@@ -49,9 +49,13 @@ jobs:
           java -version
           gradle --version
 
-      - name: Generate Gradle wrapper for the pinned toolchain
+      - name: Configure Flutter Android SDK path
         working-directory: android
-        run: gradle wrapper --gradle-version 9.4.1
+        run: printf 'flutter.sdk=%s\n' "$FLUTTER_ROOT" > local.properties
+
+      - name: Generate Gradle wrapper
+        working-directory: android
+        run: gradle wrapper --gradle-version 9.4.1 --gradle-distribution-sha256-sum 2ab2958f2a1e51120c326cad6f385153bb11ee93b3c216c5fccebfdfbb7ec6cb
 
       - name: Resolve Dart dependencies
         run: flutter pub get
