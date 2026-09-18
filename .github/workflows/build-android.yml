@@ -1,9 +1,6 @@
 name: JE Cooler Android CI
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
   workflow_dispatch:
 
 permissions:
