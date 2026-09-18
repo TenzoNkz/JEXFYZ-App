@@ -320,7 +320,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     rx = foundRx;
     tx = foundTx;
-    await foundTx!.setNotifyValue(true);
+    await foundTx.setNotifyValue(true);
     await txSub?.cancel();
     txSub = foundTx.lastValueStream.listen(_parseIncomingBytes);
 
@@ -879,7 +879,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 10),
         itemCount: menuNames.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 6),
+        separatorBuilder: (_, _) => const SizedBox(width: 6),
         itemBuilder: (context, index) {
           final selected = index == menuIndex;
           return ChoiceChip(
