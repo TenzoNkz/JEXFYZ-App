@@ -783,13 +783,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
       }
     });
 
-    await _sendRaw(
-      '$voltageKey'
-          .replaceAll('5V', 'V5COLOR')
-          .replaceAll('9V', 'V9COLOR')
-          .replaceAll('12V', 'V12COLOR') +
-          ':$color',
-    );
+    final command = switch (voltageKey) {
+      '5V' => 'V5COLOR',
+      '9V' => 'V9COLOR',
+      '12V' => 'V12COLOR',
+      _ => '',
+    };
+
+    if (command.isEmpty) return;
+
+    await _sendRaw('$command:$color');
   }
 
   Future<void> _resetVoltageColors() async {
@@ -1560,7 +1563,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         const SizedBox(height: 3),
                         Text(
                           voltage == '12V'
-                              ? '${fanSpeed}% • Manual 12V'
+                              ? '$fanSpeed% • Manual 12V'
                               : '100% outside Manual 12V',
                           style: const TextStyle(
                             fontSize: 10,
