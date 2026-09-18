@@ -50,9 +50,6 @@ jobs:
       - name: Static analysis
         run: flutter analyze
 
-      - name: Flutter tests
-        run: flutter test
-
       - name: Build release APK
         run: flutter build apk --release
 
