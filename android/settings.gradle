@@ -32,5 +32,26 @@ plugins {
     id "com.google.gms.google-services" version "4.4.3" apply false
 }
 
+def flutterStorageBaseUrl = System.getenv("FLUTTER_STORAGE_BASE_URL") ?: "https://storage.googleapis.com"
+def flutterEngineRealm = ""
+def flutterEngineRealmFile = file("${flutterSdkPath}/bin/cache/engine.realm")
+if (flutterEngineRealmFile.exists()) {
+    flutterEngineRealm = flutterEngineRealmFile.getText("UTF-8").trim()
+}
+if (flutterEngineRealm) {
+    flutterEngineRealm = "${flutterEngineRealm}/"
+}
+
+dependencyResolutionManagement {
+    repositoriesMode = RepositoriesMode.PREFER_SETTINGS
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url = uri("${flutterStorageBaseUrl}/${flutterEngineRealm}download.flutter.io")
+        }
+    }
+}
+
 rootProject.name = 'je_cooler'
 include ':app'

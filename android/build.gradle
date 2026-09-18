@@ -1,10 +1,3 @@
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
 def newBuildDir = rootProject.layout.projectDirectory.dir('../build')
 rootProject.layout.buildDirectory.value(newBuildDir)
 
