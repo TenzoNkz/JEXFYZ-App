@@ -15,7 +15,7 @@ if (localPropertiesFile.exists()) {
 
 android {
     namespace "com.horizontalzzz.jexfyz"
-    compileSdk 35
+    compileSdk 37
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -29,8 +29,8 @@ android {
     defaultConfig {
         applicationId "com.horizontalzzz.jexfyz"
         minSdk 24
-        targetSdk 35
-        versionCode 4
+        targetSdk 37
+        versionCode 6
         versionName "Telegram @horizontalzzz"
     }
 }
