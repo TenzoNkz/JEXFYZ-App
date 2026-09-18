@@ -1,10 +1,19 @@
 pluginManagement {
     def flutterSdkPath = {
         def properties = new Properties()
-        file("local.properties").withInputStream { properties.load(it) }
-        def flutterSdkPath = properties.getProperty("flutter.sdk")
-        assert flutterSdkPath != null, "flutter.sdk not set in local.properties"
-        return flutterSdkPath
+        def localPropertiesFile = file("local.properties")
+        if (localPropertiesFile.exists()) {
+            localPropertiesFile.withInputStream { properties.load(it) }
+        }
+
+        def configuredPath = properties.getProperty("flutter.sdk")
+        def environmentPath = System.getenv("FLUTTER_ROOT")
+        def resolvedPath = configuredPath ?: environmentPath
+
+        assert resolvedPath != null && resolvedPath.trim(),
+                "flutter.sdk is not configured. Set flutter.sdk in android/local.properties or FLUTTER_ROOT in the environment."
+
+        return resolvedPath
     }()
 
     includeBuild("${flutterSdkPath}/packages/flutter_tools/gradle")
@@ -18,9 +27,7 @@ pluginManagement {
 
 plugins {
     id "dev.flutter.flutter-plugin-loader" version "1.0.0"
-    // Flutter 3.47.x tooling currently knows AGP 9.2 as its upper supported range.
     id "com.android.application" version "9.2.0" apply false
-    // Keep external KGP enabled for FlutterFire/permission_handler compatibility.
     id "org.jetbrains.kotlin.android" version "2.4.0" apply false
     id "com.google.gms.google-services" version "4.4.3" apply false
 }
