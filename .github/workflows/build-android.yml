@@ -50,13 +50,45 @@ jobs:
       - name: Static analysis
         run: flutter analyze
 
-      - name: Build obfuscated release APK
-        run: flutter build apk --release --obfuscate --split-debug-info=build/symbols
+      - name: Prepare release signing key
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          set -euo pipefail
+          test -n "$ANDROID_KEYSTORE_BASE64" || {
+            echo "Missing GitHub secret: ANDROID_KEYSTORE_BASE64"
+            exit 1
+          }
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/app/release.keystore
+          test -s android/app/release.keystore
 
-      - name: Upload APK
+      - name: Build signed obfuscated release APK
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          test -n "$ANDROID_KEYSTORE_PASSWORD"
+          test -n "$ANDROID_KEY_ALIAS"
+          test -n "$ANDROID_KEY_PASSWORD"
+          flutter build apk --release --obfuscate --split-debug-info=build/symbols
+
+      - name: Verify APK signature
+        run: |
+          set -euo pipefail
+          SDK_APKSIGNER="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n 1)"
+          test -x "$SDK_APKSIGNER"
+          "$SDK_APKSIGNER" verify --verbose --print-certs build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Upload signed APK
         uses: actions/upload-artifact@v4
         with:
           name: je-cooler-release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
           retention-days: 14
+
+      - name: Remove release signing key
+        if: always()
+        run: rm -f android/app/release.keystore
