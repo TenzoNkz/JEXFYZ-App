@@ -1,73 +1,85 @@
-name: Build Android APK
+name: JE Cooler Android CI
 
 on:
-  workflow_dispatch:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: android-build-${{ github.ref }}
+  group: android-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   build:
-    name: Flutter Android Release
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Set up Java 17
+      - name: Setup Java 17
         uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
+          cache: gradle
 
-      - name: Set up Flutter 3.35.7
+      - name: Setup Flutter 3.47.4
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: 3.35.7
+          flutter-version: '3.47.4'
           cache: true
-          pub-cache: true
+          cache-key: flutter-3.47.4
 
-      - name: Verify Flutter toolchain
-        run: |
-          flutter --version
-          flutter doctor -v
-
-      - name: Get Flutter dependencies
-        run: flutter pub get
-
-      # The repository did not contain Gradle Wrapper files.
-      # Generate them inside the ephemeral CI runner, then let Flutter use them.
-      - name: Set up Gradle 8.9
+      - name: Setup Gradle 9.4.1
         uses: gradle/actions/setup-gradle@v6
         with:
-          gradle-version: '8.9'
+          gradle-version: '9.4.1'
 
-      - name: Generate Gradle Wrapper for CI
-        working-directory: android
+      - name: Toolchain versions
         run: |
-          gradle wrapper --gradle-version 8.9 --distribution-type bin
-          chmod +x gradlew
-          ./gradlew --version
+          flutter --version
+          dart --version
+          java -version
+          gradle --version
+
+      - name: Generate Gradle wrapper for the pinned toolchain
+        working-directory: android
+        run: gradle wrapper --gradle-version 9.4.1
+
+      - name: Resolve Dart dependencies
+        run: flutter pub get
+
+      - name: Static analysis
+        run: flutter analyze
+
+      - name: Flutter tests
+        run: flutter test
 
       - name: Build release APK
         run: flutter build apk --release
 
-      - name: Upload APK artifact
+      - name: Build release App Bundle
+        run: flutter build appbundle --release
+
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: je-cooler-release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload App Bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: je-cooler-release-aab
+          path: build/app/outputs/bundle/release/app-release.aab
           if-no-files-found: error
           retention-days: 14
