@@ -82,7 +82,7 @@ jobs:
           "$SDK_APKSIGNER" verify --verbose --print-certs build/app/outputs/flutter-apk/app-release.apk
 
       - name: Upload signed APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: je-cooler-release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
