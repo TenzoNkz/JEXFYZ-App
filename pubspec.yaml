@@ -1,0 +1,25 @@
+name: je_cooler
+description: JE Cooler official controller for JE X FYZ hardware.
+publish_to: 'none'
+version: 1.4.0+5
+
+environment:
+  sdk: '>=3.9.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_blue_plus: ^2.3.12
+  firebase_core: ^4.14.0
+  firebase_database: ^12.5.0
+  permission_handler: ^13.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/je_cooler.jpg
