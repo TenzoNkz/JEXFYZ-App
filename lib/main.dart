@@ -123,7 +123,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   bool _bleReady = false;
   bool _bleSessionReady = false;
   bool _syncReadyAck = false;
-  bool _finalSyncReceived = false;
   bool connected = false;
   bool syncing = false;
   bool fullSyncReceived = false;
@@ -326,7 +325,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _bleReady = false;
     _bleSessionReady = false;
     _syncReadyAck = false;
-    _finalSyncReceived = false;
     fullSyncReceived = false;
     incomingBuffer = '';
     _syncSnapshot.clear();
@@ -385,7 +383,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _bleReady = false;
     _bleSessionReady = false;
     _syncReadyAck = false;
-    _finalSyncReceived = false;
     fullSyncReceived = false;
     batteryTimer?.cancel();
     for (final waiters in _ackWaiters.values) {
@@ -465,7 +462,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     // Full Sync and then ACKs SYNC_READY. The UI still stays hidden.
     _bleSessionReady = false;
     _syncReadyAck = false;
-    _finalSyncReceived = false;
     fullSyncReceived = false;
     final readyAccepted = await sendCommand('SYNC_READY', showError: false);
     if (!readyAccepted) {
@@ -489,7 +485,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     // from the same firmware state, including BATTERY.
     await _readBatteryTemperatureOnce(updateUi: false);
     fullSyncReceived = false;
-    _finalSyncReceived = false;
     await sendCommand('SYNC', showError: false);
     final finalSyncDeadline = DateTime.now().add(const Duration(milliseconds: 2000));
     while (mounted &&
@@ -708,7 +703,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       }
       _commitTelemetry(_syncSnapshot);
       fullSyncReceived = true;
-      if (_bleSessionReady) _finalSyncReceived = true;
     }
 
     while (incomingBuffer.contains('\n') && !incomingBuffer.contains('<SYNC_START>')) {
@@ -876,21 +870,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 'NTC_MV':
         break;
     }
-  }
-
-  Future<void> _sendBatteryTemperature() async {
-    if (!connected || !phoneBatteryValid) {
-      if (_bleReady && !phoneBatteryValid) {
-        await sendCommand('PHONE:BT=-10.0', showError: false);
-      }
-      return;
-    }
-    final parsed = double.tryParse(phoneBatteryTemp);
-    if (parsed == null) return;
-    await sendCommand(
-      'PHONE:BT=${parsed.toStringAsFixed(1)}',
-      showError: false,
-    );
   }
 
   void _startBatteryTelemetry() {
@@ -1470,7 +1449,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 active ? 'ON' : 'OFF',
                 key: ValueKey<bool>(active),
                 style: TextStyle(
-                  color: active ? Colors.cyanAccent : Colors.white45,
+                  color: active ? Colors.cyanAccent : Colors.white.withValues(alpha: 0.45),
                   fontSize: 9,
                   fontWeight: FontWeight.w900,
                 ),
@@ -1665,7 +1644,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       key: PageStorageKey<String>(storageKey),
       physics: const ClampingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      cacheExtent: 480,
+      scrollCacheExtent: 480,
       padding: padding,
       children: children,
     );
