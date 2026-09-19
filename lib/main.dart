@@ -1,10 +1,10 @@
 /*
   JE X FYZ / JE COOLER
-  Horizon Cooler UI base + JE X FYZ V2.0 protocol
+  Horizon Cooler UI base + JE X FYZ V2.4 protocol
 
   Core rules:
   - Horizon Cooler remains the visual/layout and Android foundation.
-  - JE X FYZ V2.0 uses firmware-owned state and BLE SYNC -> SYNC_READY handshake.
+  - JE X FYZ V2.4 uses firmware-owned state and BLE SYNC -> SYNC_READY handshake.
   - Firebase is READ-ONLY and only queried at firmware_update.
   - Phone battery temperature is sent every 1 second while BLE is connected.
   - Manual voltage commands use a 1-second app guard matching firmware.
@@ -122,6 +122,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   bool _bleReady = false;
   bool _bleSessionReady = false;
+  bool _syncReadyAck = false;
+  bool _serviceDiscoveryActive = false;
   bool connected = false;
   bool syncing = false;
   bool fullSyncReceived = false;
@@ -282,7 +284,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       _showSnackBar('Bluetooth scan gagal.', color: Colors.redAccent);
     } finally {
       await scanSub?.cancel();
-      if (mounted) setState(() => syncing = false);
     }
   }
 
@@ -303,6 +304,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     tx = null;
     _bleReady = false;
     _bleSessionReady = false;
+    _syncReadyAck = false;
     fullSyncReceived = false;
     incomingBuffer = '';
 
@@ -314,136 +316,180 @@ class _DashboardScreenState extends State<DashboardScreen> {
       });
     }
 
-    connectionSub = target.connectionState.listen((state) async {
-      if (state == BluetoothConnectionState.connected) {
+    connectionSub = target.connectionState.listen((state) {
+      if (state != BluetoothConnectionState.disconnected) return;
+      _handleBleDisconnected();
+    });
+
+    try {
+      await target.connect(
+        license: License.nonprofit,
+        autoConnect: false,
+        timeout: const Duration(seconds: 12),
+        mtu: 247,
+      );
+
+      if (Platform.isAndroid) {
         try {
-          if (Platform.isAndroid) {
-            try {
-              await target.requestMtu(247);
-            } catch (_) {}
-          }
-          await _discoverServices(target);
-        } catch (e) {
-          debugPrint('BLE discovery: $e');
-        }
-      } else if (state == BluetoothConnectionState.disconnected) {
-        await notificationSub?.cancel();
-        notificationSub = null;
-        _bleReady = false;
-        _bleSessionReady = false;
-        batteryTimer?.cancel();
-        if (!mounted) return;
+          await target.requestMtu(247);
+        } catch (_) {}
+      }
+
+      await _discoverServices(target);
+    } catch (e) {
+      debugPrint('BLE connect/discovery: $e');
+      await notificationSub?.cancel();
+      notificationSub = null;
+      _bleReady = false;
+      _bleSessionReady = false;
+      if (mounted) {
         setState(() {
           connected = false;
           syncing = false;
-          notice = 'Disconnected';
+          notice = 'Bluetooth connection failed';
         });
       }
-    });
+      rethrow;
+    }
+  }
 
-    await target.connect(
-      license: License.nonprofit,
-      autoConnect: false,
-      timeout: const Duration(seconds: 12),
-      mtu: 247,
-    );
+  void _handleBleDisconnected() {
+    notificationSub?.cancel();
+    notificationSub = null;
+    _bleReady = false;
+    _bleSessionReady = false;
+    _syncReadyAck = false;
+    batteryTimer?.cancel();
+    if (!mounted) return;
+    setState(() {
+      connected = false;
+      syncing = false;
+      voltage = '--';
+      hotsideTemp = '--';
+      phoneBatteryTemp = '--';
+      phoneBatteryValid = false;
+      safety = 'LOCKED';
+      safetyReason = 'DISCONNECTED';
+      firmwareVersion = 'V?';
+      resetReason = 'UNKNOWN';
+      notice = 'Disconnected';
+    });
   }
 
   Future<void> _discoverServices(BluetoothDevice target) async {
-    final services = await target.discoverServices();
-    BluetoothCharacteristic? discoveredRx;
-    BluetoothCharacteristic? discoveredTx;
+    if (_serviceDiscoveryActive) return;
+    _serviceDiscoveryActive = true;
+    try {
+      final services = await target.discoverServices();
+      BluetoothCharacteristic? discoveredRx;
+      BluetoothCharacteristic? discoveredTx;
 
-    for (final service in services) {
-      if (service.uuid.toString().toLowerCase() != serviceUuid) continue;
-      for (final characteristic in service.characteristics) {
-        final id = characteristic.uuid.toString().toLowerCase();
-        if (id == rxUuid) discoveredRx = characteristic;
-        if (id == txUuid) discoveredTx = characteristic;
+      for (final service in services) {
+        if (service.uuid.toString().toLowerCase() != serviceUuid) continue;
+        for (final characteristic in service.characteristics) {
+          final id = characteristic.uuid.toString().toLowerCase();
+          if (id == rxUuid) discoveredRx = characteristic;
+          if (id == txUuid) discoveredTx = characteristic;
+        }
       }
-    }
 
-    if (discoveredRx == null || discoveredTx == null) {
-      _showSnackBar('UUID JE X FYZ tidak cocok.', color: Colors.redAccent);
-      await target.disconnect();
-      return;
-    }
-
-    rx = discoveredRx;
-    tx = discoveredTx;
-    await discoveredTx.setNotifyValue(true);
-    await notificationSub?.cancel();
-    notificationSub = discoveredTx.lastValueStream.listen((bytes) {
-      if (bytes.isNotEmpty) _parseIncoming(utf8.decode(bytes, allowMalformed: true));
-    });
-
-    _bleReady = true;
-
-    for (var attempt = 0; attempt < 3 && !fullSyncReceived && mounted; attempt++) {
-      await sendCommand('SYNC', showError: false);
-      final deadline = DateTime.now().add(const Duration(seconds: 1));
-      while (mounted && !fullSyncReceived && DateTime.now().isBefore(deadline)) {
-        await Future<void>.delayed(const Duration(milliseconds: 40));
+      if (discoveredRx == null || discoveredTx == null) {
+        throw StateError('UUID JE X FYZ tidak cocok');
       }
-    }
 
-    if (!fullSyncReceived) {
+      rx = discoveredRx;
+      tx = discoveredTx;
+
+      // Subscribe BEFORE enabling notifications so the first firmware Full Sync
+      // cannot be lost during the CCCD/notify transition.
+      await notificationSub?.cancel();
+      notificationSub = discoveredTx.lastValueStream.listen((bytes) {
+        if (bytes.isNotEmpty) {
+          _parseIncoming(utf8.decode(bytes, allowMalformed: true));
+        }
+      });
+      await discoveredTx.setNotifyValue(true);
+      await Future<void>.delayed(const Duration(milliseconds: 120));
+
+      _bleReady = true;
+      _bleSessionReady = false;
+      _syncReadyAck = false;
+      fullSyncReceived = false;
+      incomingBuffer = '';
+
+      // The firmware also emits an automatic Full Sync on connect, but we issue
+      // explicit SYNC retries as a recovery path for Android/BLE packet loss.
+      for (var attempt = 0;
+          attempt < 4 && !fullSyncReceived && mounted;
+          attempt++) {
+        await sendCommand('SYNC', showError: false);
+        final deadline = DateTime.now().add(const Duration(milliseconds: 2500));
+        while (mounted &&
+            !fullSyncReceived &&
+            DateTime.now().isBefore(deadline)) {
+          await Future<void>.delayed(const Duration(milliseconds: 50));
+        }
+      }
+
+      if (!fullSyncReceived) {
+        throw StateError('Full Sync failed');
+      }
+
+      // Only after the actual hardware state has been received do we unlock
+      // state-changing commands for this BLE session.
+      _bleSessionReady = false;
+      _syncReadyAck = false;
+      final readyAccepted = await sendCommand('SYNC_READY', showError: false);
+      if (!readyAccepted) {
+        throw StateError('BLE session handshake write failed');
+      }
+
+      final readyDeadline = DateTime.now().add(const Duration(milliseconds: 2500));
+      while (mounted &&
+          !_bleSessionReady &&
+          !_syncReadyAck &&
+          DateTime.now().isBefore(readyDeadline)) {
+        await Future<void>.delayed(const Duration(milliseconds: 50));
+      }
+
+      if (!_bleSessionReady && !_syncReadyAck) {
+        throw StateError('BLE session not ready');
+      }
+
+      _bleSessionReady = true;
+      if (!mounted) return;
+      setState(() {
+        connected = true;
+        syncing = false;
+        notice = '';
+        rgbColorController.text = rgbColor;
+        color5Controller.text = color5V;
+        color9Controller.text = color9V;
+        color12Controller.text = color12V;
+      });
+      _startBatteryTelemetry();
+      await _sendBatteryTemperature();
+
+      if (resetReason != 'POWERON' && resetReason != 'UNKNOWN') {
+        _showSnackBar(
+          'ESP32 Reset: ${_friendlyReset(resetReason)}',
+          color: Colors.orangeAccent,
+        );
+      }
+    } catch (e) {
       if (mounted) {
         setState(() {
+          connected = false;
           syncing = false;
-          notice = 'Full Sync failed';
+          notice = e is StateError ? e.message : 'BLE synchronization failed';
         });
       }
-      return;
-    }
-
-    _bleSessionReady = false;
-    final readyAccepted = await sendCommand('SYNC_READY', showError: false);
-    if (!readyAccepted) {
-      if (mounted) {
-        setState(() {
-          syncing = false;
-          notice = 'BLE session handshake failed';
-        });
-      }
-      return;
-    }
-
-    final readyDeadline = DateTime.now().add(const Duration(seconds: 1));
-    while (mounted &&
-        !_bleSessionReady &&
-        DateTime.now().isBefore(readyDeadline)) {
-      await Future<void>.delayed(const Duration(milliseconds: 40));
-    }
-
-    if (!_bleSessionReady) {
-      if (mounted) {
-        setState(() {
-          syncing = false;
-          notice = 'BLE session not ready';
-        });
-      }
-      return;
-    }
-
-    if (!mounted) return;
-    setState(() {
-      connected = true;
-      syncing = false;
-      notice = '';
-      rgbColorController.text = rgbColor;
-      color5Controller.text = color5V;
-      color9Controller.text = color9V;
-      color12Controller.text = color12V;
-    });
-    _startBatteryTelemetry();
-    await _sendBatteryTemperature();
-
-    if (resetReason != 'POWERON' && resetReason != 'UNKNOWN') {
-      _showSnackBar(
-        'ESP32 Reset: ${_friendlyReset(resetReason)}',
-        color: Colors.orangeAccent,
-      );
+      try {
+        await target.disconnect();
+      } catch (_) {}
+      rethrow;
+    } finally {
+      _serviceDiscoveryActive = false;
     }
   }
 
@@ -552,9 +598,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     if (line.startsWith('ACK:')) {
       final parts = line.substring(4).split(';');
+      final item = parts.isNotEmpty ? parts[0].trim().toUpperCase() : '';
       final reason = parts.length > 1 && parts[1].startsWith('REASON=')
-          ? parts[1].substring(7)
+          ? parts[1].substring(7).trim().toUpperCase()
           : 'UNKNOWN';
+
+      if (item == 'SYNC_READY' &&
+          (reason == 'OK' || reason == 'READY' || reason == 'ACCEPTED')) {
+        _syncReadyAck = true;
+        _bleSessionReady = true;
+      }
+
       if (reason != 'OK' &&
           reason != 'ACCEPTED' &&
           reason != 'READY' &&
@@ -720,6 +774,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  Future<bool> _waitForTelemetry(
+    bool Function() predicate, {
+    Duration timeout = const Duration(milliseconds: 1500),
+  }) async {
+    final deadline = DateTime.now().add(timeout);
+    while (mounted && DateTime.now().isBefore(deadline)) {
+      if (predicate()) return true;
+      await Future<void>.delayed(const Duration(milliseconds: 40));
+    }
+    return predicate();
+  }
+
   Future<void> _requestVoltage(String target) async {
     if (!connected || adaptiveOn || voltageGuardActive || !isVoltageCommand(target)) return;
     if (target == voltage) return;
@@ -731,20 +797,45 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
 
     final accepted = await sendCommand('VOLTAGE:$target', showError: false);
-    if (!accepted) {
+    final confirmed = accepted && await _waitForTelemetry(
+      () => voltage == target,
+      timeout: const Duration(milliseconds: 1800),
+    );
+
+    if (!confirmed) {
       voltageGuardTimer?.cancel();
       if (mounted) setState(() => voltageGuardActive = false);
+      if (connected && safetyReason != 'NONE') {
+        _showSnackBar(_friendlyReason(safetyReason), color: Colors.orangeAccent);
+      }
     }
   }
 
   Future<void> _toggleFan(bool enabled) async {
     if (!connected || adaptiveOn) return;
-    await sendCommand(enabled ? 'FAN:ON' : 'FAN:OFF', showError: false);
+    final accepted = await sendCommand(enabled ? 'FAN:ON' : 'FAN:OFF', showError: false);
+    final confirmed = accepted && await _waitForTelemetry(
+      () => fanOn == enabled,
+    );
+    if (!confirmed && connected) {
+      _showSnackBar(_friendlyReason(safetyReason), color: Colors.orangeAccent);
+    }
   }
 
   Future<void> _togglePeltier(bool enabled) async {
     if (!connected || adaptiveOn) return;
-    if (enabled && !fanOn) {
+
+    if (!enabled) {
+      final accepted = await sendCommand('PELTIER:OFF', showError: false);
+      final confirmed = accepted && await _waitForTelemetry(() => !peltierOn);
+      if (!confirmed && connected) {
+        _showSnackBar(_friendlyReason(safetyReason), color: Colors.orangeAccent);
+      }
+      return;
+    }
+
+    // Peltier is allowed only after the fan has actually been confirmed ON.
+    if (!fanOn) {
       final approved = await showDialog<bool>(
         context: context,
         builder: (ctx) => AlertDialog(
@@ -762,10 +853,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
         ),
       );
-      if (approved == true) await sendCommand('FAN:ON', showError: false);
-      else return;
+      if (approved != true) return;
+
+      final fanAccepted = await sendCommand('FAN:ON', showError: false);
+      final fanConfirmed = fanAccepted && await _waitForTelemetry(
+        () => fanOn,
+        timeout: const Duration(milliseconds: 1800),
+      );
+      if (!fanConfirmed) {
+        _showSnackBar(_friendlyReason(safetyReason), color: Colors.orangeAccent);
+        return;
+      }
     }
-    await sendCommand(enabled ? 'PELTIER:ON' : 'PELTIER:OFF', showError: false);
+
+    final accepted = await sendCommand('PELTIER:ON', showError: false);
+    final confirmed = accepted && await _waitForTelemetry(
+      () => peltierOn,
+      timeout: const Duration(milliseconds: 1800),
+    );
+    if (!confirmed && connected) {
+      _showSnackBar(_friendlyReason(safetyReason), color: Colors.orangeAccent);
+    }
   }
 
   Future<void> _toggleAdaptive(bool enabled) async {
@@ -775,7 +883,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
       enabled ? 'ADAPTIVE:ON' : 'ADAPTIVE:OFF',
       showError: false,
     );
-    if (!accepted && mounted) setState(() => adaptiveTransitioning = false);
+    final confirmed = accepted && await _waitForTelemetry(
+      () => adaptiveOn == enabled,
+      timeout: const Duration(milliseconds: 2200),
+    );
+    if (!confirmed && mounted) {
+      setState(() => adaptiveTransitioning = false);
+      _showSnackBar(_friendlyReason(safetyReason), color: Colors.orangeAccent);
+      return;
+    }
+    if (mounted) setState(() => adaptiveTransitioning = false);
   }
 
   Future<void> _setRgb(bool enabled) async {
@@ -798,7 +915,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (!connected || adaptiveOn || voltage != '12V') return;
     final next = (value / 10).round() * 10;
     if (next < fanSpeedMin || next > fanSpeedMax) return;
-    await sendCommand('FANSPEED:$next', showError: false);
+    final accepted = await sendCommand('FANSPEED:$next', showError: false);
+    final confirmed = accepted && await _waitForTelemetry(
+      () => fanSpeed == next,
+    );
+    if (!confirmed && connected) {
+      _showSnackBar(_friendlyReason(safetyReason), color: Colors.orangeAccent);
+    }
   }
 
   Future<void> _setHotLimit(int value) async {
@@ -908,6 +1031,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String _friendlyReason(String reason) {
     switch (reason) {
       case 'NTC_ERROR': return 'NTC belum valid';
+      case 'WAITING_FOR_NTC': return 'Menunggu pembacaan NTC';
       case 'HOTSIDE_PROTECTION': return 'Hotside protection aktif';
       case 'FAN_REQUIRED': return 'Fan harus ON';
       case 'ADAPTIVE_ACTIVE': return 'Control terkunci saat Adaptive ON';
@@ -1119,7 +1243,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ),
         Switch(
-          value: enabled ? value : false,
+          // Always render the real firmware state, even when interaction is
+          // locked by an interlock. Never force a disabled control visually OFF.
+          value: value,
           activeThumbColor: Colors.blueAccent,
           onChanged: enabled ? onChanged : null,
         ),
@@ -1191,7 +1317,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: [
                 _switchRow(
                   title: 'Fan',
-                  subtitle: fanOn ? 'Fan is ON' : 'Fan is OFF',
+                  subtitle: peltierOn
+                      ? 'Fan must stay ON while Peltier is ON'
+                      : (fanOn ? 'Fan is ON' : 'Fan is OFF'),
                   icon: Icons.air_rounded,
                   value: fanOn,
                   enabled: connected && !adaptiveOn && !peltierOn,
@@ -1231,7 +1359,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   value: fanSpeed.clamp(50, 100).toDouble(),
                   activeColor: Colors.black,
                   inactiveColor: Colors.black12,
-                  onChanged: speedEnabled ? _setFanSpeed : null,
+                  onChanged: speedEnabled
+                      ? (value) {
+                          final next = (value / 10).round() * 10;
+                          if (!mounted) return;
+                          setState(() => fanSpeed = next.clamp(fanSpeedMin, fanSpeedMax));
+                        }
+                      : null,
+                  onChangeEnd: speedEnabled ? _setFanSpeed : null,
                 ),
                 Align(
                   alignment: Alignment.centerRight,
@@ -1255,7 +1390,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _sectionTitle('Adaptive Control', subtitle: 'Adaptive control is owned by firmware V2.0.'),
+          _sectionTitle('Adaptive Control', subtitle: 'Adaptive control is owned by firmware V2.4.'),
           _card(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             child: Row(
@@ -1281,7 +1416,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ),
                 Switch(
-                  value: connected && adaptiveOn,
+                  value: adaptiveOn,
                   activeThumbColor: Colors.green,
                   onChanged: connected && !adaptiveTransitioning ? _toggleAdaptive : null,
                 ),
@@ -1517,7 +1652,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
               max: 50,
               onChanged: (v) {
                 if (!connected || locked) return;
-                setState(() => hotLimit = v);
                 _setHotLimit(v);
               },
             ),
@@ -1534,7 +1668,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   max: 48,
                   onChanged: (v) {
                     if (!connected || locked || v >= battery12Limit - 1) return;
-                    setState(() => battery5Limit = v);
                     _setBattery5(v);
                   },
                 ),
@@ -1554,7 +1687,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   max: 50,
                   onChanged: (v) {
                     if (!connected || locked || v <= battery5Limit + 1) return;
-                    setState(() => battery12Limit = v);
                     _setBattery12(v);
                   },
                 ),
