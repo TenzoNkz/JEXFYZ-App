@@ -25,7 +25,7 @@
     <application
         android:label="JE Cooler"
         android:name="${applicationName}"
-        android:icon="@drawable/hzicon">
+        android:icon="@drawable/jexfyzicon">
         <activity
             android:name=".MainActivity"
             android:exported="true"
