@@ -2229,12 +2229,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 children: [
                   Expanded(
                     flex: 5,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 9, right: 5, top: 4),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                    child: LayoutBuilder(
+                      builder: (context, leftConstraints) {
+                        return Padding(
+                          padding: const EdgeInsets.only(left: 9, right: 5, top: 2, bottom: 2),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerLeft,
+                              child: SizedBox(
+                                width: leftConstraints.maxWidth - 14,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
                           _homeMetric('BATTERY TEMPERATURE', batteryValue, '°C', color: Colors.orangeAccent, icon: Icons.battery_std_rounded),
                           _homeMetric('HOTSIDE TEMPERATURE', hotValue, hotValue != '--' ? '°C' : '', color: safety == 'FAULT' ? Colors.redAccent : Colors.cyanAccent, icon: Icons.device_thermostat_rounded),
                           _homeMetric('VOLTAGE INDICATOR', voltageValue, voltageValue != '--' ? 'V' : '', color: Colors.blueAccent, icon: Icons.bolt_rounded),
@@ -2274,9 +2284,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           const SizedBox(height: 6),
-                          _homeNotify(),
-                        ],
-                      ),
+                                  _homeNotify(),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                   Expanded(
