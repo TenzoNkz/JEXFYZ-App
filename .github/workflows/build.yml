@@ -1,0 +1,154 @@
+name: JE X FYZ Cooler Build
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: zulu
+          java-version: "17"
+          cache: gradle
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.47.2"
+          channel: stable
+          cache: true
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: "9.3.1"
+
+      - name: Verify toolchain
+        run: |
+          flutter --version
+          dart --version
+          java -version
+          gradle --version
+
+      - name: Prepare Flutter local.properties
+        shell: bash
+        run: |
+          printf 'flutter.sdk=%s\n' "$FLUTTER_ROOT" > android/local.properties
+
+      - name: Restore Gradle wrapper if missing
+        working-directory: android
+        shell: bash
+        run: |
+          if [ ! -f gradlew ] || [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
+            gradle wrapper --gradle-version 9.3.1 --distribution-type bin
+          fi
+
+      - name: Prepare optional production signing
+        shell: bash
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "Production Android signing secrets are not configured; using debug signing."
+            exit 0
+          fi
+
+          mkdir -p "$RUNNER_TEMP/signing"
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/signing/jexfyz-release.p12"
+
+          {
+            echo "ANDROID_KEYSTORE_FILE=$RUNNER_TEMP/signing/jexfyz-release.p12"
+            echo "ANDROID_KEYSTORE_PASSWORD=$ANDROID_KEYSTORE_PASSWORD"
+            echo "ANDROID_KEY_ALIAS=$ANDROID_KEY_ALIAS"
+            echo "ANDROID_KEY_PASSWORD=$ANDROID_KEY_PASSWORD"
+          } >> "$GITHUB_ENV"
+
+      - name: JE X FYZ architecture audit
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          source = Path("lib/main.dart").read_text(encoding="utf-8")
+
+          required = [
+              "6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001",
+              "6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001",
+              "6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001",
+              "PHONE:BT=",
+              "CLOUDOTA",
+              "FirebaseDatabase.instanceFor",
+              "firmware_update",
+              "flutter_secure_storage",
+              "onChangeEnd",
+          ]
+          missing = [token for token in required if token not in source]
+          if missing:
+              raise SystemExit("JE X FYZ audit failed; missing: " + ", ".join(missing))
+
+          forbidden = [
+              r"\bCFG(?::|\\b)",
+              r"\bADAPT(?::|\\b)",
+              r"RGBTOGGLE",
+              r"RGBPREV",
+              r"RGBNEXT",
+              r"\bBR(?::|\\b)",
+              r"AIM:",
+          ]
+          for pattern in forbidden:
+              if re.search(pattern, source):
+                  raise SystemExit(f"JE X FYZ audit failed; legacy command found: {pattern}")
+
+          if re.search(r"firebaseDb.*\\.(set|update|push|removeValue)\\s*\\(", source):
+              raise SystemExit("JE X FYZ audit failed; Firebase runtime write path detected")
+
+          if "setString('saved_pass'" in source or 'setString("saved_pass"' in source:
+              raise SystemExit("JE X FYZ audit failed; Wi-Fi password stored outside secure storage")
+
+          print("JE X FYZ architecture audit passed.")
+          PY
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze Dart code
+        run: flutter analyze
+
+      - name: Run Flutter tests
+        run: flutter test
+
+      - name: Build release APK
+        run: flutter build apk --release --obfuscate --split-debug-info=build/symbols
+
+      - name: Verify APK output
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s build/app/outputs/flutter-apk/app-release.apk
+          file build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: JE-X-FYZ-Release-APK
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Upload Dart symbols
+        uses: actions/upload-artifact@v6
+        with:
+          name: JE-X-FYZ-Dart-Symbols
+          path: build/symbols
