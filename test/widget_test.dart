@@ -6,8 +6,8 @@ void main() {
     await tester.pumpWidget(const JeCoolerApp());
     await tester.pump();
     expect(find.text('JE X FYZ'), findsOneWidget);
-    expect(find.text('Battery Temperature'), findsOneWidget);
-    expect(find.text('Adaptive Mode'), findsOneWidget);
+    expect(find.text('BATTERY TEMPERATURE'), findsOneWidget);
+    expect(find.text('ADAPTIVE MODE'), findsOneWidget);
     expect(find.text('VOLTAGE'), findsOneWidget);
     expect(find.text('TEMPERATURE'), findsOneWidget);
   });
