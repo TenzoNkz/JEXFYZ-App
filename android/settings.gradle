@@ -5,18 +5,13 @@ pluginManagement {
         if (localPropertiesFile.exists()) {
             localPropertiesFile.withInputStream { properties.load(it) }
         }
+        def flutterSdkPath = properties.getProperty("flutter.sdk")
+        assert flutterSdkPath != null : "flutter.sdk not set in local.properties"
+        return flutterSdkPath
+    }
+    settings.ext.flutterSdkPath = flutterSdkPath()
 
-        def configuredPath = properties.getProperty("flutter.sdk")
-        def environmentPath = System.getenv("FLUTTER_ROOT")
-        def resolvedPath = configuredPath ?: environmentPath
-
-        assert resolvedPath != null && resolvedPath.trim(),
-                "flutter.sdk is not configured. Set flutter.sdk in android/local.properties or FLUTTER_ROOT in the environment."
-
-        return resolvedPath
-    }()
-
-    includeBuild("${flutterSdkPath}/packages/flutter_tools/gradle")
+    includeBuild("${settings.ext.flutterSdkPath}/packages/flutter_tools/gradle")
 
     repositories {
         google()
@@ -27,31 +22,9 @@ pluginManagement {
 
 plugins {
     id "dev.flutter.flutter-plugin-loader" version "1.0.0"
-    id "com.android.application" version "9.2.0" apply false
-    id "org.jetbrains.kotlin.android" version "2.4.0" apply false
-    id "com.google.gms.google-services" version "4.4.3" apply false
+    id "com.android.application" version "9.1.1" apply false
+    id "org.jetbrains.kotlin.android" version "2.2.20" apply false
+    id "com.google.gms.google-services" version "4.4.4" apply false
 }
 
-def flutterStorageBaseUrl = System.getenv("FLUTTER_STORAGE_BASE_URL") ?: "https://storage.googleapis.com"
-def flutterEngineRealm = ""
-def flutterEngineRealmFile = file("${flutterSdkPath}/bin/cache/engine.realm")
-if (flutterEngineRealmFile.exists()) {
-    flutterEngineRealm = flutterEngineRealmFile.getText("UTF-8").trim()
-}
-if (flutterEngineRealm) {
-    flutterEngineRealm = "${flutterEngineRealm}/"
-}
-
-dependencyResolutionManagement {
-    repositoriesMode = RepositoriesMode.PREFER_SETTINGS
-    repositories {
-        google()
-        mavenCentral()
-        maven {
-            url = uri("${flutterStorageBaseUrl}/${flutterEngineRealm}download.flutter.io")
-        }
-    }
-}
-
-rootProject.name = 'je_cooler'
-include ':app'
+include ":app"
