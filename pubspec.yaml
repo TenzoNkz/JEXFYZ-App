@@ -1,18 +1,19 @@
-name: je_cooler
-description: JE Cooler official controller for JE X FYZ hardware.
+name: jexfyz_cooler
+description: "JE Cooler official Android controller for JE X FYZ hardware, based on Horizon Cooler."
 publish_to: 'none'
-version: 1.5.0+6
+version: 1.0.0+1
 
 environment:
-  sdk: '>=3.13.3 <4.0.0'
-  flutter: '>=3.47.4 <3.48.0'
+  sdk: '>=3.9.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_blue_plus: ^2.3.12
-  firebase_core: ^4.15.0
-  firebase_database: ^12.6.0
+  firebase_core: ^4.14.0
+  firebase_database: ^12.5.0
+  shared_preferences: ^2.5.5
+  flutter_secure_storage: ^11.0.0
   permission_handler: ^13.0.2
 
 dev_dependencies:
@@ -23,4 +24,5 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/je_cooler.png
+    - assets/hzcooler.png
+    - assets/hzicon.png
