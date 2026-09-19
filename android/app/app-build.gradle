@@ -26,34 +26,11 @@ android {
         versionName flutter.versionName
     }
 
-    def releaseKeystore = file("release.keystore")
-    def releaseStorePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
-    def releaseKeyAlias = System.getenv("ANDROID_KEY_ALIAS")
-    def releaseKeyPassword = System.getenv("ANDROID_KEY_PASSWORD")
-
-    if (!releaseKeystore.exists() ||
-            !releaseStorePassword ||
-            !releaseKeyAlias ||
-            !releaseKeyPassword) {
-        throw new GradleException(
-            "Release signing is not configured. " +
-            "The CI must provide android/app/release.keystore and " +
-            "ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD."
-        )
-    }
-
-    signingConfigs {
-        release {
-            storeFile = releaseKeystore
-            storePassword = releaseStorePassword
-            keyAlias = releaseKeyAlias
-            keyPassword = releaseKeyPassword
-        }
-    }
-
     buildTypes {
         release {
-            signingConfig = signingConfigs.release
+            // Standalone APK distribution: use Gradle's local debug keystore
+            // so no GitHub signing secrets are required.
+            signingConfig = signingConfigs.debug
         }
     }
 }
