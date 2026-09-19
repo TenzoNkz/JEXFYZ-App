@@ -76,7 +76,7 @@ jobs:
             echo "ANDROID_KEY_PASSWORD=$ANDROID_KEY_PASSWORD"
           } >> "$GITHUB_ENV"
 
-      - name: JE X FYZ architecture audit
+      - name: JE X FYZ architecture and asset audit
         shell: bash
         run: |
           python3 - <<'PY'
@@ -84,6 +84,8 @@ jobs:
           import re
 
           source = Path("lib/main.dart").read_text(encoding="utf-8")
+          pubspec = Path("pubspec.yaml").read_text(encoding="utf-8")
+          manifest = Path("android/app/src/main/AndroidManifest.xml").read_text(encoding="utf-8")
 
           required = [
               "6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001",
@@ -95,31 +97,50 @@ jobs:
               "firmware_update",
               "flutter_secure_storage",
               "onChangeEnd",
+              "assets/jexfyzcooler.png",
+              "assets/jexfyzicon.png",
           ]
-          missing = [token for token in required if token not in source]
+          missing = [token for token in required if token not in source and token not in pubspec]
           if missing:
               raise SystemExit("JE X FYZ audit failed; missing: " + ", ".join(missing))
 
+          if "assets/hzcooler.png" in source or "assets/hzcooler.png" in pubspec:
+              raise SystemExit("JE X FYZ asset audit failed; legacy hzcooler.png reference found")
+          if "assets/hzicon.png" in source or "assets/hzicon.png" in pubspec:
+              raise SystemExit("JE X FYZ asset audit failed; legacy hzicon.png reference found")
+          if "@drawable/hzicon" in manifest:
+              raise SystemExit("JE X FYZ asset audit failed; legacy Android icon reference found")
+          if "@drawable/jexfyzicon" not in manifest:
+              raise SystemExit("JE X FYZ asset audit failed; Android app icon is not jexfyzicon")
+
           forbidden = [
-              r"\bCFG(?::|\\b)",
-              r"\bADAPT(?::|\\b)",
+              r"\bCFG:",
+              r"\bADAPT:",
               r"RGBTOGGLE",
               r"RGBPREV",
               r"RGBNEXT",
-              r"\bBR(?::|\\b)",
+              r"\bBR:",
               r"AIM:",
           ]
           for pattern in forbidden:
               if re.search(pattern, source):
                   raise SystemExit(f"JE X FYZ audit failed; legacy command found: {pattern}")
 
-          if re.search(r"firebaseDb.*\\.(set|update|push|removeValue)\\s*\\(", source):
+          if re.search(r"firmwareDb[\s\S]*\.(set|update|push|removeValue)\s*\(", source):
               raise SystemExit("JE X FYZ audit failed; Firebase runtime write path detected")
 
           if "setString('saved_pass'" in source or 'setString("saved_pass"' in source:
               raise SystemExit("JE X FYZ audit failed; Wi-Fi password stored outside secure storage")
 
-          print("JE X FYZ architecture audit passed.")
+          for asset in [
+              Path("assets/jexfyzcooler.png"),
+              Path("assets/jexfyzicon.png"),
+              Path("android/app/src/main/res/drawable-nodpi/jexfyzicon.png"),
+          ]:
+              if not asset.is_file() or asset.stat().st_size == 0:
+                  raise SystemExit(f"JE X FYZ asset audit failed; missing or empty asset: {asset}")
+
+          print("JE X FYZ architecture and asset audit passed.")
           PY
 
       - name: Install dependencies
