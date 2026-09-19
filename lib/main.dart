@@ -1,14 +1,15 @@
 /*
   JE X FYZ / JE COOLER
-  Horizon Cooler UI base + JE X FYZ V1.7 protocol
+  Horizon Cooler UI base + JE X FYZ V2.0 protocol
 
   Core rules:
   - Horizon Cooler remains the visual/layout and Android foundation.
-  - JE X FYZ V1.7 is the only device protocol used here.
+  - JE X FYZ V2.0 uses firmware-owned state and BLE SYNC -> SYNC_READY handshake.
   - Firebase is READ-ONLY and only queried at firmware_update.
   - Phone battery temperature is sent every 1 second while BLE is connected.
   - Manual voltage commands use a 1-second app guard matching firmware.
   - Adaptive ON/OFF always relies on firmware to return the selector to 5V.
+  - BLE connection never replays local runtime state into the device.
   - UI never pretends a command succeeded until device telemetry confirms it.
 */
 
@@ -120,6 +121,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Timer? reconnectTimer;
 
   bool _bleReady = false;
+  bool _bleSessionReady = false;
   bool connected = false;
   bool syncing = false;
   bool fullSyncReceived = false;
@@ -300,6 +302,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     rx = null;
     tx = null;
     _bleReady = false;
+    _bleSessionReady = false;
     fullSyncReceived = false;
     incomingBuffer = '';
 
@@ -327,22 +330,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         await notificationSub?.cancel();
         notificationSub = null;
         _bleReady = false;
+        _bleSessionReady = false;
         batteryTimer?.cancel();
         if (!mounted) return;
         setState(() {
           connected = false;
           syncing = false;
-          voltage = '--';
-          hotsideTemp = '--';
-          phoneBatteryTemp = '--';
-          phoneBatteryValid = false;
-          fanOn = false;
-          peltierOn = false;
-          adaptiveOn = false;
-          safety = 'LOCKED';
-          safetyReason = 'DISCONNECTED';
-          firmwareVersion = 'V?';
-          resetReason = 'UNKNOWN';
           notice = 'Disconnected';
         });
       }
@@ -404,7 +397,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
       return;
     }
 
-    await _sendFullConfiguration();
+    _bleSessionReady = false;
+    final readyAccepted = await sendCommand('SYNC_READY', showError: false);
+    if (!readyAccepted) {
+      if (mounted) {
+        setState(() {
+          syncing = false;
+          notice = 'BLE session handshake failed';
+        });
+      }
+      return;
+    }
+
+    final readyDeadline = DateTime.now().add(const Duration(seconds: 1));
+    while (mounted &&
+        !_bleSessionReady &&
+        DateTime.now().isBefore(readyDeadline)) {
+      await Future<void>.delayed(const Duration(milliseconds: 40));
+    }
+
+    if (!_bleSessionReady) {
+      if (mounted) {
+        setState(() {
+          syncing = false;
+          notice = 'BLE session not ready';
+        });
+      }
+      return;
+    }
+
     if (!mounted) return;
     setState(() {
       connected = true;
@@ -426,31 +447,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
-  Future<void> _sendFullConfiguration() async {
-    final commands = <String>[
-      'VOLTAGE:${voltage == '--' ? '5V' : voltage}',
-      fanOn ? 'FAN:ON' : 'FAN:OFF',
-      peltierOn ? 'PELTIER:ON' : 'PELTIER:OFF',
-      adaptiveOn ? 'ADAPTIVE:ON' : 'ADAPTIVE:OFF',
-      rgbOn ? 'RGB:ON' : 'RGB:OFF',
-      'MODE:$rgbMode',
-      'BRIGHTNESS:$brightness',
-      'COLOR:$rgbColor',
-      'V5COLOR:$color5V',
-      'V9COLOR:$color9V',
-      'V12COLOR:$color12V',
-      'FANSPEED:$fanSpeed',
-      'HOTLIMIT:$hotLimit',
-      'BATT5:$battery5Limit',
-      'BATT12:$battery12Limit',
-    ];
-
-    for (final command in commands) {
-      await sendCommand(command, showError: false);
-      await Future<void>.delayed(const Duration(milliseconds: 20));
-    }
-  }
-
   Future<void> _disconnect() async {
     try {
       await device?.disconnect();
@@ -466,6 +462,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
         if (showError && mounted) {
           _showSnackBar('Bluetooth belum siap.', color: Colors.orangeAccent);
         }
+        if (!completer.isCompleted) completer.complete(false);
+        return;
+      }
+
+      final normalized = command.trim().toUpperCase();
+      if (!_bleSessionReady &&
+          normalized != 'SYNC' &&
+          normalized != 'SYNC_READY') {
         if (!completer.isCompleted) completer.complete(false);
         return;
       }
@@ -492,6 +496,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   bool _requiresResponse(String command) {
     final c = command.trim().toUpperCase();
     return c == 'SYNC' ||
+        c == 'SYNC_READY' ||
         c == 'CLOUDOTA' ||
         c == 'OTAENTER' ||
         c.startsWith('VOLTAGE:') ||
@@ -571,6 +576,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           firmwareVersion = value;
           break;
         case 'PROTOCOL':
+          break;
+        case 'BLE_SESSION':
+          _bleSessionReady = value == 'READY';
           break;
         case 'VOLTAGE':
           voltage = value;
@@ -905,6 +913,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 'ADAPTIVE_ACTIVE': return 'Control terkunci saat Adaptive ON';
       case 'MANUAL_12V_ONLY': return 'Fan Speed hanya tersedia pada Manual 12V';
       case 'VOLTAGE_GUARD_OR_BUSY': return 'Voltage guard/busy aktif';
+      case 'SYNC_REQUIRED': return 'BLE session belum selesai sinkronisasi';
       case 'MUST_BE_BELOW_BATT12': return 'BATT5 harus di bawah BATT12';
       case 'MUST_BE_ABOVE_BATT5': return 'BATT12 harus di atas BATT5';
       default: return reason;
@@ -1246,7 +1255,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _sectionTitle('Adaptive Control', subtitle: 'Adaptive control is owned by firmware V1.7.'),
+          _sectionTitle('Adaptive Control', subtitle: 'Adaptive control is owned by firmware V2.0.'),
           _card(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             child: Row(
