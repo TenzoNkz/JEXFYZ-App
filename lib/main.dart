@@ -107,7 +107,6 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   static const MethodChannel batteryChannel =
       MethodChannel('je_x_fyz/battery_temp');
-  static const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
   BluetoothDevice? device;
   BluetoothCharacteristic? rx;
@@ -379,7 +378,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     rx = discoveredRx;
     tx = discoveredTx;
-    await discoveredTx!.setNotifyValue(true);
+    await discoveredTx.setNotifyValue(true);
     await notificationSub?.cancel();
     notificationSub = discoveredTx.lastValueStream.listen((bytes) {
       if (bytes.isNotEmpty) _parseIncoming(utf8.decode(bytes, allowMalformed: true));
@@ -1142,7 +1141,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Expanded(
               child: Text(mode, style: TextStyle(color: active ? Colors.white70 : Colors.black45, fontSize: 10, fontWeight: FontWeight.w700)),
             ),
-            Icon(active ? Icons.check_circle : Icons.radio_button_unchecked, color: active ? Colors.blueAccent : Colors.black18),
+            Icon(active ? Icons.check_circle : Icons.radio_button_unchecked, color: active ? Colors.blueAccent : Colors.black26),
           ],
         ),
       ),
