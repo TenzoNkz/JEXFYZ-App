@@ -13,6 +13,22 @@ if (localPropertiesFile.exists()) {
     }
 }
 
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '2'
+}
+
+def releaseStoreFile = System.getenv('ANDROID_KEYSTORE_FILE')
+def releaseStorePassword = System.getenv('ANDROID_KEYSTORE_PASSWORD')
+def releaseKeyAlias = System.getenv('ANDROID_KEY_ALIAS')
+def releaseKeyPassword = System.getenv('ANDROID_KEY_PASSWORD')
+
+def productionSigningReady = releaseStoreFile &&
+        releaseStorePassword &&
+        releaseKeyAlias &&
+        releaseKeyPassword &&
+        file(releaseStoreFile).exists()
+
 android {
     namespace "com.horizontalzzz.jexfyz"
     compileSdk 37
@@ -22,16 +38,43 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = '17'
+    kotlin {
+        compilerOptions {
+            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+        }
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
     }
 
     defaultConfig {
         applicationId "com.horizontalzzz.jexfyz"
         minSdk 24
-        targetSdk 37
-        versionCode 6
+        targetSdk 36
+        versionCode flutterVersionCode.toInteger()
         versionName "Telegram @horizontalzzz"
+    }
+
+    signingConfigs {
+        if (productionSigningReady) {
+            release {
+                storeFile file(releaseStoreFile)
+                storePassword releaseStorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            if (productionSigningReady) {
+                signingConfig signingConfigs.release
+            } else {
+                signingConfig signingConfigs.debug
+            }
+        }
     }
 }
 
