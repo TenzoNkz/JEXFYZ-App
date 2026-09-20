@@ -50,17 +50,10 @@ jobs:
           set -euo pipefail
           printf 'flutter.sdk=%s\n' "$FLUTTER_ROOT" > android/local.properties
           test -s android/local.properties
-          echo "local.properties prepared."
 
-      - name: Restore Gradle wrapper if missing
-        working-directory: android
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ ! -f gradlew ] || [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
-            gradle wrapper --gradle-version 9.3.1 --distribution-type bin
-          fi
-
+      # IMPORTANT: this MUST run before the wrapper generation step.
+      # Gradle evaluates android/app/build.gradle while generating the wrapper,
+      # and production signing is intentionally mandatory for release builds.
       - name: Prepare production release signing
         shell: bash
         env:
@@ -88,6 +81,15 @@ jobs:
             echo "ANDROID_KEY_ALIAS=$ANDROID_KEY_ALIAS"
             echo "ANDROID_KEY_PASSWORD=$ANDROID_KEY_PASSWORD"
           } >> "$GITHUB_ENV"
+
+      - name: Restore Gradle wrapper if missing
+        working-directory: android
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ ! -f gradlew ] || [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
+            gradle wrapper --gradle-version 9.3.1 --distribution-type bin
+          fi
 
       - name: JE X FYZ security and architecture audit
         shell: bash
@@ -174,7 +176,6 @@ jobs:
           set -euo pipefail
           APK="build/app/outputs/flutter-apk/app-release.apk"
           test -s "$APK"
-
           APK_SIGNER="$(find "$ANDROID_SDK_ROOT/build-tools" -type f -name apksigner 2>/dev/null | sort -V | tail -n 1)"
           test -n "$APK_SIGNER"
           "$APK_SIGNER" verify --verbose "$APK"
