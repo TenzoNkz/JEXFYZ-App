@@ -117,7 +117,7 @@ jobs:
               "assets/jexfyzcooler.png",
               "assets/jexfyzicon.png",
               "firebase_app_check",
-              "AndroidProvider.playIntegrity",
+              "providerAndroid: const AndroidPlayIntegrityProvider()",
               "TamperScreen",
               "je_x_fyz/security",
           ]
