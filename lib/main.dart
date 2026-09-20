@@ -454,7 +454,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       // declaring the device unavailable.
       if (found == null) {
         final fallback = Completer<BluetoothDevice?>();
-        await scanSub?.cancel();
+        await scanSub.cancel();
         scanSub = FlutterBluePlus.scanResults.listen((results) {
           for (final result in results) {
             final name = result.advertisementData.advName.trim().toLowerCase();
