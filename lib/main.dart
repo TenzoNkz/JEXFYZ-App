@@ -17,6 +17,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +41,19 @@ const String firebaseDbUrl =
 const Duration voltageGuardDuration = Duration(seconds: 1);
 const int fanSpeedMin = 50;
 const int fanSpeedMax = 100;
+
+const MethodChannel securityChannel = MethodChannel('je_x_fyz/security');
+
+Future<bool> _isOfficialBuild() async {
+  if (!Platform.isAndroid) return true;
+  try {
+    final result = await securityChannel.invokeMethod<bool>('isOfficialBuild');
+    return result == true;
+  } catch (e) {
+    debugPrint('Security check: $e');
+    return false;
+  }
+}
 
 bool isVoltageCommand(String value) {
   final v = value.trim().toUpperCase();
@@ -70,15 +84,138 @@ bool isValidHexColor(String value) {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final officialBuild = await _isOfficialBuild();
+  if (!officialBuild) {
+    await SystemChrome.setPreferredOrientations(const [
+      DeviceOrientation.portraitUp,
+    ]);
+    runApp(const TamperApp());
+    return;
+  }
+
   try {
     await Firebase.initializeApp();
+    try {
+      await FirebaseAppCheck.instance.activate(
+        androidProvider: AndroidProvider.playIntegrity,
+      );
+    } catch (e) {
+      // App Check can be rolled out from monitoring to enforcement in Firebase
+      // without breaking the official UI when the backend is not yet enforced.
+      debugPrint('Firebase App Check init: $e');
+    }
   } catch (e) {
     debugPrint('Firebase init: $e');
   }
+
   await SystemChrome.setPreferredOrientations(const [
     DeviceOrientation.portraitUp,
   ]);
   runApp(const JeCoolerApp());
+}
+
+class TamperApp extends StatelessWidget {
+  const TamperApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: appName,
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        useMaterial3: true,
+        scaffoldBackgroundColor: const Color(0xFF111113),
+        fontFamily: 'Roboto',
+      ),
+      home: const TamperScreen(),
+    );
+  }
+}
+
+class TamperScreen extends StatelessWidget {
+  const TamperScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF111113),
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(28),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 88,
+                  height: 88,
+                  decoration: BoxDecoration(
+                    color: const Color(0x18FF453A),
+                    borderRadius: BorderRadius.circular(28),
+                    border: Border.all(color: const Color(0x40FF453A)),
+                  ),
+                  child: const Icon(
+                    PhosphorIconsBold.warning,
+                    color: Colors.redAccent,
+                    size: 44,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                const Text(
+                  headerName,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 26,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                const Text(
+                  'JANGAN DIRUBAH\nRUBAH YA!!! 😆',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.redAccent,
+                    fontSize: 25,
+                    height: 1.05,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Aplikasi ini tidak dapat digunakan karena\nintegritas aplikasi tidak valid.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 14,
+                    height: 1.35,
+                  ),
+                ),
+                const SizedBox(height: 28),
+                FilledButton(
+                  onPressed: () => SystemNavigator.pop(),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: const Color(0xFF2A2B31),
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size(160, 48),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  child: const Text(
+                    'KELUAR',
+                    style: TextStyle(fontWeight: FontWeight.w900),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class JeCoolerApp extends StatelessWidget {
