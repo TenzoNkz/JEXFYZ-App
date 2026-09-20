@@ -24,7 +24,7 @@ jobs:
         with:
           distribution: zulu
           java-version: "17"
-          cache: none
+          # Do not set cache here. setup-java only accepts maven/gradle/sbt.
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -88,7 +88,7 @@ jobs:
       - name: JE X FYZ architecture and asset audit
         shell: bash
         run: |
-          python3 - <<'PY'
+          python3 - <<'PY2'
           from pathlib import Path
           import re
 
@@ -150,7 +150,7 @@ jobs:
                   raise SystemExit(f"JE X FYZ asset audit failed; missing or empty asset: {asset}")
 
           print("JE X FYZ architecture and asset audit passed.")
-          PY
+          PY2
 
       - name: Install dependencies
         run: flutter pub get
