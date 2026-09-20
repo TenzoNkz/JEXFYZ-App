@@ -3,17 +3,12 @@ name: JE X FYZ Cooler Build
 on:
   workflow_dispatch:
 
-concurrency:
-  group: jexfyz-build-${{ github.ref }}
-  cancel-in-progress: true
-
 permissions:
   contents: read
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
@@ -24,7 +19,7 @@ jobs:
         with:
           distribution: zulu
           java-version: "17"
-          # Do not set cache here. setup-java only accepts maven/gradle/sbt.
+          cache: gradle
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -33,44 +28,39 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Cache pub packages
-        uses: actions/cache@v6
-        with:
-          path: ~/.pub-cache
-          key: ${{ runner.os }}-pub-${{ hashFiles('pubspec.yaml', 'pubspec.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pub-
-
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
         with:
           gradle-version: "9.3.1"
-
-      - name: Prepare Android/Flutter toolchain
-        shell: bash
-        run: |
-          set -euo pipefail
-          {
-            printf 'flutter.sdk=%s\n' "$FLUTTER_ROOT"
-            printf 'flutter.versionCode=%s\n' "${GITHUB_RUN_NUMBER}"
-          } > android/local.properties
-          if [ ! -f android/gradlew ] || [ ! -f android/gradle/wrapper/gradle-wrapper.jar ]; then
-            (cd android && gradle wrapper --gradle-version 9.3.1 --distribution-type bin)
-          fi
 
       - name: Verify toolchain
         run: |
           flutter --version
           dart --version
           java -version
+          gradle --version
 
-      - name: Use standard debug signing
-        run: echo "No custom signing key configured; Flutter/Gradle will use the standard debug signing configuration."
+      - name: Prepare Flutter local.properties
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf 'flutter.sdk=%s\n' "$FLUTTER_ROOT" > android/local.properties
+
+      - name: Restore Gradle wrapper if missing
+        working-directory: android
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ ! -f gradlew ] || [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
+            gradle wrapper --gradle-version 9.3.1 --distribution-type bin
+          fi
 
       - name: JE X FYZ architecture and asset audit
         shell: bash
         run: |
-          python3 - <<'PY2'
+          set -euo pipefail
+
+          python3 - <<'PY'
           from pathlib import Path
           import re
 
@@ -91,18 +81,32 @@ jobs:
               "assets/jexfyzcooler.png",
               "assets/jexfyzicon.png",
           ]
+
           missing = [token for token in required if token not in source and token not in pubspec]
           if missing:
-              raise SystemExit("JE X FYZ audit failed; missing: " + ", ".join(missing))
+              raise SystemExit(
+                  "JE X FYZ audit failed; missing: " + ", ".join(missing)
+              )
 
           if "assets/hzcooler.png" in source or "assets/hzcooler.png" in pubspec:
-              raise SystemExit("JE X FYZ asset audit failed; legacy hzcooler.png reference found")
+              raise SystemExit(
+                  "JE X FYZ asset audit failed; legacy hzcooler.png reference found"
+              )
+
           if "assets/hzicon.png" in source or "assets/hzicon.png" in pubspec:
-              raise SystemExit("JE X FYZ asset audit failed; legacy hzicon.png reference found")
+              raise SystemExit(
+                  "JE X FYZ asset audit failed; legacy hzicon.png reference found"
+              )
+
           if "@drawable/hzicon" in manifest:
-              raise SystemExit("JE X FYZ asset audit failed; legacy Android icon reference found")
+              raise SystemExit(
+                  "JE X FYZ asset audit failed; legacy Android icon reference found"
+              )
+
           if "@drawable/jexfyzicon" not in manifest:
-              raise SystemExit("JE X FYZ asset audit failed; Android app icon is not jexfyzicon")
+              raise SystemExit(
+                  "JE X FYZ asset audit failed; Android app icon is not jexfyzicon"
+              )
 
           forbidden = [
               r"\bCFG:",
@@ -113,15 +117,22 @@ jobs:
               r"\bBR:",
               r"AIM:",
           ]
+
           for pattern in forbidden:
               if re.search(pattern, source):
-                  raise SystemExit(f"JE X FYZ audit failed; legacy command found: {pattern}")
+                  raise SystemExit(
+                      f"JE X FYZ audit failed; legacy command found: {pattern}"
+                  )
 
           if re.search(r"firmwareDb[\s\S]*\.(set|update|push|removeValue)\s*\(", source):
-              raise SystemExit("JE X FYZ audit failed; Firebase runtime write path detected")
+              raise SystemExit(
+                  "JE X FYZ audit failed; Firebase runtime write path detected"
+              )
 
           if "setString('saved_pass'" in source or 'setString("saved_pass"' in source:
-              raise SystemExit("JE X FYZ audit failed; Wi-Fi password stored outside secure storage")
+              raise SystemExit(
+                  "JE X FYZ audit failed; Wi-Fi password stored outside secure storage"
+              )
 
           for asset in [
               Path("assets/jexfyzcooler.png"),
@@ -129,50 +140,63 @@ jobs:
               Path("android/app/src/main/res/drawable-nodpi/jexfyzicon.png"),
           ]:
               if not asset.is_file() or asset.stat().st_size == 0:
-                  raise SystemExit(f"JE X FYZ asset audit failed; missing or empty asset: {asset}")
+                  raise SystemExit(
+                      f"JE X FYZ asset audit failed; missing or empty asset: {asset}"
+                  )
 
           print("JE X FYZ architecture and asset audit passed.")
-          PY2
+          PY
 
       - name: Install dependencies
         run: flutter pub get
 
       - name: Analyze Dart code
-        run: flutter analyze --no-pub
+        run: flutter analyze
 
       - name: Run Flutter tests
-        run: flutter test --no-pub
+        run: flutter test
 
       - name: Build release APK
-        run: flutter build apk --release --no-pub --obfuscate --split-debug-info=build/symbols
+        run: flutter build apk --release --obfuscate --split-debug-info=build/symbols
 
       - name: Verify APK output
         shell: bash
         run: |
           set -euo pipefail
-          test -s build/app/outputs/flutter-apk/app-release.apk
-          file build/app/outputs/flutter-apk/app-release.apk
+          APK="build/app/outputs/flutter-apk/app-release.apk"
+          test -s "$APK"
+          file "$APK"
 
-      - name: Verify APK is installable and signed
+      - name: Verify APK signature
         shell: bash
         run: |
           set -euo pipefail
-          SDK_ROOT="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-}}"
-          test -n "$SDK_ROOT"
-          APK_SIGNER="$(find "$SDK_ROOT/build-tools" -type f -name apksigner 2>/dev/null | sort -V | tail -n 1)"
-          test -n "$APK_SIGNER"
-          echo "Using: $APK_SIGNER"
-          "$APK_SIGNER" verify --verbose build/app/outputs/flutter-apk/app-release.apk
-          "$APK_SIGNER" verify --print-certs build/app/outputs/flutter-apk/app-release.apk
+          APK="build/app/outputs/flutter-apk/app-release.apk"
+          APK_SIGNER="$(find "$ANDROID_SDK_ROOT/build-tools" -type f -name apksigner 2>/dev/null | sort -V | tail -n 1)"
+
+          if [ -z "$APK_SIGNER" ]; then
+            echo "ERROR: apksigner not found"
+            exit 1
+          fi
+
+          "$APK_SIGNER" verify --verbose "$APK"
 
       - name: Create normal ZIP for APK
         shell: bash
         run: |
           set -euo pipefail
+
           cd build/app/outputs/flutter-apk
+
+          # Store the APK without Deflate compression.
+          # This makes the inner ZIP maximally compatible with Android file managers
+          # while still giving us a normal .zip file.
           rm -f app-release.zip
-          zip -9 -q app-release.zip app-release.apk
+          zip -0 -q app-release.zip app-release.apk
+
+          echo "Testing normal ZIP..."
           unzip -t app-release.zip
+
           test -s app-release.zip
           echo "APK:"
           ls -lh app-release.apk
@@ -180,16 +204,15 @@ jobs:
           ls -lh app-release.zip
 
       - name: Upload normal APK ZIP
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v6
         with:
+          name: JE-X-FYZ-Release-ZIP
           path: build/app/outputs/flutter-apk/app-release.zip
-          archive: false
           if-no-files-found: error
 
       - name: Upload Dart symbols
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v6
         with:
           name: JE-X-FYZ-Dart-Symbols
           path: build/symbols
           if-no-files-found: error
-          compression-level: 0
