@@ -1,3 +1,6 @@
+import java.security.KeyStore
+import java.util.Base64
+
 plugins {
     id "com.android.application"
     id "org.jetbrains.kotlin.android"
@@ -29,7 +32,36 @@ def productionSigningReady = releaseStoreFile &&
         releaseKeyPassword &&
         file(releaseStoreFile).exists()
 
+def officialSigningCertBase64 = ''
+if (productionSigningReady) {
+    Exception lastError = null
+    for (storeType in ['PKCS12', 'JKS']) {
+        try {
+            def keyStore = KeyStore.getInstance(storeType)
+            file(releaseStoreFile).withInputStream { input ->
+                keyStore.load(input, releaseStorePassword.toCharArray())
+            }
+            def certificate = keyStore.getCertificate(releaseKeyAlias)
+            if (certificate == null) {
+                throw new GradleException("Signing alias not found: ${releaseKeyAlias}")
+            }
+            officialSigningCertBase64 = Base64.getEncoder().encodeToString(certificate.getEncoded())
+            break
+        } catch (Exception e) {
+            lastError = e
+        }
+    }
+
+    if (officialSigningCertBase64.isEmpty()) {
+        throw new GradleException("Unable to read the production signing certificate", lastError)
+    }
+}
+
 android {
+    buildFeatures {
+        buildConfig = true
+    }
+
     namespace "com.horizontalzzz.jexfyz"
     compileSdk 37
 
@@ -68,12 +100,20 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField 'String', 'OFFICIAL_SIGNING_CERT_B64', '""'
+        }
+
         release {
-            if (productionSigningReady) {
-                signingConfig signingConfigs.release
-            } else {
-                signingConfig signingConfigs.debug
+            if (!productionSigningReady) {
+                throw new GradleException('Production release signing is not configured. Set ANDROID_KEYSTORE_FILE, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS and ANDROID_KEY_PASSWORD.')
             }
+
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField 'String', 'OFFICIAL_SIGNING_CERT_B64', "\"${officialSigningCertBase64}\""
         }
     }
 }
