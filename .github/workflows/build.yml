@@ -50,7 +50,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          printf 'flutter.sdk=%s\n' "$FLUTTER_ROOT" > android/local.properties
+          {
+            printf 'flutter.sdk=%s\n' "$FLUTTER_ROOT"
+            printf 'flutter.versionCode=%s\n' "${GITHUB_RUN_NUMBER}"
+          } > android/local.properties
           if [ ! -f android/gradlew ] || [ ! -f android/gradle/wrapper/gradle-wrapper.jar ]; then
             (cd android && gradle wrapper --gradle-version 9.3.1 --distribution-type bin)
           fi
@@ -61,29 +64,8 @@ jobs:
           dart --version
           java -version
 
-      - name: Prepare optional production signing
-        shell: bash
-        env:
-          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-        run: |
-          set -euo pipefail
-          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
-            echo "Production Android signing secrets are not configured; using debug signing."
-            exit 0
-          fi
-
-          mkdir -p "$RUNNER_TEMP/signing"
-          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/signing/jexfyz-release.p12"
-
-          {
-            echo "ANDROID_KEYSTORE_FILE=$RUNNER_TEMP/signing/jexfyz-release.p12"
-            echo "ANDROID_KEYSTORE_PASSWORD=$ANDROID_KEYSTORE_PASSWORD"
-            echo "ANDROID_KEY_ALIAS=$ANDROID_KEY_ALIAS"
-            echo "ANDROID_KEY_PASSWORD=$ANDROID_KEY_PASSWORD"
-          } >> "$GITHUB_ENV"
+      - name: Use standard debug signing
+        run: echo "No custom signing key configured; Flutter/Gradle will use the standard debug signing configuration."
 
       - name: JE X FYZ architecture and asset audit
         shell: bash
@@ -171,7 +153,19 @@ jobs:
           test -s build/app/outputs/flutter-apk/app-release.apk
           file build/app/outputs/flutter-apk/app-release.apk
 
-      - name: Compress APK for download
+      - name: Verify APK is installable and signed
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDK_ROOT="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-}}"
+          test -n "$SDK_ROOT"
+          APK_SIGNER="$(find "$SDK_ROOT/build-tools" -type f -name apksigner 2>/dev/null | sort -V | tail -n 1)"
+          test -n "$APK_SIGNER"
+          echo "Using: $APK_SIGNER"
+          "$APK_SIGNER" verify --verbose build/app/outputs/flutter-apk/app-release.apk
+          "$APK_SIGNER" verify --print-certs build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Create normal ZIP for APK
         shell: bash
         run: |
           set -euo pipefail
@@ -179,10 +173,13 @@ jobs:
           rm -f app-release.zip
           zip -9 -q app-release.zip app-release.apk
           unzip -t app-release.zip
-          echo "Compressed APK:"
-          ls -lh app-release.apk app-release.zip
+          test -s app-release.zip
+          echo "APK:"
+          ls -lh app-release.apk
+          echo "ZIP:"
+          ls -lh app-release.zip
 
-      - name: Upload direct APK ZIP
+      - name: Upload normal APK ZIP
         uses: actions/upload-artifact@v7
         with:
           path: build/app/outputs/flutter-apk/app-release.zip
