@@ -3,7 +3,6 @@ name: JE X FYZ Cooler Build
 on:
   workflow_dispatch:
 
-# Prevent multiple manual builds from consuming runners/caches at the same time.
 concurrency:
   group: jexfyz-build-${{ github.ref }}
   cancel-in-progress: true
@@ -25,8 +24,6 @@ jobs:
         with:
           distribution: zulu
           java-version: "17"
-          # Gradle caching is handled by gradle/actions below; keeping both
-          # caches causes duplicate cache work and cache-reservation warnings.
           cache: none
 
       - name: Set up Flutter
@@ -167,23 +164,49 @@ jobs:
       - name: Build release APK
         run: flutter build apk --release --no-pub --obfuscate --split-debug-info=build/symbols
 
-      - name: Verify APK output
+      - name: Verify APK integrity and signing
         shell: bash
         run: |
           set -euo pipefail
-          test -s build/app/outputs/flutter-apk/app-release.apk
-          file build/app/outputs/flutter-apk/app-release.apk
 
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v6
+          APK="build/app/outputs/flutter-apk/app-release.apk"
+          test -s "$APK"
+
+          echo "APK:"
+          ls -lh "$APK"
+          file "$APK"
+
+          echo "ZIP integrity:"
+          unzip -t "$APK" >/dev/null
+
+          APKSIGNER=""
+          if command -v apksigner >/dev/null 2>&1; then
+            APKSIGNER="$(command -v apksigner)"
+          else
+            APKSIGNER="$(find "${ANDROID_SDK_ROOT:-$ANDROID_HOME}/build-tools" -type f -name apksigner 2>/dev/null | sort -V | tail -n 1 || true)"
+          fi
+
+          if [ -z "$APKSIGNER" ]; then
+            echo "apksigner not found on runner."
+            exit 1
+          fi
+
+          echo "Signing verification:"
+          "$APKSIGNER" verify --verbose "$APK"
+
+          mkdir -p build/artifacts
+          cp "$APK" build/artifacts/JE-X-FYZ-Release.apk
+
+      # Direct single-file artifact: no extra ZIP wrapper around the APK.
+      - name: Upload direct APK
+        uses: actions/upload-artifact@v7
         with:
-          name: JE-X-FYZ-Release-APK
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: build/artifacts/JE-X-FYZ-Release.apk
+          archive: false
           if-no-files-found: error
-          compression-level: 0
 
       - name: Upload Dart symbols
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: JE-X-FYZ-Dart-Symbols
           path: build/symbols
