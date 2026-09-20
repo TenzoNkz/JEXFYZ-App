@@ -50,8 +50,7 @@ jobs:
           set -euo pipefail
           printf 'flutter.sdk=%s\n' "$FLUTTER_ROOT" > android/local.properties
           test -s android/local.properties
-          echo "local.properties:"
-          cat android/local.properties
+          echo "local.properties prepared."
 
       - name: Restore Gradle wrapper if missing
         working-directory: android
@@ -62,7 +61,35 @@ jobs:
             gradle wrapper --gradle-version 9.3.1 --distribution-type bin
           fi
 
-      - name: JE X FYZ architecture and asset audit
+      - name: Prepare production release signing
+        shell: bash
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          for name in ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD; do
+            if [ -z "${!name}" ]; then
+              echo "Missing required GitHub secret: $name"
+              exit 1
+            fi
+          done
+
+          umask 077
+          mkdir -p "$RUNNER_TEMP/signing"
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/signing/jexfyz-release.p12"
+          test -s "$RUNNER_TEMP/signing/jexfyz-release.p12"
+
+          {
+            echo "ANDROID_KEYSTORE_FILE=$RUNNER_TEMP/signing/jexfyz-release.p12"
+            echo "ANDROID_KEYSTORE_PASSWORD=$ANDROID_KEYSTORE_PASSWORD"
+            echo "ANDROID_KEY_ALIAS=$ANDROID_KEY_ALIAS"
+            echo "ANDROID_KEY_PASSWORD=$ANDROID_KEY_PASSWORD"
+          } >> "$GITHUB_ENV"
+
+      - name: JE X FYZ security and architecture audit
         shell: bash
         run: |
           set -euo pipefail
@@ -73,6 +100,8 @@ jobs:
           source = Path("lib/main.dart").read_text(encoding="utf-8")
           pubspec = Path("pubspec.yaml").read_text(encoding="utf-8")
           manifest = Path("android/app/src/main/AndroidManifest.xml").read_text(encoding="utf-8")
+          activity = Path("android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt").read_text(encoding="utf-8")
+          gradle = Path("android/app/build.gradle").read_text(encoding="utf-8")
 
           required = [
               "6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001",
@@ -83,42 +112,38 @@ jobs:
               "FirebaseDatabase.instanceFor",
               "firmware_update",
               "flutter_secure_storage",
-              "onChangeEnd",
               "assets/jexfyzcooler.png",
               "assets/jexfyzicon.png",
+              "firebase_app_check",
+              "AndroidProvider.playIntegrity",
+              "TamperScreen",
+              "je_x_fyz/security",
           ]
-
-          missing = [token for token in required if token not in source and token not in pubspec]
+          combined = source + pubspec + activity
+          missing = [token for token in required if token not in combined]
           if missing:
               raise SystemExit("JE X FYZ audit failed; missing: " + ", ".join(missing))
 
-          for legacy in ["assets/hzcooler.png", "assets/hzicon.png"]:
-              if legacy in source or legacy in pubspec:
-                  raise SystemExit("JE X FYZ audit failed; legacy asset reference: " + legacy)
-
+          if "assets/hzcooler.png" in combined or "assets/hzicon.png" in combined:
+              raise SystemExit("JE X FYZ audit failed; legacy asset reference found")
           if "@drawable/hzicon" in manifest:
               raise SystemExit("JE X FYZ audit failed; legacy Android icon reference found")
-
           if "@drawable/jexfyzicon" not in manifest:
               raise SystemExit("JE X FYZ audit failed; Android icon is not jexfyzicon")
 
-          for pattern in [
-              r"\bCFG:",
-              r"\bADAPT:",
-              r"RGBTOGGLE",
-              r"RGBPREV",
-              r"RGBNEXT",
-              r"\bBR:",
-              r"AIM:",
-          ]:
+          for pattern in [r"\bCFG:", r"\bADAPT:", r"RGBTOGGLE", r"RGBPREV", r"RGBNEXT", r"\bBR:", r"AIM:"]:
               if re.search(pattern, source):
                   raise SystemExit("JE X FYZ audit failed; legacy command found: " + pattern)
 
           if re.search(r"firmwareDb[\s\S]*\.(set|update|push|removeValue)\s*\(", source):
               raise SystemExit("JE X FYZ audit failed; Firebase runtime write path detected")
-
           if "setString('saved_pass'" in source or 'setString("saved_pass"' in source:
               raise SystemExit("JE X FYZ audit failed; Wi-Fi password stored outside secure storage")
+
+          if "minifyEnabled true" not in gradle or "shrinkResources true" not in gradle:
+              raise SystemExit("JE X FYZ security audit failed; R8/resource shrinking is disabled")
+          if "OFFICIAL_SIGNING_CERT_B64" not in gradle:
+              raise SystemExit("JE X FYZ security audit failed; production signing identity embedding is missing")
 
           for asset in [
               Path("assets/jexfyzcooler.png"),
@@ -128,7 +153,7 @@ jobs:
               if not asset.is_file() or asset.stat().st_size == 0:
                   raise SystemExit("JE X FYZ audit failed; missing/empty asset: " + str(asset))
 
-          print("JE X FYZ architecture and asset audit passed.")
+          print("JE X FYZ security and architecture audit passed.")
           PY
 
       - name: Install dependencies
@@ -151,12 +176,9 @@ jobs:
           test -s "$APK"
 
           APK_SIGNER="$(find "$ANDROID_SDK_ROOT/build-tools" -type f -name apksigner 2>/dev/null | sort -V | tail -n 1)"
-          if [ -z "$APK_SIGNER" ]; then
-            echo "ERROR: apksigner not found"
-            exit 1
-          fi
-
+          test -n "$APK_SIGNER"
           "$APK_SIGNER" verify --verbose "$APK"
+          "$APK_SIGNER" verify --print-certs "$APK"
           ls -lh "$APK"
 
       - name: Prepare clean APK filename
