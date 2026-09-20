@@ -76,13 +76,13 @@ class MainActivity : FlutterActivity() {
                     packageName,
                     PackageManager.GET_SIGNING_CERTIFICATES
                 )
-                packageInfo.signingInfo.apkContentsSigners.toList()
+                packageInfo.signingInfo?.apkContentsSigners?.toList().orEmpty()
             } else {
                 @Suppress("DEPRECATION")
                 packageManager.getPackageInfo(
                     packageName,
                     PackageManager.GET_SIGNATURES
-                ).signatures.toList()
+                ).signatures?.toList().orEmpty()
             }
 
             signatures.any { signature ->
