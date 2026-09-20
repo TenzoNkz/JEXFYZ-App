@@ -48,7 +48,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          printf 'flutter.sdk=%s\\n' "$FLUTTER_ROOT" > android/local.properties
+          printf 'flutter.sdk=%s\n' "$FLUTTER_ROOT" > android/local.properties
+          test -s android/local.properties
+          echo "local.properties:"
+          cat android/local.properties
 
       - name: Restore Gradle wrapper if missing
         working-directory: android
@@ -146,11 +149,13 @@ jobs:
           set -euo pipefail
           APK="build/app/outputs/flutter-apk/app-release.apk"
           test -s "$APK"
+
           APK_SIGNER="$(find "$ANDROID_SDK_ROOT/build-tools" -type f -name apksigner 2>/dev/null | sort -V | tail -n 1)"
           if [ -z "$APK_SIGNER" ]; then
             echo "ERROR: apksigner not found"
             exit 1
           fi
+
           "$APK_SIGNER" verify --verbose "$APK"
           ls -lh "$APK"
 
@@ -158,7 +163,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cp build/app/outputs/flutter-apk/app-release.apk              build/app/outputs/flutter-apk/JE-X-FYZ-Latest.apk
+          cp build/app/outputs/flutter-apk/app-release.apk \
+             build/app/outputs/flutter-apk/JE-X-FYZ-Latest.apk
           test -s build/app/outputs/flutter-apk/JE-X-FYZ-Latest.apk
 
       - name: Upload APK only
