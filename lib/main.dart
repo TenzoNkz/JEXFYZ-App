@@ -25,7 +25,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:phosphor_icons/phosphor_icons.dart';
 
+
+// Premium icon system: Phosphor Icons (Regular/Bold).
+// Material Icons are intentionally not used by JE X FYZ UI controls.
 const String appName = 'JE Cooler';
 const String headerName = 'JE X FYZ';
 const String serviceUuid = '6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001';
@@ -1246,7 +1250,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     IconButton(
                       onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.close, color: Colors.white70),
+                      icon: const Icon(PhosphorIconsBold.x, color: Colors.white70),
                     ),
                   ],
                 ),
@@ -1270,13 +1274,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.bluetooth_searching, color: Colors.blueAccent, size: 34),
+                            const Icon(PhosphorIconsBold.bluetooth_searching, color: Colors.blueAccent, size: 34),
                             const SizedBox(height: 12),
                             const Text('Scanning for JE X FYZ...', style: TextStyle(color: Colors.grey)),
                             const SizedBox(height: 14),
                             FilledButton.icon(
                               onPressed: _startScanFromSheet,
-                              icon: const Icon(Icons.refresh),
+                              icon: const Icon(PhosphorIconsBold.arrowClockwise),
                               label: const Text('SCAN AGAIN'),
                             ),
                           ],
@@ -1292,7 +1296,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ? result.device.platformName
                             : result.advertisementData.advName;
                         return ListTile(
-                          leading: const Icon(Icons.bluetooth, color: Colors.blueAccent),
+                          leading: const Icon(PhosphorIconsBold.bluetooth, color: Colors.blueAccent),
                           title: Text(name.isEmpty ? 'JE X FYZ' : name, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                           subtitle: Text(result.device.remoteId.toString(), style: const TextStyle(color: Colors.grey, fontSize: 11)),
                           onTap: () {
@@ -1481,7 +1485,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Row(
         children: [
           Icon(
-            alert ? Icons.warning_amber_rounded : Icons.notifications_none_rounded,
+            alert ? PhosphorIconsBold.warning : PhosphorIconsRegular.bell,
             size: 13,
             color: alert ? Colors.orangeAccent : Colors.white38,
           ),
@@ -1625,7 +1629,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 180),
               child: Icon(
-                active ? Icons.check_circle : Icons.radio_button_unchecked,
+                active ? PhosphorIconsBold.checkCircle : PhosphorIconsRegular.circle,
                 key: ValueKey<bool>(active),
                 color: active ? Colors.blueAccent : Colors.black26,
               ),
@@ -1677,7 +1681,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         _card(
           child: Row(
             children: [
-              const Icon(Icons.bolt_rounded, size: 19, color: Colors.blueAccent),
+              const Icon(PhosphorIconsBold.lightning, size: 19, color: Colors.blueAccent),
               const SizedBox(width: 9),
               Expanded(
                 child: Text(
@@ -1706,7 +1710,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               _switchRow(
                 title: 'Fan',
                 subtitle: fanLocked ? 'Fan is ON • locked while Peltier is ON' : (fanOn ? 'Fan is ON' : 'Fan is OFF'),
-                icon: Icons.air_rounded,
+                icon: PhosphorIconsBold.wind,
                 value: fanOn,
                 enabled: connected && !adaptiveOn && !peltierOn,
                 onChanged: _toggleFan,
@@ -1715,7 +1719,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               _switchRow(
                 title: 'Peltier',
                 subtitle: peltierOn ? 'Peltier is ON • soft-start 5s' : 'Peltier is OFF',
-                icon: Icons.ac_unit_rounded,
+                icon: PhosphorIconsBold.snowflake,
                 value: peltierOn,
                 enabled: connected && !adaptiveOn,
                 onChanged: _togglePeltier,
@@ -1723,7 +1727,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               const Divider(height: 20),
               Row(
                 children: [
-                  const Icon(Icons.speed_rounded, size: 20, color: Colors.black45),
+                  const Icon(PhosphorIconsBold.gauge, size: 20, color: Colors.black45),
                   const SizedBox(width: 9),
                   const Expanded(
                     child: Column(
@@ -1821,7 +1825,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   shape: BoxShape.circle,
                   color: adaptiveOn ? Colors.green.withValues(alpha: 0.13) : Colors.black.withValues(alpha: 0.06),
                 ),
-                child: Icon(adaptiveOn ? Icons.shield_rounded : Icons.shield_outlined, color: adaptiveOn ? Colors.green.shade700 : Colors.black45),
+                child: Icon(adaptiveOn ? PhosphorIconsBold.shield : PhosphorIconsRegular.shield, color: adaptiveOn ? Colors.green.shade700 : Colors.black45),
               ),
               const SizedBox(width: 12),
               const Expanded(
@@ -1867,7 +1871,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
           child: Row(
             children: [
-              const Icon(Icons.info_outline_rounded, size: 18, color: Colors.blueAccent),
+              const Icon(PhosphorIconsRegular.info, size: 18, color: Colors.blueAccent),
               const SizedBox(width: 9),
               Expanded(
                 child: AnimatedSwitcher(
@@ -1956,7 +1960,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               _switchRow(
                 title: 'LED Power',
                 subtitle: rgbOn ? 'RGB illumination is ON' : 'RGB illumination is OFF',
-                icon: Icons.lightbulb_rounded,
+                icon: PhosphorIconsBold.lightbulb,
                 value: rgbOn,
                 enabled: connected,
                 onChanged: _setRgb,
@@ -1965,7 +1969,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  IconButton(onPressed: connected ? () => _setMode(rgbMode - 1) : null, icon: const Icon(Icons.chevron_left_rounded, size: 28)),
+                  IconButton(onPressed: connected ? () => _setMode(rgbMode - 1) : null, icon: const Icon(PhosphorIconsBold.caretLeft, size: 28)),
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 180),
                     width: 138,
@@ -1976,12 +1980,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       child: Text('Mode $rgbMode • $modeName', key: ValueKey<int>(rgbMode), textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 12)),
                     ),
                   ),
-                  IconButton(onPressed: connected ? () => _setMode(rgbMode + 1) : null, icon: const Icon(Icons.chevron_right_rounded, size: 28)),
+                  IconButton(onPressed: connected ? () => _setMode(rgbMode + 1) : null, icon: const Icon(PhosphorIconsBold.caretRight, size: 28)),
                 ],
               ),
               Row(
                 children: [
-                  const Icon(Icons.brightness_low_rounded, color: Colors.black38, size: 20),
+                  const Icon(PhosphorIconsRegular.sun, color: Colors.black38, size: 20),
                   Expanded(
                     child: Slider(
                       min: 0,
@@ -2030,7 +2034,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             alignment: Alignment.centerRight,
             child: OutlinedButton.icon(
               onPressed: connected ? _resetVoltageColors : null,
-              icon: const Icon(Icons.restart_alt_rounded, size: 17),
+              icon: const Icon(PhosphorIconsBold.arrowClockwise, size: 17),
               label: const Text('Reset Colors'),
             ),
           ),
@@ -2052,7 +2056,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ],
           ),
         ),
-        IconButton(onPressed: value <= min ? null : () => onChanged(value - 1), icon: const Icon(Icons.remove_circle_outline_rounded)),
+        IconButton(onPressed: value <= min ? null : () => onChanged(value - 1), icon: const Icon(PhosphorIconsRegular.minusCircle)),
         AnimatedContainer(
           duration: const Duration(milliseconds: 160),
           width: 66,
@@ -2063,7 +2067,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Text('$value$unit', key: ValueKey<String>('$value$unit'), textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: Colors.blueAccent)),
           ),
         ),
-        IconButton(onPressed: value >= max ? null : () => onChanged(value + 1), icon: const Icon(Icons.add_circle_outline_rounded)),
+        IconButton(onPressed: value >= max ? null : () => onChanged(value + 1), icon: const Icon(PhosphorIconsRegular.plusCircle)),
       ],
     );
   }
@@ -2108,7 +2112,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 children: [
                   SizedBox(width: 100, child: Text('9V Zone', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Colors.black45))),
                   Expanded(child: AnimatedSwitcher(duration: const Duration(milliseconds: 150), child: Text('≈ $midLow–$midHigh°C', key: ValueKey<String>('$midLow:$midHigh'), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900)))),
-                  const Icon(Icons.lock_outline, color: Colors.black26),
+                  const Icon(PhosphorIconsBold.lock_outline, color: Colors.black26),
                 ],
               ),
               const Divider(height: 14),
@@ -2129,7 +2133,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           _card(
             padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
             child: const Row(children: [
-              Icon(Icons.lock_rounded, size: 18, color: Colors.orangeAccent),
+              Icon(PhosphorIconsBold.lock_rounded, size: 18, color: Colors.orangeAccent),
               SizedBox(width: 9),
               Expanded(child: Text('Temperature settings are locked while Adaptive Mode is ON.', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800))),
             ]),
@@ -2138,7 +2142,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           alignment: Alignment.centerRight,
           child: OutlinedButton.icon(
             onPressed: connected && !locked ? _resetTemperatureSettings : null,
-            icon: const Icon(Icons.restart_alt_rounded, size: 17),
+            icon: const Icon(PhosphorIconsBold.arrowClockwise, size: 17),
             label: const Text('Reset Temperature'),
           ),
         ),
@@ -2190,7 +2194,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   width: 46,
                   child: IconButton(
                     tooltip: connected ? 'Disconnect' : 'Bluetooth',
-                    icon: Icon(connected ? Icons.bluetooth_connected : Icons.bluetooth, color: connected ? Colors.blueAccent : Colors.white, size: 26),
+                    icon: Icon(connected ? PhosphorIconsBold.bluetooth_connected : PhosphorIconsBold.bluetooth, color: connected ? Colors.blueAccent : Colors.white, size: 26),
                     onPressed: connected ? _disconnect : _showBluetoothMenu,
                   ),
                 ),
@@ -2216,7 +2220,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   width: 46,
                   child: IconButton(
                     tooltip: 'Firmware',
-                    icon: const Icon(Icons.settings, color: Colors.white, size: 25),
+                    icon: const Icon(PhosphorIconsBold.gear, color: Colors.white, size: 25),
                     onPressed: _openFirmwareSettings,
                   ),
                 ),
@@ -2245,16 +2249,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                          _homeMetric('BATTERY TEMPERATURE', batteryValue, '°C', color: Colors.orangeAccent, icon: Icons.battery_std_rounded),
-                          _homeMetric('HOTSIDE TEMPERATURE', hotValue, hotValue != '--' ? '°C' : '', color: safety == 'FAULT' ? Colors.redAccent : Colors.cyanAccent, icon: Icons.device_thermostat_rounded),
-                          _homeMetric('VOLTAGE INDICATOR', voltageValue, voltageValue != '--' ? 'V' : '', color: Colors.blueAccent, icon: Icons.bolt_rounded),
-                          _homeMetric('ADAPTIVE MODE', adaptiveValue, '', color: adaptiveOn ? Colors.greenAccent : Colors.white70, icon: Icons.auto_awesome_rounded),
+                          _homeMetric('BATTERY TEMPERATURE', batteryValue, '°C', color: Colors.orangeAccent, icon: PhosphorIconsBold.batteryHigh),
+                          _homeMetric('HOTSIDE TEMPERATURE', hotValue, hotValue != '--' ? '°C' : '', color: safety == 'FAULT' ? Colors.redAccent : Colors.cyanAccent, icon: PhosphorIconsBold.thermometer),
+                          _homeMetric('VOLTAGE INDICATOR', voltageValue, voltageValue != '--' ? 'V' : '', color: Colors.blueAccent, icon: PhosphorIconsBold.lightning),
+                          _homeMetric('ADAPTIVE MODE', adaptiveValue, '', color: adaptiveOn ? Colors.greenAccent : Colors.white70, icon: PhosphorIconsBold.sparkle),
                           const SizedBox(height: 1),
                           Row(
                             children: [
-                              _homeStateChip(label: 'PELTIER', value: peltierOn, icon: Icons.ac_unit_rounded),
+                              _homeStateChip(label: 'PELTIER', value: peltierOn, icon: PhosphorIconsBold.snowflake),
                               const SizedBox(width: 6),
-                              _homeStateChip(label: 'FAN', value: fanOn, icon: Icons.air_rounded),
+                              _homeStateChip(label: 'FAN', value: fanOn, icon: PhosphorIconsBold.wind),
                             ],
                           ),
                           const SizedBox(height: 6),
@@ -2268,7 +2272,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                             child: Row(
                               children: [
-                                const Icon(Icons.speed_rounded, size: 13, color: Colors.white38),
+                                const Icon(PhosphorIconsBold.gauge, size: 13, color: Colors.white38),
                                 const SizedBox(width: 5),
                                 const Text('FAN SPEED', style: TextStyle(color: Colors.white38, fontSize: 7.5, fontWeight: FontWeight.w900, letterSpacing: 0.6)),
                                 const Spacer(),
@@ -2546,14 +2550,14 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
               TextField(
                 controller: ssid,
                 style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(labelText: 'Wi-Fi SSID', labelStyle: TextStyle(color: Colors.grey), prefixIcon: Icon(Icons.wifi, color: Colors.blueAccent)),
+                decoration: const InputDecoration(labelText: 'Wi-Fi SSID', labelStyle: TextStyle(color: Colors.grey), prefixIcon: Icon(PhosphorIconsRegular.wifiHigh, color: Colors.blueAccent)),
               ),
               const SizedBox(height: 8),
               TextField(
                 controller: password,
                 obscureText: false,
                 style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(labelText: 'Wi-Fi Password', labelStyle: TextStyle(color: Colors.grey), prefixIcon: Icon(Icons.lock, color: Colors.blueAccent)),
+                decoration: const InputDecoration(labelText: 'Wi-Fi Password', labelStyle: TextStyle(color: Colors.grey), prefixIcon: Icon(PhosphorIconsBold.lock, color: Colors.blueAccent)),
               ),
               const SizedBox(height: 6),
               const Text('Password disimpan di Android secure storage.', style: TextStyle(color: Colors.white38, fontSize: 9)),
