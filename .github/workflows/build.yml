@@ -34,7 +34,7 @@ jobs:
           cache: true
 
       - name: Cache pub packages
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.pub-cache
           key: ${{ runner.os }}-pub-${{ hashFiles('pubspec.yaml', 'pubspec.lock') }}
@@ -171,10 +171,21 @@ jobs:
           test -s build/app/outputs/flutter-apk/app-release.apk
           file build/app/outputs/flutter-apk/app-release.apk
 
-      - name: Upload direct APK
+      - name: Compress APK for download
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd build/app/outputs/flutter-apk
+          rm -f app-release.zip
+          zip -9 -q app-release.zip app-release.apk
+          unzip -t app-release.zip
+          echo "Compressed APK:"
+          ls -lh app-release.apk app-release.zip
+
+      - name: Upload direct APK ZIP
         uses: actions/upload-artifact@v7
         with:
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.zip
           archive: false
           if-no-files-found: error
 
