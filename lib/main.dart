@@ -724,7 +724,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     // already-bonded devices do not see another pairing step.
     if ((!_syncReadyAck || !fullSyncReceived || !_bleSessionReady) && Platform.isAndroid) {
       try {
-        await target.createBond(timeout: 8);
+        await target.createBond();
         await Future<void>.delayed(const Duration(milliseconds: 450));
         _syncReadyAck = false;
         fullSyncReceived = false;
@@ -841,7 +841,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             (normalized == 'SYNC' || normalized == 'SYNC_READY') &&
             device != null) {
           try {
-            await device!.createBond(timeout: 8);
+            await device!.createBond();
             await Future<void>.delayed(const Duration(milliseconds: 400));
             await rx!.write(
               payload,
