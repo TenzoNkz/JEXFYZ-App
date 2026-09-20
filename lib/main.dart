@@ -98,7 +98,7 @@ Future<void> main() async {
     await Firebase.initializeApp();
     try {
       await FirebaseAppCheck.instance.activate(
-        androidProvider: AndroidProvider.playIntegrity,
+        providerAndroid: const AndroidPlayIntegrityProvider(),
       );
     } catch (e) {
       // App Check can be rolled out from monitoring to enforcement in Firebase
