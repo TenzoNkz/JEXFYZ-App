@@ -2591,14 +2591,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _homeMetric(
-                            'PHONE BATTERY',
+                            'BATTERY TEMPERATURE',
                             batteryValue,
                             '°C',
                             color: Colors.orangeAccent,
                             icon: PhosphorIconsBold.batteryHigh,
                           ),
                           _homeMetric(
-                            'HOTSIDE',
+                            'HOTSIDE TEMPERATURE',
                             hotValue,
                             hotValue != '--' ? '°C' : '',
                             color: safety == 'FAULT'
@@ -2607,14 +2607,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             icon: PhosphorIconsBold.thermometer,
                           ),
                           _homeMetric(
-                            'VOLTAGE',
+                            'VOLTAGE INDICATOR',
                             voltageValue,
                             voltageValue != '--' ? 'V' : '',
                             color: Colors.blueAccent,
                             icon: PhosphorIconsBold.lightning,
                           ),
                           _homeMetric(
-                            'ADAPTIVE',
+                            'ADAPTIVE MODE',
                             adaptiveValue,
                             '',
                             color: adaptiveOn
