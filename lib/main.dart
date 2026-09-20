@@ -173,7 +173,7 @@ class TamperScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 14),
                 const Text(
-                  'JANGAN DIRUBAH\nRUBAH YA!!! 😆',
+                  'OFFICIAL BUILD\nINTEGRITY CHECK FAILED',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.redAccent,
@@ -185,7 +185,7 @@ class TamperScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 const Text(
-                  'Aplikasi ini tidak dapat digunakan karena\nintegritas aplikasi tidak valid.',
+                  'This application cannot continue because its integrity check failed.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white70,
@@ -205,7 +205,7 @@ class TamperScreen extends StatelessWidget {
                     ),
                   ),
                   child: const Text(
-                    'KELUAR',
+                    'EXIT',
                     style: TextStyle(fontWeight: FontWeight.w900),
                   ),
                 ),
@@ -274,8 +274,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   bool fanCommandBusy = false;
   bool peltierCommandBusy = false;
   bool adaptiveCommandBusy = false;
+  bool controlCommandBusy = false;
+  String controlCommandName = '';
+  bool dashboardReady = false;
   final Map<String, List<Completer<String>>> _ackWaiters = {};
   final Map<String, String> _syncSnapshot = {};
+  final Map<String, String> _pendingTelemetry = {};
 
   int brightnessDraft = 100;
   int fanSpeedDraft = 100;
@@ -433,14 +437,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
       await FlutterBluePlus.stopScan();
 
       if (found == null) {
-        _showSnackBar('JE X FYZ tidak ditemukan.', color: Colors.orangeAccent);
+        _showSnackBar('JE X FYZ was not found.', color: Colors.orangeAccent);
         return;
       }
 
       await _connect(found);
     } catch (e) {
       debugPrint('BLE scan: $e');
-      _showSnackBar('Bluetooth scan gagal.', color: Colors.redAccent);
+      _showSnackBar('Bluetooth scan failed.', color: Colors.redAccent);
     } finally {
       await scanSub?.cancel();
       if (mounted && !connected) {
@@ -470,12 +474,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
     fullSyncReceived = false;
     incomingBuffer = '';
     _syncSnapshot.clear();
+    _pendingTelemetry.clear();
 
     if (mounted) {
       setState(() {
         syncing = true;
         connected = false;
-        notice = 'Connecting...';
+        dashboardReady = false;
+        controlCommandBusy = false;
+        controlCommandName = '';
+        voltage = '--';
+        hotsideTemp = '--';
+        phoneBatteryTemp = '--';
+        phoneBatteryValid = false;
+        fanOn = false;
+        peltierOn = false;
+        adaptiveOn = false;
+        rgbOn = false;
+        safety = 'LOCKED';
+        safetyReason = 'WAITING_FOR_SENSOR_VALIDATION';
+        firmwareVersion = 'V?';
+        resetReason = 'UNKNOWN';
+        notice = 'Connecting to JE X FYZ...';
       });
     }
 
@@ -526,6 +546,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _bleSessionReady = false;
     _syncReadyAck = false;
     fullSyncReceived = false;
+    dashboardReady = false;
+    _pendingTelemetry.clear();
     batteryTimer?.cancel();
     for (final waiters in _ackWaiters.values) {
       for (final waiter in waiters) {
@@ -537,6 +559,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     setState(() {
       connected = false;
       syncing = false;
+      dashboardReady = false;
+      controlCommandBusy = false;
+      controlCommandName = '';
       voltage = '--';
       hotsideTemp = '--';
       phoneBatteryTemp = '--';
@@ -545,7 +570,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       safetyReason = 'DISCONNECTED';
       firmwareVersion = 'V?';
       resetReason = 'UNKNOWN';
-      notice = 'Disconnected';
+      notice = 'Device disconnected.';
     });
   }
 
@@ -564,7 +589,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
 
     if (discoveredRx == null || discoveredTx == null) {
-      _showSnackBar('UUID JE X FYZ tidak cocok.', color: Colors.redAccent);
+      _showSnackBar('JE X FYZ service UUIDs do not match.', color: Colors.redAccent);
       await target.disconnect();
       return;
     }
@@ -640,9 +665,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
 
     if (!mounted) return;
+
+    final readySnapshot = Map<String, String>.from(_pendingTelemetry);
+    _pendingTelemetry.clear();
+
     setState(() {
+      for (final entry in readySnapshot.entries) {
+        _applyTelemetryValue(entry.key, entry.value);
+      }
       connected = true;
       syncing = false;
+      dashboardReady = true;
       notice = '';
       rgbColorController.text = rgbColor;
       color5Controller.text = color5V;
@@ -672,7 +705,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _writeQueue = _writeQueue.then((_) async {
       if (!_bleReady || rx == null) {
         if (showError && mounted) {
-          _showSnackBar('Bluetooth belum siap.', color: Colors.orangeAccent);
+          _showSnackBar('Bluetooth is not ready.', color: Colors.orangeAccent);
         }
         if (!completer.isCompleted) completer.complete(false);
         return;
@@ -898,7 +931,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void _commitTelemetry(Map<String, String> values) {
-    if (!mounted || values.isEmpty) return;
+    if (values.isEmpty) return;
+
+    // Hold every field until the final verified sync is complete.
+    if (!dashboardReady) {
+      _pendingTelemetry.addAll(values);
+      return;
+    }
+
+    if (!mounted) return;
     setState(() {
       for (final entry in values.entries) {
         _applyTelemetryValue(entry.key, entry.value);
@@ -1055,14 +1096,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  bool _beginControlCommand(String name) {
+    if (!connected || controlCommandBusy) return false;
+    if (mounted) {
+      setState(() {
+        controlCommandBusy = true;
+        controlCommandName = name;
+      });
+    }
+    return true;
+  }
+
+  void _endControlCommand() {
+    if (!mounted) return;
+    setState(() {
+      controlCommandBusy = false;
+      controlCommandName = '';
+    });
+  }
+
   Future<bool> _sendAndConfirm(
     String command,
     bool Function() predicate, {
     Duration timeout = const Duration(seconds: 3),
   }) async {
-    final sent = await sendCommand(command, showError: false);
-    if (!sent) return false;
-    await Future<void>.delayed(const Duration(milliseconds: 180));
+    final accepted = await _sendAndWaitAck(
+      command,
+      showError: false,
+      timeout: timeout,
+    );
+    if (!accepted) return false;
+
+    await Future<void>.delayed(const Duration(milliseconds: 260));
 
     final synced = await _requestFreshSync(timeout: timeout);
     if (!synced) return false;
@@ -1071,10 +1136,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Future<void> _requestVoltage(String target) async {
-    if (!connected || adaptiveOn || voltageGuardActive || !isVoltageCommand(target)) return;
+    if (!connected ||
+        adaptiveOn ||
+        voltageGuardActive ||
+        controlCommandBusy ||
+        !isVoltageCommand(target)) {
+      return;
+    }
     if (target == voltage) return;
+    if (!_beginControlCommand('Voltage')) return;
 
-    if (mounted) setState(() => voltageGuardActive = true);
+    try {
+      if (mounted) setState(() => voltageGuardActive = true);
     voltageGuardTimer?.cancel();
     voltageGuardTimer = Timer(voltageGuardDuration, () {
       if (mounted) setState(() => voltageGuardActive = false);
@@ -1085,14 +1158,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
       () => voltage == target,
       timeout: const Duration(seconds: 3),
     );
-    if (!accepted) {
-      voltageGuardTimer?.cancel();
-      if (mounted) setState(() => voltageGuardActive = false);
+      if (!accepted) {
+        voltageGuardTimer?.cancel();
+        if (mounted) setState(() => voltageGuardActive = false);
+      }
+    } finally {
+      _endControlCommand();
     }
   }
 
   Future<void> _toggleFan(bool enabled) async {
-    if (!connected || adaptiveOn || fanCommandBusy) return;
+    if (!connected || adaptiveOn || fanCommandBusy || controlCommandBusy) return;
+    if (!_beginControlCommand('Fan')) return;
     if (mounted) setState(() => fanCommandBusy = true);
     try {
       final ok = await _sendAndConfirm(
@@ -1100,15 +1177,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
         () => fanOn == enabled,
       );
       if (!ok && mounted) {
-        _showSnackBar('Fan command tidak dikonfirmasi firmware.', color: Colors.orangeAccent);
+        _showSnackBar('Fan change was not confirmed by the device.', color: Colors.orangeAccent);
       }
     } finally {
       if (mounted) setState(() => fanCommandBusy = false);
+      _endControlCommand();
     }
   }
 
   Future<void> _togglePeltier(bool enabled) async {
-    if (!connected || adaptiveOn || peltierCommandBusy) return;
+    if (!connected || adaptiveOn || peltierCommandBusy || controlCommandBusy) return;
+    if (!_beginControlCommand('Peltier')) return;
     if (mounted) setState(() => peltierCommandBusy = true);
     try {
       if (enabled && !fanOn) {
@@ -1116,7 +1195,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           context: context,
           builder: (ctx) => AlertDialog(
             title: const Text('Peltier Safety'),
-            content: const Text('Fan harus ON agar Peltier dapat dijalankan.'),
+            content: const Text('Fan must be running before Peltier can be enabled.'),
             actions: [
               TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('BATAL')),
               FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('NYALAKAN FAN')),
@@ -1126,7 +1205,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         if (approved != true) return;
         final fanOk = await _sendAndConfirm('FAN:ON', () => fanOn);
         if (!fanOk) {
-          _showSnackBar('Fan belum terkonfirmasi ON.', color: Colors.orangeAccent);
+          _showSnackBar('Fan activation was not confirmed by the device.', color: Colors.orangeAccent);
           return;
         }
       }
@@ -1137,16 +1216,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
         timeout: const Duration(seconds: 6),
       );
       if (!ok && mounted) {
-        _showSnackBar('Peltier command tidak dikonfirmasi firmware. ${safetyReason == 'NONE' ? '' : safetyReason}', color: Colors.orangeAccent);
+        _showSnackBar('Peltier change was not confirmed by the device. ${safetyReason == 'NONE' ? '' : safetyReason}', color: Colors.orangeAccent);
       }
     } finally {
       if (mounted) setState(() => peltierCommandBusy = false);
+      _endControlCommand();
     }
   }
 
   Future<void> _toggleAdaptive(bool enabled) async {
-    if (!connected || adaptiveTransitioning || adaptiveCommandBusy) return;
-    if (mounted) setState(() { adaptiveTransitioning = true; adaptiveCommandBusy = true; });
+    if (!connected ||
+        adaptiveTransitioning ||
+        adaptiveCommandBusy ||
+        controlCommandBusy) {
+      return;
+    }
+    if (!_beginControlCommand('Adaptive Mode')) return;
+    if (mounted) setState(() {
+      adaptiveTransitioning = true;
+      adaptiveCommandBusy = true;
+    });
     try {
       final ok = await _sendAndConfirm(
         enabled ? 'ADAPTIVE:ON' : 'ADAPTIVE:OFF',
@@ -1154,93 +1243,163 @@ class _DashboardScreenState extends State<DashboardScreen> {
         timeout: const Duration(seconds: 4),
       );
       if (!ok && mounted) {
-        _showSnackBar('Adaptive command tidak dikonfirmasi firmware.', color: Colors.orangeAccent);
+        _showSnackBar('Adaptive Mode change was not confirmed by the device.', color: Colors.orangeAccent);
       }
     } finally {
-      if (mounted) setState(() { adaptiveCommandBusy = false; if (!adaptiveOn) adaptiveTransitioning = false; });
+      if (mounted) {
+        setState(() {
+          adaptiveCommandBusy = false;
+          if (!adaptiveOn) adaptiveTransitioning = false;
+        });
+      }
+      _endControlCommand();
     }
   }
 
   Future<void> _setRgb(bool enabled) async {
-    if (!connected) return;
-    final ok = await _sendAndConfirm('RGB:${enabled ? 'ON' : 'OFF'}', () => rgbOn == enabled);
-    if (!ok && mounted) _showSnackBar('LED command tidak dikonfirmasi firmware.', color: Colors.orangeAccent);
+    if (!connected || controlCommandBusy) return;
+    if (!_beginControlCommand('LED Power')) return;
+    try {
+      final ok = await _sendAndConfirm(
+        'RGB:' + (enabled ? 'ON' : 'OFF'),
+        () => rgbOn == enabled,
+      );
+      if (!ok && mounted) {
+        _showSnackBar('LED power change was not confirmed by the device.');
+      }
+    } finally {
+      _endControlCommand();
+    }
   }
 
   Future<void> _setMode(int mode) async {
-    if (!connected) return;
-    final next = mode.clamp(0, 7).toInt();
-    final ok = await _sendAndConfirm('MODE:$next', () => rgbMode == next);
-    if (!ok && mounted) _showSnackBar('Mode LED tidak dikonfirmasi firmware.', color: Colors.orangeAccent);
+    if (!connected || controlCommandBusy) return;
+    if (!_beginControlCommand('LED Mode')) return;
+    try {
+      final next = mode.clamp(0, 7).toInt();
+      final ok = await _sendAndConfirm('MODE:$next', () => rgbMode == next);
+      if (!ok && mounted) {
+        _showSnackBar('LED mode change was not confirmed by the device.');
+      }
+    } finally {
+      _endControlCommand();
+    }
   }
 
   Future<void> _setBrightness(double value) async {
-    if (!connected) return;
-    final next = value.round().clamp(0, 100).toInt();
-    final ok = await _sendAndConfirm('BRIGHTNESS:$next', () => brightness == next);
-    if (!ok && mounted) {
-      setState(() => brightnessDraft = brightness);
-      _showSnackBar('Brightness tidak dikonfirmasi firmware.', color: Colors.orangeAccent);
+    if (!connected || controlCommandBusy) return;
+    if (!_beginControlCommand('LED Brightness')) return;
+    try {
+      final next = value.round().clamp(0, 100).toInt();
+      final ok = await _sendAndConfirm('BRIGHTNESS:$next', () => brightness == next);
+      if (!ok && mounted) {
+        setState(() => brightnessDraft = brightness);
+        _showSnackBar('LED brightness change was not confirmed by the device.');
+      }
+    } finally {
+      _endControlCommand();
     }
   }
 
   Future<void> _setFanSpeed(double value) async {
-    if (!connected || adaptiveOn || voltage != '12V') return;
-    final next = ((value / 10).round() * 10).clamp(fanSpeedMin, fanSpeedMax).toInt();
-    final ok = await _sendAndConfirm('FANSPEED:$next', () => fanSpeed == next);
-    if (!ok && mounted) {
-      setState(() => fanSpeedDraft = fanSpeed);
-      _showSnackBar('Fan Speed tidak dikonfirmasi firmware.', color: Colors.orangeAccent);
+    if (!connected || adaptiveOn || voltage != '12V' || controlCommandBusy) return;
+    if (!_beginControlCommand('Fan Speed')) return;
+    try {
+      final next = ((value / 10).round() * 10)
+          .clamp(fanSpeedMin, fanSpeedMax)
+          .toInt();
+      final ok = await _sendAndConfirm('FANSPEED:$next', () => fanSpeed == next);
+      if (!ok && mounted) {
+        setState(() => fanSpeedDraft = fanSpeed);
+        _showSnackBar('Fan speed change was not confirmed by the device.');
+      }
+    } finally {
+      _endControlCommand();
     }
   }
 
   Future<void> _setHotLimit(int value) async {
-    if (!connected || adaptiveOn) return;
-    final next = value.clamp(40, 50).toInt();
-    if (mounted) setState(() => hotLimitDraft = next);
-    final ok = await _sendAndConfirm('HOTLIMIT:$next', () => hotLimit == next);
-    if (!ok && mounted) setState(() => hotLimitDraft = hotLimit);
+    if (!connected || adaptiveOn || controlCommandBusy) return;
+    if (!_beginControlCommand('Hotside Limit')) return;
+    try {
+      final next = value.clamp(40, 50).toInt();
+      if (mounted) setState(() => hotLimitDraft = next);
+      final ok = await _sendAndConfirm('HOTLIMIT:$next', () => hotLimit == next);
+      if (!ok && mounted) setState(() => hotLimitDraft = hotLimit);
+    } finally {
+      _endControlCommand();
+    }
   }
 
   Future<void> _setBattery5(int value) async {
-    if (!connected || adaptiveOn) return;
-    final next = value.clamp(20, 48).toInt();
-    if (next >= battery12Limit - 1) return;
-    if (mounted) setState(() => battery5Draft = next);
-    final ok = await _sendAndConfirm('BATT5:$next', () => battery5Limit == next);
-    if (!ok && mounted) setState(() => battery5Draft = battery5Limit);
+    if (!connected || adaptiveOn || controlCommandBusy) return;
+    if (!_beginControlCommand('Battery 5V Ceiling')) return;
+    try {
+      final next = value.clamp(20, 48).toInt();
+      if (next >= battery12Limit - 1) return;
+      if (mounted) setState(() => battery5Draft = next);
+      final ok = await _sendAndConfirm('BATT5:$next', () => battery5Limit == next);
+      if (!ok && mounted) setState(() => battery5Draft = battery5Limit);
+    } finally {
+      _endControlCommand();
+    }
   }
 
   Future<void> _setBattery12(int value) async {
-    if (!connected || adaptiveOn) return;
-    final next = value.clamp(22, 50).toInt();
-    if (next <= battery5Limit + 1) return;
-    if (mounted) setState(() => battery12Draft = next);
-    final ok = await _sendAndConfirm('BATT12:$next', () => battery12Limit == next);
-    if (!ok && mounted) setState(() => battery12Draft = battery12Limit);
+    if (!connected || adaptiveOn || controlCommandBusy) return;
+    if (!_beginControlCommand('Battery 12V Floor')) return;
+    try {
+      final next = value.clamp(22, 50).toInt();
+      if (next <= battery5Limit + 1) return;
+      if (mounted) setState(() => battery12Draft = next);
+      final ok = await _sendAndConfirm('BATT12:$next', () => battery12Limit == next);
+      if (!ok && mounted) setState(() => battery12Draft = battery12Limit);
+    } finally {
+      _endControlCommand();
+    }
   }
 
   Future<void> _sendColor(String command, TextEditingController controller) async {
     final value = controller.text.trim().toUpperCase();
     if (!isValidHexColor(value)) {
-      _showSnackBar('Format warna harus #RRGGBB.', color: Colors.orangeAccent);
+      _showSnackBar('Enter a valid hex color in #RRGGBB format.');
       return;
     }
-    if (!connected) return;
-    final ok = await _sendAndWaitAck('$command:${value.substring(1)}', showError: false);
-    if (!ok && mounted) _showSnackBar('Perubahan warna ditolak firmware.', color: Colors.orangeAccent);
+    if (!connected || controlCommandBusy) return;
+    if (!_beginControlCommand('LED Color')) return;
+    try {
+      final ok = await _sendAndWaitAck(
+        command + ':' + value.substring(1),
+        showError: false,
+      );
+      if (!ok && mounted) {
+        _showSnackBar('Color change was not confirmed by the device.');
+      }
+    } finally {
+      _endControlCommand();
+    }
   }
 
   Future<void> _resetTemperatureSettings() async {
-    if (!connected || adaptiveOn) return;
-    final ok = await _sendAndWaitAck('RESET:TEMPERATURE', showError: false);
-    if (!ok && mounted) _showSnackBar('Reset temperature ditolak firmware.', color: Colors.orangeAccent);
+    if (!connected || adaptiveOn || controlCommandBusy) return;
+    if (!_beginControlCommand('Reset Temperature')) return;
+    try {
+      final ok = await _sendAndWaitAck('RESET:TEMPERATURE', showError: false);
+      if (!ok && mounted) _showSnackBar('Temperature reset was not confirmed by the device.');
+    } finally {
+      _endControlCommand();
+    }
   }
 
   Future<void> _resetVoltageColors() async {
-    if (!connected) return;
-    final ok = await _sendAndWaitAck('RESET:VOLTAGECOLORS', showError: false);
-    if (!ok && mounted) _showSnackBar('Reset warna ditolak firmware.', color: Colors.orangeAccent);
+    if (!connected || controlCommandBusy) return;
+    if (!_beginControlCommand('Reset Voltage Colors')) return;
+    try {
+      final ok = await _sendAndWaitAck('RESET:VOLTAGECOLORS', showError: false);
+      if (!ok && mounted) _showSnackBar('Voltage color reset was not confirmed by the device.');
+    } finally {
+      _endControlCommand();
+    }
   }
 
   Future<bool> _requestFreshSync({Duration timeout = const Duration(seconds: 3)}) async {
@@ -1252,7 +1411,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Future<void> _openFirmwareSettings() async {
     if (!connected) {
-      _showSnackBar('Connect ke JE X FYZ terlebih dahulu.', color: Colors.orangeAccent);
+      _showSnackBar('Connect to JE X FYZ first.', color: Colors.orangeAccent);
       return;
     }
     await _requestFreshSync();
@@ -1289,7 +1448,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final ok = await _sendAndWaitAck(command, showError: false, timeout: const Duration(seconds: 4));
       if (!ok) {
         _showSnackBar(
-          'OTA gagal dimulai: command ${_ackItemForCommand(command) ?? command} ditolak firmware.',
+          'OTA could not start: command ${_ackItemForCommand(command) ?? command} was rejected by the device.',
           color: Colors.redAccent,
         );
         return;
@@ -1335,32 +1494,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   String _friendlyReason(String reason) {
     switch (reason) {
-      case 'NTC_ERROR': return 'NTC belum valid';
-      case 'HOTSIDE_PROTECTION': return 'Hotside protection aktif';
-      case 'FAN_REQUIRED': return 'Fan harus ON';
-      case 'ADAPTIVE_ACTIVE': return 'Control terkunci saat Adaptive ON';
-      case 'MANUAL_12V_ONLY': return 'Fan Speed hanya tersedia pada Manual 12V';
-      case 'VOLTAGE_GUARD_OR_BUSY': return 'Voltage guard/busy aktif';
-      case 'SYNC_REQUIRED': return 'BLE session belum selesai sinkronisasi';
-      case 'MUST_BE_BELOW_BATT12': return 'BATT5 harus di bawah BATT12';
-      case 'MUST_BE_ABOVE_BATT5': return 'BATT12 harus di atas BATT5';
-      default: return reason;
+      case 'NTC_ERROR': return 'Temperature sensor validation failed.';
+      case 'HOTSIDE_PROTECTION': return 'Hotside protection is active. Peltier output is temporarily disabled.';
+      case 'FAN_REQUIRED': return 'Fan must be running before Peltier can be enabled.';
+      case 'PELTIER_ON': return 'Fan control is locked while Peltier is active.';
+      case 'ADAPTIVE_ACTIVE': return 'Manual cooling controls are locked while Adaptive Mode is active.';
+      case 'MANUAL_12V_ONLY': return 'Fan speed control is available only in manual 12V mode.';
+      case 'VOLTAGE_GUARD_OR_BUSY': return 'Voltage control is busy. Awaiting device confirmation.';
+      case 'SYNC_REQUIRED': return 'Device synchronization is still in progress.';
+      case 'RATE_LIMIT': return 'Command rate limited. Awaiting device confirmation.';
+      case 'MUST_BE_BELOW_BATT12': return 'The 5V battery threshold must remain below the 12V threshold.';
+      case 'MUST_BE_ABOVE_BATT5': return 'The 12V battery threshold must remain above the 5V threshold.';
+      default: return reason.replaceAll('_', ' ').toLowerCase();
     }
   }
 
   void _showSnackBar(String message, {Color color = Colors.blueAccent}) {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message, style: const TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: color,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        margin: const EdgeInsets.all(10),
-        duration: const Duration(seconds: 2),
-      ),
-    );
+    if (!mounted || message.trim().isEmpty) return;
+    setState(() => notice = message.trim());
   }
 
   void _showBluetoothMenu() {
@@ -1477,73 +1628,58 @@ class _DashboardScreenState extends State<DashboardScreen> {
     IconData? icon,
   }) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.only(bottom: 6),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (icon != null) ...[
-            Icon(icon, size: 15, color: color.withValues(alpha: 0.90)),
+            Icon(icon, size: 16, color: color.withValues(alpha: 0.92)),
             const SizedBox(width: 7),
           ],
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Flexible(
-                      child: StaticSwitcher(
-
-                        transitionBuilder: (child, animation) => FadeTransition(
-                          opacity: animation,
-                          child: SlideTransition(
-                            position: Tween<Offset>(
-                              begin: const Offset(0, 0.16),
-                              end: Offset.zero,
-                            ).animate(animation),
-                            child: child,
-                          ),
-                        ),
-                        child: Text(
-                          value,
-                          key: ValueKey<String>('$label:$value'),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: color,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w900,
-                            height: 0.98,
-                            letterSpacing: -0.5,
-                          ),
-                        ),
+                Flexible(
+                  child: Text(
+                    value,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: color,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w900,
+                      height: 0.98,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                ),
+                if (unit.isNotEmpty && value != '--')
+                  Padding(
+                    padding: const EdgeInsets.only(left: 3, bottom: 2),
+                    child: Text(
+                      unit,
+                      style: const TextStyle(
+                        color: Colors.white54,
+                        fontSize: 9,
+                        fontWeight: FontWeight.w800,
                       ),
                     ),
-                    if (unit.isNotEmpty && value != '--')
-                      Padding(
-                        padding: const EdgeInsets.only(left: 3, bottom: 2),
-                        child: Text(
-                          unit,
-                          style: const TextStyle(
-                            color: Colors.white54,
-                            fontSize: 9,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Colors.white54,
-                    fontSize: 8.5,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.35,
+                  ),
+                const Spacer(),
+                Flexible(
+                  flex: 2,
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.right,
+                    style: const TextStyle(
+                      color: Colors.white54,
+                      fontSize: 8.5,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.25,
+                    ),
                   ),
                 ),
               ],
@@ -1561,97 +1697,125 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }) {
     final active = value;
     return Expanded(
-      child: Container(
-
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
-        decoration: BoxDecoration(
-          color: active ? const Color(0x1E54E3FF) : const Color(0x0FFFFFFF),
-          borderRadius: BorderRadius.circular(11),
-          border: Border.all(
-            color: active ? const Color(0x8054E3FF) : const Color(0x16FFFFFF),
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, size: 14, color: active ? Colors.cyanAccent : Colors.white38),
-            const SizedBox(width: 5),
-            Expanded(
-              child: Text(
-                label,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: Colors.white70,
-                  fontSize: 8.5,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.4,
-                ),
-              ),
+      child: Tooltip(
+        message: label + ' • ' + (active ? 'ON' : 'OFF'),
+        child: Container(
+          height: 34,
+          decoration: BoxDecoration(
+            color: active ? const Color(0x1E54E3FF) : const Color(0x0FFFFFFF),
+            borderRadius: BorderRadius.circular(11),
+            border: Border.all(
+              color: active ? const Color(0x8054E3FF) : const Color(0x16FFFFFF),
             ),
-            StaticSwitcher(
-
-              child: Text(
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 16,
+                color: active ? Colors.cyanAccent : Colors.white38,
+              ),
+              const SizedBox(width: 5),
+              Text(
                 active ? 'ON' : 'OFF',
-                key: ValueKey<bool>(active),
                 style: TextStyle(
-                  color: active ? Colors.cyanAccent : Colors.white.withValues(alpha: 0.45),
-                  fontSize: 9,
+                  color: active ? Colors.cyanAccent : Colors.white54,
+                  fontSize: 8.5,
                   fontWeight: FontWeight.w900,
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _homeNotify() {
-    final message = notice.trim().isNotEmpty
-        ? notice.trim()
-        : (safetyReason == 'NONE' ? 'System ready' : safetyReason);
-    final alert = safety != 'OK' && safetyReason != 'NONE';
-    return Container(
+  String _professionalNotice() {
+    final custom = notice.trim();
+    if (custom.isNotEmpty) return custom;
 
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+    switch (safetyReason) {
+      case 'WAITING_FOR_NTC':
+      case 'WAITING_FOR_SENSOR_VALIDATION':
+        return 'Validating temperature sensors...';
+      case 'NTC_ERROR':
+        return 'Temperature sensor validation failed. Cooling is locked for safety.';
+      case 'HOTSIDE_PROTECTION':
+        return 'Hotside protection is active. Peltier output is temporarily disabled.';
+      case 'FAN_REQUIRED':
+        return 'Fan must be running before Peltier can be enabled.';
+      case 'PELTIER_ON':
+        return 'Fan control is locked while Peltier is active.';
+      case 'ADAPTIVE_ACTIVE':
+        return 'Manual cooling controls are locked while Adaptive Mode is active.';
+      case 'MANUAL_12V_ONLY':
+        return 'Fan speed control is available only in manual 12V mode.';
+      case 'VOLTAGE_GUARD_OR_BUSY':
+        return 'Voltage control is busy. Awaiting device confirmation.';
+      case 'RATE_LIMIT':
+        return 'Command rate limited. Awaiting device confirmation.';
+      case 'DISCONNECTED':
+        return 'Device disconnected.';
+      case 'NONE':
+        return 'System ready — device state is synchronized.';
+      default:
+        return _friendlyReason(safetyReason);
+    }
+  }
+
+  Widget _homeNotify() {
+    final alert = safety != 'OK' &&
+        safetyReason != 'NONE' &&
+        safetyReason != 'WAITING_FOR_NTC' &&
+        safetyReason != 'WAITING_FOR_SENSOR_VALIDATION';
+    return Container(
+      width: double.infinity,
+      constraints: const BoxConstraints(minHeight: 52),
+      padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 9),
       decoration: BoxDecoration(
         color: alert ? const Color(0x18FFB34D) : const Color(0x0EFFFFFF),
-        borderRadius: BorderRadius.circular(9),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: alert ? const Color(0x40FFB34D) : const Color(0x12FFFFFF),
         ),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
             alert ? PhosphorIconsBold.warning : PhosphorIconsRegular.bell,
-            size: 13,
+            size: 15,
             color: alert ? Colors.orangeAccent : Colors.white38,
           ),
-          const SizedBox(width: 5),
-          const Text(
-            'NOTIFY',
-            style: TextStyle(
-              color: Colors.white38,
-              fontSize: 7.5,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 0.7,
-            ),
-          ),
-          const SizedBox(width: 6),
+          const SizedBox(width: 7),
           Expanded(
-            child: StaticSwitcher(
-
-              child: Text(
-                message,
-                key: ValueKey<String>(message),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: alert ? Colors.orangeAccent : Colors.white60,
-                  fontSize: 8.5,
-                  fontWeight: FontWeight.w700,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'SYSTEM STATUS',
+                  style: TextStyle(
+                    color: Colors.white38,
+                    fontSize: 7.5,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.8,
+                  ),
                 ),
-              ),
+                const SizedBox(height: 3),
+                Text(
+                  _professionalNotice(),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: alert ? Colors.orangeAccent : Colors.white70,
+                    fontSize: 9.2,
+                    height: 1.25,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -1804,16 +1968,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
           padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
           child: Column(
             children: [
-              _voltageRow('5V', 'Low Mode'),
-              _voltageRow('9V', 'Mid Mode'),
-              _voltageRow('12V', 'High Mode'),
+              _voltageRow('5V', '5V Manual'),
+              _voltageRow('9V', '9V Manual'),
+              _voltageRow('12V', '12V Manual'),
             ],
           ),
         ),
         if (voltageGuardActive)
           const Padding(
             padding: EdgeInsets.only(left: 5, top: 2),
-            child: Text('Voltage guard aktif — tunggu 1 detik.', style: TextStyle(color: Colors.black45, fontSize: 10, fontWeight: FontWeight.w700)),
+            child: Text('Voltage guard active — awaiting device confirmation.', style: TextStyle(color: Colors.black45, fontSize: 10, fontWeight: FontWeight.w700)),
           ),
         _card(
           child: Row(
@@ -1822,7 +1986,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               const SizedBox(width: 9),
               Expanded(
                 child: Text(
-                  connected ? 'Firmware state: ${voltage == '--' ? 'syncing...' : voltage}' : 'Connect untuk mengontrol voltage.',
+                  connected ? 'Firmware state: ${voltage == '--' ? 'syncing...' : voltage}' : 'Connect to control voltage.',
                   style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
                 ),
               ),
@@ -1834,12 +1998,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildControlTab({Key? key}) {
-    final speedEnabled = connected && !adaptiveOn && voltage == '12V';
+    final speedEnabled = connected && !adaptiveOn && voltage == '12V' && !controlCommandBusy;
     final fanLocked = connected && !adaptiveOn && peltierOn;
     return KeyedSubtree(key: key, child: _smoothList(
       storageKey: 'control',
       children: [
-        _sectionTitle('Cooling Control', subtitle: 'Fan, Peltier and PWM are grouped here.'),
+        _sectionTitle('Cooling Control', subtitle: 'Manage the cooling fan, Peltier, and fan speed.'),
         _card(
           padding: const EdgeInsets.fromLTRB(13, 10, 13, 10),
           child: Column(
@@ -1849,16 +2013,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 subtitle: fanLocked ? 'Fan is ON • locked while Peltier is ON' : (fanOn ? 'Fan is ON' : 'Fan is OFF'),
                 icon: PhosphorIconsBold.wind,
                 value: fanOn,
-                enabled: connected && !adaptiveOn && !peltierOn,
+                enabled: connected && !adaptiveOn && !peltierOn && !controlCommandBusy,
                 onChanged: _toggleFan,
               ),
               const Divider(height: 20),
               _switchRow(
                 title: 'Peltier',
-                subtitle: peltierOn ? 'Peltier is ON • soft-start 5s' : 'Peltier is OFF',
+                subtitle: peltierOn ? 'Peltier is ON • 5 s soft-start' : 'Peltier is OFF',
                 icon: PhosphorIconsBold.snowflake,
                 value: peltierOn,
-                enabled: connected && !adaptiveOn,
+                enabled: connected && !adaptiveOn && !controlCommandBusy,
                 onChanged: _togglePeltier,
               ),
               const Divider(height: 20),
@@ -1872,7 +2036,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       children: [
                         Text('Fan Speed', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900)),
                         SizedBox(height: 3),
-                        Text('Manual 12V only • 50–100% • 25 kHz PWM', style: TextStyle(fontSize: 10, color: Colors.black45, fontWeight: FontWeight.w600)),
+                        Text('Manual 12V • 50–100% • 25 kHz PWM', style: TextStyle(fontSize: 10, color: Colors.black45, fontWeight: FontWeight.w600)),
                       ],
                     ),
                   ),
@@ -1971,14 +2135,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   children: [
                     Text('Adaptive Switch', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900)),
                     SizedBox(height: 4),
-                    Text('Hotside + phone battery zone', style: TextStyle(fontSize: 10, color: Colors.black45, fontWeight: FontWeight.w600)),
+                    Text('Hotside and phone battery temperature control', style: TextStyle(fontSize: 10, color: Colors.black45, fontWeight: FontWeight.w600)),
                   ],
                 ),
               ),
               Switch(
                 value: connected && adaptiveOn,
                 activeThumbColor: Colors.green,
-                onChanged: connected && !adaptiveTransitioning ? _toggleAdaptive : null,
+                onChanged: connected && !adaptiveTransitioning && !controlCommandBusy ? _toggleAdaptive : null,
               ),
             ],
           ),
@@ -2014,7 +2178,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: StaticSwitcher(
 
                   child: Text(
-                    adaptiveTransitioning ? 'Adaptive transition in progress — waiting for confirmed state.' : 'Adaptive state: ${adaptiveOn ? 'ON' : 'OFF'}',
+                    adaptiveTransitioning ? 'Adaptive transition in progress — awaiting device confirmation.' : 'Adaptive state: ${adaptiveOn ? 'ON' : 'OFF'}',
                     key: ValueKey<String>('adaptive:$adaptiveOn:$adaptiveTransitioning'),
                     style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
                   ),
@@ -2089,14 +2253,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return KeyedSubtree(key: key, child: _smoothList(
       storageKey: 'led',
       children: [
-        _sectionTitle('LED Control', subtitle: '8× WS2812B • firmware-owned color/effect state.'),
+        _sectionTitle('LED Control', subtitle: '8× WS2812B • firmware-managed lighting and effects.'),
         _card(
           padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
           child: Column(
             children: [
               _switchRow(
                 title: 'LED Power',
-                subtitle: rgbOn ? 'RGB illumination is ON' : 'RGB illumination is OFF',
+                subtitle: rgbOn ? 'Lighting is ON' : 'Lighting is OFF',
                 icon: PhosphorIconsBold.lightbulb,
                 value: rgbOn,
                 enabled: connected,
@@ -2131,8 +2295,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       value: brightness.clamp(0, 100).toDouble(),
                       activeColor: Colors.black,
                       inactiveColor: Colors.black12,
-                      onChanged: connected ? (v) => setState(() => brightness = v.round()) : null,
-                      onChangeEnd: connected ? _setBrightness : null,
+                      onChanged: connected && !controlCommandBusy ? (v) => setState(() => brightness = v.round()) : null,
+                      onChangeEnd: connected && !controlCommandBusy ? _setBrightness : null,
                     ),
                   ),
                   SizedBox(width: 42, child: Text('$brightness%', textAlign: TextAlign.right, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900))),
@@ -2159,7 +2323,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           const SizedBox(width: 8),
           FilledButton(onPressed: connected ? () => _sendColor('COLOR', rgbColorController) : null, child: const Text('SET')),
         ])),
-        _sectionTitle('Voltage Indicator Colors', subtitle: 'Shown briefly after a completed voltage transition.'),
+        _sectionTitle('Voltage Indicator Colors', subtitle: 'Shown briefly after a confirmed voltage change.'),
         _card(child: Column(children: [
           _colorField('5V', color5Controller, 'V5COLOR'),
           const Divider(height: 18),
@@ -2216,7 +2380,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return KeyedSubtree(key: key, child: _smoothList(
       storageKey: 'temperature',
       children: [
-        _sectionTitle('Temperature Protection', subtitle: locked ? 'Locked while Adaptive is ON.' : 'Sensor display remains independent from the protection threshold.'),
+        _sectionTitle('Thermal Protection', subtitle: locked ? 'Locked while Adaptive is ON.' : 'Sensor readings remain independent from the protection threshold.'),
         _card(
           child: _adjuster(
             title: 'Hotside Overheat Limit',
@@ -2229,7 +2393,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             },
           ),
         ),
-        _sectionTitle('Phone Battery Temperature Zones', subtitle: '9V is the derived middle zone.'),
+        _sectionTitle('Phone Battery Temperature Zones', subtitle: '9V uses the calculated middle zone.'),
         _card(
           padding: const EdgeInsets.fromLTRB(13, 8, 13, 8),
           child: Column(
@@ -2272,7 +2436,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: const Row(children: [
               Icon(PhosphorIconsBold.lock, size: 18, color: Colors.orangeAccent),
               SizedBox(width: 9),
-              Expanded(child: Text('Temperature settings are locked while Adaptive Mode is ON.', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800))),
+              Expanded(child: Text('Temperature settings are locked while Adaptive Mode is active.', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800))),
             ]),
           ),
         Align(
@@ -2288,7 +2452,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildTabContent() {
-    return switch (tabIndex) {
+    final content = switch (tabIndex) {
       0 => _buildVoltageTab(key: const ValueKey('voltage-tab')),
       1 => _buildControlTab(key: const ValueKey('control-tab')),
       2 => _buildAdaptiveTab(key: const ValueKey('adaptive-tab')),
@@ -2296,12 +2460,56 @@ class _DashboardScreenState extends State<DashboardScreen> {
       4 => _buildTemperatureTab(key: const ValueKey('temperature-tab')),
       _ => const SizedBox.shrink(),
     };
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        content,
+        if (controlCommandBusy) ...[
+          const Positioned.fill(
+            child: AbsorbPointer(
+              absorbing: true,
+              child: ColoredBox(color: Colors.transparent),
+            ),
+          ),
+          Positioned(
+            top: 2,
+            left: 10,
+            right: 10,
+            child: IgnorePointer(
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 7,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF17181C),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  'PROCESSING: ' +
+                      controlCommandName +
+                      ' • awaiting device confirmation...',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
   }
 
   Widget _buildHomeArea(double height) {
     final batteryValue = connected && phoneBatteryValid ? phoneBatteryTemp : '--';
     final hotValue = connected ? hotsideTemp : '--';
-    final voltageValue = connected && voltage != '--' ? voltage.replaceAll('V', '') : '--';
+    final voltageValue =
+        connected && voltage != '--' ? voltage.replaceAll('V', '') : '--';
     final adaptiveValue = connected ? (adaptiveOn ? 'ON' : 'OFF') : '--';
 
     return SizedBox(
@@ -2316,7 +2524,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   width: 46,
                   child: IconButton(
                     tooltip: connected ? 'Disconnect' : 'Bluetooth',
-                    icon: Icon(connected ? PhosphorIconsBold.bluetoothConnected : PhosphorIconsBold.bluetooth, color: connected ? Colors.blueAccent : Colors.white, size: 26),
+                    icon: Icon(
+                      connected
+                          ? PhosphorIconsBold.bluetoothConnected
+                          : PhosphorIconsBold.bluetooth,
+                      color: connected ? Colors.blueAccent : Colors.white,
+                      size: 26,
+                    ),
                     onPressed: connected ? _disconnect : _showBluetoothMenu,
                   ),
                 ),
@@ -2327,13 +2541,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       Text(
                         headerName,
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 19, letterSpacing: 0.2),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 19,
+                          letterSpacing: 0.2,
+                        ),
                       ),
                       SizedBox(height: 2),
                       Text(
                         'DEVELOPED BY HORIZON',
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white38, fontWeight: FontWeight.w700, fontSize: 7.5, letterSpacing: 1.4),
+                        style: TextStyle(
+                          color: Colors.white38,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 7.5,
+                          letterSpacing: 1.4,
+                        ),
                       ),
                     ],
                   ),
@@ -2342,7 +2566,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   width: 46,
                   child: IconButton(
                     tooltip: 'Firmware',
-                    icon: const Icon(PhosphorIconsBold.gear, color: Colors.white, size: 25),
+                    icon: const Icon(
+                      PhosphorIconsBold.gear,
+                      color: Colors.white,
+                      size: 25,
+                    ),
                     onPressed: _openFirmwareSettings,
                   ),
                 ),
@@ -2355,69 +2583,106 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 children: [
                   Expanded(
                     flex: 5,
-                    child: LayoutBuilder(
-                      builder: (context, leftConstraints) {
-                        return Padding(
-                          padding: const EdgeInsets.only(left: 9, right: 5, top: 2, bottom: 2),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              alignment: Alignment.centerLeft,
-                              child: SizedBox(
-                                width: leftConstraints.maxWidth - 14,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                          _homeMetric('BATTERY TEMPERATURE', batteryValue, '°C', color: Colors.orangeAccent, icon: PhosphorIconsBold.batteryHigh),
-                          _homeMetric('HOTSIDE TEMPERATURE', hotValue, hotValue != '--' ? '°C' : '', color: safety == 'FAULT' ? Colors.redAccent : Colors.cyanAccent, icon: PhosphorIconsBold.thermometer),
-                          _homeMetric('VOLTAGE INDICATOR', voltageValue, voltageValue != '--' ? 'V' : '', color: Colors.blueAccent, icon: PhosphorIconsBold.lightning),
-                          _homeMetric('ADAPTIVE MODE', adaptiveValue, '', color: adaptiveOn ? Colors.greenAccent : Colors.white70, icon: PhosphorIconsBold.sparkle),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8, right: 5),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _homeMetric(
+                            'PHONE BATTERY',
+                            batteryValue,
+                            '°C',
+                            color: Colors.orangeAccent,
+                            icon: PhosphorIconsBold.batteryHigh,
+                          ),
+                          _homeMetric(
+                            'HOTSIDE',
+                            hotValue,
+                            hotValue != '--' ? '°C' : '',
+                            color: safety == 'FAULT'
+                                ? Colors.redAccent
+                                : Colors.cyanAccent,
+                            icon: PhosphorIconsBold.thermometer,
+                          ),
+                          _homeMetric(
+                            'VOLTAGE',
+                            voltageValue,
+                            voltageValue != '--' ? 'V' : '',
+                            color: Colors.blueAccent,
+                            icon: PhosphorIconsBold.lightning,
+                          ),
+                          _homeMetric(
+                            'ADAPTIVE',
+                            adaptiveValue,
+                            '',
+                            color: adaptiveOn
+                                ? Colors.greenAccent
+                                : Colors.white70,
+                            icon: PhosphorIconsBold.sparkle,
+                          ),
                           const SizedBox(height: 1),
                           Row(
                             children: [
-                              _homeStateChip(label: 'PELTIER', value: peltierOn, icon: PhosphorIconsBold.snowflake),
+                              _homeStateChip(
+                                label: 'PELTIER',
+                                value: peltierOn,
+                                icon: PhosphorIconsBold.snowflake,
+                              ),
                               const SizedBox(width: 6),
-                              _homeStateChip(label: 'FAN', value: fanOn, icon: PhosphorIconsBold.wind),
+                              _homeStateChip(
+                                label: 'FAN',
+                                value: fanOn,
+                                icon: PhosphorIconsBold.wind,
+                              ),
                             ],
                           ),
                           const SizedBox(height: 6),
                           Container(
-
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 6,
+                            ),
                             decoration: BoxDecoration(
                               color: const Color(0x0FFFFFFF),
                               borderRadius: BorderRadius.circular(9),
-                              border: Border.all(color: const Color(0x12FFFFFF)),
+                              border: Border.all(
+                                color: const Color(0x12FFFFFF),
+                              ),
                             ),
                             child: Row(
                               children: [
-                                const Icon(PhosphorIconsBold.gauge, size: 13, color: Colors.white38),
+                                const Icon(
+                                  PhosphorIconsBold.gauge,
+                                  size: 13,
+                                  color: Colors.white38,
+                                ),
                                 const SizedBox(width: 5),
-                                const Text('FAN SPEED', style: TextStyle(color: Colors.white38, fontSize: 7.5, fontWeight: FontWeight.w900, letterSpacing: 0.6)),
+                                const Text(
+                                  'FAN SPEED',
+                                  style: TextStyle(
+                                    color: Colors.white38,
+                                    fontSize: 7.5,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 0.6,
+                                  ),
+                                ),
                                 const Spacer(),
-                                StaticSwitcher(
-
-                                  child: Text(
-                                    '$fanSpeed%',
-                                    key: ValueKey<int>(fanSpeed),
-                                    style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w900),
+                                Text(
+                                  fanSpeed.toString() + '%',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w900,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          const SizedBox(height: 6),
-                                  _homeNotify(),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        );
-                      },
+                        ],
+                      ),
                     ),
                   ),
                   Expanded(
@@ -2426,17 +2691,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       alignment: Alignment.center,
                       child: LayoutBuilder(
                         builder: (context, constraints) {
-                          final imageHeight = (constraints.maxHeight * 0.95).clamp(185.0, 275.0).toDouble();
+                          final imageHeight =
+                              (constraints.maxHeight * 0.95)
+                                  .clamp(185.0, 275.0)
+                                  .toDouble();
                           return ConstrainedBox(
                             constraints: BoxConstraints(
                               maxHeight: imageHeight,
                               maxWidth: constraints.maxWidth,
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 2, right: 0, top: 2),
+                              padding: const EdgeInsets.only(left: 2, right: 0),
                               child: FittedBox(
                                 fit: BoxFit.contain,
-                                child: Image.asset('assets/jexfyzcooler.png', height: imageHeight),
+                                child: Image.asset(
+                                  'assets/jexfyzcooler.png',
+                                  height: imageHeight,
+                                ),
                               ),
                             ),
                           );
@@ -2447,6 +2718,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
               ),
             ),
+            const SizedBox(height: 5),
+            _homeNotify(),
           ],
         ),
       ),
@@ -2493,7 +2766,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
-    final homeHeight = (media.size.height * 0.42).clamp(315.0, 430.0).toDouble();
+    final homeHeight =
+        (media.size.height * 0.42).clamp(315.0, 430.0).toDouble();
+
+    if (syncing && !dashboardReady) {
+      return _buildSyncGate();
+    }
 
     return Scaffold(
       backgroundColor: const Color(0xFF111113),
@@ -2507,7 +2785,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 width: double.infinity,
                 decoration: const BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(34)),
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(34),
+                  ),
                 ),
                 child: Column(
                   children: [
@@ -2529,7 +2809,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 19),
-                      child: Divider(color: Colors.black12, thickness: 1.1, height: 1),
+                      child: Divider(
+                        color: Colors.black12,
+                        thickness: 1.1,
+                        height: 1,
+                      ),
                     ),
                     const SizedBox(height: 7),
                     Expanded(
@@ -2547,6 +2831,87 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
+
+  Widget _buildSyncGate() {
+    final status =
+        notice.trim().isEmpty ? 'Synchronizing with JE X FYZ...' : notice.trim();
+
+    return Scaffold(
+      backgroundColor: const Color(0xFF111113),
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  PhosphorIconsBold.arrowsClockwise,
+                  color: Colors.blueAccent,
+                  size: 46,
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  headerName,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.2,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  status,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  'Reading the complete device state before showing the dashboard.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white38,
+                    fontSize: 11,
+                    height: 1.35,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 7,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0x0FFFFFFF),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: const Color(0x18FFFFFF),
+                    ),
+                  ),
+                  child: const Text(
+                    'SYNC IN PROGRESS • CONTROLS LOCKED',
+                    style: TextStyle(
+                      color: Colors.white54,
+                      fontSize: 8.5,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.8,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
 }
 
 
@@ -2721,7 +3086,7 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
                 decoration: const InputDecoration(labelText: 'Wi-Fi Password', labelStyle: TextStyle(color: Colors.grey), prefixIcon: Icon(PhosphorIconsBold.lock, color: Colors.blueAccent)),
               ),
               const SizedBox(height: 6),
-              const Text('Password disimpan di Android secure storage.', style: TextStyle(color: Colors.white38, fontSize: 9)),
+              const Text('Wi-Fi credentials are stored in Android secure storage.', style: TextStyle(color: Colors.white38, fontSize: 9)),
             ],
           ],
         ),
