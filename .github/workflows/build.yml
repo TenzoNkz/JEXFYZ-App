@@ -6,6 +6,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: jexfyz-cooler-build
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-24.04
@@ -20,7 +24,6 @@ jobs:
         with:
           distribution: zulu
           java-version: "17"
-          cache: gradle
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -45,8 +48,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          printf 'flutter.sdk=%s
-' "$FLUTTER_ROOT" > android/local.properties
+          printf 'flutter.sdk=%s\\n' "$FLUTTER_ROOT" > android/local.properties
 
       - name: Restore Gradle wrapper if missing
         working-directory: android
@@ -64,41 +66,65 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           import re
+
           source = Path("lib/main.dart").read_text(encoding="utf-8")
           pubspec = Path("pubspec.yaml").read_text(encoding="utf-8")
           manifest = Path("android/app/src/main/AndroidManifest.xml").read_text(encoding="utf-8")
+
           required = [
               "6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001",
               "6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001",
               "6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001",
-              "PHONE:BT=", "CLOUDOTA", "FirebaseDatabase.instanceFor",
-              "firmware_update", "flutter_secure_storage", "onChangeEnd",
-              "assets/jexfyzcooler.png", "assets/jexfyzicon.png",
+              "PHONE:BT=",
+              "CLOUDOTA",
+              "FirebaseDatabase.instanceFor",
+              "firmware_update",
+              "flutter_secure_storage",
+              "onChangeEnd",
+              "assets/jexfyzcooler.png",
+              "assets/jexfyzicon.png",
           ]
+
           missing = [token for token in required if token not in source and token not in pubspec]
           if missing:
               raise SystemExit("JE X FYZ audit failed; missing: " + ", ".join(missing))
+
           for legacy in ["assets/hzcooler.png", "assets/hzicon.png"]:
               if legacy in source or legacy in pubspec:
-                  raise SystemExit("JE X FYZ asset audit failed; legacy reference found: " + legacy)
+                  raise SystemExit("JE X FYZ audit failed; legacy asset reference: " + legacy)
+
           if "@drawable/hzicon" in manifest:
-              raise SystemExit("JE X FYZ asset audit failed; legacy Android icon reference found")
+              raise SystemExit("JE X FYZ audit failed; legacy Android icon reference found")
+
           if "@drawable/jexfyzicon" not in manifest:
-              raise SystemExit("JE X FYZ asset audit failed; Android icon is not jexfyzicon")
-          for pattern in [r"CFG:", r"ADAPT:", r"RGBTOGGLE", r"RGBPREV", r"RGBNEXT", r"BR:", r"AIM:"]:
+              raise SystemExit("JE X FYZ audit failed; Android icon is not jexfyzicon")
+
+          for pattern in [
+              r"\bCFG:",
+              r"\bADAPT:",
+              r"RGBTOGGLE",
+              r"RGBPREV",
+              r"RGBNEXT",
+              r"\bBR:",
+              r"AIM:",
+          ]:
               if re.search(pattern, source):
-                  raise SystemExit(f"JE X FYZ audit failed; legacy command found: {pattern}")
+                  raise SystemExit("JE X FYZ audit failed; legacy command found: " + pattern)
+
           if re.search(r"firmwareDb[\s\S]*\.(set|update|push|removeValue)\s*\(", source):
               raise SystemExit("JE X FYZ audit failed; Firebase runtime write path detected")
+
           if "setString('saved_pass'" in source or 'setString("saved_pass"' in source:
               raise SystemExit("JE X FYZ audit failed; Wi-Fi password stored outside secure storage")
+
           for asset in [
               Path("assets/jexfyzcooler.png"),
               Path("assets/jexfyzicon.png"),
               Path("android/app/src/main/res/drawable-nodpi/jexfyzicon.png"),
           ]:
               if not asset.is_file() or asset.stat().st_size == 0:
-                  raise SystemExit(f"JE X FYZ asset audit failed; missing or empty asset: {asset}")
+                  raise SystemExit("JE X FYZ audit failed; missing/empty asset: " + str(asset))
+
           print("JE X FYZ architecture and asset audit passed.")
           PY
 
@@ -121,7 +147,10 @@ jobs:
           APK="build/app/outputs/flutter-apk/app-release.apk"
           test -s "$APK"
           APK_SIGNER="$(find "$ANDROID_SDK_ROOT/build-tools" -type f -name apksigner 2>/dev/null | sort -V | tail -n 1)"
-          test -n "$APK_SIGNER"
+          if [ -z "$APK_SIGNER" ]; then
+            echo "ERROR: apksigner not found"
+            exit 1
+          fi
           "$APK_SIGNER" verify --verbose "$APK"
           ls -lh "$APK"
 
@@ -129,7 +158,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cp build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/JE-X-FYZ-Latest.apk
+          cp build/app/outputs/flutter-apk/app-release.apk              build/app/outputs/flutter-apk/JE-X-FYZ-Latest.apk
+          test -s build/app/outputs/flutter-apk/JE-X-FYZ-Latest.apk
 
       - name: Upload APK only
         uses: actions/upload-artifact@v7
