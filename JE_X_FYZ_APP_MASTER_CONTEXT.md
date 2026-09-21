@@ -143,7 +143,7 @@ Current indicators:
 - Fan
 - Fan Speed
 
-Every indicator uses a rounded horizontal card with a rounded colored icon box, centered icon, label/value hierarchy, and no far-right status dot.
+Every indicator uses a compact open row: only the rounded colored icon area is boxed. The label/value area is NOT inside a large outer card. There is no large rounded background around the full text row and no far-right status dot.
 
 Current visual color direction:
 - Battery Temperature → orange
@@ -158,6 +158,12 @@ Current visual color direction:
 - Large cooler image on the right side of Home.
 - Must not collide with indicator text.
 - Avoid unnecessary clipping.
+
+### Indicator sizing / hierarchy
+- The full indicator row must remain visually lightweight.
+- The colored rounded icon box is the primary visual container.
+- Do not wrap label/value text in a second outer rounded card.
+- The Home should feel less bulky while preserving the existing icon sizes and typography.
 
 ### Notify/status
 - Long horizontal card below indicators.
@@ -284,6 +290,8 @@ Whenever an app file changes:
 
 ### 2026-09-21
 - Home UI moved toward colored indicator cards with icon boxes.
+- **Latest UI correction:** the large outer indicator cards were removed. Only each indicator's icon area remains boxed; label/value text is now on the open Home background. Fan Speed follows the same icon-only-box treatment.
+- **Fan Speed display correction:** Home `FAN SPEED` now shows the numeric percentage only (for example `50%` / `100%`) with no horizontal progress bar. The underlying fan-speed range remains 50–100%.
 - Bluetooth and Settings retained as header actions without boxes.
 - Sub Menu spacing tightened toward the Home Notify card.
 - Blocking `PROCESSING` UI removed from the intended interaction model.
