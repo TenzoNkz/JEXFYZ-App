@@ -90,8 +90,18 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          # The repo intentionally keeps generated Gradle wrapper files out of Git.
+          # Do not run `gradle wrapper` here because Gradle 9.3.1 validates the
+          # distribution URL and can fail the entire workflow on a transient
+          # services.gradle.org/network error before the Android build starts.
+          # Flutter only needs an executable `gradlew`; delegate it to the
+          # already-installed Gradle 9.3.1 supplied by setup-gradle.
           if [ ! -f gradlew ] || [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
-            gradle wrapper --gradle-version 9.3.1 --distribution-type bin
+            cat > gradlew <<'EOF'
+          #!/usr/bin/env sh
+          exec gradle "$@"
+          EOF
+            chmod +x gradlew
           fi
 
       - name: JE X FYZ security and architecture audit
