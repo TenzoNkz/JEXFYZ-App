@@ -38,7 +38,6 @@ const String rxUuid = '6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001';
 const String txUuid = '6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001';
 const String firebaseDbUrl =
     'https://je-x-fyz-default-rtdb.asia-southeast1.firebasedatabase.app';
-const Duration voltageGuardDuration = Duration(seconds: 1);
 const int fanSpeedMin = 50;
 const int fanSpeedMax = 100;
 
@@ -260,8 +259,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Future<void> _writeQueue = Future<void>.value();
   Timer? batteryTimer;
-  Timer? voltageGuardTimer;
   Timer? reconnectTimer;
+  Timer? _syncDebounceTimer;
+  bool _syncInFlight = false;
+  bool _syncAgain = false;
+  int _commandSerial = 0;
+  final Map<String, int> _commandSerials = {};
+  final Map<String, Timer> _commandTimers = {};
 
   bool _bleReady = false;
   bool _bleSessionReady = false;
@@ -269,13 +273,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   bool connected = false;
   bool syncing = false;
   bool fullSyncReceived = false;
-  bool voltageGuardActive = false;
   bool adaptiveTransitioning = false;
   bool batteryReadBusy = false;
-  bool fanCommandBusy = false;
-  bool peltierCommandBusy = false;
-  bool adaptiveCommandBusy = false;
-  bool controlCommandBusy = false;
   bool dashboardReady = false;
   final Map<String, List<Completer<String>>> _ackWaiters = {};
   final Map<String, String> _syncSnapshot = {};
@@ -342,11 +341,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   void dispose() {
+    _cancelOptimisticCommands();
     connectionSub?.cancel();
     notificationSub?.cancel();
     bondStateSub?.cancel();
     batteryTimer?.cancel();
-    voltageGuardTimer?.cancel();
     reconnectTimer?.cancel();
     device?.disconnect();
     rgbColorController.dispose();
@@ -499,7 +498,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     await connectionSub?.cancel();
     await notificationSub?.cancel();
     batteryTimer?.cancel();
-    voltageGuardTimer?.cancel();
 
     try {
       if (device != null && device != target) {
@@ -523,7 +521,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         syncing = true;
         connected = false;
         dashboardReady = false;
-        controlCommandBusy = false;
         voltage = '--';
         hotsideTemp = '--';
         phoneBatteryTemp = '--';
@@ -614,7 +611,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       connected = false;
       syncing = false;
       dashboardReady = false;
-      controlCommandBusy = false;
       voltage = '--';
       hotsideTemp = '--';
       phoneBatteryTemp = '--';
@@ -825,6 +821,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Future<void> _disconnect() async {
+    _cancelOptimisticCommands();
     try {
       await device?.disconnect();
     } catch (e) {
@@ -1210,265 +1207,290 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
-  bool _beginControlCommand(String name) {
-    if (!connected || controlCommandBusy) return false;
-    if (mounted) {
-      setState(() {
-        controlCommandBusy = true;
-      });
-    }
-    return true;
-  }
+  void _scheduleFreshDeviceSync({Duration delay = const Duration(milliseconds: 280)}) {
+    if (!connected || !_bleReady || !_bleSessionReady) return;
 
-  void _endControlCommand() {
-    if (!mounted) return;
-    setState(() {
-      controlCommandBusy = false;
+    _syncDebounceTimer?.cancel();
+    _syncDebounceTimer = Timer(delay, () async {
+      if (_syncInFlight) {
+        _syncAgain = true;
+        return;
+      }
+
+      _syncInFlight = true;
+      try {
+        await _requestFreshSync(timeout: const Duration(seconds: 2));
+      } finally {
+        _syncInFlight = false;
+        if (_syncAgain) {
+          _syncAgain = false;
+          _scheduleFreshDeviceSync();
+        }
+      }
     });
   }
 
-  Future<bool> _sendAndConfirm(
-    String command,
-    bool Function() predicate, {
-    Duration timeout = const Duration(seconds: 3),
-  }) async {
-    final accepted = await _sendAndWaitAck(
-      command,
-      showError: false,
-      timeout: timeout,
-    );
-    if (!accepted) return false;
+  void _queueOptimisticCommand(
+    String key,
+    String command, {
+    Duration debounce = const Duration(milliseconds: 80),
+    String? failureMessage,
+  }) {
+    if (!connected || !_bleReady || !_bleSessionReady) return;
 
-    await Future<void>.delayed(const Duration(milliseconds: 260));
+    final serial = ++_commandSerial;
+    _commandSerials[key] = serial;
+    _commandTimers[key]?.cancel();
 
-    final synced = await _requestFreshSync(timeout: timeout);
-    if (!synced) return false;
+    _commandTimers[key] = Timer(debounce, () async {
+      if (_commandSerials[key] != serial ||
+          !connected ||
+          !_bleReady ||
+          !_bleSessionReady) {
+        return;
+      }
 
-    return predicate();
+      final sent = await sendCommand(command, showError: false);
+      if (!sent && mounted && failureMessage != null) {
+        _showSnackBar(failureMessage, color: Colors.orangeAccent);
+      }
+
+      // Firmware remains the source of truth. Reconcile after the command,
+      // without blocking the next user interaction.
+      _scheduleFreshDeviceSync(delay: const Duration(milliseconds: 220));
+    });
+  }
+
+  void _cancelOptimisticCommands() {
+    for (final timer in _commandTimers.values) {
+      timer.cancel();
+    }
+    _commandTimers.clear();
+    _commandSerials.clear();
+    _syncDebounceTimer?.cancel();
+    _syncAgain = false;
   }
 
   Future<void> _requestVoltage(String target) async {
-    if (!connected ||
-        adaptiveOn ||
-        voltageGuardActive ||
-        controlCommandBusy ||
-        !isVoltageCommand(target)) {
-      return;
-    }
+    if (!connected || adaptiveOn || !isVoltageCommand(target)) return;
     if (target == voltage) return;
-    if (!_beginControlCommand('Voltage')) return;
 
-    try {
-      if (mounted) setState(() => voltageGuardActive = true);
-    voltageGuardTimer?.cancel();
-    voltageGuardTimer = Timer(voltageGuardDuration, () {
-      if (mounted) setState(() => voltageGuardActive = false);
-    });
-
-    final accepted = await _sendAndConfirm(
-      'VOLTAGE:$target',
-      () => voltage == target,
-      timeout: const Duration(seconds: 3),
-    );
-      if (!accepted) {
-        voltageGuardTimer?.cancel();
-        if (mounted) setState(() => voltageGuardActive = false);
-      }
-    } finally {
-      _endControlCommand();
+    if (mounted) {
+      setState(() {
+        // Instant UI response. Firmware telemetry can correct this if the
+        // command is rejected or safety logic forces another voltage.
+        voltage = target;
+      });
     }
+
+    _queueOptimisticCommand(
+      'VOLTAGE',
+      'VOLTAGE:$target',
+      debounce: const Duration(milliseconds: 140),
+      failureMessage: 'Voltage command could not be sent.',
+    );
   }
 
   Future<void> _toggleFan(bool enabled) async {
-    if (!connected || adaptiveOn || fanCommandBusy || controlCommandBusy) return;
-    if (!_beginControlCommand('Fan')) return;
-    if (mounted) setState(() => fanCommandBusy = true);
-    try {
-      final ok = await _sendAndConfirm(
-        enabled ? 'FAN:ON' : 'FAN:OFF',
-        () => fanOn == enabled,
-      );
-      if (!ok && mounted) {
-        _showSnackBar('Fan change was not confirmed by the device.', color: Colors.orangeAccent);
-      }
-    } finally {
-      if (mounted) setState(() => fanCommandBusy = false);
-      _endControlCommand();
+    if (!connected || adaptiveOn) return;
+
+    if (mounted) {
+      setState(() => fanOn = enabled);
     }
+
+    _queueOptimisticCommand(
+      'FAN',
+      enabled ? 'FAN:ON' : 'FAN:OFF',
+      debounce: const Duration(milliseconds: 70),
+      failureMessage: 'Fan command could not be sent.',
+    );
   }
 
   Future<void> _togglePeltier(bool enabled) async {
-    if (!connected || adaptiveOn || peltierCommandBusy || controlCommandBusy) return;
-    if (!_beginControlCommand('Peltier')) return;
-    if (mounted) setState(() => peltierCommandBusy = true);
-    try {
-      if (enabled && !fanOn) {
-        final approved = await showDialog<bool>(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: const Text('Peltier Safety'),
-            content: const Text('Fan must be running before Peltier can be enabled.'),
-            actions: [
-              TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('BATAL')),
-              FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('NYALAKAN FAN')),
-            ],
-          ),
-        );
-        if (approved != true) return;
-        final fanOk = await _sendAndConfirm('FAN:ON', () => fanOn);
-        if (!fanOk) {
-          _showSnackBar('Fan activation was not confirmed by the device.', color: Colors.orangeAccent);
-          return;
-        }
-      }
+    if (!connected || adaptiveOn) return;
 
-      final ok = await _sendAndConfirm(
-        enabled ? 'PELTIER:ON' : 'PELTIER:OFF',
-        () => peltierOn == enabled,
-        timeout: const Duration(seconds: 6),
-      );
-      if (!ok && mounted) {
-        _showSnackBar('Peltier change was not confirmed by the device. ${safetyReason == 'NONE' ? '' : safetyReason}', color: Colors.orangeAccent);
+    if (enabled && !fanOn) {
+      // Preserve the firmware safety rule, but remove the old blocking dialog.
+      // Fan becomes the first command and Peltier follows automatically.
+      if (mounted) {
+        setState(() {
+          fanOn = true;
+          peltierOn = true;
+        });
       }
-    } finally {
-      if (mounted) setState(() => peltierCommandBusy = false);
-      _endControlCommand();
+      _queueOptimisticCommand(
+        'FAN',
+        'FAN:ON',
+        debounce: const Duration(milliseconds: 50),
+        failureMessage: 'Fan command could not be sent.',
+      );
+      _queueOptimisticCommand(
+        'PELTIER',
+        'PELTIER:ON',
+        debounce: const Duration(milliseconds: 120),
+        failureMessage: 'Peltier command could not be sent.',
+      );
+      return;
     }
+
+    if (mounted) {
+      setState(() => peltierOn = enabled);
+    }
+
+    _queueOptimisticCommand(
+      'PELTIER',
+      enabled ? 'PELTIER:ON' : 'PELTIER:OFF',
+      debounce: const Duration(milliseconds: 70),
+      failureMessage: 'Peltier command could not be sent.',
+    );
   }
 
   Future<void> _toggleAdaptive(bool enabled) async {
-    if (!connected ||
-        adaptiveTransitioning ||
-        adaptiveCommandBusy ||
-        controlCommandBusy) {
-      return;
+    if (!connected) return;
+
+    if (mounted) {
+      setState(() {
+        adaptiveOn = enabled;
+        adaptiveTransitioning = enabled;
+        if (enabled) {
+          // Firmware's documented behavior: Adaptive enters/returns through 5V.
+          voltage = '5V';
+        }
+      });
     }
-    if (!_beginControlCommand('Adaptive Mode')) return;
-    if (mounted) setState(() {
-      adaptiveTransitioning = true;
-      adaptiveCommandBusy = true;
-    });
-    try {
-      final ok = await _sendAndConfirm(
-        enabled ? 'ADAPTIVE:ON' : 'ADAPTIVE:OFF',
-        () => adaptiveOn == enabled,
-        timeout: const Duration(seconds: 4),
-      );
-      if (!ok && mounted) {
-        _showSnackBar('Adaptive Mode change was not confirmed by the device.', color: Colors.orangeAccent);
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          adaptiveCommandBusy = false;
-          if (!adaptiveOn) adaptiveTransitioning = false;
-        });
-      }
-      _endControlCommand();
-    }
+
+    _queueOptimisticCommand(
+      'ADAPTIVE',
+      enabled ? 'ADAPTIVE:ON' : 'ADAPTIVE:OFF',
+      debounce: const Duration(milliseconds: 100),
+      failureMessage: 'Adaptive Mode command could not be sent.',
+    );
   }
 
   Future<void> _setRgb(bool enabled) async {
-    if (!connected || controlCommandBusy) return;
-    if (!_beginControlCommand('LED Power')) return;
-    try {
-      final ok = await _sendAndConfirm(
-        'RGB:' + (enabled ? 'ON' : 'OFF'),
-        () => rgbOn == enabled,
-      );
-      if (!ok && mounted) {
-        _showSnackBar('LED power change was not confirmed by the device.');
-      }
-    } finally {
-      _endControlCommand();
-    }
+    if (!connected) return;
+
+    if (mounted) setState(() => rgbOn = enabled);
+
+    _queueOptimisticCommand(
+      'RGB',
+      enabled ? 'RGB:ON' : 'RGB:OFF',
+      failureMessage: 'LED power command could not be sent.',
+    );
   }
 
   Future<void> _setMode(int mode) async {
-    if (!connected || controlCommandBusy) return;
-    if (!_beginControlCommand('LED Mode')) return;
-    try {
-      final next = mode.clamp(0, 7).toInt();
-      final ok = await _sendAndConfirm('MODE:$next', () => rgbMode == next);
-      if (!ok && mounted) {
-        _showSnackBar('LED mode change was not confirmed by the device.');
-      }
-    } finally {
-      _endControlCommand();
-    }
+    if (!connected) return;
+
+    final next = mode.clamp(0, 7).toInt();
+    if (mounted) setState(() => rgbMode = next);
+
+    _queueOptimisticCommand(
+      'MODE',
+      'MODE:$next',
+      failureMessage: 'LED mode command could not be sent.',
+    );
   }
 
   Future<void> _setBrightness(double value) async {
-    if (!connected || controlCommandBusy) return;
-    if (!_beginControlCommand('LED Brightness')) return;
-    try {
-      final next = value.round().clamp(0, 100).toInt();
-      final ok = await _sendAndConfirm('BRIGHTNESS:$next', () => brightness == next);
-      if (!ok && mounted) {
-        setState(() => brightnessDraft = brightness);
-        _showSnackBar('LED brightness change was not confirmed by the device.');
-      }
-    } finally {
-      _endControlCommand();
+    if (!connected) return;
+
+    final next = value.round().clamp(0, 100).toInt();
+    if (mounted) {
+      setState(() {
+        brightness = next;
+        brightnessDraft = next;
+      });
     }
+
+    _queueOptimisticCommand(
+      'BRIGHTNESS',
+      'BRIGHTNESS:$next',
+      debounce: const Duration(milliseconds: 120),
+      failureMessage: 'LED brightness command could not be sent.',
+    );
   }
 
   Future<void> _setFanSpeed(double value) async {
-    if (!connected || adaptiveOn || voltage != '12V' || controlCommandBusy) return;
-    if (!_beginControlCommand('Fan Speed')) return;
-    try {
-      final next = ((value / 10).round() * 10)
-          .clamp(fanSpeedMin, fanSpeedMax)
-          .toInt();
-      final ok = await _sendAndConfirm('FANSPEED:$next', () => fanSpeed == next);
-      if (!ok && mounted) {
-        setState(() => fanSpeedDraft = fanSpeed);
-        _showSnackBar('Fan speed change was not confirmed by the device.');
-      }
-    } finally {
-      _endControlCommand();
+    if (!connected || adaptiveOn || voltage != '12V') return;
+
+    final next = ((value / 10).round() * 10)
+        .clamp(fanSpeedMin, fanSpeedMax)
+        .toInt();
+    if (mounted) {
+      setState(() {
+        fanSpeed = next;
+        fanSpeedDraft = next;
+      });
     }
+
+    _queueOptimisticCommand(
+      'FANSPEED',
+      'FANSPEED:$next',
+      debounce: const Duration(milliseconds: 120),
+      failureMessage: 'Fan speed command could not be sent.',
+    );
   }
 
   Future<void> _setHotLimit(int value) async {
-    if (!connected || adaptiveOn || controlCommandBusy) return;
-    if (!_beginControlCommand('Hotside Limit')) return;
-    try {
-      final next = value.clamp(40, 50).toInt();
-      if (mounted) setState(() => hotLimitDraft = next);
-      final ok = await _sendAndConfirm('HOTLIMIT:$next', () => hotLimit == next);
-      if (!ok && mounted) setState(() => hotLimitDraft = hotLimit);
-    } finally {
-      _endControlCommand();
+    if (!connected || adaptiveOn) return;
+
+    final next = value.clamp(40, 50).toInt();
+    if (mounted) {
+      setState(() {
+        hotLimit = next;
+        hotLimitDraft = next;
+      });
     }
+
+    _queueOptimisticCommand(
+      'HOTLIMIT',
+      'HOTLIMIT:$next',
+      debounce: const Duration(milliseconds: 120),
+      failureMessage: 'Hotside limit command could not be sent.',
+    );
   }
 
   Future<void> _setBattery5(int value) async {
-    if (!connected || adaptiveOn || controlCommandBusy) return;
-    if (!_beginControlCommand('Battery 5V Ceiling')) return;
-    try {
-      final next = value.clamp(20, 48).toInt();
-      if (next >= battery12Limit - 1) return;
-      if (mounted) setState(() => battery5Draft = next);
-      final ok = await _sendAndConfirm('BATT5:$next', () => battery5Limit == next);
-      if (!ok && mounted) setState(() => battery5Draft = battery5Limit);
-    } finally {
-      _endControlCommand();
+    if (!connected || adaptiveOn) return;
+
+    final next = value.clamp(20, 48).toInt();
+    if (next >= battery12Limit - 1) return;
+
+    if (mounted) {
+      setState(() {
+        battery5Limit = next;
+        battery5Draft = next;
+      });
     }
+
+    _queueOptimisticCommand(
+      'BATT5',
+      'BATT5:$next',
+      debounce: const Duration(milliseconds: 120),
+      failureMessage: 'Battery 5V limit command could not be sent.',
+    );
   }
 
   Future<void> _setBattery12(int value) async {
-    if (!connected || adaptiveOn || controlCommandBusy) return;
-    if (!_beginControlCommand('Battery 12V Floor')) return;
-    try {
-      final next = value.clamp(22, 50).toInt();
-      if (next <= battery5Limit + 1) return;
-      if (mounted) setState(() => battery12Draft = next);
-      final ok = await _sendAndConfirm('BATT12:$next', () => battery12Limit == next);
-      if (!ok && mounted) setState(() => battery12Draft = battery12Limit);
-    } finally {
-      _endControlCommand();
+    if (!connected || adaptiveOn) return;
+
+    final next = value.clamp(22, 50).toInt();
+    if (next <= battery5Limit + 1) return;
+
+    if (mounted) {
+      setState(() {
+        battery12Limit = next;
+        battery12Draft = next;
+      });
     }
+
+    _queueOptimisticCommand(
+      'BATT12',
+      'BATT12:$next',
+      debounce: const Duration(milliseconds: 120),
+      failureMessage: 'Battery 12V limit command could not be sent.',
+    );
   }
 
   Future<void> _sendColor(String command, TextEditingController controller) async {
@@ -1477,41 +1499,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
       _showSnackBar('Enter a valid hex color in #RRGGBB format.');
       return;
     }
-    if (!connected || controlCommandBusy) return;
-    if (!_beginControlCommand('LED Color')) return;
-    try {
-      final ok = await _sendAndWaitAck(
-        command + ':' + value.substring(1),
-        showError: false,
-      );
-      if (!ok && mounted) {
-        _showSnackBar('Color change was not confirmed by the device.');
-      }
-    } finally {
-      _endControlCommand();
-    }
+    if (!connected) return;
+
+    _queueOptimisticCommand(
+      command,
+      '$command:${value.substring(1)}',
+      failureMessage: 'LED color command could not be sent.',
+    );
   }
 
   Future<void> _resetTemperatureSettings() async {
-    if (!connected || adaptiveOn || controlCommandBusy) return;
-    if (!_beginControlCommand('Reset Temperature')) return;
-    try {
-      final ok = await _sendAndWaitAck('RESET:TEMPERATURE', showError: false);
-      if (!ok && mounted) _showSnackBar('Temperature reset was not confirmed by the device.');
-    } finally {
-      _endControlCommand();
-    }
+    if (!connected || adaptiveOn) return;
+
+    _queueOptimisticCommand(
+      'RESET_TEMPERATURE',
+      'RESET:TEMPERATURE',
+      debounce: const Duration(milliseconds: 50),
+      failureMessage: 'Temperature reset command could not be sent.',
+    );
   }
 
   Future<void> _resetVoltageColors() async {
-    if (!connected || controlCommandBusy) return;
-    if (!_beginControlCommand('Reset Voltage Colors')) return;
-    try {
-      final ok = await _sendAndWaitAck('RESET:VOLTAGECOLORS', showError: false);
-      if (!ok && mounted) _showSnackBar('Voltage color reset was not confirmed by the device.');
-    } finally {
-      _endControlCommand();
-    }
+    if (!connected) return;
+
+    _queueOptimisticCommand(
+      'RESET_VOLTAGECOLORS',
+      'RESET:VOLTAGECOLORS',
+      debounce: const Duration(milliseconds: 50),
+      failureMessage: 'Voltage color reset command could not be sent.',
+    );
   }
 
   Future<bool> _requestFreshSync({Duration timeout = const Duration(seconds: 3)}) async {
@@ -1746,23 +1762,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final display = value == '--' ? '--' : '$value$unit';
 
     return SizedBox(
-      height: 39,
+      height: 37,
       child: Row(
         children: [
-          Container(
+          SizedBox(
             width: 34,
-            height: 34,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.09),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: color.withValues(alpha: 0.16),
-                width: 1,
-              ),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Icon(icon, size: 24, color: color),
             ),
-            child: Icon(icon, size: 20, color: color),
           ),
-          const SizedBox(width: 9),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -1774,9 +1783,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: Colors.white54,
-                    fontSize: 8.2,
-                    fontWeight: FontWeight.w800,
+                    fontSize: 8.4,
+                    fontWeight: FontWeight.w900,
                     letterSpacing: 0.55,
+                    height: 1.0,
                   ),
                 ),
                 const SizedBox(height: 1),
@@ -1786,13 +1796,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: color,
-                    fontSize: 16.5,
+                    fontSize: 16,
                     fontWeight: FontWeight.w900,
                     height: 0.95,
-                    letterSpacing: -0.3,
+                    letterSpacing: -0.25,
                   ),
                 ),
               ],
+            ),
+          ),
+          Container(
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: color.withValues(alpha: 0.90),
             ),
           ),
         ],
@@ -1806,77 +1824,49 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required IconData icon,
   }) {
     final active = connected && value;
+    final color = active ? Colors.cyanAccent : Colors.white54;
 
-    return Expanded(
-      child: Container(
-        height: 55,
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        decoration: BoxDecoration(
-          color: active
-              ? const Color(0x1454E3FF)
-              : const Color(0x0CFFFFFF),
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(
-            color: active
-                ? const Color(0x4A54E3FF)
-                : const Color(0x17FFFFFF),
+    return SizedBox(
+      height: 34,
+      child: Row(
+        children: [
+          SizedBox(
+            width: 34,
+            child: Icon(icon, size: 22, color: color),
           ),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 33,
-              height: 33,
-              decoration: BoxDecoration(
-                color: active
-                    ? const Color(0x1454E3FF)
-                    : const Color(0x08FFFFFF),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(
-                icon,
-                size: 19,
-                color: active ? Colors.cyanAccent : Colors.white54,
-              ),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    label,
-                    maxLines: 1,
-                    style: const TextStyle(
-                      color: Colors.white54,
-                      fontSize: 7.5,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.7,
-                    ),
+          Expanded(
+            child: Row(
+              children: [
+                Text(
+                  label,
+                  style: const TextStyle(
+                    color: Colors.white54,
+                    fontSize: 8.4,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.70,
                   ),
-                  const SizedBox(height: 1),
-                  Text(
-                    connected ? (value ? 'ON' : 'OFF') : '--',
-                    style: TextStyle(
-                      color: active ? Colors.cyanAccent : Colors.white60,
-                      fontSize: 11.5,
-                      fontWeight: FontWeight.w900,
-                    ),
+                ),
+                const SizedBox(width: 7),
+                Text(
+                  connected ? (value ? 'ON' : 'OFF') : '--',
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w900,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            Container(
-              width: 6,
-              height: 6,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: active ? Colors.cyanAccent : Colors.white24,
-              ),
+          ),
+          Container(
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: active ? Colors.cyanAccent : Colors.white24,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -1887,39 +1877,37 @@ class _DashboardScreenState extends State<DashboardScreen> {
         (fanSpeed.clamp(fanSpeedMin, fanSpeedMax) - fanSpeedMin) /
         (fanSpeedMax - fanSpeedMin);
 
-    return Container(
-      height: 56,
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-      decoration: BoxDecoration(
-        color: const Color(0x0EFFFFFF),
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: const Color(0x17FFFFFF)),
-      ),
+    return SizedBox(
+      height: 36,
       child: Row(
         children: [
-          const Icon(
-            PhosphorIconsBold.gauge,
-            size: 20,
-            color: Colors.white60,
+          const SizedBox(
+            width: 34,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Icon(
+                PhosphorIconsBold.gauge,
+                size: 23,
+                color: Colors.white60,
+              ),
+            ),
           ),
-          const SizedBox(width: 8),
           const Text(
             'FAN SPEED',
             style: TextStyle(
-              color: Colors.white60,
-              fontSize: 8,
+              color: Colors.white54,
+              fontSize: 8.4,
               fontWeight: FontWeight.w900,
               letterSpacing: 0.75,
             ),
           ),
-          const SizedBox(width: 11),
+          const SizedBox(width: 10),
           Expanded(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: LinearProgressIndicator(
                 value: progress.toDouble(),
-                minHeight: 6,
+                minHeight: 5,
                 backgroundColor: const Color(0x18FFFFFF),
                 valueColor: AlwaysStoppedAnimation<Color>(
                   enabled ? Colors.cyanAccent : Colors.white24,
@@ -1932,7 +1920,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             enabled ? '$fanSpeed%' : '--',
             style: TextStyle(
               color: enabled ? Colors.white : Colors.white38,
-              fontSize: 12,
+              fontSize: 12.5,
               fontWeight: FontWeight.w900,
             ),
           ),
@@ -1979,56 +1967,48 @@ class _DashboardScreenState extends State<DashboardScreen> {
         safetyReason != 'NONE' &&
         safetyReason != 'WAITING_FOR_NTC' &&
         safetyReason != 'WAITING_FOR_SENSOR_VALIDATION';
-
     final icon = alert
         ? PhosphorIconsBold.warning
         : PhosphorIconsBold.shieldCheck;
     final color = alert ? Colors.orangeAccent : Colors.greenAccent;
 
     return SizedBox(
-      height: 48,
+      height: 42,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 11),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.07),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: color.withValues(alpha: 0.40),
-            width: 1.3,
-          ),
+          color: color.withValues(alpha: alert ? 0.10 : 0.07),
+          borderRadius: BorderRadius.circular(13),
+          border: Border.all(color: color.withValues(alpha: 0.25)),
         ),
         child: Row(
           children: [
             Container(
-              width: 32,
-              height: 32,
+              width: 26,
+              height: 26,
               decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.10),
-                borderRadius: BorderRadius.circular(10),
+                color: color.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(icon, size: 18, color: color),
+              child: Icon(icon, size: 14, color: color),
             ),
-            const SizedBox(width: 9),
+            const SizedBox(width: 7),
             Text(
               alert ? 'ALERT' : 'STATUS',
               style: TextStyle(
                 color: color,
-                fontSize: 8.5,
+                fontSize: 6.8,
                 fontWeight: FontWeight.w900,
-                letterSpacing: 1.0,
+                letterSpacing: 0.95,
               ),
             ),
             const SizedBox(width: 7),
             const Text(
               '•',
-              style: TextStyle(
-                color: Colors.white24,
-                fontSize: 11,
-                fontWeight: FontWeight.w900,
-              ),
+              style: TextStyle(color: Colors.white24, fontSize: 10, fontWeight: FontWeight.w900),
             ),
-            const SizedBox(width: 7),
+            const SizedBox(width: 6),
             Expanded(
               child: Text(
                 _professionalNotice(),
@@ -2036,19 +2016,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 9.8,
+                  fontSize: 8.8,
                   fontWeight: FontWeight.w700,
                 ),
               ),
             ),
             const SizedBox(width: 7),
-            Text(
-              connected ? 'ONLINE' : 'OFFLINE',
-              style: TextStyle(
-                color: connected ? Colors.cyanAccent : Colors.white38,
-                fontSize: 7.2,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 0.8,
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+              decoration: BoxDecoration(
+                color: const Color(0x12FFFFFF),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                connected ? 'ONLINE' : 'OFFLINE',
+                style: TextStyle(
+                  color: connected ? Colors.cyanAccent : Colors.white38,
+                  fontSize: 6.5,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 0.8,
+                ),
               ),
             ),
           ],
@@ -2140,7 +2127,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _voltageRow(String target, String mode) {
     final active = voltage == target;
-    final disabled = !connected || adaptiveOn || voltageGuardActive || adaptiveTransitioning;
+    final disabled = !connected || adaptiveOn;
     return InkWell(
       borderRadius: BorderRadius.circular(15),
       onTap: disabled ? null : () => _requestVoltage(target),
@@ -2208,11 +2195,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ],
           ),
         ),
-        if (voltageGuardActive)
-          const Padding(
-            padding: EdgeInsets.only(left: 5, top: 2),
-            child: Text('Voltage guard active — awaiting device confirmation.', style: TextStyle(color: Colors.black45, fontSize: 10, fontWeight: FontWeight.w700)),
-          ),
         _card(
           child: Row(
             children: [
@@ -2232,7 +2214,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildControlTab({Key? key}) {
-    final speedEnabled = connected && !adaptiveOn && voltage == '12V' && !controlCommandBusy;
+    final speedEnabled = connected && !adaptiveOn && voltage == '12V';
     final fanLocked = connected && !adaptiveOn && peltierOn;
     return KeyedSubtree(key: key, child: _smoothList(
       storageKey: 'control',
@@ -2247,7 +2229,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 subtitle: fanLocked ? 'Fan is ON • locked while Peltier is ON' : (fanOn ? 'Fan is ON' : 'Fan is OFF'),
                 icon: PhosphorIconsBold.wind,
                 value: fanOn,
-                enabled: connected && !adaptiveOn && !peltierOn && !controlCommandBusy,
+                enabled: connected && !adaptiveOn && !peltierOn,
                 onChanged: _toggleFan,
               ),
               const Divider(height: 20),
@@ -2256,7 +2238,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 subtitle: peltierOn ? 'Peltier is ON • 5 s soft-start' : 'Peltier is OFF',
                 icon: PhosphorIconsBold.snowflake,
                 value: peltierOn,
-                enabled: connected && !adaptiveOn && !controlCommandBusy,
+                enabled: connected && !adaptiveOn,
                 onChanged: _togglePeltier,
               ),
               const Divider(height: 20),
@@ -2376,7 +2358,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Switch(
                 value: connected && adaptiveOn,
                 activeThumbColor: Colors.green,
-                onChanged: connected && !adaptiveTransitioning && !controlCommandBusy ? _toggleAdaptive : null,
+                onChanged: connected ? _toggleAdaptive : null,
               ),
             ],
           ),
@@ -2529,8 +2511,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       value: brightness.clamp(0, 100).toDouble(),
                       activeColor: Colors.black,
                       inactiveColor: Colors.black12,
-                      onChanged: connected && !controlCommandBusy ? (v) => setState(() => brightness = v.round()) : null,
-                      onChangeEnd: connected && !controlCommandBusy ? _setBrightness : null,
+                      onChanged: connected ? (v) => setState(() => brightness = v.round()) : null,
+                      onChangeEnd: connected ? _setBrightness : null,
                     ),
                   ),
                   SizedBox(width: 42, child: Text('$brightness%', textAlign: TextAlign.right, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900))),
@@ -2709,15 +2691,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return SizedBox(
       height: height,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(14, 7, 14, 8),
+        padding: const EdgeInsets.fromLTRB(14, 5, 14, 7),
         child: Column(
           children: [
             SizedBox(
-              height: 45,
+              height: 46,
               child: Row(
                 children: [
                   SizedBox(
-                    width: 44,
+                    width: 46,
                     child: IconButton(
                       padding: EdgeInsets.zero,
                       tooltip: connected ? 'Disconnect' : 'Bluetooth',
@@ -2741,19 +2723,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w900,
-                            fontSize: 21,
+                            fontSize: 22,
                             height: 1.0,
-                            letterSpacing: 0.1,
                           ),
                         ),
-                        SizedBox(height: 4),
+                        SizedBox(height: 3),
                         Text(
                           'DEVELOPED BY HORIZON',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white38,
                             fontWeight: FontWeight.w800,
-                            fontSize: 7.6,
+                            fontSize: 7.2,
                             letterSpacing: 1.35,
                           ),
                         ),
@@ -2761,14 +2742,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                   ),
                   SizedBox(
-                    width: 44,
+                    width: 46,
                     child: IconButton(
                       padding: EdgeInsets.zero,
                       tooltip: 'Firmware',
                       icon: const Icon(
                         PhosphorIconsBold.gear,
                         color: Colors.white,
-                        size: 27,
+                        size: 28,
                       ),
                       onPressed: _openFirmwareSettings,
                     ),
@@ -2776,94 +2757,69 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 7),
+            const SizedBox(height: 2),
             Expanded(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
                     flex: 11,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 6),
-                      child: Column(
-                        children: [
-                          _homeMetric(
-                            'BATTERY TEMPERATURE',
-                            batteryValue,
-                            batteryValue == '--' ? '' : '°C',
-                            color: Colors.orangeAccent,
-                            icon: PhosphorIconsBold.batteryHigh,
-                          ),
-                          _homeMetric(
-                            'HOTSIDE TEMPERATURE',
-                            hotValue,
-                            hotValue == '--' ? '' : '°C',
-                            color: safety == 'FAULT'
-                                ? Colors.redAccent
-                                : Colors.cyanAccent,
-                            icon: PhosphorIconsBold.thermometer,
-                          ),
-                          _homeMetric(
-                            'VOLTAGE INDICATOR',
-                            voltageValue,
-                            '',
-                            color: Colors.blueAccent,
-                            icon: PhosphorIconsBold.lightning,
-                          ),
-                          _homeMetric(
-                            'ADAPTIVE MODE',
-                            adaptiveValue,
-                            '',
-                            color: adaptiveOn
-                                ? Colors.greenAccent
-                                : Colors.white,
-                            icon: PhosphorIconsBold.sparkle,
-                          ),
-                          const SizedBox(height: 3),
-                          Row(
-                            children: [
-                              _homeStateChip(
-                                label: 'PELTIER',
-                                value: peltierOn,
-                                icon: PhosphorIconsBold.snowflake,
-                              ),
-                              const SizedBox(width: 7),
-                              _homeStateChip(
-                                label: 'FAN',
-                                value: fanOn,
-                                icon: PhosphorIconsBold.wind,
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 7),
-                          _homeFanSpeed(),
-                        ],
-                      ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        _homeMetric(
+                          'BATTERY TEMPERATURE',
+                          batteryValue,
+                          batteryValue == '--' ? '' : '°C',
+                          color: Colors.orangeAccent,
+                          icon: PhosphorIconsBold.batteryHigh,
+                        ),
+                        _homeMetric(
+                          'HOTSIDE TEMPERATURE',
+                          hotValue,
+                          hotValue == '--' ? '' : '°C',
+                          color: safety == 'FAULT'
+                              ? Colors.redAccent
+                              : Colors.cyanAccent,
+                          icon: PhosphorIconsBold.thermometer,
+                        ),
+                        _homeMetric(
+                          'VOLTAGE INDICATOR',
+                          voltageValue,
+                          '',
+                          color: Colors.blueAccent,
+                          icon: PhosphorIconsBold.lightning,
+                        ),
+                        _homeMetric(
+                          'ADAPTIVE MODE',
+                          adaptiveValue,
+                          '',
+                          color: adaptiveOn
+                              ? Colors.greenAccent
+                              : Colors.white,
+                          icon: PhosphorIconsBold.sparkle,
+                        ),
+                        _homeStateChip(
+                          label: 'PELTIER',
+                          value: peltierOn,
+                          icon: PhosphorIconsBold.snowflake,
+                        ),
+                        _homeStateChip(
+                          label: 'FAN',
+                          value: fanOn,
+                          icon: PhosphorIconsBold.wind,
+                        ),
+                        _homeFanSpeed(),
+                      ],
                     ),
                   ),
                   Expanded(
-                    flex: 10,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 3,
-                        right: 2,
-                        top: 1,
-                        bottom: 1,
-                      ),
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(24),
-                          gradient: const LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Color(0x05000000),
-                              Color(0x0AFFFFFF),
-                            ],
-                          ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(3),
+                    flex: 12,
+                    child: ClipRect(
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Transform.scale(
+                          scale: 1.12,
                           child: Image.asset(
                             'assets/jexfyzcooler.png',
                             width: double.infinity,
@@ -2877,7 +2833,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 7),
+            const SizedBox(height: 4),
             _homeNotify(),
           ],
         ),
@@ -2926,7 +2882,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
     final homeHeight =
-        (media.size.height * 0.54).clamp(410.0, 610.0).toDouble();
+        (media.size.height * 0.48).clamp(370.0, 520.0).toDouble();
 
     if (syncing && !dashboardReady) {
       return _buildSyncGate();
@@ -2945,7 +2901,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(30),
+                    top: Radius.circular(34),
                   ),
                 ),
                 child: Column(
