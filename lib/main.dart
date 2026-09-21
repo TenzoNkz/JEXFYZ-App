@@ -947,28 +947,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return predicate();
   }
 
-  bool _requiresResponse(String command) {
-    final c = command.trim().toUpperCase();
-    return c == 'SYNC' ||
-        c == 'SYNC_READY' ||
-        c == 'CLOUDOTA' ||
-        c == 'OTAENTER' ||
-        c.startsWith('VOLTAGE:') ||
-        c.startsWith('SSID:') ||
-        c.startsWith('PASS:') ||
-        c.startsWith('URL:') ||
-        c.startsWith('VERSION:') ||
-        c.startsWith('FAN:') ||
-        c.startsWith('PELTIER:') ||
-        c.startsWith('ADAPTIVE:') ||
-        c.startsWith('FANSPEED:') ||
-        c.startsWith('HOTLIMIT:') ||
-        c.startsWith('BATT5:') ||
-        c.startsWith('BATT12:') ||
-        c.startsWith('RESET:') ||
-        c.startsWith('PHONE:BT=');
-  }
-
   void _parseIncoming(String incoming) {
     incomingBuffer += incoming;
     if (incomingBuffer.length > 16000) {
