@@ -1758,8 +1758,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final display = value == '--' ? '--' : value + unit;
     return Expanded(
       child: Container(
-        constraints: const BoxConstraints(minHeight: 76),
-        padding: const EdgeInsets.fromLTRB(10, 8, 10, 7),
+        constraints: const BoxConstraints(minHeight: 48),
+        padding: const EdgeInsets.fromLTRB(8, 6, 8, 6),
         decoration: BoxDecoration(
           color: const Color(0x0EFFFFFF),
           borderRadius: BorderRadius.circular(15),
@@ -1769,14 +1769,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 30,
-              height: 30,
+              width: 26,
+              height: 26,
               decoration: BoxDecoration(
                 color: color.withValues(alpha: 0.10),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(9),
                 border: Border.all(color: color.withValues(alpha: 0.22)),
               ),
-              child: Icon(icon, size: 17, color: color),
+              child: Icon(icon, size: 15, color: color),
             ),
             const Spacer(),
             Text(
@@ -1785,7 +1785,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 color: Colors.white54,
-                fontSize: 7.3,
+                fontSize: 6.9,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 0.55,
               ),
@@ -1797,7 +1797,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 color: color,
-                fontSize: 17,
+                fontSize: 15.5,
                 fontWeight: FontWeight.w900,
                 height: 0.95,
                 letterSpacing: -0.4,
@@ -1817,8 +1817,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final active = value;
     return Expanded(
       child: Container(
-        constraints: const BoxConstraints(minHeight: 54),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+        constraints: const BoxConstraints(minHeight: 40),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
         decoration: BoxDecoration(
           color: active ? const Color(0x1A54E3FF) : const Color(0x0BFFFFFF),
           borderRadius: BorderRadius.circular(14),
@@ -1829,15 +1829,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Row(
           children: [
             Container(
-              width: 30,
-              height: 30,
+              width: 26,
+              height: 26,
               decoration: BoxDecoration(
                 color: active ? const Color(0x1454E3FF) : const Color(0x0AFFFFFF),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(9),
               ),
               child: Icon(
                 icon,
-                size: 17,
+                size: 15,
                 color: active ? Colors.cyanAccent : Colors.white38,
               ),
             ),
@@ -1851,7 +1851,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     label,
                     style: const TextStyle(
                       color: Colors.white54,
-                      fontSize: 7.4,
+                      fontSize: 7.0,
                       fontWeight: FontWeight.w900,
                       letterSpacing: 0.8,
                     ),
@@ -1861,7 +1861,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     active ? 'ON' : 'OFF',
                     style: TextStyle(
                       color: active ? Colors.cyanAccent : Colors.white60,
-                      fontSize: 12,
+                      fontSize: 11.5,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
@@ -1888,7 +1888,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         (fanSpeedMax - fanSpeedMin);
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+      padding: const EdgeInsets.fromLTRB(9, 6, 9, 6),
       decoration: BoxDecoration(
         color: const Color(0x0EFFFFFF),
         borderRadius: BorderRadius.circular(14),
@@ -1898,13 +1898,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
         children: [
           Row(
             children: [
-              const Icon(PhosphorIconsBold.gauge, size: 15, color: Colors.white54),
+              const Icon(PhosphorIconsBold.gauge, size: 14, color: Colors.white54),
               const SizedBox(width: 7),
               const Text(
                 'FAN SPEED',
                 style: TextStyle(
                   color: Colors.white54,
-                  fontSize: 7.6,
+                  fontSize: 7.2,
                   fontWeight: FontWeight.w900,
                   letterSpacing: 0.75,
                 ),
@@ -1914,32 +1914,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 '$fanSpeed%',
                 style: TextStyle(
                   color: enabled ? Colors.white : Colors.white38,
-                  fontSize: 13,
+                  fontSize: 12,
                   fontWeight: FontWeight.w900,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4),
           ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: LinearProgressIndicator(
               value: progress.toDouble(),
-              minHeight: 5,
+              minHeight: 4,
               backgroundColor: const Color(0x15FFFFFF),
               valueColor: AlwaysStoppedAnimation<Color>(
                 enabled ? Colors.cyanAccent : Colors.white24,
               ),
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 3),
           Align(
             alignment: Alignment.centerRight,
             child: Text(
               enabled ? 'MANUAL 12V' : 'NOT AVAILABLE',
               style: const TextStyle(
                 color: Colors.white30,
-                fontSize: 6.7,
+                fontSize: 6.3,
                 fontWeight: FontWeight.w800,
                 letterSpacing: 0.65,
               ),
@@ -1994,8 +1994,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final color = alert ? Colors.orangeAccent : Colors.greenAccent;
     return Container(
       width: double.infinity,
-      constraints: const BoxConstraints(minHeight: 66),
-      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+      constraints: const BoxConstraints(minHeight: 52),
+      padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
       decoration: BoxDecoration(
         color: color.withValues(alpha: alert ? 0.10 : 0.07),
         borderRadius: BorderRadius.circular(15),
@@ -2005,13 +2005,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 32,
-            height: 32,
+            width: 28,
+            height: 28,
             decoration: BoxDecoration(
               color: color.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(9),
             ),
-            child: Icon(icon, size: 17, color: color),
+            child: Icon(icon, size: 15, color: color),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -2022,7 +2022,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   alert ? 'SYSTEM ALERT' : 'SYSTEM STATUS',
                   style: TextStyle(
                     color: color,
-                    fontSize: 7.5,
+                    fontSize: 7.2,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 1.0,
                   ),
@@ -2034,7 +2034,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 10,
+                    fontSize: 9.2,
                     height: 1.2,
                     fontWeight: FontWeight.w700,
                   ),
