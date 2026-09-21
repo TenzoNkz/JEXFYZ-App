@@ -276,7 +276,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   bool peltierCommandBusy = false;
   bool adaptiveCommandBusy = false;
   bool controlCommandBusy = false;
-  String controlCommandName = '';
   bool dashboardReady = false;
   final Map<String, List<Completer<String>>> _ackWaiters = {};
   final Map<String, String> _syncSnapshot = {};
@@ -525,7 +524,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         connected = false;
         dashboardReady = false;
         controlCommandBusy = false;
-        controlCommandName = '';
         voltage = '--';
         hotsideTemp = '--';
         phoneBatteryTemp = '--';
@@ -617,7 +615,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       syncing = false;
       dashboardReady = false;
       controlCommandBusy = false;
-      controlCommandName = '';
       voltage = '--';
       hotsideTemp = '--';
       phoneBatteryTemp = '--';
@@ -1218,7 +1215,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (mounted) {
       setState(() {
         controlCommandBusy = true;
-        controlCommandName = name;
       });
     }
     return true;
@@ -1228,7 +1224,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (!mounted) return;
     setState(() {
       controlCommandBusy = false;
-      controlCommandName = '';
     });
   }
 
@@ -1748,82 +1743,59 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required Color color,
     required IconData icon,
   }) {
-    final display = value == '--' ? '--' : value + unit;
+    final display = value == '--' ? '--' : '$value$unit';
 
-    return Expanded(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final compact = constraints.maxHeight < 37;
-          return Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(
-              horizontal: compact ? 6 : 8,
-              vertical: compact ? 2 : 4,
-            ),
+    return SizedBox(
+      height: 39,
+      child: Row(
+        children: [
+          Container(
+            width: 34,
+            height: 34,
             decoration: BoxDecoration(
-              color: const Color(0x0EFFFFFF),
-              borderRadius: BorderRadius.circular(compact ? 11 : 13),
-              border: Border.all(color: const Color(0x14FFFFFF)),
+              color: color.withValues(alpha: 0.09),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: color.withValues(alpha: 0.16),
+                width: 1,
+              ),
             ),
-            child: Row(
+            child: Icon(icon, size: 20, color: color),
+          ),
+          const SizedBox(width: 9),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: compact ? 22 : 27,
-                  height: compact ? 22 : 27,
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.10),
-                    borderRadius: BorderRadius.circular(compact ? 7 : 8),
-                    border: Border.all(color: color.withValues(alpha: 0.22)),
-                  ),
-                  child: Icon(icon, size: compact ? 12 : 15, color: color),
-                ),
-                SizedBox(width: compact ? 6 : 8),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        label,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: Colors.white54,
-                          fontSize: compact ? 6.0 : 6.7,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: compact ? 0.45 : 0.55,
-                          height: 1.0,
-                        ),
-                      ),
-                      SizedBox(height: compact ? 0 : 1),
-                      Text(
-                        display,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: color,
-                          fontSize: compact ? 13.0 : 15.0,
-                          fontWeight: FontWeight.w900,
-                          height: 0.95,
-                          letterSpacing: -0.35,
-                        ),
-                      ),
-                    ],
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Colors.white54,
+                    fontSize: 8.2,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.55,
                   ),
                 ),
-                const SizedBox(width: 4),
-                Container(
-                  width: 5,
-                  height: 5,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: color.withValues(alpha: 0.85),
+                const SizedBox(height: 1),
+                Text(
+                  display,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 16.5,
+                    fontWeight: FontWeight.w900,
+                    height: 0.95,
+                    letterSpacing: -0.3,
                   ),
                 ),
               ],
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }
@@ -1833,205 +1805,138 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required bool value,
     required IconData icon,
   }) {
-    final active = value;
+    final active = connected && value;
+
     return Expanded(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final compact = constraints.maxHeight < 36;
-          return Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(
-              horizontal: compact ? 6 : 8,
-              vertical: compact ? 2 : 4,
-            ),
-            decoration: BoxDecoration(
-              color: active ? const Color(0x1A54E3FF) : const Color(0x0BFFFFFF),
-              borderRadius: BorderRadius.circular(compact ? 11 : 13),
-              border: Border.all(
-                color: active ? const Color(0x6654E3FF) : const Color(0x14FFFFFF),
+      child: Container(
+        height: 55,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+          color: active
+              ? const Color(0x1454E3FF)
+              : const Color(0x0CFFFFFF),
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(
+            color: active
+                ? const Color(0x4A54E3FF)
+                : const Color(0x17FFFFFF),
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 33,
+              height: 33,
+              decoration: BoxDecoration(
+                color: active
+                    ? const Color(0x1454E3FF)
+                    : const Color(0x08FFFFFF),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(
+                icon,
+                size: 19,
+                color: active ? Colors.cyanAccent : Colors.white54,
               ),
             ),
-            child: Row(
-              children: [
-                Container(
-                  width: compact ? 21 : 25,
-                  height: compact ? 21 : 25,
-                  decoration: BoxDecoration(
-                    color: active ? const Color(0x1454E3FF) : const Color(0x0AFFFFFF),
-                    borderRadius: BorderRadius.circular(compact ? 7 : 8),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    maxLines: 1,
+                    style: const TextStyle(
+                      color: Colors.white54,
+                      fontSize: 7.5,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.7,
+                    ),
                   ),
-                  child: Icon(
-                    icon,
-                    size: compact ? 12 : 14,
-                    color: active ? Colors.cyanAccent : Colors.white38,
+                  const SizedBox(height: 1),
+                  Text(
+                    connected ? (value ? 'ON' : 'OFF') : '--',
+                    style: TextStyle(
+                      color: active ? Colors.cyanAccent : Colors.white60,
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
-                ),
-                SizedBox(width: compact ? 6 : 7),
-                Expanded(
-                  child: Row(
-                    children: [
-                      Text(
-                        label,
-                        style: TextStyle(
-                          color: Colors.white54,
-                          fontSize: compact ? 6.1 : 6.8,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.75,
-                        ),
-                      ),
-                      const SizedBox(width: 5),
-                      Text(
-                        active ? 'ON' : 'OFF',
-                        style: TextStyle(
-                          color: active ? Colors.cyanAccent : Colors.white60,
-                          fontSize: compact ? 9.8 : 11.0,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  width: 6,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: active ? Colors.cyanAccent : Colors.white24,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          );
-        },
+            Container(
+              width: 6,
+              height: 6,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: active ? Colors.cyanAccent : Colors.white24,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _homeFanSpeed() {
     final enabled = connected && voltage == '12V' && !adaptiveOn;
-    final progress = (fanSpeed.clamp(fanSpeedMin, fanSpeedMax) - fanSpeedMin) /
+    final progress =
+        (fanSpeed.clamp(fanSpeedMin, fanSpeedMax) - fanSpeedMin) /
         (fanSpeedMax - fanSpeedMin);
 
-    return Expanded(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final compact = constraints.maxHeight < 42;
-          return Container(
-            width: double.infinity,
-            padding: EdgeInsets.fromLTRB(
-              compact ? 7 : 9,
-              compact ? 3 : 5,
-              compact ? 7 : 9,
-              compact ? 3 : 5,
+    return Container(
+      height: 56,
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+      decoration: BoxDecoration(
+        color: const Color(0x0EFFFFFF),
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: const Color(0x17FFFFFF)),
+      ),
+      child: Row(
+        children: [
+          const Icon(
+            PhosphorIconsBold.gauge,
+            size: 20,
+            color: Colors.white60,
+          ),
+          const SizedBox(width: 8),
+          const Text(
+            'FAN SPEED',
+            style: TextStyle(
+              color: Colors.white60,
+              fontSize: 8,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0.75,
             ),
-            decoration: BoxDecoration(
-              color: const Color(0x0EFFFFFF),
-              borderRadius: BorderRadius.circular(compact ? 11 : 13),
-              border: Border.all(color: const Color(0x14FFFFFF)),
+          ),
+          const SizedBox(width: 11),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: LinearProgressIndicator(
+                value: progress.toDouble(),
+                minHeight: 6,
+                backgroundColor: const Color(0x18FFFFFF),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  enabled ? Colors.cyanAccent : Colors.white24,
+                ),
+              ),
             ),
-            child: compact
-                ? Row(
-                    children: [
-                      const Icon(
-                        PhosphorIconsBold.gauge,
-                        size: 14,
-                        color: Colors.white54,
-                      ),
-                      const SizedBox(width: 6),
-                      const Text(
-                        'FAN SPEED',
-                        style: TextStyle(
-                          color: Colors.white54,
-                          fontSize: 6.5,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.7,
-                        ),
-                      ),
-                      const SizedBox(width: 7),
-                      Expanded(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: LinearProgressIndicator(
-                            value: progress.toDouble(),
-                            minHeight: 3,
-                            backgroundColor: const Color(0x15FFFFFF),
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              enabled ? Colors.cyanAccent : Colors.white24,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 7),
-                      Text(
-                        '$fanSpeed%',
-                        style: TextStyle(
-                          color: enabled ? Colors.white : Colors.white38,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                    ],
-                  )
-                : Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(
-                            PhosphorIconsBold.gauge,
-                            size: 14,
-                            color: Colors.white54,
-                          ),
-                          const SizedBox(width: 7),
-                          const Text(
-                            'FAN SPEED',
-                            style: TextStyle(
-                              color: Colors.white54,
-                              fontSize: 7.0,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 0.75,
-                            ),
-                          ),
-                          const Spacer(),
-                          Text(
-                            '$fanSpeed%',
-                            style: TextStyle(
-                              color: enabled ? Colors.white : Colors.white38,
-                              fontSize: 11.5,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: LinearProgressIndicator(
-                          value: progress.toDouble(),
-                          minHeight: 4,
-                          backgroundColor: const Color(0x15FFFFFF),
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            enabled ? Colors.cyanAccent : Colors.white24,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          enabled ? 'MANUAL 12V' : 'NOT AVAILABLE',
-                          style: const TextStyle(
-                            color: Colors.white30,
-                            fontSize: 5.9,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 0.6,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-          );
-        },
+          ),
+          const SizedBox(width: 10),
+          Text(
+            enabled ? '$fanSpeed%' : '--',
+            style: TextStyle(
+              color: enabled ? Colors.white : Colors.white38,
+              fontSize: 12,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -2074,48 +1979,56 @@ class _DashboardScreenState extends State<DashboardScreen> {
         safetyReason != 'NONE' &&
         safetyReason != 'WAITING_FOR_NTC' &&
         safetyReason != 'WAITING_FOR_SENSOR_VALIDATION';
+
     final icon = alert
         ? PhosphorIconsBold.warning
         : PhosphorIconsBold.shieldCheck;
     final color = alert ? Colors.orangeAccent : Colors.greenAccent;
 
     return SizedBox(
-      height: 42,
+      height: 48,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 11),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: alert ? 0.10 : 0.07),
-          borderRadius: BorderRadius.circular(13),
-          border: Border.all(color: color.withValues(alpha: 0.25)),
+          color: color.withValues(alpha: 0.07),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: color.withValues(alpha: 0.40),
+            width: 1.3,
+          ),
         ),
         child: Row(
           children: [
             Container(
-              width: 26,
-              height: 26,
+              width: 32,
+              height: 32,
               decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(8),
+                color: color.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(icon, size: 14, color: color),
+              child: Icon(icon, size: 18, color: color),
             ),
-            const SizedBox(width: 7),
+            const SizedBox(width: 9),
             Text(
               alert ? 'ALERT' : 'STATUS',
               style: TextStyle(
                 color: color,
-                fontSize: 6.8,
+                fontSize: 8.5,
                 fontWeight: FontWeight.w900,
-                letterSpacing: 0.95,
+                letterSpacing: 1.0,
               ),
             ),
             const SizedBox(width: 7),
             const Text(
               '•',
-              style: TextStyle(color: Colors.white24, fontSize: 10, fontWeight: FontWeight.w900),
+              style: TextStyle(
+                color: Colors.white24,
+                fontSize: 11,
+                fontWeight: FontWeight.w900,
+              ),
             ),
-            const SizedBox(width: 6),
+            const SizedBox(width: 7),
             Expanded(
               child: Text(
                 _professionalNotice(),
@@ -2123,26 +2036,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 8.8,
+                  fontSize: 9.8,
                   fontWeight: FontWeight.w700,
                 ),
               ),
             ),
             const SizedBox(width: 7),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
-              decoration: BoxDecoration(
-                color: const Color(0x12FFFFFF),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                connected ? 'ONLINE' : 'OFFLINE',
-                style: TextStyle(
-                  color: connected ? Colors.cyanAccent : Colors.white38,
-                  fontSize: 6.5,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 0.8,
-                ),
+            Text(
+              connected ? 'ONLINE' : 'OFFLINE',
+              style: TextStyle(
+                color: connected ? Colors.cyanAccent : Colors.white38,
+                fontSize: 7.2,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 0.8,
               ),
             ),
           ],
@@ -2789,48 +2695,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       _ => const SizedBox.shrink(),
     };
 
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        content,
-        if (controlCommandBusy) ...[
-          const Positioned.fill(
-            child: AbsorbPointer(
-              absorbing: true,
-              child: ColoredBox(color: Colors.transparent),
-            ),
-          ),
-          Positioned(
-            top: 2,
-            left: 10,
-            right: 10,
-            child: IgnorePointer(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 7,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF17181C),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  'PROCESSING: ' +
-                      controlCommandName +
-                      ' • awaiting device confirmation...',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ],
-    );
+    // Keep the existing ACK + fresh-SYNC synchronization pipeline,
+    // but remove the blocking PROCESSING overlay from the UI.
+    return content;
   }
 
   Widget _buildHomeArea(double height) {
@@ -2842,15 +2709,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return SizedBox(
       height: height,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 7, 12, 8),
+        padding: const EdgeInsets.fromLTRB(14, 7, 14, 8),
         child: Column(
           children: [
             SizedBox(
-              height: 39,
+              height: 45,
               child: Row(
                 children: [
                   SizedBox(
-                    width: 40,
+                    width: 44,
                     child: IconButton(
                       padding: EdgeInsets.zero,
                       tooltip: connected ? 'Disconnect' : 'Bluetooth',
@@ -2858,15 +2725,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         connected
                             ? PhosphorIconsBold.bluetoothConnected
                             : PhosphorIconsBold.bluetooth,
-                        color: connected ? Colors.blueAccent : Colors.white,
-                        size: 24,
+                        color: Colors.white,
+                        size: 29,
                       ),
                       onPressed: connected ? _disconnect : _showBluetoothMenu,
                     ),
                   ),
                   Expanded(
                     child: Column(
-                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: const [
                         Text(
                           headerName,
@@ -2874,33 +2741,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w900,
-                            fontSize: 19,
-                            letterSpacing: 0.2,
+                            fontSize: 21,
+                            height: 1.0,
+                            letterSpacing: 0.1,
                           ),
                         ),
-                        SizedBox(height: 1),
+                        SizedBox(height: 4),
                         Text(
                           'DEVELOPED BY HORIZON',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Colors.white30,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 6.8,
-                            letterSpacing: 1.25,
+                            color: Colors.white38,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 7.6,
+                            letterSpacing: 1.35,
                           ),
                         ),
                       ],
                     ),
                   ),
                   SizedBox(
-                    width: 40,
+                    width: 44,
                     child: IconButton(
                       padding: EdgeInsets.zero,
                       tooltip: 'Firmware',
                       icon: const Icon(
                         PhosphorIconsBold.gear,
                         color: Colors.white,
-                        size: 21,
+                        size: 27,
                       ),
                       onPressed: _openFirmwareSettings,
                     ),
@@ -2908,15 +2776,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 7),
             Expanded(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
-                    flex: 5,
+                    flex: 11,
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 1, right: 6),
+                      padding: const EdgeInsets.only(right: 6),
                       child: Column(
                         children: [
                           _homeMetric(
@@ -2926,7 +2794,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             color: Colors.orangeAccent,
                             icon: PhosphorIconsBold.batteryHigh,
                           ),
-                          const SizedBox(height: 4),
                           _homeMetric(
                             'HOTSIDE TEMPERATURE',
                             hotValue,
@@ -2936,7 +2803,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 : Colors.cyanAccent,
                             icon: PhosphorIconsBold.thermometer,
                           ),
-                          const SizedBox(height: 4),
                           _homeMetric(
                             'VOLTAGE INDICATOR',
                             voltageValue,
@@ -2944,54 +2810,74 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             color: Colors.blueAccent,
                             icon: PhosphorIconsBold.lightning,
                           ),
-                          const SizedBox(height: 4),
                           _homeMetric(
                             'ADAPTIVE MODE',
                             adaptiveValue,
                             '',
-                            color: adaptiveOn ? Colors.greenAccent : Colors.white70,
+                            color: adaptiveOn
+                                ? Colors.greenAccent
+                                : Colors.white,
                             icon: PhosphorIconsBold.sparkle,
                           ),
-                          const SizedBox(height: 4),
-                          _homeStateChip(
-                            label: 'PELTIER',
-                            value: peltierOn,
-                            icon: PhosphorIconsBold.snowflake,
+                          const SizedBox(height: 3),
+                          Row(
+                            children: [
+                              _homeStateChip(
+                                label: 'PELTIER',
+                                value: peltierOn,
+                                icon: PhosphorIconsBold.snowflake,
+                              ),
+                              const SizedBox(width: 7),
+                              _homeStateChip(
+                                label: 'FAN',
+                                value: fanOn,
+                                icon: PhosphorIconsBold.wind,
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 4),
-                          _homeStateChip(
-                            label: 'FAN',
-                            value: fanOn,
-                            icon: PhosphorIconsBold.wind,
-                          ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 7),
                           _homeFanSpeed(),
                         ],
                       ),
                     ),
                   ),
                   Expanded(
-                    flex: 6,
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        final width = constraints.maxWidth;
-                        final height = constraints.maxHeight;
-                        return Align(
-                          alignment: Alignment.center,
+                    flex: 10,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        left: 3,
+                        right: 2,
+                        top: 1,
+                        bottom: 1,
+                      ),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(24),
+                          gradient: const LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Color(0x05000000),
+                              Color(0x0AFFFFFF),
+                            ],
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(3),
                           child: Image.asset(
                             'assets/jexfyzcooler.png',
-                            width: width,
-                            height: height,
+                            width: double.infinity,
+                            height: double.infinity,
                             fit: BoxFit.contain,
                           ),
-                        );
-                      },
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 7),
             _homeNotify(),
           ],
         ),
@@ -3040,7 +2926,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
     final homeHeight =
-        (media.size.height * 0.48).clamp(370.0, 520.0).toDouble();
+        (media.size.height * 0.54).clamp(410.0, 610.0).toDouble();
 
     if (syncing && !dashboardReady) {
       return _buildSyncGate();
@@ -3059,7 +2945,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(34),
+                    top: Radius.circular(30),
                   ),
                 ),
                 child: Column(
