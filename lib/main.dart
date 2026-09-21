@@ -1988,19 +1988,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             width: 37,
             height: 37,
             child: Center(
-              child: Container(
-                width: 34,
-                height: 34,
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.13),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: color.withValues(alpha: 0.34),
-                    width: 1.1,
-                  ),
-                ),
-                child: Icon(icon, size: 19, color: color),
-              ),
+              child: Icon(icon, size: 22, color: color),
             ),
           ),
           const SizedBox(width: 6),
@@ -2718,18 +2706,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Row(
                 children: [
                   SizedBox(
-                    width: 44,
-                    child: IconButton(
-                      padding: EdgeInsets.zero,
-                      tooltip: connected ? 'Disconnect' : 'Bluetooth',
-                      icon: Icon(
-                        connected
-                            ? PhosphorIconsBold.bluetoothConnected
-                            : PhosphorIconsBold.bluetooth,
-                        color: connected ? Colors.blueAccent : Colors.white,
-                        size: 27,
+                    width: 40,
+                    child: Center(
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints.tightFor(width: 36, height: 36),
+                        tooltip: connected ? 'Disconnect' : 'Bluetooth',
+                        icon: Icon(
+                          connected
+                              ? PhosphorIconsBold.bluetoothConnected
+                              : PhosphorIconsBold.bluetooth,
+                          color: connected ? Colors.blueAccent : Colors.white,
+                          size: 24,
+                        ),
+                        onPressed: connected ? _disconnect : _showBluetoothMenu,
                       ),
-                      onPressed: connected ? _disconnect : _showBluetoothMenu,
                     ),
                   ),
                   Expanded(
@@ -2761,16 +2752,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                   ),
                   SizedBox(
-                    width: 44,
-                    child: IconButton(
-                      padding: EdgeInsets.zero,
-                      tooltip: 'Firmware',
-                      icon: const Icon(
-                        PhosphorIconsBold.gear,
-                        color: Colors.white,
-                        size: 28,
+                    width: 40,
+                    child: Center(
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints.tightFor(width: 36, height: 36),
+                        tooltip: 'Firmware',
+                        icon: const Icon(
+                          PhosphorIconsBold.gear,
+                          color: Colors.white,
+                          size: 25,
+                        ),
+                        onPressed: _openFirmwareSettings,
                       ),
-                      onPressed: _openFirmwareSettings,
                     ),
                   ),
                 ],
@@ -2849,7 +2843,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       child: LayoutBuilder(
                         builder: (context, constraints) {
                           final imageHeight =
-                              (constraints.maxHeight * 0.88).clamp(190.0, 320.0).toDouble();
+                              (constraints.maxHeight * 0.96).clamp(210.0, 360.0).toDouble();
                           return Padding(
                             padding: const EdgeInsets.only(left: 2, right: 0),
                             child: Image.asset(
