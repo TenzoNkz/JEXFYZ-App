@@ -4,10 +4,7 @@ import 'package:jexfyz_cooler/main.dart';
 
 void main() {
   testWidgets('JE Cooler dashboard renders', (tester) async {
-    // The production Home canvas is intentionally tall on a portrait phone.
-    // Flutter's default test viewport is 800x600, which is a compact
-    // landscape-like surface and can legitimately overflow the dashboard.
-    // Use a representative portrait surface for this widget smoke test.
+    // Use a representative portrait surface for the production dashboard.
     tester.view.physicalSize = const Size(1080, 2400);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(() {
@@ -19,17 +16,22 @@ void main() {
     await tester.pump();
 
     expect(find.text('JE X FYZ'), findsOneWidget);
-    expect(find.text('BATTERY TEMP'), findsOneWidget);
-    expect(find.text('HOTSIDE TEMP'), findsOneWidget);
+    expect(find.text('BATTERY TEMPERATURE'), findsOneWidget);
+    expect(find.text('HOTSIDE TEMPERATURE'), findsOneWidget);
+
+    expect(find.text('VOLTAGE TEMPERATURE'), findsOneWidget);
     expect(find.text('VOLTAGE'), findsOneWidget);
-    expect(find.text('ADAPTIVE'), findsOneWidget);
+
+    expect(find.text('ADAPTIVE MODE'), findsOneWidget);
     expect(find.text('PELTIER'), findsOneWidget);
     expect(find.text('FAN'), findsOneWidget);
     expect(find.text('FAN SPEED'), findsOneWidget);
     expect(find.text('TEMPERATURE'), findsOneWidget);
 
-    // The dashboard must render without a layout overflow in the
-    // representative production viewport.
+    // Notify is part of the Home dashboard.
+    expect(find.text('NOTIFY'), findsOneWidget);
+
+    // The dashboard must render without a test-time layout exception.
     expect(tester.takeException(), isNull);
   });
 
