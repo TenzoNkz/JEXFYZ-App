@@ -1786,7 +1786,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Container(
       width: double.infinity,
       height: 36,
-      margin: const EdgeInsets.only(bottom: 1),
+      margin: const EdgeInsets.only(bottom: 2),
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
       decoration: BoxDecoration(
         color: const Color(0xFF1D1D20),
@@ -1861,7 +1861,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }) {
     return _homeMetric(
       label,
-      value ? 'ON' : 'OFF',
+      connected ? (value ? 'ON' : 'OFF') : '--',
       '',
       color: value ? Colors.cyanAccent : Colors.white70,
       icon: icon,
@@ -1932,11 +1932,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
         border: Border.all(color: color.withValues(alpha: 0.25)),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            width: 25,
-            height: 25,
+            width: 28,
+            height: 28,
             decoration: BoxDecoration(
               color: color.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(7),
@@ -1946,6 +1946,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           const SizedBox(width: 8),
           Expanded(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
@@ -2759,9 +2760,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 children: [
                   Expanded(
                     flex: 10,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 2, right: 4),
-                      child: Column(
+                    child: FractionallySizedBox(
+                      widthFactor: 0.94,
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 2, right: 4),
+                        child: Column(
                         children: [
                           _homeMetric(
                             'BATTERY TEMPERATURE',
@@ -2804,7 +2808,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             icon: PhosphorIconsBold.wind,
                           ),
                           _homeFanSpeed(),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
