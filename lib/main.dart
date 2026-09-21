@@ -1745,95 +1745,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }) {
     final display = value == '--' ? '--' : value + unit;
 
-    return SizedBox(
-      height: 43,
-      child: Row(
-        children: [
-          SizedBox(
-            width: 30,
-            child: Icon(icon, size: 21, color: color),
-          ),
-          const SizedBox(width: 6),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Colors.white54,
-                    fontSize: 7.2,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 0.65,
-                    height: 1,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  display,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: color,
-                    fontSize: 15.5,
-                    fontWeight: FontWeight.w900,
-                    height: 0.95,
-                    letterSpacing: -0.2,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 5),
-          Container(
-            width: 6,
-            height: 6,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: color.withValues(alpha: value == '--' ? 0.28 : 0.9),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _homeStateChip({
-    required String label,
-    required bool value,
-    required IconData icon,
-  }) {
-    final active = connected && value;
-    final display = connected ? (value ? 'ON' : 'OFF') : '--';
-
     return Expanded(
-      child: Container(
-        height: 58,
-        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 7),
-        decoration: BoxDecoration(
-          color: active ? const Color(0x1454E3FF) : const Color(0x0AFFFFFF),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: active ? const Color(0x5A54E3FF) : const Color(0x16FFFFFF),
-          ),
-        ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 1),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              width: 30,
-              height: 30,
-              decoration: BoxDecoration(
-                color: active ? const Color(0x1654E3FF) : const Color(0x0AFFFFFF),
-                borderRadius: BorderRadius.circular(9),
-              ),
-              child: Icon(
-                icon,
-                size: 16,
-                color: active ? Colors.cyanAccent : Colors.white38,
-              ),
+            SizedBox(
+              width: 34,
+              child: Icon(icon, size: 26, color: color),
             ),
             const SizedBox(width: 8),
             Expanded(
@@ -1849,17 +1769,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       color: Colors.white54,
                       fontSize: 7.1,
                       fontWeight: FontWeight.w900,
-                      letterSpacing: 0.7,
+                      letterSpacing: 0.55,
+                      height: 1.0,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 3),
                   Text(
                     display,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      color: active ? Colors.cyanAccent : Colors.white60,
-                      fontSize: 12,
+                      color: color,
+                      fontSize: 16,
                       fontWeight: FontWeight.w900,
-                      letterSpacing: 0.2,
+                      height: 0.95,
+                      letterSpacing: -0.25,
                     ),
                   ),
                 ],
@@ -1871,7 +1795,75 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _homeFanSpeed() {
+Widget _homeStateChip({
+    required String label,
+    required bool value,
+    required IconData icon,
+  }) {
+    final active = connected && value;
+    final display = connected ? (value ? 'ON' : 'OFF') : '--';
+    final stateColor = active ? Colors.cyanAccent : Colors.white70;
+
+    return Expanded(
+      child: Container(
+        height: 62,
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        decoration: BoxDecoration(
+          color: const Color(0x0AFFFFFF),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: const Color(0x16FFFFFF)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: const Color(0x0AFFFFFF),
+                borderRadius: BorderRadius.circular(11),
+              ),
+              child: Icon(
+                icon,
+                size: 22,
+                color: active ? Colors.white : Colors.white70,
+              ),
+            ),
+            const SizedBox(width: 9),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white54,
+                      fontSize: 7.4,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.65,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    display,
+                    style: TextStyle(
+                      color: stateColor,
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+Widget _homeFanSpeed() {
     final enabled = connected && voltage == '12V' && !adaptiveOn;
     final progress = enabled
         ? (fanSpeed.clamp(fanSpeedMin, fanSpeedMax) - fanSpeedMin) /
@@ -1880,52 +1872,52 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final speedDisplay = connected ? '$fanSpeed%' : '--';
 
     return SizedBox(
-      height: 52,
+      height: 56,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.fromLTRB(9, 6, 9, 6),
+        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
         decoration: BoxDecoration(
-          color: const Color(0x0EFFFFFF),
+          color: const Color(0x0AFFFFFF),
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: const Color(0x14FFFFFF)),
+          border: Border.all(color: const Color(0x16FFFFFF)),
         ),
         child: Row(
           children: [
             const Icon(
               PhosphorIconsBold.gauge,
-              size: 17,
-              color: Colors.white54,
+              size: 20,
+              color: Colors.white70,
             ),
-            const SizedBox(width: 7),
+            const SizedBox(width: 8),
             const Text(
               'FAN SPEED',
               style: TextStyle(
                 color: Colors.white54,
-                fontSize: 7.1,
+                fontSize: 7.3,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 0.72,
               ),
             ),
-            const SizedBox(width: 9),
+            const SizedBox(width: 10),
             Expanded(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: LinearProgressIndicator(
                   value: progress.toDouble(),
-                  minHeight: 4,
-                  backgroundColor: const Color(0x15FFFFFF),
+                  minHeight: 5,
+                  backgroundColor: const Color(0x18FFFFFF),
                   valueColor: AlwaysStoppedAnimation<Color>(
-                    enabled ? Colors.cyanAccent : Colors.white24,
+                    enabled ? Colors.white54 : Colors.white24,
                   ),
                 ),
               ),
             ),
-            const SizedBox(width: 9),
+            const SizedBox(width: 10),
             Text(
               speedDisplay,
               style: TextStyle(
-                color: connected ? Colors.white : Colors.white38,
-                fontSize: 11.5,
+                color: connected ? Colors.white : Colors.white54,
+                fontSize: 12,
                 fontWeight: FontWeight.w900,
               ),
             ),
@@ -1935,7 +1927,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  String _professionalNotice() {
+String _professionalNotice() {
     final custom = notice.trim();
     if (custom.isNotEmpty) return custom;
 
@@ -1974,81 +1966,64 @@ class _DashboardScreenState extends State<DashboardScreen> {
         safetyReason != 'NONE' &&
         safetyReason != 'WAITING_FOR_NTC' &&
         safetyReason != 'WAITING_FOR_SENSOR_VALIDATION';
-    final icon = connected
-        ? (alert ? PhosphorIconsBold.warning : PhosphorIconsBold.shieldCheck)
-        : PhosphorIconsBold.bluetooth;
-    final color = connected
-        ? (alert ? Colors.orangeAccent : Colors.greenAccent)
-        : Colors.white54;
-    final statusText = connected ? 'Connected' : 'Disconnected';
+    final icon = alert
+        ? PhosphorIconsBold.warning
+        : PhosphorIconsBold.shieldCheck;
+    final color = alert ? Colors.orangeAccent : Colors.greenAccent;
+    final message = connected
+        ? _professionalNotice()
+        : 'Disconnected';
 
     return SizedBox(
-      height: 42,
+      height: 52,
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 9),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: connected ? 0.08 : 0.05),
-          borderRadius: BorderRadius.circular(13),
-          border: Border.all(color: color.withValues(alpha: 0.22)),
+          color: color.withValues(alpha: 0.07),
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(color: color.withValues(alpha: 0.26)),
         ),
         child: Row(
           children: [
             Container(
-              width: 26,
-              height: 26,
+              width: 34,
+              height: 34,
               decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.10),
-                borderRadius: BorderRadius.circular(8),
+                color: color.withValues(alpha: 0.11),
+                borderRadius: BorderRadius.circular(10),
               ),
-              child: Icon(icon, size: 14, color: color),
+              child: Icon(icon, size: 19, color: color),
             ),
-            const SizedBox(width: 7),
-            const Text(
-              'STATUS',
+            const SizedBox(width: 10),
+            Text(
+              alert ? 'ALERT' : 'STATUS',
               style: TextStyle(
-                color: Colors.white54,
-                fontSize: 6.8,
+                color: color,
+                fontSize: 7.6,
                 fontWeight: FontWeight.w900,
-                letterSpacing: 0.95,
+                letterSpacing: 1.0,
               ),
             ),
-            const SizedBox(width: 7),
+            const SizedBox(width: 8),
             const Text(
               '•',
               style: TextStyle(
                 color: Colors.white24,
-                fontSize: 10,
+                fontSize: 11,
                 fontWeight: FontWeight.w900,
               ),
             ),
-            const SizedBox(width: 6),
+            const SizedBox(width: 8),
             Expanded(
               child: Text(
-                connected ? _professionalNotice() : 'Connect to JE X FYZ first.',
+                message,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 8.8,
+                  fontSize: 10,
                   fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-            const SizedBox(width: 7),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: const Color(0x12FFFFFF),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                statusText,
-                style: TextStyle(
-                  color: connected ? Colors.greenAccent : Colors.white54,
-                  fontSize: 6.8,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 0.7,
                 ),
               ),
             ),
@@ -2058,7 +2033,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _card({required Widget child, EdgeInsetsGeometry? padding}) {
+Widget _card({required Widget child, EdgeInsetsGeometry? padding}) {
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.symmetric(vertical: 6),
@@ -2749,11 +2724,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return SizedBox(
       height: height,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(14, 7, 14, 8),
+        padding: const EdgeInsets.fromLTRB(12, 6, 12, 8),
         child: Column(
           children: [
             SizedBox(
-              height: 39,
+              height: 40,
               child: Row(
                 children: [
                   SizedBox(
@@ -2766,7 +2741,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ? PhosphorIconsBold.bluetoothConnected
                             : PhosphorIconsBold.bluetooth,
                         color: connected ? Colors.blueAccent : Colors.white,
-                        size: 24,
+                        size: 25,
                       ),
                       onPressed: connected ? _disconnect : _showBluetoothMenu,
                     ),
@@ -2781,11 +2756,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w900,
-                            fontSize: 19,
-                            letterSpacing: 0.2,
+                            fontSize: 21,
+                            letterSpacing: 0.1,
+                            height: 1.0,
                           ),
                         ),
-                        SizedBox(height: 1),
+                        SizedBox(height: 3),
                         Text(
                           'DEVELOPED BY HORIZON',
                           textAlign: TextAlign.center,
@@ -2793,7 +2769,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             color: Colors.white30,
                             fontWeight: FontWeight.w700,
                             fontSize: 6.8,
-                            letterSpacing: 1.25,
+                            letterSpacing: 1.35,
                           ),
                         ),
                       ],
@@ -2807,7 +2783,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       icon: const Icon(
                         PhosphorIconsBold.gear,
                         color: Colors.white,
-                        size: 21,
+                        size: 24,
                       ),
                       onPressed: _openFirmwareSettings,
                     ),
@@ -2815,15 +2791,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 3),
             Expanded(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
-                    flex: 4,
+                    flex: 5,
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 1, right: 6),
+                      padding: const EdgeInsets.only(left: 2, right: 7),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -2834,7 +2810,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             color: Colors.orangeAccent,
                             icon: PhosphorIconsBold.batteryHigh,
                           ),
-                          const SizedBox(height: 1),
                           _homeMetric(
                             'HOTSIDE TEMPERATURE',
                             hotValue,
@@ -2844,7 +2819,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 : Colors.cyanAccent,
                             icon: PhosphorIconsBold.thermometer,
                           ),
-                          const SizedBox(height: 1),
                           _homeMetric(
                             'VOLTAGE INDICATOR',
                             voltageValue,
@@ -2852,7 +2826,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             color: Colors.blueAccent,
                             icon: PhosphorIconsBold.lightning,
                           ),
-                          const SizedBox(height: 1),
                           _homeMetric(
                             'ADAPTIVE MODE',
                             adaptiveValue,
@@ -2860,55 +2833,48 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             color: adaptiveOn ? Colors.greenAccent : Colors.white70,
                             icon: PhosphorIconsBold.sparkle,
                           ),
-                          const SizedBox(height: 6),
-                          SizedBox(
-                            height: 58,
-                            child: Row(
-                              children: [
-                                _homeStateChip(
-                                  label: 'PELTIER',
-                                  value: peltierOn,
-                                  icon: PhosphorIconsBold.snowflake,
-                                ),
-                                const SizedBox(width: 6),
-                                _homeStateChip(
-                                  label: 'FAN',
-                                  value: fanOn,
-                                  icon: PhosphorIconsBold.wind,
-                                ),
-                              ],
-                            ),
+                          const SizedBox(height: 7),
+                          Row(
+                            children: [
+                              _homeStateChip(
+                                label: 'PELTIER',
+                                value: peltierOn,
+                                icon: PhosphorIconsBold.snowflake,
+                              ),
+                              const SizedBox(width: 6),
+                              _homeStateChip(
+                                label: 'FAN',
+                                value: fanOn,
+                                icon: PhosphorIconsBold.wind,
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 6),
                           _homeFanSpeed(),
-                          const Spacer(),
                         ],
                       ),
                     ),
                   ),
-                  const SizedBox(width: 2),
                   Expanded(
                     flex: 7,
-                    child: ClipRect(
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          return Align(
-                            alignment: Alignment.center,
-                            child: Image.asset(
-                              'assets/jexfyzcooler.png',
-                              width: constraints.maxWidth,
-                              height: constraints.maxHeight,
-                              fit: BoxFit.contain,
-                            ),
-                          );
-                        },
-                      ),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return Align(
+                          alignment: Alignment.center,
+                          child: Image.asset(
+                            'assets/jexfyzcooler.png',
+                            width: constraints.maxWidth,
+                            height: constraints.maxHeight,
+                            fit: BoxFit.contain,
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 6),
             _homeNotify(),
           ],
         ),
@@ -2916,7 +2882,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _tab(String title, int index) {
+Widget _tab(String title, int index) {
     final selected = tabIndex == index;
     return Expanded(
       child: Padding(
@@ -2957,7 +2923,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
     final homeHeight =
-        (media.size.height * 0.50).clamp(430.0, 680.0).toDouble();
+        (media.size.height * 0.48).clamp(370.0, 520.0).toDouble();
 
     if (syncing && !dashboardReady) {
       return _buildSyncGate();
