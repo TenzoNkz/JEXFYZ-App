@@ -2909,23 +2909,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ],
                     ),
                   ),
-                  Container(
-                    width: 32,
-                    height: 32,
-                    margin: const EdgeInsets.only(right: 5),
-                    decoration: BoxDecoration(
-                      color: const Color(0x0FFFFFFF),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: const Color(0x14FFFFFF)),
-                    ),
-                    child: Icon(
-                      connected ? PhosphorIconsBold.checkCircle : PhosphorIconsBold.linkBreak,
-                      color: connected ? Colors.greenAccent : Colors.white38,
-                      size: 16,
-                    ),
-                  ),
                   SizedBox(
-                    width: 38,
+                    width: 40,
                     child: IconButton(
                       padding: EdgeInsets.zero,
                       tooltip: 'Firmware',
