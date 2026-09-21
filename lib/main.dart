@@ -1778,24 +1778,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required IconData icon,
   }) {
     return Container(
-      height: 56,
-      margin: const EdgeInsets.only(bottom: 6),
+      height: 47,
+      margin: const EdgeInsets.only(bottom: 2),
       child: Row(
         children: [
           Container(
-            width: 46,
-            height: 46,
+            width: 39,
+            height: 39,
             decoration: BoxDecoration(
               color: color.withValues(alpha: 0.10),
-              borderRadius: BorderRadius.circular(13),
+              borderRadius: BorderRadius.circular(11),
               border: Border.all(
                 color: color.withValues(alpha: 0.55),
-                width: 1.25,
+                width: 1.15,
               ),
             ),
-            child: Icon(icon, size: 25, color: color),
+            child: Icon(icon, size: 21, color: color),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 9),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -1807,23 +1807,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: Colors.white54,
-                    fontSize: 7.6,
+                    fontSize: 7.4,
                     fontWeight: FontWeight.w900,
-                    letterSpacing: 0.60,
+                    letterSpacing: 0.58,
                     height: 1.0,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 2),
                 Text(
                   value,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: value == '--' ? Colors.white38 : color,
-                    fontSize: 15.5,
+                    fontSize: 14.5,
                     fontWeight: FontWeight.w900,
                     height: 0.95,
-                    letterSpacing: -0.25,
+                    letterSpacing: -0.20,
                   ),
                 ),
               ],
@@ -1839,27 +1839,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
     const color = Colors.purpleAccent;
 
     return SizedBox(
-      height: 56,
+      height: 47,
       child: Row(
         children: [
           Container(
-            width: 46,
-            height: 46,
+            width: 39,
+            height: 39,
             decoration: BoxDecoration(
               color: color.withValues(alpha: enabled ? 0.11 : 0.07),
-              borderRadius: BorderRadius.circular(13),
+              borderRadius: BorderRadius.circular(11),
               border: Border.all(
                 color: color.withValues(alpha: enabled ? 0.55 : 0.28),
-                width: 1.25,
+                width: 1.15,
               ),
             ),
             child: Icon(
               PhosphorIconsBold.gauge,
-              size: 25,
+              size: 21,
               color: enabled ? color : Colors.white38,
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 9),
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1870,9 +1870,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: Colors.white54,
-                    fontSize: 7.6,
+                    fontSize: 7.4,
                     fontWeight: FontWeight.w900,
-                    letterSpacing: 0.60,
+                    letterSpacing: 0.58,
                     height: 1.0,
                   ),
                 ),
@@ -1880,9 +1880,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   enabled ? '$fanSpeed%' : '--',
                   style: TextStyle(
                     color: enabled ? color : Colors.white38,
-                    fontSize: 15.5,
+                    fontSize: 14.5,
                     fontWeight: FontWeight.w900,
-                    letterSpacing: -0.25,
+                    letterSpacing: -0.20,
                   ),
                 ),
               ],
@@ -2659,7 +2659,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return SizedBox(
       height: height,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(14, 4, 14, 3),
+        padding: const EdgeInsets.fromLTRB(14, 4, 14, 0),
         child: Column(
           children: [
             SizedBox(
@@ -2778,6 +2778,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           icon: PhosphorIconsBold.wind,
                         ),
                         _homeFanSpeed(),
+                        const SizedBox(height: 4),
+                        _homeNotify(),
                       ],
                     ),
                   ),
@@ -2798,8 +2800,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 4),
-            _homeNotify(),
           ],
         ),
       ),
