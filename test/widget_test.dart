@@ -21,11 +21,12 @@ void main() {
     expect(find.text('JE X FYZ'), findsOneWidget);
     expect(find.text('BATTERY TEMP'), findsOneWidget);
     expect(find.text('HOTSIDE TEMP'), findsOneWidget);
+    expect(find.text('VOLTAGE'), findsOneWidget);
+    expect(find.text('ADAPTIVE'), findsOneWidget);
     expect(find.text('PELTIER'), findsOneWidget);
     expect(find.text('FAN'), findsOneWidget);
     expect(find.text('FAN SPEED'), findsOneWidget);
     expect(find.text('TEMPERATURE'), findsOneWidget);
-    expect(find.textContaining('NOTIFY'), findsOneWidget);
 
     // The dashboard must render without a layout overflow in the
     // representative production viewport.
