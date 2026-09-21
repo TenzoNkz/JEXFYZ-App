@@ -1743,82 +1743,62 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required Color color,
     required IconData icon,
   }) {
-    final display = value == '--' ? '--' : value + unit;
+    final display = value == '--' ? '--' : '$value$unit';
 
-    return Expanded(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final compact = constraints.maxHeight < 37;
-          return Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(
-              horizontal: compact ? 6 : 8,
-              vertical: compact ? 2 : 4,
-            ),
-            decoration: BoxDecoration(
-              color: const Color(0x0EFFFFFF),
-              borderRadius: BorderRadius.circular(compact ? 11 : 13),
-              border: Border.all(color: const Color(0x14FFFFFF)),
-            ),
-            child: Row(
+    return SizedBox(
+      height: 43,
+      child: Row(
+        children: [
+          SizedBox(
+            width: 30,
+            child: Icon(icon, size: 21, color: color),
+          ),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: compact ? 22 : 27,
-                  height: compact ? 22 : 27,
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.10),
-                    borderRadius: BorderRadius.circular(compact ? 7 : 8),
-                    border: Border.all(color: color.withValues(alpha: 0.22)),
-                  ),
-                  child: Icon(icon, size: compact ? 12 : 15, color: color),
-                ),
-                SizedBox(width: compact ? 6 : 8),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        label,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: Colors.white54,
-                          fontSize: compact ? 6.0 : 6.7,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: compact ? 0.45 : 0.55,
-                          height: 1.0,
-                        ),
-                      ),
-                      SizedBox(height: compact ? 0 : 1),
-                      Text(
-                        display,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: color,
-                          fontSize: compact ? 13.0 : 15.0,
-                          fontWeight: FontWeight.w900,
-                          height: 0.95,
-                          letterSpacing: -0.35,
-                        ),
-                      ),
-                    ],
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Colors.white54,
+                    fontSize: 7.2,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.65,
+                    height: 1,
                   ),
                 ),
-                const SizedBox(width: 4),
-                Container(
-                  width: 5,
-                  height: 5,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: color.withValues(alpha: 0.85),
+                const SizedBox(height: 2),
+                Text(
+                  display,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 15.5,
+                    fontWeight: FontWeight.w900,
+                    height: 0.95,
+                    letterSpacing: -0.2,
                   ),
                 ),
               ],
             ),
-          );
-        },
+          ),
+          const SizedBox(width: 5),
+          Container(
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: color.withValues(
+                alpha: value == '--' ? 0.28 : 0.9,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -1828,205 +1808,137 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required bool value,
     required IconData icon,
   }) {
-    final active = value;
+    final active = connected && value;
+    final display = connected ? (value ? 'ON' : 'OFF') : '--';
+
     return Expanded(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final compact = constraints.maxHeight < 36;
-          return Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(
-              horizontal: compact ? 6 : 8,
-              vertical: compact ? 2 : 4,
-            ),
-            decoration: BoxDecoration(
-              color: active ? const Color(0x1A54E3FF) : const Color(0x0BFFFFFF),
-              borderRadius: BorderRadius.circular(compact ? 11 : 13),
-              border: Border.all(
-                color: active ? const Color(0x6654E3FF) : const Color(0x14FFFFFF),
+      child: Container(
+        height: 58,
+        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 7),
+        decoration: BoxDecoration(
+          color: active
+              ? const Color(0x1454E3FF)
+              : const Color(0x0AFFFFFF),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: active
+                ? const Color(0x5A54E3FF)
+                : const Color(0x16FFFFFF),
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 30,
+              height: 30,
+              decoration: BoxDecoration(
+                color: active
+                    ? const Color(0x1654E3FF)
+                    : const Color(0x0AFFFFFF),
+                borderRadius: BorderRadius.circular(9),
+              ),
+              child: Icon(
+                icon,
+                size: 16,
+                color: active ? Colors.cyanAccent : Colors.white38,
               ),
             ),
-            child: Row(
-              children: [
-                Container(
-                  width: compact ? 21 : 25,
-                  height: compact ? 21 : 25,
-                  decoration: BoxDecoration(
-                    color: active ? const Color(0x1454E3FF) : const Color(0x0AFFFFFF),
-                    borderRadius: BorderRadius.circular(compact ? 7 : 8),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white54,
+                      fontSize: 7.1,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.7,
+                    ),
                   ),
-                  child: Icon(
-                    icon,
-                    size: compact ? 12 : 14,
-                    color: active ? Colors.cyanAccent : Colors.white38,
+                  const SizedBox(height: 2),
+                  Text(
+                    display,
+                    style: TextStyle(
+                      color: active ? Colors.cyanAccent : Colors.white60,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.2,
+                    ),
                   ),
-                ),
-                SizedBox(width: compact ? 6 : 7),
-                Expanded(
-                  child: Row(
-                    children: [
-                      Text(
-                        label,
-                        style: TextStyle(
-                          color: Colors.white54,
-                          fontSize: compact ? 6.1 : 6.8,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.75,
-                        ),
-                      ),
-                      const SizedBox(width: 5),
-                      Text(
-                        active ? 'ON' : 'OFF',
-                        style: TextStyle(
-                          color: active ? Colors.cyanAccent : Colors.white60,
-                          fontSize: compact ? 9.8 : 11.0,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  width: 6,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: active ? Colors.cyanAccent : Colors.white24,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          );
-        },
+          ],
+        ),
       ),
     );
   }
 
   Widget _homeFanSpeed() {
     final enabled = connected && voltage == '12V' && !adaptiveOn;
-    final progress = (fanSpeed.clamp(fanSpeedMin, fanSpeedMax) - fanSpeedMin) /
-        (fanSpeedMax - fanSpeedMin);
+    final progress = enabled
+        ? (fanSpeed.clamp(fanSpeedMin, fanSpeedMax) - fanSpeedMin) /
+            (fanSpeedMax - fanSpeedMin)
+        : 0.0;
+    final speedDisplay = connected ? '$fanSpeed%' : '--';
 
-    return Expanded(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final compact = constraints.maxHeight < 42;
-          return Container(
-            width: double.infinity,
-            padding: EdgeInsets.fromLTRB(
-              compact ? 7 : 9,
-              compact ? 3 : 5,
-              compact ? 7 : 9,
-              compact ? 3 : 5,
+    return SizedBox(
+      height: 52,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(9, 6, 9, 6),
+        decoration: BoxDecoration(
+          color: const Color(0x0EFFFFFF),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: const Color(0x14FFFFFF)),
+        ),
+        child: Row(
+          children: [
+            const Icon(
+              PhosphorIconsBold.gauge,
+              size: 17,
+              color: Colors.white54,
             ),
-            decoration: BoxDecoration(
-              color: const Color(0x0EFFFFFF),
-              borderRadius: BorderRadius.circular(compact ? 11 : 13),
-              border: Border.all(color: const Color(0x14FFFFFF)),
+            const SizedBox(width: 7),
+            const Text(
+              'FAN SPEED',
+              style: TextStyle(
+                color: Colors.white54,
+                fontSize: 7.1,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 0.72,
+              ),
             ),
-            child: compact
-                ? Row(
-                    children: [
-                      const Icon(
-                        PhosphorIconsBold.gauge,
-                        size: 14,
-                        color: Colors.white54,
-                      ),
-                      const SizedBox(width: 6),
-                      const Text(
-                        'FAN SPEED',
-                        style: TextStyle(
-                          color: Colors.white54,
-                          fontSize: 6.5,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 0.7,
-                        ),
-                      ),
-                      const SizedBox(width: 7),
-                      Expanded(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: LinearProgressIndicator(
-                            value: progress.toDouble(),
-                            minHeight: 3,
-                            backgroundColor: const Color(0x15FFFFFF),
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              enabled ? Colors.cyanAccent : Colors.white24,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 7),
-                      Text(
-                        '$fanSpeed%',
-                        style: TextStyle(
-                          color: enabled ? Colors.white : Colors.white38,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                    ],
-                  )
-                : Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(
-                            PhosphorIconsBold.gauge,
-                            size: 14,
-                            color: Colors.white54,
-                          ),
-                          const SizedBox(width: 7),
-                          const Text(
-                            'FAN SPEED',
-                            style: TextStyle(
-                              color: Colors.white54,
-                              fontSize: 7.0,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: 0.75,
-                            ),
-                          ),
-                          const Spacer(),
-                          Text(
-                            '$fanSpeed%',
-                            style: TextStyle(
-                              color: enabled ? Colors.white : Colors.white38,
-                              fontSize: 11.5,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: LinearProgressIndicator(
-                          value: progress.toDouble(),
-                          minHeight: 4,
-                          backgroundColor: const Color(0x15FFFFFF),
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            enabled ? Colors.cyanAccent : Colors.white24,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          enabled ? 'MANUAL 12V' : 'NOT AVAILABLE',
-                          style: const TextStyle(
-                            color: Colors.white30,
-                            fontSize: 5.9,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 0.6,
-                          ),
-                        ),
-                      ),
-                    ],
+            const SizedBox(width: 9),
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: LinearProgressIndicator(
+                  value: progress.toDouble(),
+                  minHeight: 4,
+                  backgroundColor: const Color(0x15FFFFFF),
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    enabled ? Colors.cyanAccent : Colors.white24,
                   ),
-          );
-        },
+                ),
+              ),
+            ),
+            const SizedBox(width: 9),
+            Text(
+              speedDisplay,
+              style: TextStyle(
+                color: connected ? Colors.white : Colors.white38,
+                fontSize: 11.5,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -2065,24 +1977,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _homeNotify() {
-    final alert = safety != 'OK' &&
+    final alert = connected &&
+        safety != 'OK' &&
         safetyReason != 'NONE' &&
         safetyReason != 'WAITING_FOR_NTC' &&
         safetyReason != 'WAITING_FOR_SENSOR_VALIDATION';
-    final icon = alert
-        ? PhosphorIconsBold.warning
-        : PhosphorIconsBold.shieldCheck;
-    final color = alert ? Colors.orangeAccent : Colors.greenAccent;
+
+    final icon = connected
+        ? (alert
+            ? PhosphorIconsBold.warning
+            : PhosphorIconsBold.shieldCheck)
+        : PhosphorIconsBold.bluetooth;
+
+    final color = connected
+        ? (alert ? Colors.orangeAccent : Colors.greenAccent)
+        : Colors.white54;
+
+    final statusText = connected ? 'Connected' : 'Disconnected';
 
     return SizedBox(
       height: 42,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 9),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: alert ? 0.10 : 0.07),
+          color: color.withValues(alpha: connected ? 0.08 : 0.05),
           borderRadius: BorderRadius.circular(13),
-          border: Border.all(color: color.withValues(alpha: 0.25)),
+          border: Border.all(
+            color: color.withValues(alpha: 0.22),
+          ),
         ),
         child: Row(
           children: [
@@ -2090,16 +2013,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
               width: 26,
               height: 26,
               decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.12),
+                color: color.withValues(alpha: 0.10),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(icon, size: 14, color: color),
             ),
             const SizedBox(width: 7),
-            Text(
-              alert ? 'ALERT' : 'STATUS',
+            const Text(
+              'STATUS',
               style: TextStyle(
-                color: color,
+                color: Colors.white54,
                 fontSize: 6.8,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 0.95,
@@ -2108,12 +2031,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
             const SizedBox(width: 7),
             const Text(
               '•',
-              style: TextStyle(color: Colors.white24, fontSize: 10, fontWeight: FontWeight.w900),
+              style: TextStyle(
+                color: Colors.white24,
+                fontSize: 10,
+                fontWeight: FontWeight.w900,
+              ),
             ),
             const SizedBox(width: 6),
             Expanded(
               child: Text(
-                _professionalNotice(),
+                connected
+                    ? _professionalNotice()
+                    : 'Connect to JE X FYZ first.',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -2125,719 +2054,43 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             const SizedBox(width: 7),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 4,
+              ),
               decoration: BoxDecoration(
                 color: const Color(0x12FFFFFF),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                connected ? 'ONLINE' : 'OFFLINE',
+                statusText,
                 style: TextStyle(
-                  color: connected ? Colors.cyanAccent : Colors.white38,
-                  fontSize: 6.5,
+                  color: connected ? Colors.greenAccent : Colors.white54,
+                  fontSize: 6.8,
                   fontWeight: FontWeight.w900,
-                  letterSpacing: 0.8,
+                  letterSpacing: 0.7,
                 ),
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _card({required Widget child, EdgeInsetsGeometry? padding}) {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(vertical: 6),
-      padding: padding ?? const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF7F7F8),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFE7E7E9)),
-        boxShadow: const [
-          BoxShadow(color: Color(0x12000000), blurRadius: 12, offset: Offset(0, 5)),
-        ],
-      ),
-      child: child,
-    );
-  }
-
-  Widget _sectionTitle(String title, {String? subtitle}) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 8, 4, 6),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, letterSpacing: -0.2)),
-          if (subtitle != null) ...[
-            const SizedBox(height: 3),
-            Text(subtitle, style: const TextStyle(color: Colors.black45, fontSize: 11, fontWeight: FontWeight.w600)),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _switchRow({
-    required String title,
-    required String subtitle,
-    required IconData icon,
-    required bool value,
-    required bool enabled,
-    required Future<void> Function(bool) onChanged,
-  }) {
-    return Row(
-      children: [
-        Container(
-
-          width: 34,
-          height: 34,
-          decoration: BoxDecoration(
-            color: value ? Colors.blueAccent.withValues(alpha: 0.10) : Colors.black.withValues(alpha: 0.04),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, size: 19, color: value ? Colors.blueAccent : Colors.black38),
-        ),
-        const SizedBox(width: 9),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900)),
-              const SizedBox(height: 3),
-              StaticSwitcher(
-
-                child: Text(
-                  subtitle,
-                  key: ValueKey<String>(subtitle),
-                  style: TextStyle(fontSize: 10, color: enabled ? Colors.black45 : Colors.black38, fontWeight: FontWeight.w600),
-                ),
-              ),
-            ],
-          ),
-        ),
-        Switch(
-          value: value,
-          activeThumbColor: Colors.blueAccent,
-          activeTrackColor: Colors.blueAccent.withValues(alpha: 0.25),
-          onChanged: enabled ? onChanged : null,
-        ),
-      ],
-    );
-  }
-
-  Widget _voltageRow(String target, String mode) {
-    final active = voltage == target;
-    final disabled = !connected || adaptiveOn || voltageGuardActive || adaptiveTransitioning;
-    return InkWell(
-      borderRadius: BorderRadius.circular(15),
-      onTap: disabled ? null : () => _requestVoltage(target),
-      child: Container(
-
-        padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 11),
-        decoration: BoxDecoration(
-          color: active ? Colors.black : Colors.white,
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: active ? Colors.black : const Color(0xFFE4E4E7)),
-        ),
-        child: Row(
-          children: [
-            SizedBox(
-              width: 48,
-              child: Text(target, style: TextStyle(color: active ? Colors.white : Colors.black, fontSize: 18, fontWeight: FontWeight.w900)),
-            ),
-            Expanded(
-              child: Text(mode, style: TextStyle(color: active ? Colors.white70 : Colors.black45, fontSize: 10, fontWeight: FontWeight.w700)),
-            ),
-            StaticSwitcher(
-
-              child: Icon(
-                active ? PhosphorIconsBold.checkCircle : PhosphorIconsRegular.circle,
-                key: ValueKey<bool>(active),
-                color: active ? Colors.blueAccent : Colors.black26,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _smoothList({
-    required List<Widget> children,
-    required String storageKey,
-    EdgeInsetsGeometry padding = const EdgeInsets.fromLTRB(2, 2, 2, 20),
-  }) {
-    return ListView(
-      key: PageStorageKey<String>(storageKey),
-      physics: const ClampingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      scrollCacheExtent: const ScrollCacheExtent.pixels(480),
-      padding: padding,
-      children: children,
-    );
-  }
-
-  Widget _buildVoltageTab({Key? key}) {
-    return KeyedSubtree(key: key, child: _smoothList(
-      storageKey: 'voltage',
-      children: [
-        _sectionTitle(
-          'Voltage Control',
-          subtitle: adaptiveOn ? 'Adaptive is controlling the voltage.' : '5V / 9V / 12V manual selector.',
-        ),
-        _card(
-          padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
-          child: Column(
-            children: [
-              _voltageRow('5V', '5V Manual'),
-              _voltageRow('9V', '9V Manual'),
-              _voltageRow('12V', '12V Manual'),
-            ],
-          ),
-        ),
-        if (voltageGuardActive)
-          const Padding(
-            padding: EdgeInsets.only(left: 5, top: 2),
-            child: Text('Voltage guard active — awaiting device confirmation.', style: TextStyle(color: Colors.black45, fontSize: 10, fontWeight: FontWeight.w700)),
-          ),
-        _card(
-          child: Row(
-            children: [
-              const Icon(PhosphorIconsBold.lightning, size: 19, color: Colors.blueAccent),
-              const SizedBox(width: 9),
-              Expanded(
-                child: Text(
-                  connected ? 'Firmware state: ${voltage == '--' ? 'syncing...' : voltage}' : 'Connect to control voltage.',
-                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    ));
-  }
-
-  Widget _buildControlTab({Key? key}) {
-    final speedEnabled = connected && !adaptiveOn && voltage == '12V' && !controlCommandBusy;
-    final fanLocked = connected && !adaptiveOn && peltierOn;
-    return KeyedSubtree(key: key, child: _smoothList(
-      storageKey: 'control',
-      children: [
-        _sectionTitle('Cooling Control', subtitle: 'Manage the cooling fan, Peltier, and fan speed.'),
-        _card(
-          padding: const EdgeInsets.fromLTRB(13, 10, 13, 10),
-          child: Column(
-            children: [
-              _switchRow(
-                title: 'Fan',
-                subtitle: fanLocked ? 'Fan is ON • locked while Peltier is ON' : (fanOn ? 'Fan is ON' : 'Fan is OFF'),
-                icon: PhosphorIconsBold.wind,
-                value: fanOn,
-                enabled: connected && !adaptiveOn && !peltierOn && !controlCommandBusy,
-                onChanged: _toggleFan,
-              ),
-              const Divider(height: 20),
-              _switchRow(
-                title: 'Peltier',
-                subtitle: peltierOn ? 'Peltier is ON • 5 s soft-start' : 'Peltier is OFF',
-                icon: PhosphorIconsBold.snowflake,
-                value: peltierOn,
-                enabled: connected && !adaptiveOn && !controlCommandBusy,
-                onChanged: _togglePeltier,
-              ),
-              const Divider(height: 20),
-              Row(
-                children: [
-                  const Icon(PhosphorIconsBold.gauge, size: 20, color: Colors.black45),
-                  const SizedBox(width: 9),
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Fan Speed', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900)),
-                        SizedBox(height: 3),
-                        Text('Manual 12V • 50–100% • 25 kHz PWM', style: TextStyle(fontSize: 10, color: Colors.black45, fontWeight: FontWeight.w600)),
-                      ],
-                    ),
-                  ),
-                  Text('$fanSpeed%', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),
-                ],
-              ),
-              Slider(
-                min: 50,
-                max: 100,
-                divisions: 5,
-                value: fanSpeedDraft.clamp(50, 100).toDouble(),
-                activeColor: Colors.black,
-                inactiveColor: Colors.black12,
-                onChanged: speedEnabled
-                    ? (v) => setState(() => fanSpeedDraft = ((v / 10).round() * 10).clamp(50, 100).toInt())
-                    : null,
-                onChangeEnd: speedEnabled ? _setFanSpeed : null,
-              ),
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  Expanded(
-                    child: _miniStatus('PELTIER', peltierOn ? 'ON' : 'OFF', peltierOn ? Colors.cyan : Colors.black38),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: _miniStatus('FAN', fanOn ? 'ON' : 'OFF', fanOn ? Colors.blueAccent : Colors.black38),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: _miniStatus('PWM', '$fanSpeed%', Colors.deepPurpleAccent),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  safety == 'OK' ? 'SAFETY: OK' : 'SAFETY: $safety${safetyReason == 'NONE' ? '' : ' • $safetyReason'}',
-                  style: TextStyle(color: safety == 'OK' ? Colors.green.shade700 : Colors.orangeAccent, fontSize: 9, fontWeight: FontWeight.w800),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    ));
-  }
-
-  Widget _miniStatus(String label, String value, Color color) {
-    return Container(
-
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.07),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withValues(alpha: 0.16)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: const TextStyle(fontSize: 8, color: Colors.black45, fontWeight: FontWeight.w800, letterSpacing: 0.5)),
-          const SizedBox(height: 2),
-          StaticSwitcher(
-
-            child: Text(value, key: ValueKey<String>('$label:$value'), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: color)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAdaptiveTab({Key? key}) {
-    return KeyedSubtree(key: key, child: _smoothList(
-      storageKey: 'adaptive',
-      children: [
-        _sectionTitle('Adaptive Control', subtitle: 'Firmware-owned automatic voltage policy.'),
-        _card(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          child: Row(
-            children: [
-              Container(
-
-                width: 42,
-                height: 42,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: adaptiveOn ? Colors.green.withValues(alpha: 0.13) : Colors.black.withValues(alpha: 0.06),
-                ),
-                child: Icon(adaptiveOn ? PhosphorIconsBold.shield : PhosphorIconsRegular.shield, color: adaptiveOn ? Colors.green.shade700 : Colors.black45),
-              ),
-              const SizedBox(width: 12),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Adaptive Switch', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900)),
-                    SizedBox(height: 4),
-                    Text('Hotside and phone battery temperature control', style: TextStyle(fontSize: 10, color: Colors.black45, fontWeight: FontWeight.w600)),
-                  ],
-                ),
-              ),
-              Switch(
-                value: connected && adaptiveOn,
-                activeThumbColor: Colors.green,
-                onChanged: connected && !adaptiveTransitioning && !controlCommandBusy ? _toggleAdaptive : null,
-              ),
-            ],
-          ),
-        ),
-        _card(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Adaptive policy', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900)),
-              const SizedBox(height: 7),
-              const Text(
-                'Firmware returns to 5V first, then uses the phone battery temperature zone to target 5V / 9V / 12V. Manual controls are locked while Adaptive is ON.',
-                style: TextStyle(fontSize: 11, color: Colors.black54, height: 1.35, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  _miniMetric('Ceiling', adaptiveCeiling),
-                  const SizedBox(width: 8),
-                  _miniMetric('Battery', phoneBatteryValid ? '$phoneBatteryTemp°C' : '--'),
-                ],
-              ),
-            ],
-          ),
-        ),
-        _card(
-          padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
-          child: Row(
-            children: [
-              const Icon(PhosphorIconsRegular.info, size: 18, color: Colors.blueAccent),
-              const SizedBox(width: 9),
-              Expanded(
-                child: StaticSwitcher(
-
-                  child: Text(
-                    adaptiveTransitioning ? 'Adaptive transition in progress — awaiting device confirmation.' : 'Adaptive state: ${adaptiveOn ? 'ON' : 'OFF'}',
-                    key: ValueKey<String>('adaptive:$adaptiveOn:$adaptiveTransitioning'),
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    ));
-  }
-
-  Widget _miniMetric(String label, String value) {
-    return Expanded(
-      child: Container(
-
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFE4E4E6))),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(label, style: const TextStyle(fontSize: 9, color: Colors.black45, fontWeight: FontWeight.w700)),
-            const SizedBox(height: 3),
-            StaticSwitcher(
-
-              child: Text(value, key: ValueKey<String>('$label:$value'), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900)),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _colorField(String label, TextEditingController controller, String command) {
-    return Row(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900)),
-              const SizedBox(height: 4),
-              TextField(
-                controller: controller,
-                enabled: connected,
-                textCapitalization: TextCapitalization.characters,
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800),
-                decoration: InputDecoration(
-                  isDense: true,
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE2E2E5))),
-                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE2E2E5))),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 11, vertical: 10),
-                  hintText: '#RRGGBB',
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: 8),
-        FilledButton(
-          onPressed: connected ? () => _sendColor(command, controller) : null,
-          child: const Text('SET', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900)),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildLedTab({Key? key}) {
-    final modeName = <String>['Static', 'Breath', 'Wipe', 'Running', 'Scan', 'Theater', 'Rainbow', 'Twinkle'][rgbMode.clamp(0, 7)];
-    return KeyedSubtree(key: key, child: _smoothList(
-      storageKey: 'led',
-      children: [
-        _sectionTitle('LED Control', subtitle: '8× WS2812B • firmware-managed lighting and effects.'),
-        _card(
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
-          child: Column(
-            children: [
-              _switchRow(
-                title: 'LED Power',
-                subtitle: rgbOn ? 'Lighting is ON' : 'Lighting is OFF',
-                icon: PhosphorIconsBold.lightbulb,
-                value: rgbOn,
-                enabled: connected,
-                onChanged: _setRgb,
-              ),
-              const Divider(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(onPressed: connected ? () => _setMode(rgbMode - 1) : null, icon: const Icon(PhosphorIconsBold.caretLeft, size: 28)),
-                  Container(
-
-                    width: 138,
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
-                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(13), border: Border.all(color: const Color(0xFFE4E4E6))),
-                    child: StaticSwitcher(
-
-                      child: Text('Mode $rgbMode • $modeName', key: ValueKey<int>(rgbMode), textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 12)),
-                    ),
-                  ),
-                  IconButton(onPressed: connected ? () => _setMode(rgbMode + 1) : null, icon: const Icon(PhosphorIconsBold.caretRight, size: 28)),
-                ],
-              ),
-              Row(
-                children: [
-                  const Icon(PhosphorIconsRegular.sun, color: Colors.black38, size: 20),
-                  Expanded(
-                    child: Slider(
-                      min: 0,
-                      max: 100,
-                      divisions: 20,
-                      value: brightness.clamp(0, 100).toDouble(),
-                      activeColor: Colors.black,
-                      inactiveColor: Colors.black12,
-                      onChanged: connected && !controlCommandBusy ? (v) => setState(() => brightness = v.round()) : null,
-                      onChangeEnd: connected && !controlCommandBusy ? _setBrightness : null,
-                    ),
-                  ),
-                  SizedBox(width: 42, child: Text('$brightness%', textAlign: TextAlign.right, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900))),
-                ],
-              ),
-            ],
-          ),
-        ),
-        _sectionTitle('Custom RGB Color'),
-        _card(child: Row(children: [
-          Expanded(child: TextField(
-            controller: rgbColorController,
-            enabled: connected,
-            textCapitalization: TextCapitalization.characters,
-            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
-            decoration: InputDecoration(
-              labelText: 'Color',
-              hintText: '#FFFFFF',
-              filled: true,
-              fillColor: Colors.white,
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-            ),
-          )),
-          const SizedBox(width: 8),
-          FilledButton(onPressed: connected ? () => _sendColor('COLOR', rgbColorController) : null, child: const Text('SET')),
-        ])),
-        _sectionTitle('Voltage Indicator Colors', subtitle: 'Shown briefly after a confirmed voltage change.'),
-        _card(child: Column(children: [
-          _colorField('5V', color5Controller, 'V5COLOR'),
-          const Divider(height: 18),
-          _colorField('9V', color9Controller, 'V9COLOR'),
-          const Divider(height: 18),
-          _colorField('12V', color12Controller, 'V12COLOR'),
-          const SizedBox(height: 8),
-          Align(
-            alignment: Alignment.centerRight,
-            child: OutlinedButton.icon(
-              onPressed: connected ? _resetVoltageColors : null,
-              icon: const Icon(PhosphorIconsBold.arrowClockwise, size: 17),
-              label: const Text('Reset Colors'),
-            ),
-          ),
-        ])),
-      ],
-    ));
-  }
-
-  Widget _adjuster({required String title, required int value, required int min, required int max, required ValueChanged<int> onChanged, String unit = '°C'}) {
-    return Row(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),
-              const SizedBox(height: 3),
-              Text('Range $min–$max$unit', style: const TextStyle(color: Colors.black45, fontSize: 10, fontWeight: FontWeight.w700)),
-            ],
-          ),
-        ),
-        IconButton(onPressed: value <= min ? null : () => onChanged(value - 1), icon: const Icon(PhosphorIconsRegular.minusCircle)),
-        Container(
-
-          width: 66,
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(13), border: Border.all(color: const Color(0xFFE3E3E5))),
-          child: StaticSwitcher(
-
-            child: Text('$value$unit', key: ValueKey<String>('$value$unit'), textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: Colors.blueAccent)),
-          ),
-        ),
-        IconButton(onPressed: value >= max ? null : () => onChanged(value + 1), icon: const Icon(PhosphorIconsRegular.plusCircle)),
-      ],
-    );
-  }
-
-  Widget _buildTemperatureTab({Key? key}) {
-    final locked = adaptiveOn;
-    final midLow = battery5Limit + 1;
-    final midHigh = battery12Limit - 1;
-    return KeyedSubtree(key: key, child: _smoothList(
-      storageKey: 'temperature',
-      children: [
-        _sectionTitle('Thermal Protection', subtitle: locked ? 'Locked while Adaptive is ON.' : 'Sensor readings remain independent from the protection threshold.'),
-        _card(
-          child: _adjuster(
-            title: 'Hotside Overheat Limit',
-            value: hotLimitDraft,
-            min: 40,
-            max: 50,
-            onChanged: (v) {
-              if (!connected || locked) return;
-              _setHotLimit(v);
-            },
-          ),
-        ),
-        _sectionTitle('Phone Battery Temperature Zones', subtitle: '9V uses the calculated middle zone.'),
-        _card(
-          padding: const EdgeInsets.fromLTRB(13, 8, 13, 8),
-          child: Column(
-            children: [
-              _adjuster(
-                title: '5V Zone Ceiling',
-                value: battery5Draft,
-                min: 20,
-                max: 48,
-                onChanged: (v) {
-                  if (!connected || locked || v >= battery12Limit - 1) return;
-                  _setBattery5(v);
-                },
-              ),
-              const Divider(height: 14),
-              Row(
-                children: [
-                  SizedBox(width: 100, child: Text('9V Zone', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Colors.black45))),
-                  Expanded(child: StaticSwitcher(duration: const Duration(milliseconds: 150), child: Text('≈ $midLow–$midHigh°C', key: ValueKey<String>('$midLow:$midHigh'), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900)))),
-                  const Icon(PhosphorIconsRegular.lock, color: Colors.black26),
-                ],
-              ),
-              const Divider(height: 14),
-              _adjuster(
-                title: '12V Zone Floor',
-                value: battery12Draft,
-                min: 22,
-                max: 50,
-                onChanged: (v) {
-                  if (!connected || locked || v <= battery5Limit + 1) return;
-                  _setBattery12(v);
-                },
-              ),
-            ],
-          ),
-        ),
-        if (locked)
-          _card(
-            padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
-            child: const Row(children: [
-              Icon(PhosphorIconsBold.lock, size: 18, color: Colors.orangeAccent),
-              SizedBox(width: 9),
-              Expanded(child: Text('Temperature settings are locked while Adaptive Mode is active.', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800))),
-            ]),
-          ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: OutlinedButton.icon(
-            onPressed: connected && !locked ? _resetTemperatureSettings : null,
-            icon: const Icon(PhosphorIconsBold.arrowClockwise, size: 17),
-            label: const Text('Reset Temperature'),
-          ),
-        ),
-      ],
-    ));
-  }
-
-  Widget _buildTabContent() {
-    final content = switch (tabIndex) {
-      0 => _buildVoltageTab(key: const ValueKey('voltage-tab')),
-      1 => _buildControlTab(key: const ValueKey('control-tab')),
-      2 => _buildAdaptiveTab(key: const ValueKey('adaptive-tab')),
-      3 => _buildLedTab(key: const ValueKey('led-tab')),
-      4 => _buildTemperatureTab(key: const ValueKey('temperature-tab')),
-      _ => const SizedBox.shrink(),
-    };
-
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        content,
-        if (controlCommandBusy) ...[
-          const Positioned.fill(
-            child: AbsorbPointer(
-              absorbing: true,
-              child: ColoredBox(color: Colors.transparent),
-            ),
-          ),
-          Positioned(
-            top: 2,
-            left: 10,
-            right: 10,
-            child: IgnorePointer(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 7,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF17181C),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  'PROCESSING: ' +
-                      controlCommandName +
-                      ' • awaiting device confirmation...',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ],
     );
   }
 
   Widget _buildHomeArea(double height) {
-    final batteryValue = connected && phoneBatteryValid ? phoneBatteryTemp : '--';
+    final batteryValue =
+        connected && phoneBatteryValid ? phoneBatteryTemp : '--';
     final hotValue = connected ? hotsideTemp : '--';
-    final voltageValue = connected && voltage != '--' ? voltage : '--';
-    final adaptiveValue = connected ? (adaptiveOn ? 'ON' : 'OFF') : '--';
+    final voltageValue =
+        connected && voltage != '--' ? voltage : '--';
+    final adaptiveValue =
+        connected ? (adaptiveOn ? 'ON' : 'OFF') : '--';
 
     return SizedBox(
       height: height,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 7, 12, 8),
+        padding: const EdgeInsets.fromLTRB(14, 7, 14, 8),
         child: Column(
           children: [
             SizedBox(
@@ -2853,10 +2106,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         connected
                             ? PhosphorIconsBold.bluetoothConnected
                             : PhosphorIconsBold.bluetooth,
-                        color: connected ? Colors.blueAccent : Colors.white,
+                        color:
+                            connected ? Colors.blueAccent : Colors.white,
                         size: 24,
                       ),
-                      onPressed: connected ? _disconnect : _showBluetoothMenu,
+                      onPressed:
+                          connected ? _disconnect : _showBluetoothMenu,
                     ),
                   ),
                   Expanded(
@@ -2909,10 +2164,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
-                    flex: 5,
+                    flex: 4,
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 1, right: 6),
+                      padding:
+                          const EdgeInsets.only(left: 1, right: 6),
                       child: Column(
+                        crossAxisAlignment:
+                            CrossAxisAlignment.stretch,
                         children: [
                           _homeMetric(
                             'BATTERY TEMPERATURE',
@@ -2921,7 +2179,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             color: Colors.orangeAccent,
                             icon: PhosphorIconsBold.batteryHigh,
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 1),
                           _homeMetric(
                             'HOTSIDE TEMPERATURE',
                             hotValue,
@@ -2931,7 +2189,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 : Colors.cyanAccent,
                             icon: PhosphorIconsBold.thermometer,
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 1),
                           _homeMetric(
                             'VOLTAGE INDICATOR',
                             voltageValue,
@@ -2939,48 +2197,59 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             color: Colors.blueAccent,
                             icon: PhosphorIconsBold.lightning,
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 1),
                           _homeMetric(
                             'ADAPTIVE MODE',
                             adaptiveValue,
                             '',
-                            color: adaptiveOn ? Colors.greenAccent : Colors.white70,
+                            color: adaptiveOn
+                                ? Colors.greenAccent
+                                : Colors.white70,
                             icon: PhosphorIconsBold.sparkle,
                           ),
-                          const SizedBox(height: 4),
-                          _homeStateChip(
-                            label: 'PELTIER',
-                            value: peltierOn,
-                            icon: PhosphorIconsBold.snowflake,
+                          const SizedBox(height: 6),
+                          SizedBox(
+                            height: 58,
+                            child: Row(
+                              children: [
+                                _homeStateChip(
+                                  label: 'PELTIER',
+                                  value: peltierOn,
+                                  icon: PhosphorIconsBold.snowflake,
+                                ),
+                                const SizedBox(width: 6),
+                                _homeStateChip(
+                                  label: 'FAN',
+                                  value: fanOn,
+                                  icon: PhosphorIconsBold.wind,
+                                ),
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 4),
-                          _homeStateChip(
-                            label: 'FAN',
-                            value: fanOn,
-                            icon: PhosphorIconsBold.wind,
-                          ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 6),
                           _homeFanSpeed(),
+                          const Spacer(),
                         ],
                       ),
                     ),
                   ),
+                  const SizedBox(width: 2),
                   Expanded(
-                    flex: 6,
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        final width = constraints.maxWidth;
-                        final height = constraints.maxHeight;
-                        return Align(
-                          alignment: Alignment.center,
-                          child: Image.asset(
-                            'assets/jexfyzcooler.png',
-                            width: width,
-                            height: height,
-                            fit: BoxFit.contain,
-                          ),
-                        );
-                      },
+                    flex: 7,
+                    child: ClipRect(
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          return Align(
+                            alignment: Alignment.center,
+                            child: Image.asset(
+                              'assets/jexfyzcooler.png',
+                              width: constraints.maxWidth,
+                              height: constraints.maxHeight,
+                              fit: BoxFit.contain,
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ],
@@ -3035,7 +2304,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
     final homeHeight =
-        (media.size.height * 0.48).clamp(370.0, 520.0).toDouble();
+        (media.size.height * 0.48).clamp(430.0, 560.0).toDouble();
 
     if (syncing && !dashboardReady) {
       return _buildSyncGate();
