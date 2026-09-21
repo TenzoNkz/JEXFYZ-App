@@ -1781,39 +1781,39 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final active = value != '--';
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 1),
+      padding: EdgeInsets.zero,
       child: SizedBox(
         width: double.infinity,
-        height: 41,
+        height: 39,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 1),
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
-                width: 41,
-                height: 41,
+                width: 37,
+                height: 37,
                 child: Center(
                   child: Container(
-                    width: 38,
-                    height: 38,
+                    width: 34,
+                    height: 34,
                     decoration: BoxDecoration(
                       color: color.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(9),
                       border: Border.all(
                         color: color.withValues(alpha: 0.52),
-                        width: 1.2,
+                        width: 1.1,
                       ),
                     ),
                     child: Icon(
                       icon,
-                      size: 21,
+                      size: 19,
                       color: color,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: 7),
+              const SizedBox(width: 6),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -1974,8 +1974,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             : const Color(0xFF63E6BE);
     return Container(
       width: double.infinity,
-      height: 36,
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+      height: 39,
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
       decoration: BoxDecoration(
         color: color.withValues(alpha: hasError ? 0.12 : 0.07),
         borderRadius: BorderRadius.circular(13),
@@ -1985,25 +1985,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            width: 30,
-            height: 30,
+            width: 37,
+            height: 37,
             child: Center(
               child: Container(
-                width: 28,
-                height: 28,
+                width: 34,
+                height: 34,
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.13),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
                     color: color.withValues(alpha: 0.34),
-                    width: 1.0,
+                    width: 1.1,
                   ),
                 ),
-                child: Icon(icon, size: 14, color: color),
+                child: Icon(icon, size: 19, color: color),
               ),
             ),
           ),
-          const SizedBox(width: 7),
+          const SizedBox(width: 6),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -2835,6 +2835,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             color: const Color(0xFF5CE1C8),
                           ),
                           _homeFanSpeed(),
+                          _homeNotify(),
                           ],
                           ),
                         ),
@@ -2866,8 +2867,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 2),
-            _homeNotify(),
           ],
         ),
       ),
