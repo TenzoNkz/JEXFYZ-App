@@ -38,6 +38,7 @@ const String rxUuid = '6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001';
 const String txUuid = '6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001';
 const String firebaseDbUrl =
     'https://je-x-fyz-default-rtdb.asia-southeast1.firebasedatabase.app';
+const Duration voltageGuardDuration = Duration(seconds: 1);
 const int fanSpeedMin = 50;
 const int fanSpeedMax = 100;
 
@@ -255,21 +256,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   BluetoothCharacteristic? tx;
   StreamSubscription<BluetoothConnectionState>? connectionSub;
   StreamSubscription<List<int>>? notificationSub;
-  StreamSubscription<BluetoothBondState>? bondStateSub;
 
   Future<void> _writeQueue = Future<void>.value();
   Timer? batteryTimer;
+  Timer? voltageGuardTimer;
   Timer? reconnectTimer;
-  Timer? _syncDebounceTimer;
-  bool _syncInFlight = false;
-  bool _syncAgain = false;
-  // Command transport is latest-state driven: UI updates immediately,
-  // BLE writes happen in the background, and only the newest pending value
-  // for each control is retained. This prevents tap-spam from building a
-  // queue of stale commands while keeping firmware as the source of truth.
-  final Map<String, String> _pendingCommands = {};
-  final Set<String> _commandInFlight = <String>{};
-  final Map<String, String> _commandFailureMessages = {};
 
   bool _bleReady = false;
   bool _bleSessionReady = false;
@@ -277,8 +268,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   bool connected = false;
   bool syncing = false;
   bool fullSyncReceived = false;
+  bool voltageGuardActive = false;
   bool adaptiveTransitioning = false;
   bool batteryReadBusy = false;
+  bool fanCommandBusy = false;
+  bool peltierCommandBusy = false;
+  bool adaptiveCommandBusy = false;
+  bool controlCommandBusy = false;
+  String controlCommandName = '';
   bool dashboardReady = false;
   final Map<String, List<Completer<String>>> _ackWaiters = {};
   final Map<String, String> _syncSnapshot = {};
@@ -345,11 +342,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   void dispose() {
-    _cancelOptimisticCommands();
     connectionSub?.cancel();
     notificationSub?.cancel();
-    bondStateSub?.cancel();
     batteryTimer?.cancel();
+    voltageGuardTimer?.cancel();
     reconnectTimer?.cancel();
     device?.disconnect();
     rgbColorController.dispose();
@@ -502,6 +498,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     await connectionSub?.cancel();
     await notificationSub?.cancel();
     batteryTimer?.cancel();
+    voltageGuardTimer?.cancel();
 
     try {
       if (device != null && device != target) {
@@ -525,6 +522,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         syncing = true;
         connected = false;
         dashboardReady = false;
+        controlCommandBusy = false;
+        controlCommandName = '';
         voltage = '--';
         hotsideTemp = '--';
         phoneBatteryTemp = '--';
@@ -537,7 +536,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         safetyReason = 'WAITING_FOR_SENSOR_VALIDATION';
         firmwareVersion = 'V?';
         resetReason = 'UNKNOWN';
-        notice = Platform.isAndroid ? 'Connecting & securing JE X FYZ...' : 'Connecting to JE X FYZ...';
+        notice = 'Connecting to JE X FYZ...';
       });
     }
 
@@ -561,17 +560,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           .where((state) => state == BluetoothConnectionState.connected)
           .first
           .timeout(const Duration(seconds: 4));
-
-      // Firmware protects RX with encrypted writes. On Android, complete the
-      // BLE bond before service discovery/handshake so the first SYNC write
-      // cannot race the security manager. Already-bonded devices continue
-      // without showing another pairing prompt.
-      if (Platform.isAndroid) {
-        final bonded = await _ensureBleBond(target);
-        if (!bonded) {
-          throw StateError('Bluetooth pairing was not completed');
-        }
-      }
 
       await _discoverServices(target);
     } catch (e) {
@@ -615,6 +603,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       connected = false;
       syncing = false;
       dashboardReady = false;
+      controlCommandBusy = false;
+      controlCommandName = '';
       voltage = '--';
       hotsideTemp = '--';
       phoneBatteryTemp = '--';
@@ -625,54 +615,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       resetReason = 'UNKNOWN';
       notice = 'Device disconnected.';
     });
-  }
-
-  Future<bool> _ensureBleBond(BluetoothDevice target) async {
-    if (!Platform.isAndroid) return true;
-
-    BluetoothBondState? current;
-    try {
-      current = await target.bondState.first.timeout(
-        const Duration(seconds: 2),
-      );
-      if (current == BluetoothBondState.bonded) {
-        return true;
-      }
-    } catch (e) {
-      debugPrint('BLE bond state read: $e');
-    }
-
-    await bondStateSub?.cancel();
-    bondStateSub = null;
-
-    final completer = Completer<bool>();
-    bondStateSub = target.bondState.listen((state) {
-      if (state == BluetoothBondState.bonded) {
-        if (!completer.isCompleted) completer.complete(true);
-      }
-    });
-    target.cancelWhenDisconnected(bondStateSub!);
-
-    try {
-      // Force the Android system pairing dialog now instead of waiting for the
-      // first encrypted GATT write to trigger it mid-handshake. If Android is
-      // already in the bonding state, simply wait for the existing operation.
-      if (current != BluetoothBondState.bonding) {
-        await target.createBond();
-      }
-
-      final bonded = await completer.future.timeout(
-        const Duration(seconds: 15),
-        onTimeout: () => false,
-      );
-      return bonded;
-    } catch (e) {
-      debugPrint('BLE createBond: $e');
-      return false;
-    } finally {
-      await bondStateSub?.cancel();
-      bondStateSub = null;
-    }
   }
 
   Future<void> _discoverServices(BluetoothDevice target) async {
@@ -777,6 +719,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
       await Future<void>.delayed(const Duration(milliseconds: 40));
     }
 
+    // If encrypted writes require Android bonding on this device, create the
+    // bond and retry the handshake exactly once. This is a recovery path only;
+    // already-bonded devices do not see another pairing step.
+    if ((!_syncReadyAck || !fullSyncReceived || !_bleSessionReady) && Platform.isAndroid) {
+      try {
+        await target.createBond();
+        await Future<void>.delayed(const Duration(milliseconds: 450));
+        _syncReadyAck = false;
+        fullSyncReceived = false;
+        _bleSessionReady = false;
+        await sendCommand('SYNC', showError: false);
+        final retrySyncDeadline = DateTime.now().add(const Duration(milliseconds: 1500));
+        while (mounted && !fullSyncReceived && DateTime.now().isBefore(retrySyncDeadline)) {
+          await Future<void>.delayed(const Duration(milliseconds: 35));
+        }
+        fullSyncReceived = false;
+        await sendCommand('SYNC_READY', showError: false);
+        final retryReadyDeadline = DateTime.now().add(const Duration(milliseconds: 3000));
+        while (mounted &&
+            !(_syncReadyAck && fullSyncReceived && _bleSessionReady) &&
+            DateTime.now().isBefore(retryReadyDeadline)) {
+          await Future<void>.delayed(const Duration(milliseconds: 40));
+        }
+      } catch (e) {
+        debugPrint('BLE bond recovery: $e');
+      }
+    }
+
     if (!_syncReadyAck || !fullSyncReceived || !_bleSessionReady) {
       throw StateError('BLE session not ready');
     }
@@ -825,7 +795,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Future<void> _disconnect() async {
-    _cancelOptimisticCommands();
     try {
       await device?.disconnect();
     } catch (e) {
@@ -853,15 +822,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
       }
 
       final payload = utf8.encode('$command\n');
+      final canNoResponse = rx!.properties.writeWithoutResponse;
+      final requiresResponse = _requiresResponse(command);
 
       try {
-        // One authenticated write path for every command. The firmware RX
-        // characteristic requires encryption, so do not fall back to
-        // WRITE_NO_RESPONSE here.
-        await rx!.write(payload, withoutResponse: false);
+        await rx!.write(
+          payload,
+          withoutResponse: !requiresResponse && canNoResponse,
+        );
         if (!completer.isCompleted) completer.complete(true);
       } catch (e) {
-        debugPrint('BLE secure write $command: $e');
+        debugPrint('BLE write $command: $e');
+
+        // Android may reject the first encrypted session write until the
+        // peripheral is bonded. Recover once for SYNC/SYNC_READY only.
+        final normalizedCommand = command.trim().toUpperCase();
+        if (Platform.isAndroid &&
+            (normalizedCommand == 'SYNC' || normalizedCommand == 'SYNC_READY') &&
+            device != null) {
+          try {
+            await device!.createBond();
+            await Future<void>.delayed(const Duration(milliseconds: 400));
+            await rx!.write(
+              payload,
+              withoutResponse: !requiresResponse && canNoResponse,
+            );
+            if (!completer.isCompleted) completer.complete(true);
+            return;
+          } catch (bondError) {
+            debugPrint('BLE bond recovery for $command: $bondError');
+          }
+        }
+
         if (!completer.isCompleted) completer.complete(false);
       }
     }).catchError((_) {
@@ -943,6 +935,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
       await Future<void>.delayed(const Duration(milliseconds: 35));
     }
     return predicate();
+  }
+
+  bool _requiresResponse(String command) {
+    final c = command.trim().toUpperCase();
+    return c == 'SYNC' ||
+        c == 'SYNC_READY' ||
+        c == 'CLOUDOTA' ||
+        c == 'OTAENTER' ||
+        c.startsWith('VOLTAGE:') ||
+        c.startsWith('SSID:') ||
+        c.startsWith('PASS:') ||
+        c.startsWith('URL:') ||
+        c.startsWith('VERSION:') ||
+        c.startsWith('FAN:') ||
+        c.startsWith('PELTIER:') ||
+        c.startsWith('ADAPTIVE:') ||
+        c.startsWith('FANSPEED:') ||
+        c.startsWith('HOTLIMIT:') ||
+        c.startsWith('BATT5:') ||
+        c.startsWith('BATT12:') ||
+        c.startsWith('RESET:') ||
+        c.startsWith('PHONE:BT=');
   }
 
   void _parseIncoming(String incoming) {
@@ -1046,11 +1060,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     // Hold every field until the final verified sync is complete.
     if (!dashboardReady) {
       _pendingTelemetry.addAll(values);
-      // BLE_SESSION is also consumed by the pre-dashboard handshake.
-      // Keep the session gate live while the rest of telemetry is staged.
-      if (values.containsKey('BLE_SESSION')) {
-        _bleSessionReady = values['BLE_SESSION'] == 'READY';
-      }
       return;
     }
 
@@ -1211,305 +1220,267 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
-  void _scheduleFreshDeviceSync({Duration delay = const Duration(milliseconds: 280)}) {
-    if (!connected || !_bleReady || !_bleSessionReady) return;
+  bool _beginControlCommand(String name) {
+    if (!connected || controlCommandBusy) return false;
+    if (mounted) {
+      setState(() {
+        controlCommandBusy = true;
+        controlCommandName = name;
+      });
+    }
+    return true;
+  }
 
-    _syncDebounceTimer?.cancel();
-    _syncDebounceTimer = Timer(delay, () async {
-      if (_syncInFlight) {
-        _syncAgain = true;
-        return;
-      }
-
-      _syncInFlight = true;
-      try {
-        await _requestFreshSync(timeout: const Duration(seconds: 2));
-      } finally {
-        _syncInFlight = false;
-        if (_syncAgain) {
-          _syncAgain = false;
-          _scheduleFreshDeviceSync();
-        }
-      }
+  void _endControlCommand() {
+    if (!mounted) return;
+    setState(() {
+      controlCommandBusy = false;
+      controlCommandName = '';
     });
   }
 
-  void _queueOptimisticCommand(
-    String key,
-    String command, {
-    Duration debounce = Duration.zero,
-    String? failureMessage,
-  }) {
-    if (!connected || !_bleReady || !_bleSessionReady) return;
+  Future<bool> _sendAndConfirm(
+    String command,
+    bool Function() predicate, {
+    Duration timeout = const Duration(seconds: 3),
+  }) async {
+    final accepted = await _sendAndWaitAck(
+      command,
+      showError: false,
+      timeout: timeout,
+    );
+    if (!accepted) return false;
 
-    // The debounce argument is intentionally ignored for runtime controls.
-    // Commands are expected to feel immediate; latest-state coalescing below
-    // handles rapid taps without making the UI wait.
-    _pendingCommands[key] = command;
-    if (failureMessage != null) {
-      _commandFailureMessages[key] = failureMessage;
-    }
+    await Future<void>.delayed(const Duration(milliseconds: 260));
 
-    _flushOptimisticCommand(key);
-  }
+    final synced = await _requestFreshSync(timeout: timeout);
+    if (!synced) return false;
 
-  void _flushOptimisticCommand(String key) {
-    if (_commandInFlight.contains(key)) return;
-    if (!connected || !_bleReady || !_bleSessionReady) return;
-
-    final command = _pendingCommands.remove(key);
-    if (command == null) return;
-
-    _commandInFlight.add(key);
-
-    () async {
-      final sent = await sendCommand(command, showError: false);
-      _commandInFlight.remove(key);
-
-      if (!sent && mounted) {
-        final message = _commandFailureMessages[key];
-        if (message != null) {
-          _showSnackBar(message, color: Colors.orangeAccent);
-        }
-      }
-
-      // Never block the next tap. Reconcile in the background so the
-      // firmware remains the final source of truth.
-      _scheduleFreshDeviceSync(delay: const Duration(milliseconds: 140));
-
-      // A newer tap may have arrived while the previous BLE write was in
-      // flight. Send only that newest pending state next.
-      if (_pendingCommands.containsKey(key)) {
-        _flushOptimisticCommand(key);
-      }
-    }();
-  }
-
-  void _cancelOptimisticCommands() {
-    _pendingCommands.clear();
-    _commandFailureMessages.clear();
-    _syncDebounceTimer?.cancel();
-    _syncAgain = false;
+    return predicate();
   }
 
   Future<void> _requestVoltage(String target) async {
-    if (!connected || adaptiveOn || !isVoltageCommand(target)) return;
-    if (target == voltage) return;
-
-    if (mounted) {
-      setState(() {
-        // Instant UI response. Firmware telemetry can correct this if the
-        // command is rejected or safety logic forces another voltage.
-        voltage = target;
-      });
+    if (!connected ||
+        adaptiveOn ||
+        voltageGuardActive ||
+        controlCommandBusy ||
+        !isVoltageCommand(target)) {
+      return;
     }
+    if (target == voltage) return;
+    if (!_beginControlCommand('Voltage')) return;
 
-    _queueOptimisticCommand(
-      'VOLTAGE',
+    try {
+      if (mounted) setState(() => voltageGuardActive = true);
+    voltageGuardTimer?.cancel();
+    voltageGuardTimer = Timer(voltageGuardDuration, () {
+      if (mounted) setState(() => voltageGuardActive = false);
+    });
+
+    final accepted = await _sendAndConfirm(
       'VOLTAGE:$target',
-      debounce: const Duration(milliseconds: 140),
-      failureMessage: 'Voltage command could not be sent.',
+      () => voltage == target,
+      timeout: const Duration(seconds: 3),
     );
+      if (!accepted) {
+        voltageGuardTimer?.cancel();
+        if (mounted) setState(() => voltageGuardActive = false);
+      }
+    } finally {
+      _endControlCommand();
+    }
   }
 
   Future<void> _toggleFan(bool enabled) async {
-    if (!connected || adaptiveOn) return;
-
-    if (mounted) {
-      setState(() => fanOn = enabled);
+    if (!connected || adaptiveOn || fanCommandBusy || controlCommandBusy) return;
+    if (!_beginControlCommand('Fan')) return;
+    if (mounted) setState(() => fanCommandBusy = true);
+    try {
+      final ok = await _sendAndConfirm(
+        enabled ? 'FAN:ON' : 'FAN:OFF',
+        () => fanOn == enabled,
+      );
+      if (!ok && mounted) {
+        _showSnackBar('Fan change was not confirmed by the device.', color: Colors.orangeAccent);
+      }
+    } finally {
+      if (mounted) setState(() => fanCommandBusy = false);
+      _endControlCommand();
     }
-
-    _queueOptimisticCommand(
-      'FAN',
-      enabled ? 'FAN:ON' : 'FAN:OFF',
-      debounce: const Duration(milliseconds: 70),
-      failureMessage: 'Fan command could not be sent.',
-    );
   }
 
   Future<void> _togglePeltier(bool enabled) async {
-    if (!connected || adaptiveOn) return;
-
-    if (enabled && !fanOn) {
-      // Reflect the complete requested state immediately. The firmware still
-      // enforces the safety order; FAN:ON is written first and PELTIER:ON is
-      // queued behind it without freezing the UI.
-      if (mounted) {
-        setState(() {
-          fanOn = true;
-          peltierOn = true;
-        });
+    if (!connected || adaptiveOn || peltierCommandBusy || controlCommandBusy) return;
+    if (!_beginControlCommand('Peltier')) return;
+    if (mounted) setState(() => peltierCommandBusy = true);
+    try {
+      if (enabled && !fanOn) {
+        final approved = await showDialog<bool>(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Peltier Safety'),
+            content: const Text('Fan must be running before Peltier can be enabled.'),
+            actions: [
+              TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('BATAL')),
+              FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('NYALAKAN FAN')),
+            ],
+          ),
+        );
+        if (approved != true) return;
+        final fanOk = await _sendAndConfirm('FAN:ON', () => fanOn);
+        if (!fanOk) {
+          _showSnackBar('Fan activation was not confirmed by the device.', color: Colors.orangeAccent);
+          return;
+        }
       }
-      _queueOptimisticCommand(
-        'FAN',
-        'FAN:ON',
-        failureMessage: 'Fan command could not be sent.',
-      );
-      _queueOptimisticCommand(
-        'PELTIER',
-        'PELTIER:ON',
-        failureMessage: 'Peltier command could not be sent.',
-      );
-      return;
-    }
 
-    if (mounted) {
-      setState(() => peltierOn = enabled);
+      final ok = await _sendAndConfirm(
+        enabled ? 'PELTIER:ON' : 'PELTIER:OFF',
+        () => peltierOn == enabled,
+        timeout: const Duration(seconds: 6),
+      );
+      if (!ok && mounted) {
+        _showSnackBar('Peltier change was not confirmed by the device. ${safetyReason == 'NONE' ? '' : safetyReason}', color: Colors.orangeAccent);
+      }
+    } finally {
+      if (mounted) setState(() => peltierCommandBusy = false);
+      _endControlCommand();
     }
-
-    _queueOptimisticCommand(
-      'PELTIER',
-      enabled ? 'PELTIER:ON' : 'PELTIER:OFF',
-      failureMessage: 'Peltier command could not be sent.',
-    );
   }
 
   Future<void> _toggleAdaptive(bool enabled) async {
-    if (!connected) return;
-
-    if (mounted) {
-      setState(() {
-        adaptiveOn = enabled;
-        adaptiveTransitioning = enabled;
-        if (enabled) {
-          // Firmware's documented behavior: Adaptive enters/returns through 5V.
-          voltage = '5V';
-        }
-      });
+    if (!connected ||
+        adaptiveTransitioning ||
+        adaptiveCommandBusy ||
+        controlCommandBusy) {
+      return;
     }
-
-    _queueOptimisticCommand(
-      'ADAPTIVE',
-      enabled ? 'ADAPTIVE:ON' : 'ADAPTIVE:OFF',
-      debounce: const Duration(milliseconds: 100),
-      failureMessage: 'Adaptive Mode command could not be sent.',
-    );
+    if (!_beginControlCommand('Adaptive Mode')) return;
+    if (mounted) setState(() {
+      adaptiveTransitioning = true;
+      adaptiveCommandBusy = true;
+    });
+    try {
+      final ok = await _sendAndConfirm(
+        enabled ? 'ADAPTIVE:ON' : 'ADAPTIVE:OFF',
+        () => adaptiveOn == enabled,
+        timeout: const Duration(seconds: 4),
+      );
+      if (!ok && mounted) {
+        _showSnackBar('Adaptive Mode change was not confirmed by the device.', color: Colors.orangeAccent);
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          adaptiveCommandBusy = false;
+          if (!adaptiveOn) adaptiveTransitioning = false;
+        });
+      }
+      _endControlCommand();
+    }
   }
 
   Future<void> _setRgb(bool enabled) async {
-    if (!connected) return;
-
-    if (mounted) setState(() => rgbOn = enabled);
-
-    _queueOptimisticCommand(
-      'RGB',
-      enabled ? 'RGB:ON' : 'RGB:OFF',
-      failureMessage: 'LED power command could not be sent.',
-    );
+    if (!connected || controlCommandBusy) return;
+    if (!_beginControlCommand('LED Power')) return;
+    try {
+      final ok = await _sendAndConfirm(
+        'RGB:' + (enabled ? 'ON' : 'OFF'),
+        () => rgbOn == enabled,
+      );
+      if (!ok && mounted) {
+        _showSnackBar('LED power change was not confirmed by the device.');
+      }
+    } finally {
+      _endControlCommand();
+    }
   }
 
   Future<void> _setMode(int mode) async {
-    if (!connected) return;
-
-    final next = mode.clamp(0, 7).toInt();
-    if (mounted) setState(() => rgbMode = next);
-
-    _queueOptimisticCommand(
-      'MODE',
-      'MODE:$next',
-      failureMessage: 'LED mode command could not be sent.',
-    );
+    if (!connected || controlCommandBusy) return;
+    if (!_beginControlCommand('LED Mode')) return;
+    try {
+      final next = mode.clamp(0, 7).toInt();
+      final ok = await _sendAndConfirm('MODE:$next', () => rgbMode == next);
+      if (!ok && mounted) {
+        _showSnackBar('LED mode change was not confirmed by the device.');
+      }
+    } finally {
+      _endControlCommand();
+    }
   }
 
   Future<void> _setBrightness(double value) async {
-    if (!connected) return;
-
-    final next = value.round().clamp(0, 100).toInt();
-    if (mounted) {
-      setState(() {
-        brightness = next;
-        brightnessDraft = next;
-      });
+    if (!connected || controlCommandBusy) return;
+    if (!_beginControlCommand('LED Brightness')) return;
+    try {
+      final next = value.round().clamp(0, 100).toInt();
+      final ok = await _sendAndConfirm('BRIGHTNESS:$next', () => brightness == next);
+      if (!ok && mounted) {
+        setState(() => brightnessDraft = brightness);
+        _showSnackBar('LED brightness change was not confirmed by the device.');
+      }
+    } finally {
+      _endControlCommand();
     }
-
-    _queueOptimisticCommand(
-      'BRIGHTNESS',
-      'BRIGHTNESS:$next',
-      debounce: const Duration(milliseconds: 120),
-      failureMessage: 'LED brightness command could not be sent.',
-    );
   }
 
   Future<void> _setFanSpeed(double value) async {
-    if (!connected || adaptiveOn || voltage != '12V') return;
-
-    final next = ((value / 10).round() * 10)
-        .clamp(fanSpeedMin, fanSpeedMax)
-        .toInt();
-    if (mounted) {
-      setState(() {
-        fanSpeed = next;
-        fanSpeedDraft = next;
-      });
+    if (!connected || adaptiveOn || voltage != '12V' || controlCommandBusy) return;
+    if (!_beginControlCommand('Fan Speed')) return;
+    try {
+      final next = ((value / 10).round() * 10)
+          .clamp(fanSpeedMin, fanSpeedMax)
+          .toInt();
+      final ok = await _sendAndConfirm('FANSPEED:$next', () => fanSpeed == next);
+      if (!ok && mounted) {
+        setState(() => fanSpeedDraft = fanSpeed);
+        _showSnackBar('Fan speed change was not confirmed by the device.');
+      }
+    } finally {
+      _endControlCommand();
     }
-
-    _queueOptimisticCommand(
-      'FANSPEED',
-      'FANSPEED:$next',
-      debounce: const Duration(milliseconds: 120),
-      failureMessage: 'Fan speed command could not be sent.',
-    );
   }
 
   Future<void> _setHotLimit(int value) async {
-    if (!connected || adaptiveOn) return;
-
-    final next = value.clamp(40, 50).toInt();
-    if (mounted) {
-      setState(() {
-        hotLimit = next;
-        hotLimitDraft = next;
-      });
+    if (!connected || adaptiveOn || controlCommandBusy) return;
+    if (!_beginControlCommand('Hotside Limit')) return;
+    try {
+      final next = value.clamp(40, 50).toInt();
+      if (mounted) setState(() => hotLimitDraft = next);
+      final ok = await _sendAndConfirm('HOTLIMIT:$next', () => hotLimit == next);
+      if (!ok && mounted) setState(() => hotLimitDraft = hotLimit);
+    } finally {
+      _endControlCommand();
     }
-
-    _queueOptimisticCommand(
-      'HOTLIMIT',
-      'HOTLIMIT:$next',
-      debounce: const Duration(milliseconds: 120),
-      failureMessage: 'Hotside limit command could not be sent.',
-    );
   }
 
   Future<void> _setBattery5(int value) async {
-    if (!connected || adaptiveOn) return;
-
-    final next = value.clamp(20, 48).toInt();
-    if (next >= battery12Limit - 1) return;
-
-    if (mounted) {
-      setState(() {
-        battery5Limit = next;
-        battery5Draft = next;
-      });
+    if (!connected || adaptiveOn || controlCommandBusy) return;
+    if (!_beginControlCommand('Battery 5V Ceiling')) return;
+    try {
+      final next = value.clamp(20, 48).toInt();
+      if (next >= battery12Limit - 1) return;
+      if (mounted) setState(() => battery5Draft = next);
+      final ok = await _sendAndConfirm('BATT5:$next', () => battery5Limit == next);
+      if (!ok && mounted) setState(() => battery5Draft = battery5Limit);
+    } finally {
+      _endControlCommand();
     }
-
-    _queueOptimisticCommand(
-      'BATT5',
-      'BATT5:$next',
-      debounce: const Duration(milliseconds: 120),
-      failureMessage: 'Battery 5V limit command could not be sent.',
-    );
   }
 
   Future<void> _setBattery12(int value) async {
-    if (!connected || adaptiveOn) return;
-
-    final next = value.clamp(22, 50).toInt();
-    if (next <= battery5Limit + 1) return;
-
-    if (mounted) {
-      setState(() {
-        battery12Limit = next;
-        battery12Draft = next;
-      });
+    if (!connected || adaptiveOn || controlCommandBusy) return;
+    if (!_beginControlCommand('Battery 12V Floor')) return;
+    try {
+      final next = value.clamp(22, 50).toInt();
+      if (next <= battery5Limit + 1) return;
+      if (mounted) setState(() => battery12Draft = next);
+      final ok = await _sendAndConfirm('BATT12:$next', () => battery12Limit == next);
+      if (!ok && mounted) setState(() => battery12Draft = battery12Limit);
+    } finally {
+      _endControlCommand();
     }
-
-    _queueOptimisticCommand(
-      'BATT12',
-      'BATT12:$next',
-      debounce: const Duration(milliseconds: 120),
-      failureMessage: 'Battery 12V limit command could not be sent.',
-    );
   }
 
   Future<void> _sendColor(String command, TextEditingController controller) async {
@@ -1518,35 +1489,41 @@ class _DashboardScreenState extends State<DashboardScreen> {
       _showSnackBar('Enter a valid hex color in #RRGGBB format.');
       return;
     }
-    if (!connected) return;
-
-    _queueOptimisticCommand(
-      command,
-      '$command:${value.substring(1)}',
-      failureMessage: 'LED color command could not be sent.',
-    );
+    if (!connected || controlCommandBusy) return;
+    if (!_beginControlCommand('LED Color')) return;
+    try {
+      final ok = await _sendAndWaitAck(
+        command + ':' + value.substring(1),
+        showError: false,
+      );
+      if (!ok && mounted) {
+        _showSnackBar('Color change was not confirmed by the device.');
+      }
+    } finally {
+      _endControlCommand();
+    }
   }
 
   Future<void> _resetTemperatureSettings() async {
-    if (!connected || adaptiveOn) return;
-
-    _queueOptimisticCommand(
-      'RESET_TEMPERATURE',
-      'RESET:TEMPERATURE',
-      debounce: const Duration(milliseconds: 50),
-      failureMessage: 'Temperature reset command could not be sent.',
-    );
+    if (!connected || adaptiveOn || controlCommandBusy) return;
+    if (!_beginControlCommand('Reset Temperature')) return;
+    try {
+      final ok = await _sendAndWaitAck('RESET:TEMPERATURE', showError: false);
+      if (!ok && mounted) _showSnackBar('Temperature reset was not confirmed by the device.');
+    } finally {
+      _endControlCommand();
+    }
   }
 
   Future<void> _resetVoltageColors() async {
-    if (!connected) return;
-
-    _queueOptimisticCommand(
-      'RESET_VOLTAGECOLORS',
-      'RESET:VOLTAGECOLORS',
-      debounce: const Duration(milliseconds: 50),
-      failureMessage: 'Voltage color reset command could not be sent.',
-    );
+    if (!connected || controlCommandBusy) return;
+    if (!_beginControlCommand('Reset Voltage Colors')) return;
+    try {
+      final ok = await _sendAndWaitAck('RESET:VOLTAGECOLORS', showError: false);
+      if (!ok && mounted) _showSnackBar('Voltage color reset was not confirmed by the device.');
+    } finally {
+      _endControlCommand();
+    }
   }
 
   Future<bool> _requestFreshSync({Duration timeout = const Duration(seconds: 3)}) async {
@@ -1771,31 +1748,49 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
-  Widget _homeIndicator({
-    required String label,
-    required String value,
+  Widget _homeMetric(
+    String label,
+    String value,
+    String unit, {
     required Color color,
     required IconData icon,
   }) {
+    final display = value == '--' ? '--' : value + unit;
+    final active = value != '--';
+
     return Container(
-      height: 47,
-      margin: const EdgeInsets.only(bottom: 2),
+      width: double.infinity,
+      height: 52,
+      margin: const EdgeInsets.only(bottom: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1D1D20),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: active ? color.withValues(alpha: 0.24) : Colors.white12,
+          width: 1.0,
+        ),
+      ),
       child: Row(
         children: [
           Container(
-            width: 39,
-            height: 39,
+            width: 38,
+            height: 38,
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.10),
+              color: color.withValues(alpha: active ? 0.10 : 0.06),
               borderRadius: BorderRadius.circular(11),
               border: Border.all(
-                color: color.withValues(alpha: 0.55),
-                width: 1.15,
+                color: color.withValues(alpha: active ? 0.48 : 0.24),
+                width: 1.1,
               ),
             ),
-            child: Icon(icon, size: 21, color: color),
+            child: Icon(
+              icon,
+              size: 20,
+              color: active ? color : Colors.white38,
+            ),
           ),
-          const SizedBox(width: 9),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -1807,20 +1802,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: Colors.white54,
-                    fontSize: 7.4,
+                    fontSize: 7.5,
                     fontWeight: FontWeight.w900,
-                    letterSpacing: 0.58,
+                    letterSpacing: 0.62,
                     height: 1.0,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 3),
                 Text(
-                  value,
+                  display,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    color: value == '--' ? Colors.white38 : color,
-                    fontSize: 14.5,
+                    color: active ? color : Colors.white38,
+                    fontSize: 15.5,
                     fontWeight: FontWeight.w900,
                     height: 0.95,
                     letterSpacing: -0.20,
@@ -1834,66 +1829,33 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  Widget _homeStateChip({
+    required String label,
+    required bool value,
+    required IconData icon,
+  }) {
+    return _homeMetric(
+      label,
+      value ? 'ON' : 'OFF',
+      '',
+      color: value ? Colors.cyanAccent : Colors.white70,
+      icon: icon,
+    );
+  }
+
   Widget _homeFanSpeed() {
     final enabled = connected && voltage == '12V' && !adaptiveOn;
-    const color = Colors.purpleAccent;
-
-    return SizedBox(
-      height: 47,
-      child: Row(
-        children: [
-          Container(
-            width: 39,
-            height: 39,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: enabled ? 0.11 : 0.07),
-              borderRadius: BorderRadius.circular(11),
-              border: Border.all(
-                color: color.withValues(alpha: enabled ? 0.55 : 0.28),
-                width: 1.15,
-              ),
-            ),
-            child: Icon(
-              PhosphorIconsBold.gauge,
-              size: 21,
-              color: enabled ? color : Colors.white38,
-            ),
-          ),
-          const SizedBox(width: 9),
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'FAN SPEED',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Colors.white54,
-                    fontSize: 7.4,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 0.58,
-                    height: 1.0,
-                  ),
-                ),
-                Text(
-                  enabled ? '$fanSpeed%' : '--',
-                  style: TextStyle(
-                    color: enabled ? color : Colors.white38,
-                    fontSize: 14.5,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: -0.20,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+    return _homeMetric(
+      'FAN SPEED',
+      enabled ? '$fanSpeed%' : '--',
+      '',
+      color: enabled ? Colors.cyanAccent : Colors.white38,
+      icon: PhosphorIconsBold.gauge,
     );
   }
 
   String _professionalNotice() {
+
     final custom = notice.trim();
     if (custom.isNotEmpty) return custom;
 
@@ -1935,78 +1897,78 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ? PhosphorIconsBold.warning
         : PhosphorIconsBold.shieldCheck;
     final color = alert ? Colors.orangeAccent : Colors.greenAccent;
-
-    return SizedBox(
-      height: 44,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: alert ? 0.10 : 0.07),
-          borderRadius: BorderRadius.circular(13),
-          border: Border.all(color: color.withValues(alpha: 0.25)),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 26,
-              height: 26,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(icon, size: 14, color: color),
+    return Container(
+      width: double.infinity,
+      constraints: const BoxConstraints(minHeight: 52),
+      padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: alert ? 0.10 : 0.07),
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 28,
+            height: 28,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(9),
             ),
-            const SizedBox(width: 7),
-            Text(
-              alert ? 'ALERT' : 'STATUS',
+            child: Icon(icon, size: 15, color: color),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  alert ? 'SYSTEM ALERT' : 'SYSTEM STATUS',
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 7.2,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.0,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  _professionalNotice(),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 9.2,
+                    height: 1.2,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+            decoration: BoxDecoration(
+              color: const Color(0x12FFFFFF),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              connected ? 'ONLINE' : 'OFFLINE',
               style: TextStyle(
-                color: color,
-                fontSize: 6.8,
+                color: connected ? Colors.cyanAccent : Colors.white38,
+                fontSize: 6.7,
                 fontWeight: FontWeight.w900,
-                letterSpacing: 0.95,
+                letterSpacing: 0.8,
               ),
             ),
-            const SizedBox(width: 7),
-            const Text(
-              '•',
-              style: TextStyle(color: Colors.white24, fontSize: 10, fontWeight: FontWeight.w900),
-            ),
-            const SizedBox(width: 6),
-            Expanded(
-              child: Text(
-                _professionalNotice(),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 8.8,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-            const SizedBox(width: 7),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
-              decoration: BoxDecoration(
-                color: const Color(0x12FFFFFF),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                connected ? 'ONLINE' : 'OFFLINE',
-                style: TextStyle(
-                  color: connected ? Colors.cyanAccent : Colors.white38,
-                  fontSize: 6.5,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 0.8,
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
+
 
   Widget _card({required Widget child, EdgeInsetsGeometry? padding}) {
     return Container(
@@ -2091,7 +2053,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _voltageRow(String target, String mode) {
     final active = voltage == target;
-    final disabled = !connected || adaptiveOn;
+    final disabled = !connected || adaptiveOn || voltageGuardActive || adaptiveTransitioning;
     return InkWell(
       borderRadius: BorderRadius.circular(15),
       onTap: disabled ? null : () => _requestVoltage(target),
@@ -2159,6 +2121,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ],
           ),
         ),
+        if (voltageGuardActive)
+          const Padding(
+            padding: EdgeInsets.only(left: 5, top: 2),
+            child: Text('Voltage guard active — awaiting device confirmation.', style: TextStyle(color: Colors.black45, fontSize: 10, fontWeight: FontWeight.w700)),
+          ),
         _card(
           child: Row(
             children: [
@@ -2178,7 +2145,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildControlTab({Key? key}) {
-    final speedEnabled = connected && !adaptiveOn && voltage == '12V';
+    final speedEnabled = connected && !adaptiveOn && voltage == '12V' && !controlCommandBusy;
     final fanLocked = connected && !adaptiveOn && peltierOn;
     return KeyedSubtree(key: key, child: _smoothList(
       storageKey: 'control',
@@ -2193,7 +2160,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 subtitle: fanLocked ? 'Fan is ON • locked while Peltier is ON' : (fanOn ? 'Fan is ON' : 'Fan is OFF'),
                 icon: PhosphorIconsBold.wind,
                 value: fanOn,
-                enabled: connected && !adaptiveOn && !peltierOn,
+                enabled: connected && !adaptiveOn && !peltierOn && !controlCommandBusy,
                 onChanged: _toggleFan,
               ),
               const Divider(height: 20),
@@ -2202,7 +2169,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 subtitle: peltierOn ? 'Peltier is ON • 5 s soft-start' : 'Peltier is OFF',
                 icon: PhosphorIconsBold.snowflake,
                 value: peltierOn,
-                enabled: connected && !adaptiveOn,
+                enabled: connected && !adaptiveOn && !controlCommandBusy,
                 onChanged: _togglePeltier,
               ),
               const Divider(height: 20),
@@ -2322,7 +2289,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Switch(
                 value: connected && adaptiveOn,
                 activeThumbColor: Colors.green,
-                onChanged: connected ? _toggleAdaptive : null,
+                onChanged: connected && !adaptiveTransitioning && !controlCommandBusy ? _toggleAdaptive : null,
               ),
             ],
           ),
@@ -2475,8 +2442,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       value: brightness.clamp(0, 100).toDouble(),
                       activeColor: Colors.black,
                       inactiveColor: Colors.black12,
-                      onChanged: connected ? (v) => setState(() => brightness = v.round()) : null,
-                      onChangeEnd: connected ? _setBrightness : null,
+                      onChanged: connected && !controlCommandBusy ? (v) => setState(() => brightness = v.round()) : null,
+                      onChangeEnd: connected && !controlCommandBusy ? _setBrightness : null,
                     ),
                   ),
                   SizedBox(width: 42, child: Text('$brightness%', textAlign: TextAlign.right, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900))),
@@ -2641,33 +2608,68 @@ class _DashboardScreenState extends State<DashboardScreen> {
       _ => const SizedBox.shrink(),
     };
 
-    // Keep the existing ACK + fresh-SYNC synchronization pipeline,
-    // but remove the blocking PROCESSING overlay from the UI.
-    return content;
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        content,
+        if (controlCommandBusy) ...[
+          const Positioned.fill(
+            child: AbsorbPointer(
+              absorbing: true,
+              child: ColoredBox(color: Colors.transparent),
+            ),
+          ),
+          Positioned(
+            top: 2,
+            left: 10,
+            right: 10,
+            child: IgnorePointer(
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 7,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF17181C),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  'PROCESSING: ' +
+                      controlCommandName +
+                      ' • awaiting device confirmation...',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
   }
 
-  // HOME: Bluetooth and Settings are header actions only; they intentionally have no icon boxes.
   Widget _buildHomeArea(double height) {
-    final batteryValue =
-        connected && phoneBatteryValid ? '$phoneBatteryTemp°C' : '--';
-    final hotValue = connected && hotsideTemp != '--' ? '$hotsideTemp°C' : '--';
+    final batteryValue = connected && phoneBatteryValid ? phoneBatteryTemp : '--';
+    final hotValue = connected ? hotsideTemp : '--';
     final voltageValue = connected && voltage != '--' ? voltage : '--';
     final adaptiveValue = connected ? (adaptiveOn ? 'ON' : 'OFF') : '--';
-    final peltierValue = connected ? (peltierOn ? 'ON' : 'OFF') : '--';
-    final fanValue = connected ? (fanOn ? 'ON' : 'OFF') : '--';
 
     return SizedBox(
       height: height,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(14, 4, 14, 0),
+        padding: const EdgeInsets.fromLTRB(12, 7, 12, 8),
         child: Column(
           children: [
             SizedBox(
-              height: 48,
+              height: 46,
               child: Row(
                 children: [
                   SizedBox(
-                    width: 46,
+                    width: 44,
                     child: IconButton(
                       padding: EdgeInsets.zero,
                       tooltip: connected ? 'Disconnect' : 'Bluetooth',
@@ -2675,8 +2677,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         connected
                             ? PhosphorIconsBold.bluetoothConnected
                             : PhosphorIconsBold.bluetooth,
-                        color: Colors.white,
-                        size: 30,
+                        color: connected ? Colors.blueAccent : Colors.white,
+                        size: 27,
                       ),
                       onPressed: connected ? _disconnect : _showBluetoothMenu,
                     ),
@@ -2691,26 +2693,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w900,
-                            fontSize: 22,
-                            height: 1.0,
+                            fontSize: 19,
+                            letterSpacing: 0.2,
                           ),
                         ),
-                        SizedBox(height: 3),
+                        SizedBox(height: 1),
                         Text(
                           'DEVELOPED BY HORIZON',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Colors.white38,
-                            fontWeight: FontWeight.w800,
-                            fontSize: 7.2,
-                            letterSpacing: 1.35,
+                            color: Colors.white30,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 6.8,
+                            letterSpacing: 1.25,
                           ),
                         ),
                       ],
                     ),
                   ),
                   SizedBox(
-                    width: 46,
+                    width: 44,
                     child: IconButton(
                       padding: EdgeInsets.zero,
                       tooltip: 'Firmware',
@@ -2732,55 +2734,53 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 children: [
                   Expanded(
                     flex: 10,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        _homeIndicator(
-                          label: 'BATTERY TEMPERATURE',
-                          value: batteryValue,
-                          color: Colors.orangeAccent,
-                          icon: PhosphorIconsBold.batteryHigh,
-                        ),
-                        _homeIndicator(
-                          label: 'HOTSIDE TEMPERATURE',
-                          value: hotValue,
-                          color: safety == 'FAULT'
-                              ? Colors.redAccent
-                              : Colors.cyanAccent,
-                          icon: PhosphorIconsBold.thermometer,
-                        ),
-                        _homeIndicator(
-                          label: 'VOLTAGE INDICATOR',
-                          value: voltageValue,
-                          color: Colors.blueAccent,
-                          icon: PhosphorIconsBold.lightning,
-                        ),
-                        _homeIndicator(
-                          label: 'ADAPTIVE MODE',
-                          value: adaptiveValue,
-                          color: Colors.white,
-                          icon: PhosphorIconsBold.sparkle,
-                        ),
-                        _homeIndicator(
-                          label: 'PELTIER',
-                          value: peltierValue,
-                          color: peltierOn && connected
-                              ? Colors.cyanAccent
-                              : Colors.lightBlueAccent,
-                          icon: PhosphorIconsBold.snowflake,
-                        ),
-                        _homeIndicator(
-                          label: 'FAN',
-                          value: fanValue,
-                          color: fanOn && connected
-                              ? Colors.greenAccent
-                              : Colors.lightGreenAccent,
-                          icon: PhosphorIconsBold.wind,
-                        ),
-                        _homeFanSpeed(),
-                        const SizedBox(height: 4),
-                        _homeNotify(),
-                      ],
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 2, right: 4),
+                      child: Column(
+                        children: [
+                          _homeMetric(
+                            'BATTERY TEMPERATURE',
+                            batteryValue,
+                            batteryValue == '--' ? '' : '°C',
+                            color: Colors.orangeAccent,
+                            icon: PhosphorIconsBold.batteryHigh,
+                          ),
+                          _homeMetric(
+                            'HOTSIDE TEMPERATURE',
+                            hotValue,
+                            hotValue == '--' ? '' : '°C',
+                            color: safety == 'FAULT'
+                                ? Colors.redAccent
+                                : Colors.cyanAccent,
+                            icon: PhosphorIconsBold.thermometer,
+                          ),
+                          _homeMetric(
+                            'VOLTAGE INDICATOR',
+                            voltageValue,
+                            '',
+                            color: Colors.blueAccent,
+                            icon: PhosphorIconsBold.lightning,
+                          ),
+                          _homeMetric(
+                            'ADAPTIVE MODE',
+                            adaptiveValue,
+                            '',
+                            color: adaptiveOn ? Colors.greenAccent : Colors.white70,
+                            icon: PhosphorIconsBold.sparkle,
+                          ),
+                          _homeStateChip(
+                            label: 'PELTIER SWITCH',
+                            value: peltierOn,
+                            icon: PhosphorIconsBold.snowflake,
+                          ),
+                          _homeStateChip(
+                            label: 'FAN SWITCH',
+                            value: fanOn,
+                            icon: PhosphorIconsBold.wind,
+                          ),
+                          _homeFanSpeed(),
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(width: 6),
@@ -2788,18 +2788,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     flex: 13,
                     child: Align(
                       alignment: Alignment.centerRight,
-                      child: Image.asset(
-                        'assets/jexfyzcooler.png',
-                        width: double.infinity,
-                        height: double.infinity,
-                        fit: BoxFit.contain,
-                        alignment: Alignment.centerRight,
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          final imageHeight =
+                              (constraints.maxHeight * 0.98).clamp(210.0, 360.0).toDouble();
+                          return Padding(
+                            padding: const EdgeInsets.only(left: 2, right: 0),
+                            child: Image.asset(
+                              'assets/jexfyzcooler.png',
+                              height: imageHeight,
+                              fit: BoxFit.contain,
+                              alignment: Alignment.centerRight,
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),
                 ],
               ),
             ),
+            const SizedBox(height: 4),
+            _homeNotify(),
           ],
         ),
       ),
@@ -2807,6 +2817,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _tab(String title, int index) {
+
     final selected = tabIndex == index;
     return Expanded(
       child: Padding(
@@ -2847,7 +2858,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
     final homeHeight =
-        (media.size.height * 0.60).clamp(520.0, 860.0).toDouble();
+        (media.size.height * 0.45).clamp(335.0, 465.0).toDouble();
 
     if (syncing && !dashboardReady) {
       return _buildSyncGate();
@@ -2866,12 +2877,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(30),
+                    top: Radius.circular(34),
                   ),
                 ),
                 child: Column(
                   children: [
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 11),
                     SizedBox(
                       height: 46,
                       child: Padding(
@@ -2895,7 +2906,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         height: 1,
                       ),
                     ),
-                    const SizedBox(height: 3),
+                    const SizedBox(height: 7),
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
