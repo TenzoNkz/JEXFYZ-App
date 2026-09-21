@@ -499,13 +499,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Future<void> _connect(BluetoothDevice target) async {
+    await FlutterBluePlus.stopScan();
+    await Future<void>.delayed(const Duration(milliseconds: 250));
     await connectionSub?.cancel();
     await notificationSub?.cancel();
     batteryTimer?.cancel();
     voltageGuardTimer?.cancel();
 
+    // Never let a previous failed/stalled GATT write block the next session.
+    _writeQueue = Future<void>.value();
+
     try {
-      if (device != null) {
+      if (device != null && device!.remoteId != target.remoteId) {
         await device!.disconnect();
       }
     } catch (_) {}
@@ -644,7 +649,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     BluetoothCharacteristic? discoveredTx;
 
     for (var discoveryAttempt = 0; discoveryAttempt < 2; discoveryAttempt++) {
-      final services = await target.discoverServices();
+      final services = await target.discoverServices().timeout(const Duration(seconds: 8));
       discoveredRx = null;
       discoveredTx = null;
 
@@ -688,7 +693,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
     target.cancelWhenDisconnected(notificationSub!);
 
-    await discoveredTx.setNotifyValue(true);
+    await discoveredTx.setNotifyValue(true).timeout(const Duration(seconds: 5));
     await Future<void>.delayed(const Duration(milliseconds: 220));
 
     _bleReady = true;
@@ -824,6 +829,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  Future<bool> _ensureBleBondForProtectedWrite(BluetoothDevice target) async {
+    if (!Platform.isAndroid) return true;
+
+    BluetoothBondState state = BluetoothBondState.none;
+    try {
+      state = await target.bondState.first.timeout(const Duration(seconds: 2));
+      if (state == BluetoothBondState.bonded) return true;
+    } catch (e) {
+      debugPrint('BLE bond state: $e');
+    }
+
+    await bondStateSub?.cancel();
+    final completer = Completer<bool>();
+    bondStateSub = target.bondState.listen((next) {
+      if (next == BluetoothBondState.bonded && !completer.isCompleted) {
+        completer.complete(true);
+      }
+    });
+
+    try {
+      if (state != BluetoothBondState.bonding) {
+        await target.createBond();
+      }
+      return await completer.future.timeout(
+        const Duration(seconds: 12),
+        onTimeout: () => false,
+      );
+    } catch (e) {
+      debugPrint('BLE createBond: $e');
+      return false;
+    } finally {
+      await bondStateSub?.cancel();
+      bondStateSub = null;
+    }
+  }
+
   Future<bool> sendCommand(String command, {bool showError = true}) {
     final completer = Completer<bool>();
     _writeQueue = _writeQueue.then((_) async {
@@ -851,7 +892,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         await rx!.write(
           payload,
           withoutResponse: !requiresResponse && canNoResponse,
-        );
+        ).timeout(const Duration(seconds: 4));
         if (!completer.isCompleted) completer.complete(true);
       } catch (e) {
         debugPrint('BLE write $command: $e');
@@ -863,14 +904,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
             (normalizedCommand == 'SYNC' || normalizedCommand == 'SYNC_READY') &&
             device != null) {
           try {
-            await device!.createBond();
-            await Future<void>.delayed(const Duration(milliseconds: 400));
-            await rx!.write(
-              payload,
-              withoutResponse: !requiresResponse && canNoResponse,
-            );
-            if (!completer.isCompleted) completer.complete(true);
-            return;
+            final bonded = await _ensureBleBondForProtectedWrite(device!);
+            if (bonded) {
+              await Future<void>.delayed(const Duration(milliseconds: 350));
+              await rx!.write(
+                payload,
+                withoutResponse: !requiresResponse && canNoResponse,
+              ).timeout(const Duration(seconds: 4));
+              if (!completer.isCompleted) completer.complete(true);
+              return;
+            }
           } catch (bondError) {
             debugPrint('BLE bond recovery for $command: $bondError');
           }
@@ -1738,9 +1781,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           leading: const Icon(PhosphorIconsBold.bluetooth, color: Colors.blueAccent),
                           title: Text(name.isEmpty ? 'JE X FYZ' : name, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                           subtitle: Text(result.device.remoteId.toString(), style: const TextStyle(color: Colors.grey, fontSize: 11)),
-                          onTap: () {
+                          onTap: () async {
+                            await FlutterBluePlus.stopScan();
+                            if (!context.mounted) return;
                             Navigator.pop(context);
-                            _connect(result.device);
+                            await _connect(result.device);
                           },
                         );
                       },
@@ -1780,79 +1825,73 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final display = value == '--' ? '--' : value + unit;
     final active = value != '--';
 
-    return Container(
+    return SizedBox(
       width: double.infinity,
-      height: 40,
-      margin: const EdgeInsets.only(bottom: 2),
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1D1D20),
-        borderRadius: BorderRadius.circular(13),
-        border: Border.all(
-          color: color.withValues(alpha: active ? 0.28 : 0.16),
-          width: 1.0,
-        ),
-      ),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 32,
-            height: 32,
-            child: Center(
-              child: Container(
-                width: 29,
-                height: 29,
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: color.withValues(alpha: 0.50),
-                    width: 1.1,
+      height: 39,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 1),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 34,
+              height: 34,
+              child: Center(
+                child: Container(
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: color.withValues(alpha: 0.52),
+                      width: 1.1,
+                    ),
                   ),
-                ),
-                child: Icon(
-                  icon,
-                  size: 16,
-                  color: color,
+                  child: Icon(
+                    icon,
+                    size: 17,
+                    color: color,
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(width: 7),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Colors.white54,
-                    fontSize: 6.5,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 0.55,
-                    height: 1.0,
+            const SizedBox(width: 7),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white54,
+                      fontSize: 7.0,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.55,
+                      height: 1.0,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  display,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: active ? color : Colors.white38,
-                    fontSize: 13.0,
-                    fontWeight: FontWeight.w900,
-                    height: 0.95,
-                    letterSpacing: -0.15,
+                  const SizedBox(height: 2),
+                  Text(
+                    display,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: active ? color : Colors.white38,
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w900,
+                      height: 0.95,
+                      letterSpacing: -0.15,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -1884,56 +1923,97 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   String _professionalNotice() {
-
     final custom = notice.trim();
     if (custom.isNotEmpty) return custom;
+
+    if (_bleConnecting) return 'Bluetooth: connecting to JE X FYZ...';
+    if (syncing && !dashboardReady) return 'BLE: synchronizing device state...';
 
     switch (safetyReason) {
       case 'WAITING_FOR_NTC':
       case 'WAITING_FOR_SENSOR_VALIDATION':
-        return 'Validating temperature sensors...';
+        return 'Temperature sensors: validating...';
       case 'NTC_ERROR':
-        return 'Temperature sensor validation failed. Cooling is locked for safety.';
+        return 'ERROR • NTC validation failed • Cooling locked';
       case 'HOTSIDE_PROTECTION':
-        return 'Hotside protection is active. Peltier output is temporarily disabled.';
+        return 'WARNING • Hotside protection active • Peltier paused';
       case 'FAN_REQUIRED':
-        return 'Fan must be running before Peltier can be enabled.';
+        return 'WARNING • Fan required before Peltier';
       case 'PELTIER_ON':
-        return 'Fan control is locked while Peltier is active.';
+        return 'INFO • Fan control locked while Peltier is ON';
       case 'ADAPTIVE_ACTIVE':
-        return 'Manual cooling controls are locked while Adaptive Mode is active.';
+        return 'INFO • Manual cooling controls locked • Adaptive ON';
       case 'MANUAL_12V_ONLY':
-        return 'Fan speed control is available only in manual 12V mode.';
+        return 'INFO • Fan speed available in manual 12V only';
       case 'VOLTAGE_GUARD_OR_BUSY':
-        return 'Voltage control is busy. Awaiting device confirmation.';
+        return 'BUSY • Voltage command awaiting confirmation';
       case 'RATE_LIMIT':
-        return 'Command rate limited. Awaiting device confirmation.';
+        return 'WARNING • Command rate limited • Please wait';
       case 'DISCONNECTED':
-        return 'Bluetooth is disconnected. Connect to continue.';
+        return 'ERROR • Bluetooth disconnected';
       case 'NONE':
-        return 'System ready. Device state is synchronized.';
+        return 'OK • System ready • Device state synchronized';
       default:
         return _friendlyReason(safetyReason);
     }
   }
 
+  String _notifyStateLabel() {
+    final custom = notice.trim().toUpperCase();
+    if (custom.contains('FAILED') ||
+        custom.contains('ERROR') ||
+        custom.contains('NOT FOUND') ||
+        custom.contains('DISCONNECTED') ||
+        custom.contains('SERVICE DISCOVERY')) {
+      return 'NOTIFY • ERROR';
+    }
+    if (_bleConnecting) return 'NOTIFY • BLUETOOTH';
+    if (syncing && !dashboardReady) return 'NOTIFY • SYNC';
+    if (safety != 'OK' && safetyReason != 'NONE') return 'NOTIFY • WARNING';
+    return 'NOTIFY';
+  }
+
+  String _notifyStatusLabel() {
+    final custom = notice.trim().toUpperCase();
+    if (custom.contains('FAILED') ||
+        custom.contains('ERROR') ||
+        custom.contains('NOT FOUND') ||
+        custom.contains('DISCONNECTED') ||
+        custom.contains('SERVICE DISCOVERY')) {
+      return 'ERROR';
+    }
+    if (_bleConnecting) return 'CONNECTING';
+    if (syncing && !dashboardReady) return 'SYNCING';
+    return connected ? 'ONLINE' : 'OFFLINE';
+  }
+
   Widget _homeNotify() {
-    final alert = safety != 'OK' &&
-        safetyReason != 'NONE' &&
+    final custom = notice.trim().toUpperCase();
+    final hasError = custom.contains('FAILED') ||
+        custom.contains('ERROR') ||
+        custom.contains('NOT FOUND') ||
+        custom.contains('DISCONNECTED') ||
+        custom.contains('SERVICE DISCOVERY');
+    final warning = safetyReason != 'NONE' &&
         safetyReason != 'WAITING_FOR_NTC' &&
         safetyReason != 'WAITING_FOR_SENSOR_VALIDATION';
-    final icon = alert
-        ? PhosphorIconsBold.warning
-        : PhosphorIconsBold.shieldCheck;
-    final color = alert
-        ? const Color(0xFFFFB86B)
-        : const Color(0xFF63E6BE);
+    final alert = hasError || warning;
+    final icon = hasError
+        ? PhosphorIconsBold.xCircle
+        : alert
+            ? PhosphorIconsBold.warning
+            : PhosphorIconsBold.shieldCheck;
+    final color = hasError
+        ? const Color(0xFFFF6B7A)
+        : alert
+            ? const Color(0xFFFFC857)
+            : const Color(0xFF63E6BE);
     return Container(
       width: double.infinity,
-      height: 40,
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+      height: 36,
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: alert ? 0.10 : 0.07),
+        color: color.withValues(alpha: hasError ? 0.12 : 0.07),
         borderRadius: BorderRadius.circular(13),
         border: Border.all(color: color.withValues(alpha: 0.25)),
       ),
@@ -1941,12 +2021,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            width: 32,
-            height: 32,
+            width: 30,
+            height: 30,
             child: Center(
               child: Container(
-                width: 29,
-                height: 29,
+                width: 28,
+                height: 28,
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.13),
                   borderRadius: BorderRadius.circular(8),
@@ -1966,24 +2046,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'NOTIFY',
+                  _notifyStateLabel(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: color,
-                    fontSize: 6.8,
+                    fontSize: 6.6,
                     fontWeight: FontWeight.w900,
-                    letterSpacing: 1.0,
+                    letterSpacing: 0.8,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   _professionalNotice(),
-                  maxLines: 2,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 8.6,
-                    height: 1.15,
-                    fontWeight: FontWeight.w700,
+                    fontSize: 8.7,
+                    height: 1.0,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
               ],
@@ -1997,12 +2079,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
               borderRadius: BorderRadius.circular(7),
             ),
             child: Text(
-              connected ? 'ONLINE' : 'OFFLINE',
+              _notifyStatusLabel(),
               style: TextStyle(
-                color: connected ? Colors.cyanAccent : Colors.white38,
-                fontSize: 6.2,
+                color: hasError
+                    ? const Color(0xFFFF8A98)
+                    : connected
+                        ? Colors.cyanAccent
+                        : Colors.white38,
+                fontSize: 6.1,
                 fontWeight: FontWeight.w900,
-                letterSpacing: 0.8,
+                letterSpacing: 0.75,
               ),
             ),
           ),
@@ -2911,10 +2997,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final homeHeight =
         (media.size.height * 0.45).clamp(335.0, 465.0).toDouble();
 
-    if (syncing && !dashboardReady) {
-      return _buildSyncGate();
-    }
-
     return Scaffold(
       backgroundColor: const Color(0xFF111113),
       body: SafeArea(
@@ -2974,88 +3056,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildSyncGate() {
-    final status =
-        notice.trim().isEmpty ? 'Synchronizing with JE X FYZ...' : notice.trim();
-
-    return Scaffold(
-      backgroundColor: const Color(0xFF111113),
-      body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  PhosphorIconsBold.arrowsClockwise,
-                  color: Colors.blueAccent,
-                  size: 46,
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  headerName,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 0.2,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  status,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  'Reading the complete device state before showing the dashboard.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white38,
-                    fontSize: 11,
-                    height: 1.35,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 7,
-                  ),
-                  decoration: BoxDecoration(
-                    color: const Color(0x0FFFFFFF),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: const Color(0x18FFFFFF),
-                    ),
-                  ),
-                  child: const Text(
-                    'SYNC IN PROGRESS • CONTROLS LOCKED',
-                    style: TextStyle(
-                      color: Colors.white54,
-                      fontSize: 8.5,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.8,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 
 }
-
 
 class StaticSwitcher extends StatelessWidget {
   final Widget child;
