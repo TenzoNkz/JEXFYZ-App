@@ -1756,59 +1756,120 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required IconData icon,
   }) {
     final display = value == '--' ? '--' : value + unit;
+
     return Expanded(
       child: Container(
-        constraints: const BoxConstraints(minHeight: 48),
+        constraints: const BoxConstraints(minHeight: 0),
         padding: const EdgeInsets.fromLTRB(8, 6, 8, 6),
         decoration: BoxDecoration(
           color: const Color(0x0EFFFFFF),
           borderRadius: BorderRadius.circular(15),
           border: Border.all(color: const Color(0x14FFFFFF)),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 26,
-              height: 26,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.10),
-                borderRadius: BorderRadius.circular(9),
-                border: Border.all(color: color.withValues(alpha: 0.22)),
-              ),
-              child: Icon(icon, size: 15, color: color),
-            ),
-            const Spacer(),
-            Text(
-              label,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: Colors.white54,
-                fontSize: 6.9,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 0.55,
-              ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              display,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: color,
-                fontSize: 15.5,
-                fontWeight: FontWeight.w900,
-                height: 0.95,
-                letterSpacing: -0.4,
-              ),
-            ),
-          ],
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            // Compact automatically when the parent is too short for the
+            // full metric card. This prevents RenderFlex overflow in tests
+            // and on small-height screens without changing the normal UI.
+            final compact = constraints.maxHeight < 46;
+
+            if (compact) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 20,
+                    height: 20,
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.10),
+                      borderRadius: BorderRadius.circular(7),
+                      border: Border.all(color: color.withValues(alpha: 0.22)),
+                    ),
+                    child: Icon(icon, size: 12, color: color),
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          label,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Colors.white54,
+                            fontSize: 6.0,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 0.45,
+                            height: 1.0,
+                          ),
+                        ),
+                        const SizedBox(height: 1),
+                        Text(
+                          display,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: color,
+                            fontSize: 13.0,
+                            fontWeight: FontWeight.w900,
+                            height: 0.95,
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            }
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 26,
+                  height: 26,
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.10),
+                    borderRadius: BorderRadius.circular(9),
+                    border: Border.all(color: color.withValues(alpha: 0.22)),
+                  ),
+                  child: Icon(icon, size: 15, color: color),
+                ),
+                const Spacer(),
+                Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Colors.white54,
+                    fontSize: 6.9,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.55,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  display,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 15.5,
+                    fontWeight: FontWeight.w900,
+                    height: 0.95,
+                    letterSpacing: -0.4,
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
   }
-
   Widget _homeStateChip({
     required String label,
     required bool value,
