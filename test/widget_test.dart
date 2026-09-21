@@ -1,16 +1,33 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/material.dart';
 import 'package:jexfyz_cooler/main.dart';
 
 void main() {
   testWidgets('JE Cooler dashboard renders', (tester) async {
+    // The production Home canvas is intentionally tall on a portrait phone.
+    // Flutter's default test viewport is 800x600, which is a compact
+    // landscape-like surface and can legitimately overflow the dashboard.
+    // Use a representative portrait surface for this widget smoke test.
+    tester.view.physicalSize = const Size(1080, 2400);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
     await tester.pumpWidget(const JeCoolerApp());
     await tester.pump();
+
     expect(find.text('JE X FYZ'), findsOneWidget);
     expect(find.text('BATTERY TEMPERATURE'), findsOneWidget);
     expect(find.text('HOTSIDE TEMPERATURE'), findsOneWidget);
     expect(find.text('VOLTAGE INDICATOR'), findsOneWidget);
     expect(find.text('ADAPTIVE MODE'), findsOneWidget);
     expect(find.text('TEMPERATURE'), findsOneWidget);
+
+    // The dashboard must render without a layout overflow in the
+    // representative production viewport.
+    expect(tester.takeException(), isNull);
   });
 
   test('JE X FYZ voltage helper accepts only supported voltages', () {
