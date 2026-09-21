@@ -18,18 +18,24 @@ void main() {
     expect(find.text('JE X FYZ'), findsOneWidget);
     expect(find.text('BATTERY TEMPERATURE'), findsOneWidget);
     expect(find.text('HOTSIDE TEMPERATURE'), findsOneWidget);
-
     expect(find.text('VOLTAGE TEMPERATURE'), findsOneWidget);
     expect(find.text('VOLTAGE'), findsOneWidget);
-
     expect(find.text('ADAPTIVE MODE'), findsOneWidget);
     expect(find.text('PELTIER SWITCH'), findsOneWidget);
     expect(find.text('FAN SWITCH'), findsOneWidget);
     expect(find.text('FAN SPEED'), findsOneWidget);
     expect(find.text('TEMPERATURE'), findsOneWidget);
 
-    // Notify is part of the Home dashboard.
-    expect(find.text('NOTIFY'), findsOneWidget);
+    // Notify is part of the Home dashboard. Its label may include a
+    // contextual suffix such as "• ERROR", "• SYNC", etc.
+    expect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is Text &&
+            (widget.data ?? '').trim().startsWith('NOTIFY'),
+      ),
+      findsOneWidget,
+    );
 
     // The dashboard must render without a test-time layout exception.
     expect(tester.takeException(), isNull);
