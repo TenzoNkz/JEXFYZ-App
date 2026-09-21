@@ -1829,7 +1829,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           maxLines: 1,
                           style: const TextStyle(
                             color: Colors.white60,
-                            fontSize: 8.8,
+                            fontSize: 9.5,
                             fontWeight: FontWeight.w900,
                             letterSpacing: 0.45,
                             height: 1.0,
@@ -1844,7 +1844,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color: active ? color : Colors.white38,
-                        fontSize: 15.5,
+                        fontSize: 17.0,
                         fontWeight: FontWeight.w900,
                         height: 0.95,
                         letterSpacing: -0.15,
@@ -2835,7 +2835,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             color: const Color(0xFF5CE1C8),
                           ),
                           _homeFanSpeed(),
-                          _homeNotify(),
                           ],
                           ),
                         ),
@@ -2866,6 +2865,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ],
               ),
+            ),
+            const SizedBox(height: 2),
+            SizedBox(
+              width: double.infinity,
+              height: 39,
+              child: _homeNotify(),
             ),
           ],
         ),
