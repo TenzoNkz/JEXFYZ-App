@@ -256,6 +256,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   BluetoothCharacteristic? tx;
   StreamSubscription<BluetoothConnectionState>? connectionSub;
   StreamSubscription<List<int>>? notificationSub;
+  StreamSubscription<BluetoothBondState>? bondStateSub;
 
   Future<void> _writeQueue = Future<void>.value();
   Timer? batteryTimer;
@@ -345,6 +346,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void dispose() {
     connectionSub?.cancel();
     notificationSub?.cancel();
+    bondStateSub?.cancel();
     batteryTimer?.cancel();
     voltageGuardTimer?.cancel();
     reconnectTimer?.cancel();
@@ -570,6 +572,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
             .first
             .timeout(const Duration(seconds: 4));
 
+        // The firmware protects the RX characteristic with encrypted GATT
+        // writes. Establish the Android BLE bond before service/handshake work
+        // so authentication cannot race the first protected write.
+        if (Platform.isAndroid) {
+          final bonded = await _ensureBleBond(target);
+          if (!bonded) {
+            throw StateError('Bluetooth pairing was not completed');
+          }
+        }
+
         await _discoverServices(target);
         lastError = null;
         break;
@@ -603,6 +615,50 @@ class _DashboardScreenState extends State<DashboardScreen> {
         });
       }
       throw lastError;
+    }
+  }
+
+  Future<bool> _ensureBleBond(BluetoothDevice target) async {
+    if (!Platform.isAndroid) return true;
+
+    BluetoothBondState? current;
+    try {
+      current = await target.bondState.first.timeout(
+        const Duration(seconds: 2),
+      );
+      if (current == BluetoothBondState.bonded) {
+        return true;
+      }
+    } catch (e) {
+      debugPrint('BLE bond state read: $e');
+    }
+
+    await bondStateSub?.cancel();
+    bondStateSub = null;
+
+    final completer = Completer<bool>();
+    bondStateSub = target.bondState.listen((state) {
+      if (state == BluetoothBondState.bonded) {
+        if (!completer.isCompleted) completer.complete(true);
+      }
+    });
+    target.cancelWhenDisconnected(bondStateSub!);
+
+    try {
+      if (current != BluetoothBondState.bonding) {
+        await target.createBond();
+      }
+
+      return await completer.future.timeout(
+        const Duration(seconds: 15),
+        onTimeout: () => false,
+      );
+    } catch (e) {
+      debugPrint('BLE createBond: $e');
+      return false;
+    } finally {
+      await bondStateSub?.cancel();
+      bondStateSub = null;
     }
   }
 
@@ -1798,24 +1854,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
       child: Row(
         children: [
-          Container(
-            width: 28,
-            height: 28,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: active ? 0.10 : 0.06),
-              borderRadius: BorderRadius.circular(7),
-              border: Border.all(
-                color: color.withValues(alpha: active ? 0.48 : 0.24),
-                width: 1.1,
+          SizedBox(
+            width: 30,
+            height: 30,
+            child: Center(
+              child: Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.09),
+                  borderRadius: BorderRadius.circular(7),
+                  border: Border.all(
+                    color: color.withValues(alpha: 0.34),
+                    width: 1.1,
+                  ),
+                ),
+                child: Icon(
+                  icon,
+                  size: 16,
+                  color: color,
+                ),
               ),
             ),
-            child: Icon(
-              icon,
-              size: 16,
-              color: active ? color : Colors.white38,
-            ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 7),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -1858,12 +1920,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required String label,
     required bool value,
     required IconData icon,
+    required Color color,
   }) {
     return _homeMetric(
       label,
       connected ? (value ? 'ON' : 'OFF') : '--',
       '',
-      color: value ? Colors.cyanAccent : Colors.white70,
+      color: color,
       icon: icon,
     );
   }
@@ -1874,7 +1937,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       'FAN SPEED',
       enabled ? '$fanSpeed%' : '--',
       '',
-      color: enabled ? Colors.cyanAccent : Colors.white38,
+      color: Colors.amberAccent,
       icon: PhosphorIconsBold.gauge,
     );
   }
@@ -1924,8 +1987,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final color = alert ? Colors.orangeAccent : Colors.greenAccent;
     return Container(
       width: double.infinity,
-      constraints: const BoxConstraints(minHeight: 44),
-      padding: const EdgeInsets.fromLTRB(8, 6, 8, 6),
+      height: 36,
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
       decoration: BoxDecoration(
         color: color.withValues(alpha: alert ? 0.10 : 0.07),
         borderRadius: BorderRadius.circular(13),
@@ -1934,16 +1997,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            width: 28,
-            height: 28,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(7),
+          SizedBox(
+            width: 30,
+            height: 30,
+            child: Center(
+              child: Container(
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(7),
+                ),
+                child: Icon(icon, size: 14, color: color),
+              ),
             ),
-            child: Icon(icon, size: 14, color: color),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 7),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -2794,18 +2863,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             'ADAPTIVE MODE',
                             adaptiveValue,
                             '',
-                            color: adaptiveOn ? Colors.greenAccent : Colors.white70,
+                            color: Colors.purpleAccent,
                             icon: PhosphorIconsBold.sparkle,
                           ),
                           _homeStateChip(
-                            label: 'PELTIER',
+                            label: 'PELTIER SWITCH',
                             value: peltierOn,
                             icon: PhosphorIconsBold.snowflake,
+                            color: Colors.cyanAccent,
                           ),
                           _homeStateChip(
-                            label: 'FAN',
+                            label: 'FAN SWITCH',
                             value: fanOn,
                             icon: PhosphorIconsBold.wind,
+                            color: Colors.tealAccent,
                           ),
                           _homeFanSpeed(),
                           ],
@@ -2838,7 +2909,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 3),
+            const SizedBox(height: 2),
             _homeNotify(),
           ],
         ),
