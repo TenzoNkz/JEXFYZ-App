@@ -23,8 +23,8 @@ void main() {
     expect(find.text('VOLTAGE'), findsOneWidget);
 
     expect(find.text('ADAPTIVE MODE'), findsOneWidget);
-    expect(find.text('PELTIER'), findsOneWidget);
-    expect(find.text('FAN'), findsOneWidget);
+    expect(find.text('PELTIER SWITCH'), findsOneWidget);
+    expect(find.text('FAN SWITCH'), findsOneWidget);
     expect(find.text('FAN SPEED'), findsOneWidget);
     expect(find.text('TEMPERATURE'), findsOneWidget);
 
