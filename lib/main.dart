@@ -1733,7 +1733,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ? result.device.platformName
                             : result.advertisementData.advName;
                         return ListTile(
-                          leading: const Icon(PhosphorIconsBold.bluetooth, color: Colors.blueAccent),
+                          leading: const Icon(PhosphorIconsRegular.bluetooth, color: Colors.blueAccent),
                           title: Text(name.isEmpty ? 'JE X FYZ' : name, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                           subtitle: Text(result.device.remoteId.toString(), style: const TextStyle(color: Colors.grey, fontSize: 11)),
                           onTap: () async {
@@ -1882,7 +1882,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       enabled ? '$fanSpeed%' : '--',
       '',
       color: const Color(0xFFFFD166),
-      icon: PhosphorIconsBold.gauge,
+      icon: PhosphorIconsRegular.gauge,
     );
   }
 
@@ -1966,7 +1966,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ? PhosphorIconsBold.xCircle
         : alert
             ? PhosphorIconsBold.warning
-            : PhosphorIconsBold.shieldCheck;
+            : PhosphorIconsRegular.shieldCheck;
     final color = hasError
         ? const Color(0xFFFF6B7A)
         : alert
@@ -2209,7 +2209,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         _card(
           child: Row(
             children: [
-              const Icon(PhosphorIconsBold.lightning, size: 19, color: Colors.blueAccent),
+              const Icon(PhosphorIconsRegular.lightning, size: 19, color: Colors.blueAccent),
               const SizedBox(width: 9),
               Expanded(
                 child: Text(
@@ -2238,7 +2238,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               _switchRow(
                 title: 'Fan',
                 subtitle: fanLocked ? 'Fan is ON • locked while Peltier is ON' : (fanOn ? 'Fan is ON' : 'Fan is OFF'),
-                icon: PhosphorIconsBold.wind,
+                icon: PhosphorIconsRegular.wind,
                 value: fanOn,
                 enabled: connected && !adaptiveOn && !peltierOn,
                 onChanged: _toggleFan,
@@ -2247,7 +2247,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               _switchRow(
                 title: 'Peltier',
                 subtitle: peltierOn ? 'Peltier is ON • 5 s soft-start' : 'Peltier is OFF',
-                icon: PhosphorIconsBold.snowflake,
+                icon: PhosphorIconsRegular.snowflake,
                 value: peltierOn,
                 enabled: connected && !adaptiveOn,
                 onChanged: _togglePeltier,
@@ -2255,7 +2255,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               const Divider(height: 20),
               Row(
                 children: [
-                  const Icon(PhosphorIconsBold.gauge, size: 20, color: Colors.black45),
+                  const Icon(PhosphorIconsRegular.gauge, size: 20, color: Colors.black45),
                   const SizedBox(width: 9),
                   const Expanded(
                     child: Column(
@@ -2714,8 +2714,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         tooltip: connected ? 'Disconnect' : 'Bluetooth',
                         icon: Icon(
                           connected
-                              ? PhosphorIconsBold.bluetoothConnected
-                              : PhosphorIconsBold.bluetooth,
+                              ? PhosphorIconsRegular.bluetoothConnected
+                              : PhosphorIconsRegular.bluetooth,
                           color: connected ? Colors.blueAccent : Colors.white,
                           size: 24,
                         ),
@@ -2759,7 +2759,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         constraints: const BoxConstraints.tightFor(width: 36, height: 36),
                         tooltip: 'Firmware',
                         icon: const Icon(
-                          PhosphorIconsBold.gear,
+                          PhosphorIconsRegular.gear,
                           color: Colors.white,
                           size: 25,
                         ),
@@ -2791,7 +2791,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             batteryValue,
                             batteryValue == '--' ? '' : '°C',
                             color: const Color(0xFFFFB45C),
-                            icon: PhosphorIconsBold.batteryHigh,
+                            icon: PhosphorIconsRegular.batteryHigh,
                           ),
                           _homeMetric(
                             'HOTSIDE TEMPERATURE',
@@ -2800,32 +2800,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             color: safety == 'FAULT'
                                 ? const Color(0xFFFF6B7A)
                                 : const Color(0xFF55E6E6),
-                            icon: PhosphorIconsBold.thermometer,
+                            icon: PhosphorIconsRegular.thermometer,
                           ),
                           _homeMetric(
                             'VOLTAGE INDICATOR',
                             voltageValue,
                             '',
                             color: const Color(0xFF70A7FF),
-                            icon: PhosphorIconsBold.lightning,
+                            icon: PhosphorIconsRegular.lightning,
                           ),
                           _homeMetric(
                             'ADAPTIVE MODE',
                             adaptiveValue,
                             '',
                             color: const Color(0xFFB58CFF),
-                            icon: PhosphorIconsBold.sparkle,
+                            icon: PhosphorIconsRegular.sparkle,
                           ),
                           _homeStateChip(
                             label: 'PELTIER SWITCH',
                             value: peltierOn,
-                            icon: PhosphorIconsBold.snowflake,
+                            icon: PhosphorIconsRegular.snowflake,
                             color: const Color(0xFF6DE4FF),
                           ),
                           _homeStateChip(
                             label: 'FAN SWITCH',
                             value: fanOn,
-                            icon: PhosphorIconsBold.wind,
+                            icon: PhosphorIconsRegular.fan,
                             color: const Color(0xFF5CE1C8),
                           ),
                           _homeFanSpeed(),
