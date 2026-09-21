@@ -256,7 +256,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   BluetoothCharacteristic? tx;
   StreamSubscription<BluetoothConnectionState>? connectionSub;
   StreamSubscription<List<int>>? notificationSub;
-  StreamSubscription<BondState>? bondStateSub;
+  StreamSubscription<BluetoothBondState>? bondStateSub;
 
   Future<void> _writeQueue = Future<void>.value();
   Timer? batteryTimer;
@@ -633,12 +633,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Future<bool> _ensureBleBond(BluetoothDevice target) async {
     if (!Platform.isAndroid) return true;
 
-    BondState? current;
+    BluetoothBondState? current;
     try {
       current = await target.bondState.first.timeout(
         const Duration(seconds: 2),
       );
-      if (current == BondState.bonded) {
+      if (current == BluetoothBondState.bonded) {
         return true;
       }
     } catch (e) {
@@ -650,7 +650,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     final completer = Completer<bool>();
     bondStateSub = target.bondState.listen((state) {
-      if (state == BondState.bonded) {
+      if (state == BluetoothBondState.bonded) {
         if (!completer.isCompleted) completer.complete(true);
       }
     });
@@ -660,7 +660,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       // Force the Android system pairing dialog now instead of waiting for the
       // first encrypted GATT write to trigger it mid-handshake. If Android is
       // already in the bonding state, simply wait for the existing operation.
-      if (current != BondState.bonding) {
+      if (current != BluetoothBondState.bonding) {
         await target.createBond();
       }
 
