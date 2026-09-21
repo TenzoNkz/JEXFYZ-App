@@ -363,6 +363,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   void _initFirebase() {
     try {
+      if (Firebase.apps.isEmpty) return;
       firmwareDb = FirebaseDatabase.instanceFor(
         app: Firebase.app(),
         databaseURL: firebaseDbUrl,
@@ -1760,9 +1761,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return Container(
       width: double.infinity,
-      height: 52,
-      margin: const EdgeInsets.only(bottom: 4),
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
+      height: 46,
+      margin: const EdgeInsets.only(bottom: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
       decoration: BoxDecoration(
         color: const Color(0xFF1D1D20),
         borderRadius: BorderRadius.circular(16),
@@ -1774,8 +1775,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Row(
         children: [
           Container(
-            width: 38,
-            height: 38,
+            width: 36,
+            height: 36,
             decoration: BoxDecoration(
               color: color.withValues(alpha: active ? 0.10 : 0.06),
               borderRadius: BorderRadius.circular(11),
