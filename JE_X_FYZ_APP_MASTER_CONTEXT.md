@@ -166,7 +166,9 @@ Current visual color direction:
 - The Home should feel less bulky while preserving the existing icon sizes and typography.
 
 ### Notify/status
-- Long horizontal card below indicators.
+- Notify is part of the **left indicator column**, directly below Fan Speed.
+- Its width aligns with the indicator group, not the full Home canvas.
+- The Sub Menu canvas begins immediately below the Home/Notify area with no intentional gap.
 - Shows online/offline and safety/notification text.
 - Do not replace it with scattered status dots.
 
@@ -312,3 +314,16 @@ JEXFYZ-Firmware/JE_X_FYZ_FIRMWARE_MASTER_CONTEXT.md
 ```
 
 The two documents cross-reference each other only at the integration boundary. Do not duplicate full firmware implementation details here.
+
+### 2026-09-21 — Notify placement refined
+- Notify moved inside the Home indicator column, directly below Fan Speed.
+- Sub Menu now starts immediately after the Home canvas/Notify area; no extra spacer is used.
+- Future automatic Home length behavior is reserved for the Display Menu/appearance design and should not be mixed into the current indicator structure.
+
+### 2026-09-21 — Indicator density refined from device screenshot reference
+- The previous 46px icon boxes / 56px rows were still visually too large and too spaced out on the phone.
+- Indicator rows are now compact: approximately 47px row height, 39px icon box, 21px icon, 9px icon-to-text gap, and 2px row spacing.
+- Fan Speed uses the same compact icon-box sizing and remains percentage-only.
+- The label/value area remains unboxed; only the icon area is boxed.
+- This change is presentation-only and does not alter BLE, protocol, firmware state, or command behavior.
+
