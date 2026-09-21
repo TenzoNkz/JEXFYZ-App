@@ -1925,7 +1925,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  alert ? 'NOTIFY • ALERT' : 'NOTIFY • STATUS',
+                  'NOTIFY',
                   style: TextStyle(
                     color: color,
                     fontSize: 6.8,
@@ -2740,14 +2740,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       child: Column(
                         children: [
                           _homeMetric(
-                            'BATTERY TEMP',
+                            'BATTERY TEMPERATURE',
                             batteryValue,
                             batteryValue == '--' ? '' : '°C',
                             color: Colors.orangeAccent,
                             icon: PhosphorIconsBold.batteryHigh,
                           ),
                           _homeMetric(
-                            'HOTSIDE TEMP',
+                            'HOTSIDE TEMPERATURE',
                             hotValue,
                             hotValue == '--' ? '' : '°C',
                             color: safety == 'FAULT'
@@ -2756,14 +2756,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             icon: PhosphorIconsBold.thermometer,
                           ),
                           _homeMetric(
-                            'VOLTAGE',
+                            'VOLTAGE TEMPERATURE',
                             voltageValue,
                             '',
                             color: Colors.blueAccent,
                             icon: PhosphorIconsBold.lightning,
                           ),
                           _homeMetric(
-                            'ADAPTIVE',
+                            'ADAPTIVE MODE',
                             adaptiveValue,
                             '',
                             color: adaptiveOn ? Colors.greenAccent : Colors.white70,
