@@ -509,11 +509,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         await device!.disconnect();
       }
     } catch (_) {}
-    try {
-      await target.disconnect();
-    } catch (_) {}
-    await Future<void>.delayed(const Duration(milliseconds: 300));
-
     device = target;
     _bleConnecting = true;
     rx = null;
@@ -571,16 +566,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
             .where((state) => state == BluetoothConnectionState.connected)
             .first
             .timeout(const Duration(seconds: 4));
-
-        // The firmware protects the RX characteristic with encrypted GATT
-        // writes. Establish the Android BLE bond before service/handshake work
-        // so authentication cannot race the first protected write.
-        if (Platform.isAndroid) {
-          final bonded = await _ensureBleBond(target);
-          if (!bonded) {
-            throw StateError('Bluetooth pairing was not completed');
-          }
-        }
 
         await _discoverServices(target);
         lastError = null;
