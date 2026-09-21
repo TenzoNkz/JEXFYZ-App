@@ -593,7 +593,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     if (lastError != null) {
       final message = lastError is StateError
-          ? (lastError as StateError).message
+          ? lastError.message
           : 'Bluetooth connection failed';
       if (mounted) {
         setState(() {
