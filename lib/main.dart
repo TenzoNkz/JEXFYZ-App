@@ -1768,118 +1768,83 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final display = value == '--' ? '--' : value + unit;
 
     return Expanded(
-      child: Container(
-        constraints: const BoxConstraints(minHeight: 0),
-        padding: const EdgeInsets.fromLTRB(8, 6, 8, 6),
-        decoration: BoxDecoration(
-          color: const Color(0x0EFFFFFF),
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: const Color(0x14FFFFFF)),
-        ),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            // Compact automatically when the parent is too short for the
-            // full metric card. This prevents RenderFlex overflow in tests
-            // and on small-height screens without changing the normal UI.
-            final compact = constraints.maxHeight < 46;
-
-            if (compact) {
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.10),
-                      borderRadius: BorderRadius.circular(7),
-                      border: Border.all(color: color.withValues(alpha: 0.22)),
-                    ),
-                    child: Icon(icon, size: 12, color: color),
-                  ),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          label,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: Colors.white54,
-                            fontSize: 6.0,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 0.45,
-                            height: 1.0,
-                          ),
-                        ),
-                        const SizedBox(height: 1),
-                        Text(
-                          display,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: color,
-                            fontSize: 13.0,
-                            fontWeight: FontWeight.w900,
-                            height: 0.95,
-                            letterSpacing: -0.3,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            }
-
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final compact = constraints.maxHeight < 37;
+          return Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(
+              horizontal: compact ? 6 : 8,
+              vertical: compact ? 2 : 4,
+            ),
+            decoration: BoxDecoration(
+              color: const Color(0x0EFFFFFF),
+              borderRadius: BorderRadius.circular(compact ? 11 : 13),
+              border: Border.all(color: const Color(0x14FFFFFF)),
+            ),
+            child: Row(
               children: [
                 Container(
-                  width: 26,
-                  height: 26,
+                  width: compact ? 22 : 27,
+                  height: compact ? 22 : 27,
                   decoration: BoxDecoration(
                     color: color.withValues(alpha: 0.10),
-                    borderRadius: BorderRadius.circular(9),
+                    borderRadius: BorderRadius.circular(compact ? 7 : 8),
                     border: Border.all(color: color.withValues(alpha: 0.22)),
                   ),
-                  child: Icon(icon, size: 15, color: color),
+                  child: Icon(icon, size: compact ? 12 : 15, color: color),
                 ),
-                const Spacer(),
-                Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Colors.white54,
-                    fontSize: 6.9,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 0.55,
+                SizedBox(width: compact ? 6 : 8),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: Colors.white54,
+                          fontSize: compact ? 6.0 : 6.7,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: compact ? 0.45 : 0.55,
+                          height: 1.0,
+                        ),
+                      ),
+                      SizedBox(height: compact ? 0 : 1),
+                      Text(
+                        display,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: color,
+                          fontSize: compact ? 13.0 : 15.0,
+                          fontWeight: FontWeight.w900,
+                          height: 0.95,
+                          letterSpacing: -0.35,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  display,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: color,
-                    fontSize: 15.5,
-                    fontWeight: FontWeight.w900,
-                    height: 0.95,
-                    letterSpacing: -0.4,
+                const SizedBox(width: 4),
+                Container(
+                  width: 5,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: color.withValues(alpha: 0.85),
                   ),
                 ),
               ],
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
+
   Widget _homeStateChip({
     required String label,
     required bool value,
@@ -1887,68 +1852,74 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }) {
     final active = value;
     return Expanded(
-      child: Container(
-        constraints: const BoxConstraints(minHeight: 40),
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-        decoration: BoxDecoration(
-          color: active ? const Color(0x1A54E3FF) : const Color(0x0BFFFFFF),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: active ? const Color(0x6654E3FF) : const Color(0x14FFFFFF),
-          ),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 26,
-              height: 26,
-              decoration: BoxDecoration(
-                color: active ? const Color(0x1454E3FF) : const Color(0x0AFFFFFF),
-                borderRadius: BorderRadius.circular(9),
-              ),
-              child: Icon(
-                icon,
-                size: 15,
-                color: active ? Colors.cyanAccent : Colors.white38,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final compact = constraints.maxHeight < 36;
+          return Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(
+              horizontal: compact ? 6 : 8,
+              vertical: compact ? 2 : 4,
+            ),
+            decoration: BoxDecoration(
+              color: active ? const Color(0x1A54E3FF) : const Color(0x0BFFFFFF),
+              borderRadius: BorderRadius.circular(compact ? 11 : 13),
+              border: Border.all(
+                color: active ? const Color(0x6654E3FF) : const Color(0x14FFFFFF),
               ),
             ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    label,
-                    style: const TextStyle(
-                      color: Colors.white54,
-                      fontSize: 7.0,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.8,
-                    ),
+            child: Row(
+              children: [
+                Container(
+                  width: compact ? 21 : 25,
+                  height: compact ? 21 : 25,
+                  decoration: BoxDecoration(
+                    color: active ? const Color(0x1454E3FF) : const Color(0x0AFFFFFF),
+                    borderRadius: BorderRadius.circular(compact ? 7 : 8),
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    active ? 'ON' : 'OFF',
-                    style: TextStyle(
-                      color: active ? Colors.cyanAccent : Colors.white60,
-                      fontSize: 11.5,
-                      fontWeight: FontWeight.w900,
-                    ),
+                  child: Icon(
+                    icon,
+                    size: compact ? 12 : 14,
+                    color: active ? Colors.cyanAccent : Colors.white38,
                   ),
-                ],
-              ),
+                ),
+                SizedBox(width: compact ? 6 : 7),
+                Expanded(
+                  child: Row(
+                    children: [
+                      Text(
+                        label,
+                        style: TextStyle(
+                          color: Colors.white54,
+                          fontSize: compact ? 6.1 : 6.8,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.75,
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        active ? 'ON' : 'OFF',
+                        style: TextStyle(
+                          color: active ? Colors.cyanAccent : Colors.white60,
+                          fontSize: compact ? 9.8 : 11.0,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: 6,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: active ? Colors.cyanAccent : Colors.white24,
+                  ),
+                ),
+              ],
             ),
-            Container(
-              width: 7,
-              height: 7,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: active ? Colors.cyanAccent : Colors.white24,
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -1957,66 +1928,127 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final enabled = connected && voltage == '12V' && !adaptiveOn;
     final progress = (fanSpeed.clamp(fanSpeedMin, fanSpeedMax) - fanSpeedMin) /
         (fanSpeedMax - fanSpeedMin);
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(9, 6, 9, 6),
-      decoration: BoxDecoration(
-        color: const Color(0x0EFFFFFF),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0x14FFFFFF)),
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              const Icon(PhosphorIconsBold.gauge, size: 14, color: Colors.white54),
-              const SizedBox(width: 7),
-              const Text(
-                'FAN SPEED',
-                style: TextStyle(
-                  color: Colors.white54,
-                  fontSize: 7.2,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 0.75,
-                ),
-              ),
-              const Spacer(),
-              Text(
-                '$fanSpeed%',
-                style: TextStyle(
-                  color: enabled ? Colors.white : Colors.white38,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: LinearProgressIndicator(
-              value: progress.toDouble(),
-              minHeight: 4,
-              backgroundColor: const Color(0x15FFFFFF),
-              valueColor: AlwaysStoppedAnimation<Color>(
-                enabled ? Colors.cyanAccent : Colors.white24,
-              ),
+
+    return Expanded(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final compact = constraints.maxHeight < 42;
+          return Container(
+            width: double.infinity,
+            padding: EdgeInsets.fromLTRB(
+              compact ? 7 : 9,
+              compact ? 3 : 5,
+              compact ? 7 : 9,
+              compact ? 3 : 5,
             ),
-          ),
-          const SizedBox(height: 3),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              enabled ? 'MANUAL 12V' : 'NOT AVAILABLE',
-              style: const TextStyle(
-                color: Colors.white30,
-                fontSize: 6.3,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 0.65,
-              ),
+            decoration: BoxDecoration(
+              color: const Color(0x0EFFFFFF),
+              borderRadius: BorderRadius.circular(compact ? 11 : 13),
+              border: Border.all(color: const Color(0x14FFFFFF)),
             ),
-          ),
-        ],
+            child: compact
+                ? Row(
+                    children: [
+                      const Icon(
+                        PhosphorIconsBold.gauge,
+                        size: 14,
+                        color: Colors.white54,
+                      ),
+                      const SizedBox(width: 6),
+                      const Text(
+                        'FAN SPEED',
+                        style: TextStyle(
+                          color: Colors.white54,
+                          fontSize: 6.5,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 0.7,
+                        ),
+                      ),
+                      const SizedBox(width: 7),
+                      Expanded(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: LinearProgressIndicator(
+                            value: progress.toDouble(),
+                            minHeight: 3,
+                            backgroundColor: const Color(0x15FFFFFF),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              enabled ? Colors.cyanAccent : Colors.white24,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 7),
+                      Text(
+                        '$fanSpeed%',
+                        style: TextStyle(
+                          color: enabled ? Colors.white : Colors.white38,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ],
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(
+                            PhosphorIconsBold.gauge,
+                            size: 14,
+                            color: Colors.white54,
+                          ),
+                          const SizedBox(width: 7),
+                          const Text(
+                            'FAN SPEED',
+                            style: TextStyle(
+                              color: Colors.white54,
+                              fontSize: 7.0,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: 0.75,
+                            ),
+                          ),
+                          const Spacer(),
+                          Text(
+                            '$fanSpeed%',
+                            style: TextStyle(
+                              color: enabled ? Colors.white : Colors.white38,
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: LinearProgressIndicator(
+                          value: progress.toDouble(),
+                          minHeight: 4,
+                          backgroundColor: const Color(0x15FFFFFF),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            enabled ? Colors.cyanAccent : Colors.white24,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          enabled ? 'MANUAL 12V' : 'NOT AVAILABLE',
+                          style: const TextStyle(
+                            color: Colors.white30,
+                            fontSize: 5.9,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 0.6,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+          );
+        },
       ),
     );
   }
@@ -2063,78 +2095,78 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ? PhosphorIconsBold.warning
         : PhosphorIconsBold.shieldCheck;
     final color = alert ? Colors.orangeAccent : Colors.greenAccent;
-    return Container(
-      width: double.infinity,
-      constraints: const BoxConstraints(minHeight: 52),
-      padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: alert ? 0.10 : 0.07),
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: color.withValues(alpha: 0.25)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 28,
-            height: 28,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(9),
+
+    return SizedBox(
+      height: 42,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: alert ? 0.10 : 0.07),
+          borderRadius: BorderRadius.circular(13),
+          border: Border.all(color: color.withValues(alpha: 0.25)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 26,
+              height: 26,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(icon, size: 14, color: color),
             ),
-            child: Icon(icon, size: 15, color: color),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  alert ? 'SYSTEM ALERT' : 'SYSTEM STATUS',
-                  style: TextStyle(
-                    color: color,
-                    fontSize: 7.2,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.0,
-                  ),
-                ),
-                const SizedBox(height: 3),
-                Text(
-                  _professionalNotice(),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 9.2,
-                    height: 1.2,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
-            decoration: BoxDecoration(
-              color: const Color(0x12FFFFFF),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              connected ? 'ONLINE' : 'OFFLINE',
+            const SizedBox(width: 7),
+            Text(
+              alert ? 'ALERT' : 'STATUS',
               style: TextStyle(
-                color: connected ? Colors.cyanAccent : Colors.white38,
-                fontSize: 6.7,
+                color: color,
+                fontSize: 6.8,
                 fontWeight: FontWeight.w900,
-                letterSpacing: 0.8,
+                letterSpacing: 0.95,
               ),
             ),
-          ),
-        ],
+            const SizedBox(width: 7),
+            const Text(
+              '•',
+              style: TextStyle(color: Colors.white24, fontSize: 10, fontWeight: FontWeight.w900),
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                _professionalNotice(),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 8.8,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            const SizedBox(width: 7),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+              decoration: BoxDecoration(
+                color: const Color(0x12FFFFFF),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                connected ? 'ONLINE' : 'OFFLINE',
+                style: TextStyle(
+                  color: connected ? Colors.cyanAccent : Colors.white38,
+                  fontSize: 6.5,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 0.8,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
-
 
   Widget _card({required Widget child, EdgeInsetsGeometry? padding}) {
     return Container(
@@ -2830,181 +2862,168 @@ class _DashboardScreenState extends State<DashboardScreen> {
         padding: const EdgeInsets.fromLTRB(12, 7, 12, 8),
         child: Column(
           children: [
-            Row(
-              children: [
-                SizedBox(
-                  width: 44,
-                  child: IconButton(
-                    tooltip: connected ? 'Disconnect' : 'Bluetooth',
-                    icon: Icon(
-                      connected
-                          ? PhosphorIconsBold.bluetoothConnected
-                          : PhosphorIconsBold.bluetooth,
-                      color: connected ? Colors.blueAccent : Colors.white,
-                      size: 25,
-                    ),
-                    onPressed: connected ? _disconnect : _showBluetoothMenu,
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      Text(
-                        headerName,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 19,
-                          letterSpacing: 0.2,
-                        ),
+            SizedBox(
+              height: 39,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 40,
+                    child: IconButton(
+                      padding: EdgeInsets.zero,
+                      tooltip: connected ? 'Disconnect' : 'Bluetooth',
+                      icon: Icon(
+                        connected
+                            ? PhosphorIconsBold.bluetoothConnected
+                            : PhosphorIconsBold.bluetooth,
+                        color: connected ? Colors.blueAccent : Colors.white,
+                        size: 24,
                       ),
-                      SizedBox(height: 1),
-                      Text(
-                        'DEVELOPED BY HORIZON',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white30,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 6.8,
-                          letterSpacing: 1.25,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  width: 34,
-                  height: 34,
-                  margin: const EdgeInsets.only(right: 6),
-                  decoration: BoxDecoration(
-                    color: const Color(0x0FFFFFFF),
-                    borderRadius: BorderRadius.circular(11),
-                    border: Border.all(color: const Color(0x14FFFFFF)),
-                  ),
-                  child: Icon(
-                    connected ? PhosphorIconsBold.checkCircle : PhosphorIconsBold.linkBreak,
-                    color: connected ? Colors.greenAccent : Colors.white38,
-                    size: 17,
-                  ),
-                ),
-                SizedBox(
-                  width: 40,
-                  child: IconButton(
-                    tooltip: 'Firmware',
-                    icon: const Icon(
-                      PhosphorIconsBold.gear,
-                      color: Colors.white,
-                      size: 22,
+                      onPressed: connected ? _disconnect : _showBluetoothMenu,
                     ),
-                    onPressed: _openFirmwareSettings,
                   ),
-                ),
-              ],
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Text(
+                          headerName,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 19,
+                            letterSpacing: 0.2,
+                          ),
+                        ),
+                        SizedBox(height: 1),
+                        Text(
+                          'DEVELOPED BY HORIZON',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white30,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 6.8,
+                            letterSpacing: 1.25,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: 32,
+                    height: 32,
+                    margin: const EdgeInsets.only(right: 5),
+                    decoration: BoxDecoration(
+                      color: const Color(0x0FFFFFFF),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: const Color(0x14FFFFFF)),
+                    ),
+                    child: Icon(
+                      connected ? PhosphorIconsBold.checkCircle : PhosphorIconsBold.linkBreak,
+                      color: connected ? Colors.greenAccent : Colors.white38,
+                      size: 16,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 38,
+                    child: IconButton(
+                      padding: EdgeInsets.zero,
+                      tooltip: 'Firmware',
+                      icon: const Icon(
+                        PhosphorIconsBold.gear,
+                        color: Colors.white,
+                        size: 21,
+                      ),
+                      onPressed: _openFirmwareSettings,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 3),
+            const SizedBox(height: 4),
             Expanded(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Expanded(
-                    flex: 6,
+                    flex: 5,
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 2, right: 5),
+                      padding: const EdgeInsets.only(left: 1, right: 6),
                       child: Column(
                         children: [
-                          Expanded(
-                            child: Row(
-                              children: [
-                                _homeMetric(
-                                  'BATTERY TEMPERATURE',
-                                  batteryValue,
-                                  batteryValue == '--' ? '' : '°C',
-                                  color: Colors.orangeAccent,
-                                  icon: PhosphorIconsBold.batteryHigh,
-                                ),
-                                const SizedBox(width: 6),
-                                _homeMetric(
-                                  'HOTSIDE TEMPERATURE',
-                                  hotValue,
-                                  hotValue == '--' ? '' : '°C',
-                                  color: safety == 'FAULT'
-                                      ? Colors.redAccent
-                                      : Colors.cyanAccent,
-                                  icon: PhosphorIconsBold.thermometer,
-                                ),
-                              ],
-                            ),
+                          _homeMetric(
+                            'BATTERY TEMPERATURE',
+                            batteryValue,
+                            batteryValue == '--' ? '' : '°C',
+                            color: Colors.orangeAccent,
+                            icon: PhosphorIconsBold.batteryHigh,
                           ),
-                          const SizedBox(height: 6),
-                          Expanded(
-                            child: Row(
-                              children: [
-                                _homeMetric(
-                                  'VOLTAGE INDICATOR',
-                                  voltageValue,
-                                  '',
-                                  color: Colors.blueAccent,
-                                  icon: PhosphorIconsBold.lightning,
-                                ),
-                                const SizedBox(width: 6),
-                                _homeMetric(
-                                  'ADAPTIVE MODE',
-                                  adaptiveValue,
-                                  '',
-                                  color: adaptiveOn ? Colors.greenAccent : Colors.white70,
-                                  icon: PhosphorIconsBold.sparkle,
-                                ),
-                              ],
-                            ),
+                          const SizedBox(height: 4),
+                          _homeMetric(
+                            'HOTSIDE TEMPERATURE',
+                            hotValue,
+                            hotValue == '--' ? '' : '°C',
+                            color: safety == 'FAULT'
+                                ? Colors.redAccent
+                                : Colors.cyanAccent,
+                            icon: PhosphorIconsBold.thermometer,
                           ),
-                          const SizedBox(height: 6),
-                          Row(
-                            children: [
-                              _homeStateChip(
-                                label: 'PELTIER',
-                                value: peltierOn,
-                                icon: PhosphorIconsBold.snowflake,
-                              ),
-                              const SizedBox(width: 6),
-                              _homeStateChip(
-                                label: 'FAN',
-                                value: fanOn,
-                                icon: PhosphorIconsBold.wind,
-                              ),
-                            ],
+                          const SizedBox(height: 4),
+                          _homeMetric(
+                            'VOLTAGE INDICATOR',
+                            voltageValue,
+                            '',
+                            color: Colors.blueAccent,
+                            icon: PhosphorIconsBold.lightning,
                           ),
-                          const SizedBox(height: 6),
+                          const SizedBox(height: 4),
+                          _homeMetric(
+                            'ADAPTIVE MODE',
+                            adaptiveValue,
+                            '',
+                            color: adaptiveOn ? Colors.greenAccent : Colors.white70,
+                            icon: PhosphorIconsBold.sparkle,
+                          ),
+                          const SizedBox(height: 4),
+                          _homeStateChip(
+                            label: 'PELTIER',
+                            value: peltierOn,
+                            icon: PhosphorIconsBold.snowflake,
+                          ),
+                          const SizedBox(height: 4),
+                          _homeStateChip(
+                            label: 'FAN',
+                            value: fanOn,
+                            icon: PhosphorIconsBold.wind,
+                          ),
+                          const SizedBox(height: 4),
                           _homeFanSpeed(),
                         ],
                       ),
                     ),
                   ),
                   Expanded(
-                    flex: 5,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          final imageHeight =
-                              (constraints.maxHeight * 0.98).clamp(195.0, 290.0).toDouble();
-                          return Padding(
-                            padding: const EdgeInsets.only(left: 3, right: 0),
-                            child: Image.asset(
-                              'assets/jexfyzcooler.png',
-                              height: imageHeight,
-                              fit: BoxFit.contain,
-                            ),
-                          );
-                        },
-                      ),
+                    flex: 6,
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final width = constraints.maxWidth;
+                        final height = constraints.maxHeight;
+                        return Align(
+                          alignment: Alignment.center,
+                          child: Image.asset(
+                            'assets/jexfyzcooler.png',
+                            width: width,
+                            height: height,
+                            fit: BoxFit.contain,
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 5),
             _homeNotify(),
           ],
         ),
@@ -3053,7 +3072,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
     final homeHeight =
-        (media.size.height * 0.45).clamp(335.0, 465.0).toDouble();
+        (media.size.height * 0.48).clamp(370.0, 520.0).toDouble();
 
     if (syncing && !dashboardReady) {
       return _buildSyncGate();
