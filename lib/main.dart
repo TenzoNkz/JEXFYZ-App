@@ -1826,31 +1826,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return Container(
       width: double.infinity,
-      height: 36,
+      height: 40,
       margin: const EdgeInsets.only(bottom: 2),
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
       decoration: BoxDecoration(
         color: const Color(0xFF1D1D20),
         borderRadius: BorderRadius.circular(13),
         border: Border.all(
-          color: active ? color.withValues(alpha: 0.24) : Colors.white12,
+          color: color.withValues(alpha: active ? 0.28 : 0.16),
           width: 1.0,
         ),
       ),
       child: Row(
         children: [
           SizedBox(
-            width: 30,
-            height: 30,
+            width: 32,
+            height: 32,
             child: Center(
               child: Container(
-                width: 28,
-                height: 28,
+                width: 29,
+                height: 29,
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.09),
-                  borderRadius: BorderRadius.circular(7),
+                  color: color.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: color.withValues(alpha: 0.34),
+                    color: color.withValues(alpha: 0.50),
                     width: 1.1,
                   ),
                 ),
@@ -1922,7 +1922,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       'FAN SPEED',
       enabled ? '$fanSpeed%' : '--',
       '',
-      color: Colors.amberAccent,
+      color: const Color(0xFFFFD166),
       icon: PhosphorIconsBold.gauge,
     );
   }
@@ -1969,11 +1969,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final icon = alert
         ? PhosphorIconsBold.warning
         : PhosphorIconsBold.shieldCheck;
-    final color = alert ? Colors.orangeAccent : Colors.greenAccent;
+    final color = alert
+        ? const Color(0xFFFFB86B)
+        : const Color(0xFF63E6BE);
     return Container(
       width: double.infinity,
-      height: 36,
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+      height: 40,
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
       decoration: BoxDecoration(
         color: color.withValues(alpha: alert ? 0.10 : 0.07),
         borderRadius: BorderRadius.circular(13),
@@ -1983,15 +1985,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            width: 30,
-            height: 30,
+            width: 32,
+            height: 32,
             child: Center(
               child: Container(
-                width: 28,
-                height: 28,
+                width: 29,
+                height: 29,
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(7),
+                  color: color.withValues(alpha: 0.13),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: color.withValues(alpha: 0.34),
+                    width: 1.0,
+                  ),
                 ),
                 child: Icon(icon, size: 14, color: color),
               ),
@@ -2815,17 +2821,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   Expanded(
                     flex: 10,
                     child: FractionallySizedBox(
-                      widthFactor: 0.94,
+                      widthFactor: 0.96,
                       alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 2, right: 4),
-                        child: Column(
-                        children: [
+                      child: Transform.translate(
+                        offset: const Offset(-3, 0),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 2, right: 4),
+                          child: Column(
+                          children: [
                           _homeMetric(
                             'BATTERY TEMPERATURE',
                             batteryValue,
                             batteryValue == '--' ? '' : '°C',
-                            color: Colors.orangeAccent,
+                            color: const Color(0xFFFFB45C),
                             icon: PhosphorIconsBold.batteryHigh,
                           ),
                           _homeMetric(
@@ -2833,38 +2841,39 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             hotValue,
                             hotValue == '--' ? '' : '°C',
                             color: safety == 'FAULT'
-                                ? Colors.redAccent
-                                : Colors.cyanAccent,
+                                ? const Color(0xFFFF6B7A)
+                                : const Color(0xFF55E6E6),
                             icon: PhosphorIconsBold.thermometer,
                           ),
                           _homeMetric(
                             'VOLTAGE TEMPERATURE',
                             voltageValue,
                             '',
-                            color: Colors.blueAccent,
+                            color: const Color(0xFF70A7FF),
                             icon: PhosphorIconsBold.lightning,
                           ),
                           _homeMetric(
                             'ADAPTIVE MODE',
                             adaptiveValue,
                             '',
-                            color: Colors.purpleAccent,
+                            color: const Color(0xFFB58CFF),
                             icon: PhosphorIconsBold.sparkle,
                           ),
                           _homeStateChip(
                             label: 'PELTIER SWITCH',
                             value: peltierOn,
                             icon: PhosphorIconsBold.snowflake,
-                            color: Colors.cyanAccent,
+                            color: const Color(0xFF6DE4FF),
                           ),
                           _homeStateChip(
                             label: 'FAN SWITCH',
                             value: fanOn,
                             icon: PhosphorIconsBold.wind,
-                            color: Colors.tealAccent,
+                            color: const Color(0xFF5CE1C8),
                           ),
                           _homeFanSpeed(),
                           ],
+                          ),
                         ),
                       ),
                     ),
