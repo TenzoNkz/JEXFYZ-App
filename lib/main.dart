@@ -563,13 +563,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
           .first
           .timeout(const Duration(seconds: 4));
 
-      if (mounted) {
-        setState(() => notice = 'BLE link connected • discovering services...');
+      // Firmware protects RX with encrypted writes. On Android, complete the
+      // BLE bond before service discovery/handshake so the first SYNC write
+      // cannot race the security manager. Already-bonded devices continue
+      // without showing another pairing prompt.
+      if (Platform.isAndroid) {
+        final bonded = await _ensureBleBond(target);
+        if (!bonded) {
+          throw StateError('Bluetooth pairing was not completed');
+        }
       }
 
-      // Discover GATT first. Pairing is initiated only after notifications are
-      // registered, otherwise Android can race bonding against service discovery
-      // and make the ESP32-C3 session look completely unresponsive.
       await _discoverServices(target);
     } catch (e) {
       debugPrint('BLE connect/discovery: $e');
@@ -626,9 +630,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
-  Future<bool> _ensureBleBond(BluetoothDevice target, {
-    Duration timeout = const Duration(seconds: 12),
-  }) async {
+  Future<bool> _ensureBleBond(BluetoothDevice target) async {
     if (!Platform.isAndroid) return true;
 
     BluetoothBondState? current;
@@ -648,22 +650,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     final completer = Completer<bool>();
     bondStateSub = target.bondState.listen((state) {
-      if (state == BluetoothBondState.bonded &&
-          !completer.isCompleted) {
-        completer.complete(true);
+      if (state == BluetoothBondState.bonded) {
+        if (!completer.isCompleted) completer.complete(true);
       }
     });
     target.cancelWhenDisconnected(bondStateSub!);
 
     try {
+      // Force the Android system pairing dialog now instead of waiting for the
+      // first encrypted GATT write to trigger it mid-handshake. If Android is
+      // already in the bonding state, simply wait for the existing operation.
       if (current != BluetoothBondState.bonding) {
         await target.createBond();
       }
 
-      return await completer.future.timeout(
-        timeout,
+      final bonded = await completer.future.timeout(
+        const Duration(seconds: 15),
         onTimeout: () => false,
       );
+      return bonded;
     } catch (e) {
       debugPrint('BLE createBond: $e');
       return false;
@@ -727,41 +732,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     _bleReady = true;
 
-    if (mounted) {
-      setState(() => notice = Platform.isAndroid
-          ? 'BLE notifications ready • pairing...'
-          : 'BLE notifications ready • synchronizing...');
-    }
-
-    // Start Android bonding only after GATT discovery + notifications are ready.
-    // Do not block discovery/UI on the pairing dialog. A protected SYNC write
-    // can also trigger the security manager; the handshake below retries after
-    // the bond has had time to complete.
-    final bondFuture = Platform.isAndroid
-        ? _ensureBleBond(target)
-        : Future<bool>.value(true);
-
-    if (mounted) {
-      setState(() => notice = 'Synchronizing JE X FYZ state...');
-    }
-
     // V3.2 keeps the V3.1 atomic SYNC -> SYNC_READY protocol. Give the device
     // several opportunities to drain its automatic connect-time sync and then
     // request a clean snapshot ourselves.
-    for (var attempt = 0; attempt < 7 && !fullSyncReceived && mounted; attempt++) {
-      final sent = await sendCommand('SYNC', showError: false);
-
-      if (!sent && Platform.isAndroid) {
-        // A protected RX write may be rejected once before Android finishes
-        // encryption. Wait for the in-flight bond and immediately retry.
-        await Future.any<void>(<Future<void>>[
-          bondFuture.then((_) {}),
-          Future<void>.delayed(const Duration(milliseconds: 650)),
-        ]);
-        await Future<void>.delayed(const Duration(milliseconds: 120));
-      }
-
-      final deadline = DateTime.now().add(const Duration(milliseconds: 1400));
+    for (var attempt = 0; attempt < 5 && !fullSyncReceived && mounted; attempt++) {
+      await sendCommand('SYNC', showError: false);
+      final deadline = DateTime.now().add(const Duration(milliseconds: 1500));
       while (mounted && !fullSyncReceived && DateTime.now().isBefore(deadline)) {
         await Future<void>.delayed(const Duration(milliseconds: 40));
       }
@@ -774,16 +750,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       await discoveredTx.setNotifyValue(false);
       await discoveredTx.setNotifyValue(true);
 
-      for (var attempt = 0; attempt < 4 && !fullSyncReceived && mounted; attempt++) {
-        final sent = await sendCommand('SYNC', showError: false);
-        if (!sent && Platform.isAndroid) {
-          await Future.any<void>(<Future<void>>[
-            bondFuture.then((_) {}),
-            Future<void>.delayed(const Duration(milliseconds: 500)),
-          ]);
-          await Future<void>.delayed(const Duration(milliseconds: 120));
-        }
-        final deadline = DateTime.now().add(const Duration(milliseconds: 950));
+      for (var attempt = 0; attempt < 3 && !fullSyncReceived && mounted; attempt++) {
+        await sendCommand('SYNC', showError: false);
+        final deadline = DateTime.now().add(const Duration(milliseconds: 1000));
         while (mounted && !fullSyncReceived && DateTime.now().isBefore(deadline)) {
           await Future<void>.delayed(const Duration(milliseconds: 35));
         }
@@ -796,9 +765,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     // Phase 2: open the firmware command gate. No runtime state is written by
     // the App before the firmware confirms this handshake.
-    if (mounted) {
-      setState(() => notice = 'BLE link secure • opening device session...');
-    }
     _bleSessionReady = false;
     _syncReadyAck = false;
     fullSyncReceived = false;
@@ -1082,6 +1048,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     // Hold every field until the final verified sync is complete.
     if (!dashboardReady) {
       _pendingTelemetry.addAll(values);
+      // BLE_SESSION is also consumed by the pre-dashboard handshake.
+      // Keep the session gate live while the rest of telemetry is staged.
+      if (values.containsKey('BLE_SESSION')) {
+        _bleSessionReady = values['BLE_SESSION'] == 'READY';
+      }
       return;
     }
 
