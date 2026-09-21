@@ -1321,6 +1321,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
         voltageGuardTimer?.cancel();
         if (mounted) setState(() => voltageGuardActive = false);
       }
+    } catch (e) {
+      debugPrint('Voltage command: $e');
+      voltageGuardTimer?.cancel();
+      if (mounted) setState(() => voltageGuardActive = false);
     }
   }
 
@@ -1333,6 +1337,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       if (!ok && mounted) {
         _showSnackBar('Fan change was not confirmed by the device.', color: Colors.orangeAccent);
       }
+    } catch (e) {
+      debugPrint('Fan command: $e');
+      if (mounted) _showSnackBar('Fan command failed.', color: Colors.orangeAccent);
     }
   }
 
@@ -1366,6 +1373,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       if (!ok && mounted) {
         _showSnackBar('Peltier change was not confirmed by the device. ${safetyReason == 'NONE' ? '' : safetyReason}', color: Colors.orangeAccent);
       }
+    } catch (e) {
+      debugPrint('Peltier command: $e');
+      if (mounted) _showSnackBar('Peltier command failed.', color: Colors.orangeAccent);
     }
   }
 
@@ -1400,6 +1410,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       if (!ok && mounted) {
         _showSnackBar('LED power change was not confirmed by the device.');
       }
+    } catch (e) {
+      debugPrint('LED power command: $e');
+      if (mounted) _showSnackBar('LED power command failed.');
     }
   }
 
@@ -1411,6 +1424,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       if (!ok && mounted) {
         _showSnackBar('LED mode change was not confirmed by the device.');
       }
+    } catch (e) {
+      debugPrint('LED mode command: $e');
+      if (mounted) _showSnackBar('LED mode command failed.');
     }
   }
 
@@ -1423,6 +1439,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         setState(() => brightnessDraft = brightness);
         _showSnackBar('LED brightness change was not confirmed by the device.');
       }
+    } catch (e) {
+      debugPrint('LED brightness command: $e');
+      if (mounted) _showSnackBar('LED brightness command failed.');
     }
   }
 
@@ -1437,6 +1456,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         setState(() => fanSpeedDraft = fanSpeed);
         _showSnackBar('Fan speed change was not confirmed by the device.');
       }
+    } catch (e) {
+      debugPrint('Fan speed command: $e');
+      if (mounted) _showSnackBar('Fan speed command failed.');
     }
   }
 
@@ -1447,6 +1469,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       if (mounted) setState(() => hotLimitDraft = next);
       final ok = await _sendAndConfirm('HOTLIMIT:$next');
       if (!ok && mounted) setState(() => hotLimitDraft = hotLimit);
+    } catch (e) {
+      debugPrint('Hotside limit command: $e');
+      if (mounted) setState(() => hotLimitDraft = hotLimit);
     }
   }
 
@@ -1458,6 +1483,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       if (mounted) setState(() => battery5Draft = next);
       final ok = await _sendAndConfirm('BATT5:$next');
       if (!ok && mounted) setState(() => battery5Draft = battery5Limit);
+    } catch (e) {
+      debugPrint('Battery 5V command: $e');
+      if (mounted) setState(() => battery5Draft = battery5Limit);
     }
   }
 
@@ -1469,6 +1497,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       if (mounted) setState(() => battery12Draft = next);
       final ok = await _sendAndConfirm('BATT12:$next');
       if (!ok && mounted) setState(() => battery12Draft = battery12Limit);
+    } catch (e) {
+      debugPrint('Battery 12V command: $e');
+      if (mounted) setState(() => battery12Draft = battery12Limit);
     }
   }
 
@@ -1487,6 +1518,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       if (!ok && mounted) {
         _showSnackBar('Color change was not confirmed by the device.');
       }
+    } catch (e) {
+      debugPrint('Color command: $e');
+      if (mounted) _showSnackBar('Color command failed.');
     }
   }
 
@@ -1495,6 +1529,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     try {
       final ok = await _sendAndWaitAck('RESET:TEMPERATURE', showError: false);
       if (!ok && mounted) _showSnackBar('Temperature reset was not confirmed by the device.');
+    } catch (e) {
+      debugPrint('Temperature reset: $e');
+      if (mounted) _showSnackBar('Temperature reset failed.');
     }
   }
 
@@ -1503,6 +1540,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     try {
       final ok = await _sendAndWaitAck('RESET:VOLTAGECOLORS', showError: false);
       if (!ok && mounted) _showSnackBar('Voltage color reset was not confirmed by the device.');
+    } catch (e) {
+      debugPrint('Voltage color reset: $e');
+      if (mounted) _showSnackBar('Voltage color reset failed.');
     }
   }
 
