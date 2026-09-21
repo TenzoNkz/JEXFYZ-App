@@ -1761,12 +1761,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return Container(
       width: double.infinity,
-      height: 46,
-      margin: const EdgeInsets.only(bottom: 2),
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+      height: 36,
+      margin: const EdgeInsets.only(bottom: 1),
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
       decoration: BoxDecoration(
         color: const Color(0xFF1D1D20),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(13),
         border: Border.all(
           color: active ? color.withValues(alpha: 0.24) : Colors.white12,
           width: 1.0,
@@ -1775,11 +1775,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Row(
         children: [
           Container(
-            width: 36,
-            height: 36,
+            width: 28,
+            height: 28,
             decoration: BoxDecoration(
               color: color.withValues(alpha: active ? 0.10 : 0.06),
-              borderRadius: BorderRadius.circular(11),
+              borderRadius: BorderRadius.circular(7),
               border: Border.all(
                 color: color.withValues(alpha: active ? 0.48 : 0.24),
                 width: 1.1,
@@ -1787,11 +1787,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             child: Icon(
               icon,
-              size: 20,
+              size: 16,
               color: active ? color : Colors.white38,
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 8),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -1803,23 +1803,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: Colors.white54,
-                    fontSize: 7.5,
+                    fontSize: 6.5,
                     fontWeight: FontWeight.w900,
-                    letterSpacing: 0.62,
+                    letterSpacing: 0.55,
                     height: 1.0,
                   ),
                 ),
-                const SizedBox(height: 3),
+                const SizedBox(height: 2),
                 Text(
                   display,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: active ? color : Colors.white38,
-                    fontSize: 15.5,
+                    fontSize: 13.0,
                     fontWeight: FontWeight.w900,
                     height: 0.95,
-                    letterSpacing: -0.20,
+                    letterSpacing: -0.15,
                   ),
                 ),
               ],
@@ -1900,66 +1900,66 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final color = alert ? Colors.orangeAccent : Colors.greenAccent;
     return Container(
       width: double.infinity,
-      constraints: const BoxConstraints(minHeight: 52),
-      padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+      constraints: const BoxConstraints(minHeight: 44),
+      padding: const EdgeInsets.fromLTRB(8, 6, 8, 6),
       decoration: BoxDecoration(
         color: color.withValues(alpha: alert ? 0.10 : 0.07),
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(13),
         border: Border.all(color: color.withValues(alpha: 0.25)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 28,
-            height: 28,
+            width: 25,
+            height: 25,
             decoration: BoxDecoration(
               color: color.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(9),
+              borderRadius: BorderRadius.circular(7),
             ),
-            child: Icon(icon, size: 15, color: color),
+            child: Icon(icon, size: 14, color: color),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 8),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  alert ? 'SYSTEM ALERT' : 'SYSTEM STATUS',
+                  alert ? 'NOTIFY • ALERT' : 'NOTIFY • STATUS',
                   style: TextStyle(
                     color: color,
-                    fontSize: 7.2,
+                    fontSize: 6.8,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 1.0,
                   ),
                 ),
-                const SizedBox(height: 3),
+                const SizedBox(height: 2),
                 Text(
                   _professionalNotice(),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 9.2,
-                    height: 1.2,
+                    fontSize: 8.6,
+                    height: 1.15,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 6),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
             decoration: BoxDecoration(
               color: const Color(0x12FFFFFF),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(7),
             ),
             child: Text(
               connected ? 'ONLINE' : 'OFFLINE',
               style: TextStyle(
                 color: connected ? Colors.cyanAccent : Colors.white38,
-                fontSize: 6.7,
+                fontSize: 6.2,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 0.8,
               ),
@@ -2056,14 +2056,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final active = voltage == target;
     final disabled = !connected || adaptiveOn || voltageGuardActive || adaptiveTransitioning;
     return InkWell(
-      borderRadius: BorderRadius.circular(15),
+      borderRadius: BorderRadius.circular(13),
       onTap: disabled ? null : () => _requestVoltage(target),
       child: Container(
 
         padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 11),
         decoration: BoxDecoration(
           color: active ? Colors.black : Colors.white,
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(13),
           border: Border.all(color: active ? Colors.black : const Color(0xFFE4E4E7)),
         ),
         child: Row(
@@ -2666,7 +2666,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Column(
           children: [
             SizedBox(
-              height: 46,
+              height: 42,
               child: Row(
                 children: [
                   SizedBox(
@@ -2728,7 +2728,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 3),
             Expanded(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -2740,14 +2740,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       child: Column(
                         children: [
                           _homeMetric(
-                            'BATTERY TEMPERATURE',
+                            'BATTERY TEMP',
                             batteryValue,
                             batteryValue == '--' ? '' : '°C',
                             color: Colors.orangeAccent,
                             icon: PhosphorIconsBold.batteryHigh,
                           ),
                           _homeMetric(
-                            'HOTSIDE TEMPERATURE',
+                            'HOTSIDE TEMP',
                             hotValue,
                             hotValue == '--' ? '' : '°C',
                             color: safety == 'FAULT'
@@ -2756,26 +2756,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             icon: PhosphorIconsBold.thermometer,
                           ),
                           _homeMetric(
-                            'VOLTAGE INDICATOR',
+                            'VOLTAGE',
                             voltageValue,
                             '',
                             color: Colors.blueAccent,
                             icon: PhosphorIconsBold.lightning,
                           ),
                           _homeMetric(
-                            'ADAPTIVE MODE',
+                            'ADAPTIVE',
                             adaptiveValue,
                             '',
                             color: adaptiveOn ? Colors.greenAccent : Colors.white70,
                             icon: PhosphorIconsBold.sparkle,
                           ),
                           _homeStateChip(
-                            label: 'PELTIER SWITCH',
+                            label: 'PELTIER',
                             value: peltierOn,
                             icon: PhosphorIconsBold.snowflake,
                           ),
                           _homeStateChip(
-                            label: 'FAN SWITCH',
+                            label: 'FAN',
                             value: fanOn,
                             icon: PhosphorIconsBold.wind,
                           ),
@@ -2792,7 +2792,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       child: LayoutBuilder(
                         builder: (context, constraints) {
                           final imageHeight =
-                              (constraints.maxHeight * 0.98).clamp(210.0, 360.0).toDouble();
+                              (constraints.maxHeight * 0.88).clamp(190.0, 320.0).toDouble();
                           return Padding(
                             padding: const EdgeInsets.only(left: 2, right: 0),
                             child: Image.asset(
@@ -2809,7 +2809,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 3),
             _homeNotify(),
           ],
         ),
@@ -2885,7 +2885,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   children: [
                     const SizedBox(height: 11),
                     SizedBox(
-                      height: 46,
+                      height: 42,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         child: Row(
