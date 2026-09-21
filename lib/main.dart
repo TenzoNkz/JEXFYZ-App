@@ -603,6 +603,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  void _handleBleDisconnected() {
+    notificationSub?.cancel();
+    notificationSub = null;
+    _bleReady = false;
+    _bleSessionReady = false;
+    _syncReadyAck = false;
+    fullSyncReceived = false;
+    dashboardReady = false;
+    _pendingTelemetry.clear();
+    batteryTimer?.cancel();
+    for (final waiters in _ackWaiters.values) {
+      for (final waiter in waiters) {
+        if (!waiter.isCompleted) waiter.complete('DISCONNECTED');
+      }
+    }
+    _ackWaiters.clear();
+    if (_bleConnecting) return;
+    if (!mounted) return;
+    setState(() {
+      connected = false;
+      syncing = false;
+      dashboardReady = false;
+      controlCommandBusy = false;
+      controlCommandName = '';
+      voltage = '--';
+      hotsideTemp = '--';
+      phoneBatteryTemp = '--';
+      phoneBatteryValid = false;
+      safety = 'LOCKED';
+      safetyReason = 'DISCONNECTED';
+      firmwareVersion = 'V?';
+      resetReason = 'UNKNOWN';
+      notice = 'Device disconnected.';
+    });
+  }
+
   Future<void> _discoverServices(BluetoothDevice target) async {
     BluetoothCharacteristic? discoveredRx;
     BluetoothCharacteristic? discoveredTx;
