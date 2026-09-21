@@ -19,11 +19,13 @@ void main() {
     await tester.pump();
 
     expect(find.text('JE X FYZ'), findsOneWidget);
-    expect(find.text('BATTERY TEMPERATURE'), findsOneWidget);
-    expect(find.text('HOTSIDE TEMPERATURE'), findsOneWidget);
-    expect(find.text('VOLTAGE INDICATOR'), findsOneWidget);
-    expect(find.text('ADAPTIVE MODE'), findsOneWidget);
+    expect(find.text('BATTERY TEMP'), findsOneWidget);
+    expect(find.text('HOTSIDE TEMP'), findsOneWidget);
+    expect(find.text('PELTIER'), findsOneWidget);
+    expect(find.text('FAN'), findsOneWidget);
+    expect(find.text('FAN SPEED'), findsOneWidget);
     expect(find.text('TEMPERATURE'), findsOneWidget);
+    expect(find.textContaining('NOTIFY'), findsOneWidget);
 
     // The dashboard must render without a layout overflow in the
     // representative production viewport.
