@@ -10,6 +10,10 @@ concurrency:
   group: jexfyz-cooler-build
   cancel-in-progress: false
 
+env:
+  EXPECTED_SIGNING_CERT_SHA256: "dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0"
+  EXPECTED_SIGNING_CERT_DN: "CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID"
+
 jobs:
   build:
     runs-on: ubuntu-24.04
@@ -51,9 +55,8 @@ jobs:
           printf 'flutter.sdk=%s\n' "$FLUTTER_ROOT" > android/local.properties
           test -s android/local.properties
 
-      # IMPORTANT: this MUST run before the wrapper generation step.
-      # Gradle evaluates android/app/build.gradle while generating the wrapper,
-      # and production signing is intentionally mandatory for release builds.
+      # Production signing is mandatory. The workflow never falls back to an
+      # unsigned or debug-signed release APK.
       - name: Prepare production release signing
         shell: bash
         env:
@@ -176,10 +179,20 @@ jobs:
           set -euo pipefail
           APK="build/app/outputs/flutter-apk/app-release.apk"
           test -s "$APK"
+
           APK_SIGNER="$(find "$ANDROID_SDK_ROOT/build-tools" -type f -name apksigner 2>/dev/null | sort -V | tail -n 1)"
           test -n "$APK_SIGNER"
-          "$APK_SIGNER" verify --verbose "$APK"
-          "$APK_SIGNER" verify --print-certs "$APK"
+
+          SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --verbose --print-certs "$APK" 2>&1)"
+          printf '%s\n' "$SIGNATURE_OUTPUT"
+
+          printf '%s\n' "$SIGNATURE_OUTPUT" | grep -Eiq "Verified using v[123] scheme"
+          printf '%s\n' "$SIGNATURE_OUTPUT" | grep -Fq "$EXPECTED_SIGNING_CERT_DN"
+          printf '%s\n' "$SIGNATURE_OUTPUT" \
+            | tr '[:upper:]' '[:lower:]' \
+            | grep -Fq "$EXPECTED_SIGNING_CERT_SHA256"
+
+          echo "Production APK signature verified: JE X FYZ certificate is present and matches the official signing identity."
           ls -lh "$APK"
 
       - name: Prepare clean APK filename
