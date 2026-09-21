@@ -1780,12 +1780,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Container(
       height: 56,
       margin: const EdgeInsets.only(bottom: 6),
-      padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        color: const Color(0xFF17181C),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0x18FFFFFF)),
-      ),
       child: Row(
         children: [
           Container(
@@ -1801,7 +1795,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             child: Icon(icon, size: 25, color: color),
           ),
-          const SizedBox(width: 9),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -1842,20 +1836,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _homeFanSpeed() {
     final enabled = connected && voltage == '12V' && !adaptiveOn;
-    final progress =
-        (fanSpeed.clamp(fanSpeedMin, fanSpeedMax) - fanSpeedMin) /
-        (fanSpeedMax - fanSpeedMin);
     const color = Colors.purpleAccent;
 
-    return Container(
+    return SizedBox(
       height: 56,
-      margin: const EdgeInsets.only(bottom: 0),
-      padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        color: const Color(0xFF17181C),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0x18FFFFFF)),
-      ),
       child: Row(
         children: [
           Container(
@@ -1875,11 +1859,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
               color: enabled ? color : Colors.white38,
             ),
           ),
-          const SizedBox(width: 9),
+          const SizedBox(width: 12),
           Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
                   'FAN SPEED',
@@ -1893,32 +1876,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     height: 1.0,
                   ),
                 ),
-                const SizedBox(height: 7),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: LinearProgressIndicator(
-                          value: progress.toDouble(),
-                          minHeight: 5,
-                          backgroundColor: const Color(0x18FFFFFF),
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            enabled ? color : Colors.white24,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 9),
-                    Text(
-                      enabled ? '$fanSpeed%' : '--',
-                      style: TextStyle(
-                        color: enabled ? color : Colors.white38,
-                        fontSize: 11.8,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ],
+                Text(
+                  enabled ? '$fanSpeed%' : '--',
+                  style: TextStyle(
+                    color: enabled ? color : Colors.white38,
+                    fontSize: 15.5,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -0.25,
+                  ),
                 ),
               ],
             ),
