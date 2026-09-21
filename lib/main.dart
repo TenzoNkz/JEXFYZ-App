@@ -1122,8 +1122,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void _commitTelemetry(Map<String, String> values) {
     if (values.isEmpty) return;
 
-    // Hold every field until the final verified sync is complete.
+    // The BLE session gate must be observable during the pre-dashboard
+    // handshake. The firmware sends BLE_SESSION=READY inside the SYNC_READY
+    // full snapshot, while all other telemetry remains buffered until the
+    // final verified sync is complete.
     if (!dashboardReady) {
+      final session = values['BLE_SESSION'];
+      if (session != null) {
+        _bleSessionReady = session.trim().toUpperCase() == 'READY';
+      }
       _pendingTelemetry.addAll(values);
       return;
     }
@@ -1827,36 +1834,36 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return SizedBox(
       width: double.infinity,
-      height: 39,
+      height: 44,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 1),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
-              width: 34,
-              height: 34,
+              width: 40,
+              height: 40,
               child: Center(
                 child: Container(
-                  width: 30,
-                  height: 30,
+                  width: 36,
+                  height: 36,
                   decoration: BoxDecoration(
                     color: color.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(9),
                     border: Border.all(
                       color: color.withValues(alpha: 0.52),
-                      width: 1.1,
+                      width: 1.15,
                     ),
                   ),
                   child: Icon(
                     icon,
-                    size: 17,
+                    size: 20,
                     color: color,
                   ),
                 ),
               ),
             ),
-            const SizedBox(width: 7),
+            const SizedBox(width: 8),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -1867,10 +1874,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      color: Colors.white54,
-                      fontSize: 7.0,
+                      color: Colors.white60,
+                      fontSize: 8.1,
                       fontWeight: FontWeight.w900,
-                      letterSpacing: 0.55,
+                      letterSpacing: 0.58,
                       height: 1.0,
                     ),
                   ),
@@ -1880,8 +1887,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      color: active ? color : Colors.white38,
-                      fontSize: 13.5,
+                      color: active ? color : Colors.white42,
+                      fontSize: 15.0,
                       fontWeight: FontWeight.w900,
                       height: 0.95,
                       letterSpacing: -0.15,
