@@ -1743,7 +1743,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     required Color color,
     required IconData icon,
   }) {
-    final display = value == '--' ? '--' : '$value$unit';
+    final display = value == '--' ? '--' : value + unit;
 
     return SizedBox(
       height: 43,
@@ -1975,9 +1975,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         safetyReason != 'WAITING_FOR_NTC' &&
         safetyReason != 'WAITING_FOR_SENSOR_VALIDATION';
     final icon = connected
-        ? (alert
-            ? PhosphorIconsBold.warning
-            : PhosphorIconsBold.shieldCheck)
+        ? (alert ? PhosphorIconsBold.warning : PhosphorIconsBold.shieldCheck)
         : PhosphorIconsBold.bluetooth;
     final color = connected
         ? (alert ? Colors.orangeAccent : Colors.greenAccent)
@@ -2057,6 +2055,139 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _card({required Widget child, EdgeInsetsGeometry? padding}) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      padding: padding ?? const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF7F7F8),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE7E7E9)),
+        boxShadow: const [
+          BoxShadow(color: Color(0x12000000), blurRadius: 12, offset: Offset(0, 5)),
+        ],
+      ),
+      child: child,
+    );
+  }
+
+  Widget _sectionTitle(String title, {String? subtitle}) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(4, 8, 4, 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, letterSpacing: -0.2)),
+          if (subtitle != null) ...[
+            const SizedBox(height: 3),
+            Text(subtitle, style: const TextStyle(color: Colors.black45, fontSize: 11, fontWeight: FontWeight.w600)),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _switchRow({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required bool value,
+    required bool enabled,
+    required Future<void> Function(bool) onChanged,
+  }) {
+    return Row(
+      children: [
+        Container(
+
+          width: 34,
+          height: 34,
+          decoration: BoxDecoration(
+            color: value ? Colors.blueAccent.withValues(alpha: 0.10) : Colors.black.withValues(alpha: 0.04),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, size: 19, color: value ? Colors.blueAccent : Colors.black38),
+        ),
+        const SizedBox(width: 9),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900)),
+              const SizedBox(height: 3),
+              StaticSwitcher(
+
+                child: Text(
+                  subtitle,
+                  key: ValueKey<String>(subtitle),
+                  style: TextStyle(fontSize: 10, color: enabled ? Colors.black45 : Colors.black38, fontWeight: FontWeight.w600),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Switch(
+          value: value,
+          activeThumbColor: Colors.blueAccent,
+          activeTrackColor: Colors.blueAccent.withValues(alpha: 0.25),
+          onChanged: enabled ? onChanged : null,
+        ),
+      ],
+    );
+  }
+
+  Widget _voltageRow(String target, String mode) {
+    final active = voltage == target;
+    final disabled = !connected || adaptiveOn || voltageGuardActive || adaptiveTransitioning;
+    return InkWell(
+      borderRadius: BorderRadius.circular(15),
+      onTap: disabled ? null : () => _requestVoltage(target),
+      child: Container(
+
+        padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 11),
+        decoration: BoxDecoration(
+          color: active ? Colors.black : Colors.white,
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(color: active ? Colors.black : const Color(0xFFE4E4E7)),
+        ),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 48,
+              child: Text(target, style: TextStyle(color: active ? Colors.white : Colors.black, fontSize: 18, fontWeight: FontWeight.w900)),
+            ),
+            Expanded(
+              child: Text(mode, style: TextStyle(color: active ? Colors.white70 : Colors.black45, fontSize: 10, fontWeight: FontWeight.w700)),
+            ),
+            StaticSwitcher(
+
+              child: Icon(
+                active ? PhosphorIconsBold.checkCircle : PhosphorIconsRegular.circle,
+                key: ValueKey<bool>(active),
+                color: active ? Colors.blueAccent : Colors.black26,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _smoothList({
+    required List<Widget> children,
+    required String storageKey,
+    EdgeInsetsGeometry padding = const EdgeInsets.fromLTRB(2, 2, 2, 20),
+  }) {
+    return ListView(
+      key: PageStorageKey<String>(storageKey),
+      physics: const ClampingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      scrollCacheExtent: const ScrollCacheExtent.pixels(480),
+      padding: padding,
+      children: children,
     );
   }
 
