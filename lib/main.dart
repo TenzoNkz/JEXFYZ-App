@@ -1784,19 +1784,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
       padding: EdgeInsets.zero,
       child: SizedBox(
         width: double.infinity,
-        height: 39,
+        height: 44,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
-                width: 37,
-                height: 37,
+                width: 41,
+                height: 41,
                 child: Center(
                   child: Container(
-                    width: 34,
-                    height: 34,
+                    width: 38,
+                    height: 38,
                     decoration: BoxDecoration(
                       color: color.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(9),
@@ -1807,7 +1807,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     child: Icon(
                       icon,
-                      size: 19,
+                      size: 22,
                       color: color,
                     ),
                   ),
@@ -1820,7 +1820,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      height: 11,
+                      height: 13,
                       child: FittedBox(
                         alignment: Alignment.centerLeft,
                         fit: BoxFit.scaleDown,
@@ -1829,7 +1829,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           maxLines: 1,
                           style: const TextStyle(
                             color: Colors.white60,
-                            fontSize: 9.5,
+                            fontSize: 10.5,
                             fontWeight: FontWeight.w900,
                             letterSpacing: 0.45,
                             height: 1.0,
@@ -1844,7 +1844,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color: active ? color : Colors.white38,
-                        fontSize: 17.0,
+                        fontSize: 18.5,
                         fontWeight: FontWeight.w900,
                         height: 0.95,
                         letterSpacing: -0.15,
@@ -1974,7 +1974,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             : const Color(0xFF63E6BE);
     return Container(
       width: double.infinity,
-      height: 39,
+      height: 44,
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
       decoration: BoxDecoration(
         color: color.withValues(alpha: hasError ? 0.12 : 0.07),
@@ -1985,8 +1985,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            width: 37,
-            height: 37,
+            width: 41,
+            height: 41,
             child: Center(
               child: Icon(icon, size: 22, color: color),
             ),
@@ -2914,7 +2914,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
     final homeHeight =
-        (media.size.height * 0.45).clamp(335.0, 465.0).toDouble();
+        (media.size.height * 0.50).clamp(365.0, 500.0).toDouble();
 
     return Scaffold(
       backgroundColor: const Color(0xFF111113),
