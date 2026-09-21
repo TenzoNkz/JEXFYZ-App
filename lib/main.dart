@@ -1887,7 +1887,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      color: active ? color : Colors.white42,
+                      color: active ? color : Colors.white38,
                       fontSize: 15.0,
                       fontWeight: FontWeight.w900,
                       height: 0.95,
