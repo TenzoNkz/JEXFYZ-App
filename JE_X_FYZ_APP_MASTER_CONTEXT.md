@@ -292,6 +292,7 @@ Whenever an app file changes:
 - Home UI moved toward colored indicator cards with icon boxes.
 - **Latest UI correction:** the large outer indicator cards were removed. Only each indicator's icon area remains boxed; label/value text is now on the open Home background. Fan Speed follows the same icon-only-box treatment.
 - **Fan Speed display correction:** Home `FAN SPEED` now shows the numeric percentage only (for example `50%` / `100%`) with no horizontal progress bar. The underlying fan-speed range remains 50–100%.
+- **Home cooler image sizing correction:** the cooler image area was enlarged so the hardware illustration is more prominent while keeping the indicator labels readable. The Home layout now gives the cooler more horizontal space (`flex: 13`) and reduces the inter-column gap.
 - Bluetooth and Settings retained as header actions without boxes.
 - Sub Menu spacing tightened toward the Home Notify card.
 - Blocking `PROCESSING` UI removed from the intended interaction model.
