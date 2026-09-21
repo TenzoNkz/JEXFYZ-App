@@ -277,6 +277,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   bool controlCommandBusy = false;
   String controlCommandName = '';
   bool dashboardReady = false;
+  bool _bleConnecting = false;
   final Map<String, List<Completer<String>>> _ackWaiters = {};
   final Map<String, String> _syncSnapshot = {};
   final Map<String, String> _pendingTelemetry = {};
@@ -502,12 +503,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
     voltageGuardTimer?.cancel();
 
     try {
-      if (device != null && device != target) {
+      if (device != null) {
         await device!.disconnect();
       }
     } catch (_) {}
+    try {
+      await target.disconnect();
+    } catch (_) {}
+    await Future<void>.delayed(const Duration(milliseconds: 300));
 
     device = target;
+    _bleConnecting = true;
     rx = null;
     tx = null;
     _bleReady = false;
@@ -546,40 +552,57 @@ class _DashboardScreenState extends State<DashboardScreen> {
       _handleBleDisconnected();
     });
 
-    try {
-      await target.connect(
-        license: License.nonprofit,
-        autoConnect: false,
-        timeout: const Duration(seconds: 18),
-        mtu: 247,
-      );
+    Object? lastError;
+    for (var attempt = 0; attempt < 2; attempt++) {
+      try {
+        await target.connect(
+          license: License.nonprofit,
+          autoConnect: false,
+          timeout: const Duration(seconds: 18),
+          mtu: 247,
+        );
 
-      // FlutterBluePlus already performs the Android MTU request when `mtu`
-      // is supplied to connect(). Avoid an immediate duplicate GATT operation
-      // which can make some Android/ESP32 combinations unstable.
-      await target.connectionState
-          .where((state) => state == BluetoothConnectionState.connected)
-          .first
-          .timeout(const Duration(seconds: 4));
+        // FlutterBluePlus already performs the Android MTU request when `mtu`
+        // is supplied to connect(). Avoid an immediate duplicate GATT operation
+        // which can make some Android/ESP32 combinations unstable.
+        await target.connectionState
+            .where((state) => state == BluetoothConnectionState.connected)
+            .first
+            .timeout(const Duration(seconds: 4));
 
-      await _discoverServices(target);
-    } catch (e) {
-      debugPrint('BLE connect/discovery: $e');
-      await notificationSub?.cancel();
-      notificationSub = null;
-      _bleReady = false;
-      _bleSessionReady = false;
+        await _discoverServices(target);
+        lastError = null;
+        break;
+      } catch (e) {
+        lastError = e;
+        debugPrint('BLE connect/discovery attempt ${attempt + 1}: $e');
+        await notificationSub?.cancel();
+        notificationSub = null;
+        _bleReady = false;
+        _bleSessionReady = false;
+        try {
+          await target.disconnect();
+        } catch (_) {}
+        if (attempt == 0) {
+          await Future<void>.delayed(const Duration(milliseconds: 700));
+        }
+      }
+    }
+
+    _bleConnecting = false;
+
+    if (lastError != null) {
+      final message = lastError is StateError
+          ? (lastError as StateError).message
+          : 'Bluetooth connection failed';
       if (mounted) {
         setState(() {
           connected = false;
           syncing = false;
-          notice = e is StateError ? e.message : 'Bluetooth connection failed';
+          notice = message;
         });
       }
-      try {
-        await target.disconnect();
-      } catch (_) {}
-      rethrow;
+      throw lastError;
     }
   }
 
@@ -599,6 +622,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       }
     }
     _ackWaiters.clear();
+    if (_bleConnecting) return;
     if (!mounted) return;
     setState(() {
       connected = false;
