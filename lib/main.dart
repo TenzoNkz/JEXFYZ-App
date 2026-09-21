@@ -1793,9 +1793,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             height: 6,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: color.withValues(
-                alpha: value == '--' ? 0.28 : 0.9,
-              ),
+              color: color.withValues(alpha: value == '--' ? 0.28 : 0.9),
             ),
           ),
         ],
@@ -1816,14 +1814,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
         height: 58,
         padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 7),
         decoration: BoxDecoration(
-          color: active
-              ? const Color(0x1454E3FF)
-              : const Color(0x0AFFFFFF),
+          color: active ? const Color(0x1454E3FF) : const Color(0x0AFFFFFF),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: active
-                ? const Color(0x5A54E3FF)
-                : const Color(0x16FFFFFF),
+            color: active ? const Color(0x5A54E3FF) : const Color(0x16FFFFFF),
           ),
         ),
         child: Row(
@@ -1832,9 +1826,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               width: 30,
               height: 30,
               decoration: BoxDecoration(
-                color: active
-                    ? const Color(0x1654E3FF)
-                    : const Color(0x0AFFFFFF),
+                color: active ? const Color(0x1654E3FF) : const Color(0x0AFFFFFF),
                 borderRadius: BorderRadius.circular(9),
               ),
               child: Icon(
@@ -1982,17 +1974,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
         safetyReason != 'NONE' &&
         safetyReason != 'WAITING_FOR_NTC' &&
         safetyReason != 'WAITING_FOR_SENSOR_VALIDATION';
-
     final icon = connected
         ? (alert
             ? PhosphorIconsBold.warning
             : PhosphorIconsBold.shieldCheck)
         : PhosphorIconsBold.bluetooth;
-
     final color = connected
         ? (alert ? Colors.orangeAccent : Colors.greenAccent)
         : Colors.white54;
-
     final statusText = connected ? 'Connected' : 'Disconnected';
 
     return SizedBox(
@@ -2003,9 +1992,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         decoration: BoxDecoration(
           color: color.withValues(alpha: connected ? 0.08 : 0.05),
           borderRadius: BorderRadius.circular(13),
-          border: Border.all(
-            color: color.withValues(alpha: 0.22),
-          ),
+          border: Border.all(color: color.withValues(alpha: 0.22)),
         ),
         child: Row(
           children: [
@@ -2040,9 +2027,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             const SizedBox(width: 6),
             Expanded(
               child: Text(
-                connected
-                    ? _professionalNotice()
-                    : 'Connect to JE X FYZ first.',
+                connected ? _professionalNotice() : 'Connect to JE X FYZ first.',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -2054,10 +2039,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             const SizedBox(width: 7),
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 4,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 color: const Color(0x12FFFFFF),
                 borderRadius: BorderRadius.circular(8),
@@ -2078,14 +2060,560 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  Widget _buildVoltageTab({Key? key}) {
+    return KeyedSubtree(key: key, child: _smoothList(
+      storageKey: 'voltage',
+      children: [
+        _sectionTitle(
+          'Voltage Control',
+          subtitle: adaptiveOn ? 'Adaptive is controlling the voltage.' : '5V / 9V / 12V manual selector.',
+        ),
+        _card(
+          padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
+          child: Column(
+            children: [
+              _voltageRow('5V', '5V Manual'),
+              _voltageRow('9V', '9V Manual'),
+              _voltageRow('12V', '12V Manual'),
+            ],
+          ),
+        ),
+        if (voltageGuardActive)
+          const Padding(
+            padding: EdgeInsets.only(left: 5, top: 2),
+            child: Text('Voltage guard active — awaiting device confirmation.', style: TextStyle(color: Colors.black45, fontSize: 10, fontWeight: FontWeight.w700)),
+          ),
+        _card(
+          child: Row(
+            children: [
+              const Icon(PhosphorIconsBold.lightning, size: 19, color: Colors.blueAccent),
+              const SizedBox(width: 9),
+              Expanded(
+                child: Text(
+                  connected ? 'Firmware state: ${voltage == '--' ? 'syncing...' : voltage}' : 'Connect to control voltage.',
+                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ));
+  }
+
+  Widget _buildControlTab({Key? key}) {
+    final speedEnabled = connected && !adaptiveOn && voltage == '12V' && !controlCommandBusy;
+    final fanLocked = connected && !adaptiveOn && peltierOn;
+    return KeyedSubtree(key: key, child: _smoothList(
+      storageKey: 'control',
+      children: [
+        _sectionTitle('Cooling Control', subtitle: 'Manage the cooling fan, Peltier, and fan speed.'),
+        _card(
+          padding: const EdgeInsets.fromLTRB(13, 10, 13, 10),
+          child: Column(
+            children: [
+              _switchRow(
+                title: 'Fan',
+                subtitle: fanLocked ? 'Fan is ON • locked while Peltier is ON' : (fanOn ? 'Fan is ON' : 'Fan is OFF'),
+                icon: PhosphorIconsBold.wind,
+                value: fanOn,
+                enabled: connected && !adaptiveOn && !peltierOn && !controlCommandBusy,
+                onChanged: _toggleFan,
+              ),
+              const Divider(height: 20),
+              _switchRow(
+                title: 'Peltier',
+                subtitle: peltierOn ? 'Peltier is ON • 5 s soft-start' : 'Peltier is OFF',
+                icon: PhosphorIconsBold.snowflake,
+                value: peltierOn,
+                enabled: connected && !adaptiveOn && !controlCommandBusy,
+                onChanged: _togglePeltier,
+              ),
+              const Divider(height: 20),
+              Row(
+                children: [
+                  const Icon(PhosphorIconsBold.gauge, size: 20, color: Colors.black45),
+                  const SizedBox(width: 9),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Fan Speed', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900)),
+                        SizedBox(height: 3),
+                        Text('Manual 12V • 50–100% • 25 kHz PWM', style: TextStyle(fontSize: 10, color: Colors.black45, fontWeight: FontWeight.w600)),
+                      ],
+                    ),
+                  ),
+                  Text('$fanSpeed%', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),
+                ],
+              ),
+              Slider(
+                min: 50,
+                max: 100,
+                divisions: 5,
+                value: fanSpeedDraft.clamp(50, 100).toDouble(),
+                activeColor: Colors.black,
+                inactiveColor: Colors.black12,
+                onChanged: speedEnabled
+                    ? (v) => setState(() => fanSpeedDraft = ((v / 10).round() * 10).clamp(50, 100).toInt())
+                    : null,
+                onChangeEnd: speedEnabled ? _setFanSpeed : null,
+              ),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  Expanded(
+                    child: _miniStatus('PELTIER', peltierOn ? 'ON' : 'OFF', peltierOn ? Colors.cyan : Colors.black38),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _miniStatus('FAN', fanOn ? 'ON' : 'OFF', fanOn ? Colors.blueAccent : Colors.black38),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _miniStatus('PWM', '$fanSpeed%', Colors.deepPurpleAccent),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  safety == 'OK' ? 'SAFETY: OK' : 'SAFETY: $safety${safetyReason == 'NONE' ? '' : ' • $safetyReason'}',
+                  style: TextStyle(color: safety == 'OK' ? Colors.green.shade700 : Colors.orangeAccent, fontSize: 9, fontWeight: FontWeight.w800),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ));
+  }
+
+  Widget _miniStatus(String label, String value, Color color) {
+    return Container(
+
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.07),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: 0.16)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: const TextStyle(fontSize: 8, color: Colors.black45, fontWeight: FontWeight.w800, letterSpacing: 0.5)),
+          const SizedBox(height: 2),
+          StaticSwitcher(
+
+            child: Text(value, key: ValueKey<String>('$label:$value'), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: color)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAdaptiveTab({Key? key}) {
+    return KeyedSubtree(key: key, child: _smoothList(
+      storageKey: 'adaptive',
+      children: [
+        _sectionTitle('Adaptive Control', subtitle: 'Firmware-owned automatic voltage policy.'),
+        _card(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          child: Row(
+            children: [
+              Container(
+
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: adaptiveOn ? Colors.green.withValues(alpha: 0.13) : Colors.black.withValues(alpha: 0.06),
+                ),
+                child: Icon(adaptiveOn ? PhosphorIconsBold.shield : PhosphorIconsRegular.shield, color: adaptiveOn ? Colors.green.shade700 : Colors.black45),
+              ),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Adaptive Switch', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900)),
+                    SizedBox(height: 4),
+                    Text('Hotside and phone battery temperature control', style: TextStyle(fontSize: 10, color: Colors.black45, fontWeight: FontWeight.w600)),
+                  ],
+                ),
+              ),
+              Switch(
+                value: connected && adaptiveOn,
+                activeThumbColor: Colors.green,
+                onChanged: connected && !adaptiveTransitioning && !controlCommandBusy ? _toggleAdaptive : null,
+              ),
+            ],
+          ),
+        ),
+        _card(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Adaptive policy', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900)),
+              const SizedBox(height: 7),
+              const Text(
+                'Firmware returns to 5V first, then uses the phone battery temperature zone to target 5V / 9V / 12V. Manual controls are locked while Adaptive is ON.',
+                style: TextStyle(fontSize: 11, color: Colors.black54, height: 1.35, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  _miniMetric('Ceiling', adaptiveCeiling),
+                  const SizedBox(width: 8),
+                  _miniMetric('Battery', phoneBatteryValid ? '$phoneBatteryTemp°C' : '--'),
+                ],
+              ),
+            ],
+          ),
+        ),
+        _card(
+          padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
+          child: Row(
+            children: [
+              const Icon(PhosphorIconsRegular.info, size: 18, color: Colors.blueAccent),
+              const SizedBox(width: 9),
+              Expanded(
+                child: StaticSwitcher(
+
+                  child: Text(
+                    adaptiveTransitioning ? 'Adaptive transition in progress — awaiting device confirmation.' : 'Adaptive state: ${adaptiveOn ? 'ON' : 'OFF'}',
+                    key: ValueKey<String>('adaptive:$adaptiveOn:$adaptiveTransitioning'),
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ));
+  }
+
+  Widget _miniMetric(String label, String value) {
+    return Expanded(
+      child: Container(
+
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFE4E4E6))),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(label, style: const TextStyle(fontSize: 9, color: Colors.black45, fontWeight: FontWeight.w700)),
+            const SizedBox(height: 3),
+            StaticSwitcher(
+
+              child: Text(value, key: ValueKey<String>('$label:$value'), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _colorField(String label, TextEditingController controller, String command) {
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900)),
+              const SizedBox(height: 4),
+              TextField(
+                controller: controller,
+                enabled: connected,
+                textCapitalization: TextCapitalization.characters,
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800),
+                decoration: InputDecoration(
+                  isDense: true,
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE2E2E5))),
+                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE2E2E5))),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 11, vertical: 10),
+                  hintText: '#RRGGBB',
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 8),
+        FilledButton(
+          onPressed: connected ? () => _sendColor(command, controller) : null,
+          child: const Text('SET', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900)),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLedTab({Key? key}) {
+    final modeName = <String>['Static', 'Breath', 'Wipe', 'Running', 'Scan', 'Theater', 'Rainbow', 'Twinkle'][rgbMode.clamp(0, 7)];
+    return KeyedSubtree(key: key, child: _smoothList(
+      storageKey: 'led',
+      children: [
+        _sectionTitle('LED Control', subtitle: '8× WS2812B • firmware-managed lighting and effects.'),
+        _card(
+          padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
+          child: Column(
+            children: [
+              _switchRow(
+                title: 'LED Power',
+                subtitle: rgbOn ? 'Lighting is ON' : 'Lighting is OFF',
+                icon: PhosphorIconsBold.lightbulb,
+                value: rgbOn,
+                enabled: connected,
+                onChanged: _setRgb,
+              ),
+              const Divider(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(onPressed: connected ? () => _setMode(rgbMode - 1) : null, icon: const Icon(PhosphorIconsBold.caretLeft, size: 28)),
+                  Container(
+
+                    width: 138,
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(13), border: Border.all(color: const Color(0xFFE4E4E6))),
+                    child: StaticSwitcher(
+
+                      child: Text('Mode $rgbMode • $modeName', key: ValueKey<int>(rgbMode), textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 12)),
+                    ),
+                  ),
+                  IconButton(onPressed: connected ? () => _setMode(rgbMode + 1) : null, icon: const Icon(PhosphorIconsBold.caretRight, size: 28)),
+                ],
+              ),
+              Row(
+                children: [
+                  const Icon(PhosphorIconsRegular.sun, color: Colors.black38, size: 20),
+                  Expanded(
+                    child: Slider(
+                      min: 0,
+                      max: 100,
+                      divisions: 20,
+                      value: brightness.clamp(0, 100).toDouble(),
+                      activeColor: Colors.black,
+                      inactiveColor: Colors.black12,
+                      onChanged: connected && !controlCommandBusy ? (v) => setState(() => brightness = v.round()) : null,
+                      onChangeEnd: connected && !controlCommandBusy ? _setBrightness : null,
+                    ),
+                  ),
+                  SizedBox(width: 42, child: Text('$brightness%', textAlign: TextAlign.right, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900))),
+                ],
+              ),
+            ],
+          ),
+        ),
+        _sectionTitle('Custom RGB Color'),
+        _card(child: Row(children: [
+          Expanded(child: TextField(
+            controller: rgbColorController,
+            enabled: connected,
+            textCapitalization: TextCapitalization.characters,
+            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+            decoration: InputDecoration(
+              labelText: 'Color',
+              hintText: '#FFFFFF',
+              filled: true,
+              fillColor: Colors.white,
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+          )),
+          const SizedBox(width: 8),
+          FilledButton(onPressed: connected ? () => _sendColor('COLOR', rgbColorController) : null, child: const Text('SET')),
+        ])),
+        _sectionTitle('Voltage Indicator Colors', subtitle: 'Shown briefly after a confirmed voltage change.'),
+        _card(child: Column(children: [
+          _colorField('5V', color5Controller, 'V5COLOR'),
+          const Divider(height: 18),
+          _colorField('9V', color9Controller, 'V9COLOR'),
+          const Divider(height: 18),
+          _colorField('12V', color12Controller, 'V12COLOR'),
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.centerRight,
+            child: OutlinedButton.icon(
+              onPressed: connected ? _resetVoltageColors : null,
+              icon: const Icon(PhosphorIconsBold.arrowClockwise, size: 17),
+              label: const Text('Reset Colors'),
+            ),
+          ),
+        ])),
+      ],
+    ));
+  }
+
+  Widget _adjuster({required String title, required int value, required int min, required int max, required ValueChanged<int> onChanged, String unit = '°C'}) {
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),
+              const SizedBox(height: 3),
+              Text('Range $min–$max$unit', style: const TextStyle(color: Colors.black45, fontSize: 10, fontWeight: FontWeight.w700)),
+            ],
+          ),
+        ),
+        IconButton(onPressed: value <= min ? null : () => onChanged(value - 1), icon: const Icon(PhosphorIconsRegular.minusCircle)),
+        Container(
+
+          width: 66,
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(13), border: Border.all(color: const Color(0xFFE3E3E5))),
+          child: StaticSwitcher(
+
+            child: Text('$value$unit', key: ValueKey<String>('$value$unit'), textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: Colors.blueAccent)),
+          ),
+        ),
+        IconButton(onPressed: value >= max ? null : () => onChanged(value + 1), icon: const Icon(PhosphorIconsRegular.plusCircle)),
+      ],
+    );
+  }
+
+  Widget _buildTemperatureTab({Key? key}) {
+    final locked = adaptiveOn;
+    final midLow = battery5Limit + 1;
+    final midHigh = battery12Limit - 1;
+    return KeyedSubtree(key: key, child: _smoothList(
+      storageKey: 'temperature',
+      children: [
+        _sectionTitle('Thermal Protection', subtitle: locked ? 'Locked while Adaptive is ON.' : 'Sensor readings remain independent from the protection threshold.'),
+        _card(
+          child: _adjuster(
+            title: 'Hotside Overheat Limit',
+            value: hotLimitDraft,
+            min: 40,
+            max: 50,
+            onChanged: (v) {
+              if (!connected || locked) return;
+              _setHotLimit(v);
+            },
+          ),
+        ),
+        _sectionTitle('Phone Battery Temperature Zones', subtitle: '9V uses the calculated middle zone.'),
+        _card(
+          padding: const EdgeInsets.fromLTRB(13, 8, 13, 8),
+          child: Column(
+            children: [
+              _adjuster(
+                title: '5V Zone Ceiling',
+                value: battery5Draft,
+                min: 20,
+                max: 48,
+                onChanged: (v) {
+                  if (!connected || locked || v >= battery12Limit - 1) return;
+                  _setBattery5(v);
+                },
+              ),
+              const Divider(height: 14),
+              Row(
+                children: [
+                  SizedBox(width: 100, child: Text('9V Zone', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Colors.black45))),
+                  Expanded(child: StaticSwitcher(duration: const Duration(milliseconds: 150), child: Text('≈ $midLow–$midHigh°C', key: ValueKey<String>('$midLow:$midHigh'), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900)))),
+                  const Icon(PhosphorIconsRegular.lock, color: Colors.black26),
+                ],
+              ),
+              const Divider(height: 14),
+              _adjuster(
+                title: '12V Zone Floor',
+                value: battery12Draft,
+                min: 22,
+                max: 50,
+                onChanged: (v) {
+                  if (!connected || locked || v <= battery5Limit + 1) return;
+                  _setBattery12(v);
+                },
+              ),
+            ],
+          ),
+        ),
+        if (locked)
+          _card(
+            padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
+            child: const Row(children: [
+              Icon(PhosphorIconsBold.lock, size: 18, color: Colors.orangeAccent),
+              SizedBox(width: 9),
+              Expanded(child: Text('Temperature settings are locked while Adaptive Mode is active.', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800))),
+            ]),
+          ),
+        Align(
+          alignment: Alignment.centerRight,
+          child: OutlinedButton.icon(
+            onPressed: connected && !locked ? _resetTemperatureSettings : null,
+            icon: const Icon(PhosphorIconsBold.arrowClockwise, size: 17),
+            label: const Text('Reset Temperature'),
+          ),
+        ),
+      ],
+    ));
+  }
+
+  Widget _buildTabContent() {
+    final content = switch (tabIndex) {
+      0 => _buildVoltageTab(key: const ValueKey('voltage-tab')),
+      1 => _buildControlTab(key: const ValueKey('control-tab')),
+      2 => _buildAdaptiveTab(key: const ValueKey('adaptive-tab')),
+      3 => _buildLedTab(key: const ValueKey('led-tab')),
+      4 => _buildTemperatureTab(key: const ValueKey('temperature-tab')),
+      _ => const SizedBox.shrink(),
+    };
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        content,
+        if (controlCommandBusy) ...[
+          const Positioned.fill(
+            child: AbsorbPointer(
+              absorbing: true,
+              child: ColoredBox(color: Colors.transparent),
+            ),
+          ),
+          Positioned(
+            top: 2,
+            left: 10,
+            right: 10,
+            child: IgnorePointer(
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 7,
+                ),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF17181C),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  'PROCESSING: ' +
+                      controlCommandName +
+                      ' • awaiting device confirmation...',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
   Widget _buildHomeArea(double height) {
-    final batteryValue =
-        connected && phoneBatteryValid ? phoneBatteryTemp : '--';
+    final batteryValue = connected && phoneBatteryValid ? phoneBatteryTemp : '--';
     final hotValue = connected ? hotsideTemp : '--';
-    final voltageValue =
-        connected && voltage != '--' ? voltage : '--';
-    final adaptiveValue =
-        connected ? (adaptiveOn ? 'ON' : 'OFF') : '--';
+    final voltageValue = connected && voltage != '--' ? voltage : '--';
+    final adaptiveValue = connected ? (adaptiveOn ? 'ON' : 'OFF') : '--';
 
     return SizedBox(
       height: height,
@@ -2106,12 +2634,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         connected
                             ? PhosphorIconsBold.bluetoothConnected
                             : PhosphorIconsBold.bluetooth,
-                        color:
-                            connected ? Colors.blueAccent : Colors.white,
+                        color: connected ? Colors.blueAccent : Colors.white,
                         size: 24,
                       ),
-                      onPressed:
-                          connected ? _disconnect : _showBluetoothMenu,
+                      onPressed: connected ? _disconnect : _showBluetoothMenu,
                     ),
                   ),
                   Expanded(
@@ -2166,11 +2692,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   Expanded(
                     flex: 4,
                     child: Padding(
-                      padding:
-                          const EdgeInsets.only(left: 1, right: 6),
+                      padding: const EdgeInsets.only(left: 1, right: 6),
                       child: Column(
-                        crossAxisAlignment:
-                            CrossAxisAlignment.stretch,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           _homeMetric(
                             'BATTERY TEMPERATURE',
@@ -2202,9 +2726,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             'ADAPTIVE MODE',
                             adaptiveValue,
                             '',
-                            color: adaptiveOn
-                                ? Colors.greenAccent
-                                : Colors.white70,
+                            color: adaptiveOn ? Colors.greenAccent : Colors.white70,
                             icon: PhosphorIconsBold.sparkle,
                           ),
                           const SizedBox(height: 6),
@@ -2304,7 +2826,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
     final homeHeight =
-        (media.size.height * 0.48).clamp(430.0, 560.0).toDouble();
+        (media.size.height * 0.50).clamp(430.0, 680.0).toDouble();
 
     if (syncing && !dashboardReady) {
       return _buildSyncGate();
