@@ -2003,10 +2003,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            width: 41,
-            height: 41,
+            width: 45,
+            height: 43,
             child: Center(
-              child: Icon(icon, size: 22, color: color),
+              child: Icon(icon, size: 27, color: color),
             ),
           ),
           const SizedBox(width: 6),
@@ -2021,7 +2021,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: color,
-                    fontSize: 6.6,
+                    fontSize: 8.5,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 0.8,
                   ),
@@ -2033,7 +2033,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: const Color(0xFFF4F6FA),
-                    fontSize: 8.7,
+                    fontSize: 11.5,
                     height: 1.0,
                     fontWeight: FontWeight.w800,
                   ),
@@ -2056,7 +2056,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     : connected
                         ? Colors.cyanAccent
                         : Colors.white38,
-                fontSize: 6.1,
+                fontSize: 7.3,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 0.75,
               ),
@@ -2861,11 +2861,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       child: LayoutBuilder(
                         builder: (context, constraints) {
                           final imageHeight =
-                              (constraints.maxHeight * 0.99).clamp(230.0, 390.0).toDouble();
+                              (constraints.maxHeight * 0.99).clamp(240.0, 430.0).toDouble();
                           return Padding(
                             padding: const EdgeInsets.only(left: 2, right: 0),
                             child: Image.asset(
                               'assets/jexfyzcooler.png',
+                              width: double.infinity,
                               height: imageHeight,
                               fit: BoxFit.contain,
                               alignment: Alignment.centerRight,
@@ -2881,7 +2882,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             const SizedBox(height: 2),
             SizedBox(
               width: double.infinity,
-              height: 39,
+              height: 44,
               child: _homeNotify(),
             ),
           ],
