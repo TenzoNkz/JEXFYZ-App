@@ -2947,7 +2947,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
               // The Home is authored on one fixed 360dp-wide master canvas.
               // Device density / Smallest width changes only the single scale
               // factor; the internal geometry never reflows.
-              final scale = constraints.maxWidth / homeDesignWidth;
+              // Keep the Home design at its authored 360dp width on larger
+              // displays. Only scale down when the available width is below
+              // 360dp, so a 450dp device does not vertically stretch the
+              // entire Home section to 525dp.
+              final scale =
+                  (constraints.maxWidth / homeDesignWidth).clamp(0.0, 1.0).toDouble();
               final scaledHomeHeight = homeDesignHeight * scale;
 
               return Column(
