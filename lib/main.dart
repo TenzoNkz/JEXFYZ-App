@@ -1828,7 +1828,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           label,
                           maxLines: 1,
                           style: const TextStyle(
-                            color: Colors.white60,
+                            color: const Color(0xFFD4D7E0),
                             fontSize: 10.5,
                             fontWeight: FontWeight.w900,
                             letterSpacing: 0.45,
@@ -1843,7 +1843,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color: active ? color : Colors.white38,
+                        color: active ? color : const Color(0xFF7F8592),
                         fontSize: 18.5,
                         fontWeight: FontWeight.w900,
                         height: 0.95,
@@ -1876,12 +1876,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _homeFanSpeed() {
-    final enabled = connected && voltage == '12V' && !adaptiveOn;
+    final displaySpeed = !connected
+        ? '--'
+        : (voltage == '5V' || voltage == '9V')
+            ? '100%'
+            : (!adaptiveOn && voltage == '12V')
+                ? '$fanSpeed%'
+                : '--';
     return _homeMetric(
       'FAN SPEED',
-      enabled ? '$fanSpeed%' : '--',
+      displaySpeed,
       '',
-      color: const Color(0xFFFFD166),
+      color: const Color(0xFFFFCD38),
       icon: PhosphorIconsRegular.gauge,
     );
   }
@@ -1968,10 +1974,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ? PhosphorIconsBold.warning
             : PhosphorIconsRegular.shieldCheck;
     final color = hasError
-        ? const Color(0xFFFF6B7A)
+        ? const Color(0xFFFF5164)
         : alert
-            ? const Color(0xFFFFC857)
-            : const Color(0xFF63E6BE);
+            ? const Color(0xFFFFB72B)
+            : const Color(0xFF4DE7B7);
     return Container(
       width: double.infinity,
       height: 44,
@@ -2014,7 +2020,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: const Color(0xFFF4F6FA),
                     fontSize: 8.7,
                     height: 1.0,
                     fontWeight: FontWeight.w800,
@@ -2716,7 +2722,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           connected
                               ? PhosphorIconsRegular.bluetoothConnected
                               : PhosphorIconsRegular.bluetooth,
-                          color: connected ? Colors.blueAccent : Colors.white,
+                          color: connected ? const Color(0xFF4D8CFF) : const Color(0xFFF4F6FA),
                           size: 24,
                         ),
                         onPressed: connected ? _disconnect : _showBluetoothMenu,
@@ -2731,7 +2737,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           headerName,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Colors.white,
+                            color: const Color(0xFFF7F8FC),
                             fontWeight: FontWeight.w900,
                             fontSize: 19,
                             letterSpacing: 0.2,
@@ -2742,7 +2748,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           'DEVELOPED BY HORIZON',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Colors.white30,
+                            color: const Color(0xFF737986),
                             fontWeight: FontWeight.w700,
                             fontSize: 6.8,
                             letterSpacing: 1.25,
@@ -2790,7 +2796,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             'BATTERY TEMPERATURE',
                             batteryValue,
                             batteryValue == '--' ? '' : '°C',
-                            color: const Color(0xFFFFB45C),
+                            color: const Color(0xFFFFB52E),
                             icon: PhosphorIconsRegular.batteryHigh,
                           ),
                           _homeMetric(
@@ -2798,35 +2804,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             hotValue,
                             hotValue == '--' ? '' : '°C',
                             color: safety == 'FAULT'
-                                ? const Color(0xFFFF6B7A)
-                                : const Color(0xFF55E6E6),
+                                ? const Color(0xFFFF5164)
+                                : const Color(0xFF22E6DE),
                             icon: PhosphorIconsRegular.thermometer,
                           ),
                           _homeMetric(
                             'VOLTAGE INDICATOR',
                             voltageValue,
                             '',
-                            color: const Color(0xFF70A7FF),
+                            color: const Color(0xFF4D8CFF),
                             icon: PhosphorIconsRegular.lightning,
                           ),
                           _homeMetric(
                             'ADAPTIVE MODE',
                             adaptiveValue,
                             '',
-                            color: const Color(0xFFB58CFF),
+                            color: const Color(0xFFC05BFF),
                             icon: PhosphorIconsRegular.sparkle,
                           ),
                           _homeStateChip(
                             label: 'PELTIER SWITCH',
                             value: peltierOn,
                             icon: PhosphorIconsRegular.snowflake,
-                            color: const Color(0xFF6DE4FF),
+                            color: const Color(0xFF18DFFF),
                           ),
                           _homeStateChip(
                             label: 'FAN SWITCH',
                             value: fanOn,
                             icon: PhosphorIconsRegular.fan,
-                            color: const Color(0xFF5CE1C8),
+                            color: const Color(0xFF38E3AD),
                           ),
                           _homeFanSpeed(),
                           ],
@@ -2843,7 +2849,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       child: LayoutBuilder(
                         builder: (context, constraints) {
                           final imageHeight =
-                              (constraints.maxHeight * 0.96).clamp(210.0, 360.0).toDouble();
+                              (constraints.maxHeight * 0.99).clamp(230.0, 390.0).toDouble();
                           return Padding(
                             padding: const EdgeInsets.only(left: 2, right: 0),
                             child: Image.asset(
