@@ -4,10 +4,9 @@ import 'package:jexfyz_cooler/main.dart';
 
 void main() {
   testWidgets('JE Cooler dashboard renders', (tester) async {
-    // Give the master Home canvas enough vertical room for the test SafeArea.
-    // This avoids a false layout-overflow failure caused by the test viewport,
-    // without changing the production UI.
-    tester.view.physicalSize = const Size(1080, 2600);
+    // Use a tall portrait viewport so the fixed Home canvas plus the
+    // production submenu both have room to render without test-only overflow.
+    tester.view.physicalSize = const Size(1080, 3200);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(() {
       tester.view.resetPhysicalSize();
