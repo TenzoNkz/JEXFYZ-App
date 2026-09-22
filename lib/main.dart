@@ -2707,9 +2707,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     };
   }
 
-  static const double _homeDesignWidth = 360.0;
-  static const double _homeDesignHeight = 800.0;
-
   Widget _buildHomeArea(double height) {
     final batteryValue = connected && phoneBatteryValid ? phoneBatteryTemp : '--';
     final hotValue = connected ? hotsideTemp : '--';
@@ -2717,7 +2714,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final adaptiveValue = connected ? (adaptiveOn ? 'ON' : 'OFF') : '--';
 
     return SizedBox(
-      width: _homeDesignWidth,
+      width: double.infinity,
       height: height,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 7, 12, 8),
@@ -2936,6 +2933,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
+    const homeDesignWidth = 360.0;
+    const homeDesignHeight = 400.0;
 
     return MediaQuery(
       data: media.copyWith(textScaler: TextScaler.noScaling),
@@ -2945,66 +2944,71 @@ class _DashboardScreenState extends State<DashboardScreen> {
           bottom: false,
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final widthScale = constraints.maxWidth / _homeDesignWidth;
-              final heightScale = constraints.maxHeight / _homeDesignHeight;
-              final scale = widthScale < heightScale ? widthScale : heightScale;
-              final homeViewportHeight = _homeDesignHeight * scale;
+              // The Home is authored on one fixed 360dp-wide master canvas.
+              // Device density / Smallest width changes only the single scale
+              // factor; the internal geometry never reflows.
+              final scale = constraints.maxWidth / homeDesignWidth;
+              final scaledHomeHeight = homeDesignHeight * scale;
 
               return Column(
                 children: [
                   SizedBox(
-                    width: constraints.maxWidth,
-                    height: homeViewportHeight,
+                    width: double.infinity,
+                    height: scaledHomeHeight,
                     child: FittedBox(
                       fit: BoxFit.contain,
                       alignment: Alignment.topCenter,
-                      child: _buildHomeArea(_homeDesignHeight),
+                      child: SizedBox(
+                        width: homeDesignWidth,
+                        height: homeDesignHeight,
+                        child: _buildHomeArea(homeDesignHeight),
+                      ),
                     ),
                   ),
                   Expanded(
                     child: Container(
-                width: double.infinity,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(34),
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(34),
+                    ),
                   ),
-                ),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 11),
-                    SizedBox(
-                      height: 42,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: Row(
-                          children: [
-                            _tab('VOLTAGE', 0),
-                            _tab('CONTROL', 1),
-                            _tab('ADAPTIVE', 2),
-                            _tab('LED', 3),
-                            _tab('TEMPERATURE', 4),
-                          ],
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 11),
+                      SizedBox(
+                        height: 42,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: Row(
+                            children: [
+                              _tab('VOLTAGE', 0),
+                              _tab('CONTROL', 1),
+                              _tab('ADAPTIVE', 2),
+                              _tab('LED', 3),
+                              _tab('TEMPERATURE', 4),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 19),
-                      child: Divider(
-                        color: Colors.black12,
-                        thickness: 1.1,
-                        height: 1,
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 19),
+                        child: Divider(
+                          color: Colors.black12,
+                          thickness: 1.1,
+                          height: 1,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 7),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: _buildTabContent(),
+                      const SizedBox(height: 7),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: _buildTabContent(),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
                     ),
                   ),
                 ],
@@ -3015,7 +3019,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
-
 
 }
 
