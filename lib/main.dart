@@ -2707,6 +2707,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     };
   }
 
+  static const double _homeDesignWidth = 360.0;
+  static const double _homeDesignHeight = 800.0;
+
   Widget _buildHomeArea(double height) {
     final batteryValue = connected && phoneBatteryValid ? phoneBatteryTemp : '--';
     final hotValue = connected ? hotsideTemp : '--';
@@ -2714,6 +2717,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final adaptiveValue = connected ? (adaptiveOn ? 'ON' : 'OFF') : '--';
 
     return SizedBox(
+      width: _homeDesignWidth,
       height: height,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 7, 12, 8),
@@ -2932,18 +2936,33 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
-    final homeHeight =
-        (media.size.height * 0.50).clamp(365.0, 500.0).toDouble();
 
-    return Scaffold(
-      backgroundColor: const Color(0xFF111113),
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            _buildHomeArea(homeHeight),
-            Expanded(
-              child: Container(
+    return MediaQuery(
+      data: media.copyWith(textScaler: TextScaler.noScaling),
+      child: Scaffold(
+        backgroundColor: const Color(0xFF111113),
+        body: SafeArea(
+          bottom: false,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final widthScale = constraints.maxWidth / _homeDesignWidth;
+              final heightScale = constraints.maxHeight / _homeDesignHeight;
+              final scale = widthScale < heightScale ? widthScale : heightScale;
+              final homeViewportHeight = _homeDesignHeight * scale;
+
+              return Column(
+                children: [
+                  SizedBox(
+                    width: constraints.maxWidth,
+                    height: homeViewportHeight,
+                    child: FittedBox(
+                      fit: BoxFit.contain,
+                      alignment: Alignment.topCenter,
+                      child: _buildHomeArea(_homeDesignHeight),
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
                 width: double.infinity,
                 decoration: const BoxDecoration(
                   color: Colors.white,
@@ -2986,9 +3005,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                   ],
                 ),
-              ),
-            ),
-          ],
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
