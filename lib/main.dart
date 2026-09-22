@@ -2933,8 +2933,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
-    const homeDesignWidth = 360.0;
-    const homeDesignHeight = 420.0;
+    const designWidth = 360.0;
+    const homeHeight = 420.0;
 
     return MediaQuery(
       data: media.copyWith(textScaler: TextScaler.noScaling),
@@ -2944,79 +2944,81 @@ class _DashboardScreenState extends State<DashboardScreen> {
           bottom: false,
           child: LayoutBuilder(
             builder: (context, constraints) {
-              // The Home is authored on one fixed 360dp-wide master canvas.
-              // Device density / Smallest width changes only the single scale
-              // factor; the internal geometry never reflows.
-              // Keep the Home design at its authored 360dp width on larger
-              // displays. Only scale down when the available width is below
-              // 360dp, so a 450dp device does not vertically stretch the
-              // entire Home section to 525dp.
-              final scale =
-                  (constraints.maxWidth / homeDesignWidth).clamp(0.0, 1.0).toDouble();
-              final scaledHomeHeight = homeDesignHeight * scale;
+              // Treat the entire dashboard as one master canvas.
+              // The design stays 360 dp wide, then the whole canvas is
+              // scaled uniformly to the current logical viewport width.
+              // This keeps the physical UI size stable when Android's
+              // Smallest Width / density changes (for example 360 -> 460).
+              final scale = constraints.maxWidth / designWidth;
+              final designHeight = constraints.maxHeight / scale;
 
-              return Column(
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    height: scaledHomeHeight,
-                    child: FittedBox(
-                      fit: BoxFit.contain,
-                      alignment: Alignment.topCenter,
-                      child: SizedBox(
-                        width: homeDesignWidth,
-                        height: homeDesignHeight,
-                        child: _buildHomeArea(homeDesignHeight),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(34),
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 11),
-                      SizedBox(
-                        height: 42,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Row(
-                            children: [
-                              _tab('VOLTAGE', 0),
-                              _tab('CONTROL', 1),
-                              _tab('ADAPTIVE', 2),
-                              _tab('LED', 3),
-                              _tab('TEMPERATURE', 4),
-                            ],
+              return ClipRect(
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Transform.scale(
+                    scale: scale,
+                    alignment: Alignment.topCenter,
+                    child: SizedBox(
+                      width: designWidth,
+                      height: designHeight,
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            width: designWidth,
+                            height: homeHeight,
+                            child: _buildHomeArea(homeHeight),
                           ),
-                        ),
+                          Expanded(
+                            child: Container(
+                              width: designWidth,
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(34),
+                                ),
+                              ),
+                              child: Column(
+                                children: [
+                                  const SizedBox(height: 11),
+                                  SizedBox(
+                                    height: 42,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                                      child: Row(
+                                        children: [
+                                          _tab('VOLTAGE', 0),
+                                          _tab('CONTROL', 1),
+                                          _tab('ADAPTIVE', 2),
+                                          _tab('LED', 3),
+                                          _tab('TEMPERATURE', 4),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 19),
+                                    child: Divider(
+                                      color: Colors.black12,
+                                      thickness: 1.1,
+                                      height: 1,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 7),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                                      child: _buildTabContent(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 19),
-                        child: Divider(
-                          color: Colors.black12,
-                          thickness: 1.1,
-                          height: 1,
-                        ),
-                      ),
-                      const SizedBox(height: 7),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: _buildTabContent(),
-                        ),
-                      ),
-                    ],
-                  ),
                     ),
                   ),
-                ],
+                ),
               );
             },
           ),
