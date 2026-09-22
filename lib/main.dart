@@ -262,6 +262,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Timer? batteryTimer;
   Timer? voltageGuardTimer;
   Timer? reconnectTimer;
+  Timer? runtimeSyncTimer;
 
   bool _bleReady = false;
   bool _bleSessionReady = false;
@@ -345,6 +346,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     batteryTimer?.cancel();
     voltageGuardTimer?.cancel();
     reconnectTimer?.cancel();
+    runtimeSyncTimer?.cancel();
     device?.disconnect();
     rgbColorController.dispose();
     color5Controller.dispose();
@@ -611,6 +613,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     dashboardReady = false;
     _pendingTelemetry.clear();
     batteryTimer?.cancel();
+    runtimeSyncTimer?.cancel();
     for (final waiters in _ackWaiters.values) {
       for (final waiter in waiters) {
         if (!waiter.isCompleted) waiter.complete('DISCONNECTED');
@@ -1283,18 +1286,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  void _scheduleRuntimeSync() {
+    if (!connected || !_bleReady || !_bleSessionReady) return;
+    runtimeSyncTimer?.cancel();
+    runtimeSyncTimer = Timer(const Duration(milliseconds: 90), () {
+      if (!mounted || !connected || !_bleReady || !_bleSessionReady) return;
+      // Refresh firmware-owned state after a short burst of commands.
+      // This is deliberately non-blocking so rapid controls stay responsive.
+      unawaited(sendCommand('SYNC', showError: false));
+    });
+  }
+
   Future<bool> _sendAndConfirm(
     String command, {
     Duration timeout = const Duration(seconds: 3),
   }) async {
-    // The BLE write queue preserves command order, while the UI remains
-    // immediately interactive. Device telemetry is the source of truth for
-    // the displayed state; no extra sync or artificial delay is inserted.
-    return _sendAndWaitAck(
+    final accepted = await _sendAndWaitAck(
       command,
       showError: false,
       timeout: timeout,
     );
+    if (accepted) _scheduleRuntimeSync();
+    return accepted;
   }
 
   Future<void> _requestVoltage(String target) async {
@@ -1395,7 +1408,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     } finally {
       if (mounted) {
         setState(() {
-          if (!adaptiveOn) adaptiveTransitioning = false;
+          adaptiveTransitioning = false;
         });
       }
     }
@@ -1511,9 +1524,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
     if (!connected) return;
     try {
-      final ok = await _sendAndWaitAck(
+      final ok = await _sendAndConfirm(
         command + ':' + value.substring(1),
-        showError: false,
       );
       if (!ok && mounted) {
         _showSnackBar('Color change was not confirmed by the device.');
@@ -1527,7 +1539,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Future<void> _resetTemperatureSettings() async {
     if (!connected || adaptiveOn) return;
     try {
-      final ok = await _sendAndWaitAck('RESET:TEMPERATURE', showError: false);
+      final ok = await _sendAndConfirm('RESET:TEMPERATURE');
       if (!ok && mounted) _showSnackBar('Temperature reset was not confirmed by the device.');
     } catch (e) {
       debugPrint('Temperature reset: $e');
@@ -1538,7 +1550,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Future<void> _resetVoltageColors() async {
     if (!connected) return;
     try {
-      final ok = await _sendAndWaitAck('RESET:VOLTAGECOLORS', showError: false);
+      final ok = await _sendAndConfirm('RESET:VOLTAGECOLORS');
       if (!ok && mounted) _showSnackBar('Voltage color reset was not confirmed by the device.');
     } catch (e) {
       debugPrint('Voltage color reset: $e');
