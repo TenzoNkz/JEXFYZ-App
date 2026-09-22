@@ -97,10 +97,10 @@ jobs:
           # Flutter only needs an executable `gradlew`; delegate it to the
           # already-installed Gradle 9.3.1 supplied by setup-gradle.
           if [ ! -f gradlew ] || [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
-            cat > gradlew <<'EOF'
+            cat > gradlew <<'EOF2'
           #!/usr/bin/env sh
           exec gradle "$@"
-          EOF
+          EOF2
             chmod +x gradlew
           fi
 
@@ -213,11 +213,24 @@ jobs:
              build/app/outputs/flutter-apk/JE-X-FYZ-Latest.apk
           test -s build/app/outputs/flutter-apk/JE-X-FYZ-Latest.apk
 
-      - name: Upload APK only
+      - name: Package APK as ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f build/app/outputs/flutter-apk/JE-X-FYZ-Latest.zip
+          zip -9 -j \
+            build/app/outputs/flutter-apk/JE-X-FYZ-Latest.zip \
+            build/app/outputs/flutter-apk/JE-X-FYZ-Latest.apk
+          test -s build/app/outputs/flutter-apk/JE-X-FYZ-Latest.zip
+          ls -lh \
+            build/app/outputs/flutter-apk/JE-X-FYZ-Latest.apk \
+            build/app/outputs/flutter-apk/JE-X-FYZ-Latest.zip
+
+      - name: Upload ZIP only
         uses: actions/upload-artifact@v7
         with:
           name: JE-X-FYZ-Latest-App
-          path: build/app/outputs/flutter-apk/JE-X-FYZ-Latest.apk
+          path: build/app/outputs/flutter-apk/JE-X-FYZ-Latest.zip
           archive: false
           if-no-files-found: error
 
