@@ -1682,4 +1682,51 @@ The app notes may record the **app contract** with firmware, but should not be e
 
 ---
 
+
+## 2026-09-23 — Notify latest-event refinement
+
+### User request
+- Keep Notify text on one line.
+- Long Notify text must fit instead of being clipped.
+- Use professional, simple, minimal wording while preserving meaning.
+- Route meaningful changes, confirmations, errors, and device/app events into Notify.
+- Show only the latest event; do not build a history/log list.
+
+### Files changed
+- `lib/main.dart`
+- `APP_PROJECT_NOTES.md`
+
+### Implementation
+- Added `_compactNotifyMessage()` to normalize common Notify/status messages into short professional English.
+- Reduced the base Notify message font from `11.5` to `10.5`.
+- Wrapped Notify state/message text in `FittedBox(fit: BoxFit.scaleDown)` with `maxLines: 1` and `softWrap: false`, so long messages remain one line and scale down to fit the available Notify width.
+- Added `_notifyCommandAccepted()` and connected it to successful `_sendAndConfirm()` operations so accepted voltage, Fan, Peltier, Adaptive, LED, Fan Speed, limit, color, and reset changes become the latest Notify message.
+- Added Notify failure messages for voltage and temperature/battery-limit operations that previously only reverted the draft value without a visible status message.
+- Routed existing `_showSnackBar()` events through the same compact Notify normalization.
+- Kept only the latest message in the existing `notice` field; no event history was introduced.
+- Periodic telemetry is intentionally not converted into per-second Notify events because that would continuously overwrite the latest status and create spam.
+
+### Preserved
+- BLE handshake/session processing
+- `_sendAndConfirm()` ACK flow
+- 90 ms runtime synchronization scheduling
+- BLE reconnect/disconnect behavior
+- Firebase read-only firmware metadata
+- security/signing architecture
+- canvas/scaling architecture
+- all unrelated control logic
+
+### Verification
+- `flutter analyze`: NOT RUN — Flutter/Dart SDK is not available in this environment.
+- `flutter test`: NOT RUN — Flutter/Dart SDK is not available in this environment.
+- GitHub Actions: NOT RUN.
+- GitHub repository write: ATTEMPTED; GitHub connector returned HTTP 403 `Resource not accessible by integration`.
+- Local source integrity: file length changed from the current GitHub source's 114,606 bytes to 118,455 bytes; line count changed from 3,229 to 3,350. The modified file was generated from the exact current GitHub `main` blob before editing.
+
+### Result
+The Notify area now uses a compact professional latest-event model and keeps long messages on one line by scaling the text down instead of clipping it.
+
+### Known limitations / follow-up
+A real device screenshot test and a fresh GitHub Actions run are still required before declaring this change fully stable. The prepared `main.dart` has been saved locally, but the repository could not be updated automatically because the GitHub integration currently lacks write permission.
+
 # END OF APP PROJECT MEMORY
