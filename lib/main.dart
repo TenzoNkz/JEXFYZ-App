@@ -414,7 +414,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     setState(() {
       syncing = true;
-      notice = 'Scanning for JE X FYZ...';
+      notice = 'Scanning for device...';
     });
 
     StreamSubscription<List<ScanResult>>? scanSub;
@@ -540,7 +540,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         safetyReason = 'WAITING_FOR_SENSOR_VALIDATION';
         firmwareVersion = 'V?';
         resetReason = 'UNKNOWN';
-        notice = 'Connecting to JE X FYZ...';
+        notice = 'Connecting to device...';
       });
     }
 
@@ -596,7 +596,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         setState(() {
           connected = false;
           syncing = false;
-          notice = message;
+          notice = _compactNotifyMessage(message);
         });
       }
       throw lastError;
@@ -634,7 +634,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       safetyReason = 'DISCONNECTED';
       firmwareVersion = 'V?';
       resetReason = 'UNKNOWN';
-      notice = 'Device disconnected.';
+      notice = 'Bluetooth disconnected.';
     });
   }
 
@@ -799,7 +799,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       connected = true;
       syncing = false;
       dashboardReady = true;
-      notice = '';
+      notice = 'Device ready.';
       rgbColorController.text = rgbColor;
       color5Controller.text = color5V;
       color9Controller.text = color9V;
@@ -1306,7 +1306,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       showError: false,
       timeout: timeout,
     );
-    if (accepted) _scheduleRuntimeSync();
+    if (accepted) {
+      _scheduleRuntimeSync();
+      _notifyCommandAccepted(command);
+    }
     return accepted;
   }
 
@@ -1332,12 +1335,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
       if (!accepted) {
         voltageGuardTimer?.cancel();
-        if (mounted) setState(() => voltageGuardActive = false);
+        if (mounted) {
+          setState(() => voltageGuardActive = false);
+          _showSnackBar('Voltage change not confirmed.');
+        }
       }
     } catch (e) {
       debugPrint('Voltage command: $e');
       voltageGuardTimer?.cancel();
-      if (mounted) setState(() => voltageGuardActive = false);
+      if (mounted) {
+        setState(() => voltageGuardActive = false);
+        _showSnackBar('Voltage change failed.');
+      }
     }
   }
 
@@ -1481,10 +1490,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final next = value.clamp(40, 50).toInt();
       if (mounted) setState(() => hotLimitDraft = next);
       final ok = await _sendAndConfirm('HOTLIMIT:$next');
-      if (!ok && mounted) setState(() => hotLimitDraft = hotLimit);
+      if (!ok && mounted) {
+        setState(() => hotLimitDraft = hotLimit);
+        _showSnackBar('Hotside limit not confirmed.');
+      }
     } catch (e) {
       debugPrint('Hotside limit command: $e');
-      if (mounted) setState(() => hotLimitDraft = hotLimit);
+      if (mounted) {
+        setState(() => hotLimitDraft = hotLimit);
+        _showSnackBar('Hotside limit failed.');
+      }
     }
   }
 
@@ -1495,10 +1510,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
       if (next >= battery12Limit - 1) return;
       if (mounted) setState(() => battery5Draft = next);
       final ok = await _sendAndConfirm('BATT5:$next');
-      if (!ok && mounted) setState(() => battery5Draft = battery5Limit);
+      if (!ok && mounted) {
+        setState(() => battery5Draft = battery5Limit);
+        _showSnackBar('5V battery limit not confirmed.');
+      }
     } catch (e) {
       debugPrint('Battery 5V command: $e');
-      if (mounted) setState(() => battery5Draft = battery5Limit);
+      if (mounted) {
+        setState(() => battery5Draft = battery5Limit);
+        _showSnackBar('5V battery limit failed.');
+      }
     }
   }
 
@@ -1509,10 +1530,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
       if (next <= battery5Limit + 1) return;
       if (mounted) setState(() => battery12Draft = next);
       final ok = await _sendAndConfirm('BATT12:$next');
-      if (!ok && mounted) setState(() => battery12Draft = battery12Limit);
+      if (!ok && mounted) {
+        setState(() => battery12Draft = battery12Limit);
+        _showSnackBar('12V battery limit not confirmed.');
+      }
     } catch (e) {
       debugPrint('Battery 12V command: $e');
-      if (mounted) setState(() => battery12Draft = battery12Limit);
+      if (mounted) {
+        setState(() => battery12Draft = battery12Limit);
+        _showSnackBar('12V battery limit failed.');
+      }
     }
   }
 
@@ -1613,7 +1640,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
 
     _showSnackBar(
-      'OTA dimulai. BLE akan terputus saat Wi-Fi OTA berjalan.',
+      'OTA started. Wi-Fi update is in progress.',
       color: Colors.purpleAccent,
     );
     _startOtaReconnectMonitor();
@@ -1650,24 +1677,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   String _friendlyReason(String reason) {
     switch (reason) {
-      case 'NTC_ERROR': return 'Temperature sensor validation failed.';
-      case 'HOTSIDE_PROTECTION': return 'Hotside protection is active. Peltier output is temporarily disabled.';
-      case 'FAN_REQUIRED': return 'Fan must be running before Peltier can be enabled.';
-      case 'PELTIER_ON': return 'Fan control is locked while Peltier is active.';
-      case 'ADAPTIVE_ACTIVE': return 'Manual cooling controls are locked while Adaptive Mode is active.';
-      case 'MANUAL_12V_ONLY': return 'Fan speed control is available only in manual 12V mode.';
-      case 'VOLTAGE_GUARD_OR_BUSY': return 'Voltage control is busy. Awaiting device confirmation.';
-      case 'SYNC_REQUIRED': return 'Device synchronization is still in progress.';
-      case 'RATE_LIMIT': return 'Command rate limited. Awaiting device confirmation.';
-      case 'MUST_BE_BELOW_BATT12': return 'The 5V battery threshold must remain below the 12V threshold.';
-      case 'MUST_BE_ABOVE_BATT5': return 'The 12V battery threshold must remain above the 5V threshold.';
+      case 'NTC_ERROR': return 'Temperature sensor error.';
+      case 'HOTSIDE_PROTECTION': return 'Hotside protection active.';
+      case 'FAN_REQUIRED': return 'Fan required before Peltier.';
+      case 'PELTIER_ON': return 'Fan control locked while Peltier is ON.';
+      case 'ADAPTIVE_ACTIVE': return 'Manual cooling controls locked.';
+      case 'MANUAL_12V_ONLY': return 'Fan speed available in manual 12V only.';
+      case 'VOLTAGE_GUARD_OR_BUSY': return 'Voltage command pending.';
+      case 'SYNC_REQUIRED': return 'Device sync in progress.';
+      case 'RATE_LIMIT': return 'Command rate limited.';
+      case 'MUST_BE_BELOW_BATT12': return '5V battery limit must stay below 12V.';
+      case 'MUST_BE_ABOVE_BATT5': return '12V battery limit must stay above 5V.';
       default: return reason.replaceAll('_', ' ').toLowerCase();
     }
   }
 
   void _showSnackBar(String message, {Color color = Colors.blueAccent}) {
     if (!mounted || message.trim().isEmpty) return;
-    setState(() => notice = message.trim());
+    setState(() => notice = _compactNotifyMessage(message));
   }
 
   void _showBluetoothMenu() {
@@ -1904,39 +1931,120 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  String _compactNotifyMessage(String message) {
+    final raw = message.trim();
+    if (raw.isEmpty) return '';
+
+    final lower = raw.toLowerCase();
+    if (lower == 'scanning for je x fyz...') return 'Scanning for device...';
+    if (lower == 'connecting to je x fyz...') return 'Connecting to device...';
+    if (lower == 'device disconnected.') return 'Bluetooth disconnected.';
+    if (lower == 'je x fyz was not found.') return 'Device not found.';
+    if (lower == 'bluetooth scan failed.') return 'Bluetooth scan failed.';
+    if (lower == 'bluetooth is not ready.') return 'Bluetooth unavailable.';
+    if (lower == 'connect to je x fyz first.') return 'Connect to device first.';
+    if (lower.startsWith('ota could not start:')) return 'OTA start rejected.';
+    if (lower.contains('was not confirmed by the device')) {
+      final prefix = raw.replaceFirst(
+        RegExp(r'\s+was not confirmed by the device\.?[\s\S]*$', caseSensitive: false),
+        '',
+      ).trim();
+      return prefix.isEmpty ? 'Device did not confirm the command.' : prefix + ' not confirmed.';
+    }
+    if (lower.contains('command failed.')) {
+      final prefix = raw.replaceFirst(
+        RegExp(r'\s+command failed\.?$', caseSensitive: false),
+        '',
+      ).trim();
+      return prefix.isEmpty ? 'Command failed.' : prefix + ' failed.';
+    }
+    return raw;
+  }
+
   String _professionalNotice() {
-    final custom = notice.trim();
+    final custom = _compactNotifyMessage(notice);
     if (custom.isNotEmpty) return custom;
 
-    if (_bleConnecting) return 'Bluetooth: connecting to JE X FYZ...';
-    if (syncing && !dashboardReady) return 'BLE: synchronizing device state...';
+    if (_bleConnecting) return 'Connecting to device...';
+    if (syncing && !dashboardReady) return 'Synchronizing device...';
 
     switch (safetyReason) {
       case 'WAITING_FOR_NTC':
       case 'WAITING_FOR_SENSOR_VALIDATION':
-        return 'Temperature sensors: validating...';
+        return 'Validating temperature...';
       case 'NTC_ERROR':
-        return 'ERROR • NTC validation failed • Cooling locked';
+        return 'Temperature sensor error. Cooling locked.';
       case 'HOTSIDE_PROTECTION':
-        return 'WARNING • Hotside protection active • Peltier paused';
+        return 'Hotside protection active. Peltier paused.';
       case 'FAN_REQUIRED':
-        return 'WARNING • Fan required before Peltier';
+        return 'Fan required before Peltier.';
       case 'PELTIER_ON':
-        return 'INFO • Fan control locked while Peltier is ON';
+        return 'Fan control locked while Peltier is ON.';
       case 'ADAPTIVE_ACTIVE':
-        return 'INFO • Manual cooling controls locked • Adaptive ON';
+        return 'Manual cooling controls locked.';
       case 'MANUAL_12V_ONLY':
-        return 'INFO • Fan speed available in manual 12V only';
+        return 'Fan speed available in manual 12V only.';
       case 'VOLTAGE_GUARD_OR_BUSY':
-        return 'BUSY • Voltage command awaiting confirmation';
+        return 'Voltage command pending.';
       case 'RATE_LIMIT':
-        return 'WARNING • Command rate limited • Please wait';
+        return 'Command rate limited.';
       case 'DISCONNECTED':
-        return 'ERROR • Bluetooth disconnected';
+        return 'Bluetooth disconnected.';
       case 'NONE':
-        return 'OK • System ready • Device state synchronized';
+        return 'System ready.';
       default:
         return _friendlyReason(safetyReason);
+    }
+  }
+
+  void _notifyCommandAccepted(String command) {
+    if (!mounted) return;
+    final c = command.trim().toUpperCase();
+    String? message;
+
+    if (c.startsWith('VOLTAGE:')) {
+      message = 'Voltage set to ' + c.substring(8) + '.';
+    } else if (c == 'FAN:ON') {
+      message = 'Fan turned ON.';
+    } else if (c == 'FAN:OFF') {
+      message = 'Fan turned OFF.';
+    } else if (c == 'PELTIER:ON') {
+      message = 'Peltier turned ON.';
+    } else if (c == 'PELTIER:OFF') {
+      message = 'Peltier turned OFF.';
+    } else if (c == 'ADAPTIVE:ON') {
+      message = 'Adaptive mode enabled.';
+    } else if (c == 'ADAPTIVE:OFF') {
+      message = 'Adaptive mode disabled.';
+    } else if (c.startsWith('FANSPEED:')) {
+      message = 'Fan speed set to ' + c.substring(9) + '%.';
+    } else if (c == 'RGB:ON') {
+      message = 'LED turned ON.';
+    } else if (c == 'RGB:OFF') {
+      message = 'LED turned OFF.';
+    } else if (c.startsWith('MODE:')) {
+      message = 'LED mode updated.';
+    } else if (c.startsWith('BRIGHTNESS:')) {
+      message = 'LED brightness updated.';
+    } else if (c.startsWith('COLOR:') ||
+        c.startsWith('V5COLOR:') ||
+        c.startsWith('V9COLOR:') ||
+        c.startsWith('V12COLOR:')) {
+      message = 'LED color updated.';
+    } else if (c.startsWith('HOTLIMIT:')) {
+      message = 'Hotside limit set to ' + c.substring(9) + '°C.';
+    } else if (c.startsWith('BATT5:')) {
+      message = '5V battery limit updated.';
+    } else if (c.startsWith('BATT12:')) {
+      message = '12V battery limit updated.';
+    } else if (c == 'RESET:TEMPERATURE') {
+      message = 'Temperature settings reset.';
+    } else if (c == 'RESET:VOLTAGECOLORS') {
+      message = 'Voltage colors reset.';
+    }
+
+    if (message != null) {
+      setState(() => notice = message!);
     }
   }
 
@@ -2015,27 +2123,40 @@ class _DashboardScreenState extends State<DashboardScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  _notifyStateLabel(),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: color,
-                    fontSize: 8.5,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 0.8,
+                SizedBox(
+                  height: 12,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      _notifyStateLabel(),
+                      maxLines: 1,
+                      softWrap: false,
+                      style: TextStyle(
+                        color: color,
+                        fontSize: 8.5,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.8,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 2),
-                Text(
-                  _professionalNotice(),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: const Color(0xFFF4F6FA),
-                    fontSize: 11.5,
-                    height: 1.0,
-                    fontWeight: FontWeight.w800,
+                Expanded(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      _professionalNotice(),
+                      maxLines: 1,
+                      softWrap: false,
+                      style: const TextStyle(
+                        color: Color(0xFFF4F6FA),
+                        fontSize: 10.5,
+                        height: 1.0,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
                   ),
                 ),
               ],
