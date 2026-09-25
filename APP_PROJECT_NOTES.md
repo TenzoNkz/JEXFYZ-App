@@ -53,6 +53,16 @@ Use the following naming scheme consistently for JE X FYZ project continuity:
 
 ### Mandatory memory update for BOTH Code and Action
 
+### Mandatory shared-memory preflight before execution
+
+**Both sub-chats must read the latest `APP_PROJECT_NOTES.md` from `main` before executing any project action.** This is mandatory for both `JE X FYZ Code #N` and `JE X FYZ Action #N`.
+
+The pre-execution order is:
+
+`Read latest shared memory → understand current state/handoff → execute the requested work → update shared memory with the new state`.
+
+This means neither Code nor Action may begin an execution based only on its own chat history. Both must synchronize against the same latest project memory first. If the Notes have changed since the last read, use the newest verified Notes state as the starting point.
+
 **Every time either sub-chat makes a project change, the shared memory must be updated. This rule applies equally to `JE X FYZ Code #N` and `JE X FYZ Action #N`.**
 
 - **Code sub-chat:** whenever source code, Android configuration, dependencies, assets, workflow configuration, or another project-controlled file is changed, record the change in `APP_PROJECT_NOTES.md` in the same project update.
@@ -2094,6 +2104,13 @@ For every future app change:
 # END OF APP PROJECT MEMORY
 
 ## CHANGELOG
+### 2026-09-26 — Mandatory shared-memory preflight before every execution
+
+- Added the requirement that both Code and Action read the latest `APP_PROJECT_NOTES.md` from `main` before executing any project action.
+- Defined the common preflight order: read memory, understand current state/handoff, execute, then write the new state back to shared memory.
+- Clarified that neither sub-chat may rely only on its own chat history when the shared Notes provide a newer verified state.
+
+
 ### 2026-09-26 — Mandatory shared-memory update for every Code and Action change
 
 - Explicitly required both `JE X FYZ Code #N` and `JE X FYZ Action #N` to update `APP_PROJECT_NOTES.md` whenever they make a project-controlled change.
