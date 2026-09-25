@@ -1729,4 +1729,49 @@ The Notify area now uses a compact professional latest-event model and keeps lon
 ### Known limitations / follow-up
 A real device screenshot test and a fresh GitHub Actions run are still required before declaring this change fully stable. The prepared `main.dart` has been saved locally, but the repository could not be updated automatically because the GitHub integration currently lacks write permission.
 
+## 2026-09-25 — Canvas physical-size compensation + Notify label height fix
+
+### User request
+- The outer canvas must fit the phone screen instead of becoming visibly tiny at lower logical widths such as 320 dp.
+- Changing Android logical DP/smallest-width (for example 320 -> 420) must not independently change the physical-looking size of the UI content.
+- Notify green state label (`NOTIFY • WARNING`, etc.) must retain the earlier normal height; only the main message text should scale down to keep a long message on one line.
+- Project rule reaffirmed: discuss first; execute only after the user explicitly approves.
+
+### Files changed
+- `lib/main.dart`
+- `APP_PROJECT_NOTES.md`
+
+### Implementation
+- Replaced root canvas scaling based on `constraints.maxWidth / 360` with physical-width/density compensation.
+- The outer Scaffold/background continues to fill the current screen.
+- The single JE X FYZ canvas uses the current `devicePixelRatio` to compensate logical-DP changes.
+- The reference physical width is 1080 px, matching the provided 1080-pixel screenshots; the design is capped at that physical width and only scales down when the physical viewport is narrower.
+- Home and Display Menu remain under the same single root canvas transform.
+- Restored the Notify state label to its previous plain one-line `Text` treatment so its vertical height is not altered.
+- Kept `FittedBox(BoxFit.scaleDown)` only on the main Notify message, preserving the one-line long-text requirement.
+
+### Preserved
+- BLE handshake/session behavior
+- `_sendAndConfirm()` ACK flow
+- 90 ms runtime synchronization
+- BLE reconnect/disconnect behavior
+- Firebase read-only firmware metadata
+- security/signing architecture
+- control command set
+- existing Home and Display Menu visual structure
+- latest-event Notify model
+
+### Verification
+- `flutter analyze`: NOT RUN — Flutter/Dart SDK is unavailable in this environment.
+- `flutter test`: NOT RUN — Flutter/Dart SDK is unavailable in this environment.
+- GitHub Actions: NOT RUN after this change.
+- Static source check: completed; file remains structurally complete.
+- GitHub repository write: not available through the current integration (previous 403 permission error).
+
+### Result
+The root canvas no longer derives its scale directly from logical viewport width. Physical display width and density are used so changing Android DP does not make the UI unexpectedly tiny/large on the same physical display. The Notify green state label is restored to normal height while long message text remains one-line and can scale down to fit.
+
+### Known limitations / follow-up
+The 320/420/430/460/500 dp matrix still needs real-device screenshot validation after building the updated source. The 1080 physical-pixel reference is derived from the provided screenshots and should be confirmed against the actual target device resolution before treating the scaling implementation as final.
+
 # END OF APP PROJECT MEMORY
