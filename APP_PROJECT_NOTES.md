@@ -124,6 +124,13 @@ The user strongly prefers:
 ---
 
 
+## ACTION → CODE HANDOFF — Run #94
+
+- Run #93 failed at `flutter analyze` because `mapPinSlash` was not defined by `phosphor_icons ^3.0.1` in `lib/main.dart`.
+- Action fix: replaced the unavailable `PhosphorIconsRegular.mapPinSlash` reference with the available `PhosphorIconsRegular.mapPin` fallback for the Location indicator OFF state.
+- The fix was limited to the build-blocking icon reference; no unrelated UI or control logic was changed.
+- Run #94 then passed analyze, tests, release build, production APK signature verification, packaging, and artifact upload.
+- Built head SHA: `f20626b9433762741e6592eda8b06005de4f7ab6`.
 ## CURRENT ACTION / CI STATE
 
 **Latest verified successful build:** GitHub Actions **Run #94** for workflow `JE X FYZ Cooler Build`.
