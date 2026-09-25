@@ -3400,7 +3400,7 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
                   label: _locationOn ? 'Location ON' : 'Location OFF',
                   icon: _locationOn
                       ? PhosphorIconsRegular.mapPin
-                      : PhosphorIconsRegular.mapPinSlash,
+                      : PhosphorIconsRegular.mapPin,
                   color: locationColor,
                   onTap: _tapLocation,
                 ),
