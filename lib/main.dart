@@ -1963,6 +1963,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   String _professionalNotice() {
     final custom = _compactNotifyMessage(notice);
+
+    // Safety validation states are meaningful only after a device is connected.
+    // Do not let a stale pre-connection WAITING_* state surface as a warning
+    // while the Home dashboard is actually offline. Preserve other explicit
+    // latest-event messages such as connection failures or device-not-found.
+    if (!connected && !_bleConnecting) {
+      final upper = custom.toUpperCase();
+      final staleValidation = upper == 'VALIDATING TEMPERATURE...' ||
+          upper == 'TEMPERATURE SENSORS: VALIDATING...' ||
+          upper == 'VALIDATING TEMPERATURE SENSORS...';
+      if (custom.isEmpty || staleValidation) {
+        return 'Bluetooth disconnected.';
+      }
+      return custom;
+    }
+
     if (custom.isNotEmpty) return custom;
 
     if (_bleConnecting) return 'Connecting to device...';
@@ -2050,16 +2066,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   String _notifyStateLabel() {
     final custom = notice.trim().toUpperCase();
-    if (custom.contains('FAILED') ||
-        custom.contains('ERROR') ||
-        custom.contains('NOT FOUND') ||
-        custom.contains('DISCONNECTED') ||
-        custom.contains('SERVICE DISCOVERY')) {
-      return 'NOTIFY • ERROR';
-    }
     if (_bleConnecting) return 'NOTIFY • BLUETOOTH';
     if (syncing && !dashboardReady) return 'NOTIFY • SYNC';
-    if (safety != 'OK' && safetyReason != 'NONE') return 'NOTIFY • WARNING';
+
+    final hasError = custom.contains('FAILED') ||
+        custom.contains('ERROR') ||
+        custom.contains('NOT FOUND') ||
+        custom.contains('SERVICE DISCOVERY');
+    if (hasError) return 'NOTIFY • ERROR';
+
+    // WAITING_* is a startup/sensor-validation state and must not be shown as
+    // a safety warning while the dashboard is offline.
+    final warning = connected &&
+        safety != 'OK' &&
+        safetyReason != 'NONE' &&
+        safetyReason != 'WAITING_FOR_NTC' &&
+        safetyReason != 'WAITING_FOR_SENSOR_VALIDATION';
+    if (warning) return 'NOTIFY • WARNING';
     return 'NOTIFY';
   }
 
@@ -2120,6 +2143,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           const SizedBox(width: 6),
           Expanded(
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -2135,22 +2159,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ),
                 const SizedBox(height: 2),
-                Expanded(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      _professionalNotice(),
-                      maxLines: 1,
-                      softWrap: false,
-                      style: const TextStyle(
-                        color: Color(0xFFF4F6FA),
-                        fontSize: 10.5,
-                        height: 1.0,
-                        fontWeight: FontWeight.w800,
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    return SizedBox(
+                      width: constraints.maxWidth,
+                      height: 13,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          _professionalNotice(),
+                          maxLines: 1,
+                          softWrap: false,
+                          style: const TextStyle(
+                            color: Color(0xFFF4F6FA),
+                            fontSize: 10.5,
+                            height: 1.0,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
               ],
             ),
