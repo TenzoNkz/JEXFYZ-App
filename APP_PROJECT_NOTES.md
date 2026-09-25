@@ -131,6 +131,13 @@ The user strongly prefers:
 - The fix was limited to the build-blocking icon reference; no unrelated UI or control logic was changed.
 - Run #94 then passed analyze, tests, release build, production APK signature verification, packaging, and artifact upload.
 - Built head SHA: `f20626b9433762741e6592eda8b06005de4f7ab6`.
+## Build artifact naming convention
+
+- Every downloaded/shared application artifact must use the GitHub Actions run number in the filename.
+- APK format: `JE X FYZ Build #N.apk`.
+- ZIP format, when provided: `JE X FYZ Build #N.zip`.
+- The `#N` value must match the actual GitHub Actions workflow run number that produced the artifact; never guess or use a chat number.
+- Example: Run #94 -> `JE X FYZ Build #94.apk`.
 ## CURRENT ACTION / CI STATE
 
 **Latest verified successful build:** GitHub Actions **Run #94** for workflow `JE X FYZ Cooler Build`.
