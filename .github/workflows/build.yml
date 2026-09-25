@@ -205,32 +205,20 @@ jobs:
           echo "Production APK signature verified: JE X FYZ certificate is present and matches the official signing identity."
           ls -lh "$APK"
 
-      - name: Prepare clean APK filename
+      - name: Prepare release APK filename
         shell: bash
         run: |
           set -euo pipefail
           cp build/app/outputs/flutter-apk/app-release.apk \
-             build/app/outputs/flutter-apk/JE-X-FYZ-Latest.apk
-          test -s build/app/outputs/flutter-apk/JE-X-FYZ-Latest.apk
+             "build/app/outputs/flutter-apk/JEXFYZ#${{ github.run_number }}.apk"
+          test -s "build/app/outputs/flutter-apk/JEXFYZ#${{ github.run_number }}.apk"
+          ls -lh "build/app/outputs/flutter-apk/JEXFYZ#${{ github.run_number }}.apk"
 
-      - name: Package APK as ZIP
-        shell: bash
-        run: |
-          set -euo pipefail
-          rm -f build/app/outputs/flutter-apk/JE-X-FYZ-Latest.zip
-          zip -9 -j \
-            build/app/outputs/flutter-apk/JE-X-FYZ-Latest.zip \
-            build/app/outputs/flutter-apk/JE-X-FYZ-Latest.apk
-          test -s build/app/outputs/flutter-apk/JE-X-FYZ-Latest.zip
-          ls -lh \
-            build/app/outputs/flutter-apk/JE-X-FYZ-Latest.apk \
-            build/app/outputs/flutter-apk/JE-X-FYZ-Latest.zip
-
-      - name: Upload ZIP only
+      - name: Upload APK only
         uses: actions/upload-artifact@v7
         with:
-          name: JE-X-FYZ-Latest-App
-          path: build/app/outputs/flutter-apk/JE-X-FYZ-Latest.zip
+          name: JEXFYZ#${{ github.run_number }}.apk
+          path: build/app/outputs/flutter-apk/JEXFYZ#${{ github.run_number }}.apk
           archive: false
           if-no-files-found: error
 
