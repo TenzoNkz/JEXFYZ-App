@@ -22,6 +22,41 @@ The purpose is to prevent repeated explanations and regression from missing hist
 
 If this file is not yet loaded in the current sub-chat, retrieve the latest version before proceeding with app work. Do not rely on memory from an earlier sub-chat as a substitute for reading the current notes.
 
+### Two-sub-chat workflow separation
+
+The JE X FYZ app work is intentionally split across two sub-chat roles so the project can continue without exhausting one chat too quickly:
+
+**1. Code-change sub-chat (this role):**
+- Used for project discussion, source-code/config changes, debugging logic, UI work, and implementing fixes.
+- Code changes are executed here after the user approves the discussed change.
+- This role does **not** trigger a build automatically after each change.
+- Do not introduce a push-to-build workflow merely because files changed.
+
+**2. Build / CI sub-chat:**
+- Used specifically to trigger GitHub Actions builds, inspect build/test/analyze failures, inspect CI logs, and obtain/download the built app artifact.
+- A build is triggered only when the user explicitly requests a build from that sub-chat.
+- When CI reports a code/configuration error, diagnose and report the relevant failure there; the actual source-code fix is then performed in the code-change sub-chat.
+- This separation is intentional and must be preserved to keep the two chat contexts focused and reduce unnecessary context usage.
+
+### Project memory capture rule
+
+Treat `APP_PROJECT_NOTES.md` as the project's **persistent memory**.
+
+After every app/config/workflow change, update this file in the same change so the repository itself records the latest engineering state. The memory entry should preserve, where applicable:
+
+- what changed;
+- why it changed;
+- affected files;
+- intended final behavior;
+- behavior that must remain unchanged;
+- test/build/CI result;
+- known errors, regressions, or unresolved items;
+- important decisions that future sub-chats must not forget.
+
+This rule is specifically intended to prevent loss of context when a sub-chat reaches its limit and work continues in a new sub-chat. The next sub-chat must read the latest notes and continue from that recorded state rather than asking the user to reconstruct the history.
+
+**Note-only changes do not trigger a build and do not require a recursive note entry about the note-only change itself.**
+
 **Every time a code/config/workflow change is made, this file must be updated in the same change.**
 
 That means:
@@ -1975,6 +2010,14 @@ For every future app change:
 # END OF APP PROJECT MEMORY
 
 ## CHANGELOG
+### 2026-09-26 — Two-sub-chat workflow + persistent memory rules
+
+- Defined the code-change sub-chat as the place for app discussion, source/config changes, debugging, and implementation.
+- Defined a separate build/CI sub-chat for manual workflow triggering, build/analyze/test error inspection, CI diagnosis, and artifact download.
+- Build must not automatically trigger from every code change; build requests are intentionally separated from code-change work.
+- Added a persistent-memory rule requiring `APP_PROJECT_NOTES.md` to be updated alongside every app/config/workflow change so important project state is not lost across sub-chat limits.
+- Clarified that note-only changes do not trigger builds and do not recursively require another note entry.
+
 
 ### 2026-09-26 — Mandatory notes continuity across sub-chats
 
