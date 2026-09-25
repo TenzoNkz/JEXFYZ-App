@@ -2,9 +2,6 @@ name: JE X FYZ Cooler Build
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 permissions:
   contents: read
