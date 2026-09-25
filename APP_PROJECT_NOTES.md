@@ -51,7 +51,7 @@ Use the following naming scheme consistently for JE X FYZ project continuity:
 
 ### Shared-memory bidirectional handoff protocol
 
-The two sub-chats share **one project memory** but have different primary responsibilities. The latest `APP_PROJECT_NOTES.md` is the source of truth for the current engineering state and must be used for handoff in both directions.
+The two sub-chats share **one project memory** but have different primary responsibilities. The latest `APP_PROJECT_NOTES.md` is the source of truth for the current engineering state and must be used for handoff in both directions. **No change may be left undocumented in the shared memory.**
 
 **Code → Action:** after a code/config change, record the current HEAD/commit when known, changed files, purpose, intended behavior, what must be tested, and whether a build is requested/pending. The Action sub-chat reads this state before building.
 
@@ -82,7 +82,7 @@ This rule is specifically intended to prevent loss of context when a sub-chat re
 
 **Note-only changes do not trigger a build and do not require a recursive note entry about the note-only change itself.**
 
-**Every time a code/config/workflow change is made, this file must be updated in the same change.**
+**MANDATORY MEMORY RULE: Every time any app code, configuration, workflow, CI/build behavior, or other project behavior is changed, `APP_PROJECT_NOTES.md` must be updated in the same change. No project change is considered complete until its relevant memory/state has been recorded.**
 
 That means:
 
@@ -2083,6 +2083,11 @@ For every future app change:
 # END OF APP PROJECT MEMORY
 
 ## CHANGELOG
+### 2026-09-26 — Reinforced mandatory memory update on every project change
+
+- Reinforced that every app code, configuration, workflow, CI/build behavior, or other project behavior change must update `APP_PROJECT_NOTES.md` in the same change.
+- Established that a project change is not considered complete until its relevant state/memory has been recorded for both Code and Action sub-chats.
+
 ### 2026-09-26 — Finalized bidirectional shared-memory protocol
 
 - Both Code and Build / CI sub-chats now explicitly share one persistent project memory and must read/write the latest state for handoff.
