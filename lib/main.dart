@@ -428,6 +428,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  Future<void> _setBackgroundService(bool enabled) async {
+    if (!Platform.isAndroid) return;
+    try {
+      await batteryChannel.invokeMethod<void>(
+        enabled ? 'startBackgroundService' : 'stopBackgroundService',
+      );
+    } catch (e) {
+      debugPrint('Background service ' +
+          (enabled ? 'start' : 'stop') +
+          ': $e');
+    }
+  }
+
   Future<int> _androidSdkInt() async {
     if (!Platform.isAndroid) return 0;
     try {
@@ -639,6 +652,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void _handleBleDisconnected() {
+    unawaited(_setBackgroundService(false));
     notificationSub?.cancel();
     notificationSub = null;
     _bleReady = false;
@@ -841,6 +855,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       color12Controller.text = color12V;
     });
     _startBatteryTelemetry();
+    unawaited(_setBackgroundService(true));
 
     if (resetReason != 'POWERON' && resetReason != 'UNKNOWN') {
       _showSnackBar(

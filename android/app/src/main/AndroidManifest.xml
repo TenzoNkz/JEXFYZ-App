@@ -20,12 +20,21 @@
         android:name="android.permission.ACCESS_COARSE_LOCATION"
         android:maxSdkVersion="30" />
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
+
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:label="JE Cooler"
         android:name="${applicationName}"
         android:icon="@drawable/jexfyzicon">
+        <service
+            android:name=".JeForegroundService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="connectedDevice" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

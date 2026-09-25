@@ -166,20 +166,19 @@ The user strongly prefers:
 - Run ID: `36199711412`
 - Result: **SUCCESS**
 - Head SHA built: `13778dd574304f9acbfc7ece08e58eb903794aa9`
-- Build job: `build` — **SUCCESS**
-- User-visible problem observed after download: the APK filename was URL-encoded/incorrect (shown as `JE%20X%20FYZ%20Build%20%2395.apk`).
-- **Fix applied in this Code/CI change:** release APK is now renamed dynamically to `JEXFYZ#<run_number>.apk` and uploaded directly as the APK artifact; ZIP packaging/upload was removed.
-- Expected next build output: `JEXFYZ#96.apk` for Run #96 (or the corresponding current Actions run number).
-- Dart symbols remain a separate artifact.
-- No new build is claimed for this workflow change until a dedicated Action run executes it successfully.
+- Previous user-visible filename problem from Run #95 was fixed by the direct APK artifact workflow change.
+- **Current Code change pending validation:** native Android Foreground Service support was added so an active BLE session is kept backed by a foreground service while the Flutter UI is in the background.
+- The service starts after successful BLE session/synchronization and stops on BLE disconnect.
+- The service does **not** create a second BLE client; Flutter remains the single BLE/session owner to avoid duplicate GATT connections.
+- The next Action run must validate compilation, service registration, foreground-service permissions/type, and actual background behavior on a physical Android device. No build success is claimed yet for this change.
 
 ### Handoff to Build / CI sub-chat
 
-Read this section before the next build. The next Action run must verify that the downloaded artifact is a direct APK and that its filename follows `JEXFYZ#<RUN_NUMBER>.apk` with no spaces or literal percent-encoding.
+Build the current `main` head. Verify the new Kotlin service compiles, Android manifest checks pass, the existing BLE/session logic is unchanged, and `flutter analyze` + `flutter test` still pass. Then test: connect → enter background/game → observe BLE/session continuity → return to app.
 
 ### Handoff back to Code-change sub-chat
 
-Run #95 succeeded before this filename workflow fix. The remaining validation is to run the updated workflow and verify the actual downloaded artifact filename/output. If that validation fails, record the exact observed filename and the responsible workflow step here before further changes.
+If the build fails, record the exact failed step/error and the fix. If build succeeds but BLE disconnects after the UI goes to background, treat that as a runtime lifecycle issue and do not create a second BLE client without an explicit architecture review.
 
 # 1. PROJECT IDENTITY
 
@@ -2113,6 +2112,15 @@ For every future app change:
 # END OF APP PROJECT MEMORY
 
 ## CHANGELOG
+### 2026-09-26 — Native foreground service for background BLE continuity
+
+- Added `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JeForegroundService.kt`.
+- Updated `MainActivity.kt` with native start/stop methods through the existing MethodChannel.
+- Updated `lib/main.dart` to start the foreground service after successful BLE synchronization and stop it when BLE disconnects.
+- Updated `AndroidManifest.xml` with foreground-service permissions and a `connectedDevice` service declaration.
+- The service does not create a second BLE client; Flutter remains the single owner of the BLE/session protocol.
+- Updated shared memory with the exact implementation and Build / CI handoff. Fresh build and physical-device validation are pending.
+
 ### 2026-09-26 — Direct JEXFYZ#RUN APK output
 
 - Updated `.github/workflows/build.yml` so the release APK is copied to `JEXFYZ#${{ github.run_number }}.apk`.

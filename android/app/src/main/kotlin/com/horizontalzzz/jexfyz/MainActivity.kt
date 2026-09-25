@@ -50,6 +50,14 @@ class MainActivity : FlutterActivity() {
                     result.success(openLocationSettings())
                 }
 
+                "startBackgroundService" -> {
+                    result.success(startBackgroundService())
+                }
+
+                "stopBackgroundService" -> {
+                    result.success(stopBackgroundService())
+                }
+
                 else -> result.notImplemented()
             }
         }
@@ -62,6 +70,28 @@ class MainActivity : FlutterActivity() {
                 "isOfficialBuild" -> result.success(isOfficialBuild())
                 else -> result.notImplemented()
             }
+        }
+    }
+
+    private fun startBackgroundService(): Boolean {
+        return try {
+            val intent = Intent(this, JeForegroundService::class.java)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(intent)
+            } else {
+                startService(intent)
+            }
+            true
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    private fun stopBackgroundService(): Boolean {
+        return try {
+            stopService(Intent(this, JeForegroundService::class.java))
+        } catch (_: Exception) {
+            false
         }
     }
 
