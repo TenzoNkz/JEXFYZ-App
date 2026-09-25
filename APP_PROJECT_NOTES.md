@@ -166,30 +166,20 @@ The user strongly prefers:
 - Run ID: `36199711412`
 - Result: **SUCCESS**
 - Head SHA built: `13778dd574304f9acbfc7ece08e58eb903794aa9`
-- Event: `push` using the temporary `[build]` trigger required because the available GitHub integration does not expose workflow dispatch.
 - Build job: `build` — **SUCCESS**
-- Flutter analyze: **SUCCESS**
-- Flutter tests: **SUCCESS**
-- Release APK build: **SUCCESS**
-- Production APK signature verification: **SUCCESS**
-- Artifact: `JE-X-FYZ-Latest.zip`
-- Artifact ID: `10891114176`
-- Artifact size: `25,663,709 bytes`
-- Artifact expired: **No** at verification time
-- Dart symbols artifact: `JE-X-FYZ-Dart-Symbols` (ID `10891753422`)
-- Delivered APK filename: `JE X FYZ Build #95.apk`
-- ZIP filename: `JE X FYZ Build #95.zip`
-- The ZIP was inspected after download and contains exactly one APK: `JE-X-FYZ-Latest.apk`.
-- No source/code fix was required for Run #95; the build used the latest verified `main` state.
-- After the build, the workflow trigger was restored to the original manual `workflow_dispatch` configuration.
+- User-visible problem observed after download: the APK filename was URL-encoded/incorrect (shown as `JE%20X%20FYZ%20Build%20%2395.apk`).
+- **Fix applied in this Code/CI change:** release APK is now renamed dynamically to `JEXFYZ#<run_number>.apk` and uploaded directly as the APK artifact; ZIP packaging/upload was removed.
+- Expected next build output: `JEXFYZ#96.apk` for Run #96 (or the corresponding current Actions run number).
+- Dart symbols remain a separate artifact.
+- No new build is claimed for this workflow change until a dedicated Action run executes it successfully.
 
 ### Handoff to Build / CI sub-chat
 
-The dedicated Action sub-chat should read this section first when checking the latest build state. Run #95 is the latest build result recorded here unless a newer Action run is subsequently recorded.
+Read this section before the next build. The next Action run must verify that the downloaded artifact is a direct APK and that its filename follows `JEXFYZ#<RUN_NUMBER>.apk` with no spaces or literal percent-encoding.
 
 ### Handoff back to Code-change sub-chat
 
-Run #95 introduced no code-side fix. The latest Action-originated build-blocking fix remains the `mapPinSlash` → `mapPin` change recorded in the Run #94 handoff.
+Run #95 succeeded before this filename workflow fix. The remaining validation is to run the updated workflow and verify the actual downloaded artifact filename/output. If that validation fails, record the exact observed filename and the responsible workflow step here before further changes.
 
 # 1. PROJECT IDENTITY
 
@@ -2123,6 +2113,14 @@ For every future app change:
 # END OF APP PROJECT MEMORY
 
 ## CHANGELOG
+### 2026-09-26 — Direct JEXFYZ#RUN APK output
+
+- Updated `.github/workflows/build.yml` so the release APK is copied to `JEXFYZ#${{ github.run_number }}.apk`.
+- Removed ZIP packaging and the ZIP-only artifact upload path.
+- The workflow now uploads the direct APK with `archive: false` and a matching artifact name.
+- Recorded the Run #95 filename problem and the expected next validation in the shared CI state.
+- No application Dart/UI/BLE logic was changed.
+
 ### 2026-09-26 — Mandatory shared-memory preflight before every execution
 
 - Added the requirement that both Code and Action read the latest `APP_PROJECT_NOTES.md` from `main` before executing any project action.
