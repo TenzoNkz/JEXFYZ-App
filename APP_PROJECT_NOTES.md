@@ -35,7 +35,7 @@ The JE X FYZ app work is intentionally split across two sub-chat roles so the pr
 **2. Build / CI sub-chat:**
 - Used specifically to trigger GitHub Actions builds, inspect build/test/analyze failures, inspect CI logs, and obtain/download the built app artifact.
 - A build is triggered only when the user explicitly requests a build from that sub-chat.
-- When CI reports a code/configuration error, diagnose and report the relevant failure there; the actual source-code fix is then performed in the code-change sub-chat.
+- When CI reports a code/configuration/build error, diagnose it in the Build / CI sub-chat. The Action sub-chat may directly fix the source/configuration when the fix is required to make the build pass, then rerun the workflow and record exactly what it changed. The resulting change must be handed back through `APP_PROJECT_NOTES.md` so the Code sub-chat sees what was wrong and what Action changed.
 - This separation is intentional and must be preserved to keep the two chat contexts focused and reduce unnecessary context usage.
 
 ### Sub-chat naming convention
@@ -48,6 +48,20 @@ Use the following naming scheme consistently for JE X FYZ project continuity:
 - When a Build / CI sub-chat reaches its context limit, rename the completed chat by appending `Limit`: `JE X FYZ Action #1Limit`, then start the next Build / CI sub-chat as `JE X FYZ Action #2`.
 - Numbering of code-change chats and Build / CI chats is independent.
 - The naming is a human/UI organization convention; do not infer the active chat title from system context. When a new sub-chat is opened, read the latest `APP_PROJECT_NOTES.md` regardless of its title.
+
+### Shared-memory bidirectional handoff protocol
+
+The two sub-chats share **one project memory** but have different primary responsibilities. The latest `APP_PROJECT_NOTES.md` is the source of truth for the current engineering state and must be used for handoff in both directions.
+
+**Code → Action:** after a code/config change, record the current HEAD/commit when known, changed files, purpose, intended behavior, what must be tested, and whether a build is requested/pending. The Action sub-chat reads this state before building.
+
+**Action → Code:** after every build/CI attempt, record the run number/ID when available, head SHA when available, result, failed step/error when applicable, and artifact result. If Action directly changes source/config to fix a build failure, record the exact files and a concise description of the fix before/with the successful result. This allows the Code sub-chat to know what was wrong and what Action changed without reconstructing the history from chat messages.
+
+**Action self-fix rule:** Build / CI may directly make narrowly-scoped source/config changes required to resolve a build, analysis, test, packaging, or CI failure. It should not silently introduce unrelated feature/UI changes. Every such change is a real project change and must be recorded in the shared memory and carried forward to the next handoff.
+
+**Latest state wins:** when the two sub-chats disagree with older chat context, use the newest verified repository state and the latest relevant memory entry. A new sub-chat must not rely on an older sub-chat transcript when the current notes contain a newer state.
+
+**No automatic build from ordinary code changes:** normal Code or Action edits do not themselves imply a new build. Builds remain controlled from the dedicated Build / CI workflow unless the user explicitly requests otherwise.
 
 ### Project memory capture rule
 
@@ -2046,6 +2060,14 @@ For every future app change:
 # END OF APP PROJECT MEMORY
 
 ## CHANGELOG
+### 2026-09-26 — Finalized bidirectional shared-memory protocol
+
+- Both Code and Build / CI sub-chats now explicitly share one persistent project memory and must read/write the latest state for handoff.
+- Code records changes and build handoff requirements; Action records build/CI results and artifact state.
+- Build / CI is allowed to directly fix narrowly-scoped source/configuration problems required to resolve build, analyze, test, packaging, or CI failures, then rerun and document the exact fix.
+- The Code sub-chat must be able to learn from Notes what Action found wrong and what Action changed.
+- Ordinary code changes do not automatically trigger builds; build execution remains a separate Build / CI responsibility.
+
 ### 2026-09-26 — Recorded latest successful Action Run #94
 
 - Verified GitHub Actions Run #94 (`36197719113`) completed successfully.
