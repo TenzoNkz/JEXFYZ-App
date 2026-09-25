@@ -1923,4 +1923,45 @@ A real-device screenshot/build test is still required to visually confirm the ex
 - Bluetooth/Location status is live while the sheet is open and offers recovery actions.
 - UI wording is shorter and more consistent without changing the BLE protocol contract.
 
+
+## 2026-09-26 — GitHub write access recheck + current repository baseline
+
+### User request
+- Re-check whether ChatGPT can now write to the JE X FYZ repository.
+- Update this project memory only if the GitHub write actually succeeds.
+- Keep GitHub Actions execution manual by the user; ChatGPT can read runs/artifacts after the user starts them.
+
+### Current repository state checked before this note update
+- Repository: `TenzoNkz/JEXFYZ-App`
+- Branch: `main`
+- Current `lib/main.dart` blob SHA: `d18db65ebc30f1f92e0d40e564096c14569aebaa`
+- Current `APP_PROJECT_NOTES.md` blob SHA before this update: `230a7eb0197f52816865be6335881cc1001458da`
+- Latest observed GitHub Actions run: **#92**, run ID `36090775126`
+- Run #92 status: **success**
+- Run #92 head SHA: `98d275ef50a9445e9412ebeda80d3fb639a7ad54`
+- Run #92 produced `JE-X-FYZ-Latest.zip` and the artifact was not expired at the time of inspection.
+- The current `main` HEAD is newer than the commit used by Run #92, so that APK is not automatically considered a build of the current HEAD.
+
+### GitHub write verification
+- An update to this exact `APP_PROJECT_NOTES.md` file is being attempted now using its current blob SHA.
+- The result of this update must be treated as the authoritative test of current GitHub write access.
+- Do not claim GitHub write access is available unless this update returns a successful commit/content SHA.
+- Do not claim GitHub Actions can be dispatched from the available integration; workflow run creation remains a separate capability from repository file writing.
+
+### Project workflow rule reaffirmed
+For every future app change:
+1. Read the latest `APP_PROJECT_NOTES.md`.
+2. Read the current GitHub `main` source/files that are relevant to the change.
+3. Discuss the requested change first.
+4. Execute only after explicit user approval.
+5. Update the living project notes in the same change.
+6. Verify GitHub state after any successful repository write.
+7. Keep Actions execution manual unless a future integration explicitly exposes workflow dispatch.
+
+### Verification status
+- This note entry records the current baseline and the write-access test.
+- Flutter analyze/test status remains dependent on a real GitHub Actions run or an environment with Flutter/Dart SDK.
+- Real-device validation remains required for BLE permission/settings flow and the compact Connection sheet.
+
+
 # END OF APP PROJECT MEMORY
