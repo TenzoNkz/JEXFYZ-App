@@ -1813,4 +1813,47 @@ The root canvas no longer has a 1080 physical-pixel cap. A same-device DP/densit
 ### Known limitations / follow-up
 Real-device validation is required on the requested matrix (same physical device at 320/360/420/430/460/500 DP where available, plus at least one physically different phone) before declaring this fully stable.
 
+## 2026-09-25 — Notify vertical text centering + offline validation-state fix
+
+### User request
+- The Notify card position itself was already correct; the problem was the green Notify state label sitting too close to the top edge of the card.
+- Center the two-line Notify text group more naturally inside the existing Notify card, matching the provided reference screenshot.
+- Keep the card height/position, icon, and OFFLINE badge unchanged.
+- Also prevent an offline dashboard from showing the sensor-validation message as `NOTIFY • WARNING` when no device is connected.
+
+### Files changed
+- `lib/main.dart`
+- `APP_PROJECT_NOTES.md`
+
+### Implementation
+- Reworked the Notify text column to use `mainAxisSize: MainAxisSize.min` with vertical centering, so `NOTIFY • ...` and the latest message are centered as one compact group instead of the message `Expanded` child consuming the remaining vertical space and pulling the state label upward.
+- Kept the green Notify state label at its normal design size; no `FittedBox` was added around the label.
+- Kept one-line message behavior by putting only the message in a fixed-height `FittedBox`/`LayoutBuilder` area, allowing the message to scale down horizontally without affecting the label position.
+- Updated `_professionalNotice()` so stale `WAITING_FOR_NTC` / `WAITING_FOR_SENSOR_VALIDATION` text is not displayed while the dashboard is offline. Offline now falls back to `Bluetooth disconnected.` unless there is another explicit latest event such as a connection failure or device-not-found message.
+- Updated `_notifyStateLabel()` so `WAITING_*` safety state is not promoted to `NOTIFY • WARNING` while disconnected. Safety warning labeling is now gated by `connected == true` and excludes the normal sensor-validation states.
+
+### Preserved
+- Existing 44 px Notify card height and card placement in Home
+- Notify icon and status badge layout
+- One-master-canvas scaling architecture
+- BLE handshake/session and reconnect behavior
+- `_sendAndConfirm()` ACK flow and runtime sync
+- Firebase read-only firmware metadata
+- security/signing architecture
+- latest-event Notify model
+- all unrelated control/safety/temperature logic
+
+### Verification
+- `flutter analyze`: NOT RUN — Flutter/Dart SDK is unavailable in this environment.
+- `flutter test`: NOT RUN — Flutter/Dart SDK is unavailable in this environment.
+- GitHub Actions: NOT RUN after this local change.
+- Local source integrity: updated from the complete local `main.dart`; file ends with the expected closing class braces.
+- GitHub repository write: not available through the current integration (previous 403 permission error).
+
+### Result
+The Notify text group is now vertically centered inside the existing card while only the message line can scale down. Offline startup/disconnect states no longer masquerade as a sensor-validation warning.
+
+### Known limitations / follow-up
+A real-device screenshot/build test is still required to visually confirm the exact vertical offset against the provided reference image.
+
 # END OF APP PROJECT MEMORY
