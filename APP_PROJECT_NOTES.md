@@ -2071,6 +2071,15 @@ For every future app change:
 - Real-device validation remains required for BLE permission/settings flow and the compact Connection sheet.
 
 
+## Persistent project-memory rule
+
+- Treat `APP_PROJECT_NOTES.md` as the living memory of JE X FYZ.
+- After every meaningful project change, update the notes with the new state, files changed, purpose/behavior, verification status, and any follow-up or risk.
+- Record build/CI results and artifact information using the real GitHub Actions run number.
+- Keep Code and Action sub-chats synchronized through this file; the latest verified repository state and latest relevant note entry take precedence over older chat context.
+- Do not silently discard prior decisions, fixes, constraints, or known limitations when starting a new sub-chat.
+- This memory is continuously expanded and corrected as the project evolves.
+
 # END OF APP PROJECT MEMORY
 
 ## CHANGELOG
