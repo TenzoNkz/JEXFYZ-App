@@ -335,7 +335,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       debugPrint('BLE operation queue: $e');
     }
     _initFirebase();
-    _requestPermissions();
   }
 
   @override
@@ -373,12 +372,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
-  Future<void> _requestPermissions({bool showResult = false}) async {
-    if (!Platform.isAndroid) return;
+  Future<bool> _requestPermissions({bool showResult = false}) async {
+    if (!Platform.isAndroid) return true;
     try {
       final scan = await Permission.bluetoothScan.request();
       final connect = await Permission.bluetoothConnect.request();
-      final location = await Permission.locationWhenInUse.request();
+      final sdk = await _androidSdkInt();
+
+      PermissionStatus location = await Permission.locationWhenInUse.status;
+      if (sdk > 0 && sdk <= 30) {
+        location = await Permission.locationWhenInUse.request();
+      }
 
       var adapter = await FlutterBluePlus.adapterState.first;
       if (adapter == BluetoothAdapterState.off) {
@@ -393,28 +397,59 @@ class _DashboardScreenState extends State<DashboardScreen> {
         }
       }
 
+      bool locationService = true;
+      try {
+        locationService = await batteryChannel.invokeMethod<bool>(
+              'isLocationServiceEnabled',
+            ) ??
+            false;
+      } catch (e) {
+        debugPrint('Location service state: $e');
+      }
+
+      final bluetoothReady =
+          scan.isGranted &&
+          connect.isGranted &&
+          adapter == BluetoothAdapterState.on;
+      final locationReady =
+          sdk > 30 || (location.isGranted && locationService);
+      final ready = bluetoothReady && locationReady;
+
       if (showResult && mounted) {
         _showSnackBar(
-          'Bluetooth ${scan.isGranted && connect.isGranted && adapter == BluetoothAdapterState.on ? "ON" : "needs permission"} • '
-          'Location ${location.isGranted ? "ON" : "needs permission"}',
-          color: scan.isGranted && connect.isGranted
-              ? Colors.green
-              : Colors.orangeAccent,
+          ready ? 'Connection ready.' : 'Connection needs access.',
+          color: ready ? Colors.green : Colors.orangeAccent,
         );
       }
+      return ready;
     } catch (e) {
       debugPrint('Permission setup: $e');
+      return false;
+    }
+  }
+
+  Future<int> _androidSdkInt() async {
+    if (!Platform.isAndroid) return 0;
+    try {
+      return await batteryChannel.invokeMethod<int>('getAndroidSdkInt') ?? 0;
+    } catch (e) {
+      debugPrint('Android SDK check: $e');
+      return 0;
     }
   }
 
   Future<void> _scanAndConnect() async {
     if (syncing) return;
-    await _requestPermissions();
+    final accessReady = await _requestPermissions();
+    if (!accessReady) {
+      if (mounted) setState(() => notice = 'Connection access required.');
+      return;
+    }
     if (!mounted) return;
 
     setState(() {
       syncing = true;
-      notice = 'Scanning for device...';
+      notice = 'Scanning...';
     });
 
     StreamSubscription<List<ScanResult>>? scanSub;
@@ -486,7 +521,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       await _connect(found);
     } catch (e) {
       debugPrint('BLE scan: $e');
-      _showSnackBar('Bluetooth scan failed.', color: Colors.redAccent);
+      _showSnackBar('Scan failed.', color: Colors.redAccent);
     } finally {
       await scanSub?.cancel();
       if (mounted && !connected) {
@@ -591,7 +626,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (lastError != null) {
       final message = lastError is StateError
           ? lastError.message
-          : 'Bluetooth connection failed';
+          : 'Connection failed.';
       if (mounted) {
         setState(() {
           connected = false;
@@ -799,7 +834,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       connected = true;
       syncing = false;
       dashboardReady = true;
-      notice = 'Device ready.';
+      notice = 'System ready.';
       rgbColorController.text = rgbColor;
       color5Controller.text = color5V;
       color9Controller.text = color9V;
@@ -809,7 +844,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     if (resetReason != 'POWERON' && resetReason != 'UNKNOWN') {
       _showSnackBar(
-        'ESP32 Reset: ${_friendlyReset(resetReason)}',
+        'Reset: ${_friendlyReset(resetReason)}',
         color: Colors.orangeAccent,
       );
     }
@@ -1640,7 +1675,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
 
     _showSnackBar(
-      'OTA started. Wi-Fi update is in progress.',
+      'OTA in progress.',
       color: Colors.purpleAccent,
     );
     _startOtaReconnectMonitor();
@@ -1680,9 +1715,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 'NTC_ERROR': return 'Temperature sensor error.';
       case 'HOTSIDE_PROTECTION': return 'Hotside protection active.';
       case 'FAN_REQUIRED': return 'Fan required before Peltier.';
-      case 'PELTIER_ON': return 'Fan control locked while Peltier is ON.';
+      case 'PELTIER_ON': return 'Fan locked while Peltier is ON.';
       case 'ADAPTIVE_ACTIVE': return 'Manual cooling controls locked.';
-      case 'MANUAL_12V_ONLY': return 'Fan speed available in manual 12V only.';
+      case 'MANUAL_12V_ONLY': return 'Manual 12V only.';
       case 'VOLTAGE_GUARD_OR_BUSY': return 'Voltage command pending.';
       case 'SYNC_REQUIRED': return 'Device sync in progress.';
       case 'RATE_LIMIT': return 'Command rate limited.';
@@ -1697,106 +1732,63 @@ class _DashboardScreenState extends State<DashboardScreen> {
     setState(() => notice = _compactNotifyMessage(message));
   }
 
+  Future<void> _openBluetoothSettings() async {
+    try {
+      await batteryChannel.invokeMethod('openBluetoothSettings');
+    } catch (e) {
+      debugPrint('Bluetooth settings: $e');
+      await openAppSettings();
+    }
+  }
+
+  Future<void> _openLocationSettings() async {
+    try {
+      await batteryChannel.invokeMethod('openLocationSettings');
+    } catch (e) {
+      debugPrint('Location settings: $e');
+      await openAppSettings();
+    }
+  }
+
   void _showBluetoothMenu() {
+    final media = MediaQuery.of(context);
+    const designWidth = 360.0;
+    const homeHeight = 420.0;
+    final scale = media.size.width / designWidth;
+    final top = media.padding.top + homeHeight * scale;
+    final sheetHeight = (media.size.height - top).clamp(1.0, media.size.height).toDouble();
+
     showModalBottomSheet<void>(
       context: context,
-      backgroundColor: const Color(0xFF15161E),
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.black.withValues(alpha: 0.70),
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
-      ),
-      builder: (context) {
+      useSafeArea: false,
+      enableDrag: true,
+      showDragHandle: false,
+      builder: (_) {
         return SizedBox(
-          height: MediaQuery.of(context).size.height * 0.67,
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.fromLTRB(20, 15, 10, 12),
-                decoration: const BoxDecoration(
-                  color: Color(0xFF1E202B),
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
-                ),
-                child: Row(
-                  children: [
-                    const Expanded(
-                      child: Text(
-                        'Bluetooth • JE X FYZ',
-                        style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(PhosphorIconsBold.x, color: Colors.white70),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: StreamBuilder<List<ScanResult>>(
-                  stream: FlutterBluePlus.scanResults,
-                  initialData: const [],
-                  builder: (context, snapshot) {
-                    final results = snapshot.data ?? [];
-                    final filtered = results.where((r) {
-                      final serviceMatch = r.advertisementData.serviceUuids.any(
-                        (uuid) => uuid.toString().toLowerCase() == serviceUuid,
-                      );
-                      final name = r.device.platformName.trim().toLowerCase();
-                      return serviceMatch || name == 'je x fyz';
-                    }).toList();
-
-                    if (filtered.isEmpty) {
-                      return Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(PhosphorIconsRegular.bluetooth, color: Colors.blueAccent, size: 34),
-                            const SizedBox(height: 12),
-                            const Text('Scanning for JE X FYZ...', style: TextStyle(color: Colors.grey)),
-                            const SizedBox(height: 14),
-                            FilledButton.icon(
-                              onPressed: _startScanFromSheet,
-                              icon: const Icon(PhosphorIconsBold.arrowClockwise),
-                              label: const Text('SCAN AGAIN'),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-
-                    return ListView.builder(
-                      itemCount: filtered.length,
-                      itemBuilder: (_, index) {
-                        final result = filtered[index];
-                        final name = result.device.platformName.isNotEmpty
-                            ? result.device.platformName
-                            : result.advertisementData.advName;
-                        return ListTile(
-                          leading: const Icon(PhosphorIconsRegular.bluetooth, color: Colors.blueAccent),
-                          title: Text(name.isEmpty ? 'JE X FYZ' : name, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                          subtitle: Text(result.device.remoteId.toString(), style: const TextStyle(color: Colors.grey, fontSize: 11)),
-                          onTap: () async {
-                            await FlutterBluePlus.stopScan();
-                            if (!context.mounted) return;
-                            Navigator.pop(context);
-                            await _connect(result.device);
-                          },
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
+          width: media.size.width,
+          height: sheetHeight,
+          child: ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(34)),
+            child: _ConnectionSheetContent(
+              onScan: _startScanFromSheet,
+              onConnect: _connect,
+              onOpenBluetoothSettings: _openBluetoothSettings,
+              onOpenLocationSettings: _openLocationSettings,
+            ),
           ),
         );
       },
     ).whenComplete(() => FlutterBluePlus.stopScan());
+
     _startScanFromSheet();
   }
 
   Future<void> _startScanFromSheet() async {
-    await _requestPermissions();
+    final accessReady = await _requestPermissions();
+    if (!accessReady) return;
     try {
       await FlutterBluePlus.stopScan();
       await FlutterBluePlus.startScan(
@@ -1936,11 +1928,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (raw.isEmpty) return '';
 
     final lower = raw.toLowerCase();
-    if (lower == 'scanning for je x fyz...') return 'Scanning for device...';
+    if (lower == 'scanning for je x fyz...') return 'Scanning...';
     if (lower == 'connecting to je x fyz...') return 'Connecting to device...';
     if (lower == 'device disconnected.') return 'Bluetooth disconnected.';
     if (lower == 'je x fyz was not found.') return 'Device not found.';
-    if (lower == 'bluetooth scan failed.') return 'Bluetooth scan failed.';
+    if (lower == 'bluetooth scan failed.') return 'Scan failed.';
     if (lower == 'bluetooth is not ready.') return 'Bluetooth unavailable.';
     if (lower == 'connect to je x fyz first.') return 'Connect to device first.';
     if (lower.startsWith('ota could not start:')) return 'OTA start rejected.';
@@ -1995,11 +1987,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 'FAN_REQUIRED':
         return 'Fan required before Peltier.';
       case 'PELTIER_ON':
-        return 'Fan control locked while Peltier is ON.';
+        return 'Fan locked while Peltier is ON.';
       case 'ADAPTIVE_ACTIVE':
         return 'Manual cooling controls locked.';
       case 'MANUAL_12V_ONLY':
-        return 'Fan speed available in manual 12V only.';
+        return 'Manual 12V only.';
       case 'VOLTAGE_GUARD_OR_BUSY':
         return 'Voltage command pending.';
       case 'RATE_LIMIT':
@@ -2021,42 +2013,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (c.startsWith('VOLTAGE:')) {
       message = 'Voltage set to ' + c.substring(8) + '.';
     } else if (c == 'FAN:ON') {
-      message = 'Fan turned ON.';
+      message = 'Fan ON.';
     } else if (c == 'FAN:OFF') {
-      message = 'Fan turned OFF.';
+      message = 'Fan OFF.';
     } else if (c == 'PELTIER:ON') {
-      message = 'Peltier turned ON.';
+      message = 'Peltier ON.';
     } else if (c == 'PELTIER:OFF') {
-      message = 'Peltier turned OFF.';
+      message = 'Peltier OFF.';
     } else if (c == 'ADAPTIVE:ON') {
-      message = 'Adaptive mode enabled.';
+      message = 'Adaptive ON.';
     } else if (c == 'ADAPTIVE:OFF') {
-      message = 'Adaptive mode disabled.';
+      message = 'Adaptive OFF.';
     } else if (c.startsWith('FANSPEED:')) {
-      message = 'Fan speed set to ' + c.substring(9) + '%.';
+      message = 'Fan ' + c.substring(9) + '%.';
     } else if (c == 'RGB:ON') {
-      message = 'LED turned ON.';
+      message = 'LED ON.';
     } else if (c == 'RGB:OFF') {
-      message = 'LED turned OFF.';
+      message = 'LED OFF.';
     } else if (c.startsWith('MODE:')) {
-      message = 'LED mode updated.';
+      message = 'Mode updated.';
     } else if (c.startsWith('BRIGHTNESS:')) {
-      message = 'LED brightness updated.';
+      message = 'Brightness updated.';
     } else if (c.startsWith('COLOR:') ||
         c.startsWith('V5COLOR:') ||
         c.startsWith('V9COLOR:') ||
         c.startsWith('V12COLOR:')) {
-      message = 'LED color updated.';
+      message = 'Color updated.';
     } else if (c.startsWith('HOTLIMIT:')) {
-      message = 'Hotside limit set to ' + c.substring(9) + '°C.';
+      message = 'Hotside ' + c.substring(9) + '°C.';
     } else if (c.startsWith('BATT5:')) {
       message = '5V battery limit updated.';
     } else if (c.startsWith('BATT12:')) {
       message = '12V battery limit updated.';
     } else if (c == 'RESET:TEMPERATURE') {
-      message = 'Temperature settings reset.';
+      message = 'Temperature reset.';
     } else if (c == 'RESET:VOLTAGECOLORS') {
-      message = 'Voltage colors reset.';
+      message = 'Colors reset.';
     }
 
     if (message != null) {
@@ -2350,8 +2342,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       storageKey: 'voltage',
       children: [
         _sectionTitle(
-          'Voltage Control',
-          subtitle: adaptiveOn ? 'Adaptive is controlling the voltage.' : '5V / 9V / 12V manual selector.',
+          'Voltage',
+          subtitle: adaptiveOn ? 'Adaptive controls voltage.' : 'Manual 5V / 9V / 12V.',
         ),
         _card(
           padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
@@ -2366,7 +2358,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         if (voltageGuardActive)
           const Padding(
             padding: EdgeInsets.only(left: 5, top: 2),
-            child: Text('Voltage guard active — awaiting device confirmation.', style: TextStyle(color: Colors.black45, fontSize: 10, fontWeight: FontWeight.w700)),
+            child: Text('Awaiting voltage confirmation.', style: TextStyle(color: Colors.black45, fontSize: 10, fontWeight: FontWeight.w700)),
           ),
         _card(
           child: Row(
@@ -2375,7 +2367,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               const SizedBox(width: 9),
               Expanded(
                 child: Text(
-                  connected ? 'Firmware state: ${voltage == '--' ? 'syncing...' : voltage}' : 'Connect to control voltage.',
+                  connected ? 'Firmware state: ${voltage == '--' ? 'syncing...' : voltage}' : 'Connect first.',
                   style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
                 ),
               ),
@@ -2392,14 +2384,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return KeyedSubtree(key: key, child: _smoothList(
       storageKey: 'control',
       children: [
-        _sectionTitle('Cooling Control', subtitle: 'Manage the cooling fan, Peltier, and fan speed.'),
+        _sectionTitle('Cooling', subtitle: 'Fan, Peltier, and speed.'),
         _card(
           padding: const EdgeInsets.fromLTRB(13, 10, 13, 10),
           child: Column(
             children: [
               _switchRow(
                 title: 'Fan',
-                subtitle: fanLocked ? 'Fan is ON • locked while Peltier is ON' : (fanOn ? 'Fan is ON' : 'Fan is OFF'),
+                subtitle: fanLocked ? 'ON • locked by Peltier' : (fanOn ? 'Fan is ON' : 'Fan is OFF'),
                 icon: PhosphorIconsRegular.wind,
                 value: fanOn,
                 enabled: connected && !adaptiveOn && !peltierOn,
@@ -2408,7 +2400,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               const Divider(height: 20),
               _switchRow(
                 title: 'Peltier',
-                subtitle: peltierOn ? 'Peltier is ON • 5 s soft-start' : 'Peltier is OFF',
+                subtitle: peltierOn ? 'ON • 5 s soft-start' : 'Peltier is OFF',
                 icon: PhosphorIconsRegular.snowflake,
                 value: peltierOn,
                 enabled: connected && !adaptiveOn,
@@ -2502,7 +2494,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return KeyedSubtree(key: key, child: _smoothList(
       storageKey: 'adaptive',
       children: [
-        _sectionTitle('Adaptive Control', subtitle: 'Firmware-owned automatic voltage policy.'),
+        _sectionTitle('Adaptive', subtitle: 'Firmware controls voltage.'),
         _card(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           child: Row(
@@ -2524,7 +2516,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   children: [
                     Text('Adaptive Switch', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900)),
                     SizedBox(height: 4),
-                    Text('Hotside and phone battery temperature control', style: TextStyle(fontSize: 10, color: Colors.black45, fontWeight: FontWeight.w600)),
+                    Text('Hotside + phone battery temperature.', style: TextStyle(fontSize: 10, color: Colors.black45, fontWeight: FontWeight.w600)),
                   ],
                 ),
               ),
@@ -2540,7 +2532,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Adaptive policy', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900)),
+              const Text('Policy', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900)),
               const SizedBox(height: 7),
               const Text(
                 'Firmware returns to 5V first, then uses the phone battery temperature zone to target 5V / 9V / 12V. Manual controls are locked while Adaptive is ON.',
@@ -2567,7 +2559,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: StaticSwitcher(
 
                   child: Text(
-                    adaptiveTransitioning ? 'Adaptive transition in progress — awaiting device confirmation.' : 'Adaptive state: ${adaptiveOn ? 'ON' : 'OFF'}',
+                    adaptiveTransitioning ? 'Transitioning...' : 'Adaptive state: ${adaptiveOn ? 'ON' : 'OFF'}',
                     key: ValueKey<String>('adaptive:$adaptiveOn:$adaptiveTransitioning'),
                     style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
                   ),
@@ -2631,7 +2623,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         const SizedBox(width: 8),
         FilledButton(
           onPressed: connected ? () => _sendColor(command, controller) : null,
-          child: const Text('SET', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900)),
+          child: const Text('Set', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900)),
         ),
       ],
     );
@@ -2642,14 +2634,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return KeyedSubtree(key: key, child: _smoothList(
       storageKey: 'led',
       children: [
-        _sectionTitle('LED Control', subtitle: '8× WS2812B • firmware-managed lighting and effects.'),
+        _sectionTitle('LED', subtitle: '8× WS2812B • effects.'),
         _card(
           padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
           child: Column(
             children: [
               _switchRow(
-                title: 'LED Power',
-                subtitle: rgbOn ? 'Lighting is ON' : 'Lighting is OFF',
+                title: 'Power',
+                subtitle: rgbOn ? 'ON' : 'OFF',
                 icon: PhosphorIconsBold.lightbulb,
                 value: rgbOn,
                 enabled: connected,
@@ -2694,7 +2686,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ],
           ),
         ),
-        _sectionTitle('Custom RGB Color'),
+        _sectionTitle('Custom Color'),
         _card(child: Row(children: [
           Expanded(child: TextField(
             controller: rgbColorController,
@@ -2710,9 +2702,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           )),
           const SizedBox(width: 8),
-          FilledButton(onPressed: connected ? () => _sendColor('COLOR', rgbColorController) : null, child: const Text('SET')),
+          FilledButton(onPressed: connected ? () => _sendColor('COLOR', rgbColorController) : null, child: const Text('Set')),
         ])),
-        _sectionTitle('Voltage Indicator Colors', subtitle: 'Shown briefly after a confirmed voltage change.'),
+        _sectionTitle('Voltage Colors', subtitle: 'Shown after voltage change.'),
         _card(child: Column(children: [
           _colorField('5V', color5Controller, 'V5COLOR'),
           const Divider(height: 18),
@@ -2769,10 +2761,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return KeyedSubtree(key: key, child: _smoothList(
       storageKey: 'temperature',
       children: [
-        _sectionTitle('Thermal Protection', subtitle: locked ? 'Locked while Adaptive is ON.' : 'Sensor readings remain independent from the protection threshold.'),
+        _sectionTitle('Thermal', subtitle: locked ? 'Locked while Adaptive is ON.' : 'Sensor readings remain independent from the protection threshold.'),
         _card(
           child: _adjuster(
-            title: 'Hotside Overheat Limit',
+            title: 'Hotside Limit',
             value: hotLimitDraft,
             min: 40,
             max: 50,
@@ -2782,13 +2774,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
             },
           ),
         ),
-        _sectionTitle('Phone Battery Temperature Zones', subtitle: '9V uses the calculated middle zone.'),
+        _sectionTitle('Battery Zones', subtitle: '9V uses the middle zone.'),
         _card(
           padding: const EdgeInsets.fromLTRB(13, 8, 13, 8),
           child: Column(
             children: [
               _adjuster(
-                title: '5V Zone Ceiling',
+                title: '5V Ceiling',
                 value: battery5Draft,
                 min: 20,
                 max: 48,
@@ -2807,7 +2799,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
               const Divider(height: 14),
               _adjuster(
-                title: '12V Zone Floor',
+                title: '12V Floor',
                 value: battery12Draft,
                 min: 22,
                 max: 50,
@@ -2825,7 +2817,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: const Row(children: [
               Icon(PhosphorIconsBold.lock, size: 18, color: Colors.orangeAccent),
               SizedBox(width: 9),
-              Expanded(child: Text('Temperature settings are locked while Adaptive Mode is active.', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800))),
+              Expanded(child: Text('Locked in Adaptive.', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800))),
             ]),
           ),
         Align(
@@ -3174,6 +3166,372 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 }
 
+class _ConnectionSheetContent extends StatefulWidget {
+  final Future<void> Function() onScan;
+  final Future<void> Function(BluetoothDevice device) onConnect;
+  final Future<void> Function() onOpenBluetoothSettings;
+  final Future<void> Function() onOpenLocationSettings;
+
+  const _ConnectionSheetContent({
+    required this.onScan,
+    required this.onConnect,
+    required this.onOpenBluetoothSettings,
+    required this.onOpenLocationSettings,
+  });
+
+  @override
+  State<_ConnectionSheetContent> createState() => _ConnectionSheetContentState();
+}
+
+class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
+  static const MethodChannel _channel = MethodChannel('je_x_fyz/battery_temp');
+
+  Timer? _refreshTimer;
+  BluetoothAdapterState _adapterState = BluetoothAdapterState.unknown;
+  PermissionStatus _scanPermission = PermissionStatus.denied;
+  PermissionStatus _connectPermission = PermissionStatus.denied;
+  PermissionStatus _locationPermission = PermissionStatus.denied;
+  bool _locationServiceEnabled = false;
+  int _androidSdk = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshStatus();
+    _refreshTimer = Timer.periodic(
+      const Duration(milliseconds: 650),
+      (_) => _refreshStatus(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _refreshTimer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _refreshStatus() async {
+    if (!Platform.isAndroid) return;
+    try {
+      final adapter = await FlutterBluePlus.adapterState.first;
+      final scan = await Permission.bluetoothScan.status;
+      final connect = await Permission.bluetoothConnect.status;
+      final location = await Permission.locationWhenInUse.status;
+      final sdk = await _getAndroidSdkInt();
+
+      bool locationService = false;
+      try {
+        locationService = await _channel.invokeMethod<bool>(
+              'isLocationServiceEnabled',
+            ) ??
+            false;
+      } catch (_) {}
+
+      if (!mounted) return;
+      setState(() {
+        _adapterState = adapter;
+        _scanPermission = scan;
+        _connectPermission = connect;
+        _locationPermission = location;
+        _androidSdk = sdk;
+        _locationServiceEnabled = locationService;
+      });
+    } catch (e) {
+      debugPrint('Connection status: $e');
+    }
+  }
+
+  Future<int> _getAndroidSdkInt() async {
+    try {
+      return await _channel.invokeMethod<int>('getAndroidSdkInt') ?? 0;
+    } catch (e) {
+      debugPrint('Android SDK check: $e');
+      return 0;
+    }
+  }
+
+  bool get _bluetoothDenied =>
+      !_scanPermission.isGranted || !_connectPermission.isGranted;
+
+  bool get _bluetoothOn =>
+      !_bluetoothDenied && _adapterState == BluetoothAdapterState.on;
+
+  bool get _locationDenied =>
+      _androidSdk > 0 &&
+      _androidSdk <= 30 &&
+      !_locationPermission.isGranted;
+
+  bool get _locationOn =>
+      _locationServiceEnabled && !_locationDenied;
+
+  Color _statusColor(bool on, bool denied) {
+    if (denied) return const Color(0xFFFF6B7A);
+    if (on) return const Color(0xFF63E6BE);
+    return const Color(0xFFFFB74D);
+  }
+
+  Widget _indicator({
+    required String label,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(24),
+          child: Container(
+            height: 42,
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            decoration: BoxDecoration(
+              color: const Color(0xFF191A22),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(
+                color: color.withValues(alpha: 0.55),
+                width: 1.1,
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: 19, color: color),
+                const SizedBox(width: 7),
+                Flexible(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10.5,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _tapBluetooth() async {
+    if (_bluetoothDenied) {
+      await openAppSettings();
+    } else {
+      await widget.onOpenBluetoothSettings();
+    }
+    await Future<void>.delayed(const Duration(milliseconds: 250));
+    await _refreshStatus();
+  }
+
+  Future<void> _tapLocation() async {
+    if (_locationDenied) {
+      await openAppSettings();
+    } else {
+      await widget.onOpenLocationSettings();
+    }
+    await Future<void>.delayed(const Duration(milliseconds: 250));
+    await _refreshStatus();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final btColor = _statusColor(_bluetoothOn, _bluetoothDenied);
+    final locationColor = _statusColor(_locationOn, _locationDenied);
+    final locationRequired = _androidSdk > 0 && _androidSdk <= 30;
+
+    return Material(
+      color: const Color(0xFF15161E),
+      child: Column(
+        children: [
+          Container(
+            height: 66,
+            padding: const EdgeInsets.fromLTRB(18, 7, 7, 5),
+            decoration: const BoxDecoration(
+              color: Color(0xFF1E202B),
+              border: Border(
+                bottom: BorderSide(color: Color(0x141FFFFFFF)),
+              ),
+            ),
+            child: Row(
+              children: [
+                const Expanded(
+                  child: Text(
+                    'Connection',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: -0.15,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints.tightFor(width: 42, height: 42),
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(
+                    PhosphorIconsRegular.x,
+                    color: Colors.white70,
+                    size: 25,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 13, 16, 10),
+            child: Row(
+              children: [
+                _indicator(
+                  label: _bluetoothOn ? 'Bluetooth ON' : 'Bluetooth OFF',
+                  icon: _bluetoothOn
+                      ? PhosphorIconsRegular.bluetooth
+                      : PhosphorIconsRegular.bluetoothSlash,
+                  color: btColor,
+                  onTap: _tapBluetooth,
+                ),
+                const SizedBox(width: 8),
+                _indicator(
+                  label: _locationOn ? 'Location ON' : 'Location OFF',
+                  icon: _locationOn
+                      ? PhosphorIconsRegular.mapPin
+                      : PhosphorIconsRegular.mapPinSlash,
+                  color: locationColor,
+                  onTap: _tapLocation,
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 10, 8),
+            child: Row(
+              children: [
+                const Expanded(
+                  child: Text(
+                    'Devices',
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints.tightFor(width: 38, height: 38),
+                  tooltip: 'Scan',
+                  onPressed: widget.onScan,
+                  icon: const Icon(
+                    PhosphorIconsRegular.arrowClockwise,
+                    color: Color(0xFF5C9DFF),
+                    size: 25,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: StreamBuilder<List<ScanResult>>(
+              stream: FlutterBluePlus.scanResults,
+              initialData: const [],
+              builder: (context, snapshot) {
+                final filtered = (snapshot.data ?? const <ScanResult>[]).where((r) {
+                  final serviceMatch = r.advertisementData.serviceUuids.any(
+                    (uuid) => uuid.toString().toLowerCase() == serviceUuid,
+                  );
+                  final name = r.device.platformName.trim().toLowerCase();
+                  final advName = r.advertisementData.advName.trim().toLowerCase();
+                  return serviceMatch || name == 'je x fyz' || advName == 'je x fyz';
+                }).toList();
+
+                if (filtered.isEmpty) {
+                  final unavailable =
+                      _bluetoothDenied ||
+                      _adapterState != BluetoothAdapterState.on ||
+                      (locationRequired && !_locationOn);
+
+                  return Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          unavailable
+                              ? PhosphorIconsRegular.bluetoothSlash
+                              : PhosphorIconsRegular.bluetooth,
+                          color: unavailable
+                              ? btColor
+                              : const Color(0xFF5C9DFF),
+                          size: 36,
+                        ),
+                        const SizedBox(height: 11),
+                        Text(
+                          unavailable ? 'Connection unavailable.' : 'Scanning...',
+                          style: const TextStyle(
+                            color: Colors.white60,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 13),
+                        FilledButton.icon(
+                          onPressed: unavailable ? null : widget.onScan,
+                          icon: const Icon(
+                            PhosphorIconsRegular.arrowClockwise,
+                            size: 18,
+                          ),
+                          label: const Text('Scan'),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                return ListView.separated(
+                  padding: const EdgeInsets.fromLTRB(10, 2, 10, 16),
+                  itemCount: filtered.length,
+                  separatorBuilder: (_, __) =>
+                      const Divider(color: Color(0x14FFFFFF), height: 1),
+                  itemBuilder: (_, index) {
+                    final result = filtered[index];
+                    final name = result.device.platformName.isNotEmpty
+                        ? result.device.platformName
+                        : result.advertisementData.advName;
+                    return ListTile(
+                      dense: true,
+                      leading: const Icon(
+                        PhosphorIconsRegular.bluetooth,
+                        color: Color(0xFF63E6BE),
+                      ),
+                      title: Text(
+                        name.isEmpty ? 'JE X FYZ' : name,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      onTap: () async {
+                        await FlutterBluePlus.stopScan();
+                        if (!context.mounted) return;
+                        Navigator.pop(context);
+                        await widget.onConnect(result.device);
+                      },
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class StaticSwitcher extends StatelessWidget {
   final Widget child;
   final Duration? duration;
@@ -3313,7 +3671,7 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
     return AlertDialog(
       backgroundColor: const Color(0xFF1E202B),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: const Text('Firmware Settings', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+      title: const Text('Firmware', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -3326,34 +3684,34 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
             if (status == 'CHECKING')
               const Center(child: CircularProgressIndicator(color: Colors.blueAccent))
             else if (status == 'FAILED')
-              const Text('Firmware metadata unavailable.', style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold))
+              const Text('Metadata unavailable.', style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold))
             else if (!updateAvailable)
-              Text(widget.currentVersion == 'V?' ? 'Waiting for device version...' : 'System is up to date.', style: const TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold))
+              Text(widget.currentVersion == 'V?' ? 'Waiting for device...' : 'Up to date.', style: const TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold))
             else ...[
-              const Text('New firmware available.', style: TextStyle(color: Colors.orangeAccent, fontWeight: FontWeight.bold)),
+              const Text('Update available.', style: TextStyle(color: Colors.orangeAccent, fontWeight: FontWeight.bold)),
               const SizedBox(height: 12),
               TextField(
                 controller: ssid,
                 style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(labelText: 'Wi-Fi SSID', labelStyle: TextStyle(color: Colors.grey), prefixIcon: Icon(PhosphorIconsRegular.wifiHigh, color: Colors.blueAccent)),
+                decoration: const InputDecoration(labelText: 'SSID', labelStyle: TextStyle(color: Colors.grey), prefixIcon: Icon(PhosphorIconsRegular.wifiHigh, color: Colors.blueAccent)),
               ),
               const SizedBox(height: 8),
               TextField(
                 controller: password,
                 obscureText: false,
                 style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(labelText: 'Wi-Fi Password', labelStyle: TextStyle(color: Colors.grey), prefixIcon: Icon(PhosphorIconsBold.lock, color: Colors.blueAccent)),
+                decoration: const InputDecoration(labelText: 'Password', labelStyle: TextStyle(color: Colors.grey), prefixIcon: Icon(PhosphorIconsBold.lock, color: Colors.blueAccent)),
               ),
               const SizedBox(height: 6),
-              const Text('Wi-Fi credentials are stored in Android secure storage.', style: TextStyle(color: Colors.white38, fontSize: 9)),
+              const Text('Saved securely.', style: TextStyle(color: Colors.white38, fontSize: 9)),
             ],
           ],
         ),
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(context), child: const Text('CLOSE', style: TextStyle(color: Colors.grey))),
+        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close', style: TextStyle(color: Colors.grey))),
         if (status == 'FAILED')
-          FilledButton(onPressed: _checkFirebase, child: const Text('RETRY')),
+          FilledButton(onPressed: _checkFirebase, child: const Text('Retry')),
         if (updateAvailable)
           FilledButton(
             onPressed: () async {
@@ -3366,7 +3724,7 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
               Navigator.pop(context);
               await widget.onUpdate(s, p, firmwareUrl, latestVersion);
             },
-            child: const Text('UPDATE FIRMWARE'),
+            child: const Text('Update'),
           ),
       ],
     );
