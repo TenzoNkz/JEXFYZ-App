@@ -3058,23 +3058,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
           bottom: false,
           child: LayoutBuilder(
             builder: (context, constraints) {
-              // The viewport/background always fills the current screen,
-              // while the JE X FYZ design is treated as one physical-size
-              // canvas. The reference screenshots are 1080 physical pixels
-              // wide, so density changes such as 320 -> 420 dp are compensated
-              // through devicePixelRatio instead of scaling from logical width.
-              // On displays narrower than the reference, the canvas scales only
-              // as much as needed to fit the physical viewport.
-              final devicePixelRatio = media.devicePixelRatio > 0
-                  ? media.devicePixelRatio
-                  : 1.0;
-              final physicalWidth = constraints.maxWidth * devicePixelRatio;
-              const referencePhysicalWidth = 1080.0;
-              final targetPhysicalWidth = physicalWidth < referencePhysicalWidth
-                  ? physicalWidth
-                  : referencePhysicalWidth;
-              final scale = targetPhysicalWidth /
-                  (designWidth * devicePixelRatio);
+              // One master visual canvas. Its 360 dp design width is scaled once
+              // to fill the current viewport. When Android Smallest Width/density
+              // changes on the same physical display, logical width changes in the
+              // opposite direction, so the rendered physical UI size stays stable.
+              // A genuinely different physical display receives the same single
+              // uniform scale across Home, Notify and Display Menu.
+              final scale = constraints.maxWidth / designWidth;
               final designHeight = constraints.maxHeight / scale;
 
               return ClipRect(
