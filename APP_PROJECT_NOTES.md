@@ -14,6 +14,14 @@ This file is part of the project and should be treated as a **living engineering
 
 ### Mandatory rule
 
+### Cross-sub-chat continuity rule
+
+**This file is mandatory project context for every new JE X FYZ app sub-chat.** Before discussing, reviewing, debugging, modifying, or validating the app, the latest `APP_PROJECT_NOTES.md` from `main` must be read first — even when the previous sub-chat has reached its limit or a brand-new sub-chat is opened.
+
+The purpose is to prevent repeated explanations and regression from missing historical context. The user should not need to re-explain the architecture, approved behavior, known bugs, constraints, or previous fixes when that information is already recorded here.
+
+If this file is not yet loaded in the current sub-chat, retrieve the latest version before proceeding with app work. Do not rely on memory from an earlier sub-chat as a substitute for reading the current notes.
+
 **Every time a code/config/workflow change is made, this file must be updated in the same change.**
 
 That means:
@@ -1965,3 +1973,12 @@ For every future app change:
 
 
 # END OF APP PROJECT MEMORY
+
+## CHANGELOG
+
+### 2026-09-26 — Mandatory notes continuity across sub-chats
+
+- Added an explicit rule that the latest `APP_PROJECT_NOTES.md` on `main` must be read before any JE X FYZ app discussion, review, debugging, modification, or validation.
+- The rule applies to every new sub-chat, including when a previous sub-chat reaches its context limit.
+- The purpose is to preserve project continuity so the user does not need to re-explain established architecture, decisions, constraints, bugs, or fixes.
+- Memory from an earlier sub-chat is not a substitute for retrieving the current notes.
