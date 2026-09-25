@@ -51,6 +51,17 @@ Use the following naming scheme consistently for JE X FYZ project continuity:
 
 ### Shared-memory bidirectional handoff protocol
 
+### Mandatory memory update for BOTH Code and Action
+
+**Every time either sub-chat makes a project change, the shared memory must be updated. This rule applies equally to `JE X FYZ Code #N` and `JE X FYZ Action #N`.**
+
+- **Code sub-chat:** whenever source code, Android configuration, dependencies, assets, workflow configuration, or another project-controlled file is changed, record the change in `APP_PROJECT_NOTES.md` in the same project update.
+- **Action sub-chat:** whenever build/CI configuration, source/configuration used to fix a build failure, packaging/output naming, or another project-controlled file is changed, record the change in `APP_PROJECT_NOTES.md` as part of the same update.
+- Record the actual change, reason, affected files, resulting state, test/build result, and any handoff information needed by the other sub-chat.
+- A change made by Action is not considered fully handed back to Code until the shared memory records what Action changed and why.
+- A change made by Code is not considered fully handed to Action until the shared memory records what Action should validate/build when applicable.
+- The two sub-chats therefore maintain one continuously evolving project memory; neither chat has a separate private project history that supersedes the Notes.
+
 The two sub-chats share **one project memory** but have different primary responsibilities. The latest `APP_PROJECT_NOTES.md` is the source of truth for the current engineering state and must be used for handoff in both directions. **No change may be left undocumented in the shared memory.**
 
 **Code → Action:** after a code/config change, record the current HEAD/commit when known, changed files, purpose, intended behavior, what must be tested, and whether a build is requested/pending. The Action sub-chat reads this state before building.
@@ -2083,6 +2094,13 @@ For every future app change:
 # END OF APP PROJECT MEMORY
 
 ## CHANGELOG
+### 2026-09-26 — Mandatory shared-memory update for every Code and Action change
+
+- Explicitly required both `JE X FYZ Code #N` and `JE X FYZ Action #N` to update `APP_PROJECT_NOTES.md` whenever they make a project-controlled change.
+- Required each side to record the actual change, reason, affected files, resulting state, validation/build result, and handoff information needed by the other side.
+- Clarified that Action-originated fixes must be written back to shared memory so Code can see exactly what was changed.
+
+
 ### 2026-09-26 — Reinforced mandatory memory update on every project change
 
 - Reinforced that every app code, configuration, workflow, CI/build behavior, or other project behavior change must update `APP_PROJECT_NOTES.md` in the same change.
