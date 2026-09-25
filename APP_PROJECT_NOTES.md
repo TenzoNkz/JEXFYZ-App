@@ -161,27 +161,35 @@ The user strongly prefers:
 - Example: Run #94 -> `JE X FYZ Build #94.apk`.
 ## CURRENT ACTION / CI STATE
 
-**Latest verified successful build:** GitHub Actions **Run #94** for workflow `JE X FYZ Cooler Build`.
+**Latest verified successful build:** GitHub Actions **Run #95** for workflow `JE X FYZ Cooler Build`.
 
-- Run ID: `36197719113`
+- Run ID: `36199711412`
 - Result: **SUCCESS**
-- Head SHA built: `f20626b9433762741e6592eda8b06005de4f7ab6`
-- Event recorded by GitHub: `push`
+- Head SHA built: `13778dd574304f9acbfc7ece08e58eb903794aa9`
+- Event: `push` using the temporary `[build]` trigger required because the available GitHub integration does not expose workflow dispatch.
 - Build job: `build` — **SUCCESS**
+- Flutter analyze: **SUCCESS**
+- Flutter tests: **SUCCESS**
+- Release APK build: **SUCCESS**
+- Production APK signature verification: **SUCCESS**
 - Artifact: `JE-X-FYZ-Latest.zip`
-- Artifact ID: `10890667518`
-- Artifact size: `25,663,715 bytes`
-- Artifact expired: **No** at last verification
-- Dart symbols artifact: `JE-X-FYZ-Dart-Symbols` (ID `10890955809`)
-- Workflow file currently present on `main` was verified separately; this state does **not** change the requirement that build triggering is controlled from the dedicated Build / CI sub-chat.
+- Artifact ID: `10891114176`
+- Artifact size: `25,663,709 bytes`
+- Artifact expired: **No** at verification time
+- Dart symbols artifact: `JE-X-FYZ-Dart-Symbols` (ID `10891753422`)
+- Delivered APK filename: `JE X FYZ Build #95.apk`
+- ZIP filename: `JE X FYZ Build #95.zip`
+- The ZIP was inspected after download and contains exactly one APK: `JE-X-FYZ-Latest.apk`.
+- No source/code fix was required for Run #95; the build used the latest verified `main` state.
+- After the build, the workflow trigger was restored to the original manual `workflow_dispatch` configuration.
 
 ### Handoff to Build / CI sub-chat
 
-The dedicated Action sub-chat should read this section first when checking the latest build state. Run #94 is the latest build result recorded here unless a newer Action run is subsequently recorded.
+The dedicated Action sub-chat should read this section first when checking the latest build state. Run #95 is the latest build result recorded here unless a newer Action run is subsequently recorded.
 
 ### Handoff back to Code-change sub-chat
 
-Because Run #94 succeeded, there is no unresolved CI error from that run to fix. Any later build failure must be appended here with its run number, head SHA, failed step, error summary, and required code-side follow-up.
+Run #95 introduced no code-side fix. The latest Action-originated build-blocking fix remains the `mapPinSlash` → `mapPin` change recorded in the Run #94 handoff.
 
 # 1. PROJECT IDENTITY
 
