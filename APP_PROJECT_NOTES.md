@@ -38,6 +38,17 @@ The JE X FYZ app work is intentionally split across two sub-chat roles so the pr
 - When CI reports a code/configuration error, diagnose and report the relevant failure there; the actual source-code fix is then performed in the code-change sub-chat.
 - This separation is intentional and must be preserved to keep the two chat contexts focused and reduce unnecessary context usage.
 
+### Sub-chat naming convention
+
+Use the following naming scheme consistently for JE X FYZ project continuity:
+
+- **Code-change sub-chats:** `JE X FYZ #1`, `JE X FYZ #2`, `JE X FYZ #3`, and so on.
+- When a code-change sub-chat reaches its context limit, rename the completed chat by appending `Limit`: `JE X FYZ #1Limit`, then start the next code-change sub-chat as `JE X FYZ #2`.
+- **Build / CI sub-chats:** `JE X FYZ Action #1`, `JE X FYZ Action #2`, `JE X FYZ Action #3`, and so on.
+- When a Build / CI sub-chat reaches its context limit, rename the completed chat by appending `Limit`: `JE X FYZ Action #1Limit`, then start the next Build / CI sub-chat as `JE X FYZ Action #2`.
+- Numbering of code-change chats and Build / CI chats is independent.
+- The naming is a human/UI organization convention; do not infer the active chat title from system context. When a new sub-chat is opened, read the latest `APP_PROJECT_NOTES.md` regardless of its title.
+
 ### Project memory capture rule
 
 Treat `APP_PROJECT_NOTES.md` as the project's **persistent memory**.
@@ -2010,6 +2021,13 @@ For every future app change:
 # END OF APP PROJECT MEMORY
 
 ## CHANGELOG
+### 2026-09-26 — JE X FYZ sub-chat naming convention
+
+- Recorded the numbering convention for code-change chats: `JE X FYZ #1`, `#2`, `#3`, etc.
+- Recorded the limit suffix convention: rename the exhausted chat to `#NLimit` before starting `#N+1`.
+- Recorded the independent Build / CI naming convention: `JE X FYZ Action #1`, `#2`, `#3`, etc., with the same `Limit` suffix when a chat reaches its limit.
+- Clarified that chat titles are a human/UI convention and the latest project notes remain mandatory context regardless of title.
+
 ### 2026-09-26 — Two-sub-chat workflow + persistent memory rules
 
 - Defined the code-change sub-chat as the place for app discussion, source/config changes, debugging, and implementation.
