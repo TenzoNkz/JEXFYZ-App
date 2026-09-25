@@ -2123,22 +2123,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
-                  height: 12,
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      _notifyStateLabel(),
-                      maxLines: 1,
-                      softWrap: false,
-                      style: TextStyle(
-                        color: color,
-                        fontSize: 8.5,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 0.8,
-                      ),
-                    ),
+                Text(
+                  _notifyStateLabel(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 8.5,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.8,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -3065,12 +3058,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
           bottom: false,
           child: LayoutBuilder(
             builder: (context, constraints) {
-              // Treat the entire dashboard as one master canvas.
-              // The design stays 360 dp wide, then the whole canvas is
-              // scaled uniformly to the current logical viewport width.
-              // This keeps the physical UI size stable when Android's
-              // Smallest Width / density changes (for example 360 -> 460).
-              final scale = constraints.maxWidth / designWidth;
+              // The viewport/background always fills the current screen,
+              // while the JE X FYZ design is treated as one physical-size
+              // canvas. The reference screenshots are 1080 physical pixels
+              // wide, so density changes such as 320 -> 420 dp are compensated
+              // through devicePixelRatio instead of scaling from logical width.
+              // On displays narrower than the reference, the canvas scales only
+              // as much as needed to fit the physical viewport.
+              final devicePixelRatio = media.devicePixelRatio > 0
+                  ? media.devicePixelRatio
+                  : 1.0;
+              final physicalWidth = constraints.maxWidth * devicePixelRatio;
+              const referencePhysicalWidth = 1080.0;
+              final targetPhysicalWidth = physicalWidth < referencePhysicalWidth
+                  ? physicalWidth
+                  : referencePhysicalWidth;
+              final scale = targetPhysicalWidth /
+                  (designWidth * devicePixelRatio);
               final designHeight = constraints.maxHeight / scale;
 
               return ClipRect(
