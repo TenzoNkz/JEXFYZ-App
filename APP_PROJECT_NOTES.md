@@ -2092,6 +2092,17 @@ For every future app change:
 - Real-device validation remains required for BLE permission/settings flow and the compact Connection sheet.
 
 
+## Build App execution protocol
+
+- User command `Build App` means execute the build flow immediately; do not ask for extra confirmation.
+- Normal path: Build the latest verified `main` source with GitHub Actions → verify completion/artifact → download the built app into the conversation.
+- Failure path: Build → inspect the failing CI/analyze/test/build step and logs → make only the narrowly-scoped code/config fix required for the failure → update `APP_PROJECT_NOTES.md` with the fix → rebuild → when successful, download the final app into the conversation.
+- Do not introduce unrelated feature/UI changes while fixing a build failure.
+- Every completed build must be shared using the artifact filename convention `JE X FYZ Build #N.apk`, where `#N` is the actual GitHub Actions run number that produced the APK.
+- Keep a ZIP only when it is useful or specifically requested; the default delivery after `Build App` is the APK itself.
+- After every meaningful code/config/build change, update the persistent project memory so the next Code/Action sub-chat has the latest state.
+- The user should be able to issue only `Build App` and receive the resulting working APK in the conversation when the build succeeds.
+
 ## Persistent project-memory rule
 
 - Treat `APP_PROJECT_NOTES.md` as the living memory of JE X FYZ.
