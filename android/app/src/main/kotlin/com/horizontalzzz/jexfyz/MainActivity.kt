@@ -38,6 +38,14 @@ class MainActivity : FlutterActivity() {
                     result.success(isLocationServiceEnabled())
                 }
 
+                "getAndroidSdkInt" -> {
+                    result.success(Build.VERSION.SDK_INT)
+                }
+
+                "openBluetoothSettings" -> {
+                    result.success(openBluetoothSettings())
+                }
+
                 "enableLocation" -> {
                     result.success(openLocationSettings())
                 }
@@ -135,6 +143,17 @@ class MainActivity : FlutterActivity() {
     private fun openLocationSettings(): Boolean {
         return try {
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+            true
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    private fun openBluetoothSettings(): Boolean {
+        return try {
+            val intent = Intent(Settings.ACTION_BLUETOOTH_SETTINGS)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
             true
