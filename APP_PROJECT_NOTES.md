@@ -1774,4 +1774,43 @@ The root canvas no longer derives its scale directly from logical viewport width
 ### Known limitations / follow-up
 The 320/420/430/460/500 dp matrix still needs real-device screenshot validation after building the updated source. The 1080 physical-pixel reference is derived from the provided screenshots and should be confirmed against the actual target device resolution before treating the scaling implementation as final.
 
+## 2026-09-25 — Final canvas behavior clarified and root scaling corrected
+
+### User request
+The app must behave like one fixed visual canvas. For the same physical display, changing Android Smallest Width / DP (for example 320, 360, 420, 430, 460, 500) must not make the UI smaller, larger, or reposition individual elements. When the physical screen itself is different, the complete canvas may scale uniformly to fit the new physical screen.
+
+### Files changed
+- `lib/main.dart`
+- `APP_PROJECT_NOTES.md`
+
+### Implementation
+- Removed the hard cap on the canvas at a fixed 1080 physical-pixel width.
+- The root dashboard now uses one scale factor derived from the current logical viewport width relative to the 360 dp master design width: `scale = constraints.maxWidth / designWidth`.
+- Because Flutter logical width changes inversely with Android density on the same physical display, the rendered physical size remains stable when Smallest Width/DP changes on that same display.
+- The entire Home + Notify + Display Menu remains inside one root transform/canvas, so all elements scale together rather than independently.
+- The vertical size of the canvas is derived from the available viewport height after the single width scale. The fixed Home section stays fixed in the master design, while a physically/vertically longer viewport gives additional space to the Display Menu below instead of stretching the Home elements.
+- Existing Notify behavior is preserved: the green state label stays at normal fixed design sizing; only the message line can scale down to remain on one line.
+
+### Preserved
+- BLE handshake/session behavior
+- `_sendAndConfirm()` ACK flow
+- 90 ms runtime synchronization scheduling
+- BLE reconnect/disconnect behavior
+- Firebase read-only firmware metadata
+- security/signing architecture
+- Notify latest-event model
+- all unrelated control logic
+
+### Verification
+- `flutter analyze`: NOT RUN in this environment
+- `flutter test`: NOT RUN in this environment
+- GitHub Actions: NOT RUN after this local change
+- Local source integrity: scaling block replaced from the current project artifact; source remains a complete `main.dart` with `FirmwareUpdateDialog` present.
+
+### Result
+The root canvas no longer has a 1080 physical-pixel cap. A same-device DP/density change should keep the visual UI size stable while still filling the screen, and a genuinely different physical screen can receive one uniform canvas scale.
+
+### Known limitations / follow-up
+Real-device validation is required on the requested matrix (same physical device at 320/360/420/430/460/500 DP where available, plus at least one physically different phone) before declaring this fully stable.
+
 # END OF APP PROJECT MEMORY
