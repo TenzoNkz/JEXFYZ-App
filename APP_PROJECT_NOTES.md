@@ -42,8 +42,8 @@ The JE X FYZ app work is intentionally split across two sub-chat roles so the pr
 
 Use the following naming scheme consistently for JE X FYZ project continuity:
 
-- **Code-change sub-chats:** `JE X FYZ #1`, `JE X FYZ #2`, `JE X FYZ #3`, and so on.
-- When a code-change sub-chat reaches its context limit, rename the completed chat by appending `Limit`: `JE X FYZ #1Limit`, then start the next code-change sub-chat as `JE X FYZ #2`.
+- **Code-change sub-chats:** `JE X FYZ Code #1`, `JE X FYZ Code #2`, `JE X FYZ Code #3`, and so on.
+- When a code-change sub-chat reaches its context limit, rename the completed chat by appending `Limit`: `JE X FYZ Code #1Limit`, then start the next code-change sub-chat as `JE X FYZ Code #2`.
 - **Build / CI sub-chats:** `JE X FYZ Action #1`, `JE X FYZ Action #2`, `JE X FYZ Action #3`, and so on.
 - When a Build / CI sub-chat reaches its context limit, rename the completed chat by appending `Limit`: `JE X FYZ Action #1Limit`, then start the next Build / CI sub-chat as `JE X FYZ Action #2`.
 - Numbering of code-change chats and Build / CI chats is independent.
@@ -2022,6 +2022,9 @@ For every future app change:
 
 ## CHANGELOG
 ### 2026-09-26 — JE X FYZ sub-chat naming convention
+
+- Updated the code-change sub-chat naming format from `JE X FYZ #N` to `JE X FYZ Code #N`.
+- The limit suffix remains `JE X FYZ Code #NLimit` before starting the next numbered code-change sub-chat.
 
 - Recorded the numbering convention for code-change chats: `JE X FYZ #1`, `#2`, `#3`, etc.
 - Recorded the limit suffix convention: rename the exhausted chat to `#NLimit` before starting `#N+1`.
