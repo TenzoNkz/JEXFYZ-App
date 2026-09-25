@@ -1856,4 +1856,71 @@ The Notify text group is now vertically centered inside the existing card while 
 ### Known limitations / follow-up
 A real-device screenshot/build test is still required to visually confirm the exact vertical offset against the provided reference image.
 
+## 2026-09-26 — Connection sheet + lazy Bluetooth/Location access + realtime indicators + minimalist copy pass
+
+### User request
+- Do not request or enable Bluetooth/Location automatically when JE Cooler starts.
+- Trigger the permission/activation flow only after the Home Bluetooth icon is tapped.
+- Keep Location as a compatibility requirement only where the Android platform still requires it for BLE scanning.
+- Replace the long Bluetooth sheet with a compact bottom sheet aligned to the same top position/width and top-corner geometry as the Display Menu, using the existing modal bottom-up animation.
+- Rename the sheet title to `Connection`.
+- Add live Bluetooth and Location indicators with changing Phosphor icons and status colors. Tapping an indicator must open the relevant Android Settings/recovery path after a permission denial or system-off state.
+- Apply the agreed minimalist wording across user-facing UI text without changing BLE command/telemetry tokens.
+
+### Files changed locally
+- `main.dart`
+- `MainActivity.kt`
+- `APP_PROJECT_NOTES.md`
+
+### Implementation
+- Removed `_requestPermissions()` from `DashboardScreen.initState()`. App launch no longer opens Bluetooth/Location permission prompts and no longer attempts to turn Bluetooth on.
+- `_requestPermissions()` now returns a readiness result. Bluetooth Scan + Connect remain the primary BLE access requirements.
+- Location permission is requested only on Android SDK <= 30. On newer Android versions it is not used as a BLE prerequisite.
+- Existing `FlutterBluePlus.turnOn()` behavior is preserved, but is reachable only from the explicit Bluetooth/scan interaction.
+- Added Android SDK lookup and Bluetooth Settings intent support through the existing `je_x_fyz/battery_temp` MethodChannel.
+- Replaced the old 67%-screen Bluetooth sheet with one compact sheet whose top position is derived from the same 360 dp master design and 420 dp Home height used by the Display Menu. It uses the same 34 px top radius.
+- Added realtime indicators while the Connection sheet is open. Status refresh runs every 650 ms and reads the actual Bluetooth adapter state, Bluetooth permissions, Location service state, and legacy Location permission state.
+- Status colors/icons:
+  - Bluetooth/Location ON: Mint `#63E6BE`
+  - System OFF: Amber `#FFB74D`
+  - Required permission denied: Red `#FF6B7A`
+  - OFF icons use `BluetoothSlash` / `MapPinSlash`
+- Indicator tap behavior:
+  - Bluetooth permission denied -> Android app settings for permission recovery.
+  - Bluetooth allowed but adapter OFF -> Bluetooth system settings.
+  - Legacy required Location permission denied -> Android app settings.
+  - Location permission available but service OFF -> Location system settings.
+- Scan is blocked cleanly when required access is missing instead of proceeding into a known-invalid BLE scan state.
+- Simplified user-facing copy in the main screens, firmware dialog, Notify event text, and status messaging while preserving technical/internal protocol strings.
+
+### Preserved
+- JE X FYZ BLE UUID contract
+- SYNC -> SYNC_READY handshake and bonding recovery
+- runtime sync and phone battery telemetry
+- Firebase firmware metadata read-only behavior
+- production security/signing/App Check architecture
+- one-master-canvas scaling
+- latest-event Notify model and the previously approved centered Notify layout
+- Home/Display Menu structure and unrelated cooling control logic
+
+### Verification
+- Before editing, the authoritative GitHub `main` branch and latest `APP_PROJECT_NOTES.md` were fetched and inspected, per the project mandatory rule.
+- GitHub source SHA read before edit: `lib/main.dart` `74ff0dcf9cbfe81021773283059b1c42ab191004`.
+- GitHub `APP_PROJECT_NOTES.md` SHA read before edit: `3dfd6e3c52f51572b05aafdf68cc7922dbd6bca5`.
+- GitHub direct write was attempted for the requested change but the current integration returned HTTP 403 `Resource not accessible by integration`; therefore no GitHub commit is claimed for this change.
+- Local changed sources were written to `/mnt/data/main.dart`, `/mnt/data/MainActivity.kt`, and `/mnt/data/APP_PROJECT_NOTES.md`.
+- `flutter analyze`: NOT RUN — Flutter/Dart SDK is unavailable in this environment.
+- `flutter test`: NOT RUN — Flutter/Dart SDK is unavailable in this environment.
+- GitHub Actions: NOT RUN. The available GitHub integration does not expose workflow dispatch.
+
+### Known follow-up / risks
+- Real-device validation is still required for Android <= 30 Location behavior, Android permission-denial recovery, returning from system Settings, exact sheet top alignment against Display Menu, and availability of `BluetoothSlash` / `MapPinSlash` in the pinned `phosphor_icons` package.
+
+### Result
+- Startup is quiet.
+- Bluetooth access/activation is interaction-driven.
+- Connection sheet is compact and aligned to the Display Menu geometry.
+- Bluetooth/Location status is live while the sheet is open and offers recovery actions.
+- UI wording is shorter and more consistent without changing the BLE protocol contract.
+
 # END OF APP PROJECT MEMORY
