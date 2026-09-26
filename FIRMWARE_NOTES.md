@@ -573,3 +573,15 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Diagnostic commit: `e8185cb24acb7475a533a859208156b43ecd4c03`.
 - Interpretation boundary: if STEP 3 is reached, generic Arduino Wi-Fi initialization can complete in STA mode and the remaining fault is AP-specific; if the board panics between STEP 2 and STEP 3, the failure is below the AP-specific path and production OTA/AP changes should not be attempted blindly.
 - Next boundary: compile/flash this diagnostic under the same ArduinoDroid + Arduino-ESP32 Core 3.3.7 setup and preserve the complete Serial output.
+
+## 2026-09-27 — EXECUTION: PURE ARDUINO RUNTIME BOUNDARY DIAGNOSTIC
+- User explicitly authorized execution.
+- Added diagnostic file: `firmware/diagnostics/JEXFYZ-Pure-Arduino-Runtime-Test.ino`.
+- Scope is the smallest Arduino-layer test currently needed: `Arduino.h`, `Serial`, `millis()`, and official Arduino ESP APIs for Core version/chip information.
+- No `WiFi.h`, WebServer, Update, BLE, Preferences, NTC, PWM, RGB, or ESP-IDF API is used.
+- Serial markers identify entry into `setup()`, the installed Arduino-ESP32 Core version, chip model/revision, successful setup completion, and a 1-second loop heartbeat.
+- Diagnostic commit: `9c64bb01e2a22beada7d56116cdd879736a76af1`.
+- Purpose: establish whether the board reaches and remains in the Arduino sketch runtime before any Wi-Fi initialization is involved.
+- Build/flash was not executed in the current environment; manual ArduinoDroid + Arduino-ESP32 Core 3.3.7 testing remains the next boundary.
+- Production `firmware/JEXFYZ.ino` remains unchanged.
+- Required evidence: capture output from the first diagnostic line through at least several `HEARTBEAT: LOOP OK` lines, or the complete panic if it resets before/after `setup()`.
