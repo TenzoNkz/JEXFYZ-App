@@ -53,6 +53,18 @@
 - Versioning: use a diagnostic/test label separate from the production V1.x sequence unless the user explicitly chooses otherwise.
 - Execution lock: the actual .ino generation is reserved for the explicit Eksekusi Full command under the current project governance.
 - Next boundary: user may issue Eksekusi Full to generate only the standalone .ino, intended for manual ArduinoDroid compilation/flash and physical OTA testing.
+## 2026-09-27 — EXECUTION: STANDALONE WIFI OTA TEST FILE
+
+- User explicitly requested `Eksekusi Full` to generate a standalone .ino for manual ArduinoDroid testing.
+- Generated file: `JEXFYZ-WiFi-OTA-Test.ino` in the conversation workspace. It is intentionally separate from the production repository firmware source.
+- Scope: Wi-Fi SoftAP + WebServer + official Update OTA only. No BLE, NTC, Fan/Peltier control, touch, RGB, Preferences, Adaptive, cloud OTA, or JE X FYZ radio handoff logic.
+- Official Core 3.3.7 APIs verified before/while generating: `WiFi.softAP()`, `WebServer`, `server.upload()`, `Update.begin()`, `Update.write()`, `Update.end(true)`, `Update.abort()`, and `UPLOAD_FILE_ABORTED`.
+- Diagnostic Serial markers cover boot, SoftAP result, AP IP, HTTP readiness, OTA upload start/write/end, abort, errors, success, and restart.
+- Static validation: PASS. Required include/API/lifecycle markers are present.
+- Local compile validation: not performed because `arduino-cli` is not installed in the current container. The intended compile target is the user's manual ArduinoDroid environment using Arduino-ESP32 Core 3.3.7.
+- Production `firmware/JEXFYZ.ino` was not modified by this standalone test-file generation.
+- Runtime/root-cause status: still unproven. The standalone physical test is now the next diagnostic boundary.
+- Next boundary: compile/flash this standalone .ino manually in ArduinoDroid, connect to the `JE X FYZ OTA TEST` SoftAP, open `http://192.168.4.1/`, and test a known-good ESP32 firmware .bin upload. Preserve the Serial output exactly.
 > Current-state override for the next JE X FYZ firmware sub-chat. Historical sections below are retained for chronology.
 
 ## 1. Mandatory workflow
