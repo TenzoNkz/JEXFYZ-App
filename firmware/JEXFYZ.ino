@@ -19,7 +19,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
-static constexpr char FW_VERSION[] = "V3.6";
+static constexpr char FW_VERSION[] = "V3.7";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -301,6 +301,8 @@ String cloudVersion;
 
 HTTPClient cloudHttp;
 WiFiClientSecure cloudClient;
+uint32_t localOtaBytesReceived = 0;
+size_t localOtaExpectedSize = 0;
 uint32_t cloudBytesReceived = 0;
 int cloudExpectedSize = -1;
 uint32_t cloudPhaseStartedAt = 0;
@@ -1709,6 +1711,16 @@ static void stopWiFiRadio() {
   WiFi.mode(WIFI_OFF);
 }
 
+static String updateErrorResult(const char* phase) {
+  const uint8_t code = Update.getError();
+  String text = Update.errorString();
+  text.trim();
+  text.replace(" ", "_");
+  text.replace("-", "_");
+  if (text.isEmpty()) text = "UNKNOWN";
+  return String(phase) + "_ERROR_" + String(code) + "_" + text;
+}
+
 static void applyOtaSafeOutputs() {
   fanOn = false;
   peltierOn = false;
@@ -1769,6 +1781,7 @@ static void startOnlineOta() {
   cloudExpectedSize = -1;
   cloudTimeSyncStarted = false;
 
+  saveOtaResult("IN_PROGRESS");
   applyOtaSafeOutputs();
 
   clearBleTxQueue();
@@ -1932,8 +1945,10 @@ static void processOnlineOta() {
     }
 
     const bool updateOk = Update.end(false);
-    if (!updateOk || !Update.isFinished()) {
-      failOnlineOta("OTA_FAILED");
+    const bool updateFinished = Update.isFinished();
+    if (!updateOk || !updateFinished) {
+      const String detail = updateErrorResult("OTA_END");
+      failOnlineOta(detail.c_str());
       return;
     }
 
@@ -2013,11 +2028,17 @@ static void localOtaUploadHandler() {
     otaActive = true;
     setOtaState(OtaState::LOCAL_UPLOAD);
     resetBlinkState();
+    localOtaBytesReceived = 0;
+    localOtaExpectedSize = upload.totalSize;
 
+    saveOtaResult("IN_PROGRESS");
     applyOtaSafeOutputs();
 
-    if (!Update.begin(UPDATE_SIZE_UNKNOWN)) {
-      saveOtaResult("OTA_BEGIN_FAILED");
+    const size_t requestedSize =
+        localOtaExpectedSize > 0 ? localOtaExpectedSize : UPDATE_SIZE_UNKNOWN;
+    if (!Update.begin(requestedSize)) {
+      const String detail = updateErrorResult("OTA_BEGIN");
+      saveOtaResult(detail);
       setOtaState(OtaState::FAILED);
       resetBlinkState();
       otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
@@ -2028,9 +2049,14 @@ static void localOtaUploadHandler() {
 
   if (upload.status == UPLOAD_FILE_WRITE) {
     if (otaState != OtaState::LOCAL_UPLOAD || !otaActive) return;
-    if (Update.write(upload.buf, upload.currentSize) != upload.currentSize) {
+
+    const size_t written = Update.write(upload.buf, upload.currentSize);
+    localOtaBytesReceived += static_cast<uint32_t>(upload.currentSize);
+
+    if (written != upload.currentSize) {
+      const String detail = updateErrorResult("OTA_WRITE");
       Update.abort();
-      saveOtaResult("OTA_WRITE_FAILED");
+      saveOtaResult(detail);
       setOtaState(OtaState::FAILED);
       resetBlinkState();
       otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
@@ -2041,15 +2067,34 @@ static void localOtaUploadHandler() {
 
   if (upload.status == UPLOAD_FILE_END) {
     if (otaState != OtaState::LOCAL_UPLOAD || !otaActive) return;
-    if (Update.end(true) && Update.isFinished()) {
+
+    const size_t expectedSize =
+        localOtaExpectedSize > 0 ? localOtaExpectedSize : upload.totalSize;
+
+    if (expectedSize > 0 && localOtaBytesReceived != expectedSize) {
+      const String detail =
+          "UPLOAD_SIZE_MISMATCH_" + String(localOtaBytesReceived) + "_" + String(expectedSize);
+      Update.abort();
+      saveOtaResult(detail);
+      setOtaState(OtaState::FAILED);
+      resetBlinkState();
+      otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
+      otaActive = false;
+      return;
+    }
+
+    const bool updateOk = Update.end(false);
+    const bool updateFinished = Update.isFinished();
+    if (updateOk && updateFinished) {
       saveOtaResult("LOCAL_SUCCESS");
       setOtaState(OtaState::SUCCESS);
       otaActive = true;
       resetBlinkState();
       otaRestartAt = millis() + OTA_RESTART_DELAY_MS;
     } else {
+      const String detail = updateErrorResult("OTA_END");
       Update.abort();
-      saveOtaResult("OTA_FAILED");
+      saveOtaResult(detail);
       setOtaState(OtaState::FAILED);
       resetBlinkState();
       otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
