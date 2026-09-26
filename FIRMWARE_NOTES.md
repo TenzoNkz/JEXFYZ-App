@@ -1331,6 +1331,16 @@ The project process is now explicitly two-phase:
 - The CI temporary-source generation was corrected to strip the two unavailable Core 3.3.12-only case labels from the ArduinoDroid temporary copy, while retaining the rest of the OTA diagnostics.
 - A corrected manual V4.3 ArduinoDroid source was exported for immediate USB flashing.
 - No runtime cooling, BLE/P1, GPIO, NTC, Adaptive, voltage, RGB, touch, OTA protocol, or normal V4.3 release behavior was intentionally changed.
+## 2026-09-26 — V4.4 ONLINE OTA STREAM TIMEOUT HARDENING
+
+- Firmware source advanced from V4.3 to V4.4 after the physical V4.3 Online OTA test reached 77% and failed with UPDATE_ERROR_STREAM (code 6).
+- Online OTA HTTP/socket timeout increased from 12 seconds to 60 seconds for NetworkClientSecure, HTTPClient, and HTTPUpdate.
+- The diagnostic now appends the observed transfer percentage to a stream-timeout error, preserving the exact failure stage and numeric error code.
+- This change targets intermittent/stalled download reads; Local OTA logic is not intentionally changed.
+- Normal secure TLS verification remains enabled in the release firmware.
+- ArduinoDroid temporary source generation remains Core 3.3.7-compatible for manual flashing.
+- No GPIO, NTC, cooling, Adaptive, voltage, RGB, touch, BLE UUID/P1 contract, or Wi-Fi/BLE radio ownership rule was intentionally changed.
+
 # END OF FIRMWARE ENGINEERING MEMORY
 
 

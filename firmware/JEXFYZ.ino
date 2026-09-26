@@ -21,7 +21,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
-static constexpr char FW_VERSION[] = "V4.3";
+static constexpr char FW_VERSION[] = "V4.4";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -53,6 +53,7 @@ static constexpr uint32_t LED_FRAME_INTERVAL_MS       = 33;
 static constexpr uint32_t OTA_RESTART_DELAY_MS        = 1200;
 static constexpr uint32_t OTA_FAILURE_INDICATOR_MS    = 1000;
 static constexpr uint32_t WIFI_CONNECT_TIMEOUT_MS     = 15000;
+static constexpr uint32_t ONLINE_OTA_HTTP_TIMEOUT_MS   = 60000;
 static constexpr uint32_t OTA_MAX_FIRMWARE_BYTES      = 2 * 1024 * 1024;
 
 
@@ -1913,9 +1914,9 @@ static void processOnlineOta() {
     cloudHttp.end();
     cloudClient.stop();
     cloudClient.useBuiltinCACertBundle();
-    cloudClient.setTimeout(12000);
+    cloudClient.setTimeout(ONLINE_OTA_HTTP_TIMEOUT_MS);
 
-    cloudHttp.setTimeout(12000);
+    cloudHttp.setTimeout(ONLINE_OTA_HTTP_TIMEOUT_MS);
     cloudHttp.setReuse(false);
     cloudHttp.setRedirectLimit(5);
 
@@ -1924,7 +1925,7 @@ static void processOnlineOta() {
       return;
     }
 
-    HTTPUpdate updater(12000);
+    HTTPUpdate updater(ONLINE_OTA_HTTP_TIMEOUT_MS);
     updater.rebootOnUpdate(false);
     updater.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
     updater.setLedPin(-1);
@@ -1983,6 +1984,10 @@ static void processOnlineOta() {
     String failStage = "ONLINE_HTTP_RESPONSE";
     if (errorCode > 0) {
       failStage = otaUpdateFailureStage(true, errorCode);
+    }
+
+    if (errorCode == UPDATE_ERROR_STREAM && otaDiagnosticProgress < 100) {
+      detail = detail + " after " + String(otaDiagnosticProgress) + "%";
     }
 
     failOnlineOta(failStage, errorCode, detail);
