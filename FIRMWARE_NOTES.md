@@ -1172,9 +1172,9 @@ The project process is now explicitly two-phase:
 # END OF FIRMWARE ENGINEERING MEMORY
 
 
-## V3.3 CODE EXECUTION — CUSTOM LED ENGINE + ONEBUTTON
+## V3.4 CODE EXECUTION — CUSTOM LED ENGINE + ONEBUTTON
 
-- Firmware version incremented from V3.2 to V3.3 for the approved runtime/library refactor.
+- Firmware version incremented from V3.2 to V3.4 for the approved runtime/library refactor and its build-correction pass.
 - `firmware/JEXFYZ.ino` now uses `Adafruit_NeoPixel` as the low-level WS2812B driver; `WS2812FX` was removed completely.
 - LED mode numbering is now 1..8:
   1. STATIC
@@ -1195,3 +1195,10 @@ The project process is now explicitly two-phase:
 - Firmware CI dependency setup now installs `OneButton 2.6.1` and `Adafruit NeoPixel 1.12.5`; WS2812FX is no longer installed.
 - No App Build was triggered by this Code execution.
 - `Eksekusi Firmware` is the separate build/publish step for V3.3.
+
+
+## FIRMWARE BUILD #11 — V3.3 ATTEMPT / CORRECTION
+
+- Run #11 compiled the new OneButton and Adafruit NeoPixel libraries successfully through dependency installation and source identity audit.
+- Run #11 failed only in compilation because the custom LED block referenced `currentVoltageColor()` and `hardwareBrightness()` before their definitions; the helpers were restored in the correct order.
+- The correction is included in firmware V3.4. A new `Eksekusi Firmware` build is required and will be verified through compile, artifact, and public-repository publication.
