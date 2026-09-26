@@ -2193,9 +2193,6 @@ For every future app change:
 - Run #96: in progress at the time of this note update.
 - Run #9: in progress at the time of this note update.
 - Firmware publishing remains dependent on the existing `FIRMWARE_REPO_TOKEN` Actions secret; the previous Run #8 failed only at that publish step because the secret was unavailable.
-
-# END OF APP PROJECT MEMORY
-
 ## CHANGELOG
 ### 2026-09-26 — GitHub firmware source + public OTA distribution
 - Added private firmware source and automated firmware build/publish pipeline.
@@ -2419,3 +2416,26 @@ The project process is now explicitly two-phase:
 - `Eksekusi Firmware` is the only command in the Code workflow that intentionally updates `.github/FIRMWARE_BUILD_TRIGGER`.
 - App Build remains exclusive to the Action sub-chat.
 - Ordinary source changes never trigger either build workflow automatically.
+
+## 2026-09-26 — Code #2 execution: documentation/state synchronization
+
+### Command
+- User command: `Eksekusi Code`.
+
+### Result
+- Reviewed the latest repository memory and reconciled the active execution policy.
+- No additional source-code change was required from the immediately preceding discussion; that discussion established the workflow/execution rules rather than a new application feature or code modification.
+- The repository remains build-free after this Code execution. No App Build trigger and no Firmware Build trigger was updated.
+
+### Authoritative current workflow
+- Discussion always happens before execution.
+- `Eksekusi` in Code means apply all code/configuration/documentation changes that were agreed during the discussion.
+- `Eksekusi` does not build the APK and does not build/publish firmware.
+- `Eksekusi Firmware` is a separate command for the latest firmware `.bin` build and public firmware publication.
+- `Build App` belongs only to the Action sub-chat.
+- Ordinary source changes never trigger either build workflow automatically.
+
+### Documentation hygiene
+- This note's end marker is kept at the actual end of the document so appended changelog entries remain part of the active memory file.
+
+# END OF APP PROJECT MEMORY
