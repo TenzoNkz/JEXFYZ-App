@@ -1,10 +1,10 @@
 /*
   JE X FYZ / JE COOLER
-  Horizon Cooler UI base + JE X FYZ V2.8 protocol
+  Horizon Cooler UI base + JE X FYZ V3.2 / P1 protocol
 
   Core rules:
   - Horizon Cooler remains the visual/layout and Android foundation.
-  - JE X FYZ V2.8 uses firmware-owned state and an atomic BLE sync/ready handshake.
+  - JE X FYZ V3.2 uses firmware-owned state and an atomic P1 BLE sync/ready handshake.
   - Firebase App Check / Play Integrity remains enabled for app security. Firmware release metadata comes from the public GitHub manifest.
   - Phone battery temperature is sent every 1 second while BLE is connected.
   - Manual voltage commands use a 1-second app guard matching firmware.
