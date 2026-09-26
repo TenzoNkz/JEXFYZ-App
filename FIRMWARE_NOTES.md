@@ -585,3 +585,15 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Build/flash was not executed in the current environment; manual ArduinoDroid + Arduino-ESP32 Core 3.3.7 testing remains the next boundary.
 - Production `firmware/JEXFYZ.ino` remains unchanged.
 - Required evidence: capture output from the first diagnostic line through at least several `HEARTBEAT: LOOP OK` lines, or the complete panic if it resets before/after `setup()`.
+
+## 2026-09-27 — EXECUTION: MINIMAL ARDUINO WIFI + OTA TEST
+- User requested a simpler firmware test instead of layered diagnostics.
+- Added `firmware/diagnostics/JEXFYZ-Simple-WiFi-OTA-Test.ino`.
+- Arduino-Standard scope only: `Arduino.h`, `WiFi.h`, `WebServer.h`, and `Update.h`.
+- Wi-Fi uses the direct official `WiFi.softAP(ssid, password)` path with no custom `softAPConfig()`, no manual Wi-Fi mode calls, and no project-specific startup logic.
+- OTA uses the standard WebServer upload route with `Update.begin(UPDATE_SIZE_UNKNOWN)`, `Update.write()`, `Update.end(true)`, `Update.abort()`, and `Update.printError(Serial)`.
+- No BLE, NTC, Fan/Peltier, RGB, Preferences, Adaptive, raw ESP-IDF lifecycle, or custom radio wrapper is included.
+- Diagnostic commit: `f30263cb756877dc883d2eeae5cb924b95160b39`.
+- Production `firmware/JEXFYZ.ino` remains unchanged.
+- Build/flash execution remains on the user's ArduinoDroid + Core 3.3.7 environment.
+- Expected baseline: SSID `JE X FYZ OTA`, password `0987654321`, AP address normally reported by `WiFi.softAPIP()`.
