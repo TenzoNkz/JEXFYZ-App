@@ -1222,7 +1222,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         rgbOn = value == 'ON';
         break;
       case 'MODE':
-        rgbMode = (int.tryParse(value) ?? rgbMode).clamp(1, 8);
+        rgbMode = (int.tryParse(value) ?? rgbMode).clamp(1, 8).toInt();
         break;
       case 'BRIGHTNESS':
         brightness = (int.tryParse(value) ?? brightness).clamp(0, 100).toInt();
