@@ -1236,6 +1236,16 @@ The project process is now explicitly two-phase:
 - Public firmware repository manifest was independently verified as V3.9 and points to `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V3.9.bin`.
 - The V3.9 corrective package is the package intended for the user's manual USB/ArduinoDroid flash before another online OTA experiment.
 
+## 2026-09-26 — V3.9 NATIVE ESP OTA EXECUTION
+
+- Replaced the fragile Arduino `Update` path and the previously introduced custom ESP image-size parser with the native ESP-IDF OTA API exposed by the ESP32-C3 platform: `esp_ota_begin`, `esp_ota_write`, `esp_ota_end`, and `esp_ota_set_boot_partition`.
+- Online and local OTA now use native OTA handles with `OTA_SIZE_UNKNOWN`, so no HTTP Content-Length, multipart total size, or custom parsing of interleaved ESP image segments is required.
+- `esp_ota_end` performs full image verification through the ESP-IDF OTA/image-verification stack before the boot partition is selected. A truncated or corrupt download therefore fails without selecting the new image.
+- The 2 MiB runtime guard remains in place. A stream disconnect is only an end-of-transfer candidate; the actual acceptance decision is made by native OTA verification.
+- BLE shutdown remains radio-exclusive and recovery-safe: active connections are explicitly terminated and `BLEDevice::deinit(false)` retains BLE controller memory so BLE can be initialized again after OTA failure.
+- The previous V3.9 custom preamble parser is removed completely.
+- No GPIO, P1 BLE UUIDs, cooling/safety behavior, NTC, Adaptive, voltage, RGB/LED, touch, or App protocol contract was changed.
+- The V3.9 packages from Firmware Build #20 and #21 are superseded. The next build is the only V3.9 package that should be manually flashed and tested.
 # END OF FIRMWARE ENGINEERING MEMORY
 
 
