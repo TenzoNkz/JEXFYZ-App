@@ -51,3 +51,11 @@
 - The active Code sub-chat making the firmware change owns the firmware CI follow-through: inspect the run, fix only build-blocking issues when needed, and repeat until the firmware build/publish pipeline succeeds.
 - App Build remains separate and is manually triggered from the JE X FYZ Action sub-chat.
 - Manual `workflow_dispatch` remains available for Firmware Build as an explicit fallback/test path.
+
+
+## 2026-09-26 — Firmware manual trigger path
+
+- Added `.github/FIRMWARE_BUILD_TRIGGER` as a dedicated manual execution hook.
+- Updating this trigger file starts the same Firmware Build workflow used for real firmware updates.
+- A trigger-only run does not require changing `FW_VERSION`; firmware source/version remains unchanged.
+- Real changes to `firmware/JEXFYZ.ino` continue to auto-trigger Firmware Build.
