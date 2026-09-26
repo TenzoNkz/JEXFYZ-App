@@ -201,8 +201,8 @@ jobs:
           missing = [x for x in required if x not in s]
           if missing:
               raise SystemExit("OTA SAFETY AUDIT FAILED: " + ", ".join(missing))
-          if 'static constexpr char FW_VERSION[] = "V4.12";' not in s:
-              raise SystemExit("OTA SAFETY AUDIT FAILED: version is not V4.12")
+          if 'static constexpr char FW_VERSION[] = "V4.13";' not in s:
+              raise SystemExit("OTA SAFETY AUDIT FAILED: version is not V4.13")
           if "setInsecure()" in s:
               raise SystemExit("OTA SAFETY AUDIT FAILED: insecure TLS leaked into release source")
           if "#include <Update.h>" in s or "#include <HTTPUpdate.h>" in s:
