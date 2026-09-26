@@ -1944,9 +1944,13 @@ static void processOnlineOta() {
       return;
     }
 
+    if (!Update.isFinished()) {
+      failOnlineOta("OTA_INCOMPLETE");
+      return;
+    }
+
     const bool updateOk = Update.end(false);
-    const bool updateFinished = Update.isFinished();
-    if (!updateOk || !updateFinished) {
+    if (!updateOk) {
       const String detail = updateErrorResult("OTA_END");
       failOnlineOta(detail.c_str());
       return;
@@ -2083,9 +2087,18 @@ static void localOtaUploadHandler() {
       return;
     }
 
+    if (!Update.isFinished()) {
+      Update.abort();
+      saveOtaResult("OTA_INCOMPLETE");
+      setOtaState(OtaState::FAILED);
+      resetBlinkState();
+      otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
+      otaActive = false;
+      return;
+    }
+
     const bool updateOk = Update.end(false);
-    const bool updateFinished = Update.isFinished();
-    if (updateOk && updateFinished) {
+    if (updateOk) {
       saveOtaResult("LOCAL_SUCCESS");
       setOtaState(OtaState::SUCCESS);
       otaActive = true;
