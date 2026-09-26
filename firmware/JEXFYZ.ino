@@ -16,7 +16,7 @@
 
 #include <Update.h>
 
-static constexpr char FW_VERSION[] = "V1.3";
+static constexpr char FW_VERSION[] = "V1.4";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -2685,27 +2685,10 @@ static void startLocalOtaAp() {
   setOtaState(OtaState::BOOT_AP);
 
   Serial.println("WIFI AP: START");
-  // Match the Core 3.3.7 Arduino APOTA example: configure the AP
-  // interface first, then create/start the SoftAP.
-  Serial.println("WIFI AP: STEP 1 CONFIG");
-  const bool configOk = WiFi.softAPConfig(AP_IP, AP_GATEWAY, AP_SUBNET);
-  Serial.print("WIFI AP: CONFIG RESULT=");
-  Serial.println(configOk ? "OK" : "FAIL");
-  if (!configOk) {
-    Serial.println("WIFI AP: FAIL AT CONFIG");
-    bootApActive = false;
-    setOtaState(OtaState::FAILED);
-    otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
-    WiFi.mode(WIFI_OFF);
-    yield();
-    bleStartPending = true;
-    bleStartRetryAt = millis();
-    return;
-  }
-  yield();
+  Serial.println("WIFI AP: STEP 1 SIMPLE SOFTAP");
 
-  Serial.println("WIFI AP: STEP 2 OFFICIAL SOFTAP");
-  const bool apOk = WiFi.softAP(AP_SSID, AP_PASSWORD);
+  const apOk = WiFi.softAP(AP_SSID, AP_PASSWORD);
+
   Serial.print("WIFI AP: SOFTAP RESULT=");
   Serial.println(apOk ? "OK" : "FAIL");
   if (!apOk) {
@@ -2719,9 +2702,8 @@ static void startLocalOtaAp() {
     bleStartRetryAt = millis();
     return;
   }
-  yield();
 
-  Serial.println("WIFI AP: STEP 3 HTTP");
+  Serial.println("WIFI AP: STEP 2 HTTP");
   bootApStartedAt = millis();
   Serial.print("WIFI AP: READY SSID=");
   Serial.print(AP_SSID);
