@@ -597,3 +597,53 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Production `firmware/JEXFYZ.ino` remains unchanged.
 - Build/flash execution remains on the user's ArduinoDroid + Core 3.3.7 environment.
 - Expected baseline: SSID `JE X FYZ OTA`, password `0987654321`, AP address normally reported by `WiFi.softAPIP()`.
+
+
+# CURRENT STATE — 2026-09-27 06:00 WIB
+
+## VERIFIED RUNTIME BASELINE: MINIMAL ARDUINO WIFI AP WORKS
+- Physical test result from the user's ESP32-C3: diagnostic firmware `JEXFYZ-Simple-WiFi-OTA-Test.ino` successfully exposed the Wi-Fi SSID `JE X FYZ OTA`.
+- The phone's Wi-Fi scan visibly showed `JE X FYZ OTA` under Available networks.
+- Therefore the board's basic Wi-Fi SoftAP function works with Arduino-ESP32 Core 3.3.7 when using the simple official Arduino path:
+  ```
+  WiFi.softAP(ssid, password);
+  ```
+- This directly corrects the earlier unproven assumption that the board/runtime Wi-Fi subsystem itself was necessarily the root cause.
+- The successful simple test did not include BLE, NTC, Fan/Peltier, RGB, Preferences, Adaptive logic, custom radio supervisors, manual Wi-Fi mode setup, `softAPConfig()`, or raw ESP-IDF lifecycle code.
+- Current conclusion: do not add custom Wi-Fi initialization layers merely to start the AP.
+
+## PERMANENT IMPLEMENTATION RULE — ARDUINO STANDARD + SIMPLE
+- Use the public Arduino-ESP32 Core 3.3.7 APIs and the official Arduino example/lifecycle pattern for the required function.
+- Prefer the smallest official implementation that satisfies the JE X FYZ requirement.
+- Do not invent API names, wrappers, compatibility shims, low-level lifecycle replacements, or guessed ESP/Arduino functions.
+- Do not recreate work already owned by the Arduino framework.
+- Do not introduce `WiFi.mode()`, `WiFi.disconnect()`, `WiFi.setHostname()`, `WiFi.setSleep()`, `WiFi.setAutoReconnect()`, `softAPConfig()`, or similar startup operations into the production AP path unless a verified Core 3.3.7 requirement proves they are necessary.
+- For OTA, use the official Arduino Update lifecycle: `Update.begin()`, `Update.write()`, `Update.end(true)`, `Update.abort()`, and `Update.printError(Serial)`.
+- When a platform API is uncertain, stop and verify against the exact pinned Core 3.3.7 source before using it.
+- Every production change must compile in the project's pinned Core 3.3.7 CI before being treated as valid.
+
+## PRODUCTION FIRMWARE SAFETY
+- Authoritative production source remains `firmware/JEXFYZ.ino` V1.3.
+- The production source is not replaced by any diagnostic sketch.
+- Diagnostic sketches under `firmware/diagnostics/` are isolated tests only.
+- The verified V1.3 release remains the last known-good CI/public build baseline.
+- Do not claim physical V1.3 production runtime success merely from CI success; physical production validation remains separate.
+- GPIO contract remains GPIO5 = FAN and GPIO6 = PELTIER.
+
+## NEXT FULL EXECUTION BOUNDARY
+- The next production execution is ready to be scoped around the verified simple Arduino Wi-Fi/OTA pattern.
+- Do not redesign the whole firmware or add another diagnostic layer.
+- Preserve JE X FYZ application behavior, BLE UUID/protocol, safety logic, NTC, PWM, RGB, Adaptive logic, settings persistence, and GPIO mapping unless a specific verified issue requires a change.
+- Simplify only the production Wi-Fi/OTA startup path where the current implementation is more complex than the proven Arduino Standard baseline.
+- After the source change: run the pinned Core 3.3.7 compile/audit, then produce the firmware artifact, and only after that perform the physical test.
+- If a new production firmware behavior is created, version it according to the project's existing V1.x sequence rather than silently replacing V1.3.
+
+## LATEST DIAGNOSTIC ARTIFACTS
+- `firmware/diagnostics/JEXFYZ-Simple-WiFi-OTA-Test.ino` — commit `f30263cb756877dc883d2eeae5cb924b95160b39`; physical Wi-Fi SSID visibility: PASS.
+- `firmware/diagnostics/JEXFYZ-WiFi-STA-Mode-Test.ino` — commit `e8185cb24acb7475a533a859208156b43ecd4c03`; earlier physical output did not expose the sketch banner, so its STA boundary remains non-diagnostic.
+- `firmware/diagnostics/JEXFYZ-Pure-Arduino-Runtime-Test.ino` — commit `9c64bb01e2a22beada7d56116cdd879736a76af1`; physical test did not produce visible sketch output in the reported Monitor session.
+- The successful Simple Wi-Fi + OTA baseline supersedes the need to continue stacking lower-level Wi-Fi diagnostics unless the simple production pattern itself fails.
+
+## NOTE GOVERNANCE
+- This block is the current authoritative operational state and supersedes conflicting earlier hypotheses in the historical log.
+- Historical diagnostics are retained for traceability and must not be treated as the current implementation recipe.
