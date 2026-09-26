@@ -331,3 +331,12 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - The workflow remains pinned to Arduino-ESP32 Core 3.3.7, OneButton 2.6.1, and Adafruit NeoPixel 1.12.5.
 - No firmware logic changed in this action.
 - Next boundary: inspect the newly triggered Firmware Build run for compile result, OTA safety audit, artifact generation, and publication result.
+
+## 2026-09-27 — EXECUTION STATUS: V1.2 FIRMWARE BUILD RUN #67
+- Firmware Build Run #67 was triggered successfully from commit `d7f5110668d64c32d87e08f367c54369474f4306`.
+- Run ID: `36272350341`.
+- Head source/trigger commit: `d7f5110668d64c32d87e08f367c54369474f4306`.
+- Current status at this checkpoint: **in_progress**.
+- The `validate-arduinodroid` job has started; the later compile step has not yet completed at the time of this note.
+- No build success/failure is claimed yet.
+- Next boundary: inspect Run #67 completion and its compile/audit/artifact results before declaring V1.2 build status.
