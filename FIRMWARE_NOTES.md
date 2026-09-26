@@ -259,3 +259,13 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Validation status: file generation confirmed in the workspace; physical execution result is **NOT YET VERIFIED**.
 - Important interpretation: because this test does not create a SoftAP, no SSID is expected. Its purpose is to identify the first failing low-level Wi-Fi call.
 - Next evidence boundary: ArduinoDroid compile output and the Serial marker/result from this exact file.
+
+
+## 2026-09-27 — RAW ESP-IDF TEST FIXED
+- The first raw ESP-IDF diagnostic file failed to compile in ArduinoDroid with `redefinition of default argument` because `printResult(..., bool allowAlreadyInit = false)` conflicted with Arduino's generated function prototype.
+- A corrected diagnostic file was generated:
+  `/mnt/data/JEXFYZ-Raw-ESP-IDF-WiFi-Boundary-Test-FIXED.ino`
+- The corrected `printResult()` declaration has **no default argument**; every call supplies the third parameter explicitly.
+- Static check: PASS for removal of the default argument.
+- Production firmware source was not modified.
+- Physical execution and hardware result remain unverified.
