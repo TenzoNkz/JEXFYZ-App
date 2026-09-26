@@ -2145,6 +2145,7 @@ For every future app change:
 - No workflow itself is included in the push-path trigger list, so editing workflow configuration does not recursively start a build.
 
 ### Workflow files
+- Renamed the App workflow file from `.github/workflows/build.yml` to `.github/workflows/app-build.yml`; workflow display name remains `App Build`.
 - `.github/workflows/build.yml`: push-only trigger on `.github/APP_BUILD_TRIGGER`; no manual dispatch.
 - `.github/workflows/firmware-build.yml`: push-only triggers on `firmware/JEXFYZ.ino` and `.github/FIRMWARE_BUILD_TRIGGER`; no manual dispatch.
 - Added `.github/APP_BUILD_TRIGGER`.
