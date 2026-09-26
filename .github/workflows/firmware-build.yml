@@ -201,8 +201,8 @@ jobs:
           missing = [x for x in required if x not in s]
           if missing:
               raise SystemExit("OTA SAFETY AUDIT FAILED: " + ", ".join(missing))
-          if 'static constexpr char FW_VERSION[] = "V5.0";' not in s:
-              raise SystemExit("OTA SAFETY AUDIT FAILED: version is not V5.0")
+          if 'static constexpr char FW_VERSION[] = "V1.0";' not in s:
+              raise SystemExit("OTA SAFETY AUDIT FAILED: version is not V1.0")
           if "setInsecure()" in s:
               raise SystemExit("OTA SAFETY AUDIT FAILED: insecure TLS leaked into release source")
           if "#include <Update.h>" in s or "#include <HTTPUpdate.h>" in s:
@@ -232,6 +232,29 @@ jobs:
           ota_code = re.sub(r'/\*.*?\*/', '', ota_code, flags=re.S)
           if re.search(r'\bdelay\s*\(', ota_code):
               raise SystemExit("OTA SAFETY AUDIT FAILED: blocking delay() inside OTA engine")
+          # Regression guard: keep the V1.0 initial AP path in the exact
+          # known-good order that avoids the Core 3.3.7 boot panic seen in
+          # the previous firmware family.
+          ap_start = s.index("static void startLocalOtaAp()")
+          ap_end = s.index("static void stopLocalOtaAp()", ap_start)
+          ap = s[ap_start:ap_end]
+          order_tokens = [
+              "WiFi.disconnect(true, false);",
+              "WiFi.setHostname(",
+              "WiFi.setAutoReconnect(false);",
+              "WiFi.mode(WIFI_AP)",
+              "WiFi.softAPConfig(",
+              "WiFi.softAP(",
+              "webServer.begin();",
+          ]
+          positions = [ap.index(token) for token in order_tokens]
+          if positions != sorted(positions):
+              raise SystemExit("RADIO BOOT AUDIT FAILED: AP startup order changed")
+          if "WiFi.softAPdisconnect(true);" in ap:
+              raise SystemExit("RADIO BOOT AUDIT FAILED: initial AP path must not pre-disconnect SoftAP")
+          if "WiFi.mode(WIFI_OFF);" in ap:
+              raise SystemExit("RADIO BOOT AUDIT FAILED: initial AP path must not force WIFI_OFF")
+          print("RADIO BOOT AUDIT: PASS")
           print("OTA SAFETY AUDIT: PASS")
           PY
       - name: Compile ESP32-C3 firmware
