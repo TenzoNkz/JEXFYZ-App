@@ -20,7 +20,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
-static constexpr char FW_VERSION[] = "V1.0";
+static constexpr char FW_VERSION[] = "V1.1";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -2847,32 +2847,6 @@ static void handleOtaPost() {
 }
 
 static void startLocalOtaAp() {
-  // ========================================================================
-  // BOOT WI-FI AP — V1.0 CLEAN RADIO PATH
-  // ------------------------------------------------------------------------
-  // This startup path intentionally follows the proven Core 3.3.7 sequence:
-  //   1. Reset any previous STA state.
-  //   2. Set hostname/autoreconnect policy BEFORE WiFi.mode().
-  //   3. Enter WIFI_AP mode.
-  //   4. Apply the fixed AP IP configuration.
-  //   5. Start the SoftAP.
-  //   6. Start the HTTP server only after the AP is confirmed.
-  //
-  // IMPORTANT:
-  // The order above is part of the V1.0 radio contract. ESP32-C3 + Arduino
-  // Core 3.3.7 must not be given a new radio lifecycle sequence casually.
-  // In particular, do NOT move WiFi.mode(WIFI_AP) before the disconnect,
-  // hostname, and auto-reconnect setup used by the known-good path.
-  //
-  // Also intentionally absent here:
-  //   - WiFi.softAPdisconnect(true)
-  //   - WiFi.mode(WIFI_OFF)
-  //   - BLE initialization
-  // These belong to the later Wi-Fi -> BLE handoff, not the initial AP boot.
-  // The first radio path stays minimal so it has the smallest possible fault
-  // surface.
-  // ========================================================================
-
   onlineOtaStartPending = false;
   bootApActive = true;
   bootApHadClient = false;
@@ -2881,38 +2855,25 @@ static void startLocalOtaAp() {
   setOtaState(OtaState::BOOT_AP);
 
   Serial.println("WIFI AP: START");
+  Serial.println("WIFI AP: STEP 1 OFFICIAL SOFTAP");
 
-  // STEP 1 — Prepare the Wi-Fi object using the proven startup sequence.
-  Serial.println("WIFI AP: STEP 1 DISCONNECT");
-  WiFi.disconnect(true, false);
-
-  // STEP 2 — Set network identity and disable station auto-reconnect before
-  // selecting AP mode. This order is deliberate for Core 3.3.7.
-  Serial.println("WIFI AP: STEP 2 HOSTNAME");
-  WiFi.setHostname("JE-X-FYZ");
-  WiFi.setAutoReconnect(false);
-
-  // STEP 3 — Enter AP mode only after the two preconditions above succeed.
-  Serial.println("WIFI AP: STEP 3 MODE");
-  const bool modeOk = WiFi.mode(WIFI_AP);
-  Serial.print("WIFI AP: MODE RESULT=");
-  Serial.println(modeOk ? "OK" : "FAIL");
-  if (!modeOk || WiFi.getMode() != WIFI_AP) {
-    Serial.println("WIFI AP: FAIL AT MODE");
+  const bool apOk = WiFi.softAP(AP_SSID, AP_PASSWORD);
+  Serial.print("WIFI AP: SOFTAP RESULT=");
+  Serial.println(apOk ? "OK" : "FAIL");
+  if (!apOk) {
+    Serial.println("WIFI AP: FAIL AT SOFTAP");
     bootApActive = false;
     setOtaState(OtaState::FAILED);
     otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
     WiFi.mode(WIFI_OFF);
     yield();
-    // The main loop will perform the Wi-Fi-off -> BLE handoff.
     bleStartPending = true;
     bleStartRetryAt = millis();
     return;
   }
   yield();
 
-  // STEP 4 — Configure the fixed local OTA network.
-  Serial.println("WIFI AP: STEP 4 CONFIG");
+  Serial.println("WIFI AP: STEP 2 CONFIG");
   const bool configOk = WiFi.softAPConfig(AP_IP, AP_GATEWAY, AP_SUBNET);
   Serial.print("WIFI AP: CONFIG RESULT=");
   Serial.println(configOk ? "OK" : "FAIL");
@@ -2929,27 +2890,7 @@ static void startLocalOtaAp() {
   }
   yield();
 
-  // STEP 5 — Start the access point itself.
-  Serial.println("WIFI AP: STEP 5 START");
-  const bool apOk = WiFi.softAP(AP_SSID, AP_PASSWORD);
-  Serial.print("WIFI AP: START RESULT=");
-  Serial.println(apOk ? "OK" : "FAIL");
-  if (!apOk) {
-    Serial.println("WIFI AP: FAIL AT START");
-    bootApActive = false;
-    setOtaState(OtaState::FAILED);
-    otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
-    WiFi.mode(WIFI_OFF);
-    yield();
-    bleStartPending = true;
-    bleStartRetryAt = millis();
-    return;
-  }
-  yield();
-
-  // STEP 6 — AP is now confirmed before the HTTP server is started.
-  // webServer.begin() is mandatory for local OTA and is intentionally the
-  // final operation in this startup function.
+  Serial.println("WIFI AP: STEP 3 HTTP");
   bootApStartedAt = millis();
   Serial.print("WIFI AP: READY SSID=");
   Serial.print(AP_SSID);
