@@ -1503,6 +1503,17 @@ The project process is now explicitly two-phase:
 - Run #49 reached Core 3.3.7 and failed only in the temporary-source preparation grep checks because the generated YAML still contained doubled quotes around ${VALUE_FILE}.
 - Corrected the four grep checks to use normal Bash quoting.
 - No firmware source/OTA behavior changed.
+## 2026-09-27 — V4.9 RADIO STARTUP / CORE 3.3.7 BASELINE
+
+- User hardware test on V4.8 showed neither the boot Wi-Fi AP nor BLE advertising was visible.
+- Rebased the radio startup sequence to the known-good Core 3.3.7 behavior: complete peripheral initialization first, then start the 10-second boot AP.
+- BLE handoff now uses full BLE stack deinitialization and explicitly settles Wi-Fi OFF before BLE initialization/advertising.
+- Boot AP startup retries once after a complete Wi-Fi OFF cycle and prints deterministic AP/BLE readiness diagnostics to Serial.
+- Removed the release dependency on `esp_ota_resume()`; range-stream recovery restarts the native OTA transaction from byte zero so the release remains Core 3.3.7 compatible.
+- Firmware CI release core and ArduinoDroid validation core are both pinned to ESP32 Arduino Core 3.3.7.
+- Firmware version advanced to V4.9.
+- Physical hardware validation is still required after flashing V4.9.
+
 # END OF FIRMWARE ENGINEERING MEMORY
 
 
