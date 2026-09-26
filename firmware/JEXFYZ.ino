@@ -3497,6 +3497,10 @@ void setup() {
   sampleNtcIfDue();
   enforceSafety();
 
+  // If OTA/AP could not start, bring BLE up only after feature hardware is initialized.
+  if (!bootApActive && !BLEDevice::getInitialized()) {
+    startBle();
+  }
 }
 
 void loop() {

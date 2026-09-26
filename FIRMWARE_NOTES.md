@@ -1408,6 +1408,13 @@ The project process is now explicitly two-phase:
 - Source whitespace was cleaned by removing trailing whitespace and excessive blank-line runs; deliberate OTA lock spacing remains.
 - Absolute zero OTA failure cannot be guaranteed under all external conditions, but these guards are designed to keep OTA operational and prevent OTA-breaking source changes from reaching a release.
 - No GPIO, NTC, cooling, Adaptive, voltage, RGB, touch, BLE UUID/P1 contract, Wi-Fi/BLE ownership, or working V4.5 Online OTA behavior was intentionally changed.
+## 2026-09-26 — V4.6 OTA STARTUP FAILURE-SAFE CORRECTION
+
+- Corrected the early OTA/AP startup refactor so an AP startup failure cannot leave the device without BLE after the normal hardware/LED initialization completes.
+- OTA/AP still starts early, but BLE fallback is deferred until feature hardware initialization has completed.
+- OTA priority and the working V4.5 Range/reconnect/resume transport remain unchanged.
+- CI audit now also rejects duplicate/missing OTA lock markers.
+
 # END OF FIRMWARE ENGINEERING MEMORY
 
 
