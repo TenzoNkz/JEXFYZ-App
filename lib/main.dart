@@ -1651,6 +1651,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 'ONLINE_HTTP_UPDATE': return 'HTTP update';
       case 'ONLINE_UPDATE_BEGIN': return 'Update begin';
       case 'ONLINE_DOWNLOAD': return 'Download';
+      case 'ONLINE_RANGE_PROBE': return 'Range probe';
+      case 'ONLINE_RANGE_REQUEST': return 'Range request';
+      case 'ONLINE_RANGE_RESPONSE': return 'Range response';
+      case 'ONLINE_RANGE_WRITE': return 'Range write';
+      case 'ONLINE_RANGE_RETRY': return 'Range retry';
+      case 'ONLINE_RANGE_RESUME': return 'Range resume';
       case 'ONLINE_FLASH_WRITE': return 'Flash write';
       case 'ONLINE_FLASH_ERASE': return 'Flash erase';
       case 'ONLINE_FLASH_READBACK': return 'Flash readback';

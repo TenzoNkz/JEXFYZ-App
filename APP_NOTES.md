@@ -2533,6 +2533,14 @@ The project process is now explicitly two-phase:
 - Firmware Build Run #29 is the active validation run for V4.4 and its ArduinoDroid temporary source.
 - Required physical test after build publication: flash V4.4 manually using the Core 3.3.7-compatible temporary source, then test Online OTA again.
 
+## 2026-09-26 — V4.5 ONLINE OTA HANDOFF
+
+- Firmware V4.5 changes only the Online OTA transport to chunked HTTP Range requests with reconnect/resume using esp_ota_resume().
+- App OTA stage translation now includes range probe/request/response/write/retry/resume.
+- Existing BLE/P1 transport and persisted OTA result format remain unchanged.
+- Physical validation target: manual flash V4.5 ArduinoDroid temporary source, then Online OTA using public V4.5 binary.
+- No App Build was triggered by this firmware-focused execution.
+
 # END OF APP PROJECT MEMORY
 
 ## 2026-09-26 — Code #2: firmware source cleanup + App BLE contract synchronization

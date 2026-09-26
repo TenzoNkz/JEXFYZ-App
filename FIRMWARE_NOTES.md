@@ -1341,6 +1341,20 @@ The project process is now explicitly two-phase:
 - ArduinoDroid temporary source generation remains Core 3.3.7-compatible for manual flashing.
 - No GPIO, NTC, cooling, Adaptive, voltage, RGB, touch, BLE UUID/P1 contract, or Wi-Fi/BLE radio ownership rule was intentionally changed.
 
+## 2026-09-26 — V4.5 RESUMABLE ONLINE OTA EXECUTION
+
+- Firmware source advanced from V4.4 to V4.5 after repeated physical Online OTA failures with UPDATE_ERROR_STREAM (code 6) at variable progress points.
+- Online OTA no longer uses the single long-lived HTTPUpdate stream.
+- Online OTA probes the public firmware URL with a one-byte Range request, then downloads in 64 KiB HTTP Range chunks.
+- Each chunk uses a fresh HTTP connection with identity encoding, no-cache, and a 60-second timeout.
+- If a range stream stalls after partial data is written, the OTA handle is aborted and resumed from the exact written offset with esp_ota_resume() without erasing the written image.
+- Each range has up to 3 attempts; failure preserves the exact stage, numeric error code, and progress in OTA diagnostics.
+- Online OTA explicitly calls esp_ota_end() for image validation and esp_ota_set_boot_partition() for activation.
+- Local OTA behavior is intentionally unchanged by this release.
+- Normal release TLS certificate verification remains enabled.
+- ArduinoDroid temporary source generation remains Core 3.3.7-compatible.
+- No GPIO, NTC, cooling, Adaptive, voltage, RGB, touch, BLE UUID/P1 contract, or Wi-Fi/BLE radio ownership rule was intentionally changed.
+
 # END OF FIRMWARE ENGINEERING MEMORY
 
 
