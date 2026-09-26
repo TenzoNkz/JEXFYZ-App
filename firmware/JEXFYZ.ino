@@ -1787,7 +1787,7 @@ static void startBle() {
   // racing each other on ESP32-C3, while the RX characteristic still requires
   // encryption and the session gate below blocks all state-changing commands
   // until SYNC -> SYNC_READY completes.
-  bleSecurity->setAuthenticationMode(true, false, true);
+  bleSecurity->setAuthenticationMode(ESP_LE_AUTH_REQ_SC_BOND);
   // Do not call setForceAuthentication(): some Arduino-ESP32 cores
   // bundled by ArduinoDroid do not expose that API.
   // With encrypted RX permissions, authentication is still requested
@@ -1799,7 +1799,6 @@ static void startBle() {
 
   bleServer = BLEDevice::createServer();
   bleServer->setCallbacks(new ServerCallbacks());
-  bleServer->advertiseOnDisconnect(true);
 
   BLEService* service = bleServer->createService(SERVICE_UUID);
 
@@ -1814,7 +1813,7 @@ static void startBle() {
   rxCharacteristic = service->createCharacteristic(RX_UUID, rxProperties);
 
 #if defined(CONFIG_BLUEDROID_ENABLED)
-  rxCharacteristic->setAccessPermissions(ESP_GATT_PERM_WRITE_ENC);
+  rxCharacteristic->setAccessPermissions(ESP_GATT_PERM_WRITE_ENCRYPTED);
 #endif
 
   rxCharacteristic->setCallbacks(new RxCallbacks());
