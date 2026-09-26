@@ -2590,22 +2590,12 @@ The project process is now explicitly two-phase:
 - Existing App OTA diagnostic stage translation remains compatible.
 - No App Build was triggered by this firmware-focused execution.
 
-## 2026-09-26 — V4.7 FULL EXECUTION / MANUAL OTA BINARY READY
+## 2026-09-26 — V4.8 FIRMWARE HANDOFF / FULL HARDENING
 
-- V4.7 full firmware execution reached final success and was published.
-- Run #38 passed OTA safety audit, compile, artifact generation, ArduinoDroid temporary-source generation, and public publication after the Run #37 compile issue was automatically corrected.
-- Public manifest now reports V4.7.
-- The exact V4.7 firmware binary from the successful release artifact has been downloaded to the conversation runtime for manual OTA testing.
-- No App Build was triggered by this firmware-only release.
-- Physical validation target: current V4.5/V4.x device -> manual V4.7 OTA, then boot/BLE check and Online OTA testing as planned.
-
-## 2026-09-26 — V4.8 FIRMWARE HANDOFF
-
-- Firmware V4.8 hardens radio handoff and moves Local OTA to direct esp_ota_* APIs to address the prior Flash Readback/code-3 path.
-- Online OTA Range/reconnect/resume transport and HTTPClient body decoding are preserved.
-- App OTA diagnostic stage names remain compatible.
-- No App Build was triggered by this firmware-focused execution.
-- Physical test target: manual V4.8 flash, confirm AP->BLE handoff, Local OTA, then Online OTA.
+- Firmware V4.8 addresses the remaining physical V4.7 problems: missing/unstable Wi-Fi/BLE handoff and Local OTA code-3 Flash Readback.
+- Local OTA is now native `esp_ota_*`; V4.7 Online OTA Range/reconnect/resume stays preserved.
+- No App Build triggered; App OTA diagnostics remain compatible.
+- Physical validation: V4.8 temporary manual flash -> AP for first 10s -> BLE recovery/advertising -> Local OTA -> Online OTA.
 
 # END OF APP PROJECT MEMORY
 

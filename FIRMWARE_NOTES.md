@@ -1457,33 +1457,16 @@ The project process is now explicitly two-phase:
 - Added the required single-byte write(uint8_t) override, forwarding to the existing buffer-write implementation.
 - No OTA runtime design change; this is a compile compatibility correction for the dedicated HTTPClient-to-flash sink.
 
-## 2026-09-26 — V4.7 FULL EXECUTION SUCCESS / BIN VERIFIED
+## 2026-09-26 — V4.8 OTA/RADIO/LOCAL OTA FULL HARDENING
 
-- Full V4.7 execution completed through terminal success after one compile failure was inspected and repaired (Run #37 -> Run #38).
-- Run #37 failed because `OtaHttpFlashStream` did not implement pure virtual `Print::write(uint8_t)`; V4.7 was corrected and rebuilt.
-- Run #38 succeeded through OTA safety audit, compile, firmware artifact, ArduinoDroid temporary-source artifact, and publication.
-- Public firmware repository is now V4.7 with `JEXFYZ-V4.7.bin` and V4.7 manifest.
-- Published public binary size: 1,577,136 bytes.
-- The exact Run #38 firmware artifact was downloaded locally and extracted for manual OTA testing.
-- Local extracted binary: `/mnt/data/JEXFYZ-V4.7.bin`.
-- Extracted binary SHA-256: `79ec25e3ad0cbb02fae4ef2dc4de7a3e808b17a113f87dd77bdd2776969ac020`.
-- Artifact archive size: 1,577,280 bytes; artifact ID 10909386508; not expired at completion.
-- ArduinoDroid temporary-source artifact ID 10909246649; not expired at completion.
-- Public release engine remains ESP32 Arduino Core 3.3.12.
-- V4.7 Online OTA body path uses HTTPClient::writeToStream() with a dedicated OTA flash sink, official setAcceptEncoding("identity"), Range chunks, reconnect/retry, and offset resume on the release core.
-- V4.5 known-good baseline remains valid; V4.6 image verification failure and its diagnostic record remain historical defect data.
-- Local OTA remains separately tracked as unresolved from earlier code-3 Flash Readback tests.
-
-## 2026-09-26 — V4.8 FULL OTA/RADIO HARDENING
-
-- Firmware source advanced to V4.8.
-- Local OTA was moved from Arduino UpdateClass to direct ESP-IDF `esp_ota_begin/write/end/set_boot_partition` so the old `UPDATE_ERROR_READ / Flash Read Failed` verification path is no longer used.
-- Local OTA now requires the exact browser-provided firmware size, checks the target OTA partition size, verifies the completed image with `esp_ota_end()`, and activates it explicitly with `esp_ota_set_boot_partition()`.
-- Wi-Fi/BLE handoff was hardened for the ESP32-C3 single-radio constraint: Wi-Fi is explicitly forced OFF and settled before BLE initialization, incomplete BLE states are cleaned up, BLE advertising is restarted when the stack is already healthy, and failed BLE starts are retried automatically.
-- Local OTA failure keeps the AP available for retry; Online OTA failure turns Wi-Fi OFF and returns to the BLE recovery path.
-- Existing V4.5/V4.7 Range/reconnect/resume Online OTA transport and V4.7 HTTPClient body decoding remain preserved.
-- OTA Safety Lock, OTA Priority Supervisor, protected OTA Engine/Diagnostic Core, and CI regression audit remain mandatory.
-- Physical validation target: V4.5 known-good -> manual V4.8; verify Wi-Fi AP -> BLE handoff, Local OTA -> V4.8, then Online OTA.
+- Firmware advanced from V4.7 to V4.8.
+- Local OTA no longer uses Arduino `UpdateClass`; it now uses ESP-IDF `esp_ota_begin/write/end/set_boot_partition`, eliminating the prior UpdateClass flash-readback verification path that produced `UPDATE_ERROR_READ / code 3` at 100%.
+- Local OTA validates exact upload size and OTA partition capacity, validates the completed image with `esp_ota_end()`, and activates the target partition explicitly.
+- ESP32-C3 Wi-Fi/BLE handoff is now explicit and retry-safe: Wi-Fi is forced OFF and settled before BLE initialization; partial BLE stack states are cleaned up; advertising is restored for a healthy initialized stack; BLE initialization failures are retried automatically.
+- Local OTA failures keep the AP alive for another retry; Online OTA failures turn Wi-Fi OFF and enter BLE recovery.
+- V4.7 Online OTA HTTP Range/reconnect/resume and HTTPClient `writeToStream()` body decoding remain unchanged.
+- OTA Safety Lock, protected supervisor, locked OTA Engine/Diagnostic Core, and CI OTA audit remain mandatory.
+- No GPIO, NTC, cooling, Adaptive, voltage, RGB, touch, BLE UUID/P1 contract, or V4.7 Online OTA transport behavior was intentionally changed.
 
 # END OF FIRMWARE ENGINEERING MEMORY
 
