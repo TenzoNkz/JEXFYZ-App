@@ -1474,6 +1474,12 @@ The project process is now explicitly two-phase:
 - Replaced those legacy dependency names with internal OTA error constants matching the documented numeric codes, so the firmware no longer depends on Update.h for diagnostics.
 - No OTA transport, radio, or local OTA behavior changed in this correction.
 
+## 2026-09-26 — V4.8 TEMPORARY SOURCE COMPILE GATE
+
+- CI now compiles the generated ArduinoDroid temporary source with ESP32 Arduino Core 3.3.7 before the temporary-source artifact is uploaded.
+- This prevents delivering a temporary `.ino` that passed only text transformation but fails in the user's ArduinoDroid engine.
+- The public/release binary remains built with Core 3.3.12.
+
 # END OF FIRMWARE ENGINEERING MEMORY
 
 

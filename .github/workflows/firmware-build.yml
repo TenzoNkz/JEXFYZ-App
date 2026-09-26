@@ -208,6 +208,19 @@ jobs:
           grep -Fq 'WiFiClientSecure cloudClient;' "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
           grep -Fq 'cloudClient.setInsecure();' "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
 
+      - name: Compile ArduinoDroid temporary source
+        shell: bash
+        run: |
+          set -euo pipefail
+          arduino-cli core install "esp32:esp32@3.3.7"
+          rm -rf build/JEXFYZ-ArduinoDroid build/arduinodroid
+          mkdir -p build/JEXFYZ-ArduinoDroid build/arduinodroid
+          cp "build/firmware/V4.8-ArduinoDroid-Temporary.ino" "build/JEXFYZ-ArduinoDroid/JEXFYZ-ArduinoDroid.ino"
+          arduino-cli compile             --fqbn esp32:esp32:esp32c3:PartitionScheme=no_fs             --output-dir build/arduinodroid             build/JEXFYZ-ArduinoDroid
+          test -s build/arduinodroid/JEXFYZ-ArduinoDroid.ino.bin
+          echo "ArduinoDroid/Core 3.3.7 temporary source compile: PASS"
+          rm -rf build/arduinodroid
+
       - name: Upload ArduinoDroid temporary source artifact
         uses: actions/upload-artifact@v7
         with:
