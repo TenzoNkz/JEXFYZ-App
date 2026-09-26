@@ -51,7 +51,7 @@ The following configuration is the user's proven manual upload configuration and
 This exact ArduinoDroid configuration has been visually verified by the user and must be kept as the reference target for future manual upload discussions.
 
 ### CI / manual core baseline
-The GitHub Actions Firmware Build workflow uses `PartitionScheme=no_fs` and is pinned to stable Arduino-ESP32 Core 3.3.12. Manual ArduinoDroid should use the same 3.3.12 core before physical V4.2 flashing.
+The GitHub Actions Firmware Build workflow uses `PartitionScheme=no_fs` and is pinned to Arduino-ESP32 Core 3.3.7. Manual ArduinoDroid should use the same 3.3.7 core for the V4.13 test target.
 
 ## 3. BOARD, GPIO, AND ELECTRICAL MAP
 
@@ -82,8 +82,6 @@ The current source includes:
 - Arduino core / Arduino.h.
 - WiFi.h.
 - WebServer.h.
-- HTTPUpdate.h.
-- Update.h.
 - HTTPClient.h.
 - WiFiClientSecure.h.
 - Preferences.h.
@@ -96,8 +94,9 @@ The current source includes:
 - BLEUtils.h.
 - BLE2902.h.
 - ESP system reset-reason support.
-- Espressif error definitions (esp_err.h) where explicit API return checks are required.
+- Espressif OTA APIs (esp_ota_ops.h) and error definitions (esp_err.h).
 - FreeRTOS queue-mutex support.
+- HTTPS certificate validation uses the Core-3.3.7-compatible cloudClient.setCACert(GITHUB_ROOT_CA) path.
 
 Pinned/required project libraries:
 - OneButton 2.6.1.
@@ -1674,7 +1673,7 @@ The project process is now explicitly two-phase:
 - V4.12 Run #58 failed at release compile because ESP32 Arduino Core 3.3.7 does not expose `WiFiClientSecure::useBuiltinCACertBundle()`. The firmware was corrected to use the existing `GITHUB_ROOT_CA` through `cloudClient.setCACert(GITHUB_ROOT_CA)`, keeping release TLS verification enabled and Core 3.3.7 compatible.
 - V4.12 Run #59 then failed in the ArduinoDroid temporary-source preparation because the workflow still expected the obsolete `setInsecure()` transformation. The workflow was corrected so the temporary source remains on the secure CA configuration.
 - V4.13 additionally corrects the final hardware pin mapping to GPIO5 = Fan and GPIO6 = Peltier and aligns the boot diagnostic version string with V4.13.
-- Final Firmware Build Run #60 completed successfully. Both `validate-arduinodroid` and `build-and-publish` passed.
-- Release binary: `JEXFYZ-V4.13.bin`. The CI binary size gate remains 2 MiB.
+- Final Firmware Build Run #61 completed successfully. Both `validate-arduinodroid` and `build-and-publish` passed.
+- Release binary: `JEXFYZ-V4.13.bin`, verified at 1,465,200 bytes in the public firmware repository. The CI binary size gate remains 2 MiB.
 - The public firmware repository is published from the same pipeline and keeps the release manifest URL format without SHA-based firmware linking.
 - Physical hardware validation is still required: verify boot AP visibility for the 10-second window, Wi-Fi shutdown, BLE `JE X FYZ` advertising after handoff, and the corrected GPIO5/GPIO6 outputs on the actual cooler.
