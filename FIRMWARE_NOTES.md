@@ -747,3 +747,17 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Separately investigate and fix the physical Local OTA `UPDATE_END_FAILED` code 8 using the official Arduino-ESP32 Core 3.3.7 Update path.
 - Do not redesign BLE, NTC, cooling, RGB, Adaptive, GPIO, or unrelated application features while fixing this OTA issue.
 - Every OTA code modification requires a fresh pinned Core 3.3.7 validation before another physical flash test.
+
+## 2026-09-27 — EXECUTION: LOCAL OTA CODE-8 ROOT-CAUSE CORRECTION / V1.5
+- User provided physical V1.4 Local OTA evidence: upload reached 100%, then the UI reported `LOCAL_IMAGE_VERIFY | UPDATE_END_FAILED | code 8`.
+- Verified the uploaded V1.4 binary itself is a valid ESP32 image: first byte is `0xE9` (ESP image magic), file size 1,465,280 bytes, SHA-256 `d0d1a83711774a13f58d61070d6ff37ffaf5b17c394c3188cbb9a767898c07b2`.
+- Verified official Arduino-ESP32 Core 3.3.7 `Update.h` defines `UPDATE_ERROR_MAGIC_BYTE = 8`, but also exposes `getError()` and `errorString()`.
+- Root-cause in JE X FYZ diagnostics: the Local OTA failure path was hardcoding `OTA_ERROR_MAGIC_BYTE` (code 8) whenever `Update.end(true)` returned false. Therefore the UI's code 8 did **not** identify the actual Update failure at that stage.
+- Verified official Core 3.3.7 WebUpdate example uses the simple Arduino lifecycle `Update.begin()` -> `Update.write()` -> `Update.end(true)`.
+- Production Local OTA was changed to use the official simple `Update.begin()` call instead of `Update.begin(localOtaExpectedBytes)`.
+- Production Local OTA failure reporting now captures the real `Update.getError()` and `Update.errorString()` before calling the project failure handler, instead of inventing a magic-byte error code.
+- Production firmware version advanced to **V1.5** because Local OTA runtime behavior changed.
+- Source commit for version bump/final source: `a36c4fa7748b3e9369a92ab1c583f177a0b13705`.
+- The change is intentionally limited to Local OTA begin/end error handling and uses the official Arduino Update API pattern. BLE, NTC, Fan/Peltier, RGB, Adaptive, GPIO, settings, online OTA protocol, and app behavior were not intentionally redesigned.
+- **Important unresolved runtime status:** V1.4 failed Local OTA at `Update.end(true)`. The V1.5 source fix has not yet been physically tested. Therefore V1.5 must not be declared OTA-fixed until a physical Local OTA upload succeeds.
+- Release gate: V1.5 must pass ArduinoDroid/Core 3.3.7 compile, release compile, OTA protected-source audit, artifact verification, and publication before any V1.5 binary is delivered for manual testing.
