@@ -1420,6 +1420,13 @@ The project process is now explicitly two-phase:
 - The source itself was structurally correct; only the audit's marker-matching rule was too broad.
 - The CI audit was tightened to distinguish start/end markers before the next V4.6 build.
 
+## 2026-09-26 — EXECUTION COMPLETION RULE / OTA RELEASE GATE
+
+- Rule for future full Code/Firmware execution: the task is not complete merely because a GitHub Actions run was triggered or is in progress.
+- Continue until the latest required run reaches a terminal success state and the full pipeline is verified: source audit -> OTA safety audit -> compile -> firmware artifact -> ArduinoDroid temporary source -> publication -> public manifest.
+- If any required stage fails, inspect the actual failure log, fix the root cause in the repository, commit the correction, trigger the next run, and continue verification until the final requested pipeline succeeds.
+- Do not report completion or provide a final release artifact while the required run is failed, incomplete, or its required output has not been independently verified.
+- Treat failed/intermediate runs as engineering states to be repaired within the same execution request.
 # END OF FIRMWARE ENGINEERING MEMORY
 
 

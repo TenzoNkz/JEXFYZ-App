@@ -2572,6 +2572,11 @@ The project process is now explicitly two-phase:
 - No App Build was triggered by this firmware maintenance execution.
 - Physical validation target after build: manual V4.6 ArduinoDroid temporary flash followed by Online OTA to public V4.6.
 - Local OTA remains separately tracked for the prior Flash Readback/code 3 issue.
+## 2026-09-26 — EXECUTION COMPLETION RULE
+
+- For full Code/Firmware execution, continue through final build and publication verification instead of stopping after Actions is triggered.
+- Inspect and fix build failures, rerun the pipeline, and continue until the requested final firmware pipeline succeeds.
+- Do not treat an intermediate or failed Actions run as completion.
 # END OF APP PROJECT MEMORY
 
 ## 2026-09-26 — Code #2: firmware source cleanup + App BLE contract synchronization

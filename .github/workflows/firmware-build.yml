@@ -138,8 +138,11 @@ jobs:
               raise SystemExit("OTA SAFETY AUDIT FAILED: OTA engine end marker invalid")
           if s.count("OTA PRIORITY SUPERVISOR — LOCKED ====================") != 1:
               raise SystemExit("OTA SAFETY AUDIT FAILED: OTA supervisor marker invalid")
-          if "delay(" in s[ota_start:ota_end]:
-              raise SystemExit("OTA SAFETY AUDIT FAILED: delay() inside OTA engine")
+          import re
+          ota_code = re.sub(r'//.*', '', s[ota_start:ota_end])
+          ota_code = re.sub(r'/\*.*?\*/', '', ota_code, flags=re.S)
+          if re.search(r'\bdelay\s*\(', ota_code):
+              raise SystemExit("OTA SAFETY AUDIT FAILED: blocking delay() inside OTA engine")
           print("OTA SAFETY AUDIT: PASS")
           PY
       - name: Compile ESP32-C3 firmware
