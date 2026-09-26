@@ -85,6 +85,55 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "Firmware version: $VERSION"
 
+      - name: OTA protected-source audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          s = Path("firmware/JEXFYZ.ino").read_text(encoding="utf-8")
+          required = [
+              "OTA SAFETY LOCK",
+              "OTA STATE / PRIORITY LOCK",
+              "OTA PRIORITY SUPERVISOR — LOCKED",
+              "OTA ENGINE — LOCKED",
+              "OTA DIAGNOSTIC CORE — LOCKED",
+              "serviceOtaPriority()",
+              "startLocalOtaAp();",
+              "processOnlineOta();",
+              "localOtaUploadHandler",
+              "esp_ota_begin",
+              "esp_ota_write",
+              "esp_ota_end",
+              "esp_ota_set_boot_partition",
+              "ONLINE_RANGE_PROBE",
+              "ONLINE_RANGE_REQUEST",
+              "ONLINE_RANGE_RESUME",
+              "OTA_STAGE",
+              "OTA_PROGRESS",
+              "OTA_ERROR_CODE",
+              "OTA_ERROR",
+              "LAST_OTA_RESULT",
+          ]
+          missing = [x for x in required if x not in s]
+          if missing:
+              raise SystemExit("OTA SAFETY AUDIT FAILED: " + ", ".join(missing))
+          if 'static constexpr char FW_VERSION[] = "V4.6";' not in s:
+              raise SystemExit("OTA SAFETY AUDIT FAILED: version is not V4.6")
+          if "setInsecure()" in s:
+              raise SystemExit("OTA SAFETY AUDIT FAILED: insecure TLS leaked into release source")
+          loop_start = s.index("void loop()")
+          loop = s[loop_start:]
+          ota_pos = loop.index("serviceOtaPriority()")
+          feature_pos = loop.find("touchButton.tick()")
+          if feature_pos != -1 and ota_pos > feature_pos:
+              raise SystemExit("OTA SAFETY AUDIT FAILED: feature processing precedes OTA supervisor")
+          ota_start = s.index("OTA ENGINE — LOCKED")
+          ota_end = s.index("END OTA ENGINE — LOCKED")
+          if "delay(" in s[ota_start:ota_end]:
+              raise SystemExit("OTA SAFETY AUDIT FAILED: delay() inside OTA engine")
+          print("OTA SAFETY AUDIT: PASS")
+          PY
       - name: Compile ESP32-C3 firmware
         run: |
           set -euo pipefail

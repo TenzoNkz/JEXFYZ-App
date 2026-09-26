@@ -2565,6 +2565,13 @@ The project process is now explicitly two-phase:
 - No App command names, BLE/P1 transport, device UUIDs, or core UI feature behavior were changed as part of the V4.5 Online OTA fix.
 - Current project state: public firmware V4.5 is the active release; installed test device is running V4.5; App source remains aligned to the OTA diagnostic protocol.
 - The user's currently installed APK remains the existing App Build; no new APK build was triggered by the V4.5 firmware execution.
+## 2026-09-26 — V4.6 OTA SAFETY BASELINE
+
+- Firmware V4.6 introduces a top OTA Safety Lock, first-in-loop OTA Priority Supervisor, early OTA/AP startup, protected OTA code fences, and a CI OTA invariant audit.
+- App BLE/P1 transport and OTA diagnostic key names remain unchanged.
+- No App Build was triggered by this firmware maintenance execution.
+- Physical validation target after build: manual V4.6 ArduinoDroid temporary flash followed by Online OTA to public V4.6.
+- Local OTA remains separately tracked for the prior Flash Readback/code 3 issue.
 # END OF APP PROJECT MEMORY
 
 ## 2026-09-26 — Code #2: firmware source cleanup + App BLE contract synchronization

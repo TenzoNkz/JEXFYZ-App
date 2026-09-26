@@ -1396,6 +1396,18 @@ The project process is now explicitly two-phase:
 - OTA diagnostic telemetry remains active: OTA_STAGE, OTA_PROGRESS, OTA_ERROR_CODE, OTA_ERROR, and structured LAST_OTA_RESULT.
 - No GPIO, NTC, cooling, Adaptive, voltage, RGB, touch, BLE UUID/P1 contract, or Wi-Fi/BLE ownership behavior was changed by the V4.5 Online OTA fix.
 - Current firmware test state: device is running V4.5 after a successful Online OTA update.
+## 2026-09-26 — V4.6 OTA SAFETY LOCK / CODE HYGIENE EXECUTION
+
+- Firmware source advanced from V4.5 to V4.6 for OTA-priority hardening and code cleanup.
+- Added a top-of-file OTA Safety Lock with release-critical constants, compile-time size guards, OTA state declarations, and maintenance rules.
+- Added an OTA Priority Supervisor that runs first in loop() and owns OTA restart, boot AP, Local OTA, Online OTA, and safe-output handling before application feature processing.
+- OTA/AP startup was moved earlier in setup(), immediately after the power-control outputs are configured OFF and before sensor/LED/application initialization.
+- OTA Diagnostic Core and OTA Engine are enclosed in locked comment fences to reduce accidental regression during future feature edits.
+- Added a CI OTA protected-source audit that verifies required OTA engine functions, diagnostic telemetry, resumable transport, secure release TLS, loop priority, and absence of delay() inside the locked OTA engine.
+- Existing V4.5 resumable Online OTA transport was preserved; the successful Range/reconnect/resume mechanism was not intentionally redesigned.
+- Source whitespace was cleaned by removing trailing whitespace and excessive blank-line runs; deliberate OTA lock spacing remains.
+- Absolute zero OTA failure cannot be guaranteed under all external conditions, but these guards are designed to keep OTA operational and prevent OTA-breaking source changes from reaching a release.
+- No GPIO, NTC, cooling, Adaptive, voltage, RGB, touch, BLE UUID/P1 contract, Wi-Fi/BLE ownership, or working V4.5 Online OTA behavior was intentionally changed.
 # END OF FIRMWARE ENGINEERING MEMORY
 
 

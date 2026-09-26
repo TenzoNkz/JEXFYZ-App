@@ -22,7 +22,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
-static constexpr char FW_VERSION[] = "V4.5";
+static constexpr char FW_VERSION[] = "V4.6";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -49,16 +49,48 @@ static const IPAddress AP_IP(192, 168, 4, 1);
 static const IPAddress AP_GATEWAY(192, 168, 4, 1);
 static const IPAddress AP_SUBNET(255, 255, 255, 0);
 
+// ============================================================================
+// ============================ OTA SAFETY LOCK ==============================
+// OTA is release-critical. Keep this section near the top of the file.
+// Never remove or bypass OTA startup, OTA priority, OTA diagnostics, safe
+// outputs, finalization, or boot-partition activation during feature changes.
+// Every future firmware change must pass the OTA safety audit and build.
+// ============================================================================
 static constexpr uint32_t BOOT_AP_TIMEOUT_MS          = 10000;
 static constexpr uint32_t LED_FRAME_INTERVAL_MS       = 33;
 static constexpr uint32_t OTA_RESTART_DELAY_MS        = 1200;
 static constexpr uint32_t OTA_FAILURE_INDICATOR_MS    = 1000;
 static constexpr uint32_t WIFI_CONNECT_TIMEOUT_MS     = 15000;
-static constexpr uint32_t ONLINE_OTA_HTTP_TIMEOUT_MS   = 60000;
+static constexpr uint32_t ONLINE_OTA_HTTP_TIMEOUT_MS  = 60000;
 static constexpr size_t ONLINE_OTA_RANGE_CHUNK_BYTES  = 64 * 1024;
-static constexpr uint8_t ONLINE_OTA_RANGE_RETRIES     = 3;
-static constexpr uint32_t OTA_MAX_FIRMWARE_BYTES      = 2 * 1024 * 1024;
+static constexpr uint8_t ONLINE_OTA_RANGE_RETRIES    = 3;
+static constexpr uint32_t OTA_MAX_FIRMWARE_BYTES     = 2 * 1024 * 1024;
+static_assert(ONLINE_OTA_RANGE_CHUNK_BYTES > 0,
+              "OTA SAFETY: range chunk must be non-zero");
+static_assert(ONLINE_OTA_RANGE_CHUNK_BYTES <= OTA_MAX_FIRMWARE_BYTES,
+              "OTA SAFETY: range chunk exceeds firmware limit");
+static_assert(OTA_MAX_FIRMWARE_BYTES <= 2 * 1024 * 1024,
+              "OTA SAFETY: firmware limit exceeded");
 
+// ============================================================================
+// ======================= OTA STATE / PRIORITY LOCK =========================
+// These declarations intentionally precede application feature state.
+// ============================================================================
+enum class OtaState : uint8_t {
+  IDLE,
+  BOOT_AP,
+  LOCAL_UPLOAD,
+  CLOUD_CONNECTING,
+  CLOUD_DOWNLOADING,
+  CLOUD_APPLYING,
+  SUCCESS,
+  FAILED,
+};
+
+static bool serviceOtaPriority();
+static void processPendingOnlineOtaStart();
+
+// ========================== END OTA PRIORITY LOCK ===========================
 
 static constexpr size_t BLE_TX_QUEUE_SIZE = 48;
 static constexpr size_t BLE_RX_QUEUE_SIZE = 16;
@@ -153,17 +185,6 @@ enum class VoltageRequestSource : uint8_t {
   SAFETY,
 };
 
-enum class OtaState : uint8_t {
-  IDLE,
-  BOOT_AP,
-  LOCAL_UPLOAD,
-  CLOUD_CONNECTING,
-  CLOUD_DOWNLOADING,
-  CLOUD_APPLYING,
-  SUCCESS,
-  FAILED,
-};
-
 Voltage currentVoltage = Voltage::V5;
 Voltage pendingVoltage = Voltage::V5;
 
@@ -228,6 +249,7 @@ uint32_t adaptiveUpDueMs = 0;
 bool adaptiveDownPending = false;
 Voltage adaptiveDownTarget = Voltage::V5;
 
+// ========================= OTA STATE — PROTECTED ===========================
 bool otaActive = false;
 OtaState otaState = OtaState::BOOT_AP;
 uint32_t otaRestartAt = 0;
@@ -247,6 +269,7 @@ uint32_t cloudBytesReceived = 0;
 uint32_t cloudPhaseStartedAt = 0;
 bool cloudTimeSyncStarted = false;
 
+// ====================== OTA DIAGNOSTICS — PROTECTED =========================
 String otaDiagnosticStage = "IDLE";
 String otaDiagnosticError = "NONE";
 int otaDiagnosticErrorCode = 0;
@@ -1375,6 +1398,7 @@ static const char* otaStateText(OtaState state) {
   return "IDLE";
 }
 
+// ====================== OTA DIAGNOSTIC CORE — LOCKED ========================
 static String sanitizeOtaDetail(String value) {
   value.replace("|", "/");
   value.replace("\r", " ");
@@ -1458,6 +1482,7 @@ static String otaUpdateFailureStage(bool online, int errorCode) {
   }
 }
 
+// ================= END OTA DIAGNOSTIC CORE — LOCKED ========================
 static void setOtaState(OtaState state) {
   if (otaState == state) return;
   otaState = state;
@@ -1800,6 +1825,11 @@ static void startBle() {
   }
 }
 
+// ============================================================================
+// ========================== OTA ENGINE — LOCKED ============================
+// Keep OTA networking, flash write/read, validation, cleanup, and activation
+// isolated from application feature changes. No delay() belongs in this block.
+// ============================================================================
 static bool validHttpsUrl(const String& value) {
   return value.startsWith("https://") && value.length() <= 180;
 }
@@ -2651,6 +2681,7 @@ static void stopLocalOtaAp() {
   }
 }
 
+// ======================== END OTA ENGINE — LOCKED ==========================
 static bool setFanState(bool desired, String& reason) {
   if (adaptiveOn) {
     reason = "ADAPTIVE_ACTIVE";
@@ -3339,6 +3370,64 @@ static void onTouchLongPress() {
   executeTouchLong();
 }
 
+// ============================================================================
+// ====================== OTA PRIORITY SUPERVISOR — LOCKED ====================
+// Executed first by loop(). OTA gets control before normal feature processing.
+// ============================================================================
+static bool serviceOtaPriority() {
+  if (otaState == OtaState::SUCCESS &&
+      otaRestartAt != 0 &&
+      millis() >= otaRestartAt) {
+    ESP.restart();
+    return true;
+  }
+
+  if (bootApActive) {
+    webServer.handleClient();
+    const uint8_t clientCount = WiFi.softAPgetStationNum();
+
+    if (clientCount > 0 && !bootApHadClient) {
+      bootApHadClient = true;
+      bootApClientSafe = true;
+      applyOtaSafeOutputs();
+      stopUserLedOutput();
+      stopBleForBootWiFiClient();
+    } else if (clientCount == 0 &&
+               otaState != OtaState::LOCAL_UPLOAD &&
+               !otaActive &&
+               millis() - bootApStartedAt >= BOOT_AP_TIMEOUT_MS) {
+      stopLocalOtaAp();
+      bootApClientSafe = false;
+      bootApHadClient = false;
+      if (!BLEDevice::getInitialized()) startBle();
+      return false;
+    }
+
+    if (bootApHadClient ||
+        otaState == OtaState::LOCAL_UPLOAD ||
+        otaActive) {
+      processLeds();
+    }
+    return true;
+  }
+
+  if (otaState == OtaState::LOCAL_UPLOAD) {
+    webServer.handleClient();
+    processLeds();
+    return true;
+  }
+
+  if (otaActive &&
+      otaState != OtaState::SUCCESS &&
+      otaState != OtaState::FAILED) {
+    processOnlineOta();
+    processLeds();
+    return true;
+  }
+
+  return false;
+}
+
 static void setupTouch() {
   pinMode(PIN_TOUCH, INPUT);
   touchButton.setDebounceMs(50);
@@ -3358,18 +3447,22 @@ void setup() {
 
   Serial.begin(115200);
 
-  pinMode(PIN_NTC, INPUT);
-  pinMode(PIN_TOUCH, INPUT);
-  setupTouch();
+  // Establish all power-control outputs OFF before starting OTA service.
   pinMode(PIN_12V, OUTPUT);
   pinMode(PIN_9V, OUTPUT);
   pinMode(PIN_FAN, OUTPUT);
   pinMode(PIN_PELTIER, OUTPUT);
-
   digitalWrite(PIN_12V, OUTPUT_OFF);
   digitalWrite(PIN_9V, OUTPUT_OFF);
   digitalWrite(PIN_FAN, OUTPUT_OFF);
   digitalWrite(PIN_PELTIER, OUTPUT_OFF);
+
+  // OTA/AP starts before non-OTA feature initialization.
+  startLocalOtaAp();
+
+  pinMode(PIN_NTC, INPUT);
+  pinMode(PIN_TOUCH, INPUT);
+  setupTouch();
 
   analogReadResolution(12);
   analogSetPinAttenuation(PIN_NTC, ADC_11db);
@@ -3404,62 +3497,12 @@ void setup() {
   sampleNtcIfDue();
   enforceSafety();
 
-  startLocalOtaAp();
 }
 
 void loop() {
 
-  if (otaState == OtaState::SUCCESS &&
-      otaRestartAt != 0 &&
-      millis() >= otaRestartAt) {
-    ESP.restart();
-    return;
-  }
-
-  if (bootApActive) {
-    webServer.handleClient();
-
-    const uint8_t clientCount = WiFi.softAPgetStationNum();
-    if (clientCount > 0) {
-      if (!bootApHadClient) {
-        bootApHadClient = true;
-        bootApClientSafe = true;
-
-        applyOtaSafeOutputs();
-        stopUserLedOutput();
-        stopBleForBootWiFiClient();
-      }
-    } else if (otaState != OtaState::LOCAL_UPLOAD && !otaActive &&
-               millis() - bootApStartedAt >= BOOT_AP_TIMEOUT_MS) {
-
-      stopLocalOtaAp();
-      bootApClientSafe = false;
-      bootApHadClient = false;
-      if (!BLEDevice::getInitialized()) {
-        startBle();
-      }
-    }
-
-    if (bootApHadClient || otaState == OtaState::LOCAL_UPLOAD || otaActive) {
-      processLeds();
-      return;
-    }
-
-  }
-
-  if (otaState == OtaState::LOCAL_UPLOAD) {
-    webServer.handleClient();
-    processLeds();
-    return;
-  }
-
-  if (otaActive &&
-      otaState != OtaState::SUCCESS &&
-      otaState != OtaState::FAILED) {
-    processOnlineOta();
-    processLeds();
-    return;
-  }
+  // ================= OTA PRIORITY: DO NOT MOVE DOWN =================
+  if (serviceOtaPriority()) return;
 
   if (bleQueueResetPending) {
     bleQueueResetPending = false;
@@ -3476,11 +3519,9 @@ void loop() {
   serviceBleTx();
   processBleRxQueue();
   processPendingOnlineOtaStart();
-  if (otaActive) {
-    processOnlineOta();
-    processLeds();
-    return;
-  }
+  // A pending OTA can become active immediately; return to the locked
+  // supervisor before any application feature code executes.
+  if (serviceOtaPriority()) return;
 
   touchButton.tick();
   sampleNtcIfDue();
