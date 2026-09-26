@@ -3,7 +3,7 @@
 ## 1. SOURCE AUTHORITY AND CURRENT STATE
 
 - Authoritative firmware source: `firmware/JEXFYZ.ino`.
-- Current firmware version: `V3.2`.
+- Current firmware version: `V3.3`.
 - Protocol version: `P1`.
 - BLE device name: `JE X FYZ`.
 - Target hardware: ESP32-C3 Super Mini / ESP32-C3 Dev Module class.
@@ -86,7 +86,8 @@ The current source includes:
 - HTTPClient.h.
 - WiFiClientSecure.h.
 - Preferences.h.
-- WS2812FX.h.
+- Adafruit_NeoPixel.h.
+- OneButton.h.
 - math.h.
 - time.h.
 - BLEDevice.h.
@@ -98,10 +99,10 @@ The current source includes:
 - FreeRTOS queue-mutex support.
 
 Pinned/required project libraries:
-- WS2812FX 1.4.7.
-- Adafruit NeoPixel is kept in the CI dependency list at >=1.1.7 in the source project memory, although the current source's direct LED object uses WS2812FX.
+- OneButton 2.6.1.
+- Adafruit NeoPixel 1.12.5.
 
-The firmware source does not use OneButton.
+WS2812FX is no longer used by the firmware. LED effects are implemented by the JE X FYZ custom LED engine on top of Adafruit NeoPixel.
 
 ## 5. SYSTEM ARCHITECTURE
 
@@ -1169,3 +1170,28 @@ The project process is now explicitly two-phase:
 - The next separate `Eksekusi Firmware` will build the current source.
 
 # END OF FIRMWARE ENGINEERING MEMORY
+
+
+## V3.3 CODE EXECUTION — CUSTOM LED ENGINE + ONEBUTTON
+
+- Firmware version incremented from V3.2 to V3.3 for the approved runtime/library refactor.
+- `firmware/JEXFYZ.ino` now uses `Adafruit_NeoPixel` as the low-level WS2812B driver; `WS2812FX` was removed completely.
+- LED mode numbering is now 1..8:
+  1. STATIC
+  2. BREATH
+  3. CENTER OUT
+  4. OUTER IN
+  5. DUAL CHASE
+  6. LEFT RIGHT
+  7. RAINBOW
+  8. TWINKLE
+- The LED engine is custom and non-blocking. It explicitly models the physical layout as 4 logical pixels on the left and 4 mirrored logical pixels on the right.
+  - Left: `{0,1,2,3}`
+  - Right: `{7,6,5,4}`
+- Voltage indicator, OTA success/failure/progress indicators, and safety red indication remain higher-priority than user RGB effects.
+- `OneButton` now handles the TTP223 input on GPIO1.
+- Touch behavior remains: single click 5V -> 9V -> 12V; double click RGB ON/OFF; long press Fan + Peltier ON/OFF; debounce 50 ms; double-click window 500 ms; long press threshold 5 s.
+- Existing OTA, BLE P1 protocol, safety, cooling interlocks, voltage dead-time, NTC, persistence, and radio ownership behavior were not intentionally changed by this refactor.
+- Firmware CI dependency setup now installs `OneButton 2.6.1` and `Adafruit NeoPixel 1.12.5`; WS2812FX is no longer installed.
+- No App Build was triggered by this Code execution.
+- `Eksekusi Firmware` is the separate build/publish step for V3.3.
