@@ -295,7 +295,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   bool adaptiveOn = false;
   String adaptiveCeiling = '12V';
   bool rgbOn = false;
-  int rgbMode = 0;
+  int rgbMode = 1;
   int brightness = 100;
   String rgbColor = '#FFFFFF';
   String color5V = '#FF0000';
@@ -1222,7 +1222,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         rgbOn = value == 'ON';
         break;
       case 'MODE':
-        rgbMode = int.tryParse(value) ?? rgbMode;
+        rgbMode = (int.tryParse(value) ?? rgbMode).clamp(1, 8);
         break;
       case 'BRIGHTNESS':
         brightness = (int.tryParse(value) ?? brightness).clamp(0, 100).toInt();
@@ -1476,7 +1476,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Future<void> _setMode(int mode) async {
     if (!connected) return;
     try {
-      final next = mode.clamp(0, 7).toInt();
+      final next = mode.clamp(1, 8).toInt();
       final ok = await _sendAndConfirm('MODE:$next');
       if (!ok && mounted) {
         _showSnackBar('LED mode change was not confirmed by the device.');
@@ -2629,11 +2629,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildLedTab({Key? key}) {
-    final modeName = <String>['Static', 'Breath', 'Wipe', 'Running', 'Scan', 'Theater', 'Rainbow', 'Twinkle'][rgbMode.clamp(0, 7)];
+    final modeNames = <String>['Static', 'Breath', 'Center Out', 'Outer In', 'Dual Chase', 'Left ↔ Right', 'Rainbow', 'Twinkle'];
+    final safeMode = rgbMode.clamp(1, 8);
+    final modeName = modeNames[safeMode - 1];
     return KeyedSubtree(key: key, child: _smoothList(
       storageKey: 'led',
       children: [
-        _sectionTitle('LED', subtitle: '8× WS2812B • effects.'),
+        _sectionTitle('LED', subtitle: '4 kiri + 4 kanan • custom effects.'),
         _card(
           padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
           child: Column(
