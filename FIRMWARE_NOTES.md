@@ -670,3 +670,21 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - No other production logic was changed by this correction.
 - Run #70 release job was correctly skipped because the validation compile failed.
 - Next boundary: rerun the same pinned Core 3.3.7 ArduinoDroid validation and then the release build/publish. No binary from Run #70 is valid for OTA.
+
+## 2026-09-27 — RUN #71 FINAL V1.4 BUILD / ARTIFACT / PUBLICATION PASS
+- Run #71 (`36278510756`) completed successfully.
+- `validate-arduinodroid`: PASS, including Arduino-ESP32 Core 3.3.7 installation, pinned library installation, ArduinoDroid temporary-source preparation, and ESP32-C3 compile.
+- `build-and-publish`: PASS, including firmware source identity audit, version extraction, OTA protected-source audit, ESP32-C3 release compile, artifact upload, ArduinoDroid source artifact upload, and publication to `TenzoNkz/JEXFYZ-Firmware`.
+- Production firmware source commit: `af86fe1db68987acd5d8da01f4f2e0e6a6fe26ce`.
+- Final firmware version: **V1.4**.
+- Final release binary: `JEXFYZ-V1.4.bin`, **1,465,280 bytes**.
+- Final artifact ZIP was downloaded and extracted locally; the binary file was present and non-empty.
+- Public firmware repository was verified to contain `JEXFYZ-V1.4.bin` at 1,465,280 bytes.
+- Public manifest was verified as:
+  ```
+  {
+    "version": "V1.4",
+    "url": "https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V1.4.bin"
+  }
+  ```
+- CI validation is therefore PASS; this does not yet constitute physical V1.4 runtime validation on the user's board.
