@@ -88,3 +88,25 @@
 - Image size: 1,826,608 bytes; app slot maximum: 1,966,080 bytes (92% used).
 - Artifact upload succeeded; public repository publish was not reached because `FIRMWARE_REPO_TOKEN` was empty/unavailable in the Actions environment.
 - This is now the only blocking item for the complete automated publish pipeline; no firmware source build error remains in this run.
+
+
+## 2026-09-26 — Unified build execution trigger architecture
+
+### Trigger behavior
+- Removed manual `workflow_dispatch` from Firmware Build.
+- Firmware Build runs on push when `firmware/JEXFYZ.ino` changes or when `.github/FIRMWARE_BUILD_TRIGGER` is updated for an explicit Code-sub-chat execution.
+- A commit may contain firmware plus other files; a firmware change still starts the same workflow.
+- App Build is separate and uses its own `.github/APP_BUILD_TRIGGER` path, with no manual dispatch.
+
+### Public binary layout
+- Firmware release binary is now published at the root of `TenzoNkz/JEXFYZ-Firmware`.
+- Filename format: `JEXFYZ-Vx.x.bin`, where the version is extracted from `FW_VERSION[]` in `firmware/JEXFYZ.ino`.
+- The workflow no longer uses `releases/`.
+- The manifest URL is generated as:
+  `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-Vx.x.bin`.
+- Legacy `JEXFYZ.cpp.bin` and older root `JEXFYZ-V*.bin` files are removed during a successful publish.
+
+### Verification / pending state
+- The updated workflow was committed and verified on `main`.
+- The trigger-file setup started Firmware Build Run #9; at note update time it was still in progress.
+- Previous Run #8 compiled V3.2 successfully but could not publish because `FIRMWARE_REPO_TOKEN` was unavailable. This secret is still required for Actions to push into the separate public repository.
