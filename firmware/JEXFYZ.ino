@@ -1,9 +1,9 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <WebServer.h>
-#include <esp_ota_ops.h>
-#include <esp_err.h>
 #include <HTTPClient.h>
+#include <HTTPUpdate.h>
+#include <Update.h>
 #include <WiFiClientSecure.h>
 #include <Preferences.h>
 #include <Adafruit_NeoPixel.h>
@@ -20,7 +20,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
-static constexpr char FW_VERSION[] = "V3.9";
+static constexpr char FW_VERSION[] = "V4.0";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -52,77 +52,8 @@ static constexpr uint32_t LED_FRAME_INTERVAL_MS       = 33;
 static constexpr uint32_t OTA_RESTART_DELAY_MS        = 1200;
 static constexpr uint32_t OTA_FAILURE_INDICATOR_MS    = 1000;
 static constexpr uint32_t WIFI_CONNECT_TIMEOUT_MS     = 15000;
-static constexpr uint32_t OTA_NO_DATA_TIMEOUT_MS      = 7000;
 static constexpr uint32_t OTA_MAX_FIRMWARE_BYTES      = 2 * 1024 * 1024;
 
-static constexpr char GITHUB_ROOT_CA[] PROGMEM = R"CERT(-----BEGIN CERTIFICATE-----
-MIIDjjCCAnagAwIBAgIQAzrx5qcRqaC7KGSxHQn65TANBgkqhkiG9w0BAQsFADBh
-MQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3
-d3cuZGlnaWNlcnQuY29tMSAwHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBH
-MjAeFw0xMzA4MDExMjAwMDBaFw0zODAxMTUxMjAwMDBaMGExCzAJBgNVBAYTAlVT
-MRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5j
-b20xIDAeBgNVBAMTF0RpZ2lDZXJ0IEdsb2JhbCBSb290IEcyMIIBIjANBgkqhkiG
-9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuzfNNNx7a8myaJCtSnX/RrohCgiN9RlUyfuI
-2/Ou8jqJkTx65qsGGmvPrC3oXgkkRLpimn7Wo6h+4FR1IAWsULecYxpsMNzaHxmx
-1x7e/dfgy5SDN67sH0NO3Xss0r0upS/kqbitOtSZpLYl6ZtrAGCSYP9PIUkY92eQ
-q2EGnI/yuum06ZIya7XzV+hdG82MHauVBJVJ8zUtluNJbd134/tJS7SsVQepj5Wz
-tCO7TG1F8PapspUwtP1MVYwnSlcUfIKdzXOS0xZKBgyMUNGPHgm+F6HmIcr9g+UQ
-vIOlCsRnKPZzFBQ9RnbDhxSJITRNrw9FDKZJobq7nMWxM4MphQIDAQABo0IwQDAP
-BgNVHRMBAf8EBTADAQH/MA4GA1UdDwEB/wQEAwIBhjAdBgNVHQ4EFgQUTiJUIBiV
-5uNu5g/6+rkS7QYXjzkwDQYJKoZIhvcNAQELBQADggEBAGBnKJRvDkhj6zHd6mcY
-1Yl9PMWLSn/pvtsrF9+wX3N3KjITOYFnQoQj8kVnNeyIv/iPsGEMNKSuIEyExtv4
-NeF22d+mQrvHRAiGfzZ0JFrabA0UWTW98kndth/Jsw1HKj2ZL7tcu7XUIOGZX1NG
-Fdtom/DzMNU+MeKNhJ7jitralj41E6Vf8PlwUHBHQRFXGU7Aj64GxJUTFy8bJZ91
-8rGOmaFvE7FBcf6IKshPECBV1/MUReXgRPTqh5Uykw7+U0b6LJ3/iyK5S9kJRaTe
-pLiaWN0bfVKfjllDiIGknibVb63dDcY3fe0Dkhvld1927jyNxF1WW6LZZm6zNTfl
-MrY=
------END CERTIFICATE-----
------BEGIN CERTIFICATE-----
-MIIFZjCCA06gAwIBAgIQCPm0eKj6ftpqMzeJ3nzPijANBgkqhkiG9w0BAQwFADBN
-MQswCQYDVQQGEwJVUzEXMBUGA1UEChMORGlnaUNlcnQsIEluYy4xJTAjBgNVBAMT
-HERpZ2lDZXJ0IFRMUyBSU0E0MDk2IFJvb3QgRzUwHhcNMjEwMTE1MDAwMDAwWhcN
-NDYwMTE0MjM1OTU5WjBNMQswCQYDVQQGEwJVUzEXMBUGA1UEChMORGlnaUNlcnQs
-IEluYy4xJTAjBgNVBAMTHERpZ2lDZXJ0IFRMUyBSU0E0MDk2IFJvb3QgRzUwggIi
-MA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQCz0PTJeRGd/fxmgefM1eS87IE+
-ajWOLrfn3q/5B03PMJ3qCQuZvWxX2hhKuHisOjmopkisLnLlvevxGs3npAOpPxG0
-2C+JFvuUAT27L/gTBaF4HI4o4EXgg/RZG5Wzrn4DReW+wkL+7vI8toUTmDKdFqgp
-wgscONyfMXdcvyej/Cestyu9dJsXLfKB2l2w4SMXPohKEiPQ6s+d3gMXsUJKoBZM
-pG2T6T867jp8nVid9E6P/DsjyG244gXazOvswzH016cpVIDPRFtMbzCe88zdH5RD
-nU1/cHAN1DrRN/BsnZvAFJNY781BOHW8EwOVfH/jXOnVDdXifBBiqmvwPXbzP6Po
-sMH976pXTayGpxi0KcEsDr9kvimM2AItzVwv8n/vFfQMFawKsPHTDU9qTXeXAaDx
-Zre3zu/O7Oyldcqs4+Fj97ihBMi8ez9dLRYiVu1ISf6nL3kwJZu6ay0/nTvEF+cd
-Lvvyz6b84xQslpghjLSR6Rlgg/IwKwZzUNWYOwbpx4oMYIwo+FKbbuH2TbsGJJvX
-KyY//SovcfXWJL5/MZ4PbeiPT02jP/816t9JXkGPhvnxd3lLG7SjXi/7RgLQZhNe
-XoVPzthwiHvOAbWWl9fNff2C+MIkwcoBOU+NosEUQB+cZtUMCUbW8tDRSHZWOkPL
-tgoRObqME2wGtZ7P6wIDAQABo0IwQDAdBgNVHQ4EFgQUUTMc7TZArxfTJc1paPKv
-TiM+s0EwDgYDVR0PAQH/BAQDAgGGMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcN
-AQEMBQADggIBAGCmr1tfV9qJ20tQqcQjNSH/0GEwhJG3PxDPJY7Jv0Y02cEhJhxw
-GXIeo8mH/qlDZJY6yFMECrZBu8RHANmfGBg7sg7zNOok992vIGCukihfNudd5N7H
-PNtQOa27PShNlnx2xlv0wdsUpasZYgcYQF+Xkdycx6u1UQ3maVNVzDl92sURVXLF
-O4uJ+DQtpBflF+aZfTCIITfNMBc9uPK8qHWgQ9w+iUuQrm0D4ByjoJYJu32jtyoQ
-REtGBzRj7TG5BO6jm5qu5jF49OokYTurWGT/u4cnYiWB39yhL/btp/96j1EuMPik
-AdKFOV8BmZZvWltwGUb+hmA+rYAQCd05JS9Yf7vSdPD3Rh9GOUrYU9DzLjtxpdRv
-/PNn5AeP3SYZ4Y1b+qOTEZvpyDrDVWiakuFSdjjo4bq9+0/V77PnSIMx8IIh47a+
-p6tv75/fTM8BuGJqIz3nCU2AG3swpMPdB380vqQmsvZB6Akd4yCYqjdP//fx4ilw
-MUc/dNAUFvohigLVigmUdy7yWSiLfFCSCmZ4OIN1xLVaqBHG5cGdZlXPU8Sv13WF
-qUITVuwhd4GTWgzqltlJyqEI8pc7bZsEGCREjnwB8twl2F6GmrE52/WRMmrRpnCK
-ovfepEWFJqgejF0pW8hL2JpqA15w8oVPbEtoL8pU9ozaMv7Da4M/OMZ+
------END CERTIFICATE-----
------BEGIN CERTIFICATE-----
-MIICGTCCAZ+gAwIBAgIQCeCTZaz32ci5PhwLBCou8zAKBggqhkjOPQQDAzBOMQsw
-CQYDVQQGEwJVUzEXMBUGA1UEChMORGlnaUNlcnQsIEluYy4xJjAkBgNVBAMTHURp
-Z2lDZXJ0IFRMUyBFQ0MgUDM4NCBSb290IEc1MB4XDTIxMDExNTAwMDAwMFoXDTQ2
-MDExNDIzNTk1OVowTjELMAkGA1UEBhMCVVMxFzAVBgNVBAoTDkRpZ2lDZXJ0LCBJ
-bmMuMSYwJAYDVQQDEx1EaWdpQ2VydCBUTFMgRUNDIFAzODQgUm9vdCBHNTB2MBAG
-ByqGSM49AgEGBSuBBAAiA2IABMFEoc8Rl1Ca3iOCNQfN0MsYndLxf3c1TzvdlHJS
-7cI7+Oz6e2tYIOyZrsn8aLN1udsJ7MgT9U7GCh1mMEy7H0cKPGEQQil8pQgO4CLp
-0zVozptjn4S1mU1YoI71VOeVyaNCMEAwHQYDVR0OBBYEFMFRRVBZqz7nLFr6ICIS
-B4CIfBFqMA4GA1UdDwEB/wQEAwIBhjAPBgNVHRMBAf8EBTADAQH/MAoGCCqGSM49
-BAMDA2gAMGUCMQCJao1H5+z8blUD2WdsJk6Dxv3J+ysTvLd6jLRl0mlpYxNjOyZQ
-LgGheQaRnUi/wr4CMEfDFXuxoJGZSZOoPHzoRgaLLPIxAJSdYsiJvRmEFOml+wG4
-DXZDjC5Ty3zfDBeWUA==
------END CERTIFICATE-----
-)CERT";
 
 static constexpr size_t BLE_TX_QUEUE_SIZE = 48;
 static constexpr size_t BLE_RX_QUEUE_SIZE = 16;
@@ -305,13 +236,10 @@ String cloudVersion;
 
 HTTPClient cloudHttp;
 WiFiClientSecure cloudClient;
-uint32_t localOtaBytesReceived = 0;
+size_t localOtaBytesReceived = 0;
+size_t localOtaExpectedBytes = UPDATE_SIZE_UNKNOWN;
 uint32_t cloudBytesReceived = 0;
 uint32_t cloudPhaseStartedAt = 0;
-uint32_t cloudLastDataAt = 0;
-esp_ota_handle_t otaHandle = 0;
-const esp_partition_t* otaPartition = nullptr;
-bool otaHandleActive = false;
 bool cloudTimeSyncStarted = false;
 
 bool bootApActive = true;
@@ -355,11 +283,7 @@ static void clearBleTxQueue();
 static void clearBleRxQueue();
 static void processBleRxQueue();
 static void processPendingOnlineOtaStart();
-static String otaErrorResult(const char* phase, esp_err_t error);
-static bool beginOtaUpdate(String& detail);
-static bool writeOtaChunk(const uint8_t* data, size_t length, String& detail);
-static bool finishOtaUpdate(String& detail);
-static void abortOtaUpdate();
+static void failLocalOta(const String& reason);
 
 static const char* voltageToString(Voltage value) {
   switch (value) {
@@ -1694,7 +1618,6 @@ static void stopBleRadio() {
     bleConnectionId = BLE_INVALID_CONN_ID;
 
     BLEDevice::deinit(false);
-    delay(20);
     yield();
   } else {
     bleClientConnected = false;
@@ -1717,14 +1640,29 @@ static void startBle() {
   WiFi.disconnect(true, false);
   WiFi.softAPdisconnect(true);
   WiFi.mode(WIFI_OFF);
-  BLEDevice::init(BLE_NAME);
-  BLEDevice::setMTU(247);
 
+  if (!BLEDevice::init(BLE_NAME)) {
+    return;
+  }
+
+  if (BLEDevice::setMTU(247) != ESP_OK) {
+    BLEDevice::deinit(false);
+    return;
+  }
 
   bleServer = BLEDevice::createServer();
+  if (bleServer == nullptr) {
+    BLEDevice::deinit(false);
+    return;
+  }
   bleServer->setCallbacks(new ServerCallbacks());
 
   BLEService* service = bleServer->createService(SERVICE_UUID);
+  if (service == nullptr) {
+    BLEDevice::deinit(false);
+    bleServer = nullptr;
+    return;
+  }
 
   const uint32_t rxProperties = BLECharacteristic::PROPERTY_WRITE;
   rxCharacteristic = service->createCharacteristic(RX_UUID, rxProperties);
@@ -1769,103 +1707,9 @@ static void clearCloudCredentials() {
 }
 
 static void stopWiFiRadio() {
-
   WiFi.disconnect(true, false);
   WiFi.softAPdisconnect(true);
   WiFi.mode(WIFI_OFF);
-}
-
-static String otaErrorResult(const char* phase, esp_err_t error) {
-  const char* name = esp_err_to_name(error);
-  return String(phase) + "_ERROR_" +
-         String(static_cast<int32_t>(error)) + "_" +
-         String(name != nullptr ? name : "UNKNOWN");
-}
-
-static bool beginOtaUpdate(String& detail) {
-  detail = "";
-
-  if (otaHandleActive) {
-    detail = "OTA_BEGIN_ERROR_ALREADY_ACTIVE";
-    return false;
-  }
-
-  otaPartition = esp_ota_get_next_update_partition(nullptr);
-  if (otaPartition == nullptr) {
-    detail = "OTA_BEGIN_ERROR_NO_PARTITION";
-    return false;
-  }
-
-  const esp_err_t error =
-      esp_ota_begin(otaPartition, OTA_SIZE_UNKNOWN, &otaHandle);
-  if (error != ESP_OK) {
-    detail = otaErrorResult("OTA_BEGIN", error);
-    otaHandle = 0;
-    otaPartition = nullptr;
-    return false;
-  }
-
-  otaHandleActive = true;
-  return true;
-}
-
-static bool writeOtaChunk(
-    const uint8_t* data,
-    size_t length,
-    String& detail) {
-  detail = "";
-
-  if (!otaHandleActive || data == nullptr || length == 0) {
-    detail = "OTA_WRITE_ERROR_INVALID_STATE";
-    return false;
-  }
-
-  const esp_err_t error = esp_ota_write(otaHandle, data, length);
-  if (error != ESP_OK) {
-    detail = otaErrorResult("OTA_WRITE", error);
-    return false;
-  }
-
-  return true;
-}
-
-static bool finishOtaUpdate(String& detail) {
-  detail = "";
-
-  if (!otaHandleActive || otaPartition == nullptr) {
-    detail = "OTA_END_ERROR_INVALID_STATE";
-    return false;
-  }
-
-  const esp_ota_handle_t handle = otaHandle;
-  const esp_partition_t* partition = otaPartition;
-
-  const esp_err_t endError = esp_ota_end(handle);
-  otaHandle = 0;
-  otaHandleActive = false;
-  otaPartition = nullptr;
-
-  if (endError != ESP_OK) {
-    detail = otaErrorResult("OTA_END", endError);
-    return false;
-  }
-
-  const esp_err_t bootError = esp_ota_set_boot_partition(partition);
-  if (bootError != ESP_OK) {
-    detail = otaErrorResult("OTA_BOOT", bootError);
-    return false;
-  }
-
-  return true;
-}
-
-static void abortOtaUpdate() {
-  if (otaHandleActive) {
-    esp_ota_abort(otaHandle);
-  }
-  otaHandle = 0;
-  otaPartition = nullptr;
-  otaHandleActive = false;
 }
 
 static void applyOtaSafeOutputs() {
@@ -1885,9 +1729,8 @@ static void applyOtaSafeOutputs() {
 
 static void failOnlineOta(const char* reason) {
   otaRestartAt = 0;
-  if (cloudHttp.connected()) cloudHttp.end();
+  cloudHttp.end();
   cloudClient.stop();
-  abortOtaUpdate();
 
   saveOtaResult(reason);
   setOtaState(OtaState::FAILED);
@@ -1898,18 +1741,7 @@ static void failOnlineOta(const char* reason) {
 
   stopWiFiRadio();
   clearCloudCredentials();
-
-  currentVoltage = Voltage::V5;
-  pendingVoltage = Voltage::V5;
-  fanOn = false;
-  peltierOn = false;
-  adaptiveOn = false;
-  adaptiveCeiling = Voltage::V12;
-  fanPwm = 100;
-  stopPeltierOutput();
-  ledcWrite(PIN_FAN, 0);
-  digitalWrite(PIN_9V, OUTPUT_OFF);
-  digitalWrite(PIN_12V, OUTPUT_OFF);
+  applyOtaSafeOutputs();
 
   startBle();
 }
@@ -1923,7 +1755,6 @@ static void startOnlineOta() {
   otaRestartAt = 0;
   resetBlinkState();
   cloudPhaseStartedAt = millis();
-  cloudLastDataAt = millis();
   cloudBytesReceived = 0;
   cloudTimeSyncStarted = false;
 
@@ -1943,144 +1774,86 @@ static void startOnlineOta() {
   WiFi.begin(cloudSsid.c_str(), cloudPassword.c_str());
 }
 
-
-
 static void processOnlineOta() {
-  if (otaState == OtaState::CLOUD_CONNECTING) {
-    if (WiFi.status() == WL_CONNECTED) {
+  if (otaState != OtaState::CLOUD_CONNECTING) return;
 
-      if (!cloudTimeSyncStarted) {
-        configTime(0, 0, "pool.ntp.org", "time.nist.gov", "time.google.com");
-        cloudTimeSyncStarted = true;
-        cloudPhaseStartedAt = millis();
-        return;
-      }
-
-      const time_t now = time(nullptr);
-      if (now < 1700000000) {
-        if (millis() - cloudPhaseStartedAt >= 10000) {
-          failOnlineOta("TIME_SYNC_FAILED");
-        }
-        return;
-      }
-
-      setOtaState(OtaState::CLOUD_DOWNLOADING);
-      cloudPhaseStartedAt = millis();
-      cloudLastDataAt = millis();
-
-      cloudHttp.end();
-      cloudClient.stop();
-      cloudClient.setCACert(GITHUB_ROOT_CA);
-      cloudClient.setTimeout(12000);
-      cloudHttp.useHTTP10(true);
-      cloudHttp.setReuse(false);
-      cloudHttp.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
-      cloudHttp.setRedirectLimit(5);
-      cloudHttp.setTimeout(12000);
-      cloudHttp.addHeader("Cache-Control", "no-cache");
-      cloudHttp.addHeader("Pragma", "no-cache");
-
-      if (!cloudHttp.begin(cloudClient, cloudUrl)) {
-        failOnlineOta("DOWNLOAD_FAILED");
-        return;
-      }
-
-      const int statusCode = cloudHttp.GET();
-      if (statusCode != HTTP_CODE_OK) {
-        failOnlineOta("DOWNLOAD_FAILED");
-        return;
-      }
-
-      String detail;
-      if (!beginOtaUpdate(detail)) {
-        failOnlineOta(detail.c_str());
-        return;
-      }
-
-      cloudBytesReceived = 0;
-      cloudLastDataAt = millis();
-      return;
-    }
-
-    if (millis() - cloudPhaseStartedAt >= WIFI_CONNECT_TIMEOUT_MS) {
-      failOnlineOta("WIFI_FAILED");
-    }
-    return;
-  }
-
-  if (otaState == OtaState::CLOUD_DOWNLOADING) {
-    NetworkClient* stream = cloudHttp.getStreamPtr();
-    if (stream == nullptr || !otaHandleActive) {
-      failOnlineOta("DOWNLOAD_FAILED");
-      return;
-    }
-
-    const int available = stream->available();
-    if (available > 0) {
-      uint8_t buffer[1024];
-      const size_t requestLength = min(
-          static_cast<size_t>(available),
-          sizeof(buffer));
-      const int readLength = stream->read(buffer, requestLength);
-
-      if (readLength > 0) {
-        String detail;
-        if (!writeOtaChunk(
-                buffer,
-                static_cast<size_t>(readLength),
-                detail)) {
-          failOnlineOta(detail.c_str());
-          return;
-        }
-
-        cloudBytesReceived += static_cast<uint32_t>(readLength);
-        if (cloudBytesReceived > OTA_MAX_FIRMWARE_BYTES) {
-          failOnlineOta("OTA_TOO_LARGE");
-          return;
-        }
-        cloudLastDataAt = millis();
-      }
-    }
-
-    if (!stream->connected()) {
-      if (cloudBytesReceived == 0) {
-        failOnlineOta("DOWNLOAD_INCOMPLETE");
-        return;
-      }
-
-      setOtaState(OtaState::CLOUD_APPLYING);
+  if (WiFi.status() == WL_CONNECTED) {
+    if (!cloudTimeSyncStarted) {
+      configTime(0, 0, "pool.ntp.org", "time.nist.gov", "time.google.com");
+      cloudTimeSyncStarted = true;
       cloudPhaseStartedAt = millis();
       return;
     }
 
-    if (millis() - cloudLastDataAt >= OTA_NO_DATA_TIMEOUT_MS) {
-      failOnlineOta("DOWNLOAD_INCOMPLETE");
+    const time_t now = time(nullptr);
+    if (now < 1700000000) {
+      if (millis() - cloudPhaseStartedAt >= 10000) {
+        failOnlineOta("TIME_SYNC_FAILED");
+      }
       return;
     }
 
-    yield();
-    return;
-  }
+    setOtaState(OtaState::CLOUD_DOWNLOADING);
+    cloudBytesReceived = 0;
+    resetBlinkState();
 
-  if (otaState == OtaState::CLOUD_APPLYING) {
+    cloudHttp.end();
+    cloudClient.stop();
+    cloudClient.useBuiltinCACertBundle();
+    cloudClient.setTimeout(12000);
+
+    cloudHttp.setTimeout(12000);
+    cloudHttp.setReuse(false);
+    cloudHttp.setRedirectLimit(5);
+
+    if (!cloudHttp.begin(cloudClient, cloudUrl)) {
+      failOnlineOta("HTTP_BEGIN_FAILED");
+      return;
+    }
+
+    httpUpdate.rebootOnUpdate(false);
+    httpUpdate.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
+    httpUpdate.setLedPin(-1);
+
+    httpUpdate.onProgress([](int current, int total) {
+      if (current > 0) {
+        cloudBytesReceived = static_cast<uint32_t>(current);
+      }
+      renderBlink(0x0000FF);
+      yield();
+    });
+
+    const t_httpUpdate_return result =
+        httpUpdate.update(cloudHttp, FW_VERSION);
+
     cloudHttp.end();
     cloudClient.stop();
 
-    if (cloudBytesReceived == 0 || !otaHandleActive) {
-      failOnlineOta("OTA_INCOMPLETE");
+    if (result == HTTP_UPDATE_OK) {
+      setOtaState(OtaState::CLOUD_APPLYING);
+      saveOtaResult(cloudVersion.isEmpty()
+                        ? "SUCCESS"
+                        : "SUCCESS_" + cloudVersion);
+      setOtaState(OtaState::SUCCESS);
+      otaRestartAt = millis() + OTA_RESTART_DELAY_MS;
+      otaActive = true;
+      clearCloudCredentials();
       return;
     }
 
-    String detail;
-    if (!finishOtaUpdate(detail)) {
-      failOnlineOta(detail.c_str());
-      return;
+    String detail = httpUpdate.getLastErrorString();
+    if (detail.isEmpty()) {
+      detail = result == HTTP_UPDATE_NO_UPDATES
+                   ? "HTTP_UPDATE_NO_UPDATES"
+                   : "HTTP_UPDATE_FAILED";
     }
+    failOnlineOta(detail.c_str());
+  }
 
-    saveOtaResult(cloudVersion.isEmpty() ? "SUCCESS" : "SUCCESS_" + cloudVersion);
-    setOtaState(OtaState::SUCCESS);
-    otaRestartAt = millis() + OTA_RESTART_DELAY_MS;
-    clearCloudCredentials();
+  if (otaActive &&
+      otaState == OtaState::CLOUD_CONNECTING &&
+      millis() - cloudPhaseStartedAt >= WIFI_CONNECT_TIMEOUT_MS) {
+    failOnlineOta("WIFI_FAILED");
   }
 }
 
@@ -2125,7 +1898,8 @@ form.addEventListener('submit',e=>{
   e.preventDefault();
   if(!fileInput.files.length)return;
   const xhr=new XMLHttpRequest();
-  xhr.open('POST','/update');
+  const file=fileInput.files[0];
+   xhr.open('POST','/update?size='+encodeURIComponent(file.size.toString()));
   xhr.upload.onprogress=e=>{
     if(e.lengthComputable)progress.value=(e.loaded/e.total)*100;
     status.textContent='Uploading... '+progress.value.toFixed(0)+'%';
@@ -2145,6 +1919,17 @@ form.addEventListener('submit',e=>{
 </html>
 )HTML";
 
+static void failLocalOta(const String& reason) {
+  Update.abort();
+  saveOtaResult(reason);
+  setOtaState(OtaState::FAILED);
+  resetBlinkState();
+  otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
+  otaActive = false;
+  localOtaBytesReceived = 0;
+  localOtaExpectedBytes = UPDATE_SIZE_UNKNOWN;
+}
+
 static void localOtaUploadHandler() {
   HTTPUpload& upload = webServer.upload();
 
@@ -2154,49 +1939,60 @@ static void localOtaUploadHandler() {
     setOtaState(OtaState::LOCAL_UPLOAD);
     resetBlinkState();
     localOtaBytesReceived = 0;
-    abortOtaUpdate();
+    localOtaExpectedBytes = UPDATE_SIZE_UNKNOWN;
+
+    String filename = upload.filename;
+    filename.toLowerCase();
+    if (!filename.endsWith(".bin")) {
+      failLocalOta("INVALID_FILE_TYPE");
+      return;
+    }
+
+    if (webServer.hasArg("size")) {
+      const long parsedSize = webServer.arg("size").toInt();
+      if (parsedSize <= 0 || parsedSize > static_cast<long>(OTA_MAX_FIRMWARE_BYTES)) {
+        failLocalOta("INVALID_FILE_SIZE");
+        return;
+      }
+      localOtaExpectedBytes = static_cast<size_t>(parsedSize);
+    }
 
     saveOtaResult("IN_PROGRESS");
     applyOtaSafeOutputs();
 
-    String detail;
-    if (!beginOtaUpdate(detail)) {
-      saveOtaResult(detail);
-      setOtaState(OtaState::FAILED);
-      resetBlinkState();
-      otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
-      otaActive = false;
+    if (!Update.begin(localOtaExpectedBytes)) {
+      String detail = Update.errorString();
+      if (detail.isEmpty()) detail = "UPDATE_BEGIN_FAILED";
+      failLocalOta(detail);
     }
     return;
   }
 
   if (upload.status == UPLOAD_FILE_WRITE) {
-    if (otaState != OtaState::LOCAL_UPLOAD || !otaActive || !otaHandleActive) {
+    if (otaState != OtaState::LOCAL_UPLOAD || !otaActive) {
       return;
     }
 
-    String detail;
-    if (!writeOtaChunk(
-            upload.buf,
-            upload.currentSize,
-            detail)) {
-      abortOtaUpdate();
-      saveOtaResult(detail);
-      setOtaState(OtaState::FAILED);
-      resetBlinkState();
-      otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
-      otaActive = false;
+    if (upload.currentSize == 0) return;
+
+    const size_t chunkSize = static_cast<size_t>(upload.currentSize);
+    if (localOtaExpectedBytes != UPDATE_SIZE_UNKNOWN &&
+        localOtaBytesReceived + chunkSize > localOtaExpectedBytes) {
+      failLocalOta("UPLOAD_SIZE_EXCEEDED");
       return;
     }
 
-    localOtaBytesReceived += static_cast<uint32_t>(upload.currentSize);
+    const size_t written = Update.write(upload.buf, chunkSize);
+    if (written != chunkSize) {
+      String detail = Update.errorString();
+      if (detail.isEmpty()) detail = "UPDATE_WRITE_FAILED";
+      failLocalOta(detail);
+      return;
+    }
+
+    localOtaBytesReceived += chunkSize;
     if (localOtaBytesReceived > OTA_MAX_FIRMWARE_BYTES) {
-      abortOtaUpdate();
-      saveOtaResult("OTA_TOO_LARGE");
-      setOtaState(OtaState::FAILED);
-      resetBlinkState();
-      otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
-      otaActive = false;
+      failLocalOta("OTA_TOO_LARGE");
     }
     return;
   }
@@ -2204,41 +2000,46 @@ static void localOtaUploadHandler() {
   if (upload.status == UPLOAD_FILE_END) {
     if (otaState != OtaState::LOCAL_UPLOAD || !otaActive) return;
 
-    if (localOtaBytesReceived == 0 || !otaHandleActive) {
-      abortOtaUpdate();
-      saveOtaResult("OTA_INCOMPLETE");
-      setOtaState(OtaState::FAILED);
-      resetBlinkState();
-      otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
-      otaActive = false;
+    if (localOtaBytesReceived == 0) {
+      failLocalOta("OTA_INCOMPLETE");
       return;
     }
 
-    String detail;
-    if (finishOtaUpdate(detail)) {
-      saveOtaResult("LOCAL_SUCCESS");
-      setOtaState(OtaState::SUCCESS);
-      otaActive = true;
-      resetBlinkState();
-      otaRestartAt = millis() + OTA_RESTART_DELAY_MS;
-    } else {
-      saveOtaResult(detail);
-      setOtaState(OtaState::FAILED);
-      resetBlinkState();
-      otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
-      otaActive = false;
+    if (localOtaExpectedBytes != UPDATE_SIZE_UNKNOWN &&
+        localOtaBytesReceived != localOtaExpectedBytes) {
+      char detail[64];
+      snprintf(
+          detail,
+          sizeof(detail),
+          "UPLOAD_SIZE_MISMATCH_%lu_%lu",
+          static_cast<unsigned long>(localOtaBytesReceived),
+          static_cast<unsigned long>(localOtaExpectedBytes));
+      failLocalOta(detail);
+      return;
     }
+
+    const bool finished = localOtaExpectedBytes == UPDATE_SIZE_UNKNOWN
+                              ? Update.end(true)
+                              : Update.end();
+
+    if (!finished) {
+      String detail = Update.errorString();
+      if (detail.isEmpty()) detail = "UPDATE_END_FAILED";
+      failLocalOta(detail);
+      return;
+    }
+
+    saveOtaResult("LOCAL_SUCCESS");
+    setOtaState(OtaState::SUCCESS);
+    otaActive = true;
+    resetBlinkState();
+    otaRestartAt = millis() + OTA_RESTART_DELAY_MS;
+    localOtaExpectedBytes = UPDATE_SIZE_UNKNOWN;
     return;
   }
 
   if (upload.status == UPLOAD_FILE_ABORTED) {
-    otaRestartAt = 0;
-    abortOtaUpdate();
-    resetBlinkState();
-    saveOtaResult("UPLOAD_ABORTED");
-    setOtaState(OtaState::FAILED);
-    otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
-    otaActive = false;
+    failLocalOta("UPLOAD_ABORTED");
   }
 }
 
