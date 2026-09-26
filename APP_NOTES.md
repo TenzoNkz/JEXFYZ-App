@@ -2514,6 +2514,23 @@ The project process is now explicitly two-phase:
 - `.github/APP_BUILD_TRIGGER` and `.github/FIRMWARE_BUILD_TRIGGER` were not modified.
 - A separate `Eksekusi Firmware` remains required to compile/publish the firmware `.bin`.
 
+## 2026-09-26 — App Build Run #4 verified
+
+- User explicitly requested `Build App` in the Action sub-chat.
+- App Build was triggered only through `.github/APP_BUILD_TRIGGER`; no Firmware Build was started.
+- Trigger commit: `4c233e24bfda1e288f1a05502c17424b1d54e32b`.
+- GitHub Actions App Build Run #4 (`36215250344`) completed successfully.
+- Built head SHA: `4c233e24bfda1e288f1a05502c17424b1d54e32b`.
+- Analyze: SUCCESS.
+- Tests: SUCCESS.
+- Release APK build: SUCCESS.
+- Production APK signature verification: SUCCESS.
+- APK artifact: `JEXFYZ#4.apk`, artifact ID `10896819732`, size `53,069,270 bytes`, not expired at verification time.
+- Dart symbols artifact: `JE-X-FYZ-Dart-Symbols`, artifact ID `10897875098`.
+- APK was downloaded as `JE-X-FYZ-Build-4.apk` and verified as a genuine Android package (APK), not a wrapper ZIP.
+- No source-code feature change was made for this build; the trigger commit only advanced the dedicated App Build trigger file.
+- Real-device BLE/background-service validation remains pending from the earlier handoff.
+
 # END OF APP PROJECT MEMORY
 
 
