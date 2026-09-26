@@ -162,50 +162,46 @@ The user strongly prefers:
 - Example: Run #94 -> `JE X FYZ Build #94.apk`.
 ## CURRENT ACTION / CI STATE
 
-**Latest verified successful build:** GitHub Actions **Run #95** for the previous App Build workflow generation.
+**Latest verified successful build:** GitHub Actions **Run #3** for workflow `App Build`.
 
-- Run #95 was successful before the latest V3.4/foreground-service source changes were introduced.
-- **Latest validation attempt:** App Build Run #1, ID `36212348012`, failed at `Analyze Dart code`.
-- Failure cause: `lib/main.dart` assigned the result of `clamp(1, 8)` directly to the `int rgbMode` field in the V3.3/V3.4 LED mode sync path; Dart analyzer treats `clamp()` as returning `num`.
-- Action fix committed in `lib/main.dart`: `...clamp(1, 8)` → `...clamp(1, 8).toInt()`.
-- Fix commit: `77471c9e1b8f7e683e1cd31aa0294d4fb1e30bbd`.
-- No unrelated UI/BLE/foreground-service behavior was changed by this fix.
-- A new App Build is required to validate the fix and continue to the release/signature/artifact stages.
+- Run ID: `36212599091`
+- Result: **SUCCESS**
+- Head SHA built: `1a52f502e78291c0dea1d181fc5c5a3307a07f84`
+- Analyze: **SUCCESS**
+- Tests: **SUCCESS**
+- Release APK build: **SUCCESS**
+- Production APK signature verification: **SUCCESS**
+- APK artifact: `JEXFYZ#3.apk`
+- Artifact ID: `10896531044`
+- Artifact size: `53,134,806 bytes`
+- Artifact expired: **No** at verification time
+- Dart symbols artifact: `JE-X-FYZ-Dart-Symbols` (ID `10896446475`)
+- User-facing delivered filename: `JE X FYZ Build #3.apk`
+- The artifact is a direct APK; the current App Build workflow no longer packages ZIP output.
 
-### Handoff to Build / CI sub-chat
+### Build failure recovery recorded
 
-Build the current `main` head. Verify the new Kotlin service compiles, Android manifest checks pass, the existing BLE/session logic is unchanged, and `flutter analyze` + `flutter test` still pass. Then test: connect → enter background/game → observe BLE/session continuity → return to app.
+- Run #1 (`36212348012`) failed at `flutter analyze`: V3.3/V3.4 LED sync assigned `clamp(1, 8)` directly to `int rgbMode`. Action fixed it with `.toInt()`.
+- Run #2 (`36212485388`) failed at `flutter analyze`: Firmware dialog Retry button still called removed `_checkFirebase`; analyzer also reported one unnecessary cast. Action changed Retry to `_checkGitHub` and removed the redundant cast.
+- Run #3 (`36212599091`) then passed the complete App Build pipeline.
 
-### Handoff back to Code-change sub-chat
+### Current code-side handoff
 
-If the build fails, record the exact failed step/error and the fix. If build succeeds but BLE disconnects after the UI goes to background, treat that as a runtime lifecycle issue and do not create a second BLE client without an explicit architecture review.
+- Native Android Foreground Service support is included in the current source to keep the BLE session backed while the Flutter UI is backgrounded; the service does not create a second BLE client.
+- Real-device validation of background BLE continuity is still required. Build success does not equal runtime device validation.
+- The latest successful build used the current V3.4 app/protocol synchronization state and the latest foreground-service implementation present on `main` at build time.
 
+### Workflow state
 
-## CURRENT EXECUTION CONTROL — AUTHORITATIVE
+- App Build is triggered only by `.github/APP_BUILD_TRIGGER` in the current workflow.
+- The Action sub-chat triggers it only after the explicit user command `Build App`.
+- Action never triggers Firmware Build.
 
-### Code sub-chat
-- Discussion/preparation does not trigger any GitHub Actions workflow.
-- Plain `Eksekusi` means: apply the already-approved App/Firmware source/configuration/documentation changes to the repository.
-- Plain `Eksekusi` must NOT update `.github/APP_BUILD_TRIGGER` and must NOT update `.github/FIRMWARE_BUILD_TRIGGER`.
-- Plain `Eksekusi` therefore does NOT start App Build and does NOT compile/publish firmware.
+### Handoff to Code-change sub-chat
 
-### Firmware build
-- Firmware compilation is a separate explicit command: `Eksekusi Firmware`.
-- Only `Eksekusi Firmware` may update `.github/FIRMWARE_BUILD_TRIGGER` and start the Firmware Build workflow.
-- Changes to `firmware/JEXFYZ.ino` alone, or changes to any other project file, must not start Firmware Build.
-- Firmware Build is monitored until completion; build failures are fixed narrowly and the pipeline is rerun as needed.
+- Run #3 required no further source fix after the `_checkGitHub` correction.
+- The latest build is suitable for user testing; report any device/runtime regression back through `APP_NOTES.md`.
 
-### Action sub-chat
-- Action is exclusively for App Build.
-- Only the explicit `Build App` command may update `.github/APP_BUILD_TRIGGER` and start App Build.
-- Action monitors the workflow, fixes build/analyze/test/package errors narrowly when necessary, reruns, and provides the resulting APK artifact to the chat only after a verified successful build.
-- Action never starts Firmware Build.
-
-### Current workflow trigger files
-- App: `.github/APP_BUILD_TRIGGER` -> `.github/workflows/app-build.yml`.
-- Firmware: `.github/FIRMWARE_BUILD_TRIGGER` -> `.github/workflows/firmware-build.yml`.
-- Neither workflow uses `workflow_dispatch`.
-- No ordinary source-file path is a build trigger.
 
 # 1. PROJECT IDENTITY
 
