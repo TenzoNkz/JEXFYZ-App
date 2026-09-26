@@ -3,7 +3,7 @@
 ## 1. SOURCE AUTHORITY AND CURRENT STATE
 
 - Authoritative firmware source: `firmware/JEXFYZ.ino`.
-- Current source firmware version: `V3.7` (next release; not yet built/published at the time of this execution).
+- Current source firmware version: `V3.8` (prepared and now sent to Firmware Build).
 - Protocol version: `P1`.
 - BLE device name: `JE X FYZ`.
 - Target hardware: ESP32-C3 Super Mini / ESP32-C3 Dev Module class.
@@ -51,7 +51,7 @@ The following configuration is the user's proven manual upload configuration and
 This exact ArduinoDroid configuration has been visually verified by the user and must be kept as the reference target for future manual upload discussions.
 
 ### CI discrepancy to remember
-The GitHub Actions Firmware Build workflow currently compiles with Arduino ESP32 FQBN option `PartitionScheme=min_spiffs`, not the exact ArduinoDroid label above. The source itself does not depend on this documentation difference, but the CI build target is currently not identical to the user's proven ArduinoDroid menu selection. Do not silently assume that `min_spiffs` means `No FS 4MB (2MB APP x2)`; verify the Arduino core's exact board-option mapping before changing the workflow.
+The GitHub Actions Firmware Build workflow uses `PartitionScheme=no_fs` and is pinned to ESP32 Arduino Core 3.3.7 to match the user's proven ArduinoDroid environment.
 
 ## 3. BOARD, GPIO, AND ELECTRICAL MAP
 
@@ -1309,3 +1309,17 @@ The project process is now explicitly two-phase:
 - The default argument `brightness = 255` is now declared once in the explicit prototype and omitted from the function definition.
 - No runtime behavior, GPIO mapping, OTA logic, BLE contract, safety logic, or hardware configuration changed.
 - No Firmware Build was triggered by this source-only compatibility fix.
+
+## 2026-09-26 — V3.8 OTA-FIRST EXECUTION
+
+- Firmware source advanced from V3.7 to V3.8.
+- Online OTA no longer depends on HTTP `Content-Length` / `HTTPClient::getSize()`.
+- Online OTA uses `Update.begin(UPDATE_SIZE_UNKNOWN, U_FLASH)` and finalizes variable-length images with `Update.end(true)` after the download stream ends.
+- Local OTA likewise no longer depends on `HTTPUpload::totalSize`; it uses `Update.begin(UPDATE_SIZE_UNKNOWN, U_FLASH)` and `Update.end(true)`.
+- OTA write failures preserve detailed `Update.getError()` / `Update.errorString()` diagnostics before cleanup.
+- Firmware CI is pinned to ESP32 Arduino Core 3.3.7, matching the user's ArduinoDroid environment.
+- Firmware CI enforces a hard 2 MiB (`2,097,152` byte) release binary limit; binaries above this limit are rejected before publication.
+- Hardware, GPIO mapping, P1 BLE contract, BLE UUIDs, NTC, cooling, voltage, Adaptive, LED, and touch behavior remain unchanged.
+- This execution is OTA-first by design: the installed V3.7 device is the intended baseline for testing V3.7 -> V3.8 without USB/manual recovery dependency.
+- Firmware Build was triggered separately after these source/configuration changes.
+
