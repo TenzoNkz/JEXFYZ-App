@@ -20,7 +20,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
-static constexpr char FW_VERSION[] = "V4.14";
+static constexpr char FW_VERSION[] = "V5.0";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -3728,7 +3728,7 @@ void setup() {
 
   Serial.begin(115200);
   Serial.println();
-  Serial.println("JE X FYZ: BOOT V4.14 / CORE 3.3.7 RADIO-FIRST");
+  Serial.println("JE X FYZ: BOOT V5.0 / CORE 3.3.7 RADIO-FIRST");
 
   // Keep every power output OFF before any radio is started.
   pinMode(PIN_12V, OUTPUT);
