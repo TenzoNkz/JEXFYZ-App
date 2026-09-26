@@ -1195,6 +1195,13 @@ The project process is now explicitly two-phase:
 - OTA failure diagnostics remain persisted through `LAST_OTA_RESULT`; no automatic firmware downgrade or destructive recovery behavior was introduced.
 - GPIO mapping, NTC, cooling safety, Adaptive, voltage switching, RGB/LED, touch behavior, P1 BLE UUIDs, BLE command/telemetry contract, and the 2 MiB CI release gate remain unchanged.
 - This is source execution only. No `.bin` build or public firmware publication was started by this change. The next separate `Eksekusi Firmware` is required for the V3.9 binary.
+## 2026-09-26 — V3.9 LOCAL OTA FINALIZATION CORRECTION
+
+- Corrected the local OTA path after source review: `Update.begin(UPDATE_SIZE_UNKNOWN, U_FLASH)` cannot be paired with `Update.isFinished()` because unknown-size mode initializes the updater against the full OTA partition.
+- Local OTA therefore keeps the independently calculated exact image-size check and finalizes with `Update.end(true)`. The received byte count must still exactly match the parsed ESP image size before this finalization.
+- The online OTA path remains exact-size based and continues to require `Update.isFinished()` before `Update.end(false)`.
+- This is a V3.9 corrective rebuild before the manual USB test; no GPIO, P1/BLE protocol, safety, cooling, or hardware behavior changed.
+- The public V3.9 package from the immediately preceding build is superseded by the corrective rebuild; the new build must be verified before manual flashing.
 # END OF FIRMWARE ENGINEERING MEMORY
 
 
