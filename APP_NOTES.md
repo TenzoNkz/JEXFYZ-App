@@ -2457,6 +2457,14 @@ The project process is now explicitly two-phase:
 - No App Build was triggered by this work. The latest successful App Build remains Run #3.
 - Physical runtime validation is now the remaining step: test the V3.4 device's online OTA flow against the public V3.5 package and capture any panic/backtrace if the device still fails.
 
+## 2026-09-26 — V3.6 EXECUTION: OTA + BLE PAIRING FIX
+
+- `lib/main.dart` no longer maintains BLE bond state or invokes Android `createBond()`; the connection flow relies on the firmware's unencrypted BLE link plus the existing `SYNC -> SYNC_READY` session gate.
+- Firmware source references are now synchronized to V3.6.
+- Firmware-side OTA handoff was hardened by fully releasing BLE before Wi-Fi/TLS startup; OTA apply also verifies the received byte count before finalizing the update.
+- No App Build was triggered; App Build remains exclusive to the Action sub-chat and requires the explicit `Build App` command.
+- This execution is intended to validate the observed blue-then-red online OTA failure and the unwanted Android pairing prompt on the next physical test.
+
 # END OF APP PROJECT MEMORY
 
 ## 2026-09-26 — Code #2: firmware source cleanup + App BLE contract synchronization
