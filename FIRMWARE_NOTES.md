@@ -660,3 +660,13 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Pre-CI static sanity check: V1.4 marker present; Local AP contains direct `WiFi.softAP(AP_SSID, AP_PASSWORD)`; `WiFi.softAPConfig()` is absent from production source; GPIO5=Fan and GPIO6=Peltier remain intact; legacy LEDC and audited raw lifecycle markers remain absent.
 - Required validation boundary: pinned Arduino-ESP32 Core 3.3.7 ArduinoDroid compile, release compile, OTA protected-source audit, artifact upload, and publication must all pass before the V1.4 binary is presented as verified.
 - Physical runtime of V1.4 is not claimed until the user manually flashes the resulting binary.
+
+## 2026-09-27 — RUN #70 COMPILE ERROR / IMMEDIATE FIX
+- Run #70 failed only at the ArduinoDroid/Core 3.3.7 compile boundary.
+- Exact compiler error: `const apOk = WiFi.softAP(AP_SSID, AP_PASSWORD);` is invalid C++ because the local variable type was omitted.
+- No platform/API error was reported; the failure was a source typo introduced during the V1.4 simplification.
+- Corrected exactly one line to `const bool apOk = WiFi.softAP(AP_SSID, AP_PASSWORD);`.
+- Corrective source commit: `af86fe1db68987acd5d8da01f4f2e0e6a6fe26ce`.
+- No other production logic was changed by this correction.
+- Run #70 release job was correctly skipped because the validation compile failed.
+- Next boundary: rerun the same pinned Core 3.3.7 ArduinoDroid validation and then the release build/publish. No binary from Run #70 is valid for OTA.
