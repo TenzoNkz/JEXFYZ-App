@@ -3,7 +3,7 @@
 ## 1. SOURCE AUTHORITY AND CURRENT STATE
 
 - Authoritative firmware source: `firmware/JEXFYZ.ino`.
-- Current source firmware version: V4.2 (local OTA hardening after the physical V4.0 local OTA test failed from the user-installed V3.9 device; Core 3.3.12 baseline; Firmware Build Run #26 verified successful).
+- Current source firmware version: V4.13 (radio-first boot isolation, Core 3.3.7, secure Core-3.3.7-compatible TLS CA handling, and corrected Fan/Peltier GPIO mapping).
 - Protocol version: `P1`.
 - BLE device name: `JE X FYZ`.
 - Target hardware: ESP32-C3 Super Mini / ESP32-C3 Dev Module class.
@@ -74,7 +74,7 @@ NTC divider used by firmware:
 - ADC resolution: 12 bit.
 - ADC attenuation on GPIO0: ADC_11db.
 
-The GPIO5/GPIO6 assignment is important: GPIO5 is PELTIER and GPIO6 is FAN.
+The GPIO5/GPIO6 assignment is important: GPIO5 is FAN and GPIO6 is PELTIER.
 
 ## 4. EXTERNAL LIBRARIES AND PLATFORM
 
@@ -1665,3 +1665,16 @@ The project process is now explicitly two-phase:
 - Source verification after build confirms V3.8, no `HTTPClient::getSize()`, no `HTTPUpload::totalSize`, OTA uses `UPDATE_SIZE_UNKNOWN` and `Update.end(true)`, and CI uses ESP32 Core 3.3.7 with `PartitionScheme=no_fs`.
 - Hardware/GPIO/P1/BLE UUID/cooling/safety behavior was not intentionally changed in this OTA-focused release.
 - V3.8 is the new OTA test target from the user's installed V3.7 device. No USB/manual recovery is assumed for the test path.
+
+
+## 2026-09-27 — V4.13 FULL FIRMWARE EXECUTION / RADIO + GPIO + TLS FIXES
+
+- Full firmware execution was completed through ArduinoDroid/Core 3.3.7 validation, source audit, OTA protected-source audit, release compile, artifact upload, ArduinoDroid temporary-source artifact, and public firmware publication.
+- V4.12 Run #56 and Run #57 failed only in the CI OTA audit because of an indentation defect in the embedded Python audit script. The workflow audit was corrected.
+- V4.12 Run #58 failed at release compile because ESP32 Arduino Core 3.3.7 does not expose `WiFiClientSecure::useBuiltinCACertBundle()`. The firmware was corrected to use the existing `GITHUB_ROOT_CA` through `cloudClient.setCACert(GITHUB_ROOT_CA)`, keeping release TLS verification enabled and Core 3.3.7 compatible.
+- V4.12 Run #59 then failed in the ArduinoDroid temporary-source preparation because the workflow still expected the obsolete `setInsecure()` transformation. The workflow was corrected so the temporary source remains on the secure CA configuration.
+- V4.13 additionally corrects the final hardware pin mapping to GPIO5 = Fan and GPIO6 = Peltier and aligns the boot diagnostic version string with V4.13.
+- Final Firmware Build Run #60 completed successfully. Both `validate-arduinodroid` and `build-and-publish` passed.
+- Release binary: `JEXFYZ-V4.13.bin`. The CI binary size gate remains 2 MiB.
+- The public firmware repository is published from the same pipeline and keeps the release manifest URL format without SHA-based firmware linking.
+- Physical hardware validation is still required: verify boot AP visibility for the 10-second window, Wi-Fi shutdown, BLE `JE X FYZ` advertising after handoff, and the corrected GPIO5/GPIO6 outputs on the actual cooler.
