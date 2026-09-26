@@ -1,3 +1,129 @@
+# 🚨 CURRENT AUTHORITATIVE HANDOFF — 2026-09-27
+
+> Current-state override for the next JE X FYZ firmware sub-chat. Historical sections below are retained for chronology.
+
+## 1. Mandatory workflow
+Before every firmware action, read this note and the firmware master context, then inspect the newest `firmware/JEXFYZ.ino`. For cross-layer work, read the app context as well.
+After every material action, immediately record the action, reason, affected files, actual result, commit/run/version, unresolved issue, and next boundary.
+
+## 2. Official-source-first
+Pinned platform: Arduino-ESP32 Core 3.3.7.
+Official source repository:
+https://github.com/espressif/arduino-esp32
+Verified references:
+- https://github.com/espressif/arduino-esp32/blob/3.3.7/libraries/WiFi/examples/WiFiAccessPoint/WiFiAccessPoint.ino
+- https://github.com/espressif/arduino-esp32/blob/3.3.7/libraries/WiFi/src/WiFiAP.cpp
+- https://github.com/espressif/arduino-esp32/blob/3.3.7/libraries/WiFi/src/AP.cpp
+- https://github.com/espressif/arduino-esp32/blob/3.3.7/libraries/WiFi/src/WiFiGeneric.cpp
+- https://github.com/espressif/arduino-esp32/blob/3.3.7/libraries/WiFi/src/STA.cpp
+
+Official AP path verified:
+`WiFi.softAP(ssid, password)` → `AP.begin()` + `AP.create()` → `WiFi.enableAP(true)` → official `WiFiGenericClass::mode()` path.
+`AP.begin()` waits for `ESP_NETIF_STARTED_BIT`.
+
+Rule: do not invent a custom radio lifecycle when the pinned upstream implementation already provides the required behavior.
+
+## 3. Active firmware state
+- Version: V1.0
+- Source: `firmware/JEXFYZ.ino`
+- BLE name: JE X FYZ
+- Protocol: P1
+- Target: ESP32-C3 Super Mini
+- Current authoritative pins: GPIO0 NTC, GPIO1 touch, GPIO3 12V, GPIO4 9V, GPIO5 Fan, GPIO6 Peltier, GPIO7 WS2812B.
+- GPIO5/GPIO6 must never be silently swapped.
+
+## 4. V1.0 build evidence
+Firmware GitHub Actions Run #66:
+- ID 36264460597
+- SUCCESS
+- Core 3.3.7/ArduinoDroid validation PASS
+- ESP32-C3 release compile PASS
+- OTA source audit PASS
+- artifacts PASS
+- public publish PASS
+
+Public binary:
+https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V1.0.bin
+
+Manifest:
+https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/manifest.json
+
+CI success is compile/publish evidence only.
+
+## 5. V1.0 physical validation
+The user manually flashed V1.0 and reported that the ESP32-C3 **still panics during boot**.
+Therefore V1.0 is **NOT physically validated**.
+The exact V1.0 Guru Meditation register dump is not yet captured in the notes and must be preserved at the next test.
+
+## 6. Official-source finding and current suspect
+The active V1.0 source currently performs:
+`WiFi.disconnect(true, false)` → `WiFi.setHostname("JE-X-FYZ")` → `WiFi.setAutoReconnect(false)` → `WiFi.mode(WIFI_AP)` → `WiFi.softAPConfig(...)` → `WiFi.softAP(...)`.
+
+The official Core 3.3.7 example does not require this custom pre-sequence. Because V1.0 still panics, the custom pre-sequence is now **suspect / under investigation**, but it is **not proven** to be the root cause.
+
+## 7. Previous runtime evidence
+- V4.13: Core 0 Load access fault during Wi-Fi AP startup.
+- V5.0: Core 0 Load access fault around `WiFi.mode(WIFI_AP)`.
+- V1.0: physical panic repeated after manual flash.
+
+This repeated pattern requires boundary isolation, not more speculative patch stacking.
+
+## 8. Next diagnostic
+Temporary diagnostic only:
+1. Read this note.
+2. Read exact Core 3.3.7 upstream AP source.
+3. Use the official high-level AP API as the baseline.
+4. No BLE.
+5. No custom radio teardown.
+6. No custom retry state machine.
+7. Log before/after each relevant call.
+8. Record exact last successful call before panic.
+9. Reintroduce JE X FYZ layers one at a time only after the boundary is proven.
+
+Do not call this diagnostic a production firmware release.
+
+## 9. Production feature contract to preserve
+- NTC 10K / GPIO0 / 1 Hz sampling.
+- Hotside limit 40–50°C, default 45°C.
+- NTC fault: Fan 100%, Peltier OFF, Adaptive OFF, voltage toward 5V.
+- Fan GPIO5, 25 kHz, 8-bit, 50–100%, 10% steps.
+- Peltier GPIO6, 20 kHz, 8-bit, 5 s non-blocking soft-start.
+- 5V/9V/12V voltage selection.
+- 1 s manual voltage guard.
+- 200 ms break-before-make.
+- Adaptive upward delay 5 s.
+- Adaptive hotside cooling window 10 s.
+- PHONE:BT heartbeat 1 Hz; battery validity TTL 5 s.
+- BLE SYNC → snapshot → SYNC_READY session gate.
+- Existing BLE UUIDs and P1 command vocabulary.
+- HOT telemetry 1 Hz; other state delta-driven.
+- Preferences debounce about 10 s.
+- Wi-Fi/BLE exclusive single-radio ownership.
+- Local OTA boot AP about 10 s.
+- HTTPS online OTA.
+- OTA failure returns to BLE where supported.
+- No SHA firmware-link requirement.
+- Firmware is authoritative for physical state and safety.
+- No normal runtime delay().
+- Do not resurrect rejected legacy commands without explicit redesign.
+
+## 10. Manual ArduinoDroid reference
+Board ESP32C3 Dev Module; JTAG Disabled; USB CDC Enabled; No FS 4MB (2MB APP x2); CPU 160MHz WiFi; DIO; 80MHz flash; 4MB flash; 921600 upload; debug None; Erase All disabled; Zigbee disabled.
+
+## 11. Next-sub-chat starting point
+Start from V1.0 + physical panic + official-source investigation. Read notes first, inspect latest source, read exact Core 3.3.7 upstream implementation, isolate the crash, and document the result immediately after every step.
+
+## 12. Latest chronology
+- V1.0 baseline produced and CI Run #66 passed.
+- V1.0 manually flashed; panic reported.
+- Official 3.3.7 Wi-Fi AP implementation inspected.
+- Official high-level `WiFi.softAP()` path identified as the upstream baseline.
+- Current custom radio pre-sequence marked suspect, not proven.
+- Read/update/official-source/no-speculation governance recorded.
+
+
+---
+
 ## 2026-09-27 — V1.0 CLEAN RESTART
 
 - Firmware engine restarted at **V1.0** while preserving the current JE X FYZ feature contract.
