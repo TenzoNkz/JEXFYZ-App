@@ -20,7 +20,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
-static constexpr char FW_VERSION[] = "V4.11";
+static constexpr char FW_VERSION[] = "V4.12";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -355,6 +355,7 @@ uint8_t otaDiagnosticLastPublishedProgress = 255;
 
 bool bootApActive = true;
 uint32_t bootApStartedAt = 0;
+bool runtimeFeaturesReady = false;
 bool bootApHadClient = false;
 bool bootApClientSafe = false;
 
@@ -402,6 +403,7 @@ static String otaSuccessResult(const String& mode, const String& stage, const St
 static String otaUpdateFailureStage(bool online, int errorCode);
 static void failLocalOta(const String& stage, int errorCode, const String& error);
 static void failOnlineOta(const String& stage, int errorCode, const String& error);
+static void initializeRuntimeFeatures();
 
 static const char* voltageToString(Voltage value) {
   switch (value) {
@@ -640,7 +642,9 @@ static uint8_t fanDutyFromPercent(uint8_t percent) {
 
 static void writeFanPwm() {
   if (!fanOn) {
+    if (runtimeFeaturesReady) {
     ledcWrite(PIN_FAN, 0);
+  }
     return;
   }
 
@@ -650,7 +654,9 @@ static void writeFanPwm() {
 static void stopPeltierOutput() {
   peltierSoftStarting = false;
   peltierSoftStartAtMs = 0;
-  ledcWrite(PIN_PELTIER, 0);
+  if (runtimeFeaturesReady) {
+    ledcWrite(PIN_PELTIER, 0);
+  }
 }
 
 static void beginPeltierSoftStart() {
@@ -3613,6 +3619,7 @@ static bool serviceOtaPriority() {
                millis() - bootApStartedAt >= BOOT_AP_TIMEOUT_MS) {
       stopLocalOtaAp();
       bootApClientSafe = false;
+      Serial.println("WIFI AP: TIMEOUT -> BLE HANDOFF");
       bootApHadClient = false;
       bleStartPending = true;
       bleStartRetryAt = millis();
@@ -3654,26 +3661,10 @@ static void setupTouch() {
   touchButton.attachLongPressStart(onTouchLongPress);
 }
 
-void setup() {
-  otaDiagnosticStage = "BOOT_AP";
-  otaDiagnosticError = "NONE";
-  otaDiagnosticErrorCode = 0;
-  otaDiagnosticProgress = 0;
-  otaDiagnosticLastPublishedProgress = 255;
+void initializeRuntimeFeatures() {
+  if (runtimeFeaturesReady) return;
 
-  Serial.begin(115200);
-  Serial.println();
-  Serial.println("JE X FYZ: BOOT V4.11 / CORE 3.3.7 RADIO BASELINE");
-
-  // Establish all power-control outputs OFF before starting OTA service.
-  pinMode(PIN_12V, OUTPUT);
-  pinMode(PIN_9V, OUTPUT);
-  pinMode(PIN_FAN, OUTPUT);
-  pinMode(PIN_PELTIER, OUTPUT);
-  digitalWrite(PIN_12V, OUTPUT_OFF);
-  digitalWrite(PIN_9V, OUTPUT_OFF);
-  digitalWrite(PIN_FAN, OUTPUT_OFF);
-  digitalWrite(PIN_PELTIER, OUTPUT_OFF);
+  Serial.println("BOOT: INIT FEATURES");
 
   pinMode(PIN_NTC, INPUT);
   pinMode(PIN_TOUCH, INPUT);
@@ -3686,11 +3677,6 @@ void setup() {
   ledcWrite(PIN_FAN, 0);
   ledcAttach(PIN_PELTIER, PELTIER_PWM_FREQ, PELTIER_PWM_RESOLUTION);
   stopPeltierOutput();
-
-  leds.begin();
-  leds.clear();
-  leds.show();
-  resetLedAnimationState();
 
   loadSettings();
 
@@ -3712,9 +3698,92 @@ void setup() {
   sampleNtcIfDue();
   enforceSafety();
 
-  // Start the boot AP only after all hardware/peripheral initialization has
-  // completed, matching the known-good Core 3.3.7 startup order.
+  runtimeFeaturesReady = true;
+  Serial.println("BOOT: FEATURES READY");
+}
+
+void setup() {
+  otaDiagnosticStage = "BOOT_AP";
+  otaDiagnosticError = "NONE";
+  otaDiagnosticErrorCode = 0;
+  otaDiagnosticProgress = 0;
+  otaDiagnosticLastPublishedProgress = 255;
+
+  Serial.begin(115200);
+  Serial.println();
+  Serial.println("JE X FYZ: BOOT V4.12 / CORE 3.3.7 RADIO-FIRST");
+
+  // Keep every power output OFF before either radio is started.
+  pinMode(PIN_12V, OUTPUT);
+  pinMode(PIN_9V, OUTPUT);
+  pinMode(PIN_FAN, OUTPUT);
+  pinMode(PIN_PELTIER, OUTPUT);
+  digitalWrite(PIN_12V, OUTPUT_OFF);
+  digitalWrite(PIN_9V, OUTPUT_OFF);
+  digitalWrite(PIN_FAN, OUTPUT_OFF);
+  digitalWrite(PIN_PELTIER, OUTPUT_OFF);
+
+  // Initialize only the WS2812 driver needed for visible boot diagnostics.
+  leds.begin();
+  leds.clear();
+  leds.show();
+  showAll(0x0000FF, 80);
+
+  Serial.println("BOOT: START WIFI AP");
   startLocalOtaAp();
+}
+
+void loop() {
+  // ================= OTA PRIORITY: DO NOT MOVE DOWN =================
+  if (serviceOtaPriority()) return;
+
+  // Once Wi-Fi AP ownership has ended, initialize the rest of the application
+  // before giving the single 2.4 GHz radio to BLE.
+  if (!bootApActive && !runtimeFeaturesReady) {
+    initializeRuntimeFeatures();
+  }
+
+  serviceBleStartRecovery();
+
+  if (bleQueueResetPending) {
+    bleQueueResetPending = false;
+    clearBleTxQueue();
+    clearBleRxQueue();
+  }
+
+  if (bleSyncPending && bleClientConnected && txCharacteristic != nullptr) {
+    bleSyncPending = false;
+    clearBleTxQueue();
+    sendFullSync();
+  }
+
+  serviceBleTx();
+  processBleRxQueue();
+  processPendingOnlineOtaStart();
+
+  if (serviceOtaPriority()) return;
+
+  touchButton.tick();
+  sampleNtcIfDue();
+  updateBatteryValidity();
+  processAdaptiveHotTimer();
+  processAdaptiveBatteryDown();
+  processAdaptiveUpTimer();
+  completeVoltageTransition();
+  enforceSafety();
+  processPeltierSoftStart();
+  processSettingsPersistence();
+
+  static uint32_t lastHotTelemetryMs = 0;
+  if (millis() - lastHotTelemetryMs >= NTC_READ_INTERVAL_MS) {
+    lastHotTelemetryMs = millis();
+    sendHotsideTelemetry();
+  }
+
+  processLeds();
+  serviceBleTx();
+
+  yield();
 }
 
 void loop() {
