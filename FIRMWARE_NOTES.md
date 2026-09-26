@@ -1,5 +1,64 @@
 # 🚨 CURRENT AUTHORITATIVE HANDOFF — 2026-09-27
 
+## 2026-09-27 — V1.3 FULL ARDUINO STANDARD REFACTOR
+
+- User execution authorization: Eksekusi Full granted.
+- Standing implementation mandate: from this point forward, every firmware change, large or small, must follow Arduino Standard for the pinned Arduino-ESP32 Core 3.3.7.
+- Authoritative firmware source: firmware/JEXFYZ.ino.
+- Current firmware version: V1.3.
+- Source update commit: e520a086f5d86b28970e0eef9685facd939a397a.
+- Previous V1.2 source blob: d19d8b3bf7d8637e11148bb63568164107ae0ae1.
+- CI workflow audit update: 34347a1001c8817ae01ce9b21b9cfce384c54788.
+
+### Arduino Standard changes
+
+- Local OTA no longer uses direct ESP-IDF OTA lifecycle calls.
+- Online OTA no longer uses direct ESP-IDF OTA lifecycle calls.
+- Added the official Arduino Update.h lifecycle:
+  - Update.begin(...)
+  - Update.write(...)
+  - Update.end(true)
+  - Update.abort()
+  - Update.printError(Serial)
+- Firmware-size precheck uses the Arduino ESP.getFreeSketchSpace() API.
+- Reset-reason reporting uses the Arduino ESP.getResetReason() API.
+- Removed direct OTA/ESP-IDF implementation dependencies from the firmware source:
+  - esp_ota_*
+  - esp_err_t
+  - esp_err_to_name
+  - ESP_ERR_*
+  - raw FreeRTOS portMUX queue locking
+  - Bluedroid/NimBLE-specific callback overload blocks
+- BLE queues now use the project's single-producer/single-consumer application flow instead of the removed raw portMUX layer.
+- Cleaned the fan-PWM indentation defect, removed an empty no-op BLE block, and corrected the boot banner to print the actual FW_VERSION.
+
+### Behavior deliberately preserved
+
+- JE X FYZ BLE service/name/UUID contract remains unchanged.
+- GPIO authority remains:
+  - GPIO0 NTC
+  - GPIO1 touch
+  - GPIO3 12V selector
+  - GPIO4 9V selector
+  - GPIO5 Fan
+  - GPIO6 Peltier
+  - GPIO7 WS2812B
+- Boot Local OTA AP remains deferred from setup() into the first loop() iteration to preserve the controlled Horizon-style runtime boundary.
+- Boot AP timeout remains 10 seconds.
+- BLE remains the post-Wi-Fi handoff radio.
+- OTA safety output shutdown, NTC safety, voltage guards, adaptive logic, PWM, RGB, BLE protocol, settings persistence, and online Range/Retry policy were not intentionally redesigned.
+- Online OTA continues to use HTTPS with the pinned GitHub CA certificate and Range probing/chunks/retry logic.
+- No SHA-based firmware manifest mechanism was introduced.
+
+### Validation status
+
+- Static source audit before commit: PASS.
+- No raw esp_ota_*, esp_err_*, ESP_ERR_*, portMUX, or configuration-specific BLE callback blocks remain in the V1.3 source.
+- The CI workflow now explicitly fails if those non-Arduino implementation paths reappear.
+- V1.3 CI build has not yet been triggered after this source/CI change.
+- Public firmware repository is still on V1.2 until the next successful V1.3 build-and-publish run.
+- Next execution boundary: trigger the Firmware Build, verify ArduinoDroid/Core 3.3.7 compile, verify Arduino Standard + OTA audit, verify ESP32-C3 binary generation, then physically flash V1.3 and capture Serial boot/OTA evidence.
+
 ## 2026-09-27 — CI AUDIT ALIGNMENT AFTER V1.1 DIAGNOSTIC
 
 - Action: removed only the obsolete hardcoded V1.0 assertion from `.github/workflows/firmware-build.yml`.
