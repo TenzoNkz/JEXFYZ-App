@@ -1,3 +1,15 @@
+## 2026-09-27 — V1.0 CLEAN RESTART
+
+- Firmware engine restarted at **V1.0** while preserving the current JE X FYZ feature contract.
+- Preserved hardware map from the latest firmware source: GPIO0 NTC, GPIO1 touch, GPIO3 12V selector, GPIO4 9V selector, GPIO5 Fan, GPIO6 Peltier, GPIO7 WS2812B.
+- Preserved BLE identity, UUIDs, P1 protocol, telemetry cadence, command vocabulary, persistence, safety interlocks, Adaptive behavior, voltage timing, Local OTA, Online OTA, secure HTTPS certificate handling, and OTA diagnostics.
+- Initial Wi-Fi AP startup was rewritten around the proven Core 3.3.7 order: disconnect -> hostname/autoreconnect -> WIFI_AP -> AP config -> SoftAP -> HTTP server.
+- Initial AP startup deliberately does not run SoftAP-disconnect/WIFI_OFF cleanup and does not initialize BLE. Wi-Fi -> BLE cleanup remains a separate handoff phase.
+- Local OTA retains native esp_ota_begin/write/end/set_boot_partition APIs and exact size verification.
+- Online OTA retains HTTPS, Range probing/chunks/retry, and deterministic restart-from-zero recovery without esp_ota_resume().
+- CI now contains an explicit radio-boot regression audit that verifies the V1.0 AP startup order and rejects accidental reintroduction of the previous risky startup sequence.
+- This V1.0 is the new firmware baseline; future feature work should branch from this source and preserve the startup boundary.
+
 # JE X FYZ FIRMWARE — COMPLETE ENGINEERING MEMORY
 
 ## 1. SOURCE AUTHORITY AND CURRENT STATE
