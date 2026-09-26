@@ -50,8 +50,8 @@ The following configuration is the user's proven manual upload configuration and
 
 This exact ArduinoDroid configuration has been visually verified by the user and must be kept as the reference target for future manual upload discussions.
 
-### CI discrepancy to remember
-The GitHub Actions Firmware Build workflow uses `PartitionScheme=no_fs` and is pinned to ESP32 Arduino Core 3.3.7 to match the user's proven ArduinoDroid environment.
+### CI / manual core baseline
+The GitHub Actions Firmware Build workflow uses `PartitionScheme=no_fs` and is pinned to stable Arduino-ESP32 Core 3.3.12. Manual ArduinoDroid should use the same 3.3.12 core before physical V4.0 flashing.
 
 ## 3. BOARD, GPIO, AND ELECTRICAL MAP
 
@@ -1229,6 +1229,22 @@ The project process is now explicitly two-phase:
 - BLE deinitialization remains BLEDevice::deinit(false) and occurs only after explicit active-connection termination, preserving BLE reinitialization after online OTA failures.
 - GPIO mapping, P1 BLE UUIDs, safety, NTC, Adaptive, voltage, LED, touch, and App command/telemetry contracts were intentionally preserved.
 - This is a source/configuration execution before the dedicated Firmware Build. The next Eksekusi Firmware build must verify Core 3.3.12 compilation, artifact publication, and public V4.0 manifest/package.
+
+## FIRMWARE BUILD #23 — V4.0 FULL SUCCESS / PUBLISHED
+
+- Run #23: Firmware Build, run ID 36224197399.
+- Trigger/head SHA: 9cf979de169e3aab6fc941fa7754a1345bc944c0.
+- ESP32-C3 Core 3.3.12 installation, dependency installation, source audit, version extraction, compilation, artifact upload, and public firmware publication all completed successfully.
+- Artifact: JEXFYZ-V4.0, artifact ID 10899993135, not expired at verification time.
+- Artifact archive size: 1,573,408 bytes.
+- Artifact digest: sha256:f22ab1657d18d51a2e2de8e9bf737c02241442ed076ee2cf163829f7206637aa.
+- Public firmware repository now contains JEXFYZ-V4.0.bin and manifest.json.
+- Public V4.0 binary size: 1,573,264 bytes.
+- Public manifest was independently verified as V4.0 and points to https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V4.0.bin.
+- V4.0 preserves the P1 BLE contract, GPIO5=Peltier, GPIO6=Fan, safety/cooling/NTC/Adaptive/voltage/LED/touch behavior, and the 2 MiB release gate.
+- V4.0 online OTA now follows the official Arduino-ESP32 HTTPUpdate -> getSize() -> Update.begin(size) -> Update.writeStream() -> Update.end() lifecycle.
+- V4.0 TLS uses WiFiClientSecure::useBuiltinCACertBundle(); no hardcoded DigiCert certificate block remains in the firmware.
+- The next required physical validation is controlled testing of V3.9 (or a manually flashed V4.0 baseline) -> V4.0 online OTA, plus local OTA regression verification.
 
 # END OF FIRMWARE ENGINEERING MEMORY
 
