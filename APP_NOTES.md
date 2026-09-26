@@ -2287,3 +2287,12 @@ For every future app change:
 - The workflow was changed to compile with the OTA-capable `min_spiffs` partition scheme, which provides larger dual OTA app slots while retaining OTA functionality.
 - Only `.github/workflows/firmware-build.yml` was changed for this build fix; firmware source behavior remains unchanged.
 - Next Firmware Build run must verify compile, artifact upload, and public repository publish.
+
+
+## 2026-09-26 — Firmware Build Run #8 result
+
+- Run #8 used the new firmware execution trigger and successfully compiled the V3.2 firmware with the OTA-capable min_spiffs partition.
+- Compile result: 1,826,608 bytes (92% of 1,966,080-byte app slot).
+- Firmware artifact uploaded successfully: artifact ID 10894158538 from the preceding successful compile attempt, containing `JEXFYZ-V3.2.bin`.
+- Final publish step failed because the `FIRMWARE_REPO_TOKEN` Actions secret was empty/unavailable to the workflow.
+- No publish-success claim is made until the secret is available and a full run reaches the public repository push.
