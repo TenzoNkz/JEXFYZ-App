@@ -1,5 +1,3 @@
-
-
 #include <Arduino.h>
 #include <WiFi.h>
 #include <WebServer.h>
@@ -21,11 +19,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
-
-
-
 static constexpr char FW_VERSION[] = "V3.2";
-
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -33,9 +27,6 @@ static constexpr char BLE_NAME[] = "JE X FYZ";
 static constexpr char SERVICE_UUID[] = "6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001";
 static constexpr char RX_UUID[]      = "6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001";
 static constexpr char TX_UUID[]      = "6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001";
-
-
-
 
 static constexpr uint8_t PIN_NTC     = 0;
 static constexpr uint8_t PIN_TOUCH   = 1;
@@ -49,9 +40,6 @@ static constexpr uint8_t LED_COUNT   = 8;
 static constexpr uint8_t OUTPUT_ON  = HIGH;
 static constexpr uint8_t OUTPUT_OFF = LOW;
 
-
-
-
 static constexpr char AP_SSID[]     = "JE X FYZ";
 static constexpr char AP_PASSWORD[] = "0987654321";
 static const IPAddress AP_IP(192, 168, 4, 1);
@@ -63,8 +51,6 @@ static constexpr uint32_t OTA_RESTART_DELAY_MS        = 1200;
 static constexpr uint32_t OTA_FAILURE_INDICATOR_MS    = 1000;
 static constexpr uint32_t WIFI_CONNECT_TIMEOUT_MS     = 15000;
 static constexpr uint32_t OTA_NO_DATA_TIMEOUT_MS      = 7000;
-
-
 
 static constexpr char GITHUB_ROOT_CA[] PROGMEM = R"CERT(-----BEGIN CERTIFICATE-----
 MIIDjjCCAnagAwIBAgIQAzrx5qcRqaC7KGSxHQn65TANBgkqhkiG9w0BAQsFADBh
@@ -135,18 +121,10 @@ DXZDjC5Ty3zfDBeWUA==
 -----END CERTIFICATE-----
 )CERT";
 
-
-
-
-
 static constexpr size_t BLE_TX_QUEUE_SIZE = 48;
 static constexpr size_t BLE_RX_QUEUE_SIZE = 16;
 static constexpr uint32_t BLE_TX_INTERVAL_MS = 15;
 static constexpr uint32_t ONLINE_OTA_START_WAIT_MS = 1500;
-
-
-
-
 
 static constexpr float NTC_FIXED_OHMS    = 10000.0f;
 static constexpr float NTC_NOMINAL_OHMS  = 10000.0f;
@@ -156,16 +134,12 @@ static constexpr uint32_t NTC_READ_INTERVAL_MS = 1000;
 static constexpr uint32_t NTC_FAULT_LOW_MV  = 50;
 static constexpr uint32_t NTC_FAULT_HIGH_MV = 3250;
 
-
-
-
 static constexpr uint32_t VOLTAGE_GUARD_MS             = 1000;
 static constexpr uint32_t VOLTAGE_DEADTIME_MS           = 200;
 static constexpr uint32_t HOT_PELTIER_OFF_MS          = 10000;
 static constexpr uint32_t ADAPTIVE_UPWARD_DELAY_MS      = 5000;
 static constexpr uint32_t BATTERY_VALID_TTL_MS          = 5000;
 static constexpr uint32_t SETTINGS_SAVE_DEBOUNCE_MS     = 10000;
-
 
 static constexpr uint32_t USER_CONTROL_GUARD_MS          = 250;
 
@@ -184,9 +158,6 @@ static constexpr uint8_t FAN_PWM_RESOLUTION = 8;
 static constexpr uint32_t PELTIER_PWM_FREQ = 20000;
 static constexpr uint8_t PELTIER_PWM_RESOLUTION = 8;
 static constexpr uint32_t PELTIER_SOFT_START_MS = 5000;
-
-
-
 
 WebServer webServer(80);
 Preferences prefs;
@@ -214,9 +185,6 @@ volatile bool bleQueueResetPending = false;
 bool onlineOtaStartPending = false;
 uint32_t onlineOtaRequestedAt = 0;
 uint32_t stateSequence = 0;
-
-
-
 
 enum class Voltage : uint8_t {
   V5 = 0,
@@ -254,9 +222,6 @@ enum class OtaState : uint8_t {
   SUCCESS,
   FAILED,
 };
-
-
-
 
 Voltage currentVoltage = Voltage::V5;
 Voltage pendingVoltage = Voltage::V5;
@@ -343,17 +308,9 @@ uint32_t bootApStartedAt = 0;
 bool bootApHadClient = false;
 bool bootApClientSafe = false;
 
-
-
-
-
 volatile bool bleSyncPending = false;
 
-
-
 volatile bool bleCommandGateOpen = false;
-
-
 
 bool userControlGuardArmed = false;
 uint32_t lastUserControlCommandMs = 0;
@@ -361,13 +318,9 @@ uint32_t lastUserControlCommandMs = 0;
 uint32_t ledBlinkAt = 0;
 bool ledBlinkPhase = false;
 
-
 static constexpr size_t BLE_RX_BUFFER_SIZE = 512;
 char bleRxBuffer[BLE_RX_BUFFER_SIZE];
 size_t bleRxLength = 0;
-
-
-
 
 static void sendText(const String& line);
 static void sendDelta(const char* key, const String& value);
@@ -390,9 +343,6 @@ static void clearBleTxQueue();
 static void clearBleRxQueue();
 static void processBleRxQueue();
 static void processPendingOnlineOtaStart();
-
-
-
 
 static const char* voltageToString(Voltage value) {
   switch (value) {
@@ -561,9 +511,6 @@ static bool parseFloatRange(const String& raw, float minValue, float maxValue, f
   return isfinite(output);
 }
 
-
-
-
 static void loadSettings() {
   prefsReady = prefs.begin("jexfyz", false);
   if (!prefsReady) return;
@@ -627,9 +574,6 @@ static void saveOtaResult(const String& result) {
   if (prefsReady) prefs.putString("lastOta", otaResult);
 }
 
-
-
-
 static uint8_t fanDutyFromPercent(uint8_t percent) {
   return static_cast<uint8_t>(lroundf((percent / 100.0f) * 255.0f));
 }
@@ -687,8 +631,6 @@ static bool safetyAllowsPeltier() {
   if (hotsideProtectionActiveNow()) return false;
   if (!fanOn) return false;
 
-  
-  
   if (adaptiveOn &&
       peltierHotOffUntilMs != 0 &&
       millis() < peltierHotOffUntilMs) {
@@ -703,9 +645,6 @@ static void applyCoolingOutputs() {
   const bool previousPeltier = peltierOn;
   const uint8_t previousPwm = fanPwm;
 
-  
-  
-  
   if (!ntcValid) {
     fanOn = true;
     fanPwm = 100;
@@ -724,9 +663,6 @@ static void applyCoolingOutputs() {
   processPeltierSoftStart();
   writeFanPwm();
 
-  
-  
-  
   if (fanOn != previousFan || peltierOn != previousPeltier || fanPwm != previousPwm) {
     ++stateSequence;
   }
@@ -735,11 +671,8 @@ static void applyCoolingOutputs() {
   if (fanPwm != previousPwm) sendDelta("FAN_SPEED", String(fanPwm));
 }
 
-
-
-
 static uint8_t ws2812fxMode(LedMode mode) {
-  
+
   switch (mode) {
     case LedMode::STATIC:  return 0;
     case LedMode::BREATH:  return 2;
@@ -821,16 +754,15 @@ static void startVoltageIndicator() {
 }
 
 static void processLeds() {
-  
-  
+
   if (otaState == OtaState::SUCCESS) {
-    renderBlink(0x00FF00);  
+    renderBlink(0x00FF00);
     return;
   }
 
   if (otaState == OtaState::FAILED) {
     if (millis() < otaFailureIndicatorUntil) {
-      renderBlink(0xFF0000);  
+      renderBlink(0xFF0000);
       return;
     }
 
@@ -845,12 +777,10 @@ static void processLeds() {
   if (otaState == OtaState::CLOUD_CONNECTING ||
       otaState == OtaState::CLOUD_DOWNLOADING ||
       otaState == OtaState::CLOUD_APPLYING) {
-    renderBlink(0x0000FF);  
+    renderBlink(0x0000FF);
     return;
   }
 
-  
-  
   if (bootApActive && !bootApHadClient && !otaActive) {
     if (!rgbOn) {
       stopUserLedOutput();
@@ -873,14 +803,11 @@ static void processLeds() {
     return;
   }
 
-  
-  
   if (bootApClientSafe || otaActive || otaState == OtaState::LOCAL_UPLOAD) {
     stopUserLedOutput();
     return;
   }
 
-  
   if (!ntcValid || hotsideProtectionActiveNow()) {
     renderBlink(0xFF0000);
     return;
@@ -906,14 +833,9 @@ static void processLeds() {
   leds.service();
 }
 
-
-
-
 static bool voltageGuardAllows(bool bypassGuard) {
   if (bypassGuard || !voltageGuardArmed) return true;
 
-  
-  
   return millis() - lastVoltageChangeMs >= VOLTAGE_GUARD_MS;
 }
 
@@ -937,10 +859,6 @@ static bool requestVoltage(Voltage target, VoltageRequestSource source, bool byp
 
   if (target == currentVoltage) return true;
 
-  
-  
-  
-  
   if (!bypassGuard) {
     voltageGuardArmed = true;
     lastVoltageChangeMs = millis();
@@ -950,9 +868,6 @@ static bool requestVoltage(Voltage target, VoltageRequestSource source, bool byp
   voltageTransition = true;
   voltageTransitionAt = millis();
 
-  
-  
-  
   digitalWrite(PIN_9V, OUTPUT_OFF);
   digitalWrite(PIN_12V, OUTPUT_OFF);
 
@@ -969,17 +884,11 @@ static void completeVoltageTransition() {
 
   voltageTransition = false;
 
-  
-  
-  
-  
   if (!voltageGuardArmed) {
     voltageGuardArmed = true;
     lastVoltageChangeMs = millis();
   }
 
-  
-  
   if (currentVoltage != Voltage::V12 || adaptiveOn) {
     fanPwm = 100;
   }
@@ -990,15 +899,10 @@ static void completeVoltageTransition() {
   ++stateSequence;
   sendDelta("VOLTAGE", voltageToString(currentVoltage));
 
-  
-  
   if (adaptiveOn && currentVoltage == Voltage::V5 && batteryValid && ntcValid) {
     evaluateAdaptiveBattery();
   }
 }
-
-
-
 
 static float ntcTemperatureFromOhms(float ohms) {
   const float t0 = NTC_NOMINAL_C + 273.15f;
@@ -1010,7 +914,6 @@ static void sampleNtcIfDue() {
   if (millis() - lastNtcReadMs < NTC_READ_INTERVAL_MS) return;
   lastNtcReadMs = millis();
 
-  
   ntcMv = analogReadMilliVolts(PIN_NTC);
 
   if (ntcMv <= NTC_FAULT_LOW_MV || ntcMv >= NTC_FAULT_HIGH_MV) {
@@ -1039,9 +942,6 @@ static void sampleNtcIfDue() {
   hotsideC = temperature;
 }
 
-
-
-
 static void forceSafeFiveVolt() {
   const bool previousAdaptive = adaptiveOn;
   const Voltage previousCeiling = adaptiveCeiling;
@@ -1055,7 +955,6 @@ static void forceSafeFiveVolt() {
   peltierHotOffUntilMs = 0;
   adaptiveResumePeltierAfterHotStep = false;
 
-  
   fanOn = true;
   peltierOn = false;
   peltierSoftStarting = false;
@@ -1065,9 +964,7 @@ static void forceSafeFiveVolt() {
   fanPwm = 100;
 
   if (voltageTransition) {
-    
-    
-    
+
     pendingVoltage = Voltage::V5;
   } else if (currentVoltage != Voltage::V5) {
     requestVoltage(Voltage::V5, VoltageRequestSource::SAFETY, true);
@@ -1099,8 +996,6 @@ static void enforceSafety() {
     const bool wasFanOn = fanOn;
     const uint8_t wasFanPwm = fanPwm;
 
-    
-    
     fanOn = true;
     fanPwm = 100;
     if (peltierOn) {
@@ -1118,19 +1013,15 @@ static void enforceSafety() {
       peltierHotOffUntilMs = now + HOT_PELTIER_OFF_MS;
       adaptiveHotStepDueMs = peltierHotOffUntilMs;
 
-      
-      
       if (!adaptiveResumePeltierAfterHotStep) {
         adaptiveResumePeltierAfterHotStep = fanOn && wasPeltierOn;
       }
 
-      
       adaptiveUpPending = false;
       adaptiveDownPending = false;
     }
   }
 
-  
   if (adaptiveResumePeltierAfterHotStep &&
       adaptiveOn &&
       fanOn &&
@@ -1156,7 +1047,6 @@ static void processAdaptiveHotTimer() {
   if (voltageTransition) return;
   if (millis() < adaptiveHotStepDueMs) return;
 
-  
   adaptiveHotStepPending = false;
   adaptiveUpPending = false;
   adaptiveDownPending = false;
@@ -1165,8 +1055,6 @@ static void processAdaptiveHotTimer() {
   stopPeltierOutput();
   if (wasPeltierOn) sendDelta("PELTIER", "OFF");
 
-  
-  
   if (!hotsideProtectionActiveNow()) {
     const bool resume = adaptiveResumePeltierAfterHotStep && fanOn;
 
@@ -1181,7 +1069,6 @@ static void processAdaptiveHotTimer() {
     return;
   }
 
-  
   if (currentVoltage == Voltage::V12) {
     adaptiveCeiling = Voltage::V9;
     sendDelta("ADAPTIVE_CEILING", "9V");
@@ -1189,7 +1076,7 @@ static void processAdaptiveHotTimer() {
     adaptiveCeiling = Voltage::V5;
     sendDelta("ADAPTIVE_CEILING", "5V");
   } else {
-    
+
     adaptiveOn = false;
     adaptiveCeiling = Voltage::V12;
     adaptiveResumePeltierAfterHotStep = false;
@@ -1207,7 +1094,7 @@ static void processAdaptiveHotTimer() {
   const bool accepted = requestVoltage(target, VoltageRequestSource::HOTSTEP, true);
 
   if (!accepted) {
-    
+
     sendDelta("SAFETY_REASON", "VOLTAGE_STEP_FAILED");
   }
 }
@@ -1218,9 +1105,6 @@ static String safetyReason() {
   if (peltierOn && !fanOn) return "FAN_REQUIRED";
   return "NONE";
 }
-
-
-
 
 static int batteryZoneFor(float temperature) {
   if (temperature < battery5Limit) return 5;
@@ -1328,9 +1212,6 @@ static void processAdaptiveUpTimer() {
     adaptiveUpPending = false;
   }
 }
-
-
-
 
 static void clearBleTxQueue() {
   portENTER_CRITICAL(&bleQueueMux);
@@ -1503,13 +1384,10 @@ static void publishSafetyReason() {
 }
 
 static void sendHotsideTelemetry() {
-  
+
   sendDelta("HOT", formatTemperature(hotsideC, ntcValid));
   publishSafetyReason();
 }
-
-
-
 
 static bool isUserControlCommand(const String& raw) {
   String c = raw;
@@ -1585,9 +1463,6 @@ static void dispatchBleLine(const String& raw) {
   if (command.isEmpty()) return;
   if (command.length() > 180) return;
 
-  
-  
-  
   if (!bleCommandGateOpen && command != "SYNC" && command != "SYNC_READY") {
     sendAck("SESSION", false, "SYNC_REQUIRED");
     return;
@@ -1616,7 +1491,7 @@ static void feedBleRx(const String& incoming) {
     }
 
     if (bleRxLength >= BLE_RX_BUFFER_SIZE - 1) {
-      
+
       bleRxLength = 0;
       continue;
     }
@@ -1625,21 +1500,13 @@ static void feedBleRx(const String& incoming) {
   }
 }
 
-
-
-
 class ServerCallbacks : public BLEServerCallbacks {
  public:
   void onConnect(BLEServer* server) override {
     (void)server;
 
-    
-    
     bleClientConnected = true;
-    
-    
-    
-    
+
     bleSyncPending = false;
     bleCommandGateOpen = false;
     userControlGuardArmed = false;
@@ -1650,9 +1517,6 @@ class ServerCallbacks : public BLEServerCallbacks {
   void onDisconnect(BLEServer* server) override {
     (void)server;
 
-    
-    
-    
     bleClientConnected = false;
     bleSyncPending = false;
     bleCommandGateOpen = false;
@@ -1690,8 +1554,6 @@ static void startBle() {
   if (otaActive) return;
   if (BLEDevice::getInitialized()) return;
 
-  
-  
   WiFi.disconnect(true, false);
   WiFi.softAPdisconnect(true);
   WiFi.mode(WIFI_OFF);
@@ -1701,17 +1563,9 @@ static void startBle() {
   if (bleSecurity == nullptr) {
     bleSecurity = new BLESecurity();
   }
-  
-  
-  
-  
-  
-  
+
   bleSecurity->setAuthenticationMode(ESP_LE_AUTH_REQ_SC_BOND);
-  
-  
-  
-  
+
   bleSecurity->setCapability(ESP_IO_CAP_NONE);
   bleSecurity->setKeySize(16);
   bleSecurity->setInitEncryptionKey(ESP_BLE_ENC_KEY_MASK | ESP_BLE_ID_KEY_MASK);
@@ -1722,9 +1576,6 @@ static void startBle() {
 
   BLEService* service = bleServer->createService(SERVICE_UUID);
 
-  
-  
-  
   uint32_t rxProperties = BLECharacteristic::PROPERTY_WRITE;
 #if defined(CONFIG_NIMBLE_ENABLED)
   rxProperties |= BLECharacteristic::PROPERTY_WRITE_ENC;
@@ -1764,9 +1615,6 @@ static void startBle() {
   }
 }
 
-
-
-
 static bool validHttpsUrl(const String& value) {
   return value.startsWith("https://") && value.length() <= 180;
 }
@@ -1779,7 +1627,7 @@ static void clearCloudCredentials() {
 }
 
 static void stopWiFiRadio() {
-  
+
   WiFi.disconnect(true, false);
   WiFi.softAPdisconnect(true);
   WiFi.mode(WIFI_OFF);
@@ -1815,8 +1663,6 @@ static void failOnlineOta(const char* reason) {
   stopWiFiRadio();
   clearCloudCredentials();
 
-  
-  
   currentVoltage = Voltage::V5;
   pendingVoltage = Voltage::V5;
   fanOn = false;
@@ -1846,11 +1692,8 @@ static void startOnlineOta() {
   cloudExpectedSize = -1;
   cloudTimeSyncStarted = false;
 
-  
   applyOtaSafeOutputs();
 
-  
-  
   clearBleTxQueue();
   clearBleRxQueue();
   bleClientConnected = false;
@@ -1874,8 +1717,7 @@ static void startOnlineOta() {
 static void processOnlineOta() {
   if (otaState == OtaState::CLOUD_CONNECTING) {
     if (WiFi.status() == WL_CONNECTED) {
-      
-      
+
       if (!cloudTimeSyncStarted) {
         configTime(0, 0, "pool.ntp.org", "time.nist.gov", "time.google.com");
         cloudTimeSyncStarted = true;
@@ -1895,8 +1737,6 @@ static void processOnlineOta() {
       cloudPhaseStartedAt = millis();
       cloudLastDataAt = millis();
 
-      
-      
       cloudClient.setCACert(GITHUB_ROOT_CA);
       cloudClient.setTimeout(12000);
       cloudHttp.setReuse(false);
@@ -1928,10 +1768,6 @@ static void processOnlineOta() {
         return;
       }
 
-      
-      
-      
-      
       int firstByte = -1;
       const uint32_t firstByteDeadline = millis() + 3000;
       while (millis() < firstByteDeadline) {
@@ -1951,7 +1787,6 @@ static void processOnlineOta() {
         failOnlineOta("OTA_BEGIN_FAILED");
         return;
       }
-
 
       cloudBytesReceived = 0;
       cloudLastDataAt = millis();
@@ -1998,7 +1833,7 @@ static void processOnlineOta() {
 
     if (!stream->connected() || millis() - cloudLastDataAt >= OTA_NO_DATA_TIMEOUT_MS) {
       if (cloudExpectedSize <= 0) {
-        
+
         if (!stream->connected() && cloudBytesReceived > 0) {
           setOtaState(OtaState::CLOUD_APPLYING);
           cloudPhaseStartedAt = millis();
@@ -2029,9 +1864,6 @@ static void processOnlineOta() {
     clearCloudCredentials();
   }
 }
-
-
-
 
 static const char LOCAL_OTA_PAGE[] PROGMEM = R"HTML(
 <!doctype html>
@@ -2173,9 +2005,7 @@ static void handleOtaPost() {
 }
 
 static void startLocalOtaAp() {
-  
-  
-  
+
   onlineOtaStartPending = false;
   bootApActive = true;
   bootApHadClient = false;
@@ -2215,9 +2045,6 @@ static void stopLocalOtaAp() {
   }
 }
 
-
-
-
 static bool setFanState(bool desired, String& reason) {
   if (adaptiveOn) {
     reason = "ADAPTIVE_ACTIVE";
@@ -2234,8 +2061,6 @@ static bool setFanState(bool desired, String& reason) {
     return false;
   }
 
-  
-  
   if (!desired && hotsideProtectionActiveNow()) {
     reason = "HOTSIDE_PROTECTION";
     return false;
@@ -2286,9 +2111,7 @@ static bool setPeltierState(bool desired, String& reason) {
   }
 
   if (!peltierOn) {
-    
-    
-    
+
     peltierOn = true;
     applyCoolingOutputs();
   }
@@ -2298,8 +2121,7 @@ static bool setPeltierState(bool desired, String& reason) {
 }
 
 static bool forceAdaptiveFiveVolt() {
-  
-  
+
   if (voltageTransition) {
     pendingVoltage = Voltage::V5;
     return true;
@@ -2336,8 +2158,6 @@ static void setAdaptiveState(bool desired, String& reason) {
       fanPwm = 100;
     }
 
-    
-    
     if (!forceAdaptiveFiveVolt()) {
       adaptiveOn = previousAdaptive;
       reason = "VOLTAGE_FORCE_FAILED";
@@ -2347,7 +2167,6 @@ static void setAdaptiveState(bool desired, String& reason) {
     applyCoolingOutputs();
     reason = "OK";
 
-    
     if (currentVoltage == Voltage::V5 && batteryValid) {
       evaluateAdaptiveBattery();
     }
@@ -2361,11 +2180,8 @@ static void setAdaptiveState(bool desired, String& reason) {
     adaptiveCeiling = Voltage::V12;
     fanPwm = 100;
 
-    
-    
     if (!forceAdaptiveFiveVolt()) {
-      
-      
+
       reason = "VOLTAGE_FORCE_FAILED";
     } else {
       reason = "OK";
@@ -2477,8 +2293,7 @@ static void handleCommand(const String& command) {
 
   if (command == "SYNC_READY") {
     bleCommandGateOpen = true;
-    
-    
+
     sendFullSync();
     sendAck("SYNC_READY", true, "OK");
     return;
@@ -2516,7 +2331,6 @@ static void handleCommand(const String& command) {
     sendAck("VERSION", !cloudVersion.isEmpty(), cloudVersion.isEmpty() ? "INVALID" : "OK");
     return;
   }
-
 
   if (command == "CLOUDOTA") {
     if (cloudSsid.isEmpty() || cloudPassword.isEmpty() || !validHttpsUrl(cloudUrl) || cloudVersion.isEmpty()) {
@@ -2810,8 +2624,6 @@ static void handleCommand(const String& command) {
     return;
   }
 
-  
-  
   if (command.startsWith("PHONE:BT=")) {
     float value = 0.0f;
     if (!parseFloatRange(command.substring(9), 0.0f, 100.0f, value)) {
@@ -2865,8 +2677,6 @@ static void handleCommand(const String& command) {
 static void processPendingOnlineOtaStart() {
   if (!onlineOtaStartPending || otaActive || bootApActive) return;
 
-  
-  
   const bool queueDrained = bleTxCount == 0;
   const bool txSettled = queueDrained && millis() >= bleNextNotifyAt;
   const bool waitExpired = millis() - onlineOtaRequestedAt >= ONLINE_OTA_START_WAIT_MS;
@@ -2875,17 +2685,6 @@ static void processPendingOnlineOtaStart() {
   onlineOtaStartPending = false;
   startOnlineOta();
 }
-
-
-
-
-
-
-
-
-
-
-
 
 static constexpr uint32_t TOUCH_DEBOUNCE_MS = 50;
 static constexpr uint32_t TOUCH_DOUBLE_CLICK_MS = 500;
@@ -2914,7 +2713,8 @@ static void executeTouchSingle() {
 static void executeTouchDouble() {
   if (otaActive) return;
   setRgbState(!rgbOn);
-  sendAck("TOUCH_RGB", true, "OK");}
+  sendAck("TOUCH_RGB", true, "OK");
+}
 
 static void executeTouchLong() {
   if (otaActive || adaptiveOn) return;
@@ -2937,9 +2737,6 @@ static void serviceTouch() {
   const uint32_t now = millis();
   const bool raw = digitalRead(PIN_TOUCH) == HIGH;
 
-  
-  
-  
   if (raw != touchRawState) {
     touchRawState = raw;
     touchRawChangedAtMs = now;
@@ -2950,21 +2747,20 @@ static void serviceTouch() {
     touchStableState = touchRawState;
 
     if (touchStableState) {
-      
+
       touchPressedAtMs = now;
       touchLongFired = false;
     } else {
-      
+
       if (!touchLongFired && !otaActive) {
         if (touchPendingSingle &&
             now - touchFirstTapReleasedAtMs <= TOUCH_DOUBLE_CLICK_MS) {
-          
+
           touchPendingSingle = false;
           touchFirstTapReleasedAtMs = 0;
           executeTouchDouble();
         } else {
-          
-          
+
           touchPendingSingle = true;
           touchFirstTapReleasedAtMs = now;
         }
@@ -2972,9 +2768,6 @@ static void serviceTouch() {
     }
   }
 
-  
-  
-  
   if (touchStableState && !touchLongFired && !otaActive &&
       now - touchPressedAtMs >= TOUCH_LONG_PRESS_MS) {
     touchLongFired = true;
@@ -2983,9 +2776,6 @@ static void serviceTouch() {
     executeTouchLong();
   }
 
-  
-  
-  
   if (touchPendingSingle && !touchStableState &&
       now - touchFirstTapReleasedAtMs > TOUCH_DOUBLE_CLICK_MS) {
     touchPendingSingle = false;
@@ -2995,8 +2785,7 @@ static void serviceTouch() {
 }
 
 static void setupTouch() {
-  
-  
+
   const bool initial = digitalRead(PIN_TOUCH) == HIGH;
   touchRawState = initial;
   touchStableState = initial;
@@ -3007,15 +2796,9 @@ static void setupTouch() {
   touchLongFired = false;
 }
 
-
-
-
 void setup() {
   Serial.begin(115200);
 
-  
-  
-  
   pinMode(PIN_NTC, INPUT);
   pinMode(PIN_TOUCH, INPUT);
   setupTouch();
@@ -3042,7 +2825,6 @@ void setup() {
 
   loadSettings();
 
-  
   currentVoltage = Voltage::V5;
   pendingVoltage = Voltage::V5;
   fanOn = false;
@@ -3057,27 +2839,15 @@ void setup() {
   ntcValid = false;
   hotsideC = NAN;
 
-  
   lastNtcReadMs = millis() - NTC_READ_INTERVAL_MS;
   sampleNtcIfDue();
   enforceSafety();
 
-  
-  
-  
-  
-  
-  
-  
-  
-  
   startLocalOtaAp();
 }
 
 void loop() {
-  
-  
-  
+
   if (otaState == OtaState::SUCCESS &&
       otaRestartAt != 0 &&
       millis() >= otaRestartAt) {
@@ -3085,9 +2855,6 @@ void loop() {
     return;
   }
 
-  
-  
-  
   if (bootApActive) {
     webServer.handleClient();
 
@@ -3097,18 +2864,13 @@ void loop() {
         bootApHadClient = true;
         bootApClientSafe = true;
 
-        
-        
         applyOtaSafeOutputs();
         stopUserLedOutput();
         stopBleForBootWiFiClient();
       }
     } else if (otaState != OtaState::LOCAL_UPLOAD && !otaActive &&
                millis() - bootApStartedAt >= BOOT_AP_TIMEOUT_MS) {
-      
-      
-      
-      
+
       stopLocalOtaAp();
       bootApClientSafe = false;
       bootApHadClient = false;
@@ -3122,22 +2884,14 @@ void loop() {
       return;
     }
 
-    
-    
   }
 
-  
-  
-  
   if (otaState == OtaState::LOCAL_UPLOAD) {
     webServer.handleClient();
     processLeds();
     return;
   }
 
-  
-  
-  
   if (otaActive &&
       otaState != OtaState::SUCCESS &&
       otaState != OtaState::FAILED) {
@@ -3146,12 +2900,6 @@ void loop() {
     return;
   }
 
-  
-  
-  
-  
-  
-  
   if (bleQueueResetPending) {
     bleQueueResetPending = false;
     clearBleTxQueue();
@@ -3193,6 +2941,5 @@ void loop() {
   processLeds();
   serviceBleTx();
 
-  
   yield();
 }
