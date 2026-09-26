@@ -1684,7 +1684,7 @@ The project process is now explicitly two-phase:
 - V4.13 physical test showed an immediate Core 0 Load Access Fault directly after WIFI AP: START; the device rebooted continuously before reaching WIFI AP: READY or BLE startup.
 - Repository history was compared against the earlier working firmware path. The older proven source initialized all normal hardware/peripherals first, then entered the boot Wi-Fi AP path. It did not issue STA/SoftAP teardown calls before the initial AP mode was established.
 - V4.14 restores that hardware-first boot order while keeping the single-radio rule: Wi-Fi owns the radio during the 10-second boot AP window; BLE is not initialized until Wi-Fi is fully turned OFF after timeout or failure.
-- startLocalOtaAp() now uses an explicitly staged Core-3.7 AP sequence: WiFi.mode(WIFI_AP) -> WiFi.softAPConfig(...) -> WiFi.softAP(...), with Serial markers for MODE, CONFIG, START, and READY.
+- startLocalOtaAp() now uses an explicitly staged Core-3.3.7 AP sequence: WiFi.mode(WIFI_AP) -> WiFi.softAPConfig(...) -> WiFi.softAP(...), with Serial markers for MODE, CONFIG, START, and READY.
 - The initial AP path no longer calls WiFi.disconnect() or WiFi.softAPdisconnect() before AP-mode initialization, removing the pre-initialization radio teardown path implicated by the panic timing.
 - OTA protected engine, native esp_ota_* update lifecycle, secure TLS CA validation, BLE P1 contract, safety logic, and corrected GPIO mapping remain unchanged by the radio fix.
 - Firmware CI release gate was advanced to V4.14. Physical validation is required: confirm WIFI AP: READY SSID=JE X FYZ, AP visibility for 10 seconds, then WIFI AP: TIMEOUT -> BLE HANDOFF and BLE JE X FYZ advertising with no reboot/panic.
