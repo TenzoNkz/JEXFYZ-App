@@ -1310,6 +1310,20 @@ The project process is now explicitly two-phase:
 - Existing exact byte-count validation and OTA radio ownership remain unchanged.
 - No GPIO, NTC, cooling, Adaptive, voltage, RGB, touch, BLE UUID/P1 contract, or Wi-Fi/BLE ownership rule was intentionally changed.
 
+
+## FIRMWARE BUILD #27 — V4.3 FULL SUCCESS / PUBLISHED
+
+- Run #27: Firmware Build, run ID `36229695808`.
+- Source head SHA: `8f0578e2303abc9823f3315457d5cb905a82903e`.
+- Result: SUCCESS.
+- ESP32-C3 Core 3.3.12 installation, dependency installation, source audit, version extraction, compile, firmware artifact upload, ArduinoDroid temporary-source generation/upload, and public firmware publication all completed successfully.
+- Firmware artifact: `JEXFYZ-V4.3`, artifact ID `10901902085`, not expired at verification time.
+- Public binary: `JEXFYZ-V4.3.bin`, verified size 1,579,536 bytes.
+- Public manifest: V4.3 -> `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V4.3.bin`.
+- ArduinoDroid temporary source artifact: `JEXFYZ-V4.3-ArduinoDroid-Source`, artifact ID `10902041934`, not expired at verification time.
+- The ArduinoDroid temporary source is intentionally compatible with the user's Core 3.3.7 setup by using `WiFiClientSecure` and `setInsecure()`; it is for temporary manual flashing/testing only and is not the normal secure online-OTA release source.
+- Physical validation target: V4.2 -> V4.3 using the ArduinoDroid temporary .ino, then exercise Local OTA and Online OTA diagnostics.
+
 # END OF FIRMWARE ENGINEERING MEMORY
 
 
