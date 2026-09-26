@@ -95,7 +95,7 @@ jobs:
           mkdir -p build/firmware build/JEXFYZ
           cp firmware/JEXFYZ.ino build/JEXFYZ/JEXFYZ.ino
           arduino-cli compile \
-            --fqbn esp32:esp32:esp32c3 \
+            --fqbn esp32:esp32:esp32c3:PartitionScheme=min_spiffs \
             --output-dir build/firmware \
             build/JEXFYZ
           BIN="build/firmware/JEXFYZ.ino.bin"
