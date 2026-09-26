@@ -3,7 +3,7 @@
 ## 1. SOURCE AUTHORITY AND CURRENT STATE
 
 - Authoritative firmware source: `firmware/JEXFYZ.ino`.
-- Current source firmware version: V4.2 (local OTA hardening after the physical V4.0 local OTA test failed from the user-installed V3.9 device; Core 3.3.12 baseline).
+- Current source firmware version: V4.2 (local OTA hardening after the physical V4.0 local OTA test failed from the user-installed V3.9 device; Core 3.3.12 baseline; Firmware Build Run #26 verified successful).
 - Protocol version: `P1`.
 - BLE device name: `JE X FYZ`.
 - Target hardware: ESP32-C3 Super Mini / ESP32-C3 Dev Module class.
@@ -1259,26 +1259,45 @@ The project process is now explicitly two-phase:
 - The 2 MiB CI release gate remains active.
 
 
+## FIRMWARE BUILD #24 — V4.0 FULL SUCCESS / PUBLISHED
+
+- Run #24: Firmware Build, run ID `36225317977`.
+- Trigger/head SHA: `e2678de6d3ef9afe28001c6992534429ff54c861`.
+- ESP32-C3 Core 3.3.12 installation, source audit, compilation, artifact upload, and public firmware publication all completed successfully.
+- Public repository contained `JEXFYZ-V4.0.bin` and a V4.0 manifest after this run.
+- Public binary size at verification: 1,573,280 bytes.
+
 ## FIRMWARE BUILD #25 — V4.1 FULL SUCCESS / PUBLISHED
 
 - Run #25: Firmware Build, run ID `36225940333`.
-- Source head SHA: `b9ea717bb5b3d05ff0c7b380b4126e9282b628ab`.
-- ESP32-C3 Core 3.3.12 installation, dependency installation, source audit, compilation, artifact upload, and public firmware publication all completed successfully.
-- Public firmware repository contains `JEXFYZ-V4.1.bin` and a V4.1 manifest.
+- Trigger/head SHA: `b9ea717bb5b3d05ff0c7b380b4126e9282b628ab`.
+- Firmware source version: V4.1.
+- Compile, artifact upload, and public publication all completed successfully.
+- Public repository was advanced to `JEXFYZ-V4.1.bin` with a V4.1 manifest.
 - Public V4.1 binary size: 1,573,280 bytes.
-- V4.1 was created as a controlled firmware-version test target after the V4.0 physical local OTA test report.
+- V4.1 was created as the controlled firmware-version target after the V4.0 physical local OTA report.
 
 ## 2026-09-26 — V4.2 LOCAL OTA HARDENING AFTER PHYSICAL V4.0 FAILURE
 
-- User reported that manually uploading the published V4.0 firmware through the local OTA page failed and the physical device remained on V3.9.
-- The published V4.0 package had already passed Firmware Build verification, so the exact physical failure cause is not declared without the device's OTA error response.
-- Local OTA finalization in `firmware/JEXFYZ.ino` was changed to use the official Arduino-ESP32 `Update.end(true)` path after the existing exact received-byte checks.
-- The exact byte-count guard remains in place, so `Update.end(true)` cannot be used to silently accept a known-size short upload.
-- The local OTA POST response now returns the persisted `otaResult` on failure and the browser shows that returned diagnostic instead of a generic failure message.
-- Firmware version advanced from V4.1 to V4.2 because this is an executable firmware change and the project version policy requires a new major.minor version for every firmware change.
-- No GPIO mapping, BLE P1 UUIDs, cooling/safety rules, NTC behavior, Adaptive behavior, voltage behavior, RGB/touch behavior, or Wi-Fi/BLE radio-ownership rule was intentionally changed.
-- The next required physical test is V3.9 -> V4.2 through the local boot AP OTA path. The exact OTA page error must be recorded if it fails again.
-- Online OTA can be tested separately with the published V4.2 package after the dedicated build/publish succeeds.
+- User reported that manually uploading the published V4.0 firmware through the local OTA page failed and the running device remained on V3.9.
+- The exact physical failure cause was not known because no OTA page error string was supplied.
+- The local OTA finalization path was changed from the known-size `Update.end()` branch to the official Arduino-ESP32 `Update.end(true)` path, while retaining the exact received-byte count check before finalization.
+- The local OTA HTTP response now returns the persisted `otaResult` on failure, and the browser displays that returned diagnostic instead of a generic failure message.
+- Firmware source advanced from V4.1 to V4.2 because the project version policy requires every executable firmware change to use a new major.minor version.
+- GPIO5=Peltier, GPIO6=Fan, BLE P1 identity, cooling/safety, NTC, Adaptive, voltage, RGB/touch, and Wi-Fi/BLE radio exclusivity were not intentionally changed.
+
+## FIRMWARE BUILD #26 — V4.2 FULL SUCCESS / PUBLISHED
+
+- Run #26: Firmware Build, run ID `36226274561`.
+- Source head SHA: `a09eba8322917d2f7b11e38e8428b09dcd5b1230`.
+- Result: **SUCCESS**.
+- ESP32-C3 Core 3.3.12, library installation, source audit, version extraction, compile, artifact upload, and public publication all completed successfully.
+- Artifact: `JEXFYZ-V4.2`, artifact ID `10900183772`.
+- Artifact archive size: 1,573,760 bytes.
+- Artifact digest: `sha256:57d5414a28d789e6addff375cb4e2db37a3eda5e90f00ad4887b3d2c8932e2a6`.
+- Public binary: `JEXFYZ-V4.2.bin`, size 1,573,616 bytes.
+- Public manifest was independently verified as V4.2 and points to `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V4.2.bin`.
+- Required physical validation remains: installed V3.9 device -> local boot AP OTA -> V4.2. Firmware is not declared physically OTA-verified until the user confirms the device reboots and reports V4.2.
 
 # END OF FIRMWARE ENGINEERING MEMORY
 

@@ -8,7 +8,7 @@
 
 ---
 
-> Current firmware handoff (2026-09-26): The firmware source is V4.2 and the firmware CI baseline is stable Arduino-ESP32 Core 3.3.12. V4.1 was published by Firmware Build Run #25 as the controlled OTA test target; the user then reported that local/manual OTA from the installed V3.9 device failed and the running firmware remained V3.9. V4.2 is the local-OTA hardening target; the App BLE P1 contract remains unchanged.nd the firmware CI baseline is stable Arduino-ESP32 Core 3.3.12. The App BLE P1 contract remains unchanged; no Flutter protocol rewrite is required for this firmware OTA refactor. The dedicated Firmware Build must be completed and independently verified before V4.0 is treated as a released firmware package.
+> Current firmware handoff (2026-09-26): The firmware source is V4.2 and the firmware CI baseline is stable Arduino-ESP32 Core 3.3.12. Firmware V4.1 was published by Run #25 as the controlled OTA target; the user then reported that local/manual OTA from the installed V3.9 device failed and the device remained on V3.9. Firmware V4.2 contains the local-OTA hardening and was verified by Firmware Build Run #26. The App BLE P1 contract remains unchanged.
 
 ## 0. HOW THIS FILE MUST BE USED
 
@@ -2487,24 +2487,25 @@ The project process is now explicitly two-phase:
 - Physical validation pending: flash/boot V4.0 on the device, then test online OTA behavior and local OTA regression.
 
 
-## 2026-09-26 — Firmware V4.0 physical local OTA failure / V4.2 handoff
+## 2026-09-26 — Firmware V4.0 physical local OTA failure and V4.2 handoff
 
 ### Physical test result
 - User tested the published V4.0 firmware through the local/manual OTA page while the device was running V3.9.
-- The local OTA failed and the device remained on V3.9.
-- No exact failure string was supplied in the report, so the root cause is not asserted from the physical result alone.
+- The OTA failed and the device remained on V3.9.
+- No exact OTA page error string was supplied, so the root cause is not asserted from the physical result alone.
 
-### Code/Firmware action completed in Code #3
+### Code #3 execution
 - Firmware source advanced V4.1 -> V4.2.
-- Local OTA finalization was aligned to the official Arduino-ESP32 `Update.end(true)` path after the existing exact uploaded-byte validation.
-- The local OTA HTTP response now returns the persisted `LAST_OTA_RESULT` value on failure; the browser displays the returned diagnostic.
-- App BLE P1 commands/telemetry and firmware OTA metadata flow remain unchanged.
-- No App Build was triggered by this firmware-only change.
+- Local OTA finalization now uses `Update.end(true)` after the existing exact received-byte validation.
+- Local OTA failure responses now expose the persisted `LAST_OTA_RESULT` value to the browser.
+- No BLE P1 command/telemetry contract or app-side protocol rewrite was required.
+- No App Build was triggered by this firmware-only execution.
 
-### Handoff
-- Dedicated Firmware Build must compile and publish V4.2 before another physical OTA test.
-- Required physical baseline: installed V3.9 -> local OTA -> V4.2.
-- If the test fails, record the exact OTA page response so the next Code pass can diagnose the concrete failure rather than guessing.
+### Firmware Build handoff
+- Firmware Build Run #26 compiled and published V4.2 successfully.
+- Public firmware metadata is now V4.2.
+- Required physical validation: V3.9 device -> local boot AP OTA -> V4.2.
+- If physical OTA fails again, record the exact OTA page response before the next code change.
 
 # END OF APP PROJECT MEMORY
 
