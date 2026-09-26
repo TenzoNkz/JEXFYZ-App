@@ -435,8 +435,10 @@ static String formatTemperature(float value, bool valid) {
   return String(value, 1);
 }
 
-static String resetReasonText() {
-  return ESP.getResetReason();
+static const char* resetReasonText() {
+  // Arduino-ESP32 Core 3.3.7 has no public ESP.getResetReason() API.
+  // Do not substitute an invented or low-level lifecycle API here.
+  return "UNAVAILABLE_CORE_3_3_7";
 }
 
 static bool parseHexColor(String value, uint32_t& output) {
@@ -1730,7 +1732,6 @@ static void stopBleRadio() {
   bleClientConnected = false;
   bleSyncPending = false;
   bleCommandGateOpen = false;
-  bleConnectionId = BLE_INVALID_CONN_ID;
 
   if (BLEDevice::getInitialized()) {
     BLEDevice::deinit(true);
@@ -2067,7 +2068,10 @@ class OtaHttpFlashStream final : public Stream {
   size_t write(const uint8_t* data, size_t size) override {
     if (data == nullptr || size == 0) return 0;
 
-    const size_t accepted = Update.write(data, size);
+    // Core 3.3.7 Update.write() takes a mutable uint8_t* even though
+    // the Stream interface supplies a const buffer. Update.write() only
+    // consumes the bytes, so adapt to its official signature without copying.
+    const size_t accepted = Update.write(const_cast<uint8_t*>(data), size);
     if (accepted != size) {
       writeFailed_ = true;
       return accepted;
