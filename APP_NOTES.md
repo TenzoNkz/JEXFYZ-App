@@ -2581,6 +2581,23 @@ The project process is now explicitly two-phase:
 - No source-code feature change was made for this build; the trigger commit only advanced the dedicated App Build trigger file.
 - Real-device BLE/background-service validation remains pending from the earlier handoff.
 
+## 2026-09-26 — App Build Run #5 verified
+
+- User explicitly requested `Build App` in the Action sub-chat.
+- App Build was triggered only through `.github/APP_BUILD_TRIGGER`; no Firmware Build was started.
+- Trigger commit: `27c02ad58a15a46f744bf1e10165c32260137b3f`.
+- GitHub Actions App Build Run #5 (`36230152301`) completed successfully.
+- Built head SHA: `27c02ad58a15a46f744bf1e10165c32260137b3f`.
+- Analyze: SUCCESS.
+- Tests: SUCCESS.
+- Release APK build: SUCCESS.
+- Production APK signature verification: SUCCESS.
+- APK artifact: `JEXFYZ#5.apk`, artifact ID `10902547544`, size `53,069,270 bytes`, not expired at verification time.
+- Dart symbols artifact: `JE-X-FYZ-Dart-Symbols`, artifact ID `10902462961`.
+- APK was downloaded as `JE-X-FYZ-Build-5.apk` and verified as a genuine Android package (APK), not a wrapper ZIP.
+- No source-code feature change was made for this build; the trigger commit only advanced the dedicated App Build trigger file.
+- Real-device BLE/background-service and V3.8 OTA runtime validation remain pending.
+
 # END OF APP PROJECT MEMORY
 
 
