@@ -1450,6 +1450,13 @@ The project process is now explicitly two-phase:
 - Diagnostic progress/error reporting is preserved.
 - Physical target: V4.5 known-good -> V4.7 manual/online validation. V4.6 image-verify failure at 100% / code 5379 is the defect being addressed.
 
+## 2026-09-26 — V4.7 BUILD #37 FAILURE / STREAM SINK COMPILE FIX
+
+- Run #37 reached the OTA protected-source audit successfully but failed during compile.
+- Exact compiler error: OtaHttpFlashStream remained abstract because Print::write(uint8_t) is pure virtual in ESP32 Arduino Core 3.3.12.
+- Added the required single-byte write(uint8_t) override, forwarding to the existing buffer-write implementation.
+- No OTA runtime design change; this is a compile compatibility correction for the dedicated HTTPClient-to-flash sink.
+
 # END OF FIRMWARE ENGINEERING MEMORY
 
 

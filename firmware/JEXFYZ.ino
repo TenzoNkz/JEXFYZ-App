@@ -1992,6 +1992,10 @@ class OtaHttpFlashStream final : public Stream {
       size_t totalSize)
       : handle_(handle), written_(written), totalSize_(totalSize) {}
 
+  size_t write(uint8_t data) override {
+    return write(&data, 1);
+  }
+
   size_t write(const uint8_t* data, size_t size) override {
     if (data == nullptr || size == 0) return 0;
 

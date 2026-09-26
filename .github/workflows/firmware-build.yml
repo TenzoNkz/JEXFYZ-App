@@ -122,7 +122,7 @@ jobs:
           if missing:
               raise SystemExit("OTA SAFETY AUDIT FAILED: " + ", ".join(missing))
           if 'static constexpr char FW_VERSION[] = "V4.7";' not in s:
-              raise SystemExit("OTA SAFETY AUDIT FAILED: version is not V4.6")
+              raise SystemExit("OTA SAFETY AUDIT FAILED: version is not V4.7")
           if "setInsecure()" in s:
               raise SystemExit("OTA SAFETY AUDIT FAILED: insecure TLS leaked into release source")
           loop_start = s.index("void loop()")
