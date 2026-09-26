@@ -14,10 +14,10 @@
 
 ## 1. SOURCE AUTHORITY AND CURRENT STATE
 
-- Version transition rule: **V3.8 → V3.9 → V4.0 → V4.1 → ... → V4.9 → V5.0**. After V4.9, the next firmware version is V5.0; do not create V4.10 or V4.14.
+- Version transition rule: **active baseline V1.0; future revisions advance from V1.0 according to the newest user instruction. Older V3.x/V4.x/V5.x sequences are historical.**
 
 - Authoritative firmware source: `firmware/JEXFYZ.ino`.
-- Current source firmware version: V5.0 (restored hardware-first Wi-Fi AP startup, Core 3.3.7, secure Core-3.3.7-compatible TLS CA handling, and corrected Fan/Peltier GPIO mapping).
+- Current source firmware version: **V1.0** (`firmware/JEXFYZ.ino`).
 - Protocol version: `P1`.
 - BLE device name: `JE X FYZ`.
 - Target hardware: ESP32-C3 Super Mini / ESP32-C3 Dev Module class.
@@ -1702,3 +1702,58 @@ The project process is now explicitly two-phase:
 - The initial AP path no longer calls WiFi.disconnect() or WiFi.softAPdisconnect() before AP-mode initialization, removing the pre-initialization radio teardown path implicated by the panic timing.
 - OTA protected engine, native esp_ota_* update lifecycle, secure TLS CA validation, BLE P1 contract, safety logic, and corrected GPIO mapping remain unchanged by the radio fix.
 - Firmware CI release gate was advanced to V5.0. Physical validation is required: confirm WIFI AP: READY SSID=JE X FYZ, AP visibility for 10 seconds, then WIFI AP: TIMEOUT -> BLE HANDOFF and BLE JE X FYZ advertising with no reboot/panic.
+
+# MANDATORY PROJECT GOVERNANCE — ADDED 2026-09-27
+
+## Mandatory read-before-action
+Before every firmware-related action—discussion based on current state, source inspection, editing, generating, building, packaging, publishing, troubleshooting, or hardware/runtime analysis—read the relevant living firmware notes first. For cross-layer work, read the firmware and app contexts before acting. After reading the notes, inspect the newest actual repository/source state.
+
+## Mandatory update-after-action
+After every material firmware action, immediately update the notes with:
+- what was inspected or changed
+- why it was done
+- actual result
+- version/commit/run when available
+- unresolved issues and next diagnostic boundary
+
+Material actions include source changes, hardware/pin decisions, protocol changes, safety/timing changes, OTA/radio changes, version changes, CI results, manual-flash results, runtime panics/errors, official-source investigations, workflow/repository changes, and delivery changes.
+
+## Official-source-first
+For platform/library/API behavior, the exact pinned upstream source is the primary reference. This project is pinned to Arduino-ESP32 Core 3.3.7. Do not invent replacement lifecycle logic when the official implementation already provides the API behavior.
+
+Official references verified on 2026-09-27:
+- https://github.com/espressif/arduino-esp32/blob/3.3.7/libraries/WiFi/examples/WiFiAccessPoint/WiFiAccessPoint.ino
+- https://github.com/espressif/arduino-esp32/blob/3.3.7/libraries/WiFi/src/WiFiAP.cpp
+- https://github.com/espressif/arduino-esp32/blob/3.3.7/libraries/WiFi/src/AP.cpp
+- https://github.com/espressif/arduino-esp32/blob/3.3.7/libraries/WiFi/src/WiFiGeneric.cpp
+
+## No speculative patch stacking
+When a fault is reproducible, preserve the exact failure, inspect the pinned upstream implementation, isolate the smallest failing boundary, change one root cause at a time, build/validate, and record the result. Do not stack unverified radio/lifecycle patches.
+
+## Evidence rule
+A successful GitHub Actions firmware build proves compilation/artifact/publish steps only. It does not prove physical boot, Wi-Fi, BLE, OTA, thermal, or hardware behavior.
+
+## Current active baseline
+V1.0 is the active firmware baseline. V3.x/V4.x/V5.x material is historical unless the user explicitly reactivates it.
+
+## Current incident — 2026-09-27
+V1.0 passed CI Run #66 but, after manual flashing, the user reported that the ESP32-C3 still panics during boot. Therefore V1.0 is not physically validated.
+
+The exact V1.0 panic register dump has not yet been captured in the notes. The next runtime test must preserve the complete Serial Monitor output, especially the final successful boot line and the complete Guru Meditation register block.
+
+## Official Wi-Fi finding — 2026-09-27
+The official Core 3.3.7 Wi-Fi Access Point example uses the high-level `WiFi.softAP(ssid, password)` API. The pinned source shows this flows through `AP.begin()`, `WiFi.enableAP(true)`, and the official `WiFiGenericClass::mode()` path; `AP.begin()` also waits for `ESP_NETIF_STARTED_BIT`.
+
+The current V1.0 source instead performs a custom sequence before AP creation:
+`WiFi.disconnect(true, false)` → hostname → auto-reconnect off → `WiFi.mode(WIFI_AP)` → `softAPConfig` → `softAP`.
+
+This does not by itself prove the custom sequence is the panic root cause. It does establish that the next diagnostic must compare directly with the official Core 3.3.7 path instead of adding more custom radio lifecycle code.
+
+## Next diagnostic boundary
+Temporary diagnostic only:
+1. Read this note first.
+2. Read the exact pinned official Wi-Fi AP source.
+3. Test the smallest official high-level AP path.
+4. Do not add BLE or custom radio teardown/retry logic to the first diagnostic.
+5. Record exactly which official call completes before the panic.
+6. Reintroduce JE X FYZ layers one at a time only after the boundary is proven.
