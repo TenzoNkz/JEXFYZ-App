@@ -2242,3 +2242,18 @@ For every future app change:
 ### Verification
 - Existing workflow logic was preserved; only the `name:` display labels were changed.
 - The firmware workflow's existing automatic trigger still watches `firmware/JEXFYZ.ino` and `.github/workflows/firmware-build.yml`.
+
+
+## 2026-09-26 — Build trigger ownership / execution split
+
+### User-approved workflow
+- **App Build** must not auto-trigger from ordinary repository/app changes.
+- **App Build** is manually triggered only from the dedicated **JE X FYZ Action** build/CI sub-chat.
+- **Firmware Build** auto-triggers when the firmware source `firmware/JEXFYZ.ino` is updated.
+- Firmware build/CI follow-through belongs to the active Code sub-chat handling that firmware update: inspect failures, make only the narrow fix required, and continue until the firmware build/publish pipeline succeeds.
+- The two workflows remain independently named **App Build** and **Firmware Build**.
+
+### Current repository behavior
+- `.github/workflows/build.yml` already uses `workflow_dispatch` for App Build.
+- `.github/workflows/firmware-build.yml` already has a push trigger for `firmware/JEXFYZ.ino` and also retains manual dispatch support.
+- No application build is triggered merely because app source files change.
