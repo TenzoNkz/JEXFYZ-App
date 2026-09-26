@@ -19,7 +19,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
-static constexpr char FW_VERSION[] = "V3.7";
+static constexpr char FW_VERSION[] = "V3.8";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -1842,12 +1842,6 @@ static void processOnlineOta() {
         failOnlineOta("DOWNLOAD_FAILED");
         return;
       }
-      cloudExpectedSize = cloudHttp.getSize();
-      if (cloudExpectedSize <= 0) {
-        failOnlineOta("INVALID_IMAGE_SIZE");
-        return;
-      }
-
       NetworkClient* imageStream = cloudHttp.getStreamPtr();
       if (imageStream == nullptr) {
         failOnlineOta("DOWNLOAD_FAILED");
@@ -1868,9 +1862,10 @@ static void processOnlineOta() {
         return;
       }
 
-      const size_t imageSize = static_cast<size_t>(cloudExpectedSize);
-      if (!Update.begin(imageSize, U_FLASH)) {
-        failOnlineOta("OTA_BEGIN_FAILED");
+      (void)imageSize;
+      if (!Update.begin(UPDATE_SIZE_UNKNOWN, U_FLASH)) {
+        const String detail = updateErrorResult("OTA_BEGIN");
+        failOnlineOta(detail.c_str());
         return;
       }
 
@@ -1902,19 +1897,13 @@ static void processOnlineOta() {
         cloudLastDataAt = millis();
 
         if (Update.write(buffer, static_cast<size_t>(readLength)) != static_cast<size_t>(readLength)) {
-          failOnlineOta("OTA_WRITE_FAILED");
+          const String detail = updateErrorResult("OTA_WRITE");
+          failOnlineOta(detail.c_str());
           return;
         }
 
         cloudBytesReceived += static_cast<uint32_t>(readLength);
       }
-    }
-
-    if (cloudExpectedSize > 0 &&
-        cloudBytesReceived >= static_cast<uint32_t>(cloudExpectedSize)) {
-      setOtaState(OtaState::CLOUD_APPLYING);
-      cloudPhaseStartedAt = millis();
-      return;
     }
 
     if (!stream->connected() || millis() - cloudLastDataAt >= OTA_NO_DATA_TIMEOUT_MS) {
@@ -1939,18 +1928,12 @@ static void processOnlineOta() {
     cloudHttp.end();
     cloudClient.stop();
 
-    if (cloudExpectedSize > 0 &&
-        cloudBytesReceived != static_cast<uint32_t>(cloudExpectedSize)) {
-      failOnlineOta("DOWNLOAD_INCOMPLETE");
-      return;
-    }
-
-    if (!Update.isFinished()) {
+    if (cloudBytesReceived == 0) {
       failOnlineOta("OTA_INCOMPLETE");
       return;
     }
 
-    const bool updateOk = Update.end(false);
+    const bool updateOk = Update.end(true);
     if (!updateOk) {
       const String detail = updateErrorResult("OTA_END");
       failOnlineOta(detail.c_str());
@@ -2034,13 +2017,12 @@ static void localOtaUploadHandler() {
     setOtaState(OtaState::LOCAL_UPLOAD);
     resetBlinkState();
     localOtaBytesReceived = 0;
-    localOtaExpectedSize = upload.totalSize;
+    localOtaExpectedSize = 0;
 
     saveOtaResult("IN_PROGRESS");
     applyOtaSafeOutputs();
 
-    const size_t requestedSize =
-        localOtaExpectedSize > 0 ? localOtaExpectedSize : UPDATE_SIZE_UNKNOWN;
+    const size_t requestedSize = UPDATE_SIZE_UNKNOWN;
     if (!Update.begin(requestedSize)) {
       const String detail = updateErrorResult("OTA_BEGIN");
       saveOtaResult(detail);
@@ -2073,22 +2055,7 @@ static void localOtaUploadHandler() {
   if (upload.status == UPLOAD_FILE_END) {
     if (otaState != OtaState::LOCAL_UPLOAD || !otaActive) return;
 
-    const size_t expectedSize =
-        localOtaExpectedSize > 0 ? localOtaExpectedSize : upload.totalSize;
-
-    if (expectedSize > 0 && localOtaBytesReceived != expectedSize) {
-      const String detail =
-          "UPLOAD_SIZE_MISMATCH_" + String(localOtaBytesReceived) + "_" + String(expectedSize);
-      Update.abort();
-      saveOtaResult(detail);
-      setOtaState(OtaState::FAILED);
-      resetBlinkState();
-      otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
-      otaActive = false;
-      return;
-    }
-
-    if (!Update.isFinished()) {
+    if (localOtaBytesReceived == 0) {
       Update.abort();
       saveOtaResult("OTA_INCOMPLETE");
       setOtaState(OtaState::FAILED);
@@ -2098,7 +2065,7 @@ static void localOtaUploadHandler() {
       return;
     }
 
-    const bool updateOk = Update.end(false);
+    const bool updateOk = Update.end(true);
     if (updateOk) {
       saveOtaResult("LOCAL_SUCCESS");
       setOtaState(OtaState::SUCCESS);
