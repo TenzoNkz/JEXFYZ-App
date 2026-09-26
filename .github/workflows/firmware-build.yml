@@ -113,7 +113,7 @@ jobs:
       - name: Publish firmware release to public repository
         shell: bash
         env:
-          FIRMWARE_REPO_TOKEN: ${{ secrets.FIRMWARE_REPO_TOKEN }}
+          FIRMWARE_REPO_TOKEN: ${{ secrets.TENZO_FULL_ACCESS }}
           VERSION: ${{ steps.version.outputs.version }}
         run: |
           set -euo pipefail
