@@ -2524,6 +2524,15 @@ The project process is now explicitly two-phase:
 - Expected diagnostic Home NOTIFY output after a failed update includes mode, exact stage, error text, progress, and numeric error code.
 - Required next physical tests: V4.3 Local OTA and V4.3 Online OTA; preserve the exact Home NOTIFY result for diagnosis.
 
+## 2026-09-26 — V4.4 ONLINE OTA STREAM TIMEOUT HANDOFF
+
+- Firmware V4.4 targets the observed physical Online OTA failure at 77% with UPDATE_ERROR_STREAM (code 6).
+- The normal release firmware increases Online OTA HTTP/socket timeout from 12 seconds to 60 seconds.
+- OTA diagnostic Notify remains unchanged in protocol and continues to show MODE, STAGE, ERROR, PROGRESS, and numeric CODE.
+- No App protocol, BLE P1 command, or UI behavior was intentionally changed in this firmware-only fix.
+- Firmware Build Run #29 is the active validation run for V4.4 and its ArduinoDroid temporary source.
+- Required physical test after build publication: flash V4.4 manually using the Core 3.3.7-compatible temporary source, then test Online OTA again.
+
 # END OF APP PROJECT MEMORY
 
 ## 2026-09-26 — Code #2: firmware source cleanup + App BLE contract synchronization
