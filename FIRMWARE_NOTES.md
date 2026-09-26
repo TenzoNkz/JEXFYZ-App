@@ -1,5 +1,18 @@
 # 🚨 CURRENT AUTHORITATIVE HANDOFF — 2026-09-27
 
+## 2026-09-27 — CI AUDIT ALIGNMENT AFTER V1.1 DIAGNOSTIC
+
+- Action: removed only the obsolete hardcoded V1.0 assertion from `.github/workflows/firmware-build.yml`.
+- Reason: the source diagnostic revision is V1.1 by project version policy; the workflow already has a separate `Extract firmware version` step that validates the `Vx.y` format, so a fixed V1.0 assertion would reject the intended diagnostic source before compile.
+- CI platform remains pinned to Arduino-ESP32 Core 3.3.7 with OneButton 2.6.1 and Adafruit NeoPixel 1.12.5.
+- Repository commit: `3b046b7d8084dbad0059577925bccc23d07ed001`.
+- Static validation after this CI-only edit: PASS. Verified V1.1 source token, all OTA protected-source audit requirements present, OTA supervisor precedes feature processing, no `delay()` inside the locked OTA engine, Core 3.3.7 pin remains, and the V1.0 hardcoded audit assertion is gone.
+- Build status: still not run; no `arduino-cli` is available in the current container, and the project keeps CI firmware compilation behind the explicit `Eksekusi Firmware` action.
+- Runtime/root-cause status: unchanged — the V1.1 radio diagnostic has not yet been physically tested, so no root cause is declared.
+- Next boundary: run the dedicated Firmware Build for V1.1, then physically test the boot Serial markers. Do not add another runtime patch until the last successful radio-start boundary is known.
+
+
+
 ## 2026-09-27 — V1.1 RADIO DIAGNOSTIC SOURCE STEP
 
 - Action: replaced only the initial boot-AP startup boundary in `firmware/JEXFYZ.ino`.
