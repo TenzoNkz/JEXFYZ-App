@@ -2491,3 +2491,10 @@ The project process is now explicitly two-phase:
 - Firmware V3.3 uses OneButton for the TTP223 touch handler while preserving the existing gesture behavior and BLE acknowledgements.
 - App and firmware command/telemetry names remain `MODE`, `RGB`, `BRIGHTNESS`, `RGB_COLOR`, `COLOR_5V`, `COLOR_9V`, and `COLOR_12V`.
 - App BLE identity and P1 protocol remain unchanged.
+
+
+## CODE #2 — V3.4 FIRMWARE PUBLISH SYNC
+
+- App BLE/UI remains synchronized with firmware V3.4 and LED mode IDs 1..8.
+- App header/source protocol documentation was updated from V3.2 to V3.4.
+- Firmware CI publication secret was renamed to `TENZO_FULL_ACCESS`; this is a workflow credential reference only and no token value is stored in project files.
