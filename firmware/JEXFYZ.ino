@@ -20,7 +20,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
-static constexpr char FW_VERSION[] = "V4.8";
+static constexpr char FW_VERSION[] = "V4.9";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -1749,30 +1749,14 @@ class RxCallbacks : public BLECharacteristicCallbacks {
 
 static void stopBleRadio() {
   bleQueueResetPending = true;
+  bleClientConnected = false;
   bleSyncPending = false;
   bleCommandGateOpen = false;
+  bleConnectionId = BLE_INVALID_CONN_ID;
 
   if (BLEDevice::getInitialized()) {
-    BLEServer* server = bleServer;
-    const uint16_t connId = bleConnectionId;
-
-    if (server != nullptr &&
-        bleClientConnected &&
-        connId != BLE_INVALID_CONN_ID) {
-      server->disconnect(connId);
-      const uint32_t deadline = millis() + 250;
-      while (bleClientConnected && millis() < deadline) {
-        yield();
-      }
-    }
-
-    bleClientConnected = false;
-    bleConnectionId = BLE_INVALID_CONN_ID;
-    BLEDevice::deinit(false);
+    BLEDevice::deinit(true);
     yield();
-  } else {
-    bleClientConnected = false;
-    bleConnectionId = BLE_INVALID_CONN_ID;
   }
 
   bleServer = nullptr;
@@ -1789,7 +1773,6 @@ static void stopBleForBootWiFiClient() {
 static void waitForWiFiOff() {
   WiFi.mode(WIFI_OFF);
   for (uint8_t i = 0; i < RADIO_OFF_SETTLE_YIELDS; ++i) {
-    if (WiFi.getMode() == WIFI_OFF) break;
     yield();
   }
 }
@@ -1801,41 +1784,49 @@ static void scheduleBleRetry() {
 }
 
 static void startBle() {
-  if (otaActive) return;
+  if (otaActive || bootApActive) return;
+
+  // ESP32-C3 has one 2.4 GHz radio. Never initialize BLE while Wi-Fi owns it.
+  WiFi.disconnect(true, false);
+  WiFi.softAPdisconnect(true);
+  WiFi.mode(WIFI_OFF);
+  for (uint8_t i = 0; i < RADIO_OFF_SETTLE_YIELDS; ++i) {
+    yield();
+  }
 
   if (BLEDevice::getInitialized()) {
     if (bleServer != nullptr &&
         rxCharacteristic != nullptr &&
         txCharacteristic != nullptr) {
+      BLEDevice::startAdvertising();
+      bleClientConnected = false;
+      bleSyncPending = false;
       bleStartPending = false;
       bleStartAttempts = 0;
-      BLEDevice::startAdvertising();
+      bleStartRetryAt = 0;
+      Serial.println("BLE: READY/ADVERTISING");
       return;
     }
-    BLEDevice::deinit(false);
+
+    BLEDevice::deinit(true);
+    yield();
     bleServer = nullptr;
     rxCharacteristic = nullptr;
     txCharacteristic = nullptr;
   }
 
-  WiFi.disconnect(true, false);
-  WiFi.softAPdisconnect(true);
-  waitForWiFiOff();
-
   if (!BLEDevice::init(BLE_NAME)) {
+    Serial.println("BLE: INIT FAILED; RETRY");
     scheduleBleRetry();
     return;
   }
 
-  if (BLEDevice::setMTU(247) != ESP_OK) {
-    BLEDevice::deinit(false);
-    scheduleBleRetry();
-    return;
-  }
+  // Keep the known-good Arduino/ESP32 BLE MTU setup used by Core 3.3.7.
+  BLEDevice::setMTU(247);
 
   bleServer = BLEDevice::createServer();
   if (bleServer == nullptr) {
-    BLEDevice::deinit(false);
+    BLEDevice::deinit(true);
     scheduleBleRetry();
     return;
   }
@@ -1843,7 +1834,7 @@ static void startBle() {
 
   BLEService* service = bleServer->createService(SERVICE_UUID);
   if (service == nullptr) {
-    BLEDevice::deinit(false);
+    BLEDevice::deinit(true);
     bleServer = nullptr;
     scheduleBleRetry();
     return;
@@ -1853,7 +1844,7 @@ static void startBle() {
       RX_UUID,
       BLECharacteristic::PROPERTY_WRITE);
   if (rxCharacteristic == nullptr) {
-    BLEDevice::deinit(false);
+    BLEDevice::deinit(true);
     bleServer = nullptr;
     scheduleBleRetry();
     return;
@@ -1864,7 +1855,7 @@ static void startBle() {
       TX_UUID,
       BLECharacteristic::PROPERTY_NOTIFY);
   if (txCharacteristic == nullptr) {
-    BLEDevice::deinit(false);
+    BLEDevice::deinit(true);
     bleServer = nullptr;
     rxCharacteristic = nullptr;
     scheduleBleRetry();
@@ -1876,7 +1867,7 @@ static void startBle() {
 
   BLEAdvertising* advertising = BLEDevice::getAdvertising();
   if (advertising == nullptr) {
-    BLEDevice::deinit(false);
+    BLEDevice::deinit(true);
     bleServer = nullptr;
     rxCharacteristic = nullptr;
     txCharacteristic = nullptr;
@@ -1898,6 +1889,8 @@ static void startBle() {
   bleStartPending = false;
   bleStartAttempts = 0;
   bleStartRetryAt = 0;
+
+  Serial.println("BLE: READY/ADVERTISING");
 
   if (rgbOn) {
     startUserLedEffect();
@@ -2352,9 +2345,10 @@ static bool downloadOnlineOtaResumable() {
         }
 
         setOtaDiagnosticStage("ONLINE_RANGE_RESUME");
-#ifdef JEXFYZ_LEGACY_OTA
-        // Core 3.3.7 compatibility: use a fresh OTA transaction when the
-        // range stream stalls because esp_ota_resume() is unavailable there.
+// Core 3.3.7 compatibility: restart the OTA transaction from
+        // byte zero when a range stream stalls. The next range request then
+        // rebuilds the image deterministically without esp_ota_resume().
+        (void)resumeOffset;
         otaErr = esp_ota_begin(targetPartition, totalSize, &otaHandle);
         offset = 0;
         cloudBytesReceived = 0;
@@ -2363,24 +2357,9 @@ static bool downloadOnlineOtaResumable() {
           failOnlineOta(
               "ONLINE_RANGE_RESUME",
               static_cast<int>(otaErr),
-              String("legacy esp_ota_begin: ") + esp_err_to_name(otaErr));
+              String("esp_ota_begin: ") + esp_err_to_name(otaErr));
           return false;
         }
-#else
-        otaErr = esp_ota_resume(
-            targetPartition,
-            0,
-            resumeOffset,
-            &otaHandle);
-
-        if (otaErr != ESP_OK) {
-          failOnlineOta(
-              "ONLINE_RANGE_RESUME",
-              static_cast<int>(otaErr),
-              String("esp_ota_resume: ") + esp_err_to_name(otaErr));
-          return false;
-        }
-#endif
       }
     }
 
@@ -2789,31 +2768,56 @@ static void handleOtaPost() {
 }
 
 static void startLocalOtaAp() {
-
   onlineOtaStartPending = false;
   bootApActive = true;
   bootApHadClient = false;
+  bootApClientSafe = false;
   otaActive = false;
   setOtaState(OtaState::BOOT_AP);
 
-  WiFi.disconnect(true, false);
-  WiFi.setHostname("JE-X-FYZ");
-  WiFi.setAutoReconnect(false);
-  WiFi.mode(WIFI_AP);
+  bool apOk = false;
 
-  const bool configOk = WiFi.softAPConfig(AP_IP, AP_GATEWAY, AP_SUBNET);
-  const bool apOk = configOk && WiFi.softAP(AP_SSID, AP_PASSWORD);
+  for (uint8_t attempt = 0; attempt < 2 && !apOk; ++attempt) {
+    WiFi.disconnect(true, false);
+    WiFi.softAPdisconnect(true);
+    WiFi.mode(WIFI_OFF);
+    for (uint8_t i = 0; i < RADIO_OFF_SETTLE_YIELDS; ++i) {
+      yield();
+    }
+
+    WiFi.setHostname("JE-X-FYZ");
+    WiFi.setAutoReconnect(false);
+    WiFi.mode(WIFI_AP);
+    for (uint8_t i = 0; i < 4; ++i) {
+      yield();
+    }
+
+    const bool configOk = WiFi.softAPConfig(AP_IP, AP_GATEWAY, AP_SUBNET);
+    apOk = configOk && WiFi.softAP(AP_SSID, AP_PASSWORD);
+    if (!apOk) {
+      Serial.printf("WIFI AP: START FAILED attempt=%u\n", attempt + 1);
+      WiFi.softAPdisconnect(true);
+      WiFi.mode(WIFI_OFF);
+      yield();
+    }
+  }
 
   if (!apOk) {
     bootApActive = false;
     setOtaState(OtaState::FAILED);
     otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
     stopWiFiRadio();
-    startBle();
+    bleStartPending = true;
+    bleStartRetryAt = millis();
+    Serial.println("WIFI AP: FAILED -> BLE FALLBACK");
     return;
   }
 
   bootApStartedAt = millis();
+  Serial.print("WIFI AP: READY SSID=");
+  Serial.print(AP_SSID);
+  Serial.print(" IP=");
+  Serial.println(WiFi.softAPIP());
 
   webServer.on("/", HTTP_GET, handleOtaRoot);
   webServer.on("/update", HTTP_POST, handleOtaPost, localOtaUploadHandler);
@@ -3606,9 +3610,6 @@ void setup() {
   digitalWrite(PIN_FAN, OUTPUT_OFF);
   digitalWrite(PIN_PELTIER, OUTPUT_OFF);
 
-  // OTA/AP starts before non-OTA feature initialization.
-  startLocalOtaAp();
-
   pinMode(PIN_NTC, INPUT);
   pinMode(PIN_TOUCH, INPUT);
   setupTouch();
@@ -3646,10 +3647,9 @@ void setup() {
   sampleNtcIfDue();
   enforceSafety();
 
-  if (!bootApActive) {
-    bleStartPending = true;
-    bleStartRetryAt = millis();
-  }
+  // Start the boot AP only after all hardware/peripheral initialization has
+  // completed, matching the known-good Core 3.3.7 startup order.
+  startLocalOtaAp();
 }
 
 void loop() {
