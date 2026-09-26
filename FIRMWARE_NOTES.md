@@ -1302,3 +1302,10 @@ The project process is now explicitly two-phase:
 - Source verification after the build: V3.7 is present, GPIO5 remains Peltier, GPIO6 remains Fan, and BLE bonding/security configuration remains removed.
 - This release is ready for the physical OTA test from the user's currently running V3.4 device. Hardware/wiring remains unchanged.
 
+
+## 2026-09-26 — ArduinoDroid default-argument preprocessing fix
+
+- Fixed the `showAll()` declaration/definition pattern in `firmware/JEXFYZ.ino` that caused ArduinoDroid to report `redefinition of default argument`.
+- The default argument `brightness = 255` is now declared once in the explicit prototype and omitted from the function definition.
+- No runtime behavior, GPIO mapping, OTA logic, BLE contract, safety logic, or hardware configuration changed.
+- No Firmware Build was triggered by this source-only compatibility fix.
