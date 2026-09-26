@@ -283,3 +283,25 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Important: do not claim that the ESP32 Wi-Fi driver itself is proven faulty. The exact PC-to-symbol mapping is not available because the standalone ArduinoDroid test ELF/map was not captured.
 - Required next evidence before another production change or another speculative test: the ArduinoDroid compile output/library-selection information for this exact sketch, including any `Multiple libraries were found` lines and the selected ESP32 core/library paths. This is needed to establish whether the header and linked Wi-Fi binary come from the expected Core 3.3.7 / IDF 5.5 package.
 - Production `firmware/JEXFYZ.ino` was not modified by this runtime test.
+
+## 2026-09-27 — DISCUSSION: HORIZON COOLER WIFI PATH COMPARISON
+- User supplied the full `HorizonCooler.ino` source for direct comparison with the current JE X FYZ firmware.
+- Horizon uses the same public Arduino Wi-Fi operations that JE X FYZ ultimately relies on:
+  - `WiFi.mode(WIFI_AP)`
+  - `WiFi.softAP("Horizon Cooler")`
+  - `server.begin()`
+- Horizon does **not** call `WIFI_INIT_CONFIG_DEFAULT()`, `esp_wifi_init()`, `esp_wifi_set_mode()`, or other raw `esp_wifi_*()` APIs. Its Wi-Fi startup is delegated entirely to Arduino's `WiFi.h` implementation.
+- Horizon's Wi-Fi AP is **not started during `setup()`**. Normal boot initializes hardware, Preferences, RGB, OTA routes, and then starts BLE through `enableBleSignal()`. The Wi-Fi AP is later entered from the main loop after the user holds the left button for 5 seconds.
+- The Horizon Wi-Fi path is:
+  `disableAllRadios()` → `WiFi.mode(WIFI_AP)` → `WiFi.softAP("Horizon Cooler")` → `server.begin()`.
+- In `disableAllRadios()`, Wi-Fi is only stopped when `isWifiActive == true`; on a normal BLE-only boot this is false, so there is no pre-existing Wi-Fi session that Horizon depends on. BLE advertising is suspended immediately before AP startup.
+- Therefore the strongest code-level difference is **runtime/startup timing and radio state**, not the high-level Wi-Fi API itself: Horizon lets the complete boot/BLE initialization finish and only starts AP later from `loop()`; current JE X FYZ starts the AP inside `setup()`.
+- A second important difference is diagnostic scope: the recent raw ESP-IDF test directly included `esp_wifi.h` and invoked `WIFI_INIT_CONFIG_DEFAULT()`. Horizon never exercises that macro from sketch code. The raw test's crash at the macro therefore must not be interpreted as proof that Horizon's working Arduino Wi-Fi driver is broken.
+- Official Arduino-ESP32 Core 3.3.7 remains authoritative: the Arduino `WiFi.mode()` implementation owns the low-level initialization internally. The Horizon source supports keeping production code at the public Arduino Wi-Fi layer rather than reproducing internal driver initialization.
+- Current working hypothesis ranking is therefore:
+  1. a boot-time/runtime-state difference between Horizon and JE X FYZ;
+  2. an ArduinoDroid/library-selection or binary/header mismatch affecting the JE X FYZ build;
+  3. an application-specific interaction that corrupts state before the Wi-Fi call.
+  No item is declared proven from source comparison alone.
+- Next diagnostic principle: reproduce **Horizon's exact public Wi-Fi sequence**, with no raw `esp_wifi.h` / `WIFI_INIT_CONFIG_DEFAULT()`, but invoke it only after boot has completed and from the main loop. Compare the result with the current immediate-`setup()` failure. This is a diagnostic boundary only; no production feature change has been made.
+- Production `firmware/JEXFYZ.ino` was not modified by this discussion.
