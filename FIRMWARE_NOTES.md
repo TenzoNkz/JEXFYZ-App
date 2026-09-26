@@ -1514,6 +1514,18 @@ The project process is now explicitly two-phase:
 - Firmware version advanced to V4.9.
 - Physical hardware validation is still required after flashing V4.9.
 
+## 2026-09-27 — V4.11 RADIO ROOT-CAUSE HARDENING / CORE 3.3.7
+
+- V4.9 physical test still showed no visible Wi-Fi AP and no BLE.
+- Analysis compared the V4.x radio lifecycle against the last known Core 3.3.7 baseline (V3.8).
+- V4.11 restores the proven Core 3.3.7 Wi-Fi/BLE API order and `WiFiClientSecure` transport type.
+- BLE recovery no longer gets stuck when the controller reports initialized while the BLE server/characteristics are absent; the stale controller is fully reinitialized.
+- Boot AP startup now verifies that the AP actually remains in `WIFI_AP` mode before accepting the startup as successful, with one clean retry.
+- After the 10-second AP window, Wi-Fi is explicitly settled OFF before BLE startup/recovery.
+- The native `esp_ota_*` Local/Online OTA engine remains intact; no `esp_ota_resume()` dependency is used.
+- Firmware remains pinned to ESP32 Arduino Core 3.3.7 for both release and ArduinoDroid validation.
+- V4.11 is a new manual-flash test target; physical behavior still requires hardware validation.
+
 # END OF FIRMWARE ENGINEERING MEMORY
 
 
