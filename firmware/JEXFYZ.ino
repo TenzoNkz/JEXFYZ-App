@@ -14,13 +14,9 @@
 #include <BLEUtils.h>
 #include <BLE2902.h>
 
-#include "esp_system.h"
-#include "esp_err.h"
-#include "esp_ota_ops.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/portmacro.h"
+#include <Update.h>
 
-static constexpr char FW_VERSION[] = "V1.2";
+static constexpr char FW_VERSION[] = "V1.3";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -209,8 +205,6 @@ BLEServer* bleServer = nullptr;
 BLECharacteristic* rxCharacteristic = nullptr;
 BLECharacteristic* txCharacteristic = nullptr;
 volatile bool bleClientConnected = false;
-static constexpr uint16_t BLE_INVALID_CONN_ID = 0xFFFF;
-uint16_t bleConnectionId = BLE_INVALID_CONN_ID;
 String bleTxQueue[BLE_TX_QUEUE_SIZE];
 size_t bleTxHead = 0;
 size_t bleTxTail = 0;
@@ -222,7 +216,6 @@ size_t bleRxHead = 0;
 size_t bleRxTail = 0;
 size_t bleRxCount = 0;
 
-static portMUX_TYPE bleQueueMux = portMUX_INITIALIZER_UNLOCKED;
 volatile bool bleQueueResetPending = false;
 
 bool onlineOtaStartPending = false;
@@ -335,8 +328,6 @@ HTTPClient cloudHttp;
 WiFiClientSecure cloudClient;
 size_t localOtaBytesReceived = 0;
 size_t localOtaExpectedBytes = 0;
-esp_ota_handle_t localOtaHandle = 0;
-const esp_partition_t* localOtaPartition = nullptr;
 bool localOtaStarted = false;
 
 bool bleStartPending = true;
@@ -401,7 +392,6 @@ static void setOtaDiagnosticProgress(uint8_t progress);
 static void setOtaDiagnosticError(int errorCode, const String& error);
 static String otaFailureResult(const String& mode, const String& stage, int errorCode, const String& error, uint8_t progress);
 static String otaSuccessResult(const String& mode, const String& stage, const String& version);
-static String otaUpdateFailureStage(bool online, int errorCode);
 static void failLocalOta(const String& stage, int errorCode, const String& error);
 static void failOnlineOta(const String& stage, int errorCode, const String& error);
 static void initializeRuntimeFeatures();
@@ -446,19 +436,7 @@ static String formatTemperature(float value, bool valid) {
 }
 
 static String resetReasonText() {
-  switch (esp_reset_reason()) {
-    case ESP_RST_POWERON:   return "POWERON";
-    case ESP_RST_EXT:       return "EXTERNAL";
-    case ESP_RST_SW:        return "SOFTWARE";
-    case ESP_RST_PANIC:     return "PANIC";
-    case ESP_RST_INT_WDT:   return "INT_WDT";
-    case ESP_RST_TASK_WDT:  return "TASK_WDT";
-    case ESP_RST_WDT:       return "WDT";
-    case ESP_RST_DEEPSLEEP: return "DEEPSLEEP";
-    case ESP_RST_BROWNOUT:  return "BROWNOUT";
-    case ESP_RST_SDIO:      return "SDIO";
-    default:                return "UNKNOWN";
-  }
+  return ESP.getResetReason();
 }
 
 static bool parseHexColor(String value, uint32_t& output) {
@@ -644,8 +622,8 @@ static uint8_t fanDutyFromPercent(uint8_t percent) {
 static void writeFanPwm() {
   if (!fanOn) {
     if (runtimeFeaturesReady) {
-    ledcWrite(PIN_FAN, 0);
-  }
+      ledcWrite(PIN_FAN, 0);
+    }
     return;
   }
 
@@ -1365,33 +1343,27 @@ static void processAdaptiveUpTimer() {
 }
 
 static void clearBleTxQueue() {
-  portENTER_CRITICAL(&bleQueueMux);
   for (size_t i = 0; i < BLE_TX_QUEUE_SIZE; ++i) bleTxQueue[i] = "";
   bleTxHead = 0;
   bleTxTail = 0;
   bleTxCount = 0;
   bleNextNotifyAt = millis();
-  portEXIT_CRITICAL(&bleQueueMux);
 }
 
 static void clearBleRxQueue() {
-  portENTER_CRITICAL(&bleQueueMux);
   for (size_t i = 0; i < BLE_RX_QUEUE_SIZE; ++i) bleRxQueue[i] = "";
   bleRxHead = 0;
   bleRxTail = 0;
   bleRxCount = 0;
-  portEXIT_CRITICAL(&bleQueueMux);
 }
 
 static void enqueueBleRxPayload(const String& payload) {
   if (payload.isEmpty()) return;
-  portENTER_CRITICAL(&bleQueueMux);
   if (bleRxCount < BLE_RX_QUEUE_SIZE) {
     bleRxQueue[bleRxTail] = payload;
     bleRxTail = (bleRxTail + 1) % BLE_RX_QUEUE_SIZE;
     ++bleRxCount;
   }
-  portEXIT_CRITICAL(&bleQueueMux);
 }
 
 static void processBleRxQueue() {
@@ -1401,14 +1373,12 @@ static void processBleRxQueue() {
   }
 
   String payload;
-  portENTER_CRITICAL(&bleQueueMux);
   if (bleRxCount > 0) {
     payload = bleRxQueue[bleRxHead];
     bleRxQueue[bleRxHead] = "";
     bleRxHead = (bleRxHead + 1) % BLE_RX_QUEUE_SIZE;
     --bleRxCount;
   }
-  portEXIT_CRITICAL(&bleQueueMux);
 
   if (!payload.isEmpty()) feedBleRx(payload);
 }
@@ -1421,13 +1391,11 @@ static void sendText(const String& line) {
   if (payload.length() > 177) payload = payload.substring(0, 177);
   payload += '\n';
 
-  portENTER_CRITICAL(&bleQueueMux);
   if (bleTxCount < BLE_TX_QUEUE_SIZE) {
     bleTxQueue[bleTxTail] = payload;
     bleTxTail = (bleTxTail + 1) % BLE_TX_QUEUE_SIZE;
     ++bleTxCount;
   }
-  portEXIT_CRITICAL(&bleQueueMux);
 }
 
 static void serviceBleTx() {
@@ -1443,20 +1411,16 @@ static void serviceBleTx() {
   if (millis() < bleNextNotifyAt) return;
 
   String payload;
-  portENTER_CRITICAL(&bleQueueMux);
   if (bleTxCount > 0) {
     payload = bleTxQueue[bleTxHead];
     bleTxQueue[bleTxHead] = "";
     bleTxHead = (bleTxHead + 1) % BLE_TX_QUEUE_SIZE;
     --bleTxCount;
   }
-  portEXIT_CRITICAL(&bleQueueMux);
 
   if (payload.isEmpty()) return;
   txCharacteristic->setValue(payload);
   txCharacteristic->notify();
-  if (payload.startsWith("<SYNC_END>")) {
-  }
   bleNextNotifyAt = millis() + BLE_TX_INTERVAL_MS;
 }
 
@@ -1545,42 +1509,11 @@ static String otaSuccessResult(
          "|PROGRESS=100";
 }
 
-static constexpr int OTA_ERROR_READ = 3;
 static constexpr int OTA_ERROR_WRITE = 1;
-static constexpr int OTA_ERROR_ERASE = 2;
-static constexpr int OTA_ERROR_ACTIVATE = 9;
-static constexpr int OTA_ERROR_MAGIC_BYTE = 8;
-static constexpr int OTA_ERROR_MD5 = 7;
-static constexpr int OTA_ERROR_SHA256 = 15;
-static constexpr int OTA_ERROR_SHA512 = 16;
-static constexpr int OTA_ERROR_SIGN = 14;
-static constexpr int OTA_ERROR_STREAM = 6;
 static constexpr int OTA_ERROR_SPACE = 4;
+static constexpr int OTA_ERROR_MAGIC_BYTE = 8;
+static constexpr int OTA_ERROR_STREAM = 6;
 static constexpr int OTA_ERROR_SIZE = 5;
-static constexpr int OTA_ERROR_NO_PARTITION = 10;
-static constexpr int OTA_ERROR_BAD_ARGUMENT = 11;
-
-static String otaUpdateFailureStage(bool online, int errorCode) {
-  const String prefix = online ? "ONLINE_" : "LOCAL_";
-  switch (errorCode) {
-    case OTA_ERROR_READ: return prefix + "FLASH_READBACK";
-    case OTA_ERROR_WRITE: return prefix + "FLASH_WRITE";
-    case OTA_ERROR_ERASE: return prefix + "FLASH_ERASE";
-    case OTA_ERROR_ACTIVATE: return prefix + "BOOT_PARTITION";
-    case OTA_ERROR_MAGIC_BYTE: return prefix + "IMAGE_VALIDATE";
-    case OTA_ERROR_MD5:
-    case OTA_ERROR_SHA256:
-    case OTA_ERROR_SHA512:
-    case OTA_ERROR_SIGN: return prefix + "IMAGE_VERIFY";
-    case OTA_ERROR_STREAM: return prefix + "DOWNLOAD";
-    case OTA_ERROR_SPACE:
-    case OTA_ERROR_SIZE:
-    case OTA_ERROR_NO_PARTITION:
-    case OTA_ERROR_BAD_ARGUMENT: return prefix + "UPDATE_BEGIN";
-    default: return prefix + "FINALIZE";
-  }
-}
-
 // ================= END OTA DIAGNOSTIC CORE — LOCKED ========================
 static void setOtaState(OtaState state) {
   if (otaState == state) return;
@@ -1759,8 +1692,6 @@ class ServerCallbacks : public BLEServerCallbacks {
  public:
   void onConnect(BLEServer* server) override {
     bleClientConnected = true;
-    bleConnectionId =
-        server != nullptr ? server->getConnId() : BLE_INVALID_CONN_ID;
 
     bleSyncPending = false;
     bleCommandGateOpen = false;
@@ -1773,7 +1704,6 @@ class ServerCallbacks : public BLEServerCallbacks {
     (void)server;
 
     bleClientConnected = false;
-    bleConnectionId = BLE_INVALID_CONN_ID;
     bleSyncPending = false;
     bleCommandGateOpen = false;
     bleQueueResetPending = true;
@@ -1783,37 +1713,9 @@ class ServerCallbacks : public BLEServerCallbacks {
     }
   }
 
-#if defined(CONFIG_BLUEDROID_ENABLED)
-  void onConnect(BLEServer* server, esp_ble_gatts_cb_param_t* param) override {
-    (void)server;
-    if (param != nullptr) {
-      bleConnectionId = param->connect.conn_id;
-    }
-  }
 
-  void onDisconnect(BLEServer* server, esp_ble_gatts_cb_param_t* param) override {
-    (void)server;
-    if (param != nullptr && bleConnectionId == param->disconnect.conn_id) {
-      bleConnectionId = BLE_INVALID_CONN_ID;
-    }
-  }
-#endif
 
-#if defined(CONFIG_NIMBLE_ENABLED)
-  void onConnect(BLEServer* server, ble_gap_conn_desc* desc) override {
-    (void)server;
-    if (desc != nullptr) {
-      bleConnectionId = desc->conn_handle;
-    }
-  }
 
-  void onDisconnect(BLEServer* server, ble_gap_conn_desc* desc) override {
-    (void)server;
-    if (desc != nullptr && bleConnectionId == desc->conn_handle) {
-      bleConnectionId = BLE_INVALID_CONN_ID;
-    }
-  }
-#endif
 };
 
 class RxCallbacks : public BLECharacteristicCallbacks {
@@ -2155,11 +2057,8 @@ static void configureOnlineOtaRangeHttp(HTTPClient& http) {
 
 class OtaHttpFlashStream final : public Stream {
  public:
-  OtaHttpFlashStream(
-      esp_ota_handle_t* handle,
-      size_t* written,
-      size_t totalSize)
-      : handle_(handle), written_(written), totalSize_(totalSize) {}
+  OtaHttpFlashStream(size_t* written, size_t totalSize)
+      : written_(written), totalSize_(totalSize) {}
 
   size_t write(uint8_t data) override {
     return write(&data, 1);
@@ -2168,13 +2067,13 @@ class OtaHttpFlashStream final : public Stream {
   size_t write(const uint8_t* data, size_t size) override {
     if (data == nullptr || size == 0) return 0;
 
-    const esp_err_t err = esp_ota_write(*handle_, data, size);
-    if (err != ESP_OK) {
-      lastError_ = err;
-      return 0;
+    const size_t accepted = Update.write(data, size);
+    if (accepted != size) {
+      writeFailed_ = true;
+      return accepted;
     }
 
-    *written_ += size;
+    *written_ += accepted;
     cloudBytesReceived = static_cast<uint32_t>(
         min(*written_, totalSize_));
 
@@ -2184,7 +2083,7 @@ class OtaHttpFlashStream final : public Stream {
     renderBlink(0x0000FF);
     serviceBleTx();
     yield();
-    return size;
+    return accepted;
   }
 
   int available() override { return 0; }
@@ -2192,27 +2091,15 @@ class OtaHttpFlashStream final : public Stream {
   int peek() override { return -1; }
   void flush() override {}
 
-  esp_err_t lastError() const { return lastError_; }
+  bool failed() const { return writeFailed_; }
 
  private:
-  esp_ota_handle_t* handle_;
   size_t* written_;
   size_t totalSize_;
-  esp_err_t lastError_ = ESP_OK;
+  bool writeFailed_ = false;
 };
 
 static bool downloadOnlineOtaResumable() {
-  const esp_partition_t* targetPartition =
-      esp_ota_get_next_update_partition(nullptr);
-
-  if (targetPartition == nullptr) {
-    failOnlineOta(
-        "ONLINE_UPDATE_BEGIN",
-        static_cast<int>(ESP_ERR_NOT_FOUND),
-        "NO_OTA_PARTITION");
-    return false;
-  }
-
   size_t totalSize = 0;
   String probeError = "RANGE_PROBE_FAILED";
   int probeCode = 0;
@@ -2277,7 +2164,7 @@ static bool downloadOnlineOtaResumable() {
   if (totalSize == 0 || totalSize > OTA_MAX_FIRMWARE_BYTES) {
     failOnlineOta(
         "ONLINE_SIZE_CHECK",
-        -1,
+        OTA_ERROR_SPACE,
         "INVALID_FIRMWARE_SIZE_" +
             String(static_cast<unsigned long>(totalSize)));
     return false;
@@ -2288,22 +2175,19 @@ static bool downloadOnlineOtaResumable() {
   if (totalSize > freeSketchSpace) {
     failOnlineOta(
         "ONLINE_SIZE_CHECK",
-        -1,
+        OTA_ERROR_SPACE,
         "FIRMWARE_EXCEEDS_FREE_SKETCH_SPACE_" +
             String(static_cast<unsigned long>(freeSketchSpace)));
     return false;
   }
 
   setOtaDiagnosticStage("ONLINE_UPDATE_BEGIN");
-  esp_ota_handle_t otaHandle = 0;
-  esp_err_t otaErr =
-      esp_ota_begin(targetPartition, totalSize, &otaHandle);
-
-  if (otaErr != ESP_OK) {
+  if (!Update.begin(totalSize)) {
+    Update.printError(Serial);
     failOnlineOta(
         "ONLINE_UPDATE_BEGIN",
-        static_cast<int>(otaErr),
-        String("esp_ota_begin: ") + esp_err_to_name(otaErr));
+        OTA_ERROR_SPACE,
+        "UPDATE_BEGIN_FAILED");
     return false;
   }
 
@@ -2381,18 +2265,17 @@ static bool downloadOnlineOtaResumable() {
 
       setOtaDiagnosticStage("ONLINE_RANGE_WRITE");
       size_t chunkReceived = 0;
-      OtaHttpFlashStream sink(&otaHandle, &chunkReceived, expectedChunk);
+      OtaHttpFlashStream sink(&chunkReceived, expectedChunk);
       const int httpResult = http.writeToStream(&sink);
-      const esp_err_t sinkError = sink.lastError();
+      const bool sinkFailed = sink.failed();
 
       http.end();
       cloudClient.stop();
 
-      if (sinkError != ESP_OK) {
-        lastError =
-            String("esp_ota_write: ") + esp_err_to_name(sinkError);
-        lastErrorCode = static_cast<int>(sinkError);
-        esp_ota_abort(otaHandle);
+      if (sinkFailed) {
+        Update.abort();
+        lastError = "UPDATE_WRITE_FAILED";
+        lastErrorCode = OTA_ERROR_WRITE;
         failOnlineOta(
             "ONLINE_FLASH_WRITE",
             lastErrorCode,
@@ -2414,36 +2297,26 @@ static bool downloadOnlineOtaResumable() {
 
       if (chunkReceived < expectedChunk) {
         const size_t resumeOffset = offset + chunkReceived;
-
-        otaErr = esp_ota_abort(otaHandle);
-        if (otaErr != ESP_OK) {
-          failOnlineOta(
-              "ONLINE_RANGE_RESUME",
-              static_cast<int>(otaErr),
-              String("esp_ota_abort: ") + esp_err_to_name(otaErr));
-          return false;
-        }
+        Update.abort();
 
         setOtaDiagnosticStage("ONLINE_RANGE_RESUME");
-// Core 3.3.7 compatibility: restart the OTA transaction from
-        // byte zero when a range stream stalls. The next range request then
-        // rebuilds the image deterministically without the resume API.
         (void)resumeOffset;
-        otaErr = esp_ota_begin(targetPartition, totalSize, &otaHandle);
+        if (!Update.begin(totalSize)) {
+          Update.printError(Serial);
+          failOnlineOta(
+              "ONLINE_RANGE_RESUME",
+              OTA_ERROR_SPACE,
+              "UPDATE_BEGIN_FAILED");
+          return false;
+        }
         offset = 0;
         cloudBytesReceived = 0;
         setOtaDiagnosticProgress(0);
-        if (otaErr != ESP_OK) {
-          failOnlineOta(
-              "ONLINE_RANGE_RESUME",
-              static_cast<int>(otaErr),
-              String("esp_ota_begin: ") + esp_err_to_name(otaErr));
-          return false;
-        }
       }
     }
 
     if (!chunkComplete) {
+      Update.abort();
       const String failStage =
           lastErrorCode == OTA_ERROR_STREAM
               ? "ONLINE_RANGE_RESUME"
@@ -2454,40 +2327,23 @@ static bool downloadOnlineOtaResumable() {
           lastError + " after " +
               String(static_cast<unsigned long>(otaDiagnosticProgress)) +
               "%");
-      esp_ota_abort(otaHandle);
       return false;
     }
   }
 
   setOtaDiagnosticProgress(100);
-  setOtaDiagnosticStage("ONLINE_FINALIZE");
+  setOtaDiagnosticStage("ONLINE_UPDATE_END");
 
-  otaErr = esp_ota_end(otaHandle);
-  if (otaErr != ESP_OK) {
-    const String detail =
-        String("esp_ota_end: ") + esp_err_to_name(otaErr);
-    const String stage =
-        otaErr == ESP_ERR_OTA_VALIDATE_FAILED
-            ? "ONLINE_IMAGE_VERIFY"
-            : "ONLINE_FINALIZE";
+  if (!Update.end(true)) {
+    Update.printError(Serial);
     failOnlineOta(
-        stage,
-        static_cast<int>(otaErr),
-        detail);
+        "ONLINE_IMAGE_VERIFY",
+        OTA_ERROR_MAGIC_BYTE,
+        "UPDATE_END_FAILED");
     return false;
   }
 
   setOtaDiagnosticStage("ONLINE_BOOT_PARTITION");
-  otaErr = esp_ota_set_boot_partition(targetPartition);
-  if (otaErr != ESP_OK) {
-    failOnlineOta(
-        "ONLINE_BOOT_PARTITION",
-        static_cast<int>(otaErr),
-        String("esp_ota_set_boot_partition: ") +
-            esp_err_to_name(otaErr));
-    return false;
-  }
-
   setOtaDiagnosticError(0, "NONE");
   saveOtaResult(
       otaSuccessResult(
@@ -2500,7 +2356,6 @@ static bool downloadOnlineOtaResumable() {
   clearCloudCredentials();
   return true;
 }
-
 static void processOnlineOta() {
   if (otaState != OtaState::CLOUD_CONNECTING) return;
 
@@ -2606,11 +2461,9 @@ form.addEventListener('submit',e=>{
 
 static void abortLocalOtaTransaction() {
   if (localOtaStarted) {
-    esp_ota_abort(localOtaHandle);
+    Update.abort();
   }
   localOtaStarted = false;
-  localOtaHandle = 0;
-  localOtaPartition = nullptr;
 }
 
 static void failLocalOta(
@@ -2671,37 +2524,27 @@ static void localOtaUploadHandler() {
     }
 
     localOtaExpectedBytes = static_cast<size_t>(parsedSize);
-    localOtaPartition = esp_ota_get_next_update_partition(nullptr);
 
-    if (localOtaPartition == nullptr) {
-      failLocalOta(
-          "LOCAL_UPDATE_BEGIN",
-          static_cast<int>(ESP_ERR_NOT_FOUND),
-          "NO_OTA_PARTITION");
-      return;
-    }
-
-    if (localOtaExpectedBytes > localOtaPartition->size) {
+    const size_t freeSketchSpace =
+        static_cast<size_t>(ESP.getFreeSketchSpace());
+    if (localOtaExpectedBytes > freeSketchSpace) {
       failLocalOta(
           "LOCAL_SIZE_CHECK",
-          static_cast<int>(ESP_ERR_INVALID_SIZE),
-          "FIRMWARE_EXCEEDS_PARTITION_" +
-              String(static_cast<unsigned long>(localOtaPartition->size)));
+          OTA_ERROR_SPACE,
+          "FIRMWARE_EXCEEDS_FREE_SKETCH_SPACE_" +
+              String(static_cast<unsigned long>(freeSketchSpace)));
       return;
     }
 
     applyOtaSafeOutputs();
     setOtaDiagnosticStage("LOCAL_UPDATE_BEGIN");
 
-    const esp_err_t beginErr = esp_ota_begin(
-        localOtaPartition,
-        localOtaExpectedBytes,
-        &localOtaHandle);
-    if (beginErr != ESP_OK) {
+    if (!Update.begin(localOtaExpectedBytes)) {
+      Update.printError(Serial);
       failLocalOta(
           "LOCAL_UPDATE_BEGIN",
-          static_cast<int>(beginErr),
-          String("esp_ota_begin: ") + esp_err_to_name(beginErr));
+          OTA_ERROR_SPACE,
+          "UPDATE_BEGIN_FAILED");
       return;
     }
 
@@ -2723,19 +2566,17 @@ static void localOtaUploadHandler() {
 
     const size_t chunkSize = static_cast<size_t>(upload.currentSize);
     if (localOtaBytesReceived + chunkSize > localOtaExpectedBytes) {
-      failLocalOta("LOCAL_SIZE_VERIFY", -1, "UPLOAD_SIZE_EXCEEDED");
+      failLocalOta("LOCAL_SIZE_VERIFY", OTA_ERROR_SIZE, "UPLOAD_SIZE_EXCEEDED");
       return;
     }
 
-    const esp_err_t writeErr = esp_ota_write(
-        localOtaHandle,
-        upload.buf,
-        chunkSize);
-    if (writeErr != ESP_OK) {
+    const size_t written = Update.write(upload.buf, chunkSize);
+    if (written != chunkSize) {
+      Update.printError(Serial);
       failLocalOta(
           "LOCAL_FLASH_WRITE",
-          static_cast<int>(writeErr),
-          String("esp_ota_write: ") + esp_err_to_name(writeErr));
+          OTA_ERROR_WRITE,
+          "UPDATE_WRITE_FAILED");
       return;
     }
 
@@ -2766,40 +2607,24 @@ static void localOtaUploadHandler() {
           "UPLOAD_SIZE_MISMATCH_%lu_%lu",
           static_cast<unsigned long>(localOtaBytesReceived),
           static_cast<unsigned long>(localOtaExpectedBytes));
-      failLocalOta("LOCAL_SIZE_VERIFY", -1, detail);
+      failLocalOta("LOCAL_SIZE_VERIFY", OTA_ERROR_SIZE, detail);
       return;
     }
 
     setOtaDiagnosticProgress(100);
     setOtaDiagnosticStage("LOCAL_IMAGE_VERIFY");
 
-    const esp_err_t endErr = esp_ota_end(localOtaHandle);
-    localOtaHandle = 0;
     localOtaStarted = false;
-
-    if (endErr != ESP_OK) {
+    if (!Update.end(true)) {
+      Update.printError(Serial);
       failLocalOta(
-          endErr == ESP_ERR_OTA_VALIDATE_FAILED
-              ? "LOCAL_IMAGE_VERIFY"
-              : "LOCAL_FINALIZE",
-          static_cast<int>(endErr),
-          String("esp_ota_end: ") + esp_err_to_name(endErr));
+          "LOCAL_IMAGE_VERIFY",
+          OTA_ERROR_MAGIC_BYTE,
+          "UPDATE_END_FAILED");
       return;
     }
 
     setOtaDiagnosticStage("LOCAL_BOOT_PARTITION");
-    const esp_err_t bootErr =
-        esp_ota_set_boot_partition(localOtaPartition);
-    localOtaPartition = nullptr;
-
-    if (bootErr != ESP_OK) {
-      failLocalOta(
-          "LOCAL_BOOT_PARTITION",
-          static_cast<int>(bootErr),
-          String("esp_ota_set_boot_partition: ") + esp_err_to_name(bootErr));
-      return;
-    }
-
     setOtaDiagnosticError(0, "NONE");
     saveOtaResult(
         otaSuccessResult("LOCAL", "LOCAL_BOOT_PARTITION", FW_VERSION));
@@ -2812,7 +2637,7 @@ static void localOtaUploadHandler() {
   }
 
   if (upload.status == UPLOAD_FILE_ABORTED) {
-    failLocalOta("LOCAL_RECEIVE", -1, "UPLOAD_ABORTED");
+    failLocalOta("LOCAL_RECEIVE", OTA_ERROR_STREAM, "UPLOAD_ABORTED");
   }
 }
 
@@ -3722,7 +3547,9 @@ void setup() {
 
   Serial.begin(115200);
   Serial.println();
-  Serial.println("JE X FYZ: BOOT V1.0 / CORE 3.3.7 CLEAN RADIO");
+  Serial.print("JE X FYZ: BOOT ");
+  Serial.print(FW_VERSION);
+  Serial.println(" / CORE 3.3.7 ARDUINO STANDARD");
 
   // Keep every power output OFF before any radio is started.
   pinMode(PIN_12V, OUTPUT);
