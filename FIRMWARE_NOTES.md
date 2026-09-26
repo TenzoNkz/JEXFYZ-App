@@ -520,3 +520,17 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Any future API/signature must be verified against the exact Core 3.3.7 official source before use.
 - The recent raw ESP-IDF diagnostic files remain diagnostic evidence only and are not the implementation template.
 - No executable source was changed by this confirmation.
+
+
+## 2026-09-27 — V1.3 ARDUINO STANDARD SOURCE AUDIT / MINIMAL AP ORDER FIX
+- Audited the current firmware/JEXFYZ.ino V1.3 source on main against the official Arduino-ESP32 Core 3.3.7 public source and examples.
+- Confirmed the current source contains zero occurrences of the previously prohibited low-level ESP-IDF implementation markers: esp_ota_*, esp_err_t, esp_err_to_name, ESP_ERR_*, esp_err.h, esp_ota_ops.h, FreeRTOS/portMUX lifecycle includes, and BLE configuration macros CONFIG_BLUEDROID_ENABLED / CONFIG_NIMBLE_ENABLED.
+- Confirmed the Arduino Update lifecycle is the official Core 3.3.7 API: Update.begin(), Update.write(), Update.end(true), Update.abort(), and Update.printError(Serial).
+- Confirmed Core 3.3.7 LEDC usage is pin-centric through ledcAttach() / ledcWrite(); no legacy ledcSetup() / ledcAttachPin() remains.
+- Confirmed ADC/GPIO, Preferences, WebServer, HTTPClient, WiFiClientSecure, OneButton 2.6.1, and Adafruit NeoPixel 1.12.5 calls used by the source match public APIs verified against the pinned versions.
+- Confirmed BLE lifecycle calls used by the source (BLEDevice::init, getInitialized, createServer, setMTU, startAdvertising, deinit, service/characteristic creation) exist in the official Core 3.3.7 BLE headers/examples.
+- Confirmed Wi-Fi startup/handoff uses Arduino APIs only and BLE is not started while the boot AP owns the radio.
+- Found one concrete source-level alignment issue: the V1.3 Local AP startup called WiFi.softAP() before WiFi.softAPConfig(). Core 3.3.7 official APOTA source uses the opposite order (softAPConfig() then softAP()); the production source was minimally reordered to match that official Arduino pattern.
+- No BLE UUID, command vocabulary, safety logic, GPIO mapping, OTA diagnostics, or firmware feature behavior was intentionally changed by the audit.
+- GPIO contract remains GPIO5 = FAN and GPIO6 = PELTIER.
+- V1.3 remains a release candidate only. CI Core 3.3.7 compile and publish are still required before calling it final/public.
