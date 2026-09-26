@@ -2590,6 +2590,15 @@ The project process is now explicitly two-phase:
 - Existing App OTA diagnostic stage translation remains compatible.
 - No App Build was triggered by this firmware-focused execution.
 
+## 2026-09-26 — V4.7 FULL EXECUTION / MANUAL OTA BINARY READY
+
+- V4.7 full firmware execution reached final success and was published.
+- Run #38 passed OTA safety audit, compile, artifact generation, ArduinoDroid temporary-source generation, and public publication after the Run #37 compile issue was automatically corrected.
+- Public manifest now reports V4.7.
+- The exact V4.7 firmware binary from the successful release artifact has been downloaded to the conversation runtime for manual OTA testing.
+- No App Build was triggered by this firmware-only release.
+- Physical validation target: current V4.5/V4.x device -> manual V4.7 OTA, then boot/BLE check and Online OTA testing as planned.
+
 # END OF APP PROJECT MEMORY
 
 ## 2026-09-26 — Code #2: firmware source cleanup + App BLE contract synchronization

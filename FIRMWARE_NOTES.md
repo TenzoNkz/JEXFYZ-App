@@ -1457,6 +1457,23 @@ The project process is now explicitly two-phase:
 - Added the required single-byte write(uint8_t) override, forwarding to the existing buffer-write implementation.
 - No OTA runtime design change; this is a compile compatibility correction for the dedicated HTTPClient-to-flash sink.
 
+## 2026-09-26 — V4.7 FULL EXECUTION SUCCESS / BIN VERIFIED
+
+- Full V4.7 execution completed through terminal success after one compile failure was inspected and repaired (Run #37 -> Run #38).
+- Run #37 failed because `OtaHttpFlashStream` did not implement pure virtual `Print::write(uint8_t)`; V4.7 was corrected and rebuilt.
+- Run #38 succeeded through OTA safety audit, compile, firmware artifact, ArduinoDroid temporary-source artifact, and publication.
+- Public firmware repository is now V4.7 with `JEXFYZ-V4.7.bin` and V4.7 manifest.
+- Published public binary size: 1,577,136 bytes.
+- The exact Run #38 firmware artifact was downloaded locally and extracted for manual OTA testing.
+- Local extracted binary: `/mnt/data/JEXFYZ-V4.7.bin`.
+- Extracted binary SHA-256: `79ec25e3ad0cbb02fae4ef2dc4de7a3e808b17a113f87dd77bdd2776969ac020`.
+- Artifact archive size: 1,577,280 bytes; artifact ID 10909386508; not expired at completion.
+- ArduinoDroid temporary-source artifact ID 10909246649; not expired at completion.
+- Public release engine remains ESP32 Arduino Core 3.3.12.
+- V4.7 Online OTA body path uses HTTPClient::writeToStream() with a dedicated OTA flash sink, official setAcceptEncoding("identity"), Range chunks, reconnect/retry, and offset resume on the release core.
+- V4.5 known-good baseline remains valid; V4.6 image verification failure and its diagnostic record remain historical defect data.
+- Local OTA remains separately tracked as unresolved from earlier code-3 Flash Readback tests.
+
 # END OF FIRMWARE ENGINEERING MEMORY
 
 
