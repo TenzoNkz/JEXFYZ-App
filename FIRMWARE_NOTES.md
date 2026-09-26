@@ -1526,6 +1526,17 @@ The project process is now explicitly two-phase:
 - Firmware remains pinned to ESP32 Arduino Core 3.3.7 for both release and ArduinoDroid validation.
 - V4.11 is a new manual-flash test target; physical behavior still requires hardware validation.
 
+## 2026-09-27 — V4.12 RADIO-FIRST BOOT ISOLATION
+
+- V4.9 hardware test still showed no visible Wi-Fi/BLE after flashing the manually assembled file.
+- Static analysis of the repository showed that the radio APIs themselves follow the V3.8 Core 3.3.7 baseline, but the V4.x boot path initializes many application/OTA features before starting the AP.
+- V4.12 isolates radio startup: output pins are forced OFF, the WS2812 driver is initialized for diagnostics, then the boot AP is started before NTC/Preferences/PWM/application initialization.
+- The remaining application features initialize only after the 10-second AP ownership window ends; BLE starts only after Wi-Fi ownership is released.
+- BLE stale-controller recovery, AP post-start verification/retry, `WiFiClientSecure`, and the native `esp_ota_*` OTA engine remain protected.
+- CI release and ArduinoDroid validation remain pinned to ESP32 Arduino Core 3.3.7.
+- V4.12 source passed structural preflight: one setup(), one loop(), balanced braces/preprocessor blocks, no `esp_ota_resume()`, and required AP/BLE/OTA anchors present.
+- Full CI compile remains the final pre-flash gate. Physical radio behavior still requires hardware validation.
+
 # END OF FIRMWARE ENGINEERING MEMORY
 
 
