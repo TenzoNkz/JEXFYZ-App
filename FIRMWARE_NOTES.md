@@ -247,3 +247,15 @@ The official Core 3.3.7 example does not require this custom pre-sequence. Becau
 This repeated pattern requires boundary isolation, not more speculative patch stacking.
 
 ## 8. Next diagnostic
+
+## 2026-09-27 — RAW ESP-IDF WIFI BOUNDARY TEST GENERATED
+- A standalone diagnostic sketch was generated outside the production firmware:
+  `/mnt/data/JEXFYZ-Raw-ESP-IDF-WiFi-Boundary-Test.ino`
+- Purpose: isolate the Wi-Fi fault below the Arduino `WiFi.h` wrapper without creating a SoftAP and without adding a custom production radio lifecycle.
+- The sketch uses the exact public ESP-IDF calls observed in Arduino-ESP32 Core 3.3.7's `wifiLowLevelInit()` path: `esp_netif_init()`, `esp_event_loop_create_default()`, `WIFI_INIT_CONFIG_DEFAULT()` with the Core 3.3.7 non-static buffer values, `esp_wifi_init()`, `esp_wifi_set_storage(WIFI_STORAGE_RAM)`, `esp_wifi_set_mode(WIFI_MODE_AP)`, `esp_wifi_start()`, and `esp_wifi_get_mode()`.
+- The sketch prints a numbered marker before and after every boundary and stops on an unexpected ESP-IDF error.
+- It intentionally does **not** call `WiFi.softAP()`, create an AP SSID, or initialize BLE.
+- This is diagnostic-only; no production source was changed.
+- Validation status: file generation confirmed in the workspace; physical execution result is **NOT YET VERIFIED**.
+- Important interpretation: because this test does not create a SoftAP, no SSID is expected. Its purpose is to identify the first failing low-level Wi-Fi call.
+- Next evidence boundary: ArduinoDroid compile output and the Serial marker/result from this exact file.
