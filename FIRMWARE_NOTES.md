@@ -372,3 +372,8 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - The dependent `build-and-publish` job has started and is currently preparing the Arduino package index.
 - Release compile, OTA protected-source audit, artifact upload, and public firmware publication are still pending.
 - No public V1.2 binary is claimed yet.
+
+## 2026-09-27 — EXECUTION STATUS UPDATE: RUN #67 CORE INSTALL ACTIVE
+- `validate-arduinodroid` remains successful.
+- `build-and-publish` is now installing the ESP32-C3 Core 3.3.7 in its release-build job.
+- Release firmware compilation and publication remain pending.
