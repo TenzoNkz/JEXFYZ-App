@@ -1246,6 +1246,25 @@ The project process is now explicitly two-phase:
 - The previous V3.9 custom preamble parser is removed completely.
 - No GPIO, P1 BLE UUIDs, cooling/safety behavior, NTC, Adaptive, voltage, RGB/LED, touch, or App protocol contract was changed.
 - The V3.9 packages from Firmware Build #20 and #21 are superseded. The next build is the only V3.9 package that should be manually flashed and tested.
+## 2026-09-26 — FIRMWARE BUILD #22 — V3.9 NATIVE ESP OTA FINAL VERIFIED
+
+- Run #22: `36221049383`.
+- Trigger/source head SHA: `ea43549d45b869dfe83196586ab1e4064e8b6065`.
+- ESP32-C3 Core 3.3.7 installation, dependency installation, source audit, compilation, artifact upload, and public firmware publication all completed successfully.
+- Final artifact: `JEXFYZ-V3.9`, artifact ID `10899520462`, artifact archive size 1,453,072 bytes, expired status false at verification time.
+- Artifact digest: `sha256:fca198605a56ddf323f1f1b829048e1c97514aac9a5150c5b18f1548e2bc5a7a`.
+- Extracted firmware binary size: 1,452,928 bytes. The binary identifies as an ESP-IDF application image for ESP32-C3 and contains the V3.9 firmware/BLE identity strings.
+- The public firmware manifest was independently verified as V3.9 and points to `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V3.9.bin`.
+- This #22 package supersedes V3.9 Build #20 and #21 and is the only V3.9 package intended for the user's controlled manual ArduinoDroid flash.
+- After manual flash, first verify normal boot, BLE discovery/connection, and cooling behavior. The next online OTA test should use the same V3.9 device as the baseline only after that basic validation.
+
+### V3.9 OTA implementation state
+- Arduino `Update` was removed from the firmware OTA path.
+- Online and local OTA use native ESP-IDF OTA handles with `OTA_SIZE_UNKNOWN`.
+- Image acceptance is performed by `esp_ota_end()` and boot selection by `esp_ota_set_boot_partition()` only after native image verification succeeds.
+- BLE shutdown keeps controller memory reusable with `BLEDevice::deinit(false)` and explicitly terminates the active connection before de-initialization.
+- Online OTA does not use Content-Length, `HTTPClient::getSize()`, `HTTPUpload::totalSize`, or the previously invalid custom ESP image-size parser.
+- A premature network disconnect can no longer be treated as proof of firmware completeness; the native OTA verifier is the final acceptance gate.
 # END OF FIRMWARE ENGINEERING MEMORY
 
 
