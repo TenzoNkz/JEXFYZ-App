@@ -3656,7 +3656,7 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
         throw StateError('Invalid GitHub manifest');
       }
 
-      final data = Map<String, dynamic>.from(decoded as Map);
+      final data = Map<String, dynamic>.from(decoded);
       final version = data['version']?.toString().trim() ?? '';
       final url = data['url']?.toString().trim() ?? '';
       final parsedUrl = Uri.tryParse(url);
@@ -3730,7 +3730,7 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
       actions: [
         TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close', style: TextStyle(color: Colors.grey))),
         if (status == 'FAILED')
-          FilledButton(onPressed: _checkFirebase, child: const Text('Retry')),
+          FilledButton(onPressed: _checkGitHub, child: const Text('Retry')),
         if (updateAvailable)
           FilledButton(
             onPressed: () async {
