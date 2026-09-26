@@ -1323,3 +1323,14 @@ The project process is now explicitly two-phase:
 - This execution is OTA-first by design: the installed V3.7 device is the intended baseline for testing V3.7 -> V3.8 without USB/manual recovery dependency.
 - Firmware Build was triggered separately after these source/configuration changes.
 
+
+## FIRMWARE BUILD #17 — V3.8 OTA RELIABILITY FULL SUCCESS / PUBLISHED
+
+- Run #17: Firmware Build, run ID `36219233740`, head SHA `d7bfaa25b43a4889656055f51a12e732c7e4bf1b`.
+- ESP32-C3 Core 3.3.7 installation, dependency installation, source audit, version extraction, compilation, artifact upload, and public firmware publication all completed successfully.
+- Published artifact: `JEXFYZ-V3.8`, artifact ID `10899170248`, not expired at verification time.
+- Public firmware binary: `JEXFYZ-V3.8.bin`, verified size 1,453,120 bytes, below the 2 MiB release gate.
+- Public manifest was independently verified as V3.8 and points to `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V3.8.bin`.
+- Source verification after build confirms V3.8, no `HTTPClient::getSize()`, no `HTTPUpload::totalSize`, OTA uses `UPDATE_SIZE_UNKNOWN` and `Update.end(true)`, and CI uses ESP32 Core 3.3.7 with `PartitionScheme=no_fs`.
+- Hardware/GPIO/P1/BLE UUID/cooling/safety behavior was not intentionally changed in this OTA-focused release.
+- V3.8 is the new OTA test target from the user's installed V3.7 device. No USB/manual recovery is assumed for the test path.
