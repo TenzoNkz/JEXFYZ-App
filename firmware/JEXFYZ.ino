@@ -2687,7 +2687,7 @@ static void startLocalOtaAp() {
   Serial.println("WIFI AP: START");
   Serial.println("WIFI AP: STEP 1 SIMPLE SOFTAP");
 
-  const apOk = WiFi.softAP(AP_SSID, AP_PASSWORD);
+  const bool apOk = WiFi.softAP(AP_SSID, AP_PASSWORD);
 
   Serial.print("WIFI AP: SOFTAP RESULT=");
   Serial.println(apOk ? "OK" : "FAIL");
