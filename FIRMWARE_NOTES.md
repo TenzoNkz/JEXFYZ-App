@@ -1174,6 +1174,14 @@ The project process is now explicitly two-phase:
 - Online OTA cleanup now explicitly stops `cloudClient` on failure and before apply, and checks that the received byte count exactly matches the advertised image size before `Update.end(false)`.
 - No GPIO, NTC, cooling, Adaptive, voltage, RGB, touch, or P1 command/telemetry contract was intentionally changed.
 
+## FIRMWARE BUILD #15 — V3.6 FULL FIX VERIFIED
+
+- Run #15: `Firmware Build`, run ID `36214972250`, head SHA `4d80589119d9c49b0112ad7dd1cd272c1f33ce1b`.
+- Compile, artifact upload, and public firmware publication all completed successfully.
+- Firmware artifact `JEXFYZ-V3.6`, artifact ID `10896784103`, size 1,811,248 bytes, not expired at verification time.
+- Public `TenzoNkz/JEXFYZ-Firmware` manifest now advertises V3.6 and points to `JEXFYZ-V3.6.bin`.
+- Source verification confirms BLE bonding/security configuration is removed and V3.6 contains one `BLEDevice::deinit(true)` path for releasing BLE resources before online OTA.
+
 # END OF FIRMWARE ENGINEERING MEMORY
 
 
