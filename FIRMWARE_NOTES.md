@@ -305,3 +305,22 @@ This repeated pattern requires boundary isolation, not more speculative patch st
   No item is declared proven from source comparison alone.
 - Next diagnostic principle: reproduce **Horizon's exact public Wi-Fi sequence**, with no raw `esp_wifi.h` / `WIFI_INIT_CONFIG_DEFAULT()`, but invoke it only after boot has completed and from the main loop. Compare the result with the current immediate-`setup()` failure. This is a diagnostic boundary only; no production feature change has been made.
 - Production `firmware/JEXFYZ.ino` was not modified by this discussion.
+
+## 2026-09-27 — EXECUTION: HORIZON-STYLE DEFERRED WIFI AP (V1.2)
+- User explicitly authorized `Eksekusi Full`.
+- Inspected current production source SHA before editing: `d2e9b210e3c059bbbac62ca0197895a3a8409b3d`.
+- Applied one controlled runtime change based on the direct HorizonCooler.ino comparison:
+  - active firmware marker advanced from V1.1 to **V1.2** because executable behavior changed;
+  - `bootApActive` now starts false;
+  - added `bootApPending`;
+  - removed the direct `startLocalOtaAp()` call from `setup()`;
+  - `setup()` now only marks the boot AP as pending;
+  - the first `loop()` iteration consumes `bootApPending` and calls `startLocalOtaAp()`.
+- No raw `esp_wifi_*` APIs, `WIFI_INIT_CONFIG_DEFAULT()`, BLE implementation, OTA engine, safety logic, GPIO mapping, NTC logic, PWM logic, or application protocol was changed.
+- Purpose: isolate the Horizon-vs-JE difference of **Wi-Fi AP invocation from setup() versus loop()** while retaining the existing official Arduino `WiFi.softAP()` path.
+- Source static checks: PASS. Verified V1.2 marker, deferred-start marker, loop-start marker, `bootApActive=false`, and removal of the previous direct setup() AP call.
+- Repository commit: `bb4b271c2ef6c21bb779b65008ab24c6f98cd080`.
+- Build status at this exact action: not yet executed; the workflow is intentionally triggered separately by its dedicated trigger file.
+- Hardware result: not yet verified.
+- Diagnostic interpretation: this is a controlled test of startup context/timing, not a claim that Horizon's behavior proves the root cause.
+- Next boundary: trigger the existing firmware CI, inspect compile/build result, then physically flash V1.2 and compare the Serial boot boundary.
