@@ -1490,6 +1490,11 @@ The project process is now explicitly two-phase:
 - Corrected the validation job to use proper Bash ${VERSION}/${VALUE_FILE} expansion and the correct V4.8 audit version.
 - Run #44 remains recorded separately as the runner-disk exhaustion failure; the validation job remains isolated on its own runner.
 
+## 2026-09-26 — V4.8 BUILD #47 WORKFLOW FIX
+- Run #47 failed in the dedicated ArduinoDroid validation job because the shell script still contained malformed JavaScript-style variable text and never initialized VERSION.
+- Corrected the validation job to derive VERSION directly from FW_VERSION[] and use ordinary Bash expansion for the temporary filename.
+- Release audit expectation is V4.8.
+
 # END OF FIRMWARE ENGINEERING MEMORY
 
 
