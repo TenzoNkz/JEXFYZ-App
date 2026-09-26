@@ -3,7 +3,7 @@
 ## 1. SOURCE AUTHORITY AND CURRENT STATE
 
 - Authoritative firmware source: `firmware/JEXFYZ.ino`.
-- Current source firmware version: `V3.9` (OTA recovery/image-completion hardening applied; build not yet run).
+- Current source firmware version: V4.0 (official Espressif/Arduino-ESP32 OTA refactor + Core 3.3.12 baseline; build pending until the dedicated firmware trigger).
 - Protocol version: `P1`.
 - BLE device name: `JE X FYZ`.
 - Target hardware: ESP32-C3 Super Mini / ESP32-C3 Dev Module class.
@@ -82,6 +82,7 @@ The current source includes:
 - Arduino core / Arduino.h.
 - WiFi.h.
 - WebServer.h.
+- HTTPUpdate.h.
 - Update.h.
 - HTTPClient.h.
 - WiFiClientSecure.h.
@@ -94,8 +95,8 @@ The current source includes:
 - BLEServer.h.
 - BLEUtils.h.
 - BLE2902.h.
-- BLESecurity.h.
 - ESP system reset-reason support.
+- Espressif error definitions (esp_err.h) where explicit API return checks are required.
 - FreeRTOS queue-mutex support.
 
 Pinned/required project libraries:
@@ -158,116 +159,67 @@ This sequence is critical for the ESP32-C3 single-radio/antenna constraint.
 
 ## 7. LOCAL WEB OTA
 
-Local OTA is intended only for firmware updating.
+Local OTA uses the official Arduino-ESP32 Update library path used by Espressif's Web OTA examples.
 
 Web endpoints:
-- `GET /` serves the built-in OTA HTML page.
-- `POST /update` receives the firmware upload.
-
-The page:
-- Shows JE X FYZ branding.
-- Shows the running firmware version.
-- Accepts only `.bin` files in the file picker.
-- Shows upload progress.
-- Uses XMLHttpRequest to post the binary to `/update`.
-- Reports success/failure in the browser.
+- GET / serves the built-in OTA page.
+- POST /update receives the firmware upload.
 
 Upload behavior:
-- On upload start, OTA state becomes `LOCAL_UPLOAD`.
-- Cooling outputs are forced safe/off.
-- `Update.begin(UPDATE_SIZE_UNKNOWN)` is opened.
-- Each upload chunk is written through `Update.write()`.
-- The final write is accepted only when `Update.end(true)` and `Update.isFinished()` both succeed.
-- Successful local OTA stores `LOCAL_SUCCESS`, shows a green blink, and schedules restart after 1.2 seconds.
-- Failed local OTA aborts the update, stores a failure reason, shows a red indicator, and does not restart.
-- After a local OTA failure, Wi-Fi remains available so another upload attempt can be made without rebooting.
-- Local OTA state and result are exposed through BLE telemetry after normal radio recovery.
+- The page accepts only .bin firmware files.
+- The upload request includes the browser file size as the size query parameter when available.
+- At UPLOAD_FILE_START, firmware verifies the .bin extension and calls Update.begin(size); when the size is unavailable it falls back to UPDATE_SIZE_UNKNOWN.
+- Each upload chunk uses Update.write().
+- With a known size, finalization uses Update.end(), letting the official updater enforce completion.
+- With an unknown size, finalization uses Update.end(true), matching the official ESP32 Web OTA pattern.
+- Update errors are captured through Update.errorString() and persisted in LAST_OTA_RESULT.
+- Successful local OTA stores LOCAL_SUCCESS, shows a green blink, and schedules restart after 1.2 seconds.
+- Failed local OTA aborts the official updater, stores the reason, shows red, keeps Wi-Fi available, and does not restart.
 
-Local OTA timing:
-- Restart delay: 1,200 ms.
-- Failure indicator window: 1,000 ms.
+The local web UI remains deliberately simple and OTA-only.
 
 ## 8. ONLINE / CLOUD OTA OVER BLE + WI-FI
 
-Online OTA is initiated by BLE and then takes exclusive control of the Wi-Fi radio.
+Online OTA is initiated by BLE and then takes exclusive control of Wi-Fi.
 
 BLE supplies:
-- `SSID:<wifi name>`.
-- `PASS:<wifi password>`.
-- `URL:<https URL>`.
-- `VERSION:<metadata>`.
-- `CLOUDOTA`.
+- SSID:<wifi name>
+- PASS:<wifi password>
+- URL:<https URL>
+- VERSION:<metadata>
+- CLOUDOTA
 
-Requirements before starting:
+Requirements:
 - SSID must be non-empty.
 - Password must be non-empty.
-- URL must be HTTPS.
+- URL must use HTTPS.
 - Version metadata must be non-empty.
 - Duplicate pending requests are rejected.
 
-The request is held briefly so queued BLE acknowledgements can be transmitted first. The start wait is 1,500 ms, after which the firmware starts online OTA even if the phone has disappeared.
+Execution path:
+1. BLE acknowledgements are given a 1.5 second start window.
+2. Fan, Peltier, Adaptive, and higher-voltage selector state are forced safe.
+3. BLE client state and queues are reset.
+4. BLE is stopped with the official BLEDevice::deinit(false) path after the active connection is explicitly disconnected. The false argument retains controller memory so BLE can be initialized again after an OTA failure.
+5. Wi-Fi enters STA mode with the supplied credentials.
+6. The firmware waits for a valid system clock using configTime() before TLS validation, following Espressif's secure OTA example pattern.
+7. WiFiClientSecure::useBuiltinCACertBundle() is used instead of a hardcoded DigiCert certificate block.
+8. The official Arduino-ESP32 HTTPUpdate implementation performs the HTTPS GET, reads HTTPClient::getSize(), checks the HTTP status and image magic byte, calls Update.begin(size), streams through Update.writeStream(), and finalizes with the official Update.end() lifecycle.
+9. httpUpdate.rebootOnUpdate(false) keeps control in the JE X FYZ runtime so the firmware can show the green success indication and restart on the existing 1.2 second timer.
+10. The official HTTPUpdate error/result APIs provide the persisted failure reason.
 
-When online OTA begins:
-- Fan OFF.
-- Peltier OFF.
-- Adaptive OFF.
-- Voltage is forced to 5V.
-- Fan PWM state is normalized to 100.
-- BLE queues are cleared.
-- BLE client/session state is reset.
-- BLE is deinitialized.
-- Soft AP is disconnected.
-- Wi-Fi enters STA mode.
-- Wi-Fi sleep is disabled.
-- Auto-reconnect is disabled.
-- Wi-Fi connects using the supplied credentials.
+HTTP/TLS configuration:
+- HTTPS is required.
+- Redirect following is enabled with a five-redirect limit on the HTTP client.
+- HTTP client and secure client timeout are 12 seconds.
+- The direct GitHub raw firmware URL is used without custom HTTP payload parsing.
+- The CI release gate remains 2 MiB; the updater also enforces the available OTA partition size.
 
-HTTPS validation:
-- The firmware uses a built-in DigiCert root bundle for TLS validation.
-- The HTTPS server must validate through the trusted CA bundle.
-- GitHub/raw-content TLS is expected to be covered by this trusted certificate set.
-- Redirect following is enabled with a maximum of 5 redirects.
-- HTTP timeout is 12 seconds.
-- The device performs system-time synchronization using pool.ntp.org, time.nist.gov, and time.google.com because certificate validation requires a valid clock.
+Online OTA result behavior:
+- Success: stores the supplied metadata, shows green, schedules restart, then boots the new OTA partition.
+- Failure: captures the official HTTPUpdate error string, turns Wi-Fi fully off, clears cloud credentials, forces safe outputs, restores BLE, and does not reboot.
 
-Before touching the OTA partition, the downloaded image is checked:
-- HTTP response must be 200 OK.
-- Content size must be positive.
-- Stream must be available.
-- The first payload byte must be 0xE9, the expected ESP32 image magic byte.
-- This rejects HTML pages, JSON, source files, GitHub error pages, and other non-firmware payloads before OTA write begins.
-
-Download behavior:
-- Payload is read in 1024-byte chunks.
-- Each successful chunk is written with `Update.write()`.
-- Last received-byte timestamp is refreshed as data arrives.
-- No-data timeout: 7,000 ms.
-- A complete download transitions to `CLOUD_APPLYING`.
-- `Update.end(false)` must succeed and `Update.isFinished()` must be true.
-
-Online OTA success:
-- Stores a success result, including the supplied metadata when present.
-- Shows green blink.
-- Schedules restart after 1,200 ms.
-
-Online OTA failure:
-- Aborts the update.
-- Stores the failure reason.
-- Shows a red indicator.
-- Turns Wi-Fi fully OFF.
-- Clears cloud credentials from runtime RAM state.
-- Resets cooling state to 5V/Fan OFF/Peltier OFF/Adaptive OFF.
-- Restarts BLE without an ESP reset.
-
-Online OTA states:
-- IDLE
-- BOOT_AP
-- LOCAL_UPLOAD
-- CLOUD_CONNECTING
-- CLOUD_DOWNLOADING
-- CLOUD_APPLYING
-- SUCCESS
-- FAILED
+This design intentionally uses the Espressif/Arduino-ESP32 OTA abstraction instead of a custom image parser or custom HTTP-to-OTA engine.
 
 ## 9. BLE IDENTITY, SECURITY, AND SESSION MODEL
 
@@ -1265,6 +1217,19 @@ The project process is now explicitly two-phase:
 - BLE shutdown keeps controller memory reusable with `BLEDevice::deinit(false)` and explicitly terminates the active connection before de-initialization.
 - Online OTA does not use Content-Length, `HTTPClient::getSize()`, `HTTPUpload::totalSize`, or the previously invalid custom ESP image-size parser.
 - A premature network disconnect can no longer be treated as proof of firmware completeness; the native OTA verifier is the final acceptance gate.
+## 2026-09-26 — V4.0 OFFICIAL ESPRESSIF BASELINE / FULL OTA REFACTOR
+
+- Source advanced from V3.9 to V4.0.
+- Arduino-ESP32 CI baseline advanced from 3.3.7 to stable 3.3.12 (ESP-IDF 5.5.5).
+- Online OTA now uses the official Arduino-ESP32 HTTPUpdate abstraction with HTTPClient::getSize(), Update.begin(size), Update.writeStream(), and Update.end().
+- HTTPS uses WiFiClientSecure::useBuiltinCACertBundle(); the previous hardcoded DigiCert certificate bundle was removed.
+- TLS clock setup remains based on Espressif's official secure OTA example pattern with configTime().
+- Local OTA now uses the official Update API lifecycle and browser-provided file size when available.
+- Custom native esp_ota_* download/write code and the custom ESP image-size parser were removed from the application firmware.
+- BLE deinitialization remains BLEDevice::deinit(false) and occurs only after explicit active-connection termination, preserving BLE reinitialization after online OTA failures.
+- GPIO mapping, P1 BLE UUIDs, safety, NTC, Adaptive, voltage, LED, touch, and App command/telemetry contracts were intentionally preserved.
+- This is a source/configuration execution before the dedicated Firmware Build. The next Eksekusi Firmware build must verify Core 3.3.12 compilation, artifact publication, and public V4.0 manifest/package.
+
 # END OF FIRMWARE ENGINEERING MEMORY
 
 
