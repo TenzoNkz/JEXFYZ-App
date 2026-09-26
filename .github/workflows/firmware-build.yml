@@ -64,11 +64,10 @@ jobs:
           )"
           VALUE_FILE="JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
           cp firmware/JEXFYZ.ino "${VALUE_FILE}"
-          sed -i \
-            -e 's/#include <NetworkClientSecure.h>/#include <WiFiClientSecure.h>/'             -e 's/NetworkClientSecure cloudClient;/WiFiClientSecure cloudClient;/'             -e 's/cloudClient.useBuiltinCACertBundle();/cloudClient.setInsecure();/'             "${VALUE_FILE}"
           grep -Fq '#include <WiFiClientSecure.h>' "${VALUE_FILE}"
           grep -Fq 'WiFiClientSecure cloudClient;' "${VALUE_FILE}"
-          grep -Fq 'cloudClient.setInsecure();' "${VALUE_FILE}"
+          grep -Fq 'cloudClient.setCACert(GITHUB_ROOT_CA);' "${VALUE_FILE}"
+          ! grep -Fq 'setInsecure()' "${VALUE_FILE}"
            ! grep -Fq 'JEXFYZ_LEGACY_OTA' "${VALUE_FILE}"
            ! grep -Fq 'esp_ota_resume(' "${VALUE_FILE}"
           ! grep -Fq 'strtoul(' "${VALUE_FILE}"
@@ -273,14 +272,10 @@ jobs:
           set -euo pipefail
           VERSION="${{ steps.version.outputs.version }}"
           cp firmware/JEXFYZ.ino "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
-          sed -i \
-            -e 's/#include <NetworkClientSecure.h>/#include <WiFiClientSecure.h>/' \
-            -e 's/NetworkClientSecure cloudClient;/WiFiClientSecure cloudClient;/' \
-            -e 's/cloudClient.useBuiltinCACertBundle();/cloudClient.setInsecure();/' \
-            "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
           grep -Fq '#include <WiFiClientSecure.h>' "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
           grep -Fq 'WiFiClientSecure cloudClient;' "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
-          grep -Fq 'cloudClient.setInsecure();' "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
+          grep -Fq 'cloudClient.setCACert(GITHUB_ROOT_CA);' "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
+          ! grep -Fq 'setInsecure()' "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
 
       - name: Upload ArduinoDroid temporary source artifact
         uses: actions/upload-artifact@v7
