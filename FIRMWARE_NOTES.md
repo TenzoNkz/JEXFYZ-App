@@ -269,3 +269,17 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Static check: PASS for removal of the default argument.
 - Production firmware source was not modified.
 - Physical execution and hardware result remain unverified.
+
+## 2026-09-27 — RUNTIME RESULT: RAW ESP-IDF WIFI TEST PANICS AT CONFIG MACRO
+- User physically ran `JEXFYZ-Raw-ESP-IDF-WiFi-Boundary-Test-FIXED.ino` in ArduinoDroid and supplied the complete Serial boundary screenshot.
+- Confirmed runtime environment: Arduino-ESP32 Core `3.3.7`, chip `ESP32-C3`, revision `4`.
+- `esp_netif_init()` returned `ESP_OK` (0x0).
+- `esp_event_loop_create_default()` returned `ESP_OK` (0x0).
+- The sketch printed `STEP 5: BUILD OFFICIAL CORE 3.3.7 WIFI CONFIG`, then immediately produced `Guru Meditation Error: Core 0 panic'ed (Load access fault)`.
+- `STEP 6: WIFI CONFIG READY` was never reached. Therefore this test did **not** reach `esp_wifi_init()`, `esp_wifi_set_mode()`, `esp_wifi_start()`, or AP creation.
+- Official ESP-IDF v5.5 source was inspected because Arduino-ESP32 Core 3.3.7 declares its bundled `esp32-arduino-libs` package as `idf-release_v5.5-87912cd2-v3`.
+- In the official ESP-IDF v5.5 `esp_wifi.h`, `WIFI_INIT_CONFIG_DEFAULT()` is a designated initializer for `wifi_init_config_t`. It reads the exported `g_wifi_default_wpa_crypto_funcs` object into the local configuration and takes the address of `g_wifi_osi_funcs`; it is not itself a Wi-Fi start/AP call.
+- Current diagnostic conclusion: the failure boundary is now **below the Arduino WiFi wrapper and before the `esp_wifi_init()` API call**. A likely class of causes is an invalid/incompatible access while materializing the official Wi-Fi init configuration (for example a header/binary/toolchain/library mismatch), but this is **not yet proven** from the available evidence.
+- Important: do not claim that the ESP32 Wi-Fi driver itself is proven faulty. The exact PC-to-symbol mapping is not available because the standalone ArduinoDroid test ELF/map was not captured.
+- Required next evidence before another production change or another speculative test: the ArduinoDroid compile output/library-selection information for this exact sketch, including any `Multiple libraries were found` lines and the selected ESP32 core/library paths. This is needed to establish whether the header and linked Wi-Fi binary come from the expected Core 3.3.7 / IDF 5.5 package.
+- Production `firmware/JEXFYZ.ino` was not modified by this runtime test.
