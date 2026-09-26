@@ -647,3 +647,16 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 ## NOTE GOVERNANCE
 - This block is the current authoritative operational state and supersedes conflicting earlier hypotheses in the historical log.
 - Historical diagnostics are retained for traceability and must not be treated as the current implementation recipe.
+
+## 2026-09-27 — EXECUTION: PRODUCTION V1.4 SIMPLE ARDUINO WIFI BASELINE
+- User explicitly authorized full code + firmware execution and requested a manual OTA-ready `.bin`.
+- Production source `firmware/JEXFYZ.ino` changed from V1.3 to **V1.4**.
+- Production Local SoftAP startup was minimally simplified to the exact path proven physically on the user's ESP32-C3:
+  `WiFi.softAP(AP_SSID, AP_PASSWORD)`.
+- Removed only the extra Local AP configuration/startup calls from that production boundary: `WiFi.softAPConfig()` and its associated AP configuration result handling.
+- No BLE, NTC, Fan/Peltier, RGB, Adaptive, GPIO, settings persistence, BLE UUID/protocol, or online OTA behavior was intentionally redesigned in this execution.
+- The production source continues to use the Arduino `Update.h` lifecycle for local/online OTA and the existing OTA safety supervisor/diagnostic policy.
+- Source commit: `bf923ba37bdaee96b9f870318401c0d04061e8ff`.
+- Pre-CI static sanity check: V1.4 marker present; Local AP contains direct `WiFi.softAP(AP_SSID, AP_PASSWORD)`; `WiFi.softAPConfig()` is absent from production source; GPIO5=Fan and GPIO6=Peltier remain intact; legacy LEDC and audited raw lifecycle markers remain absent.
+- Required validation boundary: pinned Arduino-ESP32 Core 3.3.7 ArduinoDroid compile, release compile, OTA protected-source audit, artifact upload, and publication must all pass before the V1.4 binary is presented as verified.
+- Physical runtime of V1.4 is not claimed until the user manually flashes the resulting binary.
