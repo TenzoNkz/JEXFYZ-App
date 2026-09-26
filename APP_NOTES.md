@@ -8,6 +8,8 @@
 
 ---
 
+> Current firmware handoff (2026-09-26): The firmware source is V4.0 and the firmware CI baseline is stable Arduino-ESP32 Core 3.3.12. The App BLE P1 contract remains unchanged; no Flutter protocol rewrite is required for this firmware OTA refactor. The dedicated Firmware Build must be completed and independently verified before V4.0 is treated as a released firmware package.
+
 ## 0. HOW THIS FILE MUST BE USED
 
 This file is part of the project and should be treated as a **living engineering memory**.
