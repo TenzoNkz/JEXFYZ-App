@@ -382,3 +382,8 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Release job completed Core/library setup and source/audit/version steps.
 - The `Compile ESP32-C3 firmware` step is currently `in_progress`.
 - No release artifact or public V1.2 firmware is claimed until this compile and subsequent publication steps complete.
+
+## 2026-09-27 — EXECUTION DIAGNOSTIC: BUILD LOG ENDPOINT NOT AVAILABLE THROUGH CONNECTOR
+- Attempted to read the active Run #67 job log directly through the GitHub connector's fetch action.
+- The connector rejected the job-log endpoint as an unsupported URL for this action; therefore no compile-log interpretation was made from that attempt.
+- Run #67 remains the authoritative CI source; continue using its job/step status and final artifacts.
