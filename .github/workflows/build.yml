@@ -1,4 +1,4 @@
-name: JE X FYZ Cooler Build
+name: App Build
 
 on:
   workflow_dispatch:
