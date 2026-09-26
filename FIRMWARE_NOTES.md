@@ -366,3 +366,9 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - ArduinoDroid temporary source compile for ESP32-C3: **PASS**.
 - The second job `build-and-publish` is currently queued; release compile/publication results are not yet available.
 - This confirms the V1.2 source compiles under the workflow's pinned ArduinoDroid/Core 3.3.7 toolchain. It does **not** prove physical runtime.
+
+## 2026-09-27 — EXECUTION STATUS UPDATE: RUN #67 BUILD/PUBLISH ACTIVE
+- The ArduinoDroid validation job passed.
+- The dependent `build-and-publish` job has started and is currently preparing the Arduino package index.
+- Release compile, OTA protected-source audit, artifact upload, and public firmware publication are still pending.
+- No public V1.2 binary is claimed yet.
