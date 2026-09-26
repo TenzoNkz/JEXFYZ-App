@@ -1,10 +1,10 @@
 /*
   JE X FYZ / JE COOLER
-  Horizon Cooler UI base + JE X FYZ V3.5 / P1 protocol
+  Horizon Cooler UI base + JE X FYZ V3.6 / P1 protocol
 
   Core rules:
   - Horizon Cooler remains the visual/layout and Android foundation.
-  - JE X FYZ V3.5 uses firmware-owned state and an atomic P1 BLE sync/ready handshake.
+  - JE X FYZ V3.6 uses firmware-owned state and an atomic P1 BLE sync/ready handshake.
   - Firebase App Check / Play Integrity remains enabled for app security. Firmware release metadata comes from the public GitHub manifest.
   - Phone battery temperature is sent every 1 second while BLE is connected.
   - Manual voltage commands use a 1-second app guard matching firmware.
@@ -255,7 +255,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   BluetoothCharacteristic? tx;
   StreamSubscription<BluetoothConnectionState>? connectionSub;
   StreamSubscription<List<int>>? notificationSub;
-  StreamSubscription<BluetoothBondState>? bondStateSub;
 
   Future<void> _writeQueue = Future<void>.value();
   Timer? batteryTimer;
@@ -338,7 +337,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void dispose() {
     connectionSub?.cancel();
     notificationSub?.cancel();
-    bondStateSub?.cancel();
     batteryTimer?.cancel();
     voltageGuardTimer?.cancel();
     reconnectTimer?.cancel();
@@ -774,34 +772,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       await Future<void>.delayed(const Duration(milliseconds: 40));
     }
 
-    // If encrypted writes require Android bonding on this device, create the
-    // bond and retry the handshake exactly once. This is a recovery path only;
-    // already-bonded devices do not see another pairing step.
-    if ((!_syncReadyAck || !fullSyncReceived || !_bleSessionReady) && Platform.isAndroid) {
-      try {
-        await target.createBond();
-        await Future<void>.delayed(const Duration(milliseconds: 450));
-        _syncReadyAck = false;
-        fullSyncReceived = false;
-        _bleSessionReady = false;
-        await sendCommand('SYNC', showError: false);
-        final retrySyncDeadline = DateTime.now().add(const Duration(milliseconds: 1500));
-        while (mounted && !fullSyncReceived && DateTime.now().isBefore(retrySyncDeadline)) {
-          await Future<void>.delayed(const Duration(milliseconds: 35));
-        }
-        fullSyncReceived = false;
-        await sendCommand('SYNC_READY', showError: false);
-        final retryReadyDeadline = DateTime.now().add(const Duration(milliseconds: 3000));
-        while (mounted &&
-            !(_syncReadyAck && fullSyncReceived && _bleSessionReady) &&
-            DateTime.now().isBefore(retryReadyDeadline)) {
-          await Future<void>.delayed(const Duration(milliseconds: 40));
-        }
-      } catch (e) {
-        debugPrint('BLE bond recovery: $e');
-      }
-    }
-
     if (!_syncReadyAck || !fullSyncReceived || !_bleSessionReady) {
       throw StateError('BLE session not ready');
     }
@@ -858,42 +828,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
-  Future<bool> _ensureBleBondForProtectedWrite(BluetoothDevice target) async {
-    if (!Platform.isAndroid) return true;
-
-    BluetoothBondState state = BluetoothBondState.none;
-    try {
-      state = await target.bondState.first.timeout(const Duration(seconds: 2));
-      if (state == BluetoothBondState.bonded) return true;
-    } catch (e) {
-      debugPrint('BLE bond state: $e');
-    }
-
-    await bondStateSub?.cancel();
-    final completer = Completer<bool>();
-    bondStateSub = target.bondState.listen((next) {
-      if (next == BluetoothBondState.bonded && !completer.isCompleted) {
-        completer.complete(true);
-      }
-    });
-
-    try {
-      if (state != BluetoothBondState.bonding) {
-        await target.createBond();
-      }
-      return await completer.future.timeout(
-        const Duration(seconds: 12),
-        onTimeout: () => false,
-      );
-    } catch (e) {
-      debugPrint('BLE createBond: $e');
-      return false;
-    } finally {
-      await bondStateSub?.cancel();
-      bondStateSub = null;
-    }
-  }
-
   Future<bool> sendCommand(String command, {bool showError = true}) {
     final completer = Completer<bool>();
     _writeQueue = _writeQueue.then((_) async {
@@ -925,28 +859,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         if (!completer.isCompleted) completer.complete(true);
       } catch (e) {
         debugPrint('BLE write $command: $e');
-
-        // Android may reject the first encrypted session write until the
-        // peripheral is bonded. Recover once for SYNC/SYNC_READY only.
-        final normalizedCommand = command.trim().toUpperCase();
-        if (Platform.isAndroid &&
-            (normalizedCommand == 'SYNC' || normalizedCommand == 'SYNC_READY') &&
-            device != null) {
-          try {
-            final bonded = await _ensureBleBondForProtectedWrite(device!);
-            if (bonded) {
-              await Future<void>.delayed(const Duration(milliseconds: 350));
-              await rx!.write(
-                payload,
-                withoutResponse: !requiresResponse && canNoResponse,
-              ).timeout(const Duration(seconds: 4));
-              if (!completer.isCompleted) completer.complete(true);
-              return;
-            }
-          } catch (bondError) {
-            debugPrint('BLE bond recovery for $command: $bondError');
-          }
-        }
 
         if (!completer.isCompleted) completer.complete(false);
       }
