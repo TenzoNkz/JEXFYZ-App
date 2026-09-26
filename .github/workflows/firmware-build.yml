@@ -92,10 +92,13 @@ jobs:
           set -euo pipefail
           rm -rf build/firmware
           mkdir -p build/firmware
+          rm -rf build/sketch build/firmware
+          mkdir -p build/sketch build/firmware
+          cp firmware/JEXFYZ.ino build/sketch/JEXFYZ.ino
           arduino-cli compile \
             --fqbn esp32:esp32:esp32c3 \
             --output-dir build/firmware \
-            firmware/JEXFYZ.ino
+            build/sketch
           BIN="build/firmware/JEXFYZ.ino.bin"
           test -s "$BIN"
           VERSION="${{ steps.version.outputs.version }}"
