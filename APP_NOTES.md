@@ -2279,3 +2279,11 @@ For every future app change:
 - The firmware version remains V3.2; this is a compatibility build fix, not a feature/version release decision.
 - Commit: `3affa13a97d63eac1777ec2c6315fed9f8720a48`.
 - Run #6 must be revalidated after this fix; do not claim firmware publish success until the complete Build → artifact → public repository publish pipeline succeeds.
+
+
+## 2026-09-26 — Firmware Build Run #7 size fix
+
+- Run #7 passed the BLE API compatibility stage and reached compilation, then failed because the generated firmware was 1,826,576 bytes (139%) while the default ESP32-C3 app partition is 1,310,720 bytes.
+- The workflow was changed to compile with the OTA-capable `min_spiffs` partition scheme, which provides larger dual OTA app slots while retaining OTA functionality.
+- Only `.github/workflows/firmware-build.yml` was changed for this build fix; firmware source behavior remains unchanged.
+- Next Firmware Build run must verify compile, artifact upload, and public repository publish.
