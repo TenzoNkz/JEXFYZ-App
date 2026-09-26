@@ -3,7 +3,7 @@
 ## 1. SOURCE AUTHORITY AND CURRENT STATE
 
 - Authoritative firmware source: `firmware/JEXFYZ.ino`.
-- Current firmware version: `V3.4`.
+- Current firmware version: `V3.5`.
 - Protocol version: `P1`.
 - BLE device name: `JE X FYZ`.
 - Target hardware: ESP32-C3 Super Mini / ESP32-C3 Dev Module class.
@@ -1144,6 +1144,14 @@ The project process is now explicitly two-phase:
 - Plain `Eksekusi` applies agreed repository/source/documentation changes only.
 - `Eksekusi Firmware` separately builds the newest firmware and publishes the resulting versioned `.bin`.
 - Firmware source changes do not automatically start CI.
+
+## 2026-09-26 — V3.5 OTA PANIC TEST RELEASE
+
+- User has manually flashed V3.4 because the previous online OTA attempt caused a firmware panic.
+- Firmware source version is intentionally incremented to V3.5 for a controlled online-OTA test from a running V3.4 device.
+- No functional firmware logic was intentionally changed in this version bump; the purpose is to make the App treat the public V3.5 package as a newer release and exercise the same online OTA transport path again.
+- Preserve the existing V3.4 runtime behavior, BLE P1 contract, safety logic, radio exclusivity, and OTA flow while testing.
+- `Eksekusi Firmware` is being performed now; build success, artifact, and public V3.5 publication must be verified before claiming the test package is ready.
 
 # END OF FIRMWARE ENGINEERING MEMORY
 
