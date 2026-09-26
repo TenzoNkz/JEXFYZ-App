@@ -1063,3 +1063,16 @@ For all future firmware work:
 - Source SHA after comment cleanup: `0a38cf7bfc91a450301eea37650d7b0e6dbe9942`.
 
 # END OF FIRMWARE ENGINEERING MEMORY
+
+
+## 2026-09-26 — Corrected firmware build trigger policy
+
+- Firmware source changes must NOT automatically start Firmware Build.
+- `Firmware Build` now triggers only when `.github/FIRMWARE_BUILD_TRIGGER` changes.
+- Firmware source `firmware/JEXFYZ.ino` may be changed freely during implementation/discussion without starting CI.
+- The Code sub-chat starts the build only after the user explicitly says `Eksekusi`.
+- At that point the Code sub-chat updates `.github/FIRMWARE_BUILD_TRIGGER`, which starts exactly the same Firmware Build workflow.
+- A single explicit execution may include firmware-only changes or a commit containing firmware plus other project files; the build trigger is independent of which project files were changed.
+- `workflow_dispatch` remains removed.
+- This supersedes the earlier note that said Firmware Build automatically triggered from `firmware/JEXFYZ.ino`.
+- The unwanted Run #10 was caused by the previous source-path trigger and is not considered an intentional firmware execution request.
