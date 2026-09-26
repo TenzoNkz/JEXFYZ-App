@@ -1,7 +1,9 @@
 name: App Build
 
 on:
-  workflow_dispatch:
+  push:
+    paths:
+      - ".github/APP_BUILD_TRIGGER"
 
 permissions:
   contents: read
