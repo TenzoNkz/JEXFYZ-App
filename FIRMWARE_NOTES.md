@@ -1495,6 +1495,10 @@ The project process is now explicitly two-phase:
 - Corrected the validation job to derive VERSION directly from FW_VERSION[] and use ordinary Bash expansion for the temporary filename.
 - Release audit expectation is V4.8.
 
+## 2026-09-26 — V4.8 BUILD #48 FAILURE / TEMP AUDIT QUOTING FIX
+- Run #48 successfully installed Core 3.3.7 but failed in the ArduinoDroid source preparation checks because four grep commands still contained the malformed literal `"$"+"{VALUE_FILE}"`.
+- Corrected those checks to standard Bash `${VALUE_FILE}` expansion.
+- No firmware source or OTA logic changed in this correction.
 # END OF FIRMWARE ENGINEERING MEMORY
 
 
