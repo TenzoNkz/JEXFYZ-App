@@ -1182,27 +1182,7 @@ The project process is now explicitly two-phase:
 - Public `TenzoNkz/JEXFYZ-Firmware` manifest now advertises V3.6 and points to `JEXFYZ-V3.6.bin`.
 - Source verification confirms BLE bonding/security configuration is removed and V3.6 contains one `BLEDevice::deinit(true)` path for releasing BLE resources before online OTA.
 
-## 2026-09-26 — V3.9 OTA PANIC HARDENING EXECUTION
 
-- Firmware source advanced from V3.8 to V3.9 for the runtime OTA panic hardening identified during the physical V3.7 -> V3.8 test.
-- BLE OTA shutdown no longer calls `BLEDevice::deinit(true)`. The active BLE connection is explicitly terminated first when a connection handle is known, then the BLE stack is de-initialized with memory retained so the failure path can safely reinitialize BLE.
-- Online OTA no longer uses HTTP Content-Length or `HTTPClient::getSize()`.
-- Online OTA now reads the ESP image header and segment headers before starting `Update`. The firmware image structure is checked for ESP32-C3, valid segment count/alignment, and a calculated exact image length within the 2 MiB release boundary.
-- Online OTA now starts `Update` with the calculated exact image size, writes the prefetched image preamble, and treats any early stream disconnect as an incomplete download rather than a completed image.
-- Online OTA finalization now requires the received byte count to exactly match the parsed image size and requires `Update.isFinished()` before `Update.end(false)`.
-- HTTP/1.0 mode is enabled for the GitHub raw download so connection-close semantics are deterministic and HTTP keep-alive reuse is disabled.
-- Local OTA now independently captures and validates the ESP image preamble and requires the uploaded byte count to exactly match the calculated image size before `Update.end(false)`.
-- OTA failure diagnostics remain persisted through `LAST_OTA_RESULT`; no automatic firmware downgrade or destructive recovery behavior was introduced.
-- GPIO mapping, NTC, cooling safety, Adaptive, voltage switching, RGB/LED, touch behavior, P1 BLE UUIDs, BLE command/telemetry contract, and the 2 MiB CI release gate remain unchanged.
-- This is source execution only. No `.bin` build or public firmware publication was started by this change. The next separate `Eksekusi Firmware` is required for the V3.9 binary.
-## 2026-09-26 — V3.9 LOCAL OTA FINALIZATION CORRECTION
-
-- Corrected the local OTA path after source review: `Update.begin(UPDATE_SIZE_UNKNOWN, U_FLASH)` cannot be paired with `Update.isFinished()` because unknown-size mode initializes the updater against the full OTA partition.
-- Local OTA therefore keeps the independently calculated exact image-size check and finalizes with `Update.end(true)`. The received byte count must still exactly match the parsed ESP image size before this finalization.
-- The online OTA path remains exact-size based and continues to require `Update.isFinished()` before `Update.end(false)`.
-- This is a V3.9 corrective rebuild before the manual USB test; no GPIO, P1/BLE protocol, safety, cooling, or hardware behavior changed.
-- The public V3.9 package from the immediately preceding build is superseded by the corrective rebuild; the new build must be verified before manual flashing.
-# END OF FIRMWARE ENGINEERING MEMORY
 
 
 ## 2026-09-26 — Firmware source structure cleanup and App contract verification
@@ -1225,6 +1205,36 @@ The project process is now explicitly two-phase:
 - No `.github/FIRMWARE_BUILD_TRIGGER` update was performed.
 - No Firmware Build or `.bin` compilation was started by this change.
 - The next separate `Eksekusi Firmware` will build the current source.
+
+## 2026-09-26 — V3.9 OTA PANIC HARDENING EXECUTION
+
+- Firmware source advanced from V3.8 to V3.9 for the runtime OTA panic hardening identified during the physical V3.7 -> V3.8 test.
+- BLE OTA shutdown now explicitly terminates the known active connection before BLE stack de-initialization, and uses `BLEDevice::deinit(false)` so BLE memory remains reusable for the failure/recovery path.
+- Online OTA does not use HTTP Content-Length, `HTTPClient::getSize()`, or `HTTPUpload::totalSize`.
+- Online OTA reads the ESP32 image header and segment headers, validates ESP32-C3 identity, segment count/alignment, and calculates the exact image length including checksum padding and an appended 32-byte image hash when present.
+- Online OTA starts `Update` with that calculated exact image size, writes the prefetched image preamble, rejects early disconnects as incomplete, rejects data beyond the calculated image size, and requires the received byte count plus `Update.isFinished()` before `Update.end(false)`.
+- HTTP/1.0 mode is enabled for the GitHub raw image request and keep-alive reuse is disabled.
+- Local OTA independently captures the image preamble, calculates the expected image size, requires an exact received-byte match, and finalizes with `Update.end(true)` because local `Update.begin(UPDATE_SIZE_UNKNOWN)` intentionally leaves the updater size at the OTA partition capacity.
+- OTA failure diagnostics remain persisted through `LAST_OTA_RESULT`.
+- GPIO5=Peltier, GPIO6=Fan, P1 BLE UUIDs, safety/cooling logic, NTC, Adaptive, voltage, RGB/LED, touch, and the 2 MiB CI release gate remain unchanged.
+
+## FIRMWARE BUILD #20 — V3.9 FIRST HARDENING BUILD
+
+- Run #20: `36220385175`.
+- Source head SHA: `cab732e254a52bbd33f44dd159329f818963aaf2`.
+- Compile, artifact upload, and public publication completed successfully.
+- Artifact `JEXFYZ-V3.9`, artifact ID `10898324533`, was created successfully.
+- This first V3.9 build was superseded before manual flashing because review found that its local OTA path incorrectly paired `Update.begin(UPDATE_SIZE_UNKNOWN)` with `Update.isFinished()`.
+
+## FIRMWARE BUILD #21 — V3.9 CORRECTIVE BUILD VERIFIED
+
+- Run #21: `36220619296`.
+- Source head SHA: `ee364c6a85a52bbd33f44dd159329f818963aaf2`.
+- ESP32-C3 Core 3.3.7 installation, dependency installation, source audit, compilation, artifact upload, and public firmware publication all completed successfully.
+- Final artifact: `JEXFYZ-V3.9`, artifact ID `10898622293`, size 1,454,496 bytes, expired status false at verification time.
+- Artifact digest: `sha256:667f66741490ef0391536bf1fa9eeb6adc90c357cdd4afb859022e0dd46c235b`.
+- Public firmware repository manifest was independently verified as V3.9 and points to `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V3.9.bin`.
+- The V3.9 corrective package is the package intended for the user's manual USB/ArduinoDroid flash before another online OTA experiment.
 
 # END OF FIRMWARE ENGINEERING MEMORY
 
