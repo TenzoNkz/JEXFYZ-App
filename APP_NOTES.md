@@ -2546,6 +2546,13 @@ The project process is now explicitly two-phase:
 - Manual V4.5 source is generated with JEXFYZ_LEGACY_OTA for ArduinoDroid/Core 3.3.7.
 - Public V4.5 remains the Core 3.3.12 release with true offset resume.
 
+## 2026-09-26 — V4.5 BUILD #31 VERIFIED
+
+- Firmware Build Run #31 completed successfully and published V4.5.
+- App source contains the OTA diagnostic stage translations for range probe/request/response/write/retry/resume.
+- No App Build was triggered in this Firmware-focused execution.
+- Physical test target is the V4.5 ArduinoDroid temporary source followed by Online OTA using the public V4.5 binary.
+
 # END OF APP PROJECT MEMORY
 
 ## 2026-09-26 — Code #2: firmware source cleanup + App BLE contract synchronization
