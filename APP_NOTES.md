@@ -4,13 +4,23 @@
 
 ## 1. MANDATORY OPERATING RULES
 
-### Before EVERY project action
+### Before EVERY project conversation or action
 1. Read the relevant living note/context first.
+
 2. For firmware work, read the current firmware notes and firmware master context.
 3. For app work, read the current app notes and app master context.
 4. For cross-layer work, read both sides and the combined master context.
 5. After reading, inspect the newest actual GitHub/source state.
 6. Resolve conflicts by: newest user instruction → newest actual source/repository state → exact pinned official upstream source/docs → living notes → old history.
+
+
+### Passive living-notes rule
+
+The living notes are passive, continuously evolving project memory. Every discussion and every execution must update the relevant notes when there is a new decision, verified finding, contradiction, runtime result, or boundary; discussion-only updates do not authorize executable code changes or builds.
+
+### Execution lock
+
+Executable source/repository changes and build execution require the explicit user command `Eksekusi Full`. Discussion may analyze and prepare only.
 
 ### After EVERY material action
 Immediately update the relevant notes with:
