@@ -414,3 +414,40 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - "Arduino Standard" means: use the implementation style demonstrated by the official Arduino-ESP32 examples/source for the exact pinned Core version; project-specific code may orchestrate those official APIs only where the JE X FYZ requirements require it.
 - This mandate supersedes the recent raw ESP-IDF diagnostic approach for the next implementation step. The raw diagnostic remains historical evidence only.
 - No executable source changed in this discussion.
+
+## 2026-09-27 — DISCUSSION: OFFICIAL ARDUINO-STANDARD STUDY — CORE 3.3.7
+- User requested a full study of the Arduino Standard approach from the official source, with future implementation prohibited from using invented/custom low-level replacements.
+- Reviewed the official Espressif Arduino-ESP32 Core 3.3.7 repository documentation and source/examples for the areas directly relevant to JE X FYZ:
+  - Wi-Fi API: `docs/en/api/wifi.rst`, official `WiFiAccessPoint.ino`, and the WiFi AP/STA classes.
+  - Web OTA: `docs/en/ota_web_update.rst` and official `libraries/WebServer/examples/WebUpdate/WebUpdate.ino`.
+  - Network API: `docs/en/api/network.rst`.
+  - Arduino OTA: `libraries/ArduinoOTA/examples/BasicOTA/BasicOTA.ino`.
+  - HTTP update: `libraries/HTTPUpdate/examples/httpUpdate/httpUpdate.ino`.
+  - Web OTA server: `libraries/HTTPUpdateServer/examples/WebUpdater/WebUpdater.ino`.
+  - BLE server: `libraries/BLE/examples/Server/Server.ino`.
+  - LEDC/PWM: official ESP32 LEDC examples and 3.x API behavior.
+  - ADC/GPIO/timer documentation and examples.
+  - 2.x→3.x migration guide for API changes.
+- Key official Wi-Fi rule confirmed: the public Arduino path is the intended sketch-level API. The official AP example calls `WiFi.softAP(ssid, password)`; the Arduino core internally owns Wi-Fi initialization/startup. Sketch code should not recreate `WIFI_INIT_CONFIG_DEFAULT()` or `esp_wifi_init()` for ordinary Wi-Fi startup.
+- Key official Web OTA rule confirmed: the official `WebUpdate.ino` uses `WiFi.h`, `NetworkClient.h`, `WebServer.h`, and `Update.h`; upload handling uses the Arduino `Update.begin()/write()/end(true)` lifecycle and `server.handleClient()` in `loop()`.
+- Key official Arduino OTA rule confirmed: `ArduinoOTA.begin()` is paired with `ArduinoOTA.handle()` from `loop()`; Wi-Fi connection is established first.
+- Key official network architecture rule confirmed: Core 3.x exposes a unified `Network` layer and `NetworkClient`/server classes; Wi-Fi implementations sit on that layer.
+- Key official 3.x GPIO/PWM/timer direction confirmed: use the current Arduino APIs/examples for the target Core; for LEDC the Core 3.3.7 examples use pin-centric APIs such as `ledcAttach()`, `ledcWrite()`, `ledcChangeFrequency()`, and `ledcDetach()`.
+- Important implementation discipline for JE X FYZ:
+  1. Prefer official Arduino public API/example patterns over reproducing internal driver code.
+  2. Do not invent wrapper functions that duplicate official lifecycle behavior.
+  3. Use the exact Core 3.3.7 signatures verified in source/docs; do not rely on older 2.x signatures.
+  4. For callbacks/events, respect the official thread/task-safety warnings.
+  5. Keep project-specific state machines only where they implement JE X FYZ product requirements, not as replacements for framework initialization.
+- Official source links retained as authoritative:
+  - https://github.com/espressif/arduino-esp32/tree/3.3.7
+  - https://github.com/espressif/arduino-esp32/blob/3.3.7/libraries/WiFi/examples/WiFiAccessPoint/WiFiAccessPoint.ino
+  - https://github.com/espressif/arduino-esp32/blob/3.3.7/libraries/WebServer/examples/WebUpdate/WebUpdate.ino
+  - https://github.com/espressif/arduino-esp32/blob/3.3.7/libraries/ArduinoOTA/examples/BasicOTA/BasicOTA.ino
+  - https://github.com/espressif/arduino-esp32/blob/3.3.7/libraries/HTTPUpdate/examples/httpUpdate/httpUpdate.ino
+  - https://github.com/espressif/arduino-esp32/blob/3.3.7/libraries/HTTPUpdateServer/examples/WebUpdater/WebUpdater.ino
+  - https://github.com/espressif/arduino-esp32/blob/3.3.7/docs/en/api/wifi.rst
+  - https://github.com/espressif/arduino-esp32/blob/3.3.7/docs/en/ota_web_update.rst
+  - https://github.com/espressif/arduino-esp32/blob/3.3.7/docs/en/migration_guides/2.x_to_3.0.rst
+- This was a discussion/source-study action only. No executable project source was changed by this study.
+- Next implementation boundary: when the user authorizes the next firmware execution, build from the official Arduino Standard examples/APIs for Core 3.3.7 rather than from the recent raw ESP-IDF diagnostic sketches.
