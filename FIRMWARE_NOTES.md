@@ -109,6 +109,22 @@
 - Current root-cause status: still unproven. The purpose of this test is to distinguish an AP-mode failure from a later AP.create() failure inside the official WiFi.softAP() implementation.
 - Next boundary: flash the new test and preserve the entire Serial output. The most important lines are the actual Arduino-ESP32 Core value, STEP 3, and whether STEP 4 is reached or the device panics.
 
+## 2026-09-27 — RUNTIME RESULT: WIFI MODE AP PANICS
+
+- User physical-test result from `JEXFYZ-WiFi-Mode-AP-Test.ino`: actual compiled Arduino-ESP32 Core reported by the official `ESP.getCoreVersion()` API is `3.3.7`.
+- Hardware runtime reported by the sketch: Chip = ESP32-C3, Chip revision = 4.
+- `WiFi.getMode()` before initialization returned `0`, matching the official Core 3.3.7 `getMode()` path's `WIFI_MODE_NULL` result before low-level Wi-Fi initialization.
+- The sketch printed `STEP 3: BEFORE WiFi.mode(WIFI_AP)` and then immediately panicked with `Guru Meditation Error: Core 0 panic'ed (Load access fault)`; `STEP 4: WiFi.mode(WIFI_AP) RESULT` was never reached.
+- This narrows the failure boundary from the public `WiFi.softAP()` call to the official `WiFi.mode(WIFI_AP)` path itself or an internal function it invokes.
+- Official Core 3.3.7 source reviewed for this boundary: `WiFiGenericClass::mode()` first checks `getMode()`; when Wi-Fi is not initialized and a non-zero mode is requested, it calls the internal official `wifiLowLevelInit(_persistent)`; that path calls `Network.begin()`, then `esp_wifi_init(&cfg)`, registers Wi-Fi events, creates default AP/STA network interfaces, and posts the Wi-Fi ready event.
+- Official Network Manager source/docs verified: public global `Network.begin()` initializes the ESP-IDF network interface system through `esp_netif_init()` and initializes network events; the official Network API documentation explicitly presents `Network.begin()` as the initialization entry point.
+- Diagnostic conclusion: OTA, WebServer, `WiFi.softAP()` credential/configuration, and JE X FYZ production feature layers are no longer part of this immediate failure boundary. The exact failing internal step is still not proven.
+- User explicitly requested `Eksekusi Full`. Generated `JEXFYZ-Network-Begin-Test.ino` containing only `Arduino.h` + official `Network.h`, the actual Core/chip reporting APIs, and `Network.begin()`.
+- Static validation: PASS. No Wi-Fi mode/AP, WebServer, Update, BLE, Preferences, NeoPixel, or OneButton calls are present.
+- Build/flash validation: not performed here; manual ArduinoDroid test is the next step.
+- Production `firmware/JEXFYZ.ino` was not modified.
+- Next boundary: flash the Network.begin-only diagnostic and preserve the complete Serial output. The key result is whether `STEP 2: Network.begin() RESULT = OK` is reached or the board panics inside `Network.begin()`.
+
 > Current-state override for the next JE X FYZ firmware sub-chat. Historical sections below are retained for chronology.
 
 ## 1. Mandatory workflow
