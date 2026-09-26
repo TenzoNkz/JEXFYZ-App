@@ -1,1 +1,1 @@
-V4.12 full execution retry after secure Core 3.3.7 TLS compatibility + ArduinoDroid validation fix 2026-09-27 01:03 +0700
+V4.13 full execution: radio-first boot + secure Core 3.3.7 TLS + corrected GPIO5 Fan / GPIO6 Peltier 2026-09-27 01:18 +0700
