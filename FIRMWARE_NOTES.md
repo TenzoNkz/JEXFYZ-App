@@ -761,3 +761,19 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - The change is intentionally limited to Local OTA begin/end error handling and uses the official Arduino Update API pattern. BLE, NTC, Fan/Peltier, RGB, Adaptive, GPIO, settings, online OTA protocol, and app behavior were not intentionally redesigned.
 - **Important unresolved runtime status:** V1.4 failed Local OTA at `Update.end(true)`. The V1.5 source fix has not yet been physically tested. Therefore V1.5 must not be declared OTA-fixed until a physical Local OTA upload succeeds.
 - Release gate: V1.5 must pass ArduinoDroid/Core 3.3.7 compile, release compile, OTA protected-source audit, artifact verification, and publication before any V1.5 binary is delivered for manual testing.
+
+## 2026-09-27 — RUN #72 FINAL V1.5 LOCAL OTA FIX BUILD PASS
+- Run #72 (`36279605827`) completed successfully.
+- ArduinoDroid/Core 3.3.7 validation compile: PASS.
+- Release ESP32-C3 compile: PASS.
+- OTA protected-source audit: PASS.
+- Firmware artifact upload: PASS.
+- ArduinoDroid source artifact upload: PASS.
+- Public firmware publication: PASS.
+- Final production source commit: `a36c4fa7748b3e9369a92ab1c583f177a0b13705`.
+- Final firmware version: **V1.5**.
+- Final binary extracted from the CI artifact: `JEXFYZ-V1.5.bin`, **1,465,488 bytes**.
+- Local binary integrity inspection: first byte is `0xE9` (ESP image magic); SHA-256 `c9baa2f8bf263ca51a0909a772300d8bd49e69b0c641b206e3bc3c1953c15eb8`.
+- The binary is derived from Run #72's successful release artifact, not the previously failed Run #70.
+- V1.5 is **not yet physically proven to complete Local OTA**. The purpose of this release is to test the corrected official Arduino Update flow on the actual device.
+- Next required hardware test: upload V1.5 through the Local OTA page using the same device/AP that previously produced `UPDATE_END_FAILED`. Preserve the complete OTA result message and, when available, Serial output.
