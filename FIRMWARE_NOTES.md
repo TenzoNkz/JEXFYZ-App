@@ -1,5 +1,23 @@
 # 🚨 CURRENT AUTHORITATIVE HANDOFF — 2026-09-27
 
+## 2026-09-27 — V1.1 RADIO DIAGNOSTIC SOURCE STEP
+
+- Action: replaced only the initial boot-AP startup boundary in `firmware/JEXFYZ.ino`.
+- Reason: Core 3.3.7 official source shows `WiFi.softAP()` already performs `AP.begin()` and `AP.create()`; therefore the previous pre-sequence `WiFi.disconnect(true, false)` -> `WiFi.setHostname()` -> `WiFi.setAutoReconnect(false)` -> `WiFi.mode(WIFI_AP)` was not part of the official high-level AP startup path.
+- Official source verified at Arduino-ESP32 Core 3.3.7:
+  - `libraries/WiFi/src/WiFiAP.cpp`: `softAP(...)` returns `AP.begin() && AP.create(...)`.
+  - `libraries/WiFi/src/AP.cpp`: `AP.begin()` calls `WiFi.enableAP(true)` and waits for `ESP_NETIF_STARTED_BIT`.
+  - `libraries/WiFi/src/WiFiGeneric.cpp`: `enableAP(true)` calls `mode(currentMode | WIFI_MODE_AP)`; `getMode()` returns `WIFI_MODE_NULL` before low-level Wi-Fi initialization.
+  - `libraries/WiFi/src/STA.cpp`: `STA.disconnect()` directly calls `esp_wifi_disconnect()`; the startup diagnostic therefore removes that pre-init teardown call rather than relying on it.
+  - Official `WiFiAccessPoint.ino` uses the high-level `WiFi.softAP(ssid, password)` path directly.
+- Source change: `startLocalOtaAp()` now starts with official `WiFi.softAP(AP_SSID, AP_PASSWORD)`, then retains the JE X FYZ fixed `WiFi.softAPConfig(...)` and HTTP server setup. BLE, OTA engine, safety logic, PWM, NTC, and feature state were not intentionally changed.
+- Firmware version in source advanced from V1.0 to V1.1 because executable firmware behavior changed. V1.1 is a controlled diagnostic source revision, not a production release.
+- Repository commit: `379bf1fce91d0df84ab905e23a9820de2d20a9cb`.
+- Static source validation after the edit: PASS. Verified V1.1 marker, direct official `WiFi.softAP()`, no initial `WiFi.disconnect(true, false)`, no direct `WiFi.mode(WIFI_AP)` in the initial AP function, `softAPConfig` after SoftAP, and HTTP start after AP bring-up.
+- Build status: not run in this step. The active execution rule keeps firmware CI behind the explicit `Eksekusi Firmware` command, and this container has no `arduino-cli` toolchain installed for a local Core 3.3.7 compile.
+- Runtime/root-cause status: **still unproven**. The physical panic dump has not been captured; V1.1 must be tested from Serial boot markers to identify the exact last successful boundary.
+- Next boundary: compile V1.1 only through the explicit firmware-build action, then physically flash/test and preserve the exact Serial/Guru Meditation output. Do not add BLE or unrelated recovery changes before the radio boundary is proven.
+
 > Current-state override for the next JE X FYZ firmware sub-chat. Historical sections below are retained for chronology.
 
 ## 1. Mandatory workflow
