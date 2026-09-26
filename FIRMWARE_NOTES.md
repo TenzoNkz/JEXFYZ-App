@@ -393,3 +393,16 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Release `build-and-publish` job remains `in_progress`.
 - `Compile ESP32-C3 firmware` remains `in_progress`; artifact upload and public publication have not started yet.
 - No release success/failure is claimed at this checkpoint.
+
+## 2026-09-27 — DISCUSSION: REVIEW OF EXTERNAL GEMINI WIFI-OTA CLAIM
+- User supplied screenshots containing an external analysis claiming that the Wi-Fi OTA failure is caused by the project using only a low-level ESP-IDF driver test and lacking active networking/OTA implementation.
+- The claim is inconsistent with the actual JE X FYZ source and the diagnostic history:
+  - The raw ESP-IDF sketch was explicitly a **diagnostic-only boundary test**, not the production firmware and not the intended OTA implementation.
+  - Separate diagnostic sketches already tested the higher-level `WiFi.softAP()` path; the physical `WiFi.softAP()` test reached the call boundary and panicked before returning.
+  - The production `firmware/JEXFYZ.ino` contains active local OTA networking: `WebServer webServer(80)`, `WiFi.softAP()`, `webServer.on("/", ...)`, `webServer.on("/update", HTTP_POST, ...)`, `webServer.begin()`, and native `esp_ota_begin/write/end/set_boot_partition`.
+  - The production source also contains active online OTA networking through `WiFi.begin()`, `HTTPClient`, `WiFiClientSecure`, HTTPS configuration, and the online OTA state machine.
+- Therefore the screenshot's statement that the project "only" uses a low-level ESP-IDF driver test and has no active networking/OTA implementation is **factually incorrect** for the current repository.
+- The screenshot nevertheless points at a useful distinction: a raw driver test cannot itself demonstrate functional OTA. That is true, but it does not explain the earlier observed production/SoftAP panic because those were separate tests with higher-level Arduino Wi-Fi APIs.
+- Current diagnostic fact remains: the most precise standalone boundary recorded so far is `wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();` in the raw ESP-IDF diagnostic, while the higher-level Arduino boundary previously recorded is `WiFi.mode(WIFI_AP)` / `WiFi.softAP()`. These observations should not be conflated.
+- V1.2 has already been created to test one concrete difference found in the working HorizonCooler source: deferring the initial AP invocation from `setup()` into the first `loop()` iteration while keeping the official Arduino Wi-Fi APIs. Run #67 ArduinoDroid/Core 3.3.7 compile validation passed; physical runtime remains pending.
+- No production change is made by this discussion.
