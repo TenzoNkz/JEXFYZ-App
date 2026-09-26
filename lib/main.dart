@@ -5,7 +5,7 @@
   Core rules:
   - Horizon Cooler remains the visual/layout and Android foundation.
   - JE X FYZ V2.8 uses firmware-owned state and an atomic BLE sync/ready handshake.
-  - Firebase is READ-ONLY and only queried at firmware_update.
+  - Firebase App Check / Play Integrity remains enabled for app security. Firmware release metadata comes from the public GitHub manifest.
   - Phone battery temperature is sent every 1 second while BLE is connected.
   - Manual voltage commands use a 1-second app guard matching firmware.
   - Adaptive ON/OFF always relies on firmware to return the selector to 5V.
@@ -19,7 +19,6 @@ import 'dart:io';
 
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -36,8 +35,8 @@ const String headerName = 'JE X FYZ';
 const String serviceUuid = '6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001';
 const String rxUuid = '6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001';
 const String txUuid = '6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001';
-const String firebaseDbUrl =
-    'https://je-x-fyz-default-rtdb.asia-southeast1.firebasedatabase.app';
+const String firmwareManifestUrl =
+    'https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/manifest.json';
 const Duration voltageGuardDuration = Duration(seconds: 1);
 const int fanSpeedMin = 50;
 const int fanSpeedMax = 100;
@@ -316,7 +315,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   int tabIndex = 0;
 
-  DatabaseReference? firmwareDb;
   final TextEditingController rgbColorController =
       TextEditingController(text: '#FFFFFF');
   final TextEditingController color5Controller =
@@ -334,7 +332,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     } catch (e) {
       debugPrint('BLE operation queue: $e');
     }
-    _initFirebase();
   }
 
   @override
@@ -358,18 +355,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
     _ackWaiters.clear();
     super.dispose();
-  }
-
-  void _initFirebase() {
-    try {
-      if (Firebase.apps.isEmpty) return;
-      firmwareDb = FirebaseDatabase.instanceFor(
-        app: Firebase.app(),
-        databaseURL: firebaseDbUrl,
-      ).ref();
-    } catch (e) {
-      debugPrint('Firebase database init: $e');
-    }
   }
 
   Future<bool> _requestPermissions({bool showResult = false}) async {
@@ -1653,7 +1638,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       context: context,
       builder: (_) => FirmwareUpdateDialog(
         currentVersion: firmwareVersion,
-        dbRef: firmwareDb,
         onUpdate: _startCloudOta,
       ),
     );
@@ -3591,13 +3575,11 @@ class StaticScale extends StatelessWidget {
 
 class FirmwareUpdateDialog extends StatefulWidget {
   final String currentVersion;
-  final DatabaseReference? dbRef;
   final Future<void> Function(String ssid, String password, String url, String version) onUpdate;
 
   const FirmwareUpdateDialog({
     super.key,
     required this.currentVersion,
-    required this.dbRef,
     required this.onUpdate,
   });
 
@@ -3619,7 +3601,7 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
   void initState() {
     super.initState();
     _loadSavedCredentials();
-    _checkFirebase();
+    _checkGitHub();
   }
 
   @override
@@ -3644,7 +3626,7 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
     }
   }
 
-  Future<void> _checkFirebase() async {
+  Future<void> _checkGitHub() async {
     setState(() {
       status = 'CHECKING';
       latestVersion = '';
@@ -3652,32 +3634,52 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
       updateAvailable = false;
     });
 
-    if (widget.dbRef == null) {
-      if (mounted) setState(() => status = 'FAILED');
-      return;
-    }
-
+    final client = HttpClient();
     try {
-      final snapshot = await widget.dbRef!.child('firmware_update').get();
-      if (!snapshot.exists || snapshot.value is! Map) {
-        throw StateError('Missing firmware_update');
+      final request = await client.getUrl(Uri.parse(firmwareManifestUrl));
+      request.headers.set(HttpHeaders.acceptHeader, 'application/json');
+      request.headers.set(HttpHeaders.userAgentHeader, 'JE-Cooler');
+
+      final response = await request.close();
+      final body = await response.transform(utf8.decoder).join();
+
+      if (response.statusCode != HttpStatus.ok) {
+        throw StateError(
+          'GitHub manifest HTTP ' + response.statusCode.toString(),
+        );
       }
-      final data = Map<String, dynamic>.from(snapshot.value as Map);
+
+      final decoded = jsonDecode(body);
+      if (decoded is! Map) {
+        throw StateError('Invalid GitHub manifest');
+      }
+
+      final data = Map<String, dynamic>.from(decoded as Map);
       final version = data['version']?.toString().trim() ?? '';
       final url = data['url']?.toString().trim() ?? '';
-      if (parseFirmwareVersion(version) == null || !url.startsWith('https://')) {
-        throw StateError('Invalid firmware metadata');
+      final parsedUrl = Uri.tryParse(url);
+      final validUrl = parsedUrl != null &&
+          parsedUrl.scheme == 'https' &&
+          parsedUrl.host == 'raw.githubusercontent.com' &&
+          parsedUrl.path.startsWith('/TenzoNkz/JEXFYZ-Firmware/');
+
+      if (parseFirmwareVersion(version) == null || !validUrl) {
+        throw StateError('Invalid firmware manifest');
       }
+
       if (!mounted) return;
       setState(() {
         latestVersion = version;
         firmwareUrl = url;
-        updateAvailable = isNewerFirmwareVersion(version, widget.currentVersion);
+        updateAvailable =
+            isNewerFirmwareVersion(version, widget.currentVersion);
         status = updateAvailable ? 'UPDATE' : 'UP_TO_DATE';
       });
     } catch (e) {
-      debugPrint('Firebase OTA metadata: $e');
+      debugPrint('GitHub OTA manifest: ' + e.toString());
       if (mounted) setState(() => status = 'FAILED');
+    } finally {
+      client.close(force: true);
     }
   }
 

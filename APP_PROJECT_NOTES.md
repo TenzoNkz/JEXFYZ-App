@@ -2109,9 +2109,39 @@ For every future app change:
 - Do not silently discard prior decisions, fixes, constraints, or known limitations when starting a new sub-chat.
 - This memory is continuously expanded and corrected as the project evolves.
 
+## 2026-09-26 — GitHub firmware source + public OTA distribution
+
+### User-approved implementation
+- The authoritative firmware source is stored under `firmware/JEXFYZ.ino` in the private app repository.
+- The app no longer reads firmware release metadata from Firebase Realtime Database.
+- Firmware release metadata is consumed from the public GitHub manifest over HTTPS.
+- Firebase remains enabled for App Check / Play Integrity security. Daily usage telemetry is only a future idea and is not implemented here.
+- Existing BLE OTA commands remain unchanged.
+
+### App files changed
+- `lib/main.dart`
+- `pubspec.yaml`
+- `.github/workflows/build.yml`
+- `firmware/JEXFYZ.ino`
+- `.github/workflows/firmware-build.yml`
+- `firmware/FIRMWARE_PROJECT_NOTES.md`
+
+### Build / handoff
+- The firmware workflow auto-runs when `firmware/JEXFYZ.ino` changes and also supports manual dispatch.
+- It compiles ESP32-C3 firmware, uploads an artifact, then publishes the `.bin` and manifest to public `TenzoNkz/JEXFYZ-Firmware`.
+- Required GitHub Actions secret: `FIRMWARE_REPO_TOKEN` with Contents write access to the public firmware repository. Secret creation is not exposed through this integration.
+- A V3.2 baseline manifest has been created in the public repository using the existing binary endpoint; the automated workflow will replace that manifest after its first successful build.
+- No Flutter build was run as part of this code execution.
+
 # END OF APP PROJECT MEMORY
 
 ## CHANGELOG
+### 2026-09-26 — GitHub firmware source + public OTA distribution
+- Added private firmware source and automated firmware build/publish pipeline.
+- App firmware metadata moved from Firebase Realtime Database to the public GitHub manifest.
+- Firebase App Check / Play Integrity remains enabled; daily usage telemetry is not implemented.
+- First automated firmware publish requires the FIRMWARE_REPO_TOKEN secret.
+
 ### 2026-09-26 — Native foreground service for background BLE continuity
 
 - Added `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JeForegroundService.kt`.

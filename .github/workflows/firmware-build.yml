@@ -1,0 +1,167 @@
+name: JE X FYZ Firmware Build
+
+on:
+  push:
+    paths:
+      - "firmware/JEXFYZ.ino"
+      - ".github/workflows/firmware-build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: jexfyz-firmware-build
+  cancel-in-progress: false
+
+env:
+  ESP32_CORE_VERSION: "3.2.1"
+  WS2812FX_VERSION: "1.4.7"
+  ADAFRUIT_NEOPIXEL_VERSION: "1.12.5"
+  PUBLIC_FIRMWARE_REPO: "TenzoNkz/JEXFYZ-Firmware"
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout private app repository
+        uses: actions/checkout@v6
+
+      - name: Set up Arduino CLI
+        uses: arduino/setup-arduino-cli@v2
+
+      - name: Prepare Arduino package index
+        run: |
+          set -euo pipefail
+          arduino-cli version
+          arduino-cli config init --overwrite
+          arduino-cli config add board_manager.additional_urls \
+            https://espressif.github.io/arduino-esp32/package_esp32_index.json
+          arduino-cli core update-index
+
+      - name: Install ESP32-C3 core
+        run: |
+          set -euo pipefail
+          arduino-cli core install "esp32:esp32@${ESP32_CORE_VERSION}"
+          arduino-cli core list
+
+      - name: Install firmware libraries
+        run: |
+          set -euo pipefail
+          arduino-cli lib install "WS2812FX@${WS2812FX_VERSION}"
+          arduino-cli lib install "Adafruit NeoPixel@${ADAFRUIT_NEOPIXEL_VERSION}"
+          arduino-cli lib list
+
+      - name: Audit firmware source identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s firmware/JEXFYZ.ino
+          grep -Fq 'BLE_NAME[] = "JE X FYZ"' firmware/JEXFYZ.ino
+          grep -Fq 'SERVICE_UUID[] = "6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001"' firmware/JEXFYZ.ino
+          grep -Fq 'RX_UUID[]      = "6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001"' firmware/JEXFYZ.ino
+          grep -Fq 'TX_UUID[]      = "6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001"' firmware/JEXFYZ.ino
+          grep -Fq 'FW_VERSION[]' firmware/JEXFYZ.ino
+          echo "Firmware source audit passed."
+
+      - name: Extract firmware version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="$(python3 - <<'PY'
+          import re
+          from pathlib import Path
+          text = Path("firmware/JEXFYZ.ino").read_text(encoding="utf-8")
+          match = re.search(r'FW_VERSION\[\]\s*=\s*"([^"]+)"', text)
+          if not match:
+              raise SystemExit("FW_VERSION not found")
+          version = match.group(1).strip().upper()
+          if not re.fullmatch(r"V\d+(?:\.\d+)?", version):
+              raise SystemExit(f"Unsupported firmware version: {version}")
+          print(version)
+          PY
+          )"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Firmware version: $VERSION"
+
+      - name: Compile ESP32-C3 firmware
+        run: |
+          set -euo pipefail
+          rm -rf build/firmware
+          mkdir -p build/firmware
+          arduino-cli compile \
+            --fqbn esp32:esp32:esp32c3 \
+            --output-dir build/firmware \
+            firmware/JEXFYZ.ino
+          BIN="build/firmware/JEXFYZ.ino.bin"
+          test -s "$BIN"
+          VERSION="${{ steps.version.outputs.version }}"
+          RELEASE_BIN="build/firmware/JEXFYZ-${VERSION}.bin"
+          cp "$BIN" "$RELEASE_BIN"
+          ls -lh "$RELEASE_BIN"
+
+      - name: Upload firmware build artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: JEXFYZ-${{ steps.version.outputs.version }}
+          path: build/firmware/JEXFYZ-${{ steps.version.outputs.version }}.bin
+          if-no-files-found: error
+          compression-level: 0
+
+      - name: Publish firmware release to public repository
+        shell: bash
+        env:
+          FIRMWARE_REPO_TOKEN: ${{ secrets.FIRMWARE_REPO_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          if [ -z "${FIRMWARE_REPO_TOKEN:-}" ]; then
+            echo "Missing required GitHub secret: FIRMWARE_REPO_TOKEN"
+            echo "Create a fine-grained token with Contents: Read and write on ${PUBLIC_FIRMWARE_REPO}, then save it as this repository secret."
+            exit 1
+          fi
+
+          WORK="$(mktemp -d)"
+          trap 'rm -rf "$WORK"' EXIT
+
+          git clone --depth 1 \
+            "https://x-access-token:${FIRMWARE_REPO_TOKEN}@github.com/${PUBLIC_FIRMWARE_REPO}.git" \
+            "$WORK/repo"
+
+          cd "$WORK/repo"
+          mkdir -p releases
+
+          RELEASE_BIN="JEXFYZ-${VERSION}.bin"
+          cp "$GITHUB_WORKSPACE/build/firmware/$RELEASE_BIN" "releases/$RELEASE_BIN"
+
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          version = os.environ["VERSION"]
+          filename = f"JEXFYZ-{version}.bin"
+          manifest = {
+              "version": version,
+              "url": f"https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/releases/{filename}",
+          }
+          Path("manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+          PY
+
+          if [ -f "JEXFYZ.cpp.bin" ]; then
+            git rm -f "JEXFYZ.cpp.bin"
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add manifest.json releases/"$RELEASE_BIN"
+
+          if git diff --cached --quiet; then
+            echo "No firmware distribution changes to commit."
+            exit 0
+          fi
+
+          git commit -m "release firmware $VERSION"
+          git push origin main

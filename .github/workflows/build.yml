@@ -124,12 +124,11 @@ jobs:
               "6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001",
               "PHONE:BT=",
               "CLOUDOTA",
-              "FirebaseDatabase.instanceFor",
-              "firmware_update",
               "flutter_secure_storage",
               "assets/jexfyzcooler.png",
               "assets/jexfyzicon.png",
               "firebase_app_check",
+              "firmwareManifestUrl",
               "providerAndroid: const AndroidPlayIntegrityProvider()",
               "TamperScreen",
               "je_x_fyz/security",
@@ -150,8 +149,6 @@ jobs:
               if re.search(pattern, source):
                   raise SystemExit("JE X FYZ audit failed; legacy command found: " + pattern)
 
-          if re.search(r"firmwareDb[\s\S]*\.(set|update|push|removeValue)\s*\(", source):
-              raise SystemExit("JE X FYZ audit failed; Firebase runtime write path detected")
           if "setString('saved_pass'" in source or 'setString("saved_pass"' in source:
               raise SystemExit("JE X FYZ audit failed; Wi-Fi password stored outside secure storage")
 
@@ -159,6 +156,17 @@ jobs:
               raise SystemExit("JE X FYZ security audit failed; R8/resource shrinking is disabled")
           if "OFFICIAL_SIGNING_CERT_B64" not in gradle:
               raise SystemExit("JE X FYZ security audit failed; production signing identity embedding is missing")
+
+          if not Path("firmware/JEXFYZ.ino").is_file():
+              raise SystemExit("JE X FYZ audit failed; firmware/JEXFYZ.ino is missing")
+
+          for forbidden in [
+              "FirebaseDatabase.instanceFor",
+              "firebase_database",
+              "firmware_update",
+          ]:
+              if forbidden in source or forbidden in pubspec:
+                  raise SystemExit("JE X FYZ audit failed; legacy Firebase firmware metadata reference found: " + forbidden)
 
           for asset in [
               Path("assets/jexfyzcooler.png"),
