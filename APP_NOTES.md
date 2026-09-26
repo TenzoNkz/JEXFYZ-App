@@ -2498,3 +2498,10 @@ The project process is now explicitly two-phase:
 - App BLE/UI remains synchronized with firmware V3.4 and LED mode IDs 1..8.
 - App header/source protocol documentation was updated from V3.2 to V3.4.
 - Firmware CI publication secret was renamed to `TENZO_FULL_ACCESS`; this is a workflow credential reference only and no token value is stored in project files.
+
+
+## CODE #2 — V3.4 FIRMWARE RELEASE VERIFIED
+
+- Firmware V3.4 release completed successfully after the CI publish secret was corrected to `TENZO_FULL_ACCESS`.
+- App BLE contract remains P1 with unchanged JE X FYZ service/RX/TX UUIDs.
+- App LED mode synchronization remains 1..8 for the V3.4 custom LED engine.
