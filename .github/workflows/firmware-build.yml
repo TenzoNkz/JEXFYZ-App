@@ -52,11 +52,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          VERSION="$"+"{VERSION}"
-          VALUE_FILE="JEXFYZ-${VERSION}@@-ArduinoDroid-Temporary.ino"
-          cp firmware/JEXFYZ.ino "$"+"{VALUE_FILE}"
-          sed -i '1i #define JEXFYZ_LEGACY_OTA 1' "$"+"{VALUE_FILE}"
-          sed -i             -e 's/#include <NetworkClientSecure.h>/#include <WiFiClientSecure.h>/'             -e 's/NetworkClientSecure cloudClient;/WiFiClientSecure cloudClient;/'             -e 's/cloudClient.useBuiltinCACertBundle();/cloudClient.setInsecure();/'             "$"+"{VALUE_FILE}"
+          VERSION="${VERSION}"
+          VALUE_FILE="JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
+          cp firmware/JEXFYZ.ino "${VALUE_FILE}"
+          sed -i '1i #define JEXFYZ_LEGACY_OTA 1' "${VALUE_FILE}"
+          sed -i \
+            -e 's/#include <NetworkClientSecure.h>/#include <WiFiClientSecure.h>/'             -e 's/NetworkClientSecure cloudClient;/WiFiClientSecure cloudClient;/'             -e 's/cloudClient.useBuiltinCACertBundle();/cloudClient.setInsecure();/'             "${VALUE_FILE}"
           grep -Fq '#define JEXFYZ_LEGACY_OTA 1' "$"+"{VALUE_FILE}"
           grep -Fq '#include <WiFiClientSecure.h>' "$"+"{VALUE_FILE}"
           grep -Fq 'WiFiClientSecure cloudClient;' "$"+"{VALUE_FILE}"
@@ -68,7 +69,7 @@ jobs:
           set -euo pipefail
           rm -rf build/JEXFYZ-ArduinoDroid build/arduinodroid
           mkdir -p build/JEXFYZ-ArduinoDroid build/arduinodroid
-          cp "JEXFYZ-${VERSION}@@-ArduinoDroid-Temporary.ino" build/JEXFYZ-ArduinoDroid/JEXFYZ-ArduinoDroid.ino
+          cp "JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino" build/JEXFYZ-ArduinoDroid/JEXFYZ-ArduinoDroid.ino
           arduino-cli compile             --fqbn esp32:esp32:esp32c3:PartitionScheme=no_fs             --output-dir build/arduinodroid             build/JEXFYZ-ArduinoDroid
           test -s build/arduinodroid/JEXFYZ-ArduinoDroid.ino.bin
           echo "ArduinoDroid/Core 3.3.7 temporary source compile: PASS"

@@ -1485,6 +1485,11 @@ The project process is now explicitly two-phase:
 - Moved ArduinoDroid/Core 3.3.7 temporary-source compilation into a dedicated validation job/runner.
 - The release/publish job now waits for the dedicated validation job to pass.
 - The validation job regenerates the same ArduinoDroid temporary-source transformation and compiles it with Core 3.3.7 before publication.
+## 2026-09-26 — V4.8 BUILD #45 FAILURE / FINAL WORKFLOW VARIABLE FIX
+- Run #45 failed before ArduinoDroid compilation because the isolated validation job contained malformed literal JavaScript-generated strings rather than shell variables.
+- Corrected the validation job to use proper Bash ${VERSION}/${VALUE_FILE} expansion and the correct V4.8 audit version.
+- Run #44 remains recorded separately as the runner-disk exhaustion failure; the validation job remains isolated on its own runner.
+
 # END OF FIRMWARE ENGINEERING MEMORY
 
 
