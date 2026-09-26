@@ -3,7 +3,7 @@
 ## 1. SOURCE AUTHORITY AND CURRENT STATE
 
 - Authoritative firmware source: `firmware/JEXFYZ.ino`.
-- Current firmware version: `V3.3`.
+- Current firmware version: `V3.4`.
 - Protocol version: `P1`.
 - BLE device name: `JE X FYZ`.
 - Target hardware: ESP32-C3 Super Mini / ESP32-C3 Dev Module class.
@@ -1192,7 +1192,7 @@ The project process is now explicitly two-phase:
 - `OneButton` now handles the TTP223 input on GPIO1.
 - Touch behavior remains: single click 5V -> 9V -> 12V; double click RGB ON/OFF; long press Fan + Peltier ON/OFF; debounce 50 ms; double-click window 500 ms; long press threshold 5 s.
 - Existing OTA, BLE P1 protocol, safety, cooling interlocks, voltage dead-time, NTC, persistence, and radio ownership behavior were not intentionally changed by this refactor.
-- Firmware CI dependency setup now installs `OneButton 2.6.1` and `Adafruit NeoPixel 1.12.5`; WS2812FX is no longer installed.
+- Firmware CI dependency setup installs `OneButton 2.6.1` and `Adafruit NeoPixel 1.12.5`; WS2812FX is no longer installed.
 - No App Build was triggered by this Code execution.
 - `Eksekusi Firmware` is the separate build/publish step for V3.3.
 
@@ -1212,3 +1212,10 @@ The project process is now explicitly two-phase:
 - GitHub Actions artifact `JEXFYZ-V3.4` was successfully finalized as artifact ID `10896420002`; uploaded archive contains `JEXFYZ-V3.4.bin`.
 - Public repository publication did not complete because the workflow runtime received an empty `FIRMWARE_REPO_TOKEN`. No public-repository file or manifest change is claimed from this run.
 - The source/build itself is verified successful. Cross-repository publication remains pending until `FIRMWARE_REPO_TOKEN` is available to the workflow, after which the same V3.4 artifact/rebuild can be published to `TenzoNkz/JEXFYZ-Firmware`.
+
+
+## CURRENT V3.4 PUBLISH CONFIGURATION
+
+- Firmware Build publish step now reads the repository secret `TENZO_FULL_ACCESS` for access to `TenzoNkz/JEXFYZ-Firmware`.
+- The workflow no longer references the legacy secret name `FIRMWARE_REPO_TOKEN`.
+- `Eksekusi Firmware` has triggered a fresh V3.4 build after this secret-name correction; publication is considered complete only after the Actions publish step succeeds and the public repository is independently verified to contain `JEXFYZ-V3.4.bin` and a V3.4 `manifest.json`.
