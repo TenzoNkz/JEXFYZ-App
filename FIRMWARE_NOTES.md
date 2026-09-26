@@ -553,3 +553,13 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - No raw ESP-IDF Wi-Fi/OTA lifecycle was reintroduced. The fixes stay at Arduino/application boundaries and preserve the existing OTA state machine, diagnostics, safety, and radio handoff.
 - GPIO mapping remains GPIO5 = FAN and GPIO6 = PELTIER.
 - V1.3 is still not release-final/public. A new Core 3.3.7 CI run is required after this fix.
+
+## 2026-09-27 — RUN #69 FINAL CI / ARTIFACT / PUBLIC V1.3 VERIFIED
+- Run #69 (`36274477621`) completed successfully on the pinned Arduino-ESP32 Core 3.3.7 toolchain.
+- `validate-arduinodroid`: PASS, including the real ArduinoDroid temporary-source compile.
+- `build-and-publish`: PASS, including source identity audit, OTA protected-source audit, ESP32-C3 release compile, firmware artifact upload, ArduinoDroid source artifact upload, and public firmware publication.
+- Release firmware artifact: `JEXFYZ-V1.3`, 1,465,728 bytes, not expired at verification time.
+- ArduinoDroid source artifact: `JEXFYZ-V1.3-ArduinoDroid-Source`, 104,150 bytes, not expired at verification time.
+- Final ArduinoDroid `.ino` extracted from the CI source artifact was verified to contain FW_VERSION V1.3, the Core 3.3.7 reset-reason compatibility value `UNAVAILABLE_CORE_3_3_7`, the official Update.write() mutable-buffer adapter, the official SoftAP config-before-start order, and no audited legacy/raw lifecycle markers.
+- Public repository `TenzoNkz/JEXFYZ-Firmware` was verified to contain `JEXFYZ-V1.3.bin` and a manifest pointing to `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V1.3.bin`.
+- This is the first verified V1.3 CI/public-release completion after the Core 3.3.7 compile fixes. Physical ESP32-C3 flashing/runtime validation is still a separate hardware step and has not been claimed here.
