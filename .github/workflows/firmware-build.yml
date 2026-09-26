@@ -3,7 +3,6 @@ name: Firmware Build
 on:
   push:
     paths:
-      - "firmware/JEXFYZ.ino"
       - ".github/FIRMWARE_BUILD_TRIGGER"
 
 permissions:
