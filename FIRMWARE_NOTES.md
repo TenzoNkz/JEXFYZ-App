@@ -352,3 +352,8 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - The ArduinoDroid temporary source preparation also completed successfully.
 - The `Compile ArduinoDroid temporary source` step is currently `in_progress`.
 - No final compile conclusion is claimed yet.
+
+## 2026-09-27 — EXECUTION STATUS UPDATE: RUN #67 ARDUINODROID COMPILE ACTIVE
+- The pinned Core 3.3.7/toolchain/library setup is complete and the ArduinoDroid temporary source preparation passed.
+- The actual ArduinoDroid compile step is still active; no compile success/failure is claimed yet.
+- The source under test remains commit `bb4b271c2ef6c21bb779b65008ab24c6f98cd080` with only the Horizon-style setup→loop Wi-Fi deferral change.
