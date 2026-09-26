@@ -14,13 +14,12 @@
 #include <BLEServer.h>
 #include <BLEUtils.h>
 #include <BLE2902.h>
-#include <BLESecurity.h>
 
 #include "esp_system.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
-static constexpr char FW_VERSION[] = "V3.5";
+static constexpr char FW_VERSION[] = "V3.6";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -169,7 +168,6 @@ OneButton touchButton(PIN_TOUCH, false, false);
 BLEServer* bleServer = nullptr;
 BLECharacteristic* rxCharacteristic = nullptr;
 BLECharacteristic* txCharacteristic = nullptr;
-BLESecurity* bleSecurity = nullptr;
 volatile bool bleClientConnected = false;
 String bleTxQueue[BLE_TX_QUEUE_SIZE];
 size_t bleTxHead = 0;
@@ -1626,19 +1624,24 @@ class RxCallbacks : public BLECharacteristicCallbacks {
   }
 };
 
-static void stopBleForBootWiFiClient() {
+static void stopBleRadio() {
   bleQueueResetPending = true;
   bleClientConnected = false;
+  bleSyncPending = false;
+  bleCommandGateOpen = false;
 
   if (BLEDevice::getInitialized()) {
-    BLEDevice::deinit(false);
+    BLEDevice::deinit(true);
+    yield();
   }
 
   bleServer = nullptr;
   rxCharacteristic = nullptr;
   txCharacteristic = nullptr;
-  bleSyncPending = false;
-  bleCommandGateOpen = false;
+}
+
+static void stopBleForBootWiFiClient() {
+  stopBleRadio();
 }
 
 static void startBle() {
@@ -1651,32 +1654,14 @@ static void startBle() {
   BLEDevice::init(BLE_NAME);
   BLEDevice::setMTU(247);
 
-  if (bleSecurity == nullptr) {
-    bleSecurity = new BLESecurity();
-  }
-
-  bleSecurity->setAuthenticationMode(ESP_LE_AUTH_REQ_SC_BOND);
-
-  bleSecurity->setCapability(ESP_IO_CAP_NONE);
-  bleSecurity->setKeySize(16);
-  bleSecurity->setInitEncryptionKey(ESP_BLE_ENC_KEY_MASK | ESP_BLE_ID_KEY_MASK);
-  bleSecurity->setRespEncryptionKey(ESP_BLE_ENC_KEY_MASK | ESP_BLE_ID_KEY_MASK);
 
   bleServer = BLEDevice::createServer();
   bleServer->setCallbacks(new ServerCallbacks());
 
   BLEService* service = bleServer->createService(SERVICE_UUID);
 
-  uint32_t rxProperties = BLECharacteristic::PROPERTY_WRITE;
-#if defined(CONFIG_NIMBLE_ENABLED)
-  rxProperties |= BLECharacteristic::PROPERTY_WRITE_ENC;
-#endif
-
+  const uint32_t rxProperties = BLECharacteristic::PROPERTY_WRITE;
   rxCharacteristic = service->createCharacteristic(RX_UUID, rxProperties);
-
-#if defined(CONFIG_BLUEDROID_ENABLED)
-  rxCharacteristic->setAccessPermissions(ESP_GATT_PERM_WRITE_ENCRYPTED);
-#endif
 
   rxCharacteristic->setCallbacks(new RxCallbacks());
 
@@ -1742,6 +1727,7 @@ static void applyOtaSafeOutputs() {
 static void failOnlineOta(const char* reason) {
   otaRestartAt = 0;
   if (cloudHttp.connected()) cloudHttp.end();
+  cloudClient.stop();
   Update.abort();
 
   saveOtaResult(reason);
@@ -1787,14 +1773,7 @@ static void startOnlineOta() {
 
   clearBleTxQueue();
   clearBleRxQueue();
-  bleClientConnected = false;
-  bleCommandGateOpen = false;
-  if (BLEDevice::getInitialized()) {
-    BLEDevice::deinit(false);
-  }
-  bleServer = nullptr;
-  rxCharacteristic = nullptr;
-  txCharacteristic = nullptr;
+  stopBleRadio();
 
   WiFi.disconnect(true, false);
   WiFi.softAPdisconnect(true);
@@ -1828,6 +1807,8 @@ static void processOnlineOta() {
       cloudPhaseStartedAt = millis();
       cloudLastDataAt = millis();
 
+      cloudHttp.end();
+      cloudClient.stop();
       cloudClient.setCACert(GITHUB_ROOT_CA);
       cloudClient.setTimeout(12000);
       cloudHttp.setReuse(false);
@@ -1942,6 +1923,13 @@ static void processOnlineOta() {
 
   if (otaState == OtaState::CLOUD_APPLYING) {
     cloudHttp.end();
+    cloudClient.stop();
+
+    if (cloudExpectedSize > 0 &&
+        cloudBytesReceived != static_cast<uint32_t>(cloudExpectedSize)) {
+      failOnlineOta("DOWNLOAD_INCOMPLETE");
+      return;
+    }
 
     const bool updateOk = Update.end(false);
     if (!updateOk || !Update.isFinished()) {
