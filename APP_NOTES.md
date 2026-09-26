@@ -2133,6 +2133,38 @@ For every future app change:
 - A V3.2 baseline manifest has been created in the public repository using the existing binary endpoint; the automated workflow will replace that manifest after its first successful build.
 - No Flutter build was run as part of this code execution.
 
+
+## 2026-09-26 — Unified build execution trigger architecture
+
+### User-approved execution model
+- Removed manual `workflow_dispatch` triggers from both `App Build` and `Firmware Build`.
+- `App Build` now starts only when `.github/APP_BUILD_TRIGGER` changes.
+- The Action / Build sub-chat will update the app trigger file only when the user explicitly says to build the app.
+- `Firmware Build` starts automatically when `firmware/JEXFYZ.ino` changes, even when the same commit also contains unrelated files.
+- The Code sub-chat can also explicitly execute the firmware pipeline by updating `.github/FIRMWARE_BUILD_TRIGGER`, without changing firmware source or version.
+- No workflow itself is included in the push-path trigger list, so editing workflow configuration does not recursively start a build.
+
+### Workflow files
+- `.github/workflows/build.yml`: push-only trigger on `.github/APP_BUILD_TRIGGER`; no manual dispatch.
+- `.github/workflows/firmware-build.yml`: push-only triggers on `firmware/JEXFYZ.ino` and `.github/FIRMWARE_BUILD_TRIGGER`; no manual dispatch.
+- Added `.github/APP_BUILD_TRIGGER`.
+- Kept `.github/FIRMWARE_BUILD_TRIGGER`.
+
+### Firmware distribution layout
+- Public firmware repository: `TenzoNkz/JEXFYZ-Firmware`.
+- Release binary is now intended at the public repository root as `JEXFYZ-Vx.x.bin`.
+- The publish workflow removes legacy `JEXFYZ.cpp.bin` and old root `JEXFYZ-V*.bin` files, then writes the current versioned binary to the root.
+- `manifest.json` now points to the root raw URL:
+  `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-Vx.x.bin`.
+- The `releases/` directory is no longer part of the distribution workflow.
+
+### Execution verification
+- Repository workflow configuration was verified after commit.
+- Setup of the new trigger files inherently started App Build Run #96 and Firmware Build Run #9; these runs were not a source-code feature build request.
+- Run #96: in progress at the time of this note update.
+- Run #9: in progress at the time of this note update.
+- Firmware publishing remains dependent on the existing `FIRMWARE_REPO_TOKEN` Actions secret; the previous Run #8 failed only at that publish step because the secret was unavailable.
+
 # END OF APP PROJECT MEMORY
 
 ## CHANGELOG
