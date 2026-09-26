@@ -1283,3 +1283,10 @@ The project process is now explicitly two-phase:
 - No GPIO, NTC, cooling, Adaptive, voltage, RGB, touch, BLE UUID, or P1 contract changes were introduced by this V3.7 OTA patch.
 - This is a source/configuration execution only. No Firmware Build was started by this change.
 
+
+## 2026-09-26 — V3.7 OTA FINALIZE CORRECTION
+
+- Corrected the V3.7 OTA finalization check so `Update.isFinished()` is evaluated before `Update.end(false)`.
+- The source no longer checks `Update.isFinished()` after a successful `Update.end()`, because Arduino-ESP32 3.2.1 resets the updater state during successful finalization.
+- Local and online OTA now use `Update.end(false)` after confirming the full image has been received.
+- This correction is required before treating the V3.7 package as a valid OTA release.
