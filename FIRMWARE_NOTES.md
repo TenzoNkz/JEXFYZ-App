@@ -387,3 +387,9 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Attempted to read the active Run #67 job log directly through the GitHub connector's fetch action.
 - The connector rejected the job-log endpoint as an unsupported URL for this action; therefore no compile-log interpretation was made from that attempt.
 - Run #67 remains the authoritative CI source; continue using its job/step status and final artifacts.
+
+## 2026-09-27 — EXECUTION STATUS CHECKPOINT: RUN #67 RELEASE COMPILE STILL ACTIVE
+- ArduinoDroid validation remains **PASS**.
+- Release `build-and-publish` job remains `in_progress`.
+- `Compile ESP32-C3 firmware` remains `in_progress`; artifact upload and public publication have not started yet.
+- No release success/failure is claimed at this checkpoint.
