@@ -2439,3 +2439,44 @@ The project process is now explicitly two-phase:
 - This note's end marker is kept at the actual end of the document so appended changelog entries remain part of the active memory file.
 
 # END OF APP PROJECT MEMORY
+
+
+## 2026-09-26 — Code #2: firmware source cleanup + App BLE contract synchronization
+
+### User request
+- Clean and organize the firmware source.
+- Keep the firmware source compact and avoid accidental code bloat.
+- Synchronize the App and firmware so their BLE connection/protocol remain aligned.
+- Update the project memory whenever a project file changes.
+
+### Files changed
+- `firmware/JEXFYZ.ino`
+- `lib/main.dart`
+- `FIRMWARE_NOTES.md`
+- `APP_NOTES.md`
+
+### Firmware source cleanup
+- The comment-free firmware source was structurally cleaned by removing excessive blank-line runs and trailing whitespace.
+- No executable firmware logic was intentionally changed.
+- Source size reduced from 80,236 to 79,451 characters and from 3,198 to 2,945 lines.
+- This reduction is formatting/whitespace only; no required OTA certificate, protocol handler, safety state, or hardware function was removed.
+
+### App ↔ firmware synchronization
+- App BLE identity matches firmware:
+  - device name: `JE X FYZ`
+  - service UUID: `6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001`
+  - RX UUID: `6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001`
+  - TX UUID: `6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001`
+  - protocol: `P1`
+- Verified command compatibility between App and firmware for session/SYNC, OTA metadata, RGB, LED mode/brightness/colors, hotside and battery settings, voltage, Fan, Peltier, Adaptive, Fan Speed, reset groups, and `PHONE:BT=`.
+- Verified the App consumes the telemetry keys emitted by the firmware full-sync/delta path.
+- Updated the stale App source documentation from V2.8 to current `V3.2 / P1`.
+
+### Execution separation
+- This was a plain Code `Eksekusi`.
+- No App Build was triggered.
+- No Firmware Build was triggered.
+- `.github/APP_BUILD_TRIGGER` and `.github/FIRMWARE_BUILD_TRIGGER` were not modified.
+- A separate `Eksekusi Firmware` remains required to compile/publish the firmware `.bin`.
+
+# END OF APP PROJECT MEMORY
