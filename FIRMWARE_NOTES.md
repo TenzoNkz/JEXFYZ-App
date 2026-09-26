@@ -125,6 +125,17 @@
 - Production `firmware/JEXFYZ.ino` was not modified.
 - Next boundary: flash the Network.begin-only diagnostic and preserve the complete Serial output. The key result is whether `STEP 2: Network.begin() RESULT = OK` is reached or the board panics inside `Network.begin()`.
 
+## 2026-09-27 — RUNTIME RESULT: NETWORK BEGIN TEST ALSO NO SSID
+
+- User reports that the new `JEXFYZ-Network-Begin-Test.ino` also does not result in a visible Wi-Fi SSID.
+- No Serial screenshot/output for the Network.begin-only sketch was provided yet, so the exact failure boundary remains unclassified.
+- Official Core 3.3.7 source inspection reached `NetworkManager::begin()`: it calls `esp_netif_init()` once and then `initNetworkEvents()`; `initNetworkEvents()` creates the Arduino event group/queue, calls `esp_event_loop_create_default()`, and creates the Arduino network-event task.
+- This means the next evidence needed is not another higher-level Wi-Fi sketch. We need to know whether `Network.begin()` itself returns, returns false, or panics inside `esp_netif_init()` / event initialization.
+- Diagnostic rule: do not infer hardware failure or change the production firmware from the absence of an SSID alone.
+- The previous test already proved the actual Arduino-ESP32 Core is 3.3.7 and the target reports ESP32-C3 revision 4.
+- No executable source was changed in this discussion and no build was executed.
+- Next boundary: obtain the complete Serial output from `JEXFYZ-Network-Begin-Test.ino`, especially whether `STEP 2: Network.begin() RESULT = OK` appears. Based on that evidence, choose exactly one lower-level diagnostic boundary.
+
 > Current-state override for the next JE X FYZ firmware sub-chat. Historical sections below are retained for chronology.
 
 ## 1. Mandatory workflow
