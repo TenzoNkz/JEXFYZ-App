@@ -71,3 +71,12 @@
 - Commit: `3affa13a97d63eac1777ec2c6315fed9f8720a48`.
 - Version remains V3.2 for this build-fix cycle.
 - A new Firmware Build run should auto-trigger from the firmware source update and is pending verification through publish success.
+
+
+## 2026-09-26 — Run #7 firmware size / partition fix
+
+- Run #7 failed at link stage because the firmware image was 1,826,576 bytes (139%) and exceeded the default 1,310,720-byte app partition.
+- Updated `.github/workflows/firmware-build.yml` to compile `esp32:esp32:esp32c3:PartitionScheme=min_spiffs`.
+- The `min_spiffs` partition keeps two OTA app slots and gives each slot 0x1E0000 bytes, sufficient for the current image while preserving OTA.
+- No firmware source logic was changed for this fix.
+- New Firmware Build run is expected automatically from the workflow update and must be followed until the full publish pipeline succeeds.
