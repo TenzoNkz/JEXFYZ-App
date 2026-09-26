@@ -406,3 +406,11 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Current diagnostic fact remains: the most precise standalone boundary recorded so far is `wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();` in the raw ESP-IDF diagnostic, while the higher-level Arduino boundary previously recorded is `WiFi.mode(WIFI_AP)` / `WiFi.softAP()`. These observations should not be conflated.
 - V1.2 has already been created to test one concrete difference found in the working HorizonCooler source: deferring the initial AP invocation from `setup()` into the first `loop()` iteration while keeping the official Arduino Wi-Fi APIs. Run #67 ArduinoDroid/Core 3.3.7 compile validation passed; physical runtime remains pending.
 - No production change is made by this discussion.
+
+## 2026-09-27 — USER MANDATE: ARDUINO STANDARD ONLY FOR NEXT FIRMWARE WORK
+- User explicitly requires the next firmware implementation/test work to use the **Arduino-standard API/examples**, not custom/invented low-level code.
+- For Wi-Fi/OTA, prefer the exact official Arduino-ESP32 Core 3.3.7 public APIs and official examples already verified (for example `WiFi.mode()`, `WiFi.softAP()`, `WebServer`, `Update` where appropriate), following the official lifecycle rather than reproducing internal ESP-IDF initialization.
+- Do **not** create homemade wrappers, replacement lifecycle functions, guessed API names, or raw `WIFI_INIT_CONFIG_DEFAULT()` / `esp_wifi_*` startup code for the next production/test path unless the user explicitly requests a low-level diagnostic.
+- "Arduino Standard" means: use the implementation style demonstrated by the official Arduino-ESP32 examples/source for the exact pinned Core version; project-specific code may orchestrate those official APIs only where the JE X FYZ requirements require it.
+- This mandate supersedes the recent raw ESP-IDF diagnostic approach for the next implementation step. The raw diagnostic remains historical evidence only.
+- No executable source changed in this discussion.
