@@ -2347,7 +2347,7 @@ static bool downloadOnlineOtaResumable() {
         setOtaDiagnosticStage("ONLINE_RANGE_RESUME");
 // Core 3.3.7 compatibility: restart the OTA transaction from
         // byte zero when a range stream stalls. The next range request then
-        // rebuilds the image deterministically without esp_ota_resume().
+        // rebuilds the image deterministically without the resume API.
         (void)resumeOffset;
         otaErr = esp_ota_begin(targetPartition, totalSize, &otaHandle);
         offset = 0;
