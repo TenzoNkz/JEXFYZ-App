@@ -1499,6 +1499,10 @@ The project process is now explicitly two-phase:
 - Run #48 successfully installed Core 3.3.7 but failed in the ArduinoDroid source preparation checks because four grep commands still contained the malformed literal `"$"+"{VALUE_FILE}"`.
 - Corrected those checks to standard Bash `${VALUE_FILE}` expansion.
 - No firmware source or OTA logic changed in this correction.
+## 2026-09-26 — V4.8 BUILD #49 FAILURE / TEMP PREP QUOTE FIX
+- Run #49 reached Core 3.3.7 and failed only in the temporary-source preparation grep checks because the generated YAML still contained doubled quotes around ${VALUE_FILE}.
+- Corrected the four grep checks to use normal Bash quoting.
+- No firmware source/OTA behavior changed.
 # END OF FIRMWARE ENGINEERING MEMORY
 
 

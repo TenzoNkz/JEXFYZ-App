@@ -68,10 +68,10 @@ jobs:
           sed -i \
             -e 's/#include <NetworkClientSecure.h>/#include <WiFiClientSecure.h>/'             -e 's/NetworkClientSecure cloudClient;/WiFiClientSecure cloudClient;/'             -e 's/cloudClient.useBuiltinCACertBundle();/cloudClient.setInsecure();/'             "${VALUE_FILE}"
           grep -Fq '#define JEXFYZ_LEGACY_OTA 1' "${VALUE_FILE}"
-          grep -Fq '#include <WiFiClientSecure.h>' ""${VALUE_FILE}"
-          grep -Fq 'WiFiClientSecure cloudClient;' ""${VALUE_FILE}"
-          grep -Fq 'cloudClient.setInsecure();' ""${VALUE_FILE}"
-          ! grep -Fq 'strtoul(' ""${VALUE_FILE}"
+          grep -Fq '#include <WiFiClientSecure.h>' "${VALUE_FILE}"
+          grep -Fq 'WiFiClientSecure cloudClient;' "${VALUE_FILE}"
+          grep -Fq 'cloudClient.setInsecure();' "${VALUE_FILE}"
+          ! grep -Fq 'strtoul(' "${VALUE_FILE}"
 
       - name: Compile ArduinoDroid temporary source
         run: |
