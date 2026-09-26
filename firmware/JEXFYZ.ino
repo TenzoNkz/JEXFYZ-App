@@ -20,7 +20,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
-static constexpr char FW_VERSION[] = "V4.10";
+static constexpr char FW_VERSION[] = "V4.11";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -1862,7 +1862,26 @@ static void startBle() {
   WiFi.mode(WIFI_OFF);
   yield();
 
-  if (BLEDevice::getInitialized()) return;
+  if (BLEDevice::getInitialized()) {
+    if (bleServer != nullptr &&
+        rxCharacteristic != nullptr &&
+        txCharacteristic != nullptr) {
+      BLEDevice::startAdvertising();
+      bleStartPending = false;
+      bleStartAttempts = 0;
+      bleStartRetryAt = 0;
+      Serial.println("BLE: READY/ADVERTISING");
+      return;
+    }
+
+    // Recover from a stale/partial controller state instead of treating
+    // getInitialized() as a complete BLE startup.
+    BLEDevice::deinit(true);
+    yield();
+    bleServer = nullptr;
+    rxCharacteristic = nullptr;
+    txCharacteristic = nullptr;
+  }
 
   Serial.println("BLE: START");
 
@@ -1951,9 +1970,17 @@ static void startBle() {
 static void serviceBleStartRecovery() {
   if (otaActive || bootApActive) return;
 
-  if (!BLEDevice::getInitialized() || bleStartPending) {
-    if (millis() >= bleStartRetryAt) startBle();
+  if (BLEDevice::getInitialized() &&
+      bleServer != nullptr &&
+      rxCharacteristic != nullptr &&
+      txCharacteristic != nullptr) {
+    return;
   }
+
+  if (millis() < bleStartRetryAt) return;
+
+  waitForWiFiOff();
+  startBle();
 }
 
 // ============================================================================
@@ -2823,18 +2850,16 @@ static void startLocalOtaAp() {
 
   for (uint8_t attempt = 0; attempt < 2; ++attempt) {
     WiFi.disconnect(true, false);
-    WiFi.softAPdisconnect(true);
-    WiFi.mode(WIFI_OFF);
-    yield();
-
     WiFi.setHostname("JE-X-FYZ");
     WiFi.setAutoReconnect(false);
     WiFi.mode(WIFI_AP);
+    yield();
 
     const bool configOk = WiFi.softAPConfig(AP_IP, AP_GATEWAY, AP_SUBNET);
-    const bool apOk = configOk && WiFi.softAP(AP_SSID, AP_PASSWORD);
+    const bool apRequested = configOk && WiFi.softAP(AP_SSID, AP_PASSWORD);
+    const bool apRunning = apRequested && WiFi.getMode() == WIFI_AP;
 
-    if (apOk) {
+    if (apRunning) {
       bootApStartedAt = millis();
       Serial.print("WIFI AP: READY SSID=");
       Serial.print(AP_SSID);
@@ -3637,6 +3662,8 @@ void setup() {
   otaDiagnosticLastPublishedProgress = 255;
 
   Serial.begin(115200);
+  Serial.println();
+  Serial.println("JE X FYZ: BOOT V4.11 / CORE 3.3.7 RADIO BASELINE");
 
   // Establish all power-control outputs OFF before starting OTA service.
   pinMode(PIN_12V, OUTPUT);
