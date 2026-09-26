@@ -1202,3 +1202,13 @@ The project process is now explicitly two-phase:
 - Run #11 compiled the new OneButton and Adafruit NeoPixel libraries successfully through dependency installation and source identity audit.
 - Run #11 failed only in compilation because the custom LED block referenced `currentVoltageColor()` and `hardwareBrightness()` before their definitions; the helpers were restored in the correct order.
 - The correction is included in firmware V3.4. A new `Eksekusi Firmware` build is required and will be verified through compile, artifact, and public-repository publication.
+
+
+## FIRMWARE BUILD #12 — V3.4 BUILD VERIFIED / PUBLISH BLOCKED
+
+- Run #12: `Firmware Build` on commit `02d8a756eeb8234a463e35dc3f5bdae354bb0ce5`.
+- ESP32-C3 compile completed successfully with ESP32 Arduino core 3.2.1, OneButton 2.6.1, and Adafruit NeoPixel 1.12.5.
+- Output: `JEXFYZ-V3.4.bin`, 1.8 MB; sketch usage 1,811,310 bytes / 1,966,080 bytes (92%).
+- GitHub Actions artifact `JEXFYZ-V3.4` was successfully finalized as artifact ID `10896420002`; uploaded archive contains `JEXFYZ-V3.4.bin`.
+- Public repository publication did not complete because the workflow runtime received an empty `FIRMWARE_REPO_TOKEN`. No public-repository file or manifest change is claimed from this run.
+- The source/build itself is verified successful. Cross-repository publication remains pending until `FIRMWARE_REPO_TOKEN` is available to the workflow, after which the same V3.4 artifact/rebuild can be published to `TenzoNkz/JEXFYZ-Firmware`.
