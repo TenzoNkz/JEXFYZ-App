@@ -2340,3 +2340,31 @@ For every future app change:
 - Firmware: only `.github/FIRMWARE_BUILD_TRIGGER` starts Firmware Build, and Code sub-chat updates it only after the user says `Eksekusi`.
 - Firmware source changes alone must not start CI.
 - The explicit firmware execution may cover a firmware-only change or a commit containing firmware together with unrelated/other project files.
+
+## 2026-09-26 — Final separation of Code editing vs Firmware build vs Action build
+
+### JE X FYZ Code sub-chat
+- Discussion comes first. No repository execution/build is started merely because we are discussing or preparing changes.
+- After the user explicitly says `Eksekusi`, apply all agreed source/configuration/documentation changes across the App repository as discussed.
+- Plain `Eksekusi` in Code means **apply the agreed repository changes only**.
+- Plain `Eksekusi` in Code does **NOT** update `.github/FIRMWARE_BUILD_TRIGGER` and does **NOT** start Firmware Build or produce a firmware `.bin`.
+- Firmware build is a separate explicit action controlled by the user.
+
+### Firmware `.bin` execution
+- The Firmware Build workflow is deliberately decoupled from firmware source changes.
+- Changing `firmware/JEXFYZ.ino`, app files, notes, or other repository files does not start the Firmware Build.
+- Only an explicit firmware-build command may update `.github/FIRMWARE_BUILD_TRIGGER` and start Firmware Build.
+- The intended command distinction is: `Eksekusi` = apply Code changes; `Eksekusi Firmware` = build firmware `.bin`.
+- Firmware CI must then be monitored through completion; build failures are fixed narrowly and the workflow is rerun until the requested firmware execution is verified.
+
+### JE X FYZ Action sub-chat
+- Action sub-chat is dedicated to App Build only.
+- When the user says `Build App`, trigger App Build through `.github/APP_BUILD_TRIGGER`.
+- Monitor App Build, fix build/analyze/test/package failures narrowly, rerun as required, and only after success provide the resulting APK artifact to the chat.
+- Action sub-chat must not trigger Firmware Build.
+
+### Workflow trigger rule
+- Both workflows use file-based explicit triggers only; neither uses `workflow_dispatch`.
+- App Build trigger file: `.github/APP_BUILD_TRIGGER`.
+- Firmware Build trigger file: `.github/FIRMWARE_BUILD_TRIGGER`.
+- Ordinary source changes must never be treated as build commands.
