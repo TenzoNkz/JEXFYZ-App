@@ -1153,6 +1153,18 @@ The project process is now explicitly two-phase:
 - Preserve the existing V3.4 runtime behavior, BLE P1 contract, safety logic, radio exclusivity, and OTA flow while testing.
 - `Eksekusi Firmware` is being performed now; build success, artifact, and public V3.5 publication must be verified before claiming the test package is ready.
 
+## FIRMWARE BUILD #14 — V3.5 OTA TEST PACKAGE VERIFIED
+
+- Run #14: `Firmware Build`, run ID `36214058400`.
+- Head SHA: `511a84f9608da73f09452e1af5e0e09201f9f444`.
+- ESP32-C3 compile: SUCCESS with the existing pinned build configuration.
+- Firmware artifact `JEXFYZ-V3.5` uploaded successfully; artifact ID `10895889623`.
+- Artifact size: 1,811,600 bytes; artifact is not expired at verification time.
+- Cross-repository publication: SUCCESS using `TENZO_FULL_ACCESS`.
+- Public repository `TenzoNkz/JEXFYZ-Firmware` independently verified to contain `JEXFYZ-V3.5.bin` and a V3.5 manifest.
+- Public manifest URL points to `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V3.5.bin`.
+- This V3.5 release is a controlled version-bump test package intended to exercise the online OTA path from the user-flashed V3.4 device; the previous OTA panic is not considered fixed until physical OTA testing is completed.
+
 # END OF FIRMWARE ENGINEERING MEMORY
 
 
