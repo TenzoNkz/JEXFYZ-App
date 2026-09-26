@@ -304,7 +304,6 @@ WiFiClientSecure cloudClient;
 uint32_t localOtaBytesReceived = 0;
 size_t localOtaExpectedSize = 0;
 uint32_t cloudBytesReceived = 0;
-int cloudExpectedSize = -1;
 uint32_t cloudPhaseStartedAt = 0;
 uint32_t cloudLastDataAt = 0;
 bool cloudTimeSyncStarted = false;
@@ -1779,7 +1778,6 @@ static void startOnlineOta() {
   cloudPhaseStartedAt = millis();
   cloudLastDataAt = millis();
   cloudBytesReceived = 0;
-  cloudExpectedSize = -1;
   cloudTimeSyncStarted = false;
 
   saveOtaResult("IN_PROGRESS");
@@ -1862,7 +1860,6 @@ static void processOnlineOta() {
         return;
       }
 
-      (void)imageSize;
       if (!Update.begin(UPDATE_SIZE_UNKNOWN, U_FLASH)) {
         const String detail = updateErrorResult("OTA_BEGIN");
         failOnlineOta(detail.c_str());
@@ -1906,16 +1903,17 @@ static void processOnlineOta() {
       }
     }
 
-    if (!stream->connected() || millis() - cloudLastDataAt >= OTA_NO_DATA_TIMEOUT_MS) {
-      if (cloudExpectedSize <= 0) {
-
-        if (!stream->connected() && cloudBytesReceived > 0) {
-          setOtaState(OtaState::CLOUD_APPLYING);
-          cloudPhaseStartedAt = millis();
-          return;
-        }
+    if (!stream->connected()) {
+      if (cloudBytesReceived > 0) {
+        setOtaState(OtaState::CLOUD_APPLYING);
+        cloudPhaseStartedAt = millis();
+        return;
       }
+      failOnlineOta("DOWNLOAD_INCOMPLETE");
+      return;
+    }
 
+    if (millis() - cloudLastDataAt >= OTA_NO_DATA_TIMEOUT_MS) {
       failOnlineOta("DOWNLOAD_INCOMPLETE");
       return;
     }
