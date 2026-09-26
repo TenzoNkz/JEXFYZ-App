@@ -2,7 +2,7 @@
 #include <WiFi.h>
 #include <WebServer.h>
 #include <HTTPClient.h>
-#include <NetworkClientSecure.h>
+#include <WiFiClientSecure.h>
 #include <Preferences.h>
 #include <Adafruit_NeoPixel.h>
 #include <OneButton.h>
@@ -20,7 +20,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
-static constexpr char FW_VERSION[] = "V4.9";
+static constexpr char FW_VERSION[] = "V4.10";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -42,6 +42,75 @@ static constexpr uint8_t OUTPUT_ON  = HIGH;
 static constexpr uint8_t OUTPUT_OFF = LOW;
 
 static constexpr char AP_SSID[]     = "JE X FYZ";
+static constexpr char GITHUB_ROOT_CA[] PROGMEM = R"CERT(-----BEGIN CERTIFICATE-----
+MIIDjjCCAnagAwIBAgIQAzrx5qcRqaC7KGSxHQn65TANBgkqhkiG9w0BAQsFADBh
+MQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3
+d3cuZGlnaWNlcnQuY29tMSAwHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBH
+MjAeFw0xMzA4MDExMjAwMDBaFw0zODAxMTUxMjAwMDBaMGExCzAJBgNVBAYTAlVT
+MRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5j
+b20xIDAeBgNVBAMTF0RpZ2lDZXJ0IEdsb2JhbCBSb290IEcyMIIBIjANBgkqhkiG
+9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuzfNNNx7a8myaJCtSnX/RrohCgiN9RlUyfuI
+2/Ou8jqJkTx65qsGGmvPrC3oXgkkRLpimn7Wo6h+4FR1IAWsULecYxpsMNzaHxmx
+1x7e/dfgy5SDN67sH0NO3Xss0r0upS/kqbitOtSZpLYl6ZtrAGCSYP9PIUkY92eQ
+q2EGnI/yuum06ZIya7XzV+hdG82MHauVBJVJ8zUtluNJbd134/tJS7SsVQepj5Wz
+tCO7TG1F8PapspUwtP1MVYwnSlcUfIKdzXOS0xZKBgyMUNGPHgm+F6HmIcr9g+UQ
+vIOlCsRnKPZzFBQ9RnbDhxSJITRNrw9FDKZJobq7nMWxM4MphQIDAQABo0IwQDAP
+BgNVHRMBAf8EBTADAQH/MA4GA1UdDwEB/wQEAwIBhjAdBgNVHQ4EFgQUTiJUIBiV
+5uNu5g/6+rkS7QYXjzkwDQYJKoZIhvcNAQELBQADggEBAGBnKJRvDkhj6zHd6mcY
+1Yl9PMWLSn/pvtsrF9+wX3N3KjITOYFnQoQj8kVnNeyIv/iPsGEMNKSuIEyExtv4
+NeF22d+mQrvHRAiGfzZ0JFrabA0UWTW98kndth/Jsw1HKj2ZL7tcu7XUIOGZX1NG
+Fdtom/DzMNU+MeKNhJ7jitralj41E6Vf8PlwUHBHQRFXGU7Aj64GxJUTFy8bJZ91
+8rGOmaFvE7FBcf6IKshPECBV1/MUReXgRPTqh5Uykw7+U0b6LJ3/iyK5S9kJRaTe
+pLiaWN0bfVKfjllDiIGknibVb63dDcY3fe0Dkhvld1927jyNxF1WW6LZZm6zNTfl
+MrY=
+-----END CERTIFICATE-----
+-----BEGIN CERTIFICATE-----
+MIIFZjCCA06gAwIBAgIQCPm0eKj6ftpqMzeJ3nzPijANBgkqhkiG9w0BAQwFADBN
+MQswCQYDVQQGEwJVUzEXMBUGA1UEChMORGlnaUNlcnQsIEluYy4xJTAjBgNVBAMT
+HERpZ2lDZXJ0IFRMUyBSU0E0MDk2IFJvb3QgRzUwHhcNMjEwMTE1MDAwMDAwWhcN
+NDYwMTE0MjM1OTU5WjBNMQswCQYDVQQGEwJVUzEXMBUGA1UEChMORGlnaUNlcnQs
+IEluYy4xJTAjBgNVBAMTHERpZ2lDZXJ0IFRMUyBSU0E0MDk2IFJvb3QgRzUwggIi
+MA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQCz0PTJeRGd/fxmgefM1eS87IE+
+ajWOLrfn3q/5B03PMJ3qCQuZvWxX2hhKuHisOjmopkisLnLlvevxGs3npAOpPxG0
+2C+JFvuUAT27L/gTBaF4HI4o4EXgg/RZG5Wzrn4DReW+wkL+7vI8toUTmDKdFqgp
+wgscONyfMXdcvyej/Cestyu9dJsXLfKB2l2w4SMXPohKEiPQ6s+d3gMXsUJKoBZM
+pG2T6T867jp8nVid9E6P/DsjyG244gXazOvswzH016cpVIDPRFtMbzCe88zdH5RD
+nU1/cHAN1DrRN/BsnZvAFJNY781BOHW8EwOVfH/jXOnVDdXifBBiqmvwPXbzP6Po
+sMH976pXTayGpxi0KcEsDr9kvimM2AItzVwv8n/vFfQMFawKsPHTDU9qTXeXAaDx
+Zre3zu/O7Oyldcqs4+Fj97ihBMi8ez9dLRYiVu1ISf6nL3kwJZu6ay0/nTvEF+cd
+Lvvyz6b84xQslpghjLSR6Rlgg/IwKwZzUNWYOwbpx4oMYIwo+FKbbuH2TbsGJJvX
+KyY//SovcfXWJL5/MZ4PbeiPT02jP/816t9JXkGPhvnxd3lLG7SjXi/7RgLQZhNe
+XoVPzthwiHvOAbWWl9fNff2C+MIkwcoBOU+NosEUQB+cZtUMCUbW8tDRSHZWOkPL
+tgoRObqME2wGtZ7P6wIDAQABo0IwQDAdBgNVHQ4EFgQUUTMc7TZArxfTJc1paPKv
+TiM+s0EwDgYDVR0PAQH/BAQDAgGGMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcN
+AQEMBQADggIBAGCmr1tfV9qJ20tQqcQjNSH/0GEwhJG3PxDPJY7Jv0Y02cEhJhxw
+GXIeo8mH/qlDZJY6yFMECrZBu8RHANmfGBg7sg7zNOok992vIGCukihfNudd5N7H
+PNtQOa27PShNlnx2xlv0wdsUpasZYgcYQF+Xkdycx6u1UQ3maVNVzDl92sURVXLF
+O4uJ+DQtpBflF+aZfTCIITfNMBc9uPK8qHWgQ9w+iUuQrm0D4ByjoJYJu32jtyoQ
+REtGBzRj7TG5BO6jm5qu5jF49OokYTurWGT/u4cnYiWB39yhL/btp/96j1EuMPik
+AdKFOV8BmZZvWltwGUb+hmA+rYAQCd05JS9Yf7vSdPD3Rh9GOUrYU9DzLjtxpdRv
+/PNn5AeP3SYZ4Y1b+qOTEZvpyDrDVWiakuFSdjjo4bq9+0/V77PnSIMx8IIh47a+
+p6tv75/fTM8BuGJqIz3nCU2AG3swpMPdB380vqQmsvZB6Akd4yCYqjdP//fx4ilw
+MUc/dNAUFvohigLVigmUdy7yWSiLfFCSCmZ4OIN1xLVaqBHG5cGdZlXPU8Sv13WF
+qUITVuwhd4GTWgzqltlJyqEI8pc7bZsEGCREjnwB8twl2F6GmrE52/WRMmrRpnCK
+ovfepEWFJqgejF0pW8hL2JpqA15w8oVPbEtoL8pU9ozaMv7Da4M/OMZ+
+-----END CERTIFICATE-----
+-----BEGIN CERTIFICATE-----
+MIICGTCCAZ+gAwIBAgIQCeCTZaz32ci5PhwLBCou8zAKBggqhkjOPQQDAzBOMQsw
+CQYDVQQGEwJVUzEXMBUGA1UEChMORGlnaUNlcnQsIEluYy4xJjAkBgNVBAMTHURp
+Z2lDZXJ0IFRMUyBFQ0MgUDM4NCBSb290IEc1MB4XDTIxMDExNTAwMDAwMFoXDTQ2
+MDExNDIzNTk1OVowTjELMAkGA1UEBhMCVVMxFzAVBgNVBAoTDkRpZ2lDZXJ0LCBJ
+bmMuMSYwJAYDVQQDEx1EaWdpQ2VydCBUTFMgRUNDIFAzODQgUm9vdCBHNTB2MBAG
+ByqGSM49AgEGBSuBBAAiA2IABMFEoc8Rl1Ca3iOCNQfN0MsYndLxf3c1TzvdlHJS
+7cI7+Oz6e2tYIOyZrsn8aLN1udsJ7MgT9U7GCh1mMEy7H0cKPGEQQil8pQgO4CLp
+0zVozptjn4S1mU1YoI71VOeVyaNCMEAwHQYDVR0OBBYEFMFRRVBZqz7nLFr6ICIS
+B4CIfBFqMA4GA1UdDwEB/wQEAwIBhjAPBgNVHRMBAf8EBTADAQH/MAoGCCqGSM49
+BAMDA2gAMGUCMQCJao1H5+z8blUD2WdsJk6Dxv3J+ysTvLd6jLRl0mlpYxNjOyZQ
+LgGheQaRnUi/wr4CMEfDFXuxoJGZSZOoPHzoRgaLLPIxAJSdYsiJvRmEFOml+wG4
+DXZDjC5Ty3zfDBeWUA==
+-----END CERTIFICATE-----
+)CERT";
+
 static constexpr char AP_PASSWORD[] = "0987654321";
 static const IPAddress AP_IP(192, 168, 4, 1);
 static const IPAddress AP_GATEWAY(192, 168, 4, 1);
@@ -263,7 +332,7 @@ String cloudUrl;
 String cloudVersion;
 
 HTTPClient cloudHttp;
-NetworkClientSecure cloudClient;
+WiFiClientSecure cloudClient;
 size_t localOtaBytesReceived = 0;
 size_t localOtaExpectedBytes = 0;
 esp_ota_handle_t localOtaHandle = 0;
@@ -1784,44 +1853,25 @@ static void scheduleBleRetry() {
 }
 
 static void startBle() {
-  if (otaActive || bootApActive) return;
+  if (otaActive) return;
+  if (bootApActive) return;
 
-  // ESP32-C3 has one 2.4 GHz radio. Never initialize BLE while Wi-Fi owns it.
+  // Proven Core 3.3.7 radio handoff: Wi-Fi is fully stopped before BLE init.
   WiFi.disconnect(true, false);
   WiFi.softAPdisconnect(true);
   WiFi.mode(WIFI_OFF);
-  for (uint8_t i = 0; i < RADIO_OFF_SETTLE_YIELDS; ++i) {
-    yield();
-  }
+  yield();
 
-  if (BLEDevice::getInitialized()) {
-    if (bleServer != nullptr &&
-        rxCharacteristic != nullptr &&
-        txCharacteristic != nullptr) {
-      BLEDevice::startAdvertising();
-      bleClientConnected = false;
-      bleSyncPending = false;
-      bleStartPending = false;
-      bleStartAttempts = 0;
-      bleStartRetryAt = 0;
-      Serial.println("BLE: READY/ADVERTISING");
-      return;
-    }
+  if (BLEDevice::getInitialized()) return;
 
-    BLEDevice::deinit(true);
-    yield();
-    bleServer = nullptr;
-    rxCharacteristic = nullptr;
-    txCharacteristic = nullptr;
-  }
+  Serial.println("BLE: START");
 
   if (!BLEDevice::init(BLE_NAME)) {
-    Serial.println("BLE: INIT FAILED; RETRY");
+    Serial.println("BLE: INIT FAILED");
     scheduleBleRetry();
     return;
   }
 
-  // Keep the known-good Arduino/ESP32 BLE MTU setup used by Core 3.3.7.
   BLEDevice::setMTU(247);
 
   bleServer = BLEDevice::createServer();
@@ -1840,9 +1890,8 @@ static void startBle() {
     return;
   }
 
-  rxCharacteristic = service->createCharacteristic(
-      RX_UUID,
-      BLECharacteristic::PROPERTY_WRITE);
+  const uint32_t rxProperties = BLECharacteristic::PROPERTY_WRITE;
+  rxCharacteristic = service->createCharacteristic(RX_UUID, rxProperties);
   if (rxCharacteristic == nullptr) {
     BLEDevice::deinit(true);
     bleServer = nullptr;
@@ -1901,15 +1950,10 @@ static void startBle() {
 
 static void serviceBleStartRecovery() {
   if (otaActive || bootApActive) return;
-  if (!bleStartPending &&
-      BLEDevice::getInitialized() &&
-      bleServer != nullptr &&
-      rxCharacteristic != nullptr &&
-      txCharacteristic != nullptr) {
-    return;
+
+  if (!BLEDevice::getInitialized() || bleStartPending) {
+    if (millis() >= bleStartRetryAt) startBle();
   }
-  if (millis() < bleStartRetryAt) return;
-  startBle();
 }
 
 // ============================================================================
@@ -2144,7 +2188,7 @@ static bool downloadOnlineOtaResumable() {
 
     HTTPClient http;
     cloudClient.stop();
-    cloudClient.useBuiltinCACertBundle();
+    cloudClient.setCACert(GITHUB_ROOT_CA);
     cloudClient.setTimeout(ONLINE_OTA_HTTP_TIMEOUT_MS);
     configureOnlineOtaRangeHttp(http);
     http.addHeader("Range", "bytes=0-0");
@@ -2775,53 +2819,47 @@ static void startLocalOtaAp() {
   otaActive = false;
   setOtaState(OtaState::BOOT_AP);
 
-  bool apOk = false;
+  Serial.println("WIFI AP: START");
 
-  for (uint8_t attempt = 0; attempt < 2 && !apOk; ++attempt) {
+  for (uint8_t attempt = 0; attempt < 2; ++attempt) {
     WiFi.disconnect(true, false);
     WiFi.softAPdisconnect(true);
     WiFi.mode(WIFI_OFF);
-    for (uint8_t i = 0; i < RADIO_OFF_SETTLE_YIELDS; ++i) {
-      yield();
-    }
+    yield();
 
     WiFi.setHostname("JE-X-FYZ");
     WiFi.setAutoReconnect(false);
     WiFi.mode(WIFI_AP);
-    for (uint8_t i = 0; i < 4; ++i) {
-      yield();
-    }
 
     const bool configOk = WiFi.softAPConfig(AP_IP, AP_GATEWAY, AP_SUBNET);
-    apOk = configOk && WiFi.softAP(AP_SSID, AP_PASSWORD);
-    if (!apOk) {
-      Serial.printf("WIFI AP: START FAILED attempt=%u\n", attempt + 1);
-      WiFi.softAPdisconnect(true);
-      WiFi.mode(WIFI_OFF);
-      yield();
+    const bool apOk = configOk && WiFi.softAP(AP_SSID, AP_PASSWORD);
+
+    if (apOk) {
+      bootApStartedAt = millis();
+      Serial.print("WIFI AP: READY SSID=");
+      Serial.print(AP_SSID);
+      Serial.print(" IP=");
+      Serial.println(WiFi.softAPIP());
+
+      webServer.on("/", HTTP_GET, handleOtaRoot);
+      webServer.on("/update", HTTP_POST, handleOtaPost, localOtaUploadHandler);
+      webServer.begin();
+      return;
     }
+
+    Serial.printf("WIFI AP: START FAILED attempt=%u\n", attempt + 1);
+    WiFi.softAPdisconnect(true);
+    WiFi.mode(WIFI_OFF);
+    yield();
   }
 
-  if (!apOk) {
-    bootApActive = false;
-    setOtaState(OtaState::FAILED);
-    otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
-    stopWiFiRadio();
-    bleStartPending = true;
-    bleStartRetryAt = millis();
-    Serial.println("WIFI AP: FAILED -> BLE FALLBACK");
-    return;
-  }
-
-  bootApStartedAt = millis();
-  Serial.print("WIFI AP: READY SSID=");
-  Serial.print(AP_SSID);
-  Serial.print(" IP=");
-  Serial.println(WiFi.softAPIP());
-
-  webServer.on("/", HTTP_GET, handleOtaRoot);
-  webServer.on("/update", HTTP_POST, handleOtaPost, localOtaUploadHandler);
-  webServer.begin();
+  bootApActive = false;
+  setOtaState(OtaState::FAILED);
+  otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
+  stopWiFiRadio();
+  bleStartPending = true;
+  bleStartRetryAt = millis();
+  Serial.println("WIFI AP: FAILED -> BLE FALLBACK");
 }
 
 static void stopLocalOtaAp() {
