@@ -357,3 +357,12 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - The pinned Core 3.3.7/toolchain/library setup is complete and the ArduinoDroid temporary source preparation passed.
 - The actual ArduinoDroid compile step is still active; no compile success/failure is claimed yet.
 - The source under test remains commit `bb4b271c2ef6c21bb779b65008ab24c6f98cd080` with only the Horizon-style setup→loop Wi-Fi deferral change.
+
+## 2026-09-27 — EXECUTION RESULT: RUN #67 ARDUINODROID COMPILE PASS
+- Run #67 job `validate-arduinodroid` completed with **success**.
+- ESP32 Arduino Core 3.3.7 installation: PASS.
+- OneButton 2.6.1 and Adafruit NeoPixel 1.12.5 installation: PASS.
+- ArduinoDroid temporary source preparation: PASS.
+- ArduinoDroid temporary source compile for ESP32-C3: **PASS**.
+- The second job `build-and-publish` is currently queued; release compile/publication results are not yet available.
+- This confirms the V1.2 source compiles under the workflow's pinned ArduinoDroid/Core 3.3.7 toolchain. It does **not** prove physical runtime.
