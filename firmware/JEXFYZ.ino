@@ -19,7 +19,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
-static constexpr char FW_VERSION[] = "V3.8";
+static constexpr char FW_VERSION[] = "V3.9";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -52,6 +52,14 @@ static constexpr uint32_t OTA_RESTART_DELAY_MS        = 1200;
 static constexpr uint32_t OTA_FAILURE_INDICATOR_MS    = 1000;
 static constexpr uint32_t WIFI_CONNECT_TIMEOUT_MS     = 15000;
 static constexpr uint32_t OTA_NO_DATA_TIMEOUT_MS      = 7000;
+static constexpr uint32_t OTA_PREAMBLE_READ_TIMEOUT_MS = 10000;
+static constexpr size_t OTA_IMAGE_HEADER_SIZE = 24;
+static constexpr size_t OTA_SEGMENT_HEADER_SIZE = 8;
+static constexpr size_t OTA_MAX_SEGMENTS = 16;
+static constexpr size_t OTA_PREAMBLE_MAX_SIZE =
+    OTA_IMAGE_HEADER_SIZE + OTA_MAX_SEGMENTS * OTA_SEGMENT_HEADER_SIZE;
+static constexpr uint8_t ESP_IMAGE_HEADER_MAGIC_VALUE = 0xE9;
+static constexpr uint16_t ESP32C3_CHIP_ID_VALUE = 0x0005;
 
 static constexpr char GITHUB_ROOT_CA[] PROGMEM = R"CERT(-----BEGIN CERTIFICATE-----
 MIIDjjCCAnagAwIBAgIQAzrx5qcRqaC7KGSxHQn65TANBgkqhkiG9w0BAQsFADBh
@@ -169,6 +177,8 @@ BLEServer* bleServer = nullptr;
 BLECharacteristic* rxCharacteristic = nullptr;
 BLECharacteristic* txCharacteristic = nullptr;
 volatile bool bleClientConnected = false;
+static constexpr uint16_t BLE_INVALID_CONN_ID = 0xFFFF;
+uint16_t bleConnectionId = BLE_INVALID_CONN_ID;
 String bleTxQueue[BLE_TX_QUEUE_SIZE];
 size_t bleTxHead = 0;
 size_t bleTxTail = 0;
@@ -303,7 +313,11 @@ HTTPClient cloudHttp;
 WiFiClientSecure cloudClient;
 uint32_t localOtaBytesReceived = 0;
 size_t localOtaExpectedSize = 0;
+size_t localOtaPreambleLength = 0;
+bool localOtaImageLayoutKnown = false;
+uint8_t localOtaPreamble[OTA_PREAMBLE_MAX_SIZE] = {};
 uint32_t cloudBytesReceived = 0;
+size_t cloudExpectedSize = 0;
 uint32_t cloudPhaseStartedAt = 0;
 uint32_t cloudLastDataAt = 0;
 bool cloudTimeSyncStarted = false;
@@ -349,6 +363,11 @@ static void clearBleTxQueue();
 static void clearBleRxQueue();
 static void processBleRxQueue();
 static void processPendingOnlineOtaStart();
+static bool readCloudExact(NetworkClient* stream, uint8_t* buffer, size_t length, uint32_t timeoutMs);
+static uint32_t readLe32(const uint8_t* data);
+static bool inspectEspImagePreamble(const uint8_t* preamble, size_t preambleLength, size_t& expectedSize);
+static void captureLocalOtaPreamble(const uint8_t* data, size_t length);
+static bool validateLocalOtaPreamble();
 
 static const char* voltageToString(Voltage value) {
   switch (value) {
@@ -1594,9 +1613,9 @@ static void feedBleRx(const String& incoming) {
 class ServerCallbacks : public BLEServerCallbacks {
  public:
   void onConnect(BLEServer* server) override {
-    (void)server;
-
     bleClientConnected = true;
+    bleConnectionId =
+        server != nullptr ? server->getConnId() : BLE_INVALID_CONN_ID;
 
     bleSyncPending = false;
     bleCommandGateOpen = false;
@@ -1609,6 +1628,7 @@ class ServerCallbacks : public BLEServerCallbacks {
     (void)server;
 
     bleClientConnected = false;
+    bleConnectionId = BLE_INVALID_CONN_ID;
     bleSyncPending = false;
     bleCommandGateOpen = false;
     bleQueueResetPending = true;
@@ -1617,6 +1637,38 @@ class ServerCallbacks : public BLEServerCallbacks {
       BLEDevice::startAdvertising();
     }
   }
+
+#if defined(CONFIG_BLUEDROID_ENABLED)
+  void onConnect(BLEServer* server, esp_ble_gatts_cb_param_t* param) override {
+    (void)server;
+    if (param != nullptr) {
+      bleConnectionId = param->connect.conn_id;
+    }
+  }
+
+  void onDisconnect(BLEServer* server, esp_ble_gatts_cb_param_t* param) override {
+    (void)server;
+    if (param != nullptr && bleConnectionId == param->disconnect.conn_id) {
+      bleConnectionId = BLE_INVALID_CONN_ID;
+    }
+  }
+#endif
+
+#if defined(CONFIG_NIMBLE_ENABLED)
+  void onConnect(BLEServer* server, ble_gap_conn_desc* desc) override {
+    (void)server;
+    if (desc != nullptr) {
+      bleConnectionId = desc->conn_handle;
+    }
+  }
+
+  void onDisconnect(BLEServer* server, ble_gap_conn_desc* desc) override {
+    (void)server;
+    if (desc != nullptr && bleConnectionId == desc->conn_handle) {
+      bleConnectionId = BLE_INVALID_CONN_ID;
+    }
+  }
+#endif
 };
 
 class RxCallbacks : public BLECharacteristicCallbacks {
@@ -1628,13 +1680,33 @@ class RxCallbacks : public BLECharacteristicCallbacks {
 
 static void stopBleRadio() {
   bleQueueResetPending = true;
-  bleClientConnected = false;
   bleSyncPending = false;
   bleCommandGateOpen = false;
 
   if (BLEDevice::getInitialized()) {
-    BLEDevice::deinit(true);
+    BLEServer* server = bleServer;
+    const uint16_t connId = bleConnectionId;
+
+    if (server != nullptr &&
+        bleClientConnected &&
+        connId != BLE_INVALID_CONN_ID) {
+      server->disconnect(connId);
+
+      const uint32_t disconnectDeadline = millis() + 250;
+      while (bleClientConnected && millis() < disconnectDeadline) {
+        yield();
+      }
+    }
+
+    bleClientConnected = false;
+    bleConnectionId = BLE_INVALID_CONN_ID;
+
+    BLEDevice::deinit(false);
+    delay(20);
     yield();
+  } else {
+    bleClientConnected = false;
+    bleConnectionId = BLE_INVALID_CONN_ID;
   }
 
   bleServer = nullptr;
@@ -1767,6 +1839,151 @@ static void failOnlineOta(const char* reason) {
   startBle();
 }
 
+static bool readCloudExact(NetworkClient* stream, uint8_t* buffer, size_t length, uint32_t timeoutMs) {
+  if (stream == nullptr || buffer == nullptr || length == 0) return false;
+
+  size_t offset = 0;
+  const uint32_t startedAt = millis();
+
+  while (offset < length) {
+    const int available = stream->available();
+
+    if (available > 0) {
+      const size_t requestLength = min(
+          static_cast<size_t>(available),
+          length - offset);
+      const int readLength = stream->read(
+          buffer + offset,
+          requestLength);
+
+      if (readLength > 0) {
+        offset += static_cast<size_t>(readLength);
+        cloudLastDataAt = millis();
+      }
+    } else {
+      if (!stream->connected()) return false;
+      if (millis() - startedAt >= timeoutMs) return false;
+    }
+
+    yield();
+  }
+
+  return true;
+}
+
+static uint32_t readLe32(const uint8_t* data) {
+  return static_cast<uint32_t>(data[0]) |
+         (static_cast<uint32_t>(data[1]) << 8) |
+         (static_cast<uint32_t>(data[2]) << 16) |
+         (static_cast<uint32_t>(data[3]) << 24);
+}
+
+static bool inspectEspImagePreamble(
+    const uint8_t* preamble,
+    size_t preambleLength,
+    size_t& expectedSize) {
+  expectedSize = 0;
+
+  if (preamble == nullptr || preambleLength < OTA_IMAGE_HEADER_SIZE) {
+    return false;
+  }
+
+  if (preamble[0] != ESP_IMAGE_HEADER_MAGIC_VALUE) {
+    return false;
+  }
+
+  const uint8_t segmentCount = preamble[1];
+  if (segmentCount == 0 || segmentCount > OTA_MAX_SEGMENTS) {
+    return false;
+  }
+
+  const uint16_t chipId = static_cast<uint16_t>(preamble[12]) |
+                          (static_cast<uint16_t>(preamble[13]) << 8);
+  if (chipId != ESP32C3_CHIP_ID_VALUE) {
+    return false;
+  }
+
+  const size_t requiredPreambleLength =
+      OTA_IMAGE_HEADER_SIZE +
+      static_cast<size_t>(segmentCount) * OTA_SEGMENT_HEADER_SIZE;
+  if (preambleLength < requiredPreambleLength) {
+    return false;
+  }
+
+  uint64_t imageLength = OTA_IMAGE_HEADER_SIZE;
+  size_t segmentOffset = OTA_IMAGE_HEADER_SIZE;
+
+  for (uint8_t i = 0; i < segmentCount; ++i) {
+    const uint32_t dataLength = readLe32(preamble + segmentOffset + 4);
+    if ((dataLength & 0x3U) != 0U) {
+      return false;
+    }
+
+    imageLength += OTA_SEGMENT_HEADER_SIZE;
+    imageLength += dataLength;
+
+    if (imageLength > (2ULL * 1024ULL * 1024ULL)) {
+      return false;
+    }
+
+    segmentOffset += OTA_SEGMENT_HEADER_SIZE;
+  }
+
+  const uint32_t checksumPadding =
+      16U - static_cast<uint32_t>(imageLength & 0x0FU);
+  imageLength += checksumPadding;
+
+  if (preamble[23] != 0) {
+    imageLength += 32U;
+  }
+
+  if (imageLength == 0 ||
+      imageLength > (2ULL * 1024ULL * 1024ULL)) {
+    return false;
+  }
+
+  expectedSize = static_cast<size_t>(imageLength);
+  return expectedSize >= requiredPreambleLength;
+}
+
+static void captureLocalOtaPreamble(const uint8_t* data, size_t length) {
+  if (data == nullptr || length == 0 || localOtaImageLayoutKnown) return;
+
+  const size_t remaining =
+      OTA_PREAMBLE_MAX_SIZE - localOtaPreambleLength;
+  const size_t copyLength = min(length, remaining);
+
+  if (copyLength > 0) {
+    memcpy(
+        localOtaPreamble + localOtaPreambleLength,
+        data,
+        copyLength);
+    localOtaPreambleLength += copyLength;
+  }
+
+  if (localOtaPreambleLength >= OTA_IMAGE_HEADER_SIZE) {
+    const uint8_t segmentCount = localOtaPreamble[1];
+    if (segmentCount == 0 || segmentCount > OTA_MAX_SEGMENTS) return;
+
+    const size_t requiredPreambleLength =
+        OTA_IMAGE_HEADER_SIZE +
+        static_cast<size_t>(segmentCount) * OTA_SEGMENT_HEADER_SIZE;
+    if (localOtaPreambleLength >= requiredPreambleLength) {
+      localOtaImageLayoutKnown = inspectEspImagePreamble(
+          localOtaPreamble,
+          localOtaPreambleLength,
+          localOtaExpectedSize);
+    }
+  }
+}
+
+static bool validateLocalOtaPreamble() {
+  if (!localOtaImageLayoutKnown || localOtaExpectedSize == 0) {
+    return false;
+  }
+  return localOtaBytesReceived == localOtaExpectedSize;
+}
+
 static void startOnlineOta() {
   if (otaActive) return;
   if (cloudSsid.isEmpty() || cloudPassword.isEmpty() || !validHttpsUrl(cloudUrl)) return;
@@ -1778,6 +1995,7 @@ static void startOnlineOta() {
   cloudPhaseStartedAt = millis();
   cloudLastDataAt = millis();
   cloudBytesReceived = 0;
+  cloudExpectedSize = 0;
   cloudTimeSyncStarted = false;
 
   saveOtaResult("IN_PROGRESS");
@@ -1823,6 +2041,7 @@ static void processOnlineOta() {
       cloudClient.stop();
       cloudClient.setCACert(GITHUB_ROOT_CA);
       cloudClient.setTimeout(12000);
+      cloudHttp.useHTTP10(true);
       cloudHttp.setReuse(false);
       cloudHttp.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
       cloudHttp.setRedirectLimit(5);
@@ -1840,33 +2059,65 @@ static void processOnlineOta() {
         failOnlineOta("DOWNLOAD_FAILED");
         return;
       }
+
       NetworkClient* imageStream = cloudHttp.getStreamPtr();
       if (imageStream == nullptr) {
         failOnlineOta("DOWNLOAD_FAILED");
         return;
       }
 
-      int firstByte = -1;
-      const uint32_t firstByteDeadline = millis() + 3000;
-      while (millis() < firstByteDeadline) {
-        if (imageStream->available() > 0) {
-          firstByte = imageStream->peek();
-          break;
-        }
-        yield();
+      uint8_t preamble[OTA_PREAMBLE_MAX_SIZE] = {};
+      if (!readCloudExact(
+              imageStream,
+              preamble,
+              OTA_IMAGE_HEADER_SIZE,
+              OTA_PREAMBLE_READ_TIMEOUT_MS)) {
+        failOnlineOta("DOWNLOAD_INCOMPLETE");
+        return;
       }
-      if (firstByte != 0xE9) {
+
+      const uint8_t segmentCount = preamble[1];
+      if (segmentCount == 0 || segmentCount > OTA_MAX_SEGMENTS) {
         failOnlineOta("INVALID_FIRMWARE_IMAGE");
         return;
       }
 
-      if (!Update.begin(UPDATE_SIZE_UNKNOWN, U_FLASH)) {
+      const size_t preambleLength =
+          OTA_IMAGE_HEADER_SIZE +
+          static_cast<size_t>(segmentCount) * OTA_SEGMENT_HEADER_SIZE;
+
+      if (!readCloudExact(
+              imageStream,
+              preamble + OTA_IMAGE_HEADER_SIZE,
+              preambleLength - OTA_IMAGE_HEADER_SIZE,
+              OTA_PREAMBLE_READ_TIMEOUT_MS)) {
+        failOnlineOta("DOWNLOAD_INCOMPLETE");
+        return;
+      }
+
+      if (!inspectEspImagePreamble(
+              preamble,
+              preambleLength,
+              cloudExpectedSize)) {
+        failOnlineOta("INVALID_FIRMWARE_IMAGE");
+        return;
+      }
+
+      if (!Update.begin(cloudExpectedSize, U_FLASH)) {
         const String detail = updateErrorResult("OTA_BEGIN");
         failOnlineOta(detail.c_str());
         return;
       }
 
-      cloudBytesReceived = 0;
+      const size_t preambleWritten =
+          Update.write(preamble, preambleLength);
+      if (preambleWritten != preambleLength) {
+        const String detail = updateErrorResult("OTA_WRITE");
+        failOnlineOta(detail.c_str());
+        return;
+      }
+
+      cloudBytesReceived = static_cast<uint32_t>(preambleLength);
       cloudLastDataAt = millis();
       return;
     }
@@ -1879,21 +2130,36 @@ static void processOnlineOta() {
 
   if (otaState == OtaState::CLOUD_DOWNLOADING) {
     NetworkClient* stream = cloudHttp.getStreamPtr();
-    if (stream == nullptr) {
+    if (stream == nullptr || cloudExpectedSize == 0) {
       failOnlineOta("DOWNLOAD_FAILED");
+      return;
+    }
+
+    if (cloudBytesReceived >= cloudExpectedSize) {
+      if (stream->available() > 0) {
+        failOnlineOta("DOWNLOAD_OVERSIZE");
+        return;
+      }
+      setOtaState(OtaState::CLOUD_APPLYING);
+      cloudPhaseStartedAt = millis();
       return;
     }
 
     const int available = stream->available();
     if (available > 0) {
       uint8_t buffer[1024];
-      const size_t requestLength = min(available, static_cast<int>(sizeof(buffer)));
+      const size_t remaining = cloudExpectedSize - cloudBytesReceived;
+      const size_t requestLength = min(
+          min(static_cast<size_t>(available), sizeof(buffer)),
+          remaining);
       const int readLength = stream->read(buffer, requestLength);
 
       if (readLength > 0) {
         cloudLastDataAt = millis();
 
-        if (Update.write(buffer, static_cast<size_t>(readLength)) != static_cast<size_t>(readLength)) {
+        if (Update.write(
+                buffer,
+                static_cast<size_t>(readLength)) != static_cast<size_t>(readLength)) {
           const String detail = updateErrorResult("OTA_WRITE");
           failOnlineOta(detail.c_str());
           return;
@@ -1903,12 +2169,17 @@ static void processOnlineOta() {
       }
     }
 
-    if (!stream->connected()) {
-      if (cloudBytesReceived > 0) {
-        setOtaState(OtaState::CLOUD_APPLYING);
-        cloudPhaseStartedAt = millis();
+    if (cloudBytesReceived == cloudExpectedSize) {
+      if (stream->available() > 0) {
+        failOnlineOta("DOWNLOAD_OVERSIZE");
         return;
       }
+      setOtaState(OtaState::CLOUD_APPLYING);
+      cloudPhaseStartedAt = millis();
+      return;
+    }
+
+    if (!stream->connected()) {
       failOnlineOta("DOWNLOAD_INCOMPLETE");
       return;
     }
@@ -1926,12 +2197,14 @@ static void processOnlineOta() {
     cloudHttp.end();
     cloudClient.stop();
 
-    if (cloudBytesReceived == 0) {
+    if (cloudExpectedSize == 0 ||
+        cloudBytesReceived != cloudExpectedSize ||
+        !Update.isFinished()) {
       failOnlineOta("OTA_INCOMPLETE");
       return;
     }
 
-    const bool updateOk = Update.end(true);
+    const bool updateOk = Update.end(false);
     if (!updateOk) {
       const String detail = updateErrorResult("OTA_END");
       failOnlineOta(detail.c_str());
@@ -2016,6 +2289,9 @@ static void localOtaUploadHandler() {
     resetBlinkState();
     localOtaBytesReceived = 0;
     localOtaExpectedSize = 0;
+    localOtaPreambleLength = 0;
+    localOtaImageLayoutKnown = false;
+    memset(localOtaPreamble, 0, sizeof(localOtaPreamble));
 
     saveOtaResult("IN_PROGRESS");
     applyOtaSafeOutputs();
@@ -2035,6 +2311,8 @@ static void localOtaUploadHandler() {
   if (upload.status == UPLOAD_FILE_WRITE) {
     if (otaState != OtaState::LOCAL_UPLOAD || !otaActive) return;
 
+    captureLocalOtaPreamble(upload.buf, upload.currentSize);
+
     const size_t written = Update.write(upload.buf, upload.currentSize);
     localOtaBytesReceived += static_cast<uint32_t>(upload.currentSize);
 
@@ -2053,9 +2331,9 @@ static void localOtaUploadHandler() {
   if (upload.status == UPLOAD_FILE_END) {
     if (otaState != OtaState::LOCAL_UPLOAD || !otaActive) return;
 
-    if (localOtaBytesReceived == 0) {
+    if (!validateLocalOtaPreamble()) {
       Update.abort();
-      saveOtaResult("OTA_INCOMPLETE");
+      saveOtaResult("INVALID_FIRMWARE_IMAGE");
       setOtaState(OtaState::FAILED);
       resetBlinkState();
       otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
@@ -2063,7 +2341,7 @@ static void localOtaUploadHandler() {
       return;
     }
 
-    const bool updateOk = Update.end(true);
+    const bool updateOk = Update.isFinished() && Update.end(false);
     if (updateOk) {
       saveOtaResult("LOCAL_SUCCESS");
       setOtaState(OtaState::SUCCESS);
@@ -2085,6 +2363,9 @@ static void localOtaUploadHandler() {
   if (upload.status == UPLOAD_FILE_ABORTED) {
     otaRestartAt = 0;
     Update.abort();
+    localOtaExpectedSize = 0;
+    localOtaPreambleLength = 0;
+    localOtaImageLayoutKnown = false;
     resetBlinkState();
     saveOtaResult("UPLOAD_ABORTED");
     setOtaState(OtaState::FAILED);
