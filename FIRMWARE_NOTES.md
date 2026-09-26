@@ -91,6 +91,24 @@
 - Runtime/root-cause status: remains unproven until the SoftAP-only sketch is physically tested.
 - Next boundary: flash this sketch and preserve the exact Serial output. The critical evidence is whether `STEP 2: WiFi.softAP() RESULT = OK` appears and whether `RESULT: SOFTAP READY` is reached.
 
+## 2026-09-27 — EXECUTION: WIFI MODE AP-ONLY DIAGNOSTIC
+
+- User supplied physical Serial evidence from the previous SoftAP-only test. The device prints STEP 1: BEFORE WiFi.softAP() and then immediately reports Guru Meditation Error: Core 0 panic'ed (Load access fault); WiFi.softAP() never returns.
+- This rules out WebServer and OTA Update as the immediate failure boundary for that test, but WiFi.softAP() internally contains multiple official Wi-Fi/AP lifecycle steps, so the exact internal boundary was still unresolved.
+- Official Arduino-ESP32 Core 3.3.7 source verified again:
+  - WiFi.softAP() in WiFiAP.cpp calls AP.begin() and AP.create().
+  - AP.begin() calls WiFi.enableAP(true) and waits for ESP_NETIF_STARTED_BIT.
+  - WiFiGenericClass::enableAP(true) calls the official mode(currentMode | WIFI_MODE_AP) path.
+  - WiFiGenericClass::getMode() returns WIFI_MODE_NULL before Wi-Fi low-level initialization.
+  - ESP.getCoreVersion() is the official Core-version reporting API and returns ESP_ARDUINO_VERSION_STR.
+- User explicitly requested Eksekusi Full. Generated standalone diagnostic file: JEXFYZ-WiFi-Mode-AP-Test.ino.
+- Scope: Arduino.h + WiFi.h only; it prints the actual compiled Arduino-ESP32 Core version, chip model/revision, calls WiFi.getMode(), then calls only WiFi.mode(WIFI_AP) and verifies the returned mode. It does not call WiFi.softAP(), WebServer, Update, BLE, or any JE X FYZ feature library.
+- Static validation: PASS.
+- Build/flash validation: not performed here; user will compile/flash manually in ArduinoDroid.
+- Production firmware/JEXFYZ.ino was not modified.
+- Current root-cause status: still unproven. The purpose of this test is to distinguish an AP-mode failure from a later AP.create() failure inside the official WiFi.softAP() implementation.
+- Next boundary: flash the new test and preserve the entire Serial output. The most important lines are the actual Arduino-ESP32 Core value, STEP 3, and whether STEP 4 is reached or the device panics.
+
 > Current-state override for the next JE X FYZ firmware sub-chat. Historical sections below are retained for chronology.
 
 ## 1. Mandatory workflow
