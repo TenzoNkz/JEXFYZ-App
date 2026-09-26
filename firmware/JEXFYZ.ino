@@ -3713,7 +3713,7 @@ void setup() {
 
   Serial.begin(115200);
   Serial.println();
-  Serial.println("JE X FYZ: BOOT V4.12 / CORE 3.3.7 RADIO-FIRST");
+  Serial.println("JE X FYZ: BOOT V4.13 / CORE 3.3.7 RADIO-FIRST");
 
   // Keep every power output OFF before either radio is started.
   pinMode(PIN_12V, OUTPUT);
