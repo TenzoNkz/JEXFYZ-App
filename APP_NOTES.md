@@ -162,16 +162,15 @@ The user strongly prefers:
 - Example: Run #94 -> `JE X FYZ Build #94.apk`.
 ## CURRENT ACTION / CI STATE
 
-**Latest verified successful build:** GitHub Actions **Run #95** for workflow `JE X FYZ Cooler Build`.
+**Latest verified successful build:** GitHub Actions **Run #95** for the previous App Build workflow generation.
 
-- Run ID: `36199711412`
-- Result: **SUCCESS**
-- Head SHA built: `13778dd574304f9acbfc7ece08e58eb903794aa9`
-- Previous user-visible filename problem from Run #95 was fixed by the direct APK artifact workflow change.
-- **Current Code change pending validation:** native Android Foreground Service support was added so an active BLE session is kept backed by a foreground service while the Flutter UI is in the background.
-- The service starts after successful BLE session/synchronization and stops on BLE disconnect.
-- The service does **not** create a second BLE client; Flutter remains the single BLE/session owner to avoid duplicate GATT connections.
-- The next Action run must validate compilation, service registration, foreground-service permissions/type, and actual background behavior on a physical Android device. No build success is claimed yet for this change.
+- Run #95 was successful before the latest V3.4/foreground-service source changes were introduced.
+- **Latest validation attempt:** App Build Run #1, ID `36212348012`, failed at `Analyze Dart code`.
+- Failure cause: `lib/main.dart` assigned the result of `clamp(1, 8)` directly to the `int rgbMode` field in the V3.3/V3.4 LED mode sync path; Dart analyzer treats `clamp()` as returning `num`.
+- Action fix committed in `lib/main.dart`: `...clamp(1, 8)` → `...clamp(1, 8).toInt()`.
+- Fix commit: `77471c9e1b8f7e683e1cd31aa0294d4fb1e30bbd`.
+- No unrelated UI/BLE/foreground-service behavior was changed by this fix.
+- A new App Build is required to validate the fix and continue to the release/signature/artifact stages.
 
 ### Handoff to Build / CI sub-chat
 
