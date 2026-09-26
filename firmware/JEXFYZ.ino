@@ -17,6 +17,7 @@
 #include <BLE2902.h>
 
 #include "esp_system.h"
+#include "esp_err.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
