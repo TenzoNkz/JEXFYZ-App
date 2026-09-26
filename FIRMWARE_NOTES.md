@@ -1480,6 +1480,11 @@ The project process is now explicitly two-phase:
 - This prevents delivering a temporary `.ino` that passed only text transformation but fails in the user's ArduinoDroid engine.
 - The public/release binary remains built with Core 3.3.12.
 
+## 2026-09-26 — V4.8 CI TEMPORARY-SOURCE VALIDATION ISOLATION
+- Run #44 failed because Core 3.3.7 was installed in the same runner as the Core 3.3.12 release build and exhausted runner disk while installing unused ESP32 toolchains.
+- Moved ArduinoDroid/Core 3.3.7 temporary-source compilation into a dedicated validation job/runner.
+- The release/publish job now waits for the dedicated validation job to pass.
+- The validation job regenerates the same ArduinoDroid temporary-source transformation and compiles it with Core 3.3.7 before publication.
 # END OF FIRMWARE ENGINEERING MEMORY
 
 

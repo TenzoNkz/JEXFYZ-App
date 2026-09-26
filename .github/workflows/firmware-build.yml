@@ -19,7 +19,62 @@ env:
   PUBLIC_FIRMWARE_REPO: "TenzoNkz/JEXFYZ-Firmware"
 
 jobs:
+  validate-arduinodroid:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout private app repository
+        uses: actions/checkout@v6
+
+      - name: Set up Arduino CLI
+        uses: arduino/setup-arduino-cli@v2
+
+      - name: Prepare Arduino package index
+        run: |
+          set -euo pipefail
+          arduino-cli config init --overwrite
+          arduino-cli config add board_manager.additional_urls             https://espressif.github.io/arduino-esp32/package_esp32_index.json
+          arduino-cli core update-index
+
+      - name: Install ESP32 Arduino Core 3.3.7
+        run: |
+          set -euo pipefail
+          arduino-cli core install "esp32:esp32@3.3.7"
+          arduino-cli core list
+
+      - name: Install firmware libraries
+        run: |
+          set -euo pipefail
+          arduino-cli lib install "OneButton@${ONEBUTTON_VERSION}"
+          arduino-cli lib install "Adafruit NeoPixel@${ADAFRUIT_NEOPIXEL_VERSION}"
+
+      - name: Prepare ArduinoDroid temporary source
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="$"+"{VERSION}"
+          VALUE_FILE="JEXFYZ-${VERSION}@@-ArduinoDroid-Temporary.ino"
+          cp firmware/JEXFYZ.ino "$"+"{VALUE_FILE}"
+          sed -i '1i #define JEXFYZ_LEGACY_OTA 1' "$"+"{VALUE_FILE}"
+          sed -i             -e 's/#include <NetworkClientSecure.h>/#include <WiFiClientSecure.h>/'             -e 's/NetworkClientSecure cloudClient;/WiFiClientSecure cloudClient;/'             -e 's/cloudClient.useBuiltinCACertBundle();/cloudClient.setInsecure();/'             "$"+"{VALUE_FILE}"
+          grep -Fq '#define JEXFYZ_LEGACY_OTA 1' "$"+"{VALUE_FILE}"
+          grep -Fq '#include <WiFiClientSecure.h>' "$"+"{VALUE_FILE}"
+          grep -Fq 'WiFiClientSecure cloudClient;' "$"+"{VALUE_FILE}"
+          grep -Fq 'cloudClient.setInsecure();' "$"+"{VALUE_FILE}"
+          ! grep -Fq 'strtoul(' "$"+"{VALUE_FILE}"
+
+      - name: Compile ArduinoDroid temporary source
+        run: |
+          set -euo pipefail
+          rm -rf build/JEXFYZ-ArduinoDroid build/arduinodroid
+          mkdir -p build/JEXFYZ-ArduinoDroid build/arduinodroid
+          cp "JEXFYZ-${VERSION}@@-ArduinoDroid-Temporary.ino" build/JEXFYZ-ArduinoDroid/JEXFYZ-ArduinoDroid.ino
+          arduino-cli compile             --fqbn esp32:esp32:esp32c3:PartitionScheme=no_fs             --output-dir build/arduinodroid             build/JEXFYZ-ArduinoDroid
+          test -s build/arduinodroid/JEXFYZ-ArduinoDroid.ino.bin
+          echo "ArduinoDroid/Core 3.3.7 temporary source compile: PASS"
+
   build-and-publish:
+    needs: validate-arduinodroid
     runs-on: ubuntu-24.04
     timeout-minutes: 20
 
@@ -207,19 +262,6 @@ jobs:
           grep -Fq '#include <WiFiClientSecure.h>' "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
           grep -Fq 'WiFiClientSecure cloudClient;' "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
           grep -Fq 'cloudClient.setInsecure();' "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
-
-      - name: Compile ArduinoDroid temporary source
-        shell: bash
-        run: |
-          set -euo pipefail
-          arduino-cli core install "esp32:esp32@3.3.7"
-          rm -rf build/JEXFYZ-ArduinoDroid build/arduinodroid
-          mkdir -p build/JEXFYZ-ArduinoDroid build/arduinodroid
-          cp "build/firmware/V4.8-ArduinoDroid-Temporary.ino" "build/JEXFYZ-ArduinoDroid/JEXFYZ-ArduinoDroid.ino"
-          arduino-cli compile             --fqbn esp32:esp32:esp32c3:PartitionScheme=no_fs             --output-dir build/arduinodroid             build/JEXFYZ-ArduinoDroid
-          test -s build/arduinodroid/JEXFYZ-ArduinoDroid.ino.bin
-          echo "ArduinoDroid/Core 3.3.7 temporary source compile: PASS"
-          rm -rf build/arduinodroid
 
       - name: Upload ArduinoDroid temporary source artifact
         uses: actions/upload-artifact@v7
