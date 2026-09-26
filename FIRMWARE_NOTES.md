@@ -3,7 +3,7 @@
 ## 1. SOURCE AUTHORITY AND CURRENT STATE
 
 - Authoritative firmware source: `firmware/JEXFYZ.ino`.
-- Current firmware version: `V3.6`.
+- Current source firmware version: `V3.7` (next release; not yet built/published at the time of this execution).
 - Protocol version: `P1`.
 - BLE device name: `JE X FYZ`.
 - Target hardware: ESP32-C3 Super Mini / ESP32-C3 Dev Module class.
@@ -1271,3 +1271,15 @@ The project process is now explicitly two-phase:
   - URL: `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V3.4.bin`
 - The old V3.2 distribution file is no longer present in the public repo root after the publish cleanup.
 - This is the first completed V3.4 build-and-publish verification after the `TENZO_FULL_ACCESS` secret rename.
+
+## 2026-09-26 — V3.7 EXECUTION: OTA RECOVERY DIAGNOSTICS + EXACT HARDWARE PARTITION
+
+- Firmware source advanced from V3.6 to V3.7 for the approved OTA-recovery changes.
+- The CI firmware target was changed from `PartitionScheme=min_spiffs` to the ESP32-C3 `no_fs` partition scheme, which corresponds to the user's verified ArduinoDroid selection `No FS 4MB (2MB APP x2)`.
+- Local OTA now starts `Update` with the uploaded file size when available, tracks received bytes, and requires an exact byte-count match before finalization.
+- OTA end failures now preserve `Update.getError()` and `Update.errorString()` before aborting, storing a detailed `LAST_OTA_RESULT` value instead of only `OTA_FAILED`.
+- Online OTA now also preserves the detailed `Update` finalization error before the common failure path.
+- OTA start stores `IN_PROGRESS` so the App can distinguish an unfinished OTA from a prior successful/failed result.
+- No GPIO, NTC, cooling, Adaptive, voltage, RGB, touch, BLE UUID, or P1 contract changes were introduced by this V3.7 OTA patch.
+- This is a source/configuration execution only. No Firmware Build was started by this change.
+
