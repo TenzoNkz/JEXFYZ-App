@@ -113,13 +113,13 @@ jobs:
       - name: Publish firmware release to public repository
         shell: bash
         env:
-          FIRMWARE_REPO_TOKEN: ${{ secrets.TENZO_FULL_ACCESS }}
+          TENZO_FULL_ACCESS: ${{ secrets.TENZO_FULL_ACCESS }}
           VERSION: ${{ steps.version.outputs.version }}
         run: |
           set -euo pipefail
-          if [ -z "${FIRMWARE_REPO_TOKEN:-}" ]; then
-            echo "Missing required GitHub secret: FIRMWARE_REPO_TOKEN"
-            echo "Create a fine-grained token with Contents: Read and write on ${PUBLIC_FIRMWARE_REPO}, then save it as this repository secret."
+          if [ -z "${TENZO_FULL_ACCESS:-}" ]; then
+            echo "Missing required GitHub secret: TENZO_FULL_ACCESS"
+            echo "Create a fine-grained token with Contents: Read and write on ${PUBLIC_FIRMWARE_REPO}, then save it as this repository secret `TENZO_FULL_ACCESS`."
             exit 1
           fi
 
@@ -127,7 +127,7 @@ jobs:
           trap 'rm -rf "$WORK"' EXIT
 
           git clone --depth 1 \
-            "https://x-access-token:${FIRMWARE_REPO_TOKEN}@github.com/${PUBLIC_FIRMWARE_REPO}.git" \
+            "https://x-access-token:${TENZO_FULL_ACCESS}@github.com/${PUBLIC_FIRMWARE_REPO}.git" \
             "$WORK/repo"
 
           cd "$WORK/repo"
