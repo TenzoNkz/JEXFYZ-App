@@ -16,7 +16,7 @@
 
 #include <Update.h>
 
-static constexpr char FW_VERSION[] = "V1.4";
+static constexpr char FW_VERSION[] = "V1.5";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
