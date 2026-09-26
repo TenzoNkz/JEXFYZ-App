@@ -328,6 +328,7 @@ static constexpr size_t BLE_RX_BUFFER_SIZE = 512;
 char bleRxBuffer[BLE_RX_BUFFER_SIZE];
 size_t bleRxLength = 0;
 
+static void showAll(uint32_t color, uint8_t brightness = 255);
 static void sendText(const String& line);
 static void sendDelta(const char* key, const String& value);
 static void setOtaState(OtaState state);
@@ -695,7 +696,7 @@ static uint32_t blendLevel(uint32_t color, uint8_t baseBrightness, float level) 
   return scaleColor(color, brightness);
 }
 
-static void showAll(uint32_t color, uint8_t brightness = 255) {
+static void showAll(uint32_t color, uint8_t brightness) {
   const uint32_t scaled = scaleColor(color, brightness);
   for (uint8_t i = 0; i < LED_COUNT; ++i) {
     leds.setPixelColor(i, scaled);
