@@ -2480,3 +2480,14 @@ The project process is now explicitly two-phase:
 - A separate `Eksekusi Firmware` remains required to compile/publish the firmware `.bin`.
 
 # END OF APP PROJECT MEMORY
+
+
+## CODE #2 — FIRMWARE V3.3 LED / TOUCH SYNC
+
+- Firmware moved from WS2812FX to a custom LED engine using Adafruit NeoPixel.
+- Firmware LED protocol mode IDs are now 1..8: 1 Static, 2 Breath, 3 Center Out, 4 Outer In, 5 Dual Chase, 6 Left <-> Right, 7 Rainbow, 8 Twinkle.
+- `lib/main.dart` was synchronized to clamp and display LED modes 1..8.
+- The LED UI subtitle now reflects the physical layout: 4 LEDs left + 4 LEDs right.
+- Firmware V3.3 uses OneButton for the TTP223 touch handler while preserving the existing gesture behavior and BLE acknowledgements.
+- App and firmware command/telemetry names remain `MODE`, `RGB`, `BRIGHTNESS`, `RGB_COLOR`, `COLOR_5V`, `COLOR_9V`, and `COLOR_12V`.
+- App BLE identity and P1 protocol remain unchanged.
