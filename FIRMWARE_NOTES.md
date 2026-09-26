@@ -3,7 +3,7 @@
 ## 1. SOURCE AUTHORITY AND CURRENT STATE
 
 - Authoritative firmware source: `firmware/JEXFYZ.ino`.
-- Current source firmware version: `V3.8` (prepared and now sent to Firmware Build).
+- Current source firmware version: `V3.9` (OTA recovery/image-completion hardening applied; build not yet run).
 - Protocol version: `P1`.
 - BLE device name: `JE X FYZ`.
 - Target hardware: ESP32-C3 Super Mini / ESP32-C3 Dev Module class.
@@ -1182,6 +1182,19 @@ The project process is now explicitly two-phase:
 - Public `TenzoNkz/JEXFYZ-Firmware` manifest now advertises V3.6 and points to `JEXFYZ-V3.6.bin`.
 - Source verification confirms BLE bonding/security configuration is removed and V3.6 contains one `BLEDevice::deinit(true)` path for releasing BLE resources before online OTA.
 
+## 2026-09-26 — V3.9 OTA PANIC HARDENING EXECUTION
+
+- Firmware source advanced from V3.8 to V3.9 for the runtime OTA panic hardening identified during the physical V3.7 -> V3.8 test.
+- BLE OTA shutdown no longer calls `BLEDevice::deinit(true)`. The active BLE connection is explicitly terminated first when a connection handle is known, then the BLE stack is de-initialized with memory retained so the failure path can safely reinitialize BLE.
+- Online OTA no longer uses HTTP Content-Length or `HTTPClient::getSize()`.
+- Online OTA now reads the ESP image header and segment headers before starting `Update`. The firmware image structure is checked for ESP32-C3, valid segment count/alignment, and a calculated exact image length within the 2 MiB release boundary.
+- Online OTA now starts `Update` with the calculated exact image size, writes the prefetched image preamble, and treats any early stream disconnect as an incomplete download rather than a completed image.
+- Online OTA finalization now requires the received byte count to exactly match the parsed image size and requires `Update.isFinished()` before `Update.end(false)`.
+- HTTP/1.0 mode is enabled for the GitHub raw download so connection-close semantics are deterministic and HTTP keep-alive reuse is disabled.
+- Local OTA now independently captures and validates the ESP image preamble and requires the uploaded byte count to exactly match the calculated image size before `Update.end(false)`.
+- OTA failure diagnostics remain persisted through `LAST_OTA_RESULT`; no automatic firmware downgrade or destructive recovery behavior was introduced.
+- GPIO mapping, NTC, cooling safety, Adaptive, voltage switching, RGB/LED, touch behavior, P1 BLE UUIDs, BLE command/telemetry contract, and the 2 MiB CI release gate remain unchanged.
+- This is source execution only. No `.bin` build or public firmware publication was started by this change. The next separate `Eksekusi Firmware` is required for the V3.9 binary.
 # END OF FIRMWARE ENGINEERING MEMORY
 
 
