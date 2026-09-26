@@ -1,4 +1,4 @@
-name: JE X FYZ Firmware Build
+name: Firmware Build
 
 on:
   push:
