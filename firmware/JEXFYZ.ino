@@ -2021,7 +2021,9 @@ static void applyOtaSafeOutputs() {
   pendingVoltage = Voltage::V5;
 
   stopPeltierOutput();
-  ledcWrite(PIN_FAN, 0);
+  if (runtimeFeaturesReady) {
+    ledcWrite(PIN_FAN, 0);
+  }
   digitalWrite(PIN_9V, OUTPUT_OFF);
   digitalWrite(PIN_12V, OUTPUT_OFF);
 }
@@ -3761,56 +3763,6 @@ void loop() {
   processBleRxQueue();
   processPendingOnlineOtaStart();
 
-  if (serviceOtaPriority()) return;
-
-  touchButton.tick();
-  sampleNtcIfDue();
-  updateBatteryValidity();
-  processAdaptiveHotTimer();
-  processAdaptiveBatteryDown();
-  processAdaptiveUpTimer();
-  completeVoltageTransition();
-  enforceSafety();
-  processPeltierSoftStart();
-  processSettingsPersistence();
-
-  static uint32_t lastHotTelemetryMs = 0;
-  if (millis() - lastHotTelemetryMs >= NTC_READ_INTERVAL_MS) {
-    lastHotTelemetryMs = millis();
-    sendHotsideTelemetry();
-  }
-
-  processLeds();
-  serviceBleTx();
-
-  yield();
-}
-
-void loop() {
-
-  // ================= OTA PRIORITY: DO NOT MOVE DOWN =================
-  // ================= OTA PRIORITY: DO NOT MOVE DOWN =================
-  if (serviceOtaPriority()) return;
-
-  serviceBleStartRecovery();
-
-  if (bleQueueResetPending) {
-    bleQueueResetPending = false;
-    clearBleTxQueue();
-    clearBleRxQueue();
-  }
-
-  if (bleSyncPending && bleClientConnected && txCharacteristic != nullptr) {
-    bleSyncPending = false;
-    clearBleTxQueue();
-    sendFullSync();
-  }
-
-  serviceBleTx();
-  processBleRxQueue();
-  processPendingOnlineOtaStart();
-  // A pending OTA can become active immediately; return to the locked
-  // supervisor before any application feature code executes.
   if (serviceOtaPriority()) return;
 
   touchButton.tick();
