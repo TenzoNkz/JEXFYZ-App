@@ -2581,3 +2581,10 @@ The project process is now explicitly two-phase:
 - V3.8 keeps the existing BLE protocol and telemetry keys, so Build #4 remains the immediate test client for the firmware OTA experiment.
 - The V3.8 App source changes are documentation-only in this step; persisted OTA result visibility from the prior source update remains in place.
 
+
+## 2026-09-26 — V3.8 FIRMWARE BUILD HANDOFF
+
+- Firmware V3.8 was successfully compiled and published.
+- App source is synchronized to V3.8 documentation and retains persisted `LAST_OTA_RESULT` visibility.
+- The user's installed App Build #4 remains unchanged; no App Build was triggered by the Firmware execution.
+- Intended physical test: V3.7 device -> online OTA -> V3.8 using App Build #4, with no hardware modification.
