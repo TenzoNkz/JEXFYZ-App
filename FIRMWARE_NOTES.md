@@ -1219,3 +1219,18 @@ The project process is now explicitly two-phase:
 - Firmware Build publish step now reads the repository secret `TENZO_FULL_ACCESS` for access to `TenzoNkz/JEXFYZ-Firmware`.
 - The workflow no longer references the legacy secret name `FIRMWARE_REPO_TOKEN`.
 - `Eksekusi Firmware` has triggered a fresh V3.4 build after this secret-name correction; publication is considered complete only after the Actions publish step succeeds and the public repository is independently verified to contain `JEXFYZ-V3.4.bin` and a V3.4 `manifest.json`.
+
+
+## FIRMWARE BUILD #13 — V3.4 FULL SUCCESS / PUBLISHED
+
+- Run #13: `Firmware Build`, commit `81a36100bd766cea058d074e16ca484301f332e5`.
+- Firmware V3.4 compile: SUCCESS on ESP32-C3 with ESP32 Arduino core 3.2.1, OneButton 2.6.1, and Adafruit NeoPixel 1.12.5.
+- Build artifact `JEXFYZ-V3.4` was finalized successfully; artifact ID `10895544253`, expired status false at verification time.
+- Cross-repository publish: SUCCESS using repository secret `TENZO_FULL_ACCESS`.
+- Public firmware repo `TenzoNkz/JEXFYZ-Firmware` was independently verified to contain exactly `JEXFYZ-V3.4.bin` and `manifest.json` at root.
+- Public binary size verified: 1,811,456 bytes.
+- Public manifest verified:
+  - version: `V3.4`
+  - URL: `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V3.4.bin`
+- The old V3.2 distribution file is no longer present in the public repo root after the publish cleanup.
+- This is the first completed V3.4 build-and-publish verification after the `TENZO_FULL_ACCESS` secret rename.
