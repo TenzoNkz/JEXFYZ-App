@@ -1427,6 +1427,20 @@ The project process is now explicitly two-phase:
 - If any required stage fails, inspect the actual failure log, fix the root cause in the repository, commit the correction, trigger the next run, and continue verification until the final requested pipeline succeeds.
 - Do not report completion or provide a final release artifact while the required run is failed, incomplete, or its required output has not been independently verified.
 - Treat failed/intermediate runs as engineering states to be repaired within the same execution request.
+## FIRMWARE BUILD #36 — V4.6 OTA SAFETY RELEASE FULL SUCCESS / PUBLISHED
+
+- Run #36 completed successfully after automatically correcting the Run #35 OTA audit false-positive.
+- Run #35 had failed only because the audit searched the explanatory comment `No delay()` as if it were a real blocking call; the audit was corrected to strip comments and check actual code.
+- Run #36 then passed OTA safety audit, compilation, firmware artifact creation, ArduinoDroid temporary-source generation, and public publication.
+- Firmware source version: V4.6. ESP32-C3 release engine: Arduino Core 3.3.12.
+- Release artifact: `JEXFYZ-V4.6`, artifact ID `10903417989`, size 1,576,320 bytes, verified not expired at the time of completion.
+- ArduinoDroid temporary source artifact: `JEXFYZ-V4.6-ArduinoDroid-Source`, artifact ID `10903632824`, size 100,010 bytes, verified not expired at the time of completion.
+- Public firmware: `JEXFYZ-V4.6.bin`, verified size 1,576,176 bytes.
+- Public manifest verified as V4.6 and points to `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V4.6.bin`.
+- V4.6 source has OTA Safety Lock, OTA Priority Supervisor first in loop(), early OTA/AP startup, protected OTA Engine/Diagnostic Core fences, compile-time OTA guards, and a CI OTA protected-source audit.
+- V4.5 resumable Online OTA transport remains preserved; no redesign was made to the working Range/reconnect/resume mechanism.
+- Manual ArduinoDroid source remains Core 3.3.7-compatible and uses the temporary legacy branch only for manual flashing/testing.
+- This is the final completed release state for the requested V4.6 OTA safety/code-organization execution. Physical V4.6 validation remains a separate hardware test step.
 # END OF FIRMWARE ENGINEERING MEMORY
 
 

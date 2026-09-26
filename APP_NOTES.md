@@ -2577,6 +2577,13 @@ The project process is now explicitly two-phase:
 - For full Code/Firmware execution, continue through final build and publication verification instead of stopping after Actions is triggered.
 - Inspect and fix build failures, rerun the pipeline, and continue until the requested final firmware pipeline succeeds.
 - Do not treat an intermediate or failed Actions run as completion.
+## 2026-09-26 — V4.6 RELEASE / FULL EXECUTION VERIFIED
+
+- Firmware Build Run #36 completed successfully and published V4.6.
+- The full execution gate was satisfied: source audit -> OTA safety audit -> compile -> artifact -> ArduinoDroid temporary source -> publication -> public manifest verification.
+- Run #35's audit-only failure was automatically repaired before Run #36; it did not indicate a firmware compile or OTA implementation failure.
+- App OTA diagnostic protocol remains aligned with firmware V4.6; no App Build was triggered by this firmware-only execution.
+- Physical next step is manual flashing/testing of the V4.6 ArduinoDroid temporary source, followed by hardware OTA validation if desired.
 # END OF APP PROJECT MEMORY
 
 ## 2026-09-26 — Code #2: firmware source cleanup + App BLE contract synchronization
