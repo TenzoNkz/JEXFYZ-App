@@ -451,3 +451,13 @@ This repeated pattern requires boundary isolation, not more speculative patch st
   - https://github.com/espressif/arduino-esp32/blob/3.3.7/docs/en/migration_guides/2.x_to_3.0.rst
 - This was a discussion/source-study action only. No executable project source was changed by this study.
 - Next implementation boundary: when the user authorizes the next firmware execution, build from the official Arduino Standard examples/APIs for Core 3.3.7 rather than from the recent raw ESP-IDF diagnostic sketches.
+
+## 2026-09-27 — USER MANDATE CONFIRMED: ARDUINO STANDARD IS THE IMPLEMENTATION BASELINE
+- User explicitly confirmed that, from this point onward, JE X FYZ firmware implementation must follow **Arduino Standard** for the pinned Arduino-ESP32 Core 3.3.7.
+- This is now a standing implementation rule, not merely a preference for the current Wi-Fi investigation.
+- For platform functionality, use official Arduino-ESP32 public APIs and official examples/source for Core 3.3.7 first.
+- Do not replace official Arduino abstractions with handwritten ESP-IDF startup/lifecycle code when an official Arduino API already provides the required operation.
+- Project-specific state machines, safety logic, OTA policy, BLE protocol, and hardware behavior remain allowed only as application logic around the official Arduino APIs; they must not impersonate or replace framework internals.
+- Any future API/signature must be verified against the exact Core 3.3.7 official source before use.
+- The recent raw ESP-IDF diagnostic files remain diagnostic evidence only and are not the implementation template.
+- No executable source was changed by this confirmation.
