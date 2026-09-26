@@ -777,3 +777,12 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - The binary is derived from Run #72's successful release artifact, not the previously failed Run #70.
 - V1.5 is **not yet physically proven to complete Local OTA**. The purpose of this release is to test the corrected official Arduino Update flow on the actual device.
 - Next required hardware test: upload V1.5 through the Local OTA page using the same device/AP that previously produced `UPDATE_END_FAILED`. Preserve the complete OTA result message and, when available, Serial output.
+
+## 2026-09-27 — WORKFLOW RULE: CODE EXECUTION VS NOTE EXECUTION
+- **CODE/REPOSITORY EXECUTION RULE:** Never modify production firmware, diagnostic code, CI workflow, build trigger, release artifact, or other executable project files unless the user explicitly commands execution (for example: "Eksekusi", "Eksekusi Code", "Eksekusi Firmware", or an equivalent explicit command).
+- Discussion, approval, planning, screenshots, or requests for analysis do not authorize executable-code changes.
+- **NOTES AUTO-UPDATE RULE:** Project history/notes must be updated automatically whenever a meaningful decision, requirement, test result, error, correction, or workflow rule is established in discussion. No separate execution command is required for notes.
+- Notes are the project's technical life-history and must record both successful and failed experiments, including the exact boundary, version, commit, error, and resulting decision when those facts are available.
+- Current priority remains **Local OTA first**. Online OTA implementation changes are frozen until Local OTA has been physically verified working.
+- Latest physical result recorded by user: device was still running V1.4; manual Local OTA to V1.5 failed; Online OTA to V1.5 also failed.
+- Next code execution, when explicitly authorized, must focus only on making **Local OTA robust and repeatable** using the official Arduino-ESP32 Core 3.3.7 API/pattern. Do not modify Online OTA in that execution.
