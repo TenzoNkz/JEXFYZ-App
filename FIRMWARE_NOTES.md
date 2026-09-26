@@ -563,3 +563,13 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Final ArduinoDroid `.ino` extracted from the CI source artifact was verified to contain FW_VERSION V1.3, the Core 3.3.7 reset-reason compatibility value `UNAVAILABLE_CORE_3_3_7`, the official Update.write() mutable-buffer adapter, the official SoftAP config-before-start order, and no audited legacy/raw lifecycle markers.
 - Public repository `TenzoNkz/JEXFYZ-Firmware` was verified to contain `JEXFYZ-V1.3.bin` and a manifest pointing to `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V1.3.bin`.
 - This is the first verified V1.3 CI/public-release completion after the Core 3.3.7 compile fixes. Physical ESP32-C3 flashing/runtime validation is still a separate hardware step and has not been claimed here.
+
+## 2026-09-27 — EXECUTION: WIFI STA-MODE BOUNDARY DIAGNOSTIC
+- Current repository source remains the verified V1.3 Arduino-Standard firmware; no production firmware logic was changed.
+- Because standalone Core 3.3.7 testing previously showed a panic at the public `WiFi.mode(WIFI_AP)` boundary, the next diagnostic isolates the sibling public STA-mode initialization path.
+- Added diagnostic file: `firmware/diagnostics/JEXFYZ-WiFi-STA-Mode-Test.ino`.
+- Scope is intentionally minimal: `Arduino.h`, `WiFi.h`, official `ESP.getCoreVersion()`, `ESP.getChipModel()`, `ESP.getChipRevision()`, `WiFi.getMode()`, `WiFi.mode(WIFI_STA)`, and `WiFi.status()`.
+- The sketch contains explicit Serial markers immediately before and after `WiFi.mode(WIFI_STA)`; it does not use WebServer, Update, BLE, Preferences, NTC, PWM, RGB, raw ESP-IDF Wi-Fi lifecycle, or project-specific startup code.
+- Diagnostic commit: `e8185cb24acb7475a533a859208156b43ecd4c03`.
+- Interpretation boundary: if STEP 3 is reached, generic Arduino Wi-Fi initialization can complete in STA mode and the remaining fault is AP-specific; if the board panics between STEP 2 and STEP 3, the failure is below the AP-specific path and production OTA/AP changes should not be attempted blindly.
+- Next boundary: compile/flash this diagnostic under the same ArduinoDroid + Arduino-ESP32 Core 3.3.7 setup and preserve the complete Serial output.
