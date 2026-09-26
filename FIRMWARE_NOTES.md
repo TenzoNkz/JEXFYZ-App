@@ -1246,6 +1246,18 @@ The project process is now explicitly two-phase:
 - V4.0 TLS uses WiFiClientSecure::useBuiltinCACertBundle(); no hardcoded DigiCert certificate block remains in the firmware.
 - The next required physical validation is controlled testing of V3.9 (or a manually flashed V4.0 baseline) -> V4.0 online OTA, plus local OTA regression verification.
 
+## 2026-09-26 — V4.0 OFFICIAL ESPRESSIF SOURCE ALIGNMENT
+
+- Current firmware source version: V4.0.
+- Firmware CI baseline: Arduino-ESP32 Core 3.3.12 stable, based on ESP-IDF v5.5.5.
+- Online OTA uses the official Arduino-ESP32 HTTPUpdate abstraction with a 12-second HTTPUpdate instance, official Content-Length/getSize handling, official Update.begin/writeStream/end lifecycle, and official HTTPUpdate error reporting.
+- Online HTTPS uses NetworkClientSecure with the official built-in CA certificate bundle facility. Certificate time is synchronized with the official secure HTTPUpdate example pattern using pool.ntp.org and time.nist.gov.
+- The previous hardcoded DigiCert certificate bundle in the application source is removed because the runtime now uses the official platform CA bundle.
+- Local OTA continues to use the official Arduino Update API with a supplied browser file size when available and Update.end()/Update.end(true) according to the known-size/unknown-size path.
+- BLE initialization checks BLEDevice::init() and BLEDevice::setMTU() return values; BLE shutdown continues to use BLEDevice::deinit(false) so controller memory remains reusable.
+- P1 BLE UUIDs, GPIO mapping, cooling/safety behavior, NTC, Adaptive, voltage, RGB/LED, touch behavior, persistence, and Wi-Fi/BLE radio exclusivity are unchanged.
+- The 2 MiB CI release gate remains active.
+
 # END OF FIRMWARE ENGINEERING MEMORY
 
 
