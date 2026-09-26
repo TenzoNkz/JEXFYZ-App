@@ -10,7 +10,26 @@
 - Firmware source is intentionally comment-free as of the source cleanup recorded below. All design, safety, timing, hardware, protocol, OTA, persistence, and implementation explanations previously embedded as C/C++ comments are documented here instead.
 - Version policy: every firmware change must increment the major.minor firmware version. Use the project sequence style such as V1.0, V1.1 ... V1.9, V2.0; do not use V1.10 or a patch suffix.
 
-## 2. VERIFIED MANUAL UPLOAD REFERENCE — ARDUINODROID
+#
+## CURRENT EXECUTION CONTROL — AUTHORITATIVE
+
+### Firmware source editing
+- Firmware source can be discussed, reviewed, and changed in the Code sub-chat without starting CI.
+- Plain `Eksekusi` means apply the agreed repository changes. It does NOT build the firmware `.bin`.
+- Editing `firmware/JEXFYZ.ino` does not trigger Firmware Build.
+
+### Firmware build command
+- The user explicitly starts firmware compilation with `Eksekusi Firmware`.
+- Only that command updates `.github/FIRMWARE_BUILD_TRIGGER`.
+- The trigger file starts `.github/workflows/firmware-build.yml`.
+- The workflow itself has no `workflow_dispatch` and no source-file trigger.
+- Therefore the build is completely separated from ordinary source edits.
+
+### App Build separation
+- App compilation belongs to the Action sub-chat and starts only from `.github/APP_BUILD_TRIGGER` after the user says `Build App`.
+- Firmware Build is never started by the Action sub-chat.
+
+# 2. VERIFIED MANUAL UPLOAD REFERENCE — ARDUINODROID
 
 The following configuration is the user's proven manual upload configuration and is the primary reference for avoiding board/upload mismatches.
 
@@ -968,8 +987,8 @@ No SHA/hash field is part of the firmware release metadata contract.
 
 Current workflow:
 - Name: Firmware Build.
-- Automatic trigger when `firmware/JEXFYZ.ino` changes.
-- Explicit Code-subchat execution trigger via `.github/FIRMWARE_BUILD_TRIGGER`.
+- Explicit trigger only via `.github/FIRMWARE_BUILD_TRIGGER` after `Eksekusi Firmware`.
+- Source changes do not trigger the workflow.
 - No manual `workflow_dispatch` trigger remains.
 
 Pinned CI environment:
