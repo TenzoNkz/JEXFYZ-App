@@ -2341,7 +2341,7 @@ static void localOtaUploadHandler() {
       return;
     }
 
-    const bool updateOk = Update.isFinished() && Update.end(false);
+    const bool updateOk = Update.end(true);
     if (updateOk) {
       saveOtaResult("LOCAL_SUCCESS");
       setOtaState(OtaState::SUCCESS);
