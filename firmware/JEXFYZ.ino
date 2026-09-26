@@ -20,7 +20,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
-static constexpr char FW_VERSION[] = "V1.1";
+static constexpr char FW_VERSION[] = "V1.2";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -353,7 +353,8 @@ int otaDiagnosticErrorCode = 0;
 uint8_t otaDiagnosticProgress = 0;
 uint8_t otaDiagnosticLastPublishedProgress = 255;
 
-bool bootApActive = true;
+bool bootApActive = false;
+bool bootApPending = true;
 uint32_t bootApStartedAt = 0;
 bool runtimeFeaturesReady = false;
 bool bootApHadClient = false;
@@ -3778,12 +3779,12 @@ void setup() {
 
   // ========================================================================
   // RADIO STARTUP BOUNDARY
-  // All non-radio hardware is initialized first. The AP function above owns
-  // the complete initial Wi-Fi bring-up. BLE is not initialized until the AP
-  // window has ended and Wi-Fi has been explicitly shut down.
+  // Match the Horizon Cooler runtime context: complete setup() first, then
+  // enter the official Arduino Wi-Fi AP path from loop(). BLE is not started
+  // while the boot AP window owns the single radio.
   // ========================================================================
-  Serial.println("BOOT: START WIFI AP");
-  startLocalOtaAp();
+  bootApPending = true;
+  Serial.println("BOOT: WIFI AP DEFERRED TO LOOP");
 }
 
 void loop() {
@@ -3794,6 +3795,12 @@ void loop() {
   // before giving the single 2.4 GHz radio to BLE.
   if (!bootApActive && !runtimeFeaturesReady) {
     initializeRuntimeFeatures();
+  }
+
+  if (bootApPending) {
+    bootApPending = false;
+    Serial.println("BOOT: START WIFI AP FROM LOOP");
+    startLocalOtaAp();
   }
 
   serviceBleStartRecovery();
