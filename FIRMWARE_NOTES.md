@@ -145,6 +145,19 @@
 - Important reasoning correction: absence of an SSID must only be evaluated by a test whose purpose includes AP creation. This distinction is now part of the diagnostic boundary.
 - No executable source was changed and no build was executed in this discussion.
 - Next boundary: interpret the existing Network-begin test strictly from its Serial output; if it completes successfully, proceed to isolate the next official initialization step. Do not infer failure from SSID visibility for this sketch.
+## 2026-09-27 — EXECUTION: WIFI LOW-LEVEL INIT DIAGNOSTIC
+
+- User explicitly requested `Eksekusi Full` after the `WiFi.mode(WIFI_AP)` panic evidence.
+- Created standalone diagnostic file `JEXFYZ-WiFi-LowLevel-Init-Test.ino` for manual ArduinoDroid testing.
+- Diagnostic sequence follows the verified Arduino-ESP32 Core 3.3.7 `wifiLowLevelInit()` ordering only through the `esp_wifi_init()` boundary: report actual Core/chip -> `Network.begin()` -> `WIFI_INIT_CONFIG_DEFAULT()` -> apply the exact non-static-buffer configuration used by Core 3.3.7 -> `esp_wifi_init(&cfg)`.
+- The test intentionally does not call AP mode, SoftAP, WebServer, Update OTA, BLE, or any JE X FYZ feature.
+- Official source basis verified: Core 3.3.7 `WiFiGeneric.cpp` calls `Network.begin()` before `esp_wifi_init(&cfg)`, and uses `WIFI_INIT_CONFIG_DEFAULT()` with static_tx_buf_num=0, dynamic_tx_buf_num=32, tx_buf_type=1, cache_tx_buf_num=4, static_rx_buf_num=4, dynamic_rx_buf_num=32 when static buffers are disabled.
+- Static isolation/API validation: PASS. The generated file contains the required official APIs and no executable AP/WebServer/OTA/BLE/application calls.
+- Build/flash validation: not performed here; manual ArduinoDroid testing is required.
+- Production `firmware/JEXFYZ.ino` was not modified by this diagnostic.
+- Runtime/root-cause status: unresolved. This test is designed to distinguish `Network.begin()` failure from `esp_wifi_init()` failure using separate Serial boundaries.
+- Important correction from prior discussion: absence of an SSID is irrelevant for this low-level diagnostic because AP creation is intentionally not attempted.
+- Next boundary: flash the low-level diagnostic and preserve the complete Serial output, especially STEP 1 through STEP 7.
 > Current-state override for the next JE X FYZ firmware sub-chat. Historical sections below are retained for chronology.
 
 ## 1. Mandatory workflow
