@@ -2325,7 +2325,7 @@ static bool downloadOnlineOtaResumable() {
 
       HTTPClient http;
       cloudClient.stop();
-      cloudClient.useBuiltinCACertBundle();
+      cloudClient.setCACert(GITHUB_ROOT_CA);
       cloudClient.setTimeout(ONLINE_OTA_HTTP_TIMEOUT_MS);
       configureOnlineOtaRangeHttp(http);
 
