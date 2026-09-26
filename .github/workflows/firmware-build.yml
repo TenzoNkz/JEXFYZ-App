@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  ESP32_CORE_VERSION: "3.2.1"
+  ESP32_CORE_VERSION: "3.3.7"
   ONEBUTTON_VERSION: "2.6.1"
   ADAFRUIT_NEOPIXEL_VERSION: "1.12.5"
   PUBLIC_FIRMWARE_REPO: "TenzoNkz/JEXFYZ-Firmware"
@@ -97,6 +97,13 @@ jobs:
             build/JEXFYZ
           BIN="build/firmware/JEXFYZ.ino.bin"
           test -s "$BIN"
+          MAX_FIRMWARE_BYTES=$((2 * 1024 * 1024))
+          FIRMWARE_BYTES=$(stat -c%s "$BIN")
+          echo "Firmware binary size: $FIRMWARE_BYTES bytes"
+          if [ "$FIRMWARE_BYTES" -gt "$MAX_FIRMWARE_BYTES" ]; then
+            echo "Firmware exceeds 2 MiB OTA release limit: $FIRMWARE_BYTES > $MAX_FIRMWARE_BYTES"
+            exit 1
+          fi
           VERSION="${{ steps.version.outputs.version }}"
           RELEASE_BIN="JEXFYZ-${VERSION}.bin"
           cp "$BIN" "build/firmware/$RELEASE_BIN"
