@@ -158,6 +158,14 @@
 - Runtime/root-cause status: unresolved. This test is designed to distinguish `Network.begin()` failure from `esp_wifi_init()` failure using separate Serial boundaries.
 - Important correction from prior discussion: absence of an SSID is irrelevant for this low-level diagnostic because AP creation is intentionally not attempted.
 - Next boundary: flash the low-level diagnostic and preserve the complete Serial output, especially STEP 1 through STEP 7.
+## 2026-09-27 — DISCUSSION: HARDWARE TARGET CONFIRMED
+
+- User reconfirmed the physical hardware target: **ESP32-C3 Super Mini**.
+- This is consistent with the physical diagnostic output: Chip = ESP32-C3, Chip revision = 4, and the actual compiled Arduino-ESP32 Core = 3.3.7.
+- Manual ArduinoDroid board target remains the project reference: **ESP32C3 Dev Module**.
+- The current low-level Wi-Fi diagnostic files are intended for this ESP32-C3 hardware and Core 3.3.7 environment.
+- No executable source was changed and no build was executed by this discussion; this is a hardware-target clarification only.
+- Next boundary remains the existing low-level Wi-Fi initialization diagnostic; interpret results from Serial rather than SSID visibility when the sketch does not create an AP.
 > Current-state override for the next JE X FYZ firmware sub-chat. Historical sections below are retained for chronology.
 
 ## 1. Mandatory workflow
