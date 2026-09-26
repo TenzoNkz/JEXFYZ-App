@@ -2584,6 +2584,12 @@ The project process is now explicitly two-phase:
 - Run #35's audit-only failure was automatically repaired before Run #36; it did not indicate a firmware compile or OTA implementation failure.
 - App OTA diagnostic protocol remains aligned with firmware V4.6; no App Build was triggered by this firmware-only execution.
 - Physical next step is manual flashing/testing of the V4.6 ArduinoDroid temporary source, followed by hardware OTA validation if desired.
+## 2026-09-26 — V4.7 EXECUTION HANDOFF
+
+- V4.7 changes Online OTA body decoding to HTTPClient::writeToStream() with an OTA flash sink; Range/reconnect/resume architecture is retained.
+- Existing App OTA diagnostic stage translation remains compatible.
+- No App Build was triggered by this firmware-focused execution.
+
 # END OF APP PROJECT MEMORY
 
 ## 2026-09-26 — Code #2: firmware source cleanup + App BLE contract synchronization

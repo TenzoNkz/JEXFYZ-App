@@ -22,7 +22,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
-static constexpr char FW_VERSION[] = "V4.6";
+static constexpr char FW_VERSION[] = "V4.7";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -1979,10 +1979,54 @@ static void configureOnlineOtaRangeHttp(HTTPClient& http) {
   http.setReuse(false);
   http.setRedirectLimit(5);
   http.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
-  http.addHeader("Accept-Encoding", "identity");
+  http.setAcceptEncoding("identity");
   http.addHeader("Cache-Control", "no-cache");
   http.addHeader("Connection", "close");
 }
+
+class OtaHttpFlashStream final : public Stream {
+ public:
+  OtaHttpFlashStream(
+      esp_ota_handle_t* handle,
+      size_t* written,
+      size_t totalSize)
+      : handle_(handle), written_(written), totalSize_(totalSize) {}
+
+  size_t write(const uint8_t* data, size_t size) override {
+    if (data == nullptr || size == 0) return 0;
+
+    const esp_err_t err = esp_ota_write(*handle_, data, size);
+    if (err != ESP_OK) {
+      lastError_ = err;
+      return 0;
+    }
+
+    *written_ += size;
+    cloudBytesReceived = static_cast<uint32_t>(
+        min(*written_, totalSize_));
+
+    const uint8_t progress = static_cast<uint8_t>(
+        min<size_t>(100, (*written_ * 100ULL) / totalSize_));
+    setOtaDiagnosticProgress(progress);
+    renderBlink(0x0000FF);
+    serviceBleTx();
+    yield();
+    return size;
+  }
+
+  int available() override { return 0; }
+  int read() override { return -1; }
+  int peek() override { return -1; }
+  void flush() override {}
+
+  esp_err_t lastError() const { return lastError_; }
+
+ private:
+  esp_ota_handle_t* handle_;
+  size_t* written_;
+  size_t totalSize_;
+  esp_err_t lastError_ = ESP_OK;
+};
 
 static bool downloadOnlineOtaResumable() {
   const esp_partition_t* targetPartition =
@@ -2091,8 +2135,6 @@ static bool downloadOnlineOtaResumable() {
   }
 
   size_t offset = 0;
-  uint8_t buffer[2048];
-
   while (offset < totalSize) {
     const size_t rangeEnd =
         min(totalSize - 1, offset + ONLINE_OTA_RANGE_CHUNK_BYTES - 1);
@@ -2164,99 +2206,41 @@ static bool downloadOnlineOtaResumable() {
         continue;
       }
 
-      NetworkClient* stream = http.getStreamPtr();
-      if (stream == nullptr) {
-        lastError = "NO_STREAM";
-        lastErrorCode = -1;
-        http.end();
-        cloudClient.stop();
-        continue;
-      }
-
       setOtaDiagnosticStage("ONLINE_RANGE_WRITE");
       size_t chunkReceived = 0;
-      uint32_t lastByteAt = millis();
-      bool streamFailed = false;
-
-      while (chunkReceived < expectedChunk) {
-        const int available = stream->available();
-
-        if (available > 0) {
-          const size_t wanted = min(
-              static_cast<size_t>(available),
-              min(sizeof(buffer), expectedChunk - chunkReceived));
-          const int readCount = stream->read(buffer, wanted);
-
-          if (readCount <= 0) {
-            lastError = "STREAM_READ_FAILED";
-            lastErrorCode = UPDATE_ERROR_STREAM;
-            streamFailed = true;
-            break;
-          }
-
-          otaErr = esp_ota_write(
-              otaHandle,
-              buffer,
-              static_cast<size_t>(readCount));
-
-          if (otaErr != ESP_OK) {
-            lastError =
-                String("esp_ota_write: ") + esp_err_to_name(otaErr);
-            lastErrorCode = static_cast<int>(otaErr);
-            http.end();
-            cloudClient.stop();
-            esp_ota_abort(otaHandle);
-            failOnlineOta(
-                "ONLINE_FLASH_WRITE",
-                lastErrorCode,
-                lastError);
-            return false;
-          }
-
-          chunkReceived += static_cast<size_t>(readCount);
-          offset += static_cast<size_t>(readCount);
-          cloudBytesReceived = static_cast<uint32_t>(
-              min(offset, totalSize));
-
-          const uint8_t progress = static_cast<uint8_t>(
-              min<size_t>(100, (offset * 100ULL) / totalSize));
-          setOtaDiagnosticProgress(progress);
-          renderBlink(0x0000FF);
-          serviceBleTx();
-          yield();
-          lastByteAt = millis();
-          continue;
-        }
-
-        if (!http.connected()) {
-          lastError = "STREAM_CONNECTION_LOST";
-          lastErrorCode = UPDATE_ERROR_STREAM;
-          streamFailed = true;
-          break;
-        }
-
-        if (millis() - lastByteAt >= ONLINE_OTA_HTTP_TIMEOUT_MS) {
-          lastError = "STREAM_READ_TIMEOUT";
-          lastErrorCode = UPDATE_ERROR_STREAM;
-          streamFailed = true;
-          break;
-        }
-
-        renderBlink(0x0000FF);
-        serviceBleTx();
-        yield();
-      }
+      OtaHttpFlashStream sink(&otaHandle, &chunkReceived, expectedChunk);
+      const int httpResult = http.writeToStream(&sink);
+      const esp_err_t sinkError = sink.lastError();
 
       http.end();
       cloudClient.stop();
 
-      if (!streamFailed && chunkReceived == expectedChunk) {
+      if (sinkError != ESP_OK) {
+        lastError =
+            String("esp_ota_write: ") + esp_err_to_name(sinkError);
+        lastErrorCode = static_cast<int>(sinkError);
+        esp_ota_abort(otaHandle);
+        failOnlineOta(
+            "ONLINE_FLASH_WRITE",
+            lastErrorCode,
+            lastError);
+        return false;
+      }
+
+      if (chunkReceived == expectedChunk &&
+          httpResult == static_cast<int>(expectedChunk)) {
+        offset += chunkReceived;
         chunkComplete = true;
         continue;
       }
 
-      if (streamFailed) {
-        const size_t resumeOffset = offset;
+      lastError = httpResult < 0
+                      ? "HTTP_" + String(httpResult)
+                      : "STREAM_INCOMPLETE";
+      lastErrorCode = UPDATE_ERROR_STREAM;
+
+      if (chunkReceived < expectedChunk) {
+        const size_t resumeOffset = offset + chunkReceived;
 
         otaErr = esp_ota_abort(otaHandle);
         if (otaErr != ESP_OK) {

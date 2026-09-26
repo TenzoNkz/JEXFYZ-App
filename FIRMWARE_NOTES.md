@@ -1441,6 +1441,15 @@ The project process is now explicitly two-phase:
 - V4.5 resumable Online OTA transport remains preserved; no redesign was made to the working Range/reconnect/resume mechanism.
 - Manual ArduinoDroid source remains Core 3.3.7-compatible and uses the temporary legacy branch only for manual flashing/testing.
 - This is the final completed release state for the requested V4.6 OTA safety/code-organization execution. Physical V4.6 validation remains a separate hardware test step.
+## 2026-09-26 — V4.7 EXECUTION / HTTP BODY DECODER CORRECTION
+
+- V4.7 replaces the Online OTA raw `getStreamPtr()->read()` body path with Arduino-ESP32 `HTTPClient::writeToStream()` and a dedicated OTA flash Stream sink.
+- The HTTPClient decoder remains responsible for Content-Length/chunked transfer framing before bytes reach the OTA flash writer.
+- `Accept-Encoding: identity` now uses the official HTTPClient API `setAcceptEncoding()`.
+- HTTP Range, retry/reconnect, and Core-3.3.12 `esp_ota_resume()` remain in place.
+- Diagnostic progress/error reporting is preserved.
+- Physical target: V4.5 known-good -> V4.7 manual/online validation. V4.6 image-verify failure at 100% / code 5379 is the defect being addressed.
+
 # END OF FIRMWARE ENGINEERING MEMORY
 
 

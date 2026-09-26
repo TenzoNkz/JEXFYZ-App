@@ -109,6 +109,9 @@ jobs:
               "ONLINE_RANGE_PROBE",
               "ONLINE_RANGE_REQUEST",
               "ONLINE_RANGE_RESUME",
+              'setAcceptEncoding("identity")',
+              "http.writeToStream(&sink)",
+              "OtaHttpFlashStream",
               "OTA_STAGE",
               "OTA_PROGRESS",
               "OTA_ERROR_CODE",
@@ -118,7 +121,7 @@ jobs:
           missing = [x for x in required if x not in s]
           if missing:
               raise SystemExit("OTA SAFETY AUDIT FAILED: " + ", ".join(missing))
-          if 'static constexpr char FW_VERSION[] = "V4.6";' not in s:
+          if 'static constexpr char FW_VERSION[] = "V4.7";' not in s:
               raise SystemExit("OTA SAFETY AUDIT FAILED: version is not V4.6")
           if "setInsecure()" in s:
               raise SystemExit("OTA SAFETY AUDIT FAILED: insecure TLS leaked into release source")
