@@ -5,7 +5,8 @@
 #include <HTTPClient.h>
 #include <WiFiClientSecure.h>
 #include <Preferences.h>
-#include <WS2812FX.h>
+#include <Adafruit_NeoPixel.h>
+#include <OneButton.h>
 #include <math.h>
 #include <time.h>
 
@@ -19,7 +20,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
-static constexpr char FW_VERSION[] = "V3.2";
+static constexpr char FW_VERSION[] = "V3.3";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -47,6 +48,7 @@ static const IPAddress AP_GATEWAY(192, 168, 4, 1);
 static const IPAddress AP_SUBNET(255, 255, 255, 0);
 
 static constexpr uint32_t BOOT_AP_TIMEOUT_MS          = 10000;
+static constexpr uint32_t LED_FRAME_INTERVAL_MS       = 33;
 static constexpr uint32_t OTA_RESTART_DELAY_MS        = 1200;
 static constexpr uint32_t OTA_FAILURE_INDICATOR_MS    = 1000;
 static constexpr uint32_t WIFI_CONNECT_TIMEOUT_MS     = 15000;
@@ -161,7 +163,8 @@ static constexpr uint32_t PELTIER_SOFT_START_MS = 5000;
 
 WebServer webServer(80);
 Preferences prefs;
-WS2812FX leds(LED_COUNT, PIN_LED, NEO_GRB + NEO_KHZ800, 2, 2);
+Adafruit_NeoPixel leds(LED_COUNT, PIN_LED, NEO_GRB + NEO_KHZ800);
+OneButton touchButton(PIN_TOUCH, false, false);
 
 BLEServer* bleServer = nullptr;
 BLECharacteristic* rxCharacteristic = nullptr;
@@ -193,14 +196,14 @@ enum class Voltage : uint8_t {
 };
 
 enum class LedMode : uint8_t {
-  STATIC = 0,
-  BREATH = 1,
-  WIPE = 2,
-  RUNNING = 3,
-  SCAN = 4,
-  THEATER = 5,
-  RAINBOW = 6,
-  TWINKLE = 7,
+  STATIC = 1,
+  BREATH = 2,
+  CENTER_OUT = 3,
+  OUTER_IN = 4,
+  DUAL_CHASE = 5,
+  LEFT_RIGHT = 6,
+  RAINBOW = 7,
+  TWINKLE = 8,
 };
 
 enum class VoltageRequestSource : uint8_t {
@@ -270,6 +273,9 @@ String lastSafetyReasonSent;
 
 bool voltageIndicatorActive = false;
 uint32_t voltageIndicatorUntil = 0;
+uint32_t lastLedFrameAtMs = 0;
+uint32_t twinkleUpdateAtMs = 0;
+uint8_t twinkleLevel[LED_COUNT] = {0};
 
 bool hotProtectionActive = false;
 bool adaptiveHotStepPending = false;
@@ -530,7 +536,8 @@ static void loadSettings() {
   }
 
   rgbOn = prefs.getBool("rgbOn", false);
-  rgbMode = static_cast<LedMode>(constrain(static_cast<int>(prefs.getUChar("rgbMode", 0)), 0, 7));
+  const int storedMode = prefs.getUChar("rgbMode", 1);
+  rgbMode = static_cast<LedMode>(constrain(storedMode, 1, 8));
   rgbBrightness = prefs.getUChar("brightness", 100);
   if (rgbBrightness > 100) rgbBrightness = 100;
 
@@ -671,58 +678,51 @@ static void applyCoolingOutputs() {
   if (fanPwm != previousPwm) sendDelta("FAN_SPEED", String(fanPwm));
 }
 
-static uint8_t ws2812fxMode(LedMode mode) {
+static constexpr uint8_t LEFT_PIXELS[4] = {0, 1, 2, 3};
+static constexpr uint8_t RIGHT_PIXELS[4] = {7, 6, 5, 4};
 
-  switch (mode) {
-    case LedMode::STATIC:  return 0;
-    case LedMode::BREATH:  return 2;
-    case LedMode::WIPE:    return 3;
-    case LedMode::RUNNING: return 18;
-    case LedMode::SCAN:    return 13;
-    case LedMode::THEATER: return 16;
-    case LedMode::RAINBOW: return 11;
-    case LedMode::TWINKLE: return 22;
-  }
-  return 0;
+static uint32_t scaleColor(uint32_t color, uint8_t brightness) {
+  const uint8_t r = static_cast<uint8_t>((((color >> 16) & 0xFFU) * brightness) / 255U);
+  const uint8_t g = static_cast<uint8_t>((((color >> 8) & 0xFFU) * brightness) / 255U);
+  const uint8_t b = static_cast<uint8_t>(((color & 0xFFU) * brightness) / 255U);
+  return leds.Color(r, g, b);
 }
 
-static uint32_t currentVoltageColor() {
-  switch (currentVoltage) {
-    case Voltage::V5:  return color5V;
-    case Voltage::V9:  return color9V;
-    case Voltage::V12: return color12V;
-  }
-  return color5V;
+static uint32_t blendLevel(uint32_t color, uint8_t baseBrightness, float level) {
+  if (level <= 0.0f) return 0;
+  if (level > 1.0f) level = 1.0f;
+  const uint8_t brightness = static_cast<uint8_t>(lroundf(baseBrightness * level));
+  return scaleColor(color, brightness);
 }
 
-static uint8_t hardwareBrightness() {
-  return static_cast<uint8_t>(map(rgbBrightness, 0, 100, 0, 255));
-}
-
-static void showAll(uint32_t color) {
+static void showAll(uint32_t color, uint8_t brightness = 255) {
+  const uint32_t scaled = scaleColor(color, brightness);
   for (uint8_t i = 0; i < LED_COUNT; ++i) {
-    leds.setPixelColor(i, color);
+    leds.setPixelColor(i, scaled);
   }
   leds.show();
 }
 
+static void clearAllLeds() {
+  leds.clear();
+  leds.show();
+}
+
 static void stopUserLedOutput() {
-  leds.stop();
-  leds.setBrightness(0);
-  leds.strip_off();
+  clearAllLeds();
+  lastLedFrameAtMs = 0;
+  twinkleUpdateAtMs = 0;
+  for (uint8_t i = 0; i < LED_COUNT; ++i) twinkleLevel[i] = 0;
+}
+
+static void resetLedAnimationState() {
+  lastLedFrameAtMs = 0;
+  twinkleUpdateAtMs = 0;
+  for (uint8_t i = 0; i < LED_COUNT; ++i) twinkleLevel[i] = 0;
 }
 
 static void startUserLedEffect() {
-  if (!rgbOn) {
-    stopUserLedOutput();
-    return;
-  }
-
-  leds.setBrightness(hardwareBrightness());
-  leds.setColor(rgbColor);
-  leds.setSpeed(1000);
-  leds.setMode(ws2812fxMode(rgbMode));
-  leds.start();
+  resetLedAnimationState();
 }
 
 static void renderBlink(uint32_t color) {
@@ -730,8 +730,7 @@ static void renderBlink(uint32_t color) {
 
   ledBlinkAt = millis();
   ledBlinkPhase = !ledBlinkPhase;
-  leds.setBrightness(255);
-  showAll(ledBlinkPhase ? color : 0x000000);
+  showAll(ledBlinkPhase ? color : 0x000000, 255);
 }
 
 static void resetBlinkState() {
@@ -748,13 +747,117 @@ static void startVoltageIndicator() {
 
   voltageIndicatorActive = true;
   voltageIndicatorUntil = millis() + 1000;
-  leds.stop();
-  leds.setBrightness(hardwareBrightness());
-  showAll(currentVoltageColor());
+  showAll(currentVoltageColor(), hardwareBrightness());
+}
+
+static void renderCustomLedFrame(uint32_t now) {
+  if (now - lastLedFrameAtMs < LED_FRAME_INTERVAL_MS) return;
+  lastLedFrameAtMs = now;
+
+  leds.clear();
+  const uint8_t baseBrightness = hardwareBrightness();
+  const uint32_t baseColor = rgbColor;
+
+  switch (rgbMode) {
+    case LedMode::STATIC: {
+      const uint32_t color = scaleColor(baseColor, baseBrightness);
+      for (uint8_t i = 0; i < LED_COUNT; ++i) leds.setPixelColor(i, color);
+      break;
+    }
+
+    case LedMode::BREATH: {
+      const float phase = (now % 2200UL) / 2200.0f;
+      const float level = 0.12f + 0.88f * (0.5f + 0.5f * sinf(phase * 2.0f * PI));
+      const uint32_t color = blendLevel(baseColor, baseBrightness, level);
+      for (uint8_t i = 0; i < LED_COUNT; ++i) leds.setPixelColor(i, color);
+      break;
+    }
+
+    case LedMode::CENTER_OUT: {
+      const float progress = (now % 1600UL) / 400.0f;
+      for (uint8_t pair = 0; pair < 4; ++pair) {
+        const float distance = static_cast<float>(pair);
+        float level = 0.0f;
+        if (progress >= distance) level = 1.0f;
+        else if (progress > distance - 1.0f) level = progress - distance + 1.0f;
+        const uint32_t color = blendLevel(baseColor, baseBrightness, level);
+        leds.setPixelColor(LEFT_PIXELS[3 - pair], color);
+        leds.setPixelColor(RIGHT_PIXELS[3 - pair], color);
+      }
+      break;
+    }
+
+    case LedMode::OUTER_IN: {
+      const float progress = (now % 1600UL) / 400.0f;
+      for (uint8_t pair = 0; pair < 4; ++pair) {
+        const float distance = static_cast<float>(pair);
+        float level = 0.0f;
+        if (progress >= distance) level = 1.0f;
+        else if (progress > distance - 1.0f) level = progress - distance + 1.0f;
+        const uint32_t color = blendLevel(baseColor, baseBrightness, level);
+        leds.setPixelColor(LEFT_PIXELS[pair], color);
+        leds.setPixelColor(RIGHT_PIXELS[pair], color);
+      }
+      break;
+    }
+
+    case LedMode::DUAL_CHASE: {
+      static constexpr uint8_t sequence[] = {0, 1, 2, 3, 2, 1};
+      const uint8_t position = static_cast<uint8_t>((now / 150UL) % 6U);
+      const uint8_t pair = sequence[position];
+      leds.setPixelColor(LEFT_PIXELS[pair], scaleColor(baseColor, baseBrightness));
+      leds.setPixelColor(RIGHT_PIXELS[pair], scaleColor(baseColor, baseBrightness));
+      break;
+    }
+
+    case LedMode::LEFT_RIGHT: {
+      const float phase = (now % 1800UL) / 1800.0f;
+      const float wave = 0.5f + 0.5f * sinf(phase * 2.0f * PI);
+      const float leftLevel = 0.10f + 0.90f * wave;
+      const float rightLevel = 0.10f + 0.90f * (1.0f - wave);
+      const uint32_t leftColor = blendLevel(baseColor, baseBrightness, leftLevel);
+      const uint32_t rightColor = blendLevel(baseColor, baseBrightness, rightLevel);
+      for (uint8_t i = 0; i < 4; ++i) {
+        leds.setPixelColor(LEFT_PIXELS[i], leftColor);
+        leds.setPixelColor(RIGHT_PIXELS[i], rightColor);
+      }
+      break;
+    }
+
+    case LedMode::RAINBOW: {
+      const uint16_t offset = static_cast<uint16_t>((now / 10UL) & 0xFFFFU);
+      for (uint8_t logical = 0; logical < LED_COUNT; ++logical) {
+        const uint16_t hue = static_cast<uint16_t>(offset + logical * 8192U);
+        leds.setPixelColor(logical, Adafruit_NeoPixel::ColorHSV(hue, 255, baseBrightness));
+      }
+      break;
+    }
+
+    case LedMode::TWINKLE: {
+      if (now - twinkleUpdateAtMs >= 70) {
+        twinkleUpdateAtMs = now;
+        for (uint8_t i = 0; i < LED_COUNT; ++i) {
+          if (twinkleLevel[i] > 18) twinkleLevel[i] = static_cast<uint8_t>(twinkleLevel[i] - 18);
+          else twinkleLevel[i] = 0;
+        }
+        const uint8_t sparkCount = 1 + static_cast<uint8_t>(random(2));
+        for (uint8_t n = 0; n < sparkCount; ++n) {
+          const uint8_t pixel = static_cast<uint8_t>(random(LED_COUNT));
+          twinkleLevel[pixel] = 140 + static_cast<uint8_t>(random(116));
+        }
+      }
+      for (uint8_t i = 0; i < LED_COUNT; ++i) {
+        const uint8_t level = twinkleLevel[i];
+        leds.setPixelColor(i, scaleColor(baseColor, static_cast<uint8_t>((baseBrightness * level) / 255U)));
+      }
+      break;
+    }
+  }
+
+  leds.show();
 }
 
 static void processLeds() {
-
   if (otaState == OtaState::SUCCESS) {
     renderBlink(0x00FF00);
     return;
@@ -768,9 +871,7 @@ static void processLeds() {
 
     resetBlinkState();
     setOtaState(bootApActive ? OtaState::BOOT_AP : OtaState::IDLE);
-    if (!bootApActive && !otaActive) {
-      startUserLedEffect();
-    }
+    if (!bootApActive && !otaActive) startUserLedEffect();
     return;
   }
 
@@ -778,28 +879,6 @@ static void processLeds() {
       otaState == OtaState::CLOUD_DOWNLOADING ||
       otaState == OtaState::CLOUD_APPLYING) {
     renderBlink(0x0000FF);
-    return;
-  }
-
-  if (bootApActive && !bootApHadClient && !otaActive) {
-    if (!rgbOn) {
-      stopUserLedOutput();
-      return;
-    }
-
-    if (voltageIndicatorActive) {
-      if (millis() >= voltageIndicatorUntil) {
-        voltageIndicatorActive = false;
-        startUserLedEffect();
-      } else {
-        leds.stop();
-        leds.setBrightness(hardwareBrightness());
-        showAll(currentVoltageColor());
-      }
-      return;
-    }
-
-    leds.service();
     return;
   }
 
@@ -822,15 +901,14 @@ static void processLeds() {
     if (millis() >= voltageIndicatorUntil) {
       voltageIndicatorActive = false;
       startUserLedEffect();
-    } else {
-      leds.stop();
-      leds.setBrightness(hardwareBrightness());
-      showAll(currentVoltageColor());
+    } else if (millis() - lastLedFrameAtMs >= LED_FRAME_INTERVAL_MS) {
+      lastLedFrameAtMs = millis();
+      showAll(currentVoltageColor(), hardwareBrightness());
     }
     return;
   }
 
-  leds.service();
+  renderCustomLedFrame(millis());
 }
 
 static bool voltageGuardAllows(bool bypassGuard) {
@@ -2686,18 +2764,6 @@ static void processPendingOnlineOtaStart() {
   startOnlineOta();
 }
 
-static constexpr uint32_t TOUCH_DEBOUNCE_MS = 50;
-static constexpr uint32_t TOUCH_DOUBLE_CLICK_MS = 500;
-static constexpr uint32_t TOUCH_LONG_PRESS_MS = 5000;
-
-static bool touchRawState = false;
-static bool touchStableState = false;
-static uint32_t touchRawChangedAtMs = 0;
-static uint32_t touchPressedAtMs = 0;
-static uint32_t touchFirstTapReleasedAtMs = 0;
-static bool touchPendingSingle = false;
-static bool touchLongFired = false;
-
 static void executeTouchSingle() {
   if (otaActive || adaptiveOn) return;
 
@@ -2733,67 +2799,26 @@ static void executeTouchLong() {
   sendAck("TOUCH_COOLING", peltierOn, peltierOn ? "ON" : safetyReason());
 }
 
-static void serviceTouch() {
-  const uint32_t now = millis();
-  const bool raw = digitalRead(PIN_TOUCH) == HIGH;
+static void onTouchSingleClick() {
+  executeTouchSingle();
+}
 
-  if (raw != touchRawState) {
-    touchRawState = raw;
-    touchRawChangedAtMs = now;
-  }
+static void onTouchDoubleClick() {
+  executeTouchDouble();
+}
 
-  if (touchRawState != touchStableState &&
-      now - touchRawChangedAtMs >= TOUCH_DEBOUNCE_MS) {
-    touchStableState = touchRawState;
-
-    if (touchStableState) {
-
-      touchPressedAtMs = now;
-      touchLongFired = false;
-    } else {
-
-      if (!touchLongFired && !otaActive) {
-        if (touchPendingSingle &&
-            now - touchFirstTapReleasedAtMs <= TOUCH_DOUBLE_CLICK_MS) {
-
-          touchPendingSingle = false;
-          touchFirstTapReleasedAtMs = 0;
-          executeTouchDouble();
-        } else {
-
-          touchPendingSingle = true;
-          touchFirstTapReleasedAtMs = now;
-        }
-      }
-    }
-  }
-
-  if (touchStableState && !touchLongFired && !otaActive &&
-      now - touchPressedAtMs >= TOUCH_LONG_PRESS_MS) {
-    touchLongFired = true;
-    touchPendingSingle = false;
-    touchFirstTapReleasedAtMs = 0;
-    executeTouchLong();
-  }
-
-  if (touchPendingSingle && !touchStableState &&
-      now - touchFirstTapReleasedAtMs > TOUCH_DOUBLE_CLICK_MS) {
-    touchPendingSingle = false;
-    touchFirstTapReleasedAtMs = 0;
-    executeTouchSingle();
-  }
+static void onTouchLongPress() {
+  executeTouchLong();
 }
 
 static void setupTouch() {
-
-  const bool initial = digitalRead(PIN_TOUCH) == HIGH;
-  touchRawState = initial;
-  touchStableState = initial;
-  touchRawChangedAtMs = millis();
-  touchPressedAtMs = initial ? millis() : 0;
-  touchFirstTapReleasedAtMs = 0;
-  touchPendingSingle = false;
-  touchLongFired = false;
+  pinMode(PIN_TOUCH, INPUT);
+  touchButton.setDebounceMs(50);
+  touchButton.setClickMs(500);
+  touchButton.setPressMs(5000);
+  touchButton.attachClick(onTouchSingleClick);
+  touchButton.attachDoubleClick(onTouchDoubleClick);
+  touchButton.attachLongPressStart(onTouchLongPress);
 }
 
 void setup() {
@@ -2820,8 +2845,10 @@ void setup() {
   ledcAttach(PIN_PELTIER, PELTIER_PWM_FREQ, PELTIER_PWM_RESOLUTION);
   stopPeltierOutput();
 
-  leds.init();
-  stopUserLedOutput();
+  leds.begin();
+  leds.clear();
+  leds.show();
+  resetLedAnimationState();
 
   loadSettings();
 
@@ -2921,7 +2948,7 @@ void loop() {
     return;
   }
 
-  serviceTouch();
+  touchButton.tick();
   sampleNtcIfDue();
   updateBatteryValidity();
   processAdaptiveHotTimer();
