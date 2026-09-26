@@ -2515,6 +2515,15 @@ The project process is now explicitly two-phase:
 - BLE/P1 command names remain unchanged.
 - No App Build was triggered in this Code/Firmware execution; APK build remains separately controlled in the Action sub-chat.
 
+
+## 2026-09-26 — V4.3 BUILD / OTA DIAGNOSTIC HANDOFF
+
+- Firmware V4.3 was compiled and published successfully by Firmware Build Run #27.
+- The App source is synchronized to the new OTA diagnostic telemetry/result format, but no APK build was triggered in this Code/Firmware execution.
+- The user should manually flash V4.3 using the dedicated ArduinoDroid temporary .ino artifact before physical OTA retesting.
+- Expected diagnostic Home NOTIFY output after a failed update includes mode, exact stage, error text, progress, and numeric error code.
+- Required next physical tests: V4.3 Local OTA and V4.3 Online OTA; preserve the exact Home NOTIFY result for diagnosis.
+
 # END OF APP PROJECT MEMORY
 
 ## 2026-09-26 — Code #2: firmware source cleanup + App BLE contract synchronization
