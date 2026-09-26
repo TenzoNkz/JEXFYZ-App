@@ -20,7 +20,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
-static constexpr char FW_VERSION[] = "V4.13";
+static constexpr char FW_VERSION[] = "V4.14";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -2856,45 +2856,60 @@ static void startLocalOtaAp() {
 
   Serial.println("WIFI AP: START");
 
-  for (uint8_t attempt = 0; attempt < 2; ++attempt) {
-    WiFi.disconnect(true, false);
-    WiFi.setHostname("JE-X-FYZ");
-    WiFi.setAutoReconnect(false);
-    WiFi.mode(WIFI_AP);
-    yield();
-
-    const bool configOk = WiFi.softAPConfig(AP_IP, AP_GATEWAY, AP_SUBNET);
-    const bool apRequested = configOk && WiFi.softAP(AP_SSID, AP_PASSWORD);
-    const bool apRunning = apRequested && WiFi.getMode() == WIFI_AP;
-
-    if (apRunning) {
-      bootApStartedAt = millis();
-      Serial.print("WIFI AP: READY SSID=");
-      Serial.print(AP_SSID);
-      Serial.print(" IP=");
-      Serial.println(WiFi.softAPIP());
-
-      webServer.on("/", HTTP_GET, handleOtaRoot);
-      webServer.on("/update", HTTP_POST, handleOtaPost, localOtaUploadHandler);
-      webServer.begin();
-      return;
-    }
-
-    Serial.printf("WIFI AP: START FAILED attempt=%u\n", attempt + 1);
-    WiFi.softAPdisconnect(true);
+  // Keep boot AP initialization isolated from STA teardown calls. Core 3.3.7
+  // brings up the Wi-Fi driver when entering AP mode; do not call
+  // WiFi.disconnect()/softAPdisconnect() before that initialization.
+  Serial.println("WIFI AP: STEP 1 MODE");
+  if (!WiFi.mode(WIFI_AP)) {
+    Serial.println("WIFI AP: FAIL AT MODE");
+    bootApActive = false;
+    setOtaState(OtaState::FAILED);
+    otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
     WiFi.mode(WIFI_OFF);
     yield();
+    bleStartPending = true;
+    bleStartRetryAt = millis();
+    return;
   }
+  yield();
 
-  bootApActive = false;
-  setOtaState(OtaState::FAILED);
-  otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
-  stopWiFiRadio();
-  bleStartPending = true;
-  bleStartRetryAt = millis();
-  Serial.println("WIFI AP: FAILED -> BLE FALLBACK");
+  Serial.println("WIFI AP: STEP 2 CONFIG");
+  if (!WiFi.softAPConfig(AP_IP, AP_GATEWAY, AP_SUBNET)) {
+    Serial.println("WIFI AP: FAIL AT CONFIG");
+    bootApActive = false;
+    setOtaState(OtaState::FAILED);
+    otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
+    WiFi.mode(WIFI_OFF);
+    yield();
+    bleStartPending = true;
+    bleStartRetryAt = millis();
+    return;
+  }
+  yield();
+
+  Serial.println("WIFI AP: STEP 3 START");
+  if (!WiFi.softAP(AP_SSID, AP_PASSWORD)) {
+    Serial.println("WIFI AP: FAIL AT START");
+    bootApActive = false;
+    setOtaState(OtaState::FAILED);
+    otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
+    WiFi.mode(WIFI_OFF);
+    yield();
+    bleStartPending = true;
+    bleStartRetryAt = millis();
+    return;
+  }
+  yield();
+
+  bootApStartedAt = millis();
+  Serial.print("WIFI AP: READY SSID=");
+  Serial.print(AP_SSID);
+  Serial.print(" IP=");
+  Serial.println(WiFi.softAPIP());
+
+  webServer.on("/", HTTP_GET, handleOtaRoot);
+  webServer.on("/update", HTTP_POST, handleOtaPost, localOtaUploadHandler);
 }
-
 static void stopLocalOtaAp() {
   webServer.stop();
   stopWiFiRadio();
@@ -3713,9 +3728,9 @@ void setup() {
 
   Serial.begin(115200);
   Serial.println();
-  Serial.println("JE X FYZ: BOOT V4.13 / CORE 3.3.7 RADIO-FIRST");
+  Serial.println("JE X FYZ: BOOT V4.14 / CORE 3.3.7 RADIO-FIRST");
 
-  // Keep every power output OFF before either radio is started.
+  // Keep every power output OFF before any radio is started.
   pinMode(PIN_12V, OUTPUT);
   pinMode(PIN_9V, OUTPUT);
   pinMode(PIN_FAN, OUTPUT);
@@ -3725,11 +3740,48 @@ void setup() {
   digitalWrite(PIN_FAN, OUTPUT_OFF);
   digitalWrite(PIN_PELTIER, OUTPUT_OFF);
 
-  // Initialize only the WS2812 driver needed for visible boot diagnostics.
+  // Restore the previously working hardware-first initialization order before
+  // entering the Wi-Fi stack. Outputs remain OFF throughout initialization.
+  Serial.println("BOOT: INIT HARDWARE");
+  pinMode(PIN_NTC, INPUT);
+  pinMode(PIN_TOUCH, INPUT);
+  setupTouch();
+
+  analogReadResolution(12);
+  analogSetPinAttenuation(PIN_NTC, ADC_11db);
+
+  ledcAttach(PIN_FAN, FAN_PWM_FREQ, FAN_PWM_RESOLUTION);
+  ledcWrite(PIN_FAN, 0);
+  ledcAttach(PIN_PELTIER, PELTIER_PWM_FREQ, PELTIER_PWM_RESOLUTION);
+  stopPeltierOutput();
+
   leds.begin();
   leds.clear();
   leds.show();
   showAll(0x0000FF, 80);
+
+  loadSettings();
+
+  currentVoltage = Voltage::V5;
+  pendingVoltage = Voltage::V5;
+  fanOn = false;
+  peltierOn = false;
+  adaptiveOn = false;
+  adaptiveCeiling = Voltage::V12;
+  fanPwm = 100;
+
+  batteryValid = false;
+  batteryC = NAN;
+  lastBatteryZone = -1;
+  ntcValid = false;
+  hotsideC = NAN;
+
+  lastNtcReadMs = millis() - NTC_READ_INTERVAL_MS;
+  sampleNtcIfDue();
+  enforceSafety();
+
+  runtimeFeaturesReady = true;
+  Serial.println("BOOT: FEATURES READY");
 
   Serial.println("BOOT: START WIFI AP");
   startLocalOtaAp();
