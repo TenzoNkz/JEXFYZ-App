@@ -41,6 +41,18 @@
 - No executable source or build was changed by this governance update.
 - Unresolved issue: physical V1.1 radio-boundary test and exact Guru Meditation/Serial evidence are still pending.
 
+## 2026-09-27 — DISCUSSION: ISOLATED WIFI OTA TEST PLAN
+
+- User decision: create a separate minimal firmware whose only purpose is to test whether Wi-Fi OTA itself works on the ESP32-C3; the user will compile/flash it manually with ArduinoDroid.
+- This is a discussion-stage plan only. No .ino test file was created, no production source was changed, and no build was executed.
+- Diagnostic principle: completely isolate the production JE X FYZ firmware. Do not include BLE, NTC, Fan/Peltier control, touch, RGB, Preferences, Adaptive logic, online OTA, or custom radio handoff.
+- Official Core 3.3.7 OTA reference verified: libraries/WebServer/examples/WebUpdate/WebUpdate.ino uses WiFi.h, NetworkClient.h, WebServer.h, and Update.h; it starts Wi-Fi, serves /, accepts firmware at /update, uses the official Update.begin() / Update.write() / Update.end(true) lifecycle, and then restarts.
+- Official Core 3.3.7 AP reference remains WiFi.softAP(ssid, password).
+- Diagnostic goal: first prove the board can run a minimal official-style SoftAP + WebServer OTA path under the user's exact ArduinoDroid/Core 3.3.7 environment. A successful test isolates the earlier panic to interaction with JE X FYZ runtime layers; a failed test points investigation back toward board/toolchain/standalone Wi-Fi OTA behavior.
+- The standalone test should use explicit Serial markers around boot, SoftAP start/result, server start, OTA upload start/write/end, OTA error, and restart so the exact failure boundary is visible.
+- Versioning: use a diagnostic/test label separate from the production V1.x sequence unless the user explicitly chooses otherwise.
+- Execution lock: the actual .ino generation is reserved for the explicit Eksekusi Full command under the current project governance.
+- Next boundary: user may issue Eksekusi Full to generate only the standalone .ino, intended for manual ArduinoDroid compilation/flash and physical OTA testing.
 > Current-state override for the next JE X FYZ firmware sub-chat. Historical sections below are retained for chronology.
 
 ## 1. Mandatory workflow
