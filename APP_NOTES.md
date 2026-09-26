@@ -2728,3 +2728,30 @@ The project process is now explicitly two-phase:
 - App source is synchronized to V3.8 documentation and retains persisted `LAST_OTA_RESULT` visibility.
 - The user's installed App Build #4 remains unchanged; no App Build was triggered by the Firmware execution.
 - Intended physical test: V3.7 device -> online OTA -> V3.8 using App Build #4, with no hardware modification.
+
+
+# MANDATORY PROJECT GOVERNANCE — ADDED 2026-09-27
+
+## 1. Read-before-action rule
+Before every app-related action—discussion based on project state, source inspection, editing, generating files, CI/build work, BLE/OTA client work, UI changes, packaging, or troubleshooting—the relevant app notes and master context must be read first. Cross-layer work also requires the current firmware context and latest firmware source.
+
+## 2. Update-after-action rule
+After every material action, immediately record the action, reason, actual result, affected files, commit/run/version when available, and unresolved follow-up. Never defer documentation to the end of a release.
+
+## 3. Official-source-first rule
+For Flutter/Android/plugin/platform APIs, inspect the official upstream documentation/source for the exact pinned version before designing custom behavior. For firmware integration, the pinned Arduino-ESP32 Core 3.3.7 source is the reference on the firmware side. Do not invent replacement transport/lifecycle behavior when the official implementation already defines it.
+
+## 4. Evidence rule
+A green CI build is build evidence only. It does not prove BLE connection, OTA success, firmware runtime, or physical hardware behavior.
+
+## 5. Current cross-layer state — 2026-09-27
+Firmware active baseline is V1.0. V1.0 passed firmware CI Run #66 but the user reports that the device still panics after manual flashing, so firmware is not physically validated. App changes that depend on firmware runtime must not treat V1.0 as hardware-proven until runtime evidence exists.
+
+## 6. Official firmware-source reference
+Verified Arduino-ESP32 Core 3.3.7 references:
+- https://github.com/espressif/arduino-esp32/blob/3.3.7/libraries/WiFi/examples/WiFiAccessPoint/WiFiAccessPoint.ino
+- https://github.com/espressif/arduino-esp32/blob/3.3.7/libraries/WiFi/src/WiFiAP.cpp
+- https://github.com/espressif/arduino-esp32/blob/3.3.7/libraries/WiFi/src/AP.cpp
+- https://github.com/espressif/arduino-esp32/blob/3.3.7/libraries/WiFi/src/WiFiGeneric.cpp
+
+The official AP example uses the high-level `WiFi.softAP()` path. This is now the reference for the next firmware radio diagnostic.
