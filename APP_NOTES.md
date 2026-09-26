@@ -2476,6 +2476,16 @@ The project process is now explicitly two-phase:
 - No App Build was started in Code; the source-side pairing fix will require the dedicated Action sub-chat `Build App` flow to produce the updated APK.
 - Physical test remains: update the manually flashed V3.4 device to V3.6 and verify no Android pairing prompt and successful online OTA completion.
 
+## 2026-09-26 — V4.0 FIRMWARE BUILD HANDOFF
+
+- Firmware source is V4.0 and the CI baseline is stable Arduino-ESP32 Core 3.3.12.
+- Firmware Build #23 (run 36224197399) completed successfully and published JEXFYZ-V4.0.bin to TenzoNkz/JEXFYZ-Firmware.
+- Artifact ID: 10899993135; artifact digest: sha256:f22ab1657d18d51a2e2de8e9bf737c02241442ed076ee2cf163829f7206637aa.
+- Public V4.0 binary size: 1,573,264 bytes. Manifest verified at the public firmware repository and points to the V4.0 raw firmware URL.
+- Firmware BLE P1 command/telemetry contract used by lib/main.dart remains unchanged, so no Flutter protocol rewrite was required.
+- lib/main.dart only received a stale-version documentation cleanup during this firmware refactor; the installed App Build #4 remains unchanged.
+- Physical validation pending: flash/boot V4.0 on the device, then test online OTA behavior and local OTA regression.
+
 # END OF APP PROJECT MEMORY
 
 ## 2026-09-26 — Code #2: firmware source cleanup + App BLE contract synchronization
