@@ -4,7 +4,7 @@
 #include <HTTPClient.h>
 #include <HTTPUpdate.h>
 #include <Update.h>
-#include <WiFiClientSecure.h>
+#include <NetworkClientSecure.h>
 #include <Preferences.h>
 #include <Adafruit_NeoPixel.h>
 #include <OneButton.h>
@@ -236,7 +236,7 @@ String cloudUrl;
 String cloudVersion;
 
 HTTPClient cloudHttp;
-WiFiClientSecure cloudClient;
+NetworkClientSecure cloudClient;
 size_t localOtaBytesReceived = 0;
 size_t localOtaExpectedBytes = UPDATE_SIZE_UNKNOWN;
 uint32_t cloudBytesReceived = 0;
@@ -1780,7 +1780,7 @@ static void processOnlineOta() {
 
   if (WiFi.status() == WL_CONNECTED) {
     if (!cloudTimeSyncStarted) {
-      configTime(0, 0, "pool.ntp.org", "time.nist.gov", "time.google.com");
+      configTime(0, 0, "pool.ntp.org", "time.nist.gov");
       cloudTimeSyncStarted = true;
       cloudPhaseStartedAt = millis();
       return;
@@ -1812,11 +1812,12 @@ static void processOnlineOta() {
       return;
     }
 
-    httpUpdate.rebootOnUpdate(false);
-    httpUpdate.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
-    httpUpdate.setLedPin(-1);
+    HTTPUpdate updater(12000);
+    updater.rebootOnUpdate(false);
+    updater.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
+    updater.setLedPin(-1);
 
-    httpUpdate.onProgress([](int current, int total) {
+    updater.onProgress([](int current, int total) {
       if (current > 0) {
         cloudBytesReceived = static_cast<uint32_t>(current);
       }
@@ -1825,9 +1826,8 @@ static void processOnlineOta() {
     });
 
     const t_httpUpdate_return result =
-        httpUpdate.update(cloudHttp, FW_VERSION);
+        updater.update(cloudHttp, FW_VERSION);
 
-    cloudHttp.end();
     cloudClient.stop();
 
     if (result == HTTP_UPDATE_OK) {
@@ -1842,7 +1842,7 @@ static void processOnlineOta() {
       return;
     }
 
-    String detail = httpUpdate.getLastErrorString();
+    String detail = updater.getLastErrorString();
     if (detail.isEmpty()) {
       detail = result == HTTP_UPDATE_NO_UPDATES
                    ? "HTTP_UPDATE_NO_UPDATES"
