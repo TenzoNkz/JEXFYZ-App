@@ -80,3 +80,11 @@
 - The `min_spiffs` partition keeps two OTA app slots and gives each slot 0x1E0000 bytes, sufficient for the current image while preserving OTA.
 - No firmware source logic was changed for this fix.
 - New Firmware Build run is expected automatically from the workflow update and must be followed until the full publish pipeline succeeds.
+
+
+## 2026-09-26 — Firmware Build Run #8 result
+
+- Run #8 compiled V3.2 successfully using `PartitionScheme=min_spiffs`.
+- Image size: 1,826,608 bytes; app slot maximum: 1,966,080 bytes (92% used).
+- Artifact upload succeeded; public repository publish was not reached because `FIRMWARE_REPO_TOKEN` was empty/unavailable in the Actions environment.
+- This is now the only blocking item for the complete automated publish pipeline; no firmware source build error remains in this run.
