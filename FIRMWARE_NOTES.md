@@ -1080,10 +1080,6 @@ For all future firmware work:
 - Executable firmware source is now comment-free.
 - Firmware engineering memory is centralized in `FIRMWARE_NOTES.md`.
 - Source SHA after comment cleanup: `0a38cf7bfc91a450301eea37650d7b0e6dbe9942`.
-
-# END OF FIRMWARE ENGINEERING MEMORY
-
-
 ## 2026-09-26 — Corrected firmware build trigger policy
 
 - Firmware source changes must NOT automatically start Firmware Build.
@@ -1129,3 +1125,23 @@ The project process is now explicitly two-phase:
 - `Eksekusi Firmware` is the only command in the Code workflow that intentionally updates `.github/FIRMWARE_BUILD_TRIGGER`.
 - App Build remains exclusive to the Action sub-chat.
 - Ordinary source changes never trigger either build workflow automatically.
+
+## 2026-09-26 — Code #2 execution: firmware documentation/state synchronization
+
+### Command
+- User command: `Eksekusi Code`.
+
+### Result
+- Reviewed the latest firmware memory and reconciled the active separation between source editing and firmware compilation.
+- No additional firmware source change was required from the immediately preceding discussion; the discussion established execution semantics rather than a new firmware feature.
+- No `Eksekusi Firmware` operation was performed.
+- `.github/FIRMWARE_BUILD_TRIGGER` was not updated by this Code execution.
+- Firmware Build was not started.
+
+### Authoritative workflow reminder
+- Discuss first.
+- Plain `Eksekusi` applies agreed repository/source/documentation changes only.
+- `Eksekusi Firmware` separately builds the newest firmware and publishes the resulting versioned `.bin`.
+- Firmware source changes do not automatically start CI.
+
+# END OF FIRMWARE ENGINEERING MEMORY
