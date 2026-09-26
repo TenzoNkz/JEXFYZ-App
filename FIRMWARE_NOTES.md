@@ -3,7 +3,7 @@
 ## 1. SOURCE AUTHORITY AND CURRENT STATE
 
 - Authoritative firmware source: `firmware/JEXFYZ.ino`.
-- Current firmware version: `V3.5`.
+- Current firmware version: `V3.6`.
 - Protocol version: `P1`.
 - BLE device name: `JE X FYZ`.
 - Target hardware: ESP32-C3 Super Mini / ESP32-C3 Dev Module class.
@@ -1164,6 +1164,15 @@ The project process is now explicitly two-phase:
 - Public repository `TenzoNkz/JEXFYZ-Firmware` independently verified to contain `JEXFYZ-V3.5.bin` and a V3.5 manifest.
 - Public manifest URL points to `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V3.5.bin`.
 - This V3.5 release is a controlled version-bump test package intended to exercise the online OTA path from the user-flashed V3.4 device; the previous OTA panic is not considered fixed until physical OTA testing is completed.
+
+## 2026-09-26 — V3.6 EXECUTION: OTA MEMORY + BLE PAIRING FIX
+
+- Firmware version advanced from V3.5 to V3.6 because executable firmware behavior changed.
+- BLE pairing/bonding was removed from the runtime security setup. `BLESecurity`, `SC_BOND`, encrypted RX permissions, and the NimBLE encrypted-write property are no longer configured.
+- The application-level `SYNC -> SYNC_READY` gate remains unchanged and continues to protect state-changing commands after connection.
+- BLE shutdown for Wi-Fi OTA is centralized in `stopBleRadio()` and now uses `BLEDevice::deinit(true)` so BLE resources are released before HTTPS/TLS OTA memory pressure occurs.
+- Online OTA cleanup now explicitly stops `cloudClient` on failure and before apply, and checks that the received byte count exactly matches the advertised image size before `Update.end(false)`.
+- No GPIO, NTC, cooling, Adaptive, voltage, RGB, touch, or P1 command/telemetry contract was intentionally changed.
 
 # END OF FIRMWARE ENGINEERING MEMORY
 
