@@ -2329,3 +2329,14 @@ For every future app change:
 - Firmware artifact uploaded successfully: artifact ID 10894158538 from the preceding successful compile attempt, containing `JEXFYZ-V3.2.bin`.
 - Final publish step failed because the `FIRMWARE_REPO_TOKEN` Actions secret was empty/unavailable to the workflow.
 - No publish-success claim is made until the secret is available and a full run reaches the public repository push.
+
+
+## 2026-09-26 — Final build trigger policy correction
+
+- App Build and Firmware Build both use file-based explicit execution triggers.
+- Neither workflow uses `workflow_dispatch`.
+- Neither workflow should start from ordinary source changes.
+- App: only `.github/APP_BUILD_TRIGGER` starts App Build, and Action sub-chat updates it only after the user says `Build App`.
+- Firmware: only `.github/FIRMWARE_BUILD_TRIGGER` starts Firmware Build, and Code sub-chat updates it only after the user says `Eksekusi`.
+- Firmware source changes alone must not start CI.
+- The explicit firmware execution may cover a firmware-only change or a commit containing firmware together with unrelated/other project files.
