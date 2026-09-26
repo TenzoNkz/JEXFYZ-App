@@ -2565,3 +2565,11 @@ The project process is now explicitly two-phase:
 - OTA failure/success results are also considered by the Home NOTIFY error/status state so a post-OTA reconnect does not hide the persisted firmware result behind a generic "System ready" message.
 - No App Build was triggered by this Code execution; the next App Build remains separately controlled by the `Build App` command in the Action sub-chat.
 
+
+## 2026-09-26 — V3.7 FIRMWARE BUILD HANDOFF
+
+- Firmware V3.7 was successfully built and published from the Code/Firmware full execution.
+- App source is already aligned to V3.7 and exposes persisted `LAST_OTA_RESULT` in Home NOTIFY, but App Build #4 remains the user's current installed APK; no App Build was triggered here.
+- The intended physical test path is V3.4 device -> public V3.7 OTA, with no manual cable flashing and no hardware modification.
+- After OTA testing, the persisted firmware result should appear in the Home NOTIFY card on BLE reconnect.
+
