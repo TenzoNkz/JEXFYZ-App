@@ -786,3 +786,15 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Current priority remains **Local OTA first**. Online OTA implementation changes are frozen until Local OTA has been physically verified working.
 - Latest physical result recorded by user: device was still running V1.4; manual Local OTA to V1.5 failed; Online OTA to V1.5 also failed.
 - Next code execution, when explicitly authorized, must focus only on making **Local OTA robust and repeatable** using the official Arduino-ESP32 Core 3.3.7 API/pattern. Do not modify Online OTA in that execution.
+
+## 2026-09-27 — PHYSICAL TEST PLAN LOCKED
+- User-defined physical validation sequence:
+  1. Flash **V1.5 manually** first.
+  2. Verify normal V1.5 startup and application operation.
+  3. Manually flash different firmware versions upward/downward to establish that manual flashing behaves correctly.
+  4. Test **Local OTA** on the running device, including version changes and the previously failing OTA path.
+  5. Record the exact Local OTA result before making any further OTA changes.
+  6. Only after Local OTA is physically verified working, resume discussion/implementation of **Online OTA**.
+- **Online OTA is frozen during this validation sequence.**
+- No production code, firmware source, build, or release changes are authorized merely by this discussion; explicit execution command is still required.
+- Notes/history must continue to update automatically as physical test results are reported.
