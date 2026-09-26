@@ -4,9 +4,7 @@ on:
   push:
     paths:
       - "firmware/JEXFYZ.ino"
-      - ".github/workflows/firmware-build.yml"
       - ".github/FIRMWARE_BUILD_TRIGGER"
-  workflow_dispatch:
 
 permissions:
   contents: read
@@ -101,9 +99,9 @@ jobs:
           BIN="build/firmware/JEXFYZ.ino.bin"
           test -s "$BIN"
           VERSION="${{ steps.version.outputs.version }}"
-          RELEASE_BIN="build/firmware/JEXFYZ-${VERSION}.bin"
-          cp "$BIN" "$RELEASE_BIN"
-          ls -lh "$RELEASE_BIN"
+          RELEASE_BIN="JEXFYZ-${VERSION}.bin"
+          cp "$BIN" "build/firmware/$RELEASE_BIN"
+          ls -lh "build/firmware/$RELEASE_BIN"
 
       - name: Upload firmware build artifact
         uses: actions/upload-artifact@v7
@@ -134,10 +132,11 @@ jobs:
             "$WORK/repo"
 
           cd "$WORK/repo"
-          mkdir -p releases
 
           RELEASE_BIN="JEXFYZ-${VERSION}.bin"
-          cp "$GITHUB_WORKSPACE/build/firmware/$RELEASE_BIN" "releases/$RELEASE_BIN"
+          rm -f JEXFYZ.cpp.bin
+          find . -maxdepth 1 -type f -name 'JEXFYZ-V*.bin' ! -name "$RELEASE_BIN" -delete
+          cp "$GITHUB_WORKSPACE/build/firmware/$RELEASE_BIN" "$RELEASE_BIN"
 
           python3 - <<'PY'
           import json
@@ -147,18 +146,14 @@ jobs:
           filename = f"JEXFYZ-{version}.bin"
           manifest = {
               "version": version,
-              "url": f"https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/releases/{filename}",
+              "url": f"https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/{filename}",
           }
           Path("manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
           PY
 
-          if [ -f "JEXFYZ.cpp.bin" ]; then
-            git rm -f "JEXFYZ.cpp.bin"
-          fi
-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add manifest.json releases/"$RELEASE_BIN"
+          git add -A
 
           if git diff --cached --quiet; then
             echo "No firmware distribution changes to commit."
