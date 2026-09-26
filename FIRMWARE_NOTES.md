@@ -1361,6 +1361,20 @@ The project process is now explicitly two-phase:
 - The ArduinoDroid temporary source defines JEXFYZ_LEGACY_OTA and avoids esp_ota_resume() on Core 3.3.7; a stalled range retries from byte 0 on the temporary/manual build.
 - This compatibility branch is only for manual flashing/testing. It does not alter the published Core 3.3.12 V4.5 binary behavior.
 
+## FIRMWARE BUILD #31 — V4.5 RESUMABLE ONLINE OTA FULL SUCCESS
+
+- Run #31: Firmware Build, run ID `36232892450`.
+- Commit/source: `28cdf167580dc742ffb5965fbee3a2f033c94366`.
+- Result: SUCCESS.
+- ESP32-C3 Core 3.3.12 install, library install, source audit, version extraction, compilation, release artifact upload, ArduinoDroid temporary-source generation/upload, and public publication all succeeded.
+- Release artifact: `JEXFYZ-V4.5`, artifact ID `10903365978`, size 1,576,272 bytes (artifact archive), digest `sha256:cfb0ea2940021b0747ec0946cef4fecc7c57dde37f6812b495b2d27e0b1d5684`.
+- Public firmware: `JEXFYZ-V4.5.bin`, verified size 1,576,128 bytes.
+- Public manifest is V4.5 and points to `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V4.5.bin`.
+- ArduinoDroid temporary source artifact: `JEXFYZ-V4.5-ArduinoDroid-Source`, artifact ID `10903365980`, size 96,746 bytes (artifact archive), digest `sha256:93f9337021d920f499b247d029a7909a63a0711020938e65c939600ced2df820`.
+- The temporary source defines `JEXFYZ_LEGACY_OTA`, uses `WiFiClientSecure + setInsecure()`, removes Core-3.3.12-only SHA error labels, and falls back to restarting the OTA transaction from byte 0 after a stream stall because `esp_ota_resume()` is not available on the user's Core 3.3.7 environment.
+- The normal public V4.5 binary uses true `esp_ota_resume()` on Core 3.3.12.
+- Physical validation is still pending: manual flash V4.5 temporary source, then Online OTA test.
+
 # END OF FIRMWARE ENGINEERING MEMORY
 
 
