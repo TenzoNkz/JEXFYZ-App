@@ -1474,6 +1474,17 @@ The project process is now explicitly two-phase:
 - V4.5 known-good baseline remains valid; V4.6 image verification failure and its diagnostic record remain historical defect data.
 - Local OTA remains separately tracked as unresolved from earlier code-3 Flash Readback tests.
 
+## 2026-09-26 — V4.8 FULL OTA/RADIO HARDENING
+
+- Firmware source advanced to V4.8.
+- Local OTA was moved from Arduino UpdateClass to direct ESP-IDF `esp_ota_begin/write/end/set_boot_partition` so the old `UPDATE_ERROR_READ / Flash Read Failed` verification path is no longer used.
+- Local OTA now requires the exact browser-provided firmware size, checks the target OTA partition size, verifies the completed image with `esp_ota_end()`, and activates it explicitly with `esp_ota_set_boot_partition()`.
+- Wi-Fi/BLE handoff was hardened for the ESP32-C3 single-radio constraint: Wi-Fi is explicitly forced OFF and settled before BLE initialization, incomplete BLE states are cleaned up, BLE advertising is restarted when the stack is already healthy, and failed BLE starts are retried automatically.
+- Local OTA failure keeps the AP available for retry; Online OTA failure turns Wi-Fi OFF and returns to the BLE recovery path.
+- Existing V4.5/V4.7 Range/reconnect/resume Online OTA transport and V4.7 HTTPClient body decoding remain preserved.
+- OTA Safety Lock, OTA Priority Supervisor, protected OTA Engine/Diagnostic Core, and CI regression audit remain mandatory.
+- Physical validation target: V4.5 known-good -> manual V4.8; verify Wi-Fi AP -> BLE handoff, Local OTA -> V4.8, then Online OTA.
+
 # END OF FIRMWARE ENGINEERING MEMORY
 
 

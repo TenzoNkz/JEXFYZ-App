@@ -106,10 +106,18 @@ jobs:
               "esp_ota_write",
               "esp_ota_end",
               "esp_ota_set_boot_partition",
+              "localOtaHandle",
+              "localOtaPartition",
+              "localOtaStarted",
+              "startBle",
+              "serviceBleStartRecovery",
+              "waitForWiFiOff",
               "ONLINE_RANGE_PROBE",
               "ONLINE_RANGE_REQUEST",
               "ONLINE_RANGE_RESUME",
               'setAcceptEncoding("identity")',
+              "http.writeToStream(&sink)",
+              "OtaHttpFlashStream",
               "http.writeToStream(&sink)",
               "OtaHttpFlashStream",
               "OTA_STAGE",
@@ -121,7 +129,7 @@ jobs:
           missing = [x for x in required if x not in s]
           if missing:
               raise SystemExit("OTA SAFETY AUDIT FAILED: " + ", ".join(missing))
-          if 'static constexpr char FW_VERSION[] = "V4.7";' not in s:
+          if 'static constexpr char FW_VERSION[] = "V4.8";' not in s:
               raise SystemExit("OTA SAFETY AUDIT FAILED: version is not V4.7")
           if "setInsecure()" in s:
               raise SystemExit("OTA SAFETY AUDIT FAILED: insecure TLS leaked into release source")

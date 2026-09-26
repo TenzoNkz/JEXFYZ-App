@@ -2599,6 +2599,14 @@ The project process is now explicitly two-phase:
 - No App Build was triggered by this firmware-only release.
 - Physical validation target: current V4.5/V4.x device -> manual V4.7 OTA, then boot/BLE check and Online OTA testing as planned.
 
+## 2026-09-26 — V4.8 FIRMWARE HANDOFF
+
+- Firmware V4.8 hardens radio handoff and moves Local OTA to direct esp_ota_* APIs to address the prior Flash Readback/code-3 path.
+- Online OTA Range/reconnect/resume transport and HTTPClient body decoding are preserved.
+- App OTA diagnostic stage names remain compatible.
+- No App Build was triggered by this firmware-focused execution.
+- Physical test target: manual V4.8 flash, confirm AP->BLE handoff, Local OTA, then Online OTA.
+
 # END OF APP PROJECT MEMORY
 
 ## 2026-09-26 — Code #2: firmware source cleanup + App BLE contract synchronization
