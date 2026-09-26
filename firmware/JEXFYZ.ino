@@ -20,7 +20,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
-static constexpr char FW_VERSION[] = "V3.3";
+static constexpr char FW_VERSION[] = "V3.4";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -701,6 +701,19 @@ static void showAll(uint32_t color, uint8_t brightness = 255) {
     leds.setPixelColor(i, scaled);
   }
   leds.show();
+}
+
+static uint32_t currentVoltageColor() {
+  switch (currentVoltage) {
+    case Voltage::V5:  return color5V;
+    case Voltage::V9:  return color9V;
+    case Voltage::V12: return color12V;
+  }
+  return color5V;
+}
+
+static uint8_t hardwareBrightness() {
+  return static_cast<uint8_t>(map(rgbBrightness, 0, 100, 0, 255));
 }
 
 static void clearAllLeds() {
