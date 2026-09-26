@@ -1290,3 +1290,15 @@ The project process is now explicitly two-phase:
 - The source no longer checks `Update.isFinished()` after a successful `Update.end()`, because Arduino-ESP32 3.2.1 resets the updater state during successful finalization.
 - Local and online OTA now use `Update.end(false)` after confirming the full image has been received.
 - This correction is required before treating the V3.7 package as a valid OTA release.
+
+## FIRMWARE BUILD #16 — V3.7 FULL SUCCESS / PUBLISHED
+
+- Run #16: Firmware Build, run ID `36217379643`, head SHA `b0daf9304666a799da9ec51919ee375846e969d5`.
+- ESP32-C3 core install, dependency installation, source audit, version extraction, compilation, artifact upload, and cross-repository publication all completed successfully.
+- Firmware artifact `JEXFYZ-V3.7`, artifact ID `10897368348`, contained `JEXFYZ-V3.7.bin`.
+- Exact firmware binary size: 1,812,640 bytes. Binary SHA-256: `2a03892f1841e6c79a1bab34ccfe7593433a87bd291ce501c42a8c0c347e1f0f`.
+- CI now uses the ESP32-C3 `no_fs` partition scheme, matching the user's verified ArduinoDroid `No FS 4MB (2MB APP x2)` target.
+- Public repository `TenzoNkz/JEXFYZ-Firmware` was independently verified to contain `JEXFYZ-V3.7.bin` and a V3.7 manifest pointing to the GitHub raw firmware URL.
+- Source verification after the build: V3.7 is present, GPIO5 remains Peltier, GPIO6 remains Fan, and BLE bonding/security configuration remains removed.
+- This release is ready for the physical OTA test from the user's currently running V3.4 device. Hardware/wiring remains unchanged.
+
