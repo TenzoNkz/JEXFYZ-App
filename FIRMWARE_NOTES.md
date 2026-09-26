@@ -324,3 +324,10 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Hardware result: not yet verified.
 - Diagnostic interpretation: this is a controlled test of startup context/timing, not a claim that Horizon's behavior proves the root cause.
 - Next boundary: trigger the existing firmware CI, inspect compile/build result, then physically flash V1.2 and compare the Serial boot boundary.
+
+## 2026-09-27 — EXECUTION: TRIGGER V1.2 FIRMWARE CI
+- Updated the dedicated `.github/FIRMWARE_BUILD_TRIGGER` file to start the existing firmware workflow for the V1.2 source.
+- Trigger commit: `d7f5110668d64c32d87e08f367c54369474f4306`.
+- The workflow remains pinned to Arduino-ESP32 Core 3.3.7, OneButton 2.6.1, and Adafruit NeoPixel 1.12.5.
+- No firmware logic changed in this action.
+- Next boundary: inspect the newly triggered Firmware Build run for compile result, OTA safety audit, artifact generation, and publication result.
