@@ -1468,6 +1468,12 @@ The project process is now explicitly two-phase:
 - OTA Safety Lock, protected supervisor, locked OTA Engine/Diagnostic Core, and CI OTA audit remain mandatory.
 - No GPIO, NTC, cooling, Adaptive, voltage, RGB, touch, BLE UUID/P1 contract, or V4.7 Online OTA transport behavior was intentionally changed.
 
+## 2026-09-26 — V4.8 BUILD FAILURE CORRECTION: UPDATE ERROR CONSTANTS
+
+- V4.8 Run #40 compiled the source far enough to reveal that removing the Arduino Update/HTTPUpdate headers left legacy diagnostic names such as UPDATE_ERROR_READ/WRITE/STREAM undefined.
+- Replaced those legacy dependency names with internal OTA error constants matching the documented numeric codes, so the firmware no longer depends on Update.h for diagnostics.
+- No OTA transport, radio, or local OTA behavior changed in this correction.
+
 # END OF FIRMWARE ENGINEERING MEMORY
 
 

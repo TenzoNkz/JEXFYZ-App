@@ -1469,23 +1469,38 @@ static String otaSuccessResult(
          "|PROGRESS=100";
 }
 
+static constexpr int OTA_ERROR_READ = 3;
+static constexpr int OTA_ERROR_WRITE = 1;
+static constexpr int OTA_ERROR_ERASE = 2;
+static constexpr int OTA_ERROR_ACTIVATE = 9;
+static constexpr int OTA_ERROR_MAGIC_BYTE = 8;
+static constexpr int OTA_ERROR_MD5 = 7;
+static constexpr int OTA_ERROR_SHA256 = 15;
+static constexpr int OTA_ERROR_SHA512 = 16;
+static constexpr int OTA_ERROR_SIGN = 14;
+static constexpr int OTA_ERROR_STREAM = 6;
+static constexpr int OTA_ERROR_SPACE = 4;
+static constexpr int OTA_ERROR_SIZE = 5;
+static constexpr int OTA_ERROR_NO_PARTITION = 10;
+static constexpr int OTA_ERROR_BAD_ARGUMENT = 11;
+
 static String otaUpdateFailureStage(bool online, int errorCode) {
   const String prefix = online ? "ONLINE_" : "LOCAL_";
   switch (errorCode) {
-    case UPDATE_ERROR_READ: return prefix + "FLASH_READBACK";
-    case UPDATE_ERROR_WRITE: return prefix + "FLASH_WRITE";
-    case UPDATE_ERROR_ERASE: return prefix + "FLASH_ERASE";
-    case UPDATE_ERROR_ACTIVATE: return prefix + "BOOT_PARTITION";
-    case UPDATE_ERROR_MAGIC_BYTE: return prefix + "IMAGE_VALIDATE";
-    case UPDATE_ERROR_MD5:
-    case UPDATE_ERROR_SHA256:
-    case UPDATE_ERROR_SHA512:
-    case UPDATE_ERROR_SIGN: return prefix + "IMAGE_VERIFY";
-    case UPDATE_ERROR_STREAM: return prefix + "DOWNLOAD";
-    case UPDATE_ERROR_SPACE:
-    case UPDATE_ERROR_SIZE:
-    case UPDATE_ERROR_NO_PARTITION:
-    case UPDATE_ERROR_BAD_ARGUMENT: return prefix + "UPDATE_BEGIN";
+    case OTA_ERROR_READ: return prefix + "FLASH_READBACK";
+    case OTA_ERROR_WRITE: return prefix + "FLASH_WRITE";
+    case OTA_ERROR_ERASE: return prefix + "FLASH_ERASE";
+    case OTA_ERROR_ACTIVATE: return prefix + "BOOT_PARTITION";
+    case OTA_ERROR_MAGIC_BYTE: return prefix + "IMAGE_VALIDATE";
+    case OTA_ERROR_MD5:
+    case OTA_ERROR_SHA256:
+    case OTA_ERROR_SHA512:
+    case OTA_ERROR_SIGN: return prefix + "IMAGE_VERIFY";
+    case OTA_ERROR_STREAM: return prefix + "DOWNLOAD";
+    case OTA_ERROR_SPACE:
+    case OTA_ERROR_SIZE:
+    case OTA_ERROR_NO_PARTITION:
+    case OTA_ERROR_BAD_ARGUMENT: return prefix + "UPDATE_BEGIN";
     default: return prefix + "FINALIZE";
   }
 }
@@ -2322,7 +2337,7 @@ static bool downloadOnlineOtaResumable() {
       lastError = httpResult < 0
                       ? "HTTP_" + String(httpResult)
                       : "STREAM_INCOMPLETE";
-      lastErrorCode = UPDATE_ERROR_STREAM;
+      lastErrorCode = OTA_ERROR_STREAM;
 
       if (chunkReceived < expectedChunk) {
         const size_t resumeOffset = offset + chunkReceived;
@@ -2371,7 +2386,7 @@ static bool downloadOnlineOtaResumable() {
 
     if (!chunkComplete) {
       const String failStage =
-          lastErrorCode == UPDATE_ERROR_STREAM
+          lastErrorCode == OTA_ERROR_STREAM
               ? "ONLINE_RANGE_RESUME"
               : "ONLINE_RANGE_RESPONSE";
       failOnlineOta(
