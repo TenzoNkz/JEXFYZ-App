@@ -2543,12 +2543,14 @@ static void localOtaUploadHandler() {
     applyOtaSafeOutputs();
     setOtaDiagnosticStage("LOCAL_UPDATE_BEGIN");
 
-    if (!Update.begin(localOtaExpectedBytes)) {
+    if (!Update.begin()) {
+      const int updateErrorCode = static_cast<int>(Update.getError());
+      const String updateError = Update.errorString();
       Update.printError(Serial);
       failLocalOta(
           "LOCAL_UPDATE_BEGIN",
-          OTA_ERROR_SPACE,
-          "UPDATE_BEGIN_FAILED");
+          updateErrorCode,
+          "UPDATE_BEGIN_FAILED_" + updateError);
       return;
     }
 
@@ -2620,11 +2622,13 @@ static void localOtaUploadHandler() {
 
     localOtaStarted = false;
     if (!Update.end(true)) {
+      const int updateErrorCode = static_cast<int>(Update.getError());
+      const String updateError = Update.errorString();
       Update.printError(Serial);
       failLocalOta(
           "LOCAL_IMAGE_VERIFY",
-          OTA_ERROR_MAGIC_BYTE,
-          "UPDATE_END_FAILED");
+          updateErrorCode,
+          "UPDATE_END_FAILED_" + updateError);
       return;
     }
 
