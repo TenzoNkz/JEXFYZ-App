@@ -534,3 +534,13 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - No BLE UUID, command vocabulary, safety logic, GPIO mapping, OTA diagnostics, or firmware feature behavior was intentionally changed by the audit.
 - GPIO contract remains GPIO5 = FAN and GPIO6 = PELTIER.
 - V1.3 remains a release candidate only. CI Core 3.3.7 compile and publish are still required before calling it final/public.
+
+## 2026-09-27 — V1.3 POST-PATCH STATIC AUDIT PASS
+- Re-read the updated firmware/JEXFYZ.ino after the minimal SoftAP order change.
+- V1.3 identity is intact.
+- Forbidden ESP-IDF lifecycle markers remain at zero.
+- Legacy LEDC APIs ledcSetup()/ledcAttachPin() remain absent.
+- Local AP order is now verified as WiFi.softAPConfig() before WiFi.softAP().
+- Required Arduino Update lifecycle calls remain present: begin/write/end(true)/abort/printError.
+- GPIO mapping remains GPIO5 = FAN and GPIO6 = PELTIER.
+- This static check does not replace the required Core 3.3.7 CI compile.
