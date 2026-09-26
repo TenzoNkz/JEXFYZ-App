@@ -33,8 +33,9 @@ The JE X FYZ app work is intentionally split across two sub-chat roles so the pr
 - Do not introduce a push-to-build workflow merely because files changed.
 
 **2. Build / CI sub-chat:**
-- Used specifically to trigger GitHub Actions builds, inspect build/test/analyze failures, inspect CI logs, and obtain/download the built app artifact.
-- A build is triggered only when the user explicitly requests a build from that sub-chat.
+- Used specifically for the **App Build** workflow: trigger the app build, inspect build/test/analyze failures, inspect CI logs, and obtain/download the built APK artifact.
+- A build is triggered only when the user explicitly says **`Build App`** in that sub-chat.
+- This sub-chat never triggers the Firmware Build workflow.
 - When CI reports a code/configuration/build error, diagnose it in the Build / CI sub-chat. The Action sub-chat may directly fix the source/configuration when the fix is required to make the build pass, then rerun the workflow and record exactly what it changed. The resulting change must be handed back through `APP_NOTES.md` so the Code sub-chat sees what was wrong and what Action changed.
 - This separation is intentional and must be preserved to keep the two chat contexts focused and reduce unnecessary context usage.
 
@@ -179,6 +180,33 @@ Build the current `main` head. Verify the new Kotlin service compiles, Android m
 ### Handoff back to Code-change sub-chat
 
 If the build fails, record the exact failed step/error and the fix. If build succeeds but BLE disconnects after the UI goes to background, treat that as a runtime lifecycle issue and do not create a second BLE client without an explicit architecture review.
+
+
+## CURRENT EXECUTION CONTROL — AUTHORITATIVE
+
+### Code sub-chat
+- Discussion/preparation does not trigger any GitHub Actions workflow.
+- Plain `Eksekusi` means: apply the already-approved App/Firmware source/configuration/documentation changes to the repository.
+- Plain `Eksekusi` must NOT update `.github/APP_BUILD_TRIGGER` and must NOT update `.github/FIRMWARE_BUILD_TRIGGER`.
+- Plain `Eksekusi` therefore does NOT start App Build and does NOT compile/publish firmware.
+
+### Firmware build
+- Firmware compilation is a separate explicit command: `Eksekusi Firmware`.
+- Only `Eksekusi Firmware` may update `.github/FIRMWARE_BUILD_TRIGGER` and start the Firmware Build workflow.
+- Changes to `firmware/JEXFYZ.ino` alone, or changes to any other project file, must not start Firmware Build.
+- Firmware Build is monitored until completion; build failures are fixed narrowly and the pipeline is rerun as needed.
+
+### Action sub-chat
+- Action is exclusively for App Build.
+- Only the explicit `Build App` command may update `.github/APP_BUILD_TRIGGER` and start App Build.
+- Action monitors the workflow, fixes build/analyze/test/package errors narrowly when necessary, reruns, and provides the resulting APK artifact to the chat only after a verified successful build.
+- Action never starts Firmware Build.
+
+### Current workflow trigger files
+- App: `.github/APP_BUILD_TRIGGER` -> `.github/workflows/app-build.yml`.
+- Firmware: `.github/FIRMWARE_BUILD_TRIGGER` -> `.github/workflows/firmware-build.yml`.
+- Neither workflow uses `workflow_dispatch`.
+- No ordinary source-file path is a build trigger.
 
 # 1. PROJECT IDENTITY
 
@@ -905,7 +933,7 @@ Subheader:
 
 Primary workflow:
 
-`.github/workflows/build.yml`
+`.github/workflows/app-build.yml`
 
 Workflow name:
 
@@ -1368,7 +1396,7 @@ Do not remove this without explicit design approval.
 
 ## Build workflow
 
-`.github/workflows/build.yml`
+`.github/workflows/app-build.yml`
 
 ## Main cooler asset
 
@@ -2121,7 +2149,7 @@ For every future app change:
 ### App files changed
 - `lib/main.dart`
 - `pubspec.yaml`
-- `.github/workflows/build.yml`
+- `.github/workflows/app-build.yml`
 - `firmware/JEXFYZ.ino`
 - `.github/workflows/firmware-build.yml`
 - `FIRMWARE_NOTES.md`
@@ -2145,8 +2173,8 @@ For every future app change:
 - No workflow itself is included in the push-path trigger list, so editing workflow configuration does not recursively start a build.
 
 ### Workflow files
-- Renamed the App workflow file from `.github/workflows/build.yml` to `.github/workflows/app-build.yml`; workflow display name remains `App Build`.
-- `.github/workflows/build.yml`: push-only trigger on `.github/APP_BUILD_TRIGGER`; no manual dispatch.
+- Renamed the App workflow file from `.github/workflows/app-build.yml` to `.github/workflows/app-build.yml`; workflow display name remains `App Build`.
+- `.github/workflows/app-build.yml`: push-only trigger on `.github/APP_BUILD_TRIGGER`; no manual dispatch.
 - `.github/workflows/firmware-build.yml`: push-only triggers on `firmware/JEXFYZ.ino` and `.github/FIRMWARE_BUILD_TRIGGER`; no manual dispatch.
 - Added `.github/APP_BUILD_TRIGGER`.
 - Kept `.github/FIRMWARE_BUILD_TRIGGER`.
@@ -2186,7 +2214,7 @@ For every future app change:
 
 ### 2026-09-26 — Direct JEXFYZ#RUN APK output
 
-- Updated `.github/workflows/build.yml` so the release APK is copied to `JEXFYZ#${{ github.run_number }}.apk`.
+- Updated `.github/workflows/app-build.yml` so the release APK is copied to `JEXFYZ#${{ github.run_number }}.apk`.
 - Removed ZIP packaging and the ZIP-only artifact upload path.
 - The workflow now uploads the direct APK with `archive: false` and a matching artifact name.
 - Recorded the Run #95 filename problem and the expected next validation in the shared CI state.
@@ -2262,7 +2290,7 @@ For every future app change:
 - Remove the Dependabot Updates entry from the GitHub Actions view.
 
 ### Changes
-- Renamed the workflow display name in `.github/workflows/build.yml` from `JE X FYZ Cooler Build` to `App Build`.
+- Renamed the workflow display name in `.github/workflows/app-build.yml` from `JE X FYZ Cooler Build` to `App Build`.
 - Renamed the workflow display name in `.github/workflows/firmware-build.yml` from `JE X FYZ Firmware Build` to `Firmware Build`.
 - Moved and renamed the app notes from `APP_PROJECT_NOTES.md` to `APP_NOTES.md`.
 - Moved and renamed the firmware notes from `firmware/FIRMWARE_PROJECT_NOTES.md` to `FIRMWARE_NOTES.md`.
@@ -2273,21 +2301,21 @@ For every future app change:
 - No unrelated Dependabot configuration was changed.
 
 ### Verification
-- Existing workflow logic was preserved; only the `name:` display labels were changed.
-- The firmware workflow's existing automatic trigger still watches `firmware/JEXFYZ.ino` and `.github/workflows/firmware-build.yml`.
+- Workflow display names remain `App Build` and `Firmware Build`.
+- Current trigger policy is file-based explicit execution only.
 
 
 ## 2026-09-26 — Build trigger ownership / execution split
 
 ### User-approved workflow
-- **App Build** must not auto-trigger from ordinary repository/app changes.
-- **App Build** is manually triggered only from the dedicated **JE X FYZ Action** build/CI sub-chat.
-- **Firmware Build** auto-triggers when the firmware source `firmware/JEXFYZ.ino` is updated.
-- Firmware build/CI follow-through belongs to the active Code sub-chat handling that firmware update: inspect failures, make only the narrow fix required, and continue until the firmware build/publish pipeline succeeds.
+- **App Build** does not auto-trigger from ordinary repository/app changes.
+- **App Build** starts only from the dedicated **JE X FYZ Action** sub-chat after `Build App`.
+- **Firmware Build** does not auto-trigger from `firmware/JEXFYZ.ino` changes.
+- Firmware Build starts only after the separate explicit `Eksekusi Firmware` command.
 - The two workflows remain independently named **App Build** and **Firmware Build**.
 
 ### Current repository behavior
-- `.github/workflows/build.yml` already uses `workflow_dispatch` for App Build.
+- `.github/workflows/app-build.yml` already uses `workflow_dispatch` for App Build.
 - `.github/workflows/firmware-build.yml` already has a push trigger for `firmware/JEXFYZ.ino` and also retains manual dispatch support.
 - No application build is triggered merely because app source files change.
 
