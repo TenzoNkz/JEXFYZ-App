@@ -127,6 +127,8 @@ jobs:
             -e 's/#include <NetworkClientSecure.h>/#include <WiFiClientSecure.h>/' \
             -e 's/NetworkClientSecure cloudClient;/WiFiClientSecure cloudClient;/' \
             -e 's/cloudClient.useBuiltinCACertBundle();/cloudClient.setInsecure();/' \
+            -e '/case UPDATE_ERROR_SHA256:/d' \
+            -e '/case UPDATE_ERROR_SHA512:/d' \
             "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
           grep -Fq '#include <WiFiClientSecure.h>' "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
           grep -Fq 'WiFiClientSecure cloudClient;' "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
