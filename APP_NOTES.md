@@ -2553,6 +2553,18 @@ The project process is now explicitly two-phase:
 - No App Build was triggered in this Firmware-focused execution.
 - Physical test target is the V4.5 ArduinoDroid temporary source followed by Online OTA using the public V4.5 binary.
 
+## 2026-09-26 — V4.5 PHYSICAL OTA SUCCESS / CURRENT BASELINE
+
+- Physical validation of firmware V4.5 succeeded on the target device.
+- The V4.5 code was first manually flashed through ArduinoDroid with FW_VERSION temporarily labeled V3.8, then the device used Online OTA to install the public V4.5 firmware.
+- Observed success sequence: blue OTA indication during transfer -> green success indication -> restart -> App shows Current V4.5 and Latest V4.5 / Up to date.
+- This confirms the App firmware-version check/Update dialog, BLE handoff, persisted OTA result path, and post-restart synchronization all worked with the public V4.5 release.
+- The App Home NOTIFY diagnostic system successfully displayed OTA mode/stage/error/progress data during the preceding failure tests and remains synchronized with V4.5 firmware telemetry.
+- Earlier Online OTA Stream Read Timeout failures (code 6) are considered resolved by the V4.5 firmware-side Range/reconnect/resume implementation.
+- Local OTA remains a separate firmware-side issue: prior physical testing produced LOCAL_FLASH_READBACK, code 3 / Flash Read Failed at 100%.
+- No App command names, BLE/P1 transport, device UUIDs, or core UI feature behavior were changed as part of the V4.5 Online OTA fix.
+- Current project state: public firmware V4.5 is the active release; installed test device is running V4.5; App source remains aligned to the OTA diagnostic protocol.
+- The user's currently installed APK remains the existing App Build; no new APK build was triggered by the V4.5 firmware execution.
 # END OF APP PROJECT MEMORY
 
 ## 2026-09-26 — Code #2: firmware source cleanup + App BLE contract synchronization

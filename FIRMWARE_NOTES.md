@@ -1381,6 +1381,21 @@ The project process is now explicitly two-phase:
 - The parser is now implemented with a small internal decimal-token parser using Arduino String/size_t only, removing the strtoul dependency completely.
 - The public Core 3.3.12 V4.5 Online OTA behavior remains unchanged.
 
+## 2026-09-26 — V4.5 PHYSICAL ONLINE OTA SUCCESS / CURRENT BASELINE
+
+- Physical V4.5 validation completed successfully on the user's ESP32-C3 hardware.
+- Test method: the V4.5 diagnostic code was manually flashed through ArduinoDroid with the firmware label temporarily set to V3.8, then the device performed Online OTA to the public V4.5 release.
+- Online OTA behavior observed: blue OTA indication during transfer, green success indication, device restart, then the App reported Current V4.5 and Latest V4.5 / Up to date.
+- This confirms the V4.5 resumable Online OTA path works end-to-end on the target hardware with the published V4.5 binary.
+- The earlier Online OTA failure mode UPDATE_ERROR_STREAM / code 6 at variable progress points (17%, 71%, 77%) is no longer reproducing in the successful V4.5 test.
+- V4.5 Online OTA uses HTTP Range chunks, reconnect/retry, and true offset resume on the Core 3.3.12 public build.
+- Public firmware repository baseline is now V4.5: JEXFYZ-V4.5.bin plus manifest.json.
+- Public release engine: ESP32 Arduino Core 3.3.12.
+- ArduinoDroid manual source remains a temporary Core 3.3.7-compatible source using JEXFYZ_LEGACY_OTA, WiFiClientSecure, and setInsecure() for manual flashing/testing only.
+- Local OTA remains unresolved: the observed failure is LOCAL_FLASH_READBACK, UPDATE_ERROR_READ / code 3 at 100% after upload. This is separate from the now-working Online OTA path.
+- OTA diagnostic telemetry remains active: OTA_STAGE, OTA_PROGRESS, OTA_ERROR_CODE, OTA_ERROR, and structured LAST_OTA_RESULT.
+- No GPIO, NTC, cooling, Adaptive, voltage, RGB, touch, BLE UUID/P1 contract, or Wi-Fi/BLE ownership behavior was changed by the V4.5 Online OTA fix.
+- Current firmware test state: device is running V4.5 after a successful Online OTA update.
 # END OF FIRMWARE ENGINEERING MEMORY
 
 
