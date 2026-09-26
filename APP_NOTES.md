@@ -2266,3 +2266,16 @@ For every future app change:
 - This gives the Code sub-chat a safe way to execute the existing firmware pipeline without modifying firmware source/version solely to start CI.
 - The actual firmware source and firmware version remain unchanged by a trigger-only execution.
 - App Build remains manual and belongs to the JE X FYZ Action sub-chat.
+
+
+## 2026-09-26 — Firmware Build Run #6 compatibility fixes
+
+- Firmware Build execution reached the ESP32-C3 compile step and failed against Arduino ESP32 core 3.2.1 because three BLE APIs used by the V3.2 source no longer match the pinned core API.
+- Narrow source fixes were applied in `firmware/JEXFYZ.ino` only:
+  - `setAuthenticationMode(true, false, true)` → `setAuthenticationMode(ESP_LE_AUTH_REQ_SC_BOND)`.
+  - Removed unavailable `BLEServer::advertiseOnDisconnect(true)`; the existing `ServerCallbacks::onDisconnect()` already restarts advertising.
+  - `ESP_GATT_PERM_WRITE_ENC` → `ESP_GATT_PERM_WRITE_ENCRYPTED`.
+- Firmware behavior/architecture was otherwise left unchanged.
+- The firmware version remains V3.2; this is a compatibility build fix, not a feature/version release decision.
+- Commit: `3affa13a97d63eac1777ec2c6315fed9f8720a48`.
+- Run #6 must be revalidated after this fix; do not claim firmware publish success until the complete Build → artifact → public repository publish pipeline succeeds.
