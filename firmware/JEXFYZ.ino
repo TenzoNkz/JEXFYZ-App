@@ -20,7 +20,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
-static constexpr char FW_VERSION[] = "V4.12";
+static constexpr char FW_VERSION[] = "V4.13";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -33,8 +33,8 @@ static constexpr uint8_t PIN_NTC     = 0;
 static constexpr uint8_t PIN_TOUCH   = 1;
 static constexpr uint8_t PIN_12V     = 3;
 static constexpr uint8_t PIN_9V      = 4;
-static constexpr uint8_t PIN_PELTIER = 5;
-static constexpr uint8_t PIN_FAN     = 6;
+static constexpr uint8_t PIN_PELTIER = 6;
+static constexpr uint8_t PIN_FAN     = 5;
 static constexpr uint8_t PIN_LED     = 7;
 static constexpr uint8_t LED_COUNT   = 8;
 
