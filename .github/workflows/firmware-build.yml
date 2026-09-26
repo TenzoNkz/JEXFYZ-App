@@ -90,15 +90,13 @@ jobs:
       - name: Compile ESP32-C3 firmware
         run: |
           set -euo pipefail
-          rm -rf build/firmware
-          mkdir -p build/firmware
-          rm -rf build/sketch build/firmware
-          mkdir -p build/sketch build/firmware
-          cp firmware/JEXFYZ.ino build/sketch/JEXFYZ.ino
+          rm -rf build/firmware build/JEXFYZ
+          mkdir -p build/firmware build/JEXFYZ
+          cp firmware/JEXFYZ.ino build/JEXFYZ/JEXFYZ.ino
           arduino-cli compile \
             --fqbn esp32:esp32:esp32c3 \
             --output-dir build/firmware \
-            build/sketch
+            build/JEXFYZ
           BIN="build/firmware/JEXFYZ.ino.bin"
           test -s "$BIN"
           VERSION="${{ steps.version.outputs.version }}"

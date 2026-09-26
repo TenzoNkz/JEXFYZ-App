@@ -35,5 +35,5 @@
 
 ## Validation status
 - Workflow configuration is added in the private repository.
-- GitHub Actions firmware Run #1 is currently in progress; compile/publish success is not yet verified.
+- GitHub Actions firmware Run #2 failed because Arduino CLI requires the sketch directory name and main .ino filename to match; workflow is now corrected to stage as build/JEXFYZ/JEXFYZ.ino. The user has configured FIRMWARE_REPO_TOKEN; publish validation remains pending.
 - The public repository retains its existing JEXFYZ.cpp.bin as the initial baseline; the workflow removes that legacy filename after the first automated release.
