@@ -14,7 +14,7 @@ concurrency:
 
 env:
   ESP32_CORE_VERSION: "3.2.1"
-  WS2812FX_VERSION: "1.4.7"
+  ONEBUTTON_VERSION: "2.6.1"
   ADAFRUIT_NEOPIXEL_VERSION: "1.12.5"
   PUBLIC_FIRMWARE_REPO: "TenzoNkz/JEXFYZ-Firmware"
 
@@ -48,7 +48,7 @@ jobs:
       - name: Install firmware libraries
         run: |
           set -euo pipefail
-          arduino-cli lib install "WS2812FX@${WS2812FX_VERSION}"
+          arduino-cli lib install "OneButton@${ONEBUTTON_VERSION}"
           arduino-cli lib install "Adafruit NeoPixel@${ADAFRUIT_NEOPIXEL_VERSION}"
           arduino-cli lib list
 
