@@ -31,11 +31,23 @@
 - Runtime/root-cause status: **still unproven**. The physical panic dump has not been captured; V1.1 must be tested from Serial boot markers to identify the exact last successful boundary.
 - Next boundary: compile V1.1 only through the explicit firmware-build action, then physically flash/test and preserve the exact Serial/Guru Meditation output. Do not add BLE or unrelated recovery changes before the radio boundary is proven.
 
+## 2026-09-27 — PASSIVE LIVING-NOTES GOVERNANCE
+
+- Discussion result: project notes are now treated as passive, continuously evolving memory.
+- Rule: every JE X FYZ discussion and every execution must leave the relevant notes more current than before, even when no code change occurs.
+- Discussion-only updates may record decisions, verified official-source findings, contradictions, diagnostics, runtime evidence, and next boundaries.
+- Code/repository modification and build execution still require the explicit user command `Eksekusi Full`.
+- Current source/state consistency correction: the actual `firmware/JEXFYZ.ino` is V1.1 diagnostic source; the previous V1.0 physical-panic baseline remains historical/unvalidated.
+- No executable source or build was changed by this governance update.
+- Unresolved issue: physical V1.1 radio-boundary test and exact Guru Meditation/Serial evidence are still pending.
+
 > Current-state override for the next JE X FYZ firmware sub-chat. Historical sections below are retained for chronology.
 
 ## 1. Mandatory workflow
-Before every firmware action, read this note and the firmware master context, then inspect the newest `firmware/JEXFYZ.ino`. For cross-layer work, read the app context as well.
-After every material action, immediately record the action, reason, affected files, actual result, commit/run/version, unresolved issue, and next boundary.
+Before every firmware conversation or action, read this note and the firmware master context, then inspect the newest `firmware/JEXFYZ.ino`. For cross-layer work, read the app context as well.
+The living notes are passive project memory and must continue to grow during both discussion and execution. A discussion may update notes to record decisions, verified findings, contradictions, open questions, and next boundaries without changing executable source.
+After every material discussion or action, immediately record the discussion/action, reason, affected file/repository when applicable, actual result or current finding, commit/run/version when available, unresolved issue, and next boundary.
+Code edits and build execution remain locked until the user explicitly commands `Eksekusi Full`.
 
 ## 2. Official-source-first
 Pinned platform: Arduino-ESP32 Core 3.3.7.
@@ -55,7 +67,8 @@ Official AP path verified:
 Rule: do not invent a custom radio lifecycle when the pinned upstream implementation already provides the required behavior.
 
 ## 3. Active firmware state
-- Version: V1.0
+- Active source diagnostic version: V1.1
+- V1.0 remains the prior physically unvalidated baseline.
 - Source: `firmware/JEXFYZ.ino`
 - BLE name: JE X FYZ
 - Protocol: P1
