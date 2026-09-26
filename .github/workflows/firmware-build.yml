@@ -5,6 +5,7 @@ on:
     paths:
       - "firmware/JEXFYZ.ino"
       - ".github/workflows/firmware-build.yml"
+      - ".github/FIRMWARE_BUILD_TRIGGER"
   workflow_dispatch:
 
 permissions:
