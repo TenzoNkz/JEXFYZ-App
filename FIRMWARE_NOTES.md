@@ -42,3 +42,12 @@
 - Workflow configuration is added in the private repository.
 - GitHub Actions firmware Run #2 failed because Arduino CLI requires the sketch directory name and main .ino filename to match; workflow is now corrected to stage as build/JEXFYZ/JEXFYZ.ino. The user has configured FIRMWARE_REPO_TOKEN; publish validation remains pending.
 - The public repository retains its existing JEXFYZ.cpp.bin as the initial baseline; the workflow removes that legacy filename after the first automated release.
+
+
+## 2026-09-26 — Firmware build execution ownership
+
+- Firmware Build is the automatic CI path for firmware source updates.
+- A change to `firmware/JEXFYZ.ino` automatically starts Firmware Build.
+- The active Code sub-chat making the firmware change owns the firmware CI follow-through: inspect the run, fix only build-blocking issues when needed, and repeat until the firmware build/publish pipeline succeeds.
+- App Build remains separate and is manually triggered from the JE X FYZ Action sub-chat.
+- Manual `workflow_dispatch` remains available for Firmware Build as an explicit fallback/test path.
