@@ -2573,3 +2573,11 @@ The project process is now explicitly two-phase:
 - The intended physical test path is V3.4 device -> public V3.7 OTA, with no manual cable flashing and no hardware modification.
 - After OTA testing, the persisted firmware result should appear in the Home NOTIFY card on BLE reconnect.
 
+
+## 2026-09-26 — V3.8 SOURCE HANDOFF
+
+- App source documentation is aligned to firmware V3.8/P1.
+- No App Build was triggered by this execution; the user's installed App Build #4 remains the current test APK.
+- V3.8 keeps the existing BLE protocol and telemetry keys, so Build #4 remains the immediate test client for the firmware OTA experiment.
+- The V3.8 App source changes are documentation-only in this step; persisted OTA result visibility from the prior source update remains in place.
+
