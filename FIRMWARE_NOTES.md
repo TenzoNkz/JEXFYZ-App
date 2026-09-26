@@ -1076,3 +1076,14 @@ For all future firmware work:
 - `workflow_dispatch` remains removed.
 - This supersedes the earlier note that said Firmware Build automatically triggered from `firmware/JEXFYZ.ino`.
 - The unwanted Run #10 was caused by the previous source-path trigger and is not considered an intentional firmware execution request.
+
+## 2026-09-26 — Final separation of firmware editing and firmware build
+
+- Firmware implementation and firmware compilation are two separate user-controlled actions.
+- In Code discussion, we can inspect and prepare changes without starting CI.
+- After plain `Eksekusi`, Code applies the agreed repository changes, including `firmware/JEXFYZ.ino` when firmware source changes are part of the agreed work, but it does **not** update `.github/FIRMWARE_BUILD_TRIGGER`.
+- Therefore source changes never automatically compile a `.bin`.
+- The user separately commands `Eksekusi Firmware` when the current firmware source is ready to compile.
+- Only that explicit firmware execution updates `.github/FIRMWARE_BUILD_TRIGGER` and starts Firmware Build.
+- Firmware Build then verifies toolchain, identity, version, compile, artifact, and public firmware publication as applicable, and Code follows failures until the requested firmware execution is verified.
+- This supersedes any older wording that described firmware source changes themselves as an automatic build trigger.
