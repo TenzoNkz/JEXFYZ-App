@@ -2465,6 +2465,15 @@ The project process is now explicitly two-phase:
 - No App Build was triggered; App Build remains exclusive to the Action sub-chat and requires the explicit `Build App` command.
 - This execution is intended to validate the observed blue-then-red online OTA failure and the unwanted Android pairing prompt on the next physical test.
 
+## 2026-09-26 — V3.6 FULL EXECUTION VERIFIED
+
+- App source was updated to remove Android BLE bond creation/recovery and retain the existing `SYNC -> SYNC_READY` session gate.
+- Firmware V3.6 was built and published successfully in Firmware Build Run #15 (`36214972250`).
+- Firmware source verification confirms no `BLESecurity`, `SC_BOND`, or encrypted RX permission remains.
+- Online OTA handoff now releases BLE with `BLEDevice::deinit(true)` before Wi-Fi/TLS and validates received image size before finalizing.
+- No App Build was started in Code; the source-side pairing fix will require the dedicated Action sub-chat `Build App` flow to produce the updated APK.
+- Physical test remains: update the manually flashed V3.4 device to V3.6 and verify no Android pairing prompt and successful online OTA completion.
+
 # END OF APP PROJECT MEMORY
 
 ## 2026-09-26 — Code #2: firmware source cleanup + App BLE contract synchronization
