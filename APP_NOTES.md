@@ -2257,3 +2257,12 @@ For every future app change:
 - `.github/workflows/build.yml` already uses `workflow_dispatch` for App Build.
 - `.github/workflows/firmware-build.yml` already has a push trigger for `firmware/JEXFYZ.ino` and also retains manual dispatch support.
 - No application build is triggered merely because app source files change.
+
+
+## 2026-09-26 — Firmware manual trigger added for Code sub-chat execution
+
+- Added `.github/FIRMWARE_BUILD_TRIGGER` as a dedicated CI trigger file.
+- Firmware Build now auto-runs on changes to `firmware/JEXFYZ.ino` or the dedicated trigger file.
+- This gives the Code sub-chat a safe way to execute the existing firmware pipeline without modifying firmware source/version solely to start CI.
+- The actual firmware source and firmware version remain unchanged by a trigger-only execution.
+- App Build remains manual and belongs to the JE X FYZ Action sub-chat.
