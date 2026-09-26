@@ -346,3 +346,9 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Job `validate-arduinodroid` is currently installing the pinned ESP32 Arduino Core `3.3.7`; library installation and compilation have not started yet.
 - No compile result is available at this checkpoint.
 - No hardware conclusion is implied.
+
+## 2026-09-27 — EXECUTION STATUS UPDATE: RUN #67 COMPILATION
+- Run #67 toolchain installation completed successfully: Arduino-ESP32 Core 3.3.7 and the pinned firmware libraries installed successfully.
+- The ArduinoDroid temporary source preparation also completed successfully.
+- The `Compile ArduinoDroid temporary source` step is currently `in_progress`.
+- No final compile conclusion is claimed yet.
