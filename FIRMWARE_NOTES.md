@@ -1757,3 +1757,13 @@ Temporary diagnostic only:
 4. Do not add BLE or custom radio teardown/retry logic to the first diagnostic.
 5. Record exactly which official call completes before the panic.
 6. Reintroduce JE X FYZ layers one at a time only after the boundary is proven.
+
+
+## 2026-09-27 — CURRENT ANSWER / ROOT-CAUSE STATUS
+
+- Root cause is **not yet proven**.
+- The V1.0 manual-flash panic is confirmed by the user's hardware report, despite CI Run #66 being successful.
+- Official Arduino-ESP32 Core 3.3.7 source inspection has ruled out the assumption that a custom Wi-Fi startup sequence is required: the official AP example starts with `WiFi.softAP(ssid, password)`, which internally performs the AP enable/start path.
+- The current V1.0 custom pre-sequence (`WiFi.disconnect(true, false)` → `WiFi.setHostname` → `WiFi.setAutoReconnect(false)` → `WiFi.mode(WIFI_AP)`) is therefore **suspect but not yet identified as the root cause**.
+- The next diagnostic must use the official 3.3.7 AP path and capture the exact last successful call before the panic. No additional speculative radio patching should be stacked before that evidence exists.
+- Exact V1.0 Guru Meditation registers/log have not yet been recorded in this note.
