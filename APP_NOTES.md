@@ -2442,6 +2442,14 @@ The project process is now explicitly two-phase:
 - No unrelated UI, BLE, foreground-service, or firmware behavior was changed.
 - A new App Build is required to validate analyze/test/release/signing/artifact after this fix.
 
+## 2026-09-26 — V3.5 OTA PANIC TEST HANDOFF
+
+- User manually flashed V3.4 after the previous online OTA attempt caused a firmware panic.
+- Firmware source is now intentionally versioned as V3.5 so a running V3.4 device will see the public test package as a newer firmware release.
+- `lib/main.dart` source documentation was synchronized from V3.4 to V3.5; OTA version comparison remains dynamic and was not otherwise changed.
+- No App Build was triggered by this Code execution.
+- `Eksekusi Firmware` is the separate firmware build/publish action for the V3.5 test package. Physical OTA runtime behavior still requires user device testing; a successful CI build does not prove the panic is fixed.
+
 # END OF APP PROJECT MEMORY
 
 ## 2026-09-26 — Code #2: firmware source cleanup + App BLE contract synchronization
