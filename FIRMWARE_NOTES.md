@@ -1355,6 +1355,12 @@ The project process is now explicitly two-phase:
 - ArduinoDroid temporary source generation remains Core 3.3.7-compatible.
 - No GPIO, NTC, cooling, Adaptive, voltage, RGB, touch, BLE UUID/P1 contract, or Wi-Fi/BLE radio ownership rule was intentionally changed.
 
+## 2026-09-26 — V4.5 ARDUINODROID LEGACY OTA COMPATIBILITY
+
+- Public V4.5 is built on Core 3.3.12 and uses esp_ota_resume() for true offset resume.
+- The ArduinoDroid temporary source defines JEXFYZ_LEGACY_OTA and avoids esp_ota_resume() on Core 3.3.7; a stalled range retries from byte 0 on the temporary/manual build.
+- This compatibility branch is only for manual flashing/testing. It does not alter the published Core 3.3.12 V4.5 binary behavior.
+
 # END OF FIRMWARE ENGINEERING MEMORY
 
 

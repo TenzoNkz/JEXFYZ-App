@@ -123,6 +123,7 @@ jobs:
           set -euo pipefail
           VERSION="${{ steps.version.outputs.version }}"
           cp firmware/JEXFYZ.ino "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
+          sed -i '1i #define JEXFYZ_LEGACY_OTA 1' "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
           sed -i \
             -e 's/#include <NetworkClientSecure.h>/#include <WiFiClientSecure.h>/' \
             -e 's/NetworkClientSecure cloudClient;/WiFiClientSecure cloudClient;/' \

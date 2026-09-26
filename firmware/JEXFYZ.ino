@@ -2219,6 +2219,21 @@ static bool downloadOnlineOtaResumable() {
         }
 
         setOtaDiagnosticStage("ONLINE_RANGE_RESUME");
+#ifdef JEXFYZ_LEGACY_OTA
+        // Core 3.3.7 compatibility: use a fresh OTA transaction when the
+        // range stream stalls because esp_ota_resume() is unavailable there.
+        otaErr = esp_ota_begin(targetPartition, totalSize, &otaHandle);
+        offset = 0;
+        cloudBytesReceived = 0;
+        setOtaDiagnosticProgress(0);
+        if (otaErr != ESP_OK) {
+          failOnlineOta(
+              "ONLINE_RANGE_RESUME",
+              static_cast<int>(otaErr),
+              String("legacy esp_ota_begin: ") + esp_err_to_name(otaErr));
+          return false;
+        }
+#else
         otaErr = esp_ota_resume(
             targetPartition,
             0,
@@ -2232,6 +2247,7 @@ static bool downloadOnlineOtaResumable() {
               String("esp_ota_resume: ") + esp_err_to_name(otaErr));
           return false;
         }
+#endif
       }
     }
 
