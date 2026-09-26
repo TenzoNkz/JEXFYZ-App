@@ -309,6 +309,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String firmwareVersion = 'V?';
   String resetReason = 'UNKNOWN';
   String otaState = 'IDLE';
+  String otaStage = 'IDLE';
+  int otaProgress = 0;
+  int otaErrorCode = 0;
+  String otaError = 'NONE';
   String lastOtaResult = 'NONE';
   int stateSequence = 0;
 
@@ -1169,6 +1173,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 'OTA_STATE':
         otaState = value;
         break;
+      case 'OTA_STAGE':
+        otaStage = value;
+        break;
+      case 'OTA_PROGRESS':
+        otaProgress = (int.tryParse(value) ?? otaProgress).clamp(0, 100).toInt();
+        break;
+      case 'OTA_ERROR_CODE':
+        otaErrorCode = int.tryParse(value) ?? otaErrorCode;
+        break;
+      case 'OTA_ERROR':
+        otaError = value;
+        break;
       case 'LAST_OTA_RESULT':
         lastOtaResult = value;
         break;
@@ -1606,10 +1622,76 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
+  Map<String, String> _otaDiagnosticFields(String raw) {
+    final fields = <String, String>{};
+    for (final part in raw.split('|')) {
+      final index = part.indexOf('=');
+      if (index <= 0) continue;
+      fields[part.substring(0, index).trim().toUpperCase()] =
+          part.substring(index + 1).trim();
+    }
+    return fields;
+  }
+
+  String _friendlyOtaStage(String stage) {
+    switch (stage.toUpperCase()) {
+      case 'LOCAL_FILE_CHECK': return 'File check';
+      case 'LOCAL_SIZE_CHECK': return 'Size check';
+      case 'LOCAL_UPDATE_BEGIN': return 'Update begin';
+      case 'LOCAL_RECEIVE': return 'Receiving';
+      case 'LOCAL_FLASH_WRITE': return 'Flash write';
+      case 'LOCAL_SIZE_VERIFY': return 'Size verify';
+      case 'LOCAL_FINALIZE': return 'Finalize';
+      case 'LOCAL_FLASH_READBACK': return 'Flash readback';
+      case 'LOCAL_FLASH_ERASE': return 'Flash erase';
+      case 'LOCAL_BOOT_PARTITION': return 'Boot partition';
+      case 'ONLINE_WIFI_CONNECT': return 'Wi-Fi connect';
+      case 'ONLINE_TIME_SYNC': return 'Time sync';
+      case 'ONLINE_HTTPS_BEGIN': return 'HTTPS connect';
+      case 'ONLINE_HTTP_UPDATE': return 'HTTP update';
+      case 'ONLINE_UPDATE_BEGIN': return 'Update begin';
+      case 'ONLINE_DOWNLOAD': return 'Download';
+      case 'ONLINE_FLASH_WRITE': return 'Flash write';
+      case 'ONLINE_FLASH_ERASE': return 'Flash erase';
+      case 'ONLINE_FLASH_READBACK': return 'Flash readback';
+      case 'ONLINE_IMAGE_VALIDATE': return 'Image validate';
+      case 'ONLINE_IMAGE_VERIFY': return 'Image verify';
+      case 'ONLINE_BOOT_PARTITION': return 'Boot partition';
+      case 'ONLINE_HTTP_RESPONSE': return 'HTTP response';
+      default: return stage.replaceAll('_', ' ');
+    }
+  }
+
   String _friendlyOtaResult(String value) {
     final raw = value.trim();
     if (raw.isEmpty || raw.toUpperCase() == 'NONE') return '';
     final upper = raw.toUpperCase();
+
+    if (upper.startsWith('OTA_FAILED|')) {
+      final fields = _otaDiagnosticFields(raw);
+      final mode = fields['MODE'] ?? 'OTA';
+      final stage = _friendlyOtaStage(fields['STAGE'] ?? 'UNKNOWN');
+      final error = fields['ERROR'] ?? 'Unknown error';
+      final progress = fields['PROGRESS'] ?? '--';
+      final code = fields['CODE'] ?? '0';
+      return 'OTA failed • $mode • $stage • $error [${progress}% / code $code]';
+    }
+
+    if (upper.startsWith('OTA_SUCCESS|')) {
+      final fields = _otaDiagnosticFields(raw);
+      final mode = fields['MODE'] ?? 'OTA';
+      final stage = _friendlyOtaStage(fields['STAGE'] ?? 'UNKNOWN');
+      final version = fields['VERSION'] ?? '';
+      return 'OTA successful • $mode • $stage${version.isEmpty ? '' : ' • $version'}';
+    }
+
+    if (upper.startsWith('IN_PROGRESS|')) {
+      final fields = _otaDiagnosticFields(raw);
+      final mode = fields['MODE'] ?? 'OTA';
+      final stage = _friendlyOtaStage(fields['STAGE'] ?? 'UNKNOWN');
+      final progress = fields['PROGRESS'] ?? '0';
+      return 'OTA in progress • $mode • $stage • ${progress}%';
+    }
 
     if (upper == 'IN_PROGRESS') return 'OTA update in progress.';
     if (upper == 'LOCAL_SUCCESS') return 'Local OTA successful.';
@@ -1912,12 +1994,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
       return custom;
     }
 
-    if (custom.isNotEmpty) return custom;
-
     final otaNotice = _friendlyOtaResult(lastOtaResult);
     if (otaNotice.isNotEmpty && lastOtaResult.toUpperCase() != 'IN_PROGRESS') {
       return otaNotice;
     }
+
+    if (custom.isNotEmpty) return custom;
 
     if (_bleConnecting) return 'Connecting to device...';
     if (syncing && !dashboardReady) return 'Synchronizing device...';

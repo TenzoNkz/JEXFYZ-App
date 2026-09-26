@@ -21,7 +21,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
-static constexpr char FW_VERSION[] = "V4.2";
+static constexpr char FW_VERSION[] = "V4.3";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -243,6 +243,12 @@ uint32_t cloudBytesReceived = 0;
 uint32_t cloudPhaseStartedAt = 0;
 bool cloudTimeSyncStarted = false;
 
+String otaDiagnosticStage = "IDLE";
+String otaDiagnosticError = "NONE";
+int otaDiagnosticErrorCode = 0;
+uint8_t otaDiagnosticProgress = 0;
+uint8_t otaDiagnosticLastPublishedProgress = 255;
+
 bool bootApActive = true;
 uint32_t bootApStartedAt = 0;
 bool bootApHadClient = false;
@@ -284,7 +290,14 @@ static void clearBleTxQueue();
 static void clearBleRxQueue();
 static void processBleRxQueue();
 static void processPendingOnlineOtaStart();
-static void failLocalOta(const String& reason);
+static void setOtaDiagnosticStage(const String& stage);
+static void setOtaDiagnosticProgress(uint8_t progress);
+static void setOtaDiagnosticError(int errorCode, const String& error);
+static String otaFailureResult(const String& mode, const String& stage, int errorCode, const String& error, uint8_t progress);
+static String otaSuccessResult(const String& mode, const String& stage, const String& version);
+static String otaUpdateFailureStage(bool online, int errorCode);
+static void failLocalOta(const String& stage, int errorCode, const String& error);
+static void failOnlineOta(const String& stage, int errorCode, const String& error);
 
 static const char* voltageToString(Voltage value) {
   switch (value) {
@@ -1358,6 +1371,89 @@ static const char* otaStateText(OtaState state) {
   return "IDLE";
 }
 
+static String sanitizeOtaDetail(String value) {
+  value.replace("|", "/");
+  value.replace("\r", " ");
+  value.replace("\n", " ");
+  value.trim();
+  if (value.isEmpty()) value = "UNKNOWN";
+  if (value.length() > 96) value = value.substring(0, 96);
+  return value;
+}
+
+static void setOtaDiagnosticStage(const String& stage) {
+  otaDiagnosticStage = stage;
+  if (bleClientConnected) {
+    sendDelta("OTA_STAGE", otaDiagnosticStage);
+  }
+}
+
+static void setOtaDiagnosticProgress(uint8_t progress) {
+  progress = constrain(progress, static_cast<uint8_t>(0), static_cast<uint8_t>(100));
+  otaDiagnosticProgress = progress;
+  if (bleClientConnected &&
+      (otaDiagnosticLastPublishedProgress == 255 ||
+       progress == 0 ||
+       progress == 100 ||
+       progress >= otaDiagnosticLastPublishedProgress + 5)) {
+    otaDiagnosticLastPublishedProgress = progress;
+    sendDelta("OTA_PROGRESS", String(progress));
+  }
+}
+
+static void setOtaDiagnosticError(int errorCode, const String& error) {
+  otaDiagnosticErrorCode = errorCode;
+  otaDiagnosticError = sanitizeOtaDetail(error);
+  if (bleClientConnected) {
+    sendDelta("OTA_ERROR_CODE", String(otaDiagnosticErrorCode));
+    sendDelta("OTA_ERROR", otaDiagnosticError);
+  }
+}
+
+static String otaFailureResult(
+    const String& mode,
+    const String& stage,
+    int errorCode,
+    const String& error,
+    uint8_t progress) {
+  return "OTA_FAILED|MODE=" + mode +
+         "|STAGE=" + stage +
+         "|CODE=" + String(errorCode) +
+         "|ERROR=" + sanitizeOtaDetail(error) +
+         "|PROGRESS=" + String(progress);
+}
+
+static String otaSuccessResult(
+    const String& mode,
+    const String& stage,
+    const String& version) {
+  return "OTA_SUCCESS|MODE=" + mode +
+         "|STAGE=" + stage +
+         "|VERSION=" + sanitizeOtaDetail(version) +
+         "|PROGRESS=100";
+}
+
+static String otaUpdateFailureStage(bool online, int errorCode) {
+  const String prefix = online ? "ONLINE_" : "LOCAL_";
+  switch (errorCode) {
+    case UPDATE_ERROR_READ: return prefix + "FLASH_READBACK";
+    case UPDATE_ERROR_WRITE: return prefix + "FLASH_WRITE";
+    case UPDATE_ERROR_ERASE: return prefix + "FLASH_ERASE";
+    case UPDATE_ERROR_ACTIVATE: return prefix + "BOOT_PARTITION";
+    case UPDATE_ERROR_MAGIC_BYTE: return prefix + "IMAGE_VALIDATE";
+    case UPDATE_ERROR_MD5:
+    case UPDATE_ERROR_SHA256:
+    case UPDATE_ERROR_SHA512:
+    case UPDATE_ERROR_SIGN: return prefix + "IMAGE_VERIFY";
+    case UPDATE_ERROR_STREAM: return prefix + "DOWNLOAD";
+    case UPDATE_ERROR_SPACE:
+    case UPDATE_ERROR_SIZE:
+    case UPDATE_ERROR_NO_PARTITION:
+    case UPDATE_ERROR_BAD_ARGUMENT: return prefix + "UPDATE_BEGIN";
+    default: return prefix + "FINALIZE";
+  }
+}
+
 static void setOtaState(OtaState state) {
   if (otaState == state) return;
   otaState = state;
@@ -1392,6 +1488,10 @@ static void sendFullSync() {
   lastSafetyReasonSent = reason;
   sendDelta("SAFETY_REASON", reason);
   sendDelta("OTA_STATE", otaStateText(otaState));
+  sendDelta("OTA_STAGE", otaDiagnosticStage);
+  sendDelta("OTA_PROGRESS", String(otaDiagnosticProgress));
+  sendDelta("OTA_ERROR_CODE", String(otaDiagnosticErrorCode));
+  sendDelta("OTA_ERROR", otaDiagnosticError);
   sendDelta("LAST_OTA_RESULT", otaResult);
   sendDelta("RESET_REASON", resetReasonText());
   sendDelta("TEMP_HOT_LIMIT", String(hotLimit));
@@ -1728,12 +1828,18 @@ static void applyOtaSafeOutputs() {
   digitalWrite(PIN_12V, OUTPUT_OFF);
 }
 
-static void failOnlineOta(const char* reason) {
+static void failOnlineOta(
+    const String& stage,
+    int errorCode,
+    const String& error) {
   otaRestartAt = 0;
   cloudHttp.end();
   cloudClient.stop();
 
-  saveOtaResult(reason);
+  setOtaDiagnosticStage(stage);
+  setOtaDiagnosticError(errorCode, error);
+  saveOtaResult(
+      otaFailureResult("ONLINE", stage, errorCode, error, otaDiagnosticProgress));
   setOtaState(OtaState::FAILED);
   otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
   otaActive = false;
@@ -1753,13 +1859,16 @@ static void startOnlineOta() {
 
   otaActive = true;
   setOtaState(OtaState::CLOUD_CONNECTING);
+  setOtaDiagnosticStage("ONLINE_WIFI_CONNECT");
+  setOtaDiagnosticProgress(0);
+  setOtaDiagnosticError(0, "NONE");
   otaRestartAt = 0;
   resetBlinkState();
   cloudPhaseStartedAt = millis();
   cloudBytesReceived = 0;
   cloudTimeSyncStarted = false;
 
-  saveOtaResult("IN_PROGRESS");
+  saveOtaResult("IN_PROGRESS|MODE=ONLINE|STAGE=ONLINE_WIFI_CONNECT|PROGRESS=0");
   applyOtaSafeOutputs();
 
   clearBleTxQueue();
@@ -1780,6 +1889,7 @@ static void processOnlineOta() {
 
   if (WiFi.status() == WL_CONNECTED) {
     if (!cloudTimeSyncStarted) {
+      setOtaDiagnosticStage("ONLINE_TIME_SYNC");
       configTime(0, 0, "pool.ntp.org", "time.nist.gov");
       cloudTimeSyncStarted = true;
       cloudPhaseStartedAt = millis();
@@ -1789,13 +1899,15 @@ static void processOnlineOta() {
     const time_t now = time(nullptr);
     if (now < 1700000000) {
       if (millis() - cloudPhaseStartedAt >= 10000) {
-        failOnlineOta("TIME_SYNC_FAILED");
+        failOnlineOta("ONLINE_TIME_SYNC", -1, "TIME_SYNC_FAILED");
       }
       return;
     }
 
     setOtaState(OtaState::CLOUD_DOWNLOADING);
+    setOtaDiagnosticStage("ONLINE_HTTPS_BEGIN");
     cloudBytesReceived = 0;
+    setOtaDiagnosticProgress(0);
     resetBlinkState();
 
     cloudHttp.end();
@@ -1808,7 +1920,7 @@ static void processOnlineOta() {
     cloudHttp.setRedirectLimit(5);
 
     if (!cloudHttp.begin(cloudClient, cloudUrl)) {
-      failOnlineOta("HTTP_BEGIN_FAILED");
+      failOnlineOta("ONLINE_HTTPS_BEGIN", -1, "HTTP_BEGIN_FAILED");
       return;
     }
 
@@ -1817,12 +1929,27 @@ static void processOnlineOta() {
     updater.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
     updater.setLedPin(-1);
 
+    setOtaDiagnosticStage("ONLINE_HTTP_UPDATE");
+
+    updater.onStart([]() {
+      setOtaDiagnosticStage("ONLINE_UPDATE_BEGIN");
+    });
+
     updater.onProgress([](int current, int total) {
       if (current > 0) {
         cloudBytesReceived = static_cast<uint32_t>(current);
       }
+      setOtaDiagnosticStage("ONLINE_DOWNLOAD");
+      if (total > 0) {
+        const int percent = constrain((current * 100) / total, 0, 100);
+        setOtaDiagnosticProgress(static_cast<uint8_t>(percent));
+      }
       renderBlink(0x0000FF);
       yield();
+    });
+
+    updater.onError([](int errorCode) {
+      setOtaDiagnosticError(errorCode, String("HTTPUpdate error code ") + String(errorCode));
     });
 
     const t_httpUpdate_return result =
@@ -1831,10 +1958,13 @@ static void processOnlineOta() {
     cloudClient.stop();
 
     if (result == HTTP_UPDATE_OK) {
+      setOtaDiagnosticStage("ONLINE_BOOT_PARTITION");
+      setOtaDiagnosticProgress(100);
+      setOtaDiagnosticError(0, "NONE");
       setOtaState(OtaState::CLOUD_APPLYING);
-      saveOtaResult(cloudVersion.isEmpty()
-                        ? "SUCCESS"
-                        : "SUCCESS_" + cloudVersion);
+      saveOtaResult(
+          otaSuccessResult("ONLINE", "ONLINE_BOOT_PARTITION",
+                            cloudVersion.isEmpty() ? FW_VERSION : cloudVersion));
       setOtaState(OtaState::SUCCESS);
       otaRestartAt = millis() + OTA_RESTART_DELAY_MS;
       otaActive = true;
@@ -1848,13 +1978,20 @@ static void processOnlineOta() {
                    ? "HTTP_UPDATE_NO_UPDATES"
                    : "HTTP_UPDATE_FAILED";
     }
-    failOnlineOta(detail.c_str());
+
+    const int errorCode = updater.getLastError();
+    String failStage = "ONLINE_HTTP_RESPONSE";
+    if (errorCode > 0) {
+      failStage = otaUpdateFailureStage(true, errorCode);
+    }
+
+    failOnlineOta(failStage, errorCode, detail);
   }
 
   if (otaActive &&
       otaState == OtaState::CLOUD_CONNECTING &&
       millis() - cloudPhaseStartedAt >= WIFI_CONNECT_TIMEOUT_MS) {
-    failOnlineOta("WIFI_FAILED");
+    failOnlineOta("ONLINE_WIFI_CONNECT", -1, "WIFI_FAILED");
   }
 }
 
@@ -1920,9 +2057,15 @@ form.addEventListener('submit',e=>{
 </html>
 )HTML";
 
-static void failLocalOta(const String& reason) {
+static void failLocalOta(
+    const String& stage,
+    int errorCode,
+    const String& error) {
+  setOtaDiagnosticStage(stage);
+  setOtaDiagnosticError(errorCode, error);
+  saveOtaResult(
+      otaFailureResult("LOCAL", stage, errorCode, error, otaDiagnosticProgress));
   Update.abort();
-  saveOtaResult(reason);
   setOtaState(OtaState::FAILED);
   resetBlinkState();
   otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
@@ -1938,6 +2081,9 @@ static void localOtaUploadHandler() {
     otaRestartAt = 0;
     otaActive = true;
     setOtaState(OtaState::LOCAL_UPLOAD);
+    setOtaDiagnosticStage("LOCAL_FILE_CHECK");
+    setOtaDiagnosticProgress(0);
+    setOtaDiagnosticError(0, "NONE");
     resetBlinkState();
     localOtaBytesReceived = 0;
     localOtaExpectedBytes = UPDATE_SIZE_UNKNOWN;
@@ -1945,27 +2091,31 @@ static void localOtaUploadHandler() {
     String filename = upload.filename;
     filename.toLowerCase();
     if (!filename.endsWith(".bin")) {
-      failLocalOta("INVALID_FILE_TYPE");
+      failLocalOta("LOCAL_FILE_CHECK", -1, "INVALID_FILE_TYPE");
       return;
     }
 
     if (webServer.hasArg("size")) {
       const long parsedSize = webServer.arg("size").toInt();
       if (parsedSize <= 0 || parsedSize > static_cast<long>(OTA_MAX_FIRMWARE_BYTES)) {
-        failLocalOta("INVALID_FILE_SIZE");
+        failLocalOta("LOCAL_SIZE_CHECK", -1, "INVALID_FILE_SIZE");
         return;
       }
       localOtaExpectedBytes = static_cast<size_t>(parsedSize);
     }
 
-    saveOtaResult("IN_PROGRESS");
+    saveOtaResult("IN_PROGRESS|MODE=LOCAL|STAGE=LOCAL_UPDATE_BEGIN|PROGRESS=0");
     applyOtaSafeOutputs();
+    setOtaDiagnosticStage("LOCAL_UPDATE_BEGIN");
 
     if (!Update.begin(localOtaExpectedBytes)) {
       String detail = Update.errorString();
       if (detail.isEmpty()) detail = "UPDATE_BEGIN_FAILED";
-      failLocalOta(detail);
+      failLocalOta("LOCAL_UPDATE_BEGIN", Update.getError(), detail);
+      return;
     }
+
+    setOtaDiagnosticStage("LOCAL_RECEIVE");
     return;
   }
 
@@ -1975,11 +2125,12 @@ static void localOtaUploadHandler() {
     }
 
     if (upload.currentSize == 0) return;
+    setOtaDiagnosticStage("LOCAL_FLASH_WRITE");
 
     const size_t chunkSize = static_cast<size_t>(upload.currentSize);
     if (localOtaExpectedBytes != UPDATE_SIZE_UNKNOWN &&
         localOtaBytesReceived + chunkSize > localOtaExpectedBytes) {
-      failLocalOta("UPLOAD_SIZE_EXCEEDED");
+      failLocalOta("LOCAL_SIZE_VERIFY", -1, "UPLOAD_SIZE_EXCEEDED");
       return;
     }
 
@@ -1987,13 +2138,18 @@ static void localOtaUploadHandler() {
     if (written != chunkSize) {
       String detail = Update.errorString();
       if (detail.isEmpty()) detail = "UPDATE_WRITE_FAILED";
-      failLocalOta(detail);
+      failLocalOta("LOCAL_FLASH_WRITE", Update.getError(), detail);
       return;
     }
 
     localOtaBytesReceived += chunkSize;
+    if (localOtaExpectedBytes != UPDATE_SIZE_UNKNOWN && localOtaExpectedBytes > 0) {
+      const uint32_t percent =
+          static_cast<uint32_t>((localOtaBytesReceived * 100ULL) / localOtaExpectedBytes);
+      setOtaDiagnosticProgress(static_cast<uint8_t>(constrain(percent, 0UL, 100UL)));
+    }
     if (localOtaBytesReceived > OTA_MAX_FIRMWARE_BYTES) {
-      failLocalOta("OTA_TOO_LARGE");
+      failLocalOta("LOCAL_SIZE_VERIFY", -1, "OTA_TOO_LARGE");
     }
     return;
   }
@@ -2001,8 +2157,9 @@ static void localOtaUploadHandler() {
   if (upload.status == UPLOAD_FILE_END) {
     if (otaState != OtaState::LOCAL_UPLOAD || !otaActive) return;
 
+    setOtaDiagnosticStage("LOCAL_SIZE_VERIFY");
     if (localOtaBytesReceived == 0) {
-      failLocalOta("OTA_INCOMPLETE");
+      failLocalOta("LOCAL_SIZE_VERIFY", -1, "OTA_INCOMPLETE");
       return;
     }
 
@@ -2015,20 +2172,26 @@ static void localOtaUploadHandler() {
           "UPLOAD_SIZE_MISMATCH_%lu_%lu",
           static_cast<unsigned long>(localOtaBytesReceived),
           static_cast<unsigned long>(localOtaExpectedBytes));
-      failLocalOta(detail);
+      failLocalOta("LOCAL_SIZE_VERIFY", -1, detail);
       return;
     }
 
+    setOtaDiagnosticProgress(100);
+    setOtaDiagnosticStage("LOCAL_FINALIZE");
     const bool finished = Update.end(true);
 
     if (!finished) {
+      const int errorCode = Update.getError();
       String detail = Update.errorString();
       if (detail.isEmpty()) detail = "UPDATE_END_FAILED";
-      failLocalOta(detail);
+      const String failStage = otaUpdateFailureStage(false, errorCode);
+      failLocalOta(failStage, errorCode, detail);
       return;
     }
 
-    saveOtaResult("LOCAL_SUCCESS");
+    setOtaDiagnosticError(0, "NONE");
+    setOtaDiagnosticStage("LOCAL_BOOT_PARTITION");
+    saveOtaResult(otaSuccessResult("LOCAL", "LOCAL_BOOT_PARTITION", FW_VERSION));
     setOtaState(OtaState::SUCCESS);
     otaActive = true;
     resetBlinkState();
@@ -2038,7 +2201,7 @@ static void localOtaUploadHandler() {
   }
 
   if (upload.status == UPLOAD_FILE_ABORTED) {
-    failLocalOta("UPLOAD_ABORTED");
+    failLocalOta("LOCAL_RECEIVE", -1, "UPLOAD_ABORTED");
   }
 }
 
@@ -2813,6 +2976,12 @@ static void setupTouch() {
 }
 
 void setup() {
+  otaDiagnosticStage = "BOOT_AP";
+  otaDiagnosticError = "NONE";
+  otaDiagnosticErrorCode = 0;
+  otaDiagnosticProgress = 0;
+  otaDiagnosticLastPublishedProgress = 255;
+
   Serial.begin(115200);
 
   pinMode(PIN_NTC, INPUT);

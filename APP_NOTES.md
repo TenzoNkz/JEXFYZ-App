@@ -2507,6 +2507,14 @@ The project process is now explicitly two-phase:
 - Required physical validation: V3.9 device -> local boot AP OTA -> V4.2.
 - If physical OTA fails again, record the exact OTA page response before the next code change.
 
+## 2026-09-26 — V4.3 OTA DIAGNOSTIC NOTIFY SYNC
+
+- App source now consumes OTA_STAGE, OTA_PROGRESS, OTA_ERROR_CODE, and OTA_ERROR telemetry.
+- Structured LAST_OTA_RESULT values are rendered in Home NOTIFY with OTA mode, exact failing stage, error text, progress, and numeric code.
+- Persisted OTA failure/success is prioritized over a stale generic notice after reconnect.
+- BLE/P1 command names remain unchanged.
+- No App Build was triggered in this Code/Firmware execution; APK build remains separately controlled in the Action sub-chat.
+
 # END OF APP PROJECT MEMORY
 
 ## 2026-09-26 — Code #2: firmware source cleanup + App BLE contract synchronization

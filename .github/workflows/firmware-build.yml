@@ -117,6 +117,30 @@ jobs:
           if-no-files-found: error
           compression-level: 0
 
+      - name: Prepare ArduinoDroid temporary source
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.version.outputs.version }}"
+          cp firmware/JEXFYZ.ino "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
+          sed -i \
+            -e 's/#include <NetworkClientSecure.h>/#include <WiFiClientSecure.h>/' \
+            -e 's/NetworkClientSecure cloudClient;/WiFiClientSecure cloudClient;/' \
+            -e 's/cloudClient.useBuiltinCACertBundle();/cloudClient.setInsecure();/' \
+            "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
+          grep -Fq '#include <WiFiClientSecure.h>' "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
+          grep -Fq 'WiFiClientSecure cloudClient;' "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
+          grep -Fq 'cloudClient.setInsecure();' "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
+
+      - name: Upload ArduinoDroid temporary source artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: JEXFYZ-${{ steps.version.outputs.version }}-ArduinoDroid-Source
+          path: build/firmware/JEXFYZ-${{ steps.version.outputs.version }}-ArduinoDroid-Temporary.ino
+          if-no-files-found: error
+          compression-level: 0
+
+
       - name: Publish firmware release to public repository
         shell: bash
         env:

@@ -1299,6 +1299,17 @@ The project process is now explicitly two-phase:
 - Public manifest was independently verified as V4.2 and points to `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V4.2.bin`.
 - Required physical validation remains: installed V3.9 device -> local boot AP OTA -> V4.2. Firmware is not declared physically OTA-verified until the user confirms the device reboots and reports V4.2.
 
+## 2026-09-26 — V4.3 OTA FULL-STAGE DIAGNOSTICS
+
+- Firmware source advanced from V4.2 to V4.3.
+- Local and Online OTA failures now persist structured results containing MODE, STAGE, numeric error CODE, ERROR text, and PROGRESS.
+- Local stages include file check, size check, Update begin, receive, flash write, size verify, finalize, flash readback/erase, and boot partition.
+- Online stages include Wi-Fi connect, time sync, HTTPS begin, HTTP update, Update begin, download, flash write/erase/readback, image validation/verification, boot partition, and HTTP response.
+- Live BLE telemetry adds OTA_STAGE, OTA_PROGRESS, OTA_ERROR_CODE, and OTA_ERROR; these keys are also included in full sync.
+- NVS stores only the final OTA result, not every progress event.
+- Existing exact byte-count validation and OTA radio ownership remain unchanged.
+- No GPIO, NTC, cooling, Adaptive, voltage, RGB, touch, BLE UUID/P1 contract, or Wi-Fi/BLE ownership rule was intentionally changed.
+
 # END OF FIRMWARE ENGINEERING MEMORY
 
 
