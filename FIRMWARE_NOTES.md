@@ -166,6 +166,15 @@
 - The current low-level Wi-Fi diagnostic files are intended for this ESP32-C3 hardware and Core 3.3.7 environment.
 - No executable source was changed and no build was executed by this discussion; this is a hardware-target clarification only.
 - Next boundary remains the existing low-level Wi-Fi initialization diagnostic; interpret results from Serial rather than SSID visibility when the sketch does not create an AP.
+## 2026-09-27 — DISCUSSION: STOP SPECULATIVE TEST GENERATION / VERIFY TOOLCHAIN PATH
+
+- User reported that the low-level diagnostic still does not appear to work. Correction: lack of an SSID is not evidence for `JEXFYZ-Network-Begin-Test.ino` because that sketch intentionally does not create an AP.
+- Current confirmed runtime boundary from the preceding test is still `WiFi.mode(WIFI_AP)`: actual Arduino-ESP32 Core reported `3.3.7`, chip `ESP32-C3` revision `4`, `WiFi.getMode()` returned `0`, and `WiFi.mode(WIFI_AP)` was followed by a Core 0 Load access fault before returning.
+- The result of `Network.begin()` itself is still unverified because its Serial output has not been provided.
+- Discussion decision: stop generating speculative diagnostic sketches until the previous boundary is verified. The next evidence required is the complete Serial output from `JEXFYZ-Network-Begin-Test.ino` and/or the ArduinoDroid compile log showing the actual selected WiFi library/core paths.
+- Toolchain/library selection must be checked because `ESP.getCoreVersion()` proves the Arduino core version but does not by itself prove that no conflicting external `WiFi.h` library was selected by the build environment.
+- No executable source was changed and no build was executed in this discussion.
+- Next boundary: inspect the ArduinoDroid compile log and the actual Network-begin Serial result before choosing another test. The official Core 3.3.7 source remains the authority; do not add more custom Wi-Fi lifecycle code until the selected library and current failure boundary are established.
 > Current-state override for the next JE X FYZ firmware sub-chat. Historical sections below are retained for chronology.
 
 ## 1. Mandatory workflow
