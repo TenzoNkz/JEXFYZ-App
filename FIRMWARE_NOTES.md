@@ -1145,3 +1145,27 @@ The project process is now explicitly two-phase:
 - Firmware source changes do not automatically start CI.
 
 # END OF FIRMWARE ENGINEERING MEMORY
+
+
+## 2026-09-26 — Firmware source structure cleanup and App contract verification
+
+### Source cleanup
+- Reorganized the existing comment-free `firmware/JEXFYZ.ino` presentation without changing the control logic.
+- Removed excessive blank-line runs and all trailing whitespace.
+- Kept the existing functional order: constants/types → runtime state → prototypes → utilities → persistence → outputs/safety → voltage → temperature/Adaptive → BLE → OTA → command handlers → touch → setup/loop.
+- Kept the source comment-free; durable explanations remain in this document.
+- Source size changed from 80,236 to 79,451 characters and from 3,198 to 2,945 lines. The reduction is whitespace-only.
+
+### App ↔ firmware contract verification
+- Verified that the App and firmware use the same BLE service UUID, RX UUID, TX UUID, device name, and protocol value `P1`.
+- Verified that the App command set matches the firmware command handlers for SYNC/session, OTA metadata, RGB, brightness/mode/colors, temperature limits, voltage, Fan, Peltier, Adaptive, Fan Speed, reset groups, and phone battery telemetry.
+- Verified that the App consumes the firmware telemetry keys used by `sendFullSync()` and runtime deltas, including VERSION, PROTOCOL, BLE_SESSION, VOLTAGE, FAN, PELTIER, HOT, BATTERY, BATTERY_VALID, ADAPTIVE, ADAPTIVE_CEILING, RGB, MODE, BRIGHTNESS, RGB_COLOR, COLOR_5V/9V/12V, FAN_SPEED, SAFETY, SAFETY_REASON, OTA_STATE, LAST_OTA_RESULT, RESET_REASON, TEMP_HOT_LIMIT, BATT_5, BATT_12, and NTC_MV.
+- No protocol or behavior change was introduced during this cleanup.
+
+### CI / execution
+- This was a Code execution only.
+- No `.github/FIRMWARE_BUILD_TRIGGER` update was performed.
+- No Firmware Build or `.bin` compilation was started by this change.
+- The next separate `Eksekusi Firmware` will build the current source.
+
+# END OF FIRMWARE ENGINEERING MEMORY
