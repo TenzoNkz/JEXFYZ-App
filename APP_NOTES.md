@@ -2450,6 +2450,13 @@ The project process is now explicitly two-phase:
 - No App Build was triggered by this Code execution.
 - `Eksekusi Firmware` is the separate firmware build/publish action for the V3.5 test package. Physical OTA runtime behavior still requires user device testing; a successful CI build does not prove the panic is fixed.
 
+## 2026-09-26 — V3.5 OTA TEST PACKAGE READY
+
+- Firmware Build Run #14 (`36214058400`) completed successfully for source head `511a84f9608da73f09452e1af5e0e09201f9f444`.
+- The V3.5 firmware artifact was created and published to `TenzoNkz/JEXFYZ-Firmware`; the public manifest now advertises V3.5.
+- No App Build was triggered by this work. The latest successful App Build remains Run #3.
+- Physical runtime validation is now the remaining step: test the V3.4 device's online OTA flow against the public V3.5 package and capture any panic/backtrace if the device still fails.
+
 # END OF APP PROJECT MEMORY
 
 ## 2026-09-26 — Code #2: firmware source cleanup + App BLE contract synchronization
