@@ -210,8 +210,8 @@ jobs:
               raise SystemExit("OTA SAFETY AUDIT FAILED: obsolete high-level OTA API remains")
           if "Update.end(" in s or "Update.begin(" in s or "Update.write(" in s:
               raise SystemExit("OTA SAFETY AUDIT FAILED: Local OTA still uses UpdateClass")
-           if "esp_ota_resume(" in s:
-               raise SystemExit("OTA SAFETY AUDIT FAILED: esp_ota_resume must not be used on the Core 3.3.7 release baseline")
+          if "esp_ota_resume(" in s:
+              raise SystemExit("OTA SAFETY AUDIT FAILED: esp_ota_resume must not be used on the Core 3.3.7 release baseline")
           loop_start = s.index("void loop()")
           loop = s[loop_start:]
           ota_pos = loop.index("serviceOtaPriority()")
