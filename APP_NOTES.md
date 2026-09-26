@@ -2396,3 +2396,26 @@ For every future app change:
 - App Build trigger file: `.github/APP_BUILD_TRIGGER`.
 - Firmware Build trigger file: `.github/FIRMWARE_BUILD_TRIGGER`.
 - Ordinary source changes must never be treated as build commands.
+
+
+## 2026-09-26 — AUTHORITATIVE DISCUSSION → EXECUTION RULE
+
+The project process is now explicitly two-phase:
+
+### Phase 1 — Discussion first
+- Every requested change is discussed/reviewed first.
+- During discussion, no repository execution and no build is started.
+- Proposed changes, affected files, expected behavior, preserved behavior, and risks are resolved before execution.
+
+### Phase 2 — Explicit user command
+- The exact command determines the action:
+  - **`Eksekusi`** = apply all code/configuration/documentation fixes agreed during the discussion to the repository. This means make the discussed code correct across the relevant project files. It does **not** build App APK and does **not** build/publish firmware `.bin`.
+  - **`Eksekusi Firmware`** = take the latest already-applied firmware source and build the newest firmware `.bin`, then publish it to the public `TenzoNkz/JEXFYZ-Firmware` repository using the configured Firmware Build pipeline. It is a separate action from applying source changes.
+  - **`Build App`** in the Action sub-chat = trigger and complete the App Build workflow, repair build/CI failures narrowly when required, and deliver the verified APK artifact to chat.
+
+### Strict separation
+- Plain `Eksekusi` must never trigger `.github/APP_BUILD_TRIGGER` or `.github/FIRMWARE_BUILD_TRIGGER`.
+- Plain `Eksekusi` must never compile or publish the firmware.
+- `Eksekusi Firmware` is the only command in the Code workflow that intentionally updates `.github/FIRMWARE_BUILD_TRIGGER`.
+- App Build remains exclusive to the Action sub-chat.
+- Ordinary source changes never trigger either build workflow automatically.
