@@ -1,84 +1,4 @@
-/*
-  JE X FYZ Firmware V3.0
-  ESP32-C3 Super Mini
 
-  DESIGN BASIS
-  - Horizon Cooler is a REFERENCE for engineering discipline only:
-      non-blocking runtime timing, millis()-based state machines, bounded BLE
-      parsing, safe boot/output states, and explicit safety ownership.
-  - JE X FYZ keeps its own system behavior where the hardware/specification
-    differs from Horizon Cooler.
-
-  JE X FYZ PROJECT-SPECIFIC RADIO BEHAVIOR
-  - Boot: silent Wi-Fi AP local-OTA window for 10 seconds; normal cooler
-      functions remain active during the window.
-    If a Wi-Fi client connects, all physical outputs are forced OFF and BLE is
-      released so the Wi-Fi OTA path owns the device safely.
-  - If a Wi-Fi client connects within that window, Wi-Fi remains active until
-    that client disconnects.
-  - After Wi-Fi is fully shut down, BLE starts and remains the normal radio.
-  - There is only ONE touch sensor, so touch never controls radio mode.
-
-  FINAL PIN MAP
-    GPIO0 = NTC 10K
-    GPIO1 = TTP223 touch
-    GPIO3 = 12V optocoupler
-    GPIO4 = 9V optocoupler
-    GPIO5 = PELTIER MOSFET
-    GPIO6 = FAN MOSFET
-    GPIO7 = WS2812B, 8 LEDs
-
-  TIMING
-  - No executable delay() call is used anywhere in the firmware.
-  - Runtime timing uses millis() and state machines.
-  - yield() is used only inside bounded, OTA-exclusive blocking operations.
-  - NTC acquisition: exactly one ADC voltage reading every 1 second.
-  - Manual voltage guard: 1 second begins immediately when a manual voltage
-    request is accepted. The guard runs concurrently with the optocoupler
-    break-before-make dead-time, so the 1 second is not added after it.
-    This applies to both App manual voltage commands and single-touch cycling.
-  - Adaptive ON/OFF always forces voltage back to 5V before Adaptive proceeds.
-  - While Adaptive is ON, manual voltage, Fan/Peltier control, Fan PWM, and
-    Temperature settings are rejected by firmware; RGB remains available.
-  - Voltage selector optocoupler break-before-make dead-time: 200 ms.
-  - Adaptive upward battery change delay: 5 seconds.
-  - Adaptive hotside Peltier OFF / step-down delay: 10 seconds.
-  - Battery validity heartbeat timeout: 5 seconds.
-  - NVS settings debounce: 10 seconds after the last change.
-  - App control anti-spam: user commands inside 250 ms are rejected with RATE_LIMIT.
-
-  OTA
-  - Local OTA: boot-time AP only. Successful upload blinks green, then restarts; failure blinks red and keeps Wi-Fi/web OTA alive without restart.
-  - Online OTA: BLE supplies SSID/PASS/URL; blue blink during Wi-Fi/download, green after verified update, red on failure; failures return BLE without ESP restart.
-    firmware version metadata for online OTA.
-  - HTTPS is required for online OTA.
-
-  SAFETY
-  - Normal reset starts at 5V, Fan OFF, Peltier OFF, Adaptive OFF; an NTC fault immediately forces Fan ON at 100%.
-  - NTC fault: Fan ON at 100%, Peltier OFF, Adaptive OFF, 5V lock.
-  - Hotside Protection: 40..50C, default 45C.
-  - Critical hotside: Fan ON at 100%, Peltier OFF; selected voltage is retained in manual mode.
-  - Adaptive overheat: keep Fan ON at 100%, cut Peltier, wait 10s, discard the highest reached
-    voltage for this Adaptive session, step down one level, and re-enable
-    Peltier when safe. At 5V, Adaptive is turned OFF.
-  - Adaptive ceiling resets to 12V when Adaptive is turned OFF.
-  - Fan/Peltier interlock is global and enforced in firmware.
-  - Battery temperature is supplied by the App every 1 second for synchronized telemetry.
-  - Battery changes generate a voltage request ONLY when the battery zone changes.
-  - Normal voltage changes never toggle Fan/Peltier; cooling state remains continuous.
-  - Peltier PWM: 20 kHz, 8-bit. GPIO5 uses non-blocking PWM ramp from 0..100% over 2 seconds to reduce supply-current shock/brownout risk when the TEC is enabled.
-  - Fan PWM: 25 kHz, 8-bit. Fan current is low, so no additional fan soft-start is used.
-
-  PERSISTENCE
-  - RGB group only.
-  - Temperature group only.
-  - LAST_OTA_RESULT is stored separately for post-reboot reporting.
-  - No runtime Fan/Peltier/Voltage/Adaptive/PWM state is persisted.
-
-  EXTERNAL LIBRARIES
-    WS2812FX 1.4.7
-    Adafruit NeoPixel >= 1.1.7
-*/
 
 #include <Arduino.h>
 #include <WiFi.h>
@@ -101,12 +21,12 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
-// ===========================================================================
-// Identity / protocol
-// ===========================================================================
+
+
+
 static constexpr char FW_VERSION[] = "V3.2";
-// Firmware version policy: every firmware change increments this value.
-// Version policy: every firmware change increments one major.minor step; never use V1.10 or patch suffixes.
+
+
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
 
@@ -114,9 +34,9 @@ static constexpr char SERVICE_UUID[] = "6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001";
 static constexpr char RX_UUID[]      = "6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001";
 static constexpr char TX_UUID[]      = "6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001";
 
-// ===========================================================================
-// Hardware
-// ===========================================================================
+
+
+
 static constexpr uint8_t PIN_NTC     = 0;
 static constexpr uint8_t PIN_TOUCH   = 1;
 static constexpr uint8_t PIN_12V     = 3;
@@ -129,9 +49,9 @@ static constexpr uint8_t LED_COUNT   = 8;
 static constexpr uint8_t OUTPUT_ON  = HIGH;
 static constexpr uint8_t OUTPUT_OFF = LOW;
 
-// ===========================================================================
-// Local OTA AP
-// ===========================================================================
+
+
+
 static constexpr char AP_SSID[]     = "JE X FYZ";
 static constexpr char AP_PASSWORD[] = "0987654321";
 static const IPAddress AP_IP(192, 168, 4, 1);
@@ -144,8 +64,8 @@ static constexpr uint32_t OTA_FAILURE_INDICATOR_MS    = 1000;
 static constexpr uint32_t WIFI_CONNECT_TIMEOUT_MS     = 15000;
 static constexpr uint32_t OTA_NO_DATA_TIMEOUT_MS      = 7000;
 
-// Trusted DigiCert G2/G5 TLS roots for HTTPS OTA validation. The bundle
-// covers the current GitHub raw-content chain and the planned G5 transition.
+
+
 static constexpr char GITHUB_ROOT_CA[] PROGMEM = R"CERT(-----BEGIN CERTIFICATE-----
 MIIDjjCCAnagAwIBAgIQAzrx5qcRqaC7KGSxHQn65TANBgkqhkiG9w0BAQsFADBh
 MQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3
@@ -215,19 +135,19 @@ DXZDjC5Ty3zfDBeWUA==
 -----END CERTIFICATE-----
 )CERT";
 
-// State synchronization is firmware-authoritative: App and touch commands
-// never directly define App state; BLE telemetry reflects the actual hardware.
-// Radio reliability / BLE TX pacing. BLE notifications are serialized from
-// the main loop, never from BLE callbacks, so radio-mode switches are safe.
+
+
+
+
 static constexpr size_t BLE_TX_QUEUE_SIZE = 48;
 static constexpr size_t BLE_RX_QUEUE_SIZE = 16;
 static constexpr uint32_t BLE_TX_INTERVAL_MS = 15;
 static constexpr uint32_t ONLINE_OTA_START_WAIT_MS = 1500;
 
-// ===========================================================================
-// NTC
-// Hardware: 3.3V > NTC 10K > GPIO0 > R10K > GND
-// ===========================================================================
+
+
+
+
 static constexpr float NTC_FIXED_OHMS    = 10000.0f;
 static constexpr float NTC_NOMINAL_OHMS  = 10000.0f;
 static constexpr float NTC_NOMINAL_C     = 25.0f;
@@ -236,17 +156,17 @@ static constexpr uint32_t NTC_READ_INTERVAL_MS = 1000;
 static constexpr uint32_t NTC_FAULT_LOW_MV  = 50;
 static constexpr uint32_t NTC_FAULT_HIGH_MV = 3250;
 
-// ===========================================================================
-// Safety / timing / limits
-// ===========================================================================
+
+
+
 static constexpr uint32_t VOLTAGE_GUARD_MS             = 1000;
 static constexpr uint32_t VOLTAGE_DEADTIME_MS           = 200;
 static constexpr uint32_t HOT_PELTIER_OFF_MS          = 10000;
 static constexpr uint32_t ADAPTIVE_UPWARD_DELAY_MS      = 5000;
 static constexpr uint32_t BATTERY_VALID_TTL_MS          = 5000;
 static constexpr uint32_t SETTINGS_SAVE_DEBOUNCE_MS     = 10000;
-// App control anti-spam backstop. UI also serializes commands; firmware rejects
-// duplicate user commands arriving inside this guard window.
+
+
 static constexpr uint32_t USER_CONTROL_GUARD_MS          = 250;
 
 static constexpr int HOT_LIMIT_MIN = 40;
@@ -265,9 +185,9 @@ static constexpr uint32_t PELTIER_PWM_FREQ = 20000;
 static constexpr uint8_t PELTIER_PWM_RESOLUTION = 8;
 static constexpr uint32_t PELTIER_SOFT_START_MS = 5000;
 
-// ===========================================================================
-// Objects
-// ===========================================================================
+
+
+
 WebServer webServer(80);
 Preferences prefs;
 WS2812FX leds(LED_COUNT, PIN_LED, NEO_GRB + NEO_KHZ800, 2, 2);
@@ -295,9 +215,9 @@ bool onlineOtaStartPending = false;
 uint32_t onlineOtaRequestedAt = 0;
 uint32_t stateSequence = 0;
 
-// ===========================================================================
-// Types
-// ===========================================================================
+
+
+
 enum class Voltage : uint8_t {
   V5 = 0,
   V9 = 1,
@@ -335,9 +255,9 @@ enum class OtaState : uint8_t {
   FAILED,
 };
 
-// ===========================================================================
-// Runtime state
-// ===========================================================================
+
+
+
 Voltage currentVoltage = Voltage::V5;
 Voltage pendingVoltage = Voltage::V5;
 
@@ -423,32 +343,32 @@ uint32_t bootApStartedAt = 0;
 bool bootApHadClient = false;
 bool bootApClientSafe = false;
 
-// BLE lifecycle is strictly state-neutral. Connecting/disconnecting BLE must
-// never alter voltage, FAN, Peltier, Adaptive, RGB, or fan PWM. A pending
-// full-sync is serviced from the main loop so the client receives the actual
-// runtime state without letting the BLE callback mutate cooler state.
+
+
+
+
 volatile bool bleSyncPending = false;
-// BLE session gate: a newly connected client must complete SYNC -> SYNC_READY
-// before any state-changing command is accepted. This prevents stale app state
-// from being replayed into the cooler immediately after BLE connection.
+
+
+
 volatile bool bleCommandGateOpen = false;
 
-// Firmware-side anti-spam guard for App-originated state-changing commands.
-// Telemetry, SYNC, SYNC_READY and OTA metadata are intentionally excluded.
+
+
 bool userControlGuardArmed = false;
 uint32_t lastUserControlCommandMs = 0;
 
 uint32_t ledBlinkAt = 0;
 bool ledBlinkPhase = false;
 
-// Bounded BLE command accumulator. Commands are newline terminated.
+
 static constexpr size_t BLE_RX_BUFFER_SIZE = 512;
 char bleRxBuffer[BLE_RX_BUFFER_SIZE];
 size_t bleRxLength = 0;
 
-// ===========================================================================
-// Forward declarations
-// ===========================================================================
+
+
+
 static void sendText(const String& line);
 static void sendDelta(const char* key, const String& value);
 static void setOtaState(OtaState state);
@@ -471,9 +391,9 @@ static void clearBleRxQueue();
 static void processBleRxQueue();
 static void processPendingOnlineOtaStart();
 
-// ===========================================================================
-// Helpers
-// ===========================================================================
+
+
+
 static const char* voltageToString(Voltage value) {
   switch (value) {
     case Voltage::V5:  return "5V";
@@ -641,9 +561,9 @@ static bool parseFloatRange(const String& raw, float minValue, float maxValue, f
   return isfinite(output);
 }
 
-// ===========================================================================
-// Persistence
-// ===========================================================================
+
+
+
 static void loadSettings() {
   prefsReady = prefs.begin("jexfyz", false);
   if (!prefsReady) return;
@@ -707,9 +627,9 @@ static void saveOtaResult(const String& result) {
   if (prefsReady) prefs.putString("lastOta", otaResult);
 }
 
-// ===========================================================================
-// Fan / Peltier safety
-// ===========================================================================
+
+
+
 static uint8_t fanDutyFromPercent(uint8_t percent) {
   return static_cast<uint8_t>(lroundf((percent / 100.0f) * 255.0f));
 }
@@ -767,8 +687,8 @@ static bool safetyAllowsPeltier() {
   if (hotsideProtectionActiveNow()) return false;
   if (!fanOn) return false;
 
-  // During Adaptive hotside protection, Peltier must remain OFF for the full
-  // configured cooldown window. This gate applies to App and touch commands.
+  
+  
   if (adaptiveOn &&
       peltierHotOffUntilMs != 0 &&
       millis() < peltierHotOffUntilMs) {
@@ -783,9 +703,9 @@ static void applyCoolingOutputs() {
   const bool previousPeltier = peltierOn;
   const uint8_t previousPwm = fanPwm;
 
-  // A missing/invalid NTC is a thermal fault. Keep airflow available as the
-  // conservative fail-safe, while Peltier remains forced OFF. The safety
-  // manager may later clear this condition when the NTC becomes valid again.
+  
+  
+  
   if (!ntcValid) {
     fanOn = true;
     fanPwm = 100;
@@ -804,9 +724,9 @@ static void applyCoolingOutputs() {
   processPeltierSoftStart();
   writeFanPwm();
 
-  // Firmware state is the source of truth. Any real output-state change made
-  // here is immediately mirrored to the BLE client, including changes caused
-  // by safety interlocks rather than by an App command.
+  
+  
+  
   if (fanOn != previousFan || peltierOn != previousPeltier || fanPwm != previousPwm) {
     ++stateSequence;
   }
@@ -815,11 +735,11 @@ static void applyCoolingOutputs() {
   if (fanPwm != previousPwm) sendDelta("FAN_SPEED", String(fanPwm));
 }
 
-// ===========================================================================
-// LED manager
-// ===========================================================================
+
+
+
 static uint8_t ws2812fxMode(LedMode mode) {
-  // WS2812FX 1.4.7 built-in IDs used by this project.
+  
   switch (mode) {
     case LedMode::STATIC:  return 0;
     case LedMode::BREATH:  return 2;
@@ -901,16 +821,16 @@ static void startVoltageIndicator() {
 }
 
 static void processLeds() {
-  // OTA status indicators have priority over normal RGB and Wi-Fi silent mode.
-  // They are intentionally short, non-blocking and use the same WS2812 strip.
+  
+  
   if (otaState == OtaState::SUCCESS) {
-    renderBlink(0x00FF00);  // green = verified OTA, restart pending
+    renderBlink(0x00FF00);  
     return;
   }
 
   if (otaState == OtaState::FAILED) {
     if (millis() < otaFailureIndicatorUntil) {
-      renderBlink(0xFF0000);  // red = OTA failed, recovery continues
+      renderBlink(0xFF0000);  
       return;
     }
 
@@ -925,12 +845,12 @@ static void processLeds() {
   if (otaState == OtaState::CLOUD_CONNECTING ||
       otaState == OtaState::CLOUD_DOWNLOADING ||
       otaState == OtaState::CLOUD_APPLYING) {
-    renderBlink(0x0000FF);  // blue = online OTA Wi-Fi/download in progress
+    renderBlink(0x0000FF);  
     return;
   }
 
-  // Boot Wi-Fi is intentionally silent: no blue blink, no status blink and
-  // no forced RGB effect. The user's normal RGB mode remains available.
+  
+  
   if (bootApActive && !bootApHadClient && !otaActive) {
     if (!rgbOn) {
       stopUserLedOutput();
@@ -953,14 +873,14 @@ static void processLeds() {
     return;
   }
 
-  // A Wi-Fi client connection means the device is now in OTA/safe mode:
-  // all physical outputs are OFF and normal RGB must stay silent.
+  
+  
   if (bootApClientSafe || otaActive || otaState == OtaState::LOCAL_UPLOAD) {
     stopUserLedOutput();
     return;
   }
 
-  // Safety indication remains visible when normal RGB is OFF.
+  
   if (!ntcValid || hotsideProtectionActiveNow()) {
     renderBlink(0xFF0000);
     return;
@@ -986,14 +906,14 @@ static void processLeds() {
   leds.service();
 }
 
-// ===========================================================================
-// Voltage manager
-// ===========================================================================
+
+
+
 static bool voltageGuardAllows(bool bypassGuard) {
   if (bypassGuard || !voltageGuardArmed) return true;
 
-  // Manual App commands and single-touch voltage changes share the same
-  // 1-second manual request guard, matching the Horizon timing discipline.
+  
+  
   return millis() - lastVoltageChangeMs >= VOLTAGE_GUARD_MS;
 }
 
@@ -1017,10 +937,10 @@ static bool requestVoltage(Voltage target, VoltageRequestSource source, bool byp
 
   if (target == currentVoltage) return true;
 
-  // For manual voltage changes, start the full 1-second guard immediately
-  // when the accepted request arrives. This timer runs concurrently with the
-  // 200 ms optocoupler break-before-make dead-time. Safety/adaptive requests
-  // may bypass this manual guard.
+  
+  
+  
+  
   if (!bypassGuard) {
     voltageGuardArmed = true;
     lastVoltageChangeMs = millis();
@@ -1030,9 +950,9 @@ static bool requestVoltage(Voltage target, VoltageRequestSource source, bool byp
   voltageTransition = true;
   voltageTransitionAt = millis();
 
-  // Break-before-make applies only to the voltage selector optocouplers.
-  // Fan and Peltier remain in their current control state during a normal
-  // voltage transition.
+  
+  
+  
   digitalWrite(PIN_9V, OUTPUT_OFF);
   digitalWrite(PIN_12V, OUTPUT_OFF);
 
@@ -1049,17 +969,17 @@ static void completeVoltageTransition() {
 
   voltageTransition = false;
 
-  // Manual voltage guard was started at request acceptance and therefore runs
-  // concurrently with the 200 ms optocoupler dead-time. Do not restart it
-  // here. Safety/adaptive transitions may still establish their own timestamp
-  // when they complete.
+  
+  
+  
+  
   if (!voltageGuardArmed) {
     voltageGuardArmed = true;
     lastVoltageChangeMs = millis();
   }
 
-  // Fan/Peltier logical state is preserved across normal voltage changes.
-  // Fan PWM returns to 100% whenever Manual 12V control is no longer active.
+  
+  
   if (currentVoltage != Voltage::V12 || adaptiveOn) {
     fanPwm = 100;
   }
@@ -1070,16 +990,16 @@ static void completeVoltageTransition() {
   ++stateSequence;
   sendDelta("VOLTAGE", voltageToString(currentVoltage));
 
-  // Adaptive ON first returns to 5V. Only after that transition has actually
-  // completed may battery logic schedule an upward move to 9V/12V.
+  
+  
   if (adaptiveOn && currentVoltage == Voltage::V5 && batteryValid && ntcValid) {
     evaluateAdaptiveBattery();
   }
 }
 
-// ===========================================================================
-// NTC
-// ===========================================================================
+
+
+
 static float ntcTemperatureFromOhms(float ohms) {
   const float t0 = NTC_NOMINAL_C + 273.15f;
   const float invT = (1.0f / t0) + (logf(ohms / NTC_NOMINAL_OHMS) / NTC_BETA);
@@ -1090,7 +1010,7 @@ static void sampleNtcIfDue() {
   if (millis() - lastNtcReadMs < NTC_READ_INTERVAL_MS) return;
   lastNtcReadMs = millis();
 
-  // Exactly one ADC voltage reading per sample period.
+  
   ntcMv = analogReadMilliVolts(PIN_NTC);
 
   if (ntcMv <= NTC_FAULT_LOW_MV || ntcMv >= NTC_FAULT_HIGH_MV) {
@@ -1119,9 +1039,9 @@ static void sampleNtcIfDue() {
   hotsideC = temperature;
 }
 
-// ===========================================================================
-// Safety manager
-// ===========================================================================
+
+
+
 static void forceSafeFiveVolt() {
   const bool previousAdaptive = adaptiveOn;
   const Voltage previousCeiling = adaptiveCeiling;
@@ -1135,7 +1055,7 @@ static void forceSafeFiveVolt() {
   peltierHotOffUntilMs = 0;
   adaptiveResumePeltierAfterHotStep = false;
 
-  // Thermal fault state: Peltier OFF, Fan forced ON at 100%.
+  
   fanOn = true;
   peltierOn = false;
   peltierSoftStarting = false;
@@ -1145,9 +1065,9 @@ static void forceSafeFiveVolt() {
   fanPwm = 100;
 
   if (voltageTransition) {
-    // Safety is allowed to retarget an in-flight voltage transition to 5V.
-    // Keep the original transition timestamp so a persistent NTC fault cannot
-    // extend the 100 ms dead-time forever.
+    
+    
+    
     pendingVoltage = Voltage::V5;
   } else if (currentVoltage != Voltage::V5) {
     requestVoltage(Voltage::V5, VoltageRequestSource::SAFETY, true);
@@ -1179,8 +1099,8 @@ static void enforceSafety() {
     const bool wasFanOn = fanOn;
     const uint8_t wasFanPwm = fanPwm;
 
-    // Critical hotside protection: Peltier OFF, Fan forced ON at 100%.
-    // The fan remains available throughout the cooling period.
+    
+    
     fanOn = true;
     fanPwm = 100;
     if (peltierOn) {
@@ -1198,19 +1118,19 @@ static void enforceSafety() {
       peltierHotOffUntilMs = now + HOT_PELTIER_OFF_MS;
       adaptiveHotStepDueMs = peltierHotOffUntilMs;
 
-      // Preserve whether Peltier was running when the safety event occurred.
-      // It may resume only after the complete 10-second cooldown window.
+      
+      
       if (!adaptiveResumePeltierAfterHotStep) {
         adaptiveResumePeltierAfterHotStep = fanOn && wasPeltierOn;
       }
 
-      // A hotside event invalidates any pending battery voltage request.
+      
       adaptiveUpPending = false;
       adaptiveDownPending = false;
     }
   }
 
-  // Never re-enable Peltier before the complete 10-second cooldown expires.
+  
   if (adaptiveResumePeltierAfterHotStep &&
       adaptiveOn &&
       fanOn &&
@@ -1236,7 +1156,7 @@ static void processAdaptiveHotTimer() {
   if (voltageTransition) return;
   if (millis() < adaptiveHotStepDueMs) return;
 
-  // The fan has now had the full 10-second cooling window.
+  
   adaptiveHotStepPending = false;
   adaptiveUpPending = false;
   adaptiveDownPending = false;
@@ -1245,8 +1165,8 @@ static void processAdaptiveHotTimer() {
   stopPeltierOutput();
   if (wasPeltierOn) sendDelta("PELTIER", "OFF");
 
-  // If the hotside recovered during the cooldown window, do not discard a
-  // voltage level unnecessarily. Resume Peltier only after the full 10 s.
+  
+  
   if (!hotsideProtectionActiveNow()) {
     const bool resume = adaptiveResumePeltierAfterHotStep && fanOn;
 
@@ -1261,7 +1181,7 @@ static void processAdaptiveHotTimer() {
     return;
   }
 
-  // Hotside is still at/above the protection limit: discard one voltage level.
+  
   if (currentVoltage == Voltage::V12) {
     adaptiveCeiling = Voltage::V9;
     sendDelta("ADAPTIVE_CEILING", "9V");
@@ -1269,7 +1189,7 @@ static void processAdaptiveHotTimer() {
     adaptiveCeiling = Voltage::V5;
     sendDelta("ADAPTIVE_CEILING", "5V");
   } else {
-    // No lower voltage exists. End this Adaptive session.
+    
     adaptiveOn = false;
     adaptiveCeiling = Voltage::V12;
     adaptiveResumePeltierAfterHotStep = false;
@@ -1287,7 +1207,7 @@ static void processAdaptiveHotTimer() {
   const bool accepted = requestVoltage(target, VoltageRequestSource::HOTSTEP, true);
 
   if (!accepted) {
-    // Safety step bypasses the normal 1-second manual guard.
+    
     sendDelta("SAFETY_REASON", "VOLTAGE_STEP_FAILED");
   }
 }
@@ -1299,9 +1219,9 @@ static String safetyReason() {
   return "NONE";
 }
 
-// ===========================================================================
-// Battery / Adaptive manager
-// ===========================================================================
+
+
+
 static int batteryZoneFor(float temperature) {
   if (temperature < battery5Limit) return 5;
   if (temperature < battery12Limit) return 9;
@@ -1409,9 +1329,9 @@ static void processAdaptiveUpTimer() {
   }
 }
 
-// ===========================================================================
-// BLE TX / Full Sync
-// ===========================================================================
+
+
+
 static void clearBleTxQueue() {
   portENTER_CRITICAL(&bleQueueMux);
   for (size_t i = 0; i < BLE_TX_QUEUE_SIZE; ++i) bleTxQueue[i] = "";
@@ -1583,14 +1503,14 @@ static void publishSafetyReason() {
 }
 
 static void sendHotsideTelemetry() {
-  // Hotside is the one runtime value intentionally transmitted every second.
+  
   sendDelta("HOT", formatTemperature(hotsideC, ntcValid));
   publishSafetyReason();
 }
 
-// ===========================================================================
-// BLE RX parser
-// ===========================================================================
+
+
+
 static bool isUserControlCommand(const String& raw) {
   String c = raw;
   c.trim();
@@ -1665,9 +1585,9 @@ static void dispatchBleLine(const String& raw) {
   if (command.isEmpty()) return;
   if (command.length() > 180) return;
 
-  // A fresh BLE session is read-only until the app has completed the
-  // SYNC -> SYNC_READY handshake. This is the hard firmware-side protection
-  // against connect-time state replay (for example an old app sending 5V).
+  
+  
+  
   if (!bleCommandGateOpen && command != "SYNC" && command != "SYNC_READY") {
     sendAck("SESSION", false, "SYNC_REQUIRED");
     return;
@@ -1696,7 +1616,7 @@ static void feedBleRx(const String& incoming) {
     }
 
     if (bleRxLength >= BLE_RX_BUFFER_SIZE - 1) {
-      // Drop the whole partial frame. Never execute a truncated command.
+      
       bleRxLength = 0;
       continue;
     }
@@ -1705,21 +1625,21 @@ static void feedBleRx(const String& incoming) {
   }
 }
 
-// ===========================================================================
-// BLE callbacks / startup
-// ===========================================================================
+
+
+
 class ServerCallbacks : public BLEServerCallbacks {
  public:
   void onConnect(BLEServer* server) override {
     (void)server;
 
-    // IMPORTANT: BLE connection is observational only. Do not touch any
-    // cooler runtime state here. In particular, never force 5V on connect.
+    
+    
     bleClientConnected = true;
-    // Do not push SYNC immediately from the connect callback. Android still
-    // needs to discover GATT + enable TX notifications; an early notification
-    // can be lost before the CCCD is enabled. The App now requests SYNC only
-    // after notifications are ready.
+    
+    
+    
+    
     bleSyncPending = false;
     bleCommandGateOpen = false;
     userControlGuardArmed = false;
@@ -1730,9 +1650,9 @@ class ServerCallbacks : public BLEServerCallbacks {
   void onDisconnect(BLEServer* server) override {
     (void)server;
 
-    // IMPORTANT: BLE disconnect is also state-neutral. Runtime cooler state
-    // remains exactly as-is. Phone battery validity expires naturally through
-    // the normal 5-second timeout instead of being reset by BLE lifecycle.
+    
+    
+    
     bleClientConnected = false;
     bleSyncPending = false;
     bleCommandGateOpen = false;
@@ -1770,8 +1690,8 @@ static void startBle() {
   if (otaActive) return;
   if (BLEDevice::getInitialized()) return;
 
-  // BLE owns the radio exclusively. Every BLE startup explicitly shuts Wi-Fi
-  // down first, so BLE and Wi-Fi can never remain active at the same time.
+  
+  
   WiFi.disconnect(true, false);
   WiFi.softAPdisconnect(true);
   WiFi.mode(WIFI_OFF);
@@ -1781,17 +1701,17 @@ static void startBle() {
   if (bleSecurity == nullptr) {
     bleSecurity = new BLESecurity();
   }
-  // Secure BLE policy: bonded Secure Connections, no MITM/passkey needed.
-  // Authentication is deliberately deferred until a protected GATT write is
-  // accessed. This prevents authentication and Android service discovery from
-  // racing each other on ESP32-C3, while the RX characteristic still requires
-  // encryption and the session gate below blocks all state-changing commands
-  // until SYNC -> SYNC_READY completes.
+  
+  
+  
+  
+  
+  
   bleSecurity->setAuthenticationMode(ESP_LE_AUTH_REQ_SC_BOND);
-  // Do not call setForceAuthentication(): some Arduino-ESP32 cores
-  // bundled by ArduinoDroid do not expose that API.
-  // With encrypted RX permissions, authentication is still requested
-  // when the protected characteristic is accessed.
+  
+  
+  
+  
   bleSecurity->setCapability(ESP_IO_CAP_NONE);
   bleSecurity->setKeySize(16);
   bleSecurity->setInitEncryptionKey(ESP_BLE_ENC_KEY_MASK | ESP_BLE_ID_KEY_MASK);
@@ -1802,9 +1722,9 @@ static void startBle() {
 
   BLEService* service = bleServer->createService(SERVICE_UUID);
 
-  // All RX writes must be encrypted. We intentionally do NOT expose
-  // WRITE_NR, because every application command is now sent with a GATT write
-  // response, giving one consistent authenticated write path.
+  
+  
+  
   uint32_t rxProperties = BLECharacteristic::PROPERTY_WRITE;
 #if defined(CONFIG_NIMBLE_ENABLED)
   rxProperties |= BLECharacteristic::PROPERTY_WRITE_ENC;
@@ -1844,9 +1764,9 @@ static void startBle() {
   }
 }
 
-// ===========================================================================
-// Online OTA — Firebase version + URL only
-// ===========================================================================
+
+
+
 static bool validHttpsUrl(const String& value) {
   return value.startsWith("https://") && value.length() <= 180;
 }
@@ -1859,7 +1779,7 @@ static void clearCloudCredentials() {
 }
 
 static void stopWiFiRadio() {
-  // Turn the Wi-Fi radio fully off without erasing any saved AP profile.
+  
   WiFi.disconnect(true, false);
   WiFi.softAPdisconnect(true);
   WiFi.mode(WIFI_OFF);
@@ -1895,8 +1815,8 @@ static void failOnlineOta(const char* reason) {
   stopWiFiRadio();
   clearCloudCredentials();
 
-  // Leave the hardware in a conservative runtime state after a failed OTA.
-  // The device stays alive and BLE is brought back without ESP.restart().
+  
+  
   currentVoltage = Voltage::V5;
   pendingVoltage = Voltage::V5;
   fanOn = false;
@@ -1926,11 +1846,11 @@ static void startOnlineOta() {
   cloudExpectedSize = -1;
   cloudTimeSyncStarted = false;
 
-  // OTA safety state.
+  
   applyOtaSafeOutputs();
 
-  // Wi-Fi and BLE are never active at the same time in JE X FYZ. This
-  // function is called from the main loop, never from a BLE callback.
+  
+  
   clearBleTxQueue();
   clearBleRxQueue();
   bleClientConnected = false;
@@ -1954,8 +1874,8 @@ static void startOnlineOta() {
 static void processOnlineOta() {
   if (otaState == OtaState::CLOUD_CONNECTING) {
     if (WiFi.status() == WL_CONNECTED) {
-      // TLS certificate validation requires a valid system clock. Sync time
-      // non-blockingly while keeping the OTA LED state active.
+      
+      
       if (!cloudTimeSyncStarted) {
         configTime(0, 0, "pool.ntp.org", "time.nist.gov", "time.google.com");
         cloudTimeSyncStarted = true;
@@ -1975,8 +1895,8 @@ static void processOnlineOta() {
       cloudPhaseStartedAt = millis();
       cloudLastDataAt = millis();
 
-      // Validate the HTTPS server certificate. The firmware is intentionally
-      // not allowed to download executable code through an insecure TLS path.
+      
+      
       cloudClient.setCACert(GITHUB_ROOT_CA);
       cloudClient.setTimeout(12000);
       cloudHttp.setReuse(false);
@@ -2008,10 +1928,10 @@ static void processOnlineOta() {
         return;
       }
 
-      // ESP32 app images start with 0xE9. Reject HTML, .ino source, JSON,
-      // GitHub error pages, or any other non-firmware payload before touching
-      // the OTA partition. This prevents a bad Firebase URL from becoming a
-      // reboot/panic event.
+      
+      
+      
+      
       int firstByte = -1;
       const uint32_t firstByteDeadline = millis() + 3000;
       while (millis() < firstByteDeadline) {
@@ -2078,7 +1998,7 @@ static void processOnlineOta() {
 
     if (!stream->connected() || millis() - cloudLastDataAt >= OTA_NO_DATA_TIMEOUT_MS) {
       if (cloudExpectedSize <= 0) {
-        // Unknown-length response: reaching EOF is the completion condition.
+        
         if (!stream->connected() && cloudBytesReceived > 0) {
           setOtaState(OtaState::CLOUD_APPLYING);
           cloudPhaseStartedAt = millis();
@@ -2110,9 +2030,9 @@ static void processOnlineOta() {
   }
 }
 
-// ===========================================================================
-// Local OTA — boot-time Wi-Fi window only
-// ===========================================================================
+
+
+
 static const char LOCAL_OTA_PAGE[] PROGMEM = R"HTML(
 <!doctype html>
 <html>
@@ -2253,9 +2173,9 @@ static void handleOtaPost() {
 }
 
 static void startLocalOtaAp() {
-  // Boot AP owns the radio exclusively for up to 10 seconds. BLE must remain
-  // OFF during this window. A client connection moves the device into the
-  // safe output-off OTA state and keeps BLE OFF while the AP remains active.
+  
+  
+  
   onlineOtaStartPending = false;
   bootApActive = true;
   bootApHadClient = false;
@@ -2295,9 +2215,9 @@ static void stopLocalOtaAp() {
   }
 }
 
-// ===========================================================================
-// Command handlers
-// ===========================================================================
+
+
+
 static bool setFanState(bool desired, String& reason) {
   if (adaptiveOn) {
     reason = "ADAPTIVE_ACTIVE";
@@ -2314,8 +2234,8 @@ static bool setFanState(bool desired, String& reason) {
     return false;
   }
 
-  // Never allow the user/app to turn the cooling fan OFF while critical
-  // hotside protection is active. The fan is the active cooling path.
+  
+  
   if (!desired && hotsideProtectionActiveNow()) {
     reason = "HOTSIDE_PROTECTION";
     return false;
@@ -2366,9 +2286,9 @@ static bool setPeltierState(bool desired, String& reason) {
   }
 
   if (!peltierOn) {
-    // Logical Peltier state changes to ON immediately for telemetry/control,
-    // but the physical MOSFET output is ramped from 0% to 100% over
-    // PELTIER_SOFT_START_MS by processPeltierSoftStart().
+    
+    
+    
     peltierOn = true;
     applyCoolingOutputs();
   }
@@ -2378,8 +2298,8 @@ static bool setPeltierState(bool desired, String& reason) {
 }
 
 static bool forceAdaptiveFiveVolt() {
-  // Retarget an in-flight selector transition, or start a new guarded bypass
-  // transition. Fan/Peltier control state is intentionally preserved.
+  
+  
   if (voltageTransition) {
     pendingVoltage = Voltage::V5;
     return true;
@@ -2416,8 +2336,8 @@ static void setAdaptiveState(bool desired, String& reason) {
       fanPwm = 100;
     }
 
-    // Every Adaptive ON starts from 5V. If a selector transition is already in
-    // flight, retarget it to 5V rather than creating another transition.
+    
+    
     if (!forceAdaptiveFiveVolt()) {
       adaptiveOn = previousAdaptive;
       reason = "VOLTAGE_FORCE_FAILED";
@@ -2427,7 +2347,7 @@ static void setAdaptiveState(bool desired, String& reason) {
     applyCoolingOutputs();
     reason = "OK";
 
-    // If already at 5V, battery logic may begin its normal upward delay now.
+    
     if (currentVoltage == Voltage::V5 && batteryValid) {
       evaluateAdaptiveBattery();
     }
@@ -2441,11 +2361,11 @@ static void setAdaptiveState(bool desired, String& reason) {
     adaptiveCeiling = Voltage::V12;
     fanPwm = 100;
 
-    // Every Adaptive OFF also returns to 5V. This bypasses the manual 1s guard
-    // because it is a mode transition, not a user voltage selection.
+    
+    
     if (!forceAdaptiveFiveVolt()) {
-      // Adaptive is already off, but preserve the requested state and report
-      // the only failure condition available to the command caller.
+      
+      
       reason = "VOLTAGE_FORCE_FAILED";
     } else {
       reason = "OK";
@@ -2557,8 +2477,8 @@ static void handleCommand(const String& command) {
 
   if (command == "SYNC_READY") {
     bleCommandGateOpen = true;
-    // Finalize the session with a fresh atomic state snapshot. This lets the
-    // App receive phone battery + cooler state together before the UI unlocks.
+    
+    
     sendFullSync();
     sendAck("SYNC_READY", true, "OK");
     return;
@@ -2890,8 +2810,8 @@ static void handleCommand(const String& command) {
     return;
   }
 
-  // Phone battery temperature is a 1 Hz data heartbeat. The voltage request
-  // path is generated only when its 5V/9V/12V zone changes.
+  
+  
   if (command.startsWith("PHONE:BT=")) {
     float value = 0.0f;
     if (!parseFloatRange(command.substring(9), 0.0f, 100.0f, value)) {
@@ -2945,8 +2865,8 @@ static void handleCommand(const String& command) {
 static void processPendingOnlineOtaStart() {
   if (!onlineOtaStartPending || otaActive || bootApActive) return;
 
-  // Let the queued CLOUDOTA ACK and any preceding BLE frames leave first.
-  // After the bounded wait we start anyway, even if the phone disappeared.
+  
+  
   const bool queueDrained = bleTxCount == 0;
   const bool txSettled = queueDrained && millis() >= bleNextNotifyAt;
   const bool waitExpired = millis() - onlineOtaRequestedAt >= ONLINE_OTA_START_WAIT_MS;
@@ -2956,17 +2876,17 @@ static void processPendingOnlineOtaStart() {
   startOnlineOta();
 }
 
-// ===========================================================================
-// Touch — ONE TTP223 sensor, firmware-owned gesture state machine
-// ===========================================================================
-// Gesture rules:
-//   1x tap       -> next manual voltage (5V -> 9V -> 12V -> 5V)
-//   2x tap <=500 ms -> RGB toggle
-//   long press   -> Fan + Peltier ON/OFF
-//
-// The first tap is NEVER committed as a single tap immediately. It is held
-// for the full double-click window so a second tap can cancel the pending
-// single action. No delay() is used.
+
+
+
+
+
+
+
+
+
+
+
 static constexpr uint32_t TOUCH_DEBOUNCE_MS = 50;
 static constexpr uint32_t TOUCH_DOUBLE_CLICK_MS = 500;
 static constexpr uint32_t TOUCH_LONG_PRESS_MS = 5000;
@@ -3017,9 +2937,9 @@ static void serviceTouch() {
   const uint32_t now = millis();
   const bool raw = digitalRead(PIN_TOUCH) == HIGH;
 
-  // ---------------------------------------------------------------
-  // Debounce raw GPIO level.
-  // ---------------------------------------------------------------
+  
+  
+  
   if (raw != touchRawState) {
     touchRawState = raw;
     touchRawChangedAtMs = now;
@@ -3030,21 +2950,21 @@ static void serviceTouch() {
     touchStableState = touchRawState;
 
     if (touchStableState) {
-      // Confirmed touch start.
+      
       touchPressedAtMs = now;
       touchLongFired = false;
     } else {
-      // Confirmed touch release.
+      
       if (!touchLongFired && !otaActive) {
         if (touchPendingSingle &&
             now - touchFirstTapReleasedAtMs <= TOUCH_DOUBLE_CLICK_MS) {
-          // Second tap arrived inside the double-click window.
+          
           touchPendingSingle = false;
           touchFirstTapReleasedAtMs = 0;
           executeTouchDouble();
         } else {
-          // First tap. Delay its single action until the double-click window
-          // expires so a genuine second tap can still become DOUBLE.
+          
+          
           touchPendingSingle = true;
           touchFirstTapReleasedAtMs = now;
         }
@@ -3052,9 +2972,9 @@ static void serviceTouch() {
     }
   }
 
-  // ---------------------------------------------------------------
-  // Long press. Fire once after 5 seconds of stable touch.
-  // ---------------------------------------------------------------
+  
+  
+  
   if (touchStableState && !touchLongFired && !otaActive &&
       now - touchPressedAtMs >= TOUCH_LONG_PRESS_MS) {
     touchLongFired = true;
@@ -3063,9 +2983,9 @@ static void serviceTouch() {
     executeTouchLong();
   }
 
-  // ---------------------------------------------------------------
-  // Commit a pending single tap only after the full double-click window.
-  // ---------------------------------------------------------------
+  
+  
+  
   if (touchPendingSingle && !touchStableState &&
       now - touchFirstTapReleasedAtMs > TOUCH_DOUBLE_CLICK_MS) {
     touchPendingSingle = false;
@@ -3075,8 +2995,8 @@ static void serviceTouch() {
 }
 
 static void setupTouch() {
-  // TTP223 output is active HIGH. Start from the actual pin level so a
-  // finger already touching the sensor during boot does not fabricate a tap.
+  
+  
   const bool initial = digitalRead(PIN_TOUCH) == HIGH;
   touchRawState = initial;
   touchStableState = initial;
@@ -3087,15 +3007,15 @@ static void setupTouch() {
   touchLongFired = false;
 }
 
-// ===========================================================================
-// Setup / loop
-// ===========================================================================
+
+
+
 void setup() {
   Serial.begin(115200);
 
-  // ========================================================================
-  // NORMAL HARDWARE FIRST
-  // ========================================================================
+  
+  
+  
   pinMode(PIN_NTC, INPUT);
   pinMode(PIN_TOUCH, INPUT);
   setupTouch();
@@ -3122,7 +3042,7 @@ void setup() {
 
   loadSettings();
 
-  // Runtime state is NEVER restored from NVS.
+  
   currentVoltage = Voltage::V5;
   pendingVoltage = Voltage::V5;
   fanOn = false;
@@ -3137,27 +3057,27 @@ void setup() {
   ntcValid = false;
   hotsideC = NAN;
 
-  // First sample immediately, then every 1 second.
+  
   lastNtcReadMs = millis() - NTC_READ_INTERVAL_MS;
   sampleNtcIfDue();
   enforceSafety();
 
-  // ========================================================================
-  // SILENT BOOT WI-FI + NORMAL BLE
-  // ========================================================================
-  // AP is available for the boot window while cooler functions continue.
-  // BLE is deliberately NOT initialized during this window.
-  // Boot radio order is strict: Wi-Fi AP owns the radio for the first
-  // 10 seconds. BLE is NOT started while the AP is active. If no client
-  // connects, the loop turns Wi-Fi completely OFF after the 10-second
-  // window and only then starts BLE.
+  
+  
+  
+  
+  
+  
+  
+  
+  
   startLocalOtaAp();
 }
 
 void loop() {
-  // ========================================================================
-  // 1) OTA / RADIO RECOVERY HAS ABSOLUTE PRIORITY.
-  // ========================================================================
+  
+  
+  
   if (otaState == OtaState::SUCCESS &&
       otaRestartAt != 0 &&
       millis() >= otaRestartAt) {
@@ -3165,9 +3085,9 @@ void loop() {
     return;
   }
 
-  // -------------------------------------------------------------------------
-  // Boot-time local OTA AP
-  // -------------------------------------------------------------------------
+  
+  
+  
   if (bootApActive) {
     webServer.handleClient();
 
@@ -3177,18 +3097,18 @@ void loop() {
         bootApHadClient = true;
         bootApClientSafe = true;
 
-        // The Wi-Fi client connection is the only boot event that forces the
-        // cooler outputs OFF. The AP remains available for OTA handling.
+        
+        
         applyOtaSafeOutputs();
         stopUserLedOutput();
         stopBleForBootWiFiClient();
       }
     } else if (otaState != OtaState::LOCAL_UPLOAD && !otaActive &&
                millis() - bootApStartedAt >= BOOT_AP_TIMEOUT_MS) {
-      // No Wi-Fi client after the full 10-second window: silently close the
-      // AP and continue the normal BLE/cooler runtime.
-      // stopLocalOtaAp() switches Wi-Fi fully OFF before this point.
-      // Only after Wi-Fi is OFF do we initialize BLE.
+      
+      
+      
+      
       stopLocalOtaAp();
       bootApClientSafe = false;
       bootApHadClient = false;
@@ -3202,22 +3122,22 @@ void loop() {
       return;
     }
 
-    // IMPORTANT: no return here when Wi-Fi is only advertising. The normal
-    // cooler loop continues during the silent 10-second AP window.
+    
+    
   }
 
-  // -------------------------------------------------------------------------
-  // Active local upload
-  // -------------------------------------------------------------------------
+  
+  
+  
   if (otaState == OtaState::LOCAL_UPLOAD) {
     webServer.handleClient();
     processLeds();
     return;
   }
 
-  // -------------------------------------------------------------------------
-  // Online OTA owns the radio path
-  // -------------------------------------------------------------------------
+  
+  
+  
   if (otaActive &&
       otaState != OtaState::SUCCESS &&
       otaState != OtaState::FAILED) {
@@ -3226,12 +3146,12 @@ void loop() {
     return;
   }
 
-  // -------------------------------------------------------------------------
-  // Normal runtime. BLE TX is serialized before the next command/radio mode.
-  // A fresh BLE connection receives a full state snapshot from the main loop.
-  // This keeps the BLE callback state-neutral and prevents any connect-time
-  // reset/overwrite of the active voltage or other cooler runtime settings.
-  // -------------------------------------------------------------------------
+  
+  
+  
+  
+  
+  
   if (bleQueueResetPending) {
     bleQueueResetPending = false;
     clearBleTxQueue();
@@ -3273,6 +3193,6 @@ void loop() {
   processLeds();
   serviceBleTx();
 
-  // Keep the normal loop continuously schedulable; no delay() is used.
+  
   yield();
 }
