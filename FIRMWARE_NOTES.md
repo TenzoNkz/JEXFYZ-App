@@ -798,3 +798,18 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - **Online OTA is frozen during this validation sequence.**
 - No production code, firmware source, build, or release changes are authorized merely by this discussion; explicit execution command is still required.
 - Notes/history must continue to update automatically as physical test results are reported.
+
+## 2026-09-27 — WORKFLOW VISIBILITY RULE
+- User requested explicit progress explanations during every active work session, modeled on the visible GitHub Actions/workflow-style status shown in screenshots.
+- For future repository/code/build/audit work, provide clear progress messages before and after meaningful tool operations.
+- Progress messages should state, when applicable:
+  - **Checking**: what file/API/workflow/source boundary is being inspected and why.
+  - **Updating**: what is being changed and the narrow reason for the change.
+  - **Verified**: the exact result of a check or build step.
+  - **Waiting**: when a GitHub Actions job/build is still running.
+  - **Error**: the exact verified error and its cause, without speculation.
+  - **Next**: the next concrete step and what evidence is required.
+- Keep these progress messages factual and concise enough to follow on a phone screen.
+- Do not hide intermediate failures; report them and explain whether they were caused by source code, tool/build infrastructure, or unverified runtime behavior.
+- This visibility rule does not authorize code execution. Production code/repository changes still require the user's explicit execution command.
+- Notes/history remain auto-updated whenever meaningful project decisions, errors, test results, or rules are established.
