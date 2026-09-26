@@ -77,6 +77,20 @@
 - No new executable test file was generated in this discussion.
 - Next boundary: an `Eksekusi Full` step may generate the SoftAP-only diagnostic file. Do not add OTA/WebServer back until the SoftAP-only boundary is proven.
 
+## 2026-09-27 — EXECUTION: SOFTAP-ONLY DIAGNOSTIC FILE
+
+- User explicitly requested `Eksekusi Full` after the standalone Wi-Fi OTA test failed to expose an SSID.
+- Generated file: `JEXFYZ-SoftAP-Only-Test.ino` in the conversation workspace.
+- Scope is intentionally reduced to the smallest AP boundary: `#include <WiFi.h>`, `WiFi.softAP(ssid, password)`, and `WiFi.softAPIP()` with Serial markers. No WebServer, Update OTA, BLE, NTC, cooling, RGB, touch, Preferences, or other project libraries.
+- The AP call follows the verified Arduino-ESP32 Core 3.3.7 official `WiFiAccessPoint.ino` pattern.
+- SSID for this diagnostic: `JE X FYZ SOFTAP TEST`; password: `0987654321`.
+- Serial boundary markers explicitly identify: before `WiFi.softAP()`, its returned result, SSID, AP IP, and final AP-ready state.
+- Static validation: PASS. Required WiFi APIs/markers are present and the forbidden application/OTA/BLE libraries are absent.
+- Compile/flash validation: not performed here; intended manual compile target remains ArduinoDroid with Arduino-ESP32 Core 3.3.7.
+- Production `firmware/JEXFYZ.ino` was not changed by this diagnostic.
+- Runtime/root-cause status: remains unproven until the SoftAP-only sketch is physically tested.
+- Next boundary: flash this sketch and preserve the exact Serial output. The critical evidence is whether `STEP 2: WiFi.softAP() RESULT = OK` appears and whether `RESULT: SOFTAP READY` is reached.
+
 > Current-state override for the next JE X FYZ firmware sub-chat. Historical sections below are retained for chronology.
 
 ## 1. Mandatory workflow
