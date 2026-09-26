@@ -1375,6 +1375,12 @@ The project process is now explicitly two-phase:
 - The normal public V4.5 binary uses true `esp_ota_resume()` on Core 3.3.12.
 - Physical validation is still pending: manual flash V4.5 temporary source, then Online OTA test.
 
+## 2026-09-26 — V4.5 ARDUINODROID STRTOUL COMPATIBILITY FIX
+
+- The V4.5 ArduinoDroid temporary source exposed a Core 3.3.7 compile error in the HTTP Content-Range parser because the new parser used strtoul().
+- The parser is now implemented with a small internal decimal-token parser using Arduino String/size_t only, removing the strtoul dependency completely.
+- The public Core 3.3.12 V4.5 Online OTA behavior remains unchanged.
+
 # END OF FIRMWARE ENGINEERING MEMORY
 
 

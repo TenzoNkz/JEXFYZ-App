@@ -1888,6 +1888,23 @@ static void startOnlineOta() {
   WiFi.begin(cloudSsid.c_str(), cloudPassword.c_str());
 }
 
+static bool parseDecimalSizeToken(const String& token, size_t& value) {
+  if (token.isEmpty()) return false;
+
+  size_t parsed = 0;
+  for (size_t i = 0; i < token.length(); ++i) {
+    const char c = token.charAt(i);
+    if (c < '0' || c > '9') return false;
+
+    const size_t digit = static_cast<size_t>(c - '0');
+    if (parsed > (SIZE_MAX - digit) / 10) return false;
+    parsed = parsed * 10 + digit;
+  }
+
+  value = parsed;
+  return true;
+}
+
 static bool parseContentRangeHeader(
     const String& header,
     size_t& rangeStart,
@@ -1905,23 +1922,25 @@ static bool parseContentRangeHeader(
   const String endText = value.substring(dash + 1, slash);
   const String totalText = value.substring(slash + 1);
 
-  char* endPtr = nullptr;
-  const unsigned long parsedStart = strtoul(startText.c_str(), &endPtr, 10);
-  if (endPtr == startText.c_str() || *endPtr != ' ') return false;
+  size_t parsedStart = 0;
+  size_t parsedEnd = 0;
+  size_t parsedTotal = 0;
 
-  endPtr = nullptr;
-  const unsigned long parsedEnd = strtoul(endText.c_str(), &endPtr, 10);
-  if (endPtr == endText.c_str() || *endPtr != ' ') return false;
+  if (!parseDecimalSizeToken(startText, parsedStart) ||
+      !parseDecimalSizeToken(endText, parsedEnd) ||
+      !parseDecimalSizeToken(totalText, parsedTotal)) {
+    return false;
+  }
 
-  endPtr = nullptr;
-  const unsigned long parsedTotal = strtoul(totalText.c_str(), &endPtr, 10);
-  if (endPtr == totalText.c_str() || *endPtr != ' ' || parsedTotal == 0) return false;
+  if (parsedTotal == 0 ||
+      parsedStart > parsedEnd ||
+      parsedEnd >= parsedTotal) {
+    return false;
+  }
 
-  if (parsedStart > parsedEnd || parsedEnd >= parsedTotal) return false;
-
-  rangeStart = static_cast<size_t>(parsedStart);
-  rangeEnd = static_cast<size_t>(parsedEnd);
-  totalSize = static_cast<size_t>(parsedTotal);
+  rangeStart = parsedStart;
+  rangeEnd = parsedEnd;
+  totalSize = parsedTotal;
   return true;
 }
 
