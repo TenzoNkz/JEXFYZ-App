@@ -59,3 +59,15 @@
 - Updating this trigger file starts the same Firmware Build workflow used for real firmware updates.
 - A trigger-only run does not require changing `FW_VERSION`; firmware source/version remains unchanged.
 - Real changes to `firmware/JEXFYZ.ino` continue to auto-trigger Firmware Build.
+
+
+## 2026-09-26 — Build compatibility fix from Run #6
+
+- Firmware Build Run #6 failed at ESP32-C3 compile with Arduino ESP32 core 3.2.1 due to three API mismatches in `firmware/JEXFYZ.ino`.
+- Applied narrow compatibility fixes:
+  - Use `ESP_LE_AUTH_REQ_SC_BOND` with `BLESecurity::setAuthenticationMode()`.
+  - Remove unavailable `BLEServer::advertiseOnDisconnect()`; existing disconnect callback restarts advertising.
+  - Use `ESP_GATT_PERM_WRITE_ENCRYPTED` for the encrypted RX permission.
+- Commit: `3affa13a97d63eac1777ec2c6315fed9f8720a48`.
+- Version remains V3.2 for this build-fix cycle.
+- A new Firmware Build run should auto-trigger from the firmware source update and is pending verification through publish success.
