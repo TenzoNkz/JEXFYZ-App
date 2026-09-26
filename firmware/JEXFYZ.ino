@@ -21,7 +21,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/portmacro.h"
 
-static constexpr char FW_VERSION[] = "V4.1";
+static constexpr char FW_VERSION[] = "V4.2";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -1907,7 +1907,7 @@ form.addEventListener('submit',e=>{
   };
   xhr.onload=()=>{
     if(xhr.status===200){progress.value=100;status.textContent='Update verified. Green blink, then device will restart.';btn.disabled=true;}
-    else { status.textContent='OTA failed. Wi-Fi remains active; you can try again.'; btn.disabled=false; }
+    else { status.textContent='OTA failed: '+(xhr.responseText||'Unknown OTA error'); btn.disabled=false; }
   };
   xhr.onerror=()=>status.textContent='Connection error.';
   btn.disabled=true;
@@ -2019,9 +2019,7 @@ static void localOtaUploadHandler() {
       return;
     }
 
-    const bool finished = localOtaExpectedBytes == UPDATE_SIZE_UNKNOWN
-                              ? Update.end(true)
-                              : Update.end();
+    const bool finished = Update.end(true);
 
     if (!finished) {
       String detail = Update.errorString();
@@ -2051,11 +2049,28 @@ static void handleOtaRoot() {
 }
 
 static void handleOtaPost() {
+  webServer.sendHeader("Connection", "close");
+
   if (otaState == OtaState::FAILED) {
-    webServer.send(500, "text/plain", "OTA FAILED — Wi-Fi stays active; no restart.");
+    webServer.send(
+        500,
+        "text/plain",
+        "OTA FAILED: " + otaResult);
     return;
   }
-  webServer.send(200, "text/plain", "OTA verified. Green indicator active; device will restart.");
+
+  if (otaState == OtaState::SUCCESS) {
+    webServer.send(
+        200,
+        "text/plain",
+        "OTA verified. Green indicator active; device will restart.");
+    return;
+  }
+
+  webServer.send(
+      409,
+      "text/plain",
+      "OTA not finalized: " + otaResult);
 }
 
 static void startLocalOtaAp() {
