@@ -688,3 +688,62 @@ This repeated pattern requires boundary isolation, not more speculative patch st
   }
   ```
 - CI validation is therefore PASS; this does not yet constitute physical V1.4 runtime validation on the user's board.
+
+# OTA POLICY — AUTHORITATIVE CORRECTION / SAFETY RULES — 2026-09-27
+
+## FINAL USER-DEFINED VERSION POLICY
+- **Local OTA:** version policy is completely bypassed. A valid compatible `.bin` may be flashed regardless of whether its version is older, equal, or newer than the installed firmware. This explicitly supports downgrade, same-version reflashing, recovery, and repeated OTA testing.
+- **Online OTA:** a version update is allowed whenever the remote firmware version is **different** from the currently installed `FW_VERSION`.
+- **Online same-version behavior:** when the remote manifest version equals the currently installed firmware version exactly, the device/app must report **Up to date** and must not perform an OTA flash.
+- **Online does NOT require the remote version to be newer.** Example: installed V1.4 may receive remote V1.3 or V1.5; installed V1.4 receiving remote V1.4 is Up to date.
+- Version comparison is therefore an **equal-vs-different gate**, not a greater-than upgrade-only gate.
+- These rules are product policy and must not be silently changed by future implementation work.
+
+## OTA LIFE-SAFETY / RELEASE-GATE RULE
+- User explicitly states that OTA integrity is a critical survival requirement for the project: **OTA must not be knowingly broken or released with an unresolved OTA error**.
+- Treat OTA as a protected/core subsystem. Do not trade OTA reliability for unrelated feature changes.
+- A firmware binary must **never** be presented to the user as OTA-ready merely because the source compiles.
+- Before delivering a production OTA `.bin`, require at minimum:
+  1. pinned Arduino-ESP32 Core 3.3.7 compile PASS;
+  2. ArduinoDroid temporary-source compile PASS;
+  3. OTA protected-source audit PASS;
+  4. release artifact exists and is non-empty;
+  5. artifact contents match the intended firmware version/source revision;
+  6. public firmware manifest/link is verified when publication is part of the build;
+  7. any known OTA runtime failure remains explicitly marked as unresolved and is not declared fixed without evidence.
+- If any release-gate check fails, stop the release and fix the failure before presenting a production binary.
+- Never conceal or work around an OTA failure merely to make the upload appear successful.
+- Keep Local OTA and Online OTA policy separate so that a version-gate change cannot accidentally alter image validation or flash-writing safety.
+- Local OTA must still reject invalid/corrupt/incompatible images through the normal Arduino Update validation path; "no version restriction" does **not** mean "accept arbitrary bytes".
+- Online OTA must retain the same image/space/flash validation safety in addition to the equal-vs-different version gate.
+
+## CURRENT DEBUG LESSON — LOCAL OTA CODE 8
+- The user's physical V1.4 Local OTA test reached 100% upload and then reported:
+  `LOCAL_IMAGE_VERIFY | UPDATE_END_FAILED | code 8`.
+- This is an **image verification/end-of-update failure**, not evidence that a same-version file should be blocked by version policy.
+- Do not solve this failure by adding a version check.
+- The local same-version/downgrade requirement must be implemented independently from the `Update.end(true)` image-validation path.
+
+## HISTORY / NO-REPEAT RULE
+- The notes are the project's technical life-history and are to be expanded after every meaningful discussion and execution.
+- Historical failed approaches remain recorded for traceability, but current implementation must follow the latest authoritative policy block.
+- Do not resurrect superseded hypotheses simply because they appear earlier in the file.
+- Do not repeat a diagnostic test when the same boundary has already been conclusively established.
+- Prefer a small, evidence-driven change over a large refactor.
+
+## CURRENT AUTHORITATIVE PRODUCTION STATE
+- Production source: `firmware/JEXFYZ.ino`
+- Current production version: **V1.4**
+- V1.4 simple Arduino Wi-Fi baseline: physically verified SSID visibility.
+- V1.4 CI Run #71: compile, audit, artifact, and publication PASS.
+- Physical V1.4 Local OTA test: **FAILED at `Update.end(true)` with code 8**. Therefore local OTA runtime is **not yet considered fixed** despite CI PASS.
+- Physical V1.4 BLE + main application visibility/function: user reported BLE appears and application features work after V1.4 was flashed.
+- This means the next OTA work must focus specifically on the Local OTA verification failure while preserving the working Wi-Fi/BLE/application baseline.
+
+## NEXT OTA IMPLEMENTATION BOUNDARY
+- Implement the version policy exactly as defined above:
+  - Local = no version equality/newer/older restriction.
+  - Online = different version allowed; same version => Up to date/no flash.
+- Separately investigate and fix the physical Local OTA `UPDATE_END_FAILED` code 8 using the official Arduino-ESP32 Core 3.3.7 Update path.
+- Do not redesign BLE, NTC, cooling, RGB, Adaptive, GPIO, or unrelated application features while fixing this OTA issue.
+- Every OTA code modification requires a fresh pinned Core 3.3.7 validation before another physical flash test.
