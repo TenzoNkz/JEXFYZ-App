@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  ESP32_CORE_VERSION: "3.3.12"
+  ESP32_CORE_VERSION: "3.3.7"
   ONEBUTTON_VERSION: "2.6.1"
   ADAFRUIT_NEOPIXEL_VERSION: "1.12.5"
   PUBLIC_FIRMWARE_REPO: "TenzoNkz/JEXFYZ-Firmware"
@@ -64,13 +64,13 @@ jobs:
           )"
           VALUE_FILE="JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
           cp firmware/JEXFYZ.ino "${VALUE_FILE}"
-          sed -i '1i #define JEXFYZ_LEGACY_OTA 1' "${VALUE_FILE}"
           sed -i \
             -e 's/#include <NetworkClientSecure.h>/#include <WiFiClientSecure.h>/'             -e 's/NetworkClientSecure cloudClient;/WiFiClientSecure cloudClient;/'             -e 's/cloudClient.useBuiltinCACertBundle();/cloudClient.setInsecure();/'             "${VALUE_FILE}"
-          grep -Fq '#define JEXFYZ_LEGACY_OTA 1' "${VALUE_FILE}"
           grep -Fq '#include <WiFiClientSecure.h>' "${VALUE_FILE}"
           grep -Fq 'WiFiClientSecure cloudClient;' "${VALUE_FILE}"
           grep -Fq 'cloudClient.setInsecure();' "${VALUE_FILE}"
+           ! grep -Fq 'JEXFYZ_LEGACY_OTA' "${VALUE_FILE}"
+           ! grep -Fq 'esp_ota_resume(' "${VALUE_FILE}"
           ! grep -Fq 'strtoul(' "${VALUE_FILE}"
 
       - name: Compile ArduinoDroid temporary source
@@ -202,14 +202,16 @@ jobs:
           missing = [x for x in required if x not in s]
           if missing:
               raise SystemExit("OTA SAFETY AUDIT FAILED: " + ", ".join(missing))
-          if 'static constexpr char FW_VERSION[] = "V4.8";' not in s:
-              raise SystemExit("OTA SAFETY AUDIT FAILED: version is not V4.7")
+          if 'static constexpr char FW_VERSION[] = "V4.9";' not in s:
+              raise SystemExit("OTA SAFETY AUDIT FAILED: version is not V4.9")
           if "setInsecure()" in s:
               raise SystemExit("OTA SAFETY AUDIT FAILED: insecure TLS leaked into release source")
           if "#include <Update.h>" in s or "#include <HTTPUpdate.h>" in s:
               raise SystemExit("OTA SAFETY AUDIT FAILED: obsolete high-level OTA API remains")
           if "Update.end(" in s or "Update.begin(" in s or "Update.write(" in s:
               raise SystemExit("OTA SAFETY AUDIT FAILED: Local OTA still uses UpdateClass")
+           if "esp_ota_resume(" in s:
+               raise SystemExit("OTA SAFETY AUDIT FAILED: esp_ota_resume must not be used on the Core 3.3.7 release baseline")
           loop_start = s.index("void loop()")
           loop = s[loop_start:]
           ota_pos = loop.index("serviceOtaPriority()")
@@ -271,13 +273,10 @@ jobs:
           set -euo pipefail
           VERSION="${{ steps.version.outputs.version }}"
           cp firmware/JEXFYZ.ino "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
-          sed -i '1i #define JEXFYZ_LEGACY_OTA 1' "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
           sed -i \
             -e 's/#include <NetworkClientSecure.h>/#include <WiFiClientSecure.h>/' \
             -e 's/NetworkClientSecure cloudClient;/WiFiClientSecure cloudClient;/' \
             -e 's/cloudClient.useBuiltinCACertBundle();/cloudClient.setInsecure();/' \
-            -e '/case UPDATE_ERROR_SHA256:/d' \
-            -e '/case UPDATE_ERROR_SHA512:/d' \
             "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
           grep -Fq '#include <WiFiClientSecure.h>' "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
           grep -Fq 'WiFiClientSecure cloudClient;' "build/firmware/JEXFYZ-${VERSION}-ArduinoDroid-Temporary.ino"
