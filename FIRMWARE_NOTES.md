@@ -377,3 +377,8 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - `validate-arduinodroid` remains successful.
 - `build-and-publish` is now installing the ESP32-C3 Core 3.3.7 in its release-build job.
 - Release firmware compilation and publication remain pending.
+
+## 2026-09-27 — EXECUTION STATUS UPDATE: RUN #67 RELEASE COMPILE ACTIVE
+- Release job completed Core/library setup and source/audit/version steps.
+- The `Compile ESP32-C3 firmware` step is currently `in_progress`.
+- No release artifact or public V1.2 firmware is claimed until this compile and subsequent publication steps complete.
