@@ -340,3 +340,9 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - The `validate-arduinodroid` job has started; the later compile step has not yet completed at the time of this note.
 - No build success/failure is claimed yet.
 - Next boundary: inspect Run #67 completion and its compile/audit/artifact results before declaring V1.2 build status.
+
+## 2026-09-27 — EXECUTION STATUS UPDATE: RUN #67 TOOLCHAIN INSTALL
+- Run #67 remains `in_progress`.
+- Job `validate-arduinodroid` is currently installing the pinned ESP32 Arduino Core `3.3.7`; library installation and compilation have not started yet.
+- No compile result is available at this checkpoint.
+- No hardware conclusion is implied.
