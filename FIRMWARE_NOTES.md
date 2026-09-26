@@ -65,6 +65,18 @@
 - Production `firmware/JEXFYZ.ino` was not modified by this standalone test-file generation.
 - Runtime/root-cause status: still unproven. The standalone physical test is now the next diagnostic boundary.
 - Next boundary: compile/flash this standalone .ino manually in ArduinoDroid, connect to the `JE X FYZ OTA TEST` SoftAP, open `http://192.168.4.1/`, and test a known-good ESP32 firmware .bin upload. Preserve the Serial output exactly.
+## 2026-09-27 — RUNTIME RESULT: STANDALONE WIFI OTA TEST SSID NOT VISIBLE
+
+- User physical-test result: after manually compiling/flashing the standalone `JEXFYZ-WiFi-OTA-Test.ino`, the configured Wi-Fi SSID was not visible.
+- The standalone file was inspected locally: it calls `WiFi.softAP(AP_SSID, AP_PASSWORD)` directly before WebServer setup, with no BLE or JE X FYZ production runtime layers.
+- Official Core 3.3.7 reference remains the same: `WiFiAccessPoint.ino` starts AP directly with `WiFi.softAP(ssid, password)`; the WebUpdate example adds WebServer/Update only after Wi-Fi connection/startup.
+- Current diagnostic conclusion: the failure boundary is still unknown. We do not yet know whether the board panics/stops inside `WiFi.softAP()`, returns `false`, starts AP but fails visibility, or is being compiled/flashed with a different ArduinoDroid/Core/board configuration.
+- Important isolation decision: do not modify OTA logic yet. The next diagnostic should remove WebServer and Update entirely and use the smallest official-style SoftAP-only sketch, with Serial markers immediately before and after `WiFi.softAP()` and an AP IP print.
+- Exact Serial output is now the key evidence. Preserve every line from reset through failure/reboot; especially capture whether `WIFI: STEP 1 SOFTAP` is followed by `SOFTAP RESULT=OK` or a panic/reset.
+- No production JE X FYZ source was changed in this discussion.
+- No new executable test file was generated in this discussion.
+- Next boundary: an `Eksekusi Full` step may generate the SoftAP-only diagnostic file. Do not add OTA/WebServer back until the SoftAP-only boundary is proven.
+
 > Current-state override for the next JE X FYZ firmware sub-chat. Historical sections below are retained for chronology.
 
 ## 1. Mandatory workflow
