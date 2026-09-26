@@ -2557,3 +2557,11 @@ The project process is now explicitly two-phase:
 - Firmware V3.4 release completed successfully after the CI publish secret was corrected to `TENZO_FULL_ACCESS`.
 - App BLE contract remains P1 with unchanged JE X FYZ service/RX/TX UUIDs.
 - App LED mode synchronization remains 1..8 for the V3.4 custom LED engine.
+
+## 2026-09-26 — V3.7 APP SOURCE EXECUTION: OTA RESULT VISIBILITY
+
+- App source references were advanced from V3.6 to V3.7 for the next firmware release.
+- `LAST_OTA_RESULT` is now translated into a user-visible Home NOTIFY message, including detailed OTA finalization errors and upload-size mismatch results.
+- OTA failure/success results are also considered by the Home NOTIFY error/status state so a post-OTA reconnect does not hide the persisted firmware result behind a generic "System ready" message.
+- No App Build was triggered by this Code execution; the next App Build remains separately controlled by the `Build App` command in the Action sub-chat.
+
