@@ -544,3 +544,12 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Required Arduino Update lifecycle calls remain present: begin/write/end(true)/abort/printError.
 - GPIO mapping remains GPIO5 = FAN and GPIO6 = PELTIER.
 - This static check does not replace the required Core 3.3.7 CI compile.
+
+## 2026-09-27 — RUN #68 COMPILE ROOT CAUSE / V1.3 CORE 3.3.7 FIX
+- CI Run #68 reached the pinned Arduino-ESP32 Core 3.3.7 toolchain and failed only in the ArduinoDroid temporary-source compile before the release job.
+- Compiler root cause #1: Core 3.3.7 EspClass has no getResetReason() member. Official Core 3.3.7 search/source verification found no Arduino ESP.getResetReason()/getResetInfo() wrapper. The production sync field RESET_REASON is therefore retained but now reports the explicit non-fabricated value UNAVAILABLE_CORE_3_3_7 instead of calling a nonexistent API.
+- Compiler root cause #2: stale bleConnectionId = BLE_INVALID_CONN_ID remained after the callback/low-level cleanup, but neither symbol is declared or required by the current Arduino BLE implementation. The unused assignment was removed; BLE UUIDs/protocol and callback behavior were not changed.
+- Compiler root cause #3: the official Core 3.3.7 Update.write() signature requires uint8_t*, while the Stream adapter receives const uint8_t*. The adapter now uses const_cast<uint8_t*> only at the official API boundary; official Update.cpp was verified to copy/read the supplied bytes and not modify the input buffer.
+- No raw ESP-IDF Wi-Fi/OTA lifecycle was reintroduced. The fixes stay at Arduino/application boundaries and preserve the existing OTA state machine, diagnostics, safety, and radio handoff.
+- GPIO mapping remains GPIO5 = FAN and GPIO6 = PELTIER.
+- V1.3 is still not release-final/public. A new Core 3.3.7 CI run is required after this fix.
