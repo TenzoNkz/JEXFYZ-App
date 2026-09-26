@@ -1415,6 +1415,11 @@ The project process is now explicitly two-phase:
 - OTA priority and the working V4.5 Range/reconnect/resume transport remain unchanged.
 - CI audit now also rejects duplicate/missing OTA lock markers.
 
+## V4.6 BUILD #33 ATTEMPT — OTA AUDIT MARKER CORRECTION
+- Run #33 stopped before compile because the new CI OTA audit counted the shared text `OTA ENGINE — LOCKED` in both the start and end comments as a duplicate marker.
+- The source itself was structurally correct; only the audit's marker-matching rule was too broad.
+- The CI audit was tightened to distinguish start/end markers before the next V4.6 build.
+
 # END OF FIRMWARE ENGINEERING MEMORY
 
 

@@ -132,10 +132,12 @@ jobs:
           ota_end = s.index("END OTA ENGINE — LOCKED")
           if s.count("OTA SAFETY LOCK") != 1:
               raise SystemExit("OTA SAFETY AUDIT FAILED: duplicate/missing top safety lock")
-          if s.count("OTA ENGINE — LOCKED") != 1:
-              raise SystemExit("OTA SAFETY AUDIT FAILED: OTA engine lock marker invalid")
-          if s.count("OTA PRIORITY SUPERVISOR — LOCKED") != 1:
-              raise SystemExit("OTA SAFETY AUDIT FAILED: OTA supervisor lock marker invalid")
+          if s.count("OTA ENGINE — LOCKED ============================") != 1:
+              raise SystemExit("OTA SAFETY AUDIT FAILED: OTA engine start marker invalid")
+          if s.count("END OTA ENGINE — LOCKED") != 1:
+              raise SystemExit("OTA SAFETY AUDIT FAILED: OTA engine end marker invalid")
+          if s.count("OTA PRIORITY SUPERVISOR — LOCKED ====================") != 1:
+              raise SystemExit("OTA SAFETY AUDIT FAILED: OTA supervisor marker invalid")
           if "delay(" in s[ota_start:ota_end]:
               raise SystemExit("OTA SAFETY AUDIT FAILED: delay() inside OTA engine")
           print("OTA SAFETY AUDIT: PASS")
