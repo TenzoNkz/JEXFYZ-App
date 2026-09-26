@@ -235,7 +235,7 @@ jobs:
           # Regression guard: keep the V1.0 initial AP path in the exact
           # known-good order that avoids the Core 3.3.7 boot panic seen in
           # the previous firmware family.
-          ap_start = s.index("static void startLocalOtaAp()")
+          ap_start = s.index("static void startLocalOtaAp() {")
           ap_end = s.index("static void stopLocalOtaAp()", ap_start)
           ap = s[ap_start:ap_end]
           order_tokens = [
