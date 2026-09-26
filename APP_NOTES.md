@@ -2437,8 +2437,16 @@ The project process is now explicitly two-phase:
 ### Documentation hygiene
 - This note's end marker is kept at the actual end of the document so appended changelog entries remain part of the active memory file.
 
-# END OF APP PROJECT MEMORY
+## 2026-09-26 — App Build Run #2 analyzer fix
 
+- Run #2 (`36212485388`) reached `flutter analyze` and failed on `lib/main.dart:3733` because the Firmware dialog Retry button still referenced the removed `_checkFirebase` method.
+- Analyzer also reported an unnecessary cast at `lib/main.dart:3659`; this was a warning, not the build-stopping error.
+- Action fixed `lib/main.dart` narrowly: Retry now calls `_checkGitHub`, and the redundant `decoded as Map` cast was removed.
+- Fix commit: `9ee79ab5041a5cdd8e00aaa01fcb0430b65c2801`.
+- No unrelated UI, BLE, foreground-service, or firmware behavior was changed.
+- A new App Build is required to validate analyze/test/release/signing/artifact after this fix.
+
+# END OF APP PROJECT MEMORY
 
 ## 2026-09-26 — Code #2: firmware source cleanup + App BLE contract synchronization
 
