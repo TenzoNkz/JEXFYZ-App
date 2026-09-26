@@ -35,5 +35,5 @@
 
 ## Validation status
 - Workflow configuration is added in the private repository.
-- The first GitHub Actions firmware build/publish is still pending.
+- GitHub Actions firmware Run #1 is currently in progress; compile/publish success is not yet verified.
 - The public repository retains its existing JEXFYZ.cpp.bin as the initial baseline; the workflow removes that legacy filename after the first automated release.
