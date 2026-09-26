@@ -3,7 +3,7 @@
 ## 1. SOURCE AUTHORITY AND CURRENT STATE
 
 - Authoritative firmware source: `firmware/JEXFYZ.ino`.
-- Current source firmware version: V4.13 (radio-first boot isolation, Core 3.3.7, secure Core-3.3.7-compatible TLS CA handling, and corrected Fan/Peltier GPIO mapping).
+- Current source firmware version: V4.14 (restored hardware-first Wi-Fi AP startup, Core 3.3.7, secure Core-3.3.7-compatible TLS CA handling, and corrected Fan/Peltier GPIO mapping).
 - Protocol version: `P1`.
 - BLE device name: `JE X FYZ`.
 - Target hardware: ESP32-C3 Super Mini / ESP32-C3 Dev Module class.
@@ -51,7 +51,7 @@ The following configuration is the user's proven manual upload configuration and
 This exact ArduinoDroid configuration has been visually verified by the user and must be kept as the reference target for future manual upload discussions.
 
 ### CI / manual core baseline
-The GitHub Actions Firmware Build workflow uses `PartitionScheme=no_fs` and is pinned to Arduino-ESP32 Core 3.3.7. Manual ArduinoDroid should use the same 3.3.7 core for the V4.13 test target.
+The GitHub Actions Firmware Build workflow uses `PartitionScheme=no_fs` and is pinned to Arduino-ESP32 Core 3.3.7. Manual ArduinoDroid should use the same 3.3.7 core for the V4.14 test target.
 
 ## 3. BOARD, GPIO, AND ELECTRICAL MAP
 
@@ -61,8 +61,8 @@ The GitHub Actions Firmware Build workflow uses `PartitionScheme=no_fs` and is p
 | TTP223 touch | GPIO1 |
 | 12V selector optocoupler | GPIO3 |
 | 9V selector optocoupler | GPIO4 |
-| Peltier MOSFET | GPIO5 |
-| Fan MOSFET | GPIO6 |
+| Peltier MOSFET | GPIO6 |
+| Fan MOSFET | GPIO5 |
 | WS2812B LED strip | GPIO7 |
 | LED count | 8 |
 
@@ -1677,3 +1677,14 @@ The project process is now explicitly two-phase:
 - Release binary: `JEXFYZ-V4.13.bin`, verified at 1,465,200 bytes in the public firmware repository. The CI binary size gate remains 2 MiB.
 - The public firmware repository is published from the same pipeline and keeps the release manifest URL format without SHA-based firmware linking.
 - Physical hardware validation is still required: verify boot AP visibility for the 10-second window, Wi-Fi shutdown, BLE `JE X FYZ` advertising after handoff, and the corrected GPIO5/GPIO6 outputs on the actual cooler.
+
+
+## 2026-09-27 — V4.14 RADIO BOOT FIX / RESTORE PROVEN WORKING ORDER
+
+- V4.13 physical test showed an immediate Core 0 Load Access Fault directly after WIFI AP: START; the device rebooted continuously before reaching WIFI AP: READY or BLE startup.
+- Repository history was compared against the earlier working firmware path. The older proven source initialized all normal hardware/peripherals first, then entered the boot Wi-Fi AP path. It did not issue STA/SoftAP teardown calls before the initial AP mode was established.
+- V4.14 restores that hardware-first boot order while keeping the single-radio rule: Wi-Fi owns the radio during the 10-second boot AP window; BLE is not initialized until Wi-Fi is fully turned OFF after timeout or failure.
+- startLocalOtaAp() now uses an explicitly staged Core-3.7 AP sequence: WiFi.mode(WIFI_AP) -> WiFi.softAPConfig(...) -> WiFi.softAP(...), with Serial markers for MODE, CONFIG, START, and READY.
+- The initial AP path no longer calls WiFi.disconnect() or WiFi.softAPdisconnect() before AP-mode initialization, removing the pre-initialization radio teardown path implicated by the panic timing.
+- OTA protected engine, native esp_ota_* update lifecycle, secure TLS CA validation, BLE P1 contract, safety logic, and corrected GPIO mapping remain unchanged by the radio fix.
+- Firmware CI release gate was advanced to V4.14. Physical validation is required: confirm WIFI AP: READY SSID=JE X FYZ, AP visibility for 10 seconds, then WIFI AP: TIMEOUT -> BLE HANDOFF and BLE JE X FYZ advertising with no reboot/panic.
