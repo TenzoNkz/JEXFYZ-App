@@ -6,7 +6,7 @@ on:
       - ".github/FIRMWARE_BUILD_TRIGGER"
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: jexfyz-firmware-build
@@ -25,6 +25,18 @@ jobs:
     steps:
       - name: Checkout private app repository
         uses: actions/checkout@v6
+
+      - name: 🛡️ OTA SATPAM
+        id: ota_guard
+        continue-on-error: true
+        run: python3 .github/scripts/ota_guard.py --check
+
+      - name: 📋 OTA SEKRETARIS
+        if: steps.ota_guard.outcome == 'failure'
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/ota_guard.py --repair
+          python3 .github/scripts/ota_guard.py --check
 
       - name: Set up Arduino CLI
         uses: arduino/setup-arduino-cli@v2
@@ -101,6 +113,18 @@ jobs:
       - name: Checkout private app repository
         uses: actions/checkout@v6
 
+      - name: 🛡️ OTA SATPAM
+        id: ota_guard
+        continue-on-error: true
+        run: python3 .github/scripts/ota_guard.py --check
+
+      - name: 📋 OTA SEKRETARIS
+        if: steps.ota_guard.outcome == 'failure'
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/ota_guard.py --repair
+          python3 .github/scripts/ota_guard.py --check
+
       - name: Set up Arduino CLI
         uses: arduino/setup-arduino-cli@v2
 
@@ -137,6 +161,22 @@ jobs:
           grep -Fq 'TX_UUID[]      = "6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001"' firmware/JEXFYZ.ino
           grep -Fq 'FW_VERSION[]' firmware/JEXFYZ.ino
           echo "Firmware source audit passed."
+
+
+      - name: 📋 Commit OTA secretary repair
+        if: steps.ota_guard.outcome == 'failure'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- firmware/JEXFYZ.ino; then
+            echo "OTA secretary produced no source changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add firmware/JEXFYZ.ino
+          git commit -m "chore: restore OTA from gold master"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
 
       - name: Extract firmware version
         id: version
