@@ -1070,3 +1070,15 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Public manifest remains V1.6 -> `JEXFYZ-V1.6.bin`.
 - The Local OTA exact-size lifecycle restoration (`Update.begin(localOtaExpectedBytes)`) is now the physical-test candidate for the previous `LOCAL_IMAGE_VERIFY / CODE=3` failure.
 - OTA Gold Master status remains `NOT ESTABLISHED`; it requires physical OTA validation.
+
+## 2026-09-27 — CRITICAL PHYSICAL OTA MATRIX: ArduinoDroid vs REPO V1.6
+- User performed a direct ArduinoDroid V1.6 flash and Local OTA tests.
+- Physical result:
+  - ArduinoDroid V1.6 -> repository V1.6 Local OTA: PASS.
+  - repository V1.6 -> repository V1.6 Local OTA: FAIL at finalization.
+  - repository V1.6 -> ArduinoDroid V1.6 Local OTA: FAIL at finalization.
+- Both failing repository-originated tests reproduce the same `LOCAL_IMAGE_VERIFY / CODE=3 / UPDATE_END_FAILED / Flash Read Failed` boundary.
+- This result materially narrows the problem: the Local OTA upload path and target image are demonstrably usable when the running firmware is the ArduinoDroid-built V1.6, while the same OTA mechanism fails when the running firmware is the CI/repository-built V1.6.
+- Therefore the previous hypothesis that `Update.begin(localOtaExpectedBytes)` alone would fix the issue is NOT physically validated and must not be treated as the root cause.
+- Next investigation must compare the ArduinoDroid and repository build environments/configuration that can affect OTA partition selection, flash layout, boot partition state, image metadata, and runtime Update behavior. Do not make another speculative OTA rewrite before this comparison.
+- OTA Gold Master remains NOT established.
