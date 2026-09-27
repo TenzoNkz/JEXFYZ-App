@@ -3080,3 +3080,13 @@ The official AP example uses the high-level `WiFi.softAP()` path. This is now th
 - Do not rely only on conversational memory when the project notes can establish the current state.
 - After every material action, update the notes immediately with the actual action, result, affected commit/run/version/artifact, and unresolved follow-up.
 
+## 2026-09-27 — APK FILENAME DELIVERY FIX
+
+- User reported the downloaded APK appearing as `JEXFYZ%238.apk` on Android instead of the required `JEXFYZ#<build-number>.apk`.
+- Re-checked the active App Build workflow. The repository-side filename is already explicitly generated as `JEXFYZ#${{ github.run_number }}.apk`, and Run #8 artifact was uploaded under the canonical `JEXFYZ#8.apk) name.
+- Verified the downloaded artifact bytes are an Android APK; the `.zip` suffix was only the connector's local artifact container filename, not the APK format.
+- Root cause of the visible `%23` form is URL/file-transfer encoding of the `#` character during sandbox/chat delivery, not the GitHub Actions APK naming step.
+- Operational fix: when delivering an APK to the chat, preserve/restore the canonical local filename `JEXFYZ#<build-number>.apk` before providing the download link.
+- Future Build App executions must continue to generate the repository artifact as `JEXFYZ#<github run number>.apk` and the delivered APK must be normalized to that same canonical filename.
+- No application source or build logic change was required for this issue.
+
