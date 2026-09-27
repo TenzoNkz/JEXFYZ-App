@@ -1009,3 +1009,20 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Important diagnostic finding: Core 3.3.7 `Update.end(true)` calls the internal bootability path where error code 3 can be produced when the reserved first 16-byte image header is restored or when the just-written OTA partition is read back for bootability. Therefore the current firmware label `LOCAL_IMAGE_VERIFY` is too broad to identify the exact failing sub-step.
 - Next investigation must isolate the exact finalization sub-step (header/partition enable write vs bootability read) before changing Local OTA logic.
 - No Local OTA code was changed from this physical test result; Firebase remains deferred.
+
+## 2026-09-27 — OTA GOLD MASTER / TWO-LAYER GUARD DECISION
+- User approved the concept of a strict two-layer OTA protection system:
+  - 🛡️ SATPAM (OTA Guard): exact verification gate for OTA code, structure, ordering, placement, constants, strings, Wi-Fi/AP configuration, WebServer routes, Update lifecycle, diagnostics, LED handling, failure handling, and restart sequence.
+  - 📋 SEKRETARIS (OTA Repair): may only restore a known approved OTA Gold Master; it must not invent or guess replacement code.
+- Required flow:
+  1. Guard compares current OTA against the approved Gold Master.
+  2. PASS -> build/audit may continue.
+  3. FAIL -> build is blocked and a precise mismatch diagnosis is reported.
+  4. Repair restores from Gold Master.
+  5. Guard runs again.
+  6. If still FAIL -> hard stop; no build/release/OTA.
+- Exact-match principle: protected OTA items are treated like a password; a one-character difference is a mismatch and must be blocked.
+- Gold Master must be immutable as an approved reference. A new OTA master can only be promoted after deliberate changes, Core 3.3.7 CI/audit, and physical OTA validation.
+- Current V1.6 is NOT yet an OTA Gold Master because the physical Local OTA test failed at finalization (LOCAL_IMAGE_VERIFY, error code 3 / Flash Read Failed).
+- Current objective is to repair and physically validate OTA first, then establish the first physically verified OTA Gold Master. Firebase logging remains deferred until after this objective.
+- No firmware code execution/build was authorized by this discussion; this note records the design decision and test objective only.
