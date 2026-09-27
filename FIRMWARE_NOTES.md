@@ -1855,3 +1855,17 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - No code execution or source modification was performed by this discussion update.
 - Before implementation, the OTA Gold Master candidate must be deliberately refreshed for the new Online OTA block and SATPAM re-run. Local OTA protected content remains unchanged.
 - Chat handoff status: DISCUSSION — STANDARD ARDUINO HTTPUPDATE REDESIGN IS THE NEXT EXECUTION CANDIDATE; NOT YET EXECUTED.
+## 2026-09-27 — DISCUSSION APPROVAL: STANDARD ARDUINO HTTPUpdate REDESIGN
+
+- User approved replacing the custom Online OTA transport with the official Arduino-ESP32 HTTPUpdate approach, with the explicit requirement that the resulting mechanism must be physically validated and not assumed successful.
+- Approval is for the design only; no production source modification or build was executed in this discussion.
+- Required acceptance path remains:
+  - BLE single-radio handoff -> Wi-Fi STA -> bounded Wi-Fi connection
+  - HTTPS time readiness as required
+  - one official HTTPUpdate transaction to the GitHub raw firmware URL
+  - HTTPUpdate-managed Update.begin/writeStream/end lifecycle
+  - exact failure-stage reporting and BLE recovery on failure
+  - controlled restart only after a successful update
+  - Local OTA unchanged.
+- The standard-library design is selected specifically to reduce custom transport state and failure surfaces. It is not considered proven until a physical Online OTA test succeeds.
+- Chat handoff status: DISCUSSION — DESIGN APPROVED; READY FOR `Eksekusi Full`.
