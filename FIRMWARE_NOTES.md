@@ -1501,3 +1501,17 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Public repository state therefore remains: manifest V1.0 points to `JEXFYZ-V1.0.bin`, but that binary is still absent from the repository.
 - No firmware logic was changed.
 - Next publication boundary: the exact binary must be uploaded through a path that supports binary transfer (for example manual upload to the repository by the user, or a future connector/workflow that accepts the file bytes). After the binary is present, verify the raw URL before relying on Online OTA.
+
+## 2026-09-27 — EXECUTION: USER V1.0 BIN RENAMED/PROMOTED TO PUBLIC V1.0
+
+- User explicitly uploaded the manually compiled ArduinoDroid V1.0 BIN to `TenzoNkz/JEXFYZ-Firmware` as `V1.0.bin` and authorized execution to rename it.
+- Action performed: replaced the existing public `JEXFYZ-V1.0.bin` entry (the earlier CI binary) with the exact blob from the user's uploaded `V1.0.bin`, then removed the temporary `V1.0.bin` path using a Git tree/commit operation.
+- User BIN blob SHA: `fbb43cff080bff787ab6ea31b08042b744cc8809`.
+- User BIN size: **1,456,256 bytes**.
+- New public path: `JEXFYZ-V1.0.bin`.
+- Public firmware repository commit: `d952b5bf8f8873e1e168236749d84c5237141c33`.
+- Verification after update: repository root contains only `JEXFYZ-V1.0.bin` and `manifest.json`; no temporary `V1.0.bin` remains.
+- `manifest.json` remains V1.0 and points to the exact public raw URL:
+  `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V1.0.bin`.
+- This confirms the public V1.0 binary now corresponds to the user's manually compiled ArduinoDroid binary rather than the earlier CI-generated binary.
+- Firmware runtime status: the user's physical device has successfully demonstrated Local OTA in both directions using V1.0/V1.5 test labels. Online OTA test is now ready to proceed from the App using a current APK; do not infer Online OTA transfer success until it is physically executed and logged.
