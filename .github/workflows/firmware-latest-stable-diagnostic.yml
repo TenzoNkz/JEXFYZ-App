@@ -68,6 +68,11 @@ jobs:
           grep -Fq 'static constexpr uint8_t PIN_PELTIER = 6;' firmware/JEXFYZ.ino
           grep -Fq 'static constexpr uint8_t PIN_FAN     = 5;' firmware/JEXFYZ.ino
 
+      - name: Inspect ESP32-C3 Core 3.3.12 board options
+        run: |
+          set -euo pipefail
+          arduino-cli board details --fqbn esp32:esp32:esp32c3
+
       - name: Compile with ArduinoDroid-equivalent board profile
         shell: bash
         run: |
@@ -78,7 +83,7 @@ jobs:
           cp firmware/JEXFYZ.ino build/source/JEXFYZ/JEXFYZ.ino
 
           arduino-cli compile \
-            --fqbn 'esp32:esp32:esp32c3:CDCOnBoot=cdc,JTAGAdapter=disabled,PartitionScheme=no_fs,CPUFreq=160,FlashMode=dio,FlashFreq=80,FlashSize=4M,DebugLevel=none,ZigbeeMode=disabled' \
+            --fqbn 'esp32:esp32:esp32c3:CDCOnBoot=cdc,JTAGAdapter=disabled,PartitionScheme=no_fs,CPUFreq=160,FlashMode=dio,FlashFreq=80,FlashSize=4M,DebugLevel=none' \
             --output-dir build/latest-stable \
             build/source/JEXFYZ
 
