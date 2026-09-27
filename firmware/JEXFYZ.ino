@@ -3571,6 +3571,8 @@ static bool serviceOtaPriority() {
   return false;
 }
 
+// ================ END OTA PRIORITY SUPERVISOR — LOCKED =====================
+
 static void setupTouch() {
   pinMode(PIN_TOUCH, INPUT);
   touchButton.setDebounceMs(50);
