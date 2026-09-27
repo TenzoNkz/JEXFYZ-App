@@ -1526,3 +1526,20 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Before any rename/publication, verify the uploaded file's actual size/blob and, when available, embedded firmware version against the user's declared version and source context.
 - After rename, verify that the temporary upload path no longer remains unless the user explicitly asks to keep a copy.
 - This workflow is now the standard publication procedure for future user-supplied ArduinoDroid BIN releases.
+
+## 2026-09-27 — RUNTIME RESULT: ONLINE OTA V1.5 → V1.0 FAIL AT WIFI CONNECT
+
+- User physically tested Online OTA from a device running test-labeled **V1.5** while the public manifest/target is **V1.0**.
+- App-side version gate now behaved correctly: the Firmware dialog showed **Current: V1.5**, **Latest: V1.0**, **Update available** and exposed the Update action.
+- After Update was started, the App Home notification showed approximately:
+  `OTA in progress • ONLINE • Wi-Fi connect • 0%`.
+- The following observed screen showed BLE/device telemetry disconnected/reconnecting and Home values blank (`--`). No completed Online OTA download/install result was observed.
+- This means the Online OTA test passed the App version-availability gate and entered the firmware's `ONLINE_WIFI_CONNECT` stage, but did not reach GitHub/range/download stages in the observed session.
+- Current firmware source confirms that Online OTA enters this stage by stopping BLE and calling the Wi-Fi STA startup sequence:
+  `WiFi.disconnect(true, false)` → `WiFi.softAPdisconnect(true)` → `WiFi.setHostname("JE-X-FYZ")` → `WiFi.mode(WIFI_STA)` → `WiFi.setSleep(false)` → `WiFi.setAutoReconnect(false)` → `WiFi.begin(...)`.
+- Earlier isolated physical diagnostics already proved that, on the user's ESP32-C3 / Arduino-ESP32 Core 3.3.7 environment, the sibling public call `WiFi.mode(WIFI_AP)` panics before returning. A dedicated `WiFi.mode(WIFI_STA)` diagnostic source exists in history (commit `e8185cb24acb7475a533a859208156b43ecd4c03`), but its physical runtime boundary has not yet been successfully captured.
+- Therefore the current Online OTA failure is **strongly consistent with a failure during STA-mode Wi-Fi initialization**, potentially at `WiFi.mode(WIFI_STA)`, but this is **not yet proven** from the current screenshots alone.
+- Important: the failure has not reached HTTPS/GitHub/range/download logic, so do not modify the Range/HTTP/flash portion yet.
+- Local OTA remains protected and must not be changed as part of this diagnosis.
+- No firmware source or App source was changed by this discussion.
+- Next diagnostic boundary: preserve the complete Serial Monitor output from the Online OTA attempt, especially the last line before disconnect/reset; alternatively obtain a valid physical result from the existing minimal `WiFi.mode(WIFI_STA)` diagnostic. Only after the exact STA boundary is confirmed should a production Online OTA fix be executed.
