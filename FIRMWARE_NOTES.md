@@ -1375,3 +1375,25 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - The automatic filename convention remains JEXFYZ-VX.Y.bin.
 - If the user-stated version and authoritative source version do not match or cannot be reconciled unambiguously, publication must stop; do not guess, silently rename to another version, or update the manifest.
 - This does not change the production firmware source or OTA code. It only clarifies the human-to-ChatGPT release handoff.
+
+
+## 2026-09-27 — EXECUTION: RESET PROJECT BASELINE TO V1.0 + REPO CLEANUP
+
+- User explicitly authorized Code execution to restart the firmware version sequence from the beginning because the project has undergone major changes.
+- Authoritative production source remains `firmware/JEXFYZ.ino` and is now declared `FW_VERSION = "V1.0"`.
+- Firmware behavior/code was intentionally kept the same; only the firmware version declaration was changed from V1.6 to V1.0.
+- OTA Gold Master metadata was aligned from `created_from_firmware: V1.6` to `V1.0`; protected OTA block contents were not intentionally changed.
+- Production repository cleanup removed obsolete firmware-build automation and cancelled diagnostic artifacts from the main App repo:
+  - `.github/FIRMWARE_BUILD_TRIGGER`
+  - `.github/LATEST_STABLE_BUILD_TRIGGER`
+  - `.github/workflows/firmware-build.yml`
+  - `.github/workflows/firmware-latest-stable-diagnostic.yml`
+  - `firmware/diagnostics/JEXFYZ-Pure-Arduino-Runtime-Test.ino`
+  - `firmware/diagnostics/JEXFYZ-Simple-WiFi-OTA-Test.ino`
+  - `firmware/diagnostics/JEXFYZ-WiFi-STA-Mode-Test.ino`
+- The OTA Guard files remain intentionally protected in the production source tree: `firmware/OTA_GOLD_MASTER_LOCK.json` and `.github/scripts/ota_guard.py`.
+- App build automation remains intact through `.github/APP_BUILD_TRIGGER` and `.github/workflows/app-build.yml`.
+- The public `JEXFYZ-Firmware` repo was inspected and remains intentionally minimal with `JEXFYZ-V1.6.bin` and `manifest.json` until the user supplies the manually compiled ArduinoDroid V1.0 application BIN.
+- Do NOT rename the existing V1.6 binary to V1.0 by filename only; the binary's embedded firmware version must match the declared release version.
+- New firmware publication workflow remains: user compiles in ArduinoDroid -> user states the BIN version -> ChatGPT validates against `firmware/JEXFYZ.ino` -> ChatGPT renames/uploads the correct BIN -> ChatGPT updates/verifies the GitHub manifest.
+- Historical diagnostic failures and prior version history remain preserved in these notes; cleanup removes obsolete working files from the production tree, not the historical record.
