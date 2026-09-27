@@ -69,6 +69,14 @@ List<int>? parseFirmwareVersion(String version) {
   return <int>[major, minor];
 }
 
+bool isNewerFirmwareVersion(String latest, String current) {
+  final a = parseFirmwareVersion(latest);
+  final b = parseFirmwareVersion(current);
+  if (a == null || b == null) return false;
+  if (a[0] != b[0]) return a[0] > b[0];
+  return a[1] > b[1];
+}
+
 bool isDifferentFirmwareVersion(String latest, String current) {
   final a = parseFirmwareVersion(latest);
   final b = parseFirmwareVersion(current);
