@@ -1515,3 +1515,14 @@ This repeated pattern requires boundary isolation, not more speculative patch st
   `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V1.0.bin`.
 - This confirms the public V1.0 binary now corresponds to the user's manually compiled ArduinoDroid binary rather than the earlier CI-generated binary.
 - Firmware runtime status: the user's physical device has successfully demonstrated Local OTA in both directions using V1.0/V1.5 test labels. Online OTA test is now ready to proceed from the App using a current APK; do not infer Online OTA transfer success until it is physically executed and logged.
+
+## 2026-09-27 — DISCUSSION: STANDARD USER BIN RENAME WORKFLOW CONFIRMED
+
+- User confirmed the intended recurring firmware publication workflow:
+  - User may upload the newly compiled BIN to `TenzoNkz/JEXFYZ-Firmware` using any temporary filename.
+  - ChatGPT must identify/verify the newly uploaded BIN, then replace/remove the previous public versioned binary as required and rename the new verified BIN to the official `JEXFYZ-Vx.y.bin` path.
+  - The manifest must remain aligned with the declared firmware version and official filename.
+- Important operational detail: the source filename is treated as temporary only; the binary contents/blob identity must be preserved during the rename. The previous public binary must not be confused with or accidentally retained as the new release.
+- Before any rename/publication, verify the uploaded file's actual size/blob and, when available, embedded firmware version against the user's declared version and source context.
+- After rename, verify that the temporary upload path no longer remains unless the user explicitly asks to keep a copy.
+- This workflow is now the standard publication procedure for future user-supplied ArduinoDroid BIN releases.
