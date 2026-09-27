@@ -2128,3 +2128,30 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - OTA Gold Master Lock metadata refreshed to V1.4: 666188600d7fd349c131fd88cb27a52766b620a0.
 - Public firmware distribution remains V1.3. No V1.4 BIN was generated or published in this execution; V1.4 is the source revision for the next ArduinoDroid manual compile/test.
 - Physical validation remains pending. Do not claim Online OTA success until the V1.4 source has been compiled/flashed and the controlled Wi-Fi-result LED + OTA test passes physically.
+
+## 2026-09-28 — EXECUTION FULL: V1.5 OTA + RUNTIME HARDENING CANDIDATE
+
+- Firmware source advanced from V1.4 to V1.5.
+- Online OTA transport was hardened by replacing blocking `Update.writeStream()` with a fixed 1024-byte read buffer and repeated `stream->read(...)` + `Update.write(...)` operations.
+- Online OTA download now checks stream availability, uses a 10-second idle-data timeout, yields between iterations, validates each flash write, and preserves the existing HTTPS/content-length/magic-byte/`Update.begin()`/`Update.end()` lifecycle.
+- No firmware-sized RAM buffer and no resumable HTTP Range transport were introduced.
+- Online OTA LED behavior remains locked: Update trigger -> LED OFF during Wi-Fi connection; Wi-Fi success -> BLUE blink; Wi-Fi failure -> RED blink. Boot-time Local OTA AP behavior remains BLUE STATIC until AP ownership ends, then BLE handoff turns user LED output off.
+- BLE RX hardening: RX command buffer is 512 bytes; queued RX payloads use fixed-size character storage instead of a queue of heap-owning `String` objects; queue operations are serialized with a standard C++ atomic flag. No `portMUX`, FreeRTOS critical-section API, or ESP-IDF OTA API was introduced.
+- LED mode parser now accepts the complete firmware mode range 1..8, matching the existing App LED mode contract where mode 8 is Twinkle.
+- Peltier PWM output now tracks `lastPeltierDuty` so unchanged duty values are not written repeatedly.
+- Adaptive battery zoning now uses a 0.8 C hysteresis helper to reduce boundary chattering; manual voltage control behavior is unchanged.
+- NTC validation was hardened with an upper fault threshold of 3290 mV, input sanitization/clamp at 3.28 V before resistance calculation, and finite/positive validation of resistance and calculated temperature.
+- Boot Wi-Fi AP now has a 60-second hard limit in addition to the normal 10-second no-client timeout. The hard limit yields to an active local OTA transaction so an actual upload is not interrupted.
+- Hardware initialization was consolidated into `initializeRuntimeFeatures()`; setup no longer duplicates the hardware initialization sequence. GPIO authority remains GPIO5 = FAN and GPIO6 = PELTIER.
+- Gemini V1.4's callback-allocation finding was audited but intentionally not forced into this revision. The current Arduino-ESP32 BLE ownership/destruction path was not sufficiently established from the available Core 3.3.7 evidence to justify replacing the existing callback allocation pattern blindly.
+- App source/protocol was not changed in this execution because the App already defines LED modes 1..8 and does not require a new protocol for these firmware hardening changes.
+- Source commits in this execution: `d7f438a37e74c33b07b3e00295412bf1ce842731`, `210571960117f459d22f632f16fab76228b10ca6`, `13361994b0d69facf61ea88895e378edf6f71fd4`.
+- OTA Gold Master Lock was refreshed for V1.5: `f2ad197ee2c8149ad52cc7edb8c0b4f3107bdc3`.
+- Final authoritative firmware source blob SHA: `040f38fb8113dc0a0900a618bb58cc6452a1907`.
+- Static source audit: PASS for V1.5 version marker, GPIO mapping, absence of `Update.writeStream()`, chunked stream writes, 512-byte RX buffer, atomic RX queue serialization, absence of forbidden `portMUX`/FreeRTOS critical APIs, Twinkle range 1..8, Peltier duty tracking, battery hysteresis, NTC sanitization, Boot AP hard limit, protected OTA markers/order, balanced braces, and Online OTA diagnostic/result markers.
+- Callback audit remains OPEN: the source still contains one `new ServerCallbacks()` construction. This is intentionally documented as an unresolved review item rather than falsely claiming it has been fixed.
+- No firmware BIN was generated or published in this execution. Public firmware distribution remains V1.3 until a V1.5 BIN is compiled from this source in the locked ArduinoDroid environment and physically validated.
+- Build/compile proof is not claimed: the working environment does not provide a verified ArduinoDroid/Core 3.3.7 compiler toolchain.
+- Physical validation remains required. V1.5 status is CANDIDATE_NOT_PHYSICALLY_VERIFIED.
+- Next handoff: compile/flash V1.5 manually in ArduinoDroid, perform controlled Online OTA + LED + BLE + safety tests, and provide the exact V1.5 artifact to Gemini for the independent second audit.
+
