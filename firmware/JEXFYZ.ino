@@ -1774,7 +1774,7 @@ class RxCallbacks : public BLECharacteristicCallbacks {
   }
 };
 
-static void stopBleRadio(bool releaseBluetoothMemory = true) {
+static void stopBleRadio(bool releaseBluetoothMemory) {
   bleQueueResetPending = true;
   bleClientConnected = false;
   bleSyncPending = false;
