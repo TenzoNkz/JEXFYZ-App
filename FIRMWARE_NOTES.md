@@ -1478,3 +1478,14 @@ This repeated pattern requires boundary isolation, not more speculative patch st
   - `manifest.json` remains V1.6.
 - Publication was intentionally NOT performed because the available GitHub connector exposes text/blob APIs but no direct binary upload operation from the mounted conversation file. Do not change the manifest until `JEXFYZ-V1.0.bin` is actually uploaded to `TenzoNkz/JEXFYZ-Firmware`.
 - This BIN is the user's ArduinoDroid production artifact for the V1.0 release workflow; it must not be replaced by the CI V1.0 binary.
+
+## 2026-09-27 — DISCUSSION: V1.0 BIN PUBLICATION STATE RECHECK
+
+- User questioned why the supplied ArduinoDroid V1.0 BIN was not visible in the public firmware repository.
+- Current GitHub state was rechecked directly:
+  - `manifest.json` is V1.0 and points to `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V1.0.bin`.
+  - Current public firmware repository search returns **no `JEXFYZ-V1.0.bin` file**.
+  - Latest public firmware commit is `307780e8573a436519a1e46e02e7440c834148c6` (`release firmware V1.0`), created 2026-09-27 05:12:59Z.
+- Root cause of the publication gap: the available GitHub connector can create/update text blobs/files, but the received 1.46 MB binary cannot be transferred from the mounted chat file into the connector call in the current execution environment. The file itself was validated and renamed locally as `JEXFYZ-V1.0.bin`, but that does not create a GitHub release object.
+- Important consequence: the public manifest currently advertises V1.0, but the corresponding V1.0 binary is not present in the public firmware repository yet. Do not claim the public V1.0 binary is published until the binary file itself is verified in the repository.
+- No source/firmware logic was changed in this discussion. No manifest modification was made by this recheck.
