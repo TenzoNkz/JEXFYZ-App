@@ -1708,3 +1708,21 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Local file size: 107,415 bytes, 3,766 LF-terminated lines. The GitHub source currently reports 107,387 characters / 3,767 lines because its fetched representation includes a trailing line break difference; executable source content/structure is otherwise the current V1.1 candidate.
 - This file is intended for the user's ArduinoDroid compilation and/or Local OTA recovery test. No public firmware release/manifest was changed by this handoff.
 - Physical device remains on the existing V1.5 test-labeled V1.0-code image until the user manually applies/tests V1.1.
+
+## 2026-09-27 — FIX: ArduinoDroid DEFAULT-ARGUMENT COMPILATION ERROR
+
+- Physical ArduinoDroid compile of the V1.1 candidate reported:
+  `redefinition of default argument` at the `stopBleRadio` definition.
+- Cause: the Arduino sketch preprocessor can generate a function prototype, so declaring a default argument again in the function definition is rejected by the compiler.
+- Fix applied:
+  - `static void stopBleRadio(bool releaseBluetoothMemory = true)`
+  - changed to
+  - `static void stopBleRadio(bool releaseBluetoothMemory)`
+- All current call sites already pass the argument explicitly:
+  - boot/local OTA: `stopBleRadio(true)`
+  - online OTA: `stopBleRadio(false)`
+- Therefore behavior is unchanged; this is a compile-only correction.
+- Firmware source commit: `5ca5223a50ff93b735e9ae7e19a04c3f109664be`.
+- Physical test candidate remains V1.1.
+- Corrected local file: `JEXFYZ-V1.1-FIXED.ino`.
+- Chat handoff status: **FIX COMPLETE — READY TO COMPILE IN ARDUINODROID**.
