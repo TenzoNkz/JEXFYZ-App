@@ -3023,3 +3023,12 @@ The official AP example uses the high-level `WiFi.softAP()` path. This is now th
 - App policy was updated so firmware manifest versions are considered update-capable whenever they are valid and DIFFERENT from the device version; this allows rollback/downgrade as well as upgrade.
 - The existing isNewerFirmwareVersion helper was restored for test compatibility and retained as a separate helper; the OTA dialog uses isDifferentFirmwareVersion for availability.
 - App Build #7 completed successfully, including Dart analysis and Flutter tests.
+
+
+## 2026-09-27 — PROJECT BASELINE RESET / REPOSITORY CLEANUP
+
+- Firmware development baseline has been restarted at V1.0 after a major project revision; the authoritative firmware source remains `firmware/JEXFYZ.ino`.
+- The firmware code was kept unchanged for this reset; only the source version declaration was reset to V1.0.
+- Obsolete firmware CI/diagnostic files were removed from the production repository. The App Build workflow remains the active automated APK build path.
+- Firmware binaries are no longer compiled/published by the App repository CI workflow. The user compiles the firmware manually in ArduinoDroid and provides the application BIN to ChatGPT for validated GitHub publication.
+- Existing Firebase firmware-metadata dependencies remain excluded from the firmware distribution workflow; GitHub is the firmware distribution source of truth.
