@@ -1562,3 +1562,16 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Do not modify Local OTA.
 - No executable source change or build was authorized by this discussion.
 - Chat handoff status: **DISCUSSION — NOT YET READY FOR EXECUTION** until the STA diagnostic result is captured and classified.
+
+## 2026-09-27 — DISCUSSION: NON-INTRUSIVE ONLINE OTA DIAGNOSIS PREFERRED
+
+- User does **not** want to replace/reflash the currently installed test firmware and does **not** want to rely on Serial Monitor for the next Online OTA diagnosis.
+- Diagnostic preference: use the existing production firmware V1.5 test image and the App's existing OTA notification/telemetry only.
+- Therefore do not require the standalone `WiFi.mode(WIFI_STA)` diagnostic at this time and do not ask the user to replace the current device firmware merely to collect the next evidence.
+- The current Online OTA attempt already reached `ONLINE_WIFI_CONNECT` at 0%. The existing firmware has a 15-second `WIFI_CONNECT_TIMEOUT_MS` and publishes `ONLINE_WIFI_FAILED` when that timeout is reached.
+- Next non-intrusive test: with the device still on the current V1.5 test firmware, run Online OTA again and observe the App Notify panel through the full timeout window. Record the final stage/error/result shown after the Wi-Fi connect attempt, rather than stopping at the transient `Wi-Fi connect • 0%` state.
+- If the App reports `ONLINE_WIFI_FAILED` / `WIFI_FAILED`, the failure is confirmed at the STA connection stage without changing firmware.
+- If the notification advances to `ONLINE_WIFI_CONNECTED`, `ONLINE_TIME_SYNC`, `ONLINE_GITHUB_CONNECT`, or later, then the failure is later than STA startup and the next diagnosis can target that exact stage.
+- If the App/device disconnects and never publishes a terminal OTA status, the next step remains evidence collection from the existing firmware/session behavior; do not invent a root cause and do not alter Local OTA.
+- No code, firmware, or App changes are authorized by this discussion.
+- Chat handoff status: **DISCUSSION — NON-INTRUSIVE TEST WITH CURRENT FIRMWARE**.
