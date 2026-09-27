@@ -1657,3 +1657,26 @@ This repeated pattern requires boundary isolation, not more speculative patch st
   - The test is therefore specifically exercising the Online OTA transition and version-different path without introducing unrelated firmware feature changes.
 - No code was changed in this clarification.
 - Chat handoff status: **DISCUSSION — CURRENT TEST LINEAGE CORRECTED; TARGETED EXECUTION STILL AVAILABLE BUT ROOT CAUSE IS NOT YET PROVEN**.
+
+## 2026-09-27 — EXECUTION: ONLINE OTA BLE→Wi-Fi HEAP FIX CANDIDATE
+
+- User explicitly authorized `Eksekusi Code dan Firmware Full`.
+- Executed targeted firmware source change against the authoritative `firmware/JEXFYZ.ino`.
+- Firmware source version advanced from **V1.0 → V1.1** because executable behavior changed. V1.1 is a controlled test candidate; it is not a public production release yet.
+- Fix boundary:
+  - `stopBleRadio()` now accepts a `releaseBluetoothMemory` parameter, defaulting to `true`.
+  - Boot AP/local-OTA handoff explicitly calls `stopBleRadio(true)`, preserving the established Local OTA BLE teardown behavior.
+  - Online OTA explicitly calls `stopBleRadio(false)`, so the BLE→Wi-Fi handoff no longer requests Bluetooth controller memory release during the live transition.
+  - No HTTPS, GitHub, Range, download, `Update.begin/write/end`, NTC, cooling, RGB, Adaptive, GPIO, or App source logic was changed.
+- The current source therefore isolates the suspected failure mechanism to Online OTA only instead of globally changing BLE teardown behavior.
+- 🛡️ OTA SATPAM-equivalent static verification against `firmware/OTA_GOLD_MASTER_LOCK.json`: **PASS** after refreshing the lock candidate's protected `OTA_ENGINE` content to the deliberate source state. Lock status remains `CANDIDATE_NOT_PHYSICALLY_VERIFIED`.
+- Important protection result: boot/local-OTA path remains explicitly `stopBleRadio(true)`; the Online OTA path is the only path intentionally changed to `false`.
+- Git commits:
+  - Firmware source: `3732b510cbaa284771a7b8639608d224168870a4`
+  - OTA lock candidate refresh: `e9f19a9b0111f0fa1c0a5391004af7c7da26c85f`
+- Current authoritative firmware source blob SHA: `33e92493ad34a895c04c33c4a6b2e4c490d9973d`.
+- Automated firmware CI build was **not executed** in this environment because the current `main` branch no longer contains `.github/workflows/firmware-build.yml`; only the App workflow is present under `.github/workflows/`. No replacement workflow was invented during this execution.
+- No public firmware release was changed. `JEXFYZ-Firmware` remains on public V1.0 and `manifest.json` remains V1.0.
+- Next physical validation: compile the current V1.1 source using the locked ArduinoDroid/Core 3.3.7 profile. For Online OTA A/B testing, the device may be manually relabeled V1.5 again so the public V1.0 target remains a version-different update target. Do not change the Local OTA path.
+- Success criterion: the device must survive the BLE→Wi-Fi handoff without heap corruption/reboot, then advance beyond `ONLINE_WIFI_CONNECT` to `ONLINE_WIFI_CONNECTED` and subsequent stages. If it still fails, preserve the exact new stage/error before making another source change.
+- Chat handoff status: **EXECUTION COMPLETE — PHYSICAL V1.1 TEST PENDING**.
