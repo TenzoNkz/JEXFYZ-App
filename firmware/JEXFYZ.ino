@@ -1993,6 +1993,9 @@ static void failOnlineOta(
   onlineOtaStartPending = false;
   cloudTimeSyncStarted = false;
 
+  // Abort any partially prepared Arduino Update transaction before recovery.
+  Update.abort();
+
   stopWiFiRadio();
   clearCloudCredentials();
   applyOtaSafeOutputs();
@@ -2048,6 +2051,18 @@ static bool performStandardOnlineOtaUpdate() {
 
   if (result == HTTP_UPDATE_OK) {
     cloudClient.stop();
+
+    setOtaDiagnosticStage("ONLINE_BOOT_PARTITION");
+    setOtaDiagnosticError(0, "NONE");
+    saveOtaResult(
+        otaSuccessResult(
+            "ONLINE",
+            "ONLINE_BOOT_PARTITION",
+            cloudVersion.isEmpty() ? FW_VERSION : cloudVersion));
+    setOtaState(OtaState::SUCCESS);
+    otaRestartAt = millis() + OTA_RESTART_DELAY_MS;
+    otaActive = true;
+    clearCloudCredentials();
     return true;
   }
 
