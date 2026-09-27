@@ -1186,3 +1186,18 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Current evidence now points more strongly toward the firmware image/build configuration, flash/partition metadata, or the Local OTA finalization behavior itself. Do not claim the root cause yet.
 - Important distinction: ESPFlash wrote only the application image at 0x10000; bootloader and partition table were not replaced in this test. Therefore the test proves the CI application binary runs correctly on the existing board flash layout, but it does not by itself prove a complete CI-generated bootloader/partition-table image matches ArduinoDroid.
 - Next diagnostic should inspect/compare the exact application binary metadata and partition layout used by ArduinoDroid vs CI, then isolate the Core 3.3.7 Update.end(true) finalization boundary. Do not perform another speculative OTA rewrite from this result alone.
+
+
+## 2026-09-27 — DISCUSSION: ARDUINODROID PRECOMPILE FILES IDENTIFIED EXACTLY
+- User provided the ArduinoDroid precompiled directory screenshot.
+- The file manager is displayed in dual-pane mode, so each file appears twice visually; there are actually four unique files in the directory:
+  - HorizonCooler.cpp.bin — 1.36 MB
+  - JEXFYZ.cpp.bin — 1.39 MB
+  - JEXFYZ.cpp.bootloader.bin — 18.38 KB
+  - JEXFYZ.cpp.partitions.bin — 3.00 KB
+- Therefore ArduinoDroid is indeed producing the expected three JEXFYZ binary components: application, bootloader, and partition table.
+- The application binary is specifically named JEXFYZ.cpp.bin in this ArduinoDroid precompiled directory. This is the correct candidate to compare against the repository/CI application binary for Local OTA behavior.
+- The bootloader and partitions binaries are not Local OTA payloads; they matter for complete USB flashing/layout comparison.
+- The exact ArduinoDroid application filename should not be inferred from the generic *.ino.bin naming used by the CI build directory; the source/precompile naming differs because ArduinoDroid is compiling the sketch as JEXFYZ.cpp internally.
+- Next diagnostic: obtain/compare the bytes, size, and image metadata of JEXFYZ.cpp.bin versus the CI JEXFYZ-V1.6.bin, and separately compare JEXFYZ.cpp.partitions.bin against the CI-generated partition table. This will distinguish application-image differences from flash-layout differences.
+- No production firmware/code was changed by this discussion.
