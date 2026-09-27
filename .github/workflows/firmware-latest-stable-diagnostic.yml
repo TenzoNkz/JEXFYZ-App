@@ -83,7 +83,7 @@ jobs:
           cp firmware/JEXFYZ.ino build/source/JEXFYZ/JEXFYZ.ino
 
           arduino-cli compile \
-            --fqbn 'esp32:esp32:esp32c3:CDCOnBoot=cdc,JTAGAdapter=disabled,PartitionScheme=no_fs,CPUFreq=160,FlashMode=dio,FlashFreq=80,FlashSize=4M,DebugLevel=none' \
+            --fqbn 'esp32:esp32:esp32c3:CDCOnBoot=cdc,JTAGAdapter=default,PartitionScheme=no_fs,CPUFreq=160,FlashMode=dio,FlashFreq=80,FlashSize=4M,DebugLevel=none' \
             --output-dir build/latest-stable \
             build/source/JEXFYZ
 
