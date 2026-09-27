@@ -3074,3 +3074,9 @@ The official AP example uses the high-level `WiFi.softAP()` path. This is now th
 - Unresolved runtime note remains unchanged: CI success is build evidence only and does not prove BLE/OTA/physical firmware runtime behavior.
 - This entry is part of the mandatory update-after-action project governance: every material Build App execution must be recorded with trigger, result, artifact, and follow-up.
 
+## 2026-09-27 — MEMORY GOVERNANCE CONFIRMATION
+- Project notes are treated as the authoritative working memory for JE X FYZ App work.
+- Before every App-related action, execution, build, troubleshooting step, or source change, re-read the relevant current notes/master context first.
+- Do not rely only on conversational memory when the project notes can establish the current state.
+- After every material action, update the notes immediately with the actual action, result, affected commit/run/version/artifact, and unresolved follow-up.
+
