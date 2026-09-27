@@ -1869,3 +1869,39 @@ This repeated pattern requires boundary isolation, not more speculative patch st
   - Local OTA unchanged.
 - The standard-library design is selected specifically to reduce custom transport state and failure surfaces. It is not considered proven until a physical Online OTA test succeeds.
 - Chat handoff status: DISCUSSION — DESIGN APPROVED; READY FOR `Eksekusi Full`.
+
+## 2026-09-27 — EXECUTION: V1.2 ONLINE OTA REBUILT ON ARDUINO HTTPUpdate
+
+- User explicitly authorized `Eksekusi Code dan Firmware Full` for the approved standard-Arduino Online OTA redesign.
+- Authoritative firmware source `firmware/JEXFYZ.ino` advanced to **V1.2** because the executable Online OTA implementation changed.
+- Online OTA transport was replaced with the official Arduino-ESP32 `HTTPUpdate` flow:
+  - `WiFiClientSecure` keeps the pinned GitHub CA.
+  - `HTTPUpdate` uses the configured 60 s HTTP timeout and forced redirect following.
+  - Version eligibility remains owned by the existing JE X FYZ P1/App policy; the device `FW_VERSION` is intentionally NOT passed as the HTTPUpdate `currentVersion` argument.
+  - Official update lifecycle is delegated to HTTPUpdate internally (`Update.begin` / `Update.writeStream` / `Update.end`).
+  - `rebootOnUpdate(false)` retains control of final diagnostics/restart.
+  - Existing OTA diagnostic callbacks now report HTTPUpdate start/progress/error/end.
+  - Failed transactions call `Update.abort()` before radio recovery.
+  - Successful transactions set the existing boot-partition/success result and use the existing controlled restart delay.
+- Removed the custom Online OTA transport implementation:
+  - Range probe and Content-Range parsing
+  - 64 KiB chunk streaming
+  - manual resumable retry/resume loop
+  - custom `OtaHttpFlashStream`
+  - duplicated HTTPClient transaction handling
+  - manual Online OTA `Update.begin/write/end` orchestration
+- BLE handoff remains explicit and single-radio:
+  - Online OTA uses `stopBleRadio(false)`, preserving BT controller memory during the live handoff.
+  - Boot/local OTA continues to use `stopBleRadio(true)`.
+- Local OTA engine and application features were not intentionally changed.
+- 🛡️ SATPAM static verification after the final V1.2 source + lock update: **PASS**.
+- OTA lock candidate was refreshed to exactly match the V1.2 protected source and now explicitly requires the HTTPUpdate path while forbidding the removed custom Range transport markers.
+- Final firmware source commit: `b29aafdbcb7f8b7c46bc70ca9a958cc3c8a2a442`.
+- Final OTA lock synchronization commit: `8ea80a7ee08e5e5f38969e08d4a4801c745d4604`.
+- Final current source blob SHA: `72eea61ec02d1ab1956b2d64e784040c2fa57a37`.
+- A local ArduinoDroid-ready source file was prepared as `JEXFYZ-V1.2-HTTPUpdate.ino`, size **97,727 bytes**, SHA-256 `10eef9e58ec69054a760b8f26915344ec06e9d8cc1692098ca6b67f13ac79cf4`. Static marker/brace/parenthesis checks: PASS.
+- Automated firmware compilation was not executed because the current `main` branch has no `.github/workflows/firmware-build.yml`, and no Arduino CLI/toolchain is available in the container. No replacement CI workflow was invented.
+- Public firmware distribution remains intentionally at **V1.1** until a V1.2 BIN compiled by the user's ArduinoDroid environment is supplied/uploaded. No public manifest change was made by this execution.
+- Next physical boundary: compile `JEXFYZ-V1.2-HTTPUpdate.ino` using the locked ArduinoDroid/Core 3.3.7 profile, obtain the V1.2 BIN, then test Local OTA into V1.2 before testing Online OTA against the current public V1.1 target.
+- Acceptance criterion for Online OTA: survive BLE→Wi-Fi transition, reach Wi-Fi/time sync, execute standard HTTPUpdate, install V1.1 successfully, recover/restart normally, and report a terminal OTA result.
+- Chat handoff status: **EXECUTION COMPLETE — V1.2 SOURCE READY; PHYSICAL BUILD/OTA TEST PENDING**.
