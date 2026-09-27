@@ -1575,3 +1575,23 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - If the App/device disconnects and never publishes a terminal OTA status, the next step remains evidence collection from the existing firmware/session behavior; do not invent a root cause and do not alter Local OTA.
 - No code, firmware, or App changes are authorized by this discussion.
 - Chat handoff status: **DISCUSSION — NON-INTRUSIVE TEST WITH CURRENT FIRMWARE**.
+
+## 2026-09-27 — RUNTIME EVIDENCE: BOOT AP SUCCEEDS BUT HEAP CORRUPTION IS REPORTED
+
+- User supplied fresh Serial Monitor + App screenshots after another Online OTA V1.5 → V1.0 attempt.
+- Serial output begins with:
+  - `CORRUPT HEAP: Bad head at 0x3fcbff38. Expected 0xabbac234 got 0xAAAAAAAA`
+  - then normal boot continues through `BOOT: FEATURES READY`, `BOOT: WIFI AP DEFERRED TO LOOP`, `BOOT: START WIFI AP FROM LOOP`.
+  - `WIFI AP: SOFTAP RESULT=OK`
+  - `WIFI AP: READY SSID=JE X FYZ IP=192.168.4.1`
+  - `WIFI AP: HTTP READY`
+  - `WIFI AP: TIMEOUT → BLE HANDOFF`
+  - `BLE: STARTBLE: READY/ADVERTISING`
+- This is new runtime evidence that the production firmware can successfully start its boot SoftAP and HTTP server on this physical run; therefore the earlier isolated `WiFi.mode(WIFI_AP)` panic cannot by itself be treated as a universal failure of Wi-Fi AP startup.
+- The heap-corruption message is a separate and important runtime fault indicator. It appears before the boot banner and is not explained by the screenshot alone. Do not declare its root cause yet.
+- App screenshot still shows `OTA in progress • ONLINE • Wi-Fi connect • 0%` and `CONNECTING`, with telemetry fields blank. The observed session still does not show a terminal `ONLINE_WIFI_FAILED` or any GitHub/HTTPS/download stage.
+- The sequence therefore remains consistent with an Online OTA session being interrupted/lost before a terminal OTA status was delivered over BLE; however, this screenshot set does not prove whether the interruption is caused by Wi-Fi STA initialization, a reset/heap fault, BLE reconnection timing, or another failure.
+- Important new boundary: **HEAP CORRUPTION must be preserved as a first-class runtime issue.** Do not patch Online OTA networking before classifying whether the heap fault is pre-existing at boot or triggered by the OTA transition.
+- No source code changed in this discussion.
+- Next diagnostic preference remains non-intrusive: do not replace the currently installed firmware. Capture the complete Serial output spanning the exact moment the Online OTA Update button is pressed, including any reset/heap/panic lines, if the user is willing to repeat the test. If the device resets immediately after the button press, that reset/heap evidence becomes the primary boundary.
+- Chat handoff status: **DISCUSSION — NEW EVIDENCE, NOT YET READY FOR EXECUTION**.
