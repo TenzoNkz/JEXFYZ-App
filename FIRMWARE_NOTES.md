@@ -985,3 +985,14 @@ This repeated pattern requires boundary isolation, not more speculative patch st
   - The persistent Firebase logging concept remains recorded as the project design.
   - It was NOT added to V1.6 in this execution because the current firmware does not have a Firebase client path and the app currently uses Firebase Core/App Check without RTDB logging.
   - Do not claim V1.6 provides persistent Firebase OTA logs. A dedicated implementation must preserve the rule that Firebase failure can never block or corrupt OTA.
+
+
+## 2026-09-27 — OTA PHYSICAL TEST PRIORITY / FIREBASE DEFERRED
+- User explicitly deferred Firebase persistent OTA logging for now.
+- Current priority is physical OTA validation.
+- Test order:
+  1. Use the released V1.6 binary through Local OTA as the recovery/safety path.
+  2. Verify the device boots and normal Wi-Fi/BLE/application behavior remains healthy.
+  3. Only after Local OTA validation, test Online OTA behavior.
+- Do not add Firebase logging changes while this OTA validation is in progress unless the user explicitly requests it.
+- Local OTA remains a protected subsystem and must not be modified during Online OTA testing.
