@@ -69,12 +69,11 @@ List<int>? parseFirmwareVersion(String version) {
   return <int>[major, minor];
 }
 
-bool isNewerFirmwareVersion(String latest, String current) {
+bool isDifferentFirmwareVersion(String latest, String current) {
   final a = parseFirmwareVersion(latest);
   final b = parseFirmwareVersion(current);
   if (a == null || b == null) return false;
-  if (a[0] != b[0]) return a[0] > b[0];
-  return a[1] > b[1];
+  return a[0] != b[0] || a[1] != b[1];
 }
 
 bool isValidHexColor(String value) {
@@ -3715,7 +3714,7 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
         latestVersion = version;
         firmwareUrl = url;
         updateAvailable =
-            isNewerFirmwareVersion(version, widget.currentVersion);
+            isDifferentFirmwareVersion(version, widget.currentVersion);
         status = updateAvailable ? 'UPDATE' : 'UP_TO_DATE';
       });
     } catch (e) {
