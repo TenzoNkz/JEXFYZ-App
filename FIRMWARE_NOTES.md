@@ -1768,3 +1768,32 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - This is a test candidate based on the user's V1.1 heap-fix binary; it is **not yet an OTA Gold Master or final production firmware** until physical Online OTA validation passes.
 - Important test consequence: the existing device running the older V1.0 code labeled V1.5 can now target public V1.1 in the App as a different version. However, because the App's Online OTA credentials/URL are provided at runtime from the manifest flow, the next physical test should use the current V1.1 binary as the online target.
 - Chat handoff status: **EXECUTION COMPLETE — PUBLIC V1.1 TEST BINARY PUBLISHED; PHYSICAL ONLINE OTA VALIDATION PENDING**.
+
+## 2026-09-27 — PHYSICAL RESULT: V1.1 HEAP FIX DID NOT SOLVE ONLINE OTA
+
+- User tested the V1.1 heap-fix candidate after applying it through the working Local OTA path.
+- Controlled Local OTA results:
+  - test-labeled V1.5 (V1.0 code) → V1.1: **PASS**
+  - V1.1 → test-labeled V1.99 (V1.1 code): **PASS**
+- Therefore the V1.1 image is bootable and the Local OTA path remains functional with the current candidate.
+- Online OTA result:
+  - test-labeled V1.99 (V1.1 code) → public V1.1: **FAIL**
+- This physically falsifies the previous narrow hypothesis that only `BLEDevice::deinit(true)` / BTDM memory release was the direct cause. The Online OTA path still fails after changing the live Online OTA handoff to `stopBleRadio(false)`.
+- Current diagnosis should therefore move from a single teardown call to the **overall custom Online OTA mechanism**.
+- User proposed simplifying Online OTA to an Arduino-standard implementation. This is technically appropriate and should be treated as the next design direction, not yet as executed code.
+- Recommended standard flow for the next candidate:
+  1. App sends existing metadata/credentials through the unchanged P1 protocol.
+  2. Firmware exits BLE cleanly and starts Wi-Fi STA.
+  3. Wait for `WL_CONNECTED` with a bounded timeout.
+  4. Perform time synchronization as required for HTTPS certificate validation.
+  5. Open the GitHub raw URL once through `WiFiClientSecure + HTTPClient`, following GitHub redirects.
+  6. Require a normal `HTTP 200 OK` response and a valid `Content-Length`.
+  7. Check `ESP.getFreeSketchSpace()`.
+  8. Use the standard Arduino `Update.begin(contentLength)` → `Update.writeStream(http.getStream())` → `Update.end(true)` lifecycle.
+  9. On success, restart; on failure, report exact stage/error and recover to BLE where possible.
+- The custom Range probe/chunk/retry/resume stream should be removed from Online OTA in this candidate because it is not necessary for a normal GitHub raw firmware download and makes the failure surface considerably larger.
+- Local OTA must remain untouched.
+- App OTA metadata/version gate must remain unchanged.
+- Before executing this redesign, refresh the OTA Gold Master protection boundary so the intended new Online OTA block is deliberately approved and then re-run the guard.
+- No source code was changed in this discussion.
+- Chat handoff status: **DISCUSSION — STANDARD ARDUINO ONLINE OTA REDESIGN PROPOSED; NOT YET EXECUTED**.
