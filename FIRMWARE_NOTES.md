@@ -1346,3 +1346,25 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Online OTA flow should consume Firebase metadata first, then download the binary from the GitHub raw URL. Equal current/target version = no flash; any different target version is allowed according to the established version policy.
 - Local OTA remains protected and should not be changed as part of this workflow simplification.
 - This is a workflow/architecture decision only; no production code was changed by this note.
+
+
+## 2026-09-27 — FINALIZED WORKFLOW PROPOSAL: GITHUB-ONLY, MANUAL ARDUINODROID BIN, CHATGPT AUTOMATES PUBLISH
+- User decided not to use Firebase for firmware distribution/metadata.
+- GitHub is the single source of truth for JE X FYZ firmware.
+- Authoritative firmware source remains `JEXFYZ-App/firmware/JEXFYZ.ino`.
+- User compiles the firmware manually in ArduinoDroid using the user's known-good hardware/build environment.
+- User sends the resulting application `.bin` file into this ChatGPT conversation.
+- ChatGPT then handles the publication workflow automatically:
+  1. read the authoritative `firmware/JEXFYZ.ino` and determine the intended firmware version;
+  2. validate that the uploaded file is the application firmware BIN and that its intended release version matches the source version;
+  3. rename the uploaded BIN automatically to the project naming convention `JEXFYZ-VX.Y.bin`;
+  4. upload/replace the BIN in the `JEXFYZ-Firmware` GitHub repository;
+  5. update the GitHub firmware manifest/metadata to the new version and raw GitHub URL;
+  6. verify the uploaded file and public raw URL before reporting completion.
+- No Firebase dependency is used in this workflow.
+- The App remains fully automated in GitHub Actions for APK builds.
+- Local OTA remains protected/stable and is not modified as part of this workflow simplification.
+- Online OTA continues to use GitHub-only version/link metadata according to the established version policy; equal version = no flash, any different version is allowed.
+- Important safety rule: if the uploaded BIN version cannot be reconciled with the authoritative `firmware/JEXFYZ.ino`, stop before publication rather than guessing or silently choosing a version.
+- This chat-based publication flow means the user only performs the ArduinoDroid compile and uploads the resulting BIN here; GitHub naming, firmware-repo upload, and manifest update are automated by ChatGPT.
+- This is the new preferred workflow unless the user explicitly changes it later.
