@@ -15,8 +15,9 @@
 #include <BLE2902.h>
 
 #include <Update.h>
+#include <HTTPUpdate.h>
 
-static constexpr char FW_VERSION[] = "V1.1";
+static constexpr char FW_VERSION[] = "V1.2";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -125,13 +126,7 @@ static constexpr uint32_t OTA_RESTART_DELAY_MS        = 1200;
 static constexpr uint32_t OTA_FAILURE_INDICATOR_MS    = 1000;
 static constexpr uint32_t WIFI_CONNECT_TIMEOUT_MS     = 15000;
 static constexpr uint32_t ONLINE_OTA_HTTP_TIMEOUT_MS  = 60000;
-static constexpr size_t ONLINE_OTA_RANGE_CHUNK_BYTES  = 64 * 1024;
-static constexpr uint8_t ONLINE_OTA_RANGE_RETRIES    = 3;
 static constexpr uint32_t OTA_MAX_FIRMWARE_BYTES     = 2 * 1024 * 1024;
-static_assert(ONLINE_OTA_RANGE_CHUNK_BYTES > 0,
-              "OTA SAFETY: range chunk must be non-zero");
-static_assert(ONLINE_OTA_RANGE_CHUNK_BYTES <= OTA_MAX_FIRMWARE_BYTES,
-              "OTA SAFETY: range chunk exceeds firmware limit");
 static_assert(OTA_MAX_FIRMWARE_BYTES <= 2 * 1024 * 1024,
               "OTA SAFETY: firmware limit exceeded");
 
@@ -324,8 +319,8 @@ String cloudPassword;
 String cloudUrl;
 String cloudVersion;
 
-HTTPClient cloudHttp;
 WiFiClientSecure cloudClient;
+HTTPUpdate onlineHttpUpdate(ONLINE_OTA_HTTP_TIMEOUT_MS);
 size_t localOtaBytesReceived = 0;
 size_t localOtaExpectedBytes = 0;
 bool localOtaStarted = false;
@@ -333,10 +328,9 @@ bool localOtaStarted = false;
 bool bleStartPending = true;
 uint8_t bleStartAttempts = 0;
 uint32_t bleStartRetryAt = 0;
-uint32_t cloudBytesReceived = 0;
 uint32_t cloudPhaseStartedAt = 0;
 bool cloudTimeSyncStarted = false;
-uint32_t onlineOtaFinalizeAt = 0;
+int onlineHttpUpdateErrorCode = 0;
 uint32_t otaIndicatorUntil = 0;
 uint32_t otaIndicatorColor = 0;
 
@@ -1943,8 +1937,9 @@ static void serviceBleStartRecovery() {
 
 // ============================================================================
 // ========================== OTA ENGINE — LOCKED ============================
-// Keep OTA networking, flash write/read, validation, cleanup, and activation
-// isolated from application feature changes. No delay() belongs in this block.
+// Keep OTA networking, flash update, validation, cleanup, and activation
+// isolated from application feature changes. No custom Range transport.
+// Use the official Arduino-ESP32 HTTPUpdate/Update path for Online OTA.
 // ============================================================================
 static bool validHttpsUrl(const String& value) {
   return value.startsWith("https://") && value.length() <= 180;
@@ -1985,9 +1980,7 @@ static void failOnlineOta(
     int errorCode,
     const String& error) {
   otaRestartAt = 0;
-  onlineOtaFinalizeAt = 0;
   otaIndicatorUntil = 0;
-  cloudHttp.end();
   cloudClient.stop();
 
   setOtaDiagnosticStage(stage);
@@ -2005,6 +1998,74 @@ static void failOnlineOta(
   applyOtaSafeOutputs();
 
   startBle();
+}
+
+static void onlineHttpUpdateStart() {
+  onlineHttpUpdateErrorCode = 0;
+  setOtaDiagnosticStage("ONLINE_HTTP_UPDATE");
+  setOtaDiagnosticProgress(0);
+  resetBlinkState();
+}
+
+static void onlineHttpUpdateEnd() {
+  setOtaDiagnosticProgress(100);
+  setOtaDiagnosticStage("ONLINE_INSTALL_SUCCESS");
+  triggerOtaIndicator(0x00FF00);
+}
+
+static void onlineHttpUpdateError(int errorCode) {
+  onlineHttpUpdateErrorCode = errorCode;
+}
+
+static void onlineHttpUpdateProgress(int current, int total) {
+  if (total <= 0) return;
+
+  const uint8_t progress = static_cast<uint8_t>(
+      min<int>(100, max<int>(0, (current * 100LL) / total)));
+  setOtaDiagnosticProgress(progress);
+  renderBlink(0x0000FF);
+}
+
+static bool performStandardOnlineOtaUpdate() {
+  setOtaDiagnosticStage("ONLINE_HTTP_UPDATE");
+  setOtaDiagnosticProgress(0);
+  setOtaDiagnosticError(0, "NONE");
+
+  cloudClient.stop();
+  cloudClient.setCACert(GITHUB_ROOT_CA);
+  cloudClient.setTimeout(ONLINE_OTA_HTTP_TIMEOUT_MS);
+
+  onlineHttpUpdate.rebootOnUpdate(false);
+  onlineHttpUpdate.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
+  onlineHttpUpdate.onStart(onlineHttpUpdateStart);
+  onlineHttpUpdate.onEnd(onlineHttpUpdateEnd);
+  onlineHttpUpdate.onError(onlineHttpUpdateError);
+  onlineHttpUpdate.onProgress(onlineHttpUpdateProgress);
+
+  // Version eligibility is already enforced by the JE X FYZ protocol.
+  // Do not pass FW_VERSION here; HTTPUpdate must not become a second version gate.
+  const HTTPUpdateResult result = onlineHttpUpdate.update(cloudClient, cloudUrl, "");
+
+  if (result == HTTP_UPDATE_OK) {
+    cloudClient.stop();
+    return true;
+  }
+
+  const int errorCode =
+      onlineHttpUpdateErrorCode != 0
+          ? onlineHttpUpdateErrorCode
+          : onlineHttpUpdate.getLastError();
+
+  String error = onlineHttpUpdate.getLastErrorString();
+  if (error.isEmpty()) {
+    error = result == HTTP_UPDATE_NO_UPDATES
+                 ? "HTTP_UPDATE_NO_UPDATES"
+                 : "HTTP_UPDATE_FAILED";
+  }
+
+  cloudClient.stop();
+  failOnlineOta("ONLINE_HTTP_UPDATE", errorCode, error);
+  return false;
 }
 
 static void startOnlineOta() {
@@ -2042,9 +2103,7 @@ static void startOnlineOta() {
   otaRestartAt = 0;
   resetBlinkState();
   cloudPhaseStartedAt = millis();
-  cloudBytesReceived = 0;
   cloudTimeSyncStarted = false;
-  onlineOtaFinalizeAt = 0;
   otaIndicatorUntil = 0;
   otaIndicatorColor = 0;
 
@@ -2053,8 +2112,6 @@ static void startOnlineOta() {
 
   clearBleTxQueue();
   clearBleRxQueue();
-  // Online OTA must not release BTDM memory during the live BLE→Wi-Fi handoff.
-  // Keep the memory reserved; this isolates the handoff from Core 3.3.7 heap teardown.
   stopBleRadio(false);
   bleStartPending = false;
   bleStartAttempts = 0;
@@ -2068,393 +2125,7 @@ static void startOnlineOta() {
   WiFi.begin(cloudSsid.c_str(), cloudPassword.c_str());
 }
 
-static bool parseDecimalSizeToken(const String& token, size_t& value) {
-  if (token.isEmpty()) return false;
-
-  size_t parsed = 0;
-  for (size_t i = 0; i < token.length(); ++i) {
-    const char c = token.charAt(i);
-    if (c < '0' || c > '9') return false;
-
-    const size_t digit = static_cast<size_t>(c - '0');
-    if (parsed > (SIZE_MAX - digit) / 10) return false;
-    parsed = parsed * 10 + digit;
-  }
-
-  value = parsed;
-  return true;
-}
-
-static bool parseContentRangeHeader(
-    const String& header,
-    size_t& rangeStart,
-    size_t& rangeEnd,
-    size_t& totalSize) {
-  String value = header;
-  value.trim();
-  if (!value.startsWith("bytes ")) return false;
-
-  const int dash = value.indexOf('-', 6);
-  const int slash = value.indexOf('/', dash + 1);
-  if (dash < 0 || slash < 0 || dash <= 6 || slash <= dash + 1) return false;
-
-  const String startText = value.substring(6, dash);
-  const String endText = value.substring(dash + 1, slash);
-  const String totalText = value.substring(slash + 1);
-
-  size_t parsedStart = 0;
-  size_t parsedEnd = 0;
-  size_t parsedTotal = 0;
-
-  if (!parseDecimalSizeToken(startText, parsedStart) ||
-      !parseDecimalSizeToken(endText, parsedEnd) ||
-      !parseDecimalSizeToken(totalText, parsedTotal)) {
-    return false;
-  }
-
-  if (parsedTotal == 0 ||
-      parsedStart > parsedEnd ||
-      parsedEnd >= parsedTotal) {
-    return false;
-  }
-
-  rangeStart = parsedStart;
-  rangeEnd = parsedEnd;
-  totalSize = parsedTotal;
-  return true;
-}
-
-static void configureOnlineOtaRangeHttp(HTTPClient& http) {
-  http.setTimeout(ONLINE_OTA_HTTP_TIMEOUT_MS);
-  http.setReuse(false);
-  http.setRedirectLimit(5);
-  http.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
-  http.setAcceptEncoding("identity");
-  http.addHeader("Cache-Control", "no-cache");
-  http.addHeader("Connection", "close");
-}
-
-class OtaHttpFlashStream final : public Stream {
- public:
-  OtaHttpFlashStream(size_t* written, size_t totalSize)
-      : written_(written), totalSize_(totalSize) {}
-
-  size_t write(uint8_t data) override {
-    return write(&data, 1);
-  }
-
-  size_t write(const uint8_t* data, size_t size) override {
-    if (data == nullptr || size == 0) return 0;
-
-    // Core 3.3.7 Update.write() takes a mutable uint8_t* even though
-    // the Stream interface supplies a const buffer. Update.write() only
-    // consumes the bytes, so adapt to its official signature without copying.
-    const size_t accepted = Update.write(const_cast<uint8_t*>(data), size);
-    if (accepted != size) {
-      writeFailed_ = true;
-      return accepted;
-    }
-
-    *written_ += accepted;
-    cloudBytesReceived = static_cast<uint32_t>(
-        min(*written_, totalSize_));
-
-    const uint8_t progress = static_cast<uint8_t>(
-        min<size_t>(100, (*written_ * 100ULL) / totalSize_));
-    setOtaDiagnosticProgress(progress);
-    renderBlink(0x0000FF);
-    serviceBleTx();
-    yield();
-    return accepted;
-  }
-
-  int available() override { return 0; }
-  int read() override { return -1; }
-  int peek() override { return -1; }
-  void flush() override {}
-
-  bool failed() const { return writeFailed_; }
-
- private:
-  size_t* written_;
-  size_t totalSize_;
-  bool writeFailed_ = false;
-};
-
-static bool downloadOnlineOtaResumable() {
-  size_t totalSize = 0;
-  String probeError = "RANGE_PROBE_FAILED";
-  int probeCode = 0;
-  bool probeOk = false;
-
-  for (uint8_t attempt = 1; attempt <= ONLINE_OTA_RANGE_RETRIES; ++attempt) {
-    if (attempt > 1) setOtaDiagnosticStage("ONLINE_RANGE_RETRY");
-    setOtaDiagnosticStage("ONLINE_RANGE_PROBE");
-
-    HTTPClient http;
-    cloudClient.stop();
-    cloudClient.setCACert(GITHUB_ROOT_CA);
-    cloudClient.setTimeout(ONLINE_OTA_HTTP_TIMEOUT_MS);
-    configureOnlineOtaRangeHttp(http);
-    http.addHeader("Range", "bytes=0-0");
-
-    const char* headerKeys[] = {"Content-Range", "Content-Length"};
-    http.collectHeaders(headerKeys, 2);
-
-    if (!http.begin(cloudClient, cloudUrl)) {
-      probeError = "HTTP_BEGIN_FAILED";
-      probeCode = -1;
-      http.end();
-      cloudClient.stop();
-      continue;
-    }
-
-    setOtaDiagnosticStage("ONLINE_RANGE_RESPONSE");
-    const int responseCode = http.GET();
-    probeCode = responseCode;
-
-    size_t responseStart = 0;
-    size_t responseEnd = 0;
-    size_t responseTotal = 0;
-    const String contentRange = http.header("Content-Range");
-
-    if (responseCode == HTTP_CODE_PARTIAL_CONTENT &&
-        parseContentRangeHeader(
-            contentRange, responseStart, responseEnd, responseTotal) &&
-        responseStart == 0 &&
-        responseEnd == 0 &&
-        responseTotal > 0) {
-      totalSize = responseTotal;
-      probeOk = true;
-      setOtaDiagnosticStage("ONLINE_GITHUB_READY");
-      triggerOtaIndicator(0x00FF00);
-      http.end();
-      cloudClient.stop();
-      break;
-    }
-
-    probeError = responseCode == HTTP_CODE_PARTIAL_CONTENT
-                     ? "INVALID_CONTENT_RANGE"
-                     : "HTTP_STATUS_" + String(responseCode);
-    http.end();
-    cloudClient.stop();
-  }
-
-  if (!probeOk) {
-    failOnlineOta("ONLINE_GITHUB_FAILED", probeCode, probeError);
-    return false;
-  }
-
-  if (totalSize == 0 || totalSize > OTA_MAX_FIRMWARE_BYTES) {
-    failOnlineOta(
-        "ONLINE_SIZE_CHECK",
-        OTA_ERROR_SPACE,
-        "INVALID_FIRMWARE_SIZE_" +
-            String(static_cast<unsigned long>(totalSize)));
-    return false;
-  }
-
-  const size_t freeSketchSpace =
-      static_cast<size_t>(ESP.getFreeSketchSpace());
-  if (totalSize > freeSketchSpace) {
-    failOnlineOta(
-        "ONLINE_SIZE_CHECK",
-        OTA_ERROR_SPACE,
-        "FIRMWARE_EXCEEDS_FREE_SKETCH_SPACE_" +
-            String(static_cast<unsigned long>(freeSketchSpace)));
-    return false;
-  }
-
-  setOtaDiagnosticStage("ONLINE_UPDATE_BEGIN");
-  if (!Update.begin(totalSize)) {
-    Update.printError(Serial);
-    failOnlineOta(
-        "ONLINE_UPDATE_BEGIN",
-        OTA_ERROR_SPACE,
-        "UPDATE_BEGIN_FAILED");
-    return false;
-  }
-
-  size_t offset = 0;
-  while (offset < totalSize) {
-    const size_t rangeEnd =
-        min(totalSize - 1, offset + ONLINE_OTA_RANGE_CHUNK_BYTES - 1);
-    const size_t expectedChunk = rangeEnd - offset + 1;
-
-    bool chunkComplete = false;
-    String lastError = "RANGE_REQUEST_FAILED";
-    int lastErrorCode = -1;
-
-    for (uint8_t attempt = 1;
-         attempt <= ONLINE_OTA_RANGE_RETRIES && !chunkComplete;
-         ++attempt) {
-      if (attempt > 1) setOtaDiagnosticStage("ONLINE_RANGE_RETRY");
-
-      setOtaDiagnosticStage("ONLINE_RANGE_REQUEST");
-
-      HTTPClient http;
-      cloudClient.stop();
-      cloudClient.setCACert(GITHUB_ROOT_CA);
-      cloudClient.setTimeout(ONLINE_OTA_HTTP_TIMEOUT_MS);
-      configureOnlineOtaRangeHttp(http);
-
-      http.addHeader(
-          "Range",
-          "bytes=" + String(static_cast<unsigned long>(offset)) +
-              "-" + String(static_cast<unsigned long>(rangeEnd)));
-
-      const char* headerKeys[] = {"Content-Range", "Content-Length"};
-      http.collectHeaders(headerKeys, 2);
-
-      if (!http.begin(cloudClient, cloudUrl)) {
-        lastError = "HTTP_BEGIN_FAILED";
-        lastErrorCode = -1;
-        http.end();
-        cloudClient.stop();
-        continue;
-      }
-
-      setOtaDiagnosticStage("ONLINE_RANGE_RESPONSE");
-      const int responseCode = http.GET();
-      lastErrorCode = responseCode;
-
-      size_t responseStart = 0;
-      size_t responseEnd = 0;
-      size_t responseTotal = 0;
-      if (responseCode != HTTP_CODE_PARTIAL_CONTENT ||
-          !parseContentRangeHeader(
-              http.header("Content-Range"),
-              responseStart,
-              responseEnd,
-              responseTotal) ||
-          responseStart != offset ||
-          responseEnd != rangeEnd ||
-          responseTotal != totalSize) {
-        lastError = responseCode == HTTP_CODE_PARTIAL_CONTENT
-                        ? "RANGE_MISMATCH"
-                        : "HTTP_STATUS_" + String(responseCode);
-        http.end();
-        cloudClient.stop();
-        continue;
-      }
-
-      if (http.getSize() > 0 &&
-          static_cast<size_t>(http.getSize()) != expectedChunk) {
-        lastError = "CONTENT_LENGTH_MISMATCH";
-        lastErrorCode = HTTP_CODE_PARTIAL_CONTENT;
-        http.end();
-        cloudClient.stop();
-        continue;
-      }
-
-      setOtaDiagnosticStage("ONLINE_RANGE_WRITE");
-      size_t chunkReceived = 0;
-      OtaHttpFlashStream sink(&chunkReceived, expectedChunk);
-      const int httpResult = http.writeToStream(&sink);
-      const bool sinkFailed = sink.failed();
-
-      http.end();
-      cloudClient.stop();
-
-      if (sinkFailed) {
-        Update.abort();
-        lastError = "UPDATE_WRITE_FAILED";
-        lastErrorCode = OTA_ERROR_WRITE;
-        failOnlineOta(
-            "ONLINE_FLASH_WRITE",
-            lastErrorCode,
-            lastError);
-        return false;
-      }
-
-      if (chunkReceived == expectedChunk &&
-          httpResult == static_cast<int>(expectedChunk)) {
-        offset += chunkReceived;
-        chunkComplete = true;
-        continue;
-      }
-
-      lastError = httpResult < 0
-                      ? "HTTP_" + String(httpResult)
-                      : "STREAM_INCOMPLETE";
-      lastErrorCode = OTA_ERROR_STREAM;
-
-      if (chunkReceived < expectedChunk) {
-        const size_t resumeOffset = offset + chunkReceived;
-        Update.abort();
-
-        setOtaDiagnosticStage("ONLINE_RANGE_RESUME");
-        (void)resumeOffset;
-        if (!Update.begin(totalSize)) {
-          Update.printError(Serial);
-          failOnlineOta(
-              "ONLINE_RANGE_RESUME",
-              OTA_ERROR_SPACE,
-              "UPDATE_BEGIN_FAILED");
-          return false;
-        }
-        offset = 0;
-        cloudBytesReceived = 0;
-        setOtaDiagnosticProgress(0);
-      }
-    }
-
-    if (!chunkComplete) {
-      Update.abort();
-      const String failStage =
-          lastErrorCode == OTA_ERROR_STREAM
-              ? "ONLINE_RANGE_RESUME"
-              : "ONLINE_RANGE_RESPONSE";
-      failOnlineOta(
-          failStage,
-          lastErrorCode,
-          lastError + " after " +
-              String(static_cast<unsigned long>(otaDiagnosticProgress)) +
-              "%");
-      return false;
-    }
-  }
-
-  setOtaDiagnosticProgress(100);
-  setOtaDiagnosticStage("ONLINE_DOWNLOAD_SUCCESS");
-  triggerOtaIndicator(0x0000FF);
-  onlineOtaFinalizeAt = millis() + OTA_FAILURE_INDICATOR_MS;
-  setOtaState(OtaState::CLOUD_APPLYING);
-  return true;
-}
 static void processOnlineOta() {
-  if (otaState == OtaState::CLOUD_APPLYING) {
-    if (onlineOtaFinalizeAt == 0 || millis() < onlineOtaFinalizeAt) return;
-
-    onlineOtaFinalizeAt = 0;
-    setOtaDiagnosticStage("ONLINE_IMAGE_VERIFY");
-    if (!Update.end(true)) {
-      const int updateErrorCode = static_cast<int>(Update.getError());
-      const String updateError = Update.errorString();
-      Update.printError(Serial);
-      failOnlineOta(
-          "ONLINE_IMAGE_VERIFY",
-          updateErrorCode,
-          "UPDATE_END_FAILED_" + updateError);
-      return;
-    }
-
-    setOtaDiagnosticStage("ONLINE_INSTALL_SUCCESS");
-    setOtaDiagnosticError(0, "NONE");
-    triggerOtaIndicator(0x00FF00);
-    setOtaDiagnosticStage("ONLINE_BOOT_PARTITION");
-    saveOtaResult(
-        otaSuccessResult(
-            "ONLINE",
-            "ONLINE_BOOT_PARTITION",
-            cloudVersion.isEmpty() ? FW_VERSION : cloudVersion));
-    setOtaState(OtaState::SUCCESS);
-    otaRestartAt = millis() + OTA_RESTART_DELAY_MS;
-    otaActive = true;
-    clearCloudCredentials();
-    return;
-  }
-
   if (otaState != OtaState::CLOUD_CONNECTING) return;
 
   if (WiFi.status() == WL_CONNECTED) {
@@ -2477,17 +2148,8 @@ static void processOnlineOta() {
     }
 
     setOtaState(OtaState::CLOUD_DOWNLOADING);
-    setOtaDiagnosticStage("ONLINE_GITHUB_CONNECT");
-    cloudBytesReceived = 0;
-    setOtaDiagnosticProgress(0);
-    resetBlinkState();
-
-    cloudHttp.end();
-    cloudClient.stop();
-
-    if (!downloadOnlineOtaResumable()) {
-      return;
-    }
+    performStandardOnlineOtaUpdate();
+    return;
   }
 
   if (otaActive &&
