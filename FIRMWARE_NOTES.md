@@ -1165,3 +1165,24 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - For the first diagnostic flash, prefer conservative transport settings: High-Speed Mode (Stub) OFF and Firmware Compress OFF, with 115200 baud. This removes optional transfer optimizations as variables while diagnosing the ArduinoDroid-vs-CI binary difference.
 - The critical item for flashing a single Arduino application .bin is the flash address: the application image is normally placed at the app partition offset (for the project's 2MB APP x2 / no-FS layout, the expected Arduino app offset is 0x10000). Do not flash the application .bin at 0x0; that address is for the bootloader in a full-image flash.
 - This is discussion-only; no firmware/repository code was changed by this note.
+
+
+## 2026-09-27 — RUNTIME RESULT: ESPFlash DIRECT USB REPO V1.6 ALSO REPRODUCES LOCAL OTA FAILURE
+- User directly flashed the repository/CI binary JEXFYZ-V1.6.bin to the ESP32-C3 using the Android ESPFlash app, bypassing ArduinoDroid compilation and upload.
+- ESPFlash screenshot confirms:
+  - File: JEXFYZ-V1.6.bin
+  - Chip: ESP32-C3
+  - SPI: 80MHz
+  - Mode: DIO
+  - Address: 0x10000
+  - High-Speed Stub: OFF
+  - Firmware Compress: OFF
+  - Operation Successful
+- After the direct USB flash, the device booted normally into JE X FYZ V1.6 and exposed the Local OTA page at 192.168.4.1.
+- User then uploaded the same repository JEXFYZ-V1.6.bin through Local OTA.
+- Physical result: Local OTA still fails at 100% with:
+  MODE=LOCAL, STAGE=LOCAL_IMAGE_VERIFY, CODE=3, ERROR=UPDATE_END_FAILED_Flash Read Failed.
+- This is a critical isolation result: the failure reproduces even when the repository binary is flashed directly over USB from ESPFlash, so the ArduinoDroid compile/upload path is no longer a sufficient explanation for the Local OTA failure.
+- Current evidence now points more strongly toward the firmware image/build configuration, flash/partition metadata, or the Local OTA finalization behavior itself. Do not claim the root cause yet.
+- Important distinction: ESPFlash wrote only the application image at 0x10000; bootloader and partition table were not replaced in this test. Therefore the test proves the CI application binary runs correctly on the existing board flash layout, but it does not by itself prove a complete CI-generated bootloader/partition-table image matches ArduinoDroid.
+- Next diagnostic should inspect/compare the exact application binary metadata and partition layout used by ArduinoDroid vs CI, then isolate the Core 3.3.7 Update.end(true) finalization boundary. Do not perform another speculative OTA rewrite from this result alone.
