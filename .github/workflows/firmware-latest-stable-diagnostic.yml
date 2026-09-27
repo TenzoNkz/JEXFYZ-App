@@ -75,12 +75,10 @@ jobs:
           rm -rf build/latest-stable
           mkdir -p build/latest-stable
 
-          cp firmware/JEXFYZ.ino build/latest-stable/JEXFYZ.ino
-
           arduino-cli compile \
             --fqbn 'esp32:esp32:esp32c3:CDCOnBoot=cdc,JTAGAdapter=disabled,PartitionScheme=no_fs,CPUFreq=160,FlashMode=dio,FlashFreq=80,FlashSize=4M,DebugLevel=none,ZigbeeMode=disabled' \
             --output-dir build/latest-stable \
-            build/latest-stable
+            firmware
 
       - name: Verify full-flash outputs
         shell: bash
