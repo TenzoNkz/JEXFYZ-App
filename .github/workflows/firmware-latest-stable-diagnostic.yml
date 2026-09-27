@@ -1,0 +1,150 @@
+name: Firmware Latest Stable Diagnostic
+
+on:
+  push:
+    paths:
+      - ".github/LATEST_STABLE_BUILD_TRIGGER"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: jexfyz-latest-stable-diagnostic
+  cancel-in-progress: false
+
+env:
+  ONEBUTTON_VERSION: "2.6.2"
+  ADAFRUIT_NEOPIXEL_VERSION: "1.15.5"
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Arduino CLI
+        uses: arduino/setup-arduino-cli@v2
+
+      - name: Prepare Arduino package index
+        run: |
+          set -euo pipefail
+          arduino-cli version
+          arduino-cli config init --overwrite
+          arduino-cli config add board_manager.additional_urls \
+            https://espressif.github.io/arduino-esp32/package_esp32_index.json
+          arduino-cli core update-index
+
+      - name: Install latest stable ESP32 Arduino Core
+        run: |
+          set -euo pipefail
+          arduino-cli core install "esp32:esp32"
+          arduino-cli core list
+          CORE_VERSION="$(arduino-cli core list | awk '$1=="esp32:esp32"{print $2; exit}')"
+          test -n "$CORE_VERSION"
+          echo "Resolved ESP32 Arduino Core: $CORE_VERSION"
+          if [ "$CORE_VERSION" = "3.3.7" ]; then
+            echo "ERROR: latest stable resolution is still 3.3.7; a newer stable core was not resolved."
+            exit 1
+          fi
+          echo "CORE_VERSION=$CORE_VERSION" >> "$GITHUB_ENV"
+
+      - name: Install ArduinoDroid-matching libraries
+        run: |
+          set -euo pipefail
+          arduino-cli lib install "OneButton@\${ONEBUTTON_VERSION}"
+          arduino-cli lib install "Adafruit NeoPixel@\${ADAFRUIT_NEOPIXEL_VERSION}"
+          arduino-cli lib list
+
+      - name: Audit source
+        run: |
+          set -euo pipefail
+          test -s firmware/JEXFYZ.ino
+          grep -Fq 'static constexpr char FW_VERSION[] = "V1.6";' firmware/JEXFYZ.ino
+          grep -Fq '#include <Update.h>' firmware/JEXFYZ.ino
+          grep -Fq 'static constexpr uint8_t PIN_PELTIER = 6;' firmware/JEXFYZ.ino
+          grep -Fq 'static constexpr uint8_t PIN_FAN     = 5;' firmware/JEXFYZ.ino
+
+      - name: Compile with ArduinoDroid-equivalent board profile
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf build/latest-stable
+          mkdir -p build/latest-stable
+
+          cp firmware/JEXFYZ.ino build/latest-stable/JEXFYZ.ino
+
+          arduino-cli compile \
+            --fqbn 'esp32:esp32:esp32c3:CDCOnBoot=cdc,JTAGAdapter=disabled,PartitionScheme=no_fs,CPUFreq=160,FlashMode=dio,FlashFreq=80,FlashSize=4M,DebugLevel=none,ZigbeeMode=disabled' \
+            --output-dir build/latest-stable \
+            build/latest-stable
+
+      - name: Verify full-flash outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          APP="build/latest-stable/JEXFYZ.ino.bin"
+          BOOT="$(find build/latest-stable -maxdepth 1 -type f -name '*.bootloader.bin' | head -n 1)"
+          PART="$(find build/latest-stable -maxdepth 1 -type f -name '*.partitions.bin' | head -n 1)"
+
+          test -s "$APP"
+          test -n "$BOOT"
+          test -s "$BOOT"
+          test -n "$PART"
+          test -s "$PART"
+
+          cp "$APP"  build/latest-stable/JEXFYZ-V1.6-LATEST-STABLE.bin
+          cp "$BOOT" build/latest-stable/JEXFYZ-V1.6-LATEST-STABLE.bootloader.bin
+          cp "$PART" build/latest-stable/JEXFYZ-V1.6-LATEST-STABLE.partitions.bin
+          cp firmware/JEXFYZ.ino build/latest-stable/JEXFYZ-V1.6-LATEST-STABLE.ino
+
+          {
+            echo "=== JE X FYZ FULL-FLASH DIAGNOSTIC BUILD ==="
+            echo "Firmware source: firmware/JEXFYZ.ino"
+            echo "Firmware version: V1.6"
+            echo "Arduino-ESP32 Core: $CORE_VERSION"
+            echo "OneButton: \${ONEBUTTON_VERSION}"
+            echo "Adafruit NeoPixel: \${ADAFRUIT_NEOPIXEL_VERSION}"
+            echo "Board: ESP32-C3 Dev Module"
+            echo "JTAG Adapter: Disabled"
+            echo "USB CDC On Boot: Enabled"
+            echo "Partition Scheme: No FS 4MB (2MB APP x2)"
+            echo "CPU Frequency: 160MHz (WiFi)"
+            echo "Flash Mode: DIO"
+            echo "Flash Frequency: 80MHz"
+            echo "Flash Size: 4MB"
+            echo "Debug Level: None"
+            echo "Zigbee Mode: Disabled"
+            echo "Upload Baudrate target: 921600"
+            echo "Application offset: 0x10000"
+            echo "Partition table offset: 0x8000"
+            echo "Bootloader offset: 0x0"
+          } > build/latest-stable/BUILD_CONFIG.txt
+
+          sha256sum \
+            build/latest-stable/JEXFYZ-V1.6-LATEST-STABLE.bin \
+            build/latest-stable/JEXFYZ-V1.6-LATEST-STABLE.bootloader.bin \
+            build/latest-stable/JEXFYZ-V1.6-LATEST-STABLE.partitions.bin \
+            > build/latest-stable/SHA256SUMS.txt
+
+          ls -lh build/latest-stable/*.bin build/latest-stable/*.ino
+          cat build/latest-stable/BUILD_CONFIG.txt
+          cat build/latest-stable/SHA256SUMS.txt
+
+      - name: Upload full-flash diagnostic package
+        uses: actions/upload-artifact@v7
+        with:
+          name: JEXFYZ-V1.6-LATEST-STABLE-FULL-FLASH
+          path: |
+            build/latest-stable/JEXFYZ-V1.6-LATEST-STABLE.bin
+            build/latest-stable/JEXFYZ-V1.6-LATEST-STABLE.bootloader.bin
+            build/latest-stable/JEXFYZ-V1.6-LATEST-STABLE.partitions.bin
+            build/latest-stable/JEXFYZ-V1.6-LATEST-STABLE.ino
+            build/latest-stable/BUILD_CONFIG.txt
+            build/latest-stable/SHA256SUMS.txt
+          if-no-files-found: error
+          compression-level: 0
