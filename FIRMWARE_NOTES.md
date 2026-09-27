@@ -2001,3 +2001,35 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - The final flash-success GREEN indicator occurs before the controlled restart and uses the same non-blocking result-indicator timing already specified: 500 ms ON / 500 ms OFF / 500 ms ON / 500 ms OFF, driven by millis().
 - No code modification was executed by this clarification.
 - Chat handoff status: DISCUSSION — FINAL ONLINE OTA LED COLOR MAPPING UPDATED; READY FOR TARGETED EXECUTION.
+
+## 2026-09-28 — DISCUSSION: ONLINE OTA REPAIR PLAN + FINAL LED FLOW
+
+- User confirmed the requested Online OTA LED behavior and asked to repair the Online OTA path.
+- This is discussion/preparation only; no executable firmware source or build was changed in this step.
+- Final Online OTA indicator mapping:
+  - Wi-Fi connected successfully -> BLUE.
+  - Wi-Fi connection failed -> RED.
+  - GitHub connection / download availability confirmed -> GREEN, as the initial download-stage indication.
+  - GitHub/download connection failed -> RED.
+  - Firmware download/stream completed -> BLUE.
+  - Firmware download/stream failed -> RED.
+  - Firmware flash/install completed successfully -> GREEN, then controlled restart.
+  - Firmware flash/install failed -> RED.
+- Every result indicator uses the locked non-blocking sequence 500 ms ON / 500 ms OFF / 500 ms ON / 500 ms OFF, driven by millis(). No delay().
+- Required behavioral correction: LEDs must not continuously animate during Wi-Fi connection or firmware transfer. They are off while the mechanism is running and only execute the requested result indication when that stage has a known success/failure result.
+- Current authoritative source inspection found the existing V1.2 source still has two LED-flow defects:
+  1. onlineHttpUpdateProgress() calls renderBlink(0x0000FF), causing a continuous blue animation during the HTTP update instead of a result-only indicator.
+  2. triggerOtaIndicator() is currently only a 1-second immediate effect and does not gate the state machine between completed OTA stages.
+- Current Online OTA transport remains the official Arduino HTTPUpdate.update() path; it should remain the transport baseline rather than reverting to the older custom Range/chunk implementation.
+- Current physical evidence already recorded for V1.2: Wi-Fi success is apparently reached (BLUE was observed), then the LED goes off and BLE returns while the App remains at ONLINE_WIFI_CONNECT 0%. This makes the next repair/diagnostic boundary the post-Wi-Fi stage transition (time synchronization / HTTPS update entry) and the correctness of the LED/result-state reporting; no single root cause is declared yet.
+- Repair design for the next explicit Eksekusi Full:
+  - introduce a dedicated non-blocking OTA result-indicator state/phase;
+  - let each stage finish before starting its result LED;
+  - keep the next stage from starting until the 500/500 x2 indicator has completed;
+  - remove progress-time blue blinking;
+  - make GitHub-ready/download-start, download completion, and flash completion explicit diagnostics;
+  - preserve Arduino-ESP32 Core 3.3.7 standard HTTPUpdate/Update lifecycle and existing safety output shutdown;
+  - preserve BLE-off-before-Wi-Fi behavior on the ESP32-C3 single-radio constraint;
+  - preserve exact OTA error stage reporting so the App can identify where the failure occurred after BLE recovery.
+- Important repository consistency finding: the living notes contain newer V1.3 handoff text, but the actual current firmware/JEXFYZ.ino fetched from the default branch is V1.2 (72eea61ec02d1ab1956b2d64e784040c2fa57a37). The actual source/repository state must be reconciled with the notes before the next firmware execution; do not invent a V1.3 source from notes alone.
+- Next boundary: Eksekusi Full to implement the Online OTA repair against the actual current source, then build/validate and physically retest the exact stage markers.
