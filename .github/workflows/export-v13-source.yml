@@ -3,7 +3,7 @@ name: Temporary V1.3 Source Export
 on:
   push:
     paths:
-      - "firmware/JEXFYZ.ino"
+      - ".github/FIRMWARE_SOURCE_EXPORT_TRIGGER"
 
 permissions:
   contents: read
