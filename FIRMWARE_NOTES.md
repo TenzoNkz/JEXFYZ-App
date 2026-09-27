@@ -943,3 +943,11 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Because the current project rules require Arduino Standard APIs and no guessed low-level lifecycle APIs, the exact power-cycle/session-reset mechanism must be designed using a verified Arduino-compatible approach before implementation. Do not invent a reset-reason API.
 - Important interaction with the existing OTA rule: Local OTA logs must retain the complete attempt through verification/activation before the device restarts. If a session reset is implemented at boot, the implementation must ensure the previous log can still be retained as required until the user intentionally starts a new power session.
 - No code/build/release execution is authorized by this discussion. This update records the Firebase logging design only.
+## 2026-09-27 — LOCAL OTA SAFETY-NET BACKUP BEFORE ONLINE OTA (DISCUSSION / NO CODE EXECUTION)
+- User explicitly wants the known Local OTA path to remain the safety net while Online OTA is being repaired.
+- Operational rule: preserve Local OTA; do not modify its implementation during Online OTA work unless the user explicitly authorizes a direct Local OTA change and the change is independently verified.
+- Before any Online OTA execution/testing, keep a downloadable backup of the latest known firmware binary and its matching source (.ino) so the user can recover through Local OTA.
+- The backup must be clearly identified by firmware version/build and must correspond to the exact source used to produce that binary. Do not provide a source file as a "matching backup" unless its correspondence to the binary is verified.
+- The current repository production source on main is V1.5. The existing V1.5 binary artifact is the current recovery candidate; it remains subject to the project's release gate and must not be described as an Online-OTA-ready build merely because it exists.
+- Future Online OTA changes must be isolated and must not knowingly break Local OTA, because Local OTA is the recovery path if an Online OTA test fails.
+- No code/build/release execution is authorized by this discussion. This note records the safety-net policy only.
