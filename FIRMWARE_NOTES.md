@@ -951,3 +951,37 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - The current repository production source on main is V1.5. The existing V1.5 binary artifact is the current recovery candidate; it remains subject to the project's release gate and must not be described as an Online-OTA-ready build merely because it exists.
 - Future Online OTA changes must be isolated and must not knowingly break Local OTA, because Local OTA is the recovery path if an Online OTA test fails.
 - No code/build/release execution is authorized by this discussion. This note records the safety-net policy only.
+
+
+## 2026-09-27 — V1.6 ONLINE OTA EXECUTION RESULT
+- User explicitly authorized full firmware/code execution and requested a downloadable .ino + .bin backup before Online OTA testing.
+- V1.6 scope:
+  - Firmware version bumped V1.5 -> V1.6.
+  - Online OTA now validates target firmware version syntax.
+  - Online OTA policy: same version => ONLINE_UP_TO_DATE / no flash; any different valid version is permitted (older or newer).
+  - Online OTA diagnostic stages were separated for request, version check, Wi-Fi connected/failed, GitHub connect/ready/failed, download success, image verification, install success, boot partition, and restart.
+  - Online OTA LED boundaries were separated: Wi-Fi connected BLUE indicator, GitHub ready GREEN indicator, download success BLUE indicator, install success GREEN indicator, failures RED indicator.
+  - Online Update.end(true) failures now use the actual Update.getError() / Update.errorString() result instead of a hardcoded magic-byte code.
+  - Non-blocking finalize boundary was used for the download-success indicator before Update.end(true).
+- Local OTA protection:
+  - Local OTA implementation body was verified byte-for-byte identical to the previous V1.5 baseline during the V1.6 patch review.
+  - No Local OTA behavior was intentionally changed.
+  - Local OTA remains the recovery/safety-net path for Online OTA testing.
+- CI history during execution:
+  - Run #73 initially failed on a C++ String concatenation error in the new V1.6 Up-to-Date result and on an App test compatibility error after renaming the firmware-version helper.
+  - Both errors were corrected with minimal targeted fixes.
+  - A compile-order issue in the new OTA LED helper was also identified and fixed by adding a forward declaration for resetBlinkState().
+  - Firmware Run #74: ArduinoDroid/Core 3.3.7 compile PASS; release compile PASS; OTA protected-source audit PASS; firmware artifact upload PASS; ArduinoDroid source artifact upload PASS; public firmware publish PASS.
+  - App Build #7: security/architecture audit PASS; dependencies PASS; Dart analysis PASS; Flutter tests PASS; release APK build/signature verification/upload PASS.
+- V1.6 release artifact:
+  - GitHub Actions run: 36282362485 (Firmware Build #74)
+  - Firmware artifact name: JEXFYZ-V1.6
+  - Extracted binary size: 1,466,768 bytes
+  - Extracted binary SHA-256: 703a62d50f0264f493ef193c3fb65654a258d8dafa93b8aab8217c3b4e8d07f
+  - CI artifact ZIP digest: sha256:4f97138901d3b83f4141ba08665e90503cd01ff2ded943ad4e70198c1a17161e
+  - ArduinoDroid source artifact was produced from the same CI checkout as the release binary.
+  - Public manifest now reports V1.6 and points to JEXFYZ-V1.6.bin.
+- Firebase OTA diagnostic log persistence:
+  - The persistent Firebase logging concept remains recorded as the project design.
+  - It was NOT added to V1.6 in this execution because the current firmware does not have a Firebase client path and the app currently uses Firebase Core/App Check without RTDB logging.
+  - Do not claim V1.6 provides persistent Firebase OTA logs. A dedicated implementation must preserve the rule that Firebase failure can never block or corrupt OTA.
