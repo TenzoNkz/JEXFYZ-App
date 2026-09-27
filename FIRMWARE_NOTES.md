@@ -1943,3 +1943,22 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Recommended next source improvement before another physical test: make OTA LED states persistent/meaningful for the complete active stage, and publish/store the terminal OTA result so the App can display the exact ONLINE stage, error code, and error string after BLE reconnect. Preserve the Arduino-standard HTTPUpdate transport unchanged while improving observability.
 - No code modification was made by this discussion update.
 - Chat handoff status: DISCUSSION — NEW EVIDENCE CLASSIFIED; NEXT EXECUTION SHOULD IMPROVE OTA STAGE/LED OBSERVABILITY BEFORE CHANGING THE HTTPUPDATE TRANSPORT.
+## 2026-09-28 — DISCUSSION: OTA LED RESULT-ONLY NON-BLOCKING INDICATOR
+
+- User clarified the required Online OTA LED behavior precisely.
+- LED must NOT be active as a continuous blue indicator while Wi-Fi is attempting to connect.
+- When the Wi-Fi mechanism reaches a terminal result (connected OR failed/timeout), the firmware must stop the Wi-Fi stage progression and execute a fixed blue result indicator using `millis()` only:
+  - blue ON 500 ms
+  - OFF 500 ms
+  - blue ON 500 ms
+  - OFF 500 ms
+  - total indicator window: 2,000 ms
+- After the second OFF, continue the next code path:
+  - Wi-Fi success -> continue to time sync / Online HTTPUpdate
+  - Wi-Fi failure -> continue the existing failure/recovery path.
+- No `delay()` is allowed for this indicator. The LED timing must be implemented as a small non-blocking state machine driven by `millis()`.
+- The LED must only be written by this result-indicator state after the Wi-Fi result is known. The current `triggerOtaIndicator()` behavior (immediate blue + 1-second timeout while OTA remains active) does not satisfy this requirement and should be replaced for the Wi-Fi result boundary.
+- The actual success/failure outcome must remain represented by the OTA diagnostic stage/error and App Notify; the blue sequence is a Wi-Fi-stage completion marker, not a live 'connecting' animation.
+- Local OTA LED behavior and engine remain unchanged.
+- No code modification was executed in this discussion.
+- Chat handoff status: DISCUSSION — LED BEHAVIOR SPECIFICATION LOCKED; READY FOR TARGETED EXECUTION.
