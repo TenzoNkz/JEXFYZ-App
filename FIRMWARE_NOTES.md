@@ -1962,3 +1962,14 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Local OTA LED behavior and engine remain unchanged.
 - No code modification was executed in this discussion.
 - Chat handoff status: DISCUSSION — LED BEHAVIOR SPECIFICATION LOCKED; READY FOR TARGETED EXECUTION.
+## 2026-09-28 — DISCUSSION: OTA LED COLOR MAPPING CONFIRMED
+
+- User confirmed that OTA LED colors must follow the previously agreed project mapping:
+  - Wi-Fi connection success -> BLUE blink
+  - Wi-Fi connection failure -> RED blink
+  - Online/local OTA update success -> GREEN blink, then controlled restart
+  - OTA update failure -> RED blink, then BLE recovery without restart
+- The Wi-Fi result indicator timing remains the newly specified non-blocking 500 ms ON / 500 ms OFF / 500 ms ON / 500 ms OFF sequence using `millis()`.
+- Therefore color is determined by the terminal Wi-Fi result: success uses BLUE; failure uses RED. The 500 ms x2 blink pattern is not a permanent connecting indicator.
+- No code modification was executed by this discussion clarification.
+- Chat handoff status: DISCUSSION — LED COLOR + TIMING SPECIFICATION LOCKED; READY FOR TARGETED EXECUTION.
