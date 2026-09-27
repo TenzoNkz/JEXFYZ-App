@@ -1043,3 +1043,9 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - CI is allowed to commit a Secretary restoration of `firmware/JEXFYZ.ino`; the workflow trigger remains limited to `.github/FIRMWARE_BUILD_TRIGGER`, preventing a repair commit from recursively starting another firmware build.
 - Two-layer OTA protection is now active, but the lock remains only a candidate until physical Local OTA and subsequent OTA validation pass.
 - Firebase remains deferred during this OTA validation cycle.
+
+## 2026-09-27 — FIRMWARE BUILD #76 / SATPAM DIAGNOSTIC
+- Firmware Build #76 was intentionally blocked before compilation by the new OTA Satpam gate.
+- Satpam detected an incorrect block-order expectation in the first lock candidate: the source order is OTA_SAFETY_LOCK -> OTA_STATE_AND_DIAGNOSTICS -> OTA_ENGINE -> OTA_PRIORITY_SUPERVISOR -> OTA_BOOT_PATH -> OTA_LOOP_PRIORITY.
+- The Secretary correctly refused to complete the repair because the source itself was valid but the candidate lock's expected ordering was wrong; this prevented an incorrect automatic rewrite.
+- The lock candidate was corrected to the actual source order. No firmware OTA logic was changed because of this CI failure.
