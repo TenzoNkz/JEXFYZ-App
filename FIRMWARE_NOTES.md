@@ -1929,3 +1929,17 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - The binary connector can verify repository blob metadata but cannot decode the binary contents in this environment; version identity is therefore recorded from the user's declared V1.2 upload and the controlled release path.
 - This V1.2 binary is a **physical test candidate**, not an OTA Gold Master/final production release until the Online OTA test passes.
 - Next physical test: use the current device running the V1.1 image (or a test label such as V1.99) and test Online OTA to public V1.2, then capture the exact terminal status/stage.
+## 2026-09-28 — RUNTIME RESULT: V1.2 STANDARD HTTPUPDATE TEST REACHES BLUE INDICATOR THEN RECOVERS BLE
+
+- User reported that after pressing Online OTA on the V1.2 firmware, the LED turns blue continuously for a short period, then turns off, and Bluetooth reconnects.
+- App remains visually stuck at OTA in progress / ONLINE / Wi-Fi connect / 0%.
+- In the current V1.2 source, the blue indicator is explicitly triggered when WiFi.status() == WL_CONNECTED is observed at the Online OTA state-machine boundary, ONLINE_WIFI_CONNECTED.
+- Therefore the observed blue phase is evidence that the firmware likely reached Wi-Fi connected at least briefly; it is not sufficient evidence of a Wi-Fi-connect failure.
+- After that point, the firmware performs NTP time synchronization and then enters the standard HTTPUpdate transaction. A later failure calls failOnlineOta() and restarts BLE.
+- The App display can remain at the last BLE-published stage, ONLINE_WIFI_CONNECT, 0%, because BLE is stopped during Online OTA; later stages are not necessarily visible until reconnect/full sync.
+- LED behavior discrepancy confirmed from source: triggerOtaIndicator(0x0000FF) sets blue for only OTA_FAILURE_INDICATOR_MS = 1000 ms. After the 1-second indicator, while the OTA state remains active, processLeds() forces LEDs OFF. Failure red indication is likewise only 1000 ms.
+- Therefore the user's short blue then off observation is consistent with the current implementation and does not by itself identify the failed network stage.
+- Engineering conclusion: Online OTA is still failing, but the latest evidence suggests the failure may be after Wi-Fi connection, potentially time sync or the HTTPUpdate/HTTPS transaction. The exact failure stage is not yet proven from the current App screenshot.
+- Recommended next source improvement before another physical test: make OTA LED states persistent/meaningful for the complete active stage, and publish/store the terminal OTA result so the App can display the exact ONLINE stage, error code, and error string after BLE reconnect. Preserve the Arduino-standard HTTPUpdate transport unchanged while improving observability.
+- No code modification was made by this discussion update.
+- Chat handoff status: DISCUSSION — NEW EVIDENCE CLASSIFIED; NEXT EXECUTION SHOULD IMPROVE OTA STAGE/LED OBSERVABILITY BEFORE CHANGING THE HTTPUPDATE TRANSPORT.
