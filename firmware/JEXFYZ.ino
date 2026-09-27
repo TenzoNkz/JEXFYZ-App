@@ -418,7 +418,6 @@ static String otaSuccessResult(const String& mode, const String& stage, const St
 static void failLocalOta(const String& stage, int errorCode, const String& error);
 static void failOnlineOta(const String& stage, int errorCode, const String& error);
 static bool validFirmwareVersion(const String& value);
-static void setOtaState(OtaState state);
 static void clearCloudCredentials();
 static void resetBlinkState();
 static void initializeRuntimeFeatures();
