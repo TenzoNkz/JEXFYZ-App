@@ -2024,7 +2024,7 @@ static void startOnlineOta() {
     setOtaDiagnosticStage("ONLINE_UP_TO_DATE");
     setOtaDiagnosticProgress(100);
     saveOtaResult(
-        "OTA_UP_TO_DATE|MODE=ONLINE|STAGE=ONLINE_UP_TO_DATE|VERSION=" +
+        String("OTA_UP_TO_DATE|MODE=ONLINE|STAGE=ONLINE_UP_TO_DATE|VERSION=") +
         FW_VERSION + "|PROGRESS=100");
     sendDelta("LAST_OTA_RESULT", otaResult);
     setOtaState(OtaState::IDLE);
