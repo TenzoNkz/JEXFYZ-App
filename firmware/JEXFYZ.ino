@@ -15,9 +15,8 @@
 #include <BLE2902.h>
 
 #include <Update.h>
-#include <HTTPUpdate.h>
 
-static constexpr char FW_VERSION[] = "V1.2";
+static constexpr char FW_VERSION[] = "V1.3";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -126,6 +125,7 @@ static constexpr uint32_t OTA_RESTART_DELAY_MS        = 1200;
 static constexpr uint32_t OTA_FAILURE_INDICATOR_MS    = 1000;
 static constexpr uint32_t WIFI_CONNECT_TIMEOUT_MS     = 15000;
 static constexpr uint32_t ONLINE_OTA_HTTP_TIMEOUT_MS  = 60000;
+static constexpr uint32_t ONLINE_OTA_RESULT_INDICATOR_MS = 2000;
 static constexpr uint32_t OTA_MAX_FIRMWARE_BYTES     = 2 * 1024 * 1024;
 static_assert(OTA_MAX_FIRMWARE_BYTES <= 2 * 1024 * 1024,
               "OTA SAFETY: firmware limit exceeded");
@@ -143,6 +143,23 @@ enum class OtaState : uint8_t {
   CLOUD_APPLYING,
   SUCCESS,
   FAILED,
+};
+
+enum class OnlineOtaFlow : uint8_t {
+  IDLE,
+  WIFI_CONNECTING,
+  TIME_SYNC,
+  DOWNLOAD,
+  FLASH_FINALIZE,
+};
+
+enum class OnlineOtaIndicatorNext : uint8_t {
+  NONE,
+  TIME_SYNC,
+  DOWNLOAD,
+  FLASH_FINALIZE,
+  RESTART,
+  RECOVER,
 };
 
 static bool serviceOtaPriority();
@@ -320,7 +337,6 @@ String cloudUrl;
 String cloudVersion;
 
 WiFiClientSecure cloudClient;
-HTTPUpdate onlineHttpUpdate(ONLINE_OTA_HTTP_TIMEOUT_MS);
 size_t localOtaBytesReceived = 0;
 size_t localOtaExpectedBytes = 0;
 bool localOtaStarted = false;
@@ -330,9 +346,17 @@ uint8_t bleStartAttempts = 0;
 uint32_t bleStartRetryAt = 0;
 uint32_t cloudPhaseStartedAt = 0;
 bool cloudTimeSyncStarted = false;
-int onlineHttpUpdateErrorCode = 0;
-uint32_t otaIndicatorUntil = 0;
-uint32_t otaIndicatorColor = 0;
+
+OnlineOtaFlow onlineOtaFlow = OnlineOtaFlow::IDLE;
+bool onlineResultIndicatorActive = false;
+uint32_t onlineResultIndicatorStartedAt = 0;
+uint32_t onlineResultIndicatorColor = 0;
+OnlineOtaIndicatorNext onlineResultIndicatorNext = OnlineOtaIndicatorNext::NONE;
+bool onlineHttpActive = false;
+int onlineHttpResponseCode = 0;
+int onlineHttpExpectedBytes = 0;
+bool onlineUpdateStarted = false;
+HTTPClient onlineHttpClient;
 
 // ====================== OTA DIAGNOSTICS — PROTECTED =========================
 String otaDiagnosticStage = "IDLE";
@@ -394,7 +418,8 @@ static String otaSuccessResult(const String& mode, const String& stage, const St
 static void failLocalOta(const String& stage, int errorCode, const String& error);
 static void failOnlineOta(const String& stage, int errorCode, const String& error);
 static bool validFirmwareVersion(const String& value);
-static void triggerOtaIndicator(uint32_t color);
+static void setOtaState(OtaState state);
+static void clearCloudCredentials();
 static void resetBlinkState();
 static void initializeRuntimeFeatures();
 
@@ -788,11 +813,78 @@ static void renderBlink(uint32_t color) {
   showAll(ledBlinkPhase ? color : 0x000000, 255);
 }
 
-static void triggerOtaIndicator(uint32_t color) {
-  otaIndicatorColor = color;
-  otaIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
-  resetBlinkState();
+static void startOnlineOtaResultIndicator(
+    uint32_t color,
+    OnlineOtaIndicatorNext nextAction) {
+  onlineResultIndicatorActive = true;
+  onlineResultIndicatorStartedAt = millis();
+  onlineResultIndicatorColor = color;
+  onlineResultIndicatorNext = nextAction;
   showAll(color, 255);
+}
+
+static bool processOnlineOtaResultIndicator() {
+  if (!onlineResultIndicatorActive) return false;
+
+  const uint32_t elapsed = millis() - onlineResultIndicatorStartedAt;
+  if (elapsed < ONLINE_OTA_RESULT_INDICATOR_MS) {
+    const uint32_t phase = elapsed / 500U;
+    const bool ledOn = (phase == 0U || phase == 2U);
+    showAll(ledOn ? onlineResultIndicatorColor : 0x000000, 255);
+    return true;
+  }
+
+  showAll(0x000000, 0);
+  onlineResultIndicatorActive = false;
+
+  const OnlineOtaIndicatorNext nextAction = onlineResultIndicatorNext;
+  onlineResultIndicatorNext = OnlineOtaIndicatorNext::NONE;
+
+  switch (nextAction) {
+    case OnlineOtaIndicatorNext::TIME_SYNC:
+      onlineOtaFlow = OnlineOtaFlow::TIME_SYNC;
+      setOtaDiagnosticStage("ONLINE_TIME_SYNC");
+      setOtaDiagnosticProgress(0);
+      setOtaDiagnosticError(0, "NONE");
+      configTime(0, 0, "pool.ntp.org", "time.nist.gov");
+      cloudTimeSyncStarted = true;
+      cloudPhaseStartedAt = millis();
+      break;
+
+    case OnlineOtaIndicatorNext::DOWNLOAD:
+      onlineOtaFlow = OnlineOtaFlow::DOWNLOAD;
+      setOtaState(OtaState::CLOUD_DOWNLOADING);
+      setOtaDiagnosticStage("ONLINE_DOWNLOAD");
+      break;
+
+    case OnlineOtaIndicatorNext::FLASH_FINALIZE:
+      onlineOtaFlow = OnlineOtaFlow::FLASH_FINALIZE;
+      setOtaState(OtaState::CLOUD_APPLYING);
+      setOtaDiagnosticStage("ONLINE_FLASH_FINALIZE");
+      break;
+
+    case OnlineOtaIndicatorNext::RESTART:
+      onlineOtaFlow = OnlineOtaFlow::IDLE;
+      otaActive = true;
+      setOtaState(OtaState::SUCCESS);
+      otaRestartAt = millis() + 200;
+      break;
+
+    case OnlineOtaIndicatorNext::RECOVER:
+      onlineOtaFlow = OnlineOtaFlow::IDLE;
+      otaActive = false;
+      onlineUpdateStarted = false;
+      onlineHttpActive = false;
+      cloudTimeSyncStarted = false;
+      clearCloudCredentials();
+      startBle();
+      break;
+
+    case OnlineOtaIndicatorNext::NONE:
+      break;
+  }
+
+  return true;
 }
 
 static bool validFirmwareVersion(const String& value) {
@@ -943,17 +1035,12 @@ static void renderCustomLedFrame(uint32_t now) {
 }
 
 static void processLeds() {
-  if ((otaState == OtaState::CLOUD_CONNECTING ||
-       otaState == OtaState::CLOUD_DOWNLOADING ||
-       otaState == OtaState::CLOUD_APPLYING) &&
-      otaIndicatorUntil != 0 &&
-      millis() < otaIndicatorUntil) {
-    renderBlink(otaIndicatorColor);
+  if (onlineResultIndicatorActive) {
+    processOnlineOtaResultIndicator();
     return;
   }
 
   if (otaState == OtaState::SUCCESS) {
-    renderBlink(0x00FF00);
     return;
   }
 
@@ -1937,10 +2024,11 @@ static void serviceBleStartRecovery() {
 
 // ============================================================================
 // ========================== OTA ENGINE — LOCKED ============================
-// Keep OTA networking, flash update, validation, cleanup, and activation
-// isolated from application feature changes. No custom Range transport.
-// Use the official Arduino-ESP32 HTTPUpdate/Update path for Online OTA.
+// Online OTA uses the official Arduino-ESP32 HTTPClient + Update lifecycle.
+// The firmware download is streamed directly into the inactive OTA partition;
+// no Range/chunk/retry transport and no firmware-sized RAM buffer are used.
 // ============================================================================
+
 static bool validHttpsUrl(const String& value) {
   return value.startsWith("https://") && value.length() <= 180;
 }
@@ -1975,62 +2063,66 @@ static void applyOtaSafeOutputs() {
   digitalWrite(PIN_12V, OUTPUT_OFF);
 }
 
+static String updateErrorDetail() {
+  const char* detail = Update.errorString();
+  String message = detail == nullptr ? "UPDATE_FAILED" : String(detail);
+  if (message.isEmpty()) message = "UPDATE_FAILED";
+  return message;
+}
+
+static void finishOnlineOtaFailureRecovery() {
+  onlineResultIndicatorActive = false;
+  onlineResultIndicatorNext = OnlineOtaIndicatorNext::NONE;
+  onlineOtaFlow = OnlineOtaFlow::IDLE;
+  onlineUpdateStarted = false;
+  onlineHttpActive = false;
+  cloudTimeSyncStarted = false;
+  otaActive = false;
+  clearCloudCredentials();
+  startBle();
+}
+
 static void failOnlineOta(
     const String& stage,
     int errorCode,
     const String& error) {
   otaRestartAt = 0;
-  otaIndicatorUntil = 0;
-  cloudClient.stop();
+  onlineOtaFlow = OnlineOtaFlow::IDLE;
 
   setOtaDiagnosticStage(stage);
   setOtaDiagnosticError(errorCode, error);
   saveOtaResult(
       otaFailureResult("ONLINE", stage, errorCode, error, otaDiagnosticProgress));
-  setOtaState(OtaState::FAILED);
-  otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
-  otaActive = false;
-  onlineOtaStartPending = false;
-  cloudTimeSyncStarted = false;
 
-  // Abort any partially prepared Arduino Update transaction before recovery.
-  Update.abort();
+  if (onlineHttpActive) {
+    onlineHttpClient.end();
+    onlineHttpActive = false;
+  }
+  cloudClient.stop();
+
+  if (onlineUpdateStarted) {
+    Update.abort();
+    onlineUpdateStarted = false;
+  }
 
   stopWiFiRadio();
   clearCloudCredentials();
   applyOtaSafeOutputs();
 
-  startBle();
+  setOtaState(OtaState::FAILED);
+  otaActive = true;
+  startOnlineOtaResultIndicator(0xFF0000, OnlineOtaIndicatorNext::RECOVER);
 }
 
-static void onlineHttpUpdateStart() {
-  onlineHttpUpdateErrorCode = 0;
-  setOtaDiagnosticStage("ONLINE_HTTP_UPDATE");
-  setOtaDiagnosticProgress(0);
-  resetBlinkState();
-}
-
-static void onlineHttpUpdateEnd() {
-  setOtaDiagnosticProgress(100);
-  setOtaDiagnosticStage("ONLINE_INSTALL_SUCCESS");
-  triggerOtaIndicator(0x00FF00);
-}
-
-static void onlineHttpUpdateError(int errorCode) {
-  onlineHttpUpdateErrorCode = errorCode;
-}
-
-static void onlineHttpUpdateProgress(int current, int total) {
-  if (total <= 0) return;
-
+static void onlineUpdateProgress(size_t current, size_t total) {
+  if (total == 0) return;
   const uint8_t progress = static_cast<uint8_t>(
-      min<int>(100, max<int>(0, (current * 100LL) / total)));
+      min<size_t>(100, (current * 100ULL) / total));
   setOtaDiagnosticProgress(progress);
-  renderBlink(0x0000FF);
 }
 
-static bool performStandardOnlineOtaUpdate() {
-  setOtaDiagnosticStage("ONLINE_HTTP_UPDATE");
+static bool prepareOnlineOtaDownload() {
+  setOtaDiagnosticStage("ONLINE_GITHUB_CONNECT");
   setOtaDiagnosticProgress(0);
   setOtaDiagnosticError(0, "NONE");
 
@@ -2038,49 +2130,189 @@ static bool performStandardOnlineOtaUpdate() {
   cloudClient.setCACert(GITHUB_ROOT_CA);
   cloudClient.setTimeout(ONLINE_OTA_HTTP_TIMEOUT_MS);
 
-  onlineHttpUpdate.rebootOnUpdate(false);
-  onlineHttpUpdate.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
-  onlineHttpUpdate.onStart(onlineHttpUpdateStart);
-  onlineHttpUpdate.onEnd(onlineHttpUpdateEnd);
-  onlineHttpUpdate.onError(onlineHttpUpdateError);
-  onlineHttpUpdate.onProgress(onlineHttpUpdateProgress);
+  onlineHttpClient.end();
+  if (!onlineHttpClient.begin(cloudClient, cloudUrl)) {
+    failOnlineOta("ONLINE_GITHUB_CONNECT", -1, "HTTP_BEGIN_FAILED");
+    return false;
+  }
+  onlineHttpActive = true;
+  onlineHttpResponseCode = 0;
+  onlineHttpExpectedBytes = 0;
 
-  // Version eligibility is already enforced by the JE X FYZ protocol.
-  // Do not pass FW_VERSION here; HTTPUpdate must not become a second version gate.
-  const HTTPUpdateResult result = onlineHttpUpdate.update(cloudClient, cloudUrl, "");
+  onlineHttpClient.useHTTP10(true);
+  onlineHttpClient.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
+  onlineHttpClient.setConnectTimeout(15000);
+  onlineHttpClient.setTimeout(ONLINE_OTA_HTTP_TIMEOUT_MS);
+  onlineHttpClient.setReuse(false);
+  onlineHttpClient.setUserAgent("JE-X-FYZ-OTA");
+  onlineHttpClient.setAcceptEncoding("identity");
 
-  if (result == HTTP_UPDATE_OK) {
-    cloudClient.stop();
-
-    setOtaDiagnosticStage("ONLINE_BOOT_PARTITION");
-    setOtaDiagnosticError(0, "NONE");
-    saveOtaResult(
-        otaSuccessResult(
-            "ONLINE",
-            "ONLINE_BOOT_PARTITION",
-            cloudVersion.isEmpty() ? FW_VERSION : cloudVersion));
-    setOtaState(OtaState::SUCCESS);
-    otaRestartAt = millis() + OTA_RESTART_DELAY_MS;
-    otaActive = true;
-    clearCloudCredentials();
-    return true;
+  const int responseCode = onlineHttpClient.GET();
+  onlineHttpResponseCode = responseCode;
+  if (responseCode <= 0) {
+    failOnlineOta(
+        "ONLINE_GITHUB_CONNECT",
+        responseCode,
+        HTTPClient::errorToString(responseCode));
+    return false;
   }
 
-  const int errorCode =
-      onlineHttpUpdateErrorCode != 0
-          ? onlineHttpUpdateErrorCode
-          : onlineHttpUpdate.getLastError();
-
-  String error = onlineHttpUpdate.getLastErrorString();
-  if (error.isEmpty()) {
-    error = result == HTTP_UPDATE_NO_UPDATES
-                 ? "HTTP_UPDATE_NO_UPDATES"
-                 : "HTTP_UPDATE_FAILED";
+  if (responseCode != HTTP_CODE_OK) {
+    failOnlineOta(
+        "ONLINE_GITHUB_CONNECT",
+        responseCode,
+        "HTTP_" + String(responseCode));
+    return false;
   }
 
+  const int contentLength = onlineHttpClient.getSize();
+  onlineHttpExpectedBytes = contentLength;
+  if (contentLength <= 0) {
+    failOnlineOta(
+        "ONLINE_GITHUB_CONNECT",
+        -102,
+        "CONTENT_LENGTH_MISSING");
+    return false;
+  }
+
+  if (static_cast<size_t>(contentLength) > OTA_MAX_FIRMWARE_BYTES ||
+      static_cast<size_t>(contentLength) > ESP.getFreeSketchSpace()) {
+    failOnlineOta(
+        "ONLINE_GITHUB_CONNECT",
+        OTA_ERROR_SPACE,
+        "FIRMWARE_TOO_LARGE");
+    return false;
+  }
+
+  NetworkClient* stream = onlineHttpClient.getStreamPtr();
+  if (stream == nullptr) {
+    failOnlineOta(
+        "ONLINE_GITHUB_CONNECT",
+        -103,
+        "HTTP_STREAM_UNAVAILABLE");
+    return false;
+  }
+
+  const int firstByte = stream->peek();
+  if (firstByte != 0xE9) {
+    failOnlineOta(
+        "ONLINE_GITHUB_CONNECT",
+        OTA_ERROR_MAGIC_BYTE,
+        "WRONG_MAGIC_BYTE");
+    return false;
+  }
+
+  setOtaDiagnosticStage("ONLINE_GITHUB_CONNECTED");
+  setOtaDiagnosticProgress(0);
+  startOnlineOtaResultIndicator(
+      0x00FF00,
+      OnlineOtaIndicatorNext::DOWNLOAD);
+  return true;
+}
+
+static bool performOnlineOtaDownload() {
+  setOtaDiagnosticStage("ONLINE_DOWNLOAD");
+  setOtaDiagnosticProgress(0);
+  setOtaDiagnosticError(0, "NONE");
+
+  if (!onlineHttpActive || onlineHttpExpectedBytes <= 0) {
+    failOnlineOta(
+        "ONLINE_DOWNLOAD",
+        -104,
+        "HTTP_SESSION_NOT_READY");
+    return false;
+  }
+
+  if (!Update.begin(
+          static_cast<size_t>(onlineHttpExpectedBytes),
+          U_FLASH)) {
+    const int code = static_cast<int>(Update.getError());
+    failOnlineOta("ONLINE_FLASH_PREPARE", code, updateErrorDetail());
+    return false;
+  }
+
+  onlineUpdateStarted = true;
+  Update.onProgress(onlineUpdateProgress);
+
+  NetworkClient* stream = onlineHttpClient.getStreamPtr();
+  if (stream == nullptr) {
+    failOnlineOta(
+        "ONLINE_DOWNLOAD",
+        -103,
+        "HTTP_STREAM_UNAVAILABLE");
+    return false;
+  }
+
+  const size_t written = Update.writeStream(*stream);
+  onlineHttpClient.end();
+  onlineHttpActive = false;
   cloudClient.stop();
-  failOnlineOta("ONLINE_HTTP_UPDATE", errorCode, error);
-  return false;
+
+  if (written != static_cast<size_t>(onlineHttpExpectedBytes)) {
+    const int code = static_cast<int>(Update.getError());
+    const String detail =
+        code != 0 ? updateErrorDetail() : "DOWNLOAD_SIZE_MISMATCH";
+    failOnlineOta(
+        "ONLINE_DOWNLOAD",
+        code != 0 ? code : OTA_ERROR_SIZE,
+        detail);
+    return false;
+  }
+
+  setOtaDiagnosticProgress(100);
+  setOtaDiagnosticStage("ONLINE_DOWNLOAD_COMPLETE");
+  setOtaDiagnosticError(0, "NONE");
+
+  // The full firmware stream is now in the inactive OTA partition. Finalize
+  // and activate it only after the required BLUE result indication.
+  startOnlineOtaResultIndicator(
+      0x0000FF,
+      OnlineOtaIndicatorNext::FLASH_FINALIZE);
+  return true;
+}
+
+static bool finalizeOnlineOtaFlash() {
+  setOtaDiagnosticStage("ONLINE_FLASH_FINALIZE");
+  setOtaDiagnosticError(0, "NONE");
+
+  if (!onlineUpdateStarted) {
+    failOnlineOta(
+        "ONLINE_FLASH_FINALIZE",
+        -105,
+        "UPDATE_NOT_STARTED");
+    return false;
+  }
+
+  const bool finalized = Update.end();
+  if (!finalized) {
+    const int code = static_cast<int>(Update.getError());
+    failOnlineOta(
+        "ONLINE_FLASH_FINALIZE",
+        code,
+        updateErrorDetail());
+    return false;
+  }
+
+  onlineUpdateStarted = false;
+  Update.onProgress(nullptr);
+  stopWiFiRadio();
+
+  setOtaDiagnosticStage("ONLINE_FLASH_SUCCESS");
+  setOtaDiagnosticProgress(100);
+  setOtaDiagnosticError(0, "NONE");
+  saveOtaResult(
+      otaSuccessResult(
+          "ONLINE",
+          "ONLINE_FLASH_SUCCESS",
+          cloudVersion.isEmpty() ? "UNKNOWN" : cloudVersion));
+
+  clearCloudCredentials();
+
+  // Final GREEN indicator executes only after Update.end() has succeeded.
+  startOnlineOtaResultIndicator(
+      0x00FF00,
+      OnlineOtaIndicatorNext::RESTART);
+  return true;
 }
 
 static void startOnlineOta() {
@@ -2116,11 +2348,13 @@ static void startOnlineOta() {
 
   setOtaDiagnosticStage("ONLINE_WIFI_CONNECT");
   otaRestartAt = 0;
-  resetBlinkState();
   cloudPhaseStartedAt = millis();
   cloudTimeSyncStarted = false;
-  otaIndicatorUntil = 0;
-  otaIndicatorColor = 0;
+  onlineOtaFlow = OnlineOtaFlow::WIFI_CONNECTING;
+  onlineResultIndicatorActive = false;
+  onlineResultIndicatorNext = OnlineOtaIndicatorNext::NONE;
+  onlineHttpActive = false;
+  onlineUpdateStarted = false;
 
   saveOtaResult("IN_PROGRESS|MODE=ONLINE|STAGE=ONLINE_WIFI_CONNECT|PROGRESS=0");
   applyOtaSafeOutputs();
@@ -2141,36 +2375,62 @@ static void startOnlineOta() {
 }
 
 static void processOnlineOta() {
-  if (otaState != OtaState::CLOUD_CONNECTING) return;
-
-  if (WiFi.status() == WL_CONNECTED) {
-    if (!cloudTimeSyncStarted) {
-      setOtaDiagnosticStage("ONLINE_WIFI_CONNECTED");
-      triggerOtaIndicator(0x0000FF);
-      setOtaDiagnosticStage("ONLINE_TIME_SYNC");
-      configTime(0, 0, "pool.ntp.org", "time.nist.gov");
-      cloudTimeSyncStarted = true;
-      cloudPhaseStartedAt = millis();
-      return;
-    }
-
-    const time_t now = time(nullptr);
-    if (now < 1700000000) {
-      if (millis() - cloudPhaseStartedAt >= 10000) {
-        failOnlineOta("ONLINE_TIME_SYNC", -1, "TIME_SYNC_FAILED");
-      }
-      return;
-    }
-
-    setOtaState(OtaState::CLOUD_DOWNLOADING);
-    performStandardOnlineOtaUpdate();
+  if (onlineResultIndicatorActive) {
+    processOnlineOtaResultIndicator();
     return;
   }
 
-  if (otaActive &&
-      otaState == OtaState::CLOUD_CONNECTING &&
-      millis() - cloudPhaseStartedAt >= WIFI_CONNECT_TIMEOUT_MS) {
-    failOnlineOta("ONLINE_WIFI_FAILED", -1, "WIFI_FAILED");
+  switch (onlineOtaFlow) {
+    case OnlineOtaFlow::WIFI_CONNECTING:
+      if (WiFi.status() == WL_CONNECTED) {
+        setOtaDiagnosticStage("ONLINE_WIFI_CONNECTED");
+        setOtaDiagnosticProgress(0);
+        startOnlineOtaResultIndicator(
+            0x0000FF,
+            OnlineOtaIndicatorNext::TIME_SYNC);
+        return;
+      }
+
+      if (otaActive &&
+          millis() - cloudPhaseStartedAt >= WIFI_CONNECT_TIMEOUT_MS) {
+        failOnlineOta("ONLINE_WIFI_FAILED", -1, "WIFI_FAILED");
+      }
+      return;
+
+    case OnlineOtaFlow::TIME_SYNC: {
+      if (WiFi.status() != WL_CONNECTED) {
+        failOnlineOta("ONLINE_WIFI_DROPPED", -1, "WIFI_DISCONNECTED");
+        return;
+      }
+
+      const time_t now = time(nullptr);
+      if (now < 1700000000) {
+        if (millis() - cloudPhaseStartedAt >= 10000) {
+          failOnlineOta(
+              "ONLINE_TIME_SYNC",
+              -1,
+              "TIME_SYNC_FAILED");
+        }
+        return;
+      }
+
+      onlineOtaFlow = OnlineOtaFlow::DOWNLOAD;
+      prepareOnlineOtaDownload();
+      return;
+    }
+
+    case OnlineOtaFlow::DOWNLOAD:
+      if (!onlineUpdateStarted) {
+        performOnlineOtaDownload();
+      }
+      return;
+
+    case OnlineOtaFlow::FLASH_FINALIZE:
+      finalizeOnlineOtaFlash();
+      return;
+
+    case OnlineOtaFlow::IDLE:
+      return;
   }
 }
 
@@ -3241,8 +3501,8 @@ static bool serviceOtaPriority() {
   }
 
   if (otaActive &&
-      otaState != OtaState::SUCCESS &&
-      otaState != OtaState::FAILED) {
+      (otaState != OtaState::SUCCESS ||
+       onlineResultIndicatorActive)) {
     processOnlineOta();
     processLeds();
     return true;
