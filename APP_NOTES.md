@@ -3107,3 +3107,28 @@ The official AP example uses the high-level `WiFi.softAP()` path. This is now th
 - No command name, BLE UUID, P1 protocol, UI architecture, or OTA availability rule was changed by this sync.
 - No App Build was triggered here; the separate `Build App` workflow remains the APK-build boundary.
 - The next App build should be performed only when requested with `Build App` in the build/action sub-chat.
+
+## 2026-09-28 — APP BUILD RUN #9 EXECUTION LOG
+
+- User explicitly requested `Build App`.
+- Re-read current `APP_NOTES.md` and `.github/workflows/app-build.yml` before execution.
+- Current source baseline included the latest Online OTA V1.3 staged diagnostic label sync.
+- App Build was triggered through `.github/APP_BUILD_TRIGGER`; no Firmware Build was triggered.
+- Trigger commit: `96d01b47bc1eb6b01ff960e1f33f312cd7034c10`.
+- GitHub Actions App Build Run #9: `36356212663`.
+- Toolchain setup: SUCCESS.
+- Production release signing preparation: SUCCESS.
+- JE X FYZ security and architecture audit: SUCCESS.
+- Flutter dependency installation: SUCCESS.
+- Dart analysis: SUCCESS.
+- Flutter tests: SUCCESS.
+- Release APK build with obfuscation: SUCCESS.
+- Production APK signature verification: SUCCESS.
+- Release APK filename prepared as `JEXFYZ#9.apk`.
+- APK artifact uploaded successfully; artifact ID: `10943602784`; size: `53,134,754 bytes`; digest: `sha256:bbc7f08eeeddebb404e870f9aa7f85fdc87595b3c2e53f9623c3991dbc0ddcde`.
+- Dart symbols artifact uploaded successfully; artifact ID: `10944056961`.
+- Downloaded artifact was normalized from the connector's temporary `.zip` filename to the canonical local APK filename `JEXFYZ#9.apk`.
+- Local verification reports the delivered file as an Android package (APK), size approximately 51 MiB, with SHA-256 `bbc7f08eeeddebb404e870f9aa7f85fdc87595b3c2e53f9623c3991dbc0ddcde`.
+- No source-code repair was necessary because the initial build completed successfully.
+- Runtime BLE/OTA/physical firmware behavior remains unproven by CI alone; Build #9 is the APK boundary for the next controlled device test.
+
