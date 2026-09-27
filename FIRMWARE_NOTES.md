@@ -1986,3 +1986,18 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Local OTA behavior is unchanged by this clarification.
 - No code modification was executed in this discussion.
 - Chat handoff status: DISCUSSION — ONLINE OTA LED COLOR/STAGE SPECIFICATION LOCKED; READY FOR TARGETED LED EXECUTION.
+## 2026-09-28 — DISCUSSION: ONLINE OTA FLASH SUCCESS COLOR CHANGED TO GREEN
+
+- User changed the final Online OTA flash/install success indicator color from BLUE to GREEN.
+- Final Online OTA LED mapping is now:
+  - Wi-Fi connected successfully -> BLUE
+  - Wi-Fi connection failed -> RED
+  - GitHub connection / ready to download -> GREEN
+  - GitHub connection/download access failed -> RED
+  - Firmware download completed successfully -> BLUE
+  - Firmware download failed -> RED
+  - Firmware flash/install succeeded -> GREEN, then controlled restart
+  - Firmware flash/install failed -> RED
+- The final flash-success GREEN indicator occurs before the controlled restart and uses the same non-blocking result-indicator timing already specified: 500 ms ON / 500 ms OFF / 500 ms ON / 500 ms OFF, driven by millis().
+- No code modification was executed by this clarification.
+- Chat handoff status: DISCUSSION — FINAL ONLINE OTA LED COLOR MAPPING UPDATED; READY FOR TARGETED EXECUTION.
