@@ -2111,3 +2111,20 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - The exact V1.3 source artifact was re-materialized from the verified GitHub Actions source-export artifact, extracted, and written to `/mnt/data/JEXFYZ-V1.3.ino`.
 - Delivery file verification: SHA-256 `94650f80091faf45ddd7c1185b12f57f997cb24c4c13bc185ab16b2c5e8b3824`; 3,702 lines; imports match the authoritative source; firmware version remains V1.3.
 - No firmware source code was changed by this delivery fix. Public firmware distribution remains V1.2 and no V1.3 BIN was published.
+
+
+## 2026-09-28 — EXECUTION FULL: V1.4 ONLINE OTA LED START BEHAVIOR
+
+- User clarified the required Online OTA LED sequence: when the App's Update command is pressed, the LED must be OFF while Wi-Fi is connecting. No blue static indication is allowed during the Wi-Fi connection attempt.
+- Only after the Wi-Fi connection result is known may the result indicator run: BLUE blink for successful Wi-Fi connection or RED blink for failed Wi-Fi connection.
+- The existing boot-time Local OTA AP behavior is intentionally unchanged: boot can show BLUE static while the Wi-Fi AP owns the radio, then the LED turns off when BLE takes over.
+- V1.4 firmware source changes:
+  - Firmware version advanced from V1.3 to V1.4.
+  - Online OTA start now explicitly clears the user LED output immediately after applying safe outputs, before STA Wi-Fi connection begins.
+  - Online OTA result-indicator startup no longer writes the result color immediately; it starts from LED OFF and lets the non-blocking 500/500 x2 indicator state render on the next processing cycle. This prevents a false static-color flash at the stage boundary.
+  - The established 500 ms ON / 500 ms OFF / 500 ms ON / 500 ms OFF result timing remains unchanged.
+- No Online OTA transport/lifecycle change was made in this execution. The existing V1.3 post-Wi-Fi diagnostic boundary remains available for the next controlled OTA failure investigation.
+- V1.4 source commit: 7fee78ad24712f0e5d620a4b53054cccdb662137.
+- OTA Gold Master Lock metadata refreshed to V1.4: 666188600d7fd349c131fd88cb27a52766b620a0.
+- Public firmware distribution remains V1.3. No V1.4 BIN was generated or published in this execution; V1.4 is the source revision for the next ArduinoDroid manual compile/test.
+- Physical validation remains pending. Do not claim Online OTA success until the V1.4 source has been compiled/flashed and the controlled Wi-Fi-result LED + OTA test passes physically.
