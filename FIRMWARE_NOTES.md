@@ -1595,3 +1595,34 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - No source code changed in this discussion.
 - Next diagnostic preference remains non-intrusive: do not replace the currently installed firmware. Capture the complete Serial output spanning the exact moment the Online OTA Update button is pressed, including any reset/heap/panic lines, if the user is willing to repeat the test. If the device resets immediately after the button press, that reset/heap evidence becomes the primary boundary.
 - Chat handoff status: **DISCUSSION — NEW EVIDENCE, NOT YET READY FOR EXECUTION**.
+
+## 2026-09-27 — RUNTIME CLASSIFICATION: HEAP CORRUPTION OCCURS ON CLOUDOTA START, BEFORE WIFI STA COMPLETION
+
+- User provided the complete Serial trace and confirmed the heap corruption happens immediately after pressing the App Online OTA Update action while the device remains on the current test firmware V1.5.
+- Relevant timing/evidence:
+  - Boot AP and BLE handoff completed normally at approximately 20:51:28.
+  - At approximately 20:52:13, immediately after the user initiated Online OTA, the device reported:
+    `CORRUPT HEAP: Bad head at 0x3fcbfeac. Expected 0xabba1234 got 0x3fca0da4`
+    followed by
+    `assert failed: multi_heap_free multi_heap_poisoning.c:279 (head != NULL)`
+  - The device then rebooted with `rst:0xc (RTC_SW_CPU_RST)`.
+  - After reboot, the normal boot AP + HTTP + BLE advertising sequence succeeded again.
+- App state at the same test boundary remained `OTA in progress • ONLINE • Wi-Fi connect • 0%`; no GitHub/HTTPS/range/download stage was reached.
+- Source-path classification:
+  - The App sends `OTAENTER`, `SSID:`, `PASS:`, `URL:`, `VERSION:`, then `CLOUDOTA`, waiting for ACK after each command.
+  - Firmware `CLOUDOTA` handling only schedules Online OTA.
+  - After the BLE TX queue settles or the 1.5 s safety wait expires, `processPendingOnlineOtaStart()` calls `startOnlineOta()`.
+  - `startOnlineOta()` first enters `ONLINE_WIFI_CONNECT`, clears BLE queues, calls `stopBleRadio()`, and only after that begins the Wi-Fi STA sequence.
+  - `stopBleRadio()` calls the official `BLEDevice::deinit(true)`.
+- Exact pinned Arduino-ESP32 Core 3.3.7 upstream `BLEDevice::deinit(true)` was inspected:
+  - stops advertising/scanning;
+  - deletes BLE advertising/scan/server/client objects;
+  - clears the connected-client map;
+  - disables and deinitializes the configured BLE stack;
+  - disables/deinitializes the Bluetooth controller;
+  - with `release_memory=true`, releases BTDM controller memory via `esp_bt_controller_mem_release(ESP_BT_MODE_BTDM)` when enabled.
+- Engineering conclusion at this boundary: **the strongest current suspect is the BLE teardown / BLE-to-Wi-Fi radio transition, especially `BLEDevice::deinit(true)` or an asynchronous BLE event/callback interacting with teardown**, because the heap-free assert occurs immediately at Online OTA start and before any confirmed `WiFi.mode(WIFI_STA)` return or GitHub activity. This is a hypothesis, not yet a proven root cause.
+- The previous standalone `WiFi.mode(WIFI_AP)` panic remains relevant historical evidence, but the latest production run successfully starts AP and HTTP, so it is not sufficient to explain the current Online OTA heap corruption.
+- No code change was executed from this classification. Local OTA remains protected.
+- Next diagnostic boundary: inspect the exact BLE teardown ownership/lifecycle in the production path and compare it with the pinned Core 3.3.7 BLE implementation before designing a minimal change. Do not change HTTPS/Range/download/flash logic until the teardown boundary is classified.
+- Chat handoff status: **DISCUSSION — ROOT-CAUSE CANDIDATE IDENTIFIED, NOT YET READY FOR EXECUTION**.
