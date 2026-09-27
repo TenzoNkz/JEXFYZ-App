@@ -1228,3 +1228,15 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - This is a high-value diagnostic result: the ArduinoDroid application and CI application are different binaries even though both use Core 3.3.7.
 - Do not yet assert that this binary difference itself causes the OTA CODE=3 failure. The next comparison should identify which build variables produce the different image (library versions, compiler/build flags, board options, linker/build metadata) and, where possible, compare CI-generated bootloader/partition outputs with the ArduinoDroid precompile artifacts.
 - No production source/OTA code changed in this discussion.
+
+
+## 2026-09-27 — DISCUSSION: CONTROLLED FULL-FLASH BASELINE VIA ESP32Flash/Erase
+- User proposed a one-time full flash using the Android ESP32 Flash/Erase tool, supplying three images at the standard offsets:
+  - bootloader.bin -> 0x0
+  - partition table -> 0x8000
+  - application firmware -> 0x10000
+- Objective: establish a clean, known flash-layout baseline once, then repeat Local OTA testing without repeatedly changing the flash layout.
+- This is a valid diagnostic direction, but the bootloader and partition-table images must be generated from the same Arduino-ESP32 Core 3.3.7 + ESP32-C3 board configuration intended for the application image; they must not be hand-fabricated or guessed.
+- The first full-flash test should use the exact CI/repository application V1.6 together with CI-generated bootloader and partition-table images matching the same build configuration. After the one-time full flash and successful boot, re-test Local OTA with the same V1.6 application binary.
+- Because the user has only a phone, ESP32 Flash/Erase is the proposed transport for this controlled baseline. Use conservative settings first (ESP32-C3, DIO, 80MHz, 4MB); transport baud/compression are secondary to correct image/offset selection.
+- Do not erase or flash yet from this discussion. Execution remains locked behind an explicit execution command.
