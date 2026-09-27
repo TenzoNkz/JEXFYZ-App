@@ -1055,3 +1055,18 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - The build then stopped at the older in-workflow OTA marker audit because its supervisor-marker pattern was too text-layout-specific.
 - This was a CI audit false negative: the exact protected marker exists in source and the new Satpam already validated it against the lock candidate.
 - The legacy audit marker check was changed to match the stable marker prefix instead of the exact trailing `=` count. No firmware OTA behavior changed.
+
+## 2026-09-27 — FIRMWARE BUILD #78 PASS / LOCAL OTA FIX CANDIDATE
+- Firmware Build #78 completed successfully after the OTA guard/audit corrections.
+- 🛡️ OTA SATPAM: PASS in both ArduinoDroid validation and release build.
+- 📋 OTA SEKRETARIS: not invoked because the protected source matched the current lock candidate.
+- ArduinoDroid/Core 3.3.7 compile: PASS.
+- OTA protected-source audit: PASS.
+- ESP32-C3 release compile: PASS.
+- Artifact and public firmware publish: PASS.
+- Released candidate binary: `JEXFYZ-V1.6.bin`
+- Build #78 binary size: 1,466,768 bytes.
+- Build #78 binary SHA-256: `b65bb2eaaaa01d6706e48e3a844d79c43c41f5bbae94287e19ef1096e1ed341f`
+- Public manifest remains V1.6 -> `JEXFYZ-V1.6.bin`.
+- The Local OTA exact-size lifecycle restoration (`Update.begin(localOtaExpectedBytes)`) is now the physical-test candidate for the previous `LOCAL_IMAGE_VERIFY / CODE=3` failure.
+- OTA Gold Master status remains `NOT ESTABLISHED`; it requires physical OTA validation.
