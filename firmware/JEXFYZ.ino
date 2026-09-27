@@ -16,7 +16,7 @@
 
 #include <Update.h>
 
-static constexpr char FW_VERSION[] = "V1.3";
+static constexpr char FW_VERSION[] = "V1.4";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -819,7 +819,9 @@ static void startOnlineOtaResultIndicator(
   onlineResultIndicatorStartedAt = millis();
   onlineResultIndicatorColor = color;
   onlineResultIndicatorNext = nextAction;
-  showAll(color, 255);
+  // Keep the LED OFF until the indicator state is actually processed.
+  // This prevents a false static-color flash at the stage boundary.
+  showAll(0x000000, 0);
 }
 
 static bool processOnlineOtaResultIndicator() {
@@ -2357,6 +2359,8 @@ static void startOnlineOta() {
 
   saveOtaResult("IN_PROGRESS|MODE=ONLINE|STAGE=ONLINE_WIFI_CONNECT|PROGRESS=0");
   applyOtaSafeOutputs();
+  // Online OTA must begin with the LED completely OFF while Wi-Fi connects.
+  stopUserLedOutput();
 
   clearBleTxQueue();
   clearBleRxQueue();
