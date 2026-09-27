@@ -1726,3 +1726,23 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Physical test candidate remains V1.1.
 - Corrected local file: `JEXFYZ-V1.1-FIXED.ino`.
 - Chat handoff status: **FIX COMPLETE — READY TO COMPILE IN ARDUINODROID**.
+
+## 2026-09-27 — FIX: ARDUINODROID "REDEFINITION OF DEFAULT ARGUMENT" IN V1.1 .INO
+
+- User attempted to compile the delivered V1.1 Online OTA heap-fix source in ArduinoDroid/Core 3.3.7.
+- Compile error reported at the `stopBleRadio` definition:
+  `redefinition of default argument`.
+- Root cause: the delivered .ino contained a default argument in the function definition:
+  `static void stopBleRadio(bool releaseBluetoothMemory = true)`
+  Arduino's automatic prototype generation can create a conflicting default-argument declaration.
+- Fix applied to the delivered .ino: removed the default value from the definition:
+  `static void stopBleRadio(bool releaseBluetoothMemory)`
+  Both call sites are already explicit:
+  - boot/local OTA: `stopBleRadio(true)`
+  - Online OTA: `stopBleRadio(false)`
+- No runtime behavior changed by this compile-only correction.
+- The authoritative repository source `firmware/JEXFYZ.ino` was rechecked and already contains the corrected no-default signature.
+- Corrected local file: `/mnt/data/JEXFYZ-V1.1.ino`
+- Corrected local file size: **107,408 bytes**; SHA-256: `d67eb079bf4a2385b06794eabd05e03b990fd9a62348242764796e951dc80016`.
+- No public firmware release or manifest was changed.
+- Chat handoff status: **FIX COMPLETE — RETRY COMPILE/LOCAL OTA WITH CORRECTED V1.1 SOURCE**.
