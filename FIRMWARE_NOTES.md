@@ -1279,3 +1279,50 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - For the first controlled diagnostic, the recommended conservative transport setup is SPI DIO / 80MHz / 4MB with compression OFF and a lower baudrate such as 115200, to remove transport optimization variables.
 - Because the planned test supplies an explicit bootloader.bin, partition-table.bin, and application.bin, avoid relying on an automatically selected replacement image unless the app's Bootloader Auto behavior is confirmed. Do not flash until the exact three CI-generated files and their provenance are confirmed.
 - This remains discussion-only; no flash or firmware code execution was performed.
+
+
+## 2026-09-27 — EXECUTION: V1.6 FULL-FLASH DIAGNOSTIC BUILD WITH ARDUINO-ESP32 3.3.12
+- User explicitly authorized full Code & Firmware execution.
+- Diagnostic build was kept isolated from the production main firmware/release workflow; production `firmware/JEXFYZ.ino` OTA logic was not changed.
+- Verified latest stable Arduino-ESP32 release available during execution: 3.3.12. Arduino-ESP32 4.0.0-RC1 is a prerelease and was not used.
+- Build profile:
+  - ESP32-C3 Dev Module
+  - Core 3.3.12
+  - OneButton 2.6.2
+  - Adafruit NeoPixel 1.15.5
+  - USB CDC On Boot Enabled
+  - CPU 160MHz (WiFi)
+  - Flash DIO / 80MHz / 4MB
+  - No FS 4MB (2MB APP x2)
+  - Core Debug None
+  - JTAG Disabled via official Core value `JTAGAdapter=default`
+  - Zigbee Disabled via official Core value `ZigbeeMode=default`
+  - Upload target baudrate recorded as 921600
+- Official Core 3.3.12 board-option inspection was run before compile; the exact supported FQBN values were verified from `arduino-cli board details`.
+- Build initially encountered two CI-only mistakes:
+  1. sketch path was constructed incorrectly;
+  2. unsupported FQBN values were used for Zigbee and JTAG.
+  Both were corrected without modifying firmware source.
+- Successful diagnostic run:
+  - Workflow: Firmware Latest Stable Diagnostic
+  - Run number: 15
+  - Run ID: 36294947204
+  - Result: PASS
+- Compile result:
+  - Sketch uses 1,502,461 bytes (73%) of 2,031,616 bytes.
+  - Global variables use 43,816 bytes (13%).
+- Full-flash outputs verified and uploaded as one artifact:
+  - application: 1,502,608 bytes
+  - bootloader: 18,688 bytes
+  - partition table: 3,072 bytes
+  - source .ino: 107,113 bytes
+- SHA-256:
+  - application: 0c6f402b3577040b41cf2efd38d595bd75adc5b5d8e6349fb90d7e3626bc522b
+  - bootloader: 9da6c687836220a0b2c92544a5243d5af9bd1f0aff9298d48d4562e0e747989b
+  - partitions: 6d574ef034d3df9cc43f75e69b0ab9d6a6e6904c8393a1a8cb1a9e789e24adef
+  - artifact ZIP digest: 0af4a8cd33d7d2d716b2ac0cb70b7905ee97096b54128bf04d865eabb8cac9f7
+- The application image is the diagnostic full-flash candidate for the one-time USB baseline:
+  - bootloader -> 0x0000
+  - partitions -> 0x8000
+  - application -> 0x10000
+- This build is NOT a production release and is NOT published to the public firmware manifest.
