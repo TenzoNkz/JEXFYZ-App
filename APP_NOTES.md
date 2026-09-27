@@ -3050,3 +3050,27 @@ The official AP example uses the high-level `WiFi.softAP()` path. This is now th
 - No App source code was changed in this discussion.
 - No App build was triggered.
 - Next boundary: use an APK built from the current `main` source, then repeat the same controlled test with installed V1.5 and manifest V1.0. Expected UI result is **Update available**, not **Up to date**. Only after that should the actual Online OTA download/flash path be evaluated.
+
+## 2026-09-27 — APP BUILD RUN #8 EXECUTION LOG
+
+- User explicitly requested `Build App` in the Build App sub-chat.
+- Read the active app workflow and current project baseline before execution.
+- App Build was triggered through `.github/APP_BUILD_TRIGGER`; no Firmware Build was triggered.
+- Trigger commit: `5576ad28b50c814635b1d9c67ee05ac9eb66edb2`.
+- GitHub Actions App Build Run #8: `36322022571`.
+- Toolchain setup: SUCCESS.
+- Production release signing preparation: SUCCESS.
+- JE X FYZ security and architecture audit: SUCCESS.
+- Flutter dependency installation: SUCCESS.
+- Dart analysis: SUCCESS.
+- Flutter tests: SUCCESS.
+- Release APK build with obfuscation: SUCCESS.
+- Production APK signature verification: SUCCESS.
+- Release APK filename prepared as `JEXFYZ#8.apk`.
+- APK artifact uploaded successfully; artifact ID: `10932409909`; size: `53,069,218 bytes`; digest: `sha256:33f9730546292fa51bdb13bfc4a7f41f85b67bd09715626d478b66816570cfd6`.
+- Dart symbols artifact uploaded successfully; artifact ID: `10932604003`.
+- APK artifact was downloaded into the working session and verified as a real Android APK package.
+- No source-code repair was necessary because the initial build completed successfully.
+- Unresolved runtime note remains unchanged: CI success is build evidence only and does not prove BLE/OTA/physical firmware runtime behavior.
+- This entry is part of the mandatory update-after-action project governance: every material Build App execution must be recorded with trigger, result, artifact, and follow-up.
+
