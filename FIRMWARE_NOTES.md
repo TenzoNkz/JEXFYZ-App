@@ -1117,3 +1117,15 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Therefore Core version mismatch is eliminated as a cause in the current ArduinoDroid-vs-CI OTA investigation.
 - Keep investigation focused on remaining build parity variables: ArduinoDroid board/build options and installed library versions versus CI, plus resulting firmware image/partition metadata.
 - No firmware OTA code was changed from this clarification.
+
+
+## 2026-09-27 — DISCUSSION: ARDUINODROID GENERATES THREE BINARIES
+
+- User observed that a successful ArduinoDroid compilation produces three .bin files.
+- This is expected for ESP32 builds and is diagnostically important because the files normally represent different flash regions (bootloader, partition table, and application/sketch image), rather than three interchangeable firmware images.
+- OTA Local/Online using Arduino Update must use the application/sketch firmware image only (the .ino.bin application binary), not the bootloader or partition-table binary.
+- Normal USB flashing is different: a full flash operation may write bootloader + partition table + application at their required offsets, or use a merged image produced by the build tool.
+- The existence of three ArduinoDroid .bin files by itself does NOT prove the Local OTA failure is caused by ArduinoDroid. However, it is a new build-artifact parity variable that must be handled explicitly in the ArduinoDroid-vs-CI comparison.
+- CI currently checks/artifacts only the application binary JEXFYZ-VERSION.bin copied from JEXFYZ.ino.bin; it does not publish the separately generated bootloader/partition binaries as the OTA image.
+- Next diagnostic boundary: identify the exact three ArduinoDroid filenames and compare the application .ino.bin against the CI V1.6 application binary. For direct USB flashing, do not mix the three files or treat bootloader/partition binaries as OTA payloads.
+- No production firmware/OTA code was changed by this discussion.
