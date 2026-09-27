@@ -172,6 +172,7 @@ static void processPendingOnlineOtaStart();
 
 static constexpr size_t BLE_TX_QUEUE_SIZE = 48;
 static constexpr size_t BLE_RX_QUEUE_SIZE = 8;
+static constexpr size_t BLE_RX_BUFFER_SIZE = 512;
 static constexpr uint32_t BLE_TX_INTERVAL_MS = 15;
 static constexpr uint32_t ONLINE_OTA_START_WAIT_MS = 1500;
 static constexpr uint32_t BLE_START_RETRY_MS = 750;
@@ -3210,7 +3211,7 @@ static void handleCommand(const String& command) {
 
   if (command.startsWith("MODE:")) {
     int value = 0;
-    if (!parseIntRange(command.substring(5), 0, 7, value)) {
+    if (!parseIntRange(command.substring(5), 1, 8, value)) {
       sendAck("MODE", false, "INVALID");
       return;
     }
