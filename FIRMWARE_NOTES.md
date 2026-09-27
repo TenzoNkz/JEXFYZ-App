@@ -996,3 +996,16 @@ This repeated pattern requires boundary isolation, not more speculative patch st
   3. Only after Local OTA validation, test Online OTA behavior.
 - Do not add Firebase logging changes while this OTA validation is in progress unless the user explicitly requests it.
 - Local OTA remains a protected subsystem and must not be modified during Online OTA testing.
+
+## 2026-09-27 — V1.6 LOCAL OTA PHYSICAL TEST RESULT
+- Physical Local OTA test failed after the upload reached 100% progress.
+- Screenshot evidence shows two attempts using `1.8.bin` and `1.6.bin`, both ending at:
+  - `MODE=LOCAL`
+  - `STAGE=LOCAL_IMAGE_VERIFY`
+  - `CODE=3`
+  - `ERROR=UPDATE_END_FAILED_Flash Read Failed` (text visibly truncated in the browser, but code 3 is confirmed).
+- The transfer path therefore reached the finalization/verification boundary; this is NOT a simple upload-progress failure.
+- Official Arduino-ESP32 Core 3.3.7 `Update.end(true)` maps error code 3 to `UPDATE_ERROR_READ` / `Flash Read Failed`.
+- Important diagnostic finding: Core 3.3.7 `Update.end(true)` calls the internal bootability path where error code 3 can be produced when the reserved first 16-byte image header is restored or when the just-written OTA partition is read back for bootability. Therefore the current firmware label `LOCAL_IMAGE_VERIFY` is too broad to identify the exact failing sub-step.
+- Next investigation must isolate the exact finalization sub-step (header/partition enable write vs bootability read) before changing Local OTA logic.
+- No Local OTA code was changed from this physical test result; Firebase remains deferred.
