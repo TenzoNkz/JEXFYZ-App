@@ -1150,3 +1150,18 @@ This repeated pattern requires boundary isolation, not more speculative patch st
   - Baudrate: 115200
 - The three ArduinoDroid .bin files should not be treated as interchangeable. For full USB flashing, bootloader, partition table, and application must be assigned to their proper flash offsets. For an application-only test preserving the existing partition layout, use only the application .ino.bin at the application offset.
 - No production firmware/code was changed by this discussion.
+
+
+## 2026-09-27 — DISCUSSION: ESPFlash ANDROID USB FLASH CONFIGURATION
+- User showed ESPFlash Android app configuration for direct USB flashing.
+- Screenshot settings:
+  - Chip Type: ESP32C3
+  - SPI Speed: 80MHz
+  - SPI Mode: DIO
+  - High-Speed Mode (Stub): ON
+  - Firmware Compress: ON
+  - Baudrate: 115200
+- Chip type, SPI speed, and DIO match the known ArduinoDroid board/flash configuration used for the project.
+- For the first diagnostic flash, prefer conservative transport settings: High-Speed Mode (Stub) OFF and Firmware Compress OFF, with 115200 baud. This removes optional transfer optimizations as variables while diagnosing the ArduinoDroid-vs-CI binary difference.
+- The critical item for flashing a single Arduino application .bin is the flash address: the application image is normally placed at the app partition offset (for the project's 2MB APP x2 / no-FS layout, the expected Arduino app offset is 0x10000). Do not flash the application .bin at 0x0; that address is for the bootloader in a full-image flash.
+- This is discussion-only; no firmware/repository code was changed by this note.
