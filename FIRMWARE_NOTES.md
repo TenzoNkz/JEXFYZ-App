@@ -1457,3 +1457,24 @@ This repeated pattern requires boundary isolation, not more speculative patch st
   - confirm whether `STEP 2: Network.begin() RESULT = OK` appears;
   - if it does not appear, preserve the exact panic/reset output;
   - do not add another production/runtime patch before this boundary is classified.
+
+## 2026-09-27 — ARDUINODROID BIN RECEIVED: V1.0
+
+- User supplied the manually compiled ArduinoDroid application firmware BIN and explicitly declared it as V1.0.
+- Input file: `V1.0.bin`.
+- Binary validation:
+  - size: 1,456,256 bytes
+  - ESP image magic: `0xE9`
+  - image segment count: 6
+  - embedded `V1.0` string: present
+  - embedded `V1.6` string: absent
+  - `JE X FYZ` identity string: present
+  - `CORE 3.3.7` marker: present
+  - SHA-256 (validation/traceability only): `90cb4235ce05556ee9e12d945233a42bcd7cb7ce6e6fa9b442c526b3afef9a36`
+- The binary was renamed locally to the required public distribution name: `JEXFYZ-V1.0.bin`.
+- The authoritative source `firmware/JEXFYZ.ino` remains V1.0; no source version mismatch was found.
+- Public firmware repository is still unchanged at this action boundary:
+  - `JEXFYZ-V1.6.bin` remains the existing public artifact.
+  - `manifest.json` remains V1.6.
+- Publication was intentionally NOT performed because the available GitHub connector exposes text/blob APIs but no direct binary upload operation from the mounted conversation file. Do not change the manifest until `JEXFYZ-V1.0.bin` is actually uploaded to `TenzoNkz/JEXFYZ-Firmware`.
+- This BIN is the user's ArduinoDroid production artifact for the V1.0 release workflow; it must not be replaced by the CI V1.0 binary.
