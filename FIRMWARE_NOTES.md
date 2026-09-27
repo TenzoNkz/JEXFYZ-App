@@ -2147,7 +2147,7 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - App source/protocol was not changed in this execution because the App already defines LED modes 1..8 and does not require a new protocol for these firmware hardening changes.
 - Source commits in this execution: `d7f438a37e74c33b07b3e00295412bf1ce842731`, `210571960117f459d22f632f16fab76228b10ca6`, `13361994b0d69facf61ea88895e378edf6f71fd4`.
 - OTA Gold Master Lock was refreshed for V1.5: `f2ad197ee2c8149ad52cc7edb8c0b4f3107bdc3`.
-- Final authoritative firmware source blob SHA: `040f38fb8113dc0a0900a618bb58cc6452a1907`.
+- Final authoritative firmware source blob SHA: `040f38fb8113ddc7a0900a618bb58cc6452a1907`.
 - Static source audit: PASS for V1.5 version marker, GPIO mapping, absence of `Update.writeStream()`, chunked stream writes, 512-byte RX buffer, atomic RX queue serialization, absence of forbidden `portMUX`/FreeRTOS critical APIs, Twinkle range 1..8, Peltier duty tracking, battery hysteresis, NTC sanitization, Boot AP hard limit, protected OTA markers/order, balanced braces, and Online OTA diagnostic/result markers.
 - Callback audit remains OPEN: the source still contains one `new ServerCallbacks()` construction. This is intentionally documented as an unresolved review item rather than falsely claiming it has been fixed.
 - No firmware BIN was generated or published in this execution. Public firmware distribution remains V1.3 until a V1.5 BIN is compiled from this source in the locked ArduinoDroid environment and physically validated.
