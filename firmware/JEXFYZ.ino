@@ -347,6 +347,8 @@ int otaDiagnosticErrorCode = 0;
 uint8_t otaDiagnosticProgress = 0;
 uint8_t otaDiagnosticLastPublishedProgress = 255;
 
+// ==================== END OTA DIAGNOSTIC CORE — PROTECTED =================
+
 bool bootApActive = false;
 bool bootApPending = true;
 uint32_t bootApStartedAt = 0;
