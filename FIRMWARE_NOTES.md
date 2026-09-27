@@ -1746,3 +1746,25 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Corrected local file size: **107,408 bytes**; SHA-256: `d67eb079bf4a2385b06794eabd05e03b990fd9a62348242764796e951dc80016`.
 - No public firmware release or manifest was changed.
 - Chat handoff status: **FIX COMPLETE — RETRY COMPILE/LOCAL OTA WITH CORRECTED V1.1 SOURCE**.
+
+## 2026-09-27 — EXECUTION: V1.1 BINARY PUBLISHED FROM USER UPLOAD
+
+- User explicitly reported that the newly compiled/tested **V1.1 BIN** had been uploaded to `TenzoNkz/JEXFYZ-Firmware` as temporary file `V1.1.bin`.
+- Repository was rechecked before publication:
+  - `V1.0` official binary was present as `JEXFYZ-V1.0.bin`.
+  - New user-uploaded binary was present as `V1.1.bin`.
+  - `V1.1.bin` repository blob SHA: `a2ec2e4504527a159be8498b682e7f1e22abb5a0`.
+  - Size: **1,456,272 bytes**.
+- Publication action:
+  - Removed old public `JEXFYZ-V1.0.bin`.
+  - Promoted the user's exact `V1.1.bin` blob to official path `JEXFYZ-V1.1.bin`.
+  - Removed temporary `V1.1.bin`.
+  - Updated `manifest.json` from V1.0 to V1.1 and pointed it to the exact V1.1 raw URL.
+- Public firmware repository verification after the commit:
+  - Root contains only `JEXFYZ-V1.1.bin` and `manifest.json`.
+  - `JEXFYZ-V1.1.bin` has blob SHA `a2ec2e4504527a159be8498b682e7f1e22abb5a0`.
+  - Manifest reports `version: V1.1` and the matching raw URL.
+- Publication commit: `b013d87a88ac33b8f4210618e17599a1817ada5a`.
+- This is a test candidate based on the user's V1.1 heap-fix binary; it is **not yet an OTA Gold Master or final production firmware** until physical Online OTA validation passes.
+- Important test consequence: the existing device running the older V1.0 code labeled V1.5 can now target public V1.1 in the App as a different version. However, because the App's Online OTA credentials/URL are provided at runtime from the manifest flow, the next physical test should use the current V1.1 binary as the online target.
+- Chat handoff status: **EXECUTION COMPLETE — PUBLIC V1.1 TEST BINARY PUBLISHED; PHYSICAL ONLINE OTA VALIDATION PENDING**.
