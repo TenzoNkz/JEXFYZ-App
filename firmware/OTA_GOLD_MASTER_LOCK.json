@@ -59,8 +59,6 @@
     "const size_t written = Update.write(upload.buf, chunkSize);",
     "if (!Update.end(true)) {",
     "Update.printError(Serial);",
-    "if (!Update.begin(totalSize)) {",
-    "http.writeToStream(&sink)",
     "cloudClient.setCACert(GITHUB_ROOT_CA);",
     "#include <Update.h>",
     "#include <HTTPUpdate.h>",
