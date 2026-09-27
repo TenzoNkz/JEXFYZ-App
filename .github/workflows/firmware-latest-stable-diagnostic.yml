@@ -14,6 +14,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
+  ESP32_CORE_VERSION: "3.3.8"
   ONEBUTTON_VERSION: "2.6.2"
   ADAFRUIT_NEOPIXEL_VERSION: "1.15.5"
 
@@ -41,22 +42,18 @@ jobs:
       - name: Install latest stable ESP32 Arduino Core
         run: |
           set -euo pipefail
-          arduino-cli core install "esp32:esp32"
+          arduino-cli core install "esp32:esp32@${ESP32_CORE_VERSION}"
           arduino-cli core list
           CORE_VERSION="$(arduino-cli core list | awk '$1=="esp32:esp32"{print $2; exit}')"
-          test -n "$CORE_VERSION"
+          test "$CORE_VERSION" = "$ESP32_CORE_VERSION"
           echo "Resolved ESP32 Arduino Core: $CORE_VERSION"
-          if [ "$CORE_VERSION" = "3.3.7" ]; then
-            echo "ERROR: latest stable resolution is still 3.3.7; a newer stable core was not resolved."
-            exit 1
-          fi
           echo "CORE_VERSION=$CORE_VERSION" >> "$GITHUB_ENV"
 
       - name: Install ArduinoDroid-matching libraries
         run: |
           set -euo pipefail
-          arduino-cli lib install "OneButton@\${ONEBUTTON_VERSION}"
-          arduino-cli lib install "Adafruit NeoPixel@\${ADAFRUIT_NEOPIXEL_VERSION}"
+          arduino-cli lib install "OneButton@${ONEBUTTON_VERSION}"
+          arduino-cli lib install "Adafruit NeoPixel@${ADAFRUIT_NEOPIXEL_VERSION}"
           arduino-cli lib list
 
       - name: Audit source
@@ -107,8 +104,8 @@ jobs:
             echo "Firmware source: firmware/JEXFYZ.ino"
             echo "Firmware version: V1.6"
             echo "Arduino-ESP32 Core: $CORE_VERSION"
-            echo "OneButton: \${ONEBUTTON_VERSION}"
-            echo "Adafruit NeoPixel: \${ADAFRUIT_NEOPIXEL_VERSION}"
+            echo "OneButton: ${ONEBUTTON_VERSION}"
+            echo "Adafruit NeoPixel: ${ADAFRUIT_NEOPIXEL_VERSION}"
             echo "Board: ESP32-C3 Dev Module"
             echo "JTAG Adapter: Disabled"
             echo "USB CDC On Boot: Enabled"
