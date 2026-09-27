@@ -2033,3 +2033,63 @@ This repeated pattern requires boundary isolation, not more speculative patch st
   - preserve exact OTA error stage reporting so the App can identify where the failure occurred after BLE recovery.
 - Important repository consistency finding: the living notes contain newer V1.3 handoff text, but the actual current firmware/JEXFYZ.ino fetched from the default branch is V1.2 (72eea61ec02d1ab1956b2d64e784040c2fa57a37). The actual source/repository state must be reconciled with the notes before the next firmware execution; do not invent a V1.3 source from notes alone.
 - Next boundary: Eksekusi Full to implement the Online OTA repair against the actual current source, then build/validate and physically retest the exact stage markers.
+
+## 2026-09-28 — EXECUTION FULL: V1.3 ONLINE OTA REPAIR
+
+- User explicitly authorized `Eksekusi Code dan Firmware Full`.
+- User clarified the public/current upload state before this execution: firmware distribution remained **V1.2**; V1.3 had not yet been uploaded as a BIN. The source was therefore advanced to V1.3 only after the Online OTA repair, exactly as requested.
+- Authoritative source changed: `firmware/JEXFYZ.ino` from V1.2 to **V1.3**.
+- Firmware source implementation commit: `6d067febcc0318b64c86706876a43670bfe9f38c`.
+- Follow-up source cleanup removed one duplicate OTA prototype; final source cleanup commit: `7cb2caae177c79bc6774b48362cf36b3bfc8865a`.
+- Final source blob after cleanup: `709dc27d2ef1c54289100516b15d98c66146b1c0`.
+
+### Online OTA implementation now used by V1.3
+- Replaced the failing/simplified HTTPUpdate execution layer with the official Arduino-ESP32 `HTTPClient` + `Update` lifecycle so the stage boundaries can be controlled explicitly without firmware-sized RAM buffering.
+- Online firmware is streamed directly into the inactive OTA partition with `Update.writeStream()`.
+- No Range/chunk/retry transport remains in the Online OTA path.
+- GitHub connection stage performs a real HTTPS GET/header/body-stream readiness check before the GREEN indication.
+- Firmware transfer is not started until the GREEN GitHub-success result indication finishes.
+- After the full stream reaches the inactive OTA partition, the required BLUE download-complete indication runs before `Update.end()` finalization.
+- Final GREEN flash-success indication runs only after `Update.end()` succeeds; only after that indicator completes is the controlled restart scheduled.
+- Any Online OTA failure uses the RED result indication and only then returns control to BLE recovery.
+
+### Locked Online OTA LED mapping
+- Wi-Fi success -> BLUE.
+- Wi-Fi failure -> RED.
+- GitHub connection/download-ready success -> GREEN.
+- GitHub connection/download-ready failure -> RED.
+- Firmware download/stream complete -> BLUE.
+- Firmware download failure -> RED.
+- Firmware flash/install success -> GREEN, then restart.
+- Firmware flash/install failure -> RED.
+- Result timing: 500 ms ON / 500 ms OFF / 500 ms ON / 500 ms OFF, non-blocking via millis().
+- No result-color animation runs continuously during Wi-Fi connection, GitHub connection, download, or flash finalization.
+
+### Diagnostics
+- New/explicit stages include `ONLINE_WIFI_CONNECTED`, `ONLINE_GITHUB_CONNECT`, `ONLINE_GITHUB_CONNECTED`, `ONLINE_DOWNLOAD`, `ONLINE_DOWNLOAD_COMPLETE`, `ONLINE_FLASH_PREPARE`, `ONLINE_FLASH_FINALIZE`, and `ONLINE_FLASH_SUCCESS`.
+- App stage translation was updated in `lib/main.dart` so these exact firmware stage names have human-readable Home NOTIFY labels.
+- App source commit: `7c7f7a53ad30435378c90145d8dd13b44deb60dc`.
+- No App Build was triggered automatically; the project still uses the separate `Build App` action boundary for APK CI.
+
+### OTA safety lock
+- `firmware/OTA_GOLD_MASTER_LOCK.json` was refreshed to V1.3 and regenerated from the exact current protected firmware segments.
+- Lock refresh commit: `7f76e81f7877aa5ae24a54338cd89b83cb73a724`.
+- Static lock verification: PASS — all protected segment contents match the current source exactly; no required critical marker is missing and no forbidden transport/API text is present.
+- Lock status remains `CANDIDATE_NOT_PHYSICALLY_VERIFIED` because V1.3 has not yet been physically flashed/tested.
+
+### Static validation
+- Firmware source version: V1.3.
+- Balanced braces: 445 / 445.
+- Online OTA engine contains no `delay()` call.
+- No `HTTPUpdate` or stale Online OTA indicator symbols remain.
+- No Range/chunk/resume identifiers remain in the Online OTA engine.
+- Official Arduino `HTTPClient` + `Update.begin` + `Update.writeStream` + `Update.end` lifecycle markers are present.
+- Required Online OTA stage markers are present.
+- App stage mappings are present.
+- No local firmware binary was published in this execution. Public firmware distribution remains V1.2 until the user supplies the V1.3 BIN produced by ArduinoDroid.
+
+### ArduinoDroid handoff
+- The exact V1.3 source is delivered to the chat as `JEXFYZ-V1.3.ino` for manual compilation/flash.
+- Pinned ArduinoDroid target remains ESP32C3 Dev Module / Arduino-ESP32 Core 3.3.7 with the project-locked settings from the living notes.
+- Build/compile evidence is not claimed here because `arduino-cli` is unavailable in the working container and no current firmware-build workflow exists in the authoritative repository.
+- Next boundary: manually compile/flash V1.3 in ArduinoDroid, then perform the controlled Online OTA test and preserve the complete Serial/App diagnostic evidence.
