@@ -1543,3 +1543,22 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Local OTA remains protected and must not be changed as part of this diagnosis.
 - No firmware source or App source was changed by this discussion.
 - Next diagnostic boundary: preserve the complete Serial Monitor output from the Online OTA attempt, especially the last line before disconnect/reset; alternatively obtain a valid physical result from the existing minimal `WiFi.mode(WIFI_STA)` diagnostic. Only after the exact STA boundary is confirmed should a production Online OTA fix be executed.
+
+## 2026-09-27 — DISCUSSION: NEXT ACTION FOR ONLINE OTA FAILURE
+
+- User requested clear next-step instructions after the Online OTA V1.5 → V1.0 failure.
+- Current evidence boundary is fixed at `ONLINE_WIFI_CONNECT` / 0% with no observed GitHub/HTTPS/download stage.
+- Immediate user action: test the existing minimal `firmware/diagnostics/JEXFYZ-WiFi-STA-Mode-Test.ino` with the locked ArduinoDroid profile and Arduino-ESP32 Core 3.3.7. Do not flash the production `firmware/JEXFYZ.ino` for this diagnostic.
+- Serial Monitor requirements:
+  - baud: 115200
+  - start capture from reset/boot
+  - preserve every line, including any Guru Meditation/reset/backtrace
+  - critical lines are CORE, CHIP, CHIP_REV, STEP 1, STEP 2, STEP 3, STEP 4, and RESULT.
+- Interpretation boundary:
+  - If `WiFi.mode(WIFI_STA)` returns and `RESULT: WIFI STA MODE READY` appears, the failure is later in the Online OTA STA sequence and the next isolated test is `WiFi.begin()`/connection handling.
+  - If the device panics before `STEP 3`, the failure boundary is inside `WiFi.mode(WIFI_STA)`/its internal Core 3.3.7 initialization path; only then should a production patch be designed around the proven boundary.
+  - If the diagnostic output is absent or incomplete, first fix the evidence/capture boundary; do not patch production firmware from an ambiguous result.
+- Do not modify HTTPS/GitHub/Range/download/flash code yet.
+- Do not modify Local OTA.
+- No executable source change or build was authorized by this discussion.
+- Chat handoff status: **DISCUSSION — NOT YET READY FOR EXECUTION** until the STA diagnostic result is captured and classified.
