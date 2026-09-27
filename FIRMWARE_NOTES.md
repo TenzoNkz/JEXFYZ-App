@@ -1260,3 +1260,22 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - A newer Core changes the compiler/framework/toolchain output, so its resulting binary should not be treated as a like-for-like comparison against ArduinoDroid Core 3.3.7. It is useful as a separate compatibility experiment after the current 3.3.7 evidence is understood.
 - Current web access is unavailable, so the exact latest stable Core version as of 2026-09-27 cannot be independently verified in this discussion. Do not invent a version number. Before execution, select the newest stable Core version actually available in the controlled build environment and record the exact version.
 - No code/build/release execution occurred from this discussion.
+
+
+## 2026-09-27 — DISCUSSION: ESP32 FLASH/ERASE FULL-FLASH SCREEN
+- User showed the ESP32 Flash/Erase configuration screen for the planned one-time full flash.
+- Visible target configuration:
+  - Chip: ESP32-C3
+  - Baudrate: 921600
+  - SPI Mode: DIO
+  - SPI Frequency: 80MHz
+  - Flash Size: 4MB
+  - Bootloader offset: 0x0
+  - Partition table offset: 0x8000
+  - Firmware/application offset: 0x10000
+  - Bootloader Auto: ON
+  - Compression: ON
+- The three offsets are the expected flash locations for the three-image full-flash layout.
+- For the first controlled diagnostic, the recommended conservative transport setup is SPI DIO / 80MHz / 4MB with compression OFF and a lower baudrate such as 115200, to remove transport optimization variables.
+- Because the planned test supplies an explicit bootloader.bin, partition-table.bin, and application.bin, avoid relying on an automatically selected replacement image unless the app's Bootloader Auto behavior is confirmed. Do not flash until the exact three CI-generated files and their provenance are confirmed.
+- This remains discussion-only; no flash or firmware code execution was performed.
