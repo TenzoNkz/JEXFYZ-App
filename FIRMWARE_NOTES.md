@@ -828,3 +828,41 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - No code change is authorized by this discussion. The next execution, when explicitly requested, must focus only on Online OTA failure diagnosis/fix; no unrelated feature changes.
 - Before proposing a production Online OTA patch, identify the exact failure stage from the existing OTA diagnostic reporting or Serial output.
 - Do not modify BLE, NTC, cooling, RGB, Adaptive, GPIO, Local OTA, or application UI in the Online OTA execution unless a directly verified dependency requires it.
+## 2026-09-27 — ONLINE OTA DIAGNOSTIC + LED STATE DESIGN (DISCUSSION / NO CODE EXECUTION)
+- User explicitly instructed that Local OTA is considered done/stable and must not be broken during future Online OTA work. Treat Local OTA as a protected subsystem: no unrelated Online OTA change may modify Local OTA logic.
+- Historical Local OTA failures remain retained for traceability; "protected/stable" is the current product baseline instruction and does not erase the earlier physical failure evidence.
+- User requested complete, stage-by-stage diagnostics for Online OTA from start to finish so the exact failure boundary is visible.
+- Online OTA diagnostic requirement: every meaningful stage must publish a clear stage/status message, and any failure must identify the exact stage and error returned by the underlying official API/network operation. Do not collapse multiple failure points into one generic OTA failed message.
+- Proposed Online OTA stage flow:
+  1. ONLINE_REQUEST — OTA request received / metadata present.
+  2. ONLINE_VERSION_CHECK — compare manifest version with current version.
+  3. If equal: ONLINE_UP_TO_DATE — show Up to date; do not flash.
+  4. If different: ONLINE_WIFI_START — begin Wi-Fi connection process.
+  5. ONLINE_WIFI_CONNECTED — Wi-Fi connection succeeded.
+  6. ONLINE_WIFI_FAILED — Wi-Fi connection failed.
+  7. ONLINE_GITHUB_CONNECT — establish HTTPS connection to GitHub/raw firmware URL.
+  8. ONLINE_GITHUB_READY — GitHub connection/HTTP response is valid for firmware download.
+  9. ONLINE_GITHUB_FAILED — GitHub connection/download setup failed.
+  10. ONLINE_DOWNLOAD_START — firmware download begins.
+  11. ONLINE_DOWNLOAD_PROGRESS — firmware download progress reporting.
+  12. ONLINE_DOWNLOAD_SUCCESS — complete firmware image downloaded/written to OTA staging.
+  13. ONLINE_DOWNLOAD_FAILED — network/stream/range/download failure with exact error detail.
+  14. ONLINE_IMAGE_VERIFY — finalize Update.end(true) and verify image.
+  15. ONLINE_INSTALL_SUCCESS — firmware accepted and boot partition activation succeeded.
+  16. ONLINE_INSTALL_FAILED — image verification/activation failure with exact official Update error.
+  17. ONLINE_RESTART — green indication, then controlled restart.
+- User-defined Online OTA LED behavior:
+  - Wi-Fi connection succeeds: BLUE blink for 1 second, then LED off.
+  - Wi-Fi connection fails: RED blink for 1 second, then LED off.
+  - Wi-Fi succeeds + GitHub connection/download endpoint succeeds: GREEN blink, then continue.
+  - Wi-Fi succeeds + GitHub connection fails: RED blink for 1 second, then LED off / failure state.
+  - Firmware download succeeds: BLUE blink, then continue.
+  - Firmware download fails: RED blink for 1 second, then LED off / failure state.
+  - Firmware installation/verification succeeds: GREEN blink for 1 second, then restart.
+  - Firmware installation fails: RED blink for 1 second, then LED off; no restart.
+- LED indication must be tied to discrete stage completion/failure, not used as a substitute for textual diagnostics.
+- Online same-version policy remains: same remote version as current means Up to date and no flash; different remote version is allowed regardless of whether remote is older or newer.
+- Local vs Online policy remains explicitly separated:
+  - Local OTA: no version restriction; preserve the working Local OTA path.
+  - Online OTA: equal version means Up to date; different version is allowed.
+- No code/build/release execution is authorized by this discussion. The next code execution requires an explicit user command and must focus only on the Online OTA diagnostic/LED implementation while preserving Local OTA.
