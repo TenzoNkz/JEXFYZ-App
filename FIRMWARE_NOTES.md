@@ -2103,3 +2103,11 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - No V1.3 BIN was generated or published. The public firmware distribution remains V1.2, pending the user's ArduinoDroid compilation/flash validation of V1.3.
 - Physical validation remains pending; OTA lock status remains `CANDIDATE_NOT_PHYSICALLY_VERIFIED`.
 - Next boundary: compile/flash the delivered V1.3 `.ino` in the pinned ArduinoDroid environment, then test Online OTA with exact LED/stage diagnostics and preserve the complete evidence.
+
+## 2026-09-28 — DELIVERY FIX: V1.3 INO DOWNLOAD FILE
+
+- User reported a download/file-not-found error when attempting to obtain `JEXFYZ-V1.3.ino`.
+- Root cause of the chat delivery issue: the prior final link referenced `/mnt/data/JEXFYZ-V1.3.ino` before a real file existed at that exact runtime path.
+- The exact V1.3 source artifact was re-materialized from the verified GitHub Actions source-export artifact, extracted, and written to `/mnt/data/JEXFYZ-V1.3.ino`.
+- Delivery file verification: SHA-256 `94650f80091faf45ddd7c1185b12f57f997cb24c4c13bc185ab16b2c5e8b3824`; 3,702 lines; imports match the authoritative source; firmware version remains V1.3.
+- No firmware source code was changed by this delivery fix. Public firmware distribution remains V1.2 and no V1.3 BIN was published.
