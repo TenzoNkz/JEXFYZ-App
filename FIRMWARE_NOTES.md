@@ -1680,3 +1680,19 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Next physical validation: compile the current V1.1 source using the locked ArduinoDroid/Core 3.3.7 profile. For Online OTA A/B testing, the device may be manually relabeled V1.5 again so the public V1.0 target remains a version-different update target. Do not change the Local OTA path.
 - Success criterion: the device must survive the BLE→Wi-Fi handoff without heap corruption/reboot, then advance beyond `ONLINE_WIFI_CONNECT` to `ONLINE_WIFI_CONNECTED` and subsequent stages. If it still fails, preserve the exact new stage/error before making another source change.
 - Chat handoff status: **EXECUTION COMPLETE — PHYSICAL V1.1 TEST PENDING**.
+
+## 2026-09-27 — HANDOFF: V1.1 ONLINE OTA HEAP-FIX .INO READY FOR LOCAL OTA YOLO
+
+- User requested the exact test firmware source file in chat so it can be transferred to the device through the already-working Local OTA path.
+- Prepared local source file: `JEXFYZ-V1.1-OnlineOTA-HeapFix.ino`.
+- Source lineage: current authoritative V1.0 `firmware/JEXFYZ.ino` plus only the targeted Online OTA BLE→Wi-Fi handoff fix already committed in `3732b510cbaa284771a7b8639608d224168870a4`.
+- File changes:
+  - `FW_VERSION`: V1.0 → V1.1 test label.
+  - `stopBleRadio(bool releaseBluetoothMemory = true)`.
+  - Boot/local-OTA path uses `stopBleRadio(true)`.
+  - Online OTA path uses `stopBleRadio(false)`.
+  - No other source logic intentionally changed.
+- Local file size: **107,415 bytes**.
+- Local file SHA-256: `ca8c47baf171536b9ab9b90f6137e11a4208e3b5fdb1173393cb5248c8ee3232`.
+- This file is a **test candidate**, not a public release and not a change to the public V1.0 manifest/binary.
+- User will apply it through the already validated Local OTA path. Expected first physical validation target is survival through BLE→Wi-Fi handoff without the previously observed heap corruption/reboot, followed by progress beyond `ONLINE_WIFI_CONNECT`.
