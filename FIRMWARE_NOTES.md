@@ -1626,3 +1626,19 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - No code change was executed from this classification. Local OTA remains protected.
 - Next diagnostic boundary: inspect the exact BLE teardown ownership/lifecycle in the production path and compare it with the pinned Core 3.3.7 BLE implementation before designing a minimal change. Do not change HTTPS/Range/download/flash logic until the teardown boundary is classified.
 - Chat handoff status: **DISCUSSION — ROOT-CAUSE CANDIDATE IDENTIFIED, NOT YET READY FOR EXECUTION**.
+
+## 2026-09-27 — DISCUSSION: HISTORICAL ROOT-CAUSE CORRELATION — BLE deinit(true) INTRODUCED IN V3.6
+
+- Historical source diff was inspected between the pre-V3.6 firmware and the V3.6 firmware commit `be4e1dfba432f2402ce57d17e45a9f92397b18d9`.
+- The V3.6 change explicitly changed the Online OTA BLE teardown from:
+  `BLEDevice::deinit(false)`
+  to:
+  `BLEDevice::deinit(true)`.
+- The same V3.6 change consolidated the handoff into `stopBleRadio()`, which is used by Online OTA before starting Wi-Fi.
+- The current production source retained `BLEDevice::deinit(true)`.
+- Pinned Arduino-ESP32 Core 3.3.7 implementation confirms `BLEDevice::deinit(true)` performs normal BLE teardown and, with `release_memory=true`, additionally releases Bluetooth controller memory via `esp_bt_controller_mem_release(ESP_BT_MODE_BTDM)` when that controller path is enabled.
+- New physical evidence shows the user's current V1.5 test firmware reports heap corruption/assert immediately after Online OTA is started, during the BLE→Wi-Fi transition, before any confirmed HTTPS/GitHub/download stage.
+- This creates a strong historical correlation between the change to `deinit(true)` and the current failure mode. It is still a **root-cause candidate, not a proven causal conclusion**.
+- Candidate minimal investigation: compare behavior of Online OTA handoff using `deinit(false)` versus `deinit(true)`, while preserving the rest of the OTA engine and Local OTA path unchanged.
+- Do not execute the candidate change yet. No firmware/App source was modified by this discussion.
+- Chat handoff status: **DISCUSSION — STRONG ROOT-CAUSE CANDIDATE IDENTIFIED; READY FOR TARGETED EXECUTION ONLY AFTER USER AUTHORIZATION**.
