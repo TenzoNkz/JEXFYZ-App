@@ -1240,3 +1240,23 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - The first full-flash test should use the exact CI/repository application V1.6 together with CI-generated bootloader and partition-table images matching the same build configuration. After the one-time full flash and successful boot, re-test Local OTA with the same V1.6 application binary.
 - Because the user has only a phone, ESP32 Flash/Erase is the proposed transport for this controlled baseline. Use conservative settings first (ESP32-C3, DIO, 80MHz, 4MB); transport baud/compression are secondary to correct image/offset selection.
 - Do not erase or flash yet from this discussion. Execution remains locked behind an explicit execution command.
+
+
+## 2026-09-27 — DISCUSSION: PROPOSED CI BUILD PROFILE MATCHING ARDUINODROID, WITH A NEWER STABLE CORE
+- User proposed reproducing the ArduinoDroid board/build settings in the assistant's build environment while intentionally using a newer stable ESP32 Arduino Core instead of the currently pinned 3.3.7.
+- Target board settings to match the screenshot:
+  - ESP32-C3 Dev Module
+  - JTAG Adapter: Disabled
+  - USB CDC On Boot: Enabled
+  - No FS 4MB (2MB APP x2)
+  - CPU 160MHz (WiFi)
+  - Flash Mode DIO
+  - Flash Frequency 80MHz
+  - Flash Size 4MB
+  - Core Debug Level None
+  - Erase All Flash Before Sketch Upload Enabled (relevant to physical uploader behavior, not normally a compile flag)
+  - Zigbee Mode Disabled
+- This would be a diagnostic build profile, not an immediate replacement of the project's pinned production Core 3.3.7 baseline.
+- A newer Core changes the compiler/framework/toolchain output, so its resulting binary should not be treated as a like-for-like comparison against ArduinoDroid Core 3.3.7. It is useful as a separate compatibility experiment after the current 3.3.7 evidence is understood.
+- Current web access is unavailable, so the exact latest stable Core version as of 2026-09-27 cannot be independently verified in this discussion. Do not invent a version number. Before execution, select the newest stable Core version actually available in the controlled build environment and record the exact version.
+- No code/build/release execution occurred from this discussion.
