@@ -813,3 +813,18 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Do not hide intermediate failures; report them and explain whether they were caused by source code, tool/build infrastructure, or unverified runtime behavior.
 - This visibility rule does not authorize code execution. Production code/repository changes still require the user's explicit execution command.
 - Notes/history remain auto-updated whenever meaningful project decisions, errors, test results, or rules are established.
+## 2026-09-27 — PHYSICAL RESULT: MANUAL VERSION FLASHING PASS / ONLINE OTA V1.0->V1.5 FAIL
+- User physically tested manual firmware flashing by changing the firmware version source and flashing:
+  1. V1.5 -> V1.5: PASS
+  2. V1.5 -> V1.0: PASS
+  3. V1.0 -> V1.9: PASS
+  4. V1.9 -> V1.5: PASS
+  5. V1.5 -> V1.0: PASS
+- Current physical firmware state after these tests: V1.0.
+- User then tested Online OTA V1.0 -> V1.5: FAIL.
+- This manual-flashing history establishes that the board can manually accept and boot the tested firmware versions; therefore the Online OTA failure should be isolated from basic firmware-image compatibility/partition boot behavior unless new evidence contradicts this.
+- Current public firmware manifest is V1.5 and points to the public V1.5 binary.
+- The current Online OTA implementation uses HTTPS, a range probe, strict 206 Partial Content + Content-Range validation, chunked range requests, Update.begin(totalSize), Update.write(), and Update.end(true).
+- No code change is authorized by this discussion. The next execution, when explicitly requested, must focus only on Online OTA failure diagnosis/fix; no unrelated feature changes.
+- Before proposing a production Online OTA patch, identify the exact failure stage from the existing OTA diagnostic reporting or Serial output.
+- Do not modify BLE, NTC, cooling, RGB, Adaptive, GPIO, Local OTA, or application UI in the Online OTA execution unless a directly verified dependency requires it.
