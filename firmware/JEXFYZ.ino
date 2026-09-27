@@ -1774,14 +1774,14 @@ class RxCallbacks : public BLECharacteristicCallbacks {
   }
 };
 
-static void stopBleRadio() {
+static void stopBleRadio(bool releaseBluetoothMemory = true) {
   bleQueueResetPending = true;
   bleClientConnected = false;
   bleSyncPending = false;
   bleCommandGateOpen = false;
 
   if (BLEDevice::getInitialized()) {
-    BLEDevice::deinit(false);
+    BLEDevice::deinit(releaseBluetoothMemory);
     yield();
   }
 
@@ -1793,7 +1793,8 @@ static void stopBleRadio() {
 }
 
 static void stopBleForBootWiFiClient() {
-  stopBleRadio();
+  // Preserve the established boot-AP/local-OTA BLE teardown behavior.
+  stopBleRadio(true);
 }
 
 static void waitForWiFiOff() {
@@ -2052,7 +2053,9 @@ static void startOnlineOta() {
 
   clearBleTxQueue();
   clearBleRxQueue();
-  stopBleRadio();
+  // Online OTA must not release BTDM memory during the live BLE→Wi-Fi handoff.
+  // Keep the memory reserved; this isolates the handoff from Core 3.3.7 heap teardown.
+  stopBleRadio(false);
   bleStartPending = false;
   bleStartAttempts = 0;
 
