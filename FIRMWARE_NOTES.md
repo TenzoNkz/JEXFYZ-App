@@ -1489,3 +1489,15 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Root cause of the publication gap: the available GitHub connector can create/update text blobs/files, but the received 1.46 MB binary cannot be transferred from the mounted chat file into the connector call in the current execution environment. The file itself was validated and renamed locally as `JEXFYZ-V1.0.bin`, but that does not create a GitHub release object.
 - Important consequence: the public manifest currently advertises V1.0, but the corresponding V1.0 binary is not present in the public firmware repository yet. Do not claim the public V1.0 binary is published until the binary file itself is verified in the repository.
 - No source/firmware logic was changed in this discussion. No manifest modification was made by this recheck.
+
+## 2026-09-27 — EXECUTION ATTEMPT: UPLOAD USER V1.0 BIN TO PUBLIC REPOSITORY
+
+- User explicitly asked to try uploading the supplied ArduinoDroid V1.0 application BIN to `TenzoNkz/JEXFYZ-Firmware`.
+- Exact source file remains available at `/mnt/data/JEXFYZ-V1.0.bin`, size 1,456,256 bytes.
+- Upload path was rechecked against the available GitHub connector capabilities.
+- Result: **UPLOAD COULD NOT BE COMPLETED** in the current environment. The GitHub connector exposes text-file/blob operations; its `create_blob` endpoint accepts the full blob as an inline UTF-8/base64 string, but there is no binary-file/path upload operation and the functions runtime cannot pass the mounted attachment bytes/path directly into that field.
+- A direct network fallback was also attempted from the container, but external GitHub DNS/network access is unavailable (`Could not resolve host: github.com`).
+- No incorrect placeholder blob was created and no binary file was substituted with a different build.
+- Public repository state therefore remains: manifest V1.0 points to `JEXFYZ-V1.0.bin`, but that binary is still absent from the repository.
+- No firmware logic was changed.
+- Next publication boundary: the exact binary must be uploaded through a path that supports binary transfer (for example manual upload to the repository by the user, or a future connector/workflow that accepts the file bytes). After the binary is present, verify the raw URL before relying on Online OTA.
