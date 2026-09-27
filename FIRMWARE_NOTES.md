@@ -883,3 +883,47 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - The existing physical V1.4 Local OTA failure UPDATE_END_FAILED remains historical evidence and must not be deleted from the history.
 - Future implementation must use the real Update.getError() / Update.errorString() values rather than a hardcoded error code.
 - No code/build/release execution is authorized by this discussion. This update only records the Local OTA LED/diagnostic specification for the next explicit execution.
+## 2026-09-27 — OTA NOTIFY MUST BE COMPLETE AND DETAILED
+- User explicitly requires OTA notifications to be complete and detailed enough to identify where and why an OTA operation failed.
+- This applies to BOTH Local OTA and Online OTA.
+- OTA notifications must not use a generic message such as "OTA failed" without diagnostic context.
+- At every meaningful OTA boundary, the device/app must expose:
+  - MODE: LOCAL or ONLINE
+  - STAGE: exact current processing stage
+  - ACTION/RESULT: what operation was attempted and whether it succeeded
+  - PROGRESS: last known percentage when applicable
+  - ERROR CODE: the real code returned by the underlying official API/network operation when available
+  - ERROR DETAIL: the real human-readable/native error string when available
+  - VERSION: current and target/remote version when relevant
+- Minimum Local OTA notification stages should distinguish:
+  LOCAL_FILE_CHECK
+  LOCAL_UPDATE_BEGIN
+  LOCAL_RECEIVE
+  LOCAL_FILE_TRANSFER_SUCCESS
+  LOCAL_IMAGE_VERIFY
+  LOCAL_BOOT_PARTITION
+  LOCAL_RESTART
+- Minimum Online OTA notification stages should distinguish:
+  ONLINE_REQUEST
+  ONLINE_VERSION_CHECK
+  ONLINE_UP_TO_DATE
+  ONLINE_WIFI_START
+  ONLINE_WIFI_CONNECTED
+  ONLINE_WIFI_FAILED
+  ONLINE_GITHUB_CONNECT
+  ONLINE_GITHUB_READY
+  ONLINE_GITHUB_FAILED
+  ONLINE_DOWNLOAD_START
+  ONLINE_DOWNLOAD_PROGRESS
+  ONLINE_DOWNLOAD_SUCCESS
+  ONLINE_DOWNLOAD_FAILED
+  ONLINE_IMAGE_VERIFY
+  ONLINE_INSTALL_SUCCESS
+  ONLINE_INSTALL_FAILED
+  ONLINE_RESTART
+- The notification must identify the first failed stage rather than only reporting the final generic failure.
+- When an official Arduino Update API reports an error, use the actual Update.getError() / Update.errorString() result; never substitute a guessed or hardcoded error code.
+- For network/HTTP failures, preserve the actual HTTP/status/connection result and relevant stage in the diagnostic message.
+- A successful stage should also be visible so the user can distinguish "file received" from "image verified" from "boot partition activated".
+- LED indicators remain secondary to the textual diagnostic notification; LED color alone is never sufficient to diagnose OTA failure.
+- No code/build/release execution is authorized by this discussion. This is a requirements/history update only.
