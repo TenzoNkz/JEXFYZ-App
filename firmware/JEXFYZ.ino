@@ -2634,7 +2634,7 @@ static void localOtaUploadHandler() {
     applyOtaSafeOutputs();
     setOtaDiagnosticStage("LOCAL_UPDATE_BEGIN");
 
-    if (!Update.begin()) {
+    if (!Update.begin(localOtaExpectedBytes)) {
       const int updateErrorCode = static_cast<int>(Update.getError());
       const String updateError = Update.errorString();
       Update.printError(Serial);
@@ -3687,16 +3687,18 @@ void setup() {
   Serial.println("BOOT: FEATURES READY");
 
   // ========================================================================
-  // RADIO STARTUP BOUNDARY
+  // ======================= OTA BOOT PATH — PROTECTED =======================
   // Match the Horizon Cooler runtime context: complete setup() first, then
   // enter the official Arduino Wi-Fi AP path from loop(). BLE is not started
   // while the boot AP window owns the single radio.
   // ========================================================================
   bootApPending = true;
   Serial.println("BOOT: WIFI AP DEFERRED TO LOOP");
+  // ==================== END OTA BOOT PATH — PROTECTED =====================
 }
 
 void loop() {
+  // =================== OTA LOOP PRIORITY — PROTECTED =======================
   // ================= OTA PRIORITY: DO NOT MOVE DOWN =================
   if (serviceOtaPriority()) return;
 
@@ -3731,6 +3733,7 @@ void loop() {
   processPendingOnlineOtaStart();
 
   if (serviceOtaPriority()) return;
+  // ================ END OTA LOOP PRIORITY — PROTECTED ======================
 
   touchButton.tick();
   sampleNtcIfDue();
