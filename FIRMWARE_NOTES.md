@@ -1026,3 +1026,20 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Current V1.6 is NOT yet an OTA Gold Master because the physical Local OTA test failed at finalization (LOCAL_IMAGE_VERIFY, error code 3 / Flash Read Failed).
 - Current objective is to repair and physically validate OTA first, then establish the first physically verified OTA Gold Master. Firebase logging remains deferred until after this objective.
 - No firmware code execution/build was authorized by this discussion; this note records the design decision and test objective only.
+
+## 2026-09-27 — OTA FIX + SATPAM/SEKRETARIS EXECUTION
+- User explicitly authorized full firmware/code execution.
+- Local OTA regression identified from source history: V1.5 used `Update.begin(localOtaExpectedBytes)`; V1.6 had `Update.begin()`. Local OTA was restored to the exact-size official Update lifecycle.
+- Added protected OTA boundaries for safety lock, OTA state/diagnostics, OTA priority supervisor, boot path, loop priority path, and OTA engine.
+- Added `firmware/OTA_GOLD_MASTER_LOCK.json` as the current strict OTA lock candidate. Status is `CANDIDATE_NOT_PHYSICALLY_VERIFIED`; it is not yet the final Gold Master.
+- Added `.github/scripts/ota_guard.py`:
+  - exact byte-level protected-block comparison,
+  - protected block ordering check,
+  - critical OTA string check (including Wi-Fi SSID/password and Update lifecycle),
+  - forbidden low-level/insecure API check,
+  - safe block restore for the Secretary path,
+  - mandatory guard re-check after repair.
+- Firmware CI now executes 🛡️ SATPAM first; on failure it invokes 📋 SEKRETARIS to restore the approved lock candidate and immediately re-runs SATPAM. Build is blocked if the repair/check fails.
+- CI is allowed to commit a Secretary restoration of `firmware/JEXFYZ.ino`; the workflow trigger remains limited to `.github/FIRMWARE_BUILD_TRIGGER`, preventing a repair commit from recursively starting another firmware build.
+- Two-layer OTA protection is now active, but the lock remains only a candidate until physical Local OTA and subsequent OTA validation pass.
+- Firebase remains deferred during this OTA validation cycle.
