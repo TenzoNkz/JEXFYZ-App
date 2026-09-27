@@ -1082,3 +1082,32 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Therefore the previous hypothesis that `Update.begin(localOtaExpectedBytes)` alone would fix the issue is NOT physically validated and must not be treated as the root cause.
 - Next investigation must compare the ArduinoDroid and repository build environments/configuration that can affect OTA partition selection, flash layout, boot partition state, image metadata, and runtime Update behavior. Do not make another speculative OTA rewrite before this comparison.
 - OTA Gold Master remains NOT established.
+
+## 2026-09-27 — ARDUINODROID BUILD CONFIG / LIBRARY DIFFERENCE CONFIRMED
+- User provided ArduinoDroid configuration screenshots from the same physical environment:
+  - Board: ESP32C3 Dev Module
+  - JTAG Adapter: Disabled
+  - USB CDC On Boot: Enabled
+  - Partition Scheme: No FS 4MB (2MB APP x2)
+  - CPU Frequency: 160MHz (WiFi)
+  - Flash Mode: DIO
+  - Flash Frequency: 80MHz
+  - Flash Size: 4MB (32Mb)
+  - Upload Speed: 921600
+  - Core Debug Level: None
+  - Erase All Flash Before Sketch Upload: Enabled
+  - Zigbee Mode: Disabled
+- ArduinoDroid installed libraries shown:
+  - Adafruit NeoPixel 1.15.5
+  - OneButton 2.6.2
+  - WS2812FX 1.4.7
+- Repository CI is currently configured to compile with ESP32 Arduino Core 3.3.7 and explicitly installs:
+  - Adafruit NeoPixel 1.12.5
+  - OneButton 2.6.1
+- Production firmware includes Adafruit_NeoPixel and OneButton; WS2812FX is not included by the current production source header list.
+- Physical OTA matrix remains:
+  - ArduinoDroid V1.6 running -> Repo V1.6 OTA: PASS.
+  - Repo V1.6 running -> Repo V1.6 OTA: FAIL (CODE=3 / Flash Read Failed at finalization).
+  - Repo V1.6 running -> ArduinoDroid V1.6 OTA: FAIL (same finalization boundary).
+- The newly confirmed build-environment difference makes library-version and compile-configuration parity a primary investigation target. Do not yet claim it is the root cause.
+- Next comparison should reproduce ArduinoDroid settings in CI as closely as the repository build system permits, especially the installed library versions and compile board options. No OTA API rewrite is justified from this evidence alone.
