@@ -1973,3 +1973,16 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Therefore color is determined by the terminal Wi-Fi result: success uses BLUE; failure uses RED. The 500 ms x2 blink pattern is not a permanent connecting indicator.
 - No code modification was executed by this discussion clarification.
 - Chat handoff status: DISCUSSION — LED COLOR + TIMING SPECIFICATION LOCKED; READY FOR TARGETED EXECUTION.
+## 2026-09-28 — DISCUSSION: FINAL ONLINE OTA LED STAGE COLOR FLOW
+
+- User finalized the Online OTA LED color semantics:
+  1. Wi-Fi connection result: SUCCESS = BLUE; FAILED = RED.
+  2. GitHub connection / ability to reach GitHub for firmware download: initial stage indication = GREEN; FAILED = RED.
+  3. Firmware download completion/result: SUCCESS/COMPLETE = BLUE; FAILED = RED.
+  4. New firmware flash/install result: SUCCESS = BLUE, then controlled restart; FAILED = RED.
+- The LED is a stage-result indicator, not a continuous 'work in progress' animation. The code/mechanism should complete the underlying operation first, then execute the corresponding LED indication without using delay().
+- Existing agreed non-blocking timing remains: 500 ms ON / 500 ms OFF / 500 ms ON / 500 ms OFF, driven by millis(), for result indicators unless a later explicit instruction changes the timing.
+- This color mapping supersedes the earlier generic 'download = blue blink / success = green' interpretation for Online OTA. For the Online OTA flow, GREEN is specifically reserved for the initial successful GitHub connection/download-access indication; BLUE is used for successful Wi-Fi connection, completed download, and successful flash before restart. RED is used for every failed stage.
+- Local OTA behavior is unchanged by this clarification.
+- No code modification was executed in this discussion.
+- Chat handoff status: DISCUSSION — ONLINE OTA LED COLOR/STAGE SPECIFICATION LOCKED; READY FOR TARGETED LED EXECUTION.
