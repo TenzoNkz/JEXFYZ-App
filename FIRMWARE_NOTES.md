@@ -1201,3 +1201,30 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - The exact ArduinoDroid application filename should not be inferred from the generic *.ino.bin naming used by the CI build directory; the source/precompile naming differs because ArduinoDroid is compiling the sketch as JEXFYZ.cpp internally.
 - Next diagnostic: obtain/compare the bytes, size, and image metadata of JEXFYZ.cpp.bin versus the CI JEXFYZ-V1.6.bin, and separately compare JEXFYZ.cpp.partitions.bin against the CI-generated partition table. This will distinguish application-image differences from flash-layout differences.
 - No production firmware/code was changed by this discussion.
+
+
+## 2026-09-27 — BINARY COMPARISON: ARDUINODROID V1.6 VS CI/REPO V1.6
+- User uploaded the exact ArduinoDroid precompile artifacts:
+  - JEXFYZ.cpp.bin
+  - JEXFYZ.cpp.bootloader.bin
+  - JEXFYZ.cpp.partitions.bin
+- Exact measured ArduinoDroid application binary:
+  - size: 1,456,256 bytes
+  - SHA-256: 896c208e7b27a3cf12155765cb4c3366270e82f6612f322bd1f57aa23f4cfc94
+- Exact CI Build #78 application binary:
+  - size: 1,466,768 bytes
+  - SHA-256: b65bb2eaaaa01d6706e48e3a844d79c43c41f5bbae94287e19ef1096e1ed341f
+- The two application images are therefore NOT byte-identical; CI is 10,512 bytes larger (~0.72%).
+- Both images identify as the same ESP32 image class at the header level (magic 0xE9, 6 segments, SPI mode DIO, encoded flash 80 MHz/4 MB), but their image entry address differs:
+  - ArduinoDroid: 0x403807e4
+  - CI: 0x403807ca
+- Their segment layout/lengths also differs, confirming these are genuinely different builds, not just filename differences.
+- ArduinoDroid partition table binary is 3,072 bytes and decodes to the expected No-FS 4MB / 2MB APP x2 structure:
+  - nvs 0x9000 size 0x5000
+  - otadata 0xe000 size 0x2000
+  - app0 0x10000 size 0x1f0000
+  - app1 0x200000 size 0x1f0000
+  - coredump 0x3f0000 size 0x10000
+- This is a high-value diagnostic result: the ArduinoDroid application and CI application are different binaries even though both use Core 3.3.7.
+- Do not yet assert that this binary difference itself causes the OTA CODE=3 failure. The next comparison should identify which build variables produce the different image (library versions, compiler/build flags, board options, linker/build metadata) and, where possible, compare CI-generated bootloader/partition outputs with the ArduinoDroid precompile artifacts.
+- No production source/OTA code changed in this discussion.
