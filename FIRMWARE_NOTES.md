@@ -866,3 +866,20 @@ This repeated pattern requires boundary isolation, not more speculative patch st
   - Local OTA: no version restriction; preserve the working Local OTA path.
   - Online OTA: equal version means Up to date; different version is allowed.
 - No code/build/release execution is authorized by this discussion. The next code execution requires an explicit user command and must focus only on the Online OTA diagnostic/LED implementation while preserving Local OTA.
+## 2026-09-27 — LOCAL OTA LED STATE DESIGN (DISCUSSION / NO CODE EXECUTION)
+- Local OTA remains a protected/stable subsystem. Future Online OTA work must not alter this Local OTA behavior.
+- User-defined Local OTA LED sequence is explicitly separated into two success/failure boundaries:
+  1. FILE TRANSFER / RECEIVE RESULT
+     - Firmware file has been completely received by the device: BLUE blink.
+     - File transfer/receive fails: RED blink, then remain in failure state without restart.
+  2. FIRMWARE VERIFY / INSTALL RESULT
+     - After a complete successful file transfer, the firmware image passes the update/verification step and is accepted for boot: GREEN blink, then complete flash/activation and restart.
+     - Firmware verification, flash finalization, or activation fails: RED blink, no restart.
+- The exact stage must also be reported in OTA diagnostics so the LED is not the only failure indicator.
+- Required Local OTA diagnostic boundaries should distinguish at minimum:
+  LOCAL_FILE_CHECK -> LOCAL_UPDATE_BEGIN -> LOCAL_RECEIVE -> LOCAL_FILE_TRANSFER_SUCCESS -> LOCAL_IMAGE_VERIFY -> LOCAL_BOOT_PARTITION -> LOCAL_RESTART.
+- A transfer failure must never be reported as an image-verification failure, and an image/activation failure must never be mislabeled as a transfer failure.
+- Local OTA version policy remains unchanged: no version restriction; older, same, or newer valid firmware may be flashed locally.
+- The existing physical V1.4 Local OTA failure UPDATE_END_FAILED remains historical evidence and must not be deleted from the history.
+- Future implementation must use the real Update.getError() / Update.errorString() values rather than a hardcoded error code.
+- No code/build/release execution is authorized by this discussion. This update only records the Local OTA LED/diagnostic specification for the next explicit execution.
