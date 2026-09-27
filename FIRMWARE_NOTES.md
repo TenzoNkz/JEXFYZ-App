@@ -1326,3 +1326,10 @@ This repeated pattern requires boundary isolation, not more speculative patch st
   - partitions -> 0x8000
   - application -> 0x10000
 - This build is NOT a production release and is NOT published to the public firmware manifest.
+
+
+## 2026-09-27 — DECISION: CANCEL FULL-FLASH CORE 3.3.12 EXPERIMENT
+- User decided not to proceed with the one-time full-flash experiment because the process was too complicated.
+- Do not ask the user to perform the three-file full flash for this experiment unless explicitly requested again.
+- Keep the diagnostic build/branch and recorded artifacts as historical evidence; they are not a production release and must not replace the Core 3.3.7 production baseline or public firmware manifest.
+- Current physical OTA investigation remains at the previously established evidence: repository/CI V1.6 application reproduces Local OTA CODE=3 / Flash Read Failed on the board, and ArduinoDroid V1.6 behavior differs by build/image.
