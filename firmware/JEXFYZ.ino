@@ -3737,8 +3737,16 @@ void setup() {
   Serial.println(" / CORE 3.3.7 ARDUINO STANDARD");
 
   initializeRuntimeFeatures();
+
+  // ========================================================================
+  // ======================= OTA BOOT PATH — PROTECTED =======================
+  // Match the Horizon Cooler runtime context: complete setup() first, then
+  // enter the official Arduino Wi-Fi AP path from loop(). BLE is not started
+  // while the boot AP window owns the single radio.
+  // ========================================================================
   bootApPending = true;
   Serial.println("BOOT: WIFI AP DEFERRED TO LOOP");
+  // ==================== END OTA BOOT PATH — PROTECTED =====================
 }
 
 void loop() {
