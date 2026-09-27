@@ -1397,3 +1397,24 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Do NOT rename the existing V1.6 binary to V1.0 by filename only; the binary's embedded firmware version must match the declared release version.
 - New firmware publication workflow remains: user compiles in ArduinoDroid -> user states the BIN version -> ChatGPT validates against `firmware/JEXFYZ.ino` -> ChatGPT renames/uploads the correct BIN -> ChatGPT updates/verifies the GitHub manifest.
 - Historical diagnostic failures and prior version history remain preserved in these notes; cleanup removes obsolete working files from the production tree, not the historical record.
+
+
+## 2026-09-27 — ARDUINODROID OFFICIAL USER BUILD PROFILE LOCKED
+
+- User supplied the ArduinoDroid board/build-options screen and requested that the exact profile be included in the sub-chat handoff prompt.
+- ArduinoDroid firmware compile/flash baseline to preserve:
+  - Board: ESP32C3 Dev Module
+  - JTAG Adapter: Disabled
+  - USB CDC On Boot: Enabled
+  - Partition Scheme: No FS 4MB (2MB APP x2)
+  - CPU Frequency: 160MHz (WiFi)
+  - Flash Mode: DIO
+  - Flash Frequency: 80MHz
+  - Flash Size: 4MB (32Mb)
+  - Upload Speed: 921600
+  - Core Debug Level: None
+  - Erase All Flash Before Sketch Upload: Enabled
+  - Zigbee Mode: Disabled
+- Confirmed project ArduinoDroid ESP32 Arduino Core: 3.3.7.
+- Known ArduinoDroid library environment from the project diagnostics: Adafruit NeoPixel 1.15.5, OneButton 2.6.2, and WS2812FX 1.4.7. Production firmware includes/uses Adafruit NeoPixel and OneButton; WS2812FX is installed but is not used by the production source.
+- The ArduinoDroid profile above is now part of the permanent firmware handoff context and must not be lost when moving to another sub-chat.
