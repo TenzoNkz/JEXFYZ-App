@@ -16,7 +16,7 @@
 
 #include <Update.h>
 
-static constexpr char FW_VERSION[] = "V1.5";
+static constexpr char FW_VERSION[] = "V1.6";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -336,6 +336,9 @@ uint32_t bleStartRetryAt = 0;
 uint32_t cloudBytesReceived = 0;
 uint32_t cloudPhaseStartedAt = 0;
 bool cloudTimeSyncStarted = false;
+uint32_t onlineOtaFinalizeAt = 0;
+uint32_t otaIndicatorUntil = 0;
+uint32_t otaIndicatorColor = 0;
 
 // ====================== OTA DIAGNOSTICS — PROTECTED =========================
 String otaDiagnosticStage = "IDLE";
@@ -394,6 +397,8 @@ static String otaFailureResult(const String& mode, const String& stage, int erro
 static String otaSuccessResult(const String& mode, const String& stage, const String& version);
 static void failLocalOta(const String& stage, int errorCode, const String& error);
 static void failOnlineOta(const String& stage, int errorCode, const String& error);
+static bool validFirmwareVersion(const String& value);
+static void triggerOtaIndicator(uint32_t color);
 static void initializeRuntimeFeatures();
 
 static const char* voltageToString(Voltage value) {
@@ -786,6 +791,36 @@ static void renderBlink(uint32_t color) {
   showAll(ledBlinkPhase ? color : 0x000000, 255);
 }
 
+static void triggerOtaIndicator(uint32_t color) {
+  otaIndicatorColor = color;
+  otaIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
+  resetBlinkState();
+  showAll(color, 255);
+}
+
+static bool validFirmwareVersion(const String& value) {
+  String normalized = value;
+  normalized.trim();
+  normalized.toUpperCase();
+  if (!normalized.startsWith("V") || normalized.length() < 2) return false;
+
+  bool dotSeen = false;
+  bool digitSeen = false;
+  for (size_t i = 1; i < normalized.length(); ++i) {
+    const char c = normalized.charAt(i);
+    if (c >= '0' && c <= '9') {
+      digitSeen = true;
+      continue;
+    }
+    if (c == '.' && !dotSeen && i > 1 && i + 1 < normalized.length()) {
+      dotSeen = true;
+      continue;
+    }
+    return false;
+  }
+  return digitSeen;
+}
+
 static void resetBlinkState() {
   ledBlinkAt = 0;
   ledBlinkPhase = false;
@@ -911,6 +946,15 @@ static void renderCustomLedFrame(uint32_t now) {
 }
 
 static void processLeds() {
+  if ((otaState == OtaState::CLOUD_CONNECTING ||
+       otaState == OtaState::CLOUD_DOWNLOADING ||
+       otaState == OtaState::CLOUD_APPLYING) &&
+      otaIndicatorUntil != 0 &&
+      millis() < otaIndicatorUntil) {
+    renderBlink(otaIndicatorColor);
+    return;
+  }
+
   if (otaState == OtaState::SUCCESS) {
     renderBlink(0x00FF00);
     return;
@@ -931,7 +975,7 @@ static void processLeds() {
   if (otaState == OtaState::CLOUD_CONNECTING ||
       otaState == OtaState::CLOUD_DOWNLOADING ||
       otaState == OtaState::CLOUD_APPLYING) {
-    renderBlink(0x0000FF);
+    showAll(0x000000, 0);
     return;
   }
 
@@ -1937,6 +1981,8 @@ static void failOnlineOta(
     int errorCode,
     const String& error) {
   otaRestartAt = 0;
+  onlineOtaFinalizeAt = 0;
+  otaIndicatorUntil = 0;
   cloudHttp.end();
   cloudClient.stop();
 
@@ -1963,14 +2009,40 @@ static void startOnlineOta() {
 
   otaActive = true;
   setOtaState(OtaState::CLOUD_CONNECTING);
-  setOtaDiagnosticStage("ONLINE_WIFI_CONNECT");
+  setOtaDiagnosticStage("ONLINE_REQUEST");
   setOtaDiagnosticProgress(0);
   setOtaDiagnosticError(0, "NONE");
+
+  if (!validFirmwareVersion(cloudVersion)) {
+    failOnlineOta("ONLINE_VERSION_CHECK", -1, "INVALID_VERSION");
+    return;
+  }
+
+  setOtaDiagnosticStage("ONLINE_VERSION_CHECK");
+
+  if (cloudVersion.equalsIgnoreCase(FW_VERSION)) {
+    setOtaDiagnosticStage("ONLINE_UP_TO_DATE");
+    setOtaDiagnosticProgress(100);
+    saveOtaResult(
+        "OTA_UP_TO_DATE|MODE=ONLINE|STAGE=ONLINE_UP_TO_DATE|VERSION=" +
+        FW_VERSION + "|PROGRESS=100");
+    sendDelta("LAST_OTA_RESULT", otaResult);
+    setOtaState(OtaState::IDLE);
+    otaActive = false;
+    onlineOtaStartPending = false;
+    clearCloudCredentials();
+    return;
+  }
+
+  setOtaDiagnosticStage("ONLINE_WIFI_CONNECT");
   otaRestartAt = 0;
   resetBlinkState();
   cloudPhaseStartedAt = millis();
   cloudBytesReceived = 0;
   cloudTimeSyncStarted = false;
+  onlineOtaFinalizeAt = 0;
+  otaIndicatorUntil = 0;
+  otaIndicatorColor = 0;
 
   saveOtaResult("IN_PROGRESS|MODE=ONLINE|STAGE=ONLINE_WIFI_CONNECT|PROGRESS=0");
   applyOtaSafeOutputs();
@@ -2148,6 +2220,8 @@ static bool downloadOnlineOtaResumable() {
         responseTotal > 0) {
       totalSize = responseTotal;
       probeOk = true;
+      setOtaDiagnosticStage("ONLINE_GITHUB_READY");
+      triggerOtaIndicator(0x00FF00);
       http.end();
       cloudClient.stop();
       break;
@@ -2161,7 +2235,7 @@ static bool downloadOnlineOtaResumable() {
   }
 
   if (!probeOk) {
-    failOnlineOta("ONLINE_RANGE_RESPONSE", probeCode, probeError);
+    failOnlineOta("ONLINE_GITHUB_FAILED", probeCode, probeError);
     return false;
   }
 
@@ -2336,35 +2410,51 @@ static bool downloadOnlineOtaResumable() {
   }
 
   setOtaDiagnosticProgress(100);
-  setOtaDiagnosticStage("ONLINE_UPDATE_END");
-
-  if (!Update.end(true)) {
-    Update.printError(Serial);
-    failOnlineOta(
-        "ONLINE_IMAGE_VERIFY",
-        OTA_ERROR_MAGIC_BYTE,
-        "UPDATE_END_FAILED");
-    return false;
-  }
-
-  setOtaDiagnosticStage("ONLINE_BOOT_PARTITION");
-  setOtaDiagnosticError(0, "NONE");
-  saveOtaResult(
-      otaSuccessResult(
-          "ONLINE",
-          "ONLINE_BOOT_PARTITION",
-          cloudVersion.isEmpty() ? FW_VERSION : cloudVersion));
-  setOtaState(OtaState::SUCCESS);
-  otaRestartAt = millis() + OTA_RESTART_DELAY_MS;
-  otaActive = true;
-  clearCloudCredentials();
+  setOtaDiagnosticStage("ONLINE_DOWNLOAD_SUCCESS");
+  triggerOtaIndicator(0x0000FF);
+  onlineOtaFinalizeAt = millis() + OTA_FAILURE_INDICATOR_MS;
+  setOtaState(OtaState::CLOUD_APPLYING);
   return true;
 }
 static void processOnlineOta() {
+  if (otaState == OtaState::CLOUD_APPLYING) {
+    if (onlineOtaFinalizeAt == 0 || millis() < onlineOtaFinalizeAt) return;
+
+    onlineOtaFinalizeAt = 0;
+    setOtaDiagnosticStage("ONLINE_IMAGE_VERIFY");
+    if (!Update.end(true)) {
+      const int updateErrorCode = static_cast<int>(Update.getError());
+      const String updateError = Update.errorString();
+      Update.printError(Serial);
+      failOnlineOta(
+          "ONLINE_IMAGE_VERIFY",
+          updateErrorCode,
+          "UPDATE_END_FAILED_" + updateError);
+      return;
+    }
+
+    setOtaDiagnosticStage("ONLINE_INSTALL_SUCCESS");
+    setOtaDiagnosticError(0, "NONE");
+    triggerOtaIndicator(0x00FF00);
+    setOtaDiagnosticStage("ONLINE_BOOT_PARTITION");
+    saveOtaResult(
+        otaSuccessResult(
+            "ONLINE",
+            "ONLINE_BOOT_PARTITION",
+            cloudVersion.isEmpty() ? FW_VERSION : cloudVersion));
+    setOtaState(OtaState::SUCCESS);
+    otaRestartAt = millis() + OTA_RESTART_DELAY_MS;
+    otaActive = true;
+    clearCloudCredentials();
+    return;
+  }
+
   if (otaState != OtaState::CLOUD_CONNECTING) return;
 
   if (WiFi.status() == WL_CONNECTED) {
     if (!cloudTimeSyncStarted) {
+      setOtaDiagnosticStage("ONLINE_WIFI_CONNECTED");
+      triggerOtaIndicator(0x0000FF);
       setOtaDiagnosticStage("ONLINE_TIME_SYNC");
       configTime(0, 0, "pool.ntp.org", "time.nist.gov");
       cloudTimeSyncStarted = true;
@@ -2381,7 +2471,7 @@ static void processOnlineOta() {
     }
 
     setOtaState(OtaState::CLOUD_DOWNLOADING);
-    setOtaDiagnosticStage("ONLINE_RANGE_PROBE");
+    setOtaDiagnosticStage("ONLINE_GITHUB_CONNECT");
     cloudBytesReceived = 0;
     setOtaDiagnosticProgress(0);
     resetBlinkState();
@@ -2397,7 +2487,7 @@ static void processOnlineOta() {
   if (otaActive &&
       otaState == OtaState::CLOUD_CONNECTING &&
       millis() - cloudPhaseStartedAt >= WIFI_CONNECT_TIMEOUT_MS) {
-    failOnlineOta("ONLINE_WIFI_CONNECT", -1, "WIFI_FAILED");
+    failOnlineOta("ONLINE_WIFI_FAILED", -1, "WIFI_FAILED");
   }
 }
 
