@@ -8,6 +8,8 @@
 #include <OneButton.h>
 #include <math.h>
 #include <time.h>
+#include <atomic>
+#include <cstring>
 
 #include <BLEDevice.h>
 #include <BLEServer.h>
@@ -16,7 +18,7 @@
 
 #include <Update.h>
 
-static constexpr char FW_VERSION[] = "V1.4";
+static constexpr char FW_VERSION[] = "V1.5";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -120,6 +122,7 @@ static const IPAddress AP_SUBNET(255, 255, 255, 0);
 // Every future firmware change must pass the OTA safety audit and build.
 // ============================================================================
 static constexpr uint32_t BOOT_AP_TIMEOUT_MS          = 10000;
+static constexpr uint32_t BOOT_AP_HARD_LIMIT_MS       = 60000;
 static constexpr uint32_t LED_FRAME_INTERVAL_MS       = 33;
 static constexpr uint32_t OTA_RESTART_DELAY_MS        = 1200;
 static constexpr uint32_t OTA_FAILURE_INDICATOR_MS    = 1000;
@@ -168,7 +171,7 @@ static void processPendingOnlineOtaStart();
 // ========================== END OTA PRIORITY LOCK ===========================
 
 static constexpr size_t BLE_TX_QUEUE_SIZE = 48;
-static constexpr size_t BLE_RX_QUEUE_SIZE = 16;
+static constexpr size_t BLE_RX_QUEUE_SIZE = 8;
 static constexpr uint32_t BLE_TX_INTERVAL_MS = 15;
 static constexpr uint32_t ONLINE_OTA_START_WAIT_MS = 1500;
 static constexpr uint32_t BLE_START_RETRY_MS = 750;
@@ -181,7 +184,7 @@ static constexpr float NTC_NOMINAL_C     = 25.0f;
 static constexpr float NTC_BETA          = 3950.0f;
 static constexpr uint32_t NTC_READ_INTERVAL_MS = 1000;
 static constexpr uint32_t NTC_FAULT_LOW_MV  = 50;
-static constexpr uint32_t NTC_FAULT_HIGH_MV = 3250;
+static constexpr uint32_t NTC_FAULT_HIGH_MV = 3290;
 
 static constexpr uint32_t VOLTAGE_GUARD_MS             = 1000;
 static constexpr uint32_t VOLTAGE_DEADTIME_MS           = 200;
@@ -198,6 +201,7 @@ static constexpr int BATTERY_LIMIT_MIN = 20;
 static constexpr int BATTERY5_LIMIT_MAX = 48;
 static constexpr int BATTERY12_LIMIT_MIN = 22;
 static constexpr int BATTERY12_LIMIT_MAX = 50;
+static constexpr float BATTERY_HYSTERESIS_C = 0.8f;
 
 static constexpr uint8_t FAN_PWM_MIN = 50;
 static constexpr uint8_t FAN_PWM_MAX = 100;
@@ -223,10 +227,11 @@ size_t bleTxTail = 0;
 size_t bleTxCount = 0;
 uint32_t bleNextNotifyAt = 0;
 
-String bleRxQueue[BLE_RX_QUEUE_SIZE];
+char bleRxQueue[BLE_RX_QUEUE_SIZE][BLE_RX_BUFFER_SIZE];
 size_t bleRxHead = 0;
 size_t bleRxTail = 0;
 size_t bleRxCount = 0;
+std::atomic_flag bleRxQueueLock = ATOMIC_FLAG_INIT;
 
 volatile bool bleQueueResetPending = false;
 
@@ -267,6 +272,7 @@ bool fanOn = false;
 bool peltierOn = false;
 bool peltierSoftStarting = false;
 uint32_t peltierSoftStartAtMs = 0;
+uint8_t lastPeltierDuty = 0;
 bool adaptiveOn = false;
 Voltage adaptiveCeiling = Voltage::V12;
 
@@ -384,7 +390,6 @@ uint32_t lastUserControlCommandMs = 0;
 uint32_t ledBlinkAt = 0;
 bool ledBlinkPhase = false;
 
-static constexpr size_t BLE_RX_BUFFER_SIZE = 512;
 char bleRxBuffer[BLE_RX_BUFFER_SIZE];
 size_t bleRxLength = 0;
 
@@ -661,15 +666,19 @@ static void writeFanPwm() {
 static void stopPeltierOutput() {
   peltierSoftStarting = false;
   peltierSoftStartAtMs = 0;
-  if (runtimeFeaturesReady) {
+  if (lastPeltierDuty != 0) {
     ledcWrite(PIN_PELTIER, 0);
+    lastPeltierDuty = 0;
   }
 }
 
 static void beginPeltierSoftStart() {
   peltierSoftStarting = true;
   peltierSoftStartAtMs = millis();
-  ledcWrite(PIN_PELTIER, 0);
+  if (lastPeltierDuty != 0) {
+    ledcWrite(PIN_PELTIER, 0);
+    lastPeltierDuty = 0;
+  }
 }
 
 static void processPeltierSoftStart() {
@@ -679,19 +688,28 @@ static void processPeltierSoftStart() {
   }
 
   if (!peltierSoftStarting) {
-    ledcWrite(PIN_PELTIER, 255);
+    if (lastPeltierDuty != 255) {
+      ledcWrite(PIN_PELTIER, 255);
+      lastPeltierDuty = 255;
+    }
     return;
   }
 
   const uint32_t elapsed = millis() - peltierSoftStartAtMs;
   if (elapsed >= PELTIER_SOFT_START_MS) {
     peltierSoftStarting = false;
-    ledcWrite(PIN_PELTIER, 255);
+    if (lastPeltierDuty != 255) {
+      ledcWrite(PIN_PELTIER, 255);
+      lastPeltierDuty = 255;
+    }
     return;
   }
 
-  const uint32_t duty = (elapsed * 255UL) / PELTIER_SOFT_START_MS;
-  ledcWrite(PIN_PELTIER, static_cast<uint32_t>(duty));
+  const uint8_t duty = static_cast<uint8_t>((elapsed * 255UL) / PELTIER_SOFT_START_MS);
+  if (duty != lastPeltierDuty) {
+    ledcWrite(PIN_PELTIER, duty);
+    lastPeltierDuty = duty;
+  }
 }
 
 static bool hotsideProtectionActiveNow() {
@@ -1182,7 +1200,14 @@ static void sampleNtcIfDue() {
     return;
   }
 
-  const float voltage = ntcMv / 1000.0f;
+  float voltage = ntcMv / 1000.0f;
+  if (!isfinite(voltage) || voltage <= 0.0f) {
+    ntcValid = false;
+    hotsideC = NAN;
+    return;
+  }
+  if (voltage > 3.28f) voltage = 3.28f;
+
   const float ntcOhms = NTC_FIXED_OHMS * ((3.3f / voltage) - 1.0f);
 
   if (!isfinite(ntcOhms) || ntcOhms <= 1.0f) {
@@ -1372,6 +1397,34 @@ static int batteryZoneFor(float temperature) {
   return 12;
 }
 
+static int batteryZoneForStable(float temperature) {
+  if (!isfinite(temperature)) return 5;
+  if (lastBatteryZone != 5 &&
+      lastBatteryZone != 9 &&
+      lastBatteryZone != 12) {
+    return batteryZoneFor(temperature);
+  }
+
+  switch (lastBatteryZone) {
+    case 5:
+      if (temperature >= battery12Limit + BATTERY_HYSTERESIS_C) return 12;
+      if (temperature >= battery5Limit + BATTERY_HYSTERESIS_C) return 9;
+      return 5;
+
+    case 9:
+      if (temperature < battery5Limit - BATTERY_HYSTERESIS_C) return 5;
+      if (temperature >= battery12Limit + BATTERY_HYSTERESIS_C) return 12;
+      return 9;
+
+    case 12:
+      if (temperature < battery5Limit - BATTERY_HYSTERESIS_C) return 5;
+      if (temperature < battery12Limit - BATTERY_HYSTERESIS_C) return 9;
+      return 12;
+  }
+
+  return batteryZoneFor(temperature);
+}
+
 static Voltage batteryZoneVoltage(int zone) {
   if (zone >= 12) return Voltage::V12;
   if (zone >= 9) return Voltage::V9;
@@ -1419,7 +1472,7 @@ static void evaluateAdaptiveBattery() {
   if (!adaptiveOn || !ntcValid || !batteryValid) return;
   if (adaptiveHotStepPending || hotsideProtectionActiveNow()) return;
 
-  const int zone = batteryZoneFor(batteryC);
+  const int zone = batteryZoneForStable(batteryC);
   if (zone == lastBatteryZone) return;
 
   lastBatteryZone = zone;
@@ -1481,20 +1534,40 @@ static void clearBleTxQueue() {
   bleNextNotifyAt = millis();
 }
 
+static void lockBleRxQueue() {
+  while (bleRxQueueLock.test_and_set(std::memory_order_acquire)) {
+    yield();
+  }
+}
+
+static void unlockBleRxQueue() {
+  bleRxQueueLock.clear(std::memory_order_release);
+}
+
 static void clearBleRxQueue() {
-  for (size_t i = 0; i < BLE_RX_QUEUE_SIZE; ++i) bleRxQueue[i] = "";
+  lockBleRxQueue();
+  for (size_t i = 0; i < BLE_RX_QUEUE_SIZE; ++i) {
+    bleRxQueue[i][0] = '\0';
+  }
   bleRxHead = 0;
   bleRxTail = 0;
   bleRxCount = 0;
+  unlockBleRxQueue();
 }
 
 static void enqueueBleRxPayload(const String& payload) {
   if (payload.isEmpty()) return;
+
+  const size_t copyLength = min(payload.length(), BLE_RX_BUFFER_SIZE - 1);
+
+  lockBleRxQueue();
   if (bleRxCount < BLE_RX_QUEUE_SIZE) {
-    bleRxQueue[bleRxTail] = payload;
+    memcpy(bleRxQueue[bleRxTail], payload.c_str(), copyLength);
+    bleRxQueue[bleRxTail][copyLength] = '\0';
     bleRxTail = (bleRxTail + 1) % BLE_RX_QUEUE_SIZE;
     ++bleRxCount;
   }
+  unlockBleRxQueue();
 }
 
 static void processBleRxQueue() {
@@ -1503,15 +1576,19 @@ static void processBleRxQueue() {
     return;
   }
 
-  String payload;
+  char payloadBuffer[BLE_RX_BUFFER_SIZE];
+  payloadBuffer[0] = '\0';
+
+  lockBleRxQueue();
   if (bleRxCount > 0) {
-    payload = bleRxQueue[bleRxHead];
-    bleRxQueue[bleRxHead] = "";
+    memcpy(payloadBuffer, bleRxQueue[bleRxHead], BLE_RX_BUFFER_SIZE);
+    bleRxQueue[bleRxHead][0] = '\0';
     bleRxHead = (bleRxHead + 1) % BLE_RX_QUEUE_SIZE;
     --bleRxCount;
   }
+  unlockBleRxQueue();
 
-  if (!payload.isEmpty()) feedBleRx(payload);
+  if (payloadBuffer[0] != '\0') feedBleRx(String(payloadBuffer));
 }
 
 static void sendText(const String& line) {
@@ -1780,7 +1857,7 @@ static void dispatchBleLine(const String& raw) {
   String command = raw;
   command.trim();
   if (command.isEmpty()) return;
-  if (command.length() > 180) return;
+  if (command.length() >= BLE_RX_BUFFER_SIZE) return;
 
   if (!bleCommandGateOpen && command != "SYNC" && command != "SYNC_READY") {
     sendAck("SESSION", false, "SYNC_REQUIRED");
@@ -2026,12 +2103,13 @@ static void serviceBleStartRecovery() {
 // ============================================================================
 // ========================== OTA ENGINE — LOCKED ============================
 // Online OTA uses the official Arduino-ESP32 HTTPClient + Update lifecycle.
-// The firmware download is streamed directly into the inactive OTA partition;
-// no Range/chunk/retry transport and no firmware-sized RAM buffer are used.
+// The firmware download is streamed directly into the inactive OTA partition.
+// Data is processed in small fixed-size reads with explicit idle-timeout checks;
+// no firmware-sized RAM buffer or resumable Range transport is used.
 // ============================================================================
 
 static bool validHttpsUrl(const String& value) {
-  return value.startsWith("https://") && value.length() <= 180;
+  return value.startsWith("https://") && value.length() < BLE_RX_BUFFER_SIZE;
 }
 
 static void clearCloudCredentials() {
@@ -2102,6 +2180,7 @@ static void failOnlineOta(
   cloudClient.stop();
 
   if (onlineUpdateStarted) {
+    Update.onProgress(nullptr);
     Update.abort();
     onlineUpdateStarted = false;
   }
@@ -2244,28 +2323,75 @@ static bool performOnlineOtaDownload() {
     return false;
   }
 
-  const size_t written = Update.writeStream(*stream);
+  static constexpr size_t ONLINE_OTA_READ_BUFFER_SIZE = 1024;
+  static constexpr uint32_t ONLINE_OTA_STREAM_IDLE_TIMEOUT_MS = 10000;
+  uint8_t buffer[ONLINE_OTA_READ_BUFFER_SIZE];
+  size_t totalWritten = 0;
+  uint32_t lastDataAt = millis();
+
+  while (totalWritten < static_cast<size_t>(onlineHttpExpectedBytes)) {
+    yield();
+
+    const size_t availableBytes = static_cast<size_t>(stream->available());
+    if (availableBytes == 0) {
+      if (!onlineHttpClient.connected()) {
+        failOnlineOta(
+            "ONLINE_DOWNLOAD",
+            OTA_ERROR_STREAM,
+            "STREAM_CLOSED_PREMATURELY");
+        return false;
+      }
+
+      if (millis() - lastDataAt >= ONLINE_OTA_STREAM_IDLE_TIMEOUT_MS) {
+        failOnlineOta(
+            "ONLINE_DOWNLOAD",
+            OTA_ERROR_STREAM,
+            "STREAM_TIMEOUT");
+        return false;
+      }
+
+      yield();
+      continue;
+    }
+
+    const size_t remaining =
+        static_cast<size_t>(onlineHttpExpectedBytes) - totalWritten;
+    const size_t toRead = min(
+        min(availableBytes, ONLINE_OTA_READ_BUFFER_SIZE),
+        remaining);
+
+    const int bytesRead = stream->read(buffer, toRead);
+    if (bytesRead <= 0) {
+      yield();
+      continue;
+    }
+
+    lastDataAt = millis();
+
+    const size_t written =
+        Update.write(buffer, static_cast<size_t>(bytesRead));
+    if (written != static_cast<size_t>(bytesRead)) {
+      const int code = static_cast<int>(Update.getError());
+      failOnlineOta(
+          "ONLINE_DOWNLOAD",
+          code != 0 ? code : OTA_ERROR_WRITE,
+          code != 0 ? updateErrorDetail() : "UPDATE_WRITE_ERROR");
+      return false;
+    }
+
+    totalWritten += written;
+    onlineUpdateProgress(totalWritten, onlineHttpExpectedBytes);
+    yield();
+  }
+
   onlineHttpClient.end();
   onlineHttpActive = false;
   cloudClient.stop();
-
-  if (written != static_cast<size_t>(onlineHttpExpectedBytes)) {
-    const int code = static_cast<int>(Update.getError());
-    const String detail =
-        code != 0 ? updateErrorDetail() : "DOWNLOAD_SIZE_MISMATCH";
-    failOnlineOta(
-        "ONLINE_DOWNLOAD",
-        code != 0 ? code : OTA_ERROR_SIZE,
-        detail);
-    return false;
-  }
 
   setOtaDiagnosticProgress(100);
   setOtaDiagnosticStage("ONLINE_DOWNLOAD_COMPLETE");
   setOtaDiagnosticError(0, "NONE");
 
-  // The full firmware stream is now in the inactive OTA partition. Finalize
-  // and activate it only after the required BLUE result indication.
   startOnlineOtaResultIndicator(
       0x0000FF,
       OnlineOtaIndicatorNext::FLASH_FINALIZE);
@@ -3373,7 +3499,7 @@ static void handleCommand(const String& command) {
       return;
     }
 
-    const int newZone = batteryZoneFor(value);
+    const int newZone = batteryZoneForStable(value);
     const bool wasValid = batteryValid;
     const bool zoneChanged = !wasValid || newZone != lastBatteryZone;
     const bool valueChanged = !wasValid || isnan(batteryC) || fabsf(batteryC - value) > 0.05f;
@@ -3476,6 +3602,16 @@ static bool serviceOtaPriority() {
       applyOtaSafeOutputs();
       stopUserLedOutput();
       stopBleForBootWiFiClient();
+    } else if (otaState != OtaState::LOCAL_UPLOAD &&
+               !otaActive &&
+               millis() - bootApStartedAt >= BOOT_AP_HARD_LIMIT_MS) {
+      stopLocalOtaAp();
+      bootApClientSafe = false;
+      Serial.println("WIFI AP: HARD TIMEOUT -> BLE HANDOFF");
+      bootApHadClient = false;
+      bleStartPending = true;
+      bleStartRetryAt = millis();
+      return false;
     } else if (clientCount == 0 &&
                otaState != OtaState::LOCAL_UPLOAD &&
                !otaActive &&
@@ -3526,10 +3662,19 @@ static void setupTouch() {
   touchButton.attachLongPressStart(onTouchLongPress);
 }
 
-void initializeRuntimeFeatures() {
+static void initializeRuntimeFeatures() {
   if (runtimeFeaturesReady) return;
 
-  Serial.println("BOOT: INIT FEATURES");
+  Serial.println("BOOT: INIT HARDWARE");
+
+  pinMode(PIN_12V, OUTPUT);
+  pinMode(PIN_9V, OUTPUT);
+  pinMode(PIN_FAN, OUTPUT);
+  pinMode(PIN_PELTIER, OUTPUT);
+  digitalWrite(PIN_12V, OUTPUT_OFF);
+  digitalWrite(PIN_9V, OUTPUT_OFF);
+  digitalWrite(PIN_FAN, OUTPUT_OFF);
+  digitalWrite(PIN_PELTIER, OUTPUT_OFF);
 
   pinMode(PIN_NTC, INPUT);
   pinMode(PIN_TOUCH, INPUT);
@@ -3541,7 +3686,13 @@ void initializeRuntimeFeatures() {
   ledcAttach(PIN_FAN, FAN_PWM_FREQ, FAN_PWM_RESOLUTION);
   ledcWrite(PIN_FAN, 0);
   ledcAttach(PIN_PELTIER, PELTIER_PWM_FREQ, PELTIER_PWM_RESOLUTION);
-  stopPeltierOutput();
+  lastPeltierDuty = 0;
+
+  leds.begin();
+  leds.clear();
+  leds.show();
+  // Boot AP indicator: BLUE STATIC while the boot Wi-Fi AP owns the radio.
+  showAll(0x0000FF, 80);
 
   loadSettings();
 
@@ -3549,6 +3700,9 @@ void initializeRuntimeFeatures() {
   pendingVoltage = Voltage::V5;
   fanOn = false;
   peltierOn = false;
+  peltierSoftStarting = false;
+  peltierSoftStartAtMs = 0;
+  lastPeltierDuty = 0;
   adaptiveOn = false;
   adaptiveCeiling = Voltage::V12;
   fanPwm = 100;
@@ -3559,11 +3713,12 @@ void initializeRuntimeFeatures() {
   ntcValid = false;
   hotsideC = NAN;
 
+  runtimeFeaturesReady = true;
+
   lastNtcReadMs = millis() - NTC_READ_INTERVAL_MS;
   sampleNtcIfDue();
   enforceSafety();
 
-  runtimeFeaturesReady = true;
   Serial.println("BOOT: FEATURES READY");
 }
 
@@ -3580,80 +3735,15 @@ void setup() {
   Serial.print(FW_VERSION);
   Serial.println(" / CORE 3.3.7 ARDUINO STANDARD");
 
-  // Keep every power output OFF before any radio is started.
-  pinMode(PIN_12V, OUTPUT);
-  pinMode(PIN_9V, OUTPUT);
-  pinMode(PIN_FAN, OUTPUT);
-  pinMode(PIN_PELTIER, OUTPUT);
-  digitalWrite(PIN_12V, OUTPUT_OFF);
-  digitalWrite(PIN_9V, OUTPUT_OFF);
-  digitalWrite(PIN_FAN, OUTPUT_OFF);
-  digitalWrite(PIN_PELTIER, OUTPUT_OFF);
-
-  // Restore the previously working hardware-first initialization order before
-  // entering the Wi-Fi stack. Outputs remain OFF throughout initialization.
-  Serial.println("BOOT: INIT HARDWARE");
-  pinMode(PIN_NTC, INPUT);
-  pinMode(PIN_TOUCH, INPUT);
-  setupTouch();
-
-  analogReadResolution(12);
-  analogSetPinAttenuation(PIN_NTC, ADC_11db);
-
-  ledcAttach(PIN_FAN, FAN_PWM_FREQ, FAN_PWM_RESOLUTION);
-  ledcWrite(PIN_FAN, 0);
-  ledcAttach(PIN_PELTIER, PELTIER_PWM_FREQ, PELTIER_PWM_RESOLUTION);
-  stopPeltierOutput();
-
-  leds.begin();
-  leds.clear();
-  leds.show();
-  showAll(0x0000FF, 80);
-
-  loadSettings();
-
-  currentVoltage = Voltage::V5;
-  pendingVoltage = Voltage::V5;
-  fanOn = false;
-  peltierOn = false;
-  adaptiveOn = false;
-  adaptiveCeiling = Voltage::V12;
-  fanPwm = 100;
-
-  batteryValid = false;
-  batteryC = NAN;
-  lastBatteryZone = -1;
-  ntcValid = false;
-  hotsideC = NAN;
-
-  lastNtcReadMs = millis() - NTC_READ_INTERVAL_MS;
-  sampleNtcIfDue();
-  enforceSafety();
-
-  runtimeFeaturesReady = true;
-  Serial.println("BOOT: FEATURES READY");
-
-  // ========================================================================
-  // ======================= OTA BOOT PATH — PROTECTED =======================
-  // Match the Horizon Cooler runtime context: complete setup() first, then
-  // enter the official Arduino Wi-Fi AP path from loop(). BLE is not started
-  // while the boot AP window owns the single radio.
-  // ========================================================================
+  initializeRuntimeFeatures();
   bootApPending = true;
   Serial.println("BOOT: WIFI AP DEFERRED TO LOOP");
-  // ==================== END OTA BOOT PATH — PROTECTED =====================
 }
 
 void loop() {
   // =================== OTA LOOP PRIORITY — PROTECTED =======================
   // ================= OTA PRIORITY: DO NOT MOVE DOWN =================
   if (serviceOtaPriority()) return;
-
-  // Once Wi-Fi AP ownership has ended, initialize the rest of the application
-  // before giving the single 2.4 GHz radio to BLE.
-  if (!bootApActive && !runtimeFeaturesReady) {
-    initializeRuntimeFeatures();
-  }
 
   if (bootApPending) {
     bootApPending = false;
