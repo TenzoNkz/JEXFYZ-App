@@ -1418,3 +1418,42 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Confirmed project ArduinoDroid ESP32 Arduino Core: 3.3.7.
 - Known ArduinoDroid library environment from the project diagnostics: Adafruit NeoPixel 1.15.5, OneButton 2.6.2, and WS2812FX 1.4.7. Production firmware includes/uses Adafruit NeoPixel and OneButton; WS2812FX is installed but is not used by the production source.
 - The ArduinoDroid profile above is now part of the permanent firmware handoff context and must not be lost when moving to another sub-chat.
+
+## 2026-09-27 — EXECUTION: NETWORK-BEGIN BOUNDARY DIAGNOSTIC
+
+- User explicitly authorized `Eksekusi Code dan Firmware Full` and requested the raw `.ino` file for manual ArduinoDroid compilation.
+- Generated diagnostic file in the conversation workspace:
+  - `JEXFYZ-Network-Begin-Test.ino`
+- Purpose: isolate the exact boundary immediately below the confirmed `WiFi.mode(WIFI_AP)` panic without adding another higher-level Wi-Fi/AP/OTA layer.
+- Official Arduino-ESP32 Core 3.3.7 source was re-verified before generation:
+  - `NetworkManager::begin()` is the public `Network.begin()` entry point.
+  - `NetworkManager::begin()` returns `bool`.
+  - It initializes the Arduino Network layer through the framework-owned initialization path; the diagnostic therefore calls only the public Arduino `Network.begin()` API.
+- Diagnostic scope:
+  - `#include <Arduino.h>`
+  - `#include <Network.h>`
+  - `ESP.getCoreVersion()`
+  - `ESP.getChipModel()`
+  - `ESP.getChipRevision()`
+  - `Network.begin()`
+  - Serial heartbeat after a successful return.
+- Intentionally excluded:
+  - `WiFi.mode()`
+  - `WiFi.softAP()`
+  - WebServer
+  - Update OTA
+  - BLE
+  - NTC
+  - Fan/Peltier
+  - RGB
+  - Preferences
+  - direct ESP-IDF calls
+- This diagnostic file is intentionally workspace-only and is not being added to the production firmware source tree.
+- Production `firmware/JEXFYZ.ino` remains unchanged at V1.0.
+- No firmware binary was compiled in this environment. The intended compile target is the user's locked ArduinoDroid profile with Arduino-ESP32 Core 3.3.7.
+- Validation performed before handoff: source text review confirms the diagnostic does not call Wi-Fi/AP/OTA/BLE APIs and uses the verified public Network API.
+- Next physical evidence boundary:
+  - capture the complete Serial output from reset;
+  - confirm whether `STEP 2: Network.begin() RESULT = OK` appears;
+  - if it does not appear, preserve the exact panic/reset output;
+  - do not add another production/runtime patch before this boundary is classified.
