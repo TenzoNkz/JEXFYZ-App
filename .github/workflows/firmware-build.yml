@@ -273,11 +273,11 @@ jobs:
           ota_end = s.index("END OTA ENGINE — LOCKED")
           if s.count("OTA SAFETY LOCK") != 1:
               raise SystemExit("OTA SAFETY AUDIT FAILED: duplicate/missing top safety lock")
-          if s.count("OTA ENGINE — LOCKED ============================") != 1:
+          if s.count("// ========================== OTA ENGINE — LOCKED") != 1:
               raise SystemExit("OTA SAFETY AUDIT FAILED: OTA engine start marker invalid")
           if s.count("END OTA ENGINE — LOCKED") != 1:
               raise SystemExit("OTA SAFETY AUDIT FAILED: OTA engine end marker invalid")
-          if s.count("OTA PRIORITY SUPERVISOR — LOCKED ====================") != 1:
+          if s.count("// ====================== OTA PRIORITY SUPERVISOR — LOCKED") != 1:
               raise SystemExit("OTA SAFETY AUDIT FAILED: OTA supervisor marker invalid")
           import re
           ota_code = re.sub(r'//.*', '', s[ota_start:ota_end])
