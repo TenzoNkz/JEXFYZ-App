@@ -1111,3 +1111,9 @@ This repeated pattern requires boundary isolation, not more speculative patch st
   - Repo V1.6 running -> ArduinoDroid V1.6 OTA: FAIL (same finalization boundary).
 - The newly confirmed build-environment difference makes library-version and compile-configuration parity a primary investigation target. Do not yet claim it is the root cause.
 - Next comparison should reproduce ArduinoDroid settings in CI as closely as the repository build system permits, especially the installed library versions and compile board options. No OTA API rewrite is justified from this evidence alone.
+
+## 2026-09-27 — ARDUINODROID CORE VERSION CORRECTION
+- User confirmed ArduinoDroid is also using ESP32 Arduino Core 3.3.7.
+- Therefore Core version mismatch is eliminated as a cause in the current ArduinoDroid-vs-CI OTA investigation.
+- Keep investigation focused on remaining build parity variables: ArduinoDroid board/build options and installed library versions versus CI, plus resulting firmware image/partition metadata.
+- No firmware OTA code was changed from this clarification.
