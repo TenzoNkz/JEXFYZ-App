@@ -3032,3 +3032,21 @@ The official AP example uses the high-level `WiFi.softAP()` path. This is now th
 - Obsolete firmware CI/diagnostic files were removed from the production repository. The App Build workflow remains the active automated APK build path.
 - Firmware binaries are no longer compiled/published by the App repository CI workflow. The user compiles the firmware manually in ArduinoDroid and provides the application BIN to ChatGPT for validated GitHub publication.
 - Existing Firebase firmware-metadata dependencies remain excluded from the firmware distribution workflow; GitHub is the firmware distribution source of truth.
+
+## 2026-09-27 — RUNTIME RESULT: ONLINE OTA CHECK SHOWS UP TO DATE ON INSTALLED V1.5
+
+- User physically confirmed Local OTA is working in both directions with the manually flashed firmware labels:
+  - V1.0 → test-labeled V1.5: SUCCESS
+  - V1.5 → V1.0: SUCCESS
+  - V1.0 → V1.5: SUCCESS
+- User is currently running a firmware image labeled **V1.5** for testing.
+- In the App Firmware dialog, the runtime screen shows:
+  - Current: V1.5
+  - Latest: V1.0
+  - Status: **Up to date.**
+- The remote manifest is currently V1.0 and the current App source in `lib/main.dart` uses `isDifferentFirmwareVersion(latest, current)` for OTA availability. Under the documented product policy, V1.5 vs V1.0 must therefore be treated as an available Online OTA target.
+- This runtime result strongly indicates that the APK currently installed on the phone is from an older App build whose online-OTA gate still behaves as a **newer-only** comparison, or otherwise does not contain the current `isDifferentFirmwareVersion` logic.
+- This is an **App-side version-gating finding**, not evidence that the firmware's Online OTA transfer engine has failed; the dialog is reporting the update as unavailable before an Online OTA flash is offered.
+- No App source code was changed in this discussion.
+- No App build was triggered.
+- Next boundary: use an APK built from the current `main` source, then repeat the same controlled test with installed V1.5 and manifest V1.0. Expected UI result is **Update available**, not **Up to date**. Only after that should the actual Online OTA download/flash path be evaluated.
