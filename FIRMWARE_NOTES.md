@@ -1333,3 +1333,16 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Do not ask the user to perform the three-file full flash for this experiment unless explicitly requested again.
 - Keep the diagnostic build/branch and recorded artifacts as historical evidence; they are not a production release and must not replace the Core 3.3.7 production baseline or public firmware manifest.
 - Current physical OTA investigation remains at the previously established evidence: repository/CI V1.6 application reproduces Local OTA CODE=3 / Flash Read Failed on the board, and ArduinoDroid V1.6 behavior differs by build/image.
+
+
+## 2026-09-27 — PROPOSED WORKFLOW: AUTOMATED APP, MANUAL ARDUINODROID FIRMWARE, FIREBASE UPDATE DATA
+- User proposed simplifying the release workflow:
+  - App: fully automated build by CI/assistant.
+  - Firmware: compile manually in ArduinoDroid using the user's known-good local environment, then manually upload the resulting application .bin to the GitHub firmware repository.
+  - Firebase: used again as the source of the latest firmware version and GitHub raw download link.
+- This architecture intentionally avoids using the CI-compiled firmware binary as the physical firmware release artifact, addressing the observed mismatch between ArduinoDroid-generated V1.6 and CI-generated V1.6 binaries.
+- Firmware upload/release remains a human-controlled step: select the exact ArduinoDroid application binary, upload it to JEXFYZ-Firmware, then update Firebase metadata to point to that exact file.
+- Firebase data should remain simple: firmware version + raw GitHub URL. Do not add SHA-based firmware linking unless explicitly re-approved.
+- Online OTA flow should consume Firebase metadata first, then download the binary from the GitHub raw URL. Equal current/target version = no flash; any different target version is allowed according to the established version policy.
+- Local OTA remains protected and should not be changed as part of this workflow simplification.
+- This is a workflow/architecture decision only; no production code was changed by this note.
