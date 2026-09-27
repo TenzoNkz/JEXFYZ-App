@@ -1642,3 +1642,18 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Candidate minimal investigation: compare behavior of Online OTA handoff using `deinit(false)` versus `deinit(true)`, while preserving the rest of the OTA engine and Local OTA path unchanged.
 - Do not execute the candidate change yet. No firmware/App source was modified by this discussion.
 - Chat handoff status: **DISCUSSION — STRONG ROOT-CAUSE CANDIDATE IDENTIFIED; READY FOR TARGETED EXECUTION ONLY AFTER USER AUTHORIZATION**.
+
+## 2026-09-27 — CLARIFICATION: PHYSICAL "V1.5" IS V1.0 CODE WITH TEST VERSION LABEL
+
+- User clarified that the firmware currently installed on the physical device and displayed as **V1.5** is **not a separate V1.5 codebase**.
+- It is the current production `firmware/JEXFYZ.ino` codebase whose firmware version string was manually changed/labeled as `V1.5` solely for controlled Local OTA and Online OTA testing.
+- Therefore, all runtime behavior observed during the current Online OTA test belongs to the V1.0 codebase/logic, with only the reported firmware version label changed to V1.5 for version-gate testing.
+- This distinction is important: the current failure must not be described as a defect unique to a V1.5 implementation or as evidence that a separate V1.5 release was deployed.
+- The `BLEDevice::deinit(true)` candidate remains technically relevant because it is present in the current V1.0 codebase being tested; however, the earlier historical statement that its introduction in a V3.6-labeled release alone proves causality is downgraded to correlation/history. Root cause remains unproven.
+- Current controlled test meaning is:
+  - Installed/test image: **V1.0 code labeled V1.5**
+  - Target/public image: **V1.0**
+  - Version gate: V1.5 vs V1.0 => different => Online OTA permitted
+  - The test is therefore specifically exercising the Online OTA transition and version-different path without introducing unrelated firmware feature changes.
+- No code was changed in this clarification.
+- Chat handoff status: **DISCUSSION — CURRENT TEST LINEAGE CORRECTED; TARGETED EXECUTION STILL AVAILABLE BUT ROOT CAUSE IS NOT YET PROVEN**.
