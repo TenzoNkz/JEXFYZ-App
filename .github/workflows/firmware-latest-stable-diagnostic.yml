@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: jexfyz-latest-stable-diagnostic
@@ -145,3 +145,31 @@ jobs:
             build/latest-stable/SHA256SUMS.txt
           if-no-files-found: error
           compression-level: 0
+
+
+      - name: Record diagnostic status
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          STATUS="FAILED"
+          if [ "${{ job.status }}" = "success" ]; then
+            STATUS="PASS"
+          fi
+          {
+            echo "STATUS=$STATUS"
+            echo "RUN_ID=${GITHUB_RUN_ID}"
+            echo "RUN_NUMBER=${GITHUB_RUN_NUMBER}"
+            echo "COMMIT=${GITHUB_SHA}"
+            echo "CORE_VERSION=${CORE_VERSION:-unknown}"
+            echo "TIMESTAMP=${GITHUB_RUN_STARTED_AT:-unknown}"
+            if [ -f build/latest-stable/SHA256SUMS.txt ]; then
+              cat build/latest-stable/SHA256SUMS.txt
+            fi
+          } > LATEST_STABLE_DIAGNOSTIC_STATUS.txt
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add LATEST_STABLE_DIAGNOSTIC_STATUS.txt
+          git commit -m "ci: record latest stable diagnostic status" || true
+          git push origin "HEAD:${GITHUB_REF_NAME}" || true
