@@ -1905,3 +1905,27 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Next physical boundary: compile `JEXFYZ-V1.2-HTTPUpdate.ino` using the locked ArduinoDroid/Core 3.3.7 profile, obtain the V1.2 BIN, then test Local OTA into V1.2 before testing Online OTA against the current public V1.1 target.
 - Acceptance criterion for Online OTA: survive BLE→Wi-Fi transition, reach Wi-Fi/time sync, execute standard HTTPUpdate, install V1.1 successfully, recover/restart normally, and report a terminal OTA result.
 - Chat handoff status: **EXECUTION COMPLETE — V1.2 SOURCE READY; PHYSICAL BUILD/OTA TEST PENDING**.
+
+## 2026-09-28 — EXECUTION: USER V1.2 BIN PROMOTED TO OFFICIAL PATH
+
+- User reported that the compiled V1.2 BIN had been uploaded to `TenzoNkz/JEXFYZ-Firmware`.
+- Repository inspection found the new upload as `JEXFYZ.cpp.bin` alongside the previous public `JEXFYZ-V1.1.bin`.
+- New uploaded blob:
+  - temporary path: `JEXFYZ.cpp.bin`
+  - blob SHA: `9534ea090d14bbc982f983d28b581a39f705e557`
+  - size: **1,460,688 bytes**
+- Publication action completed:
+  - promoted the exact uploaded blob to `JEXFYZ-V1.2.bin`
+  - removed previous public `JEXFYZ-V1.1.bin`
+  - removed temporary `JEXFYZ.cpp.bin`
+  - updated `manifest.json` to V1.2 and the matching V1.2 raw URL
+- Post-action repository root contains only:
+  - `JEXFYZ-V1.2.bin`
+  - `manifest.json`
+- Manifest verification:
+  `version = V1.2`
+  `url = https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V1.2.bin`
+- Publication commit: `3d76f2b6407316125e0a45ae29eec4a321665041`.
+- The binary connector can verify repository blob metadata but cannot decode the binary contents in this environment; version identity is therefore recorded from the user's declared V1.2 upload and the controlled release path.
+- This V1.2 binary is a **physical test candidate**, not an OTA Gold Master/final production release until the Online OTA test passes.
+- Next physical test: use the current device running the V1.1 image (or a test label such as V1.99) and test Online OTA to public V1.2, then capture the exact terminal status/stage.
