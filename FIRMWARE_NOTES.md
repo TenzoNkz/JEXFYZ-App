@@ -927,3 +927,19 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - A successful stage should also be visible so the user can distinguish "file received" from "image verified" from "boot partition activated".
 - LED indicators remain secondary to the textual diagnostic notification; LED color alone is never sufficient to diagnose OTA failure.
 - No code/build/release execution is authorized by this discussion. This is a requirements/history update only.
+## 2026-09-27 — OTA DIAGNOSTIC LOG PERSISTENCE DESIGN (DISCUSSION / NO CODE EXECUTION)
+- User proposed sending the complete OTA diagnostic log to Firebase so the log remains visible/persistent instead of disappearing when the OTA page/session closes.
+- Desired behavior:
+  - During Local or Online OTA, every diagnostic event is appended/published to Firebase.
+  - The log remains available after the OTA attempt finishes, including successful and failed stages.
+  - The next intended fresh power session should clear the previous OTA diagnostic log so the user starts with a clean history.
+  - User's requested clearing action is to unplug power/cable and plug it in again.
+- Recommended data model: keep one dedicated OTA diagnostic log area separate from firmware manifest/version data and separate from normal application state. Each record should include timestamp/session marker when available, OTA mode, stage, action/result, progress, version current/target, error code, and error detail.
+- Do not overwrite the log with only the final result; preserve the ordered event history for troubleshooting.
+- Local and Online OTA logs must remain distinguishable by MODE=LOCAL or MODE=ONLINE.
+- The Firebase diagnostic log is an observability channel only; it must not become a prerequisite for OTA flash safety or a reason to continue a failed OTA.
+- OTA flash must remain operational even when Firebase logging is unavailable. Logging failure must never corrupt, block, or alter the firmware update transaction.
+- The firmware must not require Firebase for local OTA operation.
+- Because the current project rules require Arduino Standard APIs and no guessed low-level lifecycle APIs, the exact power-cycle/session-reset mechanism must be designed using a verified Arduino-compatible approach before implementation. Do not invent a reset-reason API.
+- Important interaction with the existing OTA rule: Local OTA logs must retain the complete attempt through verification/activation before the device restarts. If a session reset is implemented at boot, the implementation must ensure the previous log can still be retained as required until the user intentionally starts a new power session.
+- No code/build/release execution is authorized by this discussion. This update records the Firebase logging design only.
