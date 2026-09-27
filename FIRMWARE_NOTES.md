@@ -1129,3 +1129,24 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - CI currently checks/artifacts only the application binary JEXFYZ-VERSION.bin copied from JEXFYZ.ino.bin; it does not publish the separately generated bootloader/partition binaries as the OTA image.
 - Next diagnostic boundary: identify the exact three ArduinoDroid filenames and compare the application .ino.bin against the CI V1.6 application binary. For direct USB flashing, do not mix the three files or treat bootloader/partition binaries as OTA payloads.
 - No production firmware/OTA code was changed by this discussion.
+
+
+## 2026-09-27 — DISCUSSION: ESPFLASH ANDROID OTG FLASH CONFIG
+
+- User supplied ESPFlash Android screenshot for direct USB flashing diagnostics.
+- Current visible configuration:
+  - Chip Type: ESP32C3
+  - SPI Speed: 80MHz
+  - SPI Mode: DIO
+  - High-Speed Mode (Stub): ON
+  - Firmware Compress: ON
+  - Baudrate: 115200
+- For the first diagnostic flash of the repository application binary, the conservative recommended test configuration is:
+  - ESP32C3
+  - DIO
+  - 80MHz
+  - High-Speed Mode (Stub): OFF
+  - Firmware Compress: OFF
+  - Baudrate: 115200
+- The three ArduinoDroid .bin files should not be treated as interchangeable. For full USB flashing, bootloader, partition table, and application must be assigned to their proper flash offsets. For an application-only test preserving the existing partition layout, use only the application .ino.bin at the application offset.
+- No production firmware/code was changed by this discussion.
