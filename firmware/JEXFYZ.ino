@@ -399,6 +399,7 @@ static void failLocalOta(const String& stage, int errorCode, const String& error
 static void failOnlineOta(const String& stage, int errorCode, const String& error);
 static bool validFirmwareVersion(const String& value);
 static void triggerOtaIndicator(uint32_t color);
+static void resetBlinkState();
 static void initializeRuntimeFeatures();
 
 static const char* voltageToString(Voltage value) {
