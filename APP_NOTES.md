@@ -3017,3 +3017,9 @@ Verified Arduino-ESP32 Core 3.3.7 references:
 - https://github.com/espressif/arduino-esp32/blob/3.3.7/libraries/WiFi/src/WiFiGeneric.cpp
 
 The official AP example uses the high-level `WiFi.softAP()` path. This is now the reference for the next firmware radio diagnostic.
+
+
+## 2026-09-27 — ONLINE OTA VERSION POLICY APP SYNC
+- App policy was updated so firmware manifest versions are considered update-capable whenever they are valid and DIFFERENT from the device version; this allows rollback/downgrade as well as upgrade.
+- The existing isNewerFirmwareVersion helper was restored for test compatibility and retained as a separate helper; the OTA dialog uses isDifferentFirmwareVersion for availability.
+- App Build #7 completed successfully, including Dart analysis and Flutter tests.
