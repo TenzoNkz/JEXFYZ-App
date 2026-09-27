@@ -2093,3 +2093,13 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Pinned ArduinoDroid target remains ESP32C3 Dev Module / Arduino-ESP32 Core 3.3.7 with the project-locked settings from the living notes.
 - Build/compile evidence is not claimed here because `arduino-cli` is unavailable in the working container and no current firmware-build workflow exists in the authoritative repository.
 - Next boundary: manually compile/flash V1.3 in ArduinoDroid, then perform the controlled Online OTA test and preserve the complete Serial/App diagnostic evidence.
+
+## 2026-09-28 — EXECUTION HANDOFF: V1.3 INO DELIVERED
+
+- Exact V1.3 source artifact was exported from the authoritative GitHub source and delivered to the chat as `JEXFYZ-V1.3.ino`.
+- Exactness verification: local Git blob hash is `709dc27d2ef1c54289100516b15d98c66146b1c0`, matching the authoritative `firmware/JEXFYZ.ino` blob SHA `709dc27d2ef1c54289100516b15d98c66146b1c0`.
+- Local artifact size: 104,433 bytes; line count: 3,702.
+- A temporary GitHub Actions export helper was used only to obtain the exact source artifact, then removed from the repository. Both `.github/workflows/export-v13-source.yml` and `.github/FIRMWARE_SOURCE_EXPORT_TRIGGER` are confirmed absent after cleanup.
+- No V1.3 BIN was generated or published. The public firmware distribution remains V1.2, pending the user's ArduinoDroid compilation/flash validation of V1.3.
+- Physical validation remains pending; OTA lock status remains `CANDIDATE_NOT_PHYSICALLY_VERIFIED`.
+- Next boundary: compile/flash the delivered V1.3 `.ino` in the pinned ArduinoDroid environment, then test Online OTA with exact LED/stage diagnostics and preserve the complete evidence.
