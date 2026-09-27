@@ -3090,3 +3090,20 @@ The official AP example uses the high-level `WiFi.softAP()` path. This is now th
 - Future Build App executions must continue to generate the repository artifact as `JEXFYZ#<github run number>.apk` and the delivered APK must be normalized to that same canonical filename.
 - No application source or build logic change was required for this issue.
 
+## 2026-09-28 — CODE EXECUTION: ONLINE OTA DIAGNOSTIC LABEL SYNC FOR V1.3
+
+- User explicitly authorized `Eksekusi Code dan Firmware Full`.
+- `lib/main.dart` was updated only to add human-readable labels for the V1.3 Online OTA diagnostic stages emitted by firmware:
+  - `ONLINE_WIFI_CONNECTED`
+  - `ONLINE_WIFI_FAILED`
+  - `ONLINE_WIFI_DROPPED`
+  - `ONLINE_GITHUB_CONNECT`
+  - `ONLINE_GITHUB_CONNECTED`
+  - `ONLINE_DOWNLOAD_COMPLETE`
+  - `ONLINE_FLASH_PREPARE`
+  - `ONLINE_FLASH_FINALIZE`
+  - `ONLINE_FLASH_SUCCESS`
+- App source commit: `7c7f7a53ad30435378c90145d8dd13b44deb60dc`.
+- No command name, BLE UUID, P1 protocol, UI architecture, or OTA availability rule was changed by this sync.
+- No App Build was triggered here; the separate `Build App` workflow remains the APK-build boundary.
+- The next App build should be performed only when requested with `Build App` in the build/action sub-chat.
