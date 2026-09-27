@@ -1368,3 +1368,10 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Important safety rule: if the uploaded BIN version cannot be reconciled with the authoritative `firmware/JEXFYZ.ino`, stop before publication rather than guessing or silently choosing a version.
 - This chat-based publication flow means the user only performs the ArduinoDroid compile and uploads the resulting BIN here; GitHub naming, firmware-repo upload, and manifest update are automated by ChatGPT.
 - This is the new preferred workflow unless the user explicitly changes it later.
+## 2026-09-27 — DECISION: BIN VERSION WILL BE DECLARED BY USER BEFORE PUBLICATION
+
+- User clarified the GitHub-only firmware publication workflow: when sending the manually compiled ArduinoDroid application BIN, the user will explicitly state the intended firmware version.
+- ChatGPT must treat the user's stated version as release metadata, then cross-check it against the authoritative firmware/JEXFYZ.ino source before any upload, rename, or manifest update.
+- The automatic filename convention remains JEXFYZ-VX.Y.bin.
+- If the user-stated version and authoritative source version do not match or cannot be reconciled unambiguously, publication must stop; do not guess, silently rename to another version, or update the manifest.
+- This does not change the production firmware source or OTA code. It only clarifies the human-to-ChatGPT release handoff.
