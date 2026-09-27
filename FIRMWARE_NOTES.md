@@ -1797,3 +1797,27 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Before executing this redesign, refresh the OTA Gold Master protection boundary so the intended new Online OTA block is deliberately approved and then re-run the guard.
 - No source code was changed in this discussion.
 - Chat handoff status: **DISCUSSION — STANDARD ARDUINO ONLINE OTA REDESIGN PROPOSED; NOT YET EXECUTED**.
+## 2026-09-27 — DISCUSSION DECISION: REPLACE CUSTOM ONLINE OTA ENGINE WITH ARDUINO HTTPUpdate FLOW
+
+- User's latest physical matrix:
+  - Local OTA: test V1.5 (V1.0 code) -> V1.1 PASS
+  - Local OTA: V1.1 -> test V1.99 (V1.1 code) PASS
+  - Online OTA: V1.99 (V1.1 code) -> public V1.1 FAIL
+- This physically confirms that the BLEDevice::deinit(false) candidate did not solve Online OTA. The failure is therefore no longer treated as a single BLE memory-release issue.
+- User requested a simpler Online OTA mechanism based on the standard Arduino path.
+- Proposed next architecture (discussion only; not executed):
+  1. Keep the App version gate and P1 OTA metadata commands unchanged.
+  2. Apply OTA safe outputs.
+  3. Stop BLE for the single-radio handoff.
+  4. Start Wi-Fi STA using Arduino WiFi.mode(WIFI_STA) + WiFi.begin(), bounded by the existing timeout.
+  5. Perform time synchronization required for HTTPS certificate validation.
+  6. Use the standard Arduino HTTPUpdate library with WiFiClientSecure/HTTPClient and follow redirects.
+  7. Let the library perform the normal update lifecycle using the official Update.begin() / Update.writeStream() / Update.end() path internally.
+  8. Do not pass the current firmware version into HTTPUpdate.update(); the App has already enforced the project rule that any different valid version is eligible, including downgrade. Passing a version to the helper could introduce a second, conflicting version policy.
+  9. Preserve exact stage/error reporting at the application boundary and recover to BLE on failure; success restarts into the new firmware.
+  10. Remove the custom Range probe/chunk/retry/resume streaming code from Online OTA because the next candidate's goal is a minimal standard-Arduino transport path.
+- Official Arduino-ESP32 library inspection confirms HTTPUpdate exposes the high-level firmware update API, redirect configuration, start/end/error/progress callbacks, and uses Update.writeStream() internally.
+- Local OTA remains untouched.
+- Online OTA public manifest/binary remains V1.1 during this test cycle; no release change was executed by this discussion.
+- Before implementation, the OTA Gold Master candidate must be deliberately refreshed for the new Online OTA block and re-audited. No automatic Secretary repair should invent this new block.
+- Chat handoff status: DISCUSSION — STANDARD ARDUINO HTTPUPDATE REDESIGN APPROVED AS NEXT IMPLEMENTATION DIRECTION; NOT YET EXECUTED.
