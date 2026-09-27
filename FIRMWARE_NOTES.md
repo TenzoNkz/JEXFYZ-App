@@ -1049,3 +1049,9 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Satpam detected an incorrect block-order expectation in the first lock candidate: the source order is OTA_SAFETY_LOCK -> OTA_STATE_AND_DIAGNOSTICS -> OTA_ENGINE -> OTA_PRIORITY_SUPERVISOR -> OTA_BOOT_PATH -> OTA_LOOP_PRIORITY.
 - The Secretary correctly refused to complete the repair because the source itself was valid but the candidate lock's expected ordering was wrong; this prevented an incorrect automatic rewrite.
 - The lock candidate was corrected to the actual source order. No firmware OTA logic was changed because of this CI failure.
+
+## 2026-09-27 — FIRMWARE BUILD #77 / LEGACY AUDIT DIAGNOSTIC
+- Firmware Build #77 passed the new 🛡️ OTA SATPAM and ArduinoDroid/Core 3.3.7 validation.
+- The build then stopped at the older in-workflow OTA marker audit because its supervisor-marker pattern was too text-layout-specific.
+- This was a CI audit false negative: the exact protected marker exists in source and the new Satpam already validated it against the lock candidate.
+- The legacy audit marker check was changed to match the stable marker prefix instead of the exact trailing `=` count. No firmware OTA behavior changed.
