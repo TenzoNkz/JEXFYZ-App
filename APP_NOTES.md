@@ -470,3 +470,10 @@ Never:
 - App URL validation now accepts only that exact GitHub raw BIN path.
 - GitHub `manifest.json` is not part of the OTA discovery path.
 - No App Build was run for this change.
+
+## 2026-09-28 — DEBUGGING WORKFLOW PREFERENCE
+
+- User does not want Serial Monitor to be a required debugging workflow.
+- Future App/firmware diagnosis should prioritize source inspection, official API verification, build/compiler output, automated/static checks, and direct physical symptoms/screenshots supplied by the user.
+- Do not make Serial Monitor capture a prerequisite for investigating OTA or runtime failures.
+
