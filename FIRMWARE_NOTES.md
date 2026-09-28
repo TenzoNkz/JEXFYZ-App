@@ -2206,3 +2206,13 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Screenshots of Gemini remain useful as presentation-format evidence; TXT remains the primary machine-readable transfer of Gemini's response content unless a discrepancy requires visual confirmation.
 - No firmware source was modified and no build was executed in this discussion.
 - Chat handoff status: **DISCUSSION — CROSS-AI HANDOFF FORMAT LOCKED; READY FOR THE NEXT GEMINI VERIFICATION PROMPT.**
+
+
+## 2026-09-28 — DISCUSSION: SAME-VERSION GEMINI SOURCE HANDOFF RULE
+
+- User confirmed the intended cross-AI workflow: when the authoritative firmware source and notes remain at the same revision/version (for example V1.5) and the Gemini review continues in the same Gemini conversation/context, the user does **not** need to resend the V1.5 `.ino` and `.md` on every follow-up question.
+- ChatGPT should instead send a focused follow-up prompt that references the already supplied V1.5 source/context and asks only for the next verification point.
+- Resend the `.ino` and relevant `.md` when the firmware revision/version changes, the source is materially updated, Gemini starts a new/independent context that no longer has the files, or a file-specific verification requires an exact refreshed artifact.
+- Gemini → ChatGPT transfer remains: Gemini response is copied into a `.txt` file; ChatGPT should treat the TXT as the transferred response content and use screenshots only when formatting/structure needs confirmation.
+- No firmware source was modified and no build was executed in this discussion.
+- Chat handoff status: **DISCUSSION — SAME-VERSION FILE RESEND RULE LOCKED.**
