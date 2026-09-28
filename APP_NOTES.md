@@ -495,3 +495,12 @@ Never:
 - Legacy Firebase implementation markers remain forbidden: `FirebaseDatabase.instanceFor` and `firebase_database`.
 - Corrected `.github/workflows/app-build.yml` by removing only the stale `firmware_update` forbidden-token check.
 - A new App Build is triggered by this workflow fix and must pass audit, analyze, tests, release packaging, and production signature verification before APK delivery.
+
+## 2026-09-28 — BUILD ATTEMPT #15 / DART ANALYZE FIX
+
+- App Build run #15 passed the App-only security/architecture audit and dependency installation.
+- Exact Dart analysis failure: `Undefined name 'ScrollCacheExtent'` at `lib/main.dart:2477:32`.
+- Root cause: `ScrollCacheExtent.pixels(...)` is not a valid Flutter API type for the pinned App toolchain.
+- Minimal source fix: replaced `scrollCacheExtent: const ScrollCacheExtent.pixels(480)` with the supported `cacheExtent: 480.0` ListView property.
+- No BLE, OTA, protocol, or UI behavior was intentionally changed beyond preserving the requested 480px scroll cache.
+- A new App Build must now pass analyze, Flutter tests, release APK packaging, production signature verification, and artifact upload.
