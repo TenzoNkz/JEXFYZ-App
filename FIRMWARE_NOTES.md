@@ -2274,3 +2274,13 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Workflow fix commit: `00b7bbc23d0edaf30b0415d582704642e1950983`.
 - No firmware source change was made for this build failure. V1.6 source remains `aa6ed27e4404e1fa02fc3fb9440ebeda8c90acc3`.
 - Next boundary: allow the corrected workflow to run again; classify the next result as compile error, link/size error, or successful binary generation. Do not patch V1.6 source unless the compiler reports an actual source/toolchain defect.
+
+
+## 2026-09-28 — DISCUSSION: FIRMWARE BUILD OWNERSHIP / ARDUINODROID
+
+- User clarified the standing project rule: **firmware is compiled by the user in ArduinoDroid**, using the locked production environment. ChatGPT must not treat a GitHub Actions firmware build as the production build path and must not claim firmware compilation success on the user's behalf.
+- ChatGPT's temporary `.github/workflows/firmware-build.yml` addition during the V1.6 execution was unnecessary for the project's intended workflow. Its failed run is not a firmware-build result for the user's ArduinoDroid environment and must not be used as evidence about V1.6 runtime/build validity.
+- The authoritative V1.6 `.ino` source remains the firmware artifact to be compiled by the user. Any future firmware build validation in project reporting must be based on the user's ArduinoDroid compile output or a specifically requested independent CI check, not assumed automatically.
+- Repository cleanup item: remove the temporary firmware GitHub Actions workflow and remove/adjust any note text that treats that workflow as the normal firmware build path. This cleanup should occur before the next clean firmware handoff.
+- No additional firmware source changes were made in this discussion after the V1.6 patch.
+- Chat handoff status: **DISCUSSION — USER OWNS FIRMWARE COMPILE/FLASH VIA ARDUINODROID; REPO CLEANUP OF TEMPORARY CI IS THE NEXT ACTION.**
