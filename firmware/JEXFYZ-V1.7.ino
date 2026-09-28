@@ -21,6 +21,9 @@
 
 // ArduinoDroid auto-generates function prototypes before the sketch body.
 // Keep all sketch-scoped enum types visible to those generated prototypes.
+enum class OtaState : uint8_t;
+enum class OnlineOtaFlow : uint8_t;
+enum class OnlineOtaIndicatorNext : uint8_t;
 enum class Voltage : uint8_t;
 enum class LedMode : uint8_t;
 enum class VoltageRequestSource : uint8_t;
