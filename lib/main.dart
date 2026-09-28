@@ -1260,7 +1260,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         rgbOn = value == 'ON';
         break;
       case 'MODE':
-        rgbMode = (int.tryParse(value) ?? rgbMode).clamp(1, 8).toInt();
+        rgbMode = (int.tryParse(value) ?? rgbMode).clamp(1, 7).toInt();
         break;
       case 'BRIGHTNESS':
         brightness = (int.tryParse(value) ?? brightness).clamp(0, 100).toInt();
@@ -1539,7 +1539,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Future<void> _setMode(int mode) async {
     if (!connected) return;
     try {
-      final next = mode.clamp(1, 8).toInt();
+      final next = mode.clamp(1, 7).toInt();
       final ok = await _sendAndConfirm('MODE:$next');
       if (!ok && mounted) {
         _showSnackBar('LED mode change was not confirmed by the device.');
@@ -2835,8 +2835,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   // AI-METHOD: _buildLedTab — Build LED/RGB/brightness/color controls.
   Widget _buildLedTab({Key? key}) {
-    final modeNames = <String>['Static', 'Breath', 'Center Out', 'Outer In', 'Dual Chase', 'Left ↔ Right', 'Rainbow', 'Twinkle'];
-    final safeMode = rgbMode.clamp(1, 8);
+    final modeNames = <String>['Static', 'Breath', 'Center Out', 'Outer In', 'Dual Chase', 'Left ↔ Right', 'Rainbow'];
+    final safeMode = rgbMode.clamp(1, 7);
     final modeName = modeNames[safeMode - 1];
     return KeyedSubtree(key: key, child: _smoothList(
       storageKey: 'led',
@@ -2858,7 +2858,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  IconButton(onPressed: connected ? () => _setMode(rgbMode - 1) : null, icon: const Icon(PhosphorIconsBold.caretLeft, size: 28)),
+                  IconButton(onPressed: connected && rgbMode > 1 ? () => _setMode(rgbMode - 1) : null, icon: const Icon(PhosphorIconsBold.caretLeft, size: 28)),
                   Container(
 
                     width: 138,
@@ -2869,7 +2869,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       child: Text('Mode $rgbMode • $modeName', key: ValueKey<int>(rgbMode), textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 12)),
                     ),
                   ),
-                  IconButton(onPressed: connected ? () => _setMode(rgbMode + 1) : null, icon: const Icon(PhosphorIconsBold.caretRight, size: 28)),
+                  IconButton(onPressed: connected && rgbMode < 7 ? () => _setMode(rgbMode + 1) : null, icon: const Icon(PhosphorIconsBold.caretRight, size: 28)),
                 ],
               ),
               Row(
