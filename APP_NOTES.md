@@ -3132,3 +3132,9 @@ The official AP example uses the high-level `WiFi.softAP()` path. This is now th
 - No source-code repair was necessary because the initial build completed successfully.
 - Runtime BLE/OTA/physical firmware behavior remains unproven by CI alone; Build #9 is the APK boundary for the next controlled device test.
 
+## 2026-09-28 — CURRENT FIRMWARE SOURCE NAMING
+
+- Current authoritative firmware source: `firmware/JEXFYZ-V1.6.ino` (V1.6).
+- Firmware source files use the versioned naming convention `JEXFYZ-V<version>.ino`; the current source is `JEXFYZ-V1.6.ino`.
+- Earlier `firmware/JEXFYZ.ino` references in this document are historical project records unless explicitly marked current.
+- Firmware production compilation is performed manually by the user in ArduinoDroid with Arduino-ESP32 Core 3.3.7; GitHub Actions is not the production firmware build path.

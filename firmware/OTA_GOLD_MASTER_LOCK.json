@@ -2,7 +2,7 @@
   "format_version": 1,
   "status": "CANDIDATE_NOT_PHYSICALLY_VERIFIED",
   "created_from_firmware": "V1.6",
-  "source_path": "firmware/JEXFYZ.ino",
+  "source_path": "firmware/JEXFYZ-V1.6.ino",
   "rule": "Protected OTA blocks are exact-match. Any byte-level mismatch is a guard failure.",
   "segments": [
     {

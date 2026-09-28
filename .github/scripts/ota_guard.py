@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-SOURCE = ROOT / "firmware" / "JEXFYZ.ino"
+SOURCE = ROOT / "firmware" / "JEXFYZ-V1.6.ino"
 MASTER = ROOT / "firmware" / "OTA_GOLD_MASTER_LOCK.json"
 
 def load_master() -> dict:
