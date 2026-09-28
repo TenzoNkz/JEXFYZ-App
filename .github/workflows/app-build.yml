@@ -6,7 +6,7 @@
 name: App Build
 
 on:
-  # Temporary explicit Build App trigger.
+  # Temporary explicit Build App trigger; validates the latest source revision.
   push:
     paths:
       - ".github/workflows/app-build.yml"
