@@ -43,7 +43,6 @@ import 'dart:io';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -2475,7 +2474,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       key: PageStorageKey<String>(storageKey),
       physics: const ClampingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      scrollCacheExtent: 480.0,
+      scrollCacheExtent: const ScrollCacheExtent.pixels(480),
       padding: padding,
       children: children,
     );
