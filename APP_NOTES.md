@@ -117,3 +117,10 @@ For future App work:
 - Firmware implementation source files (`.ino`), firmware BIN artifacts, firmware CI/build files, and firmware production build outputs remain outside the App repository and are maintained separately by the user.
 - The App Build workflow was corrected so `FIRMWARE_NOTES.md` is allowed, while a local `firmware/` source directory remains forbidden.
 - No App BLE/UI/API behavior was changed by this documentation-boundary correction.
+
+
+## 2026-09-28 — WORKFLOW AUDIT CLEANUP CONFIRMED
+
+- Removed the obsolete App Build audit condition that rejected `FIRMWARE_NOTES.md`.
+- App Build audit now rejects only a local `firmware/` source directory.
+- Firmware documentation remains intentionally supported in the App repository.
