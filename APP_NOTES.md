@@ -513,3 +513,12 @@ Never:
 - The original `ScrollCacheExtent.pixels(480)` form was invalid because the named type does not exist; the property itself accepts the numeric extent.
 - No intended UI behavior change: the scroll cache remains 480 logical pixels.
 - A new App Build is required to validate analyze, tests, release APK packaging, signing, and artifact upload.
+
+## 2026-09-28 — BUILD ATTEMPT #19 / OFFICIAL FLUTTER API VERIFICATION
+
+- App Build run #19 passed the security/architecture audit and dependency installation but failed at `flutter analyze`.
+- Exact diagnostic: `The argument type 'double' can't be assigned to the parameter type 'ScrollCacheExtent?'` at `lib/main.dart:2477:26`.
+- Official Flutter source verification confirmed `ScrollCacheExtent` is declared in `package:flutter/rendering.dart` and provides the factory `ScrollCacheExtent.pixels(double)`.
+- Corrected the source to use the official form `scrollCacheExtent: const ScrollCacheExtent.pixels(480)` and restored the required `package:flutter/rendering.dart` import.
+- This preserves the intended 480 logical-pixel cache extent without using deprecated `cacheExtent`.
+- A fresh Build App validation is required after this exact API correction.
