@@ -3807,18 +3807,10 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
       request.headers.set(HttpHeaders.cacheControlHeader, 'no-cache');
       request.headers.set('Pragma', 'no-cache');
 
-      // Firebase App Check protects Firebase-backed services, but this request
-      // is made through Dart HttpClient rather than a Firebase Database SDK.
-      // Attach the official App Check token explicitly when one is available.
-      try {
-        final appCheckToken = await FirebaseAppCheck.instance.getToken(true);
-        if (appCheckToken != null && appCheckToken.trim().isNotEmpty) {
-          request.headers.set('X-Firebase-AppCheck', appCheckToken);
-        }
-      } catch (e) {
-        debugPrint('Firebase App Check token: $e');
-      }
-
+      // Firmware metadata is intentionally public-read data (version + public BIN URL).
+      // Keep this REST request independent from Play Integrity/App Check so the
+      // sideloaded production APK can read the update metadata reliably.
+      // App Check remains enabled for the rest of the application's Firebase layer.
       final response = await request.close().timeout(const Duration(seconds: 12));
       final body = await response.transform(utf8.decoder).join().timeout(
         const Duration(seconds: 12),
