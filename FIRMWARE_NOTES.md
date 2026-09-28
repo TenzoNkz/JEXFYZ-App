@@ -2349,3 +2349,13 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Firmware promotion commit: `b5721df0b22b9f481122a5a17a037ec09275d117`.
 - The production binary is the user's ArduinoDroid-generated artifact. Compilation was not reproduced independently in this environment; source/production validation remains based on the user's ArduinoDroid result and subsequent physical testing.
 - Current release state: V1.6 source and V1.6 public BIN are aligned by version/path; physical runtime validation remains pending unless separately evidenced by the user.
+
+## 2026-09-28 — PHYSICAL TEST: V1.6 / V6.6 OTA VERSION CHAIN + LED ISSUE
+
+- User created a second test firmware from the same V1.6 firmware content, changing only the embedded firmware version to **V6.6**. `V6.6` is a test-only version and must not be treated as the production/public release.
+- Confirmed user OTA test chain: **V1.3 → V1.6 succeeded** and **V1.6 → V6.6 succeeded**.
+- During the V1.6/V6.6 physical OTA tests, the WS2812B status LED did not show any visible color indicator for Local OTA or Online OTA, so the user could not identify OTA stage/result from the LED.
+- This is now a separate diagnostic item from the previously fixed BLE RX synchronization and callback lifetime issues.
+- Repository production release remains **V1.6**; the V6.6 test artifact is not a public release and must not be promoted to the production manifest without an explicit user instruction.
+- Current discussion evidence from the V1.6 source: Local OTA enters `OtaState::LOCAL_UPLOAD` while `otaActive=true`, and the normal `processLeds()` path explicitly clears the LEDs for that state. Local OTA success transitions directly to `OtaState::SUCCESS` and schedules restart without a dedicated green result indicator. Online OTA has an explicit result-indicator state machine, so the absence of online LED output requires separate isolation of the LED hardware/output path versus indicator-state execution before any patch is made.
+- No firmware source patch was made from this physical-test observation.
