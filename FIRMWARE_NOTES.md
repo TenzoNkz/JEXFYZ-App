@@ -2284,3 +2284,15 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Repository cleanup item: remove the temporary firmware GitHub Actions workflow and remove/adjust any note text that treats that workflow as the normal firmware build path. This cleanup should occur before the next clean firmware handoff.
 - No additional firmware source changes were made in this discussion after the V1.6 patch.
 - Chat handoff status: **DISCUSSION — USER OWNS FIRMWARE COMPILE/FLASH VIA ARDUINODROID; REPO CLEANUP OF TEMPORARY CI IS THE NEXT ACTION.**
+
+
+## 2026-09-28 — HANDOFF: V1.6 TO NEW SUBCHAT
+
+- Current conversation reached the maximum length; project work must continue in a new subchat.
+- New-subchat opening prompt must instruct ChatGPT to read the authoritative repository source and notes first, not start from zero, and preserve the current V1.6 state.
+- Exact current authoritative firmware source: `firmware/JEXFYZ.ino`, repository content SHA `a9c07df96de82ba58a403dc30f0fd23ef3bd69a7`, version V1.6, source commit `aa6ed27e4404e1fa02fc3fb9440ebeda8c90acc3`.
+- Exact current OTA lock: `firmware/OTA_GOLD_MASTER_LOCK.json`, content SHA `f799b4e838e1ba40727810b9619cf33137720d79`, refreshed for V1.6 in commit `53001e388a2752220a9d77c0ba6469b82fd97638`.
+- Current standing build rule: user compiles/flashes firmware manually in ArduinoDroid using the locked ESP32-C3/Core 3.3.7 environment. GitHub Actions is not the production firmware build path.
+- Temporary firmware CI workflow currently exists at `.github/workflows/firmware-build.yml`; it was added during V1.6 execution and has already exposed a path/invocation failure. It is cleanup-only and must not be treated as production build validation. The corrected workflow must be removed from the repository in the new subchat before clean handoff, unless the user explicitly requests an independent CI build.
+- No V1.6 firmware source change is planned after the BLE hardening patch; next repository operation is cleanup of the temporary firmware CI workflow and cleanup of related notes, then deliver the exact full V1.6 `.ino` to the user for ArduinoDroid compilation.
+- New subchat should use the established ChatGPT↔Gemini workflow: ChatGPT→Gemini prompt copied directly; Gemini→ChatGPT response returned as user-converted TXT. Same-version V1.6 `.ino`/`.md` need not be resent to Gemini on every follow-up unless source/version/context changes.
