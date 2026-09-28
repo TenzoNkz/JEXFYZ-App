@@ -2338,3 +2338,14 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - New source size: 107,643 bytes.
 - Previous source blob SHA: `a9c07df96de82ba58a403dc30f0fd23ef3bd69a7`.
 - This patch is the ArduinoDroid compile-fix revision of V1.6; the version marker remains `V1.6`.
+
+## 2026-09-28 — V1.6 BIN PROMOTED FROM USER ARDUINODROID ARTIFACT
+
+- User supplied the compiled V1.6 firmware binary in the public firmware repository as the temporary path `JEXFYZ.cpp.bin` and requested promotion by rename.
+- The exact existing binary blob SHA was preserved: `817497eff65ede9a9ce27bd7bbd466484ac5752c`.
+- The binary is now published as **`JEXFYZ-V1.6.bin`** in `TenzoNkz/JEXFYZ-Firmware`; public file size is 1,454,064 bytes.
+- The previous public `JEXFYZ-V1.3.bin` artifact and temporary `JEXFYZ.cpp.bin` path were removed in the same Git tree update.
+- `manifest.json` now declares version `V1.6` and points to the new `JEXFYZ-V1.6.bin` URL.
+- Firmware promotion commit: `b5721df0b22b9f481122a5a17a037ec09275d117`.
+- The production binary is the user's ArduinoDroid-generated artifact. Compilation was not reproduced independently in this environment; source/production validation remains based on the user's ArduinoDroid result and subsequent physical testing.
+- Current release state: V1.6 source and V1.6 public BIN are aligned by version/path; physical runtime validation remains pending unless separately evidenced by the user.
