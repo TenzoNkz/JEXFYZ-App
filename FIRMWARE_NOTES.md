@@ -6,6 +6,24 @@
 >
 > **Priority rule:** This CURRENT STATE section is the first reference for present-day decisions. The chronological record below is preserved as history. Historical paths, versions, CI experiments, diagnostic branches, and old validation states must not override the Current State unless a newer entry explicitly supersedes them.
 
+## 2026-09-28 — RESET TO V1.0 + LOCAL OTA LED FIX
+
+- User supplied the current firmware source as `JEXFYZ.ino` and requested a clean restart from **V1.0**.
+- The working source baseline is therefore reset to **V1.0**. This is a working/source baseline, not a claim that a new V1.0 BIN has been built or published.
+- Public firmware distribution history remains preserved below; the previously published V1.7 BIN is historical until the new V1.0 release is deliberately compiled and promoted.
+- Local OTA LED issue identified from the supplied source: successful Local OTA entered `OtaState::SUCCESS`, while `processLeds()` returned immediately for that state, so there was no Local OTA success-color render before restart.
+- Minimal fix applied in the supplied working source:
+  - added a dedicated non-blocking Local OTA result indicator;
+  - successful Local OTA renders **green ON/OFF/ON/OFF** over approximately 2 seconds;
+  - after the green result window completes, the normal OTA supervisor schedules the existing restart delay;
+  - Local OTA failure explicitly clears any success indicator and continues using the existing **red blink** failure indicator;
+  - a failed upload keeps the Local OTA AP alive so the user can retry.
+- No BLE UUID/protocol, Wi-Fi transport, GPIO mapping, safety logic, adaptive logic, PWM, or Online OTA transport was intentionally changed by this fix.
+- The V1.0 source still contains the previously retained heap-diagnostic instrumentation; the instrumentation is not evidence of physical validation.
+- Validation completed here: source inspection, exact Local OTA control-flow analysis, brace balance check (470/470), and diff review against the user-supplied source.
+- Validation not completed here: ArduinoDroid compile, BIN generation, physical Local OTA success test, physical Local OTA failure test.
+- Next boundary: compile the exact V1.0 source in ArduinoDroid/Core 3.3.7, then test Local OTA once with a valid BIN and once with an intentionally rejected/invalid upload, capturing the LED and Serial result.
+
 ## 1. CURRENT STATE — AUTHORITATIVE
 
 ### 1.1 Firmware ownership and repository boundary
@@ -20,7 +38,9 @@
 
 ### 1.2 Current documented firmware line
 
-**Current documented production firmware: V1.7**
+**Current working firmware baseline: V1.0**
+
+> V1.0 is the new clean project baseline supplied by the user on 2026-09-28. It has not yet been independently compiled or physically validated in this environment.
 
 Latest documented V1.7 source revision:
 - Filename: JEXFYZ-V1.7.ino
