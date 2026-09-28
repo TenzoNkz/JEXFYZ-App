@@ -62,17 +62,23 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf build/firmware
+          rm -rf build/sketch build/firmware
+          mkdir -p build/sketch
+          cp firmware/JEXFYZ.ino build/sketch/JEXFYZ.ino
+
           arduino-cli compile \
-            --fqbn esp32:esp32:esp32c3 \
+            --fqbn "esp32:esp32:esp32c3:UploadSpeed=921600,CDCOnBoot=cdc,CPUFreq=160,FlashFreq=80,FlashMode=dio,FlashSize=4M,PartitionScheme=no_fs,DebugLevel=none,EraseFlash=none,JTAGAdapter=default,ZigbeeMode=default" \
             --build-property build.partitions=no_fs \
             --build-property upload.maximum_size=2031616 \
             --output-dir build/firmware \
-            firmware/JEXFYZ.ino
+            build/sketch
 
-          BIN="build/firmware/JEXFYZ.ino.bin"
+          BIN="$(find build/firmware -maxdepth 1 -type f -name 'JEXFYZ*.bin' | head -n 1)"
+          test -n "$BIN"
           test -s "$BIN"
-          sha256sum "$BIN"
-          ls -lh "$BIN"
+          cp "$BIN" build/JEXFYZ-V1.6.bin
+          sha256sum build/JEXFYZ-V1.6.bin
+          ls -lh build/JEXFYZ-V1.6.bin
 
       - name: Verify expected firmware metadata
         shell: bash
@@ -92,7 +98,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: JEXFYZ-V1.6-firmware
-          path: build/firmware/JEXFYZ.ino.bin
+          path: build/JEXFYZ-V1.6.bin
           archive: false
           if-no-files-found: error
           compression-level: 0
