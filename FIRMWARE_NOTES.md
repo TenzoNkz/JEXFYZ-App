@@ -3130,3 +3130,18 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Static sanity validation of the edited source: braces 476/476, parentheses 1901/1901.
 - ArduinoDroid/Core 3.3.7 compile and physical retest are pending.
 
+
+## 2026-09-28 — V1.2 EVENT-DRIVEN LED OTA PATCH
+
+- Applied the approved functional patch from V1.1 to **V1.2**.
+- Source archived in the App repository as:
+  - `firmware/JEXFYZ-V1.1-FINAL.ino` (previous source snapshot)
+  - `firmware/JEXFYZ-V1.2.ino` (patched source)
+- Functional change is intentionally limited to the LED renderer ownership inside `processLeds()` plus the firmware version constant.
+- Added a function-local `static bool ledsForcedOff` latch so repeated OTA/RGB-OFF branches do not call `stopUserLedOutput()` or `showAll(0x000000, 0)` on every main-loop iteration.
+- The latch is cleared when Local/Online result indicators, protection blink, voltage indication, or normal user LED rendering needs to regain LED ownership.
+- Existing Local OTA and Online OTA result-indicator state machines were not rewritten; their existing phase-gated rendering remains intact.
+- No BLE UUID/protocol, GPIO mapping, safety logic, flash Update lifecycle, GitHub URL validation, Wi-Fi retry policy, or Firebase/App behavior was intentionally changed by this patch.
+- Static validation performed on the patched source: V1.2 marker present; exactly one `ledsForcedOff` declaration; gated OFF rendering present for OTA/pending/RGB-OFF branches; source structure remains balanced for braces/parentheses; no duplicate V1.2 version declaration.
+- The repeated LED-rendering condition is a **confirmed source-code condition**. Any claim that it is the sole cause of Wi-Fi association failure remains unproven until physical testing.
+- ArduinoDroid / Arduino-ESP32 Core 3.3.7 compilation and physical V1.2 validation remain pending; repository storage of the source must not be treated as runtime validation.
