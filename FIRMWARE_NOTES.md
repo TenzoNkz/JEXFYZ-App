@@ -2379,3 +2379,10 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - No BLE UUID/protocol, SPSC queue, OTA flow, LED behavior, GPIO, or application control logic was intentionally changed.
 - Purpose: identify the first observable heap corruption point on the ESP32-C3 first BLE startup after the boot Wi-Fi AP timeout.
 - Production `main` branch remains unchanged by this diagnostic instrumentation.
+
+
+### Diagnostic branch verification — 2026-09-28 08:40 WIB
+
+- Diagnostic source verified at blob SHA `f2d841828982fc22542ccdf2c9436ecce494fc61`.
+- Diagnostic branch contains heap integrity checkpoints only; no production behavior change is approved.
+- ArduinoDroid compile/flash result: **not yet available**; do not treat the diagnostic source as compiled/validated until the user reports the result.
