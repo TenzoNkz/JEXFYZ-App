@@ -3437,3 +3437,22 @@ This repeated pattern requires boundary isolation, not more speculative patch st
   - delimiter balance: braces 491/491, parentheses 1924/1924, brackets 57/57.
 - Physical OTA functionality remains the previously validated baseline. **V1.8 LED timing itself has not yet been physically revalidated**.
 - Firebase metadata is not promoted merely because the source version changed.
+
+
+## 2026-09-28 — V2.1 LED LAYOUT + MODE CLEANUP
+
+- Functional firmware revision bumped from **V2.0 → V2.1**.
+- Firmware source is stored in the dedicated firmware repository:
+  **`TenzoNkz/JEXFYZ-Firmware/JEXFYZ-V2.1.ino`**.
+- Physical 8-LED path:
+  - **RIGHT TOP = LED 0**;
+  - **0 → 1 → 2 → 3** down to RIGHT BOTTOM;
+  - **3 → 4** across to LEFT BOTTOM;
+  - **4 → 5 → 6 → 7** upward to LEFT TOP.
+  - Firmware mapping: `RIGHT_PIXELS = {0, 1, 2, 3}`, `LEFT_PIXELS = {7, 6, 5, 4}`.
+- LED modes are reduced from **8 → 7**. **TWINKLE is removed completely** from the enum, runtime state, renderer, persisted mode range, and BLE MODE validation.
+- A persisted mode value of 8 is normalized to **mode 7 (RAINBOW)** on settings load.
+- **RAINBOW** now displays the same color on all 8 LEDs and smoothly shifts through the hue wheel; one full cycle is **30 seconds**.
+- OTA, BLE P1 UUID/protocol, GPIO Fan/Peltier mapping, PWM, thermal safety, adaptive logic, Wi-Fi/BLE handoff, and OTA result timing are unchanged.
+- Static source checks completed; ArduinoDroid / Arduino-ESP32 Core 3.3.7 compilation and physical V2.1 validation remain pending.
+- The published `JEXFYZ.cpp.bin` was deliberately left unchanged; no Firebase/OTA binary promotion was performed.
