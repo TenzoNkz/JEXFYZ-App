@@ -2262,3 +2262,15 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Public firmware distribution remains unchanged; no V1.6 BIN has been manually supplied by the user and no new public BIN was promoted in this execution.
 - Physical validation remains pending. The V1.6 source must be compiled/flashed by the user in the locked ArduinoDroid/Core 3.3.7 environment before runtime success is declared.
 - Next handoff: obtain the V1.6 build artifact/compile evidence, then perform the controlled BLE reconnect/command stress test and OTA regression test. Any further code change must start from the exact V1.6 source currently recorded here.
+
+
+## 2026-09-28 — EXECUTION FULL: V1.6 FIRMWARE BUILD FIX #1
+
+- First GitHub Actions Firmware Build run: `36362526125` (run #80) completed with **FAILURE** at the compile step. The pinned Core install, library install, OTA guard, and board verification all passed before compilation.
+- Exact compile failure: Arduino CLI was invoked with `firmware/JEXFYZ.ino`, and Arduino CLI interpreted the `firmware/` directory as the sketch name, then reported `main file missing from sketch: .../firmware/firmware.ino`.
+- This was a CI invocation/path error, not yet a C++ compiler error in V1.6 source.
+- Build workflow fix: copy the authoritative source to a named sketch directory `build/sketch/JEXFYZ.ino`, compile that directory, and then copy the generated `JEXFYZ*.bin` to `build/JEXFYZ-V1.6.bin` for artifact upload.
+- The workflow now also uses the exact board options verified by the official Arduino-ESP32 3.3.7 board details for the user-locked target: ESP32C3 Dev Module, UploadSpeed=921600, CDCOnBoot=cdc, CPUFreq=160, FlashFreq=80, FlashMode=dio, FlashSize=4M, PartitionScheme=no_fs, DebugLevel=none, EraseFlash=none, JTAGAdapter=default, ZigbeeMode=default.
+- Workflow fix commit: `00b7bbc23d0edaf30b0415d582704642e1950983`.
+- No firmware source change was made for this build failure. V1.6 source remains `aa6ed27e4404e1fa02fc3fb9440ebeda8c90acc3`.
+- Next boundary: allow the corrected workflow to run again; classify the next result as compile error, link/size error, or successful binary generation. Do not patch V1.6 source unless the compiler reports an actual source/toolchain defect.
