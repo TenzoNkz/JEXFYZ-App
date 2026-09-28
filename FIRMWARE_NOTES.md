@@ -3158,3 +3158,10 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - No additional TLS hardening, NTP bypass, NTC calibration change, BLE queue redesign, GPIO change, BLE UUID/protocol change, Local OTA lifecycle change, App/Firebase change, or ESP-IDF OTA API was added in this Gemini-derived V1.3 patch.
 - Static patch validation: all six intended replacements applied exactly once; reconstructed patched source matches the intended six-replacement transformation; V1.3 version marker is present; no V1.2 version marker remains in the patched source.
 - This repository update is **source storage only**. ArduinoDroid / Arduino-ESP32 Core 3.3.7 compilation and physical V1.3 validation are pending and must not be inferred from the commit.
+
+## 2026-09-28 — V1.3 GEMINI PATCH SYNC
+
+- Synchronized `firmware/JEXFYZ-V1.3.ino` with the latest Gemini-provided V1.3 patch text.
+- No new firmware version was created; this remains V1.3 and is still pre-physical-validation.
+- The only delta from the previously stored V1.3 was the missing exact Gemini change inside `startOnlineOta()`: its direct `WIFI_OFF` settle loop now uses `delay(10)` for each `RADIO_OFF_SETTLE_YIELDS` iteration, matching Gemini's latest full-function patch.
+- No independent optimization, API substitution, TLS change, NTP bypass, NTC change, BLE queue redesign, GPIO change, or additional behavioral patch was added.
