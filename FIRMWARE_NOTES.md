@@ -3456,3 +3456,11 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - OTA, BLE P1 UUID/protocol, GPIO Fan/Peltier mapping, PWM, thermal safety, adaptive logic, Wi-Fi/BLE handoff, and OTA result timing are unchanged.
 - Static source checks completed; ArduinoDroid / Arduino-ESP32 Core 3.3.7 compilation and physical V2.1 validation remain pending.
 - The published `JEXFYZ.cpp.bin` was deliberately left unchanged; no Firebase/OTA binary promotion was performed.
+
+
+## 2026-09-28 — FIRMWARE SOURCE REPOSITORY STRUCTURE
+
+- Authoritative firmware `.ino` source belongs in the **JE X FYZ App repository** under `firmware/`.
+- The dedicated **JEXFYZ-Firmware repository is binary-only** and must contain only the published `JEXFYZ.cpp.bin` OTA artifact (plus repository metadata/files that are not firmware source).
+- V2.1 source was moved from `TenzoNkz/JEXFYZ-Firmware/JEXFYZ-V2.1.ino` to `TenzoNkz/JEXFYZ-App/firmware/JEXFYZ-V2.1.ino` without source-content changes.
+- The published `JEXFYZ.cpp.bin` was not changed.
