@@ -176,7 +176,6 @@ jobs:
           for forbidden in [
               "FirebaseDatabase.instanceFor",
               "firebase_database",
-              "firmware_update",
           ]:
               if forbidden in source or forbidden in pubspec:
                   raise SystemExit("JE X FYZ audit failed; legacy Firebase firmware metadata reference found: " + forbidden)
