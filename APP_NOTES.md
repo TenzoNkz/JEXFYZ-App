@@ -605,3 +605,13 @@ Never:
 - No App Build is implied by the firmware source update. The existing App build workflow remains manual-only.
 - No App BLE protocol/UUID or App OTA transport change is required by the V1.3 firmware patch unless physical testing later demonstrates a protocol/lifecycle mismatch.
 - Firmware runtime debugging continues to prioritize source inspection, ArduinoDroid compiler output, static validation, and physical symptoms/screenshots; Serial Monitor is not a prerequisite.
+
+
+## 2026-09-28 — V1.4 FIRMWARE-ONLY REVISION
+
+- Firmware source tracked by the App repo is now `firmware/JEXFYZ-V1.4.ino`; V1.3 was removed after rename.
+- This revision changes only the Online OTA LED result-indicator timing and firmware version label.
+- No Dart/Flutter, BLE UUID/protocol, Firebase OTA metadata, Android, or App build workflow changes were made.
+- Existing App behavior remains the same: it initiates OTA through P1 commands, reads firmware OTA telemetry, and runs its bounded BLE reconnect monitor.
+- Firebase firmware metadata remains unchanged; source version V1.4 is not sufficient reason to publish a V1.4 BIN.
+- App Build is not implied by firmware revisions and remains manual-only.
