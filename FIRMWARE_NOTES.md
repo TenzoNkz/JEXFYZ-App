@@ -24,6 +24,46 @@
 - Validation not completed here: ArduinoDroid compile, BIN generation, physical Local OTA success test, physical Local OTA failure test.
 - Next boundary: compile the exact V1.0 source in ArduinoDroid/Core 3.3.7, then test Local OTA once with a valid BIN and once with an intentionally rejected/invalid upload, capturing the LED and Serial result.
 
+## 2026-09-28 — FULL V1.0 ONLINE OTA ROOT-CAUSE REVIEW + FIREBASE CONTROL PLANE
+
+### Findings from the user-supplied V1.0 source
+- Local OTA and Online OTA share the Arduino `Update.h` flash lifecycle; therefore the previously working Local OTA is useful evidence that the partition/write mechanism itself is not the first suspect for the Online OTA failure.
+- The Online OTA path depended on a GitHub-hosted `manifest.json` indirectly through the App, then passed a GitHub raw BIN URL over BLE to the firmware.
+- The Online download path used a fragile immediate `stream->peek()` magic-byte check immediately after `HTTPClient::GET()`. This can reject a valid HTTP body before the first byte is actually available from the stream. The check is now moved to the first real body read.
+- The Online OTA firmware-side URL validator previously accepted any HTTPS URL. It is now restricted to the JE X FYZ GitHub raw repository and `.bin` files.
+- The Online download remains deliberately streamed into the inactive OTA partition with fixed RAM usage; no firmware-sized RAM buffer or Range/resume transport was introduced.
+- Current source still cannot prove the exact historical failure cause without the device's captured `OTA_STAGE`, `OTA_ERROR_CODE`, `OTA_ERROR`, and Serial output. The new diagnostics are intended to make the next failure attributable to a specific stage rather than guessed.
+
+### New release-discovery architecture
+**Firebase = control plane**
+- Firebase Realtime Database path: `/firmware/current.json`.
+- Expected fields: `version` and `url`.
+- The URL must point to `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/…/*.bin`.
+
+**GitHub = binary plane**
+- GitHub is used only to host the actual firmware `.bin`.
+- GitHub `manifest.json` is no longer required for App Online OTA discovery.
+
+The current end-to-end flow is:
+Firebase metadata -> App validation -> BLE sends SSID/PASS/VERSION/approved GitHub BIN URL -> firmware Wi-Fi STA -> HTTPS GitHub BIN download -> Arduino `Update` -> finalize -> green result indicator -> restart.
+
+Important: this architecture removes the GitHub manifest from the control path, but the ESP32 still has to establish a TLS/HTTP connection to GitHub to download the binary. Therefore a future TLS/network failure on the BIN fetch is still independent of Firebase metadata discovery.
+
+### V1.0 Online OTA changes made after review
+- Added strict GitHub BIN URL validation.
+- Removed immediate `stream->peek()` transport gate.
+- First actual downloaded byte is validated against ESP32 firmware magic byte `0xE9` after a successful stream read.
+- Added Serial logging of the exact accepted GitHub BIN URL immediately before `HTTPClient::GET()`.
+- No change to BLE UUIDs, P1 framing, GPIO, safety, adaptive control, PWM, or Local OTA protocol.
+
+### Validation status
+- Static source review completed on the 3929-line user-supplied V1.0 baseline.
+- Local source after modification: 3945 lines.
+- Brace/parenthesis sanity: balanced.
+- ArduinoDroid/Core 3.3.7 compile: **not performed here**.
+- Physical Online OTA: **not yet validated after the new flow**.
+- Physical Local OTA LED success/failure: **not yet revalidated after the complete source review**.
+
 ## 1. CURRENT STATE — AUTHORITATIVE
 
 ### 1.1 Firmware ownership and repository boundary
