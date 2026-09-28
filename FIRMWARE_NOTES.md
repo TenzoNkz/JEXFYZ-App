@@ -3328,3 +3328,17 @@ This repeated pattern requires boundary isolation, not more speculative patch st
   - physical V1.7 Online OTA test: **not performed yet**;
   - therefore V1.7 is a test/source revision, not a physically validated release.
 - Firebase firmware metadata is **not promoted to V1.7** merely because the source version changed. Promotion remains a deliberate step after a compiled/public BIN exists.
+
+
+## 2026-09-28 — OTA PHYSICAL VALIDATION COMPLETE / OTA FROZEN
+
+- User confirmed by physical hardware test that **Local OTA and Online OTA both succeed**.
+- Online OTA physical test path completed successfully:
+  **App → BLE OTA commands → Wi-Fi handoff → GitHub HTTPS → firmware download → flash → success → BLE/runtime recovery**.
+- The Online OTA test intentionally used firmware version **V6.4** as a repeated-update test value. The displayed V6.4 is therefore a test/version value and is **not** evidence that the active source file version changed from V1.7.
+- Current source remains **firmware/JEXFYZ-V1.7.ino** with the simplified HTTPS client using **cloudClient.setInsecure()**.
+- Local OTA success was also physically confirmed with the intended **green result indication**.
+- **OTA FREEZE:** do not modify the OTA transport, radio handoff, GitHub URL/path, HTTP download logic, Update.h flash lifecycle, OTA result indicators, or BLE OTA command sequence unless the user explicitly requests an OTA change.
+- Future firmware feature changes must preserve the currently validated OTA path and must not use the successful OTA test as a reason to redesign OTA.
+- No Firebase promotion is implied by this validation. Firebase version metadata remains a separate deliberate release-promotion step.
+- This entry supersedes earlier notes that described V1.7 Online OTA as pending physical validation.
