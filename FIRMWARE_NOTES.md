@@ -105,6 +105,17 @@ Important: this architecture removes the GitHub manifest from the control path, 
 - This is a Firebase configuration issue, not evidence that the firmware OTA flashing path is broken.
 - A new App APK containing the Firebase endpoint change is still required on the phone; source changes alone do not update an already-installed APK.
 
+## 2026-09-28 — FIRMWARE VERSION BUMP RULE
+
+- The current clean firmware baseline is **V1.0**.
+- From this point forward, **any functional firmware source change must increment the firmware version before the changed source is treated as the next test/release build**.
+- Next functional change after V1.0 = **V1.1**.
+- Do not keep modified firmware source labeled V1.0 when the implementation has changed.
+- Documentation-only changes do not require a firmware version bump.
+- App changes alone do not require a firmware version bump unless the BLE/firmware contract or firmware implementation also changes.
+- Every firmware version bump must update the source version constant, the relevant notes/current-state entry, and the Firebase `firmware_update.version` only when that version is intentionally promoted for Online OTA testing/release.
+- A version bump does not itself mean the firmware has been compiled or physically validated.
+
 ## 1. CURRENT STATE — AUTHORITATIVE
 
 ### 1.1 Firmware ownership and repository boundary
