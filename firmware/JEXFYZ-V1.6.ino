@@ -3795,7 +3795,7 @@ void setup() {
   Serial.println();
   Serial.print("JE X FYZ: BOOT ");
   Serial.print(FW_VERSION);
-  Serial.println(" / CORE 3.3.7 ARDUINO STANDARD");
+  Serial.println(" / CORE 3.3.7 ARDUINO STANDARD HEAP-DIAG");
 
   initializeRuntimeFeatures();
 
