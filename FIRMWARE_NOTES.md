@@ -2229,3 +2229,15 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Integration caution retained for reset semantics: the safety argument relies on the producer callback not being concurrently executed by the Arduino loop on the same single-core CPU. Even where the reset is safe from slot corruption, commands arriving around the reset boundary may be intentionally discarded or retained depending on the exact interleaving; the implementation must preserve the project goal of clearing stale session commands without corrupting the ring buffer.
 - No firmware source was modified and no build was executed in this discussion.
 - Chat handoff status: **DISCUSSION — SPSC MEMORY ORDERING DESIGN IS ACCEPTED AS THE PATCH BASELINE; READY FOR FINAL CROSS-CHECK BEFORE EXECUTION.**
+
+
+## 2026-09-28 — DISCUSSION: V1.5 CROSS-CHECK AGAINST ARDUINO-ESP32 CORE 3.3.7
+
+- Cross-check performed against the authoritative V1.5 source and the official Arduino-ESP32 Core 3.3.7 BLE/Arduino runtime sources before any patch decision.
+- Official Core 3.3.7 `BLEServer::setCallbacks()` only assigns the callback pointer (`m_pServerCallbacks = pCallbacks`); the source contains no `delete m_pServerCallbacks` path found in `BLEServer.cpp`. Official Core 3.3.7 `BLECharacteristic::setCallbacks()` likewise assigns `m_pCallbacks` and the characteristic destructor does not delete the callback. This strengthens Gemini's ISSUE #002 conclusion that the two callback objects should not be repeatedly allocated with `new`.
+- Official Core 3.3.7 Arduino `loopTask()` is created with priority `1` and calls `loop()` in its task body. This supports the project-specific producer/consumer task distinction used in the SPSC analysis; the ESP32-C3 target remains single-core for this discussion.
+- The current V1.5 source still uses `new ServerCallbacks()` and `new RxCallbacks()` inside `startBle()`. A minimal lifetime fix should avoid moving large sections of the file unnecessarily; a function-local/static accessor can be considered so callback class definitions do not need a broad relocation. No implementation has been executed yet.
+- SPSC design remains the accepted patch baseline: atomic head/tail, producer-owned tail, consumer-owned head, acquire/release publication, no spin-lock, no `bleRxCount`.
+- New integration nuance identified during cross-check: `bleQueueResetPending` is set on both `onConnect()` and `onDisconnect()` and is consumed in `loop()` before `processBleRxQueue()`. Therefore a BLE command that arrives between the connection callback and the pending-reset service can be intentionally discarded by the reset. The existing source already has this ordering; the SPSC patch must preserve queue safety without accidentally changing the intended session synchronization semantics. This is not currently classified as a V1.5 SPSC corruption bug, but it must be checked during the patch review.
+- No firmware source was modified and no build was executed in this discussion.
+- Chat handoff status: **DISCUSSION — CORE 3.3.7 CROSS-CHECK COMPLETE; PATCH DESIGN READY, BUT IMPLEMENTATION MUST PRESERVE CURRENT SESSION-RESET SEMANTICS.**
