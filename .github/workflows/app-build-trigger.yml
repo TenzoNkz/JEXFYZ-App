@@ -5,9 +5,6 @@ name: Build App
 
 on:
   workflow_dispatch:
-  # TEMPORARY: added only to execute the user's explicit Build App request; removed after run.
-  push:
-
 permissions:
   contents: read
 
