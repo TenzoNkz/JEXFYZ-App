@@ -3144,3 +3144,17 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Static validation performed on the patched source: V1.2 marker present; exactly one `ledsForcedOff` declaration; gated OFF rendering present for OTA/pending/RGB-OFF branches; source structure remains balanced for braces/parentheses; no duplicate V1.2 version declaration.
 - The repeated LED-rendering condition is a **confirmed source-code condition**. Any claim that it is the sole cause of Wi-Fi association failure remains unproven until physical testing.
 - ArduinoDroid / Arduino-ESP32 Core 3.3.7 compilation and physical V1.2 validation remain pending; repository storage of the source must not be treated as runtime validation.
+
+## 2026-09-28 — V1.3 GEMINI OTA/RECOVERY PATCH APPLIED
+
+- V1.2 source was **renamed/promoted** to `firmware/JEXFYZ-V1.3.ino`; no separate V1.2 active source is retained.
+- The V1.3 code change is the Gemini patch applied without additional code modifications:
+  1. `FW_VERSION`: V1.2 → V1.3.
+  2. `waitForWiFiOff()`: replace 16 `yield()` iterations with `delay(10)` per iteration.
+  3. `startOnlineOta()`: change the Online OTA BLE teardown call from `stopBleRadio(true)` to `stopBleRadio(false)`.
+  4. Online Wi-Fi retry: replace the retry-boundary `yield()` with `delay(50)`.
+  5. `performOnlineOtaDownload()`: when `stream->read()` returns <= 0, check connection loss and stream idle timeout before continuing; use `delay(10)`.
+  6. Online OTA recovery indicator: set `bleLedResumePending` to true with release ordering before `startBle()`.
+- No additional TLS hardening, NTP bypass, NTC calibration change, BLE queue redesign, GPIO change, BLE UUID/protocol change, Local OTA lifecycle change, App/Firebase change, or ESP-IDF OTA API was added in this Gemini-derived V1.3 patch.
+- Static patch validation: all six intended replacements applied exactly once; reconstructed patched source matches the intended six-replacement transformation; V1.3 version marker is present; no V1.2 version marker remains in the patched source.
+- This repository update is **source storage only**. ArduinoDroid / Arduino-ESP32 Core 3.3.7 compilation and physical V1.3 validation are pending and must not be inferred from the commit.
