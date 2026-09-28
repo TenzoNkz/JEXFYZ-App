@@ -3,6 +3,30 @@
 > **Document role:** permanent firmware engineering memory for the JE X FYZ project.
 > This file intentionally lives in the App repository as documentation, even though firmware implementation source and production build files are maintained separately.
 > **Reviewed:** 2026-09-28.
+
+## 2026-09-28 — V1.9 BOOT AP NORMAL RUNTIME BEHAVIOR
+
+- Functional firmware revision bumped from **V1.8 → V1.9**.
+- The initial 10-second Wi-Fi SoftAP window is now a **waiting network service**, not automatically a full safety-lock state.
+- Immediately after boot, while the AP has **no connected client**:
+  - persisted RGB/LED state may render normally;
+  - the touch sensor is processed normally for non-cooling gestures;
+  - Fan remains **forced OFF**;
+  - Peltier remains **forced OFF**;
+  - BLE remains disabled until Wi-Fi is turned off, preserving the single-radio handoff.
+- When a phone/client actually connects to the boot AP:
+  - OTA safe outputs are applied immediately;
+  - voltage is forced to the safe 5V state;
+  - LED is forced OFF;
+  - touch processing is blocked by the OTA priority path;
+  - Fan and Peltier are OFF;
+  - the existing Local/Online OTA architecture is unchanged.
+- If a boot-AP client disconnects before Local OTA starts, the safety lock is released immediately and normal LED/touch processing resumes while BLE remains disabled until Wi-Fi is off.
+- Long-press cooling is explicitly blocked during the initial no-client boot AP window so Fan/Peltier cannot be started before startup completes.
+- The normal NTC/safety enforcement is bypassed only during this no-client boot AP window because the boot contract requires Fan/Peltier to remain OFF regardless of last state or NTC status. Normal safety enforcement resumes after the startup AP window or immediately when a connected-client/OTA safety state ends.
+- No BLE UUID/P1 protocol, GitHub URL, Firebase metadata, HTTPS downloader, Update.h flash lifecycle, OTA recovery, or OTA result-indicator timing was changed.
+- Static validation target for V1.9: source-only review and delimiter checks; ArduinoDroid/Core 3.3.7 compile and physical V1.9 validation remain pending.
+
 >
 > **Priority rule:** This CURRENT STATE section is the first reference for present-day decisions. The chronological record below is preserved as history. Historical paths, versions, CI experiments, diagnostic branches, and old validation states must not override the Current State unless a newer entry explicitly supersedes them.
 
@@ -179,7 +203,9 @@ Important: this architecture removes the GitHub manifest from the control path, 
 
 ### 1.2 Current documented firmware line
 
-**Current working firmware source candidate: V1.1**
+**Current working firmware source candidate: V1.9**
+
+> V1.9 is the current boot-runtime behavior candidate. It is not yet compiled or physically validated.
 
 > V1.1 is the next test candidate produced from the V1.0 physically validated baseline. It is not yet physically validated.
 
