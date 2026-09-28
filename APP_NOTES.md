@@ -531,3 +531,11 @@ Never:
 - Corrected `lib/main.dart` to `scrollCacheExtent: const ScrollCacheExtent.pixels(480)` and removed the redundant `flutter/rendering.dart` import.
 - The intended 480 logical-pixel cache behavior is preserved.
 - A fresh Build App validation is required to continue through analyze, tests, release packaging, signature verification, and APK artifact upload.
+
+## 2026-09-28 — BUILD ATTEMPT #23 / IMPORT CORRECTION
+
+- App Build run #23 still failed at `flutter analyze` with `Undefined name 'ScrollCacheExtent'` at `lib/main.dart:2477:32`.
+- The source used the official `ScrollCacheExtent.pixels(480)` constructor, but the defining class was not imported in that revision.
+- Corrected `lib/main.dart` by explicitly importing `package:flutter/rendering.dart` while retaining `scrollCacheExtent: const ScrollCacheExtent.pixels(480)`.
+- This is the minimal import correction required by the official Flutter declaration already verified in `rendering/viewport.dart`.
+- A fresh Build App validation is required; no APK has been delivered until all release checks pass.
