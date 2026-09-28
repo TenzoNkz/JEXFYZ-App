@@ -653,3 +653,14 @@ Never:
 - App OTA metadata and GitHub binary URL remain unchanged.
 - App Build was not triggered; App Build remains manual-only.
 - Physical V1.6 validation is pending.
+
+
+## 2026-09-28 — OTA END-TO-END PHYSICAL VALIDATION / FREEZE
+
+- User confirmed that **Local OTA and Online OTA both work successfully on the physical device**.
+- The supplied physical App screenshot showed **OTA successful • ONLINE • Flash success • V6.4**.
+- V6.4 was intentionally used as a test firmware version so Online OTA could be exercised repeatedly; it should be treated as a test value, not as a source-version promotion.
+- The validated Online OTA architecture remains:
+  Firebase metadata/control plane → App validation → BLE P1 OTA command sequence → firmware Wi-Fi handoff → GitHub JEXFYZ.cpp.bin download → Update.h flash → success/restart → BLE recovery.
+- **OTA FREEZE:** the App OTA protocol, Firebase metadata endpoint, GitHub BIN URL, BLE OTA command sequence, and OTA status/telemetry contract are frozen unless the user explicitly requests an OTA change.
+- Firmware-side physical success does not require an App Build. No App Build was triggered by this validation.
