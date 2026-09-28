@@ -522,3 +522,12 @@ Never:
 - Corrected the source to use the official form `scrollCacheExtent: const ScrollCacheExtent.pixels(480)` and restored the required `package:flutter/rendering.dart` import.
 - This preserves the intended 480 logical-pixel cache extent without using deprecated `cacheExtent`.
 - A fresh Build App validation is required after this exact API correction.
+
+## 2026-09-28 — BUILD ATTEMPT #20 / SCROLL CACHE TYPE FIX
+
+- App Build run #20 passed the security/architecture audit but failed at `flutter analyze`.
+- Exact diagnostics: `scrollCacheExtent: 480.0` had type mismatch because the parameter type is `ScrollCacheExtent?`; analyzer also reported the explicit rendering import as unnecessary because `material.dart` already exports the used type.
+- Official Flutter source confirms the intended constructor is `const ScrollCacheExtent.pixels(480)`.
+- Corrected `lib/main.dart` to `scrollCacheExtent: const ScrollCacheExtent.pixels(480)` and removed the redundant `flutter/rendering.dart` import.
+- The intended 480 logical-pixel cache behavior is preserved.
+- A fresh Build App validation is required to continue through analyze, tests, release packaging, signature verification, and APK artifact upload.
