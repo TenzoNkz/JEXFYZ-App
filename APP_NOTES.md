@@ -305,11 +305,16 @@ Canonical artifact naming:
 Dart symbols artifact:
 `JE-X-FYZ-Dart-Symbols`
 
-### Build authorization rule
+### Build trigger policy
 
-**Do not run App Build unless the user explicitly says `Build App`.**
+The App Build workflow now has two entry points:
 
-A workflow file existing or being healthy is not the same as a verified APK.
+1. **Automatic:** a push to `main` that changes App source/configuration, Android configuration, dependencies, tests, assets, or the App Build workflow itself triggers the build automatically.
+2. **Manual:** `workflow_dispatch` remains available for a controlled rebuild/release verification.
+
+The trigger intentionally does **not** include documentation-only changes such as `APP_NOTES.md` or `FIRMWARE_NOTES.md`, so reorganizing notes does not consume a release build.
+
+A workflow file existing or being healthy is not the same as a verified APK; the actual run result must still be checked.
 
 ## 9. VALIDATION RULES
 
@@ -386,6 +391,15 @@ The 2026-09-28 comment pass reported:
 - Preserved the project rule that an unrun Build App workflow must not be described as a verified APK.
 - Preserved the project rule that App validation cannot prove physical firmware/hardware behavior.
 - This documentation-only reorganization does not intentionally change App runtime behavior.
+
+## 12. AUTOMATIC APP BUILD TRIGGER — 2026-09-28
+
+- Updated `.github/workflows/app-build.yml` so App Build automatically runs on `main` when App source/configuration changes.
+- Automatic trigger paths include `lib/**`, `android/**`, `assets/**`, `test/**`, `pubspec.yaml`, `pubspec.lock`, the App workflow itself, and the dedicated `.github/APP_BUILD_TRIGGER` path.
+- Added `workflow_dispatch` so a controlled manual build can still be requested without changing source.
+- Documentation-only files are intentionally excluded from the automatic build trigger.
+- No build was intentionally triggered by this change; the workflow configuration was prepared for future App updates.
+- A future App source commit to `main` will invoke the existing release validation pipeline automatically.
 
 ## 12. CURRENT CHANGE / VALIDATION STATUS — 2026-09-28
 
