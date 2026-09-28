@@ -1,3 +1,7 @@
+// AI TEST MEMORY:
+// These tests validate UI rendering and pure helper/parsing rules only.
+// They do not prove BLE, OTA, or physical hardware runtime.
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:jexfyz_cooler/main.dart';
