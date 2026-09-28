@@ -643,3 +643,13 @@ Never:
 - App source and App build configuration were not changed.
 - Firebase OTA metadata remains unchanged.
 - Physical firmware validation remains pending.
+
+
+## 2026-09-28 — V1.6 FIRMWARE-ONLY HTTPS PATCH
+
+- Firmware source tracked by the App repo is now `firmware/JEXFYZ-V1.6.ino`.
+- V1.6 contains the user-directed Gemini HTTPS/GitHub OTA patch only.
+- No Flutter/Dart, Android, BLE protocol/UUID, or Firebase source changes were made.
+- App OTA metadata and GitHub binary URL remain unchanged.
+- App Build was not triggered; App Build remains manual-only.
+- Physical V1.6 validation is pending.
