@@ -28,7 +28,7 @@ enum class Voltage : uint8_t;
 enum class LedMode : uint8_t;
 enum class VoltageRequestSource : uint8_t;
 
-static constexpr char FW_VERSION[] = "V1.2";
+static constexpr char FW_VERSION[] = "V1.3";
 
 // ============================================================================
 // ========================== HEAP DIAGNOSTIC BUILD ===========================
@@ -978,7 +978,7 @@ static bool processOnlineOtaResultIndicator() {
       clearCloudCredentials();
       otaActive = false;
       otaState = OtaState::IDLE;
-      bleLedResumePending.store(false, std::memory_order_relaxed);
+      bleLedResumePending.store(true, std::memory_order_release);
       startBle();
       break;
 
@@ -2115,7 +2115,7 @@ static void stopBleForBootWiFiClient() {
 static void waitForWiFiOff() {
   WiFi.mode(WIFI_OFF);
   for (uint8_t i = 0; i < RADIO_OFF_SETTLE_YIELDS; ++i) {
-    yield();
+    delay(10); // Memberi waktu nyata bagi driver Wi-Fi untuk cleanup
   }
 }
 
@@ -2543,7 +2543,15 @@ static bool performOnlineOtaDownload() {
 
     const int bytesRead = stream->read(buffer, toRead);
     if (bytesRead <= 0) {
-      yield();
+      if (!onlineHttpClient.connected()) {
+        failOnlineOta("ONLINE_DOWNLOAD", OTA_ERROR_STREAM, "STREAM_READ_ERROR");
+        return false;
+      }
+      if (millis() - lastDataAt >= ONLINE_OTA_STREAM_IDLE_TIMEOUT_MS) {
+        failOnlineOta("ONLINE_DOWNLOAD", OTA_ERROR_STREAM, "STREAM_READ_TIMEOUT");
+        return false;
+      }
+      delay(10);
       continue;
     }
 
@@ -2680,10 +2688,9 @@ static void startOnlineOta() {
 
   clearBleTxQueue();
   clearBleRxQueue();
-  // Online OTA needs the Bluetooth controller/host memory released before
-  // TLS + HTTP allocation. Local OTA already starts with BLE fully released.
-  // Keeping BLE memory here can starve Wi-FiClientSecure/HTTPClient on ESP32-C3.
-  stopBleRadio(true);
+  // DO NOT release Bluetooth memory during a live radio transition on ESP32-C3.
+  // stopBleRadio(true) causes heap corruption. Must use false for Online OTA.
+  stopBleRadio(false);
   bleStartPending = false;
   bleStartAttempts = 0;
 
@@ -2734,7 +2741,7 @@ static void processOnlineOta() {
               "ONLINE_WIFI_RETRY_" + String(onlineWifiConnectAttempt));
           setOtaDiagnosticProgress(0);
           WiFi.disconnect(false, false);
-          yield();
+          delay(50); // Mencegah driver lockup saat pergantian mode yang cepat
           WiFi.mode(WIFI_STA);
           WiFi.setHostname("JE-X-FYZ");
           WiFi.setSleep(false);
