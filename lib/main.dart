@@ -302,6 +302,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Timer? voltageGuardTimer;
   Timer? reconnectTimer;
   Timer? runtimeSyncTimer;
+  Timer? disconnectRediscoveryTimer;
+  bool disconnectRediscoveryScanInProgress = false;
 
   bool _bleReady = false;
   bool _bleSessionReady = false;
@@ -386,6 +388,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     voltageGuardTimer?.cancel();
     reconnectTimer?.cancel();
     runtimeSyncTimer?.cancel();
+    disconnectRediscoveryTimer?.cancel();
+    disconnectRediscoveryTimer = null;
+    disconnectRediscoveryScanInProgress = false;
     device?.disconnect();
     rgbColorController.dispose();
     color5Controller.dispose();
@@ -577,6 +582,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   // AI-METHOD: _connect — Create a clean GATT session, discover the contract, and complete P1 synchronization.
   Future<void> _connect(BluetoothDevice target) async {
+    _cancelDisconnectRediscovery();
     await FlutterBluePlus.stopScan();
     await Future<void>.delayed(const Duration(milliseconds: 250));
     await connectionSub?.cancel();
@@ -687,6 +693,56 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   // AI-METHOD: _handleBleDisconnected — Central BLE teardown path; clear stale timers, ACKs, session state, and UI telemetry.
+  void _cancelDisconnectRediscovery() {
+    disconnectRediscoveryTimer?.cancel();
+    disconnectRediscoveryTimer = null;
+    disconnectRediscoveryScanInProgress = false;
+  }
+
+  void _startDisconnectRediscovery() {
+    if (!mounted || connected || _bleConnecting) return;
+    // Online OTA already has its dedicated reconnect monitor. Do not start
+    // a second scanner during the OTA recovery window.
+    if (reconnectTimer?.isActive ?? false) return;
+
+    _cancelDisconnectRediscovery();
+    var attempts = 0;
+
+    Future<void> scanOnce() async {
+      if (!mounted ||
+          connected ||
+          _bleConnecting ||
+          (reconnectTimer?.isActive ?? false) ||
+          attempts >= 10) {
+        _cancelDisconnectRediscovery();
+        return;
+      }
+
+      if (disconnectRediscoveryScanInProgress) return;
+      disconnectRediscoveryScanInProgress = true;
+      attempts++;
+
+      try {
+        await FlutterBluePlus.stopScan();
+        await FlutterBluePlus.startScan(
+          timeout: const Duration(seconds: 2),
+          androidCheckLocationServices: false,
+          androidUsesFineLocation: false,
+        );
+      } catch (e) {
+        debugPrint('BLE disconnect rediscovery: $e');
+      } finally {
+        disconnectRediscoveryScanInProgress = false;
+      }
+    }
+
+    unawaited(scanOnce());
+    disconnectRediscoveryTimer = Timer.periodic(
+      const Duration(seconds: 3),
+      (_) => unawaited(scanOnce()),
+    );
+  }
+
   void _handleBleDisconnected() {
     unawaited(_setBackgroundService(false));
     notificationSub?.cancel();
@@ -699,6 +755,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _pendingTelemetry.clear();
     batteryTimer?.cancel();
     runtimeSyncTimer?.cancel();
+    _startDisconnectRediscovery();
     for (final waiters in _ackWaiters.values) {
       for (final waiter in waiters) {
         if (!waiter.isCompleted) waiter.complete('DISCONNECTED');
