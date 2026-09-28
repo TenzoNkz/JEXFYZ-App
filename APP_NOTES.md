@@ -398,8 +398,9 @@ The 2026-09-28 comment pass reported:
 - Automatic trigger paths include `lib/**`, `android/**`, `assets/**`, `test/**`, `pubspec.yaml`, `pubspec.lock`, the App workflow itself, and the dedicated `.github/APP_BUILD_TRIGGER` path.
 - Added `workflow_dispatch` so a controlled manual build can still be requested without changing source.
 - Documentation-only files are intentionally excluded from the automatic build trigger.
-- No build was intentionally triggered by this change; the workflow configuration was prepared for future App updates.
-- A future App source commit to `main` will invoke the existing release validation pipeline automatically.
+- Because `.github/workflows/app-build.yml` is itself an automatic trigger path, the setup commit generated App Build run **#11** (`36372793640`). At the latest check it was still **in progress**.
+- Run #11 must be checked for its final result separately; this note does not treat an in-progress run as a successful build.
+- Future App source commits to `main` will invoke the existing release validation pipeline automatically.
 
 ## 12. CURRENT CHANGE / VALIDATION STATUS — 2026-09-28
 
