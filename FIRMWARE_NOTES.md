@@ -3039,3 +3039,18 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Firebase RTDB node is `/firmware_update`; GitHub hosts only `JEXFYZ.cpp.bin`.
 - App-side Firebase REST reads now attach an App Check token when available and report permission failures explicitly.
 
+
+## 2026-09-28 — ONLINE OTA WIFI RETRY HARDENING
+
+- Physical test evidence from the user showed Online OTA reached `ONLINE_WIFI_CONNECT` but did not advance.
+- Review of the V1.0 source found that STA auto-reconnect was explicitly disabled before the first `WiFi.begin()`.
+- The Online OTA Wi-Fi phase is now hardened with:
+  - `WiFi.setAutoReconnect(true)` before each connection attempt;
+  - official `WiFi.begin()` return status handling using `wl_status_t` / `WL_CONNECT_FAILED`;
+  - up to **3 bounded connection attempts**, each with the existing 15-second timeout;
+  - non-blocking retry via the existing OTA state machine;
+  - immediate retry scheduling when the official `WiFi.begin()` call reports `WL_CONNECT_FAILED`.
+- This does not assert that wrong credentials or an unsupported Wi-Fi band can be bypassed; it only removes the single-attempt/transient-association failure mode.
+- Official Arduino-ESP32 Core 3.3.7 source was checked for `WiFi.begin()`, `WiFi.disconnect()`, `WiFi.setAutoReconnect()`, and `WL_CONNECT_FAILED`; the APIs used by this hardening are present in that pinned core.
+- No Local OTA, BLE UUID/protocol, GPIO, safety, adaptive, or flash-write mechanism was changed.
+- ArduinoDroid compile and physical retest are still pending.
