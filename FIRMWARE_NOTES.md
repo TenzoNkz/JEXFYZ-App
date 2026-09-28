@@ -37,9 +37,9 @@
 
 ### New release-discovery architecture
 **Firebase = control plane**
-- Firebase Realtime Database path: `/firmware/current.json`.
+- Firebase Realtime Database node: `/firmware_update` (REST: `/firmware_update.json`).
 - Expected fields: `version` and `url`.
-- The URL must point to `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/…/*.bin`.
+- The URL must be exactly `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ.cpp.bin`.
 
 **GitHub = binary plane**
 - GitHub is used only to host the actual firmware `.bin`.
@@ -64,6 +64,17 @@ Important: this architecture removes the GitHub manifest from the control path, 
 - ArduinoDroid/Core 3.3.7 compile: **not performed here**.
 - Physical Online OTA: **not yet validated after the new flow**.
 - Physical Local OTA LED success/failure: **not yet revalidated after the complete source review**.
+
+## 2026-09-28 — FINAL FIREBASE OTA NAMING
+
+- Final Firebase RTDB node: `/firmware_update`.
+- Final App REST endpoint: `https://je-x-fyz-default-rtdb.asia-southeast1.firebasedatabase.app/firmware_update.json`.
+- Final GitHub firmware filename: `JEXFYZ.cpp.bin`.
+- Final GitHub raw URL:
+  `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ.cpp.bin`.
+- Firebase stores `version` plus this fixed BIN URL.
+- App validation accepts only this exact GitHub BIN URL.
+- The firmware itself receives the approved URL over BLE; no GitHub manifest is required.
 
 ## 1. CURRENT STATE — AUTHORITATIVE
 
