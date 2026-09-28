@@ -6,10 +6,8 @@
 name: App Build
 
 on:
-  # Temporary explicit Build App trigger for the requested release validation.
-  push:
-    paths:
-      - ".github/workflows/app-build.yml"
+  # IMPORTANT: This workflow must never build automatically.
+  # A release validation run is allowed only when the user explicitly requests "Build App".
   workflow_dispatch:
 
 permissions:
