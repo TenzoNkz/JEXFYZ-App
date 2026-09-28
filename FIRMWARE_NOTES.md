@@ -2171,3 +2171,17 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - No firmware source was modified by this discussion. No build was executed. No V1.6 source is approved yet.
 - Before execution, Gemini will be asked one more targeted verification: whether `size_t` head/tail are safe as plain variables versus `std::atomic<size_t>`, what memory ordering is required, and how `clearBleRxQueue()` can safely reset state across connect/disconnect without racing the BLE producer.
 - Chat handoff status: **DISCUSSION — WAITING FOR FINAL SPSC MEMORY-ORDERING VERIFICATION BEFORE PATCH.**
+
+
+## 2026-09-28 — DISCUSSION: V1.5 GEMINI FOLLOW-UP #3 — FINAL SPSC MEMORY-ORDERING REVIEW
+
+- Gemini follow-up #3 classifies plain/volatile `size_t` RX queue indices as **INVALID** for the proposed cross-task queue and `std::atomic<size_t>` head/tail as **CONFIRMED**. Gemini's stated reason is memory-ordering/visibility between the BLE callback producer and Arduino loop consumer.
+- Gemini proposes lock-free SPSC indices with C++11 acquire/release semantics and no `portMUX`, mutex, semaphore, or FreeRTOS critical-section API.
+- Gemini's architectural definition: `bleRxCount` and `bleRxQueueLock` are removed; `bleRxHead` and `bleRxTail` become `std::atomic<size_t>`.
+- Gemini's producer publishes the new tail with `memory_order_release` only after the payload has been copied into the queue slot; consumer observes tail with `memory_order_acquire` before reading the slot.
+- Gemini's reset model is consumer-owned: `clearBleRxQueue()` must not write tail; it loads the latest tail and stores that value into head, thereby discarding queued commands without mutating producer state.
+- Important integration review: Gemini's explanatory text says producer-side head load may use `memory_order_relaxed`, but a stricter C++ happens-before design for slot reuse may require an acquire load of the consumer-published head before producer overwrites a previously consumed slot. This specific point is NOT yet accepted as final without one more targeted verification. Do not patch based on the ambiguous wording alone.
+- The current source's connect/disconnect behavior includes `bleQueueResetPending` handled from `loop()`; any final implementation must preserve session-reset semantics while preventing producer/consumer corruption.
+- Issue #002 remains unchanged: static `ServerCallbacks` and `RxCallbacks` are the intended minimal callback-lifetime fix; `BLE2902` remains unchanged.
+- No firmware source was modified and no build was executed in this discussion.
+- Chat handoff status: **DISCUSSION — SPSC CORE DESIGN ACCEPTED, ONE MEMORY-ORDERING DETAIL STILL REQUIRES FINAL VERIFICATION BEFORE EXECUTION.**
