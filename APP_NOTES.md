@@ -195,7 +195,7 @@ GitHub is now binary-only for this OTA path; the GitHub `manifest.json` is no lo
 
 Firmware source is **not** embedded in the App repository.
 
-### 5.2 Manifest validation
+### 5.2 Firmware metadata validation
 
 The App validates:
 - firmware version shape: `V<major>.<minor>`
@@ -204,6 +204,7 @@ The App validates:
 - `raw.githubusercontent.com` host
 - repository path under `/TenzoNkz/JEXFYZ-Firmware/`
 - returned file is a `.bin`
+- Firebase metadata URL must resolve to an approved GitHub `.bin` path; GitHub `manifest.json` is not accepted
 
 
 The App accepts any valid **different** firmware version as an OTA target, including a rollback/downgrade for controlled testing.
