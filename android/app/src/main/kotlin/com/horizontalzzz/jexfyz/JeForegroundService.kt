@@ -1,5 +1,9 @@
 package com.horizontalzzz.jexfyz
 
+// AI ANDROID MEMORY:
+// This service only backs an already-active JE X FYZ BLE session when Flutter
+// is backgrounded. It must never create a second GATT/BLE client.
+
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -8,6 +12,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 
+// Connected-device foreground service used by the Flutter client.
 class JeForegroundService : Service() {
 
     companion object {
@@ -15,11 +20,13 @@ class JeForegroundService : Service() {
         private const val NOTIFICATION_ID = 2101
     }
 
+    // Create the notification channel once for this service process.
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
     }
 
+    // Promote the service into connected-device foreground mode.
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val notification = buildNotification()
 
@@ -36,8 +43,10 @@ class JeForegroundService : Service() {
         return START_STICKY
     }
 
+    // Service is intentionally started rather than bound.
     override fun onBind(intent: Intent?): IBinder? = null
 
+    // Define the low-importance persistent BLE-session notification.
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
 
@@ -55,6 +64,7 @@ class JeForegroundService : Service() {
         manager.createNotificationChannel(channel)
     }
 
+    // Build the ongoing foreground notification.
     private fun buildNotification(): Notification {
         val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Notification.Builder(this, CHANNEL_ID)
