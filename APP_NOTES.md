@@ -551,3 +551,10 @@ Never:
 - The temporary push-trigger mechanism used only to execute the explicitly requested Build App was removed afterward.
 - App Build workflow is restored to **manual-only `workflow_dispatch`**.
 - This run proves the App release build/signature pipeline, not physical BLE/firmware/hardware runtime behavior.
+
+## 2026-09-28 — FIREBASE METADATA ACCESS
+
+- The App firmware metadata endpoint is `https://je-x-fyz-default-rtdb.asia-southeast1.firebasedatabase.app/firmware_update.json`.
+- The installed APK must be rebuilt after source changes; an existing older APK does not inherit the new Firebase endpoint.
+- Firebase RTDB must allow read access to `/firmware_update` for the direct REST metadata request used by the App.
+- Recommended rule: `firmware_update/.read = true`, `firmware_update/.write = false`.
