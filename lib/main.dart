@@ -67,6 +67,22 @@ const Duration voltageGuardDuration = Duration(seconds: 1);
 const int fanSpeedMin = 50;
 const int fanSpeedMax = 100;
 
+// JE X FYZ LED palette: 48 touch-friendly RGB choices.
+// Palette applies to modes that use the user RGB color; Rainbow keeps its own hue cycle.
+const List<String> ledColorPalette = <String>[
+  '#FF0000', '#FF4000', '#FF8000', '#FFC000', '#FFFF00', '#80FF00', '#00FF00', '#00FF80',
+  '#00FFFF', '#0080FF', '#0000FF', '#8000FF', '#C000FF', '#FF00FF', '#FF0080', '#FF0040',
+  '#CC0000', '#CC3300', '#CC6600', '#CC9900', '#CCCC00', '#66CC00', '#00CC00', '#00CC66',
+  '#00CCCC', '#0066CC', '#0000CC', '#6600CC', '#9900CC', '#CC00CC', '#CC0066', '#CC0033',
+  '#FF6666', '#FF9966', '#FFCC66', '#FFFF66', '#CCFF66', '#66FF66', '#66FFCC', '#66FFFF',
+  '#66CCFF', '#668CFF', '#9999FF', '#CC99FF', '#FF99FF', '#FF99CC', '#FF6699', '#FFFFFF',
+];
+
+Color ledPaletteColor(String hex) {
+  final rgb = int.parse(hex.substring(1), radix: 16);
+  return Color(0xFF000000 | rgb);
+}
+
 const MethodChannel securityChannel = MethodChannel('je_x_fyz/security');
 
 // AI-METHOD: _isOfficialBuild — Production signing-integrity gate; debug builds are intentionally allowed.
@@ -113,11 +129,6 @@ bool isDifferentFirmwareVersion(String latest, String current) {
   final b = parseFirmwareVersion(current);
   if (a == null || b == null) return false;
   return a[0] != b[0] || a[1] != b[1];
-}
-
-// AI-METHOD: isValidHexColor — Validate a complete six-digit RGB hex value.
-bool isValidHexColor(String value) {
-  return RegExp(r'^#[0-9A-Fa-f]{6}$').hasMatch(value.trim());
 }
 
 // AI-METHOD: main — Flutter entry point; initialize security/Firebase then mount production UI.
@@ -340,9 +351,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int rgbMode = 1;
   int brightness = 100;
   String rgbColor = '#FFFFFF';
-  String color5V = '#FF0000';
-  String color9V = '#00FF00';
-  String color12V = '#0000FF';
   int fanSpeed = 100;
   int hotLimit = 45;
   int battery5Limit = 25;
@@ -361,14 +369,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   int tabIndex = 0;
 
-  final TextEditingController rgbColorController =
-      TextEditingController(text: '#FFFFFF');
-  final TextEditingController color5Controller =
-      TextEditingController(text: '#FF0000');
-  final TextEditingController color9Controller =
-      TextEditingController(text: '#00FF00');
-  final TextEditingController color12Controller =
-      TextEditingController(text: '#0000FF');
 
   @override
   void initState() {
@@ -392,10 +392,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     disconnectRediscoveryTimer = null;
     disconnectRediscoveryScanInProgress = false;
     device?.disconnect();
-    rgbColorController.dispose();
-    color5Controller.dispose();
-    color9Controller.dispose();
-    color12Controller.dispose();
     for (final waiters in _ackWaiters.values) {
       for (final waiter in waiters) {
         if (!waiter.isCompleted) waiter.complete('CANCELLED');
@@ -921,10 +917,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       syncing = false;
       dashboardReady = true;
       notice = 'System ready.';
-      rgbColorController.text = rgbColor;
-      color5Controller.text = color5V;
-      color9Controller.text = color9V;
-      color12Controller.text = color12V;
     });
     // AI-METHOD: _startBatteryTelemetry — Start the 1 Hz phone-battery heartbeat.
     _startBatteryTelemetry();
@@ -996,9 +988,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (c.startsWith('MODE:')) return 'MODE';
     if (c.startsWith('BRIGHTNESS:')) return 'BRIGHTNESS';
     if (c.startsWith('COLOR:')) return 'COLOR';
-    if (c.startsWith('V5COLOR:')) return 'V5COLOR';
-    if (c.startsWith('V9COLOR:')) return 'V9COLOR';
-    if (c.startsWith('V12COLOR:')) return 'V12COLOR';
     if (c.startsWith('HOTLIMIT:')) return 'HOTLIMIT';
     if (c.startsWith('BATT5:')) return 'BATT5';
     if (c.startsWith('BATT12:')) return 'BATT12';
@@ -1008,7 +997,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (c == 'ADAPTIVE:ON' || c == 'ADAPTIVE:OFF') return 'ADAPTIVE';
     if (c.startsWith('FANSPEED:')) return 'FANSPEED';
     if (c == 'RESET:TEMPERATURE') return 'RESET_TEMPERATURE';
-    if (c == 'RESET:VOLTAGECOLORS') return 'RESET_VOLTAGECOLORS';
     if (c.startsWith('SSID:')) return 'SSID';
     if (c.startsWith('PASS:')) return 'PASS';
     if (c.startsWith('URL:')) return 'URL';
@@ -1263,24 +1251,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
         rgbMode = (int.tryParse(value) ?? rgbMode).clamp(1, 7).toInt();
         break;
       case 'BRIGHTNESS':
-        brightness = (int.tryParse(value) ?? brightness).clamp(0, 100).toInt();
+        brightness = (int.tryParse(value) ?? brightness).clamp(1, 100).toInt();
         brightnessDraft = brightness;
         break;
       case 'RGB_COLOR':
         rgbColor = value;
-        rgbColorController.text = value;
-        break;
-      case 'COLOR_5V':
-        color5V = value;
-        color5Controller.text = value;
-        break;
-      case 'COLOR_9V':
-        color9V = value;
-        color9Controller.text = value;
-        break;
-      case 'COLOR_12V':
-        color12V = value;
-        color12Controller.text = value;
         break;
       case 'FAN_SPEED':
         fanSpeed = int.tryParse(value) ?? fanSpeed;
@@ -1550,19 +1525,58 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
-  // AI-METHOD: _setBrightness — Set LED brightness 0–100.
+  // AI-METHOD: _setBrightness — Set LED brightness 1–100; firmware maps this to hardware 0–255.
   Future<void> _setBrightness(double value) async {
     if (!connected) return;
+    final next = value.round().clamp(1, 100).toInt();
+    final previous = brightnessDraft.clamp(1, 100).toInt();
+
     try {
-      final next = value.round().clamp(0, 100).toInt();
-      final ok = await _sendAndConfirm('BRIGHTNESS:$next');
-      if (!ok && mounted) {
-        setState(() => brightnessDraft = brightness);
+      final ok = await _sendAndConfirm('BRIGHTNESS:' + next.toString());
+      if (ok) {
+        if (mounted) {
+          setState(() {
+            brightness = next;
+            brightnessDraft = next;
+          });
+        }
+        return;
+      }
+
+      if (mounted) {
+        setState(() => brightness = previous);
         _showSnackBar('LED brightness change was not confirmed by the device.');
       }
     } catch (e) {
       debugPrint('LED brightness command: $e');
-      if (mounted) _showSnackBar('LED brightness command failed.');
+      if (mounted) {
+        setState(() => brightness = previous);
+        _showSnackBar('LED brightness command failed.');
+      }
+    }
+  }
+
+  // AI-METHOD: _setRgbColor — Apply one palette color to firmware RGB color.
+  Future<void> _setRgbColor(String hex) async {
+    if (!connected || rgbMode == 7) return;
+    final value = hex.trim().toUpperCase();
+    if (!ledColorPalette.contains(value)) return;
+
+    try {
+      final ok = await _sendAndConfirm('COLOR:' + value.substring(1));
+      if (!ok) {
+        if (mounted) {
+          _showSnackBar('Color change was not confirmed by the device.');
+        }
+        return;
+      }
+
+      if (mounted) {
+        setState(() => rgbColor = value);
+      }
+    } catch (e) {
+      debugPrint('LED color command: $e');
+      if (mounted) _showSnackBar('LED color command failed.');
     }
   }
 
@@ -1646,26 +1660,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
-  // AI-METHOD: _sendColor — Send one validated RGB color.
-  Future<void> _sendColor(String command, TextEditingController controller) async {
-    final value = controller.text.trim().toUpperCase();
-    if (!isValidHexColor(value)) {
-      _showSnackBar('Enter a valid hex color in #RRGGBB format.');
-      return;
-    }
-    if (!connected) return;
-    try {
-      final ok = await _sendAndConfirm(
-        command + ':' + value.substring(1),
-      );
-      if (!ok && mounted) {
-        _showSnackBar('Color change was not confirmed by the device.');
-      }
-    } catch (e) {
-      debugPrint('Color command: $e');
-      if (mounted) _showSnackBar('Color command failed.');
-    }
-  }
 
   Future<void> _resetTemperatureSettings() async {
     if (!connected || adaptiveOn) return;
@@ -1678,16 +1672,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
-  Future<void> _resetVoltageColors() async {
-    if (!connected) return;
-    try {
-      final ok = await _sendAndConfirm('RESET:VOLTAGECOLORS');
-      if (!ok && mounted) _showSnackBar('Voltage color reset was not confirmed by the device.');
-    } catch (e) {
-      debugPrint('Voltage color reset: $e');
-      if (mounted) _showSnackBar('Voltage color reset failed.');
-    }
-  }
 
   // AI-METHOD: _requestFreshSync — Request a fresh firmware snapshot without replaying local state.
   Future<bool> _requestFreshSync({Duration timeout = const Duration(seconds: 3)}) async {
@@ -2227,10 +2211,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       message = 'Mode updated.';
     } else if (c.startsWith('BRIGHTNESS:')) {
       message = 'Brightness updated.';
-    } else if (c.startsWith('COLOR:') ||
-        c.startsWith('V5COLOR:') ||
-        c.startsWith('V9COLOR:') ||
-        c.startsWith('V12COLOR:')) {
+    } else if (c.startsWith('COLOR:')) {
       message = 'Color updated.';
     } else if (c.startsWith('HOTLIMIT:')) {
       message = 'Hotside ' + c.substring(9) + '°C.';
@@ -2240,8 +2221,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       message = '12V battery limit updated.';
     } else if (c == 'RESET:TEMPERATURE') {
       message = 'Temperature reset.';
-    } else if (c == 'RESET:VOLTAGECOLORS') {
-      message = 'Colors reset.';
     }
 
     if (message != null) {
@@ -2797,139 +2776,194 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _colorField(String label, TextEditingController controller, String command) {
-    return Row(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900)),
-              const SizedBox(height: 4),
-              TextField(
-                controller: controller,
-                enabled: connected,
-                textCapitalization: TextCapitalization.characters,
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800),
-                decoration: InputDecoration(
-                  isDense: true,
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE2E2E5))),
-                  enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFE2E2E5))),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 11, vertical: 10),
-                  hintText: '#RRGGBB',
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: 8),
-        FilledButton(
-          onPressed: connected ? () => _sendColor(command, controller) : null,
-          child: const Text('Set', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900)),
-        ),
-      ],
-    );
-  }
-
   // AI-METHOD: _buildLedTab — Build LED/RGB/brightness/color controls.
   Widget _buildLedTab({Key? key}) {
-    final modeNames = <String>['Static', 'Breath', 'Center Out', 'Outer In', 'Dual Chase', 'Left ↔ Right', 'Rainbow'];
+    final modeNames = <String>[
+      'Static',
+      'Breath',
+      'Center Out',
+      'Outer In',
+      'Dual Chase',
+      'Left ↔ Right',
+      'Rainbow',
+    ];
     final safeMode = rgbMode.clamp(1, 7);
     final modeName = modeNames[safeMode - 1];
-    return KeyedSubtree(key: key, child: _smoothList(
-      storageKey: 'led',
-      children: [
-        _sectionTitle('LED', subtitle: '4 kiri + 4 kanan • custom effects.'),
-        _card(
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
-          child: Column(
-            children: [
-              _switchRow(
-                title: 'Power',
-                subtitle: rgbOn ? 'ON' : 'OFF',
-                icon: PhosphorIconsBold.lightbulb,
-                value: rgbOn,
-                enabled: connected,
-                onChanged: _setRgb,
-              ),
-              const Divider(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(onPressed: connected && rgbMode > 1 ? () => _setMode(rgbMode - 1) : null, icon: const Icon(PhosphorIconsBold.caretLeft, size: 28)),
-                  Container(
+    final paletteEnabled = connected && rgbMode != 7;
 
-                    width: 138,
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
-                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(13), border: Border.all(color: const Color(0xFFE4E4E6))),
-                    child: StaticSwitcher(
+    return KeyedSubtree(
+      key: key,
+      child: _smoothList(
+        storageKey: 'led',
+        children: [
+          _sectionTitle('LED', subtitle: '4 kiri + 4 kanan • custom effects.'),
+          _card(
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
+            child: Column(
+              children: [
+                _switchRow(
+                  title: 'Power',
+                  subtitle: rgbOn ? 'ON' : 'OFF',
+                  icon: PhosphorIconsBold.lightbulb,
+                  value: rgbOn,
+                  enabled: connected,
+                  onChanged: _setRgb,
+                ),
+                const Divider(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      onPressed: connected && rgbMode > 1
+                          ? () => _setMode(rgbMode - 1)
+                          : null,
+                      icon: const Icon(
+                        PhosphorIconsBold.caretLeft,
+                        size: 28,
+                      ),
+                    ),
+                    Container(
+                      width: 138,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 9,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(13),
+                        border: Border.all(
+                          color: const Color(0xFFE4E4E6),
+                        ),
+                      ),
+                      child: StaticSwitcher(
+                        child: Text(
+                          'Mode $rgbMode • $modeName',
+                          key: ValueKey<int>(rgbMode),
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: connected && rgbMode < 7
+                          ? () => _setMode(rgbMode + 1)
+                          : null,
+                      icon: const Icon(
+                        PhosphorIconsBold.caretRight,
+                        size: 28,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Icon(
+                      PhosphorIconsRegular.sun,
+                      color: Colors.black38,
+                      size: 20,
+                    ),
+                    Expanded(
+                      child: Slider(
+                        min: 1,
+                        max: 100,
+                        divisions: 99,
+                        value: brightness.clamp(1, 100).toDouble(),
+                        activeColor: Colors.black,
+                        inactiveColor: Colors.black12,
+                        onChanged: connected
+                            ? (v) => setState(() => brightness = v.round())
+                            : null,
+                        onChangeEnd: connected ? _setBrightness : null,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 42,
+                      child: Text(
+                        brightness.clamp(1, 100).toString() + '%',
+                        textAlign: TextAlign.right,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          _sectionTitle(
+            'RGB Color',
+            subtitle: rgbMode == 7
+                ? 'Rainbow uses its own colors.'
+                : 'Tap a color to apply it.',
+          ),
+          _card(
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+            child: Opacity(
+              opacity: rgbMode == 7 ? 0.45 : 1.0,
+              child: GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: ledColorPalette.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 8,
+                  crossAxisSpacing: 5,
+                  mainAxisSpacing: 5,
+                  mainAxisExtent: 31,
+                ),
+                itemBuilder: (context, index) {
+                  final hex = ledColorPalette[index];
+                  final selected = rgbColor.toUpperCase() == hex;
 
-                      child: Text('Mode $rgbMode • $modeName', key: ValueKey<int>(rgbMode), textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 12)),
+                  return Semantics(
+                    button: true,
+                    label: 'RGB $hex',
+                    enabled: paletteEnabled,
+                    child: GestureDetector(
+                      onTap: paletteEnabled ? () => _setRgbColor(hex) : null,
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 120),
+                        decoration: BoxDecoration(
+                          color: ledPaletteColor(hex),
+                          borderRadius: BorderRadius.circular(7),
+                          border: Border.all(
+                            color: selected
+                                ? Colors.black
+                                : Colors.transparent,
+                            width: selected ? 2.4 : 1,
+                          ),
+                          boxShadow: [
+                            if (selected)
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.16),
+                                blurRadius: 3,
+                                spreadRadius: 1,
+                              ),
+                          ],
+                        ),
+                        child: selected
+                            ? const Center(
+                                child: Icon(
+                                  PhosphorIconsBold.check,
+                                  color: Colors.white,
+                                  size: 15,
+                                ),
+                              )
+                            : null,
+                      ),
                     ),
-                  ),
-                  IconButton(onPressed: connected && rgbMode < 7 ? () => _setMode(rgbMode + 1) : null, icon: const Icon(PhosphorIconsBold.caretRight, size: 28)),
-                ],
+                  );
+                },
               ),
-              Row(
-                children: [
-                  const Icon(PhosphorIconsRegular.sun, color: Colors.black38, size: 20),
-                  Expanded(
-                    child: Slider(
-                      min: 0,
-                      max: 100,
-                      divisions: 20,
-                      value: brightness.clamp(0, 100).toDouble(),
-                      activeColor: Colors.black,
-                      inactiveColor: Colors.black12,
-                      onChanged: connected ? (v) => setState(() => brightness = v.round()) : null,
-                      onChangeEnd: connected ? _setBrightness : null,
-                    ),
-                  ),
-                  SizedBox(width: 42, child: Text('$brightness%', textAlign: TextAlign.right, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900))),
-                ],
-              ),
-            ],
-          ),
-        ),
-        _sectionTitle('Custom Color'),
-        _card(child: Row(children: [
-          Expanded(child: TextField(
-            controller: rgbColorController,
-            enabled: connected,
-            textCapitalization: TextCapitalization.characters,
-            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
-            decoration: InputDecoration(
-              labelText: 'Color',
-              hintText: '#FFFFFF',
-              filled: true,
-              fillColor: Colors.white,
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-            ),
-          )),
-          const SizedBox(width: 8),
-          FilledButton(onPressed: connected ? () => _sendColor('COLOR', rgbColorController) : null, child: const Text('Set')),
-        ])),
-        _sectionTitle('Voltage Colors', subtitle: 'Shown after voltage change.'),
-        _card(child: Column(children: [
-          _colorField('5V', color5Controller, 'V5COLOR'),
-          const Divider(height: 18),
-          _colorField('9V', color9Controller, 'V9COLOR'),
-          const Divider(height: 18),
-          _colorField('12V', color12Controller, 'V12COLOR'),
-          const SizedBox(height: 8),
-          Align(
-            alignment: Alignment.centerRight,
-            child: OutlinedButton.icon(
-              onPressed: connected ? _resetVoltageColors : null,
-              icon: const Icon(PhosphorIconsBold.arrowClockwise, size: 17),
-              label: const Text('Reset Colors'),
             ),
           ),
-        ])),
-      ],
-    ));
+        ],
+      ),
+    );
   }
 
   Widget _adjuster({required String title, required int value, required int min, required int max, required ValueChanged<int> onChanged, String unit = '°C'}) {
