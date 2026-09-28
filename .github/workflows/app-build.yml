@@ -6,9 +6,22 @@
 name: App Build
 
 on:
+  # Automatically validate the App whenever App source, Android configuration,
+  # dependencies, tests, assets, or this workflow itself changes.
   push:
+    branches:
+      - main
     paths:
+      - "lib/**"
+      - "android/**"
+      - "assets/**"
+      - "test/**"
+      - "pubspec.yaml"
+      - "pubspec.lock"
+      - ".github/workflows/app-build.yml"
       - ".github/APP_BUILD_TRIGGER"
+  # Keep an explicit manual entry point available for a controlled release check.
+  workflow_dispatch:
 
 permissions:
   # Read-only repository access is sufficient.
