@@ -2474,7 +2474,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       key: PageStorageKey<String>(storageKey),
       physics: const ClampingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      scrollCacheExtent: const ScrollCacheExtent.pixels(480),
+      cacheExtent: 480.0,
       padding: padding,
       children: children,
     );
