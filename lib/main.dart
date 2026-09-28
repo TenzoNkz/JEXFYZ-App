@@ -1,4 +1,26 @@
 /*
+  AI MAINTENANCE MEMORY
+  ---------------------
+  Scope: Flutter/Android App only. Firmware source and BIN are external.
+
+  Integration invariants:
+  - BLE identity/protocol/UUIDs below are part of the JE X FYZ contract.
+  - Firmware telemetry is authoritative for physical state and safety.
+  - A BLE write is not proof that hardware changed permanently.
+  - State-changing commands require the BLE sync/session gate.
+  - Phone battery heartbeat and hotside telemetry remain 1 Hz.
+  - Online OTA metadata is external to this repository.
+  - Wi-Fi credentials stay in flutter_secure_storage.
+  - Current OTA availability accepts any valid DIFFERENT firmware version.
+  - Do not reintroduce legacy commands or blocking PROCESSING UI.
+
+  Maintenance:
+  - Prefer minimal, evidence-based fixes.
+  - Check exact official APIs before replacing lifecycle/transport behavior.
+  - Preserve these comments as project memory when refactoring.
+*/
+
+/*
   JE X FYZ / JE COOLER
   Horizon Cooler UI base + JE X FYZ / P1 protocol
 
@@ -13,6 +35,7 @@
   - UI never pretends a command succeeded until device telemetry confirms it.
 */
 
+// --- IMPORT BOUNDARY: Dart/Flutter and JE X FYZ plugin dependencies ---
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -29,11 +52,13 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 
 // Premium icon system: Phosphor Icons (Regular/Bold).
 // Material Icons are intentionally not used by JE X FYZ UI controls.
+// --- PRODUCT/INTEGRATION CONSTANTS: identity, BLE UUIDs, OTA endpoint, UI limits ---
 const String appName = 'JE Cooler';
 const String headerName = 'JE X FYZ';
 const String serviceUuid = '6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001';
 const String rxUuid = '6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001';
 const String txUuid = '6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001';
+// AI-MEMORY: External firmware integration endpoint only; never replace with a local firmware source path.
 const String firmwareManifestUrl =
     'https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/manifest.json';
 const Duration voltageGuardDuration = Duration(seconds: 1);
@@ -42,6 +67,7 @@ const int fanSpeedMax = 100;
 
 const MethodChannel securityChannel = MethodChannel('je_x_fyz/security');
 
+// AI-METHOD: _isOfficialBuild — Production signing-integrity gate; debug builds are intentionally allowed.
 Future<bool> _isOfficialBuild() async {
   if (!Platform.isAndroid) return true;
   try {
@@ -53,11 +79,13 @@ Future<bool> _isOfficialBuild() async {
   }
 }
 
+// AI-METHOD: isVoltageCommand — Accept only 5V, 9V, or 12V.
 bool isVoltageCommand(String value) {
   final v = value.trim().toUpperCase();
   return v == '5V' || v == '9V' || v == '12V';
 }
 
+// AI-METHOD: parseFirmwareVersion — Parse supported V<major>.<minor> labels only.
 List<int>? parseFirmwareVersion(String version) {
   final match = RegExp(r'^V(\d+)(?:\.(\d+))?$')
       .firstMatch(version.trim().toUpperCase());
@@ -68,6 +96,7 @@ List<int>? parseFirmwareVersion(String version) {
   return <int>[major, minor];
 }
 
+// AI-METHOD: isNewerFirmwareVersion — Compatibility/test helper; current OTA policy uses different-version comparison.
 bool isNewerFirmwareVersion(String latest, String current) {
   final a = parseFirmwareVersion(latest);
   final b = parseFirmwareVersion(current);
@@ -76,6 +105,7 @@ bool isNewerFirmwareVersion(String latest, String current) {
   return a[1] > b[1];
 }
 
+// AI-METHOD: isDifferentFirmwareVersion — Current OTA availability rule: any valid version different from device version is an OTA target.
 bool isDifferentFirmwareVersion(String latest, String current) {
   final a = parseFirmwareVersion(latest);
   final b = parseFirmwareVersion(current);
@@ -83,10 +113,12 @@ bool isDifferentFirmwareVersion(String latest, String current) {
   return a[0] != b[0] || a[1] != b[1];
 }
 
+// AI-METHOD: isValidHexColor — Validate a complete six-digit RGB hex value.
 bool isValidHexColor(String value) {
   return RegExp(r'^#[0-9A-Fa-f]{6}$').hasMatch(value.trim());
 }
 
+// AI-METHOD: main — Flutter entry point; initialize security/Firebase then mount production UI.
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -245,6 +277,7 @@ class JeCoolerApp extends StatelessWidget {
 /// Backwards-compatible alias for simple widget tests.
 typedef MyApp = JeCoolerApp;
 
+// --- DASHBOARD CONTROLLER: BLE lifecycle, telemetry, commands, OTA initiation, rendering ---
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -365,6 +398,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.dispose();
   }
 
+  // AI-METHOD: _requestPermissions — Prepare Android BLE permissions, adapter state, and legacy location requirements.
   Future<bool> _requestPermissions({bool showResult = false}) async {
     if (!Platform.isAndroid) return true;
     try {
@@ -421,6 +455,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  // AI-METHOD: _setBackgroundService — Bridge the active BLE session to the native foreground service.
   Future<void> _setBackgroundService(bool enabled) async {
     if (!Platform.isAndroid) return;
     try {
@@ -444,6 +479,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  // AI-METHOD: _scanAndConnect — Perform bounded BLE discovery and pass the matching device to the connection routine.
   Future<void> _scanAndConnect() async {
     if (syncing) return;
     final accessReady = await _requestPermissions();
@@ -524,6 +560,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         return;
       }
 
+      // AI-METHOD: _connect — Create a clean GATT session, discover the contract, and complete P1 synchronization.
       await _connect(found);
     } catch (e) {
       debugPrint('BLE scan: $e');
@@ -536,6 +573,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  // AI-METHOD: _connect — Create a clean GATT session, discover the contract, and complete P1 synchronization.
   Future<void> _connect(BluetoothDevice target) async {
     await FlutterBluePlus.stopScan();
     await Future<void>.delayed(const Duration(milliseconds: 250));
@@ -587,6 +625,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     connectionSub = target.connectionState.listen((state) {
       if (state != BluetoothConnectionState.disconnected) return;
+      // AI-METHOD: _handleBleDisconnected — Central BLE teardown path; clear stale timers, ACKs, session state, and UI telemetry.
       _handleBleDisconnected();
     });
 
@@ -608,6 +647,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             .first
             .timeout(const Duration(seconds: 4));
 
+        // AI-METHOD: _discoverServices — Discover exact JE X FYZ service/RX/TX, enable notifications, and complete SYNC/SYNC_READY.
         await _discoverServices(target);
         lastError = null;
         break;
@@ -644,6 +684,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  // AI-METHOD: _handleBleDisconnected — Central BLE teardown path; clear stale timers, ACKs, session state, and UI telemetry.
   void _handleBleDisconnected() {
     unawaited(_setBackgroundService(false));
     notificationSub?.cancel();
@@ -680,6 +721,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
+  // AI-METHOD: _discoverServices — Discover exact JE X FYZ service/RX/TX, enable notifications, and complete SYNC/SYNC_READY.
   Future<void> _discoverServices(BluetoothDevice target) async {
     BluetoothCharacteristic? discoveredRx;
     BluetoothCharacteristic? discoveredTx;
@@ -724,6 +766,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     await notificationSub?.cancel();
     notificationSub = discoveredTx.lastValueStream.listen((bytes) {
       if (bytes.isNotEmpty) {
+        // AI-METHOD: _parseIncoming — Parse framed full-sync data and newline telemetry/ACK messages.
         _parseIncoming(utf8.decode(bytes, allowMalformed: true));
       }
     });
@@ -738,6 +781,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     // several opportunities to drain its automatic connect-time sync and then
     // request a clean snapshot ourselves.
     for (var attempt = 0; attempt < 5 && !fullSyncReceived && mounted; attempt++) {
+      // AI-METHOD: sendCommand — Serialize GATT writes and enforce the pre-session command gate.
       await sendCommand('SYNC', showError: false);
       final deadline = DateTime.now().add(const Duration(milliseconds: 1500));
       while (mounted && !fullSyncReceived && DateTime.now().isBefore(deadline)) {
@@ -753,6 +797,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       await discoveredTx.setNotifyValue(true);
 
       for (var attempt = 0; attempt < 3 && !fullSyncReceived && mounted; attempt++) {
+        // AI-METHOD: sendCommand — Serialize GATT writes and enforce the pre-session command gate.
         await sendCommand('SYNC', showError: false);
         final deadline = DateTime.now().add(const Duration(milliseconds: 1000));
         while (mounted && !fullSyncReceived && DateTime.now().isBefore(deadline)) {
@@ -787,8 +832,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
 
     // Final synchronized snapshot includes the phone battery temperature.
+    // AI-METHOD: _readBatteryTemperatureOnce — Read phone battery temperature through Android.
     await _readBatteryTemperatureOnce(updateUi: false);
     fullSyncReceived = false;
+    // AI-METHOD: sendCommand — Serialize GATT writes and enforce the pre-session command gate.
     await sendCommand('SYNC', showError: false);
     final finalSyncDeadline = DateTime.now().add(const Duration(milliseconds: 2500));
     while (mounted &&
@@ -808,6 +855,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     setState(() {
       for (final entry in readySnapshot.entries) {
+        // AI-METHOD: _applyTelemetryValue — Map firmware telemetry keys into typed Flutter state.
         _applyTelemetryValue(entry.key, entry.value);
       }
       connected = true;
@@ -819,6 +867,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       color9Controller.text = color9V;
       color12Controller.text = color12V;
     });
+    // AI-METHOD: _startBatteryTelemetry — Start the 1 Hz phone-battery heartbeat.
     _startBatteryTelemetry();
     unawaited(_setBackgroundService(true));
 
@@ -838,6 +887,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  // AI-METHOD: sendCommand — Serialize GATT writes and enforce the pre-session command gate.
   Future<bool> sendCommand(String command, {bool showError = true}) {
     final completer = Completer<bool>();
     _writeQueue = _writeQueue.then((_) async {
@@ -920,6 +970,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  // AI-METHOD: _sendAndWaitAck — Send a command and await its firmware acknowledgement.
   Future<bool> _sendAndWaitAck(
     String command, {
     bool showError = true,
@@ -975,6 +1026,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         c.startsWith('PHONE:BT=');
   }
 
+  // AI-METHOD: _parseIncoming — Parse framed full-sync data and newline telemetry/ACK messages.
   void _parseIncoming(String incoming) {
     incomingBuffer += incoming;
     if (incomingBuffer.length > 16000) {
@@ -1016,6 +1068,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         final value = line.substring(separator + 1).trim();
         _syncSnapshot[key] = value;
       }
+      // AI-METHOD: _commitTelemetry — Buffer setup telemetry until dashboard readiness; otherwise update UI state.
       _commitTelemetry(_syncSnapshot);
       fullSyncReceived = true;
     }
@@ -1067,9 +1120,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (separator <= 0) return;
     final key = line.substring(0, separator).trim();
     final value = line.substring(separator + 1).trim();
+    // AI-METHOD: _commitTelemetry — Buffer setup telemetry until dashboard readiness; otherwise update UI state.
     _commitTelemetry(<String, String>{key: value});
   }
 
+  // AI-METHOD: _commitTelemetry — Buffer setup telemetry until dashboard readiness; otherwise update UI state.
   void _commitTelemetry(Map<String, String> values) {
     if (values.isEmpty) return;
 
@@ -1089,11 +1144,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
     if (!mounted) return;
     setState(() {
       for (final entry in values.entries) {
+        // AI-METHOD: _applyTelemetryValue — Map firmware telemetry keys into typed Flutter state.
         _applyTelemetryValue(entry.key, entry.value);
       }
     });
   }
 
+  // AI-METHOD: _applyTelemetryValue — Map firmware telemetry keys into typed Flutter state.
   void _applyTelemetryValue(String key, String value) {
     switch (key) {
       case 'VERSION':
@@ -1214,13 +1271,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  // AI-METHOD: _startBatteryTelemetry — Start the 1 Hz phone-battery heartbeat.
   void _startBatteryTelemetry() {
     batteryTimer?.cancel();
     batteryTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      // AI-METHOD: _readBatteryTemperatureOnce — Read phone battery temperature through Android.
       _readBatteryTemperatureOnce();
     });
   }
 
+  // AI-METHOD: _readBatteryTemperatureOnce — Read phone battery temperature through Android.
   Future<void> _readBatteryTemperatureOnce({bool updateUi = true}) async {
     if (batteryReadBusy) return;
     batteryReadBusy = true;
@@ -1237,6 +1297,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       }
 
       if (_bleReady) {
+        // AI-METHOD: sendCommand — Serialize GATT writes and enforce the pre-session command gate.
         await sendCommand(
           valid ? 'PHONE:BT=${temp.toStringAsFixed(1)}' : 'PHONE:BT=-1.0',
           showError: false,
@@ -1255,6 +1316,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  // AI-METHOD: _scheduleRuntimeSync — Send changed runtime settings after the intended settling period.
   void _scheduleRuntimeSync() {
     if (!connected || !_bleReady || !_bleSessionReady) return;
     runtimeSyncTimer?.cancel();
@@ -1266,6 +1328,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
+  // AI-METHOD: _sendAndConfirm — Wait for telemetry confirmation after a state-changing command.
   Future<bool> _sendAndConfirm(
     String command, {
     Duration timeout = const Duration(seconds: 3),
@@ -1276,12 +1339,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
       timeout: timeout,
     );
     if (accepted) {
+      // AI-METHOD: _scheduleRuntimeSync — Send changed runtime settings after the intended settling period.
       _scheduleRuntimeSync();
       _notifyCommandAccepted(command);
     }
     return accepted;
   }
 
+  // AI-METHOD: _requestVoltage — Apply the 1-second manual voltage guard.
   Future<void> _requestVoltage(String target) async {
     if (!connected ||
         adaptiveOn ||
@@ -1319,6 +1384,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  // AI-METHOD: _toggleFan — Request Fan state; firmware remains the safety authority.
   Future<void> _toggleFan(bool enabled) async {
     if (!connected || adaptiveOn) return;
     try {
@@ -1334,6 +1400,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  // AI-METHOD: _togglePeltier — Request Peltier state; firmware remains the safety authority.
   Future<void> _togglePeltier(bool enabled) async {
     if (!connected || adaptiveOn) return;
     try {
@@ -1370,6 +1437,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  // AI-METHOD: _toggleAdaptive — Request Adaptive state; firmware controls resulting safety/voltage.
   Future<void> _toggleAdaptive(bool enabled) async {
     if (!connected) return;
     if (mounted) setState(() {
@@ -1392,6 +1460,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  // AI-METHOD: _setRgb — Set master RGB ON/OFF.
   Future<void> _setRgb(bool enabled) async {
     if (!connected) return;
     try {
@@ -1407,6 +1476,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  // AI-METHOD: _setMode — Set LED animation mode within the supported range.
   Future<void> _setMode(int mode) async {
     if (!connected) return;
     try {
@@ -1421,6 +1491,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  // AI-METHOD: _setBrightness — Set LED brightness 0–100.
   Future<void> _setBrightness(double value) async {
     if (!connected) return;
     try {
@@ -1436,6 +1507,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  // AI-METHOD: _setFanSpeed — Set App fan-speed control 50–100%.
   Future<void> _setFanSpeed(double value) async {
     if (!connected || adaptiveOn || voltage != '12V') return;
     try {
@@ -1453,6 +1525,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  // AI-METHOD: _setHotLimit — Set the hotside protection threshold.
   Future<void> _setHotLimit(int value) async {
     if (!connected || adaptiveOn) return;
     try {
@@ -1472,6 +1545,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  // AI-METHOD: _setBattery5 — Set the 5V battery-temperature threshold.
   Future<void> _setBattery5(int value) async {
     if (!connected || adaptiveOn) return;
     try {
@@ -1492,6 +1566,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  // AI-METHOD: _setBattery12 — Set the 12V battery-temperature threshold.
   Future<void> _setBattery12(int value) async {
     if (!connected || adaptiveOn) return;
     try {
@@ -1512,6 +1587,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  // AI-METHOD: _sendColor — Send one validated RGB color.
   Future<void> _sendColor(String command, TextEditingController controller) async {
     final value = controller.text.trim().toUpperCase();
     if (!isValidHexColor(value)) {
@@ -1554,6 +1630,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  // AI-METHOD: _requestFreshSync — Request a fresh firmware snapshot without replaying local state.
   Future<bool> _requestFreshSync({Duration timeout = const Duration(seconds: 3)}) async {
     fullSyncReceived = false;
     final sent = await sendCommand('SYNC', showError: false);
@@ -1561,11 +1638,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return _waitUntil(() => fullSyncReceived, timeout: timeout);
   }
 
+  // AI-METHOD: _openFirmwareSettings — Open the external firmware update dialog.
   Future<void> _openFirmwareSettings() async {
     if (!connected) {
       _showSnackBar('Connect to JE X FYZ first.', color: Colors.orangeAccent);
       return;
     }
+    // AI-METHOD: _requestFreshSync — Request a fresh firmware snapshot without replaying local state.
     await _requestFreshSync();
     if (!mounted) return;
     await showDialog<void>(
@@ -1577,6 +1656,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  // AI-METHOD: _startCloudOta — Send Online OTA metadata/credentials to firmware and monitor BLE recovery.
   Future<void> _startCloudOta(
     String ssid,
     String password,
@@ -1611,9 +1691,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
       'OTA in progress.',
       color: Colors.purpleAccent,
     );
+    // AI-METHOD: _startOtaReconnectMonitor — Retry BLE discovery after OTA disconnect/restart.
     _startOtaReconnectMonitor();
   }
 
+  // AI-METHOD: _startOtaReconnectMonitor — Retry BLE discovery after OTA disconnect/restart.
   void _startOtaReconnectMonitor() {
     reconnectTimer?.cancel();
     int attempts = 0;
@@ -1623,6 +1705,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         return;
       }
       attempts++;
+      // AI-METHOD: _scanAndConnect — Perform bounded BLE discovery and pass the matching device to the connection routine.
       await _scanAndConnect();
       if (connected) timer.cancel();
     });
@@ -1639,6 +1722,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return fields;
   }
 
+  // AI-METHOD: _friendlyOtaStage — Translate OTA stage tokens into readable text.
   String _friendlyOtaStage(String stage) {
     switch (stage.toUpperCase()) {
       case 'LOCAL_FILE_CHECK': return 'File check';
@@ -1682,6 +1766,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  // AI-METHOD: _friendlyOtaResult — Translate persisted OTA results into Home NOTIFY text.
   String _friendlyOtaResult(String value) {
     final raw = value.trim();
     if (raw.isEmpty || raw.toUpperCase() == 'NONE') return '';
@@ -1996,6 +2081,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return raw;
   }
 
+  // AI-METHOD: _professionalNotice — Normalize technical status into project UI wording.
   String _professionalNotice() {
     final custom = _compactNotifyMessage(notice);
 
@@ -2143,6 +2229,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return connected ? 'ONLINE' : 'OFFLINE';
   }
 
+  // AI-METHOD: _homeNotify — Render the Home NOTIFY card.
   Widget _homeNotify() {
     final custom = notice.trim().toUpperCase();
     final otaResultUpper = lastOtaResult.trim().toUpperCase();
@@ -2214,6 +2301,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         fit: BoxFit.scaleDown,
                         alignment: Alignment.centerLeft,
                         child: Text(
+                          // AI-METHOD: _professionalNotice — Normalize technical status into project UI wording.
                           _professionalNotice(),
                           maxLines: 1,
                           softWrap: false,
@@ -2391,6 +2479,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  // AI-METHOD: _buildVoltageTab — Build VOLTAGE submenu.
   Widget _buildVoltageTab({Key? key}) {
     return KeyedSubtree(key: key, child: _smoothList(
       storageKey: 'voltage',
@@ -2432,6 +2521,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     ));
   }
 
+  // AI-METHOD: _buildControlTab — Build CONTROL submenu.
   Widget _buildControlTab({Key? key}) {
     final speedEnabled = connected && !adaptiveOn && voltage == '12V';
     final fanLocked = connected && !adaptiveOn && peltierOn;
@@ -2544,6 +2634,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  // AI-METHOD: _buildAdaptiveTab — Build ADAPTIVE submenu.
   Widget _buildAdaptiveTab({Key? key}) {
     return KeyedSubtree(key: key, child: _smoothList(
       storageKey: 'adaptive',
@@ -2683,6 +2774,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  // AI-METHOD: _buildLedTab — Build LED/RGB/brightness/color controls.
   Widget _buildLedTab({Key? key}) {
     final modeNames = <String>['Static', 'Breath', 'Center Out', 'Outer In', 'Dual Chase', 'Left ↔ Right', 'Rainbow', 'Twinkle'];
     final safeMode = rgbMode.clamp(1, 8);
@@ -2810,6 +2902,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
+  // AI-METHOD: _buildTemperatureTab — Build temperature/battery settings.
   Widget _buildTemperatureTab({Key? key}) {
     final locked = adaptiveOn;
     final midLow = battery5Limit + 1;
@@ -2826,6 +2919,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             max: 50,
             onChanged: (v) {
               if (!connected || locked) return;
+              // AI-METHOD: _setHotLimit — Set the hotside protection threshold.
               _setHotLimit(v);
             },
           ),
@@ -2842,6 +2936,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 max: 48,
                 onChanged: (v) {
                   if (!connected || locked || v >= battery12Limit - 1) return;
+                  // AI-METHOD: _setBattery5 — Set the 5V battery-temperature threshold.
                   _setBattery5(v);
                 },
               ),
@@ -2861,6 +2956,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 max: 50,
                 onChanged: (v) {
                   if (!connected || locked || v <= battery5Limit + 1) return;
+                  // AI-METHOD: _setBattery12 — Set the 12V battery-temperature threshold.
                   _setBattery12(v);
                 },
               ),
@@ -2888,6 +2984,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     ));
   }
 
+  // AI-METHOD: _buildTabContent — Select submenu content by tab index.
   Widget _buildTabContent() {
     return switch (tabIndex) {
       0 => _buildVoltageTab(key: const ValueKey('voltage-tab')),
@@ -2899,6 +2996,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     };
   }
 
+  // AI-METHOD: _buildHomeArea — Build the complete Home dashboard.
   Widget _buildHomeArea(double height) {
     final batteryValue = connected && phoneBatteryValid ? phoneBatteryTemp : '--';
     final hotValue = connected ? hotsideTemp : '--';
@@ -3222,6 +3320,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 }
 
+// --- CONNECTION SHEET: UI only; BLE ownership remains in DashboardScreen ---
 class _ConnectionSheetContent extends StatefulWidget {
   final Future<void> Function() onScan;
   final Future<void> Function(BluetoothDevice device) onConnect;
@@ -3630,6 +3729,7 @@ class StaticScale extends StatelessWidget {
   Widget build(BuildContext context) => child;
 }
 
+// --- OTA UI: external firmware metadata/credentials; firmware performs flashing ---
 class FirmwareUpdateDialog extends StatefulWidget {
   final String currentVersion;
   final Future<void> Function(String ssid, String password, String url, String version) onUpdate;
@@ -3657,7 +3757,9 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
   @override
   void initState() {
     super.initState();
+    // AI-METHOD: _loadSavedCredentials — Load Wi-Fi credentials from secure storage only.
     _loadSavedCredentials();
+    // AI-METHOD: _checkGitHub — Fetch and validate the external firmware manifest.
     _checkGitHub();
   }
 
@@ -3668,6 +3770,7 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
     super.dispose();
   }
 
+  // AI-METHOD: _loadSavedCredentials — Load Wi-Fi credentials from secure storage only.
   Future<void> _loadSavedCredentials() async {
     try {
       final savedSsid = await storage.read(key: 'jexfyz_wifi_ssid') ?? '';
@@ -3683,6 +3786,7 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
     }
   }
 
+  // AI-METHOD: _checkGitHub — Fetch and validate the external firmware manifest.
   Future<void> _checkGitHub() async {
     setState(() {
       status = 'CHECKING';
@@ -3732,6 +3836,7 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
         latestVersion = version;
         firmwareUrl = url;
         updateAvailable =
+            // AI-METHOD: isDifferentFirmwareVersion — Current OTA availability rule: any valid version different from device version is an OTA target.
             isDifferentFirmwareVersion(version, widget.currentVersion);
         status = updateAvailable ? 'UPDATE' : 'UP_TO_DATE';
       });
