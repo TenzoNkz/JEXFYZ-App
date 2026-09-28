@@ -1,14 +1,23 @@
 # AI CI MEMORY:
-# This is the ONLY App Build workflow in the repository.
-# Firmware source/BIN/build artifacts are external and are never required here.
+# Reusable App Build engine. It is never triggered by push.
+# The dedicated "Build App" workflow is the only manual trigger.
+# Firmware source is intentionally stored in this App repository under firmware/.
+# The dedicated firmware repository is binary-only.
 # CI success proves App build validation only; it does not prove BLE/OTA/hardware runtime.
 
 name: App Build
 
 on:
-  # IMPORTANT: This workflow must never build automatically.
-  # A release validation run is allowed only when the user explicitly requests "Build App".
-  workflow_dispatch:
+  workflow_call:
+    secrets:
+      ANDROID_KEYSTORE_BASE64:
+        required: true
+      ANDROID_KEYSTORE_PASSWORD:
+        required: true
+      ANDROID_KEY_ALIAS:
+        required: true
+      ANDROID_KEY_PASSWORD:
+        required: true
 
 permissions:
   # Read-only repository access is sufficient.
@@ -178,8 +187,16 @@ jobs:
               if forbidden in source or forbidden in pubspec:
                   raise SystemExit("JE X FYZ audit failed; legacy Firebase firmware metadata reference found: " + forbidden)
 
-          if Path("firmware").exists():
-              raise SystemExit("JE X FYZ audit failed; firmware source directory must not be stored in the App repository")
+          # Firmware .ino source is intentionally stored in this App repository.
+          # It must not be referenced as a Flutter source/build dependency.
+          firmware_dir = Path("firmware")
+          if firmware_dir.exists():
+              for ino in firmware_dir.glob("*.ino"):
+                  rel = ino.as_posix()
+                  if rel in source or rel in pubspec:
+                      raise SystemExit(
+                          "JE X FYZ audit failed; App code references firmware source path: " + rel
+                      )
 
           if "shared_preferences" in pubspec:
               raise SystemExit("JE X FYZ audit failed; unused shared_preferences dependency is present")
@@ -192,8 +209,8 @@ jobs:
               if not asset.is_file() or asset.stat().st_size == 0:
                   raise SystemExit("JE X FYZ audit failed; missing/empty asset: " + str(asset))
 
-          if "firmware/JEXFYZ.ino" in source or "firmware/JEXFYZ.ino" in pubspec:
-              raise SystemExit("JE X FYZ audit failed; App source must not depend on a local firmware source path")
+          if "firmware/" in source or "firmware/" in pubspec:
+              raise SystemExit("JE X FYZ audit failed; App code must not depend on firmware source paths")
 
           print("JE X FYZ App-only security and architecture audit passed.")
           PY
