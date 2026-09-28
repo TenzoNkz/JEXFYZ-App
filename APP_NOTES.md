@@ -307,14 +307,12 @@ Dart symbols artifact:
 
 ### Build trigger policy
 
-The App Build workflow now has two entry points:
+**Build is manual-only.**
 
-1. **Automatic:** a push to `main` that changes App source/configuration, Android configuration, dependencies, tests, assets, or the App Build workflow itself triggers the build automatically.
-2. **Manual:** `workflow_dispatch` remains available for a controlled rebuild/release verification.
-
-The trigger intentionally does **not** include documentation-only changes such as `APP_NOTES.md` or `FIRMWARE_NOTES.md`, so reorganizing notes does not consume a release build.
-
-A workflow file existing or being healthy is not the same as a verified APK; the actual run result must still be checked.
+- The App Build workflow uses **only** `workflow_dispatch`.
+- Repository pushes, source edits, notes edits, asset changes, dependency changes, or workflow changes must **never** start an App Build automatically.
+- A build is to be started only after the user explicitly instructs ChatGPT to **“Build App”**.
+- A workflow file existing or being healthy is not the same as a verified APK; the actual run result must still be checked.
 
 ## 9. VALIDATION RULES
 
@@ -392,15 +390,15 @@ The 2026-09-28 comment pass reported:
 - Preserved the project rule that App validation cannot prove physical firmware/hardware behavior.
 - This documentation-only reorganization does not intentionally change App runtime behavior.
 
-## 12. AUTOMATIC APP BUILD TRIGGER — 2026-09-28
+## 12. BUILD TRIGGER POLICY CORRECTION — 2026-09-28
 
-- Updated `.github/workflows/app-build.yml` so App Build automatically runs on `main` when App source/configuration changes.
-- Automatic trigger paths include `lib/**`, `android/**`, `assets/**`, `test/**`, `pubspec.yaml`, `pubspec.lock`, the App workflow itself, and the dedicated `.github/APP_BUILD_TRIGGER` path.
-- Added `workflow_dispatch` so a controlled manual build can still be requested without changing source.
-- Documentation-only files are intentionally excluded from the automatic build trigger.
-- Because `.github/workflows/app-build.yml` is itself an automatic trigger path, the setup commit generated App Build run **#11** (`36372793640`). At the latest check it was still **in progress**.
-- Run #11 must be checked for its final result separately; this note does not treat an in-progress run as a successful build.
-- Future App source commits to `main` will invoke the existing release validation pipeline automatically.
+- Corrected the previous automatic-trigger experiment.
+- App Build is now **manual-only** via `workflow_dispatch`.
+- No push/path trigger remains in the App Build workflow.
+- The earlier setup commit created App Build run **#11** (`36372793640`) before this correction; that run belongs to the superseded automatic-trigger configuration and is not evidence of a user-requested build.
+- Future App source changes will not build automatically.
+- The normal execution boundary is now: user says **Build App** → start the App Build workflow → inspect the complete result → only then deliver/report the APK.
+
 
 ## 12. CURRENT CHANGE / VALIDATION STATUS — 2026-09-28
 
