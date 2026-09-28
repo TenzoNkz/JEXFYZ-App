@@ -18,7 +18,7 @@
 
 #include <Update.h>
 
-static constexpr char FW_VERSION[] = "V1.5";
+static constexpr char FW_VERSION[] = "V1.6";
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -229,10 +229,8 @@ size_t bleTxCount = 0;
 uint32_t bleNextNotifyAt = 0;
 
 char bleRxQueue[BLE_RX_QUEUE_SIZE][BLE_RX_BUFFER_SIZE];
-size_t bleRxHead = 0;
-size_t bleRxTail = 0;
-size_t bleRxCount = 0;
-std::atomic_flag bleRxQueueLock = ATOMIC_FLAG_INIT;
+std::atomic<size_t> bleRxHead{0};
+std::atomic<size_t> bleRxTail{0};
 
 volatile bool bleQueueResetPending = false;
 
@@ -1535,40 +1533,27 @@ static void clearBleTxQueue() {
   bleNextNotifyAt = millis();
 }
 
-static void lockBleRxQueue() {
-  while (bleRxQueueLock.test_and_set(std::memory_order_acquire)) {
-    yield();
-  }
-}
-
-static void unlockBleRxQueue() {
-  bleRxQueueLock.clear(std::memory_order_release);
-}
-
 static void clearBleRxQueue() {
-  lockBleRxQueue();
-  for (size_t i = 0; i < BLE_RX_QUEUE_SIZE; ++i) {
-    bleRxQueue[i][0] = '\0';
-  }
-  bleRxHead = 0;
-  bleRxTail = 0;
-  bleRxCount = 0;
-  unlockBleRxQueue();
+  const size_t currentTail =
+      bleRxTail.load(std::memory_order_acquire);
+  bleRxHead.store(currentTail, std::memory_order_release);
 }
 
 static void enqueueBleRxPayload(const String& payload) {
   if (payload.isEmpty()) return;
 
   const size_t copyLength = min(payload.length(), BLE_RX_BUFFER_SIZE - 1);
+  const size_t currentHead =
+      bleRxHead.load(std::memory_order_acquire);
+  const size_t currentTail =
+      bleRxTail.load(std::memory_order_relaxed);
+  const size_t nextTail = (currentTail + 1) % BLE_RX_QUEUE_SIZE;
 
-  lockBleRxQueue();
-  if (bleRxCount < BLE_RX_QUEUE_SIZE) {
-    memcpy(bleRxQueue[bleRxTail], payload.c_str(), copyLength);
-    bleRxQueue[bleRxTail][copyLength] = '\0';
-    bleRxTail = (bleRxTail + 1) % BLE_RX_QUEUE_SIZE;
-    ++bleRxCount;
+  if (nextTail != currentHead) {
+    memcpy(bleRxQueue[currentTail], payload.c_str(), copyLength);
+    bleRxQueue[currentTail][copyLength] = '\0';
+    bleRxTail.store(nextTail, std::memory_order_release);
   }
-  unlockBleRxQueue();
 }
 
 static void processBleRxQueue() {
@@ -1580,16 +1565,20 @@ static void processBleRxQueue() {
   char payloadBuffer[BLE_RX_BUFFER_SIZE];
   payloadBuffer[0] = '\0';
 
-  lockBleRxQueue();
-  if (bleRxCount > 0) {
-    memcpy(payloadBuffer, bleRxQueue[bleRxHead], BLE_RX_BUFFER_SIZE);
-    bleRxQueue[bleRxHead][0] = '\0';
-    bleRxHead = (bleRxHead + 1) % BLE_RX_QUEUE_SIZE;
-    --bleRxCount;
-  }
-  unlockBleRxQueue();
+  const size_t currentHead =
+      bleRxHead.load(std::memory_order_relaxed);
+  const size_t currentTail =
+      bleRxTail.load(std::memory_order_acquire);
 
-  if (payloadBuffer[0] != '\0') feedBleRx(String(payloadBuffer));
+  if (currentHead != currentTail) {
+    memcpy(payloadBuffer, bleRxQueue[currentHead], BLE_RX_BUFFER_SIZE);
+    bleRxQueue[currentHead][0] = '\0';
+
+    const size_t nextHead = (currentHead + 1) % BLE_RX_QUEUE_SIZE;
+    bleRxHead.store(nextHead, std::memory_order_release);
+
+    feedBleRx(String(payloadBuffer));
+  }
 }
 
 static void sendText(const String& line) {
@@ -1933,6 +1922,8 @@ class RxCallbacks : public BLECharacteristicCallbacks {
     enqueueBleRxPayload(characteristic->getValue());
   }
 };
+static ServerCallbacks serverCallbacks;
+static RxCallbacks rxCallbacks;
 
 static void stopBleRadio(bool releaseBluetoothMemory) {
   bleQueueResetPending = true;
@@ -2017,7 +2008,7 @@ static void startBle() {
     scheduleBleRetry();
     return;
   }
-  bleServer->setCallbacks(new ServerCallbacks());
+  bleServer->setCallbacks(&serverCallbacks);
 
   BLEService* service = bleServer->createService(SERVICE_UUID);
   if (service == nullptr) {
@@ -2035,7 +2026,7 @@ static void startBle() {
     scheduleBleRetry();
     return;
   }
-  rxCharacteristic->setCallbacks(new RxCallbacks());
+  rxCharacteristic->setCallbacks(&rxCallbacks);
 
   txCharacteristic = service->createCharacteristic(
       TX_UUID,
