@@ -634,3 +634,12 @@ Never:
 - The visible App stage `ONLINE_WIFI_CONNECT` remains a firmware telemetry state and does not by itself prove that `WiFi.begin()` has executed.
 - Firebase metadata remains unchanged; V1.5 source presence is not a release-publish signal.
 - App Build remains manual-only and was not triggered by this firmware change.
+
+
+## 2026-09-28 — GEMINI V1.5 FULL SOURCE REPLACEMENT
+
+- The user-provided full Gemini V1.5 firmware file is now the source of truth for `firmware/JEXFYZ-V1.5.ino`.
+- The full file was applied directly as requested; no selective edits were introduced during this replacement.
+- App source and App build configuration were not changed.
+- Firebase OTA metadata remains unchanged.
+- Physical firmware validation remains pending.
