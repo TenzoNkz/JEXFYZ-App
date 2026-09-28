@@ -1542,7 +1542,10 @@ static void clearBleRxQueue() {
 static void enqueueBleRxPayload(const String& payload) {
   if (payload.isEmpty()) return;
 
-  const size_t copyLength = min(payload.length(), BLE_RX_BUFFER_SIZE - 1);
+  const size_t copyLength =
+      (static_cast<size_t>(payload.length()) < (BLE_RX_BUFFER_SIZE - 1))
+          ? static_cast<size_t>(payload.length())
+          : (BLE_RX_BUFFER_SIZE - 1);
   const size_t currentHead =
       bleRxHead.load(std::memory_order_acquire);
   const size_t currentTail =
