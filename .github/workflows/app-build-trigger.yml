@@ -1,0 +1,15 @@
+# JE X FYZ App — single manual build trigger.
+# This is the only workflow that should be started manually for "Build App".
+# It calls the reusable App Build engine exactly once.
+name: Build App
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    uses: ./.github/workflows/app-build.yml
+    secrets: inherit
