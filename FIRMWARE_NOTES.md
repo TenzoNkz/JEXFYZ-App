@@ -2194,3 +2194,15 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - No technical conclusion from the Gemini audit is changed by this formatting clarification.
 - No firmware source was modified and no build was executed in this discussion.
 - Chat handoff status: **DISCUSSION — GEMINI AUDIT CONTENT ACCEPTED; FORMATTING CLARIFICATION RECORDED.**
+
+
+## 2026-09-28 — DISCUSSION: GEMINI ↔ CHATGPT TRANSFER WORKFLOW
+
+- User defined the permanent cross-AI handoff format for JE X FYZ:
+  - **ChatGPT → Gemini:** user copies ChatGPT's prompt/message directly into Gemini without conversion.
+  - **Gemini → ChatGPT:** user copies Gemini's response and converts/pastes it into a plain-text `.txt` file before uploading it here.
+- Therefore every future prompt sent from ChatGPT to Gemini must be written so that it remains unambiguous after direct copy/paste, and every prompt should explicitly tell Gemini that its response will return to ChatGPT as a `.txt` representation of the original formatted response.
+- When requesting an audit from Gemini, ChatGPT must include enough context, exact scope, and a clear output structure so Markdown/code formatting lost during TXT conversion does not change the technical meaning.
+- Screenshots of Gemini remain useful as presentation-format evidence; TXT remains the primary machine-readable transfer of Gemini's response content unless a discrepancy requires visual confirmation.
+- No firmware source was modified and no build was executed in this discussion.
+- Chat handoff status: **DISCUSSION — CROSS-AI HANDOFF FORMAT LOCKED; READY FOR THE NEXT GEMINI VERIFICATION PROMPT.**
