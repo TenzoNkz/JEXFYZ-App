@@ -2408,3 +2408,18 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Static post-change verification still required before physical compile. No ArduinoDroid compile or hardware result is claimed by this execution.
 - Important unresolved issue: Online OTA success is still not proven from this source change alone. The current download/flash transport has not been physically revalidated on V1.7, and the existing heap diagnostic remains present for the V1.7 candidate.
 - Next boundary: send the exact V1.7 source to Gemini for full review of the two radio-lifecycle changes and the complete Online OTA path; do not compile until ChatGPT and Gemini agree.
+
+## 2026-09-28 — EXECUTION: V1.7 ARDUINODROID PROTOTYPE VISIBILITY FIX
+
+- ArduinoDroid compile output was reviewed from the user's actual build log.
+- The selected toolchain is confirmed as ESP32-C3 with Arduino-ESP32 Core **3.3.7** and the bundled ESP-IDF v5.5 libraries.
+- Compile stopped during Arduino sketch prototype generation because ArduinoDroid generated function prototypes before the sketch-scoped enum definitions for `Voltage`, `LedMode`, and `VoltageRequestSource`.
+- The resulting errors (`Voltage was not declared in this scope`, enum type errors, and subsequent redeclaration errors) are treated as one preprocessing/prototype-visibility root cause, not as separate firmware logic failures.
+- Minimal repair applied directly to `main`: added forward declarations for the three enum classes immediately after the includes, before the firmware body:
+  - `enum class Voltage : uint8_t;`
+  - `enum class LedMode : uint8_t;`
+  - `enum class VoltageRequestSource : uint8_t;`
+- No Online OTA state-machine logic, radio lifecycle logic, BLE protocol, GPIO mapping, safety logic, or Update transport was changed by this repair.
+- Repository commit: `b3ba7856c8db4e95f29b0dca5a2f0470c17d2238`.
+- New V1.7 source blob SHA: `67aa36df79f2bcedd865a16b120ff6db72650ee9`.
+- Physical ArduinoDroid recompilation after this repair is **not yet verified**; do not claim compile success until the user provides the new final build result.
