@@ -76,6 +76,15 @@ Important: this architecture removes the GitHub manifest from the control path, 
 - App validation accepts only this exact GitHub BIN URL.
 - The firmware itself receives the approved URL over BLE; no GitHub manifest is required.
 
+## 2026-09-28 — DEBUGGING WITHOUT SERIAL MONITOR
+
+- User explicitly does not want to use a Serial Monitor for future debugging.
+- Serial Monitor output must not be treated as a required user-side diagnostic step.
+- Future firmware troubleshooting must first use source inspection, official Arduino-ESP32/Core 3.3.7 API verification, compile/build diagnostics, static state-machine analysis, repository/file inspection, and any physical symptoms or screenshots/logs the user voluntarily provides.
+- Do not repeatedly ask the user to capture Serial Monitor output merely because an OTA/runtime problem occurs.
+- When a fault cannot be conclusively distinguished from source/build evidence alone, state the uncertainty and narrow the next test to the smallest physical observation required; do not invent a root cause.
+- Preserve detailed internal firmware diagnostics in source when useful, but they are optional evidence rather than a user workflow requirement.
+
 ## 1. CURRENT STATE — AUTHORITATIVE
 
 ### 1.1 Firmware ownership and repository boundary
