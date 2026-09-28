@@ -6,8 +6,8 @@
 name: App Build
 
 on:
-  # Temporary explicit Build App trigger; validates the latest source revision.
-  push:
+  # IMPORTANT: This workflow must never build automatically.
+  # A release validation run is allowed only when the user explicitly requests "Build App".
   workflow_dispatch:
 
 permissions:
