@@ -68,6 +68,9 @@ void main() {
     expect(ledColorPalette.last, '#FFFFFF');
     for (final hex in ledColorPalette) {
       expect(RegExp(r'^#[0-9A-F]{6}
+      expect(ledPaletteColor(hex), isA<Color>());
+    }
+  });
 }
 ).hasMatch(hex), isTrue);
       expect(ledPaletteColor(hex), isA<Color>());
