@@ -615,3 +615,11 @@ Never:
 - Existing App behavior remains the same: it initiates OTA through P1 commands, reads firmware OTA telemetry, and runs its bounded BLE reconnect monitor.
 - Firebase firmware metadata remains unchanged; source version V1.4 is not sufficient reason to publish a V1.4 BIN.
 - App Build is not implied by firmware revisions and remains manual-only.
+
+
+## 2026-09-28 — LATEST ONLINE OTA SCREENSHOT EVIDENCE
+
+- User supplied a physical screenshot showing: **`OTA in progress • ONLINE • Wi-Fi connect • 0%`**.
+- The App source displays OTA stage values received from firmware and maintains a separate BLE `connected` state. Therefore a visible OTA stage does not itself prove that the ESP32 has already reached the Wi-Fi connection call.
+- Current App OTA command sequencing remains unchanged and no App source change is indicated by this evidence.
+- The latest diagnostic conclusion is that the next investigation should isolate the firmware radio-handoff boundary rather than modify Flutter UI/OTA transport speculatively.
