@@ -93,6 +93,18 @@ Important: this architecture removes the GitHub manifest from the control path, 
 - Online OTA remains a separate validation path and is not yet considered physically validated.
 - No Serial Monitor was required for this validation.
 
+## 2026-09-28 — FIREBASE METADATA READ CHECK
+
+- Physical App screenshot showed the Firebase RTDB node `/firmware_update` populated with `version: V1.0` and a GitHub BIN URL, while the App showed `Metadata unavailable`.
+- The current App source already targets the correct REST endpoint: `/firmware_update.json`.
+- The remaining configuration dependency is Firebase Realtime Database Rules: the App's unauthenticated HTTPS REST read requires the `firmware_update` node to permit `.read`.
+- Recommended RTDB Rules for the public firmware metadata node:
+  - `firmware_update/.read = true`
+  - `firmware_update/.write = false`
+- The App is intentionally not granted write access to firmware metadata.
+- This is a Firebase configuration issue, not evidence that the firmware OTA flashing path is broken.
+- A new App APK containing the Firebase endpoint change is still required on the phone; source changes alone do not update an already-installed APK.
+
 ## 1. CURRENT STATE — AUTHORITATIVE
 
 ### 1.1 Firmware ownership and repository boundary
