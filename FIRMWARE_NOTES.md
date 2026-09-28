@@ -2241,3 +2241,24 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - New integration nuance identified during cross-check: `bleQueueResetPending` is set on both `onConnect()` and `onDisconnect()` and is consumed in `loop()` before `processBleRxQueue()`. Therefore a BLE command that arrives between the connection callback and the pending-reset service can be intentionally discarded by the reset. The existing source already has this ordering; the SPSC patch must preserve queue safety without accidentally changing the intended session synchronization semantics. This is not currently classified as a V1.5 SPSC corruption bug, but it must be checked during the patch review.
 - No firmware source was modified and no build was executed in this discussion.
 - Chat handoff status: **DISCUSSION — CORE 3.3.7 CROSS-CHECK COMPLETE; PATCH DESIGN READY, BUT IMPLEMENTATION MUST PRESERVE CURRENT SESSION-RESET SEMANTICS.**
+
+
+## 2026-09-28 — EXECUTION FULL: V1.6 BLE RX SPSC + CALLBACK LIFETIME
+
+- User explicitly authorized `Eksekusi Code dan Firmware Full`.
+- Authoritative firmware source advanced from V1.5 to **V1.6**.
+- Scope was intentionally limited to the two confirmed Gemini findings: BLE RX queue synchronization (ISSUE #001) and BLE callback object lifetime (ISSUE #002). No OTA transport, LED, NTC, Peltier, Fan, GPIO, Adaptive, or protocol redesign was performed.
+- ISSUE #001 implementation: removed `std::atomic_flag` spin-lock, `bleRxQueueLock`, `bleRxCount`, `lockBleRxQueue()`, and `unlockBleRxQueue()`; converted `bleRxHead` and `bleRxTail` to `std::atomic<size_t>`; applied SPSC ownership with producer-owned tail, consumer-owned head, acquire/release publication, and consumer-owned reset (`head = tail`) without resetting producer tail.
+- Final queue ordering implemented: producer `head.load(acquire)` + `tail.load(relaxed)` + payload copy + `tail.store(release)`; consumer `head.load(relaxed)` + `tail.load(acquire)` + payload read + `head.store(release)`; reset `tail.load(acquire)` + `head.store(release)`.
+- ISSUE #002 implementation: replaced heap allocation of `ServerCallbacks` and `RxCallbacks` with static-lifetime instances and passed their addresses to `setCallbacks()`. `BLE2902` remains allocated by `new BLE2902()` as before and was not changed.
+- Cross-check against official Arduino-ESP32 Core 3.3.7 source confirmed `BLEServer::setCallbacks()` and `BLECharacteristic::setCallbacks()` assign callback pointers rather than deleting them; the corresponding destructors do not delete these callbacks. This supports the static callback lifetime change.
+- Firmware source commit: `aa6ed27e4404e1fa02fc3fb9440ebeda8c90acc3`.
+- Final source blob SHA from the repository update: `a9c07df96de82ba58a403dc30f0fd23ef3bd69a7`.
+- Final source size after V1.6 patch: 107,529 bytes; 3,797 lines.
+- OTA Gold Master Lock refreshed to V1.6: commit `53001e388a2752220a9d77c0ba6469b82fd97638`; lock blob `f799b4e838e1ba40727810b9619cf33137720d79`.
+- Static OTA lock audit at execution time: PASS. Protected OTA segments matched exactly; required ordering markers were present; balanced braces were `460/460`; V1.6 version marker present; old BLE spin-lock/count/callback-allocation patterns were absent; protected OTA transport and safety paths were not modified.
+- A pinned firmware CI workflow was restored as `.github/workflows/firmware-build.yml` in commit `54f3b5e2e28e3e84501bb5f2eb764fb2f22776cd`. It installs Arduino-ESP32 Core 3.3.7, Adafruit NeoPixel 1.15.5, OneButton 2.6.2, runs the OTA guard, compiles the ESP32-C3 target using the `no_fs` partition table, verifies V1.6 metadata, and uploads the firmware BIN artifact.
+- CI/runtime build result is **NOT CLAIMED YET**: the available GitHub connector did not expose a runnable workflow status for the push in this execution, and the local container has no Arduino CLI/toolchain. Therefore no successful compile or BIN generation is being falsely claimed from static analysis alone.
+- Public firmware distribution remains unchanged; no V1.6 BIN has been manually supplied by the user and no new public BIN was promoted in this execution.
+- Physical validation remains pending. The V1.6 source must be compiled/flashed by the user in the locked ArduinoDroid/Core 3.3.7 environment before runtime success is declared.
+- Next handoff: obtain the V1.6 build artifact/compile evidence, then perform the controlled BLE reconnect/command stress test and OTA regression test. Any further code change must start from the exact V1.6 source currently recorded here.
