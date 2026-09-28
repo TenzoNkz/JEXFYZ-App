@@ -755,3 +755,12 @@ Never:
 - Brightness uses the existing firmware BRIGHTNESS 1–100 interface; the firmware maps that user percentage to its hardware 0–255 scale.
 - BLE protocol/UUIDs, OTA, reconnect rediscovery, and firmware source were not changed.
 - App Build was **not triggered**; workflow remains manual-only.
+
+
+## 2026-09-28 — APP BUILD TRIGGER SPLIT
+
+- `app-build.yml` is now a **reusable workflow engine** triggered only through `workflow_call`; it has no `push` or direct manual trigger.
+- Added `.github/workflows/app-build-trigger.yml` named **Build App** as the single manual entry point.
+- One manual **Build App** trigger starts the reusable build engine once; normal repository commits do not create App Build runs.
+- Historical extra runs caused by the temporary `push` trigger remain visible in GitHub Actions history; they are not new triggers after this change.
+- App CI audit now permits the authoritative firmware `.ino` source under `firmware/` while still rejecting App-code dependencies on firmware source paths.
