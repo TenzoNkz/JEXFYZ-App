@@ -1,137 +1,415 @@
-# JE X FYZ App — Project Notes
+# JE X FYZ App — Master Notes
 
-## Scope
+> **Document purpose:** permanent maintenance memory for the JE X FYZ App.
+> This file describes the App repository, the App↔firmware integration contract, the Android/runtime boundary, build rules, validation rules, and change history.
+> **Reviewed:** 2026-09-28.
 
-This repository is **App-only**.
+## 1. CURRENT STATE — AUTHORITATIVE
 
-- App: Flutter/Android application **JE Cooler**
-- In-app header: **JE X FYZ**
+### 1.1 Repository ownership
+
 - Repository: `TenzoNkz/JEXFYZ-App`
-- UI/architecture reference: Horizon Cooler App
-- Firmware source, firmware `.ino`, firmware `.bin`, firmware CI, and firmware notes are **not stored in this repository**.
-- Firmware is maintained separately by the user. The App only consumes the external firmware update manifest/BIN URL when Online OTA is used.
+- Product/App name: **JE Cooler**
+- In-app brand/header: **JE X FYZ**
+- Platform: Flutter + Android
+- Primary UI/architecture reference: **Horizon Cooler App**
+- Repository scope: **App-only**
+- Firmware implementation source (.ino), firmware production BIN, firmware CI/build output, and firmware working files are maintained outside this repository by the user.
+- **FIRMWARE_NOTES.md is intentionally kept in this repository as documentation only.**
+- The App may keep the external firmware manifest URL because that URL is an App OTA integration dependency, not firmware source storage.
 
-## App ↔ Firmware integration boundary
+### 1.2 Repository boundary — do not break this rule
 
-The App remains synchronized to the external device protocol at the BLE boundary:
+The App repository may contain:
+- Flutter/Dart App source
+- Android wrapper/native bridge
+- App assets
+- App build/test configuration
+- App CI workflow
+- App notes
+- Firmware documentation/notes needed for project continuity
 
-- Device name: `JE X FYZ`
-- Protocol: `P1`
-- Service UUID: `6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001`
-- RX UUID: `6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001`
-- TX UUID: `6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001`
+The App repository must not contain:
+- `firmware/` source directory
+- production firmware `.ino` implementation
+- production firmware `.bin` artifact
+- firmware build output
+- firmware production CI/build workflow
 
-The firmware remains the source of truth for physical state and safety. The App waits for telemetry/ACK evidence instead of treating a BLE write as permanent physical success.
+A future App cleanup must not remove `FIRMWARE_NOTES.md` merely because firmware source is external.
 
-## BLE / UI behavior
+## 2. APP ARCHITECTURE
 
-- Horizon Cooler remains the UI/Android foundation.
-- Phosphor Icons are used for App controls; Material Icons are not used in the JE X FYZ UI.
-- Home keeps the established compact indicator layout.
-- Bluetooth and Settings remain header actions without icon boxes.
-- Fan Speed remains percentage-only, with the App-side control range 50–100%.
-- Normal runtime state is synchronized through the P1 session gate before state-changing commands are sent.
-- Hotside and phone-battery telemetry behavior remains 1 Hz as defined by the integration contract.
+### 2.1 Flutter layer
 
-## Firmware update integration
+The main App implementation is concentrated in:
+- `lib/main.dart`
+- `pubspec.yaml`
+- `test/widget_test.dart`
 
-Online OTA metadata is read from:
+The App follows the established Horizon Cooler architecture/style and adds JE X FYZ-specific:
+- BLE device discovery and session handling
+- P1 command/telemetry protocol
+- cooler controls
+- adaptive mode UI
+- voltage UI
+- fan-speed UI
+- temperature UI
+- LED/RGB configuration UI
+- firmware-update dialog
+- Android integration/security bridges
+
+### 2.2 Android layer
+
+Important Android files:
+- `android/app/build.gradle`
+- `android/app/src/main/AndroidManifest.xml`
+- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt`
+- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JeForegroundService.kt`
+- `android/app/proguard-rules.pro`
+- `android/build.gradle`
+- `android/settings.gradle`
+- `android/gradle.properties`
+
+Android package/application ID:
+`com.horizontalzzz.jexfyz`
+
+The native layer exists only to provide services Flutter cannot/should not own directly, including:
+- battery-temperature bridge
+- Android settings intents
+- Android SDK information
+- Bluetooth settings opening
+- foreground-service lifecycle
+- release-build signing/integrity check
+
+### 2.3 Native foreground-service rule
+
+`JeForegroundService.kt` is **not** a second BLE implementation.
+
+It exists to keep the required Android foreground-service lifecycle/notification alive for an already-established App session. Future changes must not accidentally introduce another BLE client, scanner, notification-owned connection, or duplicated session state inside the service.
+
+## 3. APP ↔ FIRMWARE BLE CONTRACT
+
+### 3.1 Device identity
+
+- BLE device name: **JE X FYZ**
+- Protocol generation: **P1**
+
+### 3.2 UUID contract
+
+Service:
+`6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001`
+
+RX:
+`6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001`
+
+TX:
+`6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001`
+
+These UUIDs are an integration contract. Do not change them casually.
+
+### 3.3 State authority
+
+The firmware remains the authority for:
+- physical voltage state
+- peltier state
+- fan state
+- safety state
+- temperature protection
+- adaptive control
+- physical LED state
+
+The App must not interpret a successful BLE write as proof that the physical device accepted/performed the operation.
+
+The correct model is:
+
+1. App sends an intended state/command.
+2. Firmware processes it.
+3. Firmware returns telemetry/ACK/state evidence.
+4. App updates the displayed state from evidence.
+
+This avoids UI drift after rejected, delayed, safety-limited, or interrupted commands.
+
+## 4. APP RUNTIME BEHAVIOR
+
+### 4.1 Home/UI rules
+
+Current established UI direction:
+- dark header
+- white rounded content panel
+- compact status/control presentation inspired by Horizon Cooler
+- Bluetooth and Settings actions remain simple header actions
+- no notification icon box
+- Phosphor Icons are used for JE X FYZ controls
+- Material `Icons.*` are not used for the JE X FYZ control UI
+- cooler image is intentionally prominent
+- voltage indicator, adaptive mode, peltier/fan controls, fan speed, and notification/reason state remain part of the core Home experience
+
+### 4.2 Fan-speed contract
+
+- App display/control uses percentage values.
+- App-side control range: **50%–100%**.
+- PWM behavior is a firmware responsibility.
+- The App must not claim PWM changes are effective until firmware telemetry/state confirms the physical mode/value.
+
+### 4.3 Session gate
+
+Normal state-changing BLE writes must pass through the current active-session gate.
+
+Do not add direct ad-hoc writes around the central session model without first checking:
+- connection state
+- service discovery
+- RX/TX characteristics
+- command serialization
+- pending command/ACK handling
+- reconnect behavior
+
+### 4.4 Telemetry expectations
+
+Integration documentation currently defines:
+- hotside temperature: approximately **1 Hz**
+- phone/device battery telemetry: approximately **1 Hz** where supported by the integration layer
+- other state: sent/processed when changed rather than continuously retransmitted
+
+The exact final telemetry semantics are governed by the firmware P1 implementation and must be checked against the current firmware notes before changing App assumptions.
+
+## 5. ONLINE FIRMWARE OTA INTEGRATION
+
+### 5.1 Manifest source
 
 `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/manifest.json`
 
-The App validates:
+The App treats this as an external integration dependency.
 
-- version format `V<major>.<minor>`
+Firmware source is **not** embedded in the App repository.
+
+### 5.2 Manifest validation
+
+The App validates:
+- firmware version shape: `V<major>.<minor>`
 - HTTPS transport
 - `raw.githubusercontent.com` host
-- firmware repository path under `/TenzoNkz/JEXFYZ-Firmware/`
+- repository path under `/TenzoNkz/JEXFYZ-Firmware/`
+- valid firmware URL/path according to the App existing allowlist
 
-The App accepts any valid **different** version as an OTA target, including rollback/downgrade for controlled testing.
+The App accepts any valid **different** firmware version as an OTA target, including a rollback/downgrade for controlled testing.
 
-Wi-Fi credentials are stored only through `flutter_secure_storage`.
+The App does **not** use a SHA-only firmware-version selection mechanism.
 
-## Android / security
+### 5.3 OTA network behavior
+
+Firmware-manifest fetching uses bounded HTTP timeouts so a stalled network request does not leave the firmware-update dialog waiting indefinitely.
+
+Future changes must keep network failures explicit:
+- timeout
+- DNS/connection failure
+- invalid manifest
+- invalid version
+- invalid host/path
+- unavailable BIN
+- firmware-side OTA failure
+
+Do not collapse all OTA failures into a generic silent state.
+
+### 5.4 Wi-Fi/BLE boundary
+
+The firmware owns the actual single-antenna radio handoff.
+
+The App responsibility is to:
+- request/update firmware through the documented OTA integration
+- display progress/state
+- tolerate the expected BLE disconnect/reconnect during OTA
+- rediscover/reconnect after firmware restart
+- not invent a simultaneous Wi-Fi + BLE capability that the hardware does not provide
+
+## 6. SECURITY / RELEASE
+
+### 6.1 Release package
 
 - Android package: `com.horizontalzzz.jexfyz`
-- Production release is signed with the configured JE X FYZ signing identity.
-- Release builds use R8/minification and resource shrinking.
-- Production App integrity checking is implemented through the native signing-certificate check.
-- Firebase App Check / Play Integrity remains an App security layer; it is not the firmware distribution source.
-- The App does not store firmware implementation files locally in this repository.
+- Release build: R8/minification enabled
+- Resource shrinking: enabled
+- Production signing: required
+- App integrity is checked by the native release-signing certificate logic
 
-## Build workflow
+Expected production signing identity currently documented:
+- CN: `JE X FYZ`
+- OU: `JE X FYZ`
+- O: `JE X FYZ`
+- L: `Indonesia`
+- ST: `Central Java`
+- C: `ID`
 
-App-only workflow:
+Expected certificate SHA-256 documented by the build workflow:
+`dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`
 
+### 6.2 Firebase/App Check boundary
+
+Firebase App Check / Play Integrity remains an **App security layer**.
+
+It is not the firmware source or production firmware distribution mechanism.
+
+### 6.3 Secret handling
+
+Wi-Fi credentials used by the App are stored through:
+`flutter_secure_storage`
+
+Do not move Wi-Fi credentials into plain-text preferences or log output.
+
+## 7. DEPENDENCY CONTRACT
+
+Current important Flutter dependencies:
+- `flutter_blue_plus ^2.3.12`
+- `firebase_core ^4.15.0`
+- `firebase_app_check ^0.4.8`
+- `flutter_secure_storage ^11.0.0`
+- `permission_handler ^13.0.2`
+- `phosphor_icons ^3.0.1`
+
+`shared_preferences` was intentionally removed as unused during the App-only cleanup.
+
+Dependency changes should be justified against actual source usage and compatibility rather than added speculatively.
+
+## 8. BUILD WORKFLOW
+
+Workflow:
 `.github/workflows/app-build.yml`
 
-The workflow is intended to validate:
+Purpose:
+1. establish the fixed Flutter/Java/Gradle environment
+2. audit App-only repository boundaries
+3. obtain dependencies
+4. run static analysis
+5. run Flutter tests
+6. build a release APK
+7. obfuscate release Dart code
+8. verify the release APK signing certificate
+9. upload the canonical APK artifact
+10. upload Dart symbol files
 
-1. Flutter/Java/Gradle toolchain
-2. production signing setup
-3. App-only architecture/security audit
-4. `flutter pub get`
-5. `flutter analyze`
-6. `flutter test`
-7. release APK build with obfuscation
-8. APK signature verification
-9. canonical APK artifact `JEXFYZ#<run-number>.apk`
-10. Dart symbols artifact
+Current pinned build environment documented in the workflow:
+- Java 17
+- Flutter 3.47.2
+- Gradle 9.3.1
+- Android compile SDK 37
+- target SDK 36
+- minimum SDK 24
+- Java/Kotlin JVM 17
+- Android Gradle Plugin 9.1.1
+- Kotlin 2.2.20
+- Google Services plugin 4.4.4
 
-The workflow must only be triggered by the dedicated App Build action/trigger when the user explicitly requests **Build App**.
+Canonical artifact naming:
+`JEXFYZ#<GitHub Actions run number>.apk`
 
-## Current repository cleanup — 2026-09-28
+Dart symbols artifact:
+`JE-X-FYZ-Dart-Symbols`
 
-- Removed `FIRMWARE_NOTES.md` from the App repository.
-- Confirmed there is no `firmware/` directory in the current App repository.
-- Restored the App Build workflow without any dependency on local firmware source.
-- Removed unused Dart dependency `shared_preferences`.
-- Removed unused `flutter/rendering.dart` import.
-- Removed the unused native `enableLocation` MethodChannel case.
-- Added bounded network timeouts to the firmware manifest fetch so the Firmware dialog cannot wait indefinitely on a stalled connection.
-- Kept the external firmware repository URL because it is an App OTA integration dependency, not firmware source storage.
+### Build authorization rule
 
-## Validation boundary
+**Do not run App Build unless the user explicitly says `Build App`.**
 
-Static/source inspection was completed against the current `main` branch before this cleanup.
+A workflow file existing or being healthy is not the same as a verified APK.
 
-This cleanup has **not** been declared a successful APK build. A fresh App Build must run `flutter analyze`, `flutter test`, release packaging, and signing verification before the resulting APK is considered verified.
+## 9. VALIDATION RULES
 
-Physical BLE/OTA/hardware behavior also remains a separate runtime validation step.
+Every meaningful App change should separate these validation layers:
 
-## Change-control rule
+### Static validation
+- source inspection
+- import/dependency consistency
+- repository-boundary check
+- manifest/build-config consistency
+- no accidental firmware source reintroduction
 
-For future App work:
+### Automated App validation
+- `flutter analyze`
+- `flutter test`
+- release packaging
+- APK signature verification
 
-- Read the current App notes/context before modifying App files.
-- Inspect the current GitHub source before changing code.
-- Keep firmware implementation out of this repository.
-- Do not guess at BLE/OTA behavior when the current integration contract can be checked.
-- Document every material App change in this file.
+### Runtime validation
+- real Android installation
+- BLE scan/connect
+- characteristic discovery
+- command/ACK/state synchronization
+- reconnect behavior
+- OTA dialog behavior
 
+### Hardware/firmware validation
+Owned by the firmware workflow and physical device testing. App source inspection cannot prove firmware hardware behavior.
 
-## 2026-09-28 — APP/FIRMWARE DOCUMENTATION BOUNDARY CORRECTION
+## 10. SOURCE COMMENT / AI MAINTENANCE RULE
 
-- User clarified that **firmware documentation must remain in the App repository** for project continuity.
-- `FIRMWARE_NOTES.md` is therefore retained as documentation only.
-- Firmware implementation source files (`.ino`), firmware BIN artifacts, firmware CI/build files, and firmware production build outputs remain outside the App repository and are maintained separately by the user.
-- The App Build workflow was corrected so `FIRMWARE_NOTES.md` is allowed, while a local `firmware/` source directory remains forbidden.
-- No App BLE/UI/API behavior was changed by this documentation-boundary correction.
+All maintainable source/configuration files were given persistent comments explaining important architecture and constraints.
 
+The comments are intended as maintenance memory:
+- why a boundary exists
+- what must not be duplicated
+- which layer owns a responsibility
+- which external contract must remain stable
+- what a future maintainer must verify before changing the code
 
-## 2026-09-28 — WORKFLOW AUDIT CLEANUP CONFIRMED
+Comments must remain factual. They must not replace verification.
 
-- Removed the obsolete App Build audit condition that rejected `FIRMWARE_NOTES.md`.
-- App Build audit now rejects only a local `firmware/` source directory.
-- Firmware documentation remains intentionally supported in the App repository.
+The 2026-09-28 comment pass reported:
+- `lib/main.dart`: 77 method-level AI maintenance markers, all attached to declarations
+- no suspicious AI-METHOD insertions inside expressions
+- Android/Kotlin/Gradle/manifest/ProGuard/pubspec/test/CI files documented
+- `google-services.json` intentionally unchanged because JSON does not support comments
+- PNG assets intentionally unchanged because they are binary assets
 
-## 2026-09-28 — SOURCE COMMENT PASS VERIFIED
+## 11. FILE ROLE MAP
 
-- Added persistent AI-maintenance comments throughout the App source/configuration files.
-- `lib/main.dart` now has an App-only architecture header, integration-boundary comments, and 77 method-level maintenance notes.
-- Android Kotlin, Gradle, manifest, ProGuard, pubspec, widget tests, and the App Build workflow now contain explicit role/constraint comments.
-- Verification check found **0 suspicious AI-METHOD comment insertions** inside expressions; all 77 method comments are directly attached to declarations.
-- No firmware source/BIN files were reintroduced. `FIRMWARE_NOTES.md` remains documentation only.
-- `google-services.json` and PNG assets remain unchanged.
-- No App runtime/protocol behavior was intentionally changed by this documentation pass.
-- Next validation boundary: explicit **Build App**.
+| Path | Role |
+|---|---|
+| `lib/main.dart` | Main Flutter App, UI, BLE/P1 integration, OTA dialog and app state |
+| `pubspec.yaml` | Flutter package/dependency contract |
+| `test/widget_test.dart` | App/widget-level automated test boundary |
+| `android/app/src/main/kotlin/.../MainActivity.kt` | Native Flutter↔Android bridge |
+| `android/app/src/main/kotlin/.../JeForegroundService.kt` | Android foreground-service lifecycle support |
+| `android/app/src/main/AndroidManifest.xml` | Android permissions/components/service declarations |
+| `android/app/build.gradle` | App Android build/signing/R8 configuration |
+| `android/app/proguard-rules.pro` | Release shrinker/keep rules |
+| `.github/workflows/app-build.yml` | App-only CI/release build |
+| `APP_NOTES.md` | App master maintenance memory |
+| `FIRMWARE_NOTES.md` | Firmware master documentation/history; documentation only |
+| `assets/jexfyzcooler.png` | Cooler UI asset |
+| `assets/jexfyzicon.png` | App/icon asset |
+| `android/app/google-services.json` | Firebase Android configuration; do not add comments |
+
+## 12. CURRENT CHANGE / VALIDATION STATUS — 2026-09-28
+
+Latest completed App cleanup work:
+- App repository boundary corrected to App-only.
+- `FIRMWARE_NOTES.md` restored and retained as documentation.
+- Local `firmware/` implementation directory removed.
+- Temporary firmware build workflow removed from the App repository.
+- Unused `shared_preferences` dependency removed.
+- Unused `flutter/rendering.dart` import removed.
+- Unused native `enableLocation` MethodChannel case removed.
+- Firmware manifest network fetch given bounded timeouts.
+- Source/configuration comments expanded across the App.
+- No firmware source or BIN was reintroduced.
+- The 2026-09-28 comment pass itself was not intended to change App runtime/protocol behavior.
+
+**Current verification status:** the App has **not** been declared a freshly verified release APK after this cleanup/comment pass. A fresh `Build App` is required before claiming release-build success.
+
+## 13. CHANGE CONTROL
+
+Before changing App code:
+1. Read this file.
+2. Read the relevant source file and its existing comments.
+3. Check the current BLE/OTA integration contract.
+4. Make the smallest justified change.
+5. Run the appropriate validation.
+6. Update this file with the reason, exact change, and validation result.
+
+Never:
+- guess a BLE UUID
+- invent a firmware response/ACK
+- assume a BLE write means physical success
+- add firmware source back into the App repository
+- remove `FIRMWARE_NOTES.md`
+- treat an unrun build as a successful build
+- treat App tests as proof of physical hardware behavior
