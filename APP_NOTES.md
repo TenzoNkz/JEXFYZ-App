@@ -568,3 +568,11 @@ Never:
   - `firmware_update.url = https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ.cpp.bin`
 - No App Build was run for this source fix.
 
+
+## 2026-09-28 — RTDB METADATA READ INDEPENDENT OF APP CHECK
+
+- Firebase Realtime Database firmware metadata is intentionally public-read at `/firmware_update` and contains only the current version plus a public GitHub BIN URL.
+- Removed the explicit `X-Firebase-AppCheck` header requirement from this metadata REST request.
+- Reason: the production APK is distributed outside Google Play, so making this public metadata read depend on Play Integrity/App Check can block OTA discovery even when RTDB rules allow `.read = true`.
+- Firebase App Check remains initialized for the App's Firebase security layer; it is no longer a prerequisite for reading the public firmware metadata endpoint.
+- No App Build was run for this source fix.
