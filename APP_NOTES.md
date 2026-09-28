@@ -589,3 +589,19 @@ Never:
 - The temporary push trigger used only for this explicit Build App request was removed afterward.
 - App Build workflow is restored to **manual-only `workflow_dispatch`**.
 - This CI result validates the App release pipeline and production signing; it does not validate physical BLE/firmware/hardware runtime.
+
+## 2026-09-28 — FIRMWARE V1.3 CURRENT BASELINE
+
+- Firmware source currently stored with the App project is **V1.3**:
+  - `firmware/JEXFYZ-V1.3.ino`
+- `firmware/JEXFYZ-V1.2.ino` has been removed; the firmware folder is maintained as a single-current-source archive.
+- V1.3 is the Gemini-derived firmware patch and is **not yet compile- or hardware-validated**.
+- App OTA architecture remains unchanged:
+  - Firebase RTDB = metadata/control plane.
+  - GitHub = firmware BIN host.
+  - Firmware itself does not query Firebase.
+  - Public RTDB metadata remains the approved App-side integration point.
+- Do **not** promote Firebase firmware metadata to V1.3 merely because the source version is V1.3. Promotion requires a deliberately published, compiled V1.3 BIN and the corresponding release/update decision.
+- No App Build is implied by the firmware source update. The existing App build workflow remains manual-only.
+- No App BLE protocol/UUID or App OTA transport change is required by the V1.3 firmware patch unless physical testing later demonstrates a protocol/lifecycle mismatch.
+- Firmware runtime debugging continues to prioritize source inspection, ArduinoDroid compiler output, static validation, and physical symptoms/screenshots; Serial Monitor is not a prerequisite.
