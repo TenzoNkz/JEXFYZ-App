@@ -2434,3 +2434,16 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - New V1.7 source blob SHA: `7b16727475aa4bc8486ba69b2db63c19ad749ee9`.
 - Gold Master protected segments were rechecked after the change and remain exact-match.
 - ArduinoDroid recompilation after this second repair is **not yet verified**.
+
+### 2026-09-28 — V1.7 BIN PROMOTED FROM USER ARDUINODROID ARTIFACT
+
+- User supplied the newly compiled ArduinoDroid application BIN and requested the existing temporary upload to be renamed/promoted.
+- The temporary public firmware file was `JEXFYZ.cpp.bin`, size **1,456,064 bytes**, blob SHA `e8acabf6484490ba9713a1dc44b06c67252c53b8`.
+- The binary blob identity was preserved; no binary re-encoding or recompilation was performed.
+- Official public filename is now **`JEXFYZ-V1.7.bin`** in `TenzoNkz/JEXFYZ-Firmware`.
+- Previous public `JEXFYZ-V1.6.bin` and temporary `JEXFYZ.cpp.bin` paths were removed from the public firmware repository.
+- `manifest.json` now declares **V1.7** and points to:
+  `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V1.7.bin`
+- Firmware publication commit: `a05b07cc86f8462a4907d5efebe7359dac55c1f1`.
+- Publication verification: repository root contains exactly `JEXFYZ-V1.7.bin` and `manifest.json`; manifest version and URL match V1.7.
+- This publication records the user's ArduinoDroid binary artifact. Physical V1.7 runtime/Online OTA success is **not** implied by the rename/publication alone.
