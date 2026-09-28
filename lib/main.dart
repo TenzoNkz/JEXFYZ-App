@@ -58,9 +58,10 @@ const String headerName = 'JE X FYZ';
 const String serviceUuid = '6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001';
 const String rxUuid = '6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001';
 const String txUuid = '6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001';
-// AI-MEMORY: External firmware integration endpoint only; never replace with a local firmware source path.
-const String firmwareManifestUrl =
-    'https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/manifest.json';
+// AI-MEMORY: Firebase Realtime Database is the firmware release metadata/control plane. GitHub is binary-only.
+// Keep the GitHub repository allowlist below unchanged unless the release source intentionally changes.
+const String firmwareMetadataUrl =
+    'https://je-x-fyz-default-rtdb.asia-southeast1.firebasedatabase.app/firmware/current.json';
 const Duration voltageGuardDuration = Duration(seconds: 1);
 const int fanSpeedMin = 50;
 const int fanSpeedMax = 100;
@@ -3759,8 +3760,8 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
     super.initState();
     // AI-METHOD: _loadSavedCredentials — Load Wi-Fi credentials from secure storage only.
     _loadSavedCredentials();
-    // AI-METHOD: _checkGitHub — Fetch and validate the external firmware manifest.
-    _checkGitHub();
+    // AI-METHOD: _checkFirebase — Fetch and validate Firebase firmware release metadata.
+    _checkFirebase();
   }
 
   @override
@@ -3786,8 +3787,8 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
     }
   }
 
-  // AI-METHOD: _checkGitHub — Fetch and validate the external firmware manifest.
-  Future<void> _checkGitHub() async {
+  // AI-METHOD: _checkFirebase — Fetch Firebase metadata; the returned GitHub URL must point to a JE X FYZ .bin only.
+  Future<void> _checkFirebase() async {
     setState(() {
       status = 'CHECKING';
       latestVersion = '';
@@ -3798,9 +3799,10 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
     final client = HttpClient();
     client.connectionTimeout = const Duration(seconds: 8);
     try {
-      final request = await client.getUrl(Uri.parse(firmwareManifestUrl));
+      final request = await client.getUrl(Uri.parse(firmwareMetadataUrl));
       request.headers.set(HttpHeaders.acceptHeader, 'application/json');
       request.headers.set(HttpHeaders.userAgentHeader, 'JE-Cooler');
+      request.headers.set(HttpHeaders.cacheControlHeader, 'no-cache');
 
       final response = await request.close().timeout(const Duration(seconds: 12));
       final body = await response.transform(utf8.decoder).join().timeout(
@@ -3809,13 +3811,13 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
 
       if (response.statusCode != HttpStatus.ok) {
         throw StateError(
-          'GitHub manifest HTTP ' + response.statusCode.toString(),
+          'Firebase firmware metadata HTTP ' + response.statusCode.toString(),
         );
       }
 
       final decoded = jsonDecode(body);
       if (decoded is! Map) {
-        throw StateError('Invalid GitHub manifest');
+        throw StateError('Invalid Firebase firmware metadata');
       }
 
       final data = Map<String, dynamic>.from(decoded);
@@ -3828,7 +3830,7 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
           parsedUrl.path.startsWith('/TenzoNkz/JEXFYZ-Firmware/');
 
       if (parseFirmwareVersion(version) == null || !validUrl) {
-        throw StateError('Invalid firmware manifest');
+        throw StateError('Invalid Firebase firmware metadata');
       }
 
       if (!mounted) return;
@@ -3841,7 +3843,7 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
         status = updateAvailable ? 'UPDATE' : 'UP_TO_DATE';
       });
     } catch (e) {
-      debugPrint('GitHub OTA manifest: ' + e.toString());
+      debugPrint('Firebase OTA metadata: ' + e.toString());
       if (mounted) setState(() => status = 'FAILED');
     } finally {
       client.close(force: true);
@@ -3893,7 +3895,7 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
       actions: [
         TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close', style: TextStyle(color: Colors.grey))),
         if (status == 'FAILED')
-          FilledButton(onPressed: _checkGitHub, child: const Text('Retry')),
+          FilledButton(onPressed: _checkFirebase, child: const Text('Retry')),
         if (updateAvailable)
           FilledButton(
             onPressed: () async {
