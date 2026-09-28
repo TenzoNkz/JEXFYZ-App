@@ -2359,3 +2359,12 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Repository production release remains **V1.6**; the V6.6 test artifact is not a public release and must not be promoted to the production manifest without an explicit user instruction.
 - Current discussion evidence from the V1.6 source: Local OTA enters `OtaState::LOCAL_UPLOAD` while `otaActive=true`, and the normal `processLeds()` path explicitly clears the LEDs for that state. Local OTA success transitions directly to `OtaState::SUCCESS` and schedules restart without a dedicated green result indicator. Online OTA has an explicit result-indicator state machine, so the absence of online LED output requires separate isolation of the LED hardware/output path versus indicator-state execution before any patch is made.
 - No firmware source patch was made from this physical-test observation.
+
+## 2026-09-28 — PHYSICAL TEST: ONLINE OTA COMPLETES, BLUE INDICATOR APPEARS STATIC
+
+- User retested Online OTA with the RGB LED enabled.
+- Observed sequence: press Update -> LED illuminated **blue**, but user observed it as **static rather than blinking** -> LED turned off -> device restarted -> BLE became available again and reconnected to the App.
+- App notification during the test showed Online OTA in progress at Wi-Fi connect / 0%.
+- This confirms that, in this test, the Online OTA flow did not remain stuck permanently: the device reached restart/recovery and BLE returned.
+- Current issue is narrowed to the **Online OTA LED indicator behavior/visibility**. The source already contains a non-blocking result-indicator state machine intended to blink the requested color for approximately two seconds; physical observation did not match the intended blink pattern.
+- No firmware source patch was made from this observation. OTA protected blocks remain unchanged pending root-cause isolation.
