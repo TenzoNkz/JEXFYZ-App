@@ -675,3 +675,14 @@ Never:
   Firebase metadata/control plane → App validation → BLE P1 OTA command sequence → firmware Wi-Fi handoff → GitHub JEXFYZ.cpp.bin download → Update.h flash → success/restart → BLE recovery.
 - **OTA FREEZE:** the App OTA protocol, Firebase metadata endpoint, GitHub BIN URL, BLE OTA command sequence, and OTA status/telemetry contract are frozen unless the user explicitly requests an OTA change.
 - Firmware-side physical success does not require an App Build. No App Build was triggered by this validation.
+
+
+## 2026-09-28 — LED 7-MODE / PHYSICAL LAYOUT UPDATE
+
+- App LED mode selector is aligned with firmware V2.1: **7 modes**.
+- Removed **Twinkle** from the LED mode list.
+- App mode parsing/display and outbound MODE command range are now **1–7**.
+- Previous mode 8 values are normalized to **mode 7 / Rainbow** by the App clamp.
+- Mode navigation stops at mode 1 and mode 7 instead of sending unsupported values.
+- No BLE UUID/protocol, OTA transport, reconnect monitor, Firebase metadata, Android lifecycle, or App build workflow changes.
+- **App Build was not triggered**; the App workflow remains manual-only.
