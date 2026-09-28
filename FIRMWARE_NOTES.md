@@ -2155,3 +2155,19 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Physical validation remains required. V1.5 status is CANDIDATE_NOT_PHYSICALLY_VERIFIED.
 - Next handoff: compile/flash V1.5 manually in ArduinoDroid, perform controlled Online OTA + LED + BLE + safety tests, and provide the exact V1.5 artifact to Gemini for the independent second audit.
 
+
+
+## 2026-09-28 — DISCUSSION: V1.5 GEMINI FOLLOW-UP #2
+
+- User requested that living project notes must be updated continuously, including discussion-only turns.
+- Current discussion source of truth: authoritative `firmware/JEXFYZ.ino` V1.5, final source blob previously verified as `040f38fb8113ddc7a0900a618bb58cc6452a1907` (verify against the repository again before any future mutation).
+- Gemini V1.5 follow-up #2 independently re-confirmed ISSUE #001 as **CONFIRMED**: the `std::atomic_flag` spin-lock around the BLE RX queue can deadlock/starve on ESP32-C3 single-core when a higher-priority BLE callback preempts the lower-priority Arduino `loop()` while holding the lock.
+- Gemini's proposed direction for ISSUE #001 is an SPSC ring buffer: producer owns/writes `tail`, consumer owns/writes `head`, no spin-lock, and no `bleRxCount`. Gemini specifically proposed checking the full condition before writing and publishing the new tail only after the payload copy is complete.
+- Important integration caution: the SPSC direction is accepted, but the exact memory-visibility/ordering design for ESP32-C3 + Arduino-ESP32 Core 3.3.7 is **not yet finalized**. Do not blindly replace the queue with plain non-atomic indices until this point is independently verified.
+- Gemini V1.5 follow-up #2 re-confirmed ISSUE #002 as **CONFIRMED LEAK** for `new ServerCallbacks()` and `new RxCallbacks()`; Gemini recommends static callback instances and passing their addresses to `setCallbacks()`.
+- Gemini classified the existing `new BLE2902()` descriptor allocation as **INVALID as a leak** and explicitly recommends leaving that allocation pattern unchanged.
+- Gemini's 60-second Boot AP hard limit remains a **possible UX concern**, not a confirmed defect; no patch is planned from that finding alone.
+- Current intended patch scope for the next firmware revision is deliberately narrow: ISSUE #001 BLE RX synchronization and ISSUE #002 callback object lifetime only. Do not mix OTA transport, LED mapping, safety, GPIO, NTC, Adaptive, or other feature changes into the same patch.
+- No firmware source was modified by this discussion. No build was executed. No V1.6 source is approved yet.
+- Before execution, Gemini will be asked one more targeted verification: whether `size_t` head/tail are safe as plain variables versus `std::atomic<size_t>`, what memory ordering is required, and how `clearBleRxQueue()` can safely reset state across connect/disconnect without racing the BLE producer.
+- Chat handoff status: **DISCUSSION — WAITING FOR FINAL SPSC MEMORY-ORDERING VERIFICATION BEFORE PATCH.**
