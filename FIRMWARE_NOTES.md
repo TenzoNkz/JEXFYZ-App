@@ -2185,3 +2185,12 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Issue #002 remains unchanged: static `ServerCallbacks` and `RxCallbacks` are the intended minimal callback-lifetime fix; `BLE2902` remains unchanged.
 - No firmware source was modified and no build was executed in this discussion.
 - Chat handoff status: **DISCUSSION — SPSC CORE DESIGN ACCEPTED, ONE MEMORY-ORDERING DETAIL STILL REQUIRES FINAL VERIFICATION BEFORE EXECUTION.**
+
+
+## 2026-09-28 — DISCUSSION: GEMINI RESPONSE FORMAT / SOURCE PRESENTATION
+
+- User clarified that Gemini's audit response is originally presented as a rich formatted message (Markdown-style headings, nested bullets, code blocks, and emphasis) and was copied/exported into a plain-text .txt file only for transfer into this chat.
+- The uploaded screenshots preserve the original visual formatting. The .txt representation should therefore be treated as the same audit content in plain-text form, while screenshots may be used to confirm structure/formatting when needed.
+- No technical conclusion from the Gemini audit is changed by this formatting clarification.
+- No firmware source was modified and no build was executed in this discussion.
+- Chat handoff status: **DISCUSSION — GEMINI AUDIT CONTENT ACCEPTED; FORMATTING CLARIFICATION RECORDED.**
