@@ -2701,8 +2701,9 @@ static void startOnlineOta() {
   WiFi.softAPdisconnect(true);
   WiFi.mode(WIFI_OFF);
   for (uint8_t i = 0; i < RADIO_OFF_SETTLE_YIELDS; ++i) {
-    yield();
-  }  WiFi.mode(WIFI_STA);
+    delay(10);
+  }  
+  WiFi.mode(WIFI_STA);
   WiFi.setHostname("JE-X-FYZ");
   WiFi.setSleep(false);
   // Keep Arduino-ESP32 STA auto-reconnect enabled during the initial
