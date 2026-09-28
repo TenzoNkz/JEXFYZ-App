@@ -9,7 +9,7 @@
   - A BLE write is not proof that hardware changed permanently.
   - State-changing commands require the BLE sync/session gate.
   - Phone battery heartbeat and hotside telemetry remain 1 Hz.
-  - Online OTA metadata is external to this repository.
+  - Online OTA release metadata is read from Firebase Realtime Database; GitHub is binary-only.
   - Wi-Fi credentials stay in flutter_secure_storage.
   - Current OTA availability accepts any valid DIFFERENT firmware version.
   - Do not reintroduce legacy commands or blocking PROCESSING UI.
@@ -27,7 +27,7 @@
   Core rules:
   - Horizon Cooler remains the visual/layout and Android foundation.
   - JE X FYZ uses firmware-owned state and an atomic P1 BLE sync/ready handshake.
-  - Firebase App Check / Play Integrity remains enabled for app security. Firmware release metadata comes from the public GitHub manifest.
+  - Firebase App Check / Play Integrity remains enabled for app security. Firmware release metadata comes from Firebase Realtime Database; GitHub hosts only the firmware .bin.
   - Phone battery temperature is sent every 1 second while BLE is connected.
   - Manual voltage commands use a 1-second app guard matching firmware.
   - Adaptive ON/OFF always relies on firmware to return the selector to 5V.
