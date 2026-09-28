@@ -2386,3 +2386,25 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Diagnostic source verified at blob SHA `f2d841828982fc22542ccdf2c9436ecce494fc61`.
 - Diagnostic branch contains heap integrity checkpoints only; no production behavior change is approved.
 - ArduinoDroid compile/flash result: **not yet available**; do not treat the diagnostic source as compiled/validated until the user reports the result.
+
+
+## 2026-09-28 — EXECUTION FULL: V1.7 ONLINE OTA RADIO-HANDOFF HARDENING
+
+- User requested a full firmware analysis and direct repair with the primary goal of making Online OTA reliable.
+- Authoritative base inspected: `firmware/JEXFYZ-V1.6.ino` on `main`, source blob `f2d841828982fc22542ccdf2c9436ecce494fc61`, 3868 source lines.
+- Full-source static inspection focused on the complete execution path, with special attention to Online OTA, Wi-Fi/BLE handoff, OTA Update lifecycle, BLE callbacks/queues, and existing diagnostic instrumentation.
+- Confirmed one concrete, minimal lifecycle issue in the Online OTA path: after the active BLE session is torn down, Online OTA redundantly called `WiFi.disconnect(true, false)` and `WiFi.softAPdisconnect(true)` before `WiFi.mode(WIFI_STA)`. The same firmware also redundantly repeated Wi-Fi shutdown inside `startBle()` after callers had already completed the Wi-Fi-off boundary.
+- Applied controlled V1.7 change:
+  - advanced firmware marker from V1.6 to **V1.7**;
+  - in `startBle()`, removed the repeated `WiFi.disconnect()`, `WiFi.softAPdisconnect()`, and `WiFi.mode(WIFI_OFF)` sequence; the caller remains responsible for the Wi-Fi-off boundary and `startBle()` only yields before BLE initialization;
+  - in `startOnlineOta()`, removed the second Wi-Fi teardown and now enters the official Arduino `WiFi.mode(WIFI_STA)` lifecycle directly, followed by hostname/sleep/autoreconnect configuration and `WiFi.begin()`;
+  - existing Online OTA transport (HTTPClient + WiFiClientSecure + Update) was otherwise left unchanged;
+  - Local OTA logic, GPIO mapping, BLE UUID/protocol, SPSC queue, and safety behavior were not intentionally redesigned.
+- New authoritative source: `firmware/JEXFYZ-V1.7.ino`, blob SHA `de6a60b88c91d0858a3b41aa097dc7a6cb842232`, 110,275 bytes, 3,867 lines.
+- OTA Gold Master Lock refreshed for V1.7: `firmware/OTA_GOLD_MASTER_LOCK.json`, blob SHA `4d0de518ab9db29fc198ecad7fdb70f3ea775135`.
+- Repository commits:
+  - V1.7 source: `dc7346f42ff2d21f65cf0216f3e65a3f66881c46`
+  - OTA lock refresh: `ecccef272dc7cf6dc1a110e630c5efd2c159216c`
+- Static post-change verification still required before physical compile. No ArduinoDroid compile or hardware result is claimed by this execution.
+- Important unresolved issue: Online OTA success is still not proven from this source change alone. The current download/flash transport has not been physically revalidated on V1.7, and the existing heap diagnostic remains present for the V1.7 candidate.
+- Next boundary: send the exact V1.7 source to Gemini for full review of the two radio-lifecycle changes and the complete Online OTA path; do not compile until ChatGPT and Gemini agree.
