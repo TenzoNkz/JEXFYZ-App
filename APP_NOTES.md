@@ -124,3 +124,14 @@ For future App work:
 - Removed the obsolete App Build audit condition that rejected `FIRMWARE_NOTES.md`.
 - App Build audit now rejects only a local `firmware/` source directory.
 - Firmware documentation remains intentionally supported in the App repository.
+
+## 2026-09-28 — SOURCE COMMENT PASS VERIFIED
+
+- Added persistent AI-maintenance comments throughout the App source/configuration files.
+- `lib/main.dart` now has an App-only architecture header, integration-boundary comments, and 77 method-level maintenance notes.
+- Android Kotlin, Gradle, manifest, ProGuard, pubspec, widget tests, and the App Build workflow now contain explicit role/constraint comments.
+- Verification check found **0 suspicious AI-METHOD comment insertions** inside expressions; all 77 method comments are directly attached to declarations.
+- No firmware source/BIN files were reintroduced. `FIRMWARE_NOTES.md` remains documentation only.
+- `google-services.json` and PNG assets remain unchanged.
+- No App runtime/protocol behavior was intentionally changed by this documentation pass.
+- Next validation boundary: explicit **Build App**.
