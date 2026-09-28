@@ -1,6 +1,11 @@
+// AI BUILD MEMORY:
+// Android release signing, R8 shrinking, package identity, and Flutter integration.
+// Secrets are supplied by CI environment variables; none belong in source control.
+
 import java.security.KeyStore
 import java.util.Base64
 
+// Flutter/Android/Google Services Gradle plugins.
 plugins {
     id "com.android.application"
     id "org.jetbrains.kotlin.android"
@@ -8,6 +13,7 @@ plugins {
     id "com.google.gms.google-services"
 }
 
+// Flutter local.properties supplies local SDK/version overrides.
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -21,6 +27,7 @@ if (flutterVersionCode == null) {
     flutterVersionCode = '3'
 }
 
+// Production release signing is mandatory; never silently fall back to debug signing.
 def releaseStoreFile = System.getenv('ANDROID_KEYSTORE_FILE')
 def releaseStorePassword = System.getenv('ANDROID_KEYSTORE_PASSWORD')
 def releaseKeyAlias = System.getenv('ANDROID_KEY_ALIAS')
@@ -57,6 +64,7 @@ if (productionSigningReady) {
     }
 }
 
+// Android application configuration.
 android {
     buildFeatures {
         buildConfig = true
@@ -88,6 +96,7 @@ android {
         versionName "1.0.0"
     }
 
+    // Release certificate is also embedded for the native integrity check.
     signingConfigs {
         if (productionSigningReady) {
             release {
@@ -99,6 +108,7 @@ android {
         }
     }
 
+    // Debug is development-only; release is minified/obfuscated and officially signed.
     buildTypes {
         debug {
             buildConfigField 'String', 'OFFICIAL_SIGNING_CERT_B64', '""'
