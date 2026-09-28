@@ -108,3 +108,12 @@ For future App work:
 - Keep firmware implementation out of this repository.
 - Do not guess at BLE/OTA behavior when the current integration contract can be checked.
 - Document every material App change in this file.
+
+
+## 2026-09-28 — APP/FIRMWARE DOCUMENTATION BOUNDARY CORRECTION
+
+- User clarified that **firmware documentation must remain in the App repository** for project continuity.
+- `FIRMWARE_NOTES.md` is therefore retained as documentation only.
+- Firmware implementation source files (`.ino`), firmware BIN artifacts, firmware CI/build files, and firmware production build outputs remain outside the App repository and are maintained separately by the user.
+- The App Build workflow was corrected so `FIRMWARE_NOTES.md` is allowed, while a local `firmware/` source directory remains forbidden.
+- No App BLE/UI/API behavior was changed by this documentation-boundary correction.
