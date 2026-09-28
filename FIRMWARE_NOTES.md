@@ -2368,3 +2368,21 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - This confirms that, in this test, the Online OTA flow did not remain stuck permanently: the device reached restart/recovery and BLE returned.
 - Current issue is narrowed to the **Online OTA LED indicator behavior/visibility**. The source already contains a non-blocking result-indicator state machine intended to blink the requested color for approximately two seconds; physical observation did not match the intended blink pattern.
 - No firmware source patch was made from this observation. OTA protected blocks remain unchanged pending root-cause isolation.
+
+
+## V1.6 HEAP DIAGNOSTIC BRANCH
+
+- Diagnostic branch: `diagnostic/v1.6-heap-check`.
+- Diagnostic source remains version marker `V1.6`; this branch is NOT a production firmware release.
+- Added official ESP-IDF heap integrity instrumentation using `heap_caps_check_integrity_all(true)` from `esp_heap_caps.h`.
+- Checkpoints cover WebServer stop, Wi-Fi radio shutdown, BLE init/object creation, BLE2902 allocation, service start, advertising, then delayed checks at 1 s and 30 s after advertising.
+- No BLE UUID/protocol, SPSC queue, OTA flow, LED behavior, GPIO, or application control logic was intentionally changed.
+- Purpose: identify the first observable heap corruption point on the ESP32-C3 first BLE startup after the boot Wi-Fi AP timeout.
+- Production `main` branch remains unchanged by this diagnostic instrumentation.
+
+
+### Diagnostic branch verification — 2026-09-28 08:40 WIB
+
+- Diagnostic source verified at blob SHA `f2d841828982fc22542ccdf2c9436ecce494fc61`.
+- Diagnostic branch contains heap integrity checkpoints only; no production behavior change is approved.
+- ArduinoDroid compile/flash result: **not yet available**; do not treat the diagnostic source as compiled/validated until the user reports the result.

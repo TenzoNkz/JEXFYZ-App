@@ -10,6 +10,7 @@
 #include <time.h>
 #include <atomic>
 #include <cstring>
+#include "esp_heap_caps.h"
 
 #include <BLEDevice.h>
 #include <BLEServer.h>
@@ -19,6 +20,53 @@
 #include <Update.h>
 
 static constexpr char FW_VERSION[] = "V1.6";
+
+// ============================================================================
+// ========================== HEAP DIAGNOSTIC BUILD ===========================
+// Diagnostic-only instrumentation. Do not use this branch as production.
+// ============================================================================
+static bool heapDiagPostAdvertisingActive = false;
+static uint8_t heapDiagPostAdvertisingChecks = 0;
+static uint32_t heapDiagPostAdvertisingStartedAt = 0;
+
+static void runHeapCheck(const char* checkpointLabel) {
+  Serial.print("[HEAP_CHECK] ");
+  Serial.print(checkpointLabel);
+  Serial.print(" | Free: ");
+  Serial.print(ESP.getFreeHeap());
+  Serial.print(" | Result: ");
+
+  const bool intact = heap_caps_check_integrity_all(true);
+  Serial.println(intact ? "OK" : "CORRUPTED");
+  if (!intact) {
+    Serial.println("[HEAP_CHECK] CORRUPTION DETECTED - STOPPING DIAGNOSTIC CHECKPOINTS");
+    Serial.flush();
+  }
+}
+
+static void scheduleHeapDiagPostAdvertisingChecks() {
+  heapDiagPostAdvertisingActive = true;
+  heapDiagPostAdvertisingChecks = 0;
+  heapDiagPostAdvertisingStartedAt = millis();
+}
+
+static void processHeapDiagPostAdvertisingChecks() {
+  if (!heapDiagPostAdvertisingActive) return;
+
+  const uint32_t elapsed = millis() - heapDiagPostAdvertisingStartedAt;
+  if ((heapDiagPostAdvertisingChecks & 0x01U) == 0 && elapsed >= 1000U) {
+    heapDiagPostAdvertisingChecks |= 0x01U;
+    runHeapCheck("CP15_1S_AFTER_ADVERTISING");
+  }
+
+  if ((heapDiagPostAdvertisingChecks & 0x02U) == 0 && elapsed >= 30000U) {
+    heapDiagPostAdvertisingChecks |= 0x02U;
+    runHeapCheck("CP16_30S_AFTER_ADVERTISING");
+    heapDiagPostAdvertisingActive = false;
+  }
+}
+
+// ======================== END HEAP DIAGNOSTIC BUILD ========================
 
 static constexpr char PROTOCOL_VERSION[] = "P1";
 static constexpr char BLE_NAME[] = "JE X FYZ";
@@ -1968,11 +2016,15 @@ static void startBle() {
   if (otaActive) return;
   if (bootApActive) return;
 
+  runHeapCheck("CP04_STARTBLE_ENTRY");
+
   // Proven Core 3.3.7 radio handoff: Wi-Fi is fully stopped before BLE init.
   WiFi.disconnect(true, false);
   WiFi.softAPdisconnect(true);
   WiFi.mode(WIFI_OFF);
   yield();
+
+  runHeapCheck("CP05_AFTER_WIFI_OFF");
 
   if (BLEDevice::getInitialized()) {
     if (bleServer != nullptr &&
@@ -1993,6 +2045,7 @@ static void startBle() {
     bleServer = nullptr;
     rxCharacteristic = nullptr;
     txCharacteristic = nullptr;
+    runHeapCheck("CP05B_AFTER_CONDITIONAL_DEINIT");
   }
 
   Serial.println("BLE: START");
@@ -2002,6 +2055,7 @@ static void startBle() {
     scheduleBleRetry();
     return;
   }
+  runHeapCheck("CP06_AFTER_BLE_INIT");
 
   BLEDevice::setMTU(247);
 
@@ -2012,6 +2066,7 @@ static void startBle() {
     return;
   }
   bleServer->setCallbacks(&serverCallbacks);
+  runHeapCheck("CP07_AFTER_CREATE_SERVER");
 
   BLEService* service = bleServer->createService(SERVICE_UUID);
   if (service == nullptr) {
@@ -2020,6 +2075,7 @@ static void startBle() {
     scheduleBleRetry();
     return;
   }
+  runHeapCheck("CP08_AFTER_CREATE_SERVICE");
 
   const uint32_t rxProperties = BLECharacteristic::PROPERTY_WRITE;
   rxCharacteristic = service->createCharacteristic(RX_UUID, rxProperties);
@@ -2030,6 +2086,7 @@ static void startBle() {
     return;
   }
   rxCharacteristic->setCallbacks(&rxCallbacks);
+  runHeapCheck("CP09_AFTER_CREATE_RX");
 
   txCharacteristic = service->createCharacteristic(
       TX_UUID,
@@ -2041,11 +2098,15 @@ static void startBle() {
     scheduleBleRetry();
     return;
   }
+  runHeapCheck("CP10_AFTER_CREATE_TX");
   txCharacteristic->addDescriptor(new BLE2902());
+  runHeapCheck("CP11_AFTER_BLE2902");
 
   service->start();
+  runHeapCheck("CP12_AFTER_SERVICE_START");
 
   BLEAdvertising* advertising = BLEDevice::getAdvertising();
+  runHeapCheck("CP13_AFTER_GET_ADVERTISING");
   if (advertising == nullptr) {
     BLEDevice::deinit(true);
     bleServer = nullptr;
@@ -2060,6 +2121,8 @@ static void startBle() {
   advertising->setMinPreferred(0x06);
   advertising->setMaxPreferred(0x12);
   BLEDevice::startAdvertising();
+  runHeapCheck("CP14_AFTER_START_ADVERTISING");
+  scheduleHeapDiagPostAdvertisingChecks();
 
   bleClientConnected = false;
   bleSyncPending = false;
@@ -2878,8 +2941,12 @@ static void startLocalOtaAp() {
 }
 
 static void stopLocalOtaAp() {
+  runHeapCheck("CP01_BEFORE_WEBSERVER_STOP");
   webServer.stop();
+  runHeapCheck("CP02_AFTER_WEBSERVER_STOP");
+
   stopWiFiRadio();
+  runHeapCheck("CP03_AFTER_STOP_WIFI_RADIO");
   bootApActive = false;
   if (otaState == OtaState::BOOT_AP) {
     setOtaState(OtaState::IDLE);
@@ -3728,7 +3795,7 @@ void setup() {
   Serial.println();
   Serial.print("JE X FYZ: BOOT ");
   Serial.print(FW_VERSION);
-  Serial.println(" / CORE 3.3.7 ARDUINO STANDARD");
+  Serial.println(" / CORE 3.3.7 ARDUINO STANDARD HEAP-DIAG");
 
   initializeRuntimeFeatures();
 
@@ -3774,6 +3841,8 @@ void loop() {
 
   if (serviceOtaPriority()) return;
   // ================ END OTA LOOP PRIORITY — PROTECTED ======================
+
+  processHeapDiagPostAdvertisingChecks();
 
   touchButton.tick();
   sampleNtcIfDue();
