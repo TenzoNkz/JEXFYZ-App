@@ -2216,3 +2216,16 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Gemini → ChatGPT transfer remains: Gemini response is copied into a `.txt` file; ChatGPT should treat the TXT as the transferred response content and use screenshots only when formatting/structure needs confirmation.
 - No firmware source was modified and no build was executed in this discussion.
 - Chat handoff status: **DISCUSSION — SAME-VERSION FILE RESEND RULE LOCKED.**
+
+
+## 2026-09-28 — DISCUSSION: GEMINI V1.5 #4 — FINAL SPSC MEMORY ORDERING
+
+- Gemini V1.5 #4 returns **CONFIRMED** and gives a final SPSC memory-ordering recommendation: `bleRxHead.load = ACQUIRE`, `bleRxTail.load = ACQUIRE`, `bleRxTail.store = RELEASE`, `bleRxHead.store = RELEASE`; self-owned index loads may use RELAXED.
+- Slot-reuse reasoning accepted as the target design: consumer reads a slot, then publishes `head` with RELEASE; producer observes `head` with ACQUIRE before reusing/overwriting that slot.
+- Producer publishes `tail` with RELEASE only after payload copy is complete; consumer reads `tail` with ACQUIRE before reading the published payload.
+- Gemini's final minimal queue removes `bleRxCount` and `bleRxQueueLock`, uses `std::atomic<size_t>` head/tail, producer writes only tail, consumer writes only head, and keeps `bleRxQueue` as the fixed char 2D array.
+- Reset design remains consumer-owned: load tail with ACQUIRE, then store that value to head with RELEASE; consumer never writes tail. The intended semantics are to discard queued/stale commands without directly resetting producer state.
+- Integration caution retained: Gemini states `std::atomic<size_t>` is 100% lock-free on ESP32-C3. This should be treated as a strong implementation claim but not as a separately verified build/runtime fact until the actual Core 3.3.7 toolchain/compiler property is checked. No code is being changed merely from that assertion.
+- Integration caution retained for reset semantics: the safety argument relies on the producer callback not being concurrently executed by the Arduino loop on the same single-core CPU. Even where the reset is safe from slot corruption, commands arriving around the reset boundary may be intentionally discarded or retained depending on the exact interleaving; the implementation must preserve the project goal of clearing stale session commands without corrupting the ring buffer.
+- No firmware source was modified and no build was executed in this discussion.
+- Chat handoff status: **DISCUSSION — SPSC MEMORY ORDERING DESIGN IS ACCEPTED AS THE PATCH BASELINE; READY FOR FINAL CROSS-CHECK BEFORE EXECUTION.**
