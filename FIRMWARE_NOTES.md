@@ -1,4 +1,479 @@
-# 🚨 CURRENT AUTHORITATIVE HANDOFF — 2026-09-27
+# JE X FYZ Firmware — Master Notes
+
+> **Document role:** permanent firmware engineering memory for the JE X FYZ project.
+> This file intentionally lives in the App repository as documentation, even though firmware implementation source and production build files are maintained separately.
+> **Reviewed:** 2026-09-28.
+>
+> **Priority rule:** This CURRENT STATE section is the first reference for present-day decisions. The chronological record below is preserved as history. Historical paths, versions, CI experiments, diagnostic branches, and old validation states must not override the Current State unless a newer entry explicitly supersedes them.
+
+## 1. CURRENT STATE — AUTHORITATIVE
+
+### 1.1 Firmware ownership and repository boundary
+
+- Firmware implementation is maintained separately from the App repository.
+- The user owns the firmware source/workspace and the production compile/flash process.
+- The production firmware source is compiled/flashed manually in ArduinoDroid.
+- The App repository stores this file, FIRMWARE_NOTES.md, as permanent documentation only.
+- Firmware .ino implementation, production .bin, firmware working files, and firmware production CI are not part of the App repository.
+- A separate public firmware distribution repository may contain release BIN files and manifest.json for App Online OTA integration.
+- Do not reintroduce a firmware source directory or firmware build workflow into TenzoNkz/JEXFYZ-App unless the user explicitly changes the repository architecture.
+
+### 1.2 Current documented firmware line
+
+**Current documented production firmware: V1.7**
+
+Latest documented V1.7 source revision:
+- Filename: JEXFYZ-V1.7.ino
+- Latest source blob documented in the historical handoff: 7b16727475aa4bc8486ba69b2db63c19ad749ee9
+- The V1.7 source includes the ArduinoDroid prototype-visibility repairs for the sketch-scoped enum types.
+
+Current public firmware artifact:
+- Filename: JEXFYZ-V1.7.bin
+- Public repository: TenzoNkz/JEXFYZ-Firmware
+- Public BIN blob documented: e8acabf6484490ba9713a1dc44b06c67252c53b8
+- Size documented: 1,456,064 bytes
+- Manifest version: V1.7
+- Manifest BIN URL:
+  https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V1.7.bin
+
+Important reproducibility rule:
+- The V1.7 BIN was supplied as a user-generated ArduinoDroid artifact.
+- This environment did not independently reproduce the ArduinoDroid compilation.
+- Do not claim source reproducibility, physical validation, or production readiness beyond the exact evidence recorded in the notes.
+
+### 1.3 Toolchain lock
+
+Production firmware environment is locked to:
+- Board family: ESP32-C3
+- Board profile: ESP32-C3 Dev Module
+- Arduino IDE/Droid ecosystem: ArduinoDroid
+- Arduino-ESP32 Core: 3.3.7
+- Bundled ESP-IDF: documented as v5.5
+- Production API rule: use Arduino Standard / official Arduino-ESP32 Core 3.3.7 APIs
+- Do not substitute guessed APIs, undocumented wrappers, or configuration-specific BLE APIs merely because they compile elsewhere.
+
+The previously considered Arduino-ESP32 3.3.12 is not the current production target. Keep production analysis pinned to 3.3.7 unless the user explicitly changes the lock.
+
+### 1.4 Board configuration documented for the locked target
+
+Where a build tool or manual board menu requires explicit values, the previously verified target profile is:
+
+- Board: ESP32C3 Dev Module
+- Upload speed: 921600
+- CDC On Boot: cdc
+- CPU frequency: 160 MHz
+- Flash frequency: 80 MHz
+- Flash mode: DIO
+- Flash size: 4 MB
+- Partition scheme: no_fs
+- Debug level: none
+- Erase flash: none
+- JTAG adapter: default
+- Zigbee mode: default
+
+These values document the known production test environment. Do not silently change them while diagnosing a runtime problem.
+
+## 2. HARDWARE / GPIO AUTHORITY
+
+Current firmware-specific GPIO mapping:
+
+| Function | GPIO |
+|---|---:|
+| NTC temperature input | GPIO0 |
+| Touch sensor | GPIO1 |
+| 12V selector | GPIO3 |
+| 9V selector | GPIO4 |
+| Fan | GPIO5 |
+| Peltier | GPIO6 |
+| WS2812B status/RGB LED | GPIO7 |
+
+Important:
+- The user previously found fan/peltier GPIO assignment confusion. The current firmware note authority is GPIO5 = Fan and GPIO6 = Peltier.
+- NTC default hardware model: NTC 10K with 10K resistor unless a newer measured/calibrated value is explicitly documented.
+- Only one touch sensor is present.
+- ESP32-C3 has the single-antenna constraint: Wi-Fi and BLE cannot be treated as simultaneously active radios in the product design.
+
+## 3. BLE CONTRACT
+
+### 3.1 Identity
+
+- Device name: JE X FYZ
+- Protocol: P1
+
+### 3.2 UUIDs
+
+Service:
+6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001
+
+RX:
+6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001
+
+TX:
+6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001
+
+These are integration-contract values shared with the App. Do not change them without coordinated App + firmware review.
+
+### 3.3 BLE radio ownership
+
+- BLE is the normal post-Wi-Fi runtime radio.
+- Wi-Fi must be considered fully finished before BLE initialization/advertising.
+- Avoid redundant radio teardown calls across both caller and callee boundaries.
+- The V1.7 Online OTA hardening specifically removed duplicate Wi-Fi shutdown from startBle() and duplicate teardown before WiFi.mode(WIFI_STA) in startOnlineOta().
+- This was a lifecycle cleanup, not a permission to redesign the whole BLE stack.
+
+### 3.4 BLE queue / callback architecture
+
+The firmware moved away from:
+- raw FreeRTOS portMUX
+- configuration-specific Bluedroid/NimBLE callback overload blocks
+
+Current design uses the project application-level single-producer/single-consumer BLE flow.
+
+Critical maintenance rule:
+- BLE callbacks must not reference destroyed application objects.
+- Queue ownership/lifetime must remain valid for the entire callback registration period.
+- Do not reintroduce a second BLE client or callback lifetime ambiguity.
+
+## 4. WIFI / OTA ARCHITECTURE
+
+### 4.1 Radio model
+
+Hardware has one active antenna path. Product logic therefore follows a controlled sequence:
+
+Boot → short Local OTA Wi-Fi window → Wi-Fi fully off → BLE active
+
+and, for Online OTA:
+
+BLE session teardown → Wi-Fi STA startup → HTTPS download/update → restart → BLE recovery
+
+The exact handoff state must be explicit. Do not assume that issuing a Wi-Fi API call means the radio is already fully stopped.
+
+### 4.2 Boot Local OTA
+
+The established design intent:
+- Wi-Fi Local OTA is available during the first 10 seconds after power-up/cable insertion.
+- OTA window is controlled and bounded.
+- After the Wi-Fi OTA window expires, Wi-Fi is shut down and BLE becomes the post-Wi-Fi radio.
+- Device outputs are forced safe/off while OTA/Wi-Fi update control takes priority.
+
+The earlier V1.1 diagnostic confirmed that the official Arduino-ESP32 Core 3.3.7 path should begin AP startup with:
+WiFi.softAP(AP_SSID, AP_PASSWORD)
+
+The diagnostic deliberately removed the pre-init sequence:
+WiFi.disconnect(true, false) → WiFi.setHostname() → WiFi.setAutoReconnect(false) → WiFi.mode(WIFI_AP)
+
+### 4.3 Online OTA
+
+The firmware Online OTA uses the Arduino-compatible stack documented in the current source/history:
+- HTTPS client
+- WiFiClientSecure
+- HTTPClient
+- Arduino Update.h
+- GitHub-hosted BIN
+- Range probing/chunk/retry logic retained from the established implementation
+
+Arduino Standard OTA lifecycle:
+- Update.begin(...)
+- Update.write(...)
+- Update.end(true)
+- Update.abort()
+- Update.printError(Serial)
+
+Firmware-size guard:
+- use Arduino ESP.getFreeSketchSpace()
+
+Reset reporting:
+- use Arduino ESP.getResetReason()
+
+Do not reintroduce the previously removed direct OTA/ESP-IDF lifecycle identifiers:
+- esp_ota_*
+- esp_err_t
+- esp_err_to_name
+- ESP_ERR_*
+
+### 4.4 No SHA-only manifest requirement
+
+Firmware selection/versioning is based on:
+- firmware version
+- manifest
+- validated BIN URL
+
+Do not replace this with a SHA-only firmware linking scheme unless the user explicitly redesigns OTA distribution.
+
+### 4.5 OTA indicator contract
+
+Design intent previously defined by the project:
+- Wi-Fi connect: blue blink, approximately 1 s cadence
+- Wi-Fi connection failure: red indication
+- GitHub connection: green indication
+- download success: blue indication
+- download failure: red indication
+- installation success: green indication, then restart
+- installation failure: red indication
+
+Local OTA intent:
+- first successful file acceptance: blue
+- failed upload: red
+- successful send/install path: green, then flash/restart
+
+Important validation distinction: these are desired UX/diagnostic patterns. Physical observations on V1.6/V6.6 did not fully match them, so LED behavior must be verified independently rather than assumed from source state transitions.
+
+## 5. SAFETY / DEVICE CONTROL CONTRACT
+
+### 5.1 Peltier / hotside protection
+
+- Hotside temperature is safety-critical.
+- The project has used a configurable critical hotside limit; current App range is documented as 40°C–50°C.
+- Historical defaults include 45°C and earlier discussions referenced 50°C. Do not silently normalize this conflict; use the active firmware source/configuration as authority for a particular build.
+- On a critical hotside event, the peltier must stop and the fan should have time to cool the hotside before normal operation resumes.
+- A documented protection behavior is a 10-second peltier-off cooling interval.
+- Rapid temperature rise should trigger immediate peltier shutdown and, where the active firmware implementation requires it, manual recovery/restart.
+
+### 5.2 Battery temperature
+
+- Battery temperature is read approximately every second.
+- The battery protection guard is an internal safety mechanism and should not be exposed as a normal App UI control/state unless explicitly designed otherwise.
+- When the battery temperature reaches its protection target, control behavior includes a defined pause/transition boundary.
+
+### 5.3 Voltage / fan control
+
+Project voltage modes:
+- 5V
+- 9V
+- 12V
+
+Historical default manual LED mapping:
+- 5V = red
+- 9V = green
+- 12V = blue
+
+Manual-mode fan control:
+- PWM fan adjustment is active in the supported manual 12V mode.
+- App-side percentage range is 50–100%.
+- Adaptive mode owns its own control logic and should not be conflated with manual PWM control.
+
+Touch/voltage interaction rules previously defined:
+- Adaptive ON locks manual touch-based voltage control.
+- When Adaptive is toggled ON, voltage should return to 5V.
+- Manual voltage switching should include a controlled delay rather than rapid uncontrolled transitions.
+
+## 6. DATA / PERSISTENCE CONTRACT
+
+- Hotside temperature telemetry: approximately once per second.
+- Other feature/state data: send on change where practical rather than flooding the BLE link.
+- Preferences should be committed after approximately 10 seconds without a change to avoid unnecessary flash writes.
+- Persisted items include user-configurable settings such as LED RGB/color and voltage-color configuration, subject to the active firmware source.
+- Keep hardware safety state independent from UI persistence.
+
+## 7. VERSIONING AND ARTIFACT POLICY
+
+### 7.1 Production naming
+
+Current source naming convention:
+JEXFYZ-V<version>.ino
+
+Current source:
+JEXFYZ-V1.7.ino
+
+Current public production BIN:
+JEXFYZ-V1.7.bin
+
+No descriptive suffix should be added to production versioned firmware filenames unless the user explicitly changes the convention.
+
+### 7.2 Test versions
+
+Test-only versions such as V6.6 are not production releases.
+
+A test version must never be promoted to the public production manifest merely because OTA transport succeeded.
+
+### 7.3 Build ownership
+
+Firmware production build/flash is user-owned:
+1. take the exact intended .ino
+2. open in ArduinoDroid
+3. use the locked ESP32-C3/Core 3.3.7 environment
+4. compile
+5. flash
+6. capture actual Serial/runtime result
+7. only then report physical validation
+
+Do not manufacture a firmware BIN in a different environment and call it the user's production build.
+
+## 8. DEBUGGING / ROOT-CAUSE RULES
+
+Use this sequence for future firmware faults:
+
+### A. Preserve evidence first
+Capture:
+- exact source version
+- exact board settings
+- ArduinoDroid/Core version
+- full compile error or Serial boot log
+- last successful Serial marker
+- reset/panic output
+- physical symptom
+
+### B. Isolate the boundary
+Examples:
+- SoftAP only
+- SoftAP + WebServer
+- WebServer + Update
+- Wi-Fi/BLE handoff
+- BLE init/advertising
+- BLE callback/queue
+- sensor/control path
+
+### C. Verify official API
+For Core 3.3.7 behavior, check official Arduino-ESP32 source/examples before changing an API call.
+
+### D. Make one minimal repair
+Do not combine:
+- OTA transport redesign
+- BLE redesign
+- GPIO changes
+- safety logic changes
+- unrelated cleanup
+in one diagnostic patch.
+
+### E. Validate again
+A source patch is not the same as:
+- ArduinoDroid compile success
+- BIN generation
+- physical boot
+- physical OTA
+- BLE recovery
+
+Each is a separate evidence layer.
+
+## 9. KNOWN DIAGNOSTIC HISTORY — CURRENTLY RELEVANT
+
+### Boot Wi-Fi / SoftAP investigation
+- Production firmware previously showed ESP32-C3 boot/panic behavior around the first Wi-Fi→BLE radio boundary.
+- A standalone Wi-Fi OTA test failed to expose its SoftAP SSID.
+- The next isolation step used a SoftAP-only test to determine whether the fault was below WebServer/OTA.
+- This investigation established the rule: do not modify production OTA transport until the exact Wi-Fi boundary is proven.
+
+### BLE heap diagnostic branch
+- A separate diagnostic branch added official heap_caps_check_integrity_all(true) checkpoints.
+- Checkpoints targeted the WebServer stop, Wi-Fi shutdown, BLE object allocation, service/characteristic setup, advertising, and delayed post-advertising intervals.
+- This branch was diagnostic only and must not be treated as a production release.
+
+### V1.6 BLE / compile history
+- V1.6 had an ArduinoDroid compile compatibility issue around a min() template type mismatch.
+- The repair changed only the BLE RX enqueue size calculation to an explicit size-safe comparison.
+- No BLE queue architecture or OTA behavior was intentionally redesigned by that repair.
+
+### V1.7 ArduinoDroid prototype visibility
+- ArduinoDroid generated function prototypes before some sketch-scoped enum declarations.
+- First repair added forward declarations for Voltage, LedMode, and VoltageRequestSource.
+- Second repair added forward declarations for OtaState, OnlineOtaFlow, and OnlineOtaIndicatorNext.
+- These were source-visibility fixes only; no runtime OTA logic was intentionally changed.
+
+### V1.7 Online OTA hardening
+Concrete V1.7 radio-lifecycle repair:
+- removed redundant Wi-Fi shutdown from startBle()
+- removed redundant Wi-Fi teardown before WiFi.mode(WIFI_STA) in startOnlineOta()
+- preserved the existing HTTPS download/Update transport
+- preserved BLE UUID/protocol, GPIO mapping, safety, PWM, Local OTA, and SPSC queue architecture
+
+This was a lifecycle simplification based on a concrete duplicate-shutdown boundary, not a wholesale OTA rewrite.
+
+## 10. CURRENT VALIDATION STATUS — 2026-09-28
+
+### Source
+- Current documented production line: V1.7
+- Latest documented source revision: 7b16727475aa4bc8486ba69b2db63c19ad749ee9
+- Gold Master OTA protected segments were documented as exact-match after the ArduinoDroid prototype fixes.
+
+### Binary
+- User supplied a compiled V1.7 BIN artifact.
+- It was promoted to the public firmware repository as JEXFYZ-V1.7.bin.
+- Manifest was updated to V1.7.
+- Binary was not independently recompiled here.
+
+### Physical runtime
+- Historical V1.3 → V1.6 OTA success was recorded.
+- Historical V1.6 → V6.6 test OTA success was recorded.
+- Online OTA during V1.6/V6.6 reached restart and BLE recovery, with a blue LED observed as static rather than visibly blinking.
+- This proves that a particular V1.6/V6.6 physical test completed OTA/restart; it does not prove V1.7 runtime success.
+- **V1.7 physical Online OTA and LED behavior remain pending explicit user evidence.**
+
+### Production readiness rule
+Do not state “V1.7 fully validated” unless the user provides:
+- actual ArduinoDroid build/compile evidence for the intended source
+- physical boot evidence
+- physical BLE recovery evidence
+- Online OTA test evidence where applicable
+- LED behavior evidence if the LED contract is being evaluated
+
+## 11. FIRMWARE ↔ APP OTA CONTRACT
+
+The App obtains firmware metadata from the public firmware repository:
+https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/manifest.json
+
+Current documented production manifest target:
+- version: V1.7
+- BIN:
+  https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V1.7.bin
+
+The App is responsible for:
+- discovering a different valid version
+- validating the manifest/URL
+- presenting OTA progress/state
+- tolerating the expected BLE disconnect
+- reconnecting after firmware restart
+
+The firmware is responsible for:
+- entering the proper radio state
+- downloading/flashing safely
+- protecting peltier/fan/LED outputs as designed
+- validating the update lifecycle
+- rebooting into the new image
+- restoring BLE after the Wi-Fi OTA phase
+
+## 12. MAINTENANCE COMMENT POLICY
+
+Firmware source comments are project memory and should explain:
+- why a radio transition exists
+- why a timeout exists
+- which API is required by Core 3.3.7
+- which GPIO is authoritative
+- which state is safety-critical
+- which block is protected by OTA Gold Master
+- which behavior is desired but not yet physically validated
+
+Do not write comments that claim a test passed when only static inspection occurred.
+
+When source is updated, update this note with:
+- date
+- version
+- exact reason
+- exact changed area
+- what was intentionally not changed
+- validation evidence
+- next diagnostic boundary
+
+## 13. RULES THAT MUST NOT BE FORGOTTEN
+
+1. **Arduino-ESP32 Core 3.3.7 is the production API target.**
+2. **ArduinoDroid is the user's production compile/flash environment.**
+3. **Do not guess Arduino or BLE APIs. Verify the official Core 3.3.7 API/source first.**
+4. **One antenna means controlled Wi-Fi/BLE handoff, not assumed simultaneous operation.**
+5. **GPIO5 = Fan, GPIO6 = Peltier** in the current firmware-specific mapping.
+6. **FIRMWARE_NOTES.md stays in the App repo as documentation.**
+7. **Firmware implementation source/BIN/build files stay outside the App repo.**
+8. **V6.6 is a test version, not production.**
+9. **V1.7 physical runtime is not proven merely by public BIN promotion.**
+10. **A build result, a binary, and a physical validation result are three different evidence levels.**
+11. **No SHA-only firmware manifest mechanism.**
+12. **Preserve OTA protected blocks and Gold Master constraints unless a deliberate redesign is explicitly authorized.**
+13. **Update the notes after every material discussion/execution so the notes remain newer than the source of confusion.**
+
+---
+
+# HISTORICAL EXECUTION RECORD
+
+> The following chronological record is retained to preserve the project trail. Some entries reference repository paths, temporary CI workflows, older versions, diagnostic branches, or validation states that are no longer current. Those references are historical evidence, not current repository architecture. The Current State section above is authoritative for present decisions.
 
 ## 2026-09-27 — V1.3 FULL ARDUINO STANDARD REFACTOR
 
