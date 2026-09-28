@@ -764,3 +764,32 @@ Never:
 - One manual **Build App** trigger starts the reusable build engine once; normal repository commits do not create App Build runs.
 - Historical extra runs caused by the temporary `push` trigger remain visible in GitHub Actions history; they are not new triggers after this change.
 - App CI audit now permits the authoritative firmware `.ino` source under `firmware/` while still rejecting App-code dependencies on firmware source paths.
+
+
+## 2026-09-28 — BUILD APP #3 SUCCESS / LED PALETTE + BRIGHTNESS 1–100
+
+- User explicitly requested **Build App** from the latest App repository state.
+- The repository now uses the dedicated **Build App** trigger (`.github/workflows/app-build-trigger.yml`) calling the reusable App Build engine (`.github/workflows/app-build.yml`).
+- A temporary `push` trigger was used only to execute this explicit request because the available GitHub control surface does not expose `workflow_dispatch`. The trigger was removed immediately after the build started; final trigger state is **manual-only**.
+- During validation, the existing LED palette test contained a malformed regular-expression literal. The first analyzer run exposed this exact syntax error. The test file was repaired minimally to use `r'^#[0-9A-F]{6}$'`.
+- Run **#3** (`36404380148`) then passed the complete pipeline from source revision `9f2e9cb30ef6f421faf691b11b29f2baff19dbb1`:
+  - App security/architecture audit ✅
+  - dependency installation ✅
+  - `flutter analyze` ✅
+  - Flutter tests ✅
+  - obfuscated release APK build ✅
+  - production APK signature verification ✅
+  - APK artifact preparation/upload ✅
+  - Dart symbols upload ✅
+- Latest validated App changes include the **48-color RGB palette** and **1–100 LED brightness UI**, with Rainbow remaining self-colored.
+- Artifact: **`JEXFYZ#3.apk`**
+- Artifact size: **52,868,412 bytes**
+- Artifact SHA-256: **`502dc458bd3a38ead3b1bdfea2a8d8dfb42ccb18860045adf4ac823ea8b2a4c5`**
+- The downloaded artifact was independently identified as an Android APK, and its SHA-256 matched the GitHub artifact digest exactly.
+- CI signature verification confirmed APK Signature Scheme v2 and the official production certificate:
+  - DN = `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`
+  - SHA-256 = `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`
+- Final workflow state verified:
+  - `.github/workflows/app-build-trigger.yml` = manual-only (`workflow_dispatch`) ✅
+  - `.github/workflows/app-build.yml` = reusable `workflow_call` engine with no push trigger ✅
+- CI validation proves the App build/signing pipeline; it does not prove BLE, OTA, or physical hardware runtime.
