@@ -3054,3 +3054,17 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Official Arduino-ESP32 Core 3.3.7 source was checked for `WiFi.begin()`, `WiFi.disconnect()`, `WiFi.setAutoReconnect()`, and `WL_CONNECT_FAILED`; the APIs used by this hardening are present in that pinned core.
 - No Local OTA, BLE UUID/protocol, GPIO, safety, adaptive, or flash-write mechanism was changed.
 - ArduinoDroid compile and physical retest are still pending.
+## 2026-09-28 — LED BOOT/ONLINE OTA OFF FIX
+
+- User reported a static blue LED during the initial 10-second Wi-Fi AP window and again during the early Online OTA handoff; both were unintended.
+- Root cause 1: `initializeRuntimeFeatures()` explicitly called `showAll(0x0000FF, 80)`, creating the static blue boot indicator before the AP started.
+- Root cause 2: after `CLOUDOTA` was accepted, the firmware waited for the BLE TX queue to settle (up to the OTA start guard window) before `startOnlineOta()`. During that gap, normal LED rendering could resume and leave the configured LED effect visible.
+- Fix:
+  - boot/AP startup now forces a known **LED OFF** frame;
+  - `CLOUDOTA` takes LED ownership immediately and forces **LED OFF** before the BLE-to-Wi-Fi handoff;
+  - `processLeds()` keeps the LED OFF while `onlineOtaStartPending` is true;
+  - the existing Online OTA stage indicators after successful Wi-Fi connection remain otherwise unchanged.
+- No Local OTA flash lifecycle, BLE protocol/UUID, GPIO, safety, adaptive, or Wi-Fi transport mechanism was intentionally changed by this LED-only fix.
+- Static sanity validation of the edited source: braces 476/476, parentheses 1901/1901.
+- ArduinoDroid/Core 3.3.7 compile and physical retest are pending.
+
