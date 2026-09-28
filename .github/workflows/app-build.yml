@@ -6,9 +6,9 @@
 name: App Build
 
 on:
-  # TEMPORARY trigger for requested Build App. Restore manual-only immediately after validation.
+  # IMPORTANT: This workflow must never build automatically.
+  # A release validation run is allowed only when the user explicitly requests "Build App".
   workflow_dispatch:
-  push:
 
 permissions:
   # Read-only repository access is sufficient.
