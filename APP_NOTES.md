@@ -486,3 +486,12 @@ Never:
 - Current App OTA implementation uses `firmwareMetadataUrl` for the Firebase Realtime Database endpoint; GitHub is binary-only.
 - Corrected `.github/workflows/app-build.yml` to require `firmwareMetadataUrl` instead of the obsolete `firmwareManifestUrl` token.
 - A new App Build is triggered by the corrected workflow commit and must be validated through release packaging and production APK signature verification before delivery.
+
+## 2026-09-28 — BUILD ATTEMPT #14 / AUDIT FIX 2
+
+- App Build run #14 reached the App-only security/architecture audit but failed before dependency analysis.
+- Exact failure: the audit treated the valid current Firebase RTDB endpoint token `firmware_update` as a legacy firmware metadata reference.
+- The current App intentionally uses `firmwareMetadataUrl` ending in `/firmware_update.json`; this is the approved Firebase OTA control-plane endpoint.
+- Legacy Firebase implementation markers remain forbidden: `FirebaseDatabase.instanceFor` and `firebase_database`.
+- Corrected `.github/workflows/app-build.yml` by removing only the stale `firmware_update` forbidden-token check.
+- A new App Build is triggered by this workflow fix and must pass audit, analyze, tests, release packaging, and production signature verification before APK delivery.
