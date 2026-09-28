@@ -3788,8 +3788,9 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
     }
   }
 
-  // AI-METHOD: _checkFirebase — Fetch Firebase metadata; the returned GitHub URL must point to a JE X FYZ .bin only.
+  // AI-METHOD: _checkFirebase — Read Firebase RTDB firmware metadata with optional App Check REST authorization.
   Future<void> _checkFirebase() async {
+    if (!mounted) return;
     setState(() {
       status = 'CHECKING';
       latestVersion = '';
@@ -3804,6 +3805,19 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
       request.headers.set(HttpHeaders.acceptHeader, 'application/json');
       request.headers.set(HttpHeaders.userAgentHeader, 'JE-Cooler');
       request.headers.set(HttpHeaders.cacheControlHeader, 'no-cache');
+      request.headers.set('Pragma', 'no-cache');
+
+      // Firebase App Check protects Firebase-backed services, but this request
+      // is made through Dart HttpClient rather than a Firebase Database SDK.
+      // Attach the official App Check token explicitly when one is available.
+      try {
+        final appCheckToken = await FirebaseAppCheck.instance.getToken(true);
+        if (appCheckToken != null && appCheckToken.trim().isNotEmpty) {
+          request.headers.set('X-Firebase-AppCheck', appCheckToken);
+        }
+      } catch (e) {
+        debugPrint('Firebase App Check token: $e');
+      }
 
       final response = await request.close().timeout(const Duration(seconds: 12));
       final body = await response.transform(utf8.decoder).join().timeout(
@@ -3811,14 +3825,19 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
       );
 
       if (response.statusCode != HttpStatus.ok) {
+        final detail = body.trim();
+        final reason = response.statusCode == HttpStatus.unauthorized ||
+                response.statusCode == HttpStatus.forbidden
+            ? 'Firebase read permission/App Check rejected'
+            : 'Firebase HTTP ' + response.statusCode.toString();
         throw StateError(
-          'Firebase firmware metadata HTTP ' + response.statusCode.toString(),
+          reason + (detail.isEmpty ? '' : ': ' + detail),
         );
       }
 
       final decoded = jsonDecode(body);
       if (decoded is! Map) {
-        throw StateError('Invalid Firebase firmware metadata');
+        throw StateError('Firebase firmware_update is not an object');
       }
 
       final data = Map<String, dynamic>.from(decoded);
@@ -3832,21 +3851,31 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
               '/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ.cpp.bin';
 
       if (parseFirmwareVersion(version) == null || !validUrl) {
-        throw StateError('Invalid Firebase firmware metadata');
+        throw StateError(
+          'Firebase firmware_update data invalid: expected version V<major>.<minor> and the fixed JEXFYZ.cpp.bin URL',
+        );
       }
 
       if (!mounted) return;
       setState(() {
         latestVersion = version;
         firmwareUrl = url;
-        updateAvailable =
-            // AI-METHOD: isDifferentFirmwareVersion — Current OTA availability rule: any valid version different from device version is an OTA target.
-            isDifferentFirmwareVersion(version, widget.currentVersion);
+        updateAvailable = isDifferentFirmwareVersion(
+          version,
+          widget.currentVersion,
+        );
         status = updateAvailable ? 'UPDATE' : 'UP_TO_DATE';
       });
     } catch (e) {
       debugPrint('Firebase OTA metadata: ' + e.toString());
-      if (mounted) setState(() => status = 'FAILED');
+      if (mounted) {
+        setState(() {
+          status = 'FAILED';
+          latestVersion = '';
+          firmwareUrl = '';
+          updateAvailable = false;
+        });
+      }
     } finally {
       client.close(force: true);
     }
@@ -3870,7 +3899,10 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
             if (status == 'CHECKING')
               const Center(child: CircularProgressIndicator(color: Colors.blueAccent))
             else if (status == 'FAILED')
-              const Text('Metadata unavailable.', style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold))
+              Text(
+                'Firebase metadata unavailable. Check RTDB read rules/App Check.',
+                style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
+              )
             else if (!updateAvailable)
               Text(widget.currentVersion == 'V?' ? 'Waiting for device...' : 'Up to date.', style: const TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold))
             else ...[
