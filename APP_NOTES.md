@@ -623,3 +623,14 @@ Never:
 - The App source displays OTA stage values received from firmware and maintains a separate BLE `connected` state. Therefore a visible OTA stage does not itself prove that the ESP32 has already reached the Wi-Fi connection call.
 - Current App OTA command sequencing remains unchanged and no App source change is indicated by this evidence.
 - The latest diagnostic conclusion is that the next investigation should isolate the firmware radio-handoff boundary rather than modify Flutter UI/OTA transport speculatively.
+
+
+## 2026-09-28 — V1.5 FIRMWARE-ONLY DIAGNOSTIC REVISION
+
+- The firmware source paired with the App repository is now `firmware/JEXFYZ-V1.5.ino`.
+- V1.5 is a firmware-only revision implementing the supplied Gemini handoff/retry patch.
+- No Flutter/Dart, Android, BLE P1 UUID/protocol, Firebase metadata, or App workflow changes were made.
+- The existing App Online OTA flow remains: send `OTAENTER`, SSID, PASS, URL, VERSION, then `CLOUDOTA`; read OTA telemetry and retry BLE discovery after the OTA session disconnects.
+- The visible App stage `ONLINE_WIFI_CONNECT` remains a firmware telemetry state and does not by itself prove that `WiFi.begin()` has executed.
+- Firebase metadata remains unchanged; V1.5 source presence is not a release-publish signal.
+- App Build remains manual-only and was not triggered by this firmware change.
