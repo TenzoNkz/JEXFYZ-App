@@ -85,6 +85,14 @@ Important: this architecture removes the GitHub manifest from the control path, 
 - When a fault cannot be conclusively distinguished from source/build evidence alone, state the uncertainty and narrow the next test to the smallest physical observation required; do not invent a root cause.
 - Preserve detailed internal firmware diagnostics in source when useful, but they are optional evidence rather than a user workflow requirement.
 
+## 2026-09-28 — LOCAL OTA PHYSICAL VALIDATION
+
+- User confirmed the current V1.0 firmware successfully completed **Local OTA** on the physical device.
+- User specifically confirmed the **success LED now blinks green** as intended.
+- This is direct physical validation of the Local OTA success indication.
+- Online OTA remains a separate validation path and is not yet considered physically validated.
+- No Serial Monitor was required for this validation.
+
 ## 1. CURRENT STATE — AUTHORITATIVE
 
 ### 1.1 Firmware ownership and repository boundary
