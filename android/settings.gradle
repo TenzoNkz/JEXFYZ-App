@@ -1,3 +1,7 @@
+// AI BUILD MEMORY:
+// Pinned Flutter Gradle loader and Android/Kotlin/Google Services plugin versions.
+
+// Resolve Flutter tooling from local.properties.
 pluginManagement {
     def flutterSdkPath = {
         def properties = new Properties()
@@ -20,6 +24,7 @@ pluginManagement {
     }
 }
 
+// Tested plugin versions for the App release.
 plugins {
     id "dev.flutter.flutter-plugin-loader" version "1.0.0"
     id "com.android.application" version "9.1.1" apply false
@@ -27,4 +32,5 @@ plugins {
     id "com.google.gms.google-services" version "4.4.4" apply false
 }
 
+// The repository contains one Android application module.
 include ":app"
