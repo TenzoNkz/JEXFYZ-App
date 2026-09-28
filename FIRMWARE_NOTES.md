@@ -3290,3 +3290,41 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - This is the user's requested Gemini patch applied directly; no selective correction or reinterpretation was made.
 - **Important status:** this source-level patch has not yet been compiled or physically validated. Do not treat the new certificate block or HTTP/1.1 change as proven to fix GitHub connection failures until the ArduinoDroid/Core 3.3.7 physical test.
 - Firebase firmware metadata remains unchanged and must not be promoted to V1.6 without a deliberately compiled/published V1.6 BIN.
+
+
+## 2026-09-28 — GEMINI V1.7 ONLINE OTA TLS SIMPLIFICATION APPLIED
+
+- User explicitly instructed: **"Eksekusi Gemini"** using the attached full Gemini V1.7 source.
+- The Gemini source was applied as the active firmware source **without selectively reconciling or silently changing its implementation**.
+- Active source path is now:
+  `firmware/JEXFYZ-V1.7.ino`
+- Superseded active source `firmware/JEXFYZ-V1.6.ino` was removed so the firmware directory does not retain multiple active versioned `.ino` sources.
+- Functional change delivered by Gemini V1.7:
+  - removed the GitHub Root CA bundle from the Online OTA source;
+  - removed the Online OTA `TIME_SYNC` state and `cloudTimeSyncStarted` state variable;
+  - Online OTA proceeds from successful Wi-Fi connection directly to download preparation;
+  - GitHub HTTPS client uses `cloudClient.setInsecure()`;
+  - `onlineHttpClient.useHTTP10(true)` remains absent;
+  - existing streamed `Update.h` download path and OTA result indicators are retained.
+- Fixed GitHub binary URL remains:
+  `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ.cpp.bin`
+- The App, BLE P1 contract/UUIDs, GPIO mapping, Local OTA, thermal/safety logic, adaptive control, and PWM logic were not intentionally changed by this Gemini source.
+- Static source checks on the applied Gemini V1.7 file:
+  - source lines: 3981;
+  - `GITHUB_ROOT_CA`: absent;
+  - `cloudClient.setCACert`: absent;
+  - `TIME_SYNC`: absent;
+  - `useHTTP10(true)`: absent;
+  - `esp_ota_*`: absent;
+  - `cloudClient.setInsecure()`: present;
+  - delimiter sanity check: parentheses 1924/1924, braces 491/491, brackets 57/57.
+- GitHub source commit sequence:
+  - complete V1.7 source applied: `5fbce565f6796824f771f267ba557ff69755077c`;
+  - superseded V1.6 source removed: `8e49a070ab0519dbccccfcd9037074ed58792b43`.
+- Validation boundary:
+  - repository source application: **completed**;
+  - static inspection of the attached Gemini source: **completed**;
+  - ArduinoDroid/Core 3.3.7 compilation: **not performed here**;
+  - physical V1.7 Online OTA test: **not performed yet**;
+  - therefore V1.7 is a test/source revision, not a physically validated release.
+- Firebase firmware metadata is **not promoted to V1.7** merely because the source version changed. Promotion remains a deliberate step after a compiled/public BIN exists.
