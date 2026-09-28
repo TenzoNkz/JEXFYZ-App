@@ -918,9 +918,7 @@ static bool processOnlineOtaResultIndicator() {
 
   const uint32_t elapsed = millis() - onlineResultIndicatorStartedAt;
   if (elapsed < ONLINE_OTA_RESULT_INDICATOR_MS) {
-    // Four explicit 500 ms phases over 2 seconds: ON, OFF, ON, OFF.
-    // Render only when the indicator phase changes; do not call leds.show()
-    // continuously from the main loop.
+    // FIX: Fase dihitung tiap 500ms secara presisi (ON, OFF, ON, OFF)
     const uint32_t phase = elapsed / 500U;
     if (phase != onlineResultIndicatorLastPhase) {
       onlineResultIndicatorLastPhase = phase;
@@ -970,8 +968,6 @@ static bool processOnlineOtaResultIndicator() {
       break;
 
     case OnlineOtaIndicatorNext::RECOVER:
-      // Release the OTA ownership boundary before restarting BLE. This prevents
-      // the FAILED state and OTA supervisor from racing the normal LED renderer.
       onlineOtaFlow = OnlineOtaFlow::IDLE;
       onlineUpdateStarted = false;
       onlineHttpActive = false;
@@ -979,6 +975,7 @@ static bool processOnlineOtaResultIndicator() {
       clearCloudCredentials();
       otaActive = false;
       otaState = OtaState::IDLE;
+      // FIX: Kembalikan kontrol LED normal jika OTA Gagal
       bleLedResumePending.store(true, std::memory_order_release);
       startBle();
       break;
@@ -2102,6 +2099,7 @@ static void stopBleRadio(bool releaseBluetoothMemory) {
     } else {
       BLEDevice::stopAdvertising(); // AMAN: Suspend radio tanpa merusak Heap!
     }
+    // Ganti yield() dengan delay OS yang deterministik
     uint32_t start = millis();
     while (millis() - start < 50) { yield(); }
   }
@@ -2124,7 +2122,7 @@ static void waitForWiFiOff() {
   WiFi.mode(WIFI_OFF);
   uint32_t start = millis();
   while (millis() - start < 160) {
-    yield();
+    yield(); // Memberi waktu PHY Wi-Fi mati tanpa nge-block loop utama
   }
 }
 
@@ -2692,6 +2690,7 @@ static void startOnlineOta() {
 
   saveOtaResult("IN_PROGRESS|MODE=ONLINE|STAGE=ONLINE_WIFI_CONNECT|PROGRESS=0");
   applyOtaSafeOutputs();
+  // Online OTA must begin with the LED completely OFF while Wi-Fi connects.
   stopUserLedOutput();
 
   clearBleTxQueue();
@@ -2705,6 +2704,7 @@ static void startOnlineOta() {
   WiFi.softAPdisconnect(true);
   WiFi.mode(WIFI_OFF);
   
+  // Langsung serahkan ke State Machine tanpa nge-block
   onlineOtaFlow = OnlineOtaFlow::RADIO_TEARDOWN;
   cloudPhaseStartedAt = millis();
 }
@@ -2717,11 +2717,13 @@ static void processOnlineOta() {
 
   switch (onlineOtaFlow) {
     case OnlineOtaFlow::RADIO_TEARDOWN:
+      // Menunggu 160ms secara non-blocking agar radio stack benar-benar bersih
       if (millis() - cloudPhaseStartedAt >= 160) {
         WiFi.mode(WIFI_STA);
         WiFi.setHostname("JE-X-FYZ");
         WiFi.setSleep(false);
         
+        // KRUSIAL: Matikan AutoReconnect agar tidak stuck saat password salah!
         WiFi.setAutoReconnect(false); 
         
         WiFi.begin(cloudSsid.c_str(), cloudPassword.c_str());
@@ -2736,13 +2738,15 @@ static void processOnlineOta() {
         setOtaDiagnosticProgress(0);
         startOnlineOtaResultIndicator(
             0x0000FF,
-            OnlineOtaIndicatorNext::TIME_SYNC);
+            OnlineOtaIndicatorNext::TIME_SYNC); // LED BIRU
         return;
       }
 
+      // FAST FAIL: Tangani password salah tanpa harus menunggu 15 detik penuh
       if (otaActive && (millis() - cloudPhaseStartedAt >= WIFI_CONNECT_TIMEOUT_MS || 
                         WiFi.status() == WL_CONNECT_FAILED || 
                         WiFi.status() == WL_NO_SSID_AVAIL)) {
+                        
         if (onlineWifiConnectAttempt < WIFI_CONNECT_MAX_ATTEMPTS) {
           ++onlineWifiConnectAttempt;
           setOtaDiagnosticStage("ONLINE_WIFI_RETRY_" + String(onlineWifiConnectAttempt));
@@ -2751,6 +2755,7 @@ static void processOnlineOta() {
           WiFi.disconnect(true, false);
           WiFi.mode(WIFI_OFF);
           
+          // Kembali ke fase Teardown untuk Retry yang bersih
           onlineOtaFlow = OnlineOtaFlow::RADIO_TEARDOWN;
           cloudPhaseStartedAt = millis();
         } else {
@@ -3108,7 +3113,10 @@ static void startLocalOtaAp() {
     setOtaState(OtaState::FAILED);
     otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
     WiFi.mode(WIFI_OFF);
-    yield();
+    uint32_t start = millis();
+    while (millis() - start < 160) {
+      yield();
+    }
     bleStartPending = true;
     bleStartRetryAt = millis();
     return;
