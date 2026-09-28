@@ -19,6 +19,12 @@
 
 #include <Update.h>
 
+// ArduinoDroid auto-generates function prototypes before the sketch body.
+// Keep all sketch-scoped enum types visible to those generated prototypes.
+enum class Voltage : uint8_t;
+enum class LedMode : uint8_t;
+enum class VoltageRequestSource : uint8_t;
+
 static constexpr char FW_VERSION[] = "V1.7";
 
 // ============================================================================
