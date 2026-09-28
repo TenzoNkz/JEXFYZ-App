@@ -3165,3 +3165,25 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - No new firmware version was created; this remains V1.3 and is still pre-physical-validation.
 - The only delta from the previously stored V1.3 was the missing exact Gemini change inside `startOnlineOta()`: its direct `WIFI_OFF` settle loop now uses `delay(10)` for each `RADIO_OFF_SETTLE_YIELDS` iteration, matching Gemini's latest full-function patch.
 - No independent optimization, API substitution, TLS change, NTP bypass, NTC change, BLE queue redesign, GPIO change, or additional behavioral patch was added.
+
+## 2026-09-28 — V1.3 GEMINI SOURCE STATUS / CURRENT BASELINE
+
+- Current firmware source baseline in this App repository is **V1.3** at `firmware/JEXFYZ-V1.3.ino`.
+- The previous `firmware/JEXFYZ-V1.2.ino` source was removed during the V1.2 → V1.3 promotion; the firmware directory is intended to contain only the current active source.
+- V1.3 is the **Gemini-derived patch applied without additional code changes**. The six requested code changes are:
+  1. `FW_VERSION`: V1.2 → V1.3.
+  2. `waitForWiFiOff()`: 16 iterations of `yield()` → `delay(10)` per iteration.
+  3. Online OTA BLE teardown: `stopBleRadio(true)` → `stopBleRadio(false)` in `startOnlineOta()`.
+  4. Online Wi-Fi retry boundary: `yield()` → `delay(50)`.
+  5. `performOnlineOtaDownload()`: `bytesRead <= 0` now checks connection loss and the existing stream-idle timeout before continuing, with `delay(10)`.
+  6. Online OTA RECOVER: `bleLedResumePending.store(false, ...)` → `store(true, std::memory_order_release)`.
+- Gemini's **source-confirmed** finding retained as rationale: the previous download path could repeatedly `continue` after `stream->read()` returned <= 0 without reaching the existing idle-timeout check when `available() > 0`.
+- Gemini's other root-cause claim that `stopBleRadio(true)` necessarily causes ESP32-C3 heap corruption is **not independently runtime-proven**. It is recorded as the Gemini hypothesis behind patch #3, not as established fact.
+- TLS verification remains enabled; `setInsecure()` was not adopted.
+- NTP logic remains enabled; no NTP bypass was adopted.
+- NTC thresholds/calibration remain unchanged.
+- BLE queue/protocol, BLE UUIDs, GPIO mapping, safety/adaptive logic, Local OTA flash lifecycle, and App/Firebase architecture were not intentionally changed by this V1.3 patch.
+- Important scope note: changing `waitForWiFiOff()` affects every caller of that helper, including Wi-Fi shutdown used by Local OTA. Therefore the V1.3 patch must not be described as having zero effect on Local OTA; its `Update.h` flash lifecycle itself was left unchanged.
+- Static source storage/inspection is complete. **ArduinoDroid + Arduino-ESP32 Core 3.3.7 compilation and physical V1.3 validation are still pending.**
+- Do not treat the presence of V1.3 in the repository as evidence of successful runtime behavior.
+- When the next functional firmware change is made, rename the existing V1.3 source to the next version and patch that same active file; do not create a second active firmware source file.
