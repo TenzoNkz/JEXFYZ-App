@@ -378,6 +378,15 @@ The 2026-09-28 comment pass reported:
 | `assets/jexfyzicon.png` | App/icon asset |
 | `android/app/google-services.json` | Firebase Android configuration; do not add comments |
 
+## 12. DOCUMENTATION REORGANIZATION — 2026-09-28
+
+- Rebuilt APP_NOTES.md as a structured master document instead of a loose accumulation of cleanup notes.
+- Corrected the repository-boundary contradiction: App implementation stays external to firmware, while FIRMWARE_NOTES.md remains intentionally stored in this App repository.
+- Added explicit sections for App architecture, BLE/P1 contract, OTA integration, security, dependency lock, build workflow, validation layers, source-comment policy, file roles, and change-control rules.
+- Preserved the project rule that an unrun Build App workflow must not be described as a verified APK.
+- Preserved the project rule that App validation cannot prove physical firmware/hardware behavior.
+- This documentation-only reorganization does not intentionally change App runtime behavior.
+
 ## 12. CURRENT CHANGE / VALIDATION STATUS — 2026-09-28
 
 Latest completed App cleanup work:
