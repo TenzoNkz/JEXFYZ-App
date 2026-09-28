@@ -142,6 +142,18 @@ Important: this architecture removes the GitHub manifest from the control path, 
 - Validation completed: source diff review, braces 481/481, parentheses 1913/1913, brackets 58/58, and targeted OTA/LED state-flow inspection.
 - Validation pending: ArduinoDroid/Core 3.3.7 compile and physical V1.1 test.
 
+## 2026-09-28 — V1.1 PATCH APPLIED AFTER GEMINI REVIEW
+
+- Gemini Patch Plan was reviewed against the actual `JEXFYZ-V1.1.ino` source before application.
+- Approved changes were applied to a new final candidate source; Gemini's `volatile bool` recommendation was strengthened to `std::atomic<bool>` because the flag crosses the BLE callback task / Arduino loop boundary and the source already uses `<atomic>` for SPSC synchronization.
+- LED result rendering is now phase-change driven using explicit last-phase state for both Online and Local OTA result indicators.
+- Wi-Fi fast-fail retry timing now uses an explicit 3-second backoff constant for BOTH the initial `WiFi.begin()` fast-fail and subsequent retry fast-fails. This corrects the Gemini plan's incomplete treatment, which only patched the later retry path.
+- The exact old retry-burn expression `cloudPhaseStartedAt -= WIFI_CONNECT_TIMEOUT_MS` is no longer present.
+- No Local OTA flash lifecycle, BLE UUID/P1 contract, GPIO mapping, Firebase version, or GitHub BIN URL was changed.
+- Firebase remains promoted at V1.0. Do not change it to V1.1 until a V1.1 BIN is actually compiled/published and intentionally promoted.
+- Final candidate validation: delimiter balance — braces 486/486, parentheses 1925/1925, brackets 58/58; no stale retry-burn expression; no plain `volatile bool bleLedResumePending`; `std::atomic<bool>` flag present.
+- ArduinoDroid compilation and physical V1.1 validation remain pending.
+
 ## 1. CURRENT STATE — AUTHORITATIVE
 
 ### 1.1 Firmware ownership and repository boundary
