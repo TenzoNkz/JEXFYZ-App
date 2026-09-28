@@ -3214,3 +3214,11 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Important terminology: V1.4 is **not** a complete “zero-delay/full-millis” radio rewrite. No new blocking radio-loop conversion was applied in this isolated revision.
 - V1.4 still requires **ArduinoDroid + Arduino-ESP32 Core 3.3.7 compilation and physical validation**.
 - App source was not changed and no App Build was triggered by this firmware-only revision.
+
+## 2026-09-28 — V1.4 PHYSICAL TEST: ONLINE OTA STILL FAILS
+
+- User physically tested firmware **V1.4** and reports that **Online OTA still fails / cannot proceed**.
+- No exact OTA stage, LED pattern, Wi-Fi association result, or reset/crash log was supplied with this report.
+- Therefore **no new root cause is declared from this result alone**.
+- The V1.4 LED timing change does not by itself prove or disprove the underlying Online OTA radio/network failure; the next diagnostic must identify the last observable OTA stage before changing radio code again.
+- Current source remains V1.4 and no additional firmware patch is applied from this test report.
