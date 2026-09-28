@@ -154,6 +154,17 @@ Important: this architecture removes the GitHub manifest from the control path, 
 - Final candidate validation: delimiter balance — braces 486/486, parentheses 1925/1925, brackets 58/58; no stale retry-burn expression; no plain `volatile bool bleLedResumePending`; `std::atomic<bool>` flag present.
 - ArduinoDroid compilation and physical V1.1 validation remain pending.
 
+## 2026-09-28 — ARDUINODROID EXTERNAL LIBRARY REQUIREMENTS
+
+- The V1.1 source includes two external Arduino libraries that are not part of the Arduino-ESP32 Core itself:
+  - **Adafruit NeoPixel** — header: `Adafruit_NeoPixel.h`; upstream library version checked: **1.15.5**.
+  - **OneButton** — header: `OneButton.h`; upstream library version checked: **2.6.2**.
+- Standard/core headers such as `<atomic>`, `Arduino.h`, `WiFi.h`, BLE headers, `Update.h`, and `esp_heap_caps.h` are not separate ArduinoDroid library installs for this project.
+- V1.1 did not introduce these two external-library dependencies; they are already present in the V1.0 source baseline.
+- A "library not found" ArduinoDroid error therefore indicates the corresponding external library is missing from the local ArduinoDroid library set, not that the V1.1 patch changed the dependency.
+- Do not replace these libraries as a workaround without first identifying the exact missing header and considering the runtime/LED/button regression risk.
+- Required production target remains Arduino-ESP32 Core 3.3.7.
+
 ## 1. CURRENT STATE — AUTHORITATIVE
 
 ### 1.1 Firmware ownership and repository boundary
