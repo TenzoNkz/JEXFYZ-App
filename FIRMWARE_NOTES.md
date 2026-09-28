@@ -3239,3 +3239,26 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Consequently, the current V1.4 use of `BLEDevice::deinit(false)` is a real BLE-stack/controller teardown, not merely `stopAdvertising()`. The previous Gemini wording that `deinit(false)` leaves BLE objects/pointers available for reuse is inconsistent with the official 3.3.7 source.
 - This materially changes the diagnostic focus: before changing BLE teardown again, isolate whether V1.4 stalls/crashes during BLE deinit, Wi-Fi shutdown/settling, or the actual `WiFi.begin()` call.
 - No firmware source change was made from this screenshot alone.
+
+
+## 2026-09-28 — V1.5 ONLINE OTA HANDOFF PATCH APPLIED
+
+- Active firmware source is now **V1.5** at `firmware/JEXFYZ-V1.5.ino`; V1.4 was renamed/promoted and removed so the firmware directory retains one active source.
+- Applied the user's supplied Gemini V1.5 patch to the existing V1.4 source. No additional firmware behavior was added beyond that patch.
+- V1.5 changes:
+  1. `FW_VERSION`: V1.4 → V1.5.
+  2. `OnlineOtaFlow`: added `RADIO_TEARDOWN`.
+  3. `stopBleRadio(false)`: uses official `BLEDevice::stopAdvertising()` plus a 50 ms millis/while settle loop; pointer nulling remains guarded by `releaseBluetoothMemory`.
+  4. `waitForWiFiOff()`: uses a 160 ms millis/while settle loop with `yield()`.
+  5. `startOnlineOta()`: removes the direct blocking Wi-Fi STA start and hands radio transition to `RADIO_TEARDOWN`.
+  6. `RADIO_TEARDOWN`: after 160 ms enters STA, disables Wi-Fi auto-reconnect, calls `WiFi.begin()`, then transitions to `WIFI_CONNECTING`.
+  7. `WIFI_CONNECTING`: detects `WL_CONNECT_FAILED`, `WL_NO_SSID_AVAIL`, or timeout; retries through a fresh `RADIO_TEARDOWN`; after the bounded retry count calls `failOnlineOta()`.
+  8. Existing HTTP stream guard from V1.3/V1.4 remains.
+  9. Existing 2-second / 500 ms OTA result LED indicator remains.
+  10. Existing `bleLedResumePending=true` recovery remains.
+- Important verification note: official Arduino-ESP32 Core 3.3.7 source confirms that `BLEDevice::stopAdvertising()` stops advertising only, while `BLEDevice::deinit(false)` performs full BLE host/controller teardown without releasing BTDM memory. Therefore the V1.5 `stopAdvertising()` change is recorded as the **user-requested Gemini patch**, not as a proven equivalent to full BLE teardown.
+- Official Core 3.3.7 source also confirms `WiFi.begin()`, `WiFi.disconnect()`, `WiFi.setAutoReconnect()`, and `WL_CONNECT_FAILED` are available APIs.
+- V1.5 must therefore be treated as a **diagnostic/experimental firmware revision**, not as a proven final fix.
+- No App source change and no App Build were made.
+- Firebase firmware metadata was not promoted to V1.5; no V1.5 BIN publication is implied.
+- ArduinoDroid + Arduino-ESP32 Core 3.3.7 compilation and physical validation are pending.
