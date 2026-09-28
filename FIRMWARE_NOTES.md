@@ -469,6 +469,16 @@ When source is updated, update this note with:
 12. **Preserve OTA protected blocks and Gold Master constraints unless a deliberate redesign is explicitly authorized.**
 13. **Update the notes after every material discussion/execution so the notes remain newer than the source of confusion.**
 
+
+## 2026-09-28 — DOCUMENTATION REORGANIZATION
+
+- Rebuilt the top of FIRMWARE_NOTES.md into an authoritative Current State section.
+- Separated present firmware ownership/status from historical execution records so old CI experiments, old repository paths, diagnostic branches, and old validation states cannot be mistaken for the current architecture.
+- Explicitly recorded the current ownership split: firmware source and production compile/flash are user-owned and maintained separately; this file remains in the App repository as persistent documentation.
+- Consolidated the current V1.7 source/BIN status, ArduinoDroid/Core 3.3.7 lock, ESP32-C3 board profile, GPIO map, BLE contract, Wi-Fi/BLE handoff, OTA lifecycle, safety contract, versioning, debugging rules, and validation boundaries.
+- Historical entries are intentionally preserved below the master section rather than deleted.
+- Documentation cleanup itself does not claim any new firmware compile, physical runtime, OTA, or LED validation.
+
 ---
 
 # HISTORICAL EXECUTION RECORD
