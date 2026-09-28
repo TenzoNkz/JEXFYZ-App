@@ -20,7 +20,6 @@ import 'dart:io';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -3693,13 +3692,16 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
     });
 
     final client = HttpClient();
+    client.connectionTimeout = const Duration(seconds: 8);
     try {
       final request = await client.getUrl(Uri.parse(firmwareManifestUrl));
       request.headers.set(HttpHeaders.acceptHeader, 'application/json');
       request.headers.set(HttpHeaders.userAgentHeader, 'JE-Cooler');
 
-      final response = await request.close();
-      final body = await response.transform(utf8.decoder).join();
+      final response = await request.close().timeout(const Duration(seconds: 12));
+      final body = await response.transform(utf8.decoder).join().timeout(
+        const Duration(seconds: 12),
+      );
 
       if (response.statusCode != HttpStatus.ok) {
         throw StateError(

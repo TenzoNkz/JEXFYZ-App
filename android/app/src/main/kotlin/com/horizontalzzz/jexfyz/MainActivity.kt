@@ -46,10 +46,6 @@ class MainActivity : FlutterActivity() {
                     result.success(openBluetoothSettings())
                 }
 
-                "enableLocation" -> {
-                    result.success(openLocationSettings())
-                }
-
                 "startBackgroundService" -> {
                     result.success(startBackgroundService())
                 }
