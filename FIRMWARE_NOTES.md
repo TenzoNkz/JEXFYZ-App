@@ -3342,3 +3342,26 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Future firmware feature changes must preserve the currently validated OTA path and must not use the successful OTA test as a reason to redesign OTA.
 - No Firebase promotion is implied by this validation. Firebase version metadata remains a separate deliberate release-promotion step.
 - This entry supersedes earlier notes that described V1.7 Online OTA as pending physical validation.
+
+
+## 2026-09-28 — V1.8 OTA RESULT LED SPEED UPDATE
+
+- User explicitly requested the successful Local OTA and Online OTA result indicators be accelerated.
+- Functional firmware revision bumped from V1.7 to V1.8.
+- Active source path is now: firmware/JEXFYZ-V1.8.ino
+- Superseded firmware/JEXFYZ-V1.7.ino was removed so the firmware directory keeps a single active versioned source.
+- OTA mechanics were not changed. Only the post-result LED timing was changed:
+  - Online OTA result indicator: 1000 ms total.
+  - Local OTA result indicator: 1000 ms total.
+  - Four phases: 250 ms ON -> 250 ms OFF -> 250 ms ON -> 250 ms OFF.
+- Wi-Fi/BLE handoff, GitHub transport, WiFiClientSecure.setInsecure(), HTTP download, Update.h flash lifecycle, OTA recovery, and OTA command/telemetry contracts remain unchanged.
+- Static validation of V1.8:
+  - parentheses: 1924/1924;
+  - braces: 491/491;
+  - brackets: 57/57;
+  - elapsed / 250U: 2 occurrences;
+  - old elapsed / 500U: 0;
+  - old elapsed < 2000U: 0.
+- ArduinoDroid/Core 3.3.7 compile and physical V1.8 validation are still pending.
+- OTA remains frozen in architecture; this revision is limited to the user-requested result-indicator timing change.
+- Firebase metadata is not promoted to V1.8 from the source version change alone.
