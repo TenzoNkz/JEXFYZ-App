@@ -61,7 +61,7 @@ const String txUuid = '6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001';
 // AI-MEMORY: Firebase Realtime Database is the firmware release metadata/control plane. GitHub is binary-only.
 // Keep the GitHub repository allowlist below unchanged unless the release source intentionally changes.
 const String firmwareMetadataUrl =
-    'https://je-x-fyz-default-rtdb.asia-southeast1.firebasedatabase.app/firmware/current.json';
+    'https://je-x-fyz-default-rtdb.asia-southeast1.firebasedatabase.app/firmware_update.json';
 const Duration voltageGuardDuration = Duration(seconds: 1);
 const int fanSpeedMin = 50;
 const int fanSpeedMax = 100;
@@ -3827,8 +3827,8 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
       final validUrl = parsedUrl != null &&
           parsedUrl.scheme == 'https' &&
           parsedUrl.host == 'raw.githubusercontent.com' &&
-          parsedUrl.path.startsWith('/TenzoNkz/JEXFYZ-Firmware/') &&
-          parsedUrl.path.toLowerCase().endsWith('.bin');
+          parsedUrl.path ==
+              '/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ.cpp.bin';
 
       if (parseFirmwareVersion(version) == null || !validUrl) {
         throw StateError('Invalid Firebase firmware metadata');
