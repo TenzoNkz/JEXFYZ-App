@@ -116,6 +116,32 @@ Important: this architecture removes the GitHub manifest from the control path, 
 - Every firmware version bump must update the source version constant, the relevant notes/current-state entry, and the Firebase `firmware_update.version` only when that version is intentionally promoted for Online OTA testing/release.
 - A version bump does not itself mean the firmware has been compiled or physically validated.
 
+## 2026-09-28 — V1.1 LED/RADIO/RECOVERY FIX
+
+- Because the source implementation changed functionally after the V1.0 physical validation, the firmware version is bumped to **V1.1** before the next test build.
+- User-reported symptoms addressed:
+  - boot Local OTA window must keep all user outputs and RGB LED OFF until Wi-Fi AP ends;
+  - Online OTA must keep the RGB LED OFF during the complete BLE->Wi-Fi connection handoff;
+  - Online OTA failure must show a clearly visible repeated RED blink before BLE recovery;
+  - after BLE disconnect/recovery, the normal user LED effect must resume on the next safe main-loop iteration instead of waiting for a later state transition.
+- Root causes found in the V1.0 source:
+  1. LED-off ownership was distributed across several callers instead of being guaranteed by the OTA safe-output function.
+  2. The Online OTA result indicator was processed by both `processOnlineOta()` and the generic `processLeds()` in the same loop iteration, so one indicator owned two render calls per loop.
+  3. The recovery transition left `OtaState::FAILED` in place until a later generic LED pass, creating an unnecessary state race around BLE restart.
+  4. BLE disconnect did not signal the main loop to restart the normal LED effect immediately; advertising and LED rendering were therefore separate state transitions.
+  5. Online OTA now also owns an explicit Wi-Fi-OFF settle boundary before entering STA, preventing residual boot-AP state from crossing the radio handoff.
+- V1.1 fixes:
+  - `FW_VERSION = V1.1`;
+  - `applyOtaSafeOutputs()` explicitly forces the RGB LED OFF and physical fan/Peltier/selector outputs safe;
+  - Online OTA result indicators use exactly one renderer path and three clear flashes (ON/OFF x3) over 1.8 s;
+  - recovery sets OTA state to `IDLE` before restarting BLE;
+  - BLE disconnect schedules a main-loop LED resume flag when normal runtime can safely resume;
+  - Online OTA enters Wi-Fi through an explicit `disconnect -> SoftAP disconnect -> WIFI_OFF -> settle -> WIFI_STA` boundary using Arduino-ESP32 Core 3.3.7 APIs.
+- No BLE UUID/P1 protocol, GPIO mapping, safety thresholds, Local OTA flash lifecycle, or GitHub BIN transport was intentionally redesigned.
+- The current Firebase metadata promotion remains **V1.0** until a V1.1 BIN is actually compiled and intentionally published. Do not point Firebase at V1.1 merely because the source version was bumped.
+- Validation completed: source diff review, braces 481/481, parentheses 1913/1913, brackets 58/58, and targeted OTA/LED state-flow inspection.
+- Validation pending: ArduinoDroid/Core 3.3.7 compile and physical V1.1 test.
+
 ## 1. CURRENT STATE — AUTHORITATIVE
 
 ### 1.1 Firmware ownership and repository boundary
@@ -130,7 +156,9 @@ Important: this architecture removes the GitHub manifest from the control path, 
 
 ### 1.2 Current documented firmware line
 
-**Current working firmware baseline: V1.0**
+**Current working firmware source candidate: V1.1**
+
+> V1.1 is the next test candidate produced from the V1.0 physically validated baseline. It is not yet physically validated.
 
 > V1.0 is the new clean project baseline supplied by the user on 2026-09-28. It has not yet been independently compiled or physically validated in this environment.
 
