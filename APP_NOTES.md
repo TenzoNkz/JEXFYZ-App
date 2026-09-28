@@ -539,3 +539,15 @@ Never:
 - Corrected `lib/main.dart` by explicitly importing `package:flutter/rendering.dart` while retaining `scrollCacheExtent: const ScrollCacheExtent.pixels(480)`.
 - This is the minimal import correction required by the official Flutter declaration already verified in `rendering/viewport.dart`.
 - A fresh Build App validation is required; no APK has been delivered until all release checks pass.
+
+## 2026-09-28 — BUILD APP FINAL SUCCESS
+
+- **Build App completed successfully on run #24**: GitHub Actions run `36375464018`.
+- Validation passed end-to-end: App-only security/architecture audit, Flutter dependency installation, `flutter analyze`, Flutter tests, release APK build, production APK signature verification, APK filename preparation, APK artifact upload, and Dart symbol upload.
+- Canonical APK artifact: `JEXFYZ#24.apk`.
+- Artifact size: 52,835,604 bytes.
+- Artifact SHA-256: `e0843c329f37a4b5771ac3ff19474026339afb0f6b2fe1c180f064f841c4f02c`.
+- The release APK was successfully downloaded from the Actions artifact for delivery in the conversation.
+- The temporary push-trigger mechanism used only to execute the explicitly requested Build App was removed afterward.
+- App Build workflow is restored to **manual-only `workflow_dispatch`**.
+- This run proves the App release build/signature pipeline, not physical BLE/firmware/hardware runtime behavior.
