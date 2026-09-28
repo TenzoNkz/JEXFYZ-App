@@ -3365,3 +3365,38 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - ArduinoDroid/Core 3.3.7 compile and physical V1.8 validation are still pending.
 - OTA remains frozen in architecture; this revision is limited to the user-requested result-indicator timing change.
 - Firebase metadata is not promoted to V1.8 from the source version change alone.
+
+
+## 2026-09-28 — V1.8 OTA RESULT LED SPEED ADJUSTMENT
+
+- User explicitly requested the Local OTA and Online OTA result LED indicators to be faster.
+- Functional firmware revision bumped from **V1.7 → V1.8**.
+- Only the OTA **result-indicator timing** was changed:
+  - Online OTA result indicator: **2 seconds → 1 second**.
+  - Local OTA result indicator: **2 seconds → 1 second**.
+  - Each phase is now **250 ms**: ON 250 ms → OFF 250 ms → ON 250 ms → OFF 250 ms.
+- The actual OTA transport and flash path were not changed.
+- Preserved:
+  - BLE/Wi-Fi radio handoff;
+  - Wi-Fi connection flow;
+  - GitHub HTTPS download using `cloudClient.setInsecure()`;
+  - HTTP/stream guard;
+  - `Update.h` flashing;
+  - OTA success/failure recovery;
+  - BLE OTA command sequence;
+  - Local OTA behavior apart from the result LED timing.
+- This is an explicit exception to the previous OTA timing freeze: **only the requested result LED timing was changed**. The underlying OTA mechanism remains frozen.
+- Static validation of repository source `firmware/JEXFYZ-V1.8.ino`:
+  - 3981 source lines;
+  - `ONLINE_OTA_RESULT_INDICATOR_MS = 1000`;
+  - two `elapsed / 250U` phase calculations (Online + Local);
+  - Local result window `elapsed < 1000U`;
+  - no remaining `elapsed / 500U`;
+  - no remaining 2-second Online indicator constant;
+  - `cloudClient.setInsecure()` present;
+  - `GITHUB_ROOT_CA` absent;
+  - `TIME_SYNC` absent;
+  - `useHTTP10(true)` absent;
+  - delimiter balance: braces 491/491, parentheses 1924/1924, brackets 57/57.
+- Physical OTA functionality remains the previously validated baseline. **V1.8 LED timing itself has not yet been physically revalidated**.
+- Firebase metadata is not promoted merely because the source version changed.
