@@ -3187,3 +3187,30 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Static source storage/inspection is complete. **ArduinoDroid + Arduino-ESP32 Core 3.3.7 compilation and physical V1.3 validation are still pending.**
 - Do not treat the presence of V1.3 in the repository as evidence of successful runtime behavior.
 - When the next functional firmware change is made, rename the existing V1.3 source to the next version and patch that same active file; do not create a second active firmware source file.
+
+
+## 2026-09-28 — V1.4 OTA LED INDICATOR ISOLATED FIX
+
+- Active firmware source is now **V1.4** at `firmware/JEXFYZ-V1.4.ino`.
+- The previous active `firmware/JEXFYZ-V1.3.ino` was renamed/replaced by V1.4 and removed, preserving the single-active-source rule.
+- V1.4 is intentionally an **isolated LED-indicator revision**. The radio/BLE lifecycle changes proposed in the latest Gemini answer were **not** applied.
+- V1.4 functional changes:
+  1. `FW_VERSION`: V1.3 → V1.4.
+  2. `ONLINE_OTA_RESULT_INDICATOR_MS`: 1800 ms → 2000 ms.
+  3. Online OTA result indicator phases: 500 ms ON / 500 ms OFF / 500 ms ON / 500 ms OFF.
+  4. Existing event-driven phase-change rendering is preserved; the LED is rendered only when the phase changes.
+  5. `bleLedResumePending` recovery remains `true`.
+- No changes were made in V1.4 to:
+  - `BLEDevice::deinit(false)` lifecycle behavior;
+  - BLE server/characteristic pointer lifetime;
+  - Wi-Fi radio handoff;
+  - Wi-Fi retry state machine;
+  - HTTP stream guard;
+  - Local OTA flash lifecycle;
+  - thermal/safety logic;
+  - BLE protocol/UUIDs or queue architecture.
+- Rationale for scope isolation: the latest Gemini proposal replaces BLE deinitialization with `stopAdvertising()` and retains BLE pointers after deinitialization. Those lifecycle assumptions are not independently verified and are therefore excluded from this revision.
+- The requested LED behavior is now deterministic by source: **2 seconds total, ON-OFF-ON-OFF at 500 ms boundaries**.
+- Important terminology: V1.4 is **not** a complete “zero-delay/full-millis” radio rewrite. No new blocking radio-loop conversion was applied in this isolated revision.
+- V1.4 still requires **ArduinoDroid + Arduino-ESP32 Core 3.3.7 compilation and physical validation**.
+- App source was not changed and no App Build was triggered by this firmware-only revision.
