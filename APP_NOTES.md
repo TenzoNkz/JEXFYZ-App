@@ -576,3 +576,16 @@ Never:
 - Reason: the production APK is distributed outside Google Play, so making this public metadata read depend on Play Integrity/App Check can block OTA discovery even when RTDB rules allow `.read = true`.
 - Firebase App Check remains initialized for the App's Firebase security layer; it is no longer a prerequisite for reading the public firmware metadata endpoint.
 - No App Build was run for this source fix.
+
+## 2026-09-28 — BUILD APP #26 FINAL SUCCESS
+
+- Explicit **Build App** completed successfully on GitHub Actions run #26 (`36376406770`).
+- Source revision built: `c56d4d52210faf68fe379b46db358ed3152e913e`, containing the latest Firebase public RTDB metadata read fixes documented immediately before the build.
+- Full pipeline passed: security/architecture audit, dependency installation, `flutter analyze`, Flutter tests, release APK build, production APK signature verification, APK naming, APK artifact upload, and Dart symbol upload.
+- Canonical APK artifact: `JEXFYZ#26.apk`.
+- Artifact size: 52,835,604 bytes.
+- Artifact SHA-256: `1a2282f0e9e6acf13cbb29f2d3403554ea53a3c4d33adb0b187bd553ddca8da1`.
+- The APK artifact was downloaded and verified as an Android APK before conversation delivery.
+- The temporary push trigger used only for this explicit Build App request was removed afterward.
+- App Build workflow is restored to **manual-only `workflow_dispatch`**.
+- This CI result validates the App release pipeline and production signing; it does not validate physical BLE/firmware/hardware runtime.
