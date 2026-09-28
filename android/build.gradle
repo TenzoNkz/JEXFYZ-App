@@ -1,3 +1,7 @@
+// AI BUILD MEMORY:
+// Root Gradle configuration. Keep application-specific details in android/app/build.gradle.
+
+// Shared Maven/Google repositories.
 allprojects {
     repositories {
         google()
@@ -5,6 +9,7 @@ allprojects {
     }
 }
 
+// Keep generated Android build output under Flutter's build directory.
 rootProject.buildDir = "../build"
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
@@ -13,6 +18,7 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
+// Remove generated Gradle/Android output only.
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
