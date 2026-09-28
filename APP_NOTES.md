@@ -686,3 +686,32 @@ Never:
 - Mode navigation stops at mode 1 and mode 7 instead of sending unsupported values.
 - No BLE UUID/protocol, OTA transport, reconnect monitor, Firebase metadata, Android lifecycle, or App build workflow changes.
 - **App Build was not triggered**; the App workflow remains manual-only.
+
+
+## 2026-09-28 — APP BUILD #28 SUCCESS / APP-ONLY REPOSITORY BOUNDARY RESTORED
+
+- User explicitly requested **Build App**.
+- Temporary `push` trigger was added only to start the manual-requested validation run; the App Build workflow was restored to **manual-only (`workflow_dispatch`)** after completion.
+- Run **#27** (`36399794582`) stopped at the App security/architecture audit because the repository still contained `firmware/JEXFYZ-V2.0.ino`.
+- The audit failure was valid under the App-only repository boundary: firmware source/BIN/build artifacts must remain external to the App repository.
+- The superseded in-repo firmware source file `firmware/JEXFYZ-V2.0.ino` was removed. No Flutter/Dart/Android/App OTA runtime code was changed for this cleanup.
+- Run **#28** (`36399990035`) was then executed from source revision `5d62b5ac6288004902481f83bc37497a93a43451` and passed the complete pipeline:
+  - App security/architecture audit ✅
+  - dependency installation ✅
+  - `flutter analyze` ✅
+  - Flutter tests ✅
+  - obfuscated release APK build ✅
+  - production APK signature verification ✅
+  - APK artifact preparation/upload ✅
+  - Dart symbols upload ✅
+- Artifact: **`JEXFYZ#28.apk`**
+- Artifact size: **52,851,988 bytes**
+- Artifact SHA-256: **`18222aed26555a003fe6fe4dcb7e3d1706a0a71386226a5c30fa468b0b8b6e83`**
+- CI signature verification confirmed:
+  - APK Signature Scheme v2 = true
+  - Certificate DN = `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`
+  - Certificate SHA-256 = `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`
+- The downloaded artifact was independently identified as a valid Android APK and its SHA-256 matched the GitHub artifact digest exactly.
+- Workflow restore commit: `5f9efac3e34bf029f80598b57c6151cf67ea3b90`.
+- **Current App Build workflow state: manual-only (`workflow_dispatch`); no automatic push trigger left enabled.**
+- Build validation proves the App release pipeline and signing identity; it does not prove BLE, OTA, or physical hardware runtime.
