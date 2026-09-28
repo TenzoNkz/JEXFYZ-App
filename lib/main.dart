@@ -3827,7 +3827,8 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
       final validUrl = parsedUrl != null &&
           parsedUrl.scheme == 'https' &&
           parsedUrl.host == 'raw.githubusercontent.com' &&
-          parsedUrl.path.startsWith('/TenzoNkz/JEXFYZ-Firmware/');
+          parsedUrl.path.startsWith('/TenzoNkz/JEXFYZ-Firmware/') &&
+          parsedUrl.path.toLowerCase().endsWith('.bin');
 
       if (parseFirmwareVersion(version) == null || !validUrl) {
         throw StateError('Invalid Firebase firmware metadata');
