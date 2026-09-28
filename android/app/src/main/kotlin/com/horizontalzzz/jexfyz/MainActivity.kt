@@ -1,5 +1,9 @@
 package com.horizontalzzz.jexfyz
 
+// AI ANDROID MEMORY:
+// Native bridge for Flutter. MethodChannel names are contracts with lib/main.dart.
+// BLE/GATT ownership stays in flutter_blue_plus; this class must not create a second BLE client.
+
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -13,11 +17,15 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
+// Native host for the JE Cooler Flutter application.
 class MainActivity : FlutterActivity() {
 
+    // Battery/location/settings/background-service bridge.
     private val CHANNEL = "je_x_fyz/battery_temp"
+    // Production release-integrity bridge.
     private val SECURITY_CHANNEL = "je_x_fyz/security"
 
+    // Register every MethodChannel operation consumed by Dart.
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
@@ -69,6 +77,7 @@ class MainActivity : FlutterActivity() {
         }
     }
 
+    // Start foreground support for an already-active BLE session.
     private fun startBackgroundService(): Boolean {
         return try {
             val intent = Intent(this, JeForegroundService::class.java)
@@ -83,6 +92,7 @@ class MainActivity : FlutterActivity() {
         }
     }
 
+    // Stop foreground support after BLE teardown.
     private fun stopBackgroundService(): Boolean {
         return try {
             stopService(Intent(this, JeForegroundService::class.java))
@@ -91,6 +101,7 @@ class MainActivity : FlutterActivity() {
         }
     }
 
+    // Compare the installed release certificate with the configured official certificate.
     private fun isOfficialBuild(): Boolean {
         // Local debug builds are intentionally allowed for development.
         if (BuildConfig.DEBUG) {
@@ -131,6 +142,7 @@ class MainActivity : FlutterActivity() {
         }
     }
 
+    // Android exposes battery temperature in tenths of a degree Celsius.
     private fun readBatteryTemperature(): Double {
         return try {
             val filter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
@@ -157,6 +169,7 @@ class MainActivity : FlutterActivity() {
         }
     }
 
+    // Legacy Android BLE scanning compatibility check.
     private fun isLocationServiceEnabled(): Boolean {
         return try {
             val manager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -166,6 +179,7 @@ class MainActivity : FlutterActivity() {
         }
     }
 
+    // Launch Android Location settings.
     private fun openLocationSettings(): Boolean {
         return try {
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
@@ -177,6 +191,7 @@ class MainActivity : FlutterActivity() {
         }
     }
 
+    // Launch Android Bluetooth settings.
     private fun openBluetoothSettings(): Boolean {
         return try {
             val intent = Intent(Settings.ACTION_BLUETOOTH_SETTINGS)
