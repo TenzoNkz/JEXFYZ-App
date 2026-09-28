@@ -2423,3 +2423,14 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Repository commit: `b3ba7856c8db4e95f29b0dca5a2f0470c17d2238`.
 - New V1.7 source blob SHA: `67aa36df79f2bcedd865a16b120ff6db72650ee9`.
 - Physical ArduinoDroid recompilation after this repair is **not yet verified**; do not claim compile success until the user provides the new final build result.
+
+### ArduinoDroid compile retry — second prototype-generation failure
+
+- The user's next ArduinoDroid compile reached the generated source as `JEXFYZ.cpp` and failed with a single reported prototype-generation error: `JEXFYZ.ino:76:68: error: 'OnlineOtaIndicatorNext' has not been declared`. fileciteturn265file0L10489-L10491
+- The previous forward-declaration repair covered `Voltage`, `LedMode`, and `VoltageRequestSource`, but it did not cover the three OTA state enums because they are declared later in the sketch.
+- Minimal repair applied on `main`: added forward declarations for `OtaState`, `OnlineOtaFlow`, and `OnlineOtaIndicatorNext` alongside the existing enum forward declarations immediately after the includes.
+- No OTA engine/state-machine behavior, radio lifecycle behavior, BLE protocol, GPIO mapping, safety behavior, or Update transport was changed.
+- Repository commit: `d7568c581d6ce3a0437a39c08ede72874a781a1b`.
+- New V1.7 source blob SHA: `7b16727475aa4bc8486ba69b2db63c19ad749ee9`.
+- Gold Master protected segments were rechecked after the change and remain exact-match.
+- ArduinoDroid recompilation after this second repair is **not yet verified**.
