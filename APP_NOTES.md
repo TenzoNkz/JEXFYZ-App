@@ -477,3 +477,12 @@ Never:
 - Future App/firmware diagnosis should prioritize source inspection, official API verification, build/compiler output, automated/static checks, and direct physical symptoms/screenshots supplied by the user.
 - Do not make Serial Monitor capture a prerequisite for investigating OTA or runtime failures.
 
+
+## 2026-09-28 — BUILD ATTEMPT / AUDIT FIX
+
+- Requested **Build App** was executed using the App Build workflow.
+- Run #13 initially failed during the App-only security/architecture audit before dependency analysis/build.
+- Exact failure: audit required stale identifier `firmwareManifestUrl`.
+- Current App OTA implementation uses `firmwareMetadataUrl` for the Firebase Realtime Database endpoint; GitHub is binary-only.
+- Corrected `.github/workflows/app-build.yml` to require `firmwareMetadataUrl` instead of the obsolete `firmwareManifestUrl` token.
+- A new App Build is triggered by the corrected workflow commit and must be validated through release packaging and production APK signature verification before delivery.
