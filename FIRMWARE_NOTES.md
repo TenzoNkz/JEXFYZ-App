@@ -4,6 +4,17 @@
 > This file intentionally lives in the App repository as documentation, even though firmware implementation source and production build files are maintained separately.
 > **Reviewed:** 2026-09-28.
 
+## 2026-09-28 — V2.0 REMOVE BLOCKING ARDUINO DELAY
+
+- Functional firmware revision bumped from **V1.9 → V2.0**.
+- Removed the remaining explicit Arduino `delay(10)` from the Online OTA stream retry path.
+- The retry now uses the existing cooperative `yield()` path instead of an Arduino blocking delay; OTA transport, HTTP handling, stream validation, `Update.h` flashing, and recovery behavior are otherwise unchanged.
+- Preserved the existing short cooperative BLE/Wi-Fi shutdown waits that use `while (...) { yield(); }`; these were not replaced with busy loops because `yield()` gives ESP32 system tasks an opportunity to run during the required radio transition window.
+- No `delay()`, `delayMicroseconds()`, or `vTaskDelay()` calls remain in the firmware source.
+- No BLE UUID/P1 protocol, GPIO mapping, safety contract, Firebase metadata, GitHub URL, OTA transport architecture, or OTA result LED timing was changed.
+- Static validation for V2.0: source inspection, blocking-delay scan, and delimiter checks; ArduinoDroid/Core 3.3.7 compile and physical V2.0 validation remain pending.
+
+
 ## 2026-09-28 — V1.9 BOOT AP NORMAL RUNTIME BEHAVIOR
 
 - Functional firmware revision bumped from **V1.8 → V1.9**.
@@ -203,9 +214,9 @@ Important: this architecture removes the GitHub manifest from the control path, 
 
 ### 1.2 Current documented firmware line
 
-**Current working firmware source candidate: V1.9**
+**Current working firmware source candidate: V2.0**
 
-> V1.9 is the current boot-runtime behavior candidate. It is not yet compiled or physically validated.
+> V2.0 is the current timing-cleanup candidate. It is not yet compiled or physically validated.
 
 > V1.1 is the next test candidate produced from the V1.0 physically validated baseline. It is not yet physically validated.
 
