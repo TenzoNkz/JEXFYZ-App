@@ -179,7 +179,9 @@ The exact final telemetry semantics are governed by the firmware P1 implementati
 
 Firebase Realtime Database is now the firmware release metadata/control plane:
 
-`https://je-x-fyz-default-rtdb.asia-southeast1.firebasedatabase.app/firmware/current.json`
+Current node: `/firmware_update`
+
+`https://je-x-fyz-default-rtdb.asia-southeast1.firebasedatabase.app/firmware_update.json`
 
 Expected document shape:
 ```json
@@ -454,7 +456,17 @@ Never:
 ## 2026-09-28 — FIREBASE OTA CONTROL PLANE
 
 - Changed App OTA discovery from the GitHub `manifest.json` to Firebase Realtime Database.
-- Firebase path: `/firmware/current.json` under project `je-x-fyz`.
+- Firebase path: `/firmware_update` under project `je-x-fyz`.
 - Firebase stores only release metadata: `version` and the approved GitHub `.bin` URL.
 - GitHub is binary-only for the Online OTA path; no GitHub manifest is required by the App.
 - No App Build was run; source-only change.
+
+## 2026-09-28 — FINAL FIRMWARE UPDATE NODE
+
+- Firebase RTDB node is now `/firmware_update`.
+- REST endpoint used by the App: `https://je-x-fyz-default-rtdb.asia-southeast1.firebasedatabase.app/firmware_update.json`.
+- Expected fields: `version` and `url`.
+- GitHub binary filename is fixed to `JEXFYZ.cpp.bin` on the `main` branch.
+- App URL validation now accepts only that exact GitHub raw BIN path.
+- GitHub `manifest.json` is not part of the OTA discovery path.
+- No App Build was run for this change.
