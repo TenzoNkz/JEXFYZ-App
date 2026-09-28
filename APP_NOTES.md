@@ -558,3 +558,13 @@ Never:
 - The installed APK must be rebuilt after source changes; an existing older APK does not inherit the new Firebase endpoint.
 - Firebase RTDB must allow read access to `/firmware_update` for the direct REST metadata request used by the App.
 - Recommended rule: `firmware_update/.read = true`, `firmware_update/.write = false`.
+## 2026-09-28 — FIREBASE RTDB READ FIX
+
+- App Online OTA metadata reader remains REST-based at `/firmware_update.json`.
+- The REST request now explicitly attaches a fresh Firebase App Check token through the official `FirebaseAppCheck.getToken(true)` API when available, using the `X-Firebase-AppCheck` header.
+- HTTP 401/403 responses are now surfaced as a Firebase read-permission/App Check rejection internally instead of being collapsed into an unexplained generic failure.
+- The expected RTDB data remains exactly:
+  - `firmware_update.version = V1.0`
+  - `firmware_update.url = https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ.cpp.bin`
+- No App Build was run for this source fix.
+
