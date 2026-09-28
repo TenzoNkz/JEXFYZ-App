@@ -577,6 +577,17 @@ Never:
 - Firebase App Check remains initialized for the App's Firebase security layer; it is no longer a prerequisite for reading the public firmware metadata endpoint.
 - No App Build was run for this source fix.
 
+## 2026-09-28 — BLE DISCONNECT REDISCOVERY FIX
+
+- App BLE lifecycle fix applied without changing the BLE UUID/P1 protocol or firmware advertising contract.
+- Root cause found in App behavior: after a normal BLE disconnect, the App cleared the connected/session UI state but did not automatically start a new BLE scan. The firmware already restarts BLE advertising on disconnect.
+- Added a bounded **disconnect rediscovery burst**: after a normal disconnect, the App starts BLE discovery immediately and retries every 3 seconds for up to 10 attempts (approximately 30 seconds).
+- Each discovery attempt uses the existing FlutterBluePlus scan path and the existing JE X FYZ name/service matching.
+- The rediscovery burst is cancelled when a new connection starts.
+- The rediscovery burst is intentionally suppressed while the existing Online OTA reconnect monitor is active, preventing two independent scanners from competing during OTA recovery.
+- No App UI redesign, BLE UUID/protocol change, firmware change, Firebase change, OTA transport change, or release build was performed.
+- Validation completed here: source inspection and static structure review of the changed lifecycle paths. A fresh App Build remains required for compile/analyze/release verification because App Build is manual-only.
+
 ## 2026-09-28 — BUILD APP #26 FINAL SUCCESS
 
 - Explicit **Build App** completed successfully on GitHub Actions run #26 (`36376406770`).
