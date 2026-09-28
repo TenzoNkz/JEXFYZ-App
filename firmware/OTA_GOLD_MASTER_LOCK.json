@@ -1,7 +1,7 @@
 {
   "format_version": 1,
   "status": "CANDIDATE_NOT_PHYSICALLY_VERIFIED",
-  "created_from_firmware": "V1.5",
+  "created_from_firmware": "V1.6",
   "source_path": "firmware/JEXFYZ.ino",
   "rule": "Protected OTA blocks are exact-match. Any byte-level mismatch is a guard failure.",
   "segments": [
@@ -73,7 +73,14 @@
     "const int bytesRead = stream->read(buffer, toRead);",
     "BATTERY_HYSTERESIS_C = 0.8f",
     "static constexpr uint32_t BOOT_AP_HARD_LIMIT_MS       = 60000;",
-    "static void lockBleRxQueue()"
+    "std::atomic<size_t> bleRxHead{0};",
+    "std::atomic<size_t> bleRxTail{0};",
+    "bleRxHead.load(std::memory_order_acquire)",
+    "bleRxTail.load(std::memory_order_acquire)",
+    "bleRxTail.store(nextTail, std::memory_order_release)",
+    "bleRxHead.store(nextHead, std::memory_order_release)",
+    "bleServer->setCallbacks(&serverCallbacks);",
+    "rxCharacteristic->setCallbacks(&rxCallbacks);"
   ],
   "forbidden_text": [
     "setInsecure()",
@@ -93,6 +100,13 @@
     "OtaHttpFlashStream",
     "downloadOnlineOtaResumable",
     "parseContentRangeHeader",
-    "configureOnlineOtaRangeHttp"
+    "configureOnlineOtaRangeHttp",
+    "std::atomic_flag bleRxQueueLock = ATOMIC_FLAG_INIT;",
+    "bleRxCount",
+    "bleRxQueueLock",
+    "lockBleRxQueue",
+    "unlockBleRxQueue",
+    "new ServerCallbacks()",
+    "new RxCallbacks()"
   ]
 }
