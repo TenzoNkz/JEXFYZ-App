@@ -504,3 +504,12 @@ Never:
 - Minimal source fix: replaced `scrollCacheExtent: const ScrollCacheExtent.pixels(480)` with the supported `cacheExtent: 480.0` ListView property.
 - No BLE, OTA, protocol, or UI behavior was intentionally changed beyond preserving the requested 480px scroll cache.
 - A new App Build must now pass analyze, Flutter tests, release APK packaging, production signature verification, and artifact upload.
+
+## 2026-09-28 — BUILD ATTEMPT #16 / DART API CORRECTION
+
+- App Build run #16 passed the security/architecture audit and dependency installation but failed at `flutter analyze`.
+- Exact diagnostic: `cacheExtent` is deprecated in the pinned Flutter 3.47.2 toolchain; analyzer explicitly reported `Use scrollCacheExtent instead` at `lib/main.dart:2477:7`.
+- Corrected the previous minimal fix to the actual supported API: `scrollCacheExtent: 480.0`.
+- The original `ScrollCacheExtent.pixels(480)` form was invalid because the named type does not exist; the property itself accepts the numeric extent.
+- No intended UI behavior change: the scroll cache remains 480 logical pixels.
+- A new App Build is required to validate analyze, tests, release APK packaging, signing, and artifact upload.
