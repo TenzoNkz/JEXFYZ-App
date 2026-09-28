@@ -16,7 +16,7 @@
 - Repository scope: **App-only**
 - Firmware implementation source (.ino), firmware production BIN, firmware CI/build output, and firmware working files are maintained outside this repository by the user.
 - **FIRMWARE_NOTES.md is intentionally kept in this repository as documentation only.**
-- The App may keep the external firmware manifest URL because that URL is an App OTA integration dependency, not firmware source storage.
+- The App may keep the Firebase firmware metadata URL because it is an App OTA integration dependency, not firmware source storage.
 
 ### 1.2 Repository boundary — do not break this rule
 
@@ -175,11 +175,23 @@ The exact final telemetry semantics are governed by the firmware P1 implementati
 
 ## 5. ONLINE FIRMWARE OTA INTEGRATION
 
-### 5.1 Manifest source
+### 5.1 Firmware metadata source
 
-`https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/manifest.json`
+Firebase Realtime Database is now the firmware release metadata/control plane:
 
-The App treats this as an external integration dependency.
+`https://je-x-fyz-default-rtdb.asia-southeast1.firebasedatabase.app/firmware/current.json`
+
+Expected document shape:
+```json
+{
+  "version": "V1.0",
+  "url": "https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ-V1.0.bin"
+}
+```
+
+The App validates the version and restricts the returned binary URL to the JE X FYZ firmware repository on `raw.githubusercontent.com`.
+
+GitHub is now binary-only for this OTA path; the GitHub `manifest.json` is no longer part of the App update-discovery path.
 
 Firmware source is **not** embedded in the App repository.
 
@@ -187,10 +199,12 @@ Firmware source is **not** embedded in the App repository.
 
 The App validates:
 - firmware version shape: `V<major>.<minor>`
-- HTTPS transport
+- Firebase metadata response is JSON/object-shaped
+- HTTPS transport for the returned BIN URL
 - `raw.githubusercontent.com` host
 - repository path under `/TenzoNkz/JEXFYZ-Firmware/`
-- valid firmware URL/path according to the App existing allowlist
+- returned file is a `.bin`
+
 
 The App accepts any valid **different** firmware version as an OTA target, including a rollback/downgrade for controlled testing.
 
@@ -435,3 +449,11 @@ Never:
 - remove `FIRMWARE_NOTES.md`
 - treat an unrun build as a successful build
 - treat App tests as proof of physical hardware behavior
+
+## 2026-09-28 — FIREBASE OTA CONTROL PLANE
+
+- Changed App OTA discovery from the GitHub `manifest.json` to Firebase Realtime Database.
+- Firebase path: `/firmware/current.json` under project `je-x-fyz`.
+- Firebase stores only release metadata: `version` and the approved GitHub `.bin` URL.
+- GitHub is binary-only for the Online OTA path; no GitHub manifest is required by the App.
+- No App Build was run; source-only change.
