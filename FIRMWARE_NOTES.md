@@ -3222,3 +3222,20 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Therefore **no new root cause is declared from this result alone**.
 - The V1.4 LED timing change does not by itself prove or disprove the underlying Online OTA radio/network failure; the next diagnostic must identify the last observable OTA stage before changing radio code again.
 - Current source remains V1.4 and no additional firmware patch is applied from this test report.
+
+
+## 2026-09-28 — V1.4 LATEST PHYSICAL EVIDENCE / ONLINE OTA STALL
+
+- User supplied a physical App screenshot after attempting Online OTA with V1.4.
+- Visible App status at the captured moment: **`OTA in progress • ONLINE • Wi-Fi connect • 0%`**.
+- Normal telemetry values remained visible in the UI; the header Bluetooth control was still rendered in its connected state at capture time.
+- Important source-order finding: V1.4 sets `ONLINE_WIFI_CONNECT` **before** `stopBleRadio(false)`, Wi-Fi shutdown/settle, and `WiFi.begin()`. Therefore the screenshot proves only the last status published to the App; it does **not** prove that `WiFi.begin()` was reached successfully.
+- The official Arduino-ESP32 Core 3.3.7 `BLEDevice::deinit(bool release_memory)` implementation was independently checked. It:
+  - stops advertising/scanning;
+  - deletes BLE advertising/scan/server/client objects;
+  - clears the connected-client map;
+  - disables and deinitializes the BLE host/controller;
+  - releases BTDM memory only when `release_memory=true`.
+- Consequently, the current V1.4 use of `BLEDevice::deinit(false)` is a real BLE-stack/controller teardown, not merely `stopAdvertising()`. The previous Gemini wording that `deinit(false)` leaves BLE objects/pointers available for reuse is inconsistent with the official 3.3.7 source.
+- This materially changes the diagnostic focus: before changing BLE teardown again, isolate whether V1.4 stalls/crashes during BLE deinit, Wi-Fi shutdown/settling, or the actual `WiFi.begin()` call.
+- No firmware source change was made from this screenshot alone.
