@@ -1,0 +1,98 @@
+name: Firmware Build
+
+on:
+  push:
+    paths:
+      - "firmware/JEXFYZ.ino"
+      - "firmware/OTA_GOLD_MASTER_LOCK.json"
+      - ".github/workflows/firmware-build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: jexfyz-firmware-build
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Arduino CLI
+        uses: arduino/setup-arduino-cli@v2
+
+      - name: Configure ESP32 package index
+        shell: bash
+        run: |
+          set -euo pipefail
+          arduino-cli config init --overwrite
+          arduino-cli core update-index \
+            --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
+
+      - name: Install pinned Arduino-ESP32 Core and libraries
+        shell: bash
+        run: |
+          set -euo pipefail
+          arduino-cli core install esp32:esp32@3.3.7
+          arduino-cli lib install "Adafruit NeoPixel@1.15.5"
+          arduino-cli lib install "OneButton@2.6.2"
+          arduino-cli core list
+          arduino-cli lib list
+
+      - name: Verify project OTA guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/ota_guard.py
+
+      - name: Verify target board
+        shell: bash
+        run: |
+          set -euo pipefail
+          arduino-cli board details --fqbn esp32:esp32:esp32c3
+
+      - name: Compile JE X FYZ firmware
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf build/firmware
+          arduino-cli compile \
+            --fqbn esp32:esp32:esp32c3 \
+            --build-property build.partitions=no_fs \
+            --build-property upload.maximum_size=2031616 \
+            --output-dir build/firmware \
+            firmware/JEXFYZ.ino
+
+          BIN="build/firmware/JEXFYZ.ino.bin"
+          test -s "$BIN"
+          sha256sum "$BIN"
+          ls -lh "$BIN"
+
+      - name: Verify expected firmware metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -F 'FW_VERSION[] = "V1.6";' firmware/JEXFYZ.ino
+          grep -F 'PIN_PELTIER = 6' firmware/JEXFYZ.ino
+          grep -F 'PIN_FAN     = 5' firmware/JEXFYZ.ino
+          grep -F 'std::atomic<size_t> bleRxHead{0};' firmware/JEXFYZ.ino
+          grep -F 'std::atomic<size_t> bleRxTail{0};' firmware/JEXFYZ.ino
+          ! grep -F 'std::atomic_flag' firmware/JEXFYZ.ino
+          ! grep -F 'bleRxCount' firmware/JEXFYZ.ino
+          ! grep -F 'new ServerCallbacks()' firmware/JEXFYZ.ino
+          ! grep -F 'new RxCallbacks()' firmware/JEXFYZ.ino
+
+      - name: Upload firmware BIN
+        uses: actions/upload-artifact@v7
+        with:
+          name: JEXFYZ-V1.6-firmware
+          path: build/firmware/JEXFYZ.ino.bin
+          archive: false
+          if-no-files-found: error
+          compression-level: 0
