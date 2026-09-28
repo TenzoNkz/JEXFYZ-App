@@ -3275,3 +3275,18 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Firebase firmware metadata was not changed or promoted.
 - This is the authoritative V1.5 source supplied by Gemini for the next ArduinoDroid/Core 3.3.7 compile and physical test.
 - Any technical concerns discovered during analysis are recorded as discussion notes only and are **not silently patched** unless the user explicitly provides a new patch or requests a change.
+
+
+## 2026-09-28 — V1.6 GEMINI HTTPS GITHUB PATCH APPLIED
+
+- User explicitly instructed execution of the Gemini V1.6 patch.
+- Active source is now `firmware/JEXFYZ-V1.6.ino`; V1.5 was promoted/removed in accordance with the single-active-source rule.
+- Applied exactly the requested three functional changes to the full V1.5 source:
+  1. `FW_VERSION`: V1.5 → V1.6.
+  2. Replaced the existing `GITHUB_ROOT_CA` PEM bundle with the complete certificate block supplied in the Gemini instruction.
+  3. Removed `onlineHttpClient.useHTTP10(true);` so HTTPClient uses its default HTTP/1.1 behavior.
+- No App/Dart source, BLE P1 protocol/UUID, Firebase metadata, Local OTA, safety, thermal, or HTTP stream guard changes were made.
+- The V1.6 source currently contains no `useHTTP10(true)` call and contains the supplied additional root-certificate block.
+- This is the user's requested Gemini patch applied directly; no selective correction or reinterpretation was made.
+- **Important status:** this source-level patch has not yet been compiled or physically validated. Do not treat the new certificate block or HTTP/1.1 change as proven to fix GitHub connection failures until the ArduinoDroid/Core 3.3.7 physical test.
+- Firebase firmware metadata remains unchanged and must not be promoted to V1.6 without a deliberately compiled/published V1.6 BIN.
