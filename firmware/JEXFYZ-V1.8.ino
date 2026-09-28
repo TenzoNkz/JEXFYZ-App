@@ -848,7 +848,7 @@ static bool processOnlineOtaResultIndicator() {
 
   const uint32_t elapsed = millis() - onlineResultIndicatorStartedAt;
   if (elapsed < ONLINE_OTA_RESULT_INDICATOR_MS) {
-    // FIX: Fase dihitung tiap 500ms secara presisi (ON, OFF, ON, OFF)
+    // FIX: Fase dihitung tiap 250ms secara presisi (ON, OFF, ON, OFF)
     const uint32_t phase = elapsed / 250U;
     if (phase != onlineResultIndicatorLastPhase) {
       onlineResultIndicatorLastPhase = phase;
