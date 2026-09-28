@@ -3134,9 +3134,8 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 ## 2026-09-28 — V1.2 EVENT-DRIVEN LED OTA PATCH
 
 - Applied the approved functional patch from V1.1 to **V1.2**.
-- Source archived in the App repository as:
-  - `firmware/JEXFYZ-V1.1-FINAL.ino` (previous source snapshot)
-  - `firmware/JEXFYZ-V1.2.ino` (patched source)
+- The superseded V1.1 source file `firmware/JEXFYZ-V1.1-FINAL.ino` was removed from the repository after V1.2 was archived.
+- The retained patched source is `firmware/JEXFYZ-V1.2.ino`.
 - Functional change is intentionally limited to the LED renderer ownership inside `processLeds()` plus the firmware version constant.
 - Added a function-local `static bool ledsForcedOff` latch so repeated OTA/RGB-OFF branches do not call `stopUserLedOutput()` or `showAll(0x000000, 0)` on every main-loop iteration.
 - The latch is cleared when Local/Online result indicators, protection blink, voltage indication, or normal user LED rendering needs to regain LED ownership.
