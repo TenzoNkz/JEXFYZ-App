@@ -3262,3 +3262,16 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - No App source change and no App Build were made.
 - Firebase firmware metadata was not promoted to V1.5; no V1.5 BIN publication is implied.
 - ArduinoDroid + Arduino-ESP32 Core 3.3.7 compilation and physical validation are pending.
+
+
+## 2026-09-28 — V1.5 GEMINI FULL FILE APPLIED
+
+- User explicitly instructed: **apply the complete firmware file supplied by Gemini**.
+- The uploaded source `Gemini V1.5.txt` was applied as the complete replacement content for `firmware/JEXFYZ-V1.5.ino`.
+- This action intentionally did **not** perform selective reconciliation, optimization, correction, or substitution against the previous repository V1.5 source.
+- The repository V1.5 source now contains **4081 source lines** after applying the uploaded Gemini file through the file-retrieval path.
+- Active firmware directory remains single-source: `firmware/JEXFYZ-V1.5.ino`.
+- No App/Dart source was changed and no App Build was triggered.
+- Firebase firmware metadata was not changed or promoted.
+- This is the authoritative V1.5 source supplied by Gemini for the next ArduinoDroid/Core 3.3.7 compile and physical test.
+- Any technical concerns discovered during analysis are recorded as discussion notes only and are **not silently patched** unless the user explicitly provides a new patch or requests a change.
