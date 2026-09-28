@@ -3033,3 +3033,9 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Firmware publication commit: `a05b07cc86f8462a4907d5efebe7359dac55c1f1`.
 - Publication verification: repository root contains exactly `JEXFYZ-V1.7.bin` and `manifest.json`; manifest version and URL match V1.7.
 - This publication records the user's ArduinoDroid binary artifact. Physical V1.7 runtime/Online OTA success is **not** implied by the rename/publication alone.
+## 2026-09-28 — FIREBASE METADATA ACCESS NOTE
+
+- Online OTA release metadata is supplied to the firmware by the App; the firmware itself does not query Firebase.
+- Firebase RTDB node is `/firmware_update`; GitHub hosts only `JEXFYZ.cpp.bin`.
+- App-side Firebase REST reads now attach an App Check token when available and report permission failures explicitly.
+
