@@ -32,6 +32,7 @@
 - The Online download path used a fragile immediate `stream->peek()` magic-byte check immediately after `HTTPClient::GET()`. This can reject a valid HTTP body before the first byte is actually available from the stream. The check is now moved to the first real body read.
 - The Online OTA firmware-side URL validator previously accepted any HTTPS URL. It is now restricted to the JE X FYZ GitHub raw repository and `.bin` files.
 - The Online download remains deliberately streamed into the inactive OTA partition with fixed RAM usage; no firmware-sized RAM buffer or Range/resume transport was introduced.
+- **Additional high-value root cause:** Online OTA previously called `stopBleRadio(false)`, which intentionally retained Bluetooth memory/resources while the ESP32-C3 then allocated Wi-Fi/TLS/HTTP/OTA resources. Local OTA starts without BLE and therefore did not exercise this contention. V1.0 now calls `stopBleRadio(true)` at the Online OTA radio boundary so Bluetooth resources are released before Wi-Fi/TLS allocation.
 - Current source still cannot prove the exact historical failure cause without the device's captured `OTA_STAGE`, `OTA_ERROR_CODE`, `OTA_ERROR`, and Serial output. The new diagnostics are intended to make the next failure attributable to a specific stage rather than guessed.
 
 ### New release-discovery architecture
