@@ -740,3 +740,18 @@ Never:
 - During the requested Build App window, consecutive repository commits caused residual push-triggered runs #29 and #30 to be cancelled while run #31 validated the latest source. The workflow has since been restored to manual-only.
 - **Current App Build workflow state: manual-only (`workflow_dispatch`) with no automatic push trigger.**
 - CI validation proves the App build/signing pipeline; it does not prove BLE, OTA, or physical hardware runtime.
+
+
+## 2026-09-28 — LED PALETTE + BRIGHTNESS UI UPDATE
+
+- App LED color selection is now a **48-color touch palette (8 × 6)**.
+- Manual HEX color entry was removed from the App.
+- Voltage color selectors for **5V / 9V / 12V** were removed from the App.
+- **Reset Colors** was removed from the App.
+- Firmware-owned voltage indicator colors remain unchanged.
+- Palette selection applies only to LED modes that use the user RGB color. **Rainbow (Mode 7) keeps its own firmware hue cycle and disables the palette.**
+- Brightness UI is now **1–100%** with **99 divisions**, allowing every 1% step.
+- LED Power OFF remains the true OFF control; brightness UI no longer exposes 0%.
+- Brightness uses the existing firmware BRIGHTNESS 1–100 interface; the firmware maps that user percentage to its hardware 0–255 scale.
+- BLE protocol/UUIDs, OTA, reconnect rediscovery, and firmware source were not changed.
+- App Build was **not triggered**; workflow remains manual-only.
