@@ -715,3 +715,28 @@ Never:
 - Workflow restore commit: `5f9efac3e34bf029f80598b57c6151cf67ea3b90`.
 - **Current App Build workflow state: manual-only (`workflow_dispatch`); no automatic push trigger left enabled.**
 - Build validation proves the App release pipeline and signing identity; it does not prove BLE, OTA, or physical hardware runtime.
+
+
+## 2026-09-28 — APP BUILD #31 SUCCESS / LATEST SOURCE DELIVERY
+
+- **Run #31** (`36400379692`) is the latest successful App Build and supersedes Build #28 as the delivery build because later App repository changes were committed after Run #28 started.
+- Run #31 built source revision `15e90fb9ff27da01dd4a21b9cb67b00e482d56ed`, which includes the latest App LED 7-mode alignment work present in the repository at that time.
+- Complete validation passed:
+  - App security/architecture audit ✅
+  - dependency installation ✅
+  - `flutter analyze` ✅
+  - Flutter tests ✅
+  - obfuscated release APK build ✅
+  - production APK signature verification ✅
+  - APK artifact preparation/upload ✅
+  - Dart symbols upload ✅
+- Artifact: **`JEXFYZ#31.apk`**
+- Artifact size: **52,851,988 bytes**
+- Artifact SHA-256: **`78e83ea92e76ab480ec2b6b633f17fe76b1b04dfb202c529b33cfeb19e3ebebb`**
+- The downloaded file was independently identified as an Android APK and its SHA-256 matched the GitHub artifact digest exactly.
+- CI signature verification confirmed APK Signature Scheme v2 and the official production certificate:
+  - DN = `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`
+  - SHA-256 = `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`
+- During the requested Build App window, consecutive repository commits caused residual push-triggered runs #29 and #30 to be cancelled while run #31 validated the latest source. The workflow has since been restored to manual-only.
+- **Current App Build workflow state: manual-only (`workflow_dispatch`) with no automatic push trigger.**
+- CI validation proves the App build/signing pipeline; it does not prove BLE, OTA, or physical hardware runtime.
