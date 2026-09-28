@@ -62,10 +62,15 @@ void main() {
     expect(isNewerFirmwareVersion('V1.7', 'V1.8'), isFalse);
   });
 
-  test('Hex color helper accepts six-digit RGB colors', () {
-    expect(isValidHexColor('#FFFFFF'), isTrue);
-    expect(isValidHexColor('#00ff7a'), isTrue);
-    expect(isValidHexColor('FFFFFF'), isFalse);
-    expect(isValidHexColor('#FFF'), isFalse);
+  test('LED palette exposes 48 valid RGB colors', () {
+    expect(ledColorPalette, hasLength(48));
+    expect(ledColorPalette.first, '#FF0000');
+    expect(ledColorPalette.last, '#FFFFFF');
+    for (final hex in ledColorPalette) {
+      expect(RegExp(r'^#[0-9A-F]{6}
+}
+).hasMatch(hex), isTrue);
+      expect(ledPaletteColor(hex), isA<Color>());
+    }
   });
 }
