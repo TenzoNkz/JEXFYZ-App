@@ -39,6 +39,9 @@ Never silently promote a hypothesis, Gemini suggestion, old snippet, or historic
 - Build #32 pipeline passed audit, dependencies, analyze, tests, release APK, signing verification, artifact upload, and Dart symbols.
 - Production certificate SHA-256: dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0.
 - Historical build success never proves newer source until the source revision matches.
+- Build #32 is therefore best treated as a validated checkpoint, not the current release validation baseline.
+- Source commits after the Build #32 checkpoint include additional UI/animation work (including `6555427b4edb003ed63a51eb2ff1d560565d7e30`, `bd242c819ff08bae981fd8cf06704e49389d82b1`, and `f2b3eddb66c834bd15802623e0369056681070db`). These later functional changes are not covered by Build #32.
+- The current branch also contains documentation/process commits after those source changes. Current source behavior must be determined from the checked-out files, not from the latest documentation commit alone.
 
 ## 4. APP UI BASELINE
 - Default Dashboard: black header + white rounded Display/content.
@@ -85,7 +88,8 @@ Never silently promote a hypothesis, Gemini suggestion, old snippet, or historic
 - runtimeState reports overlay=true when hudView is non-null and config.enabled, which is weaker than proof of actual on-screen composition.
 - Flutter currently waits for running && overlay, but those flags do not distinguish permission denial, vendor policy, service failure, addView failure, or later overlay loss.
 ### Working diagnosis
-- Strong lead: public Android overlay permission state is not sufficient to explain the observed device behavior, and runtime attachment/health is under-validated.
+- Strong lead: the OEM permission UI and the public Android overlay check may be reporting different effective states on the affected device, and runtime attachment/health is under-validated.
+- The video gives direct evidence of the UI sequence, but it does not expose the returned value of Settings.canDrawOverlays() or the WindowManager result.
 - This is a working diagnosis, not a proven vendor-specific root cause.
 ### Planned patch direction
 1. Preserve the existing architecture; avoid a broad refactor.
