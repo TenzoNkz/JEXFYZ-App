@@ -1322,3 +1322,12 @@ Never:
 - Added a regression test proving `FAN` is rejected while `S` remains selected/available.
 - This change is App-only. Firmware, BLE UUID/P1 protocol, OTA transport, Firebase metadata, GPIO mapping, and signing identity remain untouched.
 - Build App requested in this execution; the fresh release artifact must be delivered to chat automatically after a successful run.
+
+## 2026-10-01 — FOLLOW-UP / FLOATING SELECTOR CLEANUP
+
+- Corrected the Floating Settings selector implementation so every supported metric remains selectable.
+- There is no separate `Fan` checkbox/metric. `S = Speed` is the only fan-related metric.
+- Removed the stale runtime gating that made Speed selection depend on current Fan telemetry.
+- Legacy `FAN` entries remain rejected by the seven-ID validation contract.
+- This follow-up also fixes the analyzer error introduced by the first selector cleanup attempt (`speedAvailable` was still referenced after its source had been removed).
+- All Floating memory comments/tests remain aligned with the final contract.
