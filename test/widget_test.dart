@@ -134,8 +134,11 @@ void main() {
     final dark = buildJexTheme(AppThemePreset.dark);
 
     expect(light.brightness, Brightness.light);
+    expect(light.scaffoldBackgroundColor, const Color(0xFFEEF0F4));
+    expect(light.colorScheme.surface, Colors.white);
     expect(light.colorScheme.onSurface, const Color(0xFF111318));
     expect(light.colorScheme.onSurfaceVariant, const Color(0xFF3F444D));
+    expect(light.colorScheme.surfaceContainerHighest, const Color(0xFFE4E7EC));
 
     expect(dark.brightness, Brightness.dark);
     expect(dark.colorScheme.onSurface, const Color(0xFFF4F6FA));
@@ -151,6 +154,7 @@ void main() {
   test('Light theme uses dark high-contrast semantic text', () {
     final theme = buildJexTheme(AppThemePreset.light);
     expect(theme.brightness, Brightness.light);
+    expect(theme.scaffoldBackgroundColor, const Color(0xFFEEF0F4));
     expect(theme.colorScheme.onSurface, const Color(0xFF111318));
     expect(theme.colorScheme.onSurfaceVariant, const Color(0xFF3F444D));
   });
