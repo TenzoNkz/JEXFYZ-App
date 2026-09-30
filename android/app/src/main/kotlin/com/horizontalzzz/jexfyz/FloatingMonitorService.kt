@@ -74,7 +74,7 @@ class FloatingMonitorService : Service() {
             instance?.applyConfig(json) ?: start(context, json)
         }
 
-        fun runtimeState(context: Context): Map<String, Any> {
+        fun runtimeState(context: Context): Map<String, Any?> {
             return instance?.runtimeStateMap() ?: run {
                 val prefs = context.getSharedPreferences(
                     "jexfyz_floating_native_v1",
@@ -82,7 +82,13 @@ class FloatingMonitorService : Service() {
                 )
                 mapOf(
                     "running" to false,
+                    "service_running" to false,
                     "overlay" to false,
+                    "public_overlay_granted" to Settings.canDrawOverlays(context),
+                    "window_add_attempted" to false,
+                    "window_add_succeeded" to false,
+                    "window_add_error" to null,
+                    "view_attached_to_window" to false,
                     "horizontal" to prefs.getBoolean("horizontal", true),
                     "size" to prefs.getFloat("size", 1.0f).toDouble(),
                     "x" to prefs.getInt("x", 16),
@@ -122,6 +128,10 @@ class FloatingMonitorService : Service() {
     private lateinit var layoutParams: WindowManager.LayoutParams
     private var config = Config()
     private var data = Data()
+    private var windowAddAttempted = false
+    private var windowAddSucceeded = false
+    private var windowAddError: String? = null
+    private var viewAttachedToWindow = false
     private val prefs by lazy { getSharedPreferences("jexfyz_floating_native_v1", Context.MODE_PRIVATE) }
 
     override fun onCreate() {
@@ -162,10 +172,17 @@ class FloatingMonitorService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? = null
 
-    private fun runtimeStateMap(): Map<String, Any> {
+    private fun runtimeStateMap(): Map<String, Any?> {
+        val attached = hudView?.isAttachedToWindow == true || viewAttachedToWindow
         return mapOf(
             "running" to (instance === this),
-            "overlay" to (hudView != null && config.enabled),
+            "service_running" to (instance === this),
+            "overlay" to (hudView != null && config.enabled && attached),
+            "public_overlay_granted" to Settings.canDrawOverlays(this),
+            "window_add_attempted" to windowAddAttempted,
+            "window_add_succeeded" to windowAddSucceeded,
+            "window_add_error" to windowAddError,
+            "view_attached_to_window" to attached,
             "horizontal" to config.horizontal,
             "size" to config.size.toDouble(),
             "x" to if (::layoutParams.isInitialized) layoutParams.x else 16,
@@ -283,10 +300,38 @@ class FloatingMonitorService : Service() {
     }
 
     private fun ensureOverlay() {
-        if (!config.enabled || !Settings.canDrawOverlays(this)) return
+        if (!config.enabled) return
+
+        if (!Settings.canDrawOverlays(this)) {
+            windowAddAttempted = false
+            windowAddSucceeded = false
+            windowAddError = "SYSTEM_ALERT_WINDOW permission denied"
+            removeOverlay()
+            return
+        }
 
         if (hudView == null) {
-            hudView = FloatingHudView(this)
+            windowAddAttempted = true
+            windowAddSucceeded = false
+            windowAddError = null
+            viewAttachedToWindow = false
+
+            val view = FloatingHudView(this)
+            view.addOnAttachStateChangeListener(object : android.view.View.OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(v: android.view.View) {
+                    if (v === hudView) {
+                        viewAttachedToWindow = true
+                    }
+                }
+
+                override fun onViewDetachedFromWindow(v: android.view.View) {
+                    if (v === hudView) {
+                        viewAttachedToWindow = false
+                    }
+                }
+            })
+            hudView = view
+
             val type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
             } else {
@@ -308,22 +353,38 @@ class FloatingMonitorService : Service() {
             }
 
             try {
-                windowManager.addView(hudView, layoutParams)
-            } catch (_: Exception) {
+                windowManager.addView(view, layoutParams)
+                windowAddSucceeded = true
+                viewAttachedToWindow = view.isAttachedToWindow
+            } catch (error: Exception) {
+                windowAddSucceeded = false
+                windowAddError = formatWindowAddError(error)
+                viewAttachedToWindow = false
                 hudView = null
             }
         } else {
+            viewAttachedToWindow = hudView?.isAttachedToWindow == true
             hudView?.requestLayout()
             hudView?.invalidate()
         }
     }
 
+    private fun formatWindowAddError(error: Exception): String {
+        val type = error::class.java.simpleName
+        val message = error.message?.trim().orEmpty()
+        return if (message.isEmpty()) type else "$type: $message"
+    }
+
     private fun removeOverlay() {
-        val view = hudView ?: return
+        val view = hudView ?: run {
+            viewAttachedToWindow = false
+            return
+        }
         try {
             windowManager.removeView(view)
         } catch (_: Exception) {
         }
+        viewAttachedToWindow = false
         hudView = null
     }
 
