@@ -1352,8 +1352,6 @@ static void sampleNtcIfDue() {
   if (!isfinite(ntcOhms) || ntcOhms <= 1.0f) {
     ntcValid = false;
     hotsideC = NAN;
-    rapidRisePreviousC = NAN;
-    rapidRisePreviousAtMs = 0;
     return;
   }
 
