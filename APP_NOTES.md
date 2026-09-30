@@ -69,11 +69,15 @@ Never silently promote a hypothesis, Gemini suggestion, old snippet, or historic
 - Android O+: TYPE_APPLICATION_OVERLAY.
 - Foreground-service type: specialUse.
 ### Confirmed evidence from user video 99729.mp4
-- Android app-specific settings for JE Cooler are shown.
-- The page includes a Display pop-up windows permission.
-- The interaction reaches an enabled/checked state, yet Floating Monitor still does not reliably activate and permission handling can repeat.
-- The launcher/home screen is visible during the sequence before returning to Floating Monitor settings.
-- Therefore the failure is not adequately explained by the simple statement that the user never opened the permission page.
+- The video is the concrete runtime evidence for the Floating Monitor issue.
+- Android app-specific settings for JE Cooler are shown with four relevant entries: Home screen shortcuts, Show on Lock screen, Open new windows while running in the background, and Display pop-up windows.
+- At the captured permission page, Display pop-up windows is initially OFF.
+- The dedicated Display pop-up windows screen is then opened. The sequence shows Deny and Always allow; the user selects Always allow and a blue checkmark appears.
+- After returning to JE Cooler, the Floating Monitor does not activate. The App shows its own Floating Monitor Permission dialog again at approximately the later part of the video.
+- This sequence is important because it demonstrates: the OEM permission UI can visibly show Always allow while JE Cooler's current Flutter/native permission check still behaves as though permission is unavailable.
+- The launcher/home screen is also visible during the sequence, so the test crosses app/settings/task boundaries rather than remaining entirely inside the Flutter page.
+- The evidence therefore strongly supports investigating a mismatch between the OEM permission state and Settings.canDrawOverlays(), plus the lack of a definitive actual WindowManager attachment/visibility check.
+- This remains a working diagnosis until native runtime logging/probing proves the exact returned API state and overlay attach result.
 ### Current code weakness
 - MainActivity.hasOverlayPermission only reports Settings.canDrawOverlays(this).
 - FloatingMonitorService.start also gates on Settings.canDrawOverlays(context).
@@ -140,6 +144,16 @@ Never silently promote a hypothesis, Gemini suggestion, old snippet, or historic
 - Current App source has changed after the previous Build App #10 validation. Build #10 therefore does NOT validate this latest source; a new explicit Build App run is required before distributing the updated APK.
 - Firmware current source is V2.3; the dedicated firmware repository remains binary-only and is not updated with an uncompiled BIN.
 
+
+## 2026-10-01 — FLOATING VIDEO EVIDENCE REFINED
+- User video `99729.mp4` was inspected frame-by-frame around the permission flow.
+- At approximately 11.3s, the JE Cooler app-specific settings page shows `Display pop-up windows` OFF.
+- At approximately 12.8s and 13.3s, the dedicated `Display pop-up windows` screen shows `Always allow` selected with a blue checkmark.
+- At approximately 16.8s, after returning to JE Cooler, the App displays the `Floating Monitor Permission` dialog again. This is the critical observable symptom.
+- The current Flutter code only starts the overlay flow when `FloatingBridge.hasPermission()` returns true; the Android implementation of that bridge is `Settings.canDrawOverlays(this)`.
+- Therefore the next diagnostic must capture the real value returned by `Settings.canDrawOverlays()` immediately after the OEM permission screen is closed, and independently record whether `WindowManager.addView()` accepts and retains the actual overlay.
+- Do not conclude yet that a vendor-specific private API is required. First prove the public API result and actual WindowManager behavior on the affected device.
+- No source change or App Build is implied by this evidence-only entry.
 # JE X FYZ App — Master Notes
 
 ## 2026-09-30 — FINAL SETTINGS / MENU / FLOATING / SYNC PASS
