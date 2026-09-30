@@ -169,6 +169,23 @@ class FloatingTelemetry {
       };
 }
 
+// AI-METHOD / METRIC-PRESENTATION-CONTRACT
+// Runtime-visible metric policy: Speed is the only metric hidden by Fan OFF.
+bool floatingMetricVisible(String metric, FloatingTelemetry telemetry) {
+  return metric != 'S' || telemetry.fanOn;
+}
+
+// AI-METHOD / METRIC-STATUS-CONTRACT
+// Adaptive and Peltier are independent firmware-backed states; only Speed is gated by Fan.
+String floatingMetricStatus(String metric, FloatingTelemetry telemetry, AppLanguage language) {
+  return switch (metric) {
+    'A' => JexText.of(telemetry.adaptiveOn ? 'on' : 'off', language),
+    'P' => JexText.of(telemetry.peltierOn ? 'on' : 'off', language),
+    'S' => telemetry.speed.toString(),
+    _ => '--',
+  };
+}
+
 final ValueNotifier<FloatingConfig> floatingConfigNotifier =
     ValueNotifier<FloatingConfig>(const FloatingConfig());
 final ValueNotifier<FloatingTelemetry> floatingTelemetryNotifier =
@@ -721,8 +738,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   Widget _livePreview(FloatingTelemetry telemetry) {
     final visible = config.order.where((metric) {
       if (!config.selected.contains(metric)) return false;
-      if (metric == 'S' && !telemetry.fanOn) return false;
-      return true;
+      return floatingMetricVisible(metric, telemetry);
     }).toList();
 
     return Center(
@@ -771,9 +787,9 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
       'B' => telemetry.battery == '--' ? '--' : telemetry.battery + '°',
       'H' => telemetry.hotside == '--' ? '--' : telemetry.hotside + '°',
       'V' => telemetry.voltage,
-      'A' => JexText.of(telemetry.fanOn && telemetry.adaptiveOn ? 'on' : 'off', lang),
-      'P' => JexText.of(telemetry.fanOn && telemetry.peltierOn ? 'on' : 'off', lang),
-      'S' => telemetry.speed.toString(),
+      'A' => floatingMetricStatus('A', telemetry, lang),
+      'P' => floatingMetricStatus('P', telemetry, lang),
+      'S' => floatingMetricStatus('S', telemetry, lang),
       _ => '--',
     };
 
