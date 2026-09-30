@@ -4174,6 +4174,26 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
         );
         status = updateAvailable ? 'UPDATE' : 'UP_TO_DATE';
       });
+
+      if (updateAvailable && appNotifyFirmwareNotifier.value) {
+        final shouldNotify =
+            await AppSettingsStore.shouldNotifyFirmware(version);
+        if (shouldNotify) {
+          try {
+            await const MethodChannel('je_x_fyz/notifications').invokeMethod<void>(
+              'showNotification',
+              <String, dynamic>{
+                'title': JexText.of('firmwareUpdate'),
+                'body': version,
+                'id': 2104,
+              },
+            );
+            await AppSettingsStore.markFirmwareNotified(version);
+          } catch (e) {
+            debugPrint('Firmware notification: $e');
+          }
+        }
+      }
     } catch (e) {
       debugPrint('Firebase OTA metadata: ' + e.toString());
       if (mounted) {
