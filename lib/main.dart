@@ -2720,153 +2720,220 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   // AI-METHOD: _buildVoltageTab — Build VOLTAGE submenu.
   Widget _buildVoltageTab({Key? key}) {
-    return KeyedSubtree(key: key, child: _smoothList(
-      storageKey: 'voltage',
-      children: [
-        _sectionTitle(
-          'Voltage',
-          subtitle: adaptiveOn ? 'Adaptive controls voltage.' : 'Manual 5V / 9V / 12V.',
-        ),
-        _card(
-          padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
-          child: Column(
-            children: [
-              _voltageRow('5V', '5V Manual'),
-              _voltageRow('9V', '9V Manual'),
-              _voltageRow('12V', '12V Manual'),
-            ],
-          ),
-        ),
-        if (voltageGuardActive)
-          const Padding(
-            padding: EdgeInsets.only(left: 5, top: 2),
-            child: Text('Awaiting voltage confirmation.', style: TextStyle(color: Colors.black45, fontSize: 10, fontWeight: FontWeight.w700)),
-          ),
-        _card(
-          child: Row(
-            children: [
-              const Icon(PhosphorIconsRegular.lightning, size: 19, color: Colors.blueAccent),
-              const SizedBox(width: 9),
-              Expanded(
-                child: Text(
-                  connected ? 'Firmware state: ${voltage == '--' ? 'syncing...' : voltage}' : 'Connect first.',
-                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
-                ),
+    final layout = appVoltageLayoutNotifier.value;
+    final locked = !connected || adaptiveOn || voltageGuardActive;
+    final lang = appLanguageNotifier.value;
+
+    return KeyedSubtree(
+      key: key,
+      child: _smoothList(
+        storageKey: 'voltage',
+        children: [
+          _sectionTitle(JexText.of('voltage', lang)),
+          SegmentedButton<VoltageLayout>(
+            segments: [
+              ButtonSegment(
+                value: VoltageLayout.vertical,
+                label: Text(JexText.of('vertical', lang)),
+              ),
+              ButtonSegment(
+                value: VoltageLayout.sideText,
+                label: Text(JexText.of('sideText', lang)),
               ),
             ],
+            selected: <VoltageLayout>{layout},
+            onSelectionChanged: (value) async {
+              if (value.isEmpty) return;
+              final current = AppSettings(
+                language: appLanguageNotifier.value,
+                theme: appThemeNotifier.value,
+                notifySafety: appNotifySafetyNotifier.value,
+                notifyFirmware: appNotifyFirmwareNotifier.value,
+                notifyBluetooth: appNotifyBluetoothNotifier.value,
+                autoConnect: appAutoConnectNotifier.value,
+                voltageLayout: value.first,
+              );
+              await AppSettingsStore.save(
+                current.copyWith(voltageLayout: value.first),
+              );
+              if (mounted) setState(() {});
+            },
           ),
+          _card(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: layout == VoltageLayout.vertical
+                ? Column(
+                    children: [
+                      _voltageChoice('5V', 'Low Mode', locked),
+                      _voltageChoice('9V', 'Mid Mode', locked),
+                      _voltageChoice('12V', 'High Mode', locked),
+                    ],
+                  )
+                : Column(
+                    children: [
+                      _voltageSideChoice('5V', 'Low Mode', locked),
+                      _voltageSideChoice('9V', 'Mid Mode', locked),
+                      _voltageSideChoice('12V', 'High Mode', locked),
+                    ],
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _voltageChoice(String target, String mode, bool locked) {
+    final active = voltage == target;
+    return InkWell(
+      onTap: locked ? null : () => _requestVoltage(target),
+      borderRadius: BorderRadius.circular(13),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 13),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                target,
+                style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w900),
+              ),
+            ),
+            Text(
+              mode,
+              style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: Colors.black45,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Icon(
+              active
+                  ? PhosphorIconsBold.checkCircle
+                  : PhosphorIconsRegular.circle,
+              color: active ? Colors.blueAccent : Colors.black26,
+              size: 22,
+            ),
+          ],
         ),
-      ],
-    ));
+      ),
+    );
+  }
+
+  Widget _voltageSideChoice(String target, String mode, bool locked) {
+    final active = voltage == target;
+    return InkWell(
+      onTap: locked ? null : () => _requestVoltage(target),
+      borderRadius: BorderRadius.circular(13),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 55,
+              child: Text(
+                target,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
+              ),
+            ),
+            Expanded(
+              child: Text(
+                mode,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black54,
+                ),
+              ),
+            ),
+            Icon(
+              active
+                  ? PhosphorIconsBold.checkCircle
+                  : PhosphorIconsRegular.circle,
+              color: active ? Colors.blueAccent : Colors.black26,
+              size: 21,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   // AI-METHOD: _buildControlTab — Build CONTROL submenu.
   Widget _buildControlTab({Key? key}) {
-    final speedEnabled = connected && !adaptiveOn && voltage == '12V';
-    final fanLocked = connected && !adaptiveOn && peltierOn;
-    return KeyedSubtree(key: key, child: _smoothList(
-      storageKey: 'control',
-      children: [
-        _sectionTitle('Cooling', subtitle: 'Fan, Peltier, and speed.'),
-        _card(
-          padding: const EdgeInsets.fromLTRB(13, 10, 13, 10),
-          child: Column(
-            children: [
-              _switchRow(
-                title: 'Fan',
-                subtitle: fanLocked ? 'ON • locked by Peltier' : (fanOn ? 'Fan is ON' : 'Fan is OFF'),
-                icon: PhosphorIconsRegular.wind,
-                value: fanOn,
-                enabled: connected && !adaptiveOn && !peltierOn,
-                onChanged: _toggleFan,
-              ),
-              const Divider(height: 20),
-              _switchRow(
-                title: 'Peltier',
-                subtitle: peltierOn ? 'ON • 5 s soft-start' : 'Peltier is OFF',
-                icon: PhosphorIconsRegular.snowflake,
-                value: peltierOn,
-                enabled: connected && !adaptiveOn,
-                onChanged: _togglePeltier,
-              ),
-              const Divider(height: 20),
-              Row(
-                children: [
-                  const Icon(PhosphorIconsRegular.gauge, size: 20, color: Colors.black45),
-                  const SizedBox(width: 9),
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Fan Speed', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900)),
-                        SizedBox(height: 3),
-                        Text('Manual 12V • 50–100% • 25 kHz PWM', style: TextStyle(fontSize: 10, color: Colors.black45, fontWeight: FontWeight.w600)),
-                      ],
-                    ),
-                  ),
-                  Text('$fanSpeed%', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),
-                ],
-              ),
-              Slider(
-                min: 50,
-                max: 100,
-                divisions: 5,
-                value: fanSpeedDraft.clamp(50, 100).toDouble(),
-                activeColor: Colors.black,
-                inactiveColor: Colors.black12,
-                onChanged: speedEnabled
-                    ? (v) => setState(() => fanSpeedDraft = ((v / 10).round() * 10).clamp(50, 100).toInt())
-                    : null,
-                onChangeEnd: speedEnabled ? _setFanSpeed : null,
-              ),
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  Expanded(
-                    child: _miniStatus('PELTIER', peltierOn ? 'ON' : 'OFF', peltierOn ? Colors.cyan : Colors.black38),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: _miniStatus('FAN', fanOn ? 'ON' : 'OFF', fanOn ? Colors.blueAccent : Colors.black38),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: _miniStatus('PWM', '$fanSpeed%', Colors.deepPurpleAccent),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  safety == 'OK' ? 'SAFETY: OK' : 'SAFETY: $safety${safetyReason == 'NONE' ? '' : ' • $safetyReason'}',
-                  style: TextStyle(color: safety == 'OK' ? Colors.green.shade700 : Colors.orangeAccent, fontSize: 9, fontWeight: FontWeight.w800),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    ));
-  }
-
-  Widget _miniStatus(String label, String value, Color color) {
-    return Container(
-
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.07),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withValues(alpha: 0.16)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    final speedEnabled =
+        connected && !adaptiveOn && voltage == '12V' && fanOn;
+    final lang = appLanguageNotifier.value;
+    return KeyedSubtree(
+      key: key,
+      child: _smoothList(
+        storageKey: 'control',
         children: [
-          Text(label, style: const TextStyle(fontSize: 8, color: Colors.black45, fontWeight: FontWeight.w800, letterSpacing: 0.5)),
-          const SizedBox(height: 2),
-          StaticSwitcher(
-
-            child: Text(value, key: ValueKey<String>('$label:$value'), style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: color)),
+          _sectionTitle(JexText.of('control', lang)),
+          _card(
+            padding: const EdgeInsets.fromLTRB(13, 4, 13, 8),
+            child: Column(
+              children: [
+                _switchRow(
+                  title: JexText.of('peltier', lang),
+                  subtitle: '',
+                  icon: PhosphorIconsRegular.snowflake,
+                  value: peltierOn,
+                  enabled: connected && !adaptiveOn,
+                  onChanged: _togglePeltier,
+                ),
+                const Divider(height: 1),
+                _switchRow(
+                  title: JexText.of('fan', lang),
+                  subtitle: '',
+                  icon: PhosphorIconsRegular.fan,
+                  value: fanOn,
+                  enabled: connected && !adaptiveOn && !peltierOn,
+                  onChanged: _toggleFan,
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    const Icon(
+                      PhosphorIconsRegular.gauge,
+                      size: 20,
+                      color: Colors.black45,
+                    ),
+                    const SizedBox(width: 9),
+                    Expanded(
+                      child: Text(
+                        JexText.of('speed', lang),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      fanSpeed.toString() + '%',
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ],
+                ),
+                Slider(
+                  min: 50,
+                  max: 100,
+                  divisions: 5,
+                  value: fanSpeedDraft.clamp(50, 100).toDouble(),
+                  activeColor: Colors.black,
+                  inactiveColor: Colors.black12,
+                  onChanged: speedEnabled
+                      ? (v) => setState(
+                            () => fanSpeedDraft =
+                                ((v / 10).round() * 10).clamp(50, 100).toInt(),
+                          )
+                      : null,
+                  onChangeEnd: speedEnabled ? _setFanSpeed : null,
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -2875,111 +2942,81 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   // AI-METHOD: _buildAdaptiveTab — Build ADAPTIVE submenu.
   Widget _buildAdaptiveTab({Key? key}) {
-    return KeyedSubtree(key: key, child: _smoothList(
-      storageKey: 'adaptive',
-      children: [
-        _sectionTitle('Adaptive', subtitle: 'Firmware controls voltage.'),
-        _card(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          child: Row(
-            children: [
-              Container(
+    final lang = appLanguageNotifier.value;
+    final locked = adaptiveOn;
+    final group =
+        adaptiveProfile == 'HOTSIDE_BATTERY' ? 'HOTSIDE_BATTERY' : 'HOTSIDE';
 
-                width: 42,
-                height: 42,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: adaptiveOn ? Colors.green.withValues(alpha: 0.13) : Colors.black.withValues(alpha: 0.06),
-                ),
-                child: Icon(adaptiveOn ? PhosphorIconsBold.shield : PhosphorIconsRegular.shield, color: adaptiveOn ? Colors.green.shade700 : Colors.black45),
-              ),
-              const SizedBox(width: 12),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Adaptive Switch', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900)),
-                    SizedBox(height: 4),
-                    Text('Hotside + phone battery temperature.', style: TextStyle(fontSize: 10, color: Colors.black45, fontWeight: FontWeight.w600)),
-                  ],
-                ),
-              ),
-              Switch(
-                value: connected && adaptiveOn,
-                activeThumbColor: Colors.green,
-                onChanged: connected ? _toggleAdaptive : null,
-              ),
-            ],
+    return KeyedSubtree(
+      key: key,
+      child: _smoothList(
+        storageKey: 'adaptive',
+        children: [
+          _sectionTitle(JexText.of('adaptive', lang)),
+          _card(
+            padding: const EdgeInsets.fromLTRB(13, 5, 13, 7),
+            child: _switchRow(
+              title: 'Adaptive Switch',
+              subtitle: '',
+              icon: PhosphorIconsRegular.sparkle,
+              value: adaptiveOn,
+              enabled: connected,
+              onChanged: _toggleAdaptive,
+            ),
           ),
-        ),
-        _card(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Policy', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900)),
-              const SizedBox(height: 7),
-              const Text(
-                'Firmware returns to 5V first, then uses the phone battery temperature zone to target 5V / 9V / 12V. Manual controls are locked while Adaptive is ON.',
-                style: TextStyle(fontSize: 11, color: Colors.black54, height: 1.35, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  _miniMetric('Ceiling', adaptiveCeiling),
-                  const SizedBox(width: 8),
-                  _miniMetric('Battery', phoneBatteryValid ? '$phoneBatteryTemp°C' : '--'),
-                ],
-              ),
-            ],
-          ),
-        ),
-        _card(
-          padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
-          child: Row(
-            children: [
-              const Icon(PhosphorIconsRegular.info, size: 18, color: Colors.blueAccent),
-              const SizedBox(width: 9),
-              Expanded(
-                child: StaticSwitcher(
-
-                  child: Text(
-                    adaptiveTransitioning ? 'Transitioning...' : 'Adaptive state: ${adaptiveOn ? 'ON' : 'OFF'}',
-                    key: ValueKey<String>('adaptive:$adaptiveOn:$adaptiveTransitioning'),
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
+          _card(
+            padding: const EdgeInsets.symmetric(vertical: 2),
+            child: Column(
+              children: [
+                RadioListTile<String>(
+                  value: 'HOTSIDE',
+                  groupValue: group,
+                  onChanged: locked
+                      ? null
+                      : (value) {
+                          if (value != null) {
+                            unawaited(_setAdaptiveProfile(value));
+                          }
+                        },
+                  secondary: Icon(
+                    PhosphorIconsRegular.thermometer,
+                    color: locked ? Colors.black26 : Colors.black54,
+                  ),
+                  title: const Text(
+                    'Hotside Protection',
+                    style: TextStyle(fontWeight: FontWeight.w800),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    ));
-  }
-
-  Widget _miniMetric(String label, String value) {
-    return Expanded(
-      child: Container(
-
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14), border: Border.all(color: const Color(0xFFE4E4E6))),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(label, style: const TextStyle(fontSize: 9, color: Colors.black45, fontWeight: FontWeight.w700)),
-            const SizedBox(height: 3),
-            StaticSwitcher(
-
-              child: Text(value, key: ValueKey<String>('$label:$value'), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900)),
+                RadioListTile<String>(
+                  value: 'HOTSIDE_BATTERY',
+                  groupValue: group,
+                  onChanged: locked
+                      ? null
+                      : (value) {
+                          if (value != null) {
+                            unawaited(_setAdaptiveProfile(value));
+                          }
+                        },
+                  secondary: Icon(
+                    PhosphorIconsRegular.batteryHigh,
+                    color: locked ? Colors.black26 : Colors.black54,
+                  ),
+                  title: const Text(
+                    'Hotside + Battery',
+                    style: TextStyle(fontWeight: FontWeight.w800),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   // AI-METHOD: _buildLedTab — Build LED/RGB/brightness/color controls.
   Widget _buildLedTab({Key? key}) {
-    final modeNames = <String>[
+    const modeNames = <String>[
       'Static',
       'Breath',
       'Center Out',
@@ -2990,29 +3027,30 @@ class _DashboardScreenState extends State<DashboardScreen>
     ];
     final safeMode = rgbMode.clamp(1, 7);
     final modeName = modeNames[safeMode - 1];
-    final paletteEnabled = connected && rgbMode != 7;
+    final colorEnabled = connected && rgbMode != 7;
+    final lang = appLanguageNotifier.value;
 
     return KeyedSubtree(
       key: key,
       child: _smoothList(
         storageKey: 'led',
         children: [
-          _sectionTitle('LED', subtitle: '4 kiri + 4 kanan • custom effects.'),
+          _sectionTitle(JexText.of('led', lang)),
           _card(
-            padding: const EdgeInsets.fromLTRB(14, 12, 14, 10),
+            padding: const EdgeInsets.fromLTRB(14, 7, 14, 10),
             child: Column(
               children: [
                 _switchRow(
-                  title: 'Power',
-                  subtitle: rgbOn ? 'ON' : 'OFF',
+                  title: JexText.of('power', lang),
+                  subtitle: '',
                   icon: PhosphorIconsBold.lightbulb,
                   value: rgbOn,
                   enabled: connected,
                   onChanged: _setRgb,
                 ),
-                const Divider(height: 20),
+                const Divider(height: 1),
+                const SizedBox(height: 5),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     IconButton(
                       onPressed: connected && rgbMode > 1
@@ -3020,30 +3058,19 @@ class _DashboardScreenState extends State<DashboardScreen>
                           : null,
                       icon: const Icon(
                         PhosphorIconsBold.caretLeft,
-                        size: 28,
+                        size: 25,
                       ),
                     ),
-                    Container(
-                      width: 138,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 9,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(13),
-                        border: Border.all(
-                          color: const Color(0xFFE4E4E6),
-                        ),
-                      ),
-                      child: StaticSwitcher(
+                    Expanded(
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 150),
                         child: Text(
-                          'Mode $rgbMode • $modeName',
+                          rgbMode.toString(),
                           key: ValueKey<int>(rgbMode),
                           textAlign: TextAlign.center,
                           style: const TextStyle(
+                            fontSize: 24,
                             fontWeight: FontWeight.w900,
-                            fontSize: 12,
                           ),
                         ),
                       ),
@@ -3054,11 +3081,26 @@ class _DashboardScreenState extends State<DashboardScreen>
                           : null,
                       icon: const Icon(
                         PhosphorIconsBold.caretRight,
-                        size: 28,
+                        size: 25,
                       ),
                     ),
                   ],
                 ),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 150),
+                  child: Text(
+                    modeName,
+                    key: ValueKey<String>(modeName),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 5),
                 Row(
                   children: [
                     const Icon(
@@ -3083,7 +3125,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                     SizedBox(
                       width: 42,
                       child: Text(
-                        brightness.clamp(1, 100).toString() + '%',
+                        brightness.toString() + '%',
                         textAlign: TextAlign.right,
                         style: const TextStyle(
                           fontSize: 12,
@@ -3096,69 +3138,45 @@ class _DashboardScreenState extends State<DashboardScreen>
               ],
             ),
           ),
-          _sectionTitle(
-            'RGB Color',
-            subtitle: rgbMode == 7
-                ? 'Rainbow uses its own colors.'
-                : 'Tap a color to apply it.',
-          ),
-          _card(
-            padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
-            child: Opacity(
-              opacity: rgbMode == 7 ? 0.45 : 1.0,
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: ledColorPalette.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 8,
-                  crossAxisSpacing: 5,
-                  mainAxisSpacing: 5,
-                  mainAxisExtent: 31,
+          const SizedBox(height: 2),
+          Opacity(
+            opacity: colorEnabled ? 1 : 0.45,
+            child: InkWell(
+              onTap: colorEnabled ? _showLedColorPicker : null,
+              borderRadius: BorderRadius.circular(18),
+              child: _card(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 12,
                 ),
-                itemBuilder: (context, index) {
-                  final hex = ledColorPalette[index];
-                  final selected = rgbColor.toUpperCase() == hex;
-
-                  return Semantics(
-                    button: true,
-                    label: 'RGB $hex',
-                    enabled: paletteEnabled,
-                    child: GestureDetector(
-                      onTap: paletteEnabled ? () => _setRgbColor(hex) : null,
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 120),
-                        decoration: BoxDecoration(
-                          color: ledPaletteColor(hex),
-                          borderRadius: BorderRadius.circular(7),
-                          border: Border.all(
-                            color: selected
-                                ? Colors.black
-                                : Colors.transparent,
-                            width: selected ? 2.4 : 1,
-                          ),
-                          boxShadow: [
-                            if (selected)
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.16),
-                                blurRadius: 3,
-                                spreadRadius: 1,
-                              ),
-                          ],
-                        ),
-                        child: selected
-                            ? const Center(
-                                child: Icon(
-                                  PhosphorIconsBold.check,
-                                  color: Colors.white,
-                                  size: 15,
-                                ),
-                              )
-                            : null,
+                child: Row(
+                  children: [
+                    Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: colorEnabled
+                            ? ledPaletteColor(rgbColor.toUpperCase())
+                            : Colors.black12,
+                        borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                  );
-                },
+                    const SizedBox(width: 11),
+                    Expanded(
+                      child: Text(
+                        JexText.of('color', lang),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                    const Icon(
+                      PhosphorIconsRegular.caretRight,
+                      size: 20,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
