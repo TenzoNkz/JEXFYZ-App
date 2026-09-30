@@ -50,6 +50,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
+import 'app_settings.dart';
+import 'floating_monitor.dart';
+
 
 // Premium icon system: Phosphor Icons (Regular/Bold).
 // Material Icons are intentionally not used by JE X FYZ UI controls.
@@ -70,12 +73,9 @@ const int fanSpeedMax = 100;
 // JE X FYZ LED palette: 48 touch-friendly RGB choices.
 // Palette applies to modes that use the user RGB color; Rainbow keeps its own hue cycle.
 const List<String> ledColorPalette = <String>[
-  '#FF0000', '#FF4000', '#FF8000', '#FFC000', '#FFFF00', '#80FF00', '#00FF00', '#00FF80',
-  '#00FFFF', '#0080FF', '#0000FF', '#8000FF', '#C000FF', '#FF00FF', '#FF0080', '#FF0040',
-  '#CC0000', '#CC3300', '#CC6600', '#CC9900', '#CCCC00', '#66CC00', '#00CC00', '#00CC66',
-  '#00CCCC', '#0066CC', '#0000CC', '#6600CC', '#9900CC', '#CC00CC', '#CC0066', '#CC0033',
-  '#FF6666', '#FF9966', '#FFCC66', '#FFFF66', '#CCFF66', '#66FF66', '#66FFCC', '#66FFFF',
-  '#66CCFF', '#668CFF', '#9999FF', '#CC99FF', '#FF99FF', '#FF99CC', '#FF6699', '#FFFFFF',
+  '#FF0000', '#FF8000', '#FFFF00', '#80FF00',
+  '#00FF00', '#00FFFF', '#0080FF', '#0000FF',
+  '#4000FF', '#8000FF', '#FF00FF', '#FF0080',
 ];
 
 Color ledPaletteColor(String hex) {
@@ -143,6 +143,9 @@ Future<void> main() async {
     runApp(const TamperApp());
     return;
   }
+
+  await AppSettingsStore.load();
+  await FloatingStore.load();
 
   try {
     await Firebase.initializeApp();
@@ -273,16 +276,16 @@ class JeCoolerApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: appName,
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: Colors.blueAccent,
-        scaffoldBackgroundColor: const Color(0xFF111113),
-        useMaterial3: true,
-        fontFamily: 'Roboto',
-      ),
-      home: const DashboardScreen(),
+    return ValueListenableBuilder<AppThemePreset>(
+      valueListenable: appThemeNotifier,
+      builder: (context, preset, _) {
+        return MaterialApp(
+          title: appName,
+          debugShowCheckedModeBanner: false,
+          theme: buildJexTheme(preset),
+          home: const DashboardScreen(),
+        );
+      },
     );
   }
 }
@@ -298,7 +301,8 @@ class DashboardScreen extends StatefulWidget {
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
+class _DashboardScreenState extends State<DashboardScreen>
+    with WidgetsBindingObserver {
   static const MethodChannel batteryChannel =
       MethodChannel('je_x_fyz/battery_temp');
 
@@ -312,9 +316,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Timer? batteryTimer;
   Timer? voltageGuardTimer;
   Timer? reconnectTimer;
-  Timer? runtimeSyncTimer;
   Timer? disconnectRediscoveryTimer;
+  StreamSubscription<List<ScanResult>>? disconnectRediscoverySub;
   bool disconnectRediscoveryScanInProgress = false;
+  Timer? fpsTimer;
+  int frameCount = 0;
+  int currentFps = 0;
+  bool hotAlertArmed = true;
 
   bool _bleReady = false;
   bool _bleSessionReady = false;
@@ -347,6 +355,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   bool peltierOn = false;
   bool adaptiveOn = false;
   String adaptiveCeiling = '12V';
+  String adaptiveProfile = 'HOTSIDE_BATTERY';
   bool rgbOn = false;
   int rgbMode = 1;
   int brightness = 100;
@@ -373,6 +382,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addTimingsCallback(_recordFrameTimings);
+    fpsTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      currentFps = frameCount;
+      frameCount = 0;
+      _publishFloatingTelemetry();
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => _tryAutoConnect());
     try {
       FlutterBluePlus.setOperationQueueMode(OperationQueueMode.perDevice);
     } catch (e) {
@@ -382,14 +399,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance.removeTimingsCallback(_recordFrameTimings);
+    fpsTimer?.cancel();
+    disconnectRediscoverySub?.cancel();
     connectionSub?.cancel();
     notificationSub?.cancel();
     batteryTimer?.cancel();
     voltageGuardTimer?.cancel();
     reconnectTimer?.cancel();
-    runtimeSyncTimer?.cancel();
     disconnectRediscoveryTimer?.cancel();
     disconnectRediscoveryTimer = null;
+    disconnectRediscoverySub?.cancel();
+    disconnectRediscoverySub = null;
     disconnectRediscoveryScanInProgress = false;
     device?.disconnect();
     for (final waiters in _ackWaiters.values) {
@@ -692,6 +714,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void _cancelDisconnectRediscovery() {
     disconnectRediscoveryTimer?.cancel();
     disconnectRediscoveryTimer = null;
+    disconnectRediscoverySub?.cancel();
+    disconnectRediscoverySub = null;
     disconnectRediscoveryScanInProgress = false;
   }
 
@@ -750,7 +774,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     dashboardReady = false;
     _pendingTelemetry.clear();
     batteryTimer?.cancel();
-    runtimeSyncTimer?.cancel();
     _startDisconnectRediscovery();
     for (final waiters in _ackWaiters.values) {
       for (final waiter in waiters) {
@@ -1353,7 +1376,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   // AI-METHOD: _scheduleRuntimeSync — Send changed runtime settings after the intended settling period.
   void _scheduleRuntimeSync() {
     if (!connected || !_bleReady || !_bleSessionReady) return;
-    runtimeSyncTimer?.cancel();
     runtimeSyncTimer = Timer(const Duration(milliseconds: 90), () {
       if (!mounted || !connected || !_bleReady || !_bleSessionReady) return;
       // Refresh firmware-owned state after a short burst of commands.
