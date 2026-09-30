@@ -24,7 +24,7 @@ void main() {
     expect(find.text('JE X FYZ'), findsOneWidget);
     expect(find.text('Battery Temperature'), findsOneWidget);
     expect(find.text('Hotside Temperature'), findsOneWidget);
-    expect(find.text('Tegangan'), findsOneWidget);
+    expect(find.text('Voltage Indicator'), findsOneWidget);
     expect(find.text('VOLTAGE'), findsWidgets);
     expect(find.text('LOW MODE'), findsOneWidget);
     expect(find.text('MID MODE'), findsOneWidget);
