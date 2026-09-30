@@ -879,3 +879,31 @@ Never:
   - `.github/workflows/app-build.yml` = reusable `workflow_call` engine with no push trigger ✅
 - The CI trigger was temporarily enabled only to execute the explicit user request and was restored to manual-only afterward.
 - CI validation proves the App build/signing pipeline; it does not prove BLE, OTA, or physical hardware runtime.
+
+
+## 2026-09-30 — BUILD APP #15 SUCCESS / SOURCE `ba407...` PLUS MINIMAL BUILD FIXES
+
+- User requested a fresh release build from the current `main` source; Build #10 was explicitly not reused.
+- Pre-build `main` HEAD at the start of the validation was `ba4075865742944302aec4a85081b1ef87aeb54f`.
+- CI exposed a real source syntax issue in `lib/main.dart`: the Dashboard `Theme`/`MediaQuery` wrapper was missing the `MediaQuery` closing `),`. Minimal fix committed as `7186788b7dfef1e3a10fc8c78cd16039c4549eb2`.
+- Earlier analyzer/test fixes required during this build sequence were limited to restoring imports/const correctness, removing unused helpers, and aligning stale widget-test expectations with the current V2.2 UI. No firmware, OTA transport, BLE UUID, Firebase metadata, or physical-hardware behavior was changed.
+- Run **#15** (`36710407297`) was built from derived trigger head `6c4c65d445bb1b3ea2b0afab3a4438a132d0f085`; the App source files in that checkout were the same source as `7186788b...`, with only temporary trigger/marker workflow changes.
+- Complete CI pipeline passed:
+  - security/architecture audit ✅
+  - dependency installation ✅
+  - `flutter analyze --no-fatal-infos` ✅
+  - Flutter tests **4/4 passed** ✅
+  - obfuscated release APK build ✅
+  - production signing verification ✅
+  - exactly one APK release artifact ✅
+  - Dart symbols artifact ✅
+- Release artifact: **`JEXFYZ#15.apk`**
+- Artifact size: **53,918,024 bytes**
+- Artifact SHA-256: **`6b4f6f43a5e126b5334501c180a537324ffce6a9df20662eafbb27aa0c8248d4`**
+- Downloaded APK was independently identified as an Android package and its SHA-256 matched the GitHub artifact digest exactly.
+- Production signing verification:
+  - APK Signature Scheme v2 = true
+  - Certificate DN = `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`
+  - Certificate SHA-256 = `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`
+- Final repository state after cleanup: current `main` HEAD is `6b7d6159879af9fd64972c290c5ef9bc11035df8`, the App Build trigger is manual-only, the reusable build engine remains `workflow_call` only, and the temporary marker is removed.
+- CI validation proves release build/signing/artifact integrity only; it does not prove BLE, OTA, firmware V2.3 compilation in ArduinoDroid, or physical hardware runtime.
