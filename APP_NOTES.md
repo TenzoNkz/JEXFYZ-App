@@ -956,3 +956,12 @@ Never:
 - The manual trigger now requires an explicit `confirm_build` checkbox to be enabled. The reusable `app-build.yml` remains `workflow_call` only and cannot self-trigger.
 - The intended operational flow is `@Thinking Diskusi!` → review only, `@Thinking Eksekusi!` → implementation/commit only, and `@Thinking Build App!` → manually dispatch the build with explicit confirmation.
 - No automatic build trigger was added.
+
+
+## 2026-10-01 — ASSISTANT-DRIVEN BUILD APP TRIGGER
+
+- Replaced the previous manual `workflow_dispatch` gate with a dedicated GitHub Issue event used only as a trigger proxy for explicit `@Thinking Build App!` requests from the assistant.
+- `app-build-trigger.yml` now listens only for `issues: opened` / `issues: reopened` and runs the reusable build engine only when both the issue title and the dedicated `JEXFYZ_BUILD_TRIGGER_V1` token match exactly.
+- Normal pushes, pull requests, documentation commits, and source commits do not start Build App.
+- The intended operational behavior is now: explicit `@Thinking Build App!` request → assistant creates/reopens the dedicated trigger issue → GitHub Actions starts the reusable App Build engine → assistant checks the run and retrieves the APK artifact.
+- No other build workflow entry point was added.
