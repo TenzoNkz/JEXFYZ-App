@@ -706,7 +706,7 @@ class SettingsPage extends StatelessWidget {
       builder: (context, language, _) {
         final preset = appThemeNotifier.value;
         return Theme(
-          data: buildJexSettingsTheme(preset),
+          data: buildJexTheme(preset),
           child: Scaffold(
           appBar: AppBar(title: Text(JexText.of('settings', language))),
           body: ListView(
