@@ -773,8 +773,6 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   void _startDisconnectRediscovery() {
     if (!mounted || connected || _bleConnecting) return;
-    // Online OTA already has its dedicated reconnect monitor. Do not start
-    // a second scanner during the OTA recovery window.
     if (reconnectTimer?.isActive ?? false) return;
 
     _cancelDisconnectRediscovery();
@@ -789,13 +787,38 @@ class _DashboardScreenState extends State<DashboardScreen>
         _cancelDisconnectRediscovery();
         return;
       }
-
       if (disconnectRediscoveryScanInProgress) return;
+
       disconnectRediscoveryScanInProgress = true;
       attempts++;
-
       try {
         await FlutterBluePlus.stopScan();
+        await disconnectRediscoverySub?.cancel();
+
+        if (appAutoConnectNotifier.value) {
+          disconnectRediscoverySub =
+              FlutterBluePlus.scanResults.listen((results) {
+            if (!mounted || connected || _bleConnecting) return;
+            for (final result in results) {
+              final serviceMatch = result.advertisementData.serviceUuids.any(
+                (uuid) => uuid.toString().toLowerCase() == serviceUuid,
+              );
+              final name =
+                  result.advertisementData.advName.trim().toLowerCase();
+              final platformName =
+                  result.device.platformName.trim().toLowerCase();
+              if (serviceMatch ||
+                  name == 'je x fyz' ||
+                  platformName == 'je x fyz') {
+                unawaited(FlutterBluePlus.stopScan());
+                _cancelDisconnectRediscovery();
+                unawaited(_connect(result.device));
+                break;
+              }
+            }
+          });
+        }
+
         await FlutterBluePlus.startScan(
           timeout: const Duration(seconds: 2),
           androidCheckLocationServices: false,
@@ -1778,6 +1801,85 @@ class _DashboardScreenState extends State<DashboardScreen>
     final sent = await sendCommand('SYNC', showError: false);
     if (!sent) return false;
     return _waitUntil(() => fullSyncReceived, timeout: timeout);
+  }
+
+  Future<void> _openSettings() async {
+    await Navigator.push<void>(
+      context,
+      MaterialPageRoute<void>(
+        builder: (_) => SettingsPage(
+          currentFirmwareVersion: firmwareVersion,
+          onOpenFirmwareUpdate: _openFirmwareSettings,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _setAdaptiveProfile(String profile) async {
+    if (!connected || adaptiveOn) return;
+    final ok = await _sendAndConfirm('ADAPTIVE_PROFILE:' + profile);
+    if (!ok && mounted) {
+      _showSnackBar(
+        'Adaptive profile change was not confirmed by the device.',
+        color: Colors.orangeAccent,
+      );
+    }
+  }
+
+  Future<void> _showLedColorPicker() async {
+    if (!connected || rgbMode == 7) return;
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Color'),
+          content: SizedBox(
+            width: 280,
+            child: GridView.builder(
+              shrinkWrap: true,
+              itemCount: ledColorPalette.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+                mainAxisExtent: 44,
+              ),
+              itemBuilder: (_, index) {
+                final value = ledColorPalette[index];
+                final selected = rgbColor.toUpperCase() == value;
+                return InkWell(
+                  borderRadius: BorderRadius.circular(10),
+                  onTap: () async {
+                    await _setRgbColor(value);
+                    if (dialogContext.mounted) {
+                      Navigator.pop(dialogContext);
+                    }
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 120),
+                    decoration: BoxDecoration(
+                      color: ledPaletteColor(value),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: selected ? Colors.white : Colors.black12,
+                        width: selected ? 3 : 1,
+                      ),
+                    ),
+                    child: selected
+                        ? const Icon(
+                            PhosphorIconsBold.check,
+                            color: Colors.white,
+                            size: 19,
+                          )
+                        : null,
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
   }
 
   // AI-METHOD: _openFirmwareSettings — Open the external firmware update dialog.
@@ -3258,13 +3360,13 @@ class _DashboardScreenState extends State<DashboardScreen>
                       child: IconButton(
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints.tightFor(width: 36, height: 36),
-                        tooltip: 'Firmware',
+                        tooltip: 'Settings',
                         icon: const Icon(
                           PhosphorIconsRegular.gear,
                           color: Colors.white,
                           size: 25,
                         ),
-                        onPressed: _openFirmwareSettings,
+                        onPressed: _openSettings,
                       ),
                     ),
                   ),
