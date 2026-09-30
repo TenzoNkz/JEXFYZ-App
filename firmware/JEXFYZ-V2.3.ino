@@ -2941,6 +2941,7 @@ progress{width:100%;height:18px;margin-top:16px}
 <h1>JE X FYZ</h1>
 <p>Firmware OTA</p>
 <p>Current firmware: <b>%VERSION%</b></p>
+<p class="small">Security: hold the cooler touch button for 5 seconds before upload.</p>
 <form id="otaForm">
 <input id="firmware" type="file" accept=".bin" required>
 <button id="uploadBtn" type="submit">Upload &amp; Update</button>
@@ -3021,7 +3022,10 @@ static void localOtaUploadHandler() {
     if (localOtaPhysicalAuthUntilMs == 0 ||
         millis() > localOtaPhysicalAuthUntilMs) {
       // A Wi-Fi client alone is never sufficient to authorize a firmware write.
-      sendAck("LOCAL_OTA", false, "PHYSICAL_AUTH_REQUIRED");
+      saveOtaResult("OTA_REJECTED|MODE=LOCAL|STAGE=PHYSICAL_AUTH|ERROR=PHYSICAL_AUTH_REQUIRED|PROGRESS=0");
+      setOtaDiagnosticStage("PHYSICAL_AUTH");
+      setOtaDiagnosticProgress(0);
+      setOtaDiagnosticError(-1, "PHYSICAL_AUTH_REQUIRED");
       Serial.println("LOCAL OTA: REJECTED - PHYSICAL AUTH REQUIRED");
       return;
     }
@@ -4112,12 +4116,26 @@ static bool serviceOtaPriority() {
 
     if (clientCount > 0 && !bootApHadClient) {
       bootApHadClient = true;
-      bootApClientSafe = true;
-      applyOtaSafeOutputs();
-      stopUserLedOutput();
-      stopBleForBootWiFiClient();
+
+      const bool physicallyAuthorized =
+          localOtaPhysicalAuthUntilMs != 0 &&
+          millis() <= localOtaPhysicalAuthUntilMs;
+
+      bootApClientSafe = physicallyAuthorized;
+
+      if (physicallyAuthorized) {
+        applyOtaSafeOutputs();
+        stopUserLedOutput();
+        stopBleForBootWiFiClient();
+        Serial.println("WIFI AP: AUTHORIZED CLIENT -> OTA SAFE MODE");
+      } else {
+        // An arbitrary AP client must not be allowed to force cooling/BLE
+        // shutdown. The HTTP upload endpoint remains locked until a physical
+        // touch authorization is present.
+        Serial.println("WIFI AP: UNAUTHORIZED CLIENT -> OTA WRITE LOCKED");
+      }
     } else if (clientCount == 0 &&
-               bootApClientSafe &&
+               bootApHadClient &&
                otaState == OtaState::BOOT_AP &&
                !otaActive) {
       // Safety is tied to an actual Wi-Fi client/session, not to AP power-on.
