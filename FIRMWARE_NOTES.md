@@ -3538,3 +3538,16 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - The dedicated **JEXFYZ-Firmware repository is binary-only** and must contain only the published `JEXFYZ.cpp.bin` OTA artifact (plus repository metadata/files that are not firmware source).
 - V2.1 source was moved from `TenzoNkz/JEXFYZ-Firmware/JEXFYZ-V2.1.ino` to `TenzoNkz/JEXFYZ-App/firmware/JEXFYZ-V2.1.ino` without source-content changes.
 - The published `JEXFYZ.cpp.bin` was not changed.
+
+
+## 2026-09-30 — V2.3 CONTROL TELEMETRY RECONCILIATION
+
+- Firmware source remains **V2.3**; no firmware version bump was made for this synchronization fix.
+- Control-command responses now publish the authoritative current state even when the requested value is already equal to the current value. This specifically fixes the stale-App case where firmware was already `FAN:ON` or `PELTIER:ON`, the App sent the same ON command, received only an ACK, and the App toggle remained OFF.
+- FAN commands now explicitly publish `FAN:<ON|OFF>` plus the current `PELTIER:<ON|OFF>` state before their ACK. PELTIER commands do the same. This keeps the paired safety relationship visible to the App.
+- Equivalent command-response reconciliation was extended to RGB state, LED mode/brightness/color, Adaptive state/profile, fan speed, temperature limits, reset values, and related configuration telemetry. Runtime delta behavior outside command reconciliation remains unchanged, so this does not introduce a periodic telemetry flood.
+- Existing firmware safety authority is preserved: Peltier cannot remain ON without a valid NTC, acceptable hotside temperature, an active fan, and non-OTA conditions.
+- GPIO mapping is unchanged and authoritative: GPIO5 = FAN, GPIO6 = PELTIER.
+- BLE P1 UUIDs/protocol and OTA architecture remain unchanged.
+- App-side confirmation now waits for matching authoritative telemetry after an accepted ACK; this firmware note records the firmware half of that contract.
+- Static/source review was performed against `firmware/JEXFYZ-V2.3.ino`. ArduinoDroid + Arduino-ESP32 Core 3.3.7 compilation and physical hardware validation remain pending.
