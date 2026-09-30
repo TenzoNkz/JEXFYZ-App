@@ -1,5 +1,25 @@
 # JE X FYZ Firmware — Master Notes
 
+## 2026-09-30 — V2.3 TOUCH / THERMAL / ADAPTIVE FIX PASS
+
+- Working firmware source advanced from V2.2 to **V2.3** because touch behavior and safety logic are functional firmware changes.
+- Touch behavior:
+  - Adaptive OFF: 1× tap cycles voltage 5V -> 9V -> 12V -> 5V; 2× tap advances LED mode 1 -> 7 -> 1; hold 5 seconds toggles Fan + Peltier ON/OFF subject to safety.
+  - Adaptive ON: 1× tap force-shuts Fan + Peltier OFF while leaving Adaptive ON; 2× tap still advances LED mode; hold 5 seconds turns Adaptive OFF.
+  - Successful touch-driven Adaptive OFF shows three non-blocking LED indicator flashes: RED -> GREEN -> BLUE, 250 ms phase timing, then normal LED rendering resumes.
+- Adaptive Battery root fix:
+  - Removed the zone-change self-cancel condition in `evaluateAdaptiveBattery()` that could mark `lastBatteryZone` before evaluation and then immediately return.
+  - Adaptive battery timer decisions now use the hysteresis-stabilized zone consistently instead of recomputing a raw zone during the pending transition.
+- Added rapid-rise Hotside protection:
+  - Peltier-driven Hotside rise at or above **4.0 °C/s** over a valid sample gap up to 2.5 seconds latches Peltier OFF.
+  - Fan remains independently controllable; the latch is cleared only by an explicit manual Peltier restart through the App or the 5-second touch cooling control, after ordinary NTC/Fan/Hotside safety preconditions pass.
+  - New safety reason: `RAPID_RISE`.
+  - The threshold is an isolated source constant and still requires physical thermal validation before being considered final tuning.
+- OTA transport/radio ownership, P1 UUIDs, GPIO mapping, Local/Online OTA architecture, and no-explicit-blocking-delay requirement remain unchanged.
+- V2.3 static validation completed after edits: balanced delimiters and zero `delay()`, `delayMicroseconds()`, or `vTaskDelay()` calls.
+- ArduinoDroid/Core 3.3.7 compile and V2.3 physical validation are **still pending**. Production BIN/Firebase metadata remain unchanged.
+
+
 ## 2026-09-30 — V2.2 FINAL ADAPTIVE STATE PASS
 
 - Current working firmware source is `firmware/JEXFYZ-V2.2.ino`; V2.1 source is retired from the App repository.
