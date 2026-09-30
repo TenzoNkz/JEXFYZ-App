@@ -1828,6 +1828,10 @@ static void sendFullSync() {
   sendDelta("BATTERY_VALID", batteryValid ? "1" : "0");
   sendDelta("ADAPTIVE", boolText(adaptiveOn));
   sendDelta("ADAPTIVE_CEILING", voltageToString(adaptiveCeiling));
+  sendDelta("ADAPTIVE_PROFILE",
+            adaptiveProfile == AdaptiveProfile::HOTSIDE_PROTECTION
+                ? "HOTSIDE"
+                : "HOTSIDE_BATTERY");
   sendDelta("RGB", boolText(rgbOn));
   sendDelta("MODE", String(static_cast<uint8_t>(rgbMode)));
   sendDelta("BRIGHTNESS", String(rgbBrightness));
