@@ -192,7 +192,7 @@ class TamperScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF111113),
+      backgroundColor: _dashboardTopColor(),
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -276,9 +276,10 @@ class JeCoolerApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<AppThemePreset>(
-      valueListenable: appThemeNotifier,
-      builder: (context, preset, _) {
+    return ValueListenableBuilder2<AppThemePreset, AppLanguage>(
+      first: appThemeNotifier,
+      second: appLanguageNotifier,
+      builder: (context, preset, language) {
         return MaterialApp(
           title: appName,
           debugShowCheckedModeBanner: false,
@@ -3549,6 +3550,20 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
   }
 
+  Color _dashboardTopColor() => switch (appThemeNotifier.value) {
+        AppThemePreset.defaultTheme => const Color(0xFF111113),
+        AppThemePreset.light => const Color(0xFFF5F5F7),
+        AppThemePreset.dark => const Color(0xFF101114),
+      };
+
+  Color _dashboardSurfaceColor() => switch (appThemeNotifier.value) {
+        AppThemePreset.defaultTheme => Colors.white,
+        AppThemePreset.light => Colors.white,
+        AppThemePreset.dark => const Color(0xFF17181C),
+      };
+
+  bool get _dashboardDark => appThemeNotifier.value == AppThemePreset.dark;
+
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
@@ -3558,7 +3573,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     return MediaQuery(
       data: media.copyWith(textScaler: TextScaler.noScaling),
       child: Scaffold(
-        backgroundColor: const Color(0xFF111113),
+        backgroundColor: _dashboardTopColor(),
         body: SafeArea(
           bottom: false,
           child: LayoutBuilder(
@@ -3606,11 +3621,11 @@ class _DashboardScreenState extends State<DashboardScreen>
                                       padding: const EdgeInsets.symmetric(horizontal: 8),
                                       child: Row(
                                         children: [
-                                          _tab('VOLTAGE', 0),
-                                          _tab('CONTROL', 1),
-                                          _tab('ADAPTIVE', 2),
-                                          _tab('LED', 3),
-                                          _tab('TEMPERATURE', 4),
+                                          _tab(JexText.of('voltage', appLanguageNotifier.value), 0),
+                                          _tab(JexText.of('control', appLanguageNotifier.value), 1),
+                                          _tab(JexText.of('adaptive', appLanguageNotifier.value), 2),
+                                          _tab(JexText.of('led', appLanguageNotifier.value), 3),
+                                          _tab(JexText.of('temperature', appLanguageNotifier.value), 4),
                                         ],
                                       ),
                                     ),
