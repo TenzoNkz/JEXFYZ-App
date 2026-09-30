@@ -1,3 +1,109 @@
+# JE X FYZ FIRMWARE — AUTHORITATIVE MEMORY CORE
+> First-read memory index for Firmware work. Historical revision entries below remain preserved as evidence. Later verified state overrides older pending/obsolete statements.
+> Consolidated: 2026-10-01.
+
+## 0. MEMORY PRIORITY
+1. Current verified firmware source/repository state.
+2. Newest verified maintenance note.
+3. ArduinoDroid/Core 3.3.7 compilation evidence.
+4. Physical hardware evidence.
+5. Older revision history and third-party suggestions.
+Never promote a hypothesis or Gemini proposal to confirmed firmware behavior without source/compile/device evidence.
+
+## 1. CURRENT HARDWARE / TOOLCHAIN
+- Hardware: ESP32-C3 Super Mini.
+- Arduino board target: ESP32-C3 Dev Module.
+- Development environment: ArduinoDroid.
+- Required framework: official Arduino-ESP32 Core 3.3.7.
+- API rule: Arduino Standard + official Arduino-ESP32 Core 3.3.7 APIs only.
+- ESP32-C3 single-radio constraint: do not assume simultaneous independent Wi-Fi and BLE operation.
+
+## 2. GPIO MAP — FROZEN
+- GPIO0 = NTC.
+- GPIO1 = Touch.
+- GPIO3 = 12V selector.
+- GPIO4 = 9V selector.
+- GPIO5 = FAN.
+- GPIO6 = PELTIER.
+- GPIO7 = WS2812B.
+- Critical wiring correction: GPIO5 and GPIO6 must never be swapped.
+
+## 3. CURRENT FIRMWARE VERSION
+- Functional revision: V2.3.
+- Firmware repository: TenzoNkz/JEXFYZ-Firmware (production repo is binary-only).
+- Continuity source is kept under the App repository firmware/ directory.
+- Current V2.3 source must still be explicitly compiled in ArduinoDroid/Core 3.3.7 and physically validated before being called a hardware-validated release.
+- Source version alone never implies a published or Firebase-promoted BIN.
+
+## 4. BLE P1 — FROZEN CONTRACT
+- Device name: JE X FYZ.
+- Protocol: P1.
+- Service: 6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001.
+- RX: 6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001.
+- TX: 6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001.
+- Do not change UUIDs/protocol for App-only UI/runtime issues.
+
+## 5. ADAPTIVE / THERMAL BASELINE
+- Profiles: HOTSIDE = Hotside protection only; HOTSIDE_BATTERY = combined Hotside + Battery protection.
+- Profiles/preferences persist and are locked while Adaptive is ON.
+- Hotside: 12V hot -> Peltier OFF, Fan ON, cool 10s, step to 9V, may resume; 9V hot -> same sequence then step to 5V; 5V hot -> Peltier OFF, Fan ON, Adaptive OFF, Peltier remains OFF until manual intervention.
+- No extra 10s delay after the voltage step.
+- Higher voltage is blocked during the active adaptive protection session where source logic defines that guard.
+- Battery adaptive uses approximately 1 Hz evaluation with hysteresis/stable-zone handling; Hotside priority is preserved.
+- Rapid-rise protection is deliberately not guessed. Do not invent an arbitrary value such as 4 C/s.
+
+## 6. TOUCH BASELINE
+- Adaptive OFF: 1 tap = 5V -> 9V -> 12V -> 5V; 2 taps = next LED mode 1..7; 5 s hold = Peltier + Fan toggle.
+- Adaptive ON: 1 tap = force Peltier + Fan OFF while Adaptive stays ON; 2 taps = next LED mode; 5 s hold = Adaptive OFF.
+- Successful Adaptive OFF indicator: red -> green -> blue -> normal mode.
+
+## 7. LED BASELINE
+- 8 WS2812B LEDs.
+- Physical path: RIGHT TOP LED0; right side 0,1,2,3; crossover 3->4; left side upward 4,5,6,7.
+- Logical arrays: RIGHT_PIXELS={0,1,2,3}; LEFT_PIXELS={7,6,5,4}.
+- 7 LED modes.
+- TWINKLE is removed.
+- Rainbow is one shared moving hue across all 8 LEDs, full cycle 30 s.
+- Brightness is 1..100%.
+
+## 8. SAFETY AUTHORITY
+- Firmware is final authority for physical safety.
+- Peltier must not remain ON with invalid NTC, critical Hotside, Fan OFF, or OTA active.
+- Battery protection is a system guard, not a normal consumer-facing status card.
+- Temperature telemetry is approximately 1 Hz where defined by current implementation.
+
+## 9. OTA — FROZEN ARCHITECTURE
+- Local OTA uses Arduino Update.h.
+- Firebase metadata: https://je-x-fyz-default-rtdb.asia-southeast1.firebasedatabase.app/firmware_update.json
+- GitHub BIN: https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ.cpp.bin
+- No SHA-based firmware linking.
+- Single-radio Wi-Fi/BLE handoff remains required.
+- Outputs OFF during OTA focus.
+- Historical Local and Online OTA success is a validated baseline; do not redesign transport/radio handoff/Update.h lifecycle without explicit OTA-change approval.
+- Later requested OTA result-indicator acceleration changed the visible result indication to 1 second with 250 ms phases; this did not authorize changing the underlying OTA transport.
+
+## 10. APP <-> FIRMWARE STATE AUTHORITY
+- Firmware owns physical state.
+- ACK is not proof of physical state.
+- Stateful commands return authoritative current telemetry even when the requested state already matches the current state.
+- FAN responses echo FAN and current PELTIER.
+- PELTIER responses echo FAN and PELTIER.
+- Similar authoritative echo behavior covers supported LED/RGB/adaptive/fan-speed/temperature-limit/reset configuration.
+- Runtime remains delta-based; no periodic full-sync spam.
+
+## 11. VALIDATION BOUNDARIES
+- Static source scan != ArduinoDroid compile.
+- Compile != physical validation.
+- App Build != firmware validation.
+- Historical OTA success != proof of a new firmware revision.
+- Current V2.3 physical validation status must be stated explicitly whenever discussing release readiness.
+
+## 12. CURRENT APP ISSUE MUST NOT ALTER FIRMWARE
+- The active investigation is the App Android Floating Monitor reliability problem.
+- Do not modify firmware to compensate for an Android overlay permission/service/runtime issue.
+- Preserve V2.3 GPIO, BLE P1, safety, adaptive, LED, and OTA contracts while the App issue is being solved.
+
+
 # JE X FYZ Firmware — Master Notes
 
 ## 2026-09-30 — V2.3 TOUCH / ADAPTIVE FIX PASS
