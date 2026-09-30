@@ -3060,7 +3060,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             width: 45,
             height: 43,
             child: Center(
-              child: Icon(icon, size: 27, color: color),
+              child: JexAnimatedIcon.glyph(icon: icon, size: 27, color: color, active: true),
             ),
           ),
           const SizedBox(width: 6),
@@ -3650,10 +3650,11 @@ class _DashboardScreenState extends State<DashboardScreen>
                 const SizedBox(height: 5),
                 Row(
                   children: [
-                    Icon(
-                      PhosphorIconsRegular.sun,
+                    JexAnimatedIcon.glyph(
+                      icon: PhosphorIconsRegular.sun,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                       size: 20,
+                      active: true,
                     ),
                     Expanded(
                       child: Slider(
@@ -3989,12 +3990,13 @@ class _DashboardScreenState extends State<DashboardScreen>
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints.tightFor(width: 36, height: 36),
                         tooltip: JexText.of('settings', appLanguageNotifier.value),
-                        icon: Icon(
-                          PhosphorIconsRegular.gear,
+                        icon: JexAnimatedIcon.glyph(
+                          icon: PhosphorIconsRegular.gear,
                           color: appThemeNotifier.value == AppThemePreset.light
                               ? const Color(0xFF16181D)
                               : Colors.white,
                           size: 25,
+                          active: true,
                         ),
                         onPressed: _openSettings,
                       ),
@@ -4168,12 +4170,6 @@ class _DashboardScreenState extends State<DashboardScreen>
     final media = MediaQuery.of(context);
     const designWidth = 360.0;
     const homeHeight = 420.0;
-    // Default keeps the JE X FYZ black-header/white-content dashboard.
-    // Settings and other non-dashboard pages inherit the dark default theme.
-    final dashboardPreset = appThemeNotifier.value == AppThemePreset.defaultTheme
-        ? AppThemePreset.light
-        : appThemeNotifier.value;
-
     return MediaQuery(
       data: media.copyWith(textScaler: TextScaler.noScaling),
       child: Scaffold(
