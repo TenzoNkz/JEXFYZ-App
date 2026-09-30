@@ -1,0 +1,334 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+enum AppLanguage { english, indonesia }
+enum AppThemePreset { defaultTheme, light, dark }
+enum VoltageLayout { vertical, sideText }
+
+class AppSettings {
+  final AppLanguage language;
+  final AppThemePreset theme;
+  final bool notifySafety;
+  final bool notifyFirmware;
+  final bool notifyBluetooth;
+  final bool autoConnect;
+  final VoltageLayout voltageLayout;
+
+  const AppSettings({
+    this.language = AppLanguage.english,
+    this.theme = AppThemePreset.defaultTheme,
+    this.notifySafety = true,
+    this.notifyFirmware = true,
+    this.notifyBluetooth = true,
+    this.autoConnect = true,
+    this.voltageLayout = VoltageLayout.vertical,
+  });
+
+  AppSettings copyWith({
+    AppLanguage? language,
+    AppThemePreset? theme,
+    bool? notifySafety,
+    bool? notifyFirmware,
+    bool? notifyBluetooth,
+    bool? autoConnect,
+    VoltageLayout? voltageLayout,
+  }) {
+    return AppSettings(
+      language: language ?? this.language,
+      theme: theme ?? this.theme,
+      notifySafety: notifySafety ?? this.notifySafety,
+      notifyFirmware: notifyFirmware ?? this.notifyFirmware,
+      notifyBluetooth: notifyBluetooth ?? this.notifyBluetooth,
+      autoConnect: autoConnect ?? this.autoConnect,
+      voltageLayout: voltageLayout ?? this.voltageLayout,
+    );
+  }
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+        'language': language.name,
+        'theme': theme.name,
+        'notifySafety': notifySafety,
+        'notifyFirmware': notifyFirmware,
+        'notifyBluetooth': notifyBluetooth,
+        'autoConnect': autoConnect,
+        'voltageLayout': voltageLayout.name,
+      };
+
+  static AppSettings fromJson(String raw) {
+    try {
+      final decoded = jsonDecode(raw);
+      if (decoded is! Map) return const AppSettings();
+      AppLanguage language = AppLanguage.english;
+      AppThemePreset theme = AppThemePreset.defaultTheme;
+      VoltageLayout voltageLayout = VoltageLayout.vertical;
+      try {
+        language = AppLanguage.values.byName(decoded['language']?.toString() ?? '');
+      } catch (_) {}
+      try {
+        theme = AppThemePreset.values.byName(decoded['theme']?.toString() ?? '');
+      } catch (_) {}
+      try {
+        voltageLayout = VoltageLayout.values.byName(decoded['voltageLayout']?.toString() ?? '');
+      } catch (_) {}
+      return AppSettings(
+        language: language,
+        theme: theme,
+        notifySafety: decoded['notifySafety'] is bool ? decoded['notifySafety'] as bool : true,
+        notifyFirmware: decoded['notifyFirmware'] is bool ? decoded['notifyFirmware'] as bool : true,
+        notifyBluetooth: decoded['notifyBluetooth'] is bool ? decoded['notifyBluetooth'] as bool : true,
+        autoConnect: decoded['autoConnect'] is bool ? decoded['autoConnect'] as bool : true,
+        voltageLayout: voltageLayout,
+      );
+    } catch (_) {
+      return const AppSettings();
+    }
+  }
+}
+
+final ValueNotifier<AppLanguage> appLanguageNotifier = ValueNotifier<AppLanguage>(AppLanguage.english);
+final ValueNotifier<AppThemePreset> appThemeNotifier = ValueNotifier<AppThemePreset>(AppThemePreset.defaultTheme);
+final ValueNotifier<bool> appNotifySafetyNotifier = ValueNotifier<bool>(true);
+final ValueNotifier<bool> appNotifyFirmwareNotifier = ValueNotifier<bool>(true);
+final ValueNotifier<bool> appNotifyBluetoothNotifier = ValueNotifier<bool>(true);
+final ValueNotifier<bool> appAutoConnectNotifier = ValueNotifier<bool>(true);
+final ValueNotifier<VoltageLayout> appVoltageLayoutNotifier = ValueNotifier<VoltageLayout>(VoltageLayout.vertical);
+
+class AppSettingsStore {
+  static const FlutterSecureStorage _storage = FlutterSecureStorage();
+  static const String _key = 'jexfyz_app_settings_v2';
+  static const String _firmwareNoticeKey = 'jexfyz_last_firmware_notice';
+
+  static Future<AppSettings> load() async {
+    try {
+      final raw = await _storage.read(key: _key);
+      final settings = raw == null ? const AppSettings() : AppSettings.fromJson(raw);
+      _apply(settings);
+      return settings;
+    } catch (_) {
+      const settings = AppSettings();
+      _apply(settings);
+      return settings;
+    }
+  }
+
+  static Future<void> save(AppSettings settings) async {
+    _apply(settings);
+    try {
+      await _storage.write(key: _key, value: jsonEncode(settings.toJson()));
+    } catch (_) {}
+  }
+
+  static void _apply(AppSettings settings) {
+    appLanguageNotifier.value = settings.language;
+    appThemeNotifier.value = settings.theme;
+    appNotifySafetyNotifier.value = settings.notifySafety;
+    appNotifyFirmwareNotifier.value = settings.notifyFirmware;
+    appNotifyBluetoothNotifier.value = settings.notifyBluetooth;
+    appAutoConnectNotifier.value = settings.autoConnect;
+    appVoltageLayoutNotifier.value = settings.voltageLayout;
+  }
+
+  static Future<bool> shouldNotifyFirmware(String version) async {
+    if (version.trim().isEmpty) return false;
+    try {
+      final last = await _storage.read(key: _firmwareNoticeKey);
+      return last != version;
+    } catch (_) {
+      return true;
+    }
+  }
+
+  static Future<void> markFirmwareNotified(String version) async {
+    try {
+      await _storage.write(key: _firmwareNoticeKey, value: version);
+    } catch (_) {}
+  }
+}
+
+class JexText {
+  static const Map<String, Map<AppLanguage, String>> _values = {
+    'settings': {
+      AppLanguage.english: 'Settings',
+      AppLanguage.indonesia: 'Pengaturan',
+    },
+    'general': {
+      AppLanguage.english: 'General',
+      AppLanguage.indonesia: 'Umum',
+    },
+    'device': {
+      AppLanguage.english: 'Device',
+      AppLanguage.indonesia: 'Perangkat',
+    },
+    'firmwareSection': {
+      AppLanguage.english: 'Firmware',
+      AppLanguage.indonesia: 'Firmware',
+    },
+    'aboutSection': {
+      AppLanguage.english: 'About',
+      AppLanguage.indonesia: 'Tentang',
+    },
+    'language': {
+      AppLanguage.english: 'Language',
+      AppLanguage.indonesia: 'Bahasa',
+    },
+    'english': {
+      AppLanguage.english: 'English',
+      AppLanguage.indonesia: 'English',
+    },
+    'indonesia': {
+      AppLanguage.english: 'Bahasa Indonesia',
+      AppLanguage.indonesia: 'Bahasa Indonesia',
+    },
+    'appearance': {
+      AppLanguage.english: 'Appearance',
+      AppLanguage.indonesia: 'Tampilan',
+    },
+    'default': {
+      AppLanguage.english: 'Default',
+      AppLanguage.indonesia: 'Bawaan',
+    },
+    'light': {
+      AppLanguage.english: 'Light',
+      AppLanguage.indonesia: 'Terang',
+    },
+    'dark': {
+      AppLanguage.english: 'Dark',
+      AppLanguage.indonesia: 'Gelap',
+    },
+    'notifications': {
+      AppLanguage.english: 'Notifications',
+      AppLanguage.indonesia: 'Notifikasi',
+    },
+    'safetyAlert': {
+      AppLanguage.english: 'Safety Alert',
+      AppLanguage.indonesia: 'Peringatan Keselamatan',
+    },
+    'firmwareUpdate': {
+      AppLanguage.english: 'Firmware Update',
+      AppLanguage.indonesia: 'Pembaruan Firmware',
+    },
+    'bluetoothConnected': {
+      AppLanguage.english: 'Bluetooth Connected',
+      AppLanguage.indonesia: 'Bluetooth Terhubung',
+    },
+    'bluetoothDisconnected': {
+      AppLanguage.english: 'Bluetooth Disconnected',
+      AppLanguage.indonesia: 'Bluetooth Terputus',
+    },
+    'bluetooth': {
+      AppLanguage.english: 'Bluetooth',
+      AppLanguage.indonesia: 'Bluetooth',
+    },
+    'autoConnect': {
+      AppLanguage.english: 'Auto Connect',
+      AppLanguage.indonesia: 'Hubungkan Otomatis',
+    },
+    'floatingMonitor': {
+      AppLanguage.english: 'Floating Monitor',
+      AppLanguage.indonesia: 'Floating Monitor',
+    },
+    'about': {
+      AppLanguage.english: 'About JE X FYZ',
+      AppLanguage.indonesia: 'Tentang JE X FYZ',
+    },
+    'displayStyle': {
+      AppLanguage.english: 'Display Style',
+      AppLanguage.indonesia: 'Gaya Tampilan',
+    },
+    'letters': {
+      AppLanguage.english: 'Letters',
+      AppLanguage.indonesia: 'Huruf',
+    },
+    'icons': {
+      AppLanguage.english: 'Icons',
+      AppLanguage.indonesia: 'Ikon',
+    },
+    'functions': {
+      AppLanguage.english: 'Functions',
+      AppLanguage.indonesia: 'Fungsi',
+    },
+    'size': {
+      AppLanguage.english: 'Size',
+      AppLanguage.indonesia: 'Ukuran',
+    },
+    'opacity': {
+      AppLanguage.english: 'Opacity',
+      AppLanguage.indonesia: 'Opasitas',
+    },
+    'fps': {
+      AppLanguage.english: 'FPS',
+      AppLanguage.indonesia: 'FPS',
+    },
+    'battery': {
+      AppLanguage.english: 'Battery',
+      AppLanguage.indonesia: 'Baterai',
+    },
+    'hotside': {
+      AppLanguage.english: 'Hotside',
+      AppLanguage.indonesia: 'Suhu Panas',
+    },
+    'volt': {
+      AppLanguage.english: 'Volt',
+      AppLanguage.indonesia: 'Tegangan',
+    },
+    'adaptive': {
+      AppLanguage.english: 'Adaptive',
+      AppLanguage.indonesia: 'Adaptif',
+    },
+    'peltier': {
+      AppLanguage.english: 'Peltier',
+      AppLanguage.indonesia: 'Peltier',
+    },
+    'speed': {
+      AppLanguage.english: 'Speed',
+      AppLanguage.indonesia: 'Kecepatan',
+    },
+  };
+
+  static String of(String key, [AppLanguage? language]) {
+    final lang = language ?? appLanguageNotifier.value;
+    return _values[key]?[lang] ?? key;
+  }
+}
+
+ThemeData buildJexTheme(AppThemePreset preset) {
+  switch (preset) {
+    case AppThemePreset.light:
+      return ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.light,
+        scaffoldBackgroundColor: const Color(0xFFF5F5F7),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF4D8CFF),
+          brightness: Brightness.light,
+        ),
+        fontFamily: 'Roboto',
+      );
+    case AppThemePreset.dark:
+      return ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: const Color(0xFF101114),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF5C9DFF),
+          brightness: Brightness.dark,
+        ),
+        fontFamily: 'Roboto',
+        cardColor: const Color(0xFF1A1B20),
+      );
+    case AppThemePreset.defaultTheme:
+      return ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.light,
+        primaryColor: Colors.blueAccent,
+        scaffoldBackgroundColor: const Color(0xFF111113),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF4D8CFF),
+          brightness: Brightness.light,
+        ),
+        fontFamily: 'Roboto',
+      );
+  }
+}
