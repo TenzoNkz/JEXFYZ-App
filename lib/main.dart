@@ -3420,7 +3420,6 @@ class _DashboardScreenState extends State<DashboardScreen>
     final safeMode = rgbMode.clamp(1, 7);
     final modeName = modeNames[safeMode - 1];
     final colorEnabled = connected && rgbMode != 7;
-    final lang = appLanguageNotifier.value;
 
     return KeyedSubtree(
       key: key,
