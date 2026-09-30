@@ -45,6 +45,8 @@ class FloatingConfig {
     this.horizontal = true,
   });
 
+  // AI-METHOD / CONFIG-COPY-CONTRACT
+  // Clone configuration with only the supplied presentation fields changed.
   FloatingConfig copyWith({
     bool? enabled,
     FloatingDisplayStyle? style,
@@ -65,6 +67,10 @@ class FloatingConfig {
     );
   }
 
+  // AI-METHOD / CONFIG-SERIALIZATION-CONTRACT
+  // Serialize only native overlay configuration fields; no device state is persisted.
+  // AI-METHOD / TELEMETRY-SERIALIZATION-CONTRACT
+  // Serialize live telemetry plus the App-selected language for native rendering.
   Map<String, dynamic> toMap() => <String, dynamic>{
         'enabled': enabled,
         'style': style.name,
@@ -77,6 +83,8 @@ class FloatingConfig {
 
   String toJson() => jsonEncode(toMap());
 
+  // AI-METHOD / CONFIG-DESERIALIZATION-CONTRACT
+  // Normalize legacy/invalid persisted values into the supported Floating Monitor model.
   static FloatingConfig fromJson(String raw) {
     try {
       final decoded = jsonDecode(raw);
@@ -115,6 +123,8 @@ class FloatingConfig {
 
 class FloatingMetric {
   static const List<String> defaultOrder = <String>['F', 'B', 'H', 'V', 'A', 'P', 'S'];
+  // AI-METHOD / METRIC-VALIDATION-CONTRACT
+  // Accept only the seven stable floating metric identifiers.
   static bool isValid(String value) => defaultOrder.contains(value);
 }
 
@@ -267,6 +277,8 @@ class FloatingBridge {
   }
 }
 
+// AI-MEMORY / SETTINGS-PAGE-CONTRACT
+// User configuration screen for Floating Monitor; native overlay execution stays outside Flutter.
 class FloatingSettingsPage extends StatefulWidget {
   const FloatingSettingsPage({super.key});
 
@@ -839,6 +851,8 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     }
   }
 
+  // AI-METHOD / SLIDER-CONTRACT
+  // Render a localized numeric presentation control without coupling it to device commands.
   Widget _sliderRow({
     required String label,
     required double value,
@@ -855,6 +869,8 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   }
 }
 
+// AI-MEMORY / SETTINGS-CONTAINER-CONTRACT
+// Hosts the Settings navigation hierarchy and delegates persisted preferences to AppSettingsStore.
 class SettingsPage extends StatelessWidget {
   final String currentFirmwareVersion;
   final Future<void> Function() onOpenFirmwareUpdate;
@@ -1047,6 +1063,8 @@ class SettingsPage extends StatelessWidget {
   }
 }
 
+// AI-MEMORY / LANGUAGE-PAGE-CONTRACT
+// Changes only the AppLanguage preference; display strings must remain centralized in JexText.
 class LanguageSettingsPage extends StatelessWidget {
   const LanguageSettingsPage({super.key});
 
@@ -1094,6 +1112,8 @@ class LanguageSettingsPage extends StatelessWidget {
   }
 }
 
+// AI-MEMORY / APPEARANCE-PAGE-CONTRACT
+// Changes only the visual theme preset; Dashboard-specific theme handling remains in main.dart.
 class AppearanceSettingsPage extends StatelessWidget {
   const AppearanceSettingsPage({super.key});
 
@@ -1149,6 +1169,8 @@ class AppearanceSettingsPage extends StatelessWidget {
   }
 }
 
+// AI-MEMORY / NOTIFICATION-PAGE-CONTRACT
+// Persists notification preferences; Android runtime notification permission remains native.
 class NotificationsSettingsPage extends StatelessWidget {
   const NotificationsSettingsPage({super.key});
 
@@ -1217,6 +1239,8 @@ class NotificationsSettingsPage extends StatelessWidget {
   }
 }
 
+// AI-MEMORY / BLUETOOTH-PAGE-CONTRACT
+// Presents Bluetooth-related preferences; BLE/GATT ownership stays in main.dart/flutter_blue_plus.
 class BluetoothSettingsPage extends StatelessWidget {
   const BluetoothSettingsPage({super.key});
 
@@ -1254,6 +1278,8 @@ class BluetoothSettingsPage extends StatelessWidget {
   }
 }
 
+// AI-MEMORY / ABOUT-PAGE-CONTRACT
+// Static product/about presentation; no device state or transport ownership.
 class AboutSettingsPage extends StatelessWidget {
   const AboutSettingsPage({super.key});
 
@@ -1283,6 +1309,8 @@ class AboutSettingsPage extends StatelessWidget {
   }
 }
 
+// AI-MEMORY / ABOUT-ROW-CONTRACT
+// Reusable presentation row for static About information.
 class _AboutRow extends StatelessWidget {
   final String label;
   final String value;
@@ -1303,6 +1331,8 @@ class _AboutRow extends StatelessWidget {
   }
 }
 
+// AI-MEMORY / NOTIFIER-BRIDGE-CONTRACT
+// Generic two-notifier builder used by settings UI; it does not own persistence or device state.
 class ValueListenableBuilder2<A, B> extends StatelessWidget {
   final ValueListenable<A> first;
   final ValueListenable<B> second;
