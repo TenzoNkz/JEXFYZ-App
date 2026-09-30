@@ -2321,14 +2321,30 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (raw.isEmpty) return '';
 
     final lower = raw.toLowerCase();
-    if (lower == 'scanning for je x fyz...') return 'Scanning...';
-    if (lower == 'connecting to je x fyz...') return 'Connecting to device...';
-    if (lower == 'device disconnected.') return 'Bluetooth disconnected.';
-    if (lower == 'je x fyz was not found.') return 'Device not found.';
-    if (lower == 'bluetooth scan failed.') return 'Scan failed.';
-    if (lower == 'bluetooth is not ready.') return 'Bluetooth unavailable.';
-    if (lower == 'connect to je x fyz first.') return 'Connect to device first.';
-    if (lower.startsWith('ota could not start:')) return 'OTA start rejected.';
+    if (lower == 'scanning for je x fyz...') {
+      return JexText.of('scanning');
+    }
+    if (lower == 'connecting to je x fyz...') {
+      return JexText.of('connectingDevice');
+    }
+    if (lower == 'device disconnected.') {
+      return JexText.of('bluetoothDisconnected');
+    }
+    if (lower == 'je x fyz was not found.') {
+      return JexText.of('deviceNotFound');
+    }
+    if (lower == 'bluetooth scan failed.') {
+      return JexText.of('scanFailed');
+    }
+    if (lower == 'bluetooth is not ready.') {
+      return JexText.of('bluetoothNotReady');
+    }
+    if (lower == 'connect to je x fyz first.') {
+      return JexText.of('connectFirst');
+    }
+    if (lower.startsWith('ota could not start:')) {
+      return JexText.of('otaStartRejected');
+    }
     if (lower.contains('was not confirmed by the device')) {
       final prefix = raw.replaceFirst(
         RegExp(r'\s+was not confirmed by the device\.?[\s\S]*$', caseSensitive: false),
