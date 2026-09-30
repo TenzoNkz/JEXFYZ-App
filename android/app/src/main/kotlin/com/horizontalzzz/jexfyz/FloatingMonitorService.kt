@@ -206,6 +206,8 @@ class FloatingMonitorService : Service() {
     // This service is command-driven and deliberately not bound to an Activity client.
     override fun onBind(intent: Intent?): IBinder? = null
 
+    // AI-METHOD / RUNTIME-MAP-CONTRACT
+    // Compose one diagnostic snapshot; attached state is the definitive overlay-health signal.
     private fun runtimeStateMap(): Map<String, Any?> {
         val attached = hudView?.isAttachedToWindow == true || viewAttachedToWindow
         return mapOf(
@@ -500,6 +502,8 @@ class FloatingMonitorService : Service() {
         private var scaleGestureActive = false
         private var density = resources.displayMetrics.density
 
+        // AI-MEMORY / VISIBILITY-INVARIANT
+        // Filter selection by runtime availability; S (Fan Speed) is never rendered when Fan is OFF.
         private val visibleMetrics: List<String>
             get() = config.order.filter {
                 config.selected.contains(it) && (it != "S" || data.fanOn)
@@ -510,6 +514,8 @@ class FloatingMonitorService : Service() {
             isClickable = true
         }
 
+        // AI-METHOD / DP-CONTRACT
+        // Convert logical density-independent units to physical pixels for the native HUD.
         private fun dp(value: Float): Float = value * density
 
         // AI-METHOD / MEASURE-CONTRACT
