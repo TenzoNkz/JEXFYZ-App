@@ -569,6 +569,30 @@ class JexText {
       AppLanguage.english: 'Reset Temperature',
       AppLanguage.indonesia: 'Atur Ulang Temperatur',
     },
+    'hotsideLimitNotConfirmed': {
+      AppLanguage.english: 'Hotside limit not confirmed.',
+      AppLanguage.indonesia: 'Batas suhu panas tidak dikonfirmasi.',
+    },
+    'hotsideLimitFailed': {
+      AppLanguage.english: 'Hotside limit failed.',
+      AppLanguage.indonesia: 'Gagal mengatur batas suhu panas.',
+    },
+    'battery5LimitNotConfirmed': {
+      AppLanguage.english: '5V battery limit not confirmed.',
+      AppLanguage.indonesia: 'Batas baterai 5V tidak dikonfirmasi.',
+    },
+    'battery5LimitFailed': {
+      AppLanguage.english: '5V battery limit failed.',
+      AppLanguage.indonesia: 'Gagal mengatur batas baterai 5V.',
+    },
+    'battery12LimitNotConfirmed': {
+      AppLanguage.english: '12V battery limit not confirmed.',
+      AppLanguage.indonesia: 'Batas baterai 12V tidak dikonfirmasi.',
+    },
+    'battery12LimitFailed': {
+      AppLanguage.english: '12V battery limit failed.',
+      AppLanguage.indonesia: 'Gagal mengatur batas baterai 12V.',
+    },
     'closed': {
       AppLanguage.english: 'Close',
       AppLanguage.indonesia: 'Tutup',
@@ -978,6 +1002,7 @@ ThemeData buildJexTheme(AppThemePreset preset) {
       onSecondary: isDark ? Colors.black : Colors.white,
       surface: surface,
       onSurface: foreground,
+      onSurfaceVariant: muted,
       surfaceContainerHighest: isDark ? const Color(0xFF242831) : const Color(0xFFE9ECF1),
       outline: isDark ? const Color(0xFF383D47) : const Color(0xFFD2D6DE),
       outlineVariant: isDark ? const Color(0xFF2B3039) : const Color(0xFFE0E3E8),
