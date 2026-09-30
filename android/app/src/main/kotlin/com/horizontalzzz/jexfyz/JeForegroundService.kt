@@ -76,7 +76,7 @@ class JeForegroundService : Service() {
         return builder
             .setSmallIcon(R.drawable.jexfyzicon)
             .setContentTitle("JE X FYZ")
-            .setContentText("BLE connection active")
+            .setContentText("")
             .setOngoing(true)
             .setShowWhen(false)
             .setPriority(Notification.PRIORITY_LOW)
