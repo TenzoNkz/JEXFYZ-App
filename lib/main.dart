@@ -2030,7 +2030,9 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
   }
 
-  // AI-METHOD: _toggleFan — Request Fan state; firmware remains the safety authority.
+  // AI-METHOD / FAN-COMMAND-CONTRACT
+  // Send only the frozen FAN:ON/FAN:OFF protocol token. Firmware telemetry is authoritative;
+  // this function never invents or localizes the protocol value. User-facing errors are localized.
   Future<void> _toggleFan(bool enabled) async {
     if (!connected || adaptiveOn) return;
     try {
@@ -2046,7 +2048,9 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
   }
 
-  // AI-METHOD: _togglePeltier — Request Peltier state; firmware remains the safety authority.
+  // AI-METHOD / PELTIER-COMMAND-CONTRACT
+  // Enforce the UI-side Fan prerequisite, then send the frozen PELTIER command and wait for
+  // authoritative telemetry. Firmware remains the final safety authority.
   Future<void> _togglePeltier(bool enabled) async {
     if (!connected || adaptiveOn) return;
     try {
@@ -2089,7 +2093,9 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
   }
 
-  // AI-METHOD: _toggleAdaptive — Request Adaptive state; firmware controls resulting safety/voltage.
+  // AI-METHOD / ADAPTIVE-COMMAND-CONTRACT
+  // Send the frozen ADAPTIVE command and wait for telemetry. Firmware determines resulting
+  // voltage/safety behavior; Flutter only presents the confirmed state.
   Future<void> _toggleAdaptive(bool enabled) async {
     if (!connected) return;
     if (mounted) setState(() {
@@ -2198,7 +2204,9 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
   }
 
-  // AI-METHOD: _setFanSpeed — Set App fan-speed control 50–100%.
+  // AI-METHOD / FAN-SPEED-CONTRACT
+  // Accept 50–100% in 10% steps. Control is valid only for connected, non-Adaptive 12V mode;
+  // the UI hides this control entirely when Fan is OFF.
   Future<void> _setFanSpeed(double value) async {
     if (!connected || adaptiveOn || voltage != '12V') return;
     try {
@@ -2626,19 +2634,19 @@ class _DashboardScreenState extends State<DashboardScreen>
       case 'HOTSIDE_PROTECTION':
         return JexText.phrase('Hotside protection active.', 'Perlindungan Suhu Panas aktif.');
       case 'FAN_REQUIRED':
-        return JexText.phrase(JexText.phrase('Fan required before Peltier.','Kipas harus hidup sebelum Peltier.'), 'Kipas harus aktif sebelum Peltier.');
+        return JexText.phrase('Fan required before Peltier.', 'Kipas harus hidup sebelum Peltier.');
       case 'PELTIER_ON':
-        return JexText.phrase(JexText.phrase('Fan locked while Peltier is ON.','Kipas terkunci saat Peltier HIDUP.'), 'Kipas terkunci saat Peltier AKTIF.');
+        return JexText.phrase('Fan locked while Peltier is ON.', 'Kipas terkunci saat Peltier HIDUP.');
       case 'ADAPTIVE_ACTIVE':
-        return JexText.phrase(JexText.phrase('Manual cooling controls locked.','Kontrol pendinginan manual terkunci.'), 'Kontrol pendinginan manual terkunci.');
+        return JexText.phrase('Manual cooling controls locked.', 'Kontrol pendinginan manual terkunci.');
       case 'MANUAL_12V_ONLY':
-        return JexText.phrase(JexText.phrase('Manual 12V only.','Manual hanya 12V.'), 'Manual hanya 12V.');
+        return JexText.phrase('Manual 12V only.', 'Manual hanya 12V.');
       case 'VOLTAGE_GUARD_OR_BUSY':
-        return JexText.phrase(JexText.phrase('Voltage command pending.','Perintah tegangan sedang diproses.'), 'Perintah tegangan sedang diproses.');
+        return JexText.phrase('Voltage command pending.', 'Perintah tegangan sedang diproses.');
       case 'SYNC_REQUIRED':
         return JexText.phrase('Device sync in progress.', 'Sinkronisasi perangkat sedang berlangsung.');
       case 'RATE_LIMIT':
-        return JexText.phrase(JexText.phrase('Command rate limited.','Perintah dibatasi frekuensinya.'), 'Perintah terlalu cepat.');
+        return JexText.phrase('Command rate limited.', 'Perintah terlalu cepat.');
       case 'MUST_BE_BELOW_BATT12':
         return JexText.phrase('5V battery limit must stay below 12V.', 'Batas baterai 5V harus di bawah 12V.');
       case 'MUST_BE_ABOVE_BATT5':
