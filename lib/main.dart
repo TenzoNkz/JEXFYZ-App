@@ -561,8 +561,8 @@ class TamperScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 14),
-                const Text(
-                  'OFFICIAL BUILD\nINTEGRITY CHECK FAILED',
+                Text(
+                  JexText.phrase('OFFICIAL BUILD\nINTEGRITY CHECK FAILED', 'BUILD RESMI\nPEMERIKSAAN INTEGRITAS GAGAL', appLanguageNotifier.value),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.redAccent,
@@ -573,8 +573,8 @@ class TamperScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  'This application cannot continue because its integrity check failed.',
+                Text(
+                  JexText.of('officialBuildFailed', appLanguageNotifier.value),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white70,
@@ -593,8 +593,8 @@ class TamperScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
-                  child: const Text(
-                    'EXIT',
+                  child: Text(
+                    JexText.of('exit', appLanguageNotifier.value).toUpperCase(),
                     style: TextStyle(fontWeight: FontWeight.w900),
                   ),
                 ),
@@ -1660,7 +1660,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         hotAlertArmed = false;
         unawaited(_postNotification(
           JexText.of('safetyAlert', appLanguageNotifier.value),
-          'JexText.of('hotsideLimit', appLanguageNotifier.value) + ' ' + hotLimit.toString() + '°C.',
+          JexText.of('hotsideLimit', appLanguageNotifier.value) + ' ' + hotLimit.toString() + '°C.',
           2101,
         ));
       }
@@ -2763,7 +2763,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       case 'RATE_LIMIT':
         return 'Command rate limited.';
       case 'DISCONNECTED':
-        return 'Bluetooth disconnected.';
+        return JexText.of('bluetoothDisconnected', appLanguageNotifier.value);
       case 'NONE':
         return JexText.of('systemReady', appLanguageNotifier.value);
       default:
