@@ -439,6 +439,11 @@ class _JexIconPainter extends CustomPainter {
             stroke(s * .03, color.withValues(alpha: .16)),
           );
         }
+
+      case JexAnimatedIconKind.generic:
+        // Generic glyphs are rendered by the widget layer; this painter has no
+        // custom geometry for them.
+        break;
     }
 
     if (warning) {
@@ -4280,10 +4285,8 @@ class _DashboardScreenState extends State<DashboardScreen>
           ),
         ),
       ),
-    ),
-  );
+    );
   }
-
 }
 
 // --- CONNECTION SHEET: UI only; BLE ownership remains in DashboardScreen ---
