@@ -817,7 +817,7 @@ class SettingsPage extends StatelessWidget {
                 context,
                 PhosphorIconsRegular.info,
                 JexText.of('about', language),
-                appName,
+                'JE Cooler',
                 () => Navigator.of(context).push(
                   MaterialPageRoute<void>(
                     builder: (_) => const AboutSettingsPage(),
