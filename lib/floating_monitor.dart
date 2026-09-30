@@ -6,7 +6,7 @@
 // WindowManager and the actual overlay window. This file never owns BLE/GATT.
 // Localization: read the shared AppLanguage notifier. English status = ON/OFF;
 // Indonesia status = HIDUP/MATI. Language selector labels are English / Indonesia.
-// Fan Speed invariant: S is visible only while telemetry.fanOn is true.
+// Fan Speed invariant: S remains visible when selected; Fan OFF is presented as OFF/MATI.
 // The same invariant applies to Settings preview and native overlay presentation.
 // Protocol identifiers are not translated.
 
@@ -585,8 +585,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   }
 
   // AI-METHOD / METRIC-CONTRACT
-  // Add/remove one metric from the persisted selection; S remains runtime-visible only
-  // while Fan telemetry reports ON.
+  // Add/remove one metric from the persisted selection; runtime state never removes S.
   void _toggleMetric(String metric, bool value) {
     final next = Set<String>.from(config.selected);
     if (value) {
@@ -622,7 +621,6 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
       body: ValueListenableBuilder<FloatingTelemetry>(
         valueListenable: floatingTelemetryNotifier,
         builder: (context, telemetry, _) {
-          final speedAvailable = telemetry.fanOn;
           return ListView(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
             children: [
@@ -740,8 +738,8 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   }
 
   // AI-METHOD / PREVIEW-CONTRACT
-  // Render the same visibility rules as native overlay preview; Fan Speed is omitted
-  // whenever telemetry.fanOn is false.
+  // Render the same visibility rules as native overlay preview; selected Speed stays
+  // visible and becomes OFF/MATI when telemetry.fanOn is false.
   Widget _livePreview(FloatingTelemetry telemetry) {
     final visible = config.order.where((metric) {
       if (!config.selected.contains(metric)) return false;
