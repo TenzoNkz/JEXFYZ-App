@@ -33,7 +33,8 @@ class AppSettings {
     this.notifySafety = true,
     this.notifyFirmware = true,
     this.notifyBluetooth = true,
-    this.autoConnect = true,
+    // New installs default to Manual; an existing saved preference is preserved.
+    this.autoConnect = false,
   });
 
   // AI-METHOD / COPY CONTRACT
@@ -88,7 +89,8 @@ class AppSettings {
         notifySafety: decoded['notifySafety'] is bool ? decoded['notifySafety'] as bool : true,
         notifyFirmware: decoded['notifyFirmware'] is bool ? decoded['notifyFirmware'] as bool : true,
         notifyBluetooth: decoded['notifyBluetooth'] is bool ? decoded['notifyBluetooth'] as bool : true,
-        autoConnect: decoded['autoConnect'] is bool ? decoded['autoConnect'] as bool : true,
+        // Missing/malformed Auto Connect preference falls back to the new Manual default.
+        autoConnect: decoded['autoConnect'] is bool ? decoded['autoConnect'] as bool : false,
       );
     } catch (_) {
       return const AppSettings();
