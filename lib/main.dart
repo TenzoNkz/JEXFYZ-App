@@ -2613,7 +2613,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                     child: animatedKind == null
                         ? Icon(icon, size: 22, color: color)
                         : JexAnimatedIcon(
-                            kind: animatedKind!,
+                            kind: animatedKind,
                             size: 22,
                             color: color,
                             active: active,
@@ -3105,7 +3105,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               child: animatedKind == null
                   ? Icon(icon, size: 20, color: value ? accent : scheme.onSurfaceVariant)
                   : JexAnimatedIcon(
-                      kind: animatedKind!,
+                      kind: animatedKind,
                       size: 20,
                       color: value ? accent : scheme.onSurfaceVariant,
                       active: value,
