@@ -1362,3 +1362,23 @@ Never:
 - Build artifact count is exactly one APK plus the symbols artifact.
 - The APK is now available for direct chat delivery from the validated Build #38 artifact.
 - No firmware, BLE UUID/P1 protocol, OTA transport, Firebase metadata contract, GPIO mapping, or signing identity was changed.
+
+## 2026-10-01 — FULL EXECUTION / LIGHT MODE VISUAL REDESIGN
+
+- Redesigned Light Mode around a softer cool-gray background plus white surfaces, instead of a near-white background everywhere.
+- Light Theme palette:
+  - Main background: `#EEF0F4`
+  - Surface/card: `#FFFFFF`
+  - Primary text: `#111318`
+  - Secondary text: `#3F444D`
+  - Surface container: `#E4E7EC`
+  - Outline: `#D6DAE1`
+  - Outline variant: `#DDE1E7`
+  - Divider: `#D7DBE2`
+  - Input fill: `#F5F6F8`
+- Dashboard Light background now uses the same `#EEF0F4` visual foundation; inactive navigation tabs use a darker neutral surface and stronger border.
+- Semantic device colors (Battery, Hotside, Voltage, Adaptive, Peltier, Fan) were preserved.
+- Dark and Default themes were not changed.
+- Updated regression tests to lock the new Light Mode surface/contrast palette.
+- This was an App-only visual change. Firmware, BLE UUID/P1 protocol, OTA transport, Firebase metadata, GPIO mapping, release signing identity, and Floating Monitor logic were untouched.
+- Build App was not triggered by this execution.
