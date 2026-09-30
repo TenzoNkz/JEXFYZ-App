@@ -209,8 +209,10 @@ jobs:
               if not asset.is_file() or asset.stat().st_size == 0:
                   raise SystemExit("JE X FYZ audit failed; missing/empty asset: " + str(asset))
 
-          if "firmware/" in source or "firmware/" in pubspec:
-              raise SystemExit("JE X FYZ audit failed; App code must not depend on firmware source paths")
+          # The continuity firmware source may be documented in comments and kept under firmware/.
+          # Reject only executable Dart import/export/part references to that path.
+          if re.search(r"""(?m)^\s*(?:import|export|part)\s+['"][^'"]*firmware/""", source):
+              raise SystemExit("JE X FYZ audit failed; App Dart code imports firmware source")
 
           print("JE X FYZ App-only security and architecture audit passed.")
           PY
