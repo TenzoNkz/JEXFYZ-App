@@ -423,6 +423,57 @@ class _DashboardScreenState extends State<DashboardScreen>
     super.dispose();
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _tryAutoConnect();
+  }
+
+  void _recordFrameTimings(List<FrameTiming> timings) {
+    frameCount += timings.length;
+  }
+
+  void _tryAutoConnect() {
+    if (!appAutoConnectNotifier.value ||
+        connected ||
+        syncing ||
+        _bleConnecting ||
+        (reconnectTimer?.isActive ?? false)) {
+      return;
+    }
+    unawaited(_scanAndConnect());
+  }
+
+  Future<void> _postNotification(String title, String body, int id) async {
+    try {
+      await const MethodChannel('je_x_fyz/notifications').invokeMethod<void>(
+        'showNotification',
+        <String, dynamic>{
+          'title': title,
+          'body': body,
+          'id': id,
+        },
+      );
+    } catch (e) {
+      debugPrint('Notification: $e');
+    }
+  }
+
+  void _publishFloatingTelemetry() {
+    final telemetry = FloatingTelemetry(
+      fps: currentFps > 0 ? currentFps.toString() : '--',
+      battery: connected && phoneBatteryValid ? phoneBatteryTemp : '--',
+      hotside: connected ? hotsideTemp : '--',
+      voltage: connected ? voltage : '--',
+      fanOn: connected && fanOn,
+      speed: fanSpeed,
+      adaptiveOn: connected && adaptiveOn,
+      peltierOn: connected && peltierOn,
+      connected: connected,
+    );
+    floatingTelemetryNotifier.value = telemetry;
+    unawaited(FloatingBridge.updateData(telemetry));
+  }
+
   // AI-METHOD: _requestPermissions — Prepare Android BLE permissions, adapter state, and legacy location requirements.
   Future<bool> _requestPermissions({bool showResult = false}) async {
     if (!Platform.isAndroid) return true;
@@ -647,6 +698,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         resetReason = 'UNKNOWN';
         notice = 'Connecting to device...';
       });
+      _publishFloatingTelemetry();
     }
 
     connectionSub = target.connectionState.listen((state) {
@@ -797,6 +849,14 @@ class _DashboardScreenState extends State<DashboardScreen>
       resetReason = 'UNKNOWN';
       notice = 'Bluetooth disconnected.';
     });
+    _publishFloatingTelemetry();
+    if (appNotifyBluetoothNotifier.value) {
+      unawaited(_postNotification(
+        JexText.of('bluetoothDisconnected', appLanguageNotifier.value),
+        'JE X FYZ',
+        2103,
+      ));
+    }
   }
 
   // AI-METHOD: _discoverServices — Discover exact JE X FYZ service/RX/TX, enable notifications, and complete SYNC/SYNC_READY.
@@ -941,6 +1001,14 @@ class _DashboardScreenState extends State<DashboardScreen>
       dashboardReady = true;
       notice = 'System ready.';
     });
+    _publishFloatingTelemetry();
+    if (appNotifyBluetoothNotifier.value) {
+      unawaited(_postNotification(
+        JexText.of('bluetoothConnected', appLanguageNotifier.value),
+        'JE X FYZ',
+        2102,
+      ));
+    }
     // AI-METHOD: _startBatteryTelemetry — Start the 1 Hz phone-battery heartbeat.
     _startBatteryTelemetry();
     unawaited(_setBackgroundService(true));
@@ -1218,6 +1286,24 @@ class _DashboardScreenState extends State<DashboardScreen>
         _applyTelemetryValue(entry.key, entry.value);
       }
     });
+
+    final hotText = values['HOT'];
+    final hot = hotText == null ? null : double.tryParse(hotText);
+    if (hot != null && hot.isFinite) {
+      if (hot < hotLimit) hotAlertArmed = true;
+      if (hot >= hotLimit &&
+          hotAlertArmed &&
+          appNotifySafetyNotifier.value &&
+          connected) {
+        hotAlertArmed = false;
+        unawaited(_postNotification(
+          JexText.of('safetyAlert', appLanguageNotifier.value),
+          'Hotside reached ' + hotLimit.toString() + '°C.',
+          2101,
+        ));
+      }
+    }
+    _publishFloatingTelemetry();
   }
 
   // AI-METHOD: _applyTelemetryValue — Map firmware telemetry keys into typed Flutter state.
@@ -1266,6 +1352,9 @@ class _DashboardScreenState extends State<DashboardScreen>
         break;
       case 'ADAPTIVE_CEILING':
         adaptiveCeiling = value;
+        break;
+      case 'ADAPTIVE_PROFILE':
+        adaptiveProfile = value.toUpperCase();
         break;
       case 'RGB':
         rgbOn = value == 'ON';
@@ -1351,6 +1440,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           phoneBatteryValid = valid;
           phoneBatteryTemp = valid ? temp.toStringAsFixed(1) : '--';
         });
+        _publishFloatingTelemetry();
       }
 
       if (_bleReady) {
@@ -1373,17 +1463,6 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
   }
 
-  // AI-METHOD: _scheduleRuntimeSync — Send changed runtime settings after the intended settling period.
-  void _scheduleRuntimeSync() {
-    if (!connected || !_bleReady || !_bleSessionReady) return;
-    runtimeSyncTimer = Timer(const Duration(milliseconds: 90), () {
-      if (!mounted || !connected || !_bleReady || !_bleSessionReady) return;
-      // Refresh firmware-owned state after a short burst of commands.
-      // This is deliberately non-blocking so rapid controls stay responsive.
-      unawaited(sendCommand('SYNC', showError: false));
-    });
-  }
-
   // AI-METHOD: _sendAndConfirm — Wait for telemetry confirmation after a state-changing command.
   Future<bool> _sendAndConfirm(
     String command, {
@@ -1395,8 +1474,6 @@ class _DashboardScreenState extends State<DashboardScreen>
       timeout: timeout,
     );
     if (accepted) {
-      // AI-METHOD: _scheduleRuntimeSync — Send changed runtime settings after the intended settling period.
-      _scheduleRuntimeSync();
       _notifyCommandAccepted(command);
     }
     return accepted;
