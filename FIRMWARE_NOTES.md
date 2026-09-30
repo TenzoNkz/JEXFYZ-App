@@ -1,5 +1,22 @@
 # JE X FYZ Firmware — Master Notes
 
+## 2026-09-30 — V2.2 FINAL ADAPTIVE STATE PASS
+
+- Current working firmware source is `firmware/JEXFYZ-V2.2.ino`; V2.1 source is retired from the App repository.
+- V2.2 firmware version is **V2.2**. Production BIN/Firebase metadata were not promoted.
+- Adaptive profile options are `HOTSIDE` (Hotside Protection only) and `HOTSIDE_BATTERY` (combined Hotside + Battery). Hotside is the thermal priority/override in the combined profile.
+- Adaptive profile changes are locked while Adaptive is ON and persist across restart.
+- Adaptive ON/OFF forces the voltage baseline to 5V when leaving a voltage above 5V.
+- Battery-driven Adaptive voltage changes use a 1-second transition delay in both directions.
+- Hotside Protection uses a 10-second Peltier-off cooling period at the current hot level, then steps down one voltage level and resumes Peltier at the new voltage; there is no extra 10-second wait after the new voltage is reached.
+- 12V hot -> 9V, 9V hot -> 5V; 5V hot -> Peltier OFF + Fan ON and Adaptive OFF. Hotside-restricted higher voltages remain excluded until Adaptive is turned OFF.
+- Manual Hotside critical protection remains Peltier OFF + Fan ON with no automatic Peltier restart. Manual Voltage remains unavailable while Adaptive is ON and retains its intentional 1-second voltage guard.
+- Generic user-control rate limiting was removed; there is no generic control delay.
+- Existing OTA transport/radio ownership/P1 UUIDs/GPIO mapping and blocking-delay-free architecture were preserved.
+- Static source checks completed after this pass: balanced delimiters and zero explicit Arduino `delay()`, `delayMicroseconds()`, or `vTaskDelay()` calls.
+- ArduinoDroid / Arduino-ESP32 Core 3.3.7 compilation and physical V2.2 validation are still pending.
+
+
 > **Document role:** permanent firmware engineering memory for the JE X FYZ project.
 > This file intentionally lives in the App repository as documentation, even though firmware implementation source and production build files are maintained separately.
 > **Reviewed:** 2026-09-28.
