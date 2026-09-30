@@ -6,6 +6,15 @@
 - Floating telemetry now preserves raw Adaptive/Peltier state rather than masking it behind Fan state.
 - Firmware functional revision is V2.3. No Firebase/production BIN promotion is implied by this source change.
 
+# 2026-09-30 — RE-EXECUTION / FINAL UI PERMISSION CLEANUP
+
+- The previous execution session stopped during tool-side Dart/Flutter/Kotlin checking; repository changes are being completed from the already-committed source state rather than blindly duplicated.
+- Current App UI: Voltage uses only the fixed 5V / 9V / 12V vertical selector; the old Vertical/Side Text setting is removed.
+- Default Settings and child pages use the dark JE X FYZ theme. The Dashboard retains its intentional black-header/white-content Default presentation.
+- Floating Monitor overlay permission now uses an explicit in-app Allow/Cancel dialog, opens Android overlay settings, rechecks permission on resume, and auto-starts after permission is granted.
+- Current App source has changed after the previous Build App #10 validation. Build #10 therefore does NOT validate this latest source; a new explicit Build App run is required before distributing the updated APK.
+- Firmware current source is V2.3; the dedicated firmware repository remains binary-only and is not updated with an uncompiled BIN.
+
 # JE X FYZ App — Master Notes
 
 ## 2026-09-30 — FINAL SETTINGS / MENU / FLOATING / SYNC PASS
