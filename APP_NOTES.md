@@ -1,3 +1,17 @@
+# 2026-10-01 — CHAT STATUS SUFFIX RULE
+
+- Every assistant response in the JE X FYZ project chat must end with an explicit workflow-status block so the next action is unambiguous.
+- Required status choices are descriptive, not assumptions:
+  - `🟡 STATUS: LANJUT DISKUSI` = analysis/review is still in progress; no implementation or build unless explicitly requested.
+  - `🟢 STATUS: SIAP EKSEKUSI` = root cause and implementation plan are sufficiently defined; wait for `@Thinking Eksekusi!`.
+  - `🔵 STATUS: PERLU TANYA GEMINI` = a specific unresolved technical question should be independently checked before implementation; state exactly what needs verification.
+  - `🟣 STATUS: SIAP BUILD APP` = implementation is complete/committed and ready for the separate `@Thinking Build App!` validation step.
+  - `🔴 STATUS: JANGAN EKSEKUSI DULU` = a material uncertainty, missing evidence, or regression risk remains.
+- The status block must appear at the very end of each chat response, after the substantive answer.
+- This rule is a chat/process rule only; it does not authorize source edits, commits, or builds by itself.
+- Project workflow remains sequential: `@Thinking Diskusi!` → review, `@Thinking Eksekusi!` → implementation/commit, `@Thinking Build App!` → build/validation.
+- When a response is only a documentation/process update, the status must still reflect the actual next project state.
+
 # 2026-09-30 — V2.3 TOUCH / APP UI / PERMISSION FIX PASS
 
 - Voltage UI was simplified to the fixed three-row vertical selector matching the intended JE X FYZ presentation: 5V Low Mode, 9V Mid Mode, 12V High Mode. The old Vertical/Side Text setting was removed from persisted App settings and UI.
