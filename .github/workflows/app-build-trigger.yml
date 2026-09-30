@@ -5,12 +5,10 @@ name: Build App
 
 on:
   workflow_dispatch:
-  push:
 permissions:
   contents: read
 
 jobs:
   build:
-    if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'build: trigger requested App validation'
     uses: ./.github/workflows/app-build.yml
     secrets: inherit
