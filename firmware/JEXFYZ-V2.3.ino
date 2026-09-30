@@ -1343,8 +1343,6 @@ static void sampleNtcIfDue() {
   if (!isfinite(voltage) || voltage <= 0.0f) {
     ntcValid = false;
     hotsideC = NAN;
-    rapidRisePreviousC = NAN;
-    rapidRisePreviousAtMs = 0;
     return;
   }
   if (voltage > 3.28f) voltage = 3.28f;
@@ -3203,10 +3201,6 @@ static bool setPeltierState(bool desired, String& reason) {
   if (hotsideProtectionActiveNow()) {
     reason = "HOTSIDE_PROTECTION";
     return false;
-  }
-
-  if (rapidRiseProtectionLatched) {
-    rapidRiseProtectionLatched = false;
   }
 
   if (!peltierOn) {
