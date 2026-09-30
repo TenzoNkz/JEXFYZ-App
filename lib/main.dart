@@ -2974,22 +2974,21 @@ class _DashboardScreenState extends State<DashboardScreen>
 
 
   Widget _card({required Widget child, EdgeInsetsGeometry? padding}) {
-    final dark = appThemeNotifier.value == AppThemePreset.dark;
+    final scheme = Theme.of(context).colorScheme;
+    final dark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.symmetric(vertical: 6),
       padding: padding ?? const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: dark ? const Color(0xFF1A1B20) : const Color(0xFFF7F7F8),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: dark ? const Color(0xFF2B2D33) : const Color(0xFFE7E7E9),
-        ),
+        color: scheme.surface,
+        borderRadius: BorderRadius.circular(19),
+        border: Border.all(color: scheme.outlineVariant.withValues(alpha: .78)),
         boxShadow: [
           BoxShadow(
-            color: dark ? Colors.black38 : const Color(0x12000000),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: Colors.black.withValues(alpha: dark ? .24 : .07),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
           ),
         ],
       ),
@@ -2998,19 +2997,19 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   Widget _sectionTitle(String title, {String? subtitle}) {
-    final dark = appThemeNotifier.value == AppThemePreset.dark;
+    final scheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.fromLTRB(4, 8, 4, 6),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            title,
+            title.toUpperCase(),
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 16.5,
               fontWeight: FontWeight.w900,
-              letterSpacing: -0.2,
-              color: dark ? Colors.white : Colors.black,
+              letterSpacing: .60,
+              color: scheme.onSurface,
             ),
           ),
           if (subtitle != null && subtitle.trim().isNotEmpty) ...[
@@ -3018,7 +3017,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             Text(
               subtitle,
               style: TextStyle(
-                color: dark ? Colors.white54 : Colors.black45,
+                color: scheme.onSurfaceVariant,
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
               ),
@@ -3036,55 +3035,63 @@ class _DashboardScreenState extends State<DashboardScreen>
     required bool value,
     required bool enabled,
     required Future<void> Function(bool) onChanged,
+    JexAnimatedIconKind? animatedKind,
   }) {
-    return Row(
-      children: [
-        Container(
-
-          width: 34,
-          height: 34,
-          decoration: BoxDecoration(
-            color: value ? Colors.blueAccent.withValues(alpha: 0.10) : Colors.black.withValues(alpha: 0.04),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, size: 19, color: value ? Colors.blueAccent : Colors.black38),
+    final scheme = Theme.of(context).colorScheme;
+    final accent = scheme.primary;
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 180),
+      curve: Curves.easeOut,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      decoration: BoxDecoration(
+        color: value
+            ? accent.withValues(alpha: .08)
+            : scheme.surfaceContainerHighest.withValues(alpha: .40),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: value
+              ? accent.withValues(alpha: .24)
+              : scheme.outlineVariant.withValues(alpha: .60),
         ),
-        const SizedBox(width: 9),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-              if (subtitle.trim().isNotEmpty) ...[
-                const SizedBox(height: 3),
-                StaticSwitcher(
-                  child: Text(
-                    subtitle,
-                    key: ValueKey<String>(subtitle),
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: enabled ? Colors.black45 : Colors.black38,
-                      fontWeight: FontWeight.w600,
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: accent.withValues(alpha: value ? .13 : .06),
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: animatedKind == null
+                  ? Icon(icon, size: 20, color: value ? accent : scheme.onSurfaceVariant)
+                  : JexAnimatedIcon(
+                      kind: animatedKind!,
+                      size: 20,
+                      color: value ? accent : scheme.onSurfaceVariant,
+                      active: value,
                     ),
-                  ),
-                ),
-              ],
-            ],
+            ),
           ),
-        ),
-        Switch(
-          value: value,
-          activeThumbColor: Colors.blueAccent,
-          activeTrackColor: Colors.blueAccent.withValues(alpha: 0.25),
-          onChanged: enabled ? onChanged : null,
-        ),
-      ],
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              title.toUpperCase(),
+              style: TextStyle(
+                fontSize: 12.5,
+                letterSpacing: .35,
+                color: scheme.onSurface,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+          Switch(
+            value: value,
+            onChanged: enabled ? onChanged : null,
+          ),
+        ],
+      ),
     );
   }
 
@@ -3139,19 +3146,13 @@ class _DashboardScreenState extends State<DashboardScreen>
     bool isLast = false,
   }) {
     final active = voltage == target;
-    final dark = appThemeNotifier.value == AppThemePreset.dark;
-    final foreground = active
-        ? Colors.white
-        : (dark ? Colors.white : Colors.black);
-    final secondary = active
-        ? Colors.white70
-        : (dark ? Colors.white54 : Colors.black45);
-    final inactiveIcon = dark ? Colors.white24 : Colors.black26;
+    final scheme = Theme.of(context).colorScheme;
+    final foreground = active ? Colors.white : scheme.onSurface;
+    final secondary = active ? Colors.white70 : scheme.onSurfaceVariant;
+    final inactiveIcon = scheme.onSurfaceVariant.withValues(alpha: .30);
 
     return Material(
-      color: active
-          ? const Color(0xFF17181C)
-          : (dark ? const Color(0xFF1A1B20) : Colors.transparent),
+      color: active ? const Color(0xFF17181C) : Colors.transparent,
       borderRadius: BorderRadius.vertical(
         top: isFirst ? const Radius.circular(14) : Radius.zero,
         bottom: isLast ? const Radius.circular(14) : Radius.zero,
@@ -3184,12 +3185,21 @@ class _DashboardScreenState extends State<DashboardScreen>
                   ),
                 ),
               ),
-              Icon(
-                active
-                    ? PhosphorIconsBold.checkCircle
-                    : PhosphorIconsRegular.circle,
-                color: active ? const Color(0xFF5C9DFF) : inactiveIcon,
-                size: 22,
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 170),
+                width: 28,
+                height: 28,
+                decoration: BoxDecoration(
+                  color: active
+                      ? const Color(0xFF5C9DFF).withValues(alpha: .15)
+                      : scheme.onSurface.withValues(alpha: .04),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  active ? PhosphorIconsBold.check : PhosphorIconsRegular.circle,
+                  color: active ? const Color(0xFF5C9DFF) : inactiveIcon,
+                  size: active ? 18 : 10,
+                ),
               ),
             ],
           ),
@@ -3217,6 +3227,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                   title: JexText.of('peltier', lang),
                   subtitle: '',
                   icon: PhosphorIconsRegular.snowflake,
+                  animatedKind: JexAnimatedIconKind.peltier,
                   value: peltierOn,
                   enabled: connected && !adaptiveOn,
                   onChanged: _togglePeltier,
@@ -3226,6 +3237,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                   title: JexText.of('fan', lang),
                   subtitle: '',
                   icon: PhosphorIconsRegular.fan,
+                  animatedKind: JexAnimatedIconKind.fan,
                   value: fanOn,
                   enabled: connected && !adaptiveOn && !peltierOn,
                   onChanged: _toggleFan,
@@ -3236,7 +3248,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                     const Icon(
                       PhosphorIconsRegular.gauge,
                       size: 20,
-                      color: Colors.black45,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                     const SizedBox(width: 9),
                     Expanded(
@@ -3262,8 +3274,8 @@ class _DashboardScreenState extends State<DashboardScreen>
                   max: 100,
                   divisions: 5,
                   value: fanSpeedDraft.clamp(50, 100).toDouble(),
-                  activeColor: Colors.black,
-                  inactiveColor: Colors.black12,
+                  activeColor: Theme.of(context).colorScheme.primary,
+                  inactiveColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: .12),
                   onChanged: speedEnabled
                       ? (v) => setState(
                             () => fanSpeedDraft =
@@ -3296,9 +3308,10 @@ class _DashboardScreenState extends State<DashboardScreen>
           _card(
             padding: const EdgeInsets.fromLTRB(13, 5, 13, 7),
             child: _switchRow(
-              title: 'Adaptive Switch',
+              title: JexText.of('adaptiveSwitch', lang),
               subtitle: '',
               icon: PhosphorIconsRegular.sparkle,
+              animatedKind: JexAnimatedIconKind.adaptive,
               value: adaptiveOn,
               enabled: connected,
               onChanged: _toggleAdaptive,
@@ -3320,7 +3333,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                         },
                   secondary: Icon(
                     PhosphorIconsRegular.thermometer,
-                    color: locked ? Colors.black26 : Colors.black54,
+                    color: locked ? Theme.of(context).colorScheme.onSurface.withValues(alpha: .22) : Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                   title: Text(
                     JexText.of('hotsideProtection', lang),
@@ -3356,14 +3369,15 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   // AI-METHOD: _buildLedTab — Build LED/RGB/brightness/color controls.
   Widget _buildLedTab({Key? key}) {
-    const modeNames = <String>[
-      'Static',
-      'Breath',
-      'Center Out',
-      'Outer In',
-      'Dual Chase',
-      'Left ↔ Right',
-      'Rainbow',
+    final lang = appLanguageNotifier.value;
+    final modeNames = <String>[
+      JexText.of('ledModeStatic', lang),
+      JexText.of('ledModeBreath', lang),
+      JexText.of('ledModeCenterOut', lang),
+      JexText.of('ledModeOuterIn', lang),
+      JexText.of('ledModeDualChase', lang),
+      JexText.of('leftRight', lang),
+      JexText.of('ledModeRainbow', lang),
     ];
     final safeMode = rgbMode.clamp(1, 7);
     final modeName = modeNames[safeMode - 1];
@@ -3384,6 +3398,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                   title: JexText.of('power', lang),
                   subtitle: '',
                   icon: PhosphorIconsBold.lightbulb,
+                  animatedKind: JexAnimatedIconKind.led,
                   value: rgbOn,
                   enabled: connected,
                   onChanged: _setRgb,
@@ -3427,25 +3442,41 @@ class _DashboardScreenState extends State<DashboardScreen>
                   ],
                 ),
                 AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 150),
-                  child: Text(
-                    modeName,
-                    key: ValueKey<String>(modeName),
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w800,
-                    ),
+                  duration: const Duration(milliseconds: 180),
+                  child: Column(
+                    key: ValueKey<String>('led-mode-$modeName'),
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      JexAnimatedIcon(
+                        kind: JexAnimatedIconKind.led,
+                        size: 92,
+                        color: colorEnabled
+                            ? ledPaletteColor(rgbColor.toUpperCase())
+                            : Theme.of(context).colorScheme.onSurfaceVariant,
+                        active: rgbOn,
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        modeName.toUpperCase(),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          color: Theme.of(context).colorScheme.onSurface,
+                          letterSpacing: .35,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 5),
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       PhosphorIconsRegular.sun,
-                      color: Colors.black38,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                       size: 20,
                     ),
                     Expanded(
@@ -3454,8 +3485,8 @@ class _DashboardScreenState extends State<DashboardScreen>
                         max: 100,
                         divisions: 99,
                         value: brightness.clamp(1, 100).toDouble(),
-                        activeColor: Colors.black,
-                        inactiveColor: Colors.black12,
+                        activeColor: Theme.of(context).colorScheme.primary,
+                        inactiveColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: .12),
                         onChanged: connected
                             ? (v) => setState(() => brightness = v.round())
                             : null,
@@ -3526,30 +3557,65 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   Widget _adjuster({required String title, required int value, required int min, required int max, required ValueChanged<int> onChanged, String unit = '°C'}) {
+    final scheme = Theme.of(context).colorScheme;
     return Row(
       children: [
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),
+              Text(
+                title.toUpperCase(),
+                style: TextStyle(
+                  fontSize: 12.5,
+                  letterSpacing: .35,
+                  fontWeight: FontWeight.w900,
+                  color: scheme.onSurface,
+                ),
+              ),
               const SizedBox(height: 3),
-              Text(JexText.of('range', appLanguageNotifier.value) + ' $min–$max$unit', style: const TextStyle(color: Colors.black45, fontSize: 10, fontWeight: FontWeight.w700)),
+              Text(
+                JexText.of('range', appLanguageNotifier.value) + ' $min–$max$unit',
+                style: TextStyle(
+                  color: scheme.onSurfaceVariant,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             ],
           ),
         ),
-        IconButton(onPressed: value <= min ? null : () => onChanged(value - 1), icon: const Icon(PhosphorIconsRegular.minusCircle)),
+        IconButton(
+          onPressed: value <= min ? null : () => onChanged(value - 1),
+          icon: const Icon(PhosphorIconsRegular.minusCircle),
+          color: scheme.onSurfaceVariant,
+        ),
         Container(
-
-          width: 66,
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(13), border: Border.all(color: const Color(0xFFE3E3E5))),
+          width: 72,
+          padding: const EdgeInsets.symmetric(vertical: 9),
+          decoration: BoxDecoration(
+            color: scheme.surfaceContainerHighest.withValues(alpha: .52),
+            borderRadius: BorderRadius.circular(13),
+            border: Border.all(color: scheme.outlineVariant),
+          ),
           child: StaticSwitcher(
-
-            child: Text('$value$unit', key: ValueKey<String>('$value$unit'), textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: Colors.blueAccent)),
+            child: Text(
+              '$value$unit',
+              key: ValueKey<String>('$value$unit'),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+                fontSize: 15,
+                color: scheme.primary,
+              ),
+            ),
           ),
         ),
-        IconButton(onPressed: value >= max ? null : () => onChanged(value + 1), icon: const Icon(PhosphorIconsRegular.plusCircle)),
+        IconButton(
+          onPressed: value >= max ? null : () => onChanged(value + 1),
+          icon: const Icon(PhosphorIconsRegular.plusCircle),
+          color: scheme.onSurfaceVariant,
+        ),
       ],
     );
   }
@@ -3595,9 +3661,9 @@ class _DashboardScreenState extends State<DashboardScreen>
               const Divider(height: 14),
               Row(
                 children: [
-                  SizedBox(width: 100, child: Text(JexText.of('zone9v'), style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Colors.black45))),
-                  Expanded(child: StaticSwitcher(duration: const Duration(milliseconds: 150), child: Text('≈ $midLow–$midHigh°C', key: ValueKey<String>('$midLow:$midHigh'), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900)))),
-                  const Icon(PhosphorIconsRegular.lock, color: Colors.black26),
+                  SizedBox(width: 100, child: Text(JexText.of('zone9v').toUpperCase(), style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.onSurfaceVariant))),
+                  Expanded(child: StaticSwitcher(duration: const Duration(milliseconds: 150), child: Text('≈ $midLow–$midHigh°C', key: ValueKey<String>('$midLow:$midHigh'), style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.onSurface)))),
+                  Icon(PhosphorIconsRegular.lock, color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: .35)),
                 ],
               ),
               const Divider(height: 14),
@@ -3869,7 +3935,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             child: FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(
-                title,
+                title.toUpperCase(),
                 maxLines: 1,
                 style: TextStyle(
                   color: selected ? Colors.white : (dark ? Colors.white70 : const Color(0xFF5E6068)),
