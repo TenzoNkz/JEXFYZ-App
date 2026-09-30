@@ -103,7 +103,8 @@ final ValueNotifier<AppThemePreset> appThemeNotifier = ValueNotifier<AppThemePre
 final ValueNotifier<bool> appNotifySafetyNotifier = ValueNotifier<bool>(true);
 final ValueNotifier<bool> appNotifyFirmwareNotifier = ValueNotifier<bool>(true);
 final ValueNotifier<bool> appNotifyBluetoothNotifier = ValueNotifier<bool>(true);
-final ValueNotifier<bool> appAutoConnectNotifier = ValueNotifier<bool>(true);
+final ValueNotifier<bool> appAutoConnectNotifier = ValueNotifier<bool>(false);
+final ValueNotifier<String?> knownCoolerRemoteIdNotifier = ValueNotifier<String?>(null);
 
 // AI-MEMORY / STORE CONTRACT
 // AppSettingsStore is the only persistence boundary for application-level settings.
@@ -164,6 +165,50 @@ class AppSettingsStore {
   static Future<void> markFirmwareNotified(String version) async {
     try {
       await _storage.write(key: _firmwareNoticeKey, value: version);
+    } catch (_) {}
+  }
+}
+
+
+// AI-MEMORY / KNOWN-COOLER-CONTRACT
+// Persists only the identity of a cooler that completed a real BLE/P1 session.
+// Auto Connect may use this identity, but it never grants BLE permission or powers Bluetooth on.
+class KnownCoolerStore {
+  static const FlutterSecureStorage _storage = FlutterSecureStorage();
+  static const String _key = 'jexfyz_known_cooler_remote_id_v1';
+
+  // AI-METHOD / LOAD-CONTRACT
+  // Load the last cooler identity without prompting the user or touching Bluetooth state.
+  static Future<String?> load() async {
+    try {
+      final raw = await _storage.read(key: _key);
+      final value = raw?.trim();
+      knownCoolerRemoteIdNotifier.value =
+          value == null || value.isEmpty ? null : value;
+      return knownCoolerRemoteIdNotifier.value;
+    } catch (_) {
+      knownCoolerRemoteIdNotifier.value = null;
+      return null;
+    }
+  }
+
+  // AI-METHOD / SAVE-CONTRACT
+  // Save only after a complete BLE/P1 session has succeeded.
+  static Future<void> save(String remoteId) async {
+    final value = remoteId.trim();
+    if (value.isEmpty) return;
+    knownCoolerRemoteIdNotifier.value = value;
+    try {
+      await _storage.write(key: _key, value: value);
+    } catch (_) {}
+  }
+
+  // AI-METHOD / CLEAR-CONTRACT
+  // Explicitly forget the known cooler identity; no Bluetooth operation is performed here.
+  static Future<void> clear() async {
+    knownCoolerRemoteIdNotifier.value = null;
+    try {
+      await _storage.delete(key: _key);
     } catch (_) {}
   }
 }
