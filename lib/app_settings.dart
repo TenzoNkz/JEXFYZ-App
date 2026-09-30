@@ -672,6 +672,10 @@ class JexText {
       AppLanguage.english: 'Bahasa Indonesia',
       AppLanguage.indonesia: 'Bahasa Indonesia',
     },
+    'appVersion': {
+      AppLanguage.english: 'App Version',
+      AppLanguage.indonesia: 'Versi Aplikasi',
+    },
     'resetBrownout': { AppLanguage.english: 'Brownout / supply drop', AppLanguage.indonesia: 'Brownout / penurunan suplai' },
     'resetPanic': { AppLanguage.english: 'Firmware panic', AppLanguage.indonesia: 'Panic firmware' },
     'resetSoftware': { AppLanguage.english: 'Software reset', AppLanguage.indonesia: 'Reset perangkat lunak' },
