@@ -4887,7 +4887,9 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
       setState(() {
         latestVersion = version;
         firmwareUrl = url;
-        updateAvailable = isDifferentFirmwareVersion(
+        // Security policy: only a strictly newer firmware can be offered.
+        // The firmware enforces the same monotonic version rule before flashing.
+        updateAvailable = isNewerFirmwareVersion(
           version,
           widget.currentVersion,
         );
