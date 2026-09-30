@@ -948,3 +948,11 @@ Never:
 - Added reusable `lib/jex_animated_glyph.dart` for Floating Monitor / secondary UI animation coverage.
 - Dashboard Default theme remains implemented by placing the Dashboard under a Light theme ancestor while keeping the global Default theme dark for non-dashboard Settings pages.
 - No Build App was run. The repository remains ready for an explicit `Build App` command only.
+
+
+## 2026-10-01 — BUILD APP TRIGGER LOCK
+
+- Build App entry point is locked to `workflow_dispatch` only; repository pushes and pull requests do not start the App release workflow.
+- The manual trigger now requires an explicit `confirm_build` checkbox to be enabled. The reusable `app-build.yml` remains `workflow_call` only and cannot self-trigger.
+- The intended operational flow is `@Thinking Diskusi!` → review only, `@Thinking Eksekusi!` → implementation/commit only, and `@Thinking Build App!` → manually dispatch the build with explicit confirmation.
+- No automatic build trigger was added.
