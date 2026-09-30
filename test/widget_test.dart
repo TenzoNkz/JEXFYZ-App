@@ -21,15 +21,15 @@ void main() {
     await tester.pump();
 
     expect(find.text('JE X FYZ'), findsOneWidget);
-    expect(find.text('BATTERY TEMPERATURE'), findsOneWidget);
-    expect(find.text('HOTSIDE TEMPERATURE'), findsOneWidget);
-    expect(find.text('VOLTAGE INDICATOR'), findsOneWidget);
-    expect(find.text('VOLTAGE'), findsOneWidget);
-    expect(find.text('ADAPTIVE MODE'), findsOneWidget);
-    expect(find.text('PELTIER SWITCH'), findsOneWidget);
-    expect(find.text('FAN SWITCH'), findsOneWidget);
-    expect(find.text('FAN SPEED'), findsOneWidget);
-    expect(find.text('TEMPERATURE'), findsOneWidget);
+    expect(find.text('Battery Temperature'), findsOneWidget);
+    expect(find.text('Hotside Temperature'), findsOneWidget);
+    expect(find.text('Voltage Indicator'), findsOneWidget);
+    expect(find.text('Voltage'), findsOneWidget);
+    expect(find.text('Adaptive Mode'), findsOneWidget);
+    expect(find.text('Peltier Switch'), findsOneWidget);
+    expect(find.text('Fan Switch'), findsOneWidget);
+    expect(find.text('Fan Speed'), findsOneWidget);
+    expect(find.text('Temperature'), findsOneWidget);
 
     // Notify is part of the Home dashboard. Its label may include a
     // contextual suffix such as "• ERROR", "• SYNC", etc.
@@ -62,10 +62,10 @@ void main() {
     expect(isNewerFirmwareVersion('V1.7', 'V1.8'), isFalse);
   });
 
-  test('LED palette exposes 48 valid RGB colors', () {
-    expect(ledColorPalette, hasLength(48));
+  test('LED palette exposes current RGB colors', () {
+    expect(ledColorPalette, hasLength(12));
     expect(ledColorPalette.first, '#FF0000');
-    expect(ledColorPalette.last, '#FFFFFF');
+    expect(ledColorPalette.last, '#FF0080');
     for (final hex in ledColorPalette) {
       expect(RegExp(r'^#[0-9A-F]{6}$').hasMatch(hex), isTrue);
       expect(ledPaletteColor(hex), isA<Color>());
