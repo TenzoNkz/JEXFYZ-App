@@ -16,7 +16,6 @@ import android.provider.Settings
 import android.util.Base64
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.pm.ServiceInfo
 import android.Manifest
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
