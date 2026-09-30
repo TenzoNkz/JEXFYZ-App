@@ -1414,24 +1414,12 @@ static void processAdaptiveHotTimer() {
   adaptiveHotStepPending = false;
   adaptiveUpPending = false;
   adaptiveDownPending = false;
+  adaptiveDownDueMs = 0;
+
   const bool wasPeltierOn = peltierOn;
   peltierOn = false;
   stopPeltierOutput();
   if (wasPeltierOn) sendDelta("PELTIER", "OFF");
-
-  if (!hotsideProtectionActiveNow()) {
-    const bool resume = adaptiveResumePeltierAfterHotStep && fanOn;
-
-    adaptiveResumePeltierAfterHotStep = false;
-    peltierHotOffUntilMs = 0;
-
-    if (resume) {
-      peltierOn = true;
-    }
-
-    applyCoolingOutputs();
-    return;
-  }
 
   if (currentVoltage == Voltage::V12) {
     adaptiveCeiling = Voltage::V9;
@@ -1440,25 +1428,29 @@ static void processAdaptiveHotTimer() {
     adaptiveCeiling = Voltage::V5;
     sendDelta("ADAPTIVE_CEILING", "5V");
   } else {
-
     adaptiveOn = false;
     adaptiveCeiling = Voltage::V12;
     adaptiveResumePeltierAfterHotStep = false;
     peltierHotOffUntilMs = 0;
+    fanOn = true;
     fanPwm = 100;
-
     applyCoolingOutputs();
     sendDelta("ADAPTIVE", "OFF");
     sendDelta("ADAPTIVE_CEILING", voltageToString(adaptiveCeiling));
+    sendDelta("FAN", "ON");
     sendDelta("FAN_SPEED", String(fanPwm));
     return;
   }
 
+  adaptiveResumePeltierAfterHotStep =
+      adaptiveResumePeltierAfterHotStep || (wasPeltierOn && fanOn);
+
   const Voltage target = lowerVoltage(currentVoltage);
-  const bool accepted = requestVoltage(target, VoltageRequestSource::HOTSTEP, true);
+  const bool accepted =
+      requestVoltage(target, VoltageRequestSource::HOTSTEP, true);
 
   if (!accepted) {
-
+    adaptiveResumePeltierAfterHotStep = false;
     sendDelta("SAFETY_REASON", "VOLTAGE_STEP_FAILED");
   }
 }
@@ -1529,26 +1521,30 @@ static void scheduleAdaptiveBatteryTarget(Voltage target) {
   if (target == currentVoltage) {
     adaptiveUpPending = false;
     adaptiveDownPending = false;
+    adaptiveDownDueMs = 0;
     return;
   }
 
   if (isHigherVoltage(target, currentVoltage)) {
     adaptiveDownPending = false;
+    adaptiveDownDueMs = 0;
     adaptiveUpPending = true;
     adaptiveUpTarget = target;
-    adaptiveUpDueMs = millis() + ADAPTIVE_UPWARD_DELAY_MS;
+    adaptiveUpDueMs = millis() + ADAPTIVE_VOLTAGE_STEP_DELAY_MS;
     return;
   }
 
   adaptiveUpPending = false;
-  if (!requestVoltage(target, VoltageRequestSource::BATTERY, false)) {
-    adaptiveDownPending = true;
-    adaptiveDownTarget = target;
-  }
+  adaptiveDownPending = true;
+  adaptiveDownTarget = target;
+  adaptiveDownDueMs = millis() + ADAPTIVE_VOLTAGE_STEP_DELAY_MS;
 }
 
 static void evaluateAdaptiveBattery() {
-  if (!adaptiveOn || !ntcValid || !batteryValid) return;
+  if (!adaptiveOn ||
+      adaptiveProfile != AdaptiveProfile::HOTSIDE_BATTERY ||
+      !ntcValid ||
+      !batteryValid) return;
   if (adaptiveHotStepPending || hotsideProtectionActiveNow()) return;
 
   const int zone = batteryZoneForStable(batteryC);
@@ -1559,7 +1555,10 @@ static void evaluateAdaptiveBattery() {
 }
 
 static void processAdaptiveBatteryDown() {
-  if (!adaptiveOn || !ntcValid || !batteryValid) return;
+  if (!adaptiveOn ||
+      adaptiveProfile != AdaptiveProfile::HOTSIDE_BATTERY ||
+      !ntcValid ||
+      !batteryValid) return;
   if (adaptiveHotStepPending || !adaptiveDownPending || voltageTransition) return;
   if (hotsideProtectionActiveNow()) return;
 
@@ -1567,6 +1566,7 @@ static void processAdaptiveBatteryDown() {
 
   if (liveTarget == currentVoltage) {
     adaptiveDownPending = false;
+    adaptiveDownDueMs = 0;
     return;
   }
 
@@ -1577,13 +1577,18 @@ static void processAdaptiveBatteryDown() {
   }
 
   adaptiveDownTarget = liveTarget;
-  if (requestVoltage(adaptiveDownTarget, VoltageRequestSource::BATTERY, false)) {
+  if (millis() < adaptiveDownDueMs) return;
+  if (requestVoltage(adaptiveDownTarget, VoltageRequestSource::BATTERY, true)) {
     adaptiveDownPending = false;
+    adaptiveDownDueMs = 0;
   }
 }
 
 static void processAdaptiveUpTimer() {
-  if (!adaptiveOn || !ntcValid || !batteryValid) return;
+  if (!adaptiveOn ||
+      adaptiveProfile != AdaptiveProfile::HOTSIDE_BATTERY ||
+      !ntcValid ||
+      !batteryValid) return;
   if (adaptiveHotStepPending || !adaptiveUpPending || voltageTransition) return;
 
   if (hotsideProtectionActiveNow()) {
@@ -3157,6 +3162,7 @@ static void setAdaptiveState(bool desired, String& reason) {
       adaptiveResumePeltierAfterHotStep = false;
       adaptiveUpPending = false;
       adaptiveDownPending = false;
+      adaptiveDownDueMs = 0;
       lastBatteryZone = -1;
       fanPwm = 100;
     }
@@ -3179,6 +3185,7 @@ static void setAdaptiveState(bool desired, String& reason) {
     peltierHotOffUntilMs = 0;
     adaptiveUpPending = false;
     adaptiveDownPending = false;
+    adaptiveDownDueMs = 0;
     adaptiveResumePeltierAfterHotStep = false;
     adaptiveCeiling = Voltage::V12;
     fanPwm = 100;
