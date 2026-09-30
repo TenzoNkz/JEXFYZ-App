@@ -241,6 +241,26 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> {
 
   Future<void> _load() async {
     config = await FloatingStore.load();
+    if (config.enabled) {
+      final nativeState = await FloatingBridge.runtimeState();
+      if (nativeState != null) {
+        final nativeHorizontal = nativeState['horizontal'];
+        final nativeSize = nativeState['size'];
+        var next = config;
+        if (nativeHorizontal is bool) {
+          next = next.copyWith(horizontal: nativeHorizontal);
+        }
+        if (nativeSize is num) {
+          next = next.copyWith(
+            size: nativeSize.toDouble().clamp(0.65, 1.8).toDouble(),
+          );
+        }
+        if (next.horizontal != config.horizontal || next.size != config.size) {
+          config = next;
+          await FloatingStore.save(config);
+        }
+      }
+    }
     if (!mounted) return;
     setState(() => loading = false);
     if (config.enabled) {
@@ -354,13 +374,13 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> {
     final lang = appLanguageNotifier.value;
     if (loading) {
       return Scaffold(
-        appBar: AppBar(title: Text(JexText.of('floatingMonitor', lang))),
+        appBar: AppBar(title: const Text('Floating Monitor')),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text(JexText.of('floatingMonitor', lang))),
+      appBar: AppBar(title: const Text('Floating Monitor')),
       body: ValueListenableBuilder<FloatingTelemetry>(
         valueListenable: floatingTelemetryNotifier,
         builder: (context, telemetry, _) {
@@ -370,7 +390,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> {
             children: [
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                title: Text(JexText.of('floatingMonitor', lang)),
+                title: const Text('Floating Monitor'),
                 value: config.enabled,
                 onChanged: _toggleEnabled,
               ),
@@ -383,7 +403,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        JexText.of('displayStyle', lang),
+                        'Display Style',
                         style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
                       ),
                       const SizedBox(height: 7),
@@ -391,12 +411,12 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> {
                         segments: [
                           ButtonSegment(
                             value: FloatingDisplayStyle.letters,
-                            label: Text(JexText.of('letters', lang)),
+                            label: const Text('Letters'),
                             icon: const Icon(PhosphorIconsRegular.textAa),
                           ),
                           ButtonSegment(
                             value: FloatingDisplayStyle.icons,
-                            label: Text(JexText.of('icons', lang)),
+                            label: const Text('Icons'),
                             icon: const Icon(PhosphorIconsRegular.stack),
                           ),
                         ],
@@ -407,7 +427,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        JexText.of('functions', lang),
+                        'Functions',
                         style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
                       ),
                       const SizedBox(height: 4),
@@ -439,14 +459,14 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> {
                       ),
                       const SizedBox(height: 10),
                       _sliderRow(
-                        label: JexText.of('size', lang),
+                        label: 'Size',
                         value: config.size,
                         min: 0.65,
                         max: 1.8,
                         onChanged: (value) => _apply(config.copyWith(size: value)),
                       ),
                       _sliderRow(
-                        label: JexText.of('opacity', lang),
+                        label: 'Opacity',
                         value: config.opacity,
                         min: 0.35,
                         max: 1.0,
@@ -552,19 +572,19 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> {
   String _metricLabel(String metric, AppLanguage lang) {
     switch (metric) {
       case 'F':
-        return JexText.of('fps', lang);
+        return 'FPS';
       case 'B':
-        return JexText.of('battery', lang);
+        return 'Battery';
       case 'H':
-        return JexText.of('hotside', lang);
+        return 'Hotside';
       case 'V':
-        return JexText.of('volt', lang);
+        return 'Volt';
       case 'A':
-        return JexText.of('adaptive', lang);
+        return 'Adaptive';
       case 'P':
-        return JexText.of('peltier', lang);
+        return 'Peltier';
       case 'S':
-        return JexText.of('speed', lang);
+        return 'Speed';
       default:
         return metric;
     }
