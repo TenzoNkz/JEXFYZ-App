@@ -588,6 +588,16 @@ class JexText {
     },
   };
 
+  static String phrase(
+    String english,
+    String indonesia, [
+    AppLanguage? language,
+  ]) {
+    return (language ?? appLanguageNotifier.value) == AppLanguage.english
+        ? english
+        : indonesia;
+  }
+
   static String of(String key, [AppLanguage? language]) {
     final lang = language ?? appLanguageNotifier.value;
     return _values[key]?[lang] ?? key;
