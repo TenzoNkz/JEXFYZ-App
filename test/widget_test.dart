@@ -13,6 +13,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:jexfyz_cooler/main.dart';
 import 'package:jexfyz_cooler/app_settings.dart';
+import 'package:jexfyz_cooler/floating_monitor.dart';
 
 void main() {
   testWidgets('JE Cooler dashboard renders', (tester) async {
@@ -73,6 +74,22 @@ void main() {
     expect(JexText.of('off', AppLanguage.english), 'OFF');
     expect(JexText.of('on', AppLanguage.indonesia), 'HIDUP');
     expect(JexText.of('off', AppLanguage.indonesia), 'MATI');
+  });
+
+  test('Floating Monitor state presentation keeps Adaptive and Peltier independent from Fan', () {
+    const telemetry = FloatingTelemetry(
+      fanOn: false,
+      speed: 70,
+      adaptiveOn: true,
+      peltierOn: true,
+    );
+    expect(floatingMetricVisible('S', telemetry), isFalse);
+    expect(floatingMetricVisible('A', telemetry), isTrue);
+    expect(floatingMetricVisible('P', telemetry), isTrue);
+    expect(floatingMetricStatus('A', telemetry, AppLanguage.english), 'ON');
+    expect(floatingMetricStatus('P', telemetry, AppLanguage.english), 'ON');
+    expect(floatingMetricStatus('A', telemetry, AppLanguage.indonesia), 'HIDUP');
+    expect(floatingMetricStatus('P', telemetry, AppLanguage.indonesia), 'HIDUP');
   });
 
   test('JE X FYZ voltage helper accepts only supported voltages', () {
