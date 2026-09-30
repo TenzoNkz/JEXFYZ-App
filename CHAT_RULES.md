@@ -118,3 +118,42 @@ The final handover must be written as a single ready-to-copy prompt, with explic
 Do not compress away important technical details merely to make the handover shorter. Accuracy and continuity take priority.
 
 The handover is documentation/continuity work only unless the user separately authorizes implementation or build.
+## 10. MEMORY INTEGRITY / PROFESSIONAL REASONING
+
+- Treat CHAT_RULES.md, APP_NOTES.md, and FIRMWARE_NOTES.md as the project's persistent working memory.
+- At the start of relevant work, reread the authoritative memory sections and then inspect the current source that actually controls the behavior.
+- Maintain explicit labels mentally and in notes for: user requirement, confirmed fact, verified evidence, working hypothesis, historical fact, and third-party suggestion.
+- Never turn a plausible explanation into a root-cause claim without evidence.
+- Newer verified source state overrides older source snippets and historical notes; do not resurrect superseded behavior accidentally.
+- A successful build validates only the exact source revision it built. A build number alone is not proof for newer source.
+- App UI state is not physical firmware evidence when firmware telemetry is the authority.
+- Screenshot evidence proves only what is visibly shown; it does not prove hidden Android API state.
+- Preserve frozen contracts and avoid broad refactors unless explicitly approved.
+- Prefer the smallest technically sufficient change with a clear validation boundary.
+- Before execution, identify exact files/layers to change and exactly what validation can and cannot prove.
+- When evidence is insufficient, keep the status at PERLU TANYA GEMINI or JANGAN EKSEKUSI DULU instead of guessing.
+
+## 11. DOCUMENTATION CONSOLIDATION
+
+- When the user asks to update all notes, update CHAT_RULES.md, APP_NOTES.md, and FIRMWARE_NOTES.md as applicable.
+- Put current truth into an explicit AUTHORITATIVE MEMORY CORE at the top of APP_NOTES.md and FIRMWARE_NOTES.md.
+- Preserve historical revision logs; do not rewrite history merely to remove contradictions.
+- When historical entries conflict with current truth, resolve the conflict in the current memory core and explicitly mark old statements as historical/obsolete where necessary.
+- Record current source, branch, commit, build, validation, and unresolved-risk state. Especially record what has NOT been validated.
+- Process/chat rules belong in CHAT_RULES.md; App engineering belongs in APP_NOTES.md; firmware engineering belongs in FIRMWARE_NOTES.md.
+
+## 12. CHAT-LIMIT HANDOVER STANDARD
+
+- When the active chat reaches or approaches its platform/context limit, create one single copy-ready continuation prompt.
+- The handover must cover the entire current subchat from beginning to latest state, not only the last issue.
+- Include: project identity, architecture, repos, repo boundaries, current versions, current source/branch/HEAD, relevant commit SHAs, all meaningful changes, confirmed bugs/symptoms, root-cause findings, competing hypotheses, frozen requirements, BLE/P1/UUID/API contracts, Android/OTA/CI constraints, completed validation with exact run/artifact evidence, physical validation status, known risks, unresolved questions, exact files to inspect, exact next action, current workflow status, and the required first read/verification steps for the new chat.
+- Preserve tested dead ends and failed attempts when they prevent repeating known mistakes.
+- Make the handover a single prompt that can be copied directly into the new chat.
+- Accuracy and continuity have priority over brevity.
+- Handover generation itself does not authorize source changes or builds.
+
+## 13. RESPONSE-END STATUS REQUIREMENT
+
+- Every response must end with exactly one clear project workflow status block.
+- The status block must be the final content of the response.
+- The status must reflect actual evidence, not optimism.
