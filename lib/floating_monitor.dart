@@ -236,6 +236,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   late FloatingConfig config;
   bool loading = true;
   bool _waitingForOverlayPermission = false;
+  bool _permissionResumeCheckRunning = false;
   Timer? runtimeTimer;
 
   @override
@@ -254,20 +255,39 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   }
 
   Future<void> _finishOverlayPermissionFlow() async {
-    if (!_waitingForOverlayPermission) return;
-    final granted = await FloatingBridge.hasPermission();
-    if (!mounted) return;
+    if (!_waitingForOverlayPermission || _permissionResumeCheckRunning) return;
 
-    _waitingForOverlayPermission = false;
-    if (granted) {
-      await _toggleEnabled(true);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(JexText.of('overlayPermissionDenied', appLanguageNotifier.value)),
-        ),
-      );
-      setState(() {});
+    _permissionResumeCheckRunning = true;
+    try {
+      final granted = await _waitForOverlayPermission();
+      if (!mounted) return;
+
+      _waitingForOverlayPermission = false;
+      if (granted) {
+        await _toggleEnabled(true);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(JexText.of('overlayPermissionDenied', appLanguageNotifier.value)),
+          ),
+        );
+        setState(() {});
+      }
+    } finally {
+      _permissionResumeCheckRunning = false;
+    }
+  }
+
+  Future<bool> _waitForOverlayPermission({
+    Duration timeout = const Duration(seconds: 2),
+    Duration interval = const Duration(milliseconds: 300),
+  }) async {
+    final deadline = DateTime.now().add(timeout);
+
+    while (true) {
+      if (await FloatingBridge.hasPermission()) return true;
+      if (!DateTime.now().isBefore(deadline)) return false;
+      await Future<void>.delayed(interval);
     }
   }
 
@@ -421,6 +441,18 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     if (!mounted || !config.enabled) return;
     final state = await FloatingBridge.runtimeState();
     if (!mounted || state == null) return;
+
+    final serviceRunning = state['service_running'] ?? state['running'];
+    final overlayAttached = state['view_attached_to_window'] ?? state['overlay'];
+    if (serviceRunning != true || overlayAttached != true) {
+      runtimeTimer?.cancel();
+      runtimeTimer = null;
+      config = config.copyWith(enabled: false);
+      await FloatingStore.save(config);
+      if (mounted) setState(() {});
+      return;
+    }
+
     final horizontal = state['horizontal'];
     final size = state['size'];
     var next = config;
