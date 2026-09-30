@@ -965,3 +965,11 @@ Never:
 - Normal pushes, pull requests, documentation commits, and source commits do not start Build App.
 - The intended operational behavior is now: explicit `@Thinking Build App!` request → assistant creates/reopens the dedicated trigger issue → GitHub Actions starts the reusable App Build engine → assistant checks the run and retrieves the APK artifact.
 - No other build workflow entry point was added.
+
+
+## 2026-10-01 — BUILD #31 FAILURE FIX
+
+- The first assistant-driven Build App trigger successfully fired GitHub Actions as intended (Run #31, event `issues`), proving the new trigger path works and normal push builds are no longer required.
+- Run #31 failed only at `flutter analyze`. The concrete source errors were: non-exhaustive `JexAnimatedIconKind.generic` switch and an extra closing token in `DashboardScreen.build()` introduced during the theme-boundary edit.
+- Both errors were corrected in `lib/main.dart`. No unrelated feature or firmware logic was changed for the build fix.
+- The dedicated trigger issue was closed after the failed run so it can be reopened for the next explicit Build App trigger.
