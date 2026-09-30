@@ -2233,13 +2233,13 @@ class _DashboardScreenState extends State<DashboardScreen>
       final ok = await _sendAndConfirm('HOTLIMIT:$next');
       if (!ok && mounted) {
         setState(() => hotLimitDraft = hotLimit);
-        _showSnackBar('Hotside limit not confirmed.');
+        _showSnackBar(JexText.of('hotsideLimitNotConfirmed', appLanguageNotifier.value));
       }
     } catch (e) {
       debugPrint('Hotside limit command: $e');
       if (mounted) {
         setState(() => hotLimitDraft = hotLimit);
-        _showSnackBar('Hotside limit failed.');
+        _showSnackBar(JexText.of('hotsideLimitFailed', appLanguageNotifier.value));
       }
     }
   }
@@ -2254,13 +2254,13 @@ class _DashboardScreenState extends State<DashboardScreen>
       final ok = await _sendAndConfirm('BATT5:$next');
       if (!ok && mounted) {
         setState(() => battery5Draft = battery5Limit);
-        _showSnackBar('5V battery limit not confirmed.');
+        _showSnackBar(JexText.of('battery5LimitNotConfirmed', appLanguageNotifier.value));
       }
     } catch (e) {
       debugPrint('Battery 5V command: $e');
       if (mounted) {
         setState(() => battery5Draft = battery5Limit);
-        _showSnackBar('5V battery limit failed.');
+        _showSnackBar(JexText.of('battery5LimitFailed', appLanguageNotifier.value));
       }
     }
   }
@@ -2275,13 +2275,13 @@ class _DashboardScreenState extends State<DashboardScreen>
       final ok = await _sendAndConfirm('BATT12:$next');
       if (!ok && mounted) {
         setState(() => battery12Draft = battery12Limit);
-        _showSnackBar('12V battery limit not confirmed.');
+        _showSnackBar(JexText.of('battery12LimitNotConfirmed', appLanguageNotifier.value));
       }
     } catch (e) {
       debugPrint('Battery 12V command: $e');
       if (mounted) {
         setState(() => battery12Draft = battery12Limit);
-        _showSnackBar('12V battery limit failed.');
+        _showSnackBar(JexText.of('battery12LimitFailed', appLanguageNotifier.value));
       }
     }
   }
@@ -3071,6 +3071,10 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   // AI-METHOD: _homeNotify — Render the Home NOTIFY card.
   Widget _homeNotify() {
+    final headerDark = appThemeNotifier.value != AppThemePreset.light;
+    final noticeTextColor = headerDark ? const Color(0xFFF4F6FA) : const Color(0xFF16181D);
+    final noticeChipFill = headerDark ? const Color(0x12FFFFFF) : const Color(0x12000000);
+    final offlineStatusColor = headerDark ? Colors.white38 : const Color(0xFF6F747D);
     final custom = notice.trim().toUpperCase();
     final otaResultUpper = lastOtaResult.trim().toUpperCase();
     final hasError = custom.contains('FAILED') ||
@@ -3145,8 +3149,8 @@ class _DashboardScreenState extends State<DashboardScreen>
                           _professionalNotice(),
                           maxLines: 1,
                           softWrap: false,
-                          style: const TextStyle(
-                            color: Color(0xFFF4F6FA),
+                          style: TextStyle(
+                            color: noticeTextColor,
                             fontSize: 10.5,
                             height: 1.0,
                             fontWeight: FontWeight.w800,
@@ -3163,7 +3167,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
             decoration: BoxDecoration(
-              color: const Color(0x12FFFFFF),
+              color: noticeChipFill,
               borderRadius: BorderRadius.circular(7),
             ),
             child: Text(
@@ -3173,7 +3177,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                     ? const Color(0xFFFF8A98)
                     : connected
                         ? Colors.cyanAccent
-                        : Colors.white38,
+                        : offlineStatusColor,
                 fontSize: 7.3,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 0.75,
@@ -3992,6 +3996,8 @@ class _DashboardScreenState extends State<DashboardScreen>
     final adaptiveValue = connected
         ? JexText.of(adaptiveOn ? 'on' : 'off', appLanguageNotifier.value)
         : '--';
+    final headerDark = appThemeNotifier.value != AppThemePreset.light;
+    final headerForeground = headerDark ? const Color(0xFFF7F8FC) : const Color(0xFF16181D);
 
     return SizedBox(
       width: double.infinity,
@@ -4015,7 +4021,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                           icon: connected
                               ? PhosphorIconsRegular.bluetoothConnected
                               : PhosphorIconsRegular.bluetooth,
-                          color: connected ? const Color(0xFF4D8CFF) : const Color(0xFFF4F6FA),
+                          color: connected ? const Color(0xFF4D8CFF) : headerForeground,
                           size: 24,
                           active: true,
                         ),
@@ -4031,9 +4037,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                           headerName,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: appThemeNotifier.value == AppThemePreset.light
-                                ? const Color(0xFF16181D)
-                                : const Color(0xFFF7F8FC),
+                            color: headerForeground,
                             fontWeight: FontWeight.w900,
                             fontSize: 19,
                             letterSpacing: 0.2,
@@ -4062,9 +4066,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                         tooltip: JexText.of('settings', appLanguageNotifier.value),
                         icon: JexAnimatedIcon.glyph(
                           icon: PhosphorIconsRegular.gear,
-                          color: appThemeNotifier.value == AppThemePreset.light
-                              ? const Color(0xFF16181D)
-                              : Colors.white,
+                          color: headerForeground,
                           size: 25,
                           active: true,
                         ),
