@@ -907,3 +907,17 @@ Never:
   - Certificate SHA-256 = `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`
 - Final repository state after cleanup: current `main` HEAD is `6b7d6159879af9fd64972c290c5ef9bc11035df8`, the App Build trigger is manual-only, the reusable build engine remains `workflow_call` only, and the temporary marker is removed.
 - CI validation proves release build/signing/artifact integrity only; it does not prove BLE, OTA, firmware V2.3 compilation in ArduinoDroid, or physical hardware runtime.
+
+
+## 2026-09-30 — PROJECT WORKFLOW / CHAT CONTINUITY RULE
+
+- The JE X FYZ project now uses **one continuous subchat for the whole project lifecycle**. Discussion, execution, source review, validation, and build decisions stay in the same subchat until the chat reaches its platform limit.
+- When the active subchat reaches its limit, create a **copy-ready handover prompt** summarizing the project **from the beginning of that subchat through its final state**, including current repository state, commits, source versions, changes, validation evidence, pending work, known risks, and the exact next step. The new subchat continues from that handover; do not restart the project history from scratch.
+- **Process is explicit and sequential:**
+  1. `@Thinking Diskusi!` = discussion/review only. Do not modify repository, commit, or build.
+  2. `@Thinking Eksekusi!` = perform only the approved implementation changes and commit them. Do not build unless the user separately requests a build.
+  3. `@Thinking Build App!` = run the App build/validation pipeline. Do not introduce unrelated source changes as part of the build request.
+- A repository change must always be accompanied by an update to the appropriate maintenance notes in the same project workflow. App changes update `APP_NOTES.md`; firmware changes update `FIRMWARE_NOTES.md`; project-wide process changes are recorded in the project notes as well.
+- Build App must never be inferred from a discussion, an execution request, or the existence of a new commit. A build occurs only after an explicit **`Build App`** instruction from the user.
+- The Build App trigger was corrected in this execution to **manual-only**: `.github/workflows/app-build-trigger.yml` now uses `workflow_dispatch` and no longer has a `push` trigger. This prevents ordinary commits from automatically launching an App build.
+- This execution changed **process/CI behavior and documentation only**. No Dart/Android source or firmware source was modified, and no App Build was requested or run.
