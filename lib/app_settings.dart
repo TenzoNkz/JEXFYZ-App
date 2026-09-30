@@ -325,6 +325,82 @@ class JexText {
       AppLanguage.english: 'Speed',
       AppLanguage.indonesia: 'Kecepatan',
     },
+    'manual': {
+      AppLanguage.english: 'Manual',
+      AppLanguage.indonesia: 'Manual',
+    },
+    'auto': {
+      AppLanguage.english: 'Auto',
+      AppLanguage.indonesia: 'Otomatis',
+    },
+    'on': {
+      AppLanguage.english: 'ON',
+      AppLanguage.indonesia: 'AKTIF',
+    },
+    'off': {
+      AppLanguage.english: 'OFF',
+      AppLanguage.indonesia: 'NONAKTIF',
+    },
+    'hSideProtection': {
+      AppLanguage.english: 'Hotside Protection',
+      AppLanguage.indonesia: 'Perlindungan Suhu Panas',
+    },
+    'hSideBattery': {
+      AppLanguage.english: 'Hotside + Battery',
+      AppLanguage.indonesia: 'Suhu Panas + Baterai',
+    },
+    'batteryTemperature': {
+      AppLanguage.english: 'Battery Temperature',
+      AppLanguage.indonesia: 'Suhu Baterai',
+    },
+    'hotsideTemperature': {
+      AppLanguage.english: 'Hotside Temperature',
+      AppLanguage.indonesia: 'Suhu Panas',
+    },
+    'fanSpeed': {
+      AppLanguage.english: 'Fan Speed',
+      AppLanguage.indonesia: 'Kecepatan Kipas',
+    },
+    'resetTemperature': {
+      AppLanguage.english: 'Reset Temperature',
+      AppLanguage.indonesia: 'Atur Ulang Temperatur',
+    },
+    'closed': {
+      AppLanguage.english: 'Close',
+      AppLanguage.indonesia: 'Tutup',
+    },
+    'retry': {
+      AppLanguage.english: 'Retry',
+      AppLanguage.indonesia: 'Coba Lagi',
+    },
+    'update': {
+      AppLanguage.english: 'Update',
+      AppLanguage.indonesia: 'Perbarui',
+    },
+    'scan': {
+      AppLanguage.english: 'Scan',
+      AppLanguage.indonesia: 'Pindai',
+    },
+    'connectionReady': {
+      AppLanguage.english: 'Connection ready.',
+      AppLanguage.indonesia: 'Koneksi siap.',
+    },
+    'connectionAccessRequired': {
+      AppLanguage.english: 'Connection access required.',
+      AppLanguage.indonesia: 'Izin koneksi diperlukan.',
+    },
+    'deviceNotFound': {
+      AppLanguage.english: 'JE X FYZ was not found.',
+      AppLanguage.indonesia: 'JE X FYZ tidak ditemukan.',
+    },
+    'scanFailed': {
+      AppLanguage.english: 'Scan failed.',
+      AppLanguage.indonesia: 'Pemindaian gagal.',
+    },
+    'color': {
+      AppLanguage.english: 'Color',
+      AppLanguage.indonesia: 'Warna',
+    },
   };
 
   static String of(String key, [AppLanguage? language]) {
