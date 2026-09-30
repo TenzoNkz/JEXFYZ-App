@@ -9,6 +9,7 @@
 // Fan Speed invariant: S remains visible when selected; Fan OFF is presented as OFF/MATI.
 // The same invariant applies to Settings preview and native overlay presentation.
 // Protocol identifiers are not translated.
+// Floating metric contract: S (Speed) is the only fan-related metric; there is no separate Fan metric.
 
 import 'dart:async';
 import 'dart:convert';
