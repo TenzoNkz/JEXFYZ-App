@@ -1253,3 +1253,29 @@ Never:
 - Added deterministic regression coverage in test/widget_test.dart for Light/Dark semantic text inversion.
 - No BLE/P1 UUID, OTA transport, Firebase metadata, firmware GPIO/version, Floating Monitor transport, or physical-control logic was changed.
 - Per workflow contract, no Build App was run by this execution. Build remains explicit via @Thinking Build App!.
+
+
+## 2026-10-01 — FULL EXECUTION / LIGHT THEME CONTRAST + MANUAL BLUETOOTH DEFAULT + PERSISTENT SPEED STATE
+
+- Implemented the requested Light Theme direction: Light is the bright counterpart of Dark, with high-contrast dark text on bright surfaces.
+- `lib/app_settings.dart`:
+  - Strengthened Light Theme `ColorScheme.onSurfaceVariant` from medium gray to `#3F444D`.
+  - New/missing `autoConnect` default is now `false` (Manual).
+  - Existing valid persisted `autoConnect` values are preserved; only new/missing values use Manual.
+- `lib/main.dart`:
+  - Dashboard Light Home labels and inactive values now use near-black `#16181D`.
+  - Light header subtitle uses a darker neutral.
+  - Light Dashboard inactive tab labels use near-black text.
+  - Connection indicator cards now invert correctly between Light and Dark instead of always using a dark card with white text.
+  - Fan Speed indicator remains visible; disconnected shows `--`, Fan OFF shows localized `OFF` / `MATI`, and Fan ON retains the configured speed display.
+  - Control tab keeps the Speed row visible; its editable slider remains available only when Fan is ON and the existing connected/manual/12V gates pass.
+- `lib/floating_monitor.dart` + `FloatingMonitorService.kt`:
+  - Floating metric `S` is no longer hidden when Fan is OFF.
+  - `S` displays localized `OFF` / `MATI` when Fan is OFF.
+  - Existing Adaptive/Peltier independence remains intact.
+- `test/widget_test.dart`:
+  - Added Light Theme high-contrast assertions.
+  - Added Manual Auto Connect default regression coverage.
+  - Updated Floating Speed state tests for persistent `S` + localized OFF/MATI behavior.
+- No firmware source, BLE UUID/P1 protocol, OTA transport, Firebase metadata contract, GPIO mapping, or signing identity was changed.
+- Build App was not triggered by this execution; source changes are committed on the default branch and are ready for the dedicated Build App workflow.
