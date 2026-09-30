@@ -2515,7 +2515,9 @@ static bool prepareOnlineOtaDownload() {
   setOtaDiagnosticError(0, "NONE");
 
   cloudClient.stop();
-  cloudClient.setInsecure();
+  // Verify GitHub's TLS certificate chain using the Arduino-ESP32
+  // built-in CA bundle. Never accept arbitrary certificates here.
+  cloudClient.useBuiltinCACertBundle();
   cloudClient.setTimeout(ONLINE_OTA_HTTP_TIMEOUT_MS);
 
   onlineHttpClient.end();
