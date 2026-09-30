@@ -5,6 +5,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:jexfyz_cooler/main.dart';
+import 'package:jexfyz_cooler/app_settings.dart';
 
 void main() {
   testWidgets('JE Cooler dashboard renders', (tester) async {
@@ -25,6 +26,10 @@ void main() {
     expect(find.text('Hotside Temperature'), findsOneWidget);
     expect(find.text('Voltage Indicator'), findsOneWidget);
     expect(find.text('Voltage'), findsWidgets);
+    expect(find.text('Low Mode'), findsOneWidget);
+    expect(find.text('Mid Mode'), findsOneWidget);
+    expect(find.text('High Mode'), findsOneWidget);
+    expect(find.text('Side Text'), findsNothing);
     expect(find.text('Adaptive Mode'), findsOneWidget);
     expect(find.text('Peltier Switch'), findsOneWidget);
     expect(find.text('Fan Switch'), findsOneWidget);
@@ -71,4 +76,10 @@ void main() {
       expect(ledPaletteColor(hex), isA<Color>());
     }
   });
+  test('Default JE X FYZ theme is dark outside dashboard', () {
+    final theme = buildJexTheme(AppThemePreset.defaultTheme);
+    expect(theme.brightness, Brightness.dark);
+    expect(theme.scaffoldBackgroundColor, const Color(0xFF0F1013));
+  });
+
 }
