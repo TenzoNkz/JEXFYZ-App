@@ -4,6 +4,44 @@
 > This file intentionally lives in the App repository as documentation, even though firmware implementation source and production build files are maintained separately.
 > **Reviewed:** 2026-09-28.
 
+## 2026-09-30 — V2.2 ADAPTIVE PROFILE + THERMAL/VOLTAGE STATE UPDATE
+
+### Current source baseline
+- Firmware source is now maintained in the App repository under `firmware/JEXFYZ-V2.2.ino`.
+- `firmware/JEXFYZ-V2.1.ino` was retired from the App repository.
+- The dedicated firmware repository remains binary-only; no V2.2 BIN has been promoted yet.
+- V2.2 is a source/implementation revision only until ArduinoDroid/Core 3.3.7 compilation and physical validation are completed.
+
+### V2.2 functional changes
+- Firmware version bumped from V2.1 to **V2.2**.
+- Added persisted Adaptive profile:
+  - `HOTSIDE` = Hotside Protection only (NTC Hotside).
+  - `HOTSIDE_BATTERY` = combined Hotside + Battery; Battery controls normal voltage movement, while Hotside remains the primary thermal blocker/override.
+- Added P1 `ADAPTIVE_PROFILE:<profile>` command and `ADAPTIVE_PROFILE` telemetry.
+- Adaptive profile can only be changed while Adaptive is OFF; profile is locked while Adaptive is ON.
+- Adaptive Battery voltage movement now uses a **1-second delay for both upward and downward changes**.
+- Removed the extra 250 ms user-control rate guard; no generic command-delay remains.
+- Hotside Adaptive protection now uses the final thermal-step behavior:
+  - Hotside limit at 12V -> Peltier OFF, Fan ON -> 10 seconds cooling -> step to 9V -> Peltier resumes at the new voltage.
+  - Hotside limit at 9V -> Peltier OFF, Fan ON -> 10 seconds cooling -> step to 5V -> Peltier resumes at the new voltage.
+  - Hotside limit at 5V -> Peltier OFF, Fan ON -> Adaptive OFF; Peltier remains OFF until manual user activation.
+- Each voltage level blocked by Hotside remains excluded for the current Adaptive session until Adaptive is turned OFF.
+- The Hotside timer is a cooling period before the voltage step; there is no additional 10-second wait after the new voltage.
+- Manual critical Hotside behavior remains Peltier OFF + Fan ON with no automatic Peltier restart.
+- Manual Voltage remains protected by the existing 1-second voltage guard.
+- Existing OTA transport, BLE UUID/P1 contract, radio ownership, and no-blocking-delay architecture were preserved.
+
+### Validation status
+- Static V2.2 checks completed here:
+  - brace balance: 0
+  - parenthesis balance: 0
+  - bracket balance: 0
+  - `delay(`, `delayMicroseconds(`, `vTaskDelay(`: 0
+  - no stale `HOT_BATTERY` / `ADAPTIVE_UPWARD_DELAY_MS` tokens
+- ArduinoDroid/Core 3.3.7 compile: pending.
+- Physical V2.2 validation: pending.
+- No Firebase/BIN promotion performed.
+
 ## 2026-09-28 — V2.0 REMOVE BLOCKING ARDUINO DELAY
 
 - Functional firmware revision bumped from **V1.9 → V2.0**.
