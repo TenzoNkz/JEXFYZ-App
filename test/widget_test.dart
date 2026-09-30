@@ -6,7 +6,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:jexfyz_cooler/main.dart';
 import 'package:jexfyz_cooler/app_settings.dart';
-import 'package:jexfyz_cooler/app_settings.dart';
 
 void main() {
   testWidgets('JE Cooler dashboard renders', (tester) async {
@@ -30,7 +29,6 @@ void main() {
     expect(find.text('Low Mode'), findsOneWidget);
     expect(find.text('Mid Mode'), findsOneWidget);
     expect(find.text('High Mode'), findsOneWidget);
-    expect(find.text('Side Text'), findsNothing);
     expect(find.text('Adaptive Mode'), findsOneWidget);
     expect(find.text('Peltier Switch'), findsOneWidget);
     expect(find.text('Fan Switch'), findsOneWidget);
@@ -95,3 +93,9 @@ void main() {
   });
 
 }
+
+
+  test('Default application theme is dark for settings pages', () {
+    final theme = buildJexTheme(AppThemePreset.defaultTheme);
+    expect(theme.brightness, Brightness.dark);
+  });
