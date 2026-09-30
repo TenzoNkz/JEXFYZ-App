@@ -133,8 +133,8 @@ class FloatingTelemetry {
         'voltage': voltage,
         'fanOn': fanOn,
         'speed': speed,
-        'adaptiveOn': fanOn && adaptiveOn,
-        'peltierOn': fanOn && peltierOn,
+        'adaptiveOn': adaptiveOn,
+        'peltierOn': peltierOn,
         'connected': connected,
       };
 }
@@ -180,10 +180,12 @@ class FloatingBridge {
     }
   }
 
-  static Future<void> openPermissionSettings() async {
+  static Future<bool> openPermissionSettings() async {
     try {
-      await _channel.invokeMethod<void>('openOverlaySettings');
-    } catch (_) {}
+      return await _channel.invokeMethod<bool>('openOverlaySettings') ?? false;
+    } catch (_) {
+      return false;
+    }
   }
 
   static Future<bool> start(FloatingConfig config) async {
@@ -229,16 +231,43 @@ class FloatingSettingsPage extends StatefulWidget {
   State<FloatingSettingsPage> createState() => _FloatingSettingsPageState();
 }
 
-class _FloatingSettingsPageState extends State<FloatingSettingsPage> {
+class _FloatingSettingsPageState extends State<FloatingSettingsPage> with WidgetsBindingObserver {
   late FloatingConfig config;
   bool loading = true;
+  bool _waitingForOverlayPermission = false;
   Timer? runtimeTimer;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     config = floatingConfigNotifier.value;
     _load();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && _waitingForOverlayPermission) {
+      unawaited(_finishOverlayPermissionFlow());
+    }
+  }
+
+  Future<void> _finishOverlayPermissionFlow() async {
+    if (!_waitingForOverlayPermission) return;
+    final granted = await FloatingBridge.hasPermission();
+    if (!mounted) return;
+
+    _waitingForOverlayPermission = false;
+    if (granted) {
+      await _toggleEnabled(true);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Overlay permission was not granted.'),
+        ),
+      );
+      setState(() {});
+    }
   }
 
   Future<void> _load() async {
@@ -296,10 +325,40 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> {
     }
 
     if (!await FloatingBridge.hasPermission()) {
-      await FloatingBridge.openPermissionSettings();
-      if (mounted) {
+      final proceed = await showDialog<bool>(
+        context: context,
+        barrierDismissible: false,
+        builder: (dialogContext) {
+          return AlertDialog(
+            title: const Text('Floating Monitor permission'),
+            content: const Text(
+              'JE X FYZ needs permission to display the Floating Monitor over other apps. '
+              'Android will open the "Display over other apps" setting.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext, false),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(dialogContext, true),
+                child: const Text('Allow'),
+              ),
+            ],
+          );
+        },
+      );
+
+      if (proceed != true || !mounted) return;
+
+      _waitingForOverlayPermission = true;
+      final opened = await FloatingBridge.openPermissionSettings();
+      if (!opened && mounted) {
+        _waitingForOverlayPermission = false;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Allow display over other apps, then enable Floating Monitor again.')),
+          const SnackBar(
+            content: Text('Android overlay permission settings could not be opened.'),
+          ),
         );
       }
       return;
@@ -349,6 +408,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     runtimeTimer?.cancel();
     super.dispose();
   }
@@ -731,7 +791,6 @@ class LanguageSettingsPage extends StatelessWidget {
       notifyFirmware: appNotifyFirmwareNotifier.value,
       notifyBluetooth: appNotifyBluetoothNotifier.value,
       autoConnect: appAutoConnectNotifier.value,
-      voltageLayout: appVoltageLayoutNotifier.value,
     );
     await AppSettingsStore.save(current.copyWith(language: value));
     if (context.mounted) Navigator.pop(context);
@@ -779,7 +838,6 @@ class AppearanceSettingsPage extends StatelessWidget {
       notifyFirmware: appNotifyFirmwareNotifier.value,
       notifyBluetooth: appNotifyBluetoothNotifier.value,
       autoConnect: appAutoConnectNotifier.value,
-      voltageLayout: appVoltageLayoutNotifier.value,
     );
     await AppSettingsStore.save(current.copyWith(theme: value));
   }
@@ -841,7 +899,6 @@ class NotificationsSettingsPage extends StatelessWidget {
       notifyFirmware: appNotifyFirmwareNotifier.value,
       notifyBluetooth: appNotifyBluetoothNotifier.value,
       autoConnect: appAutoConnectNotifier.value,
-      voltageLayout: appVoltageLayoutNotifier.value,
     );
     final next = switch (key) {
       'safety' => current.copyWith(notifySafety: value),
@@ -911,7 +968,6 @@ class BluetoothSettingsPage extends StatelessWidget {
       notifyFirmware: appNotifyFirmwareNotifier.value,
       notifyBluetooth: appNotifyBluetoothNotifier.value,
       autoConnect: appAutoConnectNotifier.value,
-      voltageLayout: appVoltageLayoutNotifier.value,
     );
     await AppSettingsStore.save(current.copyWith(autoConnect: value));
   }
