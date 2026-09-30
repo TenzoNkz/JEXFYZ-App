@@ -92,12 +92,7 @@ class FloatingMonitorService : Service() {
         }
 
         fun updateData(context: Context, json: String) {
-            instance?.applyData(json) ?: run {
-                context.startService(Intent(context, FloatingMonitorService::class.java).apply {
-                    action = ACTION_DATA
-                    putExtra(EXTRA_JSON, json)
-                })
-            }
+            instance?.applyData(json)
         }
     }
 
