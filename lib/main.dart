@@ -2687,7 +2687,6 @@ class _DashboardScreenState extends State<DashboardScreen>
       animatedKind: animatedKind,
       animationActive: value,
       level: fanOn ? fanSpeed / 100 : 0,
-      animationActive: fanOn,
     );
   }
 
