@@ -2293,7 +2293,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 ? '$fanSpeed%'
                 : '--';
     return _homeMetric(
-      'FAN SPEED',
+      JexText.of('fanSpeedLabel'),
       displaySpeed,
       '',
       color: const Color(0xFFFFCD38),
@@ -3425,14 +3425,14 @@ class _DashboardScreenState extends State<DashboardScreen>
                           child: Column(
                           children: [
                           _homeMetric(
-                            'BATTERY TEMPERATURE',
+                            JexText.of('batteryTemperature'),
                             batteryValue,
                             batteryValue == '--' ? '' : '°C',
                             color: const Color(0xFFFFB52E),
                             icon: PhosphorIconsRegular.batteryHigh,
                           ),
                           _homeMetric(
-                            'HOTSIDE TEMPERATURE',
+                            JexText.of('hotsideTemperature'),
                             hotValue,
                             hotValue == '--' ? '' : '°C',
                             color: safety == 'FAULT'
@@ -3441,27 +3441,27 @@ class _DashboardScreenState extends State<DashboardScreen>
                             icon: PhosphorIconsRegular.thermometer,
                           ),
                           _homeMetric(
-                            'VOLTAGE INDICATOR',
+                            JexText.of('voltageIndicator'),
                             voltageValue,
                             '',
                             color: const Color(0xFF4D8CFF),
                             icon: PhosphorIconsRegular.lightning,
                           ),
                           _homeMetric(
-                            'ADAPTIVE MODE',
+                            JexText.of('adaptiveMode'),
                             adaptiveValue,
                             '',
                             color: const Color(0xFFC05BFF),
                             icon: PhosphorIconsRegular.sparkle,
                           ),
                           _homeStateChip(
-                            label: 'PELTIER SWITCH',
+                            label: JexText.of('peltierSwitch'),
                             value: peltierOn,
                             icon: PhosphorIconsRegular.snowflake,
                             color: const Color(0xFF18DFFF),
                           ),
                           _homeStateChip(
-                            label: 'FAN SWITCH',
+                            label: JexText.of('fanSwitch'),
                             value: fanOn,
                             icon: PhosphorIconsRegular.fan,
                             color: const Color(0xFF38E3AD),
