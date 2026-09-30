@@ -19,9 +19,9 @@
 - Static V2.3 source checks completed: balanced delimiters and zero delay(), delayMicroseconds(), or vTaskDelay() calls.
 - ArduinoDroid/Core 3.3.7 compile and V2.3 physical validation are **still pending**. Production BIN/Firebase metadata remain unchanged.
 
-## 2026-09-30 — V2.2 FINAL ADAPTIVE STATE PASS
+## 2026-09-30 — V2.2 FINAL ADAPTIVE STATE PASS (HISTORICAL BASELINE)
 
-- Current working firmware source is `firmware/JEXFYZ-V2.2.ino`; V2.1 source is retired from the App repository.
+- Historical V2.2 source baseline was `firmware/JEXFYZ-V2.2.ino`; it is now retired after the V2.3 migration.
 - V2.2 firmware version is **V2.2**. Production BIN/Firebase metadata were not promoted.
 - Adaptive profile options are `HOTSIDE` (Hotside Protection only) and `HOTSIDE_BATTERY` (combined Hotside + Battery). Hotside is the thermal priority/override in the combined profile.
 - Adaptive profile changes are locked while Adaptive is ON and persist across restart.
@@ -33,7 +33,7 @@
 - Generic user-control rate limiting was removed; there is no generic control delay.
 - Existing OTA transport/radio ownership/P1 UUIDs/GPIO mapping and blocking-delay-free architecture were preserved.
 - Static source checks completed after this pass: balanced delimiters and zero explicit Arduino `delay()`, `delayMicroseconds()`, or `vTaskDelay()` calls.
-- ArduinoDroid / Arduino-ESP32 Core 3.3.7 compilation and physical V2.2 validation are still pending.
+- ArduinoDroid / Arduino-ESP32 Core 3.3.7 compilation and physical V2.2 validation were not completed before the V2.3 migration.
 
 
 > **Document role:** permanent firmware engineering memory for the JE X FYZ project.
