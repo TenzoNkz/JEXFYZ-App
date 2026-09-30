@@ -3283,7 +3283,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       PhosphorIconsRegular.gauge,
                       size: 20,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -4697,25 +4697,34 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
               const Center(child: CircularProgressIndicator(color: Colors.blueAccent))
             else if (status == 'FAILED')
               Text(
-                'JexText.of('firmwareMetadataCheckFailed', appLanguageNotifier.value)',
+                JexText.of('firmwareMetadataCheckFailed', appLanguageNotifier.value),
                 style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
               )
             else if (!updateAvailable)
-              Text(widget.currentVersion == 'V?' ? 'Waiting for device...' : 'Up to date.', style: const TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold))
+              Text(
+                widget.currentVersion == 'V?'
+                    ? JexText.of('waitingForDevice', appLanguageNotifier.value)
+                    : JexText.of('upToDateSentence', appLanguageNotifier.value),
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              )
             else ...[
               Text(JexText.of('updateAvailableSentence', appLanguageNotifier.value), style: const TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 12),
               TextField(
                 controller: ssid,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(labelText: JexText.of('ssid', appLanguageNotifier.value), labelStyle: TextStyle(color: Colors.grey), prefixIcon: Icon(PhosphorIconsRegular.wifiHigh, color: Colors.blueAccent)),
+                decoration: InputDecoration(
+                  labelText: JexText.of('ssid', appLanguageNotifier.value),
+                  prefixIcon: const Icon(PhosphorIconsRegular.wifiHigh),
+                ),
               ),
               const SizedBox(height: 8),
               TextField(
                 controller: password,
                 obscureText: false,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(labelText: JexText.of('password', appLanguageNotifier.value), labelStyle: TextStyle(color: Colors.grey), prefixIcon: Icon(PhosphorIconsBold.lock, color: Colors.blueAccent)),
+                decoration: InputDecoration(
+                  labelText: JexText.of('password', appLanguageNotifier.value),
+                  prefixIcon: const Icon(PhosphorIconsBold.lock),
+                ),
               ),
               const SizedBox(height: 6),
               Text(JexText.of('savedSecurelySentence', appLanguageNotifier.value), style: const TextStyle(fontSize: 9)),
