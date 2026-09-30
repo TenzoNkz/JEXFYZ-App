@@ -39,6 +39,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math' as math;
 import 'dart:ui' show FrameTiming;
 
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -82,6 +83,340 @@ const List<String> ledColorPalette = <String>[
 Color ledPaletteColor(String hex) {
   final rgb = int.parse(hex.substring(1), radix: 16);
   return Color(0xFF000000 | rgb);
+}
+
+enum JexAnimatedIconKind {
+  battery,
+  hotside,
+  voltage,
+  adaptive,
+  peltier,
+  fan,
+  speed,
+  led,
+  bluetooth,
+}
+
+class JexAnimatedIcon extends StatefulWidget {
+  final JexAnimatedIconKind kind;
+  final Color color;
+  final double size;
+  final bool active;
+  final double level;
+  final bool warning;
+
+  const JexAnimatedIcon({
+    super.key,
+    required this.kind,
+    required this.color,
+    this.size = 24,
+    this.active = false,
+    this.level = 1,
+    this.warning = false,
+  });
+
+  @override
+  State<JexAnimatedIcon> createState() => _JexAnimatedIconState();
+}
+
+class _JexAnimatedIconState extends State<JexAnimatedIcon>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = AnimationController(
+      vsync: this,
+      duration: Duration(
+        milliseconds: widget.kind == JexAnimatedIconKind.fan ? 850 : 1500,
+      ),
+    );
+    if (widget.active) controller.repeat();
+  }
+
+  @override
+  void didUpdateWidget(covariant JexAnimatedIcon oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.kind != oldWidget.kind) {
+      controller.duration = Duration(
+        milliseconds: widget.kind == JexAnimatedIconKind.fan ? 850 : 1500,
+      );
+    }
+    if (widget.active && !controller.isAnimating) {
+      controller.repeat();
+    } else if (!widget.active && controller.isAnimating) {
+      controller.stop();
+      controller.value = 0;
+    }
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RepaintBoundary(
+      child: AnimatedBuilder(
+        animation: controller,
+        builder: (_, __) => CustomPaint(
+          size: Size.square(widget.size),
+          painter: _JexIconPainter(
+            kind: widget.kind,
+            color: widget.color,
+            progress: controller.value,
+            active: widget.active,
+            level: widget.level.clamp(0, 1).toDouble(),
+            warning: widget.warning,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _JexIconPainter extends CustomPainter {
+  final JexAnimatedIconKind kind;
+  final Color color;
+  final double progress;
+  final bool active;
+  final double level;
+  final bool warning;
+
+  const _JexIconPainter({
+    required this.kind,
+    required this.color,
+    required this.progress,
+    required this.active,
+    required this.level,
+    required this.warning,
+  });
+
+  Paint stroke(double width, [Color? c]) => Paint()
+    ..color = c ?? color
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = width
+    ..strokeCap = StrokeCap.round
+    ..strokeJoin = StrokeJoin.round;
+
+  Paint fill([Color? c]) => Paint()
+    ..color = c ?? color
+    ..style = PaintingStyle.fill;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final s = size.shortestSide;
+    final cx = size.width / 2;
+    final cy = size.height / 2;
+    final wave = active
+        ? .75 + .25 * (0.5 + 0.5 * math.sin(progress * math.pi * 2))
+        : 1.0;
+    final scale = active
+        ? .965 + .035 * (0.5 + 0.5 * math.sin(progress * math.pi * 2))
+        : 1.0;
+
+    canvas.save();
+    canvas.translate(cx, cy);
+    canvas.scale(scale, scale);
+    canvas.translate(-cx, -cy);
+
+    switch (kind) {
+      case JexAnimatedIconKind.battery:
+        final body = Rect.fromLTWH(s * .15, s * .25, s * .62, s * .50);
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(body, Radius.circular(s * .09)),
+          stroke(s * .07, color.withValues(alpha: wave)),
+        );
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(
+            Rect.fromLTWH(
+              body.left + s * .08,
+              body.top + s * .08,
+              (body.width - s * .16) * level.clamp(.03, 1),
+              body.height - s * .16,
+            ),
+            Radius.circular(s * .05),
+          ),
+          fill(color.withValues(alpha: .25 + .4 * wave)),
+        );
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(
+            Rect.fromLTWH(s * .77, s * .40, s * .09, s * .20),
+            Radius.circular(s * .03),
+          ),
+          fill(color.withValues(alpha: wave)),
+        );
+
+      case JexAnimatedIconKind.hotside:
+        canvas.drawLine(
+          Offset(cx, s * .16),
+          Offset(cx, s * .63),
+          stroke(s * .075, color.withValues(alpha: wave)),
+        );
+        canvas.drawCircle(
+          Offset(cx, s * .72),
+          s * .13,
+          fill(color.withValues(alpha: wave)),
+        );
+        final heat = Path()
+          ..moveTo(s * .72, s * .18)
+          ..quadraticBezierTo(s * .86, s * .12, s * .80, s * .03);
+        canvas.drawPath(heat, stroke(s * .04, color.withValues(alpha: .52)));
+
+      case JexAnimatedIconKind.voltage:
+        final p = Path()
+          ..moveTo(s * .56, s * .08)
+          ..lineTo(s * .30, s * .53)
+          ..lineTo(s * .49, s * .53)
+          ..lineTo(s * .40, s * .92)
+          ..lineTo(s * .71, s * .39)
+          ..lineTo(s * .52, s * .39)
+          ..close();
+        canvas.drawPath(p, fill(color.withValues(alpha: wave)));
+        if (active) {
+          canvas.drawCircle(
+            Offset(cx, cy),
+            s * (.39 + .07 * progress),
+            stroke(s * .035, color.withValues(alpha: .18)),
+          );
+        }
+
+      case JexAnimatedIconKind.adaptive:
+        canvas.drawCircle(
+          Offset(cx, cy),
+          s * .28,
+          stroke(s * .06, color.withValues(alpha: .48)),
+        );
+        canvas.drawArc(
+          Rect.fromCircle(center: Offset(cx, cy), radius: s * .39),
+          -math.pi / 2 + progress * math.pi * 2,
+          math.pi * 1.10,
+          false,
+          stroke(s * .065, color.withValues(alpha: wave)),
+        );
+        canvas.drawCircle(
+          Offset(s * .78, s * .18),
+          s * .075,
+          fill(color.withValues(alpha: wave)),
+        );
+
+      case JexAnimatedIconKind.peltier:
+        final p = stroke(s * .05, color.withValues(alpha: wave));
+        for (var i = 0; i < 3; i++) {
+          final a = i * math.pi / 3;
+          final dx = math.cos(a) * s * .34;
+          final dy = math.sin(a) * s * .34;
+          canvas.drawLine(
+            Offset(cx - dx, cy - dy),
+            Offset(cx + dx, cy + dy),
+            p,
+          );
+        }
+        canvas.drawCircle(Offset(cx, cy), s * .055, fill(color));
+
+      case JexAnimatedIconKind.fan:
+        final p = stroke(s * .05, color.withValues(alpha: wave));
+        final rotation = progress * math.pi * 2;
+        for (var i = 0; i < 3; i++) {
+          final a = rotation + i * math.pi * 2 / 3;
+          final path = Path()
+            ..moveTo(cx, cy)
+            ..quadraticBezierTo(
+              cx + math.cos(a + .75) * s * .18,
+              cy + math.sin(a + .75) * s * .18,
+              cx + math.cos(a) * s * .35,
+              cy + math.sin(a) * s * .35,
+            )
+            ..quadraticBezierTo(
+              cx + math.cos(a - .24) * s * .18,
+              cy + math.sin(a - .24) * s * .18,
+              cx,
+              cy,
+            );
+          canvas.drawPath(path, p);
+        }
+        canvas.drawCircle(Offset(cx, cy), s * .07, fill(color.withValues(alpha: wave)));
+
+      case JexAnimatedIconKind.speed:
+        final gauge = Rect.fromCircle(center: Offset(cx, cy), radius: s * .34);
+        canvas.drawArc(
+          gauge,
+          math.pi * .15,
+          math.pi * .70,
+          false,
+          stroke(s * .07, color.withValues(alpha: .18)),
+        );
+        canvas.drawArc(
+          gauge,
+          math.pi * .15,
+          math.pi * .70 * level,
+          false,
+          stroke(s * .07, color.withValues(alpha: wave)),
+        );
+        final a = math.pi * .15 + math.pi * .70 * level;
+        canvas.drawLine(
+          Offset(cx, cy),
+          Offset(cx + math.cos(a) * s * .28, cy + math.sin(a) * s * .28),
+          stroke(s * .05, color),
+        );
+        canvas.drawCircle(Offset(cx, cy), s * .05, fill(color));
+
+      case JexAnimatedIconKind.led:
+        for (var i = 0; i < 8; i++) {
+          final t = active ? (progress + i / 8) % 1 : 0;
+          final alpha = active
+              ? .48 + .45 * (0.5 + 0.5 * math.sin(t * math.pi * 2))
+              : .45;
+          canvas.drawCircle(
+            Offset(s * (.12 + i * .108), cy),
+            s * .055,
+            fill(color.withValues(alpha: alpha)),
+          );
+        }
+
+      case JexAnimatedIconKind.bluetooth:
+        final p = Path()
+          ..moveTo(cx, s * .10)
+          ..lineTo(s * .70, s * .30)
+          ..lineTo(cx, s * .50)
+          ..lineTo(s * .70, s * .70)
+          ..lineTo(cx, s * .90)
+          ..lineTo(cx, s * .10)
+          ..moveTo(s * .18, s * .30)
+          ..lineTo(s * .70, s * .70)
+          ..moveTo(s * .18, s * .70)
+          ..lineTo(s * .70, s * .30);
+        canvas.drawPath(p, stroke(s * .055, color.withValues(alpha: wave)));
+        if (active) {
+          canvas.drawCircle(
+            Offset(cx, cy),
+            s * (.42 + .07 * progress),
+            stroke(s * .03, color.withValues(alpha: .16)),
+          );
+        }
+    }
+
+    if (warning) {
+      canvas.drawCircle(
+        Offset(cx, cy),
+        s * .46,
+        stroke(s * .025, color.withValues(alpha: .70)),
+      );
+    }
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(covariant _JexIconPainter oldDelegate) =>
+      oldDelegate.kind != kind ||
+      oldDelegate.color != color ||
+      oldDelegate.progress != progress ||
+      oldDelegate.active != active ||
+      oldDelegate.level != level ||
+      oldDelegate.warning != warning;
 }
 
 const MethodChannel securityChannel = MethodChannel('je_x_fyz/security');
@@ -2201,9 +2536,14 @@ class _DashboardScreenState extends State<DashboardScreen>
     String unit, {
     required Color color,
     required IconData icon,
+    JexAnimatedIconKind? animatedKind,
+    double level = 1,
+    bool warning = false,
   }) {
     final display = value == '--' ? '--' : value + unit;
     final active = value != '--';
+    final homeDark = appThemeNotifier.value != AppThemePreset.light;
+    final mutedText = homeDark ? const Color(0xFFD4D7E0) : const Color(0xFF626873);
 
     return Padding(
       padding: EdgeInsets.zero,
@@ -2230,11 +2570,16 @@ class _DashboardScreenState extends State<DashboardScreen>
                         width: 1.1,
                       ),
                     ),
-                    child: Icon(
-                      icon,
-                      size: 22,
-                      color: color,
-                    ),
+                    child: animatedKind == null
+                        ? Icon(icon, size: 22, color: color)
+                        : JexAnimatedIcon(
+                            kind: animatedKind!,
+                            size: 22,
+                            color: color,
+                            active: active,
+                            level: level,
+                            warning: warning,
+                          ),
                   ),
                 ),
               ),
@@ -2253,7 +2598,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                           label,
                           maxLines: 1,
                           style: const TextStyle(
-                            color: const Color(0xFFD4D7E0),
+                            color: mutedText,
                             fontSize: 10.5,
                             fontWeight: FontWeight.w900,
                             letterSpacing: 0.45,
@@ -2268,7 +2613,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color: active ? color : const Color(0xFF7F8592),
+                        color: active ? color : (homeDark ? const Color(0xFF7F8592) : const Color(0xFF9A9EA7)),
                         fontSize: 18.5,
                         fontWeight: FontWeight.w900,
                         height: 0.95,
@@ -2290,6 +2635,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     required bool value,
     required IconData icon,
     required Color color,
+    JexAnimatedIconKind? animatedKind,
   }) {
     return _homeMetric(
       label,
@@ -2297,6 +2643,8 @@ class _DashboardScreenState extends State<DashboardScreen>
       '',
       color: color,
       icon: icon,
+      animatedKind: animatedKind,
+      level: fanOn ? fanSpeed / 100 : 0,
     );
   }
 
@@ -2314,6 +2662,8 @@ class _DashboardScreenState extends State<DashboardScreen>
       '',
       color: const Color(0xFFFFCD38),
       icon: PhosphorIconsRegular.gauge,
+      animatedKind: JexAnimatedIconKind.speed,
+      level: fanOn ? fanSpeed / 100 : 0,
     );
   }
 
@@ -3322,7 +3672,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                       child: IconButton(
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints.tightFor(width: 36, height: 36),
-                        tooltip: connected ? 'Disconnect' : 'Bluetooth',
+                        tooltip: connected ? JexText.of('disconnect', appLanguageNotifier.value) : JexText.of('bluetooth', appLanguageNotifier.value),
                         icon: Icon(
                           connected
                               ? PhosphorIconsRegular.bluetoothConnected
@@ -3342,7 +3692,9 @@ class _DashboardScreenState extends State<DashboardScreen>
                           headerName,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: const Color(0xFFF7F8FC),
+                            color: appThemeNotifier.value == AppThemePreset.light
+                                ? const Color(0xFF16181D)
+                                : const Color(0xFFF7F8FC),
                             fontWeight: FontWeight.w900,
                             fontSize: 19,
                             letterSpacing: 0.2,
@@ -3350,7 +3702,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                         ),
                         SizedBox(height: 1),
                         Text(
-                          'DEVELOPED BY HORIZON',
+                          JexText.of('developedByHorizon', appLanguageNotifier.value),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: const Color(0xFF737986),
@@ -3368,7 +3720,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                       child: IconButton(
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints.tightFor(width: 36, height: 36),
-                        tooltip: 'Settings',
+                        tooltip: JexText.of('settings', appLanguageNotifier.value),
                         icon: const Icon(
                           PhosphorIconsRegular.gear,
                           color: Colors.white,
@@ -3403,6 +3755,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                             batteryValue == '--' ? '' : '°C',
                             color: const Color(0xFFFFB52E),
                             icon: PhosphorIconsRegular.batteryHigh,
+                            animatedKind: JexAnimatedIconKind.battery,
                           ),
                           _homeMetric(
                             JexText.of('hotsideTemperature'),
@@ -3412,6 +3765,8 @@ class _DashboardScreenState extends State<DashboardScreen>
                                 ? const Color(0xFFFF5164)
                                 : const Color(0xFF22E6DE),
                             icon: PhosphorIconsRegular.thermometer,
+                            animatedKind: JexAnimatedIconKind.hotside,
+                            warning: safety == 'FAULT',
                           ),
                           _homeMetric(
                             JexText.of('voltageIndicator'),
@@ -3419,6 +3774,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                             '',
                             color: const Color(0xFF4D8CFF),
                             icon: PhosphorIconsRegular.lightning,
+                            animatedKind: JexAnimatedIconKind.voltage,
                           ),
                           _homeMetric(
                             JexText.of('adaptiveMode'),
@@ -3426,18 +3782,21 @@ class _DashboardScreenState extends State<DashboardScreen>
                             '',
                             color: const Color(0xFFC05BFF),
                             icon: PhosphorIconsRegular.sparkle,
+                            animatedKind: JexAnimatedIconKind.adaptive,
                           ),
                           _homeStateChip(
                             label: JexText.of('peltierSwitch'),
                             value: peltierOn,
                             icon: PhosphorIconsRegular.snowflake,
                             color: const Color(0xFF18DFFF),
+                            animatedKind: JexAnimatedIconKind.peltier,
                           ),
                           _homeStateChip(
                             label: JexText.of('fanSwitch'),
                             value: fanOn,
                             icon: PhosphorIconsRegular.fan,
                             color: const Color(0xFF38E3AD),
+                            animatedKind: JexAnimatedIconKind.fan,
                           ),
                           _homeFanSpeed(),
                           ],
