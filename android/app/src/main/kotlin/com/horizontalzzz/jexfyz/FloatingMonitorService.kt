@@ -257,8 +257,8 @@ class FloatingMonitorService : Service() {
             data.voltage = obj.optString("voltage", "--")
             data.fanOn = obj.optBoolean("fanOn", false)
             data.speed = obj.optInt("speed", 100)
-            data.adaptiveOn = obj.optBoolean("adaptiveOn", false) && data.fanOn
-            data.peltierOn = obj.optBoolean("peltierOn", false) && data.fanOn
+            data.adaptiveOn = obj.optBoolean("adaptiveOn", false)
+            data.peltierOn = obj.optBoolean("peltierOn", false)
             if (config.enabled) {
                 hudView?.invalidate()
             }
