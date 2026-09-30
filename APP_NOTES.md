@@ -938,3 +938,13 @@ Never:
 - Dashboard header/menu glyph coverage was expanded so ordinary UI icons are no longer visually static by default.
 - No BLE UUID, P1 protocol, OTA transport, Firebase metadata contract, or firmware version was changed by this execution.
 - **No Build App was run.** Per project workflow, this execution only changed source/documentation; Build App remains an explicit separate command.
+
+
+## 2026-09-30 — FULL EXECUTION / FINAL ICON COVERAGE + BLE RECONCILIATION HARDENING
+
+- Final App-side animation coverage was completed for the Dashboard and Connection UI actions. The main animated icon system now keeps subtle continuous motion even in inactive states while preserving stronger state-driven motion for active device features.
+- The App now performs a fresh firmware snapshot reconciliation when a connected dashboard resumes, and after an accepted state-changing command it waits for the matching authoritative telemetry. If the expected delta is not observed before timeout, the App performs one fresh SYNC snapshot before declaring the command unconfirmed.
+- Connection/Dashboard scan, Bluetooth, settings, reset, +/- and other visible secondary glyphs were moved onto the same subtle animated-glyph treatment where the shared Dashboard animation system is available.
+- Added reusable `lib/jex_animated_glyph.dart` for Floating Monitor / secondary UI animation coverage.
+- Dashboard Default theme remains implemented by placing the Dashboard under a Light theme ancestor while keeping the global Default theme dark for non-dashboard Settings pages.
+- No Build App was run. The repository remains ready for an explicit `Build App` command only.
