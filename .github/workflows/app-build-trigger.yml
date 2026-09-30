@@ -5,6 +5,9 @@ name: Build App
 
 on:
   workflow_dispatch:
+  push:
+    paths-ignore:
+      - '.github/workflows/app-build-trigger.yml'
 permissions:
   contents: read
 
