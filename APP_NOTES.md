@@ -1300,3 +1300,10 @@ Never:
   - Floating methods are isolated to the dedicated channel.
   - Native Floating Monitor retains actual WindowManager attachment/runtime-state checks.
 - Build App was not triggered by this execution; runtime validation on the user's OEM device still requires a fresh APK installed and the Floating permission/start flow exercised on-device.
+
+## 2026-10-01 — FLOATING SPEED STATE / SETTINGS SELECTION ALIGNMENT
+
+- Aligned the Floating Settings UI with the persistent Speed indicator contract.
+- Metric `S` remains selectable regardless of current Fan telemetry.
+- Floating preview and native overlay continue to render selected `S`; Fan OFF is presented as localized `OFF` / `MATI`.
+- Runtime telemetry still owns the actual Fan/Speed state; no device state is persisted as Floating configuration.
