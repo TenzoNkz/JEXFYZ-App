@@ -1279,3 +1279,24 @@ Never:
   - Updated Floating Speed state tests for persistent `S` + localized OFF/MATI behavior.
 - No firmware source, BLE UUID/P1 protocol, OTA transport, Firebase metadata contract, GPIO mapping, or signing identity was changed.
 - Build App was not triggered by this execution; source changes are committed on the default branch and are ready for the dedicated Build App workflow.
+
+## 2026-10-01 — FULL EXECUTION / FLOATING METHODCHANNEL ROOT-CAUSE FIX
+
+- Fixed the Floating Monitor native bridge ownership bug.
+- Root cause: `lib/floating_monitor.dart` used `MethodChannel('je_x_fyz/floating')`, while `MainActivity.kt` had incorrectly registered Floating methods on `je_x_fyz/battery_temp`. This caused the Flutter bridge calls to miss the native handler and fall into their error paths.
+- `MainActivity.kt` now keeps `je_x_fyz/battery_temp` for battery/location/Bluetooth/background-service utilities and registers all Floating operations on the dedicated `je_x_fyz/floating` channel:
+  - `hasOverlayPermission`
+  - `openOverlaySettings`
+  - `startFloatingMonitor`
+  - `stopFloatingMonitor`
+  - `updateFloatingConfig`
+  - `updateFloatingData`
+  - `getFloatingRuntimeState`
+- `FloatingMonitorService.kt` comment contract was aligned with the persistent Speed indicator behavior: S remains visible and reports OFF/MATI when Fan is OFF.
+- `.github/workflows/app-build.yml` now contains a static channel-contract guard so Flutter/native Floating channel drift is caught during CI before release.
+- Source-level validation confirmed:
+  - Flutter uses `je_x_fyz/floating`.
+  - MainActivity declares the same dedicated Floating channel.
+  - Floating methods are isolated to the dedicated channel.
+  - Native Floating Monitor retains actual WindowManager attachment/runtime-state checks.
+- Build App was not triggered by this execution; runtime validation on the user's OEM device still requires a fresh APK installed and the Floating permission/start flow exercised on-device.
