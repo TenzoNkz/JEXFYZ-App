@@ -686,7 +686,6 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                         itemBuilder: (context, index) {
                           final metric = config.order[index];
                           // All seven metrics remain selectable; Speed is a state/value, not a separate Fan toggle.
-                          const enabled = true;
                           final checked = config.selected.contains(metric);
                           return KeyedSubtree(
                             key: ValueKey<String>('floating-$metric'),
