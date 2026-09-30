@@ -1,5 +1,15 @@
 package com.horizontalzzz.jexfyz
 
+// AI-MEMORY / FILE CONTRACT
+// File: MainActivity.kt
+// Owns: Flutter MethodChannel host bridge and Android Settings/system utility entry points.
+// Overlay contract: Activity opens public Android overlay settings; FloatingMonitorService owns
+// the actual WindowManager overlay and foreground service.
+// Cross-OEM strategy: use public Settings actions with explicit fallback, never hidden APIs or
+// hardcoded vendor AppOps as the default path.
+// BLE contract: this file must not create a second BLE/GATT client.
+// Build target: compileSdk 37 / targetSdk 36 / minSdk 24.
+
 // AI ANDROID MEMORY:
 // Native bridge for Flutter. MethodChannel names are contracts with lib/main.dart.
 // BLE/GATT ownership stays in flutter_blue_plus; this class must not create a second BLE client.
@@ -31,6 +41,9 @@ class MainActivity : FlutterActivity() {
     private val NOTIFICATION_CHANNEL = "je_x_fyz/notifications"
 
     // Register every MethodChannel operation consumed by Dart.
+    // AI-METHOD / CHANNEL-CONFIG-CONTRACT
+    // Register the stable MethodChannel API consumed by Flutter. Method names are app contracts;
+    // changes here require matching Dart bridge changes.
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
@@ -133,6 +146,8 @@ class MainActivity : FlutterActivity() {
     }
 
     // Start foreground support for an already-active BLE session.
+    // AI-METHOD / BACKGROUND-SERVICE-CONTRACT
+    // Start the existing BLE-support foreground service without taking BLE ownership away from Flutter.
     private fun startBackgroundService(): Boolean {
         return try {
             val intent = Intent(this, JeForegroundService::class.java)
@@ -148,6 +163,8 @@ class MainActivity : FlutterActivity() {
     }
 
     // Stop foreground support after BLE teardown.
+    // AI-METHOD / BACKGROUND-SERVICE-CONTRACT
+    // Stop the existing BLE-support foreground service after the Flutter BLE session ends.
     private fun stopBackgroundService(): Boolean {
         return try {
             stopService(Intent(this, JeForegroundService::class.java))
@@ -157,6 +174,8 @@ class MainActivity : FlutterActivity() {
     }
 
     // Compare the installed release certificate with the configured official certificate.
+    // AI-METHOD / RELEASE-INTEGRITY-CONTRACT
+    // Verify the installed release certificate against the configured production signing identity.
     private fun isOfficialBuild(): Boolean {
         // Local debug builds are intentionally allowed for development.
         if (BuildConfig.DEBUG) {
@@ -198,6 +217,8 @@ class MainActivity : FlutterActivity() {
     }
 
     // Android exposes battery temperature in tenths of a degree Celsius.
+    // AI-METHOD / BATTERY-TEMPERATURE-CONTRACT
+    // Read Android battery temperature in Celsius; return -1.0 for unavailable/invalid readings.
     private fun readBatteryTemperature(): Double {
         return try {
             val filter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
@@ -225,6 +246,8 @@ class MainActivity : FlutterActivity() {
     }
 
     // Legacy Android BLE scanning compatibility check.
+    // AI-METHOD / LOCATION-CONTRACT
+    // Report the public Android location-service state used by legacy BLE scanning checks.
     private fun isLocationServiceEnabled(): Boolean {
         return try {
             val manager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -235,6 +258,8 @@ class MainActivity : FlutterActivity() {
     }
 
     // Launch Android Location settings.
+    // AI-METHOD / LOCATION-SETTINGS-CONTRACT
+    // Open the public Android location settings page; return false only when Activity launch fails.
     private fun openLocationSettings(): Boolean {
         return try {
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
@@ -249,6 +274,9 @@ class MainActivity : FlutterActivity() {
     // Open the most appropriate public Android Settings page for overlay permission.
     // OEM Settings implementations vary, so use a small public-API fallback ladder
     // instead of depending on one Settings activity.
+    // AI-METHOD / OVERLAY-SETTINGS-CONTRACT
+    // Try public overlay Settings in order: app-specific overlay, generic overlay, then App Details.
+    // resolveActivity() prevents avoidable failures; try/catch protects OEM Settings implementations.
     private fun openOverlaySettings(): Boolean {
         val intents = listOf(
             Intent(
@@ -276,6 +304,8 @@ class MainActivity : FlutterActivity() {
         return false
     }
 
+    // AI-METHOD / NOTIFICATION-CHANNEL-CONTRACT
+    // Create the user-alert notification channel once; safe to call repeatedly.
     private fun ensureNotificationChannel() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         val manager = getSystemService(NotificationManager::class.java)
@@ -290,6 +320,8 @@ class MainActivity : FlutterActivity() {
         manager.createNotificationChannel(channel)
     }
 
+    // AI-METHOD / NOTIFICATION-PERMISSION-CONTRACT
+    // Request POST_NOTIFICATIONS on Android 13+; older versions require no runtime prompt.
     private fun requestNotificationPermission(): Boolean {
         ensureNotificationChannel()
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return true
@@ -302,6 +334,8 @@ class MainActivity : FlutterActivity() {
         return false
     }
 
+    // AI-METHOD / USER-NOTIFICATION-CONTRACT
+    // Publish one user notification when POST_NOTIFICATIONS is granted.
     private fun showUserNotification(title: String, body: String, id: Int): Boolean {
         ensureNotificationChannel()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
@@ -333,6 +367,8 @@ class MainActivity : FlutterActivity() {
     }
 
     // Launch Android Bluetooth settings.
+    // AI-METHOD / BLUETOOTH-SETTINGS-CONTRACT
+    // Open the public Android Bluetooth settings page without creating a second BLE implementation.
     private fun openBluetoothSettings(): Boolean {
         return try {
             val intent = Intent(Settings.ACTION_BLUETOOTH_SETTINGS)
