@@ -382,6 +382,26 @@ class JexText {
       AppLanguage.english: 'OFFLINE',
       AppLanguage.indonesia: 'OFFLINE',
     },
+    'thermal': {
+      AppLanguage.english: 'Thermal',
+      AppLanguage.indonesia: 'Termal',
+    },
+    'hotsideLimit': {
+      AppLanguage.english: 'Hotside Limit',
+      AppLanguage.indonesia: 'Batas Suhu Panas',
+    },
+    'batteryZones': {
+      AppLanguage.english: 'Battery Zones',
+      AppLanguage.indonesia: 'Zona Baterai',
+    },
+    'fiveVCeiling': {
+      AppLanguage.english: '5V Ceiling',
+      AppLanguage.indonesia: 'Batas Atas 5V',
+    },
+    'twelveVFloor': {
+      AppLanguage.english: '12V Floor',
+      AppLanguage.indonesia: 'Batas Bawah 12V',
+    },
     'range': {
       AppLanguage.english: 'Range',
       AppLanguage.indonesia: 'Rentang',
