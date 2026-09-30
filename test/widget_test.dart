@@ -89,7 +89,7 @@ void main() {
   });
 
   test('Default Settings theme stays dark', () {
-    final theme = buildJexSettingsTheme(AppThemePreset.defaultTheme);
+    final theme = buildJexTheme(AppThemePreset.defaultTheme);
     expect(theme.brightness, Brightness.dark);
     expect(theme.scaffoldBackgroundColor, const Color(0xFF0F1013));
   });
