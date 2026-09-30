@@ -1204,3 +1204,6 @@ Never:
   - No Build App was run.
   - No new physical/OEM runtime validation was performed.
   - The next validation must explicitly build the current main source and then test Floating Monitor + localization + Fan Speed visibility on-device.
+
+
+- Follow-up comment-memory pass: lib/floating_monitor.dart now also marks the remaining configuration/model/settings helper functions and Settings widget classes with explicit AI-METHOD / AI-MEMORY contracts. Latest comment-only source commit: 1fa5c54868a7a683b95f338ebbd9b3ac9fa23814.
