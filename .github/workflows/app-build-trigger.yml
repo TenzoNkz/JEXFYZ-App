@@ -1,22 +1,22 @@
-# JE X FYZ App — single manual build trigger.
-# This is the only workflow that should be started for an explicit "Build App" request.
-# It calls the reusable App Build engine exactly once.
+# JE X FYZ App — single explicit build trigger.
+# Normal pushes/PRs never start this workflow.
+# The assistant creates/reopens the dedicated trigger issue only after an explicit
+# "@Thinking Build App!" request.
 name: Build App
 
 on:
-  workflow_dispatch:
-    inputs:
-      confirm_build:
-        description: "Confirm that this manual dispatch was explicitly requested as Build App."
-        required: true
-        type: boolean
-        default: false
+  issues:
+    types:
+      - opened
+      - reopened
 
 permissions:
   contents: read
 
 jobs:
   build:
-    if: inputs.confirm_build == true
+    if: >-
+      github.event.issue.title == 'JE X FYZ — BUILD APP TRIGGER'
+      && contains(github.event.issue.body, 'JEXFYZ_BUILD_TRIGGER_V1')
     uses: ./.github/workflows/app-build.yml
     secrets: inherit
