@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -6,7 +5,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 enum AppLanguage { english, indonesia }
 enum AppThemePreset { defaultTheme, light, dark }
-enum VoltageLayout { vertical, sideText }
 
 class AppSettings {
   final AppLanguage language;
@@ -15,7 +13,6 @@ class AppSettings {
   final bool notifyFirmware;
   final bool notifyBluetooth;
   final bool autoConnect;
-  final VoltageLayout voltageLayout;
 
   const AppSettings({
     this.language = AppLanguage.english,
@@ -24,7 +21,6 @@ class AppSettings {
     this.notifyFirmware = true,
     this.notifyBluetooth = true,
     this.autoConnect = true,
-    this.voltageLayout = VoltageLayout.vertical,
   });
 
   AppSettings copyWith({
@@ -34,7 +30,6 @@ class AppSettings {
     bool? notifyFirmware,
     bool? notifyBluetooth,
     bool? autoConnect,
-    VoltageLayout? voltageLayout,
   }) {
     return AppSettings(
       language: language ?? this.language,
@@ -43,7 +38,6 @@ class AppSettings {
       notifyFirmware: notifyFirmware ?? this.notifyFirmware,
       notifyBluetooth: notifyBluetooth ?? this.notifyBluetooth,
       autoConnect: autoConnect ?? this.autoConnect,
-      voltageLayout: voltageLayout ?? this.voltageLayout,
     );
   }
 
@@ -54,7 +48,6 @@ class AppSettings {
         'notifyFirmware': notifyFirmware,
         'notifyBluetooth': notifyBluetooth,
         'autoConnect': autoConnect,
-        'voltageLayout': voltageLayout.name,
       };
 
   static AppSettings fromJson(String raw) {
@@ -63,15 +56,11 @@ class AppSettings {
       if (decoded is! Map) return const AppSettings();
       AppLanguage language = AppLanguage.english;
       AppThemePreset theme = AppThemePreset.defaultTheme;
-      VoltageLayout voltageLayout = VoltageLayout.vertical;
       try {
         language = AppLanguage.values.byName(decoded['language']?.toString() ?? '');
       } catch (_) {}
       try {
         theme = AppThemePreset.values.byName(decoded['theme']?.toString() ?? '');
-      } catch (_) {}
-      try {
-        voltageLayout = VoltageLayout.values.byName(decoded['voltageLayout']?.toString() ?? '');
       } catch (_) {}
       return AppSettings(
         language: language,
@@ -80,7 +69,6 @@ class AppSettings {
         notifyFirmware: decoded['notifyFirmware'] is bool ? decoded['notifyFirmware'] as bool : true,
         notifyBluetooth: decoded['notifyBluetooth'] is bool ? decoded['notifyBluetooth'] as bool : true,
         autoConnect: decoded['autoConnect'] is bool ? decoded['autoConnect'] as bool : true,
-        voltageLayout: voltageLayout,
       );
     } catch (_) {
       return const AppSettings();
@@ -94,7 +82,6 @@ final ValueNotifier<bool> appNotifySafetyNotifier = ValueNotifier<bool>(true);
 final ValueNotifier<bool> appNotifyFirmwareNotifier = ValueNotifier<bool>(true);
 final ValueNotifier<bool> appNotifyBluetoothNotifier = ValueNotifier<bool>(true);
 final ValueNotifier<bool> appAutoConnectNotifier = ValueNotifier<bool>(true);
-final ValueNotifier<VoltageLayout> appVoltageLayoutNotifier = ValueNotifier<VoltageLayout>(VoltageLayout.vertical);
 
 class AppSettingsStore {
   static const FlutterSecureStorage _storage = FlutterSecureStorage();
@@ -128,7 +115,6 @@ class AppSettingsStore {
     appNotifyFirmwareNotifier.value = settings.notifyFirmware;
     appNotifyBluetoothNotifier.value = settings.notifyBluetooth;
     appAutoConnectNotifier.value = settings.autoConnect;
-    appVoltageLayoutNotifier.value = settings.voltageLayout;
   }
 
   static Future<bool> shouldNotifyFirmware(String version) async {
@@ -261,14 +247,6 @@ class JexText {
     'color': {
       AppLanguage.english: 'Color',
       AppLanguage.indonesia: 'Warna',
-    },
-    'vertical': {
-      AppLanguage.english: 'Vertical',
-      AppLanguage.indonesia: 'Vertikal',
-    },
-    'sideText': {
-      AppLanguage.english: 'Side Text',
-      AppLanguage.indonesia: 'Teks Samping',
     },
     'displayStyle': {
       AppLanguage.english: 'Display Style',
@@ -632,14 +610,78 @@ ThemeData buildJexTheme(AppThemePreset preset) {
     case AppThemePreset.defaultTheme:
       return ThemeData(
         useMaterial3: true,
+        brightness: Brightness.dark,
+        primaryColor: const Color(0xFF5C9DFF),
+        scaffoldBackgroundColor: const Color(0xFF0F1013),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF5C9DFF),
+          brightness: Brightness.dark,
+        ),
+        fontFamily: 'Roboto',
+        cardColor: const Color(0xFF191B20),
+        dividerColor: const Color(0xFF2B2E35),
+      );
+  }
+}
+
+ThemeData buildJexSettingsTheme(AppThemePreset preset) {
+  switch (preset) {
+    case AppThemePreset.light:
+      return ThemeData(
+        useMaterial3: true,
         brightness: Brightness.light,
-        primaryColor: Colors.blueAccent,
-        scaffoldBackgroundColor: const Color(0xFF111113),
+        scaffoldBackgroundColor: const Color(0xFFF5F5F7),
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF4D8CFF),
           brightness: Brightness.light,
         ),
         fontFamily: 'Roboto',
+        cardColor: Colors.white,
+      );
+    case AppThemePreset.dark:
+    case AppThemePreset.defaultTheme:
+      return ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: const Color(0xFF0F1013),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF5C9DFF),
+          brightness: Brightness.dark,
+        ).copyWith(
+          surface: const Color(0xFF191B20),
+          surfaceContainerHighest: const Color(0xFF22252C),
+          onSurface: const Color(0xFFF4F6FA),
+          onSurfaceVariant: const Color(0xFFAAAFBB),
+          outline: const Color(0xFF333741),
+        ),
+        fontFamily: 'Roboto',
+        cardColor: const Color(0xFF191B20),
+        dividerColor: const Color(0xFF2B2E35),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF111216),
+          foregroundColor: Color(0xFFF4F6FA),
+          elevation: 0,
+          scrolledUnderElevation: 0,
+        ),
+        listTileTheme: const ListTileThemeData(
+          textColor: Color(0xFFF4F6FA),
+          subtitleTextStyle: TextStyle(color: Color(0xFFAAAFBB)),
+          iconColor: Color(0xFFB8BDC8),
+        ),
+        dividerTheme: const DividerThemeData(
+          color: Color(0xFF2B2E35),
+          thickness: 1,
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
+          labelStyle: TextStyle(color: Color(0xFFAAAFBB)),
+          hintStyle: TextStyle(color: Color(0xFF737985)),
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Color(0xFF333741)),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Color(0xFF5C9DFF)),
+          ),
+        ),
       );
   }
 }
