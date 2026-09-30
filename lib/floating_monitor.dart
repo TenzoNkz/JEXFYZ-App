@@ -744,30 +744,86 @@ class SettingsPage extends StatelessWidget {
             children: [
               _section(context, JexText.of('general', language), [
                 _item(context, PhosphorIconsRegular.translate, JexText.of('language', language),
-                    language == AppLanguage.english ? 'English' : 'Bahasa Indonesia', () => Navigator.push(context, MaterialPageRoute<void>(builder: (_) => const LanguageSettingsPage()))),
-                _item(context, PhosphorIconsRegular.sun, JexText.of('appearance', language),
-                    JexText.of(switch (appThemeNotifier.value) {
+                    language == AppLanguage.english
+                        ? JexText.of('languageEnglish', language)
+                        : JexText.of('languageIndonesia', language),
+                    () => Navigator.of(context).push(MaterialPageRoute<void>(
+                          builder: (_) => const LanguageSettingsPage(),
+                        ))),
+                _item(
+                  context,
+                  PhosphorIconsRegular.sun,
+                  JexText.of('appearance', language),
+                  JexText.of(
+                    switch (appThemeNotifier.value) {
                       AppThemePreset.defaultTheme => 'default',
                       AppThemePreset.light => 'light',
                       AppThemePreset.dark => 'dark',
-                    }, language),
-                    () => Navigator.push(context, MaterialPageRoute<void>(builder: (_) => const AppearanceSettingsPage()))),
-                _item(context, PhosphorIconsRegular.bell, JexText.of('notifications', language), '3',
-                    () => Navigator.push(context, MaterialPageRoute<void>(builder: (_) => const NotificationsSettingsPage()))),
+                    },
+                    language,
+                  ),
+                  () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const AppearanceSettingsPage(),
+                    ),
+                  ),
+                ),
+                _item(
+                  context,
+                  PhosphorIconsRegular.bell,
+                  JexText.of('notifications', language),
+                  '3',
+                  () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const NotificationsSettingsPage(),
+                    ),
+                  ),
+                ),
               ]),
               _section(context, JexText.of('device', language), [
-                _item(context, PhosphorIconsRegular.bluetooth, JexText.of('bluetooth', language),
-                    appAutoConnectNotifier.value ? 'Auto' : 'Manual', () => Navigator.push(context, MaterialPageRoute<void>(builder: (_) => const BluetoothSettingsPage()))),
-                _item(context, PhosphorIconsRegular.stack, JexText.of('floatingMonitor', language),
-                    floatingConfigNotifier.value.enabled ? 'ON' : 'OFF', () => Navigator.push(context, MaterialPageRoute<void>(builder: (_) => const FloatingSettingsPage()))),
+                _item(
+                  context,
+                  PhosphorIconsRegular.bluetooth,
+                  JexText.of('bluetooth', language),
+                  appAutoConnectNotifier.value
+                      ? JexText.of('auto', language)
+                      : JexText.of('manual', language),
+                  () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const BluetoothSettingsPage(),
+                    ),
+                  ),
+                ),
+                _item(
+                  context,
+                  PhosphorIconsRegular.stack,
+                  JexText.of('floatingMonitor', language),
+                  floatingConfigNotifier.value.enabled
+                      ? JexText.of('on', language)
+                      : JexText.of('off', language),
+                  () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const FloatingSettingsPage(),
+                    ),
+                  ),
+                ),
               ]),
               _section(context, JexText.of('firmwareSection', language), [
                 _item(context, PhosphorIconsRegular.uploadSimple, JexText.of('firmwareUpdate', language),
                     currentFirmwareVersion, () => unawaited(onOpenFirmwareUpdate())),
               ]),
               _section(context, JexText.of('aboutSection', language), [
-                _item(context, PhosphorIconsRegular.info, JexText.of('about', language), 'JE Cooler',
-                    () => Navigator.push(context, MaterialPageRoute<void>(builder: (_) => const AboutSettingsPage()))),
+                _item(
+                context,
+                PhosphorIconsRegular.info,
+                JexText.of('about', language),
+                appName,
+                () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const AboutSettingsPage(),
+                  ),
+                ),
+              ),
               ]),
             ],
           ),
@@ -803,13 +859,50 @@ class SettingsPage extends StatelessWidget {
   }
 
   Widget _item(BuildContext context, IconData icon, String title, String summary, VoidCallback onTap) {
-    return ListTile(
-      minVerticalPadding: 12,
-      leading: Icon(icon, size: 21),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w800)),
-      subtitle: summary.isEmpty ? null : Text(summary),
-      trailing: const Icon(PhosphorIconsRegular.caretRight, size: 18),
-      onTap: onTap,
+    final scheme = Theme.of(context).colorScheme;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+          child: Row(
+            children: [
+              Icon(icon, size: 21, color: scheme.onSurfaceVariant),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        color: scheme.onSurface,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    if (summary.trim().isNotEmpty) ...[
+                      const SizedBox(height: 3),
+                      Text(
+                        summary,
+                        style: TextStyle(
+                          color: scheme.onSurfaceVariant,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              Icon(
+                PhosphorIconsRegular.caretRight,
+                size: 18,
+                color: scheme.onSurfaceVariant,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -839,7 +932,7 @@ class LanguageSettingsPage extends StatelessWidget {
         body: Column(
           children: [
             RadioListTile<AppLanguage>(
-              title: const Text('English'),
+              title: Text(JexText.of('languageEnglish', language)),
               value: AppLanguage.english,
               groupValue: language,
               onChanged: (value) {
@@ -847,7 +940,7 @@ class LanguageSettingsPage extends StatelessWidget {
               },
             ),
             RadioListTile<AppLanguage>(
-              title: const Text('Bahasa Indonesia'),
+              title: Text(JexText.of('languageIndonesia', language)),
               value: AppLanguage.indonesia,
               groupValue: language,
               onChanged: (value) {
@@ -887,7 +980,6 @@ class AppearanceSettingsPage extends StatelessWidget {
           children: [
             RadioListTile<AppThemePreset>(
               title: Text(JexText.of('default', language)),
-              subtitle: Text(language == AppLanguage.english ? 'Black header / white content' : 'Header hitam / konten putih'),
               value: AppThemePreset.defaultTheme,
               groupValue: theme,
               onChanged: (value) {
@@ -959,25 +1051,19 @@ class NotificationsSettingsPage extends StatelessWidget {
                 children: [
                   SwitchListTile(
                     title: Text(JexText.of('safetyAlert', language)),
-                    subtitle: Text(language == AppLanguage.english
-                        ? 'Notify when Hotside reaches the set limit.'
-                        : 'Notifikasi saat Suhu Panas mencapai batas yang ditetapkan.'),
+                    subtitle: Text(JexText.of('notificationSafetyDescription', language)),
                     value: appNotifySafetyNotifier.value,
                     onChanged: (value) => _set('safety', value),
                   ),
                   SwitchListTile(
                     title: Text(JexText.of('firmwareUpdate', language)),
-                    subtitle: Text(language == AppLanguage.english
-                        ? 'Notify when a firmware update is available.'
-                        : 'Notifikasi saat Pembaruan Firmware tersedia.'),
+                    subtitle: Text(JexText.of('notificationFirmwareDescription', language)),
                     value: appNotifyFirmwareNotifier.value,
                     onChanged: (value) => _set('firmware', value),
                   ),
                   SwitchListTile(
                     title: Text(JexText.of('bluetoothConnected', language)),
-                    subtitle: Text(language == AppLanguage.english
-                        ? 'Notify when JE X FYZ connects or disconnects.'
-                        : 'Notifikasi saat JE X FYZ terhubung atau terputus.'),
+                    subtitle: Text(JexText.of('notificationBluetoothDescription', language)),
                     value: appNotifyBluetoothNotifier.value,
                     onChanged: (value) => _set('bluetooth', value),
                   ),
@@ -1017,9 +1103,7 @@ class BluetoothSettingsPage extends StatelessWidget {
           children: [
             SwitchListTile(
               title: Text(JexText.of('autoConnect', language)),
-              subtitle: Text(language == AppLanguage.english
-                  ? 'Connect to JE X FYZ automatically when it is advertising.'
-                  : 'Hubungkan JE X FYZ secara otomatis saat perangkat melakukan advertising.'),
+              subtitle: Text(JexText.of('autoConnectDescription', language)),
               value: autoConnect,
               onChanged: _setAutoConnect,
             ),
