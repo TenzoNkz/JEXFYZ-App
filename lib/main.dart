@@ -2738,43 +2738,6 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
   }
 
-  Widget _voltageRow(String target, String mode) {
-    final active = voltage == target;
-    final disabled = !connected || adaptiveOn || voltageGuardActive;
-    return InkWell(
-      borderRadius: BorderRadius.circular(13),
-      onTap: disabled ? null : () => _requestVoltage(target),
-      child: Container(
-
-        padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 11),
-        decoration: BoxDecoration(
-          color: active ? Colors.black : Colors.white,
-          borderRadius: BorderRadius.circular(13),
-          border: Border.all(color: active ? Colors.black : const Color(0xFFE4E4E7)),
-        ),
-        child: Row(
-          children: [
-            SizedBox(
-              width: 48,
-              child: Text(target, style: TextStyle(color: active ? Colors.white : Colors.black, fontSize: 18, fontWeight: FontWeight.w900)),
-            ),
-            Expanded(
-              child: Text(mode, style: TextStyle(color: active ? Colors.white70 : Colors.black45, fontSize: 10, fontWeight: FontWeight.w700)),
-            ),
-            StaticSwitcher(
-
-              child: Icon(
-                active ? PhosphorIconsBold.checkCircle : PhosphorIconsRegular.circle,
-                key: ValueKey<bool>(active),
-                color: active ? Colors.blueAccent : Colors.black26,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _smoothList({
     required List<Widget> children,
     required String storageKey,
@@ -3612,12 +3575,6 @@ class _DashboardScreenState extends State<DashboardScreen>
         AppThemePreset.defaultTheme => const Color(0xFF111113),
         AppThemePreset.light => const Color(0xFFF5F5F7),
         AppThemePreset.dark => const Color(0xFF101114),
-      };
-
-  Color _dashboardSurfaceColor() => switch (appThemeNotifier.value) {
-        AppThemePreset.defaultTheme => Colors.white,
-        AppThemePreset.light => Colors.white,
-        AppThemePreset.dark => const Color(0xFF17181C),
       };
 
   bool get _dashboardDark => appThemeNotifier.value == AppThemePreset.dark;
