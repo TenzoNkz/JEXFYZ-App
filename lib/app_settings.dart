@@ -322,6 +322,78 @@ class JexText {
       AppLanguage.english: 'Speed',
       AppLanguage.indonesia: 'Kecepatan',
     },
+    'voltageIndicator': {
+      AppLanguage.english: 'Voltage Indicator',
+      AppLanguage.indonesia: 'Indikator Tegangan',
+    },
+    'adaptiveMode': {
+      AppLanguage.english: 'Adaptive Mode',
+      AppLanguage.indonesia: 'Mode Adaptif',
+    },
+    'peltierSwitch': {
+      AppLanguage.english: 'Peltier Switch',
+      AppLanguage.indonesia: 'Saklar Peltier',
+    },
+    'fanSwitch': {
+      AppLanguage.english: 'Fan Switch',
+      AppLanguage.indonesia: 'Saklar Kipas',
+    },
+    'fanSpeedLabel': {
+      AppLanguage.english: 'Fan Speed',
+      AppLanguage.indonesia: 'Kecepatan Kipas',
+    },
+    'notify': {
+      AppLanguage.english: 'NOTIFY',
+      AppLanguage.indonesia: 'NOTIFIKASI',
+    },
+    'notifyBluetooth': {
+      AppLanguage.english: 'NOTIFY • BLUETOOTH',
+      AppLanguage.indonesia: 'NOTIFIKASI • BLUETOOTH',
+    },
+    'notifySync': {
+      AppLanguage.english: 'NOTIFY • SYNC',
+      AppLanguage.indonesia: 'NOTIFIKASI • SINKRONISASI',
+    },
+    'notifyError': {
+      AppLanguage.english: 'NOTIFY • ERROR',
+      AppLanguage.indonesia: 'NOTIFIKASI • KESALAHAN',
+    },
+    'notifyWarning': {
+      AppLanguage.english: 'NOTIFY • WARNING',
+      AppLanguage.indonesia: 'NOTIFIKASI • PERINGATAN',
+    },
+    'error': {
+      AppLanguage.english: 'ERROR',
+      AppLanguage.indonesia: 'KESALAHAN',
+    },
+    'connecting': {
+      AppLanguage.english: 'CONNECTING',
+      AppLanguage.indonesia: 'MENGHUBUNGKAN',
+    },
+    'syncing': {
+      AppLanguage.english: 'SYNCING',
+      AppLanguage.indonesia: 'MENYINKRONKAN',
+    },
+    'online': {
+      AppLanguage.english: 'ONLINE',
+      AppLanguage.indonesia: 'ONLINE',
+    },
+    'offline': {
+      AppLanguage.english: 'OFFLINE',
+      AppLanguage.indonesia: 'OFFLINE',
+    },
+    'range': {
+      AppLanguage.english: 'Range',
+      AppLanguage.indonesia: 'Rentang',
+    },
+    'zone9v': {
+      AppLanguage.english: '9V Zone',
+      AppLanguage.indonesia: 'Zona 9V',
+    },
+    'lockedAdaptive': {
+      AppLanguage.english: 'Locked in Adaptive.',
+      AppLanguage.indonesia: 'Terkunci dalam Mode Adaptif.',
+    },
     'lowMode': {
       AppLanguage.english: 'Low Mode',
       AppLanguage.indonesia: 'Mode Rendah',
