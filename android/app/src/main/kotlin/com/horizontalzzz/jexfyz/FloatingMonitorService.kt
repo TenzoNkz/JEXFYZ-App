@@ -1,5 +1,17 @@
 package com.horizontalzzz.jexfyz
 
+// AI-MEMORY / FILE CONTRACT
+// File: FloatingMonitorService.kt
+// Owns: native Floating Monitor foreground service, WindowManager overlay lifetime,
+//       native overlay rendering, drag/resize/orientation gestures, and runtime diagnostics.
+// Permission authority: Settings.canDrawOverlays() is the public Android SYSTEM_ALERT_WINDOW gate.
+// Window authority: WindowManager.addView()/removeView() determine actual attachment.
+// Localization: Flutter sends the selected AppLanguage with telemetry. English status = ON/OFF;
+// Indonesia status = HIDUP/MATI. The metric identifiers F/B/H/V/A/P/S stay unchanged.
+// Fan Speed invariant: metric S is rendered only when Fan telemetry is ON.
+// Do not create a BLE/GATT client here; telemetry is supplied by MainActivity/Flutter.
+// Do not add vendor-specific hidden APIs as a default compatibility mechanism.
+
 // Native Floating Monitor overlay.
 // The overlay owns only its window and visual presentation. BLE/GATT remains
 // entirely in flutter_blue_plus; telemetry arrives from MainActivity.
@@ -45,6 +57,8 @@ class FloatingMonitorService : Service() {
         @Volatile
         private var instance: FloatingMonitorService? = null
 
+        // AI-METHOD / START CONTRACT
+        // Start the overlay foreground service only when the public overlay permission is granted.
         fun start(context: Context, json: String): Boolean {
             if (!Settings.canDrawOverlays(context)) return false
             val intent = Intent(context, FloatingMonitorService::class.java).apply {
@@ -63,6 +77,8 @@ class FloatingMonitorService : Service() {
             }
         }
 
+        // AI-METHOD / STOP CONTRACT
+        // Stop the native overlay service; Flutter controls the user-facing toggle state.
         fun stop(context: Context) {
             try {
                 context.stopService(Intent(context, FloatingMonitorService::class.java))
@@ -70,10 +86,14 @@ class FloatingMonitorService : Service() {
             }
         }
 
+        // AI-METHOD / CONFIG CONTRACT
+        // Apply configuration to a running service; start only as a compatibility fallback when absent.
         fun updateConfig(context: Context, json: String) {
             instance?.applyConfig(json) ?: start(context, json)
         }
 
+        // AI-METHOD / RUNTIME-STATE CONTRACT
+        // Expose public permission, service, WindowManager attach, and persisted geometry diagnostics.
         fun runtimeState(context: Context): Map<String, Any?> {
             return instance?.runtimeStateMap() ?: run {
                 val prefs = context.getSharedPreferences(
@@ -97,6 +117,8 @@ class FloatingMonitorService : Service() {
             }
         }
 
+        // AI-METHOD / DATA CONTRACT
+        // Forward live telemetry to the existing service instance; never start a service from telemetry.
         fun updateData(context: Context, json: String) {
             instance?.applyData(json)
         }
@@ -112,6 +134,9 @@ class FloatingMonitorService : Service() {
         var horizontal: Boolean = true,
     )
 
+    // AI-MEMORY / DATA CONTRACT
+    // Live presentation data forwarded from Flutter. The language is presentation state,
+    // not device protocol state, and therefore never changes BLE command semantics.
     private data class Data(
         var fps: String = "--",
         var battery: String = "--",
@@ -121,6 +146,7 @@ class FloatingMonitorService : Service() {
         var speed: Int = 100,
         var adaptiveOn: Boolean = false,
         var peltierOn: Boolean = false,
+        var language: String = "english",
     )
 
     private lateinit var windowManager: WindowManager
@@ -134,6 +160,8 @@ class FloatingMonitorService : Service() {
     private var viewAttachedToWindow = false
     private val prefs by lazy { getSharedPreferences("jexfyz_floating_native_v1", Context.MODE_PRIVATE) }
 
+    // AI-METHOD / SERVICE-CREATE CONTRACT
+    // Initialize WindowManager, notification channel, and the required specialUse foreground service.
     override fun onCreate() {
         super.onCreate()
         instance = this
@@ -150,6 +178,8 @@ class FloatingMonitorService : Service() {
         }
     }
 
+    // AI-METHOD / COMMAND-DISPATCH CONTRACT
+    // Handle start/stop/config/data intents without changing BLE ownership or protocol.
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             ACTION_START -> {
@@ -164,12 +194,16 @@ class FloatingMonitorService : Service() {
         return START_NOT_STICKY
     }
 
+    // AI-METHOD / SERVICE-DESTROY CONTRACT
+    // Remove any attached overlay and clear the singleton instance used by the MethodChannel bridge.
     override fun onDestroy() {
         removeOverlay()
         instance = null
         super.onDestroy()
     }
 
+    // AI-METHOD / BIND-CONTRACT
+    // This service is command-driven and deliberately not bound to an Activity client.
     override fun onBind(intent: Intent?): IBinder? = null
 
     private fun runtimeStateMap(): Map<String, Any?> {
@@ -190,6 +224,8 @@ class FloatingMonitorService : Service() {
         )
     }
 
+    // AI-METHOD / NOTIFICATION-CONTRACT
+    // Create the low-priority channel required by the foreground overlay service.
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         val manager = getSystemService(NotificationManager::class.java)
@@ -206,6 +242,8 @@ class FloatingMonitorService : Service() {
         manager.createNotificationChannel(channel)
     }
 
+    // AI-METHOD / NOTIFICATION-BUILD-CONTRACT
+    // Build the persistent foreground-service notification without exposing device controls.
     private fun buildNotification(): Notification {
         val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Notification.Builder(this, CHANNEL_ID)
@@ -223,6 +261,8 @@ class FloatingMonitorService : Service() {
             .build()
     }
 
+    // AI-METHOD / CONFIG-APPLY-CONTRACT
+    // Parse persisted/display configuration, then attach/remove the native overlay accordingly.
     private fun applyConfig(json: String) {
         try {
             val obj = JSONObject(json)
@@ -268,6 +308,8 @@ class FloatingMonitorService : Service() {
         }
     }
 
+    // AI-METHOD / DATA-APPLY-CONTRACT
+    // Update native presentation telemetry only; Flutter remains the live state producer.
     private fun applyData(json: String) {
         try {
             val obj = JSONObject(json)
@@ -279,6 +321,7 @@ class FloatingMonitorService : Service() {
             data.speed = obj.optInt("speed", 100)
             data.adaptiveOn = obj.optBoolean("adaptiveOn", false)
             data.peltierOn = obj.optBoolean("peltierOn", false)
+            data.language = obj.optString("language", "english").lowercase()
             if (config.enabled) {
                 hudView?.invalidate()
             }
@@ -286,6 +329,8 @@ class FloatingMonitorService : Service() {
         }
     }
 
+    // AI-METHOD / GEOMETRY-PERSIST-CONTRACT
+    // Persist user-controlled position/orientation/size so the next overlay session restores it.
     private fun persistNativePositionAndSize() {
         if (::layoutParams.isInitialized) {
             prefs.edit()
@@ -299,6 +344,8 @@ class FloatingMonitorService : Service() {
         }
     }
 
+    // AI-METHOD / ATTACH-CONTRACT
+    // Verify the public permission, create the real HUD window, and record attach diagnostics.
     private fun ensureOverlay() {
         if (!config.enabled) return
 
@@ -369,12 +416,16 @@ class FloatingMonitorService : Service() {
         }
     }
 
+    // AI-METHOD / ERROR-FORMAT-CONTRACT
+    // Preserve the exception class plus message so Flutter can distinguish WindowManager failures.
     private fun formatWindowAddError(error: Exception): String {
         val type = error::class.java.simpleName
         val message = error.message?.trim().orEmpty()
         return if (message.isEmpty()) type else "$type: $message"
     }
 
+    // AI-METHOD / DETACH-CONTRACT
+    // Remove the attached view safely and clear attach state even when WindowManager reports an error.
     private fun removeOverlay() {
         val view = hudView ?: run {
             viewAttachedToWindow = false
@@ -388,6 +439,8 @@ class FloatingMonitorService : Service() {
         hudView = null
     }
 
+    // AI-METHOD / ORIENTATION-CONTRACT
+    // Toggle horizontal/vertical layout without changing metric order or device state.
     private fun rotateOrientation() {
         config.horizontal = !config.horizontal
         persistNativePositionAndSize()
@@ -395,6 +448,8 @@ class FloatingMonitorService : Service() {
         hudView?.invalidate()
     }
 
+    // AI-METHOD / RESIZE-CONTRACT
+    // Apply bounded user scaling and persist it; actual window geometry is updated through WindowManager.
     private fun resizeOverlay(newSize: Float) {
         config.size = newSize.coerceIn(0.65f, 1.8f)
         prefs.edit().putFloat("size", config.size).apply()
@@ -457,6 +512,8 @@ class FloatingMonitorService : Service() {
 
         private fun dp(value: Float): Float = value * density
 
+        // AI-METHOD / MEASURE-CONTRACT
+        // Measure only metrics currently selected and visible; S is omitted when Fan is OFF.
         override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
             val size = config.size
             val textSize = dp(11.5f * size)
@@ -484,19 +541,25 @@ class FloatingMonitorService : Service() {
             setMeasuredDimension(ceil(width).toInt(), ceil(height).toInt())
         }
 
+        // AI-METHOD / METRIC-TEXT-CONTRACT
+        // Convert stable metric identifiers to presentation text using the Flutter-selected language.
         private fun itemText(metric: String): String {
+            val onText = if (data.language == "indonesia") "HIDUP" else "ON"
+            val offText = if (data.language == "indonesia") "MATI" else "OFF"
             return when (metric) {
                 "F" -> "F:" + data.fps
                 "B" -> "B:" + if (data.battery == "--") "--" else data.battery + "°"
                 "H" -> "H:" + if (data.hotside == "--") "--" else data.hotside + "°"
                 "V" -> "V:" + data.voltage
-                "A" -> "A:" + if (data.fanOn && data.adaptiveOn) "ON" else "OFF"
-                "P" -> "P:" + if (data.fanOn && data.peltierOn) "ON" else "OFF"
-                "S" -> "S:" + if (data.fanOn) data.speed.toString() else "OFF"
+                "A" -> "A:" + if (data.fanOn && data.adaptiveOn) onText else offText
+                "P" -> "P:" + if (data.fanOn && data.peltierOn) onText else offText
+                "S" -> "S:" + data.speed.toString()
                 else -> ""
             }
         }
 
+        // AI-METHOD / METRIC-WIDTH-CONTRACT
+        // Calculate width from the localized presentation value and current display style/scale.
         private fun itemWidth(metric: String): Float {
             if (config.style == "icons") {
                 return dp(21f * config.size) + dp(4f * config.size) + textPaint.measureText(itemText(metric))
@@ -504,10 +567,14 @@ class FloatingMonitorService : Service() {
             return textPaint.measureText(itemText(metric))
         }
 
+        // AI-METHOD / METRIC-HEIGHT-CONTRACT
+        // Return the scaled minimum row height for native HUD measurement.
         private fun itemHeight(metric: String): Float {
             return max(dp(18f * config.size), textPaint.textSize)
         }
 
+        // AI-METHOD / DRAW-CONTRACT
+        // Draw the HUD background and visible metrics using the current live telemetry snapshot.
         override fun onDraw(canvas: Canvas) {
             super.onDraw(canvas)
             val scale = config.size
@@ -544,6 +611,8 @@ class FloatingMonitorService : Service() {
             }
         }
 
+        // AI-METHOD / METRIC-DRAW-CONTRACT
+        // Draw one metric as letters or icon+value; status words are localized at itemText().
         private fun drawMetric(canvas: Canvas, metric: String, x: Float, baseline: Float, scale: Float) {
             val value = itemText(metric)
             if (config.style != "icons") {
@@ -560,6 +629,8 @@ class FloatingMonitorService : Service() {
             )
         }
 
+        // AI-METHOD / ICON-CONTRACT
+        // Draw a stable functional icon for the metric identifier without encoding device behavior.
         private fun drawIcon(canvas: Canvas, metric: String, cx: Float, cy: Float, scale: Float) {
             val s = dp(scale)
             iconPaint.strokeWidth = dp(1.55f * scale)
@@ -626,6 +697,8 @@ class FloatingMonitorService : Service() {
             }
         }
 
+        // AI-METHOD / GESTURE-CONTRACT
+        // Support drag, pinch resize, and tap orientation switching; persist geometry after interaction.
         override fun onTouchEvent(event: MotionEvent): Boolean {
             scaleDetector.onTouchEvent(event)
             when (event.actionMasked) {
