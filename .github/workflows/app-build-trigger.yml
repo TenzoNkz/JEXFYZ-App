@@ -5,11 +5,18 @@ name: Build App
 
 on:
   workflow_dispatch:
+    inputs:
+      confirm_build:
+        description: "Confirm that this manual dispatch was explicitly requested as Build App."
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
 
 jobs:
   build:
+    if: inputs.confirm_build == true
     uses: ./.github/workflows/app-build.yml
     secrets: inherit
