@@ -817,6 +817,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    appAutoConnectNotifier.addListener(_handleAutoConnectPreferenceChanged);
     WidgetsBinding.instance.addTimingsCallback(_recordFrameTimings);
     fpsTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       currentFps = frameCount;
@@ -834,6 +835,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    appAutoConnectNotifier.removeListener(_handleAutoConnectPreferenceChanged);
     WidgetsBinding.instance.removeTimingsCallback(_recordFrameTimings);
     fpsTimer?.cancel();
     disconnectRediscoverySub?.cancel();
@@ -869,6 +871,20 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   void _recordFrameTimings(List<FrameTiming> timings) {
     frameCount += timings.length;
+  }
+
+  // AI-METHOD / AUTO-CONNECT-PREFERENCE-CONTRACT
+  // Enabling Auto Connect reevaluates the passive prerequisites immediately. Disabling it
+  // cancels pending automatic reconnect work. This callback never requests permissions or
+  // changes Bluetooth power state.
+  void _handleAutoConnectPreferenceChanged() {
+    if (appAutoConnectNotifier.value) {
+      unawaited(_tryAutoConnect());
+    } else {
+      reconnectTimer?.cancel();
+      reconnectTimer = null;
+      _cancelDisconnectRediscovery();
+    }
   }
 
   // AI-METHOD / AUTO-CONNECT-CONTRACT
