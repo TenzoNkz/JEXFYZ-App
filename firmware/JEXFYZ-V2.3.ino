@@ -185,12 +185,7 @@ static constexpr uint32_t HOT_PELTIER_OFF_MS          = 10000;
 static constexpr uint32_t ADAPTIVE_VOLTAGE_STEP_DELAY_MS = 1000;
 static constexpr uint32_t BATTERY_VALID_TTL_MS          = 5000;
 static constexpr uint32_t SETTINGS_SAVE_DEBOUNCE_MS     = 10000;
-
-// Rapid-rise thermal protection: a Peltier-driven temperature jump is latched
-// until the user explicitly requests a manual Peltier restart. The threshold
-// is isolated so it can be physically tuned later without changing the state flow.
-static constexpr float RAPID_RISE_RATE_C_PER_SEC = 4.0f;
-static constexpr uint32_t RAPID_RISE_MAX_SAMPLE_GAP_MS = 2500;
+// Touch Adaptive-OFF indicator uses three non-blocking 250 ms color phases.
 static constexpr uint32_t TOUCH_ADAPTIVE_OFF_INDICATOR_PHASE_MS = 250;
 
 static constexpr uint32_t USER_CONTROL_GUARD_MS          = 0;
@@ -284,10 +279,6 @@ bool ntcValid = false;
 float hotsideC = NAN;
 uint32_t ntcMv = 0;
 uint32_t lastNtcReadMs = 0;
-float rapidRisePreviousC = NAN;
-uint32_t rapidRisePreviousAtMs = 0;
-bool rapidRiseProtectionLatched = false;
-
 bool batteryValid = false;
 float batteryC = NAN;
 uint32_t lastBatteryRxMs = 0;
@@ -751,7 +742,6 @@ static bool hotsideProtectionActiveNow() {
 static bool safetyAllowsPeltier() {
   if (otaActive) return false;
   if (!ntcValid) return false;
-  if (rapidRiseProtectionLatched) return false;
   if (hotsideProtectionActiveNow()) return false;
   if (!fanOn) return false;
 
@@ -1339,16 +1329,13 @@ static float ntcTemperatureFromOhms(float ohms) {
 
 static void sampleNtcIfDue() {
   if (millis() - lastNtcReadMs < NTC_READ_INTERVAL_MS) return;
-  const uint32_t now = millis();
-  lastNtcReadMs = now;
+  lastNtcReadMs = millis();
 
   ntcMv = analogReadMilliVolts(PIN_NTC);
 
   if (ntcMv <= NTC_FAULT_LOW_MV || ntcMv >= NTC_FAULT_HIGH_MV) {
     ntcValid = false;
     hotsideC = NAN;
-    rapidRisePreviousC = NAN;
-    rapidRisePreviousAtMs = 0;
     return;
   }
 
@@ -1381,33 +1368,6 @@ static void sampleNtcIfDue() {
     return;
   }
 
-  if (ntcValid &&
-      isfinite(hotsideC) &&
-      isfinite(temperature) &&
-      isfinite(rapidRisePreviousC) &&
-      rapidRisePreviousAtMs != 0) {
-    const uint32_t elapsed = now - rapidRisePreviousAtMs;
-    if (elapsed > 0 && elapsed <= RAPID_RISE_MAX_SAMPLE_GAP_MS) {
-      const float rise = temperature - rapidRisePreviousC;
-      const float ratePerSecond =
-          rise * 1000.0f / static_cast<float>(elapsed);
-
-      if (peltierOn &&
-          rise > 0.0f &&
-          ratePerSecond >= RAPID_RISE_RATE_C_PER_SEC) {
-        if (!rapidRiseProtectionLatched) {
-          rapidRiseProtectionLatched = true;
-          peltierOn = false;
-          stopPeltierOutput();
-          sendDelta("PELTIER", "OFF");
-          sendDelta("SAFETY_REASON", "RAPID_RISE");
-        }
-      }
-    }
-  }
-
-  rapidRisePreviousC = temperature;
-  rapidRisePreviousAtMs = now;
   ntcValid = true;
   hotsideC = temperature;
 }
@@ -1492,16 +1452,7 @@ static void enforceSafety() {
     }
   }
 
-  if (rapidRiseProtectionLatched) {
-    if (peltierOn) {
-      peltierOn = false;
-      stopPeltierOutput();
-      sendDelta("PELTIER", "OFF");
-    }
-  }
-
   if (adaptiveResumePeltierAfterHotStep &&
-      !rapidRiseProtectionLatched &&
       adaptiveOn &&
       fanOn &&
       !voltageTransition &&
@@ -1572,7 +1523,6 @@ static void processAdaptiveHotTimer() {
 
 static String safetyReason() {
   if (!ntcValid) return "NTC_ERROR";
-  if (rapidRiseProtectionLatched) return "RAPID_RISE";
   if (hotsideProtectionActiveNow()) return "HOTSIDE_PROTECTION";
   if (peltierOn && !fanOn) return "FAN_REQUIRED";
   return "NONE";
@@ -1961,7 +1911,6 @@ static void sendFullSync() {
   sendDelta("SAFETY", reason == "NONE" ? "OK" : "LOCKED");
   lastSafetyReasonSent = reason;
   sendDelta("SAFETY_REASON", reason);
-  sendDelta("RAPID_RISE", rapidRiseProtectionLatched ? "1" : "0");
   sendDelta("OTA_STATE", otaStateText(otaState));
   sendDelta("OTA_STAGE", otaDiagnosticStage);
   sendDelta("OTA_PROGRESS", String(otaDiagnosticProgress));
@@ -3944,9 +3893,6 @@ static void executeTouchLong() {
 
   fanOn = true;
   peltierOn = true;
-  if (rapidRiseProtectionLatched) {
-    rapidRiseProtectionLatched = false;
-  }
   applyCoolingOutputs();
   publishSafetyReason();
   sendAck("TOUCH_COOLING", peltierOn, peltierOn ? "ON" : safetyReason());
