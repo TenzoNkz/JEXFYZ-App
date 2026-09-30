@@ -1,3 +1,15 @@
+// AI-MEMORY / FILE CONTRACT
+// File: floating_monitor.dart
+// Owns: Flutter Floating Monitor configuration UI, overlay permission flow,
+//       runtime reconciliation, live telemetry forwarding, and local preview.
+// Native ownership: MainActivity opens Android Settings; FloatingMonitorService owns
+// WindowManager and the actual overlay window. This file never owns BLE/GATT.
+// Localization: read the shared AppLanguage notifier. English status = ON/OFF;
+// Indonesia status = HIDUP/MATI. Language selector labels are English / Indonesia.
+// Fan Speed invariant: S is visible only while telemetry.fanOn is true.
+// The same invariant applies to Settings preview and native overlay presentation.
+// Protocol identifiers are not translated.
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -12,6 +24,8 @@ import 'jex_animated_glyph.dart';
 
 enum FloatingDisplayStyle { letters, icons }
 
+// AI-MEMORY / CONFIG MODEL
+// Persisted overlay presentation/settings only. Device state never belongs in this model.
 class FloatingConfig {
   final bool enabled;
   final FloatingDisplayStyle style;
@@ -104,6 +118,10 @@ class FloatingMetric {
   static bool isValid(String value) => defaultOrder.contains(value);
 }
 
+// AI-MEMORY / TELEMETRY MODEL
+// Snapshot of Dashboard telemetry used by the Flutter preview and forwarded to native.
+// The language field is intentionally derived at serialization time so native overlay
+// presentation follows the App-selected language rather than the phone locale.
 class FloatingTelemetry {
   final String fps;
   final String battery;
@@ -137,6 +155,7 @@ class FloatingTelemetry {
         'adaptiveOn': adaptiveOn,
         'peltierOn': peltierOn,
         'connected': connected,
+        'language': appLanguageNotifier.value.name,
       };
 }
 
@@ -145,10 +164,14 @@ final ValueNotifier<FloatingConfig> floatingConfigNotifier =
 final ValueNotifier<FloatingTelemetry> floatingTelemetryNotifier =
     ValueNotifier<FloatingTelemetry>(const FloatingTelemetry());
 
+// AI-MEMORY / STORE CONTRACT
+// Securely persists only Floating Monitor configuration. Runtime telemetry is never stored here.
 class FloatingStore {
   static const FlutterSecureStorage _storage = FlutterSecureStorage();
   static const String _key = 'jexfyz_floating_v1';
 
+  // AI-METHOD / LOAD CONTRACT
+  // Load persisted Floating Monitor configuration and publish it to the shared notifier.
   static Future<FloatingConfig> load() async {
     try {
       final raw = await _storage.read(key: _key);
@@ -162,6 +185,8 @@ class FloatingStore {
     }
   }
 
+  // AI-METHOD / SAVE CONTRACT
+  // Publish configuration immediately and persist the same normalized model securely.
   static Future<void> save(FloatingConfig config) async {
     floatingConfigNotifier.value = config;
     try {
@@ -170,9 +195,14 @@ class FloatingStore {
   }
 }
 
+// AI-MEMORY / NATIVE BRIDGE CONTRACT
+// MethodChannel names and method names are native contracts. Keep them synchronized with
+// MainActivity.kt and FloatingMonitorService.kt; do not introduce a second overlay channel.
 class FloatingBridge {
   static const MethodChannel _channel = MethodChannel('je_x_fyz/floating');
 
+  // AI-METHOD / PERMISSION CONTRACT
+  // Read the public Android SYSTEM_ALERT_WINDOW state through MainActivity.
   static Future<bool> hasPermission() async {
     try {
       return await _channel.invokeMethod<bool>('hasOverlayPermission') ?? false;
@@ -181,6 +211,8 @@ class FloatingBridge {
     }
   }
 
+  // AI-METHOD / SETTINGS CONTRACT
+  // Ask MainActivity to open the public overlay-permission fallback ladder.
   static Future<bool> openPermissionSettings() async {
     try {
       return await _channel.invokeMethod<bool>('openOverlaySettings') ?? false;
@@ -189,6 +221,8 @@ class FloatingBridge {
     }
   }
 
+  // AI-METHOD / START CONTRACT
+  // Start the native service only after the Android permission gate is satisfied.
   static Future<bool> start(FloatingConfig config) async {
     try {
       return await _channel.invokeMethod<bool>('startFloatingMonitor', config.toJson()) ?? false;
@@ -197,24 +231,32 @@ class FloatingBridge {
     }
   }
 
+  // AI-METHOD / STOP CONTRACT
+  // Request native overlay/service teardown; this never touches BLE.
   static Future<void> stop() async {
     try {
       await _channel.invokeMethod<void>('stopFloatingMonitor');
     } catch (_) {}
   }
 
+  // AI-METHOD / CONFIG CONTRACT
+  // Forward the latest Flutter overlay configuration to the already-running native service.
   static Future<void> updateConfig(FloatingConfig config) async {
     try {
       await _channel.invokeMethod<void>('updateFloatingConfig', config.toJson());
     } catch (_) {}
   }
 
+  // AI-METHOD / TELEMETRY CONTRACT
+  // Forward live telemetry and the selected UI language to the native overlay.
   static Future<void> updateData(FloatingTelemetry telemetry) async {
     try {
       await _channel.invokeMethod<void>('updateFloatingData', jsonEncode(telemetry.toMap()));
     } catch (_) {}
   }
 
+  // AI-METHOD / RUNTIME CONTRACT
+  // Read native service/window diagnostics for startup confirmation and runtime reconciliation.
   static Future<Map<String, dynamic>?> runtimeState() async {
     try {
       final value =
@@ -232,6 +274,9 @@ class FloatingSettingsPage extends StatefulWidget {
   State<FloatingSettingsPage> createState() => _FloatingSettingsPageState();
 }
 
+// AI-MEMORY / SETTINGS STATE
+// This page coordinates user intent with native permission/runtime state.
+// It persists enabled=true only after native runtime confirmation.
 class _FloatingSettingsPageState extends State<FloatingSettingsPage> with WidgetsBindingObserver {
   late FloatingConfig config;
   bool loading = true;
@@ -248,12 +293,19 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   }
 
   @override
+  // AI-METHOD / LIFECYCLE CONTRACT
+  // Returning from Android Settings starts a bounded permission reconciliation pass.
+  // One immediate check is intentionally avoided because OEM Settings/AppOps updates
+  // may not be observable at the exact first resumed callback.
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed && _waitingForOverlayPermission) {
       unawaited(_finishOverlayPermissionFlow());
     }
   }
 
+  // AI-METHOD / PERMISSION-RESUME CONTRACT
+  // Retry the public permission state for a short bounded window, then either start the
+  // overlay or report denial. Never assume the Settings UI selection itself is proof.
   Future<void> _finishOverlayPermissionFlow() async {
     if (!_waitingForOverlayPermission || _permissionResumeCheckRunning) return;
 
@@ -278,6 +330,8 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     }
   }
 
+  // AI-METHOD / PERMISSION-RETRY CONTRACT
+  // Poll only during the permission return flow; this is not a permanent permission heartbeat.
   Future<bool> _waitForOverlayPermission({
     Duration timeout = const Duration(seconds: 2),
     Duration interval = const Duration(milliseconds: 300),
@@ -291,6 +345,9 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     }
   }
 
+  // AI-METHOD / INITIAL-LOAD CONTRACT
+  // Load config, reconcile native size/orientation, and restore only when permission plus
+  // runtime overlay attachment are both confirmed.
   Future<void> _load() async {
     config = await _normalizeSelection(await FloatingStore.load());
     if (config.enabled) {
@@ -333,6 +390,8 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     }
   }
 
+  // AI-METHOD / CONFIG-APPLY CONTRACT
+  // Persist a UI configuration change and forward it only when Floating Monitor is enabled.
   Future<void> _apply(FloatingConfig next) async {
     config = next;
     await FloatingStore.save(config);
@@ -341,6 +400,9 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     if (mounted) setState(() {});
   }
 
+  // AI-METHOD / STARTUP-VERIFY CONTRACT
+  // Wait for the native service plus actual attached overlay state; hudView existence alone
+  // is intentionally insufficient.
   Future<bool> _waitForRuntimeReady({Duration timeout = const Duration(seconds: 3)}) async {
     final deadline = DateTime.now().add(timeout);
     while (DateTime.now().isBefore(deadline)) {
@@ -351,6 +413,8 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     return false;
   }
 
+  // AI-METHOD / NORMALIZATION CONTRACT
+  // Guarantee a valid seven-metric selection for legacy/empty persisted configurations.
   Future<FloatingConfig> _normalizeSelection(FloatingConfig value) async {
     if (value.selected.isNotEmpty) return value;
     final normalized = value.copyWith(
@@ -360,6 +424,9 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     return normalized;
   }
 
+  // AI-METHOD / ENABLE-CONTRACT
+  // User-facing master toggle. Permission is obtained first, then the native service is
+  // started and verified before enabled=true is persisted.
   Future<void> _toggleEnabled(bool value) async {
     if (!value) {
       config = config.copyWith(enabled: false);
@@ -429,6 +496,8 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     if (mounted) setState(() => config = next);
   }
 
+  // AI-METHOD / RUNTIME-SYNC-CONTRACT
+  // Low-frequency reconciliation for overlay attachment and native size/orientation changes.
   void _startRuntimeSync() {
     runtimeTimer?.cancel();
     runtimeTimer = Timer.periodic(
@@ -437,6 +506,9 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     );
   }
 
+  // AI-METHOD / RUNTIME-HEALTH-CONTRACT
+  // Detect service/window loss and clear stale enabled state instead of silently showing
+  // a broken Floating Monitor toggle.
   Future<void> _syncRuntimeState() async {
     if (!mounted || !config.enabled) return;
     final state = await FloatingBridge.runtimeState();
@@ -476,6 +548,9 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     super.dispose();
   }
 
+  // AI-METHOD / METRIC-CONTRACT
+  // Add/remove one metric from the persisted selection; S remains runtime-visible only
+  // while Fan telemetry reports ON.
   void _toggleMetric(String metric, bool value) {
     final next = Set<String>.from(config.selected);
     if (value) {
@@ -486,6 +561,8 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     _apply(config.copyWith(selected: next));
   }
 
+  // AI-METHOD / ORDER-CONTRACT
+  // Reorder the seven known floating metrics without changing their identifiers.
   void _reorder(int oldIndex, int newIndex) {
     final order = List<String>.from(config.order);
     if (newIndex > oldIndex) newIndex -= 1;
@@ -626,6 +703,9 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     );
   }
 
+  // AI-METHOD / PREVIEW-CONTRACT
+  // Render the same visibility rules as native overlay preview; Fan Speed is omitted
+  // whenever telemetry.fanOn is false.
   Widget _livePreview(FloatingTelemetry telemetry) {
     final visible = config.order.where((metric) {
       if (!config.selected.contains(metric)) return false;
@@ -670,15 +750,18 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     );
   }
 
+  // AI-METHOD / PREVIEW-ITEM-CONTRACT
+  // Translate live boolean states only for presentation; technical metric letters remain stable.
   Widget _previewItem(String metric, FloatingTelemetry telemetry, FloatingDisplayStyle style, double size) {
+    final lang = appLanguageNotifier.value;
     final value = switch (metric) {
       'F' => telemetry.fps,
       'B' => telemetry.battery == '--' ? '--' : telemetry.battery + '°',
       'H' => telemetry.hotside == '--' ? '--' : telemetry.hotside + '°',
       'V' => telemetry.voltage,
-      'A' => telemetry.fanOn && telemetry.adaptiveOn ? 'ON' : 'OFF',
-      'P' => telemetry.fanOn && telemetry.peltierOn ? 'ON' : 'OFF',
-      'S' => telemetry.fanOn ? telemetry.speed.toString() : 'OFF',
+      'A' => JexText.of(telemetry.fanOn && telemetry.adaptiveOn ? 'on' : 'off', lang),
+      'P' => JexText.of(telemetry.fanOn && telemetry.peltierOn ? 'on' : 'off', lang),
+      'S' => telemetry.speed.toString(),
       _ => '--',
     };
 
@@ -710,6 +793,8 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     );
   }
 
+  // AI-METHOD / METRIC-LABEL-CONTRACT
+  // Resolve user-facing metric names from the shared JexText localization table.
   String _metricLabel(String metric, AppLanguage lang) {
     switch (metric) {
       case 'F':
@@ -731,6 +816,8 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     }
   }
 
+  // AI-METHOD / METRIC-ICON-CONTRACT
+  // Select the visual glyph for each stable metric identifier; no protocol behavior is changed.
   IconData _metricIcon(String metric) {
     switch (metric) {
       case 'F':
