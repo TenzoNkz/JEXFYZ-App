@@ -1110,6 +1110,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (c == 'FAN:ON' || c == 'FAN:OFF') return 'FAN';
     if (c == 'PELTIER:ON' || c == 'PELTIER:OFF') return 'PELTIER';
     if (c == 'ADAPTIVE:ON' || c == 'ADAPTIVE:OFF') return 'ADAPTIVE';
+    if (c.startsWith('ADAPTIVE_PROFILE:')) return 'ADAPTIVE_PROFILE';
     if (c.startsWith('FANSPEED:')) return 'FANSPEED';
     if (c == 'RESET:TEMPERATURE') return 'RESET_TEMPERATURE';
     if (c.startsWith('SSID:')) return 'SSID';
@@ -1179,6 +1180,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         c.startsWith('VERSION:') ||
         c.startsWith('FAN:') ||
         c.startsWith('PELTIER:') ||
+        c.startsWith('ADAPTIVE_PROFILE:') ||
         c.startsWith('ADAPTIVE:') ||
         c.startsWith('FANSPEED:') ||
         c.startsWith('HOTLIMIT:') ||
