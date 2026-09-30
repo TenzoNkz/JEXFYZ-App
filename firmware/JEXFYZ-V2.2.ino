@@ -186,7 +186,7 @@ static constexpr uint32_t ADAPTIVE_VOLTAGE_STEP_DELAY_MS = 1000;
 static constexpr uint32_t BATTERY_VALID_TTL_MS          = 5000;
 static constexpr uint32_t SETTINGS_SAVE_DEBOUNCE_MS     = 10000;
 
-static constexpr uint32_t USER_CONTROL_GUARD_MS          = 250;
+static constexpr uint32_t USER_CONTROL_GUARD_MS          = 0;
 
 static constexpr int HOT_LIMIT_MIN = 40;
 static constexpr int HOT_LIMIT_MAX = 50;
@@ -271,7 +271,7 @@ enum class AdaptiveProfile : uint8_t {
 
 bool adaptiveOn = false;
 Voltage adaptiveCeiling = Voltage::V12;
-AdaptiveProfile adaptiveProfile = AdaptiveProfile::HOT_BATTERY;
+AdaptiveProfile adaptiveProfile = AdaptiveProfile::HOTSIDE_BATTERY;
 
 bool ntcValid = false;
 float hotsideC = NAN;
@@ -623,11 +623,11 @@ static void loadSettings() {
 
   const uint8_t storedAdaptiveProfile =
       prefs.getUChar("adaptiveProfile",
-                     static_cast<uint8_t>(AdaptiveProfile::HOT_BATTERY));
+                     static_cast<uint8_t>(AdaptiveProfile::HOTSIDE_BATTERY));
   adaptiveProfile = storedAdaptiveProfile <=
-                            static_cast<uint8_t>(AdaptiveProfile::HOT_BATTERY)
+                            static_cast<uint8_t>(AdaptiveProfile::HOTSIDE_BATTERY)
                         ? static_cast<AdaptiveProfile>(storedAdaptiveProfile)
-                        : AdaptiveProfile::HOT_BATTERY;
+                        : AdaptiveProfile::HOTSIDE_BATTERY;
 }
 
 static void markSettingsDirty() {
