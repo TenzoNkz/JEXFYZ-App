@@ -78,6 +78,21 @@ class FloatingMonitorService : Service() {
             }
         }
 
+        fun runtimeState(context: Context): Map<String, Any> {
+            return instance?.runtimeStateMap() ?: run {
+                val prefs = context.getSharedPreferences(
+                    "jexfyz_floating_native_v1",
+                    Context.MODE_PRIVATE
+                )
+                mapOf(
+                    "horizontal" to prefs.getBoolean("horizontal", true),
+                    "size" to prefs.getFloat("size", 1.0f).toDouble(),
+                    "x" to prefs.getInt("x", 16),
+                    "y" to prefs.getInt("y", 120),
+                )
+            }
+        }
+
         fun updateData(context: Context, json: String) {
             instance?.applyData(json) ?: run {
                 context.startService(Intent(context, FloatingMonitorService::class.java).apply {
@@ -145,6 +160,15 @@ class FloatingMonitorService : Service() {
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
+
+    private fun runtimeStateMap(): Map<String, Any> {
+        return mapOf(
+            "horizontal" to config.horizontal,
+            "size" to config.size.toDouble(),
+            "x" to if (::layoutParams.isInitialized) layoutParams.x else 16,
+            "y" to if (::layoutParams.isInitialized) layoutParams.y else 120,
+        )
+    }
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
