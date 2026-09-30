@@ -1,3 +1,12 @@
+// AI-MEMORY / FILE CONTRACT
+// File: app_settings.dart
+// Owns: persisted App preferences, language/theme notifiers, and the single JexText localization table.
+// Localization contract: language names are English/Indonesia; English power states are ON/OFF;
+// Indonesian power states are HIDUP/MATI.
+// Technical identifiers (BLE, P1, OTA, RGB, LED, NTC, FPS) remain untranslated.
+// BLE protocol tokens are never localized here; this file only defines user-facing presentation.
+// Storage keys are compatibility contracts and must not be changed casually.
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -7,6 +16,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 enum AppLanguage { english, indonesia }
 enum AppThemePreset { defaultTheme, light, dark }
 
+// AI-MEMORY / MODEL CONTRACT
+// AppSettings is the persisted UI preference model. It must remain independent from
+// live device telemetry so reconnects never replay local control state into firmware.
 class AppSettings {
   final AppLanguage language;
   final AppThemePreset theme;
@@ -24,6 +36,9 @@ class AppSettings {
     this.autoConnect = true,
   });
 
+  // AI-METHOD / COPY CONTRACT
+  // Creates an immutable preference variant without changing persisted storage until save()
+  // is explicitly called by the settings store.
   AppSettings copyWith({
     AppLanguage? language,
     AppThemePreset? theme,
@@ -42,6 +57,8 @@ class AppSettings {
     );
   }
 
+  // AI-METHOD / SERIALIZATION CONTRACT
+  // Serialize only persisted application preferences. Storage names are compatibility keys.
   Map<String, dynamic> toJson() => <String, dynamic>{
         'language': language.name,
         'theme': theme.name,
@@ -51,6 +68,8 @@ class AppSettings {
         'autoConnect': autoConnect,
       };
 
+  // AI-METHOD / DESERIALIZATION CONTRACT
+  // Parse persisted preferences defensively; malformed or missing data falls back to defaults.
   static AppSettings fromJson(String raw) {
     try {
       final decoded = jsonDecode(raw);
@@ -84,11 +103,15 @@ final ValueNotifier<bool> appNotifyFirmwareNotifier = ValueNotifier<bool>(true);
 final ValueNotifier<bool> appNotifyBluetoothNotifier = ValueNotifier<bool>(true);
 final ValueNotifier<bool> appAutoConnectNotifier = ValueNotifier<bool>(true);
 
+// AI-MEMORY / STORE CONTRACT
+// AppSettingsStore is the only persistence boundary for application-level settings.
 class AppSettingsStore {
   static const FlutterSecureStorage _storage = FlutterSecureStorage();
   static const String _key = 'jexfyz_app_settings_v2';
   static const String _firmwareNoticeKey = 'jexfyz_last_firmware_notice';
 
+  // AI-METHOD / LOAD CONTRACT
+  // Read secure storage, decode the model, and publish the values through the global notifiers.
   static Future<AppSettings> load() async {
     try {
       final raw = await _storage.read(key: _key);
@@ -102,6 +125,8 @@ class AppSettingsStore {
     }
   }
 
+  // AI-METHOD / SAVE CONTRACT
+  // Publish settings immediately, then persist the exact same model to secure storage.
   static Future<void> save(AppSettings settings) async {
     _apply(settings);
     try {
@@ -109,6 +134,8 @@ class AppSettingsStore {
     } catch (_) {}
   }
 
+  // AI-METHOD / APPLY CONTRACT
+  // Synchronize persisted preference values into the notifiers consumed by the UI.
   static void _apply(AppSettings settings) {
     appLanguageNotifier.value = settings.language;
     appThemeNotifier.value = settings.theme;
@@ -118,6 +145,8 @@ class AppSettingsStore {
     appAutoConnectNotifier.value = settings.autoConnect;
   }
 
+  // AI-METHOD / FIRMWARE-NOTICE CONTRACT
+  // Prevent repeated firmware-update notifications for the same version string.
   static Future<bool> shouldNotifyFirmware(String version) async {
     if (version.trim().isEmpty) return false;
     try {
@@ -128,6 +157,8 @@ class AppSettingsStore {
     }
   }
 
+  // AI-METHOD / FIRMWARE-NOTICE CONTRACT
+  // Persist the version after its notification has been handled.
   static Future<void> markFirmwareNotified(String version) async {
     try {
       await _storage.write(key: _firmwareNoticeKey, value: version);
@@ -135,6 +166,11 @@ class AppSettingsStore {
   }
 }
 
+// AI-MEMORY / LOCALIZATION CONTRACT
+// Every visible application string must come from this table or JexText.phrase().
+// Never translate frozen protocol tokens such as FAN:ON or RGB:OFF.
+// Power-state presentation is English ON/OFF and Indonesian HIDUP/MATI.
+// Language-selector presentation is always English / Indonesia.
 class JexText {
   static const Map<String, Map<AppLanguage, String>> _values = {
     'settings': {
@@ -166,8 +202,8 @@ class JexText {
       AppLanguage.indonesia: 'English',
     },
     'indonesia': {
-      AppLanguage.english: 'Bahasa Indonesia',
-      AppLanguage.indonesia: 'Bahasa Indonesia',
+      AppLanguage.english: 'Indonesia',
+      AppLanguage.indonesia: 'Indonesia',
     },
     'appearance': {
       AppLanguage.english: 'Appearance',
@@ -503,11 +539,11 @@ class JexText {
     },
     'on': {
       AppLanguage.english: 'ON',
-      AppLanguage.indonesia: 'AKTIF',
+      AppLanguage.indonesia: 'HIDUP',
     },
     'off': {
       AppLanguage.english: 'OFF',
-      AppLanguage.indonesia: 'NONAKTIF',
+      AppLanguage.indonesia: 'MATI',
     },
     'hSideProtection': {
       AppLanguage.english: 'Hotside Protection',
@@ -667,11 +703,11 @@ class JexText {
     },
     'languageEnglish': {
       AppLanguage.english: 'English',
-      AppLanguage.indonesia: 'Inggris',
+      AppLanguage.indonesia: 'English',
     },
     'languageIndonesia': {
-      AppLanguage.english: 'Bahasa Indonesia',
-      AppLanguage.indonesia: 'Bahasa Indonesia',
+      AppLanguage.english: 'Indonesia',
+      AppLanguage.indonesia: 'Indonesia',
     },
     'appVersion': {
       AppLanguage.english: 'App Version',
@@ -721,19 +757,19 @@ class JexText {
     },
     'bluetoothOn': {
       AppLanguage.english: 'Bluetooth ON',
-      AppLanguage.indonesia: 'Bluetooth AKTIF',
+      AppLanguage.indonesia: 'Bluetooth HIDUP',
     },
     'bluetoothOff': {
       AppLanguage.english: 'Bluetooth OFF',
-      AppLanguage.indonesia: 'Bluetooth NONAKTIF',
+      AppLanguage.indonesia: 'Bluetooth MATI',
     },
     'locationOn': {
       AppLanguage.english: 'Location ON',
-      AppLanguage.indonesia: 'Lokasi AKTIF',
+      AppLanguage.indonesia: 'Lokasi HIDUP',
     },
     'locationOff': {
       AppLanguage.english: 'Location OFF',
-      AppLanguage.indonesia: 'Lokasi NONAKTIF',
+      AppLanguage.indonesia: 'Lokasi MATI',
     },
     'disconnect': {
       AppLanguage.english: 'Disconnect',
@@ -813,35 +849,35 @@ class JexText {
     },
     'fanOn': {
       AppLanguage.english: 'Fan ON.',
-      AppLanguage.indonesia: 'Kipas AKTIF.',
+      AppLanguage.indonesia: 'Kipas HIDUP.',
     },
     'fanOff': {
       AppLanguage.english: 'Fan OFF.',
-      AppLanguage.indonesia: 'Kipas NONAKTIF.',
+      AppLanguage.indonesia: 'Kipas MATI.',
     },
     'peltierOn': {
       AppLanguage.english: 'Peltier ON.',
-      AppLanguage.indonesia: 'Peltier AKTIF.',
+      AppLanguage.indonesia: 'Peltier HIDUP.',
     },
     'peltierOff': {
       AppLanguage.english: 'Peltier OFF.',
-      AppLanguage.indonesia: 'Peltier NONAKTIF.',
+      AppLanguage.indonesia: 'Peltier MATI.',
     },
     'adaptiveOn': {
       AppLanguage.english: 'Adaptive ON.',
-      AppLanguage.indonesia: 'Adaptive AKTIF.',
+      AppLanguage.indonesia: 'Adaptive HIDUP.',
     },
     'adaptiveOff': {
       AppLanguage.english: 'Adaptive OFF.',
-      AppLanguage.indonesia: 'Adaptive NONAKTIF.',
+      AppLanguage.indonesia: 'Adaptive MATI.',
     },
     'ledOn': {
       AppLanguage.english: 'LED ON.',
-      AppLanguage.indonesia: 'LED AKTIF.',
+      AppLanguage.indonesia: 'LED HIDUP.',
     },
     'ledOff': {
       AppLanguage.english: 'LED OFF.',
-      AppLanguage.indonesia: 'LED NONAKTIF.',
+      AppLanguage.indonesia: 'LED MATI.',
     },
     'modeUpdated': {
       AppLanguage.english: 'Mode updated.',
@@ -891,6 +927,8 @@ class JexText {
     'firmwareMetadataUnavailableSentence': { AppLanguage.english: 'Firmware metadata unavailable. Check Firebase read access.', AppLanguage.indonesia: 'Metadata firmware tidak tersedia. Periksa akses baca Firebase.' },
   };
 
+  // AI-METHOD / PHRASE CONTRACT
+  // Resolve a two-language inline phrase without changing technical protocol values.
   static String phrase(
     String english,
     String indonesia, [
@@ -901,12 +939,17 @@ class JexText {
         : indonesia;
   }
 
+  // AI-METHOD / LOOKUP CONTRACT
+  // Resolve one localized UI string; return the key only for an intentionally missing entry.
   static String of(String key, [AppLanguage? language]) {
     final lang = language ?? appLanguageNotifier.value;
     return _values[key]?[lang] ?? key;
   }
 }
 
+// AI-METHOD / THEME CONTRACT
+// Construct the global Settings theme. Dashboard-specific theme boundaries are handled
+// by main.dart so the Default Dashboard can remain black-header/white-content.
 ThemeData buildJexTheme(AppThemePreset preset) {
   final isLight = preset == AppThemePreset.light;
   final isDark = !isLight;
