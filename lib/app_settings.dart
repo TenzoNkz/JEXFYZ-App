@@ -790,44 +790,108 @@ class JexText {
 }
 
 ThemeData buildJexTheme(AppThemePreset preset) {
-  switch (preset) {
-    case AppThemePreset.light:
-      return ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.light,
-        scaffoldBackgroundColor: const Color(0xFFF5F5F7),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF4D8CFF),
-          brightness: Brightness.light,
-        ),
-        fontFamily: 'Roboto',
-      );
-    case AppThemePreset.dark:
-      return ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF101114),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF5C9DFF),
-          brightness: Brightness.dark,
-        ),
-        fontFamily: 'Roboto',
-        cardColor: const Color(0xFF1A1B20),
-      );
-    case AppThemePreset.defaultTheme:
-      return ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.dark,
-        primaryColor: const Color(0xFF5C9DFF),
-        scaffoldBackgroundColor: const Color(0xFF0F1013),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF5C9DFF),
-          brightness: Brightness.dark,
-        ),
-        fontFamily: 'Roboto',
-        cardColor: const Color(0xFF191B20),
-        dividerColor: const Color(0xFF2B2E35),
-      );
-  }
-}
+  final isLight = preset == AppThemePreset.light;
+  final isDark = !isLight;
+  final background = isLight
+      ? const Color(0xFFF3F4F7)
+      : (preset == AppThemePreset.dark ? const Color(0xFF0C0E12) : const Color(0xFF0F1013));
+  final surface = isLight
+      ? const Color(0xFFFFFFFF)
+      : (preset == AppThemePreset.dark ? const Color(0xFF171A20) : const Color(0xFF191B20));
+  final foreground = isDark ? const Color(0xFFF4F6FA) : const Color(0xFF16181D);
+  final muted = isDark ? const Color(0xFF979DA8) : const Color(0xFF686D78);
+  final primary = isLight ? const Color(0xFF3E72FF) : const Color(0xFF6A9DFF);
 
+  return ThemeData(
+    useMaterial3: true,
+    brightness: isDark ? Brightness.dark : Brightness.light,
+    scaffoldBackgroundColor: background,
+    canvasColor: background,
+    cardColor: surface,
+    primaryColor: primary,
+    dividerColor: isDark ? const Color(0xFF2A2E36) : const Color(0xFFE1E4E9),
+    colorScheme: (isDark ? ColorScheme.dark : ColorScheme.light)(
+      primary: primary,
+      onPrimary: isDark ? const Color(0xFF07101E) : Colors.white,
+      secondary: primary,
+      onSecondary: isDark ? Colors.black : Colors.white,
+      surface: surface,
+      onSurface: foreground,
+      surfaceContainerHighest: isDark ? const Color(0xFF242831) : const Color(0xFFE9ECF1),
+      outline: isDark ? const Color(0xFF383D47) : const Color(0xFFD2D6DE),
+      outlineVariant: isDark ? const Color(0xFF2B3039) : const Color(0xFFE0E3E8),
+      error: const Color(0xFFFF5267),
+      onError: Colors.white,
+    ),
+    appBarTheme: AppBarTheme(
+      backgroundColor: surface,
+      foregroundColor: foreground,
+      elevation: 0,
+      centerTitle: false,
+      surfaceTintColor: Colors.transparent,
+      titleTextStyle: TextStyle(color: foreground, fontSize: 20, fontWeight: FontWeight.w900),
+      iconTheme: IconThemeData(color: foreground),
+    ),
+    listTileTheme: ListTileThemeData(
+      textColor: foreground,
+      iconColor: muted,
+      tileColor: Colors.transparent,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: isLight ? const Color(0xFFF7F8FA) : const Color(0xFF20232A),
+      labelStyle: TextStyle(color: muted),
+      hintStyle: TextStyle(color: muted),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: isDark ? const Color(0xFF343944) : const Color(0xFFDDE0E6)),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: isDark ? const Color(0xFF343944) : const Color(0xFFDDE0E6)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: primary, width: 1.5),
+      ),
+    ),
+    switchTheme: SwitchThemeData(
+      thumbColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected) ? primary : muted,
+      ),
+      trackColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected)
+            ? primary.withValues(alpha: 0.28)
+            : (isDark ? const Color(0xFF30343D) : const Color(0xFFD8DCE3)),
+      ),
+      trackOutlineColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected)
+            ? primary.withValues(alpha: 0.55)
+            : (isDark ? const Color(0xFF4A4F59) : const Color(0xFFC5CAD2)),
+      ),
+    ),
+    radioTheme: RadioThemeData(
+      fillColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected) ? primary : muted,
+      ),
+    ),
+    sliderTheme: SliderThemeData(
+      activeTrackColor: primary,
+      thumbColor: primary,
+      inactiveTrackColor: isDark ? const Color(0xFF3A3E48) : const Color(0xFFD9DDE4),
+      overlayColor: primary.withValues(alpha: 0.12),
+    ),
+    dialogTheme: DialogThemeData(
+      backgroundColor: surface,
+      surfaceTintColor: Colors.transparent,
+      titleTextStyle: TextStyle(color: foreground, fontSize: 20, fontWeight: FontWeight.w900),
+      contentTextStyle: TextStyle(color: muted, fontSize: 14),
+    ),
+    textTheme: ThemeData(brightness: isDark ? Brightness.dark : Brightness.light).textTheme.apply(
+      bodyColor: foreground,
+      displayColor: foreground,
+    ),
+    fontFamily: 'Roboto',
+  );
+}
