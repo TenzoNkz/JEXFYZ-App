@@ -39,6 +39,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui' show FrameTiming;
 
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -192,7 +193,7 @@ class TamperScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _dashboardTopColor(),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -3349,10 +3350,10 @@ class _DashboardScreenState extends State<DashboardScreen>
         if (locked)
           _card(
             padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
-            child: const Row(children: [
-              Icon(PhosphorIconsBold.lock, size: 18, color: Colors.orangeAccent),
-              SizedBox(width: 9),
-              Expanded(child: Text(JexText.of('lockedAdaptive'), style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800))),
+            child: Row(children: [
+              const Icon(PhosphorIconsBold.lock, size: 18, color: Colors.orangeAccent),
+              const SizedBox(width: 9),
+              Expanded(child: Text(JexText.of('lockedAdaptive'), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800))),
             ]),
           ),
         Align(
