@@ -410,11 +410,11 @@ class FloatingMonitorService : Service() {
                 width += dp(20f * size)
                 height += dp(12f * size)
             } else if (horizontal) {
-                width += metrics.sumOf { itemWidth(it) } + gap * (metrics.size - 1)
+                width += metrics.fold(0f) { total, metric -> total + itemWidth(metric) } + gap * (metrics.size - 1)
                 height += max(dp(28f * size), metrics.maxOf { itemHeight(it) })
             } else {
                 width += metrics.maxOf { itemWidth(it) }
-                height += metrics.sumOf { itemHeight(it) } + gap * (metrics.size - 1)
+                height += metrics.fold(0f) { total, metric -> total + itemHeight(metric) } + gap * (metrics.size - 1)
             }
 
             setMeasuredDimension(ceil(width).toInt(), ceil(height).toInt())
@@ -568,8 +568,8 @@ class FloatingMonitorService : Service() {
                 MotionEvent.ACTION_DOWN -> {
                     downRawX = event.rawX
                     downRawY = event.rawY
-                    downX = layoutParams.x
-                    downY = layoutParams.y
+                    downX = this@FloatingMonitorService.layoutParams.x
+                    downY = this@FloatingMonitorService.layoutParams.y
                     moved = false
                     scaleGestureActive = false
                     return true
@@ -584,8 +584,8 @@ class FloatingMonitorService : Service() {
                         val dx = event.rawX - downRawX
                         val dy = event.rawY - downRawY
                         if (abs(dx) > dp(4f) || abs(dy) > dp(4f)) moved = true
-                        layoutParams.x = downX + dx.roundToInt()
-                        layoutParams.y = downY + dy.roundToInt()
+                        this@FloatingMonitorService.layoutParams.x = downX + dx.roundToInt()
+                        this@FloatingMonitorService.layoutParams.y = downY + dy.roundToInt()
                         try {
                             windowManager.updateViewLayout(this, layoutParams)
                         } catch (_: Exception) {
