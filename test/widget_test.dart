@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:jexfyz_cooler/main.dart';
 import 'package:jexfyz_cooler/app_settings.dart';
+import 'package:jexfyz_cooler/app_settings.dart';
 
 void main() {
   testWidgets('JE Cooler dashboard renders', (tester) async {
@@ -35,6 +36,11 @@ void main() {
     expect(find.text('Fan Switch'), findsOneWidget);
     expect(find.text('Fan Speed'), findsOneWidget);
     expect(find.text('Temperature'), findsOneWidget);
+    expect(find.text('Vertical'), findsNothing);
+    expect(find.text('Side Text'), findsNothing);
+    expect(find.text('5V'), findsOneWidget);
+    expect(find.text('9V'), findsOneWidget);
+    expect(find.text('12V'), findsOneWidget);
 
     // Notify is part of the Home dashboard. Its label may include a
     // contextual suffix such as "• ERROR", "• SYNC", etc.
@@ -78,6 +84,12 @@ void main() {
   });
   test('Default JE X FYZ theme is dark outside dashboard', () {
     final theme = buildJexTheme(AppThemePreset.defaultTheme);
+    expect(theme.brightness, Brightness.dark);
+    expect(theme.scaffoldBackgroundColor, const Color(0xFF0F1013));
+  });
+
+  test('Default Settings theme stays dark', () {
+    final theme = buildJexSettingsTheme(AppThemePreset.defaultTheme);
     expect(theme.brightness, Brightness.dark);
     expect(theme.scaffoldBackgroundColor, const Color(0xFF0F1013));
   });
