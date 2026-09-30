@@ -632,7 +632,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       }
 
       if (found == null) {
-        _showSnackBar('JE X FYZ was not found.', color: Colors.orangeAccent);
+        _showSnackBar(JexText.of('deviceNotFound'), color: Colors.orangeAccent);
         return;
       }
 
@@ -640,7 +640,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       await _connect(found);
     } catch (e) {
       debugPrint('BLE scan: $e');
-      _showSnackBar('Scan failed.', color: Colors.redAccent);
+      _showSnackBar(JexText.of('scanFailed'), color: Colors.redAccent);
     } finally {
       await scanSub?.cancel();
       if (mounted && !connected) {
@@ -1058,7 +1058,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     _writeQueue = _writeQueue.then((_) async {
       if (!_bleReady || rx == null) {
         if (showError && mounted) {
-          _showSnackBar('Bluetooth is not ready.', color: Colors.orangeAccent);
+          _showSnackBar(JexText.of('bluetoothNotReady'), color: Colors.orangeAccent);
         }
         if (!completer.isCompleted) completer.complete(false);
         return;
@@ -1564,11 +1564,17 @@ class _DashboardScreenState extends State<DashboardScreen>
         final approved = await showDialog<bool>(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: const Text('Peltier Safety'),
-            content: const Text('Fan must be running before Peltier can be enabled.'),
+            title: Text(JexText.of('peltierSafety')),
+            content: Text(JexText.of('fanRequiredPeltier')),
             actions: [
-              TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('BATAL')),
-              FilledButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('NYALAKAN FAN')),
+              TextButton(
+                onPressed: () => Navigator.pop(ctx, false),
+                child: Text(JexText.of('cancel')),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: Text(JexText.of('turnOnFan')),
+              ),
             ],
           ),
         );
@@ -1832,7 +1838,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Color'),
+          title: Text(JexText.of('color')),
           content: SizedBox(
             width: 280,
             child: GridView.builder(
@@ -1885,7 +1891,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   // AI-METHOD: _openFirmwareSettings — Open the external firmware update dialog.
   Future<void> _openFirmwareSettings() async {
     if (!connected) {
-      _showSnackBar('Connect to JE X FYZ first.', color: Colors.orangeAccent);
+      _showSnackBar(JexText.of('connectFirst'), color: Colors.orangeAccent);
       return;
     }
     // AI-METHOD: _requestFreshSync — Request a fresh firmware snapshot without replaying local state.
@@ -2764,16 +2770,16 @@ class _DashboardScreenState extends State<DashboardScreen>
             child: layout == VoltageLayout.vertical
                 ? Column(
                     children: [
-                      _voltageChoice('5V', 'Low Mode', locked),
-                      _voltageChoice('9V', 'Mid Mode', locked),
-                      _voltageChoice('12V', 'High Mode', locked),
+                      _voltageChoice('5V', JexText.of('lowMode', lang), locked),
+                      _voltageChoice('9V', JexText.of('midMode', lang), locked),
+                      _voltageChoice('12V', JexText.of('highMode', lang), locked),
                     ],
                   )
                 : Column(
                     children: [
-                      _voltageSideChoice('5V', 'Low Mode', locked),
-                      _voltageSideChoice('9V', 'Mid Mode', locked),
-                      _voltageSideChoice('12V', 'High Mode', locked),
+                      _voltageSideChoice('5V', JexText.of('lowMode', lang), locked),
+                      _voltageSideChoice('9V', JexText.of('midMode', lang), locked),
+                      _voltageSideChoice('12V', JexText.of('highMode', lang), locked),
                     ],
                   ),
           ),
@@ -2982,9 +2988,9 @@ class _DashboardScreenState extends State<DashboardScreen>
                     PhosphorIconsRegular.thermometer,
                     color: locked ? Colors.black26 : Colors.black54,
                   ),
-                  title: const Text(
-                    'Hotside Protection',
-                    style: TextStyle(fontWeight: FontWeight.w800),
+                  title: Text(
+                    JexText.of('hotsideProtection', lang),
+                    style: const TextStyle(fontWeight: FontWeight.w800),
                   ),
                 ),
                 RadioListTile<String>(
@@ -3001,9 +3007,9 @@ class _DashboardScreenState extends State<DashboardScreen>
                     PhosphorIconsRegular.batteryHigh,
                     color: locked ? Colors.black26 : Colors.black54,
                   ),
-                  title: const Text(
-                    'Hotside + Battery',
-                    style: TextStyle(fontWeight: FontWeight.w800),
+                  title: Text(
+                    JexText.of('hotsideBattery', lang),
+                    style: const TextStyle(fontWeight: FontWeight.w800),
                   ),
                 ),
               ],
