@@ -10,6 +10,7 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -70,12 +71,7 @@ class FloatingMonitorService : Service() {
         }
 
         fun updateConfig(context: Context, json: String) {
-            instance?.applyConfig(json) ?: run {
-                context.startService(Intent(context, FloatingMonitorService::class.java).apply {
-                    action = ACTION_CONFIG
-                    putExtra(EXTRA_JSON, json)
-                })
-            }
+            instance?.applyConfig(json) ?: start(context, json)
         }
 
         fun runtimeState(context: Context): Map<String, Any> {
@@ -85,6 +81,8 @@ class FloatingMonitorService : Service() {
                     Context.MODE_PRIVATE
                 )
                 mapOf(
+                    "running" to false,
+                    "overlay" to false,
                     "horizontal" to prefs.getBoolean("horizontal", true),
                     "size" to prefs.getFloat("size", 1.0f).toDouble(),
                     "x" to prefs.getInt("x", 16),
@@ -136,7 +134,15 @@ class FloatingMonitorService : Service() {
         instance = this
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
         createNotificationChannel()
-        startForeground(NOTIFICATION_ID, buildNotification())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            startForeground(
+                NOTIFICATION_ID,
+                buildNotification(),
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE,
+            )
+        } else {
+            startForeground(NOTIFICATION_ID, buildNotification())
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -163,6 +169,8 @@ class FloatingMonitorService : Service() {
 
     private fun runtimeStateMap(): Map<String, Any> {
         return mapOf(
+            "running" to (instance === this),
+            "overlay" to (hudView != null && config.enabled),
             "horizontal" to config.horizontal,
             "size" to config.size.toDouble(),
             "x" to if (::layoutParams.isInitialized) layoutParams.x else 16,
@@ -175,10 +183,10 @@ class FloatingMonitorService : Service() {
         val manager = getSystemService(NotificationManager::class.java)
         val channel = NotificationChannel(
             CHANNEL_ID,
-            "JE X FYZ Floating Monitor",
+            "JE X FYZ",
             NotificationManager.IMPORTANCE_LOW,
         ).apply {
-            description = "Keeps the JE X FYZ Floating Monitor active."
+            description = ""
             setShowBadge(false)
             setSound(null, null)
             enableVibration(false)
@@ -196,7 +204,7 @@ class FloatingMonitorService : Service() {
         return builder
             .setSmallIcon(R.drawable.jexfyzicon)
             .setContentTitle("JE X FYZ")
-            .setContentText("Floating Monitor active")
+            .setContentText("")
             .setOngoing(true)
             .setShowWhen(false)
             .setPriority(Notification.PRIORITY_LOW)
