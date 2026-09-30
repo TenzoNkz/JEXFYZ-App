@@ -3211,7 +3211,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             children: [
               Text(title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),
               const SizedBox(height: 3),
-              Text('Range $min–$max$unit', style: const TextStyle(color: Colors.black45, fontSize: 10, fontWeight: FontWeight.w700)),
+              Text(JexText.of('range', appLanguageNotifier.value) + ' $min–$max$unit', style: const TextStyle(color: Colors.black45, fontSize: 10, fontWeight: FontWeight.w700)),
             ],
           ),
         ),
@@ -3239,10 +3239,10 @@ class _DashboardScreenState extends State<DashboardScreen>
     return KeyedSubtree(key: key, child: _smoothList(
       storageKey: 'temperature',
       children: [
-        _sectionTitle('Thermal', subtitle: locked ? 'Locked while Adaptive is ON.' : 'Sensor readings remain independent from the protection threshold.'),
+        _sectionTitle(JexText.of('thermal', appLanguageNotifier.value)),
         _card(
           child: _adjuster(
-            title: 'Hotside Limit',
+            title: JexText.of('hotsideLimit'),
             value: hotLimitDraft,
             min: 40,
             max: 50,
@@ -3253,13 +3253,13 @@ class _DashboardScreenState extends State<DashboardScreen>
             },
           ),
         ),
-        _sectionTitle('Battery Zones', subtitle: '9V uses the middle zone.'),
+        _sectionTitle(JexText.of('batteryZones', appLanguageNotifier.value)),
         _card(
           padding: const EdgeInsets.fromLTRB(13, 8, 13, 8),
           child: Column(
             children: [
               _adjuster(
-                title: '5V Ceiling',
+                title: JexText.of('fiveVCeiling'),
                 value: battery5Draft,
                 min: 20,
                 max: 48,
@@ -3272,14 +3272,14 @@ class _DashboardScreenState extends State<DashboardScreen>
               const Divider(height: 14),
               Row(
                 children: [
-                  SizedBox(width: 100, child: Text('9V Zone', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Colors.black45))),
+                  SizedBox(width: 100, child: Text(JexText.of('zone9v'), style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Colors.black45))),
                   Expanded(child: StaticSwitcher(duration: const Duration(milliseconds: 150), child: Text('≈ $midLow–$midHigh°C', key: ValueKey<String>('$midLow:$midHigh'), style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900)))),
                   const Icon(PhosphorIconsRegular.lock, color: Colors.black26),
                 ],
               ),
               const Divider(height: 14),
               _adjuster(
-                title: '12V Floor',
+                title: JexText.of('twelveVFloor'),
                 value: battery12Draft,
                 min: 22,
                 max: 50,
@@ -3298,7 +3298,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             child: const Row(children: [
               Icon(PhosphorIconsBold.lock, size: 18, color: Colors.orangeAccent),
               SizedBox(width: 9),
-              Expanded(child: Text('Locked in Adaptive.', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800))),
+              Expanded(child: Text(JexText.of('lockedAdaptive'), style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800))),
             ]),
           ),
         Align(
@@ -3306,7 +3306,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           child: OutlinedButton.icon(
             onPressed: connected && !locked ? _resetTemperatureSettings : null,
             icon: const Icon(PhosphorIconsBold.arrowClockwise, size: 17),
-            label: const Text('Reset Temperature'),
+            label: Text(JexText.of('resetTemperature')),
           ),
         ),
       ],
