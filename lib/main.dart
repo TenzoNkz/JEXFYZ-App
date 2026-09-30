@@ -4211,12 +4211,12 @@ class _DashboardScreenState extends State<DashboardScreen>
             decoration: BoxDecoration(
               color: selected
                   ? const Color(0xFF17181C)
-                  : (dark ? const Color(0xFF22242A) : const Color(0xFFF2F2F4)),
+                  : (dark ? const Color(0xFF22242A) : const Color(0xFFE4E7EC)),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: selected
                     ? const Color(0xFF17181C)
-                    : (dark ? const Color(0xFF30323A) : const Color(0xFFE5E5E8)),
+                    : (dark ? const Color(0xFF30323A) : const Color(0xFFD6DAE1)),
               ),
             ),
             child: FittedBox(
@@ -4240,7 +4240,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   Color _dashboardTopColor() => switch (appThemeNotifier.value) {
         AppThemePreset.defaultTheme => const Color(0xFF111113),
-        AppThemePreset.light => const Color(0xFFF5F5F7),
+        AppThemePreset.light => const Color(0xFFEEF0F4),
         AppThemePreset.dark => const Color(0xFF101114),
       };
 
