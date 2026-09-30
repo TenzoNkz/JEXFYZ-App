@@ -16,6 +16,10 @@
 #include <BLEServer.h>
 #include <BLEUtils.h>
 #include <BLE2902.h>
+#include <BLESecurity.h>
+#if defined(CONFIG_NIMBLE_ENABLED)
+#include <host/ble_gap.h>
+#endif
 
 #include <Update.h>
 
@@ -29,7 +33,7 @@ enum class LedMode : uint8_t;
 enum class VoltageRequestSource : uint8_t;
 enum class AdaptiveProfile : uint8_t;
 
-static constexpr char FW_VERSION[] = "V2.3";
+static constexpr char FW_VERSION[] = "V2.4";
 
 // ============================================================================
 // ========================== HEAP DIAGNOSTIC BUILD ===========================
@@ -100,6 +104,9 @@ static constexpr uint8_t OUTPUT_OFF = LOW;
 static constexpr char AP_SSID[]     = "JE X FYZ";
 
 static constexpr char AP_PASSWORD[] = "0987654321";
+static constexpr char OTA_CANONICAL_FIRMWARE_URL[] =
+    "https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ.cpp.bin";
+static constexpr uint32_t PHYSICAL_AUTH_WINDOW_MS = 30000UL;
 static const IPAddress AP_IP(192, 168, 4, 1);
 static const IPAddress AP_GATEWAY(192, 168, 4, 1);
 static const IPAddress AP_SUBNET(255, 255, 255, 0);
@@ -221,6 +228,12 @@ size_t bleTxHead = 0;
 size_t bleTxTail = 0;
 size_t bleTxCount = 0;
 uint32_t bleNextNotifyAt = 0;
+
+// Security state: BLE control is bound to one bonded peer identity.
+// A new peer is accepted only after an explicit physical authorization gesture.
+static char authorizedBlePeerId[32] = {0};
+volatile uint32_t blePairingArmUntilMs = 0;
+uint32_t localOtaPhysicalAuthUntilMs = 0;
 
 char bleRxQueue[BLE_RX_QUEUE_SIZE][BLE_RX_BUFFER_SIZE];
 std::atomic<size_t> bleRxHead{0};
@@ -432,6 +445,10 @@ static String otaSuccessResult(const String& mode, const String& stage, const St
 static void failLocalOta(const String& stage, int errorCode, const String& error);
 static void failOnlineOta(const String& stage, int errorCode, const String& error);
 static bool validFirmwareVersion(const String& value);
+static bool firmwareVersionIsNewer(const String& candidate, const String& current);
+static void loadBleAuthorization();
+static void saveBleAuthorization(const String& peerId);
+static void configureBleSecurity();
 static void clearCloudCredentials();
 static void resetBlinkState();
 static void startLocalOtaResultIndicator();
@@ -600,6 +617,8 @@ static bool parseFloatRange(const String& raw, float minValue, float maxValue, f
 static void loadSettings() {
   prefsReady = prefs.begin("jexfyz", false);
   if (!prefsReady) return;
+
+  loadBleAuthorization();
 
   hotLimit = constrain(prefs.getInt("hotLimit", 45), HOT_LIMIT_MIN, HOT_LIMIT_MAX);
   battery5Limit = constrain(
@@ -991,6 +1010,34 @@ static bool validFirmwareVersion(const String& value) {
     return false;
   }
   return digitSeen;
+}
+
+static bool firmwareVersionIsNewer(
+    const String& candidate,
+    const String& current) {
+  if (!validFirmwareVersion(candidate) ||
+      !validFirmwareVersion(current)) {
+    return false;
+  }
+
+  String a = candidate;
+  String b = current;
+  a.trim();
+  b.trim();
+  a.toUpperCase();
+  b.toUpperCase();
+
+  const int aDot = a.indexOf('.');
+  const int bDot = b.indexOf('.');
+  const long aMajor = a.substring(1, aDot < 0 ? a.length() : aDot).toInt();
+  const long bMajor = b.substring(1, bDot < 0 ? b.length() : bDot).toInt();
+  const long aMinor =
+      aDot < 0 ? 0 : a.substring(aDot + 1).toInt();
+  const long bMinor =
+      bDot < 0 ? 0 : b.substring(bDot + 1).toInt();
+
+  if (aMajor != bMajor) return aMajor > bMajor;
+  return aMinor > bMinor;
 }
 
 static void resetBlinkState() {
@@ -2047,6 +2094,43 @@ static void feedBleRx(const String& incoming) {
   }
 }
 
+class JexSecurityCallbacks : public BLESecurityCallbacks {
+ public:
+#if defined(CONFIG_NIMBLE_ENABLED)
+  void onAuthenticationComplete(ble_gap_conn_desc* desc) override {
+    if (desc == nullptr) return;
+
+    BLEAddress peer(desc->peer_id_addr.val, desc->peer_id_addr.type);
+    String peerId = peer.toString();
+    peerId.toLowerCase();
+
+    bool authorized = false;
+    if (authorizedBlePeerId[0] != '\0') {
+      authorized = peerId.equalsIgnoreCase(String(authorizedBlePeerId));
+    } else if (millis() <= blePairingArmUntilMs) {
+      saveBleAuthorization(peerId);
+      blePairingArmUntilMs = 0;
+      authorized = true;
+      Serial.print("BLE SECURITY: FIRST PEER AUTHORIZED ");
+      Serial.println(peerId);
+    }
+
+    if (!authorized) {
+      Serial.print("BLE SECURITY: UNAUTHORIZED PEER REJECTED ");
+      Serial.println(peerId);
+      BLEServer* server = BLEDevice::getServer();
+      if (server != nullptr) {
+        server->disconnect(desc->conn_handle, BLE_ERR_REM_USER_CONN_TERM);
+      }
+      return;
+    }
+
+    Serial.print("BLE SECURITY: AUTHORIZED PEER ");
+    Serial.println(peerId);
+  }
+#endif
+};
+
 class ServerCallbacks : public BLEServerCallbacks {
  public:
   void onConnect(BLEServer* server) override {
@@ -2074,10 +2158,6 @@ class ServerCallbacks : public BLEServerCallbacks {
       bleLedResumePending.store(true, std::memory_order_release);
     }
   }
-
-
-
-
 };
 
 class RxCallbacks : public BLECharacteristicCallbacks {
@@ -2086,8 +2166,47 @@ class RxCallbacks : public BLECharacteristicCallbacks {
     enqueueBleRxPayload(characteristic->getValue());
   }
 };
+static JexSecurityCallbacks securityCallbacks;
 static ServerCallbacks serverCallbacks;
 static RxCallbacks rxCallbacks;
+
+static void saveBleAuthorization(const String& peerId) {
+  String normalized = peerId;
+  normalized.trim();
+  normalized.toLowerCase();
+  if (normalized.isEmpty()) return;
+
+  normalized.toCharArray(authorizedBlePeerId, sizeof(authorizedBlePeerId));
+  if (prefsReady) {
+    prefs.putString("blePeerId", normalized);
+  }
+}
+
+static void loadBleAuthorization() {
+  if (!prefsReady) return;
+
+  String stored = prefs.getString("blePeerId", "");
+  stored.trim();
+  stored.toLowerCase();
+  stored.toCharArray(authorizedBlePeerId, sizeof(authorizedBlePeerId));
+
+  if (authorizedBlePeerId[0] != '\0') {
+    Serial.print("BLE SECURITY: AUTHORIZED PEER LOADED ");
+    Serial.println(authorizedBlePeerId);
+  }
+}
+
+static void configureBleSecurity() {
+  BLESecurity* security = new BLESecurity();
+
+  // ESP32-C3 uses NimBLE. Require bonding + Secure Connections + encryption.
+  // MITM is intentionally false because the cooler has no display/input path
+  // for a passkey exchange; physical authorization binds the first peer.
+  security->setCapability(ESP_IO_CAP_NONE);
+  security->setAuthenticationMode(true, false, true);
+
+  BLEDevice::setSecurityCallbacks(&securityCallbacks);
+}
 
 static void stopBleRadio(bool releaseBluetoothMemory) {
   bleQueueResetPending = true;
@@ -2178,6 +2297,7 @@ static void startBle() {
   runHeapCheck("CP06_AFTER_BLE_INIT");
 
   BLEDevice::setMTU(247);
+  configureBleSecurity();
 
   bleServer = BLEDevice::createServer();
   if (bleServer == nullptr) {
@@ -2197,7 +2317,10 @@ static void startBle() {
   }
   runHeapCheck("CP08_AFTER_CREATE_SERVICE");
 
-  const uint32_t rxProperties = BLECharacteristic::PROPERTY_WRITE;
+  // Runtime control commands must require an encrypted BLE link.
+  const uint32_t rxProperties =
+      BLECharacteristic::PROPERTY_WRITE |
+      BLECharacteristic::PROPERTY_WRITE_ENC;
   rxCharacteristic = service->createCharacteristic(RX_UUID, rxProperties);
   if (rxCharacteristic == nullptr) {
     BLEDevice::deinit(true);
@@ -2291,12 +2414,7 @@ static void serviceBleStartRecovery() {
 static bool validGitHubFirmwareUrl(const String& value) {
   String url = value;
   url.trim();
-  if (url.length() == 0 || url.length() >= BLE_RX_BUFFER_SIZE) return false;
-  if (!url.startsWith("https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/")) {
-    return false;
-  }
-  if (!url.endsWith(".bin")) return false;
-  return true;
+  return url.equals(OTA_CANONICAL_FIRMWARE_URL);
 }
 
 static void clearCloudCredentials() {
@@ -2682,6 +2800,21 @@ static void startOnlineOta() {
     return;
   }
 
+  // Security boundary: reject downgrade targets before Wi-Fi is started.
+  if (!firmwareVersionIsNewer(cloudVersion, FW_VERSION)) {
+    setOtaDiagnosticStage("ONLINE_VERSION_REJECTED");
+    setOtaDiagnosticProgress(0);
+    saveOtaResult(
+        String("OTA_REJECTED|MODE=ONLINE|STAGE=ONLINE_VERSION_REJECTED|VERSION=") +
+        cloudVersion + "|CURRENT=" + FW_VERSION + "|PROGRESS=0");
+    sendDelta("LAST_OTA_RESULT", otaResult);
+    setOtaState(OtaState::IDLE);
+    otaActive = false;
+    onlineOtaStartPending = false;
+    clearCloudCredentials();
+    return;
+  }
+
   setOtaDiagnosticStage("ONLINE_WIFI_CONNECT");
   otaRestartAt = 0;
   cloudPhaseStartedAt = millis();
@@ -2883,6 +3016,15 @@ static void localOtaUploadHandler() {
   HTTPUpload& upload = webServer.upload();
 
   if (upload.status == UPLOAD_FILE_START) {
+    if (localOtaPhysicalAuthUntilMs == 0 ||
+        millis() > localOtaPhysicalAuthUntilMs) {
+      // A Wi-Fi client alone is never sufficient to authorize a firmware write.
+      sendAck("LOCAL_OTA", false, "PHYSICAL_AUTH_REQUIRED");
+      Serial.println("LOCAL OTA: REJECTED - PHYSICAL AUTH REQUIRED");
+      return;
+    }
+    localOtaPhysicalAuthUntilMs = 0;
+
     otaRestartAt = 0;
     otaActive = true;
     setOtaState(OtaState::LOCAL_UPLOAD);
@@ -3074,6 +3216,7 @@ static void handleOtaPost() {
 
 static void startLocalOtaAp() {
   onlineOtaStartPending = false;
+  localOtaPhysicalAuthUntilMs = 0;
   // Local OTA owns the LED output from the boot-AP boundary onward.
   touchAdaptiveOffIndicatorActive = false;
   touchAdaptiveOffIndicatorLastPhase = 0xFFFFFFFFUL;
@@ -3126,6 +3269,8 @@ static void stopLocalOtaAp() {
   runHeapCheck("CP02_AFTER_WEBSERVER_STOP");
 
   stopWiFiRadio();
+  localOtaPhysicalAuthUntilMs = 0;
+  blePairingArmUntilMs = 0;
   runHeapCheck("CP03_AFTER_STOP_WIFI_RADIO");
   bootApActive = false;
   if (otaState == OtaState::BOOT_AP) {
@@ -3857,6 +4002,14 @@ static void processPendingOnlineOtaStart() {
 
 static void executeTouchSingle() {
   if (otaActive) return;
+
+  if (bootApActive && !bootApClientSafe) {
+    const uint32_t until = millis() + PHYSICAL_AUTH_WINDOW_MS;
+    localOtaPhysicalAuthUntilMs = until;
+    blePairingArmUntilMs = until;
+    Serial.println("PHYSICAL AUTH: LOCAL OTA + BLE PAIRING ARMED");
+    return;
+  }
 
   if (adaptiveOn) {
     fanOn = false;
