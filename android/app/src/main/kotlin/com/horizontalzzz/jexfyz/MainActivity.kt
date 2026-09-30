@@ -102,6 +102,10 @@ class MainActivity : FlutterActivity() {
                     result.success(true)
                 }
 
+                "getFloatingRuntimeState" -> {
+                    result.success(FloatingMonitorService.runtimeState(this))
+                }
+
                 "requestNotificationPermission" -> {
                     result.success(requestNotificationPermission())
                 }
