@@ -159,6 +159,42 @@ void main() {
     expect(theme.colorScheme.onSurfaceVariant, const Color(0xFF3F444D));
   });
 
+  test('Auto Connect stays passive until known cooler and Bluetooth are already ready', () {
+    expect(
+      canAutoConnect(
+        autoConnectEnabled: true,
+        knownRemoteId: null,
+        bluetoothScanGranted: true,
+        bluetoothConnectGranted: true,
+        bluetoothAdapterOn: true,
+        legacyLocationReady: true,
+      ),
+      isFalse,
+    );
+    expect(
+      canAutoConnect(
+        autoConnectEnabled: true,
+        knownRemoteId: 'AA:BB:CC:DD:EE:FF',
+        bluetoothScanGranted: true,
+        bluetoothConnectGranted: true,
+        bluetoothAdapterOn: false,
+        legacyLocationReady: true,
+      ),
+      isFalse,
+    );
+    expect(
+      canAutoConnect(
+        autoConnectEnabled: true,
+        knownRemoteId: 'AA:BB:CC:DD:EE:FF',
+        bluetoothScanGranted: true,
+        bluetoothConnectGranted: true,
+        bluetoothAdapterOn: true,
+        legacyLocationReady: true,
+      ),
+      isTrue,
+    );
+  });
+
   test('New default Auto Connect preference is Manual', () {
     expect(const AppSettings().autoConnect, isFalse);
     final parsed = AppSettings.fromJson('{"language":"english"}');
