@@ -1885,6 +1885,7 @@ static bool isUserControlCommand(const String& raw) {
          c == "PELTIER:OFF" ||
          c == "ADAPTIVE:ON" ||
          c == "ADAPTIVE:OFF" ||
+         c.startsWith("ADAPTIVE_PROFILE:") ||
          c.startsWith("FANSPEED:") ||
          c == "RESET:TEMPERATURE" ||
          c == "RESET:VOLTAGECOLORS";
@@ -1908,6 +1909,7 @@ static String controlAckItem(const String& raw) {
   if (c.startsWith("VOLTAGE:")) return "VOLTAGE";
   if (c.startsWith("FAN:")) return "FAN";
   if (c.startsWith("PELTIER:")) return "PELTIER";
+  if (c.startsWith("ADAPTIVE_PROFILE:")) return "ADAPTIVE_PROFILE";
   if (c.startsWith("ADAPTIVE:")) return "ADAPTIVE";
   if (c.startsWith("FANSPEED:")) return "FANSPEED";
   if (c == "RESET:TEMPERATURE") return "RESET_TEMPERATURE";
@@ -3605,6 +3607,39 @@ static void handleCommand(const String& command) {
     String reason;
     const bool ok = setPeltierState(false, reason);
     sendAck("PELTIER", ok, reason);
+    return;
+  }
+
+  if (command.startsWith("ADAPTIVE_PROFILE:")) {
+    if (adaptiveOn) {
+      sendAck("ADAPTIVE_PROFILE", false, "ADAPTIVE_ACTIVE");
+      return;
+    }
+
+    String rawProfile = command.substring(17);
+    rawProfile.trim();
+    rawProfile.toUpperCase();
+
+    AdaptiveProfile nextProfile;
+    if (rawProfile == "HOTSIDE") {
+      nextProfile = AdaptiveProfile::HOTSIDE_PROTECTION;
+    } else if (rawProfile == "HOTSIDE_BATTERY") {
+      nextProfile = AdaptiveProfile::HOTSIDE_BATTERY;
+    } else {
+      sendAck("ADAPTIVE_PROFILE", false, "INVALID");
+      return;
+    }
+
+    if (adaptiveProfile != nextProfile) {
+      adaptiveProfile = nextProfile;
+      markSettingsDirty();
+      sendDelta("ADAPTIVE_PROFILE",
+                adaptiveProfile == AdaptiveProfile::HOTSIDE_PROTECTION
+                    ? "HOTSIDE"
+                    : "HOTSIDE_BATTERY");
+    }
+
+    sendAck("ADAPTIVE_PROFILE", true, "OK");
     return;
   }
 
