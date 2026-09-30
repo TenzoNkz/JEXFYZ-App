@@ -4548,10 +4548,11 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
                   constraints: const BoxConstraints.tightFor(width: 38, height: 38),
                   tooltip: JexText.of('scan', lang),
                   onPressed: widget.onScan,
-                  icon: const Icon(
-                    PhosphorIconsRegular.arrowClockwise,
-                    color: Color(0xFF5C9DFF),
+                  icon: JexAnimatedIcon.glyph(
+                    icon: PhosphorIconsRegular.arrowClockwise,
+                    color: const Color(0xFF5C9DFF),
                     size: 25,
+                    active: true,
                   ),
                 ),
               ],
