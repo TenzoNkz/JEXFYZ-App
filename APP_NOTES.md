@@ -1234,3 +1234,22 @@ Never:
 - Dart symbols artifact ID: 11125359500
 - Dart symbols digest: sha256:5e28f49455796e39fd5918bcad3b529ea67617b8081361f598f9c2432e9a35b3
 - Build validation applies to source commit 8df84e...; it does not prove Android OEM Floating Monitor behavior or physical firmware/hardware behavior.
+
+## 2026-10-01 — FULL EXECUTION / LIGHT THEME CONTRAST INVERSION
+
+- Corrected the Light Theme so semantic text is near-black on light surfaces, while Dark Theme keeps near-white text on dark surfaces.
+- lib/app_settings.dart now uses an explicit inverse semantic contrast contract:
+  - Light: foreground #111318, muted #3F444D.
+  - Dark: foreground #F4F6FA, muted #979DA8.
+  - ColorScheme.onSurfaceVariant follows the theme muted color.
+- lib/main.dart corrected explicit Dashboard Light-theme text paths that previously bypassed ThemeData:
+  - Home metric labels use near-black text in Light mode.
+  - Inactive Home metric values use near-black text in Light mode.
+  - Unselected Display Menu tabs use near-black text in Light mode.
+- Dashboard visual boundaries remain unchanged:
+  - Default = black Home/header + white Display/Menu.
+  - Light = light Home/header + white Display/Menu.
+  - Dark = dark Home/header + dark Display/Menu.
+- Added deterministic regression coverage in test/widget_test.dart for Light/Dark semantic text inversion.
+- No BLE/P1 UUID, OTA transport, Firebase metadata, firmware GPIO/version, Floating Monitor transport, or physical-control logic was changed.
+- Per workflow contract, no Build App was run by this execution. Build remains explicit via @Thinking Build App!.
