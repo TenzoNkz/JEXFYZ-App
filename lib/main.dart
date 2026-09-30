@@ -2744,7 +2744,9 @@ class _DashboardScreenState extends State<DashboardScreen>
     final display = value == '--' ? '--' : value + unit;
     final active = value != '--';
     final homeDark = appThemeNotifier.value != AppThemePreset.light;
-    final mutedText = homeDark ? const Color(0xFFD4D7E0) : const Color(0xFF626873);
+    // AI-THEME / DASHBOARD-LIGHT-CONTRAST-CONTRACT
+    // Explicit Home metric text remains dark in Light mode; no pale muted text on light surfaces.
+    final mutedText = homeDark ? const Color(0xFFD4D7E0) : const Color(0xFF16181D);
 
     return Padding(
       padding: EdgeInsets.zero,
@@ -2820,7 +2822,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color: active ? color : (homeDark ? const Color(0xFF7F8592) : const Color(0xFF9A9EA7)),
+                        color: active ? color : (homeDark ? const Color(0xFF7F8592) : const Color(0xFF16181D)),
                         fontSize: 18.5,
                         fontWeight: FontWeight.w900,
                         height: 0.95,
@@ -4216,7 +4218,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 title.toUpperCase(),
                 maxLines: 1,
                 style: TextStyle(
-                  color: selected ? Colors.white : (dark ? Colors.white70 : const Color(0xFF5E6068)),
+                  color: selected ? Colors.white : (dark ? Colors.white70 : const Color(0xFF16181D)),
                   fontWeight: FontWeight.w900,
                   fontSize: 9,
                   letterSpacing: 0.05,
