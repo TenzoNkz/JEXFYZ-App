@@ -557,8 +557,8 @@ class FloatingMonitorService : Service() {
                 "B" -> "B:" + if (data.battery == "--") "--" else data.battery + "°"
                 "H" -> "H:" + if (data.hotside == "--") "--" else data.hotside + "°"
                 "V" -> "V:" + data.voltage
-                "A" -> "A:" + if (data.fanOn && data.adaptiveOn) onText else offText
-                "P" -> "P:" + if (data.fanOn && data.peltierOn) onText else offText
+                "A" -> "A:" + if (data.adaptiveOn) onText else offText
+                "P" -> "P:" + if (data.peltierOn) onText else offText
                 "S" -> "S:" + data.speed.toString()
                 else -> ""
             }
