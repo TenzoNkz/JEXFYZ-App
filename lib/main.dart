@@ -1,4 +1,19 @@
 /*
+  AI-MEMORY / FILE CONTRACT
+  File: main.dart
+  Owns: JE Cooler Flutter application entry point, Dashboard UI, BLE/P1 session state,
+        firmware telemetry mapping, command confirmation, OTA coordination, and UI presentation.
+  State authority: firmware telemetry is authoritative for physical Fan/Peltier/Adaptive/LED state.
+  Localization: every user-facing string must use JexText or JexText.phrase().
+  English UI uses ON/OFF; Indonesia UI uses HIDUP/MATI.
+  Language names are displayed as English / Indonesia.
+  BLE protocol tokens such as FAN:ON, FAN:OFF, PELTIER:ON, ADAPTIVE:ON, RGB:OFF
+  are machine protocol values and must never be translated.
+  Floating Monitor receives the same live telemetry; it does not own a second BLE connection.
+  Build/runtime rule: source edits here do not imply a build; Build App is explicit.
+*/
+
+/*
   AI MAINTENANCE MEMORY
   ---------------------
   Scope: Flutter/Android App only. Firmware source and BIN are external.
@@ -687,6 +702,10 @@ class JeCoolerApp extends StatelessWidget {
 typedef MyApp = JeCoolerApp;
 
 // --- DASHBOARD CONTROLLER: BLE lifecycle, telemetry, commands, OTA initiation, rendering ---
+// AI-MEMORY / DASHBOARD OWNERSHIP
+// DashboardScreen owns live UI state and BLE coordination for one JE X FYZ session.
+// It may present firmware state but must never override firmware safety decisions.
+
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -1998,7 +2017,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         voltageGuardTimer?.cancel();
         if (mounted) {
           setState(() => voltageGuardActive = false);
-          _showSnackBar('Voltage change not confirmed.');
+          _showSnackBar(JexText.phrase('Voltage change not confirmed.','Perubahan tegangan tidak dikonfirmasi.'));
         }
       }
     } catch (e) {
@@ -2006,7 +2025,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       voltageGuardTimer?.cancel();
       if (mounted) {
         setState(() => voltageGuardActive = false);
-        _showSnackBar('Voltage change failed.');
+        _showSnackBar(JexText.phrase('Voltage change failed.','Perubahan tegangan gagal.'));
       }
     }
   }
@@ -2019,11 +2038,11 @@ class _DashboardScreenState extends State<DashboardScreen>
         enabled ? 'FAN:ON' : 'FAN:OFF',
       );
       if (!ok && mounted) {
-        _showSnackBar('Fan change was not confirmed by the device.', color: Colors.orangeAccent);
+        _showSnackBar(JexText.phrase('Fan change was not confirmed by the device.','Perubahan kipas tidak dikonfirmasi oleh perangkat.'), color: Colors.orangeAccent);
       }
     } catch (e) {
       debugPrint('Fan command: $e');
-      if (mounted) _showSnackBar('Fan command failed.', color: Colors.orangeAccent);
+      if (mounted) _showSnackBar(JexText.phrase('Fan command failed.','Perintah kipas gagal.'), color: Colors.orangeAccent);
     }
   }
 
@@ -2052,7 +2071,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         if (approved != true) return;
         final fanOk = await _sendAndConfirm('FAN:ON');
         if (!fanOk) {
-          _showSnackBar('Fan activation was not confirmed by the device.', color: Colors.orangeAccent);
+          _showSnackBar(JexText.phrase('Fan activation was not confirmed by the device.','Pengaktifan kipas tidak dikonfirmasi oleh perangkat.'), color: Colors.orangeAccent);
           return;
         }
       }
@@ -2062,11 +2081,11 @@ class _DashboardScreenState extends State<DashboardScreen>
         timeout: const Duration(seconds: 6),
       );
       if (!ok && mounted) {
-        _showSnackBar('Peltier change was not confirmed by the device. ${safetyReason == 'NONE' ? '' : safetyReason}', color: Colors.orangeAccent);
+        _showSnackBar(JexText.phrase('Peltier change was not confirmed by the device. ${safetyReason == 'NONE' ? '' : safetyReason}','Perubahan Peltier tidak dikonfirmasi oleh perangkat. ${safetyReason == 'NONE' ? '' : safetyReason}'), color: Colors.orangeAccent);
       }
     } catch (e) {
       debugPrint('Peltier command: $e');
-      if (mounted) _showSnackBar('Peltier command failed.', color: Colors.orangeAccent);
+      if (mounted) _showSnackBar(JexText.phrase('Peltier command failed.','Perintah Peltier gagal.'), color: Colors.orangeAccent);
     }
   }
 
@@ -2082,7 +2101,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         timeout: const Duration(seconds: 4),
       );
       if (!ok && mounted) {
-        _showSnackBar('Adaptive Mode change was not confirmed by the device.', color: Colors.orangeAccent);
+        _showSnackBar(JexText.phrase('Adaptive Mode change was not confirmed by the device.','Perubahan Mode Adaptif tidak dikonfirmasi oleh perangkat.'), color: Colors.orangeAccent);
       }
     } finally {
       if (mounted) {
@@ -2101,11 +2120,11 @@ class _DashboardScreenState extends State<DashboardScreen>
         'RGB:' + (enabled ? 'ON' : 'OFF'),
       );
       if (!ok && mounted) {
-        _showSnackBar('LED power change was not confirmed by the device.');
+        _showSnackBar(JexText.phrase('LED power change was not confirmed by the device.','Perubahan daya LED tidak dikonfirmasi oleh perangkat.'));
       }
     } catch (e) {
       debugPrint('LED power command: $e');
-      if (mounted) _showSnackBar('LED power command failed.');
+      if (mounted) _showSnackBar(JexText.phrase('LED power command failed.','Perintah daya LED gagal.'));
     }
   }
 
@@ -2116,11 +2135,11 @@ class _DashboardScreenState extends State<DashboardScreen>
       final next = mode.clamp(1, 7).toInt();
       final ok = await _sendAndConfirm('MODE:$next');
       if (!ok && mounted) {
-        _showSnackBar('LED mode change was not confirmed by the device.');
+        _showSnackBar(JexText.phrase('LED mode change was not confirmed by the device.','Perubahan mode LED tidak dikonfirmasi oleh perangkat.'));
       }
     } catch (e) {
       debugPrint('LED mode command: $e');
-      if (mounted) _showSnackBar('LED mode command failed.');
+      if (mounted) _showSnackBar(JexText.phrase('LED mode command failed.','Perintah mode LED gagal.'));
     }
   }
 
@@ -2144,13 +2163,13 @@ class _DashboardScreenState extends State<DashboardScreen>
 
       if (mounted) {
         setState(() => brightness = previous);
-        _showSnackBar('LED brightness change was not confirmed by the device.');
+        _showSnackBar(JexText.phrase('LED brightness change was not confirmed by the device.','Perubahan kecerahan LED tidak dikonfirmasi oleh perangkat.'));
       }
     } catch (e) {
       debugPrint('LED brightness command: $e');
       if (mounted) {
         setState(() => brightness = previous);
-        _showSnackBar('LED brightness command failed.');
+        _showSnackBar(JexText.phrase('LED brightness command failed.','Perintah kecerahan LED gagal.'));
       }
     }
   }
@@ -2165,7 +2184,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       final ok = await _sendAndConfirm('COLOR:' + value.substring(1));
       if (!ok) {
         if (mounted) {
-          _showSnackBar('Color change was not confirmed by the device.');
+          _showSnackBar(JexText.phrase('Color change was not confirmed by the device.','Perubahan warna tidak dikonfirmasi oleh perangkat.'));
         }
         return;
       }
@@ -2175,7 +2194,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       }
     } catch (e) {
       debugPrint('LED color command: $e');
-      if (mounted) _showSnackBar('LED color command failed.');
+      if (mounted) _showSnackBar(JexText.phrase('LED color command failed.','Perintah warna LED gagal.'));
     }
   }
 
@@ -2189,11 +2208,11 @@ class _DashboardScreenState extends State<DashboardScreen>
       final ok = await _sendAndConfirm('FANSPEED:$next');
       if (!ok && mounted) {
         setState(() => fanSpeedDraft = fanSpeed);
-        _showSnackBar('Fan speed change was not confirmed by the device.');
+        _showSnackBar(JexText.phrase('Fan speed change was not confirmed by the device.','Perubahan kecepatan kipas tidak dikonfirmasi oleh perangkat.'));
       }
     } catch (e) {
       debugPrint('Fan speed command: $e');
-      if (mounted) _showSnackBar('Fan speed command failed.');
+      if (mounted) _showSnackBar(JexText.phrase('Fan speed command failed.','Perintah kecepatan kipas gagal.'));
     }
   }
 
@@ -2264,10 +2283,10 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (!connected || adaptiveOn) return;
     try {
       final ok = await _sendAndConfirm('RESET:TEMPERATURE');
-      if (!ok && mounted) _showSnackBar('Temperature reset was not confirmed by the device.');
+      if (!ok && mounted) _showSnackBar(JexText.phrase('Temperature reset was not confirmed by the device.','Reset temperatur tidak dikonfirmasi oleh perangkat.'));
     } catch (e) {
       debugPrint('Temperature reset: $e');
-      if (mounted) _showSnackBar('Temperature reset failed.');
+      if (mounted) _showSnackBar(JexText.phrase('Temperature reset failed.','Reset temperatur gagal.'));
     }
   }
 
@@ -2297,7 +2316,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     final ok = await _sendAndConfirm('ADAPTIVE_PROFILE:' + profile);
     if (!ok && mounted) {
       _showSnackBar(
-        'Adaptive profile change was not confirmed by the device.',
+        JexText.phrase('Adaptive profile change was not confirmed by the device.','Perubahan profil Adaptif tidak dikonfirmasi oleh perangkat.'),
         color: Colors.orangeAccent,
       );
     }
@@ -2607,19 +2626,19 @@ class _DashboardScreenState extends State<DashboardScreen>
       case 'HOTSIDE_PROTECTION':
         return JexText.phrase('Hotside protection active.', 'Perlindungan Suhu Panas aktif.');
       case 'FAN_REQUIRED':
-        return JexText.phrase('Fan required before Peltier.', 'Kipas harus aktif sebelum Peltier.');
+        return JexText.phrase(JexText.phrase('Fan required before Peltier.','Kipas harus hidup sebelum Peltier.'), 'Kipas harus aktif sebelum Peltier.');
       case 'PELTIER_ON':
-        return JexText.phrase('Fan locked while Peltier is ON.', 'Kipas terkunci saat Peltier AKTIF.');
+        return JexText.phrase(JexText.phrase('Fan locked while Peltier is ON.','Kipas terkunci saat Peltier HIDUP.'), 'Kipas terkunci saat Peltier AKTIF.');
       case 'ADAPTIVE_ACTIVE':
-        return JexText.phrase('Manual cooling controls locked.', 'Kontrol pendinginan manual terkunci.');
+        return JexText.phrase(JexText.phrase('Manual cooling controls locked.','Kontrol pendinginan manual terkunci.'), 'Kontrol pendinginan manual terkunci.');
       case 'MANUAL_12V_ONLY':
-        return JexText.phrase('Manual 12V only.', 'Manual hanya 12V.');
+        return JexText.phrase(JexText.phrase('Manual 12V only.','Manual hanya 12V.'), 'Manual hanya 12V.');
       case 'VOLTAGE_GUARD_OR_BUSY':
-        return JexText.phrase('Voltage command pending.', 'Perintah tegangan sedang diproses.');
+        return JexText.phrase(JexText.phrase('Voltage command pending.','Perintah tegangan sedang diproses.'), 'Perintah tegangan sedang diproses.');
       case 'SYNC_REQUIRED':
         return JexText.phrase('Device sync in progress.', 'Sinkronisasi perangkat sedang berlangsung.');
       case 'RATE_LIMIT':
-        return JexText.phrase('Command rate limited.', 'Perintah terlalu cepat.');
+        return JexText.phrase(JexText.phrase('Command rate limited.','Perintah dibatasi frekuensinya.'), 'Perintah terlalu cepat.');
       case 'MUST_BE_BELOW_BATT12':
         return JexText.phrase('5V battery limit must stay below 12V.', 'Batas baterai 5V harus di bawah 12V.');
       case 'MUST_BE_ABOVE_BATT5':
@@ -2810,6 +2829,9 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
   }
 
+  // AI-METHOD / HOME-STATE CONTRACT
+  // Render a localized ON/OFF state while preserving -- for disconnected telemetry.
+  // The boolean remains the firmware-backed state; only its presentation is localized.
   Widget _homeStateChip({
     required String label,
     required bool value,
@@ -2817,9 +2839,10 @@ class _DashboardScreenState extends State<DashboardScreen>
     required Color color,
     JexAnimatedIconKind? animatedKind,
   }) {
+    final lang = appLanguageNotifier.value;
     return _homeMetric(
       label,
-      connected ? (value ? 'ON' : 'OFF') : '--',
+      connected ? JexText.of(value ? 'on' : 'off', lang) : '--',
       '',
       color: color,
       icon: icon,
@@ -2829,14 +2852,17 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
   }
 
+  // AI-METHOD / HOME-FAN-SPEED CONTRACT
+  // Fan Speed is intentionally absent when the physical Fan state is OFF.
+  // When Fan is ON, retain the existing voltage/adaptive display rules and values.
   Widget _homeFanSpeed() {
-    final displaySpeed = !connected
-        ? '--'
-        : (voltage == '5V' || voltage == '9V')
-            ? '100%'
-            : (!adaptiveOn && voltage == '12V')
-                ? '$fanSpeed%'
-                : '--';
+    if (!connected || !fanOn) return const SizedBox.shrink();
+
+    final displaySpeed = (voltage == '5V' || voltage == '9V')
+        ? '100%'
+        : (!adaptiveOn && voltage == '12V')
+            ? '$fanSpeed%'
+            : '--';
     return _homeMetric(
       JexText.of('fanSpeedLabel'),
       displaySpeed,
@@ -2844,7 +2870,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       color: const Color(0xFFFFCD38),
       icon: PhosphorIconsRegular.gauge,
       animatedKind: JexAnimatedIconKind.speed,
-      level: fanOn ? fanSpeed / 100 : 0,
+      level: fanSpeed / 100,
     );
   }
 
@@ -2882,14 +2908,14 @@ class _DashboardScreenState extends State<DashboardScreen>
         RegExp(r'\s+was not confirmed by the device\.?[\s\S]*$', caseSensitive: false),
         '',
       ).trim();
-      return prefix.isEmpty ? 'Device did not confirm the command.' : prefix + ' not confirmed.';
+      return prefix.isEmpty ? JexText.phrase('Device did not confirm the command.','Perangkat tidak mengonfirmasi perintah.') : prefix + ' not confirmed.';
     }
     if (lower.contains('command failed.')) {
       final prefix = raw.replaceFirst(
         RegExp(r'\s+command failed\.?$', caseSensitive: false),
         '',
       ).trim();
-      return prefix.isEmpty ? 'Command failed.' : prefix + ' failed.';
+      return prefix.isEmpty ? JexText.phrase('Command failed.','Perintah gagal.') : prefix + ' failed.';
     }
     return raw;
   }
@@ -2932,17 +2958,17 @@ class _DashboardScreenState extends State<DashboardScreen>
       case 'HOTSIDE_PROTECTION':
         return JexText.of('hotsideProtectionActive', appLanguageNotifier.value);
       case 'FAN_REQUIRED':
-        return 'Fan required before Peltier.';
+        return JexText.phrase('Fan required before Peltier.','Kipas harus hidup sebelum Peltier.');
       case 'PELTIER_ON':
-        return 'Fan locked while Peltier is ON.';
+        return JexText.phrase('Fan locked while Peltier is ON.','Kipas terkunci saat Peltier HIDUP.');
       case 'ADAPTIVE_ACTIVE':
-        return 'Manual cooling controls locked.';
+        return JexText.phrase('Manual cooling controls locked.','Kontrol pendinginan manual terkunci.');
       case 'MANUAL_12V_ONLY':
-        return 'Manual 12V only.';
+        return JexText.phrase('Manual 12V only.','Manual hanya 12V.');
       case 'VOLTAGE_GUARD_OR_BUSY':
-        return 'Voltage command pending.';
+        return JexText.phrase('Voltage command pending.','Perintah tegangan sedang diproses.');
       case 'RATE_LIMIT':
-        return 'Command rate limited.';
+        return JexText.phrase('Command rate limited.','Perintah dibatasi frekuensinya.');
       case 'DISCONNECTED':
         return JexText.of('bluetoothDisconnected', appLanguageNotifier.value);
       case 'NONE':
@@ -3393,7 +3419,10 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
   }
 
-  // AI-METHOD: _buildControlTab — Build CONTROL submenu.
+  // AI-METHOD / CONTROL-TAB CONTRACT
+  // Render Peltier and Fan switches from authoritative telemetry.
+  // Fan Speed is rendered only while fanOn is true; its slider remains gated by
+  // connected + manual + 12V rules. Never localize BLE command tokens.
   Widget _buildControlTab({Key? key}) {
     final speedEnabled =
         connected && !adaptiveOn && voltage == '12V' && fanOn;
@@ -3427,49 +3456,53 @@ class _DashboardScreenState extends State<DashboardScreen>
                   enabled: connected && !adaptiveOn && !peltierOn,
                   onChanged: _toggleFan,
                 ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    JexAnimatedIcon.glyph(
-                      icon: PhosphorIconsRegular.gauge,
-                      size: 20,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      active: true,
-                    ),
-                    const SizedBox(width: 9),
-                    Expanded(
-                      child: Text(
-                        JexText.of('speed', lang),
+                if (fanOn) ...[
+                  const SizedBox(height: 8),
+                  // AI-MEMORY / UI INVARIANT:
+                  // Speed controls exist only while Fan is physically ON.
+                  Row(
+                    children: [
+                      JexAnimatedIcon.glyph(
+                        icon: PhosphorIconsRegular.gauge,
+                        size: 20,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        active: true,
+                      ),
+                      const SizedBox(width: 9),
+                      Expanded(
+                        child: Text(
+                          JexText.of('speed', lang),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        fanSpeed.toString() + '%',
                         style: const TextStyle(
-                          fontSize: 14,
+                          fontSize: 13,
                           fontWeight: FontWeight.w900,
                         ),
                       ),
-                    ),
-                    Text(
-                      fanSpeed.toString() + '%',
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ],
-                ),
-                Slider(
-                  min: 50,
-                  max: 100,
-                  divisions: 5,
-                  value: fanSpeedDraft.clamp(50, 100).toDouble(),
-                  activeColor: Theme.of(context).colorScheme.primary,
-                  inactiveColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: .12),
-                  onChanged: speedEnabled
-                      ? (v) => setState(
-                            () => fanSpeedDraft =
-                                ((v / 10).round() * 10).clamp(50, 100).toInt(),
-                          )
-                      : null,
-                  onChangeEnd: speedEnabled ? _setFanSpeed : null,
-                ),
+                    ],
+                  ),
+                  Slider(
+                    min: 50,
+                    max: 100,
+                    divisions: 5,
+                    value: fanSpeedDraft.clamp(50, 100).toDouble(),
+                    activeColor: Theme.of(context).colorScheme.primary,
+                    inactiveColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: .12),
+                    onChanged: speedEnabled
+                        ? (v) => setState(
+                              () => fanSpeedDraft =
+                                  ((v / 10).round() * 10).clamp(50, 100).toInt(),
+                            )
+                        : null,
+                    onChangeEnd: speedEnabled ? _setFanSpeed : null,
+                  ),
+                ],
               ],
             ),
           ),
@@ -3940,12 +3973,17 @@ class _DashboardScreenState extends State<DashboardScreen>
     };
   }
 
-  // AI-METHOD: _buildHomeArea — Build the complete Home dashboard.
+  // AI-METHOD / HOME-CONTRACT
+  // Build Home from live firmware/phone telemetry. Power states use JexText;
+  // Fan Speed is omitted when Fan is OFF. This function owns presentation only,
+  // not device-state authority.
   Widget _buildHomeArea(double height) {
     final batteryValue = connected && phoneBatteryValid ? phoneBatteryTemp : '--';
     final hotValue = connected ? hotsideTemp : '--';
     final voltageValue = connected && voltage != '--' ? voltage : '--';
-    final adaptiveValue = connected ? (adaptiveOn ? 'ON' : 'OFF') : '--';
+    final adaptiveValue = connected
+        ? JexText.of(adaptiveOn ? 'on' : 'off', appLanguageNotifier.value)
+        : '--';
 
     return SizedBox(
       width: double.infinity,
