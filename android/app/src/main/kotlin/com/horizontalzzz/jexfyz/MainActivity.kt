@@ -15,11 +15,8 @@ import android.provider.Settings
 import android.util.Base64
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.Notification
 import android.content.pm.ServiceInfo
 import android.Manifest
-import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -301,13 +298,18 @@ class MainActivity : FlutterActivity() {
             return false
         }
         return try {
-            val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL)
+            val notification = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Notification.Builder(this, NOTIFICATION_CHANNEL)
+            } else {
+                @Suppress("DEPRECATION")
+                Notification.Builder(this)
+            }
                 .setSmallIcon(R.drawable.jexfyzicon)
                 .setContentTitle(title)
                 .setContentText(body)
-                .setStyle(NotificationCompat.BigTextStyle().bigText(body))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true)
+                .setShowWhen(true)
+                .setPriority(Notification.PRIORITY_DEFAULT)
                 .build()
             getSystemService(NotificationManager::class.java)
                 .notify(id, notification)
