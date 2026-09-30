@@ -4284,30 +4284,30 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
 
   @override
   Widget build(BuildContext context) {
+    final lang = appLanguageNotifier.value;
+    final scheme = Theme.of(context).colorScheme;
     final btColor = _statusColor(_bluetoothOn, _bluetoothDenied);
     final locationColor = _statusColor(_locationOn, _locationDenied);
     final locationRequired = _androidSdk > 0 && _androidSdk <= 30;
 
     return Material(
-      color: const Color(0xFF15161E),
+      color: scheme.surface,
       child: Column(
         children: [
           Container(
             height: 66,
             padding: const EdgeInsets.fromLTRB(18, 7, 7, 5),
-            decoration: const BoxDecoration(
-              color: Color(0xFF1E202B),
-              border: Border(
-                bottom: BorderSide(color: Color(0x141FFFFFFF)),
-              ),
+            decoration: BoxDecoration(
+              color: scheme.surfaceContainerHighest,
+              border: Border(bottom: BorderSide(color: scheme.outlineVariant)),
             ),
             child: Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: Text(
-                    'Connection',
+                    JexText.of('connection', lang),
                     style: TextStyle(
-                      color: Colors.white,
+                      color: scheme.onSurface,
                       fontSize: 18,
                       fontWeight: FontWeight.w900,
                       letterSpacing: -0.15,
@@ -4318,9 +4318,9 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints.tightFor(width: 42, height: 42),
                   onPressed: () => Navigator.pop(context),
-                  icon: const Icon(
+                  icon: Icon(
                     PhosphorIconsRegular.x,
-                    color: Colors.white70,
+                    color: scheme.onSurfaceVariant,
                     size: 25,
                   ),
                 ),
@@ -4332,7 +4332,7 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
             child: Row(
               children: [
                 _indicator(
-                  label: _bluetoothOn ? 'Bluetooth ON' : 'Bluetooth OFF',
+                  label: _bluetoothOn ? JexText.of('bluetoothOn', lang) : JexText.of('bluetoothOff', lang),
                   icon: _bluetoothOn
                       ? PhosphorIconsRegular.bluetooth
                       : PhosphorIconsRegular.bluetoothSlash,
@@ -4341,7 +4341,7 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
                 ),
                 const SizedBox(width: 8),
                 _indicator(
-                  label: _locationOn ? 'Location ON' : 'Location OFF',
+                  label: _locationOn ? JexText.of('locationOn', lang) : JexText.of('locationOff', lang),
                   icon: _locationOn
                       ? PhosphorIconsRegular.mapPin
                       : PhosphorIconsRegular.mapPin,
@@ -4355,11 +4355,11 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
             padding: const EdgeInsets.fromLTRB(16, 0, 10, 8),
             child: Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: Text(
-                    'Devices',
+                    JexText.of('devices', lang),
                     style: TextStyle(
-                      color: Colors.white70,
+                      color: scheme.onSurfaceVariant,
                       fontSize: 14,
                       fontWeight: FontWeight.w800,
                     ),
@@ -4368,7 +4368,7 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
                 IconButton(
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints.tightFor(width: 38, height: 38),
-                  tooltip: 'Scan',
+                  tooltip: JexText.of('scan', lang),
                   onPressed: widget.onScan,
                   icon: const Icon(
                     PhosphorIconsRegular.arrowClockwise,
@@ -4414,9 +4414,9 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
                         ),
                         const SizedBox(height: 11),
                         Text(
-                          unavailable ? 'Connection unavailable.' : 'Scanning...',
-                          style: const TextStyle(
-                            color: Colors.white60,
+                          unavailable ? JexText.of('connectionUnavailable', lang) : JexText.of('scanning', lang),
+                          style: TextStyle(
+                            color: scheme.onSurfaceVariant,
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
                           ),
@@ -4428,7 +4428,7 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
                             PhosphorIconsRegular.arrowClockwise,
                             size: 18,
                           ),
-                          label: const Text('Scan'),
+                          label: Text(JexText.of('scan', lang)),
                         ),
                       ],
                     ),
@@ -4439,7 +4439,7 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
                   padding: const EdgeInsets.fromLTRB(10, 2, 10, 16),
                   itemCount: filtered.length,
                   separatorBuilder: (_, __) =>
-                      const Divider(color: Color(0x14FFFFFF), height: 1),
+                      Divider(color: scheme.outlineVariant.withValues(alpha: .55), height: 1),
                   itemBuilder: (_, index) {
                     final result = filtered[index];
                     final name = result.device.platformName.isNotEmpty
@@ -4453,8 +4453,8 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
                       ),
                       title: Text(
                         name.isEmpty ? 'JE X FYZ' : name,
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: scheme.onSurface,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
