@@ -36,14 +36,14 @@ class MainActivity : FlutterActivity() {
 
     // Battery/location/settings/background-service bridge.
     private val CHANNEL = "je_x_fyz/battery_temp"
+    // Dedicated Floating Monitor bridge. Flutter's FloatingBridge uses this exact channel.
+    private val FLOATING_CHANNEL = "je_x_fyz/floating"
     // Production release-integrity bridge.
     private val SECURITY_CHANNEL = "je_x_fyz/security"
     private val NOTIFICATION_CHANNEL = "je_x_fyz/notifications"
 
-    // Register every MethodChannel operation consumed by Dart.
-    // AI-METHOD / CHANNEL-CONFIG-CONTRACT
-    // Register the stable MethodChannel API consumed by Flutter. Method names are app contracts;
-    // changes here require matching Dart bridge changes.
+    // Register the stable MethodChannel APIs consumed by Flutter. Method names and channel names
+    // are app contracts; changes here require matching Dart bridge changes.
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
@@ -79,7 +79,31 @@ class MainActivity : FlutterActivity() {
                 "stopBackgroundService" -> {
                     result.success(stopBackgroundService())
                 }
+                "requestNotificationPermission" -> {
+                    result.success(requestNotificationPermission())
+                }
 
+                "showNotification" -> {
+                    val args = call.arguments as? Map<*, *>
+                    val title = args?.get("title")?.toString() ?: "JE X FYZ"
+                    val body = args?.get("body")?.toString() ?: ""
+                    val id = (args?.get("id") as? Number)?.toInt() ?: 2300
+                    result.success(showUserNotification(title, body, id))
+                }
+
+                else -> result.notImplemented()
+            }
+        }
+
+        // AI-METHOD / FLOATING-CHANNEL-CONTRACT
+        // Keep every Floating Monitor method on the channel declared by FloatingBridge.
+        // This prevents MissingPluginException caused by mixing overlay calls with the
+        // battery/system utility channel.
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            FLOATING_CHANNEL
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
                 "hasOverlayPermission" -> {
                     result.success(Settings.canDrawOverlays(this))
                 }
@@ -118,21 +142,10 @@ class MainActivity : FlutterActivity() {
                     result.success(FloatingMonitorService.runtimeState(this))
                 }
 
-                "requestNotificationPermission" -> {
-                    result.success(requestNotificationPermission())
-                }
-
-                "showNotification" -> {
-                    val args = call.arguments as? Map<*, *>
-                    val title = args?.get("title")?.toString() ?: "JE X FYZ"
-                    val body = args?.get("body")?.toString() ?: ""
-                    val id = (args?.get("id") as? Number)?.toInt() ?: 2300
-                    result.success(showUserNotification(title, body, id))
-                }
-
                 else -> result.notImplemented()
             }
         }
+
 
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
