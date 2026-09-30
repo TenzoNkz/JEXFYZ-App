@@ -983,8 +983,11 @@ ThemeData buildJexTheme(AppThemePreset preset) {
   final surface = isLight
       ? const Color(0xFFFFFFFF)
       : (preset == AppThemePreset.dark ? const Color(0xFF171A20) : const Color(0xFF191B20));
-  final foreground = isDark ? const Color(0xFFF4F6FA) : const Color(0xFF16181D);
-  final muted = isDark ? const Color(0xFF979DA8) : const Color(0xFF686D78);
+  // AI-THEME / LIGHT-CONTRAST-CONTRACT
+  // Light mode uses near-black semantic text on white/light surfaces, mirroring Android system light mode.
+  // Dark mode keeps the inverse relationship: near-white text on dark surfaces.
+  final foreground = isDark ? const Color(0xFFF4F6FA) : const Color(0xFF111318);
+  final muted = isDark ? const Color(0xFF979DA8) : const Color(0xFF3F444D);
   final primary = isLight ? const Color(0xFF3E72FF) : const Color(0xFF6A9DFF);
 
   return ThemeData(
