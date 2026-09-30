@@ -2789,11 +2789,19 @@ class _DashboardScreenState extends State<DashboardScreen>
     bool isLast = false,
   }) {
     final active = voltage == target;
-    final foreground = active ? Colors.white : Colors.black;
-    final secondary = active ? Colors.white70 : Colors.black45;
+    final dark = appThemeNotifier.value == AppThemePreset.dark;
+    final foreground = active
+        ? Colors.white
+        : (dark ? Colors.white : Colors.black);
+    final secondary = active
+        ? Colors.white70
+        : (dark ? Colors.white54 : Colors.black45);
+    final inactiveIcon = dark ? Colors.white24 : Colors.black26;
 
     return Material(
-      color: active ? const Color(0xFF17181C) : Colors.transparent,
+      color: active
+          ? const Color(0xFF17181C)
+          : (dark ? const Color(0xFF1A1B20) : Colors.transparent),
       borderRadius: BorderRadius.vertical(
         top: isFirst ? const Radius.circular(14) : Radius.zero,
         bottom: isLast ? const Radius.circular(14) : Radius.zero,
@@ -2830,7 +2838,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 active
                     ? PhosphorIconsBold.checkCircle
                     : PhosphorIconsRegular.circle,
-                color: active ? const Color(0xFF5C9DFF) : Colors.black26,
+                color: active ? const Color(0xFF5C9DFF) : inactiveIcon,
                 size: 22,
               ),
             ],
