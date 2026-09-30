@@ -13,10 +13,12 @@
 - In-app brand/header: **JE X FYZ**
 - Platform: Flutter + Android
 - Primary UI/architecture reference: **Horizon Cooler App**
-- Repository scope: **App-only**
-- Firmware implementation source (.ino), firmware production BIN, firmware CI/build output, and firmware working files are maintained outside this repository by the user.
-- **FIRMWARE_NOTES.md is intentionally kept in this repository as documentation only.**
-- The App may keep the Firebase firmware metadata URL because it is an App OTA integration dependency, not firmware source storage.
+- Repository scope: **App + current firmware source for continuity**
+- Firmware implementation source (.ino) is intentionally kept in this App repository under `firmware/`.
+- Production firmware BINs remain in the dedicated firmware repository, which is binary-only.
+- Firmware CI/build output is not stored in this repository.
+- **FIRMWARE_NOTES.md is the permanent firmware engineering record.**
+- The App may keep the Firebase firmware metadata URL because it is an App OTA integration dependency.
 
 ### 1.2 Repository boundary — do not break this rule
 
@@ -27,16 +29,32 @@ The App repository may contain:
 - App build/test configuration
 - App CI workflow
 - App notes
-- Firmware documentation/notes needed for project continuity
+- the current firmware `.ino` source under `firmware/` for continuity/review
+- firmware documentation/notes needed for project continuity
 
 The App repository must not contain:
-- `firmware/` source directory
-- production firmware `.ino` implementation
-- production firmware `.bin` artifact
+- production firmware `.bin` artifacts
 - firmware build output
 - firmware production CI/build workflow
 
-A future App cleanup must not remove `FIRMWARE_NOTES.md` merely because firmware source is external.
+A future App cleanup must not remove `FIRMWARE_NOTES.md`.
+
+## 2026-09-30 — SETTINGS / MENUS / FLOATING / LIVE-SYNC IMPLEMENTATION
+
+- English is the default App language; Bahasa Indonesia is the second locale.
+- Added centralized bilingual UI vocabulary in `lib/app_settings.dart`; Indonesian terminology includes Baterai and Suhu Panas. Floating Monitor remains English-only by design.
+- Added Default, Light, and Dark appearance presets.
+- Added important-only notification settings: Hotside Safety Alert, Firmware Update, Bluetooth Connected/Disconnected.
+- Added Bluetooth Auto Connect preference and bounded rediscovery behavior.
+- Gear now opens Settings; Firmware Update remains accessible from Settings.
+- Added Floating Monitor configuration with all functions OFF by default, default order FPS/Battery/Hotside/Volt/Adaptive/Peltier/Speed, Letters/Icons, drag-reorder, checkboxes, live preview, size, opacity, orientation, native overlay bridge, and native drag/pinch/tap behavior.
+- Floating and Home share the same App telemetry state; no second BLE telemetry client/path is introduced.
+- Removed the 90 ms post-command SYNC layer. BLE telemetry deltas remain the confirmation source. Voltage retains its intentional 1-second guard.
+- Redesigned Voltage, Control, Adaptive, LED, and surrounding submenu presentation toward a clean minimal visual hierarchy.
+- Voltage supports Vertical and Side Text layouts with 5V Low Mode, 9V Mid Mode, 12V High Mode.
+- LED uses a 12-color hue-only picker popup; HEX, white, black, and light/dark variants are removed. Brightness remains 1–100%.
+- Added Android overlay permission/service and native notification bridge.
+- App source has not been built into an APK in this change set; physical/device validation remains pending.
 
 ## 2. APP ARCHITECTURE
 
