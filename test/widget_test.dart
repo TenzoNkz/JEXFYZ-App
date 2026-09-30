@@ -83,13 +83,15 @@ void main() {
       adaptiveOn: true,
       peltierOn: true,
     );
-    expect(floatingMetricVisible('S', telemetry), isFalse);
+    expect(floatingMetricVisible('S', telemetry), isTrue);
     expect(floatingMetricVisible('A', telemetry), isTrue);
     expect(floatingMetricVisible('P', telemetry), isTrue);
     expect(floatingMetricStatus('A', telemetry, AppLanguage.english), 'ON');
     expect(floatingMetricStatus('P', telemetry, AppLanguage.english), 'ON');
     expect(floatingMetricStatus('A', telemetry, AppLanguage.indonesia), 'HIDUP');
     expect(floatingMetricStatus('P', telemetry, AppLanguage.indonesia), 'HIDUP');
+    expect(floatingMetricStatus('S', telemetry, AppLanguage.english), 'OFF');
+    expect(floatingMetricStatus('S', telemetry, AppLanguage.indonesia), 'MATI');
   });
 
   test('JE X FYZ voltage helper accepts only supported voltages', () {
@@ -134,6 +136,19 @@ void main() {
     final theme = buildJexTheme(AppThemePreset.defaultTheme);
     expect(theme.brightness, Brightness.dark);
     expect(theme.scaffoldBackgroundColor, const Color(0xFF0F1013));
+  });
+
+  test('Light theme uses dark high-contrast semantic text', () {
+    final theme = buildJexTheme(AppThemePreset.light);
+    expect(theme.brightness, Brightness.light);
+    expect(theme.colorScheme.onSurface, const Color(0xFF16181D));
+    expect(theme.colorScheme.onSurfaceVariant, const Color(0xFF3F444D));
+  });
+
+  test('New default Auto Connect preference is Manual', () {
+    expect(const AppSettings().autoConnect, isFalse);
+    final parsed = AppSettings.fromJson('{"language":"english"}');
+    expect(parsed.autoConnect, isFalse);
   });
 
   test('Default Settings theme stays dark', () {
