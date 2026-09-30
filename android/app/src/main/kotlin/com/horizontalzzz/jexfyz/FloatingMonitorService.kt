@@ -503,11 +503,9 @@ class FloatingMonitorService : Service() {
         private var density = resources.displayMetrics.density
 
         // AI-MEMORY / VISIBILITY-INVARIANT
-        // Filter selection by runtime availability; S (Fan Speed) is never rendered when Fan is OFF.
+        // Selected metrics remain visible. S (Fan Speed) reports OFF/MATI when Fan is OFF.
         private val visibleMetrics: List<String>
-            get() = config.order.filter {
-                config.selected.contains(it) && (it != "S" || data.fanOn)
-            }
+            get() = config.order.filter { config.selected.contains(it) }
 
         init {
             setBackgroundColor(Color.TRANSPARENT)
@@ -559,7 +557,7 @@ class FloatingMonitorService : Service() {
                 "V" -> "V:" + data.voltage
                 "A" -> "A:" + if (data.adaptiveOn) onText else offText
                 "P" -> "P:" + if (data.peltierOn) onText else offText
-                "S" -> "S:" + data.speed.toString()
+                "S" -> "S:" + if (data.fanOn) data.speed.toString() else offText
                 else -> ""
             }
         }
