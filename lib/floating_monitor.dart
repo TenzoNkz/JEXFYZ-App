@@ -505,12 +505,20 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                           ButtonSegment(
                             value: FloatingDisplayStyle.letters,
                             label: Text(JexText.of('letters', lang)),
-                            icon: const Icon(PhosphorIconsRegular.textAa),
+                            icon: JexAnimatedGlyph(
+                              icon: PhosphorIconsRegular.textAa,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              size: 18,
+                            ),
                           ),
                           ButtonSegment(
                             value: FloatingDisplayStyle.icons,
                             label: Text(JexText.of('icons', lang)),
-                            icon: const Icon(PhosphorIconsRegular.stack),
+                            icon: JexAnimatedGlyph(
+                              icon: PhosphorIconsRegular.stack,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              size: 18,
+                            ),
                           ),
                         ],
                         selected: <FloatingDisplayStyle>{config.style},
@@ -539,7 +547,11 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                             key: ValueKey<String>('floating-$metric'),
                             child: ListTile(
                               contentPadding: EdgeInsets.zero,
-                              leading: const Icon(PhosphorIconsRegular.dotsSixVertical, size: 20),
+                              leading: JexAnimatedGlyph(
+                                icon: PhosphorIconsRegular.dotsSixVertical,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                size: 20,
+                              ),
                               title: Text(_metricLabel(metric, lang), style: const TextStyle(fontWeight: FontWeight.w800)),
                               trailing: Checkbox(
                                 value: checked,
