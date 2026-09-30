@@ -586,10 +586,12 @@ class TamperScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(28),
                     border: Border.all(color: const Color(0x40FF453A)),
                   ),
-                  child: const Icon(
-                    PhosphorIconsBold.warning,
+                  child: JexAnimatedIcon.glyph(
+                    icon: PhosphorIconsBold.warning,
                     color: Colors.redAccent,
                     size: 44,
+                    active: true,
+                    warning: true,
                   ),
                 ),
                 const SizedBox(height: 24),
