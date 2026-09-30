@@ -241,10 +241,6 @@ class JexText {
       AppLanguage.english: 'Control',
       AppLanguage.indonesia: 'Kontrol',
     },
-    'adaptive': {
-      AppLanguage.english: 'Adaptive',
-      AppLanguage.indonesia: 'Adaptif',
-    },
     'led': {
       AppLanguage.english: 'LED',
       AppLanguage.indonesia: 'LED',
