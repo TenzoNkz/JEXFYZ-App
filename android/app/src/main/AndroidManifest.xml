@@ -3,7 +3,7 @@
      BLE permissions are Android-version aware.
      The foreground service backs an already-active connected-device session
      and must never become a second BLE client.
-     Firmware source/BIN/build files do not belong in this App repository.
+     The current firmware .ino source is intentionally kept under App/firmware; production BINs remain in the binary-only firmware repository.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
