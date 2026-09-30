@@ -2098,8 +2098,6 @@ class _DashboardScreenState extends State<DashboardScreen>
         return JexText.phrase('Temperature sensor error.', 'Kesalahan sensor suhu.');
       case 'HOTSIDE_PROTECTION':
         return JexText.phrase('Hotside protection active.', 'Perlindungan Suhu Panas aktif.');
-      case 'RAPID_RISE':
-        return JexText.phrase('Rapid hotside rise protection active.', 'Perlindungan kenaikan suhu panas aktif.');
       case 'FAN_REQUIRED':
         return JexText.phrase('Fan required before Peltier.', 'Kipas harus aktif sebelum Peltier.');
       case 'PELTIER_ON':
