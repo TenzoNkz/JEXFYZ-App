@@ -71,3 +71,50 @@ Every implementation change must update the relevant maintenance record in the s
 - Chat/process rules → `CHAT_RULES.md`
 
 Process-rule changes belong in this file and should not be duplicated into App or Firmware notes unless they are also relevant engineering history.
+
+## 8. Memory and notes must always be read
+
+At the start of every relevant JE X FYZ task, the assistant must read the available project memory and the authoritative project notes before making conclusions or proposing changes.
+
+This includes, as applicable:
+- prior conversation/context memory
+- `CHAT_RULES.md`
+- `APP_NOTES.md`
+- `FIRMWARE_NOTES.md`
+- current repository/source files relevant to the task
+- any user-provided evidence or attachments relevant to the behavior
+
+The assistant must use the newest verified information and must not silently rely on stale memory when a current note or source file can be checked.
+
+When a task crosses App, Firmware, Android, CI, or process boundaries, read the corresponding notes rather than assuming the other layer is unchanged.
+
+## 9. Mandatory chat-limit handover
+
+When the active subchat reaches, or is close enough to, its platform/context limit that continuity may be lost, the assistant must prepare a complete copy-ready handover prompt for the next chat.
+
+The handover must summarize the project state from the beginning of the current subchat through its latest state, not only the most recent issue.
+
+The handover prompt must contain, with as much verified detail as available:
+- project identity and architecture
+- repositories and repository boundaries
+- current App and Firmware versions
+- current source/branch/HEAD state and relevant commit SHAs
+- all meaningful changes made during the subchat
+- confirmed bugs and their symptoms
+- root-cause findings and competing hypotheses
+- user-requested behavior and frozen requirements
+- BLE/P1/API/UUID contracts relevant to continuation
+- Android/runtime/OTA/CI constraints relevant to continuation
+- validation already completed, including exact build/run IDs and artifact evidence when applicable
+- physical/device validation status and what remains unverified
+- known risks, regressions, unresolved questions, and why they remain unresolved
+- exact files/areas to inspect next
+- exact next action for the new chat
+- current workflow status (Diskusi, Eksekusi, Build, Perlu Gemini, etc.)
+- the required first step in the new chat, including any source/notes that must be re-read before continuing
+
+The final handover must be written as a single ready-to-copy prompt, with explicit instructions to continue from the recorded state rather than restart the project.
+
+Do not compress away important technical details merely to make the handover shorter. Accuracy and continuity take priority.
+
+The handover is documentation/continuity work only unless the user separately authorizes implementation or build.
