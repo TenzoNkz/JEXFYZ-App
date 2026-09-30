@@ -1599,7 +1599,7 @@ static void processAdaptiveUpTimer() {
   const Voltage liveTarget = clampToAdaptiveCeiling(batteryZoneVoltage(batteryZoneFor(batteryC)));
   if (liveTarget != adaptiveUpTarget) {
     adaptiveUpTarget = liveTarget;
-    adaptiveUpDueMs = millis() + ADAPTIVE_UPWARD_DELAY_MS;
+    adaptiveUpDueMs = millis() + ADAPTIVE_VOLTAGE_STEP_DELAY_MS;
     return;
   }
 
