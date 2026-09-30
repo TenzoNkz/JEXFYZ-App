@@ -2597,7 +2597,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                         child: Text(
                           label,
                           maxLines: 1,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: mutedText,
                             fontSize: 10.5,
                             fontWeight: FontWeight.w900,
@@ -3753,7 +3753,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
+                      children: [
                         Text(
                           headerName,
                           textAlign: TextAlign.center,
@@ -3787,9 +3787,11 @@ class _DashboardScreenState extends State<DashboardScreen>
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints.tightFor(width: 36, height: 36),
                         tooltip: JexText.of('settings', appLanguageNotifier.value),
-                        icon: const Icon(
+                        icon: Icon(
                           PhosphorIconsRegular.gear,
-                          color: Colors.white,
+                          color: appThemeNotifier.value == AppThemePreset.light
+                              ? const Color(0xFF16181D)
+                              : Colors.white,
                           size: 25,
                         ),
                         onPressed: _openSettings,
@@ -4008,9 +4010,11 @@ class _DashboardScreenState extends State<DashboardScreen>
                           Expanded(
                             child: Container(
                               width: designWidth,
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.vertical(
+                              decoration: BoxDecoration(
+                                color: appThemeNotifier.value == AppThemePreset.dark
+                                    ? const Color(0xFF171A20)
+                                    : Colors.white,
+                                borderRadius: const BorderRadius.vertical(
                                   top: Radius.circular(34),
                                 ),
                               ),
@@ -4032,11 +4036,11 @@ class _DashboardScreenState extends State<DashboardScreen>
                                       ),
                                     ),
                                   ),
-                                  const Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 19),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 19),
                                     child: Divider(
-                                      color: Colors.black12,
-                                      thickness: 1.1,
+                                      color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: .75),
+                                      thickness: 1,
                                       height: 1,
                                     ),
                                   ),
