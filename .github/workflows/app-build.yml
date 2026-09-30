@@ -141,6 +141,7 @@ jobs:
           activity = Path("android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt").read_text(encoding="utf-8")
           floating = Path("lib/floating_monitor.dart").read_text(encoding="utf-8")
           gradle = Path("android/app/build.gradle").read_text(encoding="utf-8")
+          firmware = Path("firmware/JEXFYZ-V2.3.ino").read_text(encoding="utf-8")
 
           required = [
               "6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001",
@@ -180,6 +181,29 @@ jobs:
               raise SystemExit("JE X FYZ security audit failed; R8/resource shrinking is disabled")
           if "OFFICIAL_SIGNING_CERT_B64" not in gradle:
               raise SystemExit("JE X FYZ security audit failed; production signing identity embedding is missing")
+
+          # Firmware security boundary must remain enforced in the source checked into the App repo.
+          firmware_required = [
+              "BLESecurity.h",
+              "BLECharacteristic::PROPERTY_WRITE_ENC",
+              "class JexSecurityCallbacks",
+              "blePeerId",
+              "PHYSICAL AUTH: LOCAL OTA + BLE PAIRING ARMED",
+              "OTA_CANONICAL_FIRMWARE_URL",
+              "firmwareVersionIsNewer",
+              "cloudClient.useBuiltinCACertBundle()",
+              "FW_VERSION[] = \"V2.4\"",
+          ]
+          firmware_missing = [token for token in firmware_required if token not in firmware]
+          if firmware_missing:
+              raise SystemExit("JE X FYZ firmware security audit failed; missing: " + ", ".join(firmware_missing))
+
+          if "setInsecure()" in firmware:
+              raise SystemExit("JE X FYZ firmware security audit failed; insecure TLS mode is present")
+          if 'return url.equals(OTA_CANONICAL_FIRMWARE_URL);' not in firmware:
+              raise SystemExit("JE X FYZ firmware security audit failed; OTA URL is not exact-match pinned")
+          if "!firmwareVersionIsNewer(cloudVersion, FW_VERSION)" not in firmware:
+              raise SystemExit("JE X FYZ firmware security audit failed; monotonic OTA version check is missing")
 
           for forbidden in [
               "FirebaseDatabase.instanceFor",
