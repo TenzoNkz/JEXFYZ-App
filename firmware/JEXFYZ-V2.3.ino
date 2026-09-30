@@ -1359,8 +1359,6 @@ static void sampleNtcIfDue() {
   if (!isfinite(temperature)) {
     ntcValid = false;
     hotsideC = NAN;
-    rapidRisePreviousC = NAN;
-    rapidRisePreviousAtMs = 0;
     return;
   }
 
