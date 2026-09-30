@@ -857,7 +857,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
       if (showResult && mounted) {
         _showSnackBar(
-          ready ? 'Connection ready.' : 'Connection needs access.',
+          ready ? JexText.of('connectionReady', appLanguageNotifier.value) : JexText.of('connectionNeedsAccess', appLanguageNotifier.value),
           color: ready ? Colors.green : Colors.orangeAccent,
         );
       }
@@ -897,14 +897,14 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (syncing) return;
     final accessReady = await _requestPermissions();
     if (!accessReady) {
-      if (mounted) setState(() => notice = 'Connection access required.');
+      if (mounted) setState(() => notice = JexText.of('connectionAccessRequired', appLanguageNotifier.value));
       return;
     }
     if (!mounted) return;
 
     setState(() {
       syncing = true;
-      notice = 'Scanning...';
+      notice = JexText.of('scanning', appLanguageNotifier.value);
     });
 
     StreamSubscription<List<ScanResult>>? scanSub;
@@ -1033,7 +1033,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         safetyReason = 'WAITING_FOR_SENSOR_VALIDATION';
         firmwareVersion = 'V?';
         resetReason = 'UNKNOWN';
-        notice = 'Connecting to device...';
+        notice = JexText.of('connectingDevice', appLanguageNotifier.value);
       });
       _publishFloatingTelemetry();
     }
@@ -1207,7 +1207,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       safetyReason = 'DISCONNECTED';
       firmwareVersion = 'V?';
       resetReason = 'UNKNOWN';
-      notice = 'Bluetooth disconnected.';
+      notice = JexText.of('bluetoothDisconnected', appLanguageNotifier.value);
     });
     _publishFloatingTelemetry();
     if (appNotifyBluetoothNotifier.value) {
@@ -1252,7 +1252,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
 
     if (discoveredRx == null || discoveredTx == null) {
-      throw StateError('JE X FYZ BLE service discovery failed');
+      throw StateError(JexText.of('bleServiceDiscoveryFailed', appLanguageNotifier.value));
     }
 
     rx = discoveredRx;
@@ -1305,7 +1305,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
 
     if (!fullSyncReceived) {
-      throw StateError('BLE sync failed');
+      throw StateError(JexText.of('bleSyncFailed', appLanguageNotifier.value));
     }
 
     // Phase 2: open the firmware command gate. No runtime state is written by
@@ -1315,7 +1315,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     fullSyncReceived = false;
     final readyAccepted = await sendCommand('SYNC_READY', showError: false);
     if (!readyAccepted) {
-      throw StateError('BLE session handshake write failed');
+      throw StateError(JexText.of('bleHandshakeWriteFailed', appLanguageNotifier.value));
     }
 
     final readyDeadline = DateTime.now().add(const Duration(milliseconds: 3500));
@@ -1326,7 +1326,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
 
     if (!_syncReadyAck || !fullSyncReceived || !_bleSessionReady) {
-      throw StateError('BLE session not ready');
+      throw StateError(JexText.of('bleSessionNotReady', appLanguageNotifier.value));
     }
 
     // Final synchronized snapshot includes the phone battery temperature.
@@ -1343,7 +1343,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
 
     if (!fullSyncReceived) {
-      throw StateError('Final Full Sync failed');
+      throw StateError(JexText.of('fullSyncFailed', appLanguageNotifier.value));
     }
 
     if (!mounted) return;
@@ -1359,7 +1359,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       connected = true;
       syncing = false;
       dashboardReady = true;
-      notice = 'System ready.';
+      notice = JexText.of('systemReady', appLanguageNotifier.value);
     });
     _publishFloatingTelemetry();
     if (appNotifyBluetoothNotifier.value) {
@@ -1660,7 +1660,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         hotAlertArmed = false;
         unawaited(_postNotification(
           JexText.of('safetyAlert', appLanguageNotifier.value),
-          'Hotside reached ' + hotLimit.toString() + '°C.',
+          'JexText.of('hotsideLimit', appLanguageNotifier.value) + ' ' + hotLimit.toString() + '°C.',
           2101,
         ));
       }
@@ -2368,7 +2368,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       final error = fields['ERROR'] ?? 'Unknown error';
       final progress = fields['PROGRESS'] ?? '--';
       final code = fields['CODE'] ?? '0';
-      return 'OTA failed • $mode • $stage • $error [${progress}% / code $code]';
+      return JexText.of('otaFailed', appLanguageNotifier.value) + ' • $mode • $stage • $error [${progress}% / code $code]';
     }
 
     if (upper.startsWith('OTA_SUCCESS|')) {
@@ -2376,7 +2376,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       final mode = fields['MODE'] ?? 'OTA';
       final stage = _friendlyOtaStage(fields['STAGE'] ?? 'UNKNOWN');
       final version = fields['VERSION'] ?? '';
-      return 'OTA successful • $mode • $stage${version.isEmpty ? '' : ' • $version'}';
+      return JexText.of('otaSuccessful', appLanguageNotifier.value) + ' • $mode • $stage${version.isEmpty ? '' : ' • $version'}';
     }
 
     if (upper.startsWith('IN_PROGRESS|')) {
@@ -2384,11 +2384,11 @@ class _DashboardScreenState extends State<DashboardScreen>
       final mode = fields['MODE'] ?? 'OTA';
       final stage = _friendlyOtaStage(fields['STAGE'] ?? 'UNKNOWN');
       final progress = fields['PROGRESS'] ?? '0';
-      return 'OTA in progress • $mode • $stage • ${progress}%';
+      return JexText.of('otaProgress', appLanguageNotifier.value) + '$mode • $stage • ${progress}%';
     }
 
-    if (upper == 'IN_PROGRESS') return 'OTA update in progress.';
-    if (upper == 'LOCAL_SUCCESS') return 'Local OTA successful.';
+    if (upper == 'IN_PROGRESS') return JexText.of('otaInProgress', appLanguageNotifier.value);
+    if (upper == 'LOCAL_SUCCESS') return JexText.phrase('Local OTA successful.', 'OTA lokal berhasil.', appLanguageNotifier.value);
     if (upper.startsWith('SUCCESS_')) {
       return 'OTA successful: ' + raw.substring(8) + '.';
     }
@@ -2414,15 +2414,15 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   String _friendlyReset(String value) {
     switch (value) {
-      case 'BROWNOUT': return 'Brownout / supply drop';
-      case 'PANIC': return 'Firmware panic';
-      case 'SOFTWARE': return 'Software reset';
+      case 'BROWNOUT': return JexText.of('resetBrownout', appLanguageNotifier.value);
+      case 'PANIC': return JexText.of('resetPanic', appLanguageNotifier.value);
+      case 'SOFTWARE': return JexText.of('resetSoftware', appLanguageNotifier.value);
       case 'WDT':
       case 'INT_WDT':
-      case 'TASK_WDT': return 'Watchdog reset';
-      case 'EXTERNAL': return 'External reset';
-      case 'DEEPSLEEP': return 'Deep sleep reset';
-      case 'POWERON': return 'Power-on';
+      case 'TASK_WDT': return JexText.of('resetWatchdog', appLanguageNotifier.value);
+      case 'EXTERNAL': return JexText.of('resetExternal', appLanguageNotifier.value);
+      case 'DEEPSLEEP': return JexText.of('resetDeepSleep', appLanguageNotifier.value);
+      case 'POWERON': return JexText.of('resetPowerOn', appLanguageNotifier.value);
       default: return value;
     }
   }
@@ -2727,7 +2727,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           upper == 'TEMPERATURE SENSORS: VALIDATING...' ||
           upper == 'VALIDATING TEMPERATURE SENSORS...';
       if (custom.isEmpty || staleValidation) {
-        return 'Bluetooth disconnected.';
+        return JexText.of('bluetoothDisconnected', appLanguageNotifier.value);
       }
       return custom;
     }
@@ -2739,17 +2739,17 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     if (custom.isNotEmpty) return custom;
 
-    if (_bleConnecting) return 'Connecting to device...';
-    if (syncing && !dashboardReady) return 'Synchronizing device...';
+    if (_bleConnecting) return JexText.of('connectingDevice', appLanguageNotifier.value);
+    if (syncing && !dashboardReady) return JexText.of('synchronizingDevice', appLanguageNotifier.value);
 
     switch (safetyReason) {
       case 'WAITING_FOR_NTC':
       case 'WAITING_FOR_SENSOR_VALIDATION':
-        return 'Validating temperature...';
+        return JexText.of('validatingTemperature', appLanguageNotifier.value);
       case 'NTC_ERROR':
-        return 'Temperature sensor error. Cooling locked.';
+        return JexText.of('sensorErrorCoolingLocked', appLanguageNotifier.value);
       case 'HOTSIDE_PROTECTION':
-        return 'Hotside protection active. Peltier paused.';
+        return JexText.of('hotsideProtectionActive', appLanguageNotifier.value);
       case 'FAN_REQUIRED':
         return 'Fan required before Peltier.';
       case 'PELTIER_ON':
@@ -2765,7 +2765,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       case 'DISCONNECTED':
         return 'Bluetooth disconnected.';
       case 'NONE':
-        return 'System ready.';
+        return JexText.of('systemReady', appLanguageNotifier.value);
       default:
         return _friendlyReason(safetyReason);
     }
@@ -2774,53 +2774,50 @@ class _DashboardScreenState extends State<DashboardScreen>
   void _notifyCommandAccepted(String command) {
     if (!mounted) return;
     final c = command.trim().toUpperCase();
+    final lang = appLanguageNotifier.value;
     String? message;
-
     if (c.startsWith('VOLTAGE:')) {
-      message = 'Voltage set to ' + c.substring(8) + '.';
+      message = JexText.of('voltageSetTo', lang) + c.substring(8) + '.';
     } else if (c == 'FAN:ON') {
-      message = 'Fan ON.';
+      message = JexText.of('fanOn', lang);
     } else if (c == 'FAN:OFF') {
-      message = 'Fan OFF.';
+      message = JexText.of('fanOff', lang);
     } else if (c == 'PELTIER:ON') {
-      message = 'Peltier ON.';
+      message = JexText.of('peltierOn', lang);
     } else if (c == 'PELTIER:OFF') {
-      message = 'Peltier OFF.';
+      message = JexText.of('peltierOff', lang);
     } else if (c == 'ADAPTIVE:ON') {
-      message = 'Adaptive ON.';
+      message = JexText.of('adaptiveOn', lang);
     } else if (c == 'ADAPTIVE:OFF') {
-      message = 'Adaptive OFF.';
+      message = JexText.of('adaptiveOff', lang);
     } else if (c.startsWith('FANSPEED:')) {
-      message = 'Fan ' + c.substring(9) + '%.';
+      message = JexText.of('fanSpeed', lang) + ' ' + c.substring(9) + '%.';
     } else if (c == 'RGB:ON') {
-      message = 'LED ON.';
+      message = JexText.of('ledOn', lang);
     } else if (c == 'RGB:OFF') {
-      message = 'LED OFF.';
+      message = JexText.of('ledOff', lang);
     } else if (c.startsWith('MODE:')) {
-      message = 'Mode updated.';
+      message = JexText.of('modeUpdated', lang);
     } else if (c.startsWith('BRIGHTNESS:')) {
-      message = 'Brightness updated.';
+      message = JexText.of('brightnessUpdated', lang);
     } else if (c.startsWith('COLOR:')) {
-      message = 'Color updated.';
+      message = JexText.of('colorUpdated', lang);
     } else if (c.startsWith('HOTLIMIT:')) {
-      message = 'Hotside ' + c.substring(9) + '°C.';
+      message = JexText.of('hotsideTemperature', lang) + ' ' + c.substring(9) + '°C.';
     } else if (c.startsWith('BATT5:')) {
-      message = '5V battery limit updated.';
+      message = JexText.of('fiveVCeiling', lang) + '.';
     } else if (c.startsWith('BATT12:')) {
-      message = '12V battery limit updated.';
+      message = JexText.of('twelveVFloor', lang) + '.';
     } else if (c == 'RESET:TEMPERATURE') {
-      message = 'Temperature reset.';
+      message = JexText.of('temperatureReset', lang);
     }
-
-    if (message != null) {
-      setState(() => notice = message!);
-    }
+    if (message != null) setState(() => notice = message!);
   }
 
   String _notifyStateLabel() {
     final custom = notice.trim().toUpperCase();
-    if (_bleConnecting) return 'NOTIFY • BLUETOOTH';
-    if (syncing && !dashboardReady) return 'NOTIFY • SYNC';
+    if (_bleConnecting) return JexText.of('notifyBluetooth', appLanguageNotifier.value);
+    if (syncing && !dashboardReady) return JexText.of('notifySync', appLanguageNotifier.value);
 
     final otaResultUpper = lastOtaResult.trim().toUpperCase();
     final hasError = custom.contains('FAILED') ||
@@ -2829,7 +2826,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         custom.contains('SERVICE DISCOVERY') ||
         otaResultUpper.contains('FAILED') ||
         otaResultUpper.contains('ERROR');
-    if (hasError) return 'NOTIFY • ERROR';
+    if (hasError) return JexText.of('notifyError', appLanguageNotifier.value);
 
     // WAITING_* is a startup/sensor-validation state and must not be shown as
     // a safety warning while the dashboard is offline.
@@ -2838,7 +2835,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         safetyReason != 'NONE' &&
         safetyReason != 'WAITING_FOR_NTC' &&
         safetyReason != 'WAITING_FOR_SENSOR_VALIDATION';
-    if (warning) return 'NOTIFY • WARNING';
+    if (warning) return JexText.of('notifyWarning', appLanguageNotifier.value);
     return 'NOTIFY';
   }
 
@@ -4647,50 +4644,50 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
     return AlertDialog(
       backgroundColor: const Color(0xFF1E202B),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: const Text('Firmware', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+      title: Text(JexText.of('firmware', appLanguageNotifier.value), style: const TextStyle(fontWeight: FontWeight.bold)),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Current: ${widget.currentVersion}', style: const TextStyle(color: Colors.white70)),
+            Text(JexText.of('currentVersion', appLanguageNotifier.value) + ': ' + widget.currentVersion),
             const SizedBox(height: 5),
-            Text('Latest: ${latestVersion.isEmpty ? '--' : latestVersion}', style: const TextStyle(color: Colors.white70)),
+            Text(JexText.of('latestVersion', appLanguageNotifier.value) + ': ' + (latestVersion.isEmpty ? '--' : latestVersion)),
             const SizedBox(height: 16),
             if (status == 'CHECKING')
               const Center(child: CircularProgressIndicator(color: Colors.blueAccent))
             else if (status == 'FAILED')
               Text(
-                'Firebase metadata unavailable. Check RTDB read rules/App Check.',
+                'JexText.of('firmwareMetadataCheckFailed', appLanguageNotifier.value)',
                 style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
               )
             else if (!updateAvailable)
               Text(widget.currentVersion == 'V?' ? 'Waiting for device...' : 'Up to date.', style: const TextStyle(color: Colors.greenAccent, fontWeight: FontWeight.bold))
             else ...[
-              const Text('Update available.', style: TextStyle(color: Colors.orangeAccent, fontWeight: FontWeight.bold)),
+              Text(JexText.of('updateAvailableSentence', appLanguageNotifier.value), style: const TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 12),
               TextField(
                 controller: ssid,
                 style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(labelText: 'SSID', labelStyle: TextStyle(color: Colors.grey), prefixIcon: Icon(PhosphorIconsRegular.wifiHigh, color: Colors.blueAccent)),
+                decoration: const InputDecoration(labelText: JexText.of('ssid', appLanguageNotifier.value), labelStyle: TextStyle(color: Colors.grey), prefixIcon: Icon(PhosphorIconsRegular.wifiHigh, color: Colors.blueAccent)),
               ),
               const SizedBox(height: 8),
               TextField(
                 controller: password,
                 obscureText: false,
                 style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(labelText: 'Password', labelStyle: TextStyle(color: Colors.grey), prefixIcon: Icon(PhosphorIconsBold.lock, color: Colors.blueAccent)),
+                decoration: const InputDecoration(labelText: JexText.of('password', appLanguageNotifier.value), labelStyle: TextStyle(color: Colors.grey), prefixIcon: Icon(PhosphorIconsBold.lock, color: Colors.blueAccent)),
               ),
               const SizedBox(height: 6),
-              const Text('Saved securely.', style: TextStyle(color: Colors.white38, fontSize: 9)),
+              Text(JexText.of('savedSecurelySentence', appLanguageNotifier.value), style: const TextStyle(fontSize: 9)),
             ],
           ],
         ),
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close', style: TextStyle(color: Colors.grey))),
+        TextButton(onPressed: () => Navigator.pop(context), child: Text(JexText.of('close', appLanguageNotifier.value))),
         if (status == 'FAILED')
-          FilledButton(onPressed: _checkFirebase, child: const Text('Retry')),
+          FilledButton(onPressed: _checkFirebase, child: Text(JexText.of('retry', appLanguageNotifier.value))),
         if (updateAvailable)
           FilledButton(
             onPressed: () async {
@@ -4703,7 +4700,7 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
               Navigator.pop(context);
               await widget.onUpdate(s, p, firmwareUrl, latestVersion);
             },
-            child: const Text('Update'),
+            child: Text(JexText.of('updateAction', appLanguageNotifier.value)),
           ),
       ],
     );
