@@ -1156,3 +1156,51 @@ Never:
   - No Build App was run, because execution and build remain separate by project rule.
   - The patch is not yet physically validated across OEM devices. In particular, the relationship between an OEM's visible "Display pop-up windows" state and Settings.canDrawOverlays() remains a device-dependent runtime question.
   - The patch intentionally does not claim universal OEM behavior; it uses the strongest public Android fallbacks and actual overlay attachment diagnostics before considering vendor-specific handling.
+
+
+## 2026-10-01 — FULL EXECUTION / LOCALIZATION + FAN SPEED VISIBILITY + SOURCE MEMORY COMMENTS
+
+- Implemented the approved localization and Fan Speed presentation fixes after the Floating Monitor cross-OEM patch.
+- Localization contract is now explicit:
+  - Language selector displays English and Indonesia; Inggris / Bahasa Indonesia are no longer used as selector labels.
+  - English user-facing power state = ON / OFF.
+  - Indonesian user-facing power state = HIDUP / MATI.
+  - Frozen BLE/P1 protocol tokens remain machine values such as FAN:ON, FAN:OFF, PELTIER:ON, ADAPTIVE:ON, and are never localized.
+- lib/app_settings.dart:
+  - Updated the shared JexText language/status mappings to the new contract.
+  - Added file/model/store/localization/theme memory comments so persistence and presentation boundaries are explicit.
+- lib/main.dart:
+  - Added a file-level AI memory contract and stronger function-contract comments around Dashboard control/state paths.
+  - Replaced user-facing hardcoded status/error presentation paths with JexText/JexText.phrase localization where they were bypassing the localization table.
+  - Dashboard power-state presentation now resolves ON/OFF through JexText.
+  - Home Fan Speed is now completely hidden when Fan is OFF; it reappears only when Fan telemetry reports ON.
+  - Control-tab Fan Speed section is rendered only while Fan is ON; its existing manual 12V/Adaptive gating and 50–100% range remain unchanged.
+  - Localized the obvious remaining Fan/Peltier/Adaptive/LED command and safety messages that were previously hardcoded in English.
+- lib/floating_monitor.dart:
+  - Added a file-level memory/ownership contract and detailed method comments for permission, runtime, telemetry, preview, and metric-selection paths.
+  - Floating telemetry now forwards the selected AppLanguage to the native service.
+  - Flutter preview uses JexText for ON/OFF presentation.
+  - Floating metric S remains hidden whenever Fan is OFF; no S:OFF presentation is used.
+- FloatingMonitorService.kt:
+  - Added file-level ownership/localization/visibility invariants and detailed method contracts.
+  - Native service now receives the selected language and renders HIDUP/MATI for Indonesia or ON/OFF for English while retaining stable metric identifiers.
+  - Existing runtime diagnostics and actual WindowManager attachment verification from the previous Floating patch remain intact.
+- MainActivity.kt:
+  - Added detailed bridge/Settings function contracts while preserving the cross-OEM public Android overlay Settings fallback ladder.
+- test/widget_test.dart:
+  - Added deterministic tests locking the English/Indonesia language-name and ON/OFF/HIDUP/MATI contracts.
+  - Updated test memory comments to state the exact validation boundary.
+- Source commits in this execution sequence:
+  - 881d08ed6188a54aa0dc2ea9517d86feefc6ebab — localization wording in app_settings.dart
+  - 57601d9a8bfa01d7a065649abcce9e429f871c93 — main.dart localized status + Fan Speed behavior
+  - 7579ee9c910cfd9543748e86994fdb2cf2e0b9b8 — Flutter Floating Monitor localization/contract comments
+  - 292d326c176b3b6f603892de42875a52ea3016f5 — native Floating Monitor localization/contract comments
+  - 53664e70f421ecbafa6b6afb3a5f0b5f4e1946b9 — complete native floating memory markers
+  - 7295e8b4de170475a2719e586012a892f5464d41 — MainActivity bridge memory comments
+  - ad6a326372488c2363e7f696e33edd9539c10792 — localization contract tests
+  - eaa895c80d59e5c557d9df0d6056fb0b427bef4f — cleaned localized status paths and memory comments
+- Validation boundary:
+  - Source inspection and deterministic test-source update completed.
+  - No Build App was run.
+  - No new physical/OEM runtime validation was performed.
+  - The next validation must explicitly build the current main source and then test Floating Monitor + localization + Fan Speed visibility on-device.
