@@ -1339,7 +1339,8 @@ static float ntcTemperatureFromOhms(float ohms) {
 
 static void sampleNtcIfDue() {
   if (millis() - lastNtcReadMs < NTC_READ_INTERVAL_MS) return;
-  lastNtcReadMs = millis();
+  const uint32_t now = millis();
+  lastNtcReadMs = now;
 
   ntcMv = analogReadMilliVolts(PIN_NTC);
 
@@ -1355,6 +1356,8 @@ static void sampleNtcIfDue() {
   if (!isfinite(voltage) || voltage <= 0.0f) {
     ntcValid = false;
     hotsideC = NAN;
+    rapidRisePreviousC = NAN;
+    rapidRisePreviousAtMs = 0;
     return;
   }
   if (voltage > 3.28f) voltage = 3.28f;
@@ -1364,6 +1367,8 @@ static void sampleNtcIfDue() {
   if (!isfinite(ntcOhms) || ntcOhms <= 1.0f) {
     ntcValid = false;
     hotsideC = NAN;
+    rapidRisePreviousC = NAN;
+    rapidRisePreviousAtMs = 0;
     return;
   }
 
@@ -1371,12 +1376,15 @@ static void sampleNtcIfDue() {
   if (!isfinite(temperature)) {
     ntcValid = false;
     hotsideC = NAN;
+    rapidRisePreviousC = NAN;
+    rapidRisePreviousAtMs = 0;
     return;
   }
 
   if (ntcValid &&
       isfinite(hotsideC) &&
       isfinite(temperature) &&
+      isfinite(rapidRisePreviousC) &&
       rapidRisePreviousAtMs != 0) {
     const uint32_t elapsed = now - rapidRisePreviousAtMs;
     if (elapsed > 0 && elapsed <= RAPID_RISE_MAX_SAMPLE_GAP_MS) {
