@@ -174,7 +174,7 @@ class JexText {
     },
     'default': {
       AppLanguage.english: 'Default',
-      AppLanguage.indonesia: 'Bawaan',
+      AppLanguage.indonesia: 'Default',
     },
     'light': {
       AppLanguage.english: 'Light',
@@ -302,7 +302,7 @@ class JexText {
     },
     'voltageIndicator': {
       AppLanguage.english: 'Voltage Indicator',
-      AppLanguage.indonesia: 'Indikator Tegangan',
+      AppLanguage.indonesia: 'Tegangan',
     },
     'adaptiveMode': {
       AppLanguage.english: 'Adaptive Mode',
@@ -564,6 +564,213 @@ class JexText {
       AppLanguage.english: 'Scan failed.',
       AppLanguage.indonesia: 'Pemindaian gagal.',
     },
+    'officialBuildFailed': {
+      AppLanguage.english: 'This application cannot continue because its integrity check failed.',
+      AppLanguage.indonesia: 'Aplikasi ini tidak dapat dilanjutkan karena pemeriksaan integritas gagal.',
+    },
+    'exit': {
+      AppLanguage.english: 'Exit',
+      AppLanguage.indonesia: 'Keluar',
+    },
+    'connection': {
+      AppLanguage.english: 'Connection',
+      AppLanguage.indonesia: 'Koneksi',
+    },
+    'devices': {
+      AppLanguage.english: 'Devices',
+      AppLanguage.indonesia: 'Perangkat',
+    },
+    'connectionUnavailable': {
+      AppLanguage.english: 'Connection unavailable.',
+      AppLanguage.indonesia: 'Koneksi tidak tersedia.',
+    },
+    'bluetoothOn': {
+      AppLanguage.english: 'Bluetooth ON',
+      AppLanguage.indonesia: 'Bluetooth AKTIF',
+    },
+    'bluetoothOff': {
+      AppLanguage.english: 'Bluetooth OFF',
+      AppLanguage.indonesia: 'Bluetooth NONAKTIF',
+    },
+    'locationOn': {
+      AppLanguage.english: 'Location ON',
+      AppLanguage.indonesia: 'Lokasi AKTIF',
+    },
+    'locationOff': {
+      AppLanguage.english: 'Location OFF',
+      AppLanguage.indonesia: 'Lokasi NONAKTIF',
+    },
+    'disconnect': {
+      AppLanguage.english: 'Disconnect',
+      AppLanguage.indonesia: 'Putuskan',
+    },
+    'developedByHorizon': {
+      AppLanguage.english: 'DEVELOPED BY HORIZON',
+      AppLanguage.indonesia: 'DIKEMBANGKAN OLEH HORIZON',
+    },
+    'connectionFailed': {
+      AppLanguage.english: 'Connection failed.',
+      AppLanguage.indonesia: 'Koneksi gagal.',
+    },
+    'connectionNeedsAccess': {
+      AppLanguage.english: 'Connection needs access.',
+      AppLanguage.indonesia: 'Akses koneksi diperlukan.',
+    },
+    'bleServiceDiscoveryFailed': {
+      AppLanguage.english: 'JE X FYZ BLE service discovery failed.',
+      AppLanguage.indonesia: 'Pencarian layanan BLE JE X FYZ gagal.',
+    },
+    'bleSyncFailed': {
+      AppLanguage.english: 'BLE sync failed.',
+      AppLanguage.indonesia: 'Sinkronisasi BLE gagal.',
+    },
+    'bleHandshakeWriteFailed': {
+      AppLanguage.english: 'BLE session handshake write failed.',
+      AppLanguage.indonesia: 'Penulisan jabat tangan sesi BLE gagal.',
+    },
+    'bleSessionNotReady': {
+      AppLanguage.english: 'BLE session not ready.',
+      AppLanguage.indonesia: 'Sesi BLE belum siap.',
+    },
+    'fullSyncFailed': {
+      AppLanguage.english: 'Final Full Sync failed.',
+      AppLanguage.indonesia: 'Sinkronisasi penuh akhir gagal.',
+    },
+    'floatingPermissionTitle': {
+      AppLanguage.english: 'Floating Monitor Permission',
+      AppLanguage.indonesia: 'Izin Floating Monitor',
+    },
+    'floatingPermissionMessage': {
+      AppLanguage.english: 'JE X FYZ needs permission to display the Floating Monitor over other apps. Android will open the display-over-other-apps setting.',
+      AppLanguage.indonesia: 'JE X FYZ memerlukan izin untuk menampilkan Floating Monitor di atas aplikasi lain. Android akan membuka pengaturan tampilan di atas aplikasi lain.',
+    },
+    'overlayPermissionDenied': {
+      AppLanguage.english: 'Overlay permission was not granted.',
+      AppLanguage.indonesia: 'Izin tampilan mengambang belum diberikan.',
+    },
+    'overlaySettingsFailed': {
+      AppLanguage.english: 'Android overlay permission settings could not be opened.',
+      AppLanguage.indonesia: 'Pengaturan izin tampilan mengambang Android tidak dapat dibuka.',
+    },
+    'floatingStartFailed': {
+      AppLanguage.english: 'Floating Monitor could not be started.',
+      AppLanguage.indonesia: 'Floating Monitor tidak dapat dijalankan.',
+    },
+    'synchronizingDevice': {
+      AppLanguage.english: 'Synchronizing device...',
+      AppLanguage.indonesia: 'Menyinkronkan perangkat...',
+    },
+    'validatingTemperature': {
+      AppLanguage.english: 'Validating temperature...',
+      AppLanguage.indonesia: 'Memvalidasi suhu...',
+    },
+    'sensorErrorCoolingLocked': {
+      AppLanguage.english: 'Temperature sensor error. Cooling locked.',
+      AppLanguage.indonesia: 'Kesalahan sensor suhu. Pendinginan dikunci.',
+    },
+    'hotsideProtectionActive': {
+      AppLanguage.english: 'Hotside protection active. Peltier paused.',
+      AppLanguage.indonesia: 'Perlindungan hotside aktif. Peltier dijeda.',
+    },
+    'voltageSetTo': {
+      AppLanguage.english: 'Voltage set to ',
+      AppLanguage.indonesia: 'Tegangan diatur ke ',
+    },
+    'fanOn': {
+      AppLanguage.english: 'Fan ON.',
+      AppLanguage.indonesia: 'Kipas AKTIF.',
+    },
+    'fanOff': {
+      AppLanguage.english: 'Fan OFF.',
+      AppLanguage.indonesia: 'Kipas NONAKTIF.',
+    },
+    'peltierOn': {
+      AppLanguage.english: 'Peltier ON.',
+      AppLanguage.indonesia: 'Peltier AKTIF.',
+    },
+    'peltierOff': {
+      AppLanguage.english: 'Peltier OFF.',
+      AppLanguage.indonesia: 'Peltier NONAKTIF.',
+    },
+    'adaptiveOn': {
+      AppLanguage.english: 'Adaptive ON.',
+      AppLanguage.indonesia: 'Adaptive AKTIF.',
+    },
+    'adaptiveOff': {
+      AppLanguage.english: 'Adaptive OFF.',
+      AppLanguage.indonesia: 'Adaptive NONAKTIF.',
+    },
+    'ledOn': {
+      AppLanguage.english: 'LED ON.',
+      AppLanguage.indonesia: 'LED AKTIF.',
+    },
+    'ledOff': {
+      AppLanguage.english: 'LED OFF.',
+      AppLanguage.indonesia: 'LED NONAKTIF.',
+    },
+    'modeUpdated': {
+      AppLanguage.english: 'Mode updated.',
+      AppLanguage.indonesia: 'Mode diperbarui.',
+    },
+    'brightnessUpdated': {
+      AppLanguage.english: 'Brightness updated.',
+      AppLanguage.indonesia: 'Kecerahan diperbarui.',
+    },
+    'colorUpdated': {
+      AppLanguage.english: 'Color updated.',
+      AppLanguage.indonesia: 'Warna diperbarui.',
+    },
+    'temperatureReset': {
+      AppLanguage.english: 'Temperature reset.',
+      AppLanguage.indonesia: 'Temperatur diatur ulang.',
+    },
+    'commandNotConfirmed': {
+      AppLanguage.english: 'Device did not confirm the command.',
+      AppLanguage.indonesia: 'Perangkat tidak mengonfirmasi perintah.',
+    },
+    'commandFailed': {
+      AppLanguage.english: 'Command failed.',
+      AppLanguage.indonesia: 'Perintah gagal.',
+    },
+    'firmware': {
+      AppLanguage.english: 'Firmware',
+      AppLanguage.indonesia: 'Firmware',
+    },
+    'firmwareMetadataCheckFailed': {
+      AppLanguage.english: 'Firmware metadata unavailable. Check Firebase read access.',
+      AppLanguage.indonesia: 'Metadata firmware tidak tersedia. Periksa akses baca Firebase.',
+    },
+    'leftRight': {
+      AppLanguage.english: 'Left ↔ Right',
+      AppLanguage.indonesia: 'Kiri ↔ Kanan',
+    },
+    'adaptiveSwitch': {
+      AppLanguage.english: 'Adaptive Switch',
+      AppLanguage.indonesia: 'Sakelar Adaptif',
+    },
+    'ledModeStatic': { AppLanguage.english: 'Static', AppLanguage.indonesia: 'Statis' },
+    'ledModeBreath': { AppLanguage.english: 'Breath', AppLanguage.indonesia: 'Napas' },
+    'ledModeCenterOut': { AppLanguage.english: 'Center Out', AppLanguage.indonesia: 'Dari Tengah' },
+    'ledModeOuterIn': { AppLanguage.english: 'Outer In', AppLanguage.indonesia: 'Dari Luar' },
+    'ledModeDualChase': { AppLanguage.english: 'Dual Chase', AppLanguage.indonesia: 'Kejar Ganda' },
+    'ledModeRainbow': { AppLanguage.english: 'Rainbow', AppLanguage.indonesia: 'Pelangi' },
+    'languageEnglish': { AppLanguage.english: 'English', AppLanguage.indonesia: 'Inggris' },
+    'languageIndonesia': { AppLanguage.english: 'Bahasa Indonesia', AppLanguage.indonesia: 'Bahasa Indonesia' },
+    'horizontal': { AppLanguage.english: 'Horizontal', AppLanguage.indonesia: 'Horizontal' },
+    'vertical': { AppLanguage.english: 'Vertical', AppLanguage.indonesia: 'Vertikal' },
+    'location': { AppLanguage.english: 'Location', AppLanguage.indonesia: 'Lokasi' },
+    'currentValue': { AppLanguage.english: 'Current', AppLanguage.indonesia: 'Saat Ini' },
+    'latestValue': { AppLanguage.english: 'Latest', AppLanguage.indonesia: 'Terbaru' },
+    'updateAvailableSentence': { AppLanguage.english: 'Update available.', AppLanguage.indonesia: 'Pembaruan tersedia.' },
+    'waitingForDevice': { AppLanguage.english: 'Waiting for device...', AppLanguage.indonesia: 'Menunggu perangkat...' },
+    'upToDateSentence': { AppLanguage.english: 'Up to date.', AppLanguage.indonesia: 'Sudah terbaru.' },
+    'savedSecurelySentence': { AppLanguage.english: 'Saved securely.', AppLanguage.indonesia: 'Disimpan dengan aman.' },
+    'firmwareMetadataUnavailableSentence': { AppLanguage.english: 'Firmware metadata unavailable. Check Firebase read access.', AppLanguage.indonesia: 'Metadata firmware tidak tersedia. Periksa akses baca Firebase.' },
+    'close': { AppLanguage.english: 'Close', AppLanguage.indonesia: 'Tutup' },
+    'retry': { AppLanguage.english: 'Retry', AppLanguage.indonesia: 'Coba Lagi' },
+    'updateAction': { AppLanguage.english: 'Update', AppLanguage.indonesia: 'Perbarui' },
+    'currentVersion': { AppLanguage.english: 'Current', AppLanguage.indonesia: 'Saat Ini' },
+    'latestVersion': { AppLanguage.english: 'Latest', AppLanguage.indonesia: 'Terbaru' },
   };
 
   static String phrase(
