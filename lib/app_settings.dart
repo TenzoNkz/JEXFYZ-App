@@ -506,10 +506,6 @@ class JexText {
       AppLanguage.english: 'Scanning...',
       AppLanguage.indonesia: 'Memindai...',
     },
-    'syncing': {
-      AppLanguage.english: 'Synchronizing device...',
-      AppLanguage.indonesia: 'Menyinkronkan perangkat...',
-    },
     'bluetoothNotReady': {
       AppLanguage.english: 'Bluetooth is not ready.',
       AppLanguage.indonesia: 'Bluetooth belum siap.',
@@ -589,10 +585,6 @@ class JexText {
     'scanFailed': {
       AppLanguage.english: 'Scan failed.',
       AppLanguage.indonesia: 'Pemindaian gagal.',
-    },
-    'color': {
-      AppLanguage.english: 'Color',
-      AppLanguage.indonesia: 'Warna',
     },
   };
 
