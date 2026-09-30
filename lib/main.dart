@@ -2093,18 +2093,30 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   String _friendlyReason(String reason) {
     switch (reason) {
-      case 'NTC_ERROR': return 'Temperature sensor error.';
-      case 'HOTSIDE_PROTECTION': return 'Hotside protection active.';
-      case 'FAN_REQUIRED': return 'Fan required before Peltier.';
-      case 'PELTIER_ON': return 'Fan locked while Peltier is ON.';
-      case 'ADAPTIVE_ACTIVE': return 'Manual cooling controls locked.';
-      case 'MANUAL_12V_ONLY': return 'Manual 12V only.';
-      case 'VOLTAGE_GUARD_OR_BUSY': return 'Voltage command pending.';
-      case 'SYNC_REQUIRED': return 'Device sync in progress.';
-      case 'RATE_LIMIT': return 'Command rate limited.';
-      case 'MUST_BE_BELOW_BATT12': return '5V battery limit must stay below 12V.';
-      case 'MUST_BE_ABOVE_BATT5': return '12V battery limit must stay above 5V.';
-      default: return reason.replaceAll('_', ' ').toLowerCase();
+      case 'NTC_ERROR':
+        return JexText.phrase('Temperature sensor error.', 'Kesalahan sensor suhu.');
+      case 'HOTSIDE_PROTECTION':
+        return JexText.phrase('Hotside protection active.', 'Perlindungan Suhu Panas aktif.');
+      case 'FAN_REQUIRED':
+        return JexText.phrase('Fan required before Peltier.', 'Kipas harus aktif sebelum Peltier.');
+      case 'PELTIER_ON':
+        return JexText.phrase('Fan locked while Peltier is ON.', 'Kipas terkunci saat Peltier AKTIF.');
+      case 'ADAPTIVE_ACTIVE':
+        return JexText.phrase('Manual cooling controls locked.', 'Kontrol pendinginan manual terkunci.');
+      case 'MANUAL_12V_ONLY':
+        return JexText.phrase('Manual 12V only.', 'Manual hanya 12V.');
+      case 'VOLTAGE_GUARD_OR_BUSY':
+        return JexText.phrase('Voltage command pending.', 'Perintah tegangan sedang diproses.');
+      case 'SYNC_REQUIRED':
+        return JexText.phrase('Device sync in progress.', 'Sinkronisasi perangkat sedang berlangsung.');
+      case 'RATE_LIMIT':
+        return JexText.phrase('Command rate limited.', 'Perintah terlalu cepat.');
+      case 'MUST_BE_BELOW_BATT12':
+        return JexText.phrase('5V battery limit must stay below 12V.', 'Batas baterai 5V harus di bawah 12V.');
+      case 'MUST_BE_ABOVE_BATT5':
+        return JexText.phrase('12V battery limit must stay above 5V.', 'Batas baterai 12V harus di atas 5V.');
+      default:
+        return reason.replaceAll('_', ' ').toLowerCase();
     }
   }
 
@@ -2470,11 +2482,11 @@ class _DashboardScreenState extends State<DashboardScreen>
         custom.contains('NOT FOUND') ||
         custom.contains('DISCONNECTED') ||
         custom.contains('SERVICE DISCOVERY')) {
-      return 'ERROR';
+      return JexText.of('error');
     }
-    if (_bleConnecting) return 'CONNECTING';
-    if (syncing && !dashboardReady) return 'SYNCING';
-    return connected ? 'ONLINE' : 'OFFLINE';
+    if (_bleConnecting) return JexText.of('connecting');
+    if (syncing && !dashboardReady) return JexText.of('syncing');
+    return connected ? JexText.of('online') : JexText.of('offline');
   }
 
   // AI-METHOD: _homeNotify — Render the Home NOTIFY card.
