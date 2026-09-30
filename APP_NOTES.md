@@ -1362,3 +1362,13 @@ Never:
 - Build artifact count is exactly one APK plus the symbols artifact.
 - The APK is now available for direct chat delivery from the validated Build #38 artifact.
 - No firmware, BLE UUID/P1 protocol, OTA transport, Firebase metadata contract, GPIO mapping, or signing identity was changed.
+
+## Security Red-Team Hardening — 2026-10
+- Authorized full-stack security audit performed across APK, BLE, OTA, Firebase handling, firmware command boundary, and rollback policy.
+- BLE runtime commands now require an encrypted bonded session and one authorized bonded peer; first peer commissioning requires a physical 5-second touch gesture.
+- Local OTA upload requires the same physical commissioning gesture within a 30-second authorization window.
+- Unauthorized Wi-Fi clients no longer force cooling/BLE shutdown during the boot-AP window.
+- Online OTA now requires built-in CA certificate validation, exact canonical firmware URL, and a strictly newer version.
+- App OTA availability uses the same strictly-newer version policy.
+- App build number bumped to 1.0.0+4; hardened firmware source is marked V2.4.
+- Full live BLE/Android/Firebase/physical-flash validation remains required before production release.
