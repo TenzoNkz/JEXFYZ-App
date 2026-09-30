@@ -564,6 +564,22 @@ class JexText {
       AppLanguage.english: 'Scan failed.',
       AppLanguage.indonesia: 'Pemindaian gagal.',
     },
+    'notificationSafetyDescription': {
+      AppLanguage.english: 'Notify when Hotside reaches the set limit.',
+      AppLanguage.indonesia: 'Beri tahu saat Hotside mencapai batas yang ditetapkan.',
+    },
+    'notificationFirmwareDescription': {
+      AppLanguage.english: 'Notify when a firmware update is available.',
+      AppLanguage.indonesia: 'Beri tahu saat pembaruan firmware tersedia.',
+    },
+    'notificationBluetoothDescription': {
+      AppLanguage.english: 'Notify when JE X FYZ connects or disconnects.',
+      AppLanguage.indonesia: 'Beri tahu saat JE X FYZ terhubung atau terputus.',
+    },
+    'autoConnectDescription': {
+      AppLanguage.english: 'Connect to JE X FYZ automatically when it is advertising.',
+      AppLanguage.indonesia: 'Hubungkan JE X FYZ secara otomatis saat perangkat menyiarkan sinyal.',
+    },
     'officialBuildFailed': {
       AppLanguage.english: 'This application cannot continue because its integrity check failed.',
       AppLanguage.indonesia: 'Aplikasi ini tidak dapat dilanjutkan karena pemeriksaan integritas gagal.',
