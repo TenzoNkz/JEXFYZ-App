@@ -47,6 +47,7 @@
   - Manual voltage commands use a 1-second app guard matching firmware.
   - Adaptive ON/OFF always relies on firmware to return the selector to 5V.
   - BLE connection never replays local runtime state into the device.
+  - Auto Connect is passive: it never requests BLE permission or turns Bluetooth on; it requires a known cooler identity and Bluetooth already enabled.
   - UI never pretends a command succeeded until device telemetry confirms it.
 */
 
@@ -1068,10 +1069,6 @@ class _DashboardScreenState extends State<DashboardScreen>
         if (mounted) setState(() => notice = JexText.of('connectionAccessRequired', appLanguageNotifier.value));
         return;
       }
-    }
-    if (!accessReady) {
-      if (mounted) setState(() => notice = JexText.of('connectionAccessRequired', appLanguageNotifier.value));
-      return;
     }
     if (!mounted) return;
 
