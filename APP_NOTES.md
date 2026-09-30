@@ -829,3 +829,36 @@ Never:
   - `.github/workflows/app-build-trigger.yml` = manual-only (`workflow_dispatch`) ✅
   - `.github/workflows/app-build.yml` = reusable `workflow_call` engine with no push trigger ✅
 - CI validation proves the App build/signing pipeline; it does not prove BLE, OTA, or physical hardware runtime.
+
+
+## 2026-09-30 — BUILD APP #10 SUCCESS / V2.2 LATEST SOURCE
+
+- User explicitly requested **Build App** from the latest repository state.
+- Latest source before the build included the V2.2 Adaptive/settings/Floating Monitor work.
+- Build validation initially exposed real App-side issues that were fixed minimally and then revalidated:
+  - missing `FlutterSecureStorage` / `ValueListenable` imports in `floating_monitor.dart`
+  - invalid `const` usage and a misplaced TamperScreen color helper call in `main.dart`
+  - stale widget-test expectations for the V2.2 bilingual labels, 12-color LED palette, and repeated `Voltage` label
+  - Flutter 3.47.2 analyzer deprecation infos were explicitly kept non-fatal via the official `--no-fatal-infos` option; analyzer diagnostics remain visible
+  - Kotlin 2.2.20 release compile errors in `FloatingMonitorService.kt`: Float `sumOf` ambiguity was replaced with `fold`, and inner `View.layoutParams` was disambiguated to the service's `WindowManager.LayoutParams` for X/Y positioning
+- Run **#10** (`36699965445`) from source revision `3baaa4eb77ea930cb58819b2db8af6f58f5be1d8` passed the complete pipeline:
+  - App security/architecture audit ✅
+  - dependency installation ✅
+  - `flutter analyze --no-fatal-infos` ✅
+  - Flutter tests: **4/4 passed** ✅
+  - obfuscated release APK build ✅
+  - production APK signature verification ✅
+  - APK artifact preparation/upload ✅
+  - Dart symbols upload ✅
+- Artifact: **`JEXFYZ#10.apk`**
+- Artifact size: **53,918,024 bytes**
+- Artifact SHA-256: **`4697874d293a039282368080c071c66697c1a297b4da0c824fba7fd256ec555b`**
+- Downloaded artifact was independently identified as a valid Android APK and its SHA-256 matched the GitHub artifact digest exactly.
+- CI signature verification confirmed APK Signature Scheme v2 and the official production certificate:
+  - DN = `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`
+  - SHA-256 = `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`
+- Final workflow state verified:
+  - `.github/workflows/app-build-trigger.yml` = manual-only (`workflow_dispatch`) ✅
+  - `.github/workflows/app-build.yml` = reusable `workflow_call` engine with no push trigger ✅
+- The CI trigger was temporarily enabled only to execute the explicit user request and was restored to manual-only afterward.
+- CI validation proves the App build/signing pipeline; it does not prove BLE, OTA, or physical hardware runtime.
