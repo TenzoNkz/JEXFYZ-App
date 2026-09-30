@@ -568,6 +568,110 @@ class JexText {
       AppLanguage.english: 'Notify when Hotside reaches the set limit.',
       AppLanguage.indonesia: 'Beri tahu saat Hotside mencapai batas yang ditetapkan.',
     },
+    'otaFailed': {
+      AppLanguage.english: 'OTA failed',
+      AppLanguage.indonesia: 'OTA gagal',
+    },
+    'otaSuccessful': {
+      AppLanguage.english: 'OTA successful',
+      AppLanguage.indonesia: 'OTA berhasil',
+    },
+    'otaProgress': {
+      AppLanguage.english: 'OTA in progress • ',
+      AppLanguage.indonesia: 'OTA sedang berlangsung • ',
+    },
+    'resetBrownout': {
+      AppLanguage.english: 'Brownout / supply drop',
+      AppLanguage.indonesia: 'Brownout / penurunan suplai',
+    },
+    'resetPanic': {
+      AppLanguage.english: 'Firmware panic',
+      AppLanguage.indonesia: 'Panic firmware',
+    },
+    'resetSoftware': {
+      AppLanguage.english: 'Software reset',
+      AppLanguage.indonesia: 'Reset perangkat lunak',
+    },
+    'resetWatchdog': {
+      AppLanguage.english: 'Watchdog reset',
+      AppLanguage.indonesia: 'Reset watchdog',
+    },
+    'resetExternal': {
+      AppLanguage.english: 'External reset',
+      AppLanguage.indonesia: 'Reset eksternal',
+    },
+    'resetDeepSleep': {
+      AppLanguage.english: 'Deep sleep reset',
+      AppLanguage.indonesia: 'Reset deep sleep',
+    },
+    'resetPowerOn': {
+      AppLanguage.english: 'Power-on',
+      AppLanguage.indonesia: 'Saat dinyalakan',
+    },
+    'ledModeStatic': {
+      AppLanguage.english: 'Static',
+      AppLanguage.indonesia: 'Statis',
+    },
+    'ledModeBreath': {
+      AppLanguage.english: 'Breath',
+      AppLanguage.indonesia: 'Napas',
+    },
+    'ledModeCenterOut': {
+      AppLanguage.english: 'Center Out',
+      AppLanguage.indonesia: 'Dari Tengah',
+    },
+    'ledModeOuterIn': {
+      AppLanguage.english: 'Outer In',
+      AppLanguage.indonesia: 'Dari Luar',
+    },
+    'ledModeDualChase': {
+      AppLanguage.english: 'Dual Chase',
+      AppLanguage.indonesia: 'Kejar Ganda',
+    },
+    'ledModeRainbow': {
+      AppLanguage.english: 'Rainbow',
+      AppLanguage.indonesia: 'Pelangi',
+    },
+    'currentVersion': {
+      AppLanguage.english: 'Current',
+      AppLanguage.indonesia: 'Saat Ini',
+    },
+    'latestVersion': {
+      AppLanguage.english: 'Latest',
+      AppLanguage.indonesia: 'Terbaru',
+    },
+    'updateAvailableSentence': {
+      AppLanguage.english: 'Update available.',
+      AppLanguage.indonesia: 'Pembaruan tersedia.',
+    },
+    'savedSecurelySentence': {
+      AppLanguage.english: 'Saved securely.',
+      AppLanguage.indonesia: 'Disimpan dengan aman.',
+    },
+    'close': {
+      AppLanguage.english: 'Close',
+      AppLanguage.indonesia: 'Tutup',
+    },
+    'updateAction': {
+      AppLanguage.english: 'Update',
+      AppLanguage.indonesia: 'Perbarui',
+    },
+    'horizontal': {
+      AppLanguage.english: 'Horizontal',
+      AppLanguage.indonesia: 'Horizontal',
+    },
+    'vertical': {
+      AppLanguage.english: 'Vertical',
+      AppLanguage.indonesia: 'Vertikal',
+    },
+    'languageEnglish': {
+      AppLanguage.english: 'English',
+      AppLanguage.indonesia: 'Inggris',
+    },
+    'languageIndonesia': {
+      AppLanguage.english: 'Bahasa Indonesia',
+      AppLanguage.indonesia: 'Bahasa Indonesia',
+    },
     'resetBrownout': { AppLanguage.english: 'Brownout / supply drop', AppLanguage.indonesia: 'Brownout / penurunan suplai' },
     'resetPanic': { AppLanguage.english: 'Firmware panic', AppLanguage.indonesia: 'Panic firmware' },
     'resetSoftware': { AppLanguage.english: 'Software reset', AppLanguage.indonesia: 'Reset perangkat lunak' },
