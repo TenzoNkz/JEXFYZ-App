@@ -3996,8 +3996,8 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   // AI-METHOD / HOME-CONTRACT
   // Build Home from live firmware/phone telemetry. Power states use JexText;
-  // Fan Speed is omitted when Fan is OFF. This function owns presentation only,
-  // not device-state authority.
+  // Fan Speed remains visible; its presentation reports OFF/MATI when Fan is OFF.
+  // This function owns presentation only, not device-state authority.
   Widget _buildHomeArea(double height) {
     final batteryValue = connected && phoneBatteryValid ? phoneBatteryTemp : '--';
     final hotValue = connected ? hotsideTemp : '--';
