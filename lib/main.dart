@@ -2649,16 +2649,27 @@ class _DashboardScreenState extends State<DashboardScreen>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900)),
-              const SizedBox(height: 3),
-              StaticSwitcher(
-
-                child: Text(
-                  subtitle,
-                  key: ValueKey<String>(subtitle),
-                  style: TextStyle(fontSize: 10, color: enabled ? Colors.black45 : Colors.black38, fontWeight: FontWeight.w600),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w900,
                 ),
               ),
+              if (subtitle.trim().isNotEmpty) ...[
+                const SizedBox(height: 3),
+                StaticSwitcher(
+                  child: Text(
+                    subtitle,
+                    key: ValueKey<String>(subtitle),
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: enabled ? Colors.black45 : Colors.black38,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
         ),
