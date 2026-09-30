@@ -76,6 +76,16 @@ void main() {
     expect(JexText.of('off', AppLanguage.indonesia), 'MATI');
   });
 
+  test('Floating Monitor exposes Speed as the only fan-related metric', () {
+    final config = FloatingConfig.fromJson(
+      '{"order":["FAN","F","B","H","V","A","P","S"],"selected":["FAN","S"]}',
+    );
+    expect(config.order.contains('FAN'), isFalse);
+    expect(config.order.contains('S'), isTrue);
+    expect(config.selected.contains('FAN'), isFalse);
+    expect(config.selected.contains('S'), isTrue);
+  });
+
   test('Floating Monitor state presentation keeps Adaptive and Peltier independent from Fan', () {
     const telemetry = FloatingTelemetry(
       fanOn: false,
