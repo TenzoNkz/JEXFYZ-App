@@ -15,7 +15,7 @@
   - Fan remains independently controllable; the latch is cleared only by an explicit manual Peltier restart through the App or the 5-second touch cooling control, after ordinary NTC/Fan/Hotside safety preconditions pass.
   - New safety reason: `RAPID_RISE`.
   - The threshold is an isolated source constant and still requires physical thermal validation before being considered final tuning.
-- OTA transport/radio ownership, P1 UUIDs, GPIO mapping, Local/Online OTA architecture, and no-explicit-blocking-delay requirement remain unchanged.
+- OTA transport/radio ownership, P1 UUIDs, GPIO mapping, Local/Online OTA architecture, and no-explicit-blocking-delay requirement remain unchanged. Touch LED confirmation is explicitly cancelled at both Local and Online OTA ownership boundaries so it cannot interfere with OTA indicators/recovery.
 - V2.3 static validation completed after edits: balanced delimiters and zero `delay()`, `delayMicroseconds()`, or `vTaskDelay()` calls.
 - ArduinoDroid/Core 3.3.7 compile and V2.3 physical validation are **still pending**. Production BIN/Firebase metadata remain unchanged.
 
