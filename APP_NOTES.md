@@ -1331,3 +1331,11 @@ Never:
 - Legacy `FAN` entries remain rejected by the seven-ID validation contract.
 - This follow-up also fixes the analyzer error introduced by the first selector cleanup attempt (`speedAvailable` was still referenced after its source had been removed).
 - All Floating memory comments/tests remain aligned with the final contract.
+
+
+## 2026-10-01 — BUILD VALIDATION FIX / FLOATING SELECTOR ANALYZER
+
+- Build App #36 correctly stopped at Dart analysis because a stale `enabled` local remained in the Floating selector after Fan-specific gating was removed.
+- Removed that unused selector variable; checkbox interaction remains directly available for all supported metrics.
+- The separate Fan metric remains absent; S (Speed) is the sole fan-related metric.
+- Rebuild is required before delivery; no APK from #36 was produced.
