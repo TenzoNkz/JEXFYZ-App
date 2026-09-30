@@ -208,6 +208,15 @@ class FloatingBridge {
       await _channel.invokeMethod<void>('updateFloatingData', jsonEncode(telemetry.toMap()));
     } catch (_) {}
   }
+
+  static Future<Map<String, dynamic>?> runtimeState() async {
+    try {
+      final value =
+          await _channel.invokeMethod<dynamic>('getFloatingRuntimeState');
+      if (value is Map) return Map<String, dynamic>.from(value);
+    } catch (_) {}
+    return null;
+  }
 }
 
 class FloatingSettingsPage extends StatefulWidget {
@@ -220,6 +229,7 @@ class FloatingSettingsPage extends StatefulWidget {
 class _FloatingSettingsPageState extends State<FloatingSettingsPage> {
   late FloatingConfig config;
   bool loading = true;
+  Timer? runtimeTimer;
 
   @override
   void initState() {
@@ -238,6 +248,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> {
         await FloatingStore.save(config);
       } else {
         await FloatingBridge.updateConfig(config);
+        _startRuntimeSync();
       }
     }
   }
@@ -246,12 +257,15 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> {
     config = next;
     await FloatingStore.save(config);
     if (config.enabled) await FloatingBridge.updateConfig(config);
+    if (config.enabled && runtimeTimer == null) _startRuntimeSync();
     if (mounted) setState(() {});
   }
 
   Future<void> _toggleEnabled(bool value) async {
     if (!value) {
       config = config.copyWith(enabled: false);
+      runtimeTimer?.cancel();
+      runtimeTimer = null;
       await FloatingStore.save(config);
       await FloatingBridge.stop();
       if (mounted) setState(() {});
@@ -278,7 +292,42 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> {
       return;
     }
     await FloatingStore.save(next);
+    _startRuntimeSync();
     if (mounted) setState(() => config = next);
+  }
+
+  void _startRuntimeSync() {
+    runtimeTimer?.cancel();
+    runtimeTimer = Timer.periodic(
+      const Duration(milliseconds: 300),
+      (_) => unawaited(_syncRuntimeState()),
+    );
+  }
+
+  Future<void> _syncRuntimeState() async {
+    if (!mounted || !config.enabled) return;
+    final state = await FloatingBridge.runtimeState();
+    if (!mounted || state == null) return;
+    final horizontal = state['horizontal'];
+    final size = state['size'];
+    var next = config;
+    if (horizontal is bool && horizontal != config.horizontal) {
+      next = next.copyWith(horizontal: horizontal);
+    }
+    if (size is num && (size.toDouble() - config.size).abs() > 0.005) {
+      next = next.copyWith(size: size.toDouble().clamp(0.65, 1.8).toDouble());
+    }
+    if (next.horizontal != config.horizontal || next.size != config.size) {
+      config = next;
+      await FloatingStore.save(next);
+      if (mounted) setState(() {});
+    }
+  }
+
+  @override
+  void dispose() {
+    runtimeTimer?.cancel();
+    super.dispose();
   }
 
   void _toggleMetric(String metric, bool value) {
@@ -347,7 +396,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> {
                           ButtonSegment(
                             value: FloatingDisplayStyle.icons,
                             label: Text(JexText.of('icons', lang)),
-                            icon: const Icon(PhosphorIconsRegular.smiley),
+                            icon: const Icon(PhosphorIconsRegular.stack),
                           ),
                         ],
                         selected: <FloatingDisplayStyle>{config.style},
