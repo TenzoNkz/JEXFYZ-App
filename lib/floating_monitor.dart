@@ -172,7 +172,14 @@ class FloatingTelemetry {
 // AI-METHOD / METRIC-PRESENTATION-CONTRACT
 // Runtime-visible metric policy: Speed is the only metric hidden by Fan OFF.
 bool floatingMetricVisible(String metric, FloatingTelemetry telemetry) {
-  return metric != 'S' || telemetry.fanOn;
+  // All selected metrics stay visible; Fan Speed changes to OFF/MATI when Fan is OFF.
+  return metric == 'F' ||
+      metric == 'B' ||
+      metric == 'H' ||
+      metric == 'V' ||
+      metric == 'A' ||
+      metric == 'P' ||
+      metric == 'S';
 }
 
 // AI-METHOD / METRIC-STATUS-CONTRACT
@@ -181,7 +188,7 @@ String floatingMetricStatus(String metric, FloatingTelemetry telemetry, AppLangu
   return switch (metric) {
     'A' => JexText.of(telemetry.adaptiveOn ? 'on' : 'off', language),
     'P' => JexText.of(telemetry.peltierOn ? 'on' : 'off', language),
-    'S' => telemetry.speed.toString(),
+    'S' => telemetry.fanOn ? telemetry.speed.toString() : JexText.of('off', language),
     _ => '--',
   };
 }
