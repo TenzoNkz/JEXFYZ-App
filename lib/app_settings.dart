@@ -233,6 +233,46 @@ class JexText {
       AppLanguage.english: 'About JE X FYZ',
       AppLanguage.indonesia: 'Tentang JE X FYZ',
     },
+    'voltage': {
+      AppLanguage.english: 'Voltage',
+      AppLanguage.indonesia: 'Tegangan',
+    },
+    'control': {
+      AppLanguage.english: 'Control',
+      AppLanguage.indonesia: 'Kontrol',
+    },
+    'adaptive': {
+      AppLanguage.english: 'Adaptive',
+      AppLanguage.indonesia: 'Adaptif',
+    },
+    'led': {
+      AppLanguage.english: 'LED',
+      AppLanguage.indonesia: 'LED',
+    },
+    'temperature': {
+      AppLanguage.english: 'Temperature',
+      AppLanguage.indonesia: 'Temperatur',
+    },
+    'power': {
+      AppLanguage.english: 'Power',
+      AppLanguage.indonesia: 'Daya',
+    },
+    'fan': {
+      AppLanguage.english: 'Fan',
+      AppLanguage.indonesia: 'Kipas',
+    },
+    'color': {
+      AppLanguage.english: 'Color',
+      AppLanguage.indonesia: 'Warna',
+    },
+    'vertical': {
+      AppLanguage.english: 'Vertical',
+      AppLanguage.indonesia: 'Vertikal',
+    },
+    'sideText': {
+      AppLanguage.english: 'Side Text',
+      AppLanguage.indonesia: 'Teks Samping',
+    },
     'displayStyle': {
       AppLanguage.english: 'Display Style',
       AppLanguage.indonesia: 'Gaya Tampilan',
