@@ -95,10 +95,12 @@ enum JexAnimatedIconKind {
   speed,
   led,
   bluetooth,
+  generic,
 }
 
 class JexAnimatedIcon extends StatefulWidget {
   final JexAnimatedIconKind kind;
+  final IconData? glyph;
   final Color color;
   final double size;
   final bool active;
@@ -108,12 +110,24 @@ class JexAnimatedIcon extends StatefulWidget {
   const JexAnimatedIcon({
     super.key,
     required this.kind,
+    this.glyph,
     required this.color,
     this.size = 24,
     this.active = false,
     this.level = 1,
     this.warning = false,
   });
+
+  const JexAnimatedIcon.glyph({
+    super.key,
+    required IconData icon,
+    required this.color,
+    this.size = 24,
+    this.active = false,
+    this.warning = false,
+  })  : kind = JexAnimatedIconKind.generic,
+        glyph = icon,
+        level = 1;
 
   @override
   State<JexAnimatedIcon> createState() => _JexAnimatedIconState();
@@ -129,10 +143,9 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     controller = AnimationController(
       vsync: this,
       duration: Duration(
-        milliseconds: widget.kind == JexAnimatedIconKind.fan ? 850 : 1500,
+        milliseconds: widget.kind == JexAnimatedIconKind.fan ? 850 : 2400,
       ),
-    );
-    if (widget.active) controller.repeat();
+    )..repeat();
   }
 
   @override
@@ -140,15 +153,10 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     super.didUpdateWidget(oldWidget);
     if (widget.kind != oldWidget.kind) {
       controller.duration = Duration(
-        milliseconds: widget.kind == JexAnimatedIconKind.fan ? 850 : 1500,
+        milliseconds: widget.kind == JexAnimatedIconKind.fan ? 850 : 2400,
       );
     }
-    if (widget.active && !controller.isAnimating) {
-      controller.repeat();
-    } else if (!widget.active && controller.isAnimating) {
-      controller.stop();
-      controller.value = 0;
-    }
+    if (!controller.isAnimating) controller.repeat();
   }
 
   @override
@@ -159,6 +167,40 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
 
   @override
   Widget build(BuildContext context) {
+    if (widget.glyph != null) {
+      return RepaintBoundary(
+        child: AnimatedBuilder(
+          animation: controller,
+          builder: (_, __) {
+            final phase = controller.value * math.pi * 2;
+            final strength = widget.active ? 1.0 : 0.35;
+            final pulse = math.sin(phase) * strength;
+            final scale = 1 + pulse * 0.018;
+            final offsetY = pulse * widget.size * 0.010;
+            final rotation = pulse * 0.020;
+            return Transform.translate(
+              offset: Offset(0, offsetY),
+              child: Transform.rotate(
+                angle: rotation,
+                child: Transform.scale(
+                  scale: scale,
+                  child: Icon(
+                    widget.glyph!,
+                    size: widget.size,
+                    color: widget.color.withValues(
+                      alpha: widget.warning
+                          ? 0.72 + 0.28 * (0.5 + 0.5 * math.sin(phase * 2))
+                          : 1.0,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      );
+    }
+
     return RepaintBoundary(
       child: AnimatedBuilder(
         animation: controller,
@@ -620,7 +662,14 @@ class JeCoolerApp extends StatelessWidget {
           title: appName,
           debugShowCheckedModeBanner: false,
           theme: buildJexTheme(preset),
-          home: const DashboardScreen(),
+          home: Theme(
+            data: buildJexTheme(
+              preset == AppThemePreset.defaultTheme
+                  ? AppThemePreset.light
+                  : preset,
+            ),
+            child: const DashboardScreen(),
+          ),
         );
       },
     );
@@ -762,7 +811,12 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) _tryAutoConnect();
+    if (state != AppLifecycleState.resumed) return;
+    if (connected && _bleReady && _bleSessionReady) {
+      unawaited(_requestFreshSync(timeout: const Duration(seconds: 4)));
+    } else {
+      _tryAutoConnect();
+    }
   }
 
   void _recordFrameTimings(List<FrameTiming> timings) {
@@ -1488,10 +1542,73 @@ class _DashboardScreenState extends State<DashboardScreen>
       return false;
     }
     final reason = await ackFuture;
-    return reason == 'OK' ||
+    final accepted = reason == 'OK' ||
         reason == 'ACCEPTED' ||
         reason == 'READY' ||
         reason == 'STARTING';
+    if (!accepted) return false;
+
+    final expected = _expectedTelemetryForCommand(command);
+    if (expected == null) return true;
+    final confirmed = await _waitUntil(
+      () => _telemetryValueMatches(expected.key, expected.value),
+      timeout: timeout,
+    );
+    return confirmed;
+  }
+
+  MapEntry<String, String>? _expectedTelemetryForCommand(String command) {
+    final c = command.trim().toUpperCase();
+    if (c == 'FAN:ON') return const MapEntry('FAN', 'ON');
+    if (c == 'FAN:OFF') return const MapEntry('FAN', 'OFF');
+    if (c == 'PELTIER:ON') return const MapEntry('PELTIER', 'ON');
+    if (c == 'PELTIER:OFF') return const MapEntry('PELTIER', 'OFF');
+    if (c == 'ADAPTIVE:ON') return const MapEntry('ADAPTIVE', 'ON');
+    if (c == 'ADAPTIVE:OFF') return const MapEntry('ADAPTIVE', 'OFF');
+    if (c == 'RGB:ON') return const MapEntry('RGB', 'ON');
+    if (c == 'RGB:OFF') return const MapEntry('RGB', 'OFF');
+    if (c.startsWith('MODE:')) return MapEntry('MODE', c.substring(5));
+    if (c.startsWith('BRIGHTNESS:')) return MapEntry('BRIGHTNESS', c.substring(11));
+    if (c.startsWith('COLOR:')) return MapEntry('RGB_COLOR', c.substring(6));
+    if (c.startsWith('FANSPEED:')) return MapEntry('FAN_SPEED', c.substring(9));
+    if (c.startsWith('HOTLIMIT:')) return MapEntry('TEMP_HOT_LIMIT', c.substring(9));
+    if (c.startsWith('BATT5:')) return MapEntry('BATT_5', c.substring(6));
+    if (c.startsWith('BATT12:')) return MapEntry('BATT_12', c.substring(7));
+    if (c.startsWith('ADAPTIVE_PROFILE:')) {
+      return MapEntry('ADAPTIVE_PROFILE', c.substring(17));
+    }
+    return null;
+  }
+
+  bool _telemetryValueMatches(String key, String expected) {
+    switch (key) {
+      case 'FAN':
+        return fanOn == (expected == 'ON');
+      case 'PELTIER':
+        return peltierOn == (expected == 'ON');
+      case 'ADAPTIVE':
+        return adaptiveOn == (expected == 'ON');
+      case 'RGB':
+        return rgbOn == (expected == 'ON');
+      case 'MODE':
+        return rgbMode == (int.tryParse(expected) ?? -1);
+      case 'BRIGHTNESS':
+        return brightness == (int.tryParse(expected) ?? -1);
+      case 'RGB_COLOR':
+        return rgbColor.toUpperCase() == expected.toUpperCase();
+      case 'FAN_SPEED':
+        return fanSpeed == (int.tryParse(expected) ?? -1);
+      case 'TEMP_HOT_LIMIT':
+        return hotLimit == (int.tryParse(expected) ?? -1);
+      case 'BATT_5':
+        return battery5Limit == (int.tryParse(expected) ?? -1);
+      case 'BATT_12':
+        return battery12Limit == (int.tryParse(expected) ?? -1);
+      case 'ADAPTIVE_PROFILE':
+        return adaptiveProfile.toUpperCase() == expected.toUpperCase();
+      default:
+        return false;
+    }
   }
 
   Future<bool> _waitUntil(bool Function() predicate, {Duration timeout = const Duration(seconds: 3)}) async {
@@ -2612,7 +2729,13 @@ class _DashboardScreenState extends State<DashboardScreen>
                       ),
                     ),
                     child: animatedKind == null
-                        ? Icon(icon, size: 22, color: color)
+                        ? JexAnimatedIcon.glyph(
+                            icon: icon,
+                            size: 22,
+                            color: color,
+                            active: animationActive ?? active,
+                            warning: warning,
+                          )
                         : JexAnimatedIcon(
                             kind: animatedKind,
                             size: 22,
@@ -3105,7 +3228,12 @@ class _DashboardScreenState extends State<DashboardScreen>
             ),
             child: Center(
               child: animatedKind == null
-                  ? Icon(icon, size: 20, color: value ? accent : scheme.onSurfaceVariant)
+                  ? JexAnimatedIcon.glyph(
+                      icon: icon,
+                      size: 20,
+                      color: value ? accent : scheme.onSurfaceVariant,
+                      active: value,
+                    )
                   : JexAnimatedIcon(
                       kind: animatedKind,
                       size: 20,
@@ -3285,10 +3413,11 @@ class _DashboardScreenState extends State<DashboardScreen>
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    Icon(
-                      PhosphorIconsRegular.gauge,
+                    JexAnimatedIcon.glyph(
+                      icon: PhosphorIconsRegular.gauge,
                       size: 20,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      active: true,
                     ),
                     const SizedBox(width: 9),
                     Expanded(
@@ -3390,9 +3519,13 @@ class _DashboardScreenState extends State<DashboardScreen>
                             unawaited(_setAdaptiveProfile(value));
                           }
                         },
-                  secondary: Icon(
-                    PhosphorIconsRegular.batteryHigh,
-                    color: locked ? Colors.black26 : Colors.black54,
+                  secondary: JexAnimatedIcon.glyph(
+                    icon: PhosphorIconsRegular.batteryHigh,
+                    size: 22,
+                    color: locked
+                        ? Theme.of(context).colorScheme.onSurface.withValues(alpha: .22)
+                        : Theme.of(context).colorScheme.onSurfaceVariant,
+                    active: !locked,
                   ),
                   title: Text(
                     JexText.of('hotsideBattery', lang),
@@ -3450,9 +3583,11 @@ class _DashboardScreenState extends State<DashboardScreen>
                       onPressed: connected && rgbMode > 1
                           ? () => _setMode(rgbMode - 1)
                           : null,
-                      icon: const Icon(
-                        PhosphorIconsBold.caretLeft,
+                      icon: JexAnimatedIcon.glyph(
+                        icon: PhosphorIconsBold.caretLeft,
                         size: 25,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        active: true,
                       ),
                     ),
                     Expanded(
@@ -3473,9 +3608,11 @@ class _DashboardScreenState extends State<DashboardScreen>
                       onPressed: connected && rgbMode < 7
                           ? () => _setMode(rgbMode + 1)
                           : null,
-                      icon: const Icon(
-                        PhosphorIconsBold.caretRight,
+                      icon: JexAnimatedIcon.glyph(
+                        icon: PhosphorIconsBold.caretRight,
                         size: 25,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        active: true,
                       ),
                     ),
                   ],
@@ -3626,7 +3763,12 @@ class _DashboardScreenState extends State<DashboardScreen>
         ),
         IconButton(
           onPressed: value <= min ? null : () => onChanged(value - 1),
-          icon: const Icon(PhosphorIconsRegular.minusCircle),
+          icon: JexAnimatedIcon.glyph(
+            icon: PhosphorIconsRegular.minusCircle,
+            size: 22,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+            active: true,
+          ),
           color: scheme.onSurfaceVariant,
         ),
         Container(
@@ -3652,7 +3794,12 @@ class _DashboardScreenState extends State<DashboardScreen>
         ),
         IconButton(
           onPressed: value >= max ? null : () => onChanged(value + 1),
-          icon: const Icon(PhosphorIconsRegular.plusCircle),
+          icon: JexAnimatedIcon.glyph(
+            icon: PhosphorIconsRegular.plusCircle,
+            size: 22,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+            active: true,
+          ),
           color: scheme.onSurfaceVariant,
         ),
       ],
@@ -3702,7 +3849,12 @@ class _DashboardScreenState extends State<DashboardScreen>
                 children: [
                   SizedBox(width: 100, child: Text(JexText.of('zone9v').toUpperCase(), style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.onSurfaceVariant))),
                   Expanded(child: StaticSwitcher(duration: const Duration(milliseconds: 150), child: Text('≈ $midLow–$midHigh°C', key: ValueKey<String>('$midLow:$midHigh'), style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.onSurface)))),
-                  Icon(PhosphorIconsRegular.lock, color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: .35)),
+                  JexAnimatedIcon.glyph(
+                    icon: PhosphorIconsRegular.lock,
+                    size: 18,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: .35),
+                    active: true,
+                  ),
                 ],
               ),
               const Divider(height: 14),
@@ -3724,7 +3876,13 @@ class _DashboardScreenState extends State<DashboardScreen>
           _card(
             padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
             child: Row(children: [
-              const Icon(PhosphorIconsBold.lock, size: 18, color: Colors.orangeAccent),
+              JexAnimatedIcon.glyph(
+              icon: PhosphorIconsBold.lock,
+              size: 18,
+              color: Colors.orangeAccent,
+              active: true,
+              warning: true,
+            ),
               const SizedBox(width: 9),
               Expanded(child: Text(JexText.of('lockedAdaptive'), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800))),
             ]),
@@ -3733,7 +3891,12 @@ class _DashboardScreenState extends State<DashboardScreen>
           alignment: Alignment.centerRight,
           child: OutlinedButton.icon(
             onPressed: connected && !locked ? _resetTemperatureSettings : null,
-            icon: const Icon(PhosphorIconsBold.arrowClockwise, size: 17),
+            icon: JexAnimatedIcon.glyph(
+              icon: PhosphorIconsBold.arrowClockwise,
+              size: 17,
+              color: Theme.of(context).colorScheme.primary,
+              active: true,
+            ),
             label: Text(JexText.of('resetTemperature')),
           ),
         ),
@@ -4011,9 +4174,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         ? AppThemePreset.light
         : appThemeNotifier.value;
 
-    return Theme(
-      data: buildJexTheme(dashboardPreset),
-      child: MediaQuery(
+    return MediaQuery(
       data: media.copyWith(textScaler: TextScaler.noScaling),
       child: Scaffold(
         backgroundColor: _dashboardTopColor(),
