@@ -8,7 +8,7 @@ package com.horizontalzzz.jexfyz
 // Window authority: WindowManager.addView()/removeView() determine actual attachment.
 // Localization: Flutter sends the selected AppLanguage with telemetry. English status = ON/OFF;
 // Indonesia status = HIDUP/MATI. The metric identifiers F/B/H/V/A/P/S stay unchanged.
-// Fan Speed invariant: metric S is rendered only when Fan telemetry is ON.
+// Fan Speed invariant: metric S remains rendered; when Fan telemetry is OFF, S reports localized OFF/MATI.
 // Do not create a BLE/GATT client here; telemetry is supplied by MainActivity/Flutter.
 // Do not add vendor-specific hidden APIs as a default compatibility mechanism.
 
