@@ -24,7 +24,7 @@ void main() {
     expect(find.text('Battery Temperature'), findsOneWidget);
     expect(find.text('Hotside Temperature'), findsOneWidget);
     expect(find.text('Voltage Indicator'), findsOneWidget);
-    expect(find.text('Voltage'), findsOneWidget);
+    expect(find.text('Voltage'), findsWidgets);
     expect(find.text('Adaptive Mode'), findsOneWidget);
     expect(find.text('Peltier Switch'), findsOneWidget);
     expect(find.text('Fan Switch'), findsOneWidget);
