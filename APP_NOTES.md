@@ -1339,3 +1339,9 @@ Never:
 - Removed that unused selector variable; checkbox interaction remains directly available for all supported metrics.
 - The separate Fan metric remains absent; S (Speed) is the sole fan-related metric.
 - Rebuild is required before delivery; no APK from #36 was produced.
+
+## 2026-10-01 — BUILD VALIDATION FIX / LIGHT THEME EXPECTATION
+
+- Build App #37 reached all source checks and failed only one deterministic Light Theme test because the test expected `#16181D) while the current shared Light semantic foreground is intentionally `#111318`.
+- Updated the regression expectation to the actual Light Theme contract; this is a test-alignment fix, not a UI rollback.
+- No Floating, BLE, firmware, or runtime behavior was changed by this validation fix.
