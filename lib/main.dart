@@ -1556,7 +1556,15 @@ class _DashboardScreenState extends State<DashboardScreen>
       () => _telemetryValueMatches(expected.key, expected.value),
       timeout: timeout,
     );
-    return confirmed;
+    if (confirmed) return true;
+
+    // A delta can be lost during a transient BLE notification gap. Reconcile
+    // once from the firmware snapshot rather than trusting stale local state.
+    final reconciled = await _requestFreshSync(
+      timeout: const Duration(seconds: 2),
+    );
+    return reconciled &&
+        _telemetryValueMatches(expected.key, expected.value);
   }
 
   MapEntry<String, String>? _expectedTelemetryForCommand(String command) {
@@ -3504,9 +3512,13 @@ class _DashboardScreenState extends State<DashboardScreen>
                             unawaited(_setAdaptiveProfile(value));
                           }
                         },
-                  secondary: Icon(
-                    PhosphorIconsRegular.thermometer,
-                    color: locked ? Theme.of(context).colorScheme.onSurface.withValues(alpha: .22) : Theme.of(context).colorScheme.onSurfaceVariant,
+                  secondary: JexAnimatedIcon.glyph(
+                    icon: PhosphorIconsRegular.thermometer,
+                    color: locked
+                        ? Theme.of(context).colorScheme.onSurface.withValues(alpha: .22)
+                        : Theme.of(context).colorScheme.onSurfaceVariant,
+                    size: 22,
+                    active: !locked,
                   ),
                   title: Text(
                     JexText.of('hotsideProtection', lang),
@@ -3723,9 +3735,11 @@ class _DashboardScreenState extends State<DashboardScreen>
                         ),
                       ),
                     ),
-                    const Icon(
-                      PhosphorIconsRegular.caretRight,
+                    JexAnimatedIcon.glyph(
+                      icon: PhosphorIconsRegular.caretRight,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                       size: 20,
+                      active: true,
                     ),
                   ],
                 ),
@@ -3946,12 +3960,13 @@ class _DashboardScreenState extends State<DashboardScreen>
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints.tightFor(width: 36, height: 36),
                         tooltip: connected ? JexText.of('disconnect', appLanguageNotifier.value) : JexText.of('bluetooth', appLanguageNotifier.value),
-                        icon: Icon(
-                          connected
+                        icon: JexAnimatedIcon.glyph(
+                          icon: connected
                               ? PhosphorIconsRegular.bluetoothConnected
                               : PhosphorIconsRegular.bluetooth,
                           color: connected ? const Color(0xFF4D8CFF) : const Color(0xFFF4F6FA),
                           size: 24,
+                          active: true,
                         ),
                         onPressed: connected ? _disconnect : _showBluetoothMenu,
                       ),
