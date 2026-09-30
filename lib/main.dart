@@ -71,7 +71,7 @@ const Duration voltageGuardDuration = Duration(seconds: 1);
 const int fanSpeedMin = 50;
 const int fanSpeedMax = 100;
 
-// JE X FYZ LED palette: 48 touch-friendly RGB choices.
+// JE X FYZ LED palette: 12 hue-oriented RGB choices.
 // Palette applies to modes that use the user RGB color; Rainbow keeps its own hue cycle.
 const List<String> ledColorPalette = <String>[
   '#FF0000', '#FF8000', '#FFFF00', '#80FF00',
@@ -2098,6 +2098,8 @@ class _DashboardScreenState extends State<DashboardScreen>
         return JexText.phrase('Temperature sensor error.', 'Kesalahan sensor suhu.');
       case 'HOTSIDE_PROTECTION':
         return JexText.phrase('Hotside protection active.', 'Perlindungan Suhu Panas aktif.');
+      case 'RAPID_RISE':
+        return JexText.phrase('Rapid hotside rise protection active.', 'Perlindungan kenaikan suhu panas aktif.');
       case 'FAN_REQUIRED':
         return JexText.phrase('Fan required before Peltier.', 'Kipas harus aktif sebelum Peltier.');
       case 'PELTIER_ON':
@@ -2753,9 +2755,10 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
   }
 
-  // AI-METHOD: _buildVoltageTab — Build VOLTAGE submenu.
+  // AI-METHOD: _buildVoltageTab — Build the fixed three-level VOLTAGE selector.
+  // The selector intentionally matches the physical voltage hierarchy:
+  // 5V Low Mode -> 9V Mid Mode -> 12V High Mode.
   Widget _buildVoltageTab({Key? key}) {
-    final layout = appVoltageLayoutNotifier.value;
     final locked = !connected || adaptiveOn || voltageGuardActive;
     final lang = appLanguageNotifier.value;
 
@@ -2765,129 +2768,75 @@ class _DashboardScreenState extends State<DashboardScreen>
         storageKey: 'voltage',
         children: [
           _sectionTitle(JexText.of('voltage', lang)),
-          SegmentedButton<VoltageLayout>(
-            segments: [
-              ButtonSegment(
-                value: VoltageLayout.vertical,
-                label: Text(JexText.of('vertical', lang)),
-              ),
-              ButtonSegment(
-                value: VoltageLayout.sideText,
-                label: Text(JexText.of('sideText', lang)),
-              ),
-            ],
-            selected: <VoltageLayout>{layout},
-            onSelectionChanged: (value) async {
-              if (value.isEmpty) return;
-              final current = AppSettings(
-                language: appLanguageNotifier.value,
-                theme: appThemeNotifier.value,
-                notifySafety: appNotifySafetyNotifier.value,
-                notifyFirmware: appNotifyFirmwareNotifier.value,
-                notifyBluetooth: appNotifyBluetoothNotifier.value,
-                autoConnect: appAutoConnectNotifier.value,
-                voltageLayout: value.first,
-              );
-              await AppSettingsStore.save(
-                current.copyWith(voltageLayout: value.first),
-              );
-              if (mounted) setState(() {});
-            },
-          ),
           _card(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            child: layout == VoltageLayout.vertical
-                ? Column(
-                    children: [
-                      _voltageChoice('5V', JexText.of('lowMode', lang), locked),
-                      _voltageChoice('9V', JexText.of('midMode', lang), locked),
-                      _voltageChoice('12V', JexText.of('highMode', lang), locked),
-                    ],
-                  )
-                : Column(
-                    children: [
-                      _voltageSideChoice('5V', JexText.of('lowMode', lang), locked),
-                      _voltageSideChoice('9V', JexText.of('midMode', lang), locked),
-                      _voltageSideChoice('12V', JexText.of('highMode', lang), locked),
-                    ],
-                  ),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+            child: Column(
+              children: [
+                _voltageChoice('5V', JexText.of('lowMode', lang), locked, isFirst: true),
+                _voltageChoice('9V', JexText.of('midMode', lang), locked),
+                _voltageChoice('12V', JexText.of('highMode', lang), locked, isLast: true),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _voltageChoice(String target, String mode, bool locked) {
+  Widget _voltageChoice(
+    String target,
+    String mode,
+    bool locked, {
+    bool isFirst = false,
+    bool isLast = false,
+  }) {
     final active = voltage == target;
-    return InkWell(
-      onTap: locked ? null : () => _requestVoltage(target),
-      borderRadius: BorderRadius.circular(13),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 13),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                target,
-                style: const TextStyle(fontSize: 21, fontWeight: FontWeight.w900),
-              ),
-            ),
-            Text(
-              mode,
-              style: const TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-                color: Colors.black45,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Icon(
-              active
-                  ? PhosphorIconsBold.checkCircle
-                  : PhosphorIconsRegular.circle,
-              color: active ? Colors.blueAccent : Colors.black26,
-              size: 22,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+    final foreground = active ? Colors.white : Colors.black;
+    final secondary = active ? Colors.white70 : Colors.black45;
 
-  Widget _voltageSideChoice(String target, String mode, bool locked) {
-    final active = voltage == target;
-    return InkWell(
-      onTap: locked ? null : () => _requestVoltage(target),
-      borderRadius: BorderRadius.circular(13),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: Row(
-          children: [
-            SizedBox(
-              width: 55,
-              child: Text(
-                target,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900),
-              ),
-            ),
-            Expanded(
-              child: Text(
-                mode,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black54,
+    return Material(
+      color: active ? const Color(0xFF17181C) : Colors.transparent,
+      borderRadius: BorderRadius.vertical(
+        top: isFirst ? const Radius.circular(14) : Radius.zero,
+        bottom: isLast ? const Radius.circular(14) : Radius.zero,
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: locked ? null : () => _requestVoltage(target),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 13),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 48,
+                child: Text(
+                  target,
+                  style: TextStyle(
+                    color: foreground,
+                    fontSize: 19,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
               ),
-            ),
-            Icon(
-              active
-                  ? PhosphorIconsBold.checkCircle
-                  : PhosphorIconsRegular.circle,
-              color: active ? Colors.blueAccent : Colors.black26,
-              size: 21,
-            ),
-          ],
+              Expanded(
+                child: Text(
+                  mode,
+                  style: TextStyle(
+                    color: secondary,
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              Icon(
+                active
+                    ? PhosphorIconsBold.checkCircle
+                    : PhosphorIconsRegular.circle,
+                color: active ? const Color(0xFF5C9DFF) : Colors.black26,
+                size: 22,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -3584,8 +3533,15 @@ class _DashboardScreenState extends State<DashboardScreen>
     final media = MediaQuery.of(context);
     const designWidth = 360.0;
     const homeHeight = 420.0;
+    // Default keeps the JE X FYZ black-header/white-content dashboard.
+    // Settings and other non-dashboard pages inherit the dark default theme.
+    final dashboardPreset = appThemeNotifier.value == AppThemePreset.defaultTheme
+        ? AppThemePreset.light
+        : appThemeNotifier.value;
 
-    return MediaQuery(
+    return Theme(
+      data: buildJexTheme(dashboardPreset),
+      child: MediaQuery(
       data: media.copyWith(textScaler: TextScaler.noScaling),
       child: Scaffold(
         backgroundColor: _dashboardTopColor(),
@@ -3673,6 +3629,8 @@ class _DashboardScreenState extends State<DashboardScreen>
             },
           ),
         ),
+      ),
+    );
       ),
     );
   }
