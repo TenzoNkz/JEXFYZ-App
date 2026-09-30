@@ -980,7 +980,7 @@ ThemeData buildJexTheme(AppThemePreset preset) {
   final isLight = preset == AppThemePreset.light;
   final isDark = !isLight;
   final background = isLight
-      ? const Color(0xFFF3F4F7)
+      ? const Color(0xFFEEF0F4)
       : (preset == AppThemePreset.dark ? const Color(0xFF0C0E12) : const Color(0xFF0F1013));
   final surface = isLight
       ? const Color(0xFFFFFFFF)
@@ -999,7 +999,7 @@ ThemeData buildJexTheme(AppThemePreset preset) {
     canvasColor: background,
     cardColor: surface,
     primaryColor: primary,
-    dividerColor: isDark ? const Color(0xFF2A2E36) : const Color(0xFFE1E4E9),
+    dividerColor: isDark ? const Color(0xFF2A2E36) : const Color(0xFFD7DBE2),
     colorScheme: (isDark ? ColorScheme.dark : ColorScheme.light)(
       primary: primary,
       onPrimary: isDark ? const Color(0xFF07101E) : Colors.white,
@@ -1008,9 +1008,9 @@ ThemeData buildJexTheme(AppThemePreset preset) {
       surface: surface,
       onSurface: foreground,
       onSurfaceVariant: muted,
-      surfaceContainerHighest: isDark ? const Color(0xFF242831) : const Color(0xFFE9ECF1),
-      outline: isDark ? const Color(0xFF383D47) : const Color(0xFFD2D6DE),
-      outlineVariant: isDark ? const Color(0xFF2B3039) : const Color(0xFFE0E3E8),
+      surfaceContainerHighest: isDark ? const Color(0xFF242831) : const Color(0xFFE4E7EC),
+      outline: isDark ? const Color(0xFF383D47) : const Color(0xFFD6DAE1),
+      outlineVariant: isDark ? const Color(0xFF2B3039) : const Color(0xFFDDE1E7),
       error: const Color(0xFFFF5267),
       onError: Colors.white,
     ),
@@ -1031,12 +1031,12 @@ ThemeData buildJexTheme(AppThemePreset preset) {
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: isLight ? const Color(0xFFF7F8FA) : const Color(0xFF20232A),
+      fillColor: isLight ? const Color(0xFFF5F6F8) : const Color(0xFF20232A),
       labelStyle: TextStyle(color: muted),
       hintStyle: TextStyle(color: muted),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
-        borderSide: BorderSide(color: isDark ? const Color(0xFF343944) : const Color(0xFFDDE0E6)),
+        borderSide: BorderSide(color: isDark ? const Color(0xFF343944) : const Color(0xFFD4D8DF)),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
