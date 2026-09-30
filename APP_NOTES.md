@@ -1307,3 +1307,18 @@ Never:
 - Metric `S` remains selectable regardless of current Fan telemetry.
 - Floating preview and native overlay continue to render selected `S`; Fan OFF is presented as localized `OFF` / `MATI`.
 - Runtime telemetry still owns the actual Fan/Speed state; no device state is persisted as Floating configuration.
+
+
+## 2026-10-01 — FULL EXECUTION / FLOATING FAN OPTION REMOVED
+
+- Final Floating Monitor metric contract is now explicit: there is **no separate Fan metric**.
+- Fan-related presentation is represented only by **S = Speed**:
+  - Fan ON → S shows the configured speed value.
+  - Fan OFF → S remains visible and shows localized OFF/MATI.
+- Supported Floating metrics remain exactly: F (FPS), B (Battery), H (Hotside), V (Voltage), A (Adaptive), P (Peltier), S (Speed).
+- `lib/floating_monitor.dart` keeps only those seven stable identifiers and now documents S as the sole fan-related metric.
+- Legacy persisted `FAN` entries are filtered out by the existing metric validation/migration path; they are not reintroduced into the selector.
+- `FloatingMonitorService.kt` accepts only F/B/H/V/A/P/S, so a legacy FAN identifier cannot appear in the native overlay.
+- Added a regression test proving `FAN` is rejected while `S` remains selected/available.
+- This change is App-only. Firmware, BLE UUID/P1 protocol, OTA transport, Firebase metadata, GPIO mapping, and signing identity remain untouched.
+- Build App requested in this execution; the fresh release artifact must be delivered to chat automatically after a successful run.
