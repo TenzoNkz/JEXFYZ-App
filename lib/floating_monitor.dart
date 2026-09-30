@@ -704,7 +704,10 @@ class SettingsPage extends StatelessWidget {
     return ValueListenableBuilder<AppLanguage>(
       valueListenable: appLanguageNotifier,
       builder: (context, language, _) {
-        return Scaffold(
+        final preset = appThemeNotifier.value;
+        return Theme(
+          data: buildJexSettingsTheme(preset),
+          child: Scaffold(
           appBar: AppBar(title: Text(JexText.of('settings', language))),
           body: ListView(
             padding: const EdgeInsets.fromLTRB(14, 8, 14, 28),
@@ -738,6 +741,7 @@ class SettingsPage extends StatelessWidget {
               ]),
             ],
           ),
+          );
         );
       },
     );
