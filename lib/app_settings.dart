@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+// All user-facing application strings are resolved through JexText for full language coverage.
 enum AppLanguage { english, indonesia }
 enum AppThemePreset { defaultTheme, light, dark }
 
