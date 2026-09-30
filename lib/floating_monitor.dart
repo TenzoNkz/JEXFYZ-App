@@ -271,7 +271,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   }
 
   Future<void> _load() async {
-    config = await FloatingStore.load();
+    config = await _normalizeSelection(await FloatingStore.load());
     if (config.enabled) {
       final nativeState = await FloatingBridge.runtimeState();
       if (nativeState != null) {
@@ -330,6 +330,15 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     return false;
   }
 
+  Future<FloatingConfig> _normalizeSelection(FloatingConfig value) async {
+    if (value.selected.isNotEmpty) return value;
+    final normalized = value.copyWith(
+      selected: FloatingMetric.defaultOrder.toSet(),
+    );
+    await FloatingStore.save(normalized);
+    return normalized;
+  }
+
   Future<void> _toggleEnabled(bool value) async {
     if (!value) {
       config = config.copyWith(enabled: false);
@@ -347,19 +356,16 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
         barrierDismissible: false,
         builder: (dialogContext) {
           return AlertDialog(
-            title: const Text('Floating Monitor permission'),
-            content: const Text(
-              'JE X FYZ needs permission to display the Floating Monitor over other apps. '
-              'Android will open the "Display over other apps" setting.',
-            ),
+            title: Text(JexText.of('floatingPermissionTitle', appLanguageNotifier.value)),
+            content: Text(JexText.of('floatingPermissionMessage', appLanguageNotifier.value)),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(dialogContext, false),
-                child: const Text('Cancel'),
+                child: Text(JexText.of('cancel', appLanguageNotifier.value)),
               ),
               FilledButton(
                 onPressed: () => Navigator.pop(dialogContext, true),
-                child: const Text('Allow'),
+                child: Text(JexText.phrase('Allow', 'Izinkan', appLanguageNotifier.value)),
               ),
             ],
           );
@@ -381,6 +387,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
       return;
     }
 
+    config = await _normalizeSelection(config);
     final next = config.copyWith(enabled: true);
     final started = await FloatingBridge.start(next);
     final running = started && await _waitForRuntimeReady();
@@ -475,7 +482,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
             children: [
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
-                title: const Text('Floating Monitor'),
+                title: Text(JexText.of('floatingMonitor', lang)),
                 value: config.enabled,
                 onChanged: _toggleEnabled,
               ),
