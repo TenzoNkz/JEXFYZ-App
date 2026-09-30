@@ -1345,3 +1345,20 @@ Never:
 - Build App #37 reached all source checks and failed only one deterministic Light Theme test because the test expected `#16181D) while the current shared Light semantic foreground is intentionally `#111318`.
 - Updated the regression expectation to the actual Light Theme contract; this is a test-alignment fix, not a UI rollback.
 - No Floating, BLE, firmware, or runtime behavior was changed by this validation fix.
+
+
+## 2026-10-01 — BUILD APP #38 SUCCESS / FLOATING METRIC CLEANUP VALIDATED
+
+- Build App Run #38 (`36781082099`) completed successfully from source commit `97e14c94535ea313556887b00870a0e63966d5ce`.
+- Pipeline passed: security/architecture audit, dependency installation, Dart analyze, Flutter tests, release APK build, production APK signature verification, release APK filename preparation, exactly one APK artifact upload, and Dart symbols upload.
+- The final validated source includes the Floating contract with no separate Fan metric; S (Speed) is the sole fan-related Floating metric.
+- Floating selector regression test passed; Light Theme and Manual Auto Connect tests also passed.
+- Release APK artifact: `JEXFYZ#38.apk`
+- APK artifact ID: `11127881733`
+- APK artifact size: `54,147,072` bytes
+- APK SHA-256: `10285ef6b0927dafc21f14ffc312e659ba0eef4a4387fbf0cf92aefcbcf0b7d6`
+- Dart symbols artifact ID: `11127592726`
+- Dart symbols SHA-256: `ad18cf5438d75b7a956919063a8f88f58b9f63af623c144fae4e612ba648286c`
+- Build artifact count is exactly one APK plus the symbols artifact.
+- The APK is now available for direct chat delivery from the validated Build #38 artifact.
+- No firmware, BLE UUID/P1 protocol, OTA transport, Firebase metadata contract, GPIO mapping, or signing identity was changed.
