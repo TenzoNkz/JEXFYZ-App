@@ -2579,6 +2579,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     JexAnimatedIconKind? animatedKind,
     double level = 1,
     bool warning = false,
+    bool? animationActive,
   }) {
     final display = value == '--' ? '--' : value + unit;
     final active = value != '--';
@@ -2616,7 +2617,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                             kind: animatedKind,
                             size: 22,
                             color: color,
-                            active: active,
+                            active: animationActive ?? active,
                             level: level,
                             warning: warning,
                           ),
@@ -2684,7 +2685,9 @@ class _DashboardScreenState extends State<DashboardScreen>
       color: color,
       icon: icon,
       animatedKind: animatedKind,
+      animationActive: value,
       level: fanOn ? fanSpeed / 100 : 0,
+      animationActive: fanOn,
     );
   }
 
