@@ -3538,8 +3538,8 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   Widget _tab(String title, int index) {
-
     final selected = tabIndex == index;
+    final dark = _dashboardDark;
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
@@ -3550,10 +3550,14 @@ class _DashboardScreenState extends State<DashboardScreen>
             alignment: Alignment.center,
             padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 9),
             decoration: BoxDecoration(
-              color: selected ? const Color(0xFF17181C) : const Color(0xFFF2F2F4),
+              color: selected
+                  ? const Color(0xFF17181C)
+                  : (dark ? const Color(0xFF22242A) : const Color(0xFFF2F2F4)),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: selected ? const Color(0xFF17181C) : const Color(0xFFE5E5E8),
+                color: selected
+                    ? const Color(0xFF17181C)
+                    : (dark ? const Color(0xFF30323A) : const Color(0xFFE5E5E8)),
               ),
             ),
             child: FittedBox(
@@ -3562,7 +3566,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 title,
                 maxLines: 1,
                 style: TextStyle(
-                  color: selected ? Colors.white : const Color(0xFF5E6068),
+                  color: selected ? Colors.white : (dark ? Colors.white70 : const Color(0xFF5E6068)),
                   fontWeight: FontWeight.w900,
                   fontSize: 9,
                   letterSpacing: 0.05,
