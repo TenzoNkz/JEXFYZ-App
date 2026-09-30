@@ -2313,46 +2313,86 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   // AI-METHOD: _friendlyOtaStage — Translate OTA stage tokens into readable text.
   String _friendlyOtaStage(String stage) {
-    switch (stage.toUpperCase()) {
-      case 'LOCAL_FILE_CHECK': return 'File check';
-      case 'LOCAL_SIZE_CHECK': return 'Size check';
-      case 'LOCAL_UPDATE_BEGIN': return 'Update begin';
-      case 'LOCAL_RECEIVE': return 'Receiving';
-      case 'LOCAL_FLASH_WRITE': return 'Flash write';
-      case 'LOCAL_SIZE_VERIFY': return 'Size verify';
-      case 'LOCAL_FINALIZE': return 'Finalize';
-      case 'LOCAL_FLASH_READBACK': return 'Flash readback';
-      case 'LOCAL_FLASH_ERASE': return 'Flash erase';
-      case 'LOCAL_BOOT_PARTITION': return 'Boot partition';
-      case 'ONLINE_WIFI_CONNECT': return 'Wi-Fi connect';
-      case 'ONLINE_WIFI_CONNECTED': return 'Wi-Fi connected';
-      case 'ONLINE_WIFI_FAILED': return 'Wi-Fi failed';
-      case 'ONLINE_WIFI_DROPPED': return 'Wi-Fi dropped';
-      case 'ONLINE_TIME_SYNC': return 'Time sync';
-      case 'ONLINE_GITHUB_CONNECT': return 'GitHub connect';
-      case 'ONLINE_GITHUB_CONNECTED': return 'GitHub connected';
-      case 'ONLINE_HTTP_UPDATE': return 'HTTP update';
-      case 'ONLINE_UPDATE_BEGIN': return 'Update begin';
-      case 'ONLINE_DOWNLOAD': return 'Download';
-      case 'ONLINE_DOWNLOAD_COMPLETE': return 'Download complete';
-      case 'ONLINE_FLASH_PREPARE': return 'Flash prepare';
-      case 'ONLINE_FLASH_FINALIZE': return 'Flash finalize';
-      case 'ONLINE_FLASH_SUCCESS': return 'Flash success';
-      case 'ONLINE_RANGE_PROBE': return 'Range probe';
-      case 'ONLINE_RANGE_REQUEST': return 'Range request';
-      case 'ONLINE_RANGE_RESPONSE': return 'Range response';
-      case 'ONLINE_RANGE_WRITE': return 'Range write';
-      case 'ONLINE_RANGE_RETRY': return 'Range retry';
-      case 'ONLINE_RANGE_RESUME': return 'Range resume';
-      case 'ONLINE_FLASH_WRITE': return 'Flash write';
-      case 'ONLINE_FLASH_ERASE': return 'Flash erase';
-      case 'ONLINE_FLASH_READBACK': return 'Flash readback';
-      case 'ONLINE_IMAGE_VALIDATE': return 'Image validate';
-      case 'ONLINE_IMAGE_VERIFY': return 'Image verify';
-      case 'ONLINE_BOOT_PARTITION': return 'Boot partition';
-      case 'ONLINE_HTTP_RESPONSE': return 'HTTP response';
-      default: return stage.replaceAll('_', ' ');
-    }
+    const en = <String, String>{
+      'LOCAL_FILE_CHECK': 'File check',
+      'LOCAL_SIZE_CHECK': 'Size check',
+      'LOCAL_UPDATE_BEGIN': 'Update begin',
+      'LOCAL_RECEIVE': 'Receiving',
+      'LOCAL_FLASH_WRITE': 'Flash write',
+      'LOCAL_SIZE_VERIFY': 'Size verify',
+      'LOCAL_FINALIZE': 'Finalize',
+      'LOCAL_FLASH_READBACK': 'Flash readback',
+      'LOCAL_FLASH_ERASE': 'Flash erase',
+      'LOCAL_BOOT_PARTITION': 'Boot partition',
+      'ONLINE_WIFI_CONNECT': 'Wi-Fi connect',
+      'ONLINE_WIFI_CONNECTED': 'Wi-Fi connected',
+      'ONLINE_WIFI_FAILED': 'Wi-Fi failed',
+      'ONLINE_WIFI_DROPPED': 'Wi-Fi dropped',
+      'ONLINE_TIME_SYNC': 'Time sync',
+      'ONLINE_GITHUB_CONNECT': 'GitHub connect',
+      'ONLINE_GITHUB_CONNECTED': 'GitHub connected',
+      'ONLINE_HTTP_UPDATE': 'HTTP update',
+      'ONLINE_UPDATE_BEGIN': 'Update begin',
+      'ONLINE_DOWNLOAD': 'Download',
+      'ONLINE_DOWNLOAD_COMPLETE': 'Download complete',
+      'ONLINE_FLASH_PREPARE': 'Flash prepare',
+      'ONLINE_FLASH_FINALIZE': 'Flash finalize',
+      'ONLINE_FLASH_SUCCESS': 'Flash success',
+      'ONLINE_RANGE_PROBE': 'Range probe',
+      'ONLINE_RANGE_REQUEST': 'Range request',
+      'ONLINE_RANGE_RESPONSE': 'Range response',
+      'ONLINE_RANGE_WRITE': 'Range write',
+      'ONLINE_RANGE_RETRY': 'Range retry',
+      'ONLINE_RANGE_RESUME': 'Range resume',
+      'ONLINE_FLASH_WRITE': 'Flash write',
+      'ONLINE_FLASH_ERASE': 'Flash erase',
+      'ONLINE_FLASH_READBACK': 'Flash readback',
+      'ONLINE_IMAGE_VALIDATE': 'Image validate',
+      'ONLINE_IMAGE_VERIFY': 'Image verify',
+      'ONLINE_BOOT_PARTITION': 'Boot partition',
+      'ONLINE_HTTP_RESPONSE': 'HTTP response',
+    };
+    const id = <String, String>{
+      'LOCAL_FILE_CHECK': 'Periksa berkas',
+      'LOCAL_SIZE_CHECK': 'Periksa ukuran',
+      'LOCAL_UPDATE_BEGIN': 'Mulai pembaruan',
+      'LOCAL_RECEIVE': 'Menerima',
+      'LOCAL_FLASH_WRITE': 'Tulis flash',
+      'LOCAL_SIZE_VERIFY': 'Verifikasi ukuran',
+      'LOCAL_FINALIZE': 'Finalisasi',
+      'LOCAL_FLASH_READBACK': 'Baca ulang flash',
+      'LOCAL_FLASH_ERASE': 'Hapus flash',
+      'LOCAL_BOOT_PARTITION': 'Partisi boot',
+      'ONLINE_WIFI_CONNECT': 'Hubungkan Wi-Fi',
+      'ONLINE_WIFI_CONNECTED': 'Wi-Fi terhubung',
+      'ONLINE_WIFI_FAILED': 'Wi-Fi gagal',
+      'ONLINE_WIFI_DROPPED': 'Wi-Fi terputus',
+      'ONLINE_TIME_SYNC': 'Sinkronisasi waktu',
+      'ONLINE_GITHUB_CONNECT': 'Hubungkan GitHub',
+      'ONLINE_GITHUB_CONNECTED': 'GitHub terhubung',
+      'ONLINE_HTTP_UPDATE': 'Pembaruan HTTP',
+      'ONLINE_UPDATE_BEGIN': 'Mulai pembaruan',
+      'ONLINE_DOWNLOAD': 'Unduh',
+      'ONLINE_DOWNLOAD_COMPLETE': 'Unduhan selesai',
+      'ONLINE_FLASH_PREPARE': 'Siapkan flash',
+      'ONLINE_FLASH_FINALIZE': 'Finalisasi flash',
+      'ONLINE_FLASH_SUCCESS': 'Flash berhasil',
+      'ONLINE_RANGE_PROBE': 'Uji rentang',
+      'ONLINE_RANGE_REQUEST': 'Minta rentang',
+      'ONLINE_RANGE_RESPONSE': 'Respons rentang',
+      'ONLINE_RANGE_WRITE': 'Tulis rentang',
+      'ONLINE_RANGE_RETRY': 'Ulangi rentang',
+      'ONLINE_RANGE_RESUME': 'Lanjutkan rentang',
+      'ONLINE_FLASH_WRITE': 'Tulis flash',
+      'ONLINE_FLASH_ERASE': 'Hapus flash',
+      'ONLINE_FLASH_READBACK': 'Baca ulang flash',
+      'ONLINE_IMAGE_VALIDATE': 'Validasi image',
+      'ONLINE_IMAGE_VERIFY': 'Verifikasi image',
+      'ONLINE_BOOT_PARTITION': 'Partisi boot',
+      'ONLINE_HTTP_RESPONSE': 'Respons HTTP',
+    };
+    final map = appLanguageNotifier.value == AppLanguage.english ? en : id;
+    return map[stage.trim().toUpperCase()] ?? stage.replaceAll('_', ' ');
   }
 
   // AI-METHOD: _friendlyOtaResult — Translate persisted OTA results into Home NOTIFY text.
@@ -2776,6 +2816,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     final c = command.trim().toUpperCase();
     final lang = appLanguageNotifier.value;
     String? message;
+
     if (c.startsWith('VOLTAGE:')) {
       message = JexText.of('voltageSetTo', lang) + c.substring(8) + '.';
     } else if (c == 'FAN:ON') {
@@ -2805,9 +2846,9 @@ class _DashboardScreenState extends State<DashboardScreen>
     } else if (c.startsWith('HOTLIMIT:')) {
       message = JexText.of('hotsideTemperature', lang) + ' ' + c.substring(9) + '°C.';
     } else if (c.startsWith('BATT5:')) {
-      message = JexText.of('fiveVCeiling', lang) + '.';
+      message = JexText.of('fiveVCeiling', lang) + ' ' + JexText.phrase('updated.', 'diperbarui.', lang);
     } else if (c.startsWith('BATT12:')) {
-      message = JexText.of('twelveVFloor', lang) + '.';
+      message = JexText.of('twelveVFloor', lang) + ' ' + JexText.phrase('updated.', 'diperbarui.', lang);
     } else if (c == 'RESET:TEMPERATURE') {
       message = JexText.of('temperatureReset', lang);
     }
@@ -4642,8 +4683,7 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: const Color(0xFF1E202B),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       title: Text(JexText.of('firmware', appLanguageNotifier.value), style: const TextStyle(fontWeight: FontWeight.bold)),
       content: SingleChildScrollView(
         child: Column(
