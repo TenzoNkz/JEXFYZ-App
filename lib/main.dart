@@ -2863,16 +2863,19 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   // AI-METHOD / HOME-FAN-SPEED CONTRACT
-  // Fan Speed is intentionally absent when the physical Fan state is OFF.
-  // When Fan is ON, retain the existing voltage/adaptive display rules and values.
+  // Speed remains visible at all times. Fan OFF is presented as OFF/MATI instead
+  // of reusing the last PWM value; disconnected telemetry remains "--".
   Widget _homeFanSpeed() {
-    if (!connected || !fanOn) return const SizedBox.shrink();
-
-    final displaySpeed = (voltage == '5V' || voltage == '9V')
-        ? '100%'
-        : (!adaptiveOn && voltage == '12V')
-            ? '$fanSpeed%'
-            : '--';
+    final lang = appLanguageNotifier.value;
+    final displaySpeed = !connected
+        ? '--'
+        : !fanOn
+            ? JexText.of('off', lang)
+            : (voltage == '5V' || voltage == '9V')
+                ? '100%'
+                : (!adaptiveOn && voltage == '12V')
+                    ? '$fanSpeed%'
+                    : '--';
     return _homeMetric(
       JexText.of('fanSpeedLabel'),
       displaySpeed,
@@ -3435,8 +3438,8 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   // AI-METHOD / CONTROL-TAB CONTRACT
   // Render Peltier and Fan switches from authoritative telemetry.
-  // Fan Speed is rendered only while fanOn is true; its slider remains gated by
-  // connected + manual + 12V rules. Never localize BLE command tokens.
+  // Fan Speed is always presented. Its value becomes OFF/MATI when Fan is OFF,
+  // while the editable slider remains gated by connected + manual + 12V + Fan ON.
   Widget _buildControlTab({Key? key}) {
     final speedEnabled =
         connected && !adaptiveOn && voltage == '12V' && fanOn;
@@ -3470,37 +3473,42 @@ class _DashboardScreenState extends State<DashboardScreen>
                   enabled: connected && !adaptiveOn && !peltierOn,
                   onChanged: _toggleFan,
                 ),
-                if (fanOn) ...[
-                  const SizedBox(height: 8),
-                  // AI-MEMORY / UI INVARIANT:
-                  // Speed controls exist only while Fan is physically ON.
-                  Row(
-                    children: [
-                      JexAnimatedIcon.glyph(
-                        icon: PhosphorIconsRegular.gauge,
-                        size: 20,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        active: true,
-                      ),
-                      const SizedBox(width: 9),
-                      Expanded(
-                        child: Text(
-                          JexText.of('speed', lang),
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w900,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        fanSpeed.toString() + '%',
+                const SizedBox(height: 8),
+                // AI-MEMORY / UI INVARIANT:
+                // The Speed indicator never disappears. Only the editable slider is
+                // gated by the physical Fan state.
+                Row(
+                  children: [
+                    JexAnimatedIcon.glyph(
+                      icon: PhosphorIconsRegular.gauge,
+                      size: 20,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      active: true,
+                    ),
+                    const SizedBox(width: 9),
+                    Expanded(
+                      child: Text(
+                        JexText.of('speed', lang),
                         style: const TextStyle(
-                          fontSize: 13,
+                          fontSize: 14,
                           fontWeight: FontWeight.w900,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                    Text(
+                      !connected
+                          ? '--'
+                          : !fanOn
+                              ? JexText.of('off', lang)
+                              : fanSpeed.toString() + '%',
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                  ],
+                ),
+                if (fanOn)
                   Slider(
                     min: 50,
                     max: 100,
@@ -3516,7 +3524,6 @@ class _DashboardScreenState extends State<DashboardScreen>
                         : null,
                     onChangeEnd: speedEnabled ? _setFanSpeed : null,
                   ),
-                ],
               ],
             ),
           ),
@@ -4050,7 +4057,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                           JexText.of('developedByHorizon', appLanguageNotifier.value),
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: const Color(0xFF737986),
+                            color: headerDark ? const Color(0xFF737986) : const Color(0xFF40444D),
                             fontWeight: FontWeight.w700,
                             fontSize: 6.8,
                             letterSpacing: 1.25,
@@ -4450,6 +4457,9 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
     required Color color,
     required VoidCallback onTap,
   }) {
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final indicatorBackground = dark ? const Color(0xFF191A22) : Colors.white;
+    final indicatorForeground = dark ? Colors.white : const Color(0xFF16181D);
     return Expanded(
       child: Material(
         color: Colors.transparent,
@@ -4460,7 +4470,7 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
             height: 42,
             padding: const EdgeInsets.symmetric(horizontal: 10),
             decoration: BoxDecoration(
-              color: const Color(0xFF191A22),
+              color: indicatorBackground,
               borderRadius: BorderRadius.circular(24),
               border: Border.all(
                 color: color.withValues(alpha: 0.55),
@@ -4477,8 +4487,8 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
                     label,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: indicatorForeground,
                       fontSize: 10.5,
                       fontWeight: FontWeight.w800,
                     ),
