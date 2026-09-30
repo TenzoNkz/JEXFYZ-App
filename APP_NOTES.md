@@ -1395,3 +1395,11 @@ Never:
 - The last successfully completed BLE/P1 session stores only the cooler `remoteId` in `flutter_secure_storage`; that identity is the sole device target for passive Auto Connect.
 - Auto reconnect after disconnect and post-OTA reconnect now use the same passive policy, so they cannot silently prompt for permission or power Bluetooth on.
 - No firmware, BLE UUID/P1 protocol, OTA transport, Firebase metadata, GPIO mapping, or release signing identity was changed.
+
+
+## 2026-10-01 — FOLLOW-UP / AUTO CONNECT PREFERENCE LIFECYCLE
+
+- Dashboard now reacts immediately when the Auto Connect preference changes.
+- Enabling Auto Connect triggers the same passive prerequisite check without requesting permissions or changing Bluetooth power.
+- Disabling Auto Connect cancels pending automatic reconnect timers/scans.
+- Fresh install remains safe: with no known cooler identity, enabling Auto Connect still performs no scan or connection.
