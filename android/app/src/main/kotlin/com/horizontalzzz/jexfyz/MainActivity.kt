@@ -13,6 +13,13 @@ import android.os.BatteryManager
 import android.os.Build
 import android.provider.Settings
 import android.util.Base64
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.Notification
+import android.content.pm.ServiceInfo
+import android.Manifest
+import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -24,6 +31,7 @@ class MainActivity : FlutterActivity() {
     private val CHANNEL = "je_x_fyz/battery_temp"
     // Production release-integrity bridge.
     private val SECURITY_CHANNEL = "je_x_fyz/security"
+    private val NOTIFICATION_CHANNEL = "je_x_fyz/notifications"
 
     // Register every MethodChannel operation consumed by Dart.
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
@@ -60,6 +68,52 @@ class MainActivity : FlutterActivity() {
 
                 "stopBackgroundService" -> {
                     result.success(stopBackgroundService())
+                }
+
+                "hasOverlayPermission" -> {
+                    result.success(Settings.canDrawOverlays(this))
+                }
+
+                "openOverlaySettings" -> {
+                    result.success(openOverlaySettings())
+                }
+
+                "startFloatingMonitor" -> {
+                    val json = call.arguments?.toString() ?: "{}"
+                    result.success(FloatingMonitorService.start(this, json))
+                }
+
+                "stopFloatingMonitor" -> {
+                    FloatingMonitorService.stop(this)
+                    result.success(true)
+                }
+
+                "updateFloatingConfig" -> {
+                    FloatingMonitorService.updateConfig(
+                        this,
+                        call.arguments?.toString() ?: "{}"
+                    )
+                    result.success(true)
+                }
+
+                "updateFloatingData" -> {
+                    FloatingMonitorService.updateData(
+                        this,
+                        call.arguments?.toString() ?: "{}"
+                    )
+                    result.success(true)
+                }
+
+                "requestNotificationPermission" -> {
+                    result.success(requestNotificationPermission())
+                }
+
+                "showNotification" -> {
+                    val args = call.arguments as? Map<*, *>
+                    val title = args?.get("title")?.toString() ?: "JE X FYZ"
+                    val body = args?.get("body")?.toString() ?: ""
+                    val id = (args?.get("id") as? Number)?.toInt() ?: 2300
+                    result.success(showUserNotification(title, body, id))
                 }
 
                 else -> result.notImplemented()
@@ -185,6 +239,78 @@ class MainActivity : FlutterActivity() {
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
+            true
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    private fun openOverlaySettings(): Boolean {
+        return try {
+            val intent = Intent(
+                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                android.net.Uri.parse("package:$packageName")
+            )
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+            true
+        } catch (_: Exception) {
+            try {
+                val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                true
+            } catch (_: Exception) {
+                false
+            }
+        }
+    }
+
+    private fun ensureNotificationChannel() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+        val manager = getSystemService(NotificationManager::class.java)
+        val channel = NotificationChannel(
+            NOTIFICATION_CHANNEL,
+            "JE X FYZ Alerts",
+            NotificationManager.IMPORTANCE_DEFAULT
+        ).apply {
+            description = "Important JE X FYZ safety, firmware, and Bluetooth notifications."
+            setShowBadge(true)
+        }
+        manager.createNotificationChannel(channel)
+    }
+
+    private fun requestNotificationPermission(): Boolean {
+        ensureNotificationChannel()
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return true
+        if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) ==
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            return true
+        }
+        requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 2304)
+        return false
+    }
+
+    private fun showUserNotification(title: String, body: String, id: Int): Boolean {
+        ensureNotificationChannel()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) !=
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            return false
+        }
+        return try {
+            val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL)
+                .setSmallIcon(R.drawable.jexfyzicon)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(body))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true)
+                .build()
+            getSystemService(NotificationManager::class.java)
+                .notify(id, notification)
             true
         } catch (_: Exception) {
             false
