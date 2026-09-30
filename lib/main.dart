@@ -529,6 +529,26 @@ bool isDifferentFirmwareVersion(String latest, String current) {
   return a[0] != b[0] || a[1] != b[1];
 }
 
+
+// AI-METHOD: canAutoConnect — Pure policy gate for passive Auto Connect.
+// It must never prompt for permissions, enable Bluetooth, or connect without a known cooler.
+bool canAutoConnect({
+  required bool autoConnectEnabled,
+  required String? knownRemoteId,
+  required bool bluetoothScanGranted,
+  required bool bluetoothConnectGranted,
+  required bool bluetoothAdapterOn,
+  required bool legacyLocationReady,
+}) {
+  return autoConnectEnabled &&
+      knownRemoteId != null &&
+      knownRemoteId.trim().isNotEmpty &&
+      bluetoothScanGranted &&
+      bluetoothConnectGranted &&
+      bluetoothAdapterOn &&
+      legacyLocationReady;
+}
+
 // AI-METHOD: main — Flutter entry point; initialize security/Firebase then mount production UI.
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -543,6 +563,7 @@ Future<void> main() async {
   }
 
   await AppSettingsStore.load();
+  await KnownCoolerStore.load();
   await FloatingStore.load();
 
   try {
@@ -849,15 +870,52 @@ class _DashboardScreenState extends State<DashboardScreen>
     frameCount += timings.length;
   }
 
-  void _tryAutoConnect() {
-    if (!appAutoConnectNotifier.value ||
-        connected ||
+  // AI-METHOD / AUTO-CONNECT-CONTRACT
+  // Auto Connect is passive: no BLE permission prompts, no Bluetooth power-on, and no
+  // device scan until a previously successful cooler identity is known and all OS state
+  // is already ready.
+  Future<void> _tryAutoConnect() async {
+    if (connected ||
         syncing ||
         _bleConnecting ||
-        (reconnectTimer?.isActive ?? false)) {
+        (reconnectTimer?.isActive ?? false) ||
+        !appAutoConnectNotifier.value ||
+        knownCoolerRemoteIdNotifier.value == null) {
       return;
     }
-    unawaited(_scanAndConnect());
+
+    final scanPermission = await Permission.bluetoothScan.status;
+    final connectPermission = await Permission.bluetoothConnect.status;
+    final adapter = await FlutterBluePlus.adapterState.first;
+    final sdk = await _androidSdkInt();
+
+    var locationReady = true;
+    if (sdk > 0 && sdk <= 30) {
+      final permission = await Permission.locationWhenInUse.status;
+      var serviceEnabled = true;
+      try {
+        serviceEnabled = await batteryChannel.invokeMethod<bool>(
+              'isLocationServiceEnabled',
+            ) ??
+            false;
+      } catch (_) {
+        serviceEnabled = false;
+      }
+      locationReady = permission.isGranted && serviceEnabled;
+    }
+
+    if (!canAutoConnect(
+      autoConnectEnabled: appAutoConnectNotifier.value,
+      knownRemoteId: knownCoolerRemoteIdNotifier.value,
+      bluetoothScanGranted: scanPermission.isGranted,
+      bluetoothConnectGranted: connectPermission.isGranted,
+      bluetoothAdapterOn: adapter == BluetoothAdapterState.on,
+      legacyLocationReady: locationReady,
+    )) {
+      return;
+    }
+
+    unawaited(_scanAndConnect(automatic: true));
   }
 
   Future<void> _postNotification(String title, String body, int id) async {
@@ -973,9 +1031,44 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   // AI-METHOD: _scanAndConnect — Perform bounded BLE discovery and pass the matching device to the connection routine.
-  Future<void> _scanAndConnect() async {
+  Future<void> _scanAndConnect({bool automatic = false}) async {
     if (syncing) return;
-    final accessReady = await _requestPermissions();
+    if (automatic) {
+      final scanPermission = await Permission.bluetoothScan.status;
+      final connectPermission = await Permission.bluetoothConnect.status;
+      final adapter = await FlutterBluePlus.adapterState.first;
+      final sdk = await _androidSdkInt();
+      var locationReady = true;
+      if (sdk > 0 && sdk <= 30) {
+        final permission = await Permission.locationWhenInUse.status;
+        var serviceEnabled = true;
+        try {
+          serviceEnabled = await batteryChannel.invokeMethod<bool>(
+                'isLocationServiceEnabled',
+              ) ??
+              false;
+        } catch (_) {
+          serviceEnabled = false;
+        }
+        locationReady = permission.isGranted && serviceEnabled;
+      }
+      if (!canAutoConnect(
+        autoConnectEnabled: appAutoConnectNotifier.value,
+        knownRemoteId: knownCoolerRemoteIdNotifier.value,
+        bluetoothScanGranted: scanPermission.isGranted,
+        bluetoothConnectGranted: connectPermission.isGranted,
+        bluetoothAdapterOn: adapter == BluetoothAdapterState.on,
+        legacyLocationReady: locationReady,
+      )) {
+        return;
+      }
+    } else {
+      final accessReady = await _requestPermissions();
+      if (!accessReady) {
+        if (mounted) setState(() => notice = JexText.of('connectionAccessRequired', appLanguageNotifier.value));
+        return;
+      }
+    }
     if (!accessReady) {
       if (mounted) setState(() => notice = JexText.of('connectionAccessRequired', appLanguageNotifier.value));
       return;
@@ -1001,7 +1094,12 @@ class _DashboardScreenState extends State<DashboardScreen>
           );
           final name = result.advertisementData.advName.trim().toLowerCase();
           final platformName = result.device.platformName.trim().toLowerCase();
-          if (serviceMatch || name == 'je x fyz' || platformName == 'je x fyz') {
+          final knownMatch = knownCoolerRemoteIdNotifier.value != null &&
+              result.device.remoteId.toString() == knownCoolerRemoteIdNotifier.value;
+          final matches = automatic
+              ? (knownMatch && serviceMatch)
+              : (serviceMatch || name == 'je x fyz' || platformName == 'je x fyz');
+          if (matches) {
             if (!completer.isCompleted) completer.complete(result.device);
             break;
           }
@@ -1030,7 +1128,12 @@ class _DashboardScreenState extends State<DashboardScreen>
           for (final result in results) {
             final name = result.advertisementData.advName.trim().toLowerCase();
             final platformName = result.device.platformName.trim().toLowerCase();
-            if (name == 'je x fyz' || platformName == 'je x fyz') {
+            final knownMatch = knownCoolerRemoteIdNotifier.value != null &&
+                result.device.remoteId.toString() == knownCoolerRemoteIdNotifier.value;
+            final matches = automatic
+                ? knownMatch
+                : (name == 'je x fyz' || platformName == 'je x fyz');
+            if (matches) {
               if (!fallback.isCompleted) fallback.complete(result.device);
               break;
             }
@@ -1144,6 +1247,9 @@ class _DashboardScreenState extends State<DashboardScreen>
 
         // AI-METHOD: _discoverServices — Discover exact JE X FYZ service/RX/TX, enable notifications, and complete SYNC/SYNC_READY.
         await _discoverServices(target);
+        // Reaching here means GATT discovery + SYNC + SYNC_READY succeeded; only now
+        // is this cooler eligible for future passive Auto Connect.
+        await KnownCoolerStore.save(target.remoteId.toString());
         lastError = null;
         break;
       } catch (e) {
@@ -1206,37 +1312,63 @@ class _DashboardScreenState extends State<DashboardScreen>
       }
       if (disconnectRediscoveryScanInProgress) return;
 
+      // Passive reconnect uses the same OS-state gate as Auto Connect.
+      final scanPermission = await Permission.bluetoothScan.status;
+      final connectPermission = await Permission.bluetoothConnect.status;
+      final adapter = await FlutterBluePlus.adapterState.first;
+      final sdk = await _androidSdkInt();
+      var locationReady = true;
+      if (sdk > 0 && sdk <= 30) {
+        final permission = await Permission.locationWhenInUse.status;
+        var serviceEnabled = true;
+        try {
+          serviceEnabled = await batteryChannel.invokeMethod<bool>(
+                'isLocationServiceEnabled',
+              ) ??
+              false;
+        } catch (_) {
+          serviceEnabled = false;
+        }
+        locationReady = permission.isGranted && serviceEnabled;
+      }
+      if (!canAutoConnect(
+        autoConnectEnabled: appAutoConnectNotifier.value,
+        knownRemoteId: knownCoolerRemoteIdNotifier.value,
+        bluetoothScanGranted: scanPermission.isGranted,
+        bluetoothConnectGranted: connectPermission.isGranted,
+        bluetoothAdapterOn: adapter == BluetoothAdapterState.on,
+        legacyLocationReady: locationReady,
+      )) {
+        disconnectRediscoveryScanInProgress = false;
+        return;
+      }
+
       disconnectRediscoveryScanInProgress = true;
       attempts++;
       try {
         await FlutterBluePlus.stopScan();
         await disconnectRediscoverySub?.cancel();
 
-        if (appAutoConnectNotifier.value) {
-          disconnectRediscoverySub =
-              FlutterBluePlus.scanResults.listen((results) {
-            if (!mounted || connected || _bleConnecting) return;
-            for (final result in results) {
-              final serviceMatch = result.advertisementData.serviceUuids.any(
-                (uuid) => uuid.toString().toLowerCase() == serviceUuid,
-              );
-              final name =
-                  result.advertisementData.advName.trim().toLowerCase();
-              final platformName =
-                  result.device.platformName.trim().toLowerCase();
-              if (serviceMatch ||
-                  name == 'je x fyz' ||
-                  platformName == 'je x fyz') {
-                unawaited(FlutterBluePlus.stopScan());
-                _cancelDisconnectRediscovery();
-                unawaited(_connect(result.device));
-                break;
-              }
+        disconnectRediscoverySub =
+            FlutterBluePlus.scanResults.listen((results) {
+          if (!mounted || connected || _bleConnecting) return;
+          for (final result in results) {
+            final serviceMatch = result.advertisementData.serviceUuids.any(
+              (uuid) => uuid.toString().toLowerCase() == serviceUuid,
+            );
+            final knownMatch = knownCoolerRemoteIdNotifier.value != null &&
+                result.device.remoteId.toString() == knownCoolerRemoteIdNotifier.value;
+            if (serviceMatch && knownMatch) {
+              unawaited(FlutterBluePlus.stopScan());
+              _cancelDisconnectRediscovery();
+              unawaited(_connect(result.device));
+              break;
             }
-          });
-        }
+          }
+        });
 
         await FlutterBluePlus.startScan(
+          withServices: <Guid>[Guid(serviceUuid)],
           timeout: const Duration(seconds: 2),
           androidCheckLocationServices: false,
           androidUsesFineLocation: false,
@@ -2455,7 +2587,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       }
       attempts++;
       // AI-METHOD: _scanAndConnect — Perform bounded BLE discovery and pass the matching device to the connection routine.
-      await _scanAndConnect();
+      await _tryAutoConnect();
       if (connected) timer.cancel();
     });
   }
@@ -4504,8 +4636,11 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
 
   Future<void> _tapBluetooth() async {
     if (_bluetoothDenied) {
-      await openAppSettings();
+      // Explicit user action retries the Nearby Devices permission request.
+      // Never redirect to App Settings merely because the previous request was denied.
+      await widget.onScan();
     } else {
+      // Bluetooth power remains a manual OS action when the adapter is off.
       await widget.onOpenBluetoothSettings();
     }
     await Future<void>.delayed(const Duration(milliseconds: 250));
