@@ -2709,6 +2709,10 @@ static void startOnlineOta() {
   if (cloudSsid.isEmpty() || cloudPassword.isEmpty() || !validGitHubFirmwareUrl(cloudUrl)) return;
 
   otaActive = true;
+  // OTA owns LED output from this boundary onward; cancel any normal touch
+  // confirmation animation so it cannot reappear during OTA recovery.
+  touchAdaptiveOffIndicatorActive = false;
+  touchAdaptiveOffIndicatorLastPhase = 0xFFFFFFFFUL;
   setOtaState(OtaState::CLOUD_CONNECTING);
   setOtaDiagnosticStage("ONLINE_REQUEST");
   setOtaDiagnosticProgress(0);
@@ -3127,6 +3131,9 @@ static void handleOtaPost() {
 
 static void startLocalOtaAp() {
   onlineOtaStartPending = false;
+  // Local OTA owns the LED output from the boot-AP boundary onward.
+  touchAdaptiveOffIndicatorActive = false;
+  touchAdaptiveOffIndicatorLastPhase = 0xFFFFFFFFUL;
   // Boot AP is not a safety state until a Wi-Fi client actually connects.
   // Keep the restored user LED state visible while the AP waits for a client.
   bootApActive = true;
