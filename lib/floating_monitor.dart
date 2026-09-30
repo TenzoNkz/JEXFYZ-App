@@ -24,7 +24,7 @@ class FloatingConfig {
     this.enabled = false,
     this.style = FloatingDisplayStyle.letters,
     this.order = const <String>['F', 'B', 'H', 'V', 'A', 'P', 'S'],
-    this.selected = const <String>{},
+    this.selected = const <String>{'F', 'B', 'H', 'V', 'A', 'P', 'S'},
     this.size = 1.0,
     this.opacity = 0.9,
     this.horizontal = true,
@@ -77,7 +77,7 @@ class FloatingConfig {
           : <String>['F', 'B', 'H', 'V', 'A', 'P', 'S'];
       final selected = rawSelected is List
           ? rawSelected.map((e) => e.toString()).where(FloatingMetric.isValid).toSet()
-          : <String>{};
+          : <String>{'F', 'B', 'H', 'V', 'A', 'P', 'S'};
       if (order.length != 7) {
         for (final metric in FloatingMetric.defaultOrder) {
           if (!order.contains(metric)) order.add(metric);
@@ -262,8 +262,8 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
       await _toggleEnabled(true);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Overlay permission was not granted.'),
+        SnackBar(
+          content: Text(JexText.of('overlayPermissionDenied', appLanguageNotifier.value)),
         ),
       );
       setState(() {});
@@ -299,8 +299,15 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
         config = config.copyWith(enabled: false);
         await FloatingStore.save(config);
       } else {
-        await FloatingBridge.updateConfig(config);
-        _startRuntimeSync();
+        final started = await FloatingBridge.start(config);
+        final running = started && await _waitForRuntimeReady();
+        if (!running) {
+          config = config.copyWith(enabled: false);
+          await FloatingStore.save(config);
+        } else {
+          await FloatingBridge.updateConfig(config);
+          _startRuntimeSync();
+        }
       }
     }
   }
@@ -311,6 +318,16 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     if (config.enabled) await FloatingBridge.updateConfig(config);
     if (config.enabled && runtimeTimer == null) _startRuntimeSync();
     if (mounted) setState(() {});
+  }
+
+  Future<bool> _waitForRuntimeReady({Duration timeout = const Duration(seconds: 3)}) async {
+    final deadline = DateTime.now().add(timeout);
+    while (DateTime.now().isBefore(deadline)) {
+      final state = await FloatingBridge.runtimeState();
+      if (state?['running'] == true && state?['overlay'] == true) return true;
+      await Future<void>.delayed(const Duration(milliseconds: 120));
+    }
+    return false;
   }
 
   Future<void> _toggleEnabled(bool value) async {
@@ -356,8 +373,8 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
       if (!opened && mounted) {
         _waitingForOverlayPermission = false;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Android overlay permission settings could not be opened.'),
+          SnackBar(
+            content: Text(JexText.of('overlaySettingsFailed', appLanguageNotifier.value)),
           ),
         );
       }
@@ -365,11 +382,17 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     }
 
     final next = config.copyWith(enabled: true);
-    if (!await FloatingBridge.start(next)) {
+    final started = await FloatingBridge.start(next);
+    final running = started && await _waitForRuntimeReady();
+    if (!running) {
+      await FloatingBridge.stop();
+      config = config.copyWith(enabled: false);
+      await FloatingStore.save(config);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Floating Monitor could not be started.')),
+          SnackBar(content: Text(JexText.of('floatingStartFailed', appLanguageNotifier.value))),
         );
+        setState(() {});
       }
       return;
     }
@@ -436,13 +459,13 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     final lang = appLanguageNotifier.value;
     if (loading) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Floating Monitor')),
+        appBar: AppBar(title: Text(JexText.of('floatingMonitor', lang))),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Floating Monitor')),
+      appBar: AppBar(title: Text(JexText.of('floatingMonitor', lang))),
       body: ValueListenableBuilder<FloatingTelemetry>(
         valueListenable: floatingTelemetryNotifier,
         builder: (context, telemetry, _) {
@@ -465,7 +488,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Display Style',
+                        JexText.of('displayStyle', lang),
                         style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
                       ),
                       const SizedBox(height: 7),
@@ -473,12 +496,12 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                         segments: [
                           ButtonSegment(
                             value: FloatingDisplayStyle.letters,
-                            label: const Text('Letters'),
+                            label: Text(JexText.of('letters', lang)),
                             icon: const Icon(PhosphorIconsRegular.textAa),
                           ),
                           ButtonSegment(
                             value: FloatingDisplayStyle.icons,
-                            label: const Text('Icons'),
+                            label: Text(JexText.of('icons', lang)),
                             icon: const Icon(PhosphorIconsRegular.stack),
                           ),
                         ],
@@ -489,7 +512,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'Functions',
+                        JexText.of('functions', lang),
                         style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
                       ),
                       const SizedBox(height: 4),
@@ -521,14 +544,14 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                       ),
                       const SizedBox(height: 10),
                       _sliderRow(
-                        label: 'Size',
+                        label: JexText.of('size', lang),
                         value: config.size,
                         min: 0.65,
                         max: 1.8,
                         onChanged: (value) => _apply(config.copyWith(size: value)),
                       ),
                       _sliderRow(
-                        label: 'Opacity',
+                        label: JexText.of('opacity', lang),
                         value: config.opacity,
                         min: 0.35,
                         max: 1.0,
@@ -536,7 +559,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        config.horizontal ? 'Horizontal' : 'Vertical',
+                        config.horizontal ? JexText.of('horizontal', lang) : JexText.of('vertical', lang),
                         textAlign: TextAlign.center,
                         style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
                       ),
@@ -634,19 +657,19 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   String _metricLabel(String metric, AppLanguage lang) {
     switch (metric) {
       case 'F':
-        return 'FPS';
+        return JexText.of('fps', lang);
       case 'B':
-        return 'Battery';
+        return JexText.of('battery', lang);
       case 'H':
-        return 'Hotside';
+        return JexText.of('hotside', lang);
       case 'V':
-        return 'Volt';
+        return JexText.of('volt', lang);
       case 'A':
-        return 'Adaptive';
+        return JexText.of('adaptive', lang);
       case 'P':
-        return 'Peltier';
+        return JexText.of('peltier', lang);
       case 'S':
-        return 'Speed';
+        return JexText.of('speed', lang);
       default:
         return metric;
     }
