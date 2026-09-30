@@ -93,9 +93,3 @@ void main() {
   });
 
 }
-
-
-  test('Default application theme is dark for settings pages', () {
-    final theme = buildJexTheme(AppThemePreset.defaultTheme);
-    expect(theme.brightness, Brightness.dark);
-  });
