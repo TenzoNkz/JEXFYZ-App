@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
 import 'app_settings.dart';
+import 'jex_animated_glyph.dart';
 
 enum FloatingDisplayStyle { letters, icons }
 
@@ -641,7 +642,11 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
       return Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(_metricIcon(metric), size: 17 * size, color: Colors.white),
+          JexAnimatedGlyph(
+            icon: _metricIcon(metric),
+            size: 17 * size,
+            color: Colors.white,
+          ),
           SizedBox(width: 4 * size),
           Text(
             value,
@@ -868,7 +873,11 @@ class SettingsPage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
           child: Row(
             children: [
-              Icon(icon, size: 21, color: scheme.onSurfaceVariant),
+              JexAnimatedGlyph(
+                icon: icon,
+                size: 21,
+                color: scheme.onSurfaceVariant,
+              ),
               const SizedBox(width: 14),
               Expanded(
                 child: Column(
@@ -894,8 +903,8 @@ class SettingsPage extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(
-                PhosphorIconsRegular.caretRight,
+              JexAnimatedGlyph(
+                icon: PhosphorIconsRegular.caretRight,
                 size: 18,
                 color: scheme.onSurfaceVariant,
               ),
