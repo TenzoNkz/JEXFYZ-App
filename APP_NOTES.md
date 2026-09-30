@@ -921,3 +921,20 @@ Never:
 - Build App must never be inferred from a discussion, an execution request, or the existence of a new commit. A build occurs only after an explicit **`Build App`** instruction from the user.
 - The Build App trigger was corrected in this execution to **manual-only**: `.github/workflows/app-build-trigger.yml` now uses `workflow_dispatch` and no longer has a `push` trigger. This prevents ordinary commits from automatically launching an App build.
 - This execution changed **process/CI behavior and documentation only**. No Dart/Android source or firmware source was modified, and no App Build was requested or run.
+
+
+## 2026-09-30 — FULL EXECUTION / DISPLAY THEME + APP↔FIRMWARE STATE SYNC + ANIMATED ICON SYSTEM
+
+- Restored the intended **Default Dashboard visual boundary**: black Home/header with a white Display/Menu area. The Dashboard now receives its light Default theme above the `DashboardScreen` State context so helper widgets using `Theme.of(context)` resolve the same theme as the rendered Display.
+- Preserved the global Default non-dashboard theme as dark, so Settings and child pages do not become unintentionally white.
+- Strengthened App↔Firmware command synchronization:
+  - App now treats BLE ACK as **command acceptance**, not physical-state confirmation.
+  - After accepted stateful commands, App waits for the corresponding authoritative telemetry state before reporting confirmation success.
+  - App performs a fresh firmware SYNC when the connected dashboard resumes from the Android lifecycle, providing reconciliation after background/notification loss without adding a 1 Hz SYNC heartbeat.
+- Added firmware-side authoritative state replies for stateful commands even when the requested value was already equal to the current firmware state. FAN and PELTIER are always echoed after their commands, preventing stale App toggles from remaining OFF when the device is already ON. The same reconciliation pattern was extended to RGB, LED mode/brightness/color, adaptive/profile, fan speed, temperature limits, reset settings, and related persisted control values.
+- Firmware physical GPIO authority remains unchanged: GPIO5 = FAN and GPIO6 = PELTIER.
+- Reworked the JE X FYZ animated icon behavior toward **calm micro-interactions** rather than aggressive looping motion. Existing functional icons (battery, hotside, voltage, adaptive, peltier, fan, speed, LED, Bluetooth) remain state-driven; FAN animation speed continues to follow its level.
+- Added reusable `lib/jex_animated_glyph.dart` for subtle continuous animation on secondary Settings/Floating Monitor glyphs.
+- Dashboard header/menu glyph coverage was expanded so ordinary UI icons are no longer visually static by default.
+- No BLE UUID, P1 protocol, OTA transport, Firebase metadata contract, or firmware version was changed by this execution.
+- **No Build App was run.** Per project workflow, this execution only changed source/documentation; Build App remains an explicit separate command.
