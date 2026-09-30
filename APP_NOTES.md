@@ -1126,3 +1126,33 @@ Never:
 - APK artifact: `JEXFYZ#32.apk`, artifact ID `11116203156`, size 54,130,688 bytes, SHA-256 `afbd43db1e8ca06e267666129763cc0960be4b309d3b0156c65dd9db8bc3c6b5`.
 - The downloaded artifact was independently checked as a valid APK/ZIP container with no ZIP integrity errors.
 - Dedicated Build Trigger Issue #6 was closed after the successful build. Future explicit `@Thinking Build App!` requests can reopen the same issue to trigger the workflow; closing/reopening is the assistant-controlled trigger path.
+
+
+## 2026-10-01 — FULL EXECUTION / CROSS-OEM FLOATING MONITOR ROBUSTNESS
+
+- Implemented the approved Floating Monitor robustness patch without changing firmware, BLE/P1 contracts, OTA, UUIDs, or manifest permissions.
+- MainActivity.kt:
+  - Reworked openOverlaySettings() into a public-API fallback ladder:
+    1. Settings.ACTION_MANAGE_OVERLAY_PERMISSION with the app package URI.
+    2. Generic Settings.ACTION_MANAGE_OVERLAY_PERMISSION.
+    3. Settings.ACTION_APPLICATION_DETAILS_SETTINGS with the app package URI.
+  - Each candidate is checked with resolveActivity() and guarded with try/catch; no OEM-specific hidden API or hardcoded vendor AppOps was added.
+  - Removed the unnecessary FLAG_ACTIVITY_NEW_TASK from this Activity-context Settings flow.
+- FloatingMonitorService.kt:
+  - Added public_overlay_granted, service_running, window_add_attempted, window_add_succeeded, window_add_error, and view_attached_to_window runtime diagnostics.
+  - runtimeState() now returns Map<String, Any?> so the attach error can be nullable.
+  - ensureOverlay() now records permission denial and the exact exception class/message from WindowManager.addView() instead of swallowing it.
+  - Added View.OnAttachStateChangeListener plus View.isAttachedToWindow verification so overlay is no longer based only on hudView != null.
+- lib/floating_monitor.dart:
+  - Replaced the single immediate permission check after AppLifecycleState.resumed with a bounded retry window of up to 2 seconds at 300 ms intervals.
+  - Added a guard preventing concurrent resume permission checks.
+  - Extended the existing 300 ms runtime reconciliation to detect service/overlay loss and persist Floating Monitor disabled rather than leaving a stale enabled UI state.
+- Source commits created by this execution:
+  - MainActivity fallback: fa4719843b8741bcbefc20ca32196b1158c662b4
+  - Native overlay diagnostics: 191fd40dd552e07c67f985324dbb2158af620c99
+  - Flutter permission/runtime reconciliation: a16a6ea02cca1158379dc2d3fdab1f335d776082b
+- Validation boundary:
+  - Static source edits were applied and committed.
+  - No Build App was run, because execution and build remain separate by project rule.
+  - The patch is not yet physically validated across OEM devices. In particular, the relationship between an OEM's visible "Display pop-up windows" state and Settings.canDrawOverlays() remains a device-dependent runtime question.
+  - The patch intentionally does not claim universal OEM behavior; it uses the strongest public Android fallbacks and actual overlay attachment diagnostics before considering vendor-specific handling.
