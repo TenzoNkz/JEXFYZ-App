@@ -1,3 +1,128 @@
+# JE X FYZ APP — AUTHORITATIVE MEMORY CORE
+> First-read memory index for App work. Historical entries below remain preserved as evidence. When an older entry conflicts with a later verified state, this current section wins.
+> Consolidated: 2026-10-01.
+
+## 0. MEMORY PRIORITY
+1. Current verified source/repository state.
+2. Newest authoritative maintenance notes.
+3. Verified build/runtime/device evidence.
+4. Older history.
+5. Unverified hypotheses or third-party suggestions.
+Never silently promote a hypothesis, Gemini suggestion, old snippet, or historical build into a confirmed fact.
+
+## 1. CURRENT PROJECT
+- Product: JE Cooler
+- In-app brand/header: JE X FYZ
+- App repo: TenzoNkz/JEXFYZ-App
+- Firmware repo: TenzoNkz/JEXFYZ-Firmware
+- Reference architecture/UI: Horizon Cooler App
+- App: Flutter/Dart + Android/Kotlin
+- Firmware hardware: ESP32-C3 Super Mini / ESP32-C3 Dev Module
+- Firmware toolchain: ArduinoDroid + official Arduino-ESP32 Core 3.3.7
+- BLE protocol: P1
+- Firmware is authoritative for physical state and safety.
+
+## 2. CURRENT SOURCE / REPOSITORY STATE
+- App branch: main.
+- Documentation/process HEAD before this consolidation: ab98e627910e902558cfaf07ecc96b4f72ca0064.
+- Latest functional Floating Monitor source commit identified before the documentation-only changes: 6555427b4edb003ed63a51eb2ff1d560565d7e30.
+- Later commits between that functional change and the documentation HEAD include workflow/documentation and main.dart changes; therefore the current source must still be read directly before implementation.
+- Current source is NOT automatically validated by Build #32 because Build #32 used source revision b98651ed1e92d1e8de88cd3f67530520db5bc76f.
+
+## 3. BUILD TRUTH
+- Build App is explicit-only.
+- Current trigger model: dedicated GitHub Issue proxy -> reusable app-build.yml.
+- Normal pushes/PRs/notes commits do not count as a Build App request.
+- Build #32: Run 36754549510.
+- Build #32 artifact: JEXFYZ#32.apk; artifact ID 11116203156; size 54,130,688 bytes.
+- Build #32 artifact SHA-256: afbd43db1e8ca06e267666129763cc0960be4b309d3b0156c65dd9db8bc3c6b5.
+- Build #32 pipeline passed audit, dependencies, analyze, tests, release APK, signing verification, artifact upload, and Dart symbols.
+- Production certificate SHA-256: dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0.
+- Historical build success never proves newer source until the source revision matches.
+
+## 4. APP UI BASELINE
+- Default Dashboard: black header + white rounded Display/content.
+- Non-dashboard Default Settings pages: dark theme.
+- English is default; Bahasa Indonesia is separate.
+- Voltage: fixed 5V / 9V / 12V selector.
+- Control: Peltier, Fan, Fan Speed.
+- Adaptive: Adaptive Switch + Hotside Protection / Hotside + Battery.
+- LED: 7 modes; Twinkle removed; brightness 1–100%.
+- Floating Monitor default order: F, B, H, V, A, P, S.
+- Floating supports Letters/Icons, selection, reorder, preview, size, opacity, orientation, drag, pinch resize, tap orientation switching.
+- Floating uses the same App telemetry state as Home; no second BLE/GATT path.
+
+## 5. APP <-> FIRMWARE SYNC CONTRACT
+- BLE ACK means command acceptance, not physical-state confirmation.
+- Stateful commands wait for authoritative firmware telemetry.
+- If expected telemetry is missing, App may perform one fresh firmware SYNC for reconciliation.
+- Firmware echoes authoritative current state for stateful commands even when the requested value is already current.
+- FAN and PELTIER command responses include both FAN and current PELTIER state.
+- Runtime remains delta-based; do not add periodic full-sync spam without explicit approval.
+
+## 6. FLOATING MONITOR — ACTIVE INVESTIGATION
+### Confirmed implementation
+- Flutter channel: je_x_fyz/floating.
+- Methods: hasOverlayPermission, openOverlaySettings, startFloatingMonitor, stopFloatingMonitor, updateFloatingConfig, updateFloatingData, getFloatingRuntimeState.
+- Manifest declares SYSTEM_ALERT_WINDOW and FOREGROUND_SERVICE_SPECIAL_USE.
+- Native service: FloatingMonitorService.
+- Android O+: TYPE_APPLICATION_OVERLAY.
+- Foreground-service type: specialUse.
+### Confirmed evidence from user video 99729.mp4
+- Android app-specific settings for JE Cooler are shown.
+- The page includes a Display pop-up windows permission.
+- The interaction reaches an enabled/checked state, yet Floating Monitor still does not reliably activate and permission handling can repeat.
+- The launcher/home screen is visible during the sequence before returning to Floating Monitor settings.
+- Therefore the failure is not adequately explained by the simple statement that the user never opened the permission page.
+### Current code weakness
+- MainActivity.hasOverlayPermission only reports Settings.canDrawOverlays(this).
+- FloatingMonitorService.start also gates on Settings.canDrawOverlays(context).
+- ensureOverlay catches addView exceptions but exposes no structured failure reason.
+- runtimeState reports overlay=true when hudView is non-null and config.enabled, which is weaker than proof of actual on-screen composition.
+- Flutter currently waits for running && overlay, but those flags do not distinguish permission denial, vendor policy, service failure, addView failure, or later overlay loss.
+### Working diagnosis
+- Strong lead: public Android overlay permission state is not sufficient to explain the observed device behavior, and runtime attachment/health is under-validated.
+- This is a working diagnosis, not a proven vendor-specific root cause.
+### Planned patch direction
+1. Preserve the existing architecture; avoid a broad refactor.
+2. Separate public permission state from actual overlay attachment/runtime health.
+3. Add actual WindowManager attachment verification and structured failure reporting after the Android behavior is fully confirmed.
+4. Persist enabled=true only after runtime overlay confirmation.
+5. Re-check position/bounds recovery after the permission/lifecycle issue is fixed.
+6. Ask Gemini only for a specific unresolved Android/OEM question if source inspection and evidence are insufficient.
+### Non-goals
+- No random permissions.
+- No second BLE implementation.
+- No BLE UUID/P1 changes for this UI/runtime bug.
+- No firmware changes for an App Android overlay issue.
+- No build while still in Diskusi.
+
+## 7. ANDROID BASELINE
+- Application ID: com.horizontalzzz.jexfyz.
+- compileSdk 37; targetSdk 36; minSdk 24.
+- Java/Kotlin JVM 17.
+- Production signing required.
+- R8/resource shrinking enabled.
+- Native foreground services must not become second BLE owners.
+
+## 8. OTA BOUNDARY
+- Firebase RTDB firmware metadata node: /firmware_update.
+- Metadata URL: https://je-x-fyz-default-rtdb.asia-southeast1.firebasedatabase.app/firmware_update.json
+- Published BIN URL documented: https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ.cpp.bin
+- No SHA-only firmware link selection.
+- Firmware source continuity is under App/firmware/; production BIN repo remains binary-only.
+
+## 9. VALIDATION BOUNDARIES
+- Static source inspection != Flutter build.
+- Flutter build/test != Android OEM runtime validation.
+- App runtime != physical firmware validation.
+- Successful OTA history != proof of a newer firmware release.
+- Build artifact != current-source validation unless the source revision matches.
+
+## 10. CURRENT NEXT STEP
+- Active issue: Floating Monitor permission/runtime reliability.
+- This documentation pass does not authorize a source patch by itself; the next source change still requires explicit execution approval.
+
 # 2026-09-30 — V2.3 TOUCH / APP UI / PERMISSION FIX PASS
 
 - Voltage UI was simplified to the fixed three-row vertical selector matching the intended JE X FYZ presentation: 5V Low Mode, 9V Mid Mode, 12V High Mode. The old Vertical/Side Text setting was removed from persisted App settings and UI.
