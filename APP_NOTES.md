@@ -1207,3 +1207,16 @@ Never:
 
 
 - Follow-up comment-memory pass: lib/floating_monitor.dart now also marks the remaining configuration/model/settings helper functions and Settings widget classes with explicit AI-METHOD / AI-MEMORY contracts. Latest comment-only source commit: 1fa5c54868a7a683b95f338ebbd9b3ac9fa23814.
+
+
+## 2026-10-01 — FULL EXECUTION / THEME CONTRAST + RESIDUAL LOCALIZATION + FLOATING STATE
+
+- Re-inspected the current main source before implementation; existing Localization and Fan Speed patches were preserved rather than duplicated.
+- Fixed remaining Dashboard Light-theme contrast hazards in the Home header and Notify presentation:
+  - disconnected Bluetooth now uses header-aware foreground contrast;
+  - Notify message text, chip fill, and offline status color follow the actual header presentation;
+  - ColorScheme.onSurfaceVariant is explicitly aligned with the project muted text color.
+- Completed the six remaining hardcoded temperature-limit Snackbar paths through JexText.
+- Floating Monitor now treats Adaptive and Peltier as independent firmware-backed states; Fan state only gates visibility of Speed (S).
+- Added deterministic Flutter regression coverage for the Floating state/visibility contract.
+- No BLE UUID, P1 protocol, OTA transport, Firebase metadata contract, firmware GPIO, firmware version, or Android overlay permission architecture was changed.
