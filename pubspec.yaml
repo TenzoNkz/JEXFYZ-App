@@ -5,7 +5,7 @@
 name: jexfyz_cooler
 description: "JE Cooler official Android controller for JE X FYZ hardware, based on Horizon Cooler."
 publish_to: 'none'
-version: 1.0.0+3
+version: 1.0.0+4
 
 environment:
   sdk: '>=3.9.0 <4.0.0'
