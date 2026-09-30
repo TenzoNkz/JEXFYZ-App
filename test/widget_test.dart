@@ -1,3 +1,10 @@
+// AI-MEMORY / TEST CONTRACT
+// This file validates deterministic UI helpers, localization contracts, and pure parsing rules.
+// It does not prove BLE, Android OEM permission behavior, overlay compositing, OTA transport,
+// or physical firmware behavior.
+// Localization contract under test: English/Indonesia names stay stable; ON/OFF becomes
+// HIDUP/MATI only in Indonesia. BLE protocol tokens remain English machine identifiers.
+
 // AI TEST MEMORY:
 // These tests validate UI rendering and pure helper/parsing rules only.
 // They do not prove BLE, OTA, or physical hardware runtime.
@@ -9,8 +16,9 @@ import 'package:jexfyz_cooler/app_settings.dart';
 
 void main() {
   testWidgets('JE Cooler dashboard renders', (tester) async {
-    // Use a tall portrait viewport so the fixed Home canvas plus the
-    // production submenu both have room to render without test-only overflow.
+    // AI-MEMORY / DASHBOARD-VIEWPORT-CONTRACT
+    // Use a tall portrait viewport so the fixed Home canvas and production submenu render
+    // without test-only overflow. This is a UI layout guard, not device-runtime validation.
     tester.view.physicalSize = const Size(1080, 3200);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(() {
@@ -48,6 +56,23 @@ void main() {
 
     // The dashboard must render without a test-time layout exception.
     expect(tester.takeException(), isNull);
+  });
+
+
+
+  test('Localization keeps language names stable and maps power states correctly', () {
+    // AI-MEMORY / LOCALIZATION-CONTRACT
+    // Language names must be English / Indonesia regardless of the selected language.
+    expect(JexText.of('english', AppLanguage.english), 'English');
+    expect(JexText.of('english', AppLanguage.indonesia), 'English');
+    expect(JexText.of('indonesia', AppLanguage.english), 'Indonesia');
+    expect(JexText.of('indonesia', AppLanguage.indonesia), 'Indonesia');
+
+    // User-facing power states are ON/OFF in English and HIDUP/MATI in Indonesia.
+    expect(JexText.of('on', AppLanguage.english), 'ON');
+    expect(JexText.of('off', AppLanguage.english), 'OFF');
+    expect(JexText.of('on', AppLanguage.indonesia), 'HIDUP');
+    expect(JexText.of('off', AppLanguage.indonesia), 'MATI');
   });
 
   test('JE X FYZ voltage helper accepts only supported voltages', () {
