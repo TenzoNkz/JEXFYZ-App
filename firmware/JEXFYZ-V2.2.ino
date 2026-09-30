@@ -1241,6 +1241,13 @@ static void completeVoltageTransition() {
 
   voltageTransition = false;
 
+  if (adaptiveOn &&
+      adaptiveResumePeltierAfterHotStep &&
+      fanOn) {
+    adaptiveResumePeltierAfterHotStep = false;
+    peltierOn = true;
+  }
+
   if (!voltageGuardArmed) {
     voltageGuardArmed = true;
     lastVoltageChangeMs = millis();
