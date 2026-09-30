@@ -321,6 +321,110 @@ class JexText {
       AppLanguage.english: 'Speed',
       AppLanguage.indonesia: 'Kecepatan',
     },
+    'lowMode': {
+      AppLanguage.english: 'Low Mode',
+      AppLanguage.indonesia: 'Mode Rendah',
+    },
+    'midMode': {
+      AppLanguage.english: 'Mid Mode',
+      AppLanguage.indonesia: 'Mode Sedang',
+    },
+    'highMode': {
+      AppLanguage.english: 'High Mode',
+      AppLanguage.indonesia: 'Mode Tinggi',
+    },
+    'hotsideProtection': {
+      AppLanguage.english: 'Hotside Protection',
+      AppLanguage.indonesia: 'Perlindungan Suhu Panas',
+    },
+    'hotsideBattery': {
+      AppLanguage.english: 'Hotside + Battery',
+      AppLanguage.indonesia: 'Suhu Panas + Baterai',
+    },
+    'peltierSafety': {
+      AppLanguage.english: 'Peltier Safety',
+      AppLanguage.indonesia: 'Keamanan Peltier',
+    },
+    'fanRequiredPeltier': {
+      AppLanguage.english: 'Fan must be running before Peltier can be enabled.',
+      AppLanguage.indonesia: 'Kipas harus menyala sebelum Peltier dapat diaktifkan.',
+    },
+    'cancel': {
+      AppLanguage.english: 'Cancel',
+      AppLanguage.indonesia: 'Batal',
+    },
+    'turnOnFan': {
+      AppLanguage.english: 'Turn On Fan',
+      AppLanguage.indonesia: 'Nyalakan Kipas',
+    },
+    'current': {
+      AppLanguage.english: 'Current',
+      AppLanguage.indonesia: 'Saat Ini',
+    },
+    'latest': {
+      AppLanguage.english: 'Latest',
+      AppLanguage.indonesia: 'Terbaru',
+    },
+    'updateAvailable': {
+      AppLanguage.english: 'Update available.',
+      AppLanguage.indonesia: 'Pembaruan tersedia.',
+    },
+    'waitingDevice': {
+      AppLanguage.english: 'Waiting for device...',
+      AppLanguage.indonesia: 'Menunggu perangkat...',
+    },
+    'upToDate': {
+      AppLanguage.english: 'Up to date.',
+      AppLanguage.indonesia: 'Sudah terbaru.',
+    },
+    'metadataUnavailable': {
+      AppLanguage.english: 'Firmware metadata unavailable.',
+      AppLanguage.indonesia: 'Metadata firmware tidak tersedia.',
+    },
+    'password': {
+      AppLanguage.english: 'Password',
+      AppLanguage.indonesia: 'Kata Sandi',
+    },
+    'ssid': {
+      AppLanguage.english: 'SSID',
+      AppLanguage.indonesia: 'SSID',
+    },
+    'savedSecurely': {
+      AppLanguage.english: 'Saved securely.',
+      AppLanguage.indonesia: 'Disimpan dengan aman.',
+    },
+    'otaStartRejected': {
+      AppLanguage.english: 'OTA start rejected.',
+      AppLanguage.indonesia: 'Mulai OTA ditolak.',
+    },
+    'otaInProgress': {
+      AppLanguage.english: 'OTA in progress.',
+      AppLanguage.indonesia: 'OTA sedang berlangsung.',
+    },
+    'systemReady': {
+      AppLanguage.english: 'System ready.',
+      AppLanguage.indonesia: 'Sistem siap.',
+    },
+    'connectingDevice': {
+      AppLanguage.english: 'Connecting to device...',
+      AppLanguage.indonesia: 'Menghubungkan ke perangkat...',
+    },
+    'scanning': {
+      AppLanguage.english: 'Scanning...',
+      AppLanguage.indonesia: 'Memindai...',
+    },
+    'syncing': {
+      AppLanguage.english: 'Synchronizing device...',
+      AppLanguage.indonesia: 'Menyinkronkan perangkat...',
+    },
+    'bluetoothNotReady': {
+      AppLanguage.english: 'Bluetooth is not ready.',
+      AppLanguage.indonesia: 'Bluetooth belum siap.',
+    },
+    'connectFirst': {
+      AppLanguage.english: 'Connect to JE X FYZ first.',
+      AppLanguage.indonesia: 'Hubungkan ke JE X FYZ terlebih dahulu.',
+    },
     'manual': {
       AppLanguage.english: 'Manual',
       AppLanguage.indonesia: 'Manual',
