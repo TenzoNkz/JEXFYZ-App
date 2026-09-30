@@ -685,8 +685,9 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                         onReorder: _reorder,
                         itemBuilder: (context, index) {
                           final metric = config.order[index];
-                          final enabled = metric == 'S' ? speedAvailable : true;
-                          final checked = config.selected.contains(metric) && enabled;
+                          // All seven metrics remain selectable; Speed is a state/value, not a separate Fan toggle.
+                          const enabled = true;
+                          final checked = config.selected.contains(metric);
                           return KeyedSubtree(
                             key: ValueKey<String>('floating-$metric'),
                             child: ListTile(
@@ -699,7 +700,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                               title: Text(_metricLabel(metric, lang), style: const TextStyle(fontWeight: FontWeight.w800)),
                               trailing: Checkbox(
                                 value: checked,
-                                onChanged: enabled ? (value) => _toggleMetric(metric, value == true) : null,
+                                onChanged: (value) => _toggleMetric(metric, value == true),
                               ),
                               dense: true,
                             ),
