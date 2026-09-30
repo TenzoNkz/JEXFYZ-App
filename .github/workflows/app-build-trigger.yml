@@ -5,6 +5,10 @@ name: Build App
 
 on:
   workflow_dispatch:
+  # TEMPORARY: one-shot push trigger listens only to the marker file.
+  push:
+    paths:
+      - .github/.build-trigger
 permissions:
   contents: read
 
