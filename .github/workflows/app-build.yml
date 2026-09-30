@@ -25,7 +25,7 @@ permissions:
 
 concurrency:
   group: jexfyz-cooler-build
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 env:
   EXPECTED_SIGNING_CERT_SHA256: "dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0"
@@ -198,7 +198,7 @@ jobs:
                           "JE X FYZ audit failed; App code references firmware source path: " + rel
                       )
 
-          if "shared_preferences" in pubspec:
+          if re.search(r"(?m)^\\s*shared_preferences\\s*:", pubspec):
               raise SystemExit("JE X FYZ audit failed; unused shared_preferences dependency is present")
 
           for asset in [
