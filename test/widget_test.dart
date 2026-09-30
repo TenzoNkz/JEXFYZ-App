@@ -117,6 +117,19 @@ void main() {
       expect(ledPaletteColor(hex), isA<Color>());
     }
   });
+  test('Light and Dark themes use inverse semantic text contrast', () {
+    final light = buildJexTheme(AppThemePreset.light);
+    final dark = buildJexTheme(AppThemePreset.dark);
+
+    expect(light.brightness, Brightness.light);
+    expect(light.colorScheme.onSurface, const Color(0xFF111318));
+    expect(light.colorScheme.onSurfaceVariant, const Color(0xFF3F444D));
+
+    expect(dark.brightness, Brightness.dark);
+    expect(dark.colorScheme.onSurface, const Color(0xFFF4F6FA));
+    expect(dark.colorScheme.onSurfaceVariant, const Color(0xFF979DA8));
+  });
+
   test('Default JE X FYZ theme is dark outside dashboard', () {
     final theme = buildJexTheme(AppThemePreset.defaultTheme);
     expect(theme.brightness, Brightness.dark);
