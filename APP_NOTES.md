@@ -1220,3 +1220,17 @@ Never:
 - Floating Monitor now treats Adaptive and Peltier as independent firmware-backed states; Fan state only gates visibility of Speed (S).
 - Added deterministic Flutter regression coverage for the Floating state/visibility contract.
 - No BLE UUID, P1 protocol, OTA transport, Firebase metadata contract, firmware GPIO, firmware version, or Android overlay permission architecture was changed.
+
+
+## 2026-10-01 — BUILD APP #34 SUCCESS / CURRENT SOURCE VALIDATED
+
+- Build App Run #34 (36776478079) completed successfully from current source commit 8df84e6722d08789a507388e51c930cfec457e71.
+- Run #33 (36776240045) failed only because the CI audit incorrectly treated a documented firmware path string as an App dependency; the audit was minimally corrected in 8df84e6722d08789a507388e51c930cfec457e71 to reject executable Dart import/export/part references instead.
+- Build #34 pipeline passed: security/architecture audit, dependency installation, Dart analyze, Flutter tests, release APK build, production APK signature verification, release APK filename preparation, exactly one APK artifact upload, and Dart symbols artifact upload.
+- Release APK artifact: JEXFYZ#34.apk
+- APK artifact ID: 11125019753
+- APK size: 54,147,072 bytes
+- APK artifact digest: sha256:8de4114a0b2f8d7a7eb981a3507a587a38bbc47bf2945d03ebf660498acb5ea8
+- Dart symbols artifact ID: 11125359500
+- Dart symbols digest: sha256:5e28f49455796e39fd5918bcad3b529ea67617b8081361f598f9c2432e9a35b3
+- Build validation applies to source commit 8df84e...; it does not prove Android OEM Floating Monitor behavior or physical firmware/hardware behavior.
