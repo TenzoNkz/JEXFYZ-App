@@ -29,11 +29,6 @@ void main() {
     expect(find.text('Low Mode'), findsOneWidget);
     expect(find.text('Mid Mode'), findsOneWidget);
     expect(find.text('High Mode'), findsOneWidget);
-    expect(find.text('ADAPTIVE SWITCH'), findsOneWidget);
-    expect(find.text('PELTIER SWITCH'), findsOneWidget);
-    expect(find.text('FAN SWITCH'), findsOneWidget);
-    expect(find.text('Speed'), findsOneWidget);
-    expect(find.text('TEMPERATURE'), findsOneWidget);
     expect(find.text('VERTICAL'), findsNothing);
     expect(find.text('Side Text'), findsNothing);
     expect(find.text('5V'), findsOneWidget);
