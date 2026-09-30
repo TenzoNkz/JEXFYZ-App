@@ -2595,16 +2595,23 @@ class _DashboardScreenState extends State<DashboardScreen>
 
 
   Widget _card({required Widget child, EdgeInsetsGeometry? padding}) {
+    final dark = appThemeNotifier.value == AppThemePreset.dark;
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.symmetric(vertical: 6),
       padding: padding ?? const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFFF7F7F8),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFE7E7E9)),
-        boxShadow: const [
-          BoxShadow(color: Color(0x12000000), blurRadius: 12, offset: Offset(0, 5)),
+        color: dark ? const Color(0xFF1A1B20) : const Color(0xFFF7F7F8),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: dark ? const Color(0xFF2B2D33) : const Color(0xFFE7E7E9),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: dark ? Colors.black38 : const Color(0x12000000),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
         ],
       ),
       child: child,
@@ -2612,15 +2619,31 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   Widget _sectionTitle(String title, {String? subtitle}) {
+    final dark = appThemeNotifier.value == AppThemePreset.dark;
     return Padding(
       padding: const EdgeInsets.fromLTRB(4, 8, 4, 6),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, letterSpacing: -0.2)),
-          if (subtitle != null) ...[
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w900,
+              letterSpacing: -0.2,
+              color: dark ? Colors.white : Colors.black,
+            ),
+          ),
+          if (subtitle != null && subtitle.trim().isNotEmpty) ...[
             const SizedBox(height: 3),
-            Text(subtitle, style: const TextStyle(color: Colors.black45, fontSize: 11, fontWeight: FontWeight.w600)),
+            Text(
+              subtitle,
+              style: TextStyle(
+                color: dark ? Colors.white54 : Colors.black45,
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ],
         ],
       ),
