@@ -4009,14 +4009,6 @@ static void processPendingOnlineOtaStart() {
 static void executeTouchSingle() {
   if (otaActive) return;
 
-  if (bootApActive && !bootApClientSafe) {
-    const uint32_t until = millis() + PHYSICAL_AUTH_WINDOW_MS;
-    localOtaPhysicalAuthUntilMs = until;
-    blePairingArmUntilMs = until;
-    Serial.println("PHYSICAL AUTH: LOCAL OTA + BLE PAIRING ARMED");
-    return;
-  }
-
   if (adaptiveOn) {
     fanOn = false;
     peltierOn = false;
@@ -4053,9 +4045,19 @@ static void executeTouchDouble() {
 
 static void executeTouchLong() {
   if (otaActive) return;
-  // Fan/Peltier are forced OFF during the initial boot AP window.
-  // Touch remains active, but cooling cannot be started until startup completes.
-  if (bootApActive && !bootApClientSafe) return;
+
+  // During the boot AP window, a 5-second physical long-press is the
+  // commissioning gesture for BOTH local OTA and first BLE pairing.
+  if (bootApActive && !bootApClientSafe) {
+    const uint32_t until = millis() + PHYSICAL_AUTH_WINDOW_MS;
+    localOtaPhysicalAuthUntilMs = until;
+    blePairingArmUntilMs = until;
+    Serial.println("PHYSICAL AUTH: LOCAL OTA + BLE PAIRING ARMED");
+    return;
+  }
+
+  // Fan/Peltier are forced OFF during an active authorized boot-AP session.
+  // Touch remains inactive for cooling changes until startup completes.
 
   if (adaptiveOn) {
     String reason;
