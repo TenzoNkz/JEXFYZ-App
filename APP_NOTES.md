@@ -1382,3 +1382,16 @@ Never:
 - Updated regression tests to lock the new Light Mode surface/contrast palette.
 - This was an App-only visual change. Firmware, BLE UUID/P1 protocol, OTA transport, Firebase metadata, GPIO mapping, release signing identity, and Floating Monitor logic were untouched.
 - Build App was not triggered by this execution.
+
+## 2026-10-01 — FOLLOW-UP / PASSIVE AUTO CONNECT + BLUETOOTH PERMISSION FLOW
+
+- Auto Connect is now explicitly passive:
+  - It never calls BLE permission `request()`.
+  - It never calls `FlutterBluePlus.turnOn()`.
+  - It does nothing until Auto Connect is enabled, a previously successful cooler identity is stored, BLE scan/connect permissions are already granted, Bluetooth is already ON, and any legacy Android location requirement is already satisfied.
+- A fresh install therefore cannot auto-connect to a cooler that has never been connected before, even when the user manually enables Auto Connect.
+- Manual Bluetooth scan remains allowed to request the Android `Nearby devices` permission.
+- When the user previously selected `Don't allow`, tapping the Bluetooth status control retries the permission request inside the App instead of calling `openAppSettings()`.
+- The last successfully completed BLE/P1 session stores only the cooler `remoteId` in `flutter_secure_storage`; that identity is the sole device target for passive Auto Connect.
+- Auto reconnect after disconnect and post-OTA reconnect now use the same passive policy, so they cannot silently prompt for permission or power Bluetooth on.
+- No firmware, BLE UUID/P1 protocol, OTA transport, Firebase metadata, GPIO mapping, or release signing identity was changed.
