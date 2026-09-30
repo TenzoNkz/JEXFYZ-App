@@ -1,5 +1,23 @@
 # JE X FYZ App — Master Notes
 
+## 2026-09-30 — FINAL SETTINGS / MENU / FLOATING / SYNC PASS
+
+- Current App implementation includes the approved Settings hierarchy and separate pages.
+- English is the default language; Bahasa Indonesia is the separate second locale. Home/menu/runtime wording is being routed through the bilingual vocabulary; Floating Monitor indicator labels remain English-only by design.
+- Appearance presets are Default, Light, and Dark. Default remains the black-header/white-content JE X FYZ presentation.
+- Notifications remain important-only: Hotside Safety Alert, Firmware Update Available, Bluetooth Connected/Disconnected, with event re-arming to avoid repeated Hotside alerts while the temperature remains above the limit.
+- Bluetooth Auto Connect is enabled by default and uses bounded discovery/reconnect behavior; it does not create a second BLE implementation.
+- Gear now opens Settings; Firmware Update remains an entry inside Settings.
+- Floating Monitor is enabled/configurable only while active. Default function order is FPS, Battery, Hotside, Volt, Adaptive, Peltier, Speed; all default OFF. Reorder handle is on the left and checkbox on the right. Letters and Icons are supported, with live preview, drag position, pinch resize, opacity, and tap-based horizontal/vertical switching.
+- Floating telemetry is fed from the same App state used by Home. No second BLE/GATT telemetry path was introduced.
+- Voltage submenu supports Vertical and Side Text layouts: 5V Low Mode, 9V Mid Mode, 12V High Mode. The extra firmware-state card was removed.
+- Control submenu contains only Peltier, Fan, and Fan Speed; duplicate status cards and Safety/PWM indicator rows were removed.
+- Adaptive submenu contains Adaptive Switch plus Hotside Protection and Hotside + Battery profiles. Manual Voltage, Control, and Temperature are locked while Adaptive is ON.
+- LED uses a compact 12-hue picker popup. HEX/white/dark/light variants are not shown. Brightness remains 1–100%. Mode number and mode name are separated.
+- Runtime control sync no longer sends a 90 ms post-command SYNC. Telemetry deltas remain the state-confirmation path. The intentional Voltage guard remains 1 second.
+- App source has not been packaged into an APK in this pass. Do not treat repository commits as App Build validation.
+
+
 > **Document purpose:** permanent maintenance memory for the JE X FYZ App.
 > This file describes the App repository, the App↔firmware integration contract, the Android/runtime boundary, build rules, validation rules, and change history.
 > **Reviewed:** 2026-09-28.
