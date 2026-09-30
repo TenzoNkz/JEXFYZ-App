@@ -3355,6 +3355,11 @@ static void handleSettingsReset(const String& group) {
       sendDelta("BATT_5", String(battery5Limit));
       sendDelta("BATT_12", String(battery12Limit));
     }
+    sendDelta("TEMP_HOT_LIMIT", String(hotLimit));
+    sendDelta("BATT_5", String(battery5Limit));
+    sendDelta("BATT_12", String(battery12Limit));
+    sendDelta("FAN", boolText(fanOn));
+    sendDelta("PELTIER", boolText(peltierOn));
     sendAck("RESET_TEMPERATURE", true, "OK");
     return;
   }
@@ -3370,6 +3375,9 @@ static void handleSettingsReset(const String& group) {
       sendDelta("COLOR_9V", colorToHex(color9V));
       sendDelta("COLOR_12V", colorToHex(color12V));
     }
+    sendDelta("COLOR_5V", colorToHex(color5V));
+    sendDelta("COLOR_9V", colorToHex(color9V));
+    sendDelta("COLOR_12V", colorToHex(color12V));
     sendAck("RESET_VOLTAGECOLORS", true, "OK");
     return;
   }
@@ -3449,12 +3457,14 @@ static void handleCommand(const String& command) {
 
   if (command == "RGB:ON") {
     const bool ok = setRgbState(true);
+    sendDelta("RGB", boolText(rgbOn));
     sendAck("RGB", ok, ok ? "OK" : "FAILED");
     return;
   }
 
   if (command == "RGB:OFF") {
     const bool ok = setRgbState(false);
+    sendDelta("RGB", boolText(rgbOn));
     sendAck("RGB", ok, ok ? "OK" : "FAILED");
     return;
   }
@@ -3473,6 +3483,7 @@ static void handleCommand(const String& command) {
       if (rgbOn) startUserLedEffect();
       sendDelta("MODE", String(value));
     }
+    sendDelta("MODE", String(static_cast<uint8_t>(rgbMode)));
 
     sendAck("MODE", true, "OK");
     return;
@@ -3491,6 +3502,7 @@ static void handleCommand(const String& command) {
       if (rgbOn) startUserLedEffect();
       sendDelta("BRIGHTNESS", String(value));
     }
+    sendDelta("BRIGHTNESS", String(rgbBrightness));
 
     sendAck("BRIGHTNESS", true, "OK");
     return;
@@ -3509,6 +3521,7 @@ static void handleCommand(const String& command) {
       if (rgbOn) startUserLedEffect();
       sendDelta("RGB_COLOR", colorToHex(rgbColor));
     }
+    sendDelta("RGB_COLOR", colorToHex(rgbColor));
 
     sendAck("COLOR", true, "OK");
     return;
@@ -3526,6 +3539,7 @@ static void handleCommand(const String& command) {
       markSettingsDirty();
       sendDelta("COLOR_5V", colorToHex(color5V));
     }
+    sendDelta("COLOR_5V", colorToHex(color5V));
 
     sendAck("V5COLOR", true, "OK");
     return;
@@ -3543,6 +3557,7 @@ static void handleCommand(const String& command) {
       markSettingsDirty();
       sendDelta("COLOR_9V", colorToHex(color9V));
     }
+    sendDelta("COLOR_9V", colorToHex(color9V));
 
     sendAck("V9COLOR", true, "OK");
     return;
@@ -3560,6 +3575,7 @@ static void handleCommand(const String& command) {
       markSettingsDirty();
       sendDelta("COLOR_12V", colorToHex(color12V));
     }
+    sendDelta("COLOR_12V", colorToHex(color12V));
 
     sendAck("V12COLOR", true, "OK");
     return;
@@ -3582,6 +3598,7 @@ static void handleCommand(const String& command) {
       enforceSafety();
       sendDelta("TEMP_HOT_LIMIT", String(hotLimit));
     }
+    sendDelta("TEMP_HOT_LIMIT", String(hotLimit));
 
     sendAck("HOTLIMIT", true, "OK");
     return;
@@ -3607,6 +3624,7 @@ static void handleCommand(const String& command) {
       markSettingsDirty();
       sendDelta("BATT_5", String(battery5Limit));
     }
+    sendDelta("BATT_5", String(battery5Limit));
 
     sendAck("BATT5", true, "OK");
     return;
@@ -3633,6 +3651,7 @@ static void handleCommand(const String& command) {
       markSettingsDirty();
       sendDelta("BATT_12", String(battery12Limit));
     }
+    sendDelta("BATT_12", String(battery12Limit));
 
     sendAck("BATT12", true, "OK");
     return;
@@ -3664,6 +3683,8 @@ static void handleCommand(const String& command) {
   if (command == "FAN:ON") {
     String reason;
     const bool ok = setFanState(true, reason);
+    sendDelta("FAN", boolText(fanOn));
+    sendDelta("PELTIER", boolText(peltierOn));
     sendAck("FAN", ok, reason);
     return;
   }
@@ -3671,6 +3692,8 @@ static void handleCommand(const String& command) {
   if (command == "FAN:OFF") {
     String reason;
     const bool ok = setFanState(false, reason);
+    sendDelta("FAN", boolText(fanOn));
+    sendDelta("PELTIER", boolText(peltierOn));
     sendAck("FAN", ok, reason);
     return;
   }
@@ -3678,6 +3701,8 @@ static void handleCommand(const String& command) {
   if (command == "PELTIER:ON") {
     String reason;
     const bool ok = setPeltierState(true, reason);
+    sendDelta("FAN", boolText(fanOn));
+    sendDelta("PELTIER", boolText(peltierOn));
     if (!ok) sendDelta("SAFETY_REASON", reason);
     sendAck("PELTIER", ok, reason);
     return;
@@ -3686,6 +3711,8 @@ static void handleCommand(const String& command) {
   if (command == "PELTIER:OFF") {
     String reason;
     const bool ok = setPeltierState(false, reason);
+    sendDelta("FAN", boolText(fanOn));
+    sendDelta("PELTIER", boolText(peltierOn));
     sendAck("PELTIER", ok, reason);
     return;
   }
@@ -3718,6 +3745,10 @@ static void handleCommand(const String& command) {
                     ? "HOTSIDE"
                     : "HOTSIDE_BATTERY");
     }
+    sendDelta("ADAPTIVE_PROFILE",
+              adaptiveProfile == AdaptiveProfile::HOTSIDE_PROTECTION
+                  ? "HOTSIDE"
+                  : "HOTSIDE_BATTERY");
 
     sendAck("ADAPTIVE_PROFILE", true, "OK");
     return;
@@ -3726,6 +3757,8 @@ static void handleCommand(const String& command) {
   if (command == "ADAPTIVE:ON") {
     String reason;
     setAdaptiveState(true, reason);
+    sendDelta("ADAPTIVE", boolText(adaptiveOn));
+    sendDelta("ADAPTIVE_CEILING", voltageToString(adaptiveCeiling));
     sendAck("ADAPTIVE", adaptiveOn, reason);
     return;
   }
@@ -3733,6 +3766,10 @@ static void handleCommand(const String& command) {
   if (command == "ADAPTIVE:OFF") {
     String reason;
     setAdaptiveState(false, reason);
+    sendDelta("ADAPTIVE", boolText(adaptiveOn));
+    sendDelta("ADAPTIVE_CEILING", voltageToString(adaptiveCeiling));
+    sendDelta("FAN", boolText(fanOn));
+    sendDelta("PELTIER", boolText(peltierOn));
     sendAck("ADAPTIVE", true, reason);
     return;
   }
@@ -3745,6 +3782,8 @@ static void handleCommand(const String& command) {
       return;
     }
     const bool ok = setFanSpeed(static_cast<uint8_t>(value), reason);
+    sendDelta("FAN_SPEED", String(fanPwm));
+    sendDelta("FAN", boolText(fanOn));
     sendAck("FANSPEED", ok, reason);
     return;
   }
