@@ -246,25 +246,34 @@ class MainActivity : FlutterActivity() {
         }
     }
 
+    // Open the most appropriate public Android Settings page for overlay permission.
+    // OEM Settings implementations vary, so use a small public-API fallback ladder
+    // instead of depending on one Settings activity.
     private fun openOverlaySettings(): Boolean {
-        return try {
-            val intent = Intent(
+        val intents = listOf(
+            Intent(
                 Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                 android.net.Uri.parse("package:$packageName")
-            )
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
-            true
-        } catch (_: Exception) {
+            ),
+            Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION),
+            Intent(
+                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                android.net.Uri.parse("package:$packageName")
+            ),
+        )
+
+        for (intent in intents) {
             try {
-                val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                if (intent.resolveActivity(packageManager) == null) continue
                 startActivity(intent)
-                true
+                return true
             } catch (_: Exception) {
-                false
+                // Try the next public fallback on OEM implementations that reject
+                // or fail to resolve the previous Settings activity.
             }
         }
+
+        return false
     }
 
     private fun ensureNotificationChannel() {
