@@ -4,6 +4,7 @@ package com.horizontalzzz.jexfyz
 // Native bridge for Flutter. MethodChannel names are contracts with lib/main.dart.
 // BLE/GATT ownership stays in flutter_blue_plus; this class must not create a second BLE client.
 
+import android.app.Notification
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
