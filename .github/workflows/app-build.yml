@@ -139,6 +139,7 @@ jobs:
           pubspec = Path("pubspec.yaml").read_text(encoding="utf-8")
           manifest = Path("android/app/src/main/AndroidManifest.xml").read_text(encoding="utf-8")
           activity = Path("android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt").read_text(encoding="utf-8")
+          floating = Path("lib/floating_monitor.dart").read_text(encoding="utf-8")
           gradle = Path("android/app/build.gradle").read_text(encoding="utf-8")
 
           required = [
@@ -156,7 +157,7 @@ jobs:
               "TamperScreen",
               "je_x_fyz/security",
           ]
-          combined = source + pubspec + activity
+          combined = source + pubspec + activity + floating
           missing = [token for token in required if token not in combined]
           if missing:
               raise SystemExit("JE X FYZ audit failed; missing: " + ", ".join(missing))
@@ -186,6 +187,15 @@ jobs:
           ]:
               if forbidden in source or forbidden in pubspec:
                   raise SystemExit("JE X FYZ audit failed; legacy Firebase firmware metadata reference found: " + forbidden)
+
+
+          # Floating Monitor must use its dedicated MethodChannel end-to-end.
+          if "MethodChannel('je_x_fyz/floating')" not in floating:
+              raise SystemExit("JE X FYZ audit failed; Flutter Floating Monitor channel contract is missing")
+          if 'private val FLOATING_CHANNEL = "je_x_fyz/floating"' not in activity:
+              raise SystemExit("JE X FYZ audit failed; native Floating Monitor channel contract is missing")
+          if activity.count('"startFloatingMonitor"') != 1 or activity.count('"getFloatingRuntimeState"') != 1:
+              raise SystemExit("JE X FYZ audit failed; Floating methods are not isolated to the dedicated channel")
 
           # Firmware .ino source is intentionally stored in this App repository.
           # It must not be referenced as a Flutter source/build dependency.
