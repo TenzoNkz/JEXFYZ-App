@@ -3536,7 +3536,7 @@ class _JexColorPickerCard extends StatelessWidget {
                             kind: animatedKind,
                             size: 22,
                             color: color,
-                            active: animationActive ?? active,
+                            active: animationIsActive,
                             level: level,
                             warning: warning,
                           ),
