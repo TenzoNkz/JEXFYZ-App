@@ -247,9 +247,11 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
         animation: controller,
         builder: (_, __) {
           final elapsedMs = (controller.value * 30000).round();
-          return CustomPaint(
-            size: const Size(double.infinity, 72),
-            painter: _JexLedStripPainter(
+          return SizedBox(
+            width: double.infinity,
+            height: 72,
+            child: CustomPaint(
+              painter: _JexLedStripPainter(
               levels: ledPreviewLevels(
                 mode: widget.mode,
                 elapsedMs: elapsedMs,
@@ -261,9 +263,10 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
                 brightness: widget.brightness,
               ),
               active: widget.active,
-              background: Theme.of(context).brightness == Brightness.dark
-                  ? const Color(0xFF20232A)
-                  : const Color(0xFFF5F6F8),
+                background: Theme.of(context).brightness == Brightness.dark
+                    ? const Color(0xFF20232A)
+                    : const Color(0xFFF5F6F8),
+              ),
             ),
           );
         },
@@ -2722,7 +2725,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     final anchor = renderObject.localToGlobal(Offset.zero) & renderObject.size;
     final media = MediaQuery.of(context);
-    const popupWidth = 320.0;
+    final popupWidth = math.min(320.0, media.size.width - 20.0);
     const popupHeight = 246.0;
     const edge = 10.0;
 
@@ -4260,7 +4263,7 @@ class _JexColorPickerCard extends StatelessWidget {
                     vertical: 12,
                   ),
                   child: Row(
-                  children: [
+                    children: [
                     Container(
                       width: 32,
                       height: 32,
@@ -4288,8 +4291,6 @@ class _JexColorPickerCard extends StatelessWidget {
                       active: true,
                     ),
                   ],
-                ),
-                  ),
                 ),
               ),
             ),
