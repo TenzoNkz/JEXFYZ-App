@@ -17,7 +17,7 @@
 - Explicit Build trigger remains Issue-only with exact title `JE X FYZ — BUILD APP TRIGGER` and body token `JEXFYZ_BUILD_TRIGGER_V1`; push/PR does not trigger the App build workflow.
 - BLE P1 UUIDs and command vocabulary remain frozen.
 - **Firmware physical GPIO authority is: GPIO5 = PELTIER; GPIO6 = FAN.** App logical tokens are not swapped.
-- Current App-repo firmware mirror `firmware/JEXFYZ-V2.3.ino` already reflects this mapping and includes the compile-time mapping guard.
+- Current App-repo firmware mirror `firmware/JEXFYZ-V2.4.ino` reflects this mapping and includes the compile-time mapping guard.
 - Dedicated firmware repo currently contains `JEXFYZ-V2.4.ino` plus the existing `JEXFYZ.cpp.bin`. The source is V2.4; the BIN remains the previously published/prebuilt binary until a verified V2.4 compile is completed.
 - The existing production BIN was not modified/regenerated in this execution because a verified Arduino-ESP32 Core 3.3.7 compiler toolchain is unavailable in this environment.
 - Safety remains authoritative in firmware; no safety check was removed or bypassed to address the FAN/PELTIER mismatch.
@@ -56,7 +56,7 @@ Never silently promote a hypothesis, Gemini suggestion, old snippet, or historic
 
 ## 2. CURRENT SOURCE / REPOSITORY STATE
 - App branch: `main`.
-- Current App-repo HEAD after this execution: `a8cd7275bdf0e810364890ccff5c66c6d5c00410`.
+- Current App branch: `main`; functional App source remains the Build #41-validated source baseline.
 - Build #41 validated App source commit `6deff1af4cb74310a00ee4ee0f3ed1584225c351`.
 - All App-repo commits inspected after Build #41 are documentation, firmware-source, or CI-comment maintenance; no later Flutter/Dart/Android functional change was found.
 - Current App-source behavior therefore remains covered by Build #41, while the later firmware GPIO hardening is outside that App build's scope.
