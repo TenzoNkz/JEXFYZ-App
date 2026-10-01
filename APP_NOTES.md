@@ -1559,3 +1559,12 @@ Never:
 - No App telemetry labels were swapped and no safety prerequisite was bypassed.
 - The external firmware repository contains a binary-only artifact, so a fresh firmware BIN must be compiled/flashed separately for this source correction to reach the ESP32.
 - App Build was not triggered for this firmware-only correction.
+
+
+## 2026-10-01 — FULL EXECUTION / FIRMWARE REPO SYNC FOR FAN-PELTIER FIX
+
+- Corrected firmware source was synchronized from the embedded App copy into the dedicated `TenzoNkz/JEXFYZ-Firmware` repository as `JEXFYZ-V2.3.ino`.
+- Dedicated firmware repo source commit: `89dc8ea08c7d97e28fa8c452e1f7214cbff793a5`.
+- Dedicated firmware notes commit: `4bfca310fbd02ac77bebed4d06e805966e96e96e230`.
+- The dedicated repository's prebuilt `JEXFYZ.cpp.bin` remains unchanged because no verified Arduino-ESP32 Core 3.3.7 compiler toolchain is available in this execution environment. No unverified binary byte patch was performed.
+- Physical correction in source is `PIN_FAN = 6`, `PIN_PELTIER = 5`, while App BLE/P1 command tokens remain unchanged.
