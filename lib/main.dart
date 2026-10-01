@@ -4640,7 +4640,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                       Row(
                         children: [
                           Text(
-                            'MODE',
+                            JexText.of('mode', lang).toUpperCase(),
                             style: TextStyle(
                               color: scheme.onSurfaceVariant,
                               fontSize: 10,
