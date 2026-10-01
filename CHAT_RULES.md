@@ -220,6 +220,7 @@ For any hardware/control mismatch, verify in order:
 - Firmware source compile is separate from App Build.
 - A successful historical build never validates a newer source revision unless the built source revision matches.
 - Firmware source, BIN, Firebase metadata, and physical device state must be treated as separate validation layers.
+- Repository boundary is frozen: `TenzoNkz/JEXFYZ-App` stores firmware source/engineering notes for continuity; `TenzoNkz/JEXFYZ-Firmware` is **binary-only** and must not receive `.ino` source or `FIRMWARE_NOTES.md`.
 
 ## 19. REQUIRED RESPONSE FOOTER
 
@@ -227,3 +228,11 @@ For any hardware/control mismatch, verify in order:
   `Lanjut diskusi, eksekusi, tanya gemini, build app!`
 - The sentence must appear before the final workflow status block so that the final content remains an unambiguous status block.
 - The final workflow status block remains exactly one of the allowed project statuses defined in Section 2.
+
+## 20. REPOSITORY BOUNDARY — FROZEN
+
+- `TenzoNkz/JEXFYZ-App` is the firmware continuity/source repository for the JE X FYZ project, including `firmware/*.ino` and firmware engineering notes.
+- `TenzoNkz/JEXFYZ-Firmware` is the **binary distribution repository**.
+- Do not copy, synchronize, or commit firmware `.ino` source or `FIRMWARE_NOTES.md` into the dedicated binary repository.
+- Published `JEXFYZ.cpp.bin` remains the distribution artifact. A source version bump is independent from BIN promotion.
+- Any accidental repository-boundary change must be reverted and recorded in the appropriate notes.
