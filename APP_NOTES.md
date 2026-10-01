@@ -1533,3 +1533,19 @@ Never:
 - Flutter package version in `pubspec.yaml` remains `1.0.0+3` because it is the package/build metadata source; Android `versionName` is the user-visible App info label requested here.
 - No applicationId, versionCode, signing identity, BLE/P1 protocol, firmware, OTA, or Firebase behavior was changed.
 - Build App was not triggered by this execution.
+
+## 2026-10-01 — BUILD APP #41 SUCCESS / SUBMENU V2 + APP VERSION LABEL
+
+- Build App Run #41 (`36800153829`) completed successfully from source commit `6deff1af4cb74310a00ee4ee0f3ed1584225c351`.
+- Passed: security/architecture audit, dependency installation, Dart analyze, Flutter tests, release APK build, production APK signature verification, release APK filename preparation, exactly one APK artifact upload, and Dart symbols upload.
+- Release APK artifact: `JEXFYZ#41.apk`
+- APK artifact ID: `11135950331`
+- APK artifact size: `54,245,456` bytes
+- APK artifact SHA-256: `0470a30268b455cb55e564a3ce34ef05ac5b5a744f364b3765cd2ad29d14109e`
+- Dart symbols artifact ID: `11135985299`
+- Dart symbols SHA-256: `4890c4baa223e687a356488d969b900f9c03b0f784d557a24cf38abda0fb80c2`
+- Exactly one APK artifact exists, plus Dart symbols.
+- Android `versionName` in this build is `Telegram @horizontalzzz`, matching the requested App info label.
+- Build includes the full custom submenu V2 presentation-layer redesign and the custom JE X FYZ indicator motion engine already committed before the build.
+- Direct chat APK copy prepared at `/mnt/data/JEXFYZ#41.apk`; the artifact bytes are verified as an Android APK and the SHA-256 matches the GitHub artifact digest.
+- No firmware source, BLE UUID/P1 protocol, OTA transport, Firebase metadata contract, GPIO mapping, or signing identity was changed by the version-label/build steps.
