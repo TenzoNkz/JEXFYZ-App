@@ -1,4 +1,11 @@
 # JE X FYZ FIRMWARE — AUTHORITATIVE MEMORY CORE
+## 2026-10-01 — DEDICATED FIRMWARE REPO CLEANUP
+
+- Removed the mistakenly mirrored `JEXFYZ-V2.4.ino` and `FIRMWARE_NOTES.md` from the dedicated firmware repository.
+- Root cause: previous execution crossed the repository boundary and placed source/notes in the distribution repo.
+- Correct boundary: `TenzoNkz/JEXFYZ-App` is the continuity/engineering source repository; `TenzoNkz/JEXFYZ-Firmware` is the binary distribution repository.
+- Current V2.4 source remains at `firmware/JEXFYZ-V2.4.ino` in the App repository.
+- No firmware functional code, BIN, Firebase metadata, BLE/P1, GPIO, OTA, or safety behavior was changed by this cleanup.
 ## 2026-10-01 — CHAT RULES FINAL RECORDING UPDATE
 
 - `CHAT_RULES.md` now requires a maintenance-note record for every JE X FYZ project workflow/event, including audits, build/compile attempts, tests, failures, and no-change reviews when they establish validation status.
@@ -24,7 +31,7 @@
 - The firmware output path is internally consistent: Fan PWM writes to `PIN_FAN`; Peltier soft-start/stop writes to `PIN_PELTIER`.
 - The dedicated V2.4 source has a compile-time `static_assert` protecting this mapping.
 - Safety semantics were not changed: Peltier still requires Fan ON plus the existing NTC/Hotside/OTA protections.
-- Dedicated firmware repo current state is **V2.4 source + existing BIN**. The existing BIN has not been regenerated and must not be represented as V2.4.
+- Dedicated firmware repo current state is **binary-only** with the existing `JEXFYZ.cpp.bin`. Firmware source and firmware notes remain in this App repository.
 - Source hardening commit before version bump: `21ceb9ceb3f7b7701a88367a0dbd13090949acc2`.
 - V2.4 source creation commit: `bd89ccfbe6aef846e35456fbf875d7ca68b90390`.
 - Validation boundary:
