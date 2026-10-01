@@ -47,26 +47,31 @@ Never silently promote a hypothesis, Gemini suggestion, old snippet, or historic
 - Firmware is authoritative for physical state and safety.
 
 ## 2. CURRENT SOURCE / REPOSITORY STATE
-- App branch: main.
-- Documentation/process HEAD before this consolidation: ab98e627910e902558cfaf07ecc96b4f72ca0064.
-- Latest functional Floating Monitor source commit identified before the documentation-only changes: 6555427b4edb003ed63a51eb2ff1d560565d7e30.
-- Later commits between that functional change and the documentation HEAD include workflow/documentation and main.dart changes; therefore the current source must still be read directly before implementation.
-- Current source is NOT automatically validated by Build #32 because Build #32 used source revision b98651ed1e92d1e8de88cd3f67530520db5bc76f.
-
+- App branch: `main`.
+- Current App-repo HEAD after this execution: `a8cd7275bdf0e810364890ccff5c66c6d5c00410`.
+- Build #41 validated App source commit `6deff1af4cb74310a00ee4ee0f3ed1584225c351`.
+- All App-repo commits inspected after Build #41 are documentation, firmware-source, or CI-comment maintenance; no later Flutter/Dart/Android functional change was found.
+- Current App-source behavior therefore remains covered by Build #41, while the later firmware GPIO hardening is outside that App build's scope.
+- Current App-repo V2.3 firmware mirror is `firmware/JEXFYZ-V2.3.ino`.
+- Current dedicated firmware repo state is source + existing production BIN; do not use older binary-only wording as the present repository state.
+- Current Flutter/Android source must still be read directly for any future functional change; notes are not a substitute for source inspection.
 ## 3. BUILD TRUTH
 - Build App is explicit-only.
-- Current trigger model: dedicated GitHub Issue proxy -> reusable app-build.yml.
-- Normal pushes/PRs/notes commits do not count as a Build App request.
-- Build #32: Run 36754549510.
-- Build #32 artifact: JEXFYZ#32.apk; artifact ID 11116203156; size 54,130,688 bytes.
-- Build #32 artifact SHA-256: afbd43db1e8ca06e267666129763cc0960be4b309d3b0156c65dd9db8bc3c6b5.
-- Build #32 pipeline passed audit, dependencies, analyze, tests, release APK, signing verification, artifact upload, and Dart symbols.
-- Production certificate SHA-256: dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0.
-- Historical build success never proves newer source until the source revision matches.
-- Build #32 is therefore best treated as a validated checkpoint, not the current release validation baseline.
-- Source commits after the Build #32 checkpoint include additional UI/animation work (including `6555427b4edb003ed63a51eb2ff1d560565d7e30`, `bd242c819ff08bae981fd8cf06704e49389d82b1`, and `f2b3eddb66c834bd15802623e0369056681070db`). These later functional changes are not covered by Build #32.
-- The current branch also contains documentation/process commits after those source changes. Current source behavior must be determined from the checked-out files, not from the latest documentation commit alone.
-
+- Current trigger model: dedicated GitHub Issue proxy -> reusable `app-build.yml`.
+- Normal pushes/PRs do not trigger the App build workflow.
+- Latest successful App build: **Build #41**.
+- Build #41 Run: `36800153829`.
+- Build #41 source commit: `6deff1af4cb74310a00ee4ee0f3ed1584225c351`.
+- Build #41 artifact: `JEXFYZ#41.apk`.
+- Build #41 artifact ID: `11135950331`.
+- Build #41 artifact size: `54,245,456` bytes.
+- Build #41 APK SHA-256: `0470a30268b455cb55e564a3ce34ef05ac5b5a744f364b3765cd2ad29d14109e`.
+- Build #41 Dart symbols artifact ID: `11135985299`.
+- Build #41 Dart symbols SHA-256: `4890c4baa223e687a356488d969b900f9c03b0f784d557a24cf38abda0fb80c2`.
+- Build #41 passed: security/architecture audit, dependency installation, Dart analyze, Flutter tests, release APK, production signature verification, exactly one APK artifact, and Dart symbols upload.
+- Production signing certificate SHA-256: `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`.
+- Android user-visible versionName validated by Build #41: `Telegram @horizontalzzz`.
+- Historical Build #32 remains preserved below as an earlier checkpoint; it is not the latest build baseline.
 ## 4. APP UI BASELINE
 - Default Dashboard: black header + white rounded Display/content.
 - Non-dashboard Default Settings pages: dark theme.
