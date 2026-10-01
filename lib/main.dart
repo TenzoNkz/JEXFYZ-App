@@ -3021,10 +3021,10 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (!connected || adaptiveOn) return;
     try {
       final ok = await _sendAndConfirm('RESET:TEMPERATURE');
-      if (!ok && mounted) _showSnackBar(JexText.phrase('Temperature reset was not confirmed by the device.','Reset temperatur tidak dikonfirmasi oleh perangkat.'));
+      if (!ok && mounted) _showSnackBar(JexText.phrase('Temperature reset was not confirmed by the device.','Reset suhu tidak dikonfirmasi oleh perangkat.'));
     } catch (e) {
       debugPrint('Temperature reset: $e');
-      if (mounted) _showSnackBar(JexText.phrase('Temperature reset failed.','Reset temperatur gagal.'));
+      if (mounted) _showSnackBar(JexText.phrase('Temperature reset failed.','Reset suhu gagal.'));
     }
   }
 
@@ -3218,91 +3218,64 @@ class _DashboardScreenState extends State<DashboardScreen>
     return fields;
   }
 
-  // AI-METHOD: _friendlyOtaStage — Translate OTA stage tokens into readable text.
+  // AI-METHOD: _friendlyOtaStage — Translate frozen OTA stage tokens into localized presentation text.
   String _friendlyOtaStage(String stage) {
-    const en = <String, String>{
-      'LOCAL_FILE_CHECK': 'File check',
-      'LOCAL_SIZE_CHECK': 'Size check',
-      'LOCAL_UPDATE_BEGIN': 'Update begin',
-      'LOCAL_RECEIVE': 'Receiving',
-      'LOCAL_FLASH_WRITE': 'Flash write',
-      'LOCAL_SIZE_VERIFY': 'Size verify',
-      'LOCAL_FINALIZE': 'Finalize',
-      'LOCAL_FLASH_READBACK': 'Flash readback',
-      'LOCAL_FLASH_ERASE': 'Flash erase',
-      'LOCAL_BOOT_PARTITION': 'Boot partition',
-      'ONLINE_WIFI_CONNECT': 'Wi-Fi connect',
-      'ONLINE_WIFI_CONNECTED': 'Wi-Fi connected',
-      'ONLINE_WIFI_FAILED': 'Wi-Fi failed',
-      'ONLINE_WIFI_DROPPED': 'Wi-Fi dropped',
-      'ONLINE_TIME_SYNC': 'Time sync',
-      'ONLINE_GITHUB_CONNECT': 'GitHub connect',
-      'ONLINE_GITHUB_CONNECTED': 'GitHub connected',
-      'ONLINE_HTTP_UPDATE': 'HTTP update',
-      'ONLINE_UPDATE_BEGIN': 'Update begin',
-      'ONLINE_DOWNLOAD': 'Download',
-      'ONLINE_DOWNLOAD_COMPLETE': 'Download complete',
-      'ONLINE_FLASH_PREPARE': 'Flash prepare',
-      'ONLINE_FLASH_FINALIZE': 'Flash finalize',
-      'ONLINE_FLASH_SUCCESS': 'Flash success',
-      'ONLINE_RANGE_PROBE': 'Range probe',
-      'ONLINE_RANGE_REQUEST': 'Range request',
-      'ONLINE_RANGE_RESPONSE': 'Range response',
-      'ONLINE_RANGE_WRITE': 'Range write',
-      'ONLINE_RANGE_RETRY': 'Range retry',
-      'ONLINE_RANGE_RESUME': 'Range resume',
-      'ONLINE_FLASH_WRITE': 'Flash write',
-      'ONLINE_FLASH_ERASE': 'Flash erase',
-      'ONLINE_FLASH_READBACK': 'Flash readback',
-      'ONLINE_IMAGE_VALIDATE': 'Image validate',
-      'ONLINE_IMAGE_VERIFY': 'Image verify',
-      'ONLINE_BOOT_PARTITION': 'Boot partition',
-      'ONLINE_HTTP_RESPONSE': 'HTTP response',
+    const keyByStage = <String, String>{
+      'LOCAL_FILE_CHECK': 'otaStageLocalFileCheck',
+      'LOCAL_SIZE_CHECK': 'otaStageLocalSizeCheck',
+      'LOCAL_UPDATE_BEGIN': 'otaStageLocalUpdateBegin',
+      'LOCAL_RECEIVE': 'otaStageLocalReceive',
+      'LOCAL_FLASH_WRITE': 'otaStageLocalFlashWrite',
+      'LOCAL_SIZE_VERIFY': 'otaStageLocalSizeVerify',
+      'LOCAL_FINALIZE': 'otaStageLocalFinalize',
+      'LOCAL_FLASH_READBACK': 'otaStageLocalFlashReadback',
+      'LOCAL_FLASH_ERASE': 'otaStageLocalFlashErase',
+      'LOCAL_BOOT_PARTITION': 'otaStageLocalBootPartition',
+      'ONLINE_WIFI_CONNECT': 'otaStageOnlineWifiConnect',
+      'ONLINE_WIFI_CONNECTED': 'otaStageOnlineWifiConnected',
+      'ONLINE_WIFI_FAILED': 'otaStageOnlineWifiFailed',
+      'ONLINE_WIFI_DROPPED': 'otaStageOnlineWifiDropped',
+      'ONLINE_TIME_SYNC': 'otaStageOnlineTimeSync',
+      'ONLINE_GITHUB_CONNECT': 'otaStageOnlineGithubConnect',
+      'ONLINE_GITHUB_CONNECTED': 'otaStageOnlineGithubConnected',
+      'ONLINE_HTTP_UPDATE': 'otaStageOnlineHttpUpdate',
+      'ONLINE_UPDATE_BEGIN': 'otaStageOnlineUpdateBegin',
+      'ONLINE_DOWNLOAD': 'otaStageOnlineDownload',
+      'ONLINE_DOWNLOAD_COMPLETE': 'otaStageOnlineDownloadComplete',
+      'ONLINE_FLASH_PREPARE': 'otaStageOnlineFlashPrepare',
+      'ONLINE_FLASH_FINALIZE': 'otaStageOnlineFlashFinalize',
+      'ONLINE_FLASH_SUCCESS': 'otaStageOnlineFlashSuccess',
+      'ONLINE_RANGE_PROBE': 'otaStageOnlineRangeProbe',
+      'ONLINE_RANGE_REQUEST': 'otaStageOnlineRangeRequest',
+      'ONLINE_RANGE_RESPONSE': 'otaStageOnlineRangeResponse',
+      'ONLINE_RANGE_WRITE': 'otaStageOnlineRangeWrite',
+      'ONLINE_RANGE_RETRY': 'otaStageOnlineRangeRetry',
+      'ONLINE_RANGE_RESUME': 'otaStageOnlineRangeResume',
+      'ONLINE_FLASH_WRITE': 'otaStageOnlineFlashWrite',
+      'ONLINE_FLASH_ERASE': 'otaStageOnlineFlashErase',
+      'ONLINE_FLASH_READBACK': 'otaStageOnlineFlashReadback',
+      'ONLINE_IMAGE_VALIDATE': 'otaStageOnlineImageValidate',
+      'ONLINE_IMAGE_VERIFY': 'otaStageOnlineImageVerify',
+      'ONLINE_BOOT_PARTITION': 'otaStageOnlineBootPartition',
+      'ONLINE_HTTP_RESPONSE': 'otaStageOnlineHttpResponse',
     };
-    const id = <String, String>{
-      'LOCAL_FILE_CHECK': 'Periksa berkas',
-      'LOCAL_SIZE_CHECK': 'Periksa ukuran',
-      'LOCAL_UPDATE_BEGIN': 'Mulai pembaruan',
-      'LOCAL_RECEIVE': 'Menerima',
-      'LOCAL_FLASH_WRITE': 'Tulis flash',
-      'LOCAL_SIZE_VERIFY': 'Verifikasi ukuran',
-      'LOCAL_FINALIZE': 'Finalisasi',
-      'LOCAL_FLASH_READBACK': 'Baca ulang flash',
-      'LOCAL_FLASH_ERASE': 'Hapus flash',
-      'LOCAL_BOOT_PARTITION': 'Partisi boot',
-      'ONLINE_WIFI_CONNECT': 'Hubungkan Wi-Fi',
-      'ONLINE_WIFI_CONNECTED': 'Wi-Fi terhubung',
-      'ONLINE_WIFI_FAILED': 'Wi-Fi gagal',
-      'ONLINE_WIFI_DROPPED': 'Wi-Fi terputus',
-      'ONLINE_TIME_SYNC': 'Sinkronisasi waktu',
-      'ONLINE_GITHUB_CONNECT': 'Hubungkan GitHub',
-      'ONLINE_GITHUB_CONNECTED': 'GitHub terhubung',
-      'ONLINE_HTTP_UPDATE': 'Pembaruan HTTP',
-      'ONLINE_UPDATE_BEGIN': 'Mulai pembaruan',
-      'ONLINE_DOWNLOAD': 'Unduh',
-      'ONLINE_DOWNLOAD_COMPLETE': 'Unduhan selesai',
-      'ONLINE_FLASH_PREPARE': 'Siapkan flash',
-      'ONLINE_FLASH_FINALIZE': 'Finalisasi flash',
-      'ONLINE_FLASH_SUCCESS': 'Flash berhasil',
-      'ONLINE_RANGE_PROBE': 'Uji rentang',
-      'ONLINE_RANGE_REQUEST': 'Minta rentang',
-      'ONLINE_RANGE_RESPONSE': 'Respons rentang',
-      'ONLINE_RANGE_WRITE': 'Tulis rentang',
-      'ONLINE_RANGE_RETRY': 'Ulangi rentang',
-      'ONLINE_RANGE_RESUME': 'Lanjutkan rentang',
-      'ONLINE_FLASH_WRITE': 'Tulis flash',
-      'ONLINE_FLASH_ERASE': 'Hapus flash',
-      'ONLINE_FLASH_READBACK': 'Baca ulang flash',
-      'ONLINE_IMAGE_VALIDATE': 'Validasi image',
-      'ONLINE_IMAGE_VERIFY': 'Verifikasi image',
-      'ONLINE_BOOT_PARTITION': 'Partisi boot',
-      'ONLINE_HTTP_RESPONSE': 'Respons HTTP',
-    };
-    final map = appLanguageNotifier.value == AppLanguage.english ? en : id;
-    return map[stage.trim().toUpperCase()] ?? stage.replaceAll('_', ' ');
+    final key = keyByStage[stage.trim().toUpperCase()] ?? 'unknownOtaStage';
+    return JexText.of(key, appLanguageNotifier.value);
   }
 
   // AI-METHOD: _friendlyOtaResult — Translate persisted OTA results into Home NOTIFY text.
+  String _friendlyOtaMode(String mode) {
+    switch (mode.trim().toUpperCase()) {
+      case 'LOCAL':
+        return JexText.of('otaModeLocal', appLanguageNotifier.value);
+      case 'ONLINE':
+        return JexText.of('otaModeOnline', appLanguageNotifier.value);
+      default:
+        return mode.trim().isEmpty ? 'OTA' : mode.trim();
+    }
+  }
+
+  // AI-METHOD: _friendlyOtaResult — Translate OTA result envelopes while preserving technical diagnostics.
   String _friendlyOtaResult(String value) {
     final raw = value.trim();
     if (raw.isEmpty || raw.toUpperCase() == 'NONE') return '';
@@ -3310,9 +3283,9 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     if (upper.startsWith('OTA_FAILED|')) {
       final fields = _otaDiagnosticFields(raw);
-      final mode = fields['MODE'] ?? 'OTA';
+      final mode = _friendlyOtaMode(fields['MODE'] ?? 'OTA');
       final stage = _friendlyOtaStage(fields['STAGE'] ?? 'UNKNOWN');
-      final error = fields['ERROR'] ?? 'Unknown error';
+      final error = fields['ERROR'] ?? JexText.of('unknownError', appLanguageNotifier.value);
       final progress = fields['PROGRESS'] ?? '--';
       final code = fields['CODE'] ?? '0';
       return JexText.of('otaFailed', appLanguageNotifier.value) + ' • $mode • $stage • $error [${progress}% / code $code]';
@@ -3320,7 +3293,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     if (upper.startsWith('OTA_SUCCESS|')) {
       final fields = _otaDiagnosticFields(raw);
-      final mode = fields['MODE'] ?? 'OTA';
+      final mode = _friendlyOtaMode(fields['MODE'] ?? 'OTA');
       final stage = _friendlyOtaStage(fields['STAGE'] ?? 'UNKNOWN');
       final version = fields['VERSION'] ?? '';
       return JexText.of('otaSuccessful', appLanguageNotifier.value) + ' • $mode • $stage${version.isEmpty ? '' : ' • $version'}';
@@ -3328,33 +3301,33 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     if (upper.startsWith('IN_PROGRESS|')) {
       final fields = _otaDiagnosticFields(raw);
-      final mode = fields['MODE'] ?? 'OTA';
+      final mode = _friendlyOtaMode(fields['MODE'] ?? 'OTA');
       final stage = _friendlyOtaStage(fields['STAGE'] ?? 'UNKNOWN');
       final progress = fields['PROGRESS'] ?? '0';
       return JexText.of('otaProgress', appLanguageNotifier.value) + '$mode • $stage • ${progress}%';
     }
 
     if (upper == 'IN_PROGRESS') return JexText.of('otaInProgress', appLanguageNotifier.value);
-    if (upper == 'LOCAL_SUCCESS') return JexText.phrase('Local OTA successful.', 'OTA lokal berhasil.', appLanguageNotifier.value);
+    if (upper == 'LOCAL_SUCCESS') return JexText.of('otaLocalSuccessful', appLanguageNotifier.value);
     if (upper.startsWith('SUCCESS_')) {
-      return 'OTA successful: ' + raw.substring(8) + '.';
+      return JexText.of('otaSuccessfulGeneric', appLanguageNotifier.value) + raw.substring(8) + '.';
     }
     if (upper.startsWith('UPLOAD_SIZE_MISMATCH_')) {
       final parts = raw.split('_');
       if (parts.length >= 5) {
-        return 'OTA failed: uploaded ' + parts[3] + ' / ' + parts[4] + ' bytes.';
+        return JexText.of('otaUploaded', appLanguageNotifier.value) + parts[3] + ' / ' + parts[4] + JexText.of('otaBytes', appLanguageNotifier.value);
       }
-      return 'OTA failed: upload size mismatch.';
+      return JexText.of('otaSizeMismatch', appLanguageNotifier.value);
     }
     if (upper.startsWith('OTA_END_ERROR_')) {
       final parts = raw.split('_');
       if (parts.length >= 5) {
-        return 'OTA failed: ' + parts.sublist(4).join(' ').toLowerCase() + '.';
+        return JexText.of('otaFailedGeneric', appLanguageNotifier.value) + parts.sublist(4).join(' ').toLowerCase() + '.';
       }
-      return 'OTA failed: finalization error.';
+      return JexText.of('otaFinalizationError', appLanguageNotifier.value);
     }
     if (upper.contains('FAILED') || upper.contains('ERROR')) {
-      return 'OTA failed: ' + raw.replaceAll('_', ' ').toLowerCase() + '.';
+      return JexText.of('otaFailedGeneric', appLanguageNotifier.value) + raw.replaceAll('_', ' ').toLowerCase() + '.';
     }
     return raw.replaceAll('_', ' ');
   }
@@ -3379,7 +3352,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       case 'NTC_ERROR':
         return JexText.phrase('Temperature sensor error.', 'Kesalahan sensor suhu.');
       case 'HOTSIDE_PROTECTION':
-        return JexText.phrase('Hotside protection active.', 'Perlindungan Suhu Panas aktif.');
+        return JexText.phrase('Hotside protection active.', 'Perlindungan suhu panas aktif.');
       case 'FAN_REQUIRED':
         return JexText.phrase('Fan required before Peltier.', 'Kipas harus hidup sebelum Peltier.');
       case 'PELTIER_ON':
@@ -3679,14 +3652,18 @@ class _DashboardScreenState extends State<DashboardScreen>
         RegExp(r'\s+was not confirmed by the device\.?[\s\S]*$', caseSensitive: false),
         '',
       ).trim();
-      return prefix.isEmpty ? JexText.phrase('Device did not confirm the command.','Perangkat tidak mengonfirmasi perintah.') : prefix + ' not confirmed.';
+      return prefix.isEmpty
+          ? JexText.of('commandNotConfirmed', appLanguageNotifier.value)
+          : prefix + ' ' + JexText.of('notConfirmedSuffix', appLanguageNotifier.value);
     }
     if (lower.contains('command failed.')) {
       final prefix = raw.replaceFirst(
         RegExp(r'\s+command failed\.?$', caseSensitive: false),
         '',
       ).trim();
-      return prefix.isEmpty ? JexText.phrase('Command failed.','Perintah gagal.') : prefix + ' failed.';
+      return prefix.isEmpty
+          ? JexText.of('commandFailed', appLanguageNotifier.value)
+          : prefix + ' ' + JexText.of('failedSuffix', appLanguageNotifier.value);
     }
     return raw;
   }
@@ -3815,7 +3792,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         safetyReason != 'WAITING_FOR_NTC' &&
         safetyReason != 'WAITING_FOR_SENSOR_VALIDATION';
     if (warning) return JexText.of('notifyWarning', appLanguageNotifier.value);
-    return 'NOTIFY';
+    return JexText.of('notify', appLanguageNotifier.value);
   }
 
   String _notifyStatusLabel() {
