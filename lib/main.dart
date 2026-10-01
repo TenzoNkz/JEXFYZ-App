@@ -342,6 +342,89 @@ class _JexLedStripPainter extends CustomPainter {
       oldDelegate.background != background;
 }
 
+class _JexColorPickerCard extends StatelessWidget {
+  final List<String> colors;
+  final String selected;
+  final ValueChanged<String> onSelected;
+
+  const _JexColorPickerCard({
+    required this.colors,
+    required this.selected,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Material(
+      color: scheme.surface,
+      elevation: 18,
+      shadowColor: Colors.black.withValues(alpha: .22),
+      borderRadius: BorderRadius.circular(20),
+      clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(14, 13, 14, 14),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              JexText.of('color', appLanguageNotifier.value),
+              style: TextStyle(
+                color: scheme.onSurface,
+                fontSize: 17,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            const SizedBox(height: 10),
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: colors.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 6,
+                crossAxisSpacing: 7,
+                mainAxisSpacing: 7,
+                mainAxisExtent: 38,
+              ),
+              itemBuilder: (_, index) {
+                final value = colors[index];
+                final isSelected = selected == value;
+                final isWhite = value == '#FFFFFF';
+                return InkWell(
+                  borderRadius: BorderRadius.circular(11),
+                  onTap: () => onSelected(value),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 100),
+                    decoration: BoxDecoration(
+                      color: ledPaletteColor(value),
+                      borderRadius: BorderRadius.circular(11),
+                      border: Border.all(
+                        color: isSelected
+                            ? scheme.onSurface
+                            : (isWhite ? scheme.outline : Colors.transparent),
+                        width: isSelected ? 2.5 : 1,
+                      ),
+                    ),
+                    child: isSelected
+                        ? JexAnimatedIcon.glyph(
+                            icon: PhosphorIconsBold.check,
+                            color: isWhite ? Colors.black : Colors.white,
+                            size: 18,
+                            active: true,
+                          )
+                        : null,
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 enum JexAnimatedIconKind {
   battery,
   hotside,
@@ -3050,89 +3133,6 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   
-class _JexColorPickerCard extends StatelessWidget {
-  final List<String> colors;
-  final String selected;
-  final ValueChanged<String> onSelected;
-
-  const _JexColorPickerCard({
-    required this.colors,
-    required this.selected,
-    required this.onSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Material(
-      color: scheme.surface,
-      elevation: 18,
-      shadowColor: Colors.black.withValues(alpha: .22),
-      borderRadius: BorderRadius.circular(20),
-      clipBehavior: Clip.antiAlias,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(14, 13, 14, 14),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              JexText.of('color', appLanguageNotifier.value),
-              style: TextStyle(
-                color: scheme.onSurface,
-                fontSize: 17,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-            const SizedBox(height: 10),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: colors.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 6,
-                crossAxisSpacing: 7,
-                mainAxisSpacing: 7,
-                mainAxisExtent: 38,
-              ),
-              itemBuilder: (_, index) {
-                final value = colors[index];
-                final isSelected = selected == value;
-                final isWhite = value == '#FFFFFF';
-                return InkWell(
-                  borderRadius: BorderRadius.circular(11),
-                  onTap: () => onSelected(value),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 100),
-                    decoration: BoxDecoration(
-                      color: ledPaletteColor(value),
-                      borderRadius: BorderRadius.circular(11),
-                      border: Border.all(
-                        color: isSelected
-                            ? scheme.onSurface
-                            : (isWhite ? scheme.outline : Colors.transparent),
-                        width: isSelected ? 2.5 : 1,
-                      ),
-                    ),
-                    child: isSelected
-                        ? JexAnimatedIcon.glyph(
-                            icon: PhosphorIconsBold.check,
-                            color: isWhite ? Colors.black : Colors.white,
-                            size: 18,
-                            active: true,
-                          )
-                        : null,
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 
   // AI-METHOD: _openFirmwareSettings — Open the external firmware update dialog.
   Future<void> _openFirmwareSettings() async {
@@ -4791,7 +4791,7 @@ class _JexColorPickerCard extends StatelessWidget {
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints.tightFor(width: 36, height: 36),
                         tooltip: connected ? JexText.of('disconnect', appLanguageNotifier.value) : JexText.of('bluetooth', appLanguageNotifier.value),
-                        icon: JexAnimatedIcon.glyph(
+                        icon: JexAnimatedIcon(
                           kind: JexAnimatedIconKind.bluetooth,
                           color: connected ? const Color(0xFF4D8CFF) : headerForeground,
                           size: 25,
