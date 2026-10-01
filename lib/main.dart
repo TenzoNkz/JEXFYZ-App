@@ -4008,6 +4008,8 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
   }
 
+  // AI-METHOD / SUBMENU-TOGGLE-CONTRACT
+  // Full-custom switch row. No Material Switch/ListTile chrome is used here.
   Widget _switchRow({
     required String title,
     required String subtitle,
@@ -4019,41 +4021,44 @@ class _DashboardScreenState extends State<DashboardScreen>
   }) {
     final scheme = Theme.of(context).colorScheme;
     final accent = scheme.primary;
+    final lang = appLanguageNotifier.value;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 180),
-      curve: Curves.easeOut,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      curve: Curves.easeOutCubic,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: value
-            ? accent.withValues(alpha: .08)
-            : scheme.surfaceContainerHighest.withValues(alpha: .40),
-        borderRadius: BorderRadius.circular(16),
+            ? accent.withValues(alpha: .075)
+            : scheme.surfaceContainerHighest.withValues(alpha: .34),
+        borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: value
-              ? accent.withValues(alpha: .24)
-              : scheme.outlineVariant.withValues(alpha: .60),
+              ? accent.withValues(alpha: .28)
+              : scheme.outlineVariant.withValues(alpha: .72),
         ),
       ),
       child: Row(
         children: [
-          Container(
-            width: 38,
-            height: 38,
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            width: 42,
+            height: 42,
             decoration: BoxDecoration(
-              color: accent.withValues(alpha: value ? .13 : .06),
-              shape: BoxShape.circle,
+              color: value
+                  ? accent.withValues(alpha: .12)
+                  : scheme.surfaceContainerHighest.withValues(alpha: .72),
+              borderRadius: BorderRadius.circular(14),
             ),
             child: Center(
               child: animatedKind == null
-                  ? JexAnimatedIcon.glyph(
-                      icon: icon,
-                      size: 20,
+                  ? Icon(
+                      icon,
+                      size: 21,
                       color: value ? accent : scheme.onSurfaceVariant,
-                      active: false,
                     )
                   : JexAnimatedIcon(
                       kind: animatedKind,
-                      size: 20,
+                      size: 22,
                       color: value ? accent : scheme.onSurfaceVariant,
                       active: jexIndicatorAnimationActive(
                         connected: connected,
@@ -4062,23 +4067,108 @@ class _DashboardScreenState extends State<DashboardScreen>
                     ),
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 12),
           Expanded(
-            child: Text(
-              title.toUpperCase(),
-              style: TextStyle(
-                fontSize: 12.5,
-                letterSpacing: .35,
-                color: scheme.onSurface,
-                fontWeight: FontWeight.w900,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title.toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 13,
+                    letterSpacing: .35,
+                    fontWeight: FontWeight.w900,
+                    color: scheme.onSurface,
+                  ),
+                ),
+                if (subtitle.trim().isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Text(
+                      subtitle,
+                      style: TextStyle(
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w600,
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
-          Switch(
+          const SizedBox(width: 8),
+          Text(
+            JexText.of(value ? 'on' : 'off', lang),
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w900,
+              color: value ? accent : scheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(width: 8),
+          _jexToggle(
             value: value,
-            onChanged: enabled ? onChanged : null,
+            enabled: enabled,
+            accent: accent,
+            onChanged: onChanged,
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _jexToggle({
+    required bool value,
+    required bool enabled,
+    required Color accent,
+    required Future<void> Function(bool) onChanged,
+  }) {
+    final scheme = Theme.of(context).colorScheme;
+    return GestureDetector(
+      onTap: enabled ? () => unawaited(onChanged(!value)) : null,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        width: 54,
+        height: 32,
+        padding: const EdgeInsets.all(3),
+        decoration: BoxDecoration(
+          color: value
+              ? accent.withValues(alpha: .24)
+              : scheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color: value ? accent.withValues(alpha: .52) : scheme.outlineVariant,
+            width: 1.2,
+          ),
+        ),
+        child: AnimatedAlign(
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeOutCubic,
+          alignment: value ? Alignment.centerRight : Alignment.centerLeft,
+          child: Container(
+            width: 24,
+            height: 24,
+            decoration: BoxDecoration(
+              color: value
+                  ? accent
+                  : (enabled
+                      ? scheme.onSurfaceVariant
+                      : scheme.onSurfaceVariant.withValues(alpha: .32)),
+              shape: BoxShape.circle,
+              boxShadow: [
+                if (value)
+                  BoxShadow(
+                    color: accent.withValues(alpha: .20),
+                    blurRadius: 7,
+                    offset: const Offset(0, 2),
+                  ),
+              ],
+            ),
+            child: value
+                ? const Icon(Icons.check, size: 15, color: Colors.white)
+                : null,
+          ),
+        ),
       ),
     );
   }
