@@ -463,6 +463,18 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
 
   @override
   Widget build(BuildContext context) {
+    // Generic/action glyphs are intentionally static. Full custom motion is reserved
+    // for JE X FYZ status/indicator kinds.
+    if (widget.glyph != null) {
+      return RepaintBoundary(
+        child: Icon(
+          widget.glyph!,
+          size: widget.size,
+          color: widget.color,
+        ),
+      );
+    }
+
     final level = widget.level.clamp(0.0, 1.0).toDouble();
     return RepaintBoundary(
       child: AnimatedBuilder(
