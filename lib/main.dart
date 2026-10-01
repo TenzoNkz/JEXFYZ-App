@@ -4426,6 +4426,8 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   // AI-METHOD: _buildAdaptiveTab — Build ADAPTIVE submenu.
+  // AI-METHOD / ADAPTIVE-UI-CONTRACT
+  // Custom profile selection replaces Material RadioListTile while preserving commands/state.
   Widget _buildAdaptiveTab({Key? key}) {
     final lang = appLanguageNotifier.value;
     final locked = adaptiveOn;
@@ -4436,10 +4438,11 @@ class _DashboardScreenState extends State<DashboardScreen>
       key: key,
       child: _smoothList(
         storageKey: 'adaptive',
+        padding: const EdgeInsets.fromLTRB(2, 0, 2, 18),
         children: [
           _sectionTitle(JexText.of('adaptive', lang)),
           _card(
-            padding: const EdgeInsets.fromLTRB(13, 5, 13, 7),
+            padding: const EdgeInsets.all(9),
             child: _switchRow(
               title: JexText.of('adaptiveSwitch', lang),
               subtitle: '',
@@ -4450,60 +4453,137 @@ class _DashboardScreenState extends State<DashboardScreen>
               onChanged: _toggleAdaptive,
             ),
           ),
+          _sectionTitle(JexText.of('adaptiveProfile', lang)),
           _card(
-            padding: const EdgeInsets.symmetric(vertical: 2),
+            padding: const EdgeInsets.all(9),
             child: Column(
               children: [
-                RadioListTile<String>(
+                _adaptiveProfileRow(
                   value: 'HOTSIDE',
-                  groupValue: group,
-                  onChanged: locked
-                      ? null
-                      : (value) {
-                          if (value != null) {
-                            unawaited(_setAdaptiveProfile(value));
-                          }
-                        },
-                  secondary: JexAnimatedIcon.glyph(
-                    icon: PhosphorIconsRegular.thermometer,
-                    color: locked
-                        ? Theme.of(context).colorScheme.onSurface.withValues(alpha: .22)
-                        : Theme.of(context).colorScheme.onSurfaceVariant,
-                    size: 22,
-                    active: !locked,
-                  ),
-                  title: Text(
-                    JexText.of('hotsideProtection', lang),
-                    style: const TextStyle(fontWeight: FontWeight.w800),
-                  ),
+                  title: JexText.of('hotsideProtection', lang),
+                  icon: PhosphorIconsRegular.thermometer,
+                  selected: group == 'HOTSIDE',
+                  locked: locked,
                 ),
-                RadioListTile<String>(
+                const SizedBox(height: 8),
+                _adaptiveProfileRow(
                   value: 'HOTSIDE_BATTERY',
-                  groupValue: group,
-                  onChanged: locked
-                      ? null
-                      : (value) {
-                          if (value != null) {
-                            unawaited(_setAdaptiveProfile(value));
-                          }
-                        },
-                  secondary: JexAnimatedIcon.glyph(
-                    icon: PhosphorIconsRegular.batteryHigh,
-                    size: 22,
-                    color: locked
-                        ? Theme.of(context).colorScheme.onSurface.withValues(alpha: .22)
-                        : Theme.of(context).colorScheme.onSurfaceVariant,
-                    active: !locked,
-                  ),
-                  title: Text(
-                    JexText.of('hotsideBattery', lang),
-                    style: const TextStyle(fontWeight: FontWeight.w800),
-                  ),
+                  title: JexText.of('hotsideBattery', lang),
+                  icon: PhosphorIconsRegular.batteryHigh,
+                  selected: group == 'HOTSIDE_BATTERY',
+                  locked: locked,
                 ),
               ],
             ),
           ),
+          if (locked)
+            _card(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.lock_outline_rounded,
+                    size: 19,
+                    color: Colors.orangeAccent,
+                  ),
+                  const SizedBox(width: 9),
+                  Expanded(
+                    child: Text(
+                      JexText.of('lockedAdaptive', lang),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
         ],
+      ),
+    );
+  }
+
+  Widget _adaptiveProfileRow({
+    required String value,
+    required String title,
+    required IconData icon,
+    required bool selected,
+    required bool locked,
+  }) {
+    final scheme = Theme.of(context).colorScheme;
+    final accent = scheme.primary;
+    return InkWell(
+      onTap: locked ? null : () => unawaited(_setAdaptiveProfile(value)),
+      borderRadius: BorderRadius.circular(17),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOutCubic,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: selected
+              ? accent.withValues(alpha: .07)
+              : scheme.surfaceContainerHighest.withValues(alpha: .24),
+          borderRadius: BorderRadius.circular(17),
+          border: Border.all(
+            color: selected
+                ? accent.withValues(alpha: .30)
+                : scheme.outlineVariant.withValues(alpha: .68),
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: selected
+                    ? accent.withValues(alpha: .11)
+                    : scheme.surfaceContainerHighest.withValues(alpha: .62),
+                borderRadius: BorderRadius.circular(13),
+              ),
+              child: Icon(
+                icon,
+                size: 21,
+                color: locked
+                    ? scheme.onSurfaceVariant.withValues(alpha: .35)
+                    : (selected ? accent : scheme.onSurfaceVariant),
+              ),
+            ),
+            const SizedBox(width: 11),
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: locked
+                      ? scheme.onSurfaceVariant.withValues(alpha: .45)
+                      : scheme.onSurface,
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
+              width: 30,
+              height: 30,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: selected
+                    ? accent.withValues(alpha: .14)
+                    : scheme.surfaceContainerHighest,
+                border: Border.all(
+                  color: selected ? accent : scheme.outlineVariant,
+                  width: selected ? 2 : 1,
+                ),
+              ),
+              child: selected
+                  ? Icon(Icons.check, size: 17, color: accent)
+                  : null,
+            ),
+          ],
+        ),
       ),
     );
   }
