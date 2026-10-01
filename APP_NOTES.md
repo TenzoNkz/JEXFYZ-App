@@ -1403,3 +1403,25 @@ Never:
 - Enabling Auto Connect triggers the same passive prerequisite check without requesting permissions or changing Bluetooth power.
 - Disabling Auto Connect cancels pending automatic reconnect timers/scans.
 - Fresh install remains safe: with no known cooler identity, enabling Auto Connect still performs no scan or connection.
+
+
+## 2026-10-01 — FULL EXECUTION / LED VISUALIZER + ANCHORED COLOR PICKER
+
+- LED submenu now uses a custom horizontal **8-LED visualizer**. The physical strip remains 4 LEDs on the left + 4 on the right; the App intentionally flattens the eight logical positions into one row.
+- Preview mode formulas mirror the current firmware renderer for the seven supported LED modes:
+  - STATIC
+  - BREATH
+  - CENTER OUT
+  - OUTER IN
+  - DUAL CHASE
+  - LEFT RIGHT
+  - RAINBOW
+- Preview uses the firmware timing periods and the 1–100% master brightness relationship. Animation phase is app-local because the current BLE protocol does not expose the firmware's LED animation phase.
+- Expanded the App color preset palette from 12 to 24 curated RGB presets and added `#FFFFFF`.
+- Black and light/dark color variants are intentionally excluded; brightness remains the intensity control.
+- Replaced the centered Color dialog with an **anchored floating Color Picker** positioned near the COLOR row and adaptively opening above/below based on available screen space.
+- Color picker is custom, compact, 6-column grid with selected-state checkmark and white-swatch border handling.
+- The selected color swatch in the LED control now represents white correctly.
+- Added automated regression coverage for the 8-LED preview and expanded palette/white contract.
+- No firmware source was changed. BLE UUID/P1 protocol, OTA, Firebase metadata, GPIO mapping, and release signing identity remain unchanged.
+- Build App was not triggered by this execution.
