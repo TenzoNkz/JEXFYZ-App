@@ -1320,7 +1320,7 @@ class AboutSettingsPage extends StatelessWidget {
             const SizedBox(height: 4),
             const Center(child: Text('JE Cooler', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700))),
             const SizedBox(height: 24),
-            _AboutRow(label: JexText.of('appVersion', language), value: '1.0.0'),
+            _AboutRow(label: JexText.of('appVersion', language), value: 'Telegram @horizontalzzz'),
             _AboutRow(label: JexText.of('bluetooth', language), value: 'P1'),
             const SizedBox(height: 14),
             Center(child: Text('© JE X FYZ', style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant))),
