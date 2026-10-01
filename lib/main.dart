@@ -4225,6 +4225,11 @@ class _DashboardScreenState extends State<DashboardScreen>
     final active = voltage == target;
     final scheme = Theme.of(context).colorScheme;
     final accent = scheme.primary;
+    final darkSurface = appThemeNotifier.value == AppThemePreset.dark;
+    final activeBackground =
+        darkSurface ? scheme.onSurface : const Color(0xFF17181C);
+    final activeForeground =
+        darkSurface ? const Color(0xFF111318) : Colors.white;
     return InkWell(
       onTap: locked ? null : () => _requestVoltage(target),
       borderRadius: BorderRadius.circular(17),
@@ -4234,7 +4239,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         padding: const EdgeInsets.fromLTRB(14, 11, 11, 11),
         decoration: BoxDecoration(
           color: active
-              ? const Color(0xFF17181C)
+              ? activeBackground
               : scheme.surfaceContainerHighest.withValues(alpha: .26),
           borderRadius: BorderRadius.circular(17),
           border: Border.all(
@@ -4250,7 +4255,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               child: Text(
                 target,
                 style: TextStyle(
-                  color: active ? Colors.white : scheme.onSurface,
+                  color: active ? activeForeground : scheme.onSurface,
                   fontSize: 20,
                   fontWeight: FontWeight.w900,
                 ),
@@ -4260,7 +4265,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               child: Text(
                 mode,
                 style: TextStyle(
-                  color: active ? Colors.white70 : scheme.onSurfaceVariant,
+                  color: active ? activeForeground.withValues(alpha: .72) : scheme.onSurfaceVariant,
                   fontSize: 11.5,
                   fontWeight: FontWeight.w700,
                 ),
@@ -4940,7 +4945,16 @@ class _DashboardScreenState extends State<DashboardScreen>
           Align(
             alignment: Alignment.centerLeft,
             child: OutlinedButton(
-              onPressed: connected && !locked ? _resetTemperatureSettings : null,
+              onPressed: connected && !locked
+                  ? _resetTemperatureSettings
+                  : null,
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size(0, 38),
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(13),
+                ),
+              ),
               child: Text(JexText.of('resetTemperature', lang)),
             ),
           ),
