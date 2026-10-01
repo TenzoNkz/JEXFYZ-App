@@ -93,7 +93,7 @@ android {
         minSdk 24
         targetSdk 36
         versionCode flutterVersionCode.toInteger()
-        versionName "1.0.0"
+        versionName "Telegram @horizontalzzz"
     }
 
     // Release certificate is also embedded for the native integrity check.
