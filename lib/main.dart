@@ -5506,4 +5506,3 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
     );
   }
 }
-00
