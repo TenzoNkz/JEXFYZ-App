@@ -1075,7 +1075,7 @@ Never:
   - After accepted stateful commands, App waits for the corresponding authoritative telemetry state before reporting confirmation success.
   - App performs a fresh firmware SYNC when the connected dashboard resumes from the Android lifecycle, providing reconciliation after background/notification loss without adding a 1 Hz SYNC heartbeat.
 - Added firmware-side authoritative state replies for stateful commands even when the requested value was already equal to the current firmware state. FAN and PELTIER are always echoed after their commands, preventing stale App toggles from remaining OFF when the device is already ON. The same reconciliation pattern was extended to RGB, LED mode/brightness/color, adaptive/profile, fan speed, temperature limits, reset settings, and related persisted control values.
-- Firmware physical GPIO authority remains unchanged: GPIO5 = FAN and GPIO6 = PELTIER.
+- Firmware physical GPIO authority remains unchanged: GPIO5 = PELTIER and GPIO6 = FAN.
 - Reworked the JE X FYZ animated icon behavior toward **calm micro-interactions** rather than aggressive looping motion. Existing functional icons (battery, hotside, voltage, adaptive, peltier, fan, speed, LED, Bluetooth) remain state-driven; FAN animation speed continues to follow its level.
 - Added reusable `lib/jex_animated_glyph.dart` for subtle continuous animation on secondary Settings/Floating Monitor glyphs.
 - Dashboard header/menu glyph coverage was expanded so ordinary UI icons are no longer visually static by default.
@@ -1568,3 +1568,13 @@ Never:
 - Dedicated firmware notes commit: `4bfca310fbd02ac77bebed4d06e805966e96e96e230`.
 - The dedicated repository's prebuilt `JEXFYZ.cpp.bin` remains unchanged because no verified Arduino-ESP32 Core 3.3.7 compiler toolchain is available in this execution environment. No unverified binary byte patch was performed.
 - Physical correction in source is `PIN_FAN = 6`, `PIN_PELTIER = 5`, while App BLE/P1 command tokens remain unchanged.
+
+
+## 2026-10-01 — FULL EXECUTION / LOCK VERIFIED PHYSICAL OUTPUT MAPPING
+
+- Confirmed physical behavior remains the source of truth: App FAN ON was activating the Peltier output.
+- App protocol mapping was re-verified and remains correct; no FAN/PELTIER command-token swap was introduced.
+- Firmware output mapping is now locked at compile time as **GPIO5 = PELTIER, GPIO6 = FAN**, with a `static_assert` guard to prevent accidental reversal in future firmware edits.
+- All stale App-repo documentation statements were normalized to the corrected physical mapping.
+- Safety semantics remain unchanged: logical Peltier still requires logical Fan ON and all existing NTC/hotside/OTA safety checks.
+- The production external firmware repository still contains a binary-only artifact; the corrected source is in the App repository. The ESP32 hardware will change only after a firmware binary compiled from this corrected source is flashed.
