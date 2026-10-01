@@ -357,6 +357,14 @@ enum JexAnimatedIconKind {
 
 // JE X FYZ custom motion: every status icon has its own rhythm. Generic action
 // glyphs intentionally stay static; only device/status indicators animate.
+// Global JE X FYZ indicator motion gate.
+// Device/status animation is legal only when BLE is connected and the indicator state is active.
+bool jexIndicatorAnimationActive({
+  required bool connected,
+  required bool stateActive,
+}) =>
+    connected && stateActive;
+
 Duration jexIconAnimationDuration(JexAnimatedIconKind kind) {
   return switch (kind) {
     JexAnimatedIconKind.battery => const Duration(milliseconds: 1500),
@@ -3470,6 +3478,10 @@ class _JexColorPickerCard extends StatelessWidget {
   }) {
     final display = value == '--' ? '--' : value + unit;
     final active = value != '--';
+    final animationIsActive = jexIndicatorAnimationActive(
+      connected: connected,
+      stateActive: animationActive ?? active,
+    );
     final homeDark = appThemeNotifier.value != AppThemePreset.light;
     // AI-THEME / DASHBOARD-LIGHT-CONTRAST-CONTRACT
     // Explicit Home metric text remains dark in Light mode; no pale muted text on light surfaces.
@@ -3505,7 +3517,7 @@ class _JexColorPickerCard extends StatelessWidget {
                             icon: icon,
                             size: 22,
                             color: color,
-                            active: animationActive ?? active,
+                            active: animationIsActive,
                             warning: warning,
                           )
                         : JexAnimatedIcon(
@@ -3584,7 +3596,10 @@ class _JexColorPickerCard extends StatelessWidget {
       color: color,
       icon: icon,
       animatedKind: animatedKind,
-      animationActive: value,
+      animationActive: jexIndicatorAnimationActive(
+        connected: connected,
+        stateActive: value,
+      ),
       level: fanOn ? fanSpeed / 100 : 0,
     );
   }
@@ -3610,6 +3625,10 @@ class _JexColorPickerCard extends StatelessWidget {
       color: const Color(0xFFFFCD38),
       icon: PhosphorIconsRegular.gauge,
       animatedKind: JexAnimatedIconKind.speed,
+      animationActive: jexIndicatorAnimationActive(
+        connected: connected,
+        stateActive: fanOn,
+      ),
       level: fanSpeed / 100,
     );
   }
@@ -4018,13 +4037,16 @@ class _JexColorPickerCard extends StatelessWidget {
                       icon: icon,
                       size: 20,
                       color: value ? accent : scheme.onSurfaceVariant,
-                      active: value,
+                      active: false,
                     )
                   : JexAnimatedIcon(
                       kind: animatedKind,
                       size: 20,
                       color: value ? accent : scheme.onSurfaceVariant,
-                      active: value,
+                      active: jexIndicatorAnimationActive(
+                        connected: connected,
+                        stateActive: value,
+                      ),
                     ),
             ),
           ),
@@ -4761,7 +4783,10 @@ class _JexColorPickerCard extends StatelessWidget {
                           kind: JexAnimatedIconKind.bluetooth,
                           color: connected ? const Color(0xFF4D8CFF) : headerForeground,
                           size: 25,
-                          active: connected,
+                          active: jexIndicatorAnimationActive(
+                            connected: connected,
+                            stateActive: true,
+                          ),
                         ),
                         onPressed: connected ? _disconnect : _showBluetoothMenu,
                       ),
