@@ -1425,3 +1425,30 @@ Never:
 - Added automated regression coverage for the 8-LED preview and expanded palette/white contract.
 - No firmware source was changed. BLE UUID/P1 protocol, OTA, Firebase metadata, GPIO mapping, and release signing identity remain unchanged.
 - Build App was not triggered by this execution.
+
+## 2026-10-01 — FULL EXECUTION / JE X FYZ CUSTOM INDICATOR MOTION ENGINE
+
+- Replaced the previous generic icon motion approach with a full custom `CustomPainter`-based JE X FYZ indicator animation engine.
+- Each status indicator now has its own geometry and motion language:
+  - Battery: internal energy fill + moving energy flow.
+  - Hotside: rising thermal waves + optional warning ring.
+  - Voltage: custom lightning geometry + moving electrical sparks.
+  - Adaptive: orbital ring + moving energy orb.
+  - Peltier: thermal exchange particles around the core.
+  - Fan: custom 3-blade geometry + speed-scaled rotation + subtle airflow particles.
+  - Speed: custom gauge + dynamic needle behavior.
+  - LED: eight-point light strip animation.
+  - Bluetooth: custom Bluetooth geometry + expanding wireless signal waves.
+- Generic action/navigation glyphs (for example settings/action icons) remain static; they are not device-status indicators.
+- Added individual motion durations per indicator type rather than one generic animation timing.
+- Added a centralized `jexIndicatorAnimationActive` gate.
+- Animation contract:
+  - BLE disconnected => all device/status indicator animations are frozen/static.
+  - BLE connected + indicator/device state inactive => that indicator remains static.
+  - BLE connected + indicator/device state active => that indicator animates.
+- The Home Speed indicator specifically uses `fanOn` as its animation gate, so Fan OFF cannot animate merely because the stored speed value is non-zero.
+- `_switchRow` now also gates indicator motion by both BLE connection and the actual switch state.
+- Header Bluetooth now uses the custom Bluetooth painter and only animates while connected.
+- Firmware source was not modified. BLE UUID/P1 protocol, OTA, Firebase metadata, GPIO mapping, and signing identity remain unchanged.
+- Added regression tests for the centralized animation gate and distinct motion timing.
+- Build App was not triggered by this execution. Runtime visual validation remains a fresh-APK/device test requirement.
