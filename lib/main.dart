@@ -4191,6 +4191,8 @@ class _DashboardScreenState extends State<DashboardScreen>
   // AI-METHOD: _buildVoltageTab — Build the fixed three-level VOLTAGE selector.
   // The selector intentionally matches the physical voltage hierarchy:
   // 5V Low Mode -> 9V Mid Mode -> 12V High Mode.
+  // AI-METHOD / VOLTAGE-UI-CONTRACT
+  // Voltage stays vertical. Each row is a custom single-select toggle; only one can be active.
   Widget _buildVoltageTab({Key? key}) {
     final locked = !connected || adaptiveOn || voltageGuardActive;
     final lang = appLanguageNotifier.value;
@@ -4199,15 +4201,18 @@ class _DashboardScreenState extends State<DashboardScreen>
       key: key,
       child: _smoothList(
         storageKey: 'voltage',
+        padding: const EdgeInsets.fromLTRB(2, 0, 2, 18),
         children: [
           _sectionTitle(JexText.of('voltage', lang)),
           _card(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+            padding: const EdgeInsets.all(9),
             child: Column(
               children: [
-                _voltageChoice('5V', JexText.of('lowMode', lang), locked, isFirst: true),
-                _voltageChoice('9V', JexText.of('midMode', lang), locked),
-                _voltageChoice('12V', JexText.of('highMode', lang), locked, isLast: true),
+                _voltageChoiceCustom('5V', JexText.of('lowMode', lang), locked),
+                const SizedBox(height: 7),
+                _voltageChoiceCustom('9V', JexText.of('midMode', lang), locked),
+                const SizedBox(height: 7),
+                _voltageChoiceCustom('12V', JexText.of('highMode', lang), locked),
               ],
             ),
           ),
@@ -4216,72 +4221,85 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
   }
 
-  Widget _voltageChoice(
-    String target,
-    String mode,
-    bool locked, {
-    bool isFirst = false,
-    bool isLast = false,
-  }) {
+  Widget _voltageChoiceCustom(String target, String mode, bool locked) {
     final active = voltage == target;
     final scheme = Theme.of(context).colorScheme;
-    final foreground = active ? Colors.white : scheme.onSurface;
-    final secondary = active ? Colors.white70 : scheme.onSurfaceVariant;
-    final inactiveIcon = scheme.onSurfaceVariant.withValues(alpha: .30);
-
-    return Material(
-      color: active ? const Color(0xFF17181C) : Colors.transparent,
-      borderRadius: BorderRadius.vertical(
-        top: isFirst ? const Radius.circular(14) : Radius.zero,
-        bottom: isLast ? const Radius.circular(14) : Radius.zero,
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: locked ? null : () => _requestVoltage(target),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 13),
-          child: Row(
-            children: [
-              SizedBox(
-                width: 48,
-                child: Text(
-                  target,
-                  style: TextStyle(
-                    color: foreground,
-                    fontSize: 19,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  mode,
-                  style: TextStyle(
-                    color: secondary,
-                    fontSize: 11.5,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 170),
-                width: 28,
-                height: 28,
-                decoration: BoxDecoration(
-                  color: active
-                      ? const Color(0xFF5C9DFF).withValues(alpha: .15)
-                      : scheme.onSurface.withValues(alpha: .04),
-                  shape: BoxShape.circle,
-                ),
-                child: JexAnimatedIcon.glyph(
-                  icon: active ? PhosphorIconsBold.check : PhosphorIconsRegular.circle,
-                  color: active ? const Color(0xFF5C9DFF) : inactiveIcon,
-                  size: active ? 18 : 10,
-                  active: true,
-                ),
-              ),
-            ],
+    final accent = scheme.primary;
+    return InkWell(
+      onTap: locked ? null : () => _requestVoltage(target),
+      borderRadius: BorderRadius.circular(17),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOutCubic,
+        padding: const EdgeInsets.fromLTRB(14, 11, 11, 11),
+        decoration: BoxDecoration(
+          color: active
+              ? const Color(0xFF17181C)
+              : scheme.surfaceContainerHighest.withValues(alpha: .26),
+          borderRadius: BorderRadius.circular(17),
+          border: Border.all(
+            color: active
+                ? accent.withValues(alpha: .28)
+                : scheme.outlineVariant.withValues(alpha: .68),
           ),
+        ),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 58,
+              child: Text(
+                target,
+                style: TextStyle(
+                  color: active ? Colors.white : scheme.onSurface,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Text(
+                mode,
+                style: TextStyle(
+                  color: active ? Colors.white70 : scheme.onSurfaceVariant,
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
+              width: 46,
+              height: 28,
+              padding: const EdgeInsets.all(3),
+              decoration: BoxDecoration(
+                color: active
+                    ? accent.withValues(alpha: .18)
+                    : scheme.surfaceContainerHighest.withValues(alpha: .72),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: active ? accent.withValues(alpha: .46) : scheme.outlineVariant,
+                ),
+              ),
+              child: AnimatedAlign(
+                duration: const Duration(milliseconds: 180),
+                curve: Curves.easeOutCubic,
+                alignment: active ? Alignment.centerRight : Alignment.centerLeft,
+                child: Container(
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: active
+                        ? accent
+                        : scheme.onSurfaceVariant.withValues(alpha: locked ? .18 : .30),
+                    shape: BoxShape.circle,
+                  ),
+                  child: active
+                      ? const Icon(Icons.check, size: 13, color: Colors.white)
+                      : null,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
