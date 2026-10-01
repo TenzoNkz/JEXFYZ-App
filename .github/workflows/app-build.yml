@@ -2,7 +2,7 @@
 # Reusable App Build engine. It is never triggered by push.
 # The dedicated "Build App" workflow is the only manual trigger.
 # Firmware source is intentionally stored in this App repository under firmware/.
-# The dedicated firmware repository is binary-only.
+# The dedicated firmware repository may contain continuity source plus the published firmware BIN; this workflow builds the App only.
 # CI success proves App build validation only; it does not prove BLE/OTA/hardware runtime.
 
 name: App Build
