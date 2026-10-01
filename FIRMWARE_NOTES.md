@@ -11,7 +11,7 @@
 - **Authoritative physical mapping:** GPIO5 = PELTIER; GPIO6 = FAN.
 - App BLE/P1 logical tokens remain unchanged: `FAN:ON/OFF` controls Fan; `PELTIER:ON/OFF` controls Peltier.
 - The firmware output path is internally consistent: Fan PWM writes to `PIN_FAN`; Peltier soft-start/stop writes to `PIN_PELTIER`.
-- The dedicated V2.3 source now has a compile-time `static_assert` protecting this mapping.
+- The dedicated V2.4 source has a compile-time `static_assert` protecting this mapping.
 - Safety semantics were not changed: Peltier still requires Fan ON plus the existing NTC/Hotside/OTA protections.
 - Dedicated firmware repo current state is **V2.4 source + existing BIN**. The existing BIN has not been regenerated and must not be represented as V2.4.
 - Source hardening commit before version bump: `21ceb9ceb3f7b7701a88367a0dbd13090949acc2`.
