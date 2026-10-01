@@ -1,21 +1,29 @@
 # JE X FYZ FIRMWARE — AUTHORITATIVE MEMORY CORE
+## 2026-10-01 — FIRMWARE VERSIONING RULE / V2.4
+
+- Firmware source revision was bumped **V2.3 → V2.4** as part of this source change.
+- The App mirror is now `firmware/JEXFYZ-V2.4.ino`.
+- The exact V2.4 source still requires ArduinoDroid/Core 3.3.7 compilation before BIN/OTA promotion.
 
 ## 2026-10-01 — FULL EXECUTION / SOURCE-TO-HARDWARE MAPPING RECONCILIATION
 
-- Current V2.3 source was inspected directly in both repositories.
+- Current V2.4 source was inspected directly in both repositories after the required firmware version bump from V2.3.
 - **Authoritative physical mapping:** GPIO5 = PELTIER; GPIO6 = FAN.
 - App BLE/P1 logical tokens remain unchanged: `FAN:ON/OFF` controls Fan; `PELTIER:ON/OFF` controls Peltier.
 - The firmware output path is internally consistent: Fan PWM writes to `PIN_FAN`; Peltier soft-start/stop writes to `PIN_PELTIER`.
 - The dedicated V2.3 source now has a compile-time `static_assert` protecting this mapping.
 - Safety semantics were not changed: Peltier still requires Fan ON plus the existing NTC/Hotside/OTA protections.
-- Dedicated firmware repo current state is **source + existing BIN**, despite older documentation that called it binary-only. The existing BIN has not been altered or claimed as corrected.
-- Source hardening commit in dedicated firmware repo: `21ceb9ceb3f7b7701a88367a0dbd13090949acc2`.
+- Dedicated firmware repo current state is **V2.4 source + existing BIN**. The existing BIN has not been regenerated and must not be represented as V2.4.
+- Source hardening commit before version bump: `21ceb9ceb3f7b7701a88367a0dbd13090949acc2`.
+- V2.4 source creation commit: `bd89ccfbe6aef846e35456fbf875d7ca68b90390`.
 - Validation boundary:
   - Source/static consistency: **checked**
   - ArduinoDroid + Core 3.3.7 compile: **pending**
   - Corrected BIN flash: **pending**
   - Physical FAN/PELTIER test: **pending**
 - No App command-token swap was made to compensate for the hardware mismatch.
+- **Firmware versioning rule:** every functional firmware/source change must increment the firmware version before the changed source is treated as an OTA candidate. Documentation-only changes do not require a version bump.
+- V2.4 OTA publication is intentionally incomplete until a V2.4 BIN is compiled from this exact source and the Firebase `version` metadata is promoted to `V2.4` together with the same production BIN URL.
 > First-read memory index for Firmware work. Historical revision entries below remain preserved as evidence. Later verified state overrides older pending/obsolete statements.
 > Consolidated: 2026-10-01.
 
