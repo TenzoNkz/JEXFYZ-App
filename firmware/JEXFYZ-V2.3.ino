@@ -89,11 +89,13 @@ static constexpr uint8_t PIN_NTC     = 0;
 static constexpr uint8_t PIN_TOUCH   = 1;
 static constexpr uint8_t PIN_12V     = 3;
 static constexpr uint8_t PIN_9V      = 4;
-// Physical output correction based on confirmed bench behavior:
-// FAN command must drive the physical fan output; PELTIER command must drive the physical Peltier output.
-// Observed hardware had the two output traces reversed relative to the previous source labels.
+// Physical output mapping contract (ESP32-C3):
+// GPIO5 = PELTIER output, GPIO6 = FAN output.
+// App BLE tokens remain logical: FAN:* drives FAN, PELTIER:* drives PELTIER.
 static constexpr uint8_t PIN_PELTIER = 5;
 static constexpr uint8_t PIN_FAN     = 6;
+static_assert(PIN_PELTIER == 5 && PIN_FAN == 6,
+              "JE X FYZ output mapping contract violated");
 static constexpr uint8_t PIN_LED     = 7;
 static constexpr uint8_t LED_COUNT   = 8;
 
