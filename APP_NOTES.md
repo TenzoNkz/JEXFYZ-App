@@ -1549,3 +1549,13 @@ Never:
 - Build includes the full custom submenu V2 presentation-layer redesign and the custom JE X FYZ indicator motion engine already committed before the build.
 - Direct chat APK copy prepared at `/mnt/data/JEXFYZ#41.apk`; the artifact bytes are verified as an Android APK and the SHA-256 matches the GitHub artifact digest.
 - No firmware source, BLE UUID/P1 protocol, OTA transport, Firebase metadata contract, GPIO mapping, or signing identity was changed by the version-label/build steps.
+
+
+## 2026-10-01 — VERIFIED FAN/PELTIER OUTPUT INVERSION FIX
+
+- User confirmed a physical mismatch: App FAN ON activated the Peltier output.
+- App-side protocol mapping was verified and intentionally left unchanged (`FAN:ON/OFF`, `PELTIER:ON/OFF`).
+- Embedded firmware source `firmware/JEXFYZ-V2.3.ino` was corrected to map physical outputs as `PIN_FAN = 6` and `PIN_PELTIER = 5` to match the observed hardware behavior.
+- No App telemetry labels were swapped and no safety prerequisite was bypassed.
+- The external firmware repository contains a binary-only artifact, so a fresh firmware BIN must be compiled/flashed separately for this source correction to reach the ESP32.
+- App Build was not triggered for this firmware-only correction.
