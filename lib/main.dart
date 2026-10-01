@@ -355,6 +355,23 @@ enum JexAnimatedIconKind {
   generic,
 }
 
+// JE X FYZ custom motion: every status icon has its own rhythm. Generic action
+// glyphs intentionally stay static; only device/status indicators animate.
+Duration jexIconAnimationDuration(JexAnimatedIconKind kind) {
+  return switch (kind) {
+    JexAnimatedIconKind.battery => const Duration(milliseconds: 1500),
+    JexAnimatedIconKind.hotside => const Duration(milliseconds: 1800),
+    JexAnimatedIconKind.voltage => const Duration(milliseconds: 1050),
+    JexAnimatedIconKind.adaptive => const Duration(milliseconds: 2400),
+    JexAnimatedIconKind.peltier => const Duration(milliseconds: 1600),
+    JexAnimatedIconKind.fan => const Duration(milliseconds: 1050),
+    JexAnimatedIconKind.speed => const Duration(milliseconds: 1300),
+    JexAnimatedIconKind.led => const Duration(milliseconds: 1250),
+    JexAnimatedIconKind.bluetooth => const Duration(milliseconds: 1800),
+    JexAnimatedIconKind.generic => const Duration(milliseconds: 2000),
+  };
+}
+
 class JexAnimatedIcon extends StatefulWidget {
   final JexAnimatedIconKind kind;
   final IconData? glyph;
@@ -394,26 +411,40 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     with SingleTickerProviderStateMixin {
   late final AnimationController controller;
 
+  void _syncAnimation() {
+    if (widget.kind == JexAnimatedIconKind.generic || !widget.active) {
+      controller.stop();
+      controller.value = 0;
+      return;
+    }
+    if (!controller.isAnimating) {
+      controller.repeat();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     controller = AnimationController(
       vsync: this,
-      duration: Duration(
-        milliseconds: widget.kind == JexAnimatedIconKind.fan ? 850 : 2400,
-      ),
-    )..repeat();
+      duration: jexIconAnimationDuration(widget.kind),
+    );
+    _syncAnimation();
   }
 
   @override
   void didUpdateWidget(covariant JexAnimatedIcon oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.kind != oldWidget.kind) {
-      controller.duration = Duration(
-        milliseconds: widget.kind == JexAnimatedIconKind.fan ? 850 : 2400,
-      );
+      controller.duration = jexIconAnimationDuration(widget.kind);
+      controller.reset();
     }
-    if (!controller.isAnimating) controller.repeat();
+    // Transitioning OFF always freezes the painter at its canonical static pose.
+    // Transitioning ON starts a fresh motion cycle from phase zero.
+    if (widget.active != oldWidget.active) {
+      controller.reset();
+    }
+    _syncAnimation();
   }
 
   @override
@@ -424,40 +455,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
 
   @override
   Widget build(BuildContext context) {
-    if (widget.glyph != null) {
-      return RepaintBoundary(
-        child: AnimatedBuilder(
-          animation: controller,
-          builder: (_, __) {
-            final phase = controller.value * math.pi * 2;
-            final strength = widget.active ? 1.0 : 0.35;
-            final pulse = math.sin(phase) * strength;
-            final scale = 1 + pulse * 0.018;
-            final offsetY = pulse * widget.size * 0.010;
-            final rotation = pulse * 0.020;
-            return Transform.translate(
-              offset: Offset(0, offsetY),
-              child: Transform.rotate(
-                angle: rotation,
-                child: Transform.scale(
-                  scale: scale,
-                  child: Icon(
-                    widget.glyph!,
-                    size: widget.size,
-                    color: widget.color.withValues(
-                      alpha: widget.warning
-                          ? 0.72 + 0.28 * (0.5 + 0.5 * math.sin(phase * 2))
-                          : 1.0,
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      );
-    }
-
+    final level = widget.level.clamp(0.0, 1.0).toDouble();
     return RepaintBoundary(
       child: AnimatedBuilder(
         animation: controller,
@@ -468,7 +466,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
             color: widget.color,
             progress: controller.value,
             active: widget.active,
-            level: widget.level.clamp(0, 1).toDouble(),
+            level: level,
             warning: widget.warning,
           ),
         ),
@@ -494,222 +492,463 @@ class _JexIconPainter extends CustomPainter {
     required this.warning,
   });
 
-  Paint stroke(double width, [Color? c]) => Paint()
-    ..color = c ?? color
-    ..style = PaintingStyle.stroke
-    ..strokeWidth = width
-    ..strokeCap = StrokeCap.round
-    ..strokeJoin = StrokeJoin.round;
+  Paint stroke(
+    double width, [
+    Color? c,
+  ]) {
+    return Paint()
+      ..color = c ?? color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = width
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+  }
 
-  Paint fill([Color? c]) => Paint()
-    ..color = c ?? color
-    ..style = PaintingStyle.fill;
+  Paint fill([Color? c]) {
+    return Paint()
+      ..color = c ?? color
+      ..style = PaintingStyle.fill;
+  }
+
+  Path _bolt(double s) {
+    return Path()
+      ..moveTo(s * .56, s * .08)
+      ..lineTo(s * .28, s * .51)
+      ..lineTo(s * .49, s * .51)
+      ..lineTo(s * .39, s * .92)
+      ..lineTo(s * .73, s * .37)
+      ..lineTo(s * .53, s * .37)
+      ..close();
+  }
+
+  void _drawHeatWave(
+    Canvas canvas,
+    Size size,
+    double phase,
+    double alpha,
+  ) {
+    final s = size.shortestSide;
+    final cx = size.width / 2;
+    final offset = (phase % 1.0) * s * .13;
+    final waves = <double>[
+      -.16 + offset / s,
+      0.02 + offset / s,
+      .20 + offset / s,
+    ];
+    for (final xFactor in waves) {
+      final x = cx + xFactor * s;
+      final path = Path()
+        ..moveTo(x, s * .23)
+        ..cubicTo(
+          x - s * .05,
+          s * .30,
+          x + s * .05,
+          s * .36,
+          x,
+          s * .43,
+        )
+        ..cubicTo(
+          x - s * .05,
+          s * .50,
+          x + s * .05,
+          s * .56,
+          x,
+          s * .63,
+        );
+      canvas.drawPath(
+        path,
+        stroke(s * .028, color.withValues(alpha: alpha)),
+      );
+    }
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
     final s = size.shortestSide;
     final cx = size.width / 2;
     final cy = size.height / 2;
-    final wave = active
-        ? .75 + .25 * (0.5 + 0.5 * math.sin(progress * math.pi * 2))
-        : 1.0;
-    final scale = active
-        ? .965 + .035 * (0.5 + 0.5 * math.sin(progress * math.pi * 2))
-        : 1.0;
+    final p = active ? progress : 0.0;
+    final pulse = active
+        ? .5 + .5 * math.sin(p * math.pi * 2)
+        : 0.0;
 
     canvas.save();
-    canvas.translate(cx, cy);
-    canvas.scale(scale, scale);
-    canvas.translate(-cx, -cy);
 
     switch (kind) {
       case JexAnimatedIconKind.battery:
-        final body = Rect.fromLTWH(s * .15, s * .25, s * .62, s * .50);
+        final body = RRect.fromRectAndRadius(
+          Rect.fromLTWH(s * .12, s * .24, s * .68, s * .52),
+          Radius.circular(s * .10),
+        );
         canvas.drawRRect(
-          RRect.fromRectAndRadius(body, Radius.circular(s * .09)),
-          stroke(s * .07, color.withValues(alpha: wave)),
+          body,
+          stroke(s * .065, color),
+        );
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(
+            Rect.fromLTWH(s * .22, s * .34, s * .48, s * .32),
+            Radius.circular(s * .055),
+          ),
+          stroke(s * .035, color.withValues(alpha: .30)),
         );
         canvas.drawRRect(
           RRect.fromRectAndRadius(
             Rect.fromLTWH(
-              body.left + s * .08,
-              body.top + s * .08,
-              (body.width - s * .16) * level.clamp(.03, 1),
-              body.height - s * .16,
+              s * .24,
+              s * .36,
+              s * .44 * (active ? .62 + .18 * pulse : .62),
+              s * .28,
             ),
-            Radius.circular(s * .05),
+            Radius.circular(s * .045),
           ),
-          fill(color.withValues(alpha: .25 + .4 * wave)),
+          fill(color.withValues(alpha: active ? .38 + .24 * pulse : .18)),
         );
         canvas.drawRRect(
           RRect.fromRectAndRadius(
-            Rect.fromLTWH(s * .77, s * .40, s * .09, s * .20),
-            Radius.circular(s * .03),
+            Rect.fromLTWH(s * .80, s * .40, s * .09, s * .20),
+            Radius.circular(s * .035),
           ),
-          fill(color.withValues(alpha: wave)),
+          fill(color),
         );
+        if (active) {
+          final flowX = s * (.25 + .36 * ((p * 1.4) % 1.0));
+          canvas.drawLine(
+            Offset(flowX, s * .43),
+            Offset(flowX + s * .08, s * .43),
+            stroke(s * .032, color.withValues(alpha: .82)),
+          );
+        }
+        break;
 
       case JexAnimatedIconKind.hotside:
         canvas.drawLine(
-          Offset(cx, s * .16),
-          Offset(cx, s * .63),
-          stroke(s * .075, color.withValues(alpha: wave)),
+          Offset(cx, s * .17),
+          Offset(cx, s * .67),
+          stroke(s * .065, color),
         );
         canvas.drawCircle(
-          Offset(cx, s * .72),
+          Offset(cx, s * .75),
           s * .13,
-          fill(color.withValues(alpha: wave)),
+          stroke(s * .058, color),
         );
-        final heat = Path()
-          ..moveTo(s * .72, s * .18)
-          ..quadraticBezierTo(s * .86, s * .12, s * .80, s * .03);
-        canvas.drawPath(heat, stroke(s * .04, color.withValues(alpha: .52)));
-
-      case JexAnimatedIconKind.voltage:
-        final p = Path()
-          ..moveTo(s * .56, s * .08)
-          ..lineTo(s * .30, s * .53)
-          ..lineTo(s * .49, s * .53)
-          ..lineTo(s * .40, s * .92)
-          ..lineTo(s * .71, s * .39)
-          ..lineTo(s * .52, s * .39)
-          ..close();
-        canvas.drawPath(p, fill(color.withValues(alpha: wave)));
-        if (active) {
+        canvas.drawLine(
+          Offset(cx, s * .75),
+          Offset(cx, s * .75),
+          stroke(s * .058, color),
+        );
+        _drawHeatWave(
+          canvas,
+          size,
+          active ? p : 0,
+          active ? .34 + .22 * pulse : .12,
+        );
+        if (warning && active) {
           canvas.drawCircle(
             Offset(cx, cy),
-            s * (.39 + .07 * progress),
-            stroke(s * .035, color.withValues(alpha: .18)),
+            s * (.43 + .035 * pulse),
+            stroke(s * .028, color.withValues(alpha: .55 + .15 * pulse)),
           );
         }
+        break;
+
+      case JexAnimatedIconKind.voltage:
+        final bolt = _bolt(s);
+        canvas.drawPath(
+          bolt,
+          fill(color.withValues(alpha: active ? 1 : .72)),
+        );
+        if (active) {
+          final t = (p * 1.6) % 1.0;
+          final points = <Offset>[
+            Offset(s * .52, s * (.18 + .16 * t)),
+            Offset(s * (.41 + .18 * t), s * (.51 - .08 * t)),
+            Offset(s * (.53 - .08 * t), s * (.72 + .05 * t)),
+          ];
+          for (var i = 0; i < points.length; i++) {
+            final spark = points[i];
+            final a = .28 + .62 * (1 - ((t + i * .27) % 1.0));
+            canvas.drawCircle(
+              spark,
+              s * .028,
+              fill(Colors.white.withValues(alpha: a)),
+            );
+          }
+          canvas.drawPath(
+            bolt,
+            stroke(
+              s * .025,
+              Colors.white.withValues(alpha: .16 + .08 * pulse),
+            ),
+          );
+        }
+        break;
 
       case JexAnimatedIconKind.adaptive:
+        final ringRect = Rect.fromCircle(
+          center: Offset(cx, cy),
+          radius: s * .34,
+        );
         canvas.drawCircle(
           Offset(cx, cy),
-          s * .28,
-          stroke(s * .06, color.withValues(alpha: .48)),
+          s * .25,
+          stroke(s * .055, color.withValues(alpha: active ? .34 : .24)),
         );
         canvas.drawArc(
-          Rect.fromCircle(center: Offset(cx, cy), radius: s * .39),
-          -math.pi / 2 + progress * math.pi * 2,
-          math.pi * 1.10,
+          Rect.fromCircle(
+            center: Offset(cx, cy),
+            radius: s * .39,
+          ),
+          -math.pi / 2,
+          active ? math.pi * 1.62 : math.pi * 1.45,
           false,
-          stroke(s * .065, color.withValues(alpha: wave)),
+          stroke(s * .065, color.withValues(alpha: active ? .82 : .40)),
         );
-        canvas.drawCircle(
-          Offset(s * .78, s * .18),
-          s * .075,
-          fill(color.withValues(alpha: wave)),
-        );
+        if (active) {
+          final angle = -math.pi / 2 + p * math.pi * 2;
+          final orb = Offset(
+            cx + math.cos(angle) * s * .39,
+            cy + math.sin(angle) * s * .39,
+          );
+          canvas.drawCircle(
+            orb,
+            s * (.055 + .015 * pulse),
+            fill(color),
+          );
+          canvas.drawCircle(
+            orb,
+            s * (.11 + .02 * pulse),
+            stroke(s * .018, color.withValues(alpha: .20)),
+          );
+          canvas.drawArc(
+            ringRect,
+            angle - .55,
+            .55,
+            false,
+            stroke(s * .025, color.withValues(alpha: .40)),
+          );
+        }
+        break;
 
       case JexAnimatedIconKind.peltier:
-        final p = stroke(s * .05, color.withValues(alpha: wave));
-        for (var i = 0; i < 3; i++) {
-          final a = i * math.pi / 3;
-          final dx = math.cos(a) * s * .34;
-          final dy = math.sin(a) * s * .34;
+        final core = Offset(cx, cy);
+        final arms = <double>[0, math.pi / 3, 2 * math.pi / 3];
+        for (final a in arms) {
+          final dx = math.cos(a) * s * .31;
+          final dy = math.sin(a) * s * .31;
           canvas.drawLine(
             Offset(cx - dx, cy - dy),
             Offset(cx + dx, cy + dy),
-            p,
+            stroke(s * .048, color.withValues(alpha: active ? .88 : .52)),
           );
         }
-        canvas.drawCircle(Offset(cx, cy), s * .055, fill(color));
+        canvas.drawCircle(
+          core,
+          s * .055,
+          fill(color),
+        );
+        if (active) {
+          for (var i = 0; i < 6; i++) {
+            final angle = p * math.pi * 2 + i * math.pi / 3;
+            final radial = i.isEven
+                ? s * (.10 + .10 * ((p + i * .09) % 1))
+                : s * (.30 - .10 * ((p + i * .11) % 1));
+            final pt = Offset(
+              cx + math.cos(angle) * radial,
+              cy + math.sin(angle) * radial,
+            );
+            canvas.drawCircle(
+              pt,
+              s * (.018 + .010 * pulse),
+              fill(color.withValues(alpha: .25 + .60 * pulse)),
+            );
+          }
+          canvas.drawCircle(
+            core,
+            s * (.11 + .04 * pulse),
+            stroke(s * .022, color.withValues(alpha: .22)),
+          );
+        }
+        break;
 
       case JexAnimatedIconKind.fan:
-        final p = stroke(s * .05, color.withValues(alpha: wave));
-        final rotation = progress * math.pi * 2;
+        final speed = .55 + 2.15 * level.clamp(.0, 1.0);
+        final rotation = p * math.pi * 2 * speed;
+        final bladePaint = stroke(s * .05, color.withValues(alpha: active ? .95 : .52));
         for (var i = 0; i < 3; i++) {
           final a = rotation + i * math.pi * 2 / 3;
+          final tip = Offset(
+            cx + math.cos(a) * s * .34,
+            cy + math.sin(a) * s * .34,
+          );
+          final control = Offset(
+            cx + math.cos(a + .72) * s * .20,
+            cy + math.sin(a + .72) * s * .20,
+          );
           final path = Path()
             ..moveTo(cx, cy)
             ..quadraticBezierTo(
-              cx + math.cos(a + .75) * s * .18,
-              cy + math.sin(a + .75) * s * .18,
-              cx + math.cos(a) * s * .35,
-              cy + math.sin(a) * s * .35,
+              control.dx,
+              control.dy,
+              tip.dx,
+              tip.dy,
             )
             ..quadraticBezierTo(
-              cx + math.cos(a - .24) * s * .18,
-              cy + math.sin(a - .24) * s * .18,
+              cx + math.cos(a - .20) * s * .17,
+              cy + math.sin(a - .20) * s * .17,
               cx,
               cy,
             );
-          canvas.drawPath(path, p);
+          canvas.drawPath(path, bladePaint);
         }
-        canvas.drawCircle(Offset(cx, cy), s * .07, fill(color.withValues(alpha: wave)));
+        canvas.drawCircle(
+          Offset(cx, cy),
+          s * (.065 + (active ? .008 * pulse : 0)),
+          fill(color),
+        );
+        if (active) {
+          for (var i = 0; i < 3; i++) {
+            final a = rotation + i * math.pi * 2 / 3 + .35;
+            final trail = Offset(
+              cx + math.cos(a) * s * .40,
+              cy + math.sin(a) * s * .40,
+            );
+            canvas.drawCircle(
+              trail,
+              s * .018,
+              fill(color.withValues(alpha: .18 + .26 * pulse)),
+            );
+          }
+        }
+        break;
 
       case JexAnimatedIconKind.speed:
-        final gauge = Rect.fromCircle(center: Offset(cx, cy), radius: s * .34);
-        canvas.drawArc(
-          gauge,
-          math.pi * .15,
-          math.pi * .70,
-          false,
-          stroke(s * .07, color.withValues(alpha: .18)),
+        final gauge = Rect.fromCircle(
+          center: Offset(cx, cy),
+          radius: s * .34,
         );
         canvas.drawArc(
           gauge,
-          math.pi * .15,
-          math.pi * .70 * level,
+          math.pi * .18,
+          math.pi * .64,
           false,
-          stroke(s * .07, color.withValues(alpha: wave)),
+          stroke(s * .055, color.withValues(alpha: .18)),
         );
-        final a = math.pi * .15 + math.pi * .70 * level;
+        final actual = level.clamp(0.0, 1.0);
+        canvas.drawArc(
+          gauge,
+          math.pi * .18,
+          math.pi * .64 * actual,
+          false,
+          stroke(s * .065, color.withValues(alpha: active ? 1 : .38)),
+        );
+        final needleBase =
+            math.pi * .18 + math.pi * .64 * actual;
+        final needleSweep = active
+            ? math.sin(p * math.pi * 2) * .035
+            : 0.0;
+        final angle = needleBase + needleSweep;
         canvas.drawLine(
           Offset(cx, cy),
-          Offset(cx + math.cos(a) * s * .28, cy + math.sin(a) * s * .28),
-          stroke(s * .05, color),
+          Offset(
+            cx + math.cos(angle) * s * .28,
+            cy + math.sin(angle) * s * .28,
+          ),
+          stroke(s * .040, color.withValues(alpha: active ? 1 : .45)),
         );
-        canvas.drawCircle(Offset(cx, cy), s * .05, fill(color));
+        canvas.drawCircle(
+          Offset(cx, cy),
+          s * .055,
+          fill(color.withValues(alpha: active ? 1 : .45)),
+        );
+        break;
 
       case JexAnimatedIconKind.led:
         for (var i = 0; i < 8; i++) {
-          final t = active ? (progress + i / 8) % 1 : 0;
-          final alpha = active
-              ? .48 + .45 * (0.5 + 0.5 * math.sin(t * math.pi * 2))
-              : .45;
+          final phase = active
+              ? (p * 1.15 + i / 8) % 1.0
+              : 0.0;
+          final level = active
+              ? .30 + .65 * (.5 + .5 * math.sin(phase * math.pi * 2))
+              : .25;
           canvas.drawCircle(
-            Offset(s * (.12 + i * .108), cy),
-            s * .055,
-            fill(color.withValues(alpha: alpha)),
+            Offset(
+              s * (.11 + i * .112),
+              cy,
+            ),
+            s * .052,
+            fill(color.withValues(alpha: level)),
           );
+          if (active && level > .65) {
+            canvas.drawCircle(
+              Offset(
+                s * (.11 + i * .112),
+                cy,
+              ),
+              s * .085,
+              stroke(s * .018, color.withValues(alpha: .14)),
+            );
+          }
         }
+        break;
 
       case JexAnimatedIconKind.bluetooth:
-        final p = Path()
+        final bt = Path()
           ..moveTo(cx, s * .10)
-          ..lineTo(s * .70, s * .30)
+          ..lineTo(s * .70, s * .29)
           ..lineTo(cx, s * .50)
-          ..lineTo(s * .70, s * .70)
+          ..lineTo(s * .70, s * .71)
           ..lineTo(cx, s * .90)
           ..lineTo(cx, s * .10)
-          ..moveTo(s * .18, s * .30)
-          ..lineTo(s * .70, s * .70)
-          ..moveTo(s * .18, s * .70)
-          ..lineTo(s * .70, s * .30);
-        canvas.drawPath(p, stroke(s * .055, color.withValues(alpha: wave)));
+          ..moveTo(s * .18, s * .29)
+          ..lineTo(s * .70, s * .71)
+          ..moveTo(s * .18, s * .71)
+          ..lineTo(s * .70, s * .29);
+        canvas.drawPath(
+          bt,
+          stroke(s * .052, color.withValues(alpha: active ? 1 : .62)),
+        );
         if (active) {
-          canvas.drawCircle(
-            Offset(cx, cy),
-            s * (.42 + .07 * progress),
-            stroke(s * .03, color.withValues(alpha: .16)),
-          );
+          for (var i = 0; i < 2; i++) {
+            final waveP = (p + i * .5) % 1.0;
+            final radius = s * (.23 + waveP * .24);
+            canvas.drawArc(
+              Rect.fromCircle(
+                center: Offset(cx, cy),
+                radius: radius,
+              ),
+              -math.pi * .50,
+              math.pi,
+              false,
+              stroke(
+                s * .026,
+                color.withValues(alpha: .42 * (1 - waveP)),
+              ),
+            );
+          }
         }
+        break;
 
       case JexAnimatedIconKind.generic:
-        // Generic glyphs are rendered by the widget layer; this painter has no
-        // custom geometry for them.
+        // Action/navigation glyphs remain intentionally static.
+        canvas.drawCircle(
+          Offset(cx, cy),
+          0,
+          fill(Colors.transparent),
+        );
         break;
     }
 
     if (warning) {
+      final warningAlpha = active
+          ? .42 + .26 * pulse
+          : .28;
       canvas.drawCircle(
         Offset(cx, cy),
-        s * .46,
-        stroke(s * .025, color.withValues(alpha: .70)),
+        s * (.45 + (active ? .025 * pulse : 0)),
+        stroke(s * .022, color.withValues(alpha: warningAlpha)),
       );
     }
+
     canvas.restore();
   }
 
@@ -722,6 +961,7 @@ class _JexIconPainter extends CustomPainter {
       oldDelegate.level != level ||
       oldDelegate.warning != warning;
 }
+
 
 const MethodChannel securityChannel = MethodChannel('je_x_fyz/security');
 
@@ -4518,12 +4758,10 @@ class _JexColorPickerCard extends StatelessWidget {
                         constraints: const BoxConstraints.tightFor(width: 36, height: 36),
                         tooltip: connected ? JexText.of('disconnect', appLanguageNotifier.value) : JexText.of('bluetooth', appLanguageNotifier.value),
                         icon: JexAnimatedIcon.glyph(
-                          icon: connected
-                              ? PhosphorIconsRegular.bluetoothConnected
-                              : PhosphorIconsRegular.bluetooth,
+                          kind: JexAnimatedIconKind.bluetooth,
                           color: connected ? const Color(0xFF4D8CFF) : headerForeground,
-                          size: 24,
-                          active: true,
+                          size: 25,
+                          active: connected,
                         ),
                         onPressed: connected ? _disconnect : _showBluetoothMenu,
                       ),
