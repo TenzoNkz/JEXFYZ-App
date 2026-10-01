@@ -1452,3 +1452,15 @@ Never:
 - Firmware source was not modified. BLE UUID/P1 protocol, OTA, Firebase metadata, GPIO mapping, and signing identity remain unchanged.
 - Added regression tests for the centralized animation gate and distinct motion timing.
 - Build App was not triggered by this execution. Runtime visual validation remains a fresh-APK/device test requirement.
+
+## 2026-10-01 — BUILD VALIDATION FIX / CUSTOM ICON ENGINE CONSTRUCTORS
+
+- Build App #39 stopped at Dart analysis after the full custom motion refactor.
+- Root causes identified from CI logs:
+  - `_JexColorPickerCard` had been inserted inside the Dashboard State class instead of at top level.
+  - The Bluetooth header used `JexAnimatedIcon.glyph(... kind: ...)`, which is not a valid constructor contract.
+- Corrected both source-level issues:
+  - Moved `_JexColorPickerCard` to top-level.
+  - Changed Bluetooth header to the full `JexAnimatedIcon(kind: ...)` custom constructor.
+- No design or device protocol behavior was intentionally changed by this validation repair.
+- Build #39 produced no APK because analysis failed; a new Build App run is required.
