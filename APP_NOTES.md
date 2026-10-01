@@ -1482,3 +1482,46 @@ Never:
 - Direct chat delivery file prepared at `/mnt/data/JEXFYZ#40.apk`.
 - No firmware source, BLE UUID/P1 protocol, OTA transport, Firebase metadata contract, GPIO mapping, or signing identity was changed.
 - Runtime visual behavior still requires on-device testing, especially custom indicator animation appearance and state transitions.
+
+## 2026-10-01 — FULL EXECUTION / SUBMENU UI REDESIGN V2
+
+- Completed the previously missing **full custom redesign of all five Dashboard submenus**:
+  - VOLTAGE
+  - CONTROL
+  - ADAPTIVE
+  - LED
+  - TEMPERATURE
+- Unified submenu spacing:
+  - list padding is compact and consistent
+  - shared section headings are tighter
+  - shared card margins reduced
+  - long separator/divider lines are removed from the five submenu layouts
+- VOLTAGE:
+  - remains vertical top-to-bottom
+  - only one voltage can be selected
+  - custom toggle-style selection state replaces the previous radio-like presentation
+  - selected state is theme-aware for the Dark preset
+- CONTROL:
+  - replaced default Material switch presentation with a custom JE X FYZ toggle
+  - Peltier/Fan rows are compact and state-driven
+  - Speed remains visible at all times; Fan OFF displays OFF/MATI and the speed animation is gated by Fan state
+  - editable Speed slider remains restricted by existing connected/manual/12V/Fan-ON rules
+- ADAPTIVE:
+  - removed Material `RadioListTile`
+  - profile selection is now custom single-select rows with dedicated selection indicators
+  - Adaptive switch remains authoritative through existing command/state logic
+  - lock state remains visible without legacy radio styling
+- LED:
+  - control shell fully reorganized into custom Power, Mode, 8-LED preview, Brightness, and Color surfaces
+  - existing horizontal 8-LED visualizer, 24-color palette, White, and anchored floating Color Picker are preserved
+  - mode navigator is compact and custom
+- TEMPERATURE:
+  - replaced legacy adjuster/separator layout with compact custom +/- controls
+  - 5V Ceiling and 12V Floor retain existing safety constraints
+  - 9V derived zone is shown as a compact locked row
+  - Adaptive lock notice and reset action retained
+- Localization:
+  - added localized `adaptiveProfile` (Profile/Profil) and `mode` (Mode/Mode) labels.
+  - user-facing custom labels remain routed through JexText.
+- Functional contracts were preserved: BLE/P1, firmware telemetry authority, voltage switching guards, Adaptive profile commands, LED commands, temperature safety ranges, OTA, Firebase, GPIO, and release signing were not changed.
+- This is an App presentation-layer execution only. Build App was not triggered by this execution.
