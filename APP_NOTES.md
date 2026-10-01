@@ -1464,3 +1464,21 @@ Never:
   - Changed Bluetooth header to the full `JexAnimatedIcon(kind: ...)` custom constructor.
 - No design or device protocol behavior was intentionally changed by this validation repair.
 - Build #39 produced no APK because analysis failed; a new Build App run is required.
+
+
+## 2026-10-01 — BUILD APP #40 SUCCESS / FULL CUSTOM INDICATOR ANIMATION
+
+- Build App Run #40 (`36797284179`) completed successfully from source commit `66ef4a2fbd3fa3ac0236e21170420c39a231ac08`.
+- Build pipeline passed: security/architecture audit, dependency installation, Dart analyze, Flutter tests, release APK build, production APK signature verification, release APK filename preparation, exactly one APK artifact upload, and Dart symbols upload.
+- The build validates the full custom JE X FYZ indicator motion engine and the BLE/state animation gating introduced in the current source.
+- Release APK artifact: `JEXFYZ#40.apk`
+- APK artifact ID: `11134361764`
+- APK artifact size: `54,245,340` bytes
+- APK artifact SHA-256: `87fb858aeba5dbd64c00639cf1b3482e3438871bbdee18fef3e0fda460d7c226`
+- Dart symbols artifact ID: `11134596362`
+- Dart symbols SHA-256: `1a754cf12c26ad4df2ab1df2e7802fccaf5d6c43e59a4ce7af1464d2208eddc0`
+- Exactly one APK artifact exists, plus the Dart symbols artifact.
+- The downloaded artifact is an APK byte stream despite the connector filename carrying a `.zip` suffix; local file inspection identifies it as an Android package and its SHA-256 matches the GitHub artifact digest exactly.
+- Direct chat delivery file prepared at `/mnt/data/JEXFYZ#40.apk`.
+- No firmware source, BLE UUID/P1 protocol, OTA transport, Firebase metadata contract, GPIO mapping, or signing identity was changed.
+- Runtime visual behavior still requires on-device testing, especially custom indicator animation appearance and state transitions.
