@@ -490,7 +490,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
               ),
               FilledButton(
                 onPressed: () => Navigator.pop(dialogContext, true),
-                child: Text(JexText.phrase('Allow', 'Izinkan', appLanguageNotifier.value)),
+                child: Text(JexText.of('allow', appLanguageNotifier.value)),
               ),
             ],
           );
