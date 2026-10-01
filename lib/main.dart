@@ -4309,18 +4309,22 @@ class _DashboardScreenState extends State<DashboardScreen>
   // Render Peltier and Fan switches from authoritative telemetry.
   // Fan Speed is always presented. Its value becomes OFF/MATI when Fan is OFF,
   // while the editable slider remains gated by connected + manual + 12V + Fan ON.
+  // AI-METHOD / CONTROL-UI-CONTRACT
+  // Compact custom device controls; no long separators or default Material tiles.
   Widget _buildControlTab({Key? key}) {
-    final speedEnabled =
-        connected && !adaptiveOn && voltage == '12V' && fanOn;
+    final speedEnabled = connected && !adaptiveOn && voltage == '12V' && fanOn;
     final lang = appLanguageNotifier.value;
+    final scheme = Theme.of(context).colorScheme;
+
     return KeyedSubtree(
       key: key,
       child: _smoothList(
         storageKey: 'control',
+        padding: const EdgeInsets.fromLTRB(2, 0, 2, 18),
         children: [
           _sectionTitle(JexText.of('control', lang)),
           _card(
-            padding: const EdgeInsets.fromLTRB(13, 4, 13, 8),
+            padding: const EdgeInsets.all(9),
             child: Column(
               children: [
                 _switchRow(
@@ -4332,7 +4336,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                   enabled: connected && !adaptiveOn,
                   onChanged: _togglePeltier,
                 ),
-                const Divider(height: 1),
+                const SizedBox(height: 8),
                 _switchRow(
                   title: JexText.of('fan', lang),
                   subtitle: '',
@@ -4342,57 +4346,77 @@ class _DashboardScreenState extends State<DashboardScreen>
                   enabled: connected && !adaptiveOn && !peltierOn,
                   onChanged: _toggleFan,
                 ),
-                const SizedBox(height: 8),
-                // AI-MEMORY / UI INVARIANT:
-                // The Speed indicator never disappears. Only the editable slider is
-                // gated by the physical Fan state.
-                Row(
-                  children: [
-                    JexAnimatedIcon.glyph(
-                      icon: PhosphorIconsRegular.gauge,
-                      size: 20,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      active: true,
+                const SizedBox(height: 10),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                  decoration: BoxDecoration(
+                    color: scheme.surfaceContainerHighest.withValues(alpha: .25),
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(
+                      color: scheme.outlineVariant.withValues(alpha: .70),
                     ),
-                    const SizedBox(width: 9),
-                    Expanded(
-                      child: Text(
-                        JexText.of('speed', lang),
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                    ),
-                    Text(
-                      !connected
-                          ? '--'
-                          : !fanOn
-                              ? JexText.of('off', lang)
-                              : fanSpeed.toString() + '%',
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ],
-                ),
-                if (fanOn)
-                  Slider(
-                    min: 50,
-                    max: 100,
-                    divisions: 5,
-                    value: fanSpeedDraft.clamp(50, 100).toDouble(),
-                    activeColor: Theme.of(context).colorScheme.primary,
-                    inactiveColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: .12),
-                    onChanged: speedEnabled
-                        ? (v) => setState(
-                              () => fanSpeedDraft =
-                                  ((v / 10).round() * 10).clamp(50, 100).toInt(),
-                            )
-                        : null,
-                    onChangeEnd: speedEnabled ? _setFanSpeed : null,
                   ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          JexAnimatedIcon(
+                            kind: JexAnimatedIconKind.speed,
+                            size: 25,
+                            color: fanOn ? scheme.primary : scheme.onSurfaceVariant,
+                            active: jexIndicatorAnimationActive(
+                              connected: connected,
+                              stateActive: fanOn,
+                            ),
+                            level: fanSpeed / 100,
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              JexText.of('speed', lang),
+                              style: TextStyle(
+                                color: scheme.onSurface,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            !connected
+                                ? '--'
+                                : !fanOn
+                                    ? JexText.of('off', lang)
+                                    : '$fanSpeed%',
+                            style: TextStyle(
+                              color: fanOn ? scheme.primary : scheme.onSurfaceVariant,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (fanOn) ...[
+                        const SizedBox(height: 3),
+                        Slider(
+                          min: 50,
+                          max: 100,
+                          divisions: 5,
+                          value: fanSpeedDraft.clamp(50, 100).toDouble(),
+                          activeColor: scheme.primary,
+                          inactiveColor: scheme.onSurface.withValues(alpha: .10),
+                          onChanged: speedEnabled
+                              ? (v) => setState(
+                                    () => fanSpeedDraft =
+                                        ((v / 10).round() * 10).clamp(50, 100).toInt(),
+                                  )
+                              : null,
+                          onChangeEnd: speedEnabled ? _setFanSpeed : null,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
