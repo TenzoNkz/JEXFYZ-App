@@ -120,6 +120,29 @@ void main() {
     expect(isNewerFirmwareVersion('V1.7', 'V1.8'), isFalse);
   });
 
+  test('JE X FYZ custom indicator motion is gated by BLE and state', () {
+    expect(
+      jexIndicatorAnimationActive(connected: false, stateActive: true),
+      isFalse,
+    );
+    expect(
+      jexIndicatorAnimationActive(connected: true, stateActive: false),
+      isFalse,
+    );
+    expect(
+      jexIndicatorAnimationActive(connected: true, stateActive: true),
+      isTrue,
+    );
+    expect(
+      jexIconAnimationDuration(JexAnimatedIconKind.fan),
+      const Duration(milliseconds: 1050),
+    );
+    expect(
+      jexIconAnimationDuration(JexAnimatedIconKind.adaptive),
+      const Duration(milliseconds: 2400),
+    );
+  });
+
   test('LED palette exposes current RGB colors', () {
     expect(ledColorPalette, hasLength(24));
     expect(ledColorPalette.first, '#FF0000');
