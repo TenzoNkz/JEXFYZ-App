@@ -177,7 +177,7 @@ The handover is documentation/continuity work only unless the user separately au
 
 ## 15. MANDATORY NOTES / EVENT RECORDING
 
-- Notes are part of the project's persistent engineering memory and must be updated whenever a meaningful project event occurs, not only when source code changes.
+- Notes are part of the project's persistent engineering memory and must be updated for **every JE X FYZ project workflow/event** (Diskusi, Eksekusi, Eksekusi Full, Build App, Tanya Gemini, audit, compile/build attempt, runtime/physical test, failure, or rules change), not only when source code changes.
 - Record as applicable:
   - source/repository changes;
   - process/chat-rule changes;
@@ -188,7 +188,7 @@ The handover is documentation/continuity work only unless the user separately au
   - failed approaches/dead ends that prevent repetition;
   - validation boundaries;
   - unresolved risks/questions.
-- Every implementation execution must update the relevant maintenance note in the same workflow.
+- Every implementation execution must update the relevant maintenance note in the same workflow. Every review/audit/build/test attempt must also record its outcome and validation boundary in the relevant note, even when no source change is made.
 - If nothing was changed but a requested audit/review materially establishes a new verified fact or validation status, record that fact/status in the appropriate note.
 - Never record an unverified physical, build, runtime, or third-party result as confirmed.
 
