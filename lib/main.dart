@@ -4589,6 +4589,8 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   // AI-METHOD: _buildLedTab — Build LED/RGB/brightness/color controls.
+  // AI-METHOD / LED-UI-CONTRACT
+  // Custom LED control surface. Hardware remains 4-left/4-right; App preview is 8 horizontal LEDs.
   Widget _buildLedTab({Key? key}) {
     final lang = appLanguageNotifier.value;
     final modeNames = <String>[
@@ -4603,15 +4605,17 @@ class _DashboardScreenState extends State<DashboardScreen>
     final safeMode = rgbMode.clamp(1, 7);
     final modeName = modeNames[safeMode - 1];
     final colorEnabled = connected && rgbMode != 7;
+    final scheme = Theme.of(context).colorScheme;
 
     return KeyedSubtree(
       key: key,
       child: _smoothList(
         storageKey: 'led',
+        padding: const EdgeInsets.fromLTRB(2, 0, 2, 18),
         children: [
           _sectionTitle(JexText.of('led', lang)),
           _card(
-            padding: const EdgeInsets.fromLTRB(14, 7, 14, 10),
+            padding: const EdgeInsets.all(9),
             child: Column(
               children: [
                 _switchRow(
@@ -4623,159 +4627,191 @@ class _DashboardScreenState extends State<DashboardScreen>
                   enabled: connected,
                   onChanged: _setRgb,
                 ),
-                const Divider(height: 1),
-                const SizedBox(height: 5),
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: connected && rgbMode > 1
-                          ? () => _setMode(rgbMode - 1)
-                          : null,
-                      icon: JexAnimatedIcon.glyph(
-                        icon: PhosphorIconsBold.caretLeft,
-                        size: 25,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        active: true,
-                      ),
-                    ),
-                    Expanded(
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 150),
-                        child: Text(
-                          rgbMode.toString(),
-                          key: ValueKey<int>(rgbMode),
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w900,
-                          ),
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: connected && rgbMode < 7
-                          ? () => _setMode(rgbMode + 1)
-                          : null,
-                      icon: JexAnimatedIcon.glyph(
-                        icon: PhosphorIconsBold.caretRight,
-                        size: 25,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        active: true,
-                      ),
-                    ),
-                  ],
-                ),
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 180),
+                const SizedBox(height: 9),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(10, 9, 10, 10),
+                  decoration: BoxDecoration(
+                    color: scheme.surfaceContainerHighest.withValues(alpha: .22),
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(color: scheme.outlineVariant.withValues(alpha: .68)),
+                  ),
                   child: Column(
-                    key: ValueKey<String>('led-mode-$modeName'),
-                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: JexLedStripPreview(
-                          mode: safeMode,
-                          colorHex: rgbColor.toUpperCase(),
-                          brightness: brightness,
-                          active: rgbOn && connected,
-                        ),
+                      Row(
+                        children: [
+                          Text(
+                            'MODE',
+                            style: TextStyle(
+                              color: scheme.onSurfaceVariant,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: .75,
+                            ),
+                          ),
+                          const Spacer(),
+                          _ledModeButton(
+                            icon: PhosphorIconsBold.caretLeft,
+                            enabled: connected && safeMode > 1,
+                            onPressed: () => _setMode(safeMode - 1),
+                          ),
+                          const SizedBox(width: 6),
+                          Container(
+                            constraints: const BoxConstraints(minWidth: 84),
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: scheme.surface,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: scheme.outlineVariant),
+                            ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  safeMode.toString().padLeft(2, '0'),
+                                  style: TextStyle(
+                                    color: scheme.primary,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                                ),
+                                Text(
+                                  modeName.toUpperCase(),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: scheme.onSurface,
+                                    fontSize: 8,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          _ledModeButton(
+                            icon: PhosphorIconsBold.caretRight,
+                            enabled: connected && safeMode < 7,
+                            onPressed: () => _setMode(safeMode + 1),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 3),
+                      const SizedBox(height: 8),
+                      JexLedStripPreview(
+                        mode: safeMode,
+                        colorHex: rgbColor.toUpperCase(),
+                        brightness: brightness,
+                        active: rgbOn && connected,
+                      ),
+                      const SizedBox(height: 4),
                       Text(
                         modeName.toUpperCase(),
-                        textAlign: TextAlign.center,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w800,
-                          color: Theme.of(context).colorScheme.onSurface,
-                          letterSpacing: .35,
+                          color: scheme.onSurface,
+                          fontSize: 9.5,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: .55,
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 5),
-                Row(
-                  children: [
-                    JexAnimatedIcon.glyph(
-                      icon: PhosphorIconsRegular.sun,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      size: 20,
-                      active: true,
-                    ),
-                    Expanded(
-                      child: Slider(
-                        min: 1,
-                        max: 100,
-                        divisions: 99,
-                        value: brightness.clamp(1, 100).toDouble(),
-                        activeColor: Theme.of(context).colorScheme.primary,
-                        inactiveColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: .12),
-                        onChanged: connected
-                            ? (v) => setState(() => brightness = v.round())
-                            : null,
-                        onChangeEnd: connected ? _setBrightness : null,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 42,
-                      child: Text(
-                        brightness.toString() + '%',
-                        textAlign: TextAlign.right,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w900,
+                const SizedBox(height: 9),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(11, 8, 11, 7),
+                  decoration: BoxDecoration(
+                    color: scheme.surfaceContainerHighest.withValues(alpha: .20),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: scheme.outlineVariant.withValues(alpha: .60)),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.wb_sunny_outlined, size: 19, color: scheme.onSurfaceVariant),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Slider(
+                          min: 1,
+                          max: 100,
+                          divisions: 99,
+                          value: brightness.clamp(1, 100).toDouble(),
+                          activeColor: scheme.primary,
+                          inactiveColor: scheme.onSurface.withValues(alpha: .10),
+                          onChanged: connected
+                              ? (v) => setState(() => brightness = v.round())
+                              : null,
+                          onChangeEnd: connected ? _setBrightness : null,
                         ),
                       ),
-                    ),
-                  ],
+                      SizedBox(
+                        width: 40,
+                        child: Text(
+                          '$brightness%',
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            color: scheme.onSurface,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: 4),
           Opacity(
-            opacity: colorEnabled ? 1 : 0.45,
+            opacity: colorEnabled ? 1 : .45,
             child: InkWell(
               onTap: colorEnabled ? _showLedColorPicker : null,
               borderRadius: BorderRadius.circular(18),
               child: Container(
                 key: _ledColorAnchorKey,
                 child: _card(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 12,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
                   child: Row(
                     children: [
                       Container(
-                        width: 32,
-                        height: 32,
+                        width: 34,
+                        height: 34,
                         decoration: BoxDecoration(
                           color: colorEnabled
                               ? ledPaletteColor(rgbColor.toUpperCase())
-                              : Colors.black12,
-                          borderRadius: BorderRadius.circular(10),
+                              : scheme.surfaceContainerHighest,
+                          borderRadius: BorderRadius.circular(11),
+                          border: Border.all(
+                            color: rgbColor.toUpperCase() == '#FFFFFF'
+                                ? scheme.outline
+                                : Colors.transparent,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 11),
                       Expanded(
-                        child: Text(
-                          JexText.of('color', lang),
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w900,
-                          ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              JexText.of('color', lang),
+                              style: TextStyle(
+                                color: scheme.onSurface,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                            const SizedBox(height: 1),
+                            Text(
+                              rgbColor.toUpperCase(),
+                              style: TextStyle(
+                                color: scheme.onSurfaceVariant,
+                                fontSize: 9.5,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: .4,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      JexAnimatedIcon.glyph(
-                        icon: PhosphorIconsRegular.caretRight,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        size: 20,
-                        active: true,
-                      ),
+                      Icon(Icons.chevron_right_rounded, color: scheme.onSurfaceVariant, size: 22),
                     ],
                   ),
                 ),
@@ -4783,6 +4819,36 @@ class _DashboardScreenState extends State<DashboardScreen>
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _ledModeButton({
+    required IconData icon,
+    required bool enabled,
+    required VoidCallback onPressed,
+  }) {
+    final scheme = Theme.of(context).colorScheme;
+    return InkWell(
+      onTap: enabled ? onPressed : null,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        width: 34,
+        height: 34,
+        decoration: BoxDecoration(
+          color: enabled
+              ? scheme.surface
+              : scheme.surfaceContainerHighest.withValues(alpha: .45),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: scheme.outlineVariant),
+        ),
+        child: Icon(
+          icon,
+          size: 19,
+          color: enabled
+              ? scheme.onSurface
+              : scheme.onSurfaceVariant.withValues(alpha: .30),
+        ),
       ),
     );
   }
