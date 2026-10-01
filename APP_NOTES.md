@@ -1,4 +1,14 @@
-# JE X FYZ APP — AUTHORITATIVE MEMORY CORE
+## 2026-10-02 — POST-EXECUTION STATIC VALIDATION / LOCALIZATION PASS
+
+- Re-read the active localization/source files after the execution.
+- Active glossary now contains 253 localized keys; all 264 statically discovered JexText.of key usages resolve to defined keys.
+- Verified Indonesian contract values: Temperature -> Suhu; Reset Temperature -> Atur Ulang Suhu; Voltage Indicator -> Indikator Tegangan; Brightness -> Kecerahan; Default -> Bawaan; Opacity -> Transparansi; Adaptive Switch -> Sakelar Adaptif.
+- Verified legacy Indonesian UI values Temperatur and Opasitas are no longer used by the active glossary, and the old direct OTA stage/result prefixes and English status suffixes are no longer present in the affected paths.
+- Verified Floating Monitor Allow uses centralized localization.
+- The only remaining English terms in Indonesian presentation are intentional technical/product identifiers or technical diagnostics, such as Bluetooth, BLE, OTA, LED, RGB, NTC, FPS, Peltier, Firmware, SSID, and protocol/runtime identifiers.
+- No firmware files, firmware version, BLE/P1 UUIDs, safety logic, OTA transport, Firebase metadata, GPIO mapping, signing identity, or dedicated binary firmware repository content were changed.
+- This validation was source/static only. Flutter analyze, Flutter tests, APK build, Android OEM runtime validation, and physical-device validation were not run in this execution.
+
 ## 2026-10-02 — FULL EXECUTION / BILINGUAL LANGUAGE STANDARDIZATION
 
 - Completed a full App-language audit and standardization pass for user-facing Flutter localization.
