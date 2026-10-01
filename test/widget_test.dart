@@ -68,6 +68,20 @@ void main() {
     expect(JexText.of('english', AppLanguage.indonesia), 'English');
     expect(JexText.of('indonesia', AppLanguage.english), 'Indonesia');
     expect(JexText.of('indonesia', AppLanguage.indonesia), 'Indonesia');
+    // Indonesia uses baku UI terminology while coding identifiers remain English.
+    expect(JexText.of('temperature', AppLanguage.indonesia), 'Suhu');
+    expect(JexText.of('batteryTemperature', AppLanguage.indonesia), 'Suhu Baterai');
+    expect(JexText.of('hotsideTemperature', AppLanguage.indonesia), 'Suhu Panas');
+    expect(JexText.of('voltage', AppLanguage.indonesia), 'Tegangan');
+    expect(JexText.of('voltageIndicator', AppLanguage.indonesia), 'Indikator Tegangan');
+    expect(JexText.of('brightness', AppLanguage.indonesia), 'Kecerahan');
+    expect(JexText.of('default', AppLanguage.indonesia), 'Bawaan');
+    expect(JexText.of('opacity', AppLanguage.indonesia), 'Transparansi');
+    expect(JexText.of('adaptiveSwitch', AppLanguage.indonesia), 'Sakelar Adaptif');
+    expect(JexText.of('adaptiveOn', AppLanguage.indonesia), 'Mode Adaptif HIDUP');
+    expect(JexText.of('adaptiveOff', AppLanguage.indonesia), 'Mode Adaptif MATI');
+    expect(JexText.of('allow', AppLanguage.indonesia), 'Izinkan');
+    expect(JexText.of('unknownError', AppLanguage.indonesia), 'Kesalahan tidak diketahui');
 
     // User-facing power states are ON/OFF in English and HIDUP/MATI in Indonesia.
     expect(JexText.of('on', AppLanguage.english), 'ON');
