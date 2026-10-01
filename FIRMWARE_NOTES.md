@@ -1,4 +1,11 @@
 # JE X FYZ FIRMWARE — AUTHORITATIVE MEMORY CORE
+## 2026-10-01 — PROCESS RULE UPDATE / FIRMWARE VERSIONING ENFORCED
+
+- Project-wide `CHAT_RULES.md` now explicitly requires a firmware version increment for every functional firmware/source change before OTA candidacy.
+- Current source remains **V2.4**.
+- Every meaningful firmware event must be documented in `FIRMWARE_NOTES.md`, including changes, compile attempts/results, failures, physical tests, validation boundaries, and unresolved risks.
+- This rules-only change does not alter firmware code, BIN, Firebase metadata, BLE/P1, GPIO, OTA, or safety behavior.
+
 ## 2026-10-01 — FIRMWARE VERSIONING RULE / V2.4
 
 - Firmware source revision was bumped **V2.3 → V2.4** as part of this source change.
