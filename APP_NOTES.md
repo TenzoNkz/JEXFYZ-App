@@ -1,4 +1,11 @@
 # JE X FYZ APP — AUTHORITATIVE MEMORY CORE
+## 2026-10-01 — DEDICATED FIRMWARE REPO CLEANUP
+
+- Removed `JEXFYZ-V2.4.ino` from `TenzoNkz/JEXFYZ-Firmware`.
+- Removed `FIRMWARE_NOTES.md` from `TenzoNkz/JEXFYZ-Firmware`.
+- Root cause of the repository-boundary mistake: a previous execution incorrectly synchronized firmware source/notes into the dedicated distribution repository despite the project boundary requiring that repo to remain binary-only.
+- Correct boundary is now reaffirmed: firmware `.ino` source and `FIRMWARE_NOTES.md` live in `TenzoNkz/JEXFYZ-App`; dedicated firmware repo contains the published BIN artifact only, plus non-source repository metadata.
+- This cleanup does not change firmware behavior, `FW_VERSION` (current V2.4), BLE/P1, GPIO mapping, OTA transport, Firebase metadata, or App source.
 ## 2026-10-01 — CHAT RULES FINAL RECORDING UPDATE
 
 - `CHAT_RULES.md` now requires a maintenance-note record for every JE X FYZ project workflow/event, including audits, build/compile attempts, tests, failures, and no-change reviews when they establish validation status.
@@ -30,7 +37,7 @@
 - BLE P1 UUIDs and command vocabulary remain frozen.
 - **Firmware physical GPIO authority is: GPIO5 = PELTIER; GPIO6 = FAN.** App logical tokens are not swapped.
 - Current App-repo firmware mirror `firmware/JEXFYZ-V2.4.ino` reflects this mapping and includes the compile-time mapping guard.
-- Dedicated firmware repo currently contains `JEXFYZ-V2.4.ino` plus the existing `JEXFYZ.cpp.bin`. The source is V2.4; the BIN remains the previously published/prebuilt binary until a verified V2.4 compile is completed.
+- Dedicated firmware repo is **binary-only**: `JEXFYZ.cpp.bin` is the firmware distribution artifact. Firmware source and firmware engineering notes remain in the App repo.
 - The existing production BIN was not modified/regenerated in this execution because a verified Arduino-ESP32 Core 3.3.7 compiler toolchain is unavailable in this environment.
 - Safety remains authoritative in firmware; no safety check was removed or bypassed to address the FAN/PELTIER mismatch.
 - Mapping validation status:
@@ -73,7 +80,7 @@ Never silently promote a hypothesis, Gemini suggestion, old snippet, or historic
 - All App-repo commits inspected after Build #41 are documentation, firmware-source, or CI-comment maintenance; no later Flutter/Dart/Android functional change was found.
 - Current App-source behavior therefore remains covered by Build #41, while the later firmware GPIO hardening is outside that App build's scope.
 - Current App-repo V2.3 firmware mirror is `firmware/JEXFYZ-V2.3.ino`.
-- Current dedicated firmware repo state is source + existing production BIN; do not use older binary-only wording as the present repository state.
+- Current dedicated firmware repo state is **binary-only**. Do not place `.ino` source or firmware engineering notes in that repository.
 - Current Flutter/Android source must still be read directly for any future functional change; notes are not a substitute for source inspection.
 ## 3. BUILD TRUTH
 - Build App is explicit-only.
