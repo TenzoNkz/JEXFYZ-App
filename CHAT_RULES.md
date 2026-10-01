@@ -157,3 +157,73 @@ The handover is documentation/continuity work only unless the user separately au
 - Every response must end with exactly one clear project workflow status block.
 - The status block must be the final content of the response.
 - The status must reflect actual evidence, not optimism.
+
+## 14. MANDATORY FIRMWARE VERSIONING
+
+- Every functional firmware/source change that can affect the firmware image must increment the firmware version before that changed source is treated as an OTA candidate.
+- Example: V2.4 -> V2.5 for the next functional firmware change.
+- Documentation-only changes do not require a firmware version bump.
+- A firmware source version bump does **not** by itself mean the BIN, Firebase metadata, or physical device has been updated.
+- The exact workflow is:
+  1. change firmware source;
+  2. increment `FW_VERSION`;
+  3. keep the source filename/version aligned when the project uses versioned source filenames;
+  4. update firmware notes;
+  5. compile with ArduinoDroid + official Arduino-ESP32 Core 3.3.7;
+  6. verify the resulting BIN;
+  7. only then promote the OTA/Firebase version metadata;
+  8. only claim device/runtime validation after the binary is actually flashed and tested.
+- Never reuse an older firmware version for a new functional firmware image merely because the code change is small.
+
+## 15. MANDATORY NOTES / EVENT RECORDING
+
+- Notes are part of the project's persistent engineering memory and must be updated whenever a meaningful project event occurs, not only when source code changes.
+- Record as applicable:
+  - source/repository changes;
+  - process/chat-rule changes;
+  - build attempts and results;
+  - compile attempts and failures;
+  - runtime/device observations;
+  - physical test results;
+  - failed approaches/dead ends that prevent repetition;
+  - validation boundaries;
+  - unresolved risks/questions.
+- Every implementation execution must update the relevant maintenance note in the same workflow.
+- If nothing was changed but a requested audit/review materially establishes a new verified fact or validation status, record that fact/status in the appropriate note.
+- Never record an unverified physical, build, runtime, or third-party result as confirmed.
+
+## 16. COMMAND SEMANTICS — FROZEN
+
+- `@Thinking Diskusi!` -> discuss/audit/plan only; do not modify repository/source.
+- `@Thinking Eksekusi!` -> implement the requested/approved change, update relevant notes, and commit; do not run App Build unless explicitly requested.
+- `@Thinking Eksekusi Full!` -> implement the approved change plus a full affected-area audit, update all relevant notes, and commit; still do not run App Build unless explicitly requested.
+- `@Thinking Diskusi & Eksekusi!` -> perform discussion sufficient to resolve the request, then execute the approved change in the same response/workflow; update notes and commit.
+- `@Thinking Build App!` -> App build/validation only in the dedicated Build App workflow/chat; do not make unrelated source changes.
+- `@Thinking Tanya Gemini!` -> obtain/analyze a specific second opinion when the unresolved question warrants it; never invent a Gemini response.
+- Build App is never triggered by ordinary push/PR activity.
+
+## 17. SOURCE-TO-HARDWARE TRACEABILITY — FROZEN
+
+For any hardware/control mismatch, verify in order:
+`App logical command -> BLE/P1 -> firmware command handler -> logical state -> GPIO/output writer -> physical wiring/output -> telemetry`.
+
+- Do not swap App command tokens to compensate for a firmware/hardware mapping problem unless the actual protocol contract itself is proven wrong.
+- ACK is not physical confirmation.
+- Telemetry is the firmware state authority.
+- Do not claim physical validation without an actual device test.
+- Do not change safety logic merely to make UI/runtime behavior appear correct.
+
+## 18. BUILD / RELEASE SEPARATION — FROZEN
+
+- App Build and Diskusi/Eksekusi are separate workflows/chats.
+- No App Build on ordinary repository push.
+- Firmware source compile is separate from App Build.
+- A successful historical build never validates a newer source revision unless the built source revision matches.
+- Firmware source, BIN, Firebase metadata, and physical device state must be treated as separate validation layers.
+
+## 19. REQUIRED RESPONSE FOOTER
+
+- Every final project response must include the exact sentence:
+  `Lanjut diskusi, eksekusi, tanya gemini, build app!`
+- The sentence must appear before the final workflow status block so that the final content remains an unambiguous status block.
+- The final workflow status block remains exactly one of the allowed project statuses defined in Section 2.
