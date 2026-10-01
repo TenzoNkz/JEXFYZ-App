@@ -1,4 +1,11 @@
 # JE X FYZ APP — AUTHORITATIVE MEMORY CORE
+## 2026-10-01 — FIRMWARE VERSIONING RULE / V2.4
+
+- Required firmware version bump completed: **V2.3 → V2.4**.
+- Reason: this change modifies the firmware source (GPIO-output hardening/versioned release), so the firmware must advertise a new version for OTA discovery.
+- Exact V2.4 source must be compiled with ArduinoDroid + official Arduino-ESP32 Core 3.3.7 before its BIN is promoted.
+- Firebase firmware metadata must not be changed to V2.4 until the matching BIN is verified.
+- App Build is separate and was not triggered by this firmware execution.
 ## 2026-10-01 — FULL EXECUTION / PROJECT STATE RECONCILIATION
 
 - Current App branch: `main`; latest inspected documentation HEAD before this write was `106087a5ee01793f2e682859afccfa6bf002e9f1`.
@@ -11,7 +18,7 @@
 - BLE P1 UUIDs and command vocabulary remain frozen.
 - **Firmware physical GPIO authority is: GPIO5 = PELTIER; GPIO6 = FAN.** App logical tokens are not swapped.
 - Current App-repo firmware mirror `firmware/JEXFYZ-V2.3.ino` already reflects this mapping and includes the compile-time mapping guard.
-- Dedicated firmware repo currently contains `JEXFYZ-V2.3.ino` plus the existing `JEXFYZ.cpp.bin`; this current repository state supersedes older notes that described it as binary-only.
+- Dedicated firmware repo currently contains `JEXFYZ-V2.4.ino` plus the existing `JEXFYZ.cpp.bin`. The source is V2.4; the BIN remains the previously published/prebuilt binary until a verified V2.4 compile is completed.
 - The existing production BIN was not modified/regenerated in this execution because a verified Arduino-ESP32 Core 3.3.7 compiler toolchain is unavailable in this environment.
 - Safety remains authoritative in firmware; no safety check was removed or bypassed to address the FAN/PELTIER mismatch.
 - Mapping validation status:
@@ -22,7 +29,8 @@
   - Core 3.3.7 compile: **pending**
   - Firmware flash: **pending**
   - Physical FAN ON / PELTIER ON test: **pending**
-- No App Build was triggered by this firmware-source hardening execution.
+- Firmware source revision was bumped V2.3 → V2.4 so the OTA version contract can recognize a new release once the V2.4 BIN and Firebase metadata are promoted.
+- No App Build was triggered; this execution changes firmware source/notes only.
 > First-read memory index for App work. Historical entries below remain preserved as evidence. When an older entry conflicts with a later verified state, this current section wins.
 > Consolidated: 2026-10-01.
 
