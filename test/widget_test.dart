@@ -121,14 +121,39 @@ void main() {
   });
 
   test('LED palette exposes current RGB colors', () {
-    expect(ledColorPalette, hasLength(12));
+    expect(ledColorPalette, hasLength(24));
     expect(ledColorPalette.first, '#FF0000');
-    expect(ledColorPalette.last, '#FF0080');
+    expect(ledColorPalette.last, '#FFFFFF');
+    expect(ledColorPalette, contains('#FFFFFF'));
+    expect(ledColorPalette, isNot(contains('#000000')));
     for (final hex in ledColorPalette) {
       expect(RegExp(r'^#[0-9A-F]{6}$').hasMatch(hex), isTrue);
       expect(ledPaletteColor(hex), isA<Color>());
     }
   });
+  test('LED preview always exposes eight horizontal pixels', () {
+    final staticLevels = ledPreviewLevels(mode: 1, elapsedMs: 0);
+    final centerLevels = ledPreviewLevels(mode: 3, elapsedMs: 0);
+    final colors = ledPreviewColors(
+      mode: 1,
+      elapsedMs: 0,
+      baseColor: '#FFFFFF',
+      brightness: 50,
+    );
+
+    expect(staticLevels, hasLength(8));
+    expect(staticLevels, everyElement(1.0));
+    expect(centerLevels, hasLength(8));
+    expect(centerLevels[3], 1.0);
+    expect(centerLevels[4], 1.0);
+    expect(centerLevels[0], 0.0);
+    expect(centerLevels[7], 0.0);
+    expect(colors, hasLength(8));
+    expect(colors.first.red, 128);
+    expect(colors.first.green, 128);
+    expect(colors.first.blue, 128);
+  });
+
   test('Light and Dark themes use inverse semantic text contrast', () {
     final light = buildJexTheme(AppThemePreset.light);
     final dark = buildJexTheme(AppThemePreset.dark);
