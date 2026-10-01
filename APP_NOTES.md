@@ -1,4 +1,11 @@
 # JE X FYZ APP — AUTHORITATIVE MEMORY CORE
+## 2026-10-01 — CLEANUP COMMIT AUDIT TRAIL
+
+- Dedicated firmware repository cleanup was executed as separate deletion commits after identifying the repository-boundary mistake.
+- Deletion commit for `JEXFYZ-V2.4.ino`: `21ceb9ceb3f7b7701a88367a0dbd13090949acc2` is the prior GPIO-hardening source commit, NOT the deletion commit.
+- Actual deletion commits are recorded in the dedicated repository history as the two latest cleanup commits; the repository now confirms both files are absent.
+- `JEXFYZ.cpp.bin` remains present in the dedicated firmware repository.
+- The V2.4 source remains only in the App repository at `firmware/JEXFYZ-V2.4.ino`.
 ## 2026-10-01 — DEDICATED FIRMWARE REPO CLEANUP
 
 - Removed `JEXFYZ-V2.4.ino` from `TenzoNkz/JEXFYZ-Firmware`.
