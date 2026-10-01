@@ -3958,7 +3958,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     final dark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.symmetric(vertical: 6),
+      margin: const EdgeInsets.symmetric(vertical: 4),
       padding: padding ?? const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: scheme.surface,
@@ -3979,14 +3979,14 @@ class _DashboardScreenState extends State<DashboardScreen>
   Widget _sectionTitle(String title, {String? subtitle}) {
     final scheme = Theme.of(context).colorScheme;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 8, 4, 6),
+      padding: const EdgeInsets.fromLTRB(4, 6, 4, 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title.toUpperCase(),
             style: TextStyle(
-              fontSize: 16.5,
+              fontSize: 16,
               fontWeight: FontWeight.w900,
               letterSpacing: .60,
               color: scheme.onSurface,
