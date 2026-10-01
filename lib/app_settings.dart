@@ -332,6 +332,10 @@ class JexText {
       AppLanguage.english: 'Color',
       AppLanguage.indonesia: 'Warna',
     },
+    'brightness': {
+      AppLanguage.english: 'Brightness',
+      AppLanguage.indonesia: 'Kecerahan',
+    },
     'displayStyle': {
       AppLanguage.english: 'Display Style',
       AppLanguage.indonesia: 'Gaya Tampilan',
