@@ -88,17 +88,255 @@ const Duration voltageGuardDuration = Duration(seconds: 1);
 const int fanSpeedMin = 50;
 const int fanSpeedMax = 100;
 
-// JE X FYZ LED palette: 12 hue-oriented RGB choices.
-// Palette applies to modes that use the user RGB color; Rainbow keeps its own hue cycle.
+// JE X FYZ LED palette: 24 curated RGB presets.
+// White is included; black and dark/light variants are intentionally excluded because
+// brightness is the single intensity control.
 const List<String> ledColorPalette = <String>[
-  '#FF0000', '#FF8000', '#FFFF00', '#80FF00',
-  '#00FF00', '#00FFFF', '#0080FF', '#0000FF',
-  '#4000FF', '#8000FF', '#FF00FF', '#FF0080',
+  '#FF0000', '#FF4000', '#FF8000', '#FFC000', '#FFFF00', '#BFFF00',
+  '#80FF00', '#00FF00', '#00FF80', '#00FFFF', '#00BFFF', '#0080FF',
+  '#0040FF', '#0000FF', '#4000FF', '#8000FF', '#BF00FF', '#FF00FF',
+  '#FF0080', '#FF4080', '#FF0040', '#FF8040', '#FFB6C1', '#FFFFFF',
 ];
 
 Color ledPaletteColor(String hex) {
   final rgb = int.parse(hex.substring(1), radix: 16);
   return Color(0xFF000000 | rgb);
+}
+
+/// Returns the normalized per-pixel intensity for the horizontal eight-LED preview.
+/// The physical 4-left/4-right strip is deliberately flattened into one App row.
+List<double> ledPreviewLevels({
+  required int mode,
+  required int elapsedMs,
+}) {
+  final levels = List<double>.filled(8, 0);
+  final t = elapsedMs < 0 ? 0 : elapsedMs;
+
+  void setPair(int pair, double level) {
+    final clamped = level.clamp(0.0, 1.0).toDouble();
+    levels[3 - pair] = clamped;
+    levels[4 + pair] = clamped;
+  }
+
+  switch (mode.clamp(1, 7)) {
+    case 1:
+      levels.fillRange(0, 8, 1);
+    case 2:
+      final phase = (t % 2200) / 2200.0;
+      final level = .12 + .88 * (.5 + .5 * math.sin(phase * math.pi * 2));
+      levels.fillRange(0, 8, level);
+    case 3:
+      final progress = (t % 1600) / 400.0;
+      for (var pair = 0; pair < 4; pair++) {
+        final distance = pair.toDouble();
+        final level = progress >= distance
+            ? 1.0
+            : progress > distance - 1.0
+                ? progress - distance + 1.0
+                : 0.0;
+        setPair(pair, level);
+      }
+    case 4:
+      final progress = (t % 1600) / 400.0;
+      for (var pair = 0; pair < 4; pair++) {
+        final distance = pair.toDouble();
+        final level = progress >= distance
+            ? 1.0
+            : progress > distance - 1.0
+                ? progress - distance + 1.0
+                : 0.0;
+        setPair(3 - pair, level);
+      }
+    case 5:
+      const sequence = <int>[0, 1, 2, 3, 2, 1];
+      setPair(sequence[(t ~/ 150) % sequence.length], 1.0);
+    case 6:
+      final phase = (t % 1800) / 1800.0;
+      final wave = .5 + .5 * math.sin(phase * math.pi * 2);
+      final leftLevel = .10 + .90 * wave;
+      final rightLevel = .10 + .90 * (1.0 - wave);
+      for (var i = 0; i < 4; i++) {
+        levels[i] = leftLevel;
+        levels[4 + i] = rightLevel;
+      }
+    case 7:
+      levels.fillRange(0, 8, 1);
+  }
+  return levels;
+}
+
+/// Returns the per-pixel RGB colors for the horizontal eight-LED preview.
+/// Firmware maps 1..100% brightness to hardware intensity; the preview follows the same
+/// base-brightness relationship before the animation level is applied by the painter.
+List<Color> ledPreviewColors({
+  required int mode,
+  required int elapsedMs,
+  required String baseColor,
+  required int brightness,
+}) {
+  final safeBrightness = brightness.clamp(1, 100).toDouble() / 100.0;
+  if (mode.clamp(1, 7) != 7) {
+    final rgb = ledPaletteColor(baseColor);
+    final scaled = Color.fromARGB(
+      255,
+      (rgb.red * safeBrightness).round().clamp(0, 255),
+      (rgb.green * safeBrightness).round().clamp(0, 255),
+      (rgb.blue * safeBrightness).round().clamp(0, 255),
+    );
+    return List<Color>.filled(8, scaled);
+  }
+
+  const cycleMs = 30000;
+  final hue = ((elapsedMs % cycleMs) / cycleMs) * 360.0;
+  final rainbow = HSVColor.fromAHSV(1, hue, 1, safeBrightness).toColor();
+  return List<Color>.filled(8, rainbow);
+}
+
+class JexLedStripPreview extends StatefulWidget {
+  final int mode;
+  final String colorHex;
+  final int brightness;
+  final bool active;
+
+  const JexLedStripPreview({
+    super.key,
+    required this.mode,
+    required this.colorHex,
+    required this.brightness,
+    required this.active,
+  });
+
+  @override
+  State<JexLedStripPreview> createState() => _JexLedStripPreviewState();
+}
+
+class _JexLedStripPreviewState extends State<JexLedStripPreview>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 30000),
+    );
+    if (widget.active) controller.repeat();
+  }
+
+  @override
+  void didUpdateWidget(covariant JexLedStripPreview oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.active && !controller.isAnimating) {
+      controller.repeat();
+    } else if (!widget.active && controller.isAnimating) {
+      controller.stop();
+    }
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RepaintBoundary(
+      child: AnimatedBuilder(
+        animation: controller,
+        builder: (_, __) {
+          final elapsedMs = (controller.value * 30000).round();
+          return CustomPaint(
+            size: const Size(double.infinity, 72),
+            painter: _JexLedStripPainter(
+              levels: ledPreviewLevels(
+                mode: widget.mode,
+                elapsedMs: elapsedMs,
+              ),
+              colors: ledPreviewColors(
+                mode: widget.mode,
+                elapsedMs: elapsedMs,
+                baseColor: widget.colorHex,
+                brightness: widget.brightness,
+              ),
+              active: widget.active,
+              background: Theme.of(context).brightness == Brightness.dark
+                  ? const Color(0xFF20232A)
+                  : const Color(0xFFF5F6F8),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _JexLedStripPainter extends CustomPainter {
+  final List<double> levels;
+  final List<Color> colors;
+  final bool active;
+  final Color background;
+
+  const _JexLedStripPainter({
+    required this.levels,
+    required this.colors,
+    required this.active,
+    required this.background,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final centerY = size.height / 2;
+    final left = 18.0;
+    final usable = math.max(1.0, size.width - 36.0);
+    final gap = usable / 7;
+    final radius = math.min(14.0, math.max(9.0, size.height * .19));
+
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(10, centerY - 19, math.max(0, size.width - 20), 38),
+        const Radius.circular(19),
+      ),
+      Paint()..color = background,
+    );
+
+    for (var i = 0; i < 8; i++) {
+      final center = Offset(left + gap * i, centerY);
+      final level = active ? levels[i] : .10;
+      final color = colors[i];
+      if (active && level > .02) {
+        canvas.drawCircle(
+          center,
+          radius + 3,
+          Paint()
+            ..color = color.withValues(alpha: .14 * level)
+            ..maskFilter = MaskFilter.blur(BlurStyle.normal, 7),
+        );
+      }
+      canvas.drawCircle(
+        center,
+        radius,
+        Paint()
+          ..color = color.withValues(alpha: active ? level.clamp(.08, 1) : .14),
+      );
+      canvas.drawCircle(
+        center.translate(-radius * .22, -radius * .22),
+        radius * .20,
+        Paint()
+          ..color = Colors.white.withValues(
+            alpha: active ? (.12 + .22 * level) : .05,
+          ),
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _JexLedStripPainter oldDelegate) =>
+      oldDelegate.levels != levels ||
+      oldDelegate.colors != colors ||
+      oldDelegate.active != active ||
+      oldDelegate.background != background;
 }
 
 enum JexAnimatedIconKind {
@@ -754,6 +992,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   StreamSubscription<List<ScanResult>>? disconnectRediscoverySub;
   bool disconnectRediscoveryScanInProgress = false;
   Timer? fpsTimer;
+  final GlobalKey _ledColorAnchorKey = GlobalKey();
   int frameCount = 0;
   int currentFps = 0;
   bool hotAlertArmed = true;
@@ -2477,48 +2716,146 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   Future<void> _showLedColorPicker() async {
     if (!connected || rgbMode == 7) return;
-    await showDialog<void>(
+
+    final renderObject = _ledColorAnchorKey.currentContext?.findRenderObject();
+    if (renderObject is! RenderBox) return;
+
+    final anchor = renderObject.localToGlobal(Offset.zero) & renderObject.size;
+    final media = MediaQuery.of(context);
+    const popupWidth = 320.0;
+    const popupHeight = 246.0;
+    const edge = 10.0;
+
+    var left = anchor.right - popupWidth;
+    left = left.clamp(edge, media.size.width - popupWidth - edge).toDouble();
+
+    final spaceAbove = anchor.top - media.padding.top - edge;
+    final spaceBelow = media.size.height - media.padding.bottom - anchor.bottom - edge;
+    final openAbove = spaceAbove >= popupHeight || spaceAbove >= spaceBelow;
+    final top = openAbove
+        ? (anchor.top - popupHeight - 8).clamp(
+            media.padding.top + edge,
+            media.size.height - popupHeight - edge,
+          )
+        : (anchor.bottom + 8).clamp(
+            media.padding.top + edge,
+            media.size.height - popupHeight - edge,
+          );
+
+    await showGeneralDialog<void>(
       context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: Text(JexText.of('color')),
-          content: SizedBox(
-            width: 280,
-            child: GridView.builder(
+      barrierDismissible: true,
+      barrierLabel: JexText.of('color', appLanguageNotifier.value),
+      barrierColor: Colors.black.withValues(alpha: .08),
+      transitionDuration: const Duration(milliseconds: 150),
+      pageBuilder: (dialogContext, _, __) {
+        return Stack(
+          children: [
+            Positioned(
+              left: left,
+              top: top,
+              width: popupWidth,
+              child: Material(
+                color: Colors.transparent,
+                child: _JexColorPickerCard(
+                  colors: ledColorPalette,
+                  selected: rgbColor.toUpperCase(),
+                  onSelected: (value) async {
+                    await _setRgbColor(value);
+                    if (dialogContext.mounted) Navigator.pop(dialogContext);
+                  },
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+      transitionBuilder: (_, animation, __, child) {
+        final scale = Tween<double>(begin: .96, end: 1).animate(
+          CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+        );
+        return FadeTransition(
+          opacity: animation,
+          child: ScaleTransition(
+            scale: scale,
+            alignment: Alignment.topRight,
+            child: child,
+          ),
+        );
+      },
+    );
+  }
+
+  
+class _JexColorPickerCard extends StatelessWidget {
+  final List<String> colors;
+  final String selected;
+  final ValueChanged<String> onSelected;
+
+  const _JexColorPickerCard({
+    required this.colors,
+    required this.selected,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Material(
+      color: scheme.surface,
+      elevation: 18,
+      shadowColor: Colors.black.withValues(alpha: .22),
+      borderRadius: BorderRadius.circular(20),
+      clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(14, 13, 14, 14),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              JexText.of('color', appLanguageNotifier.value),
+              style: TextStyle(
+                color: scheme.onSurface,
+                fontSize: 17,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            const SizedBox(height: 10),
+            GridView.builder(
               shrinkWrap: true,
-              itemCount: ledColorPalette.length,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: colors.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-                mainAxisExtent: 44,
+                crossAxisCount: 6,
+                crossAxisSpacing: 7,
+                mainAxisSpacing: 7,
+                mainAxisExtent: 38,
               ),
               itemBuilder: (_, index) {
-                final value = ledColorPalette[index];
-                final selected = rgbColor.toUpperCase() == value;
+                final value = colors[index];
+                final isSelected = selected == value;
+                final isWhite = value == '#FFFFFF';
                 return InkWell(
-                  borderRadius: BorderRadius.circular(10),
-                  onTap: () async {
-                    await _setRgbColor(value);
-                    if (dialogContext.mounted) {
-                      Navigator.pop(dialogContext);
-                    }
-                  },
+                  borderRadius: BorderRadius.circular(11),
+                  onTap: () => onSelected(value),
                   child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 120),
+                    duration: const Duration(milliseconds: 100),
                     decoration: BoxDecoration(
                       color: ledPaletteColor(value),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(11),
                       border: Border.all(
-                        color: selected ? Colors.white : Colors.black12,
-                        width: selected ? 3 : 1,
+                        color: isSelected
+                            ? scheme.onSurface
+                            : (isWhite ? scheme.outline : Colors.transparent),
+                        width: isSelected ? 2.5 : 1,
                       ),
                     ),
-                    child: selected
+                    child: isSelected
                         ? JexAnimatedIcon.glyph(
                             icon: PhosphorIconsBold.check,
-                            color: Colors.white,
-                            size: 19,
+                            color: isWhite ? Colors.black : Colors.white,
+                            size: 18,
                             active: true,
                           )
                         : null,
@@ -2526,11 +2863,13 @@ class _DashboardScreenState extends State<DashboardScreen>
                 );
               },
             ),
-          ),
-        );
-      },
+          ],
+        ),
+      ),
     );
   }
+}
+
 
   // AI-METHOD: _openFirmwareSettings — Open the external firmware update dialog.
   Future<void> _openFirmwareSettings() async {
@@ -3843,15 +4182,16 @@ class _DashboardScreenState extends State<DashboardScreen>
                     key: ValueKey<String>('led-mode-$modeName'),
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      JexAnimatedIcon(
-                        kind: JexAnimatedIconKind.led,
-                        size: 92,
-                        color: colorEnabled
-                            ? ledPaletteColor(rgbColor.toUpperCase())
-                            : Theme.of(context).colorScheme.onSurfaceVariant,
-                        active: rgbOn,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: JexLedStripPreview(
+                          mode: safeMode,
+                          colorHex: rgbColor.toUpperCase(),
+                          brightness: brightness,
+                          active: rgbOn && connected,
+                        ),
                       ),
-                      const SizedBox(height: 5),
+                      const SizedBox(height: 3),
                       Text(
                         modeName.toUpperCase(),
                         textAlign: TextAlign.center,
@@ -3912,12 +4252,14 @@ class _DashboardScreenState extends State<DashboardScreen>
             child: InkWell(
               onTap: colorEnabled ? _showLedColorPicker : null,
               borderRadius: BorderRadius.circular(18),
-              child: _card(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 12,
-                ),
-                child: Row(
+              child: Container(
+                key: _ledColorAnchorKey,
+                child: _card(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
+                  child: Row(
                   children: [
                     Container(
                       width: 32,
@@ -3946,6 +4288,8 @@ class _DashboardScreenState extends State<DashboardScreen>
                       active: true,
                     ),
                   ],
+                ),
+                  ),
                 ),
               ),
             ),
@@ -5161,3 +5505,4 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
     );
   }
 }
+00
