@@ -4853,176 +4853,249 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
   }
 
-  Widget _adjuster({required String title, required int value, required int min, required int max, required ValueChanged<int> onChanged, String unit = '°C'}) {
-    final scheme = Theme.of(context).colorScheme;
-    return Row(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title.toUpperCase(),
-                style: TextStyle(
-                  fontSize: 12.5,
-                  letterSpacing: .35,
-                  fontWeight: FontWeight.w900,
-                  color: scheme.onSurface,
-                ),
-              ),
-              const SizedBox(height: 3),
-              Text(
-                JexText.of('range', appLanguageNotifier.value) + ' $min–$max$unit',
-                style: TextStyle(
-                  color: scheme.onSurfaceVariant,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ),
-        ),
-        IconButton(
-          onPressed: value <= min ? null : () => onChanged(value - 1),
-          icon: JexAnimatedIcon.glyph(
-            icon: PhosphorIconsRegular.minusCircle,
-            size: 22,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-            active: true,
-          ),
-          color: scheme.onSurfaceVariant,
-        ),
-        Container(
-          width: 72,
-          padding: const EdgeInsets.symmetric(vertical: 9),
-          decoration: BoxDecoration(
-            color: scheme.surfaceContainerHighest.withValues(alpha: .52),
-            borderRadius: BorderRadius.circular(13),
-            border: Border.all(color: scheme.outlineVariant),
-          ),
-          child: StaticSwitcher(
-            child: Text(
-              '$value$unit',
-              key: ValueKey<String>('$value$unit'),
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.w900,
-                fontSize: 15,
-                color: scheme.primary,
-              ),
-            ),
-          ),
-        ),
-        IconButton(
-          onPressed: value >= max ? null : () => onChanged(value + 1),
-          icon: JexAnimatedIcon.glyph(
-            icon: PhosphorIconsRegular.plusCircle,
-            size: 22,
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-            active: true,
-          ),
-          color: scheme.onSurfaceVariant,
-        ),
-      ],
-    );
-  }
-
-  // AI-METHOD: _buildTemperatureTab — Build temperature/battery settings.
+  // AI-METHOD / TEMPERATURE-UI-CONTRACT
+  // Compact thermal controls with consistent custom +/- buttons and no long dividers.
   Widget _buildTemperatureTab({Key? key}) {
     final locked = adaptiveOn;
     final midLow = battery5Limit + 1;
     final midHigh = battery12Limit - 1;
-    return KeyedSubtree(key: key, child: _smoothList(
-      storageKey: 'temperature',
-      children: [
-        _sectionTitle(JexText.of('thermal', appLanguageNotifier.value)),
-        _card(
-          child: _adjuster(
-            title: JexText.of('hotsideLimit'),
-            value: hotLimitDraft,
-            min: 40,
-            max: 50,
-            onChanged: (v) {
-              if (!connected || locked) return;
-              // AI-METHOD: _setHotLimit — Set the hotside protection threshold.
-              _setHotLimit(v);
-            },
+    final lang = appLanguageNotifier.value;
+
+    return KeyedSubtree(
+      key: key,
+      child: _smoothList(
+        storageKey: 'temperature',
+        padding: const EdgeInsets.fromLTRB(2, 0, 2, 18),
+        children: [
+          _sectionTitle(JexText.of('thermal', lang)),
+          _card(
+            padding: const EdgeInsets.all(11),
+            child: _temperatureAdjuster(
+              title: JexText.of('hotsideLimit'),
+              value: hotLimitDraft,
+              min: 40,
+              max: 50,
+              enabled: connected && !locked,
+              onChanged: _setHotLimit,
+            ),
           ),
-        ),
-        _sectionTitle(JexText.of('batteryZones', appLanguageNotifier.value)),
-        _card(
-          padding: const EdgeInsets.fromLTRB(13, 8, 13, 8),
-          child: Column(
-            children: [
-              _adjuster(
-                title: JexText.of('fiveVCeiling'),
-                value: battery5Draft,
-                min: 20,
-                max: 48,
-                onChanged: (v) {
-                  if (!connected || locked || v >= battery12Limit - 1) return;
-                  // AI-METHOD: _setBattery5 — Set the 5V battery-temperature threshold.
-                  _setBattery5(v);
-                },
-              ),
-              const Divider(height: 14),
-              Row(
+          _sectionTitle(JexText.of('batteryZones', lang)),
+          _card(
+            padding: const EdgeInsets.all(9),
+            child: Column(
+              children: [
+                _temperatureAdjuster(
+                  title: JexText.of('fiveVCeiling'),
+                  value: battery5Draft,
+                  min: 20,
+                  max: 48,
+                  enabled: connected && !locked && battery5Draft < battery12Limit - 1,
+                  onChanged: (v) {
+                    if (v < battery12Limit - 1) _setBattery5(v);
+                  },
+                ),
+                const SizedBox(height: 8),
+                _lockedZoneRow(
+                  title: JexText.of('zone9v', lang),
+                  value: '≈ ' + midLow.toString() + '–' + midHigh.toString() + '°C',
+                ),
+                const SizedBox(height: 8),
+                _temperatureAdjuster(
+                  title: JexText.of('twelveVFloor'),
+                  value: battery12Draft,
+                  min: 22,
+                  max: 50,
+                  enabled: connected && !locked && battery12Draft > battery5Limit + 1,
+                  onChanged: (v) {
+                    if (v > battery5Limit + 1) _setBattery12(v);
+                  },
+                ),
+              ],
+            ),
+          ),
+          if (locked)
+            _card(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              child: Row(
                 children: [
-                  SizedBox(width: 100, child: Text(JexText.of('zone9v').toUpperCase(), style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.onSurfaceVariant))),
-                  Expanded(child: StaticSwitcher(duration: const Duration(milliseconds: 150), child: Text('≈ $midLow–$midHigh°C', key: ValueKey<String>('$midLow:$midHigh'), style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.onSurface)))),
-                  JexAnimatedIcon.glyph(
-                    icon: PhosphorIconsRegular.lock,
-                    size: 18,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: .35),
-                    active: true,
+                  const Icon(
+                    Icons.lock_outline_rounded,
+                    size: 19,
+                    color: Colors.orangeAccent,
+                  ),
+                  const SizedBox(width: 9),
+                  Expanded(
+                    child: Text(
+                      JexText.of('lockedAdaptive', lang),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
                   ),
                 ],
               ),
-              const Divider(height: 14),
-              _adjuster(
-                title: JexText.of('twelveVFloor'),
-                value: battery12Draft,
-                min: 22,
-                max: 50,
-                onChanged: (v) {
-                  if (!connected || locked || v <= battery5Limit + 1) return;
-                  // AI-METHOD: _setBattery12 — Set the 12V battery-temperature threshold.
-                  _setBattery12(v);
-                },
+            ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: OutlinedButton(
+              onPressed: connected && !locked ? _resetTemperatureSettings : null,
+              child: Text(JexText.of('resetTemperature', lang)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _temperatureAdjuster({
+    required String title,
+    required int value,
+    required int min,
+    required int max,
+    required bool enabled,
+    required ValueChanged<int> onChanged,
+  }) {
+    final scheme = Theme.of(context).colorScheme;
+    final accent = scheme.primary;
+    return AnimatedOpacity(
+      duration: const Duration(milliseconds: 150),
+      opacity: enabled ? 1 : .48,
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title.toUpperCase(),
+                  style: TextStyle(
+                    color: scheme.onSurface,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: .35,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  JexText.of('range', appLanguageNotifier.value) + ' ' + min.toString() + '–' + max.toString() + '°C',
+                  style: TextStyle(
+                    color: scheme.onSurfaceVariant,
+                    fontSize: 9.5,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          _temperatureButton(
+            icon: Icons.remove_rounded,
+            enabled: enabled && value > min,
+            onPressed: () => onChanged(value - 1),
+          ),
+          const SizedBox(width: 5),
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            width: 72,
+            padding: const EdgeInsets.symmetric(vertical: 9),
+            decoration: BoxDecoration(
+              color: scheme.surfaceContainerHighest.withValues(alpha: .55),
+              borderRadius: BorderRadius.circular(13),
+              border: Border.all(color: scheme.outlineVariant),
+            ),
+            child: Text(
+              value.toString() + '°C',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: accent,
+                fontSize: 14,
+                fontWeight: FontWeight.w900,
               ),
-            ],
-          ),
-        ),
-        if (locked)
-          _card(
-            padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
-            child: Row(children: [
-              JexAnimatedIcon.glyph(
-              icon: PhosphorIconsBold.lock,
-              size: 18,
-              color: Colors.orangeAccent,
-              active: true,
-              warning: true,
             ),
-              const SizedBox(width: 9),
-              Expanded(child: Text(JexText.of('lockedAdaptive'), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800))),
-            ]),
           ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: OutlinedButton.icon(
-            onPressed: connected && !locked ? _resetTemperatureSettings : null,
-            icon: JexAnimatedIcon.glyph(
-              icon: PhosphorIconsBold.arrowClockwise,
-              size: 17,
-              color: Theme.of(context).colorScheme.primary,
-              active: true,
-            ),
-            label: Text(JexText.of('resetTemperature')),
+          const SizedBox(width: 5),
+          _temperatureButton(
+            icon: Icons.add_rounded,
+            enabled: enabled && value < max,
+            onPressed: () => onChanged(value + 1),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _temperatureButton({
+    required IconData icon,
+    required bool enabled,
+    required VoidCallback onPressed,
+  }) {
+    final scheme = Theme.of(context).colorScheme;
+    return InkWell(
+      onTap: enabled ? onPressed : null,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        width: 34,
+        height: 34,
+        decoration: BoxDecoration(
+          color: enabled
+              ? scheme.surfaceContainerHighest
+              : scheme.surfaceContainerHighest.withValues(alpha: .48),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: scheme.outlineVariant),
         ),
-      ],
-    ));
+        child: Icon(
+          icon,
+          size: 19,
+          color: enabled
+              ? scheme.onSurfaceVariant
+              : scheme.onSurfaceVariant.withValues(alpha: .28),
+        ),
+      ),
+    );
+  }
+
+  Widget _lockedZoneRow({
+    required String title,
+    required String value,
+  }) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerHighest.withValues(alpha: .24),
+        borderRadius: BorderRadius.circular(17),
+        border: Border.all(color: scheme.outlineVariant.withValues(alpha: .68)),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.lock_outline_rounded,
+            size: 18,
+            color: scheme.onSurfaceVariant.withValues(alpha: .55),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              title.toUpperCase(),
+              style: TextStyle(
+                color: scheme.onSurfaceVariant,
+                fontSize: 11.5,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              color: scheme.onSurface,
+              fontSize: 13,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   // AI-METHOD: _buildTabContent — Select submenu content by tab index.
