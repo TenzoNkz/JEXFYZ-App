@@ -986,6 +986,10 @@ class JexText {
       AppLanguage.english: 'Left ↔ Right',
       AppLanguage.indonesia: 'Kiri ↔ Kanan',
     },
+    'adaptiveProfile': {
+      AppLanguage.english: 'Profile',
+      AppLanguage.indonesia: 'Profil',
+    },
     'adaptiveSwitch': {
       AppLanguage.english: 'Adaptive Switch',
       AppLanguage.indonesia: 'Sakelar Adaptif',
