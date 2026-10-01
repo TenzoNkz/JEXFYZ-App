@@ -839,7 +839,7 @@ When source is updated, update this note with:
 2. **ArduinoDroid is the user's production compile/flash environment.**
 3. **Do not guess Arduino or BLE APIs. Verify the official Core 3.3.7 API/source first.**
 4. **One antenna means controlled Wi-Fi/BLE handoff, not assumed simultaneous operation.**
-5. **GPIO5 = Fan, GPIO6 = Peltier** in the current firmware-specific mapping.
+5. **GPIO5 = Peltier, GPIO6 = Fan** in the current firmware-specific mapping.
 6. **FIRMWARE_NOTES.md stays in the App repo as documentation.**
 7. **Firmware implementation source/BIN/build files stay outside the App repo.**
 8. **V6.6 is a test version, not production.**
@@ -1397,7 +1397,7 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Confirmed Wi-Fi startup/handoff uses Arduino APIs only and BLE is not started while the boot AP owns the radio.
 - Found one concrete source-level alignment issue: the V1.3 Local AP startup called WiFi.softAP() before WiFi.softAPConfig(). Core 3.3.7 official APOTA source uses the opposite order (softAPConfig() then softAP()); the production source was minimally reordered to match that official Arduino pattern.
 - No BLE UUID, command vocabulary, safety logic, GPIO mapping, OTA diagnostics, or firmware feature behavior was intentionally changed by the audit.
-- GPIO contract remains GPIO5 = FAN and GPIO6 = PELTIER.
+- GPIO contract remains GPIO5 = PELTIER and GPIO6 = FAN.
 - V1.3 remains a release candidate only. CI Core 3.3.7 compile and publish are still required before calling it final/public.
 
 ## 2026-09-27 — V1.3 POST-PATCH STATIC AUDIT PASS
@@ -1407,7 +1407,7 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Legacy LEDC APIs ledcSetup()/ledcAttachPin() remain absent.
 - Local AP order is now verified as WiFi.softAPConfig() before WiFi.softAP().
 - Required Arduino Update lifecycle calls remain present: begin/write/end(true)/abort/printError.
-- GPIO mapping remains GPIO5 = FAN and GPIO6 = PELTIER.
+- GPIO mapping remains GPIO5 = PELTIER and GPIO6 = FAN.
 - This static check does not replace the required Core 3.3.7 CI compile.
 
 ## 2026-09-27 — RUN #68 COMPILE ROOT CAUSE / V1.3 CORE 3.3.7 FIX
@@ -1416,7 +1416,7 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Compiler root cause #2: stale bleConnectionId = BLE_INVALID_CONN_ID remained after the callback/low-level cleanup, but neither symbol is declared or required by the current Arduino BLE implementation. The unused assignment was removed; BLE UUIDs/protocol and callback behavior were not changed.
 - Compiler root cause #3: the official Core 3.3.7 Update.write() signature requires uint8_t*, while the Stream adapter receives const uint8_t*. The adapter now uses const_cast<uint8_t*> only at the official API boundary; official Update.cpp was verified to copy/read the supplied bytes and not modify the input buffer.
 - No raw ESP-IDF Wi-Fi/OTA lifecycle was reintroduced. The fixes stay at Arduino/application boundaries and preserve the existing OTA state machine, diagnostics, safety, and radio handoff.
-- GPIO mapping remains GPIO5 = FAN and GPIO6 = PELTIER.
+- GPIO mapping remains GPIO5 = PELTIER and GPIO6 = FAN.
 - V1.3 is still not release-final/public. A new Core 3.3.7 CI run is required after this fix.
 
 ## 2026-09-27 — RUN #69 FINAL CI / ARTIFACT / PUBLIC V1.3 VERIFIED
@@ -1493,7 +1493,7 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Diagnostic sketches under `firmware/diagnostics/` are isolated tests only.
 - The verified V1.3 release remains the last known-good CI/public build baseline.
 - Do not claim physical V1.3 production runtime success merely from CI success; physical production validation remains separate.
-- GPIO contract remains GPIO5 = FAN and GPIO6 = PELTIER.
+- GPIO contract remains GPIO5 = PELTIER and GPIO6 = FAN.
 
 ## NEXT FULL EXECUTION BOUNDARY
 - The next production execution is ready to be scoped around the verified simple Arduino Wi-Fi/OTA pattern.
@@ -1522,7 +1522,7 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - No BLE, NTC, Fan/Peltier, RGB, Adaptive, GPIO, settings persistence, BLE UUID/protocol, or online OTA behavior was intentionally redesigned in this execution.
 - The production source continues to use the Arduino `Update.h` lifecycle for local/online OTA and the existing OTA safety supervisor/diagnostic policy.
 - Source commit: `bf923ba37bdaee96b9f870318401c0d04061e8ff`.
-- Pre-CI static sanity check: V1.4 marker present; Local AP contains direct `WiFi.softAP(AP_SSID, AP_PASSWORD)`; `WiFi.softAPConfig()` is absent from production source; GPIO5=Fan and GPIO6=Peltier remain intact; legacy LEDC and audited raw lifecycle markers remain absent.
+- Pre-CI static sanity check: V1.4 marker present; Local AP contains direct `WiFi.softAP(AP_SSID, AP_PASSWORD)`; `WiFi.softAPConfig()` is absent from production source; GPIO5=Peltier and GPIO6=Fan remain intact; legacy LEDC and audited raw lifecycle markers remain absent.
 - Required validation boundary: pinned Arduino-ESP32 Core 3.3.7 ArduinoDroid compile, release compile, OTA protected-source audit, artifact upload, and publication must all pass before the V1.4 binary is presented as verified.
 - Physical runtime of V1.4 is not claimed until the user manually flashes the resulting binary.
 
@@ -3007,7 +3007,7 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Adaptive battery zoning now uses a 0.8 C hysteresis helper to reduce boundary chattering; manual voltage control behavior is unchanged.
 - NTC validation was hardened with an upper fault threshold of 3290 mV, input sanitization/clamp at 3.28 V before resistance calculation, and finite/positive validation of resistance and calculated temperature.
 - Boot Wi-Fi AP now has a 60-second hard limit in addition to the normal 10-second no-client timeout. The hard limit yields to an active local OTA transaction so an actual upload is not interrupted.
-- Hardware initialization was consolidated into `initializeRuntimeFeatures()`; setup no longer duplicates the hardware initialization sequence. GPIO authority remains GPIO5 = FAN and GPIO6 = PELTIER.
+- Hardware initialization was consolidated into `initializeRuntimeFeatures()`; setup no longer duplicates the hardware initialization sequence. GPIO authority remains GPIO5 = PELTIER and GPIO6 = FAN.
 - Gemini V1.4's callback-allocation finding was audited but intentionally not forced into this revision. The current Arduino-ESP32 BLE ownership/destruction path was not sufficiently established from the available Core 3.3.7 evidence to justify replacing the existing callback allocation pattern blindly.
 - App source/protocol was not changed in this execution because the App already defines LED modes 1..8 and does not require a new protocol for these firmware hardening changes.
 - Source commits in this execution: `d7f438a37e74c33b07b3e00295412bf1ce842731`, `210571960117f459d22f632f16fab76228b10ca6`, `13361994b0d69facf61ea88895e378edf6f71fd4`.
