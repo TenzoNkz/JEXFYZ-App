@@ -1,4 +1,28 @@
 # JE X FYZ APP — AUTHORITATIVE MEMORY CORE
+## 2026-10-01 — FULL EXECUTION / PROJECT STATE RECONCILIATION
+
+- Current App branch: `main`; latest inspected documentation HEAD before this write was `106087a5ee01793f2e682859afccfa6bf002e9f1`.
+- Build App #41 remains the latest successful App validation checkpoint: Run `36800153829`, source commit `6deff1af4cb74310a00ee4ee0f3ed1584225c351`.
+- Commits after Build #41 inspected in this execution are documentation/firmware-source changes only; no later Flutter/Dart/Android functional source change was found in those commits.
+- Therefore Build #41 still represents the latest successful **App-source** build validation, while it does not validate the later firmware-source GPIO hardening.
+- Production signing certificate remains unchanged and remains the required identity.
+- `pubspec.yaml` package version remains `1.0.0+3`; Android user-visible version remains `Telegram @horizontalzzz`.
+- Explicit Build trigger remains Issue-only with exact title `JE X FYZ — BUILD APP TRIGGER` and body token `JEXFYZ_BUILD_TRIGGER_V1`; push/PR does not trigger the App build workflow.
+- BLE P1 UUIDs and command vocabulary remain frozen.
+- **Firmware physical GPIO authority is: GPIO5 = PELTIER; GPIO6 = FAN.** App logical tokens are not swapped.
+- Current App-repo firmware mirror `firmware/JEXFYZ-V2.3.ino` already reflects this mapping and includes the compile-time mapping guard.
+- Dedicated firmware repo currently contains `JEXFYZ-V2.3.ino` plus the existing `JEXFYZ.cpp.bin`; this current repository state supersedes older notes that described it as binary-only.
+- The existing production BIN was not modified/regenerated in this execution because a verified Arduino-ESP32 Core 3.3.7 compiler toolchain is unavailable in this environment.
+- Safety remains authoritative in firmware; no safety check was removed or bypassed to address the FAN/PELTIER mismatch.
+- Mapping validation status:
+  - App command layer: **unchanged / logical mapping preserved**
+  - Firmware pin constants: **verified**
+  - Firmware output writers: **verified**
+  - Static compile-time mapping guard: **present**
+  - Core 3.3.7 compile: **pending**
+  - Firmware flash: **pending**
+  - Physical FAN ON / PELTIER ON test: **pending**
+- No App Build was triggered by this firmware-source hardening execution.
 > First-read memory index for App work. Historical entries below remain preserved as evidence. When an older entry conflicts with a later verified state, this current section wins.
 > Consolidated: 2026-10-01.
 
