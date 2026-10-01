@@ -4264,38 +4264,37 @@ class _JexColorPickerCard extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                    Container(
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        color: colorEnabled
-                            ? ledPaletteColor(rgbColor.toUpperCase())
-                            : Colors.black12,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    const SizedBox(width: 11),
-                    Expanded(
-                      child: Text(
-                        JexText.of('color', lang),
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w900,
+                      Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          color: colorEnabled
+                              ? ledPaletteColor(rgbColor.toUpperCase())
+                              : Colors.black12,
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                    ),
-                    JexAnimatedIcon.glyph(
-                      icon: PhosphorIconsRegular.caretRight,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      size: 20,
-                      active: true,
-                    ),
+                      const SizedBox(width: 11),
+                      Expanded(
+                        child: Text(
+                          JexText.of('color', lang),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ),
+                      JexAnimatedIcon.glyph(
+                        icon: PhosphorIconsRegular.caretRight,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        size: 20,
+                        active: true,
+                      ),
                     ],
                   ),
                 ),
               ),
             ),
-              ),
           ),
         ],
       ),
