@@ -89,8 +89,11 @@ static constexpr uint8_t PIN_NTC     = 0;
 static constexpr uint8_t PIN_TOUCH   = 1;
 static constexpr uint8_t PIN_12V     = 3;
 static constexpr uint8_t PIN_9V      = 4;
-static constexpr uint8_t PIN_PELTIER = 6;
-static constexpr uint8_t PIN_FAN     = 5;
+// Physical output correction based on confirmed bench behavior:
+// FAN command must drive the physical fan output; PELTIER command must drive the physical Peltier output.
+// Observed hardware had the two output traces reversed relative to the previous source labels.
+static constexpr uint8_t PIN_PELTIER = 5;
+static constexpr uint8_t PIN_FAN     = 6;
 static constexpr uint8_t PIN_LED     = 7;
 static constexpr uint8_t LED_COUNT   = 8;
 
