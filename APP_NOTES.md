@@ -1525,3 +1525,11 @@ Never:
   - user-facing custom labels remain routed through JexText.
 - Functional contracts were preserved: BLE/P1, firmware telemetry authority, voltage switching guards, Adaptive profile commands, LED commands, temperature safety ranges, OTA, Firebase, GPIO, and release signing were not changed.
 - This is an App presentation-layer execution only. Build App was not triggered by this execution.
+
+## 2026-10-01 — APP VERSION LABEL UPDATE
+
+- Android `versionName` is now exactly `Telegram @horizontalzzz`, so Android App info will display that requested version label.
+- The Floating Monitor/About version field was updated to the same `Telegram @horizontalzzz` label to avoid a UI mismatch.
+- Flutter package version in `pubspec.yaml` remains `1.0.0+3` because it is the package/build metadata source; Android `versionName` is the user-visible App info label requested here.
+- No applicationId, versionCode, signing identity, BLE/P1 protocol, firmware, OTA, or Firebase behavior was changed.
+- Build App was not triggered by this execution.
