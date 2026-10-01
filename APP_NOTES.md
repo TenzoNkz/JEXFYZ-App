@@ -1,4 +1,20 @@
 # JE X FYZ APP — AUTHORITATIVE MEMORY CORE
+## 2026-10-02 — FULL EXECUTION / BILINGUAL LANGUAGE STANDARDIZATION
+
+- Completed a full App-language audit and standardization pass for user-facing Flutter localization.
+- Coding/source identifiers remain English; frozen technical identifiers such as BLE, P1, OTA stage tokens, RGB, LED, NTC, FPS, UUIDs, storage keys, and protocol commands remain untranslated.
+- Indonesian UI terminology is standardized to natural/baku wording, including Temperature -> Suhu, Reset Temperature -> Atur Ulang Suhu, Voltage Indicator -> Indikator Tegangan, Default -> Bawaan, and Opacity -> Transparansi.
+- Confirmed Adaptive Switch is correctly localized as Adaptive Switch / Sakelar Adaptif in the active source.
+- Hotside remains an English internal/technical term, while user-facing Indonesian presentation uses Suhu Panas.
+- OTA stage presentation is now centralized through JexText; frozen OTA stage tokens remain internal identifiers, while displayed stage names are localized.
+- OTA result/status paths no longer append hardcoded English not-confirmed/failed suffixes; these suffixes are localized.
+- Floating Monitor Allow action now uses the centralized localization table.
+- Added regression assertions for the Indonesian terminology contract.
+- Active source commits for this execution: 91ea62c9bf241bdb04832a768de88f3031f0a78e (app_settings), c9242b0daf25718975b50b1c0e2c24fd8a4f1044 (main), e1acfbc0f6c3d2165d421d583af8a91727898adb (floating_monitor), 6a4f9bca1f451b5ad4b400eae9aabf707101f2d7 (tests).
+- Native Android system-facing service/channel descriptions remain outside the Flutter locale table because they are native service metadata rather than Flutter-controlled in-app copy; no service architecture or BLE ownership was changed.
+- This was an App-only localization/presentation execution. Firmware source, firmware version, BLE/P1 protocol, OTA transport, Firebase metadata, GPIO mapping, safety behavior, signing identity, and production BIN were not changed.
+- No App Build was run; Build App remains a separate explicit workflow.
+
 ## 2026-10-01 — CLEANUP COMMIT AUDIT TRAIL
 
 - Dedicated firmware repository cleanup was executed with deletion commits after the repository-boundary mistake was identified.
