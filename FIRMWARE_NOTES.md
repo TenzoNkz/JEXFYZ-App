@@ -3657,3 +3657,13 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - BLE P1 UUIDs/protocol and OTA architecture remain unchanged.
 - App-side confirmation now waits for matching authoritative telemetry after an accepted ACK; this firmware note records the firmware half of that contract.
 - Static/source review was performed against `firmware/JEXFYZ-V2.3.ino`. ArduinoDroid + Arduino-ESP32 Core 3.3.7 compilation and physical hardware validation remain pending.
+
+
+## 2026-10-01 — VERIFIED CONTROL OUTPUT CORRECTION
+
+- Bench behavior confirmed: pressing the App FAN control was physically activating the Peltier output, while the App PELTIER control was correspondingly reversed at the hardware output.
+- The App protocol commands remain correct and were not swapped: `FAN:ON/OFF` remains FAN and `PELTIER:ON/OFF` remains PELTIER.
+- Root cause for the observed physical inversion is corrected at the firmware output mapping layer: `PIN_FAN = 6`, `PIN_PELTIER = 5` so the logical FAN/PELTIER commands drive the observed physical outputs correctly.
+- Existing safety relationship is preserved: Peltier still requires logical Fan ON, valid NTC, acceptable hotside temperature, and non-OTA conditions.
+- Important: this is a firmware-source correction. The binary-only `TenzoNkz/JEXFYZ-Firmware` repository still requires a newly compiled/flashed BIN before the physical device changes.
+- Do not compensate by swapping App BLE command tokens; doing so would corrupt the logical safety/telemetry contract.
