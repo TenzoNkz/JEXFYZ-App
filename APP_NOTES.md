@@ -1,4 +1,12 @@
 # JE X FYZ APP — AUTHORITATIVE MEMORY CORE
+## 2026-10-01 — CHAT RULES UPDATE / MANDATORY VERSIONING + NOTES
+
+- Project chat rules were strengthened in `CHAT_RULES.md`.
+- Firmware functional/source changes now require a firmware version increment before OTA candidacy.
+- Every meaningful project event must be reflected in the appropriate maintenance notes, including implementation, build/compile attempts, failures, runtime/device observations, validation status, risks, and important dead ends.
+- Current firmware source revision remains **V2.4**; no App source change or App Build was triggered by this rules-only update.
+- `CHAT_RULES.md` is now the authoritative process contract for Diskusi, Eksekusi, Build App, Gemini review, source-first auditing, source-to-hardware traceability, and response footer/status behavior.
+
 ## 2026-10-01 — FIRMWARE VERSIONING RULE / V2.4
 
 - Required firmware version bump completed: **V2.3 → V2.4**.
