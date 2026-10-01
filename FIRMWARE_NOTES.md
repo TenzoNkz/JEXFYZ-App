@@ -1,4 +1,13 @@
-# JE X FYZ FIRMWARE — AUTHORITATIVE MEMORY CORE
+## 2026-10-02 — V2.5 / ONE-SHOT OTA RESULT LIFECYCLE
+
+- Functional firmware revision bumped V2.4 → V2.5 because OTA result lifecycle is functional firmware behavior.
+- Removed persistent lastOta NVS history; the legacy key is purged on boot.
+- OTA results are RAM-only pending events. Successful OTA uses a one-boot otaBootResult handoff written only immediately before restart and removed at next boot; it is not OTA history.
+- LAST_OTA_RESULT is now one-shot: the first full BLE sync consumes the pending result; later syncs send NONE.
+- App Home NOTIFY consumes only fresh OTA_SUCCESS|... / OTA_FAILED|... events, and newer App events replace the OTA message.
+- Power removal before the final restart boundary creates no persistent OTA result.
+- BLE UUIDs, command vocabulary, OTA transport, safety, GPIO, LED indicators, Firebase metadata, and production BIN were not changed.
+- No V2.5 BIN or Firebase promotion occurred; ArduinoDroid/Core 3.3.7 compile and physical validation remain pending.
 ## 2026-10-01 — CLEANUP COMMIT AUDIT TRAIL
 
 - Dedicated firmware repository cleanup was executed with deletion commits after the repository-boundary mistake was identified.
@@ -82,10 +91,10 @@ Never promote a hypothesis or Gemini proposal to confirmed firmware behavior wit
 - Critical wiring correction: GPIO5 and GPIO6 must never be swapped.
 
 ## 3. CURRENT FIRMWARE VERSION
-- Functional revision: V2.3.
+- Functional revision: V2.5.
 - Firmware repository: TenzoNkz/JEXFYZ-Firmware (production repo is binary-only).
 - Continuity source is kept under the App repository firmware/ directory.
-- Current V2.3 source must still be explicitly compiled in ArduinoDroid/Core 3.3.7 and physically validated before being called a hardware-validated release.
+- Current V2.5 source is firmware/JEXFYZ-V2.5.ino and still must be explicitly compiled in ArduinoDroid/Core 3.3.7 and physically validated before being called a hardware-validated release.
 - Source version alone never implies a published or Firebase-promoted BIN.
 
 ## 4. BLE P1 — FROZEN CONTRACT

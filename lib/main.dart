@@ -1086,6 +1086,12 @@ bool isVoltageCommand(String value) {
   return v == '5V' || v == '9V' || v == '12V';
 }
 
+// AI-METHOD: isTransientOtaResultEvent — Accept only fresh OTA success/failure envelopes for Home NOTIFY.
+bool isTransientOtaResultEvent(String value) {
+  final upper = value.trim().toUpperCase();
+  return upper.startsWith('OTA_SUCCESS|') || upper.startsWith('OTA_FAILED|');
+}
+
 // AI-METHOD: parseFirmwareVersion — Parse supported V<major>.<minor> labels only.
 List<int>? parseFirmwareVersion(String version) {
   final match = RegExp(r'^V(\d+)(?:\.(\d+))?$')
@@ -1365,6 +1371,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   int battery12Draft = 35;
   String incomingBuffer = '';
   String notice = '';
+  String pendingOtaNotice = '';
 
   String voltage = '--';
   String hotsideTemp = '--';
@@ -1392,7 +1399,6 @@ class _DashboardScreenState extends State<DashboardScreen>
   int otaProgress = 0;
   int otaErrorCode = 0;
   String otaError = 'NONE';
-  String lastOtaResult = 'NONE';
   int stateSequence = 0;
 
   int tabIndex = 0;
@@ -1995,6 +2001,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     fullSyncReceived = false;
     dashboardReady = false;
     _pendingTelemetry.clear();
+    pendingOtaNotice = '';
     batteryTimer?.cancel();
     _startDisconnectRediscovery();
     for (final waiters in _ackWaiters.values) {
@@ -2160,6 +2167,13 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     final readySnapshot = Map<String, String>.from(_pendingTelemetry);
     _pendingTelemetry.clear();
+    final syncedOtaResult = readySnapshot['LAST_OTA_RESULT'] ?? '';
+    final syncedOtaNotice = pendingOtaNotice.isNotEmpty
+        ? pendingOtaNotice
+        : (isTransientOtaResultEvent(syncedOtaResult)
+            ? _friendlyOtaResult(syncedOtaResult)
+            : '');
+    pendingOtaNotice = '';
 
     setState(() {
       for (final entry in readySnapshot.entries) {
@@ -2169,7 +2183,9 @@ class _DashboardScreenState extends State<DashboardScreen>
       connected = true;
       syncing = false;
       dashboardReady = true;
-      notice = JexText.of('systemReady', appLanguageNotifier.value);
+      notice = syncedOtaNotice.isNotEmpty
+          ? syncedOtaNotice
+          : JexText.of('systemReady', appLanguageNotifier.value);
     });
     _publishFloatingTelemetry();
     if (appNotifyBluetoothNotifier.value) {
@@ -2518,6 +2534,10 @@ class _DashboardScreenState extends State<DashboardScreen>
       if (session != null) {
         _bleSessionReady = session.trim().toUpperCase() == 'READY';
       }
+      final otaResult = values['LAST_OTA_RESULT'];
+      if (otaResult != null && isTransientOtaResultEvent(otaResult)) {
+        pendingOtaNotice = _friendlyOtaResult(otaResult);
+      }
       _pendingTelemetry.addAll(values);
       return;
     }
@@ -2638,7 +2658,10 @@ class _DashboardScreenState extends State<DashboardScreen>
         otaError = value;
         break;
       case 'LAST_OTA_RESULT':
-        lastOtaResult = value;
+        // LAST_OTA_RESULT is event-only. Baseline/history values never replace Home NOTIFY.
+        if (isTransientOtaResultEvent(value)) {
+          notice = _friendlyOtaResult(value);
+        }
         break;
       case 'RESET_REASON':
         resetReason = value;
@@ -3263,7 +3286,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     return JexText.of(key, appLanguageNotifier.value);
   }
 
-  // AI-METHOD: _friendlyOtaResult — Translate persisted OTA results into Home NOTIFY text.
+  // AI-METHOD: _friendlyOtaResult — Translate one-shot OTA result events into Home NOTIFY text.
   String _friendlyOtaMode(String mode) {
     switch (mode.trim().toUpperCase()) {
       case 'LOCAL':
@@ -3687,10 +3710,6 @@ class _DashboardScreenState extends State<DashboardScreen>
       return custom;
     }
 
-    final otaNotice = _friendlyOtaResult(lastOtaResult);
-    if (otaNotice.isNotEmpty && lastOtaResult.toUpperCase() != 'IN_PROGRESS') {
-      return otaNotice;
-    }
 
     if (custom.isNotEmpty) return custom;
 
@@ -3775,13 +3794,10 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (_bleConnecting) return JexText.of('notifyBluetooth', appLanguageNotifier.value);
     if (syncing && !dashboardReady) return JexText.of('notifySync', appLanguageNotifier.value);
 
-    final otaResultUpper = lastOtaResult.trim().toUpperCase();
     final hasError = custom.contains('FAILED') ||
         custom.contains('ERROR') ||
         custom.contains('NOT FOUND') ||
-        custom.contains('SERVICE DISCOVERY') ||
-        otaResultUpper.contains('FAILED') ||
-        otaResultUpper.contains('ERROR');
+        custom.contains('SERVICE DISCOVERY');
     if (hasError) return JexText.of('notifyError', appLanguageNotifier.value);
 
     // WAITING_* is a startup/sensor-validation state and must not be shown as
@@ -3816,14 +3832,11 @@ class _DashboardScreenState extends State<DashboardScreen>
     final noticeChipFill = headerDark ? const Color(0x12FFFFFF) : const Color(0x12000000);
     final offlineStatusColor = headerDark ? Colors.white38 : const Color(0xFF6F747D);
     final custom = notice.trim().toUpperCase();
-    final otaResultUpper = lastOtaResult.trim().toUpperCase();
     final hasError = custom.contains('FAILED') ||
         custom.contains('ERROR') ||
         custom.contains('NOT FOUND') ||
         custom.contains('DISCONNECTED') ||
-        custom.contains('SERVICE DISCOVERY') ||
-        otaResultUpper.contains('FAILED') ||
-        otaResultUpper.contains('ERROR');
+        custom.contains('SERVICE DISCOVERY');
     final warning = safetyReason != 'NONE' &&
         safetyReason != 'WAITING_FOR_NTC' &&
         safetyReason != 'WAITING_FOR_SENSOR_VALIDATION';

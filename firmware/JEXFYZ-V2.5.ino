@@ -29,7 +29,7 @@ enum class LedMode : uint8_t;
 enum class VoltageRequestSource : uint8_t;
 enum class AdaptiveProfile : uint8_t;
 
-static constexpr char FW_VERSION[] = "V2.4";
+static constexpr char FW_VERSION[] = "V2.5";
 
 // ============================================================================
 // ========================== HEAP DIAGNOSTIC BUILD ===========================
@@ -342,6 +342,7 @@ OtaState otaState = OtaState::BOOT_AP;
 uint32_t otaRestartAt = 0;
 uint32_t otaFailureIndicatorUntil = 0;
 String otaResult = "NONE";
+bool otaResultPending = false;
 
 String cloudSsid;
 String cloudPassword;
@@ -432,6 +433,7 @@ static void processPendingOnlineOtaStart();
 static void setOtaDiagnosticStage(const String& stage);
 static void setOtaDiagnosticProgress(uint8_t progress);
 static void setOtaDiagnosticError(int errorCode, const String& error);
+static void setOtaResult(const String& result, bool notifyEvent);
 static String otaFailureResult(const String& mode, const String& stage, int errorCode, const String& error, uint8_t progress);
 static String otaSuccessResult(const String& mode, const String& stage, const String& version);
 static void failLocalOta(const String& stage, int errorCode, const String& error);
@@ -631,7 +633,21 @@ static void loadSettings() {
   color9V = prefs.getUInt("color9V", 0x00FF00);
   color12V = prefs.getUInt("color12V", 0x0000FF);
 
-  otaResult = prefs.getString("lastOta", "NONE");
+  // Purge V2.4 persistent OTA history. V2.5 exposes OTA results as events only.
+  prefs.remove("lastOta");
+
+  // Bridge only the intentional successful-OTA reboot. The key is consumed and
+  // deleted immediately on boot; it is not notification history.
+  String bootOtaResult = prefs.getString("otaBootResult", "NONE");
+  prefs.remove("otaBootResult");
+  otaResult = "NONE";
+  otaResultPending = false;
+  String bootOtaUpper = bootOtaResult;
+  bootOtaUpper.toUpperCase();
+  if (bootOtaUpper.startsWith("OTA_SUCCESS|")) {
+    otaResult = bootOtaResult;
+    otaResultPending = true;
+  }
 
   const uint8_t storedAdaptiveProfile =
       prefs.getUChar("adaptiveProfile",
@@ -671,9 +687,9 @@ static void processSettingsPersistence() {
   }
 }
 
-static void saveOtaResult(const String& result) {
+static void setOtaResult(const String& result, bool notifyEvent) {
   otaResult = result;
-  if (prefsReady) prefs.putString("lastOta", otaResult);
+  otaResultPending = notifyEvent;
 }
 
 static uint8_t fanDutyFromPercent(uint8_t percent) {
@@ -1915,7 +1931,12 @@ static void sendFullSync() {
   sendDelta("OTA_PROGRESS", String(otaDiagnosticProgress));
   sendDelta("OTA_ERROR_CODE", String(otaDiagnosticErrorCode));
   sendDelta("OTA_ERROR", otaDiagnosticError);
-  sendDelta("LAST_OTA_RESULT", otaResult);
+
+  // Consume each OTA result once. Later SYNC calls report NONE.
+  const String otaEvent = otaResultPending ? otaResult : "NONE";
+  otaResultPending = false;
+  otaResult = "NONE";
+  sendDelta("LAST_OTA_RESULT", otaEvent);
   sendDelta("RESET_REASON", resetReasonText());
   sendDelta("TEMP_HOT_LIMIT", String(hotLimit));
   sendDelta("BATT_5", String(battery5Limit));
@@ -2365,8 +2386,9 @@ static void failOnlineOta(
 
   setOtaDiagnosticStage(stage);
   setOtaDiagnosticError(errorCode, error);
-  saveOtaResult(
-      otaFailureResult("ONLINE", stage, errorCode, error, otaDiagnosticProgress));
+  setOtaResult(
+      otaFailureResult("ONLINE", stage, errorCode, error, otaDiagnosticProgress),
+      true);
 
   if (onlineHttpActive) {
     onlineHttpClient.end();
@@ -2637,11 +2659,12 @@ static bool finalizeOnlineOtaFlash() {
   setOtaDiagnosticStage("ONLINE_FLASH_SUCCESS");
   setOtaDiagnosticProgress(100);
   setOtaDiagnosticError(0, "NONE");
-  saveOtaResult(
+  setOtaResult(
       otaSuccessResult(
           "ONLINE",
           "ONLINE_FLASH_SUCCESS",
-          cloudVersion.isEmpty() ? "UNKNOWN" : cloudVersion));
+          cloudVersion.isEmpty() ? "UNKNOWN" : cloudVersion),
+      true);
 
   clearCloudCredentials();
 
@@ -2657,6 +2680,9 @@ static void startOnlineOta() {
   if (cloudSsid.isEmpty() || cloudPassword.isEmpty() || !validGitHubFirmwareUrl(cloudUrl)) return;
 
   otaActive = true;
+  // A new Online OTA supersedes any undelivered previous OTA result.
+  otaResultPending = false;
+  otaResult = "NONE";
   // OTA owns LED output from this boundary onward; cancel any normal touch
   // confirmation animation so it cannot reappear during OTA recovery.
   touchAdaptiveOffIndicatorActive = false;
@@ -2676,9 +2702,10 @@ static void startOnlineOta() {
   if (cloudVersion.equalsIgnoreCase(FW_VERSION)) {
     setOtaDiagnosticStage("ONLINE_UP_TO_DATE");
     setOtaDiagnosticProgress(100);
-    saveOtaResult(
+    setOtaResult(
         String("OTA_UP_TO_DATE|MODE=ONLINE|STAGE=ONLINE_UP_TO_DATE|VERSION=") +
-        FW_VERSION + "|PROGRESS=100");
+            FW_VERSION + "|PROGRESS=100",
+        false);
     sendDelta("LAST_OTA_RESULT", otaResult);
     setOtaState(OtaState::IDLE);
     otaActive = false;
@@ -2697,7 +2724,9 @@ static void startOnlineOta() {
   onlineHttpActive = false;
   onlineUpdateStarted = false;
 
-  saveOtaResult("IN_PROGRESS|MODE=ONLINE|STAGE=ONLINE_WIFI_CONNECT|PROGRESS=0");
+  setOtaResult(
+      "IN_PROGRESS|MODE=ONLINE|STAGE=ONLINE_WIFI_CONNECT|PROGRESS=0",
+      false);
   applyOtaSafeOutputs();
   // Online OTA must begin with the LED completely OFF while Wi-Fi connects.
   stopUserLedOutput();
@@ -2864,8 +2893,9 @@ static void failLocalOta(
   abortLocalOtaTransaction();
   setOtaDiagnosticStage(stage);
   setOtaDiagnosticError(errorCode, error);
-  saveOtaResult(
-      otaFailureResult("LOCAL", stage, errorCode, error, otaDiagnosticProgress));
+  setOtaResult(
+      otaFailureResult("LOCAL", stage, errorCode, error, otaDiagnosticProgress),
+      true);
   setOtaState(OtaState::FAILED);
   localOtaResultIndicatorActive = false;
   localOtaResultIndicatorLastPhase = 0xFFFFFFFFUL;
@@ -2890,6 +2920,8 @@ static void localOtaUploadHandler() {
   if (upload.status == UPLOAD_FILE_START) {
     otaRestartAt = 0;
     otaActive = true;
+    otaResultPending = false;
+    otaResult = "NONE";
     setOtaState(OtaState::LOCAL_UPLOAD);
     setOtaDiagnosticStage("LOCAL_FILE_CHECK");
     setOtaDiagnosticProgress(0);
@@ -2950,7 +2982,9 @@ static void localOtaUploadHandler() {
 
     localOtaStarted = true;
     setOtaDiagnosticStage("LOCAL_RECEIVE");
-    saveOtaResult("IN_PROGRESS|MODE=LOCAL|STAGE=LOCAL_RECEIVE|PROGRESS=0");
+    setOtaResult(
+        "IN_PROGRESS|MODE=LOCAL|STAGE=LOCAL_RECEIVE|PROGRESS=0",
+        false);
     return;
   }
 
@@ -3028,8 +3062,9 @@ static void localOtaUploadHandler() {
 
     setOtaDiagnosticStage("LOCAL_BOOT_PARTITION");
     setOtaDiagnosticError(0, "NONE");
-    saveOtaResult(
-        otaSuccessResult("LOCAL", "LOCAL_BOOT_PARTITION", FW_VERSION));
+    setOtaResult(
+        otaSuccessResult("LOCAL", "LOCAL_BOOT_PARTITION", FW_VERSION),
+        true);
     setOtaState(OtaState::SUCCESS);
     otaActive = true;
     otaRestartAt = 0;
@@ -3952,6 +3987,13 @@ static bool serviceOtaPriority() {
   if (otaState == OtaState::SUCCESS &&
       otaRestartAt != 0 &&
       millis() >= otaRestartAt) {
+    // Write the one-boot success handoff only at the actual restart boundary.
+    // Power removal before this boundary leaves no persistent OTA result.
+    String resultUpper = otaResult;
+    resultUpper.toUpperCase();
+    if (resultUpper.startsWith("OTA_SUCCESS|") && prefsReady) {
+      prefs.putString("otaBootResult", otaResult);
+    }
     ESP.restart();
     return true;
   }

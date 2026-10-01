@@ -118,7 +118,15 @@ void main() {
     expect(floatingMetricStatus('S', telemetry, AppLanguage.indonesia), 'MATI');
   });
 
-  test('JE X FYZ voltage helper accepts only supported voltages', () {
+  test('OTA result notifications accept only one-shot success/failure events', () {
+    expect(isTransientOtaResultEvent('OTA_SUCCESS|MODE=ONLINE|STAGE=ONLINE_FLASH_SUCCESS|VERSION=V2.5|PROGRESS=100'), isTrue);
+    expect(isTransientOtaResultEvent('OTA_FAILED|MODE=LOCAL|STAGE=LOCAL_IMAGE_VERIFY|CODE=5|ERROR=UPDATE_FAILED|PROGRESS=100'), isTrue);
+    expect(isTransientOtaResultEvent('NONE'), isFalse);
+    expect(isTransientOtaResultEvent('IN_PROGRESS|MODE=ONLINE|STAGE=ONLINE_WIFI_CONNECT|PROGRESS=0'), isFalse);
+    expect(isTransientOtaResultEvent('OTA_UP_TO_DATE|MODE=ONLINE|STAGE=ONLINE_UP_TO_DATE|VERSION=V2.5|PROGRESS=100'), isFalse);
+  });
+
+  test('JE X FYZ voltage helper accepts only supported voltages', {
     expect(isVoltageCommand('5V'), isTrue);
     expect(isVoltageCommand('9v'), isTrue);
     expect(isVoltageCommand('12V'), isTrue);

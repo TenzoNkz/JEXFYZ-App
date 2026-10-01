@@ -1,3 +1,15 @@
+## 2026-10-02 — FULL EXECUTION / ONE-SHOT OTA NOTIFY LIFECYCLE
+
+- Home NOTIFY now follows the latest event message; OTA history is not a notification source.
+- Removed App-side lastOtaResult state/fallback. LAST_OTA_RESULT is accepted only for fresh OTA_SUCCESS|... or OTA_FAILED|... event envelopes.
+- NONE, IN_PROGRESS, and OTA_UP_TO_DATE do not overwrite Home NOTIFY.
+- OTA results received during BLE handshake are buffered as one event and shown once after the verified session is ready.
+- BLE disconnect clears the OTA-event buffer and replaces Home NOTIFY with the disconnected state; the App stores no OTA history for later replay.
+- Firmware V2.4 → V2.5 removes persistent lastOta history. The legacy key is purged on boot.
+- Successful OTA uses a one-boot otaBootResult handoff created only at the final restart boundary and consumed immediately on next boot; it is not notification history.
+- Failures remain RAM-only until the first full sync consumes the event; subsequent syncs send NONE.
+- No BLE UUID/token, OTA transport, Firebase metadata, GPIO mapping, safety logic, production BIN, or App build workflow was changed.
+- Static/source validation only; Core 3.3.7 compile, BIN generation, physical flash/OTA, and App Build remain pending.
 ## 2026-10-02 — POST-EXECUTION STATIC VALIDATION / LOCALIZATION PASS
 
 - Re-read the active localization/source files after the execution.
