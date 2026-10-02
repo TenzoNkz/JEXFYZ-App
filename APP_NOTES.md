@@ -1,3 +1,13 @@
+## 2026-10-02 — BUILD APP #47 SUCCESS / SUBMENU GEOMETRY ALIGNMENT
+
+- Build #47 run `36955917639` completed successfully from source commit `d7b0ae4a9869d3419000d204b4588ed64a5acc40`.
+- Passed toolchain verification, production signing preparation, security/architecture audit, dependency installation, Dart analysis, all Flutter tests, release APK compilation, APK signature verification, APK-only upload, and Dart symbols upload.
+- Release APK artifact: `JEXFYZ#47.apk`, artifact ID `11205393844`, size `54,245,456` bytes.
+- APK artifact SHA-256: `8d075bd13a47bffe29f7a791c1f4939a2551d778899ab7b1d99626ce09810f4c`.
+- Dart symbols artifact: `JE-X-FYZ-Dart-Symbols`, artifact ID `11205653434`, SHA-256 `5be9ba2ea4d83dcd179927cc0fc5c8b1e4d017d3546f09160af8436025e4c468`.
+- Exactly one APK artifact was produced; Dart symbols are the only additional release artifact.
+- Build validates the latest App source with shared 62px submenu row geometry, shared 54x32px toggles, matching 18px row radius/10px vertical padding, 8px VOLTAGE row spacing, and VOLTAGE toggle-only selection.
+- This build does not constitute Android OEM runtime or physical-device validation.
 ## 2026-10-02 — FULL EXECUTION / SUBMENU GEOMETRY ALIGNMENT
 
 - Unified submenu row geometry across VOLTAGE and switch-based CONTROL/ADAPTIVE/LED components.
