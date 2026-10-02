@@ -1,3 +1,20 @@
+## 2026-10-02 — CORRECTED REQUIREMENT / BATTERY ZONE IS BETWEEN TWO CONFIGURED LIMITS
+
+- Supersedes the previous wording that described 9V as a fixed 30°C-only band or generic transition state.
+- User clarified the intended model is the same basic three-zone system already used by the firmware: **5V is below/through the configured 5V ceiling, 9V is the entire interval between the two configured limits, and 12V starts at the configured 12V floor**.
+- User-configurable limits are constrained to:
+  - 5V limit: **20°C–30°C**.
+  - 12V limit: **30°C–40°C**.
+- The 9V zone is not a special temporary transition. It is the real middle operating zone.
+- The two configured boundaries must remain separated by at least **1°C of middle-zone temperature**, which means the 12V boundary must be at least 2°C above the 5V ceiling when using integer-degree boundaries.
+- Example A: 5V limit = 25°C and 12V limit = 37°C → 5V = up to 25°C, 9V = 26–36°C, 12V = 37°C and above.
+- Example B: 5V limit = 29°C and 12V limit = 31°C → 5V = 29°C, 9V = 30°C, 12V = 31°C.
+- Therefore there is never an overlapping '5V 30°C' and '12V 30°C' definition when the boundaries are configured correctly.
+- This zone definition is separate from the requested **1.0°C hysteresis**. Hysteresis must be applied around actual zone changes without redefining the three base zones or causing contradictory simultaneous assignments.
+- Current V2.6 `batteryZoneFor()` uses the existing threshold direction (`temperature < battery5Limit => 5V; temperature < battery12Limit => 9V; else 12V`), so its boundary semantics currently differ from the clarified user model where `battery5Limit` is the **maximum 5V temperature**. This is an implementation-review item for later execution.
+- Current V2.6 default limits are 25°C and 35°C; these remain historical/current source values until an execution changes defaults/constraints. The user's newly stated allowed ranges are the intended future configuration contract.
+- No source change was made in this discussion.
+
 ## 2026-10-02 — CORRECTION / BATTERY VOLTAGE ZONE INTERPRETATION
 
 - User clarified that the Battery voltage ranges are NOT a transition zone.
