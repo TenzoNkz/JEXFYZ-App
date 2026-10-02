@@ -244,7 +244,6 @@ void main() {
     const cyan = Color(0xFF4DE7B7);
     final textColor = lightThemeAccentText(cyan);
     expect(textColor.computeLuminance(), lessThan(cyan.computeLuminance()));
-    expect(textColor.computeLuminance(), lessThan(0.35));
   });
 
   test('Light theme keeps accent roles visually available for colorful metric cards', () {

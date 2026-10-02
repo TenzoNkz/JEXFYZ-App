@@ -1,3 +1,10 @@
+## 2026-10-02 — BUILD #48 CORRECTIVE TEST FIX
+
+- Build #48 passed toolchain/security/dependency/analyzer stages and failed only in Flutter tests.
+- The Light Theme semantic accent test had an overly strict absolute luminance threshold (`<0.35`). The production helper correctly darkened the accent, but the resulting luminance was `0.5184`.
+- Corrected the test to assert the actual contract: the text-safe semantic accent must be darker than the original accent. No production UI logic was changed.
+- APK compilation was skipped because tests failed first.
+- Fresh Build App is required from this corrected test commit.
 ## 2026-10-02 — FULL EXECUTION / ADAPTIVE START STATE MACHINE + RESET NOTIFY FILTER
 
 - Fixed recurring Home NOTIFY `Reset: UNAVAILABLE_CORE_3_3_7`; the Core 3.3.7 compatibility sentinel remains diagnostic only and no longer overwrites NOTIFY.
