@@ -1,3 +1,11 @@
+## 2026-10-02 — PROJECT AUDIT / FIRMWARE V2.6 GROUP REVIEW STARTED
+
+- App Build #50 remains the latest verified App build and completed successfully before the current firmware re-audit; no App source change is part of this audit step.
+- User has granted full discretion for focused Gemini second-opinion queries when technical uncertainty warrants independent review.
+- Firmware audit is being handled separately from App implementation/build work using the numbered V2.6 inventory so App UI/protocol code is not changed merely because a firmware point is under review.
+- Current App state relevant to this audit remains the Build #50 validated source at commit bf01595253eb5a1912471c4aee57c4eed4421f0f; no firmware source/bin, BLE/P1 contract, OTA transport, Firebase metadata, GPIO mapping, safety thresholds, signing identity, or Build App workflow was changed by this review event.
+- No App source modification or App build was authorized by this audit entry.
+
 ## 2026-10-02 — BUILD APP #50 SUCCESS
 
 - Build #50 run `36996987220` completed successfully from source commit `bf01595253eb5a1912471c4aee57c4eed4421f0f`.
