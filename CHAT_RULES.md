@@ -1,3 +1,10 @@
+## 2026-10-03 — V2.7 AUDIT EVENT / GROUPS M–S
+
+- User continued the numbered firmware audit through groups M–S.
+- Decisions and implementation boundaries were recorded in FIRMWARE_NOTES.md and APP_NOTES.md.
+- #81 remains a recommended conservative 1.75 MB Local/Online OTA hard cap, pending explicit execution; the current 2 MB source limit remains unchanged until then.
+- No source change or App Build was performed during this discussion event.
+
 ## 2026-10-02 — V2.7 AUDIT / GROUPS H–L REVIEW EVENT
 
 - User continued the numbered firmware audit in @Thinking Diskusi! mode.
