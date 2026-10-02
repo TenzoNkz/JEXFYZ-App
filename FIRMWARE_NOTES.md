@@ -1,3 +1,58 @@
+## 2026-10-02 — V2.6 AUDIT / GROUP A IDENTITAS & HARDWARE #1–#5
+
+### Audit scope
+- User is re-auditing the current V2.6 firmware one numbered group at a time before deciding any source correction.
+- Points #1–#3 are accepted as correct for the current design.
+- No firmware source, BIN, Firebase metadata, or dedicated binary-repository content was changed by this review event.
+
+### #1 — Firmware identity
+- Status: KEEP / ACCEPTED.
+- Current identity remains V2.6 / P1 / JE X FYZ / ESP32-C3 / Arduino-ESP32 Core 3.3.7 requirement.
+
+### #2 — GPIO mapping
+- Status: KEEP / FROZEN.
+- GPIO5 = PELTIER.
+- GPIO6 = FAN.
+- GPIO0 = NTC, GPIO1 = Touch, GPIO3 = 12V selector, GPIO4 = 9V selector, GPIO7 = WS2812B.
+- The GPIO5/Peltier and GPIO6/Fan mapping must not be swapped to compensate for App/protocol issues.
+
+### #3 — Output hardware model
+- Status: KEEP / ACCEPTED.
+- 9V selector, 12V selector, Fan PWM, Peltier PWM, and 8-LED NeoPixel output remain the current hardware-control model.
+- 5V is represented by both voltage-selector outputs OFF.
+
+### #4 — Fan PWM
+- Current source configuration: 25 kHz, 8-bit, 50–100% range, 10% step, default 100%.
+- User decision: KEEP for now.
+- Gemini second opinion also assessed the software configuration as KEEP.
+- Engineering refinement to the Gemini response: the familiar 25 kHz PC/4-wire PWM fan range must not be treated as proof that this particular MOSFET-controlled 2-/3-wire fan implements the same standard; 25 kHz remains a reasonable high-frequency choice, not a universal compatibility claim.
+- 50% is the project's deliberate operating floor, not a universal rule that every BLDC fan stalls below 30–40%.
+- An external flyback diode should not be declared mandatory without confirming the actual fan electronics/load topology.
+- No source change is justified from this audit alone.
+
+### #5 — Peltier PWM
+- Current source configuration: 20 kHz, 8-bit, 0–255 duty, 5-second linear soft-start.
+- User decision: REVIEW / KEEP TEMPORARILY; no source change yet.
+- 8-bit / 0–255 is accepted as sufficient resolution for this thermal-control application.
+- 5-second linear soft-start is accepted provisionally because it provides a controlled electrical/thermal transition and avoids an abrupt load step; documentation must not overstate this as a capacitor-like Peltier inrush mechanism without hardware evidence.
+- The claim that Peltier PWM must stay above 10 kHz or that low-frequency PWM will destroy a TEC in weeks is not accepted as an authoritative project requirement. Such a claim depends on actual thermal/electrical conditions and is not sufficient reason to set a hard firmware threshold.
+- The most important unresolved engineering question is the MOSFET/gate-drive behavior at 20 kHz and the interaction between Peltier PWM and the existing 5V/9V/12V voltage-selection architecture.
+- Do not label 20 kHz as proven optimal until the actual Peltier current, MOSFET part, gate-drive conditions, and relevant thermal/electrical behavior are known or tested.
+- Recommended later hardware validation: observe MOSFET temperature and supply behavior during sustained intermediate-duty operation; this is a physical test requirement, not yet a verified result.
+
+### Gemini second-opinion record
+- Gemini classified Fan PWM #4 as KEEP and Peltier PWM #5 as software KEEP / hardware REVIEW.
+- Gemini raised MOSFET switching-loss concerns for high-current Peltier PWM and noted that voltage selection may be a more efficient primary power-control mechanism than relying on large PWM reductions at a fixed high voltage.
+- Gemini also proposed a fan flyback diode and a >10 kHz lower bound for Peltier PWM; those are recorded as third-party suggestions only and are not frozen requirements.
+- The assistant's audit rejects any unverified claim as a firmware rule until it is supported by the actual hardware design or testing.
+
+### Current audit status
+- Confirmed: #1 KEEP, #2 KEEP, #3 KEEP, #4 KEEP.
+- Pending engineering review: #5.
+- V2.6 source remains the active continuity source at firmware/JEXFYZ-V2.6.ino.
+- ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile of V2.6 remains pending unless separately recorded elsewhere.
+- Physical V2.6 validation remains pending; this audit does not constitute a hardware test.
+
 ## 2026-10-02 — CORRECTIVE STATIC PASS AFTER ONE-SHOT OTA COMMIT
 
 - Removed the final explicit LAST_OTA_RESULT send from ONLINE_UP_TO_DATE; OTA result events remain limited to fresh success/failure envelopes.
