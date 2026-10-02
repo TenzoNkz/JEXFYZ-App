@@ -1,5 +1,22 @@
 ## 2026-10-02 — V2.7 AUDIT / GROUPS H–L USER DECISIONS
 
+- #39: remove the 50 ms Touch debounce; tap window = 500 ms; single tap = voltage cycle; double tap = RGB ON/OFF; 3+ taps within the decision window = cancel; 5 s hold = Fan+Peltier toggle subject to safety.
+- #40: KEEP.
+- #41: corrected — double tap controls RGB ON/OFF, not LED mode.
+- #42: KEEP.
+- #43–#51: KEEP.
+- #52: KEEP fixed voltage-indicator colors.
+- #53: remove per-voltage configurable colors.
+- #54–#57: KEEP.
+- #58–#65: KEEP.
+- #66: anti-spam guard applies only to VOLTAGE; do not add a generic control throttle. Avoid stacking duplicate voltage guards.
+- #67–#69: KEEP.
+- #70: not needed after #53; obsolete per-voltage color command/persistence/telemetry paths are cleanup items. Fixed indicator colors remain.
+- #71–#74: KEEP.
+- Current V2.7 source is unchanged by this discussion event.
+
+## 2026-10-02 — V2.7 AUDIT / GROUPS H–L USER DECISIONS
+
 ### H. TOUCH SENSOR — #39–#42
 - #39 is a functional firmware change to be implemented later:
   - remove the explicit 50 ms OneButton debounce setting;
