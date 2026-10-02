@@ -1,3 +1,17 @@
+## 2026-10-03 — V2.7 AUDIT / GROUPS M–S USER DECISIONS
+
+- #75: configurable per-voltage LED colors are removed from the intended contract.
+- #76–#77: preferences save debounce and non-persistent runtime cooling state remain accepted.
+- #78–#80: Local OTA boot/AP and OTA radio/output safety behavior remain accepted.
+- #81: proposed firmware hard cap is **1.75 MB (1792 KiB)** as a conservative target; firmware must still validate against actual free OTA sketch space. No App-side assumption may override the firmware's authoritative capacity check.
+- #82–#84: Local OTA validation/success/failure behavior remains accepted.
+- #85–#94: Online OTA architecture and current simple version/link update policy remain accepted; no SHA or downgrade-blocking requirement is added.
+- #95: current OTA LED state machine accepted.
+- #96–#98: OTA diagnostics and one-shot result lifecycle accepted.
+- #99: Reset-reason sentinel behavior accepted.
+- #100: safety/state reason contract accepted.
+- No App source/build change was made in this audit discussion.
+
 ## 2026-10-02 — V2.7 AUDIT / GROUPS H–L USER DECISIONS
 
 - Touch contract: single tap changes voltage; double tap toggles RGB; 3+ taps within the 500 ms decision window cancel; 5 s hold toggles Fan+Peltier subject to firmware safety.
