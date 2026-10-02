@@ -240,6 +240,16 @@ void main() {
     expect(isUserVisibleResetReason('BROWNOUT'), isTrue);
   });
 
+  test('Light Theme Home metric value role uses dark semantic accent', () {
+    const semantic = Color(0xFF4DE7B7);
+    final safe = lightThemeAccentText(semantic);
+    expect(safe, isNot(semantic));
+    expect(safe.computeLuminance(), lessThan(semantic.computeLuminance()));
+    expect(safe.red, greaterThanOrEqualTo(0));
+    expect(safe.green, greaterThanOrEqualTo(0));
+    expect(safe.blue, greaterThanOrEqualTo(0));
+  });
+
   test('Light Theme semantic accent text reduces luminance for bright surfaces', () {
     const cyan = Color(0xFF4DE7B7);
     final textColor = lightThemeAccentText(cyan);
