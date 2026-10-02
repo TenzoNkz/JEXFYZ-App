@@ -3492,17 +3492,20 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
     final homeDark = appThemeNotifier.value != AppThemePreset.light;
     // AI-THEME / DASHBOARD-LIGHT-CONTRAST-CONTRACT
-    // Light mode is neutral-first: surfaces/borders remain neutral and accent colors
-    // identify active telemetry instead of becoming large pastel blocks.
+    // Light mode stays colorful while separating surface, outline, and glyph contrast.
+    // The accent identifies the metric without becoming a harsh solid block.
     final mutedText = homeDark ? const Color(0xFFD4D7E0) : const Color(0xFF25282E);
-    final indicatorColor =
-        !homeDark && (!connected || !active) ? const Color(0xFF7A808A) : color;
+    final lightAccentOpacity = active ? .11 : .075;
+    final lightOutlineOpacity = active ? .46 : .28;
+    final indicatorColor = homeDark
+        ? color
+        : color.withValues(alpha: active ? 1.0 : .78);
     final indicatorFill = homeDark
         ? color.withValues(alpha: .12)
-        : const Color(0xFFE5E7EB);
+        : color.withValues(alpha: lightAccentOpacity);
     final indicatorBorder = homeDark
         ? color.withValues(alpha: .52)
-        : const Color(0xFFD5D9E0);
+        : color.withValues(alpha: lightOutlineOpacity);
 
     return Padding(
       padding: EdgeInsets.zero,
@@ -3526,8 +3529,17 @@ class _DashboardScreenState extends State<DashboardScreen>
                       borderRadius: BorderRadius.circular(9),
                       border: Border.all(
                         color: indicatorBorder,
-                        width: 1.1,
+                        width: homeDark ? 1.1 : 1.25,
                       ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: homeDark
+                              ? Colors.black.withValues(alpha: .10)
+                              : color.withValues(alpha: active ? .12 : .07),
+                          blurRadius: homeDark ? 5 : (active ? 8 : 6),
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
                     child: animatedKind == null
                         ? JexAnimatedIcon.glyph(

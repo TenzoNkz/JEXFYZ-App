@@ -221,6 +221,13 @@ void main() {
     expect(theme.scaffoldBackgroundColor, const Color(0xFF0F1013));
   });
 
+  test('Light theme keeps accent roles visually available for colorful metric cards', () {
+    final light = buildJexTheme(AppThemePreset.light);
+    expect(light.colorScheme.primary.computeLuminance(), greaterThan(0.20));
+    expect(light.colorScheme.onSurface.computeLuminance(), lessThan(0.05));
+    expect(light.colorScheme.outlineVariant, isNot(light.colorScheme.surface));
+  });
+
   test('Light theme keeps neutral surfaces and reserved accent roles', () {
     final light = buildJexTheme(AppThemePreset.light);
     expect(light.colorScheme.surface, isNot(light.colorScheme.primary));

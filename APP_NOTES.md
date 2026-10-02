@@ -1,3 +1,13 @@
+## 2026-10-02 — FULL EXECUTION / COLORFUL LIGHT THEME RESTORE
+
+- Corrected the previous Light Theme over-neutralization identified from physical screenshot review.
+- Home metric cards remain colorful in Light Theme using soft accent surface, clear accent outline, solid accent icon, and subtle accent shadow.
+- Inactive/disconnected metrics keep their semantic accent identity with reduced intensity instead of becoming gray/pale.
+- Metric labels remain dark for readability; accent color is reserved for visual identity/state.
+- VOLTAGE selection remains toggle-only: the row itself does not change to black/white when active.
+- Added Light Theme accent-role regression coverage.
+- No firmware, BLE/P1, OTA, Firebase, GPIO, safety, telemetry protocol, Floating transport, signing, or build-workflow logic was changed.
+- Build App is being run from this corrected source as requested.
 ## 2026-10-02 — BUILD APP #45 SUCCESS / LIGHT THEME + VOLTAGE TOGGLE
 
 - Build #45 run `36951986261` completed successfully from source commit `f67eab1117c6d651f71c9a30a43dc0b5f978760b`.
