@@ -1,4 +1,4 @@
-## 2026-10-02 — FINAL CLARIFICATION / BATTERY ADAPTIVE STEP LOGIC
+## 2026-10-02 — V2.7 FIRMWARE EXECUTION RECORDED\n\n- Firmware was functionally advanced from V2.6 to V2.7 in the App continuity repository after the user's explicit execution command.\n- App source was not modified by this firmware execution.\n- App/BLE/P1 logical command tokens and UUID contract remain unchanged; the firmware-side Adaptive lock/safety behavior was updated without introducing an App protocol change.\n- App Build was not triggered. The latest verified App Build remains #50 from the pre-execution App source state.\n- Firmware V2.7 requires its own ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile, BIN verification, and physical validation before it can be considered an OTA candidate/release.\n\n## 2026-10-02 — FINAL CLARIFICATION / BATTERY ADAPTIVE STEP LOGIC
 
 - Battery Adaptive uses the configured 5V and 12V temperature limits as movement thresholds, not as a direct 5V/9V/12V lookup table.
 - Below the 5V limit: step voltage downward by one level when possible.
