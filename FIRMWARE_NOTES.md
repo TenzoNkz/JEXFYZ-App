@@ -1,3 +1,24 @@
+## 2026-10-02 — FINAL CLARIFICATION / BATTERY ADAPTIVE STEP LOGIC
+
+- User clarified the intended Battery Adaptive behavior: the configured 5V and 12V limits are **trigger thresholds for voltage movement**, not direct voltage-selection zones.
+- If Battery temperature is **below the configured 5V limit**, Adaptive Battery should command voltage **down** by one level when a lower level exists (12V→9V, 9V→5V).
+- If Battery temperature is **above the configured 12V limit**, Adaptive Battery should command voltage **up** by one level when a higher level exists (5V→9V, 9V→12V).
+- If Battery temperature is **between the two configured limits**, Battery Adaptive should **hold the current voltage**; it should not force a direct target and should not treat 9V as a temporary transition.
+- Example: 5V limit = 25°C and 12V limit = 37°C:
+  - below 25°C → step voltage down;
+  - 25°C through 37°C → hold current voltage;
+  - above 37°C → step voltage up.
+- Example: 5V limit = 29°C and 12V limit = 31°C:
+  - below 29°C → step down;
+  - 29°C through 31°C → hold current voltage, so 30°C can remain at 9V;
+  - above 31°C → step up.
+- Exact equality is therefore not itself a movement trigger under the user's wording ('below' and 'above'); equality holds the current voltage.
+- The 9V operating level is the middle voltage reached by stepwise movement between 5V and 12V. It is not a separate temporary transition state.
+- Battery hysteresis remains a separate requested setting of 1.0°C. During implementation, hysteresis must be designed around the two movement thresholds without changing the user's basic rule: below lower limit = down, above upper limit = up, between = hold.
+- This clarified step logic supersedes previous notes that described Battery temperature as directly selecting 5V/9V/12V from a fixed zone function.
+- Current V2.6 `batteryZoneFor()` / `scheduleAdaptiveBatteryTarget()` architecture does not match this clarified requirement exactly and must be redesigned during execution.
+- No firmware source was changed in this discussion.
+
 ## 2026-10-02 — CORRECTED REQUIREMENT / BATTERY ZONE IS BETWEEN TWO CONFIGURED LIMITS
 
 - Supersedes the previous wording that described 9V as a fixed 30°C-only band or generic transition state.
