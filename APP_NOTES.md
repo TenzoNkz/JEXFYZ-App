@@ -1,3 +1,13 @@
+## 2026-10-02 — FULL EXECUTION / ADAPTIVE START STATE MACHINE + RESET NOTIFY FILTER
+
+- Fixed recurring Home NOTIFY `Reset: UNAVAILABLE_CORE_3_3_7`; the Core 3.3.7 compatibility sentinel remains diagnostic only and no longer overwrites NOTIFY.
+- App Adaptive transition now treats 5V as the safe handoff milestone and completes only after authoritative `ADAPTIVE=ON` telemetry.
+- Firmware V2.5 → V2.6 because Adaptive startup sequencing is functional firmware behavior.
+- Adaptive ON is now two-stage: remain Adaptive-OFF, force/retarget voltage to 5V, wait for the voltage transition to complete, then activate the selected HOTSIDE/HOTSIDE_BATTERY profile.
+- During the startup handoff, conflicting manual voltage/fan/Peltier/fan-speed/profile commands are rejected as `ADAPTIVE_STARTING`.
+- Existing BLE UUID/P1 and command tokens remain unchanged; the App already accepts `STARTING` and waits for requested ADAPTIVE telemetry confirmation.
+- No OTA transport, Firebase metadata, GPIO mapping, safety thresholds, production BIN, or dedicated firmware repository files were changed.
+- V2.6 source has not been compiled in ArduinoDroid/Core 3.3.7 and has not been physically validated.
 ## 2026-10-02 — FULL EXECUTION / LIGHT THEME CONTRAST + VISIBLE SHADOW
 
 - Home metric inactive icons now retain full semantic accent color; inactive state is communicated by stopped animation, not a faded icon.

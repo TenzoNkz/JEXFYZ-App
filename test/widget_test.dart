@@ -233,6 +233,13 @@ void main() {
     expect(theme.scaffoldBackgroundColor, const Color(0xFF0F1013));
   });
 
+  test('Reset reason sentinel is not a user-facing event', () {
+    expect(isUserVisibleResetReason('UNAVAILABLE_CORE_3_3_7'), isFalse);
+    expect(isUserVisibleResetReason('POWERON'), isFalse);
+    expect(isUserVisibleResetReason('UNKNOWN'), isFalse);
+    expect(isUserVisibleResetReason('BROWNOUT'), isTrue);
+  });
+
   test('Light Theme semantic accent text reduces luminance for bright surfaces', () {
     const cyan = Color(0xFF4DE7B7);
     final textColor = lightThemeAccentText(cyan);

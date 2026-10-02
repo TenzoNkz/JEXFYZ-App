@@ -1091,6 +1091,14 @@ bool isVoltageCommand(String value) {
   return v == '5V' || v == '9V' || v == '12V';
 }
 
+bool isUserVisibleResetReason(String value) {
+  final normalized = value.trim().toUpperCase();
+  return normalized.isNotEmpty &&
+      normalized != 'POWERON' &&
+      normalized != 'UNKNOWN' &&
+      normalized != 'UNAVAILABLE_CORE_3_3_7';
+}
+
 // AI-THEME: lightThemeAccentText — Generate a darker semantic accent for text on bright surfaces.
 Color lightThemeAccentText(Color color) {
   final hsl = HSLColor.fromColor(color);
@@ -2212,7 +2220,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     _startBatteryTelemetry();
     unawaited(_setBackgroundService(true));
 
-    if (resetReason != 'POWERON' && resetReason != 'UNKNOWN') {
+    if (isUserVisibleResetReason(resetReason)) {
       _showSnackBar(
         'Reset: ${_friendlyReset(resetReason)}',
         color: Colors.orangeAccent,
@@ -2598,9 +2606,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         break;
       case 'VOLTAGE':
         voltage = value;
-        if (adaptiveTransitioning && value == '5V') {
-          adaptiveTransitioning = false;
-        }
+        // 5V is the safe handoff milestone; wait for ADAPTIVE=ON for completion.
         break;
       case 'FAN':
         fanOn = value == 'ON';
@@ -2620,11 +2626,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         break;
       case 'ADAPTIVE':
         adaptiveOn = value == 'ON';
-        if (!adaptiveOn) {
-          adaptiveTransitioning = false;
-        } else if (voltage != '5V') {
-          adaptiveTransitioning = true;
-        }
+        adaptiveTransitioning = false;
         break;
       case 'ADAPTIVE_CEILING':
         adaptiveCeiling = value;
@@ -3791,6 +3793,8 @@ class _DashboardScreenState extends State<DashboardScreen>
         return JexText.phrase('Fan locked while Peltier is ON.','Kipas terkunci saat Peltier HIDUP.');
       case 'ADAPTIVE_ACTIVE':
         return JexText.phrase('Manual cooling controls locked.','Kontrol pendinginan manual terkunci.');
+      case 'ADAPTIVE_STARTING':
+        return JexText.phrase('Adaptive Mode is starting.','Mode Adaptif sedang diaktifkan.');
       case 'MANUAL_12V_ONLY':
         return JexText.phrase('Manual 12V only.','Manual hanya 12V.');
       case 'VOLTAGE_GUARD_OR_BUSY':

@@ -29,7 +29,7 @@ enum class LedMode : uint8_t;
 enum class VoltageRequestSource : uint8_t;
 enum class AdaptiveProfile : uint8_t;
 
-static constexpr char FW_VERSION[] = "V2.5";
+static constexpr char FW_VERSION[] = "V2.6";
 
 // ============================================================================
 // ========================== HEAP DIAGNOSTIC BUILD ===========================
@@ -277,6 +277,8 @@ enum class AdaptiveProfile : uint8_t {
 };
 
 bool adaptiveOn = false;
+// AI-ADAPTIVE-START: Adaptive becomes ON only after the mandatory 5V handoff completes.
+bool adaptiveStartPending = false;
 Voltage adaptiveCeiling = Voltage::V12;
 AdaptiveProfile adaptiveProfile = AdaptiveProfile::HOTSIDE_BATTERY;
 
@@ -423,6 +425,7 @@ static void stopLocalOtaAp();
 static void startOnlineOta();
 static void processOnlineOta();
 static bool requestVoltage(Voltage target, VoltageRequestSource source, bool bypassGuard = false);
+static void activateAdaptiveAfterSafeFiveVolt();
 static void publishSafetyReason();
 static void evaluateAdaptiveBattery();
 static void serviceBleTx();
@@ -1270,7 +1273,13 @@ static bool voltageGuardAllows(bool bypassGuard) {
   return millis() - lastVoltageChangeMs >= VOLTAGE_GUARD_MS;
 }
 
-static bool manualVoltageRequestAllowed(VoltageRequestSource source) {  if (!adaptiveOn) return true;
+static bool manualVoltageRequestAllowed(VoltageRequestSource source) {
+  if (adaptiveStartPending) {
+    return source == VoltageRequestSource::ADAPTIVE ||
+           source == VoltageRequestSource::SAFETY;
+  }
+
+  if (!adaptiveOn) return true;
   return source == VoltageRequestSource::BATTERY ||
          source == VoltageRequestSource::HOTSTEP ||
          source == VoltageRequestSource::ADAPTIVE ||
@@ -1314,6 +1323,11 @@ static void completeVoltageTransition() {
   digitalWrite(PIN_12V, currentVoltage == Voltage::V12 ? OUTPUT_ON : OUTPUT_OFF);
 
   voltageTransition = false;
+
+  // Adaptive ON is committed only after the forced 5V transition completes.
+  if (adaptiveStartPending && currentVoltage == Voltage::V5) {
+    activateAdaptiveAfterSafeFiveVolt();
+  }
 
   if (adaptiveOn &&
       adaptiveResumePeltierAfterHotStep &&
@@ -1389,6 +1403,8 @@ static void sampleNtcIfDue() {
 
 static void forceSafeFiveVolt() {
   const bool previousAdaptive = adaptiveOn;
+  // Sensor safety invalidation cancels a pending Adaptive startup before activation.
+  adaptiveStartPending = false;
   const Voltage previousCeiling = adaptiveCeiling;
   const uint8_t previousPwm = fanPwm;
   const bool previousFan = fanOn;
@@ -3174,6 +3190,10 @@ static void stopLocalOtaAp() {
 
 // ======================== END OTA ENGINE — LOCKED ==========================
 static bool setFanState(bool desired, String& reason) {
+  if (adaptiveStartPending) {
+    reason = "ADAPTIVE_STARTING";
+    return false;
+  }
   if (adaptiveOn) {
     reason = "ADAPTIVE_ACTIVE";
     return false;
@@ -3208,6 +3228,10 @@ static bool setFanState(bool desired, String& reason) {
 }
 
 static bool setPeltierState(bool desired, String& reason) {
+  if (adaptiveStartPending) {
+    reason = "ADAPTIVE_STARTING";
+    return false;
+  }
   if (adaptiveOn) {
     reason = "ADAPTIVE_ACTIVE";
     return false;
@@ -3264,70 +3288,116 @@ static bool forceAdaptiveFiveVolt() {
       true);
 }
 
+static void activateAdaptiveAfterSafeFiveVolt() {
+  if (!adaptiveStartPending || currentVoltage != Voltage::V5) return;
+
+  if (!ntcValid) {
+    adaptiveStartPending = false;
+    adaptiveOn = false;
+    adaptiveCeiling = Voltage::V12;
+    sendDelta("ADAPTIVE", "OFF");
+    publishSafetyReason();
+    return;
+  }
+
+  adaptiveStartPending = false;
+  adaptiveOn = true;
+  adaptiveCeiling = Voltage::V12;
+  adaptiveHotStepPending = false;
+  peltierHotOffUntilMs = 0;
+  adaptiveResumePeltierAfterHotStep = false;
+  adaptiveUpPending = false;
+  adaptiveDownPending = false;
+  adaptiveDownDueMs = 0;
+  lastBatteryZone = -1;
+  fanPwm = 100;
+
+  applyCoolingOutputs();
+
+  ++stateSequence;
+  sendDelta("ADAPTIVE", "ON");
+  sendDelta("ADAPTIVE_CEILING", voltageToString(adaptiveCeiling));
+
+  // HOTSIDE_BATTERY starts evaluating only after Adaptive has actually become ON.
+  if (adaptiveProfile == AdaptiveProfile::HOTSIDE_BATTERY && batteryValid) {
+    evaluateAdaptiveBattery();
+  }
+}
+
 static void setAdaptiveState(bool desired, String& reason) {
-  const bool previousAdaptive = adaptiveOn;
-  const Voltage previousCeiling = adaptiveCeiling;
   if (desired) {
+    if (adaptiveOn) {
+      reason = "OK";
+      return;
+    }
+
+    if (adaptiveStartPending) {
+      reason = "STARTING";
+      return;
+    }
+
     if (!ntcValid) {
       adaptiveOn = false;
+      adaptiveStartPending = false;
       adaptiveCeiling = Voltage::V12;
       reason = "NTC_ERROR";
       return;
     }
 
-    adaptiveOn = true;
-    if (!previousAdaptive) {
-      adaptiveCeiling = Voltage::V12;
-      adaptiveHotStepPending = false;
-      peltierHotOffUntilMs = 0;
-      adaptiveResumePeltierAfterHotStep = false;
-      adaptiveUpPending = false;
-      adaptiveDownPending = false;
-      adaptiveDownDueMs = 0;
-      lastBatteryZone = -1;
-      fanPwm = 100;
+    // Stage 1: remain Adaptive-OFF while forcing the hardware to 5V.
+    adaptiveStartPending = true;
+    adaptiveCeiling = Voltage::V12;
+    adaptiveHotStepPending = false;
+    peltierHotOffUntilMs = 0;
+    adaptiveResumePeltierAfterHotStep = false;
+    adaptiveUpPending = false;
+    adaptiveDownPending = false;
+    adaptiveDownDueMs = 0;
+    lastBatteryZone = -1;
+    fanPwm = 100;
+
+    if (currentVoltage == Voltage::V5 && !voltageTransition) {
+      activateAdaptiveAfterSafeFiveVolt();
+      reason = adaptiveOn ? "OK" : "NTC_ERROR";
+      return;
     }
 
-    if (!forceAdaptiveFiveVolt()) {
-      adaptiveOn = previousAdaptive;
+    if (voltageTransition) {
+      // Any in-flight voltage transition is redirected to the required 5V endpoint.
+      pendingVoltage = Voltage::V5;
+      reason = "STARTING";
+      return;
+    }
+
+    if (!requestVoltage(Voltage::V5, VoltageRequestSource::ADAPTIVE, true)) {
+      adaptiveStartPending = false;
       reason = "VOLTAGE_FORCE_FAILED";
       return;
     }
 
-    applyCoolingOutputs();
-    reason = "OK";
+    reason = "STARTING";
+    return;
+  }
 
-    if (currentVoltage == Voltage::V5 && batteryValid) {
-      evaluateAdaptiveBattery();
-    }
+  // OFF cancels an in-flight Adaptive start and retains the safe-5V behavior.
+  adaptiveStartPending = false;
+  adaptiveOn = false;
+  adaptiveHotStepPending = false;
+  peltierHotOffUntilMs = 0;
+  adaptiveUpPending = false;
+  adaptiveDownPending = false;
+  adaptiveDownDueMs = 0;
+  adaptiveResumePeltierAfterHotStep = false;
+  adaptiveCeiling = Voltage::V12;
+  fanPwm = 100;
+
+  if (!forceAdaptiveFiveVolt()) {
+    reason = "VOLTAGE_FORCE_FAILED";
   } else {
-    adaptiveOn = false;
-    adaptiveHotStepPending = false;
-    peltierHotOffUntilMs = 0;
-    adaptiveUpPending = false;
-    adaptiveDownPending = false;
-    adaptiveDownDueMs = 0;
-    adaptiveResumePeltierAfterHotStep = false;
-    adaptiveCeiling = Voltage::V12;
-    fanPwm = 100;
-
-    if (!forceAdaptiveFiveVolt()) {
-
-      reason = "VOLTAGE_FORCE_FAILED";
-    } else {
-      reason = "OK";
-    }
-
-    applyCoolingOutputs();
+    reason = "OK";
   }
 
-  if (adaptiveOn != previousAdaptive) {
-    ++stateSequence;
-    sendDelta("ADAPTIVE", boolText(adaptiveOn));
-  }
-  if (adaptiveCeiling != previousCeiling) {
-    sendDelta("ADAPTIVE_CEILING", voltageToString(adaptiveCeiling));
-  }
+  applyCoolingOutputs();
 }
 
 static bool setRgbState(bool desired) {
@@ -3348,6 +3418,11 @@ static bool setRgbState(bool desired) {
 }
 
 static bool setFanSpeed(uint8_t value, String& reason) {
+  if (adaptiveStartPending) {
+    reason = "ADAPTIVE_STARTING";
+    return false;
+  }
+
   if (value < FAN_PWM_MIN || value > FAN_PWM_MAX || value % FAN_PWM_STEP != 0) {
     reason = "RANGE_50_100_STEP_10";
     return false;
@@ -3757,6 +3832,10 @@ static void handleCommand(const String& command) {
   }
 
   if (command.startsWith("ADAPTIVE_PROFILE:")) {
+    if (adaptiveStartPending) {
+      sendAck("ADAPTIVE_PROFILE", false, "ADAPTIVE_STARTING");
+      return;
+    }
     if (adaptiveOn) {
       sendAck("ADAPTIVE_PROFILE", false, "ADAPTIVE_ACTIVE");
       return;
@@ -3798,7 +3877,8 @@ static void handleCommand(const String& command) {
     setAdaptiveState(true, reason);
     sendDelta("ADAPTIVE", boolText(adaptiveOn));
     sendDelta("ADAPTIVE_CEILING", voltageToString(adaptiveCeiling));
-    sendAck("ADAPTIVE", adaptiveOn, reason);
+    const bool accepted = adaptiveOn || adaptiveStartPending;
+    sendAck("ADAPTIVE", accepted, reason);
     return;
   }
 

@@ -97,10 +97,10 @@ Never promote a hypothesis or Gemini proposal to confirmed firmware behavior wit
 - Critical wiring correction: GPIO5 and GPIO6 must never be swapped.
 
 ## 3. CURRENT FIRMWARE VERSION
-- Functional revision: V2.5.
+- Functional revision: V2.6.
 - Firmware repository: TenzoNkz/JEXFYZ-Firmware (production repo is binary-only).
 - Continuity source is kept under the App repository firmware/ directory.
-- Current V2.5 source is firmware/JEXFYZ-V2.5.ino and still must be explicitly compiled in ArduinoDroid/Core 3.3.7 and physically validated before being called a hardware-validated release.
+- Current V2.6 source is firmware/JEXFYZ-V2.6.ino and still must be explicitly compiled in ArduinoDroid/Core 3.3.7 and physically validated before being called a hardware-validated release.
 - Source version alone never implies a published or Firebase-promoted BIN.
 
 ## 4. BLE P1 — FROZEN CONTRACT
