@@ -1,3 +1,9 @@
+## 2026-10-02 — BUILD #44 CORRECTIVE TEST CONTRACT
+
+- Build #44 passed toolchain verification, signing preparation, security/architecture audit, dependency installation, and Dart analysis.
+- Flutter tests reached 16 passing tests and failed only on the `adaptiveOff` Indonesian localization assertion because the active JexText value includes a terminal period (`Mode Adaptif MATI.`).
+- Corrected only the regression-test expectation; production localization/UI logic was not changed.
+- Build #44 did not reach APK compilation because tests failed first. A fresh Build App is required from the corrected commit.
 ## 2026-10-02 — BUILD #43 TEST-CONTRACT CORRECTION
 
 - Build #43 passed toolchain verification, production signing preparation, security/architecture audit, dependency installation, and Dart analysis.
