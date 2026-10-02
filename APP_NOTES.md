@@ -1,3 +1,19 @@
+## 2026-10-02 — FULL EXECUTION / LIGHT THEME SHADOW REMOVAL + SEMANTIC VALUE CONTRAST
+
+- Reviewed the Light Theme visual direction against the supplied Gemini deep UI/UX review.
+- Removed the extra Home Metric ambient black shadow and accent shadow.
+- Removed Home Metric label text shadow and value text shadow.
+- Removed Home NOTIFY card shadow, status-pill shadow, and status text shadow.
+- Kept the existing Light Theme colorful semantic identity, soft surfaces, colored outlines, full-color inactive/offline icons, and active-only animation behavior.
+- Light Theme Home metric values now use the existing `lightThemeAccentText()` text-safe darker semantic accent instead of the brighter raw accent, while Dark/Default retain their existing accent-value behavior.
+- Did not remove native Material elevation/shadow from unrelated components such as dialogs, bottom sheets, dropdowns, or the shared `_card()` system.
+- VOLTAGE shared geometry and toggle-only selection behavior remain unchanged.
+- Added regression coverage confirming Light Theme semantic metric text is darkened for bright surfaces.
+- No firmware source, V2.6 binary, BLE/P1 UUIDs/tokens, OTA transport, Firebase metadata, GPIO mapping, safety thresholds, signing identity, or Build App workflow were changed.
+- Build App was intentionally not run; a fresh Build App remains a separate explicit step.
+- Production source commit: `4b0cb643c085f3b27709727b30d7be5a04f5a605`.
+- Regression-test commit: `e5c96a13370619f270d08d5c7f3a83b8fb824029`.
+
 ## 2026-10-02 — BUILD APP #49 SUCCESS
 
 - Build #49 run `36968864365` completed successfully from source commit `7d48a02586e09dcfaa53b73952cb86594a62382b`.
