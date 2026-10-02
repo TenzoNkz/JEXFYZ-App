@@ -1,3 +1,13 @@
+## 2026-10-02 — CORRECTION / BATTERY VOLTAGE ZONE DEFINITIONS
+
+- User clarified that Battery voltage mapping uses three actual zones, not a temporary transition zone.
+- Intended mapping: 20–29°C = 5V, 30°C = 9V, 31–40°C = 12V.
+- There is no 5V at exactly 30°C and no 12V at exactly 30°C.
+- The 9V band is the single 1°C zone between the 5V and 12V ranges; it is a real operating zone.
+- Battery hysteresis remains a separate requested value of 1.0°C and must be implemented without contradicting the exact 29/30/31 upward mapping.
+- This clarification supersedes the earlier wording that called 9V a generic transition zone.
+- No App source or build change was made.
+
 ## 2026-10-02 — V2.6 FIRMWARE AUDIT / GROUPS B–G USER DECISIONS
 
 - User reviewed the numbered V2.6 inventory group-by-group and accepted the following as the current design baseline:
