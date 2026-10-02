@@ -1,3 +1,16 @@
+## 2026-10-02 — FINAL CLARIFICATION / BATTERY ADAPTIVE STEP LOGIC
+
+- Battery Adaptive uses the configured 5V and 12V temperature limits as movement thresholds, not as a direct 5V/9V/12V lookup table.
+- Below the 5V limit: step voltage downward by one level when possible.
+- Above the 12V limit: step voltage upward by one level when possible.
+- Between the two limits: hold the current voltage.
+- Example 5V=25°C, 12V=37°C: below 25 → down; 25–37 → hold; above 37 → up.
+- Example 5V=29°C, 12V=31°C: below 29 → down; 29–31 → hold; above 31 → up, so 30°C naturally remains at the current middle level such as 9V.
+- Equality at either boundary does not itself trigger movement; the wording is explicitly 'below' and 'above'.
+- This is the intended interpretation of the 9V middle region and supersedes earlier direct-zone mapping descriptions.
+- App UI must eventually present the two configurable limits as the Battery Adaptive boundaries without inventing a separate fixed 9V transition setting.
+- No App source/build change was made.
+
 ## 2026-10-02 — CORRECTED BATTERY RANGE MODEL
 
 - Battery voltage settings are defined by two user-configurable boundaries, not by a fixed 30/31°C scheme.
