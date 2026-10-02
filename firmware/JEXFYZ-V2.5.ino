@@ -2706,7 +2706,6 @@ static void startOnlineOta() {
         String("OTA_UP_TO_DATE|MODE=ONLINE|STAGE=ONLINE_UP_TO_DATE|VERSION=") +
             FW_VERSION + "|PROGRESS=100",
         false);
-    sendDelta("LAST_OTA_RESULT", otaResult);
     setOtaState(OtaState::IDLE);
     otaActive = false;
     onlineOtaStartPending = false;

@@ -126,7 +126,7 @@ void main() {
     expect(isTransientOtaResultEvent('OTA_UP_TO_DATE|MODE=ONLINE|STAGE=ONLINE_UP_TO_DATE|VERSION=V2.5|PROGRESS=100'), isFalse);
   });
 
-  test('JE X FYZ voltage helper accepts only supported voltages', {
+  test('JE X FYZ voltage helper accepts only supported voltages', () {
     expect(isVoltageCommand('5V'), isTrue);
     expect(isVoltageCommand('9v'), isTrue);
     expect(isVoltageCommand('12V'), isTrue);

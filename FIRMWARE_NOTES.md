@@ -1,3 +1,9 @@
+## 2026-10-02 — CORRECTIVE STATIC PASS AFTER ONE-SHOT OTA COMMIT
+
+- Removed the final explicit LAST_OTA_RESULT send from ONLINE_UP_TO_DATE; OTA result events remain limited to fresh success/failure envelopes.
+- Corrected the companion App regression-test syntax typo.
+- No OTA transport, BLE/P1, GPIO, safety behavior, Firebase metadata, or production BIN was changed.
+
 ## 2026-10-02 — V2.5 / ONE-SHOT OTA RESULT LIFECYCLE
 
 - Functional firmware revision bumped V2.4 → V2.5 because OTA result lifecycle is functional firmware behavior.

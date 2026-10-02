@@ -1,3 +1,9 @@
+## 2026-10-02 — CORRECTIVE STATIC PASS AFTER ONE-SHOT OTA COMMIT
+
+- Corrected one regression-test syntax typo found during post-commit review.
+- Removed the remaining explicit LAST_OTA_RESULT emission from ONLINE OTA_UP_TO_DATE; this diagnostic state no longer uses the OTA result event channel.
+- No production App behavior beyond the already-committed one-shot lifecycle was changed.
+
 ## 2026-10-02 — FULL EXECUTION / ONE-SHOT OTA NOTIFY LIFECYCLE
 
 - Home NOTIFY now follows the latest event message; OTA history is not a notification source.
