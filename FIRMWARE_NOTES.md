@@ -1,3 +1,68 @@
+## 2026-10-02 — V2.6 AUDIT / GROUPS B–G USER DECISIONS + NEW CONTROL REQUIREMENTS
+
+### B. TEMPERATURE / NTC — #6–#9
+- User status: KEEP / ACCEPTED.
+- #6 NTC model/read cadence accepted.
+- #7 NTC temperature calculation accepted.
+- #8 NTC fault boundaries/validation accepted.
+- #9 invalid-NTC safety response accepted.
+- No source change from these points during this discussion.
+
+### C. VOLTAGE SYSTEM — #10–#15
+- User status: KEEP / ACCEPTED for all points.
+- Voltage states 5V/9V/12V, 200 ms deadtime, 1-second voltage guard, request-source model, manual command rules, and single-click touch cycling remain the baseline.
+- No source change from these points during this discussion.
+
+### D. FAN / PELTIER CONTROL — #16–#18
+- User status: KEEP / ACCEPTED, with the existing notes/source behavior treated as the baseline.
+- Current source already rejects manual Fan/Peltier commands while Adaptive is active (ADAPTIVE_ACTIVE) and enforces the Fan-required safety relationship.
+- New user requirement: when Adaptive becomes active, Fan and Peltier must be ON automatically. If either is OFF, firmware must turn it ON automatically.
+- New user requirement: while Adaptive is ON, Fan and Peltier remain user-locked and cannot be manually toggled.
+- Safety exception is explicit: Hotside protection may force Peltier OFF while Adaptive remains ON. This is a firmware safety override, not a reopening of the user control.
+- Current V2.6 source does not explicitly set peltierOn = true when Adaptive activates; this is a real implementation gap to address during a later execution pass.
+
+### E. HOTSIDE SAFETY — #19–#23
+- #19–#22 user status: KEEP / ACCEPTED.
+- #23 Rapid-Rise Temperature Protection: NOT NEEDED by current user decision. Do not add a separate °C/sec/rate-window protection mechanism unless the user explicitly reopens this requirement.
+- New user requirement: during manual-voltage operation (Adaptive OFF), when Hotside reaches the critical limit, firmware must force the voltage to 5V in addition to the existing Fan ON / 100% and Peltier OFF response.
+- During Adaptive operation, the existing Hotside staged protection remains: Peltier OFF, Fan 100%, cooling timer, then step down one voltage level (12→9 or 9→5). This manual 5V-force rule is specifically for the manual-voltage safety case and must not accidentally replace the Adaptive staged behavior.
+
+### F. BATTERY TEMPERATURE / ADAPTIVE BATTERY — #24–#29
+- #24 Battery source architecture accepted: Battery temperature remains supplied by the App/phone via PHONE:BT, not a second physical NTC.
+- #25 Battery validity/TTL accepted.
+- #26 Battery zoning accepted conceptually, but the threshold design is changed by the user's new note.
+- User's intended example is: 29°C → 5V, 30°C → 9V, 31°C → 12V.
+- User also described the desired temperature bands as approximately 5V = 20–30°C, 9V = between the two boundaries, 12V = 30–40°C, with a 1°C spacing between voltage transition boundaries.
+- For implementation planning, this is interpreted as a transition sequence centered on 30°C and 31°C, so that the 9V zone occupies the 1°C interval between the 5V and 12V transition points. The exact inclusive/exclusive edge behavior must be coded deliberately to preserve the example.
+- Important: this is distinct from hysteresis. The user also explicitly changed #27 hysteresis from 0.8°C → 1.0°C.
+- #28–#29 Adaptive Battery target scheduling and pending states are accepted.
+- Existing 5V/9V/12V target scheduling remains subject to the Hotside safety override and Adaptive ceiling.
+
+### G. ADAPTIVE MODE — #30–#38
+- #30 user status: KEEP / ACCEPTED.
+- #31 user status: KEEP / ACCEPTED with the existing source/note semantics:
+  - HOTSIDE_PROTECTION evaluates the physical NTC/Hotside safety only.
+  - HOTSIDE_BATTERY evaluates physical NTC/Hotside plus App/phone Battery temperature.
+  - Hotside remains the safety priority/override in the combined profile.
+- #32–#37 user status: KEEP / ACCEPTED.
+- #38 user status: KEEP / ACCEPTED for current Adaptive-OFF semantics.
+- Adaptive startup still requires the safe 5V handoff before authoritative ADAPTIVE=ON.
+- New requirement applies once Adaptive is actually ON: Fan and Peltier must be automatically ON and user-locked, subject to the safety exception for Peltier during Hotside protection.
+
+### IMPLEMENTATION ITEMS CREATED BY THIS AUDIT (NOT YET EXECUTED)
+1. Modify Adaptive activation/enforcement so adaptiveOn == true requires fanOn == true and peltierOn == true under normal-safe conditions; automatically restore either output if found OFF.
+2. Preserve the existing safety authority so hotsideProtectionActiveNow() / NTC invalidation can still force Peltier OFF and Fan ON/100% as required.
+3. Add a manual-mode Hotside safety path that requests/forces 5V when the critical Hotside limit is reached, without replacing the Adaptive 12→9→5 staged protection algorithm.
+4. Change Battery hysteresis constant from 0.8°C to 1.0°C and review all stable-zone comparisons for exact boundary behavior.
+5. Redesign the Battery 5V/9V/12V threshold defaults/logic to preserve the user's example 29°C→5V, 30°C→9V, 31°C→12V and the intended configurable ranges, without accidentally creating contradictory threshold/hysteresis behavior.
+6. Review persistence/reset/App telemetry implications for changed battery thresholds and the temperature reset defaults before execution.
+
+### VALIDATION BOUNDARY
+- This is a discussion/audit record only.
+- No .ino source, BIN, Firebase metadata, or dedicated binary firmware repository content was modified for these decisions.
+- V2.6 ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compilation remains unverified.
+- Physical V2.6 validation remains unverified.
+
 ## 2026-10-02 — V2.6 AUDIT / GROUP A IDENTITAS & HARDWARE #1–#5
 
 ### Audit scope
