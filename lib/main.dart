@@ -88,6 +88,11 @@ const Duration voltageGuardDuration = Duration(seconds: 1);
 const int fanSpeedMin = 50;
 const int fanSpeedMax = 100;
 
+// AI-UI-GEOMETRY: Shared submenu dimensions keep VOLTAGE, CONTROL, ADAPTIVE, and LED aligned.
+const double jexSubmenuRowMinHeight = 62.0;
+const double jexSubmenuToggleWidth = 54.0;
+const double jexSubmenuToggleHeight = 32.0;
+
 // JE X FYZ LED palette: 24 curated RGB presets.
 // White is included; black and dark/light variants are intentionally excluded because
 // brightness is the single intensity control.
@@ -4049,6 +4054,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     return AnimatedContainer(
       duration: const Duration(milliseconds: 180),
       curve: Curves.easeOutCubic,
+      constraints: const BoxConstraints(minHeight: jexSubmenuRowMinHeight),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: rowFill,
@@ -4148,8 +4154,8 @@ class _DashboardScreenState extends State<DashboardScreen>
       onTap: enabled ? () => unawaited(onChanged(!value)) : null,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        width: 54,
-        height: 32,
+        width: jexSubmenuToggleWidth,
+        height: jexSubmenuToggleHeight,
         padding: const EdgeInsets.all(3),
         decoration: BoxDecoration(
           color: value
@@ -4229,9 +4235,9 @@ class _DashboardScreenState extends State<DashboardScreen>
             child: Column(
               children: [
                 _voltageChoiceCustom('5V', JexText.of('lowMode', lang), locked),
-                const SizedBox(height: 7),
+                const SizedBox(height: 8),
                 _voltageChoiceCustom('9V', JexText.of('midMode', lang), locked),
-                const SizedBox(height: 7),
+                const SizedBox(height: 8),
                 _voltageChoiceCustom('12V', JexText.of('highMode', lang), locked),
               ],
             ),
@@ -4251,11 +4257,12 @@ class _DashboardScreenState extends State<DashboardScreen>
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         curve: Curves.easeOutCubic,
-        padding: const EdgeInsets.fromLTRB(14, 11, 11, 11),
+        constraints: const BoxConstraints(minHeight: jexSubmenuRowMinHeight),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
           // The row itself is neutral in every state. Selection is represented only by the toggle.
           color: scheme.surfaceContainerHighest.withValues(alpha: .26),
-          borderRadius: BorderRadius.circular(17),
+          borderRadius: BorderRadius.circular(18),
           border: Border.all(color: scheme.outlineVariant.withValues(alpha: .68)),
         ),
         child: Row(
@@ -4283,8 +4290,8 @@ class _DashboardScreenState extends State<DashboardScreen>
             ),
             AnimatedContainer(
               duration: const Duration(milliseconds: 180),
-              width: 46,
-              height: 28,
+              width: jexSubmenuToggleWidth,
+              height: jexSubmenuToggleHeight,
               padding: const EdgeInsets.all(3),
               decoration: BoxDecoration(
                 color: active
@@ -4300,8 +4307,8 @@ class _DashboardScreenState extends State<DashboardScreen>
                 curve: Curves.easeOutCubic,
                 alignment: active ? Alignment.centerRight : Alignment.centerLeft,
                 child: Container(
-                  width: 20,
-                  height: 20,
+                  width: 24,
+                  height: 24,
                   decoration: BoxDecoration(
                     color: active
                         ? accent

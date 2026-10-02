@@ -1,3 +1,11 @@
+## 2026-10-02 — FULL EXECUTION / SUBMENU GEOMETRY ALIGNMENT
+
+- Unified submenu row geometry across VOLTAGE and switch-based CONTROL/ADAPTIVE/LED components.
+- Shared baseline: 62px minimum row height, 54x32px toggle, 18px row radius, 10px vertical padding, and 8px inter-row spacing.
+- VOLTAGE keeps its dedicated 5V/9V/12V content and toggle-only selection behavior while matching the visual height, toggle size, and rhythm of the other submenu rows.
+- Added regression coverage for the shared submenu geometry constants.
+- No firmware, BLE/P1, OTA, Firebase, GPIO, safety, telemetry, signing, or build workflow changes were made.
+- Build App was intentionally deferred until this code pass is reviewed.
 ## 2026-10-02 — BUILD APP #46 SUCCESS / COLORFUL LIGHT THEME
 
 - Build #46 run `36953404344` completed successfully from source commit `99500b7a801e1fb42797b917ebb0c460ad1edd7d`.
