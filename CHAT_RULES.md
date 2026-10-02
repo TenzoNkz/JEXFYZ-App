@@ -1,3 +1,12 @@
+## 2026-10-02 — FULL GEMINI REVIEW AUTHORIZATION / AUDIT WORKFLOW
+
+- User explicitly granted the assistant discretion to request Gemini second opinions whenever technically useful during JE X FYZ analysis.
+- This does not change Gemini's role: Gemini remains a second-opinion source, never an automatic decision-maker, and no Gemini result may be fabricated.
+- The assistant may formulate focused follow-up Gemini questions when a first answer is incomplete, conflicting, overly broad, or materially important to implementation risk.
+- Source inspection and verified project evidence remain authoritative over third-party suggestions.
+- During @Thinking Diskusi!, Gemini review and note updates do not authorize source/repository/build changes; implementation still requires an explicit execution command.
+- Current firmware audit workflow is proceeding group-by-group from the numbered V2.6 inventory, with decisions recorded only after discussion/evidence review.
+
 # JE X FYZ — CHAT RULES
 
 ## 1. Chat workflow
