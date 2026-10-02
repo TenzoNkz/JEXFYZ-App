@@ -1,3 +1,21 @@
+## 2026-10-02 — BUILD APP #50 SUCCESS
+
+- Build #50 run `36996987220` completed successfully from source commit `bf01595253eb5a1912471c4aee57c4eed4421f0f`.
+- Passed all release gates: Java 17, Flutter 3.47.2 stable, Gradle 9.3.1, JE X FYZ security/architecture audit, `flutter pub get`, `flutter analyze --no-fatal-infos`, `flutter test`, release APK compilation with obfuscation/Dart symbols, production signing verification, release filename preparation, APK artifact upload, and Dart symbols upload.
+- Release APK artifact: `JEXFYZ#50.apk`, artifact ID `11222007634`, size `54,245,456` bytes.
+- APK artifact digest / verified APK SHA-256: `82a2320d8e3663800d6884f4cb0d009ff1b31b5b19cc64420f9ee5c6b01d01b0`.
+- Downloaded artifact was independently identified as a valid Android package (APK), not an outer archive; core APK entries including `AndroidManifest.xml` and `classes.dex` are present, and `unzip -t` completed with no errors.
+- Production signing verification passed in CI against the required JE X FYZ certificate identity and SHA-256.
+- Dart symbols artifact: `JE-X-FYZ-Dart-Symbols`, artifact ID `11222132522`, size `8,308,848` bytes, digest `sha256:a87a3181bada92e229da3c1f79d9a59339d7669c11b32ac1d8c219ae435c9062`.
+- Exactly one APK artifact was produced; the only additional release artifact is the Dart symbols artifact.
+- Build includes the latest Light Theme shadow-removal/semantic value-contrast source state recorded in commit `bf01595253eb5a1912471c4aee57c4eed4421f0f`.
+- App Android version label remains exactly `Telegram @horizontalzzz`; package metadata remains `1.0.0+3`.
+- No firmware source/bin, BLE/P1 UUIDs or command tokens, OTA transport, Firebase metadata, GPIO mapping, safety thresholds, signing identity, or Build App workflow were changed for this build.
+- CI success validates App build/runtime-independent checks only. No physical ESP32 runtime test was performed as part of Build #50.
+- GitHub build: https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/36996987220
+- APK artifact API: https://api.github.com/repos/TenzoNkz/JEXFYZ-App/actions/artifacts/11222007634
+- Dart symbols artifact API: https://api.github.com/repos/TenzoNkz/JEXFYZ-App/actions/artifacts/11222132522
+
 ## 2026-10-02 — FULL EXECUTION / LIGHT THEME SHADOW REMOVAL + SEMANTIC VALUE CONTRAST
 
 - Reviewed the Light Theme visual direction against the supplied Gemini deep UI/UX review.
@@ -397,8 +415,7 @@ Never silently promote a hypothesis, Gemini suggestion, old snippet, or historic
 - Current App UI: Voltage uses only the fixed 5V / 9V / 12V vertical selector; the old Vertical/Side Text setting is removed.
 - Default Settings and child pages use the dark JE X FYZ theme. The Dashboard retains its intentional black-header/white-content Default presentation.
 - Floating Monitor overlay permission now uses an explicit in-app Allow/Cancel dialog, opens Android overlay settings, rechecks permission on resume, and auto-starts after permission is granted.
-- Current App source has changed after the previous Build App #10 validation. Build #10 therefore does NOT validate this latest source; a new explicit Build App run is required before distributing the updated APK.
-- Firmware current source is V2.3; the dedicated firmware repository remains binary-only and is not updated with an uncompiled BIN.
+- Current App source has changed after the previous Build App #10 validation. Build #10 therefore does NOT validate this latest source; a new explicit Build App run is required before distributing the updated APK.- Firmware current source is V2.3; the dedicated firmware repository remains binary-only and is not updated with an uncompiled BIN.
 
 
 ## 2026-10-01 — FLOATING VIDEO EVIDENCE REFINED
@@ -797,8 +814,7 @@ Every meaningful App change should separate these validation layers:
 - APK signature verification
 
 ### Runtime validation
-- real Android installation
-- BLE scan/connect
+- real Android installation- BLE scan/connect
 - characteristic discovery
 - command/ACK/state synchronization
 - reconnect behavior
@@ -1197,8 +1213,7 @@ Never:
 - Voltage color selectors for **5V / 9V / 12V** were removed from the App.
 - **Reset Colors** was removed from the App.
 - Firmware-owned voltage indicator colors remain unchanged.
-- Palette selection applies only to LED modes that use the user RGB color. **Rainbow (Mode 7) keeps its own firmware hue cycle and disables the palette.**
-- Brightness UI is now **1–100%** with **99 divisions**, allowing every 1% step.
+- Palette selection applies only to LED modes that use the user RGB color. **Rainbow (Mode 7) keeps its own firmware hue cycle and disables the palette.**- Brightness UI is now **1–100%** with **99 divisions**, allowing every 1% step.
 - LED Power OFF remains the true OFF control; brightness UI no longer exposes 0%.
 - Brightness uses the existing firmware BRIGHTNESS 1–100 interface; the firmware maps that user percentage to its hardware 0–255 scale.
 - BLE protocol/UUIDs, OTA, reconnect rediscovery, and firmware source were not changed.
@@ -1597,7 +1612,6 @@ Never:
 - Build App #37 reached all source checks and failed only one deterministic Light Theme test because the test expected `#16181D) while the current shared Light semantic foreground is intentionally `#111318`.
 - Updated the regression expectation to the actual Light Theme contract; this is a test-alignment fix, not a UI rollback.
 - No Floating, BLE, firmware, or runtime behavior was changed by this validation fix.
-
 
 ## 2026-10-01 — BUILD APP #38 SUCCESS / FLOATING METRIC CLEANUP VALIDATED
 
