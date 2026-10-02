@@ -1,3 +1,44 @@
+## 2026-10-02 — V2.7 AUDIT / GROUPS H–L USER DECISIONS
+
+### H. TOUCH SENSOR — #39–#42
+- #39 is a functional firmware change to be implemented later:
+  - remove the explicit 50 ms OneButton debounce setting;
+  - tap timing limit remains 500 ms;
+  - 1 tap = change voltage to the next manual level (5V→9V→12V→5V);
+  - 2 taps = toggle RGB ON/OFF;
+  - 3 taps or more within the tap/click interpretation window = cancel/fail with no action;
+  - 5-second hold = toggle Fan + Peltier ON/OFF, subject to existing safety rules;
+  - implementation should use a single multi-click decision path so 3+ taps cannot accidentally trigger the 1-tap or 2-tap action.
+- #40 user status: KEEP / ACCEPTED.
+- #41 replaces the old behavior: **2 taps no longer change LED mode; 2 taps toggle RGB ON/OFF**.
+- #42 user status: KEEP / ACCEPTED.
+
+### I. RGB / LED — #43–#51
+- #43–#51 user status: KEEP / ACCEPTED.
+- 8 NeoPixel hardware and the seven current LED render modes remain unchanged.
+
+### J. VOLTAGE LED COLOR — #52–#57
+- #52 user status: KEEP / ACCEPTED: the default voltage color identity remains part of the voltage indicator.
+- #53: **REMOVE USER CONFIGURATION**. Custom voltage color settings are no longer used.
+- Therefore V5COLOR/V9COLOR/V12COLOR commands, persistent voltage-color settings, and the dedicated voltage-color reset command are obsolete and should be removed in a later implementation pass.
+- #54–#57 user status: KEEP / ACCEPTED.
+- Important distinction: removing configurable voltage colors does **not** remove the default 5V/9V/12V color mapping needed by the voltage indicator. The defaults become fixed firmware behavior rather than user settings.
+
+### K. BLE — #58–#66
+- #58–#65 user status: KEEP / ACCEPTED.
+- #66 user status: KEEP, with an important narrowing: the user-control spam guard is wanted **only for VOLTAGE** commands.
+- Current V2.7 still routes all commands through the generic user-control guard, although its current guard interval is 0 ms and therefore does not currently delay anything. Later execution must narrow the guard to VOLTAGE only without changing other BLE command behavior.
+
+### L. COMMAND CONTROL — #67–#74
+- #67–#69 user status: KEEP / ACCEPTED.
+- #70: voltage-color commands should be considered **NOT NEEDED** because #53 removes user-configurable voltage colors. Remove V5COLOR/V9COLOR/V12COLOR command handling in the same cleanup, together with obsolete voltage-color reset/persistence/telemetry paths, while preserving fixed default voltage colors for the voltage indicator.
+- #71–#74 user status: KEEP / ACCEPTED.
+
+### VALIDATION / IMPLEMENTATION STATUS
+- These H–L decisions are discussion/audit decisions only; no firmware source was changed in this event.
+- Current V2.7 source still contains the old Touch single/double mapping and voltage-color command/configuration paths; these are intentionally pending until an explicit execution command.
+- No new firmware version is created by this discussion. The next functional firmware implementation must increment V2.7 to the next version before it is treated as an OTA candidate.
+
 ## 2026-10-02 — V2.7 EXECUTION / ADAPTIVE COOLING + BATTERY STEP CONTROL\n\n### Source/version\n- Functional firmware revision advanced **V2.6 → V2.7** because the approved Adaptive, Hotside safety, Battery hysteresis, and Battery control-logic changes affect firmware behavior.\n- Active continuity source is now `firmware/JEXFYZ-V2.7.ino`.\n- Superseded `firmware/JEXFYZ-V2.6.ino` was removed; the dedicated `TenzoNkz/JEXFYZ-Firmware` repository remains binary-only and was not modified.\n- Source creation commit: `79b2117f5331bc5b905358d6b07c43df7c443ae`.\n- V2.6 source retirement commit: `868a78090372331d3d7f3052763147f56b960a99`.\n\n### Implemented changes\n1. **Adaptive cooling ownership**\n   - When Adaptive reaches authoritative ON, Fan is forced ON and Peltier is forced ON before normal output application.\n   - While Adaptive is ON, firmware safety enforcement continuously restores Fan ON / 100% and Peltier ON whenever the normal safe conditions allow it.\n   - Manual Fan/Peltier commands were already locked by `ADAPTIVE_ACTIVE` and remain locked.\n   - Touch single-click can no longer force Fan/Peltier OFF while Adaptive is ON; it now returns `ADAPTIVE_ACTIVE` instead.\n   - Safety remains authoritative: an active Hotside protection window can still force Peltier OFF, while Fan remains ON/100%.\n\n2. **Manual Hotside critical response**\n   - When Adaptive is OFF and Hotside reaches the configured critical limit, existing Peltier OFF + Fan ON/100% protection now also forces/requests voltage to **5V**.\n   - Adaptive Hotside protection remains separate and keeps its staged 12V→9V→5V behavior with the existing cooling timer.\n\n3. **Battery configuration limits**\n   - 5V limit range changed from 20–48°C to **20–30°C**.\n   - 12V limit range changed from 22–50°C to **30–40°C**.\n   - The existing validation keeps at least one integer-degree middle value for the 9V region by requiring the 12V boundary to remain at least 2°C above the 5V boundary.\n   - Existing default values remain 25°C / 35°C because the user changed the allowed ranges, not the requested defaults.\n\n4. **Battery hysteresis**\n   - `BATTERY_HYSTERESIS_C` changed from **0.8°C → 1.0°C**.\n   - Stateful Battery control now uses hysteresis around the two boundaries instead of direct three-way voltage lookup.\n\n5. **Battery Adaptive step logic**\n   - Below the configured 5V boundary, the Battery control state moves toward lower voltage.\n   - Above the configured 12V boundary, the Battery control state moves toward higher voltage.\n   - Between the two boundaries, the Battery control state holds.\n   - Actual voltage movement is **one voltage step at a time**: 5V↔9V↔12V, preserving the existing 1-second Adaptive voltage-step delay.\n   - The current V2.6 direct-target scheduling was changed so a high Battery temperature cannot skip 9V when moving 5V→12V.\n   - Phone Battery updates now re-evaluate Battery Adaptive continuously per received Battery sample instead of only when the previous zone label changes, allowing multiple sequential one-step movements when the Battery remains above/below a threshold.\n   - Equality at the raw configured boundaries is not itself a separate movement command; hysteresis governs reversal and prevents rapid oscillation.\n\n6. **Rapid-rise protection**\n   - #23 remains explicitly **NOT NEEDED**. No separate °C/sec or rate-window protection was added.\n\n### Validation completed in this execution\n- Active V2.7 source file fetched from the repository after write.\n- Static checks passed: `FW_VERSION` = V2.7; no V2.6 firmware version literal remains in the active source; hysteresis = 1.0°C; Battery ranges = 5V 20–30°C and 12V 30–40°C; Adaptive Fan/Peltier enforcement present; Adaptive touch lock present; manual Hotside safety force-to-5V path present; one-step Battery up/down scheduling present; PHONE:BT re-evaluation present.\n- Delimiter sanity check passed: braces 526/526 and parentheses 2087/2087.\n- V2.6 source retirement was verified; a repository search for the old filename returns only historical note references.\n- ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile was **NOT performed here**.\n- BIN generation/publication was **NOT performed**.\n- Physical V2.7 flash/runtime validation was **NOT performed**.\n- Firebase firmware metadata was **NOT promoted**.\n- App Build was **NOT run**; App Build remains a separate explicit workflow.\n\n### Important validation boundary\n- This execution proves repository/source transformation and static structural checks only. It does not prove PWM behavior, voltage hardware switching, Peltier/Fan physical operation, thermal behavior, BLE runtime behavior, or OTA behavior on hardware.\n\n## 2026-10-02 — FINAL CLARIFICATION / BATTERY ADAPTIVE STEP LOGIC
 
 - User clarified the intended Battery Adaptive behavior: the configured 5V and 12V limits are **trigger thresholds for voltage movement**, not direct voltage-selection zones.
