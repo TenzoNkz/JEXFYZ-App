@@ -5,7 +5,6 @@
 #include <WiFiClientSecure.h>
 #include <Preferences.h>
 #include <Adafruit_NeoPixel.h>
-#include <OneButton.h>
 #include <math.h>
 #include <time.h>
 #include <atomic>
@@ -29,7 +28,7 @@ enum class LedMode : uint8_t;
 enum class VoltageRequestSource : uint8_t;
 enum class AdaptiveProfile : uint8_t;
 
-static constexpr char FW_VERSION[] = "V2.7";
+static constexpr char FW_VERSION[] = "V2.8";
 
 // ============================================================================
 // ========================== HEAP DIAGNOSTIC BUILD ===========================
@@ -126,7 +125,7 @@ static constexpr uint8_t WIFI_CONNECT_MAX_ATTEMPTS      = 3;
 static constexpr uint32_t WIFI_CONNECT_RETRY_BACKOFF_MS = 3000UL;
 static constexpr uint32_t ONLINE_OTA_HTTP_TIMEOUT_MS  = 60000;
 static constexpr uint32_t ONLINE_OTA_RESULT_INDICATOR_MS = 1000;
-static constexpr uint32_t OTA_MAX_FIRMWARE_BYTES     = 2 * 1024 * 1024;
+static constexpr uint32_t OTA_MAX_FIRMWARE_BYTES     = 1792UL * 1024UL;
 static_assert(OTA_MAX_FIRMWARE_BYTES <= 2 * 1024 * 1024,
               "OTA SAFETY: firmware limit exceeded");
 
@@ -193,7 +192,6 @@ static constexpr uint32_t SETTINGS_SAVE_DEBOUNCE_MS     = 10000;
 // Touch Adaptive-OFF indicator uses three non-blocking 250 ms color phases.
 static constexpr uint32_t TOUCH_ADAPTIVE_OFF_INDICATOR_PHASE_MS = 250;
 
-static constexpr uint32_t USER_CONTROL_GUARD_MS          = 0;
 
 static constexpr int HOT_LIMIT_MIN = 40;
 static constexpr int HOT_LIMIT_MAX = 50;
@@ -215,7 +213,6 @@ static constexpr uint32_t PELTIER_SOFT_START_MS = 5000;
 WebServer webServer(80);
 Preferences prefs;
 Adafruit_NeoPixel leds(LED_COUNT, PIN_LED, NEO_GRB + NEO_KHZ800);
-OneButton touchButton(PIN_TOUCH, false, false);
 
 BLEServer* bleServer = nullptr;
 BLECharacteristic* rxCharacteristic = nullptr;
@@ -301,9 +298,6 @@ bool rgbOn = false;
 LedMode rgbMode = LedMode::STATIC;
 uint8_t rgbBrightness = 100;
 uint32_t rgbColor = 0xFFFFFF;
-uint32_t color5V = 0xFF0000;
-uint32_t color9V = 0x00FF00;
-uint32_t color12V = 0x0000FF;
 
 bool settingsDirty = false;
 uint32_t settingsDirtyAt = 0;
@@ -393,8 +387,6 @@ volatile bool bleSyncPending = false;
 
 volatile bool bleCommandGateOpen = false;
 
-bool userControlGuardArmed = false;
-uint32_t lastUserControlCommandMs = 0;
 
 uint32_t ledBlinkAt = 0;
 bool ledBlinkPhase = false;
@@ -632,9 +624,10 @@ static void loadSettings() {
   if (rgbBrightness > 100) rgbBrightness = 100;
 
   rgbColor = prefs.getUInt("rgbColor", 0xFFFFFF);
-  color5V = prefs.getUInt("color5V", 0xFF0000);
-  color9V = prefs.getUInt("color9V", 0x00FF00);
-  color12V = prefs.getUInt("color12V", 0x0000FF);
+  // Purge legacy V2.7 user-configurable voltage colors.
+  prefs.remove("color5V");
+  prefs.remove("color9V");
+  prefs.remove("color12V");
 
   // Purge V2.4 persistent OTA history. V2.5 exposes OTA results as events only.
   prefs.remove("lastOta");
@@ -676,9 +669,6 @@ static void saveSettingsNow() {
   prefs.putUChar("rgbMode", static_cast<uint8_t>(rgbMode));
   prefs.putUChar("brightness", rgbBrightness);
   prefs.putUInt("rgbColor", rgbColor);
-  prefs.putUInt("color5V", color5V);
-  prefs.putUInt("color9V", color9V);
-  prefs.putUInt("color12V", color12V);
   prefs.putUChar("adaptiveProfile",
                  static_cast<uint8_t>(adaptiveProfile));
   settingsDirty = false;
@@ -835,13 +825,17 @@ static void showAll(uint32_t color, uint8_t brightness) {
   leds.show();
 }
 
+static constexpr uint32_t VOLTAGE_COLOR_5V = 0xFF0000;
+static constexpr uint32_t VOLTAGE_COLOR_9V = 0x00FF00;
+static constexpr uint32_t VOLTAGE_COLOR_12V = 0x0000FF;
+
 static uint32_t currentVoltageColor() {
   switch (currentVoltage) {
-    case Voltage::V5:  return color5V;
-    case Voltage::V9:  return color9V;
-    case Voltage::V12: return color12V;
+    case Voltage::V5:  return VOLTAGE_COLOR_5V;
+    case Voltage::V9:  return VOLTAGE_COLOR_9V;
+    case Voltage::V12: return VOLTAGE_COLOR_12V;
   }
-  return color5V;
+  return VOLTAGE_COLOR_5V;
 }
 
 static uint8_t hardwareBrightness() {
@@ -1977,9 +1971,6 @@ static void sendFullSync() {
   sendDelta("MODE", String(static_cast<uint8_t>(rgbMode)));
   sendDelta("BRIGHTNESS", String(rgbBrightness));
   sendDelta("RGB_COLOR", colorToHex(rgbColor));
-  sendDelta("COLOR_5V", colorToHex(color5V));
-  sendDelta("COLOR_9V", colorToHex(color9V));
-  sendDelta("COLOR_12V", colorToHex(color12V));
   sendDelta("FAN_SPEED", String(fanPwm));
   const String reason = safetyReason();
   sendDelta("SAFETY", reason == "NONE" ? "OK" : "LOCKED");
@@ -2019,76 +2010,6 @@ static void sendHotsideTelemetry() {
   publishSafetyReason();
 }
 
-static bool isUserControlCommand(const String& raw) {
-  String c = raw;
-  c.trim();
-  c.toUpperCase();
-
-  return c == "RGB:ON" ||
-         c == "RGB:OFF" ||
-         c.startsWith("MODE:") ||
-         c.startsWith("BRIGHTNESS:") ||
-         c.startsWith("COLOR:") ||
-         c.startsWith("V5COLOR:") ||
-         c.startsWith("V9COLOR:") ||
-         c.startsWith("V12COLOR:") ||
-         c.startsWith("HOTLIMIT:") ||
-         c.startsWith("BATT5:") ||
-         c.startsWith("BATT12:") ||
-         c.startsWith("VOLTAGE:") ||
-         c == "FAN:ON" ||
-         c == "FAN:OFF" ||
-         c == "PELTIER:ON" ||
-         c == "PELTIER:OFF" ||
-         c == "ADAPTIVE:ON" ||
-         c == "ADAPTIVE:OFF" ||
-         c.startsWith("ADAPTIVE_PROFILE:") ||
-         c.startsWith("FANSPEED:") ||
-         c == "RESET:TEMPERATURE" ||
-         c == "RESET:VOLTAGECOLORS";
-}
-
-static String controlAckItem(const String& raw) {
-  String c = raw;
-  c.trim();
-  c.toUpperCase();
-
-  if (c == "RGB:ON" || c == "RGB:OFF") return "RGB";
-  if (c.startsWith("MODE:")) return "MODE";
-  if (c.startsWith("BRIGHTNESS:")) return "BRIGHTNESS";
-  if (c.startsWith("COLOR:")) return "COLOR";
-  if (c.startsWith("V5COLOR:")) return "V5COLOR";
-  if (c.startsWith("V9COLOR:")) return "V9COLOR";
-  if (c.startsWith("V12COLOR:")) return "V12COLOR";
-  if (c.startsWith("HOTLIMIT:")) return "HOTLIMIT";
-  if (c.startsWith("BATT5:")) return "BATT5";
-  if (c.startsWith("BATT12:")) return "BATT12";
-  if (c.startsWith("VOLTAGE:")) return "VOLTAGE";
-  if (c.startsWith("FAN:")) return "FAN";
-  if (c.startsWith("PELTIER:")) return "PELTIER";
-  if (c.startsWith("ADAPTIVE_PROFILE:")) return "ADAPTIVE_PROFILE";
-  if (c.startsWith("ADAPTIVE:")) return "ADAPTIVE";
-  if (c.startsWith("FANSPEED:")) return "FANSPEED";
-  if (c == "RESET:TEMPERATURE") return "RESET_TEMPERATURE";
-  if (c == "RESET:VOLTAGECOLORS") return "RESET_VOLTAGECOLORS";
-  return "COMMAND";
-}
-
-static bool userControlRateLimited(const String& command) {
-  if (!isUserControlCommand(command)) return false;
-
-  const uint32_t now = millis();
-  if (userControlGuardArmed &&
-      static_cast<uint32_t>(now - lastUserControlCommandMs) < USER_CONTROL_GUARD_MS) {
-    sendAck(controlAckItem(command), false, "RATE_LIMIT");
-    return true;
-  }
-
-  userControlGuardArmed = true;
-  lastUserControlCommandMs = now;
-  return false;
-}
-
 static void dispatchBleLine(const String& raw) {
   String command = raw;
   command.trim();
@@ -2097,10 +2018,6 @@ static void dispatchBleLine(const String& raw) {
 
   if (!bleCommandGateOpen && command != "SYNC" && command != "SYNC_READY") {
     sendAck("SESSION", false, "SYNC_REQUIRED");
-    return;
-  }
-
-  if (userControlRateLimited(command)) {
     return;
   }
 
@@ -2139,8 +2056,6 @@ class ServerCallbacks : public BLEServerCallbacks {
 
     bleSyncPending = false;
     bleCommandGateOpen = false;
-    userControlGuardArmed = false;
-    lastUserControlCommandMs = 0;
     bleQueueResetPending = true;
   }
 
@@ -3523,24 +3438,6 @@ static void handleSettingsReset(const String& group) {
     return;
   }
 
-  if (normalized == "VOLTAGECOLORS") {
-    const bool changed = color5V != 0xFF0000 || color9V != 0x00FF00 || color12V != 0x0000FF;
-    color5V = 0xFF0000;
-    color9V = 0x00FF00;
-    color12V = 0x0000FF;
-    if (changed) {
-      markSettingsDirty();
-      sendDelta("COLOR_5V", colorToHex(color5V));
-      sendDelta("COLOR_9V", colorToHex(color9V));
-      sendDelta("COLOR_12V", colorToHex(color12V));
-    }
-    sendDelta("COLOR_5V", colorToHex(color5V));
-    sendDelta("COLOR_9V", colorToHex(color9V));
-    sendDelta("COLOR_12V", colorToHex(color12V));
-    sendAck("RESET_VOLTAGECOLORS", true, "OK");
-    return;
-  }
-
   sendAck("RESET", false, "UNKNOWN_GROUP");
 }
 
@@ -3683,60 +3580,6 @@ static void handleCommand(const String& command) {
     sendDelta("RGB_COLOR", colorToHex(rgbColor));
 
     sendAck("COLOR", true, "OK");
-    return;
-  }
-
-  if (command.startsWith("V5COLOR:")) {
-    uint32_t parsed = 0;
-    if (!parseHexColor(command.substring(8), parsed)) {
-      sendAck("V5COLOR", false, "INVALID_HEX");
-      return;
-    }
-
-    if (color5V != parsed) {
-      color5V = parsed;
-      markSettingsDirty();
-      sendDelta("COLOR_5V", colorToHex(color5V));
-    }
-    sendDelta("COLOR_5V", colorToHex(color5V));
-
-    sendAck("V5COLOR", true, "OK");
-    return;
-  }
-
-  if (command.startsWith("V9COLOR:")) {
-    uint32_t parsed = 0;
-    if (!parseHexColor(command.substring(8), parsed)) {
-      sendAck("V9COLOR", false, "INVALID_HEX");
-      return;
-    }
-
-    if (color9V != parsed) {
-      color9V = parsed;
-      markSettingsDirty();
-      sendDelta("COLOR_9V", colorToHex(color9V));
-    }
-    sendDelta("COLOR_9V", colorToHex(color9V));
-
-    sendAck("V9COLOR", true, "OK");
-    return;
-  }
-
-  if (command.startsWith("V12COLOR:")) {
-    uint32_t parsed = 0;
-    if (!parseHexColor(command.substring(9), parsed)) {
-      sendAck("V12COLOR", false, "INVALID_HEX");
-      return;
-    }
-
-    if (color12V != parsed) {
-      color12V = parsed;
-      markSettingsDirty();
-      sendDelta("COLOR_12V", colorToHex(color12V));
-    }
-    sendDelta("COLOR_12V", colorToHex(color12V));
-
-    sendAck("V12COLOR", true, "OK");
     return;
   }
 
@@ -4036,18 +3879,8 @@ static void executeTouchSingle() {
 static void executeTouchDouble() {
   if (otaActive) return;
 
-  uint8_t mode = static_cast<uint8_t>(rgbMode);
-  if (mode < 1 || mode > 7) mode = 1;
-  mode = (mode >= 7) ? 1 : static_cast<uint8_t>(mode + 1);
-
-  const LedMode nextMode = static_cast<LedMode>(mode);
-  if (rgbMode != nextMode) {
-    rgbMode = nextMode;
-    markSettingsDirty();
-    startUserLedEffect();
-    sendDelta("MODE", String(mode));
-  }
-  sendAck("TOUCH_LED_MODE", true, "OK");
+  const bool accepted = setRgbState(!rgbOn);
+  sendAck("TOUCH_RGB", accepted, accepted ? "OK" : "FAILED");
 }
 
 static void executeTouchLong() {
@@ -4056,46 +3889,95 @@ static void executeTouchLong() {
   // Touch remains active, but cooling cannot be started until startup completes.
   if (bootApActive && !bootApClientSafe) return;
 
+  // Adaptive owns Fan/Peltier controls while active; a hold must not bypass that lock.
   if (adaptiveOn) {
-    String reason;
-    setAdaptiveState(false, reason);
+    sendAck("TOUCH_COOLING", false, "ADAPTIVE_ACTIVE");
+    return;
+  }
 
-    if (adaptiveOn) {
-      sendAck("TOUCH_ADAPTIVE", false, reason);
+  // Toggle both outputs as one paired control. Existing safety rules remain authoritative.
+  const bool desired = !(fanOn && peltierOn);
+  fanOn = desired;
+  peltierOn = desired;
+  applyCoolingOutputs();
+  publishSafetyReason();
+  sendAck("TOUCH_COOLING", peltierOn == desired,
+          peltierOn ? "ON" : safetyReason());
+}
+
+static void processTouchInput() {
+  static constexpr uint32_t TAP_MAX_PRESS_MS = 500;
+  static constexpr uint32_t TAP_DECISION_WINDOW_MS = 500;
+  static constexpr uint32_t LONG_PRESS_MS = 5000;
+
+  const uint32_t now = millis();
+  const bool pressed = digitalRead(PIN_TOUCH) == HIGH;
+
+  static bool inputPressed = false;
+  static bool longPressHandled = false;
+  static uint32_t pressStartedAt = 0;
+  static uint32_t sequenceStartedAt = 0;
+  static uint8_t tapCount = 0;
+
+  if (pressed) {
+    if (!inputPressed) {
+      inputPressed = true;
+      longPressHandled = false;
+      pressStartedAt = now;
+    }
+
+    if (!longPressHandled && now - pressStartedAt >= LONG_PRESS_MS) {
+      longPressHandled = true;
+      tapCount = 0;
+      sequenceStartedAt = 0;
+      executeTouchLong();
+    }
+    return;
+  }
+
+  if (inputPressed) {
+    const uint32_t pressDuration = now - pressStartedAt;
+    inputPressed = false;
+
+    if (longPressHandled || pressDuration > TAP_MAX_PRESS_MS) {
+      tapCount = 0;
+      sequenceStartedAt = 0;
       return;
     }
 
-    startTouchAdaptiveOffIndicator();
-    sendAck("TOUCH_ADAPTIVE", true, "OFF");
-    return;
+    // The window begins at the first completed tap. A late tap is discarded,
+    // never reinterpreted as a new single tap after the prior sequence expired.
+    if (tapCount > 0 && now - sequenceStartedAt > TAP_DECISION_WINDOW_MS) {
+      tapCount = 0;
+      sequenceStartedAt = 0;
+      return;
+    }
+
+    if (tapCount == 0) sequenceStartedAt = now;
+    ++tapCount;
+
+    if (tapCount >= 3) {
+      // 3+ taps inside 500 ms explicitly cancel with no action.
+      tapCount = 0;
+      sequenceStartedAt = 0;
+      return;
+    }
   }
 
-  if (fanOn && peltierOn) {
-    fanOn = false;
-    peltierOn = false;
-    applyCoolingOutputs();
-    sendAck("TOUCH_COOLING", true, "OFF");
-    return;
+  if (!inputPressed && tapCount > 0 &&
+      now - sequenceStartedAt >= TAP_DECISION_WINDOW_MS) {
+    const uint8_t resolvedTapCount = tapCount;
+    tapCount = 0;
+    sequenceStartedAt = 0;
+
+    if (resolvedTapCount == 1) {
+      executeTouchSingle();
+    } else if (resolvedTapCount == 2) {
+      executeTouchDouble();
+    }
   }
-
-  fanOn = true;
-  peltierOn = true;
-  applyCoolingOutputs();
-  publishSafetyReason();
-  sendAck("TOUCH_COOLING", peltierOn, peltierOn ? "ON" : safetyReason());
 }
 
-static void onTouchSingleClick() {
-  executeTouchSingle();
-}
-
-static void onTouchDoubleClick() {
-  executeTouchDouble();
-}
-
-static void onTouchLongPress() {
-  executeTouchLong();
-}
 
 // ============================================================================
 // ====================== OTA PRIORITY SUPERVISOR — LOCKED ====================
@@ -4198,12 +4080,6 @@ static bool serviceOtaPriority() {
 
 static void setupTouch() {
   pinMode(PIN_TOUCH, INPUT);
-  touchButton.setDebounceMs(50);
-  touchButton.setClickMs(500);
-  touchButton.setPressMs(5000);
-  touchButton.attachClick(onTouchSingleClick);
-  touchButton.attachDoubleClick(onTouchDoubleClick);
-  touchButton.attachLongPressStart(onTouchLongPress);
 }
 
 static void initializeRuntimeFeatures() {
@@ -4334,7 +4210,7 @@ void loop() {
 
   processHeapDiagPostAdvertisingChecks();
 
-  touchButton.tick();
+  processTouchInput();
   sampleNtcIfDue();
   updateBatteryValidity();
   processAdaptiveHotTimer();
