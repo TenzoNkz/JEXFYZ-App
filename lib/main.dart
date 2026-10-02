@@ -4253,72 +4253,55 @@ class _DashboardScreenState extends State<DashboardScreen>
     final accent = scheme.primary;
     return InkWell(
       onTap: locked ? null : () => _requestVoltage(target),
-      borderRadius: BorderRadius.circular(17),
+      borderRadius: BorderRadius.circular(18),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         curve: Curves.easeOutCubic,
         constraints: const BoxConstraints(minHeight: jexSubmenuRowMinHeight),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
-          // The row itself is neutral in every state. Selection is represented only by the toggle.
+          // Geometry intentionally mirrors CONTROL/_switchRow. The row stays neutral;
+          // selection is represented only by the shared toggle on the right.
           color: scheme.surfaceContainerHighest.withValues(alpha: .26),
           borderRadius: BorderRadius.circular(18),
           border: Border.all(color: scheme.outlineVariant.withValues(alpha: .68)),
         ),
         child: Row(
           children: [
-            SizedBox(
-              width: 58,
+            Container(
+              width: 42,
+              height: 42,
+              decoration: BoxDecoration(
+                color: scheme.surfaceContainerHighest.withValues(alpha: .72),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              alignment: Alignment.center,
               child: Text(
                 target,
                 style: TextStyle(
                   color: scheme.onSurface,
-                  fontSize: 20,
+                  fontSize: 16,
                   fontWeight: FontWeight.w900,
                 ),
               ),
             ),
+            const SizedBox(width: 12),
             Expanded(
               child: Text(
                 mode,
                 style: TextStyle(
                   color: scheme.onSurfaceVariant,
-                  fontSize: 11.5,
+                  fontSize: 12,
                   fontWeight: FontWeight.w700,
                 ),
               ),
             ),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 180),
-              width: jexSubmenuToggleWidth,
-              height: jexSubmenuToggleHeight,
-              padding: const EdgeInsets.all(3),
-              decoration: BoxDecoration(
-                color: active
-                    ? accent.withValues(alpha: .18)
-                    : scheme.surfaceContainerHighest.withValues(alpha: .72),
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(
-                  color: active ? accent.withValues(alpha: .46) : scheme.outlineVariant,
-                ),
-              ),
-              child: AnimatedAlign(
-                duration: const Duration(milliseconds: 180),
-                curve: Curves.easeOutCubic,
-                alignment: active ? Alignment.centerRight : Alignment.centerLeft,
-                child: Container(
-                  width: 24,
-                  height: 24,
-                  decoration: BoxDecoration(
-                    color: active
-                        ? accent
-                        : scheme.onSurfaceVariant.withValues(alpha: locked ? .18 : .30),
-                    shape: BoxShape.circle,
-                  ),
-                  // No secondary check glyph; knob position + accent track are the sole selection cue.
-
-                ),
-              ),
+            const SizedBox(width: 8),
+            _jexToggle(
+              value: active,
+              enabled: !locked,
+              accent: accent,
+              onChanged: (_) async => _requestVoltage(target),
             ),
           ],
         ),

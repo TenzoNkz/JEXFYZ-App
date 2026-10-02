@@ -126,6 +126,12 @@ void main() {
     expect(isTransientOtaResultEvent('OTA_UP_TO_DATE|MODE=ONLINE|STAGE=ONLINE_UP_TO_DATE|VERSION=V2.5|PROGRESS=100'), isFalse);
   });
 
+  test('Voltage uses the same leading slot and shared toggle geometry as control rows', () {
+    expect(jexSubmenuRowMinHeight, 62.0);
+    expect(jexSubmenuToggleWidth, 54.0);
+    expect(jexSubmenuToggleHeight, 32.0);
+  });
+
   test('Submenu geometry is shared between Voltage and control toggles', () {
     expect(jexSubmenuRowMinHeight, 62.0);
     expect(jexSubmenuToggleWidth, 54.0);

@@ -1,3 +1,12 @@
+## 2026-10-02 — FULL EXECUTION / VOLTAGE REFACTORED TO CONTROL TEMPLATE
+
+- Refactored VOLTAGE rows to follow the same internal geometry pattern as CONTROL/_switchRow instead of merely matching minimum height numerically.
+- Each VOLTAGE row now has the same 42x42 leading slot, 12px leading gap, 62px row minimum, 12px horizontal/10px vertical padding, 18px row radius, 8px status-toggle gap, and the shared `_jexToggle()` (54x32px).
+- 5V/9V/12V are displayed inside the 42x42 leading slot; the slot is neutral and does not represent selection.
+- VOLTAGE remains toggle-only: no black/white active row and no secondary check glyph.
+- Added/updated regression coverage for the shared VOLTAGE/CONTROL geometry contract.
+- No firmware, BLE/P1, OTA, Firebase, GPIO, safety, telemetry, signing, or build workflow changes were made.
+- Build App remains deferred until explicitly requested.
 ## 2026-10-02 — BUILD APP #47 SUCCESS / SUBMENU GEOMETRY ALIGNMENT
 
 - Build #47 run `36955917639` completed successfully from source commit `d7b0ae4a9869d3419000d204b4588ed64a5acc40`.
