@@ -1,5 +1,14 @@
 ## 2026-10-02 — V2.7 AUDIT / GROUPS H–L USER DECISIONS
 
+- Touch contract: single tap changes voltage; double tap toggles RGB; 3+ taps within the 500 ms decision window cancel; 5 s hold toggles Fan+Peltier subject to firmware safety.
+- Per-voltage custom color settings are removed from the intended App/Firmware contract; fixed voltage indicator colors remain.
+- BLE anti-spam requirement applies only to VOLTAGE control.
+- Command #70 is not needed after per-voltage color customization was removed.
+- #67–#69 and #71–#74 remain accepted.
+- No App source or App build change was made in this discussion.
+
+## 2026-10-02 — V2.7 AUDIT / GROUPS H–L USER DECISIONS
+
 - Firmware audit decisions recorded without changing App source or triggering an App build.
 - Touch contract to be implemented later: remove explicit debounce; 1 tap = voltage step, 2 taps = RGB ON/OFF, 3+ taps = cancel/fail, 5 s hold = Fan+Peltier toggle, with Adaptive safety/lock preserved.
 - LED/RGB #43–#51 accepted unchanged.
