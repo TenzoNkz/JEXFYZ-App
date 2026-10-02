@@ -28,7 +28,7 @@ enum class LedMode : uint8_t;
 enum class VoltageRequestSource : uint8_t;
 enum class AdaptiveProfile : uint8_t;
 
-static constexpr char FW_VERSION[] = "V2.8";
+static constexpr char FW_VERSION[] = "V2.9";
 
 // ============================================================================
 // ========================== HEAP DIAGNOSTIC BUILD ===========================
@@ -3889,9 +3889,19 @@ static void executeTouchLong() {
   // Touch remains active, but cooling cannot be started until startup completes.
   if (bootApActive && !bootApClientSafe) return;
 
-  // Adaptive owns Fan/Peltier controls while active; a hold must not bypass that lock.
+  // Preserve the existing Touch Adaptive-OFF path. While Adaptive is active,
+  // the 5-second hold exits Adaptive rather than directly toggling cooling.
   if (adaptiveOn) {
-    sendAck("TOUCH_COOLING", false, "ADAPTIVE_ACTIVE");
+    String reason;
+    setAdaptiveState(false, reason);
+
+    if (adaptiveOn) {
+      sendAck("TOUCH_ADAPTIVE", false, reason);
+      return;
+    }
+
+    startTouchAdaptiveOffIndicator();
+    sendAck("TOUCH_ADAPTIVE", true, "OFF");
     return;
   }
 
