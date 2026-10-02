@@ -230,7 +230,7 @@ void main() {
     expect(light.colorScheme.onSurfaceVariant.computeLuminance(), lessThan(0.10));
   });
 
-  test('Light theme uses dark high-contrast semantic text', {
+  test('Light theme uses dark high-contrast semantic text', () {
     final theme = buildJexTheme(AppThemePreset.light);
     expect(theme.brightness, Brightness.light);
     expect(theme.scaffoldBackgroundColor, const Color(0xFFEEF0F4));

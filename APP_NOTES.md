@@ -1,3 +1,9 @@
+## 2026-10-02 — BUILD #42 CORRECTIVE SOURCE FIX
+
+- Build #42 reached the `flutter analyze` stage and failed because the newly added Light Theme regression test contained a Dart test declaration typo: `{` was used where `() {` was required.
+- Corrected only `test/widget_test.dart`; no production App logic was changed by this corrective fix.
+- Build #42 did not run Flutter tests, APK compilation, signing, or artifact upload because analyze failed first.
+- A fresh Build App is required from the corrected commit before the App can be considered build-validated.
 ## 2026-10-02 — FULL EXECUTION / LIGHT THEME + VOLTAGE TOGGLE CLEANUP
 
 - App-only presentation pass executed from current HEAD.
