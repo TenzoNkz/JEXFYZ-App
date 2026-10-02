@@ -1,3 +1,13 @@
+## 2026-10-02 — FULL EXECUTION / LIGHT THEME CONTRAST + VISIBLE SHADOW
+
+- Home metric inactive icons now retain full semantic accent color; inactive state is communicated by stopped animation, not a faded icon.
+- Light Theme Home metric cards now use visible black ambient shadow plus restrained accent shadow and stronger accent outlines.
+- Home labels and values receive a subtle dark text shadow for separation from the bright scaffold; active values retain their semantic accent.
+- Home NOTIFY uses darker semantic accent text in Light Theme, specifically preventing bright neon-cyan `ONLINE` from disappearing against the pale status pill.
+- Home NOTIFY card and status pill now have explicit border/shadow depth.
+- Added regression coverage for Light Theme semantic accent text.
+- No firmware, BLE/P1, OTA, Firebase, GPIO, safety, telemetry, signing, or build-workflow logic changed.
+- Build App was not run in this execution.
 ## 2026-10-02 — FULL EXECUTION / VOLTAGE REFACTORED TO CONTROL TEMPLATE
 
 - Refactored VOLTAGE rows to follow the same internal geometry pattern as CONTROL/_switchRow instead of merely matching minimum height numerically.

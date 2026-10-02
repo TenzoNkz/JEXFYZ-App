@@ -1091,6 +1091,14 @@ bool isVoltageCommand(String value) {
   return v == '5V' || v == '9V' || v == '12V';
 }
 
+// AI-THEME: lightThemeAccentText — Generate a darker semantic accent for text on bright surfaces.
+Color lightThemeAccentText(Color color) {
+  final hsl = HSLColor.fromColor(color);
+  final lightness = hsl.lightness.clamp(0.22, 0.48).toDouble();
+  final saturation = hsl.saturation.clamp(0.58, 1.0).toDouble();
+  return hsl.withLightness(lightness).withSaturation(saturation).toColor();
+}
+
 // AI-METHOD: isTransientOtaResultEvent — Accept only fresh OTA success/failure envelopes for Home NOTIFY.
 bool isTransientOtaResultEvent(String value) {
   final upper = value.trim().toUpperCase();
@@ -3500,11 +3508,11 @@ class _DashboardScreenState extends State<DashboardScreen>
     // Light mode stays colorful while separating surface, outline, and glyph contrast.
     // The accent identifies the metric without becoming a harsh solid block.
     final mutedText = homeDark ? const Color(0xFFD4D7E0) : const Color(0xFF25282E);
-    final lightAccentOpacity = active ? .11 : .075;
-    final lightOutlineOpacity = active ? .46 : .28;
-    final indicatorColor = homeDark
-        ? color
-        : color.withValues(alpha: active ? 1.0 : .78);
+    final lightAccentOpacity = active ? .12 : .09;
+    final lightOutlineOpacity = active ? .50 : .36;
+    // Active state controls animation only. Inactive icons retain their full semantic color.
+    final indicatorColor = color;
+    final lightTextAccent = lightThemeAccentText(color);
     final indicatorFill = homeDark
         ? color.withValues(alpha: .12)
         : color.withValues(alpha: lightAccentOpacity);
@@ -3538,12 +3546,19 @@ class _DashboardScreenState extends State<DashboardScreen>
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: homeDark
-                              ? Colors.black.withValues(alpha: .10)
-                              : color.withValues(alpha: active ? .12 : .07),
-                          blurRadius: homeDark ? 5 : (active ? 8 : 6),
+                          color: Colors.black.withValues(
+                            alpha: homeDark ? .16 : (active ? .16 : .12),
+                          ),
+                          blurRadius: homeDark ? 7 : (active ? 9 : 8),
+                          spreadRadius: homeDark ? 0 : .2,
                           offset: const Offset(0, 2),
                         ),
+                        if (!homeDark)
+                          BoxShadow(
+                            color: color.withValues(alpha: active ? .10 : .06),
+                            blurRadius: active ? 8 : 6,
+                            offset: const Offset(0, 1),
+                          ),
                       ],
                     ),
                     child: animatedKind == null
@@ -3585,6 +3600,15 @@ class _DashboardScreenState extends State<DashboardScreen>
                             fontWeight: FontWeight.w900,
                             letterSpacing: 0.45,
                             height: 1.0,
+                            shadows: homeDark
+                                ? null
+                                : [
+                                    Shadow(
+                                      color: Colors.black.withValues(alpha: .12),
+                                      blurRadius: 1.0,
+                                      offset: const Offset(0, 1),
+                                    ),
+                                  ],
                           ),
                         ),
                       ),
@@ -3597,7 +3621,16 @@ class _DashboardScreenState extends State<DashboardScreen>
                       style: TextStyle(
                         color: active
                             ? indicatorColor
-                            : (homeDark ? const Color(0xFF7F8592) : const Color(0xFF7A808A)),
+                            : (homeDark ? const Color(0xFF7F8592) : lightTextAccent),
+                        shadows: homeDark
+                            ? null
+                            : [
+                                Shadow(
+                                  color: Colors.black.withValues(alpha: .16),
+                                  blurRadius: 1.1,
+                                  offset: const Offset(0, 1),
+                                ),
+                              ],
                         fontSize: 18.5,
                         fontWeight: FontWeight.w900,
                         height: 0.95,
@@ -3857,8 +3890,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   Widget _homeNotify() {
     final headerDark = appThemeNotifier.value != AppThemePreset.light;
     final noticeTextColor = headerDark ? const Color(0xFFF4F6FA) : const Color(0xFF16181D);
-    final noticeChipFill = headerDark ? const Color(0x12FFFFFF) : const Color(0xFFE5E7EB);
-    final offlineStatusColor = headerDark ? Colors.white38 : const Color(0xFF6F747D);
+    final offlineStatusColor = headerDark ? Colors.white38 : const Color(0xFF5C626B);
     final custom = notice.trim().toUpperCase();
     final hasError = custom.contains('FAILED') ||
         custom.contains('ERROR') ||
@@ -3879,14 +3911,31 @@ class _DashboardScreenState extends State<DashboardScreen>
         : alert
             ? const Color(0xFFFFB72B)
             : const Color(0xFF4DE7B7);
+    final lightStatusTextColor = lightThemeAccentText(color);
+    final noticeChipFill = headerDark
+        ? const Color(0x12FFFFFF)
+        : color.withValues(alpha: hasError ? .11 : .08);
     return Container(
       width: double.infinity,
       height: 44,
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: hasError ? 0.12 : 0.07),
+        color: headerDark
+            ? color.withValues(alpha: hasError ? .12 : .07)
+            : color.withValues(alpha: hasError ? .11 : .08),
         borderRadius: BorderRadius.circular(13),
-        border: Border.all(color: color.withValues(alpha: 0.25)),
+        border: Border.all(
+          color: headerDark
+              ? color.withValues(alpha: .25)
+              : color.withValues(alpha: .30),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: headerDark ? .12 : .10),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -3950,15 +3999,38 @@ class _DashboardScreenState extends State<DashboardScreen>
             decoration: BoxDecoration(
               color: noticeChipFill,
               borderRadius: BorderRadius.circular(7),
+              border: Border.all(
+                color: headerDark
+                    ? color.withValues(alpha: .16)
+                    : lightStatusTextColor.withValues(alpha: .24),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: headerDark ? .08 : .07),
+                  blurRadius: 4,
+                  offset: const Offset(0, 1),
+                ),
+              ],
             ),
             child: Text(
               _notifyStatusLabel(),
               style: TextStyle(
                 color: hasError
-                    ? const Color(0xFFFF8A98)
+                    ? (headerDark
+                        ? const Color(0xFFFF8A98)
+                        : lightThemeAccentText(const Color(0xFFFF5164)))
                     : connected
-                        ? Colors.cyanAccent
+                        ? (headerDark ? Colors.cyanAccent : lightStatusTextColor)
                         : offlineStatusColor,
+                shadows: headerDark
+                    ? null
+                    : [
+                        Shadow(
+                          color: Colors.black.withValues(alpha: .14),
+                          blurRadius: 1.0,
+                          offset: const Offset(0, 1),
+                        ),
+                      ],
                 fontSize: 7.3,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 0.75,

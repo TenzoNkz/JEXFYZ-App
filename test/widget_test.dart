@@ -233,6 +233,13 @@ void main() {
     expect(theme.scaffoldBackgroundColor, const Color(0xFF0F1013));
   });
 
+  test('Light Theme semantic accent text reduces luminance for bright surfaces', () {
+    const cyan = Color(0xFF4DE7B7);
+    final textColor = lightThemeAccentText(cyan);
+    expect(textColor.computeLuminance(), lessThan(cyan.computeLuminance()));
+    expect(textColor.computeLuminance(), lessThan(0.35));
+  });
+
   test('Light theme keeps accent roles visually available for colorful metric cards', () {
     final light = buildJexTheme(AppThemePreset.light);
     expect(light.colorScheme.primary.computeLuminance(), greaterThan(0.20));
