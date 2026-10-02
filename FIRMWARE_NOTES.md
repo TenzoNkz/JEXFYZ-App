@@ -1,3 +1,43 @@
+## 2026-10-03 — V2.7 AUDIT / GROUPS M–S USER DECISIONS
+
+### M. PREFERENCES / STORAGE — #75–#77
+- #75: remove configurable per-voltage LED color persistence because #53 removed the feature. Fixed voltage-indicator colors remain internal firmware behavior.
+- #76: KEEP 10-second save debounce after settings changes.
+- #77: KEEP runtime cooling state non-persistent; boot starts from safe baseline as defined by firmware.
+
+### N. LOCAL OTA — #78–#84
+- #78: KEEP boot AP/local OTA startup behavior.
+- #79: KEEP 10-second initial AP timeout and 60-second hard limit.
+- #80: KEEP local OTA client safety behavior: Fan/Peltier/LED OFF and BLE OFF while OTA client session owns the radio.
+- #81: current 2 MB firmware hard cap is considered too close to the available OTA partition budget. Recommended new hard cap for discussion/execution is **1.75 MB (1792 KiB)**, while retaining the existing runtime `ESP.getFreeSketchSpace()` check and `Update.begin()` validation.
+- Hardware/repository notes identify the board baseline as 4 MB flash with `no_fs`; the exact partition CSV is not present in the App repository, so 1.75 MB is recorded as a conservative engineering target rather than a proven exact partition capacity.
+- #82–#84: KEEP local `.bin` validation, exact-size write/verify lifecycle, green success indication, and red failure/retry behavior.
+
+### O. ONLINE OTA — #85–#94
+- #85: KEEP Firebase/App metadata plane and GitHub binary plane.
+- #86: KEEP fixed approved GitHub Raw URL restriction and `.bin` validation.
+- #87: KEEP simple firmware-version comparison policy: a syntactically valid version that differs from the current version is accepted; do not add SHA linking or a downgrade-blocking rule under this current requirement.
+- #88–#94: KEEP current radio handoff, bounded Wi-Fi retry, HTTP download, 0xE9 image validation, Update.h flash lifecycle, success restart, and failure BLE recovery behavior.
+
+### P. OTA LED STATE MACHINE — #95
+- #95: KEEP the current multi-stage OTA LED state machine exactly as already designed; user accepts the existing blue/green/red stage indicators.
+
+### Q. OTA DIAGNOSTICS / NOTIFY — #96–#98
+- #96: KEEP OTA diagnostic telemetry including stage/progress/error information.
+- #97: KEEP one-shot OTA result event semantics.
+- #98: KEEP one-boot OTA success handoff and event consumption behavior.
+
+### R. RESET REASON — #99
+- #99: KEEP the current Core 3.3.7 diagnostic sentinel behavior and App filtering semantics.
+
+### S. SAFETY / STATE REASON — #100
+- #100: KEEP current safety/state reason vocabulary and firmware safety authority.
+
+### #81 ENGINEERING CLARIFICATION
+- A hard 1.75 MB cap is intended to provide conservative headroom below the estimated 4 MB/no_fs OTA application budget, but it does NOT replace `ESP.getFreeSketchSpace()` or `Update.begin()` validation.
+- 'Breathing room' here means flash/OTA partition margin; it is not runtime heap/RAM headroom. Runtime RAM safety continues to be governed by the existing heap diagnostics and normal firmware behavior.
+- No source change was made in this audit discussion. #81 remains a recommendation until explicitly executed.
+
 ## 2026-10-02 — V2.7 AUDIT / GROUPS H–L USER DECISIONS
 
 - #39: remove the 50 ms Touch debounce; tap window = 500 ms; single tap = voltage cycle; double tap = RGB ON/OFF; 3+ taps within the decision window = cancel; 5 s hold = Fan+Peltier toggle subject to safety.
