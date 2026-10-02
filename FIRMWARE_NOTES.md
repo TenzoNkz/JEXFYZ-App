@@ -1,3 +1,18 @@
+## 2026-10-02 — CORRECTION / BATTERY VOLTAGE ZONE INTERPRETATION
+
+- User clarified that the Battery voltage ranges are NOT a transition zone.
+- The three voltages are independent temperature zones with a 1°C separation between their boundary values.
+- Intended temperature behavior is:
+  - 5V zone: 20°C through below 30°C; therefore 29°C = 5V.
+  - 9V zone: the single 1°C interval/value between the 5V and 12V zones; 30°C = 9V.
+  - 12V zone: above the 9V boundary and through the configured maximum; 31°C = 12V, up to 40°C.
+- Critical clarification: there must be NO 5V at 30°C and NO 12V at 30°C. At exactly 30°C the result must be 9V.
+- Therefore the intended upward mapping is explicitly: 29°C → 5V, 30°C → 9V, 31°C → 12V.
+- The 1°C value is the width/separation of the 9V zone, not a special ramp or temporary transition state.
+- Hysteresis is a separate mechanism and remains 1.0°C as previously requested; when implementing, hysteresis must not create an overlap where the same temperature can resolve simultaneously to multiple voltage zones.
+- The previous audit note describing 9V as a generic 'transition zone' was imprecise and is superseded by this clarification.
+- No source was changed in this discussion. This correction is a requirements/documentation update only.
+
 ## 2026-10-02 — V2.6 AUDIT / GROUPS B–G USER DECISIONS + NEW CONTROL REQUIREMENTS
 
 ### B. TEMPERATURE / NTC — #6–#9
