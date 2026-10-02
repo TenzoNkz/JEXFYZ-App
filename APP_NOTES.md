@@ -1,3 +1,10 @@
+## 2026-10-02 — BUILD #43 TEST-CONTRACT CORRECTION
+
+- Build #43 passed toolchain verification, production signing preparation, security/architecture audit, dependency installation, and Dart analysis.
+- Flutter tests then failed only on the `adaptiveOn` Indonesian assertion because the active JexText value is `Mode Adaptif HIDUP.` with a terminal period.
+- Corrected only `test/widget_test.dart` to match the active centralized localization contract. No production App logic was changed.
+- Build #43 did not reach APK compilation because tests failed first; a fresh Build App is required from the corrected commit.
+
 ## 2026-10-02 — BUILD #42 CORRECTIVE SOURCE FIX
 
 - Build #42 reached the `flutter analyze` stage and failed because the newly added Light Theme regression test contained a Dart test declaration typo: `{` was used where `() {` was required.
