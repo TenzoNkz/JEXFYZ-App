@@ -1,3 +1,29 @@
+## 2026-10-02 — V2.6 FIRMWARE AUDIT / GROUPS B–G USER DECISIONS
+
+- User reviewed the numbered V2.6 inventory group-by-group and accepted the following as the current design baseline:
+  - #6–#9 NTC / Temperature: **KEEP / ACCEPTED**.
+  - #10–#15 Voltage System: **KEEP / ACCEPTED**.
+  - #16–#18 Fan/Peltier Control: **KEEP / ACCEPTED, subject to the current firmware notes and new Adaptive-lock requirement below**.
+  - #19–#22 Hotside Safety: **KEEP / ACCEPTED**.
+  - #23 Rapid-Rise Protection: **NOT NEEDED**; do not add a guessed rate-of-rise protection mechanism unless the user explicitly reopens this requirement.
+  - #24–#26 Battery Temperature / Adaptive Battery: **ACCEPTED**, with #26 subject to the new battery-zone boundaries below.
+  - #27 Battery hysteresis: **CHANGE REQUEST — 1.0°C** instead of the current 0.8°C.
+  - #28–#29 Adaptive Battery scheduling/pending states: **KEEP / ACCEPTED**.
+  - #30 Adaptive profiles: **KEEP / ACCEPTED**.
+  - #31 Profile semantics: **KEEP / ACCEPTED**, respecting the source/note distinction between Hotside-only and combined Hotside+Battery behavior.
+  - #32–#37 Adaptive startup/active behavior: **KEEP / ACCEPTED**.
+  - #38 Adaptive OFF: **KEEP / ACCEPTED**.
+- New requested firmware behavior is recorded as a planned change, not yet implemented:
+  1. When Adaptive is ON, Fan and Peltier must be ON automatically. If either is OFF when Adaptive becomes active, firmware must turn it ON automatically.
+  2. While Adaptive is ON, user Fan/Peltier controls must remain locked and cannot be manually changed.
+  3. Safety logic remains authoritative: if Hotside protection requires Peltier OFF, the safety state may override the normal Adaptive “Peltier ON” policy; this is not considered a user control unlock.
+  4. In manual-voltage operation, when Hotside reaches the critical limit, firmware must force the voltage to 5V in addition to the existing Peltier-OFF/Fan-ON safety response.
+  5. Battery voltage zoning is being redesigned around the user's example: approximately 5V at 29°C, 9V at 30°C, and 12V at 31°C. The intended temperature bands are 5V 20–30°C, a 1°C intermediate 9V band, and 12V 30–40°C as the overall configured range; exact edge/hysteresis interaction must remain consistent when implemented.
+  6. Battery hysteresis is requested at **1.0°C**.
+  7. HOTSIDE / Hotside Protection evaluates the physical NTC Hotside temperature only.
+  8. HOTSIDE_BATTERY evaluates both physical NTC Hotside and the App/phone-provided Battery temperature, with Hotside remaining the safety priority.
+- No App source or build change is authorized by this audit event; the App/BLE contract should remain stable while firmware behavior is finalized.
+
 ## 2026-10-02 — PROJECT AUDIT / FIRMWARE V2.6 GROUP REVIEW STARTED
 
 - App Build #50 remains the latest verified App build and completed successfully before the current firmware re-audit; no App source change is part of this audit step.
