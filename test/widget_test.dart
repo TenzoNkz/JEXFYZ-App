@@ -78,7 +78,7 @@ void main() {
     expect(JexText.of('default', AppLanguage.indonesia), 'Bawaan');
     expect(JexText.of('opacity', AppLanguage.indonesia), 'Transparansi');
     expect(JexText.of('adaptiveSwitch', AppLanguage.indonesia), 'Sakelar Adaptif');
-    expect(JexText.of('adaptiveOn', AppLanguage.indonesia), 'Mode Adaptif HIDUP');
+    expect(JexText.of('adaptiveOn', AppLanguage.indonesia), 'Mode Adaptif HIDUP.');
     expect(JexText.of('adaptiveOff', AppLanguage.indonesia), 'Mode Adaptif MATI');
     expect(JexText.of('allow', AppLanguage.indonesia), 'Izinkan');
     expect(JexText.of('unknownError', AppLanguage.indonesia), 'Kesalahan tidak diketahui');
