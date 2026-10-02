@@ -1,3 +1,15 @@
+## 2026-10-02 — FULL EXECUTION / LIGHT THEME + VOLTAGE TOGGLE CLEANUP
+
+- App-only presentation pass executed from current HEAD.
+- Light Theme Home metrics now use neutral icon containers/borders; accent colors remain reserved for active telemetry instead of filling large pastel blocks.
+- Disconnected/inactive Light Theme Home metrics use muted neutral icon/value presentation while labels remain dark and readable.
+- Home NOTIFY Light Theme now uses a neutral card surface with semantic status accent retained on the icon/status text.
+- Custom Control switch rows use neutral Light Theme row/icon surfaces; ON state is expressed by accent state/control rather than a full accent-tinted row.
+- VOLTAGE no longer changes the entire 5V/9V/12V row into a black/white active block. Rows keep the same surface/text treatment; the right-side toggle is the only selection indicator.
+- Removed the redundant check glyph inside the VOLTAGE active toggle.
+- Added Light Theme semantic-role regression coverage.
+- No BLE/P1, firmware, OTA, Firebase, GPIO, safety, telemetry, Floating transport, signing, or build workflow changes were made.
+- Build App was intentionally not run; it remains the next explicit workflow step.
 ## 2026-10-02 — CORRECTIVE STATIC PASS AFTER ONE-SHOT OTA COMMIT
 
 - Corrected one regression-test syntax typo found during post-commit review.

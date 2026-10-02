@@ -221,7 +221,16 @@ void main() {
     expect(theme.scaffoldBackgroundColor, const Color(0xFF0F1013));
   });
 
-  test('Light theme uses dark high-contrast semantic text', () {
+  test('Light theme keeps neutral surfaces and reserved accent roles', () {
+    final light = buildJexTheme(AppThemePreset.light);
+    expect(light.colorScheme.surface, isNot(light.colorScheme.primary));
+    expect(light.colorScheme.surfaceContainerHighest, isNot(light.colorScheme.primary));
+    expect(light.colorScheme.outlineVariant, isNot(light.colorScheme.primary));
+    expect(light.colorScheme.onSurface.computeLuminance(), lessThan(0.05));
+    expect(light.colorScheme.onSurfaceVariant.computeLuminance(), lessThan(0.10));
+  });
+
+  test('Light theme uses dark high-contrast semantic text', {
     final theme = buildJexTheme(AppThemePreset.light);
     expect(theme.brightness, Brightness.light);
     expect(theme.scaffoldBackgroundColor, const Color(0xFFEEF0F4));

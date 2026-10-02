@@ -3492,8 +3492,17 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
     final homeDark = appThemeNotifier.value != AppThemePreset.light;
     // AI-THEME / DASHBOARD-LIGHT-CONTRAST-CONTRACT
-    // Explicit Home metric text remains dark in Light mode; no pale muted text on light surfaces.
-    final mutedText = homeDark ? const Color(0xFFD4D7E0) : const Color(0xFF16181D);
+    // Light mode is neutral-first: surfaces/borders remain neutral and accent colors
+    // identify active telemetry instead of becoming large pastel blocks.
+    final mutedText = homeDark ? const Color(0xFFD4D7E0) : const Color(0xFF25282E);
+    final indicatorColor =
+        !homeDark && (!connected || !active) ? const Color(0xFF7A808A) : color;
+    final indicatorFill = homeDark
+        ? color.withValues(alpha: .12)
+        : const Color(0xFFE5E7EB);
+    final indicatorBorder = homeDark
+        ? color.withValues(alpha: .52)
+        : const Color(0xFFD5D9E0);
 
     return Padding(
       padding: EdgeInsets.zero,
@@ -3513,10 +3522,10 @@ class _DashboardScreenState extends State<DashboardScreen>
                     width: 38,
                     height: 38,
                     decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.12),
+                      color: indicatorFill,
                       borderRadius: BorderRadius.circular(9),
                       border: Border.all(
-                        color: color.withValues(alpha: 0.52),
+                        color: indicatorBorder,
                         width: 1.1,
                       ),
                     ),
@@ -3524,14 +3533,14 @@ class _DashboardScreenState extends State<DashboardScreen>
                         ? JexAnimatedIcon.glyph(
                             icon: icon,
                             size: 22,
-                            color: color,
+                            color: indicatorColor,
                             active: animationIsActive,
                             warning: warning,
                           )
                         : JexAnimatedIcon(
                             kind: animatedKind,
                             size: 22,
-                            color: color,
+                            color: indicatorColor,
                             active: animationIsActive,
                             level: level,
                             warning: warning,
@@ -3569,7 +3578,9 @@ class _DashboardScreenState extends State<DashboardScreen>
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color: active ? color : (homeDark ? const Color(0xFF7F8592) : const Color(0xFF16181D)),
+                        color: active
+                            ? indicatorColor
+                            : (homeDark ? const Color(0xFF7F8592) : const Color(0xFF7A808A)),
                         fontSize: 18.5,
                         fontWeight: FontWeight.w900,
                         height: 0.95,
@@ -3829,7 +3840,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   Widget _homeNotify() {
     final headerDark = appThemeNotifier.value != AppThemePreset.light;
     final noticeTextColor = headerDark ? const Color(0xFFF4F6FA) : const Color(0xFF16181D);
-    final noticeChipFill = headerDark ? const Color(0x12FFFFFF) : const Color(0x12000000);
+    final noticeChipFill = headerDark ? const Color(0x12FFFFFF) : const Color(0xFFE5E7EB);
     final offlineStatusColor = headerDark ? Colors.white38 : const Color(0xFF6F747D);
     final custom = notice.trim().toUpperCase();
     final hasError = custom.contains('FAILED') ||
@@ -4012,20 +4023,25 @@ class _DashboardScreenState extends State<DashboardScreen>
     final scheme = Theme.of(context).colorScheme;
     final accent = scheme.primary;
     final lang = appLanguageNotifier.value;
+    final lightTheme = Theme.of(context).brightness == Brightness.light;
+    final rowFill = lightTheme
+        ? const Color(0xFFF5F6F8)
+        : (value
+            ? accent.withValues(alpha: .075)
+            : scheme.surfaceContainerHighest.withValues(alpha: .34));
+    final rowBorder = lightTheme
+        ? const Color(0xFFDDE1E7)
+        : (value
+            ? accent.withValues(alpha: .28)
+            : scheme.outlineVariant.withValues(alpha: .72));
     return AnimatedContainer(
       duration: const Duration(milliseconds: 180),
       curve: Curves.easeOutCubic,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: value
-            ? accent.withValues(alpha: .075)
-            : scheme.surfaceContainerHighest.withValues(alpha: .34),
+        color: rowFill,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: value
-              ? accent.withValues(alpha: .28)
-              : scheme.outlineVariant.withValues(alpha: .72),
-        ),
+        border: Border.all(color: rowBorder),
       ),
       child: Row(
         children: [
@@ -4034,9 +4050,11 @@ class _DashboardScreenState extends State<DashboardScreen>
             width: 42,
             height: 42,
             decoration: BoxDecoration(
-              color: value
-                  ? accent.withValues(alpha: .12)
-                  : scheme.surfaceContainerHighest.withValues(alpha: .72),
+              color: lightTheme
+                  ? const Color(0xFFE9EBEF)
+                  : (value
+                      ? accent.withValues(alpha: .12)
+                      : scheme.surfaceContainerHighest.withValues(alpha: .72)),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Center(
@@ -4215,11 +4233,6 @@ class _DashboardScreenState extends State<DashboardScreen>
     final active = voltage == target;
     final scheme = Theme.of(context).colorScheme;
     final accent = scheme.primary;
-    final darkSurface = appThemeNotifier.value == AppThemePreset.dark;
-    final activeBackground =
-        darkSurface ? scheme.onSurface : const Color(0xFF17181C);
-    final activeForeground =
-        darkSurface ? const Color(0xFF111318) : Colors.white;
     return InkWell(
       onTap: locked ? null : () => _requestVoltage(target),
       borderRadius: BorderRadius.circular(17),
@@ -4228,15 +4241,10 @@ class _DashboardScreenState extends State<DashboardScreen>
         curve: Curves.easeOutCubic,
         padding: const EdgeInsets.fromLTRB(14, 11, 11, 11),
         decoration: BoxDecoration(
-          color: active
-              ? activeBackground
-              : scheme.surfaceContainerHighest.withValues(alpha: .26),
+          // The row itself is neutral in every state. Selection is represented only by the toggle.
+          color: scheme.surfaceContainerHighest.withValues(alpha: .26),
           borderRadius: BorderRadius.circular(17),
-          border: Border.all(
-            color: active
-                ? accent.withValues(alpha: .28)
-                : scheme.outlineVariant.withValues(alpha: .68),
-          ),
+          border: Border.all(color: scheme.outlineVariant.withValues(alpha: .68)),
         ),
         child: Row(
           children: [
@@ -4245,7 +4253,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               child: Text(
                 target,
                 style: TextStyle(
-                  color: active ? activeForeground : scheme.onSurface,
+                  color: scheme.onSurface,
                   fontSize: 20,
                   fontWeight: FontWeight.w900,
                 ),
@@ -4255,7 +4263,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               child: Text(
                 mode,
                 style: TextStyle(
-                  color: active ? activeForeground.withValues(alpha: .72) : scheme.onSurfaceVariant,
+                  color: scheme.onSurfaceVariant,
                   fontSize: 11.5,
                   fontWeight: FontWeight.w700,
                 ),
@@ -4288,9 +4296,8 @@ class _DashboardScreenState extends State<DashboardScreen>
                         : scheme.onSurfaceVariant.withValues(alpha: locked ? .18 : .30),
                     shape: BoxShape.circle,
                   ),
-                  child: active
-                      ? const Icon(Icons.check, size: 13, color: Colors.white)
-                      : null,
+                  // No secondary check glyph; knob position + accent track are the sole selection cue.
+
                 ),
               ),
             ),
