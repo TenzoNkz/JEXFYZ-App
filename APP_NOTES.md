@@ -1,3 +1,13 @@
+## 2026-10-02 — V2.7 AUDIT / GROUPS H–L USER DECISIONS
+
+- Firmware audit decisions recorded without changing App source or triggering an App build.
+- Touch contract to be implemented later: remove explicit debounce; 1 tap = voltage step, 2 taps = RGB ON/OFF, 3+ taps = cancel/fail, 5 s hold = Fan+Peltier toggle, with Adaptive safety/lock preserved.
+- LED/RGB #43–#51 accepted unchanged.
+- Voltage LED defaults remain needed for indicator behavior, but user-configurable V5/V9/V12 colors are removed; App should no longer expose or depend on custom voltage-color settings.
+- BLE #58–#65 accepted. #66 narrows the future spam guard to VOLTAGE only.
+- Command #70 is obsolete together with removed voltage-color customization; fixed default voltage colors remain firmware-side.
+- No App protocol UUIDs or logical command tokens are being changed as part of this audit.
+
 ## 2026-10-02 — V2.7 FIRMWARE EXECUTION RECORDED\n\n- Firmware was functionally advanced from V2.6 to V2.7 in the App continuity repository after the user's explicit execution command.\n- App source was not modified by this firmware execution.\n- App/BLE/P1 logical command tokens and UUID contract remain unchanged; the firmware-side Adaptive lock/safety behavior was updated without introducing an App protocol change.\n- App Build was not triggered. The latest verified App Build remains #50 from the pre-execution App source state.\n- Firmware V2.7 requires its own ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile, BIN verification, and physical validation before it can be considered an OTA candidate/release.\n\n## 2026-10-02 — FINAL CLARIFICATION / BATTERY ADAPTIVE STEP LOGIC
 
 - Battery Adaptive uses the configured 5V and 12V temperature limits as movement thresholds, not as a direct 5V/9V/12V lookup table.
