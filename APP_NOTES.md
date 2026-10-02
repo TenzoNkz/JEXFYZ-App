@@ -1,3 +1,13 @@
+## 2026-10-02 — BUILD APP #45 SUCCESS / LIGHT THEME + VOLTAGE TOGGLE
+
+- Build #45 run `36951986261` completed successfully from source commit `f67eab1117c6d651f71c9a30a43dc0b5f978760b`.
+- Passed: toolchain verification, production signing preparation, security/architecture audit, dependency installation, Dart analysis, all Flutter tests, release APK compilation, APK signature verification, APK artifact upload, and Dart symbols upload.
+- Release APK artifact: `JEXFYZ#45.apk`, artifact ID `11204632497`, size `54,245,456` bytes.
+- APK artifact SHA-256: `0f08ef854ef72f510c2d93388a028ef7d9ae524f13600487d5d1b78e88db50fc`.
+- Dart symbols artifact: `JE-X-FYZ-Dart-Symbols`, artifact ID `11204692248`, SHA-256 `315adb81cefe3e023f78f4cbeb132b87ebeb51ca2a320445bc7aca93b1293eb4`.
+- Exactly one APK artifact was produced; Dart symbols are the only additional release artifact.
+- Build validates the latest App source including the Light Theme neutralization and VOLTAGE toggle-only selection redesign. Firmware V2.5 source remains outside this App build scope.
+- This build does not constitute Android OEM runtime or physical-device validation.
 ## 2026-10-02 — BUILD #44 CORRECTIVE TEST CONTRACT
 
 - Build #44 passed toolchain verification, signing preparation, security/architecture audit, dependency installation, and Dart analysis.
