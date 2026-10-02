@@ -3546,22 +3546,6 @@ class _DashboardScreenState extends State<DashboardScreen>
                         color: indicatorBorder,
                         width: homeDark ? 1.1 : 1.25,
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(
-                            alpha: homeDark ? .16 : (active ? .16 : .12),
-                          ),
-                          blurRadius: homeDark ? 7 : (active ? 9 : 8),
-                          spreadRadius: homeDark ? 0 : .2,
-                          offset: const Offset(0, 2),
-                        ),
-                        if (!homeDark)
-                          BoxShadow(
-                            color: color.withValues(alpha: active ? .10 : .06),
-                            blurRadius: active ? 8 : 6,
-                            offset: const Offset(0, 1),
-                          ),
-                      ],
                     ),
                     child: animatedKind == null
                         ? JexAnimatedIcon.glyph(
@@ -3602,15 +3586,6 @@ class _DashboardScreenState extends State<DashboardScreen>
                             fontWeight: FontWeight.w900,
                             letterSpacing: 0.45,
                             height: 1.0,
-                            shadows: homeDark
-                                ? null
-                                : [
-                                    Shadow(
-                                      color: Colors.black.withValues(alpha: .12),
-                                      blurRadius: 1.0,
-                                      offset: const Offset(0, 1),
-                                    ),
-                                  ],
                           ),
                         ),
                       ),
@@ -3621,18 +3596,9 @@ class _DashboardScreenState extends State<DashboardScreen>
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color: active
-                            ? indicatorColor
-                            : (homeDark ? const Color(0xFF7F8592) : lightTextAccent),
-                        shadows: homeDark
-                            ? null
-                            : [
-                                Shadow(
-                                  color: Colors.black.withValues(alpha: .16),
-                                  blurRadius: 1.1,
-                                  offset: const Offset(0, 1),
-                                ),
-                              ],
+                        color: homeDark
+                            ? (active ? indicatorColor : const Color(0xFF7F8592))
+                            : lightTextAccent,
                         fontSize: 18.5,
                         fontWeight: FontWeight.w900,
                         height: 0.95,
@@ -3933,13 +3899,6 @@ class _DashboardScreenState extends State<DashboardScreen>
               ? color.withValues(alpha: .25)
               : color.withValues(alpha: .30),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: headerDark ? .12 : .10),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -4008,13 +3967,6 @@ class _DashboardScreenState extends State<DashboardScreen>
                     ? color.withValues(alpha: .16)
                     : lightStatusTextColor.withValues(alpha: .24),
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: headerDark ? .08 : .07),
-                  blurRadius: 4,
-                  offset: const Offset(0, 1),
-                ),
-              ],
             ),
             child: Text(
               _notifyStatusLabel(),
@@ -4026,15 +3978,6 @@ class _DashboardScreenState extends State<DashboardScreen>
                     : connected
                         ? (headerDark ? Colors.cyanAccent : lightStatusTextColor)
                         : offlineStatusColor,
-                shadows: headerDark
-                    ? null
-                    : [
-                        Shadow(
-                          color: Colors.black.withValues(alpha: .14),
-                          blurRadius: 1.0,
-                          offset: const Offset(0, 1),
-                        ),
-                      ],
                 fontSize: 7.3,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 0.75,
