@@ -1,3 +1,16 @@
+## 2026-10-02 — CORRECTED BATTERY RANGE MODEL
+
+- Battery voltage settings are defined by two user-configurable boundaries, not by a fixed 30/31°C scheme.
+- 5V boundary/maximum temperature is configurable from **20°C to 30°C**.
+- 12V boundary/minimum temperature is configurable from **30°C to 40°C**.
+- 9V is the complete middle range between the two boundaries.
+- Example: 5V=25°C and 12V=37°C means 5V through 25°C, 9V at 26–36°C, and 12V from 37°C.
+- Example: 5V=29°C and 12V=31°C means 29°C=5V, 30°C=9V, 31°C=12V.
+- The boundaries must preserve at least a one-degree 9V middle range; therefore the numeric boundary difference is at least 2°C when using whole-degree settings.
+- Battery hysteresis remains a separate 1.0°C requirement.
+- The previous APP_NOTES wording that fixed 30°C as the 9V zone is superseded by this entry.
+- No App source/build change was made.
+
 ## 2026-10-02 — CORRECTION / BATTERY VOLTAGE ZONE DEFINITIONS
 
 - User clarified that Battery voltage mapping uses three actual zones, not a temporary transition zone.
