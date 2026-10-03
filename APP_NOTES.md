@@ -1,3 +1,14 @@
+## 2026-10-03 — FIRMWARE V2.9 EXECUTION / APP CONTRACT IMPACT
+
+- Firmware continuity source advanced to firmware/JEXFYZ-V2.9.ino in the App repository; active firmware source commit is 5254ac4112aba63429ee075497f165d253541649.
+- App source was NOT modified and no App Build was triggered in this execution.
+- Firmware-side Touch behavior is now deterministic: 1 tap voltage, 2 taps RGB ON/OFF, 3+ taps in the 500 ms decision window cancel, 5 s hold uses the accepted Adaptive-aware cooling/Adaptive-OFF behavior.
+- Per-voltage configurable LED colors are retired on the firmware side. V5COLOR/V9COLOR/V12COLOR, COLOR_5V/COLOR_9V/COLOR_12V telemetry, and the voltage-color reset path are no longer supported by V2.9.
+- The App must therefore remove any remaining per-voltage color UI, preference, telemetry, or command dependency in a later App implementation pass. No claim is made here that the current App has already been changed.
+- Firmware OTA hard cap is now 1792 KiB; App-side OTA handling must continue to respect firmware-reported/authoritative capacity and must not assume the older 2 MiB firmware limit.
+- No App/BLE UUID change and no logical FAN/PELTIER token swap was introduced by this execution.
+- App Build remains a separate explicit workflow.
+
 ## 2026-10-03 — V2.7 AUDIT / GROUPS M–S USER DECISIONS
 
 - #75: configurable per-voltage LED colors are removed from the intended contract.

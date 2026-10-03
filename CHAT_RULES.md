@@ -1,3 +1,12 @@
+## 2026-10-03 — EXECUTION EVENT / FIRMWARE V2.9
+
+- User issued @Thinking Eksekusi! after the V2.7 audit decisions.
+- Implemented the approved firmware Touch, per-voltage-color cleanup, VOLTAGE-only guard narrowing, and conservative OTA-cap changes.
+- Firmware source was versioned to V2.9. Intermediate V2.8 was immediately superseded by V2.9 to preserve the already-accepted Touch Adaptive-OFF indicator path.
+- Active implementation commit: 5254ac4112aba63429ee075497f165d253541649.
+- No App Build was triggered. No firmware BIN, Firebase metadata, or physical device validation was performed.
+- Static source validation passed; ArduinoDroid/Core 3.3.7 compilation remains the next firmware validation layer.
+
 ## 2026-10-03 — V2.7 AUDIT EVENT / GROUPS M–S
 
 - User continued the numbered firmware audit through groups M–S.

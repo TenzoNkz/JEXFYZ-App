@@ -1,3 +1,56 @@
+## 2026-10-03 — EXECUTION / FIRMWARE V2.9 TOUCH + CONTROL CLEANUP + OTA CAP
+
+### Source/version
+- Implemented the approved V2.7 audit items in the firmware continuity source.
+- Intermediate V2.8 source commit ed5502fcfc626b0261d391babf7784bdfed2462a was immediately superseded because the final cross-check preserved the accepted Touch Adaptive-OFF behavior required by #42/#57.
+- Active continuity source is firmware/JEXFYZ-V2.9.ino.
+- Active source commit: 5254ac4112aba63429ee075497f165d253541649.
+- Functional version is V2.9; no BIN, Firebase metadata, or physical device state was changed.
+
+### Implemented changes
+1. TOUCH
+   - Removed the OneButton dependency and its 50 ms debounce/callback path.
+   - Replaced it with a deterministic non-blocking state machine in the main loop.
+   - Tap press duration is limited to 500 ms.
+   - The decision window is 500 ms from the first completed tap.
+   - 1 tap resolves to the next manual voltage level 5V->9V->12V->5V.
+   - 2 taps resolve to RGB ON/OFF.
+   - 3 or more taps inside the 500 ms decision window cancel with no action; the sequence cannot fall through into a single/double action.
+   - 5-second hold toggles Fan/Peltier together when Adaptive is OFF, while existing safety remains authoritative.
+   - When Adaptive is ON, a 5-second hold preserves the accepted Adaptive-OFF path and its existing indicator rather than bypassing the Fan/Peltier lock.
+
+2. Per-voltage LED color cleanup
+   - Removed user-configurable V5/V9/V12 color variables and persistence.
+   - Removed V5COLOR/V9COLOR/V12COLOR command handlers, voltage-color reset handling, and COLOR_5V/COLOR_9V/COLOR_12V telemetry.
+   - Fixed voltage-indicator colors remain internal firmware constants: 5V red, 9V green, 12V blue.
+   - Legacy color preference keys are purged from Preferences on load so old configurable values are no longer retained.
+
+3. Control anti-spam guard
+   - Removed the generic user-control guard, its state, and its dispatch hook.
+   - The existing 1-second voltage guard remains in requestVoltage(), so anti-spam/rate limiting applies only to actual VOLTAGE control paths.
+   - No additional duplicate voltage guard was introduced.
+
+4. OTA firmware-size guard
+   - Reduced OTA_MAX_FIRMWARE_BYTES from 2 MiB to 1792 KiB (1.75 MiB / 1,835,008 bytes).
+   - Existing ESP.getFreeSketchSpace() and Update.begin() checks remain authoritative in addition to the hard cap.
+   - The repository still does not contain the exact partition CSV, so 1.75 MiB remains a conservative engineering target rather than a proven exact partition capacity.
+
+### Validation completed
+- Source transformation was validated before write and after final commit.
+- Delimiter sanity check passed (balanced braces and parentheses).
+- Obsolete OneButton object/API paths, generic guard paths, obsolete voltage-color command/telemetry paths, and old Touch LED-mode callback are absent from the active V2.9 source.
+- Fixed voltage color constants and legacy Preferences cleanup are present.
+- Active firmware version is V2.9 and source filename matches.
+- ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile was NOT performed in this environment.
+- BIN generation/publication was NOT performed.
+- Firebase firmware metadata was NOT promoted.
+- Physical ESP32 flash/runtime validation was NOT performed.
+- App Build was NOT triggered.
+
+### Validation boundary
+- This execution establishes the repository/source implementation state only. It does not prove Touch timing against the physical sensor, voltage-switch hardware behavior, Fan/Peltier PWM behavior, BLE runtime behavior, OTA update behavior, thermal behavior, or device safety under load.
+- Because the App source was not changed in this execution, the next App implementation/build pass must remove any remaining UI/storage/protocol dependence on the retired per-voltage color controls before treating the App/Firmware contract as fully synchronized.
+
 ## 2026-10-03 — V2.7 AUDIT / GROUPS M–S USER DECISIONS
 
 ### M. PREFERENCES / STORAGE — #75–#77
