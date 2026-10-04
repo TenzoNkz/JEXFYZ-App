@@ -1,3 +1,11 @@
+## 2026-10-04 — GEMINI PATCH-ONLY PROTOCOL
+
+- [WORKFLOW] `@Thinking Tanya Gemini!` now uses the dedicated `GEMINI_PROMPT_ONLINE_OTA.md` prompt when diagnosing the current Online OTA issue.
+- [REQUIRED GEMINI OUTPUT] Patch-only: exact `OLD` block → `NEW` block. Gemini must not return the full `.ino` file.
+- [EXECUTION HANDOFF] After the user supplies Gemini's patch, `@Thinking Eksekusi Full!` is the stage that applies and audits the patch against the exact current repository source, then commits it.
+- [LOCAL OTA] Frozen/protected because Local OTA has been proven working on hardware. Do not modify Local OTA for Online OTA fixes.
+- [ONLINE OTA] User priority is simple reliable GitHub download/flash; `setInsecure()` is acceptable for the Online OTA path and the binary URL remains restricted to the JE X FYZ firmware repository.
+
 ## 2026-10-04 — V4.0 COMPILE FIX
 
 - [FIXED] ArduinoDroid compile error from `batteryZoneFor(batteryC)` using the wrong argument count.
