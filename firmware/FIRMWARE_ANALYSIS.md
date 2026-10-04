@@ -1,3 +1,15 @@
+## 2026-10-04 — CURRENT FIRMWARE ANALYSIS SNAPSHOT / V4.0
+
+- Active source: `firmware/JEXFYZ-V4.0.ino`.
+- Firmware version: V4.0.
+- Source blob: `b2a77fadeaa154412850d34c82b0bb78ef108bae`.
+- V3.9 P0 rail/load sequencing gap is addressed by a cooperative 300 ms post-selector stabilization state for 9V/12V activation.
+- V3.9 Online OTA TLS trust gap is addressed using the exact Arduino-ESP32 Core 3.3.7 ESP certificate-bundle mechanism; `setInsecure()` is absent from the active source.
+- Frozen Peltier contract remains: only logical OFF→ON starts the 5 s soft-start; voltage changes do not restart it.
+- [STATIC VERIFIED] braces 581/581; parentheses 2123/2123; executable delay 0; timing while 0; stopBleRadio(false) 0.
+- [UNVERIFIED] exact ArduinoDroid/Core 3.3.7 compile/link, BIN, Firebase, and physical electrical/thermal/radio/OTA evidence.
+- [GATE] V4.0 still requires independent Assistant + Gemini agreement before update/flash.
+
 ## 2026-10-04 — CURRENT FIRMWARE ANALYSIS SNAPSHOT
 
 - This repository is the persistent continuity boundary for JE X FYZ while the current chat approaches its context limit.
