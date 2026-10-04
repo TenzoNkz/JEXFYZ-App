@@ -549,3 +549,10 @@ For any hardware/control mismatch, verify in order:
 - A separate Build App chat is not exempt: it must perform the same memory preflight before inspecting or building App source.
 - The user should not need to restate project history after a chat transfer.
 - If a current-state document is stale, refresh it from current source/repository evidence before continuing.
+
+## 2026-10-04 — HARDWARE TEST / 9V TO 12V RESET — SOFT-START HYPOTHESIS
+
+- [CONFIRMED] Hardware-test discussion must distinguish observation, hypothesis, and verified root cause.
+- [USER REQUIREMENT] When a second-opinion/Gemini review is requested, only an actual tool/connector result may be recorded as a Gemini result.
+- [BLOCKED] No Gemini-capable tool/connector was available for this event, so the review request is recorded as blocked rather than fabricated.
+
