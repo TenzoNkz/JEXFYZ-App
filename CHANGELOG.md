@@ -16,6 +16,16 @@
 - Build run 37199918015 completed security/architecture audit, dependency installation, Dart analysis, Flutter tests, release APK compilation, production signing verification, and filename preparation successfully.
 - Artifact upload was blocked by GitHub Actions artifact storage quota; no downloadable artifact was created.
 
+## APP BUILD RUN #2 — VERIFIED — 2026-10-04
+- Workflow run: 37201925842
+- Source commit: 9136f11799143d91eb58e947ea10e9e576bb579f
+- All App CI/security/build/signing gates passed.
+- GitHub Release `jexfyz-latest` was updated successfully with exactly one asset: `JEXFYZ-release.apk`.
+- Release asset ID: 609813273
+- APK size: 54,327,520 bytes
+- APK SHA256: 24fcd6f4d1f7843f34e8a31c352b43f23a581b57fc2d29ae71053eb7924092bb
+- No Actions artifact was created by this run.
+
 ## V4.5 — 2026-10-04
 - Promoted the active firmware source from V4.4 to V4.5 for functional hardening.
 - Fixed explicit Online OTA GATT disconnect ordering so an active BLE session is closed before Wi-Fi radio handoff.

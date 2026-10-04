@@ -38,4 +38,6 @@
 - Current release workflow blob: 08a137b4d315cc12e830a7e8dbc1ea40c3d2873d.
 - Legacy app-build.yml and app-build-trigger.yml are deleted.
 - APK delivery now uses GitHub Release tag jexfyz-latest; the workflow does not use Actions-artifact upload.
-- New workflow run #1 remains a historical artifact-quota failure; the new Release-asset path is not yet validated by a fresh build.
+- New workflow run #1 remains a historical artifact-quota failure.
+- Workflow run #2 [VERIFIED] built, signed, and published JEXFYZ-release.apk to GitHub Release jexfyz-latest.
+- Release asset SHA-256: 24fcd6f4d1f7843f34e8a31c352b43f23a581b57fc2d29ae71053eb7924092bb.

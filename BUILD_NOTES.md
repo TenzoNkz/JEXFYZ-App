@@ -21,7 +21,7 @@
 - [VERIFIED] Trigger workflow remains issue-based, owner/title/token gated, and reusable.
 - [HISTORICAL] New workflow run #1 cleanup step completed and all build/signing gates passed before the quota fix.
 - [HISTORICAL] New workflow run #1 artifact upload failed because Actions artifact storage quota was exhausted.
-- [IMPLEMENTED] Current workflow has removed that Actions-artifact delivery dependency.
+- [IMPLEMENTED][VERIFIED] Current workflow has removed that Actions-artifact delivery dependency and successfully published the replacement Release asset in workflow run #2.
 
 ## BUILD HISTORY
 ### #50 — latest verified downloadable APK
@@ -70,15 +70,31 @@
 - [COMMITTED] Added direct GitHub Release publication using tag `jexfyz-latest`.
 - [COMMITTED] Existing release is kept synchronized to the latest build commit with `gh release edit --target` and marked Latest.
 - [COMMITTED] Exactly one APK is delivered as `JEXFYZ-release.apk`; an existing release asset is replaced with `gh release upload --clobber`.
-- [UNVERIFIED] A fresh Build App run is still required to prove GitHub Release creation/update and asset verification.
+- [VERIFIED] Workflow run #2 proved GitHub Release creation/update and asset verification end-to-end.
+
+## WORKFLOW RUN #2 — VERIFIED RELEASE DELIVERY — 2026-10-04
+- [BUILT][VERIFIED] Run: 37201925842 (workflow run #2)
+- [VERIFIED] Source commit: 9136f11799143d91eb58e947ea10e9e576bb579f
+- [VERIFIED] Result: SUCCESS
+- [VERIFIED] Audit, dependencies, Dart analysis, Flutter tests, release APK compilation, production signing, filename preparation, and GitHub Release publication all passed.
+- [VERIFIED] GitHub Release: jexfyz-latest / JE X FYZ — Latest App
+- [VERIFIED] Release ID: 403010611
+- [VERIFIED] Asset ID: 609813273
+- [VERIFIED] Asset: JEXFYZ-release.apk
+- [VERIFIED] APK size: 54,327,520 bytes
+- [VERIFIED] APK SHA256: 24fcd6f4d1f7843f34e8a31c352b43f23a581b57fc2d29ae71053eb7924092bb
+- [VERIFIED] Actions-artifact list for the run is empty; no Actions artifact was created.
 
 ## LATEST VERIFIED APK
-- Build #50 is the latest verified downloadable APK.
-- Artifact ID: 11222007634
-- APK SHA256: 82a2320d8e3663800d6884f4cb0d009ff1b31b5b19cc64420f9ee5c6b01d01b0
+- Workflow run #2 is now the latest verified downloadable APK.
+- Delivery: GitHub Release `jexfyz-latest`
+- Asset: JEXFYZ-release.apk
+- APK size: 54,327,520 bytes
+- APK SHA256: 24fcd6f4d1f7843f34e8a31c352b43f23a581b57fc2d29ae71053eb7924092bb
 
 ## BUILD BOUNDARY
 - Build #50 validates only its exact source commit.
 - Build #53 proves the current App source passed CI through signing, but not artifact delivery.
 - No future App Build may be inferred from Build #53.
-- The next explicit Build App must validate the new GitHub Release delivery path.
+- Workflow run #2 is valid evidence for the current source commit 9136f11799143d91eb58e947ea10e9e576bb579f.
+- The next explicit Build App must validate any future source commit through the same GitHub Release delivery path.

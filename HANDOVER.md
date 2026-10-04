@@ -11,9 +11,9 @@
 - Current App workflow: .github/workflows/jexfyz-build.yml
 - Current App workflow blob: 08a137b4d315cc12e830a7e8dbc1ea40c3d2873d
 - Legacy app-build.yml and app-build-trigger.yml are deleted.
-- Latest verified downloadable App Build: #50
+- Latest verified downloadable App Build: workflow run #2 / GitHub Release jexfyz-latest.
 - Build #53: App validation passed through signing; legacy artifact creation blocked by Actions quota.
-- CI delivery fix committed: APK publication moved to GitHub Release tag jexfyz-latest.
+- CI delivery fix is [VERIFIED]: workflow run #2 successfully published JEXFYZ-release.apk to GitHub Release.
 
 ## CURRENT OBJECTIVE
 Preserve this state across chat transfer, then on a future explicit Build App request publish the current App as one APK through the GitHub Release asset path.
@@ -41,7 +41,7 @@ Update Firmware → active GATT disconnect → live App telemetry stops → Onli
 - Current workflow no longer uses Actions-artifact cleanup/upload; it publishes exactly one JEXFYZ-release.apk GitHub Release asset.
 - Current workflow is owner/title/token-gated issue-based with no push/PR trigger.
 - New workflow run #1 verified all build/signing gates but failed its legacy Actions-artifact publication step due quota; this is historical.
-- The replacement GitHub Release delivery path is implemented and awaits the next explicit Build App verification.
+- The replacement GitHub Release delivery path is now end-to-end [VERIFIED] by workflow run #2.
 
 ## NEXT
-On the next explicit App Build request, run the current single workflow and verify CI gates, signing, GitHub Release publication, and exactly one JEXFYZ-release.apk asset. Separately compile/flash Firmware V4.5 and perform physical OTA/BLE validation.
+On the next explicit App Build request, run the current single workflow and verify CI gates, signing, GitHub Release update, and exactly one JEXFYZ-release.apk asset. Separately compile/flash Firmware V4.5 and perform physical OTA/BLE validation.

@@ -13,7 +13,7 @@
 ## 2. CURRENT TASK
 - [CONFIRMED] Current task was full execution to fix the Actions-artifact quota failure.
 - [IMPLEMENTED][COMMITTED] The single workflow now publishes the APK as a GitHub Release asset instead of an Actions artifact.
-- [OPEN QUESTION] A fresh Build App run is still required to prove the Release-asset delivery path end-to-end.
+- [RESOLVED] Workflow run #2 proved the Release-asset delivery path end-to-end.
 
 ## 3. CURRENT WORKFLOW
 - [USER REQUIREMENT] @Thinking Diskusi! = discussion/review only; no functional source, release, or build.
@@ -262,13 +262,13 @@
 
 ## 18. KNOWN RISKS
 - [RESOLVED] GitHub Actions artifact quota is no longer an active CI delivery dependency for APK publication.
-- [UNVERIFIED] GitHub Release creation/update and asset verification require the next real Build App run.
+- [RESOLVED] GitHub Release creation/update and asset verification passed in workflow run #2.
 - [UNVERIFIED] Firmware V4.5 physical validation has not been completed.
 - [UNVERIFIED] End-to-end App + V4.5 Online OTA physical behavior after the final workflow/source state remains untested.
 - [KNOWN RISK] Current CHAT_RULES/notes previously contained stale V4.4 status text; this transfer updates the persistent state to V4.5/workflow-reset truth.
 
 ## 19. UNRESOLVED QUESTIONS
-- [OPEN QUESTION] Will the next explicit Build App successfully create/update jexfyz-latest and publish JEXFYZ-release.apk?
+- [RESOLVED] Workflow run #2 created/updated jexfyz-latest and published JEXFYZ-release.apk successfully.
 - [OPEN QUESTION] What is the final artifact ID/SHA256 of the next successful release?
 - [OPEN QUESTION] Has Firmware V4.5 been compiled, flashed, and physically validated on ESP32-C3?
 - [OPEN QUESTION] Has the V4.5 Online OTA GATT disconnect/reconnect sequence been physically verified with the synchronized App?
@@ -280,7 +280,7 @@
 - [CHAT-ONLY] This transfer prompt itself is not permission to build or release.
 
 ## 21. EXACT NEXT ACTION
-- [NEXT ACTION] On the next explicit @Thinking Build App! use `.github/workflows/jexfyz-build.yml` and verify CI gates, signing, GitHub Release publication, and exactly one JEXFYZ-release.apk asset.
+- [NEXT ACTION] On the next explicit @Thinking Build App! use `.github/workflows/jexfyz-build.yml` and verify CI gates, signing, GitHub Release update, and exactly one JEXFYZ-release.apk asset for the new source commit.
 - [NEXT ACTION] Separately compile/flash Firmware V4.5 and perform physical Online OTA BLE disconnect/reconnect plus Local OTA Golden Path validation.
 
 ## 22. REQUIRED FIRST ACTION IN NEW CHAT

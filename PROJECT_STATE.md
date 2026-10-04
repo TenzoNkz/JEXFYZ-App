@@ -17,14 +17,14 @@
 - Active App Build workflow: .github/workflows/jexfyz-build.yml
 - App Build workflow blob: 08a137b4d315cc12e830a7e8dbc1ea40c3d2873d
 - Legacy app-build.yml and app-build-trigger.yml are deleted.
-- Latest verified downloadable App Build: #50
+- Latest verified downloadable App Build: workflow run #2 (37201925842) / GitHub Release jexfyz-latest.
 - Historical new-workflow Build run #1: 37199918015 [BUILT][VERIFIED] through signing; [BLOCKED] legacy Actions-artifact upload by quota.
 - Build #53 passed App validation gates through signing but failed legacy artifact creation due GitHub Actions quota.
-- Workflow delivery fix is committed: APK publication now uses a GitHub Release asset and no longer depends on Actions-artifact creation.
+- Workflow delivery fix is committed and [VERIFIED]: APK publication now uses a GitHub Release asset; Actions-artifact creation is not used.
 
 ## CURRENT TASK / TRANSFER
-- The current execution fixed CI delivery without changing App/Firmware runtime source.
-- The next explicit Build App is required to prove end-to-end GitHub Release delivery.
+- The current execution built and verified the App through GitHub Release publication without changing App/Firmware runtime source.
+- GitHub Release delivery is now end-to-end [VERIFIED].
 
 ## FIRMWARE
 - V4.5 remains active.
@@ -40,9 +40,9 @@
 - BLE/P1 architecture is preserved.
 - Online OTA recovery is explicit, independent of passive Auto Connect, and returns through normal P1 sync.
 - Adaptive Ceiling, safety semantics, battery threshold ranges, OTA stage mapping, and password masking are synchronized with firmware.
-- Current App source has passed audit, Dart analysis, Flutter tests, release APK compilation, and production signing verification in Build #53.
+- Current App source has passed audit, Dart analysis, Flutter tests, release APK compilation, and production signing verification in Build #53 and workflow run #2.
 - Build #51 source parser defect and Build #52 signing-shell defect are fixed.
-- Build #53 did not create a downloadable artifact because Actions quota was exhausted.
+- Workflow run #2 successfully created/updated the GitHub Release and uploaded the APK.
 
 ## CI / BUILD
 - Legacy App Build workflows were deleted; one new single workflow `.github/workflows/jexfyz-build.yml` is current.
@@ -52,16 +52,18 @@
 - Release workflow publishes exactly one direct APK as GitHub Release asset jexfyz-latest/JEXFYZ-release.apk; existing asset is replaced with --clobber.
 - Dart symbols are generated for the obfuscated build but are not uploaded.
 - Push/PR release triggers remain excluded.
-- The release publication path is [IMPLEMENTED][NOT YET VERIFIED] until the next explicit Build App run.
+- The GitHub Release publication path is [IMPLEMENTED][VERIFIED] by workflow run #2.
 
 ## VALIDATION BOUNDARY
 - App source CI gates: PASS through production signing verification in Build #53.
-- Downloadable release artifact: Build #50 remains the latest verified APK; the new Release-asset delivery path is implemented but awaits a real build.
-- Actions-artifact quota is no longer a required delivery dependency for future builds.
+- Downloadable release: workflow run #2 is the latest verified APK delivery via GitHub Release.
+- Release asset: JEXFYZ-release.apk, 54,327,520 bytes, SHA-256 24fcd6f4d1f7843f34e8a31c352b43f23a581b57fc2d29ae71053eb7924092bb.
+- GitHub Release tag: jexfyz-latest; Release ID: 403010611; asset ID: 609813273.
+- Actions-artifact quota is no longer a delivery dependency.
 - Firmware V4.5 physical compile/BIN/flash/OTA validation: UNVERIFIED.
 - No Build #53 APK is available for delivery.
 
 ## EXACT NEXT ACTION
 - Keep the transfer docs synchronized.
-- On the next explicit Build App command, execute `.github/workflows/jexfyz-build.yml` and verify CI gates, signing, GitHub Release creation/update, and exactly one JEXFYZ-release.apk asset.
+- Continue using `.github/workflows/jexfyz-build.yml` for future explicit Build App commands and verify CI gates, signing, GitHub Release update, and exactly one JEXFYZ-release.apk asset.
 - Separately compile/flash V4.5 and perform physical Online OTA BLE disconnect/reconnect plus Local OTA validation.
