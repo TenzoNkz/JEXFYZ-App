@@ -20,8 +20,8 @@ on:
         required: true
 
 permissions:
-  # Read-only repository access is sufficient.
-  contents: read
+  # Release publication requires write access to repository contents.
+  contents: write
 
 concurrency:
   group: jexfyz-cooler-build
@@ -267,30 +267,70 @@ jobs:
           echo "Production APK signature verified: JE X FYZ certificate is present and matches the official signing identity."
           ls -lh "$APK"
 
-      # Canonical delivery name remains JEXFYZ#<run-number>.apk.
+      # Stable delivery filename keeps the latest release asset replaceable.
       - name: Prepare release APK filename
         shell: bash
         run: |
           set -euo pipefail
           cp build/app/outputs/flutter-apk/app-release.apk \
-             "build/app/outputs/flutter-apk/JEXFYZ#${{ github.run_number }}.apk"
-          test -s "build/app/outputs/flutter-apk/JEXFYZ#${{ github.run_number }}.apk"
-          ls -lh "build/app/outputs/flutter-apk/JEXFYZ#${{ github.run_number }}.apk"
+             "build/app/outputs/flutter-apk/JEXFYZ-release.apk"
+          test -s "build/app/outputs/flutter-apk/JEXFYZ-release.apk"
+          ls -lh "build/app/outputs/flutter-apk/JEXFYZ-release.apk"
 
-      # Publish exactly one release APK artifact.
-      - name: Upload APK only
-        uses: actions/upload-artifact@v7
-        with:
-          name: JEXFYZ#${{ github.run_number }}.apk
-          path: build/app/outputs/flutter-apk/JEXFYZ#${{ github.run_number }}.apk
-          archive: false
-          if-no-files-found: error
+      # Publish exactly one direct APK as a GitHub Release asset.
+      # This intentionally avoids Actions-artifact storage quota and keeps the
+      # delivery filename stable across builds. Dart symbols remain local to the
+      # build workspace for obfuscation diagnostics and are not uploaded.
+      - name: Publish APK to GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
 
-      # Keep obfuscation symbols for diagnostics.
-      - name: Upload Dart symbols
-        uses: actions/upload-artifact@v7
-        with:
-          name: JE-X-FYZ-Dart-Symbols
-          path: build/symbols
-          if-no-files-found: error
-          compression-level: 0
+          APK="build/app/outputs/flutter-apk/JEXFYZ-release.apk"
+          RELEASE_TAG="jexfyz-latest"
+          RELEASE_TITLE="JE X FYZ — Latest App"
+          APP_VERSION="$(sed -n 's/^version: //p' pubspec.yaml | head -n 1)"
+
+          test -s "$APK"
+          test -n "$APP_VERSION"
+
+          RELEASE_NOTES="Automated JE X FYZ App release.
+          App version: $APP_VERSION
+          Source commit: $GITHUB_SHA
+          Delivery file: JEXFYZ-release.apk"
+
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "Updating existing GitHub Release $RELEASE_TAG"
+            gh release upload "$RELEASE_TAG" "$APK" --clobber
+            gh release edit "$RELEASE_TAG" \
+              --target "$GITHUB_SHA" \
+              --title "$RELEASE_TITLE" \
+              --notes "$RELEASE_NOTES" \
+              --latest
+          else
+            echo "Creating GitHub Release $RELEASE_TAG"
+            gh release create "$RELEASE_TAG" "$APK" \
+              --target "$GITHUB_SHA" \
+              --title "$RELEASE_TITLE" \
+              --notes "$RELEASE_NOTES" \
+              --latest
+          fi
+
+          ASSET_COUNT="$(gh release view "$RELEASE_TAG" --json assets --jq '[.assets[] | select(.name == "JEXFYZ-release.apk")] | length')"
+          TOTAL_ASSET_COUNT="$(gh release view "$RELEASE_TAG" --json assets --jq '.assets | length')"
+          ASSET_SIZE="$(gh release view "$RELEASE_TAG" --json assets --jq '.assets[] | select(.name == "JEXFYZ-release.apk") | .size')"
+          ASSET_DIGEST="$(gh release view "$RELEASE_TAG" --json assets --jq '.assets[] | select(.name == "JEXFYZ-release.apk") | .digest')"
+          LOCAL_SIZE="$(stat -c '%s' "$APK")"
+
+          test "$ASSET_COUNT" -eq 1
+          test "$TOTAL_ASSET_COUNT" -eq 1
+          test "$ASSET_SIZE" -eq "$LOCAL_SIZE"
+          printf '%s
+' "$ASSET_DIGEST" | grep -Eiq '^sha256:[0-9a-f]{64}
+
+
+          echo "GitHub Release delivery verified: $RELEASE_TAG / JEXFYZ-release.apk"
+          echo "Release asset size: $ASSET_SIZE bytes"
+          echo "Release asset digest: $ASSET_DIGEST"
