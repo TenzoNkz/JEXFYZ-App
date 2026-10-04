@@ -316,3 +316,47 @@ This is static/source analysis only. ArduinoDroid + official Arduino-ESP32 Core 
 
 ### Documentation standard for next implementation pass
 The requested “keterangan di semua baris” is interpreted as every meaningful functional statement being explainable from nearby comments/contract metadata: purpose, authority, state mutation, timing, and safety effect. Blank lines, punctuation-only braces, and obvious syntax do not need redundant comments.
+
+## 2026-10-04 — GEMINI INDEPENDENT AUDIT RECONCILIATION
+
+[DISCUSSION ONLY] Received the user's raw Gemini independent V3.8 firmware audit. The audit was reconciled against the current source `firmware/JEXFYZ-V3.8.ino` blob `2fbff3656bc037846124806fb390022f85146845`.
+
+### Accepted / confirmed against current source
+- **B1/P0-P1 — Online OTA DOWNLOAD dispatcher starvation:** confirmed. `processOnlineOta()` currently calls `performOnlineOtaDownload()` only while `!onlineUpdateStarted`; after the first `Update.begin()`, subsequent chunks are never serviced.
+- **S2/P1 — NTC validity race at selector completion:** confirmed. `completeVoltageTransition()` revalidates Hotside but does not independently reject `!ntcValid` immediately before 9V/12V selector activation.
+- **S3/P1 — Peltier ON during voltage transition:** confirmed. `setPeltierState(true,...)` has no `voltageTransition` gate.
+- **B4/P1 — Wi-Fi retry settle gap:** confirmed. Retry path calls `WiFi.mode(WIFI_OFF)` and returns to `RADIO_TEARDOWN` without rearming `wifiOffSettlePending`.
+- **B5/P2 — ADAPTIVE:OFF ACK contradiction:** confirmed. `setAdaptiveState(false,...)` can produce `VOLTAGE_FORCE_FAILED`, while the handler reports ACK success unconditionally.
+- **B6/P2 — Battery threshold chatter risk:** confirmed as a design/risk condition. `batteryZoneFor()` has no hysteresis; readings crossing 25C/35C can alternate targets subject to existing one-step and 1s guard behavior.
+- **OTA Sec1/Sec3 and BLE Sec2:** confirmed as security gaps from source: TLS uses `cloudClient.setInsecure()`; firmware version validation is syntactic only; BLE command gating is session-state based rather than cryptographically authenticated.
+- **Rapid-rise thermal protection:** confirmed missing relative to the historical user requirement. No dT/dt calculation or rapid-rise manual-restart latch exists.
+- **Synchronous Online OTA HTTP GET:** confirmed. `prepareOnlineOtaDownload()` can remain inside `HTTPClient::GET()` for the configured timeout, contrary to the cooperative runtime contract.
+
+### Accepted with corrected severity / wording
+- **B2 — BLE radio handoff:** source-level safety/architecture gap is confirmed because Online OTA uses `stopBleRadio(false)`, which stops advertising without BLE deinitialization. This violates the project's explicit single-radio handoff contract. **Not proven:** that this alone caused the observed MCU restart, panic, or RF collision.
+- **B3 — BLE disconnect advertising restart:** direct `BLEDevice::startAdvertising()` from `onDisconnect()` is a callback-context/reentrancy risk. The exact Core 3.3.7 implementation has not been runtime-validated here, so this is **P2 likely risk**, not a proven P1 crash/deadlock.
+- **S1 — Peltier PWM remains logically/output-wise active across selector deadtime:** confirmed as an unsafe sequencing gap. However, the Gemini claim that this is the **proven electrical root cause** of the 9V->12V MCU restart is rejected. Source proves the hazard window; it does not prove brownout versus EMI, LDO collapse, wiring/transient behavior, or another mechanism without reset/rail/current evidence.
+- **Radio wording:** the project contract is “BLE fully inactive before Wi-Fi starts”; that is the requirement. Do not overstate this as “ESP32-C3 cannot ever coexist with Wi-Fi/BLE” or infer a physical RF failure from source alone.
+
+### Needs external/toolchain or hardware validation
+- Exact availability/behavior of low-level `esp_reset_reason()` in the user's ArduinoDroid + official Arduino-ESP32 Core 3.3.7 environment has not been compile-verified. Upstream Arduino-ESP32 examples use `esp_reset_reason()`, while the current firmware intentionally avoids assuming a public `ESP.getResetReason()` API. Keep the reset telemetry change as a validation task, not an unverified source edit.
+- Any exact electrical statement such as “36W inrush causes the ESP32-C3 brownout” remains **HARDWARE VALIDATION REQUIRED**. Controlled tests should capture reset reason, 3.3V rail behavior, and Peltier current around 9V->12V transitions.
+
+### Rejected / not authoritative as stated
+- “Firmware is absolutely proven to brownout/restart because of PWM during 9V->12V” — **rejected as overclaim**; retain as the leading electrical hypothesis until measured.
+- “BLE callback API call is definitively an interrupt-context crash” — **rejected**; classify as callback-task/reentrancy risk unless Core 3.3.7 runtime evidence proves otherwise.
+- “ISRG Root X1 is the definitive GitHub CA” — **not accepted as a final implementation detail** without validating the intended hostname/certificate-chain strategy. The source-level requirement is CA/server verification instead of `setInsecure()`.
+
+### Safe implementation priority after this reconciliation
+1. Fix OTA DOWNLOAD dispatcher starvation.
+2. Close the voltage/Peltier interlock and define the exact PWM behavior across selector deadtime without violating the frozen rule that voltage changes do not restart the 5s soft-start.
+3. Add immediate `!ntcValid` rejection before selector activation.
+4. Harden Online OTA BLE->Wi-Fi handoff and Wi-Fi retry settle.
+5. Move BLE re-advertising out of callback context.
+6. Fix ADAPTIVE:OFF ACK semantics and battery hysteresis.
+7. Add the required rapid-rise thermal protection.
+8. Harden OTA authentication/version rollback and observability.
+9. Compile with the exact ArduinoDroid/Core 3.3.7 toolchain, generate BIN, then perform staged hardware validation.
+
+### Validation boundary
+No functional firmware/App source was changed by this Gemini reconciliation. No firmware compile, BIN generation, Firebase promotion, or physical validation was performed.
