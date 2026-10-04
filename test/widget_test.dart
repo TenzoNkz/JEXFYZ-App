@@ -118,12 +118,12 @@ void main() {
     expect(floatingMetricStatus('S', telemetry, AppLanguage.indonesia), 'MATI');
   });
 
-  test('OTA result notifications accept only one-shot success/failure events', () {
+  test('OTA result notifications accept one-shot success/failure/up-to-date events', () {
     expect(isTransientOtaResultEvent('OTA_SUCCESS|MODE=ONLINE|STAGE=ONLINE_FLASH_SUCCESS|VERSION=V2.5|PROGRESS=100'), isTrue);
     expect(isTransientOtaResultEvent('OTA_FAILED|MODE=LOCAL|STAGE=LOCAL_IMAGE_VERIFY|CODE=5|ERROR=UPDATE_FAILED|PROGRESS=100'), isTrue);
+    expect(isTransientOtaResultEvent('OTA_UP_TO_DATE|MODE=ONLINE|STAGE=ONLINE_UP_TO_DATE|VERSION=V2.5|PROGRESS=100'), isTrue);
     expect(isTransientOtaResultEvent('NONE'), isFalse);
     expect(isTransientOtaResultEvent('IN_PROGRESS|MODE=ONLINE|STAGE=ONLINE_WIFI_CONNECT|PROGRESS=0'), isFalse);
-    expect(isTransientOtaResultEvent('OTA_UP_TO_DATE|MODE=ONLINE|STAGE=ONLINE_UP_TO_DATE|VERSION=V2.5|PROGRESS=100'), isFalse);
   });
 
   test('Voltage uses the same leading slot and shared toggle geometry as control rows', () {
@@ -150,8 +150,9 @@ void main() {
     expect(parseFirmwareVersion('V1.7'), [1, 7]);
     expect(parseFirmwareVersion('v3'), [3, 0]);
     expect(parseFirmwareVersion('V1.7.1'), isNull);
-    expect(isNewerFirmwareVersion('V1.8', 'V1.7'), isTrue);
-    expect(isNewerFirmwareVersion('V1.7', 'V1.8'), isFalse);
+    expect(isDifferentFirmwareVersion('V1.8', 'V1.7'), isTrue);
+    expect(isDifferentFirmwareVersion('V1.7', 'V1.8'), isTrue);
+    expect(isDifferentFirmwareVersion('V1.8', 'V1.8'), isFalse);
   });
 
   test('JE X FYZ custom indicator motion is gated by BLE and state', () {
