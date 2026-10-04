@@ -1,3 +1,11 @@
+## 2026-10-04 — V4.2 ONLINE OTA RETRY HARDENING
+
+- Firmware V4.1 → V4.2.
+- Removed repeated Online OTA `WiFi.disconnect(); WiFi.begin(...)` retry cycling.
+- Online OTA now waits on one cumulative 45-second connection window and reports attempt milestones without re-beginning Wi-Fi.
+- Local OTA unchanged/protected.
+- Compile/BIN/physical validation remains pending.
+
 ## 2026-10-04 — EXECUTION FULL / V4.1 SIMPLE ONLINE OTA
 
 - [IMPLEMENTED] Applied the accepted Gemini redesign to Online OTA in the exact V4.0 source.
