@@ -1857,7 +1857,7 @@ static void completeVoltageTransition() {
       ntcValid &&
       batteryValid &&
       !hotsideProtectionActiveNow()) {
-    const int liveZone = batteryZoneFor(batteryC);
+    const int liveZone = batteryZoneFor(batteryC, currentVoltage);
     const Voltage liveTarget =
         clampToAdaptiveCeiling(batteryZoneVoltage(liveZone));
 
