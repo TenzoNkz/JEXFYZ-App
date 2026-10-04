@@ -8,6 +8,12 @@
 - Removed dead firmware state/legacy comparator and generated documentation noise.
 - Synchronized App OTA recovery, safety presentation, Adaptive Ceiling, battery limits, and current OTA stage mapping.
 
+## BUILD APP CI — 2026-10-04
+- Build #51 failed during Dart analysis because _startCloudOta was missing its closing brace; fixed in commit ea5261230245fc86061cdf85f65ccd0208e607d3.
+- Build #52 confirmed App compilation and signing were correct; its workflow failed on a shell pipefail/SIGPIPE signing-output pipeline and was fixed in commit e33141efd47b8f1ca025e832097e1106d9119b65.
+- Build #53 passed audit, analysis, tests, APK compilation, and production signing verification, then failed only because GitHub Actions artifact storage quota was exhausted.
+- App build workflow now publishes one replaceable direct APK artifact with 7-day retention and no separate symbol artifact.
+
 ## V4.4 — 2026-10-04
 - Added explicit active BLE GATT disconnect before Online OTA Wi-Fi handoff.
 - Preserved the V3.2-style Online OTA transport/retry/result-indicator behavior.
