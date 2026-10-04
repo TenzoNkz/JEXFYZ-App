@@ -150,3 +150,11 @@ Every future successful build must append a new checkpoint containing:
 - What the next Build App subchat must read:
 - Exact next build baseline:
 - Known risks:
+
+## 2026-10-04 — DISCUSSION / APP BUILD REQUIREMENT FOR HARDWARE TEST
+
+- [CONFIRMED] A hardware test does not automatically require rebuilding the App.
+- [VERIFIED] Build #50 remains the latest verified App artifact, and current App functional source/configuration has no post-Build-#50 functional delta requiring a new APK.
+- [DECISION] The existing Build #50 APK is the appropriate App baseline for the initial V3.7 hardware/runtime test.
+- A new App Build becomes necessary when App source/runtime/configuration/dependency/release behavior changes, or when a fresh artifact is explicitly needed for test control.
+- [UNVERIFIED] This baseline does not prove V3.7 Firmware compatibility; firmware/device evidence must be recorded independently.
