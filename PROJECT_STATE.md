@@ -1,3 +1,11 @@
+## 2026-10-04 — ONLINE OTA INDICATOR RUNTIME BUG REPORTED
+
+- [USER VALIDATION] During hardware test of V4.0 Online OTA, OTA indicator LED blinking was not visible at all.
+- [SCOPE] This is a newly reported Online OTA indicator runtime issue; source contains Online OTA indicator calls, but actual device behavior shows no visible blink.
+- [USER DIRECTIVE] User will ask Gemini to diagnose and provide the fix. When Gemini's exact fix is supplied, apply that fix without independently changing the requested scope.
+- [PROTECTED] Local OTA remains frozen because it is confirmed working successfully on hardware. Do not touch Local OTA to solve this Online OTA indicator issue.
+- [NO SOURCE CHANGE] This event records the runtime observation only.
+
 ## 2026-10-04 — OTA TEST DIRECTION / LOCAL OTA FROZEN
 
 - [USER VALIDATION] User reports Local OTA is still working successfully on the hardware.
