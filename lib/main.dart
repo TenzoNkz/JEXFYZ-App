@@ -1110,7 +1110,9 @@ Color lightThemeAccentText(Color color) {
 // AI-METHOD: isTransientOtaResultEvent — Accept only fresh OTA success/failure envelopes for Home NOTIFY.
 bool isTransientOtaResultEvent(String value) {
   final upper = value.trim().toUpperCase();
-  return upper.startsWith('OTA_SUCCESS|') || upper.startsWith('OTA_FAILED|');
+  return upper.startsWith('OTA_SUCCESS|') ||
+      upper.startsWith('OTA_FAILED|') ||
+      upper.startsWith('OTA_UP_TO_DATE|');
 }
 
 // AI-METHOD: parseFirmwareVersion — Parse supported V<major>.<minor> labels only.
@@ -1125,13 +1127,7 @@ List<int>? parseFirmwareVersion(String version) {
 }
 
 // AI-METHOD: isNewerFirmwareVersion — Compatibility/test helper; current OTA policy uses different-version comparison.
-bool isNewerFirmwareVersion(String latest, String current) {
-  final a = parseFirmwareVersion(latest);
-  final b = parseFirmwareVersion(current);
-  if (a == null || b == null) return false;
-  if (a[0] != b[0]) return a[0] > b[0];
-  return a[1] > b[1];
-}
+
 
 // AI-METHOD: isDifferentFirmwareVersion — Current OTA availability rule: any valid version different from device version is an OTA target.
 bool isDifferentFirmwareVersion(String latest, String current) {
@@ -1381,6 +1377,9 @@ class _DashboardScreenState extends State<DashboardScreen>
   bool batteryReadBusy = false;
   bool dashboardReady = false;
   bool _bleConnecting = false;
+  bool otaExpectedDisconnect = false;
+  bool otaRecoveryActive = false;
+  bool otaRecoveryScanInProgress = false;
   final Map<String, List<Completer<String>>> _ackWaiters = {};
   final Map<String, String> _syncSnapshot = {};
   final Map<String, String> _pendingTelemetry = {};
@@ -1492,7 +1491,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   void _handleAutoConnectPreferenceChanged() {
     if (appAutoConnectNotifier.value) {
       unawaited(_tryAutoConnect());
-    } else {
+    } else if (!otaRecoveryActive && !otaExpectedDisconnect) {
       reconnectTimer?.cancel();
       reconnectTimer = null;
       _cancelDisconnectRediscovery();
@@ -1660,7 +1659,10 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   // AI-METHOD: _scanAndConnect — Perform bounded BLE discovery and pass the matching device to the connection routine.
-  Future<void> _scanAndConnect({bool automatic = false}) async {
+  Future<void> _scanAndConnect({
+    bool automatic = false,
+    bool otaRecovery = false,
+  }) async {
     if (syncing) return;
     if (automatic) {
       final scanPermission = await Permission.bluetoothScan.status;
@@ -1682,7 +1684,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         locationReady = permission.isGranted && serviceEnabled;
       }
       if (!canAutoConnect(
-        autoConnectEnabled: appAutoConnectNotifier.value,
+        autoConnectEnabled: otaRecovery || appAutoConnectNotifier.value,
         knownRemoteId: knownCoolerRemoteIdNotifier.value,
         bluetoothScanGranted: scanPermission.isGranted,
         bluetoothConnectGranted: connectPermission.isGranted,
@@ -2013,6 +2015,9 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   void _handleBleDisconnected() {
+    final expectedOtaDisconnect =
+        otaExpectedDisconnect || otaRecoveryActive;
+
     unawaited(_setBackgroundService(false));
     notificationSub?.cancel();
     notificationSub = null;
@@ -2022,9 +2027,20 @@ class _DashboardScreenState extends State<DashboardScreen>
     fullSyncReceived = false;
     dashboardReady = false;
     _pendingTelemetry.clear();
-    pendingOtaNotice = '';
+    if (!expectedOtaDisconnect) {
+      pendingOtaNotice = '';
+    }
     batteryTimer?.cancel();
-    _startDisconnectRediscovery();
+
+    if (expectedOtaDisconnect) {
+      _cancelDisconnectRediscovery();
+      if (!(reconnectTimer?.isActive ?? false)) {
+        _startOtaReconnectMonitor();
+      }
+    } else {
+      _startDisconnectRediscovery();
+    }
+
     for (final waiters in _ackWaiters.values) {
       for (final waiter in waiters) {
         if (!waiter.isCompleted) waiter.complete('DISCONNECTED');
@@ -2045,10 +2061,13 @@ class _DashboardScreenState extends State<DashboardScreen>
       safetyReason = 'DISCONNECTED';
       firmwareVersion = 'V?';
       resetReason = 'UNKNOWN';
-      notice = JexText.of('bluetoothDisconnected', appLanguageNotifier.value);
+      notice = expectedOtaDisconnect
+          ? JexText.of('otaInProgress', appLanguageNotifier.value)
+          : JexText.of('bluetoothDisconnected', appLanguageNotifier.value);
     });
     _publishFloatingTelemetry();
-    if (appNotifyBluetoothNotifier.value) {
+
+    if (!expectedOtaDisconnect && appNotifyBluetoothNotifier.value) {
       unawaited(_postNotification(
         JexText.of('bluetoothDisconnected', appLanguageNotifier.value),
         'JE X FYZ',
@@ -2056,6 +2075,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       ));
     }
   }
+
 
   // AI-METHOD: _discoverServices — Discover exact JE X FYZ service/RX/TX, enable notifications, and complete SYNC/SYNC_READY.
   Future<void> _discoverServices(BluetoothDevice target) async {
@@ -2186,6 +2206,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     if (!mounted) return;
 
+    final wasOtaRecovery = otaRecoveryActive || otaExpectedDisconnect;
     final readySnapshot = Map<String, String>.from(_pendingTelemetry);
     _pendingTelemetry.clear();
     final syncedOtaResult = readySnapshot['LAST_OTA_RESULT'] ?? '';
@@ -2209,7 +2230,21 @@ class _DashboardScreenState extends State<DashboardScreen>
           : JexText.of('systemReady', appLanguageNotifier.value);
     });
     _publishFloatingTelemetry();
-    if (appNotifyBluetoothNotifier.value) {
+
+    if (wasOtaRecovery) {
+      reconnectTimer?.cancel();
+      reconnectTimer = null;
+      otaRecoveryActive = false;
+      otaExpectedDisconnect = false;
+      otaRecoveryScanInProgress = false;
+      if (appNotifyBluetoothNotifier.value && syncedOtaNotice.isNotEmpty) {
+        unawaited(_postNotification(
+          syncedOtaNotice,
+          'JE X FYZ',
+          2102,
+        ));
+      }
+    } else if (appNotifyBluetoothNotifier.value) {
       unawaited(_postNotification(
         JexText.of('bluetoothConnected', appLanguageNotifier.value),
         'JE X FYZ',
@@ -2676,6 +2711,13 @@ class _DashboardScreenState extends State<DashboardScreen>
         // LAST_OTA_RESULT is event-only. Baseline/history values never replace Home NOTIFY.
         if (isTransientOtaResultEvent(value)) {
           notice = _friendlyOtaResult(value);
+          if (value.trim().toUpperCase().startsWith('OTA_UP_TO_DATE|')) {
+            otaExpectedDisconnect = false;
+            otaRecoveryActive = false;
+            otaRecoveryScanInProgress = false;
+            reconnectTimer?.cancel();
+            reconnectTimer = null;
+          }
         }
         break;
       case 'RESET_REASON':
@@ -2686,11 +2728,11 @@ class _DashboardScreenState extends State<DashboardScreen>
         hotLimitDraft = hotLimit;
         break;
       case 'BATT_5':
-        battery5Limit = (int.tryParse(value) ?? battery5Limit).clamp(20, 48).toInt();
+        battery5Limit = (int.tryParse(value) ?? battery5Limit).clamp(20, 30).toInt();
         battery5Draft = battery5Limit;
         break;
       case 'BATT_12':
-        battery12Limit = (int.tryParse(value) ?? battery12Limit).clamp(22, 50).toInt();
+        battery12Limit = (int.tryParse(value) ?? battery12Limit).clamp(30, 40).toInt();
         battery12Draft = battery12Limit;
         break;
       case 'NTC_MV':
@@ -3016,7 +3058,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   Future<void> _setBattery5(int value) async {
     if (!connected || adaptiveOn) return;
     try {
-      final next = value.clamp(20, 48).toInt();
+      final next = value.clamp(20, 30).toInt();
       if (next >= battery12Limit - 1) return;
       if (mounted) setState(() => battery5Draft = next);
       final ok = await _sendAndConfirm('BATT5:$next');
@@ -3037,7 +3079,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   Future<void> _setBattery12(int value) async {
     if (!connected || adaptiveOn) return;
     try {
-      final next = value.clamp(22, 50).toInt();
+      final next = value.clamp(30, 40).toInt();
       if (next <= battery5Limit + 1) return;
       if (mounted) setState(() => battery12Draft = next);
       final ok = await _sendAndConfirm('BATT12:$next');
@@ -3213,7 +3255,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       final ok = await _sendAndWaitAck(command, showError: false, timeout: const Duration(seconds: 4));
       if (!ok) {
         _showSnackBar(
-          'OTA could not start: command ${_ackItemForCommand(command) ?? command} was rejected by the device.',
+          JexText.of('otaStartRejected', appLanguageNotifier.value),
           color: Colors.redAccent,
         );
         return;
@@ -3221,29 +3263,67 @@ class _DashboardScreenState extends State<DashboardScreen>
       await Future<void>.delayed(const Duration(milliseconds: 80));
     }
 
+    otaExpectedDisconnect = true;
+    otaRecoveryActive = true;
+    otaRecoveryScanInProgress = false;
+
     _showSnackBar(
-      'OTA in progress.',
+      JexText.of('otaInProgress', appLanguageNotifier.value),
       color: Colors.purpleAccent,
     );
     // AI-METHOD: _startOtaReconnectMonitor — Retry BLE discovery after OTA disconnect/restart.
-    _startOtaReconnectMonitor();
-  }
-
-  // AI-METHOD: _startOtaReconnectMonitor — Retry BLE discovery after OTA disconnect/restart.
   void _startOtaReconnectMonitor() {
     reconnectTimer?.cancel();
     int attempts = 0;
+    otaRecoveryActive = true;
+    otaRecoveryScanInProgress = false;
+
     reconnectTimer = Timer.periodic(const Duration(seconds: 3), (timer) async {
-      if (connected || attempts >= 12) {
+      if (!mounted || (!otaExpectedDisconnect && !otaRecoveryActive)) {
         timer.cancel();
+        reconnectTimer = null;
+        otaRecoveryScanInProgress = false;
         return;
       }
+
+      if (connected || syncing || _bleConnecting) return;
+
+      if (attempts >= 12) {
+        timer.cancel();
+        reconnectTimer = null;
+        otaRecoveryActive = false;
+        otaExpectedDisconnect = false;
+        otaRecoveryScanInProgress = false;
+        if (mounted) {
+          setState(() {
+            notice = JexText.of('otaReconnectFailed', appLanguageNotifier.value);
+          });
+        }
+        return;
+      }
+
+      if (otaRecoveryScanInProgress) return;
+      otaRecoveryScanInProgress = true;
       attempts++;
-      // AI-METHOD: _scanAndConnect — Perform bounded BLE discovery and pass the matching device to the connection routine.
-      await _tryAutoConnect();
-      if (connected) timer.cancel();
+
+      try {
+        await _scanAndConnect(
+          automatic: true,
+          otaRecovery: true,
+        );
+      } catch (e) {
+        debugPrint('OTA BLE recovery: $e');
+      } finally {
+        otaRecoveryScanInProgress = false;
+      }
+
+      if (connected) {
+        timer.cancel();
+        reconnectTimer = null;
+      }
     });
   }
+
 
   Map<String, String> _otaDiagnosticFields(String raw) {
     final fields = <String, String>{};
@@ -3265,37 +3345,23 @@ class _DashboardScreenState extends State<DashboardScreen>
       'LOCAL_RECEIVE': 'otaStageLocalReceive',
       'LOCAL_FLASH_WRITE': 'otaStageLocalFlashWrite',
       'LOCAL_SIZE_VERIFY': 'otaStageLocalSizeVerify',
-      'LOCAL_FINALIZE': 'otaStageLocalFinalize',
-      'LOCAL_FLASH_READBACK': 'otaStageLocalFlashReadback',
-      'LOCAL_FLASH_ERASE': 'otaStageLocalFlashErase',
+      'LOCAL_IMAGE_VERIFY': 'otaStageLocalImageVerify',
       'LOCAL_BOOT_PARTITION': 'otaStageLocalBootPartition',
+      'ONLINE_REQUEST': 'otaStageOnlineRequest',
+      'ONLINE_VERSION_CHECK': 'otaStageOnlineVersionCheck',
+      'ONLINE_UP_TO_DATE': 'otaStageOnlineUpToDate',
       'ONLINE_WIFI_CONNECT': 'otaStageOnlineWifiConnect',
       'ONLINE_WIFI_CONNECTED': 'otaStageOnlineWifiConnected',
+      'ONLINE_WIFI_RETRY_2': 'otaStageOnlineWifiRetry2',
+      'ONLINE_WIFI_RETRY_3': 'otaStageOnlineWifiRetry3',
       'ONLINE_WIFI_FAILED': 'otaStageOnlineWifiFailed',
-      'ONLINE_WIFI_DROPPED': 'otaStageOnlineWifiDropped',
-      'ONLINE_TIME_SYNC': 'otaStageOnlineTimeSync',
       'ONLINE_GITHUB_CONNECT': 'otaStageOnlineGithubConnect',
       'ONLINE_GITHUB_CONNECTED': 'otaStageOnlineGithubConnected',
-      'ONLINE_HTTP_UPDATE': 'otaStageOnlineHttpUpdate',
-      'ONLINE_UPDATE_BEGIN': 'otaStageOnlineUpdateBegin',
       'ONLINE_DOWNLOAD': 'otaStageOnlineDownload',
       'ONLINE_DOWNLOAD_COMPLETE': 'otaStageOnlineDownloadComplete',
       'ONLINE_FLASH_PREPARE': 'otaStageOnlineFlashPrepare',
       'ONLINE_FLASH_FINALIZE': 'otaStageOnlineFlashFinalize',
       'ONLINE_FLASH_SUCCESS': 'otaStageOnlineFlashSuccess',
-      'ONLINE_RANGE_PROBE': 'otaStageOnlineRangeProbe',
-      'ONLINE_RANGE_REQUEST': 'otaStageOnlineRangeRequest',
-      'ONLINE_RANGE_RESPONSE': 'otaStageOnlineRangeResponse',
-      'ONLINE_RANGE_WRITE': 'otaStageOnlineRangeWrite',
-      'ONLINE_RANGE_RETRY': 'otaStageOnlineRangeRetry',
-      'ONLINE_RANGE_RESUME': 'otaStageOnlineRangeResume',
-      'ONLINE_FLASH_WRITE': 'otaStageOnlineFlashWrite',
-      'ONLINE_FLASH_ERASE': 'otaStageOnlineFlashErase',
-      'ONLINE_FLASH_READBACK': 'otaStageOnlineFlashReadback',
-      'ONLINE_IMAGE_VALIDATE': 'otaStageOnlineImageValidate',
-      'ONLINE_IMAGE_VERIFY': 'otaStageOnlineImageVerify',
-      'ONLINE_BOOT_PARTITION': 'otaStageOnlineBootPartition',
-      'ONLINE_HTTP_RESPONSE': 'otaStageOnlineHttpResponse',
     };
     final key = keyByStage[stage.trim().toUpperCase()] ?? 'unknownOtaStage';
     return JexText.of(key, appLanguageNotifier.value);
@@ -3327,6 +3393,16 @@ class _DashboardScreenState extends State<DashboardScreen>
       final progress = fields['PROGRESS'] ?? '--';
       final code = fields['CODE'] ?? '0';
       return JexText.of('otaFailed', appLanguageNotifier.value) + ' • $mode • $stage • $error [${progress}% / code $code]';
+    }
+
+    if (upper.startsWith('OTA_UP_TO_DATE|')) {
+      final fields = _otaDiagnosticFields(raw);
+      final mode = _friendlyOtaMode(fields['MODE'] ?? 'OTA');
+      final stage = _friendlyOtaStage(fields['STAGE'] ?? 'UNKNOWN');
+      final version = fields['VERSION'] ?? '';
+      return JexText.of('otaUpToDate', appLanguageNotifier.value) +
+          ' • ' + mode + ' • ' + stage +
+          (version.isEmpty ? '' : ' • ' + version);
     }
 
     if (upper.startsWith('OTA_SUCCESS|')) {
@@ -3391,6 +3467,16 @@ class _DashboardScreenState extends State<DashboardScreen>
         return JexText.phrase('Temperature sensor error.', 'Kesalahan sensor suhu.');
       case 'HOTSIDE_PROTECTION':
         return JexText.phrase('Hotside protection active.', 'Perlindungan suhu panas aktif.');
+      case 'RAPID_HOTSIDE_RISE':
+        return JexText.phrase('Rapid Hotside temperature rise detected.', 'Kenaikan suhu panas terlalu cepat terdeteksi.');
+      case 'PELTIER_SAFETY_LATCH':
+        return JexText.phrase('Peltier safety lock is active.', 'Pengunci keselamatan Peltier aktif.');
+      case 'VOLTAGE_STEP_FAILED':
+        return JexText.phrase('Adaptive voltage step failed.', 'Perubahan langkah tegangan adaptif gagal.');
+      case 'VOLTAGE_FORCE_FAILED':
+        return JexText.phrase('Safety could not force 5V.', 'Sistem keselamatan gagal memaksa 5V.');
+      case 'ADAPTIVE_RISE_WAIT':
+        return JexText.phrase('Adaptive is waiting before raising voltage.', 'Mode Adaptif menunggu sebelum menaikkan tegangan.');
       case 'FAN_REQUIRED':
         return JexText.phrase('Fan required before Peltier.', 'Kipas harus hidup sebelum Peltier.');
       case 'PELTIER_ON':
@@ -4453,7 +4539,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   // Custom profile selection replaces Material RadioListTile while preserving commands/state.
   Widget _buildAdaptiveTab({Key? key}) {
     final lang = appLanguageNotifier.value;
-    final locked = adaptiveOn;
+    final locked = adaptiveOn || adaptiveTransitioning;
     final group =
         adaptiveProfile == 'HOTSIDE_BATTERY' ? 'HOTSIDE_BATTERY' : 'HOTSIDE';
 
@@ -4474,6 +4560,38 @@ class _DashboardScreenState extends State<DashboardScreen>
               value: adaptiveOn,
               enabled: connected,
               onChanged: _toggleAdaptive,
+            ),
+          ),
+          _card(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            child: Row(
+              children: [
+                JexAnimatedIcon.glyph(
+                  icon: PhosphorIconsRegular.sparkle,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 20,
+                  active: connected,
+                ),
+                const SizedBox(width: 9),
+                Expanded(
+                  child: Text(
+                    JexText.of('adaptiveCeiling', lang),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+                Text(
+                  connected ? adaptiveCeiling : '--',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+              ],
             ),
           ),
           _sectionTitle(JexText.of('adaptiveProfile', lang)),
@@ -4879,9 +4997,9 @@ class _DashboardScreenState extends State<DashboardScreen>
   // AI-METHOD / TEMPERATURE-UI-CONTRACT
   // Compact thermal controls with consistent custom +/- buttons and no long dividers.
   Widget _buildTemperatureTab({Key? key}) {
-    final locked = adaptiveOn;
-    final midLow = battery5Limit + 1;
-    final midHigh = battery12Limit - 1;
+    final locked = adaptiveOn || adaptiveTransitioning;
+    final midLow = battery5Limit;
+    final midHigh = battery12Limit;
     final lang = appLanguageNotifier.value;
 
     return KeyedSubtree(
@@ -4912,15 +5030,15 @@ class _DashboardScreenState extends State<DashboardScreen>
                   value: battery5Draft,
                   min: 20,
                   max: 48,
-                  enabled: connected && !locked && battery5Draft < battery12Limit - 1,
+                  enabled: connected && !locked && battery5Draft < battery12Limit,
                   onChanged: (v) {
-                    if (v < battery12Limit - 1) _setBattery5(v);
+                    if (v < battery12Limit) _setBattery5(v);
                   },
                 ),
                 const SizedBox(height: 8),
                 _lockedZoneRow(
                   title: JexText.of('zone9v', lang),
-                  value: '≈ ' + midLow.toString() + '–' + midHigh.toString() + '°C',
+                  value: midLow.toString() + '°C → 9V → ' + midHigh.toString() + '°C',
                 ),
                 const SizedBox(height: 8),
                 _temperatureAdjuster(
@@ -4928,9 +5046,9 @@ class _DashboardScreenState extends State<DashboardScreen>
                   value: battery12Draft,
                   min: 22,
                   max: 50,
-                  enabled: connected && !locked && battery12Draft > battery5Limit + 1,
+                  enabled: connected && !locked && battery12Draft > battery5Limit,
                   onChanged: (v) {
-                    if (v > battery5Limit + 1) _setBattery12(v);
+                    if (v > battery5Limit) _setBattery12(v);
                   },
                 ),
               ],
@@ -5153,6 +5271,8 @@ class _DashboardScreenState extends State<DashboardScreen>
     final adaptiveValue = connected
         ? JexText.of(adaptiveOn ? 'on' : 'off', appLanguageNotifier.value)
         : '--';
+    final safetyLocked =
+        connected && safety.trim().toUpperCase() != 'OK';
     final headerDark = appThemeNotifier.value != AppThemePreset.light;
     final headerForeground = headerDark ? const Color(0xFFF7F8FC) : const Color(0xFF16181D);
 
@@ -5263,12 +5383,12 @@ class _DashboardScreenState extends State<DashboardScreen>
                             JexText.of('hotsideTemperature'),
                             hotValue,
                             hotValue == '--' ? '' : '°C',
-                            color: safety == 'FAULT'
+                            color: safetyLocked
                                 ? const Color(0xFFFF5164)
                                 : const Color(0xFF22E6DE),
                             icon: PhosphorIconsRegular.thermometer,
                             animatedKind: JexAnimatedIconKind.hotside,
-                            warning: safety == 'FAULT',
+                            warning: safetyLocked,
                           ),
                           _homeMetric(
                             JexText.of('voltageIndicator'),
@@ -6126,7 +6246,7 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
               const SizedBox(height: 8),
               TextField(
                 controller: password,
-                obscureText: false,
+                obscureText: true,
                 decoration: InputDecoration(
                   labelText: JexText.of('password', appLanguageNotifier.value),
                   prefixIcon: JexAnimatedIcon.glyph(
