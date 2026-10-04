@@ -565,3 +565,10 @@ For any hardware/control mismatch, verify in order:
 - After the user returns Gemini's response, classify it as external second-opinion evidence, reconcile it against current repository/source authority, and record accepted/rejected conclusions plus what remains unverified.
 - A direct Gemini connector/tool, when available, may be used instead of the relay; otherwise the user relay is the default requested path.
 
+## 2026-10-04 — EXECUTION FULL / V3.8 FIRMWARE SOFT-START SCOPE
+
+- [IMPLEMENTED] Approved scope was executed: soft-start is now only a genuine Peltier OFF → ON event.
+- [IMPLEMENTED] Voltage-rise transitions no longer restart soft-start.
+- [PRESERVE] 5 s soft-start duration, PWM configuration, safety, BLE/P1, GPIO, Adaptive, OTA, and non-blocking contracts remain unchanged.
+- [NO BUILD] App Build was not triggered because App source/configuration was unchanged.
+- [VALIDATION] Full affected firmware source/static audit completed; physical validation remains pending.
