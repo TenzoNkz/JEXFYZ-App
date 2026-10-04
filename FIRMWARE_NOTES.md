@@ -4774,3 +4774,13 @@ A full hardening pass must address the confirmed sequencing/OTA/safety items bef
 - [PASS / RETAINED] Previously hardened V3.9 items remain accepted: OTA download dispatcher, full BLE radio teardown for Wi-Fi handoff, main-loop BLE advertising recovery, semantic firmware-version comparison, retry radio settle, rapid Hotside rise latch, NTC final gate, battery hysteresis, and local OTA image magic-byte validation.
 - [BLOCKED] No compile, BIN generation, Firebase promotion, flash, or physical electrical/thermal validation was performed as part of this audit.
 - [NEXT ACTION] Do not flash V3.9. First patch the P0 rail-stabilization state machine and P1 OTA certificate validation; then re-audit the affected source with the same two-party gate before any firmware update.
+
+
+## 2026-10-04 — DISCUSSION / V3.9 UPDATE READINESS CHECK
+
+- [VERIFIED] Current V3.9 source remains unready for firmware update/flash.
+- [P0] `completeVoltageTransition()` still commits the 9V/12V selector and then calls `applyCoolingOutputs()` without a dedicated post-selector rail-settling state. Logical Peltier ON can therefore transition back to full physical duty immediately after selector activation.
+- [P1] `prepareOnlineOtaDownload()` still uses `cloudClient.setInsecure()`; production Online OTA server authentication remains unresolved.
+- [CONFIRMED] The previous assistant + user-mediated Gemini dual audit remains NOT SAFE TO FLASH for this candidate.
+- [DECISION] Keep the update/flash gate CLOSED until P0/P1 are fixed and the same two-party audit passes.
+- [NO SOURCE CHANGE] Discussion-only event; no firmware/App/build/release change performed.
