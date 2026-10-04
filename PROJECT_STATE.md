@@ -1,3 +1,14 @@
+## 2026-10-04 — EXECUTION FULL / V4.2 ONLINE OTA RETRY HARDENING
+
+- [CURRENT] Active Firmware source: `firmware/JEXFYZ-V4.2.ino`, blob `63e8db10dbe99eb538af62ddc7d35d8b4b20b849`, `FW_VERSION = V4.2`.
+- [IMPLEMENTED] Online OTA Wi-Fi retry no longer performs repeated `WiFi.disconnect(); WiFi.begin(...)`; it uses one cumulative 45 s connection window with attempt telemetry only.
+- [VERIFIED] V4.2 source has exactly one `WiFi.begin()`, zero `setAutoReconnect(false)`, one `setAutoReconnect(true)`, zero `WL_CONNECT_FAILED/WL_NO_SSID_AVAIL`, zero executable `delay()`, zero timing `while()`, and balanced braces/parentheses/brackets.
+- [PROTECTED] Local OTA remains unchanged.
+- [UNVERIFIED] ArduinoDroid/Core 3.3.7 compile/link, BIN, Firebase metadata promotion, physical flash, Online OTA runtime, thermal/electrical/radio validation.
+- [APP] App baseline remains `1.0.0+3`; Build #50 remains the latest verified App artifact; no App Build is triggered by this Firmware change.
+- [HISTORICAL] V4.1 source is superseded and removed from the active branch; prior V3.x/V4.0 narratives remain historical only.
+- [NEXT] Compile/generate V4.2 BIN, verify artifact/hash, then apply the required firmware flash gate and staged physical testing.
+
 ## 2026-10-04 — NEW CHAT PREFLIGHT / REPOSITORY RECONCILIATION
 
 - [VERIFIED] Repository: `TenzoNkz/JEXFYZ-App`; branch: `main`; current HEAD: `684a89c270c5dda00ae749c26572737f7e65609c`.
