@@ -331,6 +331,15 @@ The final handover must be written as a single ready-to-copy prompt, with explic
 Do not compress away important technical details merely to make the handover shorter. Accuracy and continuity take priority.
 
 The handover is documentation/continuity work only unless the user separately authorizes implementation or build.
+## 2026-10-04 — EXECUTION FULL / DUAL CHAT-LIMIT PROMPT SYSTEM
+
+- Formalized a two-stage chat-limit continuity system.
+- Prompt A — CHAT-LIMIT RECAP is used in the old chat after a context-limit warning. It exports the complete available chat context into a structured JE X FYZ CHAT RECAP PACKAGE, including requirements, decisions, source/commit/build evidence, bugs, root causes, hypotheses, validation, Gemini results, dead ends, risks, unresolved questions, chat-only data, and the exact next action.
+- Prompt B — NEW CHAT TRANSFER is used in the new chat. It treats Prompt A output as transfer evidence only, performs the mandatory full memory preflight, inspects current source/workflow, reconciles the package against repository truth, and only then continues the permitted workflow.
+- Current source/current workflow remain the highest authority. The recap cannot override newer repository state.
+- Prompt B is mandatory for separate Build App subchats as well; a recap does not replace the Build App memory/source/workflow preflight.
+- This execution changed documentation/process only. No functional App or Firmware source was changed and no Build App was triggered.
+
 ## 10. MEMORY INTEGRITY / PROFESSIONAL REASONING
 
 - Treat CHAT_RULES.md, APP_NOTES.md, and FIRMWARE_NOTES.md as the project's persistent working memory.
