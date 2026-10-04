@@ -24,9 +24,9 @@ Before any JE X FYZ discussion, analysis, source inspection, execution, audit, G
 5. **FIRMWARE_NOTES.md** — Firmware contract and Firmware history.
 6. **BUILD_NOTES.md** — App Build history and build continuity.
 7. **CHANGELOG.md** — historical milestone summary.
-8. **HANDOVER.md** — portable continuity context when present.
-9. **CHAT_TRANSFER.md** — latest old-chat transfer snapshot saved by Prompt 1.
-10. **firmware/FIRMWARE_ANALYSIS.md** — firmware architecture/safety map when Firmware context is relevant.
+8. **firmware/FIRMWARE_ANALYSIS.md** — firmware architecture/safety map when Firmware context is relevant.
+9. **HANDOVER.md** — portable continuity context when present.
+10. **CHAT_TRANSFER.md** — latest old-chat transfer snapshot saved by Prompt 1.
 11. Inspect the **current source/workflow** that actually controls the task.
 
 Never start from old chat memory alone.
