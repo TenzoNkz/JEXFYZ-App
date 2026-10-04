@@ -269,3 +269,120 @@ Then send the following to Gemini together with the current `.ino` file:
 >
 > Final response must include: verdict, root cause, OLD→NEW patches, explicit Local OTA unchanged statement, regression check, Online OTA flow check, and source consistency check. Never output the full .ino.
 
+
+
+# 2026-10-04 — FULL PRE-FLASH FORENSIC AUDIT REQUEST
+
+## COPY THIS ENTIRE SECTION TO GEMINI
+
+Saya akan melakukan **flash Firmware V4.0 melalui Local OTA** sebagai jalur update/testing karena **Online OTA sebelumnya masih gagal**. Sebelum saya flash Local OTA, lakukan **FULL FORENSIC CODE AUDIT** terhadap file `firmware/JEXFYZ-V4.0.ino` yang saya kirim bersama prompt ini.
+
+### CURRENT SOURCE
+- Firmware: **V4.0**
+- Repository: `TenzoNkz/JEXFYZ-App`
+- Current source blob: `0566105383a889912e5e756b0b9f265e5fcf0264`
+- Target hardware: **ESP32-C3 Super Mini / ESP32-C3 Dev Module**
+- Arduino platform: **Arduino Standard + official Arduino-ESP32 Core 3.3.7**
+
+### USER PRIORITY
+Prioritas utama sekarang bukan kosmetik, tetapi menemukan **semua kemungkinan bug, error, failure path, compile problem, watchdog/reset risk, state-machine deadlock, radio handoff failure, OTA failure, memory issue, race/reentrancy issue, dan hardware-safety issue** sebelum Firmware di-flash.
+
+Online OTA sebelumnya **masih gagal**. Jangan menganggap patch Gemini sebelumnya sudah menyelesaikan masalah hanya karena source berubah. Cari root cause baru maupun root cause yang masih tersisa.
+
+### HARD RULE — LOCAL OTA
+**Local OTA adalah jalur flash/testing dan harus dianggap golden/protected.**
+- Jangan mengusulkan perubahan Local OTA hanya karena ada bug Online OTA.
+- Namun audit seluruh source harus memastikan perubahan V4.0 tidak secara tidak langsung merusak Local OTA, boot SoftAP, upload handler, Update.begin/Write/end, validation, recovery, atau restart flow.
+- Jangan menyebut Local OTA aman hanya karena source terlihat benar; identifikasi semua kondisi yang secara realistis dapat membuat flashing Local OTA gagal.
+
+### ONLINE OTA — AUDIT WAJIB SANGAT DETAIL
+Analisa end-to-end:
+1. BLE teardown → Wi-Fi ownership → Wi-Fi OFF settle → Wi-Fi STA connect.
+2. ESP32-C3 single-radio constraint: pastikan BLE benar-benar inactive sebelum Wi-Fi.
+3. Wi-Fi retry/failure/recovery dan kemungkinan state machine macet.
+4. GitHub raw URL validation dan redirect handling.
+5. `WiFiClientSecure + setInsecure()` compatibility pada Arduino-ESP32 Core 3.3.7.
+6. Apakah synchronous `HTTPClient::GET()` dapat menyebabkan blocking, watchdog reset, starvation, timeout, atau membuat LED/state machine tampak mati.
+7. HTTP response/status/content-length handling.
+8. Stream availability/read behavior; premature close; timeout; partial reads.
+9. ESP32 image magic byte `0xE9` validation.
+10. `Update.begin()`, `Update.write()`, ukuran firmware, free sketch space, dan `Update.end()`.
+11. Apakah download progress dapat kehilangan milestone 20/40/60/80/100.
+12. Apakah indikator LED dapat tidak terlihat karena ownership, early return, state priority, atau transition overlap.
+13. Apakah Online OTA bisa gagal tanpa LED feedback.
+14. Failure path → Wi-Fi shutdown → BLE recovery.
+15. Success path → green → restart.
+16. Credential/url cleanup dan OTA state cleanup setelah success/failure.
+17. Version parsing, anti-rollback, dan mismatch antara metadata Firebase/GitHub BIN.
+18. Heap/stack pressure, large local buffers, String fragmentation, callback lifetime, atomic flags, and reentrancy.
+19. BLE callback safety and main-loop API ownership.
+20. Peltier/Fan/selector safety while OTA is active.
+
+### FIRMWARE-WIDE AUDIT WAJIB
+Jangan berhenti di OTA. Periksa juga:
+- GPIO contract: GPIO0 NTC, GPIO1 touch, GPIO3 12V selector, GPIO4 9V selector, GPIO5 Peltier, GPIO6 Fan, GPIO7 WS2812.
+- Peltier 20 kHz / 8-bit / 5 s OFF→ON soft-start.
+- Voltage selector 200 ms deadtime.
+- 300 ms post-selector rail stabilization.
+- Hotside universal thermal authority.
+- Rapid Hotside rise safety latch.
+- NTC validity gate.
+- Adaptive start/stop and 5V recovery.
+- Battery validity/fallback/hysteresis.
+- Fan PWM 25 kHz / 50–100%.
+- No executable `delay()` and no timing `while()` loops.
+- Preferences debounce/save behavior.
+- LED ownership conflicts among normal RGB, voltage indicator, Hotside protection, and OTA.
+- Any hidden path that can leave Peltier ON, Fan OFF, selector in an invalid state, or outputs active during OTA.
+
+### PARTICULARLY LOOK FOR REAL FAILURE CONDITIONS
+Cari bug dengan mindset **“bagaimana hardware benar-benar bisa gagal?”**, bukan hanya style review.
+
+Untuk setiap temuan, jelaskan:
+- exact function/state;
+- trigger/sequence needed;
+- what the device will do;
+- why it can fail on real ESP32-C3;
+- whether it can produce reset/hang/no LED/no OTA/no BLE recovery;
+- severity: **P0 / P1 / P2 / P3**;
+- whether it is proven from source or only a hypothesis.
+
+### IMPORTANT DISTINCTION
+Pisahkan:
+- **PROVEN SOURCE BUG**
+- **HIGH-CONFIDENCE RISK**
+- **HYPOTHESIS REQUIRING HARDWARE TEST**
+- **NOT A BUG**
+
+Jangan mengarang hasil compile atau hardware test.
+
+### FINAL VERDICT — REQUIRED
+Akhiri dengan salah satu:
+**SAFE TO FLASH LOCAL OTA**
+atau
+**NOT SAFE TO FLASH LOCAL OTA**
+
+SAFE hanya boleh diberikan jika tidak ada P0/P1 yang dapat reasonably menyebabkan update/boot/runtime failure pada hardware.
+
+### PATCH OUTPUT RULE
+Bila menemukan bug yang benar-benar perlu diperbaiki sebelum flash:
+- Jangan kirim full `.ino`.
+- Kirim hanya patch yang diperlukan dalam format **OLD → NEW**.
+- OLD harus exact text dari source yang saya kirim.
+- NEW harus replacement lengkap.
+- Jelaskan setiap patch dan mengapa patch tersebut diperlukan.
+- Jangan mengubah Local OTA kecuali ada defect Local OTA yang benar-benar terbukti dari source dan secara langsung dapat menggagalkan flash/testing.
+
+### RESPONSE STRUCTURE
+1. FINAL VERDICT
+2. P0 BLOCKERS
+3. P1 CRITICAL RISKS
+4. P2/P3 FINDINGS
+5. ONLINE OTA END-TO-END FAILURE ANALYSIS
+6. LOCAL OTA PRE-FLASH AUDIT
+7. FIRMWARE-WIDE SAFETY AUDIT
+8. COMPILE/CORE 3.3.7 RISKS
+9. EXACT REQUIRED PATCHES (ONLY IF NEEDED, OLD → NEW)
+10. WHAT IS STILL UNVERIFIED ON REAL HARDWARE
+
+**Jangan bias terhadap patch sebelumnya. Audit source dari nol dan coba secara agresif menemukan cara firmware ini gagal.**
