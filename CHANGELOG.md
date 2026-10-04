@@ -1,3 +1,11 @@
+## 2026-10-04 — FIRMWARE VERSION RULE + GEMINI PROMPT FILE RETIRED
+
+- [WORKFLOW] Dedicated `GEMINI_PROMPT_ONLINE_OTA.md` has been removed from the repository. Gemini prompts are generated from current repository/source context in the active chat.
+- [RULE] Every firmware update that produces/can produce a new firmware image MUST increment `FW_VERSION`, even for the smallest source change (including a one-character change).
+- [CURRENT] No firmware source was changed by this policy update; active firmware remains V4.0.
+- [LOCAL OTA] Protected/golden path remains unchanged.
+
+
 ## 2026-10-04 — GEMINI WIFI FORENSIC RESULT RECONCILIATION
 
 - [GEMINI RESULT] Gemini identified two candidate Online OTA Wi-Fi patches: PASS whitespace normalization and a relaxed Wi-Fi retry state using WiFi.setAutoReconnect(true) plus timeout-only retries.
