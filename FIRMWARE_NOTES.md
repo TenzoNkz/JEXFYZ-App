@@ -1,3 +1,12 @@
+## 2026-10-04 — V4.0 ARITY/COMPILE FIX
+
+- [ERROR] ArduinoDroid reported `no matching function for call to 'batteryZoneFor'` at the live-zone calculation in `completeVoltageTransition()`.
+- [ROOT CAUSE] `batteryZoneFor()` requires `(float temperature, Voltage referenceVoltage)` but one call passed only `batteryC`.
+- [FIX] Updated to `batteryZoneFor(batteryC, currentVoltage)`.
+- [SOURCE] New V4.0 blob: `415346ece09f4af33f907b2077140ccfc45c357b`.
+- [AUDIT] All `batteryZoneFor` call sites now use the two-argument signature; no one-argument stale call remains.
+- [GATE] Because the functional source blob changed, prior Gemini + Assistant approval is superseded and must be repeated on the exact new blob.
+
 ## 2026-10-04 — V4.0 GEMINI + ASSISTANT DUAL-PARTY REVIEW
 
 - [GEMINI VERDICT] Exact V4.0 blob `b2a77fadeaa154412850d34c82b0bb78ef108bae`: **SAFE TO FLASH**.
