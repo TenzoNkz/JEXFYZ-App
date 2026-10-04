@@ -360,3 +360,11 @@ The requested “keterangan di semua baris” is interpreted as every meaningful
 
 ### Validation boundary
 No functional firmware/App source was changed by this Gemini reconciliation. No firmware compile, BIN generation, Firebase promotion, or physical validation was performed.
+
+## 2026-10-04 — V3.9 POST-PATCH STATIC AUDIT
+- Active source: `firmware/JEXFYZ-V3.9.ino`, blob `f123a46d84d1e2ec0e67419a6577388fd3c8645e`.
+- Static invariants: braces 574/574; parentheses 2112/2112; executable `delay()` 0; timing `while()` waits 0; active `stopBleRadio(false)` call count 0; DOC-CONTRACT blocks 137.
+- V3.8 source blockers addressed: OTA starvation, voltage/Peltier transition interleaving, NTC deadtime race, BLE handoff, Wi-Fi retry settle, callback advertising context, battery chatter, ADAPTIVE:OFF ACK, rapid-rise safety, anti-rollback, reset reason, Local OTA image magic.
+- Security/architecture still open: Online OTA TLS currently uses `setInsecure()`; BLE command authentication; synchronous HTTP preparation; post-boot rollback health policy.
+- Electrical causality remains unverified: V3.9 removes the confirmed PWM/selector sequencing hazard but does not prove whether the historical 9V->12V restart was brownout, EMI, regulator collapse, or another mechanism.
+- Validation boundary: static repository audit only.
