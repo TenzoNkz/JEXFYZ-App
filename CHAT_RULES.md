@@ -1,3 +1,12 @@
+## 2026-10-04 — EXECUTION FULL / V3.7 PELTIER PWM SOFT-START
+
+- User authorized combined **Diskusi & Eksekusi** after identifying the required Peltier PWM rule.
+- The authoritative source was located in the App repository at `firmware/JEXFYZ-V3.6.ino`; the prior dedicated firmware repository is binary-only.
+- Implemented V3.7: upward voltage transitions restart the 5-second Peltier PWM soft-start; downward transitions do not; Peltier OFF → ON always soft-starts.
+- Updated firmware continuity source, retired V3.6 source, and recorded the App/Firmware/chat maintenance entries.
+- No App Build was triggered.
+- Next firmware validation remains ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compilation, then hardware validation.
+  
 ## 2026-10-04 — EXECUTION FULL / V3.6 UNIVERSAL HOTSIDE SAFETY FLOW
 
 - User explicitly authorized `@Thinking Eksekusi Full!`.
