@@ -1,0 +1,24 @@
+# JE X FYZ App — single explicit build trigger.
+# Normal pushes/PRs never start this workflow.
+# The assistant creates/reopens the dedicated trigger issue only after an explicit
+# "@Thinking Build App!" request.
+name: Build App
+
+on:
+  issues:
+    types:
+      - opened
+      - reopened
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  build:
+    if: >-
+      github.event.issue.user.login == github.repository_owner
+      && github.event.issue.title == 'JE X FYZ — BUILD APP TRIGGER'
+      && contains(github.event.issue.body, 'JEXFYZ_BUILD_TRIGGER_V1')
+    uses: ./.github/workflows/app-build.yml
+    secrets: inherit
