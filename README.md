@@ -18,7 +18,7 @@
 
 ## 2026-10-04 — GEMINI PATCH-ONLY PROTOCOL
 
-- [WORKFLOW] `@Thinking Tanya Gemini!` now uses the dedicated `GEMINI_PROMPT_ONLINE_OTA.md` prompt when diagnosing the current Online OTA issue.
+- [WORKFLOW] `@Thinking Tanya Gemini!` uses the current repository/source context and a copy-ready prompt generated in the active chat; no dedicated Gemini prompt file is required.
 - [REQUIRED GEMINI OUTPUT] Patch-only: exact `OLD` block → `NEW` block. Gemini must not return the full `.ino` file.
 - [EXECUTION HANDOFF] After the user supplies Gemini's patch, `@Thinking Eksekusi Full!` is the stage that applies and audits the patch against the exact current repository source, then commits it.
 - [LOCAL OTA] Frozen/protected because Local OTA has been proven working on hardware. Do not modify Local OTA for Online OTA fixes.
@@ -129,6 +129,20 @@ The project uses multiple persistent memory layers because a single chat can rea
 **Memory synchronization is not the same thing as functional source modification.**
 
 For example, `@Thinking Diskusi!` must not modify firmware/App behavior, but the automatic memory checkpoint may update documentation/state files so the discussion is not lost when the chat ends.
+
+### MANDATORY FIRMWARE VERSION RULE — ABSOLUTE
+
+**EVERY firmware update MUST increment `FW_VERSION`, even when the functional change is only one character, one token, one line, one constant, one comment that changes the compiled image, or any other minimal source change that produces a new firmware candidate.**
+
+Rules:
+- Never create a new functional firmware image while reusing the previous firmware version.
+- Minimum change still means a version bump: for example `V4.0 → V4.1`.
+- The firmware source filename/version must remain aligned when versioned source filenames are used.
+- Documentation-only changes do not require a firmware version bump.
+- A version bump does not imply that a BIN, Firebase metadata, or physical device has already been updated.
+- The required order for every firmware update is: modify source → increment `FW_VERSION` → align versioned filename → update firmware notes → compile with ArduinoDroid + official Arduino-ESP32 Core 3.3.7 → verify BIN → deliberately promote OTA/Firebase metadata → physically flash/test before claiming runtime validation.
+
+**COMMAND:** `@Thinking Eksekusi!`, `@Thinking Eksekusi Full!`, or `@Thinking Eksekusi & Build App!` that includes a firmware source change MUST enforce this version bump automatically. No exception is allowed because the change is small.
 
 ---
 
