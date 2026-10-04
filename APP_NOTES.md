@@ -42,6 +42,12 @@
 - The App/BLE cross-layer contract remains unchanged.
 - No App Build was triggered by the analysis-document addition.
 
+## 2026-10-04 — DUAL CHAT-LIMIT TRANSFER PROMPTS
+
+- Added the official two-stage continuity mechanism shared by normal continuation and Build App subchats.
+- Prompt A captures the full available old-chat context without fabricating evidence.
+- Prompt B rebuilds context from repository memory, inspects current source/workflow, reconciles Prompt A, and continues only from verified current truth.
+- No App runtime behavior, BLE/OTA contract, signing identity, dependency contract, or firmware interface changed.
 # JE X FYZ — APP NOTES
 
 ## AUTHORITATIVE MEMORY CORE — CROSS-LAYER CONTRACT — 2026-10-04
