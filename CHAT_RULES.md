@@ -1,3 +1,29 @@
+## 2026-10-04 — EXECUTION FULL / V3.7 SOURCE DOCUMENTATION + REPOSITORY CLEANUP
+
+- User explicitly authorized `@Thinking Eksekusi Full!`.
+- Authoritative source was re-read from `firmware/JEXFYZ-V3.7.ino` before editing.
+- Functional firmware version remains **V3.7**; this pass is documentation/cleanup only and does not introduce a new functional version.
+- Source cleanup completed:
+  - added an authoritative firmware contract block at the top of the source;
+  - added a contract comment block before every detected firmware function definition (**136** function contracts);
+  - added detailed line-level intent comments around Peltier PWM, output interlocks, voltage transitions, Hotside safety, Adaptive timing, BLE radio handoff, OTA, setup, and loop;
+  - normalized mixed-language comments to English;
+  - removed stale version/baseline references;
+  - separated a joined declaration and removed unnecessary blank-line runs;
+  - normalized a split OTA state case and retained the existing non-blocking architecture.
+- Static C++-aware scan after the documentation pass:
+  - `FW_VERSION = V3.7`: 1;
+  - stale V3.5/V3.6 and old V1.0 baseline references: 0;
+  - executable `delay(...)`: 0;
+  - timing `while(...)`: 0;
+  - braces: 535/535;
+  - parentheses: 2002/2002;
+  - function contract blocks: 136;
+  - comment lines: 779.
+- Source commit: `ef4519b8f4d032a6d2d1f84101785c05b8a89cfa`; source blob: `4a7e08a6ea0de57f4e3d3a742ad88cbd25a05e01`.
+- No App source change, App Build, BIN generation, Firebase promotion, dedicated binary-repository update, or physical validation was performed.
+- Next firmware validation boundary remains ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compilation, followed by real-device validation.
+
 ## 2026-10-04 — EXECUTION FULL / V3.7 PELTIER PWM SOFT-START
 
 - User authorized combined **Diskusi & Eksekusi** after identifying the required Peltier PWM rule.
