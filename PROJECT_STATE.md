@@ -1,3 +1,11 @@
+## 2026-10-04 — OTA LOCAL vs ONLINE DISCUSSION / V4.0
+
+- [CLARIFICATION] User asked whether Local OTA and Online OTA were fixed by the V4.0 hardening execution.
+- [LOCAL OTA] No new functional Local OTA source patch was made in the V3.9→V4.0 P0/P1 execution. Existing V4.0 Local OTA hardening remains active: `.bin` file-type check, declared-size and free-space checks, OTA safe outputs before `Update.begin()`, ESP32 image magic-byte `0xE9` validation before first local flash write, exact received-size verification, `Update.end(true)`, success/failure indicators, and retry-capable SoftAP recovery.
+- [ONLINE OTA] P1 was directly fixed in the V4.0 execution: `setInsecure()` removed and Core 3.3.7 certificate-bundle trust enabled. Existing Online protections include GitHub raw-BIN URL allowlist, firmware version/anti-rollback checks, OTA safe outputs, BLE teardown before Wi-Fi handoff, bounded streaming, `0xE9` magic validation, download timeout/error handling, `Update.end()`, and BLE recovery after failure.
+- [IMPORTANT] Both OTA paths are source-hardened, but neither path has yet passed ArduinoDroid/Core 3.3.7 compilation or physical runtime OTA validation. “Fixed” means source-level hardening, not proven device success.
+- [NO SOURCE CHANGE] This discussion/audit event changed documentation only.
+
 ## 2026-10-04 — CURRENT V4.0 DUAL-PARTY FLASH GATE
 
 - [USER COMMAND] `@Thinking Tanya Gemini!` and user supplied Gemini's independent audit.
