@@ -6,20 +6,21 @@
 - Active Firmware: V4.5
 - Firmware source: firmware/JEXFYZ-V4.5.ino
 - Firmware blob: daef871d910f3f1bc4f2d1bdc44e0d19f6e292dc
-- App main blob: 8ebd878b116d7ef093b6df54894a7db876eb0f02
+- App main blob: f762f6d1cdd1351e57e7d93665ff2f5898769b42
 - App settings blob: f11235bab559b291928550e06984532581ddad6a
 - App tests blob: aa86778beb8fcc3ce6a12454f6354f96ec99a160
-- Latest verified App Build: #50 for an older App source
+- App workflow blob: 9cbb39a3bec997072b1866b01caeed756e6228eb
+- Latest verified downloadable App Build: #50
 
-## COMPLETED IN THIS EXECUTION
-- Firmware promoted V4.4 → V4.5.
-- Active-GATT disconnect ordering fixed.
-- OTA_UP_TO_DATE one-shot result aligned.
-- Rapid-rise safety gated on Peltier ON.
-- App Online OTA recovery no longer self-blocks and no longer depends on passive Auto Connect preference.
-- Expected OTA disconnect no longer produces the normal Bluetooth-disconnected error.
-- App/Firmware safety, Adaptive Ceiling, battery thresholds, OTA stages, password masking, and OTA localization synchronized.
-- Repository memory updated.
+## COMPLETED
+- Firmware V4.5 is the active version and source/static audit is complete.
+- App OTA recovery synchronization is implemented.
+- Build #51 source syntax failure was fixed.
+- Build #52 signing-shell failure was fixed.
+- Build #53 proved the current App source compiles, analyzes, tests, and passes production signing verification.
+- Build #53 artifact creation was blocked only by GitHub Actions storage quota.
+- App workflow was hardened to publish one replaceable direct APK artifact with 7-day retention and no second symbols artifact.
+- Repository memory/documentation is synchronized to the current source and CI state.
 
 ## FROZEN
 - Local OTA Golden Path
@@ -27,9 +28,13 @@
 - V3.2-style Online OTA transport/retry/result-indicator behavior
 - Manual App Build trigger
 - No executable delay() / no timing while()
+- Firmware version/file alignment
 
 ## VALIDATION BOUNDARY
-- V4.4 physical OTA: user-confirmed PASS.
-- V4.5 source/static audit: PASS.
-- V4.5 compile/BIN/flash/physical validation: pending.
-- Current App source requires a future explicit App Build for release validation.
+- App source CI gate: PASS through production signing verification in Build #53.
+- Release APK artifact: not yet available because of GitHub Actions artifact quota.
+- Firmware V4.5 compile/BIN/flash/physical validation: pending.
+- Do not treat Build #53 as a successful release artifact.
+
+## NEXT ACTION
+Clear obsolete GitHub Actions artifacts or wait for quota recalculation, then run the manual Build App trigger again. Separately compile/flash Firmware V4.5 and validate BLE disconnect/reconnect, Online OTA, and Local OTA on hardware.
