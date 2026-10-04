@@ -1,3 +1,30 @@
+## 2026-10-04 — CHAT-LIMIT TRANSFER / FINAL CONTINUITY SYNC
+
+- Current chat is near context limit; this repository checkpoint is the handoff boundary for the next chat.
+- The detailed copy-ready continuation prompt is stored in README.md and HANDOVER.md.
+- The next chat must begin with the full memory preflight before any analysis, discussion, execution, Build App, Gemini review, or test interpretation.
+- Current functional firmware remains V3.7.
+- Active firmware source remains firmware/JEXFYZ-V3.7.ino.
+- Firmware source blob remains 4a7e08a6ea0de57f4e3d3a742ad88cbd25a05e01.
+- Latest verified App Build remains #50; no newer App Build was performed in this chat.
+- Firmware V3.7 compile/BIN/Firebase/device validation remains unperformed.
+- No functional App/Firmware behavior was changed by this continuity/handover event.
+
+### Current memory artifact blobs
+- README.md: cb6006064ab2f30afa7d645472ffb616682997f2
+- CHAT_RULES.md: 67960204052ad4748e3b543d4b1fae1ba69b27cd
+- APP_NOTES.md: c7083894fa000d6ae21658a99c87cbde10ffede5
+- FIRMWARE_NOTES.md: ea76fb71a46e91e6dc4e53270bf30ccfc5a3a6e2
+- BUILD_NOTES.md: 2f18d9bc8f2b63c6a101ae805972ba1f197bfd8d
+- CHANGELOG.md: 0d551177a11f62371f94b0bd3847c10743f7e5e9
+- HANDOVER.md: da0cf8cabafff5c75b7d72198786d2802ac3dc2c
+- firmware/FIRMWARE_ANALYSIS.md: 72f0d528898f733ad5055263e5dcf4d3758e8454
+- firmware/JEXFYZ-V3.7.ino: 4a7e08a6ea0de57f4e3d3a742ad88cbd25a05e01
+
+### Handover state
+- Workflow: chat-limit transfer / ready for new chat.
+- Next exact action: copy the detailed prompt from HANDOVER.md (or the equivalent prompt in README.md) into the new chat.
+- First new-chat action: perform the mandatory memory preflight and then report current project state before continuing the user task.
 ## 2026-10-04 — FINAL MEMORY FOUNDATION SYNCHRONIZATION
 
 - This `@Thinking Eksekusi Full!` completes the permanent memory architecture.
