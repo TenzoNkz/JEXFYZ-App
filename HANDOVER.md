@@ -437,3 +437,17 @@ The source contains function-level `[DOC-CONTRACT]` blocks, but not literally ev
 
 ### Validation boundary
 This is static/source analysis only. ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compilation, BIN generation, Firebase promotion, and physical ESP32 electrical/thermal/radio/OTA tests remain unperformed.
+
+## 2026-10-04 — GEMINI AUDIT RECONCILIATION
+
+[DISCUSSION ONLY] The raw Gemini V3.8 independent audit has been reconciled against current source.
+
+### Current truth
+- Firmware V3.8 source remains `firmware/JEXFYZ-V3.8.ino` blob `2fbff3656bc037846124806fb390022f85146845`.
+- Online OTA DOWNLOAD starvation is confirmed.
+- Voltage/Peltier sequencing, NTC revalidation, BLE/Wi-Fi handoff, Wi-Fi retry settle, rapid-rise protection, ADAPTIVE:OFF ACK, OTA authentication/rollback and battery hysteresis remain open hardening items.
+- The Gemini conclusion that 9V->12V brownout is already proven is **not accepted**; the electrical mechanism remains a hardware-validation hypothesis.
+- Frozen soft-start rule remains unchanged: only true Peltier OFF -> ON starts the 5s ramp.
+
+### Next exact action
+Use `@Thinking Eksekusi Full!` for the source hardening pass. Do not Build App. After source hardening is committed, compile using the exact ArduinoDroid + official Core 3.3.7 environment, generate BIN, and only then conduct staged physical validation.
