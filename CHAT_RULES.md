@@ -403,6 +403,15 @@ It records chat context that may otherwise be lost; it does not override
 newer verified repository truth.
 
 
+## 2026-10-04 — EXECUTION FULL / REPOSITORY-FIRST TRANSFER IMPLEMENTATION
+
+- Finalized the repository-first two-prompt chat-limit model.
+- Prompt 1 runs in the old chat, reads the complete available chat, reconciles it with repository evidence, and saves the complete transfer snapshot to CHAT_TRANSFER.md.
+- Prompt 2 runs in the new chat, reads the full repository memory stack plus CHAT_TRANSFER.md, inspects current source/workflow, reconciles discrepancies, and continues from current project truth.
+- CHAT_TRANSFER.md is a rolling transfer file; previous snapshots remain recoverable through Git history.
+- This process change does not authorize or introduce functional App/Firmware changes.
+
+
 ## 10. MEMORY INTEGRITY / PROFESSIONAL REASONING
 
 - Treat CHAT_RULES.md, APP_NOTES.md, and FIRMWARE_NOTES.md as the project's persistent working memory.
