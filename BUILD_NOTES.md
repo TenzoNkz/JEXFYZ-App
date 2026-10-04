@@ -158,3 +158,10 @@ Every future successful build must append a new checkpoint containing:
 - [DECISION] The existing Build #50 APK is the appropriate App baseline for the initial V3.7 hardware/runtime test.
 - A new App Build becomes necessary when App source/runtime/configuration/dependency/release behavior changes, or when a fresh artifact is explicitly needed for test control.
 - [UNVERIFIED] This baseline does not prove V3.7 Firmware compatibility; firmware/device evidence must be recorded independently.
+
+## 2026-10-04 — FIRMWARE V3.8 CHANGE / APP BUILD IMPACT
+
+- [CONFIRMED] Firmware V3.8 is a firmware-only functional change; App source/configuration is unchanged.
+- [DECISION] Do not trigger a new App Build solely for V3.8.
+- [BUILT] App Build #50 remains the latest verified App artifact and is not validation evidence for V3.8 firmware runtime.
+
