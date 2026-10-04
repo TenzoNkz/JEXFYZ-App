@@ -46,7 +46,7 @@
 
 ## 2026-10-04 — GEMINI PATCH-ONLY ONLINE OTA WORKFLOW
 
-- Dedicated prompt: `GEMINI_PROMPT_ONLINE_OTA.md`.
+- Gemini prompt: generated in the active chat from the current repository/source context; no dedicated prompt file is persisted.
 - Gemini receives the .ino from the user and returns only exact OLD → NEW patches.
 - No full .ino is required from Gemini.
 - Next `@Thinking Eksekusi Full!` applies the supplied patch to the repository, audits it, syncs memory, and commits.
