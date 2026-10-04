@@ -43,7 +43,7 @@
 - [USER RULE] Local OTA is frozen/protected because it has been verified working.
 - [USER RULE] Gemini receives the .ino directly from the user and must provide only minimal `OLD` → `NEW` patches, never a full file.
 - [USER RULE] The following `@Thinking Eksekusi Full!` belongs to the assistant: match OLD blocks to repository source, apply NEW blocks, full affected audit, memory sync, commit.
-- [WORKFLOW DOC] Full copy-ready Gemini prompt is stored in `GEMINI_PROMPT_ONLINE_OTA.md`.
+- [WORKFLOW DOC] Gemini prompt is generated in the active chat from the current repository/source context; no dedicated prompt file is stored in the repository.
 - [NO FUNCTIONAL CHANGE] This workflow update is documentation/process-only.
 
 # JE X FYZ — CHAT TRANSFER SNAPSHOT
