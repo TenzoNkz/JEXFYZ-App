@@ -1,3 +1,14 @@
+## 2026-10-04 — GEMINI ONLINE OTA PATCH EXECUTION COMPLETE
+
+- Applied the exact Gemini Online OTA patch to V4.0: removed the custom CA-bundle client, restored plain `WiFiClientSecure`, and use `setInsecure()` by intentional user-approved compatibility policy.
+- Removed intermediate GREEN after GitHub preparation; flow enters DOWNLOAD directly.
+- Removed intermediate BLUE after download completion; flow enters FLASH_FINALIZE directly.
+- Preserved BLUE Wi-Fi success, YELLOW 20/40/60/80/100 milestones, GREEN final success, and RED failure/recovery.
+- Local OTA is frozen/protected and its source region is byte-for-byte unchanged.
+- Firmware remains V4.0; source blob is `0566105383a889912e5e756b0b9f265e5fcf0264`.
+- Static audit: braces 579/579; parentheses 2122/2122; timing while() 0; executable delay() 0 (comment-only match); CA-bundle/custom-client references 0; setInsecure() 1 by design.
+- No App Build. Flash gate is CLOSED pending fresh exact-source Assistant + Gemini review, compile/BIN validation, and controlled hardware validation.
+
 ## 2026-10-04 — GEMINI ONLINE OTA FIX RECEIVED
 
 - [GEMINI RESULT] User supplied Gemini's independent Online OTA fix for the uploaded V4.0 source.
