@@ -20,6 +20,7 @@
   - `BUILD_NOTES.md`
   - `CHANGELOG.md`
   - `HANDOVER.md`
+  - `CHAT_TRANSFER.md`
   - `firmware/FIRMWARE_ANALYSIS.md` when firmware context is relevant
 - `PROJECT_STATE.md` is the mandatory current-state checkpoint after every meaningful event.
 - Other memory files must be updated whenever that event changes their knowledge domain; if a file does not need textual change, it must still be considered during the synchronization pass rather than silently skipped.
