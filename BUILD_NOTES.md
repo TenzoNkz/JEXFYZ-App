@@ -1,3 +1,10 @@
+## 2026-10-04 — V4.0 DUAL-PARTY FLASH GATE
+
+- [FIRMWARE] V4.0 exact source blob `b2a77fadeaa154412850d34c82b0bb78ef108bae` received independent Gemini verdict: **SAFE TO FLASH**.
+- [ASSISTANT] Assistant independently agrees: **SAFE TO FLASH**.
+- [NO APP BUILD] This gate event does not change the App Build baseline; Build #50 remains current.
+- [NEXT] Firmware compile/BIN/physical validation may now proceed. App Build remains separately explicit.
+
 ## 2026-10-04 — FIRMWARE V4.0 EXECUTION / APP BUILD BOUNDARY
 
 - [NO APP BUILD] Firmware V3.9 → V4.0 is a Firmware-only source change; App functional source/configuration was not modified.
