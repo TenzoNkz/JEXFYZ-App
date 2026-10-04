@@ -28,7 +28,7 @@ enum class LedMode : uint8_t;
 enum class VoltageRequestSource : uint8_t;
 enum class AdaptiveProfile : uint8_t;
 
-static constexpr char FW_VERSION[] = "V3.5";
+static constexpr char FW_VERSION[] = "V3.6";
 
 // ============================================================================
 // ========================== HEAP DIAGNOSTIC BUILD ===========================
@@ -1400,7 +1400,39 @@ static void completeVoltageTransition() {
   if (!voltageTransition) return;
   if (millis() - voltageTransitionAt < VOLTAGE_DEADTIME_MS) return;
 
-  if (voltageTransitionSource == VoltageRequestSource::BATTERY &&
+  // Re-validate Hotside immediately before selector activation. Hotside is
+  // the universal thermal authority and may override any pending target.
+  VoltageRequestSource completedSource = voltageTransitionSource;
+  if (hotsideProtectionActiveNow()) {
+    if (adaptiveOn && currentVoltage != Voltage::V5) {
+      pendingVoltage = lowerVoltage(currentVoltage);
+      completedSource = VoltageRequestSource::HOTSTEP;
+    } else {
+      pendingVoltage = Voltage::V5;
+      completedSource = VoltageRequestSource::SAFETY;
+    }
+  }
+
+  // If Battery data disappeared while its 200 ms selector deadtime was in
+  // flight, cancel the stale Battery step and restore the current selector.
+  // Hotside fallback then starts from a clean physical state.
+  if (completedSource == VoltageRequestSource::BATTERY &&
+      adaptiveOn &&
+      adaptiveProfile == AdaptiveProfile::HOTSIDE_BATTERY &&
+      !batteryValid) {
+    digitalWrite(PIN_9V, currentVoltage == Voltage::V9 ? OUTPUT_ON : OUTPUT_OFF);
+    digitalWrite(PIN_12V, currentVoltage == Voltage::V12 ? OUTPUT_ON : OUTPUT_OFF);
+    voltageTransition = false;
+    voltageTransitionSource = VoltageRequestSource::MANUAL;
+    voltageGuardArmed = true;
+    lastVoltageTransitionCompleteMs = millis();
+    return;
+  }
+
+  // Battery Adaptive has a live target. Re-evaluate it at the end of the
+  // 200 ms selector deadtime so an in-flight stale step can never be applied
+  // after the battery temperature has already returned to another zone.
+  if (completedSource == VoltageRequestSource::BATTERY &&
       adaptiveOn &&
       adaptiveProfile == AdaptiveProfile::HOTSIDE_BATTERY &&
       !adaptiveHotStepPending &&
@@ -1428,7 +1460,6 @@ static void completeVoltageTransition() {
   }
 
   const Voltage previousVoltage = currentVoltage;
-  const VoltageRequestSource completedSource = voltageTransitionSource;
 
   currentVoltage = pendingVoltage;
   digitalWrite(PIN_9V, currentVoltage == Voltage::V9 ? OUTPUT_ON : OUTPUT_OFF);
