@@ -1382,34 +1382,30 @@ static bool isFirmwareVersionNewer(const String& candidate, const String& curren
   uint32_t currentMinor = 0;
 
   size_t index = 1;
-  while (index < candidateNormalized.length() &&
-         candidateNormalized.charAt(index) != '.') {
+  for (; index < candidateNormalized.length() &&
+         candidateNormalized.charAt(index) != '.'; ++index) {
     candidateMajor = (candidateMajor * 10U) +
                      static_cast<uint32_t>(candidateNormalized.charAt(index) - '0');
-    ++index;
   }
   if (index < candidateNormalized.length()) {
     ++index;
-    while (index < candidateNormalized.length()) {
+    for (; index < candidateNormalized.length(); ++index) {
       candidateMinor = (candidateMinor * 10U) +
                        static_cast<uint32_t>(candidateNormalized.charAt(index) - '0');
-      ++index;
     }
   }
 
   index = 1;
-  while (index < currentNormalized.length() &&
-         currentNormalized.charAt(index) != '.') {
+  for (; index < currentNormalized.length() &&
+         currentNormalized.charAt(index) != '.'; ++index) {
     currentMajor = (currentMajor * 10U) +
                    static_cast<uint32_t>(currentNormalized.charAt(index) - '0');
-    ++index;
   }
   if (index < currentNormalized.length()) {
     ++index;
-    while (index < currentNormalized.length()) {
+    for (; index < currentNormalized.length(); ++index) {
       currentMinor = (currentMinor * 10U) +
                      static_cast<uint32_t>(currentNormalized.charAt(index) - '0');
-      ++index;
     }
   }
 
@@ -3893,6 +3889,16 @@ static void localOtaUploadHandler() {
     const size_t chunkSize = static_cast<size_t>(upload.currentSize);
     if (localOtaBytesReceived + chunkSize > localOtaExpectedBytes) {
       failLocalOta("LOCAL_SIZE_VERIFY", OTA_ERROR_SIZE, "UPLOAD_SIZE_EXCEEDED");
+      return;
+    }
+
+    // Validate the ESP32 application-image magic before the first local OTA flash write.
+    if (localOtaBytesReceived == 0 &&
+        static_cast<uint8_t>(upload.buf[0]) != 0xE9) {
+      failLocalOta(
+          "LOCAL_IMAGE_VALIDATE",
+          OTA_ERROR_MAGIC_BYTE,
+          "WRONG_FIRMWARE_MAGIC");
       return;
     }
 
