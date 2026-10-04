@@ -1,3 +1,54 @@
+## 2026-10-04 — EXECUTION FULL / FIRMWARE V3.7 PELTIER PWM SOFT-START RULE
+
+### Source/version
+- Functional firmware revision advanced **V3.6 → V3.7**.
+- Active source: `firmware/JEXFYZ-V3.7.ino`.
+- Superseded `firmware/JEXFYZ-V3.6.ino` was retired from the active source tree.
+- Source is kept in the App repository under `firmware/`; the dedicated firmware repository remains binary-only and is not modified by this execution.
+
+### Implemented Peltier PWM behavior
+- Peltier PWM hardware remains **20 kHz / 8-bit** with the existing **5-second soft-start ramp**.
+- Every **upward voltage transition** now explicitly restarts the Peltier soft-start when Peltier is ON:
+  - 5V → 9V: soft-start.
+  - 9V → 12V: soft-start.
+  - Any other upward one-step transition: soft-start.
+- **Downward voltage transitions never restart Peltier soft-start**:
+  - 12V → 9V: no soft-start restart.
+  - 9V → 5V: no soft-start restart.
+- A genuine **Peltier OFF → ON** transition always starts the soft-start through the existing `applyCoolingOutputs()` state transition.
+- Repeated ON application while Peltier is already ON does **not** restart the ramp.
+- Hotside safety down-steps therefore do not create a PWM ramp solely because voltage decreases.
+- When Hotside cooldown later turns Peltier back ON, that is a genuine OFF → ON transition and therefore correctly starts the soft-start.
+
+### Implementation boundary
+- The soft-start trigger is applied only after the voltage transition physically completes and the final voltage state is established.
+- The trigger is based on the actual transition direction (`currentVoltage > previousVoltage`), so Manual, Touch, Adaptive, and Battery-originated upward transitions share the same rule.
+- Existing 200 ms selector deadtime, voltage guard/source tracking, Hotside safety authority, Adaptive ceiling, and no-blocking-timing architecture are unchanged.
+
+### Static validation
+- `FW_VERSION` = V3.7.
+- Active V3.7 source contains the new upward-transition soft-start trigger.
+- Superseded V3.6 source path removed from active tree.
+- Braces: 550/550.
+- Parentheses: 2041/2041.
+- Executable `delay(...)` calls: 0.
+- Timing `while(...)` patterns: 0.
+- Peltier soft-start call paths remain limited to the existing OFF → ON path plus the new voltage-rise path.
+- ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile: **NOT performed in this environment**.
+- BIN generation/publication: **NOT performed**.
+- Firebase firmware metadata: **NOT promoted**.
+- Dedicated binary repository: **NOT modified**.
+- Physical ESP32/Peltier thermal/electrical validation: **NOT performed**.
+- App Build: **NOT triggered**.
+
+### Commits
+- V3.7 source creation: `83c900fd611be3fdb4f20a79b4cb5524121fda38`.
+- V3.6 retirement: `8aa974eb2c2861e6362e0048cf2c10ae83faeff7`.
+
+### Validation boundary
+- Repository/source implementation and static checks are complete for V3.7.
+- Hardware behavior remains pending ArduinoDroid/Core 3.3.7 compile plus real ESP32 testing.
+  
 ## 2026-10-04 — EXECUTION FULL / FIRMWARE V3.6 UNIVERSAL HOTSIDE SAFETY + ADAPTIVE FLOW
 
 ### Source/version
