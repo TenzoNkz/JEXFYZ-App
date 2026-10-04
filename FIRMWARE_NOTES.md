@@ -1,3 +1,42 @@
+## 2026-10-04 — FOLLOW-UP EXECUTION FULL / FIRMWARE V3.1 BATTERY DEADTIME REVALIDATION
+
+### Source/version
+- During the full regression of V3.0, an edge case was identified: Battery Adaptive target could change during the 200 ms selector deadtime while `voltageTransition` was already in flight.
+- Functional firmware revision advanced **V3.0 → V3.1** to correct that edge case before firmware validation proceeds.
+- Active continuity source is `firmware/JEXFYZ-V3.1.ino`.
+- Superseded `firmware/JEXFYZ-V3.0.ino` was removed from the active source tree.
+- Corrective source commit: eaa8bdb55f1b47d29ae27b37a374463bd2a8c311.
+- No firmware BIN, Firebase metadata, dedicated binary-repository update, App Build, or physical device validation was performed.
+
+### Corrective implementation
+- `completeVoltageTransition()` now re-evaluates the live Battery Adaptive target immediately before selector activation, after the full 200 ms deadtime.
+- If the live Battery target has returned to the current voltage, the stale in-flight step is canceled and the current selector is restored instead of applying the stale target.
+- If the live target changed direction, the in-flight pending step is replaced with the correct one-step target from the current physical voltage.
+- A canceled deadtime attempt still arms the shared 1-second dwell because both selectors were physically de-asserted for the deadtime; this prevents immediate re-attempt chatter.
+- The 1-second dwell still starts from a completed physical voltage-transition boundary, and Battery Adaptive up/down requests remain on the same guarded path with `bypassGuard=false`.
+- No FIFO Battery command queue was introduced.
+
+### Full regression rerun
+- V3.1 source version/file naming verified.
+- No obsolete hysteresis, stable-zone, Battery pending-state, or old Adaptive-step-delay symbols remain.
+- Direct threshold mapping remains:
+  - below BATT5 → 5V
+  - BATT5 through below BATT12 → 9V
+  - at/above BATT12 → 12V
+- One-step movement remains 5V→9V→12V and 12V→9V→5V.
+- 1-second shared voltage dwell remains symmetric for Battery up/down.
+- 200 ms selector deadtime remains intact.
+- Stale target protection is now covered both before the next 1-second step and at the end of an in-flight 200 ms deadtime.
+- Braces and parentheses are balanced.
+- ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile was **NOT performed in this environment**.
+- BIN generation/publication was **NOT performed**.
+- Physical ESP32 flash/runtime validation was **NOT performed**.
+- Firebase firmware metadata was **NOT promoted**.
+- App Build was **NOT triggered**.
+
+### Validation boundary
+- This execution establishes source implementation and static/behavioral-model regression only. Hardware switching, selector/relay behavior, supply droop, Fan/Peltier thermal behavior, BLE runtime, OTA runtime, and physical safety remain unverified until the firmware is compiled and tested on the real ESP32 hardware.
+
 ## 2026-10-04 — EXECUTION FULL / FIRMWARE V3.0 BATTERY ADAPTIVE NO-HYSTERESIS + UNIFIED VOLTAGE DWELL
 
 ### Source/version

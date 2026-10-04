@@ -1,3 +1,11 @@
+## 2026-10-04 — FOLLOW-UP EXECUTION FULL EVENT / FIRMWARE V3.1
+
+- Full regression of V3.0 identified and corrected a Battery Adaptive stale in-flight target during the 200 ms selector deadtime.
+- Firmware continuity source advanced V3.0 → V3.1.
+- V3.1 revalidates Battery target at deadtime completion, cancels stale steps, retargets direction changes, and arms the 1-second dwell after a canceled deadtime attempt to suppress immediate re-attempt chatter.
+- No App Build, firmware BIN publication, Firebase promotion, dedicated binary-repository update, or physical validation was performed.
+- Next firmware validation layer remains ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile.
+
 ## 2026-10-04 — EXECUTION FULL EVENT / FIRMWARE V3.0 BATTERY ADAPTIVE
 
 - User issued @Thinking Eksekusi Full! after the Battery Adaptive + Gemini audit.
