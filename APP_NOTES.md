@@ -2134,3 +2134,11 @@ Never:
 - [BUILT] Build #50 remains the current App test baseline.
 - [DECISION] Keep the existing Build #50 APK as the initial hardware-test client. Do not trigger a release build merely because Firmware V3.7 is entering device testing.
 - [OPEN CONDITION] Rebuild the App only when a functional App change, Android/configuration/dependency change, release-signing change, or test-specific need makes the current APK no longer the correct baseline.
+
+## 2026-10-04 — HARDWARE TEST / GEMINI RESULT / APP IMPACT
+
+- [CONFIRMED] The 9V → 12V MCU-reset fault is currently treated as a Firmware/Power-stage investigation, not an App defect.
+- [DECISION] No App source change or App rebuild is justified by this hardware fault alone.
+- [CONFIRMED] App Build #50 remains a valid App client baseline for hardware testing.
+- [OPEN QUESTION] App only needs a new build if later testing identifies an App/BLE-side functional defect or a new App change is intentionally introduced.
+
