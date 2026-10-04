@@ -1,3 +1,13 @@
+## 2026-10-04 — GEMINI PATCH-ONLY WORKFLOW UPDATE
+
+- [CURRENT] Active firmware: V4.0; current source blob after compile-arity fix remains `415346ece09f4af33f907b2077140ccfc45c357b`.
+- [CURRENT ISSUE] Online OTA indicator does not visibly blink in hardware testing.
+- [USER RULE] Local OTA is frozen/protected because it has been verified working.
+- [USER RULE] Gemini receives the .ino directly from the user and must provide only minimal `OLD` → `NEW` patches, never a full file.
+- [USER RULE] The following `@Thinking Eksekusi Full!` belongs to the assistant: match OLD blocks to repository source, apply NEW blocks, full affected audit, memory sync, commit.
+- [WORKFLOW DOC] Full copy-ready Gemini prompt is stored in `GEMINI_PROMPT_ONLINE_OTA.md`.
+- [NO FUNCTIONAL CHANGE] This workflow update is documentation/process-only.
+
 # JE X FYZ — CHAT TRANSFER SNAPSHOT
 
 > Repository transfer boundary for the 2026-10-04 context-limit event.
