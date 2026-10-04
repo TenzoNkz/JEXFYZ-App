@@ -1,3 +1,12 @@
+## 2026-10-04 — NEW CHAT PREFLIGHT / REPOSITORY TRUTH VERIFIED
+
+- [VERIFIED] App repository `TenzoNkz/JEXFYZ-App`, branch `main`, current HEAD at the time of this synchronization is `34c660cd1c13d8097b2872727a6f589562699fa2` before the subsequent documentation-only sync commits.
+- [VERIFIED] Active Firmware source is V4.1: `firmware/JEXFYZ-V4.1.ino`, blob `352f7c408f2bc5a4a691af35cfb477338036a102`.
+- [VERIFIED] App baseline remains version `1.0.0+3`; latest verified App Build is #50 from source SHA `bf01595253eb5a1912471c4aee57c4eed4421f0f`.
+- [VERIFIED] Build workflow and manual issue trigger are unchanged and remain separate from Firmware changes.
+- [UNVERIFIED] V4.1 compile/BIN/Firebase/physical runtime validation.
+- [NEXT] Continue with authorized V4.1 Firmware validation; no source redesign and no App Build is implied by the new-chat transfer.
+
 ## 2026-10-04 — EXECUTION FULL / V4.1 SIMPLE ONLINE OTA
 
 - [IMPLEMENTED] Applied the accepted Gemini redesign to Online OTA in the exact V4.0 source.
