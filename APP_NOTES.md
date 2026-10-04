@@ -1132,6 +1132,7 @@ The 2026-09-28 comment pass reported:
 | `android/app/proguard-rules.pro` | Release shrinker/keep rules |
 | `.github/workflows/app-build.yml` | App-only CI/release build |
 | `APP_NOTES.md` | App master maintenance memory |
+| `CHAT_TRANSFER.md` | Rolling old-chat → new-chat transfer snapshot; Prompt 1 writes, Prompt 2 reads |
 | `FIRMWARE_NOTES.md` | Firmware master documentation/history; documentation only |
 | `assets/jexfyzcooler.png` | Cooler UI asset |
 | `assets/jexfyzicon.png` | App/icon asset |
