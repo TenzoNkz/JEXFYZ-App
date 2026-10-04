@@ -11,7 +11,8 @@ on:
       - reopened
 
 permissions:
-  contents: read
+  # The reusable build engine publishes the APK as a GitHub Release asset.
+  contents: write
 
 jobs:
   build:
