@@ -1,6 +1,7 @@
 ## 2026-10-04 — CORRECTIVE EXECUTION FULL / FIRMWARE V3.4 EXACT-SOURCE AUDIT REPAIR
 
 ### Source/version
+- Corrective implementation commit: `2182794cb98964a8a7432d0ea75587b44b508573`.
 - The V3.3 post-commit exact-source audit found two helper blocks syntactically nested inside existing function bodies due to an insertion-placement error.
 - Those placement errors are corrected here without changing the intended V3.3 feature behavior.
 - Per mandatory firmware versioning, the corrected candidate advances **V3.3 → V3.4** and uses `firmware/JEXFYZ-V3.4.ino`.

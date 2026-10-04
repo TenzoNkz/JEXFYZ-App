@@ -1,4 +1,5 @@
 ## 2026-10-04 — CORRECTIVE EXECUTION FULL / V3.4 SOURCE-STRUCTURE REPAIR
+- Current corrective firmware HEAD: `2182794cb98964a8a7432d0ea75587b44b508573`.
 
 - Exact-source post-commit verification of V3.3 detected malformed helper placement that a delimiter-only audit did not catch.
 - The affected helpers were moved to global scope and the firmware version advanced V3.3 → V3.4 according to the project versioning rule.

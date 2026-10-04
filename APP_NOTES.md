@@ -1,4 +1,5 @@
 ## 2026-10-04 — FIRMWARE V3.4 CORRECTIVE SOURCE EVENT / APP CONTRACT
+- Current corrective firmware HEAD: `2182794cb98964a8a7432d0ea75587b44b508573`.
 
 - Firmware continuity source is now V3.4 after exact-source audit correction of helper placement in the V3.3 candidate.
 - No App source was modified and no App Build was triggered.
