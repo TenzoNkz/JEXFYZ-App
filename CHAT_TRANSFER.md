@@ -1,653 +1,586 @@
-## 2026-10-04 — EXECUTION FULL / V4.1 SIMPLE ONLINE OTA
-
-- [IMPLEMENTED] Applied the accepted Gemini redesign to Online OTA in the exact V4.0 source.
-- [VERSION] Firmware advanced **V4.0 → V4.1** as required by the absolute versioning rule.
-- [SOURCE] Active firmware is now `firmware/JEXFYZ-V4.1.ino`.
-- [SOURCE BLOB] `352f7c408f2bc5a4a691af35cfb477338036a102`.
-- [ONLINE OTA] Wi-Fi retry simplified: `WiFi.setAutoReconnect(true)`; `WL_CONNECT_FAILED/WL_NO_SSID_AVAIL` fast-fail handling removed; retry after the 15 s connection window now uses `WiFi.disconnect(); WiFi.begin(...)` without repeated `WIFI_OFF` radio teardown.
-- [RETAINED] Plain `WiFiClientSecure + setInsecure()`, GitHub raw BIN allowlist, BLUE Wi-Fi success, YELLOW download milestones, final GREEN success, RED failure/BLE recovery, OTA safe outputs, stream/image/update validation remain intact.
-- [PROTECTED] Local OTA source region was verified byte-for-byte unchanged.
-- [SOURCE ALIGNMENT] All active V4.0 text markers in the firmware source were updated to V4.1 and the active filename now matches the firmware version.
-- [STATIC AUDIT] No timing `while()` loops; no executable `delay()` (remaining textual match is in a comment); no `setAutoReconnect(false)`; no retry `WiFi.mode(WIFI_OFF)` path remains; reset-reason telemetry remains present.
-- [VALIDATION BOUNDARY] ArduinoDroid/Core 3.3.7 compile, BIN generation, physical Local OTA flash, and physical Online OTA runtime success are NOT claimed yet.
-- [APP] No App source/configuration change; no App Build triggered.
-- [COMMITS] Source creation: `10e01cb70f35abc19749a7cfe90dea457116416f`; superseded V4.0 deletion: `5abcea6551bba59af9a8a5f0c8f3cc9aa884b760`.
-
-## 2026-10-04 — GEMINI FINAL SIMPLE V4.1 PATCH RESULT RECONCILIATION
-
-- [GEMINI RESULT] Gemini returned exactly two patches: V4.0 -> V4.1 and simplification of Online OTA Wi-Fi connection/retry.
-- [PATCH 1] Accepted. Firmware version must advance V4.0 -> V4.1 for any functional firmware change.
-- [PATCH 2] Current-source OLD block matches the exact V4.0 Online OTA connection/retry block. The proposed change sets WiFi auto-reconnect true, removes WL_CONNECT_FAILED/WL_NO_SSID_AVAIL fast-fail handling, removes repeated WiFi.disconnect(true,false)+WIFI_OFF retry teardown, and uses soft WiFi.disconnect()+WiFi.begin() only after the full 15 s connection interval.
-- [RECONCILIATION] This is materially aligned with the user's requested simple Online OTA architecture and is the only directly applicable part of the latest Gemini response.
-- [RETAINED] Current V4.0 setInsecure(), GitHub URL allowlist, direct DOWNLOAD/FLASH_FINALIZE transitions, LED flow, OTA safe outputs, streaming validation, and Local OTA are not being re-patched.
-- [REJECTED] No cloudPassword.trim().
-- [CAUTION] Gemini's explanations that the previous path definitively caused brownout or that WPA3/PMF is definitely the root cause remain hypotheses; the patch is accepted as a simplification/reliability correction, not as hardware-proven causality.
-- [NEXT] The exact V4.1 patch is ready for Execution Full when explicitly authorized. No functional source change was made in this reconciliation.
-- [PROTECTED] Local OTA remains Golden/Protected and unchanged.
-
-## 2026-10-04 — GEMINI SIMPLE ONLINE OTA REDESIGN RESULT RECONCILIATION
-
-- [USER GOAL] Return Online OTA to the simplest reliable architecture because Online OTA worked previously; keep mandatory LED feedback.
-- [GEMINI DIRECTION] Gemini proposes simplifying Wi-Fi retry, using auto reconnect, soft retry, simple setInsecure(), and keeping BLUE/YELLOW/GREEN/RED LED flow.
-- [ACCEPTED] The architectural direction is aligned with the user goal: avoid unnecessary radio OFF/reinitialization during retries and avoid TLS/indicator complexity.
-- [REJECTED PATCH DETAIL] Gemini PATCH 2 (CA-bundle removal) is stale for current V4.0 because the exact current source already uses plain WiFiClientSecure + setInsecure(). Do not reapply.
-- [REJECTED PATCH DETAIL] Gemini PATCH 3 is stale for current V4.0 for the same reason; current source already contains setInsecure().
-- [REJECTED PATCH DETAIL] Gemini PATCH 6A/6B is stale for current V4.0 because the intermediate GREEN/BLUE transitions were already removed in commit 5ba869806a85244142378470818665b75025527a.
-- [REJECTED PATCH DETAIL] Gemini PATCH 4 cloudPassword.trim() is not accepted because Wi-Fi password whitespace can be legitimate data and the protocol does not prove surrounding spaces are transport formatting.
-- [CANDIDATE PATCH] Gemini PATCH 5 is the only materially applicable candidate: setAutoReconnect(true) and soft retry after the connection timeout instead of WiFi.disconnect(true,false)+WIFI_OFF. It still needs exact current-source OLD/NEW reconstruction and safety audit before implementation.
-- [HISTORY] Git confirms the V1.5 handoff patch introduced the RADIO_TEARDOWN architecture and setAutoReconnect(false); however this history alone does not prove that commit was the regression cause. The older V1.4 source already used setAutoReconnect(false) and direct WiFi.begin().
-- [VERSION] Any functional firmware implementation must bump V4.0 -> V4.1, including a one-character change, and keep the versioned source filename aligned.
-- [STATUS] No functional firmware change applied from this Gemini result. Local OTA remains protected/frozen.
-- [NEXT] Before Execution Full, obtain or derive exact current-source patch only for the applicable simple Wi-Fi retry redesign; do not reapply already-completed TLS/LED changes and do not trim PASS.
-
-## 2026-10-04 — DISCUSSION: SIMPLE ONLINE OTA REDESIGN REQUEST
-
-- [USER] Online OTA feels unnecessarily difficult and the user notes that it has worked previously.
-- [USER REQUEST] Ask Gemini to create a **simple, reliable Online OTA implementation** focused on actually connecting, downloading the GitHub raw BIN, flashing, and recovering cleanly.
-- [LED CONTRACT] Keep OTA LED visibility: start OFF; Wi-Fi success BLUE; download progress YELLOW; flash success GREEN then restart; failure RED then BLE recovery.
-- [HISTORY] Gemini must inspect git history and identify the previously working/minimal Online OTA pattern before proposing a redesign.
-- [PROTECTED] Local OTA remains Golden/Protected; no Local OTA changes.
-- [VERSION RULE] Any functional implementation of this request must bump firmware version, minimum V4.0 -> V4.1, even for a minimal change.
-- [NO SOURCE CHANGE] This discussion/request does not change firmware behavior yet.
-
-## 2026-10-04 — GEMINI ROUND 3 RECONCILIATION
-
-- [GEMINI RESULT] Gemini concluded no patch, suspected the failure occurs before normal Wi-Fi completion and recommended Serial Monitor testing. Gemini's final verdict was NOT SAFE TO FLASH LOCAL OTA.
-- [ACCEPTED] Latest hardware evidence localizes the observed failure before GitHub/HTTPS because the ESP32-C3 did not reach an observed Wi-Fi-connected state.
-- [ACCEPTED] Current PASS handler does not trim password; this is not a proven bug because spaces may be legitimate password data.
-- [ACCEPTED] Current Wi-Fi logic can bypass the 15 s timeout when the driver reports WL_CONNECT_FAILED or WL_NO_SSID_AVAIL.
-- [CORRECTION] The source contains resetReasonText() using esp_reset_reason(), including BROWNOUT, WDT and PANIC classes, and publishes RESET_REASON through the runtime sync path. Therefore Gemini's statement that reset-reason telemetry is absent is incorrect.
-- [CORRECTION] WIFI_CONNECT_RETRY_BACKOFF_MS = 3000 exists in source but is not used in the shown retry path; Gemini's retry-time calculation that adds a 3000 ms backoff is therefore incorrect for the current source.
-- [CORRECTION] The current retry path has no intentional 3 s sleep/backoff. Each attempt can terminate on driver-reported failure; worst-case connection wait is approximately three 15 s attempts plus the 160 ms Wi-Fi-off settle/reinitialization boundaries, before the 1 s RED indicator.
-- [CORRECTION] The git-history anchor e8185cb... is a diagnostic-source commit and does not by itself prove it introduced production setAutoReconnect(false) or the current production retry logic.
-- [UNPROVEN] Claims about WPA3/PMF causing the failure, RF recalibration causing a 350–400 mA spike, watchdog looping, or brownout remain hypotheses without runtime logs/measurement.
-- [DECISION] No functional firmware patch is authorized from this Gemini result. The strongest next action remains a serial/reboot-reason diagnostic under the same hotspot test.
-- [PROTECTED] Local OTA remains unchanged/frozen. Current firmware source blob remains 0566105383a889912e5e756b0b9f265e5fcf0264.
-
-## 2026-10-04 — SECOND-OPINION GEMINI REQUEST
-
-- Previous Gemini response was reconciled and found to contain overconfident claims about WPA3 timing and setAutoReconnect semantics.
-- New Gemini audit request requires proof from exact V4.0 source/API semantics, exact retry timing, retry counter behavior, actual use of WIFI_CONNECT_RETRY_BACKOFF_MS, WiFi.disconnect/mode OFF sequencing, PASS whitespace protocol semantics, LED failure reachability, brownout-vs-normal-failure evidence, and git-history comparison against prior Online OTA behavior.
-- Required output is diagnosis first; patch only if justified, exact OLD → NEW blocks only.
-- Protected: Local OTA remains unchanged.
-- Current exact firmware source blob: 0566105383a889912e5e756b0b9f265e5fcf0264.
-- No functional source change made.
-
-## 2026-10-04 — GEMINI WIFI FORENSIC RESULT RECONCILIATION
-
-- [GEMINI RESULT] Gemini identified two candidate Online OTA Wi-Fi patches: PASS whitespace normalization and a relaxed Wi-Fi retry state using WiFi.setAutoReconnect(true) plus timeout-only retries.
-- [RECONCILIATION] PASS handling currently stores command payload verbatim. However, the absence of trim() is NOT by itself a proven bug because whitespace can be part of a legitimate Wi-Fi password. Apply trim() only if the BLE protocol contract explicitly treats surrounding whitespace as transport formatting.
-- [RECONCILIATION] Gemini's claim that setAutoReconnect(false) "absolutely" causes WPA3/Mixed-mode negotiation failure and that WL_CONNECT_FAILED occurs on a fixed ~10 ms path is NOT proven from the source. setAutoReconnect(false) is used only to prevent driver-level reconnect behavior; WL_CONNECT_FAILED may legitimately appear before the 15 s timeout.
-- [CANDIDATE PATCH] Relaxing fast-fail can improve tolerance/observability for transient hotspot connection failures and is a reasonable candidate, but it is not yet proven as the root cause. The proposed soft retry should also be audited for disconnect/rebegin sequencing.
-- [OBSERVATION] Latest hardware evidence remains: ESP32-C3 does not reach WL_CONNECTED when tested with an HP hotspot; therefore GitHub/HTTPS is not demonstrated as the failure stage.
-- [STATUS] No functional source change authorized/applied from this Gemini result. Local OTA remains protected/frozen.
-- [NEXT GATE] Require a corrected second-opinion review or explicit Execution Full before any firmware patch.
-
-## 2026-10-04 — GEMINI FORENSIC AUDIT CHECKPOINT
-
-- Gemini audited exact V4.0 source blob `0566105383a889912e5e756b0b9f265e5fcf0264` before Local OTA flash.
-- Verdict: **SAFE TO FLASH LOCAL OTA** source-level; no P0/P1 blocker identified.
-- P2: BLE TX queue overflow under pressure remains.
-- Online OTA runtime success remains unverified.
-- Exact source LED flow is Wi-Fi BLUE → YELLOW download milestones → final GREEN; intermediate post-download BLUE is absent by design.
-- Local OTA remains protected/frozen.
-
-## 2026-10-04 — ONLINE OTA PATCH EXECUTION CHECKPOINT
-
-- Current V4.0 source blob: `0566105383a889912e5e756b0b9f265e5fcf0264` after applying the supplied Gemini Online OTA patch.
-- Custom CA-bundle client removed; Online OTA uses `WiFiClientSecure + setInsecure()` by intentional user-approved compatibility policy.
-- Intermediate GREEN after GitHub connection and intermediate BLUE after download completion removed.
-- BLUE Wi-Fi success, YELLOW 20/40/60/80/100 download milestones, GREEN final success, and RED failure/recovery remain.
-- Local OTA is frozen/protected and unchanged.
-- No App Build. Compile/BIN/Firebase/physical validation remains pending.
-- Fresh Assistant + Gemini review is required for this new functional source blob before flashing.
-
-## 2026-10-04 — GEMINI PATCH-ONLY WORKFLOW UPDATE
-
-- [CURRENT] Active firmware: V4.0; current source blob after compile-arity fix remains `415346ece09f4af33f907b2077140ccfc45c357b`.
-- [CURRENT ISSUE] Online OTA indicator does not visibly blink in hardware testing.
-- [USER RULE] Local OTA is frozen/protected because it has been verified working.
-- [USER RULE] Gemini receives the .ino directly from the user and must provide only minimal `OLD` → `NEW` patches, never a full file.
-- [USER RULE] The following `@Thinking Eksekusi Full!` belongs to the assistant: match OLD blocks to repository source, apply NEW blocks, full affected audit, memory sync, commit.
-- [WORKFLOW DOC] Gemini prompt is generated in the active chat from the current repository/source context; no dedicated prompt file is stored in the repository.
-- [NO FUNCTIONAL CHANGE] This workflow update is documentation/process-only.
-
 # JE X FYZ — CHAT TRANSFER SNAPSHOT
-
-> Repository transfer boundary for the 2026-10-04 context-limit event.
-> This snapshot records the current chat state after the V3.9 dual-audit reconciliation.
-> Transfer evidence is persistent; current source and current workflow remain authoritative.
-> Older transfer snapshots remain recoverable from Git history.
+# 2026-10-04 — CONTEXT-LIMIT RECONCILIATION / CURRENT REPOSITORY TRUTH
 
 ## 1. TRANSFER METADATA
 
-- Project: JE X FYZ / JE Cooler.
-- App repository: TenzoNkz/JEXFYZ-App.
-- Branch: main.
-- Firmware distribution repository: TenzoNkz/JEXFYZ-Firmware; binary-only distribution boundary.
-- Current repository HEAD observed before this transfer: 940f7e7952c49b31e88fb540e1bff3848e5e17e4.
-- Active firmware source: firmware/JEXFYZ-V3.9.ino.
-- Active firmware source blob: bf85b50e0a8cab22e5d66ef09ee84d6692cee009.
-- Firmware version literal: V3.9.
-- App Build baseline: Build #50.
-- This event is documentation/process only; no functional source change, release, Build App, compile, BIN, Firebase promotion, or flash is authorized by the transfer prompt.
+- [CONFIRMED] Repository: `TenzoNkz/JEXFYZ-App`
+- [CONFIRMED] Branch: `main`
+- [CONFIRMED] Official transfer file: `CHAT_TRANSFER.md`
+- [CONFIRMED] Snapshot purpose: preserve the complete actionable state of this chat before context rollover.
+- [CONFIRMED] This transfer operation is documentation-only. No new functional App/Firmware source change, release, or App Build is performed by this transfer prompt.
+- [CONFIRMED] Repository authority applies: current source/current workflow outrank historical notes and chat-only statements.
+- [RECONCILIATION] During this transfer preflight, repository `main` was found to already contain the V4.1 Online OTA implementation. Earlier chat-context statements saying the V4.1 patch was merely ready for execution are therefore superseded by the committed repository state.
+- [CURRENT HEAD BEFORE THIS SNAPSHOT WRITE] `37fbd303472241e52f984e68eca56f7f568eb159`
+- [CURRENT CHAT_TRANSFER BLOB BEFORE THIS SNAPSHOT WRITE] `83873499fe532b21c0fc4bb4e40134dad0601a5f`
+- [CURRENT SOURCE BLOB OBSERVED] `352f7c408f2bc5a4a691af35cfb477338036a102`
+- [CURRENT SOURCE FILE OBSERVED] `firmware/JEXFYZ-V4.1.ino`
+- [CURRENT SOURCE LINE COUNT] 5327
+- [CURRENT SOURCE VERSION] V4.1
+- [TRANSFER COMMIT NOTE] GitHub assigns the commit SHA after the file write. The exact resulting commit SHA and post-write HEAD must be verified by re-reading Git after the write; the final assistant report will preserve that exact server-returned SHA.
 
 ## 2. CURRENT TASK
 
-- Determine whether V3.9 is safe to update/flash onto the real JE X FYZ hardware.
-- User requirement, exact wording: "saya akan kirimkan firmware V3.9 juga, jadi kamu dan gemini harus sama sama setuju sebelum saya update!"
-- Decision: the firmware update gate is closed until both this assistant and Gemini agree on the exact V3.9 candidate.
-- Gemini independent audit was received in-chat.
-- This assistant independently re-checked Gemini's material findings against the active V3.9 source.
-- Both reviews converge on NOT SAFE TO FLASH.
-- Next technical action: patch P0 rail stabilization and P1 OTA certificate validation, then repeat the same two-party gate before any firmware update.
+- [CURRENT] Preserve a self-contained handover of the complete JE X FYZ / JE Cooler engineering state.
+- [CURRENT] The immediately preceding workflow request was `@Thinking Eksekusi Full!` for the accepted Gemini V4.1 Simple Online OTA redesign.
+- [CONFIRMED] Repository reconciliation shows that implementation is already committed in V4.1. The context-limit transfer itself must not repeat that functional change.
+- [CURRENT OBJECTIVE] Preserve the state accurately, clearly separate implemented/committed facts from unverified validation, and make the next action unambiguous for the new chat.
 
 ## 3. CURRENT WORKFLOW
 
-- @Thinking Diskusi! = discussion/reconciliation only.
-- @Thinking Eksekusi! = implement approved scope, synchronize memory, commit.
-- @Thinking Eksekusi Full! = implement + full affected audit + synchronize memory + commit.
-- @Thinking Tanya Gemini! = independent third-party review and reconciliation.
-- @Thinking Build App! = explicit App build only.
-- Current command is CHAT-LIMIT RECAP — SAVE TO REPOSITORY, therefore documentation only.
-- Build App remains issue-trigger-only:
-  - Issue title: JE X FYZ — BUILD APP TRIGGER
-  - Body token: JEXFYZ_BUILD_TRIGGER_V1
-- Normal push/PR must not create a release APK.
-- No App Build is implied by firmware changes.
-- Every meaningful project event must persist conclusions into repository memory.
-- Future chats must perform the full memory preflight and current source/workflow inspection before analysis or action.
+### Mandatory memory preflight
+
+Every JE X FYZ action/subchat must re-read, in order:
+
+1. `README.md`
+2. `PROJECT_STATE.md`
+3. `CHAT_RULES.md`
+4. `APP_NOTES.md`
+5. `FIRMWARE_NOTES.md`
+6. `BUILD_NOTES.md`
+7. `CHANGELOG.md`
+8. `firmware/FIRMWARE_ANALYSIS.md` when Firmware is relevant
+9. `HANDOVER.md`
+10. `CHAT_TRANSFER.md`
+11. Exact current App/Firmware source and exact current workflow files
+
+Authority order:
+
+`CURRENT SOURCE / CURRENT WORKFLOW > PROJECT_STATE.md > AUTHORITATIVE NOTES > BUILD_NOTES.md / CHANGELOG.md / HANDOVER.md > CHAT_TRANSFER.md > CURRENT CHAT > OLD CHAT`
+
+### Workflow commands
+
+- `@Thinking Diskusi!` = discussion/review only; no functional source/build/release.
+- `@Thinking Tanya Gemini!` = diagnosis/patch-request stage. Gemini receives the current `.ino`; Gemini returns exact OLD → NEW patches only, never a full `.ino`.
+- `@Thinking Eksekusi!` = implement approved scope, audit/sync, commit.
+- `@Thinking Eksekusi Full!` = implement approved scope, full affected audit, synchronize memory, commit. It does NOT imply App Build.
+- `@Thinking Build App!` = full explicit App Build workflow.
+- `@Thinking Eksekusi & Build App!` = implement → audit → sync → commit → explicit App Build.
+- Build App is manual-by-issue-trigger only. Normal push/PR must not create a release APK.
+- Discussion and transfer workflows may update documentation memory automatically; that must not be mistaken for functional source change.
+- Every meaningful event must be persisted in repository memory.
+
+### Firmware version rule
+
+- [USER REQUIREMENT] EVERY functional Firmware update that produces/can produce a new firmware image MUST increment `FW_VERSION`, even for a one-character/token/line change.
+- Example: V4.0 → V4.1.
+- Documentation-only changes do not require a version bump.
+- Functional Firmware workflow order: modify source → increment `FW_VERSION` → align versioned filename → update Firmware notes → compile with ArduinoDroid + official Arduino-ESP32 Core 3.3.7 → verify BIN → only then promote OTA/Firebase metadata → physical flash/test.
+- A version bump by itself does not prove compile/BIN/Firebase/device update.
 
 ## 4. USER REQUIREMENTS
 
-### Continuity and process
-- Repository-first continuity is mandatory.
-- Current source/current workflow > PROJECT_STATE.md > authoritative engineering notes > transfer/history.
-- Never promote a hypothesis, old snippet, third-party suggestion, or successful compile into proof of hardware safety.
-- Chat-limit Prompt 1 must save directly to CHAT_TRANSFER.md and verify the save.
-- Prompt 2 in the new chat must rebuild context from the repository, not from stale remembered chat state.
-- Do not perform functional source edits merely because a chat-limit transfer is requested.
+### Project/repository
+
+- Project name: JE X FYZ / JE Cooler.
+- Reference architecture: Horizon Cooler App/Firmware.
+- App repository: `https://github.com/TenzoNkz/JEXFYZ-App`
+- Firmware distribution repository: `https://github.com/TenzoNkz/JEXFYZ-Firmware`
+- App branch: `main`.
+- Dedicated Firmware distribution repository is binary-only; do not put `.ino` or `FIRMWARE_NOTES.md` there.
+- App name: JE Cooler; in-app header branding: JE X FYZ.
+- User requires Bahasa Indonesia for App text; code remains English.
+
+### Hardware
+
+- Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module.
+- Platform: Arduino Standard + official Arduino-ESP32 Core 3.3.7.
+- ESP32-C3 has one antenna; Wi-Fi and BLE must not be treated as concurrently active radios.
+- GPIO contract:
+  - GPIO0 = NTC
+  - GPIO1 = touch
+  - GPIO3 = 12V selector
+  - GPIO4 = 9V selector
+  - GPIO5 = Peltier
+  - GPIO6 = Fan
+  - GPIO7 = WS2812
+- The GPIO5/GPIO6 fan/Peltier swap was a previous bug and is now corrected/frozen as the contract above.
+- NTC: 10K NTC + 10K resistor, beta 3950, 12-bit ADC, 11dB attenuation, sampled every 1s.
+- Fan PWM: 25kHz, 8-bit, 50–100%.
+- Peltier PWM: 20kHz, 8-bit.
+- Selector deadtime: 200ms.
+- Shared voltage guard: 1s.
+- No executable runtime `delay()` and no timing `while()` loops in the current source.
+
+### Cooling/safety
+
+- Hotside is the universal thermal authority.
+- Fan is available independently/plug-and-play; Peltier is subject to safety authority.
+- Critical Hotside configured default: 45°C in current reset-to-default behavior; supported App range historically 40–50°C.
+- At/above Hotside limit in manual mode: Peltier OFF, Fan 100%, safety latch, voltage forced toward 5V; restart requires explicit safe command.
+- Rapid Hotside rise can immediately latch Peltier safety OFF and require manual restart.
+- After a Hotside limit event, Peltier remains OFF for the defined recovery dwell and can resume when safe; it is not a permanent shutdown.
+- Battery protection is system security and must not be displayed as an App-facing guard.
+- Battery temperature is sampled/synchronized on the 1s cadence.
+- HOTSIDE_BATTERY falls back at runtime to HOTSIDE if the phone battery source is invalid/disconnected.
+
+### Peltier soft-start
+
+- [FROZEN] The only trigger for the 5s Peltier soft-start is a true logical OFF → ON transition.
+- Voltage changes must NOT restart the soft-start.
+- During selector deadtime the physical Peltier PWM is 0 while logical state is preserved.
+- New Peltier ON commands are rejected during a voltage transition.
+- Current voltage changes preserve the existing Peltier PWM state unless safety requires otherwise.
+
+### Adaptive
+
+- Manual voltage can be 5V/9V/12V.
+- Turning Adaptive ON from any manual voltage first forces/returns hardware to 5V, then Adaptive activates.
+- Turning Adaptive OFF also returns hardware to 5V.
+- Adaptive locks manual voltage/control/temperature changes while active.
+- HOTSIDE Adaptive stays within the current safety ceiling and can step one level at a time.
+- A hot event removes the reached voltage from the Adaptive ceiling for that session.
+- HOTSIDE hot-step recovery includes a 5s safe dwell before Peltier can resume.
+- HOTSIDE_BATTERY uses battery temperature only inside the Hotside safety ceiling.
+- Battery mapping contract: below BATT5 → 5V; BATT5 through below BATT12 → 9V; at/above BATT12 → 12V.
+- Adaptive must remain a cooperative state machine; no blocking waits.
 
 ### App/UI
-- Product/app name: JE Cooler; in-app brand/header: JE X FYZ.
-- Horizon Cooler App is the UI/architecture reference.
-- Flutter/Dart with Android wrapper.
-- Dashboard style: dark header plus white rounded content panel; cooler image on the right.
-- Main areas: VOLTAGE, CONTROL, ADAPTIVE, LED, TEMPERATURE.
-- Home: Hotside temperature, Battery temperature, Voltage, Adaptive, Peltier/Fan, Fan Speed, Notify Reason.
-- App text should be Indonesian where applicable; source code remains English.
-- Manual voltage mapping defaults: 5V red, 9V green, 12V blue; voltage color reset is separate.
-- LED color/brightness follows Horizon-style controls; RGB mode needs no reset button.
-- Fan speed is for the 12V manual mode, range 50–100%.
-- Adaptive ON must return voltage to 5V first and lock manual voltage control while active.
-- Separate reset controls by function; no global reset.
-- Save settings after 10 seconds of no change and send only changed settings.
-- User explicitly rejected the visual shadow treatment: "buang aja shadownya malah jadi jelek!"
-- OTA result notification should be one-shot/nonpersistent rather than surviving power removal or cable/session end.
-- Floating Monitor has an open Android permission/runtime investigation; no patch was made in this chat.
 
-### Firmware hardware
-- Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module.
-- Arduino Standard + official Arduino-ESP32 Core 3.3.7 target.
-- GPIO0 NTC; GPIO1 Touch; GPIO3 12V selector; GPIO4 9V selector; GPIO5 Peltier; GPIO6 Fan; GPIO7 WS2812.
-- Physical mapping is locked as GPIO5=Peltier and GPIO6=Fan. App logical tokens remain FAN:* and PELTIER:*.
-- Fan PWM 25 kHz, 8-bit, 50–100%.
-- Peltier PWM 20 kHz, 8-bit, 5-second soft-start.
-- NTC 10k/10k, beta 3950, 12-bit ADC, 11 dB, 1-second sample.
-- Selector deadtime 200 ms; shared voltage guard 1 s.
-- No executable delay() and no timing while() wait loops.
-- User raised optocoupler safety timing to 200 ms.
-- Voltage switching must be break-before-make and must not overlap 9V/12V rails.
+- Horizon-style visual language: dark header + white rounded content panel.
+- Home layout includes Hotside Temperature, Battery Temperature, Voltage indicator, Adaptive, Peltier/Fan controls, Fan Speed for 12V manual mode, and Notify Reason.
+- Submenu structure: VOLTAGE → CONTROL → ADAPTIVE → LED → TEMPERATURE.
+- Cooler image on the right similar to Horizon.
+- Fan Speed is only active in manual 12V mode, with 50–100% increments; current Firmware step is 10.
+- Voltage LED defaults: 5V red, 9V green, 12V blue; customizable with voltage-color reset.
+- LED RGB settings support RGB on/off state, brightness, color, and voltage colors; function-specific reset buttons are preferred over global reset.
+- UI should not fade inactive icons.
+- Light/dark/default combined themes were requested; shadow was rejected as visually worse.
+- Voltage, Control and LED blocks should have consistent column sizing.
+- Settings persistence after 10 seconds of no change.
+- Only changed settings/features should be sent over BLE to avoid spam.
+- Hotside temperature telemetry is sent every second.
+- Other changed features are sent only when changed.
 
-### Peltier / thermal / Adaptive
-- In V3.9, true logical Peltier OFF -> ON is the soft-start trigger.
-- Voltage changes must not restart soft-start.
-- During selector deadtime, physical Peltier PWM must be 0 while logical Peltier state is preserved.
-- New Peltier ON commands are blocked during an active voltage transition.
-- Hotside is the universal thermal authority.
-- Rapid Hotside rise must latch Peltier safety OFF and require manual restart.
-- Invalid NTC must prevent non-5V selector activation.
-- Battery protection is system safety, not an App-visible guard.
-- Phone Battery Temperature is a remote BLE input, not an independent physical sensor.
-- Battery Adaptive uses hysteresis.
-- Adaptive start/stop returns the selector to 5V first.
-- Fan remains available for cooling during thermal protection.
+### BLE/P1/UUID
 
-### BLE / radio
-- P1 BLE protocol and command vocabulary are frozen.
-- Known P1 UUIDs:
-  - 6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001
-  - 6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001
-  - 6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001
-- BLE ACK means command acceptance, while authoritative physical state comes from firmware telemetry.
-- Runtime sync is delta based; no periodic full-sync spam.
-- ESP32-C3 one-radio rule: Wi-Fi and BLE are not intentionally concurrent.
-- BLE starts only after Wi-Fi is actually shut down and settled.
+- Protocol version: P1.
+- Current Firmware UUID contract in source:
+  - Service: `6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001`
+  - RX: `6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001`
+  - TX: `6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001`
+- BLE device name: `JE X FYZ`.
+- User wants Horizon-like one-firmware/one-app UUID/key/lock concept for unique pairing.
+- BLE must recover cleanly after Wi-Fi/OTA shutdown and must be fully inactive while Wi-Fi owns the radio.
 
-### OTA / Firebase / security
-- Wi-Fi OTA is intended for the initial boot window, then Wi-Fi shuts down and BLE takes over.
-- During OTA handoff/operation, cooling outputs are forced safe/off and selector is at 5V.
-- Desired indicators: Wi-Fi fail red blink -> BLE recovery; Wi-Fi success blue blink -> update; OTA success green blink -> restart; OTA failure red blink -> BLE recovery.
-- Firmware metadata is distributed using Firebase/GitHub like Horizon.
-- Firebase selection uses firmware version plus raw URL; SHA is not the firmware-link selection contract.
-- Approved online firmware source is the JE X FYZ raw GitHub BIN.
-- Online OTA must authenticate the server using a validated CA/trust mechanism before production use.
+### Wi-Fi/OTA
 
-### CI/build
-- App build = exactly one normal production-signed, obfuscated APK; no Play Store bundle.
-- Java 17, Flutter 3.47.2 stable, Gradle 9.3.1, ubuntu-24.04.
-- Dependabot remains enabled.
-- Signing identity is frozen and verified by CI.
-- Build #50 remains the current App artifact baseline.
+- Wi-Fi OTA window at boot was requested for the first 10 seconds after cable insertion, then Wi-Fi off and BLE active.
+- During OTA: Peltier OFF, Fan OFF, LED under OTA indicator control.
+- BLE starts only after Wi-Fi is truly off and settled.
+- Online OTA target flow: BLE OFF → Wi-Fi STA → connect → BLUE → GitHub raw BIN → YELLOW download milestones → Update/finalize → GREEN → restart; failure → RED → BLE recovery.
+- Firebase firmware metadata uses firmware version + raw URL; SHA is not used for firmware selection.
+- Online OTA GitHub URL allowlist is restricted to raw GitHub URLs under `TenzoNkz/JEXFYZ-Firmware/` and ending `.bin`.
+- Current Online OTA intentionally uses plain `WiFiClientSecure` + `setInsecure()`. This is accepted for the Online OTA path; do not falsely label it server-authenticated TLS.
+- User wants OTA code kept simple, reliable, and prioritized at the top of Firmware.
+- Local OTA is a protected Golden Path. Do not alter Local OTA for an Online OTA defect without a separately reproduced Local OTA defect.
+
+### Persistence/notification
+
+- Preferences should save after 10 seconds with no changes.
+- OTA result notification/indicator must be transient and not permanently retained after power cycle/cable unplug.
+- Previous issue: notification was repeatedly shown after V2.5 firmware update. This was a known symptom; do not infer root cause without evidence.
 
 ## 5. FROZEN / ACCEPTED DECISIONS
 
-- GPIO5 = Peltier; GPIO6 = Fan.
-- 200 ms selector deadtime.
-- 1 s shared voltage guard.
-- 5 s Peltier soft-start only on true logical OFF -> ON for V3.9.
-- Voltage changes do not restart soft-start.
-- Physical Peltier PWM is suppressed during selector deadtime while logical state remains ON.
-- OTA supervisor has priority over normal application processing.
-- Wi-Fi/BLE single-radio handoff.
-- BLE advertising restart is deferred from callback context to the main loop.
-- V3.9 is the active firmware source/version.
-- Rapid-rise latch, final NTC gate, battery hysteresis, numeric anti-rollback, Local OTA magic-byte validation, Wi-Fi retry settle, full BLE teardown, OTA dispatcher fix, ADAPTIVE:OFF ACK correction, and reset-reason telemetry remain accepted hardening.
-- Firmware source remains in the App repository; the dedicated firmware repository is binary-only.
-- Dual-party approval is required before a V3.9 update.
+- [FROZEN] Local OTA source path and behavior are protected.
+- [FROZEN] Peltier 5s soft-start only on logical OFF → ON.
+- [FROZEN] Voltage changes do not restart soft-start.
+- [FROZEN] GPIO5=Peltier, GPIO6=Fan.
+- [FROZEN] Official Arduino-ESP32 Core 3.3.7 target.
+- [FROZEN] Cooperative/non-blocking runtime; no executable delay/timing while.
+- [ACCEPTED] Current V4.1 Online OTA Wi-Fi retry redesign:
+  - `WiFi.setAutoReconnect(true)`
+  - no direct `WL_CONNECT_FAILED`/`WL_NO_SSID_AVAIL` fast-fail branch
+  - timeout-driven retry after the full 15s connection window
+  - retry uses `WiFi.disconnect(); WiFi.begin(...)`
+  - retry path does not call `WiFi.mode(WIFI_OFF)`
+- [ACCEPTED] Current Online OTA retains BLUE Wi-Fi success, YELLOW download milestones at 20/40/60/80/100, final GREEN success, and RED failure/BLE recovery.
+- [ACCEPTED] Direct DOWNLOAD and FLASH_FINALIZE transitions remain.
+- [ACCEPTED] Current URL allowlist and `setInsecure()` are retained.
+- [ACCEPTED] Version V4.1 is required for the Online OTA functional update.
+- [ACCEPTED] Reset reason telemetry remains present in Firmware.
+- [ACCEPTED] App Build remains independent from Firmware-only changes.
 
 ## 6. REJECTED / OBSOLETE DECISIONS
 
-- V3.7 and V3.8 are not the current firmware baseline; V3.9 supersedes them.
-- firmware/JEXFYZ-V3.8.ino is retired.
-- A source-level switching hazard must not be mislabeled as proof of a specific brownout root cause.
-- Gemini's proposed 300–500 ms stabilization interval is a candidate engineering range, not universal proof.
-- Firebase firmware linking by SHA is rejected.
-- Restarting the 5 s soft-start merely because voltage changed is obsolete for V3.9.
-- Direct BLE startAdvertising() from disconnect callback is rejected as the recovery design.
-- Concurrent Wi-Fi/BLE handoff is rejected.
-- Build App solely because firmware changed is rejected.
+- [REJECTED] `cloudPassword.trim()` as a universal fix. Surrounding whitespace may be legitimate password data.
+- [REJECTED] Claim that `setAutoReconnect(false)` alone is proven to make WPA3/mixed-mode negotiation fail.
+- [REJECTED] Claim that `WL_CONNECT_FAILED` occurs on a fixed ~10ms path as a source-proven rule.
+- [REJECTED] Claim that brownout, WPA3/PMF, RF recalibration current spikes, or watchdog behavior is proven without serial/reset/power evidence.
+- [OBSOLETE] Earlier Gemini patches for CA-bundle removal; current source already uses plain `WiFiClientSecure + setInsecure()`.
+- [OBSOLETE] Earlier Gemini patches for adding `setInsecure()`; already present before V4.1.
+- [OBSOLETE] Earlier Gemini patches for removing intermediate GREEN/BLUE transitions; already completed before V4.1.
+- [OBSOLETE] Any V4.0 source as the active source. V4.0 is superseded by V4.1 in `main`.
+- [OBSOLETE] Old transfer/handover statements that still call V3.9 or V4.0 the active source must be reconciled against current repository state.
 
 ## 7. APP STATE
 
-- App functional source/configuration was not changed by V3.9 hardening or by this transfer.
-- Build #50 is the verified current App baseline.
-- Build #50 Run: 36996987220.
-- Build #50 source commit: bf01595253eb5a1912471c4aee57c4eed4421f0f.
-- APK artifact ID: 11222007634.
-- APK size: 54,245,456 bytes.
-- APK SHA256: 82a2320d8e3663800d6884f4cb0d009ff1b31b5b19cc64420f9ee5c6b01d01b0.
-- Symbols artifact ID: 11222132522.
-- Symbols size: 8,308,848 bytes.
-- Symbols SHA256: a87a3181bada92e2293c1f79d9a59339d7669c11b32ac1d8c219ae435c9062.
-- Production signing certificate SHA256: dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0.
-- Build #50 validates App build gates only, not V3.9 firmware.
-- Floating Monitor remains an App-side open investigation based on user video evidence: OEM overlay permission can show Always allow while the current permission/runtime checks still fail to establish actual overlay health.
+- [CURRENT] App package version: `1.0.0+3`.
+- [CURRENT] Android applicationId: `com.horizontalzzz.jexfyz`.
+- [CURRENT] Android minSdk: 24.
+- [CURRENT] Android versionName: `Telegram @horizontalzzz`.
+- [CURRENT] Main Flutter source includes P1 BLE UUID contract, `PHONE:BT=`, `CLOUDOTA`, secure Wi-Fi storage, Firebase App Check, firmware metadata URL handling, TamperScreen, and Floating Monitor channel integration.
+- [CURRENT] Legacy Horizon asset references are forbidden by the App audit; current branding assets are `jexfyzicon.png` and `jexfyzcooler.png`.
+- [CURRENT] Production release uses R8/minification/resource shrinking and official signing identity embedding.
+- [CURRENT] No App functional/configuration change was made by the V4.1 Firmware execution.
+- [CURRENT] No App Build was triggered by the V4.1 Firmware execution or by this transfer.
 
 ## 8. FIRMWARE STATE
 
-### Active source
-- V3.9 source: firmware/JEXFYZ-V3.9.ino.
-- Blob: bf85b50e0a8cab22e5d66ef09ee84d6692cee009.
-- 5305 source lines.
-- Old V3.8 source retired.
-- No V3.9 compile.
-- No V3.9 BIN generation.
-- No V3.9 Firebase promotion.
-- No V3.9 flash.
-- No physical V3.9 validation.
-
-### V3.9 hardening already implemented
-- Fixed Online OTA stream dispatcher starvation.
-- Full BLE deinit for Online OTA Wi-Fi handoff.
-- Wi-Fi retry re-arms Wi-Fi off and settle state.
-- BLE disconnect recovery uses an atomic pending flag and main-loop advertising restart.
-- Numeric semantic firmware version comparison.
-- Final NTC selector gate.
-- Physical Peltier PWM suppression during selector deadtime without changing logical state or soft-start timeline.
-- Reject Peltier ON during active voltage transition.
-- Battery Adaptive hysteresis.
-- Rapid Hotside rise detection and safety latch.
-- ADAPTIVE:OFF ACK correctness.
-- esp_reset_reason() diagnostics.
-- Local OTA first byte 0xE9 validation.
-- BLE TX overflow diagnostics.
-
-### V3.9 static evidence
-- 574/574 braces.
-- 2112/2112 parentheses.
-- 0 executable delay().
-- 0 timing while().
-- 0 stopBleRadio(false).
-- 137 DOC-CONTRACT blocks.
-- setInsecure() remains present.
-- esp_reset_reason() present.
-- Numeric anti-rollback comparator present.
-- Rapid-rise state/latch present.
-- Battery hysteresis present.
-- Local OTA magic validation present.
+- [CURRENT] Active source: `firmware/JEXFYZ-V4.1.ino`.
+- [CURRENT] Firmware version: V4.1.
+- [CURRENT] Active source blob: `352f7c408f2bc5a4a691af35cfb477338036a102`.
+- [CURRENT] Source length: 5327 lines.
+- [CURRENT] V4.0 active source before the redesign: `firmware/JEXFYZ-V4.0.ino`, blob `0566105383a889912e5e756b0b9f265e5fcf0264`.
+- [CURRENT] V4.0 file is no longer present on `main`; the V4.1 file is the active versioned source.
+- [CURRENT] Source target remains ESP32-C3 Super Mini / Dev Module, Arduino Standard, official Arduino-ESP32 Core 3.3.7.
+- [CURRENT] Current source contains reset-reason telemetry via `esp_reset_reason()` and publishes RESET_REASON through runtime synchronization.
+- [CURRENT] Current source contains one `setInsecure()` use for Online OTA.
+- [CURRENT] Current source has no `setAutoReconnect(false)`.
+- [CURRENT] Current Online OTA retry path no longer performs retry-side `WiFi.mode(WIFI_OFF)`; other legitimate Wi-Fi-off logic remains in the broader OTA/BLE radio handoff path.
+- [CURRENT] Current source has no executable `delay()` and no timing `while()`.
+- [CURRENT] Current source preserves the Local OTA region; prior V4.1 audit recorded a byte-for-byte equality check against the prior Local OTA region.
 
 ## 9. ANDROID / BLE / OTA / FIREBASE / CI
 
 ### Android
-- Flutter + Android wrapper.
-- Production signing identity is frozen.
-- Release uses R8/minification and resource shrinking.
-- Build #50-era user-visible Android versionName is Telegram @horizontalzzz.
+
+- [CURRENT] Release applicationId `com.horizontalzzz.jexfyz`, minSdk 24.
+- [CURRENT] VersionName remains `Telegram @horizontalzzz`.
+- [CURRENT] Production signing certificate SHA256:
+  `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`
+- [CURRENT] App audit checks for R8/resource shrinking, signing identity, legacy asset absence, P1 UUIDs, secure storage, App Check, TamperScreen, and Floating Monitor channel.
 
 ### BLE
-- P1 UUID/command contracts are frozen.
-- BLE cryptographic authentication remains an open security item requiring App + Firmware protocol work.
-- TX uses a finite FIFO.
 
-### OTA
-- Local OTA image magic validation is implemented.
-- Online OTA prior starvation and incomplete BLE teardown were fixed.
-- Online OTA still has synchronous HTTPClient GET() preparation.
-- Online OTA still uses setInsecure().
-- Post-boot health/rollback is absent.
+- [CURRENT] P1 UUIDs and device name remain as above.
+- [CURRENT] BLE and Wi-Fi radio ownership must not overlap on ESP32-C3.
+- [OPEN] P2 BLE critical-message drop behavior was identified historically and has not been promoted to a verified fix in this transfer.
 
-### Firebase
-- Version + raw URL distribution contract.
-- V3.9 is not promoted to production Firebase metadata.
+### OTA/Firebase
 
-### CI
-- app-build.yml is reusable and does not trigger on push.
-- app-build-trigger.yml is issue-based and checks exact title/token.
-- Release toolchain: ubuntu-24.04, Java 17, Flutter 3.47.2 stable, Gradle 9.3.1.
-- Build #50 remains current.
+- [CURRENT] Local OTA is protected.
+- [CURRENT] Online OTA GitHub raw URL allowlist and version+URL Firebase metadata model remain.
+- [CURRENT] No SHA selector is used for firmware metadata.
+- [UNVERIFIED] Current V4.1 Firebase metadata promotion state.
+- [UNVERIFIED] Current dedicated Firmware-distribution repository BIN state.
+
+### CI / App Build
+
+- [CURRENT] `.github/workflows/app-build.yml` is reusable and is not push-triggered.
+- [CURRENT] Toolchain:
+  - Java 17
+  - Flutter 3.47.2 stable
+  - Gradle 9.3.1
+  - ubuntu-24.04
+- [CURRENT] `.github/workflows/app-build-trigger.yml` is issue-triggered only:
+  - issue title must equal `JE X FYZ — BUILD APP TRIGGER`
+  - issue body must contain `JEXFYZ_BUILD_TRIGGER_V1`
+- [CURRENT] Normal push/PR does not trigger the release APK workflow.
+- [CURRENT] Dependabot is preserved.
+- [CURRENT] One App APK only; no Play Store bundle/output requirement.
 
 ## 10. SOURCE CHANGES
 
-### V3.8 -> V3.9 functional lineage
-- d3d78f010222f5b2dca12fc297fb7d2e1ec0f1b5 — harden V3.8 safety and OTA state machines.
-- cbcfea379f7b897f142191d0b5783a90afa8da7e — tighten firmware version/local OTA validation.
-- fac8a579e8c6b5af7c27cd01423d4ab04d753122
-- 70498fc15a75e17721166766080f7538abf7b529
-- 3a4c0ceedd5729fc0f9d62d5ec9be1f2d63cc59a
-- e3673ad71c0fa2d10d8e80cd433bcb34ac4c5a08 — stale V3.8 version comment corrected.
-- Final active V3.9 blob: bf85b50e0a8cab22e5d66ef09ee84d6692cee009.
-- Functional source changes are Firmware-only; App functional source was unchanged.
+### V4.0 → V4.1 Online OTA
 
-### Documentation/process lineage
-- 7e33bf97bc4a27be3b55f9ef55d1555b1376e229 — README V3.9 current-state record.
-- fb8739e0549b55e9cb0415f76a1bb26b545bda2f — PROJECT_STATE V3.9 record.
-- a2400f68ff5aa329460b8079746c9e52ab708452 — FIRMWARE_NOTES V3.9 record.
-- bd948c4f53d814cd432eac26d906f6187b6eb7f5 — Firmware analysis V3.9 record.
-- b45ded30a079199cedcb082d80fff79e5c746e89 — CHANGELOG V3.9 record.
-- eb7f4e2e9c7804c9c9ffed5f777447126a39f032 — HANDOVER V3.9 record.
-- a6f9453d955d0ab221778469ef7c401f0d8fd48d — APP_NOTES V3.9 impact.
-- 187bf0e4a049bc7b5adb8d94797eb2b6e6f6b0c9 — Build boundary record.
-- 534e2552e0908781762106a569e601598b319e89 — V3.9 execution completion memory record.
-- Later dual-audit documentation commits observed before this transfer:
-  - 0a4e0bf0dc0f726438143254083fb456241226f1
-  - 347bafd9cbcc2a63f8cadf11c2fdac6b14a447c8
-  - 02c2a5e0396d840761fe802abc123037e6fa2e57
-  - 77fd3a62dc86ba2938eb03e94d629b9b03297df1
-  - a9a100abfdf3ee54b376e3c0e9e96855b23bc6dd
-  - eb8651b55de166f204870a703acc3fc7dc1801f3
-  - 940f7e7952c49b31e88fb540e1bff3848e5e17e4
-- These are documentation/audit-gate records, not new functional App/Firmware changes.
+Before:
+- File: `firmware/JEXFYZ-V4.0.ino`
+- Blob: `0566105383a889912e5e756b0b9f265e5fcf0264`
+- `WiFi.setAutoReconnect(false)`
+- Online Wi-Fi failure path could fast-fail on `WL_CONNECT_FAILED` or `WL_NO_SSID_AVAIL`.
+- Timeout retry path tore down Wi-Fi with `WiFi.disconnect(true,false)` and `WiFi.mode(WIFI_OFF)`, then re-armed the radio teardown state.
+
+After:
+- File: `firmware/JEXFYZ-V4.1.ino`
+- Blob: `352f7c408f2bc5a4a691af35cfb477338036a102`
+- `WiFi.setAutoReconnect(true)`
+- Only the 15s connection window controls retry.
+- Retry performs `WiFi.disconnect(); WiFi.begin(cloudSsid.c_str(), cloudPassword.c_str());`.
+- No retry-side `WiFi.mode(WIFI_OFF)`.
+- Firmware version bumped to V4.1.
+- Versioned filename aligned to V4.1.
+- Existing Online OTA TLS/URL/LED/download/finalize logic retained.
+- Local OTA region protected.
+
+### Documentation-only synchronization
+
+- This Chat-Limit operation modifies documentation only.
+- No App source, Firmware source, workflow trigger, release artifact, or Firebase data is modified by the transfer itself.
 
 ## 11. COMMITS / SHAs
 
-### Current HEAD
-- 940f7e7952c49b31e88fb540e1bff3848e5e17e4
-- Message: docs: record V3.9 dual-audit flash gate
+### Current relevant Firmware commits
 
-### Firmware hardening
-- d3d78f010222f5b2dca12fc297fb7d2e1ec0f1b5
-- cbcfea379f7b897f142191d0b5783a90afa8da7e
-- fac8a579e8c6b5af7c27cd01423d4ab04d753122
-- 70498fc15a75e17721166766080f7538abf7b529
-- 3a4c0ceedd5729fc0f9d62d5ec9be1f2d63cc59a
-- e3673ad71c0fa2d10d8e80cd433bcb34ac4c5a08
+- [COMMITTED] `10e01cb70f35abc19749a7cfe90dea457116416f`
+  - message: `feat: simplify online ota wifi retry and bump firmware to v4.1`
+  - adds `firmware/JEXFYZ-V4.1.ino`
+  - new source blob: `352f7c408f2bc5a4a691af35cfb477338036a102`
+- [COMMITTED] `5abcea6551bba59af9a8a5f0c8f3cc9aa884b760`
+  - message: `refactor: retire superseded v4.0 firmware source`
+  - removes superseded V4.0 source.
+- [COMMITTED] `5ba869806a85244142378470818665b75025527a`
+  - prior V4.0 Online OTA patch baseline: plain `WiFiClientSecure + setInsecure()`, direct download/finalize transitions, intermediate indicator cleanup.
+- [COMMITTED] `428fd3d07ffd1eece35831077b011dd18479ca4a`
+  - V4.0 compile-arity fix: `batteryZoneFor(batteryC)` → `batteryZoneFor(batteryC, currentVoltage)`.
+- [COMMITTED] `43b6e3dfc49f114aba49c73762a9bdc4822d30de`
+  - V4.0 source creation baseline.
+- [HISTORY] `17c5dd44d17023cb735f57fcc2563e2a2dc5d0cb`
+  - documents the V1.5 Online OTA handoff architecture. This history does NOT prove causality for the current failure.
+- [HISTORY] `bf923ba37bdaee96b9f870318401c0d04061e8ff`
+  - V1.4 production source; simpler Online OTA startup pattern and historical evidence.
+- [HISTORY] `e8185cb24acb7475a533a859208156b43ecd4c03`
+  - diagnostic Wi-Fi source.
+- [HISTORY] `f30263cb756877dc883d2eeae5cb924b95160b39`
+  - minimal Arduino Wi-Fi + OTA test source.
 
-### Memory/audit documentation known from this context
-- 7e33bf97bc4a27be3b55f9ef55d1555b1376e229
-- fb8739e0549b55e9cb0415f76a1bb26b545bda2f
-- a2400f68ff5aa329460b8079746c9e52ab708452
-- bd948c4f53d814cd432eac26d906f6187b6eb7f5
-- b45ded30a079199cedcb082d80fff79e5c746e89
-- eb7f4e2e9c7804c9c9ffed5f777447126a39f032
-- a6f9453d955d0ab221778469ef7c401f0d8fd48d
-- 187bf0e4a049bc7b5adb8d94797eb2b6e6f6b0c9
-- 534e2552e0908781762106a569e601598b319e89
-- 0a4e0bf0dc0f726438143254083fb456241226f1
-- 347bafd9cbcc2a63f8cadf11c2fdac6b14a447c8
-- 02c2a5e0396d840761fe802abc123037e6fa2e57
-- 77fd3a62dc86ba2938eb03e94d629b9b03297df1
-- a9a100abfdf3ee54b376e3c0e9e96855b23bc6dd
-- eb8651b55de166f204870a703acc3fc7dc1801f3
-- 940f7e7952c49b31e88fb540e1bff3848e5e17e4
+### Documentation commits already in repository
+
+- `37fbd303472241e52f984e68eca56f7f568eb159` — docs: revalidate v4.1 online ota execution; current HEAD observed immediately before this transfer write.
+- `e62a63d3359a5d418ce39ff53de15e9c0332927b` — docs: record v4.1 simple online ota execution.
+- `e9858eb38a4d843d160a9750cd6991753bbd3bc4` — docs: record v4.1 simple online ota execution.
+- `c16566d29ae0a1aaae1dfdfa7896afe6601afe03` — prior documentation/transfer checkpoint parent of the V4.1 source commit.
+
+### Important prior documentation state
+
+- README policy commit: `776514a71ab1d6e6ff69d54dbaecf9fd4ba61d2a`
+- Deleted dedicated Gemini prompt commit: `a342cd9ca4387edc5e889411fbc99241c4db8486`
+- Removed file: `GEMINI_PROMPT_ONLINE_OTA.md`; prompt/process now lives in README/CHAT_RULES.
 
 ## 12. BUILD STATE
 
-### Build #50
-- [BUILT] Run 36996987220.
-- [BUILT] Source commit bf01595253eb5a1912471c4aee57c4eed4421f0f.
-- [BUILT] APK artifact ID 11222007634.
-- [BUILT] Size 54,245,456 bytes.
-- [BUILT] SHA256 82a2320d8e3663800d6884f4cb0d009ff1b31b5b19cc64420f9ee5c6b01d01b0.
-- [BUILT] Symbols artifact ID 11222132522.
-- [BUILT] Symbols size 8,308,848 bytes.
-- [BUILT] Symbols SHA256 a87a3181bada92e2293c1f79d9a59339d7669c11b32ac1d8c219ae435c9062.
-- [VERIFIED] Production signing certificate dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0.
+### Latest verified App Build
 
-### Build #41 historical
-- Run 36800153829.
-- Source 6deff1af4cb74310a00ee4ee0f3ed1584225c351.
-- Artifact ID 11135950331.
-- Size 54,245,456 bytes.
-- APK SHA256 0470a30268b455cb55e564a3ce34ef05ac5b5a744f364b3765cd2ad29d14109e.
-- Symbols artifact ID 11135985299.
-- Symbols SHA256 4890c4baa223e687a356488d969b900f9c03b0f784d557a24cf38abda0fb80c2.
-- Build #32 exists in history but exact artifact details are not present in this transfer context.
+- [BUILT] Build #50.
+- Workflow run ID: `36996987220`.
+- App source commit built: `bf01595253eb5a1912471c4aee57c4eed4421f0f`.
+- Result: SUCCESS.
+- APK artifact ID: `11222007634`.
+- APK size: 54,245,456 bytes.
+- APK SHA256: `82a2320d8e3663800d6884f4cb0d009ff1b31b5b19cc64420f9ee5c6b01d01b0`.
+- Symbols artifact ID: `11222132522`.
+- Symbols size: 8,308,848 bytes.
+- Symbols SHA256: `a87a3181bada92e2293c1f79d9a59339d7669c11b32ac1d8c219ae435c9062`.
+- Production signing cert SHA256: `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`.
+- [VERIFIED] Security audit PASS.
+- [VERIFIED] Dependency checks PASS.
+- [VERIFIED] Architecture/static analysis PASS.
+- [VERIFIED] Tests PASS.
+- [VERIFIED] Release packaging PASS.
+- [VERIFIED] Signing/certificate verification PASS.
+- [LIMIT] Build #50 validates only App source commit `bf01595253eb5a1912471c4aee57c4eed4421f0f`. It does not validate later App commits, V4.x Firmware, Firebase state, or physical hardware.
 
-### Firmware build/testing
-- [UNVERIFIED] V3.9 ArduinoDroid/Core 3.3.7 compile.
-- [UNVERIFIED] V3.9 BIN.
-- [UNVERIFIED] V3.9 Firebase.
-- [UNVERIFIED] V3.9 firmware publication/signing.
-- [UNVERIFIED] V3.9 flash.
-- [UNVERIFIED] physical electrical, thermal, BLE, OTA validation.
-- No V3.9 build troubleshooting was performed because compile was not attempted.
+### Firmware validation boundary
+
+- [UNVERIFIED] ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile of V4.1.
+- [UNVERIFIED] V4.1 BIN generation and BIN checksum.
+- [UNVERIFIED] Firebase metadata promotion to the V4.1 raw BIN URL.
+- [UNVERIFIED] Physical Local OTA flash of V4.1.
+- [UNVERIFIED] Physical Online OTA success of V4.1.
+- [UNVERIFIED] Thermal/electrical/radio runtime validation of V4.1.
+- [UNVERIFIED] Serial/reset log from the earlier Online OTA hotspot failure.
+
+- [NOTE] Build App must not be triggered simply because Firmware changed.
+- [NOTE] App Build remains separately explicit.
 
 ## 13. BUGS / SYMPTOMS
 
-### Historical hardware/runtime
-- 9V -> 12V caused immediate MCU restart; perceived switching gap about 2 s.
-- 5V -> 9V had been reported safe.
-- Fan/Peltier physical GPIO mapping had previously been swapped; corrected to GPIO5=Peltier, GPIO6=Fan.
-- NTC readings had previously been inaccurate.
-- Adaptive previously reset voltage to 5V without applying the intended Adaptive behavior.
-- OTA notifications had previously persisted/reappeared after flashing or power cycling.
-- Floating Monitor permission flow showed OEM "Always allow" but JE Cooler still treated overlay permission/runtime as unavailable.
+### Current / recent Online OTA
 
-### V3.9 current audit findings
-- P0: zero-settle post-selector load reapplication.
-- P1: Online OTA TLS trust disabled by setInsecure().
-- P2: BLE TX queue can drop newest messages when full.
+- [SYMPTOM] Online OTA previously failed on an Android phone hotspot.
+- [OBSERVED] ESP32-C3 did not visibly reach the Wi-Fi connected state in that test.
+- [OBSERVED] No BLUE Wi-Fi-success indicator was observed.
+- [OBSERVED] No RED indicator was observed, but this does not prove a crash/brownout.
+- [MISSING EVIDENCE] No serial/reset log was captured in that latest hardware test.
+- [LOCALIZATION] Failure was localized only to the pre-GitHub/Wi-Fi-connect stage; HTTPS/GitHub was not demonstrated as reached.
+
+### Historical firmware/app bugs
+
+- [FIXED] GPIO5/GPIO6 Peltier/Fan swap corrected.
+- [FIXED] NTC reading issue addressed in current architecture.
+- [FIXED] Adaptive startup semantics now require 5V reset before activation.
+- [FIXED] V4.0 compile-arity issue corrected.
+- [FIXED] Intermediate Online OTA LED transitions removed.
+- [OPEN] Battery/P2 critical BLE-message drop behavior is not proven resolved.
+- [HISTORICAL SYMPTOM] Repeated OTA result notification after V2.5 update; no current proof this is still present.
+- [OPEN] Exact root cause of the earlier Online Wi-Fi hotspot failure remains unproven.
 
 ## 14. VERIFIED ROOT CAUSES
 
-- [VERIFIED SOURCE] V3.9 preserves logical Peltier ON across selector deadtime, then completeVoltageTransition() can re-enable the rail and dependent cooling logic can restore duty 255 without an explicit post-selector rail-stabilization state.
-- [VERIFIED SOURCE] Online OTA explicitly invokes cloudClient.setInsecure(), so certificate/server authentication is disabled for that connection.
-- [VERIFIED SOURCE] BLE TX is a finite FIFO and drops newest messages on full; overflow is counted but ACK/OTA-state traffic has no reserved priority lane.
+- [VERIFIED] The previously reported V4.0→V4.1 functional change is a retry simplification and versioned-source replacement as shown by committed source/history.
+- [VERIFIED] Current V4.1 source has `setAutoReconnect(true)`, no `setAutoReconnect(false)`, no timing `while()`, no executable `delay()`.
+- [VERIFIED] The current source uses plain `WiFiClientSecure + setInsecure()` for Online OTA.
+- [VERIFIED] The active source and firmware version/file are aligned as V4.1.
+- [VERIFIED] The App Build workflow remains issue-triggered/manual and no App Build was caused by this Firmware change.
 
-Important non-causality:
-- [NOT PROVEN] The exact physical mechanism behind the historical 9V -> 12V reset. It may be brownout, LDO collapse, EMI, PSU transient, MOSFET/gate behavior, or another mechanism; source alone does not prove which.
+No hardware root cause for the earlier hotspot failure has been verified.
 
 ## 15. HYPOTHESES / LIKELY CAUSES
 
-- [HYPOTHESIS] Immediate reapplication of a full Peltier load after rail activation can exceed transient rail capability and reproduce the MCU reset.
-- [HYPOTHESIS] A millisecond-scale rail settling period is electrically appropriate, but the exact value must be measured.
-- [HYPOTHESIS] MOSFET gate charge/discharge may contribute to transient switching stress.
-- [HYPOTHESIS] NTC ADC noise under PWM EMI may cause abrupt readings without appropriate hardware filtering.
-- [HYPOTHESIS] Gemini's 300–500 ms recommendation is a candidate design range, not a universal constant.
-- [HYPOTHESIS] BLE queue pressure can desynchronize App state if a critical ACK/OTA-state message is dropped.
+These were discussed but are NOT proven:
+
+- [HYPOTHESIS] The earlier retry architecture was too destructive/complex and repeated Wi-Fi radio teardown reduced reliability.
+- [HYPOTHESIS] AP negotiation/security-mode interactions such as WPA3/PMF may have contributed.
+- [HYPOTHESIS] RF calibration/current transients may have contributed to brownout.
+- [HYPOTHESIS] The device may have reset or entered a watchdog path before the RED indicator state was reached.
+- [HYPOTHESIS] Hotspot-specific negotiation may differ from a normal router.
+- [HYPOTHESIS] `WL_CONNECT_FAILED`/driver state timing might have caused premature retry, but its exact timing is not source-proven.
+
+Do not promote any of these to root-cause fact without serial/reset/power evidence.
 
 ## 16. VALIDATION EVIDENCE
 
-### Repository/source/static
-- [VERIFIED] V3.9 source blob bf85b50e0a8cab22e5d66ef09ee84d6692cee009.
-- [VERIFIED] 5305 source lines.
-- [VERIFIED] 574/574 braces.
-- [VERIFIED] 2112/2112 parentheses.
-- [VERIFIED] 0 executable delay().
-- [VERIFIED] 0 timing while().
-- [VERIFIED] 0 stopBleRadio(false).
-- [VERIFIED] 137 DOC-CONTRACT blocks.
-- [VERIFIED] esp_reset_reason() present.
-- [VERIFIED] numeric version comparison present.
-- [VERIFIED] rapid-rise state/latch present.
-- [VERIFIED] battery hysteresis present.
-- [VERIFIED] Local OTA magic byte validation present.
-- [VERIFIED] setInsecure() present.
+### Current V4.1 static evidence
 
-### Upstream/toolchain evidence
-- Arduino-ESP32 3.3.7 upstream was previously checked for esp_reset_reason() and NetworkClientSecure CA APIs.
-- Exact ArduinoDroid/Core 3.3.7 local compile/link remains unverified.
+- [VERIFIED] Source blob: `352f7c408f2bc5a4a691af35cfb477338036a102`.
+- [VERIFIED] 5327 lines.
+- [VERIFIED] Braces: 579/579.
+- [VERIFIED] Parentheses: 2121/2121.
+- [VERIFIED] Executable `delay()`: 0 after stripping comments.
+- [VERIFIED] Timing `while()`: 0 after stripping comments.
+- [VERIFIED] `WiFi.setAutoReconnect(false)`: 0.
+- [VERIFIED] `WiFi.setAutoReconnect(true)`: 1.
+- [VERIFIED] `cloudClient.setInsecure()`: 1.
+- [VERIFIED] Current Online OTA Wi-Fi retry block matches the accepted soft-retry architecture.
+- [VERIFIED] Local OTA was previously audited as byte-for-byte unchanged relative to the prior protected region.
+- [UNVERIFIED] Physical correctness remains untested.
 
-### Runtime/physical
-- No V3.9 compile, BIN, Firebase, flash, oscilloscope, current, rail, thermal, BLE, or OTA hardware validation.
+### Current workflow evidence
+
+- [VERIFIED] `.github/workflows/app-build.yml` blob `731f4a7a43bf58d01a382053457d1f67a4742c8a`.
+- [VERIFIED] `.github/workflows/app-build-trigger.yml` blob `89598aff0b006bb3db6819080a13965fc5a6247d`.
+- [VERIFIED] Trigger issue title/token contract is unchanged.
+- [VERIFIED] Workflow uses Java 17, Flutter 3.47.2 stable, Gradle 9.3.1, ubuntu-24.04.
+- [VERIFIED] Workflow builds one signed release APK only.
 
 ## 17. GEMINI RESULTS
 
-### Audit question
-- Perform an independent, adversarial, full-source firmware V3.9 audit and return SAFE TO FLASH / NOT SAFE TO FLASH / CONDITIONALLY SAFE.
+### Round 1
 
-### Gemini verdict
-- [USER-MEDIATED / CONFIRMED] NOT SAFE TO FLASH.
+- [REJECTED] “Whitespace is proven bug” — not proven; Wi-Fi passwords can legally contain spaces.
+- [REJECTED] “setAutoReconnect(false) absolutely kills WPA3/mixed-mode” — overclaim.
+- [REJECTED] “WL_CONNECT_FAILED is a fixed ~10ms path” — unsupported by the source evidence.
 
-### Gemini P0
-- completeVoltageTransition() activates the selected 9V/12V rail after 200 ms deadtime, then dependent cooling logic can immediately restore an already-logically-ON Peltier to duty 255.
-- Gemini considers this a zero-microsecond rail stabilization/load-slamming risk.
-- Recommended a cooperative 300–500 ms post-selector stabilization period with Peltier physical PWM held at 0.
+### Round 2 / 3
 
-### Gemini P1
-- Online OTA calls setInsecure().
-- This removes server certificate validation and creates an OTA MITM/security risk.
-- Gemini recommends trusted CA validation using setCACert()/CA bundle.
+- [RESULT] No patch.
+- [SUGGESTION] Capture Serial Monitor/reset evidence.
+- [RESULT] Latest Gemini verdict was NOT SAFE TO FLASH LOCAL OTA at that stage.
+- [RECONCILIATION] Local OTA was already protected and was not the Online OTA issue.
 
-### Gemini P2
-- BLE TX queue is finite FIFO and can drop new messages when full.
-- Gemini recommends priority/eviction behavior so ACK and OTA-state messages are protected.
+### Simple Online OTA redesign
 
-### Gemini PASS/FIXED
-- OTA dispatcher starvation fixed.
-- Full BLE radio teardown for online OTA fixed.
-- BLE advertising recovery moved to main-loop context.
-- Numeric anti-rollback fixed.
-- Wi-Fi retry settle fixed.
-- Rapid-rise protection fixed.
-- NTC final gate fixed.
-- Battery hysteresis fixed.
-- Local OTA magic validation fixed.
-- Static delay()/timing while() invariants clean.
-- Reset diagnostics present.
+Gemini proposed a 6-part simplification, but only the materially applicable pieces were accepted:
 
-### Reconciliation
-- [CONFIRMED] Assistant rechecked Gemini's P0/P1/P2 claims against the active source.
-- [DECISION] Both parties agree on NOT SAFE TO FLASH.
-- [DECISION] Flash/update gate is CLOSED.
-- [DECISION] 300–500 ms is not treated as a universal requirement.
-- [DECISION] Historical reset is not promoted to a proven brownout cause without hardware evidence.
+- [STALE/OBSOLETE] CA bundle removal — already done before that response.
+- [STALE/OBSOLETE] Add `setInsecure()` — already present.
+- [REJECTED] `cloudPassword.trim()`.
+- [STALE/OBSOLETE] Remove intermediate LED transitions — already done.
+- [ACCEPTED] `setAutoReconnect(true)`, remove Wi-Fi fast-fail handling, use a timeout-driven soft retry without repeated Wi-Fi OFF.
+
+### Final Gemini V4.1 response
+
+Gemini returned exactly two patches:
+
+1. V4.0 → V4.1.
+2. Replace the exact V4.0 Online OTA Wi-Fi connection/retry block with:
+   - `WiFi.setAutoReconnect(true)`
+   - wait for the full 15s connection interval
+   - retry with `WiFi.disconnect(); WiFi.begin(...)`
+   - no repeated `WIFI_OFF`
+   - preserve BLUE/YELLOW/GREEN/RED indicator flow.
+
+[RECONCILIATION] Repository evidence now confirms these accepted changes are already committed in `10e01cb70f35abc19749a7cfe90dea457116416f` and active as V4.1.
 
 ## 18. FAILED APPROACHES / DEAD ENDS
 
-- Successful compile alone is not hardware-safety proof.
-- Source-level switching hazard is not proof of the exact electrical root cause.
-- setInsecure() is not acceptable for production Online OTA.
-- Direct callback-context BLE advertising restart is rejected.
-- Voltage-change-triggered soft-start restart is obsolete for V3.9.
-- Executable timing delay()/while() wait loops are rejected.
-- App Build solely because firmware changes is rejected.
-- Stale PROJECT_STATE history cannot override current source/workflow.
+- Repeatedly adding/removing CA-bundle complexity without proving that TLS was the failure stage.
+- Treating `cloudPassword.trim()` as a guaranteed fix.
+- Treating `setAutoReconnect(false)` as a proven WPA3 failure cause.
+- Treating missing BLUE/RED indicators as proof of brownout/crash.
+- Repeated destructive Wi-Fi OFF/reinit retry architecture as the only recovery strategy.
+- Changing Local OTA while the reproduced issue was Online OTA.
+- Building the App solely because Firmware changed.
+- Reusing V4.0 as the firmware version for a functional V4.1 change.
+- The dedicated Gemini prompt file `GEMINI_PROMPT_ONLINE_OTA.md` has been retired; Gemini procedure now lives in README/CHAT_RULES.
 
 ## 19. KNOWN RISKS
 
-- [P0] Post-selector rail/load stabilization state is missing from V3.9.
-- [P1] Online OTA server authenticity is missing.
-- [P2] BLE ACK/OTA-state priority is not protected.
-- [OPEN] BLE cryptographic authentication.
-- [OPEN] Synchronous Online OTA HTTP preparation.
-- [OPEN] OTA post-boot health/rollback.
-- [OPEN] Exact electrical mechanism of the historical 9V -> 12V reset.
-- [OPEN] Exact ArduinoDroid/Core 3.3.7 compile/link.
-- [OPEN] V3.9 BIN/Firebase/device evidence.
-- [OPEN] NTC hardware EMI/noise characterization.
+- [RISK] Current V4.1 Online OTA uses `setInsecure()`, so the connection is not certificate-authenticated at the TLS layer.
+- [RISK] Physical V4.1 runtime is not yet validated.
+- [RISK] Hotspot/security-mode compatibility remains uncertain without a successful physical test.
+- [RISK] Current source includes other legitimate Wi-Fi OFF transitions outside the Online-OTA retry path; audits must distinguish those from the prohibited retry-side radio teardown.
+- [RISK] Historical documentation sections can still contain stale V3.7/V3.8/V3.9/V4.0 narratives; current source and top-of-file current-state overrides are authoritative.
+- [RISK] Dedicated firmware repository BIN/Firebase state may not yet correspond to V4.1.
+- [RISK] P2 BLE critical-message drop behavior remains open.
 
 ## 20. UNRESOLVED QUESTIONS
 
-- What rail stabilization interval is actually required by the real PSU/regulator/MOSFET/load?
-- Does the historical 9V -> 12V reset reproduce after the P0 sequencing fix?
-- Can trusted GitHub CA validation compile in the exact ArduinoDroid/Core 3.3.7 environment?
-- Should BLE use a priority queue, reserved ACK lane, or telemetry eviction?
-- What is the safe App/Firmware authentication design for BLE commands?
-- How should synchronous Online OTA preparation be redesigned?
-- What OTA post-boot rollback/health policy is required?
-- Which oscilloscope/current/rail measurements will close the electrical safety gate?
-- What exact validated BIN SHA and Firebase record will be approved for V3.9?
+- Will V4.1 compile cleanly in ArduinoDroid with official Arduino-ESP32 Core 3.3.7?
+- Does V4.1 produce the expected BIN?
+- Does V4.1 connect reliably to the same Android hotspot that previously failed?
+- Does BLUE appear after Wi-Fi connection?
+- Does GitHub raw BIN download reach the YELLOW milestones?
+- Does Update/finalize complete and produce the final GREEN indicator and restart?
+- Does failure reliably produce RED followed by BLE recovery?
+- Does the exact expected V4.1 BIN exist and become the promoted Firebase raw URL?
+- Does P2 BLE critical-message drop remain reproducible?
+- Is there any post-Build-#50 App change that would actually require a fresh App Build? Current evidence says no functional App delta.
 
 ## 21. CHAT-ONLY INFORMATION
 
-- Before this save, Gemini's full audit result existed in the chat and was supplied by the user.
-- This transfer now persists the material Gemini result and the assistant/Gemini consensus in the repository.
-- The explicit user requirement that both assistant and Gemini must agree before update is now persistent in CHAT_TRANSFER.md and current project notes.
-- No functional source change was made by this transfer.
+- [CHAT-ONLY] The user issued `@Thinking Eksekusi Full!!!!!!!!` shortly before the context-limit recap.
+- [CHAT-ONLY] The context-limit recap explicitly prohibits using the recap itself as a reason to perform a new functional source change, release, or App Build.
+- [CHAT-ONLY] Earlier assistant context had a temporary state saying V4.1 was only ready for execution. Repository evidence supersedes that statement: V4.1 is already implemented and committed.
+- [CHAT-ONLY] No new physical test result, compile result, BIN result, Firebase promotion result, or App Build result was supplied after the V4.1 repository implementation.
+- [PERSISTED] The important accepted V4.1 implementation state is already in repository notes and source; this section is only to explain the chat-to-repository reconciliation.
 
 ## 22. EXACT NEXT ACTION
 
-- Do not flash V3.9.
-- Do not release or build the App.
-- When execution is authorized, implement a cooperative post-selector stabilization state that holds physical Peltier PWM at 0 after selector activation, without changing the logical Peltier state or restarting the V3.9 OFF->ON soft-start contract.
-- Replace setInsecure() with validated server/CA authentication compatible with the exact Arduino-ESP32 Core 3.3.7 target; do not guess the certificate.
-- Address the P2 BLE critical-message drop behavior if included in the approved hardening scope.
-- Run a full affected-source/static audit.
-- Submit the revised candidate to the same two-party Gemini + assistant flash gate.
-- Only after both agree proceed to compile, BIN generation, Firebase promotion, staged hardware testing, and eventual update.
+- Do NOT make another functional source change merely because the chat limit recap is running.
+- Do NOT build the App.
+- Next engineering step is to validate the already-committed V4.1 Firmware candidate:
+  1. perform the required current-memory preflight in the new chat;
+  2. inspect the exact V4.1 source/workflow;
+  3. run the required V4.1 compile using ArduinoDroid + official Arduino-ESP32 Core 3.3.7;
+  4. verify the generated BIN and record exact file/hash evidence;
+  5. perform the appropriate Firmware flash/test gate, including the previously required independent Assistant + Gemini agreement before physical update;
+  6. promote Firebase/Firmware-distribution metadata only after compile/BIN validation;
+  7. perform staged physical Local/Online OTA and safety/radio testing;
+  8. persist every result back into repository memory.
 
 ## 23. REQUIRED FIRST ACTION IN NEW CHAT
 
-- Read README.md.
-- Read CHAT_TRANSFER.md.
-- Read PROJECT_STATE.md.
-- Read CHAT_RULES.md.
-- Read APP_NOTES.md.
-- Read FIRMWARE_NOTES.md.
-- Read BUILD_NOTES.md.
-- Read CHANGELOG.md.
-- Read HANDOVER.md.
-- Read firmware/FIRMWARE_ANALYSIS.md.
-- Inspect current firmware/JEXFYZ-V3.9.ino.
-- Inspect .github/workflows/app-build.yml and .github/workflows/app-build-trigger.yml.
-- Reconcile stale historical V3.7/V3.8 sections against current source/current workflow.
-- Report V3.9 active, flash gate closed, P0/P1/P2 open, Build #50 baseline, and no compile/BIN/flash evidence.
+Read/reconcile this exact stack before any project action:
+
+`README.md` → `PROJECT_STATE.md` → `CHAT_RULES.md` → `APP_NOTES.md` → `FIRMWARE_NOTES.md` → `BUILD_NOTES.md` → `CHANGELOG.md` → `firmware/FIRMWARE_ANALYSIS.md` → `HANDOVER.md` → `CHAT_TRANSFER.md` → current `firmware/JEXFYZ-V4.1.ino` → `.github/workflows/app-build.yml` → `.github/workflows/app-build-trigger.yml`.
+
+Then report:
+- [CURRENT] V4.1 active;
+- [CURRENT] source blob `352f7c408f2bc5a4a691af35cfb477338036a102`;
+- [CURRENT] App Build #50 is the latest verified APK baseline;
+- [UNVERIFIED] V4.1 compile/BIN/physical/runtime state;
+- [PROTECTED] Local OTA;
+- [OPEN] Online OTA physical validation and P2 BLE validation;
+- [NEXT] compile/BIN/flash-gate/testing, not another source redesign.
 
 ## 24. AUTHORITY / RECONCILIATION NOTES
 
-- Current source and current workflow are higher authority than historical memory sections.
-- PROJECT_STATE.md contains historical V3.7/V3.8 sections; the newest current-state override must supersede them.
-- FIRMWARE_NOTES.md and firmware/FIRMWARE_ANALYSIS.md already contain V3.9 dual-audit gate notes before this transfer.
-- CHANGELOG.md and HANDOVER.md also contain the V3.9 dual-audit flash-gate decision.
-- app-build.yml is reusable and not push-triggered.
-- app-build-trigger.yml is the explicit issue proxy and checks the exact issue title/token.
-- This transfer introduces no functional source/workflow delta.
+- Current source is V4.1. Any historical V4.0/V3.x section is historical unless explicitly labeled current.
+- Current workflow is `app-build.yml` + `app-build-trigger.yml`; these remain unchanged by the V4.1 Firmware implementation.
+- Build #50 is still the latest verified App build; Firmware changes do not retroactively alter or invalidate its exact source identity.
+- The current V4.1 implementation is evidence of source persistence, not evidence of successful compile, BIN, firmware flash, Firebase promotion, or physical Online OTA.
+- Gemini analysis is advisory evidence; only exact source/history/tool evidence determines what was actually implemented.
+- No hypothesis about WPA3/PMF/brownout/watchdog is to be stored as a verified root cause without direct runtime evidence.
+- The Local OTA path remains protected and is not a legitimate target for an Online OTA-only issue.
+- The repository contains some repeated/historical memory sections. Do not delete Git history merely to remove stale text; use current top-of-file state and this transfer as the continuity checkpoint.
 
 ## 25. TRANSFER COMPLETION
 
-- Recap completed: YES.
-- Repository write: SUCCESS.
-- CHAT_TRANSFER snapshot write commit: 756d9a63bab828e67cf95fd575853dd2255c112d.
-- CHAT_TRANSFER snapshot blob produced by that write: 1bc6a425b6af273fe0e9f4ae244e45763569c8b2.
-- PROJECT_STATE synchronization commit: d41fb74ed9816d46bc706f6b62a2e3ade68e5191.
-- CHAT_RULES synchronization commit: fe9e35b578bd7034899e629ca6d030854257ddf6.
-- Current HEAD observed at the completed documentation synchronization checkpoint: fe9e35b578bd7034899e629ca6d030854257ddf6.
-- Current source observed and preserved unchanged: V3.9 / bf85b50e0a8cab22e5d66ef09ee84d6692cee009.
-- Current workflows observed and preserved unchanged:
-  - app-build.yml blob 731f4a7a43bf58d01a382053457d1f67a4742c8a.
-  - app-build-trigger.yml blob 89598aff0b006bb3db6819080a13965fc5a6247d.
-- Functional source/workflow delta from this transfer: NONE.
-- Exact next action recorded: patch P0 + P1, then repeat two-party audit; no flash until both agree.
-
+- [COMPLETED] Recap reconstructed from the available full project context and reconciled against the current repository.
+- [COMPLETED] Current `main` HEAD was observed as `37fbd303472241e52f984e68eca56f7f568eb159` before this snapshot write.
+- [COMPLETED] Current Firmware source/workflow were directly re-read from repository.
+- [COMPLETED] No functional App/Firmware source or App Build was performed by the transfer procedure.
+- [PENDING WRITE RESULT] CHAT_TRANSFER replacement is being committed now; GitHub will return the exact persistence commit SHA.
+- [VERIFICATION REQUIREMENT] Immediately after write, re-read `CHAT_TRANSFER.md`, observe the new commit HEAD, verify the V4.1 source blob and workflow blobs again, and record the returned persistence commit in the final assistant status.
+- [NEXT ACTION] Validate the already-committed V4.1 Firmware candidate; do not repeat the V4.0→V4.1 functional patch.
