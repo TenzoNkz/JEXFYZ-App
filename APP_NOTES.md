@@ -2127,3 +2127,10 @@ Never:
 - All stale App-repo documentation statements were normalized to the corrected physical mapping.
 - Safety semantics remain unchanged: logical Peltier still requires logical Fan ON and all existing NTC/hotside/OTA safety checks.
 - The production external firmware repository still contains a binary-only artifact; the corrected source is in the App repository. The ESP32 hardware will change only after a firmware binary compiled from this corrected source is flashed.
+
+## 2026-10-04 — DISCUSSION / APP BUILD REQUIREMENT FOR HARDWARE TEST
+
+- [CONFIRMED] Hardware/device testing can proceed without rebuilding the App because the current App functional source has not changed since the source revision used by verified Build #50.
+- [BUILT] Build #50 remains the current App test baseline.
+- [DECISION] Keep the existing Build #50 APK as the initial hardware-test client. Do not trigger a release build merely because Firmware V3.7 is entering device testing.
+- [OPEN CONDITION] Rebuild the App only when a functional App change, Android/configuration/dependency change, release-signing change, or test-specific need makes the current APK no longer the correct baseline.
