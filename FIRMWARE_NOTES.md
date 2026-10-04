@@ -1,3 +1,24 @@
+## 2026-10-04 — CORRECTIVE EXECUTION FULL / FIRMWARE V3.4 EXACT-SOURCE AUDIT REPAIR
+
+### Source/version
+- The V3.3 post-commit exact-source audit found two helper blocks syntactically nested inside existing function bodies due to an insertion-placement error.
+- Those placement errors are corrected here without changing the intended V3.3 feature behavior.
+- Per mandatory firmware versioning, the corrected candidate advances **V3.3 → V3.4** and uses `firmware/JEXFYZ-V3.4.ino`.
+- V3.3 is superseded immediately; it was never compiled, flashed, or promoted.
+
+### Corrective validation
+- `FW_VERSION` = V3.4; filename/version aligned.
+- `adaptiveProfileText()` / `effectiveAdaptiveProfile()` are at global scope.
+- Battery invalidation/TTL/fallback helpers are at global scope.
+- Exactly one active `lowerVoltage()` definition and one `updateBatteryValidity()` implementation remain.
+- Braces 523/523; parentheses 1978/1978.
+- `delay(...)` calls: 0; timing `while (...)` loops: 0.
+- Global-scope static-function-depth audit found no nested function definitions.
+- No BIN/Firebase/dedicated-binary-repository update, physical validation, or App Build was performed.
+
+### Validation boundary
+- V3.4 is still uncompiled/unflashed. ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile remains the next validation layer.
+
 ## 2026-10-04 — EXECUTION FULL / FIRMWARE V3.3 ADAPTIVE FALLBACK + OTA PROGRESS + FULL NO-DELAY
 
 ### Source/version

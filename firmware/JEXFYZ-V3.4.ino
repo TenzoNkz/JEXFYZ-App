@@ -28,7 +28,7 @@ enum class LedMode : uint8_t;
 enum class VoltageRequestSource : uint8_t;
 enum class AdaptiveProfile : uint8_t;
 
-static constexpr char FW_VERSION[] = "V3.3";
+static constexpr char FW_VERSION[] = "V3.4";
 
 // ============================================================================
 // ========================== HEAP DIAGNOSTIC BUILD ===========================
@@ -458,7 +458,7 @@ static void resetOnlineOtaProgressState();
 static void queueOnlineOtaProgressMilestones(uint8_t progress);
 static bool processOnlineOtaProgressIndicator();
 
-static const char* voltageToString(Voltage value) {static const char* adaptiveProfileText(AdaptiveProfile profile) {
+static const char* adaptiveProfileText(AdaptiveProfile profile) {
   return profile == AdaptiveProfile::HOTSIDE_PROTECTION
              ? "HOTSIDE"
              : "HOTSIDE_BATTERY";
@@ -473,7 +473,7 @@ static AdaptiveProfile effectiveAdaptiveProfile() {
   return adaptiveProfile;
 }
 
-
+static const char* voltageToString(Voltage value) {
   switch (value) {
     case Voltage::V5:  return "5V";
     case Voltage::V9:  return "9V";
@@ -1637,7 +1637,6 @@ static String safetyReason() {
   return "NONE";
 }
 
-static int batteryZoneFor(float temperature) {
 static void invalidateBatterySource() {
   const bool hadState = batteryValid || isfinite(batteryC);
   batteryValid = false;
@@ -1696,7 +1695,7 @@ static void processAdaptiveHotsideFallback() {
   }
 }
 
-
+static int batteryZoneFor(float temperature) {
   if (!isfinite(temperature)) return 9;
   if (temperature < battery5Limit) return 5;
   if (temperature < battery12Limit) return 9;

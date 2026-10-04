@@ -1,3 +1,10 @@
+## 2026-10-04 — FIRMWARE V3.4 CORRECTIVE SOURCE EVENT / APP CONTRACT
+
+- Firmware continuity source is now V3.4 after exact-source audit correction of helper placement in the V3.3 candidate.
+- No App source was modified and no App Build was triggered.
+- V3.3 intended BLE/P1/GPIO/OTA/Adaptive/Battery contracts are retained; this correction only places helpers at valid global scope.
+- V3.4 is not compiled, flashed, or published.
+
 ## 2026-10-04 — FIRMWARE V3.3 EXECUTION / APP CONTRACT IMPACT
 
 - Firmware continuity source advanced V3.2 → V3.3; no App source was modified and no App Build was triggered.

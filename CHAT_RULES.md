@@ -1,3 +1,10 @@
+## 2026-10-04 — CORRECTIVE EXECUTION FULL / V3.4 SOURCE-STRUCTURE REPAIR
+
+- Exact-source post-commit verification of V3.3 detected malformed helper placement that a delimiter-only audit did not catch.
+- The affected helpers were moved to global scope and the firmware version advanced V3.3 → V3.4 according to the project versioning rule.
+- The corrected source passes delimiter, no-delay/no-timing-loop, and global function-definition-depth checks.
+- No App Build, firmware BIN/Firebase promotion, dedicated binary-repository update, or physical validation was performed.
+
 ## 2026-10-04 — EXECUTION FULL / FIRMWARE V3.3 EVENT
 
 - User explicitly authorized `@Thinking Eksekusi Full!` after the V3.2 discussion.
