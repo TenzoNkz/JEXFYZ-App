@@ -1,3 +1,11 @@
+## 2026-10-04 — GEMINI FORENSIC PRE-FLASH AUDIT
+
+- Exact V4.0 source blob `0566105383a889912e5e756b0b9f265e5fcf0264` received Gemini full forensic audit verdict: **SAFE TO FLASH LOCAL OTA** source-level.
+- No P0/P1 blockers reported. P2: BLE TX queue overflow under heavy load.
+- Online OTA is still not physically proven successful; prior runtime failure remains an open validation item.
+- Reconciliation note: any Gemini narrative describing a BLUE blink after download is stale; current source removes that intermediate indicator.
+- Before actual flashing, compile/BIN and exact-source Assistant + Gemini gate requirements remain active.
+
 ## 2026-10-04 — ONLINE OTA PATCH EXECUTED
 
 - Gemini Online OTA patch applied to V4.0; current source blob `0566105383a889912e5e756b0b9f265e5fcf0264`.
