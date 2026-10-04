@@ -1,3 +1,12 @@
+## 2026-10-04 — V4.0 DUAL-PARTY GATE OPEN
+
+- Exact V4.0 source blob: `b2a77fadeaa154412850d34c82b0bb78ef108bae`.
+- Gemini verdict: **SAFE TO FLASH**.
+- Assistant verdict: **SAFE TO FLASH**.
+- User's two-party agreement requirement is satisfied.
+- The controlled next stage is ArduinoDroid/Core 3.3.7 compile/BIN generation followed by staged physical validation.
+- No claim of compile or physical success is made by this review alone.
+
 ## 2026-10-04 — CURRENT HANDOVER AFTER V4.0 EXECUTION
 
 - Current firmware: **V4.0**.
