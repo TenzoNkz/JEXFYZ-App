@@ -18,6 +18,13 @@
 - No functional App/Firmware behavior changed in this continuity task.
 - No App Build or firmware compile was triggered.
 
+## 2026-10-04 — DUAL CHAT-LIMIT PROMPT SYSTEM
+
+- Added Prompt A — CHAT-LIMIT RECAP for complete context export from a chat approaching its context limit.
+- Added Prompt B — NEW CHAT TRANSFER for fresh-chat memory preflight, current-source reconciliation, and safe continuation.
+- Defined the recap as transfer evidence rather than a source-of-truth replacement.
+- Applied the mechanism to separate Build App subchats as well.
+- Documentation/process change only; no functional App/Firmware source or build output changed.
 # JE X FYZ — CHANGELOG
 
 ## 2026-10-04 — CONTINUITY SYSTEM
