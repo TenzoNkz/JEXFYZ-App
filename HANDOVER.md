@@ -1,3 +1,13 @@
+## 2026-10-04 — ROUND 3 DECISIVE GEMINI WIFI ADJUDICATION
+
+- New Gemini prompt added for decisive adjudication after prior overconfident claims were rejected.
+- Exact source remains firmware/JEXFYZ-V4.0.ino blob 0566105383a889912e5e756b0b9f265e5fcf0264.
+- Gemini is explicitly required to use git-history anchors e8185cb24acb7475a533a859208156b43ecd4c03, f30263cb756877dc883d2eeae5cb924b95160b39, and bf923ba37bdaee96b9f870318401c0d04061e8ff where relevant.
+- Key decision points: initial WiFi.begin semantics of setAutoReconnect(false), WL_CONNECT_FAILED timing, actual retry/backoff behavior, destructive versus soft retry, PASS whitespace protocol semantics, LED/red reachability, reset/brownout evidence, and exact source regression history.
+- Patch remains unauthorized until Gemini evidence is reconciled.
+- Local OTA remains protected/golden; no functional firmware change was made.
+- Prompt update commit: ce8d984d8b58416e0bc11eabf3b348eef9978b62.
+
 ## 2026-10-04 — SECOND-OPINION GEMINI REQUEST
 
 - Previous Gemini response was reconciled and found to contain overconfident claims about WPA3 timing and setAutoReconnect semantics.
