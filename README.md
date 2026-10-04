@@ -1,3 +1,15 @@
+## 2026-10-04 — CURRENT V4.0 EXECUTION STATE
+
+- [CURRENT] Firmware advanced V3.9 → V4.0 after the approved full hardening execution.
+- [CURRENT] Active source: `firmware/JEXFYZ-V4.0.ino`; source blob: `b2a77fadeaa154412850d34c82b0bb78ef108bae`.
+- [IMPLEMENTED] P0 post-selector rail stabilization: 9V/12V activation now holds physical Peltier PWM at 0% for an initial cooperative 300 ms stabilization window while preserving the logical Peltier state and existing 5 s OFF→ON soft-start timeline.
+- [IMPLEMENTED] P1 Online OTA TLS: `cloudClient.setInsecure()` removed; the exact Arduino-ESP32 Core 3.3.7 NetworkClientSecure certificate-bundle mechanism is enabled through a small derived client wrapper.
+- [VERIFIED STATIC] V4.0: braces 581/581; parentheses 2123/2123; executable `delay()` 0; timing `while()` 0; `setInsecure()` 0; `stopBleRadio(false)` 0; DOC-CONTRACT 137.
+- [UNVERIFIED] ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile/link, BIN generation, Firebase promotion, physical flash, rail/current measurements, and runtime validation.
+- [GATE] The prior V3.9 NOT-SAFE decision no longer describes the current source, but V4.0 is NOT YET APPROVED TO FLASH because the required two-party Assistant + Gemini review must be repeated on the new V4.0 source first.
+- [NO APP BUILD] App source/configuration remains unchanged; Build #50 remains the latest verified App artifact.
+- [NEXT] Submit V4.0 to the same independent Assistant/Gemini audit; only after both agree proceed to compile/BIN/controlled hardware validation.
+
 ## 2026-10-04 — CHAT-LIMIT CONTINUITY CHECKPOINT
 
 - This repository is the persistent continuity boundary for JE X FYZ while the current chat approaches its context limit.
