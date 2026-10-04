@@ -3,15 +3,15 @@
 - This repository is the persistent continuity boundary for JE X FYZ while the current chat approaches its context limit.
 - The detailed copy-ready continuation prompt is available in both `README.md` and `HANDOVER.md`.
 - A new chat must re-read the complete memory stack before any action, including Build App subchats.
-- Current functional firmware remains V3.7; this checkpoint does not change runtime behavior.
+- Current functional firmware remains V3.8; this checkpoint does not change runtime behavior.
 - Latest verified App Build remains #50; no Build App was run during the handover.
 
-# JE X FYZ — Firmware Analysis / V3.7
+# JE X FYZ — Firmware Analysis / V3.8
 
 ## Current source
 
-Active file: firmware/JEXFYZ-V3.7.ino
-Functional version: V3.7
+Active file: firmware/JEXFYZ-V3.8.ino
+Functional version: V3.8
 Source blob: 4a7e08a6ea0de57f4e3d3a742ad88cbd25a05e01
 Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module
 Framework: Arduino Standard + official Arduino-ESP32 Core 3.3.7
@@ -42,17 +42,17 @@ requestVoltage(): validates OTA lock, in-flight transition lock, voltage guard, 
 
 completeVoltageTransition(): waits for the 200 ms deadtime, revalidates Hotside immediately before selector activation, applies Battery-only deadtime revalidation for Battery-originated transitions, commits one physical voltage step, arms the shared 1 s guard, and finally applies cooling/PWM consequences.
 
-### Peltier V3.7 rule
+### Peltier V3.8 rule
 
 | Transition | Peltier state | Result |
 |---|---|---|
-| 5 V -> 9 V | ON | Restart 5 s soft-start |
-| 9 V -> 12 V | ON | Restart 5 s soft-start |
-| 12 V -> 9 V | ON | Do not restart |
-| 9 V -> 5 V | ON | Do not restart |
+| 5 V -> 9 V | ON | Preserve current PWM state |
+| 9 V -> 12 V | ON | Preserve current PWM state |
+| 12 V -> 9 V | ON | Preserve current PWM state |
+| 9 V -> 5 V | ON | Preserve current PWM state |
 | Any OFF -> ON | OFF | Start 5 s soft-start |
 
-The upward restart is evaluated only after the selector transition physically completes. Safety still has higher authority and can prevent Peltier operation.
+Voltage changes do not start or restart the Peltier soft-start. A true Peltier OFF -> ON transition remains the only soft-start trigger. Safety still has higher authority and can prevent Peltier operation.
 
 ## Universal Hotside safety
 
@@ -145,7 +145,7 @@ No executable delay() calls and no timing while() waits are present in the curre
 - Timing while(): 0.
 - Stale V3.5/V3.6/V1.0 baseline references: 0.
 - Mixed-language source comments found in the cleanup audit: 0.
-- Functional firmware version change in this documentation pass: none; remains V3.7.
+- Functional firmware version change in this documentation pass: none; remains V3.8.
 
 ## Validation boundary
 
