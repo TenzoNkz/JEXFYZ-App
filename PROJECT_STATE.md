@@ -4,7 +4,7 @@
 - Project: JE X FYZ / JE Cooler
 - Repository: TenzoNkz/JEXFYZ-App
 - Branch: main
-- Current HEAD: 35550c89791c43a0e8267dcfa61abc34bbcbe183
+- Last functional workflow fix commit: dd4320cbc21311777ec62803187b1ff0955e4e03
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
 - Active Firmware: V4.5
@@ -14,16 +14,16 @@
 - App settings source blob: f11235bab559b291928550e06984532581ddad6a
 - App test source blob: aa86778beb8fcc3ce6a12454f6354f96ec99a160
 - Active App Build workflow: .github/workflows/jexfyz-build.yml
-- App Build workflow blob: 33ae11a17ec9353e4693bed723018e6d8ea20b8e
+- App Build workflow blob: eee1c73e0692a327546852d962e0186f4aff98fd
 - Legacy app-build.yml and app-build-trigger.yml are deleted.
 - Latest verified downloadable App Build: #50
-- New workflow Build run #1: 37199918015 [BUILT][VERIFIED] through signing; [BLOCKED] artifact upload by Actions quota.
-- Build #53 passed App validation gates through signing but failed artifact creation due GitHub Actions quota.
-- New workflow run #1 (jexfyz-build.yml) repeated the current App validation gates successfully and failed only at artifact upload due the same Actions storage quota.
+- Historical new-workflow Build run #1: 37199918015 [BUILT][VERIFIED] through signing; [BLOCKED] legacy Actions-artifact upload by quota.
+- Build #53 passed App validation gates through signing but failed legacy artifact creation due GitHub Actions quota.
+- Workflow delivery fix is committed: APK publication now uses a GitHub Release asset and no longer depends on Actions-artifact creation.
 
 ## CURRENT TASK / TRANSFER
-- Current Build App execution completed the authorized single-workflow build attempt.
-- No App/Firmware runtime source was changed.
+- The current execution fixed CI delivery without changing App/Firmware runtime source.
+- The next explicit Build App is required to prove end-to-end GitHub Release delivery.
 
 ## FIRMWARE
 - V4.5 remains active.
@@ -46,20 +46,21 @@
 ## CI / BUILD
 - Legacy App Build workflows were deleted; one new single workflow `.github/workflows/jexfyz-build.yml` is current.
 - App Build remains manual-by-issue-trigger only.
-- Current workflow requests actions: write and clears all current Actions artifacts before packaging.
-- Cleanup repeats page 1 until the artifact list is empty, then asserts zero remaining artifacts.
-- Release workflow publishes exactly one direct APK: JEXFYZ-release.apk, overwrite=true, retention-days=7.
+- Current workflow requests contents: write so it can publish a GitHub Release asset.
+- The workflow no longer calls actions/upload-artifact and no longer relies on Actions-artifact storage.
+- Release workflow publishes exactly one direct APK as GitHub Release asset jexfyz-latest/JEXFYZ-release.apk; existing asset is replaced with --clobber.
 - Dart symbols are generated for the obfuscated build but are not uploaded.
 - Push/PR release triggers remain excluded.
-- Cleanup step is [VERIFIED] successful on workflow run #1; artifact publication remains [BLOCKED] by GitHub storage quota.
+- The release publication path is [IMPLEMENTED][NOT YET VERIFIED] until the next explicit Build App run.
 
 ## VALIDATION BOUNDARY
 - App source CI gates: PASS through production signing verification in Build #53.
-- Downloadable release artifact: BLOCKED by Actions artifact quota at Build #53 and new workflow run #1.
+- Downloadable release artifact: Build #50 remains the latest verified APK; the new Release-asset delivery path is implemented but awaits a real build.
+- Actions-artifact quota is no longer a required delivery dependency for future builds.
 - Firmware V4.5 physical compile/BIN/flash/OTA validation: UNVERIFIED.
 - No Build #53 APK is available for delivery.
 
 ## EXACT NEXT ACTION
 - Keep the transfer docs synchronized.
-- On the next explicit Build App command, execute `.github/workflows/jexfyz-build.yml` and verify artifact cleanup + one APK publication.
+- On the next explicit Build App command, execute `.github/workflows/jexfyz-build.yml` and verify CI gates, signing, GitHub Release creation/update, and exactly one JEXFYZ-release.apk asset.
 - Separately compile/flash V4.5 and perform physical Online OTA BLE disconnect/reconnect plus Local OTA validation.

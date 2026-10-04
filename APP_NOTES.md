@@ -35,6 +35,7 @@
 - Build #53: [VERIFIED] audit/analysis/tests/compile/signing passed; [BLOCKED] artifact creation due Actions quota.
 - Latest verified downloadable APK remains Build #50.
 - Current release workflow: .github/workflows/jexfyz-build.yml
-- Current release workflow blob: 33ae11a17ec9353e4693bed723018e6d8ea20b8e.
+- Current release workflow blob: eee1c73e0692a327546852d962e0186f4aff98fd.
 - Legacy app-build.yml and app-build-trigger.yml are deleted.
-- New workflow run #1 passed audit, analysis, tests, release compilation, and signing; artifact creation remains blocked by Actions quota.
+- APK delivery now uses GitHub Release tag jexfyz-latest; the workflow does not use Actions-artifact upload.
+- New workflow run #1 remains a historical artifact-quota failure; the new Release-asset path is not yet validated by a fresh build.

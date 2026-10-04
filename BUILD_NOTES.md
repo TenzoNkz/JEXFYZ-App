@@ -13,11 +13,11 @@
 ## CURRENT DELIVERY WORKFLOW
 - [COMMITTED] Legacy `.github/workflows/app-build.yml` and `.github/workflows/app-build-trigger.yml` were deleted.
 - [COMMITTED] New single workflow: `.github/workflows/jexfyz-build.yml`.
-- [VERIFIED] Current workflow blob: 33ae11a17ec9353e4693bed723018e6d8ea20b8e.
-- [COMMITTED] Release workflow has permissions contents: read / actions: write.
-- [COMMITTED] Every explicit build first deletes repository Actions artifacts, repeats page 1 until the list is empty, and asserts zero remain.
-- [COMMITTED] Release publication is exactly one direct APK artifact named JEXFYZ-release.apk, overwrite=true, retention-days=7.
-- [COMMITTED] Dart symbols are still generated for obfuscation diagnostics but are not uploaded as a second artifact.
+- [VERIFIED] Current workflow blob: eee1c73e0692a327546852d962e0186f4aff98fd.
+- [COMMITTED] Release workflow now uses permissions contents: write.
+- [COMMITTED] Actions-artifact upload/cleanup is no longer part of the APK delivery path.
+- [COMMITTED] Release publication is exactly one direct GitHub Release asset at jexfyz-latest, named JEXFYZ-release.apk; existing asset is replaced with --clobber.
+- [COMMITTED] Dart symbols are still generated for obfuscation diagnostics but are not uploaded.
 - [VERIFIED] Trigger workflow remains issue-based, owner/title/token gated, and reusable.
 - [VERIFIED] New workflow run #1 cleanup step completed and all build/signing gates passed.
 - [BLOCKED] New workflow run #1 artifact upload failed because Actions artifact storage quota remains exhausted.
@@ -64,6 +64,12 @@
 - [BLOCKED] Artifact upload failed: Actions artifact storage quota has been hit; no artifact was created.
 - [VERIFIED] Run artifact list is empty after failure.
 
+## CI DELIVERY FIX — 2026-10-04
+- [COMMITTED] Removed Actions-artifact publication from `.github/workflows/jexfyz-build.yml`.
+- [COMMITTED] Added direct GitHub Release publication using tag `jexfyz-latest`.
+- [COMMITTED] Exactly one APK is delivered as `JEXFYZ-release.apk`; an existing release asset is replaced with `gh release upload --clobber`.
+- [UNVERIFIED] A fresh Build App run is still required to prove GitHub Release creation/update and asset verification.
+
 ## LATEST VERIFIED APK
 - Build #50 is the latest verified downloadable APK.
 - Artifact ID: 11222007634
@@ -73,3 +79,4 @@
 - Build #50 validates only its exact source commit.
 - Build #53 proves the current App source passed CI through signing, but not artifact delivery.
 - No future App Build may be inferred from Build #53.
+- The next explicit Build App must validate the new GitHub Release delivery path.

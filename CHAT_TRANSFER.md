@@ -3,17 +3,16 @@
 ## 1. TRANSFER METADATA
 - [VERIFIED] Repository: TenzoNkz/JEXFYZ-App
 - [VERIFIED] Branch: main
-- [VERIFIED] Current HEAD: 8c77dc4c409c5e5ca2740ed36cf087d5a22e9510
+- [VERIFIED] Last functional workflow fix commit: dd4320cbc21311777ec62803187b1ff0955e4e03
 - [VERIFIED] Transfer file: CHAT_TRANSFER.md
 - [VERIFIED] Transfer purpose: preserve the current JE X FYZ / JE Cooler project state and Build App result.
 - [CONFIRMED] This transfer does not authorize a functional App/Firmware change, release, or App Build by itself.
 - [COMMITTED] This snapshot must be the current transfer evidence; source/workflow files remain authoritative.
 
 ## 2. CURRENT TASK
-- [CONFIRMED] Current task was explicit Build App execution using a new single workflow.
-- [CHAT-ONLY] Earlier in this chat the user requested deletion/recreation of the two App Build workflows and artifact cleanup, then explicitly switched to the chat-limit recap procedure.
-- [IMPLEMENTED][COMMITTED] The repository already contains the recreated workflows and the artifact-cleanup logic before this snapshot.
-- [OPEN QUESTION] Whether GitHub Actions storage usage has fully recalculated after the cleanup-capable workflow reset cannot be established from source alone.
+- [CONFIRMED] Current task was full execution to fix the Actions-artifact quota failure.
+- [IMPLEMENTED][COMMITTED] The single workflow now publishes the APK as a GitHub Release asset instead of an Actions artifact.
+- [OPEN QUESTION] A fresh Build App run is still required to prove the Release-asset delivery path end-to-end.
 
 ## 3. CURRENT WORKFLOW
 - [USER REQUIREMENT] @Thinking Diskusi! = discussion/review only; no functional source, release, or build.
@@ -70,8 +69,8 @@
 - [CONFIRMED] Equal firmware version is Up to date; any other valid firmware version is eligible.
 - [CONFIRMED] Current firmware OTA result event includes one-shot OTA_UP_TO_DATE.
 - [CONFIRMED] Battery thresholds: 5V = 20–30°C; 12V = 30–40°C.
-- [CONFIRMED] App Build publishes one direct APK artifact named JEXFYZ-release.apk, overwrite enabled, 7-day retention; symbols are generated for obfuscation diagnostics but are not uploaded as a second artifact.
-- [CONFIRMED] Workflow cleanup is performed by the reusable build with actions: write permission before artifact publication.
+- [CONFIRMED] App Build publishes one direct APK as GitHub Release asset jexfyz-latest/JEXFYZ-release.apk; existing asset is replaced with --clobber.
+- [CONFIRMED] Actions-artifact upload is not part of the release delivery path; the workflow uses contents: write.
 
 ## 6. REJECTED / OBSOLETE DECISIONS
 - [OBSOLETE] V3.3 yellow Online OTA progress layer.
@@ -140,11 +139,11 @@
 - [VERIFIED] App architecture/security audit rejects legacy FirebaseDatabase references and retains Firebase App Check.
 
 ### CI
-- [VERIFIED] Current release workflow blob: 33ae11a17ec9353e4693bed723018e6d8ea20b8e.
-- [IMPLEMENTED][COMMITTED] Both App Build workflows were deleted and recreated on 2026-10-04.
-- [IMPLEMENTED][COMMITTED] Release workflow clears the repository Actions artifact list before build, repeating page 1 until empty, then requires remaining count = 0.
-- [IMPLEMENTED][COMMITTED] Release workflow publishes one direct APK artifact: JEXFYZ-release.apk, overwrite=true, retention-days=7.
-- [IMPLEMENTED][COMMITTED] No separate Dart-symbol artifact is uploaded.
+- [VERIFIED] Current release workflow blob: eee1c73e0692a327546852d962e0186f4aff98fd.
+- [IMPLEMENTED][COMMITTED] Both legacy App Build workflows were deleted; one current workflow remains.
+- [IMPLEMENTED][COMMITTED] Release workflow no longer calls Actions-artifact upload/cleanup.
+- [IMPLEMENTED][COMMITTED] Release workflow publishes one direct APK asset at jexfyz-latest, named JEXFYZ-release.apk, with clobber replacement.
+- [IMPLEMENTED][COMMITTED] No separate Dart-symbol asset is uploaded.
 - [VERIFIED] Trigger workflow is issue-based and owner/title/token gated.
 - [UNVERIFIED] The cleanup-enabled workflow has not yet been proven by a subsequent successful artifact-producing build.
 
@@ -245,8 +244,8 @@
 
 ## 15. HYPOTHESES / LIKELY CAUSES
 - [HYPOTHESIS] Initial Build #51 parser-error line numbers were slightly shifted from the current source because the failing run used the source tree at a different commit than later doc-only commits; the known brace defect is the verified cause.
-- [HYPOTHESIS] GitHub Actions storage may need time to recalculate after artifact deletion; source changes alone cannot guarantee immediate quota availability.
-- [HYPOTHESIS] The stable one-artifact strategy will reduce future artifact accumulation, but it still depends on GitHub allowing the first new artifact after cleanup/recalculation.
+- [RESOLVED] APK publication no longer depends on Actions-artifact quota; GitHub Release assets are now the delivery mechanism.
+- [HYPOTHESIS] Existing historical Actions artifacts, if any, can still affect Actions storage accounting until GitHub recalculates or they are removed; this does not block the new Release-asset path.
 
 ## 16. GEMINI RESULTS
 - [VERIFIED] No Gemini question/result was used as evidence in the accessible context of this chat.
@@ -261,14 +260,14 @@
 - [OBSOLETE] V4.3/V4.4 Online OTA approaches that only stopped advertising without correct active-GATT closure were superseded by V4.5.
 
 ## 18. KNOWN RISKS
-- [BLOCKED] GitHub Actions artifact capacity remains the active CI delivery risk until a new build proves artifact creation works.
-- [UNVERIFIED] Workflow cleanup currently relies on repository-level actions:write and GitHub API artifact deletion; runtime success has not yet been demonstrated.
+- [RESOLVED] GitHub Actions artifact quota is no longer an active CI delivery dependency for APK publication.
+- [UNVERIFIED] GitHub Release creation/update and asset verification require the next real Build App run.
 - [UNVERIFIED] Firmware V4.5 physical validation has not been completed.
 - [UNVERIFIED] End-to-end App + V4.5 Online OTA physical behavior after the final workflow/source state remains untested.
 - [KNOWN RISK] Current CHAT_RULES/notes previously contained stale V4.4 status text; this transfer updates the persistent state to V4.5/workflow-reset truth.
 
 ## 19. UNRESOLVED QUESTIONS
-- [OPEN QUESTION] Will the next explicit Build App successfully publish JEXFYZ-release.apk after artifact cleanup/quota recalculation?
+- [OPEN QUESTION] Will the next explicit Build App successfully create/update jexfyz-latest and publish JEXFYZ-release.apk?
 - [OPEN QUESTION] What is the final artifact ID/SHA256 of the next successful release?
 - [OPEN QUESTION] Has Firmware V4.5 been compiled, flashed, and physically validated on ESP32-C3?
 - [OPEN QUESTION] Has the V4.5 Online OTA GATT disconnect/reconnect sequence been physically verified with the synchronized App?
@@ -280,7 +279,7 @@
 - [CHAT-ONLY] This transfer prompt itself is not permission to build or release.
 
 ## 21. EXACT NEXT ACTION
-- [NEXT ACTION] After GitHub Actions storage quota recalculates, on the next explicit @Thinking Build App! use `.github/workflows/jexfyz-build.yml` and verify artifact cleanup plus one APK publication.
+- [NEXT ACTION] On the next explicit @Thinking Build App! use `.github/workflows/jexfyz-build.yml` and verify CI gates, signing, GitHub Release publication, and exactly one JEXFYZ-release.apk asset.
 - [NEXT ACTION] Separately compile/flash Firmware V4.5 and perform physical Online OTA BLE disconnect/reconnect plus Local OTA Golden Path validation.
 
 ## 22. REQUIRED FIRST ACTION IN NEW CHAT
@@ -299,6 +298,7 @@
 - [RECONCILIATION] The new workflow reset is committed CI configuration, but actual storage reclamation and a post-reset successful artifact upload remain unverified.
 
 ## 24. TRANSFER COMPLETION
+- [IMPLEMENTED] CI quota delivery fix is synchronized in the persistent transfer state.
 - [IMPLEMENTED] Complete snapshot reconstructed from accessible chat context and repository evidence.
 - [IMPLEMENTED] Functional App/Firmware source intentionally not changed by this transfer procedure.
 - [IMPLEMENTED] Persistent docs are being replaced/synchronized for the new state.

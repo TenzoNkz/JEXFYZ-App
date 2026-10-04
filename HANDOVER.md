@@ -9,11 +9,11 @@
 - App settings blob: f11235bab559b291928550e06984532581ddad6a
 - App test blob: aa86778beb8fcc3ce6a12454f6354f96ec99a160
 - Current App workflow: .github/workflows/jexfyz-build.yml
-- Current App workflow: .github/workflows/jexfyz-build.yml
-- Current App workflow blob: 33ae11a17ec9353e4693bed723018e6d8ea20b8e
+- Current App workflow blob: eee1c73e0692a327546852d962e0186f4aff98fd
 - Legacy app-build.yml and app-build-trigger.yml are deleted.
 - Latest verified downloadable App Build: #50
-- Build #53: App validation passed through signing; artifact creation blocked by Actions quota.
+- Build #53: App validation passed through signing; legacy artifact creation blocked by Actions quota.
+- CI delivery fix committed: APK publication moved to GitHub Release tag jexfyz-latest.
 
 ## CURRENT OBJECTIVE
 Preserve this state across chat transfer, then on a future explicit Build App request publish the current App as one APK after workflow artifact cleanup succeeds.
@@ -38,9 +38,10 @@ Update Firmware → active GATT disconnect → live App telemetry stops → Onli
 
 ## CI DELIVERY STATE
 - Legacy App Build workflows were deleted; a single new `.github/workflows/jexfyz-build.yml` is current.
-- Current workflow clears all existing Actions artifacts using actions: write, then attempts exactly one JEXFYZ-release.apk upload.
+- Current workflow no longer uses Actions-artifact cleanup/upload; it publishes exactly one JEXFYZ-release.apk GitHub Release asset.
 - Current workflow is owner/title/token-gated issue-based with no push/PR trigger.
-- New workflow run #1 verified cleanup + all build/signing gates; artifact upload remains blocked by Actions quota (GitHub reports 6–12 hour recalculation).
+- New workflow run #1 verified all build/signing gates but failed its legacy Actions-artifact publication step due quota; this is historical.
+- The replacement GitHub Release delivery path is implemented and awaits the next explicit Build App verification.
 
 ## NEXT
-On the next explicit App Build request, run the current single workflow trigger after quota recalculation and verify cleanup, CI gates, signing, and single APK artifact publication. Separately compile/flash Firmware V4.5 and perform physical OTA/BLE validation.
+On the next explicit App Build request, run the current single workflow and verify CI gates, signing, GitHub Release publication, and exactly one JEXFYZ-release.apk asset. Separately compile/flash Firmware V4.5 and perform physical OTA/BLE validation.

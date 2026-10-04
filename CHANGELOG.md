@@ -1,5 +1,14 @@
 # JE X FYZ — CHANGELOG
 
+## CI ARTIFACT QUOTA FIX — 2026-10-04
+- Replaced Actions-artifact APK delivery in `.github/workflows/jexfyz-build.yml` with direct GitHub Release asset publication.
+- Workflow permission changed from `contents: read / actions: write` to `contents: write`.
+- Exactly one delivery asset is maintained as `jexfyz-latest / JEXFYZ-release.apk`; existing assets are replaced with `--clobber`.
+- This removes Actions-artifact storage quota from the APK delivery path.
+- App/Firmware runtime source was not changed.
+- A fresh Build App run is still required to verify the new Release asset path end-to-end.
+
+
 ## SINGLE WORKFLOW / BUILD RUN #1 — 2026-10-04
 - Deleted the legacy `.github/workflows/app-build.yml` and `.github/workflows/app-build-trigger.yml`.
 - Created the new single `.github/workflows/jexfyz-build.yml`, based directly on the former App Build engine and gated by the dedicated owner/title/token issue trigger.

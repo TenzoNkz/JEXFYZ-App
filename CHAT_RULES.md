@@ -44,7 +44,8 @@
 - Normal push/PR must not generate a release APK.
 - Firmware-only changes do not require App Build.
 - Never claim build/compile/flash/runtime validation that did not occur.
-- Release workflow may require actions: write solely for artifact cleanup; this does not enable push/PR builds.
+- Release workflow uses contents: write solely to publish the APK as a GitHub Release asset; this does not enable push/PR builds.
+- Actions-artifact upload is not part of the App release delivery path.
 
 ## MEMORY RULES
 - Persist meaningful project state in repository documentation.
@@ -61,6 +62,7 @@
 - Build #53: [VERIFIED] CI gates through production signing; [BLOCKED] artifact creation by Actions quota.
 - Local OTA: [CONFIRMED] user-confirmed working on V4.4 before V4.5 promotion; Local OTA remains protected.
 - Online OTA: [CONFIRMED] V3.2-style path retained; V4.5 physical validation still pending.
-- Current App Build workflow: [COMMITTED] .github/workflows/jexfyz-build.yml (blob 33ae11a17ec9353e4693bed723018e6d8ea20b8e).
+- Current App Build workflow: [COMMITTED] .github/workflows/jexfyz-build.yml (blob eee1c73e0692a327546852d962e0186f4aff98fd).
 - Legacy app-build.yml and app-build-trigger.yml are deleted.
-- New workflow run #1: [VERIFIED] all build gates through signing; [BLOCKED] artifact creation by Actions quota.
+- New workflow run #1: [VERIFIED] all build gates through signing; [BLOCKED] only at the legacy Actions-artifact publication step.
+- Current workflow fix: [COMMITTED] APK delivery moved to GitHub Release asset jexfyz-latest.
