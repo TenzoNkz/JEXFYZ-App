@@ -1,3 +1,12 @@
+## 2026-10-04 — CHAT-LIMIT HANDOVER REFRESH
+
+- Prepared for immediate transfer to a new chat because the current conversation is near its context limit.
+- The detailed copy-ready continuation prompt remains stored below and in README.md.
+- New chat must start with README.md and perform the complete memory preflight before any analysis or action.
+- Current firmware: V3.7; current source: `firmware/JEXFYZ-V3.7.ino`.
+- Latest verified App Build: #50.
+- No new App Build or firmware compile was performed for this handover.
+
 # JE X FYZ — HANDOVER
 
 > Portable continuation prompt. Copy the prompt below into a new JE X FYZ chat, especially when the previous chat is near its context limit or when starting a separate Build App subchat.
