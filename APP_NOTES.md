@@ -1,3 +1,35 @@
+# JE X FYZ — APP NOTES
+
+## AUTHORITATIVE MEMORY CORE — CROSS-LAYER CONTRACT — 2026-10-04
+
+### Current App/Firmware boundary
+- App repository: `TenzoNkz/JEXFYZ-App`.
+- Active firmware source referenced by the App project: `firmware/JEXFYZ-V3.7.ino`.
+- Firmware version remains `V3.7`; this documentation pass did not change the functional firmware version.
+- BLE/P1 UUIDs, logical `FAN:*` / `PELTIER:*` command semantics, telemetry keys, GPIO mapping, and App UI contract were not intentionally changed.
+- The firmware now documents a 20 kHz / 8-bit Peltier PWM with 5 s soft-start; OFF → ON and every upward voltage transition while ON restart that ramp, while downward voltage transitions do not.
+- No Flutter/App source was changed by this firmware documentation execution.
+
+### App release contract
+- Production package/signing identity remains unchanged.
+- The last verified App build remains Build #50; this firmware documentation commit is newer and has not been included in a new App build.
+- App Build remains a separate explicit workflow and is not implied by repository health or firmware source validation.
+
+### Runtime UX/data contract
+- Hotside telemetry remains the primary one-second thermal stream.
+- Other changed states/settings remain delta-driven rather than continuously spammed.
+- OTA result remains one-shot in the synchronized App state path.
+- Adaptive controls remain locked at runtime while firmware Adaptive is active; the App should not assume a newly exposed manual control path.
+- Battery temperature remains a phone-provided runtime input for HOTSIDE_BATTERY and is not a firmware-local sensor.
+
+### Validation boundary
+- Current firmware source is documented and statically audited.
+- No App Build was triggered.
+- No device-side firmware compile/flash evidence exists yet for V3.7.
+- Any App release built before a future V3.7 firmware compile/physical validation must be understood as an App artifact, not proof of firmware runtime compatibility.
+
+---
+
 ## 2026-10-04 — FIRMWARE V3.7 / PELTIER PWM CONTRACT IMPACT
 
 - Firmware continuity source advanced **V3.6 → V3.7** in the App repository.
