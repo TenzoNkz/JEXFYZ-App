@@ -5,13 +5,14 @@
 - Active source: firmware/JEXFYZ-V4.5.ino
 - Firmware blob: daef871d910f3f1bc4f2d1bdc44e0d19f6e292dc
 - App: 1.0.0+3
-- App main blob: 8ebd878b116d7ef093b6df54894a7db876eb0f02
-- Latest verified App Build: #50 (older App source)
-- V4.4 OTA: user-confirmed PASS.
-- V4.5 source/static audit: PASS.
+- App main blob: f762f6d1cdd1351e57e7d93665ff2f5898769b42
+- App settings blob: f11235bab559b291928550e06984532581ddad6a
+- Current App workflow blob: 9cbb39a3bec997072b1866b01caeed756e6228eb
+- Latest verified downloadable App Build: #50
+- Build #53: App validation passed; artifact upload blocked by Actions storage quota.
 
 ## CURRENT OBJECTIVE
-Physically validate the V4.5 firmware and the synchronized App OTA recovery contract.
+Deliver the current V4.5 App APK after artifact storage is cleared, then validate it together with Firmware V4.5.
 
 Expected Online OTA:
 Update Firmware → active GATT disconnect → live App telemetry stops → Online OTA continues → restart → BLE reconnect → P1 sync → OTA result is shown.
@@ -26,10 +27,17 @@ Update Firmware → active GATT disconnect → live App telemetry stops → Onli
 - Firmware version/file alignment
 
 ## VALIDATION
-- V4.4 physical OTA was confirmed successful before V4.5 promotion.
-- V4.5 compile/BIN/flash/physical OTA remains pending.
-- Current App source is not validated by Build #50.
+- Build #53 passed security/architecture audit, dependency resolution, Dart analysis, Flutter tests, release APK compilation, and production signing verification.
+- Build #53 failed only during artifact creation because GitHub Actions artifact storage quota was exhausted.
+- Firmware V4.5 compile/BIN/flash/physical OTA validation remains pending.
 
-## BUILD
-- App Build remains explicit and manual.
-- No App Build was triggered by this execution.
+## CI DELIVERY FIX
+- One direct APK artifact only.
+- Stable artifact filename: JEXFYZ-release.apk.
+- Artifact overwrite enabled.
+- Retention: 7 days.
+- No separate Dart-symbol artifact.
+- Normal push/PR does not trigger release builds.
+
+## NEXT
+Clear obsolete Actions artifacts or allow quota to recalculate, then trigger the manual Build App workflow again. Do not change Firmware/App source unless validation exposes a new issue.
