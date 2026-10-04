@@ -3,7 +3,7 @@
 - This repository is the persistent continuity boundary for JE X FYZ while the current chat approaches its context limit.
 - The detailed copy-ready continuation prompt is available in both `README.md` and `HANDOVER.md`.
 - A new chat must re-read the complete memory stack before any action, including Build App subchats.
-- Current functional firmware remains V3.7; this checkpoint does not change runtime behavior.
+- Current functional firmware is now V3.8; this checkpoint records the functional soft-start scope change.
 - Latest verified App Build remains #50; no Build App was run during the handover.
 
 # JE X FYZ — Project Operating Manual
