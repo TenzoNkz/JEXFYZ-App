@@ -77,7 +77,7 @@ enum class AdaptiveProfile : uint8_t;
  * ---------------------------------------------------------------------------
  */
 
-static constexpr char FW_VERSION[] = "V4.1";
+static constexpr char FW_VERSION[] = "V4.2";
 
 // ============================================================================
 // ========================== HEAP DIAGNOSTIC BUILD ===========================
@@ -3687,18 +3687,19 @@ static void processOnlineOta() {
         return;
       }
 
-      if (otaActive && (millis() - cloudPhaseStartedAt >= WIFI_CONNECT_TIMEOUT_MS)) {
-                        
-        if (onlineWifiConnectAttempt < WIFI_CONNECT_MAX_ATTEMPTS) {
-          ++onlineWifiConnectAttempt;
-          setOtaDiagnosticStage("ONLINE_WIFI_RETRY_" + String(onlineWifiConnectAttempt));
-          setOtaDiagnosticProgress(0);
-          
-          WiFi.disconnect();
-          WiFi.begin(cloudSsid.c_str(), cloudPassword.c_str());
-          cloudPhaseStartedAt = millis();
-        } else {
-          failOnlineOta("ONLINE_WIFI_FAILED", -1, "WIFI_FAILED_AFTER_RETRIES");
+      // Allow a longer cumulative connection window without repeatedly restarting the Wi-Fi driver.
+      if (otaActive &&
+          (millis() - cloudPhaseStartedAt >=
+           (WIFI_CONNECT_TIMEOUT_MS * WIFI_CONNECT_MAX_ATTEMPTS))) {
+        failOnlineOta("ONLINE_WIFI_FAILED", -1, "WIFI_FAILED_AFTER_RETRIES");
+      } else {
+        // Report connection-attempt progress without resetting Wi-Fi.
+        const uint8_t currentAttempt =
+            1 + ((millis() - cloudPhaseStartedAt) / WIFI_CONNECT_TIMEOUT_MS);
+        if (currentAttempt != onlineWifiConnectAttempt) {
+          onlineWifiConnectAttempt = currentAttempt;
+          setOtaDiagnosticStage(
+              "ONLINE_WIFI_RETRY_" + String(onlineWifiConnectAttempt));
         }
       }
       return;
