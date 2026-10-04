@@ -1,4 +1,4 @@
-## WORKFLOW RESTORE — 2026-10-05
+## WORKFLOW RESTORE — 2026-10-05 (HISTORICAL)
 - Restored the Build #50-era two-workflow architecture under new filenames.
 - Trigger workflow: `.github/workflows/jexfyz-app-build-trigger.yml`.
 - Reusable engine: `.github/workflows/jexfyz-app-build-engine.yml`.
@@ -21,11 +21,11 @@
 - [REPLACED] Previous single workflow `.github/workflows/jexfyz-build.yml` was removed.
 - [COMMITTED] Restored manual trigger: `.github/workflows/jexfyz-app-build-trigger.yml`.
 - [COMMITTED] Restored reusable engine: `.github/workflows/jexfyz-app-build-engine.yml`.
-- [COMMITTED] Restored engine is based on the proven Build #50-era App Build engine and uses Actions artifacts for the APK and Dart symbols.
+- [COMMITTED] Restored engine now uses GitHub Release delivery for exactly one APK; it no longer uploads Actions artifacts.
 - [VERIFIED] No normal push/PR trigger is present in the restored pair.
 - [HISTORICAL] New workflow run #1 cleanup step completed and all build/signing gates passed before the quota fix.
 - [HISTORICAL] New workflow run #1 artifact upload failed because Actions artifact storage quota was exhausted.
-- [IMPLEMENTED][VERIFIED] Current workflow has removed that Actions-artifact delivery dependency and successfully published the replacement Release asset in workflow run #2.
+- [IMPLEMENTED] Current engine publishes `JEXFYZ-release.apk` to `jexfyz-latest` with `--clobber`; verification is pending the new build.
 
 ## BUILD HISTORY
 ### #50 — historical verified downloadable APK
@@ -69,14 +69,14 @@
 - [BLOCKED] Artifact upload failed: Actions artifact storage quota has been hit; no artifact was created.
 - [VERIFIED] Run artifact list is empty after failure.
 
-## CI DELIVERY FIX — 2026-10-04
+## CI DELIVERY FIX — 2026-10-05
 - [COMMITTED] Removed Actions-artifact publication from `.github/workflows/jexfyz-build.yml`.
 - [COMMITTED] Added direct GitHub Release publication using tag `jexfyz-latest`.
 - [COMMITTED] Existing release is kept synchronized to the latest build commit with `gh release edit --target` and marked Latest.
 - [COMMITTED] Exactly one APK is delivered as `JEXFYZ-release.apk`; an existing release asset is replaced with `gh release upload --clobber`.
-- [VERIFIED] Workflow run #2 proved GitHub Release creation/update and asset verification end-to-end.
+- [HISTORICAL] Workflow run #2 proved GitHub Release creation/update and asset verification end-to-end; this is the reference implementation.
 
-## WORKFLOW RUN #2 — VERIFIED RELEASE DELIVERY — 2026-10-04
+## WORKFLOW RUN #2 — VERIFIED RELEASE DELIVERY — 2026-10-04 (HISTORICAL)
 - [BUILT][VERIFIED] Run: 37201925842 (workflow run #2)
 - [VERIFIED] Source commit: 9136f11799143d91eb58e947ea10e9e576bb579f
 - [VERIFIED] Result: SUCCESS
@@ -101,4 +101,4 @@
 - Build #53 proves the current App source passed CI through signing, but not artifact delivery.
 - No future App Build may be inferred from Build #53.
 - Workflow run #2 is valid evidence for the current source commit 9136f11799143d91eb58e947ea10e9e576bb579f.
-- The next explicit Build App must validate any future source commit through the same GitHub Release delivery path.
+- The current explicit Build App run must validate the new Release delivery path on the restored two-workflow architecture.
