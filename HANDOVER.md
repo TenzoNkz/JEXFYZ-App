@@ -179,9 +179,9 @@ MANDATORY PREFLIGHT — WAJIB sebelum action apa pun:
 5. FIRMWARE_NOTES.md
 6. BUILD_NOTES.md
 7. CHANGELOG.md
-8. HANDOVER.md
-9. CHAT_TRANSFER.md
-10. firmware/FIRMWARE_ANALYSIS.md bila firmware relevan
+8. firmware/FIRMWARE_ANALYSIS.md bila firmware relevan
+9. HANDOVER.md
+10. CHAT_TRANSFER.md
 11. inspect exact current source/workflow yang mengendalikan task.
 
 Untuk Build App, semua langkah di atas tetap wajib.
