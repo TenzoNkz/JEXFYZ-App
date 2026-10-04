@@ -96,6 +96,17 @@ For every future JE X FYZ action, the assistant must first read the complete cur
 - The future Prompt 2 should read the complete repository memory stack plus the persisted recap/state file before continuing.
 - This is a process/documentation decision only; no functional App/Firmware behavior changes are authorized by this discussion.
 
+## 2026-10-04 — EXECUTION FULL / REPOSITORY-FIRST TRANSFER FINALIZATION
+
+- Final two-prompt design is now operational: Prompt 1 runs in the old chat and saves the complete chat snapshot to CHAT_TRANSFER.md; Prompt 2 runs in the new chat and reads the repository to rebuild and verify context.
+- CHAT_TRANSFER.md is the rolling repository transfer boundary. Older snapshots remain recoverable through Git history.
+- README.md and HANDOVER.md contain the full official Prompt 1 and Prompt 2 text.
+- CHAT_RULES.md defines repository-first transfer semantics and includes CHAT_TRANSFER.md in the continuity model.
+- APP_NOTES.md and BUILD_NOTES.md record the cross-layer/Build App continuity impact.
+- CHANGELOG.md records the implementation milestone.
+- Functional App source, Firmware source, BLE/OTA behavior, Android runtime behavior, dependency configuration, signing configuration, and CI build execution behavior were not intentionally changed by this process implementation.
+- No App Build, firmware compile/BIN generation, Firebase promotion, or physical hardware test was performed.
+- Exact documentation commits for this implementation are recorded in each file's Git history; current repository HEAD must be used as final source authority.
 # JE X FYZ — PROJECT STATE
 
 > **Authoritative current-state snapshot.**
