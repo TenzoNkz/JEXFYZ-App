@@ -1,3 +1,33 @@
+## 2026-10-04 — FINAL MEMORY FOUNDATION SYNCHRONIZATION
+
+- This `@Thinking Eksekusi Full!` completes the permanent memory architecture.
+- All continuity artifacts are present and were re-read during the final synchronization pass.
+- README.md is the mandatory first-read operating manual and contains the detailed copy-ready new-chat/Build-App prompt.
+- PROJECT_STATE.md is the current snapshot and must be refreshed after every meaningful event.
+- CHAT_RULES.md defines mandatory preflight and all-memory synchronization.
+- APP_NOTES.md and FIRMWARE_NOTES.md preserve cross-layer engineering truth/history.
+- BUILD_NOTES.md preserves exact App Build checkpoints.
+- CHANGELOG.md preserves milestone history.
+- HANDOVER.md preserves a portable continuation prompt.
+- firmware/FIRMWARE_ANALYSIS.md preserves the V3.7 architecture/safety map.
+- Current active firmware source remains V3.7 with no functional source change from this memory execution.
+- Latest verified App Build remains #50; no Build App was run in this execution.
+- Firmware V3.7 compile/BIN/Firebase/device validation remains unperformed.
+
+### Final memory-file verification references
+- README.md blob: `7933fb484ab149e0d7b181f3eb166260eb4efaf4`
+- CHAT_RULES.md blob at pre-state refresh: `cc97b6235c0c85953979fc84b123d4d9e13f0c30`
+- APP_NOTES.md blob at pre-state refresh: `0230f84c92b8492b257879b4fa1440499913b876`
+- FIRMWARE_NOTES.md blob at pre-state refresh: `15b9973a1fedd865947859453fd3ceefdf4eaecc`
+- BUILD_NOTES.md blob at pre-state refresh: `68d34c28ffe2feb0f21c0ad3f3354821e4dc96a0`
+- CHANGELOG.md blob at pre-state refresh: `2ea2bf6cb4c91d9a51738f56a76e4c2347a5e1e2`
+- HANDOVER.md blob: `ffa0b1c917d7b6f061b738a98a3a0e1af85ec7a5`
+- firmware/FIRMWARE_ANALYSIS.md blob: `8e904b0800332ee59410b5443a41c8a443654f99`
+- firmware/JEXFYZ-V3.7.ino blob: `4a7e08a6ea0de57f4e3d3a742ad88cbd25a05e01`
+
+### Final continuity rule
+For every future JE X FYZ action, the assistant must first read the complete current memory stack and then inspect the source/workflow. After the action, memory must be synchronized automatically. No user reminder is required.
+
 # JE X FYZ — PROJECT STATE
 
 > **Authoritative current-state snapshot.**
