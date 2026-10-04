@@ -524,13 +524,16 @@ Important non-causality:
 ## 25. TRANSFER COMPLETION
 
 - Recap completed: YES.
-- Repository write: PENDING UNTIL COMMIT.
-- CHAT_TRANSFER current pre-save blob: 7c44aeec84d642623f6d3814fd3e03130eb4acd6.
-- PROJECT_STATE pre-save blob: 0cb951d3c58a92c35acd0cdbc262fcf835d2208a.
-- Current HEAD observed pre-save: 940f7e7952c49b31e88fb540e1bff3848e5e17e4.
-- Current source observed: V3.9 / bf85b50e0a8cab22e5d66ef09ee84d6692cee009.
-- Current workflows observed:
+- Repository write: SUCCESS.
+- CHAT_TRANSFER snapshot write commit: 756d9a63bab828e67cf95fd575853dd2255c112d.
+- CHAT_TRANSFER snapshot blob produced by that write: 1bc6a425b6af273fe0e9f4ae244e45763569c8b2.
+- PROJECT_STATE synchronization commit: d41fb74ed9816d46bc706f6b62a2e3ade68e5191.
+- CHAT_RULES synchronization commit: fe9e35b578bd7034899e629ca6d030854257ddf6.
+- Current HEAD observed at the completed documentation synchronization checkpoint: fe9e35b578bd7034899e629ca6d030854257ddf6.
+- Current source observed and preserved unchanged: V3.9 / bf85b50e0a8cab22e5d66ef09ee84d6692cee009.
+- Current workflows observed and preserved unchanged:
   - app-build.yml blob 731f4a7a43bf58d01a382053457d1f67a4742c8a.
   - app-build-trigger.yml blob 89598aff0b006bb3db6819080a13965fc5a6247d.
+- Functional source/workflow delta from this transfer: NONE.
 - Exact next action recorded: patch P0 + P1, then repeat two-party audit; no flash until both agree.
 
