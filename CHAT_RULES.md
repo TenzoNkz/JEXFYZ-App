@@ -1,3 +1,11 @@
+## 2026-10-04 — EXECUTION FULL REVALIDATION / V4.1 SIMPLE ONLINE OTA
+
+- [CURRENT] Repository main already contains the accepted V4.1 Online OTA execution; this revalidation is not a new functional firmware change and therefore does not advance the firmware version again.
+- [SOURCE] Active file: firmware/JEXFYZ-V4.1.ino; blob 352f7c408f2bc5a4a691af35cfb477338036a102.
+- [ONLINE OTA] WiFi.setAutoReconnect(true); no WL_CONNECT_FAILED/WL_NO_SSID_AVAIL fast-fail branch; retry uses WiFi.disconnect(); WiFi.begin(...) after the full 15 s window; no retry-side WiFi.mode(WIFI_OFF).
+- [PROTECTED] Local OTA region remains byte-for-byte identical to V4.0; no Local OTA functional change.
+- [STATIC REVALIDATION] Robust lexical audit: balanced braces 564/564, parentheses 2081/2081, timing while() 0, executable delay() 0, setAutoReconnect(false) 0.
+- [VALIDATION BOUNDARY] ArduinoDroid/Core 3.3.7 compile, BIN generation, physical Local OTA flash, and physical Online OTA success remain unverified; no App Build was triggered.
 ## 2026-10-04 — ONLINE OTA PATCH EXECUTED
 
 - The supplied Gemini patch was applied only to Online OTA in `firmware/JEXFYZ-V4.0.ino`.
