@@ -1,3 +1,11 @@
+## 2026-10-04 — CHAT-LIMIT CONTINUITY CHECKPOINT
+
+- This repository is the persistent continuity boundary for JE X FYZ while the current chat approaches its context limit.
+- The detailed copy-ready continuation prompt is available in both `README.md` and `HANDOVER.md`.
+- A new chat must re-read the complete memory stack before any action, including Build App subchats.
+- Current functional firmware remains V3.7; this checkpoint does not change runtime behavior.
+- Latest verified App Build remains #50; no Build App was run during the handover.
+
 # JE X FYZ — Project Operating Manual
 
 > **This repository is the primary continuity/source repository for JE X FYZ / JE Cooler.**
