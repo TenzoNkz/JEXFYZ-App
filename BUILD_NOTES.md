@@ -1,3 +1,10 @@
+## 2026-10-04 — FIRMWARE V4.2 EXECUTION / APP BUILD NOT TRIGGERED
+
+- [VERIFIED] Firmware-only V4.2 source change was committed without triggering the App Build workflow.
+- [CURRENT APP BASELINE] App version remains `1.0.0+3`; latest verified App Build is #50 from source SHA `bf01595253eb5a1912471c4aee57c4eed4421f0f`.
+- [VERIFIED] App build workflow remains reusable/manual-by-issue-trigger and unchanged.
+- [DECISION] No new App Build is justified solely by this Firmware change.
+
 ## 2026-10-04 — EXECUTION FULL / V4.1 SIMPLE ONLINE OTA
 
 - [IMPLEMENTED] Applied the accepted Gemini redesign to Online OTA in the exact V4.0 source.
