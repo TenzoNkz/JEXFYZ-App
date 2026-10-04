@@ -1,3 +1,12 @@
+## 2026-10-04 — PROCESS CONTINUITY / BUILD APP MEMORY CHECKPOINT
+
+- Build App is treated as a separate engineering subchat/workflow with its own continuity boundary.
+- Before any App Build analysis or execution, the assistant must re-read the complete current project memory and then inspect the exact App source/workflow revision being built.
+- A successful App Build automatically becomes a persistent memory checkpoint.
+- The App memory record must capture the exact source commit built, build/run identifier, artifact metadata/checksum when available, version/build-number state, all source/config/workflow/dependency changes included in that build, build validation gates, and remaining validation boundaries.
+- The user must not need to restate what changed between Build App chats; repository memory is responsible for preserving that continuity.
+- Build history is evidence of the exact revision built, not proof for newer source revisions or physical firmware behavior.
+
 ## 2026-10-04 — FIRMWARE V3.7 ANALYSIS DOCUMENT / APP IMPACT
 
 - Added the repository-level `firmware/FIRMWARE_ANALYSIS.md` map for V3.7 architecture and safety behavior.
