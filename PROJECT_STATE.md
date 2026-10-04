@@ -1,3 +1,15 @@
+## 2026-10-04 — V4.0 COMPILE ERROR FIX / FLASH GATE REOPENED
+
+- [USER] ArduinoDroid compile error reported at line ~1860: `no matching function for call to 'batteryZoneFor'`.
+- [ROOT CAUSE] Exact V4.0 source called `batteryZoneFor(batteryC)` with one argument, while the declared function is `batteryZoneFor(float temperature, Voltage referenceVoltage)`.
+- [FIXED] Call changed to `batteryZoneFor(batteryC, currentVoltage)`, consistent with the existing call in `evaluateAdaptiveBattery()` and preserving the intended hysteresis reference voltage.
+- [COMMIT] Functional fix commit: `428fd3d07ffd1eece35831077b011dd18479ca4a`.
+- [NEW SOURCE BLOB] `firmware/JEXFYZ-V4.0.ino` blob `415346ece09f4af33f907b2077140ccfc45c357b`.
+- [TARGETED AUDIT] `batteryZoneFor` now has no remaining one-argument call; braces 581/581; parentheses 2123/2123; `setInsecure()` 0.
+- [IMPORTANT] The exact source blob changed after the previous Assistant + Gemini SAFE TO FLASH decision. That prior agreement must NOT be assumed valid for the new blob.
+- [GATE CLOSED] V4.0 flash gate is temporarily CLOSED pending repeat Assistant + Gemini review of exact blob `415346ece09f4af33f907b2077140ccfc45c357b`.
+- [NEXT] Re-run full compile and exact-source two-party review after this fix. No flash yet.
+
 ## 2026-10-04 — OTA LOCAL vs ONLINE DISCUSSION / V4.0
 
 - [CLARIFICATION] User asked whether Local OTA and Online OTA were fixed by the V4.0 hardening execution.
