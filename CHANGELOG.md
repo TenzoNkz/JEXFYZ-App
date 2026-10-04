@@ -25,6 +25,14 @@
 - Defined the recap as transfer evidence rather than a source-of-truth replacement.
 - Applied the mechanism to separate Build App subchats as well.
 - Documentation/process change only; no functional App/Firmware source or build output changed.
+## 2026-10-04 — REPOSITORY-FIRST CHAT TRANSFER IMPLEMENTED
+
+- Added CHAT_TRANSFER.md as the canonical rolling transfer snapshot.
+- Prompt 1 is CHAT → REPOSITORY: read the entire old chat, reconcile it, save the complete snapshot, and verify persistence.
+- Prompt 2 is REPOSITORY → NEW CHAT: read all memory and CHAT_TRANSFER.md, verify current source/workflow, reconcile, and continue.
+- Manual copy-paste between chats is no longer the intended transfer mechanism.
+- Documentation/process only; functional App/Firmware behavior unchanged and no Build App triggered.
+
 # JE X FYZ — CHANGELOG
 
 ## 2026-10-04 — CONTINUITY SYSTEM
