@@ -1,3 +1,12 @@
+## 2026-10-04 — CURRENT V4.0 ONLINE OTA PATCH
+
+- Active source: `firmware/JEXFYZ-V4.0.ino`; blob `0566105383a889912e5e756b0b9f265e5fcf0264`.
+- Online OTA uses `WiFiClientSecure + setInsecure()` intentionally for GitHub raw-BIN compatibility; the URL allowlist remains restricted to the JE X FYZ firmware repository.
+- Indicator flow: OFF at OTA start → BLUE on Wi-Fi success → YELLOW at 20/40/60/80/100 → flash finalize → final GREEN → restart; failure remains RED → BLE recovery.
+- Intermediate GREEN-after-GitHub and BLUE-after-download transitions are removed.
+- Local OTA remains frozen/protected and unchanged.
+- New source is not yet compile/BIN/physically validated.
+
 ## 2026-10-04 — ONLINE OTA GEMINI PATCH-ONLY PROTOCOL
 
 - [CURRENT ISSUE] Online OTA indicator is not visibly blinking during hardware test.
