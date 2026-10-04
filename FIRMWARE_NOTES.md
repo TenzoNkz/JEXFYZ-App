@@ -1,3 +1,13 @@
+## 2026-10-04 — V4.0 ONLINE OTA GEMINI PATCH EXECUTED
+
+- Applied the supplied Gemini patch against source blob `415346ece09f4af33f907b2077140ccfc45c357b`.
+- Replaced the custom certificate-bundle client with plain `WiFiClientSecure cloudClient` + `setInsecure()`; this is an intentional compatibility trade-off, not authenticated server TLS.
+- Removed intermediate GREEN after GitHub/HTTP preparation and intermediate BLUE after download completion.
+- Preserved Wi-Fi-success BLUE, YELLOW 20/40/60/80/100 milestones, final GREEN, and RED failure/recovery.
+- Local OTA source is unchanged and remains protected.
+- Current V4.0 source blob: `0566105383a889912e5e756b0b9f265e5fcf0264`.
+- Compile/BIN/Firebase/physical validation remains pending; fresh Assistant + Gemini review is required before flashing.
+
 ## 2026-10-04 — GEMINI PATCH-ONLY HANDOFF PROTOCOL
 
 - [WORKFLOW] Gemini is to receive the current .ino file directly from the user and return only the minimal Online OTA patch as OLD → NEW blocks.
