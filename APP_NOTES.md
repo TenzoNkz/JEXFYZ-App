@@ -1,3 +1,9 @@
+## 2026-10-04 — GEMINI PATCH WORKFLOW / NO APP IMPACT
+
+- [NO APP CHANGE] The Gemini patch-only workflow concerns Firmware Online OTA only.
+- [NO APP BUILD] No App source/configuration/build change is implied by this workflow update.
+- [PRESERVE] App contracts remain unchanged while the Online OTA indicator issue is isolated to Firmware.
+
 ## 2026-10-04 — FIRMWARE V4.0 / APP IMPACT
 
 - [CURRENT] Firmware source advanced V3.9 → V4.0: `firmware/JEXFYZ-V4.0.ino` blob `b2a77fadeaa154412850d34c82b0bb78ef108bae`.
