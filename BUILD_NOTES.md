@@ -15,6 +15,13 @@
 - No App Build was executed in this memory-architecture task.
 - Latest verified build remains #50; newer repository commits are not covered by that build.
 
+## 2026-10-04 — DUAL CHAT-LIMIT BUILD CONTINUITY
+
+- Build App subchats now use the same two-stage continuity model.
+- Prompt A can capture build-related chat-only facts when a Build App chat nears its limit.
+- Prompt B must re-read all build memory, inspect current App source/workflow/trigger, reconcile the recap, and establish the exact intended source SHA before any build.
+- Chat recap never substitutes for exact build evidence or repository/source verification.
+- No App Build was triggered by this process change.
 # JE X FYZ — BUILD NOTES
 
 ## AUTHORITATIVE BUILD CORE — 2026-10-04
