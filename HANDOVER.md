@@ -1,11 +1,11 @@
-## 2026-10-04 — CHAT-LIMIT HANDOVER REFRESH
+## 2026-10-04 — CHAT-LIMIT CONTINUITY DOCUMENTATION
 
-- Prepared for immediate transfer to a new chat because the current conversation is near its context limit.
+- Maintained as the portable continuity document for chat-limit transfers and separate Build App subchats.
 - The detailed copy-ready continuation prompt remains stored below and in README.md.
 - New chat must start with README.md and perform the complete memory preflight before any analysis or action.
 - Current firmware: V3.7; current source: `firmware/JEXFYZ-V3.7.ino`.
 - Latest verified App Build: #50.
-- No new App Build or firmware compile was performed for this handover.
+- No App Build or firmware compile was performed by this documentation refresh.
 
 # JE X FYZ — HANDOVER
 
@@ -307,6 +307,7 @@ SEKARANG MULAI DARI MANDATORY PREFLIGHT.
 ## Transfer boundary
 
 - CHAT_TRANSFER.md is the official rolling transfer snapshot.
+- Its initial repository state is a template; Prompt 1 replaces it with a real transfer snapshot at the end of an old chat.
 - Prompt 1 writes the latest complete snapshot directly to the repository.
 - Prompt 2 reads that snapshot directly from the repository.
 - Previous transfer snapshots remain recoverable through Git history.
