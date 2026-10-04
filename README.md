@@ -1,3 +1,13 @@
+## 2026-10-04 — EXECUTION FULL / GEMINI ONLINE OTA PATCH APPLIED
+
+- Applied the supplied Gemini Online OTA patch to the exact V4.0 source.
+- Online OTA now uses `WiFiClientSecure cloudClient` + `setInsecure()`, intentionally prioritizing GitHub raw-BIN compatibility over CA validation.
+- Removed only the intermediate GREEN-after-GitHub and BLUE-after-download transitions.
+- Preserved Wi-Fi-success BLUE, YELLOW 20/40/60/80/100 download milestones, final GREEN success, and RED failure/recovery.
+- Local OTA region was verified byte-for-byte unchanged.
+- Current source blob: `0566105383a889912e5e756b0b9f265e5fcf0264`.
+- Compile/BIN/Firebase/physical Online OTA validation remains unverified; fresh Assistant + Gemini review is required before flashing.
+
 ## 2026-10-04 — GEMINI PATCH-ONLY PROTOCOL
 
 - [WORKFLOW] `@Thinking Tanya Gemini!` now uses the dedicated `GEMINI_PROMPT_ONLINE_OTA.md` prompt when diagnosing the current Online OTA issue.
