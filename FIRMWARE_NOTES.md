@@ -4537,3 +4537,13 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - [PRESERVE] Voltage transitions preserve the current Peltier PWM state; 5 s soft-start remains unchanged for Peltier turn-on.
 - [PRESERVE] BLE/P1, GPIO mapping, PWM frequencies, NTC/safety, Adaptive, OTA, and non-blocking timing architecture are unchanged.
 - [VALIDATION] Static source audit completed after implementation. ArduinoDroid/Core 3.3.7 compile, BIN publication, Firebase promotion, and physical validation remain pending.
+
+## 2026-10-04 — V3.8 IMPLEMENTATION / AUDIT CHECKPOINT
+
+- [COMMITTED] Active source: `firmware/JEXFYZ-V3.8.ino`; source blob `2fbff3656bc037846124806fb390022f85146845`.
+- [COMMITTED] Repository HEAD: `dbe9ac209ad0b9ca1f68ae50d65f8e7838245d22`.
+- [VERIFIED] Voltage changes no longer call `beginPeltierSoftStart()`; the only runtime trigger is the genuine Peltier OFF → ON path in `applyCoolingOutputs()`.
+- [VERIFIED] Peltier soft-start remains 20 kHz / 8-bit over 5 s.
+- [VERIFIED] Active source has balanced braces/parentheses (549/549 and 2039/2039) and no executable `delay()` or timing-wait `while()`.
+- [UNVERIFIED] ArduinoDroid/Core 3.3.7 compile, BIN generation/publication, Firebase promotion, and physical device behavior remain pending.
+
