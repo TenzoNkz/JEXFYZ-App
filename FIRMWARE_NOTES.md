@@ -1,3 +1,14 @@
+## 2026-10-04 — NEW CHAT PREFLIGHT / V4.1 CURRENT SOURCE
+
+- [VERIFIED] Active firmware is `firmware/JEXFYZ-V4.1.ino`, `FW_VERSION = V4.1`, source blob `352f7c408f2bc5a4a691af35cfb477338036a102`.
+- [VERIFIED] V4.1 preserves the accepted P0 rail-stabilization, P1 Online OTA compatibility path, Local OTA protection, and cooperative no-delay/no-timing-while constraints recorded in the current source.
+- [VERIFIED] Online OTA Wi-Fi retry is the committed V4.1 redesign: `setAutoReconnect(true)`; no `WL_CONNECT_FAILED/WL_NO_SSID_AVAIL` fast-fail branch; retry uses `WiFi.disconnect(); WiFi.begin(...)` after the 15 s connection window.
+- [VERIFIED] Current source has one intentional `setInsecure()` in Online OTA; this remains a known TLS-authentication risk, not a compile/runtime proof.
+- [PROTECTED] Local OTA is unchanged and remains the Golden Path.
+- [UNVERIFIED] V4.1 ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile/link, BIN generation/hash, Firebase promotion, physical flash, and runtime validation.
+- [OPEN] P2 BLE critical-message drop behavior and the exact physical root cause of the earlier Android-hotspot Online OTA failure.
+- [NO FUNCTIONAL CHANGE] New-chat synchronization only records repository truth.
+
 ## 2026-10-04 — EXECUTION FULL / V4.1 SIMPLE ONLINE OTA
 
 - [IMPLEMENTED] Applied the accepted Gemini redesign to Online OTA in the exact V4.0 source.
