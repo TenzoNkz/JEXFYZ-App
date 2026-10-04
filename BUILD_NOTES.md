@@ -165,3 +165,7 @@ Every future successful build must append a new checkpoint containing:
 - [DECISION] Do not trigger a new App Build solely for V3.8.
 - [BUILT] App Build #50 remains the latest verified App artifact and is not validation evidence for V3.8 firmware runtime.
 
+## 2026-10-04 — V3.9 FIRMWARE HARDENING / APP BUILD IMPACT
+- [NO APP BUILD] V3.9 is firmware-only; App source/configuration remained unchanged.
+- Latest verified App Build remains #50.
+- V3.9 firmware compile/BIN generation is pending and must be validated separately from the App build pipeline.
