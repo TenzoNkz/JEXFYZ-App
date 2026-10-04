@@ -62,10 +62,10 @@
 
 ### Current App/Firmware boundary
 - App repository: `TenzoNkz/JEXFYZ-App`.
-- Active firmware source referenced by the App project: `firmware/JEXFYZ-V3.7.ino`.
-- Firmware version remains `V3.7`; this documentation pass did not change the functional firmware version.
+- Active firmware source referenced by the App project: `firmware/JEXFYZ-V3.8.ino`.
+- Firmware version is `V3.8`; the latest functional change scopes Peltier soft-start to OFF → ON only.
 - BLE/P1 UUIDs, logical `FAN:*` / `PELTIER:*` command semantics, telemetry keys, GPIO mapping, and App UI contract were not intentionally changed.
-- The firmware now documents a 20 kHz / 8-bit Peltier PWM with 5 s soft-start; OFF → ON and every upward voltage transition while ON restart that ramp, while downward voltage transitions do not.
+- The firmware uses 20 kHz / 8-bit Peltier PWM with a 5 s soft-start triggered only by Peltier OFF → ON; voltage changes preserve the existing Peltier PWM state.
 - No Flutter/App source was changed by this firmware documentation execution.
 
 ### Current Build / Transfer policy
@@ -90,8 +90,8 @@
 ### Validation boundary
 - Current firmware source is documented and statically audited.
 - No App Build was triggered.
-- No device-side firmware compile/flash evidence exists yet for V3.7.
-- Any App release built before a future V3.7 firmware compile/physical validation must be understood as an App artifact, not proof of firmware runtime compatibility.
+- No device-side firmware compile/flash evidence exists yet for V3.8.
+- Any App release built before a V3.8 firmware compile/physical validation must be understood as an App artifact, not proof of firmware runtime compatibility.
 
 ---
 
