@@ -1,3 +1,13 @@
+## 2026-10-04 — FIRMWARE V4.0 / P0+P1 HARDENING EXECUTION
+
+- Firmware advanced V3.9 → V4.0.
+- P0 rail stabilization added after 9V/12V selector activation with an initial cooperative 300 ms physical Peltier PWM hold at 0%, preserving logical Peltier state and the OFF→ON-only 5 s soft-start contract.
+- P1 Online OTA changed from insecure TLS to the Arduino-ESP32 Core 3.3.7 ESP certificate-bundle trust path.
+- V3.9 source retired after V4.0 creation.
+- Full affected static audit passed: 5351 lines, braces 581/581, parentheses 2123/2123, executable delay 0, timing while 0, setInsecure 0, stopBleRadio(false) 0.
+- No App Build, firmware compile, BIN generation, Firebase promotion, or physical validation was performed.
+- V4.0 remains pending the required independent Assistant + Gemini two-party flash gate.
+
 ## 2026-10-04 — CHAT-LIMIT HANDOVER CHECKPOINT
 
 - Current chat is being handed over because the context limit is near.
