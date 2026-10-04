@@ -1,3 +1,15 @@
+## 2026-10-04 — FIRMWARE V3.7 / PELTIER PWM CONTRACT IMPACT
+
+- Firmware continuity source advanced **V3.6 → V3.7** in the App repository.
+- Active firmware source is `firmware/JEXFYZ-V3.7.ino`; V3.6 is retired from the active source tree.
+- Peltier PWM remains 20 kHz, 8-bit, with the existing 5-second soft-start.
+- Firmware now restarts Peltier soft-start on every **upward voltage transition** while Peltier is ON.
+- Downward voltage transitions do not restart Peltier soft-start.
+- Any genuine Peltier OFF → ON transition always starts soft-start, including a post-Hotside-cooldown resume.
+- No BLE command token, UUID, GPIO mapping, telemetry key, App UI contract, Firebase metadata, or App signing identity was intentionally changed.
+- No App source was modified and no App Build was triggered.
+- Firmware compile, BIN promotion, Firebase update, dedicated binary repository update, and physical-device validation remain pending.
+  
 ## 2026-10-04 — FIRMWARE V3.6 ADAPTIVE/HOTSide SAFETY CONTRACT
 
 - Firmware continuity source advanced V3.5 → V3.6; source commit: `03ede906a34a5e06082f2c9520a29687f0abd710`.
