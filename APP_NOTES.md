@@ -68,6 +68,13 @@
 - The firmware now documents a 20 kHz / 8-bit Peltier PWM with 5 s soft-start; OFF → ON and every upward voltage transition while ON restart that ramp, while downward voltage transitions do not.
 - No Flutter/App source was changed by this firmware documentation execution.
 
+### Current Build / Transfer policy
+- App Build is manual-by-issue-trigger only through `.github/workflows/app-build-trigger.yml`.
+- Trigger title: `JE X FYZ — BUILD APP TRIGGER`; required body token: `JEXFYZ_BUILD_TRIGGER_V1`.
+- The reusable `.github/workflows/app-build.yml` is not a push-triggered release workflow.
+- `CHAT_TRANSFER.md` is the rolling old-chat → new-chat transfer snapshot; Prompt 1 writes it and Prompt 2 reads it.
+- Historical `workflow_dispatch` references in older APP_NOTES entries describe superseded history and must not override the active workflow.
+
 ### App release contract
 - Production package/signing identity remains unchanged.
 - The last verified App build remains Build #50; this firmware documentation commit is newer and has not been included in a new App build.
