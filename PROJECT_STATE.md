@@ -1,3 +1,13 @@
+## 2026-10-04 — DISCUSSION / V3.9 UPDATE READINESS CHECK
+
+- [CONFIRMED] User asked whether the current V3.9 candidate is ready to update/flash.
+- [VERIFIED] Current source still contains the P0 gap: selector activation at `completeVoltageTransition()` is followed by `applyCoolingOutputs()`, while logical Peltier state remains ON; the dedicated post-selector rail-stabilization state is still absent.
+- [VERIFIED] Current source still contains P1 Online OTA TLS weakness: `cloudClient.setInsecure()` remains in `prepareOnlineOtaDownload()`.
+- [CONFIRMED] Assistant and prior user-mediated Gemini audit still converge on **NOT SAFE TO FLASH** for the current V3.9 source.
+- [DECISION] V3.9 is **not ready for update/flash**. The gate remains CLOSED.
+- [PRESERVE] Existing V3.9 hardening remains unchanged; the 5 s Peltier soft-start contract stays logical OFF -> ON only.
+- [NO FUNCTIONAL CHANGE] This was discussion/review only; no App/Firmware/workflow source was changed and no Build App/flash action was performed.
+- [NEXT EXACT ACTION] Use an explicit execution command to patch P0 + P1, then perform the full affected audit and repeat the two-party assistant/Gemini gate before any update.
 ## 2026-10-04 — NEW CHAT PREFLIGHT / REPOSITORY RECONCILIATION
 
 - [VERIFIED] Mandatory repository preflight completed in the required order, including current firmware analysis and exact current source/workflow inspection.
