@@ -417,3 +417,17 @@ For Build App, the first action must be the full memory preflight and exact-sour
 - [VERIFIED] App functional source and App build workflows remain unchanged; App Build #50 remains the latest verified App artifact.
 - [NO BUILD] No App Build or firmware compile/BIN/Firebase promotion was performed.
 - [UNVERIFIED] Physical V3.8 hardware behavior remains to be retested, especially 9V → 12V with Peltier ON.
+
+## 2026-10-04 — DISCUSSION / ONLINE OTA DOWNLOAD STALL ROOT CAUSE
+
+- [TESTED] User reports Online OTA sequence: BLUE indicator → GREEN indicator → then very long stall with no LED indicator.
+- [VERIFIED] In V3.8, BLUE corresponds to `ONLINE_WIFI_CONNECTED` and queues `PREPARE_DOWNLOAD`; GREEN corresponds to `ONLINE_GITHUB_CONNECTED` and queues `DOWNLOAD`.
+- [VERIFIED] `prepareOnlineOtaDownload()` successfully reaches the GitHub-connected stage before starting the download state, consistent with the observed GREEN indicator.
+- [VERIFIED] The `OnlineOtaFlow::DOWNLOAD` switch currently calls `performOnlineOtaDownload()` only when `onlineUpdateStarted == false`.
+- [VERIFIED] The first `performOnlineOtaDownload()` call sets `onlineUpdateStarted = true` after `Update.begin()`. If the firmware is not completely downloaded in that same call, the next loop iteration skips `performOnlineOtaDownload()` forever.
+- [VERIFIED] Therefore the current state machine can become permanently stuck after the first download chunk. This is the primary source-level root cause of the reported GREEN → no-indicator stall.
+- [VERIFIED] Progress LEDs are milestone-based at 20/40/60/80/100%. If the first chunk does not reach 20%, no yellow progress indicator appears, which explains the user's observation that the LEDs become completely inactive.
+- [SECONDARY] `prepareOnlineOtaDownload()` uses a synchronous `HTTPClient.GET()` with up to the configured HTTP timeout, so initial preparation can also be slow, but that does not explain the persistent post-GREEN stall because GREEN is reached.
+- [DECISION] App is not implicated and does not need rebuilding for this OTA bug.
+- [UNVERIFIED] The exact network throughput/chunk size on the physical device is not measured yet.
+- [NEXT ACTION] Execute a minimal firmware-only fix so `performOnlineOtaDownload()` continues on every DOWNLOAD loop while the HTTP session remains active; then audit progress/timeout/finalize/recovery state transitions.
