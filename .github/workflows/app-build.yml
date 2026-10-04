@@ -266,30 +266,23 @@ jobs:
           echo "Production APK signature verified: JE X FYZ certificate is present and matches the official signing identity."
           ls -lh "$APK"
 
-      # Canonical delivery name remains JEXFYZ#<run-number>.apk.
+      # Stable delivery filename keeps the latest APK artifact replaceable.
       - name: Prepare release APK filename
         shell: bash
         run: |
           set -euo pipefail
           cp build/app/outputs/flutter-apk/app-release.apk \
-             "build/app/outputs/flutter-apk/JEXFYZ#${{ github.run_number }}.apk"
-          test -s "build/app/outputs/flutter-apk/JEXFYZ#${{ github.run_number }}.apk"
-          ls -lh "build/app/outputs/flutter-apk/JEXFYZ#${{ github.run_number }}.apk"
+             "build/app/outputs/flutter-apk/JEXFYZ-release.apk"
+          test -s "build/app/outputs/flutter-apk/JEXFYZ-release.apk"
+          ls -lh "build/app/outputs/flutter-apk/JEXFYZ-release.apk"
 
-      # Publish exactly one release APK artifact.
+      # Publish exactly one direct release APK and overwrite the previous delivery.
       - name: Upload APK only
         uses: actions/upload-artifact@v7
         with:
-          name: JEXFYZ#${{ github.run_number }}.apk
-          path: build/app/outputs/flutter-apk/JEXFYZ#${{ github.run_number }}.apk
+          name: JEXFYZ-release.apk
+          path: build/app/outputs/flutter-apk/JEXFYZ-release.apk
           archive: false
           if-no-files-found: error
-
-      # Keep obfuscation symbols for diagnostics.
-      - name: Upload Dart symbols
-        uses: actions/upload-artifact@v7
-        with:
-          name: JE-X-FYZ-Dart-Symbols
-          path: build/symbols
-          if-no-files-found: error
-          compression-level: 0
+          overwrite: true
+          retention-days: 7
