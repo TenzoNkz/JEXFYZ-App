@@ -1,3 +1,11 @@
+## 2026-10-04 — FIRMWARE V4.0 EXECUTION / APP BUILD BOUNDARY
+
+- [NO APP BUILD] Firmware V3.9 → V4.0 is a Firmware-only source change; App functional source/configuration was not modified.
+- [CURRENT FIRMWARE] Active source: `firmware/JEXFYZ-V4.0.ino` blob `b2a77fadeaa154412850d34c82b0bb78ef108bae`.
+- [CURRENT APP BASELINE] Build #50 remains the latest verified App artifact, built from source `bf01595253eb5a1912471c4aee57c4eed4421f0f`.
+- [DECISION] Do not create a new App Build solely because of the V4.0 firmware hardening.
+- [BOUNDARY] V4.0 firmware compile/BIN/device validation is separate from App Build validation.
+
 ## 2026-10-04 — CHAT-LIMIT HANDOVER CHECKPOINT
 
 - Current chat is being handed over because the context limit is near.
