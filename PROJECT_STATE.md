@@ -1,3 +1,13 @@
+## 2026-10-04 — DISCUSSION: SIMPLE ONLINE OTA REDESIGN REQUEST
+
+- [USER] Online OTA feels unnecessarily difficult and the user notes that it has worked previously.
+- [USER REQUEST] Ask Gemini to create a **simple, reliable Online OTA implementation** focused on actually connecting, downloading the GitHub raw BIN, flashing, and recovering cleanly.
+- [LED CONTRACT] Keep OTA LED visibility: start OFF; Wi-Fi success BLUE; download progress YELLOW; flash success GREEN then restart; failure RED then BLE recovery.
+- [HISTORY] Gemini must inspect git history and identify the previously working/minimal Online OTA pattern before proposing a redesign.
+- [PROTECTED] Local OTA remains Golden/Protected; no Local OTA changes.
+- [VERSION RULE] Any functional implementation of this request must bump firmware version, minimum V4.0 -> V4.1, even for a minimal change.
+- [NO SOURCE CHANGE] This discussion/request does not change firmware behavior yet.
+
 ## 2026-10-04 — GEMINI ROUND 3 RECONCILIATION
 
 - [GEMINI RESULT] Gemini concluded no patch, suspected the failure occurs before normal Wi-Fi completion and recommended Serial Monitor testing. Gemini's final verdict was NOT SAFE TO FLASH LOCAL OTA.
