@@ -30,7 +30,7 @@ enum class VoltageRequestSource : uint8_t;
 enum class AdaptiveProfile : uint8_t;
 
 /**
- * JE X FYZ — V3.8 Firmware
+ * JE X FYZ — V3.9 Firmware
  * ---------------------------------------------------------------------------
  * Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module
  * Framework: Arduino Standard + official Arduino-ESP32 Core 3.3.7
@@ -77,7 +77,7 @@ enum class AdaptiveProfile : uint8_t;
  * ---------------------------------------------------------------------------
  */
 
-static constexpr char FW_VERSION[] = "V3.8";
+static constexpr char FW_VERSION[] = "V3.9";
 
 // ============================================================================
 // ========================== HEAP DIAGNOSTIC BUILD ===========================
