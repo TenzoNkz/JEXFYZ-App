@@ -3,7 +3,7 @@
 - Maintained as the portable continuity document for chat-limit transfers and separate Build App subchats.
 - The detailed copy-ready continuation prompt remains stored below and in README.md.
 - New chat must start with README.md and perform the complete memory preflight before any analysis or action.
-- Current firmware: V3.7; current source: `firmware/JEXFYZ-V3.7.ino`.
+- Current firmware: V3.8; current source: `firmware/JEXFYZ-V3.8.ino`.
 - Latest verified App Build: #50.
 - No App Build or firmware compile was performed by this documentation refresh.
 
@@ -16,11 +16,11 @@
 - Project: JE X FYZ / JE Cooler.
 - App repository: https://github.com/TenzoNkz/JEXFYZ-App
 - Firmware distribution repository: https://github.com/TenzoNkz/JEXFYZ-Firmware
-- Current firmware source: `firmware/JEXFYZ-V3.7.ino`
+- Current firmware source: `firmware/JEXFYZ-V3.8.ino`
 - Current firmware source blob: `4a7e08a6ea0de57f4e3d3a742ad88cbd25a05e01`
 - Last verified App Build: #50, run 36996987220.
 - Newer repository documentation/firmware commits have not been included in a newer App Build.
-- V3.7 ArduinoDroid compilation, BIN publication, Firebase promotion, and physical validation are still unperformed.
+- V3.8 ArduinoDroid compilation, BIN publication, Firebase promotion, and physical validation are still unperformed.
 
 ## REPOSITORY-FIRST CHAT-LIMIT HANDOVER
 
@@ -313,4 +313,11 @@ SEKARANG MULAI DARI MANDATORY PREFLIGHT.
 - Previous transfer snapshots remain recoverable through Git history.
 - Current source/current workflow always outrank transfer text.
 - Build App subchats must use Prompt 2 and still perform the complete build preflight.
+
+## 2026-10-04 — CURRENT FIRMWARE V3.8
+
+- Current firmware: V3.8
+- Current source: `firmware/JEXFYZ-V3.8.ino`
+- Soft-start scope: Peltier OFF → ON only; voltage changes do not restart the 5 s soft-start.
+- V3.8 hardware validation is pending.
 
