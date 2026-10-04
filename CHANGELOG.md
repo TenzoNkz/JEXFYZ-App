@@ -290,3 +290,12 @@ Received raw Gemini V3.8 independent firmware audit and reconciled it against th
 
 ### State
 No functional Firmware/App source changed during this review. Hardware validation remains blocked until the source hardening pass is completed.
+
+## 2026-10-04 — V3.9 FULL FIRMWARE HARDENING
+- V3.8 hardened and versioned to V3.9.
+- Fixed Online OTA stream starvation and hardened BLE/Wi-Fi radio handoff/retry.
+- Added selector/Peltier physical interlock without restarting the 5 s soft-start on voltage changes.
+- Added final NTC gate, rapid-rise thermal latch, Battery hysteresis, ADAPTIVE:OFF ACK fix, callback-safe BLE advertising recovery.
+- Added numeric OTA anti-rollback, reset reason telemetry, Local OTA magic validation, and BLE TX drop diagnostics.
+- Active source blob: `f123a46d84d1e2ec0e67419a6577388fd3c8645e`.
+- No firmware compile/BIN/Firebase/physical validation yet; App Build #50 unchanged.
