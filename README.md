@@ -172,6 +172,71 @@ The new chat must not assume the previous conversation is available.
 
 ---
 
+
+## 4A. DUAL-PROMPT CHAT-LIMIT CONTINUITY SYSTEM
+
+Untuk mencegah kehilangan konteks saat satu chat mencapai limit, JE X FYZ
+menggunakan dua prompt resmi yang bekerja berurutan:
+
+**PROMPT A — CHAT-LIMIT RECAP**
+- dipakai di chat lama ketika peringatan limit muncul;
+- mengekspor seluruh konteks chat menjadi `JE X FYZ CHAT RECAP PACKAGE`;
+- mencatat requirement, decision, source, commit, build, bug, root cause,
+  hypothesis, test evidence, Gemini, dead ends, risk, unresolved question,
+  dan exact next action;
+- membedakan persistent repository memory dengan chat-only information;
+- tidak boleh mengarang evidence;
+- tidak menjadi source of truth final.
+
+**PROMPT B — NEW CHAT TRANSFER**
+- dipakai di chat baru bersama package dari Prompt A;
+- membaca seluruh project memory terlebih dahulu;
+- inspect current source/workflow;
+- membandingkan package dengan repository;
+- merekonsiliasi discrepancy;
+- menetapkan current project truth;
+- hanya setelah itu melanjutkan workflow yang memang diizinkan.
+
+### Authority rule
+
+Chat Recap Package adalah **transfer evidence**, bukan replacement untuk
+repository memory. Current source/current workflow tetap menjadi authority
+tertinggi.
+
+### Mandatory sequence
+
+```
+CHAT LAMA + LIMIT WARNING
+        ↓
+PROMPT A — FULL CHAT RECAP
+        ↓
+JE X FYZ CHAT RECAP PACKAGE
+        ↓
+CHAT BARU
+        ↓
+PROMPT B — MEMORY PREFLIGHT
+        ↓
+CURRENT SOURCE / WORKFLOW INSPECTION
+        ↓
+RECONCILIATION
+        ↓
+CURRENT PROJECT TRUTH
+        ↓
+CONTINUE EXACT NEXT ACTION
+```
+
+### Special Build App rule
+
+Build App subchat juga wajib menggunakan Prompt B. Recap tidak boleh
+menggantikan mandatory memory preflight, current-source inspection,
+workflow/trigger verification, atau exact-build-SHA identification.
+
+### Official copy-ready prompts
+
+Prompt lengkap berada di `README.md` dan `HANDOVER.md` dengan judul:
+- **PROMPT A — CHAT-LIMIT RECAP**
+- **PROMPT B — NEW CHAT TRANSFER**
+
 ## 5. WORKFLOW COMMANDS
 
 ### `@Thinking Diskusi!`
@@ -284,26 +349,371 @@ Never claim a later layer from an earlier one.
 
 ---
 
-# 9. COPY-READY NEW CHAT PROMPT
+# 9. OFFICIAL CHAT-LIMIT PROMPTS
 
-The following prompt is intentionally detailed. **Copy it into a new JE X FYZ chat whenever the current chat reaches its limit or when starting a separate Build App subchat.**
+The project maintains two distinct prompts. Use them in order.
+
+## PROMPT A — CHAT-LIMIT RECAP
+
+Copy the complete block below into the **old chat** when the platform warns
+that the chat/context limit is approaching.
 
 ```
-@Thinking CONTINUE JE X FYZ PROJECT
+@Thinking CHAT-LIMIT RECAP — JE X FYZ
 
-Saya melanjutkan project JE X FYZ / JE Cooler dari repository resmi.
-
-JANGAN mengandalkan memory percakapan lama sebagai source of truth.
-JANGAN mulai dari asumsi.
-JANGAN mengulang desain lama yang sudah superseded.
+CHAT INI SUDAH MENDAPATI PERINGATAN CONTEXT/CHAT LIMIT.
+JANGAN melakukan implementasi, build, release, atau perubahan functional source.
+Tugas kamu sekarang hanya membuat TRANSFER PACKAGE lengkap dari seluruh data
+yang masih tersedia di chat ini agar bisa dipindahkan ke chat baru.
 
 ============================================================
-MANDATORY MEMORY PREFLIGHT — WAJIB SEBELUM ACTION APA PUN
+A. TUJUAN
 ============================================================
 
-Sebelum membaca, menganalisa, berdiskusi, mengeksekusi, Build App,
-bertanya kepada Gemini, melakukan audit, membaca hasil build, atau
-menafsirkan hasil hardware:
+Buat satu paket recap utuh yang merepresentasikan kondisi chat ini
+dari awal sampai pesan terakhir.
+
+JANGAN hanya merangkum pesan terakhir.
+JANGAN hanya merangkum issue terakhir.
+JANGAN menghapus detail teknis yang masih dibutuhkan untuk melanjutkan.
+JANGAN mengarang detail yang tidak ada.
+JANGAN menganggap sesuatu verified hanya karena pernah disebut.
+
+Gunakan:
+1. seluruh percakapan yang masih tersedia di chat ini;
+2. hasil tool/source inspection yang benar-benar sudah dilakukan;
+3. data repository/memory yang sudah dibaca;
+4. keputusan user yang eksplisit;
+5. hasil build/test/compile/hardware/Gemini yang benar-benar memiliki evidence.
+
+Repository/current source tetap lebih tinggi daripada chat history.
+
+============================================================
+B. WAJIB REKONSTRUKSI SELURUH CHAT
+============================================================
+
+Telusuri seluruh konteks yang tersedia dan kumpulkan:
+
+1. PROJECT CONTEXT
+- identitas project;
+- repository;
+- branch;
+- tujuan task;
+- subchat type;
+- workflow command terakhir;
+- current state yang diketahui.
+
+2. USER REQUIREMENTS
+- semua requirement baru;
+- requirement lama yang ditegaskan ulang;
+- constraint;
+- exact wording bila wording mempengaruhi behavior;
+- requirement yang masih pending.
+
+3. DECISIONS
+- keputusan yang accepted/final;
+- keputusan yang rejected;
+- behavior yang frozen;
+- behavior yang obsolete/superseded;
+- perubahan prioritas.
+
+4. TECHNICAL DISCUSSION
+- architecture;
+- source flow;
+- UI behavior;
+- BLE/P1;
+- UUID;
+- Android;
+- Firebase;
+- OTA;
+- Firmware;
+- hardware;
+- CI/build;
+- security;
+- persistence;
+- timing;
+- safety.
+
+5. SOURCE / REPOSITORY EVENTS
+Untuk setiap source event yang terjadi di chat:
+- exact file;
+- exact path;
+- branch;
+- source version;
+- commit SHA;
+- blob SHA bila tersedia;
+- before/after summary;
+- apakah functional atau documentation-only;
+- apakah sudah committed;
+- apakah sudah diverifikasi dari repository.
+
+6. BUILD EVENTS
+Untuk setiap Build App/compile/build attempt:
+- requested atau tidak;
+- source SHA yang dimaksud;
+- workflow;
+- trigger;
+- run ID;
+- result;
+- artifact name;
+- artifact ID;
+- APK size;
+- SHA256;
+- symbols;
+- signing;
+- gates;
+- error/failure log;
+- troubleshooting;
+- apakah build benar-benar membuktikan source revision tertentu.
+
+7. TEST / VALIDATION
+Pisahkan secara eksplisit:
+- static/source audit;
+- automated tests;
+- app release build;
+- firmware compile;
+- BIN generation;
+- Firebase promotion;
+- runtime test;
+- hardware test;
+- OTA test;
+- BLE test.
+
+Untuk setiap test:
+- expected;
+- observed;
+- evidence;
+- pass/fail;
+- exact revision/binary;
+- remaining uncertainty.
+
+8. BUGS / SYMPTOMS
+Catat setiap bug:
+- symptom;
+- kapan terjadi;
+- device/version;
+- reproduction;
+- evidence;
+- current status.
+
+9. ROOT CAUSE
+Pisahkan:
+- VERIFIED ROOT CAUSE;
+- STRONG EVIDENCE / LIKELY;
+- HYPOTHESIS;
+- NOT YET DETERMINED.
+
+JANGAN menaikkan hypothesis menjadi root cause.
+
+10. GEMINI
+Untuk setiap Gemini interaction:
+- exact question;
+- actual answer;
+- accepted conclusion;
+- rejected conclusion;
+- unresolved portion.
+
+JANGAN membuat jawaban Gemini sendiri.
+
+11. DEAD ENDS / FAILED APPROACHES
+Simpan pendekatan yang sudah dicoba dan gagal agar chat baru tidak
+mengulang kesalahan yang sama.
+
+12. RISKS
+- regression risk;
+- source mismatch;
+- build mismatch;
+- firmware/app mismatch;
+- hardware uncertainty;
+- security concern;
+- stale documentation;
+- unresolved issue.
+
+13. NEXT ACTION
+Tentukan satu:
+- exact next discussion;
+- exact file/source area;
+- exact build;
+- exact test;
+- exact Gemini question;
+- atau exact reason mengapa belum boleh dieksekusi.
+
+============================================================
+C. STATUS CLASSIFICATION
+============================================================
+
+Gunakan label berikut secara eksplisit:
+
+[USER REQUIREMENT]
+[CONFIRMED]
+[VERIFIED]
+[IMPLEMENTED]
+[COMMITTED]
+[BUILT]
+[TESTED]
+[UNVERIFIED]
+[HYPOTHESIS]
+[OBSOLETE]
+[REJECTED]
+[BLOCKED]
+[OPEN QUESTION]
+
+Jangan mencampur label tersebut.
+
+============================================================
+D. CROSS-CHECK REPOSITORY
+============================================================
+
+Bila repository/source sudah diakses di chat ini:
+- catat exact current HEAD yang terakhir terlihat;
+- catat source SHA;
+- catat relevant file SHA/blob;
+- catat discrepancy antara chat dan repository;
+- jangan menebak state repository setelah titik terakhir evidence.
+
+Bila suatu perubahan dibahas tetapi belum berhasil di-commit:
+status = [UNCOMMITTED] atau [UNVERIFIED], bukan [IMPLEMENTED].
+
+Bila build berhasil tetapi source kemudian berubah:
+build hanya berlaku untuk exact source SHA yang dibuild.
+
+============================================================
+E. PERSISTENT MEMORY VS CHAT-ONLY DATA
+============================================================
+
+Pisahkan dengan jelas:
+
+PERSISTENT / ALREADY RECORDED
+- informasi yang sudah tersimpan di repository memory.
+
+CHAT-ONLY / NOT YET PERSISTED
+- informasi penting yang hanya muncul di chat ini dan belum dipastikan
+  sudah tercatat di repository.
+
+JANGAN mengklaim repository sudah menyimpan sesuatu bila belum ada evidence.
+
+============================================================
+F. OUTPUT FORMAT — WAJIB
+============================================================
+
+Output SATU blok yang dimulai:
+
+===== JE X FYZ CHAT RECAP PACKAGE START =====
+
+Lalu gunakan struktur:
+
+1. RECAP METADATA
+2. CURRENT TASK
+3. CURRENT WORKFLOW COMMAND
+4. PROJECT / REPOSITORY STATE
+5. USER REQUIREMENTS
+6. FROZEN DECISIONS
+7. REJECTED / OBSOLETE DECISIONS
+8. APP STATE
+9. FIRMWARE STATE
+10. ANDROID / OTA / BLE / FIREBASE STATE
+11. CI / BUILD STATE
+12. SOURCE CHANGES
+13. COMMITS / SHAs
+14. BUGS / SYMPTOMS
+15. VERIFIED ROOT CAUSES
+16. HYPOTHESES
+17. TEST / VALIDATION EVIDENCE
+18. GEMINI RESULTS
+19. FAILED APPROACHES / DEAD ENDS
+20. KNOWN RISKS
+21. UNRESOLVED QUESTIONS
+22. CHAT-ONLY INFORMATION NOT YET PERSISTED
+23. EXACT NEXT ACTION
+24. REQUIRED FIRST ACTION IN NEW CHAT
+25. SOURCE / MEMORY AUTHORITY RULE
+
+Akhiri dengan:
+
+===== JE X FYZ CHAT RECAP PACKAGE END =====
+
+============================================================
+G. NEW-CHAT HANDLING
+============================================================
+
+JANGAN membuat prompt transfer yang hanya berkata "lanjutkan".
+Paket harus dapat diberikan utuh ke chat baru.
+
+Paket harus cukup detail sehingga chat baru:
+- tahu apa yang sudah dilakukan;
+- tahu apa yang belum dilakukan;
+- tahu apa yang benar-benar verified;
+- tahu apa yang hanya hypothesis;
+- tahu apa yang obsolete;
+- tahu exact source/build evidence;
+- tahu exact next action.
+
+============================================================
+H. SAFETY RULE
+============================================================
+
+Recap ini BUKAN source of truth final.
+Recap hanya merupakan transfer evidence dari chat lama.
+
+Chat baru WAJIB:
+1. membaca seluruh project memory;
+2. inspect current source/workflow;
+3. compare recap dengan repository;
+4. reconcile discrepancy;
+5. menetapkan CURRENT PROJECT TRUTH.
+
+Jangan melakukan implementation/build hanya karena recap menyebutnya,
+kecuali workflow command dan evidence saat ini memang mengizinkan.
+
+Sekarang hasilkan TRANSFER PACKAGE lengkap.
+```
+
+## PROMPT B — NEW CHAT TRANSFER
+
+Copy the complete block below into the **new chat**, then paste the complete
+output from Prompt A into its designated package section.
+
+```
+@Thinking NEW CHAT TRANSFER — JE X FYZ
+
+Saya membawa CHAT RECAP PACKAGE dari chat sebelumnya.
+Anggap package ini sebagai transfer evidence, BUKAN sebagai source of truth.
+
+============================================================
+A. NON-NEGOTIABLE RULE
+============================================================
+
+JANGAN langsung melanjutkan implementation/build berdasarkan recap.
+
+Kamu WAJIB membangun ulang context dari repository terlebih dahulu.
+
+Priority:
+
+CURRENT SOURCE / CURRENT WORKFLOW
+>
+PROJECT_STATE.md
+>
+AUTHORITATIVE NOTES
+>
+BUILD_NOTES.md / CHANGELOG.md / HANDOVER.md
+>
+CHAT RECAP PACKAGE
+>
+CURRENT CHAT CLAIMS
+>
+OLD CHAT HISTORY
+
+Jika recap berbeda dengan source:
+- source/current workflow menang;
+- jangan menghidupkan behavior lama;
+- tandai discrepancy;
+- jelaskan reconciliation.
+
+============================================================
+B. MANDATORY PREFLIGHT
+============================================================
+
+Sebelum action apa pun:
 
 1. Baca README.md.
 2. Baca PROJECT_STATE.md.
@@ -312,240 +722,203 @@ menafsirkan hasil hardware:
 5. Baca FIRMWARE_NOTES.md.
 6. Baca BUILD_NOTES.md.
 7. Baca CHANGELOG.md.
-8. Bila firmware relevan, baca firmware/FIRMWARE_ANALYSIS.md.
-9. Setelah itu inspeksi CURRENT SOURCE / CURRENT WORKFLOW yang benar-benar
-   mengendalikan task.
+8. Baca HANDOVER.md.
+9. Bila firmware relevan, baca firmware/FIRMWARE_ANALYSIS.md.
+10. Inspect exact current source/workflow yang mengendalikan task.
 
-JANGAN melewati langkah preflight walaupun:
-- ini chat baru;
-- Build App;
-- task terlihat sederhana;
-- perubahan hanya satu baris;
-- saya mengatakan "lanjutkan";
-- konteks chat sebelumnya sudah hilang.
-
-============================================================
-SOURCE / MEMORY AUTHORITY
-============================================================
-
-Gunakan urutan kebenaran:
-
-CURRENT SOURCE / CURRENT WORKFLOW
->
-PROJECT_STATE.md
->
-AUTHORITATIVE APP/FIRMWARE NOTES
->
-BUILD_NOTES.md / CHANGELOG.md / HANDOVER.md
->
-CURRENT CHAT
->
-OLD CHAT HISTORY
-
-Jika ada konflik:
-- source terbaru menang;
-- jangan menghidupkan kembali fitur lama;
-- verifikasi commit/source sebelum menyimpulkan.
-
-============================================================
-REPOSITORY
-============================================================
-
-APP:
-https://github.com/TenzoNkz/JEXFYZ-App
-
-FIRMWARE DISTRIBUTION:
-https://github.com/TenzoNkz/JEXFYZ-Firmware
-
-APP REPO menyimpan source firmware untuk continuity.
-FIRMWARE REPO adalah binary distribution repository.
-JANGAN memindahkan source .ino atau FIRMWARE_NOTES.md ke firmware repo.
-
-============================================================
-AUTOMATIC MEMORY SYNCHRONIZATION — WAJIB
-============================================================
-
-Setelah setiap meaningful:
+Ini berlaku untuk:
 - Diskusi;
-- Audit;
 - Eksekusi;
 - Eksekusi Full;
 - Build App;
-- Tanya Gemini;
-- compile attempt;
+- Gemini;
+- compile;
+- audit;
 - runtime test;
-- hardware test;
-- failure;
-- rules change;
+- hardware test.
 
-WAJIB sinkronkan memory yang relevan tanpa menunggu saya meminta.
-
-Minimal pertahankan:
-PROJECT_STATE.md
-CHAT_RULES.md
-APP_NOTES.md
-FIRMWARE_NOTES.md
-
-Dan sesuai kebutuhan:
-BUILD_NOTES.md
-CHANGELOG.md
-HANDOVER.md
-firmware/FIRMWARE_ANALYSIS.md
-
-Jangan kehilangan:
-- requirement terbaru;
-- keputusan accepted/rejected;
-- exact source SHA;
-- exact build/run/artifact;
-- failed attempt/dead end;
-- validation status;
-- unresolved risks;
-- next action.
-
-Memory update tidak boleh dipakai untuk menyelundupkan functional source
-change ketika command saya hanya @Thinking Diskusi!.
+JANGAN melewati preflight karena recap dianggap lengkap.
 
 ============================================================
-BUILD APP — KHUSUS DAN KOMPLEKS
+C. RECAP INGESTION
 ============================================================
 
-Build App boleh dilakukan hanya ketika saya meminta @Thinking Build App!
-atau @Thinking Eksekusi & Build App!.
+Setelah memory preflight selesai:
+1. baca seluruh JE X FYZ CHAT RECAP PACKAGE;
+2. ekstrak requirements/decisions/state/evidence;
+3. kelompokkan data menjadi:
+   - VERIFIED;
+   - CONFIRMED;
+   - IMPLEMENTED;
+   - UNVERIFIED;
+   - HYPOTHESIS;
+   - OBSOLETE;
+   - OPEN QUESTION;
+4. jangan mengubah label tanpa evidence.
 
-Build App biasanya dilakukan pada subchat berbeda.
-Karena itu Build App TIDAK BOLEH bergantung pada context chat sebelumnya.
+============================================================
+D. RECONCILIATION
+============================================================
 
-Sebelum Build:
+Bandingkan recap dengan:
+
+1. PROJECT_STATE.md
+2. current source
+3. current workflow
+4. APP_NOTES.md
+5. FIRMWARE_NOTES.md
+6. BUILD_NOTES.md
+7. CHANGELOG.md
+8. relevant firmware analysis
+
+Untuk setiap mismatch:
+- tulis apa yang diklaim recap;
+- tulis apa yang sekarang dibuktikan source;
+- tentukan mana yang berlaku;
+- tandai data lama sebagai obsolete bila memang superseded.
+
+============================================================
+E. SOURCE / COMMIT VERIFICATION
+============================================================
+
+Verifikasi:
+- repository;
+- branch;
+- current HEAD;
+- current App source;
+- current Firmware source bila relevan;
+- exact workflow;
+- trigger;
+- current app version/build;
+- latest verified App Build;
+- exact source SHA of latest verified build;
+- later commits since that build;
+- relevant file/blob SHAs.
+
+Jangan menyamakan:
+source revision ≠ build revision
+build success ≠ hardware validation
+firmware source ≠ firmware BIN
+BIN ≠ physical validation
+
+============================================================
+F. MEMORY INTEGRITY
+============================================================
+
+Tentukan mana information yang:
+- sudah persistent di repository;
+- hanya berasal dari recap;
+- perlu disinkronkan ke memory;
+- bertentangan dengan current source;
+- tidak boleh dipertahankan karena obsolete.
+
+Jangan menghapus history hanya karena conflict.
+Gunakan current-state sections untuk menetapkan current truth.
+
+============================================================
+G. BUILD APP SAFETY
+============================================================
+
+Build App adalah engineering workflow kompleks.
+
+Jangan Build kecuali workflow command saat ini memang mengizinkan.
+
+Untuk Build App:
 - baca seluruh memory;
-- baca current App source;
-- baca workflow;
-- baca trigger;
-- tentukan exact source SHA;
-- tentukan current version/build number;
-- catat previous successful build;
-- catat semua perubahan sejak previous successful build;
-- catat known risks.
+- inspect current source;
+- inspect workflow + trigger;
+- record intended source SHA;
+- current version/build;
+- previous successful build;
+- all delta since previous build;
+- unresolved risks;
+- setelah build sukses, persist exact source/run/artifact/checksum/gates/boundary.
 
-Setelah Build sukses:
-- simpan source SHA;
-- workflow/run ID;
-- build number;
-- artifact;
-- artifact ID;
-- size;
-- SHA256;
-- symbols;
-- semua perubahan source/config/workflow/dependency;
-- troubleshooting changes;
-- validation gates;
-- known unvalidated areas;
-- next build baseline.
-
-Successful Build = MEMORY CHECKPOINT.
+Build tidak boleh dilakukan hanya karena recap menyebut "siap build".
 
 ============================================================
-FIRMWARE CONTINUITY
+H. REQUIRED OUTPUT SETELAH RECONCILIATION
 ============================================================
 
-Current firmware source must be determined from PROJECT_STATE + repository.
+Setelah semua preflight + reconciliation, jawab dengan:
 
-Known platform contract:
-- ESP32-C3;
-- Arduino Standard;
-- Arduino-ESP32 Core 3.3.7.
+CURRENT PROJECT TRUTH
+- Project
+- Repository
+- Branch
+- Current HEAD
+- App version/build
+- Firmware version/source
+- Latest verified App Build
+- Exact source SHA of latest verified build
 
-GPIO authority:
-GPIO0 = NTC
-GPIO1 = Touch
-GPIO3 = 12V selector
-GPIO4 = 9V selector
-GPIO5 = Peltier
-GPIO6 = Fan
-GPIO7 = WS2812
+RECAP VS REPOSITORY
+- What matches
+- What differs
+- What became obsolete
+- What remains chat-only
 
-Logical BLE tokens:
-FAN:* -> Fan
-PELTIER:* -> Peltier
+VERIFIED
+- facts with repository/source/test evidence
 
-Do not change physical/logical mapping without verified evidence.
+UNVERIFIED
+- items without sufficient evidence
 
-Firmware source versioning is mandatory for functional image changes.
-
-Never claim:
-source audit = compile
-compile = BIN publication
-BIN = hardware test
-App Build = firmware validation
-
-============================================================
-WORKFLOW SEMANTICS
-============================================================
-
-@Thinking Diskusi!
-= review/analysis only; memory-sync documentation is allowed automatically.
-No functional source/build/release changes.
-
-@Thinking Eksekusi!
-= implement + audit relevant area + memory-sync + commit.
-
-@Thinking Eksekusi Full!
-= implement + full affected-area regression + memory-sync + commit.
-
-@Thinking Build App!
-= complete build/validation workflow only.
-
-@Thinking Eksekusi & Build App!
-= implementation + audit + memory-sync + commit + Build App + build-memory checkpoint.
-
-@Thinking Tanya Gemini!
-= focused second opinion; never fabricate result.
-
-============================================================
-WHEN CHAT LIMIT IS NEAR
-============================================================
-
-Do NOT wait for me to remember the handover.
-
-Before continuity becomes unsafe:
-1. Sync memory.
-2. Refresh PROJECT_STATE.md.
-3. Refresh HANDOVER.md.
-4. Produce a complete copy-ready continuation prompt.
-
-The new chat must begin again from README.md and perform the mandatory
-preflight before doing anything else.
-
-============================================================
-FIRST RESPONSE AFTER THIS PROMPT
-============================================================
-
-After completing the mandatory preflight, report:
-
-CURRENT PROJECT STATE
-CURRENT APP VERSION/BUILD
-CURRENT FIRMWARE VERSION
-CURRENT SOURCE SHA
-LATEST VERIFIED BUILD
-WHAT CHANGED LAST
-WHAT IS VERIFIED
-WHAT IS NOT VERIFIED
 KNOWN RISKS
+- current meaningful risks only
+
+OPEN QUESTIONS
+- only questions that actually remain open
+
 NEXT EXACT ACTION
+- one precise next action
+
+MEMORY SYNC REQUIRED
+- which memory files need updating now, if any
+
 WORKFLOW STATUS
+- use the project's allowed status value exactly.
 
-Then continue the task I provide.
+JANGAN mulai implementation/build sebelum status/workflow command memang
+mengizinkannya.
 
-DO NOT invent missing evidence.
-DO NOT fabricate Gemini.
-DO NOT claim physical validation without a physical test.
-DO NOT Build App unless I explicitly request it.
+============================================================
+I. PERSISTENCE RULE
+============================================================
+
+Setelah rekonsiliasi selesai, jika ditemukan information penting yang belum
+persisted, lakukan memory synchronization sesuai workflow rules.
+
+Memory sync:
+- boleh memperbarui documentation/state;
+- tidak boleh menyelundupkan functional source change;
+- harus mencatat discrepancy dan final reconciled truth;
+- harus menyimpan next exact action.
+
+============================================================
+J. CHAT RECAP PACKAGE
+============================================================
+
+Tempel package di bawah prompt ini:
+
+===== JE X FYZ CHAT RECAP PACKAGE START =====
+[PASTE COMPLETE CHAT RECAP PACKAGE HERE]
+===== JE X FYZ CHAT RECAP PACKAGE END =====
+
+Mulai dari MANDATORY PREFLIGHT.
+Jangan mengasumsikan chat lama masih tersedia.
 ```
 
----
+## Prompt selection rule
+
+Do not use Prompt A in a new chat.
+Do not use Prompt B as a substitute for Prompt A.
+Do not treat the recap as authoritative until current repository/source/workflow
+reconciliation is complete.
 
 ## 10. Quick New-Chat Command
 
-For normal continuation, the detailed prompt above is preferred.
+For normal continuation, the detailed Prompt B above is preferred.
 
 A shorter entry is:
 
@@ -560,20 +933,22 @@ APP_NOTES.md
 FIRMWARE_NOTES.md
 BUILD_NOTES.md
 CHANGELOG.md
+HANDOVER.md
 firmware/FIRMWARE_ANALYSIS.md bila relevan
 lalu inspect current source/workflow.
 
 Sync project memory automatically after every meaningful project event.
-For Build App, treat the subchat as a fresh engineering environment.
+Untuk chat transfer, gunakan Prompt B.
+Untuk Build App, perlakukan subchat sebagai fresh engineering environment.
 ```
-
----
 
 ## 11. Golden Rules
 
 **Never trust memory without checking source.**
 
 **Never trust old source over current source.**
+
+**Never trust a chat recap over current source/current workflow.**
 
 **Never claim an unperformed validation.**
 
@@ -584,3 +959,4 @@ For Build App, treat the subchat as a fresh engineering environment.
 **Build success must permanently explain what was actually built and what changed.**
 
 **Current state must always be recoverable from the repository alone.**
+
