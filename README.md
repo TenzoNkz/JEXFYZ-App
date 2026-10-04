@@ -1,3 +1,16 @@
+## 2026-10-04 — FINAL SIMPLE ONLINE OTA GEMINI REQUEST
+
+- [USER] User wants a concrete, simple Online OTA redesign because Online OTA worked in an earlier firmware and the current V4.0 path is unnecessarily complex.
+- [GEMINI REQUEST] Gemini was asked to produce a real V4.0 -> V4.1 implementation patch for the Online OTA Wi-Fi/retry architecture, using historical source as evidence and keeping the LED contract.
+- [SCOPE] Target flow: BLE OFF -> Wi-Fi STA -> WiFi.begin -> wait connected -> BLUE -> GitHub raw BIN -> YELLOW progress -> Update -> GREEN -> restart; failure -> RED -> BLE recovery.
+- [REQUIRED] Avoid unnecessary WIFI_OFF/reinitialization on retries; prefer simple soft retry when technically correct; preserve cooperative timing.
+- [ALREADY PRESENT] Current V4.0 already uses plain WiFiClientSecure + setInsecure(), GitHub raw URL allowlist, BLUE/YELLOW/GREEN/RED indicators, and direct download/finalize transitions. Gemini must not resend patches for these completed items.
+- [REJECTED] Do not add cloudPassword.trim(); protocol does not establish surrounding whitespace as formatting.
+- [HISTORY ANCHOR] V1.4 production source commit bf923ba37bdaee96b9f870318401c0d04061e8ff uses simpler direct Online OTA startup; history is evidence only, not proof of perfection.
+- [VERSION] Any functional implementation must increment V4.0 -> V4.1, even for a one-character change.
+- [PROTECTED] Local OTA remains Golden/Protected and out of scope.
+- [NO SOURCE CHANGE] This Gemini request itself does not modify firmware.
+
 ## 2026-10-04 — GEMINI FULL PRE-FLASH FORENSIC AUDIT RECEIVED
 
 - [VERDICT] User-supplied Gemini audit of exact V4.0 source blob `0566105383a889912e5e756b0b9f265e5fcf0264`: **SAFE TO FLASH LOCAL OTA** at source level.
