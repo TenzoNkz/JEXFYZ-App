@@ -64,6 +64,13 @@ For every future JE X FYZ action, the assistant must first read the complete cur
 - A stale `workflow_dispatch` statement in APP_NOTES.md was corrected to match the active issue-trigger workflow.
 - No functional App/Firmware source was changed by this preflight; no App Build was triggered.
 
+## 2026-10-04 — DUAL CHAT-LIMIT CONTINUITY SYSTEM ACTIVE
+
+- Prompt A is the official old-chat context exporter: CHAT-LIMIT RECAP.
+- Prompt B is the official new-chat bootstrap/reconciliation prompt: NEW CHAT TRANSFER.
+- Prompt A output is transfer evidence only; current repository/source/workflow remain authoritative.
+- Prompt B must perform the complete memory preflight and current-source/workflow inspection before continuing any workflow, including Build App subchats.
+- This implementation is documentation/process only. No functional App/Firmware source changed and no App Build was triggered.
 # JE X FYZ — PROJECT STATE
 
 > **Authoritative current-state snapshot.**
@@ -72,7 +79,7 @@ For every future JE X FYZ action, the assistant must first read the complete cur
 ## 1. CURRENT PROJECT
 
 - Project: JE X FYZ / JE Cooler
-- Current workflow event: New Chat Preflight — Repository Memory + Current Source/Workflow Verification
+- Current workflow event: Execution Full — Dual Chat-Limit Prompt System
 - Functional source behavior changed by this task: No
 - App Build triggered by this task: No
 - Firmware compile triggered by this task: No
