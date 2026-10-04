@@ -420,21 +420,7 @@ String cloudVersion;
 
 // Core 3.3.7 exposes the ESP-IDF certificate-bundle attach hook through NetworkClientSecure.
 // This wrapper enables the built-in trusted CA bundle without guessing or pinning a GitHub leaf certificate.
-class JexTrustedWiFiClientSecure : public WiFiClientSecure {
- public:
-  void enableSystemCaBundle() {
-    attach_ssl_certificate_bundle(sslclient.get(), true);
-    _use_ca_bundle = true;
-    _use_insecure = false;
-    _CA_cert = nullptr;
-    _cert = nullptr;
-    _private_key = nullptr;
-    _pskIdent = nullptr;
-    _psKey = nullptr;
-  }
-};
-
-JexTrustedWiFiClientSecure cloudClient;
+WiFiClientSecure cloudClient;
 size_t localOtaBytesReceived = 0;
 size_t localOtaExpectedBytes = 0;
 bool localOtaStarted = false;
@@ -3287,9 +3273,9 @@ static bool processOnlineOtaProgressIndicator() {
 
   if (onlineOtaDownloadCompletePending) {
     onlineOtaDownloadCompletePending = false;
-    startOnlineOtaResultIndicator(
-        0x0000FF,
-        OnlineOtaIndicatorNext::FLASH_FINALIZE);
+    onlineOtaFlow = OnlineOtaFlow::FLASH_FINALIZE;
+    setOtaState(OtaState::CLOUD_APPLYING);
+    setOtaDiagnosticStage("ONLINE_FLASH_FINALIZE");
     return true;
   }
 
@@ -3306,8 +3292,8 @@ static bool prepareOnlineOtaDownload() {
   setOtaDiagnosticError(0, "NONE");
 
   cloudClient.stop();
-  // Use the ESP32 Core trust bundle so the TLS peer must chain to a trusted CA; never accept an arbitrary server certificate.
-  cloudClient.enableSystemCaBundle();
+  // Online OTA intentionally prioritizes compatibility with the GitHub raw BIN endpoint over CA validation.
+  cloudClient.setInsecure();
   cloudClient.setTimeout(ONLINE_OTA_HTTP_TIMEOUT_MS);
 
   onlineHttpClient.end();
@@ -3382,9 +3368,9 @@ static bool prepareOnlineOtaDownload() {
 
   setOtaDiagnosticStage("ONLINE_GITHUB_CONNECTED");
   setOtaDiagnosticProgress(0);
-  startOnlineOtaResultIndicator(
-      0x00FF00,
-      OnlineOtaIndicatorNext::DOWNLOAD);
+  onlineOtaFlow = OnlineOtaFlow::DOWNLOAD;
+  setOtaState(OtaState::CLOUD_DOWNLOADING);
+  setOtaDiagnosticStage("ONLINE_DOWNLOAD");
   return true;
 }
 
