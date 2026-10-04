@@ -28,7 +28,7 @@ enum class LedMode : uint8_t;
 enum class VoltageRequestSource : uint8_t;
 enum class AdaptiveProfile : uint8_t;
 
-static constexpr char FW_VERSION[] = "V2.9";
+static constexpr char FW_VERSION[] = "V3.0";
 
 // ============================================================================
 // ========================== HEAP DIAGNOSTIC BUILD ===========================
@@ -186,7 +186,6 @@ static constexpr uint32_t NTC_FAULT_HIGH_MV = 3290;
 static constexpr uint32_t VOLTAGE_GUARD_MS             = 1000;
 static constexpr uint32_t VOLTAGE_DEADTIME_MS           = 200;
 static constexpr uint32_t HOT_PELTIER_OFF_MS          = 10000;
-static constexpr uint32_t ADAPTIVE_VOLTAGE_STEP_DELAY_MS = 1000;
 static constexpr uint32_t BATTERY_VALID_TTL_MS          = 5000;
 static constexpr uint32_t SETTINGS_SAVE_DEBOUNCE_MS     = 10000;
 // Touch Adaptive-OFF indicator uses three non-blocking 250 ms color phases.
@@ -199,7 +198,6 @@ static constexpr int BATTERY_LIMIT_MIN = 20;
 static constexpr int BATTERY5_LIMIT_MAX = 30;
 static constexpr int BATTERY12_LIMIT_MIN = 30;
 static constexpr int BATTERY12_LIMIT_MAX = 40;
-static constexpr float BATTERY_HYSTERESIS_C = 1.0f;
 
 static constexpr uint8_t FAN_PWM_MIN = 50;
 static constexpr uint8_t FAN_PWM_MAX = 100;
@@ -286,7 +284,6 @@ uint32_t lastNtcReadMs = 0;
 bool batteryValid = false;
 float batteryC = NAN;
 uint32_t lastBatteryRxMs = 0;
-int lastBatteryZone = -1;
 
 int hotLimit = 45;
 int battery5Limit = 25;
@@ -305,7 +302,7 @@ bool prefsReady = false;
 
 bool voltageTransition = false;
 uint32_t voltageTransitionAt = 0;
-uint32_t lastVoltageChangeMs = 0;
+uint32_t lastVoltageTransitionCompleteMs = 0;
 bool voltageGuardArmed = false;
 
 String lastSafetyReasonSent;
@@ -320,13 +317,7 @@ uint32_t adaptiveHotStepDueMs = 0;
 uint32_t peltierHotOffUntilMs = 0;
 bool adaptiveResumePeltierAfterHotStep = false;
 
-bool adaptiveUpPending = false;
-Voltage adaptiveUpTarget = Voltage::V5;
-uint32_t adaptiveUpDueMs = 0;
 
-bool adaptiveDownPending = false;
-Voltage adaptiveDownTarget = Voltage::V5;
-uint32_t adaptiveDownDueMs = 0;
 
 bool touchAdaptiveOffIndicatorActive = false;
 uint32_t touchAdaptiveOffIndicatorStartedAt = 0;
@@ -1264,7 +1255,7 @@ static void processLeds() {
 static bool voltageGuardAllows(bool bypassGuard) {
   if (bypassGuard || !voltageGuardArmed) return true;
 
-  return millis() - lastVoltageChangeMs >= VOLTAGE_GUARD_MS;
+  return millis() - lastVoltageTransitionCompleteMs >= VOLTAGE_GUARD_MS;
 }
 
 static bool manualVoltageRequestAllowed(VoltageRequestSource source) {
@@ -1292,11 +1283,6 @@ static bool requestVoltage(Voltage target, VoltageRequestSource source, bool byp
   }
 
   if (target == currentVoltage) return true;
-
-  if (!bypassGuard) {
-    voltageGuardArmed = true;
-    lastVoltageChangeMs = millis();
-  }
 
   pendingVoltage = target;
   voltageTransition = true;
@@ -1330,10 +1316,11 @@ static void completeVoltageTransition() {
     peltierOn = true;
   }
 
-  if (!voltageGuardArmed) {
-    voltageGuardArmed = true;
-    lastVoltageChangeMs = millis();
-  }
+  // A successful physical voltage transition arms the shared hardware dwell.
+  // The 1-second rate limit starts only after the 200 ms selector deadtime
+  // has completed and the new voltage selector is active.
+  voltageGuardArmed = true;
+  lastVoltageTransitionCompleteMs = millis();
 
   if (currentVoltage != Voltage::V12 || adaptiveOn) {
     fanPwm = 100;
@@ -1404,8 +1391,6 @@ static void forceSafeFiveVolt() {
   const bool previousFan = fanOn;
   const bool previousPeltier = peltierOn;
 
-  adaptiveUpPending = false;
-  adaptiveDownPending = false;
   adaptiveHotStepPending = false;
   peltierHotOffUntilMs = 0;
   adaptiveResumePeltierAfterHotStep = false;
@@ -1483,8 +1468,6 @@ static void enforceSafety() {
         adaptiveResumePeltierAfterHotStep = fanOn && wasPeltierOn;
       }
 
-      adaptiveUpPending = false;
-      adaptiveDownPending = false;
     }
 
     if (!adaptiveOn) {
@@ -1526,9 +1509,6 @@ static void processAdaptiveHotTimer() {
   if (millis() < adaptiveHotStepDueMs) return;
 
   adaptiveHotStepPending = false;
-  adaptiveUpPending = false;
-  adaptiveDownPending = false;
-  adaptiveDownDueMs = 0;
 
   const bool wasPeltierOn = peltierOn;
   peltierOn = false;
@@ -1579,40 +1559,8 @@ static String safetyReason() {
 static int batteryZoneFor(float temperature) {
   if (!isfinite(temperature)) return 9;
   if (temperature < battery5Limit) return 5;
-  if (temperature > battery12Limit) return 12;
-  return 9;
-}
-
-static int batteryZoneForStable(float temperature) {
-  if (!isfinite(temperature)) return 9;
-
-  if (lastBatteryZone != 5 &&
-      lastBatteryZone != 9 &&
-      lastBatteryZone != 12) {
-    switch (currentVoltage) {
-      case Voltage::V5:  return 5;
-      case Voltage::V9:  return 9;
-      case Voltage::V12: return 12;
-    }
-    return batteryZoneFor(temperature);
-  }
-
-  switch (lastBatteryZone) {
-    case 5:
-      if (temperature >= battery5Limit + BATTERY_HYSTERESIS_C) return 9;
-      return 5;
-
-    case 9:
-      if (temperature <= battery5Limit - BATTERY_HYSTERESIS_C) return 5;
-      if (temperature >= battery12Limit + BATTERY_HYSTERESIS_C) return 12;
-      return 9;
-
-    case 12:
-      if (temperature <= battery12Limit - BATTERY_HYSTERESIS_C) return 9;
-      return 12;
-  }
-
-  return batteryZoneFor(temperature);
+  if (temperature < battery12Limit) return 9;
+  return 12;
 }
 
 static Voltage batteryZoneVoltage(int zone) {
@@ -1626,48 +1574,9 @@ static Voltage higherVoltage(Voltage value) {
   return Voltage::V12;
 }
 
-static void updateBatteryValidity() {
-  if (!batteryValid) return;
-  if (millis() - lastBatteryRxMs <= BATTERY_VALID_TTL_MS) return;
-
-  batteryValid = false;
-  batteryC = NAN;
-  lastBatteryZone = -1;
-  adaptiveUpPending = false;
-  adaptiveDownPending = false;
-  sendDelta("BATTERY", "--");
-  sendDelta("BATTERY_VALID", "0");
-}
-
-static void scheduleAdaptiveBatteryTarget(Voltage desiredTarget) {
-  desiredTarget = clampToAdaptiveCeiling(desiredTarget);
-
-  if (desiredTarget == currentVoltage) {
-    adaptiveUpPending = false;
-    adaptiveDownPending = false;
-    adaptiveDownDueMs = 0;
-    return;
-  }
-
-  if (isHigherVoltage(desiredTarget, currentVoltage)) {
-    adaptiveDownPending = false;
-    adaptiveDownDueMs = 0;
-    const Voltage stepTarget = higherVoltage(currentVoltage);
-    if (!adaptiveUpPending || adaptiveUpTarget != stepTarget) {
-      adaptiveUpPending = true;
-      adaptiveUpTarget = stepTarget;
-      adaptiveUpDueMs = millis() + ADAPTIVE_VOLTAGE_STEP_DELAY_MS;
-    }
-    return;
-  }
-
-  adaptiveUpPending = false;
-  const Voltage stepTarget = lowerVoltage(currentVoltage);
-  if (!adaptiveDownPending || adaptiveDownTarget != stepTarget) {
-    adaptiveDownPending = true;
-    adaptiveDownTarget = stepTarget;
-    adaptiveDownDueMs = millis() + ADAPTIVE_VOLTAGE_STEP_DELAY_MS;
-  }
+static Voltage lowerVoltage(Voltage value) {
+  if (value == Voltage::V12) return Voltage::V9;
+  return Voltage::V5;
 }
 
 static void evaluateAdaptiveBattery() {
@@ -1677,79 +1586,31 @@ static void evaluateAdaptiveBattery() {
       !batteryValid) return;
   if (adaptiveHotStepPending || hotsideProtectionActiveNow()) return;
 
-  const int zone = batteryZoneForStable(batteryC);
-  lastBatteryZone = zone;
-  scheduleAdaptiveBatteryTarget(batteryZoneVoltage(zone));
-}
-
-static void processAdaptiveBatteryDown() {
-  if (!adaptiveOn ||
-      adaptiveProfile != AdaptiveProfile::HOTSIDE_BATTERY ||
-      !ntcValid ||
-      !batteryValid) return;
-  if (adaptiveHotStepPending || !adaptiveDownPending || voltageTransition) return;
-  if (hotsideProtectionActiveNow()) return;
-
-  const int stableZone = batteryZoneForStable(batteryC);
-  lastBatteryZone = stableZone;
+  // Battery temperature maps directly to the current desired zone.
+  // There is intentionally no temperature hysteresis or remembered zone.
+  const int zone = batteryZoneFor(batteryC);
   const Voltage desiredTarget =
-      clampToAdaptiveCeiling(batteryZoneVoltage(stableZone));
+      clampToAdaptiveCeiling(batteryZoneVoltage(zone));
 
-  if (desiredTarget == currentVoltage) {
-    adaptiveDownPending = false;
-    adaptiveDownDueMs = 0;
-    return;
-  }
+  // No queue is kept here. If the desired target returns to the
+  // current physical voltage before the rate-limit window opens,
+  // there is simply no voltage transition to execute.
+  if (desiredTarget == currentVoltage) return;
+  if (voltageTransition) return;
 
-  if (isHigherVoltage(desiredTarget, currentVoltage)) {
-    adaptiveDownPending = false;
-    scheduleAdaptiveBatteryTarget(desiredTarget);
-    return;
-  }
+  // Move exactly one voltage level toward the current desired target.
+  const Voltage stepTarget =
+      isHigherVoltage(desiredTarget, currentVoltage)
+          ? higherVoltage(currentVoltage)
+          : lowerVoltage(currentVoltage);
 
-  adaptiveDownTarget = lowerVoltage(currentVoltage);
-  if (millis() < adaptiveDownDueMs) return;
-
-  if (requestVoltage(adaptiveDownTarget, VoltageRequestSource::BATTERY, true)) {
-    adaptiveDownPending = false;
-    adaptiveDownDueMs = 0;
-  }
-}
-
-static void processAdaptiveUpTimer() {
-  if (!adaptiveOn ||
-      adaptiveProfile != AdaptiveProfile::HOTSIDE_BATTERY ||
-      !ntcValid ||
-      !batteryValid) return;
-  if (adaptiveHotStepPending || !adaptiveUpPending || voltageTransition) return;
-
-  if (hotsideProtectionActiveNow()) {
-    adaptiveUpPending = false;
-    return;
-  }
-
-  const int stableZone = batteryZoneForStable(batteryC);
-  lastBatteryZone = stableZone;
-  const Voltage desiredTarget =
-      clampToAdaptiveCeiling(batteryZoneVoltage(stableZone));
-
-  if (desiredTarget == currentVoltage) {
-    adaptiveUpPending = false;
-    return;
-  }
-
-  if (!isHigherVoltage(desiredTarget, currentVoltage)) {
-    adaptiveUpPending = false;
-    scheduleAdaptiveBatteryTarget(desiredTarget);
-    return;
-  }
-
-  adaptiveUpTarget = higherVoltage(currentVoltage);
-  if (millis() < adaptiveUpDueMs) return;
-
-  if (requestVoltage(adaptiveUpTarget, VoltageRequestSource::BATTERY, false)) {
-    adaptiveUpPending = false;
-  }
+  // Battery Adaptive always obeys the shared voltage hardware dwell.
+  // A stale step is never queued: this function re-evaluates the
+  // live battery target every loop and before every physical step.
+  (void)requestVoltage(
+      stepTarget,
+      VoltageRequestSource::BATTERY,
+      false);
 }
 
 static void clearBleTxQueue() {
@@ -3264,10 +3125,6 @@ static void activateAdaptiveAfterSafeFiveVolt() {
   adaptiveHotStepPending = false;
   peltierHotOffUntilMs = 0;
   adaptiveResumePeltierAfterHotStep = false;
-  adaptiveUpPending = false;
-  adaptiveDownPending = false;
-  adaptiveDownDueMs = 0;
-  lastBatteryZone = -1;
   fanOn = true;
   peltierOn = true;
   fanPwm = 100;
@@ -3310,10 +3167,6 @@ static void setAdaptiveState(bool desired, String& reason) {
     adaptiveHotStepPending = false;
     peltierHotOffUntilMs = 0;
     adaptiveResumePeltierAfterHotStep = false;
-    adaptiveUpPending = false;
-    adaptiveDownPending = false;
-    adaptiveDownDueMs = 0;
-    lastBatteryZone = -1;
     fanPwm = 100;
 
     if (currentVoltage == Voltage::V5 && !voltageTransition) {
@@ -3344,9 +3197,6 @@ static void setAdaptiveState(bool desired, String& reason) {
   adaptiveOn = false;
   adaptiveHotStepPending = false;
   peltierHotOffUntilMs = 0;
-  adaptiveUpPending = false;
-  adaptiveDownPending = false;
-  adaptiveDownDueMs = 0;
   adaptiveResumePeltierAfterHotStep = false;
   adaptiveCeiling = Voltage::V12;
   fanPwm = 100;
@@ -3806,9 +3656,6 @@ static void handleCommand(const String& command) {
       if (batteryValid || !isnan(batteryC)) {
         batteryValid = false;
         batteryC = NAN;
-        lastBatteryZone = -1;
-        adaptiveUpPending = false;
-        adaptiveDownPending = false;
         sendDelta("BATTERY", "--");
         sendDelta("BATTERY_VALID", "0");
       }
@@ -3819,9 +3666,6 @@ static void handleCommand(const String& command) {
       if (batteryValid || !isnan(batteryC)) {
         batteryValid = false;
         batteryC = NAN;
-        lastBatteryZone = -1;
-        adaptiveUpPending = false;
-        adaptiveDownPending = false;
         sendDelta("BATTERY", "--");
         sendDelta("BATTERY_VALID", "0");
       }
@@ -4138,7 +3982,6 @@ static void initializeRuntimeFeatures() {
 
   batteryValid = false;
   batteryC = NAN;
-  lastBatteryZone = -1;
   ntcValid = false;
   hotsideC = NAN;
 
@@ -4224,8 +4067,7 @@ void loop() {
   sampleNtcIfDue();
   updateBatteryValidity();
   processAdaptiveHotTimer();
-  processAdaptiveBatteryDown();
-  processAdaptiveUpTimer();
+  evaluateAdaptiveBattery();
   completeVoltageTransition();
 
   const bool bootCoolingLocked =
