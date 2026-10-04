@@ -4720,3 +4720,36 @@ This is static/source analysis only. ArduinoDroid + official Arduino-ESP32 Core 
 
 ### Documentation standard for next implementation pass
 The requested “keterangan di semua baris” is interpreted as every meaningful functional statement being explainable from nearby comments/contract metadata: purpose, authority, state mutation, timing, and safety effect. Blank lines, punctuation-only braces, and obvious syntax do not need redundant comments.
+
+## 2026-10-04 — GEMINI INDEPENDENT AUDIT RECONCILIATION
+
+[DISCUSSION ONLY] Gemini's raw independent V3.8 audit was compared against current source blob `2fbff3656bc037846124806fb390022f85146845`.
+
+[CONFIRMED]
+- Online OTA DOWNLOAD dispatcher starvation.
+- NTC deadtime validity race before selector activation.
+- Peltier ON can interleave with active voltage transition.
+- Wi-Fi retry can skip radio-off settle.
+- ADAPTIVE:OFF ACK can report success after safe-5V force failure.
+- Battery Adaptive has no hysteresis.
+- Rapid Hotside dT/dt protection required by the project is absent.
+- Online OTA uses synchronous HTTP GET.
+- Online OTA TLS verification is disabled by `setInsecure()`.
+- OTA version check is syntax-only; no anti-rollback.
+- BLE control channel has no cryptographic authentication.
+
+[CONFIRMED SAFETY GAP / NOT PROVEN ROOT CAUSE]
+- Voltage transition does not explicitly clear Peltier PWM before selector handoff. This is a real sequencing hazard and remains a leading hypothesis for the 9V->12V restart, but brownout/LDO/EMI/current causality is not source-proven.
+
+[CORRECTED SEVERITY]
+- BLE disconnect callback advertising restart is P2 callback-context/reentrancy risk unless exact Core 3.3.7 behavior proves otherwise.
+- BLE/Wi-Fi handoff is a confirmed project-contract violation because OTA calls `stopBleRadio(false)`; physical restart causality remains unverified.
+- Reset-reason implementation remains a validation item: upstream Arduino-ESP32 exposes `esp_reset_reason()` in examples, but the user's exact ArduinoDroid/Core 3.3.7 build must be compile-verified before source changes.
+
+[FROZEN CONTRACT]
+- Peltier 5s soft-start remains **ONLY logical OFF -> ON**.
+- Voltage changes must **NOT** restart the 5s soft-start.
+- Any electrical hardening around voltage switching must preserve that contract and may introduce a separate transient-suppression mechanism only if its semantics are explicitly defined.
+
+[NEXT SOURCE WORK]
+A full hardening pass must address the confirmed sequencing/OTA/safety items before hardware validation.
