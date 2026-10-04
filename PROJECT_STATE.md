@@ -340,3 +340,16 @@ For Build App, the first action must be the full memory preflight and exact-sour
 - [DECISION] For the planned device test, continue using the verified Build #50 APK unless a new App functional/configuration change occurs or a fresh APK is needed for operational reasons.
 - [UNVERIFIED] Build #50 does not validate Firmware V3.7 runtime; firmware compile/BIN/flash and physical device validation remain separate evidence layers.
 - [NEXT ACTION] Hardware test should establish the exact firmware binary/version flashed on the ESP32-C3 and test the current App APK against that device.
+
+## 2026-10-04 — HARDWARE TEST / 9V TO 12V RESET — SOFT-START HYPOTHESIS
+
+- [TESTED] User reports a physical runtime fault: 5 V → 9 V is stable, while 9 V → 12 V causes an immediate MCU restart.
+- [USER REQUIREMENT] User suspects the V3.7 Peltier soft-start is related and requested a second-opinion/Gemini check.
+- [CONFIRMED] V3.7 performs the 9 V → 12 V selector transition with a 200 ms break-before-make deadtime, then arms a 1 s shared voltage guard.
+- [CONFIRMED] When Peltier is already ON, every upward voltage transition invokes `beginPeltierSoftStart()` after the physical selector transition completes.
+- [CONFIRMED] The Peltier ramp is 0% → 100% over 5 s; this is not an immediate full-duty command.
+- [HYPOTHESIS] The reset may be caused by a power transient/current disturbance associated with the 12 V transition and/or the interaction of the newly restarted Peltier PWM with the 12 V power stage. Source inspection alone cannot distinguish brownout, external supply collapse, EMI/reset coupling, or another electrical fault.
+- [DECISION] Do not modify firmware timing or rebuild the App from this observation alone. First isolate the 9 V → 12 V transition from the Peltier soft-start so the hardware fault can be attributed correctly.
+- [BLOCKED] Gemini second opinion could not be executed because no Gemini-capable tool/connector is available in this session; no Gemini result is being claimed.
+- [NEXT ACTION] A controlled diagnostic should compare 9 V → 12 V with Peltier OFF versus Peltier ON, while capturing the ESP32 reset/boot serial output if available.
+
