@@ -1,3 +1,14 @@
+## 2026-10-04 — DISCUSSION / RESTORE ONLINE OTA PRE-YELLOW BASELINE
+
+- [USER REQUEST] User wants Online OTA returned to the version before the firmware changed to yellow progress LEDs because the current Online OTA continues to fail.
+- [VERIFIED] The yellow Online OTA progress indicator was introduced in **V3.3**. Commit `5cd6ef08cb127ba6084eb1560555dc8d9589565a` adds `ONLINE_OTA_PROGRESS_BLINK_MS`, `queueOnlineOtaProgressMilestones()`, and `showAll(0xFFFF00, 255)` at 20/40/60/80/100% milestones.
+- [VERIFIED] The immediately preceding pre-yellow source is **V3.2**, active source commit `536877e644731e3ed0a64b87508c18de9270eede`, source blob `03638659990b0d37f6d8d4eb155a96bd127c28a7`.
+- [VERIFIED] V3.2 contains no yellow-progress indicator; its Online OTA path uses the earlier result-only LED flow (BLUE after Wi-Fi connection, GREEN after GitHub/download preparation, BLUE after download, GREEN after successful flash, RED on failure) and does not contain the V3.3 yellow milestone state machine.
+- [IMPORTANT] Repository evidence does **not** prove that V3.2 itself completed a physical end-to-end Online OTA update. Therefore V3.2 is the exact **pre-yellow baseline**, not a repository-proven successful hardware baseline.
+- [HISTORICAL VERIFIED SUCCESS] A separate historical V4.5 Online OTA path is documented as physically successful end-to-end, but it is not the pre-yellow V3.2 architecture and must not be conflated with this request.
+- [NO SOURCE CHANGE] This is discussion-only; no Firmware/App source or build was changed.
+- [NEXT] Before executing a rollback, decide whether the intended scope is the exact V3.2 Online OTA engine or only removal of the V3.3+ yellow progress layer while retaining later safety hardening.
+
 ## 2026-10-04 — EXECUTION FULL / V4.2 ONLINE OTA RETRY HARDENING
 
 ### Source/version
