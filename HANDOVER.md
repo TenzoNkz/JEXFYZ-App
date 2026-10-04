@@ -1,31 +1,35 @@
 # JE X FYZ — CURRENT HANDOVER
 
 ## CURRENT TRUTH
-- Firmware: V4.4
-- Active source: firmware/JEXFYZ-V4.4.ino
+- Firmware: V4.5
+- Active source: firmware/JEXFYZ-V4.5.ino
+- Firmware blob: daef871d910f3f1bc4f2d1bdc44e0d19f6e292dc
 - App: 1.0.0+3
-- Latest App Build: #50
-- V4.3 Local OTA: PASS — user confirmed
-- V4.3 Online OTA: PASS — user confirmed
-- V4.4 new BLE GATT disconnect: physical test pending
+- App main blob: 8ebd878b116d7ef093b6df54894a7db876eb0f02
+- Latest verified App Build: #50 (older App source)
+- V4.4 OTA: user-confirmed PASS.
+- V4.5 source/static audit: PASS.
 
 ## CURRENT OBJECTIVE
-Verify that clicking Update Firmware causes the active BLE GATT session to disconnect before Wi-Fi OTA begins.
+Physically validate the V4.5 firmware and the synchronized App OTA recovery contract.
 
-Expected:
-Update Firmware → BLE disconnect → App telemetry disappears → Online OTA → restart → BLE reconnect → sync → dashboard resumes.
+Expected Online OTA:
+Update Firmware → active GATT disconnect → live App telemetry stops → Online OTA continues → restart → BLE reconnect → P1 sync → OTA result is shown.
 
 ## FROZEN
-- Local OTA
+- Local OTA Golden Path
 - BLE UUID/P1 contract
 - App package identity
 - Manual App Build workflow
 - V3.2-style Online OTA transport/retry/result-indicator path
-- cooperative timing rules
+- Cooperative timing rules
 - Firmware version/file alignment
 
 ## VALIDATION
-Compile V4.4 with ArduinoDroid/Core 3.3.7, generate BIN, flash, test Online OTA, verify BLE disconnect and telemetry stop, then verify restart/reconnect/sync and Local OTA.
+- V4.4 physical OTA was confirmed successful before V4.5 promotion.
+- V4.5 compile/BIN/flash/physical OTA remains pending.
+- Current App source is not validated by Build #50.
 
 ## BUILD
-No App source/config/workflow change was made for V4.4. Build #50 remains the App baseline.
+- App Build remains explicit and manual.
+- No App Build was triggered by this execution.
