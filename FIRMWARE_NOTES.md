@@ -1,3 +1,12 @@
+## 2026-10-04 — V4.0 GEMINI + ASSISTANT DUAL-PARTY REVIEW
+
+- [GEMINI VERDICT] Exact V4.0 blob `b2a77fadeaa154412850d34c82b0bb78ef108bae`: **SAFE TO FLASH**.
+- [ASSISTANT VERDICT] Independently reviewed the exact same blob and agrees: **SAFE TO FLASH**.
+- [GATE OPEN] Both parties agree, satisfying the user's mandatory two-party requirement.
+- [SCOPE] This opens the gate to the next controlled phase: ArduinoDroid/Core 3.3.7 compile → BIN generation → staged physical validation.
+- [NOT CLAIMED] Compilation, BIN integrity, Firebase publication, or physical device validation has not yet succeeded merely from this review.
+- [VERIFIED] P0 selector/load sequencing hardening and P1 Online OTA TLS trust hardening remain present.
+
 ## 2026-10-04 — EXECUTION FULL / FIRMWARE V4.0 P0+P1 HARDENING
 
 ### Source/version
