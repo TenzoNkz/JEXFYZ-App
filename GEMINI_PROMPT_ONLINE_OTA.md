@@ -386,3 +386,48 @@ Bila menemukan bug yang benar-benar perlu diperbaiki sebelum flash:
 10. WHAT IS STILL UNVERIFIED ON REAL HARDWARE
 
 **Jangan bias terhadap patch sebelumnya. Audit source dari nol dan coba secara agresif menemukan cara firmware ini gagal.**
+
+
+# 2026-10-04 — ONLINE OTA WIFI CONNECTION FORENSIC DIAGNOSIS
+
+Saya membawa hasil hardware terbaru untuk firmware V4.0 exact source yang sama.
+
+CURRENT EXACT SOURCE BLOB:
+0566105383a889912e5e756b0b9f265e5fcf0264
+
+HARDWARE OBSERVATION:
+- Online OTA masih gagal.
+- Pengujian dilakukan memakai hotspot HP.
+- ESP32-C3 tidak mau connect ke hotspot.
+- Karena tidak pernah mencapai WL_CONNECTED, BLUE Wi-Fi-success tidak muncul.
+- Jangan menganggap masalah ini masih berada di HTTPS/GitHub; tentukan stage failure berdasarkan source.
+
+AUDIT KHUSUS:
+1. BLE teardown → Wi-Fi OFF settle → WIFI_STA handoff.
+2. WiFi.mode(WIFI_STA).
+3. WiFi.setHostname().
+4. WiFi.setSleep(false).
+5. WiFi.setAutoReconnect(false).
+6. WiFi.begin(SSID, PASSWORD).
+7. WL_CONNECTED / WL_CONNECT_FAILED / WL_NO_SSID_AVAIL handling.
+8. 15 s connection timeout and retry sequencing.
+9. Wi-Fi disconnect/retry state reset.
+10. ESP32-C3/Arduino-ESP32 Core 3.3.7 Wi-Fi API compatibility.
+11. Possibility that the source prevents successful association/authentication.
+12. Possibility that Wi-Fi is actually connected but status is not observed.
+13. Possibility that retry/failure state machine prevents visible LED feedback.
+14. Determine whether hotspot compatibility is the likely cause versus a firmware source bug.
+15. Check whether any Wi-Fi setting should explicitly support common Android 2.4 GHz hotspot configurations.
+
+IMPORTANT:
+- Do not invent hardware logs.
+- Distinguish proven source bug vs hypothesis vs hotspot compatibility.
+- Do not change Local OTA.
+- Do not modify unrelated firmware features.
+
+FINAL ANSWER REQUIRED:
+A. Exact failure stage.
+B. Root cause with confidence.
+C. Whether a source patch is actually required.
+D. SAFE / NOT SAFE assessment for the next test.
+E. If patch required, output ONLY exact OLD → NEW blocks. Never return the full .ino.
