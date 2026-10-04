@@ -1,3 +1,10 @@
+## WORKFLOW RESTORE — 2026-10-05
+- Restored the Build #50-era two-workflow architecture under new filenames.
+- Trigger workflow: `.github/workflows/jexfyz-app-build-trigger.yml`.
+- Reusable engine: `.github/workflows/jexfyz-app-build-engine.yml`.
+- Engine preserves obfuscated release APK generation, production certificate verification, APK Actions artifact upload, and Dart symbols artifact upload.
+- No App Build was executed by this workflow restore.
+
 # JE X FYZ — BUILD NOTES
 
 ## APP BUILD POLICY
@@ -11,14 +18,11 @@
 - Production signing certificate SHA256: dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0
 
 ## CURRENT DELIVERY WORKFLOW
-- [COMMITTED] Legacy `.github/workflows/app-build.yml` and `.github/workflows/app-build-trigger.yml` were deleted.
-- [COMMITTED] New single workflow: `.github/workflows/jexfyz-build.yml`.
-- [VERIFIED] Current workflow blob: 08a137b4d315cc12e830a7e8dbc1ea40c3d2873d.
-- [COMMITTED] Release workflow now uses permissions contents: write.
-- [COMMITTED] Actions-artifact upload/cleanup is no longer part of the APK delivery path.
-- [COMMITTED] Release publication is exactly one direct GitHub Release asset at jexfyz-latest, named JEXFYZ-release.apk; existing asset is replaced with --clobber.
-- [COMMITTED] Dart symbols are still generated for obfuscation diagnostics but are not uploaded.
-- [VERIFIED] Trigger workflow remains issue-based, owner/title/token gated, and reusable.
+- [REPLACED] Previous single workflow `.github/workflows/jexfyz-build.yml` was removed.
+- [COMMITTED] Restored manual trigger: `.github/workflows/jexfyz-app-build-trigger.yml`.
+- [COMMITTED] Restored reusable engine: `.github/workflows/jexfyz-app-build-engine.yml`.
+- [COMMITTED] Restored engine is based on the proven Build #50-era App Build engine and uses Actions artifacts for the APK and Dart symbols.
+- [VERIFIED] No normal push/PR trigger is present in the restored pair.
 - [HISTORICAL] New workflow run #1 cleanup step completed and all build/signing gates passed before the quota fix.
 - [HISTORICAL] New workflow run #1 artifact upload failed because Actions artifact storage quota was exhausted.
 - [IMPLEMENTED][VERIFIED] Current workflow has removed that Actions-artifact delivery dependency and successfully published the replacement Release asset in workflow run #2.
