@@ -57,7 +57,7 @@
 - [LOCAL OTA] Local OTA remains frozen/protected; audit must check for indirect regressions but must not propose unrelated Local OTA changes.
 - [GEMINI OUTPUT] Final verdict must be SAFE TO FLASH LOCAL OTA or NOT SAFE TO FLASH LOCAL OTA. Any required functional corrections must be exact OLD → NEW patches only; no full .ino.
 - [CURRENT SOURCE] V4.0 source blob remains `0566105383a889912e5e756b0b9f265e5fcf0264`.
-- [PROMPT] Full copy-ready forensic audit prompt has been appended to `GEMINI_PROMPT_ONLINE_OTA.md`.
+- [PROMPT] Gemini audit prompts are now generated in the active chat; no dedicated Gemini prompt file is persisted in the repository.
 - [GATE] Flash gate remains CLOSED until the fresh exact-source review and required validation are complete.
 
 ## 2026-10-04 — GEMINI ONLINE OTA PATCH EXECUTION COMPLETE
