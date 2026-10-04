@@ -1,3 +1,14 @@
+## 2026-10-04 — GEMINI PATCH-ONLY EXECUTION PROTOCOL
+
+- [USER COMMAND] `@Thinking Eksekusi Full!` requested repository/workflow preparation so future Gemini fixes are applied by this assistant.
+- [IMPLEMENTED] Added `GEMINI_PROMPT_ONLINE_OTA.md` containing the full copy-ready Online OTA Gemini prompt.
+- [RULE] Gemini output must be patch-only using exact OLD → NEW blocks; no full .ino file.
+- [RULE] After the user returns Gemini's patch, the next `@Thinking Eksekusi Full!` applies the patch to the exact repository source, performs full affected audit, syncs memory, and commits.
+- [PROTECTED] Local OTA remains frozen/protected because user has confirmed it works on hardware.
+- [CURRENT ONLINE OTA ISSUE] User reports Online OTA indicator does not visibly blink during runtime testing; Gemini diagnosis/fix is pending.
+- [CURRENT SOURCE] V4.0 blob remains `415346ece09f4af33f907b2077140ccfc45c357b`; no functional source change was made in this workflow execution.
+- [GATE] Flash gate remains CLOSED until the current source reaches the required compile/test/review gates after any functional Online OTA patch.
+
 ## 2026-10-04 — ONLINE OTA DESIGN PRIORITY / SIMPLE GITHUB FLOW
 
 - [USER REQUIREMENT] Online OTA does not need certificate/CA security hardening; priority is reliable GitHub connection and successful firmware update.
