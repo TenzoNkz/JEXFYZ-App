@@ -1,3 +1,67 @@
+## 2026-10-04 — EXECUTION FULL / FIRMWARE V3.6 UNIVERSAL HOTSIDE SAFETY + ADAPTIVE FLOW
+
+### Source/version
+- Functional firmware revision advanced **V3.5 → V3.6**.
+- Active source: `firmware/JEXFYZ-V3.6.ino`.
+- V3.5 is superseded by V3.6 after the deeper full regression found two safety/authority edge cases in the V3.5 implementation.
+- Source commit: `03ede906a34a5e06082f2c9520a29687f0abd710`.
+- V3.6 retains BLE/P1 UUIDs, logical FAN/PELTIER tokens, GPIO mapping, 200 ms selector deadtime, and no-delay runtime architecture.
+
+### Implemented — universal Hotside limit
+1. **One Hotside Limit for Manual + Adaptive**
+   - The configured Hotside temperature limit is now the universal thermal safety boundary for Manual, Adaptive HOTSIDE, and Adaptive HOTSIDE_BATTERY.
+2. **Manual Voltage safety**
+   - When Hotside reaches the limit, Peltier is forced OFF and a manual Peltier safety latch is set.
+   - Voltage is forcibly returned to **5V**.
+   - Fan remains ON and is forced to **100%** during the safety condition.
+   - Peltier remains OFF after the temperature recovers until the user explicitly turns Peltier ON from a valid manual control path.
+   - Manual Peltier ON is rejected while Hotside is still at/above the limit; the latch is released only by a safe explicit manual ON command.
+   - Normal manual voltage requests above 5V are rejected while Hotside remains at/above the limit.
+3. **Adaptive HOTSIDE**
+   - Adaptive startup still forces the selector to 5V first.
+   - Fan and Peltier are ON during normal Adaptive operation.
+   - Upward Hotside-only movement is one level at a time with a **5-second rise dwell**.
+   - When Hotside reaches the limit, voltage steps down immediately by one level without a pre-down delay.
+   - The reached voltage is removed from the Adaptive ceiling for the current Adaptive session.
+   - After the down-step physically completes, Peltier remains OFF for **5 seconds**, then may resume only if Hotside is safe.
+   - Fan remains ON throughout.
+   - If 5V itself is at/above the Hotside limit, Peltier stays OFF and **Adaptive immediately turns OFF**.
+   - Adaptive OFF resets the temporary Hotside ceiling back to 12V.
+4. **Adaptive HOTSIDE_BATTERY**
+   - Hotside remains the higher-priority thermal ceiling.
+   - Battery temperature continues to control the requested voltage only within the currently allowed Hotside ceiling.
+   - A Hotside-triggered ceiling reduction therefore prevents Battery from selecting the blocked voltage.
+   - If Battery data disappears, effective runtime control falls back to HOTSIDE behavior without rewriting the configured profile.
+5. **Battery transition authority hardening**
+   - If Battery data becomes invalid during a 200 ms Battery-originated selector deadtime, the stale Battery step is canceled and the current physical selector is restored instead of applying the stale target.
+   - Hotside safety is also revalidated immediately before selector activation so a hot condition cannot allow a pending target above the safe endpoint.
+6. **Hotside LED event**
+   - Each Hotside protection event starts a dedicated **red LED blink for 5 seconds** using a non-blocking 250 ms phase.
+   - The event indicator has LED ownership priority over the normal RGB/voltage indicator for its active window.
+   - A continuous hot condition does not retrigger the same event every loop; a later re-entry/new protection event can trigger again.
+7. **No blocking delay**
+   - Runtime source contains no executable `delay()` calls and no timing `while` loop.
+   - Main loop remains fast; timing is handled by state/timestamp checks.
+
+### Static validation
+- V3.6 version marker and versioned source path verified.
+- V3.5 removed from the active source tree.
+- Key function-definition duplication checks passed for voltage/safety/LED functions.
+- Delimiters balanced.
+- `delay(...)` count: 0.
+- No timing `while(...)` loop detected.
+- Source-level Hotside Manual, Adaptive, Battery-ceiling, 5-second Peltier cooldown, and 5-second red LED indicator paths verified.
+- ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile: **NOT performed in this environment**.
+- BIN generation/publication: **NOT performed**.
+- Firebase firmware metadata: **NOT promoted**.
+- Dedicated binary repository: **NOT modified**.
+- Physical ESP32 flash/thermal/selector/BLE/OTA validation: **NOT performed**.
+- App Build: **NOT triggered**.
+
+### Validation boundary
+- Repository/source transformation and static/model review are complete for V3.6.
+- Hardware behavior, exact selector electrical timing, Peltier thermal response, LED physical behavior, BLE runtime, and OTA runtime remain unverified until the firmware is compiled with Core 3.3.7 and tested on the real ESP32-C3 hardware.
+
 ## 2026-10-04 — CORRECTIVE EXECUTION FULL / FIRMWARE V3.4 EXACT-SOURCE AUDIT REPAIR
 
 ### Source/version
