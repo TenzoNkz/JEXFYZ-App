@@ -1,3 +1,9 @@
+## 2026-10-04 — GEMINI ONLINE OTA PATCH WORKFLOW / APP BUILD BOUNDARY
+
+- [NO APP BUILD] Adding the Gemini patch-only workflow does not trigger or require an App Build.
+- [FIRMWARE ONLY] Online OTA indicator fixes are applied in Firmware during a later `@Thinking Eksekusi Full!` step.
+- [BUILD BOUNDARY] Any later App Build remains separately explicit and follows the existing issue-trigger workflow.
+
 ## 2026-10-04 — V4.0 DUAL-PARTY FLASH GATE
 
 - [FIRMWARE] V4.0 exact source blob `b2a77fadeaa154412850d34c82b0bb78ef108bae` received independent Gemini verdict: **SAFE TO FLASH**.
