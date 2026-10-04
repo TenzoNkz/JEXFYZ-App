@@ -1,3 +1,37 @@
+## 2026-10-04 — EXECUTION FULL / V4.2 ONLINE OTA RETRY HARDENING
+
+### Source/version
+- Functional Firmware advanced **V4.1 → V4.2**.
+- Active source: `firmware/JEXFYZ-V4.2.ino`.
+- Source blob: `63e8db10dbe99eb538af62ddc7d35d8b4b20b849`.
+- Commit: `d5401b7a2bf168a8db3f4f7dd2ef876ad8eadd15`.
+
+### Implemented Online OTA change
+- Removed repeated retry-side `WiFi.disconnect(); WiFi.begin(...)`.
+- `WIFI_CONNECTING` now waits for a cumulative `WIFI_CONNECT_TIMEOUT_MS * WIFI_CONNECT_MAX_ATTEMPTS` window (3 × 15 s = 45 s with current constants).
+- Attempt telemetry changes based on elapsed 15-second intervals but does not restart the Wi-Fi driver.
+- Existing initial radio teardown remains the only Online-OTA teardown before the first `WiFi.begin()`.
+- Existing `setAutoReconnect(true)`, GitHub raw URL allowlist, `setInsecure()`, indicator flow, OTA safe outputs, and DOWNLOAD state servicing are retained.
+- Local OTA remains protected/frozen.
+
+### Full affected static audit
+- Braces: 564/564.
+- Parentheses: 2079/2079.
+- Brackets: 45/45.
+- Executable `delay()`: 0.
+- Timing `while()`: 0.
+- `WiFi.begin()`: 1.
+- `WiFi.setAutoReconnect(false)`: 0.
+- `WiFi.setAutoReconnect(true)`: 1.
+- `WL_CONNECT_FAILED/WL_NO_SSID_AVAIL`: 0.
+
+### Validation boundary
+- [UNVERIFIED] ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile/link.
+- [UNVERIFIED] V4.2 BIN generation and checksum.
+- [UNVERIFIED] Firebase metadata promotion.
+- [UNVERIFIED] Physical Local/Online OTA and runtime behavior.
+- [UNVERIFIED] Exact cause of the historical hotspot failure; Gemini's crash/event-queue explanation remains a hypothesis until instrumented evidence exists.
+
 ## 2026-10-04 — NEW CHAT PREFLIGHT / V4.1 CURRENT SOURCE
 
 - [VERIFIED] Active firmware is `firmware/JEXFYZ-V4.1.ino`, `FW_VERSION = V4.1`, source blob `352f7c408f2bc5a4a691af35cfb477338036a102`.
