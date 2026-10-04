@@ -1,3 +1,15 @@
+## 2026-10-04 — FIRMWARE V3.6 ADAPTIVE/HOTSide SAFETY CONTRACT
+
+- Firmware continuity source advanced V3.5 → V3.6; source commit: `03ede906a34a5e06082f2c9520a29687f0abd710`.
+- No Flutter/App source was changed and no App Build was triggered.
+- The Hotside Temperature Limit is now explicitly the universal thermal boundary for Manual Voltage, Adaptive HOTSIDE, and Adaptive HOTSIDE_BATTERY.
+- Manual Hotside protection now forces 5V, keeps Fan ON, latches Peltier OFF until a safe explicit manual ON command, and blocks normal manual voltage requests above 5V while the limit is active.
+- Adaptive HOTSIDE rises one voltage level at a time with a 5-second dwell; Hotside limit causes an immediate one-level down-step, temporarily removes that voltage from the Adaptive ceiling, and starts a 5-second Peltier-off cooldown after the physical down-step completes.
+- Adaptive HOTSIDE_BATTERY keeps Hotside as the ceiling and Battery as the normal controller below that ceiling. Battery-originated transitions that lose Battery validity during selector deadtime are canceled rather than applied stale.
+- At 5V with Hotside at/above the limit, Adaptive turns OFF immediately and Peltier remains OFF; Fan remains ON.
+- Hotside protection events drive a firmware-owned red LED blink for 5 seconds; no new BLE command is required.
+- Existing BLE/P1 UUIDs and logical FAN/PELTIER command tokens remain unchanged.
+- Firmware remains uncompiled/unflashed/unpublished; this contract is source-level only.
 ## 2026-10-04 — FIRMWARE V3.4 CORRECTIVE SOURCE EVENT / APP CONTRACT
 - Current corrective firmware HEAD: `2182794cb98964a8a7432d0ea75587b44b508573`.
 
