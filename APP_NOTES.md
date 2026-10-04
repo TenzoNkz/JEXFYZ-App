@@ -34,6 +34,7 @@
 - Build #52: [VERIFIED] signing-shell pipefail/SIGPIPE failure; fixed in e33141efd47b8f1ca025e832097e1106d9119b65.
 - Build #53: [VERIFIED] audit/analysis/tests/compile/signing passed; [BLOCKED] artifact creation due Actions quota.
 - Latest verified downloadable APK remains Build #50.
-- Current release workflow blob: 5c7faeb8fece972179a0607ffd2278bdfd174704.
-- Current trigger workflow blob: 04d2293725e97c3cbc67ce8b6f0d9c1230802afd.
-- No source/App behavior change is made by the present chat-limit transfer.
+- Current release workflow: .github/workflows/jexfyz-build.yml
+- Current release workflow blob: 33ae11a17ec9353e4693bed723018e6d8ea20b8e.
+- Legacy app-build.yml and app-build-trigger.yml are deleted.
+- New workflow run #1 passed audit, analysis, tests, release compilation, and signing; artifact creation remains blocked by Actions quota.
