@@ -45,7 +45,7 @@
 - Firmware-only changes do not require App Build.
 - Never claim build/compile/flash/runtime validation that did not occur.
 - Build trigger is manual-by-issue only; the trigger workflow calls a reusable App Build engine.
-- The restored App Build engine uses Actions artifacts for APK + Dart symbols, matching the proven historical delivery path.
+- The App Build engine publishes exactly one APK to GitHub Release `jexfyz-latest`; Dart symbols are generated locally for obfuscation diagnostics and are not uploaded.
 
 ## MEMORY RULES
 - Persist meaningful project state in repository documentation.
@@ -59,11 +59,11 @@
 - Firmware: V4.5.
 - App: 1.0.0+3.
 - Latest verified downloadable App Build: #2.
-- Build #53: [VERIFIED] CI gates through production signing; [BLOCKED] artifact creation by Actions quota.
+- Build #53: [VERIFIED] CI gates through production signing; [BLOCKED] legacy Actions-artifact creation by quota.
 - Local OTA: [CONFIRMED] user-confirmed working on V4.4 before V4.5 promotion; Local OTA remains protected.
 - Online OTA: [CONFIRMED] V3.2-style path retained; V4.5 physical validation still pending.
 - Current App Build trigger: [COMMITTED] .github/workflows/jexfyz-app-build-trigger.yml.
 - Current reusable App Build engine: [COMMITTED] .github/workflows/jexfyz-app-build-engine.yml.
 - The previous single-workflow Release-asset path is retained as historical evidence only.
-- Latest verified downloadable APK remains historical workflow run #2 / GitHub Release jexfyz-latest; the restored workflow pair has not been re-run yet.
+- Current Build App run is in progress; Release delivery will be verified after completion.
 - Restored workflow pair is intentionally based on the proven Build #50-era reusable engine + issue trigger.
