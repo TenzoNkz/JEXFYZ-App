@@ -3271,7 +3271,9 @@ class _DashboardScreenState extends State<DashboardScreen>
       JexText.of('otaInProgress', appLanguageNotifier.value),
       color: Colors.purpleAccent,
     );
-    // AI-METHOD: _startOtaReconnectMonitor — Retry BLE discovery after OTA disconnect/restart.
+  }
+
+  // AI-METHOD: _startOtaReconnectMonitor — Retry BLE discovery after OTA disconnect/restart.
   void _startOtaReconnectMonitor() {
     reconnectTimer?.cancel();
     int attempts = 0;
