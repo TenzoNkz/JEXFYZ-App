@@ -297,5 +297,5 @@ No functional Firmware/App source changed during this review. Hardware validatio
 - Added selector/Peltier physical interlock without restarting the 5 s soft-start on voltage changes.
 - Added final NTC gate, rapid-rise thermal latch, Battery hysteresis, ADAPTIVE:OFF ACK fix, callback-safe BLE advertising recovery.
 - Added numeric OTA anti-rollback, reset reason telemetry, Local OTA magic validation, and BLE TX drop diagnostics.
-- Active source blob: `f123a46d84d1e2ec0e67419a6577388fd3c8645e`.
+- Active source blob: `bf85b50e0a8cab22e5d66ef09ee84d6692cee009`.
 - No firmware compile/BIN/Firebase/physical validation yet; App Build #50 unchanged.
