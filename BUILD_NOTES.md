@@ -19,8 +19,9 @@
 - [COMMITTED] Release publication is exactly one direct GitHub Release asset at jexfyz-latest, named JEXFYZ-release.apk; existing asset is replaced with --clobber.
 - [COMMITTED] Dart symbols are still generated for obfuscation diagnostics but are not uploaded.
 - [VERIFIED] Trigger workflow remains issue-based, owner/title/token gated, and reusable.
-- [VERIFIED] New workflow run #1 cleanup step completed and all build/signing gates passed.
-- [BLOCKED] New workflow run #1 artifact upload failed because Actions artifact storage quota remains exhausted.
+- [HISTORICAL] New workflow run #1 cleanup step completed and all build/signing gates passed before the quota fix.
+- [HISTORICAL] New workflow run #1 artifact upload failed because Actions artifact storage quota was exhausted.
+- [IMPLEMENTED] Current workflow has removed that Actions-artifact delivery dependency.
 
 ## BUILD HISTORY
 ### #50 — latest verified downloadable APK

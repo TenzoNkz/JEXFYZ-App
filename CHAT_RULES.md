@@ -64,5 +64,6 @@
 - Online OTA: [CONFIRMED] V3.2-style path retained; V4.5 physical validation still pending.
 - Current App Build workflow: [COMMITTED] .github/workflows/jexfyz-build.yml (blob 08a137b4d315cc12e830a7e8dbc1ea40c3d2873d).
 - Legacy app-build.yml and app-build-trigger.yml are deleted.
-- New workflow run #1: [VERIFIED] all build gates through signing; [BLOCKED] only at the legacy Actions-artifact publication step.
+- New workflow run #1: [HISTORICAL][VERIFIED] all build gates through signing; [BLOCKED] only at the legacy Actions-artifact publication step.
 - Current workflow fix: [COMMITTED] APK delivery moved to GitHub Release asset jexfyz-latest.
+- Fresh Build App verification of the Release-asset path is still pending.

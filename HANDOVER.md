@@ -16,7 +16,7 @@
 - CI delivery fix committed: APK publication moved to GitHub Release tag jexfyz-latest.
 
 ## CURRENT OBJECTIVE
-Preserve this state across chat transfer, then on a future explicit Build App request publish the current App as one APK after workflow artifact cleanup succeeds.
+Preserve this state across chat transfer, then on a future explicit Build App request publish the current App as one APK through the GitHub Release asset path.
 
 Expected Online OTA:
 Update Firmware → active GATT disconnect → live App telemetry stops → Online OTA continues → restart → BLE reconnect → P1 sync → OTA result is shown.
