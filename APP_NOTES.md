@@ -5,28 +5,34 @@
 - Header: JE X FYZ
 - Package: com.horizontalzzz.jexfyz
 - Version: 1.0.0+3
-- Source: lib/main.dart
-- Source blob: 7a0003ff7aa9691468139714ec18d364e5896b38
+- Main source blob: 8ebd878b116d7ef093b6df54894a7db876eb0f02
+- Settings blob: f11235bab559b291928550e06984532581ddad6a
 
 ## BLE / SESSION
 - flutter_blue_plus is the BLE transport.
 - JE X FYZ service/RX/TX UUIDs are frozen.
-- P1 SYNC/SYNC_READY gates a usable session.
-- The App has a centralized BLE disconnect handler that clears session and live telemetry state.
-- Auto Connect is passive and requires the known cooler identity.
+- P1 SYNC/SYNC_READY remains the usable-session gate.
+- Firmware telemetry remains authoritative for hardware and safety state.
+- Passive Auto Connect remains permission-free and preference-controlled.
+- Online OTA recovery is explicit and does not depend on passive Auto Connect.
 
 ## OTA
-- Firmware update flow sends OTAENTER, SSID, PASS, URL, VERSION, then CLOUDOTA.
-- Firmware performs the actual flashing.
-- The App does not need a code change for the V4.4 GATT disconnect fix.
-- When firmware closes the active GATT connection, the existing App disconnect handler should clear live data.
-- Firebase supplies firmware release metadata; GitHub hosts the firmware BIN.
-- Wi-Fi credentials use flutter_secure_storage.
+- Firmware update flow remains OTAENTER, SSID, PASS, URL, VERSION, CLOUDOTA.
+- Firmware performs flashing; App coordinates metadata, commands, disconnect handling, and reconnection.
+- Expected Online OTA GATT disconnect is no longer shown as a normal Bluetooth error.
+- After OTA reconnect, the App completes normal P1 sync and surfaces the one-shot OTA result.
+- OTA_UP_TO_DATE is recognized as a one-shot result.
+- Firebase supplies release metadata; GitHub hosts the fixed firmware BIN URL.
+- Wi-Fi credentials remain in flutter_secure_storage.
+
+## UI / CONTRACT SYNC
+- Adaptive Ceiling is displayed from firmware telemetry.
+- Battery thresholds match firmware: 5V 20–30°C and 12V 30–40°C.
+- Safety display follows SAFETY OK/LOCKED and SAFETY_REASON.
+- OTA stage presentation follows the current Firmware stage tokens.
+- Wi-Fi password input is masked.
 
 ## BUILD
-- Latest verified Build #50.
-- Run: 36996987220
-- Source: bf01595253eb5a1912471c4aee57c4eed4421f0f
-- APK artifact: 11222007634
-- APK SHA256: 82a2320d8e3663800d6884f4cb0d009ff1b31b5b19cc64420f9ee5c6b01d01b0
-- V4.4 is Firmware-only; no App Build required.
+- Latest verified App Build: #50.
+- Build #50 does not validate the current V4.5-synchronized App source.
+- No new App Build was triggered during this execution.
