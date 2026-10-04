@@ -33,6 +33,14 @@
 - Manual copy-paste between chats is no longer the intended transfer mechanism.
 - Documentation/process only; functional App/Firmware behavior unchanged and no Build App triggered.
 
+## 2026-10-04 — REPOSITORY CLEANUP / HARDWARE TEST BASELINE
+
+- Reconciled the repository-first chat-transfer system and normalized its current-state documentation.
+- CHAT_TRANSFER.md is explicitly a template until Prompt 1 performs a real chat-limit transfer; it must not be interpreted as completed transfer evidence beforehand.
+- Current App Build remains #50; no new App Build was triggered.
+- Current firmware remains V3.7; no firmware source/build/device behavior was changed by this cleanup.
+- Next operational stage is real hardware/device testing when the user provides evidence.
+
 # JE X FYZ — CHANGELOG
 
 ## 2026-10-04 — CONTINUITY SYSTEM
