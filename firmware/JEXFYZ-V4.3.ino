@@ -255,7 +255,6 @@ static constexpr uint32_t SETTINGS_SAVE_DEBOUNCE_MS     = 10000;
 static constexpr uint32_t TOUCH_ADAPTIVE_OFF_INDICATOR_PHASE_MS = 250;
 static constexpr uint32_t BLE_RADIO_SETTLE_MS = 50;
 static constexpr uint32_t WIFI_OFF_SETTLE_MS = 160;
-static constexpr uint32_t ONLINE_OTA_PROGRESS_BLINK_MS = 200;
 
 static constexpr int HOT_LIMIT_MIN = 40;
 static constexpr int HOT_LIMIT_MAX = 50;
