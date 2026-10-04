@@ -1,3 +1,22 @@
+## 2026-10-04 — CURRENT AUTHORITATIVE STATE AFTER V3.9 CHAT-LIMIT TRANSFER
+
+> Current-state override for older V3.7/V3.8 historical entries below.
+
+- [CONFIRMED] Active firmware: V3.9.
+- [CONFIRMED] Active source: firmware/JEXFYZ-V3.9.ino.
+- [CONFIRMED] Active source blob: bf85b50e0a8cab22e5d66ef09ee84d6692cee009.
+- [CONFIRMED] User-mediated Gemini independent audit was received and independently rechecked against the same source.
+- [DECISION] Dual-party flash gate is CLOSED: NOT SAFE TO FLASH.
+- [P0 / ACCEPTED] V3.9 can reapply 100% Peltier duty immediately after selector activation without a separate post-selector rail-stabilization state.
+- [P1 / ACCEPTED] Online OTA uses cloudClient.setInsecure(); server certificate validation remains disabled.
+- [P2 / ACCEPTED] BLE TX queue is finite FIFO with drop-on-full behavior and no priority reservation for critical ACK/OTA-state messages.
+- [NUANCE] Gemini's 300–500 ms stabilization interval is a candidate engineering range, not a proven universal constant.
+- [NOT PROVEN] Historical 9V -> 12V MCU reset mechanism; brownout/LDO/EMI/PSU/MOSFET explanations remain hardware hypotheses.
+- [BLOCKED] No V3.9 compile, BIN, Firebase promotion, flash, oscilloscope, or physical validation.
+- [NO APP BUILD] App source/configuration unchanged; Build #50 remains the App baseline.
+- [NEXT ACTION] Patch P0 rail stabilization and P1 trusted OTA TLS, then repeat the assistant/Gemini two-party audit.
+- [NO FUNCTIONAL CHANGE] This checkpoint is documentation-only.
+
 ## 2026-10-04 — CHAT-LIMIT TRANSFER / FINAL CONTINUITY SYNC
 
 - Current chat is near context limit; this repository checkpoint is the handoff boundary for the next chat.
