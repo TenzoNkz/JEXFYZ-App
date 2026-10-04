@@ -1,3 +1,10 @@
+## 2026-10-04 — V4.0 COMPILE FIX
+
+- [FIXED] ArduinoDroid compile error from `batteryZoneFor(batteryC)` using the wrong argument count.
+- [CORRECT] Call now uses `batteryZoneFor(batteryC, currentVoltage)`.
+- [CURRENT SOURCE] `firmware/JEXFYZ-V4.0.ino` blob `415346ece09f4af33f907b2077140ccfc45c357b`.
+- [GATE] Previous dual-party SAFE verdict applied to the older V4.0 blob and is superseded by this source change; fresh Gemini + Assistant review is required before flashing.
+
 ## 2026-10-04 — V4.0 DUAL-PARTY FLASH GATE DECISION
 
 - [GEMINI] User-provided independent Gemini audit of exact V4.0 blob `b2a77fadeaa154412850d34c82b0bb78ef108bae`: **SAFE TO FLASH**.
