@@ -1,3 +1,67 @@
+# JE X FYZ — FIRMWARE NOTES
+
+## AUTHORITATIVE MEMORY CORE — V3.7 — 2026-10-04
+
+### Current source of truth
+- Repository: `TenzoNkz/JEXFYZ-App`
+- Active firmware source: `firmware/JEXFYZ-V3.7.ino`
+- Current firmware version: `V3.7`
+- Current source blob: `4a7e08a6ea0de57f4e3d3a742ad88cbd25a05e01`
+- Documentation/cleanup commit: `ef4519b8f4d032a6d2d1f84101785c05b8a89cfa`
+- The dedicated `TenzoNkz/JEXFYZ-Firmware` repository remains binary-only and was not changed by this execution.
+
+### Hardware / I/O contract
+- Board: ESP32-C3 Super Mini / ESP32-C3 Dev Module.
+- Arduino Standard + official Arduino-ESP32 Core 3.3.7.
+- GPIO0 = NTC, GPIO1 = Touch, GPIO3 = 12 V selector, GPIO4 = 9 V selector.
+- GPIO5 = Peltier, GPIO6 = Fan, GPIO7 = WS2812.
+- App BLE tokens remain logical: `FAN:*` controls Fan and `PELTIER:*` controls Peltier.
+- Fan PWM: 25 kHz, 8-bit, 50–100%.
+- Peltier PWM: 20 kHz, 8-bit, 5 s soft-start.
+- NTC: fixed 10 kΩ / 10 kΩ divider model, beta 3950, 12-bit ADC, 11 dB attenuation, sampled every 1 s.
+
+### Voltage / safety contract
+- Physical selector deadtime: 200 ms; shared post-transition voltage guard: 1 s.
+- Hotside Limit is the universal thermal boundary for Manual Voltage, Adaptive HOTSIDE, and HOTSIDE_BATTERY.
+- Manual Hotside event: force 5 V, Fan 100% ON, Peltier OFF safety latch; normal voltage above 5 V is rejected while hot.
+- Adaptive Hotside event: immediate one-level down, reached voltage removed from the temporary Adaptive ceiling, Peltier OFF for 5 s after the physical down-step, then resume only when safe.
+- At 5 V while still hot, Adaptive turns OFF.
+- Hotside event indicator: red blink, 5 s duration, non-blocking 250 ms phase.
+
+### Adaptive contract
+- Adaptive startup and shutdown both return hardware to 5 V first.
+- Adaptive keeps Voltage/Control/Temperature user control locked while active.
+- HOTSIDE uses physical NTC Hotside temperature for normal voltage decisions.
+- HOTSIDE_BATTERY uses phone Battery temperature for normal voltage decisions inside the Hotside ceiling.
+- Invalid/disconnected Battery source in HOTSIDE_BATTERY falls back to HOTSIDE runtime behavior without rewriting the configured profile.
+- Battery mapping is direct-zone: below BATT5 → 5 V; BATT5 through below BATT12 → 9 V; at/above BATT12 → 12 V.
+- Battery Adaptive moves one voltage step at a time and continuously re-evaluates the live target.
+
+### Peltier PWM contract — V3.7
+- Peltier OFF → ON always starts the 5 s soft-start.
+- Every upward physical voltage transition while Peltier is already ON restarts the 5 s soft-start.
+- Downward voltage transitions never restart the Peltier soft-start.
+- The upward-voltage trigger is applied after the selector transition physically completes.
+- Safety authority still overrides the PWM request when Peltier cannot safely run.
+
+### OTA / radio contract
+- Wi-Fi and BLE are never intentionally operated concurrently; BLE starts only after Wi-Fi is OFF and settled.
+- Boot SoftAP and Online OTA own the radio through cooperative state machines.
+- OTA safe outputs are Fan/Peltier OFF and selector state 5 V.
+- Online OTA accepts only the approved JE X FYZ GitHub firmware repository and `.bin` files.
+- OTA runtime uses non-blocking timing; executable `delay()` and timing `while()` waits are prohibited.
+
+### Validation boundary
+- Static/model source audit: completed.
+- ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile: NOT performed in this environment.
+- BIN generation/publication: NOT performed.
+- Firebase firmware metadata promotion: NOT performed.
+- Dedicated binary repository update: NOT performed.
+- Physical ESP32 electrical/thermal/BLE/OTA validation: NOT performed.
+- App Build: NOT triggered by this firmware documentation execution.
+
+---
+
 ## 2026-10-04 — EXECUTION FULL / FIRMWARE V3.7 PELTIER PWM SOFT-START RULE
 
 ### Source/version
