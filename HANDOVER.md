@@ -1,3 +1,12 @@
+## 2026-10-04 — GEMINI PATCH-ONLY ONLINE OTA WORKFLOW
+
+- Dedicated prompt: `GEMINI_PROMPT_ONLINE_OTA.md`.
+- Gemini receives the .ino from the user and returns only exact OLD → NEW patches.
+- No full .ino is required from Gemini.
+- Next `@Thinking Eksekusi Full!` applies the supplied patch to the repository, audits it, syncs memory, and commits.
+- Local OTA remains frozen/protected.
+- Current reported issue remains Online OTA indicator not visibly blinking.
+
 ## 2026-10-04 — V4.0 COMPILE FIX / NEW SOURCE BASELINE
 
 - ArduinoDroid compile error fixed: batteryZoneFor(batteryC) now passes currentVoltage.
