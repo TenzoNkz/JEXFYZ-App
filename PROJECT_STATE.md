@@ -1,3 +1,12 @@
+## 2026-10-04 — OTA TEST DIRECTION / LOCAL OTA FROZEN
+
+- [USER VALIDATION] User reports Local OTA is still working successfully on the hardware.
+- [USER REQUIREMENT] Local OTA is now a frozen/protected path: do not modify Local OTA behavior, handlers, endpoints, state transitions, upload validation, recovery, or indicator sequencing merely to improve other OTA paths. Any future Local OTA change requires a concrete reproduced defect or explicit user approval.
+- [CURRENT FOCUS] User will test Online OTA next.
+- [NO SOURCE CHANGE] This discussion event does not modify firmware/App functional source.
+- [ONLINE TEST RULE] Treat the Online OTA result as hardware/runtime evidence. Record exact stage, error, reset behavior, Wi-Fi/BLE recovery, and resulting firmware version before making any source change.
+- [GATE] Current V4.0 source blob remains 415346ece09f4af33f907b2077140ccfc45c357b; fresh two-party review is still required for this exact blob before formal flash approval after the compile fix.
+
 ## 2026-10-04 — V4.0 COMPILE ERROR FIX / FLASH GATE REOPENED
 
 - [USER] ArduinoDroid compile error reported at line ~1860: `no matching function for call to 'batteryZoneFor'`.
