@@ -49,13 +49,13 @@
 
 # JE X FYZ — FIRMWARE NOTES
 
-## AUTHORITATIVE MEMORY CORE — V3.7 — 2026-10-04
+## AUTHORITATIVE MEMORY CORE — V3.8 — 2026-10-04
 
 ### Current source of truth
 - Repository: `TenzoNkz/JEXFYZ-App`
-- Active firmware source: `firmware/JEXFYZ-V3.7.ino`
-- Current firmware version: `V3.7`
-- Current source blob: `4a7e08a6ea0de57f4e3d3a742ad88cbd25a05e01`
+- Active firmware source: `firmware/JEXFYZ-V3.8.ino`
+- Current firmware version: `V3.8`
+- Current source blob: `2fbff3656bc037846124806fb390022f85146845`
 - Documentation/cleanup commit: `ef4519b8f4d032a6d2d1f84101785c05b8a89cfa`
 - The dedicated `TenzoNkz/JEXFYZ-Firmware` repository remains binary-only and was not changed by this execution.
 
@@ -86,11 +86,11 @@
 - Battery mapping is direct-zone: below BATT5 → 5 V; BATT5 through below BATT12 → 9 V; at/above BATT12 → 12 V.
 - Battery Adaptive moves one voltage step at a time and continuously re-evaluates the live target.
 
-### Peltier PWM contract — V3.7
+### Peltier PWM contract — V3.8
 - Peltier OFF → ON always starts the 5 s soft-start.
-- Every upward physical voltage transition while Peltier is already ON restarts the 5 s soft-start.
-- Downward voltage transitions never restart the Peltier soft-start.
-- The upward-voltage trigger is applied after the selector transition physically completes.
+- Voltage transitions do not start or restart the 5 s soft-start.
+- Voltage changes preserve the existing Peltier PWM state.
+- A genuine Peltier OFF → ON transition starts the 5 s soft-start.
 - Safety authority still overrides the PWM request when Peltier cannot safely run.
 
 ### OTA / radio contract
@@ -4527,3 +4527,13 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - [IMPORTANT] A voltage transition must not artificially create a Peltier OFF → ON edge merely to obtain soft-start; normal voltage switching should preserve the current Peltier state.
 - [UNVERIFIED] This is a functional change proposal only. No firmware source has been modified in this discussion and no new binary/device test exists yet.
 
+
+
+## 2026-10-04 — FIRMWARE V3.8 / SOFT-START SCOPE FIX
+
+- [IMPLEMENTED] Firmware advanced V3.7 → V3.8.
+- [IMPLEMENTED] `beginPeltierSoftStart()` is now reached from the genuine Peltier OFF → ON path in `applyCoolingOutputs()` only.
+- [IMPLEMENTED] The V3.7 upward-voltage restart path was removed from `completeVoltageTransition()`.
+- [PRESERVE] Voltage transitions preserve the current Peltier PWM state; 5 s soft-start remains unchanged for Peltier turn-on.
+- [PRESERVE] BLE/P1, GPIO mapping, PWM frequencies, NTC/safety, Adaptive, OTA, and non-blocking timing architecture are unchanged.
+- [VALIDATION] Static source audit completed after implementation. ArduinoDroid/Core 3.3.7 compile, BIN publication, Firebase promotion, and physical validation remain pending.
