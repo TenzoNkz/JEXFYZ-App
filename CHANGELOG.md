@@ -1,5 +1,11 @@
 # JE X FYZ — CHANGELOG
 
+## SINGLE WORKFLOW / BUILD RUN #1 — 2026-10-04
+- Deleted the legacy `.github/workflows/app-build.yml` and `.github/workflows/app-build-trigger.yml`.
+- Created the new single `.github/workflows/jexfyz-build.yml`, based directly on the former App Build engine and gated by the dedicated owner/title/token issue trigger.
+- Build run 37199918015 completed security/architecture audit, dependency installation, Dart analysis, Flutter tests, release APK compilation, production signing verification, and filename preparation successfully.
+- Artifact upload was blocked by GitHub Actions artifact storage quota; no downloadable artifact was created.
+
 ## V4.5 — 2026-10-04
 - Promoted the active firmware source from V4.4 to V4.5 for functional hardening.
 - Fixed explicit Online OTA GATT disconnect ordering so an active BLE session is closed before Wi-Fi radio handoff.
