@@ -1,3 +1,10 @@
+## 2026-10-04 — EXECUTION FULL / MEMORY ARCHITECTURE CHECKPOINT
+
+- Build-memory continuity is now part of the mandatory project preflight for every subchat.
+- A successful App Build is a permanent checkpoint and must identify the exact source revision, run, artifacts, checksums, all included changes, gates, and remaining validation boundaries.
+- No App Build was executed in this memory-architecture task.
+- Latest verified build remains #50; newer repository commits are not covered by that build.
+
 # JE X FYZ — BUILD NOTES
 
 ## AUTHORITATIVE BUILD CORE — 2026-10-04
