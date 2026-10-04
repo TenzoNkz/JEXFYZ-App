@@ -13,7 +13,7 @@
 - [SCOPE RULE] Gemini patches must be limited to the approved scope. For the current issue this is Online OTA indicator/runtime behavior only.
 - [PROTECTED] Local OTA is frozen because it has been proven working on hardware. Gemini must not propose Local OTA changes for an Online OTA problem, and Eksekusi Full must reject scope expansion into Local OTA unless a separate reproduced Local OTA defect is explicitly authorized.
 - [ONLINE OTA PRIORITY] Keep Online OTA simple: Wi-Fi → GitHub JE X FYZ firmware URL → .bin download → OTA write/finalize → visible success indicator → restart; failure → visible red indicator/recovery. CA-bundle/custom-CA/certificate-pinning complexity is not required by the user; `WiFiClientSecure + setInsecure()` is acceptable for this Online OTA path.
-- [PROTOCOL] Full copy-ready prompt is persisted in `GEMINI_PROMPT_ONLINE_OTA.md`.
+- [PROTOCOL] Gemini prompt is generated in the active chat from the current repository/source context; no dedicated prompt file is required or persisted.
 - [NO SOURCE CHANGE] This rule update changes workflow/documentation only.
 
 ## 2026-10-04 — CHAT-LIMIT HANDOVER CHECKPOINT
@@ -472,8 +472,9 @@ newer verified repository truth.
 
 ## 14. MANDATORY FIRMWARE VERSIONING
 
-- Every functional firmware/source change that can affect the firmware image must increment the firmware version before that changed source is treated as an OTA candidate.
-- Example: V2.4 -> V2.5 for the next functional firmware change.
+- **ABSOLUTE RULE:** Every firmware update/change that produces or can produce a new firmware image MUST increment the firmware version, even when the change is only one character, one token, one line, one constant, or another minimal compiled-source change.
+- Example: V4.0 -> V4.1 for the next firmware update, regardless of the size of the change.
+- Never reuse the previous firmware version for a new functional firmware image.
 - Documentation-only changes do not require a firmware version bump.
 - A firmware source version bump does **not** by itself mean the BIN, Firebase metadata, or physical device has been updated.
 - The exact workflow is:
