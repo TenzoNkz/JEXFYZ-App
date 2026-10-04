@@ -11,7 +11,7 @@
 - [COMMITTED] This snapshot must be the current transfer evidence; source/workflow files remain authoritative.
 
 ## 2. CURRENT TASK
-- [CONFIRMED] Current task was full execution to fix the Actions-artifact quota failure.
+- [CONFIRMED] Current task was full execution to restore the proven two-workflow App Build architecture under new filenames.
 - [IMPLEMENTED][COMMITTED] The single workflow now publishes the APK as a GitHub Release asset instead of an Actions artifact.
 - [RESOLVED] Workflow run #2 proved the Release-asset delivery path end-to-end.
 
@@ -70,8 +70,7 @@
 - [CONFIRMED] Equal firmware version is Up to date; any other valid firmware version is eligible.
 - [CONFIRMED] Current firmware OTA result event includes one-shot OTA_UP_TO_DATE.
 - [CONFIRMED] Battery thresholds: 5V = 20–30°C; 12V = 30–40°C.
-- [CONFIRMED] App Build publishes one direct APK as GitHub Release asset jexfyz-latest/JEXFYZ-release.apk; existing asset is replaced with --clobber.
-- [CONFIRMED] Actions-artifact upload is not part of the release delivery path; the workflow uses contents: write.
+- [CONFIRMED] Restored App Build engine publishes the obfuscated APK and Dart symbols using GitHub Actions artifacts, matching the proven historical Build #50 path.
 
 ## 6. REJECTED / OBSOLETE DECISIONS
 - [OBSOLETE] V3.3 yellow Online OTA progress layer.
@@ -299,8 +298,8 @@
 - [RECONCILIATION] The single workflow is committed CI configuration, and Build #2 verified successful Release-asset delivery with no Actions artifact.
 
 ## 24. TRANSFER COMPLETION
-- [IMPLEMENTED] CI quota delivery fix is synchronized in the persistent transfer state.
+- [IMPLEMENTED] Restored App Build workflow architecture is synchronized in the persistent transfer state.
 - [IMPLEMENTED] Complete snapshot reconstructed from accessible chat context and repository evidence.
 - [IMPLEMENTED] Functional App/Firmware source intentionally not changed by this transfer procedure.
-- [IMPLEMENTED] Persistent docs are being replaced/synchronized for the new state.
-- [VERIFIED PENDING] Final save verification must confirm the documentation sync commit SHA/HEAD plus unchanged App/Firmware source blobs and workflow blob.
+- [IMPLEMENTED] Persistent docs are synchronized for the restored workflow architecture.
+- [VERIFIED PENDING] Final save verification must confirm restored workflow contents, unchanged App/Firmware source blobs, and synchronized documentation.
