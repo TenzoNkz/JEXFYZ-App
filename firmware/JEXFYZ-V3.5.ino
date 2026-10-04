@@ -28,7 +28,7 @@ enum class LedMode : uint8_t;
 enum class VoltageRequestSource : uint8_t;
 enum class AdaptiveProfile : uint8_t;
 
-static constexpr char FW_VERSION[] = "V3.4";
+static constexpr char FW_VERSION[] = "V3.5";
 
 // ============================================================================
 // ========================== HEAP DIAGNOSTIC BUILD ===========================
@@ -185,7 +185,9 @@ static constexpr uint32_t NTC_FAULT_HIGH_MV = 3290;
 
 static constexpr uint32_t VOLTAGE_GUARD_MS             = 1000;
 static constexpr uint32_t VOLTAGE_DEADTIME_MS           = 200;
-static constexpr uint32_t HOT_PELTIER_OFF_MS          = 10000;
+static constexpr uint32_t HOT_PELTIER_OFF_MS          = 5000;
+static constexpr uint32_t HOT_LIMIT_LED_BLINK_INTERVAL_MS = 250;
+static constexpr uint32_t HOT_LIMIT_LED_BLINK_DURATION_MS = 5000;
 static constexpr uint32_t BATTERY_VALID_TTL_MS          = 5000;
 static constexpr uint32_t SETTINGS_SAVE_DEBOUNCE_MS     = 10000;
 // Touch Adaptive-OFF indicator uses three non-blocking 250 ms color phases.
@@ -318,9 +320,14 @@ uint32_t lastLedFrameAtMs = 0;
 
 bool hotProtectionActive = false;
 bool adaptiveHotStepPending = false;
-uint32_t adaptiveHotStepDueMs = 0;
 uint32_t peltierHotOffUntilMs = 0;
 bool adaptiveResumePeltierAfterHotStep = false;
+uint32_t adaptiveHotsideRiseDueMs = 0;
+bool manualPeltierSafetyLatch = false;
+
+bool hotsideLimitIndicatorActive = false;
+uint32_t hotsideLimitIndicatorStartedAt = 0;
+uint32_t hotsideLimitIndicatorLastPhase = 0xFFFFFFFFUL;
 
 
 
@@ -454,6 +461,8 @@ static bool isWiFiOffSettled();
 static void processBatteryLinkState();
 static void updateBatteryValidity();
 static void processAdaptiveHotsideFallback();
+static void startHotsideLimitIndicator();
+static bool processHotsideLimitIndicator();
 static void resetOnlineOtaProgressState();
 static void queueOnlineOtaProgressMilestones(uint8_t progress);
 static bool processOnlineOtaProgressIndicator();
@@ -791,10 +800,14 @@ static bool safetyAllowsPeltier() {
   if (hotsideProtectionActiveNow()) return false;
   if (!fanOn) return false;
 
-  if (adaptiveOn &&
-      peltierHotOffUntilMs != 0 &&
-      millis() < peltierHotOffUntilMs) {
-    return false;
+  if (!adaptiveOn && manualPeltierSafetyLatch) return false;
+
+  if (adaptiveOn) {
+    if (adaptiveHotStepPending) return false;
+    if (peltierHotOffUntilMs != 0) {
+      if (millis() < peltierHotOffUntilMs) return false;
+      if (hotsideProtectionActiveNow()) return false;
+    }
   }
 
   return true;
@@ -891,6 +904,40 @@ static void resetLedAnimationState() {
 static void startUserLedEffect() {
   resetLedAnimationState();
 }
+static void startHotsideLimitIndicator() {
+  hotsideLimitIndicatorActive = true;
+  hotsideLimitIndicatorStartedAt = millis();
+  hotsideLimitIndicatorLastPhase = 0xFFFFFFFFUL;
+  voltageIndicatorActive = false;
+  showAll(0x000000, 0);
+}
+
+static bool processHotsideLimitIndicator() {
+  if (!hotsideLimitIndicatorActive) return false;
+
+  const uint32_t elapsed = millis() - hotsideLimitIndicatorStartedAt;
+  if (elapsed < HOT_LIMIT_LED_BLINK_DURATION_MS) {
+    const uint32_t phase = elapsed / HOT_LIMIT_LED_BLINK_INTERVAL_MS;
+    if (phase != hotsideLimitIndicatorLastPhase) {
+      hotsideLimitIndicatorLastPhase = phase;
+      const bool ledOn = (phase & 0x01U) == 0;
+      showAll(ledOn ? 0xFF0000 : 0x000000, 255);
+    }
+    return true;
+  }
+
+  hotsideLimitIndicatorActive = false;
+  hotsideLimitIndicatorLastPhase = 0xFFFFFFFFUL;
+  showAll(0x000000, 0);
+
+  if (rgbOn) {
+    startUserLedEffect();
+  } else {
+    stopUserLedOutput();
+  }
+  return true;
+}
+
 
 static void startTouchAdaptiveOffIndicator() {
   touchAdaptiveOffIndicatorActive = true;
@@ -1196,10 +1243,6 @@ static void renderCustomLedFrame(uint32_t now) {
 }
 
 static void processLeds() {
-  // V1.2: OFF ownership is latched per state so stopUserLedOutput()/showAll()
-  // are not repeatedly invoked from the main loop while OTA owns the LEDs.
-  // This keeps the LED renderer event-driven without changing the existing
-  // Local/Online result-indicator state machines.
   static bool ledsForcedOff = false;
 
   if (localOtaResultIndicatorActive) {
@@ -1263,9 +1306,17 @@ static void processLeds() {
     return;
   }
 
-  if (!ntcValid || hotsideProtectionActiveNow()) {
+  if (hotsideLimitIndicatorActive) {
     ledsForcedOff = false;
-    renderBlink(0xFF0000);
+    processHotsideLimitIndicator();
+    return;
+  }
+
+  if (!ntcValid) {
+    if (!ledsForcedOff) {
+      stopUserLedOutput();
+      ledsForcedOff = true;
+    }
     return;
   }
 
@@ -1319,6 +1370,15 @@ static bool requestVoltage(Voltage target, VoltageRequestSource source, bool byp
 
   if (!ntcValid && target != Voltage::V5) return false;
 
+  // Hotside Limit is a universal voltage safety boundary.
+  // In Manual mode, a hot Hotside condition prevents normal requests above 5V.
+  if (!adaptiveOn &&
+      source != VoltageRequestSource::SAFETY &&
+      hotsideProtectionActiveNow() &&
+      target != Voltage::V5) {
+    return false;
+  }
+
   if (adaptiveOn) {
     target = clampToAdaptiveCeiling(target);
   }
@@ -1340,9 +1400,6 @@ static void completeVoltageTransition() {
   if (!voltageTransition) return;
   if (millis() - voltageTransitionAt < VOLTAGE_DEADTIME_MS) return;
 
-  // Battery Adaptive has a live target. Re-evaluate it at the end of the
-  // 200 ms selector deadtime so an in-flight stale step can never be applied
-  // after the battery temperature has already returned to another zone.
   if (voltageTransitionSource == VoltageRequestSource::BATTERY &&
       adaptiveOn &&
       adaptiveProfile == AdaptiveProfile::HOTSIDE_BATTERY &&
@@ -1355,28 +1412,23 @@ static void completeVoltageTransition() {
         clampToAdaptiveCeiling(batteryZoneVoltage(liveZone));
 
     if (liveTarget == currentVoltage) {
-      // The Battery request became stale during deadtime. Restore the
-      // current physical voltage instead of applying the stale pending step.
       digitalWrite(PIN_9V, currentVoltage == Voltage::V9 ? OUTPUT_ON : OUTPUT_OFF);
       digitalWrite(PIN_12V, currentVoltage == Voltage::V12 ? OUTPUT_ON : OUTPUT_OFF);
       voltageTransition = false;
       voltageTransitionSource = VoltageRequestSource::MANUAL;
-
-      // The selectors were de-asserted for the full deadtime, so treat the
-      // canceled hardware attempt as a completed dwell boundary to prevent
-      // immediate re-attempt chatter.
       voltageGuardArmed = true;
       lastVoltageTransitionCompleteMs = millis();
       return;
     }
 
-    // If the live target changed direction during deadtime, replace the
-    // pending step with the one-step move required by the current target.
     pendingVoltage =
         isHigherVoltage(liveTarget, currentVoltage)
             ? higherVoltage(currentVoltage)
             : lowerVoltage(currentVoltage);
   }
+
+  const Voltage previousVoltage = currentVoltage;
+  const VoltageRequestSource completedSource = voltageTransitionSource;
 
   currentVoltage = pendingVoltage;
   digitalWrite(PIN_9V, currentVoltage == Voltage::V9 ? OUTPUT_ON : OUTPUT_OFF);
@@ -1385,21 +1437,26 @@ static void completeVoltageTransition() {
   voltageTransition = false;
   voltageTransitionSource = VoltageRequestSource::MANUAL;
 
-  // Adaptive ON is committed only after the forced 5V transition completes.
   if (adaptiveStartPending && currentVoltage == Voltage::V5) {
     activateAdaptiveAfterSafeFiveVolt();
   }
 
-  if (adaptiveOn &&
-      adaptiveResumePeltierAfterHotStep &&
-      fanOn) {
-    adaptiveResumePeltierAfterHotStep = false;
-    peltierOn = true;
+  if (completedSource == VoltageRequestSource::HOTSTEP && adaptiveOn) {
+    adaptiveHotStepPending = false;
+    peltierHotOffUntilMs = millis() + HOT_PELTIER_OFF_MS;
+    adaptiveResumePeltierAfterHotStep = true;
+    adaptiveHotsideRiseDueMs = 0;
   }
 
-  // A successful physical voltage transition arms the shared hardware dwell.
-  // The 1-second rate limit starts only after the 200 ms selector deadtime
-  // has completed and the new voltage selector is active.
+  if (completedSource == VoltageRequestSource::ADAPTIVE &&
+      adaptiveOn &&
+      effectiveAdaptiveProfile() == AdaptiveProfile::HOTSIDE_PROTECTION &&
+      isHigherVoltage(currentVoltage, previousVoltage) &&
+      currentVoltage != Voltage::V12 &&
+      adaptiveCeiling != Voltage::V5) {
+    adaptiveHotsideRiseDueMs = millis() + 5000UL;
+  }
+
   voltageGuardArmed = true;
   lastVoltageTransitionCompleteMs = millis();
 
@@ -1475,6 +1532,7 @@ static void forceSafeFiveVolt() {
   adaptiveHotStepPending = false;
   peltierHotOffUntilMs = 0;
   adaptiveResumePeltierAfterHotStep = false;
+  adaptiveHotsideRiseDueMs = 0;
 
   fanOn = true;
   peltierOn = false;
@@ -1510,50 +1568,95 @@ static void enforceSafety() {
     return;
   }
 
-  hotProtectionActive = hotsideProtectionActiveNow();
-
-  // Adaptive owns cooling outputs while active. Restore them automatically
-  // whenever they are OFF, except during an active Hotside safety cooling window.
-  if (adaptiveOn &&
-      !hotProtectionActive &&
-      !adaptiveHotStepPending &&
-      peltierHotOffUntilMs == 0) {
-    fanOn = true;
-    fanPwm = 100;
-    peltierOn = true;
+  const bool hotNow = hotsideProtectionActiveNow();
+  if (hotNow && !hotProtectionActive) {
+    startHotsideLimitIndicator();
   }
+  hotProtectionActive = hotNow;
 
-  if (hotProtectionActive) {
-    const bool wasPeltierOn = peltierOn;
-    const bool wasFanOn = fanOn;
-    const uint8_t wasFanPwm = fanPwm;
-
+  if (adaptiveOn) {
     fanOn = true;
     fanPwm = 100;
-    if (peltierOn) {
-      peltierOn = false;
-      stopPeltierOutput();
-      sendDelta("PELTIER", "OFF");
-    }
-    if (!wasFanOn) sendDelta("FAN", "ON");
-    if (wasFanPwm != 100) sendDelta("FAN_SPEED", "100");
 
-    if (adaptiveOn && !adaptiveHotStepPending) {
-      const uint32_t now = millis();
-
-      adaptiveHotStepPending = true;
-      peltierHotOffUntilMs = now + HOT_PELTIER_OFF_MS;
-      adaptiveHotStepDueMs = peltierHotOffUntilMs;
-
-      if (!adaptiveResumePeltierAfterHotStep) {
-        adaptiveResumePeltierAfterHotStep = fanOn && wasPeltierOn;
+    if (hotNow) {
+      if (peltierOn) {
+        peltierOn = false;
+        stopPeltierOutput();
+        sendDelta("PELTIER", "OFF");
       }
 
-    }
+      if (currentVoltage == Voltage::V5) {
+        // 5V is the terminal Hotside safety state for Adaptive.
+        adaptiveOn = false;
+        adaptiveStartPending = false;
+        adaptiveCeiling = Voltage::V12;
+        adaptiveHotStepPending = false;
+        peltierHotOffUntilMs = 0;
+        adaptiveResumePeltierAfterHotStep = false;
+        adaptiveHotsideRiseDueMs = 0;
+        fanOn = true;
+        fanPwm = 100;
+        peltierOn = false;
 
-    if (!adaptiveOn) {
+        sendDelta("ADAPTIVE", "OFF");
+        sendDelta("ADAPTIVE_CEILING", "12V");
+        sendDelta("FAN", "ON");
+        sendDelta("FAN_SPEED", "100");
+      } else if (!adaptiveHotStepPending) {
+        adaptiveHotsideRiseDueMs = 0;
+        adaptiveResumePeltierAfterHotStep = true;
+
+        const Voltage target = lowerVoltage(currentVoltage);
+        adaptiveCeiling =
+            currentVoltage == Voltage::V12 ? Voltage::V9 : Voltage::V5;
+        sendDelta("ADAPTIVE_CEILING", voltageToString(adaptiveCeiling));
+
+        bool accepted = false;
+        if (voltageTransition) {
+          pendingVoltage = target;
+          voltageTransitionSource = VoltageRequestSource::HOTSTEP;
+          adaptiveHotStepPending = true;
+          accepted = true;
+        } else {
+          adaptiveHotStepPending = true;
+          accepted = requestVoltage(
+              target,
+              VoltageRequestSource::HOTSTEP,
+              true);
+          if (!accepted) {
+            adaptiveHotStepPending = false;
+          }
+        }
+
+        if (!accepted) {
+          sendDelta("SAFETY_REASON", "VOLTAGE_STEP_FAILED");
+        } else if (!hotProtectionActive) {
+          startHotsideLimitIndicator();
+        }
+      }
+    } else if (!voltageTransition &&
+               !adaptiveHotStepPending &&
+               peltierHotOffUntilMs == 0) {
+      fanOn = true;
+      fanPwm = 100;
+      peltierOn = true;
+    }
+  } else {
+    // Manual mode: Hotside Limit forces a return to 5V and permanently
+    // latches Peltier OFF until a safe, explicit manual ON command.
+    if (hotNow) {
+      fanOn = true;
+      fanPwm = 100;
+      if (peltierOn) {
+        peltierOn = false;
+        stopPeltierOutput();
+        sendDelta("PELTIER", "OFF");
+      }
+      manualPeltierSafetyLatch = true;
+
       if (voltageTransition) {
         pendingVoltage = Voltage::V5;
+        voltageTransitionSource = VoltageRequestSource::SAFETY;
       } else if (currentVoltage != Voltage::V5) {
         const bool accepted =
             requestVoltage(Voltage::V5, VoltageRequestSource::SAFETY, true);
@@ -1562,18 +1665,6 @@ static void enforceSafety() {
         }
       }
     }
-  }
-
-  if (adaptiveResumePeltierAfterHotStep &&
-      adaptiveOn &&
-      fanOn &&
-      !voltageTransition &&
-      peltierHotOffUntilMs != 0 &&
-      millis() >= peltierHotOffUntilMs &&
-      !hotsideProtectionActiveNow()) {
-    adaptiveResumePeltierAfterHotStep = false;
-    peltierHotOffUntilMs = 0;
-    peltierOn = true;
   }
 
   if (peltierOn && !fanOn) {
@@ -1585,48 +1676,47 @@ static void enforceSafety() {
 }
 
 static void processAdaptiveHotTimer() {
-  if (!adaptiveOn || !ntcValid || !adaptiveHotStepPending) return;
-  if (voltageTransition) return;
-  if (millis() < adaptiveHotStepDueMs) return;
+  if (!adaptiveOn || !ntcValid) return;
 
-  adaptiveHotStepPending = false;
+  const uint32_t now = millis();
 
-  const bool wasPeltierOn = peltierOn;
-  peltierOn = false;
-  stopPeltierOutput();
-  if (wasPeltierOn) sendDelta("PELTIER", "OFF");
+  // Hotside-triggered down-step cooldown starts only after the new voltage
+  // selector is physically active.
+  if (peltierHotOffUntilMs != 0) {
+    if (now < peltierHotOffUntilMs) return;
+    if (hotsideProtectionActiveNow()) return;
 
-  if (currentVoltage == Voltage::V12) {
-    adaptiveCeiling = Voltage::V9;
-    sendDelta("ADAPTIVE_CEILING", "9V");
-  } else if (currentVoltage == Voltage::V9) {
-    adaptiveCeiling = Voltage::V5;
-    sendDelta("ADAPTIVE_CEILING", "5V");
-  } else {
-    adaptiveOn = false;
-    adaptiveCeiling = Voltage::V12;
-    adaptiveResumePeltierAfterHotStep = false;
     peltierHotOffUntilMs = 0;
+    adaptiveResumePeltierAfterHotStep = false;
     fanOn = true;
     fanPwm = 100;
+    peltierOn = true;
     applyCoolingOutputs();
-    sendDelta("ADAPTIVE", "OFF");
-    sendDelta("ADAPTIVE_CEILING", voltageToString(adaptiveCeiling));
-    sendDelta("FAN", "ON");
-    sendDelta("FAN_SPEED", String(fanPwm));
+  }
+
+  if (voltageTransition) return;
+  if (effectiveAdaptiveProfile() != AdaptiveProfile::HOTSIDE_PROTECTION) return;
+  if (currentVoltage == Voltage::V12 || adaptiveCeiling == Voltage::V5) return;
+  if (hotsideProtectionActiveNow()) return;
+
+  if (adaptiveHotsideRiseDueMs == 0) {
+    adaptiveHotsideRiseDueMs = now + 5000UL;
     return;
   }
 
-  adaptiveResumePeltierAfterHotStep =
-      adaptiveResumePeltierAfterHotStep || (wasPeltierOn && fanOn);
+  if (now < adaptiveHotsideRiseDueMs) return;
 
-  const Voltage target = lowerVoltage(currentVoltage);
+  adaptiveHotsideRiseDueMs = 0;
+
+  const Voltage target = higherVoltage(currentVoltage);
+  if (isHigherVoltage(target, adaptiveCeiling)) return;
+
   const bool accepted =
-      requestVoltage(target, VoltageRequestSource::HOTSTEP, true);
+      requestVoltage(target, VoltageRequestSource::ADAPTIVE, true);
 
   if (!accepted) {
-    adaptiveResumePeltierAfterHotStep = false;
-    sendDelta("SAFETY_REASON", "VOLTAGE_STEP_FAILED");
+    adaptiveHotsideRiseDueMs = now + 5000UL;
+    sendDelta("SAFETY_REASON", "ADAPTIVE_RISE_WAIT");
   }
 }
 
@@ -1673,25 +1763,16 @@ static void processAdaptiveHotsideFallback() {
     return;
   }
 
-  // Runtime fallback: Battery control is suspended and Hotside becomes the
-  // effective Adaptive profile until a fresh phone Battery value is received.
-  // Hotside safety remains authoritative.
-  if (adaptiveHotStepPending || hotsideProtectionActiveNow()) return;
-
-  if (voltageTransition) {
-    if (voltageTransitionSource == VoltageRequestSource::BATTERY) {
-      pendingVoltage = Voltage::V12;
-    }
+  // Battery is unavailable: preserve the configured profile, but use the
+  // effective HOTSIDE controller until a fresh PHONE:BT value returns.
+  if (hotsideProtectionActiveNow() ||
+      voltageTransition ||
+      peltierHotOffUntilMs != 0) {
     return;
   }
 
-  if (currentVoltage != Voltage::V12) {
-    // Runtime fallback bypasses the normal Battery dwell so the Hotside
-    // profile can immediately resume its normal 12V operating target.
-    (void)requestVoltage(
-        Voltage::V12,
-        VoltageRequestSource::ADAPTIVE,
-        true);
+  if (currentVoltage != Voltage::V12 && adaptiveHotsideRiseDueMs == 0) {
+    adaptiveHotsideRiseDueMs = millis() + 5000UL;
   }
 }
 
@@ -1718,29 +1799,25 @@ static void evaluateAdaptiveBattery() {
       adaptiveProfile != AdaptiveProfile::HOTSIDE_BATTERY ||
       !ntcValid ||
       !batteryValid) return;
-  if (adaptiveHotStepPending || hotsideProtectionActiveNow()) return;
+  if (adaptiveHotStepPending ||
+      peltierHotOffUntilMs != 0 ||
+      hotsideProtectionActiveNow()) return;
 
-  // Battery temperature maps directly to the current desired zone.
-  // There is intentionally no temperature hysteresis or remembered zone.
+  // Battery data has returned, so any Hotside-fallback rise timer is stale.
+  adaptiveHotsideRiseDueMs = 0;
+
   const int zone = batteryZoneFor(batteryC);
   const Voltage desiredTarget =
       clampToAdaptiveCeiling(batteryZoneVoltage(zone));
 
-  // No queue is kept here. If the desired target returns to the
-  // current physical voltage before the rate-limit window opens,
-  // there is simply no voltage transition to execute.
   if (desiredTarget == currentVoltage) return;
   if (voltageTransition) return;
 
-  // Move exactly one voltage level toward the current desired target.
   const Voltage stepTarget =
       isHigherVoltage(desiredTarget, currentVoltage)
           ? higherVoltage(currentVoltage)
           : lowerVoltage(currentVoltage);
 
-  // Battery Adaptive always obeys the shared voltage hardware dwell.
-  // A stale step is never queued: this function re-evaluates the
-  // live battery target every loop and before every physical step.
   (void)requestVoltage(
       stepTarget,
       VoltageRequestSource::BATTERY,
@@ -3316,8 +3393,11 @@ static bool setPeltierState(bool desired, String& reason) {
     return false;
   }
 
-  if (!peltierOn) {
+  if (manualPeltierSafetyLatch) {
+    manualPeltierSafetyLatch = false;
+  }
 
+  if (!peltierOn) {
     peltierOn = true;
     applyCoolingOutputs();
   }
@@ -3355,23 +3435,37 @@ static void activateAdaptiveAfterSafeFiveVolt() {
   }
 
   adaptiveStartPending = false;
+  manualPeltierSafetyLatch = false;
   adaptiveOn = true;
   adaptiveCeiling = Voltage::V12;
   adaptiveHotStepPending = false;
   peltierHotOffUntilMs = 0;
   adaptiveResumePeltierAfterHotStep = false;
+  adaptiveHotsideRiseDueMs = 0;
   fanOn = true;
-  peltierOn = true;
   fanPwm = 100;
 
+  if (hotsideProtectionActiveNow()) {
+    adaptiveOn = false;
+    adaptiveCeiling = Voltage::V12;
+    peltierOn = false;
+    sendDelta("ADAPTIVE", "OFF");
+    sendDelta("ADAPTIVE_CEILING", "12V");
+    applyCoolingOutputs();
+    publishSafetyReason();
+    return;
+  }
+
+  peltierOn = true;
   applyCoolingOutputs();
 
   ++stateSequence;
   sendDelta("ADAPTIVE", "ON");
   sendDelta("ADAPTIVE_CEILING", voltageToString(adaptiveCeiling));
 
-  // HOTSIDE_BATTERY starts evaluating only after Adaptive has actually become ON.
-  if (adaptiveProfile == AdaptiveProfile::HOTSIDE_BATTERY && batteryValid) {
+  if (effectiveAdaptiveProfile() == AdaptiveProfile::HOTSIDE_PROTECTION) {
+    adaptiveHotsideRiseDueMs = millis() + 5000UL;
+  } else if (batteryValid) {
     evaluateAdaptiveBattery();
   }
 }
@@ -3402,6 +3496,7 @@ static void setAdaptiveState(bool desired, String& reason) {
     adaptiveHotStepPending = false;
     peltierHotOffUntilMs = 0;
     adaptiveResumePeltierAfterHotStep = false;
+    adaptiveHotsideRiseDueMs = 0;
     fanPwm = 100;
 
     if (currentVoltage == Voltage::V5 && !voltageTransition) {
@@ -3433,6 +3528,7 @@ static void setAdaptiveState(bool desired, String& reason) {
   adaptiveHotStepPending = false;
   peltierHotOffUntilMs = 0;
   adaptiveResumePeltierAfterHotStep = false;
+  adaptiveHotsideRiseDueMs = 0;
   adaptiveCeiling = Voltage::V12;
   fanPwm = 100;
 
@@ -3986,6 +4082,16 @@ static void executeTouchLong() {
 
   // Toggle both outputs as one paired control. Existing safety rules remain authoritative.
   const bool desired = !(fanOn && peltierOn);
+
+  if (desired && hotsideProtectionActiveNow()) {
+    sendAck("TOUCH_COOLING", false, "HOTSIDE_PROTECTION");
+    return;
+  }
+
+  if (desired && manualPeltierSafetyLatch) {
+    manualPeltierSafetyLatch = false;
+  }
+
   fanOn = desired;
   peltierOn = desired;
   applyCoolingOutputs();
