@@ -3,9 +3,9 @@
 - Current chat is near context limit; this repository checkpoint is the handoff boundary for the next chat.
 - The detailed copy-ready continuation prompt is stored in README.md and HANDOVER.md.
 - The next chat must begin with the full memory preflight before any analysis, discussion, execution, Build App, Gemini review, or test interpretation.
-- Current functional firmware remains V3.7.
-- Active firmware source remains firmware/JEXFYZ-V3.7.ino.
-- Firmware source blob remains 4a7e08a6ea0de57f4e3d3a742ad88cbd25a05e01.
+- Current functional firmware remains V3.8.
+- Active firmware source remains firmware/JEXFYZ-V3.8.ino.
+- Firmware source blob remains 2fbff3656bc037846124806fb390022f85146845.
 - Latest verified App Build remains #50; no newer App Build was performed in this chat.
 - Firmware V3.7 compile/BIN/Firebase/device validation remains unperformed.
 - No functional App/Firmware behavior was changed by this continuity/handover event.
