@@ -122,3 +122,119 @@ For current truth, always read PROJECT_STATE.md and the current repository sourc
 - Existing 20 kHz / 8-bit Peltier PWM, 5 s duration, safety, BLE/P1, GPIO, Adaptive, and OTA contracts are preserved.
 - No App source changed and no App Build was triggered.
 
+## 2026-10-04 — FULL V3.8 FIRMWARE AUDIT / DISCUSSION CHECKPOINT
+
+[DISCUSSION ONLY] No functional Firmware/App source was changed by this audit. Current functional source remains `firmware/JEXFYZ-V3.8.ino` blob `2fbff3656bc037846124806fb390022f85146845`.
+
+### Scope
+Full static review of the V3.8 firmware path: OTA/radio, BLE command/queues, GPIO/PWM, NTC, Hotside safety, Adaptive, Battery input, Voltage transitions, touch state machine, LED ownership, persistence, setup/loop scheduling, error recovery, and observability.
+
+### Confirmed findings
+1. **P0/P1 — Online OTA DOWNLOAD dispatcher stalls after the first chunk.**
+   - Source: `processOnlineOta()`, around L3501.
+   - The DOWNLOAD state is guarded by `if (!onlineUpdateStarted)`, so after `Update.begin()` sets `onlineUpdateStarted=true`, later loop passes stop calling `performOnlineOtaDownload()`.
+   - This exactly explains BLUE -> GREEN -> LED OFF/stall on an incomplete download.
+   - Intended correction: service `performOnlineOtaDownload()` every cooperative DOWNLOAD loop; keep its internal initialization/completion/error guards.
+
+2. **P0/P1 — Online OTA does not fully release BLE before Wi-Fi handoff.**
+   - `startOnlineOta()` calls `stopBleRadio(false)`.
+   - The false path stops advertising but does not deinitialize the BLE controller or explicitly disconnect an existing GATT client.
+   - The code then starts Wi-Fi after the settle window.
+   - This conflicts with the ESP32-C3 single-radio contract and can create radio coexistence/recovery instability.
+   - This finding is source-level verified; physical radio-fault causality is not yet measured.
+
+3. **P1 — NTC validity is not revalidated immediately before voltage-selector activation.**
+   - `requestVoltage()` validates `ntcValid` when the request is created.
+   - `completeVoltageTransition()` rechecks Hotside, but not `!ntcValid`, immediately before activating 9 V/12 V.
+   - If the NTC becomes invalid during the 200 ms deadtime, one above-5 V selector state can be committed before the next loop forces the safe 5 V path.
+   - This is a safety-state race and should be fixed before treating voltage safety as complete.
+
+4. **P1 — Required rapid Hotside temperature-rise protection is absent.**
+   - Current source has absolute Hotside-limit protection but no previous-temperature/rate-of-rise calculation, no `dT/dt` threshold, and no dedicated manual-restart latch for a rapid-rise event.
+   - A 1 s NTC sample period also means the current thermal decision granularity is approximately 1 s.
+   - Therefore the historical requirement “rapid temperature rise -> immediate Peltier OFF + manual restart” is not implemented in V3.8.
+
+5. **P1 — Wi-Fi retry path skips the explicit radio-off settle on retries.**
+   - In Online OTA `WIFI_CONNECTING`, a failed attempt calls `WiFi.mode(WIFI_OFF)` and returns to `RADIO_TEARDOWN` without re-arming `wifiOffSettlePending`.
+   - The next teardown pass can therefore proceed without the configured 160 ms settle.
+   - First-attempt teardown is settled; retry teardown is not consistently modeled.
+
+6. **P1 — Online OTA HTTP preparation is synchronously blocking.**
+   - `prepareOnlineOtaDownload()` calls `onlineHttpClient.GET()` with a 60 s timeout from the main loop.
+   - This violates the stated cooperative/non-blocking runtime contract and can freeze normal scheduling/LED feedback for a long period.
+   - It does not explain GREEN-after-success by itself, but it is a separate OTA reliability defect.
+
+7. **P1 — OTA transport is not cryptographically authenticated.**
+   - `prepareOnlineOtaDownload()` uses `cloudClient.setInsecure()`.
+   - HTTPS encryption is therefore used without certificate/server authentication.
+   - The URL host/path allowlist reduces scope but does not eliminate a network MITM firmware-substitution risk.
+
+8. **P1 — OTA has no explicit anti-rollback/version monotonicity check.**
+   - `validFirmwareVersion()` validates syntax only.
+   - `startOnlineOta()` skips only an exact string match with `FW_VERSION`; an older version can still be accepted for download.
+   - No semantic version ordering or rollback policy is enforced.
+
+9. **P1 — BLE control channel is not authenticated.**
+   - The UUIDs identify the service/characteristics but are not a secret key or access-control mechanism.
+   - Any compatible BLE client that completes `SYNC_READY` can issue control/OTA commands.
+   - This is especially relevant because `PHONE:BT`, OTA credentials, OTA URL, and OTA version are accepted from that channel.
+
+10. **P1/P2 — Battery temperature is a trusted remote control input, not an independent sensor.**
+    - `PHONE:BT=` directly feeds the Adaptive Battery controller.
+    - TTL/liveness protection exists, but there is no authenticity/attestation of the temperature source.
+    - With an unauthenticated BLE channel, a client can influence Adaptive voltage selection.
+
+11. **P2 — Local OTA AP has no application-layer authentication/session timeout after a client connects.**
+    - Once `bootApClientSafe` is set by a connected station, the AP can remain the priority owner until the station disconnects or OTA completes.
+    - A stale/idle Wi-Fi client can therefore hold the device away from BLE longer than necessary.
+
+12. **P2 — Online OTA progress UX can be legitimately silent for long intervals.**
+    - Progress indicators appear only at 20/40/60/80/100% milestones.
+    - Below 20% the LEDs are intentionally off.
+    - Combined with the blocking GET and the confirmed DOWNLOAD dispatcher bug, this created the exact “green then nothing” user symptom.
+
+13. **P2 — OTA success has no explicit post-boot health/rollback validation.**
+    - The source records success and restarts after `Update.end()`.
+    - There is no application-level “new image booted healthy” confirmation/rollback decision in this firmware.
+
+14. **P2 — Reset-reason telemetry is intentionally unavailable.**
+    - `resetReasonText()` always returns `UNAVAILABLE_CORE_3_3_7`.
+    - This prevents the firmware from distinguishing brownout/panic/watchdog/software reset classes during post-mortem analysis.
+
+15. **P2 — BLE TX queue silently drops data when full.**
+    - `sendText()` only enqueues when `bleTxCount < BLE_TX_QUEUE_SIZE`; otherwise the message is discarded with no overflow counter/diagnostic.
+    - High-rate telemetry or sync bursts can therefore lose non-safety state notifications.
+
+16. **P2 — Battery Adaptive has no threshold hysteresis.**
+    - Near `battery5Limit` or `battery12Limit`, small temperature noise can cause repeated 5 V/9 V/12 V target changes.
+    - The one-step movement and 1 s voltage guard reduce the rate, but do not prevent threshold chatter.
+
+17. **P2 — Heap/allocator fragility remains a long-run risk.**
+    - The firmware uses many dynamic `String` objects and a 48-entry `String` TX queue.
+    - Heap checks exist, but only at named BLE-start checkpoints rather than during long-duration runtime.
+    - No fragmentation regression metric is currently retained.
+
+18. **P2 — Local OTA relies on library image finalization rather than an explicit first-byte magic check.**
+    - Online OTA checks the ESP32 magic byte before streaming.
+    - Local OTA validates file extension/size and calls `Update.end(true)`, but has no equivalent explicit first-byte diagnostic.
+    - This is primarily observability/diagnostic inconsistency unless a malformed image reaches the library error path.
+
+### Requirements / contract gaps
+- Rapid-rise thermal shutdown + manual restart is missing from the current implementation.
+- Independent Battery protection guard is not present as a separate safety authority; Battery temperature is currently an Adaptive input only.
+- “BLE/Wi-Fi never concurrent” is not fully enforced during Online OTA because the current BLE stop call is non-deinitializing.
+
+### Known non-bugs / already-verified
+- GPIO contract is correct in source: GPIO5=Peltier, GPIO6=Fan.
+- Peltier 5 s soft-start is correctly scoped to genuine OFF->ON only in V3.8; voltage changes do not restart it.
+- 200 ms selector deadtime and 1 s shared post-transition guard are present.
+- Hotside absolute-limit protection is present in Manual and Adaptive paths.
+- BLE RX callbacks enqueue data; main loop performs command handling.
+- Executable `delay()` count is 0; timing `while()` wait count is 0.
+- Source/static brace and parenthesis audits are balanced.
+
+### Full-source documentation requirement for the next execution
+The source contains function-level `[DOC-CONTRACT]` blocks, but not literally every executable statement has a dedicated explanation. Before a functional cleanup pass, document every **meaningful functional line/statement** with its purpose, authority, state mutation, timing, and safety implication. Do not waste comments on blank lines or punctuation-only braces. The goal is line-auditable engineering intent without turning the file into noise.
+
+### Validation boundary
+This is static/source analysis only. ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compilation, BIN generation, Firebase promotion, and physical ESP32 electrical/thermal/radio/OTA tests remain unperformed.
