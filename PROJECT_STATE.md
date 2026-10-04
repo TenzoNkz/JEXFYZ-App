@@ -353,3 +353,10 @@ For Build App, the first action must be the full memory preflight and exact-sour
 - [BLOCKED] Gemini second opinion could not be executed because no Gemini-capable tool/connector is available in this session; no Gemini result is being claimed.
 - [NEXT ACTION] A controlled diagnostic should compare 9 V → 12 V with Peltier OFF versus Peltier ON, while capturing the ESP32 reset/boot serial output if available.
 
+## 2026-10-04 — GEMINI RELAY WORKFLOW RESTORED
+
+- [CONFIRMED] `@Thinking Tanya Gemini!` uses the user as the relay when no direct Gemini connector is available.
+- [DECISION] The assistant must provide a full copy-ready Gemini prompt with verified project context and exact technical questions; the user sends it to Gemini and returns the response here.
+- [UNVERIFIED] No Gemini conclusion exists yet for the current 9V → 12V MCU-restart fault until the user returns Gemini's answer.
+- [NEXT ACTION] Provide the Gemini relay prompt for the V3.7 9V → 12V restart / Peltier soft-start investigation.
+
