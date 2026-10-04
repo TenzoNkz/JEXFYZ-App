@@ -1,3 +1,17 @@
+## 2026-10-04 — EXECUTION FULL / V4.2 ONLINE OTA RETRY HARDENING
+
+- [IMPLEMENTED] Applied the user-supplied Gemini V4.2 patch to the exact active V4.1 source after verifying the supplied V4.1 blob reference was stale.
+- [VERSION] Firmware advanced V4.1 → V4.2 as required by the absolute firmware-version rule.
+- [SOURCE] Active firmware is now `firmware/JEXFYZ-V4.2.ino`; source blob `63e8db10dbe99eb538af62ddc7d35d8b4b20b849`.
+- [ONLINE OTA] Removed retry-side `WiFi.disconnect(); WiFi.begin(...)` looping. Online Wi-Fi now allows one cumulative 3 × 15 s = 45 s connection window and reports attempt milestones without restarting the Wi-Fi driver.
+- [RETAINED] Initial radio teardown, single `WiFi.begin()`, `setAutoReconnect(true)`, GitHub raw URL allowlist, `setInsecure()`, BLUE/YELLOW/GREEN/RED indicators, OTA safe outputs, and cooperative DOWNLOAD processing remain intact.
+- [PROTECTED] Local OTA was not modified.
+- [STATIC AUDIT] 564/564 braces; 2079/2079 parentheses; 45/45 brackets; 0 executable `delay()`; 0 timing `while()`; 1 `WiFi.begin()`; 0 `setAutoReconnect(false)`; 1 `setAutoReconnect(true)`; 0 `WL_CONNECT_FAILED/WL_NO_SSID_AVAIL` references.
+- [VALIDATION BOUNDARY] ArduinoDroid/Core 3.3.7 compile, BIN generation, Firebase promotion, physical flash, and runtime validation remain unverified.
+- [APP] No App source/config/workflow change; no App Build triggered.
+- [COMMIT] Firmware V4.2 commit: `d5401b7a2bf168a8db3f4f7dd2ef876ad8eadd15`.
+- [NOTE] The supplied Gemini prose attributes the prior failure to driver/event-queue crash mechanisms; that causality remains unproven without runtime/reset/power evidence. The implemented change is recorded as a reliability simplification, not as proof of root cause.
+
 ## 2026-10-04 — EXECUTION FULL / V4.1 SIMPLE ONLINE OTA
 
 - [IMPLEMENTED] Applied the accepted Gemini redesign to Online OTA in the exact V4.0 source.
