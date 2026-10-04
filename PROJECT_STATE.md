@@ -1,3 +1,13 @@
+## 2026-10-04 — GEMINI ONLINE OTA FIX RECEIVED
+
+- [GEMINI RESULT] User supplied Gemini's independent Online OTA fix for the uploaded V4.0 source.
+- [SCOPE] Gemini proposes four Online OTA-only changes: remove the custom CA-bundle client, restore simple `WiFiClientSecure + setInsecure()`, transition directly to DOWNLOAD after GitHub connection, and transition directly to FLASH_FINALIZE after download completion.
+- [RUNTIME ROOT CAUSE REPORTED] Gemini attributes the missing/imperceptible Online OTA indicator to the previous TLS path potentially failing early and to unnecessary intermediate green/blue indicator transitions.
+- [LOCAL OTA] Gemini explicitly states Local OTA is unchanged. Existing Local OTA remains frozen/protected by project rule.
+- [IMPORTANT] Gemini did not provide exact OLD → NEW blocks for every change; it provided replacement snippets/descriptions. The next `@Thinking Eksekusi Full!` must derive exact OLD blocks from the repository source and apply only the intended Online OTA changes, without altering Local OTA.
+- [CURRENT SOURCE] V4.0 remains blob `415346ece09f4af33f907b2077140ccfc45c357b`; no functional source change has been made from this Gemini result alone.
+- [NEXT] On explicit `@Thinking Eksekusi Full!`, apply the four Gemini Online OTA changes, run full affected audit, verify Local OTA diff is empty, sync memory, and commit.
+
 ## 2026-10-04 — GEMINI PATCH-ONLY EXECUTION PROTOCOL
 
 - [USER COMMAND] `@Thinking Eksekusi Full!` requested repository/workflow preparation so future Gemini fixes are applied by this assistant.
