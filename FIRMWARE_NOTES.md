@@ -1,3 +1,12 @@
+## 2026-10-04 — DOCUMENTATION PASS / V3.7 FIRMWARE ANALYSIS MAP
+
+- Added `firmware/FIRMWARE_ANALYSIS.md` as the repository-level architecture and safety map for V3.7.
+- The analysis covers hardware mapping, authority order, Voltage/Adaptive/Hotside/Battery state machines, Peltier PWM rules, BLE/radio ownership, OTA flow, LED ownership, persistence, timing, and validation boundaries.
+- Critical source functions are indexed with current source line numbers.
+- The functional firmware version remains **V3.7**; no runtime logic was changed by the analysis-document addition.
+- Analysis document commit: `e2ab50edeb428e95ce21a9b5a54e169d904ade84`.
+- Physical compilation, BIN generation, Firebase promotion, dedicated binary repository update, and hardware validation remain unperformed.
+
 # JE X FYZ — FIRMWARE NOTES
 
 ## AUTHORITATIVE MEMORY CORE — V3.7 — 2026-10-04
