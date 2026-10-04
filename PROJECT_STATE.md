@@ -4,78 +4,52 @@
 - Project: JE X FYZ / JE Cooler
 - Repository: TenzoNkz/JEXFYZ-App
 - Branch: main
-- HEAD: b612626861cee4f5f8b4d20e6ef0d88c5f0ca550
+- Current source state is V4.5 firmware + synchronized App; see Git history for exact HEAD.
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
-- Active Firmware: V4.4
-- Active Firmware source: firmware/JEXFYZ-V4.4.ino
-- Firmware source blob: 18f74d5c87b85886b6d3d44fddd4938f4db7019c
-- App source baseline: lib/main.dart, blob 7a0003ff7aa9691468139714ec18d364e5896b38
-- Latest verified App Build: #50
+- Active Firmware: V4.5
+- Active Firmware source: firmware/JEXFYZ-V4.5.ino
+- Firmware source blob: daef871d910f3f1bc4f2d1bdc44e0d19f6e292dc
+- App main source blob: 8ebd878b116d7ef093b6df54894a7db876eb0f02
+- App settings source blob: f11235bab559b291928550e06984532581ddad6a
+- App test source blob: aa86778beb8fcc3ce6a12454f6354f96ec99a160
+- Latest verified App Build: #50 (older App source; not validation for current source)
 
 ## FIRMWARE
-- V4.3 Local OTA: PASS, user-confirmed.
-- V4.3 Online OTA: PASS, user-confirmed.
-- V4.4 adds explicit active-GATT disconnect before Online OTA Wi-Fi handoff.
+- V4.4 Local OTA: user-confirmed PASS.
+- V4.4 Online OTA: user-confirmed PASS.
+- V4.5 fixes active-GATT disconnect ordering, keeps Online OTA on the V3.2-style path, emits OTA_UP_TO_DATE as a one-shot event, and gates rapid-rise protection on Peltier ON.
 - Local OTA remains Golden/Protected.
-- Online OTA retains the V3.2-style bounded Wi-Fi/retry/result-indicator behavior.
-- Online result flow: Wi-Fi BLUE → GitHub GREEN → download complete BLUE → flash success GREEN → restart; failure RED/recovery.
-- Yellow 20/40/60/80/100% progress layer: removed.
-- Equal firmware version: Up to date; any other valid version is eligible.
-- Download remains cooperative and bounded per loop pass.
-- Physical V4.4 flash/runtime validation: pending.
+- Online OTA: Wi-Fi BLUE → GitHub GREEN → download complete BLUE → flash success GREEN → restart; failure RED/recovery.
+- Yellow Online OTA progress layer remains removed.
+- Any valid different firmware version is eligible; equal version is Up to date.
+- Timing remains cooperative; no executable delay() and no timing while() loops.
 
 ## APP
-- App source/config/workflow unchanged by V4.4.
-- Existing App BLE disconnect handler already clears live telemetry/session state.
-- V4.4 is a firmware-only change; new App Build is not required unless App source/config changes.
-- Latest verified Build #50 details are maintained in BUILD_NOTES.md.
+- App BLE/P1 architecture is preserved.
+- Online OTA recovery now treats the expected GATT disconnect as an OTA lifecycle event, reconnects independently of passive Auto Connect, and restores the normal P1 sync contract.
+- App now uses firmware-reported Adaptive Ceiling, exact battery threshold ranges (5V 20–30°C / 12V 30–40°C), current OTA stage tokens, and actual SAFETY OK/LOCKED semantics.
+- OTA password entry is masked.
+- App Build has not been triggered by the V4.5 source changes.
 
 ## HARDWARE
 - Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module.
 - Arduino Standard + official Arduino-ESP32 Core 3.3.7.
 - GPIO 5 Peltier, GPIO 6 Fan, GPIO 0 Hotside NTC, GPIO 1 Touch, GPIO 3 12V, GPIO 4 9V, GPIO 7 WS2812.
-- BLE and Wi-Fi are treated as mutually exclusive because the ESP32-C3 is single-radio for this product.
-- No executable delay().
-- No timing while() loops.
-- Hotside NTC is the universal thermal safety input.
+- BLE and Wi-Fi are mutually exclusive because the ESP32-C3 is single-radio for this product.
 
 ## CI / BUILD
 - App workflow: .github/workflows/app-build.yml
-- App workflow blob: 731f4a7a43bf58d01a382053457d1f67a4742c8a
 - Trigger workflow: .github/workflows/app-build-trigger.yml
-- Trigger blob: 89598aff0b006bb3db6819080a13965fc5a6247d
-- Trigger issue title: JE X FYZ — BUILD APP TRIGGER
-- Trigger token: JEXFYZ_BUILD_TRIGGER_V1
-- Toolchain: Java 17, Flutter 3.47.2 stable, Gradle 9.3.1, ubuntu-24.04.
-- Normal push/PR must not generate a release APK.
+- App build remains manual-by-issue-trigger only.
+- Firmware-only or source-only changes do not trigger a release APK automatically.
+- Latest verified App Build #50 remains the last verified APK for its own source commit.
 
-## VERSION / SOURCE RULES
-- Every functional Firmware image change increments FW_VERSION.
-- Active versioned .ino filename must match FW_VERSION.
-- Keep one active versioned .ino in firmware/.
-- Current source/workflow outrank historical notes.
-- Documentation-only cleanup never changes firmware version.
-
-## VALIDATION
-Verified by source/static audit:
-- braces balanced
-- parentheses balanced
-- brackets balanced
-- executable delay() = 0
-- timing while() = 0
-- yellow 0xFFFF00 refs = 0
-- stale Online OTA progress refs = 0
-- explicit BLE GATT disconnect = 1
-
-Pending:
-- compile V4.4 in ArduinoDroid/Core 3.3.7
-- generate/verify V4.4 BIN
-- flash V4.4
-- verify BLE disconnect and App telemetry stop at Online OTA start
-- verify BLE reconnect + sync after restart
-- verify Local OTA remains intact
+## VALIDATION BOUNDARY
+- V4.4 OTA was physically user-confirmed successful.
+- V4.5 source/static audit is complete.
+- V4.5 ArduinoDroid/Core 3.3.7 compile, BIN generation, flashing, and physical OTA validation are still pending.
+- Current App source changes are not covered by Build #50.
 
 ## EXACT NEXT ACTION
-Compile/flash V4.4 and test:
-Update Firmware → BLE disconnects → App telemetry stops → Online OTA continues → restart → BLE reconnects → sync.
+Compile V4.5 with ArduinoDroid/Core 3.3.7, generate/verify BIN, flash hardware, then validate Online OTA BLE disconnect/reconnect and Local OTA. Run Build App only on an explicit Build App command.
