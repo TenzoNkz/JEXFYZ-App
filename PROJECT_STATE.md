@@ -115,7 +115,7 @@ For every future JE X FYZ action, the assistant must first read the complete cur
 - Next exact action: when the user returns, record the tested device/binary/version, expected behavior, observed behavior, evidence, pass/fail, and remaining risks before making any implementation decision.
 
 ## 2026-10-04 — EXECUTION FULL / REPOSITORY CLEANUP + TEST BASELINE
-- Final repository HEAD after cleanup/reconciliation: `7cf60454976a468d4fcbe2ea814ae452613be878`.
+- Final repository HEAD after cleanup/reconciliation: `6c1a415b8038eaa3ad1d04a4ee9565504f6e4aeb`.
 - Current App source hashes remain unchanged from pre-cleanup: `lib/main.dart` = `7a0003ff7aa9691468139714ec18d364e5896b38`; `lib/floating_monitor.dart` = `af3449bf4344b8ce64b8c547de28f7572b5c47fd`; `pubspec.yaml` = `8f558273e21692af9958f914527fdc62d623d63a`; Android build/source files remain unchanged.
 - Current firmware source remains V3.7 blob `4a7e08a6ea0de57f4e3d3a742ad88cbd25a05e01`.
 - CHAT_TRANSFER.md is intentionally `TEMPLATE_WAITING_FOR_PROMPT_1` until a real limit-transfer event occurs.
@@ -126,6 +126,13 @@ For every future JE X FYZ action, the assistant must first read the complete cur
 - Current firmware remains V3.7; source/static audit is complete, while compile/BIN/Firebase/physical validation remain pending.
 - Next operational project stage remains real hardware/device testing when the user returns with evidence.
 - Current build trigger remains issue-based: `JE X FYZ — BUILD APP TRIGGER` + `JEXFYZ_BUILD_TRIGGER_V1`.
+
+## 2026-10-04 — FINAL CURRENT-STATE SYNC
+
+- Re-verified repository current HEAD after all cleanup commits: `6c1a415b8038eaa3ad1d04a4ee9565504f6e4aeb`.
+- Functional App source hashes remain unchanged from the pre-cleanup baseline.
+- CHAT_TRANSFER.md remains intentionally a template until Prompt 1 performs a real chat-limit transfer.
+- Next operational stage remains hardware/device testing when user-provided evidence is available.
 
 # JE X FYZ — PROJECT STATE
 
