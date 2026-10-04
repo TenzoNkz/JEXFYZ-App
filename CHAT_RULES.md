@@ -1,3 +1,11 @@
+## 2026-10-04 — FOLLOW-UP EXECUTION FULL EVENT / FIRMWARE V3.2
+
+- Full regression of V3.1 identified an authority-boundary edge case in the deadtime revalidation logic.
+- Firmware continuity source advanced V3.1 → V3.2.
+- Added explicit voltage-transition source tracking so Battery Adaptive can retarget/cancel only Battery-originated in-flight transitions.
+- Safety/HOTSTEP/Adaptive/manual/touch voltage transitions are protected from Battery revalidation.
+- No App Build, firmware BIN publication, Firebase promotion, dedicated binary-repository update, or physical validation was performed.
+
 ## 2026-10-04 — FOLLOW-UP EXECUTION FULL EVENT / FIRMWARE V3.1
 
 - Full regression of V3.0 identified and corrected a Battery Adaptive stale in-flight target during the 200 ms selector deadtime.

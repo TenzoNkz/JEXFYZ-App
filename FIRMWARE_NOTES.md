@@ -1,3 +1,40 @@
+## 2026-10-04 — FOLLOW-UP EXECUTION FULL / FIRMWARE V3.2 BATTERY TRANSITION SOURCE ISOLATION
+
+### Source/version
+- Full V3.1 regression identified one additional authority-boundary edge case: deadtime revalidation needed to distinguish Battery Adaptive transitions from higher-priority Safety/HOTSTEP and other voltage requests.
+- Functional firmware revision advanced **V3.1 → V3.2** to isolate the Battery-specific retarget/cancel logic.
+- Active continuity source is `firmware/JEXFYZ-V3.2.ino`.
+- Superseded `firmware/JEXFYZ-V3.1.ino` was removed from the active source tree.
+- Corrective source commit: 536877e644731e3ed0a64b87508c18de9270eede.
+- No firmware BIN, Firebase metadata, dedicated binary-repository update, App Build, or physical device validation was performed.
+
+### Corrective implementation
+- Added `voltageTransitionSource` so every in-flight voltage transition records its originating request source.
+- The 200 ms deadtime revalidation/cancel/retarget block now runs **only** when the in-flight transition source is `BATTERY`.
+- Higher-authority `SAFETY`, `HOTSTEP`, `ADAPTIVE`, manual, and touch transitions are no longer eligible for Battery Adaptive retargeting.
+- Battery Adaptive still has no FIFO queue, no hysteresis, and no stale target after the deadtime boundary.
+- The shared 1-second dwell remains measured from the completion/cancellation boundary, with Battery up/down using `bypassGuard=false`.
+- No change was made to the Hotside safety authority, Adaptive ceiling, 200 ms deadtime, one-step movement, BLE protocol, GPIO mapping, or OTA architecture.
+
+### Full regression rerun
+- V3.2 version and active filename verified.
+- V3.1 retired from active tree.
+- No obsolete Battery hysteresis/stable-zone/pending-state symbols remain.
+- Battery boundary logic remains direct: below BATT5 → 5V; BATT5 through below BATT12 → 9V; at/above BATT12 → 12V.
+- Battery Adaptive remains one-step only.
+- Battery up/down remains symmetric through the shared 1-second guard.
+- Battery in-flight deadtime target is revalidated only for Battery-originated transitions.
+- Safety/HOTSTEP transition cannot be overwritten by Battery revalidation.
+- Braces and parentheses are balanced.
+- ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile was **NOT performed in this environment**.
+- BIN generation/publication was **NOT performed**.
+- Physical ESP32 flash/runtime validation was **NOT performed**.
+- Firebase firmware metadata was **NOT promoted**.
+- App Build was **NOT triggered**.
+
+### Validation boundary
+- Repository/source implementation and static/behavioral-model regression are complete for this execution sequence. Physical selector behavior, supply stability, thermal behavior, BLE runtime, OTA runtime, and actual compile compatibility remain unverified until the Core 3.3.7 build and hardware tests are performed.
+
 ## 2026-10-04 — FOLLOW-UP EXECUTION FULL / FIRMWARE V3.1 BATTERY DEADTIME REVALIDATION
 
 ### Source/version

@@ -1,3 +1,11 @@
+## 2026-10-04 — FIRMWARE V3.2 EXECUTION / APP CONTRACT IMPACT
+
+- Firmware continuity source advanced V3.1 → V3.2 in the App repository; active source commit is 536877e644731e3ed0a64b87508c18de9270eede.
+- Battery Adaptive no-hysteresis/direct-zone behavior and shared 1-second voltage dwell remain unchanged.
+- V3.2 adds explicit source tracking for in-flight voltage transitions so Battery-specific deadtime revalidation cannot override Safety/HOTSTEP or other higher-authority voltage transitions.
+- No App source was modified by this firmware execution and no App Build was triggered.
+- BLE UUID/P1 protocol, logical FAN/PELTIER tokens, GPIO mapping, OTA transport, Firebase metadata plane, and signing identity were not intentionally changed.
+
 ## 2026-10-04 — FIRMWARE V3.1 EXECUTION / APP CONTRACT IMPACT
 
 - Firmware continuity source advanced V3.0 → V3.1 in the App repository; active source commit is eaa8bdb55f1b47d29ae27b37a374463bd2a8c311.
