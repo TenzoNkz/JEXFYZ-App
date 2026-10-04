@@ -1,0 +1,326 @@
+# AI CI MEMORY:
+# JE X FYZ App Build — single explicit issue-gated release workflow.
+# No push/PR trigger. This workflow is intentionally the only workflow used for App Build.
+# Firmware source is intentionally stored in this App repository under firmware/.
+# The dedicated firmware repository may contain continuity source plus the published firmware BIN; this workflow builds the App only.
+# CI success proves App build validation only; it does not prove BLE/OTA/hardware runtime.
+
+name: App Build
+
+on:
+  issues:
+    types:
+      - opened
+      - reopened
+
+permissions:
+  # The release workflow cleans existing Actions artifacts before publishing the next APK.
+  contents: read
+  actions: write
+
+concurrency:
+  group: jexfyz-cooler-build
+  cancel-in-progress: true
+
+env:
+  EXPECTED_SIGNING_CERT_SHA256: "dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0"
+  EXPECTED_SIGNING_CERT_DN: "CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID"
+
+jobs:
+  # Single App release pipeline. Triggered only by the dedicated owner/title/token-gated issue.
+  build:
+    if: >-
+      github.event.issue.user.login == github.repository_owner
+      && github.event.issue.title == 'JE X FYZ — BUILD APP TRIGGER'
+      && contains(github.event.issue.body, 'JEXFYZ_BUILD_TRIGGER_V1')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    steps:
+      # Fetch App source/assets only.
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      # Start every release build from an empty Actions-artifact list.
+      - name: Clear all workflow artifacts
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          while :; do
+            ids="$(curl -fsSL \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts?per_page=100&page=1" \
+              | jq -r '.artifacts[].id')"
+
+            [ -z "$ids" ] && break
+
+            while IFS= read -r artifact_id; do
+              [ -z "$artifact_id" ] && continue
+              echo "Deleting workflow artifact $artifact_id"
+              curl -fsSL -X DELETE \
+                -H "Accept: application/vnd.github+json" \
+                -H "Authorization: Bearer $GH_TOKEN" \
+                -H "X-GitHub-Api-Version: 2022-11-28" \
+                "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts/$artifact_id" \
+                >/dev/null
+            done <<< "$ids"
+          done
+
+          remaining="$(curl -fsSL \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts?per_page=1&page=1" \
+            | jq '.artifacts | length')"
+
+          test "$remaining" -eq 0
+          echo "Actions-artifact list is empty."
+
+      # Tested Android release toolchain.
+      - name: Set up Java 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: zulu
+          java-version: "17"
+
+      # Tested Flutter version for the App.
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.47.2"
+          channel: stable
+          cache: true
+
+      # Tested Gradle version for the App.
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: "9.3.1"
+
+      - name: Verify toolchain
+        run: |
+          flutter --version
+          dart --version
+          java -version
+          gradle --version
+
+      - name: Prepare Flutter local.properties
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf 'flutter.sdk=%s\n' "$FLUTTER_ROOT" > android/local.properties
+          test -s android/local.properties
+
+      # Production signing is mandatory. The workflow never falls back to an
+      # unsigned or debug-signed release APK.
+      - name: Prepare production release signing
+        shell: bash
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          for name in ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD; do
+            if [ -z "${!name}" ]; then
+              echo "Missing required GitHub secret: $name"
+              exit 1
+            fi
+          done
+
+          umask 077
+          mkdir -p "$RUNNER_TEMP/signing"
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/signing/jexfyz-release.p12"
+          test -s "$RUNNER_TEMP/signing/jexfyz-release.p12"
+
+          {
+            echo "ANDROID_KEYSTORE_FILE=$RUNNER_TEMP/signing/jexfyz-release.p12"
+            echo "ANDROID_KEYSTORE_PASSWORD=$ANDROID_KEYSTORE_PASSWORD"
+            echo "ANDROID_KEY_ALIAS=$ANDROID_KEY_ALIAS"
+            echo "ANDROID_KEY_PASSWORD=$ANDROID_KEY_PASSWORD"
+          } >> "$GITHUB_ENV"
+
+      - name: Restore Gradle wrapper if missing
+        working-directory: android
+        shell: bash
+        run: |
+          set -euo pipefail
+          # The repo intentionally keeps generated Gradle wrapper files out of Git.
+          # Do not run `gradle wrapper` here because Gradle 9.3.1 validates the
+          # distribution URL and can fail the entire workflow on a transient
+          # services.gradle.org/network error before the Android build starts.
+          # Flutter only needs an executable `gradlew`; delegate it to the
+          # already-installed Gradle 9.3.1 supplied by setup-gradle.
+          if [ ! -f gradlew ] || [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
+            cat > gradlew <<'EOF2'
+          #!/usr/bin/env sh
+          exec gradle "$@"
+          EOF2
+            chmod +x gradlew
+          fi
+
+      # Static App-only architecture/security audit.
+      - name: JE X FYZ security and architecture audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          source = Path("lib/main.dart").read_text(encoding="utf-8")
+          pubspec = Path("pubspec.yaml").read_text(encoding="utf-8")
+          manifest = Path("android/app/src/main/AndroidManifest.xml").read_text(encoding="utf-8")
+          activity = Path("android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt").read_text(encoding="utf-8")
+          floating = Path("lib/floating_monitor.dart").read_text(encoding="utf-8")
+          gradle = Path("android/app/build.gradle").read_text(encoding="utf-8")
+
+          required = [
+              "6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001",
+              "6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001",
+              "6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001",
+              "PHONE:BT=",
+              "CLOUDOTA",
+              "flutter_secure_storage",
+              "assets/jexfyzcooler.png",
+              "assets/jexfyzicon.png",
+              "firebase_app_check",
+              "firmwareMetadataUrl",
+              "providerAndroid: const AndroidPlayIntegrityProvider()",
+              "TamperScreen",
+              "je_x_fyz/security",
+          ]
+          combined = source + pubspec + activity + floating
+          missing = [token for token in required if token not in combined]
+          if missing:
+              raise SystemExit("JE X FYZ audit failed; missing: " + ", ".join(missing))
+
+          if "assets/hzcooler.png" in combined or "assets/hzicon.png" in combined:
+              raise SystemExit("JE X FYZ audit failed; legacy asset reference found")
+          if "@drawable/hzicon" in manifest:
+              raise SystemExit("JE X FYZ audit failed; legacy Android icon reference found")
+          if "@drawable/jexfyzicon" not in manifest:
+              raise SystemExit("JE X FYZ audit failed; Android icon is not jexfyzicon")
+
+          for pattern in [r"\bCFG:", r"\bADAPT:", r"RGBTOGGLE", r"RGBPREV", r"RGBNEXT", r"\bBR:", r"AIM:"]:
+              if re.search(pattern, source):
+                  raise SystemExit("JE X FYZ audit failed; legacy command found: " + pattern)
+
+          if "setString('saved_pass'" in source or 'setString("saved_pass"' in source:
+              raise SystemExit("JE X FYZ audit failed; Wi-Fi password stored outside secure storage")
+
+          if "minifyEnabled true" not in gradle or "shrinkResources true" not in gradle:
+              raise SystemExit("JE X FYZ security audit failed; R8/resource shrinking is disabled")
+          if "OFFICIAL_SIGNING_CERT_B64" not in gradle:
+              raise SystemExit("JE X FYZ security audit failed; production signing identity embedding is missing")
+
+          for forbidden in [
+              "FirebaseDatabase.instanceFor",
+              "firebase_database",
+          ]:
+              if forbidden in source or forbidden in pubspec:
+                  raise SystemExit("JE X FYZ audit failed; legacy Firebase firmware metadata reference found: " + forbidden)
+
+
+          # Floating Monitor must use its dedicated MethodChannel end-to-end.
+          if "MethodChannel('je_x_fyz/floating')" not in floating:
+              raise SystemExit("JE X FYZ audit failed; Flutter Floating Monitor channel contract is missing")
+          if 'private val FLOATING_CHANNEL = "je_x_fyz/floating"' not in activity:
+              raise SystemExit("JE X FYZ audit failed; native Floating Monitor channel contract is missing")
+          if activity.count('"startFloatingMonitor"') != 1 or activity.count('"getFloatingRuntimeState"') != 1:
+              raise SystemExit("JE X FYZ audit failed; Floating methods are not isolated to the dedicated channel")
+
+          # Firmware .ino source is intentionally stored in this App repository.
+          # It must not be referenced as a Flutter source/build dependency.
+          firmware_dir = Path("firmware")
+          if firmware_dir.exists():
+              for ino in firmware_dir.glob("*.ino"):
+                  rel = ino.as_posix()
+                  if rel in source or rel in pubspec:
+                      raise SystemExit(
+                          "JE X FYZ audit failed; App code references firmware source path: " + rel
+                      )
+
+          if re.search(r"(?m)^\\s*shared_preferences\\s*:", pubspec):
+              raise SystemExit("JE X FYZ audit failed; unused shared_preferences dependency is present")
+
+          for asset in [
+              Path("assets/jexfyzcooler.png"),
+              Path("assets/jexfyzicon.png"),
+              Path("android/app/src/main/res/drawable-nodpi/jexfyzicon.png"),
+          ]:
+              if not asset.is_file() or asset.stat().st_size == 0:
+                  raise SystemExit("JE X FYZ audit failed; missing/empty asset: " + str(asset))
+
+          # The continuity firmware source may be documented in comments and kept under firmware/.
+          # Reject only executable Dart import/export/part references to that path.
+          if re.search(r"""(?m)^\s*(?:import|export|part)\s+['"][^'"]*firmware/""", source):
+              raise SystemExit("JE X FYZ audit failed; App Dart code imports firmware source")
+
+          print("JE X FYZ App-only security and architecture audit passed.")
+          PY
+
+      # Resolve the Dart/Flutter dependency graph.
+      - name: Install dependencies
+        run: flutter pub get
+
+      # Static analysis must remain clean.
+      - name: Analyze Dart code
+        # Flutter 3.47.2 defaults fatal-infos=true; deprecations remain visible but do not block the release build.
+        run: flutter analyze --no-fatal-infos
+
+      # Source/UI tests; no physical hardware assumptions.
+      - name: Run Flutter tests
+        run: flutter test
+
+      # Obfuscated production APK plus symbols.
+      - name: Build latest release APK
+        run: flutter build apk --release --obfuscate --split-debug-info=build/symbols
+
+      # Verify the official JE X FYZ production certificate.
+      - name: Verify APK signature
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK="build/app/outputs/flutter-apk/app-release.apk"
+          test -s "$APK"
+
+          APK_SIGNER="$(find "$ANDROID_SDK_ROOT/build-tools" -type f -name apksigner 2>/dev/null | sort -V | tail -n 1)"
+          test -n "$APK_SIGNER"
+
+          SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --verbose --print-certs "$APK" 2>&1)"
+          printf '%s\n' "$SIGNATURE_OUTPUT"
+
+          grep -Eiq "Verified using v[123] scheme" <<< "$SIGNATURE_OUTPUT"
+          grep -Fq "$EXPECTED_SIGNING_CERT_DN" <<< "$SIGNATURE_OUTPUT"
+          SIGNATURE_OUTPUT_LOWER="${SIGNATURE_OUTPUT,,}"
+          grep -Fq "$EXPECTED_SIGNING_CERT_SHA256" <<< "$SIGNATURE_OUTPUT_LOWER"
+
+          echo "Production APK signature verified: JE X FYZ certificate is present and matches the official signing identity."
+          ls -lh "$APK"
+
+      # Stable delivery filename keeps the latest APK artifact replaceable.
+      - name: Prepare release APK filename
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp build/app/outputs/flutter-apk/app-release.apk \
+             "build/app/outputs/flutter-apk/JEXFYZ-release.apk"
+          test -s "build/app/outputs/flutter-apk/JEXFYZ-release.apk"
+          ls -lh "build/app/outputs/flutter-apk/JEXFYZ-release.apk"
+
+      # Publish exactly one direct release APK and overwrite the previous delivery.
+      - name: Upload APK only
+        uses: actions/upload-artifact@v7
+        with:
+          name: JEXFYZ-release.apk
+          path: build/app/outputs/flutter-apk/JEXFYZ-release.apk
+          archive: false
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
