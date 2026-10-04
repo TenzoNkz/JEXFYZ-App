@@ -1,3 +1,12 @@
+## 2026-10-04 — GEMINI PATCH-ONLY HANDOFF PROTOCOL
+
+- [WORKFLOW] Gemini is to receive the current .ino file directly from the user and return only the minimal Online OTA patch as OLD → NEW blocks.
+- [NO FULL FILE] Gemini must not return the complete .ino.
+- [EXECUTION] The assistant applies Gemini's patch during the following `@Thinking Eksekusi Full!`, after exact OLD-block matching against the repository source.
+- [SCOPE] Current Online OTA issue: indicator LED does not visibly blink during hardware testing.
+- [PROTECTED] Local OTA remains frozen and must not be changed as part of this fix.
+- [CURRENT PRIORITY] Simple Online OTA GitHub download/flash/restart flow; CA-bundle/custom-CA complexity is not required.
+
 ## 2026-10-04 — ONLINE OTA SIMPLICITY REQUIREMENT
 
 - [USER REQUIREMENT] Online OTA prioritizes successful GitHub download/flash over TLS certificate security.
