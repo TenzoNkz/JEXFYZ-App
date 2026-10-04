@@ -157,3 +157,11 @@ This repository pass proves source/documentation consistency only. ArduinoDroid 
 - Safety-critical state changes also have statement-level intent comments.
 - Comments explain contract/intent and authority, not merely syntax.
 - Source comments remain English to match the codebase standard.
+
+## 2026-10-04 — ONLINE OTA DOWNLOAD STATE AUDIT
+
+- [VERIFIED] Online OTA enters `DOWNLOAD` after the green GitHub-connected indicator.
+- [VERIFIED] Current DOWNLOAD dispatch is incorrectly conditioned on `!onlineUpdateStarted`, which prevents subsequent chunks after the first `Update.begin()` call.
+- [VERIFIED] This can permanently stall an incomplete firmware stream while `otaActive` remains true and no progress milestone is reached.
+- [ROOT CAUSE] The download servicing predicate is inverted for a cooperative streaming state machine: an active download must be serviced repeatedly, not only before `Update.begin()` has started.
+- [OPEN] Firmware-only patch should make the DOWNLOAD state call `performOnlineOtaDownload()` on every loop pass while active, with the function itself retaining initialization/completion/error guards.
