@@ -107,6 +107,13 @@ For every future JE X FYZ action, the assistant must first read the complete cur
 - Functional App source, Firmware source, BLE/OTA behavior, Android runtime behavior, dependency configuration, signing configuration, and CI build execution behavior were not intentionally changed by this process implementation.
 - No App Build, firmware compile/BIN generation, Firebase promotion, or physical hardware test was performed.
 - Exact documentation commits for this implementation are recorded in each file's Git history; current repository HEAD must be used as final source authority.
+## 2026-10-04 — DISCUSSION / HARDWARE TEST STAGE PAUSED
+
+- User confirmed the project is moving into the real hardware/device test stage and will return with test results later.
+- No implementation or build was requested in this event.
+- Current firmware remains V3.7 and remains source/static-audit only until actual compile/flash/device evidence is supplied.
+- Next exact action: when the user returns, record the tested device/binary/version, expected behavior, observed behavior, evidence, pass/fail, and remaining risks before making any implementation decision.
+
 # JE X FYZ — PROJECT STATE
 
 > **Authoritative current-state snapshot.**
