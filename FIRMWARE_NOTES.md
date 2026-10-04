@@ -4556,3 +4556,16 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - [VERIFIED] App functional source and App build workflows remain unchanged; App Build #50 remains the latest verified App artifact.
 - [NO BUILD] No App Build or firmware compile/BIN/Firebase promotion was performed.
 - [UNVERIFIED] Physical V3.8 hardware behavior remains to be retested, especially 9V → 12V with Peltier ON.
+
+## 2026-10-04 — V3.8 ONLINE OTA STALL / ROOT CAUSE FOUND
+
+- [TESTED] User-observed Online OTA sequence is BLUE → GREEN → prolonged stall with no LED.
+- [VERIFIED] BLUE is the Wi-Fi-connected result indicator; its next action is `PREPARE_DOWNLOAD`.
+- [VERIFIED] GREEN is the GitHub-connected result indicator; its next action is `DOWNLOAD`.
+- [VERIFIED] In `processOnlineOta()`, the DOWNLOAD state is currently guarded by `if (!onlineUpdateStarted)`.
+- [VERIFIED] `performOnlineOtaDownload()` sets `onlineUpdateStarted = true` immediately after `Update.begin()`. On the next cooperative loop pass, the DOWNLOAD state therefore stops calling the function, even when the firmware stream is far from complete.
+- [VERIFIED] Download progress indicators are only generated when `onlineUpdateProgress()` reaches the 20/40/60/80/100% milestones. A stalled first chunk below 20% therefore leaves the LED OFF.
+- [ACCEPTED] This is a deterministic source-level state-machine bug and explains the exact BLUE → GREEN → no-indicator symptom.
+- [DECISION] Preserve the non-blocking bounded-chunk architecture and fix the DOWNLOAD state to service the active download repeatedly until completion/failure.
+- [PRESERVE] OTA validation, image magic check, Update.write(), Update.end(), failure recovery, and LED ownership architecture should remain intact.
+- [NO APP BUILD] No App source change is involved.
