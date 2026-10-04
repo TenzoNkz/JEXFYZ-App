@@ -4547,3 +4547,12 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - [VERIFIED] Active source has balanced braces/parentheses (549/549 and 2039/2039) and no executable `delay()` or timing-wait `while()`.
 - [UNVERIFIED] ArduinoDroid/Core 3.3.7 compile, BIN generation/publication, Firebase promotion, and physical device behavior remain pending.
 
+## 2026-10-04 — FINAL V3.8 EXECUTION PERSISTENCE
+
+- [COMMITTED] Final repository HEAD: `88e7a281bf9d35c62f3e8774b73ecaf84e92993f`.
+- [COMMITTED] Active firmware source: `firmware/JEXFYZ-V3.8.ino`; source blob: `2fbff3656bc037846124806fb390022f85146845`.
+- [VERIFIED] V3.8 soft-start trigger is limited to Peltier OFF → ON; no voltage-rise soft-start trigger remains.
+- [VERIFIED] V3.8 preserves 20 kHz / 8-bit Peltier PWM and 5 s soft-start duration.
+- [VERIFIED] App functional source and App build workflows remain unchanged; App Build #50 remains the latest verified App artifact.
+- [NO BUILD] No App Build or firmware compile/BIN/Firebase promotion was performed.
+- [UNVERIFIED] Physical V3.8 hardware behavior remains to be retested, especially 9V → 12V with Peltier ON.
