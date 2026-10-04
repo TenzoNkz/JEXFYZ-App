@@ -4,7 +4,7 @@
 - Project: JE X FYZ / JE Cooler
 - Repository: TenzoNkz/JEXFYZ-App
 - Branch: main
-- Current HEAD at last workflow-state verification: aebda225240ac3c686a82c659ded1026bd151ca7
+- Current HEAD at last workflow-state verification: cd408983970da8a867d40f0131047369f0e53af4
 - Last functional workflow fix commit: b449fc15659efa781063ac178754d99c5501c8b5
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
@@ -15,19 +15,19 @@
 - App settings source blob: f11235bab559b291928550e06984532581ddad6a
 - App test source blob: aa86778beb8fcc3ce6a12454f6354f96ec99a160
 - Active App Build trigger: .github/workflows/jexfyz-app-build-trigger.yml
-- App Build trigger blob: 606d5dbef8b1b17054e510d6101a663359566073
+- App Build trigger blob: 6f8abfb64581bb48d4db6c2ed978dc4e12aef1a9
 - Active reusable App Build engine: .github/workflows/jexfyz-app-build-engine.yml
-- App Build engine blob: 0452535b14ce1537368082fec4b716d6c7c36f67
+- App Build engine blob: f123b00c908d6e91363df0bf4b435b4e9e6f252e
 - The temporary `.github/workflows/jexfyz-build.yml` Release-asset workflow is removed.
-- The restored pair is based on the proven Build #50-era workflow configuration.
+- The trigger remains issue-based; the engine now publishes exactly one `JEXFYZ-release.apk` to GitHub Release `jexfyz-latest` and does not use Actions artifacts.
 - Latest verified downloadable App Build: workflow run #2 (37201925842) / GitHub Release jexfyz-latest.
 - Historical new-workflow Build run #1: 37199918015 [BUILT][VERIFIED] through signing; [BLOCKED] legacy Actions-artifact upload by quota.
 - Build #53 passed App validation gates through signing but failed legacy artifact creation due GitHub Actions quota.
-- Workflow delivery fix is committed and [VERIFIED]: APK publication now uses a GitHub Release asset; Actions-artifact creation is not used.
+- [IMPLEMENTED][UNVERIFIED] APK delivery is now routed through GitHub Release; a post-change build is required to verify the Release path.
 
 ## CURRENT TASK / TRANSFER
 - This execution restored the proven two-workflow App Build architecture under new filenames without changing App/Firmware runtime source.
-- No App Build was executed by this workflow restore.
+- App Build is explicitly being executed now against this workflow revision.
 
 ## FIRMWARE
 - V4.5 remains active.
@@ -51,7 +51,7 @@
 - App Build uses a manual issue trigger plus a reusable build engine.
 - Trigger: `.github/workflows/jexfyz-app-build-trigger.yml` (issue `opened`/`reopened`, title/token gated).
 - Engine: `.github/workflows/jexfyz-app-build-engine.yml` (`workflow_call`).
-- The restored engine uses `actions/upload-artifact@v7` for the APK and Dart symbols, matching the proven Build #50-era delivery path.
+- The engine uses GitHub Release publication instead of `actions/upload-artifact`.
 - Normal push/PR events do not trigger App Build.
 - The GitHub Release `jexfyz-latest` / `JEXFYZ-release.apk` from workflow run #2 remains the latest verified downloadable APK, but no post-restore build has been executed.
 
@@ -60,11 +60,11 @@
 - Downloadable release: workflow run #2 is the latest verified APK delivery via GitHub Release.
 - Release asset: JEXFYZ-release.apk, 54,327,520 bytes, SHA-256 24fcd6f4d1f7843f34e8a31c352b43f23a581b57fc2d29ae71053eb7924092bb.
 - GitHub Release tag: jexfyz-latest; Release ID: 403010611; asset ID: 609813273.
-- Actions-artifact storage quota is again a known delivery dependency because the restored engine intentionally uses artifacts.
+- Actions-artifact storage quota is no longer a delivery dependency for the current workflow.
 - Firmware V4.5 physical compile/BIN/flash/OTA validation: UNVERIFIED.
 - No Build #53 APK is available for delivery.
 
 ## EXACT NEXT ACTION
 - Keep the transfer docs synchronized.
-- Continue using `.github/workflows/jexfyz-app-build-trigger.yml` for future explicit Build App commands; it invokes `.github/workflows/jexfyz-app-build-engine.yml`.
+- Current trigger: `.github/workflows/jexfyz-app-build-trigger.yml`; current engine: `.github/workflows/jexfyz-app-build-engine.yml`. Verify the Release asset after this build.
 - Separately compile/flash V4.5 and perform physical Online OTA BLE disconnect/reconnect plus Local OTA validation.
