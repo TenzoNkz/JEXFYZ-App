@@ -77,7 +77,7 @@ enum class AdaptiveProfile : uint8_t;
  * ---------------------------------------------------------------------------
  */
 
-static constexpr char FW_VERSION[] = "V4.2";
+static constexpr char FW_VERSION[] = "V4.3";
 
 // ============================================================================
 // ========================== HEAP DIAGNOSTIC BUILD ===========================
@@ -436,11 +436,6 @@ uint32_t onlineResultIndicatorStartedAt = 0;
 uint32_t onlineResultIndicatorColor = 0;
 OnlineOtaIndicatorNext onlineResultIndicatorNext = OnlineOtaIndicatorNext::NONE;
 uint32_t onlineResultIndicatorLastPhase = 0xFFFFFFFFUL;
-uint8_t onlineOtaProgressReachedMask = 0;
-uint8_t onlineOtaProgressPendingMask = 0;
-bool onlineOtaProgressIndicatorActive = false;
-uint32_t onlineOtaProgressIndicatorStartedAt = 0;
-uint8_t onlineOtaProgressIndicatorMilestone = 0;
 bool onlineOtaDownloadCompletePending = false;
 size_t onlineOtaDownloadBytesWritten = 0;
 uint32_t onlineOtaDownloadLastDataAt = 0;
@@ -537,9 +532,6 @@ static void updateBatteryValidity();
 static void processAdaptiveHotsideFallback();
 static void startHotsideLimitIndicator();
 static bool processHotsideLimitIndicator();
-static void resetOnlineOtaProgressState();
-static void queueOnlineOtaProgressMilestones(uint8_t progress);
-static bool processOnlineOtaProgressIndicator();
 
 /** [DOC-CONTRACT]
  * Implements adaptiveProfileText while preserving the firmware's non-blocking state-machine and safety contracts.
@@ -3190,102 +3182,6 @@ static void failOnlineOta(
   startOnlineOtaResultIndicator(0xFF0000, OnlineOtaIndicatorNext::RECOVER);
 }
 
-/** [DOC-CONTRACT]
- * Implements resetOnlineOtaProgressState while preserving the firmware's non-blocking state-machine and safety contracts.
- * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
- */
-static void resetOnlineOtaProgressState() {
-  onlineOtaProgressReachedMask = 0;
-  onlineOtaProgressPendingMask = 0;
-  onlineOtaProgressIndicatorActive = false;
-  onlineOtaProgressIndicatorStartedAt = 0;
-  onlineOtaProgressIndicatorMilestone = 0;
-  onlineOtaDownloadCompletePending = false;
-  onlineOtaDownloadBytesWritten = 0;
-  onlineOtaDownloadLastDataAt = 0;
-}
-
-/** [DOC-CONTRACT]
- * Implements queueOnlineOtaProgressMilestones while preserving the firmware's non-blocking state-machine and safety contracts.
- * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
- */
-static void queueOnlineOtaProgressMilestones(uint8_t progress) {
-  progress = constrain(progress, static_cast<uint8_t>(0), static_cast<uint8_t>(100));
-
-  for (uint8_t index = 0; index < 5; ++index) {
-    const uint8_t threshold = static_cast<uint8_t>((index + 1U) * 20U);
-    const uint8_t bit = static_cast<uint8_t>(1U << index);
-
-    if (progress >= threshold &&
-        (onlineOtaProgressReachedMask & bit) == 0) {
-      onlineOtaProgressReachedMask |= bit;
-      onlineOtaProgressPendingMask |= bit;
-    }
-  }
-}
-
-/** [DOC-CONTRACT]
- * Implements onlineUpdateProgress while preserving the firmware's non-blocking state-machine and safety contracts.
- * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
- */
-static void onlineUpdateProgress(size_t current, size_t total) {
-  if (total == 0) return;
-  const uint8_t progress = static_cast<uint8_t>(
-      min<size_t>(100, (current * 100ULL) / total));
-  setOtaDiagnosticProgress(progress);
-  queueOnlineOtaProgressMilestones(progress);
-}
-
-/** [DOC-CONTRACT]
- * Advances OnlineOtaProgressIndicator using current state and elapsed-time checks without blocking the main loop.
- * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
- */
-static bool processOnlineOtaProgressIndicator() {
-  if (onlineOtaProgressIndicatorActive) {
-    const uint32_t elapsed =
-        millis() - onlineOtaProgressIndicatorStartedAt;
-
-    if (elapsed < ONLINE_OTA_PROGRESS_BLINK_MS) {
-      showAll(0xFFFF00, 255);
-      return true;
-    }
-
-    showAll(0x000000, 0);
-    onlineOtaProgressIndicatorActive = false;
-    onlineOtaProgressIndicatorMilestone = 0;
-    return true;
-  }
-
-  if (onlineOtaProgressPendingMask != 0) {
-    for (uint8_t index = 0; index < 5; ++index) {
-      const uint8_t bit = static_cast<uint8_t>(1U << index);
-      if ((onlineOtaProgressPendingMask & bit) != 0) {
-        onlineOtaProgressPendingMask &= static_cast<uint8_t>(~bit);
-        onlineOtaProgressIndicatorMilestone =
-            static_cast<uint8_t>((index + 1U) * 20U);
-        onlineOtaProgressIndicatorStartedAt = millis();
-        onlineOtaProgressIndicatorActive = true;
-        showAll(0xFFFF00, 255);
-        return true;
-      }
-    }
-  }
-
-  if (onlineOtaDownloadCompletePending) {
-    onlineOtaDownloadCompletePending = false;
-    onlineOtaFlow = OnlineOtaFlow::FLASH_FINALIZE;
-    setOtaState(OtaState::CLOUD_APPLYING);
-    setOtaDiagnosticStage("ONLINE_FLASH_FINALIZE");
-    return true;
-  }
-
-  return false;
-}
-
-/** [DOC-CONTRACT]
- * Opens the GitHub firmware stream and validates HTTP response, image size, and stream availability.
- * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
- */
 static bool prepareOnlineOtaDownload() {
   setOtaDiagnosticStage("ONLINE_GITHUB_CONNECT");
   setOtaDiagnosticProgress(0);
@@ -3368,9 +3264,9 @@ static bool prepareOnlineOtaDownload() {
 
   setOtaDiagnosticStage("ONLINE_GITHUB_CONNECTED");
   setOtaDiagnosticProgress(0);
-  onlineOtaFlow = OnlineOtaFlow::DOWNLOAD;
-  setOtaState(OtaState::CLOUD_DOWNLOADING);
-  setOtaDiagnosticStage("ONLINE_DOWNLOAD");
+  startOnlineOtaResultIndicator(
+      0x00FF00,
+      OnlineOtaIndicatorNext::DOWNLOAD);
   return true;
 }
 
@@ -3503,10 +3399,10 @@ static bool performOnlineOtaDownload() {
     setOtaDiagnosticStage("ONLINE_DOWNLOAD_COMPLETE");
     setOtaDiagnosticError(0, "NONE");
 
-    // Keep the 100% yellow milestone before the existing blue post-download
-    // indicator and flash-finalize state.
-    queueOnlineOtaProgressMilestones(100);
-    onlineOtaDownloadCompletePending = true;
+    // Restore the pre-yellow V3.2 stage result: BLUE, then finalize.
+    startOnlineOtaResultIndicator(
+        0x0000FF,
+        OnlineOtaIndicatorNext::FLASH_FINALIZE);
   }
 
   return true;
@@ -3604,12 +3500,6 @@ static void startOnlineOta() {
     return;
   }
 
-  // Reject rollback or equal versions before any Wi-Fi handoff or flash write begins.
-  if (!isFirmwareVersionNewer(cloudVersion, FW_VERSION)) {
-    failOnlineOta("ONLINE_VERSION_CHECK", -107, "ROLLBACK_BLOCKED");
-    return;
-  }
-
   setOtaDiagnosticStage("ONLINE_WIFI_CONNECT");
   otaRestartAt = 0;
   cloudPhaseStartedAt = millis();
@@ -3619,7 +3509,6 @@ static void startOnlineOta() {
   onlineResultIndicatorNext = OnlineOtaIndicatorNext::NONE;
   onlineHttpActive = false;
   onlineUpdateStarted = false;
-  resetOnlineOtaProgressState();
 
   setOtaResult(
       "IN_PROGRESS|MODE=ONLINE|STAGE=ONLINE_WIFI_CONNECT|PROGRESS=0",
@@ -3632,7 +3521,7 @@ static void startOnlineOta() {
   clearBleRxQueue();
   
   // Stop BLE advertising/controller state before the Wi-Fi radio handoff; the operation is non-blocking and recovered by the supervisor.
-  stopBleRadio(true);
+  stopBleRadio(false); // Restore the pre-yellow V3.2 Online OTA BLE handoff baseline.
   bleStartPending = false;
   bleStartAttempts = 0;
 
@@ -3669,8 +3558,10 @@ static void processOnlineOta() {
         WiFi.setHostname("JE-X-FYZ");
         WiFi.setSleep(false);
         
-        WiFi.setAutoReconnect(true); 
-        
+        WiFi.setAutoReconnect(false);
+
+        // Restore the pre-yellow V3.2 connection baseline: one WiFi.begin()
+        // per clean radio-teardown attempt, with bounded retries.
         WiFi.begin(cloudSsid.c_str(), cloudPassword.c_str());
         cloudPhaseStartedAt = millis();
         onlineOtaFlow = OnlineOtaFlow::WIFI_CONNECTING;
@@ -3683,23 +3574,31 @@ static void processOnlineOta() {
         setOtaDiagnosticProgress(0);
         startOnlineOtaResultIndicator(
             0x0000FF,
-            OnlineOtaIndicatorNext::PREPARE_DOWNLOAD); // Keep the blue Wi-Fi-success indicator before download preparation.
+            OnlineOtaIndicatorNext::PREPARE_DOWNLOAD);
         return;
       }
 
-      // Allow a longer cumulative connection window without repeatedly restarting the Wi-Fi driver.
+      // Restore the pre-yellow V3.2 retry behavior. Fast driver failures or the
+      // normal 15-second timeout enter a clean cooperative radio teardown.
       if (otaActive &&
-          (millis() - cloudPhaseStartedAt >=
-           (WIFI_CONNECT_TIMEOUT_MS * WIFI_CONNECT_MAX_ATTEMPTS))) {
-        failOnlineOta("ONLINE_WIFI_FAILED", -1, "WIFI_FAILED_AFTER_RETRIES");
-      } else {
-        // Report connection-attempt progress without resetting Wi-Fi.
-        const uint8_t currentAttempt =
-            1 + ((millis() - cloudPhaseStartedAt) / WIFI_CONNECT_TIMEOUT_MS);
-        if (currentAttempt != onlineWifiConnectAttempt) {
-          onlineWifiConnectAttempt = currentAttempt;
+          (millis() - cloudPhaseStartedAt >= WIFI_CONNECT_TIMEOUT_MS ||
+           WiFi.status() == WL_CONNECT_FAILED ||
+           WiFi.status() == WL_NO_SSID_AVAIL)) {
+        if (onlineWifiConnectAttempt < WIFI_CONNECT_MAX_ATTEMPTS) {
+          ++onlineWifiConnectAttempt;
           setOtaDiagnosticStage(
               "ONLINE_WIFI_RETRY_" + String(onlineWifiConnectAttempt));
+          setOtaDiagnosticProgress(0);
+
+          WiFi.disconnect(true, false);
+          requestWiFiOffShutdown();
+          onlineOtaFlow = OnlineOtaFlow::RADIO_TEARDOWN;
+          cloudPhaseStartedAt = millis();
+        } else {
+          failOnlineOta(
+              "ONLINE_WIFI_FAILED",
+              -1,
+              "WIFI_FAILED_AFTER_RETRIES");
         }
       }
       return;
@@ -5113,8 +5012,7 @@ static bool serviceOtaPriority() {
     // Result indicators are rendered exclusively by processOnlineOta().
     // The normal LED renderer resumes only after the indicator/recovery state
     // has ended, preventing double-driving and clipped red/green flashes.
-    if (!onlineResultIndicatorActive &&
-        !onlineOtaProgressIndicatorActive) {
+    if (!onlineResultIndicatorActive) {
       processLeds();
     }
     return true;
