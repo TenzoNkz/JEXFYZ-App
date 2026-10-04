@@ -1,3 +1,12 @@
+## 2026-10-04 — SECOND-OPINION GEMINI REQUEST
+
+- Previous Gemini response was reconciled and found to contain overconfident claims about WPA3 timing and setAutoReconnect semantics.
+- New Gemini audit request requires proof from exact V4.0 source/API semantics, exact retry timing, retry counter behavior, actual use of WIFI_CONNECT_RETRY_BACKOFF_MS, WiFi.disconnect/mode OFF sequencing, PASS whitespace protocol semantics, LED failure reachability, brownout-vs-normal-failure evidence, and git-history comparison against prior Online OTA behavior.
+- Required output is diagnosis first; patch only if justified, exact OLD → NEW blocks only.
+- Protected: Local OTA remains unchanged.
+- Current exact firmware source blob: 0566105383a889912e5e756b0b9f265e5fcf0264.
+- No functional source change made.
+
 ## 2026-10-04 — GEMINI WIFI FORENSIC RESULT RECONCILIATION
 
 - [GEMINI RESULT] Gemini identified two candidate Online OTA Wi-Fi patches: PASS whitespace normalization and a relaxed Wi-Fi retry state using WiFi.setAutoReconnect(true) plus timeout-only retries.
