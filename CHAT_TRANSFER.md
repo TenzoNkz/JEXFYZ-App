@@ -1,6 +1,7 @@
 # JE X FYZ — CHAT TRANSFER SNAPSHOT
 
 > Rolling repository transfer boundary between JE X FYZ chats.
+> This initial file is a template. Prompt 1 replaces it with the complete current-chat snapshot before handoff.
 > Prompt 1 writes the complete latest-chat snapshot here before an old chat is abandoned.
 > Prompt 2 reads this file in the new chat and reconciles it with the current repository.
 >
@@ -11,8 +12,8 @@
 
 ## TRANSFER METADATA
 
-- Status: READY_FOR_PROMPT_2
-- Created/updated by: Prompt 1 — CHAT-LIMIT RECAP
+- Status: TEMPLATE_WAITING_FOR_PROMPT_1
+- Created/updated by: [Prompt 1 after a real chat-limit event]
 - Source chat: [record by Prompt 1]
 - Transfer timestamp: [record by Prompt 1]
 - Repository HEAD observed by Prompt 1: [record]
@@ -112,7 +113,7 @@
 
 ## 24. TRANSFER COMPLETION
 
-- Prompt 1 recap completed: [YES/NO]
-- Persistent memory synchronized: [YES/NO]
+- Prompt 1 recap completed: NO — template only until Prompt 1 performs a real transfer
+- Persistent memory synchronized: [YES/NO/NOT APPLICABLE FOR TEMPLATE]
 - Current source/workflow checked: [YES/NO]
 - Exact next action recorded: [YES/NO]
