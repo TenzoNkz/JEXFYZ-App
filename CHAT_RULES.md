@@ -44,8 +44,8 @@
 - Normal push/PR must not generate a release APK.
 - Firmware-only changes do not require App Build.
 - Never claim build/compile/flash/runtime validation that did not occur.
-- Release workflow uses contents: write solely to publish the APK as a GitHub Release asset; this does not enable push/PR builds.
-- Actions-artifact upload is not part of the App release delivery path.
+- Build trigger is manual-by-issue only; the trigger workflow calls a reusable App Build engine.
+- The restored App Build engine uses Actions artifacts for APK + Dart symbols, matching the proven historical delivery path.
 
 ## MEMORY RULES
 - Persist meaningful project state in repository documentation.
@@ -62,8 +62,8 @@
 - Build #53: [VERIFIED] CI gates through production signing; [BLOCKED] artifact creation by Actions quota.
 - Local OTA: [CONFIRMED] user-confirmed working on V4.4 before V4.5 promotion; Local OTA remains protected.
 - Online OTA: [CONFIRMED] V3.2-style path retained; V4.5 physical validation still pending.
-- Current App Build workflow: [COMMITTED] .github/workflows/jexfyz-build.yml (blob 08a137b4d315cc12e830a7e8dbc1ea40c3d2873d).
-- Legacy app-build.yml and app-build-trigger.yml are deleted.
-- New workflow run #1: [HISTORICAL][VERIFIED] all build gates through signing; [BLOCKED] only at the legacy Actions-artifact publication step.
-- Current workflow fix: [COMMITTED][VERIFIED] APK delivery moved to GitHub Release asset jexfyz-latest.
-- Workflow run #2 verified the Release-asset path end-to-end.
+- Current App Build trigger: [COMMITTED] .github/workflows/jexfyz-app-build-trigger.yml.
+- Current reusable App Build engine: [COMMITTED] .github/workflows/jexfyz-app-build-engine.yml.
+- The previous single-workflow Release-asset path is retained as historical evidence only.
+- Latest verified downloadable APK remains historical workflow run #2 / GitHub Release jexfyz-latest; the restored workflow pair has not been re-run yet.
+- Restored workflow pair is intentionally based on the proven Build #50-era reusable engine + issue trigger.
