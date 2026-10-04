@@ -1,3 +1,11 @@
+## 2026-10-04 — GEMINI FULL PRE-FLASH FORENSIC AUDIT
+
+- Gemini audited the exact V4.0 source blob `0566105383a889912e5e756b0b9f265e5fcf0264` before planned Local OTA testing.
+- Verdict: **SAFE TO FLASH LOCAL OTA** at source level; no P0/P1 blocker identified.
+- P2 finding: BLE TX queue overflow can drop newest messages during heavy traffic and affect ACK/UI synchronization.
+- Online OTA remains physically unverified despite the simplified `setInsecure()` path.
+- Current source-level LED flow remains Wi-Fi BLUE → YELLOW 20/40/60/80/100 → final GREEN → restart; no intermediate BLUE after download.
+
 ## 2026-10-04 — V4.0 ONLINE OTA GEMINI PATCH
 
 - Applied the supplied Gemini Online OTA patch to V4.0.
