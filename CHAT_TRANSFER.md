@@ -269,7 +269,7 @@
 
 ## 19. UNRESOLVED QUESTIONS
 - [RESOLVED] Workflow run #2 created/updated jexfyz-latest and published JEXFYZ-release.apk successfully.
-- [OPEN QUESTION] What is the final artifact ID/SHA256 of the next successful release?
+- [RESOLVED] Current Release asset ID: 609813273; SHA-256: 24fcd6f4d1f7843f34e8a31c352b43f23a581b57fc2d29ae71053eb7924092bb.
 - [OPEN QUESTION] Has Firmware V4.5 been compiled, flashed, and physically validated on ESP32-C3?
 - [OPEN QUESTION] Has the V4.5 Online OTA GATT disconnect/reconnect sequence been physically verified with the synchronized App?
 
@@ -294,13 +294,13 @@
 - [VERIFIED] Current source/workflow are the primary truth.
 - [VERIFIED] The persisted V4.5/workflow-reset state matches the current repository evidence at this transfer except for intentionally unverified runtime/artifact outcomes.
 - [RECONCILIATION] CHAT_RULES previously said Firmware V4.4; current source/workflow and higher-priority state establish V4.5, so the stale status is obsolete.
-- [RECONCILIATION] Build #50 remains the latest downloadable APK even though Build #53 reached compile/signing gates.
+- [RECONCILIATION] Build #2 is now the latest downloadable APK via GitHub Release; Build #50 is historical.
 - [RECONCILIATION] Build #53 is a failed CI run for release-delivery purposes because artifact creation failed; its earlier green gates remain valid evidence for the current App source.
-- [RECONCILIATION] The new workflow reset is committed CI configuration, but actual storage reclamation and a post-reset successful artifact upload remain unverified.
+- [RECONCILIATION] The single workflow is committed CI configuration, and Build #2 verified successful Release-asset delivery with no Actions artifact.
 
 ## 24. TRANSFER COMPLETION
 - [IMPLEMENTED] CI quota delivery fix is synchronized in the persistent transfer state.
 - [IMPLEMENTED] Complete snapshot reconstructed from accessible chat context and repository evidence.
 - [IMPLEMENTED] Functional App/Firmware source intentionally not changed by this transfer procedure.
 - [IMPLEMENTED] Persistent docs are being replaced/synchronized for the new state.
-- [VERIFIED PENDING] Final save verification must confirm new CHAT_TRANSFER blob, commit SHA, HEAD, source blobs, and workflow blobs after commit.
+- [VERIFIED PENDING] Final save verification must confirm the documentation sync commit SHA/HEAD plus unchanged App/Firmware source blobs and workflow blob.

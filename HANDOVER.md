@@ -32,9 +32,9 @@ Update Firmware → active GATT disconnect → live App telemetry stops → Onli
 
 ## VALIDATION
 - Build #53 passed security/architecture audit, dependency resolution, Dart analysis, Flutter tests, release APK compilation, and production signing verification.
-- Build #53 failed only during artifact creation because GitHub Actions artifact storage quota was exhausted.
+- Build #53 failed only during legacy artifact creation because GitHub Actions artifact storage quota was exhausted; Build #2 proves the replacement Release delivery path.
 - Firmware V4.5 compile/BIN/flash/physical OTA validation remains pending.
-- Current App source is not validated for downloadable artifact delivery beyond Build #50.
+- Current App source is validated for downloadable Release delivery by workflow run #2.
 
 ## CI DELIVERY STATE
 - Legacy App Build workflows were deleted; a single new `.github/workflows/jexfyz-build.yml` is current.

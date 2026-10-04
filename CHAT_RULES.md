@@ -58,7 +58,7 @@
 ## CURRENT STATUS
 - Firmware: V4.5.
 - App: 1.0.0+3.
-- Latest verified downloadable App Build: #50.
+- Latest verified downloadable App Build: #2.
 - Build #53: [VERIFIED] CI gates through production signing; [BLOCKED] artifact creation by Actions quota.
 - Local OTA: [CONFIRMED] user-confirmed working on V4.4 before V4.5 promotion; Local OTA remains protected.
 - Online OTA: [CONFIRMED] V3.2-style path retained; V4.5 physical validation still pending.

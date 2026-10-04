@@ -33,7 +33,7 @@
 - Build #51: [VERIFIED] source parser failure; fixed in ea5261230245fc86061cdf85f65ccd0208e607d3.
 - Build #52: [VERIFIED] signing-shell pipefail/SIGPIPE failure; fixed in e33141efd47b8f1ca025e832097e1106d9119b65.
 - Build #53: [VERIFIED] audit/analysis/tests/compile/signing passed; [BLOCKED] artifact creation due Actions quota.
-- Latest verified downloadable APK remains Build #50.
+- Build #2 / run 37201925842 is now the latest verified downloadable APK via GitHub Release.
 - Current release workflow: .github/workflows/jexfyz-build.yml
 - Current release workflow blob: 08a137b4d315cc12e830a7e8dbc1ea40c3d2873d.
 - Legacy app-build.yml and app-build-trigger.yml are deleted.

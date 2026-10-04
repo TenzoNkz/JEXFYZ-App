@@ -6,7 +6,7 @@
 - Exactly one delivery asset is maintained as `jexfyz-latest / JEXFYZ-release.apk`; existing assets are replaced with `--clobber`.
 - This removes Actions-artifact storage quota from the APK delivery path.
 - App/Firmware runtime source was not changed.
-- A fresh Build App run is still required to verify the new Release asset path end-to-end.
+- Workflow run #2 verified the new Release asset path end-to-end.
 - Existing Release updates now retarget `jexfyz-latest` to the current build commit and keep it marked Latest.
 
 
@@ -36,14 +36,14 @@
 
 ## BUILD APP WORKFLOW RESET — 2026-10-04
 - Deleted and recreated both App Build workflows.
-- Release workflow now clears existing Actions artifacts with `actions: write`, then publishes one replaceable APK only.
+- Historical workflow reset used Actions-artifact cleanup; current delivery uses GitHub Release asset publication.
 - Trigger workflow remains manual issue-based and is restricted to the repository owner.
 
 ## BUILD APP CI — 2026-10-04
 - Build #51 failed during Dart analysis because _startCloudOta was missing its closing brace; fixed in commit ea5261230245fc86061cdf85f65ccd0208e607d3.
 - Build #52 confirmed App compilation and signing were correct; its workflow failed on a shell pipefail/SIGPIPE signing-output pipeline and was fixed in commit e33141efd47b8f1ca025e832097e1106d9119b65.
 - Build #53 passed audit, analysis, tests, APK compilation, and production signing verification, then failed only because GitHub Actions artifact storage quota was exhausted.
-- App build workflow now publishes one replaceable direct APK artifact with 7-day retention and no separate symbol artifact.
+- Current App build workflow publishes one replaceable direct GitHub Release asset and no separate symbol asset.
 
 ## V4.4 — 2026-10-04
 - Added explicit active BLE GATT disconnect before Online OTA Wi-Fi handoff.
