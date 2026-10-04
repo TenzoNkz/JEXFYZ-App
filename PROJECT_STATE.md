@@ -1,3 +1,14 @@
+## 2026-10-04 — CURRENT V4.0 DUAL-PARTY FLASH GATE
+
+- [USER COMMAND] `@Thinking Tanya Gemini!` and user supplied Gemini's independent audit.
+- [GEMINI] Exact source blob `b2a77fadeaa154412850d34c82b0bb78ef108bae`: **SAFE TO FLASH**.
+- [ASSISTANT] Independent reconciliation against the same exact source: **SAFE TO FLASH**.
+- [DECISION] Mandatory Assistant + Gemini agreement requirement is now satisfied.
+- [GATE] V4.0 flash gate is **OPEN** for the next controlled validation stage.
+- [BOUNDARY] This does not mean ArduinoDroid/Core 3.3.7 compile, BIN generation, Firebase promotion, or physical validation has already succeeded. Those remain separate evidence gates.
+- [NO SOURCE CHANGE] Review-only event; functional firmware source remains unchanged.
+- [NEXT EXACT ACTION] Compile V4.0 with official Arduino-ESP32 Core 3.3.7, validate the generated BIN, then perform staged physical validation. Do not claim success before each layer passes.
+
 ## 2026-10-04 — GEMINI REVIEW REQUEST / V4.0 FLASH GATE
 
 - [USER COMMAND] `@Thinking Tanya Gemini!` — determine whether current V4.0 is ready to update/flash, with mandatory Assistant + Gemini agreement.
