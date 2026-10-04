@@ -572,3 +572,15 @@ For any hardware/control mismatch, verify in order:
 - [PRESERVE] 5 s soft-start duration, PWM configuration, safety, BLE/P1, GPIO, Adaptive, OTA, and non-blocking contracts remain unchanged.
 - [NO BUILD] App Build was not triggered because App source/configuration was unchanged.
 - [VALIDATION] Full affected firmware source/static audit completed; physical validation remains pending.
+
+## 2026-10-04 — EXECUTION / V3.9 FULL HARDENING COMPLETED
+
+- [COMMITTED] Full V3.8 firmware hardening pass completed and versioned to V3.9.
+- [CURRENT] Active source: `firmware/JEXFYZ-V3.9.ino`.
+- [CURRENT] Active source blob: `bf85b50e0a8cab22e5d66ef09ee84d6692cee009`.
+- [IMPLEMENTED] OTA DOWNLOAD continuation, voltage/Peltier sequencing interlock, final NTC gate, BLE full teardown for Online OTA, Wi-Fi retry settle, callback-safe BLE advertising recovery, Battery hysteresis, rapid-rise thermal latch, ADAPTIVE:OFF ACK correction, OTA anti-rollback, reset diagnostics, Local OTA magic validation, and BLE TX-drop diagnostics.
+- [PRESERVE] Peltier 5 s soft-start remains only on logical OFF -> ON; voltage changes do not restart soft-start.
+- [VERIFIED STATIC] Braces 574/574; parentheses 2112/2112; executable `delay()` 0; timing `while()` 0; `stopBleRadio(false)` 0; DOC-CONTRACT 137.
+- [OPEN] Online OTA certificate/server verification, BLE cryptographic authentication, synchronous HTTP preparation redesign, and post-boot rollback-health policy.
+- [UNVERIFIED] ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile/link, BIN generation, Firebase promotion, and physical hardware validation.
+- [NO APP BUILD] App source/configuration unchanged; Build #50 remains the verified App baseline.
