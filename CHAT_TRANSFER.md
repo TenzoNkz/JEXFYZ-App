@@ -1,3 +1,15 @@
+## 2026-10-04 — EXECUTION FULL / V4.4 BLE GATT DISCONNECT BEFORE ONLINE OTA
+
+- [USER CONFIRMED] Firmware V4.3 was physically reported as working for both Local OTA and Online OTA.
+- [ROOT CAUSE] Online OTA called `stopBleRadio(false)`, which stopped BLE advertising but did not close the active GATT session; the Android App therefore stayed connected and continued showing live telemetry during Wi-Fi OTA.
+- [IMPLEMENTED] Firmware advanced **V4.3 → V4.4** and the active source was renamed to `firmware/JEXFYZ-V4.4.ino`.
+- [IMPLEMENTED] Before Online OTA Wi-Fi handoff, an active BLE GATT connection is now explicitly closed with `bleServer->disconnect(bleServer->getConnId())`; advertising is then stopped as before.
+- [COMPATIBILITY] The explicit disconnect uses `BLEServer::getConnId()` and `BLEServer::disconnect(uint16_t)`, verified in the official Arduino-ESP32 Core 3.3.7 BLEServer API.
+- [RETAINED] The proven V3.2-style Online OTA Wi-Fi/retry and result-indicator flow remains unchanged. Yellow progress code remains removed.
+- [PROTECTED] Local OTA source/flow was not modified.
+- [STATIC AUDIT] V4.4: 5223 lines; braces 0-balance error; parentheses 0-balance error; brackets 0-balance error; executable `delay()` 0; timing `while()` 0; `0xFFFF00` refs 0; stale Online OTA progress refs 0; explicit BLE disconnect call 1.
+- [VALIDATION STATUS] V4.4 source/static audit passed. Physical V4.4 flash and runtime re-test are still pending because this version adds a new BLE disconnect behavior.
+- [APP BUILD] App source/config/workflow unchanged; no App Build triggered. Latest verified App Build remains #50.
 ## 2026-10-04 — EXECUTION FULL / V4.3 RESTORE PRE-YELLOW V3.2 ONLINE OTA
 
 - [USER AUTHORIZED] `@Thinking Eksekusi Full!` to return Online OTA to the pre-yellow V3.2 behavior after V4.2 continued to fail.
