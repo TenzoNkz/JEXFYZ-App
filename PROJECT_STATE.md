@@ -72,7 +72,7 @@ For every future JE X FYZ action, the assistant must first read the complete cur
 ## 1. CURRENT PROJECT
 
 - Project: JE X FYZ / JE Cooler
-- Current workflow event: Execution Full — Permanent Memory Architecture
+- Current workflow event: New Chat Preflight — Repository Memory + Current Source/Workflow Verification
 - Functional source behavior changed by this task: No
 - App Build triggered by this task: No
 - Firmware compile triggered by this task: No
