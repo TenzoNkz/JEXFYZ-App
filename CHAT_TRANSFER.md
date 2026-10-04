@@ -9,7 +9,8 @@
 - App main blob: f762f6d1cdd1351e57e7d93665ff2f5898769b42
 - App settings blob: f11235bab559b291928550e06984532581ddad6a
 - App tests blob: aa86778beb8fcc3ce6a12454f6354f96ec99a160
-- App workflow blob: 9cbb39a3bec997072b1866b01caeed756e6228eb
+- App workflow blob: 5c7faeb8fece972179a0607ffd2278bdfd174704
+- App trigger workflow blob: 04d2293725e97c3cbc67ce8b6f0d9c1230802afd
 - Latest verified downloadable App Build: #50
 
 ## COMPLETED
@@ -19,7 +20,8 @@
 - Build #52 signing-shell failure was fixed.
 - Build #53 proved the current App source compiles, analyzes, tests, and passes production signing verification.
 - Build #53 artifact creation was blocked only by GitHub Actions storage quota.
-- App workflow was hardened to publish one replaceable direct APK artifact with 7-day retention and no second symbols artifact.
+- App Build and Build App trigger workflows were deleted and recreated.
+- App workflow was hardened to clear existing artifacts before build and publish one replaceable direct APK artifact with 7-day retention and no second symbols artifact.
 - Repository memory/documentation is synchronized to the current source and CI state.
 
 ## FROZEN
