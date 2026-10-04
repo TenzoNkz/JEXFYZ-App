@@ -1,3 +1,19 @@
+# 2026-10-04 — V4.2 EXECUTION TRANSFER UPDATE
+
+- [CURRENT] Active Firmware is V4.2: `firmware/JEXFYZ-V4.2.ino`.
+- [CURRENT] Source blob: `63e8db10dbe99eb538af62ddc7d35d8b4b20b849`.
+- [IMPLEMENTED] User-supplied Gemini Online OTA patch applied to the exact active V4.1 source.
+- [IMPLEMENTED] Version advanced V4.1 → V4.2; V4.1 source file retired.
+- [IMPLEMENTED] Online OTA now performs one initial `WiFi.begin()` and waits through a cumulative 45-second connection window. Retry-side `WiFi.disconnect(); WiFi.begin(...)` is removed; attempt telemetry is passive.
+- [VERIFIED] Static affected-source audit: braces 564/564, parentheses 2079/2079, brackets 45/45, executable `delay()` 0, timing `while()` 0, `WiFi.begin()` 1, `setAutoReconnect(false)` 0, `setAutoReconnect(true)` 1, WL fast-fail references 0.
+- [PROTECTED] Local OTA unchanged.
+- [UNVERIFIED] ArduinoDroid/Core 3.3.7 compile, BIN/hash, Firebase promotion, physical flash/runtime.
+- [APP] No App source/config/workflow change; Build #50 remains the latest verified App build.
+- [RECONCILIATION] Gemini's supplied V4.1 blob `0566105383a889912e5e756b0b9f265e5fcf0264` was stale relative to repository truth. The active V4.1 source was `352f7c408f2bc5a4a691af35cfb477338036a102`, which was used as the patch base.
+- [NOTE] Gemini's proposed driver/event-queue crash mechanism remains a hypothesis; this execution does not establish that root cause.
+- [COMMIT] Functional V4.2 source commit: `d5401b7a2bf168a8db3f4f7dd2ef876ad8eadd15`.
+- [NEXT] Compile/generate BIN, verify hash, then conduct the required firmware flash gate and staged physical Online OTA test.
+
 # JE X FYZ — CHAT TRANSFER SNAPSHOT
 # 2026-10-04 — CONTEXT-LIMIT RECONCILIATION / CURRENT REPOSITORY TRUTH
 
