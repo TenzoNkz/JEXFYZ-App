@@ -1,3 +1,13 @@
+## 2026-10-04 — FIRMWARE V3.3 EXECUTION / APP CONTRACT IMPACT
+
+- Firmware continuity source advanced V3.2 → V3.3; no App source was modified and no App Build was triggered.
+- BLE/P1 UUIDs, logical FAN/PELTIER command tokens, and GPIO mapping remain unchanged.
+- The existing `ADAPTIVE_PROFILE` telemetry key now reports the effective runtime profile while Adaptive is active and phone Battery data is unavailable (`HOTSIDE`); a fresh `PHONE:BT` value restores `HOTSIDE_BATTERY`. The configured profile is not persisted from this runtime fallback.
+- Firmware brightness command acceptance is now 1–100%; App-side controls should not send 0%.
+- Online OTA adds firmware-side one-shot yellow progress flashes at 20/40/60/80/100% and does not introduce a new BLE command.
+- Online OTA download processing is now cooperative per bounded chunk; URL/version/control contracts remain unchanged.
+- V3.3 compile/BIN/device validation remains pending and separate from App Build validation.
+
 ## 2026-10-04 — FIRMWARE V3.2 EXECUTION / APP CONTRACT IMPACT
 
 - Firmware continuity source advanced V3.1 → V3.2 in the App repository; active source commit is 536877e644731e3ed0a64b87508c18de9270eede.

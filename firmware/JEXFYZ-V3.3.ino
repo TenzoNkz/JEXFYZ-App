@@ -28,7 +28,7 @@ enum class LedMode : uint8_t;
 enum class VoltageRequestSource : uint8_t;
 enum class AdaptiveProfile : uint8_t;
 
-static constexpr char FW_VERSION[] = "V3.2";
+static constexpr char FW_VERSION[] = "V3.3";
 
 // ============================================================================
 // ========================== HEAP DIAGNOSTIC BUILD ===========================
@@ -190,6 +190,9 @@ static constexpr uint32_t BATTERY_VALID_TTL_MS          = 5000;
 static constexpr uint32_t SETTINGS_SAVE_DEBOUNCE_MS     = 10000;
 // Touch Adaptive-OFF indicator uses three non-blocking 250 ms color phases.
 static constexpr uint32_t TOUCH_ADAPTIVE_OFF_INDICATOR_PHASE_MS = 250;
+static constexpr uint32_t BLE_RADIO_SETTLE_MS = 50;
+static constexpr uint32_t WIFI_OFF_SETTLE_MS = 160;
+static constexpr uint32_t ONLINE_OTA_PROGRESS_BLINK_MS = 200;
 
 
 static constexpr int HOT_LIMIT_MIN = 40;
@@ -284,6 +287,7 @@ uint32_t lastNtcReadMs = 0;
 bool batteryValid = false;
 float batteryC = NAN;
 uint32_t lastBatteryRxMs = 0;
+volatile bool batteryLinkLostPending = false;
 
 int hotLimit = 45;
 int battery5Limit = 25;
@@ -353,10 +357,22 @@ uint32_t onlineResultIndicatorStartedAt = 0;
 uint32_t onlineResultIndicatorColor = 0;
 OnlineOtaIndicatorNext onlineResultIndicatorNext = OnlineOtaIndicatorNext::NONE;
 uint32_t onlineResultIndicatorLastPhase = 0xFFFFFFFFUL;
+uint8_t onlineOtaProgressReachedMask = 0;
+uint8_t onlineOtaProgressPendingMask = 0;
+bool onlineOtaProgressIndicatorActive = false;
+uint32_t onlineOtaProgressIndicatorStartedAt = 0;
+uint8_t onlineOtaProgressIndicatorMilestone = 0;
+bool onlineOtaDownloadCompletePending = false;
+size_t onlineOtaDownloadBytesWritten = 0;
+uint32_t onlineOtaDownloadLastDataAt = 0;
+
 bool onlineHttpActive = false;
 int onlineHttpResponseCode = 0;
 int onlineHttpExpectedBytes = 0;
-bool onlineUpdateStarted = false;
+bool onlineUpdateStarted = false;bool wifiOffSettlePending = false;
+uint32_t wifiOffSettleUntilMs = 0;
+uint32_t bleRadioSettleUntilMs = 0;
+
 HTTPClient onlineHttpClient;
 
 // ====================== OTA DIAGNOSTICS — PROTECTED =========================
@@ -433,8 +449,31 @@ static bool processLocalOtaResultIndicator();
 static void startTouchAdaptiveOffIndicator();
 static bool processTouchAdaptiveOffIndicator();
 static void initializeRuntimeFeatures();
+static void requestWiFiOffShutdown();
+static bool isWiFiOffSettled();
+static void processBatteryLinkState();
+static void updateBatteryValidity();
+static void processAdaptiveHotsideFallback();
+static void resetOnlineOtaProgressState();
+static void queueOnlineOtaProgressMilestones(uint8_t progress);
+static bool processOnlineOtaProgressIndicator();
 
-static const char* voltageToString(Voltage value) {
+static const char* voltageToString(Voltage value) {static const char* adaptiveProfileText(AdaptiveProfile profile) {
+  return profile == AdaptiveProfile::HOTSIDE_PROTECTION
+             ? "HOTSIDE"
+             : "HOTSIDE_BATTERY";
+}
+
+static AdaptiveProfile effectiveAdaptiveProfile() {
+  if (adaptiveOn &&
+      adaptiveProfile == AdaptiveProfile::HOTSIDE_BATTERY &&
+      !batteryValid) {
+    return AdaptiveProfile::HOTSIDE_PROTECTION;
+  }
+  return adaptiveProfile;
+}
+
+
   switch (value) {
     case Voltage::V5:  return "5V";
     case Voltage::V9:  return "9V";
@@ -613,6 +652,7 @@ static void loadSettings() {
   const int storedMode = prefs.getUChar("rgbMode", 1);
   rgbMode = static_cast<LedMode>(constrain(storedMode, 1, 7));
   rgbBrightness = prefs.getUChar("brightness", 100);
+  if (rgbBrightness < 1) rgbBrightness = 1;
   if (rgbBrightness > 100) rgbBrightness = 100;
 
   rgbColor = prefs.getUInt("rgbColor", 0xFFFFFF);
@@ -1598,6 +1638,65 @@ static String safetyReason() {
 }
 
 static int batteryZoneFor(float temperature) {
+static void invalidateBatterySource() {
+  const bool hadState = batteryValid || isfinite(batteryC);
+  batteryValid = false;
+  batteryC = NAN;
+  lastBatteryRxMs = 0;
+
+  if (hadState) {
+    sendDelta("BATTERY", "--");
+    sendDelta("BATTERY_VALID", "0");
+  }
+
+  if (adaptiveOn &&
+      adaptiveProfile == AdaptiveProfile::HOTSIDE_BATTERY) {
+    sendDelta("ADAPTIVE_PROFILE", "HOTSIDE");
+  }
+}
+
+static void updateBatteryValidity() {
+  if (!batteryValid) return;
+  if (millis() - lastBatteryRxMs < BATTERY_VALID_TTL_MS) return;
+  invalidateBatterySource();
+}
+
+static void processBatteryLinkState() {
+  if (!batteryLinkLostPending) return;
+  batteryLinkLostPending = false;
+  invalidateBatterySource();
+}
+
+static void processAdaptiveHotsideFallback() {
+  if (!adaptiveOn ||
+      adaptiveProfile != AdaptiveProfile::HOTSIDE_BATTERY ||
+      batteryValid) {
+    return;
+  }
+
+  // Runtime fallback: Battery control is suspended and Hotside becomes the
+  // effective Adaptive profile until a fresh phone Battery value is received.
+  // Hotside safety remains authoritative.
+  if (adaptiveHotStepPending || hotsideProtectionActiveNow()) return;
+
+  if (voltageTransition) {
+    if (voltageTransitionSource == VoltageRequestSource::BATTERY) {
+      pendingVoltage = Voltage::V12;
+    }
+    return;
+  }
+
+  if (currentVoltage != Voltage::V12) {
+    // Runtime fallback bypasses the normal Battery dwell so the Hotside
+    // profile can immediately resume its normal 12V operating target.
+    (void)requestVoltage(
+        Voltage::V12,
+        VoltageRequestSource::ADAPTIVE,
+        true);
+  }
+}
+
+
   if (!isfinite(temperature)) return 9;
   if (temperature < battery5Limit) return 5;
   if (temperature < battery12Limit) return 9;
@@ -1613,11 +1712,6 @@ static Voltage batteryZoneVoltage(int zone) {
 static Voltage higherVoltage(Voltage value) {
   if (value == Voltage::V5) return Voltage::V9;
   return Voltage::V12;
-}
-
-static Voltage lowerVoltage(Voltage value) {
-  if (value == Voltage::V12) return Voltage::V9;
-  return Voltage::V5;
 }
 
 static void evaluateAdaptiveBattery() {
@@ -1865,10 +1959,7 @@ static void sendFullSync() {
   sendDelta("BATTERY_VALID", batteryValid ? "1" : "0");
   sendDelta("ADAPTIVE", boolText(adaptiveOn));
   sendDelta("ADAPTIVE_CEILING", voltageToString(adaptiveCeiling));
-  sendDelta("ADAPTIVE_PROFILE",
-            adaptiveProfile == AdaptiveProfile::HOTSIDE_PROTECTION
-                ? "HOTSIDE"
-                : "HOTSIDE_BATTERY");
+  sendDelta("ADAPTIVE_PROFILE", adaptiveProfileText(effectiveAdaptiveProfile()));
   sendDelta("RGB", boolText(rgbOn));
   sendDelta("MODE", String(static_cast<uint8_t>(rgbMode)));
   sendDelta("BRIGHTNESS", String(rgbBrightness));
@@ -1968,6 +2059,7 @@ class ServerCallbacks : public BLEServerCallbacks {
     bleSyncPending = false;
     bleCommandGateOpen = false;
     bleQueueResetPending = true;
+    batteryLinkLostPending = true;
 
     if (!otaActive && !bootApActive && BLEDevice::getInitialized()) {
       BLEDevice::startAdvertising();
@@ -2001,11 +2093,10 @@ static void stopBleRadio(bool releaseBluetoothMemory) {
     if (releaseBluetoothMemory) {
       BLEDevice::deinit(true);
     } else {
-      BLEDevice::stopAdvertising(); // AMAN: Suspend radio tanpa merusak Heap!
+      BLEDevice::stopAdvertising();
     }
-    // Give the BLE controller a short cooperative shutdown window.
-    uint32_t start = millis();
-    while (millis() - start < 50) { yield(); }
+    // Cooperative settle: return to the main loop instead of spinning here.
+    bleRadioSettleUntilMs = millis() + BLE_RADIO_SETTLE_MS;
   }
 
   if (releaseBluetoothMemory) {
@@ -2013,21 +2104,30 @@ static void stopBleRadio(bool releaseBluetoothMemory) {
     rxCharacteristic = nullptr;
     txCharacteristic = nullptr;
   }
+
   bleStartPending = true;
-  bleStartRetryAt = millis();
+  bleStartRetryAt =
+      bleRadioSettleUntilMs > millis()
+          ? bleRadioSettleUntilMs
+          : millis();
 }
 
 static void stopBleForBootWiFiClient() {
-  // Preserve the established boot-AP/local-OTA BLE teardown behavior.
   stopBleRadio(true);
 }
 
-static void waitForWiFiOff() {
+static void requestWiFiOffShutdown() {
+  if (wifiOffSettlePending) return;
   WiFi.mode(WIFI_OFF);
-  uint32_t start = millis();
-  while (millis() - start < 160) {
-    yield(); // Memberi waktu PHY Wi-Fi mati tanpa nge-block loop utama
-  }
+  wifiOffSettleUntilMs = millis() + WIFI_OFF_SETTLE_MS;
+  wifiOffSettlePending = true;
+}
+
+static bool isWiFiOffSettled() {
+  if (!wifiOffSettlePending) return true;
+  if (static_cast<int32_t>(millis() - wifiOffSettleUntilMs) < 0) return false;
+  wifiOffSettlePending = false;
+  return true;
 }
 
 static void scheduleBleRetry() {
@@ -2039,6 +2139,18 @@ static void scheduleBleRetry() {
 static void startBle() {
   if (otaActive) return;
   if (bootApActive) return;
+
+  if (!isWiFiOffSettled()) {
+    bleStartPending = true;
+    bleStartRetryAt = wifiOffSettleUntilMs;
+    return;
+  }
+
+  if (millis() < bleRadioSettleUntilMs) {
+    bleStartPending = true;
+    bleStartRetryAt = bleRadioSettleUntilMs;
+    return;
+  }
 
   runHeapCheck("CP04_STARTBLE_ENTRY");
 
@@ -2063,11 +2175,14 @@ static void startBle() {
     // Recover from a stale/partial controller state instead of treating
     // getInitialized() as a complete BLE startup.
     BLEDevice::deinit(true);
-    yield();
     bleServer = nullptr;
     rxCharacteristic = nullptr;
     txCharacteristic = nullptr;
+    bleRadioSettleUntilMs = millis() + BLE_RADIO_SETTLE_MS;
+    bleStartPending = true;
+    bleStartRetryAt = bleRadioSettleUntilMs;
     runHeapCheck("CP05B_AFTER_CONDITIONAL_DEINIT");
+    return;
   }
 
   Serial.println("BLE: START");
@@ -2176,7 +2291,8 @@ static void serviceBleStartRecovery() {
 
   if (millis() < bleStartRetryAt) return;
 
-  waitForWiFiOff();
+  requestWiFiOffShutdown();
+  if (!isWiFiOffSettled()) return;
   startBle();
 }
 
@@ -2211,7 +2327,7 @@ static void clearCloudCredentials() {
 static void stopWiFiRadio() {
   WiFi.disconnect(true, false);
   WiFi.softAPdisconnect(true);
-  waitForWiFiOff();
+  requestWiFiOffShutdown();
 }
 
 static void applyOtaSafeOutputs() {
@@ -2287,11 +2403,80 @@ static void failOnlineOta(
   startOnlineOtaResultIndicator(0xFF0000, OnlineOtaIndicatorNext::RECOVER);
 }
 
+static void resetOnlineOtaProgressState() {
+  onlineOtaProgressReachedMask = 0;
+  onlineOtaProgressPendingMask = 0;
+  onlineOtaProgressIndicatorActive = false;
+  onlineOtaProgressIndicatorStartedAt = 0;
+  onlineOtaProgressIndicatorMilestone = 0;
+  onlineOtaDownloadCompletePending = false;
+  onlineOtaDownloadBytesWritten = 0;
+  onlineOtaDownloadLastDataAt = 0;
+}
+
+static void queueOnlineOtaProgressMilestones(uint8_t progress) {
+  progress = constrain(progress, static_cast<uint8_t>(0), static_cast<uint8_t>(100));
+
+  for (uint8_t index = 0; index < 5; ++index) {
+    const uint8_t threshold = static_cast<uint8_t>((index + 1U) * 20U);
+    const uint8_t bit = static_cast<uint8_t>(1U << index);
+
+    if (progress >= threshold &&
+        (onlineOtaProgressReachedMask & bit) == 0) {
+      onlineOtaProgressReachedMask |= bit;
+      onlineOtaProgressPendingMask |= bit;
+    }
+  }
+}
+
 static void onlineUpdateProgress(size_t current, size_t total) {
   if (total == 0) return;
   const uint8_t progress = static_cast<uint8_t>(
       min<size_t>(100, (current * 100ULL) / total));
   setOtaDiagnosticProgress(progress);
+  queueOnlineOtaProgressMilestones(progress);
+}
+
+static bool processOnlineOtaProgressIndicator() {
+  if (onlineOtaProgressIndicatorActive) {
+    const uint32_t elapsed =
+        millis() - onlineOtaProgressIndicatorStartedAt;
+
+    if (elapsed < ONLINE_OTA_PROGRESS_BLINK_MS) {
+      showAll(0xFFFF00, 255);
+      return true;
+    }
+
+    showAll(0x000000, 0);
+    onlineOtaProgressIndicatorActive = false;
+    onlineOtaProgressIndicatorMilestone = 0;
+    return true;
+  }
+
+  if (onlineOtaProgressPendingMask != 0) {
+    for (uint8_t index = 0; index < 5; ++index) {
+      const uint8_t bit = static_cast<uint8_t>(1U << index);
+      if ((onlineOtaProgressPendingMask & bit) != 0) {
+        onlineOtaProgressPendingMask &= static_cast<uint8_t>(~bit);
+        onlineOtaProgressIndicatorMilestone =
+            static_cast<uint8_t>((index + 1U) * 20U);
+        onlineOtaProgressIndicatorStartedAt = millis();
+        onlineOtaProgressIndicatorActive = true;
+        showAll(0xFFFF00, 255);
+        return true;
+      }
+    }
+  }
+
+  if (onlineOtaDownloadCompletePending) {
+    onlineOtaDownloadCompletePending = false;
+    startOnlineOtaResultIndicator(
+        0x0000FF,
+        OnlineOtaIndicatorNext::FLASH_FINALIZE);
+    return true;
+  }
+
+  return false;
 }
 
 static bool prepareOnlineOtaDownload() {
@@ -2383,7 +2568,6 @@ static bool prepareOnlineOtaDownload() {
 
 static bool performOnlineOtaDownload() {
   setOtaDiagnosticStage("ONLINE_DOWNLOAD");
-  setOtaDiagnosticProgress(0);
   setOtaDiagnosticError(0, "NONE");
 
   if (!onlineHttpActive || onlineHttpExpectedBytes <= 0) {
@@ -2394,16 +2578,20 @@ static bool performOnlineOtaDownload() {
     return false;
   }
 
-  if (!Update.begin(
-          static_cast<size_t>(onlineHttpExpectedBytes),
-          U_FLASH)) {
-    const int code = static_cast<int>(Update.getError());
-    failOnlineOta("ONLINE_FLASH_PREPARE", code, updateErrorDetail());
-    return false;
-  }
+  if (!onlineUpdateStarted) {
+    if (!Update.begin(
+            static_cast<size_t>(onlineHttpExpectedBytes),
+            U_FLASH)) {
+      const int code = static_cast<int>(Update.getError());
+      failOnlineOta("ONLINE_FLASH_PREPARE", code, updateErrorDetail());
+      return false;
+    }
 
-  onlineUpdateStarted = true;
-  Update.onProgress(onlineUpdateProgress);
+    onlineUpdateStarted = true;
+    onlineOtaDownloadBytesWritten = 0;
+    onlineOtaDownloadLastDataAt = millis();
+    Update.onProgress(onlineUpdateProgress);
+  }
 
   NetworkClient* stream = onlineHttpClient.getStreamPtr();
   if (stream == nullptr) {
@@ -2415,94 +2603,99 @@ static bool performOnlineOtaDownload() {
   }
 
   static constexpr size_t ONLINE_OTA_READ_BUFFER_SIZE = 1024;
-  static constexpr uint32_t ONLINE_OTA_STREAM_IDLE_TIMEOUT_MS = 10000;
-  uint8_t buffer[ONLINE_OTA_READ_BUFFER_SIZE];
-  size_t totalWritten = 0;
-  uint32_t lastDataAt = millis();
+  const size_t availableBytes = static_cast<size_t>(stream->available());
 
-  while (totalWritten < static_cast<size_t>(onlineHttpExpectedBytes)) {
-    yield();
-
-    const size_t availableBytes = static_cast<size_t>(stream->available());
-    if (availableBytes == 0) {
-      if (!onlineHttpClient.connected()) {
-        failOnlineOta(
-            "ONLINE_DOWNLOAD",
-            OTA_ERROR_STREAM,
-            "STREAM_CLOSED_PREMATURELY");
-        return false;
-      }
-
-      if (millis() - lastDataAt >= ONLINE_OTA_STREAM_IDLE_TIMEOUT_MS) {
-        failOnlineOta(
-            "ONLINE_DOWNLOAD",
-            OTA_ERROR_STREAM,
-            "STREAM_TIMEOUT");
-        return false;
-      }
-
-      yield();
-      continue;
-    }
-
-    const size_t remaining =
-        static_cast<size_t>(onlineHttpExpectedBytes) - totalWritten;
-    const size_t toRead = min(
-        min(availableBytes, ONLINE_OTA_READ_BUFFER_SIZE),
-        remaining);
-
-    const int bytesRead = stream->read(buffer, toRead);
-    if (bytesRead <= 0) {
-      if (!onlineHttpClient.connected()) {
-        failOnlineOta("ONLINE_DOWNLOAD", OTA_ERROR_STREAM, "STREAM_READ_ERROR");
-        return false;
-      }
-      if (millis() - lastDataAt >= ONLINE_OTA_STREAM_IDLE_TIMEOUT_MS) {
-        failOnlineOta("ONLINE_DOWNLOAD", OTA_ERROR_STREAM, "STREAM_READ_TIMEOUT");
-        return false;
-      }
-      // Cooperative retry: no blocking Arduino delay.
-      yield();
-      continue;
-    }
-
-    if (totalWritten == 0 && static_cast<uint8_t>(buffer[0]) != 0xE9) {
-      failOnlineOta(
-          "ONLINE_IMAGE_VALIDATE",
-          OTA_ERROR_MAGIC_BYTE,
-          "WRONG_FIRMWARE_MAGIC");
-      return false;
-    }
-
-    lastDataAt = millis();
-
-    const size_t written =
-        Update.write(buffer, static_cast<size_t>(bytesRead));
-    if (written != static_cast<size_t>(bytesRead)) {
-      const int code = static_cast<int>(Update.getError());
+  if (availableBytes == 0) {
+    if (!onlineHttpClient.connected()) {
       failOnlineOta(
           "ONLINE_DOWNLOAD",
-          code != 0 ? code : OTA_ERROR_WRITE,
-          code != 0 ? updateErrorDetail() : "UPDATE_WRITE_ERROR");
+          OTA_ERROR_STREAM,
+          "STREAM_CLOSED_PREMATURELY");
       return false;
     }
 
-    totalWritten += written;
-    onlineUpdateProgress(totalWritten, onlineHttpExpectedBytes);
-    yield();
+    if (millis() - onlineOtaDownloadLastDataAt >= 10000UL) {
+      failOnlineOta(
+          "ONLINE_DOWNLOAD",
+          OTA_ERROR_STREAM,
+          "STREAM_TIMEOUT");
+      return false;
+    }
+
+    return true;
   }
 
-  onlineHttpClient.end();
-  onlineHttpActive = false;
-  cloudClient.stop();
+  const size_t remaining =
+      static_cast<size_t>(onlineHttpExpectedBytes) -
+      onlineOtaDownloadBytesWritten;
+  const size_t toRead = min(
+      min(availableBytes, ONLINE_OTA_READ_BUFFER_SIZE),
+      remaining);
 
-  setOtaDiagnosticProgress(100);
-  setOtaDiagnosticStage("ONLINE_DOWNLOAD_COMPLETE");
-  setOtaDiagnosticError(0, "NONE");
+  uint8_t buffer[ONLINE_OTA_READ_BUFFER_SIZE];
+  const int bytesRead = stream->read(buffer, toRead);
 
-  startOnlineOtaResultIndicator(
-      0x0000FF,
-      OnlineOtaIndicatorNext::FLASH_FINALIZE);
+  if (bytesRead <= 0) {
+    if (!onlineHttpClient.connected()) {
+      failOnlineOta("ONLINE_DOWNLOAD", OTA_ERROR_STREAM, "STREAM_READ_ERROR");
+      return false;
+    }
+
+    if (millis() - onlineOtaDownloadLastDataAt >= 10000UL) {
+      failOnlineOta(
+          "ONLINE_DOWNLOAD",
+          OTA_ERROR_STREAM,
+          "STREAM_READ_TIMEOUT");
+      return false;
+    }
+
+    return true;
+  }
+
+  if (onlineOtaDownloadBytesWritten == 0 &&
+      static_cast<uint8_t>(buffer[0]) != 0xE9) {
+    failOnlineOta(
+        "ONLINE_IMAGE_VALIDATE",
+        OTA_ERROR_MAGIC_BYTE,
+        "WRONG_FIRMWARE_MAGIC");
+    return false;
+  }
+
+  onlineOtaDownloadLastDataAt = millis();
+
+  const size_t written =
+      Update.write(buffer, static_cast<size_t>(bytesRead));
+
+  if (written != static_cast<size_t>(bytesRead)) {
+    const int code = static_cast<int>(Update.getError());
+    failOnlineOta(
+        "ONLINE_DOWNLOAD",
+        code != 0 ? code : OTA_ERROR_WRITE,
+        code != 0 ? updateErrorDetail() : "UPDATE_WRITE_ERROR");
+    return false;
+  }
+
+  onlineOtaDownloadBytesWritten += written;
+  onlineUpdateProgress(
+      onlineOtaDownloadBytesWritten,
+      static_cast<size_t>(onlineHttpExpectedBytes));
+
+  if (onlineOtaDownloadBytesWritten >=
+      static_cast<size_t>(onlineHttpExpectedBytes)) {
+    onlineHttpClient.end();
+    onlineHttpActive = false;
+    cloudClient.stop();
+
+    setOtaDiagnosticProgress(100);
+    setOtaDiagnosticStage("ONLINE_DOWNLOAD_COMPLETE");
+    setOtaDiagnosticError(0, "NONE");
+
+    // Keep the 100% yellow milestone before the existing blue post-download
+    // indicator and flash-finalize state.
+    queueOnlineOtaProgressMilestones(100);
+    onlineOtaDownloadCompletePending = true;
+  }
+
   return true;
 }
 
@@ -2598,6 +2791,7 @@ static void startOnlineOta() {
   onlineResultIndicatorNext = OnlineOtaIndicatorNext::NONE;
   onlineHttpActive = false;
   onlineUpdateStarted = false;
+  resetOnlineOtaProgressState();
 
   setOtaResult(
       "IN_PROGRESS|MODE=ONLINE|STAGE=ONLINE_WIFI_CONNECT|PROGRESS=0",
@@ -2615,9 +2809,9 @@ static void startOnlineOta() {
 
   WiFi.disconnect(true, false);
   WiFi.softAPdisconnect(true);
-  WiFi.mode(WIFI_OFF);
+  requestWiFiOffShutdown();
   
-  // Langsung serahkan ke State Machine tanpa nge-block
+  // Hand off to the nonblocking radio-teardown state machine.
   onlineOtaFlow = OnlineOtaFlow::RADIO_TEARDOWN;
   cloudPhaseStartedAt = millis();
 }
@@ -2628,10 +2822,15 @@ static void processOnlineOta() {
     return;
   }
 
+  if (processOnlineOtaProgressIndicator()) {
+    return;
+  }
+
   switch (onlineOtaFlow) {
     case OnlineOtaFlow::RADIO_TEARDOWN:
-      // Menunggu 160ms secara non-blocking agar radio stack benar-benar bersih
-      if (millis() - cloudPhaseStartedAt >= 160) {
+      if (!isWiFiOffSettled()) return;
+      {
+        wifiOffSettlePending = false;
         WiFi.mode(WIFI_STA);
         WiFi.setHostname("JE-X-FYZ");
         WiFi.setSleep(false);
@@ -3012,13 +3211,9 @@ static void startLocalOtaAp() {
     bootApActive = false;
     setOtaState(OtaState::FAILED);
     otaFailureIndicatorUntil = millis() + OTA_FAILURE_INDICATOR_MS;
-    WiFi.mode(WIFI_OFF);
-    uint32_t start = millis();
-    while (millis() - start < 160) {
-      yield();
-    }
+    requestWiFiOffShutdown();
     bleStartPending = true;
-    bleStartRetryAt = millis();
+    bleStartRetryAt = wifiOffSettleUntilMs;
     return;
   }
 
@@ -3438,8 +3633,8 @@ static void handleCommand(const String& command) {
 
   if (command.startsWith("BRIGHTNESS:")) {
     int value = 0;
-    if (!parseIntRange(command.substring(11), 0, 100, value)) {
-      sendAck("BRIGHTNESS", false, "RANGE_0_100");
+    if (!parseIntRange(command.substring(11), 1, 100, value)) {
+      sendAck("BRIGHTNESS", false, "RANGE_1_100");
       return;
     }
 
@@ -3694,12 +3889,7 @@ static void handleCommand(const String& command) {
   if (command.startsWith("PHONE:BT=")) {
     float value = 0.0f;
     if (!parseFloatRange(command.substring(9), 0.0f, 100.0f, value)) {
-      if (batteryValid || !isnan(batteryC)) {
-        batteryValid = false;
-        batteryC = NAN;
-        sendDelta("BATTERY", "--");
-        sendDelta("BATTERY_VALID", "0");
-      }
+      invalidateBatterySource();
       return;
     }
 
@@ -3722,6 +3912,11 @@ static void handleCommand(const String& command) {
 
     if (valueChanged) sendDelta("BATTERY", formatTemperature(batteryC, true));
     if (!wasValid) sendDelta("BATTERY_VALID", "1");
+
+    if (adaptiveOn &&
+        adaptiveProfile == AdaptiveProfile::HOTSIDE_BATTERY) {
+      sendDelta("ADAPTIVE_PROFILE", "HOTSIDE_BATTERY");
+    }
 
     if (adaptiveOn) {
       evaluateAdaptiveBattery();
@@ -3962,7 +4157,8 @@ static bool serviceOtaPriority() {
     // Result indicators are rendered exclusively by processOnlineOta().
     // The normal LED renderer resumes only after the indicator/recovery state
     // has ended, preventing double-driving and clipped red/green flashes.
-    if (!onlineResultIndicatorActive) {
+    if (!onlineResultIndicatorActive &&
+        !onlineOtaProgressIndicatorActive) {
       processLeds();
     }
     return true;
@@ -4107,9 +4303,11 @@ void loop() {
   processTouchInput();
   sampleNtcIfDue();
   updateBatteryValidity();
+  processBatteryLinkState();
   processAdaptiveHotTimer();
-  evaluateAdaptiveBattery();
   completeVoltageTransition();
+  processAdaptiveHotsideFallback();
+  evaluateAdaptiveBattery();
 
   const bool bootCoolingLocked =
       bootApActive &&

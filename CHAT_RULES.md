@@ -1,3 +1,12 @@
+## 2026-10-04 — EXECUTION FULL / FIRMWARE V3.3 EVENT
+
+- User explicitly authorized `@Thinking Eksekusi Full!` after the V3.2 discussion.
+- Firmware source advanced to V3.3 with the approved Hotside-only 12V behavior, runtime Battery-loss fallback, LED brightness 1–100%, Online OTA 20/40/60/80/100 yellow flashes, and cooperative no-delay timing.
+- Full affected-area audit found and repaired two latent V3.2 source-structure issues: an undefined `updateBatteryValidity()` call and duplicate active `lowerVoltage()` definitions.
+- No App Build, firmware BIN/Firebase promotion, dedicated binary-repository update, or physical validation was performed.
+- #118 and #124 were deliberately not guessed because their numbered descriptions were not present in the authoritative notes inspected for this execution.
+- Next validation boundary is ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile, followed by BIN and physical-device validation.
+
 ## 2026-10-04 — FOLLOW-UP EXECUTION FULL EVENT / FIRMWARE V3.2
 
 - Full regression of V3.1 identified an authority-boundary edge case in the deadtime revalidation logic.

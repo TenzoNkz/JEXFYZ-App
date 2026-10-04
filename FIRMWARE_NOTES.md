@@ -1,3 +1,57 @@
+## 2026-10-04 — EXECUTION FULL / FIRMWARE V3.3 ADAPTIVE FALLBACK + OTA PROGRESS + FULL NO-DELAY
+
+### Source/version
+- User issued `@Thinking Eksekusi Full!` after the V3.2 firmware discussion.
+- Functional firmware revision advanced **V3.2 → V3.3**.
+- Active source is `firmware/JEXFYZ-V3.3.ino`; V3.2 is retired from the active source tree.
+- Existing BLE/P1 UUIDs, logical FAN/PELTIER tokens, GPIO mapping, Hotside safety authority, Battery direct-zone semantics, 200 ms selector deadtime, and shared 1-second Battery voltage dwell remain intact unless listed below.
+
+### Implemented
+1. **Adaptive profile behavior**
+   - HOTSIDE-only Adaptive now completes its mandatory 5V startup handoff and then requests/resumes **12V** whenever Hotside is below the configured safety limit.
+   - HOTSIDE-only does not use phone Battery temperature for normal voltage control.
+   - HOTSIDE_BATTERY continues to use phone Battery temperature for normal voltage selection while physical NTC Hotside protection remains authoritative.
+2. **Immediate Battery-loss fallback**
+   - BLE disconnect raises a main-loop signal that immediately invalidates the phone Battery source.
+   - Battery source timeout at 5 seconds uses the same invalidation path when BLE remains connected but Battery updates stop.
+   - When Adaptive is configured as HOTSIDE_BATTERY and Battery is unavailable, the effective runtime profile becomes HOTSIDE and the controller resumes toward 12V when Hotside is safe.
+   - The configured profile is not rewritten/persisted. A fresh PHONE:BT value restores the effective HOTSIDE_BATTERY runtime profile.
+3. **LED/Fan ranges**
+   - Fan remains 50–100% with the existing 10% step.
+   - LED brightness is now strictly 1–100%; stored legacy 0% is clamped to 1%.
+4. **Online OTA progress**
+   - Online firmware download emits a one-shot **yellow flash at 20%, 40%, 60%, 80%, and 100%**, once per milestone per OTA session.
+   - Each flash is 200 ms and is driven by a nonblocking state machine, not a delay.
+   - Existing OTA Wi-Fi/green/blue/red indicators remain in place.
+5. **Full no-delay / cooperative scheduling**
+   - Removed timing `while (...)` waits from BLE shutdown, Wi-Fi-off settling, Local OTA failure handoff, and Online OTA firmware download.
+   - Online download now performs one bounded 1024-byte stream read/write per main-loop pass instead of a long inner download loop.
+   - Main loop is not globally changed to a 100 ms tick; it remains fast/nonblocking and uses per-task state/timers where needed.
+6. **Full-audit source repairs**
+   - Added the missing `updateBatteryValidity()` implementation for the existing 5-second Battery TTL call.
+   - Removed a duplicate active `lowerVoltage()` definition that would create a compile error.
+7. **Not guessed**
+   - #118 and #124 were not reinterpreted because their original numbered descriptions were not present in the authoritative notes/source available during this execution.
+
+### Static validation
+- V3.3 marker and versioned filename content verified.
+- Braces: 523/523.
+- Parentheses: 1978/1978.
+- Active `lowerVoltage()` definitions: 1.
+- Active `updateBatteryValidity()` definitions: 1.
+- `delay(...)` calls: 0.
+- Timing `while (...)` loops: 0.
+- Battery disconnect signal, Battery fallback, brightness 1–100, and OTA milestone state present.
+- ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile: **NOT performed here**.
+- BIN generation/publication: **NOT performed**.
+- Firebase firmware metadata: **NOT promoted**.
+- Dedicated binary repository: **NOT modified**.
+- Physical ESP32 flash/runtime/thermal/BLE/OTA validation: **NOT performed**.
+- App Build: **NOT triggered**.
+
+### Validation boundary
+- This execution proves repository/source transformation and static structural checks only. V3.3 still needs ArduinoDroid/Core 3.3.7 compilation and real-device validation before binary/OTA promotion.
+
 ## 2026-10-04 — FOLLOW-UP EXECUTION FULL / FIRMWARE V3.2 BATTERY TRANSITION SOURCE ISOLATION
 
 ### Source/version
