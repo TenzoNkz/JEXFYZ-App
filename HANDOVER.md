@@ -12,8 +12,8 @@
 - Current App Build engine: .github/workflows/jexfyz-app-build-engine.yml
 - Latest verified downloadable App Build: workflow run #2 / GitHub Release jexfyz-latest.
 - Build #53: App validation passed through signing; legacy artifact creation blocked by Actions quota.
-- The restored workflows are based on the proven Build #50-era manual issue trigger and reusable artifact-producing App Build engine.
-- No new build was started by this execution; workflow run #2 remains the latest verified downloadable APK.
+- The trigger remains issue-based; the reusable engine now publishes one `JEXFYZ-release.apk` to GitHub Release `jexfyz-latest`.
+- A new Build App run is now being executed; workflow run #2 remains historical reference evidence until this run succeeds.
 
 ## CURRENT OBJECTIVE
 Preserve this state across chat transfer. On a future explicit Build App request, use the restored manual trigger to invoke the reusable App Build engine and verify its artifacts/signing gates.
@@ -38,9 +38,9 @@ Update Firmware → active GATT disconnect → live App telemetry stops → Onli
 
 ## CI DELIVERY STATE
 - `.github/workflows/jexfyz-app-build-trigger.yml` is the manual issue trigger.
-- `.github/workflows/jexfyz-app-build-engine.yml` is the reusable build engine and restores the proven Actions-artifact APK + Dart-symbol delivery path.
+- `.github/workflows/jexfyz-app-build-engine.yml` is the reusable engine and publishes the APK through GitHub Release.
 - Normal push/PR events do not trigger App Build.
-- Workflow run #2 / `jexfyz-latest` remains the latest verified downloadable APK, but no post-restore build has been run.
+- Workflow run #2 / `jexfyz-latest` is the historical verified Release path; the current build will update/verify that Release.
 
 ## NEXT
-On the next explicit App Build request, use the manual trigger workflow to invoke the reusable engine, then verify build gates, production signing, and the expected APK/symbol artifacts. Separately compile/flash Firmware V4.5 and perform physical OTA/BLE validation.
+After this build, verify CI gates, production signing, exactly one Release asset, and the Release asset digest/size. Separately compile/flash Firmware V4.5 and perform physical OTA/BLE validation. Separately compile/flash Firmware V4.5 and perform physical OTA/BLE validation.
