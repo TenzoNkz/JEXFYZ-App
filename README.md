@@ -1,3 +1,12 @@
+## 2026-10-04 — V4.0 DUAL-PARTY FLASH GATE DECISION
+
+- [GEMINI] User-provided independent Gemini audit of exact V4.0 blob `b2a77fadeaa154412850d34c82b0bb78ef108bae`: **SAFE TO FLASH**.
+- [ASSISTANT] Independent reconciliation against the same exact V4.0 source agrees: **SAFE TO FLASH**.
+- [DUAL-PARTY] Assistant + Gemini now agree. The V4.0 source-level flash gate is OPEN for the controlled next validation stage.
+- [CLARIFICATION] SAFE TO FLASH here means safe to proceed to compile/BIN/controlled hardware validation; it does not claim compile success or physical validation success.
+- [VERIFIED] P0 300 ms post-selector stabilization, P1 trusted certificate-bundle TLS, 200 ms selector deadtime, rapid-rise safety latch, OTA safe outputs, anti-rollback, and GitHub raw BIN URL allowlist are present in the exact source.
+- [NO SOURCE CHANGE] This is a review/gate event only.
+
 ## 2026-10-04 — CURRENT V4.0 EXECUTION STATE
 
 - [CURRENT] Firmware advanced V3.9 → V4.0 after the approved full hardening execution.
