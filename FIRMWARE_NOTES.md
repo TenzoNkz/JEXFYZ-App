@@ -1,3 +1,10 @@
+## 2026-10-04 — ONLINE OTA INDICATOR BUG REPORT
+
+- [RUNTIME OBSERVATION] V4.0 Online OTA was tested and the expected OTA LED indicator blink was not visible.
+- [SOURCE OBSERVED] Online OTA has indicator state-machine calls for Wi-Fi success/download/finalize/result paths, so the hardware observation requires runtime/state interaction analysis rather than assuming the indicator code is absent.
+- [PENDING] User will provide Gemini's independent diagnosis/fix for the Online OTA indicator.
+- [RULE] Apply Gemini's supplied fix within the Online OTA scope only. Local OTA must remain unchanged unless a separately reproduced Local OTA defect occurs.
+
 ## 2026-10-04 — V4.0 ARITY/COMPILE FIX
 
 - [ERROR] ArduinoDroid reported `no matching function for call to 'batteryZoneFor'` at the live-zone calculation in `completeVoltageTransition()`.
