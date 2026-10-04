@@ -1,3 +1,10 @@
+## 2026-10-04 — V4.0 DUAL-PARTY REVIEW PASSED
+
+- Gemini independently audited exact V4.0 source blob `b2a77fadeaa154412850d34c82b0bb78ef108bae` and returned **SAFE TO FLASH**.
+- Assistant independently reconciled the exact source and returned **SAFE TO FLASH**.
+- Two-party firmware flash gate is therefore OPEN for the controlled compile/BIN/device-validation phase.
+- No compile, BIN publication, Firebase update, App Build, or physical flash was performed by this review event.
+
 ## 2026-10-04 — FIRMWARE V4.0 / P0+P1 HARDENING EXECUTION
 
 - Firmware advanced V3.9 → V4.0.
