@@ -7,7 +7,8 @@
 - App: 1.0.0+3
 - App main blob: f762f6d1cdd1351e57e7d93665ff2f5898769b42
 - App settings blob: f11235bab559b291928550e06984532581ddad6a
-- Current App workflow blob: 9cbb39a3bec997072b1866b01caeed756e6228eb
+- Current App workflow blob: 5c7faeb8fece972179a0607ffd2278bdfd174704
+- Current App trigger workflow blob: 04d2293725e97c3cbc67ce8b6f0d9c1230802afd
 - Latest verified downloadable App Build: #50
 - Build #53: App validation passed; artifact upload blocked by Actions storage quota.
 
@@ -32,6 +33,7 @@ Update Firmware → active GATT disconnect → live App telemetry stops → Onli
 - Firmware V4.5 compile/BIN/flash/physical OTA validation remains pending.
 
 ## CI DELIVERY FIX
+- Both App Build workflows were deleted and recreated on 2026-10-04.
 - One direct APK artifact only.
 - Stable artifact filename: JEXFYZ-release.apk.
 - Artifact overwrite enabled.
