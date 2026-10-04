@@ -272,3 +272,21 @@ This is static/source analysis only. ArduinoDroid + official Arduino-ESP32 Core 
 
 ### Documentation standard for next implementation pass
 The requested “keterangan di semua baris” is interpreted as every meaningful functional statement being explainable from nearby comments/contract metadata: purpose, authority, state mutation, timing, and safety effect. Blank lines, punctuation-only braces, and obvious syntax do not need redundant comments.
+
+## 2026-10-04 — GEMINI INDEPENDENT AUDIT RECONCILIATION
+
+[DISCUSSION ONLY]
+Received raw Gemini V3.8 independent firmware audit and reconciled it against the current source.
+
+### Accepted
+- OTA DOWNLOAD dispatcher starvation is source-proven.
+- NTC validity race, Peltier/voltage-transition interleaving, Wi-Fi retry settle gap, ADAPTIVE:OFF ACK contradiction, battery hysteresis gap, rapid-rise thermal gap, synchronous HTTP GET, TLS `setInsecure()`, and missing semantic anti-rollback are confirmed findings.
+- BLE/Wi-Fi handoff remains a source-level project-contract violation because OTA uses `stopBleRadio(false)`.
+
+### Corrected / not overclaimed
+- The 9V->12V restart mechanism is **not** source-proven as brownout/LDO failure; PWM/selector sequencing is a confirmed hazard and leading hypothesis only.
+- BLE disconnect `startAdvertising()` is a callback-context risk, not a proven interrupt crash.
+- Exact `esp_reset_reason()` availability in the user's ArduinoDroid/Core 3.3.7 setup remains to be compile-validated.
+
+### State
+No functional Firmware/App source changed during this review. Hardware validation remains blocked until the source hardening pass is completed.
