@@ -1,3 +1,12 @@
+## 2026-10-04 — ONLINE OTA GEMINI PATCH-ONLY PROTOCOL
+
+- [CURRENT ISSUE] Online OTA indicator is not visibly blinking during hardware test.
+- [USER PRIORITY] Online OTA should remain simple and reliable: Wi-Fi → JE X FYZ GitHub BIN → flash → success indicator → restart.
+- [GEMINI INPUT] User supplies the current .ino directly to Gemini; Gemini does not need repository access.
+- [GEMINI OUTPUT] Gemini must return minimal OLD → NEW patches only, never the complete .ino.
+- [EXECUTION] The next `@Thinking Eksekusi Full!` applies the Gemini patch against the exact current repository source, then audits affected Firmware behavior and commits it.
+- [PROTECTED] Local OTA is frozen/proven working on hardware and is out of scope for Online OTA fixes.
+
 ## 2026-10-04 — CURRENT FIRMWARE ANALYSIS SNAPSHOT / V4.0
 
 - Active source: `firmware/JEXFYZ-V4.0.ino`.
