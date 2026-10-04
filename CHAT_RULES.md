@@ -1,3 +1,10 @@
+## 2026-10-04 — EXECUTION FULL / V4.2 ONLINE OTA RETRY HARDENING
+
+- [EXECUTION] User authorized the supplied Gemini patch for the active V4.1 Firmware.
+- [RULE ENFORCED] Functional Firmware change advanced the version V4.1 → V4.2 and aligned the versioned source filename.
+- [RULE ENFORCED] No App Build was triggered because the change is Firmware-only.
+- [AUDIT] Affected Online OTA state was statically re-audited after implementation; no executable delay/timing while and no retry-side Wi-Fi Begin loop remain.
+
 ## 2026-10-04 — EXECUTION FULL REVALIDATION / V4.1 SIMPLE ONLINE OTA
 
 - [CURRENT] Repository main already contains the accepted V4.1 Online OTA execution; this revalidation is not a new functional firmware change and therefore does not advance the firmware version again.
