@@ -238,3 +238,37 @@ The source contains function-level `[DOC-CONTRACT]` blocks, but not literally ev
 
 ### Validation boundary
 This is static/source analysis only. ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compilation, BIN generation, Firebase promotion, and physical ESP32 electrical/thermal/radio/OTA tests remain unperformed.
+
+## 2026-10-04 — AUDIT FOLLOW-UP / ADDITIONAL FINDINGS + DOCUMENTATION CORRECTION
+
+### Additional source findings
+19. **P1 — Peltier can be commanded ON during an active voltage transition.**
+   - `setPeltierState()` does not reject or defer ON when `voltageTransition == true`.
+   - `requestVoltage()` has already forced both selectors OFF for the 200 ms deadtime.
+   - A subsequent `PELTIER:ON` can therefore start the 5 s PWM soft-start while the selector is physically OFF; the pending selector may then be enabled mid-ramp.
+   - This is an unsafe state interleaving and a plausible contributor to load-transient faults.
+   - Recommended design: block/defer Peltier ON until selector transition completes; do not restart soft-start merely because voltage changes.
+
+20. **P2 — `ADAPTIVE:OFF` reports ACK=OK even when the safe-5V handoff fails.**
+   - `setAdaptiveState(false, reason)` can return `VOLTAGE_FORCE_FAILED`.
+   - `handleCommand()` currently sends `sendAck("ADAPTIVE", true, reason)` unconditionally for `ADAPTIVE:OFF`.
+   - App-side state acknowledgement can therefore claim success when the requested safety transition was not accepted.
+   - Recommended correction: ACK success only when `reason == "OK"`; preserve the actual failure reason.
+
+21. **P2 — BLE disconnect callback performs stack API work from the BLE callback context.**
+   - `ServerCallbacks::onDisconnect()` calls `BLEDevice::startAdvertising()` directly.
+   - This should be treated as a callback-context safety/reentrancy risk unless the exact Core 3.3.7 BLE implementation guarantees that API is safe from that callback task.
+   - Safer architecture: callback sets a pending flag; main loop performs advertising restart.
+
+22. **P2 — One source function is currently dead/incomplete: `finishOnlineOtaFailureRecovery()`.**
+   - Static call-site scan found the function definition with no call site.
+   - It appears to be superseded by the `RECOVER` path inside `processOnlineOtaResultIndicator()`.
+   - This is not itself a runtime failure, but dead recovery code increases maintenance/refactor risk.
+
+### Corrections to previous audit notes
+- The previous statement that Local OTA has no session/hard timeout after a client connects was too strong. `BOOT_AP_HARD_LIMIT_MS` still bounds the AP window when no Local OTA upload is active. The remaining concern is that a connected client owns the safe Wi-Fi/OTA state until the hard limit or session ends.
+- The previous static line-count note of 5107 was stale. Current V3.8 source fetched from the repository is 5097 lines by the repository line ranges used in this audit.
+- The current source still contains two mixed-language comments: `FIX: Fase dihitung tiap 250ms...` and `FAST FAIL: Tangani password salah...` Therefore the older note claiming zero mixed-language source comments is obsolete.
+
+### Documentation standard for next implementation pass
+The requested “keterangan di semua baris” is interpreted as every meaningful functional statement being explainable from nearby comments/contract metadata: purpose, authority, state mutation, timing, and safety effect. Blank lines, punctuation-only braces, and obvious syntax do not need redundant comments.
