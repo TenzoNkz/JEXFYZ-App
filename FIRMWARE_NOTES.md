@@ -1,3 +1,11 @@
+## 2026-10-04 — FIRMWARE VERSION RULE + GEMINI PROMPT FILE RETIRED
+
+- [WORKFLOW] Dedicated `GEMINI_PROMPT_ONLINE_OTA.md` has been removed from the repository. Gemini prompts are generated from current repository/source context in the active chat.
+- [RULE] Every firmware update that produces/can produce a new firmware image MUST increment `FW_VERSION`, even for the smallest source change (including a one-character change).
+- [CURRENT] No firmware source was changed by this policy update; active firmware remains V4.0.
+- [LOCAL OTA] Protected/golden path remains unchanged.
+
+
 ## 2026-10-04 — ROUND 3 DECISIVE GEMINI WIFI ADJUDICATION
 
 - New Gemini prompt added for decisive adjudication after prior overconfident claims were rejected.
