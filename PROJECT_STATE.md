@@ -55,6 +55,15 @@
 ### Final continuity rule
 For every future JE X FYZ action, the assistant must first read the complete current memory stack and then inspect the source/workflow. After the action, memory must be synchronized automatically. No user reminder is required.
 
+## 2026-10-04 — NEW CHAT PREFLIGHT VERIFIED
+
+- Mandatory memory preflight completed: README.md, PROJECT_STATE.md, CHAT_RULES.md, APP_NOTES.md, FIRMWARE_NOTES.md, BUILD_NOTES.md, CHANGELOG.md, HANDOVER.md, and firmware/FIRMWARE_ANALYSIS.md were re-read before current-source inspection.
+- Current App repository HEAD at preflight: `fa25b80f1c85557cb767c7c02af310b91ca690ad`.
+- Current functional App source is unchanged from the source revision used by verified App Build #50; the 82 commits after Build #50 are documentation/continuity and Firmware-source changes only.
+- Active App build trigger was verified from `.github/workflows/app-build-trigger.yml`: issue title `JE X FYZ — BUILD APP TRIGGER` + body token `JEXFYZ_BUILD_TRIGGER_V1`.
+- A stale `workflow_dispatch` statement in APP_NOTES.md was corrected to match the active issue-trigger workflow.
+- No functional App/Firmware source was changed by this preflight; no App Build was triggered.
+
 # JE X FYZ — PROJECT STATE
 
 > **Authoritative current-state snapshot.**
