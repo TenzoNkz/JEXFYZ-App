@@ -40,6 +40,13 @@
 - Analysis document commit: `e2ab50edeb428e95ce21a9b5a54e169d904ade84`.
 - Physical compilation, BIN generation, Firebase promotion, dedicated binary repository update, and hardware validation remain unperformed.
 
+## 2026-10-04 — DISCUSSION / HARDWARE TEST STAGE PAUSED
+
+- User confirmed that the next phase is real hardware/device validation.
+- No firmware source change was made in this discussion.
+- When results return, capture exact ESP32 board/binary/version, expected vs observed behavior, evidence, pass/fail, and remaining electrical/thermal/BLE/OTA risks.
+- Do not infer successful firmware compilation, BIN publication, or physical safety from source/static audit alone.
+
 # JE X FYZ — FIRMWARE NOTES
 
 ## AUTHORITATIVE MEMORY CORE — V3.7 — 2026-10-04
