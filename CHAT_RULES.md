@@ -61,4 +61,6 @@
 - Build #53: [VERIFIED] CI gates through production signing; [BLOCKED] artifact creation by Actions quota.
 - Local OTA: [CONFIRMED] user-confirmed working on V4.4 before V4.5 promotion; Local OTA remains protected.
 - Online OTA: [CONFIRMED] V3.2-style path retained; V4.5 physical validation still pending.
-- App Build workflows: [COMMITTED] deleted and recreated; current blobs 5c7faeb8fece972179a0607ffd2278bdfd174704 and 04d2293725e97c3cbc67ce8b6f0d9c1230802afd.
+- Current App Build workflow: [COMMITTED] .github/workflows/jexfyz-build.yml (blob 33ae11a17ec9353e4693bed723018e6d8ea20b8e).
+- Legacy app-build.yml and app-build-trigger.yml are deleted.
+- New workflow run #1: [VERIFIED] all build gates through signing; [BLOCKED] artifact creation by Actions quota.
