@@ -11,16 +11,16 @@
 - Production signing certificate SHA256: dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0
 
 ## CURRENT DELIVERY WORKFLOW
-- [COMMITTED] .github/workflows/app-build.yml was deleted and recreated on 2026-10-04.
-- [COMMITTED] .github/workflows/app-build-trigger.yml was deleted and recreated on 2026-10-04.
-- [VERIFIED] Release workflow blob: 5c7faeb8fece972179a0607ffd2278bdfd174704.
-- [VERIFIED] Trigger workflow blob: 04d2293725e97c3cbc67ce8b6f0d9c1230802afd.
+- [COMMITTED] Legacy `.github/workflows/app-build.yml` and `.github/workflows/app-build-trigger.yml` were deleted.
+- [COMMITTED] New single workflow: `.github/workflows/jexfyz-build.yml`.
+- [VERIFIED] Current workflow blob: 33ae11a17ec9353e4693bed723018e6d8ea20b8e.
 - [COMMITTED] Release workflow has permissions contents: read / actions: write.
 - [COMMITTED] Every explicit build first deletes repository Actions artifacts, repeats page 1 until the list is empty, and asserts zero remain.
 - [COMMITTED] Release publication is exactly one direct APK artifact named JEXFYZ-release.apk, overwrite=true, retention-days=7.
 - [COMMITTED] Dart symbols are still generated for obfuscation diagnostics but are not uploaded as a second artifact.
 - [VERIFIED] Trigger workflow remains issue-based, owner/title/token gated, and reusable.
-- [UNVERIFIED] A real post-reset successful artifact upload has not yet been observed.
+- [VERIFIED] New workflow run #1 cleanup step completed and all build/signing gates passed.
+- [BLOCKED] New workflow run #1 artifact upload failed because Actions artifact storage quota remains exhausted.
 
 ## BUILD HISTORY
 ### #50 — latest verified downloadable APK
@@ -56,6 +56,13 @@
 - [BLOCKED] Upload failed: Failed to CreateArtifact: Artifact storage quota has been hit.
 - [VERIFIED] No APK or symbols artifact exists for #53.
 - [REJECTED] #53 is not a successful downloadable release.
+
+## NEW WORKFLOW RUN #1 — 2026-10-04
+- [BUILT] Run: 37199918015 (workflow run number 1 for `jexfyz-build.yml`).
+- [VERIFIED] Source commit: 7332026374abdfec2c46efab84c9085a9e200283.
+- [VERIFIED] Cleanup, toolchain, audit, dependencies, analysis, tests, release APK compilation, production signing, and filename preparation all passed.
+- [BLOCKED] Artifact upload failed: Actions artifact storage quota has been hit; no artifact was created.
+- [VERIFIED] Run artifact list is empty after failure.
 
 ## LATEST VERIFIED APK
 - Build #50 is the latest verified downloadable APK.
