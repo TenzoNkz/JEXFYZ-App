@@ -598,3 +598,15 @@ For any hardware/control mismatch, verify in order:
 - [PASS / RETAINED] Previously hardened V3.9 items remain accepted: OTA download dispatcher, full BLE radio teardown for Wi-Fi handoff, main-loop BLE advertising recovery, semantic firmware-version comparison, retry radio settle, rapid Hotside rise latch, NTC final gate, battery hysteresis, and local OTA image magic-byte validation.
 - [BLOCKED] No compile, BIN generation, Firebase promotion, flash, or physical electrical/thermal validation was performed as part of this audit.
 - [NEXT ACTION] Do not flash V3.9. First patch the P0 rail-stabilization state machine and P1 OTA certificate validation; then re-audit the affected source with the same two-party gate before any firmware update.
+
+## 2026-10-04 — V3.9 DUAL-PARTY FLASH GATE / CHAT-LIMIT TRANSFER
+
+- [CONFIRMED] User requires both assistant and Gemini to agree before a V3.9 firmware update.
+- [DECISION] V3.9 is NOT SAFE TO FLASH; update gate CLOSED.
+- [P0] Post-selector rail stabilization must be implemented before the next flash gate.
+- [P1] Online OTA must use validated server/CA authentication instead of setInsecure().
+- [P2] BLE critical ACK/OTA-state traffic needs priority protection if queue pressure is retained.
+- [IMPORTANT] Gemini's 300–500 ms suggestion is a candidate, not a universal constant.
+- [IMPORTANT] The historical 9V -> 12V reset is not a proven brownout root cause without hardware evidence.
+- [BLOCKED] No V3.9 compile/BIN/Firebase/flash/physical validation.
+- [TRANSFER] This chat-limit event is persisted in CHAT_TRANSFER.md; no functional App/Firmware source changed.
