@@ -3,14 +3,14 @@
 ## 1. TRANSFER METADATA
 - [VERIFIED] Repository: TenzoNkz/JEXFYZ-App
 - [VERIFIED] Branch: main
-- [VERIFIED] Current HEAD at transfer: 9875cbe8e10f52572341e71cb1427f6f7bdc0e13
+- [VERIFIED] Current HEAD: 8c77dc4c409c5e5ca2740ed36cf087d5a22e9510
 - [VERIFIED] Transfer file: CHAT_TRANSFER.md
-- [VERIFIED] Transfer purpose: preserve the complete accessible JE X FYZ / JE Cooler project state before chat context limit.
+- [VERIFIED] Transfer purpose: preserve the current JE X FYZ / JE Cooler project state and Build App result.
 - [CONFIRMED] This transfer does not authorize a functional App/Firmware change, release, or App Build by itself.
 - [COMMITTED] This snapshot must be the current transfer evidence; source/workflow files remain authoritative.
 
 ## 2. CURRENT TASK
-- [CONFIRMED] Immediate task is chat-limit persistence and state handoff.
+- [CONFIRMED] Current task was explicit Build App execution using a new single workflow.
 - [CHAT-ONLY] Earlier in this chat the user requested deletion/recreation of the two App Build workflows and artifact cleanup, then explicitly switched to the chat-limit recap procedure.
 - [IMPLEMENTED][COMMITTED] The repository already contains the recreated workflows and the artifact-cleanup logic before this snapshot.
 - [OPEN QUESTION] Whether GitHub Actions storage usage has fully recalculated after the cleanup-capable workflow reset cannot be established from source alone.
@@ -26,8 +26,8 @@
 - [VERIFIED] Issue title: JE X FYZ — BUILD APP TRIGGER.
 - [VERIFIED] Required body token: JEXFYZ_BUILD_TRIGGER_V1.
 - [VERIFIED] Push/PR do not trigger the release workflow.
-- [VERIFIED] Reusable release workflow: .github/workflows/app-build.yml.
-- [VERIFIED] Trigger workflow: .github/workflows/app-build-trigger.yml.
+- [VERIFIED] Single current release workflow: .github/workflows/jexfyz-build.yml.
+- [OBSOLETE] Former app-build.yml and app-build-trigger.yml no longer exist.
 
 ## 4. USER REQUIREMENTS
 ### Build / CI
@@ -140,8 +140,7 @@
 - [VERIFIED] App architecture/security audit rejects legacy FirebaseDatabase references and retains Firebase App Check.
 
 ### CI
-- [VERIFIED] Release workflow blob: 5c7faeb8fece972179a0607ffd2278bdfd174704.
-- [VERIFIED] Trigger workflow blob: 04d2293725e97c3cbc67ce8b6f0d9c1230802afd.
+- [VERIFIED] Current release workflow blob: 33ae11a17ec9353e4693bed723018e6d8ea20b8e.
 - [IMPLEMENTED][COMMITTED] Both App Build workflows were deleted and recreated on 2026-10-04.
 - [IMPLEMENTED][COMMITTED] Release workflow clears the repository Actions artifact list before build, repeating page 1 until empty, then requires remaining count = 0.
 - [IMPLEMENTED][COMMITTED] Release workflow publishes one direct APK artifact: JEXFYZ-release.apk, overwrite=true, retention-days=7.
@@ -187,6 +186,13 @@
 - [COMMITTED] 9875cbe8e10f52572341e71cb1427f6f7bdc0e13 — latest pre-transfer docs state.
 
 ## 12. BUILD STATE
+### New single-workflow Build run #1
+- [BUILT] Run: 37199918015.
+- [VERIFIED] Source commit: 7332026374abdfec2c46efab84c9085a9e200283.
+- [VERIFIED] Cleanup, audit, dependencies, analysis, tests, release APK compilation, signing, and filename preparation passed.
+- [BLOCKED] Artifact creation failed because Actions artifact storage quota was exhausted.
+- [VERIFIED] No artifact was created for this run.
+
 ### Build #50
 - [BUILT][VERIFIED] Run: 36996987220.
 - [VERIFIED] Build source commit: bf01595253eb5a1912471c4aee57c4eed4421f0f.
@@ -274,8 +280,7 @@
 - [CHAT-ONLY] This transfer prompt itself is not permission to build or release.
 
 ## 21. EXACT NEXT ACTION
-- [CONFIRMED] First, leave this persisted state intact and start any new chat by mandatory preflight/reconciliation.
-- [NEXT ACTION] On a future explicit @Thinking Build App! or @Thinking Eksekusi & Build App!, use the recreated manual trigger and verify that the artifact cleanup step empties the Actions artifact list before publishing JEXFYZ-release.apk.
+- [NEXT ACTION] After GitHub Actions storage quota recalculates, on the next explicit @Thinking Build App! use `.github/workflows/jexfyz-build.yml` and verify artifact cleanup plus one APK publication.
 - [NEXT ACTION] Separately compile/flash Firmware V4.5 and perform physical Online OTA BLE disconnect/reconnect plus Local OTA Golden Path validation.
 
 ## 22. REQUIRED FIRST ACTION IN NEW CHAT
