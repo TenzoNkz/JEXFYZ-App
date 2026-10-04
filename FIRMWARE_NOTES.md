@@ -1,3 +1,13 @@
+## 2026-10-04 — GEMINI WIFI FORENSIC RESULT RECONCILIATION
+
+- [GEMINI RESULT] Gemini identified two candidate Online OTA Wi-Fi patches: PASS whitespace normalization and a relaxed Wi-Fi retry state using WiFi.setAutoReconnect(true) plus timeout-only retries.
+- [RECONCILIATION] PASS handling currently stores command payload verbatim. However, the absence of trim() is NOT by itself a proven bug because whitespace can be part of a legitimate Wi-Fi password. Apply trim() only if the BLE protocol contract explicitly treats surrounding whitespace as transport formatting.
+- [RECONCILIATION] Gemini's claim that setAutoReconnect(false) "absolutely" causes WPA3/Mixed-mode negotiation failure and that WL_CONNECT_FAILED occurs on a fixed ~10 ms path is NOT proven from the source. setAutoReconnect(false) is used only to prevent driver-level reconnect behavior; WL_CONNECT_FAILED may legitimately appear before the 15 s timeout.
+- [CANDIDATE PATCH] Relaxing fast-fail can improve tolerance/observability for transient hotspot connection failures and is a reasonable candidate, but it is not yet proven as the root cause. The proposed soft retry should also be audited for disconnect/rebegin sequencing.
+- [OBSERVATION] Latest hardware evidence remains: ESP32-C3 does not reach WL_CONNECTED when tested with an HP hotspot; therefore GitHub/HTTPS is not demonstrated as the failure stage.
+- [STATUS] No functional source change authorized/applied from this Gemini result. Local OTA remains protected/frozen.
+- [NEXT GATE] Require a corrected second-opinion review or explicit Execution Full before any firmware patch.
+
 ## 2026-10-04 — GEMINI FULL PRE-FLASH FORENSIC AUDIT
 
 - [GEMINI VERDICT] Exact V4.0 source blob `0566105383a889912e5e756b0b9f265e5fcf0264`: **SAFE TO FLASH LOCAL OTA** source-level.
