@@ -1,3 +1,10 @@
+## 2026-10-04 — FIRMWARE V3.7 ANALYSIS DOCUMENT / APP IMPACT
+
+- Added the repository-level `firmware/FIRMWARE_ANALYSIS.md` map for V3.7 architecture and safety behavior.
+- No Flutter/App source or App release configuration changed.
+- The App/BLE cross-layer contract remains unchanged.
+- No App Build was triggered by the analysis-document addition.
+
 # JE X FYZ — APP NOTES
 
 ## AUTHORITATIVE MEMORY CORE — CROSS-LAYER CONTRACT — 2026-10-04
