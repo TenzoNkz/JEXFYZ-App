@@ -15,9 +15,8 @@ on:
       - reopened
 
 permissions:
-  # The release workflow cleans existing Actions artifacts before publishing the next APK.
-  contents: read
-  actions: write
+  # APK delivery is handled by a GitHub Release asset, not an Actions artifact.
+  contents: write
 
 concurrency:
   group: jexfyz-cooler-build
@@ -42,46 +41,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      # Start every release build from an empty Actions-artifact list.
-      - name: Clear all workflow artifacts
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          while :; do
-            ids="$(curl -fsSL \
-              -H "Accept: application/vnd.github+json" \
-              -H "Authorization: Bearer $GH_TOKEN" \
-              -H "X-GitHub-Api-Version: 2022-11-28" \
-              "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts?per_page=100&page=1" \
-              | jq -r '.artifacts[].id')"
-
-            [ -z "$ids" ] && break
-
-            while IFS= read -r artifact_id; do
-              [ -z "$artifact_id" ] && continue
-              echo "Deleting workflow artifact $artifact_id"
-              curl -fsSL -X DELETE \
-                -H "Accept: application/vnd.github+json" \
-                -H "Authorization: Bearer $GH_TOKEN" \
-                -H "X-GitHub-Api-Version: 2022-11-28" \
-                "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts/$artifact_id" \
-                >/dev/null
-            done <<< "$ids"
-          done
-
-          remaining="$(curl -fsSL \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer $GH_TOKEN" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts?per_page=1&page=1" \
-            | jq '.artifacts | length')"
-
-          test "$remaining" -eq 0
-          echo "Actions-artifact list is empty."
-
-      # Tested Android release toolchain.
+      # APK delivery intentionally avoids Actions-artifact storage quota.\n\n      # Tested Android release toolchain.
       - name: Set up Java 17
         uses: actions/setup-java@v6
         with:
@@ -315,13 +275,47 @@ jobs:
           test -s "build/app/outputs/flutter-apk/JEXFYZ-release.apk"
           ls -lh "build/app/outputs/flutter-apk/JEXFYZ-release.apk"
 
-      # Publish exactly one direct release APK and overwrite the previous delivery.
-      - name: Upload APK only
-        uses: actions/upload-artifact@v7
-        with:
-          name: JEXFYZ-release.apk
-          path: build/app/outputs/flutter-apk/JEXFYZ-release.apk
-          archive: false
-          if-no-files-found: error
-          overwrite: true
-          retention-days: 7
+      # Publish exactly one direct APK as a GitHub Release asset.
+      # This deliberately avoids Actions-artifact storage quota and keeps the
+      # delivery filename stable across builds.
+      - name: Publish APK to GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          APK="build/app/outputs/flutter-apk/JEXFYZ-release.apk"
+          RELEASE_TAG="jexfyz-latest"
+          RELEASE_TITLE="JE X FYZ — Latest App"
+          APP_VERSION="$(sed -n 's/^version: //p' pubspec.yaml | head -n 1)"
+
+          test -s "$APK"
+          test -n "$APP_VERSION"
+
+          RELEASE_NOTES="Automated JE X FYZ App release.
+          App version: $APP_VERSION
+          Source commit: $GITHUB_SHA
+          Delivery file: JEXFYZ-release.apk"
+
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "Updating existing GitHub Release $RELEASE_TAG"
+            gh release upload "$RELEASE_TAG" "$APK" --clobber
+            gh release edit "$RELEASE_TAG" \
+              --title "$RELEASE_TITLE" \
+              --notes "$RELEASE_NOTES"
+          else
+            echo "Creating GitHub Release $RELEASE_TAG"
+            gh release create "$RELEASE_TAG" "$APK" \
+              --target "$GITHUB_SHA" \
+              --title "$RELEASE_TITLE" \
+              --notes "$RELEASE_NOTES" \
+              --latest
+          fi
+
+          gh release view "$RELEASE_TAG" \
+            --json assets \
+            --jq '.assets[] | select(.name == "JEXFYZ-release.apk") | .name' \
+            | grep -Fx "JEXFYZ-release.apk"
+
+          echo "GitHub Release delivery verified: $RELEASE_TAG / JEXFYZ-release.apk"
