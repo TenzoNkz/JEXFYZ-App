@@ -1,21 +1,21 @@
 # JE X FYZ — CURRENT FIRMWARE NOTES
 
 ## ACTIVE
-- Version: V4.4
-- Source: firmware/JEXFYZ-V4.4.ino
-- Blob: 18f74d5c87b85886b6d3d44fddd4938f4db7019c
+- Version: V4.5
+- Source: firmware/JEXFYZ-V4.5.ino
+- Blob: daef871d910f3f1bc4f2d1bdc44e0d19f6e292dc
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
 ## OTA CONTRACT
 Local OTA:
 - Golden/Protected.
-- User-confirmed working on V4.3.
-- Do not change for unrelated Online OTA issues.
+- V4.4 OTA was user-confirmed successful before the V4.5 source promotion.
+- Do not modify Local OTA for unrelated Online OTA work.
 
 Online OTA:
 - V3.2-style bounded Wi-Fi retry path.
-- No yellow download-progress layer.
+- No yellow progress layer.
 - Wi-Fi success BLUE.
 - GitHub connection GREEN.
 - Download complete BLUE.
@@ -24,27 +24,25 @@ Online OTA:
 - Any valid different version is eligible; equal version is Up to date.
 - Download processing remains cooperative.
 
-## V4.4 CHANGE
-V4.3 only stopped BLE advertising during Online OTA and did not explicitly close an active GATT connection.
-
-V4.4 adds:
-bleServer->disconnect(bleServer->getConnId())
-
-This is executed before Wi-Fi takes the single ESP32-C3 radio.
-
-## RUNTIME STATUS
-- V4.3 Local OTA: PASS — user confirmed.
-- V4.3 Online OTA: PASS — user confirmed.
-- V4.4 GATT disconnect behavior: pending physical verification.
+## V4.5 CHANGE
+- Fixes GATT disconnect ordering by capturing the active connection ID before clearing the logical BLE-connected flag, then calling bleServer->disconnect(activeConnId).
+- Emits OTA_UP_TO_DATE immediately as a one-shot LAST_OTA_RESULT event.
+- Gates rapid Hotside-rise protection on Peltier being ON to avoid false thermal latching while Peltier is already OFF.
+- Removes dead adaptive-resume state, unused legacy version comparison, unused timing constants/include, and generated [DOC-CONTRACT] comment noise.
+- Keeps BLE/Wi-Fi radio ownership mutually exclusive.
 
 ## STATIC AUDIT
-- 5223 lines
-- balanced braces/parentheses/brackets
-- executable delay() = 0
-- timing while() = 0
-- yellow 0xFFFF00 = 0
-- stale Online OTA progress refs = 0
-- explicit GATT disconnect call = 1
+- 4648 lines.
+- Firmware version/file alignment: V4.5 / JEXFYZ-V4.5.ino.
+- Only one active versioned .ino exists under firmware/.
+- executable delay() = 0.
+- timing while() = 0.
+- yellow 0xFFFF00 = 0.
+- stale Online OTA progress refs = 0.
+- explicit BLE GATT disconnect = 1.
+- active GATT state is captured before bleClientConnected is cleared.
 
-## NEXT VALIDATION
-Compile → BIN → flash → Online OTA → confirm BLE disconnect + telemetry stop → confirm restart/reconnect/sync → verify Local OTA.
+## VALIDATION BOUNDARY
+- V4.4 OTA: user-confirmed PASS for all OTA paths.
+- V4.5 source/static audit: PASS.
+- V4.5 compile/BIN/flash/physical validation: pending.
