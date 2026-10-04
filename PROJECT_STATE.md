@@ -1,3 +1,11 @@
+## 2026-10-04 — ONLINE OTA DESIGN PRIORITY / SIMPLE GITHUB FLOW
+
+- [USER REQUIREMENT] Online OTA does not need certificate/CA security hardening; priority is reliable GitHub connection and successful firmware update.
+- [ONLINE OTA] Keep the binary URL tied to the JE X FYZ firmware repository. TLS verification may use the simple previous-style `WiFiClientSecure` + `setInsecure()` approach for compatibility/reliability, if supplied by the approved fix.
+- [ONLINE OTA FLOW] Desired minimum flow: BLE OFF → Wi-Fi connect → GitHub URL → download `.bin` → OTA flash → success indicator → restart; failure → red indicator/recovery.
+- [PROTECTED] Local OTA remains frozen because it is confirmed working successfully on hardware. Do not modify Local OTA while fixing Online OTA.
+- [NO SOURCE CHANGE] This discussion changes the Online OTA design priority documentation only.
+
 ## 2026-10-04 — ONLINE OTA INDICATOR RUNTIME BUG REPORTED
 
 - [USER VALIDATION] During hardware test of V4.0 Online OTA, OTA indicator LED blinking was not visible at all.
