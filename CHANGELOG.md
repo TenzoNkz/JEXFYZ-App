@@ -1,3 +1,9 @@
+## 2026-10-04 — V4.0 COMPILE FIX
+
+- Fixed ArduinoDroid compile blocker: `batteryZoneFor(batteryC)` now passes `currentVoltage` to the required two-argument function signature.
+- New V4.0 source blob: `415346ece09f4af33f907b2077140ccfc45c357b`.
+- Prior dual-party SAFE verdict is tied to the previous blob and must be repeated for this new source before flash.
+
 ## 2026-10-04 — V4.0 DUAL-PARTY REVIEW PASSED
 
 - Gemini independently audited exact V4.0 source blob `b2a77fadeaa154412850d34c82b0bb78ef108bae` and returned **SAFE TO FLASH**.
