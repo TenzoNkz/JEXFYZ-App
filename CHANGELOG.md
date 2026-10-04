@@ -1,3 +1,10 @@
+## RELEASE DELIVERY RESTORE — 2026-10-05
+- Converted the restored reusable App Build engine from Actions-artifact delivery back to direct GitHub Release delivery.
+- Engine now requires `contents: write`, publishes exactly one `JEXFYZ-release.apk` under `jexfyz-latest`, and replaces the existing asset with `--clobber`.
+- Trigger workflow was raised to `contents: write` so the reusable workflow can publish the Release.
+- No App/Firmware runtime source was changed.
+- This execution includes an explicit Build App run to verify the new Release delivery path.
+
 ## APP BUILD WORKFLOW RESTORE UNDER NEW NAMES — 2026-10-05
 - Restored the proven two-workflow App Build architecture without reusing the legacy filenames.
 - Manual trigger: `.github/workflows/jexfyz-app-build-trigger.yml`.
