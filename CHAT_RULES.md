@@ -340,6 +340,36 @@ The handover is documentation/continuity work only unless the user separately au
 - Prompt B is mandatory for separate Build App subchats as well; a recap does not replace the Build App memory/source/workflow preflight.
 - This execution changed documentation/process only. No functional App or Firmware source was changed and no Build App was triggered.
 
+### 9A. Prompt A — CHAT-LIMIT RECAP
+
+When the platform shows or is reasonably close to showing a chat/context-limit warning, the old chat must use the official **PROMPT A — CHAT-LIMIT RECAP** from README.md/HANDOVER.md.
+
+Prompt A must:
+- reconstruct the whole available chat, not only the last exchange;
+- preserve requirements, decisions, source changes, commits, builds, tests, bugs, root causes, hypotheses, Gemini results, dead ends, risks, open questions, and exact next action;
+- classify facts as VERIFIED, CONFIRMED, USER REQUIREMENT, IMPLEMENTED, COMMITTED, BUILT, TESTED, UNVERIFIED, HYPOTHESIS, OBSOLETE, REJECTED, BLOCKED, or OPEN QUESTION as appropriate;
+- distinguish persistent repository memory from chat-only information;
+- never invent missing evidence;
+- produce exactly one complete JE X FYZ CHAT RECAP PACKAGE.
+
+Prompt A is context export only. It does not authorize implementation or build.
+
+### 9B. Prompt B — NEW CHAT TRANSFER
+
+The new chat must use the official **PROMPT B — NEW CHAT TRANSFER** with the complete Prompt A package.
+
+Prompt B must:
+- perform the full mandatory memory preflight before acting;
+- inspect the current source/workflow;
+- compare the recap against current repository truth;
+- reconcile mismatches rather than trusting the recap blindly;
+- treat the recap as transfer evidence, not source of truth;
+- establish the current project baseline before continuing;
+- preserve obsolete/history records without allowing them to override current truth;
+- apply the same rules to separate Build App subchats.
+
+Prompt B does not permit Build App by itself. Build permission still follows the frozen workflow commands and build policy.
+
 ## 10. MEMORY INTEGRITY / PROFESSIONAL REASONING
 
 - Treat CHAT_RULES.md, APP_NOTES.md, and FIRMWARE_NOTES.md as the project's persistent working memory.
