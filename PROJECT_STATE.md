@@ -597,3 +597,11 @@ The requested “keterangan di semua baris” is interpreted as every meaningful
 - [FROZEN] 5s Peltier soft-start remains OFF -> ON only; voltage changes do not restart soft-start.
 - No functional source change has been made in response to the Gemini review.
 - Exact next action: **`@Thinking Eksekusi Full!` for the agreed V3.8 hardening pass**, followed by separate ArduinoDroid/Core 3.3.7 compile and hardware validation.
+
+## 2026-10-04 — CURRENT STATE AFTER V3.9 EXECUTION FULL
+- [CURRENT] Firmware V3.9, active source `firmware/JEXFYZ-V3.9.ino`, blob `f123a46d84d1e2ec0e67419a6577388fd3c8645e`.
+- [IMPLEMENTED] OTA DOWNLOAD dispatcher repair; full BLE deinit before Online OTA Wi-Fi; Wi-Fi retry settle; Peltier PWM suppression during selector deadtime; Peltier transition interlock; final NTC selector gate; rapid-rise latch; Battery hysteresis; ADAPTIVE:OFF ACK fix; BLE callback-safe advertising recovery; anti-rollback; reset diagnostics; Local OTA magic validation; BLE TX drop diagnostics.
+- [PRESERVE] Peltier 5 s soft-start only on logical OFF -> ON. Voltage changes do not restart it.
+- [OPEN] Online OTA still uses `setInsecure()`; BLE cryptographic authentication is not implemented; Online OTA HTTP GET remains synchronous; post-boot rollback health policy is absent.
+- [VALIDATION PENDING] ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile, BIN, Firebase promotion, physical validation.
+- [NO BUILD] App source/configuration unchanged; Build #50 remains baseline.
