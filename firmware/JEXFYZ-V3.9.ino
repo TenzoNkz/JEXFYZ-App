@@ -804,7 +804,7 @@ static void loadSettings() {
   if (rgbBrightness > 100) rgbBrightness = 100;
 
   rgbColor = prefs.getUInt("rgbColor", 0xFFFFFF);
-  // Remove retired per-voltage user color keys so old configuration cannot influence V3.8 behavior.
+  // Remove retired per-voltage user color keys so old configuration cannot influence V3.9 behavior.
   prefs.remove("color5V");
   prefs.remove("color9V");
   prefs.remove("color12V");
