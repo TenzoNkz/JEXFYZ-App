@@ -397,3 +397,13 @@ For Build App, the first action must be the full memory preflight and exact-sour
 - [NO BUILD] No App Build was triggered.
 - [UNVERIFIED] V3.8 ArduinoDroid/Core 3.3.7 compilation, BIN generation/publication, Firebase promotion, and physical hardware validation remain pending.
 - [NEXT ACTION] Compile/flash V3.8 and retest 9V → 12V with Peltier ON, then compare against the prior restart fault.
+
+## 2026-10-04 — EXECUTION FULL / V3.8 PERSISTENCE VERIFICATION
+
+- [COMMITTED] Current repository HEAD after V3.8 implementation and memory synchronization: `dbe9ac209ad0b9ca1f68ae50d65f8e7838245d22`.
+- [COMMITTED] Active Firmware V3.8 source blob: `2fbff3656bc037846124806fb390022f85146845`.
+- [COMMITTED] V3.8 source was added in commit `1b9f5bcda5bd01bc01acc32e26e1c1b7884a102d`; V3.7 source was retired in commit `55f366b02a93623be10471077c4efc02a30f1743`.
+- [VERIFIED] Static audit: one `FW_VERSION = V3.8`; zero remaining V3.7 references in active source; zero upward-voltage soft-start triggers; OFF→ON soft-start trigger preserved; 549/549 braces; 2039/2039 parentheses; zero executable `delay()` (the only textual match is a comment); zero timing while waits.
+- [VERIFIED] App functional source remains unchanged; `lib/main.dart` blob remains `7a0003ff7aa9691468139714ec18d364e5896b38`.
+- [NO BUILD] No App Build, firmware compile, BIN publication, Firebase promotion, or physical validation was performed.
+- [NEXT ACTION] Compile/flash V3.8 and run the hardware 9V → 12V regression test, especially with Peltier ON.
