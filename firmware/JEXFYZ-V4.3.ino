@@ -436,7 +436,6 @@ uint32_t onlineResultIndicatorStartedAt = 0;
 uint32_t onlineResultIndicatorColor = 0;
 OnlineOtaIndicatorNext onlineResultIndicatorNext = OnlineOtaIndicatorNext::NONE;
 uint32_t onlineResultIndicatorLastPhase = 0xFFFFFFFFUL;
-bool onlineOtaDownloadCompletePending = false;
 size_t onlineOtaDownloadBytesWritten = 0;
 uint32_t onlineOtaDownloadLastDataAt = 0;
 
@@ -3542,10 +3541,6 @@ static void startOnlineOta() {
 static void processOnlineOta() {
   if (onlineResultIndicatorActive) {
     processOnlineOtaResultIndicator();
-    return;
-  }
-
-  if (processOnlineOtaProgressIndicator()) {
     return;
   }
 
