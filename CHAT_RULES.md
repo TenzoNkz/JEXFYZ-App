@@ -1,3 +1,15 @@
+## 2026-10-04 — EXECUTION FULL / PERMANENT MEMORY ARCHITECTURE
+
+- Added `README.md` as the mandatory project operating manual and new-chat entry point.
+- Added `PROJECT_STATE.md` as the current-state snapshot.
+- Added `BUILD_NOTES.md` as Build App continuity/artifact memory.
+- Added `CHANGELOG.md` as milestone/version history.
+- Added `HANDOVER.md` as a portable copy-ready continuation prompt.
+- Formalized mandatory memory preflight for every project action, including separate Build App subchats.
+- Formalized automatic memory synchronization after every meaningful Discussion, Execution, Build, Gemini review, compile/test attempt, runtime observation, or rules change.
+- Updated Discussion semantics: `@Thinking Diskusi!` remains functional-source/build/release read-only, but memory-only documentation may be synchronized automatically so context is not lost.
+- Build App is explicitly treated as a complex engineering workflow; successful builds are persistent memory checkpoints containing source SHA, run/artifact evidence, all included changes, gates, and remaining validation boundaries.
+- Chat-limit handling now requires memory synchronization plus a refreshable `PROJECT_STATE.md` and `HANDOVER.md` before continuity is handed to a new chat.
 ## 2026-10-04 — PROCESS RULE / MANDATORY MEMORY PREFLIGHT + BUILD-SUBCHAT CONTINUITY
 
 - Before **any** JE X FYZ project action, including reading/analyzing source, discussion, execution, audit, Build App, Gemini review, compile/build attempt, or test-result interpretation, the assistant must re-read the current project memory before acting.
@@ -394,3 +406,22 @@ For any hardware/control mismatch, verify in order:
 - Do not copy, synchronize, or commit firmware `.ino` source or `FIRMWARE_NOTES.md` into the dedicated binary repository.
 - Published `JEXFYZ.cpp.bin` remains the distribution artifact. A source version bump is independent from BIN promotion.
 - Any accidental repository-boundary change must be reverted and recorded in the appropriate notes.
+
+## 21. CANONICAL MEMORY FILE ARCHITECTURE
+
+- `README.md` = project operating manual + copy-ready continuation prompt.
+- `PROJECT_STATE.md` = current truth/current snapshot.
+- `CHAT_RULES.md` = project process and workflow rules.
+- `APP_NOTES.md` = App/cross-layer engineering contract and history.
+- `FIRMWARE_NOTES.md` = Firmware engineering contract and history.
+- `BUILD_NOTES.md` = Build App checkpoints and artifact continuity.
+- `CHANGELOG.md` = milestone/version history.
+- `HANDOVER.md` = portable continuation prompt for chat transfer.
+- `firmware/FIRMWARE_ANALYSIS.md` = Firmware architecture/safety analysis.
+
+## 22. MEMORY-FIRST PROJECT GATE
+
+- The first safe action in every new or existing project chat is to rebuild context from the repository memory.
+- A separate Build App chat is not exempt: it must perform the same memory preflight before inspecting or building App source.
+- The user should not need to restate project history after a chat transfer.
+- If a current-state document is stale, refresh it from current source/repository evidence before continuing.
