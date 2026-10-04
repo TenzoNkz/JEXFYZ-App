@@ -1,3 +1,22 @@
+## 2026-10-04 — NEW CHAT PREFLIGHT / REPOSITORY RECONCILIATION
+
+- [VERIFIED] Repository: `TenzoNkz/JEXFYZ-App`; branch: `main`; current HEAD: `684a89c270c5dda00ae749c26572737f7e65609c`.
+- [VERIFIED] `CHAT_TRANSFER.md` is persisted in Git; the prior transfer write is the commit `684a89c270c5dda00ae749c26572737f7e65609c`.
+- [VERIFIED] Active Firmware source: `firmware/JEXFYZ-V4.1.ino`; source blob `352f7c408f2bc5a4a691af35cfb477338036a102`; 5327 lines; `FW_VERSION = V4.1`.
+- [VERIFIED] Current App version/build config: `1.0.0+3`; applicationId `com.horizontalzzz.jexfyz`; minSdk 24; versionName `Telegram @horizontalzzz`.
+- [VERIFIED] Latest verified App Build remains #50, run `36996987220`, built from App source SHA `bf01595253eb5a1912471c4aee57c4eed4421f0f`; APK artifact `JEXFYZ#50.apk`, artifact ID `11222007634`, digest `sha256:82a2320d8e3663800d6884f4cb0d009ff1b31b5b19cc64420f9ee5c6b01d01b0`.
+- [VERIFIED] Changes from Build #50 to current `main` are confined to repository documentation and Firmware continuity/source files; no Flutter/Android App source or build-workflow file changed in the comparison.
+- [VERIFIED] Current App build engine remains `.github/workflows/app-build.yml` blob `731f4a7a43bf58d01a382053457d1f67a4742c8a`; trigger remains `.github/workflows/app-build-trigger.yml` blob `89598aff0b006bb3db6819080a13965fc5a6247d`.
+- [VERIFIED] App Build remains manual-by-issue-trigger only: title `JE X FYZ — BUILD APP TRIGGER`, body token `JEXFYZ_BUILD_TRIGGER_V1`; no push/PR release trigger.
+- [VERIFIED] Toolchain policy: Java 17, Flutter 3.47.2 stable, Gradle 9.3.1, ubuntu-24.04; one signed release APK with obfuscation/R8/resource shrinking.
+- [VERIFIED] V4.1 Online OTA currently uses `WiFi.setAutoReconnect(true)`, timeout-driven soft retry via `WiFi.disconnect(); WiFi.begin(...)`, retained `setInsecure()`, GitHub raw URL allowlist, BLUE/YELLOW/GREEN/RED indicator flow, and cooperative DOWNLOAD servicing.
+- [PROTECTED] Local OTA remains Golden/Protected; no Online-OTA fix should modify it without an independently reproduced Local OTA defect.
+- [UNVERIFIED] V4.1 ArduinoDroid/Core 3.3.7 compile/link, BIN generation/hash, Firebase metadata promotion, physical flash, Online OTA runtime, thermal/electrical/radio runtime.
+- [OPEN] P2 BLE critical-message drop behavior and the exact historical Online OTA hotspot failure root cause.
+- [HISTORICAL/OBSOLETE] Stale V3.8/V3.9/V4.0 sections remain in long-form memory files and must not override current source/current workflow.
+- [NEXT] Firmware validation of the already-committed V4.1 candidate; do not repeat the V4.0→V4.1 source redesign and do not trigger an App Build solely because Firmware changed.
+- [NO FUNCTIONAL CHANGE] This new-chat preflight synchronization is documentation-only.
+
 ## 2026-10-04 — EXECUTION FULL / V4.1 SIMPLE ONLINE OTA
 
 - [IMPLEMENTED] Applied the accepted Gemini redesign to Online OTA in the exact V4.0 source.
