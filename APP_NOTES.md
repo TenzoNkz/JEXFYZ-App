@@ -1,3 +1,9 @@
+## 2026-10-04 — FIRMWARE V4.2 / APP IMPACT CHECK
+
+- [VERIFIED] No Flutter/Android App source or configuration change was made by the V4.2 Firmware execution.
+- [VERIFIED] App package version remains `1.0.0+3`; Build #50 remains the latest verified release artifact.
+- [DECISION] App Build remains separately authorized only by the explicit Build App command/issue-trigger workflow.
+
 ## 2026-10-04 — EXECUTION FULL / V4.1 SIMPLE ONLINE OTA
 
 - [IMPLEMENTED] Applied the accepted Gemini redesign to Online OTA in the exact V4.0 source.
