@@ -1049,10 +1049,11 @@ Dart symbols artifact:
 
 ### Build trigger policy
 
-**Build is manual-only.**
+**Build is manual-by-issue-trigger only.**
 
-- The App Build workflow uses **only** `workflow_dispatch`.
-- Repository pushes, source edits, notes edits, asset changes, dependency changes, or workflow changes must **never** start an App Build automatically.
+- The active trigger workflow is `.github/workflows/app-build-trigger.yml`.
+- The trigger requires an opened/reopened issue titled **`JE X FYZ — BUILD APP TRIGGER`** whose body contains **`JEXFYZ_BUILD_TRIGGER_V1`**.
+- Repository pushes, source edits, notes edits, asset changes, dependency changes, or ordinary PR activity must **never** start the release APK workflow.
 - A build is to be started only after the user explicitly instructs ChatGPT to **“Build App”**.
 - A workflow file existing or being healthy is not the same as a verified APK; the actual run result must still be checked.
 
