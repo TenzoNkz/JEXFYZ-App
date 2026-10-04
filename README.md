@@ -1,3 +1,18 @@
+## 2026-10-04 — EXECUTION FULL / V4.1 SIMPLE ONLINE OTA
+
+- [IMPLEMENTED] Applied the accepted Gemini redesign to Online OTA in the exact V4.0 source.
+- [VERSION] Firmware advanced **V4.0 → V4.1** as required by the absolute versioning rule.
+- [SOURCE] Active firmware is now `firmware/JEXFYZ-V4.1.ino`.
+- [SOURCE BLOB] `352f7c408f2bc5a4a691af35cfb477338036a102`.
+- [ONLINE OTA] Wi-Fi retry simplified: `WiFi.setAutoReconnect(true)`; `WL_CONNECT_FAILED/WL_NO_SSID_AVAIL` fast-fail handling removed; retry after the 15 s connection window now uses `WiFi.disconnect(); WiFi.begin(...)` without repeated `WIFI_OFF` radio teardown.
+- [RETAINED] Plain `WiFiClientSecure + setInsecure()`, GitHub raw BIN allowlist, BLUE Wi-Fi success, YELLOW download milestones, final GREEN success, RED failure/BLE recovery, OTA safe outputs, stream/image/update validation remain intact.
+- [PROTECTED] Local OTA source region was verified byte-for-byte unchanged.
+- [SOURCE ALIGNMENT] All active V4.0 text markers in the firmware source were updated to V4.1 and the active filename now matches the firmware version.
+- [STATIC AUDIT] No timing `while()` loops; no executable `delay()` (remaining textual match is in a comment); no `setAutoReconnect(false)`; no retry `WiFi.mode(WIFI_OFF)` path remains; reset-reason telemetry remains present.
+- [VALIDATION BOUNDARY] ArduinoDroid/Core 3.3.7 compile, BIN generation, physical Local OTA flash, and physical Online OTA runtime success are NOT claimed yet.
+- [APP] No App source/configuration change; no App Build triggered.
+- [COMMITS] Source creation: `10e01cb70f35abc19749a7cfe90dea457116416f`; superseded V4.0 deletion: `5abcea6551bba59af9a8a5f0c8f3cc9aa884b760`.
+
 ## 2026-10-04 — FINAL SIMPLE ONLINE OTA GEMINI REQUEST
 
 - [USER] User wants a concrete, simple Online OTA redesign because Online OTA worked in an earlier firmware and the current V4.0 path is unnecessarily complex.
