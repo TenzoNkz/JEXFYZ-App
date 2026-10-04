@@ -8,8 +8,9 @@
 - App main blob: f762f6d1cdd1351e57e7d93665ff2f5898769b42
 - App settings blob: f11235bab559b291928550e06984532581ddad6a
 - App test blob: aa86778beb8fcc3ce6a12454f6354f96ec99a160
-- Current App workflow blob: 5c7faeb8fece972179a0607ffd2278bdfd174704
-- Current App trigger workflow blob: 04d2293725e97c3cbc67ce8b6f0d9c1230802afd
+- Current App workflow: .github/workflows/jexfyz-build.yml
+- Current App workflow blob: 33ae11a17ec9353e4693bed723018e6d8ea20b8e
+- Legacy app-build.yml and app-build-trigger.yml are deleted.
 - Latest verified downloadable App Build: #50
 - Build #53: App validation passed through signing; artifact creation blocked by Actions quota.
 
@@ -35,10 +36,10 @@ Update Firmware → active GATT disconnect → live App telemetry stops → Onli
 - Current App source is not validated for downloadable artifact delivery beyond Build #50.
 
 ## CI DELIVERY STATE
-- Both App Build workflows were deleted and recreated.
-- Release workflow now clears all existing Actions artifacts using actions: write, then uploads exactly one JEXFYZ-release.apk with overwrite and 7-day retention.
-- Trigger remains owner/title/token-gated issue workflow with no push/PR trigger.
-- Runtime proof of the reset workflow producing a new artifact is pending.
+- Legacy App Build workflows were deleted; a single new `.github/workflows/jexfyz-build.yml` is current.
+- Current workflow clears all existing Actions artifacts using actions: write, then attempts exactly one JEXFYZ-release.apk upload.
+- Current workflow is owner/title/token-gated issue-based with no push/PR trigger.
+- New workflow run #1 verified cleanup + all build/signing gates; artifact upload remains blocked by Actions quota.
 
 ## NEXT
-On the next explicit App Build request, run the manual trigger and verify cleanup, CI gates, signing, and single APK artifact publication. Separately compile/flash Firmware V4.5 and perform physical OTA/BLE validation.
+On the next explicit App Build request, run the current single workflow trigger and verify cleanup, CI gates, signing, and single APK artifact publication. Separately compile/flash Firmware V4.5 and perform physical OTA/BLE validation.
