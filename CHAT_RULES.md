@@ -370,6 +370,38 @@ Prompt B must:
 
 Prompt B does not permit Build App by itself. Build permission still follows the frozen workflow commands and build policy.
 
+### 9C. Repository-First Transfer Semantics
+
+The canonical continuity flow is now:
+
+```
+OLD CHAT
+  ↓
+PROMPT 1 — READ CHAT + RECONCILE + SAVE TO REPOSITORY
+  ↓
+PERSISTED CHAT RECAP / CURRENT STATE
+  ↓
+NEW CHAT
+  ↓
+PROMPT 2 — READ COMPLETE REPOSITORY + INSPECT CURRENT SOURCE/WORKFLOW
+  ↓
+CONTINUE FROM CURRENT PROJECT TRUTH
+```
+
+Prompt 1 is not merely a copy generator. Its intended final behavior is to
+persist the complete available chat recap/state into the repository's
+continuity layer before the old chat is abandoned.
+
+Prompt 2 treats the repository as the transfer boundary. It must read the
+complete mandatory memory stack and the persisted recap/state, then inspect
+current source/workflow before continuing. Prompt 2 must never rely on the
+old chat being available.
+
+The persisted recap remains subordinate to current source/current workflow.
+It records chat context that may otherwise be lost; it does not override
+newer verified repository truth.
+
+
 ## 10. MEMORY INTEGRITY / PROFESSIONAL REASONING
 
 - Treat CHAT_RULES.md, APP_NOTES.md, and FIRMWARE_NOTES.md as the project's persistent working memory.
