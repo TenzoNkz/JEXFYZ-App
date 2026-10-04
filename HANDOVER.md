@@ -455,7 +455,7 @@ Use `@Thinking Eksekusi Full!` for the source hardening pass. Do not Build App. 
 ## 2026-10-04 — CURRENT HANDOVER AFTER V3.9
 - Current firmware: V3.9
 - Active source: `firmware/JEXFYZ-V3.9.ino`
-- Active blob: `f123a46d84d1e2ec0e67419a6577388fd3c8645e`
+- Active blob: `bf85b50e0a8cab22e5d66ef09ee84d6692cee009`
 - Hardening committed and statically audited; compile/BIN/Firebase/physical validation remains pending.
 - Soft-start contract remains OFF -> ON only; voltage changes do not restart it.
 - Remaining open items: OTA CA/server verification, BLE cryptographic auth, synchronous HTTP transport redesign, post-boot rollback health.
