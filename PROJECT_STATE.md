@@ -1,3 +1,18 @@
+## 2026-10-04 — GEMINI SIMPLE ONLINE OTA REDESIGN RESULT RECONCILIATION
+
+- [USER GOAL] Return Online OTA to the simplest reliable architecture because Online OTA worked previously; keep mandatory LED feedback.
+- [GEMINI DIRECTION] Gemini proposes simplifying Wi-Fi retry, using auto reconnect, soft retry, simple setInsecure(), and keeping BLUE/YELLOW/GREEN/RED LED flow.
+- [ACCEPTED] The architectural direction is aligned with the user goal: avoid unnecessary radio OFF/reinitialization during retries and avoid TLS/indicator complexity.
+- [REJECTED PATCH DETAIL] Gemini PATCH 2 (CA-bundle removal) is stale for current V4.0 because the exact current source already uses plain WiFiClientSecure + setInsecure(). Do not reapply.
+- [REJECTED PATCH DETAIL] Gemini PATCH 3 is stale for current V4.0 for the same reason; current source already contains setInsecure().
+- [REJECTED PATCH DETAIL] Gemini PATCH 6A/6B is stale for current V4.0 because the intermediate GREEN/BLUE transitions were already removed in commit 5ba869806a85244142378470818665b75025527a.
+- [REJECTED PATCH DETAIL] Gemini PATCH 4 cloudPassword.trim() is not accepted because Wi-Fi password whitespace can be legitimate data and the protocol does not prove surrounding spaces are transport formatting.
+- [CANDIDATE PATCH] Gemini PATCH 5 is the only materially applicable candidate: setAutoReconnect(true) and soft retry after the connection timeout instead of WiFi.disconnect(true,false)+WIFI_OFF. It still needs exact current-source OLD/NEW reconstruction and safety audit before implementation.
+- [HISTORY] Git confirms the V1.5 handoff patch introduced the RADIO_TEARDOWN architecture and setAutoReconnect(false); however this history alone does not prove that commit was the regression cause. The older V1.4 source already used setAutoReconnect(false) and direct WiFi.begin().
+- [VERSION] Any functional firmware implementation must bump V4.0 -> V4.1, including a one-character change, and keep the versioned source filename aligned.
+- [STATUS] No functional firmware change applied from this Gemini result. Local OTA remains protected/frozen.
+- [NEXT] Before Execution Full, obtain or derive exact current-source patch only for the applicable simple Wi-Fi retry redesign; do not reapply already-completed TLS/LED changes and do not trim PASS.
+
 ## 2026-10-04 — DISCUSSION: SIMPLE ONLINE OTA REDESIGN REQUEST
 
 - [USER] Online OTA feels unnecessarily difficult and the user notes that it has worked previously.
