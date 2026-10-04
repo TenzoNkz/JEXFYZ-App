@@ -431,3 +431,103 @@ B. Root cause with confidence.
 C. Whether a source patch is actually required.
 D. SAFE / NOT SAFE assessment for the next test.
 E. If patch required, output ONLY exact OLD → NEW blocks. Never return the full .ino.
+
+
+# 2026-10-04 — SECOND-OPINION CORRECTION / WIFI PATCH PROOF
+
+The previous Gemini answer was reconciled against exact source and several claims were found to be overconfident. Re-audit from the exact source blob below and do NOT assume the previous verdict is correct.
+
+EXACT SOURCE:
+0566105383a889912e5e756b0b9f265e5fcf0264
+
+IMPORTANT SOURCE FACTS ALREADY VERIFIED:
+- PASS handling currently does:
+  cloudPassword = command.substring(5);
+  and does NOT trim.
+- SSID handling DOES trim.
+- feedBleRx() removes CR and treats LF as command terminator; it does not itself append whitespace.
+- WIFI_CONNECT_TIMEOUT_MS = 15000.
+- WIFI_CONNECT_MAX_ATTEMPTS = 3.
+- WIFI_CONNECT_RETRY_BACKOFF_MS = 3000 exists but must be checked whether the current connection path actually uses it.
+- RADIO_TEARDOWN currently does:
+  WiFi.mode(WIFI_STA);
+  WiFi.setHostname("JE-X-FYZ");
+  WiFi.setSleep(false);
+  WiFi.setAutoReconnect(false);
+  WiFi.begin(...);
+- WIFI_CONNECTING currently treats:
+  WL_CONNECTED => BLUE
+  timeout OR WL_CONNECT_FAILED OR WL_NO_SSID_AVAIL => retry/final failure
+- Current retry path does:
+  WiFi.disconnect(true, false);
+  WiFi.mode(WIFI_OFF);
+  requestWiFiOffShutdown();
+  then RADIO_TEARDOWN.
+- Current Online OTA start fully tears down BLE before Wi-Fi handoff.
+- GitHub/HTTPS is not proven reached in the latest hardware test.
+
+REQUIRED CORRECTIONS TO YOUR PRIOR ANSWER:
+
+1. Do NOT claim that setAutoReconnect(false) "absolutely" prevents WPA3/Mixed-mode negotiation.
+   Prove from Arduino-ESP32 / ESP-IDF semantics whether disabling auto reconnect affects the INITIAL connection attempt, or only reconnect behavior after a disconnect.
+   If you cannot prove it from source/API semantics, label it as hypothesis.
+
+2. Do NOT claim WL_CONNECT_FAILED occurs after a fixed ~10 ms.
+   Determine whether the firmware can receive WL_CONNECT_FAILED at arbitrary timing and whether the 15 s timeout is bypassed only when the driver reports failure.
+
+3. Analyze the retry counter exactly.
+   Is attempt #1 actually given a full 15 s unless driver reports failure?
+   What happens at attempt #2 and #3?
+   Are retries immediate, or is there real 3 s backoff?
+   Note that WIFI_CONNECT_RETRY_BACKOFF_MS exists and may be unused.
+
+4. Analyze WiFi.disconnect(true, false) + WiFi.mode(WIFI_OFF) + requestWiFiOffShutdown() sequencing.
+   Determine whether this is unnecessarily destructive, safe, or potentially harmful for ESP32-C3 radio initialization.
+   Compare it with the proposed soft retry:
+     WiFi.disconnect();
+     WiFi.begin(...);
+   Determine whether the proposed soft retry is actually better.
+
+5. PASS whitespace:
+   Determine whether surrounding whitespace is explicitly defined as transport formatting in this project's BLE command protocol.
+   If NOT explicitly defined, do not call trim() a proven bug.
+   State the safest protocol behavior for arbitrary valid Wi-Fi passwords containing spaces.
+
+6. Hotspot compatibility:
+   Do not assume WPA3/Mixed-mode, 2.4 GHz, DHCP, PMF, or Android hotspot behavior caused the failure without evidence.
+   State what is proven by the observed hardware result and what remains hypothesis.
+
+7. LED observability:
+   Determine exactly how long RED can be delayed under:
+   a) immediate WL_CONNECT_FAILED
+   b) 15 s timeout
+   c) repeated failures
+   and whether the current state machine can complete all retries too quickly or too slowly.
+   Verify whether the RED indicator is actually reachable on every final failure path.
+
+8. Brownout:
+   Treat brownout/current sag as a hardware hypothesis only.
+   Identify what firmware evidence would distinguish reset/brownout from a normal Wi-Fi failure (for example reset reason telemetry if already available).
+   Do not call it 100% hardware unless evidence supports it.
+
+9. VERY IMPORTANT:
+   Do a code-level audit for any earlier Wi-Fi patch that accidentally introduced the current failure.
+   Compare the current V4.0 behavior with the prior known-good Wi-Fi/Online OTA source if available in git history.
+   Focus on the BLE→Wi-Fi radio handoff and Wi-Fi connection state machine.
+
+FINAL DELIVERABLE:
+
+A. EXACT FAILURE STAGE
+B. PROVEN ROOT CAUSE(S)
+C. HYPOTHESES
+D. EACH CLAIM'S CONFIDENCE
+E. WHETHER A SOURCE PATCH IS REQUIRED
+F. MINIMAL PATCH STRATEGY
+
+PATCH RULE:
+If a patch is actually justified, return ONLY exact OLD → NEW blocks.
+No full .ino.
+Do not touch Local OTA.
+Do not modify thermal, voltage, BLE protocol, Firebase, or unrelated features.
+
+If no source bug is proven, explicitly say NO PATCH and identify the next hardware/diagnostic test that best separates firmware failure from hotspot compatibility.
