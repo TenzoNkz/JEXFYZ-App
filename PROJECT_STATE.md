@@ -84,7 +84,7 @@ For every future JE X FYZ action, the assistant must first read the complete cur
 - Documentation/process files changed in this execution: README.md, HANDOVER.md, CHAT_RULES.md, PROJECT_STATE.md, APP_NOTES.md, BUILD_NOTES.md, CHANGELOG.md.
 - Functional App source, Android runtime source, Firmware source, BLE/OTA contracts, dependencies, signing configuration, and CI build behavior were not intentionally changed.
 - No App Build, firmware compilation, BIN publication, Firebase promotion, or physical hardware validation was performed.
-- Pre-execution documentation HEAD before this checkpoint: 47db20ec70f92b4025be05bac36f37d71254bd6b.
+- Execution starting repository HEAD: 93cbc35acb4a68e5737d43bf3d354a544a172b2b.
 - Validation: Prompt A/B presence verified in README.md and HANDOVER.md; repository comparison shows no functional source files changed by this execution.
 
 # JE X FYZ — PROJECT STATE
