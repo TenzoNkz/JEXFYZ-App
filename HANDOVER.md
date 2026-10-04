@@ -17,7 +17,7 @@
 - App repository: https://github.com/TenzoNkz/JEXFYZ-App
 - Firmware distribution repository: https://github.com/TenzoNkz/JEXFYZ-Firmware
 - Current firmware source: `firmware/JEXFYZ-V3.8.ino`
-- Current firmware source blob: `4a7e08a6ea0de57f4e3d3a742ad88cbd25a05e01`
+- Current firmware source blob: `2fbff3656bc037846124806fb390022f85146845`
 - Last verified App Build: #50, run 36996987220.
 - Newer repository documentation/firmware commits have not been included in a newer App Build.
 - V3.8 ArduinoDroid compilation, BIN publication, Firebase promotion, and physical validation are still unperformed.
