@@ -376,3 +376,13 @@ For Build App, the first action must be the full memory preflight and exact-sour
 - [DECISION] Before firmware execution, the intended fix should preserve the 200ms selector deadtime but explicitly pre-clear Peltier PWM before the selector transition and add a controlled rail-stabilization phase before restarting the 5-second Peltier soft-start.
 - [OPEN QUESTION] Exact stabilization interval (candidate ~300–500ms) must be chosen deliberately and validated on hardware; the observed ~2s user-perceived gap is not yet established as a firmware timer.
 
+## 2026-10-04 — DISCUSSION / SOFT-START SCOPE REFINEMENT
+
+- [USER REQUIREMENT] User proposes that Peltier soft-start should run **only when Peltier is newly turned ON**, not during voltage changes.
+- [CONFIRMED] Current V3.7 triggers `beginPeltierSoftStart()` in two situations: a true Peltier OFF → ON transition inside `applyCoolingOutputs()`, and an upward voltage transition while Peltier is already ON inside `completeVoltageTransition()`.
+- [DECISION CANDIDATE] Narrow the soft-start trigger to the true Peltier OFF → ON event only. Voltage changes 5V ↔ 9V ↔ 12V would not reset or restart the Peltier soft-start state.
+- [RATIONALE] User reports that the earlier behavior, where voltage changes did not restart the Peltier soft-start, was physically safe; the current 9V → 12V reset fault appeared in the present test baseline.
+- [IMPORTANT] Removing the upward-transition soft-start does **not by itself prove** that the 9V → 12V hardware reset is fixed. During a voltage transition the Peltier duty would remain at its existing value. This matches the user's historical behavior but still requires hardware validation.
+- [DECISION] If this scope is executed, preserve the existing 5s soft-start for actual Peltier OFF → ON, preserve safety-forced Peltier OFF paths, and remove only the voltage-rise-triggered restart.
+- [OPEN QUESTION] After this change, hardware must retest 9V → 12V with Peltier ON. A remaining reset would shift investigation toward the selector/power-stage transient rather than the voltage-rise soft-start trigger.
+
