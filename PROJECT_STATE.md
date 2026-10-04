@@ -360,3 +360,19 @@ For Build App, the first action must be the full memory preflight and exact-sour
 - [UNVERIFIED] No Gemini conclusion exists yet for the current 9V → 12V MCU-restart fault until the user returns Gemini's answer.
 - [NEXT ACTION] Provide the Gemini relay prompt for the V3.7 9V → 12V restart / Peltier soft-start investigation.
 
+## 2026-10-04 — GEMINI RELAY RESULT / 9V TO 12V MCU RESET
+
+- [TESTED] User-provided hardware observation: 5V → 9V is stable; 9V → 12V causes an immediate MCU restart.
+- [CONFIRMED] User-provided Gemini second opinion reviewed against current V3.7 source.
+- [CONFIRMED] `requestVoltage()` currently turns GPIO9V and GPIO12V OFF but does **not** clear Peltier PWM before the voltage selector transition.
+- [CONFIRMED] When Peltier is already ON and the voltage rises, `completeVoltageTransition()` activates the target selector and only afterward calls `beginPeltierSoftStart()`.
+- [CONFIRMED] Therefore, during the critical selector activation interval, `lastPeltierDuty` can still represent the previous duty (normally 255 after the ramp has completed). The firmware's intended soft-start reset occurs only after target-voltage activation.
+- [ACCEPTED] Gemini's core diagnosis is technically plausible and well supported by the source: the critical hazard is the ordering of **selector activation before Peltier PWM pre-clear**, not the 5-second ramp itself.
+- [ACCEPTED] The recommended control architecture is **Pre-clear Load → selector break-before-make → target rail stabilization → Peltier soft-start**.
+- [REJECTED] Do not treat Gemini's statements such as “absolute proof,” “99%,” or “boot OS takes about 2 seconds” as verified facts. They are stronger than the available evidence.
+- [REJECTED] Test A cannot by itself prove the selector path is fault-free; it would only strongly implicate the Peltier/load path if 9V → 12V becomes stable with Peltier OFF.
+- [UNVERIFIED] Brownout, ground bounce, EMI, or another electrical mechanism is not yet distinguished because no reset-reason serial evidence or oscilloscope/current/rail measurement has been captured.
+- [DECISION] Do not rebuild the App. Do not change BLE, GPIO mapping, or the 5-second soft-start duration based on this result alone.
+- [DECISION] Before firmware execution, the intended fix should preserve the 200ms selector deadtime but explicitly pre-clear Peltier PWM before the selector transition and add a controlled rail-stabilization phase before restarting the 5-second Peltier soft-start.
+- [OPEN QUESTION] Exact stabilization interval (candidate ~300–500ms) must be chosen deliberately and validated on hardware; the observed ~2s user-perceived gap is not yet established as a firmware timer.
+
