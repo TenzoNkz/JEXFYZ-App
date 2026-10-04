@@ -1,3 +1,14 @@
+## 2026-10-04 — GEMINI PATCH-ONLY WORKFLOW / ONLINE OTA
+
+- [NEW RULE] `@Thinking Tanya Gemini!` is now a diagnosis/patch-request stage. Gemini receives the current `.ino` file directly from the user and does not need repository access.
+- [OUTPUT RULE] Gemini must NOT return the full `.ino`. Every functional correction must be expressed only as explicit `OLD` → `NEW` source patch blocks, with exact current source text in OLD and the complete replacement in NEW.
+- [HANDOFF RULE] The user brings Gemini's patch response back to this chat. The next `@Thinking Eksekusi Full!` is responsible for matching the OLD block against the exact repository source, applying the NEW block, auditing the affected area, synchronizing memory, and committing the result.
+- [SCOPE RULE] Gemini patches must be limited to the approved scope. For the current issue this is Online OTA indicator/runtime behavior only.
+- [PROTECTED] Local OTA is frozen because it has been proven working on hardware. Gemini must not propose Local OTA changes for an Online OTA problem, and Eksekusi Full must reject scope expansion into Local OTA unless a separate reproduced Local OTA defect is explicitly authorized.
+- [ONLINE OTA PRIORITY] Keep Online OTA simple: Wi-Fi → GitHub JE X FYZ firmware URL → .bin download → OTA write/finalize → visible success indicator → restart; failure → visible red indicator/recovery. CA-bundle/custom-CA/certificate-pinning complexity is not required by the user; `WiFiClientSecure + setInsecure()` is acceptable for this Online OTA path.
+- [PROTOCOL] Full copy-ready prompt is persisted in `GEMINI_PROMPT_ONLINE_OTA.md`.
+- [NO SOURCE CHANGE] This rule update changes workflow/documentation only.
+
 ## 2026-10-04 — CHAT-LIMIT HANDOVER CHECKPOINT
 
 - Current chat is being handed over because the context limit is near.
