@@ -28,7 +28,7 @@ enum class LedMode : uint8_t;
 enum class VoltageRequestSource : uint8_t;
 enum class AdaptiveProfile : uint8_t;
 
-static constexpr char FW_VERSION[] = "V3.1";
+static constexpr char FW_VERSION[] = "V3.2";
 
 // ============================================================================
 // ========================== HEAP DIAGNOSTIC BUILD ===========================
@@ -302,6 +302,7 @@ bool prefsReady = false;
 
 bool voltageTransition = false;
 uint32_t voltageTransitionAt = 0;
+VoltageRequestSource voltageTransitionSource = VoltageRequestSource::MANUAL;
 uint32_t lastVoltageTransitionCompleteMs = 0;
 bool voltageGuardArmed = false;
 
@@ -1287,6 +1288,7 @@ static bool requestVoltage(Voltage target, VoltageRequestSource source, bool byp
   pendingVoltage = target;
   voltageTransition = true;
   voltageTransitionAt = millis();
+  voltageTransitionSource = source;
 
   digitalWrite(PIN_9V, OUTPUT_OFF);
   digitalWrite(PIN_12V, OUTPUT_OFF);
@@ -1301,7 +1303,8 @@ static void completeVoltageTransition() {
   // Battery Adaptive has a live target. Re-evaluate it at the end of the
   // 200 ms selector deadtime so an in-flight stale step can never be applied
   // after the battery temperature has already returned to another zone.
-  if (adaptiveOn &&
+  if (voltageTransitionSource == VoltageRequestSource::BATTERY &&
+      adaptiveOn &&
       adaptiveProfile == AdaptiveProfile::HOTSIDE_BATTERY &&
       !adaptiveHotStepPending &&
       ntcValid &&
@@ -1317,6 +1320,7 @@ static void completeVoltageTransition() {
       digitalWrite(PIN_9V, currentVoltage == Voltage::V9 ? OUTPUT_ON : OUTPUT_OFF);
       digitalWrite(PIN_12V, currentVoltage == Voltage::V12 ? OUTPUT_ON : OUTPUT_OFF);
       voltageTransition = false;
+      voltageTransitionSource = VoltageRequestSource::MANUAL;
 
       // The selectors were de-asserted for the full deadtime, so treat the
       // canceled hardware attempt as a completed dwell boundary to prevent
@@ -1339,6 +1343,7 @@ static void completeVoltageTransition() {
   digitalWrite(PIN_12V, currentVoltage == Voltage::V12 ? OUTPUT_ON : OUTPUT_OFF);
 
   voltageTransition = false;
+  voltageTransitionSource = VoltageRequestSource::MANUAL;
 
   // Adaptive ON is committed only after the forced 5V transition completes.
   if (adaptiveStartPending && currentVoltage == Voltage::V5) {
