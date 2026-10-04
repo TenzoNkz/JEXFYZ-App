@@ -1,3 +1,20 @@
+## 2026-10-04 — CURRENT AUTHORITATIVE STATE AFTER V4.0 EXECUTION FULL
+
+> Current-state override for older V3.7/V3.8/V3.9 historical entries below.
+
+- [CURRENT] Active Firmware: V4.0.
+- [CURRENT] Active source: `firmware/JEXFYZ-V4.0.ino`.
+- [CURRENT] Active source blob: `b2a77fadeaa154412850d34c82b0bb78ef108bae`.
+- [IMPLEMENTED P0] 9V/12V selector activation now arms a cooperative 300 ms post-selector rail-stabilization state that holds physical Peltier PWM at 0% while preserving logical Peltier ON state and the existing 5 s OFF→ON-only soft-start timeline.
+- [IMPLEMENTED P1] Online OTA no longer uses `setInsecure()`; the exact Arduino-ESP32 Core 3.3.7 NetworkClientSecure certificate-bundle attach path is used through `JexTrustedWiFiClientSecure`.
+- [VERIFIED STATIC] 5351 source lines; braces 581/581; parentheses 2123/2123; executable delay() 0; timing while() 0; setInsecure() 0; stopBleRadio(false) 0; DOC-CONTRACT 137.
+- [VERIFIED TOOLCHAIN SOURCE] Arduino-ESP32 3.3.7 exposes `attach_ssl_certificate_bundle()`, `esp_crt_bundle_attach`, and the `_use_ca_bundle` TLS path used by V4.0.
+- [UNVERIFIED] ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile/link of V4.0; BIN; Firebase promotion; signing/publication; flash; physical electrical/thermal/BLE/OTA validation.
+- [GATE] V4.0 is NOT YET APPROVED TO FLASH. The prior V3.9 gate has been superseded by the new source, but the mandatory two-party Assistant + Gemini audit must now be performed on the exact V4.0 source.
+- [NO APP BUILD] App functional source/configuration remains unchanged; Build #50 remains the latest verified App artifact.
+- [SOURCE COMMITS] V4.0 source creation `43b6e3dfc49f114aba49c73762a9bdc4822d30de`; V3.9 retirement `e743b3b84e1a603c64747936242d1d44ee1b7746`.
+- [NEXT EXACT ACTION] Perform the same independent Assistant + Gemini full-source audit against V4.0; only after both agree proceed to ArduinoDroid/Core 3.3.7 compile and staged hardware validation.
+
 ## 2026-10-04 — DISCUSSION / V3.9 UPDATE READINESS CHECK
 
 - [CONFIRMED] User asked whether the current V3.9 candidate is ready to update/flash.
