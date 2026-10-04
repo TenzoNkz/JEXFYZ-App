@@ -7,6 +7,7 @@
 - This removes Actions-artifact storage quota from the APK delivery path.
 - App/Firmware runtime source was not changed.
 - A fresh Build App run is still required to verify the new Release asset path end-to-end.
+- Existing Release updates now retarget `jexfyz-latest` to the current build commit and keep it marked Latest.
 
 
 ## SINGLE WORKFLOW / BUILD RUN #1 — 2026-10-04

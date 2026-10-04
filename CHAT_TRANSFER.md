@@ -3,7 +3,7 @@
 ## 1. TRANSFER METADATA
 - [VERIFIED] Repository: TenzoNkz/JEXFYZ-App
 - [VERIFIED] Branch: main
-- [VERIFIED] Last functional workflow fix commit: dd4320cbc21311777ec62803187b1ff0955e4e03
+- [VERIFIED] Last functional workflow fix commit: b449fc15659efa781063ac178754d99c5501c8b5
 - [VERIFIED] Transfer file: CHAT_TRANSFER.md
 - [VERIFIED] Transfer purpose: preserve the current JE X FYZ / JE Cooler project state and Build App result.
 - [CONFIRMED] This transfer does not authorize a functional App/Firmware change, release, or App Build by itself.
@@ -139,7 +139,7 @@
 - [VERIFIED] App architecture/security audit rejects legacy FirebaseDatabase references and retains Firebase App Check.
 
 ### CI
-- [VERIFIED] Current release workflow blob: eee1c73e0692a327546852d962e0186f4aff98fd.
+- [VERIFIED] Current release workflow blob: 08a137b4d315cc12e830a7e8dbc1ea40c3d2873d.
 - [IMPLEMENTED][COMMITTED] Both legacy App Build workflows were deleted; one current workflow remains.
 - [IMPLEMENTED][COMMITTED] Release workflow no longer calls Actions-artifact upload/cleanup.
 - [IMPLEMENTED][COMMITTED] Release workflow publishes one direct APK asset at jexfyz-latest, named JEXFYZ-release.apk, with clobber replacement.

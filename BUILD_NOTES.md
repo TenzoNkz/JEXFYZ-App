@@ -13,7 +13,7 @@
 ## CURRENT DELIVERY WORKFLOW
 - [COMMITTED] Legacy `.github/workflows/app-build.yml` and `.github/workflows/app-build-trigger.yml` were deleted.
 - [COMMITTED] New single workflow: `.github/workflows/jexfyz-build.yml`.
-- [VERIFIED] Current workflow blob: eee1c73e0692a327546852d962e0186f4aff98fd.
+- [VERIFIED] Current workflow blob: 08a137b4d315cc12e830a7e8dbc1ea40c3d2873d.
 - [COMMITTED] Release workflow now uses permissions contents: write.
 - [COMMITTED] Actions-artifact upload/cleanup is no longer part of the APK delivery path.
 - [COMMITTED] Release publication is exactly one direct GitHub Release asset at jexfyz-latest, named JEXFYZ-release.apk; existing asset is replaced with --clobber.
@@ -67,6 +67,7 @@
 ## CI DELIVERY FIX — 2026-10-04
 - [COMMITTED] Removed Actions-artifact publication from `.github/workflows/jexfyz-build.yml`.
 - [COMMITTED] Added direct GitHub Release publication using tag `jexfyz-latest`.
+- [COMMITTED] Existing release is kept synchronized to the latest build commit with `gh release edit --target` and marked Latest.
 - [COMMITTED] Exactly one APK is delivered as `JEXFYZ-release.apk`; an existing release asset is replaced with `gh release upload --clobber`.
 - [UNVERIFIED] A fresh Build App run is still required to prove GitHub Release creation/update and asset verification.
 

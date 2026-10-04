@@ -4,7 +4,7 @@
 - Project: JE X FYZ / JE Cooler
 - Repository: TenzoNkz/JEXFYZ-App
 - Branch: main
-- Last functional workflow fix commit: dd4320cbc21311777ec62803187b1ff0955e4e03
+- Last functional workflow fix commit: b449fc15659efa781063ac178754d99c5501c8b5
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
 - Active Firmware: V4.5
@@ -14,7 +14,7 @@
 - App settings source blob: f11235bab559b291928550e06984532581ddad6a
 - App test source blob: aa86778beb8fcc3ce6a12454f6354f96ec99a160
 - Active App Build workflow: .github/workflows/jexfyz-build.yml
-- App Build workflow blob: eee1c73e0692a327546852d962e0186f4aff98fd
+- App Build workflow blob: 08a137b4d315cc12e830a7e8dbc1ea40c3d2873d
 - Legacy app-build.yml and app-build-trigger.yml are deleted.
 - Latest verified downloadable App Build: #50
 - Historical new-workflow Build run #1: 37199918015 [BUILT][VERIFIED] through signing; [BLOCKED] legacy Actions-artifact upload by quota.

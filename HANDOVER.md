@@ -9,7 +9,7 @@
 - App settings blob: f11235bab559b291928550e06984532581ddad6a
 - App test blob: aa86778beb8fcc3ce6a12454f6354f96ec99a160
 - Current App workflow: .github/workflows/jexfyz-build.yml
-- Current App workflow blob: eee1c73e0692a327546852d962e0186f4aff98fd
+- Current App workflow blob: 08a137b4d315cc12e830a7e8dbc1ea40c3d2873d
 - Legacy app-build.yml and app-build-trigger.yml are deleted.
 - Latest verified downloadable App Build: #50
 - Build #53: App validation passed through signing; legacy artifact creation blocked by Actions quota.
