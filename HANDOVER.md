@@ -1,3 +1,12 @@
+## 2026-10-04 — ONLINE OTA PATCH EXECUTED
+
+- Gemini Online OTA patch applied to V4.0; current source blob `0566105383a889912e5e756b0b9f265e5fcf0264`.
+- Online OTA intentionally uses `WiFiClientSecure + setInsecure()` for GitHub raw-BIN compatibility.
+- LED flow keeps BLUE Wi-Fi success, YELLOW 20/40/60/80/100 progress, GREEN final success, and RED failure; only intermediate GREEN/BLUE transitions were removed.
+- Local OTA remains frozen/proven working and is unchanged.
+- No App Build. Firmware compile/BIN/device validation remains pending.
+- Flash gate remains CLOSED pending fresh exact-source Assistant + Gemini review.
+
 ## 2026-10-04 — GEMINI PATCH-ONLY ONLINE OTA WORKFLOW
 
 - Dedicated prompt: `GEMINI_PROMPT_ONLINE_OTA.md`.
