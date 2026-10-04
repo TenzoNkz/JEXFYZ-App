@@ -4493,3 +4493,15 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - Existing safety relationship is preserved: Peltier still requires logical Fan ON, valid NTC, acceptable hotside temperature, and non-OTA conditions.
 - Important: this is a firmware-source correction. The binary-only `TenzoNkz/JEXFYZ-Firmware` repository still requires a newly compiled/flashed BIN before the physical device changes.
 - Do not compensate by swapping App BLE command tokens; doing so would corrupt the logical safety/telemetry contract.
+
+## 2026-10-04 — HARDWARE TEST / 9V TO 12V RESET — SOFT-START HYPOTHESIS
+
+- [TESTED] Hardware observation received: 5 V → 9 V passes; 9 V → 12 V causes immediate restart.
+- [USER REQUIREMENT] User proposed Peltier soft-start as a possible cause and requested a Gemini second opinion.
+- [CONFIRMED] `completeVoltageTransition()` commits the physical selector first, then for an upward transition while Peltier is ON calls `beginPeltierSoftStart()`.
+- [CONFIRMED] `beginPeltierSoftStart()` starts from 0% duty; `processPeltierSoftStart()` increases duty cooperatively to 100% over 5000 ms.
+- [HYPOTHESIS] The soft-start may still participate electrically because the Peltier control state changes immediately after the 12 V selector becomes active, but the source does not show an immediate 100% Peltier command.
+- [OPEN QUESTION] Whether the actual reset is caused by the selector/power-stage transient or by the Peltier PWM/load interaction remains unresolved without controlled hardware isolation and reset evidence.
+- [BLOCKED] No Gemini connector/tool is available in the current session; no external Gemini conclusion was obtained.
+- No functional firmware change is authorized from this discussion alone.
+
