@@ -2142,3 +2142,8 @@ Never:
 - [CONFIRMED] App Build #50 remains a valid App client baseline for hardware testing.
 - [OPEN QUESTION] App only needs a new build if later testing identifies an App/BLE-side functional defect or a new App change is intentionally introduced.
 
+## 2026-10-04 — FIRMWARE V3.8 / APP IMPACT
+
+- [CONFIRMED] Firmware V3.8 changes only the Peltier soft-start trigger scope.
+- [CONFIRMED] No App source, BLE protocol, UI contract, Android integration, dependency, or signing configuration changed.
+- [DECISION] App Build #50 remains the current App baseline; a new App Build is not required for this firmware-only change.
