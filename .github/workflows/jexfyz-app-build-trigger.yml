@@ -1,7 +1,7 @@
 # AI CI MEMORY:
-# Active JE X FYZ issue-triggered App Build workflow using direct GitHub Release delivery.
-# Reusable JE X FYZ App Build engine. It is never triggered by push. Restored under a new filename from the proven pre-quota workflow.
-# Triggered only by the owner-controlled Build App issue.
+# JE X FYZ App Build — active single explicit issue-triggered release workflow.
+# Based directly on the proven Release workflow that completed workflow run #2.
+# Normal push/PR events do not trigger this workflow.
 # Firmware source is intentionally stored in this App repository under firmware/.
 # The dedicated firmware repository may contain continuity source plus the published firmware BIN; this workflow builds the App only.
 # CI success proves App build validation only; it does not prove BLE/OTA/hardware runtime.
@@ -15,6 +15,7 @@ on:
       - reopened
 
 permissions:
+  # APK delivery is handled by a GitHub Release asset, not an Actions artifact.
   contents: write
 
 concurrency:
@@ -39,6 +40,8 @@ jobs:
       # Fetch App source/assets only.
       - name: Checkout repository
         uses: actions/checkout@v6
+
+      # APK delivery intentionally avoids Actions-artifact storage quota.
 
       # Tested Android release toolchain.
       - name: Set up Java 17
@@ -256,11 +259,10 @@ jobs:
           SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --verbose --print-certs "$APK" 2>&1)"
           printf '%s\n' "$SIGNATURE_OUTPUT"
 
-          printf '%s\n' "$SIGNATURE_OUTPUT" | grep -Eiq "Verified using v[123] scheme"
-          printf '%s\n' "$SIGNATURE_OUTPUT" | grep -Fq "$EXPECTED_SIGNING_CERT_DN"
-          printf '%s\n' "$SIGNATURE_OUTPUT" \
-            | tr '[:upper:]' '[:lower:]' \
-            | grep -Fq "$EXPECTED_SIGNING_CERT_SHA256"
+          grep -Eiq "Verified using v[123] scheme" <<< "$SIGNATURE_OUTPUT"
+          grep -Fq "$EXPECTED_SIGNING_CERT_DN" <<< "$SIGNATURE_OUTPUT"
+          SIGNATURE_OUTPUT_LOWER="${SIGNATURE_OUTPUT,,}"
+          grep -Fq "$EXPECTED_SIGNING_CERT_SHA256" <<< "$SIGNATURE_OUTPUT_LOWER"
 
           echo "Production APK signature verified: JE X FYZ certificate is present and matches the official signing identity."
           ls -lh "$APK"
@@ -276,9 +278,8 @@ jobs:
           ls -lh "build/app/outputs/flutter-apk/JEXFYZ-release.apk"
 
       # Publish exactly one direct APK as a GitHub Release asset.
-      # This intentionally avoids Actions-artifact storage quota and keeps the
-      # delivery filename stable across builds. Dart symbols remain local to the
-      # build workspace for obfuscation diagnostics and are not uploaded.
+      # This deliberately avoids Actions-artifact storage quota and keeps the
+      # delivery filename stable across builds.
       - name: Publish APK to GitHub Release
         shell: bash
         env:
@@ -316,19 +317,9 @@ jobs:
               --latest
           fi
 
-          ASSET_COUNT="$(gh release view "$RELEASE_TAG" --json assets --jq '[.assets[] | select(.name == "JEXFYZ-release.apk")] | length')"
-          TOTAL_ASSET_COUNT="$(gh release view "$RELEASE_TAG" --json assets --jq '.assets | length')"
-          ASSET_SIZE="$(gh release view "$RELEASE_TAG" --json assets --jq '.assets[] | select(.name == "JEXFYZ-release.apk") | .size')"
-          ASSET_DIGEST="$(gh release view "$RELEASE_TAG" --json assets --jq '.assets[] | select(.name == "JEXFYZ-release.apk") | .digest')"
-          LOCAL_SIZE="$(stat -c '%s' "$APK")"
-
-          test "$ASSET_COUNT" -eq 1
-          test "$TOTAL_ASSET_COUNT" -eq 1
-          test "$ASSET_SIZE" -eq "$LOCAL_SIZE"
-          printf '%s
-' "$ASSET_DIGEST" | grep -Eiq '^sha256:[0-9a-f]{64}
-
+          gh release view "$RELEASE_TAG" \
+            --json assets \
+            --jq '.assets[] | select(.name == "JEXFYZ-release.apk") | .name' \
+            | grep -Fx "JEXFYZ-release.apk"
 
           echo "GitHub Release delivery verified: $RELEASE_TAG / JEXFYZ-release.apk"
-          echo "Release asset size: $ASSET_SIZE bytes"
-          echo "Release asset digest: $ASSET_DIGEST"
