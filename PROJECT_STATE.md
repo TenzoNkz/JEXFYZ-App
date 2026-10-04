@@ -114,6 +114,15 @@ For every future JE X FYZ action, the assistant must first read the complete cur
 - Current firmware remains V3.7 and remains source/static-audit only until actual compile/flash/device evidence is supplied.
 - Next exact action: when the user returns, record the tested device/binary/version, expected behavior, observed behavior, evidence, pass/fail, and remaining risks before making any implementation decision.
 
+## 2026-10-04 — EXECUTION FULL / REPOSITORY CLEANUP + TEST BASELINE
+
+- Current repository cleanup/reconciliation is documentation/process work only.
+- Current repository transfer file: `CHAT_TRANSFER.md`; its checked-in state is an empty/template baseline awaiting the next real Prompt 1 transfer.
+- Current App Build remains #50; no newer App Build has been verified.
+- Current firmware remains V3.7; source/static audit is complete, while compile/BIN/Firebase/physical validation remain pending.
+- Next operational project stage remains real hardware/device testing when the user returns with evidence.
+- Current build trigger remains issue-based: `JE X FYZ — BUILD APP TRIGGER` + `JEXFYZ_BUILD_TRIGGER_V1`.
+
 # JE X FYZ — PROJECT STATE
 
 > **Authoritative current-state snapshot.**
@@ -122,7 +131,7 @@ For every future JE X FYZ action, the assistant must first read the complete cur
 ## 1. CURRENT PROJECT
 
 - Project: JE X FYZ / JE Cooler
-- Current workflow event: Execution Full — Dual Chat-Limit Prompt System
+- Current workflow event: Execution Full — Repository Cleanup + Hardware Test Baseline
 - Functional source behavior changed by this task: No
 - App Build triggered by this task: No
 - Firmware compile triggered by this task: No
