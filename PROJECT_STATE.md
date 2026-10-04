@@ -71,6 +71,20 @@ For every future JE X FYZ action, the assistant must first read the complete cur
 - Prompt A output is transfer evidence only; current repository/source/workflow remain authoritative.
 - Prompt B must perform the complete memory preflight and current-source/workflow inspection before continuing any workflow, including Build App subchats.
 - This implementation is documentation/process only. No functional App/Firmware source changed and no App Build was triggered.
+
+## 2026-10-04 — EXECUTION FULL / DUAL CHAT-LIMIT PROMPT SYSTEM CHECKPOINT
+
+- Official Prompt A and Prompt B are now part of the project continuity architecture.
+- Prompt A = full old-chat context export after a limit warning.
+- Prompt B = new-chat memory preflight + current-source/workflow reconciliation + safe continuation.
+- The recap package is transfer evidence only; current source/current workflow remain authoritative.
+- Build App subchats must also use Prompt B and cannot treat the recap as build authorization.
+- Documentation/process files changed in this execution: README.md, HANDOVER.md, CHAT_RULES.md, PROJECT_STATE.md, APP_NOTES.md, BUILD_NOTES.md, CHANGELOG.md.
+- Functional App source, Android runtime source, Firmware source, BLE/OTA contracts, dependencies, signing configuration, and CI build behavior were not intentionally changed.
+- No App Build, firmware compilation, BIN publication, Firebase promotion, or physical hardware validation was performed.
+- Pre-execution documentation HEAD before this checkpoint: 47db20ec70f92b4025be05bac36f37d71254bd6b.
+- Validation: Prompt A/B presence verified in README.md and HANDOVER.md; repository comparison shows no functional source files changed by this execution.
+
 # JE X FYZ — PROJECT STATE
 
 > **Authoritative current-state snapshot.**
