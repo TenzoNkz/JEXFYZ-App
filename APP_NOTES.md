@@ -1,3 +1,11 @@
+## 2026-10-04 — FIRMWARE V4.0 / APP IMPACT
+
+- [CURRENT] Firmware source advanced V3.9 → V4.0: `firmware/JEXFYZ-V4.0.ino` blob `b2a77fadeaa154412850d34c82b0bb78ef108bae`.
+- [NO APP FUNCTIONAL CHANGE] Flutter/UI/Android/BLE command vocabulary/configuration/signing remain unchanged by this execution.
+- [NO APP BUILD] Build #50 remains the latest verified App baseline.
+- [PRESERVE] App continues to treat firmware telemetry as the physical state authority and does not infer rail-stabilization state from ACKs.
+- [UNVERIFIED] Firmware compile/BIN/device validation remains separate from App Build validation.
+
 ## 2026-10-04 — CHAT-LIMIT HANDOVER CHECKPOINT
 
 - Current chat is being handed over because the context limit is near.
