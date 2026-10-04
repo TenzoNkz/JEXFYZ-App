@@ -1,3 +1,11 @@
+## 2026-10-04 — ONLINE OTA SIMPLICITY REQUIREMENT
+
+- [USER REQUIREMENT] Online OTA prioritizes successful GitHub download/flash over TLS certificate security.
+- [APPROACH] Remove CA-bundle/custom-CA complexity from Online OTA; simple `WiFiClientSecure` + `setInsecure()` is acceptable when applying the user's requested fix.
+- [URL] Online OTA binary source remains the user's JE X FYZ firmware repository URL.
+- [SUCCESS CRITERIA] Wi-Fi connects, GitHub `.bin` downloads, OTA partition writes/finalizes, success indicator displays, and device restarts into the new firmware.
+- [PROTECTED] Local OTA is frozen/proven working and must not be changed as part of Online OTA fixes.
+
 ## 2026-10-04 — ONLINE OTA INDICATOR BUG REPORT
 
 - [RUNTIME OBSERVATION] V4.0 Online OTA was tested and the expected OTA LED indicator blink was not visible.
