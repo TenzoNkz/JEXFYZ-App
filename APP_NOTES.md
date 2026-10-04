@@ -2147,3 +2147,8 @@ Never:
 - [CONFIRMED] Firmware V3.8 changes only the Peltier soft-start trigger scope.
 - [CONFIRMED] No App source, BLE protocol, UI contract, Android integration, dependency, or signing configuration changed.
 - [DECISION] App Build #50 remains the current App baseline; a new App Build is not required for this firmware-only change.
+
+## 2026-10-04 — FIRMWARE V3.9 / APP IMPACT
+- Firmware source is now `firmware/JEXFYZ-V3.9.ino`; App source/protocol/UI/Android configuration were not changed.
+- App Build #50 remains the latest verified App artifact and remains the appropriate baseline client for firmware hardware testing.
+- The firmware hardening does not require an App rebuild unless subsequent protocol/authentication changes are introduced.
