@@ -1,3 +1,13 @@
+## 2026-10-04 — EXECUTION FULL / MEMORY ARCHITECTURE COMPLETED
+
+- Completed the persistent continuity stack: README.md, PROJECT_STATE.md, CHAT_RULES.md, APP_NOTES.md, FIRMWARE_NOTES.md, BUILD_NOTES.md, CHANGELOG.md, HANDOVER.md, plus firmware/FIRMWARE_ANALYSIS.md.
+- README.md now serves as the mandatory new-chat entry point and contains a detailed copy-ready continuation prompt.
+- PROJECT_STATE.md is the current-state snapshot.
+- Build App is explicitly treated as a complex workflow across separate subchats.
+- Every meaningful project event requires an automatic memory synchronization pass; the user does not need to request it.
+- No functional App/Firmware behavior changed in this continuity task.
+- No App Build or firmware compile was triggered.
+
 # JE X FYZ — CHANGELOG
 
 ## 2026-10-04 — CONTINUITY SYSTEM
