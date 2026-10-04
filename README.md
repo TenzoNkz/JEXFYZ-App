@@ -16,6 +16,15 @@
 - Current source blob: `0566105383a889912e5e756b0b9f265e5fcf0264`.
 - Compile/BIN/Firebase/physical Online OTA validation remains unverified; fresh Assistant + Gemini review is required before flashing.
 
+## 2026-10-04 — SIMPLE ONLINE OTA GEMINI REQUEST
+
+- [USER REQUEST] Because Online OTA previously worked but the current V4.0 path is failing, Gemini must be asked to design a **simple Online OTA path focused on real reliability**, not additional complexity.
+- [REQUIRED SCOPE] Keep BLE → Wi-Fi → GitHub raw .bin → OTA write/finalize → LED result → restart, while simplifying the Wi-Fi/OTA state machine and removing unnecessary layers only when safe.
+- [LED] Keep visible OTA LED feedback: OTA start OFF, Wi-Fi success BLUE, download progress YELLOW, successful flash GREEN then restart, failure RED then BLE recovery.
+- [PROTECTED] Local OTA remains Golden/Protected and must not be changed for the Online OTA redesign.
+- [VERSION] Any later firmware implementation of this request MUST bump FW_VERSION (minimum V4.0 → V4.1), regardless of change size.
+- [GEMINI] Ask Gemini to inspect git history for the previously working Online OTA pattern and return only the minimum required exact OLD → NEW source blocks.
+
 ## 2026-10-04 — GEMINI PATCH-ONLY PROTOCOL
 
 - [WORKFLOW] `@Thinking Tanya Gemini!` uses the current repository/source context and a copy-ready prompt generated in the active chat; no dedicated Gemini prompt file is required.
