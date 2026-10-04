@@ -1,3 +1,15 @@
+## 2026-10-04 — GEMINI FINAL SIMPLE V4.1 PATCH RESULT RECONCILIATION
+
+- [GEMINI RESULT] Gemini returned exactly two patches: V4.0 -> V4.1 and simplification of Online OTA Wi-Fi connection/retry.
+- [PATCH 1] Accepted. Firmware version must advance V4.0 -> V4.1 for any functional firmware change.
+- [PATCH 2] Current-source OLD block matches the exact V4.0 Online OTA connection/retry block. The proposed change sets WiFi auto-reconnect true, removes WL_CONNECT_FAILED/WL_NO_SSID_AVAIL fast-fail handling, removes repeated WiFi.disconnect(true,false)+WIFI_OFF retry teardown, and uses soft WiFi.disconnect()+WiFi.begin() only after the full 15 s connection interval.
+- [RECONCILIATION] This is materially aligned with the user's requested simple Online OTA architecture and is the only directly applicable part of the latest Gemini response.
+- [RETAINED] Current V4.0 setInsecure(), GitHub URL allowlist, direct DOWNLOAD/FLASH_FINALIZE transitions, LED flow, OTA safe outputs, streaming validation, and Local OTA are not being re-patched.
+- [REJECTED] No cloudPassword.trim().
+- [CAUTION] Gemini's explanations that the previous path definitively caused brownout or that WPA3/PMF is definitely the root cause remain hypotheses; the patch is accepted as a simplification/reliability correction, not as hardware-proven causality.
+- [NEXT] The exact V4.1 patch is ready for Execution Full when explicitly authorized. No functional source change was made in this reconciliation.
+- [PROTECTED] Local OTA remains Golden/Protected and unchanged.
+
 ## 2026-10-04 — GEMINI SIMPLE ONLINE OTA REDESIGN RESULT RECONCILIATION
 
 - [USER GOAL] Return Online OTA to the simplest reliable architecture because Online OTA worked previously; keep mandatory LED feedback.
