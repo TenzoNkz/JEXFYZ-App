@@ -1,3 +1,12 @@
+## 2026-10-04 — GEMINI FULL PRE-FLASH FORENSIC AUDIT
+
+- [GEMINI VERDICT] Exact V4.0 source blob `0566105383a889912e5e756b0b9f265e5fcf0264`: **SAFE TO FLASH LOCAL OTA** source-level.
+- [FINDING] No P0/P1 blockers identified. P2: BLE TX FIFO overflow can drop newest messages under heavy pressure, potentially affecting ACK/UI synchronization.
+- [ONLINE OTA] Gemini considers the current `setInsecure()` path more compatible than the removed CA-bundle path, but real Online OTA success remains unverified.
+- [LOCAL OTA] No Local OTA defect was identified; Local OTA remains frozen/protected.
+- [RECONCILIATION] Gemini's text describing a BLUE indicator after download is outdated for the current exact source. The current patch removed that intermediate BLUE transition; final GREEN remains after successful `Update.end()`.
+- [UNVERIFIED] Compile/Core 3.3.7, BIN generation, physical flash, rail/current response, and real Online OTA runtime are still unverified.
+
 ## 2026-10-04 — V4.0 ONLINE OTA GEMINI PATCH EXECUTED
 
 - Applied the supplied Gemini patch against source blob `415346ece09f4af33f907b2077140ccfc45c357b`.
