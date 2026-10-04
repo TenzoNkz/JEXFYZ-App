@@ -1,3 +1,16 @@
+## 2026-10-04 — GEMINI FULL PRE-FLASH FORENSIC AUDIT / V4.0
+
+- [GEMINI] User supplied an independent full forensic audit of the exact V4.0 source blob `0566105383a889912e5e756b0b9f265e5fcf0264`.
+- [GEMINI VERDICT] **SAFE TO FLASH LOCAL OTA** at source level; no P0/P1 blocker identified.
+- [FINDING] P2 BLE TX queue overflow can drop newest messages under pressure, including possible ACK/telemetry synchronization impact; no immediate hardware safety blocker identified.
+- [ONLINE OTA] Gemini's main explanation is that the earlier CA-bundle TLS path could fail during handshake; current V4.0 intentionally uses `setInsecure()`. The audit considers Online OTA structurally viable but real network/runtime success remains unverified.
+- [IMPORTANT RECONCILIATION] Gemini's narrative mentions a BLUE blink between download and flash finalize; that is stale relative to the exact current source. The applied patch intentionally removed that intermediate BLUE transition. Current flow is Wi-Fi BLUE → YELLOW download milestones → flash finalize → final GREEN.
+- [IMPORTANT RECONCILIATION] Claims about TLS time/epoch behavior and watchdog tolerance are not source-proven hardware facts; treat them as analysis/hypothesis, not measured evidence.
+- [LOCAL OTA] Gemini found no source-level Local OTA blocker and confirmed the protected Local OTA path was not intentionally modified by the Online OTA patch.
+- [HARDWARE UNVERIFIED] 200 ms selector deadtime, 300 ms rail stabilization, real 3 A load behavior, Wi-Fi congestion, and physical OTA success remain hardware-test evidence gates.
+- [DECISION] This external Gemini verdict is recorded as supporting evidence, but the project must still distinguish source-level safety from compile/BIN/physical validation.
+- [NEXT] Before Local OTA flash, perform the required exact-source Assistant + Gemini reconciliation and then ArduinoDroid/Core 3.3.7 compile/BIN validation. Do not claim physical safety until hardware testing passes.
+
 ## 2026-10-04 — FULL PRE-FLASH GEMINI FORENSIC AUDIT REQUESTED
 
 - [USER] User requests a fresh full Gemini forensic audit before flashing V4.0 through Local OTA because Online OTA previously still failed.
