@@ -41,7 +41,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      # APK delivery intentionally avoids Actions-artifact storage quota.\n\n      # Tested Android release toolchain.
+      # APK delivery intentionally avoids Actions-artifact storage quota.
+
+      # Tested Android release toolchain.
       - name: Set up Java 17
         uses: actions/setup-java@v6
         with:
