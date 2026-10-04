@@ -4,7 +4,7 @@
 - @Thinking Diskusi! = discussion/review only; no functional source, release, or build.
 - @Thinking Tanya Gemini! = diagnosis/patch-request; return exact OLD → NEW patches only.
 - @Thinking Eksekusi! = implement approved scope + affected audit + memory sync + commit.
-- @Thinking Eksekusi Full! = implement + full affected audit + memory sync + commit; App Build is not implied.
+- @Thinking Eksekusi Full! = implement + full audit + memory sync + commit; App Build is not implied.
 - @Thinking Build App! = explicit full App Build workflow in a fresh engineering environment.
 - @Thinking Eksekusi & Build App! = implement → audit → sync → commit → explicit App Build.
 
@@ -40,8 +40,11 @@
 - Issue title: JE X FYZ — BUILD APP TRIGGER
 - Token: JEXFYZ_BUILD_TRIGGER_V1
 - One normal APK, not a Play Store bundle.
+- Obfuscated release build required.
+- Normal push/PR must not generate a release APK.
 - Firmware-only changes do not require App Build.
 - Never claim build/compile/flash/runtime validation that did not occur.
+- Release workflow may require actions: write solely for artifact cleanup; this does not enable push/PR builds.
 
 ## MEMORY RULES
 - Persist meaningful project state in repository documentation.
@@ -52,8 +55,10 @@
 - Current source/workflow always wins on conflicts.
 
 ## CURRENT STATUS
-- Firmware: V4.4
-- App: 1.0.0+3 / Build #50
-- Local OTA: protected, user-confirmed working on V4.3
-- Online OTA: V3.2-style path, user-confirmed working on V4.3
-- V4.4 GATT disconnect fix: physical verification pending.
+- Firmware: V4.5.
+- App: 1.0.0+3.
+- Latest verified downloadable App Build: #50.
+- Build #53: [VERIFIED] CI gates through production signing; [BLOCKED] artifact creation by Actions quota.
+- Local OTA: [CONFIRMED] user-confirmed working on V4.4 before V4.5 promotion; Local OTA remains protected.
+- Online OTA: [CONFIRMED] V3.2-style path retained; V4.5 physical validation still pending.
+- App Build workflows: [COMMITTED] deleted and recreated; current blobs 5c7faeb8fece972179a0607ffd2278bdfd174704 and 04d2293725e97c3cbc67ce8b6f0d9c1230802afd.

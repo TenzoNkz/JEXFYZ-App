@@ -7,13 +7,14 @@
 - App: 1.0.0+3
 - App main blob: f762f6d1cdd1351e57e7d93665ff2f5898769b42
 - App settings blob: f11235bab559b291928550e06984532581ddad6a
+- App test blob: aa86778beb8fcc3ce6a12454f6354f96ec99a160
 - Current App workflow blob: 5c7faeb8fece972179a0607ffd2278bdfd174704
 - Current App trigger workflow blob: 04d2293725e97c3cbc67ce8b6f0d9c1230802afd
 - Latest verified downloadable App Build: #50
-- Build #53: App validation passed; artifact upload blocked by Actions storage quota.
+- Build #53: App validation passed through signing; artifact creation blocked by Actions quota.
 
 ## CURRENT OBJECTIVE
-Deliver the current V4.5 App APK after artifact storage is cleared, then validate it together with Firmware V4.5.
+Preserve this state across chat transfer, then on a future explicit Build App request publish the current App as one APK after workflow artifact cleanup succeeds.
 
 Expected Online OTA:
 Update Firmware → active GATT disconnect → live App telemetry stops → Online OTA continues → restart → BLE reconnect → P1 sync → OTA result is shown.
@@ -31,15 +32,13 @@ Update Firmware → active GATT disconnect → live App telemetry stops → Onli
 - Build #53 passed security/architecture audit, dependency resolution, Dart analysis, Flutter tests, release APK compilation, and production signing verification.
 - Build #53 failed only during artifact creation because GitHub Actions artifact storage quota was exhausted.
 - Firmware V4.5 compile/BIN/flash/physical OTA validation remains pending.
+- Current App source is not validated for downloadable artifact delivery beyond Build #50.
 
-## CI DELIVERY FIX
-- Both App Build workflows were deleted and recreated on 2026-10-04.
-- One direct APK artifact only.
-- Stable artifact filename: JEXFYZ-release.apk.
-- Artifact overwrite enabled.
-- Retention: 7 days.
-- No separate Dart-symbol artifact.
-- Normal push/PR does not trigger release builds.
+## CI DELIVERY STATE
+- Both App Build workflows were deleted and recreated.
+- Release workflow now clears all existing Actions artifacts using actions: write, then uploads exactly one JEXFYZ-release.apk with overwrite and 7-day retention.
+- Trigger remains owner/title/token-gated issue workflow with no push/PR trigger.
+- Runtime proof of the reset workflow producing a new artifact is pending.
 
 ## NEXT
-Clear obsolete Actions artifacts or allow quota to recalculate, then trigger the manual Build App workflow again. Do not change Firmware/App source unless validation exposes a new issue.
+On the next explicit App Build request, run the manual trigger and verify cleanup, CI gates, signing, and single APK artifact publication. Separately compile/flash Firmware V4.5 and perform physical OTA/BLE validation.

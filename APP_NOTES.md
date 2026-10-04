@@ -1,19 +1,13 @@
-## 2026-10-04 — WORKFLOW RESET
-- Both App Build workflows were deleted and recreated.
-- Release workflow blob: `5c7faeb8fece972179a0607ffd2278bdfd174704`.
-- Trigger workflow blob: `04d2293725e97c3cbc67ce8b6f0d9c1230802afd`.
-- The release workflow deletes existing Actions artifacts before packaging and publishes one replaceable APK only.
-- The trigger is restricted to the repository owner and grants `actions: write` to the reusable build.
-
 # JE X FYZ — CURRENT APP NOTES
 
-## IDENTITY
+## CURRENT IDENTITY
 - App name: JE Cooler
 - Header: JE X FYZ
 - Package: com.horizontalzzz.jexfyz
 - Version: 1.0.0+3
 - Main source blob: f762f6d1cdd1351e57e7d93665ff2f5898769b42
 - Settings blob: f11235bab559b291928550e06984532581ddad6a
+- Tests blob: aa86778beb8fcc3ce6a12454f6354f96ec99a160
 
 ## BLE / SESSION
 - flutter_blue_plus is the BLE transport.
@@ -35,9 +29,11 @@
 - Firebase supplies release metadata; GitHub hosts the fixed firmware BIN URL.
 - Wi-Fi credentials remain in flutter_secure_storage.
 
-## BUILD STATUS
-- Build #51 failed at Dart analysis because _startCloudOta was missing its closing brace; fixed in commit ea5261230245fc86061cdf85f65ccd0208e607d3.
-- Build #52 passed App compilation and signing but failed in the workflow signing-output shell pipeline; fixed in commit e33141efd47b8f1ca025e832097e1106d9119b65.
-- Build #53 passed audit, analysis, tests, APK compilation, and production signing verification, but artifact upload failed because GitHub Actions artifact quota was exhausted.
-- Current workflow publishes one replaceable APK artifact and no separate symbols artifact.
-- Build #50 remains the latest verified downloadable APK; #53 has no downloadable artifact.
+## BUILD / CI STATUS
+- Build #51: [VERIFIED] source parser failure; fixed in ea5261230245fc86061cdf85f65ccd0208e607d3.
+- Build #52: [VERIFIED] signing-shell pipefail/SIGPIPE failure; fixed in e33141efd47b8f1ca025e832097e1106d9119b65.
+- Build #53: [VERIFIED] audit/analysis/tests/compile/signing passed; [BLOCKED] artifact creation due Actions quota.
+- Latest verified downloadable APK remains Build #50.
+- Current release workflow blob: 5c7faeb8fece972179a0607ffd2278bdfd174704.
+- Current trigger workflow blob: 04d2293725e97c3cbc67ce8b6f0d9c1230802afd.
+- No source/App behavior change is made by the present chat-limit transfer.
