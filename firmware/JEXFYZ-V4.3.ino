@@ -3297,7 +3297,6 @@ static bool performOnlineOtaDownload() {
     onlineUpdateStarted = true;
     onlineOtaDownloadBytesWritten = 0;
     onlineOtaDownloadLastDataAt = millis();
-    Update.onProgress(onlineUpdateProgress);
   }
 
   NetworkClient* stream = onlineHttpClient.getStreamPtr();
@@ -3383,9 +3382,6 @@ static bool performOnlineOtaDownload() {
   }
 
   onlineOtaDownloadBytesWritten += written;
-  onlineUpdateProgress(
-      onlineOtaDownloadBytesWritten,
-      static_cast<size_t>(onlineHttpExpectedBytes));
 
   if (onlineOtaDownloadBytesWritten >=
       static_cast<size_t>(onlineHttpExpectedBytes)) {
