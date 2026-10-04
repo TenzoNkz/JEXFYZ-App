@@ -582,3 +582,18 @@ This is static/source analysis only. ArduinoDroid + official Arduino-ESP32 Core 
 
 ### Documentation standard for next implementation pass
 The requested “keterangan di semua baris” is interpreted as every meaningful functional statement being explainable from nearby comments/contract metadata: purpose, authority, state mutation, timing, and safety effect. Blank lines, punctuation-only braces, and obvious syntax do not need redundant comments.
+
+## 2026-10-04 — GEMINI AUDIT RECONCILIATION / CURRENT DECISION
+
+- [DISCUSSION ONLY] Raw Gemini V3.8 independent audit received and reconciled against current firmware source.
+- Current functional firmware remains **V3.8**, source `firmware/JEXFYZ-V3.8.ino`, blob `2fbff3656bc037846124806fb390022f85146845`.
+- **Confirmed blocker:** Online OTA DOWNLOAD dispatcher starvation after first chunk.
+- **Confirmed safety gaps:** NTC validity race at selector completion; Peltier ON during voltage transition; PWM/selector sequencing hazard; Wi-Fi retry settle gap; rapid-rise thermal protection missing.
+- **Confirmed logic/protocol gap:** ADAPTIVE:OFF ACK contradiction.
+- **Confirmed security gaps:** TLS `setInsecure()`, no semantic anti-rollback, unauthenticated BLE command channel.
+- **Accepted but downgraded:** BLE disconnect callback advertising restart is a P2 callback-context/reentrancy risk, not a proven crash.
+- **Accepted but carefully worded:** BLE/Wi-Fi handoff violates the project's single-radio contract because OTA uses `stopBleRadio(false)`; physical RF/panic/restart causality remains unverified.
+- **Rejected as an established fact:** “PWM during 9V->12V is conclusively the brownout root cause.” It remains the leading hardware hypothesis until reset-reason/rail/current measurements exist.
+- [FROZEN] 5s Peltier soft-start remains OFF -> ON only; voltage changes do not restart soft-start.
+- No functional source change has been made in response to the Gemini review.
+- Exact next action: **`@Thinking Eksekusi Full!` for the agreed V3.8 hardening pass**, followed by separate ArduinoDroid/Core 3.3.7 compile and hardware validation.
