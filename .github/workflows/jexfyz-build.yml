@@ -267,7 +267,7 @@ jobs:
           echo "Production APK signature verified: JE X FYZ certificate is present and matches the official signing identity."
           ls -lh "$APK"
 
-      # Stable delivery filename keeps the latest APK artifact replaceable.
+      # Stable delivery filename keeps the latest release asset replaceable.
       - name: Prepare release APK filename
         shell: bash
         run: |
@@ -304,8 +304,10 @@ jobs:
             echo "Updating existing GitHub Release $RELEASE_TAG"
             gh release upload "$RELEASE_TAG" "$APK" --clobber
             gh release edit "$RELEASE_TAG" \
+              --target "$GITHUB_SHA" \
               --title "$RELEASE_TITLE" \
-              --notes "$RELEASE_NOTES"
+              --notes "$RELEASE_NOTES" \
+              --latest
           else
             echo "Creating GitHub Release $RELEASE_TAG"
             gh release create "$RELEASE_TAG" "$APK" \
