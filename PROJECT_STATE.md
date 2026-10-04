@@ -1,3 +1,17 @@
+## 2026-10-04 — NEW CHAT PREFLIGHT / REPOSITORY RECONCILIATION
+
+- [VERIFIED] Mandatory repository preflight completed in the required order, including current firmware analysis and exact current source/workflow inspection.
+- [VERIFIED] Live `main` HEAD before this memory-only synchronization: `af29fd3a3f785aa3685c713cac963ecedeb7f869`.
+- [RECONCILED] `CHAT_TRANSFER.md` records `fe9e35b578bd7034899e629ca6d030854257ddf6` as its historical completed-checkpoint HEAD. The live `af29…` commit is one documentation-only child that updates the transfer-completion record; no functional App/Firmware/workflow source changed in that commit.
+- [VERIFIED] Active Firmware source is `firmware/JEXFYZ-V3.9.ino`, blob `bf85b50e0a8cab22e5d66ef09ee84d6692cee009`.
+- [VERIFIED] Current App Build baseline remains #50, Run `36996987220`, built from source `bf01595253eb5a1912471c4aee57c4eed4421f0f`; no newer verified App Build exists.
+- [VERIFIED] Current App workflows are `.github/workflows/app-build.yml` blob `731f4a7a43bf58d01a382053457d1f67a4742c8a` and `.github/workflows/app-build-trigger.yml` blob `89598aff0b006bb3db6819080a13965fc5a6247d`; push/PR does not trigger the release APK.
+- [RECONCILED] Older V3.7/V3.8 entries in PROJECT_STATE, APP_NOTES, FIRMWARE_NOTES, FIRMWARE_ANALYSIS, and HANDOVER are historical. Current source plus the newest V3.9 state sections override them.
+- [CONFIRMED] V3.9 flash gate remains CLOSED / NOT SAFE TO FLASH. P0 post-selector rail stabilization and P1 trusted OTA TLS remain open; P2 BLE TX priority remains a secondary risk.
+- [BLOCKED] V3.9 compile, BIN generation, Firebase promotion, flash, oscilloscope/current/rail measurement, and physical validation remain unperformed.
+- [NO FUNCTIONAL CHANGE] This new-chat reconciliation is memory/documentation-only; no App/Firmware/workflow behavior was modified.
+- [NEXT EXACT ACTION] When explicitly authorized for execution, patch the P0 post-selector rail stabilization and P1 trusted OTA TLS, then repeat the assistant/Gemini two-party audit before any firmware update.
+
 ## 2026-10-04 — CURRENT AUTHORITATIVE STATE AFTER V3.9 CHAT-LIMIT TRANSFER
 
 > Current-state override for older V3.7/V3.8 historical entries below.
