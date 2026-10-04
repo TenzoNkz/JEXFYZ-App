@@ -4755,7 +4755,7 @@ The requested “keterangan di semua baris” is interpreted as every meaningful
 A full hardening pass must address the confirmed sequencing/OTA/safety items before hardware validation.
 
 ## 2026-10-04 — V3.9 FULL HARDENING EXECUTION
-- Active source: `firmware/JEXFYZ-V3.9.ino` blob `f123a46d84d1e2ec0e67419a6577388fd3c8645e`.
+- Active source: `firmware/JEXFYZ-V3.9.ino` blob `bf85b50e0a8cab22e5d66ef09ee84d6692cee009`.
 - Implemented: OTA stream continuation, full BLE teardown for Online OTA, Wi-Fi retry settle, physical Peltier PWM suppression across selector deadtime, manual Peltier transition interlock, final NTC gate, rapid Hotside rise latch, Battery hysteresis, ADAPTIVE:OFF ACK correction, main-loop BLE advertising recovery, numeric anti-rollback, reset reason telemetry, Local OTA magic byte validation, TX overflow counter.
 - Preserved: GPIO5=Peltier, GPIO6=Fan; 200 ms selector deadtime; 1 s voltage guard; OFF -> ON-only soft-start semantics; no executable delay/wait loops.
 - Remaining open: CA/server verification instead of `setInsecure()`; BLE cryptographic auth; strict non-blocking HTTP transport; post-boot rollback health.
