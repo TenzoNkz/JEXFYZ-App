@@ -1,71 +1,35 @@
 # JE X FYZ — LATEST CHAT TRANSFER
 
-## TRANSFER METADATA
+## CURRENT STATE
 - Repository: TenzoNkz/JEXFYZ-App
-- HEAD: b612626861cee4f5f8b4d20e6ef0d88c5f0ca550
 - Branch: main
-- This file is the latest replace-style transfer snapshot.
-- Superseded transfer snapshots remain in Git history only.
+- Active Firmware: V4.5
+- Firmware source: firmware/JEXFYZ-V4.5.ino
+- Firmware blob: daef871d910f3f1bc4f2d1bdc44e0d19f6e292dc
+- App main blob: 8ebd878b116d7ef093b6df54894a7db876eb0f02
+- App settings blob: f11235bab559b291928550e06984532581ddad6a
+- App tests blob: aa86778beb8fcc3ce6a12454f6354f96ec99a160
+- Latest verified App Build: #50 for an older App source
 
-## CURRENT TASK
-Verify the V4.4 firmware change that explicitly closes the active BLE GATT session when Online OTA starts.
+## COMPLETED IN THIS EXECUTION
+- Firmware promoted V4.4 → V4.5.
+- Active-GATT disconnect ordering fixed.
+- OTA_UP_TO_DATE one-shot result aligned.
+- Rapid-rise safety gated on Peltier ON.
+- App Online OTA recovery no longer self-blocks and no longer depends on passive Auto Connect preference.
+- Expected OTA disconnect no longer produces the normal Bluetooth-disconnected error.
+- App/Firmware safety, Adaptive Ceiling, battery thresholds, OTA stages, password masking, and OTA localization synchronized.
+- Repository memory updated.
 
-## CURRENT WORKFLOW
-- Diskusi = review only.
-- Tanya Gemini = diagnosis/patch-only.
-- Eksekusi = implement + affected audit + sync + commit.
-- Eksekusi Full = implement + full audit + sync + commit.
-- Build App = explicit App build.
-- Eksekusi & Build App = implement + audit + sync + commit + App Build.
+## FROZEN
+- Local OTA Golden Path
+- BLE UUID/P1 contract
+- V3.2-style Online OTA transport/retry/result-indicator behavior
+- Manual App Build trigger
+- No executable delay() / no timing while()
 
-## CURRENT PROJECT TRUTH
-- App: JE Cooler / JE X FYZ
-- App version: 1.0.0+3
-- Package: com.horizontalzzz.jexfyz
-- Firmware: V4.4
-- Firmware source: firmware/JEXFYZ-V4.4.ino
-- Firmware blob: 18f74d5c87b85886b6d3d44fddd4938f4db7019c
-- Latest App Build: #50
-- Build source SHA: bf01595253eb5a1912471c4aee57c4eed4421f0f
-
-## REQUIREMENTS / FROZEN DECISIONS
-- Local OTA is protected.
-- Online OTA stays simple and V3.2-style.
-- No yellow Online OTA progress layer.
-- BLE and Wi-Fi are mutually exclusive.
-- Functional Firmware changes increment version.
-- No executable delay() and no timing while() loops.
-- App Build remains manual and independent from Firmware.
-
-## VERIFIED RUNTIME HISTORY
-- V4.3 Local OTA: PASS — user confirmed.
-- V4.3 Online OTA: PASS — user confirmed.
-- V4.4 GATT disconnect: pending.
-
-## V4.4 CHANGE
-V4.3 stopped BLE advertising but left the active GATT session open.
-V4.4 adds explicit BLEServer disconnect using the connection ID.
-
-## STATIC VALIDATION
-- 5223 lines.
-- braces/parentheses/brackets balanced.
-- executable delay() = 0.
-- timing while() = 0.
-- yellow 0xFFFF00 refs = 0.
-- stale Online OTA progress refs = 0.
-- explicit GATT disconnect = 1.
-- one active versioned .ino remains.
-
-## RISKS / UNVERIFIED
-- V4.4 has not yet been physically flashed/tested.
-- Core 3.3.7 compile/BIN and Firebase promotion are still separate gates.
-- The new GATT disconnect boundary must be validated on Android + ESP32-C3.
-
-## EXACT NEXT ACTION
-Compile/flash V4.4. Test BLE disconnect at Online OTA start, verify telemetry stops, verify OTA succeeds, then verify reboot/reconnect/sync.
-
-## REQUIRED FIRST ACTION IN NEW CHAT
-Read the full mandatory memory stack and exact current source/workflow, reconcile this transfer, and continue the exact next action.
-
-## RECONCILIATION NOTE
-Current source/workflow outrank this transfer. Old V4.1/V4.2/V4.3 current-state claims are historical and must not be treated as current.
+## VALIDATION BOUNDARY
+- V4.4 physical OTA: user-confirmed PASS.
+- V4.5 source/static audit: PASS.
+- V4.5 compile/BIN/flash/physical validation: pending.
+- Current App source requires a future explicit App Build for release validation.
