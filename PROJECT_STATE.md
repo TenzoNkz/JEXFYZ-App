@@ -1,3 +1,13 @@
+## 2026-10-04 — ONLINE OTA WIFI CONNECTION FORENSIC DIAGNOSIS REQUESTED
+
+- [USER HARDWARE EVIDENCE] V4.0 Online OTA still fails when using an HP hotspot; ESP32-C3 does not reach Wi-Fi connected state.
+- [DIAGNOSIS] The latest test did not demonstrate that GitHub/HTTPS was reached; current investigation is the Wi-Fi connection stage first.
+- [SCOPE] Gemini is being asked to inspect BLE teardown/radio handoff, Wi-Fi STA setup, WiFi.begin(), WL_* status handling, timeout/retry, and common hotspot compatibility.
+- [PROTECTED] Local OTA remains frozen/protected and is not a target for changes.
+- [CURRENT SOURCE] V4.0 blob remains `0566105383a889912e5e756b0b9f265e5fcf0264`.
+- [GEMINI OUTPUT] Determine exact failure stage/root cause and whether a source patch is required. Any patch must be exact OLD → NEW only; no full .ino.
+- [NO SOURCE CHANGE] This request itself does not modify firmware behavior; wait for Gemini diagnosis.
+
 ## 2026-10-04 — GEMINI FULL PRE-FLASH FORENSIC AUDIT / V4.0
 
 - [GEMINI] User supplied an independent full forensic audit of the exact V4.0 source blob `0566105383a889912e5e756b0b9f265e5fcf0264`.
