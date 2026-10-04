@@ -1,3 +1,15 @@
+## 2026-10-04 — FIRMWARE V3.0 EXECUTION / APP CONTRACT IMPACT
+
+- Firmware continuity source advanced V2.9 → V3.0 in the App repository; active source commit is 38dc74ca92833ee3a6c8b7a67b0ecccf66e27025.
+- Battery Adaptive contract now uses direct temperature zones without 1°C hysteresis:
+  - below BATT5 → 5V
+  - BATT5 through below BATT12 → 9V
+  - at/above BATT12 → 12V
+- Battery Adaptive voltage movement remains one step at a time and is constrained by the shared 1-second voltage dwell measured after completed physical transitions.
+- Battery down-voltage no longer bypasses the shared voltage guard.
+- No App source was modified by this firmware execution, and no App Build was triggered.
+- BLE UUID/P1 protocol, logical FAN/PELTIER tokens, GPIO mapping, OTA transport, Firebase metadata plane, and signing identity were not intentionally changed.
+
 ## 2026-10-03 — FIRMWARE V2.9 EXECUTION / APP CONTRACT IMPACT
 
 - Firmware continuity source advanced to firmware/JEXFYZ-V2.9.ino in the App repository; active firmware source commit is 5254ac4112aba63429ee075497f165d253541649.

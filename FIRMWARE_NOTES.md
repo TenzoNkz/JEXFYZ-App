@@ -1,3 +1,57 @@
+## 2026-10-04 — EXECUTION FULL / FIRMWARE V3.0 BATTERY ADAPTIVE NO-HYSTERESIS + UNIFIED VOLTAGE DWELL
+
+### Source/version
+- User issued `@Thinking Eksekusi Full!` after Gemini's Battery Adaptive audit.
+- Functional firmware revision advanced **V2.9 → V3.0** because Battery Adaptive voltage-control semantics changed.
+- Active continuity source is `firmware/JEXFYZ-V3.0.ino`.
+- Superseded `firmware/JEXFYZ-V2.9.ino` was removed from the active source tree.
+- Firmware source implementation commit: 38dc74ca92833ee3a6c8b7a67b0ecccf66e27025.
+- No firmware BIN, Firebase metadata, dedicated binary-repository update, App Build, or physical device validation was performed.
+
+### Implemented changes
+1. **Battery Adaptive temperature mapping**
+   - Removed the 1.0°C Battery hysteresis completely.
+   - Removed `batteryZoneForStable()`, `lastBatteryZone`, and the Adaptive Battery pending-state/timer variables that existed only around the old hysteresis/delayed-command model.
+   - Battery zone is now evaluated directly from the live Battery temperature:
+     - below `battery5Limit` → 5V;
+     - `battery5Limit <= temperature < battery12Limit` → 9V;
+     - at/above `battery12Limit` → 12V.
+   - Boundary equality is therefore immediate: BATT5 exactly → 9V; BATT12 exactly → 12V.
+   - 9V remains a real operating level.
+
+2. **Continuous Battery Adaptive evaluation**
+   - Removed the separate Battery up/down delayed execution queues.
+   - `evaluateAdaptiveBattery()` now calculates the live desired voltage every loop, clamps it to `adaptiveCeiling`, and selects exactly one higher/lower voltage step toward that current target.
+   - There is no FIFO/stale Battery command. If the Battery target returns to the current physical voltage before a step is allowed, no transition is executed.
+   - Large temperature jumps still move only one level per physical transition: 5V→9V→12V or 12V→9V→5V.
+
+3. **Unified voltage hardware dwell**
+   - Battery Adaptive up and down requests now both use the shared voltage guard; Battery down no longer bypasses the guard.
+   - `requestVoltage()` no longer timestamps the 1-second guard when a request is created.
+   - The shared 1-second voltage dwell now starts when a physical voltage transition actually completes, after the existing 200 ms selector deadtime and target-selector activation.
+   - The completed-transition timestamp is stored in `lastVoltageTransitionCompleteMs`.
+   - Existing explicit `bypassGuard=true` remains available only for higher-authority safety/Adaptive startup paths that must be able to force a voltage change; Battery Adaptive always uses the guarded path.
+
+### Full regression checks completed
+- Source version literal = V3.0.
+- Active source filename = `JEXFYZ-V3.0.ino`.
+- V2.9 source file retired from active tree.
+- No retired Battery hysteresis/stable-zone/pending-state terms remain in active V3.0 source.
+- Direct threshold semantics verified in source: `T < BATT5` → 5V; `T < BATT12` → 9V; otherwise 12V.
+- Battery Adaptive physical step call is guarded with `bypassGuard=false`.
+- Voltage guard timestamp is written only on completed physical transition.
+- Braces and parentheses are balanced.
+- Behavioral model cross-checks were performed for the agreed boundary, one-step, no-stale-target, and rate-limit scenarios.
+- ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile was **NOT performed in this environment**.
+- BIN generation/publication was **NOT performed**.
+- Physical ESP32 flash/runtime validation was **NOT performed**.
+- Firebase firmware metadata was **NOT promoted**.
+- App Build was **NOT triggered**.
+
+### Validation boundary
+- This execution proves repository/source transformation plus static/behavioral model checks only.
+- It does not prove actual selector timing, supply stability, Fan/Peltier behavior, thermal behavior, BLE runtime, OTA runtime, or physical switching safety on the ESP32 hardware.
+
 ## 2026-10-03 — EXECUTION / FIRMWARE V2.9 TOUCH + CONTROL CLEANUP + OTA CAP
 
 ### Source/version
