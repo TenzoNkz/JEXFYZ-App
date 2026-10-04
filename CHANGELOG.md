@@ -1,3 +1,12 @@
+## APP BUILD WORKFLOW RESTORE UNDER NEW NAMES — 2026-10-05
+- Restored the proven two-workflow App Build architecture without reusing the legacy filenames.
+- Manual trigger: `.github/workflows/jexfyz-app-build-trigger.yml`.
+- Reusable build engine: `.github/workflows/jexfyz-app-build-engine.yml`.
+- The restored engine is based on the Build #50-era verified configuration: Java 17, Flutter 3.47.2, Gradle 9.3.1, production signing verification, obfuscated release APK, Actions artifact for the APK, and Dart symbols artifact.
+- The previous `.github/workflows/jexfyz-build.yml` single Release-asset workflow was removed.
+- No App Build was started by this execution; this is a workflow/configuration restore only.
+- App/Firmware runtime source was not changed.
+
 # JE X FYZ — CHANGELOG
 
 ## CI ARTIFACT QUOTA FIX — 2026-10-04
