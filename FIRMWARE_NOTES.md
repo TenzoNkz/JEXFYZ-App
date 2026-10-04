@@ -1,3 +1,11 @@
+## 2026-10-04 — EXECUTION FULL / MEMORY FOUNDATION BOOTSTRAP
+
+- Repository memory now has a dedicated current-state snapshot at `PROJECT_STATE.md`, plus README operating instructions, build checkpoints, changelog, and portable handover.
+- Firmware source remains `firmware/JEXFYZ-V3.7.ino`; this execution did not change firmware behavior or version.
+- The mandatory memory preflight applies even when the task is App Build-related and the active subchat is separate from the firmware discussion chat.
+- Firmware compile/BIN/device validation remains separate from source/documentation validation.
+- No firmware BIN promotion, Firebase update, dedicated binary-repository update, or physical validation was performed by this memory-system execution.
+
 ## 2026-10-04 — EXECUTION FULL / PERMANENT MEMORY CONTINUITY SYSTEM
 
 - Added the project-wide continuity documents: `README.md`, `PROJECT_STATE.md`, `BUILD_NOTES.md`, `CHANGELOG.md`, and `HANDOVER.md`.
