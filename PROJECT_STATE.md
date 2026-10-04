@@ -605,3 +605,10 @@ The requested “keterangan di semua baris” is interpreted as every meaningful
 - [OPEN] Online OTA still uses `setInsecure()`; BLE cryptographic authentication is not implemented; Online OTA HTTP GET remains synchronous; post-boot rollback health policy is absent.
 - [VALIDATION PENDING] ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile, BIN, Firebase promotion, physical validation.
 - [NO BUILD] App source/configuration unchanged; Build #50 remains baseline.
+
+## 2026-10-04 — V3.9 TWO-PARTY VALIDATION GATE
+
+- [USER REQUIREMENT] Before any further Firmware update/release decision, the active V3.9 source must be reviewed independently by both this assistant and Gemini.
+- [FROZEN PROCESS] Agreement requires the same V3.9 source/evidence to be audited by both parties; source changes must not be made merely to obtain agreement.
+- [GATE] Do not update/flash/release a new firmware revision until both reviews are reconciled and no unresolved P0/P1 blocker remains without an explicitly accepted validation plan.
+- [EVIDENCE] Gemini review is user-mediated: the user supplies the exact V3.9 source to Gemini and returns Gemini's raw response; no Gemini result may be fabricated.
