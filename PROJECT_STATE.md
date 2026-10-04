@@ -1,3 +1,13 @@
+## 2026-10-04 — FULL PRE-FLASH GEMINI FORENSIC AUDIT REQUESTED
+
+- [USER] User requests a fresh full Gemini forensic audit before flashing V4.0 through Local OTA because Online OTA previously still failed.
+- [SCOPE] Audit the exact current V4.0 source from zero, searching for bugs, errors, failure paths, compile/Core 3.3.7 risks, watchdog/reset, state-machine, radio handoff, OTA, LED, memory, concurrency, and firmware-wide safety problems.
+- [LOCAL OTA] Local OTA remains frozen/protected; audit must check for indirect regressions but must not propose unrelated Local OTA changes.
+- [GEMINI OUTPUT] Final verdict must be SAFE TO FLASH LOCAL OTA or NOT SAFE TO FLASH LOCAL OTA. Any required functional corrections must be exact OLD → NEW patches only; no full .ino.
+- [CURRENT SOURCE] V4.0 source blob remains `0566105383a889912e5e756b0b9f265e5fcf0264`.
+- [PROMPT] Full copy-ready forensic audit prompt has been appended to `GEMINI_PROMPT_ONLINE_OTA.md`.
+- [GATE] Flash gate remains CLOSED until the fresh exact-source review and required validation are complete.
+
 ## 2026-10-04 — GEMINI ONLINE OTA PATCH EXECUTION COMPLETE
 
 - Applied the exact Gemini Online OTA patch to V4.0: removed the custom CA-bundle client, restored plain `WiFiClientSecure`, and use `setInsecure()` by intentional user-approved compatibility policy.
