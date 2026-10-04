@@ -1,3 +1,10 @@
+## 2026-10-04 — WORKFLOW RESET
+- Both App Build workflows were deleted and recreated.
+- Release workflow blob: `5c7faeb8fece972179a0607ffd2278bdfd174704`.
+- Trigger workflow blob: `04d2293725e97c3cbc67ce8b6f0d9c1230802afd`.
+- The release workflow deletes existing Actions artifacts before packaging and publishes one replaceable APK only.
+- The trigger is restricted to the repository owner and grants `actions: write` to the reusable build.
+
 # JE X FYZ — CURRENT APP NOTES
 
 ## IDENTITY
