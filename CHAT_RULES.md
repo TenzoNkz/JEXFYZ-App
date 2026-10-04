@@ -556,3 +556,12 @@ For any hardware/control mismatch, verify in order:
 - [USER REQUIREMENT] When a second-opinion/Gemini review is requested, only an actual tool/connector result may be recorded as a Gemini result.
 - [BLOCKED] No Gemini-capable tool/connector was available for this event, so the review request is recorded as blocked rather than fabricated.
 
+## 2026-10-04 — PROCESS RULE / GEMINI RELAY VIA USER
+
+- [CONFIRMED] When the user requests `@Thinking Tanya Gemini!`, the intended workflow is a **user-mediated Gemini relay** unless a direct Gemini connector is actually available.
+- The assistant must prepare a complete, copy-ready technical prompt containing the verified project context, exact question, relevant source excerpts/constraints, requested analysis scope, and a structured response format.
+- The user sends that prompt to Gemini externally and brings Gemini's reply back into this chat.
+- Do not claim a Gemini result before the user's relay reply is received.
+- After the user returns Gemini's response, classify it as external second-opinion evidence, reconcile it against current repository/source authority, and record accepted/rejected conclusions plus what remains unverified.
+- A direct Gemini connector/tool, when available, may be used instead of the relay; otherwise the user relay is the default requested path.
+
