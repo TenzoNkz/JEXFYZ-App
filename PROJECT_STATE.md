@@ -1,0 +1,196 @@
+# JE X FYZ — PROJECT STATE
+
+> **Authoritative current-state snapshot.**
+> Read after README.md and before historical notes. The source repository remains the authority for code truth.
+
+## 1. CURRENT PROJECT
+
+- Project: JE X FYZ / JE Cooler
+- Current workflow event: Execution Full — Permanent Memory Architecture
+- Functional source behavior changed by this task: No
+- App Build triggered by this task: No
+- Firmware compile triggered by this task: No
+- Physical hardware test triggered by this task: No
+
+## 2. REPOSITORIES
+
+### App / Source / Continuity
+- Repository: TenzoNkz/JEXFYZ-App
+- Branch: main
+- Contains App source, Android project, CI workflow, firmware continuity source, and project memory.
+
+### Firmware Distribution
+- Repository: TenzoNkz/JEXFYZ-Firmware
+- Distribution boundary: binary-only
+- Do not place .ino source or FIRMWARE_NOTES.md here.
+
+## 3. CURRENT SOFTWARE BASELINE
+
+### Firmware
+- Version: V3.7
+- Source: firmware/JEXFYZ-V3.7.ino
+- Source blob: 4a7e08a6ea0de57f4e3d3a742ad88cbd25a05e01
+- Functional/documentation source commit: ef4519b8f4d032a6d2d1f84101785c05b8a89cfa
+- Firmware analysis: firmware/FIRMWARE_ANALYSIS.md
+
+### App
+- Last verified App Build: #50
+- Run: 36996987220
+- Source built: bf01595253eb5a1912471c4aee57c4eed4421f0f
+- APK artifact: 11222007634
+- APK size: 54,245,456 bytes
+- APK SHA256: 82a2320d8e3663800d6884f4cb0d009ff1b31b5b19cc64420f9ee5c6b01d01b0
+- Symbols artifact: 11222132522
+- Symbols size: 8,308,848 bytes
+- Symbols SHA256: a87a3181bada92e229da3c1f79d9a59339d7669c11b32ac1d8c219ae435c9062
+- The newer V3.7/documentation/memory commits have not been included in a newer App Build.
+
+## 4. MEMORY ARCHITECTURE
+
+The repository now has an explicit continuity stack:
+
+1. README.md — operating manual + detailed new-chat prompt.
+2. PROJECT_STATE.md — current-state snapshot.
+3. CHAT_RULES.md — workflow/process rules.
+4. APP_NOTES.md — App/cross-layer contract and history.
+5. FIRMWARE_NOTES.md — Firmware contract and history.
+6. BUILD_NOTES.md — Build App checkpoints and artifact evidence.
+7. CHANGELOG.md — milestone/version history.
+8. HANDOVER.md — portable continuation prompt.
+9. firmware/FIRMWARE_ANALYSIS.md — Firmware architecture/safety map.
+
+## 5. MANDATORY MEMORY PREFLIGHT
+
+Before any project action:
+README -> PROJECT_STATE -> CHAT_RULES -> APP_NOTES -> FIRMWARE_NOTES -> BUILD_NOTES -> CHANGELOG -> relevant FIRMWARE_ANALYSIS -> current source/workflow
+
+The assistant must not rely on old chat context when repository memory can be read.
+
+## 6. AUTOMATIC MEMORY SYNC
+
+Every meaningful project event must persist its conclusions without waiting for a user reminder.
+
+### Discussion
+Record requirements, decisions, accepted/rejected paths, confirmed facts, unresolved questions, risks, and next action.
+Discussion may update memory-only documentation but must not change functional App/Firmware source or trigger build/release.
+
+### Execution / Execution Full
+Record changed files, exact source/version, commit, audit/regression, validation boundary, and unchanged contracts.
+
+### Build App
+Treat Build App as a complete engineering workflow:
+- memory preflight;
+- current App source inspection;
+- workflow/trigger inspection;
+- exact source SHA;
+- current version/build;
+- previous successful build;
+- delta since previous successful build;
+- risks before build.
+
+After success, persist exact source SHA, workflow/run ID, build number/version, artifact ID/name/size/SHA256, symbols metadata, every included source/config/workflow/dependency change, build-only troubleshooting, gates, unvalidated areas, and next baseline.
+
+A successful build is a memory checkpoint.
+
+### Gemini / compile / hardware
+Record exact question/result or exact test/evidence. Never invent missing evidence.
+
+## 7. CURRENT HARDWARE CONTRACT
+
+- GPIO0 = NTC
+- GPIO1 = Touch
+- GPIO3 = 12 V selector
+- GPIO4 = 9 V selector
+- GPIO5 = Peltier
+- GPIO6 = Fan
+- GPIO7 = WS2812
+- Fan PWM = 25 kHz, 8-bit, 50–100%
+- Peltier PWM = 20 kHz, 8-bit, 5 s soft-start
+- NTC = fixed 10 kΩ / 10 kΩ model, beta 3950, 12-bit ADC, 11 dB, 1 s sampling
+
+## 8. CURRENT V3.7 PELTIER CONTRACT
+
+- Peltier OFF -> ON: start 5 s soft-start.
+- Voltage UP while Peltier is ON: restart 5 s soft-start.
+- Voltage DOWN while Peltier is ON: do not restart.
+- The voltage-rise restart is applied after the physical selector transition completes.
+- Safety authority can still force Peltier OFF.
+
+## 9. CURRENT ADAPTIVE / SAFETY CONTRACT
+
+- Adaptive start and stop both return the physical selector to 5 V first.
+- While Adaptive is active, Voltage/Control/Temperature user control is locked.
+- Hotside Limit is universal across Manual, HOTSIDE, and HOTSIDE_BATTERY.
+- Manual hot: force 5 V, Fan 100%, Peltier safety latch.
+- Adaptive hot: immediate one-level down; blocked voltage removed from temporary ceiling; Peltier OFF 5 s after physical down-step.
+- At 5 V while still hot: Adaptive OFF, Fan remains ON.
+- HOTSIDE_BATTERY: Hotside is the safety ceiling; phone Battery controls allowed voltage below that ceiling.
+- Battery invalid/disconnected: runtime fallback to HOTSIDE without changing configured profile.
+- Battery direct zones: below BATT5 -> 5 V; BATT5 through below BATT12 -> 9 V; at/above BATT12 -> 12 V.
+
+## 10. CURRENT OTA / RADIO CONTRACT
+
+- ESP32-C3 uses one-radio behavior: Wi-Fi and BLE are not intentionally active concurrently.
+- BLE starts only after Wi-Fi is OFF and settled.
+- OTA supervisor has priority over normal application processing.
+- OTA safe outputs: Fan/Peltier OFF, selector safe state 5 V.
+- Online OTA accepts only the approved JE X FYZ GitHub .bin source.
+- Runtime timing is cooperative; executable delay() and timing while() are prohibited.
+
+## 11. CURRENT SOURCE AUDIT
+
+- 5107 source lines.
+- 779 comment lines.
+- 136 [DOC-CONTRACT] blocks.
+- 535/535 C++-aware braces.
+- 2002/2002 C++-aware parentheses.
+- 0 executable delay().
+- 0 timing while().
+- 0 stale V3.5/V3.6/V1.0 baseline references.
+- 0 mixed-language comments in the cleanup audit.
+
+## 12. VALIDATION BOUNDARY
+
+### Verified
+- Current V3.7 source exists.
+- Source documentation and architecture map are present.
+- Repository memory architecture is present.
+- Historical App Build #50 is fully recorded.
+
+### Not verified
+- ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile for V3.7.
+- V3.7 BIN generation/publication.
+- Firebase promotion for V3.7.
+- Physical ESP32 electrical/thermal/BLE/OTA behavior.
+- New App Build after current V3.7/documentation/memory commits.
+
+## 13. CHAT CONTINUITY
+
+For a new chat:
+1. Start with README.md.
+2. Perform the full memory preflight.
+3. Report the current state.
+4. Inspect exact current source/workflow.
+5. Continue from repository state, not remembered chat text.
+
+If the chat approaches context limit:
+1. synchronize memory;
+2. refresh PROJECT_STATE;
+3. refresh HANDOVER;
+4. provide the detailed copy-ready continuation prompt;
+5. new chat starts again from README.
+
+## 14. IMPORTANT DOCUMENTATION COMMITS
+
+- V3.7 source documentation: ef4519b8f4d032a6d2d1f84101785c05b8a89cfa
+- Firmware analysis map: e2ab50edeb428e95ce21a9b5a54e169d904ade84
+- Latest pre-state memory/process commits are recorded in CHAT_RULES.md, APP_NOTES.md, and FIRMWARE_NOTES.md.
+- Build/milestone/handover records are stored in BUILD_NOTES.md, CHANGELOG.md, and HANDOVER.md.
+
+## 15. CURRENT NEXT ACTION
+
+No functional source change is pending from this memory-system task.
+
+For Build App, the first action must be the full memory preflight and exact-source/build-workflow identification.
+
+**Memory architecture established. Functional V3.7 behavior remains unchanged by this documentation system work.**
