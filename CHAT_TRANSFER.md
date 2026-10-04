@@ -26,8 +26,10 @@
 - [VERIFIED] Issue title: JE X FYZ — BUILD APP TRIGGER.
 - [VERIFIED] Required body token: JEXFYZ_BUILD_TRIGGER_V1.
 - [VERIFIED] Push/PR do not trigger the release workflow.
-- [VERIFIED] Single current release workflow: .github/workflows/jexfyz-build.yml.
-- [OBSOLETE] Former app-build.yml and app-build-trigger.yml no longer exist.
+- [VERIFIED] Manual trigger workflow: `.github/workflows/jexfyz-app-build-trigger.yml`.
+- [VERIFIED] Reusable App Build engine: `.github/workflows/jexfyz-app-build-engine.yml`.
+- [VERIFIED] Normal push/PR do not trigger App Build.
+- [HISTORICAL] Former single `.github/workflows/jexfyz-build.yml` Release-asset workflow has been removed.
 
 ## 4. USER REQUIREMENTS
 ### Build / CI
@@ -279,7 +281,7 @@
 - [CHAT-ONLY] This transfer prompt itself is not permission to build or release.
 
 ## 21. EXACT NEXT ACTION
-- [NEXT ACTION] On the next explicit @Thinking Build App! use `.github/workflows/jexfyz-build.yml` and verify CI gates, signing, GitHub Release update, and exactly one JEXFYZ-release.apk asset for the new source commit.
+- [NEXT ACTION] On the next explicit @Thinking Build App! use `.github/workflows/jexfyz-app-build-trigger.yml`; verify the reusable engine's CI gates, production signing, APK artifact, and Dart-symbol artifact.
 - [NEXT ACTION] Separately compile/flash Firmware V4.5 and perform physical Online OTA BLE disconnect/reconnect plus Local OTA Golden Path validation.
 
 ## 22. REQUIRED FIRST ACTION IN NEW CHAT
