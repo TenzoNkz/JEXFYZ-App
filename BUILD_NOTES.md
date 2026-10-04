@@ -1,3 +1,10 @@
+## 2026-10-04 — WORKFLOW RECREATION
+- Deleted and recreated `.github/workflows/app-build.yml` and `.github/workflows/app-build-trigger.yml`.
+- New App Build workflow clears all existing Actions artifacts before the release build, then publishes exactly one `JEXFYZ-release.apk` artifact with overwrite enabled and 7-day retention; no symbols artifact is uploaded.
+- New trigger grants `actions: write` to the reusable build and accepts only the repository owner's exact trigger issue title/token. Push/PR remain excluded.
+- New App Build workflow blob: `5c7faeb8fece972179a0607ffd2278bdfd174704`.
+- New trigger workflow blob: `04d2293725e97c3cbc67ce8b6f0d9c1230802afd`.
+
 ## 2026-10-04 — ARTIFACT STORAGE CLEANUP HARDENING
 
 - Build #51 source parser failure was corrected in commit `ea5261230245fc86061cdf85f65ccd0208e607d3` by restoring the missing closing brace for `_startCloudOta`.
@@ -45,9 +52,9 @@
 
 ## WORKFLOWS
 - App workflow: .github/workflows/app-build.yml
-- App workflow blob: 9cbb39a3bec997072b1866b01caeed756e6228eb
+- App workflow blob: 5c7faeb8fece972179a0607ffd2278bdfd174704
 - Trigger workflow: .github/workflows/app-build-trigger.yml
-- Trigger blob: 89598aff0b006bb3db6819080a13965fc5a6247d
+- Trigger blob: 04d2293725e97c3cbc67ce8b6f0d9c1230802afd
 
 ## CURRENT BUILD BOUNDARY
 - Current App source has passed analysis/tests/release compilation/signing verification in Build #53.
