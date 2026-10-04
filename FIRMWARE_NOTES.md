@@ -4518,3 +4518,12 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - [HYPOTHESIS] The immediate MCU reset is most consistent with an electrical transient/load event such as supply droop or EMI, but the exact mechanism remains unverified.
 - [OPEN QUESTION] Need controlled comparison with Peltier OFF/ON and reset-reason/rail evidence before declaring brownout as root cause.
 
+## 2026-10-04 — DISCUSSION / SOFT-START ONLY ON PELTIER ON
+
+- [USER REQUIREMENT] User wants the 5s Peltier soft-start to activate only when Peltier transitions from OFF → ON.
+- [CONFIRMED] Current V3.7 additionally restarts the soft-start on every upward voltage transition while Peltier is ON.
+- [DECISION CANDIDATE] Remove the upward-voltage soft-start trigger while retaining the OFF → ON soft-start in `applyCoolingOutputs()`.
+- [PRESERVE] Keep Peltier PWM frequency/resolution, 5s ramp duration, safety interlocks, and logical BLE FAN/PELTIER commands unchanged.
+- [IMPORTANT] A voltage transition must not artificially create a Peltier OFF → ON edge merely to obtain soft-start; normal voltage switching should preserve the current Peltier state.
+- [UNVERIFIED] This is a functional change proposal only. No firmware source has been modified in this discussion and no new binary/device test exists yet.
+
