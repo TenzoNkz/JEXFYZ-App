@@ -30,7 +30,7 @@ enum class VoltageRequestSource : uint8_t;
 enum class AdaptiveProfile : uint8_t;
 
 /**
- * JE X FYZ — V4.1 Firmware
+ * JE X FYZ — V4.4 Firmware
  * ---------------------------------------------------------------------------
  * Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module
  * Framework: Arduino Standard + official Arduino-ESP32 Core 3.3.7
@@ -800,7 +800,7 @@ static void loadSettings() {
   if (rgbBrightness > 100) rgbBrightness = 100;
 
   rgbColor = prefs.getUInt("rgbColor", 0xFFFFFF);
-  // Remove retired per-voltage user color keys so old configuration cannot influence the current V4.1 behavior.
+  // Remove retired per-voltage user color keys so old configuration cannot influence the current V4.4 behavior.
   prefs.remove("color5V");
   prefs.remove("color9V");
   prefs.remove("color12V");
