@@ -1,3 +1,13 @@
+## 2026-10-04 — CHAT-LIMIT HANDOVER CHECKPOINT
+
+- Current chat is being handed over because the context limit is near.
+- README.md already contains the detailed copy-ready new-chat prompt and is the mandatory first-read entry point.
+- HANDOVER.md is the portable handoff artifact; the embedded prompt remains the required continuation prompt.
+- Current firmware remains V3.7; active source is `firmware/JEXFYZ-V3.7.ino`.
+- Latest verified App Build remains #50; no App Build was triggered by this handover checkpoint.
+- Firmware V3.7 ArduinoDroid/Core 3.3.7 compile, BIN publication, Firebase promotion, and physical validation remain unperformed.
+- Next chat must perform the full repository memory preflight before any action.
+
 ## 2026-10-04 — EXECUTION FULL / MEMORY FOUNDATION BOOTSTRAP
 
 - Repository memory now has a dedicated current-state snapshot at `PROJECT_STATE.md`, plus README operating instructions, build checkpoints, changelog, and portable handover.
