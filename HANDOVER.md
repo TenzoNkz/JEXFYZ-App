@@ -1,3 +1,17 @@
+## 2026-10-04 — GEMINI ROUND 3 RECONCILIATION
+
+- [GEMINI RESULT] Gemini concluded no patch, suspected the failure occurs before normal Wi-Fi completion and recommended Serial Monitor testing. Gemini's final verdict was NOT SAFE TO FLASH LOCAL OTA.
+- [ACCEPTED] Latest hardware evidence localizes the observed failure before GitHub/HTTPS because the ESP32-C3 did not reach an observed Wi-Fi-connected state.
+- [ACCEPTED] Current PASS handler does not trim password; this is not a proven bug because spaces may be legitimate password data.
+- [ACCEPTED] Current Wi-Fi logic can bypass the 15 s timeout when the driver reports WL_CONNECT_FAILED or WL_NO_SSID_AVAIL.
+- [CORRECTION] The source contains resetReasonText() using esp_reset_reason(), including BROWNOUT, WDT and PANIC classes, and publishes RESET_REASON through the runtime sync path. Therefore Gemini's statement that reset-reason telemetry is absent is incorrect.
+- [CORRECTION] WIFI_CONNECT_RETRY_BACKOFF_MS = 3000 exists in source but is not used in the shown retry path; Gemini's retry-time calculation that adds a 3000 ms backoff is therefore incorrect for the current source.
+- [CORRECTION] The current retry path has no intentional 3 s sleep/backoff. Each attempt can terminate on driver-reported failure; worst-case connection wait is approximately three 15 s attempts plus the 160 ms Wi-Fi-off settle/reinitialization boundaries, before the 1 s RED indicator.
+- [CORRECTION] The git-history anchor e8185cb... is a diagnostic-source commit and does not by itself prove it introduced production setAutoReconnect(false) or the current production retry logic.
+- [UNPROVEN] Claims about WPA3/PMF causing the failure, RF recalibration causing a 350–400 mA spike, watchdog looping, or brownout remain hypotheses without runtime logs/measurement.
+- [DECISION] No functional firmware patch is authorized from this Gemini result. The strongest next action remains a serial/reboot-reason diagnostic under the same hotspot test.
+- [PROTECTED] Local OTA remains unchanged/frozen. Current firmware source blob remains 0566105383a889912e5e756b0b9f265e5fcf0264.
+
 ## 2026-10-04 — ROUND 3 DECISIVE GEMINI WIFI ADJUDICATION
 
 - New Gemini prompt added for decisive adjudication after prior overconfident claims were rejected.
