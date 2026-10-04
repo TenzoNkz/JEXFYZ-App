@@ -48,6 +48,14 @@
 - Prompt A captures the full available old-chat context without fabricating evidence.
 - Prompt B rebuilds context from repository memory, inspects current source/workflow, reconciles Prompt A, and continues only from verified current truth.
 - No App runtime behavior, BLE/OTA contract, signing identity, dependency contract, or firmware interface changed.
+## 2026-10-04 — REPOSITORY-FIRST CHAT TRANSFER MODEL
+
+- The intended chat-limit mechanism is now explicitly repository-first.
+- Prompt 1 executes in the old chat: read the available chat, reconstruct the meaningful state, and persist the result into the repository continuity layer.
+- Prompt 2 executes in the new chat: read all repository memory/recap files, verify against current source/workflow, establish current truth, and continue.
+- The transfer artifact should live in the repository so the user does not need to manually carry chat context between chats.
+- No App runtime/protocol/UI behavior is changed by this discussion decision.
+
 # JE X FYZ — APP NOTES
 
 ## AUTHORITATIVE MEMORY CORE — CROSS-LAYER CONTRACT — 2026-10-04
