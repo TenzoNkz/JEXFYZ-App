@@ -390,7 +390,7 @@ Build details and historical artifacts belong in `BUILD_NOTES.md`.
 
 Current functional Firmware source:
 
-`firmware/JEXFYZ-V3.8.ino`
+`firmware/JEXFYZ-V4.1.ino`
 
 Target:
 
