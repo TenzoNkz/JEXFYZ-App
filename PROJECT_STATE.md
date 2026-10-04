@@ -612,3 +612,17 @@ The requested “keterangan di semua baris” is interpreted as every meaningful
 - [FROZEN PROCESS] Agreement requires the same V3.9 source/evidence to be audited by both parties; source changes must not be made merely to obtain agreement.
 - [GATE] Do not update/flash/release a new firmware revision until both reviews are reconciled and no unresolved P0/P1 blocker remains without an explicitly accepted validation plan.
 - [EVIDENCE] Gemini review is user-mediated: the user supplies the exact V3.9 source to Gemini and returns Gemini's raw response; no Gemini result may be fabricated.
+
+
+## 2026-10-04 — V3.9 DUAL-AUDIT RECONCILIATION / FLASH GATE
+
+- [CONFIRMED] User-mediated Gemini independent audit for the active JE X FYZ / JE Cooler V3.9 source has been received.
+- [CONFIRMED] This assistant independently re-checked Gemini's critical findings against active source blob `bf85b50e0a8cab22e5d66ef09ee84d6692cee009`.
+- [DECISION] Both reviews converge on **NOT SAFE TO FLASH**. The V3.9 flash/update gate remains CLOSED.
+- [P0 / ACCEPTED] `completeVoltageTransition()` re-enables the selected 9V/12V rail and then `applyCoolingOutputs()` can restore an already-logically-ON Peltier to 100% duty without a separate post-selector rail-stabilization window. The source-level sequencing hazard is proven. The historical 9V→12V MCU reset's exact electrical mechanism remains unproven without hardware evidence.
+- [P1 / ACCEPTED] Online OTA still calls `cloudClient.setInsecure()`, so HTTPS transport is not server-authenticated against a trusted CA. This remains a production security blocker.
+- [P2 / ACCEPTED] BLE TX uses a single FIFO with no priority handling. When full, newest messages are dropped. The overflow counter improves observability, but ACK/OTA-state messages are not protected from queue pressure.
+- [NUANCE] Gemini's suggested 300–500 ms stabilization interval is an engineering candidate, not a source-proven universal value. The final interval must be validated against the actual regulator/PSU/MOSFET/rail behavior.
+- [PASS / RETAINED] Previously hardened V3.9 items remain accepted: OTA download dispatcher, full BLE radio teardown for Wi-Fi handoff, main-loop BLE advertising recovery, semantic firmware-version comparison, retry radio settle, rapid Hotside rise latch, NTC final gate, battery hysteresis, and local OTA image magic-byte validation.
+- [BLOCKED] No compile, BIN generation, Firebase promotion, flash, or physical electrical/thermal validation was performed as part of this audit.
+- [NEXT ACTION] Do not flash V3.9. First patch the P0 rail-stabilization state machine and P1 OTA certificate validation; then re-audit the affected source with the same two-party gate before any firmware update.
