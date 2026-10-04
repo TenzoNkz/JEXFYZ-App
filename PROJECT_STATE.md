@@ -1,3 +1,13 @@
+## 2026-10-04 — GEMINI REVIEW REQUEST / V4.0 FLASH GATE
+
+- [USER COMMAND] `@Thinking Tanya Gemini!` — determine whether current V4.0 is ready to update/flash, with mandatory Assistant + Gemini agreement.
+- [VERIFIED] Exact active source remains `firmware/JEXFYZ-V4.0.ino`, blob `b2a77fadeaa154412850d34c82b0bb78ef108bae`.
+- [ASSISTANT REVIEW] Rechecked current V4.0 P0/P1 fixes: post-selector 300 ms cooperative physical Peltier hold is present; `setInsecure()` is absent and Core 3.3.7 certificate-bundle trust path is present; static structure remains balanced.
+- [LIMITATION] No direct Gemini connector/tool is available in this environment. Therefore no new independent Gemini verdict can honestly be claimed for V4.0.
+- [GATE] Because user requires both Assistant and Gemini to agree, V4.0 remains **NOT APPROVED TO FLASH** until the user-mediated Gemini review of the exact V4.0 source is received and reconciled.
+- [NO SOURCE CHANGE] This is a review/gate event only; no functional firmware/App/workflow change was made.
+- [NEXT] Send the exact V4.0 source/blob to Gemini for an independent full safety audit and return Gemini's explicit SAFE/NOT SAFE verdict; then compare it against the Assistant verdict before compile/BIN/flash.
+
 ## 2026-10-04 — CURRENT AUTHORITATIVE STATE AFTER V4.0 EXECUTION FULL
 
 > Current-state override for older V3.7/V3.8/V3.9 historical entries below.
