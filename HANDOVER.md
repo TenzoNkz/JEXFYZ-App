@@ -1,3 +1,11 @@
+## 2026-10-04 — V4.0 COMPILE FIX / NEW SOURCE BASELINE
+
+- ArduinoDroid compile error fixed: batteryZoneFor(batteryC) now passes currentVoltage.
+- Current V4.0 source blob: 415346ece09f4af33f907b2077140ccfc45c357b.
+- Functional fix commit: 428fd3d07ffd1eece35831077b011dd18479ca4a.
+- Prior Gemini + Assistant SAFE verdict applied to the previous blob and is superseded by this source change.
+- Flash gate is CLOSED pending fresh exact-source two-party review.
+
 ## 2026-10-04 — V4.0 DUAL-PARTY GATE OPEN
 
 - Exact V4.0 source blob: `b2a77fadeaa154412850d34c82b0bb78ef108bae`.
