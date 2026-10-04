@@ -1,3 +1,49 @@
+## 2026-10-04 — EXECUTION FULL / FIRMWARE V4.0 P0+P1 HARDENING
+
+### Source/version
+- [COMMITTED] Firmware advanced V3.9 → V4.0.
+- [CURRENT] Active source: `firmware/JEXFYZ-V4.0.ino`.
+- [CURRENT] Active source blob: `b2a77fadeaa154412850d34c82b0bb78ef108bae`.
+- Source creation commit: `43b6e3dfc49f114aba49c73762a9bdc4822d30de`.
+- V3.9 retirement commit: `e743b3b84e1a603c64747936242d1d44ee1b7746`.
+
+### P0 — selector/rail stabilization
+- Added `PELTIER_RAIL_STABILIZE_MS = 300` as the initial cooperative post-selector stabilization interval.
+- After a validated 9V/12V selector activation, `peltierRailStabilizing` holds physical Peltier PWM at 0% until the stabilization deadline.
+- Logical `peltierOn` remains unchanged, and `peltierSoftStartAtMs` is not reset. Therefore voltage changes do not manufacture a new OFF→ON soft-start event.
+- 5V destination does not arm the post-selector rail-stabilization state because no 9V/12V rail is being activated.
+- The 300 ms value is an engineering starting point and still requires physical rail/current validation; it is not claimed as a universal electrical constant.
+
+### P1 — Online OTA TLS trust
+- Removed `cloudClient.setInsecure()`.
+- Added `JexTrustedWiFiClientSecure`, which enables the ESP32 certificate-bundle attach hook through the protected Core 3.3.7 `NetworkClientSecure` state.
+- Verified against the Arduino-ESP32 **3.3.7** upstream source that the library provides `attach_ssl_certificate_bundle(...)`, `esp_crt_bundle_attach`, and the `_use_ca_bundle` path used during TLS setup.
+- This implementation intentionally uses the bundled trust store instead of guessing/pinning a GitHub leaf/root certificate.
+- Exact ArduinoDroid/Core 3.3.7 compile compatibility remains to be proven locally.
+
+### Full affected static audit
+- Source lines: 5351.
+- Braces: 581/581.
+- Parentheses: 2123/2123.
+- Executable `delay()`: 0.
+- Timing `while()`: 0.
+- `setInsecure()`: 0.
+- `stopBleRadio(false)`: 0.
+- `FW_VERSION = V4.0`: 1.
+- Stale V3.9 literals in active source: 0.
+- DOC-CONTRACT blocks: 137.
+- Existing V3.9 hardening remains present (NTC gate, Peltier transition interlock, rapid-rise latch, battery hysteresis, anti-rollback, Local OTA magic, callback-safe BLE recovery, full BLE teardown, OTA dispatcher, reset diagnostics).
+
+### Validation boundary
+- [VERIFIED SOURCE/STATIC] P0 and P1 source changes are present in the active V4.0 blob.
+- [UNVERIFIED] ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compile/link.
+- [UNVERIFIED] BIN generation and checksum.
+- [UNVERIFIED] Firebase promotion.
+- [UNVERIFIED] Physical flash/device validation.
+- [UNVERIFIED] Oscilloscope/current/rail evidence and proof of the historical 9V→12V reset mechanism.
+- [GATE CLOSED] V4.0 requires the same independent Assistant + Gemini review before update/flash.
+- [NO APP BUILD] App Build #50 remains the current App baseline.
+
 ## 2026-10-04 — CHAT-LIMIT HANDOVER CHECKPOINT
 
 - Current chat is being handed over because the context limit is near.
