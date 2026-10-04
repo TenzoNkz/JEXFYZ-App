@@ -386,3 +386,14 @@ For Build App, the first action must be the full memory preflight and exact-sour
 - [DECISION] If this scope is executed, preserve the existing 5s soft-start for actual Peltier OFF → ON, preserve safety-forced Peltier OFF paths, and remove only the voltage-rise-triggered restart.
 - [OPEN QUESTION] After this change, hardware must retest 9V → 12V with Peltier ON. A remaining reset would shift investigation toward the selector/power-stage transient rather than the voltage-rise soft-start trigger.
 
+## 2026-10-04 — EXECUTION FULL / FIRMWARE V3.8 SOFT-START SCOPE FIX
+
+- [IMPLEMENTED] Firmware advanced V3.7 → V3.8.
+- [IMPLEMENTED] Peltier 5 s soft-start now triggers only on a genuine Peltier OFF → ON transition.
+- [IMPLEMENTED] Voltage transitions no longer invoke or restart Peltier soft-start; voltage changes preserve the existing Peltier PWM state.
+- [PRESERVE] Peltier PWM remains 20 kHz / 8-bit and soft-start remains 5 s. Safety interlocks, BLE/P1, GPIO mapping, Fan PWM, NTC, Adaptive, OTA, and non-blocking timing are unchanged.
+- [IMPLEMENTED] Active firmware source is `firmware/JEXFYZ-V3.8.ino`; V3.7 remains historical.
+- [VERIFIED] App source/configuration and App workflows were not changed.
+- [NO BUILD] No App Build was triggered.
+- [UNVERIFIED] V3.8 ArduinoDroid/Core 3.3.7 compilation, BIN generation/publication, Firebase promotion, and physical hardware validation remain pending.
+- [NEXT ACTION] Compile/flash V3.8 and retest 9V → 12V with Peltier ON, then compare against the prior restart fault.
