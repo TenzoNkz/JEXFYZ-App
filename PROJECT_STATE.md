@@ -9,7 +9,7 @@
 - Package: com.horizontalzzz.jexfyz
 - Active Firmware: V4.4
 - Active Firmware source: firmware/JEXFYZ-V4.4.ino
-- Firmware source blob: acbd376b4b5a1f536e83c35b24600e85462de579
+- Firmware source blob: 18f74d5c87b85886b6d3d44fddd4938f4db7019c
 - App source baseline: lib/main.dart, blob 7a0003ff7aa9691468139714ec18d364e5896b38
 - Latest verified App Build: #50
 

@@ -24,7 +24,7 @@ Verify the V4.4 firmware change that explicitly closes the active BLE GATT sessi
 - Package: com.horizontalzzz.jexfyz
 - Firmware: V4.4
 - Firmware source: firmware/JEXFYZ-V4.4.ino
-- Firmware blob: acbd376b4b5a1f536e83c35b24600e85462de579
+- Firmware blob: 18f74d5c87b85886b6d3d44fddd4938f4db7019c
 - Latest App Build: #50
 - Build source SHA: bf01595253eb5a1912471c4aee57c4eed4421f0f
 

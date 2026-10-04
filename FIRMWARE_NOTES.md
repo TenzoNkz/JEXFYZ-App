@@ -3,7 +3,7 @@
 ## ACTIVE
 - Version: V4.4
 - Source: firmware/JEXFYZ-V4.4.ino
-- Blob: acbd376b4b5a1f536e83c35b24600e85462de579
+- Blob: 18f74d5c87b85886b6d3d44fddd4938f4db7019c
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
