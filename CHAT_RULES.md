@@ -1,3 +1,10 @@
+## 2026-10-04 — ONLINE OTA PATCH EXECUTED
+
+- The supplied Gemini patch was applied only to Online OTA in `firmware/JEXFYZ-V4.0.ino`.
+- `WiFiClientSecure + setInsecure()` is intentionally allowed for this Online OTA path because reliable GitHub download/flash is the priority; it is not server-authenticated TLS.
+- Keep BLUE Wi-Fi success, YELLOW 20/40/60/80/100, GREEN final success, and RED failure/recovery. Remove only the two intermediate GREEN/BLUE transitions.
+- Local OTA remains frozen/protected.
+
 ## 2026-10-04 — GEMINI PATCH-ONLY WORKFLOW / ONLINE OTA
 
 - [NEW RULE] `@Thinking Tanya Gemini!` is now a diagnosis/patch-request stage. Gemini receives the current `.ino` file directly from the user and does not need repository access.
