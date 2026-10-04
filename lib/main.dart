@@ -5029,7 +5029,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                   title: JexText.of('fiveVCeiling'),
                   value: battery5Draft,
                   min: 20,
-                  max: 48,
+                  max: 30,
                   enabled: connected && !locked && battery5Draft < battery12Limit,
                   onChanged: (v) {
                     if (v < battery12Limit) _setBattery5(v);
@@ -5044,8 +5044,8 @@ class _DashboardScreenState extends State<DashboardScreen>
                 _temperatureAdjuster(
                   title: JexText.of('twelveVFloor'),
                   value: battery12Draft,
-                  min: 22,
-                  max: 50,
+                  min: 30,
+                  max: 40,
                   enabled: connected && !locked && battery12Draft > battery5Limit,
                   onChanged: (v) {
                     if (v > battery5Limit) _setBattery12(v);
