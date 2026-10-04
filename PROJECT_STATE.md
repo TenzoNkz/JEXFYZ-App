@@ -330,3 +330,13 @@ No functional source change is pending from this memory-system task.
 For Build App, the first action must be the full memory preflight and exact-source/build-workflow identification.
 
 **Memory architecture established. Functional V3.7 behavior remains unchanged by this documentation system work.**
+
+## 2026-10-04 — DISCUSSION / APP BUILD REQUIREMENT FOR HARDWARE TEST
+
+- [CONFIRMED] Current hardware/device-test stage does **not** require a new App Build by itself.
+- [VERIFIED] Current App functional source blobs remain unchanged from the App revision represented by verified App Build #50: `lib/main.dart`, `lib/floating_monitor.dart`, `pubspec.yaml`, Android release/runtime files, and related App behavior were not changed by the repository continuity/documentation work after Build #50.
+- [BUILT] Latest verified App Build remains #50 (run `36996987220`) from source commit `bf01595253eb5a1912471c4aee57c4eed4421f0f`.
+- [CONFIRMED] Current `main` HEAD is `5fea6733ef0f42b1ca18b03bca9b60da8a977170`; the post-Build-#50 delta is documentation/continuity plus Firmware V3.7 source, not a functional App delta.
+- [DECISION] For the planned device test, continue using the verified Build #50 APK unless a new App functional/configuration change occurs or a fresh APK is needed for operational reasons.
+- [UNVERIFIED] Build #50 does not validate Firmware V3.7 runtime; firmware compile/BIN/flash and physical device validation remain separate evidence layers.
+- [NEXT ACTION] Hardware test should establish the exact firmware binary/version flashed on the ESP32-C3 and test the current App APK against that device.
