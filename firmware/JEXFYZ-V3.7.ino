@@ -28,16 +28,68 @@ enum class LedMode : uint8_t;
 enum class VoltageRequestSource : uint8_t;
 enum class AdaptiveProfile : uint8_t;
 
+/**
+ * JE X FYZ — V3.7 Firmware
+ * ---------------------------------------------------------------------------
+ * Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module
+ * Framework: Arduino Standard + official Arduino-ESP32 Core 3.3.7
+ *
+ * Runtime architecture:
+ * - Wi-Fi owns the single radio during the boot/OTA window.
+ * - BLE starts only after Wi-Fi is fully turned off and settled.
+ * - The main loop is cooperative/non-blocking; timed work uses millis().
+ * - NTC Hotside is sampled every 1 s and is the universal thermal safety input.
+ * - Manual, HOTSIDE Adaptive, and HOTSIDE_BATTERY share one Hotside authority.
+ *
+ * Cooling contract:
+ * - Fan PWM: 25 kHz, 8-bit, 50–100%.
+ * - Peltier PWM: 20 kHz, 8-bit, 5 s soft-start.
+ * - Peltier OFF -> ON always starts the 5 s soft-start.
+ * - Every upward voltage transition while Peltier is ON restarts the 5 s ramp.
+ * - Downward voltage transitions never restart the Peltier ramp.
+ *
+ * Voltage/safety contract:
+ * - Physical selector outputs: GPIO4 = 9 V, GPIO3 = 12 V.
+ * - Peltier output: GPIO5. Fan output: GPIO6. WS2812: GPIO7.
+ * - Selector deadtime: 200 ms. Shared voltage guard: 1 s after completion.
+ * - Hotside at/above the configured limit overrides normal cooling requests.
+ *
+ * Adaptive contract:
+ * - Adaptive startup and shutdown both return the hardware to 5 V first.
+ * - HOTSIDE rises one level at a time after a 5 s safe dwell.
+ * - HOTSIDE hot event forces an immediate one-level down step.
+ * - The reached voltage is removed from the Adaptive ceiling for that session.
+ * - After a Hotside down-step completes, Peltier remains OFF for 5 s.
+ * - HOTSIDE_BATTERY uses phone Battery temperature only inside the safe ceiling.
+ * - Battery loss falls back to HOTSIDE runtime behavior without changing profile.
+ *
+ * OTA contract:
+ * - OTA is supervised before normal application work.
+ * - OTA safe outputs are all OFF and the physical selector is forced to 5 V.
+ * - Local OTA uses the boot SoftAP; Online OTA uses the approved GitHub BIN URL.
+ * - OTA indicators are state-machine driven and never use blocking delay().
+ *
+ * Validation boundary:
+ * - This file has been statically/model audited in the repository.
+ * - ArduinoDroid/Core 3.3.7 compilation and physical ESP32 validation are
+ *   separate required validation layers and are not implied by this source pass.
+ * ---------------------------------------------------------------------------
+ */
+
 static constexpr char FW_VERSION[] = "V3.7";
 
 // ============================================================================
 // ========================== HEAP DIAGNOSTIC BUILD ===========================
-// Diagnostic-only instrumentation retained from the earlier V1.0 baseline. Do not interpret it as physical validation.
+// Diagnostic-only heap instrumentation used at named runtime checkpoints. It detects heap-integrity faults but is not physical validation.
 // ============================================================================
 static bool heapDiagPostAdvertisingActive = false;
 static uint8_t heapDiagPostAdvertisingChecks = 0;
 static uint32_t heapDiagPostAdvertisingStartedAt = 0;
 
+/** [DOC-CONTRACT]
+ * Checks heap integrity at a named diagnostic checkpoint and reports the result over Serial; diagnostic-only instrumentation, not physical validation.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void runHeapCheck(const char* checkpointLabel) {
   Serial.print("[HEAP_CHECK] ");
   Serial.print(checkpointLabel);
@@ -53,12 +105,20 @@ static void runHeapCheck(const char* checkpointLabel) {
   }
 }
 
+/** [DOC-CONTRACT]
+ * Arms delayed heap-integrity checkpoints after BLE advertising starts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void scheduleHeapDiagPostAdvertisingChecks() {
   heapDiagPostAdvertisingActive = true;
   heapDiagPostAdvertisingChecks = 0;
   heapDiagPostAdvertisingStartedAt = millis();
 }
 
+/** [DOC-CONTRACT]
+ * Runs the armed post-advertising heap checks when their non-blocking timestamps expire.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void processHeapDiagPostAdvertisingChecks() {
   if (!heapDiagPostAdvertisingActive) return;
 
@@ -196,7 +256,6 @@ static constexpr uint32_t BLE_RADIO_SETTLE_MS = 50;
 static constexpr uint32_t WIFI_OFF_SETTLE_MS = 160;
 static constexpr uint32_t ONLINE_OTA_PROGRESS_BLINK_MS = 200;
 
-
 static constexpr int HOT_LIMIT_MIN = 40;
 static constexpr int HOT_LIMIT_MAX = 50;
 static constexpr int BATTERY_LIMIT_MIN = 20;
@@ -277,7 +336,7 @@ enum class AdaptiveProfile : uint8_t {
 };
 
 bool adaptiveOn = false;
-// AI-ADAPTIVE-START: Adaptive becomes ON only after the mandatory 5V handoff completes.
+// Adaptive activation is deferred until the mandatory 5 V handoff physically completes.
 bool adaptiveStartPending = false;
 Voltage adaptiveCeiling = Voltage::V12;
 AdaptiveProfile adaptiveProfile = AdaptiveProfile::HOTSIDE_BATTERY;
@@ -329,8 +388,6 @@ bool hotsideLimitIndicatorActive = false;
 uint32_t hotsideLimitIndicatorStartedAt = 0;
 uint32_t hotsideLimitIndicatorLastPhase = 0xFFFFFFFFUL;
 
-
-
 bool touchAdaptiveOffIndicatorActive = false;
 uint32_t touchAdaptiveOffIndicatorStartedAt = 0;
 uint32_t touchAdaptiveOffIndicatorLastPhase = 0xFFFFFFFFUL;
@@ -376,7 +433,8 @@ uint32_t onlineOtaDownloadLastDataAt = 0;
 bool onlineHttpActive = false;
 int onlineHttpResponseCode = 0;
 int onlineHttpExpectedBytes = 0;
-bool onlineUpdateStarted = false;bool wifiOffSettlePending = false;
+bool onlineUpdateStarted = false;
+bool wifiOffSettlePending = false;
 uint32_t wifiOffSettleUntilMs = 0;
 uint32_t bleRadioSettleUntilMs = 0;
 
@@ -401,7 +459,6 @@ bool bootApClientSafe = false;
 volatile bool bleSyncPending = false;
 
 volatile bool bleCommandGateOpen = false;
-
 
 uint32_t ledBlinkAt = 0;
 bool ledBlinkPhase = false;
@@ -467,12 +524,20 @@ static void resetOnlineOtaProgressState();
 static void queueOnlineOtaProgressMilestones(uint8_t progress);
 static bool processOnlineOtaProgressIndicator();
 
+/** [DOC-CONTRACT]
+ * Implements adaptiveProfileText while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static const char* adaptiveProfileText(AdaptiveProfile profile) {
   return profile == AdaptiveProfile::HOTSIDE_PROTECTION
              ? "HOTSIDE"
              : "HOTSIDE_BATTERY";
 }
 
+/** [DOC-CONTRACT]
+ * Implements effectiveAdaptiveProfile while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static AdaptiveProfile effectiveAdaptiveProfile() {
   if (adaptiveOn &&
       adaptiveProfile == AdaptiveProfile::HOTSIDE_BATTERY &&
@@ -482,6 +547,10 @@ static AdaptiveProfile effectiveAdaptiveProfile() {
   return adaptiveProfile;
 }
 
+/** [DOC-CONTRACT]
+ * Implements voltageToString while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static const char* voltageToString(Voltage value) {
   switch (value) {
     case Voltage::V5:  return "5V";
@@ -491,6 +560,10 @@ static const char* voltageToString(Voltage value) {
   return "5V";
 }
 
+/** [DOC-CONTRACT]
+ * Implements voltageFromString while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static Voltage voltageFromString(String value) {
   value.trim();
   value.toUpperCase();
@@ -499,34 +572,62 @@ static Voltage voltageFromString(String value) {
   return Voltage::V5;
 }
 
+/** [DOC-CONTRACT]
+ * Implements isHigherVoltage while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool isHigherVoltage(Voltage a, Voltage b) {
   return static_cast<uint8_t>(a) > static_cast<uint8_t>(b);
 }
 
+/** [DOC-CONTRACT]
+ * Implements lowerVoltage while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static Voltage lowerVoltage(Voltage value) {
   if (value == Voltage::V12) return Voltage::V9;
   return Voltage::V5;
 }
 
+/** [DOC-CONTRACT]
+ * Implements clampToAdaptiveCeiling while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static Voltage clampToAdaptiveCeiling(Voltage target) {
   return isHigherVoltage(target, adaptiveCeiling) ? adaptiveCeiling : target;
 }
 
+/** [DOC-CONTRACT]
+ * Implements boolText while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static String boolText(bool value) {
   return value ? "ON" : "OFF";
 }
 
+/** [DOC-CONTRACT]
+ * Implements formatTemperature while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static String formatTemperature(float value, bool valid) {
   if (!valid || !isfinite(value)) return "--";
   return String(value, 1);
 }
 
+/** [DOC-CONTRACT]
+ * Implements resetReasonText while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static const char* resetReasonText() {
   // Arduino-ESP32 Core 3.3.7 has no public ESP.getResetReason() API.
   // Do not substitute an invented or low-level lifecycle API here.
   return "UNAVAILABLE_CORE_3_3_7";
 }
 
+/** [DOC-CONTRACT]
+ * Implements parseHexColor while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool parseHexColor(String value, uint32_t& output) {
   value.trim();
   if (value.startsWith("#")) value.remove(0, 1);
@@ -554,12 +655,20 @@ static bool parseHexColor(String value, uint32_t& output) {
   return true;
 }
 
+/** [DOC-CONTRACT]
+ * Implements colorToHex while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static String colorToHex(uint32_t color) {
   char buffer[8];
   snprintf(buffer, sizeof(buffer), "#%06lX", static_cast<unsigned long>(color & 0xFFFFFFUL));
   return String(buffer);
 }
 
+/** [DOC-CONTRACT]
+ * Implements parseIntRange while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool parseIntRange(const String& raw, int minValue, int maxValue, int& output) {
   String value = raw;
   value.trim();
@@ -588,6 +697,10 @@ static bool parseIntRange(const String& raw, int minValue, int maxValue, int& ou
   return true;
 }
 
+/** [DOC-CONTRACT]
+ * Implements parseFloatRange while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool parseFloatRange(const String& raw, float minValue, float maxValue, float& output) {
   String value = raw;
   value.trim();
@@ -639,6 +752,10 @@ static bool parseFloatRange(const String& raw, float minValue, float maxValue, f
   return isfinite(output);
 }
 
+/** [DOC-CONTRACT]
+ * Loads persisted user settings, clamps supported values, and removes retired configuration keys.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void loadSettings() {
   prefsReady = prefs.begin("jexfyz", false);
   if (!prefsReady) return;
@@ -665,7 +782,7 @@ static void loadSettings() {
   if (rgbBrightness > 100) rgbBrightness = 100;
 
   rgbColor = prefs.getUInt("rgbColor", 0xFFFFFF);
-  // Purge legacy V2.7 user-configurable voltage colors.
+  // Remove retired per-voltage user color keys so old configuration cannot influence V3.7 behavior.
   prefs.remove("color5V");
   prefs.remove("color9V");
   prefs.remove("color12V");
@@ -695,11 +812,19 @@ static void loadSettings() {
                         : AdaptiveProfile::HOTSIDE_BATTERY;
 }
 
+/** [DOC-CONTRACT]
+ * Marks settings as changed and starts the 10 s persistence debounce window.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void markSettingsDirty() {
   settingsDirty = true;
   settingsDirtyAt = millis();
 }
 
+/** [DOC-CONTRACT]
+ * Persists the current supported settings and clears the dirty-state marker.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void saveSettingsNow() {
   if (!prefsReady) return;
 
@@ -715,21 +840,39 @@ static void saveSettingsNow() {
   settingsDirty = false;
 }
 
+/** [DOC-CONTRACT]
+ * Commits dirty settings only after the configured 10 s quiet period has elapsed.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void processSettingsPersistence() {
   if (settingsDirty && millis() - settingsDirtyAt >= SETTINGS_SAVE_DEBOUNCE_MS) {
     saveSettingsNow();
   }
 }
 
+/** [DOC-CONTRACT]
+ * Updates OtaResult state while preserving the applicable protocol, persistence, and safety constraints.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void setOtaResult(const String& result, bool notifyEvent) {
   otaResult = result;
   otaResultPending = notifyEvent;
 }
 
+// Convert the user-facing 0–100% Fan setting into the 8-bit LEDC duty range.
+/** [DOC-CONTRACT]
+ * Implements fanDutyFromPercent while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static uint8_t fanDutyFromPercent(uint8_t percent) {
   return static_cast<uint8_t>(lroundf((percent / 100.0f) * 255.0f));
 }
 
+// Apply the current Fan ON/OFF state and percentage to the physical GPIO6 PWM channel.
+/** [DOC-CONTRACT]
+ * Drives the GPIO6 Fan PWM channel from the current Fan ON state and percentage.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void writeFanPwm() {
   if (!fanOn) {
     if (runtimeFeaturesReady) {
@@ -741,6 +884,11 @@ static void writeFanPwm() {
   ledcWrite(PIN_FAN, fanDutyFromPercent(fanPwm));
 }
 
+// Force the Peltier output to 0% and cancel any in-progress soft-start ramp.
+/** [DOC-CONTRACT]
+ * Turns GPIO5 Peltier output fully OFF and resets its soft-start timing/duty state.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void stopPeltierOutput() {
   peltierSoftStarting = false;
   peltierSoftStartAtMs = 0;
@@ -750,6 +898,11 @@ static void stopPeltierOutput() {
   }
 }
 
+// Restart the Peltier ramp from 0% whenever the contract requires a fresh soft-start.
+/** [DOC-CONTRACT]
+ * Starts or restarts the 5 s Peltier PWM ramp from 0% duty.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void beginPeltierSoftStart() {
   peltierSoftStarting = true;
   peltierSoftStartAtMs = millis();
@@ -759,6 +912,11 @@ static void beginPeltierSoftStart() {
   }
 }
 
+// Advance the Peltier 5 s ramp cooperatively; no blocking wait is allowed here.
+/** [DOC-CONTRACT]
+ * Advances the Peltier PWM ramp cooperatively and reaches full duty at the 5 s boundary.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void processPeltierSoftStart() {
   if (!peltierOn) {
     stopPeltierOutput();
@@ -790,10 +948,18 @@ static void processPeltierSoftStart() {
   }
 }
 
+/** [DOC-CONTRACT]
+ * Returns true only when valid NTC Hotside temperature is at or above the universal limit.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool hotsideProtectionActiveNow() {
   return ntcValid && isfinite(hotsideC) && hotsideC >= static_cast<float>(hotLimit);
 }
 
+/** [DOC-CONTRACT]
+ * Evaluates OTA, NTC, Hotside, Fan, Adaptive cooldown, and manual-latch gates for Peltier output.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool safetyAllowsPeltier() {
   if (otaActive) return false;
   if (!ntcValid) return false;
@@ -813,18 +979,27 @@ static bool safetyAllowsPeltier() {
   return true;
 }
 
+// Reconcile requested cooling state with NTC/Fan/Peltier safety constraints and then drive hardware.
+/** [DOC-CONTRACT]
+ * Reconciles requested Fan/Peltier state with all output interlocks, then drives the physical PWM channels.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void applyCoolingOutputs() {
+  // Snapshot the previous state so telemetry is emitted only when a real output setting changes.
   const bool previousFan = fanOn;
   const bool previousPeltier = peltierOn;
   const uint8_t previousPwm = fanPwm;
 
+  // A failed NTC immediately selects the safest cooling state: Fan 100%, Peltier OFF.
   if (!ntcValid) {
     fanOn = true;
     fanPwm = 100;
     peltierOn = false;
   }
 
+  // Never permit Peltier operation without the Fan running.
   if (!fanOn) peltierOn = false;
+  // Thermal, OTA, Adaptive-cooldown, and safety-latch rules can veto a requested Peltier ON state.
   if (peltierOn && !safetyAllowsPeltier()) peltierOn = false;
 
   if (peltierOn && !previousPeltier) {
@@ -848,6 +1023,10 @@ static void applyCoolingOutputs() {
 static constexpr uint8_t RIGHT_PIXELS[4] = {0, 1, 2, 3};
 static constexpr uint8_t LEFT_PIXELS[4] = {7, 6, 5, 4};
 
+/** [DOC-CONTRACT]
+ * Implements scaleColor while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static uint32_t scaleColor(uint32_t color, uint8_t brightness) {
   const uint8_t r = static_cast<uint8_t>((((color >> 16) & 0xFFU) * brightness) / 255U);
   const uint8_t g = static_cast<uint8_t>((((color >> 8) & 0xFFU) * brightness) / 255U);
@@ -855,6 +1034,10 @@ static uint32_t scaleColor(uint32_t color, uint8_t brightness) {
   return leds.Color(r, g, b);
 }
 
+/** [DOC-CONTRACT]
+ * Implements blendLevel while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static uint32_t blendLevel(uint32_t color, uint8_t baseBrightness, float level) {
   if (level <= 0.0f) return 0;
   if (level > 1.0f) level = 1.0f;
@@ -862,6 +1045,10 @@ static uint32_t blendLevel(uint32_t color, uint8_t baseBrightness, float level) 
   return scaleColor(color, brightness);
 }
 
+/** [DOC-CONTRACT]
+ * Implements showAll while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void showAll(uint32_t color, uint8_t brightness) {
   const uint32_t scaled = scaleColor(color, brightness);
   for (uint8_t i = 0; i < LED_COUNT; ++i) {
@@ -874,6 +1061,10 @@ static constexpr uint32_t VOLTAGE_COLOR_5V = 0xFF0000;
 static constexpr uint32_t VOLTAGE_COLOR_9V = 0x00FF00;
 static constexpr uint32_t VOLTAGE_COLOR_12V = 0x0000FF;
 
+/** [DOC-CONTRACT]
+ * Implements currentVoltageColor while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static uint32_t currentVoltageColor() {
   switch (currentVoltage) {
     case Voltage::V5:  return VOLTAGE_COLOR_5V;
@@ -883,27 +1074,51 @@ static uint32_t currentVoltageColor() {
   return VOLTAGE_COLOR_5V;
 }
 
+/** [DOC-CONTRACT]
+ * Implements hardwareBrightness while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static uint8_t hardwareBrightness() {
   return static_cast<uint8_t>(map(rgbBrightness, 0, 100, 0, 255));
 }
 
+/** [DOC-CONTRACT]
+ * Resets AllLeds to a known empty baseline.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void clearAllLeds() {
   leds.clear();
   leds.show();
 }
 
+/** [DOC-CONTRACT]
+ * Stops the UserLedOutput state and leaves the related hardware/runtime state at a known baseline.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void stopUserLedOutput() {
   clearAllLeds();
   lastLedFrameAtMs = 0;
 }
 
+/** [DOC-CONTRACT]
+ * Implements resetLedAnimationState while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void resetLedAnimationState() {
   lastLedFrameAtMs = 0;
 }
 
+/** [DOC-CONTRACT]
+ * Initializes or enters the UserLedEffect state without violating the cooperative runtime model.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void startUserLedEffect() {
   resetLedAnimationState();
 }
+/** [DOC-CONTRACT]
+ * Initializes or enters the HotsideLimitIndicator state without violating the cooperative runtime model.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void startHotsideLimitIndicator() {
   hotsideLimitIndicatorActive = true;
   hotsideLimitIndicatorStartedAt = millis();
@@ -912,6 +1127,10 @@ static void startHotsideLimitIndicator() {
   showAll(0x000000, 0);
 }
 
+/** [DOC-CONTRACT]
+ * Renders the 5 s non-blocking red Hotside-limit event indicator.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool processHotsideLimitIndicator() {
   if (!hotsideLimitIndicatorActive) return false;
 
@@ -938,7 +1157,10 @@ static bool processHotsideLimitIndicator() {
   return true;
 }
 
-
+/** [DOC-CONTRACT]
+ * Initializes or enters the TouchAdaptiveOffIndicator state without violating the cooperative runtime model.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void startTouchAdaptiveOffIndicator() {
   touchAdaptiveOffIndicatorActive = true;
   touchAdaptiveOffIndicatorStartedAt = millis();
@@ -946,6 +1168,10 @@ static void startTouchAdaptiveOffIndicator() {
   showAll(0x000000, 0);
 }
 
+/** [DOC-CONTRACT]
+ * Advances TouchAdaptiveOffIndicator using current state and elapsed-time checks without blocking the main loop.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool processTouchAdaptiveOffIndicator() {
   if (!touchAdaptiveOffIndicatorActive) return false;
 
@@ -979,6 +1205,10 @@ static bool processTouchAdaptiveOffIndicator() {
   return true;
 }
 
+/** [DOC-CONTRACT]
+ * Renders Blink without blocking other runtime tasks.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void renderBlink(uint32_t color) {
   if (millis() - ledBlinkAt < 250) return;
 
@@ -999,6 +1229,10 @@ static void startOnlineOtaResultIndicator(
   showAll(0x000000, 0);
 }
 
+/** [DOC-CONTRACT]
+ * Advances OnlineOtaResultIndicator using current state and elapsed-time checks without blocking the main loop.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool processOnlineOtaResultIndicator() {
   if (!onlineResultIndicatorActive) return false;
 
@@ -1055,7 +1289,7 @@ static bool processOnlineOtaResultIndicator() {
       clearCloudCredentials();
       otaActive = false;
       otaState = OtaState::IDLE;
-      // FIX: Kembalikan kontrol LED normal jika OTA Gagal
+      // Restore normal LED ownership after Online OTA recovery so the resumed BLE/runtime state can render it.
       bleLedResumePending.store(true, std::memory_order_release);
       startBle();
       break;
@@ -1067,6 +1301,10 @@ static bool processOnlineOtaResultIndicator() {
   return true;
 }
 
+/** [DOC-CONTRACT]
+ * Implements validFirmwareVersion while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool validFirmwareVersion(const String& value) {
   String normalized = value;
   normalized.trim();
@@ -1090,11 +1328,19 @@ static bool validFirmwareVersion(const String& value) {
   return digitSeen;
 }
 
+/** [DOC-CONTRACT]
+ * Implements resetBlinkState while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void resetBlinkState() {
   ledBlinkAt = 0;
   ledBlinkPhase = false;
 }
 
+/** [DOC-CONTRACT]
+ * Initializes or enters the LocalOtaResultIndicator state without violating the cooperative runtime model.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void startLocalOtaResultIndicator() {
   localOtaResultIndicatorActive = true;
   localOtaResultIndicatorStartedAt = millis();
@@ -1106,6 +1352,10 @@ static void startLocalOtaResultIndicator() {
   showAll(0x000000, 0);
 }
 
+/** [DOC-CONTRACT]
+ * Advances LocalOtaResultIndicator using current state and elapsed-time checks without blocking the main loop.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool processLocalOtaResultIndicator() {
   if (!localOtaResultIndicatorActive) return false;
 
@@ -1136,6 +1386,10 @@ static bool processLocalOtaResultIndicator() {
   return true;
 }
 
+/** [DOC-CONTRACT]
+ * Initializes or enters the VoltageIndicator state without violating the cooperative runtime model.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void startVoltageIndicator() {
   if (!rgbOn) {
     voltageIndicatorActive = false;
@@ -1148,6 +1402,10 @@ static void startVoltageIndicator() {
   showAll(currentVoltageColor(), hardwareBrightness());
 }
 
+/** [DOC-CONTRACT]
+ * Renders CustomLedFrame without blocking other runtime tasks.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void renderCustomLedFrame(uint32_t now) {
   if (now - lastLedFrameAtMs < LED_FRAME_INTERVAL_MS) return;
   lastLedFrameAtMs = now;
@@ -1242,6 +1500,10 @@ static void renderCustomLedFrame(uint32_t now) {
   leds.show();
 }
 
+/** [DOC-CONTRACT]
+ * Advances Leds using current state and elapsed-time checks without blocking the main loop.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void processLeds() {
   static bool ledsForcedOff = false;
 
@@ -1344,12 +1606,20 @@ static void processLeds() {
   renderCustomLedFrame(millis());
 }
 
+/** [DOC-CONTRACT]
+ * Determines whether the shared 1 s post-transition voltage guard has expired.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool voltageGuardAllows(bool bypassGuard) {
   if (bypassGuard || !voltageGuardArmed) return true;
 
   return millis() - lastVoltageTransitionCompleteMs >= VOLTAGE_GUARD_MS;
 }
 
+/** [DOC-CONTRACT]
+ * Enforces the control-source lock that prevents user voltage changes while Adaptive is starting or active.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool manualVoltageRequestAllowed(VoltageRequestSource source) {
   if (adaptiveStartPending) {
     return source == VoltageRequestSource::ADAPTIVE ||
@@ -1363,11 +1633,18 @@ static bool manualVoltageRequestAllowed(VoltageRequestSource source) {
          source == VoltageRequestSource::SAFETY;
 }
 
+// Validate a voltage request, record its source, and open the 200 ms selector deadtime.
+/** [DOC-CONTRACT]
+ * Validates and stages a voltage request, de-asserting both selector outputs before the 200 ms deadtime.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool requestVoltage(Voltage target, VoltageRequestSource source, bool bypassGuard) {
   if (otaActive || voltageTransition) return false;
   if (!manualVoltageRequestAllowed(source)) return false;
+  // Respect the shared 1 s post-transition voltage guard unless the caller is an explicit safety path.
   if (!voltageGuardAllows(bypassGuard)) return false;
 
+  // Without a trustworthy Hotside sensor, only the safe 5 V state can be requested.
   if (!ntcValid && target != Voltage::V5) return false;
 
   // Hotside Limit is a universal voltage safety boundary.
@@ -1396,12 +1673,18 @@ static bool requestVoltage(Voltage target, VoltageRequestSource source, bool byp
   return true;
 }
 
+// Finish a pending selector change only after the full 200 ms deadtime has elapsed.
+/** [DOC-CONTRACT]
+ * Revalidates and physically completes a staged voltage change, then applies dependent cooling/PWM rules.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void completeVoltageTransition() {
   if (!voltageTransition) return;
   if (millis() - voltageTransitionAt < VOLTAGE_DEADTIME_MS) return;
 
   // Re-validate Hotside immediately before selector activation. Hotside is
   // the universal thermal authority and may override any pending target.
+  // Preserve the origin of the request so Battery-only retargeting cannot overwrite Safety/HOTSTEP transitions.
   VoltageRequestSource completedSource = voltageTransitionSource;
   if (hotsideProtectionActiveNow()) {
     if (adaptiveOn && currentVoltage != Voltage::V5) {
@@ -1459,8 +1742,10 @@ static void completeVoltageTransition() {
             : lowerVoltage(currentVoltage);
   }
 
+  // Capture the physically active voltage before committing the new selector state.
   const Voltage previousVoltage = currentVoltage;
 
+  // Commit the validated target to the physical selector outputs.
   currentVoltage = pendingVoltage;
   digitalWrite(PIN_9V, currentVoltage == Voltage::V9 ? OUTPUT_ON : OUTPUT_OFF);
   digitalWrite(PIN_12V, currentVoltage == Voltage::V12 ? OUTPUT_ON : OUTPUT_OFF);
@@ -1501,6 +1786,7 @@ static void completeVoltageTransition() {
   // - A true Peltier OFF -> ON transition is already handled by
   //   applyCoolingOutputs() and always starts the 5 s ramp.
   const bool voltageRose = isHigherVoltage(currentVoltage, previousVoltage);
+  // V3.7 rule: every upward voltage step with Peltier already ON restarts the 5 s PWM ramp.
   if (voltageRose && peltierOn && safetyAllowsPeltier()) {
     beginPeltierSoftStart();
   }
@@ -1516,12 +1802,20 @@ static void completeVoltageTransition() {
   }
 }
 
+/** [DOC-CONTRACT]
+ * Implements ntcTemperatureFromOhms while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static float ntcTemperatureFromOhms(float ohms) {
   const float t0 = NTC_NOMINAL_C + 273.15f;
   const float invT = (1.0f / t0) + (logf(ohms / NTC_NOMINAL_OHMS) / NTC_BETA);
   return (1.0f / invT) - 273.15f;
 }
 
+/** [DOC-CONTRACT]
+ * Samples Hotside NTC every 1 s, rejects invalid ADC values, and converts the divider measurement into temperature.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void sampleNtcIfDue() {
   if (millis() - lastNtcReadMs < NTC_READ_INTERVAL_MS) return;
   lastNtcReadMs = millis();
@@ -1561,6 +1855,11 @@ static void sampleNtcIfDue() {
   hotsideC = temperature;
 }
 
+// Collapse runtime cooling/adaptive state to the universal sensor-safe 5 V condition.
+/** [DOC-CONTRACT]
+ * Forces the universal sensor-safe runtime state: 5 V, Fan 100% ON, Peltier OFF, Adaptive OFF.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void forceSafeFiveVolt() {
   const bool previousAdaptive = adaptiveOn;
   // Sensor safety invalidation cancels a pending Adaptive startup before activation.
@@ -1602,6 +1901,11 @@ static void forceSafeFiveVolt() {
   publishSafetyReason();
 }
 
+// Apply the highest-priority thermal/sensor rules after normal feature evaluation.
+/** [DOC-CONTRACT]
+ * Applies the highest-priority NTC/Hotside safety policy after normal feature evaluation.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void enforceSafety() {
   if (!ntcValid) {
     forceSafeFiveVolt();
@@ -1609,6 +1913,7 @@ static void enforceSafety() {
     return;
   }
 
+  // Sample the current thermal boundary once so every safety branch uses the same instant.
   const bool hotNow = hotsideProtectionActiveNow();
   if (hotNow && !hotProtectionActive) {
     startHotsideLimitIndicator();
@@ -1716,6 +2021,11 @@ static void enforceSafety() {
   applyCoolingOutputs();
 }
 
+// Advance HOTSIDE Adaptive cooldown and 5 s upward-voltage timing without blocking the main loop.
+/** [DOC-CONTRACT]
+ * Handles Hotside cooldown and 5 s upward-voltage timing without blocking the main loop.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void processAdaptiveHotTimer() {
   if (!adaptiveOn || !ntcValid) return;
 
@@ -1761,6 +2071,10 @@ static void processAdaptiveHotTimer() {
   }
 }
 
+/** [DOC-CONTRACT]
+ * Implements safetyReason while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static String safetyReason() {
   if (!ntcValid) return "NTC_ERROR";
   if (hotsideProtectionActiveNow()) return "HOTSIDE_PROTECTION";
@@ -1768,6 +2082,10 @@ static String safetyReason() {
   return "NONE";
 }
 
+/** [DOC-CONTRACT]
+ * Implements invalidateBatterySource while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void invalidateBatterySource() {
   const bool hadState = batteryValid || isfinite(batteryC);
   batteryValid = false;
@@ -1785,18 +2103,30 @@ static void invalidateBatterySource() {
   }
 }
 
+/** [DOC-CONTRACT]
+ * Recomputes BatteryValidity validity or state from current input and timing data.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void updateBatteryValidity() {
   if (!batteryValid) return;
   if (millis() - lastBatteryRxMs < BATTERY_VALID_TTL_MS) return;
   invalidateBatterySource();
 }
 
+/** [DOC-CONTRACT]
+ * Advances BatteryLinkState using current state and elapsed-time checks without blocking the main loop.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void processBatteryLinkState() {
   if (!batteryLinkLostPending) return;
   batteryLinkLostPending = false;
   invalidateBatterySource();
 }
 
+/** [DOC-CONTRACT]
+ * Runs HOTSIDE behavior while HOTSIDE_BATTERY has no valid phone Battery temperature.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void processAdaptiveHotsideFallback() {
   if (!adaptiveOn ||
       adaptiveProfile != AdaptiveProfile::HOTSIDE_BATTERY ||
@@ -1817,6 +2147,10 @@ static void processAdaptiveHotsideFallback() {
   }
 }
 
+/** [DOC-CONTRACT]
+ * Implements batteryZoneFor while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static int batteryZoneFor(float temperature) {
   if (!isfinite(temperature)) return 9;
   if (temperature < battery5Limit) return 5;
@@ -1824,17 +2158,30 @@ static int batteryZoneFor(float temperature) {
   return 12;
 }
 
+/** [DOC-CONTRACT]
+ * Implements batteryZoneVoltage while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static Voltage batteryZoneVoltage(int zone) {
   if (zone >= 12) return Voltage::V12;
   if (zone >= 9) return Voltage::V9;
   return Voltage::V5;
 }
 
+/** [DOC-CONTRACT]
+ * Implements higherVoltage while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static Voltage higherVoltage(Voltage value) {
   if (value == Voltage::V5) return Voltage::V9;
   return Voltage::V12;
 }
 
+// Convert the latest phone Battery temperature into a one-step target inside the Hotside ceiling.
+/** [DOC-CONTRACT]
+ * Maps phone Battery temperature to the direct voltage zone and moves at most one step within the safe ceiling.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void evaluateAdaptiveBattery() {
   if (!adaptiveOn ||
       adaptiveProfile != AdaptiveProfile::HOTSIDE_BATTERY ||
@@ -1865,6 +2212,10 @@ static void evaluateAdaptiveBattery() {
       false);
 }
 
+/** [DOC-CONTRACT]
+ * Resets BleTxQueue to a known empty baseline.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void clearBleTxQueue() {
   for (size_t i = 0; i < BLE_TX_QUEUE_SIZE; ++i) bleTxQueue[i] = "";
   bleTxHead = 0;
@@ -1873,12 +2224,20 @@ static void clearBleTxQueue() {
   bleNextNotifyAt = millis();
 }
 
+/** [DOC-CONTRACT]
+ * Resets BleRxQueue to a known empty baseline.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void clearBleRxQueue() {
   const size_t currentTail =
       bleRxTail.load(std::memory_order_acquire);
   bleRxHead.store(currentTail, std::memory_order_release);
 }
 
+/** [DOC-CONTRACT]
+ * Implements enqueueBleRxPayload while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void enqueueBleRxPayload(const String& payload) {
   if (payload.isEmpty()) return;
 
@@ -1899,6 +2258,10 @@ static void enqueueBleRxPayload(const String& payload) {
   }
 }
 
+/** [DOC-CONTRACT]
+ * Advances BleRxQueue using current state and elapsed-time checks without blocking the main loop.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void processBleRxQueue() {
   if (!bleClientConnected) {
     clearBleRxQueue();
@@ -1924,6 +2287,10 @@ static void processBleRxQueue() {
   }
 }
 
+/** [DOC-CONTRACT]
+ * Serializes and publishes Text through the JE X FYZ runtime communication path.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void sendText(const String& line) {
   if (txCharacteristic == nullptr || !BLEDevice::getInitialized()) return;
   if (!bleClientConnected || line.isEmpty()) return;
@@ -1939,6 +2306,10 @@ static void sendText(const String& line) {
   }
 }
 
+/** [DOC-CONTRACT]
+ * Implements serviceBleTx while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void serviceBleTx() {
   if (bleQueueResetPending) {
     bleQueueResetPending = false;
@@ -1965,19 +2336,32 @@ static void serviceBleTx() {
   bleNextNotifyAt = millis() + BLE_TX_INTERVAL_MS;
 }
 
+/** [DOC-CONTRACT]
+ * Serializes and publishes Delta through the JE X FYZ runtime communication path.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void sendDelta(const char* key, const String& value) {
   sendText(String(key) + ":" + value);
 }
 
+/** [DOC-CONTRACT]
+ * Serializes and publishes Ack through the JE X FYZ runtime communication path.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void sendAck(const String& item, bool ok, const String& reason) {
   sendText("ACK:" + item + "=" + (ok ? "OK" : "DENIED") + ";REASON=" + reason);
 }
 
+/** [DOC-CONTRACT]
+ * Implements otaStateText while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static const char* otaStateText(OtaState state) {
   switch (state) {
     case OtaState::BOOT_AP:          return "BOOT_AP";
     case OtaState::LOCAL_UPLOAD:     return "LOCAL_UPLOAD";
-    case OtaState::CLOUD_CONNECTING: return "CLOUD_CONNECTING";    case OtaState::CLOUD_DOWNLOADING:return "CLOUD_DOWNLOADING";
+    case OtaState::CLOUD_CONNECTING: return "CLOUD_CONNECTING";
+    case OtaState::CLOUD_DOWNLOADING: return "CLOUD_DOWNLOADING";
     case OtaState::CLOUD_APPLYING:   return "CLOUD_APPLYING";
     case OtaState::SUCCESS:          return "SUCCESS";
     case OtaState::FAILED:           return "FAILED";
@@ -1987,6 +2371,10 @@ static const char* otaStateText(OtaState state) {
 }
 
 // ====================== OTA DIAGNOSTIC CORE — LOCKED ========================
+/** [DOC-CONTRACT]
+ * Implements sanitizeOtaDetail while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static String sanitizeOtaDetail(String value) {
   value.replace("|", "/");
   value.replace("\r", " ");
@@ -1997,6 +2385,10 @@ static String sanitizeOtaDetail(String value) {
   return value;
 }
 
+/** [DOC-CONTRACT]
+ * Updates OtaDiagnosticStage state while preserving the applicable protocol, persistence, and safety constraints.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void setOtaDiagnosticStage(const String& stage) {
   otaDiagnosticStage = stage;
   if (bleClientConnected) {
@@ -2004,6 +2396,10 @@ static void setOtaDiagnosticStage(const String& stage) {
   }
 }
 
+/** [DOC-CONTRACT]
+ * Updates OtaDiagnosticProgress state while preserving the applicable protocol, persistence, and safety constraints.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void setOtaDiagnosticProgress(uint8_t progress) {
   progress = constrain(progress, static_cast<uint8_t>(0), static_cast<uint8_t>(100));
   otaDiagnosticProgress = progress;
@@ -2017,6 +2413,10 @@ static void setOtaDiagnosticProgress(uint8_t progress) {
   }
 }
 
+/** [DOC-CONTRACT]
+ * Updates OtaDiagnosticError state while preserving the applicable protocol, persistence, and safety constraints.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void setOtaDiagnosticError(int errorCode, const String& error) {
   otaDiagnosticErrorCode = errorCode;
   otaDiagnosticError = sanitizeOtaDetail(error);
@@ -2055,12 +2455,20 @@ static constexpr int OTA_ERROR_MAGIC_BYTE = 8;
 static constexpr int OTA_ERROR_STREAM = 6;
 static constexpr int OTA_ERROR_SIZE = 5;
 // ================= END OTA DIAGNOSTIC CORE — LOCKED ========================
+/** [DOC-CONTRACT]
+ * Updates OtaState state while preserving the applicable protocol, persistence, and safety constraints.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void setOtaState(OtaState state) {
   if (otaState == state) return;
   otaState = state;
   sendDelta("OTA_STATE", otaStateText(otaState));
 }
 
+/** [DOC-CONTRACT]
+ * Publishes the complete runtime state and consumes the one-shot OTA result event.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void sendFullSync() {
   clearBleTxQueue();
   sendText("<SYNC_START>");
@@ -2105,6 +2513,10 @@ static void sendFullSync() {
   sendText("<SYNC_END>");
 }
 
+/** [DOC-CONTRACT]
+ * Implements publishSafetyReason while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void publishSafetyReason() {
   const String reason = safetyReason();
   if (reason != lastSafetyReasonSent) {
@@ -2114,12 +2526,20 @@ static void publishSafetyReason() {
   }
 }
 
+/** [DOC-CONTRACT]
+ * Serializes and publishes HotsideTelemetry through the JE X FYZ runtime communication path.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void sendHotsideTelemetry() {
 
   sendDelta("HOT", formatTemperature(hotsideC, ntcValid));
   publishSafetyReason();
 }
 
+/** [DOC-CONTRACT]
+ * Implements dispatchBleLine while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void dispatchBleLine(const String& raw) {
   String command = raw;
   command.trim();
@@ -2134,6 +2554,10 @@ static void dispatchBleLine(const String& raw) {
   handleCommand(command);
 }
 
+/** [DOC-CONTRACT]
+ * Frames newline-delimited BLE input and dispatches complete commands.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void feedBleRx(const String& incoming) {
   for (size_t i = 0; i < incoming.length(); ++i) {
     const char c = incoming[i];
@@ -2186,9 +2610,6 @@ class ServerCallbacks : public BLEServerCallbacks {
     }
   }
 
-
-
-
 };
 
 class RxCallbacks : public BLECharacteristicCallbacks {
@@ -2200,6 +2621,10 @@ class RxCallbacks : public BLECharacteristicCallbacks {
 static ServerCallbacks serverCallbacks;
 static RxCallbacks rxCallbacks;
 
+/** [DOC-CONTRACT]
+ * Stops BLE before Wi-Fi ownership and schedules cooperative radio settling/restart.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void stopBleRadio(bool releaseBluetoothMemory) {
   bleQueueResetPending = true;
   bleClientConnected = false;
@@ -2229,10 +2654,18 @@ static void stopBleRadio(bool releaseBluetoothMemory) {
           : millis();
 }
 
+/** [DOC-CONTRACT]
+ * Stops the BleForBootWiFiClient state and leaves the related hardware/runtime state at a known baseline.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void stopBleForBootWiFiClient() {
   stopBleRadio(true);
 }
 
+/** [DOC-CONTRACT]
+ * Requests Wi-Fi OFF and arms the radio-off settle interval.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void requestWiFiOffShutdown() {
   if (wifiOffSettlePending) return;
   WiFi.mode(WIFI_OFF);
@@ -2240,6 +2673,10 @@ static void requestWiFiOffShutdown() {
   wifiOffSettlePending = true;
 }
 
+/** [DOC-CONTRACT]
+ * Implements isWiFiOffSettled while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool isWiFiOffSettled() {
   if (!wifiOffSettlePending) return true;
   if (static_cast<int32_t>(millis() - wifiOffSettleUntilMs) < 0) return false;
@@ -2247,12 +2684,20 @@ static bool isWiFiOffSettled() {
   return true;
 }
 
+/** [DOC-CONTRACT]
+ * Implements scheduleBleRetry while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void scheduleBleRetry() {
   bleStartPending = true;
   if (bleStartAttempts < BLE_START_MAX_ATTEMPTS) ++bleStartAttempts;
   bleStartRetryAt = millis() + BLE_START_RETRY_MS;
 }
 
+/** [DOC-CONTRACT]
+ * Starts or resumes BLE only after Wi-Fi is OFF and settled.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void startBle() {
   if (otaActive) return;
   if (bootApActive) return;
@@ -2396,6 +2841,10 @@ static void startBle() {
   }
 }
 
+/** [DOC-CONTRACT]
+ * Implements serviceBleStartRecovery while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void serviceBleStartRecovery() {
   if (otaActive || bootApActive) return;
 
@@ -2423,6 +2872,10 @@ static void serviceBleStartRecovery() {
 // ============================================================================
 
 // Only the approved JE X FYZ GitHub repository may be used as the OTA binary source.
+/** [DOC-CONTRACT]
+ * Accepts only .bin URLs served by the approved JE X FYZ firmware repository.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool validGitHubFirmwareUrl(const String& value) {
   String url = value;
   url.trim();
@@ -2434,6 +2887,10 @@ static bool validGitHubFirmwareUrl(const String& value) {
   return true;
 }
 
+/** [DOC-CONTRACT]
+ * Resets CloudCredentials to a known empty baseline.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void clearCloudCredentials() {
   cloudSsid = "";
   cloudPassword = "";
@@ -2441,12 +2898,20 @@ static void clearCloudCredentials() {
   cloudVersion = "";
 }
 
+/** [DOC-CONTRACT]
+ * Stops the WiFiRadio state and leaves the related hardware/runtime state at a known baseline.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void stopWiFiRadio() {
   WiFi.disconnect(true, false);
   WiFi.softAPdisconnect(true);
   requestWiFiOffShutdown();
 }
 
+/** [DOC-CONTRACT]
+ * Forces cooling and voltage-selector outputs into the OTA-safe state.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void applyOtaSafeOutputs() {
   fanOn = false;
   peltierOn = false;
@@ -2467,6 +2932,10 @@ static void applyOtaSafeOutputs() {
   digitalWrite(PIN_12V, OUTPUT_OFF);
 }
 
+/** [DOC-CONTRACT]
+ * Recomputes ErrorDetail validity or state from current input and timing data.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static String updateErrorDetail() {
   const char* detail = Update.errorString();
   String message = detail == nullptr ? "UPDATE_FAILED" : String(detail);
@@ -2474,6 +2943,10 @@ static String updateErrorDetail() {
   return message;
 }
 
+/** [DOC-CONTRACT]
+ * Implements finishOnlineOtaFailureRecovery while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void finishOnlineOtaFailureRecovery() {
   onlineResultIndicatorActive = false;
   onlineResultIndicatorLastPhase = 0xFFFFFFFFUL;
@@ -2520,6 +2993,10 @@ static void failOnlineOta(
   startOnlineOtaResultIndicator(0xFF0000, OnlineOtaIndicatorNext::RECOVER);
 }
 
+/** [DOC-CONTRACT]
+ * Implements resetOnlineOtaProgressState while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void resetOnlineOtaProgressState() {
   onlineOtaProgressReachedMask = 0;
   onlineOtaProgressPendingMask = 0;
@@ -2531,6 +3008,10 @@ static void resetOnlineOtaProgressState() {
   onlineOtaDownloadLastDataAt = 0;
 }
 
+/** [DOC-CONTRACT]
+ * Implements queueOnlineOtaProgressMilestones while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void queueOnlineOtaProgressMilestones(uint8_t progress) {
   progress = constrain(progress, static_cast<uint8_t>(0), static_cast<uint8_t>(100));
 
@@ -2546,6 +3027,10 @@ static void queueOnlineOtaProgressMilestones(uint8_t progress) {
   }
 }
 
+/** [DOC-CONTRACT]
+ * Implements onlineUpdateProgress while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void onlineUpdateProgress(size_t current, size_t total) {
   if (total == 0) return;
   const uint8_t progress = static_cast<uint8_t>(
@@ -2554,6 +3039,10 @@ static void onlineUpdateProgress(size_t current, size_t total) {
   queueOnlineOtaProgressMilestones(progress);
 }
 
+/** [DOC-CONTRACT]
+ * Advances OnlineOtaProgressIndicator using current state and elapsed-time checks without blocking the main loop.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool processOnlineOtaProgressIndicator() {
   if (onlineOtaProgressIndicatorActive) {
     const uint32_t elapsed =
@@ -2596,6 +3085,10 @@ static bool processOnlineOtaProgressIndicator() {
   return false;
 }
 
+/** [DOC-CONTRACT]
+ * Opens the GitHub firmware stream and validates HTTP response, image size, and stream availability.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool prepareOnlineOtaDownload() {
   setOtaDiagnosticStage("ONLINE_GITHUB_CONNECT");
   setOtaDiagnosticProgress(0);
@@ -2683,6 +3176,11 @@ static bool prepareOnlineOtaDownload() {
   return true;
 }
 
+// Read at most one bounded network chunk per loop pass and stream it into the inactive OTA partition.
+/** [DOC-CONTRACT]
+ * Streams bounded firmware chunks into the inactive OTA partition and validates the ESP32 image magic byte.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool performOnlineOtaDownload() {
   setOtaDiagnosticStage("ONLINE_DOWNLOAD");
   setOtaDiagnosticError(0, "NONE");
@@ -2816,6 +3314,10 @@ static bool performOnlineOtaDownload() {
   return true;
 }
 
+/** [DOC-CONTRACT]
+ * Finalizes the OTA partition, records success metadata, and schedules restart.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool finalizeOnlineOtaFlash() {
   setOtaDiagnosticStage("ONLINE_FLASH_FINALIZE");
   setOtaDiagnosticError(0, "NONE");
@@ -2861,6 +3363,11 @@ static bool finalizeOnlineOtaFlash() {
   return true;
 }
 
+// Start Online OTA only after validating credentials, source URL, and remote firmware version.
+/** [DOC-CONTRACT]
+ * Validates the Online OTA request, disables BLE, transfers radio ownership to Wi-Fi, and enters OTA states.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void startOnlineOta() {
   if (otaActive) return;
   if (cloudSsid.isEmpty() || cloudPassword.isEmpty() || !validGitHubFirmwareUrl(cloudUrl)) return;
@@ -2920,7 +3427,8 @@ static void startOnlineOta() {
   clearBleTxQueue();
   clearBleRxQueue();
   
-  stopBleRadio(false); // AMAN: Tidak akan crash
+  // Stop BLE advertising/controller state before the Wi-Fi radio handoff; the operation is non-blocking and recovered by the supervisor.
+  stopBleRadio(false);
   bleStartPending = false;
   bleStartAttempts = 0;
 
@@ -2933,6 +3441,11 @@ static void startOnlineOta() {
   cloudPhaseStartedAt = millis();
 }
 
+// Advance the Online OTA radio/download/finalize state machine one cooperative step at a time.
+/** [DOC-CONTRACT]
+ * Advances the Online OTA state machine cooperatively.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void processOnlineOta() {
   if (onlineResultIndicatorActive) {
     processOnlineOtaResultIndicator();
@@ -2952,7 +3465,7 @@ static void processOnlineOta() {
         WiFi.setHostname("JE-X-FYZ");
         WiFi.setSleep(false);
         
-        // KRUSIAL: Matikan AutoReconnect agar tidak stuck saat password salah!
+        // Disable automatic reconnect so an invalid password reaches the explicit retry/failure state machine.
         WiFi.setAutoReconnect(false); 
         
         WiFi.begin(cloudSsid.c_str(), cloudPassword.c_str());
@@ -2967,7 +3480,7 @@ static void processOnlineOta() {
         setOtaDiagnosticProgress(0);
         startOnlineOtaResultIndicator(
             0x0000FF,
-            OnlineOtaIndicatorNext::PREPARE_DOWNLOAD); // LED BIRU -> langsung ke DOWNLOAD
+            OnlineOtaIndicatorNext::PREPARE_DOWNLOAD); // Keep the blue Wi-Fi-success indicator before download preparation.
         return;
       }
 
@@ -2984,7 +3497,7 @@ static void processOnlineOta() {
           WiFi.disconnect(true, false);
           WiFi.mode(WIFI_OFF);
           
-          // Kembali ke fase Teardown untuk Retry yang bersih
+          // Return to the radio-teardown phase so each retry starts from a clean Wi-Fi state.
           onlineOtaFlow = OnlineOtaFlow::RADIO_TEARDOWN;
           cloudPhaseStartedAt = millis();
         } else {
@@ -3070,6 +3583,10 @@ form.addEventListener('submit',e=>{
 </html>
 )HTML";
 
+/** [DOC-CONTRACT]
+ * Implements abortLocalOtaTransaction while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void abortLocalOtaTransaction() {
   if (localOtaStarted) {
     Update.abort();
@@ -3105,6 +3622,10 @@ static void failLocalOta(
   bootApClientSafe = true;
 }
 
+/** [DOC-CONTRACT]
+ * Processes Local OTA upload chunks, validates size/type, writes flash, and finalizes the image.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void localOtaUploadHandler() {
   HTTPUpload& upload = webServer.upload();
 
@@ -3272,12 +3793,20 @@ static void localOtaUploadHandler() {
   }
 }
 
+/** [DOC-CONTRACT]
+ * Implements handleOtaRoot while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void handleOtaRoot() {
   String html = FPSTR(LOCAL_OTA_PAGE);
   html.replace("%VERSION%", FW_VERSION);
   webServer.send(200, "text/html", html);
 }
 
+/** [DOC-CONTRACT]
+ * Implements handleOtaPost while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void handleOtaPost() {
   webServer.sendHeader("Connection", "close");
 
@@ -3303,6 +3832,10 @@ static void handleOtaPost() {
       "OTA not finalized: " + otaResult);
 }
 
+/** [DOC-CONTRACT]
+ * Starts the boot SoftAP and HTTP OTA service without enabling BLE concurrently.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void startLocalOtaAp() {
   onlineOtaStartPending = false;
   // Local OTA owns the LED output from the boot-AP boundary onward.
@@ -3347,6 +3880,10 @@ static void startLocalOtaAp() {
   Serial.println("WIFI AP: HTTP READY");
 }
 
+/** [DOC-CONTRACT]
+ * Stops the Local OTA server and requests Wi-Fi shutdown for BLE handoff.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void stopLocalOtaAp() {
   runHeapCheck("CP01_BEFORE_WEBSERVER_STOP");
   webServer.stop();
@@ -3361,6 +3898,10 @@ static void stopLocalOtaAp() {
 }
 
 // ======================== END OTA ENGINE — LOCKED ==========================
+/** [DOC-CONTRACT]
+ * Applies a manual Fan request subject to Adaptive, NTC, Hotside, and Peltier interlock rules.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool setFanState(bool desired, String& reason) {
   if (adaptiveStartPending) {
     reason = "ADAPTIVE_STARTING";
@@ -3399,6 +3940,10 @@ static bool setFanState(bool desired, String& reason) {
   return fanOn == desired;
 }
 
+/** [DOC-CONTRACT]
+ * Applies a manual Peltier request subject to Adaptive, NTC, Fan, latch, Hotside, and OTA safety rules.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool setPeltierState(bool desired, String& reason) {
   if (adaptiveStartPending) {
     reason = "ADAPTIVE_STARTING";
@@ -3448,6 +3993,10 @@ static bool setPeltierState(bool desired, String& reason) {
   return peltierOn;
 }
 
+/** [DOC-CONTRACT]
+ * Implements forceAdaptiveFiveVolt while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool forceAdaptiveFiveVolt() {
 
   if (voltageTransition) {
@@ -3463,6 +4012,10 @@ static bool forceAdaptiveFiveVolt() {
       true);
 }
 
+/** [DOC-CONTRACT]
+ * Implements activateAdaptiveAfterSafeFiveVolt while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void activateAdaptiveAfterSafeFiveVolt() {
   if (!adaptiveStartPending || currentVoltage != Voltage::V5) return;
 
@@ -3511,6 +4064,10 @@ static void activateAdaptiveAfterSafeFiveVolt() {
   }
 }
 
+/** [DOC-CONTRACT]
+ * Starts or stops Adaptive through the mandatory 5 V handoff and resets temporary ceiling state on exit.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void setAdaptiveState(bool desired, String& reason) {
   if (desired) {
     if (adaptiveOn) {
@@ -3582,6 +4139,10 @@ static void setAdaptiveState(bool desired, String& reason) {
   applyCoolingOutputs();
 }
 
+/** [DOC-CONTRACT]
+ * Updates RgbState state while preserving the applicable protocol, persistence, and safety constraints.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool setRgbState(bool desired) {
   if (rgbOn == desired) return true;
 
@@ -3599,6 +4160,10 @@ static bool setRgbState(bool desired) {
   return true;
 }
 
+/** [DOC-CONTRACT]
+ * Updates FanSpeed state while preserving the applicable protocol, persistence, and safety constraints.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool setFanSpeed(uint8_t value, String& reason) {
   if (adaptiveStartPending) {
     reason = "ADAPTIVE_STARTING";
@@ -3630,6 +4195,10 @@ static bool setFanSpeed(uint8_t value, String& reason) {
   return true;
 }
 
+/** [DOC-CONTRACT]
+ * Implements handleSettingsReset while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void handleSettingsReset(const String& group) {
   String normalized = group;
   normalized.trim();
@@ -3663,6 +4232,10 @@ static void handleSettingsReset(const String& group) {
   sendAck("RESET", false, "UNKNOWN_GROUP");
 }
 
+/** [DOC-CONTRACT]
+ * Parses one BLE command and routes it to the matching state handler.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void handleCommand(const String& command) {
   if (command == "SYNC") {
     sendFullSync();
@@ -4063,6 +4636,10 @@ static void handleCommand(const String& command) {
   sendAck("COMMAND", false, "UNKNOWN");
 }
 
+/** [DOC-CONTRACT]
+ * Executes a queued Online OTA request at the safe main-loop boundary.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void processPendingOnlineOtaStart() {
   if (!onlineOtaStartPending || otaActive || bootApActive) return;
 
@@ -4075,6 +4652,10 @@ static void processPendingOnlineOtaStart() {
   startOnlineOta();
 }
 
+/** [DOC-CONTRACT]
+ * Executes the approved single-tap action and its feedback.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void executeTouchSingle() {
   if (otaActive) return;
 
@@ -4092,6 +4673,10 @@ static void executeTouchSingle() {
           accepted ? "OK" : "VOLTAGE_GUARD_OR_BUSY");
 }
 
+/** [DOC-CONTRACT]
+ * Executes the approved double-tap action and its feedback.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void executeTouchDouble() {
   if (otaActive) return;
 
@@ -4099,6 +4684,10 @@ static void executeTouchDouble() {
   sendAck("TOUCH_RGB", accepted, accepted ? "OK" : "FAILED");
 }
 
+/** [DOC-CONTRACT]
+ * Implements executeTouchLong while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void executeTouchLong() {
   if (otaActive) return;
   // Fan/Peltier are forced OFF during the initial boot AP window.
@@ -4141,6 +4730,10 @@ static void executeTouchLong() {
           peltierOn ? "ON" : safetyReason());
 }
 
+/** [DOC-CONTRACT]
+ * Debounces and resolves the touch single/double/multi-tap state machine.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void processTouchInput() {
   static constexpr uint32_t TAP_MAX_PRESS_MS = 500;
   static constexpr uint32_t TAP_DECISION_WINDOW_MS = 500;
@@ -4214,11 +4807,15 @@ static void processTouchInput() {
   }
 }
 
-
 // ============================================================================
 // ====================== OTA PRIORITY SUPERVISOR — LOCKED ====================
 // Executed first by loop(). OTA gets control before normal feature processing.
 // ============================================================================
+// Global OTA supervisor: service OTA before normal application logic and own the LED/output path when active.
+/** [DOC-CONTRACT]
+ * Implements serviceOtaPriority while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static bool serviceOtaPriority() {
   if (otaState == OtaState::SUCCESS &&
       otaRestartAt != 0 &&
@@ -4315,10 +4912,18 @@ static bool serviceOtaPriority() {
 
 // ================ END OTA PRIORITY SUPERVISOR — LOCKED =====================
 
+/** [DOC-CONTRACT]
+ * Updates upTouch state while preserving the applicable protocol, persistence, and safety constraints.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void setupTouch() {
   pinMode(PIN_TOUCH, INPUT);
 }
 
+/** [DOC-CONTRACT]
+ * Initializes GPIO, ADC, PWM, LED hardware, persisted settings, and the first safety evaluation.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 static void initializeRuntimeFeatures() {
   if (runtimeFeaturesReady) return;
 
@@ -4377,6 +4982,11 @@ static void initializeRuntimeFeatures() {
   Serial.println("BOOT: FEATURES READY");
 }
 
+// Arduino entry point: initialize diagnostics/hardware, then defer the boot SoftAP handoff to loop().
+/** [DOC-CONTRACT]
+ * Updates up state while preserving the applicable protocol, persistence, and safety constraints.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 void setup() {
   otaDiagnosticStage = "BOOT_AP";
   otaDiagnosticError = "NONE";
@@ -4403,6 +5013,11 @@ void setup() {
   // ==================== END OTA BOOT PATH — PROTECTED =====================
 }
 
+// Cooperative runtime scheduler. OTA has absolute priority; normal features run only after the OTA gate releases.
+/** [DOC-CONTRACT]
+ * Implements loop while preserving the firmware's non-blocking state-machine and safety contracts.
+ * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ */
 void loop() {
   // =================== OTA LOOP PRIORITY — PROTECTED =======================
   // ================= OTA PRIORITY: DO NOT MOVE DOWN =================
@@ -4489,4 +5104,3 @@ void loop() {
 
   yield();
 }
-
