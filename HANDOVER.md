@@ -451,3 +451,13 @@ This is static/source analysis only. ArduinoDroid + official Arduino-ESP32 Core 
 
 ### Next exact action
 Use `@Thinking Eksekusi Full!` for the source hardening pass. Do not Build App. After source hardening is committed, compile using the exact ArduinoDroid + official Core 3.3.7 environment, generate BIN, and only then conduct staged physical validation.
+
+## 2026-10-04 — CURRENT HANDOVER AFTER V3.9
+- Current firmware: V3.9
+- Active source: `firmware/JEXFYZ-V3.9.ino`
+- Active blob: `f123a46d84d1e2ec0e67419a6577388fd3c8645e`
+- Hardening committed and statically audited; compile/BIN/Firebase/physical validation remains pending.
+- Soft-start contract remains OFF -> ON only; voltage changes do not restart it.
+- Remaining open items: OTA CA/server verification, BLE cryptographic auth, synchronous HTTP transport redesign, post-boot rollback health.
+- App source/configuration unchanged; Build #50 remains baseline.
+- Next exact action: compile V3.9 with ArduinoDroid + official Arduino-ESP32 Core 3.3.7, generate BIN, then staged hardware validation.
