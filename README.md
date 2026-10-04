@@ -610,3 +610,10 @@ persisted in the repository.**
 
 **Current state must always be recoverable from the repository alone.**
 
+## 2026-10-04 — CURRENT FIRMWARE V3.9 HARDENING
+- Current Firmware: V3.9
+- Active source: `firmware/JEXFYZ-V3.9.ino`
+- V3.9 implements the approved safety/OTA hardening pass.
+- Frozen contract: Peltier 5 s soft-start is logical OFF -> ON only; voltage changes do not restart soft-start.
+- V3.9 has not yet been compiled, flashed, or physically validated.
+- App Build #50 remains the latest verified App artifact; no App Build is required for this firmware-only change.
