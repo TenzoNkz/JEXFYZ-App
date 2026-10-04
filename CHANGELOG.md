@@ -1,3 +1,12 @@
+## 2026-10-04 — V4.0 ONLINE OTA GEMINI PATCH
+
+- Applied the supplied Gemini Online OTA patch to V4.0.
+- Switched Online OTA to simple `WiFiClientSecure + setInsecure()` for GitHub raw-BIN compatibility, intentionally without CA/server authentication.
+- Removed only the intermediate GREEN-after-GitHub and BLUE-after-download transitions.
+- Preserved BLUE Wi-Fi success, YELLOW 20/40/60/80/100 milestones, GREEN final success, and RED failure/recovery.
+- Local OTA remained byte-for-byte unchanged.
+- No App Build or firmware compile/BIN/physical validation was performed.
+
 ## 2026-10-04 — GEMINI PATCH-ONLY WORKFLOW ADDED
 
 - Added `GEMINI_PROMPT_ONLINE_OTA.md` as the copy-ready independent Gemini review/fix prompt.
