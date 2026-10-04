@@ -1,3 +1,13 @@
+## 2026-10-04 — CURRENT FIRMWARE ANALYSIS / V4.2
+
+- [CURRENT] Active source: `firmware/JEXFYZ-V4.2.ino`; blob `63e8db10dbe99eb538af62ddc7d35d8b4b20b849`.
+- [CURRENT] Online OTA `WIFI_CONNECTING` performs one initial `WiFi.begin()` and does not issue retry-side `WiFi.disconnect(); WiFi.begin(...)`.
+- [CURRENT] Connection failure is handled by a cumulative 45-second timeout using the existing 15-second interval constants.
+- [CURRENT] Attempt telemetry advances from elapsed time only; it does not manipulate the radio state.
+- [CURRENT] Local OTA path remains protected.
+- [UNVERIFIED] Toolchain compile/BIN and physical/runtime behavior.
+- [HYPOTHESIS ONLY] Gemini's event-queue/crash explanation is not independently proven by source alone.
+
 ## 2026-10-04 — EXECUTION FULL / V4.1 SIMPLE ONLINE OTA
 
 - [IMPLEMENTED] Applied the accepted Gemini redesign to Online OTA in the exact V4.0 source.
