@@ -1,9 +1,28 @@
+## 2026-10-04 — PROCESS RULE / ALL-MEMORY SYNCHRONIZATION MATRIX
+
+- Every meaningful JE X FYZ event must perform a synchronization pass across the complete memory stack before the event is considered complete.
+- Mandatory memory stack:
+  - `README.md`
+  - `PROJECT_STATE.md`
+  - `CHAT_RULES.md`
+  - `APP_NOTES.md`
+  - `FIRMWARE_NOTES.md`
+  - `BUILD_NOTES.md`
+  - `CHANGELOG.md`
+  - `HANDOVER.md`
+  - `firmware/FIRMWARE_ANALYSIS.md` when firmware context is relevant
+- `PROJECT_STATE.md` is the mandatory current-state checkpoint after every meaningful event.
+- Other memory files must be updated whenever that event changes their knowledge domain; if a file does not need textual change, it must still be considered during the synchronization pass rather than silently skipped.
+- A Discussion event may therefore create memory-only commits while leaving functional source/build/release untouched.
+- An Execution or Build event must never finish with source changes that are absent from the persistent memory record.
+- This matrix exists specifically so a chat/subchat reaching its context limit cannot discard a requirement, decision, change, build fact, failure, or validation result merely because the user did not explicitly request a memory update.
+
 ## 2026-10-04 — EXECUTION FULL / MEMORY FOUNDATION BOOTSTRAP
 
 - Completed the persistent continuity architecture requested for JE X FYZ.
 - Confirmed `README.md` is the mandatory first-read project operating manual and contains the detailed copy-ready new-chat prompt.
 - Confirmed `BUILD_NOTES.md`, `CHANGELOG.md`, and `HANDOVER.md` are persistent continuity artifacts.
-- Added the missing `PROJECT_STATE.md) snapshot in the final step of this execution so the repository has a single current-state checkpoint.
+- Added the missing `PROJECT_STATE.md` snapshot in the final step of this execution so the repository has a single current-state checkpoint.
 - Mandatory preflight now includes every memory layer before any project action, including Build App subchats.
 - Automatic memory synchronization is part of every meaningful Discussion, Execution, Build, Gemini, compile/test, and hardware-test workflow; the user does not need to request a memory update.
 - A successful App Build is a persistent memory checkpoint and must preserve the exact source SHA, run/artifact evidence, all changes included, gates, and remaining validation boundary.
@@ -30,7 +49,10 @@
   3. `CHAT_RULES.md` — workflow/process rules.
   4. `APP_NOTES.md` — App contract and App history.
   5. `FIRMWARE_NOTES.md` — Firmware contract and Firmware history.
-  6. `firmware/FIRMWARE_ANALYSIS.md` — firmware architecture/safety map when firmware context is relevant.
+  6. `BUILD_NOTES.md` — Build App checkpoints and artifact continuity.
+  7. `CHANGELOG.md` — milestone/version history.
+  8. `HANDOVER.md` — portable continuity context when present.
+  9. `firmware/FIRMWARE_ANALYSIS.md` — firmware architecture/safety map when firmware context is relevant.
   7. Inspect the current repository source/workflow that actually controls the task.
 - For **Build App**, this preflight is mandatory even though Build App may run in a separate subchat. A Build App chat must not rely on remembered context from a previous chat; it must rebuild context from repository memory and current source.
 - A Build App workflow is therefore treated as a full engineering continuity workflow, not as a short artifact-generation shortcut.
