@@ -1,3 +1,11 @@
+## 2026-10-04 — ARTIFACT STORAGE CLEANUP HARDENING
+
+- Build #51 source parser failure was corrected in commit `ea5261230245fc86061cdf85f65ccd0208e607d3` by restoring the missing closing brace for `_startCloudOta`.
+- Build #52 compiled successfully but failed only in production-signature shell verification; commit `e33141efd47b8f1ca025e832097e1106d9119b65` fixed the pipefail/SIGPIPE handling.
+- Build #53 passed analysis, tests, release APK compilation, and signing verification but could not upload because GitHub Actions artifact storage quota was exhausted.
+- App Build workflow commit `4514aac93b75abb18eed8073484bf96de1316ec7` now requires `actions: write`, deletes all existing workflow artifacts at the start of each explicit build, and uploads exactly one release APK. Dart symbols are no longer uploaded.
+- Normal push/PR behavior remains unchanged; only the dedicated issue-triggered App Build reaches this cleanup step.
+
 # JE X FYZ — BUILD NOTES
 
 ## APP BUILD POLICY
