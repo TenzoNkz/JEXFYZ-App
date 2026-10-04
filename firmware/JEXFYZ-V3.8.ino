@@ -10,6 +10,7 @@
 #include <atomic>
 #include <cstring>
 #include "esp_heap_caps.h"
+#include "esp_system.h"
 
 #include <BLEDevice.h>
 #include <BLEServer.h>
@@ -271,6 +272,10 @@ static constexpr uint8_t FAN_PWM_RESOLUTION = 8;
 static constexpr uint32_t PELTIER_PWM_FREQ = 20000;
 static constexpr uint8_t PELTIER_PWM_RESOLUTION = 8;
 static constexpr uint32_t PELTIER_SOFT_START_MS = 5000;
+// Battery zone hysteresis prevents small sensor noise from chattering the target voltage around configured thresholds.
+static constexpr float BATTERY_HYSTERESIS_C = 0.5f;
+// A rapid positive Hotside rise at or above this rate requires a manual Peltier restart after the safety shutdown.
+static constexpr float RAPID_HOTSIDE_RISE_C_PER_SEC = 3.0f;
 
 WebServer webServer(80);
 Preferences prefs;
@@ -285,6 +290,7 @@ size_t bleTxHead = 0;
 size_t bleTxTail = 0;
 size_t bleTxCount = 0;
 uint32_t bleNextNotifyAt = 0;
+uint32_t bleTxOverflowCount = 0;
 
 char bleRxQueue[BLE_RX_QUEUE_SIZE][BLE_RX_BUFFER_SIZE];
 std::atomic<size_t> bleRxHead{0};
@@ -345,6 +351,9 @@ bool ntcValid = false;
 float hotsideC = NAN;
 uint32_t ntcMv = 0;
 uint32_t lastNtcReadMs = 0;
+float previousValidHotsideC = NAN;
+uint32_t previousValidHotsideAtMs = 0;
+bool rapidRiseProtectionEventPending = false;
 bool batteryValid = false;
 float batteryC = NAN;
 uint32_t lastBatteryRxMs = 0;
@@ -463,6 +472,8 @@ volatile bool bleCommandGateOpen = false;
 uint32_t ledBlinkAt = 0;
 bool ledBlinkPhase = false;
 std::atomic<bool> bleLedResumePending{false};
+// BLE callbacks only signal recovery; the main loop owns advertising API calls.
+std::atomic<bool> bleAdvertiseRestartPending{false};
 
 // Local OTA result indicator is separate from normal LED effects.
 // Success: green blink for the result window, then restart.
@@ -615,13 +626,24 @@ static String formatTemperature(float value, bool valid) {
 }
 
 /** [DOC-CONTRACT]
- * Implements resetReasonText while preserving the firmware's non-blocking state-machine and safety contracts.
- * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
+ * Reports the ESP32-C3 reset class captured by the Arduino-ESP32/ESP-IDF reset-reason API for hardware post-mortem diagnostics.
+ * Timing/safety: read-only classification; no output or runtime state is mutated.
  */
 static const char* resetReasonText() {
-  // Arduino-ESP32 Core 3.3.7 has no public ESP.getResetReason() API.
-  // Do not substitute an invented or low-level lifecycle API here.
-  return "UNAVAILABLE_CORE_3_3_7";
+  switch (esp_reset_reason()) {
+    case ESP_RST_UNKNOWN:   return "UNKNOWN";
+    case ESP_RST_POWERON:   return "POWER_ON";
+    case ESP_RST_EXT:      return "EXTERNAL";
+    case ESP_RST_SW:       return "SOFTWARE";
+    case ESP_RST_PANIC:    return "PANIC";
+    case ESP_RST_INT_WDT:  return "INT_WDT";
+    case ESP_RST_TASK_WDT: return "TASK_WDT";
+    case ESP_RST_WDT:      return "WDT";
+    case ESP_RST_DEEPSLEEP:return "DEEPSLEEP";
+    case ESP_RST_BROWNOUT: return "BROWNOUT";
+    case ESP_RST_SDIO:     return "SDIO";
+    default:               return "UNKNOWN";
+  }
 }
 
 /** [DOC-CONTRACT]
@@ -920,6 +942,15 @@ static void beginPeltierSoftStart() {
 static void processPeltierSoftStart() {
   if (!peltierOn) {
     stopPeltierOutput();
+    return;
+  }
+
+  // Voltage selector deadtime suppresses physical PWM while preserving the logical Peltier ON state and its existing soft-start timeline.
+  if (voltageTransition) {
+    if (lastPeltierDuty != 0) {
+      ledcWrite(PIN_PELTIER, 0);
+      lastPeltierDuty = 0;
+    }
     return;
   }
 
@@ -1238,7 +1269,7 @@ static bool processOnlineOtaResultIndicator() {
 
   const uint32_t elapsed = millis() - onlineResultIndicatorStartedAt;
   if (elapsed < ONLINE_OTA_RESULT_INDICATOR_MS) {
-    // FIX: Fase dihitung tiap 250ms secara presisi (ON, OFF, ON, OFF)
+    // Compute each 250 ms phase deterministically (ON, OFF, ON, OFF) so the OTA result indicator has stable timing.
     const uint32_t phase = elapsed / 250U;
     if (phase != onlineResultIndicatorLastPhase) {
       onlineResultIndicatorLastPhase = phase;
@@ -1326,6 +1357,66 @@ static bool validFirmwareVersion(const String& value) {
     return false;
   }
   return digitSeen;
+}
+
+/** [DOC-CONTRACT]
+ * Compares V-major.minor versions numerically so Online OTA can reject downgrades.
+ * Timing/safety: deterministic parsing only; malformed versions are never accepted as newer.
+ */
+static bool isFirmwareVersionNewer(const String& candidate, const String& current) {
+  String candidateNormalized = candidate;
+  String currentNormalized = current;
+  candidateNormalized.trim();
+  currentNormalized.trim();
+  candidateNormalized.toUpperCase();
+  currentNormalized.toUpperCase();
+
+  if (!validFirmwareVersion(candidateNormalized) ||
+      !validFirmwareVersion(currentNormalized)) {
+    return false;
+  }
+
+  uint32_t candidateMajor = 0;
+  uint32_t candidateMinor = 0;
+  uint32_t currentMajor = 0;
+  uint32_t currentMinor = 0;
+
+  size_t index = 1;
+  while (index < candidateNormalized.length() &&
+         candidateNormalized.charAt(index) != '.') {
+    candidateMajor = (candidateMajor * 10U) +
+                     static_cast<uint32_t>(candidateNormalized.charAt(index) - '0');
+    ++index;
+  }
+  if (index < candidateNormalized.length()) {
+    ++index;
+    while (index < candidateNormalized.length()) {
+      candidateMinor = (candidateMinor * 10U) +
+                       static_cast<uint32_t>(candidateNormalized.charAt(index) - '0');
+      ++index;
+    }
+  }
+
+  index = 1;
+  while (index < currentNormalized.length() &&
+         currentNormalized.charAt(index) != '.') {
+    currentMajor = (currentMajor * 10U) +
+                   static_cast<uint32_t>(currentNormalized.charAt(index) - '0');
+    ++index;
+  }
+  if (index < currentNormalized.length()) {
+    ++index;
+    while (index < currentNormalized.length()) {
+      currentMinor = (currentMinor * 10U) +
+                     static_cast<uint32_t>(currentNormalized.charAt(index) - '0');
+      ++index;
+    }
+  }
+
+  if (candidateMajor != currentMajor) {
+    return candidateMajor > currentMajor;
+  }
+  return candidateMinor > currentMinor;
 }
 
 /** [DOC-CONTRACT]
@@ -1667,6 +1758,13 @@ static bool requestVoltage(Voltage target, VoltageRequestSource source, bool byp
   voltageTransitionAt = millis();
   voltageTransitionSource = source;
 
+  // Remove Peltier PWM before selector break-before-make; keep logical Peltier state so voltage switching does not fabricate an OFF->ON edge.
+  if (peltierOn && lastPeltierDuty != 0) {
+    ledcWrite(PIN_PELTIER, 0);
+    lastPeltierDuty = 0;
+  }
+
+  // De-assert both selector outputs before the mandatory 200 ms break-before-make window.
   digitalWrite(PIN_9V, OUTPUT_OFF);
   digitalWrite(PIN_12V, OUTPUT_OFF);
 
@@ -1686,7 +1784,15 @@ static void completeVoltageTransition() {
   // the universal thermal authority and may override any pending target.
   // Preserve the origin of the request so Battery-only retargeting cannot overwrite Safety/HOTSTEP transitions.
   VoltageRequestSource completedSource = voltageTransitionSource;
-  if (hotsideProtectionActiveNow()) {
+
+  // NTC validity is a final selector gate: an invalid sensor during deadtime forces the safe 5 V endpoint.
+  if (!ntcValid && pendingVoltage != Voltage::V5) {
+    pendingVoltage = Voltage::V5;
+    completedSource = VoltageRequestSource::SAFETY;
+  }
+
+  // Re-check Hotside only while the NTC is valid; invalid NTC is handled by the safe-5V branch above.
+  if (ntcValid && hotsideProtectionActiveNow()) {
     if (adaptiveOn && currentVoltage != Voltage::V5) {
       pendingVoltage = lowerVoltage(currentVoltage);
       completedSource = VoltageRequestSource::HOTSTEP;
@@ -1816,6 +1922,8 @@ static void sampleNtcIfDue() {
   if (ntcMv <= NTC_FAULT_LOW_MV || ntcMv >= NTC_FAULT_HIGH_MV) {
     ntcValid = false;
     hotsideC = NAN;
+    previousValidHotsideC = NAN;
+    previousValidHotsideAtMs = 0;
     return;
   }
 
@@ -1823,6 +1931,8 @@ static void sampleNtcIfDue() {
   if (!isfinite(voltage) || voltage <= 0.0f) {
     ntcValid = false;
     hotsideC = NAN;
+    previousValidHotsideC = NAN;
+    previousValidHotsideAtMs = 0;
     return;
   }
   if (voltage > 3.28f) voltage = 3.28f;
@@ -1832,6 +1942,8 @@ static void sampleNtcIfDue() {
   if (!isfinite(ntcOhms) || ntcOhms <= 1.0f) {
     ntcValid = false;
     hotsideC = NAN;
+    previousValidHotsideC = NAN;
+    previousValidHotsideAtMs = 0;
     return;
   }
 
@@ -1839,11 +1951,31 @@ static void sampleNtcIfDue() {
   if (!isfinite(temperature)) {
     ntcValid = false;
     hotsideC = NAN;
+    previousValidHotsideC = NAN;
+    previousValidHotsideAtMs = 0;
     return;
+  }
+
+  const uint32_t currentSampleAtMs = lastNtcReadMs;
+  if (isfinite(previousValidHotsideC) &&
+      previousValidHotsideAtMs != 0 &&
+      currentSampleAtMs > previousValidHotsideAtMs) {
+    const float elapsedSeconds =
+        (currentSampleAtMs - previousValidHotsideAtMs) / 1000.0f;
+    const float risePerSecond =
+        (temperature - previousValidHotsideC) / elapsedSeconds;
+
+    // Trigger only on a positive rise above the emergency slope; the safety supervisor performs the actual shutdown.
+    if (risePerSecond >= RAPID_HOTSIDE_RISE_C_PER_SEC &&
+        !manualPeltierSafetyLatch) {
+      rapidRiseProtectionEventPending = true;
+    }
   }
 
   ntcValid = true;
   hotsideC = temperature;
+  previousValidHotsideC = temperature;
+  previousValidHotsideAtMs = currentSampleAtMs;
 }
 
 // Collapse runtime cooling/adaptive state to the universal sensor-safe 5 V condition.
@@ -1901,6 +2033,16 @@ static void enforceSafety() {
   if (!ntcValid) {
     forceSafeFiveVolt();
     hotProtectionActive = false;
+    return;
+  }
+
+  // A rapid Hotside rise is a one-shot emergency event; latch Peltier OFF and require an explicit manual ON command to clear the latch.
+  if (rapidRiseProtectionEventPending) {
+    rapidRiseProtectionEventPending = false;
+    manualPeltierSafetyLatch = true;
+    Serial.println("SAFETY: RAPID_HOTSIDE_RISE");
+    sendDelta("SAFETY_REASON", "RAPID_HOTSIDE_RISE");
+    forceSafeFiveVolt();
     return;
   }
 
@@ -2069,6 +2211,7 @@ static void processAdaptiveHotTimer() {
 static String safetyReason() {
   if (!ntcValid) return "NTC_ERROR";
   if (hotsideProtectionActiveNow()) return "HOTSIDE_PROTECTION";
+  if (manualPeltierSafetyLatch) return "PELTIER_SAFETY_LATCH";
   if (peltierOn && !fanOn) return "FAN_REQUIRED";
   return "NONE";
 }
@@ -2142,11 +2285,26 @@ static void processAdaptiveHotsideFallback() {
  * Implements batteryZoneFor while preserving the firmware's non-blocking state-machine and safety contracts.
  * Timing/safety: cooperative execution is preserved; bounded library operations remain inside explicit state-machine gates.
  */
-static int batteryZoneFor(float temperature) {
+static int batteryZoneFor(float temperature, Voltage referenceVoltage) {
   if (!isfinite(temperature)) return 9;
-  if (temperature < battery5Limit) return 5;
-  if (temperature < battery12Limit) return 9;
-  return 12;
+
+  // Use the current voltage as the hysteresis state so each configured threshold has a 0.5 C entry/exit deadband.
+  const float lowEnter = static_cast<float>(battery5Limit) + BATTERY_HYSTERESIS_C;
+  const float lowExit = static_cast<float>(battery5Limit) - BATTERY_HYSTERESIS_C;
+  const float highEnter = static_cast<float>(battery12Limit) + BATTERY_HYSTERESIS_C;
+  const float highExit = static_cast<float>(battery12Limit) - BATTERY_HYSTERESIS_C;
+
+  if (referenceVoltage == Voltage::V5) {
+    return temperature >= lowEnter ? 9 : 5;
+  }
+
+  if (referenceVoltage == Voltage::V9) {
+    if (temperature < lowExit) return 5;
+    if (temperature >= highEnter) return 12;
+    return 9;
+  }
+
+  return temperature < highExit ? 9 : 12;
 }
 
 /** [DOC-CONTRACT]
@@ -2185,7 +2343,7 @@ static void evaluateAdaptiveBattery() {
   // Battery data has returned, so any Hotside-fallback rise timer is stale.
   adaptiveHotsideRiseDueMs = 0;
 
-  const int zone = batteryZoneFor(batteryC);
+  const int zone = batteryZoneFor(batteryC, currentVoltage);
   const Voltage desiredTarget =
       clampToAdaptiveCeiling(batteryZoneVoltage(zone));
 
@@ -2294,6 +2452,9 @@ static void sendText(const String& line) {
     bleTxQueue[bleTxTail] = payload;
     bleTxTail = (bleTxTail + 1) % BLE_TX_QUEUE_SIZE;
     ++bleTxCount;
+  } else {
+    // Drop newest non-critical telemetry instead of blocking the loop, and keep an explicit loss counter for diagnostics.
+    ++bleTxOverflowCount;
   }
 }
 
@@ -2490,6 +2651,7 @@ static void sendFullSync() {
   sendDelta("OTA_PROGRESS", String(otaDiagnosticProgress));
   sendDelta("OTA_ERROR_CODE", String(otaDiagnosticErrorCode));
   sendDelta("OTA_ERROR", otaDiagnosticError);
+  sendDelta("BLE_TX_DROPS", String(bleTxOverflowCount));
 
   // Consume each OTA result once. Later SYNC calls report NONE.
   const String otaEvent = otaResultPending ? otaResult : "NONE";
@@ -2593,11 +2755,9 @@ class ServerCallbacks : public BLEServerCallbacks {
     bleQueueResetPending = true;
     batteryLinkLostPending = true;
 
-    if (!otaActive && !bootApActive && BLEDevice::getInitialized()) {
-      BLEDevice::startAdvertising();
-      // The callback never writes LEDs directly. The main loop resumes the
-      // normal LED effect on the very next safe iteration.
-      bleLedResumePending.store(true, std::memory_order_release);
+    if (!otaActive && !bootApActive) {
+      // Callback context only records the restart request; the main loop performs the BLE advertising API call.
+      bleAdvertiseRestartPending.store(true, std::memory_order_release);
     }
   }
 
@@ -2816,6 +2976,8 @@ static void startBle() {
 
   bleClientConnected = false;
   bleSyncPending = false;
+  bleAdvertiseRestartPending.store(false, std::memory_order_release);
+  bleTxOverflowCount = 0;
   clearBleTxQueue();
   clearBleRxQueue();
   bleQueueResetPending = false;
@@ -2838,6 +3000,25 @@ static void startBle() {
  */
 static void serviceBleStartRecovery() {
   if (otaActive || bootApActive) return;
+
+  // Main-loop context owns BLE advertising restart after callback notification.
+  if (bleAdvertiseRestartPending.exchange(false, std::memory_order_acq_rel)) {
+    if (BLEDevice::getInitialized() &&
+        bleServer != nullptr &&
+        rxCharacteristic != nullptr &&
+        txCharacteristic != nullptr) {
+      BLEDevice::startAdvertising();
+      bleStartPending = false;
+      bleStartAttempts = 0;
+      bleStartRetryAt = 0;
+      bleLedResumePending.store(true, std::memory_order_release);
+      return;
+    }
+
+    // An incomplete BLE controller state falls through to the normal restart supervisor.
+    bleStartPending = true;
+    bleStartRetryAt = millis();
+  }
 
   if (BLEDevice::getInitialized() &&
       bleServer != nullptr &&
@@ -3397,6 +3578,12 @@ static void startOnlineOta() {
     return;
   }
 
+  // Reject rollback or equal versions before any Wi-Fi handoff or flash write begins.
+  if (!isFirmwareVersionNewer(cloudVersion, FW_VERSION)) {
+    failOnlineOta("ONLINE_VERSION_CHECK", -107, "ROLLBACK_BLOCKED");
+    return;
+  }
+
   setOtaDiagnosticStage("ONLINE_WIFI_CONNECT");
   otaRestartAt = 0;
   cloudPhaseStartedAt = millis();
@@ -3419,7 +3606,7 @@ static void startOnlineOta() {
   clearBleRxQueue();
   
   // Stop BLE advertising/controller state before the Wi-Fi radio handoff; the operation is non-blocking and recovered by the supervisor.
-  stopBleRadio(false);
+  stopBleRadio(true);
   bleStartPending = false;
   bleStartAttempts = 0;
 
@@ -3475,7 +3662,7 @@ static void processOnlineOta() {
         return;
       }
 
-      // FAST FAIL: Tangani password salah tanpa harus menunggu 15 detik penuh
+      // FAST FAIL: Handle invalid Wi-Fi credentials immediately instead of waiting for the full 15-second timeout.
       if (otaActive && (millis() - cloudPhaseStartedAt >= WIFI_CONNECT_TIMEOUT_MS || 
                         WiFi.status() == WL_CONNECT_FAILED || 
                         WiFi.status() == WL_NO_SSID_AVAIL)) {
@@ -3487,6 +3674,9 @@ static void processOnlineOta() {
           
           WiFi.disconnect(true, false);
           WiFi.mode(WIFI_OFF);
+          // Re-arm the explicit Wi-Fi-OFF settle gate on every retry so each attempt starts from the same radio-safe boundary.
+          wifiOffSettlePending = false;
+          requestWiFiOffShutdown();
           
           // Return to the radio-teardown phase so each retry starts from a clean Wi-Fi state.
           onlineOtaFlow = OnlineOtaFlow::RADIO_TEARDOWN;
@@ -3498,9 +3688,8 @@ static void processOnlineOta() {
       return;
 
     case OnlineOtaFlow::DOWNLOAD:
-      if (!onlineUpdateStarted) {
-        performOnlineOtaDownload();
-      }
+      // An active streaming state must be serviced on every loop pass; the downloader owns its own initialization guard.
+      performOnlineOtaDownload();
       return;
 
     case OnlineOtaFlow::FLASH_FINALIZE:
@@ -3953,6 +4142,11 @@ static bool setPeltierState(bool desired, String& reason) {
     }
     reason = "OK";
     return true;
+  }
+
+  if (voltageTransition) {
+    reason = "VOLTAGE_TRANSITION";
+    return false;
   }
 
   if (!ntcValid) {
@@ -4563,7 +4757,8 @@ static void handleCommand(const String& command) {
     sendDelta("ADAPTIVE_CEILING", voltageToString(adaptiveCeiling));
     sendDelta("FAN", boolText(fanOn));
     sendDelta("PELTIER", boolText(peltierOn));
-    sendAck("ADAPTIVE", true, reason);
+    const bool accepted = reason == "OK";
+    sendAck("ADAPTIVE", accepted, reason);
     return;
   }
 
@@ -4950,6 +5145,9 @@ static void initializeRuntimeFeatures() {
 
   currentVoltage = Voltage::V5;
   pendingVoltage = Voltage::V5;
+  previousValidHotsideC = NAN;
+  previousValidHotsideAtMs = 0;
+  rapidRiseProtectionEventPending = false;
   fanOn = false;
   peltierOn = false;
   peltierSoftStarting = false;
@@ -4963,6 +5161,9 @@ static void initializeRuntimeFeatures() {
   batteryC = NAN;
   ntcValid = false;
   hotsideC = NAN;
+  previousValidHotsideC = NAN;
+  previousValidHotsideAtMs = 0;
+  rapidRiseProtectionEventPending = false;
 
   runtimeFeaturesReady = true;
 
