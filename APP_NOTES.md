@@ -1,3 +1,12 @@
+## 2026-10-04 — EXECUTION FULL / PERMANENT MEMORY + BUILD CONTINUITY SYSTEM
+
+- Added the permanent continuity document set: `README.md`, `PROJECT_STATE.md`, `BUILD_NOTES.md`, `CHANGELOG.md`, and `HANDOVER.md`.
+- The App Build process is now explicitly treated as a complex workflow that can span separate subchats.
+- Every Build App subchat must perform the full repository-memory preflight before analyzing/building source.
+- Every successful App Build must automatically write a persistent checkpoint containing exact source SHA, workflow/run ID, version/build number, artifact metadata/checksums, all included source/config/workflow/dependency changes, troubleshooting changes, validation gates, and remaining boundaries.
+- The user does not need to reconstruct the delta from the previous build; repository memory is responsible for preserving the build continuity.
+- No App Build was triggered by this documentation execution.
+
 ## 2026-10-04 — PROCESS CONTINUITY / BUILD APP MEMORY CHECKPOINT
 
 - Build App is treated as a separate engineering subchat/workflow with its own continuity boundary.
