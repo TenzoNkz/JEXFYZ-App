@@ -34,6 +34,7 @@
 
 ## CI / BUILD
 - App Build remains manual-by-issue-trigger only.
+- Explicit App Build starts by deleting all existing workflow artifacts, then publishes one APK only.
 - Issue title: JE X FYZ — BUILD APP TRIGGER
 - Token: JEXFYZ_BUILD_TRIGGER_V1
 - Workflow now publishes exactly one direct APK artifact named JEXFYZ-release.apk with overwrite enabled and 7-day retention.
