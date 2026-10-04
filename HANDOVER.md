@@ -1,3 +1,15 @@
+## 2026-10-04 — CURRENT HANDOVER AFTER V4.0 EXECUTION
+
+- Current firmware: **V4.0**.
+- Active source: `firmware/JEXFYZ-V4.0.ino`.
+- Active source blob: `b2a77fadeaa154412850d34c82b0bb78ef108bae`.
+- P0 rail stabilization implemented: initial 300 ms cooperative post-selector hold at physical Peltier PWM 0% for 9V/12V activation; logical Peltier state and 5 s soft-start timeline preserved.
+- P1 Online OTA TLS hardened: `setInsecure()` removed in favor of the Core 3.3.7 certificate-bundle trust path.
+- Static affected audit passed; no executable delay/timing-wait loops remain.
+- ArduinoDroid/Core 3.3.7 compile, BIN, Firebase, flash, and physical validation are still pending.
+- V4.0 is **not yet approved to flash**. Required next step is independent Assistant + Gemini audit of the exact V4.0 source.
+- App Build #50 remains the latest verified App artifact; no App Build was triggered by this firmware-only execution.
+
 ## 2026-10-04 — CHAT-LIMIT CONTINUITY DOCUMENTATION
 
 - Maintained as the portable continuity document for chat-limit transfers and separate Build App subchats.
