@@ -28,7 +28,7 @@ enum class LedMode : uint8_t;
 enum class VoltageRequestSource : uint8_t;
 enum class AdaptiveProfile : uint8_t;
 
-static constexpr char FW_VERSION[] = "V3.0";
+static constexpr char FW_VERSION[] = "V3.1";
 
 // ============================================================================
 // ========================== HEAP DIAGNOSTIC BUILD ===========================
@@ -1297,6 +1297,42 @@ static bool requestVoltage(Voltage target, VoltageRequestSource source, bool byp
 static void completeVoltageTransition() {
   if (!voltageTransition) return;
   if (millis() - voltageTransitionAt < VOLTAGE_DEADTIME_MS) return;
+
+  // Battery Adaptive has a live target. Re-evaluate it at the end of the
+  // 200 ms selector deadtime so an in-flight stale step can never be applied
+  // after the battery temperature has already returned to another zone.
+  if (adaptiveOn &&
+      adaptiveProfile == AdaptiveProfile::HOTSIDE_BATTERY &&
+      !adaptiveHotStepPending &&
+      ntcValid &&
+      batteryValid &&
+      !hotsideProtectionActiveNow()) {
+    const int liveZone = batteryZoneFor(batteryC);
+    const Voltage liveTarget =
+        clampToAdaptiveCeiling(batteryZoneVoltage(liveZone));
+
+    if (liveTarget == currentVoltage) {
+      // The Battery request became stale during deadtime. Restore the
+      // current physical voltage instead of applying the stale pending step.
+      digitalWrite(PIN_9V, currentVoltage == Voltage::V9 ? OUTPUT_ON : OUTPUT_OFF);
+      digitalWrite(PIN_12V, currentVoltage == Voltage::V12 ? OUTPUT_ON : OUTPUT_OFF);
+      voltageTransition = false;
+
+      // The selectors were de-asserted for the full deadtime, so treat the
+      // canceled hardware attempt as a completed dwell boundary to prevent
+      // immediate re-attempt chatter.
+      voltageGuardArmed = true;
+      lastVoltageTransitionCompleteMs = millis();
+      return;
+    }
+
+    // If the live target changed direction during deadtime, replace the
+    // pending step with the one-step move required by the current target.
+    pendingVoltage =
+        isHigherVoltage(liveTarget, currentVoltage)
+            ? higherVoltage(currentVoltage)
+            : lowerVoltage(currentVoltage);
+  }
 
   currentVoltage = pendingVoltage;
   digitalWrite(PIN_9V, currentVoltage == Voltage::V9 ? OUTPUT_ON : OUTPUT_OFF);
