@@ -1,9 +1,9 @@
-## 2026-10-04 — CHAT-LIMIT CONTINUITY CHECKPOINT
+## 2026-10-04 — CURRENT FIRMWARE ANALYSIS SNAPSHOT
 
 - This repository is the persistent continuity boundary for JE X FYZ while the current chat approaches its context limit.
 - The detailed copy-ready continuation prompt is available in both `README.md` and `HANDOVER.md`.
 - A new chat must re-read the complete memory stack before any action, including Build App subchats.
-- Current functional firmware remains V3.8; this checkpoint does not change runtime behavior.
+- Current functional firmware is V3.8; this checkpoint reflects the soft-start scope change.
 - Latest verified App Build remains #50; no Build App was run during the handover.
 
 # JE X FYZ — Firmware Analysis / V3.8
@@ -12,7 +12,7 @@
 
 Active file: firmware/JEXFYZ-V3.8.ino
 Functional version: V3.8
-Source blob: 4a7e08a6ea0de57f4e3d3a742ad88cbd25a05e01
+Source blob: 2fbff3656bc037846124806fb390022f85146845
 Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module
 Framework: Arduino Standard + official Arduino-ESP32 Core 3.3.7
 
@@ -145,7 +145,7 @@ No executable delay() calls and no timing while() waits are present in the curre
 - Timing while(): 0.
 - Stale V3.5/V3.6/V1.0 baseline references: 0.
 - Mixed-language source comments found in the cleanup audit: 0.
-- Functional firmware version change in this documentation pass: none; remains V3.8.
+- Functional firmware version: V3.8; latest functional change scopes soft-start to Peltier OFF → ON only.
 
 ## Validation boundary
 
