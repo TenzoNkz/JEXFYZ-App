@@ -22,6 +22,13 @@
 - Prompt B must re-read all build memory, inspect current App source/workflow/trigger, reconcile the recap, and establish the exact intended source SHA before any build.
 - Chat recap never substitutes for exact build evidence or repository/source verification.
 - No App Build was triggered by this process change.
+## 2026-10-04 — REPOSITORY-FIRST TRANSFER FILE
+
+- CHAT_TRANSFER.md is the rolling repository transfer snapshot shared by ordinary and Build App subchats.
+- Prompt 1 saves the old-chat context directly to the repository before handoff.
+- Prompt 2 reads the saved transfer plus all build memory and current workflow before continuing.
+- No Build App was triggered by this continuity implementation.
+
 # JE X FYZ — BUILD NOTES
 
 ## AUTHORITATIVE BUILD CORE — 2026-10-04
