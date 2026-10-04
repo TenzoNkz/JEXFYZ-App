@@ -1,3 +1,13 @@
+## 2026-10-04 — EXECUTION FULL / V3.6 UNIVERSAL HOTSIDE SAFETY FLOW
+
+- User explicitly authorized `@Thinking Eksekusi Full!`.
+- Firmware source advanced V3.5 → V3.6 after implementing the finalized Adaptive/Manual Hotside safety flow and hardening two authority-boundary cases found during full regression.
+- Current firmware source: `firmware/JEXFYZ-V3.6.ino`; source commit: `03ede906a34a5e06082f2c9520a29687f0abd710`.
+- Maintenance notes were updated for Firmware, App contract, and Chat workflow.
+- No App Build, firmware BIN promotion, Firebase update, dedicated binary-repository update, or physical validation was performed.
+- Static checks passed for delimiter balance, required function uniqueness, no executable `delay()`, and no timing `while` loop.
+- Next validation layer remains ArduinoDroid + official Arduino-ESP32 Core 3.3.7 compilation, followed by BIN/device validation.
+- The V3.6 safety contract is: one universal Hotside Limit; Manual hot → force 5V + Peltier safety latch + Fan ON; Adaptive hot → immediate one-level down + voltage ceiling reduction + Peltier OFF 5s after the down-step; Adaptive at 5V hot → Adaptive OFF; Hotside LED event → red blink 5s; Adaptive controls keep Voltage/Control/Temperature locked while active.
 ## 2026-10-04 — CORRECTIVE EXECUTION FULL / V3.4 SOURCE-STRUCTURE REPAIR
 - Current corrective firmware HEAD: `2182794cb98964a8a7432d0ea75587b44b508573`.
 
