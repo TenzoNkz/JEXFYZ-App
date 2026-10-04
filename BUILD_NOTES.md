@@ -1,3 +1,20 @@
+## 2026-10-04 — EXECUTION FULL / V4.3 RESTORE PRE-YELLOW V3.2 ONLINE OTA
+
+- [USER AUTHORIZED] `@Thinking Eksekusi Full!` to return Online OTA to the pre-yellow V3.2 behavior after V4.2 continued to fail.
+- [BASELINE] Repository inspection verified that V3.2 is the exact firmware revision immediately before V3.3 introduced the yellow 20/40/60/80/100% Online OTA progress layer.
+- [IMPLEMENTED] V4.2 Online OTA was reverted to the V3.2-style Online OTA flow while preserving the current V4.x safety/control implementation outside the Online OTA subsystem.
+- [IMPLEMENTED] Online OTA result indicators are restored to BLUE after Wi-Fi success, GREEN after GitHub connection, BLUE after firmware download, GREEN after successful flash, and RED on failure/recovery. The yellow progress subsystem is removed.
+- [IMPLEMENTED] Online Wi-Fi connection behavior is restored to the V3.2-style bounded retry model: `setAutoReconnect(false)`, driver fast-fail/15-second timeout handling, and clean radio-teardown retry instead of the V4.2 cumulative passive 45-second wait.
+- [IMPLEMENTED] Online OTA BLE handoff uses `stopBleRadio(false)` to match the pre-yellow V3.2 baseline.
+- [IMPLEMENTED] Online OTA different-version policy no longer blocks rollback based on numeric version comparison; equal version remains Up to date.
+- [RETAINED] Current V4.x cooperative scheduling is preserved: no executable `delay()`, no timing `while()`; download remains bounded per main-loop pass rather than reintroducing V3.2's blocking download loop.
+- [PROTECTED] Local OTA was not modified.
+- [CURRENT SOURCE] `firmware/JEXFYZ-V4.3.ino`; version V4.3; latest source blob is recorded in the Firmware notes.
+- [VALIDATION] Static/source validation completed after rollback; ArduinoDroid/Core 3.3.7 compile, BIN generation, Firebase promotion, physical flash, and runtime validation remain pending.
+- [USER RUNTIME CLAIM] User reports the V3.2 Online OTA behavior was the working baseline; repository evidence establishes the exact pre-yellow lineage, while this new V4.3 build still requires physical re-test.
+- [NO APP BUILD] App source/config/workflow unchanged; Build #50 remains the latest verified App build.
+- [NEXT] Compile V4.3, generate/verify BIN, then perform the firmware flash gate and test Online OTA against the known-working V3.2-style behavior.
+
 ## 2026-10-04 — FIRMWARE V4.2 EXECUTION / APP BUILD NOT TRIGGERED
 
 - [VERIFIED] Firmware-only V4.2 source change was committed without triggering the App Build workflow.
