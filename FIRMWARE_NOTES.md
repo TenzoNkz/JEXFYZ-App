@@ -1,3 +1,11 @@
+## 2026-10-04 — EXECUTION FULL / PERMANENT MEMORY CONTINUITY SYSTEM
+
+- Added the project-wide continuity documents: `README.md`, `PROJECT_STATE.md`, `BUILD_NOTES.md`, `CHANGELOG.md`, and `HANDOVER.md`.
+- Firmware continuity remains source-first: current source must be inspected after the memory preflight before any firmware conclusion or cross-layer App Build decision.
+- App Build memory checkpoints must not be interpreted as firmware compile/BIN/device validation.
+- Firmware validation boundaries for V3.7 remain unchanged: ArduinoDroid/Core 3.3.7 compile, BIN generation, Firebase promotion, and physical validation are still unperformed.
+- No functional firmware behavior was changed by this continuity-system execution.
+
 ## 2026-10-04 — PROCESS CONTINUITY / CROSS-LAYER MEMORY PREFLIGHT
 
 - Firmware context must be re-read before every JE X FYZ action that can intersect firmware behavior, including App Build analysis when the App embeds, references, or releases firmware-related metadata.
