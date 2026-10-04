@@ -87,6 +87,15 @@ For every future JE X FYZ action, the assistant must first read the complete cur
 - Execution starting repository HEAD: 93cbc35acb4a68e5737d43bf3d354a544a172b2b.
 - Validation: Prompt A/B presence verified in README.md and HANDOVER.md; repository comparison shows no functional source files changed by this execution.
 
+## 2026-10-04 — DISCUSSION / REPOSITORY-FIRST CHAT TRANSFER MODEL
+
+- User clarified the intended final continuity flow: Prompt 1 belongs to the current/old chat and must read the available chat context, reconcile it with project state, and persist the resulting recap/state into the repository before the chat ends.
+- Prompt 2 belongs to the new chat and must rebuild context entirely from the repository memory/files, then inspect current source/workflow and continue from the persisted state.
+- The repository, not the old chat, becomes the transfer medium between chats.
+- The future Prompt 1 should therefore persist the recap directly into the project repository rather than merely returning a copy-only package to the user.
+- The future Prompt 2 should read the complete repository memory stack plus the persisted recap/state file before continuing.
+- This is a process/documentation decision only; no functional App/Firmware behavior changes are authorized by this discussion.
+
 # JE X FYZ — PROJECT STATE
 
 > **Authoritative current-state snapshot.**
