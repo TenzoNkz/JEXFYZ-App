@@ -4505,3 +4505,16 @@ This repeated pattern requires boundary isolation, not more speculative patch st
 - [BLOCKED] No Gemini connector/tool is available in the current session; no external Gemini conclusion was obtained.
 - No functional firmware change is authorized from this discussion alone.
 
+## 2026-10-04 — V3.7 HARDWARE FAULT / GEMINI SECOND OPINION
+
+- [TESTED] Hardware result received: 5V → 9V passes; 9V → 12V restarts the MCU.
+- [CONFIRMED] Gemini's relay answer was compared with the actual V3.7 source.
+- [CONFIRMED] Current `requestVoltage()` disables both 9V and 12V selector outputs but leaves the Peltier PWM at its prior duty during the 200ms deadtime.
+- [CONFIRMED] Current `completeVoltageTransition()` then enables the target selector and invokes `beginPeltierSoftStart()` only after the target selector is already active.
+- [ACCEPTED] The ordering creates a real risk window: if Peltier PWM is still high when 12V becomes active, the load sees the new 12V rail before the intended soft-start reset is applied.
+- [ACCEPTED] Recommended architecture: **Peltier PWM pre-clear → 200ms selector deadtime → target selector ON → rail stabilization timer → restart 5s Peltier soft-start**.
+- [REJECTED] Extending the 200ms selector deadtime alone is not considered a sufficient fix because the load can remain active during the deadtime and the underlying ordering hazard remains.
+- [REJECTED] The 5s soft-start duration is not currently considered the root problem; retain it unless controlled testing proves otherwise.
+- [HYPOTHESIS] The immediate MCU reset is most consistent with an electrical transient/load event such as supply droop or EMI, but the exact mechanism remains unverified.
+- [OPEN QUESTION] Need controlled comparison with Peltier OFF/ON and reset-reason/rail evidence before declaring brownout as root cause.
+
