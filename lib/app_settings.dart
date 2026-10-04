@@ -560,6 +560,14 @@ class JexText {
       AppLanguage.english: 'OTA in progress.',
       AppLanguage.indonesia: 'OTA sedang berlangsung.',
     },
+    'otaUpToDate': {
+      AppLanguage.english: 'OTA is already up to date',
+      AppLanguage.indonesia: 'Firmware sudah yang terbaru',
+    },
+    'otaReconnectFailed': {
+      AppLanguage.english: 'OTA finished, but BLE recovery could not reconnect.',
+      AppLanguage.indonesia: 'OTA selesai, tetapi BLE tidak dapat tersambung kembali.',
+    },
     'systemReady': {
       AppLanguage.english: 'System ready.',
       AppLanguage.indonesia: 'Sistem siap.',
@@ -692,6 +700,10 @@ class JexText {
       AppLanguage.english: 'OTA in progress • ',
       AppLanguage.indonesia: 'OTA sedang berlangsung • ',
     },
+    'adaptiveCeiling': {
+      AppLanguage.english: 'Adaptive Ceiling',
+      AppLanguage.indonesia: 'Batas Adaptif',
+    },
     'resetBrownout': {
       AppLanguage.english: 'Brownout / supply drop',
       AppLanguage.indonesia: 'Brownout / penurunan suplai',
@@ -812,9 +824,30 @@ class JexText {
     'otaStageLocalFinalize': { AppLanguage.english: 'Finalize', AppLanguage.indonesia: 'Finalisasi' },
     'otaStageLocalFlashReadback': { AppLanguage.english: 'Flash readback', AppLanguage.indonesia: 'Baca ulang flash' },
     'otaStageLocalFlashErase': { AppLanguage.english: 'Flash erase', AppLanguage.indonesia: 'Hapus flash' },
+    'otaStageLocalImageVerify': { AppLanguage.english: 'Image verify', AppLanguage.indonesia: 'Verifikasi image' },
     'otaStageLocalBootPartition': { AppLanguage.english: 'Boot partition', AppLanguage.indonesia: 'Partisi boot' },
     'otaStageOnlineWifiConnect': { AppLanguage.english: 'Wi-Fi connect', AppLanguage.indonesia: 'Hubungkan Wi-Fi' },
     'otaStageOnlineWifiConnected': { AppLanguage.english: 'Wi-Fi connected', AppLanguage.indonesia: 'Wi-Fi terhubung' },
+    'otaStageOnlineRequest': {
+      AppLanguage.english: 'OTA request',
+      AppLanguage.indonesia: 'Permintaan OTA',
+    },
+    'otaStageOnlineVersionCheck': {
+      AppLanguage.english: 'Version check',
+      AppLanguage.indonesia: 'Periksa versi',
+    },
+    'otaStageOnlineUpToDate': {
+      AppLanguage.english: 'Already up to date',
+      AppLanguage.indonesia: 'Sudah versi terbaru',
+    },
+    'otaStageOnlineWifiRetry2': {
+      AppLanguage.english: 'Wi-Fi retry 2',
+      AppLanguage.indonesia: 'Percobaan Wi-Fi 2',
+    },
+    'otaStageOnlineWifiRetry3': {
+      AppLanguage.english: 'Wi-Fi retry 3',
+      AppLanguage.indonesia: 'Percobaan Wi-Fi 3',
+    },
     'otaStageOnlineWifiFailed': { AppLanguage.english: 'Wi-Fi failed', AppLanguage.indonesia: 'Wi-Fi gagal' },
     'otaStageOnlineWifiDropped': { AppLanguage.english: 'Wi-Fi dropped', AppLanguage.indonesia: 'Wi-Fi terputus' },
     'otaStageOnlineTimeSync': { AppLanguage.english: 'Time sync', AppLanguage.indonesia: 'Sinkronisasi waktu' },
