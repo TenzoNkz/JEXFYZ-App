@@ -1,3 +1,13 @@
+## 2026-10-04 — ONLINE OTA PATCH EXECUTION CHECKPOINT
+
+- Current V4.0 source blob: `0566105383a889912e5e756b0b9f265e5fcf0264` after applying the supplied Gemini Online OTA patch.
+- Custom CA-bundle client removed; Online OTA uses `WiFiClientSecure + setInsecure()` by intentional user-approved compatibility policy.
+- Intermediate GREEN after GitHub connection and intermediate BLUE after download completion removed.
+- BLUE Wi-Fi success, YELLOW 20/40/60/80/100 download milestones, GREEN final success, and RED failure/recovery remain.
+- Local OTA is frozen/protected and unchanged.
+- No App Build. Compile/BIN/Firebase/physical validation remains pending.
+- Fresh Assistant + Gemini review is required for this new functional source blob before flashing.
+
 ## 2026-10-04 — GEMINI PATCH-ONLY WORKFLOW UPDATE
 
 - [CURRENT] Active firmware: V4.0; current source blob after compile-arity fix remains `415346ece09f4af33f907b2077140ccfc45c357b`.
