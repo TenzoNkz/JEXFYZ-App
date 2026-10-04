@@ -113,3 +113,12 @@
 
 This file is milestone history, not the current source of truth.
 For current truth, always read PROJECT_STATE.md and the current repository source.
+
+## 2026-10-04 — FIRMWARE V3.8
+
+- Advanced Firmware V3.7 → V3.8.
+- Peltier 5 s soft-start now runs only when Peltier transitions OFF → ON.
+- Voltage changes no longer restart soft-start.
+- Existing 20 kHz / 8-bit Peltier PWM, 5 s duration, safety, BLE/P1, GPIO, Adaptive, and OTA contracts are preserved.
+- No App source changed and no App Build was triggered.
+
