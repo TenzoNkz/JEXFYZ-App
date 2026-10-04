@@ -531,3 +531,84 @@ Do not touch Local OTA.
 Do not modify thermal, voltage, BLE protocol, Firebase, or unrelated features.
 
 If no source bug is proven, explicitly say NO PATCH and identify the next hardware/diagnostic test that best separates firmware failure from hotspot compatibility.
+
+
+# 2026-10-04 — ROUND 3 DECISIVE ADJUDICATION
+
+This is a decisive second-opinion request. Do not repeat prior conclusions without proving them from the exact source and relevant git history.
+
+EXACT CURRENT SOURCE:
+firmware/JEXFYZ-V4.0.ino
+blob 0566105383a889912e5e756b0b9f265e5fcf0264
+
+LATEST HARDWARE FACT:
+- Online OTA fails.
+- With an Android phone hotspot, ESP32-C3 does not appear to connect to Wi-Fi.
+- No BLUE indicator was observed.
+- No RED indicator was observed.
+- No serial/Wi-Fi reason log was captured.
+Therefore the exact Wi-Fi failure reason is still unproven.
+
+IMPORTANT: The previous Gemini response asserted:
+- PASS trailing whitespace = proven bug
+- setAutoReconnect(false) = WPA3/Mixed-mode killer
+- WL_CONNECT_FAILED happens ~10 ms
+Those claims were not accepted as proven. Re-evaluate from first principles.
+
+GIT HISTORY EVIDENCE TO USE:
+- e8185cb24acb7475a533a859208156b43ecd4c03 — diag: isolate Core 3.3.7 WiFi STA mode init boundary. Minimal Arduino-Standard STA diagnostic using WiFi.mode(WIFI_STA), no project logic.
+- f30263cb756877dc883d2eeae5cb924b95160b39 — diag: add minimal Arduino WiFi OTA test. Minimal Arduino WiFi/OTA diagnostic.
+- bf923ba37bdaee96b9f870318401c0d04061e8ff — fix: simplify production WiFi AP to Arduino Standard baseline. Simplified production Local SoftAP to direct WiFi.softAP().
+Use these as history anchors where useful. If a prior known-good STA test source is available in git history, inspect it.
+
+DECISIVE QUESTIONS:
+
+1. INITIAL CONNECTION SEMANTICS
+Determine from Arduino-ESP32 Core 3.3.7 semantics whether WiFi.setAutoReconnect(false) changes the first WiFi.begin() association/authentication attempt. If it only controls later reconnects, say so explicitly. Do not infer WPA3 failure from this setting.
+
+2. WL_CONNECT_FAILED SEMANTICS
+Can WL_CONNECT_FAILED appear immediately, after seconds, or only after a driver-defined failure? Does the firmware's WiFi.status() check make the 15-second timeout a maximum wait rather than a guaranteed wait? Give exact timing consequences.
+
+3. RETRY STATE MACHINE
+Current constants: WIFI_CONNECT_TIMEOUT_MS = 15000; WIFI_CONNECT_MAX_ATTEMPTS = 3; WIFI_CONNECT_RETRY_BACKOFF_MS = 3000. Determine exact attempt sequence and whether the 3000 ms constant is actually used. Determine worst-case time to final RED. Determine best-case time if driver reports WL_CONNECT_FAILED immediately. Determine whether the current radio-off retry is technically justified.
+
+4. COMPARE RETRY DESIGNS
+Compare CURRENT: WiFi.disconnect(true, false) -> WiFi.mode(WIFI_OFF) -> requestWiFiOffShutdown() -> RADIO_TEARDOWN versus PROPOSED: WiFi.disconnect() -> WiFi.begin(...). Determine which is safer/reliable on ESP32-C3 Core 3.3.7. Do not choose the simpler one merely because it looks cleaner.
+
+5. PASSWORD TRANSPORT CONTRACT
+Inspect current App command generation and firmware BLE framing if needed. Determine whether PASS payload surrounding whitespace is formatting or data. A valid WPA password may contain leading/trailing spaces. Do NOT recommend trim() unless protocol semantics prove spaces are accidental framing. Consider whether App-side normalization or firmware-side parsing is the correct boundary if normalization is needed.
+
+6. HOTSPOT COMPATIBILITY
+Do not assume WPA3, PMF, 2.4 GHz, hidden SSID, DHCP, or Android behavior. State what additional physical test would discriminate: A wrong credentials; B AP incompatible security mode; C STA state-machine bug; D radio handoff bug; E brownout/reset; F driver/API issue.
+
+7. LED FEEDBACK
+Trace exact control flow from CLOUDOTA -> startOnlineOta() -> RADIO_TEARDOWN -> WIFI_CONNECTING -> failure -> failOnlineOta() -> startOnlineOtaResultIndicator() -> processOnlineOtaResultIndicator(). Prove whether RED is guaranteed on a normal final-failure path. Also identify whether a reset can explain seeing neither BLUE nor RED.
+
+8. RESET/BROWNOUT
+Search current source for reset reason telemetry. If present, show how it can distinguish normal Wi-Fi failure from reset. If absent, say it is absent. Do not label brownout as 100% hardware without reset evidence.
+
+9. SOURCE REGRESSION
+Use git history/diffs to identify exactly which change introduced setAutoReconnect(false), the current radio teardown, the current Wi-Fi retry path, and current password handling, and whether those changes were copied from an earlier Gemini patch. Determine whether the production source before those changes had a better Online OTA connection sequence.
+
+10. MINIMAL PATCH DECISION
+At the end choose exactly one:
+A. NO PATCH — source is not proven faulty; do a diagnostic hardware test first.
+B. PATCH REQUIRED — one or more source defects are sufficiently proven.
+
+If PATCH REQUIRED: return ONLY exact OLD -> NEW blocks. No full .ino. No changes to Local OTA. No changes to thermal, voltage, BLE protocol, Firebase, or unrelated code.
+
+If NO PATCH: specify the single most informative next test and exactly what result would confirm/refute firmware fault.
+
+FINAL OUTPUT:
+1. EXACT FAILURE STAGE
+2. PROVEN SOURCE BUGS
+3. HIGH-CONFIDENCE RISKS
+4. HARDWARE/NETWORK HYPOTHESES
+5. GIT-HISTORY REGRESSION FINDINGS
+6. LED/RESET FORENSICS
+7. PATCH DECISION
+8. NEXT TEST
+
+End with exactly one of:
+SAFE TO FLASH LOCAL OTA
+NOT SAFE TO FLASH LOCAL OTA
