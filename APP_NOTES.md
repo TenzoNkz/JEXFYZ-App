@@ -1,3 +1,12 @@
+## 2026-10-04 — EXECUTION FULL / MEMORY FOUNDATION BOOTSTRAP
+
+- Repository continuity now has a dedicated `PROJECT_STATE.md` current snapshot and `BUILD_NOTES.md` build-history checkpoint.
+- README.md is the required entry point for App work and Build App subchats.
+- Build App is explicitly treated as a complex workflow that must reconstruct context from repository memory and current App/workflow source before building.
+- Every successful Build App must automatically record the exact source SHA, run/artifacts/checksums, all changes since the previous successful build, validation gates, and remaining boundaries.
+- No Flutter/App source or release configuration was functionally changed by this memory-system execution.
+- Latest verified App Build remains #50; later repository changes are not retroactively included in that build.
+
 ## 2026-10-04 — EXECUTION FULL / PERMANENT MEMORY + BUILD CONTINUITY SYSTEM
 
 - Added the permanent continuity document set: `README.md`, `PROJECT_STATE.md`, `BUILD_NOTES.md`, `CHANGELOG.md`, and `HANDOVER.md`.
