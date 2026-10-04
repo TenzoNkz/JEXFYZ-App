@@ -1,68 +1,55 @@
 # JE X FYZ — CURRENT FIRMWARE ANALYSIS
 
 ## SOURCE
-- Active: firmware/JEXFYZ-V4.4.ino
-- Version: V4.4
-- Blob: 18f74d5c87b85886b6d3d44fddd4938f4db7019c
+- Active: firmware/JEXFYZ-V4.5.ino
+- Version: V4.5
+- Blob: daef871d910f3f1bc4f2d1bdc44e0d19f6e292dc
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
 ## ARCHITECTURE
 - ESP32-C3 single-radio model: Wi-Fi and BLE ownership are mutually exclusive.
 - OTA is processed before normal application work.
-- Local OTA uses boot SoftAP and is protected.
+- Local OTA uses boot SoftAP and remains protected.
 - Online OTA uses Firebase metadata and the approved GitHub raw BIN endpoint.
-- Firmware is streamed into the inactive OTA partition.
+- Firmware streams the image into the inactive OTA partition.
 - Timing is cooperative.
 
-## ONLINE OTA V4.4
-1. Clear BLE queues/session flags.
-2. If a client is actively connected, close its GATT connection with:
-   bleServer->disconnect(bleServer->getConnId())
-3. Stop advertising.
-4. Transfer radio ownership to Wi-Fi.
-5. Use the V3.2-style bounded Wi-Fi retry path.
-6. Download and finalize.
-7. Restart and recover BLE.
+## ONLINE OTA
+1. Capture active GATT state/connection ID.
+2. Close the active GATT session when present.
+3. Clear BLE session/controller state.
+4. Stop advertising.
+5. Transfer radio ownership to Wi-Fi.
+6. Use the V3.2-style bounded Wi-Fi retry path.
+7. Download and finalize.
+8. Restart and recover BLE.
 
-The purpose of step 2 is to make Android observe a real BLE disconnect so live App telemetry stops before Wi-Fi OTA.
+## APP SYNC CONTRACT
+- App marks the Online OTA disconnect as expected.
+- Recovery scans/connects using the known cooler identity without requiring passive Auto Connect to be enabled.
+- Final P1 sync restores the dashboard and surfaces the one-shot OTA result.
 
-## INDICATORS
-- Start OFF
-- Wi-Fi connected BLUE
-- GitHub connected GREEN
-- Download complete BLUE
-- Flash success GREEN then restart
-- Failure RED then recovery
-- Yellow progress milestones removed
-
-## HARDWARE
-| Function | GPIO |
-| Hotside NTC | 0 |
-| Touch | 1 |
-| 12V selector | 3 |
-| 9V selector | 4 |
-| Peltier | 5 |
-| Fan | 6 |
-| WS2812 | 7 |
-
-## SAFETY
+## SAFETY / CONTROL
 - Hotside NTC is the universal thermal safety input.
+- Rapid Hotside-rise latching is only armed while Peltier is ON.
 - Fan PWM 25 kHz, 8-bit, 50–100%.
 - Peltier PWM 20 kHz, 8-bit.
-- Peltier OFF→ON starts the 5 s soft-start.
-- Voltage changes do not restart the soft-start.
 - Selector deadtime 200 ms.
 - Voltage guard 1 s.
+- Adaptive Ceiling remains firmware-owned and is exposed over telemetry.
 
 ## STATIC RESULT
-- 5223 lines.
-- Braces, parentheses, brackets balanced.
-- Executable delay() = 0.
-- Timing while() = 0.
+- 4648 lines.
+- Firmware source/file alignment: V4.5.
+- One active versioned .ino.
+- executable delay() = 0.
+- timing while() = 0.
 - Yellow 0xFFFF00 = 0.
 - Stale Online OTA progress refs = 0.
-- Explicit GATT disconnect call = 1.
+- Explicit BLE GATT disconnect = 1.
+- Dead adaptive-resume state = 0.
+- Legacy newer-version comparator = 0.
 
 ## VALIDATION BOUNDARY
-V4.3 physical OTA success is user-confirmed. V4.4 physical validation is pending.
+V4.4 physical OTA success is user-confirmed. V4.5 source/static audit is complete. V4.5 compile/BIN/flash/physical validation remains pending.
