@@ -1,3 +1,11 @@
+## 2026-10-04 — GEMINI PATCH-ONLY WORKFLOW ADDED
+
+- Added `GEMINI_PROMPT_ONLINE_OTA.md` as the copy-ready independent Gemini review/fix prompt.
+- Gemini responses for this workflow are now patch-only OLD → NEW blocks; no full .ino response.
+- The assistant owns the subsequent `@Thinking Eksekusi Full!` application, full affected audit, memory synchronization, and commit.
+- Local OTA is frozen/protected; current scope is Online OTA indicator/runtime behavior only.
+- No functional Firmware/App source changed in this workflow update.
+
 ## 2026-10-04 — V4.0 COMPILE FIX
 
 - Fixed ArduinoDroid compile blocker: `batteryZoneFor(batteryC)` now passes `currentVoltage` to the required two-argument function signature.
