@@ -1,3 +1,10 @@
+## 2026-10-04 — PROCESS CONTINUITY / CROSS-LAYER MEMORY PREFLIGHT
+
+- Firmware context must be re-read before every JE X FYZ action that can intersect firmware behavior, including App Build analysis when the App embeds, references, or releases firmware-related metadata.
+- Build App and Firmware are separate validation layers, but the memory preflight is project-wide: the current Firmware notes remain part of the mandatory continuity read.
+- A Build App result must never overwrite or imply firmware compile/BIN/device validation status. If a build changes firmware-relevant metadata, that exact cross-layer change must be recorded explicitly.
+- Persistent project memory is the handoff mechanism between separate subchats; chat history alone is not sufficient.
+
 ## 2026-10-04 — DOCUMENTATION PASS / V3.7 FIRMWARE ANALYSIS MAP
 
 - Added `firmware/FIRMWARE_ANALYSIS.md` as the repository-level architecture and safety map for V3.7.
