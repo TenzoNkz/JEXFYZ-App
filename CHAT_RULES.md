@@ -1,3 +1,32 @@
+## 2026-10-04 — PROCESS RULE / MANDATORY MEMORY PREFLIGHT + BUILD-SUBCHAT CONTINUITY
+
+- Before **any** JE X FYZ project action, including reading/analyzing source, discussion, execution, audit, Build App, Gemini review, compile/build attempt, or test-result interpretation, the assistant must re-read the current project memory before acting.
+- Mandatory preflight order is:
+  1. `README.md` — project operating manual and continuation entry point.
+  2. `PROJECT_STATE.md` — current project snapshot.
+  3. `CHAT_RULES.md` — workflow/process rules.
+  4. `APP_NOTES.md` — App contract and App history.
+  5. `FIRMWARE_NOTES.md` — Firmware contract and Firmware history.
+  6. `firmware/FIRMWARE_ANALYSIS.md` — firmware architecture/safety map when firmware context is relevant.
+  7. Inspect the current repository source/workflow that actually controls the task.
+- For **Build App**, this preflight is mandatory even though Build App may run in a separate subchat. A Build App chat must not rely on remembered context from a previous chat; it must rebuild context from repository memory and current source.
+- A Build App workflow is therefore treated as a full engineering continuity workflow, not as a short artifact-generation shortcut.
+- Before Build App starts, record the exact App source/commit intended for the build, relevant workflow file/trigger, current release/version state, latest known successful build, and all known unresolved risks.
+- After **every successful App Build**, automatically synchronize the project memory without waiting for a user reminder. At minimum record:
+  - exact source commit/SHA that was built;
+  - workflow/run identifier and result;
+  - build number/version if changed;
+  - artifact name, artifact ID, size, and checksum when available;
+  - all source/config/workflow/dependency changes included since the prior successful build;
+  - any build-only troubleshooting changes or files changed during the build workflow;
+  - validation gates that passed/failed;
+  - what was not validated (especially physical firmware/device state);
+  - exact next state/action.
+- A successful build is not only an artifact result; it is a **memory checkpoint**. The repository memory must describe what changed so a future Build App chat can understand the build without the user reconstructing the history.
+- If the build changes anything, the corresponding App/process/memory records must be updated in the same Build App workflow. If only build metadata changed, record that metadata explicitly.
+- When Build App uses a separate subchat, the handover/current-state memory must be sufficient for the new chat to continue without relying on the previous conversation.
+- This rule applies to every project workflow, not only Build App: each meaningful Discussion, Execution, Audit, Gemini review, Compile, Build, or Hardware Test must leave persistent current-state/memory information before continuity can be considered complete.
+
 ## 2026-10-04 — EXECUTION FULL / V3.7 ANALYSIS DOCUMENT FINALIZATION
 
 - Added the repository-level firmware analysis map at `firmware/FIRMWARE_ANALYSIS.md`.
