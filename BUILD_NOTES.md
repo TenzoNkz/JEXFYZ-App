@@ -24,7 +24,7 @@
 - [IMPLEMENTED][VERIFIED] Current workflow has removed that Actions-artifact delivery dependency and successfully published the replacement Release asset in workflow run #2.
 
 ## BUILD HISTORY
-### #50 — latest verified downloadable APK
+### #50 — historical verified downloadable APK
 - [BUILT][VERIFIED] Run: 36996987220
 - [VERIFIED] Source commit: bf01595253eb5a1912471c4aee57c4eed4421f0f
 - [VERIFIED] Result: SUCCESS
