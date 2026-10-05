@@ -1,3 +1,10 @@
+## APP PELTIER SAFETY NOTIFY — 2026-10-05
+- [IMPLEMENTED] Peltier restart failures now explain the Hotside re-arm requirement, using the configured hotLimit minus 2°C.
+- [IMPLEMENTED] The retired RAPID_HOTSIDE_RISE notification mapping was removed.
+- [IMPLEMENTED] ACK handling treats ON/OFF as valid outcomes and shows unsolicited Touch cooling success in NOTIFY instead of flagging it as an error.
+- [IMPLEMENTED] Peltier failure notices avoid duplicating a firmware-supplied safety reason.
+- [NOT BUILT HERE] App Build was not executed.
+
 ## APP HOME FAN SPEED DISPLAY QC — 2026-10-05
 - Fixed Home Fan Speed presentation for Adaptive + 12V: Fan Speed now displays 100% instead of --.
 - Manual + 12V continues to display the actual configured Fan Speed.
@@ -44,16 +51,16 @@
 
 # JE X FYZ — CURRENT APP NOTES
 
-- App CONTROL source change commit: 5a3d63eb931d82b0b0d44668d7efde1b3c450b83
+- App CONTROL source change commit: 7c4d406204244d0282a857a298b00eed0c55dcc6
 
 ## CURRENT IDENTITY
 - App name: JE Cooler
 - Header: JE X FYZ
 - Package: com.horizontalzzz.jexfyz
 - Version: 1.0.0+3
-- Main source blob: 484b14bd585b95cdcb066adff59b5446649760b9
+- Main source blob: 7c4d406204244d0282a857a298b00eed0c55dcc6
 - Settings blob: f11235bab559b291928550e06984532581ddad6a
-- Tests blob: 6e6dd60b3b7a7615875851b7af027bc0bd2ea326
+- Tests blob: bc228885b0c6778d3470429e2ad8ba26a08614a5
 
 ## CURRENT PHASE
 - App remains in DEVELOPMENT + QC; the current firmware integration target is V5.0.
