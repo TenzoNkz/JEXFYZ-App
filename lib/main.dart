@@ -89,6 +89,23 @@ const int fanSpeedMin = 50;
 const int fanSpeedMax = 100;
 
 /// Returns true when a live, healthy firmware update can clear a stale Home NOTIFY error.
+/// Computes the Home Fan Speed presentation from authoritative runtime state.
+String homeFanSpeedDisplay({
+  required bool connected,
+  required bool fanOn,
+  required String voltage,
+  required bool adaptiveOn,
+  required int fanSpeed,
+  required String offLabel,
+}) {
+  if (!connected) return '--';
+  if (!fanOn) return offLabel;
+  if (voltage == '5V' || voltage == '9V') return '100%';
+  if (voltage == '12V' && adaptiveOn) return '100%';
+  if (voltage == '12V' && !adaptiveOn) return '$fanSpeed%';
+  return '--';
+}
+
 bool shouldClearStaleNotifyError({
   required bool connected,
   required String safety,
@@ -3810,15 +3827,14 @@ class _DashboardScreenState extends State<DashboardScreen>
   // of reusing the last PWM value; disconnected telemetry remains "--".
   Widget _homeFanSpeed() {
     final lang = appLanguageNotifier.value;
-    final displaySpeed = !connected
-        ? '--'
-        : !fanOn
-            ? JexText.of('off', lang)
-            : (voltage == '5V' || voltage == '9V')
-                ? '100%'
-                : (!adaptiveOn && voltage == '12V')
-                    ? '$fanSpeed%'
-                    : '--';
+    final displaySpeed = homeFanSpeedDisplay(
+      connected: connected,
+      fanOn: fanOn,
+      voltage: voltage,
+      adaptiveOn: adaptiveOn,
+      fanSpeed: fanSpeed,
+      offLabel: JexText.of('off', lang),
+    );
     return _homeMetric(
       JexText.of('fanSpeedLabel'),
       displaySpeed,
