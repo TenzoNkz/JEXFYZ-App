@@ -14,11 +14,11 @@
 - The latest verified APK predates the V4.7 realtime telemetry fix and does not prove V4.7 physical integration.
 
 ## CONTROL
-- Peltier ON from Fan-OFF state now requires a confirmed FAN:ON, then a 2-second non-blocking wait, then a fresh guard check before PELTIER:ON.
+- Peltier ON from Fan-OFF state sends FAN:ON first; the firmware then owns the 5-second Peltier soft-start.
 - Fan already ON does not incur the 2-second precharge wait.
 - Realtime QC fix: unsolicited FAN/PELTIER/FAN_SPEED telemetry is applied immediately as firmware-authoritative Control state.
-- If BLE disconnects, Adaptive becomes active, or Fan is no longer ON during the 2-second wait, PELTIER:ON is not sent.
-- Peltier still uses the existing 6-second command-confirmation timeout, while the firmware remains responsible for the 5-second Peltier soft-start.
+- Firmware remains the final safety authority; App does not add a fixed precharge timer.
+- Peltier still uses the existing command-confirmation timeout, while the firmware remains responsible for the 5-second Peltier soft-start.
 - Notify QC fix: stale command/connection errors clear only after healthy live cooling/safety telemetry; actual safety warnings remain visible.
 
 ## BLE / SESSION
@@ -35,7 +35,7 @@
 - Firmware update flow remains OTAENTER, SSID, PASS, URL, VERSION, CLOUDOTA.
 - OTA_UP_TO_DATE is recognized as a one-shot result.
 - App uses firmware-reported Adaptive Ceiling and current SAFETY OK/LOCKED semantics.
-- Battery thresholds remain 5V 20–30°C and 12V 30–40°C; current firmware source is V4.7.
+- Battery thresholds remain 5V 20–30°C and 12V 30–40°C; current firmware source is V4.8.
 - Current Firmware OTA stage tokens are mapped for presentation.
 - Wi-Fi password input is masked.
 - Firebase supplies release metadata; GitHub hosts the fixed firmware BIN URL.
@@ -49,3 +49,11 @@
 - Workflow is a direct owner/title/token-gated issue-triggered Release build.
 - Workflow publishes exactly one JEXFYZ-release.apk to GitHub Release jexfyz-latest.
 - No Actions artifact is used by the current delivery path.
+
+## V4.8 HOTSIDE
+- HOTSIDE safety dwell is non-blocking and uses 10 seconds before each lower-voltage step.
+- 12V hot: Fan ON / Peltier OFF → 10s → 9V.
+- 9V hot: Fan OFF / Peltier OFF → 10s → 5V.
+- 5V hot: terminal Peltier OFF; Adaptive exits and manual restart remains latched until Hotside cools below the re-arm threshold.
+- App no longer adds a fixed 2-second precharge before PELTIER:ON.
+- App Build remains a separate operation.
