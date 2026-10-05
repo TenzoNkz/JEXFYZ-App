@@ -1,44 +1,37 @@
 # JE X FYZ — CURRENT HANDOVER
 
 ## CURRENT TRUTH
-- Firmware: V4.5
-- Active source: firmware/JEXFYZ-V4.5.ino
-- Firmware blob: daef871d910f3f1bc4f2d1bdc44e0d19f6e292dc
+- Firmware: V4.6
+- Active source: firmware/JEXFYZ-V4.6.ino
+- Firmware blob: cd2ebd7395343f64b824e74c1370b04cea6835ab
+- Firmware compile/BIN/flash/physical validation: UNVERIFIED
 - App: 1.0.0+3
 - App main blob: f762f6d1cdd1351e57e7d93665ff2f5898769b42
 - App settings blob: f11235bab559b291928550e06984532581ddad6a
-- App test blob: aa86778beb8fcc3ce6a12454f6354f96ec99a160
+- App tests blob: aa86778beb8fcc3ce6a12454f6354f96ec99a160
 - Current App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml
-- Latest verified downloadable App Build: workflow run #2 / GitHub Release jexfyz-latest.
-- Build #53: App validation passed through signing; legacy artifact creation blocked by Actions quota.
-- The direct workflow is owner/title/token-gated and publishes one `JEXFYZ-release.apk` to GitHub Release `jexfyz-latest`.
-- A new Build App run is now being executed; workflow run #2 remains historical reference evidence until this run succeeds.
+- Workflow blob: 51a6c4d35580228ae24f859058ae5b08665d94a0
+- Latest verified downloadable App Build: workflow run 37245703677 / GitHub Release jexfyz-latest.
+- Latest verified APK SHA-256: a9d93bb3f359285bca1f2658f1336b502fd87539b0dec169282a9f2e59df1fc2.
 
-## CURRENT OBJECTIVE
-Preserve this state across chat transfer. On a future explicit Build App request, use the restored manual trigger to invoke the reusable App Build engine and verify its artifacts/signing gates.
-
-Expected Online OTA:
-Update Firmware → active GATT disconnect → live App telemetry stops → Online OTA continues → restart → BLE reconnect → P1 sync → OTA result is shown.
+## V4.6 EXECUTION
+- Hardware single tap: 5V → 9V → 12V → 9V → 5V → ...
+- Hardware cooling long press ON: Fan is forced to 100%.
+- Peltier OFF → ON: existing cooperative 5-second soft-start is preserved.
+- BOOT_AP_HARD_LIMIT_MS: 60 seconds preserved.
+- Rapid Hotside-rise protection: removed completely.
+- Normal Hotside temperature-limit protection: preserved.
+- All unrelated firmware, BLE/P1, OTA, Adaptive, RGB, telemetry, and App behavior remain unchanged.
 
 ## FROZEN
-- Local OTA Golden Path
-- BLE UUID/P1 contract
-- App package identity
-- Manual App Build trigger + reusable App Build engine
-- V3.2-style Online OTA transport/retry/result-indicator path
-- Cooperative timing rules
-- Firmware version/file alignment
+- Local OTA Golden Path.
+- Single-radio Wi-Fi/BLE ownership.
+- BLE Service/RX/TX UUIDs.
+- P1 session contract.
+- App package identity and App Build policy.
+- Production signing certificate identity.
 
 ## VALIDATION
-- Build #53 passed security/architecture audit, dependency resolution, Dart analysis, Flutter tests, release APK compilation, and production signing verification.
-- Build #53 failed only during legacy artifact creation because GitHub Actions artifact storage quota was exhausted; Build #2 proves the replacement Release delivery path.
-- Firmware V4.5 compile/BIN/flash/physical OTA validation remains pending.
-- Current App source is validated for downloadable Release delivery by workflow run #2.
-
-## CI DELIVERY STATE
-- `.github/workflows/jexfyz-app-build-trigger.yml` is the manual issue trigger.
-- Normal push/PR events do not trigger App Build.
-- Workflow run 37245703677 updated and verified `jexfyz-latest`.
-
-## NEXT
-Build 37245703677 verified CI gates, production signing, exactly one Release asset, and the Release asset digest/size. Separately compile/flash Firmware V4.5 and perform physical OTA/BLE validation. Separately compile/flash Firmware V4.5 and perform physical OTA/BLE validation.
+- V4.6 source/static audit: PASS.
+- Firmware compile/BIN/flash/physical validation: pending.
+- App Build was not run by this execution.
