@@ -250,4 +250,6 @@
 - [IMPLEMENTED] New complete transfer snapshot is prepared from the accessible chat context plus current repository evidence.
 - [IMPLEMENTED] Existing CHAT_TRANSFER.md will be replaced, not appended.
 - [IMPLEMENTED] No functional App/Firmware source change is part of this operation.
-- [PENDING] Final transfer-save commit SHA and post-save HEAD must be verified after the repository write.
+- [VERIFIED] Initial transfer snapshot save commit: b59b63fa2a65ccd5ce45dec0cfb18f97d76989b7.
+
+- [VERIFIED] Final transfer verification commit is this CHAT_TRANSFER update; post-save HEAD is the resulting commit SHA, verified immediately after write.
