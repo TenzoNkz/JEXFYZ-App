@@ -48,6 +48,15 @@ Online OTA:
 - Existing OTA result LED/state-machine behavior remains unchanged.
 - Download processing remains cooperative.
 
+## OTA SECURITY SEAL — 2026-10-06
+- Repository CI seal is active at .github/workflows/ota-security-seal.yml.
+- Protected manifest: firmware/OTA_SECURITY_SEAL.json.
+- Protected lock: firmware/OTA_SECURITY_SEAL.lock.
+- Protected areas cover OTA runtime/priority, BLE radio handoff, App version-difference policy, and Firebase OTA metadata validation.
+- Any protected-seal artifact edit requires [OTA-SEAL-RENEW].
+- Anti-downgrade remains OFF; any valid firmware version different from the device version may be selected.
+- This seal guards accidental repository drift; it does not replace compile, BIN, OTA, or hardware QC.
+
 ## V5.4 CHANGE — HOTSIDE DWELL FAN + LED — 2026-10-06
 - Adaptive HOTSIDE safety keeps Fan ON at 100% throughout each full 10-second thermal dwell.
 - Every completed HOTSTEP keeps Fan ON at 100% while Hotside safety remains active.
@@ -73,8 +82,8 @@ Online OTA:
 - Preserved the pre-mutation cooling snapshots so Fan/Peltier/Fan-speed transitions remain realtime.
 
 ## STATIC AUDIT
-- 4784 lines.
-- Firmware version/file alignment: V5.3 / JEXFYZ-V5.3.ino.
+- 4907 lines.
+- Firmware version/file alignment: V5.7 / JEXFYZ-V5.7.ino.
 - Only one active versioned .ino exists under firmware/.
 - executable delay() = 0 (comments excluded).
 - timing while() = 0.
