@@ -1,3 +1,12 @@
+## V5.5 PELTIER SAFETY REARM LED FEEDBACK — 2026-10-06
+- Promoted Firmware V5.4 → V5.5 for a targeted QC correction.
+- Removed the normal Peltier ON/OFF green/red LED feedback.
+- Re-scoped the Peltier LED to safety re-arm attempts only after Hotside Safety forces Peltier OFF.
+- Failed re-arm ON attempts blink red for 1 second; successful re-arm ON attempts at hotLimit - 2°C blink green for 1 second.
+- The existing manualPeltierSafetyLatch remains authoritative; it is cleared only after the successful re-arm ON attempt.
+- Hotside dwell LED priority is preserved: 9 seconds red blink + final 1 second green blink.
+- App source/build was not changed or run for this Firmware-only QC fix.
+
 ## V5.4 HOTSIDE DWELL FAN + LED QC FIX — 2026-10-06
 - Promoted Firmware V5.3 → V5.4 for a targeted QC correction.
 - Adaptive HOTSIDE safety now keeps Fan ON at 100% through the full 10-second thermal dwell at every rail.
