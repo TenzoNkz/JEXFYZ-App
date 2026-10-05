@@ -1,14 +1,14 @@
 # JE X FYZ — CURRENT FIRMWARE ANALYSIS
 
 ## SOURCE
-- Active: firmware/JEXFYZ-V5.3.ino
-- Version: V5.3
-- Blob: d6b5262c0ed429999ef6a951841bca6b24296949
+- Active: firmware/JEXFYZ-V5.4.ino
+- Version: V5.4
+- Blob: 0b1fd030aad646001b6c2f75bc248caa843b30eb
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
 ## CURRENT PHASE
-> **V5.3 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V5.4 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## ARCHITECTURE
 - ESP32-C3 single-radio model: Wi-Fi and BLE ownership are mutually exclusive.
@@ -25,6 +25,13 @@
 - Peltier OFF → ON: 5-second soft-start, then 100%.
 - Adaptive upward voltage changes: 5-second cooperative dwell after every completed increase in both profiles; downward changes remain immediate.
 - Double tap RGB and long-press Adaptive-OFF remain unchanged.
+
+## V5.4 HOTSIDE DWELL FAN + LED QC FIX — 2026-10-06
+- Adaptive HOTSIDE safety keeps Fan ON at 100% for the complete 10-second thermal dwell.
+- Completed HOTSTEP transitions keep Fan ON at 100% while thermal protection remains active.
+- Hotside dwell LED uses 9 seconds red blink plus the final 1 second green blink.
+- The selector step timing and 10-second dwell duration are unchanged.
+- Firmware version/file alignment is now V5.4 / JEXFYZ-V5.4.ino.
 
 ## V5.3 ADAPTIVE VOLTAGE RISE DWELL
 - HOTSIDE and HOTSIDE_BATTERY both use the same 5-second post-transition dwell for every upward voltage step.
@@ -62,8 +69,8 @@
 8. Restart and recover BLE.
 
 ## STATIC RESULT
-- 4778 lines.
-- Firmware source/file alignment: V5.3 / JEXFYZ-V5.3.ino.
+- 4784 lines.
+- Firmware source/file alignment: V5.4 / JEXFYZ-V5.4.ino.
 - One active versioned .ino.
 - executable delay() = 0 (comments excluded).
 - timing while() = 0.
@@ -90,5 +97,5 @@
 - [UNVERIFIED] Local OTA V4.6.
 - [UNVERIFIED] Online OTA/BLE recovery V4.6.
 - [VERIFIED] V4.9 source/static audit for the realtime telemetry fix.
-- [UNVERIFIED] V5.3 compile/BIN/flash/OTA and App integration after this revision.
+- [UNVERIFIED] V5.4 compile/BIN/flash/OTA and App integration after this revision.
 - [NOT RELEASED] Release Gate is incomplete.
