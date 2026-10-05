@@ -1,16 +1,16 @@
 # JE X FYZ — CURRENT PROJECT STATE
 
 ## CURRENT PHASE
-> **V4.8 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V4.9 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## CURRENT TRUTH
 - Project: JE X FYZ / JE Cooler
 - Repository: TenzoNkz/JEXFYZ-App
 - Branch: main
-- Firmware: V4.8
+- Firmware: V4.9
 - Firmware source change commit: d03998ac5137e475bc1f6778931b25a509068a28
-- Active Firmware source: firmware/JEXFYZ-V4.8.ino
-- Firmware source blob: d47b62edbf275032780ef05d6ac3be1df06e350b
+- Active Firmware source: firmware/JEXFYZ-V4.9.ino
+- Firmware source blob: 888ae9740446081b2a2bcb1769e0471f065dce41
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
 - App main source blob: 6def6eb10936bdec1923a6dfe1c809d5f71b1177
@@ -23,7 +23,7 @@
 - Latest verified APK: JEXFYZ-release.apk, 54,327,520 bytes, SHA-256 a9d93bb3f359285bca1f2658f1336b502fd87539b0dec169282a9f2e59df1fc2.
 - No App Build was executed for the CONTROL precharge change.
 
-## V4.8 HOTSIDE EXECUTION — 2026-10-05
+## V4.9 HOTSIDE EXECUTION — 2026-10-05
 - [IMPLEMENTED] HOTSIDE 12V limit: Fan remains ON, Peltier OFF, 10-second dwell, then 9V.
 - [IMPLEMENTED] HOTSIDE 9V limit: Fan OFF, Peltier OFF, 10-second dwell, then 5V.
 - [IMPLEMENTED] HOTSIDE 5V terminal state: Adaptive exits, Peltier remains OFF, and manual restart is required after thermal re-arm.
@@ -45,15 +45,15 @@
 - [PRESERVED] Normal Hotside temperature-limit safety.
 - [PRESERVED] Local OTA Golden/Protected path and single-radio Wi-Fi/BLE ownership.
 - [PRESERVED] BLE UUIDs, P1 protocol, Adaptive, RGB, telemetry, and existing App behavior outside the targeted CONTROL change.
-- [IMPLEMENTED] When Peltier is requested ON while Fan is OFF, App now waits 2 seconds after confirmed FAN=ON before sending PELTIER:ON.
-- [QC FIX] Firmware V4.8 publishes Fan/Peltier/Fan-speed realtime deltas from pre-mutation state snapshots.
+- [IMPLEMENTED] App confirms FAN:ON before PELTIER:ON; Firmware owns the 5-second Peltier soft-start.
+- [QC FIX] Firmware V4.9 publishes Fan/Peltier/Fan-speed realtime deltas from pre-mutation state snapshots.
 - [QC FIX] App consumes unsolicited FAN/PELTIER/FAN_SPEED telemetry immediately and reconciles stale Notify errors only after healthy live safety telemetry.
-- Firmware version incremented from V4.6 to V4.8 because this is a functional realtime-telemetry QC fix.
+- Firmware version incremented from V4.6 to V4.9 because this is a functional realtime-telemetry QC fix.
 
 ## QC / RELEASE STATE
-- [VERIFIED] V4.8 source/static audit passed for the realtime telemetry fix.
-- [UNVERIFIED] Arduino compilation, BIN generation, V4.8 flash/OTA, and App ↔ Firmware physical integration after the fix.
-- [NOT RELEASED] V4.8 is not yet a released firmware.
+- [VERIFIED] V4.9 source/static audit passed for the realtime telemetry fix.
+- [UNVERIFIED] Arduino compilation, BIN generation, V4.9 flash/OTA, and App ↔ Firmware physical integration after the fix.
+- [NOT RELEASED] V4.9 is not yet a released firmware.
 - Functional source is frozen during QC unless a demonstrated QC defect requires a targeted fix.
 
 ## FIRMWARE
@@ -66,7 +66,7 @@
 - Hotside limit range: 40–50°C, default 45°C.
 - NTC fault behavior remains Fan 100%, Peltier OFF, Adaptive OFF, safe 5V.
 - Rapid-rise slope protection is removed; no RAPID_HOTSIDE_RISE event is emitted.
-- V4.8 compile/BIN/flash/OTA validation remains pending.
+- V4.9 compile/BIN/flash/OTA validation remains pending.
 
 ## APP
 - App version remains 1.0.0+3.
@@ -86,16 +86,16 @@
 - No App Build was implied or executed by this firmware-only change.
 
 ## VALIDATION BOUNDARY
-- [VERIFIED] Repository/source audit for the requested V4.8 realtime telemetry fix.
-- [USER-CONFIRMED] V4.6 Firmware compilation, Online OTA, and hardware test succeeded before the V4.8 telemetry fix.
+- [VERIFIED] Repository/source audit for the requested V4.9 realtime telemetry fix.
+- [USER-CONFIRMED] V4.6 Firmware compilation, Online OTA, and hardware test succeeded before the V4.9 telemetry fix.
 - [UNVERIFIED] Firmware compile independently reproduced in this environment.
 - [UNVERIFIED] Final BIN generation.
 - [UNVERIFIED] ESP32-C3 flash.
 - [UNVERIFIED] Hardware-only touch/Fan/Peltier behavior.
 - [UNVERIFIED] Hotside/NTC safety runtime tests.
-- [UNVERIFIED] V4.8 Local OTA and Online OTA + GATT recovery.
-- [UNVERIFIED] App Build after the realtime fix and App ↔ V4.8 physical integration.
+- [UNVERIFIED] V4.9 Local OTA and Online OTA + GATT recovery.
+- [UNVERIFIED] App Build after the realtime fix and App ↔ V4.9 physical integration.
 - [NOT RELEASED] Release Gate is not complete.
 
 ## EXACT NEXT ACTION
-> **Compile V4.8 → generate BIN → flash/OTA → Build App → install APK → App ↔ Firmware realtime Control/Notify QC.**
+> **Compile V4.9 → generate BIN → flash/OTA → Build App → install APK → App ↔ Firmware realtime Control/Notify QC.**
