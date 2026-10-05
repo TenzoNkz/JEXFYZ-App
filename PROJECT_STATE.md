@@ -4,67 +4,61 @@
 - Project: JE X FYZ / JE Cooler
 - Repository: TenzoNkz/JEXFYZ-App
 - Branch: main
-- Current HEAD at Build App validation: fc4b89ce0c76b4b7826fc25cb8ac68ea843dc366
-- Last functional workflow fix commit: b449fc15659efa781063ac178754d99c5501c8b5
+- Firmware: V4.6
+- Active Firmware source: firmware/JEXFYZ-V4.6.ino
+- Firmware source blob: cd2ebd7395343f64b824e74c1370b04cea6835ab
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
-- Active Firmware: V4.5
-- Active Firmware source: firmware/JEXFYZ-V4.5.ino
-- Firmware source blob: daef871d910f3f1bc4f2d1bdc44e0d19f6e292dc
 - App main source blob: f762f6d1cdd1351e57e7d93665ff2f5898769b42
 - App settings source blob: f11235bab559b291928550e06984532581ddad6a
 - App test source blob: aa86778beb8fcc3ce6a12454f6354f96ec99a160
-- Active App Build trigger: .github/workflows/jexfyz-app-build-trigger.yml
-- App Build trigger blob: 6f8abfb64581bb48d4db6c2ed978dc4e12aef1a9
-- Active reusable App Build engine: .github/workflows/jexfyz-app-build-engine.yml
-- App Build engine blob: f123b00c908d6e91363df0bf4b435b4e9e6f252e
-- The temporary `.github/workflows/jexfyz-build.yml` Release-asset workflow is removed.
-- The trigger remains issue-based; the engine now publishes exactly one `JEXFYZ-release.apk` to GitHub Release `jexfyz-latest` and does not use Actions artifacts.
+- Active App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml
+- App Build workflow blob: 51a6c4d35580228ae24f859058ae5b08665d94a0
+- Direct issue-triggered Release workflow is authoritative; no reusable engine is active.
 - Latest verified downloadable App Build: workflow run 37245703677 / GitHub Release jexfyz-latest.
-- Historical new-workflow Build run #1: 37199918015 [BUILT][VERIFIED] through signing; [BLOCKED] legacy Actions-artifact upload by quota.
-- Build #53 passed App validation gates through signing but failed legacy artifact creation due GitHub Actions quota.
-- [IMPLEMENTED][UNVERIFIED] APK delivery is now routed through GitHub Release; a post-change build is required to verify the Release path.
+- Latest verified APK: JEXFYZ-release.apk, 54,327,520 bytes, SHA-256 a9d93bb3f359285bca1f2658f1336b502fd87539b0dec169282a9f2e59df1fc2.
+- This V4.6 firmware execution did not run App Build.
 
-## CURRENT TASK / TRANSFER
-- This execution restored the proven two-workflow App Build architecture under new filenames without changing App/Firmware runtime source.
-- App Build is explicitly being executed now against this workflow revision.
+## CURRENT TASK RESULT
+- [IMPLEMENTED] Hardware single-tap voltage now follows 5V → 9V → 12V → 9V → 5V → ...
+- [IMPLEMENTED] Hardware long-press cooling ON forces Fan to 100%.
+- [PRESERVED] Peltier OFF → ON keeps the existing cooperative 5-second soft-start.
+- [PRESERVED] BOOT_AP_HARD_LIMIT_MS remains 60 seconds.
+- [REMOVED] Rapid Hotside-rise protection and its dedicated slope/event state/history.
+- [PRESERVED] Normal Hotside temperature-limit safety.
+- [PRESERVED] Local OTA Golden/Protected path and single-radio Wi-Fi/BLE ownership.
+- [PRESERVED] BLE UUIDs, P1 protocol, Adaptive, RGB, telemetry, and App behavior.
+- Firmware version incremented from V4.5 to V4.6 because these are functional firmware changes.
 
 ## FIRMWARE
-- V4.5 remains active.
-- V4.4 OTA was user-confirmed PASS for all OTA paths before V4.5 promotion.
-- V4.5 fixes active-GATT disconnect ordering, emits OTA_UP_TO_DATE as a one-shot result, and gates rapid-rise protection on Peltier ON.
-- Local OTA remains Golden/Protected.
-- Online OTA remains V3.2-style bounded Wi-Fi/retry/result-indicator behavior.
-- Yellow Online OTA progress layer remains removed.
-- No executable delay() and no timing while() loops.
-- V4.5 physical compile/BIN/flash/OTA validation remains unverified.
+- Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module.
+- Core: Arduino-ESP32 3.3.7.
+- GPIO contract: NTC 0, Touch 1, 12V 3, 9V 4, Peltier 5, Fan 6, WS2812 7.
+- Fan PWM: 25 kHz, 8-bit, 50–100%; hardware touch ON forces 100%.
+- Peltier PWM: 20 kHz, 8-bit, 5-second OFF→ON soft-start.
+- Hotside NTC sample interval: 1 s.
+- Hotside limit range: 40–50°C, default 45°C.
+- NTC fault behavior remains Fan 100%, Peltier OFF, Adaptive OFF, safe 5V.
+- Rapid-rise slope protection is removed; no RAPID_HOTSIDE_RISE event is emitted.
+- V4.6 compile/BIN/flash/physical runtime validation remains unverified.
 
 ## APP
-- BLE/P1 architecture is preserved.
-- Online OTA recovery is explicit, independent of passive Auto Connect, and returns through normal P1 sync.
-- Adaptive Ceiling, safety semantics, battery threshold ranges, OTA stage mapping, and password masking are synchronized with firmware.
-- Current App source has passed audit, Dart analysis, Flutter tests, release APK compilation, and production signing verification in Build #53 and workflow run #2.
-- Build #51 source parser defect and Build #52 signing-shell defect are fixed.
-- Workflow run #2 successfully created/updated the GitHub Release and uploaded the APK.
+- App source and UI were not functionally changed by this firmware execution.
+- App continues to treat firmware telemetry as authoritative for physical/safety state.
 
 ## CI / BUILD
-- App Build uses a manual issue trigger plus a reusable build engine.
-- Workflow: `.github/workflows/jexfyz-app-build-trigger.yml` (issue `opened`/`reopened`, owner/title/token gated).
-- Normal push/PR events do not trigger App Build.
-- The engine uses GitHub Release publication instead of `actions/upload-artifact`.
-- Normal push/PR events do not trigger App Build.
-- The GitHub Release `jexfyz-latest` / `JEXFYZ-release.apk` was updated and verified by the current Build App run.
+- App Build is manual issue-trigger only.
+- Issue title: JE X FYZ — BUILD APP TRIGGER.
+- Required token: JEXFYZ_BUILD_TRIGGER_V1.
+- Normal push/PR do not trigger App Build.
+- Workflow uses Java 17, Flutter 3.47.2 stable, Gradle 9.3.1, ubuntu-24.04.
+- Release build is obfuscated and production-signed.
+- Exactly one APK is published to GitHub Release jexfyz-latest as JEXFYZ-release.apk.
+- No App Build was implied or executed by this firmware-only change.
 
 ## VALIDATION BOUNDARY
-- App source CI gates: PASS through production signing verification in Build #53.
-- Downloadable release: workflow run 37245703677 is the latest verified APK delivery via GitHub Release.
-- Release asset: JEXFYZ-release.apk, 54,327,520 bytes, SHA-256 a9d93bb3f359285bca1f2658f1336b502fd87539b0dec169282a9f2e59df1fc2.
-- GitHub Release tag: jexfyz-latest; Release ID: 403010611; asset ID: 610989112.
-- Actions-artifact storage quota is no longer a delivery dependency for the current workflow.
-- Firmware V4.5 physical compile/BIN/flash/OTA validation: UNVERIFIED.
-- No Build #53 APK is available for delivery.
-
-## EXACT NEXT ACTION
-- Keep the transfer docs synchronized.
-- Current trigger: `.github/workflows/jexfyz-app-build-trigger.yml`; current engine: `.github/workflows/jexfyz-app-build-engine.yml`. Verify the Release asset after this build.
-- Separately compile/flash V4.5 and perform physical Online OTA BLE disconnect/reconnect plus Local OTA validation.
+- Repository/source audit: PASS for V4.6 requested behavior.
+- Firmware compile/BIN/flash: UNVERIFIED.
+- Physical touch/fan/peltier behavior: UNVERIFIED.
+- App Build: not run in this execution.
+- Latest verified App APK evidence predates V4.6 and remains valid for the unchanged App source only.
