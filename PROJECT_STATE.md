@@ -1,16 +1,16 @@
 # JE X FYZ — CURRENT PROJECT STATE
 
 ## CURRENT PHASE
-> **V5.5 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V5.6 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## CURRENT TRUTH
 - Project: JE X FYZ / JE Cooler
 - Repository: TenzoNkz/JEXFYZ-App
 - Branch: main
-- Firmware: V5.5
+- Firmware: V5.6
 - Firmware source change commits: 85bf8acf79fd91f0d3bbbe2440bec8bab73774da → fd883ca695cab2f35014b3cf069fa9454ae6bc89
-- Active Firmware source: firmware/JEXFYZ-V5.5.ino
-- Firmware source blob: 5f72b3557f91c33827ee61f8c2eaf1cab2cfd786
+- Active Firmware source: firmware/JEXFYZ-V5.6.ino
+- Firmware source blob: f291e05b16235b0e944ea135238335024201355a
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
 - App main source blob: 48406cda017be1ce939ff682497324bf3680a7f3
@@ -23,6 +23,15 @@
 - Latest verified downloadable App Build: workflow run 37261171475 / GitHub Release jexfyz-latest.
 - Latest verified APK: JEXFYZ-release.apk, 54,327,520 bytes, SHA-256 b8045d0b6fa6d05b421bd6b1c0318d4ee4529734d7b471534700f95676200888.
 - No App Build was executed for the CONTROL precharge change.
+
+## V5.6 NTC ADC FILTERING QC FIX — 2026-10-06
+- [QC FIX / IMPLEMENTED] Hotside NTC sampling now uses a bounded 16-sample calibrated ADC burst once per 1-second sampling period.
+- [QC FIX / IMPLEMENTED] ADC samples are insertion-sorted, then the 4 lowest and 4 highest samples are discarded; the remaining 8 samples are averaged as the filtered NTC millivolt value.
+- [PRESERVED] NTC remains 10K nominal, 10K fixed resistor, Beta 3950, GPIO0, 12-bit ADC, and 11 dB attenuation.
+- [PRESERVED] VREF calculation remains the existing 3.3 V design value; no speculative 3.28 V constant was introduced.
+- [PRESERVED] No EMA/Kalman temperature filter, voltage clamp, offset calibration, or blocking timing was introduced.
+- [IMPLEMENTED] Firmware promoted V5.5 → V5.6 for this targeted NTC QC correction.
+- [NOT BUILT HERE] V5.6 compile/BIN/flash/physical validation remains pending.
 
 ## V5.5 PELTIER SAFETY REARM LED FEEDBACK — 2026-10-06
 - [QC FIX / IMPLEMENTED] Normal Peltier ON/OFF no longer emits the green/red Peltier LED command indicator.
