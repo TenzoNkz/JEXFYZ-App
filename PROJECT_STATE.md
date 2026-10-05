@@ -1,5 +1,8 @@
 # JE X FYZ — CURRENT PROJECT STATE
 
+## CURRENT PHASE
+> **V4.6 — CODE COMPLETE → QC / PRE-RELEASE → NOT RELEASED**
+
 ## CURRENT TRUTH
 - Project: JE X FYZ / JE Cooler
 - Repository: TenzoNkz/JEXFYZ-App
@@ -31,6 +34,12 @@
 - [PRESERVED] BLE UUIDs, P1 protocol, Adaptive, RGB, telemetry, and App behavior.
 - Firmware version incremented from V4.5 to V4.6 because these are functional firmware changes.
 
+## QC / RELEASE STATE
+- [VERIFIED] V4.6 requested source/static audit passed.
+- [UNVERIFIED] Arduino compilation, BIN generation, flash, physical hardware behavior, V4.6 OTA, and App ↔ Firmware physical integration.
+- [NOT RELEASED] V4.6 is not yet a released firmware.
+- Functional source is frozen during QC unless a demonstrated QC defect requires a targeted fix.
+
 ## FIRMWARE
 - Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module.
 - Core: Arduino-ESP32 3.3.7.
@@ -58,8 +67,16 @@
 - No App Build was implied or executed by this firmware-only change.
 
 ## VALIDATION BOUNDARY
-- Repository/source audit: PASS for V4.6 requested behavior.
-- Firmware compile/BIN/flash: UNVERIFIED.
-- Physical touch/fan/peltier behavior: UNVERIFIED.
-- App Build: not run in this execution.
-- Latest verified App APK evidence predates V4.6 and remains valid for the unchanged App source only.
+- [VERIFIED] Repository/source audit for the requested V4.6 behavior.
+- [UNVERIFIED] Firmware compile.
+- [UNVERIFIED] Final BIN generation.
+- [UNVERIFIED] ESP32-C3 flash.
+- [UNVERIFIED] Hardware-only touch/Fan/Peltier behavior.
+- [UNVERIFIED] Hotside/NTC safety runtime tests.
+- [UNVERIFIED] Local OTA on V4.6.
+- [UNVERIFIED] Online OTA + GATT disconnect/BLE recovery on V4.6.
+- [UNVERIFIED] App ↔ V4.6 physical integration.
+- [NOT RELEASED] Release Gate is not complete.
+
+## EXACT NEXT ACTION
+> **Compile V4.6 → generate BIN → flash ESP32-C3 → begin Hardware QC.**
