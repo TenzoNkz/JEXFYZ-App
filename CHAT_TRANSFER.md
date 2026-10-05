@@ -1,3 +1,13 @@
+## 2026-10-06 — OTA SECURITY SEAL
+### PERSISTENT
+- [IMPLEMENTED] OTA Security Seal added at .github/workflows/ota-security-seal.yml.
+- [IMPLEMENTED] Protected seal manifest: firmware/OTA_SECURITY_SEAL.json.
+- [IMPLEMENTED] Protected seal lock: firmware/OTA_SECURITY_SEAL.lock.
+- [IMPLEMENTED] Protected regions cover Firmware OTA runtime/priority, BLE radio handoff, App any-different-version policy, and Firebase OTA metadata validation.
+- [PRESERVED] Anti-downgrade is OFF; any valid firmware version different from the device version remains eligible for OTA.
+- [PRESERVED] V5.7 Firmware source and App runtime source were not functionally changed by the seal operation.
+- [USER-CONFIRMED] V5.7 OTA update to hardware succeeded before seal installation.
+
 ## 2026-10-06 — V5.7 QC EXECUTION RECORD
 ### PERSISTENT
 - [VERIFIED] Functional source authority is now V5.7: firmware/JEXFYZ-V5.7.ino, blob 652e54afdd9c7c347cd82072f573f1729c4b46de.
@@ -6,7 +16,8 @@
 - [COMMITTED] V5.6 source retirement commit: 38f8f2738cca18fbac3830d241baa1f5596cc719.
 - [IMPLEMENTED] TTP223 uses 30 ms qualification, 60–500 ms tap duration, 800 ms double-tap window from first valid release, second-tap grace, 1 s startup grace, and preserved 3+ tap cancellation.
 - [PRESERVED] 1x Voltage, 2x RGB, 5 s long press, and cooperative timing contracts.
-- [UNVERIFIED] Compile, BIN, flash, physical runtime, Local OTA, Online OTA/BLE recovery, and App integration for V5.7.
+- [USER-CONFIRMED] V5.7 Firmware was successfully OTA-updated onto the physical hardware; the device is running V5.7.
+- [UNVERIFIED] Full V5.7 functional runtime regression, Local OTA regression, Online OTA/BLE recovery regression, and App integration remain pending.
 - [NOT RELEASED] V5.7.
 
 ### PERSISTENT
@@ -52,10 +63,10 @@
 - [VERIFIED] Repository: TenzoNkz/JEXFYZ-App.
 - [VERIFIED] Branch: main.
 - [VERIFIED] Current post-fix state is V5.7; prior pre-fix transfer HEAD 3a54d83956f357750684a32279952cbd7fb484f8 is historical evidence.
-- [VERIFIED] Current phase: V5.4 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED.
+- [VERIFIED] Current phase: V5.7 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED.
 - [VERIFIED] Active Firmware: V5.7.
 - [VERIFIED] Active Firmware source: firmware/JEXFYZ-V5.7.ino.
-- [VERIFIED] Firmware source blob: 05044824a6ec15e77634dffc16c14b4bddada8bb.
+- [VERIFIED] Firmware source blob: 652e54afdd9c7c347cd82072f573f1729c4b46de.
 - [VERIFIED] App: JE Cooler; header JE X FYZ; package com.horizontalzzz.jexfyz; version 1.0.0+3.
 - [VERIFIED] App main source blob: 48406cda017be1ce939ff682497324bf3680a7f3.
 - [VERIFIED] App settings source blob: f11235bab559b291928550e06984532581ddad6a.
@@ -261,14 +272,14 @@
 
 ## 21. EXACT NEXT ACTION
 ### PERSISTENT
-> **Compile V5.3 → generate BIN → flash/OTA V5.3 → hardware Adaptive/Hotside/Safety QC → verify Local OTA + Online OTA/BLE recovery → Build App separately → App ↔ V5.3 integration QC → Release Gate.**
+> **Compile V5.7 → generate BIN → complete hardware/safety QC → regression-check Local OTA + Online OTA/BLE recovery → Build App separately → App ↔ V5.7 integration QC → Release Gate.**
 - [CONFIRMED] Do not run App Build merely because the chat transfers.
 
 ## 22. REQUIRED FIRST ACTION IN NEW CHAT
 ### PERSISTENT
-> **Read CHAT_TRANSFER.md first, then reconcile current main HEAD/source/workflow against PROJECT_STATE.md, HANDOVER.md, FIRMWARE_NOTES.md, firmware/FIRMWARE_ANALYSIS.md, APP_NOTES.md, and CHANGELOG.md. Treat firmware/JEXFYZ-V5.4.ino as the active Firmware source and V5.4 as the current version.**
+> **Read CHAT_TRANSFER.md first, then reconcile current main HEAD/source/workflow against PROJECT_STATE.md, HANDOVER.md, FIRMWARE_NOTES.md, firmware/FIRMWARE_ANALYSIS.md, APP_NOTES.md, and CHANGELOG.md. Treat firmware/JEXFYZ-V5.7.ino as the active Firmware source and V5.7 as the current version. OTA Security Seal is active; anti-downgrade remains OFF.**
 - [CONFIRMED] Do not modify functional source on the first action unless a separately issued command authorizes it.
-- [CONFIRMED] Continue from QC state; V5.3 is not released.
+- [CONFIRMED] Continue from QC state; V5.7 is not released.
 
 ## 23. AUTHORITY / RECONCILIATION NOTES
 ### PERSISTENT
@@ -276,13 +287,13 @@
 - [AUTHORITY] App source authority: current main branch under lib/.
 - [AUTHORITY] CI authority: .github/workflows/jexfyz-app-build-trigger.yml.
 - [RECONCILED] Current App main blob in PROJECT_STATE was previously stale (93ed2e3e...) and is now corrected to 48406cda...; this was documentation-only.
-- [RECONCILED] Current phase/active Firmware records are aligned to V5.4.
-- [RECONCILED] Current Handover includes V5.4 and the Hotside 10-second Fan/LED dwell correction.
+- [RECONCILED] Current phase/active Firmware records are aligned to V5.7.
+- [RECONCILED] Current Handover includes V5.7 and the OTA Security Seal.
 - [CAUTION] Commit search shows current main at 3a54... before this CHAT_TRANSFER write; the final save commit will be newer.
 
 ## 24. TRANSFER COMPLETION
 ### PERSISTENT
 - [CONFIRMED] Existing CHAT_TRANSFER.md was read before replacement.
 - [CONFIRMED] Current project/docs/source/workflow were reconciled against repository HEAD before save.
-- [COMPLETED BY THIS OPERATION] This file is being replaced now with the complete V5.3 chat snapshot.
+- [COMPLETED BY THIS OPERATION] This file is being updated with the current V5.7 state and OTA Security Seal record.
 - [REQUIRED AFTER WRITE] Re-read CHAT_TRANSFER.md, verify its saved blob/commit and then verify current main HEAD and active source/workflow.
