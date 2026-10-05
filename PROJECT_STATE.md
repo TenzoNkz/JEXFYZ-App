@@ -12,7 +12,8 @@
 - Active Firmware source: firmware/JEXFYZ-V5.7.ino
 - Firmware source blob: 652e54afdd9c7c347cd82072f573f1729c4b46de
 - OTA Security Seal status: ACTIVE / SEALED.
-- OTA Security Seal commit: c2845ef674e9f3041115b6c5c3d618b7a5a5790d.
+- Latest main HEAD: 8b62cb2e241a61a151e7d8c5ba2921c027328690.
+- OTA Security Seal commit: 8b62cb2e241a61a151e7d8c5ba2921c027328690.
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
 - App main source blob: 48406cda017be1ce939ff682497324bf3680a7f3
