@@ -5,19 +5,21 @@
 - Header: JE X FYZ
 - Package: com.horizontalzzz.jexfyz
 - Version: 1.0.0+3
-- Main source blob: 8341c125489f5cf419ce7a76fb41b698e70a92dc
+- Main source blob: 6def6eb10936bdec1923a6dfe1c809d5f71b1177
 - Settings blob: f11235bab559b291928550e06984532581ddad6a
-- Tests blob: 7f6650466b3f9e9d02ef43f889c1d184beeb2497
+- Tests blob: d9ddfca369980fc0cd5ecdf80de1a10a5b1a2e18
 
 ## CURRENT PHASE
-- App is functionally FROZEN during Firmware V4.6 QC unless an integration QC finding requires an App fix.
-- The latest verified APK predates V4.6 and does not prove V4.6 physical integration.
+- App is in DEVELOPMENT + QC during the V4.7 integration-fix cycle; further changes remain limited to demonstrated QC findings.
+- The latest verified APK predates the V4.7 realtime telemetry fix and does not prove V4.7 physical integration.
 
 ## CONTROL
 - Peltier ON from Fan-OFF state now requires a confirmed FAN:ON, then a 2-second non-blocking wait, then a fresh guard check before PELTIER:ON.
 - Fan already ON does not incur the 2-second precharge wait.
+- Realtime QC fix: unsolicited FAN/PELTIER/FAN_SPEED telemetry is applied immediately as firmware-authoritative Control state.
 - If BLE disconnects, Adaptive becomes active, or Fan is no longer ON during the 2-second wait, PELTIER:ON is not sent.
 - Peltier still uses the existing 6-second command-confirmation timeout, while the firmware remains responsible for the 5-second Peltier soft-start.
+- Notify QC fix: stale command/connection errors clear only after healthy live cooling/safety telemetry; actual safety warnings remain visible.
 
 ## BLE / SESSION
 - flutter_blue_plus is the BLE transport.
@@ -33,12 +35,12 @@
 - Firmware update flow remains OTAENTER, SSID, PASS, URL, VERSION, CLOUDOTA.
 - OTA_UP_TO_DATE is recognized as a one-shot result.
 - App uses firmware-reported Adaptive Ceiling and current SAFETY OK/LOCKED semantics.
-- Battery thresholds match Firmware V4.6: 5V 20–30°C and 12V 30–40°C.
+- Battery thresholds remain 5V 20–30°C and 12V 30–40°C; current firmware source is V4.7.
 - Current Firmware OTA stage tokens are mapped for presentation.
 - Wi-Fi password input is masked.
 - Firebase supplies release metadata; GitHub hosts the fixed firmware BIN URL.
 - Wi-Fi credentials remain in flutter_secure_storage.
-- The V4.6 firmware-only change removes rapid-rise protection; no App command contract change was required.
+- The V4.7 firmware telemetry fix preserves the P1 command contract and adds targeted App realtime/Notify reconciliation.
 
 ## BUILD / CI STATUS
 - Latest verified downloadable App Build: workflow run 37245703677.
