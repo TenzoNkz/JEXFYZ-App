@@ -130,6 +130,49 @@ void main() {
     expect(peltierFanPrechargeDuration, const Duration(seconds: 2));
   });
 
+  test('Live cooling telemetry clears stale command errors only in a healthy state', () {
+    expect(
+      shouldClearStaleNotifyError(
+        connected: true,
+        safety: 'OK',
+        safetyReason: 'NONE',
+        liveTelemetryReceived: true,
+        notice: 'Fan command failed.',
+      ),
+      isTrue,
+    );
+    expect(
+      shouldClearStaleNotifyError(
+        connected: true,
+        safety: 'LOCKED',
+        safetyReason: 'HOTSIDE_PROTECTION',
+        liveTelemetryReceived: true,
+        notice: 'Fan command failed.',
+      ),
+      isFalse,
+    );
+    expect(
+      shouldClearStaleNotifyError(
+        connected: true,
+        safety: 'OK',
+        safetyReason: 'NONE',
+        liveTelemetryReceived: true,
+        notice: 'Firmware update failed.',
+      ),
+      isFalse,
+    );
+    expect(
+      shouldClearStaleNotifyError(
+        connected: true,
+        safety: 'OK',
+        safetyReason: 'NONE',
+        liveTelemetryReceived: false,
+        notice: 'Fan command failed.',
+      ),
+      isFalse,
+    );
+  });
+
   test('Voltage uses the same leading slot and shared toggle geometry as control rows', () {
     expect(jexSubmenuRowMinHeight, 62.0);
     expect(jexSubmenuToggleWidth, 54.0);
