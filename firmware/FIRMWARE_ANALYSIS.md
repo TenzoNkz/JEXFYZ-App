@@ -1,14 +1,14 @@
 # JE X FYZ — CURRENT FIRMWARE ANALYSIS
 
 ## SOURCE
-- Active: firmware/JEXFYZ-V4.7.ino
-- Version: V4.7
+- Active: firmware/JEXFYZ-V4.8.ino
+- Version: V4.8
 - Blob: d47b62edbf275032780ef05d6ac3be1df06e350b
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
 ## CURRENT PHASE
-> **V4.7 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V4.8 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## ARCHITECTURE
 - ESP32-C3 single-radio model: Wi-Fi and BLE ownership are mutually exclusive.
@@ -27,7 +27,7 @@
 
 ## SAFETY
 - Hotside NTC is the universal thermal safety input.
-- Normal Hotside temperature-limit protection remains active.
+- Normal Hotside temperature-limit protection remains active with the V4.8 10-second step-down dwell.
 - Rapid Hotside-rise protection was removed; no dedicated slope/event/history state remains.
 - NTC invalid state still forces Fan 100%, Peltier OFF, Adaptive OFF, safe 5V.
 
@@ -42,8 +42,8 @@
 8. Restart and recover BLE.
 
 ## STATIC RESULT
-- 4667 lines.
-- Firmware source/file alignment: V4.7.
+- 4688 lines.
+- Firmware source/file alignment: V4.8 / JEXFYZ-V4.8.ino.
 - One active versioned .ino.
 - executable delay() = 0 (comments excluded).
 - timing while() = 0.
@@ -54,17 +54,21 @@
 - Explicit BLE GATT disconnect = 1.
 - Hard limit: 60000 ms.
 - Peltier soft-start: 5000 ms.
+- HOTSIDE safety dwell: 10000 ms.
+- HOTSIDE sequence: 12V hold → 9V → 5V.
+- 5V terminal safety exits Adaptive and requires manual Peltier restart.
+- Manual-mode Hotside protection preserves the selected rail.
 
 ## VALIDATION BOUNDARY
 - [VERIFIED] Source/static audit.
 - [UNVERIFIED] Arduino compile.
 - [UNVERIFIED] BIN generation.
 - [UNVERIFIED] ESP32-C3 flash.
-- [USER-CONFIRMED] V4.6 physical hardware behavior passed before the V4.7 telemetry fix.
-- [UNVERIFIED] V4.7 physical hardware regression after the telemetry fix.
+- [USER-CONFIRMED] V4.6 physical hardware behavior passed before the V4.8 telemetry fix.
+- [UNVERIFIED] V4.8 physical hardware regression after the telemetry fix.
 - [UNVERIFIED] Safety runtime.
 - [UNVERIFIED] Local OTA V4.6.
 - [UNVERIFIED] Online OTA/BLE recovery V4.6.
-- [VERIFIED] V4.7 source/static audit for the realtime telemetry fix.
-- [UNVERIFIED] V4.7 compile/BIN/flash/OTA and App integration after the fix.
+- [VERIFIED] V4.8 source/static audit for the realtime telemetry fix.
+- [UNVERIFIED] V4.8 compile/BIN/flash/OTA and App integration after the fix.
 - [NOT RELEASED] Release Gate is incomplete.
