@@ -89,6 +89,36 @@ const Duration peltierFanPrechargeDuration = Duration(seconds: 2);
 const int fanSpeedMin = 50;
 const int fanSpeedMax = 100;
 
+/// Returns true when a live, healthy firmware update can clear a stale Home NOTIFY error.
+bool shouldClearStaleNotifyError({
+  required bool connected,
+  required String safety,
+  required String safetyReason,
+  required bool liveTelemetryReceived,
+  required String notice,
+}) {
+  if (!connected || !liveTelemetryReceived) return false;
+
+  final safe = safety.trim().toUpperCase() == 'OK' &&
+      safetyReason.trim().toUpperCase() == 'NONE';
+  if (!safe) return false;
+
+  final upper = notice.trim().toUpperCase();
+  if (upper.isEmpty ||
+      upper.contains('OTA') ||
+      upper.contains('FIRMWARE')) {
+    return false;
+  }
+
+  return upper.contains('NOT CONFIRMED') ||
+      upper.contains('COMMAND FAILED') ||
+      upper.contains('FAILED') ||
+      upper.contains('ERROR') ||
+      upper.contains('TIDAK DIKONFIRMASI') ||
+      upper.contains('GAGAL') ||
+      upper.contains('KESALAHAN');
+}
+
 // AI-UI-GEOMETRY: Shared submenu dimensions keep VOLTAGE, CONTROL, ADAPTIVE, and LED aligned.
 const double jexSubmenuRowMinHeight = 62.0;
 const double jexSubmenuToggleWidth = 54.0;
@@ -2600,10 +2630,29 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
 
     if (!mounted) return;
+    final liveCoolingTelemetryReceived =
+        values.containsKey('FAN') ||
+        values.containsKey('PELTIER') ||
+        values.containsKey('ADAPTIVE') ||
+        values.containsKey('VOLTAGE') ||
+        values.containsKey('FAN_SPEED') ||
+        values.containsKey('SAFETY') ||
+        values.containsKey('SAFETY_REASON');
+
     setState(() {
       for (final entry in values.entries) {
         // AI-METHOD: _applyTelemetryValue — Map firmware telemetry keys into typed Flutter state.
         _applyTelemetryValue(entry.key, entry.value);
+      }
+
+      if (shouldClearStaleNotifyError(
+        connected: connected,
+        safety: safety,
+        safetyReason: safetyReason,
+        liveTelemetryReceived: liveCoolingTelemetryReceived,
+        notice: notice,
+      )) {
+        notice = JexText.of('systemReady', appLanguageNotifier.value);
       }
     });
 
@@ -3962,7 +4011,8 @@ class _DashboardScreenState extends State<DashboardScreen>
         custom.contains('NOT FOUND') ||
         custom.contains('DISCONNECTED') ||
         custom.contains('SERVICE DISCOVERY');
-    final warning = safetyReason != 'NONE' &&
+    final warning = connected &&
+        safetyReason != 'NONE' &&
         safetyReason != 'WAITING_FOR_NTC' &&
         safetyReason != 'WAITING_FOR_SENSOR_VALIDATION';
     final alert = hasError || warning;
