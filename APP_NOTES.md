@@ -1,4 +1,4 @@
-## 2026-10-05 — BUILD APP #8 SUCCESS / V4.9 HOTSIDE SOURCE
+## 2026-10-05 — BUILD APP #8 SUCCESS / V5.0 FIRMWARE SOURCE
 
 - Build #8 run `37261171475` completed successfully from source commit `eeeec79e729383c4c588719efac677373a62bfa9`.
 - Passed all active release gates: Java 17, Flutter 3.47.2 stable, Gradle 9.3.1, JE X FYZ security/architecture audit, dependency installation, `flutter analyze --no-fatal-infos`, `flutter test`, obfuscated release APK compilation, production signing verification, release filename preparation, and GitHub Release publication.
@@ -49,12 +49,12 @@
 - Firmware update flow remains OTAENTER, SSID, PASS, URL, VERSION, CLOUDOTA.
 - OTA_UP_TO_DATE is recognized as a one-shot result.
 - App uses firmware-reported Adaptive Ceiling and current SAFETY OK/LOCKED semantics.
-- Battery thresholds remain 5V 20–30°C and 12V 30–40°C; current firmware source is V4.9.
+- Battery thresholds remain 5V 20–30°C and 12V 30–40°C; current firmware source is V5.0.
 - Current Firmware OTA stage tokens are mapped for presentation.
 - Wi-Fi password input is masked.
 - Firebase supplies release metadata; GitHub hosts the fixed firmware BIN URL.
 - Wi-Fi credentials remain in flutter_secure_storage.
-- The V4.9 firmware telemetry and Adaptive LED safety update preserves the P1 command contract and adds targeted App realtime/Notify reconciliation.
+- The V5.0 firmware preserves the P1 command contract and adds selector-only voltage deadtime, 100% Fan transition behavior, and 10-second HOTSIDE LED timing. preserves the P1 command contract and adds targeted App realtime/Notify reconciliation.
 
 ## BUILD / CI STATUS
 - Latest verified downloadable App Build: workflow run 37245703677.
@@ -63,6 +63,14 @@
 - Workflow is a direct owner/title/token-gated issue-triggered Release build.
 - Workflow publishes exactly one JEXFYZ-release.apk to GitHub Release jexfyz-latest.
 - No Actions artifact is used by the current delivery path.
+
+## V5.0 FIRMWARE CONTROL / SELECTOR
+- GPIO3 = 12V Optocoupler/Decoy selector; GPIO4 = 9V Optocoupler/Decoy selector.
+- Both selector outputs are OFF for 200 ms before the target output is enabled; they are never active together.
+- GPIO5 Peltier MOSFET and GPIO6 Fan MOSFET remain physically active during selector voltage changes; Peltier PWM is not forcibly cleared.
+- Fan is forced to 100% at the start of every voltage transition. Fan Speed is user-adjustable only at 12V.
+- Returning to 12V does not restore a previous Fan Speed preference; Fan remains at 100% until manually changed.
+- HOTSIDE LED red blink lasts 10 seconds during each HOTSIDE timing stage, including the 5V terminal stage.
 
 ## V4.8 HOTSIDE
 - HOTSIDE safety dwell is non-blocking and uses 10 seconds before each lower-voltage step.
