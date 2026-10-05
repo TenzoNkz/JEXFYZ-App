@@ -28,7 +28,7 @@
 - NTC fault remains Fan 100%, Peltier OFF, Adaptive OFF, safe 5V.
 - Rapid Hotside-rise slope protection is removed completely.
 - No RAPID_HOTSIDE_RISE safety event is emitted.
-- Normal Hotside temperature-limit protection remains active, with V4.9 10-second step-down dwell.
+- Normal Hotside temperature-limit protection remains active, with a 10-second step-down dwell.
 
 ## OTA CONTRACT
 Local OTA:
@@ -69,7 +69,7 @@ Online OTA:
 - Generate BIN.
 - Flash/OTA ESP32-C3.
 - Hardware-only control QC.
-- V4.9 HOTSIDE safety sequence QC.
+- V5.0 HOTSIDE selector/safety sequence QC.
 - Local OTA Golden Path.
 - Online OTA + BLE recovery.
 - App ↔ Firmware integration after the separately executed App Build.
