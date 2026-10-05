@@ -1,4 +1,4 @@
-## 2026-10-05 — BUILD APP #8 SUCCESS / V4.8 HOTSIDE SOURCE
+## 2026-10-05 — BUILD APP #8 SUCCESS / V4.9 HOTSIDE SOURCE
 
 - Build #8 run `37261171475` completed successfully from source commit `eeeec79e729383c4c588719efac677373a62bfa9`.
 - Passed all active release gates: Java 17, Flutter 3.47.2 stable, Gradle 9.3.1, JE X FYZ security/architecture audit, dependency installation, `flutter analyze --no-fatal-infos`, `flutter test`, obfuscated release APK compilation, production signing verification, release filename preparation, and GitHub Release publication.
@@ -29,7 +29,7 @@
 
 ## CONTROL
 - Peltier ON from Fan-OFF state sends FAN:ON first; the firmware then owns the 5-second Peltier soft-start.
-- Fan already ON does not incur the 2-second precharge wait.
+- Fan already ON -> Peltier ON remains immediate; there is no App-side precharge timer.
 - Realtime QC fix: unsolicited FAN/PELTIER/FAN_SPEED telemetry is applied immediately as firmware-authoritative Control state.
 - Firmware remains the final safety authority; App does not add a fixed precharge timer.
 - Peltier still uses the existing command-confirmation timeout, while the firmware remains responsible for the 5-second Peltier soft-start.
@@ -49,12 +49,12 @@
 - Firmware update flow remains OTAENTER, SSID, PASS, URL, VERSION, CLOUDOTA.
 - OTA_UP_TO_DATE is recognized as a one-shot result.
 - App uses firmware-reported Adaptive Ceiling and current SAFETY OK/LOCKED semantics.
-- Battery thresholds remain 5V 20–30°C and 12V 30–40°C; current firmware source is V4.8.
+- Battery thresholds remain 5V 20–30°C and 12V 30–40°C; current firmware source is V4.9.
 - Current Firmware OTA stage tokens are mapped for presentation.
 - Wi-Fi password input is masked.
 - Firebase supplies release metadata; GitHub hosts the fixed firmware BIN URL.
 - Wi-Fi credentials remain in flutter_secure_storage.
-- The V4.7 firmware telemetry fix preserves the P1 command contract and adds targeted App realtime/Notify reconciliation.
+- The V4.9 firmware telemetry and Adaptive LED safety update preserves the P1 command contract and adds targeted App realtime/Notify reconciliation.
 
 ## BUILD / CI STATUS
 - Latest verified downloadable App Build: workflow run 37245703677.
