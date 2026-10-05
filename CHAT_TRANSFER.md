@@ -1,12 +1,14 @@
 ## 2026-10-06 — V5.5 QC EXECUTION RECORD
 ### PERSISTENT
-- [VERIFIED] Functional source authority is now V5.5: firmware/JEXFYZ-V5.5.ino, blob ca6d88280dff8f14e220b6dc3b50e1967edaea1b.
+- [VERIFIED] Functional source authority is now V5.5: firmware/JEXFYZ-V5.5.ino, blob 5f72b3557f91c33827ee61f8c2eaf1cab2cfd786.
 - [COMMITTED] V5.5 source promotion commit: adfb3e3860f6c7004e577981d668fef46f467d47.
 - [COMMITTED] V5.4 source retirement commit: 12973ebace66f660c6c1b0a7a48407e96c02ea08.
 - [COMMITTED] V5.5 safety-attempt correction commit: b29d050dcb7deea0ffc5339c76a37bf27a7dacb1.
+- [COMMITTED] V5.5 final latch-consistency correction commit: 87c69ce33024e9653efbe9f52cbce84a857efaf4.
 - [IMPLEMENTED] Normal Peltier ON/OFF no longer emits green/red Peltier LED feedback.
 - [IMPLEMENTED] After Hotside safety-forced Peltier OFF, failed re-arm ON attempts blink red for 1 s.
 - [IMPLEMENTED] Successful re-arm ON at Hotside <= hotLimit - 2°C blinks green for 1 s and clears the existing safety latch.
+- [IMPLEMENTED] Adaptive activation cannot bypass an active safety latch.
 - [PRESERVED] Hotside dwell indicator remains 9 s red + final 1 s green and has LED priority.
 - [UNVERIFIED] Compile, BIN, flash, physical runtime, Local OTA, Online OTA/BLE recovery, and App integration for V5.5.
 - [NOT RELEASED] V5.5.
