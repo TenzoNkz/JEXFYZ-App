@@ -30,6 +30,12 @@
 - Hardware Touch restart uses the same re-arm hysteresis and cannot bypass the latch.
 - Failed Peltier ON: red blink 1 second. Successful Peltier ON: green blink 1 second.
 
+## V5.1 SAFETY REARM FEEDBACK
+- Peltier ON safety rejection: 1-second red blink.
+- Peltier ON success: 1-second green blink.
+- Re-arm threshold: Hotside <= hotLimit - 2°C.
+- Touch and App Peltier start paths use the same safety latch semantics.
+
 ## SAFETY
 - Hotside NTC is the universal thermal safety input.
 - Normal Hotside temperature-limit protection remains active with the 10-second step-down dwell.
