@@ -1,14 +1,14 @@
 # JE X FYZ — CURRENT FIRMWARE ANALYSIS
 
 ## SOURCE
-- Active: firmware/JEXFYZ-V5.0.ino
-- Version: V5.0
-- Blob: 34a3b895bba282fcb9036a703eb9035bb0ad19cc
+- Active: firmware/JEXFYZ-V5.1.ino
+- Version: V5.1
+- Blob: e5a38482b09ce9f07f93b471914495238d9a81aa
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
 ## CURRENT PHASE
-> **V5.0 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V5.1 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## ARCHITECTURE
 - ESP32-C3 single-radio model: Wi-Fi and BLE ownership are mutually exclusive.
@@ -24,6 +24,11 @@
 - Hardware cooling ON: Fan 100%.
 - Peltier OFF → ON: 5-second soft-start, then 100%.
 - Double tap RGB and long-press Adaptive-OFF remain unchanged.
+
+## V5.1 PELTIER SAFETY REARM FEEDBACK
+- Manual and 5V Adaptive-terminal Peltier restart remains locked until Hotside <= hotLimit - 2°C.
+- Hardware Touch restart uses the same re-arm hysteresis and cannot bypass the latch.
+- Failed Peltier ON: red blink 1 second. Successful Peltier ON: green blink 1 second.
 
 ## SAFETY
 - Hotside NTC is the universal thermal safety input.
