@@ -1,3 +1,11 @@
+## OTA SECURITY SEAL — 2026-10-06
+- Added the JE X FYZ OTA Security Seal to protect the proven V5.7 OTA path against accidental repository drift.
+- CI fingerprints the Firmware OTA runtime/priority path, BLE radio handoff, App any-different-version policy, and Firebase OTA metadata validation.
+- Seal artifacts require explicit [OTA-SEAL-RENEW] for intentional changes, and refreshed fingerprints must still pass the seal checks.
+- Preserved the existing OTA behavior and the agreed policy that any valid firmware version different from the device version may be installed.
+- No anti-downgrade policy was introduced.
+- No App Build was executed.
+
 ## V5.7 TTP223 TOUCH ACCURACY QC FIX — 2026-10-06
 - Promoted Firmware V5.6 → V5.7 for a targeted TTP223 touch recognition correction.
 - Added 30 ms raw-input qualification for PRESS and RELEASE edges to reject short false transitions.
