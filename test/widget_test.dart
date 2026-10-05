@@ -126,6 +126,10 @@ void main() {
     expect(isTransientOtaResultEvent('IN_PROGRESS|MODE=ONLINE|STAGE=ONLINE_WIFI_CONNECT|PROGRESS=0'), isFalse);
   });
 
+  test('Peltier waits 2 seconds after Fan activation', () {
+    expect(peltierFanPrechargeDuration, const Duration(seconds: 2));
+  });
+
   test('Voltage uses the same leading slot and shared toggle geometry as control rows', () {
     expect(jexSubmenuRowMinHeight, 62.0);
     expect(jexSubmenuToggleWidth, 54.0);
