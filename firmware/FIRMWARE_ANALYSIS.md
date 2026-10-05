@@ -3,7 +3,7 @@
 ## SOURCE
 - Active: firmware/JEXFYZ-V5.5.ino
 - Version: V5.5
-- Blob: ca6d88280dff8f14e220b6dc3b50e1967edaea1b
+- Blob: 5f72b3557f91c33827ee61f8c2eaf1cab2cfd786
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
@@ -33,6 +33,7 @@
 - When Hotside is <= hotLimit - 2°C, a successful Peltier ON attempt produces a non-blocking 1-second green blink and clears the latch.
 - The Hotside 10-second dwell indicator keeps LED priority, so its 9-second red + final 1-second green sequence is not disrupted.
 - No second safety latch or alternate thermal threshold was introduced.
+- Adaptive start is explicitly blocked while manualPeltierSafetyLatch is active, so the safety re-arm cannot be bypassed through Adaptive mode.
 
 ## V5.4 HOTSIDE DWELL FAN + LED QC FIX — 2026-10-06
 - Adaptive HOTSIDE safety keeps Fan ON at 100% for the complete 10-second thermal dwell.
