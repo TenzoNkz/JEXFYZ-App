@@ -1,6 +1,7 @@
 ## CHAT-LIMIT RECONCILIATION — 2026-10-05
 - [VERIFIED] Repository main HEAD before CHAT_TRANSFER write: 3a54d83956f357750684a32279952cbd7fb484f8.
-- [VERIFIED] Repository main HEAD after final transfer/documentation reconciliation: b857370546c2b5f1358b6576bb324d2ab0bddf38.
+- [VERIFIED] CHAT_TRANSFER save commit: 3d21b33b5c96640f7393a4956ad2ccb868639644.
+- [VERIFIED] This Handover note is documentation-only; latest main HEAD is checked after the save sequence.
 - [VERIFIED] Active Firmware V5.3: `firmware/JEXFYZ-V5.3.ino`, blob d6b5262c0ed429999ef6a951841bca6b24296949.
 - [VERIFIED] Both Adaptive profiles share the 5-second upward-voltage dwell; safe-5V Adaptive startup also starts the dwell; downward changes remain immediate.
 - [VERIFIED] App main source blob: 48406cda017be1ce939ff682497324bf3680a7f3.
