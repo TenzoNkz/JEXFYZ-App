@@ -1,12 +1,3 @@
-// ArduinoDroid auto-generates function prototypes before sketch code.
-// CoolingOutputState must therefore be declared before the first include so
-// generated prototypes can resolve the type.
-struct CoolingOutputState {
-  bool fanOn;
-  bool peltierOn;
-  unsigned char fanPwm;
-};
-
 #include <Arduino.h>
 #include <WiFi.h>
 #include <WebServer.h>
@@ -909,30 +900,22 @@ static bool safetyAllowsPeltier() {
 }
 
 // Reconcile requested cooling state with NTC/Fan/Peltier safety constraints and then drive hardware.
-static CoolingOutputState coolingOutputSnapshot() {
-  return CoolingOutputState{fanOn, peltierOn, fanPwm};
-}
-
 static void applyCoolingOutputs(
-    const CoolingOutputState* previousOverride = nullptr) {
-  // Some callers mutate logical state before applying safety/hardware.
-  // They pass a pre-mutation snapshot so realtime telemetry can report it.
-  const CoolingOutputState previous =
-      previousOverride != nullptr ? *previousOverride : coolingOutputSnapshot();
-
-  // A failed NTC immediately selects the safest cooling state: Fan 100%, Peltier OFF.
+    bool previousFanOn,
+    bool previousPeltierOn,
+    uint8_t previousFanPwm) {
+  // Primitive snapshots keep ArduinoDroid-generated prototypes independent of
+  // sketch-defined types while preserving realtime telemetry behavior.
   if (!ntcValid) {
     fanOn = true;
     fanPwm = 100;
     peltierOn = false;
   }
 
-  // Never permit Peltier operation without the Fan running.
   if (!fanOn) peltierOn = false;
-  // Thermal, OTA, Adaptive-cooldown, and safety-latch rules can veto a requested Peltier ON state.
   if (peltierOn && !safetyAllowsPeltier()) peltierOn = false;
 
-  if (peltierOn && !previous.peltierOn) {
+  if (peltierOn && !previousPeltierOn) {
     beginPeltierSoftStart();
   } else if (!peltierOn) {
     stopPeltierOutput();
@@ -941,15 +924,16 @@ static void applyCoolingOutputs(
   processPeltierSoftStart();
   writeFanPwm();
 
-  if (fanOn != previous.fanOn ||
-      peltierOn != previous.peltierOn ||
-      fanPwm != previous.fanPwm) {
+  if (fanOn != previousFanOn ||
+      peltierOn != previousPeltierOn ||
+      fanPwm != previousFanPwm) {
     ++stateSequence;
-    if (fanOn != previous.fanOn) sendDelta("FAN", boolText(fanOn));
-    if (peltierOn != previous.peltierOn) sendDelta("PELTIER", boolText(peltierOn));
-    if (fanPwm != previous.fanPwm) sendDelta("FAN_SPEED", String(fanPwm));
+    if (fanOn != previousFanOn) sendDelta("FAN", boolText(fanOn));
+    if (peltierOn != previousPeltierOn) sendDelta("PELTIER", boolText(peltierOn));
+    if (fanPwm != previousFanPwm) sendDelta("FAN_SPEED", String(fanPwm));
   }
 }
+
 
 // Physical LED path: RIGHT TOP -> RIGHT BOTTOM -> LEFT BOTTOM -> LEFT TOP.
 static constexpr uint8_t RIGHT_PIXELS[4] = {0, 1, 2, 3};
@@ -1591,7 +1575,9 @@ static void completeVoltageTransition() {
             : lowerVoltage(currentVoltage);
   }
 
-  CoolingOutputState previousCooling = coolingOutputSnapshot();
+  bool previousFanOn = fanOn;
+  bool previousPeltierOn = peltierOn;
+  uint8_t previousFanPwm = fanPwm;
 
   // Capture the physically active voltage before committing the new selector state.
   const Voltage previousVoltage = currentVoltage;
@@ -1616,7 +1602,9 @@ static void completeVoltageTransition() {
 
   if (adaptiveStartPending && currentVoltage == Voltage::V5) {
     activateAdaptiveAfterSafeFiveVolt();
-    previousCooling = coolingOutputSnapshot();
+    previousFanOn = fanOn;
+    previousPeltierOn = peltierOn;
+    previousFanPwm = fanPwm;
   }
 
   if (completedSource == VoltageRequestSource::HOTSTEP && adaptiveOn) {
@@ -1667,7 +1655,7 @@ static void completeVoltageTransition() {
 
   // Peltier soft-start is intentionally scoped only to a true OFF -> ON
   // transition. Voltage changes preserve the current Peltier PWM state.
-  applyCoolingOutputs(&previousCooling);
+  applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
   startVoltageIndicator();
 
   ++stateSequence;
@@ -1753,9 +1741,8 @@ static void forceSafeFiveVolt() {
     requestVoltage(Voltage::V5, VoltageRequestSource::SAFETY, true);
   }
 
-  const CoolingOutputState previousCooling{
-      previousFan, previousPeltier, previousPwm};
-  applyCoolingOutputs(&previousCooling);
+  applyCoolingOutputs(previousFan, previousPeltier, previousPwm);
+  applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
 
   if (previousFan != fanOn) sendDelta("FAN", boolText(fanOn));
   if (previousPeltier != peltierOn) sendDelta("PELTIER", boolText(peltierOn));
@@ -1769,7 +1756,9 @@ static void forceSafeFiveVolt() {
 
 // Apply the highest-priority thermal/sensor rules after normal feature evaluation.
 static void enforceSafety() {
-  const CoolingOutputState previousCooling = coolingOutputSnapshot();
+  bool previousFanOn = fanOn;
+  bool previousPeltierOn = peltierOn;
+  uint8_t previousFanPwm = fanPwm;
 
   if (!ntcValid) {
     forceSafeFiveVolt();
@@ -1855,7 +1844,7 @@ static void enforceSafety() {
     stopPeltierOutput();
   }
 
-  applyCoolingOutputs(&previousCooling);
+  applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
 }
 
 // Advance HOTSIDE Adaptive cooldown and 5 s upward-voltage timing without blocking the main loop.
@@ -1891,11 +1880,13 @@ static void processAdaptiveHotTimer() {
     }
 
     // Thermal event resolved during the 10 s dwell: restore normal Adaptive cooling.
-    const CoolingOutputState previousCooling = coolingOutputSnapshot();
+    bool previousFanOn = fanOn;
+    bool previousPeltierOn = peltierOn;
+    uint8_t previousFanPwm = fanPwm;
     fanOn = true;
     fanPwm = 100;
     peltierOn = true;
-    applyCoolingOutputs(&previousCooling);
+    applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
   }
 
   if (voltageTransition) return;
@@ -3542,9 +3533,11 @@ static bool setFanState(bool desired, String& reason) {
   }
 
   if (fanOn != desired) {
-    const CoolingOutputState previousCooling = coolingOutputSnapshot();
+    bool previousFanOn = fanOn;
+    bool previousPeltierOn = peltierOn;
+    uint8_t previousFanPwm = fanPwm;
     fanOn = desired;
-    applyCoolingOutputs(&previousCooling);
+    applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
   }
 
   reason = "OK";
@@ -3564,9 +3557,11 @@ static bool setPeltierState(bool desired, String& reason) {
   if (!desired) {
 
     if (peltierOn) {
-      const CoolingOutputState previousCooling = coolingOutputSnapshot();
+      bool previousFanOn = fanOn;
+      bool previousPeltierOn = peltierOn;
+      uint8_t previousFanPwm = fanPwm;
       peltierOn = false;
-      applyCoolingOutputs(&previousCooling);
+      applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
     }
     reason = "OK";
     return true;
@@ -3602,9 +3597,11 @@ static bool setPeltierState(bool desired, String& reason) {
   }
 
   if (!peltierOn) {
-    const CoolingOutputState previousCooling = coolingOutputSnapshot();
+    bool previousFanOn = fanOn;
+    bool previousPeltierOn = peltierOn;
+    uint8_t previousFanPwm = fanPwm;
     peltierOn = true;
-    applyCoolingOutputs(&previousCooling);
+    applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
   }
 
   publishSafetyReason();
@@ -3630,7 +3627,9 @@ static bool forceAdaptiveFiveVolt() {
 static void activateAdaptiveAfterSafeFiveVolt() {
   if (!adaptiveStartPending || currentVoltage != Voltage::V5) return;
 
-  const CoolingOutputState previousCooling = coolingOutputSnapshot();
+  bool previousFanOn = fanOn;
+  bool previousPeltierOn = peltierOn;
+  uint8_t previousFanPwm = fanPwm;
 
   if (!ntcValid) {
     adaptiveStartPending = false;
@@ -3658,14 +3657,14 @@ static void activateAdaptiveAfterSafeFiveVolt() {
     peltierOn = false;
     sendDelta("ADAPTIVE", "OFF");
     sendDelta("ADAPTIVE_CEILING", "12V");
-    applyCoolingOutputs(&previousCooling);
+    applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
     publishSafetyReason();
     return;
   }
 
   peltierOn = true;
   const uint32_t previousSequence = stateSequence;
-  applyCoolingOutputs(&previousCooling);
+  applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
 
   if (stateSequence == previousSequence) ++stateSequence;
   sendDelta("ADAPTIVE", "ON");
@@ -3731,7 +3730,9 @@ static void setAdaptiveState(bool desired, String& reason) {
   }
 
   // OFF cancels an in-flight Adaptive start and retains the safe-5V behavior.
-  const CoolingOutputState previousCooling = coolingOutputSnapshot();
+  bool previousFanOn = fanOn;
+  bool previousPeltierOn = peltierOn;
+  uint8_t previousFanPwm = fanPwm;
   adaptiveStartPending = false;
   adaptiveOn = false;
   adaptiveHotStepPending = false;
@@ -3747,7 +3748,7 @@ static void setAdaptiveState(bool desired, String& reason) {
     reason = "OK";
   }
 
-  applyCoolingOutputs(&previousCooling);
+  applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
 }
 
 static bool setRgbState(bool desired) {
@@ -4313,7 +4314,9 @@ static void executeTouchLong() {
 
   // Toggle both outputs as one paired control. Existing safety rules remain authoritative.
   const bool desired = !(fanOn && peltierOn);
-  const CoolingOutputState previousCooling = coolingOutputSnapshot();
+  bool previousFanOn = fanOn;
+  bool previousPeltierOn = peltierOn;
+  uint8_t previousFanPwm = fanPwm;
 
   if (desired && hotsideProtectionActiveNow()) {
     sendAck("TOUCH_COOLING", false, "HOTSIDE_PROTECTION");
@@ -4330,7 +4333,7 @@ static void executeTouchLong() {
 
   fanOn = desired;
   peltierOn = desired;
-  applyCoolingOutputs(&previousCooling);
+  applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
   publishSafetyReason();
   sendAck("TOUCH_COOLING", peltierOn == desired,
           peltierOn ? "ON" : safetyReason());
@@ -4658,7 +4661,9 @@ void loop() {
       !bootApClientSafe &&
       otaState == OtaState::BOOT_AP;
   if (bootCoolingLocked) {
-    const CoolingOutputState previousCooling = coolingOutputSnapshot();
+    bool previousFanOn = fanOn;
+    bool previousPeltierOn = peltierOn;
+    uint8_t previousFanPwm = fanPwm;
     fanOn = false;
     peltierOn = false;
     peltierSoftStarting = false;
@@ -4671,13 +4676,13 @@ void loop() {
       }
     }
 
-    if (fanOn != previousCooling.fanOn ||
-        peltierOn != previousCooling.peltierOn ||
-        fanPwm != previousCooling.fanPwm) {
+    if (fanOn != previousFanOn ||
+        peltierOn != previousPeltierOn ||
+        fanPwm != previousFanPwm) {
       ++stateSequence;
-      if (fanOn != previousCooling.fanOn) sendDelta("FAN", boolText(fanOn));
-      if (peltierOn != previousCooling.peltierOn) sendDelta("PELTIER", boolText(peltierOn));
-      if (fanPwm != previousCooling.fanPwm) sendDelta("FAN_SPEED", String(fanPwm));
+      if (fanOn != previousFanOn) sendDelta("FAN", boolText(fanOn));
+      if (peltierOn != previousPeltierOn) sendDelta("PELTIER", boolText(peltierOn));
+      if (fanPwm != previousFanPwm) sendDelta("FAN_SPEED", String(fanPwm));
     }
   } else {
     enforceSafety();
