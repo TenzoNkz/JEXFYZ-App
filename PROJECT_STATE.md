@@ -1,16 +1,16 @@
 # JE X FYZ — CURRENT PROJECT STATE
 
 ## CURRENT PHASE
-> **V5.4 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V5.5 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## CURRENT TRUTH
 - Project: JE X FYZ / JE Cooler
 - Repository: TenzoNkz/JEXFYZ-App
 - Branch: main
-- Firmware: V5.4
+- Firmware: V5.5
 - Firmware source change commits: 85bf8acf79fd91f0d3bbbe2440bec8bab73774da → fd883ca695cab2f35014b3cf069fa9454ae6bc89
-- Active Firmware source: firmware/JEXFYZ-V5.4.ino
-- Firmware source blob: 0b1fd030aad646001b6c2f75bc248caa843b30eb
+- Active Firmware source: firmware/JEXFYZ-V5.5.ino
+- Firmware source blob: ca6d88280dff8f14e220b6dc3b50e1967edaea1b
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
 - App main source blob: 48406cda017be1ce939ff682497324bf3680a7f3
@@ -23,6 +23,15 @@
 - Latest verified downloadable App Build: workflow run 37261171475 / GitHub Release jexfyz-latest.
 - Latest verified APK: JEXFYZ-release.apk, 54,327,520 bytes, SHA-256 b8045d0b6fa6d05b421bd6b1c0318d4ee4529734d7b471534700f95676200888.
 - No App Build was executed for the CONTROL precharge change.
+
+## V5.5 PELTIER SAFETY REARM LED FEEDBACK — 2026-10-06
+- [QC FIX / IMPLEMENTED] Normal Peltier ON/OFF no longer emits the green/red Peltier LED command indicator.
+- [QC FIX / IMPLEMENTED] The Peltier LED feedback is reserved for ON attempts while manualPeltierSafetyLatch is active after a Hotside safety-forced Peltier OFF.
+- [IMPLEMENTED] Any blocked re-arm attempt while the safety latch is active emits a non-blocking 1-second red blink.
+- [IMPLEMENTED] A successful re-arm ON attempt after Hotside reaches hotLimit - 2°C emits a non-blocking 1-second green blink, then clears the latch.
+- [PRESERVED] Hotside dwell LED remains 9 seconds red blink + final 1 second green blink and keeps priority over the short Peltier re-arm feedback.
+- [IMPLEMENTED] Firmware promoted V5.4 → V5.5 for this targeted QC correction.
+- [NOT BUILT HERE] V5.5 compile/BIN/flash/physical validation remains pending.
 
 ## V5.4 HOTSIDE DWELL FAN + LED QC FIX — 2026-10-06
 - [QC FIX / IMPLEMENTED] Adaptive HOTSIDE safety keeps Fan ON at 100% throughout the full 10-second Hotside thermal dwell at every Adaptive rail.
