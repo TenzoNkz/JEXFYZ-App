@@ -92,9 +92,17 @@
 7. Download and finalize.
 8. Restart and recover BLE.
 
+## OTA SECURITY SEAL — 2026-10-06
+- CI workflow: .github/workflows/ota-security-seal.yml.
+- Seal manifest: firmware/OTA_SECURITY_SEAL.json.
+- Seal lock: firmware/OTA_SECURITY_SEAL.lock.
+- Protected regions: Firmware OTA runtime, OTA priority, BLE radio handoff, App version policy, App Firebase OTA metadata validation.
+- Anti-downgrade is explicitly OFF.
+- Deliberate protected changes require [OTA-SEAL-RENEW]; stale fingerprints still fail.
+
 ## STATIC RESULT
-- 4784 lines.
-- Firmware source/file alignment: V5.4 / JEXFYZ-V5.4.ino.
+- 4907 lines.
+- Firmware source/file alignment: V5.7 / JEXFYZ-V5.7.ino.
 - One active versioned .ino.
 - executable delay() = 0 (comments excluded).
 - timing while() = 0.
@@ -109,6 +117,7 @@
 - HOTSIDE sequence: 12V hold → 9V → 5V, with 10-second LED timing at each stage.
 - 5V terminal safety exits Adaptive and requires manual Peltier restart.
 - Manual-mode Hotside protection preserves the selected rail.
+- OTA Security Seal: active and locked to the current proven OTA contract.
 
 ## VALIDATION BOUNDARY
 - [VERIFIED] Source/static audit.
@@ -121,5 +130,6 @@
 - [UNVERIFIED] Local OTA V4.6.
 - [UNVERIFIED] Online OTA/BLE recovery V4.6.
 - [VERIFIED] V4.9 source/static audit for the realtime telemetry fix.
-- [UNVERIFIED] V5.4 compile/BIN/flash/OTA and App integration after this revision.
+- [USER-CONFIRMED] V5.7 OTA update to hardware succeeded.
+- [UNVERIFIED] V5.7 compile/BIN/flash/physical functional validation and App integration remain separate QC gates.
 - [NOT RELEASED] Release Gate is incomplete.
