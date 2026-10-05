@@ -5,13 +5,19 @@
 - Header: JE X FYZ
 - Package: com.horizontalzzz.jexfyz
 - Version: 1.0.0+3
-- Main source blob: f762f6d1cdd1351e57e7d93665ff2f5898769b42
+- Main source blob: 8341c125489f5cf419ce7a76fb41b698e70a92dc
 - Settings blob: f11235bab559b291928550e06984532581ddad6a
-- Tests blob: aa86778beb8fcc3ce6a12454f6354f96ec99a160
+- Tests blob: 7f6650466b3f9e9d02ef43f889c1d184beeb2497
 
 ## CURRENT PHASE
 - App is functionally FROZEN during Firmware V4.6 QC unless an integration QC finding requires an App fix.
 - The latest verified APK predates V4.6 and does not prove V4.6 physical integration.
+
+## CONTROL
+- Peltier ON from Fan-OFF state now requires a confirmed FAN:ON, then a 2-second non-blocking wait, then a fresh guard check before PELTIER:ON.
+- Fan already ON does not incur the 2-second precharge wait.
+- If BLE disconnects, Adaptive becomes active, or Fan is no longer ON during the 2-second wait, PELTIER:ON is not sent.
+- Peltier still uses the existing 6-second command-confirmation timeout, while the firmware remains responsible for the 5-second Peltier soft-start.
 
 ## BLE / SESSION
 - flutter_blue_plus is the BLE transport.
