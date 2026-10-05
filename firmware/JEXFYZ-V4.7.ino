@@ -925,7 +925,7 @@ static void applyCoolingOutputs(
   // Thermal, OTA, Adaptive-cooldown, and safety-latch rules can veto a requested Peltier ON state.
   if (peltierOn && !safetyAllowsPeltier()) peltierOn = false;
 
-  if (peltierOn && !previousPeltier) {
+  if (peltierOn && !previous.peltierOn) {
     beginPeltierSoftStart();
   } else if (!peltierOn) {
     stopPeltierOutput();
