@@ -76,7 +76,7 @@
 - Tests blob: 1951964af7542324b2ae27b1bd94f84e1c853060
 
 ## CURRENT PHASE
-- App remains in DEVELOPMENT + QC; the current firmware integration target is V5.1.
+- App remains in DEVELOPMENT + QC; current Firmware integration target is V5.7.
 - The latest verified APK predates V5.2 Firmware and does not prove V5.2 physical integration.
 
 ## CONTROL
@@ -98,11 +98,20 @@
 - Expected Online OTA GATT disconnect is treated as an OTA lifecycle event, not a normal Bluetooth error.
 - After OTA reconnect, the App completes normal P1 sync and surfaces the one-shot OTA result.
 
+## OTA SECURITY SEAL
+- OTA Security Seal is active in .github/workflows/ota-security-seal.yml.
+- Protected manifest: firmware/OTA_SECURITY_SEAL.json.
+- Protected lock: firmware/OTA_SECURITY_SEAL.lock.
+- The seal protects the proven OTA runtime path against accidental source drift; it does not replace physical OTA validation.
+- Anti-downgrade is OFF: any valid version different from the device version may be selected.
+- Intentional protected changes require [OTA-SEAL-RENEW] and refreshed fingerprints.
+
 ## OTA / FIRMWARE SYNC
 - Firmware update flow remains OTAENTER, SSID, PASS, URL, VERSION, CLOUDOTA.
 - OTA_UP_TO_DATE is recognized as a one-shot result.
+- V5.7 OTA update to the physical hardware is user-confirmed successful.
 - App uses firmware-reported Adaptive Ceiling and current SAFETY OK/LOCKED semantics.
-- Battery thresholds remain 5V 20–30°C and 12V 30–40°C; current firmware source is V5.0.
+- Battery thresholds remain 5V 20–30°C and 12V 30–40°C; current firmware source is V5.7.
 - Current Firmware OTA stage tokens are mapped for presentation.
 - Wi-Fi password input is masked.
 - Firebase supplies release metadata; GitHub hosts the fixed firmware BIN URL.
