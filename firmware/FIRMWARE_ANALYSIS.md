@@ -1,14 +1,14 @@
 # JE X FYZ — CURRENT FIRMWARE ANALYSIS
 
 ## SOURCE
-- Active: firmware/JEXFYZ-V5.6.ino
-- Version: V5.6
-- Blob: f291e05b16235b0e944ea135238335024201355a
+- Active: firmware/JEXFYZ-V5.7.ino
+- Version: V5.7
+- Blob: 05044824a6ec15e77634dffc16c14b4bddada8bb
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
 ## CURRENT PHASE
-> **V5.6 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V5.7 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## ARCHITECTURE
 - ESP32-C3 single-radio model: Wi-Fi and BLE ownership are mutually exclusive.
@@ -25,6 +25,14 @@
 - Peltier OFF → ON: 5-second soft-start, then 100%.
 - Adaptive upward voltage changes: 5-second cooperative dwell after every completed increase in both profiles; downward changes remain immediate.
 - Double tap RGB and long-press Adaptive-OFF remain unchanged.
+
+## V5.7 TTP223 TOUCH ACCURACY QC FIX — 2026-10-06
+- TTP223 input processing is layered: raw GPIO → 30 ms qualification → stable edge → gesture engine.
+- Startup touch input is ignored for the first 1,000 ms; if Q is already HIGH after startup grace, that held state is blocked until a qualified release.
+- Tap validity uses raw HIGH duration 60–500 ms, avoiding double-counting the 30 ms input qualification time.
+- Double-tap window is 800 ms from the first valid release. A second press that begins before the deadline gets release grace beyond the deadline.
+- Long press remains 5,000 ms and is evaluated continuously from the qualified press.
+- No blocking delay or timing wait was introduced.
 
 ## V5.6 NTC ADC FILTERING QC FIX — 2026-10-06
 - Single-sample Hotside ADC capture was replaced with a bounded 16-sample calibrated burst.
