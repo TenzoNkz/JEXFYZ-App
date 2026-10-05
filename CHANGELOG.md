@@ -1,3 +1,10 @@
+## APP HOME FAN SPEED DISPLAY — 2026-10-05
+- Fixed Home Fan Speed showing `--` while Adaptive Mode was ON at 12V.
+- Adaptive + 12V now displays `100%`, matching the firmware-enforced Fan speed.
+- Manual + 12V keeps displaying the configured Fan Speed; Adaptive Fan Speed control remains locked.
+- Added regression coverage for Adaptive 12V = 100%, Manual 12V configured speed, and 9V = 100%.
+- No App Build was executed.
+
 ## APP PELTIER POPUP START — 2026-10-05
 - Removed the App-side confirmation wait after FAN:ON when starting Peltier from Fan-OFF through the Safety popup.
 - FAN:ON and PELTIER:ON confirmation flows are now started together; the BLE write queue sends FAN:ON first and PELTIER:ON immediately after the Fan write completes, without waiting for Fan telemetry.
