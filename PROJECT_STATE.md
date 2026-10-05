@@ -15,7 +15,7 @@
 - Package: com.horizontalzzz.jexfyz
 - App main source blob: 93ed2e3e3cf2aadf503825675bb121f9c167689f
 - App settings source blob: f11235bab559b291928550e06984532581ddad6a
-- App test source blob: 6e6dd60b3b7a7615875851b7af027bc0bd2ea326
+- App test source blob: 1951964af7542324b2ae27b1bd94f84e1c853060
 - App CONTROL source change commit: b9f316e50770acb66770515395344de6c6e80ea6
 - Active App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml
 - App Build workflow blob: 51a6c4d35580228ae24f859058ae5b08665d94a0
@@ -43,7 +43,7 @@
 - [IMPLEMENTED] Any failed Peltier ON safety attempt gets a non-blocking 1-second red LED blink; a successful Peltier ON gets a non-blocking 1-second green LED blink.
 - [IMPLEMENTED] App NOTIFY now explains the re-arm threshold dynamically and no longer surfaces the retired RAPID_HOTSIDE_RISE reason.
 - [IMPLEMENTED] Touch cooling success/failure ACKs are presented as clean notifications; ON/OFF ACK reasons are no longer misclassified as errors.
-- [IMPLEMENTED] Firmware version bumped V5.0 → V5.1 for this functional safety revision.
+- [IMPLEMENTED] Firmware version bumped V5.0 → V5.2 for this functional safety/notification revision.
 - [NOT BUILT HERE] App Build was not executed for this change.
 
 ## V5.0 SELECTOR / MOSFET / LED TIMING EXECUTION — 2026-10-05
@@ -77,13 +77,13 @@
 - [PRESERVED] Normal Hotside temperature-limit safety.
 - [PRESERVED] Local OTA Golden/Protected path and single-radio Wi-Fi/BLE ownership.
 - [PRESERVED] BLE UUIDs, P1 protocol, Adaptive, RGB, telemetry, and existing App behavior outside the targeted CONTROL change.
-- [IMPLEMENTED] Peltier Safety popup now queues FAN:ON and PELTIER:ON together; no App-side Fan telemetry wait remains between the two commands.
+- [IMPLEMENTED] Peltier Safety popup queues FAN:ON and PELTIER:ON back-to-back; no App-side Fan telemetry wait remains between the two commands.
 - [QC FIX] Firmware V4.9 publishes Fan/Peltier/Fan-speed realtime deltas from pre-mutation state snapshots.
 - [QC FIX] App consumes unsolicited FAN/PELTIER/FAN_SPEED telemetry immediately and reconciles stale Notify errors only after healthy live safety telemetry.
 - Firmware version incremented from V4.6 to V4.9 because this is a functional realtime-telemetry QC fix.
 
 ## QC / RELEASE STATE
-- [VERIFIED] V5.0 source/static audit passed for the selector/MOSFET/Fan/LED timing revision.
+- [VERIFIED] V5.2 source/static audit passed for the Peltier safety/re-arm/notification revision.
 - [UNVERIFIED] Arduino compilation, BIN generation, V5.2 flash/OTA, and App ↔ Firmware physical integration after this revision.
 - [NOT RELEASED] V5.2 is not yet a released firmware.
 - Functional source is frozen during QC unless a demonstrated QC defect requires a targeted fix.
