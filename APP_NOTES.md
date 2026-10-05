@@ -9,6 +9,10 @@
 - Settings blob: f11235bab559b291928550e06984532581ddad6a
 - Tests blob: aa86778beb8fcc3ce6a12454f6354f96ec99a160
 
+## CURRENT PHASE
+- App is functionally FROZEN during Firmware V4.6 QC unless an integration QC finding requires an App fix.
+- The latest verified APK predates V4.6 and does not prove V4.6 physical integration.
+
 ## BLE / SESSION
 - flutter_blue_plus is the BLE transport.
 - JE X FYZ service/RX/TX UUIDs are frozen.
