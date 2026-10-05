@@ -2908,8 +2908,9 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   // AI-METHOD / PELTIER-COMMAND-CONTRACT
-  // Enforce the UI-side Fan prerequisite, then send the frozen PELTIER command and wait for
-  // authoritative telemetry. Firmware remains the final safety authority.
+  // When the popup approves Peltier startup from Fan-OFF, queue FAN:ON and PELTIER:ON
+  // together before awaiting either confirmation. The BLE write queue preserves ordering,
+  // but there is no UI-side confirmation delay between the two commands.
   Future<void> _togglePeltier(bool enabled) async {
     if (!connected || adaptiveOn) return;
     try {
@@ -2932,12 +2933,38 @@ class _DashboardScreenState extends State<DashboardScreen>
           ),
         );
         if (approved != true) return;
-        final fanOk = await _sendAndConfirm('FAN:ON');
-        if (!fanOk) {
-          _showSnackBar(JexText.phrase('Fan activation was not confirmed by the device.','Pengaktifan kipas tidak dikonfirmasi oleh perangkat.'), color: Colors.orangeAccent);
-          return;
+
+        // Start both confirmation flows immediately. sendCommand() serializes the
+        // actual GATT writes as FAN:ON -> PELTIER:ON without waiting for FAN telemetry first.
+        final fanFuture = _sendAndConfirm('FAN:ON');
+        final peltierFuture = _sendAndConfirm(
+          'PELTIER:ON',
+          timeout: const Duration(seconds: 6),
+        );
+        final results = await Future.wait<bool>([fanFuture, peltierFuture]);
+        final fanOk = results[0];
+        final peltierOk = results[1];
+
+        if (!fanOk && mounted) {
+          _showSnackBar(
+            JexText.phrase(
+              'Fan activation was not confirmed by the device.',
+              'Pengaktifan kipas tidak dikonfirmasi oleh perangkat.',
+            ),
+            color: Colors.orangeAccent,
+          );
         }
 
+        if (!peltierOk && mounted) {
+          _showSnackBar(
+            JexText.phrase(
+              'Peltier change was not confirmed by the device. ${safetyReason == 'NONE' ? '' : safetyReason}',
+              'Perubahan Peltier tidak dikonfirmasi oleh perangkat. ${safetyReason == 'NONE' ? '' : safetyReason}',
+            ),
+            color: Colors.orangeAccent,
+          );
+        }
+        return;
       }
 
       final ok = await _sendAndConfirm(
@@ -2952,7 +2979,6 @@ class _DashboardScreenState extends State<DashboardScreen>
       if (mounted) _showSnackBar(JexText.phrase('Peltier command failed.','Perintah Peltier gagal.'), color: Colors.orangeAccent);
     }
   }
-
   // AI-METHOD / ADAPTIVE-COMMAND-CONTRACT
   // Send the frozen ADAPTIVE command and wait for telemetry. Firmware determines resulting
   // voltage/safety behavior; Flutter only presents the confirmed state.
