@@ -1,3 +1,15 @@
+## 2026-10-06 — V5.4 QC EXECUTION RECORD
+### PERSISTENT
+- [VERIFIED] Functional source authority is now V5.4: `firmware/JEXFYZ-V5.4.ino`, blob 0b1fd030aad646001b6c2f75bc248caa843b30eb.
+- [COMMITTED] Source fix commit: fd883ca695cab2f35014b3cf069fa9454ae6bc89.
+- [COMMITTED] V5.3 retirement commit: 65d971616c793e7dd056c6a7896d552516fe626c.
+- [IMPLEMENTED] Adaptive HOTSIDE Hotside-limit dwell keeps Fan ON at 100% for the full 10 seconds.
+- [IMPLEMENTED] Hotside dwell LED blinks red for 9 seconds and green for the final 1 second.
+- [PRESERVED] 10-second thermal dwell duration and downstream safety sequence.
+- [PRESERVED] 5-second Adaptive upward dwell, 200 ms selector deadtime, 1 s voltage guard, 5-second Peltier soft-start, OTA/BLE/P1 contracts.
+- [UNVERIFIED] Compile, BIN, flash, physical runtime, Local OTA, Online OTA/BLE recovery, and App integration for V5.4.
+- [NOT RELEASED] V5.4.
+
 # JE X FYZ — CHAT TRANSFER SNAPSHOT
 
 ## 1. TRANSFER METADATA
