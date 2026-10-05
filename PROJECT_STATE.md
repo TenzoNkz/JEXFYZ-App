@@ -10,7 +10,7 @@
 - Firmware: V5.7
 - Firmware source change commits: 85bf8acf79fd91f0d3bbbe2440bec8bab73774da → fd883ca695cab2f35014b3cf069fa9454ae6bc89
 - Active Firmware source: firmware/JEXFYZ-V5.7.ino
-- Firmware source blob: 05044824a6ec15e77634dffc16c14b4bddada8bb
+- Firmware source blob: 652e54afdd9c7c347cd82072f573f1729c4b46de
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
 - App main source blob: 48406cda017be1ce939ff682497324bf3680a7f3
@@ -25,6 +25,8 @@
 - No App Build was executed for the CONTROL precharge change.
 
 ## V5.7 TTP223 TOUCH ACCURACY QC FIX — 2026-10-06
+- [QC FIX / FINALIZED] Double-tap resolution is held until the 800 ms decision window; 3+ taps inside the same sequence remain cancel/no-action as in the prior gesture contract.
+- [COMMITTED] Latest V5.7 Touch FSM correction commit: 77591d7406aa8613a3dc9beb33828af5a592d8d5.
 - [QC FIX / IMPLEMENTED] TTP223 GPIO input now passes through a 30 ms stable-state qualification layer before gesture processing.
 - [QC FIX / IMPLEMENTED] Valid tap duration is qualified at 60–500 ms using the raw HIGH duration, preventing qualification overhead from rejecting short but real taps.
 - [QC FIX / IMPLEMENTED] Double-tap decision window is 800 ms and starts after the first valid tap release.
