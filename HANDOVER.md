@@ -25,7 +25,7 @@
 - Firmware: V5.1
 - Active source: firmware/JEXFYZ-V5.1.ino
 - Firmware blob: e5a38482b09ce9f07f93b471914495238d9a81aa
-- Firmware source change commit: 534bdfa94bdbe0c00bb05ffbb750ec8d07390a75
+- Firmware source change commit: d4fd79ebfbd9eff2986f16d814ff36c11550ee55
 - App: 1.0.0+3
 - App package: com.horizontalzzz.jexfyz
 - Current App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml
