@@ -4,7 +4,7 @@
 - Project: JE X FYZ / JE Cooler
 - Repository: TenzoNkz/JEXFYZ-App
 - Branch: main
-- Current HEAD at last workflow-state verification: cd408983970da8a867d40f0131047369f0e53af4
+- Current HEAD at Build App validation: fc4b89ce0c76b4b7826fc25cb8ac68ea843dc366
 - Last functional workflow fix commit: b449fc15659efa781063ac178754d99c5501c8b5
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
@@ -20,7 +20,7 @@
 - App Build engine blob: f123b00c908d6e91363df0bf4b435b4e9e6f252e
 - The temporary `.github/workflows/jexfyz-build.yml` Release-asset workflow is removed.
 - The trigger remains issue-based; the engine now publishes exactly one `JEXFYZ-release.apk` to GitHub Release `jexfyz-latest` and does not use Actions artifacts.
-- Latest verified downloadable App Build: workflow run #2 (37201925842) / GitHub Release jexfyz-latest.
+- Latest verified downloadable App Build: workflow run 37245703677 / GitHub Release jexfyz-latest.
 - Historical new-workflow Build run #1: 37199918015 [BUILT][VERIFIED] through signing; [BLOCKED] legacy Actions-artifact upload by quota.
 - Build #53 passed App validation gates through signing but failed legacy artifact creation due GitHub Actions quota.
 - [IMPLEMENTED][UNVERIFIED] APK delivery is now routed through GitHub Release; a post-change build is required to verify the Release path.
@@ -49,17 +49,17 @@
 
 ## CI / BUILD
 - App Build uses a manual issue trigger plus a reusable build engine.
-- Trigger: `.github/workflows/jexfyz-app-build-trigger.yml` (issue `opened`/`reopened`, title/token gated).
-- Engine: `.github/workflows/jexfyz-app-build-engine.yml` (`workflow_call`).
+- Workflow: `.github/workflows/jexfyz-app-build-trigger.yml` (issue `opened`/`reopened`, owner/title/token gated).
+- Normal push/PR events do not trigger App Build.
 - The engine uses GitHub Release publication instead of `actions/upload-artifact`.
 - Normal push/PR events do not trigger App Build.
-- The GitHub Release `jexfyz-latest` / `JEXFYZ-release.apk` from workflow run #2 remains the latest verified downloadable APK, but no post-restore build has been executed.
+- The GitHub Release `jexfyz-latest` / `JEXFYZ-release.apk` was updated and verified by the current Build App run.
 
 ## VALIDATION BOUNDARY
 - App source CI gates: PASS through production signing verification in Build #53.
-- Downloadable release: workflow run #2 is the latest verified APK delivery via GitHub Release.
-- Release asset: JEXFYZ-release.apk, 54,327,520 bytes, SHA-256 24fcd6f4d1f7843f34e8a31c352b43f23a581b57fc2d29ae71053eb7924092bb.
-- GitHub Release tag: jexfyz-latest; Release ID: 403010611; asset ID: 609813273.
+- Downloadable release: workflow run 37245703677 is the latest verified APK delivery via GitHub Release.
+- Release asset: JEXFYZ-release.apk, 54,327,520 bytes, SHA-256 a9d93bb3f359285bca1f2658f1336b502fd87539b0dec169282a9f2e59df1fc2.
+- GitHub Release tag: jexfyz-latest; Release ID: 403010611; asset ID: 610989112.
 - Actions-artifact storage quota is no longer a delivery dependency for the current workflow.
 - Firmware V4.5 physical compile/BIN/flash/OTA validation: UNVERIFIED.
 - No Build #53 APK is available for delivery.
