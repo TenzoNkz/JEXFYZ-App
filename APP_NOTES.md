@@ -23,21 +23,17 @@
 - Firmware update flow remains OTAENTER, SSID, PASS, URL, VERSION, CLOUDOTA.
 - OTA_UP_TO_DATE is recognized as a one-shot result.
 - App uses firmware-reported Adaptive Ceiling and current SAFETY OK/LOCKED semantics.
-- Battery thresholds match Firmware V4.5: 5V 20–30°C and 12V 30–40°C.
+- Battery thresholds match Firmware V4.6: 5V 20–30°C and 12V 30–40°C.
 - Current Firmware OTA stage tokens are mapped for presentation.
 - Wi-Fi password input is masked.
 - Firebase supplies release metadata; GitHub hosts the fixed firmware BIN URL.
 - Wi-Fi credentials remain in flutter_secure_storage.
+- The V4.6 firmware-only change removes rapid-rise protection; no App command contract change was required.
 
 ## BUILD / CI STATUS
-- Build #51: [VERIFIED] source parser failure; fixed in ea5261230245fc86061cdf85f65ccd0208e607d3.
-- Build #52: [VERIFIED] signing-shell pipefail/SIGPIPE failure; fixed in e33141efd47b8f1ca025e832097e1106d9119b65.
-- Build #53: [VERIFIED] audit/analysis/tests/compile/signing passed; [BLOCKED] artifact creation due Actions quota.
-- Build #2 / run 37201925842 is now the latest verified downloadable APK via GitHub Release.
-- Current release workflow: .github/workflows/jexfyz-build.yml
-- Current release workflow blob: 08a137b4d315cc12e830a7e8dbc1ea40c3d2873d.
-- Legacy app-build.yml and app-build-trigger.yml are deleted.
-- APK delivery now uses GitHub Release tag jexfyz-latest; the workflow does not use Actions-artifact upload.
-- New workflow run #1 remains a historical artifact-quota failure.
-- Workflow run #2 [VERIFIED] built, signed, and published JEXFYZ-release.apk to GitHub Release jexfyz-latest.
-- Release asset SHA-256: 24fcd6f4d1f7843f34e8a31c352b43f23a581b57fc2d29ae71053eb7924092bb.
+- Latest verified downloadable App Build: workflow run 37245703677.
+- Current release workflow: .github/workflows/jexfyz-app-build-trigger.yml.
+- Active workflow blob: 51a6c4d35580228ae24f859058ae5b08665d94a0.
+- Workflow is a direct owner/title/token-gated issue-triggered Release build.
+- Workflow publishes exactly one JEXFYZ-release.apk to GitHub Release jexfyz-latest.
+- No Actions artifact is used by the current delivery path.
