@@ -9,7 +9,7 @@
 - @Thinking Eksekusi & Build App! = implement → audit → sync → commit → explicit App Build.
 
 ## CURRENT PHASE
-- **V5.4 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+- **V5.7 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## QC / SOURCE FREEZE
 - QC is validation-first, not feature-development.
@@ -36,7 +36,15 @@
 - Cooperative millis()-based timing.
 - Local OTA is Golden/Protected.
 - OTA has priority over normal application work.
+- OTA Security Seal is active; protected OTA source/contract drift requires explicit [OTA-SEAL-RENEW].
+- Anti-downgrade is intentionally OFF; any valid firmware version different from the device version may be installed.
 - Hotside NTC safety is authoritative.
+
+## OTA SECURITY SEAL RULES
+- Protected OTA regions are CI-sealed against accidental edits.
+- The seal covers Firmware OTA runtime/priority, BLE radio handoff, App version policy, and App Firebase metadata validation.
+- Updating a sealed OTA region requires [OTA-SEAL-RENEW] and a refreshed seal manifest/lock that still passes CI.
+- The seal is an integrity guard; it does not replace compile, BIN, flash, OTA, or hardware validation.
 
 ## APP RULES
 - Firmware telemetry is authoritative for physical hardware state.
@@ -77,12 +85,17 @@
 - Current source/workflow always wins on conflicts.
 
 ## CURRENT STATUS
-- Phase: V5.4 DEVELOPMENT + QC / PRE-RELEASE.
+- Phase: V5.7 DEVELOPMENT + QC / PRE-RELEASE.
 - Release status: NOT RELEASED.
-- Firmware: V5.4.
+- Firmware: V5.7.
 - App: 1.0.0+3.
-- Firmware V5.4 source/static audit: PASS.
-- Firmware V5.4 compile/BIN/flash/physical validation: UNVERIFIED.
+- Firmware V5.7 source/static audit: PASS.
+- Firmware V5.7 OTA update to hardware: USER-CONFIRMED SUCCESS.
+- Full V5.7 compile/BIN/flash/physical validation: UNVERIFIED.
 - Latest verified downloadable App Build: workflow run 37245703677 via GitHub Release jexfyz-latest.
 - Current App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml.
-- Current workflow blob: 51a6c4d35580228ae24f859058ae5b08665d94a0.
+- Current App Build workflow blob: 51a6c4d35580228ae24f859058ae5b08665d94a0.
+- OTA Security Seal workflow: .github/workflows/ota-security-seal.yml.
+- OTA Security Seal manifest: firmware/OTA_SECURITY_SEAL.json.
+- OTA Security Seal lock: firmware/OTA_SECURITY_SEAL.lock.
+- Latest OTA Security Seal commit: c2845ef674e9f3041115b6c5c3d618b7a5a5790d.
