@@ -1,3 +1,15 @@
+## 2026-10-06 — V5.7 TTP223 TOUCH ACCURACY QC FIX
+- [IMPLEMENTED] Firmware V5.7 is active at firmware/JEXFYZ-V5.7.ino.
+- [IMPLEMENTED] TTP223 input uses 30 ms PRESS/RELEASE qualification before gesture processing.
+- [IMPLEMENTED] Valid tap duration is 60–500 ms; duration is measured from raw HIGH start to raw LOW transition so qualification does not shrink the usable tap interval.
+- [IMPLEMENTED] Double-tap window is 800 ms from first valid release with second-tap grace.
+- [IMPLEMENTED] Startup grace is 1 second, and boot-held touch is ignored until a qualified release occurs.
+- [PRESERVED] 1x Voltage, 2x RGB, 5 s long press, no delay(), and cooperative timing contracts.
+- [COMMITTED] V5.7 source promotion commit: d2ec5d56383f25a105835b10698f62cf19cbf5df.
+- [COMMITTED] V5.6 source retirement commit: 38f8f2738cca18fbac3830d241baa1f5596cc719.
+- [UNVERIFIED] V5.7 compile, BIN generation, flash, physical touch behavior, OTA, and App integration remain pending.
+- [NOT RELEASED] V5.7 is not released.
+
 ## 2026-10-06 — V5.6 NTC ADC FILTERING QC FIX
 - [IMPLEMENTED] Firmware V5.6 is active at firmware/JEXFYZ-V5.6.ino.
 - [IMPLEMENTED] Hotside NTC uses 16 calibrated ADC samples per 1-second sample period, trims 4 low + 4 high values, and averages the remaining 8.
