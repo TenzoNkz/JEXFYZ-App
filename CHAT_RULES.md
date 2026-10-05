@@ -9,7 +9,7 @@
 - @Thinking Eksekusi & Build App! = implement → audit → sync → commit → explicit App Build.
 
 ## CURRENT PHASE
-- **V4.6 — CODE COMPLETE → QC / PRE-RELEASE → NOT RELEASED**
+- **V5.4 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## QC / SOURCE FREEZE
 - QC is validation-first, not feature-development.
@@ -77,12 +77,12 @@
 - Current source/workflow always wins on conflicts.
 
 ## CURRENT STATUS
-- Phase: V4.6 CODE COMPLETE → QC / PRE-RELEASE.
+- Phase: V5.4 DEVELOPMENT + QC / PRE-RELEASE.
 - Release status: NOT RELEASED.
-- Firmware: V4.6.
+- Firmware: V5.4.
 - App: 1.0.0+3.
-- Firmware V4.6 source/static audit: PASS.
-- Firmware V4.6 compile/BIN/flash/physical validation: UNVERIFIED.
+- Firmware V5.4 source/static audit: PASS.
+- Firmware V5.4 compile/BIN/flash/physical validation: UNVERIFIED.
 - Latest verified downloadable App Build: workflow run 37245703677 via GitHub Release jexfyz-latest.
 - Current App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml.
 - Current workflow blob: 51a6c4d35580228ae24f859058ae5b08665d94a0.
