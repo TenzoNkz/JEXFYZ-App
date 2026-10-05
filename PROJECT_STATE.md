@@ -1,16 +1,16 @@
 # JE X FYZ — CURRENT PROJECT STATE
 
 ## CURRENT PHASE
-> **V5.2 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V5.3 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## CURRENT TRUTH
 - Project: JE X FYZ / JE Cooler
 - Repository: TenzoNkz/JEXFYZ-App
 - Branch: main
-- Firmware: V5.2
-- Firmware source change commit: 3729812c29a7c727e1b40ba18bc3b030b187904c
-- Active Firmware source: firmware/JEXFYZ-V5.2.ino
-- Firmware source blob: 3ecb7fef69a5db41475fe2b76d2ae1bc1fef616b
+- Firmware: V5.3
+- Firmware source change commits: 85bf8acf79fd91f0d3bbbe2440bec8bab73774da → 90f459ac4720a3ec509543bcc4e83bde96e3d910
+- Active Firmware source: firmware/JEXFYZ-V5.3.ino
+- Firmware source blob: d6b5262c0ed429999ef6a951841bca6b24296949
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
 - App main source blob: 93ed2e3e3cf2aadf503825675bb121f9c167689f
@@ -23,6 +23,14 @@
 - Latest verified downloadable App Build: workflow run 37261171475 / GitHub Release jexfyz-latest.
 - Latest verified APK: JEXFYZ-release.apk, 54,327,520 bytes, SHA-256 b8045d0b6fa6d05b421bd6b1c0318d4ee4529734d7b471534700f95676200888.
 - No App Build was executed for the CONTROL precharge change.
+
+## V5.3 ADAPTIVE VOLTAGE RISE DWELL — 2026-10-05
+- [IMPLEMENTED] Both Adaptive profiles (HOTSIDE and HOTSide_BATTERY) now wait 5 seconds after each completed voltage increase before allowing the next upward step.
+- [IMPLEMENTED] Adaptive activation from the mandatory 5V safe state also starts the same 5-second upward dwell.
+- [IMPLEMENTED] Downward Adaptive voltage changes remain immediate; the 5-second dwell applies only to voltage increases.
+- [IMPLEMENTED] Hotside fallback keeps the same cooperative 5-second upward timing.
+- [IMPLEMENTED] Firmware promoted V5.2 → V5.3.
+- [NOT BUILT HERE] App Build was not executed.
 
 ## APP HOME FAN SPEED DISPLAY QC — 2026-10-05
 - [IMPLEMENTED] Fixed Home Fan Speed display for Adaptive + 12V: it now shows 100% instead of --.
