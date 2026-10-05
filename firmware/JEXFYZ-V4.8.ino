@@ -1,3 +1,12 @@
+// ArduinoDroid auto-generates function prototypes before sketch code.
+// CoolingOutputState must therefore be declared before the first include so
+// generated prototypes can resolve the type.
+struct CoolingOutputState {
+  bool fanOn;
+  bool peltierOn;
+  unsigned char fanPwm;
+};
+
 #include <Arduino.h>
 #include <WiFi.h>
 #include <WebServer.h>
@@ -900,12 +909,6 @@ static bool safetyAllowsPeltier() {
 }
 
 // Reconcile requested cooling state with NTC/Fan/Peltier safety constraints and then drive hardware.
-struct CoolingOutputState {
-  bool fanOn;
-  bool peltierOn;
-  uint8_t fanPwm;
-};
-
 static CoolingOutputState coolingOutputSnapshot() {
   return CoolingOutputState{fanOn, peltierOn, fanPwm};
 }
