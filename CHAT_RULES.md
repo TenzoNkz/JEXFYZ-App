@@ -44,8 +44,8 @@
 - Normal push/PR must not generate a release APK.
 - Firmware-only changes do not require App Build.
 - Never claim build/compile/flash/runtime validation that did not occur.
-- Build trigger is manual-by-issue only; the trigger workflow calls a reusable App Build engine.
-- The App Build engine publishes exactly one APK to GitHub Release `jexfyz-latest`; Dart symbols are generated locally for obfuscation diagnostics and are not uploaded.
+- The active direct issue-triggered workflow publishes the APK to GitHub Release jexfyz-latest and does not use Actions artifacts.
+- No reusable App Build engine is currently active.
 
 ## MEMORY RULES
 - Persist meaningful project state in repository documentation.
@@ -56,14 +56,10 @@
 - Current source/workflow always wins on conflicts.
 
 ## CURRENT STATUS
-- Firmware: V4.5.
+- Firmware: V4.6.
 - App: 1.0.0+3.
-- Latest verified downloadable App Build: workflow run 37245703677.
-- Build #53: [VERIFIED] CI gates through production signing; [BLOCKED] legacy Actions-artifact creation by quota.
-- Local OTA: [CONFIRMED] user-confirmed working on V4.4 before V4.5 promotion; Local OTA remains protected.
-- Online OTA: [CONFIRMED] V3.2-style path retained; V4.5 physical validation still pending.
-- Current App Build trigger: [COMMITTED] .github/workflows/jexfyz-app-build-trigger.yml.
-- Current reusable App Build engine: [COMMITTED] .github/workflows/jexfyz-app-build-engine.yml.
-- The previous single-workflow Release-asset path is retained as historical evidence only.
-- Current Build App run is in progress; Release delivery will be verified after completion.
-- Current Build App workflow is a direct owner/title/token-gated issue-triggered Release build.
+- Firmware V4.6 source/static audit: PASS.
+- Firmware V4.6 compile/BIN/flash/physical validation: UNVERIFIED.
+- Latest verified downloadable App Build: workflow run 37245703677 via GitHub Release jexfyz-latest.
+- Current App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml.
+- Current workflow blob: 51a6c4d35580228ae24f859058ae5b08665d94a0.
