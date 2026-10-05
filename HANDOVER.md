@@ -1,10 +1,10 @@
 # JE X FYZ — CURRENT HANDOVER
 
 ## CURRENT TRUTH
-- Firmware: V4.9
-- Active source: firmware/JEXFYZ-V4.9.ino
-- Firmware blob: 888ae9740446081b2a2bcb1769e0471f065dce41
-- Firmware source change commit: 3f9a215f2d5532e291c9d26c77897e3ae8ffe15d
+- Firmware: V5.0
+- Active source: firmware/JEXFYZ-V5.0.ino
+- Firmware blob: 34a3b895bba282fcb9036a703eb9035bb0ad19cc
+- Firmware source change commit: 534bdfa94bdbe0c00bb05ffbb750ec8d07390a75
 - App: 1.0.0+3
 - App package: com.horizontalzzz.jexfyz
 - Current App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml
@@ -13,7 +13,7 @@
 - Current App source has no fixed 2-second Fan precharge; Firmware 5-second Peltier soft-start is authoritative.
 
 ## CURRENT PHASE
-> **V4.9 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V5.0 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## IMPLEMENTED / FROZEN
 - Hardware single tap: 5V → 9V → 12V → 9V → 5V → ...
@@ -31,9 +31,9 @@
 Functional source is frozen during QC. Only a demonstrated QC failure with a clear root cause justifies a targeted source change.
 
 ## QC NEXT
-1. Compile V4.9.
+1. Compile V5.0.
 2. Generate BIN.
-3. Flash / OTA V4.9.
+3. Flash / OTA V5.0.
 4. Hardware-only QC.
 5. Safety QC.
 6. Local OTA.
@@ -45,7 +45,17 @@ Functional source is frozen during QC. Only a demonstrated QC failure with a cle
 - [VERIFIED] Source/static audit.
 - [USER-CONFIRMED] V4.6 firmware compilation, Online OTA, and hardware test succeeded before the V4.8 telemetry fix.
 - [UNVERIFIED] V4.8 compile/BIN/flash/OTA and App ↔ V4.8 integration after the fix.
-- [NOT RELEASED] V4.8.
+- [NOT RELEASED] V5.0.
+
+## V5.0 SELECTOR / MOSFET / LED TIMING — 2026-10-05
+- Voltage selector GPIO3 = 12V Optocoupler/Decoy and GPIO4 = 9V Optocoupler/Decoy.
+- Selector break-before-make: both selector outputs OFF for 200 ms, then the target selector output ON; never simultaneous.
+- GPIO5 Peltier MOSFET and GPIO6 Fan MOSFET are not forcibly turned OFF during voltage changes.
+- Fan is forced to 100% when a voltage transition begins; Fan Speed is adjustable only at 12V.
+- Returning to 12V does not restore a previous Fan Speed preference; Fan remains at 100%.
+- HOTSIDE LED red blink runs for 10 seconds during every HOTSIDE timing stage, including 5V terminal protection.
+- Firmware Peltier OFF → ON 5-second soft-start remains unchanged.
+- App Build is separate and is not run by this Firmware execution.
 
 ## V4.9 HOTSIDE EXECUTION — 2026-10-05
 - 12V Hotside limit: Fan ON, Peltier OFF, 10s dwell, then 9V.
