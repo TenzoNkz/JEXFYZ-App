@@ -1,3 +1,10 @@
+## VERIFIED RELEASE BUILD — 2026-10-05
+- Workflow run 37245703677 completed successfully from source commit fc4b89ce0c76b4b7826fc25cb8ac68ea843dc366.
+- All build, analysis, test, obfuscated release compilation, and production signing gates passed.
+- GitHub Release `jexfyz-latest` now contains exactly one asset: `JEXFYZ-release.apk`.
+- Release asset ID: 610989112; size: 54,327,520 bytes; SHA-256: a9d93bb3f359285bca1f2658f1336b502fd87539b0dec169282a9f2e59df1fc2.
+- No Actions artifact was created.
+
 ## RELEASE DELIVERY RESTORE — 2026-10-05
 - Converted the restored reusable App Build engine from Actions-artifact delivery back to direct GitHub Release delivery.
 - Engine now requires `contents: write`, publishes exactly one `JEXFYZ-release.apk` under `jexfyz-latest`, and replaces the existing asset with `--clobber`.
