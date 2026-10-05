@@ -1,5 +1,11 @@
 # JE X FYZ — BUILD NOTES
 
+## CURRENT PHASE
+- Firmware V4.6 is in **QC / PRE-RELEASE**.
+- V4.6 is **NOT RELEASED**.
+- App Build remains a separate explicit operation.
+
+
 ## APP BUILD POLICY
 - App Build is explicit and separate from Firmware build/flash.
 - Manual issue trigger only.
@@ -28,7 +34,11 @@
 - [VERIFIED] Asset ID: 610989112; size: 54,327,520 bytes; SHA-256: a9d93bb3f359285bca1f2658f1336b502fd87539b0dec169282a9f2e59df1fc2.
 - [VERIFIED] Actions artifact list for the run is empty.
 
-## BUILD BOUNDARY
+## QC / BUILD BOUNDARY
+- Firmware QC does not imply App Build.
+- App Build does not prove Firmware compile, flash, OTA, or physical behavior.
+- Do not run App Build unless the explicit Build App command is given.
+
 - Firmware-only changes do not automatically trigger or require App Build.
 - This V4.6 firmware execution did not start an App Build.
 - Do not infer Firmware compile/BIN/physical validation from an App Build result.
