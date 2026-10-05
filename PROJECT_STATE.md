@@ -5,7 +5,6 @@
 - Repository: TenzoNkz/JEXFYZ-App
 - Branch: main
 - Firmware: V4.6
-- Current HEAD: 6a00b5b66fbf1291de9aac5536ac5205ef1c0cb3
 - Firmware source change commit: 3f9a215f2d5532e291c9d26c77897e3ae8ffe15d
 - Active Firmware source: firmware/JEXFYZ-V4.6.ino
 - Firmware source blob: cd2ebd7395343f64b824e74c1370b04cea6835ab
