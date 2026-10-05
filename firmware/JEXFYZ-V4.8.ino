@@ -1633,6 +1633,10 @@ static void completeVoltageTransition() {
       sendDelta("ADAPTIVE", "OFF");
       sendDelta("ADAPTIVE_CEILING", "12V");
     } else {
+      // The reached rail becomes the current Adaptive safety ceiling.
+      adaptiveCeiling = currentVoltage;
+      sendDelta("ADAPTIVE_CEILING", voltageToString(adaptiveCeiling));
+
       // Every successful HOTSTEP starts the next 10 s thermal dwell.
       peltierHotOffUntilMs = millis() + HOT_PELTIER_OFF_MS;
       // 9 V safety state intentionally runs Fan OFF; 12 V is only the
@@ -3586,6 +3590,11 @@ static bool setPeltierState(bool desired, String& reason) {
   }
 
   if (manualPeltierSafetyLatch) {
+    if (!isfinite(hotsideC) ||
+        hotsideC > static_cast<float>(hotLimit) - MANUAL_PELTIER_REARM_HYSTERESIS_C) {
+      reason = "PELTIER_SAFETY_LATCH";
+      return false;
+    }
     manualPeltierSafetyLatch = false;
   }
 
