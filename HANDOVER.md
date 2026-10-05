@@ -22,10 +22,10 @@
 # JE X FYZ — CURRENT HANDOVER
 
 ## CURRENT TRUTH
-- Firmware: V5.2
-- Active source: firmware/JEXFYZ-V5.2.ino
-- Firmware blob: 3ecb7fef69a5db41475fe2b76d2ae1bc1fef616b
-- Firmware source change commit: 3729812c29a7c727e1b40ba18bc3b030b187904c
+- Firmware: V5.3
+- Active source: firmware/JEXFYZ-V5.3.ino
+- Firmware blob: d6b5262c0ed429999ef6a951841bca6b24296949
+- Firmware source change commits: 85bf8acf79fd91f0d3bbbe2440bec8bab73774da → 90f459ac4720a3ec509543bcc4e83bde96e3d910
 - App: 1.0.0+3
 - App package: com.horizontalzzz.jexfyz
 - Current App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml
@@ -34,7 +34,13 @@
 - Current App source has no fixed 2-second Fan precharge; Firmware 5-second Peltier soft-start is authoritative.
 
 ## CURRENT PHASE
-> **V5.2 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V5.3 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+
+## V5.3 ADAPTIVE VOLTAGE RISE DWELL — 2026-10-05
+- Both Adaptive profiles use the same 5-second cooperative dwell after every completed upward voltage step.
+- The first upward step after Adaptive reaches the required safe 5V state also waits 5 seconds.
+- Downward Adaptive changes remain immediate.
+- HOTSIDE_BATTERY evaluation now honors the same rise timer.
 
 ## IMPLEMENTED / FROZEN
 - Hardware single tap: 5V → 9V → 12V → 9V → 5V → ...
@@ -52,9 +58,9 @@
 Functional source is frozen during QC. Only a demonstrated QC failure with a clear root cause justifies a targeted source change.
 
 ## QC NEXT
-1. Compile V5.2.
+1. Compile V5.3.
 2. Generate BIN.
-3. Flash / OTA V5.2.
+3. Flash / OTA V5.3.
 4. Hardware-only QC.
 5. Safety QC.
 6. Local OTA.
@@ -65,8 +71,8 @@ Functional source is frozen during QC. Only a demonstrated QC failure with a cle
 ## VALIDATION
 - [VERIFIED] Source/static audit.
 - [USER-CONFIRMED] V4.6 firmware compilation, Online OTA, and hardware test succeeded before the later V5.0 revision.
-- [UNVERIFIED] V5.2 compile/BIN/flash/OTA and App ↔ V5.2 integration after this revision.
-- [NOT RELEASED] V5.2.
+- [UNVERIFIED] V5.3 compile/BIN/flash/OTA and App ↔ V5.3 integration after this revision.
+- [NOT RELEASED] V5.3.
 
 ## APP POPUP START SEQUENCE — 2026-10-05
 - When the Peltier Safety popup is approved from Fan-OFF, the App starts FAN:ON and PELTIER:ON confirmation flows together.
