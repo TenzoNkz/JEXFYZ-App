@@ -24,7 +24,7 @@
 - Normal Hotside temperature-limit protection preserved.
 - Local OTA Golden Path preserved.
 - BLE/P1/UUIDs, Adaptive, RGB, telemetry, and App CI workflow preserved; V5.0 adds selector-only voltage deadtime, MOSFET-preserved voltage changes, 100% Fan transition behavior, and 10-second HOTSIDE LED timing.
-- App CONTROL: FAN:ON is confirmed before PELTIER:ON; Firmware owns the 5-second Peltier soft-start.
+- App CONTROL: Peltier Safety popup queues FAN:ON and PELTIER:ON back-to-back; Firmware owns the 5-second Peltier soft-start.
 - App realtime fix: unsolicited FAN/PELTIER/FAN_SPEED telemetry updates Control; stale Notify errors reconcile against healthy live state.
 
 ## QC RULE
@@ -46,6 +46,13 @@ Functional source is frozen during QC. Only a demonstrated QC failure with a cle
 - [USER-CONFIRMED] V4.6 firmware compilation, Online OTA, and hardware test succeeded before the later V5.0 revision.
 - [UNVERIFIED] V5.0 compile/BIN/flash/OTA and App ↔ V5.0 integration after this revision.
 - [NOT RELEASED] V5.0.
+
+## APP POPUP START SEQUENCE — 2026-10-05
+- When the Peltier Safety popup is approved from Fan-OFF, the App starts FAN:ON and PELTIER:ON confirmation flows together.
+- sendCommand() serializes the actual writes as FAN:ON → PELTIER:ON without waiting for Fan telemetry confirmation first.
+- No App-side precharge/confirmation delay remains between the two commands.
+- Firmware remains the final safety authority and owns the 5-second Peltier soft-start.
+- App Build is separate and is not run by this source execution.
 
 ## V5.0 SELECTOR / MOSFET / LED TIMING — 2026-10-05
 - Voltage selector GPIO3 = 12V Optocoupler/Decoy and GPIO4 = 9V Optocoupler/Decoy.
