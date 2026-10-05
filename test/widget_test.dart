@@ -90,6 +90,17 @@ void main() {
     expect(JexText.of('off', AppLanguage.indonesia), 'MATI');
   });
 
+  test('Peltier re-arm notify uses the 2C safety hysteresis threshold', () {
+    expect(
+      peltierRearmNotice(45, AppLanguage.english),
+      'Peltier is locked. Hotside must cool to <= 43°C before restart.',
+    );
+    expect(
+      peltierRearmNotice(45, AppLanguage.indonesia),
+      'Peltier terkunci. Suhu panas harus turun hingga <= 43°C sebelum dinyalakan lagi.',
+    );
+  });
+
   test('Home Fan Speed shows 100% for Adaptive at 12V', () {
     expect(
       homeFanSpeedDisplay(
