@@ -80,9 +80,9 @@
 # JE X FYZ — CURRENT HANDOVER
 
 ## CURRENT TRUTH
-- Firmware: V5.3
-- Active source: firmware/JEXFYZ-V5.3.ino
-- Firmware blob: d6b5262c0ed429999ef6a951841bca6b24296949
+- Firmware: V5.7
+- Active source: firmware/JEXFYZ-V5.7.ino
+- Firmware blob: 652e54afdd9c7c347cd82072f573f1729c4b46de
 - Firmware source change commits: 85bf8acf79fd91f0d3bbbe2440bec8bab73774da → 90f459ac4720a3ec509543bcc4e83bde96e3d910
 - App: 1.0.0+3
 - App package: com.horizontalzzz.jexfyz
@@ -92,7 +92,14 @@
 - Current App source has no fixed 2-second Fan precharge; Firmware 5-second Peltier soft-start is authoritative.
 
 ## CURRENT PHASE
-> **V5.3 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V5.7 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+
+## V5.7 OTA SECURITY SEAL — 2026-10-06
+- [IMPLEMENTED] OTA Security Seal is active for the proven V5.7 OTA path.
+- [IMPLEMENTED] OTA runtime, OTA priority, BLE radio handoff, App version policy, and Firebase OTA metadata validation are CI-fingerprinted.
+- [IMPLEMENTED] Seal artifacts require [OTA-SEAL-RENEW] for intentional changes.
+- [PRESERVED] Anti-downgrade remains OFF; any valid version different from the device version is allowed.
+- [USER-CONFIRMED] V5.7 OTA update to the hardware succeeded; full functional OTA regression remains a separate QC gate.
 
 ## V5.3 ADAPTIVE VOLTAGE RISE DWELL — 2026-10-05
 - Both Adaptive profiles use the same 5-second cooperative dwell after every completed upward voltage step.
@@ -101,6 +108,7 @@
 - HOTSIDE_BATTERY evaluation now honors the same rise timer.
 
 ## IMPLEMENTED / FROZEN
+- OTA Security Seal: ACTIVE / SEALED.
 - Hardware single tap: 5V → 9V → 12V → 9V → 5V → ...
 - Hardware cooling ON: Fan 100%.
 - Peltier OFF → ON: 5-second soft-start, then 100%.
@@ -116,21 +124,22 @@
 Functional source is frozen during QC. Only a demonstrated QC failure with a clear root cause justifies a targeted source change.
 
 ## QC NEXT
-1. Compile V5.3.
+1. Compile V5.7.
 2. Generate BIN.
-3. Flash / OTA V5.3.
+3. Regression-check the already successful V5.7 OTA image/path.
 4. Hardware-only QC.
 5. Safety QC.
 6. Local OTA.
 7. Online OTA/BLE recovery.
-8. Build App separately and run App ↔ Firmware integration QC, including the V5.0 HOTSIDE safety sequence.
+8. Build App separately and run App ↔ Firmware integration QC against V5.7.
 9. Release Gate.
 
 ## VALIDATION
 - [VERIFIED] Source/static audit.
 - [USER-CONFIRMED] V4.6 firmware compilation, Online OTA, and hardware test succeeded before the later V5.0 revision.
-- [UNVERIFIED] V5.3 compile/BIN/flash/OTA and App ↔ V5.3 integration after this revision.
-- [NOT RELEASED] V5.3.
+- [USER-CONFIRMED] V5.7 OTA update to hardware succeeded; device is running V5.7.
+- [UNVERIFIED] Full V5.7 compile/BIN/physical functional QC and App ↔ Firmware integration remain pending.
+- [NOT RELEASED] V5.7.
 
 ## APP POPUP START SEQUENCE — 2026-10-05
 - When the Peltier Safety popup is approved from Fan-OFF, the App starts FAN:ON and PELTIER:ON confirmation flows together.
