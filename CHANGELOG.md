@@ -1,3 +1,10 @@
+## V4.9 ADAPTIVE HOTSIDE LED — 2026-10-05
+- Promoted Firmware V4.8 → V4.9 for the approved Adaptive Hotside LED stage indication.
+- The Hotside LED red-blink indicator now fires once for each safety stage: initial hot stage, after a successful 12V → 9V step, and after a successful 9V → 5V terminal step.
+- LED indication is event-driven and does not repeat every main-loop iteration while the Hotside limit remains active.
+- All V4.8 safety timing and cooling behavior remains unchanged.
+- App source/build was not changed by this firmware-only LED revision.
+
 ## V4.8 HOTSIDE SAFETY SEQUENCE — 2026-10-05
 - Promoted Firmware V4.7 → V4.8 for the approved HOTSIDE-only thermal sequence.
 - At 12V Hotside limit: Fan remains ON, Peltier turns OFF, and the controller holds 12V for 10 seconds before stepping to 9V.
