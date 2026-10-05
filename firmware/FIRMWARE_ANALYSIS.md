@@ -1,14 +1,14 @@
 # JE X FYZ — CURRENT FIRMWARE ANALYSIS
 
 ## SOURCE
-- Active: firmware/JEXFYZ-V5.2.ino
-- Version: V5.2
-- Blob: 3ecb7fef69a5db41475fe2b76d2ae1bc1fef616b
+- Active: firmware/JEXFYZ-V5.3.ino
+- Version: V5.3
+- Blob: d6b5262c0ed429999ef6a951841bca6b24296949
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
 ## CURRENT PHASE
-> **V5.2 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V5.3 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## ARCHITECTURE
 - ESP32-C3 single-radio model: Wi-Fi and BLE ownership are mutually exclusive.
@@ -23,7 +23,13 @@
 - Single tap: 5V → 9V → 12V → 9V → 5V → ...
 - Hardware cooling ON: Fan 100%.
 - Peltier OFF → ON: 5-second soft-start, then 100%.
+- Adaptive upward voltage changes: 5-second cooperative dwell after every completed increase in both profiles; downward changes remain immediate.
 - Double tap RGB and long-press Adaptive-OFF remain unchanged.
+
+## V5.3 ADAPTIVE VOLTAGE RISE DWELL
+- HOTSIDE and HOTSIDE_BATTERY both use the same 5-second post-transition dwell for every upward voltage step.
+- Adaptive startup from safe 5V also waits 5 seconds before the first upward step.
+- The timer remains cooperative and does not use blocking delay() or while() timing.
 
 ## V5.2 TOUCH ACK CLEANUP
 - Successful Touch cooling OFF uses an explicit OFF acknowledgement.
@@ -56,8 +62,8 @@
 8. Restart and recover BLE.
 
 ## STATIC RESULT
-- 4712 lines.
-- Firmware source/file alignment: V4.9 / JEXFYZ-V4.9.ino.
+- 4778 lines.
+- Firmware source/file alignment: V5.3 / JEXFYZ-V5.3.ino.
 - One active versioned .ino.
 - executable delay() = 0 (comments excluded).
 - timing while() = 0.
@@ -84,5 +90,5 @@
 - [UNVERIFIED] Local OTA V4.6.
 - [UNVERIFIED] Online OTA/BLE recovery V4.6.
 - [VERIFIED] V4.9 source/static audit for the realtime telemetry fix.
-- [UNVERIFIED] V5.2 compile/BIN/flash/OTA and App integration after this revision.
+- [UNVERIFIED] V5.3 compile/BIN/flash/OTA and App integration after this revision.
 - [NOT RELEASED] Release Gate is incomplete.
