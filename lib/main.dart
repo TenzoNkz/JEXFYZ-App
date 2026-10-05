@@ -2426,10 +2426,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       return false;
     }
     final reason = await ackFuture;
-    final accepted = reason == 'OK' ||
-        reason == 'ACCEPTED' ||
-        reason == 'READY' ||
-        reason == 'STARTING';
+    final accepted = _isAckSuccessReason(reason);
     if (!accepted) return false;
 
     final expected = _expectedTelemetryForCommand(command);
