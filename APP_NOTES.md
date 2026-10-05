@@ -1,3 +1,10 @@
+## APP HOME FAN SPEED DISPLAY QC — 2026-10-05
+- Fixed Home Fan Speed presentation for Adaptive + 12V: Fan Speed now displays 100% instead of --.
+- Manual + 12V continues to display the actual configured Fan Speed.
+- Adaptive Fan Speed remains non-editable; this change is presentation only.
+- Added regression tests for Adaptive 12V = 100%, Manual 12V = configured speed, and 9V = 100%.
+- No App Build was executed for this source fix.
+
 ## 2026-10-05 — BUILD APP #9 SUCCESS / V4.8 HOTSIDE TERMINAL RE-ARM
 
 - Build #9 run `37268139253` completed successfully from source commit `9d44514cf251416ba75d71b039750f4fd33ae5e2`.
@@ -37,7 +44,7 @@
 
 # JE X FYZ — CURRENT APP NOTES
 
-- App CONTROL source change commit: e4cffd620eea2eaa67dca980237b6608f904a160
+- App CONTROL source change commit: 5a3d63eb931d82b0b0d44668d7efde1b3c450b83
 
 ## CURRENT IDENTITY
 - App name: JE Cooler
@@ -46,7 +53,7 @@
 - Version: 1.0.0+3
 - Main source blob: 484b14bd585b95cdcb066adff59b5446649760b9
 - Settings blob: f11235bab559b291928550e06984532581ddad6a
-- Tests blob: d9ddfca369980fc0cd5ecdf80de1a10a5b1a2e18
+- Tests blob: 1a1b4fe225b1faaf9e3602173895d6e05c1bc4ec
 
 ## CURRENT PHASE
 - App remains in DEVELOPMENT + QC; the current firmware integration target is V5.0.
