@@ -1,9 +1,10 @@
 ## 2026-10-06 — V5.7 QC EXECUTION RECORD
 ### PERSISTENT
-- [VERIFIED] Functional source authority is now V5.7: firmware/JEXFYZ-V5.7.ino, blob 05044824a6ec15e77634dffc16c14b4bddada8bb.
+- [VERIFIED] Functional source authority is now V5.7: firmware/JEXFYZ-V5.7.ino, blob 652e54afdd9c7c347cd82072f573f1729c4b46de.
 - [COMMITTED] V5.7 source promotion commit: d2ec5d56383f25a105835b10698f62cf19cbf5df.
+- [COMMITTED] V5.7 Touch FSM correction commit: 77591d7406aa8613a3dc9beb33828af5a592d8d5.
 - [COMMITTED] V5.6 source retirement commit: 38f8f2738cca18fbac3830d241baa1f5596cc719.
-- [IMPLEMENTED] TTP223 uses 30 ms qualification, 60–500 ms tap duration, 800 ms double-tap window from first valid release, second-tap grace, and 1 s startup grace.
+- [IMPLEMENTED] TTP223 uses 30 ms qualification, 60–500 ms tap duration, 800 ms double-tap window from first valid release, second-tap grace, 1 s startup grace, and preserved 3+ tap cancellation.
 - [PRESERVED] 1x Voltage, 2x RGB, 5 s long press, and cooperative timing contracts.
 - [UNVERIFIED] Compile, BIN, flash, physical runtime, Local OTA, Online OTA/BLE recovery, and App integration for V5.7.
 - [NOT RELEASED] V5.7.
