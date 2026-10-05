@@ -58,19 +58,19 @@
 
 # JE X FYZ — CURRENT APP NOTES
 
-- App CONTROL source change commit: 7c4d406204244d0282a857a298b00eed0c55dcc6
+- App CONTROL source change commit: b9f316e50770acb66770515395344de6c6e80ea6
 
 ## CURRENT IDENTITY
 - App name: JE Cooler
 - Header: JE X FYZ
 - Package: com.horizontalzzz.jexfyz
 - Version: 1.0.0+3
-- Main source blob: 7c4d406204244d0282a857a298b00eed0c55dcc6
+- Main source blob: 48406cda017be1ce939ff682497324bf3680a7f3
 - Settings blob: f11235bab559b291928550e06984532581ddad6a
-- Tests blob: bc228885b0c6778d3470429e2ad8ba26a08614a5
+- Tests blob: 1951964af7542324b2ae27b1bd94f84e1c853060
 
 ## CURRENT PHASE
-- App remains in DEVELOPMENT + QC; the current firmware integration target is V5.0.
+- App remains in DEVELOPMENT + QC; the current firmware integration target is V5.1.
 - The latest verified APK predates V5.0 Firmware and does not prove V5.0 physical integration.
 
 ## CONTROL
