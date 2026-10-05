@@ -88,6 +88,15 @@ const Duration voltageGuardDuration = Duration(seconds: 1);
 const int fanSpeedMin = 50;
 const int fanSpeedMax = 100;
 
+String peltierRearmNotice(int hotLimit, AppLanguage language) {
+  final target = hotLimit - 2;
+  return JexText.phrase(
+    'Peltier is locked. Hotside must cool to <= ' + target.toString() + '°C before restart.',
+    'Peltier terkunci. Suhu panas harus turun hingga <= ' + target.toString() + '°C sebelum dinyalakan lagi.',
+    language,
+  );
+}
+
 /// Returns true when a live, healthy firmware update can clear a stale Home NOTIFY error.
 /// Computes the Home Fan Speed presentation from authoritative runtime state.
 String homeFanSpeedDisplay({
@@ -2581,7 +2590,25 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
   }
 
-  void _handleAckLine(String line) {
+    bool _isAckSuccessReason(String reason) {
+    return reason == 'OK' || reason == 'ACCEPTED' || reason == 'READY' || reason == 'STARTING' || reason == 'ON' || reason == 'OFF';
+  }
+
+  String? _friendlyAckSuccess(String item, String reason) {
+    if (item == 'TOUCH_COOLING') {
+      return reason == 'ON'
+          ? JexText.phrase('Cooling started.', 'Pendinginan berhasil dinyalakan.')
+          : reason == 'OFF'
+              ? JexText.phrase('Cooling stopped.', 'Pendinginan berhasil dimatikan.')
+              : null;
+    }
+    if (item == 'TOUCH_ADAPTIVE' && reason == 'OFF') {
+      return JexText.phrase('Adaptive Mode turned OFF.', 'Mode Adaptif berhasil dimatikan.');
+    }
+    return null;
+  }
+
+void _handleAckLine(String line) {
     final parts = line.substring(4).split(';');
     final item = parts.isNotEmpty ? parts[0].split('=').first.trim().toUpperCase() : '';
     final rawReason = parts.length > 1 && parts[1].startsWith('REASON=')
@@ -2590,23 +2617,26 @@ class _DashboardScreenState extends State<DashboardScreen>
     final reason = rawReason.trim().toUpperCase();
 
     final waiters = _ackWaiters[item];
-    if (waiters != null && waiters.isNotEmpty) {
+    final hadWaiter = waiters != null && waiters.isNotEmpty;
+    if (hadWaiter) {
       final waiter = waiters.removeAt(0);
       if (!waiter.isCompleted) waiter.complete(reason);
       if (waiters.isEmpty) _ackWaiters.remove(item);
     }
 
-    if (item == 'SYNC_READY' &&
-        (reason == 'OK' || reason == 'READY' || reason == 'STARTING')) {
+    if (item == 'SYNC_READY' && _isAckSuccessReason(reason)) {
       _syncReadyAck = true;
       return;
     }
 
-    if (reason != 'OK' &&
-        reason != 'ACCEPTED' &&
-        reason != 'READY' &&
-        reason != 'STARTING') {
+    if (!_isAckSuccessReason(reason)) {
       _showSnackBar(_friendlyReason(reason), color: Colors.orangeAccent);
+      return;
+    }
+
+    if (!hadWaiter) {
+      final successMessage = _friendlyAckSuccess(item, reason);
+      if (successMessage != null) _showSnackBar(successMessage);
     }
   }
 
@@ -2972,7 +3002,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           );
         }
 
-        if (!peltierOk && mounted) {
+        if (!peltierOk && mounted && safetyReason == 'NONE') {
           _showSnackBar(
             JexText.phrase(
               'Peltier change was not confirmed by the device. ${safetyReason == 'NONE' ? '' : safetyReason}',
@@ -3561,11 +3591,9 @@ class _DashboardScreenState extends State<DashboardScreen>
       case 'NTC_ERROR':
         return JexText.phrase('Temperature sensor error.', 'Kesalahan sensor suhu.');
       case 'HOTSIDE_PROTECTION':
-        return JexText.phrase('Hotside protection active.', 'Perlindungan suhu panas aktif.');
-      case 'RAPID_HOTSIDE_RISE':
-        return JexText.phrase('Rapid Hotside temperature rise detected.', 'Kenaikan suhu panas terlalu cepat terdeteksi.');
+        return JexText.phrase('Hotside limit is active. Peltier remains locked until the re-arm threshold is reached.', 'Batas suhu panas aktif. Peltier tetap terkunci sampai batas aktif kembali tercapai.');
       case 'PELTIER_SAFETY_LATCH':
-        return JexText.phrase('Peltier safety lock is active.', 'Pengunci keselamatan Peltier aktif.');
+        return peltierRearmNotice(hotLimit, appLanguageNotifier.value);
       case 'VOLTAGE_STEP_FAILED':
         return JexText.phrase('Adaptive voltage step failed.', 'Perubahan langkah tegangan adaptif gagal.');
       case 'VOLTAGE_FORCE_FAILED':
@@ -3573,7 +3601,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       case 'ADAPTIVE_RISE_WAIT':
         return JexText.phrase('Adaptive is waiting before raising voltage.', 'Mode Adaptif menunggu sebelum menaikkan tegangan.');
       case 'FAN_REQUIRED':
-        return JexText.phrase('Fan required before Peltier.', 'Kipas harus hidup sebelum Peltier.');
+        return JexText.phrase('Fan must be ON before Peltier can start.', 'Kipas harus HIDUP sebelum Peltier dapat dinyalakan.');
       case 'PELTIER_ON':
         return JexText.phrase('Fan locked while Peltier is ON.', 'Kipas terkunci saat Peltier HIDUP.');
       case 'ADAPTIVE_ACTIVE':
@@ -3590,6 +3618,12 @@ class _DashboardScreenState extends State<DashboardScreen>
         return JexText.phrase('5V battery limit must stay below 12V.', 'Batas baterai 5V harus di bawah 12V.');
       case 'MUST_BE_ABOVE_BATT5':
         return JexText.phrase('12V battery limit must stay above 5V.', 'Batas baterai 12V harus di atas 5V.');
+      case 'VOLTAGE_TRANSITION':
+        return JexText.phrase('Voltage change is in progress. Please wait.', 'Perpindahan tegangan sedang berlangsung. Silakan tunggu.');
+      case 'RANGE_50_100_STEP_10':
+        return JexText.phrase('Fan Speed must be 50% to 100% in 10% steps.', 'Kecepatan Kipas harus 50% sampai 100% dengan langkah 10%.');
+      case 'UNKNOWN_GROUP':
+        return JexText.phrase('Reset request is not supported.', 'Permintaan reset tidak didukung.');
       default:
         return reason.replaceAll('_', ' ').toLowerCase();
     }
@@ -3926,13 +3960,8 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (syncing && !dashboardReady) return JexText.of('synchronizingDevice', appLanguageNotifier.value);
 
     switch (safetyReason) {
-      case 'WAITING_FOR_NTC':
-      case 'WAITING_FOR_SENSOR_VALIDATION':
-        return JexText.of('validatingTemperature', appLanguageNotifier.value);
-      case 'NTC_ERROR':
-        return JexText.of('sensorErrorCoolingLocked', appLanguageNotifier.value);
-      case 'HOTSIDE_PROTECTION':
-        return JexText.of('hotsideProtectionActive', appLanguageNotifier.value);
+      case 'PELTIER_SAFETY_LATCH':
+        return peltierRearmNotice(hotLimit, appLanguageNotifier.value);
       case 'FAN_REQUIRED':
         return JexText.phrase('Fan required before Peltier.','Kipas harus hidup sebelum Peltier.');
       case 'PELTIER_ON':
