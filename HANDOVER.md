@@ -5,7 +5,7 @@
 - Retired RAPID_HOTSIDE_RISE notification text is removed.
 - App Build remains separate.
 
-## V5.1 PELTIER SAFETY REARM FEEDBACK — 2026-10-05
+## V5.2 PELTIER SAFETY REARM FEEDBACK — 2026-10-05
 - Peltier remains locked until Hotside <= hotLimit - 2°C after a safety latch, including the 5V Adaptive terminal state.
 - Hardware Touch cooling ON now enforces the same re-arm threshold; it cannot bypass the latch.
 - Failed Peltier ON attempts blink red for 1 second; successful Peltier ON attempts blink green for 1 second.
@@ -22,10 +22,10 @@
 # JE X FYZ — CURRENT HANDOVER
 
 ## CURRENT TRUTH
-- Firmware: V5.1
-- Active source: firmware/JEXFYZ-V5.1.ino
-- Firmware blob: e5a38482b09ce9f07f93b471914495238d9a81aa
-- Firmware source change commit: d4fd79ebfbd9eff2986f16d814ff36c11550ee55
+- Firmware: V5.2
+- Active source: firmware/JEXFYZ-V5.2.ino
+- Firmware blob: 3ecb7fef69a5db41475fe2b76d2ae1bc1fef616b
+- Firmware source change commit: 3729812c29a7c727e1b40ba18bc3b030b187904c
 - App: 1.0.0+3
 - App package: com.horizontalzzz.jexfyz
 - Current App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml
@@ -34,7 +34,7 @@
 - Current App source has no fixed 2-second Fan precharge; Firmware 5-second Peltier soft-start is authoritative.
 
 ## CURRENT PHASE
-> **V5.1 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V5.2 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## IMPLEMENTED / FROZEN
 - Hardware single tap: 5V → 9V → 12V → 9V → 5V → ...
@@ -52,9 +52,9 @@
 Functional source is frozen during QC. Only a demonstrated QC failure with a clear root cause justifies a targeted source change.
 
 ## QC NEXT
-1. Compile V5.1.
+1. Compile V5.2.
 2. Generate BIN.
-3. Flash / OTA V5.1.
+3. Flash / OTA V5.2.
 4. Hardware-only QC.
 5. Safety QC.
 6. Local OTA.
@@ -65,8 +65,8 @@ Functional source is frozen during QC. Only a demonstrated QC failure with a cle
 ## VALIDATION
 - [VERIFIED] Source/static audit.
 - [USER-CONFIRMED] V4.6 firmware compilation, Online OTA, and hardware test succeeded before the later V5.0 revision.
-- [UNVERIFIED] V5.1 compile/BIN/flash/OTA and App ↔ V5.1 integration after this revision.
-- [NOT RELEASED] V5.1.
+- [UNVERIFIED] V5.2 compile/BIN/flash/OTA and App ↔ V5.2 integration after this revision.
+- [NOT RELEASED] V5.2.
 
 ## APP POPUP START SEQUENCE — 2026-10-05
 - When the Peltier Safety popup is approved from Fan-OFF, the App starts FAN:ON and PELTIER:ON confirmation flows together.
