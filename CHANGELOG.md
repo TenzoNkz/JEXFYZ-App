@@ -1,3 +1,9 @@
+## APP PELTIER POPUP START — 2026-10-05
+- Removed the App-side confirmation wait after FAN:ON when starting Peltier from Fan-OFF through the Safety popup.
+- FAN:ON and PELTIER:ON confirmation flows are now started together; the BLE write queue sends FAN:ON first and PELTIER:ON immediately after the Fan write completes, without waiting for Fan telemetry.
+- Firmware safety authority and the existing 5-second Peltier soft-start remain unchanged.
+- No App Build was executed.
+
 ## V5.0 SELECTOR / MOSFET / HOTSIDE LED TIMING — 2026-10-05
 - Promoted Firmware V4.9 → V5.0 for the approved voltage-selector and cooling-output behavior revision.
 - Voltage selector contract: GPIO3 = 12V Optocoupler/Decoy selector, GPIO4 = 9V Optocoupler/Decoy selector; both selector outputs are OFF for the mandatory 200 ms break-before-make deadtime and are never active together.
