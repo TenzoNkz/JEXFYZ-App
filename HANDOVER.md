@@ -1,9 +1,10 @@
 ## CHAT-LIMIT RECONCILIATION — 2026-10-05
-- [VERIFIED] Repository main HEAD: 5afa578b2362087c59e7f1ef8723bb108e950864.
+- [VERIFIED] Repository main HEAD before transfer reconciliation: 3a54d83956f357750684a32279952cbd7fb484f8.
 - [VERIFIED] Active Firmware V5.3: `firmware/JEXFYZ-V5.3.ino`, blob d6b5262c0ed429999ef6a951841bca6b24296949.
 - [VERIFIED] Both Adaptive profiles share the 5-second upward-voltage dwell; safe-5V Adaptive startup also starts the dwell; downward changes remain immediate.
 - [VERIFIED] App main source blob: 48406cda017be1ce939ff682497324bf3680a7f3.
 - [OPEN QUESTION] Historical App Build records conflict between run 37261171475 (PROJECT_STATE) and run 37268139253 (APP_NOTES); no independent Actions-page recheck was possible in this session.
+- [VERIFIED] CHAT_TRANSFER.md save commit: 3d21b33b5c96640f7393a4956ad2ccb868639644; saved blob fc00fdf83cd461f4f76e1edca6b53453111f1137.
 
 ## APP SAFETY NOTIFY / REARM — 2026-10-05
 - App NOTIFY reports the exact Peltier re-arm threshold using `hotLimit - 2°C`.
