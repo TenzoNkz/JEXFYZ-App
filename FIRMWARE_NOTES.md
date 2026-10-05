@@ -3,7 +3,7 @@
 ## ACTIVE
 - Version: V5.5
 - Source: firmware/JEXFYZ-V5.5.ino
-- Blob: ca6d88280dff8f14e220b6dc3b50e1967edaea1b
+- Blob: 5f72b3557f91c33827ee61f8c2eaf1cab2cfd786
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
@@ -19,6 +19,7 @@
 - Peltier OFF → ON: 5-second cooperative soft-start, unchanged.
 - Normal Peltier ON/OFF emits no Peltier LED indicator.
 - After Hotside safety forces Peltier OFF, failed re-arm ON attempts blink red for 1 s; a successful re-arm ON attempt at hotLimit - 2°C blinks green for 1 s.
+- Adaptive activation cannot bypass an active Peltier safety latch.
 - Fan remains 25 kHz, 8-bit, 50–100% for App-controlled operation.
 - Voltage selector deadtime 200 ms; voltage guard 1 s.
 - Adaptive HOTSIDE safety timing uses the 10-second step-down sequence; both Adaptive profiles use a 5-second dwell after every upward voltage step; Peltier restart safety uses the 2°C re-arm hysteresis.
