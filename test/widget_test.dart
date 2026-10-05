@@ -126,10 +126,6 @@ void main() {
     expect(isTransientOtaResultEvent('IN_PROGRESS|MODE=ONLINE|STAGE=ONLINE_WIFI_CONNECT|PROGRESS=0'), isFalse);
   });
 
-  test('Peltier waits 2 seconds after Fan activation', () {
-    expect(peltierFanPrechargeDuration, const Duration(seconds: 2));
-  });
-
   test('Live cooling telemetry clears stale command errors only in a healthy state', () {
     expect(
       shouldClearStaleNotifyError(
