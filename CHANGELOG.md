@@ -1,3 +1,11 @@
+## V5.6 NTC ADC FILTERING QC FIX — 2026-10-06
+- Promoted Firmware V5.5 → V5.6 for a targeted NTC QC correction.
+- Replaced single-sample Hotside ADC capture with 16-sample calibrated burst sampling.
+- Uses a 50% trimmed mean: discard 4 lowest and 4 highest samples, then average the 8 middle samples.
+- Preserved the 3.3 V divider-reference calculation, 10K NTC / 10K resistor / Beta 3950 model, and 1-second sampling cadence.
+- Did not add EMA/Kalman temperature filtering, speculative VREF changes, voltage clamping, or offset calibration.
+- App source/build was not changed or run for this Firmware-only QC fix.
+
 ## V5.5 PELTIER SAFETY REARM LED FEEDBACK — 2026-10-06
 - Promoted Firmware V5.4 → V5.5 for a targeted QC correction.
 - Removed the normal Peltier ON/OFF green/red LED feedback.
