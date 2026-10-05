@@ -81,5 +81,5 @@
 - [UNVERIFIED] Local OTA V4.6.
 - [UNVERIFIED] Online OTA/BLE recovery V4.6.
 - [VERIFIED] V4.9 source/static audit for the realtime telemetry fix.
-- [UNVERIFIED] V5.0 compile/BIN/flash/OTA and App integration after this revision.
+- [UNVERIFIED] V5.1 compile/BIN/flash/OTA and App integration after this revision.
 - [NOT RELEASED] Release Gate is incomplete.
