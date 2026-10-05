@@ -25,7 +25,7 @@
 - No App Build was executed for the CONTROL precharge change.
 
 ## V5.3 ADAPTIVE VOLTAGE RISE DWELL — 2026-10-05
-- [IMPLEMENTED] Both Adaptive profiles (HOTSIDE and HOTSide_BATTERY) now wait 5 seconds after each completed voltage increase before allowing the next upward step.
+- [IMPLEMENTED] Both Adaptive profiles (HOTSIDE and HOTSIDE_BATTERY) now wait 5 seconds after each completed voltage increase before allowing the next upward step.
 - [IMPLEMENTED] Adaptive activation from the mandatory 5V safe state also starts the same 5-second upward dwell.
 - [IMPLEMENTED] Downward Adaptive voltage changes remain immediate; the 5-second dwell applies only to voltage increases.
 - [IMPLEMENTED] Hotside fallback keeps the same cooperative 5-second upward timing.
