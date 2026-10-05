@@ -1,3 +1,14 @@
+## V4.8 HOTSIDE SAFETY SEQUENCE — 2026-10-05
+- Promoted Firmware V4.7 → V4.8 for the approved HOTSIDE-only thermal sequence.
+- At 12V Hotside limit: Fan remains ON, Peltier turns OFF, and the controller holds 12V for 10 seconds before stepping to 9V.
+- At 9V Hotside limit: Fan turns OFF, Peltier remains OFF, and the controller holds 9V for 10 seconds before stepping to 5V.
+- At 5V Hotside limit: Peltier remains OFF as the terminal protection state; Adaptive exits and manual Peltier restart is required after thermal re-arm.
+- Manual-mode Hotside protection preserves the currently selected voltage and forces Fan ON / Peltier OFF; it does not force an unrelated voltage change.
+- Manual Peltier safety re-arm uses 2°C hysteresis below the configured Hotside limit.
+- Rapid Hotside-rise/slope protection remains absent.
+- Peltier OFF → ON retains the existing 5-second firmware soft-start.
+- Removed the redundant App-side fixed 2-second Fan precharge; the Firmware owns Peltier startup timing.
+- No App Build is performed as part of this Firmware execution.
 ## V4.7 REALTIME TELEMETRY QC FIX — 2026-10-05
 - Promoted Firmware V4.6 → V4.7 after hardware/App QC exposed stale realtime Fan/Peltier state in the App.
 - Firmware cooling telemetry now uses pre-mutation state snapshots across Touch, Adaptive, safety, voltage completion, and command-setter paths.
