@@ -1,48 +1,62 @@
 # JE X FYZ — CURRENT FIRMWARE NOTES
 
 ## ACTIVE
-- Version: V4.5
-- Source: firmware/JEXFYZ-V4.5.ino
-- Blob: daef871d910f3f1bc4f2d1bdc44e0d19f6e292dc
+- Version: V4.6
+- Source: firmware/JEXFYZ-V4.6.ino
+- Blob: cd2ebd7395343f64b824e74c1370b04cea6835ab
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
+
+## CONTROL CONTRACT
+- Hardware single tap: 5V → 9V → 12V → 9V → 5V → ...
+- Hardware cooling long press ON: Fan 100%.
+- Peltier OFF → ON: 5-second cooperative soft-start, unchanged.
+- Fan remains 25 kHz, 8-bit, 50–100% for App-controlled operation.
+- Voltage selector deadtime 200 ms; voltage guard 1 s.
+- Adaptive behavior remains unchanged.
+- RGB/touch double-tap behavior remains unchanged.
+
+## SAFETY CONTRACT
+- Hotside NTC remains the universal thermal safety input and is sampled every 1 s.
+- Hotside limit remains 40–50°C, default 45°C.
+- NTC fault remains Fan 100%, Peltier OFF, Adaptive OFF, safe 5V.
+- Rapid Hotside-rise slope protection is removed completely.
+- No RAPID_HOTSIDE_RISE safety event is emitted.
+- Normal Hotside temperature-limit protection remains active.
 
 ## OTA CONTRACT
 Local OTA:
 - Golden/Protected.
-- V4.4 OTA was user-confirmed successful before the V4.5 source promotion.
-- Do not modify Local OTA for unrelated Online OTA work.
+- Boot AP hard limit remains 60 seconds.
+- Wi-Fi and BLE radio ownership remain mutually exclusive.
 
 Online OTA:
 - V3.2-style bounded Wi-Fi retry path.
 - No yellow progress layer.
-- Wi-Fi success BLUE.
-- GitHub connection GREEN.
-- Download complete BLUE.
-- Flash success GREEN then restart.
-- Failure RED then recovery.
-- Any valid different version is eligible; equal version is Up to date.
+- Existing OTA result LED/state-machine behavior remains unchanged.
 - Download processing remains cooperative.
 
-## V4.5 CHANGE
-- Fixes GATT disconnect ordering by capturing the active connection ID before clearing the logical BLE-connected flag, then calling bleServer->disconnect(activeConnId).
-- Emits OTA_UP_TO_DATE immediately as a one-shot LAST_OTA_RESULT event.
-- Gates rapid Hotside-rise protection on Peltier being ON to avoid false thermal latching while Peltier is already OFF.
-- Removes dead adaptive-resume state, unused legacy version comparison, unused timing constants/include, and generated [DOC-CONTRACT] comment noise.
-- Keeps BLE/Wi-Fi radio ownership mutually exclusive.
+## V4.6 CHANGE
+- Promoted V4.5 → V4.6 for the approved hardware behavior changes.
+- Implemented hardware touch voltage bounce sequence.
+- Hardware cooling ON forces Fan to 100%.
+- Preserved the existing Peltier 5-second OFF→ON soft-start.
+- Removed the rapid Hotside-rise slope/event protection only.
+- Preserved normal Hotside temperature-limit safety and all unrelated runtime/OTA/BLE/App contracts.
 
 ## STATIC AUDIT
-- 4648 lines.
-- Firmware version/file alignment: V4.5 / JEXFYZ-V4.5.ino.
+- 4628 lines.
+- Firmware version/file alignment: V4.6 / JEXFYZ-V4.6.ino.
 - Only one active versioned .ino exists under firmware/.
-- executable delay() = 0.
+- executable delay() = 0 (comments excluded).
 - timing while() = 0.
-- yellow 0xFFFF00 = 0.
-- stale Online OTA progress refs = 0.
-- explicit BLE GATT disconnect = 1.
-- active GATT state is captured before bleClientConnected is cleared.
+- RAPID_HOTSIDE_RISE = 0.
+- rapid-rise state/history identifiers = 0.
+- GPIO Peltier = 5; Fan = 6.
+- BOOT_AP_HARD_LIMIT_MS = 60000.
+- PELTIER_SOFT_START_MS = 5000.
 
 ## VALIDATION BOUNDARY
-- V4.4 OTA: user-confirmed PASS for all OTA paths.
-- V4.5 source/static audit: PASS.
-- V4.5 compile/BIN/flash/physical validation: pending.
+- V4.4 OTA: user-confirmed PASS for all OTA paths before V4.5 promotion.
+- V4.6 source/static audit: PASS.
+- V4.6 compile/BIN/flash/physical validation: pending.
