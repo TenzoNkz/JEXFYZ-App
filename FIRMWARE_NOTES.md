@@ -73,7 +73,7 @@ Online OTA:
 - HOT_PELTIER_OFF_MS = 10000.
 
 ## QC GATES
-- Compile V4.9.
+- Compile V5.3.
 - Generate BIN.
 - Flash/OTA ESP32-C3.
 - Hardware-only control QC.
