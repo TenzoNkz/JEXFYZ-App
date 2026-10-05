@@ -65,7 +65,7 @@ Functional source is frozen during QC. Only a demonstrated QC failure with a cle
 ## VALIDATION
 - [VERIFIED] Source/static audit.
 - [USER-CONFIRMED] V4.6 firmware compilation, Online OTA, and hardware test succeeded before the later V5.0 revision.
-- [UNVERIFIED] V5.0 compile/BIN/flash/OTA and App ↔ V5.0 integration after this revision.
+- [UNVERIFIED] V5.1 compile/BIN/flash/OTA and App ↔ V5.1 integration after this revision.
 - [NOT RELEASED] V5.1.
 
 ## APP POPUP START SEQUENCE — 2026-10-05
