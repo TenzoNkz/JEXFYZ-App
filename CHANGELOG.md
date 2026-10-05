@@ -1,3 +1,9 @@
+## QC / PRE-RELEASE MODE — 2026-10-05
+- V4.6 code is complete and the project is now in QC / PRE-RELEASE.
+- Functional source is frozen during QC unless a demonstrated defect requires a targeted fix.
+- The next release gate is Firmware V4.6 compile → BIN → flash → Hardware QC.
+- V4.6 is not released.
+
 ## V4.6 — 2026-10-05
 - Promoted the active Firmware source from V4.5 to V4.6 for the approved hardware control changes.
 - Changed hardware single-tap voltage selection to the requested bounce sequence: 5V → 9V → 12V → 9V → 5V → ...
