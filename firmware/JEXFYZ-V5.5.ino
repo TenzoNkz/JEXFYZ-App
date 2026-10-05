@@ -3622,6 +3622,7 @@ static bool setPeltierState(bool desired, String& reason) {
   }
 
   if (!ntcValid) {
+    if (safetyRearmAttempt) startPeltierSafetyAttemptIndicator(false);
     reason = "NTC_ERROR";
     return false;
   }
@@ -3696,7 +3697,6 @@ static void activateAdaptiveAfterSafeFiveVolt() {
   }
 
   adaptiveStartPending = false;
-  manualPeltierSafetyLatch = false;
   adaptiveOn = true;
   adaptiveCeiling = Voltage::V12;
   adaptiveHotStepPending = false;
@@ -3736,6 +3736,11 @@ static void activateAdaptiveAfterSafeFiveVolt() {
 
 static void setAdaptiveState(bool desired, String& reason) {
   if (desired) {
+    if (manualPeltierSafetyLatch) {
+      reason = "PELTIER_SAFETY_LATCH";
+      return;
+    }
+
     if (adaptiveOn) {
       reason = "OK";
       return;
