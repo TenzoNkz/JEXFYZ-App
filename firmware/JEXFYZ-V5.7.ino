@@ -4506,12 +4506,17 @@ static void processTouchInput() {
   static uint32_t sequenceStartedAt = 0;
   static uint8_t tapCount = 0;
   static bool secondTapInProgress = false;
+  static bool multiTapCancelled = false;
 
-  // If a second tap starts after the decision window, resolve the pending
-  // first tap before treating this press as a new gesture.
-  if (edgeDown && tapCount == 1 && !inputPressed &&
+  // If a pending first/second tap sequence expires before a new press,
+  // resolve it before treating the new press as a fresh gesture.
+  if (edgeDown && tapCount > 0 && !inputPressed &&
       now - sequenceStartedAt >= DOUBLE_TAP_WINDOW_MS) {
-    executeTouchSingle();
+    if (tapCount == 1) {
+      executeTouchSingle();
+    } else if (tapCount == 2) {
+      executeTouchDouble();
+    }
     tapCount = 0;
     sequenceStartedAt = 0;
     secondTapInProgress = false;
@@ -4522,9 +4527,22 @@ static void processTouchInput() {
     longPressHandled = false;
     pressStartedAt = now;
 
-    secondTapInProgress =
-        (tapCount == 1) &&
-        (now - sequenceStartedAt < DOUBLE_TAP_WINDOW_MS);
+    if (tapCount == 1 &&
+        now - sequenceStartedAt < DOUBLE_TAP_WINDOW_MS) {
+      secondTapInProgress = true;
+      multiTapCancelled = false;
+    } else if (tapCount == 2 &&
+               now - sequenceStartedAt < DOUBLE_TAP_WINDOW_MS) {
+      // Preserve the existing safety/UX rule: 3+ taps in one double-tap
+      // sequence cancel the sequence without executing Voltage or RGB.
+      tapCount = 0;
+      sequenceStartedAt = 0;
+      secondTapInProgress = false;
+      multiTapCancelled = true;
+    } else {
+      secondTapInProgress = false;
+      multiTapCancelled = false;
+    }
   }
 
   // Long press runs continuously while the qualified input stays HIGH.
@@ -4535,6 +4553,7 @@ static void processTouchInput() {
     tapCount = 0;
     sequenceStartedAt = 0;
     secondTapInProgress = false;
+    multiTapCancelled = false;
     executeTouchLong();
   }
 
@@ -4550,36 +4569,50 @@ static void processTouchInput() {
       tapCount = 0;
       sequenceStartedAt = 0;
       secondTapInProgress = false;
+      multiTapCancelled = false;
     } else if (rawPressDuration >= MIN_TAP_PRESS_MS) {
-      if (tapCount == 0) {
+      if (multiTapCancelled) {
+        // Consume the cancelling third tap without creating a new tap.
+        tapCount = 0;
+        sequenceStartedAt = 0;
+        secondTapInProgress = false;
+        multiTapCancelled = false;
+      } else if (tapCount == 0) {
         // A valid first tap starts the double-tap decision window at release.
         tapCount = 1;
         sequenceStartedAt = now;
         secondTapInProgress = false;
       } else if (tapCount == 1 && secondTapInProgress) {
-        // The second tap may finish slightly after the deadline as long as
-        // its press started before the deadline.
-        executeTouchDouble();
-        tapCount = 0;
-        sequenceStartedAt = 0;
+        // Count the second tap now, but resolve the double only when the
+        // decision window expires. This preserves 3+ tap cancellation.
+        tapCount = 2;
         secondTapInProgress = false;
       }
-    } else {
-      // Too-short noise/touch is not a tap. Preserve a valid first tap while
-      // a second, invalid attempt is still inside its decision window.
-      if (tapCount == 1 && secondTapInProgress) {
-        secondTapInProgress = false;
-      }
+    } else if (multiTapCancelled) {
+      multiTapCancelled = false;
+      tapCount = 0;
+      sequenceStartedAt = 0;
+      secondTapInProgress = false;
+    } else if (tapCount == 1 && secondTapInProgress) {
+      // Too-short second attempt is ignored; preserve the valid first tap.
+      secondTapInProgress = false;
     }
   }
 
-  // Resolve an isolated first tap only after the double-tap window has expired.
-  if (!inputPressed && tapCount == 1 &&
+  // Resolve the completed tap sequence after the decision window.
+  // A second tap that started before the deadline may release after it;
+  // in that case tapCount == 2 and the double is resolved immediately here.
+  if (!inputPressed && tapCount > 0 &&
       now - sequenceStartedAt >= DOUBLE_TAP_WINDOW_MS) {
-    executeTouchSingle();
+    if (tapCount == 1) {
+      executeTouchSingle();
+    } else if (tapCount == 2) {
+      executeTouchDouble();
+    }
     tapCount = 0;
     sequenceStartedAt = 0;
     secondTapInProgress = false;
+    multiTapCancelled = false;
   }
 }
 
