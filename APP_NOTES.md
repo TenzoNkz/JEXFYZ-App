@@ -5,6 +5,13 @@
 - [IMPLEMENTED] Peltier failure notices avoid duplicating a firmware-supplied safety reason.
 - [NOT BUILT HERE] App Build was not executed.
 
+## APP SAFETY NOTIFY / REARM — 2026-10-05
+- Peltier restart lock notification states that Hotside must cool to `hotLimit - 2°C` before restart.
+- Touch-generated ON/OFF ACK outcomes are classified correctly and surfaced as clean NOTIFY messages.
+- Peltier failure notices prefer the firmware safety reason and avoid a duplicate generic warning.
+- Retired RAPID_HOTSIDE_RISE presentation was removed.
+- App Build was not executed.
+
 ## APP HOME FAN SPEED DISPLAY QC — 2026-10-05
 - Fixed Home Fan Speed presentation for Adaptive + 12V: Fan Speed now displays 100% instead of --.
 - Manual + 12V continues to display the actual configured Fan Speed.
