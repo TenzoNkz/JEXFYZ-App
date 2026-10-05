@@ -1,3 +1,12 @@
+## VERIFIED RELEASE BUILD — 2026-10-05
+- [BUILT][VERIFIED] Workflow run: 37245703677.
+- [VERIFIED] Source commit: fc4b89ce0c76b4b7826fc25cb8ac68ea843dc366.
+- [VERIFIED] Security/architecture audit, dependencies, Dart analysis, Flutter tests, obfuscated APK compilation, production signing, and filename preparation passed.
+- [VERIFIED] GitHub Release `jexfyz-latest` updated successfully.
+- [VERIFIED] Exactly one Release asset exists: `JEXFYZ-release.apk`.
+- [VERIFIED] Asset ID: 610989112; size: 54,327,520 bytes; SHA-256: a9d93bb3f359285bca1f2658f1336b502fd87539b0dec169282a9f2e59df1fc2.
+- [VERIFIED] Actions artifact list for the run is empty.
+
 ## WORKFLOW RESTORE — 2026-10-05 (HISTORICAL)
 - Restored the Build #50-era two-workflow architecture under new filenames.
 - Trigger workflow: `.github/workflows/jexfyz-app-build-trigger.yml`.
@@ -70,7 +79,7 @@
 - [VERIFIED] Run artifact list is empty after failure.
 
 ## CI DELIVERY FIX — 2026-10-05
-- [COMMITTED] Removed Actions-artifact publication from `.github/workflows/jexfyz-build.yml`.
+- [HISTORICAL] The former `.github/workflows/jexfyz-build.yml` workflow used the same Release-asset delivery mechanism and is no longer active.
 - [COMMITTED] Added direct GitHub Release publication using tag `jexfyz-latest`.
 - [COMMITTED] Existing release is kept synchronized to the latest build commit with `gh release edit --target` and marked Latest.
 - [COMMITTED] Exactly one APK is delivered as `JEXFYZ-release.apk`; an existing release asset is replaced with `gh release upload --clobber`.
