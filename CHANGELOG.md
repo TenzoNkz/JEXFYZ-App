@@ -4,6 +4,7 @@
 - Re-scoped the Peltier LED to safety re-arm attempts only after Hotside Safety forces Peltier OFF.
 - Failed re-arm ON attempts blink red for 1 second; successful re-arm ON attempts at hotLimit - 2°C blink green for 1 second.
 - The existing manualPeltierSafetyLatch remains authoritative; it is cleared only after the successful re-arm ON attempt.
+- Adaptive start cannot bypass an active Peltier safety latch.
 - Hotside dwell LED priority is preserved: 9 seconds red blink + final 1 second green blink.
 - App source/build was not changed or run for this Firmware-only QC fix.
 
