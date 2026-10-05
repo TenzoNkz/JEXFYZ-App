@@ -1,9 +1,9 @@
 # JE X FYZ — CURRENT FIRMWARE NOTES
 
 ## ACTIVE
-- Version: V5.3
-- Source: firmware/JEXFYZ-V5.3.ino
-- Blob: d6b5262c0ed429999ef6a951841bca6b24296949
+- Version: V5.4
+- Source: firmware/JEXFYZ-V5.4.ino
+- Blob: 0b1fd030aad646001b6c2f75bc248caa843b30eb
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
@@ -42,6 +42,14 @@ Online OTA:
 - Existing OTA result LED/state-machine behavior remains unchanged.
 - Download processing remains cooperative.
 
+## V5.4 CHANGE — HOTSIDE DWELL FAN + LED — 2026-10-06
+- Adaptive HOTSIDE safety keeps Fan ON at 100% throughout each full 10-second thermal dwell.
+- Every completed HOTSTEP keeps Fan ON at 100% while Hotside safety remains active.
+- Hotside dwell LED: 9 seconds red blink, then 1 second green blink.
+- The 10-second thermal dwell itself is unchanged.
+- Promoted Firmware V5.3 → V5.4.
+- No blocking timing was introduced.
+
 ## V5.3 CHANGE — ADAPTIVE VOLTAGE RISE DWELL
 - Both HOTSIDE and HOTSIDE_BATTERY Adaptive profiles now wait 5 seconds after a completed upward voltage transition before the next increase.
 - Adaptive activation from safe 5V starts the same 5-second upward dwell.
@@ -59,7 +67,7 @@ Online OTA:
 - Preserved the pre-mutation cooling snapshots so Fan/Peltier/Fan-speed transitions remain realtime.
 
 ## STATIC AUDIT
-- 4778 lines.
+- 4784 lines.
 - Firmware version/file alignment: V5.3 / JEXFYZ-V5.3.ino.
 - Only one active versioned .ino exists under firmware/.
 - executable delay() = 0 (comments excluded).
@@ -73,11 +81,11 @@ Online OTA:
 - HOT_PELTIER_OFF_MS = 10000.
 
 ## QC GATES
-- Compile V5.3.
+- Compile V5.4.
 - Generate BIN.
 - Flash/OTA ESP32-C3.
 - Hardware-only control QC.
-- V5.3 Peltier safety/selector/Adaptive rise-dwell/HOTSide sequence QC.
+- V5.4 Peltier safety/selector/Adaptive rise-dwell/HOTSide sequence QC.
 - Local OTA Golden Path.
 - Online OTA + BLE recovery.
 - App ↔ Firmware integration after the separately executed App Build.
