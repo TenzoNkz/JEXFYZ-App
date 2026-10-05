@@ -11,6 +11,8 @@
 - Firmware source change commits: 85bf8acf79fd91f0d3bbbe2440bec8bab73774da → fd883ca695cab2f35014b3cf069fa9454ae6bc89
 - Active Firmware source: firmware/JEXFYZ-V5.7.ino
 - Firmware source blob: 652e54afdd9c7c347cd82072f573f1729c4b46de
+- OTA Security Seal status: ACTIVE / SEALED.
+- OTA Security Seal commit: c2845ef674e9f3041115b6c5c3d618b7a5a5790d.
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
 - App main source blob: 48406cda017be1ce939ff682497324bf3680a7f3
@@ -24,6 +26,14 @@
 - Latest verified APK: JEXFYZ-release.apk, 54,327,520 bytes, SHA-256 b8045d0b6fa6d05b421bd6b1c0318d4ee4529734d7b471534700f95676200888.
 - No App Build was executed for the CONTROL precharge change.
 
+## OTA SECURITY SEAL — 2026-10-06
+- [IMPLEMENTED] Protected OTA integrity guard added without changing Firmware OTA runtime behavior.
+- [IMPLEMENTED] CI now fingerprints the OTA runtime, OTA priority, BLE radio handoff, App any-different-version policy, and App Firebase OTA metadata validation.
+- [IMPLEMENTED] CI rejects seal-artifact changes unless [OTA-SEAL-RENEW] is explicitly present.
+- [IMPLEMENTED] Anti-downgrade remains OFF; any valid version different from the device version is allowed.
+- [VERIFIED] V5.7 Firmware source and App source blobs remain unchanged by the seal operation.
+- [USER-CONFIRMED] V5.7 Online OTA update to hardware succeeded before this seal was added.
+
 ## V5.7 TTP223 TOUCH ACCURACY QC FIX — 2026-10-06
 - [QC FIX / FINALIZED] Double-tap resolution is held until the 800 ms decision window; 3+ taps inside the same sequence remain cancel/no-action as in the prior gesture contract.
 - [COMMITTED] Latest V5.7 Touch FSM correction commit: 77591d7406aa8613a3dc9beb33828af5a592d8d5.
@@ -34,7 +44,8 @@
 - [QC FIX / IMPLEMENTED] A 1-second startup grace period ignores boot-time touch input; a touch already held during startup must be released before any new gesture is accepted.
 - [PRESERVED] Single tap remains voltage sequence control, double tap remains RGB toggle, and long press remains 5 seconds.
 - [IMPLEMENTED] Firmware promoted V5.6 → V5.7 for this targeted Touch accuracy correction.
-- [NOT BUILT HERE] V5.7 compile/BIN/flash/physical validation remains pending.
+- [USER-CONFIRMED] V5.7 Firmware was successfully OTA-updated onto the hardware; the device is now running V5.7.
+- [UNVERIFIED] Full V5.7 compile/BIN/flash/functional physical QC remains pending; the successful OTA update proves the OTA path reached the device but does not replace functional QC.
 
 ## V5.6 NTC ADC FILTERING QC FIX — 2026-10-06
 - [QC FIX / IMPLEMENTED] Hotside NTC sampling now uses a bounded 16-sample calibrated ADC burst once per 1-second sampling period.
