@@ -1,21 +1,21 @@
 # JE X FYZ — CURRENT PROJECT STATE
 
 ## CURRENT PHASE
-> **V4.6 — CODE COMPLETE → QC / PRE-RELEASE → NOT RELEASED**
+> **V4.7 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## CURRENT TRUTH
 - Project: JE X FYZ / JE Cooler
 - Repository: TenzoNkz/JEXFYZ-App
 - Branch: main
-- Firmware: V4.6
-- Firmware source change commit: 3f9a215f2d5532e291c9d26c77897e3ae8ffe15d
-- Active Firmware source: firmware/JEXFYZ-V4.6.ino
-- Firmware source blob: cd2ebd7395343f64b824e74c1370b04cea6835ab
+- Firmware: V4.7
+- Firmware source change commit: d03998ac5137e475bc1f6778931b25a509068a28
+- Active Firmware source: firmware/JEXFYZ-V4.7.ino
+- Firmware source blob: d47b62edbf275032780ef05d6ac3be1df06e350b
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
-- App main source blob: 8341c125489f5cf419ce7a76fb41b698e70a92dc
+- App main source blob: 6def6eb10936bdec1923a6dfe1c809d5f71b1177
 - App settings source blob: f11235bab559b291928550e06984532581ddad6a
-- App test source blob: 7f6650466b3f9e9d02ef43f889c1d184beeb2497
+- App test source blob: d9ddfca369980fc0cd5ecdf80de1a10a5b1a2e18
 - Active App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml
 - App Build workflow blob: 51a6c4d35580228ae24f859058ae5b08665d94a0
 - Direct issue-triggered Release workflow is authoritative; no reusable engine is active.
@@ -37,12 +37,12 @@
 - [PRESERVED] Local OTA Golden/Protected path and single-radio Wi-Fi/BLE ownership.
 - [PRESERVED] BLE UUIDs, P1 protocol, Adaptive, RGB, telemetry, and existing App behavior outside the targeted CONTROL change.
 - [IMPLEMENTED] When Peltier is requested ON while Fan is OFF, App now waits 2 seconds after confirmed FAN=ON before sending PELTIER:ON.
-- Firmware version incremented from V4.5 to V4.6 because these are functional firmware changes.
+- Firmware version incremented from V4.6 to V4.7 because this is a functional realtime-telemetry QC fix.
 
 ## QC / RELEASE STATE
-- [VERIFIED] V4.6 requested source/static audit passed.
+- [VERIFIED] V4.7 source/static audit passed for the realtime telemetry fix.
 - [UNVERIFIED] Arduino compilation, BIN generation, flash, physical hardware behavior, V4.6 OTA, and App ↔ Firmware physical integration.
-- [NOT RELEASED] V4.6 is not yet a released firmware.
+- [NOT RELEASED] V4.7 is not yet a released firmware.
 - Functional source is frozen during QC unless a demonstrated QC defect requires a targeted fix.
 
 ## FIRMWARE
@@ -55,7 +55,7 @@
 - Hotside limit range: 40–50°C, default 45°C.
 - NTC fault behavior remains Fan 100%, Peltier OFF, Adaptive OFF, safe 5V.
 - Rapid-rise slope protection is removed; no RAPID_HOTSIDE_RISE event is emitted.
-- V4.6 compile/BIN/flash/physical runtime validation remains unverified.
+- V4.7 compile/BIN/flash/OTA validation remains pending.
 
 ## APP
 - App version remains 1.0.0+3.
@@ -88,4 +88,4 @@
 - [NOT RELEASED] Release Gate is not complete.
 
 ## EXACT NEXT ACTION
-> **Build App → install APK → App ↔ Firmware V4.6 integration QC, including CONTROL Fan → 2 s → Peltier behavior.**
+> **Compile V4.7 → generate BIN → flash/OTA → Build App → install APK → App ↔ Firmware realtime Control/Notify QC.**
