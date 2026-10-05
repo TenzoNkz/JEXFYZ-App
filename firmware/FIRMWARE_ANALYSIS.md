@@ -1,9 +1,9 @@
 # JE X FYZ — CURRENT FIRMWARE ANALYSIS
 
 ## SOURCE
-- Active: firmware/JEXFYZ-V4.5.ino
-- Version: V4.5
-- Blob: daef871d910f3f1bc4f2d1bdc44e0d19f6e292dc
+- Active: firmware/JEXFYZ-V4.6.ino
+- Version: V4.6
+- Blob: cd2ebd7395343f64b824e74c1370b04cea6835ab
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
@@ -15,7 +15,20 @@
 - Firmware streams the image into the inactive OTA partition.
 - Timing is cooperative.
 
-## ONLINE OTA
+## HARDWARE CONTROL
+- GPIO mapping: NTC 0, Touch 1, 12V 3, 9V 4, Peltier 5, Fan 6, WS2812 7.
+- Single tap sequence: 5V → 9V → 12V → 9V → 5V → ...
+- Hardware cooling ON: Fan 100%.
+- Peltier OFF → ON: existing 5-second soft-start remains active.
+- Double tap RGB and long-press Adaptive-OFF behavior remain unchanged.
+
+## SAFETY
+- Hotside NTC is the universal thermal safety input.
+- Normal Hotside temperature-limit protection remains active.
+- Rapid Hotside-rise protection was removed; no dedicated slope/event state remains.
+- NTC invalid state still forces Fan 100%, Peltier OFF, Adaptive OFF, safe 5V.
+
+## OTA
 1. Capture active GATT state/connection ID.
 2. Close the active GATT session when present.
 3. Clear BLE session/controller state.
@@ -25,31 +38,19 @@
 7. Download and finalize.
 8. Restart and recover BLE.
 
-## APP SYNC CONTRACT
-- App marks the Online OTA disconnect as expected.
-- Recovery scans/connects using the known cooler identity without requiring passive Auto Connect to be enabled.
-- Final P1 sync restores the dashboard and surfaces the one-shot OTA result.
-
-## SAFETY / CONTROL
-- Hotside NTC is the universal thermal safety input.
-- Rapid Hotside-rise latching is only armed while Peltier is ON.
-- Fan PWM 25 kHz, 8-bit, 50–100%.
-- Peltier PWM 20 kHz, 8-bit.
-- Selector deadtime 200 ms.
-- Voltage guard 1 s.
-- Adaptive Ceiling remains firmware-owned and is exposed over telemetry.
-
 ## STATIC RESULT
-- 4648 lines.
-- Firmware source/file alignment: V4.5.
+- 4628 lines.
+- Firmware source/file alignment: V4.6.
 - One active versioned .ino.
-- executable delay() = 0.
+- executable delay() = 0 (comments excluded).
 - timing while() = 0.
+- RAPID_HOTSIDE_RISE = 0.
+- rapid-rise state/history identifiers = 0.
 - Yellow 0xFFFF00 = 0.
 - Stale Online OTA progress refs = 0.
 - Explicit BLE GATT disconnect = 1.
-- Dead adaptive-resume state = 0.
-- Legacy newer-version comparator = 0.
+- BOOT_AP_HARD_LIMIT_MS = 60000.
+- PELTIER_SOFT_START_MS = 5000.
 
 ## VALIDATION BOUNDARY
-V4.4 physical OTA success is user-confirmed. V4.5 source/static audit is complete. V4.5 compile/BIN/flash/physical validation remains pending.
+V4.4 physical OTA success is user-confirmed. V4.6 source/static audit is complete. V4.6 compile/BIN/flash/physical validation remains pending.
