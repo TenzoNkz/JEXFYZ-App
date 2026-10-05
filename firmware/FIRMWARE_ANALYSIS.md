@@ -3,7 +3,7 @@
 ## SOURCE
 - Active: firmware/JEXFYZ-V5.7.ino
 - Version: V5.7
-- Blob: 05044824a6ec15e77634dffc16c14b4bddada8bb
+- Blob: 652e54afdd9c7c347cd82072f573f1729c4b46de
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
@@ -30,7 +30,7 @@
 - TTP223 input processing is layered: raw GPIO → 30 ms qualification → stable edge → gesture engine.
 - Startup touch input is ignored for the first 1,000 ms; if Q is already HIGH after startup grace, that held state is blocked until a qualified release.
 - Tap validity uses raw HIGH duration 60–500 ms, avoiding double-counting the 30 ms input qualification time.
-- Double-tap window is 800 ms from the first valid release. A second press that begins before the deadline gets release grace beyond the deadline.
+- Double-tap window is 800 ms from the first valid release. A second press that begins before the deadline gets release grace beyond the deadline; completed double tap resolves at the decision boundary, preserving the prior 3+ tap cancellation behavior.
 - Long press remains 5,000 ms and is evaluated continuously from the qualified press.
 - No blocking delay or timing wait was introduced.
 
