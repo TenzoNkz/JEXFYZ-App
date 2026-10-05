@@ -1,0 +1,85 @@
+{
+  "schema": "JEXFYZ_OTA_SECURITY_SEAL_V1",
+  "status": "SEALED",
+  "purpose": "Guard the proven OTA path against accidental source/config drift. This is an integrity gate for engineering changes, not a cryptographic firmware signature.",
+  "anti_downgrade": false,
+  "version_policy": "Any valid V<major>.<minor> firmware version different from the device version may be selected for OTA. Higher-version-only enforcement is intentionally disabled.",
+  "firmware": {
+    "active_source_glob": "firmware/JEXFYZ-V*.ino",
+    "expected_active_file_count": 1,
+    "version_rule": "The single active versioned .ino filename must match its FW_VERSION value."
+  },
+  "protected_regions": [
+    {
+      "id": "FW_OTA_RUNTIME",
+      "file_glob": "firmware/JEXFYZ-V*.ino",
+      "type": "function_range",
+      "start_symbol": "stopWiFiRadio",
+      "end_symbol": "stopLocalOtaAp",
+      "sha1_git_blob": "05251337f03713651fa3b51a3e8230576e200f51"
+    },
+    {
+      "id": "FW_OTA_PRIORITY",
+      "file_glob": "firmware/JEXFYZ-V*.ino",
+      "type": "function_range",
+      "start_symbol": "processPendingOnlineOtaStart",
+      "end_symbol": "serviceOtaPriority",
+      "sha1_git_blob": "6f300f9918e874cea3267600e3c3c8a465b1c9fd"
+    },
+    {
+      "id": "FW_BLE_RADIO_HANDOFF",
+      "file_glob": "firmware/JEXFYZ-V*.ino",
+      "type": "function",
+      "symbol": "stopBleRadio",
+      "sha1_git_blob": "d3e410306d1f64d385b58330716237ca77c529a1"
+    },
+    {
+      "id": "APP_OTA_VERSION_POLICY",
+      "file": "lib/main.dart",
+      "type": "function",
+      "symbol": "isDifferentFirmwareVersion",
+      "sha1_git_blob": "83001d06dec72fc79b0bbbc4ed37f8f12383b550"
+    },
+    {
+      "id": "APP_OTA_METADATA_VALIDATION",
+      "file": "lib/main.dart",
+      "type": "function",
+      "symbol": "_checkFirebase",
+      "sha1_git_blob": "709b5502e190afac9139cc46515e2466f81b54cd"
+    }
+  ],
+  "required_anchors": {
+    "firmware": [
+      "#include <Update.h>",
+      "Update.begin(",
+      "Update.write(",
+      "Update.end(",
+      "Update.abort(",
+      "0xE9",
+      "BLEDevice::deinit(true)",
+      "WiFi.disconnect(true, false)",
+      "isWiFiOffSettled()",
+      "BOOT_AP_HARD_LIMIT_MS       = 60000",
+      "ONLINE_OTA_HTTP_TIMEOUT_MS  = 60000",
+      "WIFI_CONNECT_MAX_ATTEMPTS      = 3",
+      "ONLINE_IMAGE_VALIDATE",
+      "LOCAL_IMAGE_VERIFY"
+    ],
+    "app": [
+      "https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ.cpp.bin",
+      "updateAvailable = isDifferentFirmwareVersion("
+    ],
+    "absent": [
+      "RAPID_HOTSIDE_RISE"
+    ]
+  },
+  "runtime_safety_contract": {
+    "no_executable_delay": true,
+    "no_while_loops": true,
+    "single_radio_ownership": true,
+    "ota_safe_outputs": "Peltier OFF, Fan OFF, selector forced to 5V while OTA owns the system",
+    "online_image_magic": "0xE9",
+    "app_url_allowlist": "Exact JEXFYZ.cpp.bin raw GitHub URL only",
+    "anti_downgrade": "OFF"
+  }
+}
