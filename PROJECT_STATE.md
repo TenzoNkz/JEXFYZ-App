@@ -84,7 +84,7 @@
 
 ## QC / RELEASE STATE
 - [VERIFIED] V5.0 source/static audit passed for the selector/MOSFET/Fan/LED timing revision.
-- [UNVERIFIED] Arduino compilation, BIN generation, V5.1 flash/OTA, and App ↔ Firmware physical integration after this revision.
+- [UNVERIFIED] Arduino compilation, BIN generation, V5.2 flash/OTA, and App ↔ Firmware physical integration after this revision.
 - [NOT RELEASED] V5.2 is not yet a released firmware.
 - Functional source is frozen during QC unless a demonstrated QC defect requires a targeted fix.
 
