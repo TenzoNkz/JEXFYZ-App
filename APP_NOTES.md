@@ -1,3 +1,9 @@
+## FIRMWARE V5.3 SYNC — 2026-10-05
+- [IMPLEMENTED IN FIRMWARE] Both Adaptive profiles now enforce a 5-second dwell after each completed upward voltage step.
+- [PRESERVED] Downward Adaptive voltage changes remain immediate.
+- [PRESERVED] App version remains 1.0.0+3; no App source change was required for this firmware-only behavior.
+- [NOT BUILT HERE] App Build was not executed.
+
 ## APP PELTIER SAFETY NOTIFY — 2026-10-05
 - [IMPLEMENTED] Peltier restart failures now explain the Hotside re-arm requirement, using the configured hotLimit minus 2°C.
 - [IMPLEMENTED] The retired RAPID_HOTSIDE_RISE notification mapping was removed.
