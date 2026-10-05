@@ -1,14 +1,14 @@
 # JE X FYZ — CURRENT FIRMWARE ANALYSIS
 
 ## SOURCE
-- Active: firmware/JEXFYZ-V5.5.ino
-- Version: V5.5
-- Blob: 5f72b3557f91c33827ee61f8c2eaf1cab2cfd786
+- Active: firmware/JEXFYZ-V5.6.ino
+- Version: V5.6
+- Blob: f291e05b16235b0e944ea135238335024201355a
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
 ## CURRENT PHASE
-> **V5.5 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V5.6 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## ARCHITECTURE
 - ESP32-C3 single-radio model: Wi-Fi and BLE ownership are mutually exclusive.
@@ -25,6 +25,13 @@
 - Peltier OFF → ON: 5-second soft-start, then 100%.
 - Adaptive upward voltage changes: 5-second cooperative dwell after every completed increase in both profiles; downward changes remain immediate.
 - Double tap RGB and long-press Adaptive-OFF remain unchanged.
+
+## V5.6 NTC ADC FILTERING QC FIX — 2026-10-06
+- Single-sample Hotside ADC capture was replaced with a bounded 16-sample calibrated burst.
+- Samples are insertion-sorted and reduced with a 50% trimmed mean: discard 4 lowest + 4 highest, average the middle 8.
+- NTC conversion remains the existing 10K / 25°C / Beta 3950 model and the existing 3.3 V divider-reference assumption.
+- Sensor fault gates remain applied after the filtered ADC millivolt result; abnormal results are invalidated rather than clamped into a temperature.
+- No temperature-history filter was added, avoiding deliberate thermal lag in the safety path.
 
 ## V5.5 PELTIER SAFETY REARM LED FEEDBACK — 2026-10-06
 - Normal Peltier ON/OFF no longer calls a Peltier LED command-result indicator.
