@@ -1,4 +1,13 @@
-## 2026-10-06 — V5.6 QC EXECUTION RECORD
+## 2026-10-06 — V5.7 QC EXECUTION RECORD
+### PERSISTENT
+- [VERIFIED] Functional source authority is now V5.7: firmware/JEXFYZ-V5.7.ino, blob 05044824a6ec15e77634dffc16c14b4bddada8bb.
+- [COMMITTED] V5.7 source promotion commit: d2ec5d56383f25a105835b10698f62cf19cbf5df.
+- [COMMITTED] V5.6 source retirement commit: 38f8f2738cca18fbac3830d241baa1f5596cc719.
+- [IMPLEMENTED] TTP223 uses 30 ms qualification, 60–500 ms tap duration, 800 ms double-tap window from first valid release, second-tap grace, and 1 s startup grace.
+- [PRESERVED] 1x Voltage, 2x RGB, 5 s long press, and cooperative timing contracts.
+- [UNVERIFIED] Compile, BIN, flash, physical runtime, Local OTA, Online OTA/BLE recovery, and App integration for V5.7.
+- [NOT RELEASED] V5.7.
+
 ### PERSISTENT
 - [VERIFIED] Functional source authority is now V5.6: firmware/JEXFYZ-V5.6.ino, blob f291e05b16235b0e944ea135238335024201355a.
 - [COMMITTED] V5.6 source promotion commit: 1c5159652584bea8e26878a61e88f44aff5e3713.
@@ -41,18 +50,18 @@
 - [CONFIRMED] Project: JE X FYZ / JE Cooler.
 - [VERIFIED] Repository: TenzoNkz/JEXFYZ-App.
 - [VERIFIED] Branch: main.
-- [VERIFIED] Current post-fix state is V5.6; prior pre-fix transfer HEAD 3a54d83956f357750684a32279952cbd7fb484f8 is historical evidence.
+- [VERIFIED] Current post-fix state is V5.7; prior pre-fix transfer HEAD 3a54d83956f357750684a32279952cbd7fb484f8 is historical evidence.
 - [VERIFIED] Current phase: V5.4 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED.
-- [VERIFIED] Active Firmware: V5.6.
-- [VERIFIED] Active Firmware source: firmware/JEXFYZ-V5.6.ino.
-- [VERIFIED] Firmware source blob: f291e05b16235b0e944ea135238335024201355a.
+- [VERIFIED] Active Firmware: V5.7.
+- [VERIFIED] Active Firmware source: firmware/JEXFYZ-V5.7.ino.
+- [VERIFIED] Firmware source blob: 05044824a6ec15e77634dffc16c14b4bddada8bb.
 - [VERIFIED] App: JE Cooler; header JE X FYZ; package com.horizontalzzz.jexfyz; version 1.0.0+3.
 - [VERIFIED] App main source blob: 48406cda017be1ce939ff682497324bf3680a7f3.
 - [VERIFIED] App settings source blob: f11235bab559b291928550e06984532581ddad6a.
 - [VERIFIED] App regression-test source blob: 1951964af7542324b2ae27b1bd94f84e1c853060.
 - [VERIFIED] Active App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml.
 - [VERIFIED] Workflow blob: 51a6c4d35580228ae24f859058ae5b08665d94a0.
-- [VERIFIED] V5.6 is the active source; older firmware source revisions are retained only as history, not as active source.
+- [VERIFIED] V5.7 is the active source; older firmware source revisions are retained only as history, not as active source.
 - [CONFIRMED] This transfer is documentation/state persistence only. It does not authorize a new functional source change, Firmware release, or App Build.
 
 ## 2. CURRENT TASK
@@ -105,6 +114,7 @@
 - [FROZEN] Manual/Touch Peltier restart safety latch requires Hotside <= hotLimit - 2°C.
 - [FROZEN] Peltier LED feedback is safety-rearm-only: failed ON attempt while the Hotside safety latch is active = red blink 1 s; successful re-arm ON at hotLimit - 2°C = green blink 1 s; normal ON/OFF has no Peltier LED.
 - [FROZEN] Hotside NTC filtering: 16 calibrated ADC samples per 1-second period, discard 4 lowest + 4 highest, average 8 middle samples.
+- [FROZEN] TTP223 touch recognition: 30 ms qualification, 60–500 ms tap duration, 800 ms double-tap window, second-tap grace, 1 s startup grace.
 - [FROZEN] App Peltier Safety popup queues FAN:ON then PELTIER:ON back-to-back; Firmware owns the 5-second Peltier soft-start.
 - [FROZEN] App Fan Speed display at Adaptive + 12V is 100%; Manual + 12V shows configured speed; Adaptive speed control remains locked.
 - [FROZEN] Local OTA uses Golden/Protected path; Online OTA explicitly disconnects GATT before Wi-Fi ownership.
