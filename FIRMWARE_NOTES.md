@@ -19,7 +19,7 @@
 - Peltier OFF → ON: 5-second cooperative soft-start, unchanged.
 - Fan remains 25 kHz, 8-bit, 50–100% for App-controlled operation.
 - Voltage selector deadtime 200 ms; voltage guard 1 s.
-- Adaptive HOTSIDE safety timing is updated to the V4.9 10-second step-down sequence; unrelated Adaptive behavior remains unchanged.
+- Adaptive HOTSIDE safety timing uses the 10-second step-down sequence; Peltier restart safety uses the 2°C re-arm hysteresis.
 - RGB/touch double-tap behavior remains unchanged.
 
 ## SAFETY CONTRACT
@@ -42,7 +42,7 @@ Online OTA:
 - Existing OTA result LED/state-machine behavior remains unchanged.
 - Download processing remains cooperative.
 
-## V4.9 CHANGE
+## V5.2 CHANGE
 - Promoted V4.7 → V4.9 for the approved HOTSIDE-only safety sequence and realtime telemetry baseline.
 - Preserved the hardware touch voltage bounce sequence.
 - Hardware cooling ON forces Fan to 100%.
