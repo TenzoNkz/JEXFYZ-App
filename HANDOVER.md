@@ -1,3 +1,15 @@
+## 2026-10-06 — V5.5 PELTIER SAFETY REARM LED FEEDBACK
+- [IMPLEMENTED] Normal Peltier ON/OFF no longer produces green/red Peltier LED feedback.
+- [IMPLEMENTED] After Hotside Safety forces Peltier OFF, the existing manualPeltierSafetyLatch remains active until an explicit successful Peltier ON attempt.
+- [IMPLEMENTED] Any blocked ON attempt while that latch is active blinks red for 1 second.
+- [IMPLEMENTED] A successful ON attempt after Hotside reaches hotLimit - 2°C blinks green for 1 second and clears the latch.
+- [PRESERVED] Hotside dwell LED remains 9 seconds red + final 1 second green and has LED priority over the short re-arm feedback.
+- [COMMITTED] V5.5 source creation commit: adfb3e3860f6c7004e577981d668fef46f467d47.
+- [COMMITTED] V5.4 source retirement commit: 12973ebace66f660c6c1b0a7a48407e96c02ea08.
+- [COMMITTED] V5.5 follow-up safety-attempt correction commit: b29d050dcb7deea0ffc5339c76a37bf27a7dacb1.
+- [UNVERIFIED] V5.5 compile, BIN generation, flash, physical safety behavior, OTA, and App integration remain pending.
+- [NOT RELEASED] V5.5 is not released.
+
 ## 2026-10-06 — V5.4 HOTSIDE DWELL FAN + LED QC FIX
 - [IMPLEMENTED] Firmware V5.4 is active at `firmware/JEXFYZ-V5.4.ino`.
 - [IMPLEMENTED] Adaptive Hotside safety keeps Fan ON at 100% during the complete 10-second thermal dwell.
