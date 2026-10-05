@@ -27,7 +27,7 @@
 
 ## SAFETY
 - Hotside NTC is the universal thermal safety input.
-- Normal Hotside temperature-limit protection remains active with the V4.9 10-second step-down dwell.
+- Normal Hotside temperature-limit protection remains active with the 10-second step-down dwell.
 - Rapid Hotside-rise protection was removed; no dedicated slope/event/history state remains.
 - NTC invalid state still forces Fan 100%, Peltier OFF, Adaptive OFF, safe 5V.
 
@@ -55,7 +55,7 @@
 - Hard limit: 60000 ms.
 - Peltier soft-start: 5000 ms.
 - HOTSIDE safety dwell: 10000 ms.
-- HOTSIDE sequence: 12V hold → 9V → 5V.
+- HOTSIDE sequence: 12V hold → 9V → 5V, with 10-second LED timing at each stage.
 - 5V terminal safety exits Adaptive and requires manual Peltier restart.
 - Manual-mode Hotside protection preserves the selected rail.
 
@@ -70,5 +70,5 @@
 - [UNVERIFIED] Local OTA V4.6.
 - [UNVERIFIED] Online OTA/BLE recovery V4.6.
 - [VERIFIED] V4.9 source/static audit for the realtime telemetry fix.
-- [UNVERIFIED] V4.9 compile/BIN/flash/OTA and App integration after the fix.
+- [UNVERIFIED] V5.0 compile/BIN/flash/OTA and App integration after this revision.
 - [NOT RELEASED] Release Gate is incomplete.
