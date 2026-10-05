@@ -1,9 +1,9 @@
 # JE X FYZ — CURRENT FIRMWARE NOTES
 
 ## ACTIVE
-- Version: V4.6
-- Source: firmware/JEXFYZ-V4.6.ino
-- Blob: cd2ebd7395343f64b824e74c1370b04cea6835ab
+- Version: V4.7
+- Source: firmware/JEXFYZ-V4.7.ino
+- Blob: d47b62edbf275032780ef05d6ac3be1df06e350b
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
@@ -42,17 +42,18 @@ Online OTA:
 - Existing OTA result LED/state-machine behavior remains unchanged.
 - Download processing remains cooperative.
 
-## V4.6 CHANGE
-- Promoted V4.5 → V4.6 for the approved hardware behavior changes.
+## V4.7 CHANGE
+- Promoted V4.6 → V4.7 for the demonstrated realtime telemetry QC defect.
 - Implemented hardware touch voltage bounce sequence.
 - Hardware cooling ON forces Fan to 100%.
 - Preserved the existing Peltier 5-second OFF→ON soft-start.
 - Removed the rapid Hotside-rise slope/event protection only.
 - Preserved normal Hotside temperature-limit safety and all unrelated runtime/OTA/BLE/App contracts.
+- Added pre-mutation cooling snapshots so Fan/Peltier/Fan-speed transitions are emitted when logical state changes occur before output application.
 
 ## STATIC AUDIT
-- 4628 lines.
-- Firmware version/file alignment: V4.6 / JEXFYZ-V4.6.ino.
+- 4667 lines.
+- Firmware version/file alignment: V4.7 / JEXFYZ-V4.7.ino.
 - Only one active versioned .ino exists under firmware/.
 - executable delay() = 0 (comments excluded).
 - timing while() = 0.
@@ -63,9 +64,9 @@ Online OTA:
 - PELTIER_SOFT_START_MS = 5000.
 
 ## QC GATES
-- Compile V4.6.
+- Compile V4.7.
 - Generate BIN.
-- Flash ESP32-C3.
+- Flash/OTA ESP32-C3.
 - Hardware-only control QC.
 - Safety QC.
 - Local OTA Golden Path.
@@ -75,4 +76,4 @@ Online OTA:
 ## VALIDATION BOUNDARY
 - V4.4 OTA: user-confirmed PASS for all OTA paths before V4.5 promotion.
 - V4.6 source/static audit: PASS.
-- V4.6 compile/BIN/flash/physical validation: pending.
+- V4.7 compile/BIN/flash/physical validation: pending.
