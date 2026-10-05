@@ -1,9 +1,9 @@
 # JE X FYZ — CURRENT FIRMWARE NOTES
 
 ## ACTIVE
-- Version: V4.9
-- Source: firmware/JEXFYZ-V4.9.ino
-- Blob: 888ae9740446081b2a2bcb1769e0471f065dce41
+- Version: V5.0
+- Source: firmware/JEXFYZ-V5.0.ino
+- Blob: 34a3b895bba282fcb9036a703eb9035bb0ad19cc
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
