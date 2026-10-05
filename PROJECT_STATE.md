@@ -1,16 +1,16 @@
 # JE X FYZ — CURRENT PROJECT STATE
 
 ## CURRENT PHASE
-> **V5.6 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V5.7 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## CURRENT TRUTH
 - Project: JE X FYZ / JE Cooler
 - Repository: TenzoNkz/JEXFYZ-App
 - Branch: main
-- Firmware: V5.6
+- Firmware: V5.7
 - Firmware source change commits: 85bf8acf79fd91f0d3bbbe2440bec8bab73774da → fd883ca695cab2f35014b3cf069fa9454ae6bc89
-- Active Firmware source: firmware/JEXFYZ-V5.6.ino
-- Firmware source blob: f291e05b16235b0e944ea135238335024201355a
+- Active Firmware source: firmware/JEXFYZ-V5.7.ino
+- Firmware source blob: 05044824a6ec15e77634dffc16c14b4bddada8bb
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
 - App main source blob: 48406cda017be1ce939ff682497324bf3680a7f3
@@ -23,6 +23,16 @@
 - Latest verified downloadable App Build: workflow run 37261171475 / GitHub Release jexfyz-latest.
 - Latest verified APK: JEXFYZ-release.apk, 54,327,520 bytes, SHA-256 b8045d0b6fa6d05b421bd6b1c0318d4ee4529734d7b471534700f95676200888.
 - No App Build was executed for the CONTROL precharge change.
+
+## V5.7 TTP223 TOUCH ACCURACY QC FIX — 2026-10-06
+- [QC FIX / IMPLEMENTED] TTP223 GPIO input now passes through a 30 ms stable-state qualification layer before gesture processing.
+- [QC FIX / IMPLEMENTED] Valid tap duration is qualified at 60–500 ms using the raw HIGH duration, preventing qualification overhead from rejecting short but real taps.
+- [QC FIX / IMPLEMENTED] Double-tap decision window is 800 ms and starts after the first valid tap release.
+- [QC FIX / IMPLEMENTED] If the second tap starts before the 800 ms deadline, release may occur slightly after the deadline and still resolves as double tap.
+- [QC FIX / IMPLEMENTED] A 1-second startup grace period ignores boot-time touch input; a touch already held during startup must be released before any new gesture is accepted.
+- [PRESERVED] Single tap remains voltage sequence control, double tap remains RGB toggle, and long press remains 5 seconds.
+- [IMPLEMENTED] Firmware promoted V5.6 → V5.7 for this targeted Touch accuracy correction.
+- [NOT BUILT HERE] V5.7 compile/BIN/flash/physical validation remains pending.
 
 ## V5.6 NTC ADC FILTERING QC FIX — 2026-10-06
 - [QC FIX / IMPLEMENTED] Hotside NTC sampling now uses a bounded 16-sample calibrated ADC burst once per 1-second sampling period.
