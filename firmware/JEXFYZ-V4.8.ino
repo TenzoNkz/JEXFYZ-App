@@ -1742,7 +1742,6 @@ static void forceSafeFiveVolt() {
   }
 
   applyCoolingOutputs(previousFan, previousPeltier, previousPwm);
-  applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
 
   if (previousFan != fanOn) sendDelta("FAN", boolText(fanOn));
   if (previousPeltier != peltierOn) sendDelta("PELTIER", boolText(peltierOn));
