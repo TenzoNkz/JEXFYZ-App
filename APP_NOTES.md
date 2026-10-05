@@ -53,7 +53,7 @@
 - Version: 1.0.0+3
 - Main source blob: 484b14bd585b95cdcb066adff59b5446649760b9
 - Settings blob: f11235bab559b291928550e06984532581ddad6a
-- Tests blob: 1a1b4fe225b1faaf9e3602173895d6e05c1bc4ec
+- Tests blob: 6e6dd60b3b7a7615875851b7af027bc0bd2ea326
 
 ## CURRENT PHASE
 - App remains in DEVELOPMENT + QC; the current firmware integration target is V5.0.
