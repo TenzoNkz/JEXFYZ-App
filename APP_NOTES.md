@@ -71,7 +71,7 @@
 
 ## CURRENT PHASE
 - App remains in DEVELOPMENT + QC; the current firmware integration target is V5.1.
-- The latest verified APK predates V5.0 Firmware and does not prove V5.0 physical integration.
+- The latest verified APK predates V5.1 Firmware and does not prove V5.1 physical integration.
 
 ## CONTROL
 - Peltier ON from Fan-OFF state: after the safety popup is approved, the App queues FAN:ON and PELTIER:ON together; the BLE write queue preserves that order without waiting for Fan telemetry between commands.
