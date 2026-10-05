@@ -23,6 +23,10 @@
 - Latest verified APK: JEXFYZ-release.apk, 54,327,520 bytes, SHA-256 a9d93bb3f359285bca1f2658f1336b502fd87539b0dec169282a9f2e59df1fc2.
 - This V4.6 firmware execution did not run App Build.
 
+## TRANSFER / MEMORY STATE
+- [VERIFIED] Latest chat-limit transfer snapshot save commit: b59b63fa2a65ccd5ce45dec0cfb18f97d76989b7.
+- [PENDING] Final verification commit will record the post-save HEAD in CHAT_TRANSFER.md.
+
 ## CURRENT TASK RESULT
 - [IMPLEMENTED] Hardware single-tap voltage now follows 5V → 9V → 12V → 9V → 5V → ...
 - [IMPLEMENTED] Hardware long-press cooling ON forces Fan to 100%.
