@@ -1,14 +1,14 @@
 # JE X FYZ — CURRENT FIRMWARE ANALYSIS
 
 ## SOURCE
-- Active: firmware/JEXFYZ-V4.9.ino
-- Version: V4.9
-- Blob: 888ae9740446081b2a2bcb1769e0471f065dce41
+- Active: firmware/JEXFYZ-V5.0.ino
+- Version: V5.0
+- Blob: 34a3b895bba282fcb9036a703eb9035bb0ad19cc
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
 ## CURRENT PHASE
-> **V4.9 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V5.0 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## ARCHITECTURE
 - ESP32-C3 single-radio model: Wi-Fi and BLE ownership are mutually exclusive.
