@@ -1,3 +1,11 @@
+## APP CONTROL PRECHARGE — 2026-10-05
+- Added a 2-second Fan precharge interval when the user requests Peltier ON while Fan is OFF.
+- App now waits for confirmed FAN=ON telemetry before starting the 2-second interval.
+- After the interval, App re-validates BLE connection, Adaptive OFF, and Fan ON before sending PELTIER:ON.
+- Fan already ON remains an immediate Peltier-start path; no extra delay is added.
+- Added a regression test locking the precharge duration to exactly 2 seconds.
+- Firmware source, Firmware behavior, BLE protocol tokens, and App Build workflow were not changed.
+
 ## QC / PRE-RELEASE MODE — 2026-10-05
 - V4.6 code is complete and the project is now in QC / PRE-RELEASE.
 - Functional source is frozen during QC unless a demonstrated defect requires a targeted fix.
