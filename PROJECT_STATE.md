@@ -84,7 +84,8 @@
 - [VERIFIED] CHAT_TRANSFER.md was replaced at commit 3d21b33b5c96640f7393a4956ad2ccb868639644.
 - [VERIFIED] Saved CHAT_TRANSFER blob: fc00fdf83cd461f4f76e1edca6b53453111f1137.
 - [VERIFIED] Pre-save HEAD reconciled before transfer write: 3a54d83956f357750684a32279952cbd7fb484f8.
-- [PENDING VERIFICATION] A subsequent documentation reconciliation commit may advance main after this state write.
+- [VERIFIED] Main HEAD after transfer persistence and final documentation reconciliation: b857370546c2b5f1358b6576bb324d2ab0bddf38.
+- [VERIFIED] Final transfer content was re-read from main at blob fc00fdf83cd461f4f76e1edca6b53453111f1137.
 
 ## CURRENT TASK RESULT
 - [IMPLEMENTED] Hardware single-tap voltage now follows 5V → 9V → 12V → 9V → 5V → ...
