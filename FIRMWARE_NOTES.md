@@ -3,7 +3,7 @@
 ## ACTIVE
 - Version: V4.8
 - Source: firmware/JEXFYZ-V4.8.ino
-- Blob: d47b62edbf275032780ef05d6ac3be1df06e350b
+- Blob: 09efb58653c20012d32a82c4113f3e7c6412012d
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
@@ -52,7 +52,7 @@ Online OTA:
 - Preserved the pre-mutation cooling snapshots so Fan/Peltier/Fan-speed transitions remain realtime.
 
 ## STATIC AUDIT
-- 4688 lines.
+- 4700 lines.
 - Firmware version/file alignment: V4.8 / JEXFYZ-V4.8.ino.
 - Only one active versioned .ino exists under firmware/.
 - executable delay() = 0 (comments excluded).
