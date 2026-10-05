@@ -9,7 +9,7 @@
 - App package: com.horizontalzzz.jexfyz
 - Current App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml
 - Workflow blob: 51a6c4d35580228ae24f859058ae5b08665d94a0
-- Latest verified App Build: workflow run 37245703677 / GitHub Release jexfyz-latest
+- Latest verified App Build: workflow run 37261171475 / GitHub Release jexfyz-latest
 - Current App source has no fixed 2-second Fan precharge; Firmware 5-second Peltier soft-start is authoritative.
 
 ## CURRENT PHASE
