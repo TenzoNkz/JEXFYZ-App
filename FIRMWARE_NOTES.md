@@ -75,5 +75,5 @@ Online OTA:
 
 ## VALIDATION BOUNDARY
 - V4.4 OTA: user-confirmed PASS for all OTA paths before V4.5 promotion.
-- V4.6 source/static audit: PASS.
+- V4.7 source/static audit: PASS.
 - V4.7 compile/BIN/flash/physical validation: pending.
