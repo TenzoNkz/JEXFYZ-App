@@ -4,34 +4,41 @@
 - Firmware: V4.6
 - Active source: firmware/JEXFYZ-V4.6.ino
 - Firmware blob: cd2ebd7395343f64b824e74c1370b04cea6835ab
-- Firmware compile/BIN/flash/physical validation: UNVERIFIED
+- Firmware source change commit: 3f9a215f2d5532e291c9d26c77897e3ae8ffe15d
 - App: 1.0.0+3
-- App main blob: f762f6d1cdd1351e57e7d93665ff2f5898769b42
-- App settings blob: f11235bab559b291928550e06984532581ddad6a
-- App tests blob: aa86778beb8fcc3ce6a12454f6354f96ec99a160
+- App package: com.horizontalzzz.jexfyz
 - Current App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml
 - Workflow blob: 51a6c4d35580228ae24f859058ae5b08665d94a0
-- Latest verified downloadable App Build: workflow run 37245703677 / GitHub Release jexfyz-latest.
-- Latest verified APK SHA-256: a9d93bb3f359285bca1f2658f1336b502fd87539b0dec169282a9f2e59df1fc2.
+- Latest verified App Build: workflow run 37245703677 / GitHub Release jexfyz-latest
 
-## V4.6 EXECUTION
+## CURRENT PHASE
+> **V4.6 — CODE COMPLETE → QC / PRE-RELEASE → NOT RELEASED**
+
+## IMPLEMENTED / FROZEN
 - Hardware single tap: 5V → 9V → 12V → 9V → 5V → ...
-- Hardware cooling long press ON: Fan is forced to 100%.
-- Peltier OFF → ON: existing cooperative 5-second soft-start is preserved.
-- BOOT_AP_HARD_LIMIT_MS: 60 seconds preserved.
-- Rapid Hotside-rise protection: removed completely.
-- Normal Hotside temperature-limit protection: preserved.
-- All unrelated firmware, BLE/P1, OTA, Adaptive, RGB, telemetry, and App behavior remain unchanged.
+- Hardware cooling ON: Fan 100%.
+- Peltier OFF → ON: 5-second soft-start, then 100%.
+- BOOT_AP_HARD_LIMIT_MS: 60 seconds.
+- Rapid Hotside-rise protection removed.
+- Normal Hotside temperature-limit protection preserved.
+- Local OTA Golden Path preserved.
+- BLE/P1/UUIDs, Adaptive, RGB, telemetry, App source, and App CI workflow preserved.
 
-## FROZEN
-- Local OTA Golden Path.
-- Single-radio Wi-Fi/BLE ownership.
-- BLE Service/RX/TX UUIDs.
-- P1 session contract.
-- App package identity and App Build policy.
-- Production signing certificate identity.
+## QC RULE
+Functional source is frozen during QC. Only a demonstrated QC failure with a clear root cause justifies a targeted source change.
+
+## QC NEXT
+1. Compile V4.6.
+2. Generate BIN.
+3. Flash ESP32-C3.
+4. Hardware-only QC.
+5. Safety QC.
+6. Local OTA.
+7. Online OTA/BLE recovery.
+8. App ↔ Firmware integration.
+9. Release Gate.
 
 ## VALIDATION
-- V4.6 source/static audit: PASS.
-- Firmware compile/BIN/flash/physical validation: pending.
-- App Build was not run by this execution.
+- [VERIFIED] Source/static audit.
+- [UNVERIFIED] Compile/BIN/flash/physical/runtime/OTA V4.6 validation.
+- [NOT RELEASED] V4.6.
