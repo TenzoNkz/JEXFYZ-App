@@ -72,7 +72,7 @@
 - [CONFIRMED] Equal firmware version is Up to date; any other valid firmware version is eligible.
 - [CONFIRMED] Current firmware OTA result event includes one-shot OTA_UP_TO_DATE.
 - [CONFIRMED] Battery thresholds: 5V = 20–30°C; 12V = 30–40°C.
-- [CONFIRMED] Current engine publishes the obfuscated APK to GitHub Release `jexfyz-latest`; symbols remain generated locally only.
+- [CONFIRMED] Current workflow builds an obfuscated APK, verifies production signing, and publishes `JEXFYZ-release.apk` to `jexfyz-latest`; symbols remain generated locally only.
 
 ## 6. REJECTED / OBSOLETE DECISIONS
 - [OBSOLETE] V3.3 yellow Online OTA progress layer.
@@ -141,10 +141,9 @@
 - [VERIFIED] App architecture/security audit rejects legacy FirebaseDatabase references and retains Firebase App Check.
 
 ### CI
-- [VERIFIED] Current trigger blob: 6f8abfb64581bb48d4db6c2ed978dc4e12aef1a9.
-- [VERIFIED] Current engine blob: f123b00c908d6e91363df0bf4b435b4e9e6f252e.
-- [IMPLEMENTED][COMMITTED] Current engine no longer calls Actions-artifact upload.
-- [IMPLEMENTED][COMMITTED] Current engine publishes one direct APK asset at jexfyz-latest, named JEXFYZ-release.apk, with clobber replacement.
+- [VERIFIED] Current workflow blob: 88c3c3bdaf79f9ac43595861c7ca81be4698d5fe.
+- [IMPLEMENTED][COMMITTED] Current workflow does not call Actions-artifact upload.
+- [IMPLEMENTED][COMMITTED] Current workflow publishes one direct APK asset at jexfyz-latest, named JEXFYZ-release.apk, with clobber replacement.
 - [IMPLEMENTED][COMMITTED] No separate Dart-symbol asset is uploaded.
 - [VERIFIED] Trigger workflow is issue-based and title/token gated.
 - [UNVERIFIED] Current Release publication requires this build run for fresh verification.
@@ -281,7 +280,7 @@
 - [CHAT-ONLY] This transfer prompt itself is not permission to build or release.
 
 ## 21. EXACT NEXT ACTION
-- [NEXT ACTION] On the next explicit @Thinking Build App! use `.github/workflows/jexfyz-app-build-trigger.yml`; verify the reusable engine's CI gates, production signing, APK artifact, and Dart-symbol artifact.
+- [NEXT ACTION] On the next explicit @Thinking Build App! use `.github/workflows/jexfyz-app-build-trigger.yml`; verify CI gates, production signing, and the GitHub Release asset.
 - [NEXT ACTION] Separately compile/flash Firmware V4.5 and perform physical Online OTA BLE disconnect/reconnect plus Local OTA Golden Path validation.
 
 ## 22. REQUIRED FIRST ACTION IN NEW CHAT
@@ -300,8 +299,8 @@
 - [RECONCILIATION] The single workflow is committed CI configuration, and Build #2 verified successful Release-asset delivery with no Actions artifact.
 
 ## 24. TRANSFER COMPLETION
-- [IMPLEMENTED] Restored App Build architecture and Release delivery path are synchronized in the persistent transfer state.
+- [IMPLEMENTED] Current direct Release delivery workflow and Build 37245703677 result are synchronized in the persistent transfer state.
 - [IMPLEMENTED] Complete snapshot reconstructed from accessible chat context and repository evidence.
 - [IMPLEMENTED] Functional App/Firmware source intentionally not changed by this transfer procedure.
-- [IMPLEMENTED] Persistent docs are synchronized for the restored workflow architecture.
-- [VERIFIED PENDING] Final save verification after this build must confirm Release asset metadata plus unchanged App/Firmware source blobs and synchronized documentation.
+- [IMPLEMENTED] Persistent docs are synchronized for the current Release workflow.
+- [VERIFIED] Build 37245703677 confirmed Release asset metadata; final documentation sync records the result.
