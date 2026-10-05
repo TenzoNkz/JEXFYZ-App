@@ -1,16 +1,16 @@
 # JE X FYZ — CURRENT PROJECT STATE
 
 ## CURRENT PHASE
-> **V4.9 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V5.0 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## CURRENT TRUTH
 - Project: JE X FYZ / JE Cooler
 - Repository: TenzoNkz/JEXFYZ-App
 - Branch: main
-- Firmware: V4.9
-- Firmware source change commit: d03998ac5137e475bc1f6778931b25a509068a28
-- Active Firmware source: firmware/JEXFYZ-V4.9.ino
-- Firmware source blob: 888ae9740446081b2a2bcb1769e0471f065dce41
+- Firmware: V5.0
+- Firmware source change commit: 534bdfa94bdbe0c00bb05ffbb750ec8d07390a75
+- Active Firmware source: firmware/JEXFYZ-V5.0.ino
+- Firmware source blob: 34a3b895bba282fcb9036a703eb9035bb0ad19cc
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
 - App main source blob: 6def6eb10936bdec1923a6dfe1c809d5f71b1177
@@ -19,9 +19,18 @@
 - Active App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml
 - App Build workflow blob: 51a6c4d35580228ae24f859058ae5b08665d94a0
 - Direct issue-triggered Release workflow is authoritative; no reusable engine is active.
-- Latest verified downloadable App Build: workflow run 37245703677 / GitHub Release jexfyz-latest.
-- Latest verified APK: JEXFYZ-release.apk, 54,327,520 bytes, SHA-256 a9d93bb3f359285bca1f2658f1336b502fd87539b0dec169282a9f2e59df1fc2.
+- Latest verified downloadable App Build: workflow run 37261171475 / GitHub Release jexfyz-latest.
+- Latest verified APK: JEXFYZ-release.apk, 54,327,520 bytes, SHA-256 b8045d0b6fa6d05b421bd6b1c0318d4ee4529734d7b471534700f95676200888.
 - No App Build was executed for the CONTROL precharge change.
+
+## V5.0 SELECTOR / MOSFET / LED TIMING EXECUTION — 2026-10-05
+- [IMPLEMENTED] Voltage selector: GPIO3 = 12V Optocoupler/Decoy, GPIO4 = 9V Optocoupler/Decoy; both OFF for 200 ms before the target selector is enabled, preventing simultaneous selector activation.
+- [IMPLEMENTED] GPIO5 Peltier MOSFET and GPIO6 Fan MOSFET are not forcibly turned OFF during voltage changes; Peltier PWM state is preserved through the selector deadtime.
+- [IMPLEMENTED] Fan is forced to 100% at the start of every voltage transition.
+- [IMPLEMENTED] Fan Speed is adjustable only while already at 12V; commands during a voltage transition are rejected, and returning to 12V does not restore a previous speed preference.
+- [IMPLEMENTED] HOTSIDE red LED blink duration is 10 seconds and is aligned with each 10-second HOTSIDE timing stage, including the 5V terminal stage.
+- [IMPLEMENTED] Firmware version bumped V4.9 → V5.0 for this functional revision.
+- [NOT BUILT HERE] App Build remains a separate operation.
 
 ## V4.9 HOTSIDE EXECUTION — 2026-10-05
 - [IMPLEMENTED] HOTSIDE 12V limit: Fan remains ON, Peltier OFF, 10-second dwell, then 9V.
@@ -51,9 +60,9 @@
 - Firmware version incremented from V4.6 to V4.9 because this is a functional realtime-telemetry QC fix.
 
 ## QC / RELEASE STATE
-- [VERIFIED] V4.9 source/static audit passed for the realtime telemetry fix.
-- [UNVERIFIED] Arduino compilation, BIN generation, V4.9 flash/OTA, and App ↔ Firmware physical integration after the fix.
-- [NOT RELEASED] V4.9 is not yet a released firmware.
+- [VERIFIED] V5.0 source/static audit passed for the selector/MOSFET/Fan/LED timing revision.
+- [UNVERIFIED] Arduino compilation, BIN generation, V5.0 flash/OTA, and App ↔ Firmware physical integration after this revision.
+- [NOT RELEASED] V5.0 is not yet a released firmware.
 - Functional source is frozen during QC unless a demonstrated QC defect requires a targeted fix.
 
 ## FIRMWARE
@@ -66,7 +75,7 @@
 - Hotside limit range: 40–50°C, default 45°C.
 - NTC fault behavior remains Fan 100%, Peltier OFF, Adaptive OFF, safe 5V.
 - Rapid-rise slope protection is removed; no RAPID_HOTSIDE_RISE event is emitted.
-- V4.9 compile/BIN/flash/OTA validation remains pending.
+- V5.0 compile/BIN/flash/OTA validation remains pending.
 
 ## APP
 - App version remains 1.0.0+3.
@@ -86,7 +95,7 @@
 - No App Build was implied or executed by this firmware-only change.
 
 ## VALIDATION BOUNDARY
-- [VERIFIED] Repository/source audit for the requested V4.9 realtime telemetry fix.
+- [VERIFIED] Repository/source audit for the requested V5.0 selector/MOSFET/Fan/LED behavior.
 - [USER-CONFIRMED] V4.6 Firmware compilation, Online OTA, and hardware test succeeded before the V4.9 telemetry fix.
 - [UNVERIFIED] Firmware compile independently reproduced in this environment.
 - [UNVERIFIED] Final BIN generation.
