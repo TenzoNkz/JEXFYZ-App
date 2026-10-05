@@ -13,16 +13,23 @@
 - Firmware source blob: 34a3b895bba282fcb9036a703eb9035bb0ad19cc
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
-- App main source blob: 484b14bd585b95cdcb066adff59b5446649760b9
+- App main source blob: 5a3d63eb931d82b0b0d44668d7efde1b3c450b83
 - App settings source blob: f11235bab559b291928550e06984532581ddad6a
-- App test source blob: d9ddfca369980fc0cd5ecdf80de1a10a5b1a2e18
-- App CONTROL source change commit: e4cffd620eea2eaa67dca980237b6608f904a160
+- App test source blob: 1a1b4fe225b1faaf9e3602173895d6e05c1bc4ec
+- App CONTROL source change commit: 5a3d63eb931d82b0b0d44668d7efde1b3c450b83
 - Active App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml
 - App Build workflow blob: 51a6c4d35580228ae24f859058ae5b08665d94a0
 - Direct issue-triggered Release workflow is authoritative; no reusable engine is active.
 - Latest verified downloadable App Build: workflow run 37261171475 / GitHub Release jexfyz-latest.
 - Latest verified APK: JEXFYZ-release.apk, 54,327,520 bytes, SHA-256 b8045d0b6fa6d05b421bd6b1c0318d4ee4529734d7b471534700f95676200888.
 - No App Build was executed for the CONTROL precharge change.
+
+## APP HOME FAN SPEED DISPLAY QC — 2026-10-05
+- [IMPLEMENTED] Fixed Home Fan Speed display for Adaptive + 12V: it now shows 100% instead of --.
+- [PRESERVED] Manual + 12V continues to show the actual user-controlled Fan Speed.
+- [PRESERVED] Adaptive Fan Speed remains non-editable; this is a display fix only.
+- [IMPLEMENTED] Added regression coverage for Adaptive 12V = 100%, Manual 12V = configured speed, and 9V = 100%.
+- [NOT BUILT HERE] App Build was not executed for this source fix.
 
 ## V5.0 SELECTOR / MOSFET / LED TIMING EXECUTION — 2026-10-05
 - [IMPLEMENTED] Voltage selector: GPIO3 = 12V Optocoupler/Decoy, GPIO4 = 9V Optocoupler/Decoy; both OFF for 200 ms before the target selector is enabled, preventing simultaneous selector activation.
