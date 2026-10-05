@@ -10,6 +10,7 @@
 - Current App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml
 - Workflow blob: 51a6c4d35580228ae24f859058ae5b08665d94a0
 - Latest verified App Build: workflow run 37245703677 / GitHub Release jexfyz-latest
+- Current App source includes the targeted 2-second Fan precharge before Peltier ON when Fan was initially OFF.
 
 ## CURRENT PHASE
 > **V4.6 — CODE COMPLETE → QC / PRE-RELEASE → NOT RELEASED**
@@ -22,7 +23,8 @@
 - Rapid Hotside-rise protection removed.
 - Normal Hotside temperature-limit protection preserved.
 - Local OTA Golden Path preserved.
-- BLE/P1/UUIDs, Adaptive, RGB, telemetry, App source, and App CI workflow preserved.
+- BLE/P1/UUIDs, Adaptive, RGB, telemetry, and App CI workflow preserved.
+- App CONTROL change: confirmed FAN=ON -> 2-second precharge -> PELTIER:ON when Fan was initially OFF.
 
 ## QC RULE
 Functional source is frozen during QC. Only a demonstrated QC failure with a clear root cause justifies a targeted source change.
@@ -35,10 +37,11 @@ Functional source is frozen during QC. Only a demonstrated QC failure with a cle
 5. Safety QC.
 6. Local OTA.
 7. Online OTA/BLE recovery.
-8. App ↔ Firmware integration.
+8. Build App and App ↔ Firmware integration QC, including CONTROL Fan -> 2 s -> Peltier behavior.
 9. Release Gate.
 
 ## VALIDATION
 - [VERIFIED] Source/static audit.
-- [UNVERIFIED] Compile/BIN/flash/physical/runtime/OTA V4.6 validation.
+- [USER-CONFIRMED] V4.6 Firmware compilation and Online OTA update succeeded in the user's environment.
+- [UNVERIFIED] App Build after the latest CONTROL change and App ↔ Firmware physical integration.
 - [NOT RELEASED] V4.6.
