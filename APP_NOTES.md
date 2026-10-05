@@ -71,7 +71,7 @@
 
 ## CURRENT PHASE
 - App remains in DEVELOPMENT + QC; the current firmware integration target is V5.1.
-- The latest verified APK predates V5.1 Firmware and does not prove V5.1 physical integration.
+- The latest verified APK predates V5.2 Firmware and does not prove V5.2 physical integration.
 
 ## CONTROL
 - Peltier ON from Fan-OFF state: after the safety popup is approved, the App queues FAN:ON and PELTIER:ON together; the BLE write queue preserves that order without waiting for Fan telemetry between commands.
@@ -101,7 +101,7 @@
 - Wi-Fi password input is masked.
 - Firebase supplies release metadata; GitHub hosts the fixed firmware BIN URL.
 - Wi-Fi credentials remain in flutter_secure_storage.
-- The V5.0 firmware preserves the P1 command contract and adds selector-only voltage deadtime, 100% Fan transition behavior, and 10-second HOTSIDE LED timing; App control now starts Fan/Peltier back-to-back from the safety popup.
+- V5.2 firmware preserves the P1 command contract and adds Peltier safety re-arm feedback; App control now starts Fan/Peltier back-to-back from the safety popup.
 
 ## BUILD / CI STATUS
 - Latest verified downloadable App Build: workflow run 37245703677.
