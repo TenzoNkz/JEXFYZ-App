@@ -1,16 +1,16 @@
 # JE X FYZ — CURRENT PROJECT STATE
 
 ## CURRENT PHASE
-> **V5.3 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V5.4 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## CURRENT TRUTH
 - Project: JE X FYZ / JE Cooler
 - Repository: TenzoNkz/JEXFYZ-App
 - Branch: main
-- Firmware: V5.3
-- Firmware source change commits: 85bf8acf79fd91f0d3bbbe2440bec8bab73774da → 90f459ac4720a3ec509543bcc4e83bde96e3d910
-- Active Firmware source: firmware/JEXFYZ-V5.3.ino
-- Firmware source blob: d6b5262c0ed429999ef6a951841bca6b24296949
+- Firmware: V5.4
+- Firmware source change commits: 85bf8acf79fd91f0d3bbbe2440bec8bab73774da → fd883ca695cab2f35014b3cf069fa9454ae6bc89
+- Active Firmware source: firmware/JEXFYZ-V5.4.ino
+- Firmware source blob: 0b1fd030aad646001b6c2f75bc248caa843b30eb
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
 - App main source blob: 48406cda017be1ce939ff682497324bf3680a7f3
@@ -23,6 +23,16 @@
 - Latest verified downloadable App Build: workflow run 37261171475 / GitHub Release jexfyz-latest.
 - Latest verified APK: JEXFYZ-release.apk, 54,327,520 bytes, SHA-256 b8045d0b6fa6d05b421bd6b1c0318d4ee4529734d7b471534700f95676200888.
 - No App Build was executed for the CONTROL precharge change.
+
+## V5.4 HOTSIDE DWELL FAN + LED QC FIX — 2026-10-06
+- [QC FIX / IMPLEMENTED] Adaptive HOTSIDE safety keeps Fan ON at 100% throughout the full 10-second Hotside thermal dwell at every Adaptive rail.
+- [QC FIX / IMPLEMENTED] After each HOTSTEP completes, Fan remains ON at 100% while Hotside safety is still active.
+- [QC FIX / IMPLEMENTED] Hotside thermal LED timing is now synchronized to the 10-second dwell: 9 seconds red blink followed by 1 second green blink.
+- [PRESERVED] HOTSIDE thermal dwell remains 10 seconds before the lower-voltage safety step is requested.
+- [PRESERVED] Adaptive upward-voltage dwell remains 5 seconds; downward Adaptive steps remain immediate.
+- [PRESERVED] 200 ms selector deadtime, 1 s voltage guard, Peltier 5 s soft-start, NTC safety, OTA, BLE, and P1 contracts.
+- [IMPLEMENTED] Firmware promoted V5.3 → V5.4 for this functional QC correction.
+- [NOT BUILT HERE] V5.4 compile/BIN/flash/physical validation remains pending.
 
 ## CHAT-LIMIT RECONCILIATION — 2026-10-05
 - [VERIFIED] Current main HEAD before this transfer write: 3a54d83956f357750684a32279952cbd7fb484f8 (docs: reconcile V5.3 handover for chat transfer).
@@ -102,9 +112,9 @@
 - Firmware version incremented from V4.6 to V4.9 because this is a functional realtime-telemetry QC fix.
 
 ## QC / RELEASE STATE
-- [VERIFIED] V5.3 source/static audit passed for the Adaptive rise-dwell and prior safety revisions.
-- [UNVERIFIED] Arduino compilation, BIN generation, V5.3 flash/OTA, and App ↔ Firmware physical integration after this revision.
-- [NOT RELEASED] V5.3 is not yet a released firmware.
+- [VERIFIED] V5.4 source/static audit passed for the Fan/LED Hotside dwell QC correction and prior safety revisions.
+- [UNVERIFIED] Arduino compilation, BIN generation, V5.4 flash/OTA, and App ↔ Firmware physical integration after this revision.
+- [NOT RELEASED] V5.4 is not yet a released firmware.
 - Functional source is frozen during QC unless a demonstrated QC defect requires a targeted fix.
 
 ## FIRMWARE
@@ -117,7 +127,7 @@
 - Hotside limit range: 40–50°C, default 45°C.
 - NTC fault behavior remains Fan 100%, Peltier OFF, Adaptive OFF, safe 5V.
 - Rapid-rise slope protection is removed; no RAPID_HOTSIDE_RISE event is emitted.
-- V5.3 compile/BIN/flash/OTA validation remains pending.
+- V5.4 compile/BIN/flash/OTA validation remains pending.
 
 ## APP
 - App version remains 1.0.0+3.
@@ -149,4 +159,4 @@
 - [NOT RELEASED] Release Gate is not complete.
 
 ## EXACT NEXT ACTION
-> **Compile V5.3 → generate BIN → flash/OTA → hardware/safety QC → App Build separately → App ↔ V5.3 integration QC → Release Gate.**
+> **Compile V5.4 → generate BIN → flash/OTA → hardware/safety QC → App Build separately → App ↔ V5.4 integration QC → Release Gate.**
