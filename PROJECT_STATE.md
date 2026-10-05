@@ -1,16 +1,16 @@
 # JE X FYZ — CURRENT PROJECT STATE
 
 ## CURRENT PHASE
-> **V5.1 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V5.2 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## CURRENT TRUTH
 - Project: JE X FYZ / JE Cooler
 - Repository: TenzoNkz/JEXFYZ-App
 - Branch: main
-- Firmware: V5.1
-- Firmware source change commit: d4fd79ebfbd9eff2986f16d814ff36c11550ee55
-- Active Firmware source: firmware/JEXFYZ-V5.1.ino
-- Firmware source blob: e5a38482b09ce9f07f93b471914495238d9a81aa
+- Firmware: V5.2
+- Firmware source change commit: 3729812c29a7c727e1b40ba18bc3b030b187904c
+- Active Firmware source: firmware/JEXFYZ-V5.2.ino
+- Firmware source blob: 3ecb7fef69a5db41475fe2b76d2ae1bc1fef616b
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
 - App main source blob: 93ed2e3e3cf2aadf503825675bb121f9c167689f
@@ -37,7 +37,7 @@
 - [IMPLEMENTED] Retired `RAPID_HOTSIDE_RISE` notification wording was removed from the App.
 - [IMPLEMENTED] Peltier failure notification avoids duplicating the firmware safety reason.
 
-## V5.1 PELTIER SAFETY REARM FEEDBACK — 2026-10-05
+## V5.2 PELTIER SAFETY REARM FEEDBACK — 2026-10-05
 - [IMPLEMENTED] Manual Peltier restart remains locked until Hotside <= hotLimit - 2°C after a Hotside safety event, including the 5V Adaptive terminal state.
 - [IMPLEMENTED] Hardware Touch cooling ON now respects the same 2°C re-arm hysteresis and no longer bypasses the latch.
 - [IMPLEMENTED] Any failed Peltier ON safety attempt gets a non-blocking 1-second red LED blink; a successful Peltier ON gets a non-blocking 1-second green LED blink.
@@ -85,7 +85,7 @@
 ## QC / RELEASE STATE
 - [VERIFIED] V5.0 source/static audit passed for the selector/MOSFET/Fan/LED timing revision.
 - [UNVERIFIED] Arduino compilation, BIN generation, V5.1 flash/OTA, and App ↔ Firmware physical integration after this revision.
-- [NOT RELEASED] V5.1 is not yet a released firmware.
+- [NOT RELEASED] V5.2 is not yet a released firmware.
 - Functional source is frozen during QC unless a demonstrated QC defect requires a targeted fix.
 
 ## FIRMWARE
@@ -98,7 +98,7 @@
 - Hotside limit range: 40–50°C, default 45°C.
 - NTC fault behavior remains Fan 100%, Peltier OFF, Adaptive OFF, safe 5V.
 - Rapid-rise slope protection is removed; no RAPID_HOTSIDE_RISE event is emitted.
-- V5.1 compile/BIN/flash/OTA validation remains pending.
+- V5.2 compile/BIN/flash/OTA validation remains pending.
 
 ## APP
 - App version remains 1.0.0+3.
@@ -125,9 +125,9 @@
 - [UNVERIFIED] ESP32-C3 flash.
 - [UNVERIFIED] Hardware-only touch/Fan/Peltier behavior.
 - [UNVERIFIED] Hotside/NTC safety runtime tests.
-- [UNVERIFIED] V5.1 Local OTA and Online OTA + GATT recovery.
-- [UNVERIFIED] App Build after the safety/Notify fixes and App ↔ V5.1 physical integration.
+- [UNVERIFIED] V5.2 Local OTA and Online OTA + GATT recovery.
+- [UNVERIFIED] App Build after the safety/Notify fixes and App ↔ V5.2 physical integration.
 - [NOT RELEASED] Release Gate is not complete.
 
 ## EXACT NEXT ACTION
-> **Compile V5.1 → generate BIN → flash/OTA → Build App separately → install APK → App ↔ Firmware safety/Notify QC.**
+> **Compile V5.2 → generate BIN → flash/OTA → Build App separately → install APK → App ↔ Firmware safety/Notify QC.**
