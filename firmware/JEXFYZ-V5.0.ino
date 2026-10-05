@@ -4534,8 +4534,6 @@ static void initializeRuntimeFeatures() {
   peltierOn = false;
   peltierSoftStarting = false;
   peltierSoftStartAtMs = 0;
-  peltierRailStabilizing = false;
-  peltierRailStabilizeUntilMs = 0;
   lastPeltierDuty = 0;
   adaptiveOn = false;
   adaptiveCeiling = Voltage::V12;
