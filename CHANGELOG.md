@@ -1,3 +1,10 @@
+## APP SAFETY NOTIFY CLEANUP — 2026-10-05
+- Unified Peltier safety failure wording around the configured Hotside re-arm threshold.
+- Removed retired RAPID_HOTSIDE_RISE notification mapping.
+- Touch ON/OFF ACK reasons are treated as valid outcomes and shown cleanly.
+- Duplicate generic Peltier failure notices are suppressed when firmware already reports the safety reason.
+- No App Build was executed.
+
 ## V5.1 PELTIER SAFETY REARM FEEDBACK — 2026-10-05
 - Promoted Firmware V5.0 → V5.1 for the requested Peltier restart protection and feedback.
 - Manual and 5V Adaptive-terminal Peltier restart stays locked until Hotside reaches hotLimit - 2°C.
