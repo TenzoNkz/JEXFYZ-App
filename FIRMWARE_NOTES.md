@@ -7,6 +7,12 @@
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
+## CURRENT PHASE
+- CODE COMPLETE
+- QC / PRE-RELEASE
+- NOT RELEASED
+- Functional source is frozen unless QC demonstrates a real defect.
+
 ## CONTROL CONTRACT
 - Hardware single tap: 5V → 9V → 12V → 9V → 5V → ...
 - Hardware cooling long press ON: Fan 100%.
@@ -55,6 +61,16 @@ Online OTA:
 - GPIO Peltier = 5; Fan = 6.
 - BOOT_AP_HARD_LIMIT_MS = 60000.
 - PELTIER_SOFT_START_MS = 5000.
+
+## QC GATES
+- Compile V4.6.
+- Generate BIN.
+- Flash ESP32-C3.
+- Hardware-only control QC.
+- Safety QC.
+- Local OTA Golden Path.
+- Online OTA + BLE recovery.
+- App ↔ Firmware integration.
 
 ## VALIDATION BOUNDARY
 - V4.4 OTA: user-confirmed PASS for all OTA paths before V4.5 promotion.
