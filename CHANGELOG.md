@@ -1,3 +1,13 @@
+## V5.7 TTP223 TOUCH ACCURACY QC FIX — 2026-10-06
+- Promoted Firmware V5.6 → V5.7 for a targeted TTP223 touch recognition correction.
+- Added 30 ms raw-input qualification for PRESS and RELEASE edges to reject short false transitions.
+- Added 60–500 ms valid tap duration using raw HIGH duration.
+- Increased double-tap window to 800 ms, starting after the first valid tap release.
+- Added second-tap grace: a second tap started before the deadline is allowed to finish after the deadline.
+- Added 1-second startup grace and blocks boot-held touch until a qualified release.
+- Preserved the existing 1x voltage, 2x RGB, and 5-second long-press command semantics.
+- App source/build was not changed or run for this Firmware-only QC fix.
+
 ## V5.6 NTC ADC FILTERING QC FIX — 2026-10-06
 - Promoted Firmware V5.5 → V5.6 for a targeted NTC QC correction.
 - Replaced single-sample Hotside ADC capture with 16-sample calibrated burst sampling.
