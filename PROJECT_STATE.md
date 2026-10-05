@@ -16,7 +16,7 @@
 - App main source blob: 93ed2e3e3cf2aadf503825675bb121f9c167689f
 - App settings source blob: f11235bab559b291928550e06984532581ddad6a
 - App test source blob: 6e6dd60b3b7a7615875851b7af027bc0bd2ea326
-- App CONTROL source change commit: 7c4d406204244d0282a857a298b00eed0c55dcc6
+- App CONTROL source change commit: b9f316e50770acb66770515395344de6c6e80ea6
 - Active App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml
 - App Build workflow blob: 51a6c4d35580228ae24f859058ae5b08665d94a0
 - Direct issue-triggered Release workflow is authoritative; no reusable engine is active.
@@ -30,6 +30,12 @@
 - [PRESERVED] Adaptive Fan Speed remains non-editable; this is a display fix only.
 - [IMPLEMENTED] Added regression coverage for Adaptive 12V = 100%, Manual 12V = configured speed, and 9V = 100%.
 - [NOT BUILT HERE] App Build was not executed for this source fix.
+
+## CURRENT APP SAFETY NOTIFY — 2026-10-05
+- [IMPLEMENTED] Peltier restart notifications report the exact re-arm temperature (`hotLimit - 2°C`).
+- [IMPLEMENTED] Touch ON/OFF ACKs are treated as valid results and surfaced cleanly; successful touch cooling is no longer shown as an error.
+- [IMPLEMENTED] Retired `RAPID_HOTSIDE_RISE` notification wording was removed from the App.
+- [IMPLEMENTED] Peltier failure notification avoids duplicating the firmware safety reason.
 
 ## V5.1 PELTIER SAFETY REARM FEEDBACK — 2026-10-05
 - [IMPLEMENTED] Manual Peltier restart remains locked until Hotside <= hotLimit - 2°C after a Hotside safety event, including the 5V Adaptive terminal state.
@@ -124,4 +130,4 @@
 - [NOT RELEASED] Release Gate is not complete.
 
 ## EXACT NEXT ACTION
-> **Compile V4.9 → generate BIN → flash/OTA → Build App → install APK → App ↔ Firmware realtime Control/Notify QC.**
+> **Compile V5.1 → generate BIN → flash/OTA → Build App separately → install APK → App ↔ Firmware safety/Notify QC.**
