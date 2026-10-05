@@ -25,7 +25,7 @@
 
 ## TRANSFER / MEMORY STATE
 - [VERIFIED] Latest chat-limit transfer snapshot save commit: b59b63fa2a65ccd5ce45dec0cfb18f97d76989b7.
-- [PENDING] Final verification commit will record the post-save HEAD in CHAT_TRANSFER.md.
+- [VERIFIED] Final CHAT_TRANSFER verification commit: 590d9ebcafe9a9dc5e0961343a3c2f4250d0e4aa.
 
 ## CURRENT TASK RESULT
 - [IMPLEMENTED] Hardware single-tap voltage now follows 5V → 9V → 12V → 9V → 5V → ...
