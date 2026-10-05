@@ -1,3 +1,11 @@
+## V5.4 HOTSIDE DWELL FAN + LED QC FIX — 2026-10-06
+- Promoted Firmware V5.3 → V5.4 for a targeted QC correction.
+- Adaptive HOTSIDE safety now keeps Fan ON at 100% through the full 10-second thermal dwell at every rail.
+- Completed HOTSTEP transitions keep Fan ON at 100% while Hotside safety is active.
+- Hotside dwell LED now blinks red for the first 9 seconds and green for the final 1 second.
+- Preserved the 10-second thermal dwell, 5-second Adaptive upward dwell, 200 ms selector deadtime, 1 s voltage guard, and 5-second Peltier soft-start.
+- App source and App Build were not changed or run for this Firmware-only QC fix.
+
 ## V5.3 ADAPTIVE VOLTAGE RISE DWELL — 2026-10-05
 - Promoted Firmware V5.2 → V5.3.
 - Both Adaptive profiles (HOTSIDE and HOTSIDE_BATTERY) now wait 5 seconds after every completed upward voltage step before allowing another increase.
