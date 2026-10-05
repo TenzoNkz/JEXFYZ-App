@@ -8,7 +8,7 @@
 - Repository: TenzoNkz/JEXFYZ-App
 - Branch: main
 - Firmware: V5.1
-- Firmware source change commit: 534bdfa94bdbe0c00bb05ffbb750ec8d07390a75
+- Firmware source change commit: d4fd79ebfbd9eff2986f16d814ff36c11550ee55
 - Active Firmware source: firmware/JEXFYZ-V5.1.ino
 - Firmware source blob: e5a38482b09ce9f07f93b471914495238d9a81aa
 - App version: 1.0.0+3
@@ -84,7 +84,7 @@
 
 ## QC / RELEASE STATE
 - [VERIFIED] V5.0 source/static audit passed for the selector/MOSFET/Fan/LED timing revision.
-- [UNVERIFIED] Arduino compilation, BIN generation, V5.0 flash/OTA, and App ↔ Firmware physical integration after this revision.
+- [UNVERIFIED] Arduino compilation, BIN generation, V5.1 flash/OTA, and App ↔ Firmware physical integration after this revision.
 - [NOT RELEASED] V5.1 is not yet a released firmware.
 - Functional source is frozen during QC unless a demonstrated QC defect requires a targeted fix.
 
@@ -102,7 +102,7 @@
 
 ## APP
 - App version remains 1.0.0+3.
-- [IMPLEMENTED] CONTROL Peltier-start sequence: App confirms FAN:ON then sends PELTIER:ON; Firmware owns the 5-second Peltier soft-start.
+- [IMPLEMENTED] CONTROL Peltier-start sequence: App queues FAN:ON then PELTIER:ON back-to-back; Firmware owns the 5-second Peltier soft-start.
 - Fan already ON -> Peltier ON remains immediate; no App-side precharge timer.
 - App continues to treat firmware telemetry as authoritative for physical/safety state.
 - App Build remains separate and was not executed by this change.
@@ -125,8 +125,8 @@
 - [UNVERIFIED] ESP32-C3 flash.
 - [UNVERIFIED] Hardware-only touch/Fan/Peltier behavior.
 - [UNVERIFIED] Hotside/NTC safety runtime tests.
-- [UNVERIFIED] V4.9 Local OTA and Online OTA + GATT recovery.
-- [UNVERIFIED] App Build after the realtime fix and App ↔ V4.9 physical integration.
+- [UNVERIFIED] V5.1 Local OTA and Online OTA + GATT recovery.
+- [UNVERIFIED] App Build after the safety/Notify fixes and App ↔ V5.1 physical integration.
 - [NOT RELEASED] Release Gate is not complete.
 
 ## EXACT NEXT ACTION
