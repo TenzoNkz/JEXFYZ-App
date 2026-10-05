@@ -1,9 +1,9 @@
 # JE X FYZ — CURRENT FIRMWARE NOTES
 
 ## ACTIVE
-- Version: V5.4
-- Source: firmware/JEXFYZ-V5.4.ino
-- Blob: 0b1fd030aad646001b6c2f75bc248caa843b30eb
+- Version: V5.5
+- Source: firmware/JEXFYZ-V5.5.ino
+- Blob: ca6d88280dff8f14e220b6dc3b50e1967edaea1b
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
@@ -17,6 +17,8 @@
 - Hardware single tap: 5V → 9V → 12V → 9V → 5V → ...
 - Hardware cooling long press ON: Fan 100%.
 - Peltier OFF → ON: 5-second cooperative soft-start, unchanged.
+- Normal Peltier ON/OFF emits no Peltier LED indicator.
+- After Hotside safety forces Peltier OFF, failed re-arm ON attempts blink red for 1 s; a successful re-arm ON attempt at hotLimit - 2°C blinks green for 1 s.
 - Fan remains 25 kHz, 8-bit, 50–100% for App-controlled operation.
 - Voltage selector deadtime 200 ms; voltage guard 1 s.
 - Adaptive HOTSIDE safety timing uses the 10-second step-down sequence; both Adaptive profiles use a 5-second dwell after every upward voltage step; Peltier restart safety uses the 2°C re-arm hysteresis.
@@ -77,7 +79,7 @@ Online OTA:
 - GPIO Peltier = 5; Fan = 6.
 - BOOT_AP_HARD_LIMIT_MS = 60000.
 - PELTIER_SOFT_START_MS = 5000.
-- PELTIER_COMMAND_INDICATOR_DURATION_MS = 1000.
+- PELTIER_SAFETY_ATTEMPT_INDICATOR_DURATION_MS = 1000.
 - HOT_PELTIER_OFF_MS = 10000.
 
 ## QC GATES
