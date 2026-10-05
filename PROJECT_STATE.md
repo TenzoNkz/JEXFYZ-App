@@ -37,11 +37,13 @@
 - [PRESERVED] Local OTA Golden/Protected path and single-radio Wi-Fi/BLE ownership.
 - [PRESERVED] BLE UUIDs, P1 protocol, Adaptive, RGB, telemetry, and existing App behavior outside the targeted CONTROL change.
 - [IMPLEMENTED] When Peltier is requested ON while Fan is OFF, App now waits 2 seconds after confirmed FAN=ON before sending PELTIER:ON.
+- [QC FIX] Firmware V4.7 publishes Fan/Peltier/Fan-speed realtime deltas from pre-mutation state snapshots.
+- [QC FIX] App consumes unsolicited FAN/PELTIER/FAN_SPEED telemetry immediately and reconciles stale Notify errors only after healthy live safety telemetry.
 - Firmware version incremented from V4.6 to V4.7 because this is a functional realtime-telemetry QC fix.
 
 ## QC / RELEASE STATE
 - [VERIFIED] V4.7 source/static audit passed for the realtime telemetry fix.
-- [UNVERIFIED] Arduino compilation, BIN generation, flash, physical hardware behavior, V4.6 OTA, and App ↔ Firmware physical integration.
+- [UNVERIFIED] Arduino compilation, BIN generation, V4.7 flash/OTA, and App ↔ Firmware physical integration after the fix.
 - [NOT RELEASED] V4.7 is not yet a released firmware.
 - Functional source is frozen during QC unless a demonstrated QC defect requires a targeted fix.
 
@@ -75,16 +77,15 @@
 - No App Build was implied or executed by this firmware-only change.
 
 ## VALIDATION BOUNDARY
-- [VERIFIED] Repository/source audit for the requested V4.6 behavior.
-- [USER-CONFIRMED] V4.6 Firmware compilation and Online OTA update succeeded in the user's environment.
+- [VERIFIED] Repository/source audit for the requested V4.7 realtime telemetry fix.
+- [USER-CONFIRMED] V4.6 Firmware compilation, Online OTA, and hardware test succeeded before the V4.7 telemetry fix.
 - [UNVERIFIED] Firmware compile independently reproduced in this environment.
 - [UNVERIFIED] Final BIN generation.
 - [UNVERIFIED] ESP32-C3 flash.
 - [UNVERIFIED] Hardware-only touch/Fan/Peltier behavior.
 - [UNVERIFIED] Hotside/NTC safety runtime tests.
-- [UNVERIFIED] Local OTA on V4.6.
-- [UNVERIFIED] Online OTA + GATT disconnect/BLE recovery on V4.6.
-- [UNVERIFIED] App Build after the CONTROL change and App ↔ V4.6 physical integration, including the new 2-second Fan precharge timing.
+- [UNVERIFIED] V4.7 Local OTA and Online OTA + GATT recovery.
+- [UNVERIFIED] App Build after the realtime fix and App ↔ V4.7 physical integration.
 - [NOT RELEASED] Release Gate is not complete.
 
 ## EXACT NEXT ACTION
