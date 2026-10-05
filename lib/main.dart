@@ -3586,39 +3586,41 @@ void _handleAckLine(String line) {
   String _friendlyReason(String reason) {
     switch (reason) {
       case 'NTC_ERROR':
-        return JexText.phrase('Temperature sensor error.', 'Kesalahan sensor suhu.');
+        return JexText.phrase('Temperature sensor error. Peltier is locked.', 'Kesalahan sensor suhu. Peltier dikunci.');
       case 'HOTSIDE_PROTECTION':
-        return JexText.phrase('Hotside limit is active. Peltier remains locked until the re-arm threshold is reached.', 'Batas suhu panas aktif. Peltier tetap terkunci sampai batas aktif kembali tercapai.');
+        return peltierRearmNotice(hotLimit, appLanguageNotifier.value);
       case 'PELTIER_SAFETY_LATCH':
         return peltierRearmNotice(hotLimit, appLanguageNotifier.value);
       case 'VOLTAGE_STEP_FAILED':
-        return JexText.phrase('Adaptive voltage step failed.', 'Perubahan langkah tegangan adaptif gagal.');
+        return JexText.phrase('Adaptive voltage step could not be completed.', 'Perpindahan tegangan adaptif gagal.');
       case 'VOLTAGE_FORCE_FAILED':
-        return JexText.phrase('Safety could not force 5V.', 'Sistem keselamatan gagal memaksa 5V.');
+        return JexText.phrase('Safety could not force the required 5V state.', 'Sistem keselamatan gagal memaksa keadaan 5V.');
       case 'ADAPTIVE_RISE_WAIT':
         return JexText.phrase('Adaptive is waiting before raising voltage.', 'Mode Adaptif menunggu sebelum menaikkan tegangan.');
+      case 'ADAPTIVE_STARTING':
+        return JexText.phrase('Adaptive Mode is starting.', 'Mode Adaptif sedang diaktifkan.');
       case 'FAN_REQUIRED':
         return JexText.phrase('Fan must be ON before Peltier can start.', 'Kipas harus HIDUP sebelum Peltier dapat dinyalakan.');
       case 'PELTIER_ON':
-        return JexText.phrase('Fan locked while Peltier is ON.', 'Kipas terkunci saat Peltier HIDUP.');
+        return JexText.phrase('Fan is locked while Peltier is ON.', 'Kipas terkunci saat Peltier HIDUP.');
       case 'ADAPTIVE_ACTIVE':
-        return JexText.phrase('Manual cooling controls locked.', 'Kontrol pendinginan manual terkunci.');
+        return JexText.phrase('Manual cooling controls are locked while Adaptive Mode is active.', 'Kontrol pendinginan manual terkunci saat Mode Adaptif aktif.');
       case 'MANUAL_12V_ONLY':
-        return JexText.phrase('Manual 12V only.', 'Manual hanya 12V.');
-      case 'VOLTAGE_GUARD_OR_BUSY':
-        return JexText.phrase('Voltage command pending.', 'Perintah tegangan sedang diproses.');
-      case 'SYNC_REQUIRED':
-        return JexText.phrase('Device sync in progress.', 'Sinkronisasi perangkat sedang berlangsung.');
-      case 'RATE_LIMIT':
-        return JexText.phrase('Command rate limited.', 'Perintah terlalu cepat.');
-      case 'MUST_BE_BELOW_BATT12':
-        return JexText.phrase('5V battery limit must stay below 12V.', 'Batas baterai 5V harus di bawah 12V.');
-      case 'MUST_BE_ABOVE_BATT5':
-        return JexText.phrase('12V battery limit must stay above 5V.', 'Batas baterai 12V harus di atas 5V.');
+        return JexText.phrase('Fan Speed can only be changed at 12V in Manual Mode.', 'Kecepatan Kipas hanya dapat diubah pada 12V dalam Mode Manual.');
       case 'VOLTAGE_TRANSITION':
         return JexText.phrase('Voltage change is in progress. Please wait.', 'Perpindahan tegangan sedang berlangsung. Silakan tunggu.');
+      case 'VOLTAGE_GUARD_OR_BUSY':
+        return JexText.phrase('Voltage command is still being processed.', 'Perintah tegangan masih diproses.');
+      case 'SYNC_REQUIRED':
+        return JexText.phrase('Device sync is still in progress.', 'Sinkronisasi perangkat masih berlangsung.');
+      case 'RATE_LIMIT':
+        return JexText.phrase('Command was sent too quickly. Please try again.', 'Perintah dikirim terlalu cepat. Silakan coba lagi.');
       case 'RANGE_50_100_STEP_10':
         return JexText.phrase('Fan Speed must be 50% to 100% in 10% steps.', 'Kecepatan Kipas harus 50% sampai 100% dengan langkah 10%.');
+      case 'MUST_BE_BELOW_BATT12':
+        return JexText.phrase('5V battery limit must stay below the 12V battery limit.', 'Batas baterai 5V harus tetap di bawah batas baterai 12V.');
+      case 'MUST_BE_ABOVE_BATT5':
+        return JexText.phrase('12V battery limit must stay above the 5V battery limit.', 'Batas baterai 12V harus tetap di atas batas baterai 5V.');
       case 'UNKNOWN_GROUP':
         return JexText.phrase('Reset request is not supported.', 'Permintaan reset tidak didukung.');
       default:
