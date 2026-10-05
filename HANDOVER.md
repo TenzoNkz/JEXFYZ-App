@@ -1,9 +1,9 @@
 # JE X FYZ — CURRENT HANDOVER
 
 ## CURRENT TRUTH
-- Firmware: V4.8
-- Active source: firmware/JEXFYZ-V4.8.ino
-- Firmware blob: d47b62edbf275032780ef05d6ac3be1df06e350b
+- Firmware: V4.9
+- Active source: firmware/JEXFYZ-V4.9.ino
+- Firmware blob: 888ae9740446081b2a2bcb1769e0471f065dce41
 - Firmware source change commit: 3f9a215f2d5532e291c9d26c77897e3ae8ffe15d
 - App: 1.0.0+3
 - App package: com.horizontalzzz.jexfyz
@@ -13,7 +13,7 @@
 - Current App source has no fixed 2-second Fan precharge; Firmware 5-second Peltier soft-start is authoritative.
 
 ## CURRENT PHASE
-> **V4.8 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V4.9 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## IMPLEMENTED / FROZEN
 - Hardware single tap: 5V → 9V → 12V → 9V → 5V → ...
@@ -23,7 +23,7 @@
 - Rapid Hotside-rise protection removed.
 - Normal Hotside temperature-limit protection preserved.
 - Local OTA Golden Path preserved.
-- BLE/P1/UUIDs, Adaptive, RGB, telemetry, and App CI workflow preserved; V4.8 adds the targeted realtime cooling telemetry fix.
+- BLE/P1/UUIDs, Adaptive, RGB, telemetry, and App CI workflow preserved; V4.9 adds the Adaptive Hotside LED stage indication while preserving the realtime cooling telemetry fix.
 - App CONTROL: FAN:ON is confirmed before PELTIER:ON; Firmware owns the 5-second Peltier soft-start.
 - App realtime fix: unsolicited FAN/PELTIER/FAN_SPEED telemetry updates Control; stale Notify errors reconcile against healthy live state.
 
@@ -31,9 +31,9 @@
 Functional source is frozen during QC. Only a demonstrated QC failure with a clear root cause justifies a targeted source change.
 
 ## QC NEXT
-1. Compile V4.8.
+1. Compile V4.9.
 2. Generate BIN.
-3. Flash / OTA V4.8.
+3. Flash / OTA V4.9.
 4. Hardware-only QC.
 5. Safety QC.
 6. Local OTA.
@@ -47,7 +47,7 @@ Functional source is frozen during QC. Only a demonstrated QC failure with a cle
 - [UNVERIFIED] V4.8 compile/BIN/flash/OTA and App ↔ V4.8 integration after the fix.
 - [NOT RELEASED] V4.8.
 
-## V4.8 HOTSIDE EXECUTION — 2026-10-05
+## V4.9 HOTSIDE EXECUTION — 2026-10-05
 - 12V Hotside limit: Fan ON, Peltier OFF, 10s dwell, then 9V.
 - 9V Hotside limit: Fan OFF, Peltier OFF, 10s dwell, then 5V.
 - 5V Hotside limit: terminal safety state; Adaptive exits and manual Peltier restart is required.
