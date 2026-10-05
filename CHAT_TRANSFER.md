@@ -1,4 +1,14 @@
-## 2026-10-06 — V5.5 QC EXECUTION RECORD
+## 2026-10-06 — V5.6 QC EXECUTION RECORD
+### PERSISTENT
+- [VERIFIED] Functional source authority is now V5.6: firmware/JEXFYZ-V5.6.ino, blob f291e05b16235b0e944ea135238335024201355a.
+- [COMMITTED] V5.6 source promotion commit: 1c5159652584bea8e26878a61e88f44aff5e3713.
+- [COMMITTED] V5.5 source retirement commit: c342e2e25c508e38f5ffa33aeffa05ac149d4eee.
+- [IMPLEMENTED] Hotside NTC now uses 16 calibrated ADC samples, trims 4 low + 4 high outliers, and averages the 8 middle samples.
+- [PRESERVED] Existing 10K/10K/Beta3950 model, 3.3 V divider reference, 1-second cadence, and safety behavior.
+- [PRESERVED] No EMA/Kalman temperature filter, speculative VREF constant, voltage clamp, offset calibration, or blocking timing.
+- [UNVERIFIED] Compile, BIN, flash, physical runtime, Local OTA, Online OTA/BLE recovery, and App integration for V5.6.
+- [NOT RELEASED] V5.6.
+
 ### PERSISTENT
 - [VERIFIED] Functional source authority is now V5.5: firmware/JEXFYZ-V5.5.ino, blob 5f72b3557f91c33827ee61f8c2eaf1cab2cfd786.
 - [COMMITTED] V5.5 source promotion commit: adfb3e3860f6c7004e577981d668fef46f467d47.
@@ -31,18 +41,18 @@
 - [CONFIRMED] Project: JE X FYZ / JE Cooler.
 - [VERIFIED] Repository: TenzoNkz/JEXFYZ-App.
 - [VERIFIED] Branch: main.
-- [VERIFIED] Current post-fix state is V5.5; prior pre-fix transfer HEAD 3a54d83956f357750684a32279952cbd7fb484f8 is historical evidence.
+- [VERIFIED] Current post-fix state is V5.6; prior pre-fix transfer HEAD 3a54d83956f357750684a32279952cbd7fb484f8 is historical evidence.
 - [VERIFIED] Current phase: V5.4 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED.
-- [VERIFIED] Active Firmware: V5.5.
-- [VERIFIED] Active Firmware source: firmware/JEXFYZ-V5.5.ino.
-- [VERIFIED] Firmware source blob: ca6d88280dff8f14e220b6dc3b50e1967edaea1b.
+- [VERIFIED] Active Firmware: V5.6.
+- [VERIFIED] Active Firmware source: firmware/JEXFYZ-V5.6.ino.
+- [VERIFIED] Firmware source blob: f291e05b16235b0e944ea135238335024201355a.
 - [VERIFIED] App: JE Cooler; header JE X FYZ; package com.horizontalzzz.jexfyz; version 1.0.0+3.
 - [VERIFIED] App main source blob: 48406cda017be1ce939ff682497324bf3680a7f3.
 - [VERIFIED] App settings source blob: f11235bab559b291928550e06984532581ddad6a.
 - [VERIFIED] App regression-test source blob: 1951964af7542324b2ae27b1bd94f84e1c853060.
 - [VERIFIED] Active App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml.
 - [VERIFIED] Workflow blob: 51a6c4d35580228ae24f859058ae5b08665d94a0.
-- [VERIFIED] V5.5 is the active source; older firmware source revisions are retained only as history, not as active source.
+- [VERIFIED] V5.6 is the active source; older firmware source revisions are retained only as history, not as active source.
 - [CONFIRMED] This transfer is documentation/state persistence only. It does not authorize a new functional source change, Firmware release, or App Build.
 
 ## 2. CURRENT TASK
@@ -94,6 +104,7 @@
 - [FROZEN] Manual Hotside protection preserves the selected voltage.
 - [FROZEN] Manual/Touch Peltier restart safety latch requires Hotside <= hotLimit - 2°C.
 - [FROZEN] Peltier LED feedback is safety-rearm-only: failed ON attempt while the Hotside safety latch is active = red blink 1 s; successful re-arm ON at hotLimit - 2°C = green blink 1 s; normal ON/OFF has no Peltier LED.
+- [FROZEN] Hotside NTC filtering: 16 calibrated ADC samples per 1-second period, discard 4 lowest + 4 highest, average 8 middle samples.
 - [FROZEN] App Peltier Safety popup queues FAN:ON then PELTIER:ON back-to-back; Firmware owns the 5-second Peltier soft-start.
 - [FROZEN] App Fan Speed display at Adaptive + 12V is 100%; Manual + 12V shows configured speed; Adaptive speed control remains locked.
 - [FROZEN] Local OTA uses Golden/Protected path; Online OTA explicitly disconnects GATT before Wi-Fi ownership.
@@ -138,7 +149,7 @@
 - [IMPLEMENTED] evaluateAdaptiveBattery() uses the same 5-second dwell for HOTSIDE_BATTERY upward increases; downward Battery-driven changes clear the rise timer and remain immediate.
 - [IMPLEMENTED] Failed upward requests re-arm a new 5-second wait and report ADAPTIVE_RISE_WAIT.
 - [VERIFIED] Static source audit: 4,778 lines; executable delay() count 0; timing while() count 0; RAPID_HOTSIDE_RISE count 0.
-- [VERIFIED] Peltier soft-start remains 5,000 ms; Hotside thermal dwell remains 10,000 ms; Peltier safety re-arm feedback duration remains 1,000 ms.
+- [VERIFIED] Peltier soft-start remains 5,000 ms; Hotside thermal dwell remains 10,000 ms; Peltier safety re-arm feedback duration remains 1,000 ms; NTC sample cadence remains 1,000 ms.
 - [UNVERIFIED] Arduino compile, BIN generation, ESP32-C3 flash, runtime Adaptive timing, Hotside safety runtime, and OTA runtime for V5.3.
 
 ## 9. ANDROID / BLE / OTA / FIREBASE / CI
