@@ -25,7 +25,7 @@
 - No App Build was executed for the CONTROL precharge change.
 
 ## CHAT-LIMIT RECONCILIATION — 2026-10-05
-- [VERIFIED] Current main HEAD from repository history: 5afa578b2362087c59e7f1ef8723bb108e950864 (fix: align V5.3 firmware qc gate).
+- [VERIFIED] Current main HEAD before this transfer write: 3a54d83956f357750684a32279952cbd7fb484f8 (docs: reconcile V5.3 handover for chat transfer).
 - [VERIFIED] Active Firmware is V5.3 at `firmware/JEXFYZ-V5.3.ino`, blob d6b5262c0ed429999ef6a951841bca6b24296949.
 - [VERIFIED] Active App main source blob is 48406cda017be1ce939ff682497324bf3680a7f3; App settings blob f11235bab559b291928550e06984532581ddad6a; tests blob 1951964af7542324b2ae27b1bd94f84e1c853060.
 - [VERIFIED] V5.3 functional implementation is preserved in source commit 85bf8acf79fd91f0d3bbbe2440bec8bab73774da; V5.2 retirement is 90f459ac4720a3ec509543bcc4e83bde96e3d910. Compare 90f→current shows only documentation changes after the source retirement.
@@ -81,8 +81,10 @@
 - [NOT BUILT HERE] App Build is intentionally separate from this execution.
 
 ## TRANSFER / MEMORY STATE
-- [VERIFIED] Latest chat-limit transfer snapshot save commit: b59b63fa2a65ccd5ce45dec0cfb18f97d76989b7.
-- [VERIFIED] Final CHAT_TRANSFER verification commit: 590d9ebcafe9a9dc5e0961343a3c2f4250d0e4aa.
+- [VERIFIED] CHAT_TRANSFER.md was replaced at commit 3d21b33b5c96640f7393a4956ad2ccb868639644.
+- [VERIFIED] Saved CHAT_TRANSFER blob: fc00fdf83cd461f4f76e1edca6b53453111f1137.
+- [VERIFIED] Pre-save HEAD reconciled before transfer write: 3a54d83956f357750684a32279952cbd7fb484f8.
+- [PENDING VERIFICATION] A subsequent documentation reconciliation commit may advance main after this state write.
 
 ## CURRENT TASK RESULT
 - [IMPLEMENTED] Hardware single-tap voltage now follows 5V → 9V → 12V → 9V → 5V → ...
