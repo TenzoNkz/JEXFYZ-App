@@ -1,3 +1,10 @@
+## APP HOME FAN SPEED DISPLAY QC — 2026-10-05
+- Home Fan Speed now displays 100% when Adaptive is ON at 12V, matching Firmware behavior.
+- Manual 12V remains displayable at the firmware-reported user-selected speed.
+- The Adaptive speed control remains locked; only the display logic changed.
+- Regression coverage added for Adaptive 12V, Manual 12V, and 9V cases.
+- App Build is separate and was not run for this source fix.
+
 # JE X FYZ — CURRENT HANDOVER
 
 ## CURRENT TRUTH
