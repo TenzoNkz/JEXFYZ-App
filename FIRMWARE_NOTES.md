@@ -1,9 +1,9 @@
 # JE X FYZ — CURRENT FIRMWARE NOTES
 
 ## ACTIVE
-- Version: V4.8
-- Source: firmware/JEXFYZ-V4.8.ino
-- Blob: 09efb58653c20012d32a82c4113f3e7c6412012d
+- Version: V4.9
+- Source: firmware/JEXFYZ-V4.9.ino
+- Blob: 888ae9740446081b2a2bcb1769e0471f065dce41
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
@@ -19,7 +19,7 @@
 - Peltier OFF → ON: 5-second cooperative soft-start, unchanged.
 - Fan remains 25 kHz, 8-bit, 50–100% for App-controlled operation.
 - Voltage selector deadtime 200 ms; voltage guard 1 s.
-- Adaptive HOTSIDE safety timing is updated to the V4.8 10-second step-down sequence; unrelated Adaptive behavior remains unchanged.
+- Adaptive HOTSIDE safety timing is updated to the V4.9 10-second step-down sequence; unrelated Adaptive behavior remains unchanged.
 - RGB/touch double-tap behavior remains unchanged.
 
 ## SAFETY CONTRACT
@@ -28,7 +28,7 @@
 - NTC fault remains Fan 100%, Peltier OFF, Adaptive OFF, safe 5V.
 - Rapid Hotside-rise slope protection is removed completely.
 - No RAPID_HOTSIDE_RISE safety event is emitted.
-- Normal Hotside temperature-limit protection remains active, with V4.8 10-second step-down dwell.
+- Normal Hotside temperature-limit protection remains active, with V4.9 10-second step-down dwell.
 
 ## OTA CONTRACT
 Local OTA:
@@ -42,8 +42,8 @@ Online OTA:
 - Existing OTA result LED/state-machine behavior remains unchanged.
 - Download processing remains cooperative.
 
-## V4.8 CHANGE
-- Promoted V4.7 → V4.8 for the approved HOTSIDE-only safety sequence and realtime telemetry baseline.
+## V4.9 CHANGE
+- Promoted V4.7 → V4.9 for the approved HOTSIDE-only safety sequence and realtime telemetry baseline.
 - Preserved the hardware touch voltage bounce sequence.
 - Hardware cooling ON forces Fan to 100%.
 - Preserved the existing Peltier 5-second OFF→ON soft-start.
@@ -52,8 +52,8 @@ Online OTA:
 - Preserved the pre-mutation cooling snapshots so Fan/Peltier/Fan-speed transitions remain realtime.
 
 ## STATIC AUDIT
-- 4700 lines.
-- Firmware version/file alignment: V4.8 / JEXFYZ-V4.8.ino.
+- 4712 lines.
+- Firmware version/file alignment: V4.9 / JEXFYZ-V4.9.ino.
 - Only one active versioned .ino exists under firmware/.
 - executable delay() = 0 (comments excluded).
 - timing while() = 0.
@@ -65,11 +65,11 @@ Online OTA:
 - HOT_PELTIER_OFF_MS = 10000.
 
 ## QC GATES
-- Compile V4.8.
+- Compile V4.9.
 - Generate BIN.
 - Flash/OTA ESP32-C3.
 - Hardware-only control QC.
-- V4.8 HOTSIDE safety sequence QC.
+- V4.9 HOTSIDE safety sequence QC.
 - Local OTA Golden Path.
 - Online OTA + BLE recovery.
 - App ↔ Firmware integration after the separately executed App Build.
