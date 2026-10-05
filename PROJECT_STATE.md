@@ -54,7 +54,7 @@
 - [PRESERVED] Normal Hotside temperature-limit safety.
 - [PRESERVED] Local OTA Golden/Protected path and single-radio Wi-Fi/BLE ownership.
 - [PRESERVED] BLE UUIDs, P1 protocol, Adaptive, RGB, telemetry, and existing App behavior outside the targeted CONTROL change.
-- [IMPLEMENTED] App confirms FAN:ON before PELTIER:ON; Firmware owns the 5-second Peltier soft-start.
+- [IMPLEMENTED] Peltier Safety popup now queues FAN:ON and PELTIER:ON together; no App-side Fan telemetry wait remains between the two commands.
 - [QC FIX] Firmware V4.9 publishes Fan/Peltier/Fan-speed realtime deltas from pre-mutation state snapshots.
 - [QC FIX] App consumes unsolicited FAN/PELTIER/FAN_SPEED telemetry immediately and reconciles stale Notify errors only after healthy live safety telemetry.
 - Firmware version incremented from V4.6 to V4.9 because this is a functional realtime-telemetry QC fix.
@@ -92,7 +92,7 @@
 - Workflow uses Java 17, Flutter 3.47.2 stable, Gradle 9.3.1, ubuntu-24.04.
 - Release build is obfuscated and production-signed.
 - Exactly one APK is published to GitHub Release jexfyz-latest as JEXFYZ-release.apk.
-- No App Build was implied or executed by this firmware-only change.
+- No App Build was executed for the popup start-sequence revision.
 
 ## VALIDATION BOUNDARY
 - [VERIFIED] Repository/source audit for the requested V5.0 selector/MOSFET/Fan/LED behavior.
