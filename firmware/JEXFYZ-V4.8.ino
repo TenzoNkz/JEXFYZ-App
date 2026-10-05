@@ -29,7 +29,7 @@ enum class VoltageRequestSource : uint8_t;
 enum class AdaptiveProfile : uint8_t;
 
 /**
- * JE X FYZ — V4.8 Firmware
+ * JE X FYZ — V4.9 Firmware
  * ---------------------------------------------------------------------------
  * Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module
  * Framework: Arduino Standard + official Arduino-ESP32 Core 3.3.7
@@ -78,7 +78,7 @@ enum class AdaptiveProfile : uint8_t;
  * ---------------------------------------------------------------------------
  */
 
-static constexpr char FW_VERSION[] = "V4.8";
+static constexpr char FW_VERSION[] = "V4.9";
 
 // ============================================================================
 // ========================== HEAP DIAGNOSTIC BUILD ===========================
@@ -1621,12 +1621,20 @@ static void completeVoltageTransition() {
       fanPwm = 100;
       peltierOn = false;
       manualPeltierSafetyLatch = true;
+
+      // The terminal 5V Hotside safety state is also a distinct LED event.
+      startHotsideLimitIndicator();
+
       sendDelta("ADAPTIVE", "OFF");
       sendDelta("ADAPTIVE_CEILING", "12V");
     } else {
       // The reached rail becomes the current Adaptive safety ceiling.
       adaptiveCeiling = currentVoltage;
       sendDelta("ADAPTIVE_CEILING", voltageToString(adaptiveCeiling));
+
+      // Each successful HOTSTEP is a distinct Adaptive Hotside safety stage.
+      // Trigger exactly one red blink for the newly reached rail.
+      startHotsideLimitIndicator();
 
       // Every successful HOTSTEP starts the next 10 s thermal dwell.
       peltierHotOffUntilMs = millis() + HOT_PELTIER_OFF_MS;
