@@ -1,9 +1,9 @@
 # JE X FYZ — CURRENT FIRMWARE ANALYSIS
 
 ## SOURCE
-- Active: firmware/JEXFYZ-V4.6.ino
-- Version: V4.6
-- Blob: cd2ebd7395343f64b824e74c1370b04cea6835ab
+- Active: firmware/JEXFYZ-V4.7.ino
+- Version: V4.7
+- Blob: d47b62edbf275032780ef05d6ac3be1df06e350b
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
@@ -42,8 +42,8 @@
 8. Restart and recover BLE.
 
 ## STATIC RESULT
-- 4628 lines.
-- Firmware source/file alignment: V4.6.
+- 4667 lines.
+- Firmware source/file alignment: V4.7.
 - One active versioned .ino.
 - executable delay() = 0 (comments excluded).
 - timing while() = 0.
@@ -60,8 +60,11 @@
 - [UNVERIFIED] Arduino compile.
 - [UNVERIFIED] BIN generation.
 - [UNVERIFIED] ESP32-C3 flash.
-- [UNVERIFIED] Physical hardware behavior.
+- [USER-CONFIRMED] V4.6 physical hardware behavior passed before the V4.7 telemetry fix.
+- [UNVERIFIED] V4.7 physical hardware regression after the telemetry fix.
 - [UNVERIFIED] Safety runtime.
 - [UNVERIFIED] Local OTA V4.6.
 - [UNVERIFIED] Online OTA/BLE recovery V4.6.
+- [VERIFIED] V4.7 source/static audit for the realtime telemetry fix.
+- [UNVERIFIED] V4.7 compile/BIN/flash/OTA and App integration after the fix.
 - [NOT RELEASED] Release Gate is incomplete.
