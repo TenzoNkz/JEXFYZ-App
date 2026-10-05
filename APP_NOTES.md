@@ -20,12 +20,14 @@
 
 # JE X FYZ — CURRENT APP NOTES
 
+- App CONTROL source change commit: e4cffd620eea2eaa67dca980237b6608f904a160
+
 ## CURRENT IDENTITY
 - App name: JE Cooler
 - Header: JE X FYZ
 - Package: com.horizontalzzz.jexfyz
 - Version: 1.0.0+3
-- Main source blob: 6def6eb10936bdec1923a6dfe1c809d5f71b1177
+- Main source blob: 484b14bd585b95cdcb066adff59b5446649760b9
 - Settings blob: f11235bab559b291928550e06984532581ddad6a
 - Tests blob: d9ddfca369980fc0cd5ecdf80de1a10a5b1a2e18
 
