@@ -1,3 +1,13 @@
+## V5.0 SELECTOR / MOSFET / HOTSIDE LED TIMING — 2026-10-05
+- Promoted Firmware V4.9 → V5.0 for the approved voltage-selector and cooling-output behavior revision.
+- Voltage selector contract: GPIO3 = 12V Optocoupler/Decoy selector, GPIO4 = 9V Optocoupler/Decoy selector; both selector outputs are OFF for the mandatory 200 ms break-before-make deadtime and are never active together.
+- GPIO5 Peltier MOSFET and GPIO6 Fan MOSFET are not forcibly turned OFF during voltage changes; the active Peltier PWM/output state continues through the selector deadtime.
+- Fan is forced to 100% at the start of every voltage transition and remains the only allowed speed while transitioning or operating outside 12V.
+- Fan Speed commands are accepted only at 12V and are rejected during a voltage transition; returning to 12V does not restore a previous preference and leaves Fan at 100% until the user manually changes it.
+- HOTSIDE LED indication now blinks red for the full 10-second timing window at every HOTSIDE protection stage, including the final 5V terminal stage.
+- Peltier OFF → ON keeps the existing 5-second cooperative soft-start.
+- No App Build was executed as part of this Firmware-only change.
+
 ## V4.9 ADAPTIVE HOTSIDE LED — 2026-10-05
 - Promoted Firmware V4.8 → V4.9 for the approved Adaptive Hotside LED stage indication.
 - The Hotside LED red-blink indicator now fires once for each safety stage: initial hot stage, after a successful 12V → 9V step, and after a successful 9V → 5V terminal step.
