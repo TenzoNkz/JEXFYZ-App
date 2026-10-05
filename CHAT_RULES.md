@@ -8,6 +8,16 @@
 - @Thinking Build App! = explicit full App Build workflow in a fresh engineering environment.
 - @Thinking Eksekusi & Build App! = implement → audit → sync → commit → explicit App Build.
 
+## CURRENT PHASE
+- **V4.6 — CODE COMPLETE → QC / PRE-RELEASE → NOT RELEASED**
+
+## QC / SOURCE FREEZE
+- QC is validation-first, not feature-development.
+- Treat functional source as FROZEN during QC.
+- Only change functional source for a demonstrable/reproducible QC failure with a clear root cause.
+- Do not refactor or change unrelated behavior while closing a QC finding.
+- Record the finding, evidence, root cause, affected scope, fix, and re-audit result.
+
 ## AUTHORITY
 1. CURRENT SOURCE / CURRENT WORKFLOW
 2. PROJECT_STATE.md
@@ -47,6 +57,17 @@
 - The active direct issue-triggered workflow publishes the APK to GitHub Release jexfyz-latest and does not use Actions artifacts.
 - No reusable App Build engine is currently active.
 
+## QC GATES
+1. Firmware compile
+2. BIN generation
+3. Flash
+4. Hardware-only behavior
+5. Safety
+6. Local OTA Golden Path
+7. Online OTA + BLE recovery
+8. App ↔ Firmware integration
+9. Release Gate
+
 ## MEMORY RULES
 - Persist meaningful project state in repository documentation.
 - CHAT_TRANSFER.md is the latest transfer snapshot, not source of truth.
@@ -56,6 +77,8 @@
 - Current source/workflow always wins on conflicts.
 
 ## CURRENT STATUS
+- Phase: V4.6 CODE COMPLETE → QC / PRE-RELEASE.
+- Release status: NOT RELEASED.
 - Firmware: V4.6.
 - App: 1.0.0+3.
 - Firmware V4.6 source/static audit: PASS.
