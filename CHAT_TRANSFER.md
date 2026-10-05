@@ -17,11 +17,11 @@
 - [CONFIRMED] Project: JE X FYZ / JE Cooler.
 - [VERIFIED] Repository: TenzoNkz/JEXFYZ-App.
 - [VERIFIED] Branch: main.
-- [VERIFIED] Pre-save HEAD: 3a54d83956f357750684a32279952cbd7fb484f8.
-- [VERIFIED] Current phase: V5.3 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED.
-- [VERIFIED] Active Firmware: V5.3.
-- [VERIFIED] Active Firmware source: firmware/JEXFYZ-V5.3.ino.
-- [VERIFIED] Firmware source blob: d6b5262c0ed429999ef6a951841bca6b24296949.
+- [VERIFIED] Current post-fix state is V5.4; prior pre-fix transfer HEAD 3a54d83956f357750684a32279952cbd7fb484f8 is historical evidence.
+- [VERIFIED] Current phase: V5.4 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED.
+- [VERIFIED] Active Firmware: V5.4.
+- [VERIFIED] Active Firmware source: firmware/JEXFYZ-V5.4.ino.
+- [VERIFIED] Firmware source blob: 0b1fd030aad646001b6c2f75bc248caa843b30eb.
 - [VERIFIED] App: JE Cooler; header JE X FYZ; package com.horizontalzzz.jexfyz; version 1.0.0+3.
 - [VERIFIED] App main source blob: 48406cda017be1ce939ff682497324bf3680a7f3.
 - [VERIFIED] App settings source blob: f11235bab559b291928550e06984532581ddad6a.
@@ -33,7 +33,8 @@
 
 ## 2. CURRENT TASK
 ### PERSISTENT
-- [CONFIRMED] The immediate functional requirement discussed in this chat was: both Adaptive modes must wait 5 seconds whenever Adaptive voltage increases.
+- [CONFIRMED] The prior functional requirement was that both Adaptive modes wait 5 seconds whenever Adaptive voltage increases.
+- [IMPLEMENTED] Current QC fix: Adaptive Hotside safety keeps Fan ON at 100% during the full 10-second thermal dwell, with LED red blink for 9 seconds followed by green blink for the final 1 second.
 - [IMPLEMENTED] HOTSIDE and HOTSIDE_BATTERY both enforce the 5-second cooperative dwell after each completed upward voltage step.
 - [IMPLEMENTED] Adaptive startup from the mandatory safe 5V state starts the same 5-second upward dwell before the first increase.
 - [IMPLEMENTED] Downward Adaptive voltage changes remain immediate.
@@ -112,9 +113,10 @@
 
 ## 8. FIRMWARE STATE
 ### PERSISTENT
-- [VERIFIED] Version V5.3.
-- [VERIFIED] Active source: firmware/JEXFYZ-V5.3.ino.
-- [VERIFIED] Blob: d6b5262c0ed429999ef6a951841bca6b24296949.
+- [VERIFIED] Version V5.4.
+- [VERIFIED] Active source: firmware/JEXFYZ-V5.4.ino.
+- [VERIFIED] Blob: 0b1fd030aad646001b6c2f75bc248caa843b30eb.
+- [IMPLEMENTED] Hotside 10-second dwell Fan behavior is ON at 100%; LED is red 9 seconds then green 1 second.
 - [IMPLEMENTED] Both HOTSIDE and HOTSIDE_BATTERY Adaptive profiles share adaptiveHotsideRiseDueMs as the cooperative 5-second upward-rise timer.
 - [IMPLEMENTED] completeVoltageTransition() starts a fresh 5-second rise dwell after an Adaptive/Battery upward selector transition physically completes.
 - [IMPLEMENTED] activateAdaptiveAfterSafeFiveVolt() starts the same 5-second dwell after Adaptive reaches safe 5V.
@@ -159,8 +161,8 @@
 ### PERSISTENT
 - [VERIFIED] Latest build evidence retained in PROJECT_STATE: workflow run 37261171475, GitHub Release jexfyz-latest, APK JEXFYZ-release.apk, size 54,327,520 bytes, SHA-256 b8045d0b6fa6d05b421bd6b1c0318d4ee4529734d7b471534700f95676200888.
 - [DOCUMENTED / UNRESOLVED] APP_NOTES additionally records Build #9 run 37268139253 with APK digest 64f9be08a28007e42a27dfd7b0459857a06d7146200113a405638ef8f0353058 and the same release asset name/size.
-- [UNVERIFIED] Current V5.3 has no verified App Build associated with it.
-- [UNVERIFIED] Current V5.3 Firmware has no verified compile/BIN/flash/OTA result.
+- [UNVERIFIED] Current V5.4 has no verified App Build associated with it.
+- [UNVERIFIED] Current V5.4 Firmware has no verified compile/BIN/flash/OTA result.
 - [CONFIRMED] App Build is not to be triggered by this transfer.
 
 ## 13. BUGS / SYMPTOMS
@@ -170,7 +172,7 @@
 - [RESOLVED] App Safety popup previously waited for Fan telemetry before Peltier command; it now queues FAN:ON then PELTIER:ON directly.
 - [RESOLVED] Peltier restart safety notification previously lacked the exact dynamic re-arm threshold; App now reports hotLimit - 2°C.
 - [RESOLVED] Touch OFF success was previously at risk of being interpreted as a safety error; Firmware now emits explicit OFF acknowledgement and App classifies OFF as success.
-- [OPEN] V5.3 upward-rise timing and all prior safety/OTA behavior still require physical QC.
+- [OPEN] V5.4 upward-rise timing and all current safety/OTA behavior still require physical QC.
 
 ## 14. VERIFIED ROOT CAUSES
 ### PERSISTENT
@@ -182,7 +184,7 @@
 
 ## 15. HYPOTHESES / LIKELY CAUSES
 ### PERSISTENT
-- [HYPOTHESIS] Any future observed Adaptive step earlier than 5 seconds would most likely be caused by runtime timing/telemetry conditions around selector completion or by a not-yet-compiled/flashed V5.3 binary, not by the current source logic shown above.
+- [HYPOTHESIS] Any future observed Adaptive step earlier than 5 seconds would most likely be caused by runtime timing/telemetry conditions around selector completion or by a not-yet-compiled/flashed V5.4 binary, not by the current source logic shown above.
 - [UNVERIFIED] Physical thermal behavior can still differ from software intent because NTC calibration, MOSFET/optocoupler timing, wiring, supply sag, and real thermal load have not been revalidated for V5.3.
 
 ## 16. GEMINI RESULTS
@@ -199,24 +201,24 @@
 
 ## 18. KNOWN RISKS
 ### PERSISTENT
-- [UNVERIFIED] V5.3 compile/BIN/flash/OTA.
-- [UNVERIFIED] Physical Adaptive 5-second dwell on real hardware, including both profiles and step transitions.
-- [UNVERIFIED] Hotside safety sequence and 2°C re-arm behavior after V5.3 flash.
-- [UNVERIFIED] Online OTA Wi-Fi/BLE teardown and recovery after V5.3 flash.
+- [UNVERIFIED] V5.4 compile/BIN/flash/OTA.
+- [UNVERIFIED] Physical Adaptive 5-second dwell on real hardware, including both profiles and step transitions, plus the V5.4 Hotside Fan/LED safety correction.
+- [UNVERIFIED] Hotside safety sequence and 2°C re-arm behavior after V5.4 flash.
+- [UNVERIFIED] Online OTA Wi-Fi/BLE teardown and recovery after V5.4 flash.
 - [OPEN] Historical App Build metadata conflict remains unresolved.
 - [RISK] Any release claim would be premature until QC gates are completed.
 
 ## 19. UNRESOLVED QUESTIONS
 ### PERSISTENT
-- [OPEN QUESTION] Has V5.3 been compiled successfully with the intended Arduino-ESP32 3.3.7 environment?
-- [OPEN QUESTION] Has V5.3 BIN been generated and flashed/OTA-updated onto the ESP32-C3?
-- [OPEN QUESTION] On hardware, does each Adaptive upward change occur only after the full 5-second dwell in HOTSIDE and HOTSIDE_BATTERY?
+- [OPEN QUESTION] Has V5.4 been compiled successfully with the intended Arduino-ESP32 3.3.7 environment?
+- [OPEN QUESTION] Has V5.4 BIN been generated and flashed/OTA-updated onto the ESP32-C3?
+- [OPEN QUESTION] On hardware, does each Adaptive upward change occur only after the full 5-second dwell and does Hotside dwell maintain Fan 100% with 9 s red + 1 s green LED?
 - [OPEN QUESTION] Which historical App Build run, 37261171475 or 37268139253, should be treated as the canonical latest verified release record?
-- [OPEN QUESTION] Has current App ↔ V5.3 integration been revalidated after V5.3?
+- [OPEN QUESTION] Has current App ↔ V5.4 integration been revalidated after V5.4?
 
 ## 20. CHAT-ONLY INFORMATION
 ### CHAT-ONLY
-- [CONFIRMED] The user explicitly clarified “yang saya mau kedua adaptive semua Adaptive naik jeda 5 detik” and then authorized full execution.
+- [CONFIRMED] The user clarified that both Adaptive profiles must wait 5 seconds on voltage increases, then authorized this V5.4 QC fix execution for Hotside Fan/LED dwell behavior.
 - [CONFIRMED] This recap request explicitly forbids functional source changes, release, and App Build.
 - [CONFIRMED] The next chat must start from repository truth, not from the older V4.6/V5.2 transfer snapshot.
 - [CHAT-ONLY] The command protocol used by the user in this project: @Thinking Diskusi!, @Thinking Tanya Gemini!, @Thinking Eksekusi!, @Thinking Eksekusi Full!, @Thinking Build App!, and @Thinking Eksekusi & Build App!.
@@ -228,7 +230,7 @@
 
 ## 22. REQUIRED FIRST ACTION IN NEW CHAT
 ### PERSISTENT
-> **Read CHAT_TRANSFER.md first, then reconcile current main HEAD/source/workflow against PROJECT_STATE.md, HANDOVER.md, FIRMWARE_NOTES.md, firmware/FIRMWARE_ANALYSIS.md, APP_NOTES.md, and CHANGELOG.md. Treat firmware/JEXFYZ-V5.3.ino as the active Firmware source and V5.3 as the current version.**
+> **Read CHAT_TRANSFER.md first, then reconcile current main HEAD/source/workflow against PROJECT_STATE.md, HANDOVER.md, FIRMWARE_NOTES.md, firmware/FIRMWARE_ANALYSIS.md, APP_NOTES.md, and CHANGELOG.md. Treat firmware/JEXFYZ-V5.4.ino as the active Firmware source and V5.4 as the current version.**
 - [CONFIRMED] Do not modify functional source on the first action unless a separately issued command authorizes it.
 - [CONFIRMED] Continue from QC state; V5.3 is not released.
 
@@ -238,8 +240,8 @@
 - [AUTHORITY] App source authority: current main branch under lib/.
 - [AUTHORITY] CI authority: .github/workflows/jexfyz-app-build-trigger.yml.
 - [RECONCILED] Current App main blob in PROJECT_STATE was previously stale (93ed2e3e...) and is now corrected to 48406cda...; this was documentation-only.
-- [RECONCILED] Current phase/active Firmware records are aligned to V5.3.
-- [RECONCILED] Current Handover includes V5.3 and the same five-second Adaptive requirement.
+- [RECONCILED] Current phase/active Firmware records are aligned to V5.4.
+- [RECONCILED] Current Handover includes V5.4 and the Hotside 10-second Fan/LED dwell correction.
 - [CAUTION] Commit search shows current main at 3a54... before this CHAT_TRANSFER write; the final save commit will be newer.
 
 ## 24. TRANSFER COMPLETION
