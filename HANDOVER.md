@@ -100,6 +100,7 @@
 - [IMPLEMENTED] Seal artifacts require [OTA-SEAL-RENEW] for intentional changes.
 - [PRESERVED] Anti-downgrade remains OFF; any valid version different from the device version is allowed.
 - [USER-CONFIRMED] V5.7 OTA update to the hardware succeeded; full functional OTA regression remains a separate QC gate.
+- [VERIFIED] OTA Security Seal renewal is committed on main.
 
 ## V5.3 ADAPTIVE VOLTAGE RISE DWELL — 2026-10-05
 - Both Adaptive profiles use the same 5-second cooperative dwell after every completed upward voltage step.
