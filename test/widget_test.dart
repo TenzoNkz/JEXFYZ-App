@@ -90,6 +90,42 @@ void main() {
     expect(JexText.of('off', AppLanguage.indonesia), 'MATI');
   });
 
+  test('Home Fan Speed shows 100% for Adaptive at 12V', () {
+    expect(
+      homeFanSpeedDisplay(
+        connected: true,
+        fanOn: true,
+        voltage: '12V',
+        adaptiveOn: true,
+        fanSpeed: 70,
+        offLabel: 'OFF',
+      ),
+      '100%',
+    );
+    expect(
+      homeFanSpeedDisplay(
+        connected: true,
+        fanOn: true,
+        voltage: '12V',
+        adaptiveOn: false,
+        fanSpeed: 70,
+        offLabel: 'OFF',
+      ),
+      '70%',
+    );
+    expect(
+      homeFanSpeedDisplay(
+        connected: true,
+        fanOn: true,
+        voltage: '9V',
+        adaptiveOn: true,
+        fanSpeed: 70,
+        offLabel: 'OFF',
+      ),
+      '100%',
+    );
+  });
+
   test('Floating Monitor exposes Speed as the only fan-related metric', () {
     final config = FloatingConfig.fromJson(
       '{"order":["FAN","F","B","H","V","A","P","S"],"selected":["FAN","S"]}',
