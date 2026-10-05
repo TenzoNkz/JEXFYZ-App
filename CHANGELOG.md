@@ -1,3 +1,8 @@
+## V5.2 TOUCH ACK CLEANUP — 2026-10-05
+- Corrected the successful hardware Touch cooling OFF acknowledgement to use `OFF` rather than the generic safety reason, preventing a false NOTIFY error.
+- Firmware remains V5.2 with the same 1-second Peltier command result indicators and 2°C re-arm latch.
+- No App Build was executed.
+
 ## APP SAFETY NOTIFY CLEANUP — 2026-10-05
 - Unified Peltier safety failure wording around the configured Hotside re-arm threshold.
 - Removed retired RAPID_HOTSIDE_RISE notification mapping.
