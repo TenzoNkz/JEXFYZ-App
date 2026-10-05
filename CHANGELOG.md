@@ -4,6 +4,7 @@
 - Added 60–500 ms valid tap duration using raw HIGH duration.
 - Increased double-tap window to 800 ms, starting after the first valid tap release.
 - Added second-tap grace: a second tap started before the deadline is allowed to finish after the deadline.
+- Preserved 3+ tap cancellation by resolving a double sequence at the decision boundary instead of firing it immediately on the second release.
 - Added 1-second startup grace and blocks boot-held touch until a qualified release.
 - Preserved the existing 1x voltage, 2x RGB, and 5-second long-press command semantics.
 - App source/build was not changed or run for this Firmware-only QC fix.
