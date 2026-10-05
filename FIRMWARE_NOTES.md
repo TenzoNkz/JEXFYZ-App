@@ -1,9 +1,9 @@
 # JE X FYZ — CURRENT FIRMWARE NOTES
 
 ## ACTIVE
-- Version: V5.6
-- Source: firmware/JEXFYZ-V5.6.ino
-- Blob: f291e05b16235b0e944ea135238335024201355a
+- Version: V5.7
+- Source: firmware/JEXFYZ-V5.7.ino
+- Blob: 05044824a6ec15e77634dffc16c14b4bddada8bb
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
@@ -25,7 +25,8 @@
 - Fan remains 25 kHz, 8-bit, 50–100% for App-controlled operation.
 - Voltage selector deadtime 200 ms; voltage guard 1 s.
 - Adaptive HOTSIDE safety timing uses the 10-second step-down sequence; both Adaptive profiles use a 5-second dwell after every upward voltage step; Peltier restart safety uses the 2°C re-arm hysteresis.
-- RGB/touch double-tap behavior remains unchanged.
+- TTP223 Touch uses 30 ms press/release qualification, 60–500 ms valid tap duration, 800 ms double-tap window, second-tap grace, and 1 s startup grace.
+- RGB/touch double-tap behavior remains unchanged at the command level; only input recognition timing/filtering was hardened.
 
 ## SAFETY CONTRACT
 - Hotside NTC remains the universal thermal safety input and is sampled every 1 s.
