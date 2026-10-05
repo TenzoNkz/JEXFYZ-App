@@ -8,7 +8,7 @@
 - Core: Arduino-ESP32 3.3.7
 
 ## CURRENT PHASE
-> **CODE COMPLETE → QC / PRE-RELEASE → NOT RELEASED**
+> **V4.7 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## ARCHITECTURE
 - ESP32-C3 single-radio model: Wi-Fi and BLE ownership are mutually exclusive.
