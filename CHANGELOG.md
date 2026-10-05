@@ -1,3 +1,11 @@
+## V5.1 PELTIER SAFETY REARM FEEDBACK — 2026-10-05
+- Promoted Firmware V5.0 → V5.1 for the requested Peltier restart protection and feedback.
+- Manual and 5V Adaptive-terminal Peltier restart stays locked until Hotside reaches hotLimit - 2°C.
+- Hardware Touch cooling ON now enforces the same re-arm hysteresis and no longer bypasses the latch.
+- Failed Peltier ON attempts blink red for 1 second; successful Peltier ON attempts blink green for 1 second.
+- App NOTIFY explains the required re-arm temperature and cleans up ACK success/failure wording.
+- No App Build was executed.
+
 ## APP HOME FAN SPEED DISPLAY — 2026-10-05
 - Fixed Home Fan Speed showing `--` while Adaptive Mode was ON at 12V.
 - Adaptive + 12V now displays `100%`, matching the firmware-enforced Fan speed.
