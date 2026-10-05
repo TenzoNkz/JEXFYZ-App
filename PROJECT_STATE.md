@@ -13,9 +13,9 @@
 - Firmware source blob: 34a3b895bba282fcb9036a703eb9035bb0ad19cc
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
-- App main source blob: 5a3d63eb931d82b0b0d44668d7efde1b3c450b83
+- App main source blob: 93ed2e3e3cf2aadf503825675bb121f9c167689f
 - App settings source blob: f11235bab559b291928550e06984532581ddad6a
-- App test source blob: 1a1b4fe225b1faaf9e3602173895d6e05c1bc4ec
+- App test source blob: 6e6dd60b3b7a7615875851b7af027bc0bd2ea326
 - App CONTROL source change commit: 5a3d63eb931d82b0b0d44668d7efde1b3c450b83
 - Active App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml
 - App Build workflow blob: 51a6c4d35580228ae24f859058ae5b08665d94a0
