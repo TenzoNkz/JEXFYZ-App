@@ -58,7 +58,7 @@
 ## CURRENT STATUS
 - Firmware: V4.5.
 - App: 1.0.0+3.
-- Latest verified downloadable App Build: #2.
+- Latest verified downloadable App Build: workflow run 37245703677.
 - Build #53: [VERIFIED] CI gates through production signing; [BLOCKED] legacy Actions-artifact creation by quota.
 - Local OTA: [CONFIRMED] user-confirmed working on V4.4 before V4.5 promotion; Local OTA remains protected.
 - Online OTA: [CONFIRMED] V3.2-style path retained; V4.5 physical validation still pending.
@@ -66,4 +66,4 @@
 - Current reusable App Build engine: [COMMITTED] .github/workflows/jexfyz-app-build-engine.yml.
 - The previous single-workflow Release-asset path is retained as historical evidence only.
 - Current Build App run is in progress; Release delivery will be verified after completion.
-- Restored workflow pair is intentionally based on the proven Build #50-era reusable engine + issue trigger.
+- Current Build App workflow is a direct owner/title/token-gated issue-triggered Release build.
