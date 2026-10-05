@@ -3560,7 +3560,6 @@ static bool setFanState(bool desired, String& reason) {
   }
 
   if (!ntcValid) {
-    if (safetyRearmAttempt) startPeltierSafetyAttemptIndicator(false);
     reason = "NTC_ERROR";
     return false;
   }
