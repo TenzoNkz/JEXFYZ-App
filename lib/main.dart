@@ -85,7 +85,6 @@ const String txUuid = '6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001';
 const String firmwareMetadataUrl =
     'https://je-x-fyz-default-rtdb.asia-southeast1.firebasedatabase.app/firmware_update.json';
 const Duration voltageGuardDuration = Duration(seconds: 1);
-const Duration peltierFanPrechargeDuration = Duration(seconds: 2);
 const int fanSpeedMin = 50;
 const int fanSpeedMax = 100;
 
@@ -2939,11 +2938,6 @@ class _DashboardScreenState extends State<DashboardScreen>
           return;
         }
 
-        // Give the newly enabled Fan 2 seconds of confirmed runtime before starting the Peltier.
-        await Future<void>.delayed(peltierFanPrechargeDuration);
-        if (!mounted || !connected || adaptiveOn || !fanOn) {
-          return;
-        }
       }
 
       final ok = await _sendAndConfirm(
