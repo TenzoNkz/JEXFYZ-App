@@ -1,3 +1,9 @@
+## 2026-10-05 — PELTIER POPUP START SEQUENCE
+- [IMPLEMENTED] Removed the UI-side Fan confirmation wait when starting Peltier from Fan-OFF via the Safety popup.
+- [IMPLEMENTED] After popup approval, App starts both confirmation flows immediately; the serialized GATT write queue sends FAN:ON followed directly by PELTIER:ON.
+- [PRESERVED] Firmware remains the final safety authority and keeps the 5-second Peltier soft-start.
+- [NOT BUILT HERE] No App Build was executed for this source change.
+
 ## 2026-10-05 — BUILD APP #8 SUCCESS / V5.0 FIRMWARE SOURCE
 
 - Build #8 run `37261171475` completed successfully from source commit `eeeec79e729383c4c588719efac677373a62bfa9`.
@@ -28,8 +34,9 @@
 - The latest verified APK predates V5.0 Firmware and does not prove V5.0 physical integration.
 
 ## CONTROL
-- Peltier ON from Fan-OFF state sends FAN:ON first; the firmware then owns the 5-second Peltier soft-start.
-- Fan already ON -> Peltier ON remains immediate; there is no App-side precharge timer.
+- Peltier ON from Fan-OFF state: after the safety popup is approved, the App queues FAN:ON and PELTIER:ON together; the BLE write queue preserves that order without waiting for Fan telemetry between commands.
+- Fan already ON -> Peltier ON remains immediate.
+- Firmware remains responsible for the 5-second Peltier soft-start.
 - Realtime QC fix: unsolicited FAN/PELTIER/FAN_SPEED telemetry is applied immediately as firmware-authoritative Control state.
 - Firmware remains the final safety authority; App does not add a fixed precharge timer.
 - Peltier still uses the existing command-confirmation timeout, while the firmware remains responsible for the 5-second Peltier soft-start.
@@ -54,7 +61,7 @@
 - Wi-Fi password input is masked.
 - Firebase supplies release metadata; GitHub hosts the fixed firmware BIN URL.
 - Wi-Fi credentials remain in flutter_secure_storage.
-- The V5.0 firmware preserves the P1 command contract and adds selector-only voltage deadtime, 100% Fan transition behavior, and 10-second HOTSIDE LED timing. preserves the P1 command contract and adds targeted App realtime/Notify reconciliation.
+- The V5.0 firmware preserves the P1 command contract and adds selector-only voltage deadtime, 100% Fan transition behavior, and 10-second HOTSIDE LED timing; App control now starts Fan/Peltier back-to-back from the safety popup.
 
 ## BUILD / CI STATUS
 - Latest verified downloadable App Build: workflow run 37245703677.
