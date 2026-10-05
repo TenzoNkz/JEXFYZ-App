@@ -1,3 +1,11 @@
+## V5.3 ADAPTIVE VOLTAGE RISE DWELL — 2026-10-05
+- Promoted Firmware V5.2 → V5.3.
+- Both Adaptive profiles (HOTSIDE and HOTSIDE_BATTERY) now wait 5 seconds after every completed upward voltage step before allowing another increase.
+- Adaptive activation from the mandatory safe 5V state starts the same 5-second upward dwell.
+- Downward Adaptive steps remain immediate.
+- The existing cooperative millis() timing model is preserved; no blocking delay/while timing was introduced.
+- App source/build was not changed or run for this firmware-only revision.
+
 ## V5.2 TOUCH ACK CLEANUP — 2026-10-05
 - Corrected the successful hardware Touch cooling OFF acknowledgement to use `OFF` rather than the generic safety reason, preventing a false NOTIFY error.
 - Firmware remains V5.2 with the same 1-second Peltier command result indicators and 2°C re-arm latch.
