@@ -13,7 +13,7 @@
 - Firmware source blob: d6b5262c0ed429999ef6a951841bca6b24296949
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
-- App main source blob: 93ed2e3e3cf2aadf503825675bb121f9c167689f
+- App main source blob: 48406cda017be1ce939ff682497324bf3680a7f3
 - App settings source blob: f11235bab559b291928550e06984532581ddad6a
 - App test source blob: 1951964af7542324b2ae27b1bd94f84e1c853060
 - App CONTROL source change commit: b9f316e50770acb66770515395344de6c6e80ea6
@@ -23,6 +23,14 @@
 - Latest verified downloadable App Build: workflow run 37261171475 / GitHub Release jexfyz-latest.
 - Latest verified APK: JEXFYZ-release.apk, 54,327,520 bytes, SHA-256 b8045d0b6fa6d05b421bd6b1c0318d4ee4529734d7b471534700f95676200888.
 - No App Build was executed for the CONTROL precharge change.
+
+## CHAT-LIMIT RECONCILIATION — 2026-10-05
+- [VERIFIED] Current main HEAD from repository history: 5afa578b2362087c59e7f1ef8723bb108e950864 (fix: align V5.3 firmware qc gate).
+- [VERIFIED] Active Firmware is V5.3 at `firmware/JEXFYZ-V5.3.ino`, blob d6b5262c0ed429999ef6a951841bca6b24296949.
+- [VERIFIED] Active App main source blob is 48406cda017be1ce939ff682497324bf3680a7f3; App settings blob f11235bab559b291928550e06984532581ddad6a; tests blob 1951964af7542324b2ae27b1bd94f84e1c853060.
+- [VERIFIED] V5.3 functional implementation is preserved in source commit 85bf8acf79fd91f0d3bbbe2440bec8bab73774da; V5.2 retirement is 90f459ac4720a3ec509543bcc4e83bde96e3d910. Compare 90f→current shows only documentation changes after the source retirement.
+- [IMPLEMENTED] Both Adaptive profiles (HOTSIDE and HOTSIDE_BATTERY) now use a 5-second cooperative dwell after each completed upward voltage step. Adaptive startup from safe 5V also starts the same dwell; downward steps remain immediate.
+- [OPEN QUESTION] Cached build documentation contains two historical IDs: PROJECT_STATE cites run 37261171475 / APK SHA-256 b8045d0b6fa6d05b421bd6b1c0318d4ee4529734d7b471534700f95676200888, while APP_NOTES records Build #9 run 37268139253 / APK digest 64f9be08a28007e42a27dfd7b0459857a06d7146200113a405638ef8f0353058. The current session could not independently re-fetch GitHub Actions/Release pages, so the discrepancy remains explicitly unresolved.
 
 ## V5.3 ADAPTIVE VOLTAGE RISE DWELL — 2026-10-05
 - [IMPLEMENTED] Both Adaptive profiles (HOTSIDE and HOTSIDE_BATTERY) now wait 5 seconds after each completed voltage increase before allowing the next upward step.
@@ -91,9 +99,9 @@
 - Firmware version incremented from V4.6 to V4.9 because this is a functional realtime-telemetry QC fix.
 
 ## QC / RELEASE STATE
-- [VERIFIED] V5.2 source/static audit passed for the Peltier safety/re-arm/notification revision.
-- [UNVERIFIED] Arduino compilation, BIN generation, V5.2 flash/OTA, and App ↔ Firmware physical integration after this revision.
-- [NOT RELEASED] V5.2 is not yet a released firmware.
+- [VERIFIED] V5.3 source/static audit passed for the Adaptive rise-dwell and prior safety revisions.
+- [UNVERIFIED] Arduino compilation, BIN generation, V5.3 flash/OTA, and App ↔ Firmware physical integration after this revision.
+- [NOT RELEASED] V5.3 is not yet a released firmware.
 - Functional source is frozen during QC unless a demonstrated QC defect requires a targeted fix.
 
 ## FIRMWARE
@@ -106,7 +114,7 @@
 - Hotside limit range: 40–50°C, default 45°C.
 - NTC fault behavior remains Fan 100%, Peltier OFF, Adaptive OFF, safe 5V.
 - Rapid-rise slope protection is removed; no RAPID_HOTSIDE_RISE event is emitted.
-- V5.2 compile/BIN/flash/OTA validation remains pending.
+- V5.3 compile/BIN/flash/OTA validation remains pending.
 
 ## APP
 - App version remains 1.0.0+3.
@@ -133,9 +141,9 @@
 - [UNVERIFIED] ESP32-C3 flash.
 - [UNVERIFIED] Hardware-only touch/Fan/Peltier behavior.
 - [UNVERIFIED] Hotside/NTC safety runtime tests.
-- [UNVERIFIED] V5.2 Local OTA and Online OTA + GATT recovery.
-- [UNVERIFIED] App Build after the safety/Notify fixes and App ↔ V5.2 physical integration.
+- [UNVERIFIED] V5.3 Local OTA and Online OTA + GATT recovery.
+- [UNVERIFIED] App Build after the safety/Notify fixes and App ↔ V5.3 physical integration.
 - [NOT RELEASED] Release Gate is not complete.
 
 ## EXACT NEXT ACTION
-> **Compile V5.2 → generate BIN → flash/OTA → Build App separately → install APK → App ↔ Firmware safety/Notify QC.**
+> **Compile V5.3 → generate BIN → flash/OTA → hardware/safety QC → App Build separately → App ↔ V5.3 integration QC → Release Gate.**
