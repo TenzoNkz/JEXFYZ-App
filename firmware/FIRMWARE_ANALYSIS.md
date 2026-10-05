@@ -1,14 +1,14 @@
 # JE X FYZ — CURRENT FIRMWARE ANALYSIS
 
 ## SOURCE
-- Active: firmware/JEXFYZ-V5.4.ino
-- Version: V5.4
-- Blob: 0b1fd030aad646001b6c2f75bc248caa843b30eb
+- Active: firmware/JEXFYZ-V5.5.ino
+- Version: V5.5
+- Blob: ca6d88280dff8f14e220b6dc3b50e1967edaea1b
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
 ## CURRENT PHASE
-> **V5.4 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V5.5 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## ARCHITECTURE
 - ESP32-C3 single-radio model: Wi-Fi and BLE ownership are mutually exclusive.
@@ -25,6 +25,14 @@
 - Peltier OFF → ON: 5-second soft-start, then 100%.
 - Adaptive upward voltage changes: 5-second cooperative dwell after every completed increase in both profiles; downward changes remain immediate.
 - Double tap RGB and long-press Adaptive-OFF remain unchanged.
+
+## V5.5 PELTIER SAFETY REARM LED FEEDBACK — 2026-10-06
+- Normal Peltier ON/OFF no longer calls a Peltier LED command-result indicator.
+- manualPeltierSafetyLatch remains set after cooldown until an explicit Peltier ON attempt succeeds; this preserves the distinction between a safety re-arm attempt and normal ON/OFF.
+- While the latch is active, every blocked Peltier ON attempt produces a non-blocking 1-second red blink.
+- When Hotside is <= hotLimit - 2°C, a successful Peltier ON attempt produces a non-blocking 1-second green blink and clears the latch.
+- The Hotside 10-second dwell indicator keeps LED priority, so its 9-second red + final 1-second green sequence is not disrupted.
+- No second safety latch or alternate thermal threshold was introduced.
 
 ## V5.4 HOTSIDE DWELL FAN + LED QC FIX — 2026-10-06
 - Adaptive HOTSIDE safety keeps Fan ON at 100% for the complete 10-second thermal dwell.
