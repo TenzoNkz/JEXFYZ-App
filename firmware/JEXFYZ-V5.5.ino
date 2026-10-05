@@ -3560,6 +3560,7 @@ static bool setFanState(bool desired, String& reason) {
   }
 
   if (!ntcValid) {
+    if (safetyRearmAttempt) startPeltierSafetyAttemptIndicator(false);
     reason = "NTC_ERROR";
     return false;
   }
@@ -3615,6 +3616,7 @@ static bool setPeltierState(bool desired, String& reason) {
   }
 
   if (voltageTransition) {
+    if (safetyRearmAttempt) startPeltierSafetyAttemptIndicator(false);
     reason = "VOLTAGE_TRANSITION";
     return false;
   }
@@ -3625,6 +3627,7 @@ static bool setPeltierState(bool desired, String& reason) {
   }
 
   if (!fanOn) {
+    if (safetyRearmAttempt) startPeltierSafetyAttemptIndicator(false);
     reason = "FAN_REQUIRED";
     return false;
   }
