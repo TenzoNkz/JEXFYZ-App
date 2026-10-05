@@ -23,7 +23,7 @@
 - Rapid Hotside-rise protection removed.
 - Normal Hotside temperature-limit protection preserved.
 - Local OTA Golden Path preserved.
-- BLE/P1/UUIDs, Adaptive, RGB, telemetry, and App CI workflow preserved; V4.9 adds the Adaptive Hotside LED stage indication while preserving the realtime cooling telemetry fix.
+- BLE/P1/UUIDs, Adaptive, RGB, telemetry, and App CI workflow preserved; V5.0 adds selector-only voltage deadtime, MOSFET-preserved voltage changes, 100% Fan transition behavior, and 10-second HOTSIDE LED timing.
 - App CONTROL: FAN:ON is confirmed before PELTIER:ON; Firmware owns the 5-second Peltier soft-start.
 - App realtime fix: unsolicited FAN/PELTIER/FAN_SPEED telemetry updates Control; stale Notify errors reconcile against healthy live state.
 
@@ -38,13 +38,13 @@ Functional source is frozen during QC. Only a demonstrated QC failure with a cle
 5. Safety QC.
 6. Local OTA.
 7. Online OTA/BLE recovery.
-8. Build App separately and run App ↔ Firmware integration QC, including the V4.8 HOTSIDE safety sequence.
+8. Build App separately and run App ↔ Firmware integration QC, including the V5.0 HOTSIDE safety sequence.
 9. Release Gate.
 
 ## VALIDATION
 - [VERIFIED] Source/static audit.
-- [USER-CONFIRMED] V4.6 firmware compilation, Online OTA, and hardware test succeeded before the V4.8 telemetry fix.
-- [UNVERIFIED] V4.8 compile/BIN/flash/OTA and App ↔ V4.8 integration after the fix.
+- [USER-CONFIRMED] V4.6 firmware compilation, Online OTA, and hardware test succeeded before the later V5.0 revision.
+- [UNVERIFIED] V5.0 compile/BIN/flash/OTA and App ↔ V5.0 integration after this revision.
 - [NOT RELEASED] V5.0.
 
 ## V5.0 SELECTOR / MOSFET / LED TIMING — 2026-10-05
