@@ -1,22 +1,22 @@
 # JE X FYZ — CURRENT PROJECT STATE
 
 ## CURRENT PHASE
-> **V5.0 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V5.1 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## CURRENT TRUTH
 - Project: JE X FYZ / JE Cooler
 - Repository: TenzoNkz/JEXFYZ-App
 - Branch: main
-- Firmware: V5.0
+- Firmware: V5.1
 - Firmware source change commit: 534bdfa94bdbe0c00bb05ffbb750ec8d07390a75
-- Active Firmware source: firmware/JEXFYZ-V5.0.ino
-- Firmware source blob: 34a3b895bba282fcb9036a703eb9035bb0ad19cc
+- Active Firmware source: firmware/JEXFYZ-V5.1.ino
+- Firmware source blob: e5a38482b09ce9f07f93b471914495238d9a81aa
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
 - App main source blob: 93ed2e3e3cf2aadf503825675bb121f9c167689f
 - App settings source blob: f11235bab559b291928550e06984532581ddad6a
 - App test source blob: 6e6dd60b3b7a7615875851b7af027bc0bd2ea326
-- App CONTROL source change commit: 5a3d63eb931d82b0b0d44668d7efde1b3c450b83
+- App CONTROL source change commit: 7c4d406204244d0282a857a298b00eed0c55dcc6
 - Active App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml
 - App Build workflow blob: 51a6c4d35580228ae24f859058ae5b08665d94a0
 - Direct issue-triggered Release workflow is authoritative; no reusable engine is active.
@@ -30,6 +30,15 @@
 - [PRESERVED] Adaptive Fan Speed remains non-editable; this is a display fix only.
 - [IMPLEMENTED] Added regression coverage for Adaptive 12V = 100%, Manual 12V = configured speed, and 9V = 100%.
 - [NOT BUILT HERE] App Build was not executed for this source fix.
+
+## V5.1 PELTIER SAFETY REARM FEEDBACK — 2026-10-05
+- [IMPLEMENTED] Manual Peltier restart remains locked until Hotside <= hotLimit - 2°C after a Hotside safety event, including the 5V Adaptive terminal state.
+- [IMPLEMENTED] Hardware Touch cooling ON now respects the same 2°C re-arm hysteresis and no longer bypasses the latch.
+- [IMPLEMENTED] Any failed Peltier ON safety attempt gets a non-blocking 1-second red LED blink; a successful Peltier ON gets a non-blocking 1-second green LED blink.
+- [IMPLEMENTED] App NOTIFY now explains the re-arm threshold dynamically and no longer surfaces the retired RAPID_HOTSIDE_RISE reason.
+- [IMPLEMENTED] Touch cooling success/failure ACKs are presented as clean notifications; ON/OFF ACK reasons are no longer misclassified as errors.
+- [IMPLEMENTED] Firmware version bumped V5.0 → V5.1 for this functional safety revision.
+- [NOT BUILT HERE] App Build was not executed for this change.
 
 ## V5.0 SELECTOR / MOSFET / LED TIMING EXECUTION — 2026-10-05
 - [IMPLEMENTED] Voltage selector: GPIO3 = 12V Optocoupler/Decoy, GPIO4 = 9V Optocoupler/Decoy; both OFF for 200 ms before the target selector is enabled, preventing simultaneous selector activation.
@@ -70,7 +79,7 @@
 ## QC / RELEASE STATE
 - [VERIFIED] V5.0 source/static audit passed for the selector/MOSFET/Fan/LED timing revision.
 - [UNVERIFIED] Arduino compilation, BIN generation, V5.0 flash/OTA, and App ↔ Firmware physical integration after this revision.
-- [NOT RELEASED] V5.0 is not yet a released firmware.
+- [NOT RELEASED] V5.1 is not yet a released firmware.
 - Functional source is frozen during QC unless a demonstrated QC defect requires a targeted fix.
 
 ## FIRMWARE
@@ -83,7 +92,7 @@
 - Hotside limit range: 40–50°C, default 45°C.
 - NTC fault behavior remains Fan 100%, Peltier OFF, Adaptive OFF, safe 5V.
 - Rapid-rise slope protection is removed; no RAPID_HOTSIDE_RISE event is emitted.
-- V5.0 compile/BIN/flash/OTA validation remains pending.
+- V5.1 compile/BIN/flash/OTA validation remains pending.
 
 ## APP
 - App version remains 1.0.0+3.
