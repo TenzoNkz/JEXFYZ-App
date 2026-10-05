@@ -1,9 +1,9 @@
 # JE X FYZ — CURRENT FIRMWARE NOTES
 
 ## ACTIVE
-- Version: V5.0
-- Source: firmware/JEXFYZ-V5.0.ino
-- Blob: 34a3b895bba282fcb9036a703eb9035bb0ad19cc
+- Version: V5.1
+- Source: firmware/JEXFYZ-V5.1.ino
+- Blob: e5a38482b09ce9f07f93b471914495238d9a81aa
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
@@ -52,8 +52,8 @@ Online OTA:
 - Preserved the pre-mutation cooling snapshots so Fan/Peltier/Fan-speed transitions remain realtime.
 
 ## STATIC AUDIT
-- 4712 lines.
-- Firmware version/file alignment: V4.9 / JEXFYZ-V4.9.ino.
+- 4751 lines.
+- Firmware version/file alignment: V5.1 / JEXFYZ-V5.1.ino.
 - Only one active versioned .ino exists under firmware/.
 - executable delay() = 0 (comments excluded).
 - timing while() = 0.
@@ -62,6 +62,7 @@ Online OTA:
 - GPIO Peltier = 5; Fan = 6.
 - BOOT_AP_HARD_LIMIT_MS = 60000.
 - PELTIER_SOFT_START_MS = 5000.
+- PELTIER_COMMAND_INDICATOR_DURATION_MS = 1000.
 - HOT_PELTIER_OFF_MS = 10000.
 
 ## QC GATES
@@ -69,7 +70,7 @@ Online OTA:
 - Generate BIN.
 - Flash/OTA ESP32-C3.
 - Hardware-only control QC.
-- V5.0 HOTSIDE selector/safety sequence QC.
+- V5.1 Peltier safety/selector/HOTSide sequence QC.
 - Local OTA Golden Path.
 - Online OTA + BLE recovery.
 - App ↔ Firmware integration after the separately executed App Build.
