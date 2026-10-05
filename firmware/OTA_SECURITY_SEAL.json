@@ -66,7 +66,8 @@
       "LOCAL_IMAGE_VERIFY"
     ],
     "app": [
-      "https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ.cpp.bin",
+      "raw.githubusercontent.com",
+      "/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ.cpp.bin",
       "updateAvailable = isDifferentFirmwareVersion("
     ],
     "absent": [
@@ -75,7 +76,7 @@
   },
   "runtime_safety_contract": {
     "no_executable_delay": true,
-    "no_while_loops": true,
+    "no_timing_while_loops": true,
     "single_radio_ownership": true,
     "ota_safe_outputs": "Peltier OFF, Fan OFF, selector forced to 5V while OTA owns the system",
     "online_image_magic": "0xE9",

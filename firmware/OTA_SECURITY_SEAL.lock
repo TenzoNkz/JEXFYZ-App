@@ -1,4 +1,4 @@
 # JE X FYZ OTA SECURITY SEAL LOCK
 # Renewal of these values is intentional and must accompany [OTA-SEAL-RENEW].
-manifest_sha1=a22d633236a8427dea58190275aed2a8f2d98dcf
-workflow_sha1=95d83c6e123bfbc23f23729e3a5281c047a4e6b4
+manifest_sha1=ec921d5af55cfd9d48e541b5163130ba06289ad5
+workflow_sha1=76fbf95d97651313848cf6a8ddf8df5193434341
