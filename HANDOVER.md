@@ -1,3 +1,10 @@
+## APP SAFETY NOTIFY / REARM — 2026-10-05
+- App NOTIFY reports the exact Peltier re-arm threshold using `hotLimit - 2°C`.
+- Failed Peltier ON safety requests are reported from the firmware reason; duplicate generic notices are suppressed.
+- Touch ON/OFF ACKs are classified as successful outcomes and shown cleanly.
+- Retired RAPID_HOTSIDE_RISE notification text is removed.
+- App Build remains separate.
+
 ## V5.1 PELTIER SAFETY REARM FEEDBACK — 2026-10-05
 - Peltier remains locked until Hotside <= hotLimit - 2°C after a safety latch, including the 5V Adaptive terminal state.
 - Hardware Touch cooling ON now enforces the same re-arm threshold; it cannot bypass the latch.
