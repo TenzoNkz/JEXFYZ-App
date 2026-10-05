@@ -1,9 +1,9 @@
 # JE X FYZ — CURRENT FIRMWARE NOTES
 
 ## ACTIVE
-- Version: V5.5
-- Source: firmware/JEXFYZ-V5.5.ino
-- Blob: 5f72b3557f91c33827ee61f8c2eaf1cab2cfd786
+- Version: V5.6
+- Source: firmware/JEXFYZ-V5.6.ino
+- Blob: f291e05b16235b0e944ea135238335024201355a
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
@@ -17,6 +17,8 @@
 - Hardware single tap: 5V → 9V → 12V → 9V → 5V → ...
 - Hardware cooling long press ON: Fan 100%.
 - Peltier OFF → ON: 5-second cooperative soft-start, unchanged.
+- Hotside NTC sampling uses 16 calibrated ADC samples, trims 4 low + 4 high outliers, and averages the remaining 8 samples.
+- NTC temperature has no additional EMA/Kalman smoothing; safety remains responsive to the filtered ADC result.
 - Normal Peltier ON/OFF emits no Peltier LED indicator.
 - After Hotside safety forces Peltier OFF, failed re-arm ON attempts blink red for 1 s; a successful re-arm ON attempt at hotLimit - 2°C blinks green for 1 s.
 - Adaptive activation cannot bypass an active Peltier safety latch.
