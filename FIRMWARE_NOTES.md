@@ -1,9 +1,9 @@
 # JE X FYZ — CURRENT FIRMWARE NOTES
 
 ## ACTIVE
-- Version: V5.2
-- Source: firmware/JEXFYZ-V5.2.ino
-- Blob: 3ecb7fef69a5db41475fe2b76d2ae1bc1fef616b
+- Version: V5.3
+- Source: firmware/JEXFYZ-V5.3.ino
+- Blob: d6b5262c0ed429999ef6a951841bca6b24296949
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
@@ -19,7 +19,7 @@
 - Peltier OFF → ON: 5-second cooperative soft-start, unchanged.
 - Fan remains 25 kHz, 8-bit, 50–100% for App-controlled operation.
 - Voltage selector deadtime 200 ms; voltage guard 1 s.
-- Adaptive HOTSIDE safety timing uses the 10-second step-down sequence; Peltier restart safety uses the 2°C re-arm hysteresis.
+- Adaptive HOTSIDE safety timing uses the 10-second step-down sequence; both Adaptive profiles use a 5-second dwell after every upward voltage step; Peltier restart safety uses the 2°C re-arm hysteresis.
 - RGB/touch double-tap behavior remains unchanged.
 
 ## SAFETY CONTRACT
@@ -42,6 +42,13 @@ Online OTA:
 - Existing OTA result LED/state-machine behavior remains unchanged.
 - Download processing remains cooperative.
 
+## V5.3 CHANGE — ADAPTIVE VOLTAGE RISE DWELL
+- Both HOTSIDE and HOTSIDE_BATTERY Adaptive profiles now wait 5 seconds after a completed upward voltage transition before the next increase.
+- Adaptive activation from safe 5V starts the same 5-second upward dwell.
+- Downward Adaptive steps remain immediate.
+- The existing non-blocking millis() timing model is preserved.
+- Firmware version bumped V5.2 → V5.3.
+
 ## V5.2 CHANGE
 - Promoted V4.7 → V4.9 for the approved HOTSIDE-only safety sequence and realtime telemetry baseline.
 - Preserved the hardware touch voltage bounce sequence.
@@ -52,8 +59,8 @@ Online OTA:
 - Preserved the pre-mutation cooling snapshots so Fan/Peltier/Fan-speed transitions remain realtime.
 
 ## STATIC AUDIT
-- 4751 lines.
-- Firmware version/file alignment: V5.1 / JEXFYZ-V5.1.ino.
+- 4778 lines.
+- Firmware version/file alignment: V5.3 / JEXFYZ-V5.3.ino.
 - Only one active versioned .ino exists under firmware/.
 - executable delay() = 0 (comments excluded).
 - timing while() = 0.
@@ -70,7 +77,7 @@ Online OTA:
 - Generate BIN.
 - Flash/OTA ESP32-C3.
 - Hardware-only control QC.
-- V5.1 Peltier safety/selector/HOTSide sequence QC.
+- V5.3 Peltier safety/selector/Adaptive rise-dwell/HOTSide sequence QC.
 - Local OTA Golden Path.
 - Online OTA + BLE recovery.
 - App ↔ Firmware integration after the separately executed App Build.
