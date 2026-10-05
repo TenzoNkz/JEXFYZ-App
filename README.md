@@ -84,19 +84,23 @@ Jika repository write gagal:
 SEKARANG LAKUKAN PROSEDUR TERSEBUT.
 ~~~
 
-# PROMPT 2 — NEW CHAT TRANSFER / READ REPOSITORY
+# PROMPT 2 — NEW CHAT TRANSFER / QC PRE-RELEASE
 
 ~~~
-@Thinking NEW CHAT TRANSFER — READ FROM REPOSITORY AND CONTINUE
+@Thinking NEW CHAT TRANSFER — QC / PRE-RELEASE
 
 Ini adalah chat baru JE X FYZ.
 
-JANGAN mengandalkan chat lama atau menganggap context sebelumnya masih tersedia.
+PROJECT PHASE:
+V4.6 — CODE COMPLETE → QC / PRE-RELEASE → NOT RELEASED
+
+JANGAN memulai ulang development.
 JANGAN langsung implement/build berdasarkan asumsi.
+JANGAN menambah fitur.
 
 TUJUAN:
 REPOSITORY → REBUILD CONTEXT → VERIFY CURRENT SOURCE/WORKFLOW →
-ESTABLISH CURRENT PROJECT TRUTH → CONTINUE EXACT NEXT ACTION.
+ESTABLISH QC TRUTH → CONTINUE DARI QC GATE TERAKHIR.
 
 MANDATORY PREFLIGHT:
 1. README.md
@@ -106,10 +110,11 @@ MANDATORY PREFLIGHT:
 5. FIRMWARE_NOTES.md
 6. BUILD_NOTES.md
 7. CHANGELOG.md
-8. firmware/FIRMWARE_ANALYSIS.md bila Firmware relevan
+8. firmware/FIRMWARE_ANALYSIS.md
 9. HANDOVER.md
 10. CHAT_TRANSFER.md
-11. Inspect exact current source/workflow yang mengendalikan task.
+11. Inspect exact current Firmware source + current App source + current workflow.
+12. Verify branch HEAD and active version/file alignment.
 
 SOURCE AUTHORITY:
 CURRENT SOURCE / CURRENT WORKFLOW
@@ -128,74 +133,75 @@ OLD CHAT
 
 CHAT_TRANSFER.md adalah transfer evidence, bukan source of truth.
 
-Baca CHAT_TRANSFER.md SEPENUHNYA, lalu reconcile dengan:
-PROJECT_STATE, CHAT_RULES, APP_NOTES, FIRMWARE_NOTES, BUILD_NOTES,
-CHANGELOG, HANDOVER, current source, current workflow, branch, dan HEAD.
+QC RULE:
+Selama QC, functional source dianggap FROZEN.
+Functional source hanya boleh berubah jika QC menemukan kegagalan yang:
+- dapat direproduksi atau dibuktikan dari source;
+- memiliki root cause yang jelas;
+- benar-benar relevan terhadap release gate.
 
-Untuk mismatch:
-1. catat claim transfer;
-2. catat repository evidence;
-3. pilih current verified truth;
-4. tandai data lama obsolete/historical bila perlu.
+Jangan melakukan refactor, feature addition, workflow redesign, atau perubahan
+yang tidak diperlukan untuk memperbaiki temuan QC.
 
-VERIFY CURRENT:
-- repo, branch, HEAD;
-- App version/build;
-- Firmware version/source bila relevan;
-- latest verified App Build;
-- exact build source SHA;
-- relevant workflow/trigger;
-- changes after latest verified build;
-- validation boundaries.
+QC GATES:
+1. Firmware compile V4.6
+2. BIN generation
+3. Flash ESP32-C3
+4. Hardware-only QC
+5. Safety QC
+6. Local OTA Golden Path
+7. Online OTA + BLE recovery
+8. App ↔ Firmware integration QC
+9. Release Gate
 
-CURRENT PROJECT TRUTH wajib menetapkan:
-- project;
-- repository;
-- branch;
-- HEAD;
-- App version/build;
-- Firmware version/source;
-- latest verified build;
-- current task;
-- workflow;
-- changed;
-- verified;
-- unverified;
-- risks;
-- open questions;
-- exact next action.
+HARDWARE QC:
+- Single tap: 5V → 9V → 12V → 9V → 5V → ...
+- Hardware cooling ON: Fan 100%.
+- Peltier OFF → ON: soft-start 5 detik → 100%.
+- Double-tap RGB.
+- Long-press Adaptive OFF.
+- Touch timing and voltage guard/deadtime.
 
-CONTINUE, JANGAN RESTART:
-- jangan mengulang pekerjaan yang sudah committed/verified;
-- jangan meminta user mengulang informasi yang sudah persisted;
-- lanjutkan exact next action sesuai current rules/workflow.
+SAFETY QC:
+- Hotside limit 40–50°C (default 45°C).
+- NTC fault.
+- Fan/Peltier interlock.
+- 200 ms selector deadtime.
+- 1 s voltage guard.
+- Confirm Rapid Hotside Rise protection is absent and does not generate
+  RAPID_HOTSIDE_RISE.
 
-COMMAND SEMANTICS:
-- @Thinking Diskusi! = discussion/review only.
-- @Thinking Tanya Gemini! = diagnosis/patch-request; Gemini returns exact OLD → NEW patches only.
-- @Thinking Eksekusi! = implement approved scope + sync + commit.
-- @Thinking Eksekusi Full! = implement + full affected audit + sync + commit.
-- @Thinking Build App! = full App build workflow; fresh engineering environment.
-- @Thinking Eksekusi & Build App! = implement → audit → sync → commit → explicit App Build.
+OTA QC:
+- Local OTA remains Golden/Protected and must not be altered for unrelated issues.
+- Online OTA must preserve single-radio Wi-Fi/BLE ownership.
+- Active BLE GATT disconnect before Wi-Fi ownership.
+- Restart → BLE recovery → P1 sync.
 
-Build hanya boleh dilakukan jika command/build policy mengizinkan.
+BUILD POLICY:
+App Build remains manual-by-issue only.
+Issue title: JE X FYZ — BUILD APP TRIGGER
+Token: JEXFYZ_BUILD_TRIGGER_V1
+Current workflow: .github/workflows/jexfyz-app-build-trigger.yml
+Normal push/PR MUST NOT produce a release APK.
+Do not run App Build unless the explicit Build App command is given.
 
-MEMORY SYNC:
-Setelah reconciliation atau meaningful continuation, sinkronkan memory.
-Dokumentasi sync tidak boleh menyelundupkan functional source change.
+VALIDATION LANGUAGE:
+- Static/source audit is not compile validation.
+- Compile is not flash validation.
+- Flash is not physical behavior validation.
+- App Build is not Firmware validation.
+- Never claim PASS for a gate that was not actually tested.
 
-FIRST RESPONSE:
+FIRST RESPONSE IN NEW CHAT:
 CURRENT PROJECT TRUTH
-RECAP VS REPOSITORY
+QC STATUS
+REPOSITORY RECONCILIATION
 VERIFIED
 UNVERIFIED
 KNOWN RISKS
 OPEN QUESTIONS
-NEXT EXACT ACTION
-MEMORY SYNC REQUIRED
+NEXT EXACT QC GATE
 WORKFLOW STATUS
 
-Lalu lanjutkan task yang memang diotorisasi.
-
-SEKARANG MULAI DARI MANDATORY PREFLIGHT.
+THEN continue from the exact next QC gate.
 ~~~
