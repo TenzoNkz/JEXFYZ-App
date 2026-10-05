@@ -1,3 +1,13 @@
+## V4.7 REALTIME TELEMETRY QC FIX — 2026-10-05
+- Promoted Firmware V4.6 → V4.7 after hardware/App QC exposed stale realtime Fan/Peltier state in the App.
+- Firmware cooling telemetry now uses pre-mutation state snapshots across Touch, Adaptive, safety, voltage completion, and command-setter paths.
+- App applies unsolicited FAN/PELTIER/FAN_SPEED telemetry directly to Control state.
+- App Home Notify clears stale command/connection errors only after healthy live cooling/safety telemetry; safety warnings remain visible.
+- Home Notify warning presentation is gated by active BLE connection.
+- Added regression coverage for realtime Notify reconciliation.
+- No App Build was executed.
+- V4.7 is NOT RELEASED pending compile/BIN/flash/OTA and App integration QC.
+
 ## APP CONTROL PRECHARGE — 2026-10-05
 - Added a 2-second Fan precharge interval when the user requests Peltier ON while Fan is OFF.
 - App now waits for confirmed FAN=ON telemetry before starting the 2-second interval.
