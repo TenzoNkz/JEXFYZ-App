@@ -25,6 +25,9 @@
 - Peltier OFF → ON: 5-second soft-start, then 100%.
 - Double tap RGB and long-press Adaptive-OFF remain unchanged.
 
+## V5.2 TOUCH ACK CLEANUP
+- Successful Touch cooling OFF uses an explicit OFF acknowledgement.
+
 ## V5.2 PELTIER SAFETY REARM FEEDBACK
 - Manual and 5V Adaptive-terminal Peltier restart remains locked until Hotside <= hotLimit - 2°C.
 - Hardware Touch restart uses the same re-arm hysteresis and cannot bypass the latch.
