@@ -1,3 +1,14 @@
+## V4.6 — 2026-10-05
+- Promoted the active Firmware source from V4.5 to V4.6 for the approved hardware control changes.
+- Changed hardware single-tap voltage selection to the requested bounce sequence: 5V → 9V → 12V → 9V → 5V → ...
+- Hardware cooling ON via touch now forces Fan PWM to 100%.
+- Preserved the existing Peltier OFF → ON 5-second soft-start.
+- Preserved BOOT_AP_HARD_LIMIT_MS at 60 seconds.
+- Removed Rapid Hotside-rise protection, including its dedicated slope threshold, event flag, and Hotside history state.
+- Preserved normal Hotside temperature-limit safety.
+- Preserved Local OTA, Online OTA, BLE/P1, Adaptive, RGB, telemetry, and App behavior.
+- No App Build was executed for this Firmware-only change.
+
 ## VERIFIED RELEASE BUILD — 2026-10-05
 - Workflow run 37245703677 completed successfully from source commit fc4b89ce0c76b4b7826fc25cb8ac68ea843dc366.
 - All build, analysis, test, obfuscated release compilation, and production signing gates passed.
