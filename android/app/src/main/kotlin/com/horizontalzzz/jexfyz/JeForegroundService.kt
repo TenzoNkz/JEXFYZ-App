@@ -40,7 +40,7 @@ class JeForegroundService : Service() {
             startForeground(NOTIFICATION_ID, notification)
         }
 
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
     // Service is intentionally started rather than bound.
