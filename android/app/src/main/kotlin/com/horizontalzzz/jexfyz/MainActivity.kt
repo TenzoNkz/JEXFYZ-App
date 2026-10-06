@@ -79,17 +79,6 @@ class MainActivity : FlutterActivity() {
                 "stopBackgroundService" -> {
                     result.success(stopBackgroundService())
                 }
-                "requestNotificationPermission" -> {
-                    result.success(requestNotificationPermission())
-                }
-
-                "showNotification" -> {
-                    val args = call.arguments as? Map<*, *>
-                    val title = args?.get("title")?.toString() ?: "JE X FYZ"
-                    val body = args?.get("body")?.toString() ?: ""
-                    val id = (args?.get("id") as? Number)?.toInt() ?: 2300
-                    result.success(showUserNotification(title, body, id))
-                }
 
                 else -> result.notImplemented()
             }
@@ -153,6 +142,29 @@ class MainActivity : FlutterActivity() {
         ).setMethodCallHandler { call, result ->
             when (call.method) {
                 "isOfficialBuild" -> result.success(isOfficialBuild())
+                else -> result.notImplemented()
+            }
+        }
+
+        // AI-METHOD / NOTIFICATION-CHANNEL-CONTRACT
+        // Flutter notification calls use this exact dedicated channel.
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            NOTIFICATION_CHANNEL
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "requestNotificationPermission" -> {
+                    result.success(requestNotificationPermission())
+                }
+
+                "showNotification" -> {
+                    val args = call.arguments as? Map<*, *>
+                    val title = args?.get("title")?.toString() ?: "JE X FYZ"
+                    val body = args?.get("body")?.toString() ?: ""
+                    val id = (args?.get("id") as? Number)?.toInt() ?: 2300
+                    result.success(showUserNotification(title, body, id))
+                }
+
                 else -> result.notImplemented()
             }
         }

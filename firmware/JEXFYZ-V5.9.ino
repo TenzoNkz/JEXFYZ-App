@@ -456,8 +456,6 @@ bool runtimeFeaturesReady = false;
 bool bootApHadClient = false;
 bool bootApClientSafe = false;
 
-volatile bool bleSyncPending = false;
-
 volatile bool bleCommandGateOpen = false;
 
 uint32_t ledBlinkAt = 0;
@@ -2410,7 +2408,6 @@ class ServerCallbacks : public BLEServerCallbacks {
   void onConnect(BLEServer* server) override {
     bleClientConnected = true;
 
-    bleSyncPending = false;
     bleCommandGateOpen = false;
     bleQueueResetPending = true;
   }
@@ -2419,7 +2416,6 @@ class ServerCallbacks : public BLEServerCallbacks {
     (void)server;
 
     bleClientConnected = false;
-    bleSyncPending = false;
     bleCommandGateOpen = false;
     bleQueueResetPending = true;
     batteryLinkLostPending = true;
@@ -2451,7 +2447,6 @@ static void stopBleRadio(bool releaseBluetoothMemory) {
       activeGattSession ? bleServer->getConnId() : 0;
 
   bleQueueResetPending = true;
-  bleSyncPending = false;
   bleCommandGateOpen = false;
 
   if (BLEDevice::getInitialized()) {
@@ -2634,7 +2629,6 @@ static void startBle() {
   scheduleHeapDiagPostAdvertisingChecks();
 
   bleClientConnected = false;
-  bleSyncPending = false;
   bleAdvertiseRestartPending.store(false, std::memory_order_release);
   bleTxOverflowCount = 0;
   clearBleTxQueue();
@@ -4817,12 +4811,6 @@ void loop() {
     bleQueueResetPending = false;
     clearBleTxQueue();
     clearBleRxQueue();
-  }
-
-  if (bleSyncPending && bleClientConnected && txCharacteristic != nullptr) {
-    bleSyncPending = false;
-    clearBleTxQueue();
-    sendFullSync();
   }
 
   serviceBleTx();

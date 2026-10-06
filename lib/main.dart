@@ -1451,6 +1451,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   bool otaRecoveryScanInProgress = false;
   final Map<String, List<Completer<String>>> _ackWaiters = {};
   final Map<String, String> _syncSnapshot = {};
+  String _lastPeltierAckFailureReason = '';
   Future<void> _commandTransactionQueue = Future<void>.value();
   String? _pendingPhoneBatteryCommand;
   bool _phoneBatteryHeartbeatQueued = false;
@@ -1895,6 +1896,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     protocolValid = false;
     _syncReadyAck = false;
     fullSyncReceived = false;
+    _lastPeltierAckFailureReason = '';
     incomingBuffer = '';
     _syncSnapshot.clear();
     _pendingTelemetry.clear();
@@ -2102,6 +2104,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     fullSyncReceived = false;
     dashboardReady = false;
     _pendingTelemetry.clear();
+    _lastPeltierAckFailureReason = '';
     if (!expectedOtaDisconnect) {
       pendingOtaNotice = '';
     }
@@ -2440,6 +2443,9 @@ class _DashboardScreenState extends State<DashboardScreen>
     Duration timeout = const Duration(seconds: 3),
   }) async {
     final item = _ackItemForCommand(command);
+    if (item == 'PELTIER') {
+      _lastPeltierAckFailureReason = '';
+    }
     if (item == null) return sendCommand(command, showError: showError);
     final ackFuture = _waitForAck(item, timeout: timeout);
     final sent = await sendCommand(command, showError: showError);
@@ -2672,6 +2678,9 @@ void _handleAckLine(String line) {
     }
 
     if (!_isAckSuccessReason(reason)) {
+      if (item == 'PELTIER') {
+        _lastPeltierAckFailureReason = reason;
+      }
       if (!hadWaiter) {
         _showSnackBar(_friendlyReason(reason), color: Colors.orangeAccent);
       }
@@ -3076,7 +3085,12 @@ void _handleAckLine(String line) {
           timeout: const Duration(seconds: 6),
         );
         if (!peltierOk && mounted) {
-          final reason = safetyReason.trim().toUpperCase();
+          final reason =
+              (_lastPeltierAckFailureReason.isNotEmpty
+                      ? _lastPeltierAckFailureReason
+                      : safetyReason)
+                  .trim()
+                  .toUpperCase();
           if (reason == 'PELTIER_SAFETY_LATCH' ||
               reason == 'HOTSIDE_PROTECTION') {
             _showSnackBar(
