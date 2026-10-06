@@ -36,30 +36,26 @@
 
 
 ## CURRENT PHASE
-> **V5.8 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V5.9 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## CURRENT TRUTH
 - Project: JE X FYZ / JE Cooler
 - Repository: TenzoNkz/JEXFYZ-App
 - Branch: main
-- Firmware: V5.8
-- Latest V5.8 functional firmware change: Peltier safety-lock auto-release + NTC single-sample QC fix.
-- Latest V5.7 functional firmware commits: d2ec5d56383f25a105835b10698f62cf19cbf5df → 77591d7406aa8613a3dc9beb33828af5a592d8d5
-- Active Firmware source: firmware/JEXFYZ-V5.8.ino
-- Firmware source blob: 1edd37f4bfbe53e141464fe081921edb960e7597
+- Firmware: V5.9
+- Active Firmware source: firmware/JEXFYZ-V5.9.ino
+- Firmware source blob: 11879cda3e96411c16cc372a176dcef6b71ebe94
+- Firmware compile/BIN/flash/physical regression: UNVERIFIED
 - OTA Protection reminder: ACTIVE in OTA_PROTECTION.md.
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
-- App main source blob: 48406cda017be1ce939ff682497324bf3680a7f3
+- App main source blob: df4a244723420f8057745275838d7e07c1e0c82a
 - App settings source blob: f11235bab559b291928550e06984532581ddad6a
-- App test source blob: 1951964af7542324b2ae27b1bd94f84e1c853060
-- App CONTROL source change commit: b9f316e50770acb66770515395344de6c6e80ea6
-- Active App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml
-- App Build workflow blob: 51a6c4d35580228ae24f859058ae5b08665d94a0
-- Direct issue-triggered Release workflow is authoritative; no reusable engine is active.
-- Latest verified downloadable App Build: workflow run 37261171475 / GitHub Release jexfyz-latest.
-- Latest verified APK: JEXFYZ-release.apk, 54,327,520 bytes, SHA-256 b8045d0b6fa6d05b421bd6b1c0318d4ee4529734d7b471534700f95676200888.
-- No App Build was executed for the CONTROL precharge change.
+- App test source blob: 2da4bff01d3eed749eeba873e9ec2e577c04def9
+- App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml
+- Release status: NOT RELEASED
+- This V5.9 execution did not run App Build.
+
 
 ## OTA PROTECTION REMINDER — 2026-10-06
 - [IMPLEMENTED] OTA_PROTECTION.md is the repository's documentation-only protection reminder.
