@@ -16,6 +16,36 @@ import 'package:jexfyz_cooler/app_settings.dart';
 import 'package:jexfyz_cooler/floating_monitor.dart';
 
 void main() {
+  test('BLE session protocol gate accepts only P1', () {
+    expect(isSupportedP1Protocol('P1'), isTrue);
+    expect(isSupportedP1Protocol(' p1 '), isTrue);
+    expect(isSupportedP1Protocol('P2'), isFalse);
+    expect(isSupportedP1Protocol(''), isFalse);
+  });
+
+  test('stale Peltier re-arm notice clears after healthy firmware state', () {
+    final notice = peltierRearmNotice(45, AppLanguage.english);
+    expect(shouldClearStaleNotifyError(
+      connected: true,
+      safety: 'OK',
+      safetyReason: 'NONE',
+      liveTelemetryReceived: true,
+      notice: notice,
+    ), isTrue);
+    expect(shouldClearStaleNotifyError(
+      connected: true,
+      safety: 'LOCKED',
+      safetyReason: 'PELTIER_SAFETY_LATCH',
+      liveTelemetryReceived: true,
+      notice: notice,
+    ), isFalse);
+  });
+
+  test('ONLINE_IMAGE_VALIDATE maps to its OTA localization key', () {
+    expect(otaStageLocalizationKey('ONLINE_IMAGE_VALIDATE'), 'otaStageOnlineImageValidate');
+    expect(otaStageLocalizationKey('UNKNOWN_STAGE'), '');
+  });
+
   testWidgets('JE Cooler dashboard renders', (tester) async {
     // AI-MEMORY / DASHBOARD-VIEWPORT-CONTRACT
     // Use a tall portrait viewport so the fixed Home canvas and production submenu render
