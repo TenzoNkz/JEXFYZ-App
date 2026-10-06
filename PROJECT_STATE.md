@@ -1,24 +1,36 @@
 # JE X FYZ — CURRENT PROJECT STATE
 
+## V5.8 PELTIER REARM + NTC SINGLE-SAMPLE QC FIX — 2026-10-06
+- [IMPLEMENTED] Firmware promoted V5.7 → V5.8 for the reproducible Peltier safety-lock and NTC sampling QC findings.
+- [FIX] Effective Peltier safety lock now clears automatically once Hotside reaches `hotLimit - 2°C`; one-shot green re-arm feedback remains armed for the next successful Peltier ON.
+- [FIX] Locked Peltier ON attempts retain the red 1-second feedback path while the effective safety lock is active.
+- [FIX] Hotside NTC is exactly one calibrated ADC reading every 1 second; the V5.6 16-sample trimmed-mean path is retired.
+- [PRESERVED] NTC remains 10K / 10K divider / Beta 3950 with the existing 3.3 V reference assumption.
+- [PRESERVED] OTA, BLE/P1, GPIO mapping, Adaptive 5-second upward dwell, Hotside 10-second dwell, selector deadtime, voltage guard, and Peltier 5-second soft-start were not intentionally changed.
+- [USER-CONFIRMED] V5.7 compiled successfully and was successfully updated to the hardware before this V5.8 QC fix.
+- [UNVERIFIED] V5.8 compile, BIN generation, flash/update, and physical regression remain pending.
+
+
 ## TRANSFER PROTOCOL V2 — 2026-10-06
 - [IMPLEMENTED] `CHAT_TRANSFER.md` was upgraded to a detailed boot/transfer protocol to prevent context repetition between chats.
 - [FROZEN] The transfer protocol does not authorize functional source changes, Firmware release, or App Build.
-- [VERIFIED] Current active Firmware remains V5.7 at `firmware/JEXFYZ-V5.7.ino`.
+- [CURRENT] Active Firmware is V5.8 at `firmware/JEXFYZ-V5.8.ino`.
 - [VERIFIED] Current main HEAD before this documentation write: `c7faf134742fc6fdbebc3f66469c8aa5dd9980c6`.
 - [POLICY] New chats must reconcile the transfer snapshot against current repository truth before acting and must not ask for already-documented project facts.
 
 
 ## CURRENT PHASE
-> **V5.7 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V5.8 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## CURRENT TRUTH
 - Project: JE X FYZ / JE Cooler
 - Repository: TenzoNkz/JEXFYZ-App
 - Branch: main
-- Firmware: V5.7
+- Firmware: V5.8
+- Latest V5.8 functional firmware change: Peltier safety-lock auto-release + NTC single-sample QC fix.
 - Latest V5.7 functional firmware commits: d2ec5d56383f25a105835b10698f62cf19cbf5df → 77591d7406aa8613a3dc9beb33828af5a592d8d5
-- Active Firmware source: firmware/JEXFYZ-V5.7.ino
-- Firmware source blob: 652e54afdd9c7c347cd82072f573f1729c4b46de
+- Active Firmware source: firmware/JEXFYZ-V5.8.ino
+- Firmware source blob: a7729d92fb4adf382c492ab82034ff1ec9b8386b
 - OTA Protection reminder: ACTIVE in OTA_PROTECTION.md.
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
@@ -51,8 +63,8 @@
 - [QC FIX / IMPLEMENTED] A 1-second startup grace period ignores boot-time touch input; a touch already held during startup must be released before any new gesture is accepted.
 - [PRESERVED] Single tap remains voltage sequence control, double tap remains RGB toggle, and long press remains 5 seconds.
 - [IMPLEMENTED] Firmware promoted V5.6 → V5.7 for this targeted Touch accuracy correction.
-- [USER-CONFIRMED] V5.7 Firmware was successfully OTA-updated onto the hardware; the device is now running V5.7.
-- [UNVERIFIED] Full V5.7 compile/BIN/flash/functional physical QC remains pending; the successful OTA update proves the OTA path reached the device but does not replace functional QC.
+- [USER-CONFIRMED] V5.7 compiled and was successfully updated to the hardware before the V5.8 fix.
+- [UNVERIFIED] V5.8 compile/BIN/flash/physical functional QC remains pending.
 
 ## V5.6 NTC ADC FILTERING QC FIX — 2026-10-06
 - [QC FIX / IMPLEMENTED] Hotside NTC sampling now uses a bounded 16-sample calibrated ADC burst once per 1-second sampling period.
