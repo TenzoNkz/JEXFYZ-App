@@ -1,12 +1,9 @@
-## 2026-10-06 — OTA SECURITY SEAL
+## 2026-10-06 — OTA PROTECTION REMINDER
 ### PERSISTENT
-- [IMPLEMENTED] OTA Security Seal added at .github/workflows/ota-security-seal.yml.
-- [IMPLEMENTED] Protected seal manifest: firmware/OTA_SECURITY_SEAL.json.
-- [IMPLEMENTED] Protected seal lock: firmware/OTA_SECURITY_SEAL.lock.
-- [IMPLEMENTED] Protected regions cover Firmware OTA runtime/priority, BLE radio handoff, App any-different-version policy, and Firebase OTA metadata validation.
+- [IMPLEMENTED] Added OTA_PROTECTION.md as the repository reminder for the protected OTA path.
+- [PRESERVED] OTA Firmware/App behavior and the any-different-version policy were not functionally changed.
 - [PRESERVED] Anti-downgrade is OFF; any valid firmware version different from the device version remains eligible for OTA.
-- [PRESERVED] V5.7 Firmware source and App runtime source were not functionally changed by the seal operation.
-- [USER-CONFIRMED] V5.7 OTA update to hardware succeeded before seal installation.
+- [USER-CONFIRMED] V5.7 OTA update to hardware succeeded before this reminder was added.
 
 ## 2026-10-06 — V5.7 QC EXECUTION RECORD
 ### PERSISTENT
