@@ -30,7 +30,7 @@
 - Latest V5.8 functional firmware change: Peltier safety-lock auto-release + NTC single-sample QC fix.
 - Latest V5.7 functional firmware commits: d2ec5d56383f25a105835b10698f62cf19cbf5df → 77591d7406aa8613a3dc9beb33828af5a592d8d5
 - Active Firmware source: firmware/JEXFYZ-V5.8.ino
-- Firmware source blob: a7729d92fb4adf382c492ab82034ff1ec9b8386b
+- Firmware source blob: 1edd37f4bfbe53e141464fe081921edb960e7597
 - OTA Protection reminder: ACTIVE in OTA_PROTECTION.md.
 - App version: 1.0.0+3
 - Package: com.horizontalzzz.jexfyz
