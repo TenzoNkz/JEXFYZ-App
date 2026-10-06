@@ -94,7 +94,4 @@
 - Latest verified downloadable App Build: workflow run 37245703677 via GitHub Release jexfyz-latest.
 - Current App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml.
 - Current App Build workflow blob: 51a6c4d35580228ae24f859058ae5b08665d94a0.
-- OTA Security Seal workflow: .github/workflows/ota-security-seal.yml.
-- OTA Security Seal manifest: firmware/OTA_SECURITY_SEAL.json.
-- OTA Security Seal lock: firmware/OTA_SECURITY_SEAL.lock.
-- Latest OTA Security Seal commit: c2845ef674e9f3041115b6c5c3d618b7a5a5790d.
+- OTA protection reminder: OTA_PROTECTION.md (documentation-only; no CI enforcement).
