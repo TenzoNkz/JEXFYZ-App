@@ -86,13 +86,19 @@
 - Header: JE X FYZ
 - Package: com.horizontalzzz.jexfyz
 - Version: 1.0.0+3
-- Main source blob: 48406cda017be1ce939ff682497324bf3680a7f3
+- Main source blob: df4a244723420f8057745275838d7e07c1e0c82a
 - Settings blob: f11235bab559b291928550e06984532581ddad6a
-- Tests blob: 1951964af7542324b2ae27b1bd94f84e1c853060
+- Tests blob: 2da4bff01d3eed749eeba873e9ec2e577c04def9
 
 ## CURRENT PHASE
-- App remains in DEVELOPMENT + QC; current Firmware integration target is V5.7.
-- The latest verified APK predates V5.2 Firmware and does not prove V5.2 physical integration.
+- App remains in DEVELOPMENT + QC; current Firmware integration target is V5.9.
+- App version remains 1.0.0+3.
+- Android versionName remains intentionally Telegram @horizontalzzz.
+- P1 is required before BLE dashboard/session readiness.
+- Command confirmations are serialized at the high-level transaction layer.
+- PHONE:BT heartbeat values are coalesced; no unbounded 1 Hz write backlog is allowed.
+- Current source/runtime compile and device integration gates remain unverified.
+
 
 ## CONTROL
 - Peltier ON from Fan-OFF state: after the safety popup is approved, the App queues FAN:ON and PELTIER:ON together; the BLE write queue preserves that order without waiting for Fan telemetry between commands.
