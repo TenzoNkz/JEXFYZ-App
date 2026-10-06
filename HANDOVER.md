@@ -1,3 +1,10 @@
+# TRANSFER PROTOCOL V2 — 2026-10-06
+
+- [IMPLEMENTED] `CHAT_TRANSFER.md` is now the detailed cross-chat boot protocol.
+- [POLICY] New chats must read it first, reconcile current `main`, and avoid repeating established context questions.
+- [PRESERVED] V5.7 source, OTA protection, BLE, hardware safety, App, and App Build behavior are unchanged by this documentation update.
+- [VERIFIED] Pre-write main HEAD: `c7faf134742fc6fdbebc3f66469c8aa5dd9980c6`.
+
 ## 2026-10-06 — V5.7 TTP223 TOUCH ACCURACY QC FIX
 - [IMPLEMENTED] Firmware V5.7 is active at firmware/JEXFYZ-V5.7.ino.
 - [IMPLEMENTED] TTP223 input uses 30 ms PRESS/RELEASE qualification before gesture processing.

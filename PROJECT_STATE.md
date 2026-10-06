@@ -1,5 +1,13 @@
 # JE X FYZ — CURRENT PROJECT STATE
 
+## TRANSFER PROTOCOL V2 — 2026-10-06
+- [IMPLEMENTED] `CHAT_TRANSFER.md` was upgraded to a detailed boot/transfer protocol to prevent context repetition between chats.
+- [FROZEN] The transfer protocol does not authorize functional source changes, Firmware release, or App Build.
+- [VERIFIED] Current active Firmware remains V5.7 at `firmware/JEXFYZ-V5.7.ino`.
+- [VERIFIED] Current main HEAD before this documentation write: `c7faf134742fc6fdbebc3f66469c8aa5dd9980c6`.
+- [POLICY] New chats must reconcile the transfer snapshot against current repository truth before acting and must not ask for already-documented project facts.
+
+
 ## CURRENT PHASE
 > **V5.7 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
