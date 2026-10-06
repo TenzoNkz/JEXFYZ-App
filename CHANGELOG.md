@@ -1,3 +1,18 @@
+## CURRENT V5.9 INTEGRATED QC BATCH — 2026-10-06
+
+- Firmware source: `firmware/JEXFYZ-V5.9.ino`.
+- App: 1.0.0+3.
+- Status: DEVELOPMENT + QC / PRE-RELEASE — NOT RELEASED.
+- App + Firmware are one integrated contract.
+- Peltier safety re-arm: effective Hotside lock + one-shot post-safety feedback; Touch/BLE/Adaptive use the same effective safety gate.
+- App: P1 required for session readiness; stale Peltier re-arm notice clears on healthy safety telemetry; safety-sensitive paired startup is serialized; PHONE:BT is coalesced; ONLINE_IMAGE_VALIDATE is mapped.
+- Android notification preference is not saved ON unless runtime permission is granted.
+- Foreground BLE-support service is NOT_STICKY.
+- OTA Local, OTA Online, Wi-Fi↔BLE handoff, OTA state/recovery, image validation, URL/path contract, and BLE/P1/SYNC architecture remain FROZEN.
+- `versionName "Telegram @horizontalzzz"` is intentional and unchanged.
+- App Build was NOT requested by this execution.
+- V5.9 compile/flash/physical regression and final release gate remain pending.
+
 ## V5.8 PELTIER REARM + NTC SINGLE-SAMPLE QC FIX — 2026-10-06
 - Promoted Firmware V5.7 → V5.8 for two reproducible QC findings.
 - Fixed the Peltier safety-lock state so its effective lock clears automatically once Hotside reaches `hotLimit - 2°C`.
