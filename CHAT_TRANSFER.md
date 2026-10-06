@@ -21,13 +21,18 @@
 
 ### CURRENT QC SNAPSHOT — 2026-10-06
 
-- **Active Firmware:** V5.8 (`firmware/JEXFYZ-V5.8.ino`)
-- **V5.7 physical evidence:** user-confirmed compile + hardware update success.
-- **V5.8 status:** source fix implemented; compile/BIN/flash/physical regression is still unverified.
-- **Open QC findings addressed:** Peltier lock did not release after Hotside cooldown; locked Peltier ON feedback was not observable; NTC was sampling 16 values instead of one value per second.
-- **Exact fix:** effective lock releases at `hotLimit - 2°C`; blocked attempts keep red feedback; first successful post-safety ON keeps green feedback; NTC is one calibrated ADC read every 1 second.
-
-
+- **Active Firmware:** V5.9 (`firmware/JEXFYZ-V5.9.ino`)
+- **Active App:** 1.0.0+3 (`com.horizontalzzz.jexfyz`)
+- **Current phase:** DEVELOPMENT + QC / PRE-RELEASE — NOT RELEASED.
+- **Current App BLE contract:** P1 is mandatory before dashboard/session readiness; frozen Service/RX/TX UUIDs remain unchanged.
+- **Current App confirmation contract:** high-level state-changing BLE commands are serialized; paired Fan→Peltier startup stops after a failed Fan confirmation and safety-specific Peltier reasons take priority.
+- **Current App heartbeat contract:** PHONE:BT remains 1 Hz but only the newest pending heartbeat is retained; it cannot create an unbounded write backlog.
+- **Current Peltier safety contract:** effective Hotside re-arm lock releases at hotLimit - 2°C; blocked attempts red 1 s; first successful post-safety ON green 1 s; Touch/BLE/Adaptive use the same effective gate.
+- **Current NTC contract:** exactly one calibrated ADC reading every 1 s; 10K/10K/Beta3950/3.3 V.
+- **OTA status:** Local OTA and Online OTA are protected/frozen; Wi-Fi and BLE radio ownership remain mutually exclusive; no OTA runtime refactor was made by this batch.
+- **OTA policy:** anti-downgrade remains OFF; no crypto/CI OTA seal is active.
+- **Android:** `versionName "Telegram @horizontalzzz"` is intentional and unchanged; notification ON is not persisted without native permission; BLE-support foreground service is NOT_STICKY.
+- **Validation boundary:** V5.9 compile/BIN/flash/physical/OTA/App integration and final release gate are still UNVERIFIED.
 This file exists so a new chat can continue the project **without making the user repeat established context**.
 
 A new chat MUST:
