@@ -9,6 +9,7 @@
 - [PRESERVED] OTA, BLE/P1, GPIO mapping, Adaptive 5-second upward dwell, Hotside 10-second dwell, selector deadtime, voltage guard, and Peltier 5-second soft-start were not intentionally changed.
 - [USER-CONFIRMED] V5.7 compiled successfully and was successfully updated to the hardware before this V5.8 QC fix.
 - [UNVERIFIED] V5.8 compile, BIN generation, flash/update, and physical regression remain pending.
+- [AUDIT PASS] Final V5.8 source audit: no executable `delay()`, no timing `while()` loop, NTC sample-count path removed, brace/parenthesis balance is zero, and only the intended firmware/docs files changed versus pre-fix HEAD.
 
 
 ## TRANSFER PROTOCOL V2 — 2026-10-06
