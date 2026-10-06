@@ -3665,10 +3665,9 @@ static bool setPeltierState(bool desired, String& reason) {
   }
 
   if (manualPeltierSafetyLatchBlocksPeltier()) {
-      startPeltierSafetyAttemptIndicator(false);
-      reason = "PELTIER_SAFETY_LATCH";
-      return false;
-    }
+    startPeltierSafetyAttemptIndicator(false);
+    reason = "PELTIER_SAFETY_LATCH";
+    return false;
   }
 
   if (!peltierOn) {
