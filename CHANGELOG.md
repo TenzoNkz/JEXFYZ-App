@@ -1,3 +1,12 @@
+## V5.9 APP + FIRMWARE BLE QC INTEGRATION — 2026-10-06
+
+- Repaired the App 1 Hz PHONE:BT heartbeat into a valid class method with coalescing so only the newest pending value is retained.
+- Required `PROTOCOL=P1` in the active BLE session readiness polling gate.
+- Command-owned BLE ACK errors no longer emit a competing generic error snackbar.
+- Fan→Peltier popup startup now stops after an unconfirmed Fan start; Peltier safety reasons `PELTIER_SAFETY_LATCH` and `HOTSIDE_PROTECTION` retain notification priority.
+- Added regression coverage for P1 readiness, stale Peltier re-arm notice clearing, and `ONLINE_IMAGE_VALIDATE` presentation mapping.
+- Firmware V5.9 Peltier safety re-arm, Touch, and Adaptive semantics remain aligned; OTA runtime behavior was not changed.
+- V5.9 compile/BIN/flash/physical/OTA runtime and explicit App Build remain pending.
 ## CURRENT V5.9 INTEGRATED QC BATCH — 2026-10-06
 
 - Firmware source: `firmware/JEXFYZ-V5.9.ino`.
