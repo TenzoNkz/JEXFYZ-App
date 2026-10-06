@@ -36,7 +36,7 @@
 - Cooperative millis()-based timing.
 - Local OTA is Golden/Protected.
 - OTA has priority over normal application work.
-- OTA Security Seal is active; protected OTA source/contract drift requires explicit [OTA-SEAL-RENEW].
+- OTA protection reminder is active; protected OTA source/contract drift requires explicit [OTA-SEAL-RENEW].
 - Anti-downgrade is intentionally OFF; any valid firmware version different from the device version may be installed.
 - Hotside NTC safety is authoritative.
 
