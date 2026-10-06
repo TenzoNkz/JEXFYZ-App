@@ -1,9 +1,9 @@
 # JE X FYZ — CURRENT FIRMWARE NOTES
 
 ## ACTIVE
-- Version: V5.7
-- Source: firmware/JEXFYZ-V5.7.ino
-- Blob: 652e54afdd9c7c347cd82072f573f1729c4b46de
+- Version: V5.8
+- Source: firmware/JEXFYZ-V5.8.ino
+- Blob: a7729d92fb4adf382c492ab82034ff1ec9b8386b
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
@@ -13,12 +13,18 @@
 - NOT RELEASED
 - Functional source is frozen unless QC demonstrates a real defect.
 
+## V5.8 QC FIX — 2026-10-06
+- Peltier safety lock auto-releases when Hotside is at or below `hotLimit - 2°C`.
+- The re-arm feedback flag remains pending so the first successful Peltier ON after a safety event keeps the green 1-second indication.
+- While the effective lock is still active, a forced Peltier ON attempt keeps the red 1-second indication.
+- NTC conversion math remains unchanged; only the sampling method returned from the V5.6 multi-sample burst to one reading per second.
+
 ## CONTROL CONTRACT
 - Hardware single tap: 5V → 9V → 12V → 9V → 5V → ...
 - Hardware cooling long press ON: Fan 100%.
 - Peltier OFF → ON: 5-second cooperative soft-start, unchanged.
-- Hotside NTC sampling uses 16 calibrated ADC samples, trims 4 low + 4 high outliers, and averages the remaining 8 samples.
-- NTC temperature has no additional EMA/Kalman smoothing; safety remains responsive to the filtered ADC result.
+- Hotside NTC sampling is exactly 1 calibrated ADC reading every 1 second.
+- NTC temperature has no median, trimmed mean, EMA, Kalman, sorting, or multi-sample burst; safety uses the single current ADC result.
 - Normal Peltier ON/OFF emits no Peltier LED indicator.
 - After Hotside safety forces Peltier OFF, failed re-arm ON attempts blink red for 1 s; a successful re-arm ON attempt at hotLimit - 2°C blinks green for 1 s.
 - Adaptive activation cannot bypass an active Peltier safety latch.
