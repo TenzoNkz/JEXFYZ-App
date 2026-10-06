@@ -1,8 +1,8 @@
 # JE X FYZ — BUILD NOTES
 
 ## CURRENT PHASE
-- Firmware V4.6 is in **QC / PRE-RELEASE**.
-- V4.6 is **NOT RELEASED**.
+- Firmware V5.9 is in **QC / PRE-RELEASE**.
+- V5.9 is **NOT RELEASED**.
 - App Build remains a separate explicit operation.
 
 
@@ -39,6 +39,6 @@
 - App Build does not prove Firmware compile, flash, OTA, or physical behavior.
 - Do not run App Build unless the explicit Build App command is given.
 
-- Firmware-only changes do not automatically trigger or require App Build.
-- This V4.6 firmware execution did not start an App Build.
+- Firmware-only/integrated QC changes do not automatically trigger or require App Build.
+- This V5.9 integrated execution did not start an App Build.
 - Do not infer Firmware compile/BIN/physical validation from an App Build result.
