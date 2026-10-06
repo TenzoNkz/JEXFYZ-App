@@ -1,17 +1,15 @@
-## CURRENT V5.9 INTEGRATED QC BATCH — 2026-10-06
+## CURRENT V5.9 INTEGRATED QC + CHAT-LIMIT RECONCILIATION — 2026-10-06
 
-- Firmware source: `firmware/JEXFYZ-V5.9.ino`.
-- App: 1.0.0+3.
-- Status: DEVELOPMENT + QC / PRE-RELEASE — NOT RELEASED.
-- App + Firmware are one integrated contract.
-- Peltier safety re-arm: effective Hotside lock + one-shot post-safety feedback; Touch/BLE/Adaptive use the same effective safety gate.
-- App: P1 required for session readiness; stale Peltier re-arm notice clears on healthy safety telemetry; safety-sensitive paired startup is serialized; PHONE:BT is coalesced; ONLINE_IMAGE_VALIDATE is mapped.
-- Android notification preference is not saved ON unless runtime permission is granted.
-- Foreground BLE-support service is NOT_STICKY.
-- OTA Local, OTA Online, Wi-Fi↔BLE handoff, OTA state/recovery, image validation, URL/path contract, and BLE/P1/SYNC architecture remain FROZEN.
-- `versionName "Telegram @horizontalzzz"` is intentional and unchanged.
-- App Build was NOT requested by this execution.
-- V5.9 compile/flash/physical regression and final release gate remain pending.
+- [VERIFIED] Current main HEAD: 7d5f0f5adf7fec92b33c92a3b6a6eb58a9ab36a8.
+- [VERIFIED] Active Firmware V5.9: firmware/JEXFYZ-V5.9.ino; blob ee5db12f7e897bbc58557d9946af52786cb9f151.
+- [VERIFIED] Active App 1.0.0+3: lib/main.dart; blob 8a2e97946c4bc4ac2aa3ea09e3a1aca4b15fc6a0.
+- [VERIFIED] App settings blob f11235bab559b291928550e06984532581ddad6a; tests blob 2da4bff01d3eed749eeba873e9ec2e577c04def9.
+- [VERIFIED] Firmware static audit passes the current V5.9 timing/NTC/rapid-rise checks.
+- [VERIFIED] Current App includes P1 validation, serialized command confirmation, coalesced heartbeat, Peltier ACK reason handling, OTA stage presentation, notification channel, and NOT_STICKY service.
+- [VERIFIED] The earlier heartbeat-helper lexical-scope issue is corrected in the current main.dart by commit 7d5f0f5adf7fec92b33c92a3b6a6eb58a9ab36a8.
+- [PROTECTED] OTA Local, OTA Online, radio handoff, state/recovery, image validation, URL/path contract, and BLE/P1 architecture remain frozen.
+- [UNVERIFIED] Current V5.9 compile, tests, BIN, flash, physical behavior, OTA regression, App integration, and release build.
+- [NOT RELEASED] This transfer save does not build or release anything.
 
 # JE X FYZ — CURRENT PROJECT STATE
 

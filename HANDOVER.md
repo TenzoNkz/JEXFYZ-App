@@ -1,17 +1,13 @@
-## CURRENT V5.9 INTEGRATED QC BATCH — 2026-10-06
+## CURRENT V5.9 INTEGRATED QC + CHAT-LIMIT RECONCILIATION — 2026-10-06
 
-- Firmware source: `firmware/JEXFYZ-V5.9.ino`.
-- App: 1.0.0+3.
-- Status: DEVELOPMENT + QC / PRE-RELEASE — NOT RELEASED.
-- App + Firmware are one integrated contract.
-- Peltier safety re-arm: effective Hotside lock + one-shot post-safety feedback; Touch/BLE/Adaptive use the same effective safety gate.
-- App: P1 required for session readiness; stale Peltier re-arm notice clears on healthy safety telemetry; safety-sensitive paired startup is serialized; PHONE:BT is coalesced; ONLINE_IMAGE_VALIDATE is mapped.
-- Android notification preference is not saved ON unless runtime permission is granted.
-- Foreground BLE-support service is NOT_STICKY.
-- OTA Local, OTA Online, Wi-Fi↔BLE handoff, OTA state/recovery, image validation, URL/path contract, and BLE/P1/SYNC architecture remain FROZEN.
-- `versionName "Telegram @horizontalzzz"` is intentional and unchanged.
-- App Build was NOT requested by this execution.
-- V5.9 compile/flash/physical regression and final release gate remain pending.
+- [VERIFIED] Current main HEAD: 7d5f0f5adf7fec92b33c92a3b6a6eb58a9ab36a8.
+- [VERIFIED] Firmware: V5.9 at firmware/JEXFYZ-V5.9.ino; blob ee5db12f7e897bbc58557d9946af52786cb9f151.
+- [VERIFIED] App: 1.0.0+3; package com.horizontalzzz.jexfyz; main blob 8a2e97946c4bc4ac2aa3ea09e3a1aca4b15fc6a0.
+- [IMPLEMENTED] V5.9 integrated App/Firmware QC changes remain present.
+- [VERIFIED] The earlier heartbeat-helper scope issue is corrected; current helper is top-level.
+- [PROTECTED] OTA Local/Online and Wi-Fi↔BLE handoff remain frozen.
+- [UNVERIFIED] V5.9 compile, BIN, flash, physical, OTA, App integration, and release gates.
+- [NOT RELEASED] App Build was not run by this transfer save.
 
 # TRANSFER PROTOCOL V2 — 2026-10-06
 

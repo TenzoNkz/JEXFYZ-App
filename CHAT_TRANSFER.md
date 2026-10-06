@@ -1,237 +1,67 @@
-## CURRENT V5.9 INTEGRATED QC BATCH — 2026-10-06
-
-- Firmware source: `firmware/JEXFYZ-V5.9.ino`.
-- App: 1.0.0+3.
-- Status: DEVELOPMENT + QC / PRE-RELEASE — NOT RELEASED.
-- App + Firmware are one integrated contract.
-- Peltier safety re-arm: effective Hotside lock + one-shot post-safety feedback; Touch/BLE/Adaptive use the same effective safety gate.
-- App: P1 required for session readiness; stale Peltier re-arm notice clears on healthy safety telemetry; safety-sensitive paired startup is serialized; PHONE:BT is coalesced; ONLINE_IMAGE_VALIDATE is mapped.
-- Android notification preference is not saved ON unless runtime permission is granted.
-- Foreground BLE-support service is NOT_STICKY.
-- OTA Local, OTA Online, Wi-Fi↔BLE handoff, OTA state/recovery, image validation, URL/path contract, and BLE/P1/SYNC architecture remain FROZEN.
-- `versionName "Telegram @horizontalzzz"` is intentional and unchanged.
-- App Build was NOT requested by this execution.
-- V5.9 compile/flash/physical regression and final release gate remain pending.
-
 # JE X FYZ — CHAT TRANSFER / NEW CHAT BOOT PROTOCOL
 
-> **Transfer Protocol v2 — authoritative handover procedure for continuing the JE X FYZ / JE Cooler project across chats.**
+> Transfer Protocol v3 — current V5.9 integrated QC snapshot reconciled from main.
 
-## 0. READ FIRST — MANDATORY BOOT RULE
+## 0. READ FIRST / MANDATORY BOOT
 
-### CURRENT QC SNAPSHOT — 2026-10-06
-
-- **Active Firmware:** V5.9 (`firmware/JEXFYZ-V5.9.ino`)
-- **Active App:** 1.0.0+3 (`com.horizontalzzz.jexfyz`)
-- **Current phase:** DEVELOPMENT + QC / PRE-RELEASE — NOT RELEASED.
-- **Current App BLE contract:** P1 is mandatory before dashboard/session readiness; frozen Service/RX/TX UUIDs remain unchanged.
-- **Current App confirmation contract:** high-level state-changing BLE commands are serialized; paired Fan→Peltier startup stops after a failed Fan confirmation and safety-specific Peltier reasons take priority.
-- **Current App heartbeat contract:** PHONE:BT remains 1 Hz but only the newest pending heartbeat is retained; it cannot create an unbounded write backlog.
-- **Current Peltier safety contract:** effective Hotside re-arm lock releases at hotLimit - 2°C; blocked attempts red 1 s; first successful post-safety ON green 1 s; Touch/BLE/Adaptive use the same effective gate.
-- **Current NTC contract:** exactly one calibrated ADC reading every 1 s; 10K/10K/Beta3950/3.3 V.
-- **OTA status:** Local OTA and Online OTA are protected/frozen; Wi-Fi and BLE radio ownership remain mutually exclusive; no OTA runtime refactor was made by this batch.
-- **OTA policy:** anti-downgrade remains OFF; no crypto/CI OTA seal is active.
-- **Android:** `versionName "Telegram @horizontalzzz"` is intentional and unchanged; notification ON is not persisted without native permission; BLE-support foreground service is NOT_STICKY.
-- **Validation boundary:** V5.9 compile/BIN/flash/physical/OTA/App integration and final release gate are still UNVERIFIED.
-This file exists so a new chat can continue the project **without making the user repeat established context**.
-
-A new chat MUST:
-
-1. Read this file before planning work.
-2. Read the current repository state before trusting cached transfer facts.
-3. Reconcile the transfer snapshot against the current `main` branch.
-4. Treat current source/configuration as authoritative over historical notes.
-5. Treat historical sections as history only; never reuse an obsolete version or behavior as current.
-6. Never ask the user to restate information already available here or in the authoritative repository files.
-7. Never perform a functional source change merely because a chat was transferred.
-8. Never run App Build merely because a chat was transferred.
-9. Never claim compile, flash, runtime, OTA, or release PASS without matching evidence.
-10. Continue from the current QC gate and user command, not from an old development snapshot.
-
-### Anti-repetition rule
-
-Before asking the user a clarification question, the new chat MUST first check:
-
-- this file;
-- PROJECT_STATE.md;
-- HANDOVER.md;
-- the relevant authoritative notes;
-- the current source/configuration in the repository.
-
-Ask only when the information is genuinely missing, contradictory, or requires a new decision.
-
----
+- [VERIFIED] Current repository: TenzoNkz/JEXFYZ-App.
+- [VERIFIED] Branch: main.
+- [VERIFIED] Current main HEAD before this documentation save: 7d5f0f5adf7fec92b33c92a3b6a6eb58a9ab36a8.
+- [VERIFIED] Current active Firmware: V5.9 at firmware/JEXFYZ-V5.9.ino.
+- [VERIFIED] Current App: 1.0.0+3; package com.horizontalzzz.jexfyz.
+- [VERIFIED] Current phase: V5.9 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED.
+- [POLICY] Read this file first, then reconcile current source/configuration before acting.
+- [POLICY] Current source and workflow always outrank this transfer snapshot when they conflict.
+- [POLICY] Do not ask the user to repeat project facts already documented here or in the authoritative repository files.
+- [POLICY] Transfer/save does not authorize functional source changes, App Build, Firmware release, BIN publishing, or unverified runtime claims.
 
 ## 1. PROJECT IDENTITY
 
-### PERSISTENT
-
-- Project: **JE X FYZ**
-- App name: **JE Cooler**
-- App header/branding: **JE X FYZ**
-- App repository: **TenzoNkz/JEXFYZ-App**
-- Branch: **main**
-- Hardware target: **ESP32-C3 Super Mini / ESP32-C3 Dev Module**
-- Firmware source authority: `firmware/` inside JEXFYZ-App
-- Firmware binary/publishing repository: **TenzoNkz/JEXFYZ-Firmware**
-- Current Firmware: **V5.9**
-- Current App version: **1.0.0+3**
-- Android package: **com.horizontalzzz.jexfyz**
-- Current phase: **V5.9 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
-- Release status: **NOT RELEASED**
-
-### Current repository evidence at this transfer
-
-- Current main HEAD: tracked by the latest repository commit.
-- Active Firmware source: `firmware/JEXFYZ-V5.9.ino`
-- Active Firmware source blob: `11879cda3e96411c16cc372a176dcef6b71ebe94`
-- App main source blob: `df4a244723420f8057745275838d7e07c1e0c82a`
-- App settings source blob: `f11235bab559b291928550e06984532581ddad6a`
-- App regression-test source blob: `2da4bff01d3eed749eeba873e9ec2e577c04def9`
-- Active App Build workflow: `.github/workflows/jexfyz-app-build-trigger.yml`
-- App Build workflow blob: `51a6c4d35580228ae24f859058ae5b08665d94a0`
-
-### Firmware published-output evidence
-
-- Firmware publishing repository: **TenzoNkz/JEXFYZ-Firmware**
-- Published file: `JEXFYZ.cpp.bin`
-- Current BIN blob: `668aa6bcdec3cca72c4893bc82745598c7e71e5a`
-- Current BIN size: **1,452,496 bytes**
-- Current publishing-repo commit: `25e9fd02d0d949d753b6b5560f8dd543d5197f2a`
-- Approved raw OTA URL:
-  `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ.cpp.bin`
-- The published BIN record alone does **not** independently prove the embedded firmware version; the hardware V5.7 state is user-confirmed.
-
----
+- [CURRENT TRUTH] Project: JE X FYZ.
+- [CURRENT TRUTH] App name: JE Cooler.
+- [CURRENT TRUTH] Header/branding: JE X FYZ.
+- [CURRENT TRUTH] Hardware: ESP32-C3 Super Mini / ESP32-C3 Dev Module.
+- [CURRENT TRUTH] Firmware source authority: firmware/ inside JEXFYZ-App.
+- [CURRENT TRUTH] Firmware publishing repository: TenzoNkz/JEXFYZ-Firmware.
+- [CURRENT TRUTH] Active Firmware: V5.9.
+- [CURRENT TRUTH] App version: 1.0.0+3.
+- [CURRENT TRUTH] Package: com.horizontalzzz.jexfyz.
+- [CURRENT TRUTH] Release status: NOT RELEASED.
 
 ## 2. AUTHORITY HIERARCHY
 
-When information conflicts, use this order:
+1. Current source/configuration and current workflow.
+2. PROJECT_STATE.md.
+3. Authoritative current engineering notes.
+4. HANDOVER.md / CHAT_RULES.md / CHANGELOG.md.
+5. CHAT_TRANSFER.md.
+6. Current chat statements.
+7. Old chat/history.
 
-1. **Current Firmware/App source and current workflow/configuration**
-2. **PROJECT_STATE.md**
-3. **Authoritative current engineering notes**
-4. **CHAT_RULES.md / current HANDOVER.md / CHANGELOG.md**
-5. **CHAT_TRANSFER.md**
-6. **Current chat statements**
-7. **Old chat/history**
-
-Important:
-
-- Current repository state wins over stale documentation.
-- A historical version number must never override the active source filename/version.
-- `CHAT_TRANSFER.md` is a transfer protocol/snapshot, **not the final source of truth**.
-- Historical material is evidence of what happened, not permission to restore old behavior.
-- When a conflict is found, record the discrepancy instead of silently guessing.
-
----
+- [POLICY] Historical statements are evidence of history, not current implementation permission.
+- [POLICY] When documentation conflicts with source, record the discrepancy rather than guessing.
 
 ## 3. USER COMMAND PROTOCOL
 
-The user uses these commands as project control modes.
+- [USER REQUIREMENT] @Thinking Diskusi! = discussion/review only.
+- [USER REQUIREMENT] @Thinking Tanya Gemini! = diagnosis/OLD → NEW patch request; do not silently execute.
+- [USER REQUIREMENT] @Thinking Eksekusi! = implement approved scope + affected audit + docs/memory sync + commit; no App Build unless separately commanded.
+- [USER REQUIREMENT] @Thinking Eksekusi Full! = full implementation + broad affected audit + docs/memory sync + commit; App Build is not implied.
+- [USER REQUIREMENT] @Thinking Build App! = explicit App Build operation.
+- [USER REQUIREMENT] @Thinking Eksekusi & Build App! = implement → audit → docs → commit → App Build.
+- [POLICY] Chat-limit transfer/save itself is documentation-only.
 
-### `@Thinking Diskusi!`
-Discussion/review only.
+## 4. CURRENT PROJECT MODE
 
-Allowed:
-- analyze architecture;
-- compare alternatives;
-- identify risks;
-- propose changes;
-- audit logic conceptually.
+- [CURRENT TRUTH] QC / PRE-RELEASE.
+- [CURRENT TRUTH] Functional source is frozen except for a demonstrated QC defect with clear root cause and approved scope.
+- [CURRENT TRUTH] V5.9 is NOT RELEASED.
+- [POLICY] Static audit, compile, BIN generation, flash, physical QC, OTA regression, App integration, and App Build are separate gates.
 
-Not allowed:
-- functional source edits;
-- commits/releases;
-- App Build;
-- silently changing repository state.
-
-### `@Thinking Tanya Gemini!`
-Diagnosis/patch-request mode.
-
-Expected:
-- identify the suspected root cause;
-- provide exact **OLD → NEW** patches;
-- keep the scope tightly limited;
-- do not silently execute the patch.
-
-### `@Thinking Eksekusi!`
-Implement the **approved scope**.
-
-Required:
-- implement only the approved change;
-- audit affected behavior;
-- synchronize persistent project memory/docs when appropriate;
-- commit the result;
-- do not trigger App Build unless separately commanded.
-
-### `@Thinking Eksekusi Full!`
-Full engineering execution for the approved scope.
-
-Required:
-- implement;
-- perform broad affected-scope audit;
-- verify no unrelated behavior was changed;
-- synchronize persistent documentation/state;
-- commit;
-- clearly separate verified / unverified results.
-
-**App Build is NOT implied.**
-
-### `@Thinking Build App!`
-Explicit App Build operation.
-
-Required:
-- use the existing manual issue-trigger workflow;
-- no firmware implementation is implied;
-- produce the configured production APK pipeline result;
-- report actual run/release evidence.
-
-### `@Thinking Eksekusi & Build App!`
-Combined sequence:
-
-**implement → audit → documentation sync → commit → explicit App Build**
-
-No step should be assumed skipped.
-
----
-
-## 4. CURRENT PROJECT MODE: QC / PRE-RELEASE
-
-The project is **not in unrestricted feature-development mode**.
-
-### QC source-freeze policy
-
-Functional source is treated as **FROZEN** during QC.
-
-A functional change is justified only when:
-
-- the QC failure is real/reproducible or clearly proven from source;
-- the root cause is identified;
-- the defect is relevant to the current release gate;
-- the fix is narrowly scoped;
-- the affected behavior is re-audited.
-
-Do NOT:
-- add unrelated features;
-- refactor stable paths without necessity;
-- redesign the App Build workflow;
-- redesign BLE without a demonstrated defect;
-- alter OTA merely for cleanup/optimization;
-- convert a hypothesis into a fact.
-
----
-
-## 5. HARDWARE CONTRACT — FROZEN
-
-### Target
-- ESP32-C3 Super Mini.
-- Single-radio limitation: Wi-Fi and BLE must not own the radio concurrently.
-
-### GPIO mapping
+## 5. HARDWARE CONTRACT
 
 | Function | GPIO |
-|---|---:|
+| --- | ---: |
 | NTC Hotside | 0 |
 | TTP223 Touch | 1 |
 | 12V selector | 3 |
@@ -240,617 +70,232 @@ Do NOT:
 | Fan | 6 |
 | WS2812 | 7 |
 
-### Touch hardware behavior
-
-- TTP223 is direct Active-High.
-- Single tap: `5V → 9V → 12V → 9V → 5V → ...`
-- Double tap: RGB control.
-- Long press: 5 seconds.
-- Hardware cooling ON forces Fan to 100%.
-
-### Power/output timing
-
-- Fan PWM: **25 kHz, 8-bit, 50–100%**.
-- Peltier PWM: **20 kHz, 8-bit**.
-- Peltier OFF → ON: **5-second cooperative soft-start**, then 100%.
-- Selector deadtime: **200 ms break-before-make**.
-- Voltage guard: **1 second after completed transition**.
-- Voltage transitions preserve the existing Peltier PWM/logical state; normal selector changes do not arbitrarily force Peltier OFF.
-- Fan is forced to 100% during voltage transition and outside the editable 12V manual condition.
-
-### NTC hardware model
-
-- Nominal NTC: **10K**.
-- Fixed resistor: **10K**.
-- Beta: **3950**.
-- GPIO0.
-- 12-bit ADC.
-- 11 dB attenuation.
-- Existing design uses the 3.3 V reference calculation.
-- Hotside sample cadence: **1 second**.
-- Current filter: **16 calibrated ADC samples**, sort, discard **4 lowest + 4 highest**, average the remaining **8**.
-- No EMA/Kalman filter.
-- No speculative VREF change.
-- No voltage clamp.
-- No offset calibration.
-
----
-
-## 6. FIRMWARE V5.7 CONTRACT — FROZEN
-
-### Core/runtime
-
-- Arduino Standard.
-- Arduino-ESP32 Core **3.3.7**.
-- Main loop is cooperative.
-- Timed work uses `millis()`.
-- **No executable `delay()`.**
-- **No timing `while()` loops.**
-
-### Thermal authority
-
-Hotside NTC is the universal thermal safety input.
-
-- Hotside limit range: **40–50°C**.
-- Default limit: **45°C**.
-- Firmware remains the physical-state and safety authority.
-- App telemetry reconciles to firmware; App does not own physical truth.
-
-### Hotside safety
-
-Adaptive Hotside safety sequence:
-
-- At 12V limit:
-  - Fan remains ON at 100%;
-  - Peltier OFF;
-  - hold **10 seconds**;
-  - then step to 9V.
-- At 9V limit:
-  - Fan remains ON at 100%;
-  - Peltier OFF;
-  - hold **10 seconds**;
-  - then step to 5V.
-- At 5V:
-  - terminal protection state;
-  - Peltier remains OFF;
-  - Adaptive exits;
-  - manual Peltier restart is required after thermal re-arm.
-- During every 10-second Hotside dwell:
-  - **9 seconds red blink**;
-  - **final 1 second green blink**.
-- After a HOTSTEP, Fan remains ON at 100% while Hotside protection is still active.
-- Manual-mode Hotside protection preserves the selected voltage rather than forcing an unrelated voltage change.
-
-### Adaptive profiles
-
-Both profiles are protected by the same timing contract:
-
-- `HOTSIDE`
-- `HOTSIDE_BATTERY`
-
-For both:
-- upward voltage changes wait **5 seconds after each completed upward voltage step**;
-- Adaptive startup from the mandatory safe 5V state also begins the same 5-second upward dwell before increasing;
-- downward changes remain immediate;
-- failed upward requests re-arm the wait;
-- Hotside fallback uses the cooperative upward-rise timing.
-
-This is a **Firmware scheduling/state-machine rule**, not an App UI delay.
-
-### Peltier safety latch
-
-- Hotside safety-forced Peltier OFF activates the existing safety latch.
-- Re-arm requires Hotside **≤ `hotLimit - 2°C`**.
-- Normal Peltier ON/OFF does **not** use green/red feedback.
-- While the safety latch is active:
-  - blocked ON attempt → **red blink 1 second**;
-  - successful re-arm ON → **green blink 1 second**, then latch clears.
-- Adaptive start cannot bypass an active safety latch.
-- Hotside dwell LED keeps priority over the short Peltier re-arm indicator.
-
-### NTC fault
-
-If NTC fault is detected:
-- Fan 100%;
-- Peltier OFF;
-- Adaptive OFF;
-- safe 5V.
-
-### Rapid rise protection
-
-`RAPID_HOTSIDE_RISE` and rapid Hotside slope protection are **obsolete and absent**.
-
-Do not reintroduce them without a separately approved new requirement.
-
----
-
-## 7. V5.7 TTP223 TOUCH FSM — FROZEN
-
-Current parameters:
-
-- `STARTUP_GRACE_MS = 1000`
-- `QUALIFICATION_MS = 30`
-- `MIN_TAP_PRESS_MS = 60`
-- `TAP_MAX_PRESS_MS = 500`
-- `DOUBLE_TAP_WINDOW_MS = 800`
-- `LONG_PRESS_MS = 5000`
-
-Behavior:
-
-- raw GPIO is qualified for stable PRESS/RELEASE before gesture processing;
-- valid tap duration uses raw HIGH duration;
-- first valid tap starts the double-tap decision window at release;
-- second tap that starts before the deadline is allowed to release slightly after it;
-- 3+ taps in one sequence cancel the sequence without Voltage/RGB execution;
-- boot-time touch is ignored during startup grace;
-- a touch held at boot must be released before a new gesture is accepted;
-- existing 1x Voltage, 2x RGB, 5s long press semantics remain unchanged.
-
-Latest V5.7 Touch FSM correction commit:
-- `77591d7406aa8613a3dc9beb33828af5a592d8d5`
-
-V5.7 promotion commit:
-- `d2ec5d56383f25a105835b10698f62cf19cbf5df`
-
----
-
-## 8. APP CONTRACT — FROZEN
-
-### Identity
-
-- App: JE Cooler.
-- Header: JE X FYZ.
-- Package: `com.horizontalzzz.jexfyz`.
-- Version: `1.0.0+3`.
-
-### Control contracts
-
-- Manual voltage values: **5V / 9V / 12V**.
-- Fan Speed editable only in **Manual + 12V**.
-- Fan Speed range: **50–100%**, current UI increments in configured discrete steps.
-- Adaptive Fan Speed control is locked.
-- Adaptive + 12V Home Fan Speed displays **100%**.
-- Manual + 12V displays firmware-reported configured speed.
-- App Safety popup queues:
-  - `FAN:ON`
-  - `PELTIER:ON`
-  back-to-back; there is no App-side confirmation wait between them.
-- Firmware owns the actual 5-second Peltier soft-start.
-
-### Temperature settings
-
-- Hotside limit: **40–50°C**, default **45°C**.
-- Battery 5V target range: **20–30°C**.
-- Battery 12V target range: **30–40°C**.
-- Firmware remains the authoritative runtime state.
-
-### Notify / safety presentation
-
-- Re-arm temperature shown as dynamic `hotLimit - 2°C`.
-- Touch ON/OFF ACKs are treated as valid outcomes.
-- Retired `RAPID_HOTSIDE_RISE` presentation is removed.
-- Duplicate generic Peltier failures are suppressed when firmware provides the safety reason.
-- App must not treat a BLE write as proof that hardware has physically changed.
-
-### Persistence
-
-- Settings are persisted after the established no-change interval.
-- Changed settings are not unnecessarily spammed.
-- User requested separate reset controls for separate functions rather than a global reset.
-
----
-
-## 9. BLE / P1 CONTRACT — FROZEN
-
-BLE stack currently uses Arduino BLE:
-
-- `BLEDevice.h`
-- `BLEServer.h`
-- `BLEUtils.h`
-- `BLE2902.h`
-
-Device name:
-- **JE X FYZ**
-
-UUIDs:
-
-- Service: `6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001`
-- RX: `6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001`
-- TX: `6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001`
-
-Current protocol/transport facts:
-
-- MTU target: 247.
-- TX queue: 48 String entries.
-- RX ring: 8 × 512 buffers.
-- TX notify pacing: 15 ms.
-- BLE retry: every 750 ms, max 8 attempts.
-- Sync gate uses `SYNC` / `SYNC_READY`.
-- Full sync includes state/version/protocol/session, cooling state, voltage, temperatures, adaptive state, RGB, fan speed, safety, OTA state/progress/errors, BLE diagnostics, reset reason, and temperature configuration.
-- App uses flutter_blue_plus.
-- Floating Monitor does not create a second BLE client.
-- One GATT session is the intended App architecture.
-
-BLE policy:
-
-- Do not migrate to NimBLE merely for cleanup.
-- Do not redesign BLE without a demonstrated defect.
-- A disconnect must allow normal BLE recovery without requiring a manual firmware restart.
-- Wi-Fi and BLE cannot concurrently own the ESP32-C3 single radio.
-
-Known non-blocking future improvement ideas are not current tasks:
-- TX priority/coalescing;
-- RX drop diagnostics;
-- indefinite recovery retry rather than finite retry window.
-
----
-
-## 10. OTA CONTRACT — PROTECTED / FROZEN
-
-Read **OTA_PROTECTION.md** before touching OTA.
-
-Protected areas:
-
-- Local OTA;
-- Online OTA;
-- OTA state machine;
-- OTA priority/lifecycle;
-- Wi-Fi ↔ BLE radio handoff;
-- OTA recovery;
-- OTA safety output;
-- timeout/retry logic;
-- image validation;
-- firmware OTA URL/path contract;
-- App OTA version-selection contract.
-
-Rules:
-
-1. Do not refactor/optimize OTA while working on unrelated functionality.
-2. Change OTA only when a real OTA bug is demonstrated.
-3. Root cause must be clear.
-4. Change must be explicitly discussed/approved.
-5. After an OTA change, perform a full OTA re-audit.
-
-### Version policy
-
-**ANTI-DOWNGRADE = OFF.**
-
-Any valid firmware version that is **different** from the device version may be installed.
-
-Examples:
-- V5.7 → V5.8 ✅
-- V5.7 → V5.6 ✅
-- V5.7 → V6.0 ✅
-- V5.7 → V5.7 ❌ unnecessary update
-
-Do not add downgrade blocking.
-
-### Radio ownership
-
-- Wi-Fi OTA gets radio ownership.
-- BLE must not remain active concurrently.
-- Online OTA explicitly tears down GATT/BLE before Wi-Fi ownership.
-- After OTA failure/recovery, BLE must be restored as designed.
-
-### OTA current evidence
-
-- OTA protection reminder file: `OTA_PROTECTION.md`
-- Documentation-only; it is **not cryptographic signing** and **not CI enforcement**.
-- User-confirmed: V5.7 OTA successfully reached the physical hardware and the device is running V5.7.
-- Full V5.7 OTA regression is still a QC gate.
-
----
-
-## 11. FIREBASE / OTA METADATA CONTRACT
-
-Firmware metadata uses:
-
-- firmware version;
-- firmware URL.
-
-**SHA is intentionally NOT required for Firebase firmware linking.**
-
-Firebase metadata endpoint currently documented:
-`https://je-x-fyz-default-rtdb.asia-southeast1.firebasedatabase.app/firmware_update.json`
-
-Approved BIN host/path:
-- raw GitHub;
-- repository: `TenzoNkz/JEXFYZ-Firmware`;
-- endpoint must be a `.bin`.
-
-The App uses its established OTA version-selection contract:
-- any valid **different** firmware version may be selected;
-- same version does not require an update;
-- anti-downgrade is OFF.
-
----
-
-## 12. ANDROID / SECURITY / APP BUILD CONTRACT
-
-### Android host
-
-- compileSdk: **37**
-- targetSdk: **36**
-- minSdk: **24**
-- package: `com.horizontalzzz.jexfyz`
-
-App security/storage references include:
-- Firebase App Check / Android Play Integrity;
-- flutter_secure_storage for protected Wi-Fi credentials.
-
-### App Build workflow
-
-Authoritative workflow:
-`.github/workflows/jexfyz-app-build-trigger.yml`
-
-Trigger:
-- GitHub Issues;
-- opened/reopened only;
-- repository owner;
-- exact title:
-  **JE X FYZ — BUILD APP TRIGGER**
-- required body token:
-  **JEXFYZ_BUILD_TRIGGER_V1**
-
-Build policy:
-- manual-by-issue only;
-- normal push/PR must NOT create a release APK;
-- one normal APK, not a Play Store bundle;
-- production signing required;
-- obfuscation required;
-- delivery through GitHub Release;
-- no Actions artifact delivery;
-- published asset name:
-  **JEXFYZ-release.apk**
-
-Toolchain configured by the workflow:
-- ubuntu-24.04
-- Java 17
-- Flutter 3.47.2 stable
-- Gradle 9.3.1
-
-A Firmware-only execution does not automatically require App Build.
-
----
-
-## 13. CURRENT SOURCE / COMMIT MAP
-
-### Active Firmware
-
-- Version: **V5.7**
-- Path: `firmware/JEXFYZ-V5.7.ino`
-- Blob: `652e54afdd9c7c347cd82072f573f1729c4b46de`
-- V5.7 promotion: `d2ec5d56383f25a105835b10698f62cf19cbf5df`
-- V5.7 Touch FSM correction: `77591d7406aa8613a3dc9beb33828af5a592d8d5`
-
-### Active App
-
-- Main: `lib/main.dart`
-- Main blob: `48406cda017be1ce939ff682497324bf3680a7f3`
-- Settings: `lib/app_settings.dart`
-- Settings blob: `f11235bab559b291928550e06984532581ddad6a`
-- Regression test source blob: `1951964af7542324b2ae27b1bd94f84e1c853060`
-
-### Active App CI
-
-- Workflow: `.github/workflows/jexfyz-app-build-trigger.yml`
-- Blob: `51a6c4d35580228ae24f859058ae5b08665d94a0`
-
-### Current main
-
-- Pre-transfer HEAD: `c7faf134742fc6fdbebc3f66469c8aa5dd9980c6`
-- The transfer write itself is documentation-only.
-
----
-
-## 14. CURRENT QC STATUS
+- [FROZEN] ESP32-C3 single-radio rule: Wi-Fi and BLE must never own the radio concurrently.
+- [FROZEN] Fan PWM: 25 kHz, 8-bit, 50–100%.
+- [FROZEN] Peltier PWM: 20 kHz; OFF→ON soft-start 5 seconds, cooperative.
+- [FROZEN] Selector deadtime: 200 ms break-before-make.
+- [FROZEN] Voltage guard: 1 second after completed transition.
+- [FROZEN] NTC model: 10K NTC + 10K fixed resistor + Beta 3950 + 3.3 V reference design.
+- [FROZEN] V5.9 NTC cadence: exactly one calibrated ADC reading every 1 second.
+- [FROZEN] Hotside limit: 40–50°C, default 45°C.
+- [FROZEN] NTC fault: Fan 100%, Peltier OFF, Adaptive OFF, safe 5V.
+
+## 6. FIRMWARE CONTRACT
+
+- [VERIFIED] Active source contains FW_VERSION V5.9.
+- [VERIFIED] Static source checks: one NTC ADC read, no executable delay(), no timing while(), no RAPID_HOTSIDE_RISE, dead bleSyncPending state removed.
+- [IMPLEMENTED] Effective Peltier safety lock blocks Peltier when Hotside is above hotLimit - 2°C or NTC is invalid.
+- [IMPLEMENTED] Safety-forced Peltier OFF arms one-shot re-arm feedback; first successful post-safety ON consumes it and produces the green re-arm indication.
+- [IMPLEMENTED] Blocked effective-lock ON attempt uses red 1-second indication.
+- [IMPLEMENTED] Adaptive activation uses the same effective safety latch gate.
+- [FROZEN] Both HOTSIDE and HOTSIDE_BATTERY Adaptive profiles wait 5 seconds after each completed upward voltage step; downward changes remain immediate.
+- [FROZEN] Hotside safety dwell is 10 seconds with Fan 100% and 9-second red + final 1-second green LED.
+- [OBSOLETE] Rapid Hotside slope/RAPID_HOTSIDE_RISE protection.
+
+## 7. TOUCH CONTRACT
+
+- [FROZEN] TTP223 direct Active-High.
+- [FROZEN] Single tap: 5V → 9V → 12V → 9V → 5V → ...
+- [FROZEN] Double tap: RGB.
+- [FROZEN] Long press: 5 seconds.
+- [FROZEN] STARTUP_GRACE_MS 1000.
+- [FROZEN] QUALIFICATION_MS 30.
+- [FROZEN] Valid tap: 60–500 ms raw HIGH.
+- [FROZEN] DOUBLE_TAP_WINDOW_MS 800.
+- [FROZEN] LONG_PRESS_MS 5000.
+- [IMPLEMENTED] Touch cooling/re-arm path uses the same effective Peltier safety gate as the BLE command path.
+- [USER-CONFIRMED] V5.7 compiled and updated hardware successfully before V5.8/V5.9 source work.
+
+## 8. APP CONTRACT
+
+- [CURRENT TRUTH] App remains 1.0.0+3 with package com.horizontalzzz.jexfyz.
+- [IMPLEMENTED] BLE session readiness requires PROTOCOL=P1 in addition to SYNC_READY/full sync/session readiness.
+- [IMPLEMENTED] High-level state-changing BLE confirmation calls are serialized with _commandTransactionQueue.
+- [IMPLEMENTED] Peltier ACK failure reason is retained for safety-specific user feedback.
+- [IMPLEMENTED] Fan→Peltier popup startup executes ordered confirmation so generic Fan success cannot race the Peltier safety result.
+- [IMPLEMENTED] Stale Peltier re-arm notices can be cleared by healthy firmware safety telemetry.
+- [IMPLEMENTED] ONLINE_IMAGE_VALIDATE is a known OTA presentation stage.
+- [IMPLEMENTED] PHONE:BT heartbeat is coalesced to retain only the newest pending value.
+- [IMPLEMENTED] Native notification calls use a dedicated MethodChannel and notification ON is not persisted without native permission.
+- [IMPLEMENTED] BLE-support foreground service uses START_NOT_STICKY.
+- [FROZEN] Android versionName is exactly Telegram @horizontalzzz; this is intentional and must not be changed.
+- [VERIFIED SOURCE] Current heartbeat helper is now top-level in main.dart; the earlier lexical-scope issue was corrected by commit 7d5f0f5adf7fec92b33c92a3b6a6eb58a9ab36a8.
+
+## 9. BLE / P1 CONTRACT
+
+- [FROZEN] BLE device name: JE X FYZ.
+- [FROZEN] Service UUID: 6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001.
+- [FROZEN] RX UUID: 6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001.
+- [FROZEN] TX UUID: 6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001.
+- [FROZEN] Transport: flutter_blue_plus.
+- [FROZEN] One intended GATT session.
+- [FROZEN] Handshake: SYNC → SYNC_READY; PROTOCOL=P1 must be valid before dashboard readiness.
+- [FROZEN] Firmware telemetry remains physical-state authority.
+- [POLICY] Do not migrate/rewrite BLE without a demonstrated defect.
+
+## 10. OTA PROTECTED CONTRACT
+
+- [PROTECTED] Local OTA.
+- [PROTECTED] Online OTA.
+- [PROTECTED] OTA priority/lifecycle/state machine.
+- [PROTECTED] Wi-Fi ↔ BLE radio handoff.
+- [PROTECTED] OTA recovery after failure.
+- [PROTECTED] OTA safety output.
+- [PROTECTED] OTA timeout/retry.
+- [PROTECTED] Image validation.
+- [PROTECTED] Firmware OTA URL/path contract.
+- [PROTECTED] App OTA version-selection contract.
+- [VERIFIED] Current V5.9 work did not intentionally redesign the OTA runtime.
+- [FROZEN] Wi-Fi must obtain radio ownership only after BLE/GATT is torn down.
+- [FROZEN] Anti-downgrade is OFF.
+- [FROZEN] No cryptographic OTA signing or CI-enforced OTA seal is active.
+- [USER-CONFIRMED] V5.7 OTA reached physical hardware successfully.
+- [UNVERIFIED] Final V5.9 Local OTA and Online OTA runtime regression.
+
+## 11. FIREBASE / OTA METADATA
+
+- [CURRENT] Metadata endpoint: https://je-x-fyz-default-rtdb.asia-southeast1.firebasedatabase.app/firmware_update.json.
+- [FROZEN] Firebase firmware linking uses version + URL; SHA is intentionally NOT required.
+- [CURRENT] Firmware binary repository: TenzoNkz/JEXFYZ-Firmware.
+- [CURRENT] Published binary filename: JEXFYZ.cpp.bin.
+- [CURRENT] Approved raw OTA URL: https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ.cpp.bin.
+- [POLICY] Any valid firmware version DIFFERENT from the device version may be selected; same version requires no update.
+- [UNVERIFIED] Published BIN provenance does not independently prove the embedded V5.9 version.
+
+## 12. ANDROID / APP BUILD CONTRACT
+
+- [VERIFIED] Build workflow: .github/workflows/jexfyz-app-build-trigger.yml.
+- [VERIFIED] Trigger is GitHub Issues opened/reopened only, gated by repository owner, exact title, and JEXFYZ_BUILD_TRIGGER_V1.
+- [FROZEN] Normal push/PR does not generate a release APK.
+- [FROZEN] Toolchain: ubuntu-24.04, Java 17, Flutter 3.47.2 stable, Gradle 9.3.1.
+- [FROZEN] Output: one obfuscated production-signed JEXFYZ-release.apk via GitHub Release jexfyz-latest.
+- [VERIFIED] Android minSdk 24, targetSdk 36, compileSdk 37.
+- [FROZEN] versionName Telegram @horizontalzzz.
+- [POLICY] App Build is never implied by Firmware execution or chat transfer.
+
+## 13. SOURCE / COMMIT MAP
+
+### Current source blobs
+- [VERIFIED] Firmware V5.9: ee5db12f7e897bbc58557d9946af52786cb9f151.
+- [VERIFIED] App main: 8a2e97946c4bc4ac2aa3ea09e3a1aca4b15fc6a0.
+- [VERIFIED] App settings: f11235bab559b291928550e06984532581ddad6a.
+- [VERIFIED] Floating Monitor: 4cd980ea1cc53c663e60267b2c865f3ebb09d91d.
+- [VERIFIED] MainActivity: eeb135ef34b1d415196b86e6ffe1ac39d7bda5e2.
+- [VERIFIED] Foreground service: 437655add9f12631570614314eef1db1fd9c4005.
+- [VERIFIED] App tests: 2da4bff01d3eed749eeba873e9ec2e577c04def9; 29 test/testWidgets declarations detected.
+- [VERIFIED] App Build workflow: 51a6c4d35580228ae24f859058ae5b08665d94a0.
+- [VERIFIED] Android Gradle: 8f053eeb4c3bdbfade7d04e1e350437d88954876.
+
+### Recent relevant commits
+- [COMMITTED] 7d5f0f5adf7fec92b33c92a3b6a6eb58a9ab36a8 — fix: correct Duration named argument.
+- [COMMITTED] a75b759d60063bd39b6442ee6d524ac46af7ab30 — fix: complete V5.9 BLE and notification audit.
+- [COMMITTED] c4d9d66c37deabd7f9dc0ebe8925096bb6ce8975 — fix: wire V5.9 OTA stage presentation helper.
+- [COMMITTED] 8eebf1d1a3426f512cec1d7f1a459c34969cddc5 — fix: consume Peltier re-arm feedback on Touch success.
+- [COMMITTED] 6bbc88ff27e4755a67e8658548b43207de07be01 — fix: reset P1 validation on every BLE session.
+- [COMMITTED] 1f768d50e5b7f3b484c160289c67f44812f5c045 — fix: release coalesced BLE heartbeat queue safely.
+- [COMMITTED] f40688d449a719c6dfc841582ace3150fffbf31f — feat: synchronize firmware safety re-arm for V5.9.
+
+### Historical V5.7 evidence
+- [USER-CONFIRMED] V5.7 compiled and was successfully updated to physical hardware.
+- [UNVERIFIED] V5.9 compile/BIN/flash/physical validation.
+
+## 14. QC STATUS
 
 ### VERIFIED
+- [VERIFIED] Current main HEAD: 7d5f0f5adf7fec92b33c92a3b6a6eb58a9ab36a8.
+- [VERIFIED] One active .ino exists: JEXFYZ-V5.9.ino.
+- [VERIFIED] Firmware static source audit passes: one NTC read, zero executable delay, zero timing while, no RAPID_HOTSIDE_RISE.
+- [VERIFIED] App contains P1 readiness gate, serialized ACK transaction queue, Peltier ACK-reason retention, coalesced heartbeat, OTA stage presentation, dedicated notification channel, and NOT_STICKY BLE-support service.
+- [VERIFIED] Current App heartbeat helper is top-level; previous scope issue is no longer present in current main.dart.
+- [VERIFIED] App Build workflow remains manual issue-triggered.
+- [USER-CONFIRMED] V5.7 compile + OTA update to hardware succeeded.
 
-- Active source is V5.7.
-- V5.7 source/static contract is present in the repository.
-- V5.7 Touch FSM correction is committed.
-- V5.7 OTA update reached the physical hardware.
-- User-confirmed device state: hardware is running V5.7.
-- OTA protection reminder exists and is documentation-only.
-- App Build workflow is manual issue-triggered and separate.
-- Current source/workflow were re-read against `main` during this transfer.
+### UNVERIFIED
+- [UNVERIFIED] Flutter/Dart analysis and tests for current V5.9-integrated App.
+- [UNVERIFIED] V5.9 Arduino compile.
+- [UNVERIFIED] V5.9 BIN generation.
+- [UNVERIFIED] V5.9 flash/update and image provenance.
+- [UNVERIFIED] V5.9 physical control/safety behavior.
+- [UNVERIFIED] Local OTA Golden Path on V5.9 image.
+- [UNVERIFIED] Online OTA + BLE recovery on V5.9 image.
+- [UNVERIFIED] Full App ↔ V5.9 hardware integration.
+- [UNVERIFIED] V5.9 App Build/release.
+- [UNVERIFIED] Final Release Gate.
 
-### UNVERIFIED / PENDING
+## 15. RISKS
 
-- V5.7 Arduino compile in the intended Arduino-ESP32 3.3.7 environment.
-- V5.7 BIN generation from the active source.
-- Independent V5.7 flash validation.
-- Full physical Touch regression.
-- Full Hotside/NTC thermal regression.
-- Both Adaptive profiles' 5-second upward dwell on physical hardware.
-- 10-second Hotside dwell + Fan 100% + 9s red/1s green LED behavior on hardware.
-- Peltier safety latch/re-arm runtime.
-- Local OTA regression on the final V5.7 image.
-- Online OTA + BLE recovery regression on the final V5.7 image.
-- Full App ↔ V5.7 integration regression.
-- Final Release Gate.
+- [RISK] V5.9 has not been compiled or validated on physical ESP32-C3 hardware.
+- [RISK] Final Local/Online OTA regression for the V5.9 image is still pending.
+- [RISK] App current source has static changes but no current toolchain compile/test evidence in this chat.
+- [RISK] Some historical project notes still contain older version references; use source + current state, not history.
 
-### Build evidence caveat
+## 16. OBSOLETE / DO NOT REUSE
 
-Repository documentation contains conflicting historical App Build records. Do **not** silently choose one as canonical.
+- [OBSOLETE] V4.x–V5.8 as active Firmware targets.
+- [OBSOLETE] App-side fixed 2-second Fan precharge.
+- [OBSOLETE] RAPID_HOTSIDE_RISE and rapid slope protection.
+- [OBSOLETE] Concurrent Wi-Fi + BLE radio ownership.
+- [OBSOLETE] Anti-downgrade enforcement.
+- [OBSOLETE] Automatic App Build on push/PR.
+- [OBSOLETE] Temporary CI OTA Security Seal experiment.
 
-Currently documented records include:
-- PROJECT_STATE: run `37261171475`, release `jexfyz-latest`, APK SHA-256 `b8045d0b6fa6d05b421bd6b1c0318d4ee4529734d7b471534700f95676200888`;
-- APP_NOTES / older records contain other run IDs/digests.
+## 17. GEMINI EVIDENCE
 
-This transfer intentionally preserves that as an **unresolved evidence discrepancy** until a current Actions/Release verification is performed.
+- [VERIFIED] No authoritative Gemini result text is stored in the current repository snapshot.
+- [POLICY] Never invent or promote unrecorded Gemini output to verified evidence.
 
----
+## 18. FAILED APPROACHES
 
-## 15. CURRENT RISKS
-
-- V5.7 physical behavior is not yet fully regression-tested.
-- Final compile/BIN/flash provenance for V5.7 is not yet independently recorded here.
-- OTA final-image regression remains pending even though V5.7 successfully reached hardware once.
-- App ↔ V5.7 physical integration remains pending.
-- Historical App Build evidence is not fully reconciled.
-- Documentation outside this transfer file may still contain historical statements; use the authority hierarchy and current source to reconcile them.
-- Release must remain blocked until the QC gates are actually completed.
-
----
-
-## 16. RESOLVED / OBSOLETE — DO NOT REUSE AS CURRENT
-
-The following are historical only:
-
-- V4.6, V4.7, V4.8, V4.9, V5.0, V5.1, V5.2, V5.3, V5.4, V5.5, V5.6 active-source states.
-- App-side fixed 2-second Fan precharge before Peltier ON.
-- Rapid Hotside-rise/slope protection.
-- `RAPID_HOTSIDE_RISE` notification.
-- Concurrent Wi-Fi + BLE radio ownership.
-- Any rule that treats the 5-second Adaptive dwell as applying to only one profile.
-- Any anti-downgrade implementation.
-- Any App Build triggered automatically by push/PR.
-- The temporary CI-based OTA Security Seal experiment and its removed files.
-
-Historical commits remain useful for audit/history, but must not be treated as current implementation targets.
-
----
-
-## 17. GEMINI EVIDENCE POLICY
-
-Gemini findings must be kept separate from local reasoning.
-
-Current retained state:
-
-- No authoritative Gemini result text is currently stored as verified evidence for this transfer.
-- Do not invent, paraphrase, or upgrade an unrecorded Gemini response into fact.
-- When a future Gemini result is supplied, preserve the exact finding/context needed to distinguish:
-  - Gemini evidence;
-  - repository evidence;
-  - local engineering inference.
-
----
-
-## 18. FAILED APPROACHES / ENVIRONMENT LIMITATIONS
-
-Previously encountered environment limitations include:
-
-- local repository clone/network resolution failures;
-- missing local Flutter/Dart/Arduino CLI/PlatformIO validation tools in prior environments;
-- inability to treat cached GitHub documentation as equivalent to fresh runtime/physical evidence.
-
-These are environment limitations, not proof that the project itself is defective.
-
-Do not repeat a failed local strategy without first checking whether the environment/tooling has changed.
-
----
+- [ENVIRONMENT LIMITATION] This chat had tool/orchestration interruptions during an earlier execution attempt.
+- [ENVIRONMENT LIMITATION] No local Flutter/Dart/Arduino compiler run was completed here.
+- [POLICY] Tool interruption or missing local toolchain is not evidence of a firmware/app runtime defect.
 
 ## 19. EXACT QC SEQUENCE
 
-Unless the user explicitly changes project priority, the current release path is:
+1. Run Flutter/Dart analysis and tests on the current App source.
+2. Compile V5.9 with the intended Arduino-ESP32 3.3.7 toolchain.
+3. Generate V5.9 BIN and record image provenance.
+4. Flash/update ESP32-C3 and verify reported firmware version.
+5. Run hardware-only functional QC.
+6. Run safety QC, including Peltier re-arm, Adaptive timing, Hotside dwell, Fan/Peltier constraints, and NTC fault behavior.
+7. Run Local OTA Golden Path.
+8. Run Online OTA and verify Wi-Fi→BLE recovery plus single-radio ownership.
+9. Run App ↔ V5.9 integration QC, including P1, ACK confirmation, Peltier NOTIFY/re-arm, heartbeat behavior, and OTA presentation.
+10. Run App Build only after explicit @Thinking Build App! or @Thinking Eksekusi & Build App!.
+11. Final Release Gate only after all required evidence exists.
 
-**1. Compile V5.7**
-→ **2. Generate V5.7 BIN**
-→ **3. Flash/verify V5.7 provenance**
-→ **4. Hardware-only functional QC**
-→ **5. Safety QC**
-→ **6. Local OTA Golden Path**
-→ **7. Online OTA + BLE recovery**
-→ **8. App ↔ V5.7 integration QC**
-→ **9. Separate explicit App Build**
-→ **10. Final Release Gate**
+## 20. NEW CHAT FIRST RESPONSE
 
-Important:
-- Build App is a separate operation.
-- Firmware implementation does not imply App Build.
-- Chat transfer does not imply App Build.
-- No release claim before the actual gates pass.
+Report only:
+- CURRENT PROJECT TRUTH
+- REPOSITORY RECONCILIATION
+- VERIFIED
+- UNVERIFIED
+- KNOWN RISKS
+- NEXT EXACT QC GATE
 
----
+Then wait for the user's next command.
 
-## 20. NEW CHAT FIRST RESPONSE FORMAT
+## 21. TRANSFER / MEMORY RULES
 
-After preflight/reconciliation, the new chat should report:
+- [POLICY] On each context-limit event, replace CHAT_TRANSFER.md; do not append duplicate snapshots.
+- [POLICY] Keep historical events in CHANGELOG/history.
+- [POLICY] Preserve exact source paths, versions, blob SHAs, commit SHAs, run IDs, checksums, and evidence where material.
+- [POLICY] Separate CURRENT TRUTH, VERIFIED, UNVERIFIED, HISTORY/OBSOLETE, and CHAT-ONLY state.
+- [POLICY] Never convert HYPOTHESIS into VERIFIED without evidence.
+- [POLICY] Transfer/save does not change functional source.
 
-### CURRENT PROJECT TRUTH
-Current version, phase, active source, current main HEAD, and release status.
+## 22. CHAT-ONLY STATE
 
-### REPOSITORY RECONCILIATION
-What was verified against current `main`, and any discrepancies.
-
-### VERIFIED
-Only facts supported by current repository/evidence.
-
-### UNVERIFIED
-Only genuinely pending validation.
-
-### KNOWN RISKS
-Only active risks.
-
-### NEXT EXACT GATE
-One concrete next QC action.
-
-Then wait for the user's command.
-
-Do not re-explain the entire historical project unless a specific part is relevant to the current task.
-
----
-
-## 21. TRANSFER SAVE / MEMORY RULES
-
-When a future chat reaches context/transfer limits:
-
-- do not append another giant duplicate snapshot;
-- replace this file with one current transfer snapshot;
-- keep current truth consolidated;
-- keep history in CHANGELOG/Git history;
-- preserve exact source paths, versions, blobs, commits, run IDs, checksums, and evidence where they materially matter;
-- separate persistent facts from chat-only discussion;
-- update PROJECT_STATE/HANDOVER only when the new state is persistent and materially useful;
-- do not change functional source merely to perform memory synchronization.
-
-Recommended transfer labels:
-
-`[USER REQUIREMENT]`
-`[CONFIRMED]`
-`[VERIFIED]`
-`[IMPLEMENTED]`
-`[COMMITTED]`
-`[BUILT]`
-`[TESTED]`
-`[UNVERIFIED]`
-`[HYPOTHESIS]`
-`[OBSOLETE]`
-`[REJECTED]`
-`[BLOCKED]`
-`[OPEN QUESTION]`
-
-Never promote `[HYPOTHESIS]` to `[VERIFIED]` without evidence.
-
----
-
-## 22. CURRENT CHAT-ONLY STATE
-
-- The user requested a more detailed transfer prompt so future chats do not repeatedly ask for established context.
-- This execution is a **documentation/protocol improvement only**.
-- No functional Firmware behavior is authorized to change by this transfer operation.
-- No App source behavior is authorized to change by this transfer operation.
-- No App Build is authorized by this transfer operation.
-
----
+- [CHAT-ONLY] User reported the previous chat became stuck and then invoked this persistence procedure.
+- [CHAT-ONLY] Before this transfer, the user explicitly required OTA Local, OTA Online, and BLE protection to remain safe/frozen through later execution.
+- [CHAT-ONLY] No new functional requirement is authorized by this transfer save.
 
 ## 23. TRANSFER COMPLETION
 
-At the start of this transfer write:
-
-- Repository: `TenzoNkz/JEXFYZ-App`
-- Branch: `main`
-- Verified pre-write HEAD: `c7faf134742fc6fdbebc3f66469c8aa5dd9980c6`
-- Active Firmware source/blob: `firmware/JEXFYZ-V5.7.ino` / `652e54afdd9c7c347cd82072f573f1729c4b46de`
-- Active App Build workflow/blob: `.github/workflows/jexfyz-app-build-trigger.yml` / `51a6c4d35580228ae24f859058ae5b08665d94a0`
-
-After the write:
-- re-read this file;
-- verify that its saved contents match the intended Transfer Protocol v2;
-- verify the new main HEAD;
-- verify the active Firmware source and workflow still match;
-- verify no functional source/workflow changes were introduced by the transfer protocol update.
-
-> **Purpose:** a new chat should be able to boot from this document, reconcile repository truth, and continue the project without forcing the user to restart the explanation from zero.
+- [VERIFIED] Current CHAT_TRANSFER.md was read before replacement.
+- [VERIFIED] Current main was reconciled immediately before the write.
+- [VERIFIED] Only documentation files are being changed by this operation.
+- [VERIFIED] No App Build is being run.
+- [VERIFIED] No firmware BIN is being published.
+- [NEXT] Continue from Section 19 after the next chat boots.
