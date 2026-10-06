@@ -8,6 +8,7 @@
 - [PRESERVED] No OTA, BLE, GPIO, Adaptive timing, selector timing, voltage guard, or Peltier soft-start changes.
 - [USER-CONFIRMED] V5.7 compile + hardware update succeeded before this fix.
 - [UNVERIFIED] V5.8 compile/BIN/flash/physical QC is pending.
+- [AUDIT PASS] Static source audit passed: no executable `delay()`, no timing `while()` loop, single NTC ADC sample path, latch auto-release path present, and no App source/workflow change.
 
 
 - [IMPLEMENTED] `CHAT_TRANSFER.md` is now the detailed cross-chat boot protocol.
