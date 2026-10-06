@@ -16,7 +16,7 @@
 - Repository: TenzoNkz/JEXFYZ-App
 - Branch: main
 - Firmware: V5.7
-- Firmware source change commits: 85bf8acf79fd91f0d3bbbe2440bec8bab73774da → fd883ca695cab2f35014b3cf069fa9454ae6bc89
+- Latest V5.7 functional firmware commits: d2ec5d56383f25a105835b10698f62cf19cbf5df → 77591d7406aa8613a3dc9beb33828af5a592d8d5
 - Active Firmware source: firmware/JEXFYZ-V5.7.ino
 - Firmware source blob: 652e54afdd9c7c347cd82072f573f1729c4b46de
 - OTA Protection reminder: ACTIVE in OTA_PROTECTION.md.
@@ -33,13 +33,13 @@
 - Latest verified APK: JEXFYZ-release.apk, 54,327,520 bytes, SHA-256 b8045d0b6fa6d05b421bd6b1c0318d4ee4529734d7b471534700f95676200888.
 - No App Build was executed for the CONTROL precharge change.
 
-## OTA SECURITY SEAL — 2026-10-06
-- [IMPLEMENTED] Protected OTA integrity guard added without changing Firmware OTA runtime behavior.
-- [IMPLEMENTED] CI now fingerprints the OTA runtime, OTA priority, BLE radio handoff, App any-different-version policy, and App Firebase OTA metadata validation.
-- [IMPLEMENTED] CI rejects seal-artifact changes unless [OTA-SEAL-RENEW] is explicitly present.
-- [IMPLEMENTED] Anti-downgrade remains OFF; any valid version different from the device version is allowed.
-- [VERIFIED] V5.7 Firmware source and App source blobs remain unchanged by the seal operation.
-- [USER-CONFIRMED] V5.7 Online OTA update to hardware succeeded before this seal was added.
+## OTA PROTECTION REMINDER — 2026-10-06
+- [IMPLEMENTED] OTA_PROTECTION.md is the repository's documentation-only protection reminder.
+- [PRESERVED] Firmware OTA runtime behavior and App OTA behavior were not changed by the protection reminder.
+- [PRESERVED] Anti-downgrade is OFF; any valid firmware version different from the device version may be installed.
+- [PRESERVED] No CI-enforced OTA seal, manifest, lock file, or OTA-security workflow is active.
+- [USER-CONFIRMED] V5.7 OTA successfully updated the physical hardware.
+- [POLICY] OTA changes require a demonstrated OTA defect, clear root cause, explicit approval, and full OTA re-audit.
 
 ## V5.7 TTP223 TOUCH ACCURACY QC FIX — 2026-10-06
 - [QC FIX / FINALIZED] Double-tap resolution is held until the 800 ms decision window; 3+ taps inside the same sequence remain cancel/no-action as in the prior gesture contract.
