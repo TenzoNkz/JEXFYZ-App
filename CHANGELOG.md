@@ -1,8 +1,7 @@
-## OTA SECURITY SEAL — 2026-10-06
-- Added the JE X FYZ OTA Security Seal to protect the proven V5.7 OTA path against accidental repository drift.
-- CI fingerprints the Firmware OTA runtime/priority path, BLE radio handoff, App any-different-version policy, and Firebase OTA metadata validation.
-- Seal artifacts require explicit [OTA-SEAL-RENEW] for intentional changes, and refreshed fingerprints must still pass the seal checks.
-- Preserved the existing OTA behavior and the agreed policy that any valid firmware version different from the device version may be installed.
+## OTA PROTECTION REMINDER — 2026-10-06
+- Replaced the temporary CI-based OTA Security Seal experiment with the requested repository reminder file OTA_PROTECTION.md.
+- Removed the dedicated OTA Seal workflow and manifest/lock files.
+- Preserved the existing V5.7 OTA behavior and the policy that any valid firmware version different from the device version may be installed.
 - No anti-downgrade policy was introduced.
 - No App Build was executed.
 
