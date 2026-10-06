@@ -16,19 +16,21 @@
 # JE X FYZ — CURRENT FIRMWARE NOTES
 
 ## ACTIVE
-- Version: V5.8
-- Source: firmware/JEXFYZ-V5.8.ino
-- Blob: 1edd37f4bfbe53e141464fe081921edb960e7597
+- Version: V5.9
+- Source: firmware/JEXFYZ-V5.9.ino
+- Blob: 11879cda3e96411c16cc372a176dcef6b71ebe94
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
+
 ## CURRENT PHASE
 - CODE COMPLETE
-- QC / PRE-RELEASE
+- DEVELOPMENT + QC / PRE-RELEASE
 - NOT RELEASED
 - Functional source is frozen unless QC demonstrates a real defect.
 
-## V5.8 QC FIX — 2026-10-06
+
+## V5.9 INTEGRATED QC — 2026-10-06
 - Peltier safety lock auto-releases when Hotside is at or below `hotLimit - 2°C`.
 - The re-arm feedback flag remains pending so the first successful Peltier ON after a safety event keeps the green 1-second indication.
 - While the effective lock is still active, a forced Peltier ON attempt keeps the red 1-second indication.
