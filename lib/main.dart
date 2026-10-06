@@ -497,7 +497,6 @@ class _JexColorPickerCard extends StatelessWidget {
     );
   }
 }
-
 enum JexAnimatedIconKind {
   battery,
   hotside,
@@ -997,8 +996,7 @@ class _JexIconPainter extends CustomPainter {
         }
         break;
 
-      case JexAnimatedIconKind.speed:
-        final gauge = Rect.fromCircle(
+      case JexAnimatedIconKind.speed:        final gauge = Rect.fromCircle(
           center: Offset(cx, cy),
           radius: s * .34,
         );
@@ -1497,8 +1495,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   int tabIndex = 0;
 
 
-  @override
-  void initState() {
+  @override  void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     appAutoConnectNotifier.addListener(_handleAutoConnectPreferenceChanged);
@@ -1997,8 +1994,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     disconnectRediscoveryScanInProgress = false;
   }
 
-  void _startDisconnectRediscovery() {
-    if (!mounted || connected || _bleConnecting) return;
+  void _startDisconnectRediscovery() {    if (!mounted || connected || _bleConnecting) return;
     if (reconnectTimer?.isActive ?? false) return;
 
     _cancelDisconnectRediscovery();
@@ -2481,7 +2477,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   Future<bool> _sendAndWaitAck(
     String command, {
     bool showError = true,
-    Duration timeout = const Duration(seconds = 3),
+    Duration timeout = const Duration(seconds: 3),
   }) {
     final next = _commandTransactionQueue.then<bool>(
       (_) => _sendAndWaitAckInternal(
@@ -2497,8 +2493,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     return next;
   }
 
-  MapEntry<String, String>? _expectedTelemetryForCommand(String command) {
-    final c = command.trim().toUpperCase();
+  MapEntry<String, String>? _expectedTelemetryForCommand(String command) {    final c = command.trim().toUpperCase();
     if (c == 'FAN:ON') return const MapEntry('FAN', 'ON');
     if (c == 'FAN:OFF') return const MapEntry('FAN', 'OFF');
     if (c == 'PELTIER:ON') return const MapEntry('PELTIER', 'ON');
@@ -2997,7 +2992,6 @@ void _handleAckLine(String line) {
     voltageGuardTimer = Timer(voltageGuardDuration, () {
       if (mounted) setState(() => voltageGuardActive = false);
     });
-
     final accepted = await _sendAndConfirm(
       'VOLTAGE:$target',
       timeout: const Duration(seconds: 3),
@@ -3498,7 +3492,6 @@ void _handleAckLine(String line) {
     int attempts = 0;
     otaRecoveryActive = true;
     otaRecoveryScanInProgress = false;
-
     reconnectTimer = Timer.periodic(const Duration(seconds: 3), (timer) async {
       if (!mounted || (!otaExpectedDisconnect && !otaRecoveryActive)) {
         timer.cancel();
@@ -3997,8 +3990,7 @@ void _handleAckLine(String line) {
     }
     if (lower == 'connecting to je x fyz...') {
       return JexText.of('connectingDevice');
-    }
-    if (lower == 'device disconnected.') {
+    }    if (lower == 'device disconnected.') {
       return JexText.of('bluetoothDisconnected');
     }
     if (lower == 'je x fyz was not found.') {
@@ -4497,8 +4489,7 @@ void _handleAckLine(String line) {
           border: Border.all(
             color: value ? accent.withValues(alpha: .52) : scheme.outlineVariant,
             width: 1.2,
-          ),
-        ),
+          ),        ),
         child: AnimatedAlign(
           duration: const Duration(milliseconds: 180),
           curve: Curves.easeOutCubic,
@@ -4997,8 +4988,7 @@ void _handleAckLine(String line) {
                 ),
                 const SizedBox(height: 9),
                 Container(
-                  padding: const EdgeInsets.fromLTRB(10, 9, 10, 10),
-                  decoration: BoxDecoration(
+                  padding: const EdgeInsets.fromLTRB(10, 9, 10, 10),                  decoration: BoxDecoration(
                     color: scheme.surfaceContainerHighest.withValues(alpha: .22),
                     borderRadius: BorderRadius.circular(18),
                     border: Border.all(color: scheme.outlineVariant.withValues(alpha: .68)),
@@ -5497,8 +5487,7 @@ void _handleAckLine(String line) {
     final voltageValue = connected && voltage != '--' ? voltage : '--';
     final adaptiveValue = connected
         ? JexText.of(adaptiveOn ? 'on' : 'off', appLanguageNotifier.value)
-        : '--';
-    final safetyLocked =
+        : '--';    final safetyLocked =
         connected && safety.trim().toUpperCase() != 'OK';
     final headerDark = appThemeNotifier.value != AppThemePreset.light;
     final headerForeground = headerDark ? const Color(0xFFF7F8FC) : const Color(0xFF16181D);
@@ -5997,7 +5986,6 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
       ),
     );
   }
-
   Future<void> _tapBluetooth() async {
     if (_bluetoothDenied) {
       // Explicit user action retries the Nearby Devices permission request.
@@ -6497,8 +6485,7 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
         if (updateAvailable)
           FilledButton(
             onPressed: () async {
-              final s = ssid.text.trim();
-              final p = password.text;
+              final s = ssid.text.trim();              final p = password.text;
               if (s.isEmpty || p.isEmpty) return;
               await storage.write(key: 'jexfyz_wifi_ssid', value: s);
               await storage.write(key: 'jexfyz_wifi_pass', value: p);
