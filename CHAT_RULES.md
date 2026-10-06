@@ -36,15 +36,14 @@
 - Cooperative millis()-based timing.
 - Local OTA is Golden/Protected.
 - OTA has priority over normal application work.
-- OTA protection reminder is active; protected OTA source/contract drift requires explicit [OTA-SEAL-RENEW].
+- OTA protection reminder is active; protected OTA source/contract drift requires explicit discussion/approval.
 - Anti-downgrade is intentionally OFF; any valid firmware version different from the device version may be installed.
 - Hotside NTC safety is authoritative.
 
-## OTA SECURITY SEAL RULES
-- Protected OTA regions are CI-sealed against accidental edits.
-- The seal covers Firmware OTA runtime/priority, BLE radio handoff, App version policy, and App Firebase metadata validation.
-- Updating a sealed OTA region requires [OTA-SEAL-RENEW] and a refreshed seal manifest/lock that still passes CI.
-- The seal is an integrity guard; it does not replace compile, BIN, flash, OTA, or hardware validation.
+## OTA PROTECTION RULES
+- OTA_PROTECTION.md is the engineering reminder for the protected OTA path.
+- OTA changes require a demonstrated OTA defect, explicit discussion/approval, and a full OTA re-audit.
+- Do not refactor or optimize OTA while working on unrelated functionality.
 
 ## APP RULES
 - Firmware telemetry is authoritative for physical hardware state.
