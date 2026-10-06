@@ -1199,8 +1199,13 @@ class NotificationsSettingsPage extends StatelessWidget {
   Future<void> _set(String key, bool value) async {
     if (value) {
       try {
-        await const MethodChannel('je_x_fyz/notifications').invokeMethod<bool>('requestNotificationPermission');
-      } catch (_) {}
+        final granted = await const MethodChannel('je_x_fyz/notifications')
+                .invokeMethod<bool>('requestNotificationPermission') ??
+            false;
+        if (!granted) return;
+      } catch (_) {
+        return;
+      }
     }
     final current = AppSettings(
       language: appLanguageNotifier.value,
