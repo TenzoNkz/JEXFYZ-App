@@ -1,3 +1,13 @@
+## V5.8 PELTIER REARM + NTC SINGLE-SAMPLE QC FIX — 2026-10-06
+- Promoted Firmware V5.7 → V5.8 for two reproducible QC findings.
+- Fixed the Peltier safety-lock state so its effective lock clears automatically once Hotside reaches `hotLimit - 2°C`.
+- Preserved the red 1-second LED for blocked Peltier ON attempts while the effective safety lock is active.
+- Preserved one-shot green 1-second LED feedback for the first successful Peltier ON after a safety-forced shutdown.
+- Replaced the V5.6 16-sample trimmed-mean NTC path with exactly one calibrated ADC reading every 1 second.
+- Preserved the existing 10K NTC / 10K resistor / Beta 3950 / 3.3 V conversion model.
+- OTA, BLE/P1, GPIO, Adaptive timing, selector timing, voltage guard, and Peltier soft-start were not intentionally changed.
+- App source/build was not changed or run for this Firmware-only QC fix.
+
 ## OTA PROTECTION REMINDER — 2026-10-06
 - Replaced the temporary CI-based OTA Security Seal experiment with the requested repository reminder file OTA_PROTECTION.md.
 - Removed the dedicated OTA Seal workflow and manifest/lock files.
