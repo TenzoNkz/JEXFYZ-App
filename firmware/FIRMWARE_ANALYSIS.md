@@ -1,14 +1,14 @@
 # JE X FYZ — CURRENT FIRMWARE ANALYSIS
 
 ## SOURCE
-- Active: firmware/JEXFYZ-V5.7.ino
-- Version: V5.7
-- Blob: 652e54afdd9c7c347cd82072f573f1729c4b46de
+- Active: firmware/JEXFYZ-V5.8.ino
+- Version: V5.8
+- Blob: a7729d92fb4adf382c492ab82034ff1ec9b8386b
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
 ## CURRENT PHASE
-> **V5.7 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V5.8 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## ARCHITECTURE
 - ESP32-C3 single-radio model: Wi-Fi and BLE ownership are mutually exclusive.
@@ -17,6 +17,15 @@
 - Online OTA uses Firebase metadata and the approved GitHub raw BIN endpoint.
 - Firmware streams the image into the inactive OTA partition.
 - Timing is cooperative.
+
+## V5.8 PELTIER REARM + NTC SINGLE-SAMPLE QC FIX — 2026-10-06
+- The effective Peltier safety lock auto-releases at `hotLimit - 2°C`.
+- A one-shot re-arm feedback flag preserves the green 1-second LED for the first successful Peltier ON after a safety event.
+- While the effective lock is active, blocked Peltier ON attempts preserve the red 1-second LED feedback path.
+- NTC sampling is exactly one calibrated `analogReadMilliVolts()` sample per 1-second period.
+- The prior 16-sample insertion-sort / 50% trimmed-mean path is removed.
+- NTC electrical model remains 10K fixed resistor / 10K nominal NTC / Beta 3950 with the existing 3.3 V divider reference.
+
 
 ## HARDWARE CONTROL
 - GPIO: NTC 0, Touch 1, 12V 3, 9V 4, Peltier 5, Fan 6, WS2812 7.
@@ -35,8 +44,7 @@
 - No blocking delay or timing wait was introduced.
 
 ## V5.6 NTC ADC FILTERING QC FIX — 2026-10-06
-- Single-sample Hotside ADC capture was replaced with a bounded 16-sample calibrated burst.
-- Samples are insertion-sorted and reduced with a 50% trimmed mean: discard 4 lowest + 4 highest, average the middle 8.
+- Historical V5.6 change: multi-sample filtering was introduced here and is now retired by V5.8 after QC feedback.
 - NTC conversion remains the existing 10K / 25°C / Beta 3950 model and the existing 3.3 V divider-reference assumption.
 - Sensor fault gates remain applied after the filtered ADC millivolt result; abnormal results are invalidated rather than clamped into a temperature.
 - No temperature-history filter was added, avoiding deliberate thermal lag in the safety path.
