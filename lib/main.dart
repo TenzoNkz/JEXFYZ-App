@@ -88,6 +88,9 @@ const Duration voltageGuardDuration = Duration(seconds: 1);
 const int fanSpeedMin = 50;
 const int fanSpeedMax = 100;
 
+bool isSupportedP1Protocol(String value) =>
+    value.trim().toUpperCase() == 'P1';
+
 String peltierRearmNotice(int hotLimit, AppLanguage language) {
   final target = hotLimit - 2;
   return JexText.phrase(
@@ -135,7 +138,9 @@ bool shouldClearStaleNotifyError({
     return false;
   }
 
-  return upper.contains('NOT CONFIRMED') ||
+  return upper.contains('PELTIER IS LOCKED') ||
+      upper.contains('PELTIER TERKUNCI') ||
+      upper.contains('NOT CONFIRMED') ||
       upper.contains('COMMAND FAILED') ||
       upper.contains('FAILED') ||
       upper.contains('ERROR') ||
@@ -1424,6 +1429,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   bool _bleReady = false;
   bool _bleSessionReady = false;
+  bool protocolValid = false;
   bool _syncReadyAck = false;
   bool connected = false;
   bool syncing = false;
@@ -1438,6 +1444,9 @@ class _DashboardScreenState extends State<DashboardScreen>
   bool otaRecoveryScanInProgress = false;
   final Map<String, List<Completer<String>>> _ackWaiters = {};
   final Map<String, String> _syncSnapshot = {};
+  Future<void> _commandTransactionQueue = Future<void>.value();
+  String? _pendingPhoneBatteryCommand;
+  bool _phoneBatteryHeartbeatQueued = false;
   final Map<String, String> _pendingTelemetry = {};
 
   int brightnessDraft = 100;
@@ -2239,7 +2248,10 @@ class _DashboardScreenState extends State<DashboardScreen>
       await Future<void>.delayed(const Duration(milliseconds: 40));
     }
 
-    if (!_syncReadyAck || !fullSyncReceived || !_bleSessionReady) {
+    if (!_syncReadyAck ||
+        !fullSyncReceived ||
+        !_bleSessionReady ||
+        !protocolValid) {
       throw StateError(JexText.of('bleSessionNotReady', appLanguageNotifier.value));
     }
 
@@ -2408,7 +2420,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   // AI-METHOD: _sendAndWaitAck — Send a command and await its firmware acknowledgement.
-  Future<bool> _sendAndWaitAck(
+  Future<bool> _sendAndWaitAckInternal(
     String command, {
     bool showError = true,
     Duration timeout = const Duration(seconds: 3),
@@ -2444,6 +2456,25 @@ class _DashboardScreenState extends State<DashboardScreen>
     );
     return reconciled &&
         _telemetryValueMatches(expected.key, expected.value);
+  }
+
+  Future<bool> _sendAndWaitAck(
+    String command, {
+    bool showError = true,
+    Duration timeout = const Duration(seconds = 3),
+  }) {
+    final next = _commandTransactionQueue.then<bool>(
+      (_) => _sendAndWaitAckInternal(
+        command,
+        showError: showError,
+        timeout: timeout,
+      ),
+    );
+    _commandTransactionQueue = next.then<void>(
+      (_) {},
+      onError: (_) {},
+    );
+    return next;
   }
 
   MapEntry<String, String>? _expectedTelemetryForCommand(String command) {
@@ -2664,6 +2695,10 @@ void _handleAckLine(String line) {
       if (session != null) {
         _bleSessionReady = session.trim().toUpperCase() == 'READY';
       }
+      final protocol = values['PROTOCOL'];
+      if (protocol != null) {
+        protocolValid = isSupportedP1Protocol(protocol);
+      }
       final otaResult = values['LAST_OTA_RESULT'];
       if (otaResult != null && isTransientOtaResultEvent(otaResult)) {
         pendingOtaNotice = _friendlyOtaResult(otaResult);
@@ -2725,6 +2760,7 @@ void _handleAckLine(String line) {
         firmwareVersion = value;
         break;
       case 'PROTOCOL':
+        protocolValid = isSupportedP1Protocol(value);
         break;
       case 'STATE_SEQ':
         stateSequence = int.tryParse(value) ?? stateSequence;
@@ -2837,7 +2873,37 @@ void _handleAckLine(String line) {
   void _startBatteryTelemetry() {
     batteryTimer?.cancel();
     batteryTimer = Timer.periodic(const Duration(seconds: 1), (_) {
-      // AI-METHOD: _readBatteryTemperatureOnce — Read phone battery temperature through Android.
+      void _queuePhoneBatteryHeartbeat(String command) {
+    _pendingPhoneBatteryCommand = command;
+    if (_phoneBatteryHeartbeatQueued) return;
+    _phoneBatteryHeartbeatQueued = true;
+
+    _writeQueue = _writeQueue.then((_) async {
+      final pending = _pendingPhoneBatteryCommand;
+      _pendingPhoneBatteryCommand = null;
+      if (pending == null || !_bleReady || rx == null) return;
+
+      try {
+        final payload = utf8.encode('$pending\n');
+        final canNoResponse = rx!.properties.writeWithoutResponse;
+        await rx!.write(
+          payload,
+          withoutResponse: canNoResponse,
+        ).timeout(const Duration(seconds: 4));
+      } catch (e) {
+        debugPrint('BLE heartbeat $pending: $e');
+      } finally {
+        _phoneBatteryHeartbeatQueued = false;
+        if (_pendingPhoneBatteryCommand != null && _bleReady) {
+          _queuePhoneBatteryHeartbeat(_pendingPhoneBatteryCommand!);
+        }
+      }
+    }).catchError((_) {
+      _phoneBatteryHeartbeatQueued = false;
+    });
+  }
+
+  // AI-METHOD: _readBatteryTemperatureOnce — Read phone battery temperature through Android.
       _readBatteryTemperatureOnce();
     });
   }
@@ -2860,10 +2926,8 @@ void _handleAckLine(String line) {
       }
 
       if (_bleReady) {
-        // AI-METHOD: sendCommand — Serialize GATT writes and enforce the pre-session command gate.
-        await sendCommand(
+        _queuePhoneBatteryHeartbeat(
           valid ? 'PHONE:BT=${temp.toStringAsFixed(1)}' : 'PHONE:BT=-1.0',
-          showError: false,
         );
       }
     } catch (e) {
@@ -2978,18 +3042,15 @@ void _handleAckLine(String line) {
         );
         if (approved != true) return;
 
-        // Start both confirmation flows immediately. sendCommand() serializes the
-        // actual GATT writes as FAN:ON -> PELTIER:ON without waiting for FAN telemetry first.
-        final fanFuture = _sendAndConfirm('FAN:ON');
-        final peltierFuture = _sendAndConfirm(
+        // Safety-sensitive paired startup is serialized as two confirmation transactions.
+        // Do not publish generic FAN success before the Peltier safety result is known.
+        final fanOk = await _sendAndWaitAck('FAN:ON');
+        final peltierOk = await _sendAndWaitAck(
           'PELTIER:ON',
           timeout: const Duration(seconds: 6),
         );
-        final results = await Future.wait<bool>([fanFuture, peltierFuture]);
-        final fanOk = results[0];
-        final peltierOk = results[1];
 
-        if (!fanOk && mounted) {
+        if (!fanOk && peltierOk && mounted) {
           _showSnackBar(
             JexText.phrase(
               'Fan activation was not confirmed by the device.',
@@ -2999,14 +3060,21 @@ void _handleAckLine(String line) {
           );
         }
 
-        if (!peltierOk && mounted && safetyReason == 'NONE') {
-          _showSnackBar(
-            JexText.phrase(
-              'Peltier change was not confirmed by the device. ${safetyReason == 'NONE' ? '' : safetyReason}',
-              'Perubahan Peltier tidak dikonfirmasi oleh perangkat. ${safetyReason == 'NONE' ? '' : safetyReason}',
-            ),
-            color: Colors.orangeAccent,
-          );
+        if (!peltierOk && mounted) {
+          if (safetyReason == 'PELTIER_SAFETY_LATCH') {
+            _showSnackBar(
+              peltierRearmNotice(hotLimit, appLanguageNotifier.value),
+              color: Colors.redAccent,
+            );
+          } else {
+            _showSnackBar(
+              JexText.phrase(
+                'Peltier change was not confirmed by the device.',
+                'Perubahan Peltier tidak dikonfirmasi oleh perangkat.',
+              ),
+              color: Colors.orangeAccent,
+            );
+          }
         }
         return;
       }
@@ -3481,6 +3549,7 @@ void _handleAckLine(String line) {
       'ONLINE_GITHUB_CONNECTED': 'otaStageOnlineGithubConnected',
       'ONLINE_DOWNLOAD': 'otaStageOnlineDownload',
       'ONLINE_DOWNLOAD_COMPLETE': 'otaStageOnlineDownloadComplete',
+      'ONLINE_IMAGE_VALIDATE': 'otaStageOnlineImageValidate',
       'ONLINE_FLASH_PREPARE': 'otaStageOnlineFlashPrepare',
       'ONLINE_FLASH_FINALIZE': 'otaStageOnlineFlashFinalize',
       'ONLINE_FLASH_SUCCESS': 'otaStageOnlineFlashSuccess',
