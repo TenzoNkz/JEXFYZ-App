@@ -25,6 +25,7 @@
 - NTC sampling is exactly one calibrated `analogReadMilliVolts()` sample per 1-second period.
 - The prior 16-sample insertion-sort / 50% trimmed-mean path is removed.
 - NTC electrical model remains 10K fixed resistor / 10K nominal NTC / Beta 3950 with the existing 3.3 V divider reference.
+- Static V5.8 source audit passed for cooperative timing and balanced braces/parentheses; Arduino toolchain compilation and physical ESP32 validation remain separate and unverified.
 
 
 ## HARDWARE CONTROL
