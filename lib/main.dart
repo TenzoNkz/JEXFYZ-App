@@ -1885,6 +1885,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     tx = null;
     _bleReady = false;
     _bleSessionReady = false;
+    protocolValid = false;
     _syncReadyAck = false;
     fullSyncReceived = false;
     incomingBuffer = '';
@@ -1951,6 +1952,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         notificationSub = null;
         _bleReady = false;
         _bleSessionReady = false;
+        protocolValid = false;
         try {
           await target.disconnect();
         } catch (_) {}
@@ -2088,6 +2090,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     notificationSub = null;
     _bleReady = false;
     _bleSessionReady = false;
+    protocolValid = false;
     _syncReadyAck = false;
     fullSyncReceived = false;
     dashboardReady = false;
@@ -2234,6 +2237,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     // Phase 2: open the firmware command gate. No runtime state is written by
     // the App before the firmware confirms this handshake.
     _bleSessionReady = false;
+    protocolValid = false;
     _syncReadyAck = false;
     fullSyncReceived = false;
     final readyAccepted = await sendCommand('SYNC_READY', showError: false);
