@@ -4419,6 +4419,7 @@ static void executeTouchLong() {
   publishSafetyReason();
   if (peltierOn && safetyRearmAttempt) {
     manualPeltierSafetyLatch = false;
+    peltierSafetyRearmFeedbackPending = false;
     startPeltierSafetyAttemptIndicator(true);
   }
   sendAck("TOUCH_COOLING", peltierOn == desired,
