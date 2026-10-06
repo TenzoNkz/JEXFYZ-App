@@ -2881,9 +2881,9 @@ void _handleAckLine(String line) {
     _writeQueue = _writeQueue.then((_) async {
       final pending = _pendingPhoneBatteryCommand;
       _pendingPhoneBatteryCommand = null;
-      if (pending == null || !_bleReady || rx == null) return;
 
       try {
+        if (pending == null || !_bleReady || rx == null) return;
         final payload = utf8.encode('$pending\n');
         final canNoResponse = rx!.properties.writeWithoutResponse;
         await rx!.write(
