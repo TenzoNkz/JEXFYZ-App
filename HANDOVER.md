@@ -1,8 +1,18 @@
 # TRANSFER PROTOCOL V2 — 2026-10-06
 
+## 2026-10-06 — V5.8 PELTIER REARM + NTC SINGLE-SAMPLE QC FIX
+- [IMPLEMENTED] Active source promoted to `firmware/JEXFYZ-V5.8.ino`.
+- [FIX] Peltier safety lock releases automatically at `hotLimit - 2°C`; the next successful Peltier ON retains the green 1-second re-arm feedback.
+- [FIX] Locked Peltier ON attempts emit red 1-second feedback while the effective safety lock is active.
+- [FIX] NTC sampling is exactly one calibrated ADC reading every 1 second; the V5.6 16-sample trimmed-mean path is retired.
+- [PRESERVED] No OTA, BLE, GPIO, Adaptive timing, selector timing, voltage guard, or Peltier soft-start changes.
+- [USER-CONFIRMED] V5.7 compile + hardware update succeeded before this fix.
+- [UNVERIFIED] V5.8 compile/BIN/flash/physical QC is pending.
+
+
 - [IMPLEMENTED] `CHAT_TRANSFER.md` is now the detailed cross-chat boot protocol.
 - [POLICY] New chats must read it first, reconcile current `main`, and avoid repeating established context questions.
-- [PRESERVED] V5.7 source, OTA protection, BLE, hardware safety, App, and App Build behavior are unchanged by this documentation update.
+- [CURRENT] V5.8 firmware QC fix is implemented; App source/build remains unchanged.
 - [VERIFIED] Pre-write main HEAD: `c7faf134742fc6fdbebc3f66469c8aa5dd9980c6`.
 
 ## 2026-10-06 — V5.7 TTP223 TOUCH ACCURACY QC FIX
