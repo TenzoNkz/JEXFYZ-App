@@ -92,13 +92,11 @@
 7. Download and finalize.
 8. Restart and recover BLE.
 
-## OTA SECURITY SEAL — 2026-10-06
-- CI workflow: .github/workflows/ota-security-seal.yml.
-- Seal manifest: firmware/OTA_SECURITY_SEAL.json.
-- Seal lock: firmware/OTA_SECURITY_SEAL.lock.
-- Protected regions: Firmware OTA runtime, OTA priority, BLE radio handoff, App version policy, App Firebase OTA metadata validation.
+## OTA PROTECTION — 2026-10-06
+- Repository reminder: OTA_PROTECTION.md.
+- OTA runtime, OTA priority, BLE radio handoff, and App OTA contracts are protected/frozen during normal feature work.
+- Deliberate OTA changes require a demonstrated OTA defect, explicit discussion/approval, and full OTA re-audit.
 - Anti-downgrade is explicitly OFF.
-- Deliberate protected changes require [OTA-SEAL-RENEW]; stale fingerprints still fail.
 
 ## STATIC RESULT
 - 4907 lines.
