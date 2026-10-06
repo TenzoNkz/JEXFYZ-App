@@ -16,14 +16,16 @@
 # JE X FYZ — CURRENT FIRMWARE ANALYSIS
 
 ## SOURCE
-- Active: firmware/JEXFYZ-V5.8.ino
-- Version: V5.8
-- Blob: 1edd37f4bfbe53e141464fe081921edb960e7597
+- Active: firmware/JEXFYZ-V5.9.ino
+- Version: V5.9
+- Blob: 11879cda3e96411c16cc372a176dcef6b71ebe94
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
+
 ## CURRENT PHASE
-> **V5.8 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V5.9 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+
 
 ## ARCHITECTURE
 - ESP32-C3 single-radio model: Wi-Fi and BLE ownership are mutually exclusive.
@@ -122,24 +124,15 @@
 - Deliberate OTA changes require a demonstrated OTA defect, explicit discussion/approval, and full OTA re-audit.
 - Anti-downgrade is explicitly OFF.
 
-## STATIC RESULT
-- 4907 lines.
-- Firmware source/file alignment: V5.7 / JEXFYZ-V5.7.ino.
-- One active versioned .ino.
-- executable delay() = 0 (comments excluded).
-- timing while() = 0.
-- RAPID_HOTSIDE_RISE = 0.
-- rapid-rise state/history identifiers = 0.
-- Yellow 0xFFFF00 = 0.
-- Stale Online OTA progress refs = 0.
-- Explicit BLE GATT disconnect = 1.
-- Hard limit: 60000 ms.
-- Peltier soft-start: 5000 ms.
-- HOTSIDE safety dwell: 10000 ms.
-- HOTSIDE sequence: 12V hold → 9V → 5V, with 10-second LED timing at each stage.
-- 5V terminal safety exits Adaptive and requires manual Peltier restart.
-- Manual-mode Hotside protection preserves the selected rail.
-- OTA Security Seal: active and locked to the current proven OTA contract.
+## STATIC RESULT — V5.9
+- Active source/file alignment: V5.9 / firmware/JEXFYZ-V5.9.ino.
+- No executable delay() or timing while() loops in the firmware source audit target.
+- No RAPID_HOTSIDE_RISE.
+- NTC sample path is exactly one calibrated ADC read per 1-second period.
+- Peltier effective safety gate and one-shot re-arm feedback are unified across BLE, Touch, and Adaptive.
+- OTA Local/Online runtime and single-radio handoff were preserved; no OTA functional source change was introduced by this batch.
+- Compile/BIN/flash/physical/OTA runtime validation remains pending.
+
 
 ## VALIDATION BOUNDARY
 - [VERIFIED] Source/static audit.
