@@ -282,7 +282,7 @@
 ### PERSISTENT
 - [AUTHORITY] Active Firmware source authority: JEXFYZ-App/firmware/firmware source tree; the separate TenzoNkz/JEXFYZ-Firmware repository is treated as binary/published-output storage, not as the source of truth.
 - [AUTHORITY] App source authority: current main branch under lib/.
-- [AUTHORITY] CI authority: .github/workflows/jexfyz-app-build-trigger.yml for App release, plus .github/workflows/ota-security-seal.yml for OTA integrity.
+- [AUTHORITY] CI authority: .github/workflows/jexfyz-app-build-trigger.yml for App release. OTA protection is documented in OTA_PROTECTION.md and is not CI-enforced.
 - [RECONCILED] Current App main blob in PROJECT_STATE was previously stale (93ed2e3e...) and is now corrected to 48406cda...; this was documentation-only.
 - [RECONCILED] Current phase/active Firmware records are aligned to V5.7.
 - [RECONCILED] Current Handover includes V5.7 and the OTA Security Seal.
