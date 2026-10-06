@@ -85,14 +85,13 @@
 - Current source/workflow always wins on conflicts.
 
 ## CURRENT STATUS
-- Phase: V5.7 DEVELOPMENT + QC / PRE-RELEASE.
+- Phase: V5.9 DEVELOPMENT + QC / PRE-RELEASE.
 - Release status: NOT RELEASED.
-- Firmware: V5.7.
+- Firmware: V5.9.
 - App: 1.0.0+3.
-- Firmware V5.7 source/static audit: PASS.
-- Firmware V5.7 OTA update to hardware: USER-CONFIRMED SUCCESS.
-- Full V5.7 compile/BIN/flash/physical validation: UNVERIFIED.
-- Latest verified downloadable App Build: workflow run 37245703677 via GitHub Release jexfyz-latest.
+- Firmware V5.9 source/static audit: PASS.
+- V5.7 physical OTA update was user-confirmed successful; V5.9 physical validation is UNVERIFIED.
+- V5.9 compile/BIN/flash/physical/OTA/App integration remain QC gates.
+- Latest verified downloadable App Build remains historical; V5.9 App Build was NOT executed by this source integration.
 - Current App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml.
-- Current App Build workflow blob: 51a6c4d35580228ae24f859058ae5b08665d94a0.
 - OTA protection reminder: OTA_PROTECTION.md (documentation-only; no CI enforcement).
