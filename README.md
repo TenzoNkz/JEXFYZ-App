@@ -165,7 +165,11 @@ when those facts already exist in the transfer/repository.
 Only ask when a genuinely new decision or a real contradiction must be resolved.
 
 CURRENT PROJECT:
-- Firmware: V5.7
+- Firmware: V5.8
+- Active source: firmware/JEXFYZ-V5.8.ino
+- Status: DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED
+- V5.7 compile + hardware update: user-confirmed success
+- V5.8 compile/flash/physical regression: pending
 - App: 1.0.0+3
 - Phase: DEVELOPMENT + QC / PRE-RELEASE
 - Release: NOT RELEASED
