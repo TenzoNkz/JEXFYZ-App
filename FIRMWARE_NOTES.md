@@ -3,7 +3,7 @@
 ## ACTIVE
 - Version: V5.8
 - Source: firmware/JEXFYZ-V5.8.ino
-- Blob: a7729d92fb4adf382c492ab82034ff1ec9b8386b
+- Blob: 1edd37f4bfbe53e141464fe081921edb960e7597
 - Target: ESP32-C3 Super Mini
 - Core: Arduino-ESP32 3.3.7
 
