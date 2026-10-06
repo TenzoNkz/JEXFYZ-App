@@ -9,7 +9,7 @@
 - @Thinking Eksekusi & Build App! = implement → audit → sync → commit → explicit App Build.
 
 ## CURRENT PHASE
-- **V5.8 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+- **V5.9 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## QC / SOURCE FREEZE
 - QC is validation-first, not feature-development.
