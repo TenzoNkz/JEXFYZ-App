@@ -64,7 +64,7 @@ Ask only when the information is genuinely missing, contradictory, or requires a
 
 - main HEAD at transfer pre-write: `c7faf134742fc6fdbebc3f66469c8aa5dd9980c6`
 - Active Firmware source: `firmware/JEXFYZ-V5.8.ino`
-- Active Firmware source blob: `a7729d92fb4adf382c492ab82034ff1ec9b8386b`
+- Active Firmware source blob: `1edd37f4bfbe53e141464fe081921edb960e7597`
 - App main source blob: `48406cda017be1ce939ff682497324bf3680a7f3`
 - App settings source blob: `f11235bab559b291928550e06984532581ddad6a`
 - App regression-test source blob: `1951964af7542324b2ae27b1bd94f84e1c853060`
