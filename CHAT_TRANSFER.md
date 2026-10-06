@@ -74,20 +74,20 @@ Ask only when the information is genuinely missing, contradictory, or requires a
 - Hardware target: **ESP32-C3 Super Mini / ESP32-C3 Dev Module**
 - Firmware source authority: `firmware/` inside JEXFYZ-App
 - Firmware binary/publishing repository: **TenzoNkz/JEXFYZ-Firmware**
-- Current Firmware: **V5.8**
+- Current Firmware: **V5.9**
 - Current App version: **1.0.0+3**
 - Android package: **com.horizontalzzz.jexfyz**
-- Current phase: **V5.8 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+- Current phase: **V5.9 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 - Release status: **NOT RELEASED**
 
 ### Current repository evidence at this transfer
 
-- main HEAD at transfer pre-write: `c7faf134742fc6fdbebc3f66469c8aa5dd9980c6`
-- Active Firmware source: `firmware/JEXFYZ-V5.8.ino`
-- Active Firmware source blob: `1edd37f4bfbe53e141464fe081921edb960e7597`
-- App main source blob: `48406cda017be1ce939ff682497324bf3680a7f3`
+- Current main HEAD: tracked by the latest repository commit.
+- Active Firmware source: `firmware/JEXFYZ-V5.9.ino`
+- Active Firmware source blob: `11879cda3e96411c16cc372a176dcef6b71ebe94`
+- App main source blob: `df4a244723420f8057745275838d7e07c1e0c82a`
 - App settings source blob: `f11235bab559b291928550e06984532581ddad6a`
-- App regression-test source blob: `1951964af7542324b2ae27b1bd94f84e1c853060`
+- App regression-test source blob: `2da4bff01d3eed749eeba873e9ec2e577c04def9`
 - Active App Build workflow: `.github/workflows/jexfyz-app-build-trigger.yml`
 - App Build workflow blob: `51a6c4d35580228ae24f859058ae5b08665d94a0`
 
