@@ -113,18 +113,31 @@
 # JE X FYZ — CURRENT HANDOVER
 
 ## CURRENT TRUTH
-- Firmware: **V5.7**
-- Active source: `firmware/JEXFYZ-V5.7.ino`
-- Firmware blob: `652e54afdd9c7c347cd82072f573f1729c4b46de`
-- Latest V5.7 functional commits: `d2ec5d56383f25a105835b10698f62cf19cbf5df` → `77591d7406aa8613a3dc9beb33828af5a592d8d5`
+- Firmware: **V5.9**
+- Active source: `firmware/JEXFYZ-V5.9.ino`
+- Firmware source blob: `11879cda3e96411c16cc372a176dcef6b71ebe94`
 - App: **1.0.0+3**
 - App package: `com.horizontalzzz.jexfyz`
-- App main blob: `48406cda017be1ce939ff682497324bf3680a7f3`
-- Current App Build workflow: `.github/workflows/jexfyz-app-build-trigger.yml`
-- Workflow blob: `51a6c4d35580228ae24f859058ae5b08665d94a0`
-- Current phase: **V5.7 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
-- Current main HEAD before Transfer Protocol v2 write: `c7faf134742fc6fdbebc3f66469c8aa5dd9980c6`
+- App main blob: `df4a244723420f8057745275838d7e07c1e0c82a`
+- App tests blob: `2da4bff01d3eed749eeba873e9ec2e577c04def9`
+- Current phase: **V5.9 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+- App + Firmware are one integrated contract.
+- P1 is mandatory for App BLE session readiness.
+- Peltier safety re-arm is unified across BLE and hardware Touch.
+- OTA Local/Online, OTA state/recovery, and Wi-Fi↔BLE handoff remain protected/frozen.
+- Android `versionName "Telegram @horizontalzzz"` is intentional and unchanged.
+- App Build was not executed by this source integration batch.
 
+## QC NEXT
+1. Compile V5.9.
+2. Generate V5.9 BIN.
+3. Flash/update ESP32-C3 and verify image provenance.
+4. Hardware-only control and safety QC.
+5. Local OTA Golden Path.
+6. Online OTA + BLE recovery.
+7. App↔V5.9 integration QC.
+8. Explicit App Build.
+9. Release Gate.
 ## TRANSFER PROTOCOL V2
 - [IMPLEMENTED] `CHAT_TRANSFER.md` is now the detailed cross-chat boot/transfer protocol.
 - [POLICY] New chats read it first, reconcile current `main`, and do not ask the user to repeat established facts.
