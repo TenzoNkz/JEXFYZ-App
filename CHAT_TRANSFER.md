@@ -4,6 +4,15 @@
 
 ## 0. READ FIRST — MANDATORY BOOT RULE
 
+### CURRENT QC SNAPSHOT — 2026-10-06
+
+- **Active Firmware:** V5.8 (`firmware/JEXFYZ-V5.8.ino`)
+- **V5.7 physical evidence:** user-confirmed compile + hardware update success.
+- **V5.8 status:** source fix implemented; compile/BIN/flash/physical regression is still unverified.
+- **Open QC findings addressed:** Peltier lock did not release after Hotside cooldown; locked Peltier ON feedback was not observable; NTC was sampling 16 values instead of one value per second.
+- **Exact fix:** effective lock releases at `hotLimit - 2°C`; blocked attempts keep red feedback; first successful post-safety ON keeps green feedback; NTC is one calibrated ADC read every 1 second.
+
+
 This file exists so a new chat can continue the project **without making the user repeat established context**.
 
 A new chat MUST:
@@ -45,17 +54,17 @@ Ask only when the information is genuinely missing, contradictory, or requires a
 - Hardware target: **ESP32-C3 Super Mini / ESP32-C3 Dev Module**
 - Firmware source authority: `firmware/` inside JEXFYZ-App
 - Firmware binary/publishing repository: **TenzoNkz/JEXFYZ-Firmware**
-- Current Firmware: **V5.7**
+- Current Firmware: **V5.8**
 - Current App version: **1.0.0+3**
 - Android package: **com.horizontalzzz.jexfyz**
-- Current phase: **V5.7 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+- Current phase: **V5.8 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 - Release status: **NOT RELEASED**
 
 ### Current repository evidence at this transfer
 
 - main HEAD at transfer pre-write: `c7faf134742fc6fdbebc3f66469c8aa5dd9980c6`
-- Active Firmware source: `firmware/JEXFYZ-V5.7.ino`
-- Active Firmware source blob: `652e54afdd9c7c347cd82072f573f1729c4b46de`
+- Active Firmware source: `firmware/JEXFYZ-V5.8.ino`
+- Active Firmware source blob: `a7729d92fb4adf382c492ab82034ff1ec9b8386b`
 - App main source blob: `48406cda017be1ce939ff682497324bf3680a7f3`
 - App settings source blob: `f11235bab559b291928550e06984532581ddad6a`
 - App regression-test source blob: `1951964af7542324b2ae27b1bd94f84e1c853060`
