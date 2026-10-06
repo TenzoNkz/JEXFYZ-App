@@ -94,13 +94,11 @@
 ## CURRENT PHASE
 > **V5.7 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
-## V5.7 OTA SECURITY SEAL — 2026-10-06
-- [IMPLEMENTED] OTA Security Seal is active for the proven V5.7 OTA path.
-- [IMPLEMENTED] OTA runtime, OTA priority, BLE radio handoff, App version policy, and Firebase OTA metadata validation are CI-fingerprinted.
-- [IMPLEMENTED] Seal artifacts require [OTA-SEAL-RENEW] for intentional changes.
+## V5.7 OTA PROTECTION — 2026-10-06
+- [IMPLEMENTED] OTA_PROTECTION.md is the repository reminder for the protected OTA path.
+- [PRESERVED] V5.7 OTA runtime behavior, App OTA behavior, and the any-different-version policy are unchanged.
 - [PRESERVED] Anti-downgrade remains OFF; any valid version different from the device version is allowed.
 - [USER-CONFIRMED] V5.7 OTA update to the hardware succeeded; full functional OTA regression remains a separate QC gate.
-- [VERIFIED] OTA Security Seal renewal is committed on main.
 
 ## V5.3 ADAPTIVE VOLTAGE RISE DWELL — 2026-10-05
 - Both Adaptive profiles use the same 5-second cooperative dwell after every completed upward voltage step.
