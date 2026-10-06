@@ -9,11 +9,12 @@
 - @Thinking Eksekusi & Build App! = implement → audit → sync → commit → explicit App Build.
 
 ## CURRENT PHASE
-- **V5.7 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+- **V5.8 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## QC / SOURCE FREEZE
 - QC is validation-first, not feature-development.
 - Treat functional source as FROZEN during QC.
+- [CURRENT QC] V5.8 closes the demonstrated Peltier safety-lock and NTC single-sample findings only.
 - Only change functional source for a demonstrable/reproducible QC failure with a clear root cause.
 - Do not refactor or change unrelated behavior while closing a QC finding.
 - Record the finding, evidence, root cause, affected scope, fix, and re-audit result.
