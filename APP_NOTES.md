@@ -98,13 +98,11 @@
 - Expected Online OTA GATT disconnect is treated as an OTA lifecycle event, not a normal Bluetooth error.
 - After OTA reconnect, the App completes normal P1 sync and surfaces the one-shot OTA result.
 
-## OTA SECURITY SEAL
-- OTA Security Seal is active in .github/workflows/ota-security-seal.yml.
-- Protected manifest: firmware/OTA_SECURITY_SEAL.json.
-- Protected lock: firmware/OTA_SECURITY_SEAL.lock.
-- The seal protects the proven OTA runtime path against accidental source drift; it does not replace physical OTA validation.
+## OTA PROTECTION
+- OTA_PROTECTION.md is the repository reminder for the protected OTA path.
+- OTA behavior is frozen during unrelated App work and should not be refactored or optimized casually.
+- Any OTA change requires a demonstrated OTA defect, explicit discussion/approval, and full OTA re-audit.
 - Anti-downgrade is OFF: any valid version different from the device version may be selected.
-- Intentional protected changes require [OTA-SEAL-RENEW] and refreshed fingerprints.
 
 ## OTA / FIRMWARE SYNC
 - Firmware update flow remains OTAENTER, SSID, PASS, URL, VERSION, CLOUDOTA.
