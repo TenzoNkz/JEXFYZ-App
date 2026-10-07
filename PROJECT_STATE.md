@@ -1,3 +1,16 @@
+## CURRENT V5.9 QC FOLLOW-UP — 2026-10-08
+
+- [IMPLEMENTED / COMMITTED] Latest Firmware source remains `firmware/JEXFYZ-V5.9.ino`; current source blob: `18982b3af0f235bade264643c8022f2cd1ce2d72`; implementation commit: `5190d8d587e358e3853a483c34b9a09ddd9620dc`.
+- [USER-CONFIRMED / PRE-FIX] Firmware compiled successfully and V5.9 Online OTA updated the hardware before this QC follow-up.
+- [IMPLEMENTED] Adaptive Hotside recovery dwell is now 30 seconds only at 12 V and 9 V: 29 seconds red blink + final 1 second blue before stepping down.
+- [IMPLEMENTED] Adaptive 5 V is terminal: no 30-second countdown and no blue phase. While Hotside remains above the re-arm threshold, Adaptive exits into the manual-restart thermal lock and the LED remains continuous red until Hotside reaches <= `hotLimit - 2°C`.
+- [IMPLEMENTED] Peltier command-result LED feedback has been removed. Peltier ON/OFF commands no longer start a separate red/green indicator that can interrupt the Hotside red blink. Green remains reserved for thermal re-arm.
+- [IMPLEMENTED] Adaptive activation is now gated: Fan and Peltier must already both be ON from the Control menu. Pressing Adaptive with either output OFF is denied and does not turn either output ON.
+- [PRESERVED] OTA runtime, BLE/P1, GPIO mapping, NTC single-sample cadence, selector deadtime, voltage guard, Peltier soft-start, and Adaptive 5-second upward dwell were not intentionally changed.
+- [AUDIT PASS] Post-change static audit: no executable `delay()`, no timing `while()`, no `RAPID_HOTSIDE_RISE`, exactly one `analogReadMilliVolts(PIN_NTC)` path, GPIO5=Peltier / GPIO6=Fan, braces balanced, obsolete Peltier attempt-indicator symbols removed.
+- [UNVERIFIED] This post-fix source has not yet been recompiled, flashed, physically regression-tested, or used for a new OTA/BIN publication.
+- [NOT RELEASED] Project remains V5.9 DEVELOPMENT + QC / PRE-RELEASE.
+
 ## V5.9 APP LOCALIZATION / NOTIFY QC UPDATE — 2026-10-07
 - [IMPLEMENTED] English is the master/reference copy for all localized user-facing messages.
 - [IMPLEMENTED] Indonesian copy was aligned to the English meaning and standardized for natural UI terminology.
