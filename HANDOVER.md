@@ -12,7 +12,7 @@
 
 - [VERIFIED] Functional execution started from main HEAD 414cc6959d9fd5d89968da19b9473b317b0cbba7; final firmware update/comment commits completed before documentation-sync commits.
 - [VERIFIED] Firmware: V5.9 at firmware/JEXFYZ-V5.9.ino; latest firmware blob 6fec4071056aca4fd93cbeaecfc81d7f6d19ef60.
-- [VERIFIED] App: 1.0.0+3; package com.horizontalzzz.jexfyz; main blob 8a2e97946c4bc4ac2aa3ea09e3a1aca4b15fc6a0.
+- [VERIFIED] App: 1.0.0+3; package com.horizontalzzz.jexfyz; main blob 06850f297087b11789d3daa239f272dbe7591f32; settings blob 8bcbfbc6a91eb6274d641c0921a0411aa01bebd7; widget-test blob 430e5542ed80cb2170c4236511f94e2615cea5ba2.
 - [IMPLEMENTED] V5.9 integrated App/Firmware QC changes remain present.
 - [IMPLEMENTED] New Hotside recovery contract: 20 s Adaptive stage per rail, 19 s red + 1 s blue, green 2x only on <= hotLimit - 2°C re-arm, continuous Manual red until re-arm, and 5V terminal lock after an unrecovered 20 s Adaptive stage.
 - [VERIFIED] The earlier heartbeat-helper scope issue is corrected; current helper is top-level.
