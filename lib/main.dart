@@ -3712,7 +3712,7 @@ void _handleAckLine(String line) {
       case 'PELTIER_SAFETY_LATCH':
         return peltierRearmNotice(hotLimit, appLanguageNotifier.value);
       case 'VOLTAGE_STEP_FAILED':
-        return JexText.phrase('Adaptive voltage step failed.', 'Adaptive voltage step gagal.');
+        return JexText.phrase('Adaptive voltage step failed.', 'Perubahan tegangan Adaptive gagal.');
       case 'VOLTAGE_FORCE_FAILED':
         return JexText.phrase('Safety could not switch to the required 5V state.', 'Sistem keselamatan tidak dapat beralih ke 5V.');
       case 'ADAPTIVE_RISE_WAIT':
