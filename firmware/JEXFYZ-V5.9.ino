@@ -58,11 +58,11 @@ enum class AdaptiveProfile : uint8_t;
  * - Adaptive startup and shutdown both return the hardware to 5 V first.
  * - Adaptive voltage increases in either profile wait 5 s after each completed upward voltage step.
  * - HOTSIDE rises one level at a time after the same 5 s safe upward dwell.
- * - HOTSIDE limit at 12 V: Fan remains ON at 100%, Peltier OFF, hold 10 s, then step to 9 V.
- * - HOTSIDE limit at 9 V: Fan remains ON at 100%, Peltier OFF, hold 10 s, then step to 5 V.
- * - During each 10 s Hotside dwell, LED blinks red for 9 s then green for the final 1 s.
+ * - HOTSIDE limit at 12 V: Fan remains ON at 100%, Peltier OFF, hold 20 s, then step to 9 V.
+ * - HOTSIDE limit at 9 V: Fan remains ON at 100%, Peltier OFF, hold 20 s, then step to 5 V.
+ * - During each 20 s Adaptive Hotside dwell, LED blinks red for 19 s then blue for the final 1 s.
  * - HOTSIDE limit at 5 V: terminal Peltier OFF state; Adaptive exits and manual restart is required.
- * - Each lower-voltage safety step is committed only after its full 10 s thermal dwell.
+ * - Each lower-voltage Adaptive safety step is committed only after its full 20 s thermal dwell.
  * - No rapid Hotside-rise/slope protection is present.
  * - HOTSIDE_BATTERY uses phone Battery temperature only inside the safe ceiling.
  * - Battery loss falls back to HOTSIDE runtime behavior without changing profile.
@@ -1647,7 +1647,7 @@ static void completeVoltageTransition() {
       if (completedSource != VoltageRequestSource::HOTSTEP || !adaptiveHotStepPending) {
         // A non-HOTSTEP transition was already in the 200 ms selector deadtime
         // when the Hotside limit appeared. Restore the current rail instead of
-        // skipping the mandatory 10 s thermal dwell.
+        // skipping the mandatory 20 s thermal dwell.
         pendingVoltage = currentVoltage;
         completedSource = VoltageRequestSource::SAFETY;
       }
@@ -1912,7 +1912,7 @@ static void enforceSafety() {
 
   if (adaptiveOn) {
     if (hotNow) {
-      // HOTSIDE safety keeps the Fan ON at 100% through the full 10 s dwell
+      // HOTSIDE safety keeps the Fan ON at 100% through the full 20 s dwell
       // at every Adaptive rail. Peltier remains OFF while the thermal dwell runs.
       fanOn = true;
       fanPwm = 100;
