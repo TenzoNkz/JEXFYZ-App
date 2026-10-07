@@ -4,7 +4,11 @@
 - App: 1.0.0+3.
 - Status: DEVELOPMENT + QC / PRE-RELEASE — NOT RELEASED.
 - App + Firmware are one integrated contract.
-- Peltier safety re-arm: effective Hotside lock + one-shot post-safety feedback; Touch/BLE/Adaptive use the same effective safety gate.
+- Peltier safety re-arm: effective Hotside lock; thermal re-arm is signaled with 2 green blinks at <= hotLimit - 2°C; Touch/BLE/Adaptive use the same effective safety gate.
+- Adaptive Hotside recovery: 20 seconds per rail with 19 seconds red blink + final 1 second blue blink; re-arm before the boundary resumes Peltier on the same rail.
+- Adaptive sequence: 12V -> 9V -> 5V, each with its own 20-second thermal stage. If 5V still fails to re-arm after 20 seconds, Adaptive exits and the Peltier stays locked until manual restart.
+- Manual Hotside protection: selected voltage is preserved; red blink continues for the entire lock until the <= hotLimit - 2°C re-arm threshold; then 2 green blinks.
+- Normal successful Peltier ON no longer emits green feedback; green is reserved for the thermal re-arm event.
 - App: P1 required for session readiness; stale Peltier re-arm notice clears on healthy safety telemetry; safety-sensitive paired startup is serialized; PHONE:BT is coalesced; ONLINE_IMAGE_VALIDATE is mapped.
 - Android notification preference is not saved ON unless runtime permission is granted.
 - Foreground BLE-support service is NOT_STICKY.
@@ -32,7 +36,7 @@
 
 ## V5.9 INTEGRATED QC — 2026-10-06
 - Peltier safety lock auto-releases when Hotside is at or below `hotLimit - 2°C`.
-- The re-arm feedback flag remains pending so the first successful Peltier ON after a safety event keeps the green 1-second indication.
+- Thermal re-arm readiness is indicated directly when Hotside reaches the configured 2°C hysteresis threshold; a later Peltier ON command has no additional green indicator.
 - While the effective lock is still active, a forced Peltier ON attempt keeps the red 1-second indication.
 - NTC conversion math remains unchanged; only the sampling method returned from the V5.6 multi-sample burst to one reading per second.
 
@@ -47,7 +51,7 @@
 - Adaptive activation cannot bypass an active Peltier safety latch.
 - Fan remains 25 kHz, 8-bit, 50–100% for App-controlled operation.
 - Voltage selector deadtime 200 ms; voltage guard 1 s.
-- Adaptive HOTSIDE safety timing uses the 10-second step-down sequence; both Adaptive profiles use a 5-second dwell after every upward voltage step; Peltier restart safety uses the 2°C re-arm hysteresis.
+- Adaptive HOTSIDE safety timing uses a 20-second thermal stage per rail; both Adaptive profiles retain the 5-second dwell after every upward voltage step; Peltier restart safety uses the 2°C re-arm hysteresis.
 - TTP223 Touch uses 30 ms press/release qualification, 60–500 ms valid tap duration, 800 ms double-tap decision window from first valid release, second-tap grace, 1 s startup grace, and preserved 3+ tap cancellation.
 - RGB/touch double-tap behavior remains unchanged at the command level; only input recognition timing/filtering was hardened.
 
@@ -57,7 +61,7 @@
 - NTC fault remains Fan 100%, Peltier OFF, Adaptive OFF, safe 5V.
 - Rapid Hotside-rise slope protection is removed completely.
 - No RAPID_HOTSIDE_RISE safety event is emitted.
-- Normal Hotside temperature-limit protection remains active, with a 10-second step-down dwell.
+- Normal Hotside temperature-limit protection remains active, with a 20-second Adaptive step-down dwell and continuous Manual re-arm indication.
 
 ## OTA CONTRACT
 Local OTA:
@@ -79,10 +83,9 @@ Online OTA:
 - This reminder is a process guard; it does not replace compile, BIN, OTA, or hardware QC.
 
 ## V5.4 CHANGE — HOTSIDE DWELL FAN + LED — 2026-10-06
-- Adaptive HOTSIDE safety keeps Fan ON at 100% throughout each full 10-second thermal dwell.
+- Adaptive HOTSIDE safety keeps Fan ON at 100% throughout each full 20-second thermal dwell.
 - Every completed HOTSTEP keeps Fan ON at 100% while Hotside safety remains active.
-- Hotside dwell LED: 9 seconds red blink, then 1 second green blink.
-- The 10-second thermal dwell itself is unchanged.
+- Hotside Adaptive dwell LED: 19 seconds red blink, then 1 second blue blink; green 2x is shown only when the Hotside re-arm threshold is reached.
 - Promoted Firmware V5.3 → V5.4.
 - No blocking timing was introduced.
 
@@ -99,7 +102,7 @@ Online OTA:
 - Hardware cooling ON forces Fan to 100%.
 - Preserved the existing Peltier 5-second OFF→ON soft-start.
 - Removed the rapid Hotside-rise slope/event protection only.
-- Implemented HOTSIDE 12V hold 10s → 9V; HOTSIDE 9V hold 10s → 5V; 5V is terminal with manual Peltier restart required.
+- Implemented HOTSIDE 12V 20s → 9V; HOTSIDE 9V 20s → 5V; 5V receives the same 20s stage and becomes a terminal Peltier lock if still unrearmed.
 - Preserved the pre-mutation cooling snapshots so Fan/Peltier/Fan-speed transitions remain realtime.
 
 ## STATIC AUDIT
