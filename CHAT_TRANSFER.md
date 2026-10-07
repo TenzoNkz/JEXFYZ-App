@@ -6,7 +6,7 @@
 
 - [VERIFIED] Current repository: TenzoNkz/JEXFYZ-App.
 - [VERIFIED] Branch: main.
-- [VERIFIED] Current main HEAD before this documentation save: 7d5f0f5adf7fec92b33c92a3b6a6eb58a9ab36a8.
+- [VERIFIED] Current main HEAD at the start of this functional execution: 414cc6959d9fd5d89968da19b9473b317b0cbba7; firmware execution commit: 3c5aca4e6e6e01ea025d76965c85d8014e84a378.
 - [VERIFIED] Current active Firmware: V5.9 at firmware/JEXFYZ-V5.9.ino.
 - [VERIFIED] Current App: 1.0.0+3; package com.horizontalzzz.jexfyz.
 - [VERIFIED] Current phase: V5.9 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED.
@@ -84,12 +84,12 @@
 
 - [VERIFIED] Active source contains FW_VERSION V5.9.
 - [VERIFIED] Static source checks: one NTC ADC read, no executable delay(), no timing while(), no RAPID_HOTSIDE_RISE, dead bleSyncPending state removed.
-- [IMPLEMENTED] Effective Peltier safety lock blocks Peltier when Hotside is above hotLimit - 2°C or NTC is invalid.
-- [IMPLEMENTED] Safety-forced Peltier OFF arms one-shot re-arm feedback; first successful post-safety ON consumes it and produces the green re-arm indication.
-- [IMPLEMENTED] Blocked effective-lock ON attempt uses red 1-second indication.
+- [IMPLEMENTED] Effective Peltier safety lock blocks Peltier when Hotside is above hotLimit - 2°C or NTC is invalid; Manual red blink persists until thermal re-arm, then green 2x.
+- [IMPLEMENTED] Green safety feedback is now emitted only at thermal re-arm; successful Peltier ON commands do not emit an additional green indicator.
+- [IMPLEMENTED] Blocked effective-lock ON attempt remains safety-gated; the active Hotside red lock indicator has priority while unrearmed.
 - [IMPLEMENTED] Adaptive activation uses the same effective safety latch gate.
 - [FROZEN] Both HOTSIDE and HOTSIDE_BATTERY Adaptive profiles wait 5 seconds after each completed upward voltage step; downward changes remain immediate.
-- [FROZEN] Hotside safety dwell is 10 seconds with Fan 100% and 9-second red + final 1-second green LED.
+- [IMPLEMENTED] Adaptive Hotside safety uses a 20-second thermal stage per rail: 19-second red blink + final 1-second blue blink; if Hotside reaches <= hotLimit - 2°C, green 2x indicates re-arm and Peltier may resume on the same rail.
 - [OBSOLETE] Rapid Hotside slope/RAPID_HOTSIDE_RISE protection.
 
 ## 7. TOUCH CONTRACT
