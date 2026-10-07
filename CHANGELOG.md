@@ -1,3 +1,15 @@
+## V5.9 HOTSIDE RECOVERY / LED QC UPDATE — 2026-10-07
+
+- Changed Adaptive Hotside thermal recovery from 10 seconds to 20 seconds per rail.
+- Adaptive Hotside LED now blinks red for the first 19 seconds and blue during the final 1 second before a required step-down.
+- If Hotside reaches <= hotLimit - 2°C before the 20-second boundary, the Peltier is allowed to resume on the same Adaptive rail and the LED blinks green 2x.
+- Adaptive Hotside now applies the 20-second stage independently at 12V, 9V, and 5V.
+- After an unrecovered 20-second 5V stage, Adaptive exits and the Peltier remains locked until thermal re-arm and manual restart.
+- Manual Hotside protection now keeps red LED indication active for the entire thermal lock until Hotside reaches <= hotLimit - 2°C, then shows green 2x; the selected Manual voltage is preserved.
+- Removed the previous green feedback attached to a successful Peltier ON command so green exclusively communicates thermal re-arm readiness.
+- OTA, BLE/P1, selector timing, voltage guard, and Peltier soft-start behavior were not intentionally changed.
+- V5.9 compile/BIN/flash/physical/OTA/App integration and release gates remain unverified.
+
 ## V5.9 APP + FIRMWARE BLE QC INTEGRATION — 2026-10-06
 
 - Repaired the App 1 Hz PHONE:BT heartbeat into a valid class method with coalescing so only the newest pending value is retained.
