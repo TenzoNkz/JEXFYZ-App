@@ -572,6 +572,10 @@ class JexText {
       AppLanguage.english: 'System ready.',
       AppLanguage.indonesia: 'Sistem siap.',
     },
+    'deviceStatusUpdate': {
+      AppLanguage.english: 'Device status updated.',
+      AppLanguage.indonesia: 'Status perangkat diperbarui.',
+    },
     'connectingDevice': {
       AppLanguage.english: 'Connecting to device...',
       AppLanguage.indonesia: 'Menghubungkan ke perangkat...',
