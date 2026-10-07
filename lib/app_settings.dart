@@ -454,19 +454,19 @@ class JexText {
     },
     'hotsideLimit': {
       AppLanguage.english: 'Hotside Limit',
-      AppLanguage.indonesia: 'Batas Suhu Hotside',
+      AppLanguage.indonesia: 'Batas Hotside',
     },
     'batteryZones': {
       AppLanguage.english: 'Battery Zones',
       AppLanguage.indonesia: 'Zona Baterai',
     },
     'fiveVCeiling': {
-      AppLanguage.english: '5V Ceiling',
-      AppLanguage.indonesia: 'Batas Atas 5V',
+      AppLanguage.english: '5V Limit',
+      AppLanguage.indonesia: 'Batas 5V',
     },
     'twelveVFloor': {
-      AppLanguage.english: '12V Floor',
-      AppLanguage.indonesia: 'Batas Bawah 12V',
+      AppLanguage.english: '12V Limit',
+      AppLanguage.indonesia: 'Batas 12V',
     },
     'range': {
       AppLanguage.english: 'Range',
@@ -477,8 +477,8 @@ class JexText {
       AppLanguage.indonesia: 'Zona 9V',
     },
     'lockedAdaptive': {
-      AppLanguage.english: 'Locked in Adaptive.',
-      AppLanguage.indonesia: 'Terkunci dalam Mode Adaptif.',
+      AppLanguage.english: 'Locked while Adaptive Mode is active.',
+      AppLanguage.indonesia: 'Terkunci saat Mode Adaptif aktif.',
     },
     'lowMode': {
       AppLanguage.english: 'Low Mode',
@@ -506,7 +506,7 @@ class JexText {
     },
     'fanRequiredPeltier': {
       AppLanguage.english: 'Fan must be running before Peltier can be enabled.',
-      AppLanguage.indonesia: 'Kipas harus menyala sebelum Peltier dapat diaktifkan.',
+      AppLanguage.indonesia: 'Kipas harus aktif sebelum Peltier dapat dimulai.',
     },
     'cancel': {
       AppLanguage.english: 'Cancel',
@@ -553,16 +553,16 @@ class JexText {
       AppLanguage.indonesia: 'Disimpan dengan aman.',
     },
     'otaStartRejected': {
-      AppLanguage.english: 'OTA start rejected.',
-      AppLanguage.indonesia: 'Mulai OTA ditolak.',
+      AppLanguage.english: 'OTA start was rejected.',
+      AppLanguage.indonesia: 'Permintaan OTA ditolak.',
     },
     'otaInProgress': {
-      AppLanguage.english: 'OTA in progress.',
+      AppLanguage.english: 'OTA is in progress.',
       AppLanguage.indonesia: 'OTA sedang berlangsung.',
     },
     'otaUpToDate': {
-      AppLanguage.english: 'OTA is already up to date',
-      AppLanguage.indonesia: 'Firmware sudah yang terbaru',
+      AppLanguage.english: 'OTA is already up to date.',
+      AppLanguage.indonesia: 'Firmware sudah versi terbaru.',
     },
     'otaReconnectFailed': {
       AppLanguage.english: 'OTA finished, but BLE recovery could not reconnect.',
@@ -629,20 +629,20 @@ class JexText {
       AppLanguage.indonesia: 'Kecepatan Kipas',
     },
     'resetTemperature': {
-      AppLanguage.english: 'Reset Temperature',
-      AppLanguage.indonesia: 'Atur Ulang Suhu',
+      AppLanguage.english: 'Reset Temperature Settings',
+      AppLanguage.indonesia: 'Atur Ulang Pengaturan Suhu',
     },
     'hotsideLimitNotConfirmed': {
-      AppLanguage.english: 'Hotside limit not confirmed.',
-      AppLanguage.indonesia: 'Batas suhu panas tidak dikonfirmasi.',
+      AppLanguage.english: 'Hotside limit was not confirmed.',
+      AppLanguage.indonesia: 'Batas Hotside tidak terkonfirmasi.',
     },
     'hotsideLimitFailed': {
-      AppLanguage.english: 'Hotside limit failed.',
-      AppLanguage.indonesia: 'Gagal mengatur batas suhu panas.',
+      AppLanguage.english: 'Hotside limit update failed.',
+      AppLanguage.indonesia: 'Gagal memperbarui batas Hotside.',
     },
     'battery5LimitNotConfirmed': {
       AppLanguage.english: '5V battery limit not confirmed.',
-      AppLanguage.indonesia: 'Batas baterai 5V tidak dikonfirmasi.',
+      AppLanguage.indonesia: 'Batas baterai 5V tidak terkonfirmasi.',
     },
     'battery5LimitFailed': {
       AppLanguage.english: '5V battery limit failed.',
@@ -650,7 +650,7 @@ class JexText {
     },
     'battery12LimitNotConfirmed': {
       AppLanguage.english: '12V battery limit not confirmed.',
-      AppLanguage.indonesia: 'Batas baterai 12V tidak dikonfirmasi.',
+      AppLanguage.indonesia: 'Batas baterai 12V tidak terkonfirmasi.',
     },
     'battery12LimitFailed': {
       AppLanguage.english: '12V battery limit failed.',
@@ -693,8 +693,8 @@ class JexText {
       AppLanguage.indonesia: 'Beri tahu saat Hotside mencapai batas yang ditetapkan.',
     },
     'otaFailed': {
-      AppLanguage.english: 'OTA failed',
-      AppLanguage.indonesia: 'OTA gagal',
+      AppLanguage.english: 'OTA failed.',
+      AppLanguage.indonesia: 'OTA gagal.',
     },
     'otaSuccessful': {
       AppLanguage.english: 'OTA successful.',
@@ -804,14 +804,14 @@ class JexText {
       AppLanguage.english: 'App Version',
       AppLanguage.indonesia: 'Versi Aplikasi',
     },
-    'otaFinalizationError': { AppLanguage.english: 'OTA failed: finalization error.', AppLanguage.indonesia: 'OTA gagal: kesalahan finalisasi.' },
-    'otaSizeMismatch': { AppLanguage.english: 'OTA failed: upload size mismatch.', AppLanguage.indonesia: 'OTA gagal: ukuran unggahan tidak cocok.' },
+    'otaFinalizationError': { AppLanguage.english: 'OTA failed.: finalization error.', AppLanguage.indonesia: 'OTA gagal.: kesalahan finalisasi.' },
+    'otaSizeMismatch': { AppLanguage.english: 'OTA failed.: upload size mismatch.', AppLanguage.indonesia: 'OTA gagal.: ukuran unggahan tidak cocok.' },
     'commandRejected': { AppLanguage.english: 'Command failed.', AppLanguage.indonesia: 'Perintah gagal.' },
     'otaCouldNotStart': { AppLanguage.english: 'OTA could not start: command ', AppLanguage.indonesia: 'OTA tidak dapat dimulai: perintah ' },
     'rejectedByDevice': { AppLanguage.english: ' was rejected by the device.', AppLanguage.indonesia: ' ditolak oleh perangkat.' },
     'otaSuccessfulGeneric': { AppLanguage.english: 'OTA successful: ', AppLanguage.indonesia: 'OTA berhasil: ' },
-    'otaFailedGeneric': { AppLanguage.english: 'OTA failed: ', AppLanguage.indonesia: 'OTA gagal: ' },
-    'otaUploaded': { AppLanguage.english: 'OTA failed: uploaded ', AppLanguage.indonesia: 'OTA gagal: ukuran unggahan ' },
+    'otaFailedGeneric': { AppLanguage.english: 'OTA failed.: ', AppLanguage.indonesia: 'OTA gagal.: ' },
+    'otaUploaded': { AppLanguage.english: 'OTA failed.: uploaded ', AppLanguage.indonesia: 'OTA gagal.: ukuran unggahan ' },
     'otaBytes': { AppLanguage.english: ' bytes.', AppLanguage.indonesia: ' byte.' },
     'otaLocalSuccessful': { AppLanguage.english: 'Local OTA successful.', AppLanguage.indonesia: 'OTA lokal berhasil.' },
     'allow': { AppLanguage.english: 'Allow', AppLanguage.indonesia: 'Izinkan' },
@@ -828,7 +828,7 @@ class JexText {
     'otaStageLocalFinalize': { AppLanguage.english: 'Finalize', AppLanguage.indonesia: 'Finalisasi' },
     'otaStageLocalFlashReadback': { AppLanguage.english: 'Flash readback', AppLanguage.indonesia: 'Baca ulang flash' },
     'otaStageLocalFlashErase': { AppLanguage.english: 'Flash erase', AppLanguage.indonesia: 'Hapus flash' },
-    'otaStageLocalImageVerify': { AppLanguage.english: 'Image verify', AppLanguage.indonesia: 'Verifikasi image' },
+    'otaStageLocalImageVerify': { AppLanguage.english: 'Image verification', AppLanguage.indonesia: 'Verifikasi image' },
     'otaStageLocalBootPartition': { AppLanguage.english: 'Boot partition', AppLanguage.indonesia: 'Partisi boot' },
     'otaStageOnlineWifiConnect': { AppLanguage.english: 'Wi-Fi connect', AppLanguage.indonesia: 'Hubungkan Wi-Fi' },
     'otaStageOnlineWifiConnected': { AppLanguage.english: 'Wi-Fi connected', AppLanguage.indonesia: 'Wi-Fi terhubung' },
@@ -861,9 +861,9 @@ class JexText {
     'otaStageOnlineUpdateBegin': { AppLanguage.english: 'Update begin', AppLanguage.indonesia: 'Mulai pembaruan' },
     'otaStageOnlineDownload': { AppLanguage.english: 'Download', AppLanguage.indonesia: 'Unduh' },
     'otaStageOnlineDownloadComplete': { AppLanguage.english: 'Download complete', AppLanguage.indonesia: 'Unduhan selesai' },
-    'otaStageOnlineFlashPrepare': { AppLanguage.english: 'Flash prepare', AppLanguage.indonesia: 'Siapkan flash' },
-    'otaStageOnlineFlashFinalize': { AppLanguage.english: 'Flash finalize', AppLanguage.indonesia: 'Finalisasi flash' },
-    'otaStageOnlineFlashSuccess': { AppLanguage.english: 'Flash success', AppLanguage.indonesia: 'Flash berhasil' },
+    'otaStageOnlineFlashPrepare': { AppLanguage.english: 'Prepare flash', AppLanguage.indonesia: 'Siapkan flash' },
+    'otaStageOnlineFlashFinalize': { AppLanguage.english: 'Finalize flash', AppLanguage.indonesia: 'Finalisasi flash' },
+    'otaStageOnlineFlashSuccess': { AppLanguage.english: 'Flash successful', AppLanguage.indonesia: 'Flash berhasil' },
     'otaStageOnlineRangeProbe': { AppLanguage.english: 'Range probe', AppLanguage.indonesia: 'Uji rentang' },
     'otaStageOnlineRangeRequest': { AppLanguage.english: 'Range request', AppLanguage.indonesia: 'Minta rentang' },
     'otaStageOnlineRangeResponse': { AppLanguage.english: 'Range response', AppLanguage.indonesia: 'Respons rentang' },
@@ -873,8 +873,8 @@ class JexText {
     'otaStageOnlineFlashWrite': { AppLanguage.english: 'Flash write', AppLanguage.indonesia: 'Menulis flash' },
     'otaStageOnlineFlashErase': { AppLanguage.english: 'Flash erase', AppLanguage.indonesia: 'Hapus flash' },
     'otaStageOnlineFlashReadback': { AppLanguage.english: 'Flash readback', AppLanguage.indonesia: 'Baca ulang flash' },
-    'otaStageOnlineImageValidate': { AppLanguage.english: 'Image validate', AppLanguage.indonesia: 'Validasi image' },
-    'otaStageOnlineImageVerify': { AppLanguage.english: 'Image verify', AppLanguage.indonesia: 'Verifikasi image' },
+    'otaStageOnlineImageValidate': { AppLanguage.english: 'Image validation', AppLanguage.indonesia: 'Validasi image' },
+    'otaStageOnlineImageVerify': { AppLanguage.english: 'Image verification', AppLanguage.indonesia: 'Verifikasi image' },
     'otaStageOnlineBootPartition': { AppLanguage.english: 'Boot partition', AppLanguage.indonesia: 'Partisi boot' },
     'otaStageOnlineHttpResponse': { AppLanguage.english: 'HTTP response', AppLanguage.indonesia: 'Respons HTTP' },
     'notConfirmedSuffix': { AppLanguage.english: 'not confirmed.', AppLanguage.indonesia: 'tidak dikonfirmasi.' },
