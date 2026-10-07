@@ -1,6 +1,6 @@
 ## CURRENT V5.9 INTEGRATED QC + HOTSIDE RECOVERY UPDATE — 2026-10-07
 
-- [VERIFIED] Current main HEAD after this execution: 36393c76bdddcfb5b7c2c91d63770047b2e09468.
+- [VERIFIED] Last reconciled main HEAD before this final documentation consolidation: 97f8b68545e50853871493ba8999ddb226c95d5b.
 - [VERIFIED] Active Firmware V5.9: firmware/JEXFYZ-V5.9.ino; updated blob 6fec4071056aca4fd93cbeaecfc81d7f6d19ef60.
 - [VERIFIED] Active App 1.0.0+3: lib/main.dart; blob 8a2e97946c4bc4ac2aa3ea09e3a1aca4b15fc6a0.
 - [VERIFIED] App settings blob f11235bab559b291928550e06984532581ddad6a; tests blob 2da4bff01d3eed749eeba873e9ec2e577c04def9.
@@ -29,7 +29,7 @@
 - [IMPLEMENTED] `CHAT_TRANSFER.md` was upgraded to a detailed boot/transfer protocol to prevent context repetition between chats.
 - [FROZEN] The transfer protocol does not authorize functional source changes, Firmware release, or App Build.
 - [CURRENT] Active Firmware is V5.9 at `firmware/JEXFYZ-V5.9.ino`.
-- [CURRENT] Current main HEAD is tracked by the latest repository commit..
+- [CURRENT] Current main HEAD is reconciled at the last documented checkpoint; source/workflow outrank this historical pointer.
 - [POLICY] New chats must reconcile the transfer snapshot against current repository truth before acting and must not ask for already-documented project facts.
 
 
@@ -107,7 +107,7 @@
 - [NOT BUILT HERE] V5.4 compile/BIN/flash/physical validation remains pending.
 
 ## CHAT-LIMIT RECONCILIATION — 2026-10-05
-- [VERIFIED] Current main HEAD after this execution: 36393c76bdddcfb5b7c2c91d63770047b2e09468.3 handover for chat transfer).
+- [VERIFIED] Last reconciled main HEAD before this final documentation consolidation: 97f8b68545e50853871493ba8999ddb226c95d5b.3 handover for chat transfer).
 - [VERIFIED] Active Firmware is V5.3 at `firmware/JEXFYZ-V5.3.ino`, blob d6b5262c0ed429999ef6a951841bca6b24296949.
 - [VERIFIED] Active App main source blob is 48406cda017be1ce939ff682497324bf3680a7f3; App settings blob f11235bab559b291928550e06984532581ddad6a; tests blob 1951964af7542324b2ae27b1bd94f84e1c853060.
 - [VERIFIED] V5.3 functional implementation is preserved in source commit 85bf8acf79fd91f0d3bbbe2440bec8bab73774da; V5.2 retirement is 90f459ac4720a3ec509543bcc4e83bde96e3d910. Compare 90f→current shows only documentation changes after the source retirement.

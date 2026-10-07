@@ -6,7 +6,7 @@
 
 - [VERIFIED] Current repository: TenzoNkz/JEXFYZ-App.
 - [VERIFIED] Branch: main.
-- [VERIFIED] Current main HEAD after this execution: 36393c76bdddcfb5b7c2c91d63770047b2e09468.
+- [VERIFIED] Last reconciled main HEAD before this final documentation consolidation: 97f8b68545e50853871493ba8999ddb226c95d5b.
 - [VERIFIED] Current active Firmware: V5.9 at firmware/JEXFYZ-V5.9.ino.
 - [VERIFIED] Current App: 1.0.0+3; package com.horizontalzzz.jexfyz.
 - [VERIFIED] Current phase: V5.9 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED.
@@ -202,7 +202,7 @@
 ## 14. QC STATUS
 
 ### VERIFIED
-- [VERIFIED] Current main HEAD after this execution: 36393c76bdddcfb5b7c2c91d63770047b2e09468.
+- [VERIFIED] Last reconciled main HEAD before this final documentation consolidation: 97f8b68545e50853871493ba8999ddb226c95d5b.
 - [VERIFIED] One active .ino exists: JEXFYZ-V5.9.ino.
 - [VERIFIED] Firmware static source audit passes: one NTC read, zero executable delay, zero timing while, no RAPID_HOTSIDE_RISE.
 - [VERIFIED] App contains P1 readiness gate, serialized ACK transaction queue, Peltier ACK-reason retention, coalesced heartbeat, OTA stage presentation, dedicated notification channel, and NOT_STICKY BLE-support service.
