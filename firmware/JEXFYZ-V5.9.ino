@@ -232,10 +232,13 @@ static constexpr uint32_t NTC_FAULT_HIGH_MV = 3290;
 
 static constexpr uint32_t VOLTAGE_GUARD_MS             = 1000;
 static constexpr uint32_t VOLTAGE_DEADTIME_MS           = 200;
-// HOTSIDE safety dwell before each lower-voltage step: 10 seconds.
-static constexpr uint32_t HOT_PELTIER_OFF_MS          = 10000;
+// HOTSIDE Adaptive safety dwell before each lower-voltage step: 20 seconds.
+// Manual Hotside protection has no time limit; red blink persists until re-arm.
+static constexpr uint32_t HOT_PELTIER_OFF_MS          = 20000;
 static constexpr uint32_t HOT_LIMIT_LED_BLINK_INTERVAL_MS = 250;
-static constexpr uint32_t HOT_LIMIT_LED_BLINK_DURATION_MS = 10000;
+static constexpr uint32_t HOT_LIMIT_REARM_GREEN_INTERVAL_MS = 250;
+static constexpr uint8_t HOT_LIMIT_REARM_GREEN_BLINKS = 2;
+static constexpr uint32_t HOT_LIMIT_REARM_GREEN_DURATION_MS = 1000;
 static constexpr uint32_t PELTIER_SAFETY_ATTEMPT_INDICATOR_INTERVAL_MS = 250;
 static constexpr uint32_t PELTIER_SAFETY_ATTEMPT_INDICATOR_DURATION_MS = 1000;
 static constexpr uint32_t BATTERY_VALID_TTL_MS          = 5000;
@@ -383,7 +386,15 @@ bool manualPeltierSafetyLatch = false;
 bool peltierSafetyRearmFeedbackPending = false;
 static constexpr float MANUAL_PELTIER_REARM_HYSTERESIS_C = 2.0f;
 
-bool hotsideLimitIndicatorActive = false;
+enum class HotsideLimitIndicatorMode : uint8_t {
+  NONE,
+  ADAPTIVE_DWELL,
+  RECOVERY_LOCK,
+  REARM_GREEN,
+};
+
+HotsideLimitIndicatorMode hotsideLimitIndicatorMode =
+    HotsideLimitIndicatorMode::NONE;
 uint32_t hotsideLimitIndicatorStartedAt = 0;
 uint32_t hotsideLimitIndicatorLastPhase = 0xFFFFFFFFUL;
 
@@ -518,7 +529,9 @@ static bool isWiFiOffSettled();
 static void processBatteryLinkState();
 static void updateBatteryValidity();
 static void processAdaptiveHotsideFallback();
-static void startHotsideLimitIndicator();
+static void startHotsideThermalDwellIndicator();
+static void startHotsideRecoveryLockIndicator();
+static void startHotsideRearmGreenIndicator();
 static bool processHotsideLimitIndicator();
 
 static const char* adaptiveProfileText(AdaptiveProfile profile) {
@@ -864,6 +877,14 @@ static bool hotsideProtectionActiveNow() {
   return ntcValid && isfinite(hotsideC) && hotsideC >= static_cast<float>(hotLimit);
 }
 
+static bool hotsideRearmReady() {
+  return ntcValid &&
+         isfinite(hotsideC) &&
+         hotsideC <=
+             static_cast<float>(hotLimit) -
+                 MANUAL_PELTIER_REARM_HYSTERESIS_C;
+}
+
 static bool manualPeltierSafetyLatchBlocksPeltier() {
   if (!manualPeltierSafetyLatch) return false;
   if (!ntcValid || !isfinite(hotsideC)) return true;
@@ -987,8 +1008,24 @@ static void resetLedAnimationState() {
 static void startUserLedEffect() {
   resetLedAnimationState();
 }
-static void startHotsideLimitIndicator() {
-  hotsideLimitIndicatorActive = true;
+static void startHotsideThermalDwellIndicator() {
+  hotsideLimitIndicatorMode = HotsideLimitIndicatorMode::ADAPTIVE_DWELL;
+  hotsideLimitIndicatorStartedAt = millis();
+  hotsideLimitIndicatorLastPhase = 0xFFFFFFFFUL;
+  voltageIndicatorActive = false;
+  showAll(0x000000, 0);
+}
+
+static void startHotsideRecoveryLockIndicator() {
+  hotsideLimitIndicatorMode = HotsideLimitIndicatorMode::RECOVERY_LOCK;
+  hotsideLimitIndicatorStartedAt = millis();
+  hotsideLimitIndicatorLastPhase = 0xFFFFFFFFUL;
+  voltageIndicatorActive = false;
+  showAll(0x000000, 0);
+}
+
+static void startHotsideRearmGreenIndicator() {
+  hotsideLimitIndicatorMode = HotsideLimitIndicatorMode::REARM_GREEN;
   hotsideLimitIndicatorStartedAt = millis();
   hotsideLimitIndicatorLastPhase = 0xFFFFFFFFUL;
   voltageIndicatorActive = false;
@@ -996,38 +1033,89 @@ static void startHotsideLimitIndicator() {
 }
 
 static bool processHotsideLimitIndicator() {
-  if (!hotsideLimitIndicatorActive) return false;
+  if (hotsideLimitIndicatorMode == HotsideLimitIndicatorMode::NONE) {
+    return false;
+  }
 
   const uint32_t elapsed = millis() - hotsideLimitIndicatorStartedAt;
-  if (elapsed < HOT_LIMIT_LED_BLINK_DURATION_MS) {
-    const uint32_t phase = elapsed / HOT_LIMIT_LED_BLINK_INTERVAL_MS;
+
+  if (hotsideLimitIndicatorMode ==
+      HotsideLimitIndicatorMode::ADAPTIVE_DWELL) {
+    if (elapsed < HOT_PELTIER_OFF_MS) {
+      const uint32_t phase =
+          elapsed / HOT_LIMIT_LED_BLINK_INTERVAL_MS;
+      if (phase != hotsideLimitIndicatorLastPhase) {
+        hotsideLimitIndicatorLastPhase = phase;
+
+        // Adaptive thermal recovery: red for the first 19 seconds,
+        // blue for the final 1 second before the rail decision.
+        const bool finalBlueWindow =
+            elapsed >= (HOT_PELTIER_OFF_MS - 1000UL);
+        const uint32_t indicatorColor =
+            finalBlueWindow ? 0x0000FF : 0xFF0000;
+        const bool ledOn = (phase & 0x01U) == 0;
+        showAll(ledOn ? indicatorColor : 0x000000, 255);
+      }
+      return true;
+    }
+
+    hotsideLimitIndicatorMode = HotsideLimitIndicatorMode::NONE;
+    hotsideLimitIndicatorLastPhase = 0xFFFFFFFFUL;
+    showAll(0x000000, 0);
+    return false;
+  }
+
+  if (hotsideLimitIndicatorMode ==
+      HotsideLimitIndicatorMode::RECOVERY_LOCK) {
+    // Manual mode and Adaptive 5 V terminal lock: keep red blinking until
+    // the thermal re-arm threshold is actually reached.
+    if (!manualPeltierSafetyLatch) {
+      startHotsideRearmGreenIndicator();
+      return true;
+    }
+
+    const uint32_t phase =
+        elapsed / HOT_LIMIT_LED_BLINK_INTERVAL_MS;
     if (phase != hotsideLimitIndicatorLastPhase) {
       hotsideLimitIndicatorLastPhase = phase;
-
-      // First 9 s: red safety blink. Final 1 s: green blink indicates
-      // the thermal dwell is completing and the next voltage step is due.
-      const bool greenWindow =
-          elapsed >= (HOT_LIMIT_LED_BLINK_DURATION_MS - 1000UL);
-      const uint32_t indicatorColor = greenWindow ? 0x00FF00 : 0xFF0000;
       const bool ledOn = (phase & 0x01U) == 0;
-      showAll(ledOn ? indicatorColor : 0x000000, 255);
+      showAll(ledOn ? 0xFF0000 : 0x000000, 255);
     }
     return true;
   }
 
-  hotsideLimitIndicatorActive = false;
-  hotsideLimitIndicatorLastPhase = 0xFFFFFFFFUL;
-  showAll(0x000000, 0);
+  if (hotsideLimitIndicatorMode ==
+      HotsideLimitIndicatorMode::REARM_GREEN) {
+    if (elapsed < HOT_LIMIT_REARM_GREEN_DURATION_MS) {
+      const uint32_t phase =
+          elapsed / HOT_LIMIT_REARM_GREEN_INTERVAL_MS;
+      if (phase != hotsideLimitIndicatorLastPhase) {
+        hotsideLimitIndicatorLastPhase = phase;
+        const bool ledOn =
+            (phase < HOT_LIMIT_REARM_GREEN_BLINKS * 2U) &&
+            ((phase & 0x01U) == 0);
+        showAll(ledOn ? 0x00FF00 : 0x000000, 255);
+      }
+      return true;
+    }
 
-  if (rgbOn) {
-    startUserLedEffect();
-  } else {
-    stopUserLedOutput();
+    hotsideLimitIndicatorMode = HotsideLimitIndicatorMode::NONE;
+    hotsideLimitIndicatorLastPhase = 0xFFFFFFFFUL;
+    showAll(0x000000, 0);
+    if (rgbOn) {
+      startUserLedEffect();
+    } else {
+      stopUserLedOutput();
+    }
+    return true;
   }
-  return true;
+
+  hotsideLimitIndicatorMode = HotsideLimitIndicatorMode::NONE;
+  hotsideLimitIndicatorLastPhase = 0xFFFFFFFFUL;
+  return false;
 }
 
-// Feedback is shown only for a Peltier ON attempt while the Hotside safety latch is active.
+// Feedback is shown only for a blocked Peltier ON attempt while the Hotside safety lock is active.
 static void startPeltierSafetyAttemptIndicator(bool success) {
   peltierSafetyAttemptIndicatorActive = true;
   peltierSafetyAttemptIndicatorStartedAt = millis();
@@ -1053,7 +1141,7 @@ static bool processPeltierSafetyAttemptIndicator() {
   peltierSafetyAttemptIndicatorActive = false;
   peltierSafetyAttemptIndicatorLastPhase = 0xFFFFFFFFUL;
   showAll(0x000000, 0);
-  if (!hotsideLimitIndicatorActive) {
+  if (hotsideLimitIndicatorMode == HotsideLimitIndicatorMode::NONE) {
     if (rgbOn) startUserLedEffect();
     else stopUserLedOutput();
   }
@@ -1428,7 +1516,7 @@ static void processLeds() {
     return;
   }
 
-  if (hotsideLimitIndicatorActive) {
+  if (hotsideLimitIndicatorMode != HotsideLimitIndicatorMode::NONE) {
     ledsForcedOff = false;
     processHotsideLimitIndicator();
     return;
@@ -1641,38 +1729,17 @@ static void completeVoltageTransition() {
     adaptiveHotStepPending = false;
     adaptiveHotsideRiseDueMs = 0;
 
-    if (currentVoltage == Voltage::V5) {
-      // Terminal HOTSIDE state: Adaptive exits and manual Peltier restart is required.
-      adaptiveOn = false;
-      adaptiveStartPending = false;
-      adaptiveCeiling = Voltage::V12;
-      peltierHotOffUntilMs = 0;
-      fanOn = true;
-      fanPwm = 100;
-      peltierOn = false;
-      manualPeltierSafetyLatch = true;
-      peltierSafetyRearmFeedbackPending = true;
+    // Every reached lower rail gets its own full 20 s Hotside recovery stage.
+    // 5 V is terminal only if that 20 s stage also fails to reach re-arm.
+    adaptiveCeiling = currentVoltage;
+    sendDelta("ADAPTIVE_CEILING", voltageToString(adaptiveCeiling));
 
-      // The terminal 5V Hotside safety state is also a distinct LED event.
-      startHotsideLimitIndicator();
+    startHotsideThermalDwellIndicator();
 
-      sendDelta("ADAPTIVE", "OFF");
-      sendDelta("ADAPTIVE_CEILING", "12V");
-    } else {
-      // The reached rail becomes the current Adaptive safety ceiling.
-      adaptiveCeiling = currentVoltage;
-      sendDelta("ADAPTIVE_CEILING", voltageToString(adaptiveCeiling));
-
-      // Each successful HOTSTEP is a distinct Adaptive Hotside safety stage.
-      // Trigger exactly one red blink for the newly reached rail.
-      startHotsideLimitIndicator();
-
-      // Every successful HOTSTEP starts the next 10 s thermal dwell.
-      peltierHotOffUntilMs = millis() + HOT_PELTIER_OFF_MS;
-      // Fan remains ON at 100% after every HOTSTEP while Hotside safety is active.
-      fanOn = true;
-      fanPwm = 100;
-    }
+    peltierHotOffUntilMs = millis() + HOT_PELTIER_OFF_MS;
+    fanOn = true;
+    fanPwm = 100;
+    peltierOn = false;
   }
 
   // Every Adaptive upward voltage step starts a fresh 5-second dwell after
@@ -1811,19 +1878,36 @@ static void enforceSafety() {
   // Sample the thermal boundary once so every branch uses the same instant.
   const bool hotNow = hotsideProtectionActiveNow();
   if (hotNow && !hotProtectionActive) {
-    startHotsideLimitIndicator();
+    if (adaptiveOn) {
+      startHotsideThermalDwellIndicator();
+    } else {
+      startHotsideRecoveryLockIndicator();
+    }
   }
   hotProtectionActive = hotNow;
 
-  // Release the effective Peltier lock as soon as Hotside reaches the configured
-  // re-arm threshold. Keep the one-shot feedback armed for the next successful
-  // Peltier ON attempt after the safety event.
-  if (manualPeltierSafetyLatch &&
-      !hotNow &&
-      isfinite(hotsideC) &&
-      hotsideC <=
-          static_cast<float>(hotLimit) - MANUAL_PELTIER_REARM_HYSTERESIS_C) {
+  const bool rearmReady = hotsideRearmReady();
+
+  // Manual safety lock: remain visibly locked until the full 2 C re-arm
+  // hysteresis is reached, then show exactly 2 green blinks.
+  if (manualPeltierSafetyLatch && rearmReady) {
     manualPeltierSafetyLatch = false;
+    peltierSafetyRearmFeedbackPending = false;
+    startHotsideRearmGreenIndicator();
+  }
+
+  // Adaptive recovery: if the rail cools to the re-arm threshold before the
+  // 20 s dwell expires, cancel the dwell and allow Peltier back on at this rail.
+  if (adaptiveOn &&
+      peltierHotOffUntilMs != 0 &&
+      rearmReady &&
+      !voltageTransition &&
+      !adaptiveHotStepPending) {
+    peltierHotOffUntilMs = 0;
+    peltierOn = true;
+    fanOn = true;
+    fanPwm = 100;
+    startHotsideRearmGreenIndicator();
   }
 
   if (adaptiveOn) {
@@ -1900,40 +1984,60 @@ static void processAdaptiveHotTimer() {
 
   const uint32_t now = millis();
 
-  // Hotside safety owns the 10 s dwell. At the end of the dwell, step down
-  // exactly one rail level if the Hotside limit is still active.
+  // Hotside safety owns the 20 s dwell on every Adaptive rail.
+  // Re-arm is temperature-based: Hotside <= hotLimit - 2 C.
   if (peltierHotOffUntilMs != 0) {
     if (now < peltierHotOffUntilMs) return;
 
     peltierHotOffUntilMs = 0;
 
-    if (hotsideProtectionActiveNow()) {
-      if (currentVoltage == Voltage::V5) return;
+    if (hotsideRearmReady()) {
+      // Thermal recovery completed at/before the 20 s boundary:
+      // restore Peltier on the current rail and show the 2x green re-arm cue.
+      bool previousFanOn = fanOn;
+      bool previousPeltierOn = peltierOn;
+      uint8_t previousFanPwm = fanPwm;
+      fanOn = true;
+      fanPwm = 100;
+      peltierOn = true;
+      startHotsideRearmGreenIndicator();
+      applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
+    } else {
+      // Not re-armed after 20 s: step down one rail. At 5 V this becomes
+      // the terminal manual-restart lock instead of another voltage step.
+      if (currentVoltage == Voltage::V5) {
+        adaptiveOn = false;
+        adaptiveStartPending = false;
+        adaptiveCeiling = Voltage::V12;
+        adaptiveHotStepPending = false;
+        adaptiveHotsideRiseDueMs = 0;
+        fanOn = true;
+        fanPwm = 100;
+        peltierOn = false;
+        manualPeltierSafetyLatch = true;
+        peltierSafetyRearmFeedbackPending = true;
+        startHotsideRecoveryLockIndicator();
+        sendDelta("ADAPTIVE", "OFF");
+        sendDelta("ADAPTIVE_CEILING", "12V");
+        publishSafetyReason();
+        return;
+      }
+
       if (voltageTransition || adaptiveHotStepPending) return;
 
       const Voltage target = lowerVoltage(currentVoltage);
       adaptiveHotStepPending = true;
-
       const bool accepted =
           requestVoltage(target, VoltageRequestSource::HOTSTEP, true);
       if (!accepted) {
         adaptiveHotStepPending = false;
-        // Keep a short cooperative retry interval. The mandatory 10 s
-        // safety dwell has already elapsed.
+        // The 20 s dwell already elapsed. Retry cooperatively without
+        // granting Peltier permission while the Hotside remains unrearmed.
         peltierHotOffUntilMs = now + 250UL;
         sendDelta("SAFETY_REASON", "VOLTAGE_STEP_FAILED");
       }
       return;
     }
-
-    // Thermal event resolved during the 10 s dwell: restore normal Adaptive cooling.
-    bool previousFanOn = fanOn;
-    bool previousPeltierOn = peltierOn;
-    uint8_t previousFanPwm = fanPwm;
-    fanOn = true;
-    fanPwm = 100;
-    peltierOn = true;
-    applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
   }
 
   if (voltageTransition) return;
@@ -3660,7 +3764,8 @@ static bool setPeltierState(bool desired, String& reason) {
   if (peltierOn && safetyRearmAttempt) {
     manualPeltierSafetyLatch = false;
     peltierSafetyRearmFeedbackPending = false;
-    startPeltierSafetyAttemptIndicator(true);
+    // Thermal re-arm green feedback is emitted when the Hotside reaches the
+    // re-arm threshold, not when the subsequent Peltier ON command is issued.
   }
   reason = peltierOn ? "OK" : safetyReason();
   return peltierOn;
@@ -4414,7 +4519,8 @@ static void executeTouchLong() {
   if (peltierOn && safetyRearmAttempt) {
     manualPeltierSafetyLatch = false;
     peltierSafetyRearmFeedbackPending = false;
-    startPeltierSafetyAttemptIndicator(true);
+    // Thermal re-arm green feedback is emitted when the Hotside reaches the
+    // re-arm threshold, not when the subsequent Peltier ON command is issued.
   }
   sendAck("TOUCH_COOLING", peltierOn == desired,
           desired ? (peltierOn ? "ON" : safetyReason()) : "OFF");
