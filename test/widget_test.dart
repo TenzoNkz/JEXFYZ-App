@@ -101,7 +101,7 @@ void main() {
     // Indonesia uses baku UI terminology while coding identifiers remain English.
     expect(JexText.of('temperature', AppLanguage.indonesia), 'Suhu');
     expect(JexText.of('batteryTemperature', AppLanguage.indonesia), 'Suhu Baterai');
-    expect(JexText.of('hotsideTemperature', AppLanguage.indonesia), 'Suhu Panas');
+    expect(JexText.of('hotsideTemperature', AppLanguage.indonesia), 'Suhu Hotside');
     expect(JexText.of('voltage', AppLanguage.indonesia), 'Tegangan');
     expect(JexText.of('voltageIndicator', AppLanguage.indonesia), 'Indikator Tegangan');
     expect(JexText.of('brightness', AppLanguage.indonesia), 'Kecerahan');
@@ -123,11 +123,11 @@ void main() {
   test('Peltier re-arm notify uses the 2C safety hysteresis threshold', () {
     expect(
       peltierRearmNotice(45, AppLanguage.english),
-      'Peltier is locked. Hotside must cool to <= 43°C before restart.',
+      'Peltier is locked. Cool the Hotside to ≤ 43°C before restarting.',
     );
     expect(
       peltierRearmNotice(45, AppLanguage.indonesia),
-      'Peltier terkunci. Suhu panas harus turun hingga <= 43°C sebelum dinyalakan lagi.',
+      'Peltier terkunci. Dinginkan Hotside hingga ≤ 43°C sebelum menyalakan kembali.',
     );
   });
 
@@ -352,6 +352,19 @@ void main() {
     final theme = buildJexTheme(AppThemePreset.defaultTheme);
     expect(theme.brightness, Brightness.dark);
     expect(theme.scaffoldBackgroundColor, const Color(0xFF0F1013));
+  });
+
+  test('Localized Notify error detection is language-aware', () {
+    expect(isNotifyErrorMessage('Voltage change failed.'), isTrue);
+    expect(isNotifyErrorMessage('Perubahan tegangan gagal.'), isTrue);
+    expect(isNotifyErrorMessage('System ready.'), isFalse);
+    expect(isNotifyErrorMessage('Sistem siap.'), isFalse);
+  });
+
+  test('Reset reason POWER_ON is not shown as a user-facing reset event', () {
+    expect(isUserVisibleResetReason('POWER_ON'), isFalse);
+    expect(isUserVisibleResetReason('POWERON'), isFalse);
+    expect(isUserVisibleResetReason('BROWNOUT'), isTrue);
   });
 
   test('Reset reason sentinel is not a user-facing event', () {
