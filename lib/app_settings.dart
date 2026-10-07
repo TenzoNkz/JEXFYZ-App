@@ -744,13 +744,13 @@ class JexText {
       AppLanguage.english: 'Breath',
       AppLanguage.indonesia: 'Napas',
     },
-    'ledModeCenterOut': {
-      AppLanguage.english: 'Center Out',
-      AppLanguage.indonesia: 'Dari Tengah',
+    'ledModeMirrorPulse': {
+      AppLanguage.english: 'Mirror Pulse',
+      AppLanguage.indonesia: 'Pulsa Cermin',
     },
-    'ledModeOuterIn': {
-      AppLanguage.english: 'Outer In',
-      AppLanguage.indonesia: 'Dari Luar',
+    'ledModeComet': {
+      AppLanguage.english: 'Comet',
+      AppLanguage.indonesia: 'Komet',
     },
     'ledModeDualChase': {
       AppLanguage.english: 'Dual Chase',

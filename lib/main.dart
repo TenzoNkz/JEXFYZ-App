@@ -176,61 +176,81 @@ Color ledPaletteColor(String hex) {
   return Color(0xFF000000 | rgb);
 }
 
-/// Returns the normalized per-pixel intensity for the horizontal eight-LED preview.
-/// The physical 4-left/4-right strip is deliberately flattened into one App row.
+/// Firmware-owned LED animation timing helpers. The App preview mirrors the
+/// physical 4-left/4-right strip using the phase/cycle reported by the firmware.
+int ledAnimationCycleMs(int mode) {
+  switch (mode.clamp(1, 7).toInt()) {
+    case 1: return 1000;
+    case 2: return 2200;
+    case 3: return 2400;
+    case 4: return 1600;
+    case 5: return 900;
+    case 6: return 1800;
+    case 7: return 30000;
+  }
+  return 1000;
+}
+
+/// Returns normalized per-pixel intensity in the firmware's physical pixel order.
+/// Hardware order is RIGHT TOP->BOTTOM (0..3), then LEFT BOTTOM->TOP (4..7).
 List<double> ledPreviewLevels({
   required int mode,
-  required int elapsedMs,
+  required int phaseMs,
 }) {
   final levels = List<double>.filled(8, 0);
-  final t = elapsedMs < 0 ? 0 : elapsedMs;
+  final safeMode = mode.clamp(1, 7).toInt();
+  final cycle = ledAnimationCycleMs(safeMode);
+  final phase = phaseMs < 0 ? 0 : phaseMs % cycle;
 
-  void setPair(int pair, double level) {
+  void setMirrorPair(int pair, double level) {
     final clamped = level.clamp(0.0, 1.0).toDouble();
     levels[3 - pair] = clamped;
     levels[4 + pair] = clamped;
   }
 
-  switch (mode.clamp(1, 7)) {
+  switch (safeMode) {
     case 1:
       levels.fillRange(0, 8, 1);
     case 2:
-      final phase = (t % 2200) / 2200.0;
-      final level = .12 + .88 * (.5 + .5 * math.sin(phase * math.pi * 2));
+      final breathingPhase = phase / 2200.0;
+      final level = .12 + .88 * (.5 + .5 * math.sin(breathingPhase * math.pi * 2));
       levels.fillRange(0, 8, level);
     case 3:
-      final progress = (t % 1600) / 400.0;
+      final normalized = phase / 2400.0;
+      final sweep = normalized < .5
+          ? (normalized * 2.0) * 3.0
+          : ((1.0 - normalized) * 2.0) * 3.0;
       for (var pair = 0; pair < 4; pair++) {
-        final distance = pair.toDouble();
-        final level = progress >= distance
-            ? 1.0
-            : progress > distance - 1.0
-                ? progress - distance + 1.0
-                : 0.0;
-        setPair(pair, level);
+        final distance = (pair - sweep).abs();
+        setMirrorPair(pair, math.max(0.0, 1.0 - distance));
       }
     case 4:
-      final progress = (t % 1600) / 400.0;
-      for (var pair = 0; pair < 4; pair++) {
-        final distance = pair.toDouble();
-        final level = progress >= distance
-            ? 1.0
-            : progress > distance - 1.0
-                ? progress - distance + 1.0
-                : 0.0;
-        setPair(3 - pair, level);
+      final head = phase / 200.0;
+      for (var pixel = 0; pixel < 8; pixel++) {
+        final distance = (head - pixel + 8.0) % 8.0;
+        var level = 0.0;
+        if (distance < 1.0) {
+          level = 1.0 - distance;
+        } else if (distance < 2.0) {
+          level = .55 * (2.0 - distance);
+        } else if (distance < 3.0) {
+          level = .25 * (3.0 - distance);
+        }
+        levels[pixel] = level;
       }
     case 5:
       const sequence = <int>[0, 1, 2, 3, 2, 1];
-      setPair(sequence[(t ~/ 150) % sequence.length], 1.0);
+      final pair = sequence[(phase ~/ 150) % sequence.length];
+      levels[pair] = 1.0;
+      levels[7 - pair] = 1.0;
     case 6:
-      final phase = (t % 1800) / 1800.0;
-      final wave = .5 + .5 * math.sin(phase * math.pi * 2);
+      final wavePhase = phase / 1800.0;
+      final wave = .5 + .5 * math.sin(wavePhase * math.pi * 2);
       final leftLevel = .10 + .90 * wave;
       final rightLevel = .10 + .90 * (1.0 - wave);
       for (var i = 0; i < 4; i++) {
-        levels[i] = leftLevel;
-        levels[4 + i] = rightLevel;
+        levels[4 + i] = leftLevel;
+        levels[i] = rightLevel;
       }
     case 7:
       levels.fillRange(0, 8, 1);
@@ -238,29 +258,27 @@ List<double> ledPreviewLevels({
   return levels;
 }
 
-/// Returns the per-pixel RGB colors for the horizontal eight-LED preview.
-/// Firmware maps 1..100% brightness to hardware intensity; the preview follows the same
-/// base-brightness relationship before the animation level is applied by the painter.
+/// Returns per-pixel RGB colors using the same base brightness and Rainbow phase as firmware.
 List<Color> ledPreviewColors({
   required int mode,
-  required int elapsedMs,
+  required int phaseMs,
   required String baseColor,
   required int brightness,
 }) {
   final safeBrightness = brightness.clamp(1, 100).toDouble() / 100.0;
-  if (mode.clamp(1, 7) != 7) {
+  if (mode.clamp(1, 7).toInt() != 7) {
     final rgb = ledPaletteColor(baseColor);
     final scaled = Color.fromARGB(
       255,
-      (rgb.red * safeBrightness).round().clamp(0, 255),
-      (rgb.green * safeBrightness).round().clamp(0, 255),
-      (rgb.blue * safeBrightness).round().clamp(0, 255),
+      (rgb.red * safeBrightness).round().clamp(0, 255).toInt(),
+      (rgb.green * safeBrightness).round().clamp(0, 255).toInt(),
+      (rgb.blue * safeBrightness).round().clamp(0, 255).toInt(),
     );
     return List<Color>.filled(8, scaled);
   }
 
   const cycleMs = 30000;
-  final hue = ((elapsedMs % cycleMs) / cycleMs) * 360.0;
+  final hue = ((phaseMs.clamp(0, cycleMs - 1)) / cycleMs) * 360.0;
   final rainbow = HSVColor.fromAHSV(1, hue, 1, safeBrightness).toColor();
   return List<Color>.filled(8, rainbow);
 }
@@ -270,6 +288,8 @@ class JexLedStripPreview extends StatefulWidget {
   final String colorHex;
   final int brightness;
   final bool active;
+  final int ledPhaseMs;
+  final int ledCycleMs;
 
   const JexLedStripPreview({
     super.key,
@@ -277,6 +297,8 @@ class JexLedStripPreview extends StatefulWidget {
     required this.colorHex,
     required this.brightness,
     required this.active,
+    required this.ledPhaseMs,
+    required this.ledCycleMs,
   });
 
   @override
@@ -287,12 +309,14 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
     with SingleTickerProviderStateMixin {
   late final AnimationController controller;
 
+  int _safeCycle(int value) => math.max(1, value);
+
   @override
   void initState() {
     super.initState();
     controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 30000),
+      duration: Duration(milliseconds: _safeCycle(widget.ledCycleMs)),
     );
     if (widget.active) controller.repeat();
   }
@@ -300,10 +324,23 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
   @override
   void didUpdateWidget(covariant JexLedStripPreview oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.active && !controller.isAnimating) {
-      controller.repeat();
-    } else if (!widget.active && controller.isAnimating) {
+
+    if (widget.ledCycleMs != oldWidget.ledCycleMs) {
+      controller.duration = Duration(milliseconds: _safeCycle(widget.ledCycleMs));
+    }
+
+    if (widget.active != oldWidget.active ||
+        widget.mode != oldWidget.mode ||
+        widget.ledPhaseMs != oldWidget.ledPhaseMs ||
+        widget.ledCycleMs != oldWidget.ledCycleMs) {
+      controller.reset();
+    }
+
+    if (widget.active) {
+      if (!controller.isAnimating) controller.repeat();
+    } else {
       controller.stop();
+      controller.value = 0;
     }
   }
 
@@ -315,27 +352,31 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
 
   @override
   Widget build(BuildContext context) {
+    final cycle = _safeCycle(widget.ledCycleMs);
     return RepaintBoundary(
       child: AnimatedBuilder(
         animation: controller,
         builder: (_, __) {
-          final elapsedMs = (controller.value * 30000).round();
+          final controllerElapsed = (controller.value * cycle).round();
+          final syncedPhase =
+              (widget.ledPhaseMs + controllerElapsed) % cycle;
+
           return SizedBox(
             width: double.infinity,
             height: 72,
             child: CustomPaint(
               painter: _JexLedStripPainter(
-              levels: ledPreviewLevels(
-                mode: widget.mode,
-                elapsedMs: elapsedMs,
-              ),
-              colors: ledPreviewColors(
-                mode: widget.mode,
-                elapsedMs: elapsedMs,
-                baseColor: widget.colorHex,
-                brightness: widget.brightness,
-              ),
-              active: widget.active,
+                levels: ledPreviewLevels(
+                  mode: widget.mode,
+                  phaseMs: syncedPhase,
+                ),
+                colors: ledPreviewColors(
+                  mode: widget.mode,
+                  phaseMs: syncedPhase,
+                  baseColor: widget.colorHex,
+                  brightness: widget.brightness,
+                ),
+                active: widget.active,
                 background: Theme.of(context).brightness == Brightness.dark
                     ? const Color(0xFF20232A)
                     : const Color(0xFFF5F6F8),
@@ -364,23 +405,26 @@ class _JexLedStripPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final centerY = size.height / 2;
-    final left = 18.0;
-    final usable = math.max(1.0, size.width - 36.0);
-    final gap = usable / 7;
-    final radius = math.min(14.0, math.max(9.0, size.height * .19));
+    final radius = math.min(10.0, math.max(7.0, size.height * .12));
 
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        Rect.fromLTWH(10, centerY - 19, math.max(0, size.width - 20), 38),
+        Rect.fromLTWH(10, centerY - 29, math.max(0, size.width - 20), 58),
         const Radius.circular(19),
       ),
       Paint()..color = background,
     );
 
-    for (var i = 0; i < 8; i++) {
-      final center = Offset(left + gap * i, centerY);
-      final level = active ? levels[i] : .10;
-      final color = colors[i];
+    final top = centerY - 22;
+    const verticalGap = 14.7;
+    final leftX = size.width * .32;
+    final rightX = size.width * .68;
+    const leftIndices = <int>[7, 6, 5, 4];
+    const rightIndices = <int>[0, 1, 2, 3];
+
+    void drawPixel(int index, Offset center) {
+      final level = active ? levels[index] : .10;
+      final color = colors[index];
       if (active && level > .02) {
         canvas.drawCircle(
           center,
@@ -394,16 +438,23 @@ class _JexLedStripPainter extends CustomPainter {
         center,
         radius,
         Paint()
-          ..color = color.withValues(alpha: active ? level.clamp(.08, 1) : .14),
+          ..color = color.withValues(
+            alpha: active ? level.clamp(.08, 1).toDouble() : .14,
+          ),
       );
       canvas.drawCircle(
         center.translate(-radius * .22, -radius * .22),
         radius * .20,
-        Paint()
-          ..color = Colors.white.withValues(
-            alpha: active ? (.12 + .22 * level) : .05,
-          ),
+        Paint()..color = Colors.white.withValues(
+          alpha: active ? (.12 + .22 * level) : .05,
+        ),
       );
+    }
+
+    for (var row = 0; row < 4; row++) {
+      final centerYPosition = top + verticalGap * row;
+      drawPixel(leftIndices[row], Offset(leftX, centerYPosition));
+      drawPixel(rightIndices[row], Offset(rightX, centerYPosition));
     }
   }
 
@@ -1490,11 +1541,13 @@ class _DashboardScreenState extends State<DashboardScreen>
   bool peltierOn = false;
   bool adaptiveOn = false;
   String adaptiveCeiling = '12V';
-  String adaptiveProfile = 'HOTSIDE_BATTERY';
+  String adaptiveProfile = 'HOTSIDE';
   bool rgbOn = false;
   int rgbMode = 1;
   int brightness = 100;
   String rgbColor = '#FFFFFF';
+  int ledPhaseMs = 0;
+  int ledCycleMs = 1000;
   int fanSpeed = 100;
   int hotLimit = 45;
   int battery5Limit = 25;
@@ -1929,6 +1982,8 @@ class _DashboardScreenState extends State<DashboardScreen>
         peltierOn = false;
         adaptiveOn = false;
         rgbOn = false;
+        ledPhaseMs = 0;
+        ledCycleMs = 1000;
         safety = 'LOCKED';
         safetyReason = 'WAITING_FOR_SENSOR_VALIDATION';
         firmwareVersion = 'V?';
@@ -2841,6 +2896,12 @@ void _handleAckLine(String line) {
         break;
       case 'MODE':
         rgbMode = (int.tryParse(value) ?? rgbMode).clamp(1, 7).toInt();
+        break;
+      case 'LED_PHASE':
+        ledPhaseMs = math.max(0, int.tryParse(value) ?? ledPhaseMs);
+        break;
+      case 'LED_CYCLE_MS':
+        ledCycleMs = math.max(1, int.tryParse(value) ?? ledCycleMs);
         break;
       case 'BRIGHTNESS':
         brightness = (int.tryParse(value) ?? brightness).clamp(1, 100).toInt();
@@ -4971,14 +5032,14 @@ void _handleAckLine(String line) {
 
   // AI-METHOD: _buildLedTab — Build LED/RGB/brightness/color controls.
   // AI-METHOD / LED-UI-CONTRACT
-  // Custom LED control surface. Hardware remains 4-left/4-right; App preview is 8 horizontal LEDs.
+  // Custom LED control surface. The preview mirrors the physical 4-left/4-right strip and follows firmware phase telemetry.
   Widget _buildLedTab({Key? key}) {
     final lang = appLanguageNotifier.value;
     final modeNames = <String>[
       JexText.of('ledModeStatic', lang),
       JexText.of('ledModeBreath', lang),
-      JexText.of('ledModeCenterOut', lang),
-      JexText.of('ledModeOuterIn', lang),
+      JexText.of('ledModeMirrorPulse', lang),
+      JexText.of('ledModeComet', lang),
       JexText.of('ledModeDualChase', lang),
       JexText.of('leftRight', lang),
       JexText.of('ledModeRainbow', lang),
@@ -5080,6 +5141,8 @@ void _handleAckLine(String line) {
                         colorHex: rgbColor.toUpperCase(),
                         brightness: brightness,
                         active: rgbOn && connected,
+                        ledPhaseMs: ledPhaseMs,
+                        ledCycleMs: ledCycleMs,
                       ),
                       const SizedBox(height: 4),
                       Text(

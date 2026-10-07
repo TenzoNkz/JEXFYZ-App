@@ -309,27 +309,66 @@ void main() {
       expect(ledPaletteColor(hex), isA<Color>());
     }
   });
-  test('LED preview always exposes eight horizontal pixels', () {
-    final staticLevels = ledPreviewLevels(mode: 1, elapsedMs: 0);
-    final centerLevels = ledPreviewLevels(mode: 3, elapsedMs: 0);
+  test('LED preview exposes the physical 4-left/4-right pixel map and new modes', () {
+    final staticLevels = ledPreviewLevels(mode: 1, phaseMs: 0);
+    final mirrorStart = ledPreviewLevels(mode: 3, phaseMs: 0);
+    final cometHead = ledPreviewLevels(mode: 4, phaseMs: 0);
+    final dualChase = ledPreviewLevels(mode: 5, phaseMs: 0);
     final colors = ledPreviewColors(
       mode: 1,
-      elapsedMs: 0,
+      phaseMs: 0,
       baseColor: '#FFFFFF',
       brightness: 50,
     );
 
     expect(staticLevels, hasLength(8));
     expect(staticLevels, everyElement(1.0));
-    expect(centerLevels, hasLength(8));
-    expect(centerLevels[3], 1.0);
-    expect(centerLevels[4], 1.0);
-    expect(centerLevels[0], 0.0);
-    expect(centerLevels[7], 0.0);
+    expect(mirrorStart[3], 1.0);
+    expect(mirrorStart[4], 1.0);
+    expect(mirrorStart[0], 0.0);
+    expect(mirrorStart[7], 0.0);
+    expect(cometHead[0], 1.0);
+    expect(cometHead[7], greaterThan(0.0));
+    expect(cometHead[6], greaterThan(0.0));
+    expect(dualChase[0], 1.0);
+    expect(dualChase[7], 1.0);
+
     expect(colors, hasLength(8));
     expect(colors.first.red, 128);
     expect(colors.first.green, 128);
     expect(colors.first.blue, 128);
+  });
+
+  test('LED preview timing matches the firmware animation cycles', () {
+    expect(ledAnimationCycleMs(1), 1000);
+    expect(ledAnimationCycleMs(2), 2200);
+    expect(ledAnimationCycleMs(3), 2400);
+    expect(ledAnimationCycleMs(4), 1600);
+    expect(ledAnimationCycleMs(5), 900);
+    expect(ledAnimationCycleMs(6), 1800);
+    expect(ledAnimationCycleMs(7), 30000);
+
+    final yellow = ledPreviewColors(
+      mode: 7,
+      phaseMs: 5000,
+      baseColor: '#FFFFFF',
+      brightness: 100,
+    ).first;
+    expect(yellow.red, greaterThan(240));
+    expect(yellow.green, greaterThan(240));
+    expect(yellow.blue, lessThan(20));
+  });
+
+  test('LED localization uses the V6.0 mode set', () {
+    expect(JexText.of('ledModeStatic', AppLanguage.english), 'Static');
+    expect(JexText.of('ledModeBreath', AppLanguage.english), 'Breath');
+    expect(JexText.of('ledModeMirrorPulse', AppLanguage.english), 'Mirror Pulse');
+    expect(JexText.of('ledModeComet', AppLanguage.english), 'Comet');
+    expect(JexText.of('ledModeDualChase', AppLanguage.english), 'Dual Chase');
+    expect(JexText.of('leftRight', AppLanguage.english), 'Left ↔ Right');
+    expect(JexText.of('ledModeRainbow', AppLanguage.english), 'Rainbow');
+    expect(JexText.of('ledModeMirrorPulse', AppLanguage.indonesia), 'Pulsa Cermin');
+    expect(JexText.of('ledModeComet', AppLanguage.indonesia), 'Komet');
   });
 
   test('Light and Dark themes use inverse semantic text contrast', () {
