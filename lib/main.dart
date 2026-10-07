@@ -101,8 +101,8 @@ bool isSupportedP1Protocol(String value) =>
 String peltierRearmNotice(int hotLimit, AppLanguage language) {
   final target = hotLimit - 2;
   return JexText.phrase(
-    'Peltier is locked. Hotside must cool to <= ' + target.toString() + '°C before restart.',
-    'Peltier terkunci. Suhu panas harus turun hingga <= ' + target.toString() + '°C sebelum dinyalakan lagi.',
+    'Peltier is locked. Cool the Hotside to ≤ ' + target.toString() + '°C before restarting.',
+    'Peltier terkunci. Dinginkan Hotside hingga ≤ ' + target.toString() + '°C sebelum menyalakan kembali.',
     language,
   );
 }
@@ -1161,8 +1161,26 @@ bool isUserVisibleResetReason(String value) {
   final normalized = value.trim().toUpperCase();
   return normalized.isNotEmpty &&
       normalized != 'POWERON' &&
+      normalized != 'POWER_ON' &&
       normalized != 'UNKNOWN' &&
       normalized != 'UNAVAILABLE_CORE_3_3_7';
+}
+
+bool isNotifyErrorMessage(String value) {
+  final normalized = value.trim().toUpperCase();
+  if (normalized.isEmpty) return false;
+  const markers = <String>[
+    'FAILED',
+    'ERROR',
+    'NOT FOUND',
+    'DISCONNECTED',
+    'SERVICE DISCOVERY',
+    'GAGAL',
+    'KESALAHAN',
+    'TIDAK DITEMUKAN',
+    'TERPUTUS',
+  ];
+  return markers.any(normalized.contains);
 }
 
 // AI-THEME: lightThemeAccentText — Generate a darker semantic accent for text on bright surfaces.
@@ -2338,7 +2356,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     if (isUserVisibleResetReason(resetReason)) {
       _showSnackBar(
-        'Reset: ${_friendlyReset(resetReason)}',
+        _friendlyReset(resetReason),
         color: Colors.orangeAccent,
       );
     }
@@ -2640,13 +2658,13 @@ class _DashboardScreenState extends State<DashboardScreen>
   String? _friendlyAckSuccess(String item, String reason) {
     if (item == 'TOUCH_COOLING') {
       return reason == 'ON'
-          ? JexText.phrase('Cooling started.', 'Pendinginan berhasil dinyalakan.')
+          ? JexText.phrase('Cooling started.', 'Pendinginan dimulai.')
           : reason == 'OFF'
-              ? JexText.phrase('Cooling stopped.', 'Pendinginan berhasil dimatikan.')
+              ? JexText.phrase('Cooling stopped.', 'Pendinginan dihentikan.')
               : null;
     }
     if (item == 'TOUCH_ADAPTIVE' && reason == 'OFF') {
-      return JexText.phrase('Adaptive Mode turned OFF.', 'Mode Adaptif berhasil dimatikan.');
+      return JexText.phrase('Adaptive Mode turned OFF.', 'Mode Adaptif dimatikan.');
     }
     return null;
   }
@@ -3000,7 +3018,7 @@ void _handleAckLine(String line) {
         voltageGuardTimer?.cancel();
         if (mounted) {
           setState(() => voltageGuardActive = false);
-          _showSnackBar(JexText.phrase('Voltage change not confirmed.','Perubahan tegangan tidak dikonfirmasi.'));
+          _showSnackBar(JexText.phrase('Voltage change not confirmed.','Perubahan tegangan tidak terkonfirmasi.'));
         }
       }
     } catch (e) {
@@ -3023,7 +3041,7 @@ void _handleAckLine(String line) {
         enabled ? 'FAN:ON' : 'FAN:OFF',
       );
       if (!ok && mounted) {
-        _showSnackBar(JexText.phrase('Fan change was not confirmed by the device.','Perubahan kipas tidak dikonfirmasi oleh perangkat.'), color: Colors.orangeAccent);
+        _showSnackBar(JexText.phrase('Fan change was not confirmed.','Perubahan kipas tidak terkonfirmasi.'), color: Colors.orangeAccent);
       }
     } catch (e) {
       debugPrint('Fan command: $e');
@@ -3065,8 +3083,8 @@ void _handleAckLine(String line) {
           if (mounted) {
             _showSnackBar(
               JexText.phrase(
-                'Fan activation was not confirmed by the device.',
-                'Pengaktifan kipas tidak dikonfirmasi oleh perangkat.',
+                'Fan start was not confirmed.',
+                'Kipas tidak terkonfirmasi menyala.',
               ),
               color: Colors.orangeAccent,
             );
@@ -3094,8 +3112,8 @@ void _handleAckLine(String line) {
           } else {
             _showSnackBar(
               JexText.phrase(
-                'Peltier change was not confirmed by the device.',
-                'Perubahan Peltier tidak dikonfirmasi oleh perangkat.',
+                'Peltier change was not confirmed.',
+                'Perubahan Peltier tidak terkonfirmasi.',
               ),
               color: Colors.orangeAccent,
             );
@@ -3109,7 +3127,7 @@ void _handleAckLine(String line) {
         timeout: const Duration(seconds: 6),
       );
       if (!ok && mounted) {
-        _showSnackBar(JexText.phrase('Peltier change was not confirmed by the device. ${safetyReason == 'NONE' ? '' : safetyReason}','Perubahan Peltier tidak dikonfirmasi oleh perangkat. ${safetyReason == 'NONE' ? '' : safetyReason}'), color: Colors.orangeAccent);
+        _showSnackBar(JexText.phrase('Peltier change was not confirmed. ${safetyReason == 'NONE' ? '' : safetyReason}','Perubahan Peltier tidak terkonfirmasi. ${safetyReason == 'NONE' ? '' : safetyReason}'), color: Colors.orangeAccent);
       }
     } catch (e) {
       debugPrint('Peltier command: $e');
@@ -3130,7 +3148,7 @@ void _handleAckLine(String line) {
         timeout: const Duration(seconds: 4),
       );
       if (!ok && mounted) {
-        _showSnackBar(JexText.phrase('Adaptive Mode change was not confirmed by the device.','Perubahan Mode Adaptif tidak dikonfirmasi oleh perangkat.'), color: Colors.orangeAccent);
+        _showSnackBar(JexText.phrase('Adaptive Mode change was not confirmed.','Perubahan Mode Adaptif tidak terkonfirmasi.'), color: Colors.orangeAccent);
       }
     } finally {
       if (mounted) {
@@ -3149,7 +3167,7 @@ void _handleAckLine(String line) {
         'RGB:' + (enabled ? 'ON' : 'OFF'),
       );
       if (!ok && mounted) {
-        _showSnackBar(JexText.phrase('LED power change was not confirmed by the device.','Perubahan daya LED tidak dikonfirmasi oleh perangkat.'));
+        _showSnackBar(JexText.phrase('LED power change was not confirmed.','Perubahan daya LED tidak terkonfirmasi.'));
       }
     } catch (e) {
       debugPrint('LED power command: $e');
@@ -3164,7 +3182,7 @@ void _handleAckLine(String line) {
       final next = mode.clamp(1, 7).toInt();
       final ok = await _sendAndConfirm('MODE:$next');
       if (!ok && mounted) {
-        _showSnackBar(JexText.phrase('LED mode change was not confirmed by the device.','Perubahan mode LED tidak dikonfirmasi oleh perangkat.'));
+        _showSnackBar(JexText.phrase('LED mode change was not confirmed.','Perubahan mode LED tidak terkonfirmasi.'));
       }
     } catch (e) {
       debugPrint('LED mode command: $e');
@@ -3192,7 +3210,7 @@ void _handleAckLine(String line) {
 
       if (mounted) {
         setState(() => brightness = previous);
-        _showSnackBar(JexText.phrase('LED brightness change was not confirmed by the device.','Perubahan kecerahan LED tidak dikonfirmasi oleh perangkat.'));
+        _showSnackBar(JexText.phrase('LED brightness change was not confirmed.','Perubahan kecerahan LED tidak terkonfirmasi.'));
       }
     } catch (e) {
       debugPrint('LED brightness command: $e');
@@ -3213,7 +3231,7 @@ void _handleAckLine(String line) {
       final ok = await _sendAndConfirm('COLOR:' + value.substring(1));
       if (!ok) {
         if (mounted) {
-          _showSnackBar(JexText.phrase('Color change was not confirmed by the device.','Perubahan warna tidak dikonfirmasi oleh perangkat.'));
+          _showSnackBar(JexText.phrase('Color change was not confirmed.','Perubahan warna tidak terkonfirmasi.'));
         }
         return;
       }
@@ -3239,7 +3257,7 @@ void _handleAckLine(String line) {
       final ok = await _sendAndConfirm('FANSPEED:$next');
       if (!ok && mounted) {
         setState(() => fanSpeedDraft = fanSpeed);
-        _showSnackBar(JexText.phrase('Fan speed change was not confirmed by the device.','Perubahan kecepatan kipas tidak dikonfirmasi oleh perangkat.'));
+        _showSnackBar(JexText.phrase('Fan speed change was not confirmed.','Perubahan kecepatan kipas tidak terkonfirmasi.'));
       }
     } catch (e) {
       debugPrint('Fan speed command: $e');
@@ -3314,10 +3332,10 @@ void _handleAckLine(String line) {
     if (!connected || adaptiveOn) return;
     try {
       final ok = await _sendAndConfirm('RESET:TEMPERATURE');
-      if (!ok && mounted) _showSnackBar(JexText.phrase('Temperature reset was not confirmed by the device.','Reset suhu tidak dikonfirmasi oleh perangkat.'));
+      if (!ok && mounted) _showSnackBar(JexText.phrase('Temperature settings were not confirmed.','Pengaturan suhu tidak terkonfirmasi.'));
     } catch (e) {
       debugPrint('Temperature reset: $e');
-      if (mounted) _showSnackBar(JexText.phrase('Temperature reset failed.','Reset suhu gagal.'));
+      if (mounted) _showSnackBar(JexText.phrase('Temperature settings failed.','Pengaturan suhu gagal.'));
     }
   }
 
@@ -3347,7 +3365,7 @@ void _handleAckLine(String line) {
     final ok = await _sendAndConfirm('ADAPTIVE_PROFILE:' + profile);
     if (!ok && mounted) {
       _showSnackBar(
-        JexText.phrase('Adaptive profile change was not confirmed by the device.','Perubahan profil Adaptif tidak dikonfirmasi oleh perangkat.'),
+        JexText.phrase('Adaptive profile change was not confirmed by the device.','Perubahan profil Adaptif tidak terkonfirmasi.'),
         color: Colors.orangeAccent,
       );
     }
@@ -3662,7 +3680,9 @@ void _handleAckLine(String line) {
     if (upper.contains('FAILED') || upper.contains('ERROR')) {
       return JexText.of('otaFailedGeneric', appLanguageNotifier.value) + raw.replaceAll('_', ' ').toLowerCase() + '.';
     }
-    return raw.replaceAll('_', ' ');
+    return raw.contains('_')
+        ? JexText.of('deviceStatusUpdate', appLanguageNotifier.value)
+        : raw;
   }
 
   String _friendlyReset(String value) {
@@ -3675,49 +3695,52 @@ void _handleAckLine(String line) {
       case 'TASK_WDT': return JexText.of('resetWatchdog', appLanguageNotifier.value);
       case 'EXTERNAL': return JexText.of('resetExternal', appLanguageNotifier.value);
       case 'DEEPSLEEP': return JexText.of('resetDeepSleep', appLanguageNotifier.value);
-      case 'POWERON': return JexText.of('resetPowerOn', appLanguageNotifier.value);
-      default: return value;
+      case 'POWER_ON':
+      case 'POWERON':
+        return JexText.of('resetPowerOn', appLanguageNotifier.value);
+      default:
+        return JexText.of('deviceStatusUpdate', appLanguageNotifier.value);
     }
   }
 
   String _friendlyReason(String reason) {
     switch (reason) {
       case 'NTC_ERROR':
-        return JexText.phrase('Temperature sensor error. Peltier is locked.', 'Kesalahan sensor suhu. Peltier dikunci.');
+        return JexText.phrase('Temperature sensor error. Peltier is locked.', 'Sensor suhu bermasalah. Peltier terkunci.');
       case 'HOTSIDE_PROTECTION':
         return peltierRearmNotice(hotLimit, appLanguageNotifier.value);
       case 'PELTIER_SAFETY_LATCH':
         return peltierRearmNotice(hotLimit, appLanguageNotifier.value);
       case 'VOLTAGE_STEP_FAILED':
-        return JexText.phrase('Adaptive voltage step could not be completed.', 'Perpindahan tegangan adaptif gagal.');
+        return JexText.phrase('Adaptive voltage step failed.', 'Adaptive voltage step gagal.');
       case 'VOLTAGE_FORCE_FAILED':
-        return JexText.phrase('Safety could not force the required 5V state.', 'Sistem keselamatan gagal memaksa keadaan 5V.');
+        return JexText.phrase('Safety could not switch to the required 5V state.', 'Sistem keselamatan tidak dapat beralih ke 5V.');
       case 'ADAPTIVE_RISE_WAIT':
-        return JexText.phrase('Adaptive is waiting before raising voltage.', 'Mode Adaptif menunggu sebelum menaikkan tegangan.');
+        return JexText.phrase('Adaptive is waiting before raising voltage.', 'Adaptive menunggu sebelum menaikkan tegangan.');
       case 'ADAPTIVE_STARTING':
-        return JexText.phrase('Adaptive Mode is starting.', 'Mode Adaptif sedang diaktifkan.');
+        return JexText.phrase('Adaptive Mode is starting.', 'Mode Adaptif sedang dimulai.');
       case 'FAN_REQUIRED':
-        return JexText.phrase('Fan must be ON before Peltier can start.', 'Kipas harus HIDUP sebelum Peltier dapat dinyalakan.');
+        return JexText.phrase('Fan must be on before Peltier can start.', 'Kipas harus aktif sebelum Peltier dapat dimulai.');
       case 'PELTIER_ON':
-        return JexText.phrase('Fan is locked while Peltier is ON.', 'Kipas terkunci saat Peltier HIDUP.');
+        return JexText.phrase('Fan control is locked while Peltier is on.', 'Kendali kipas terkunci saat Peltier aktif.');
       case 'ADAPTIVE_ACTIVE':
-        return JexText.phrase('Manual cooling controls are locked while Adaptive Mode is active.', 'Kontrol pendinginan manual terkunci saat Mode Adaptif aktif.');
+        return JexText.phrase('Manual cooling controls are locked while Adaptive Mode is active.', 'Kendali pendinginan manual terkunci saat Mode Adaptif aktif.');
       case 'MANUAL_12V_ONLY':
-        return JexText.phrase('Fan Speed can only be changed at 12V in Manual Mode.', 'Kecepatan Kipas hanya dapat diubah pada 12V dalam Mode Manual.');
+        return JexText.phrase('Fan speed can only be changed at 12V in Manual Mode.', 'Kecepatan kipas hanya dapat diubah pada 12V dalam Mode Manual.');
       case 'VOLTAGE_TRANSITION':
-        return JexText.phrase('Voltage change is in progress. Please wait.', 'Perpindahan tegangan sedang berlangsung. Silakan tunggu.');
+        return JexText.phrase('Voltage change is in progress. Please wait.', 'Perubahan tegangan sedang berlangsung. Tunggu sebentar.');
       case 'VOLTAGE_GUARD_OR_BUSY':
         return JexText.phrase('Voltage command is still being processed.', 'Perintah tegangan masih diproses.');
       case 'SYNC_REQUIRED':
         return JexText.phrase('Device sync is still in progress.', 'Sinkronisasi perangkat masih berlangsung.');
       case 'RATE_LIMIT':
-        return JexText.phrase('Command was sent too quickly. Please try again.', 'Perintah dikirim terlalu cepat. Silakan coba lagi.');
+        return JexText.phrase('Command was sent too quickly. Please wait and try again.', 'Perintah terlalu cepat. Tunggu sebentar, lalu coba lagi.');
       case 'RANGE_50_100_STEP_10':
-        return JexText.phrase('Fan Speed must be 50% to 100% in 10% steps.', 'Kecepatan Kipas harus 50% sampai 100% dengan langkah 10%.');
+        return JexText.phrase('Fan speed must be 50%–100% in 10% steps.', 'Kecepatan kipas harus 50%–100% dengan langkah 10%.');
       case 'MUST_BE_BELOW_BATT12':
-        return JexText.phrase('5V battery limit must stay below the 12V battery limit.', 'Batas baterai 5V harus tetap di bawah batas baterai 12V.');
+        return JexText.phrase('5V battery limit must stay below the 12V battery limit.', 'Batas baterai 5V harus di bawah batas baterai 12V.');
       case 'MUST_BE_ABOVE_BATT5':
-        return JexText.phrase('12V battery limit must stay above the 5V battery limit.', 'Batas baterai 12V harus tetap di atas batas baterai 5V.');
+        return JexText.phrase('12V battery limit must stay above the 5V battery limit.', 'Batas baterai 12V harus di atas batas baterai 5V.');
       case 'UNKNOWN_GROUP':
         return JexText.phrase('Reset request is not supported.', 'Permintaan reset tidak didukung.');
       default:
@@ -4005,6 +4028,10 @@ void _handleAckLine(String line) {
     if (lower == 'connect to je x fyz first.') {
       return JexText.of('connectFirst');
     }
+    if (lower.startsWith('reset:')) {
+      final reset = raw.substring(raw.indexOf(':') + 1).trim();
+      return _friendlyReset(reset);
+    }
     if (lower.startsWith('ota could not start:')) {
       return JexText.of('otaStartRejected');
     }
@@ -4058,19 +4085,19 @@ void _handleAckLine(String line) {
       case 'PELTIER_SAFETY_LATCH':
         return peltierRearmNotice(hotLimit, appLanguageNotifier.value);
       case 'FAN_REQUIRED':
-        return JexText.phrase('Fan required before Peltier.','Kipas harus hidup sebelum Peltier.');
+        return JexText.phrase('Fan required before Peltier.','Kipas harus aktif sebelum Peltier.');
       case 'PELTIER_ON':
-        return JexText.phrase('Fan locked while Peltier is ON.','Kipas terkunci saat Peltier HIDUP.');
+        return JexText.phrase('Fan control is locked while Peltier is on.','Kendali kipas terkunci saat Peltier aktif.');
       case 'ADAPTIVE_ACTIVE':
-        return JexText.phrase('Manual cooling controls locked.','Kontrol pendinginan manual terkunci.');
+        return JexText.phrase('Manual cooling controls are locked.','Kendali pendinginan manual terkunci.');
       case 'ADAPTIVE_STARTING':
-        return JexText.phrase('Adaptive Mode is starting.','Mode Adaptif sedang diaktifkan.');
+        return JexText.phrase('Adaptive Mode is starting.','Mode Adaptif sedang dimulai.');
       case 'MANUAL_12V_ONLY':
-        return JexText.phrase('Manual 12V only.','Manual hanya 12V.');
+        return JexText.phrase('Only available at 12V in Manual Mode.','Hanya tersedia pada 12V dalam Mode Manual.');
       case 'VOLTAGE_GUARD_OR_BUSY':
-        return JexText.phrase('Voltage command pending.','Perintah tegangan sedang diproses.');
+        return JexText.phrase('Voltage command is still processing.','Perintah tegangan sedang diproses.');
       case 'RATE_LIMIT':
-        return JexText.phrase('Command rate limited.','Perintah dibatasi frekuensinya.');
+        return JexText.phrase('Too many commands. Please wait before trying again.','Terlalu banyak perintah. Tunggu sebentar sebelum mencoba lagi.');
       case 'DISCONNECTED':
         return JexText.of('bluetoothDisconnected', appLanguageNotifier.value);
       case 'NONE':
@@ -4113,11 +4140,11 @@ void _handleAckLine(String line) {
     } else if (c.startsWith('COLOR:')) {
       message = JexText.of('colorUpdated', lang);
     } else if (c.startsWith('HOTLIMIT:')) {
-      message = JexText.of('hotsideTemperature', lang) + ' ' + c.substring(9) + '°C.';
+      message = JexText.of('hotsideTemperature', lang) + ': ' + c.substring(9) + '°C.';
     } else if (c.startsWith('BATT5:')) {
-      message = JexText.of('fiveVCeiling', lang) + ' ' + JexText.phrase('updated.', 'diperbarui.', lang);
+      message = JexText.of('fiveVCeiling', lang) + ' ' + JexText.phrase('updated.', 'Diperbarui.', lang);
     } else if (c.startsWith('BATT12:')) {
-      message = JexText.of('twelveVFloor', lang) + ' ' + JexText.phrase('updated.', 'diperbarui.', lang);
+      message = JexText.of('twelveVFloor', lang) + ' ' + JexText.phrase('updated.', 'Diperbarui.', lang);
     } else if (c == 'RESET:TEMPERATURE') {
       message = JexText.of('temperatureReset', lang);
     }
@@ -4129,10 +4156,7 @@ void _handleAckLine(String line) {
     if (_bleConnecting) return JexText.of('notifyBluetooth', appLanguageNotifier.value);
     if (syncing && !dashboardReady) return JexText.of('notifySync', appLanguageNotifier.value);
 
-    final hasError = custom.contains('FAILED') ||
-        custom.contains('ERROR') ||
-        custom.contains('NOT FOUND') ||
-        custom.contains('SERVICE DISCOVERY');
+    final hasError = isNotifyErrorMessage(custom);
     if (hasError) return JexText.of('notifyError', appLanguageNotifier.value);
 
     // WAITING_* is a startup/sensor-validation state and must not be shown as
@@ -4166,11 +4190,7 @@ void _handleAckLine(String line) {
     final noticeTextColor = headerDark ? const Color(0xFFF4F6FA) : const Color(0xFF16181D);
     final offlineStatusColor = headerDark ? Colors.white38 : const Color(0xFF5C626B);
     final custom = notice.trim().toUpperCase();
-    final hasError = custom.contains('FAILED') ||
-        custom.contains('ERROR') ||
-        custom.contains('NOT FOUND') ||
-        custom.contains('DISCONNECTED') ||
-        custom.contains('SERVICE DISCOVERY');
+    final hasError = isNotifyErrorMessage(custom);
     final warning = connected &&
         safetyReason != 'NONE' &&
         safetyReason != 'WAITING_FOR_NTC' &&
@@ -4250,6 +4270,7 @@ void _handleAckLine(String line) {
                           style: TextStyle(
                             color: noticeTextColor,
                             fontSize: 10.5,
+                            decoration: TextDecoration.none,
                             height: 1.0,
                             fontWeight: FontWeight.w800,
                           ),
@@ -4276,6 +4297,7 @@ void _handleAckLine(String line) {
             child: Text(
               _notifyStatusLabel(),
               style: TextStyle(
+                decoration: TextDecoration.none,
                 color: hasError
                     ? (headerDark
                         ? const Color(0xFFFF8A98)
