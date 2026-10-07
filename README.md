@@ -202,13 +202,18 @@ FROZEN HARDWARE/SAFETY:
 - Peltier PWM: 20 kHz; OFF→ON 5s cooperative soft-start.
 - Selector deadtime: 200 ms.
 - Voltage guard: 1 s.
-- Hotside NTC: 1 s cadence, 10K/10K/Beta3950, 16-sample trimmed mean.
+- Hotside NTC: 1 s cadence, exactly one calibrated ADC reading, 10K/10K/Beta3950.
 - Hotside limit: 40–50°C, default 45°C.
 - NTC fault: Fan 100%, Peltier OFF, Adaptive OFF, safe 5V.
 - No RAPID_HOTSIDE_RISE.
 - Adaptive upward dwell: 5 s after every completed upward step in BOTH HOTSIDE and HOTSIDE_BATTERY.
 - Adaptive downward changes: immediate.
-- Hotside safety dwell: 10 s; Fan 100%; LED 9s red + 1s green.
+- Adaptive Hotside safety dwell: 20 s per rail; Fan 100%; LED 19 s red + final 1 s blue.
+- Adaptive Hotside re-arm: if Hotside reaches <= hotLimit - 2°C before the 20 s boundary, Peltier resumes on the same rail and LED blinks green 2x.
+- Adaptive step-down: 12V -> 9V -> 5V, with a fresh 20 s thermal stage on every reached rail; 5V remains terminal if the 20 s stage still does not reach re-arm.
+- Adaptive 5V terminal lock: after the 20 s stage, Peltier remains locked and LED blinks red continuously until Hotside reaches <= hotLimit - 2°C; then green 2x and manual Peltier restart is required.
+- Manual Hotside protection: selected voltage is preserved, Fan 100%, Peltier OFF, and red blink continues until <= hotLimit - 2°C; then green 2x. Peltier restart remains manual.
+- Peltier safety green feedback is thermal-state based only; a normal successful Peltier ON command does not emit a green indicator.
 - Peltier safety re-arm: Hotside <= hotLimit - 2°C.
 - Normal Peltier ON/OFF has no green/red LED.
 - Blocked safety re-arm ON = red 1s; successful re-arm ON = green 1s then latch clear.
