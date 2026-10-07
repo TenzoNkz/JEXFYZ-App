@@ -381,8 +381,8 @@ uint32_t peltierHotOffUntilMs = 0;
 
 uint32_t adaptiveHotsideRiseDueMs = 0;
 bool manualPeltierSafetyLatch = false;
-// A safety-forced Peltier shutdown arms one-shot green feedback for the first
-// successful restart after the Hotside reaches the re-arm threshold.
+// A safety-forced Peltier shutdown records that the Peltier entered a thermal
+// lock. Green feedback is emitted when the Hotside itself reaches re-arm.
 bool peltierSafetyRearmFeedbackPending = false;
 static constexpr float MANUAL_PELTIER_REARM_HYSTERESIS_C = 2.0f;
 
@@ -1922,27 +1922,11 @@ static void enforceSafety() {
         stopPeltierOutput();
       }
 
-      if (currentVoltage == Voltage::V5) {
-        // 5 V is the terminal HOTSIDE safety state.
-        // Exit Adaptive so the user can later issue a manual Peltier ON
-        // command after the Hotside has cooled below the re-arm threshold.
-        adaptiveOn = false;
-        adaptiveStartPending = false;
-        adaptiveCeiling = Voltage::V12;
-        adaptiveHotStepPending = false;
-        peltierHotOffUntilMs = 0;
-        adaptiveHotsideRiseDueMs = 0;
-
-        fanOn = true;
-        fanPwm = 100;
-        peltierOn = false;
-        manualPeltierSafetyLatch = true;
-        peltierSafetyRearmFeedbackPending = true;
-
-        sendDelta("ADAPTIVE", "OFF");
-        sendDelta("ADAPTIVE_CEILING", "12V");
-      } else if (!adaptiveHotStepPending && peltierHotOffUntilMs == 0) {
-        // Start the mandatory 10 s thermal dwell before stepping down.
+      // Every Adaptive rail, including 5 V, gets its full 20 s thermal stage.
+      // The stage either re-arms Peltier on the same rail or advances one rail
+      // lower; only after an unrecovered 5 V stage does Adaptive enter the
+      // terminal manual-restart lock.
+      if (!adaptiveHotStepPending && peltierHotOffUntilMs == 0) {
         adaptiveHotsideRiseDueMs = 0;
         peltierHotOffUntilMs = millis() + HOT_PELTIER_OFF_MS;
       }
