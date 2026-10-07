@@ -1,3 +1,15 @@
+## V5.9 APP LOCALIZATION / NOTIFY CLEANUP — 2026-10-07
+
+- Standardized English as the master/reference language for user-facing App copy.
+- Synchronized Indonesian translations to the same meaning, context, tone, and severity.
+- Replaced user-facing reset/debug wording such as `Reset: POWER_ON` with concise localized status messages.
+- Removed raw internal reason presentation from known Peltier, Fan, Adaptive, LED, temperature, connection, and command feedback.
+- Made Notify error classification language-aware for English and Indonesian.
+- Added explicit `TextDecoration.none` to Home Notify message and status text.
+- Standardized core UI terminology around Hotside and Indonesian “Sakelar”.
+- Updated localization regression tests.
+- App Build and current Flutter analyze/test execution remain unverified.
+
 ## V5.9 HOTSIDE RECOVERY / LED QC UPDATE — 2026-10-07
 
 - Changed Adaptive Hotside thermal recovery from 10 seconds to 20 seconds per rail.

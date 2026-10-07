@@ -1,3 +1,15 @@
+## CURRENT V5.9 APP LOCALIZATION + NOTIFY CLEANUP — 2026-10-07
+
+- [IMPLEMENTED] English is the master/reference language for user-facing copy.
+- [IMPLEMENTED] Indonesian wording is synchronized to the English meaning, context, tone, and severity.
+- [IMPLEMENTED] Home NOTIFY no longer exposes reset/debug text such as `Reset: POWER_ON`; user-facing reset messages are localized and concise.
+- [IMPLEMENTED] Known safety, command, connection, and OTA status messages use professional, minimal wording without firmware protocol tokens or underscore-formatted reasons.
+- [IMPLEMENTED] Error-state classification is language-aware for English and Indonesian.
+- [IMPLEMENTED] Home NOTIFY message and status text explicitly disable text decoration to prevent accidental underline rendering.
+- [IMPLEMENTED] Core Hotside terminology is standardized as “Hotside” / “Suhu Hotside”; “Sakelar” is used for Indonesian switch labels.
+- [IMPLEMENTED] Localization regression coverage was updated for Hotside terminology, Notify error detection, Peltier re-arm copy, and POWER_ON reset handling.
+- [NOT BUILT HERE] Flutter analyze/test execution and App Build remain pending.
+
 ## CURRENT V5.9 INTEGRATED QC BATCH — 2026-10-06
 
 - Firmware source: `firmware/JEXFYZ-V5.9.ino`.

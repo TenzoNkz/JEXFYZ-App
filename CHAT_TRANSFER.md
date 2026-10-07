@@ -1,3 +1,13 @@
+## APP LOCALIZATION CONTRACT — 2026-10-07
+- [CURRENT TRUTH] English is the master/reference language.
+- [IMPLEMENTED] Indonesian text is semantically synchronized to the English master.
+- [IMPLEMENTED] Home Notify no longer exposes internal reset/reason tokens such as `POWER_ON` or `PELTIER_SAFETY_LATCH`.
+- [IMPLEMENTED] Error classification is language-aware for English and Indonesian.
+- [IMPLEMENTED] Home Notify text and status chip explicitly disable text decoration.
+- [IMPLEMENTED] Core Hotside terminology is standardized.
+- [IMPLEMENTED] Localization tests were updated.
+- [UNVERIFIED] Current Flutter analyze/test and App Build after this cleanup.
+
 # JE X FYZ — CHAT TRANSFER / NEW CHAT BOOT PROTOCOL
 
 > Transfer Protocol v3 — current V5.9 integrated QC snapshot reconciled from main.
@@ -6,9 +16,9 @@
 
 - [VERIFIED] Current repository: TenzoNkz/JEXFYZ-App.
 - [VERIFIED] Branch: main.
-- [VERIFIED] Last reconciled main HEAD before this final documentation consolidation: 97f8b68545e50853871493ba8999ddb226c95d5b.
+- [VERIFIED] Last functional App execution HEAD: 015eb56d52b4aaeb1431db4ece1ef19d140f961c.
 - [VERIFIED] Current active Firmware: V5.9 at firmware/JEXFYZ-V5.9.ino.
-- [VERIFIED] Current App: 1.0.0+3; package com.horizontalzzz.jexfyz.
+- [VERIFIED] Current App: 1.0.0+3; package com.horizontalzzz.jexfyz; main blob 06850f297087b11789d3daa239f272dbe7591f32; settings blob 8bcbfbc6a91eb6274d641c0921a0411aa01bebd7; test blob 430e5542ed80cb2170c4236511f94e2615cea5ba2.
 - [VERIFIED] Current phase: V5.9 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED.
 - [POLICY] Read this file first, then reconcile current source/configuration before acting.
 - [POLICY] Current source and workflow always outrank this transfer snapshot when they conflict.

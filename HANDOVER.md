@@ -1,3 +1,13 @@
+## 2026-10-07 — V5.9 APP LOCALIZATION / NOTIFY CLEANUP
+- [IMPLEMENTED] English is the master/reference language for all user-facing App copy.
+- [IMPLEMENTED] Indonesian copy was aligned to identical meaning and natural UI terminology.
+- [IMPLEMENTED] Reset notifications no longer show raw `Reset: POWER_ON` style text.
+- [IMPLEMENTED] Known internal safety/command reasons are mapped to concise localized user-facing text.
+- [IMPLEMENTED] Notify error-state detection works with both English and Indonesian wording.
+- [IMPLEMENTED] Home Notify message/status styles explicitly disable text decoration.
+- [IMPLEMENTED] Localization tests were synchronized.
+- [UNVERIFIED] Flutter analyze/test and App Build for the updated source.
+
 ## CURRENT V5.9 INTEGRATED QC + HOTSIDE RECOVERY UPDATE — 2026-10-07
 
 - [VERIFIED] Functional execution started from main HEAD 414cc6959d9fd5d89968da19b9473b317b0cbba7; final firmware update/comment commits completed before documentation-sync commits.

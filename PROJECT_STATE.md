@@ -1,9 +1,19 @@
+## V5.9 APP LOCALIZATION / NOTIFY QC UPDATE — 2026-10-07
+- [IMPLEMENTED] English is the master/reference copy for all localized user-facing messages.
+- [IMPLEMENTED] Indonesian copy was aligned to the English meaning and standardized for natural UI terminology.
+- [IMPLEMENTED] Notify reset handling no longer exposes `Reset: POWER_ON` or internal reset tokens.
+- [IMPLEMENTED] Notify error classification now recognizes both English and Indonesian status wording.
+- [IMPLEMENTED] Home Notify text and status chip explicitly use `TextDecoration.none`.
+- [IMPLEMENTED] Core terminology now uses Hotside/Suhu Hotside consistently, and Indonesian switch labels use “Sakelar”.
+- [IMPLEMENTED] Localization regression tests were updated.
+- [UNVERIFIED] Flutter analyze/test and App Build on this post-cleanup source.
+
 ## CURRENT V5.9 INTEGRATED QC + HOTSIDE RECOVERY UPDATE — 2026-10-07
 
-- [VERIFIED] Last reconciled main HEAD before this final documentation consolidation: 97f8b68545e50853871493ba8999ddb226c95d5b.
+- [VERIFIED] Last functional App execution HEAD: 015eb56d52b4aaeb1431db4ece1ef19d140f961c.
 - [VERIFIED] Active Firmware V5.9: firmware/JEXFYZ-V5.9.ino; updated blob 6fec4071056aca4fd93cbeaecfc81d7f6d19ef60.
-- [VERIFIED] Active App 1.0.0+3: lib/main.dart; blob 8a2e97946c4bc4ac2aa3ea09e3a1aca4b15fc6a0.
-- [VERIFIED] App settings blob f11235bab559b291928550e06984532581ddad6a; tests blob 2da4bff01d3eed749eeba873e9ec2e577c04def9.
+- [VERIFIED] Active App 1.0.0+3: lib/main.dart; updated blob 06850f297087b11789d3daa239f272dbe7591f32.
+- [VERIFIED] App settings blob 8bcbfbc6a91eb6274d641c0921a0411aa01bebd7; tests blob 430e5542ed80cb2170c4236511f94e2615cea5ba2.
 - [VERIFIED] Firmware static audit after the thermal update: no executable delay(), no timing while(), no RAPID_HOTSIDE_RISE; one NTC ADC sample per 1 s remains intact.
 - [VERIFIED] Current App includes P1 validation, serialized command confirmation, coalesced heartbeat, Peltier ACK reason handling, OTA stage presentation, notification channel, and NOT_STICKY service.
 - [VERIFIED] The earlier heartbeat-helper lexical-scope issue is corrected in the current main.dart by commit 7d5f0f5adf7fec92b33c92a3b6a6eb58a9ab36a8.
