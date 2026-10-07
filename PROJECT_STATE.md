@@ -1,6 +1,6 @@
 ## CURRENT V5.9 QC FOLLOW-UP — 2026-10-08
 
-- [IMPLEMENTED / COMMITTED] Latest Firmware source remains `firmware/JEXFYZ-V5.9.ino`; current source blob: `18982b3af0f235bade264643c8022f2cd1ce2d72`; implementation commit: `5190d8d587e358e3853a483c34b9a09ddd9620dc`.
+- [IMPLEMENTED / COMMITTED] Latest Firmware source remains `firmware/JEXFYZ-V5.9.ino`; current source blob: `2941942622efadf1d98ebd632ffddfdb40d5884b`; implementation commit: `5190d8d587e358e3853a483c34b9a09ddd9620dc`.
 - [USER-CONFIRMED / PRE-FIX] Firmware compiled successfully and V5.9 Online OTA updated the hardware before this QC follow-up.
 - [IMPLEMENTED] Adaptive Hotside recovery dwell is now 30 seconds only at 12 V and 9 V: 29 seconds red blink + final 1 second blue before stepping down.
 - [IMPLEMENTED] Adaptive 5 V is terminal: no 30-second countdown and no blue phase. While Hotside remains above the re-arm threshold, Adaptive exits into the manual-restart thermal lock and the LED remains continuous red until Hotside reaches <= `hotLimit - 2°C`.
