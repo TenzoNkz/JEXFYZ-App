@@ -233,7 +233,8 @@ static constexpr uint32_t NTC_FAULT_HIGH_MV = 3290;
 
 static constexpr uint32_t VOLTAGE_GUARD_MS             = 1000;
 static constexpr uint32_t VOLTAGE_DEADTIME_MS           = 200;
-// HOTSIDE Adaptive safety dwell before each lower-voltage step: 20 seconds.
+// HOTSIDE Adaptive safety dwell: 30 seconds at 12 V and 9 V only.
+// 5 V is terminal with continuous red lock indication until re-arm.
 // Manual Hotside protection has no time limit; red blink persists until re-arm.
 static constexpr uint32_t HOT_PELTIER_OFF_MS          = 30000;
 static constexpr uint32_t HOT_LIMIT_LED_BLINK_INTERVAL_MS = 250;
@@ -1602,7 +1603,7 @@ static void completeVoltageTransition() {
       if (completedSource != VoltageRequestSource::HOTSTEP || !adaptiveHotStepPending) {
         // A non-HOTSTEP transition was already in the 200 ms selector deadtime
         // when the Hotside limit appeared. Restore the current rail instead of
-        // skipping the mandatory 20 s thermal dwell.
+        // skipping the mandatory 30 s thermal dwell at 12 V/9 V.
         pendingVoltage = currentVoltage;
         completedSource = VoltageRequestSource::SAFETY;
       }
@@ -1863,7 +1864,7 @@ static void enforceSafety() {
   }
 
   // Adaptive recovery: if the rail cools to the re-arm threshold before the
-  // 20 s dwell expires, cancel the dwell and allow Peltier back on at this rail.
+  // 30 s dwell expires, cancel the dwell and allow Peltier back on at this rail.
   if (adaptiveOn &&
       peltierHotOffUntilMs != 0 &&
       rearmReady &&
