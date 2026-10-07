@@ -370,7 +370,7 @@ class JexText {
     },
     'hotside': {
       AppLanguage.english: 'Hotside',
-      AppLanguage.indonesia: 'Suhu Panas',
+      AppLanguage.indonesia: 'Hotside',
     },
     'volt': {
       AppLanguage.english: 'Volt',
@@ -398,11 +398,11 @@ class JexText {
     },
     'peltierSwitch': {
       AppLanguage.english: 'Peltier Switch',
-      AppLanguage.indonesia: 'Saklar Peltier',
+      AppLanguage.indonesia: 'Sakelar Peltier',
     },
     'fanSwitch': {
       AppLanguage.english: 'Fan Switch',
-      AppLanguage.indonesia: 'Saklar Kipas',
+      AppLanguage.indonesia: 'Sakelar Kipas',
     },
     'fanSpeedLabel': {
       AppLanguage.english: 'Fan Speed',
@@ -454,7 +454,7 @@ class JexText {
     },
     'hotsideLimit': {
       AppLanguage.english: 'Hotside Limit',
-      AppLanguage.indonesia: 'Batas Suhu Panas',
+      AppLanguage.indonesia: 'Batas Suhu Hotside',
     },
     'batteryZones': {
       AppLanguage.english: 'Battery Zones',
@@ -494,11 +494,11 @@ class JexText {
     },
     'hotsideProtection': {
       AppLanguage.english: 'Hotside Protection',
-      AppLanguage.indonesia: 'Perlindungan Suhu Panas',
+      AppLanguage.indonesia: 'Perlindungan Hotside',
     },
     'hotsideBattery': {
       AppLanguage.english: 'Hotside + Battery',
-      AppLanguage.indonesia: 'Suhu Panas + Baterai',
+      AppLanguage.indonesia: 'Hotside + Baterai',
     },
     'peltierSafety': {
       AppLanguage.english: 'Peltier Safety',
@@ -606,11 +606,11 @@ class JexText {
     },
     'hSideProtection': {
       AppLanguage.english: 'Hotside Protection',
-      AppLanguage.indonesia: 'Perlindungan Suhu Panas',
+      AppLanguage.indonesia: 'Perlindungan Hotside',
     },
     'hSideBattery': {
       AppLanguage.english: 'Hotside + Battery',
-      AppLanguage.indonesia: 'Suhu Panas + Baterai',
+      AppLanguage.indonesia: 'Hotside + Baterai',
     },
     'batteryTemperature': {
       AppLanguage.english: 'Battery Temperature',
@@ -618,7 +618,7 @@ class JexText {
     },
     'hotsideTemperature': {
       AppLanguage.english: 'Hotside Temperature',
-      AppLanguage.indonesia: 'Suhu Panas',
+      AppLanguage.indonesia: 'Suhu Hotside',
     },
     'fanSpeed': {
       AppLanguage.english: 'Fan Speed',
@@ -686,51 +686,51 @@ class JexText {
     },
     'notificationSafetyDescription': {
       AppLanguage.english: 'Notify when Hotside reaches the set limit.',
-      AppLanguage.indonesia: 'Beri tahu saat suhu panas mencapai batas yang ditetapkan.',
+      AppLanguage.indonesia: 'Beri tahu saat Hotside mencapai batas yang ditetapkan.',
     },
     'otaFailed': {
       AppLanguage.english: 'OTA failed',
       AppLanguage.indonesia: 'OTA gagal',
     },
     'otaSuccessful': {
-      AppLanguage.english: 'OTA successful',
-      AppLanguage.indonesia: 'OTA berhasil',
+      AppLanguage.english: 'OTA successful.',
+      AppLanguage.indonesia: 'OTA berhasil.',
     },
     'otaProgress': {
       AppLanguage.english: 'OTA in progress • ',
       AppLanguage.indonesia: 'OTA sedang berlangsung • ',
     },
     'adaptiveCeiling': {
-      AppLanguage.english: 'Adaptive Ceiling',
+      AppLanguage.english: 'Adaptive Limit',
       AppLanguage.indonesia: 'Batas Adaptif',
     },
     'resetBrownout': {
-      AppLanguage.english: 'Brownout / supply drop',
-      AppLanguage.indonesia: 'Brownout / penurunan suplai',
+      AppLanguage.english: 'Power supply dropped. Device restarted.',
+      AppLanguage.indonesia: 'Tegangan suplai turun. Perangkat dimulai ulang.',
     },
     'resetPanic': {
-      AppLanguage.english: 'Firmware panic',
-      AppLanguage.indonesia: 'Panic firmware',
+      AppLanguage.english: 'System error caused a restart.',
+      AppLanguage.indonesia: 'Kesalahan sistem menyebabkan perangkat dimulai ulang.',
     },
     'resetSoftware': {
-      AppLanguage.english: 'Software reset',
-      AppLanguage.indonesia: 'Reset perangkat lunak',
+      AppLanguage.english: 'System restarted.',
+      AppLanguage.indonesia: 'Sistem dimulai ulang.',
     },
     'resetWatchdog': {
-      AppLanguage.english: 'Watchdog reset',
-      AppLanguage.indonesia: 'Reset watchdog',
+      AppLanguage.english: 'System recovered after a watchdog reset.',
+      AppLanguage.indonesia: 'Sistem pulih setelah reset watchdog.',
     },
     'resetExternal': {
-      AppLanguage.english: 'External reset',
-      AppLanguage.indonesia: 'Reset eksternal',
+      AppLanguage.english: 'Device restarted.',
+      AppLanguage.indonesia: 'Perangkat dimulai ulang.',
     },
     'resetDeepSleep': {
-      AppLanguage.english: 'Deep sleep reset',
-      AppLanguage.indonesia: 'Reset deep sleep',
+      AppLanguage.english: 'Device resumed from deep sleep.',
+      AppLanguage.indonesia: 'Perangkat melanjutkan dari mode deep sleep.',
     },
     'resetPowerOn': {
-      AppLanguage.english: 'Power-on',
-      AppLanguage.indonesia: 'Saat dinyalakan',
+      AppLanguage.english: 'Device started.',
+      AppLanguage.indonesia: 'Perangkat dinyalakan.',
     },
     'ledModeStatic': {
       AppLanguage.english: 'Static',
@@ -989,12 +989,12 @@ class JexText {
       AppLanguage.indonesia: 'Memvalidasi suhu...',
     },
     'sensorErrorCoolingLocked': {
-      AppLanguage.english: 'Temperature sensor error. Cooling locked.',
-      AppLanguage.indonesia: 'Kesalahan sensor suhu. Pendinginan dikunci.',
+      AppLanguage.english: 'Temperature sensor error. Cooling is locked.',
+      AppLanguage.indonesia: 'Sensor suhu bermasalah. Pendinginan dikunci.',
     },
     'hotsideProtectionActive': {
-      AppLanguage.english: 'Hotside protection active. Peltier paused.',
-      AppLanguage.indonesia: 'Perlindungan suhu panas aktif. Peltier dijeda.',
+      AppLanguage.english: 'Hotside protection is active. Peltier is paused.',
+      AppLanguage.indonesia: 'Perlindungan Hotside aktif. Peltier dijeda.',
     },
     'voltageSetTo': {
       AppLanguage.english: 'Voltage set to ',
@@ -1002,35 +1002,35 @@ class JexText {
     },
     'fanOn': {
       AppLanguage.english: 'Fan ON.',
-      AppLanguage.indonesia: 'Kipas HIDUP.',
+      AppLanguage.indonesia: 'Kipas aktif.',
     },
     'fanOff': {
       AppLanguage.english: 'Fan OFF.',
-      AppLanguage.indonesia: 'Kipas MATI.',
+      AppLanguage.indonesia: 'Kipas nonaktif.',
     },
     'peltierOn': {
       AppLanguage.english: 'Peltier ON.',
-      AppLanguage.indonesia: 'Peltier HIDUP.',
+      AppLanguage.indonesia: 'Peltier aktif.',
     },
     'peltierOff': {
       AppLanguage.english: 'Peltier OFF.',
-      AppLanguage.indonesia: 'Peltier MATI.',
+      AppLanguage.indonesia: 'Peltier nonaktif.',
     },
     'adaptiveOn': {
       AppLanguage.english: 'Adaptive ON.',
-      AppLanguage.indonesia: 'Mode Adaptif HIDUP.',
+      AppLanguage.indonesia: 'Mode Adaptif aktif.',
     },
     'adaptiveOff': {
       AppLanguage.english: 'Adaptive OFF.',
-      AppLanguage.indonesia: 'Mode Adaptif MATI.',
+      AppLanguage.indonesia: 'Mode Adaptif nonaktif.',
     },
     'ledOn': {
       AppLanguage.english: 'LED ON.',
-      AppLanguage.indonesia: 'LED HIDUP.',
+      AppLanguage.indonesia: 'LED aktif.',
     },
     'ledOff': {
       AppLanguage.english: 'LED OFF.',
-      AppLanguage.indonesia: 'LED MATI.',
+      AppLanguage.indonesia: 'LED nonaktif.',
     },
     'modeUpdated': {
       AppLanguage.english: 'Mode updated.',
@@ -1045,8 +1045,8 @@ class JexText {
       AppLanguage.indonesia: 'Warna diperbarui.',
     },
     'temperatureReset': {
-      AppLanguage.english: 'Temperature reset.',
-      AppLanguage.indonesia: 'Temperatur diatur ulang.',
+      AppLanguage.english: 'Temperature settings reset.',
+      AppLanguage.indonesia: 'Pengaturan suhu diatur ulang.',
     },
     'commandNotConfirmed': {
       AppLanguage.english: 'Device did not confirm the command.',
