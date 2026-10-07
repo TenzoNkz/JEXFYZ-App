@@ -25,16 +25,16 @@
 
 # JE X FYZ — CHAT TRANSFER / NEW CHAT BOOT PROTOCOL
 
-> Transfer Protocol v3 — current V5.9 integrated QC snapshot reconciled from main.
+> Transfer Protocol v4 — current V6.0 integrated QC snapshot reconciled from main.
 
 ## 0. READ FIRST / MANDATORY BOOT
 
 - [VERIFIED] Current repository: TenzoNkz/JEXFYZ-App.
 - [VERIFIED] Branch: main.
-- [VERIFIED] Last functional App execution HEAD: 015eb56d52b4aaeb1431db4ece1ef19d140f961c.
-- [VERIFIED] Current active Firmware: V5.9 at firmware/JEXFYZ-V5.9.ino.
-- [VERIFIED] Current App: 1.0.0+3; package com.horizontalzzz.jexfyz; main blob 06850f297087b11789d3daa239f272dbe7591f32; settings blob 8bcbfbc6a91eb6274d641c0921a0411aa01bebd7; test blob 430e5542ed80cb2170c4236511f94e2615cea5ba2.
-- [VERIFIED] Current phase: V5.9 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED.
+- [VERIFIED] Current main HEAD: 250054b5e737744961d94803e09318d92861fcb6.
+- [VERIFIED] Current active Firmware: V6.0 at firmware/JEXFYZ-V6.0.ino.
+- [VERIFIED] Current App: 1.0.0+3; package com.horizontalzzz.jexfyz; main blob 8189825511499cec01f357f1735dcee22426627b; settings blob 0c29bed46b746c1171f61ee7b095c724474a5e6b; test blob a3ffbb349e30ece3c84f38f2863c2f8717c1e4a7.
+- [VERIFIED] Current phase: V6.0 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED.
 - [POLICY] Read this file first, then reconcile current source/configuration before acting.
 - [POLICY] Current source and workflow always outrank this transfer snapshot when they conflict.
 - [POLICY] Do not ask the user to repeat project facts already documented here or in the authoritative repository files.
@@ -48,7 +48,8 @@
 - [CURRENT TRUTH] Hardware: ESP32-C3 Super Mini / ESP32-C3 Dev Module.
 - [CURRENT TRUTH] Firmware source authority: firmware/ inside JEXFYZ-App.
 - [CURRENT TRUTH] Firmware publishing repository: TenzoNkz/JEXFYZ-Firmware.
-- [CURRENT TRUTH] Active Firmware: V5.9.
+- [VERIFIED] Firmware source blob: e85e897353a1eed5beab1368595686b29e3791d0.
+- [CURRENT TRUTH] Active Firmware: V6.0.
 - [CURRENT TRUTH] App version: 1.0.0+3.
 - [CURRENT TRUTH] Package: com.horizontalzzz.jexfyz.
 - [CURRENT TRUTH] Release status: NOT RELEASED.
