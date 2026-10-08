@@ -253,8 +253,14 @@ static constexpr uint8_t HOT_LIMIT_REARM_GREEN_BLINKS = 2;
 static constexpr uint32_t HOT_LIMIT_REARM_GREEN_DURATION_MS = 1000;
 static constexpr uint32_t BATTERY_VALID_TTL_MS          = 5000;
 static constexpr uint32_t SETTINGS_SAVE_DEBOUNCE_MS     = 10000;
-// Touch Adaptive-OFF indicator uses three non-blocking 250 ms color phases.
-static constexpr uint32_t TOUCH_ADAPTIVE_OFF_INDICATOR_PHASE_MS = 250;
+// Adaptive state feedback uses three non-blocking 250 ms ON phases separated by OFF phases.
+static constexpr uint32_t ADAPTIVE_STATE_INDICATOR_PHASE_MS = 250;
+static constexpr uint8_t ADAPTIVE_STATE_INDICATOR_BLINKS = 3;
+static constexpr uint32_t ADAPTIVE_STATE_INDICATOR_DURATION_MS =
+    ADAPTIVE_STATE_INDICATOR_PHASE_MS *
+    (ADAPTIVE_STATE_INDICATOR_BLINKS * 2UL);
+static constexpr uint32_t ADAPTIVE_STATE_ON_COLOR = 0xFF8000;
+static constexpr uint32_t ADAPTIVE_STATE_OFF_COLOR = 0xFFFFFF;
 static constexpr uint32_t BLE_RADIO_SETTLE_MS = 50;
 static constexpr uint32_t WIFI_OFF_SETTLE_MS = 160;
 
@@ -415,9 +421,10 @@ HotsideLimitIndicatorMode hotsideLimitIndicatorMode =
 uint32_t hotsideLimitIndicatorStartedAt = 0;
 uint32_t hotsideLimitIndicatorLastPhase = 0xFFFFFFFFUL;
 
-bool touchAdaptiveOffIndicatorActive = false;
-uint32_t touchAdaptiveOffIndicatorStartedAt = 0;
-uint32_t touchAdaptiveOffIndicatorLastPhase = 0xFFFFFFFFUL;
+bool adaptiveStateIndicatorActive = false;
+uint32_t adaptiveStateIndicatorStartedAt = 0;
+uint32_t adaptiveStateIndicatorLastPhase = 0xFFFFFFFFUL;
+uint32_t adaptiveStateIndicatorColor = 0;
 
 // ========================= OTA STATE — PROTECTED ===========================
 bool otaActive = false;
@@ -532,8 +539,8 @@ static void clearCloudCredentials();
 static void resetBlinkState();
 static void startLocalOtaResultIndicator();
 static bool processLocalOtaResultIndicator();
-static void startTouchAdaptiveOffIndicator();
-static bool processTouchAdaptiveOffIndicator();
+static void startAdaptiveStateIndicator(bool adaptiveEnabled);
+static bool processAdaptiveStateIndicator();
 static void initializeRuntimeFeatures();
 static void requestWiFiOffShutdown();
 static bool isWiFiOffSettled();
@@ -1192,38 +1199,36 @@ static bool processHotsideLimitIndicator() {
   return false;
 }
 
-// Feedback is shown only for a blocked Peltier ON attempt while the Hotside safety lock is active.
-static void startTouchAdaptiveOffIndicator() {
-  touchAdaptiveOffIndicatorActive = true;
-  touchAdaptiveOffIndicatorStartedAt = millis();
-  touchAdaptiveOffIndicatorLastPhase = 0xFFFFFFFFUL;
+// Adaptive state feedback: ON = orange 3x, OFF = white 3x.
+static void startAdaptiveStateIndicator(bool adaptiveEnabled) {
+  adaptiveStateIndicatorActive = true;
+  adaptiveStateIndicatorStartedAt = millis();
+  adaptiveStateIndicatorLastPhase = 0xFFFFFFFFUL;
+  adaptiveStateIndicatorColor =
+      adaptiveEnabled ? ADAPTIVE_STATE_ON_COLOR : ADAPTIVE_STATE_OFF_COLOR;
   showAll(0x000000, 0);
 }
 
-static bool processTouchAdaptiveOffIndicator() {
-  if (!touchAdaptiveOffIndicatorActive) return false;
+static bool processAdaptiveStateIndicator() {
+  if (!adaptiveStateIndicatorActive) return false;
 
-  const uint32_t elapsed = millis() - touchAdaptiveOffIndicatorStartedAt;
-  const uint32_t totalMs = TOUCH_ADAPTIVE_OFF_INDICATOR_PHASE_MS * 6UL;
+  const uint32_t elapsed = millis() - adaptiveStateIndicatorStartedAt;
 
-  if (elapsed < totalMs) {
-    const uint32_t phase = elapsed / TOUCH_ADAPTIVE_OFF_INDICATOR_PHASE_MS;
-    if (phase != touchAdaptiveOffIndicatorLastPhase) {
-      touchAdaptiveOffIndicatorLastPhase = phase;
-
-      uint32_t color = 0x000000;
-      if (phase == 0U) color = 0xFF0000;
-      else if (phase == 2U) color = 0x00FF00;
-      else if (phase == 4U) color = 0x0000FF;
-
-      showAll(color, 255);
+  if (elapsed < ADAPTIVE_STATE_INDICATOR_DURATION_MS) {
+    const uint32_t phase = elapsed / ADAPTIVE_STATE_INDICATOR_PHASE_MS;
+    if (phase != adaptiveStateIndicatorLastPhase) {
+      adaptiveStateIndicatorLastPhase = phase;
+      const bool ledOn =
+          phase < (ADAPTIVE_STATE_INDICATOR_BLINKS * 2UL) &&
+          ((phase & 0x01U) == 0);
+      showAll(ledOn ? adaptiveStateIndicatorColor : 0x000000, 255);
     }
     return true;
   }
 
   showAll(0x000000, 0);
-  touchAdaptiveOffIndicatorActive = false;
-  touchAdaptiveOffIndicatorLastPhase = 0xFFFFFFFFUL;
+  adaptiveStateIndicatorActive = false;
+  adaptiveStateIndicatorLastPhase = 0xFFFFFFFFUL;
 
   if (rgbOn) {
     startUserLedEffect();
@@ -1541,9 +1546,9 @@ static void processLeds() {
     return;
   }
 
-  if (touchAdaptiveOffIndicatorActive) {
+  if (adaptiveStateIndicatorActive) {
     ledsForcedOff = false;
-    processTouchAdaptiveOffIndicator();
+    processAdaptiveStateIndicator();
     return;
   }
 
@@ -3231,8 +3236,8 @@ static void startOnlineOta() {
   otaResult = "NONE";
   // OTA owns LED output from this boundary onward; cancel any normal touch
   // confirmation animation so it cannot reappear during OTA recovery.
-  touchAdaptiveOffIndicatorActive = false;
-  touchAdaptiveOffIndicatorLastPhase = 0xFFFFFFFFUL;
+  adaptiveStateIndicatorActive = false;
+  adaptiveStateIndicatorLastPhase = 0xFFFFFFFFUL;
   setOtaState(OtaState::CLOUD_CONNECTING);
   setOtaDiagnosticStage("ONLINE_REQUEST");
   setOtaDiagnosticProgress(0);
@@ -3891,6 +3896,7 @@ static void activateAdaptiveAfterSafeFiveVolt() {
   if (stateSequence == previousSequence) ++stateSequence;
   sendDelta("ADAPTIVE", "ON");
   sendDelta("ADAPTIVE_CEILING", voltageToString(adaptiveCeiling));
+  startAdaptiveStateIndicator(true);
 
   // All Adaptive profiles wait 5 seconds before their first upward
   // voltage step after the mandatory safe-5V activation.
@@ -3985,7 +3991,10 @@ static void setAdaptiveState(bool desired, String& reason) {
   }
 
   applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
-}
+
+  if (reason == "OK") {
+    startAdaptiveStateIndicator(false);
+  }
 
 static bool setRgbState(bool desired) {
   if (rgbOn == desired) return true;
@@ -4548,7 +4557,6 @@ static void executeTouchLong() {
       return;
     }
 
-    startTouchAdaptiveOffIndicator();
     sendAck("TOUCH_ADAPTIVE", true, "OFF");
     return;
   }
