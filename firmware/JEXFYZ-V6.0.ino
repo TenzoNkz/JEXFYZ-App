@@ -3683,8 +3683,8 @@ static void handleOtaPost() {
 static void startLocalOtaAp() {
   onlineOtaStartPending = false;
   // Local OTA owns the LED output from the boot-AP boundary onward.
-  touchAdaptiveOffIndicatorActive = false;
-  touchAdaptiveOffIndicatorLastPhase = 0xFFFFFFFFUL;
+  adaptiveStateIndicatorActive = false;
+  adaptiveStateIndicatorLastPhase = 0xFFFFFFFFUL;
   // Boot AP is not a safety state until a Wi-Fi client actually connects.
   // Keep the restored user LED state visible while the AP waits for a client.
   bootApActive = true;
