@@ -49,7 +49,7 @@
 - [CURRENT TRUTH] Hardware: ESP32-C3 Super Mini / ESP32-C3 Dev Module.
 - [CURRENT TRUTH] Firmware source authority: firmware/ inside JEXFYZ-App.
 - [CURRENT TRUTH] Firmware publishing repository: TenzoNkz/JEXFYZ-Firmware.
-- [VERIFIED] Firmware source blob before this adaptive-LED execution: e85e897353a1eed5beab1368595686b29e3791d0; current source must be reconciled from `firmware/JEXFYZ-V6.0.ino`.
+- [VERIFIED] Current Firmware V6.0 source blob after the adaptive-LED execution: 6b0977e74dbdd1427061979269ad3d8b9bad85c9.
 - [CURRENT TRUTH] Active Firmware: V6.0.
 - [CURRENT TRUTH] App version: 1.0.0+3.
 - [CURRENT TRUTH] Package: com.horizontalzzz.jexfyz.
