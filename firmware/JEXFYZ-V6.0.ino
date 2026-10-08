@@ -3972,6 +3972,7 @@ static void setAdaptiveState(bool desired, String& reason) {
   }
 
   // OFF cancels an in-flight Adaptive start and retains the safe-5V behavior.
+  const bool wasAdaptiveOn = adaptiveOn;
   bool previousFanOn = fanOn;
   bool previousPeltierOn = peltierOn;
   uint8_t previousFanPwm = fanPwm;
@@ -3992,7 +3993,7 @@ static void setAdaptiveState(bool desired, String& reason) {
 
   applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
 
-  if (reason == "OK") {
+  if (reason == "OK" && wasAdaptiveOn) {
     startAdaptiveStateIndicator(false);
   }
 
