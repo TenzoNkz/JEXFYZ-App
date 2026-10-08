@@ -3996,6 +3996,7 @@ static void setAdaptiveState(bool desired, String& reason) {
   if (reason == "OK" && wasAdaptiveOn) {
     startAdaptiveStateIndicator(false);
   }
+}
 
 static bool setRgbState(bool desired) {
   if (rgbOn == desired) return true;
