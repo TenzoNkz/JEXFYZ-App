@@ -5,6 +5,7 @@
 - [IMPLEMENTED] Persistent firmware settings are Hotside Limit, Battery 5V Limit, Battery 12V Limit, RGB ON/OFF, RGB Mode, RGB Brightness, and RGB Color.
 - [IMPLEMENTED] All persistent setting changes share a 10-second quiet-period debounce. Every new change resets the timer; after 10 seconds without change, only values different from the persisted NVS shadow are written.
 - [IMPLEMENTED] LED modes are now Static, Breath, Mirror Pulse, Comet, Dual Chase, Left/Right, and Rainbow. Center Out and Outer In are retired.
+- [IMPLEMENTED] Adaptive state LED feedback is now three orange blinks on successful Adaptive ON and three white blinks on successful Adaptive OFF; the previous red→green→blue Adaptive-OFF feedback is retired. OTA and Hotside safety LED indicators remain unchanged.
 - [IMPLEMENTED] Firmware publishes LED animation phase/cycle telemetry; App preview uses that firmware phase and mirrors the physical 4-left/4-right LED layout.
 - [FIX IMPLEMENTED] App release signing is now explicitly V1/V2/V3 with V4 signing disabled; the official JE X FYZ certificate identity remains mandatory.
 - [FIX IMPLEMENTED] App Build CI now requires V1, V2, and V3 verification, one signer, the official certificate fingerprint/DN, and a byte-for-byte re-download verification of the published GitHub Release asset.
