@@ -259,12 +259,18 @@ jobs:
           SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --verbose --print-certs "$APK" 2>&1)"
           printf '%s\n' "$SIGNATURE_OUTPUT"
 
-          grep -Eiq "Verified using v[123] scheme" <<< "$SIGNATURE_OUTPUT"
+          # Require every APK signature scheme used by the release policy.
+          # V1 is kept for legacy/third-party APK verifiers (including MT Manager);
+          # V2/V3 are required for modern Android integrity verification.
+          grep -Fq "Verified using v1 scheme" <<< "$SIGNATURE_OUTPUT"
+          grep -Fq "Verified using v2 scheme" <<< "$SIGNATURE_OUTPUT"
+          grep -Fq "Verified using v3 scheme" <<< "$SIGNATURE_OUTPUT"
+          grep -Fq "Number of signers: 1" <<< "$SIGNATURE_OUTPUT"
           grep -Fq "$EXPECTED_SIGNING_CERT_DN" <<< "$SIGNATURE_OUTPUT"
           SIGNATURE_OUTPUT_LOWER="${SIGNATURE_OUTPUT,,}"
           grep -Fq "$EXPECTED_SIGNING_CERT_SHA256" <<< "$SIGNATURE_OUTPUT_LOWER"
 
-          echo "Production APK signature verified: JE X FYZ certificate is present and matches the official signing identity."
+          echo "Production APK signature verified: v1/v2/v3 + official JE X FYZ certificate."
           ls -lh "$APK"
 
       # Stable delivery filename keeps the latest release asset replaceable.
@@ -323,3 +329,47 @@ jobs:
             | grep -Fx "JEXFYZ-release.apk"
 
           echo "GitHub Release delivery verified: $RELEASE_TAG / JEXFYZ-release.apk"
+
+      # Re-download the exact published asset and verify it again.
+      # This closes the release-delivery loop: the bytes users receive from
+      # GitHub must be identical to the signed APK that passed CI verification.
+      - name: Verify downloaded GitHub Release asset
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          APK="build/app/outputs/flutter-apk/JEXFYZ-release.apk"
+          RELEASE_TAG="jexfyz-latest"
+          DOWNLOADED="$RUNNER_TEMP/release-verify/JEXFYZ-release.apk"
+
+          mkdir -p "$RUNNER_TEMP/release-verify"
+          gh release download "$RELEASE_TAG" \
+            --pattern "JEXFYZ-release.apk" \
+            --dir "$RUNNER_TEMP/release-verify" \
+            --clobber
+
+          test -s "$DOWNLOADED"
+
+          LOCAL_SHA="$(sha256sum "$APK" | awk '{print $1}')"
+          DOWNLOADED_SHA="$(sha256sum "$DOWNLOADED" | awk '{print $1}')"
+          test "$LOCAL_SHA" = "$DOWNLOADED_SHA"
+
+          APK_SIGNER="$(find "$ANDROID_SDK_ROOT/build-tools" -type f -name apksigner 2>/dev/null | sort -V | tail -n 1)"
+          test -n "$APK_SIGNER"
+
+          DOWNLOADED_SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --verbose --print-certs "$DOWNLOADED" 2>&1)"
+          printf '%s\n' "$DOWNLOADED_SIGNATURE_OUTPUT"
+
+          grep -Fq "Verified using v1 scheme" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
+          grep -Fq "Verified using v2 scheme" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
+          grep -Fq "Verified using v3 scheme" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
+          grep -Fq "Number of signers: 1" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
+
+          DOWNLOADED_SIGNATURE_OUTPUT_LOWER="${DOWNLOADED_SIGNATURE_OUTPUT,,}"
+          grep -Fq "$EXPECTED_SIGNING_CERT_DN" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
+          grep -Fq "$EXPECTED_SIGNING_CERT_SHA256" <<< "$DOWNLOADED_SIGNATURE_OUTPUT_LOWER"
+
+          echo "Published GitHub Release asset re-download verification passed."
+          echo "SHA-256: $DOWNLOADED_SHA"
