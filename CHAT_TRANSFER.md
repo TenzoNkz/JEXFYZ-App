@@ -5,6 +5,7 @@
 - [IMPLEMENTED] Persistent firmware settings are Hotside Limit, Battery 5V Limit, Battery 12V Limit, RGB ON/OFF, RGB Mode, RGB Brightness, and RGB Color.
 - [IMPLEMENTED] All persistent setting changes share a 10-second quiet-period debounce. Every new change resets the timer; after 10 seconds without change, only values different from the persisted NVS shadow are written.
 - [IMPLEMENTED] LED modes are now Static, Breath, Mirror Pulse, Comet, Dual Chase, Left/Right, and Rainbow. Center Out and Outer In are retired.
+- [IMPLEMENTED] Adaptive state LED feedback is now three orange blinks on successful Adaptive ON and three white blinks on successful Adaptive OFF; the previous red→green→blue Adaptive-OFF feedback is retired. OTA and Hotside safety LED indicators remain unchanged.
 - [IMPLEMENTED] Firmware publishes LED animation phase/cycle telemetry; App preview uses that firmware phase and mirrors the physical 4-left/4-right LED layout.
 - [PRESERVED] OTA, single-radio Wi-Fi/BLE handoff, BLE/P1, GPIO mapping, NTC 1 Hz single-sample path, selector deadtime, voltage guard, Peltier soft-start, thermal safety, and Adaptive 5-second upward dwell were not intentionally changed.
 - [AUDIT PASS] Source-level invariants passed for V6.0 version alignment, LED mode set, HOTSIDE default, non-persistent Adaptive Profile, LED phase protocol, GPIO mapping, and single NTC ADC read path.
@@ -31,7 +32,7 @@
 
 - [VERIFIED] Current repository: TenzoNkz/JEXFYZ-App.
 - [VERIFIED] Branch: main.
-- [VERIFIED] Current main HEAD: 250054b5e737744961d94803e09318d92861fcb6.
+- [RECONCILE REQUIRED] Current main HEAD after the V6.0 adaptive-LED execution must be read from `main`; this transfer snapshot predates the final documentation commit. Current source/workflow outrank this pointer.
 - [VERIFIED] Current active Firmware: V6.0 at firmware/JEXFYZ-V6.0.ino.
 - [VERIFIED] Current App: 1.0.0+3; package com.horizontalzzz.jexfyz; main blob 8189825511499cec01f357f1735dcee22426627b; settings blob 0c29bed46b746c1171f61ee7b095c724474a5e6b; test blob a3ffbb349e30ece3c84f38f2863c2f8717c1e4a7.
 - [VERIFIED] Current phase: V6.0 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED.
@@ -48,7 +49,7 @@
 - [CURRENT TRUTH] Hardware: ESP32-C3 Super Mini / ESP32-C3 Dev Module.
 - [CURRENT TRUTH] Firmware source authority: firmware/ inside JEXFYZ-App.
 - [CURRENT TRUTH] Firmware publishing repository: TenzoNkz/JEXFYZ-Firmware.
-- [VERIFIED] Firmware source blob: e85e897353a1eed5beab1368595686b29e3791d0.
+- [VERIFIED] Firmware source blob before this adaptive-LED execution: e85e897353a1eed5beab1368595686b29e3791d0; current source must be reconciled from `firmware/JEXFYZ-V6.0.ino`.
 - [CURRENT TRUTH] Active Firmware: V6.0.
 - [CURRENT TRUTH] App version: 1.0.0+3.
 - [CURRENT TRUTH] Package: com.horizontalzzz.jexfyz.
