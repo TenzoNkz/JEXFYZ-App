@@ -45,8 +45,9 @@ enum class AdaptiveProfile : uint8_t;
  * - Fan PWM: 25 kHz, 8-bit, 50–100%.
  * - Peltier PWM: 20 kHz, 8-bit, 5 s soft-start.
  * - Peltier OFF -> ON always starts the 5 s soft-start.
- * - Voltage transitions do not start or restart the Peltier soft-start.
- * - Voltage changes preserve the existing Peltier PWM state.
+ * - Ordinary voltage transitions preserve the existing Peltier PWM state.
+ * - Adaptive entry/exit turns Peltier OFF before the 200 ms selector handoff;
+ *   a previously ON Peltier is restored after 5 V settles using the 5 s soft-start.
  *
  * Voltage/safety contract:
  * - Physical selector outputs: GPIO4 = 9 V, GPIO3 = 12 V.
