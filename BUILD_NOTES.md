@@ -1,8 +1,8 @@
 # JE X FYZ — BUILD NOTES
 
 ## CURRENT PHASE
-- Firmware V5.9 is in **QC / PRE-RELEASE**.
-- V5.9 is **NOT RELEASED**.
+- Firmware V6.1 is the active **source-only QC / PRE-RELEASE** target.
+- V6.1 is **NOT RELEASED** and has no current compile/BIN/flash evidence.
 - App Build remains a separate explicit operation.
 
 
@@ -19,6 +19,8 @@
 ## CURRENT DELIVERY WORKFLOW
 - [COMMITTED] .github/workflows/jexfyz-app-build-trigger.yml is the only active App Build workflow.
 - [COMMITTED] It is triggered only by issue opened/reopened events and gated by repository owner, exact title, and JEXFYZ_BUILD_TRIGGER_V1.
+- [VERIFIED] Current `.github/workflows` directory contains only `jexfyz-app-build-trigger.yml`; the former `.github/workflows/firmware-build.yml` was deleted in commit `32bc3c3fcb0c074e39d7ea49428f98d7845e4073`.
+- [USER REQUIREMENT] Firmware compile/build must be explicitly requested; do not start it as an automatic consequence of source execution or documentation sync.
 - [COMMITTED] Normal push/PR do not trigger App Build.
 - [COMMITTED] Release build is obfuscated and production-signed.
 - [COMMITTED] Exactly one APK is published to GitHub Release jexfyz-latest as JEXFYZ-release.apk.
