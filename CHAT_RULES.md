@@ -9,12 +9,13 @@
 - @Thinking Eksekusi & Build App! = implement → audit → sync → commit → explicit App Build.
 
 ## CURRENT PHASE
-- **V5.9 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+- **V6.1 candidate — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED; execution branch fix/adaptive-power-sequencing, main still V6.0 pending review**
 
 ## QC / SOURCE FREEZE
 - QC is validation-first, not feature-development.
 - Treat functional source as FROZEN during QC.
-- [CURRENT QC] V5.8 closes the demonstrated Peltier safety-lock and NTC single-sample findings only.
+- [CLOSED HISTORICAL QC] V5.8 closed the demonstrated Peltier safety-lock and NTC single-sample findings.
+- [CURRENT QC] V6.1 candidate addresses the reported Adaptive restart/indicator gap through Peltier-off rail handoff and deferred state feedback; hardware reset root cause and physical fix remain UNVERIFIED.
 - Only change functional source for a demonstrable/reproducible QC failure with a clear root cause.
 - Do not refactor or change unrelated behavior while closing a QC finding.
 - Record the finding, evidence, root cause, affected scope, fix, and re-audit result.
@@ -85,13 +86,13 @@
 - Current source/workflow always wins on conflicts.
 
 ## CURRENT STATUS
-- Phase: V5.9 DEVELOPMENT + QC / PRE-RELEASE.
+- Phase: V6.1 candidate DEVELOPMENT + QC / PRE-RELEASE.
 - Release status: NOT RELEASED.
-- Firmware: V5.9.
-- App: 1.0.0+3.
-- Firmware V5.9 source/static audit: PASS.
-- V5.7 physical OTA update was user-confirmed successful; V5.9 physical validation is UNVERIFIED.
-- V5.9 compile/BIN/flash/physical/OTA/App integration remain QC gates.
-- Latest verified downloadable App Build remains historical; V5.9 App Build was NOT executed by this source integration.
+- Main baseline: V6.0; candidate branch: fix/adaptive-power-sequencing.
+- Candidate firmware: firmware/JEXFYZ-V6.1.ino; source blob 3f8c61ef2add303b495b1cc19e6ee6be04cea028.
+- Source-level audit: PASS for version/file alignment, delimiters, no executable delay()/while(), single NTC sample path, GPIO mapping, selector timings, Peltier soft-start, and OTA priority markers.
+- Candidate Arduino compile/BIN/flash/hardware/OTA regression remain UNVERIFIED; no build or hardware test is claimed.
+- App: 1.0.0+3; App source unchanged and App Build not run.
+- Latest verified downloadable App Build remains historical.
 - Current App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml.
 - OTA protection reminder: OTA_PROTECTION.md (documentation-only; no CI enforcement).
