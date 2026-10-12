@@ -1,3 +1,9 @@
+## CURRENT APP / V6.1 INTEGRATION STATUS — 2026-10-12
+
+- [CURRENT TRUTH] App source remains version `1.0.0+3`, package `com.horizontalzzz.jexfyz`; no App source change is part of the V6.1 firmware fix.
+- [UNVERIFIED] App ↔ V6.1 integration and UI behavior on the physical device are not yet validated. No App Build was executed for V6.1.
+- [POLICY] The V5.9 integration/localization records below are historical records, not the current firmware target.
+
 ## CURRENT V5.9 APP LOCALIZATION + NOTIFY CLEANUP — 2026-10-07
 
 - [IMPLEMENTED] English is the master/reference language for user-facing copy.
