@@ -48,9 +48,11 @@ Jadi segel ini **tidak** mengubah kebijakan versi OTA.
 ## 🔒 Kondisi baseline
 
 OTA V5.7 sudah berhasil digunakan untuk memperbarui hardware sebelum QC V5.8.
-Firmware V5.9 adalah active source; V5.9 belum dikompilasi/diuji pada hardware:
+Active source saat ini adalah V6.1, tetapi source-only: belum dikompilasi, dibuat BIN, diflash, atau divalidasi pada hardware:
 
-`firmware/JEXFYZ-V5.9.ino`
+`firmware/JEXFYZ-V6.1.ino`
+
+Keberhasilan OTA V5.7 adalah bukti historis untuk V5.7 saja, bukan bukti OTA V6.1.
 
 Dokumen ini **bukan** cryptographic signature, bukan CI enforcement, dan bukan pengganti pengujian OTA pada hardware.
 
