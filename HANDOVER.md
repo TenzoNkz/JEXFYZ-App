@@ -1,20 +1,19 @@
-## CURRENT V6.0 EXECUTION — 2026-10-08
+## CURRENT V6.1 EXECUTION — 2026-10-12
 
-- [IMPLEMENTED] Firmware promoted V5.9 → V6.0 at firmware/JEXFYZ-V6.0.ino; FW_VERSION is V6.0.
-- [IMPLEMENTED] Adaptive Profile is runtime-only. Default after boot is HOTSIDE; HOTSIDE_BATTERY remains the optional second Adaptive mode and is not stored in Preferences.
-- [IMPLEMENTED] Persistent firmware settings are Hotside Limit, Battery 5V Limit, Battery 12V Limit, RGB ON/OFF, RGB Mode, RGB Brightness, and RGB Color.
-- [IMPLEMENTED] All persistent setting changes share a 10-second quiet-period debounce. Every new change resets the timer; after 10 seconds without change, only values different from the persisted NVS shadow are written.
-- [IMPLEMENTED] LED modes are now Static, Breath, Mirror Pulse, Comet, Dual Chase, Left/Right, and Rainbow. Center Out and Outer In are retired.
-- [IMPLEMENTED] Adaptive state LED feedback is now three orange blinks on successful Adaptive ON and three white blinks on successful Adaptive OFF; the previous red→green→blue Adaptive-OFF feedback is retired. OTA and Hotside safety LED indicators remain unchanged.
-- [IMPLEMENTED] Firmware publishes LED animation phase/cycle telemetry; App preview uses that firmware phase and mirrors the physical 4-left/4-right LED layout.
-- [FIX IMPLEMENTED] App release signing is now explicitly V1/V2/V3 with V4 signing disabled; the official JE X FYZ certificate identity remains mandatory.
-- [FIX IMPLEMENTED] App Build CI now requires V1, V2, and V3 verification, one signer, the official certificate fingerprint/DN, and a byte-for-byte re-download verification of the published GitHub Release asset.
-- [PRESERVED] OTA, single-radio Wi-Fi/BLE handoff, BLE/P1, GPIO mapping, NTC 1 Hz single-sample path, selector deadtime, voltage guard, Peltier soft-start, thermal safety, and Adaptive 5-second upward dwell were not intentionally changed.
-- [AUDIT PASS] Source-level invariants passed for V6.0 version alignment, LED mode set, HOTSIDE default, non-persistent Adaptive Profile, LED phase protocol, GPIO mapping, and single NTC ADC read path.
-- [UNVERIFIED] V6.0 ArduinoDroid compilation, BIN generation, ESP32-C3 flash, physical LED synchronization, thermal regression, Local/Online OTA regression, and App Build remain unverified.
-- [NOT RELEASED] Project remains DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED.
+- [IMPLEMENTED] Candidate firmware promoted from V6.0 to V6.1 at firmware/JEXFYZ-V6.1.ino; FW_VERSION is V6.1. The superseded V6.0 sketch is removed on this execution branch to preserve filename/version alignment and the one-active-sketch rule.
+- [QC FINDING] User reported hardware restart when enabling Adaptive from 12V with Fan and Peltier ON; after reboot the App showed Adaptive OFF and did not surface a reset reason. Adaptive ON/OFF status indicators were not observed. The source showed that Adaptive rail handoff did not explicitly stop Peltier before selector deadtime; this was a credible sequencing hazard, but the physical reset root cause remains unverified.
+- [FIX IMPLEMENTED] Adaptive ON now sets Peltier output OFF before selector outputs are released for the 200 ms deadtime. After validated completion at 5V, the existing 5 s Peltier OFF-to-ON soft-start is used to restore cooling.
+- [FIX IMPLEMENTED] Adaptive OFF also removes Peltier load before a required rail change and restores a previously requested Peltier state only after the safe 5V endpoint, through the same 5 s soft-start. Failed transitions retain the safety path instead of silently claiming the rail changed.
+- [FIX IMPLEMENTED] Adaptive ON orange feedback remains tied to successful activation. Adaptive OFF white feedback is deferred until the 5V transition completes and is skipped when NTC/Hotside safety owns the indication. A repeated OFF command when already OFF (including after reboot) is not a state change and does not emit the white transition indicator.
+- [DIAGNOSTIC] Firmware prints BOOT RESET REASON: ... to Serial at startup so a future reproduction can capture BROWNOUT/PANIC/WDT even if App Notify hides UNKNOWN/POWER_ON or BLE reconnects too late.
+- [PRESERVED] OTA workflow, BLE/P1, GPIO mapping, single-sample 1 Hz NTC reading, 200 ms selector deadtime, 1 s voltage guard, existing 5 s Adaptive upward dwell, and the App source were not intentionally changed. The only OTA-related source adjustment clears the new Adaptive staging flags at the existing safe-output boundary; OTA state-machine sequencing is unchanged.
+- [AUDIT PASS] Source-level checks passed for version/file alignment, balanced delimiters, zero executable delay(), zero while() loops, exactly one NTC ADC-read call, GPIO3/4/5/6 mapping, 200 ms deadtime, 1 s voltage guard, 5 s Peltier soft-start, and retained OTA priority markers.
+- [UNVERIFIED] ArduinoDroid/Core 3.3.7 compile, BIN generation, ESP32-C3 flash, physical reset/LED behavior, power-load regression, thermal regression, and Local/Online OTA runtime regression remain unverified. No firmware build or hardware test was available in this execution.
+- [APP BUILD] Not run; this is a firmware-only change and repository rules do not imply an App Build.
+- [NOT RELEASED] V6.1 remains DEVELOPMENT + QC / PRE-RELEASE — NOT RELEASED. The candidate is on branch fix/adaptive-power-sequencing; main remains at the V6.0 baseline pending review/merge.
 
-> Earlier V5.9 sections remain historical and do not override current V6.0 source/workflow.
+> Earlier V6.0/V5.9 records below are historical. For this QC fix, reconcile against the V6.1 candidate source on fix/adaptive-power-sequencing; it has not been merged to main.
+
 
 ## 2026-10-07 — V5.9 APP LOCALIZATION / NOTIFY CLEANUP
 - [IMPLEMENTED] English is the master/reference language for all user-facing App copy.
@@ -138,31 +137,30 @@
 # JE X FYZ — CURRENT HANDOVER
 
 ## CURRENT TRUTH
-- Firmware: **V5.9**
-- Active source: `firmware/JEXFYZ-V5.9.ino`
-- Firmware source blob: `11879cda3e96411c16cc372a176dcef6b71ebe94`
-- App: **1.0.0+3**
-- App package: `com.horizontalzzz.jexfyz`
-- App main blob: `df4a244723420f8057745275838d7e07c1e0c82a`
-- App tests blob: `2da4bff01d3eed749eeba873e9ec2e577c04def9`
-- Current phase: **V5.9 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
-- App + Firmware are one integrated contract.
-- P1 is mandatory for App BLE session readiness.
-- Peltier safety re-arm is unified across BLE and hardware Touch.
+- Firmware candidate: V6.1
+- Candidate source: firmware/JEXFYZ-V6.1.ino
+- Candidate source blob: 3f8c61ef2add303b495b1cc19e6ee6be04cea028
+- Candidate branch: fix/adaptive-power-sequencing (not merged); main baseline V6.0
+- App: 1.0.0+3; App source unchanged by this fix
+- Current phase: V6.1 candidate — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED
+- App + Firmware remain one integrated contract.
+- P1 remains mandatory for App BLE session readiness.
 - OTA Local/Online, OTA state/recovery, and Wi-Fi↔BLE handoff remain protected/frozen.
-- Android `versionName "Telegram @horizontalzzz"` is intentional and unchanged.
-- App Build was not executed by this source integration batch.
+- Firmware compile/BIN/flash/physical behavior: UNVERIFIED.
+- App Build was not run by this firmware-only execution.
 
 ## QC NEXT
-1. Compile V5.9.
-2. Generate V5.9 BIN.
-3. Flash/update ESP32-C3 and verify image provenance.
-4. Hardware-only control and safety QC.
-5. Local OTA Golden Path.
-6. Online OTA + BLE recovery.
-7. App↔V5.9 integration QC.
-8. Explicit App Build.
-9. Release Gate.
+1. Compile V6.1 with ArduinoDroid / Arduino-ESP32 Core 3.3.7.
+2. Generate V6.1 BIN and record image provenance.
+3. Flash/update ESP32-C3 and capture boot Serial reset reason.
+4. Verify Adaptive ON from 12V with Fan/Peltier ON: Peltier output OFF before selector transition, safe 5V completion, 5 s Peltier soft-start, orange three-blink indicator.
+5. Verify Adaptive OFF returns safely to 5V; Peltier restoration uses 5 s soft-start where previously requested; white three-blink only after successful ON-to-OFF state change.
+6. Check NTC invalid/Hotside limit, Fan/Peltier state consistency, GPIO selector exclusivity and voltage guard.
+7. Run Local OTA Golden Path.
+8. Run Online OTA + BLE recovery regression.
+9. App-to-V6.1 integration QC; App Build remains separate and was not run.
+10. Release Gate only after all required evidence passes.
+
 ## TRANSFER PROTOCOL V2
 - [IMPLEMENTED] `CHAT_TRANSFER.md` is now the detailed cross-chat boot/transfer protocol.
 - [POLICY] New chats read it first, reconcile current `main`, and do not ask the user to repeat established facts.
