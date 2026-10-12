@@ -7,6 +7,9 @@
 - [COMMITTED] V6.1 source added on `main` in commit `5fa7a4033a1cf2c5989c5fb9511be75cf34b7dbe`; the obsolete V6.0 source path was removed in commit `167f44df6c379d6d2a7a03b47f6620c609a4136c`. No PR was used.
 - [NO BUILD] This V6.1 source/version promotion did not run a compile/build, generate a V6.1 BIN, flash hardware, or update production OTA metadata.
 - [UNVERIFIED] Physical confirmation that the reported Adaptive restart is eliminated, that both LED indicators render on hardware, and that thermal/OTA regression remains pending.
+- [USER-REPORTED / UNVERIFIED] On the previously installed firmware, sequence reported: select Manual 12V, enable Fan and Peltier, then enable Adaptive; hardware immediately restarts, and after reboot Adaptive is OFF. No reset-reason notification was shown and neither orange ON nor white OFF feedback was observed. This does not establish brownout or another root cause.
+- [USER-CONFIRMED] The earlier physical 12V output issue was caused by a loose cable and was resolved by securing the cable; do not treat that earlier 12V symptom as a confirmed firmware defect.
+- [UNVERIFIED] V6.1 source includes the Adaptive rail-handoff fix and Serial `BOOT: RESET_REASON=` diagnostic, but no V6.1 compile, BIN, flash, or hardware confirmation has been recorded.
 - [NOT RELEASED] Production firmware repository `TenzoNkz/JEXFYZ-Firmware` and Firebase `firmware_update.json` were not changed. V6.1 remains source-only until separately built, validated, and explicitly released.
 
 > The V6.0 section below is historical QC/build evidence only; it does not imply that V6.1 has been built, flashed, or released.
