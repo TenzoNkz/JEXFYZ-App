@@ -1,18 +1,19 @@
-## CURRENT V6.0 EXECUTION — 2026-10-08
+## CURRENT V6.1 EXECUTION — 2026-10-12
 
-- [IMPLEMENTED] Firmware promoted V5.9 → V6.0 at firmware/JEXFYZ-V6.0.ino; FW_VERSION is V6.0.
-- [IMPLEMENTED] Adaptive Profile is runtime-only. Default after boot is HOTSIDE; HOTSIDE_BATTERY remains the optional second Adaptive mode and is not stored in Preferences.
-- [IMPLEMENTED] Persistent firmware settings are Hotside Limit, Battery 5V Limit, Battery 12V Limit, RGB ON/OFF, RGB Mode, RGB Brightness, and RGB Color.
-- [IMPLEMENTED] All persistent setting changes share a 10-second quiet-period debounce. Every new change resets the timer; after 10 seconds without change, only values different from the persisted NVS shadow are written.
-- [IMPLEMENTED] LED modes are now Static, Breath, Mirror Pulse, Comet, Dual Chase, Left/Right, and Rainbow. Center Out and Outer In are retired.
-- [IMPLEMENTED] Adaptive state LED feedback is now three orange blinks on successful Adaptive ON and three white blinks on successful Adaptive OFF; the previous red→green→blue Adaptive-OFF feedback is retired. OTA and Hotside safety LED indicators remain unchanged.
-- [IMPLEMENTED] Firmware publishes LED animation phase/cycle telemetry; App preview uses that firmware phase and mirrors the physical 4-left/4-right LED layout.
-- [PRESERVED] OTA, single-radio Wi-Fi/BLE handoff, BLE/P1, GPIO mapping, NTC 1 Hz single-sample path, selector deadtime, voltage guard, Peltier soft-start, thermal safety, and Adaptive 5-second upward dwell were not intentionally changed.
-- [AUDIT PASS] Source-level invariants passed for V6.0 version alignment, LED mode set, HOTSIDE default, non-persistent Adaptive Profile, LED phase protocol, GPIO mapping, and single NTC ADC read path.
-- [UNVERIFIED] V6.0 ArduinoDroid compilation, BIN generation, ESP32-C3 flash, physical LED synchronization, thermal regression, Local/Online OTA regression, and App Build remain unverified.
-- [NOT RELEASED] Project remains DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED.
+- [IMPLEMENTED] Candidate firmware promoted from V6.0 to V6.1 at firmware/JEXFYZ-V6.1.ino; FW_VERSION is V6.1. The superseded V6.0 sketch is removed on this execution branch to preserve filename/version alignment and the one-active-sketch rule.
+- [QC FINDING] User reported hardware restart when enabling Adaptive from 12V with Fan and Peltier ON; after reboot the App showed Adaptive OFF and did not surface a reset reason. Adaptive ON/OFF status indicators were not observed. The source showed that Adaptive rail handoff did not explicitly stop Peltier before selector deadtime; this was a credible sequencing hazard, but the physical reset root cause remains unverified.
+- [FIX IMPLEMENTED] Adaptive ON now sets Peltier output OFF before selector outputs are released for the 200 ms deadtime. After validated completion at 5V, the existing 5 s Peltier OFF-to-ON soft-start is used to restore cooling.
+- [FIX IMPLEMENTED] Adaptive OFF also removes Peltier load before a required rail change and restores a previously requested Peltier state only after the safe 5V endpoint, through the same 5 s soft-start. Failed transitions retain the safety path instead of silently claiming the rail changed.
+- [FIX IMPLEMENTED] Adaptive ON orange feedback remains tied to successful activation. Adaptive OFF white feedback is deferred until the 5V transition completes and is skipped when NTC/Hotside safety owns the indication. A repeated OFF command when already OFF (including after reboot) is not a state change and does not emit the white transition indicator.
+- [DIAGNOSTIC] Firmware prints BOOT RESET REASON: ... to Serial at startup so a future reproduction can capture BROWNOUT/PANIC/WDT even if App Notify hides UNKNOWN/POWER_ON or BLE reconnects too late.
+- [PRESERVED] OTA workflow, BLE/P1, GPIO mapping, single-sample 1 Hz NTC reading, 200 ms selector deadtime, 1 s voltage guard, existing 5 s Adaptive upward dwell, and the App source were not intentionally changed. The only OTA-related source adjustment clears the new Adaptive staging flags at the existing safe-output boundary; OTA state-machine sequencing is unchanged.
+- [AUDIT PASS] Source-level checks passed for version/file alignment, balanced delimiters, zero executable delay(), zero while() loops, exactly one NTC ADC-read call, GPIO3/4/5/6 mapping, 200 ms deadtime, 1 s voltage guard, 5 s Peltier soft-start, and retained OTA priority markers.
+- [UNVERIFIED] ArduinoDroid/Core 3.3.7 compile, BIN generation, ESP32-C3 flash, physical reset/LED behavior, power-load regression, thermal regression, and Local/Online OTA runtime regression remain unverified. No firmware build or hardware test was available in this execution.
+- [APP BUILD] Not run; this is a firmware-only change and repository rules do not imply an App Build.
+- [NOT RELEASED] V6.1 remains DEVELOPMENT + QC / PRE-RELEASE — NOT RELEASED. The candidate is on branch fix/adaptive-power-sequencing; main remains at the V6.0 baseline pending review/merge.
 
-> Earlier V5.9 sections remain historical and do not override current V6.0 source/workflow.
+> Earlier V6.0/V5.9 records below are historical. For this QC fix, reconcile against the V6.1 candidate source on fix/adaptive-power-sequencing; it has not been merged to main.
+
 
 ## APP LOCALIZATION CONTRACT — 2026-10-07
 - [CURRENT TRUTH] English is the master/reference language.
@@ -26,16 +27,16 @@
 
 # JE X FYZ — CHAT TRANSFER / NEW CHAT BOOT PROTOCOL
 
-> Transfer Protocol v4 — current V6.0 integrated QC snapshot reconciled from main.
+> Transfer Protocol v5 — current V6.1 Adaptive-sequencing QC candidate snapshot on fix/adaptive-power-sequencing; main baseline remains V6.0.
 
 ## 0. READ FIRST / MANDATORY BOOT
 
 - [VERIFIED] Current repository: TenzoNkz/JEXFYZ-App.
-- [VERIFIED] Branch: main.
-- [RECONCILE REQUIRED] Current main HEAD after the V6.0 adaptive-LED execution must be read from `main`; this transfer snapshot predates the final documentation commit. Current source/workflow outrank this pointer.
-- [VERIFIED] Current active Firmware: V6.0 at firmware/JEXFYZ-V6.0.ino.
+- [VERIFIED] Execution branch: fix/adaptive-power-sequencing.
+- [VERIFIED] Main baseline HEAD: 611acb446feab7483c108a55ed3f84a81fffe9e5; main remains unchanged until the V6.1 candidate is reviewed/merged.
+- [CANDIDATE] Firmware V6.1 at firmware/JEXFYZ-V6.1.ino on the execution branch.
 - [VERIFIED] Current App: 1.0.0+3; package com.horizontalzzz.jexfyz; main blob 8189825511499cec01f357f1735dcee22426627b; settings blob 0c29bed46b746c1171f61ee7b095c724474a5e6b; test blob a3ffbb349e30ece3c84f38f2863c2f8717c1e4a7.
-- [VERIFIED] Current phase: V6.0 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED.
+- [VERIFIED] Current candidate phase: V6.1 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED; compile/BIN/physical validation is UNVERIFIED.
 - [POLICY] Read this file first, then reconcile current source/configuration before acting.
 - [POLICY] Current source and workflow always outrank this transfer snapshot when they conflict.
 - [POLICY] Do not ask the user to repeat project facts already documented here or in the authoritative repository files.
@@ -49,8 +50,8 @@
 - [CURRENT TRUTH] Hardware: ESP32-C3 Super Mini / ESP32-C3 Dev Module.
 - [CURRENT TRUTH] Firmware source authority: firmware/ inside JEXFYZ-App.
 - [CURRENT TRUTH] Firmware publishing repository: TenzoNkz/JEXFYZ-Firmware.
-- [VERIFIED] Current Firmware V6.0 source blob after the adaptive-LED execution: 6b0977e74dbdd1427061979269ad3d8b9bad85c9.
-- [CURRENT TRUTH] Active Firmware: V6.0.
+- [VERIFIED] V6.1 candidate source blob: 3f8c61ef2add303b495b1cc19e6ee6be04cea028.
+- [CURRENT TRUTH] Main baseline Firmware: V6.0; execution candidate: V6.1.
 - [CURRENT TRUTH] App version: 1.0.0+3.
 - [CURRENT TRUTH] Package: com.horizontalzzz.jexfyz.
 - [CURRENT TRUTH] Release status: NOT RELEASED.
@@ -203,7 +204,7 @@
 ## 13. SOURCE / COMMIT MAP
 
 ### Current source blobs
-- [VERIFIED] Firmware V5.9: ee5db12f7e897bbc58557d9946af52786cb9f151.
+- [VERIFIED] Firmware V6.1 candidate: 3f8c61ef2add303b495b1cc19e6ee6be04cea028.
 - [VERIFIED] App main: 8a2e97946c4bc4ac2aa3ea09e3a1aca4b15fc6a0.
 - [VERIFIED] App settings: f11235bab559b291928550e06984532581ddad6a.
 - [VERIFIED] Floating Monitor: 4cd980ea1cc53c663e60267b2c865f3ebb09d91d.
@@ -229,8 +230,8 @@
 ## 14. QC STATUS
 
 ### VERIFIED
-- [VERIFIED] Last reconciled main HEAD before this final documentation consolidation: 97f8b68545e50853871493ba8999ddb226c95d5b.
-- [VERIFIED] One active .ino exists: JEXFYZ-V5.9.ino.
+- [VERIFIED] Main base HEAD for this execution: 611acb446feab7483c108a55ed3f84a81fffe9e5.
+- [VERIFIED] One active versioned .ino candidate exists on this branch: JEXFYZ-V6.1.ino; V6.0 sketch was retired from the branch.
 - [VERIFIED] Firmware static source audit passes: one NTC read, zero executable delay, zero timing while, no RAPID_HOTSIDE_RISE.
 - [VERIFIED] App contains P1 readiness gate, serialized ACK transaction queue, Peltier ACK-reason retention, coalesced heartbeat, OTA stage presentation, dedicated notification channel, and NOT_STICKY BLE-support service.
 - [VERIFIED] Current App heartbeat helper is top-level; previous scope issue is no longer present in current main.dart.
@@ -239,20 +240,20 @@
 
 ### UNVERIFIED
 - [UNVERIFIED] Flutter/Dart analysis and tests for current V5.9-integrated App.
-- [UNVERIFIED] V5.9 Arduino compile.
-- [UNVERIFIED] V5.9 BIN generation.
-- [UNVERIFIED] V5.9 flash/update and image provenance.
-- [UNVERIFIED] V5.9 physical control/safety behavior.
-- [UNVERIFIED] Local OTA Golden Path on V5.9 image.
-- [UNVERIFIED] Online OTA + BLE recovery on V5.9 image.
-- [UNVERIFIED] Full App ↔ V5.9 hardware integration.
-- [UNVERIFIED] V5.9 App Build/release.
+- [UNVERIFIED] V6.1 Arduino compile (Core 3.3.7).
+- [UNVERIFIED] V6.1 BIN generation.
+- [UNVERIFIED] V6.1 flash/update and image provenance.
+- [UNVERIFIED] V6.1 physical control/safety behavior.
+- [UNVERIFIED] Local OTA Golden Path on V6.1 image.
+- [UNVERIFIED] Online OTA + BLE recovery on V6.1 image.
+- [UNVERIFIED] Full App ↔ V6.1 hardware integration.
+- [UNVERIFIED] App Build/release not run (separate explicit workflow).
 - [UNVERIFIED] Final Release Gate.
 
 ## 15. RISKS
 
-- [RISK] V5.9 has not been compiled or validated on physical ESP32-C3 hardware.
-- [RISK] Final Local/Online OTA regression for the V5.9 image is still pending.
+- [RISK] V6.1 candidate has not been compiled or validated on physical ESP32-C3 hardware.
+- [RISK] Local/Online OTA regression for the V6.1 candidate image is still pending.
 - [RISK] App current source has static changes but no current toolchain compile/test evidence in this chat.
 - [RISK] Some historical project notes still contain older version references; use source + current state, not history.
 
@@ -280,14 +281,14 @@
 ## 19. EXACT QC SEQUENCE
 
 1. Run Flutter/Dart analysis and tests on the current App source.
-2. Compile V5.9 with the intended Arduino-ESP32 3.3.7 toolchain.
-3. Generate V5.9 BIN and record image provenance.
+2. Compile V6.1 with the intended Arduino-ESP32 3.3.7 toolchain.
+3. Generate V6.1 BIN and record image provenance.
 4. Flash/update ESP32-C3 and verify reported firmware version.
 5. Run hardware-only functional QC.
 6. Run safety QC, including Peltier re-arm, Adaptive timing, Hotside dwell, Fan/Peltier constraints, and NTC fault behavior.
 7. Run Local OTA Golden Path.
 8. Run Online OTA and verify Wi-Fi→BLE recovery plus single-radio ownership.
-9. Run App ↔ V5.9 integration QC, including P1, ACK confirmation, Peltier NOTIFY/re-arm, heartbeat behavior, and OTA presentation.
+9. Run App ↔ V6.1 integration QC, including P1, ACK confirmation, Peltier NOTIFY/re-arm, heartbeat behavior, and OTA presentation.
 10. Run App Build only after explicit @Thinking Build App! or @Thinking Eksekusi & Build App!.
 11. Final Release Gate only after all required evidence exists.
 
