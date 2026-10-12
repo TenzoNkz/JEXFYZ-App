@@ -10,7 +10,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  # Publish QC builds as a prerelease asset; Actions artifact storage is quota-limited.
+  contents: write
 
 concurrency:
   group: jexfyz-firmware-compile
@@ -76,10 +77,52 @@ jobs:
           ls -lh build/firmware/JEXFYZ.cpp.bin
           echo "Firmware source compiled successfully; image magic and OTA size limit passed."
 
-      - name: Upload compiled firmware for QC (not OTA release)
-        uses: actions/upload-artifact@v4
-        with:
-          name: JEXFYZ-V6.0-firmware-QC
-          path: build/firmware/JEXFYZ.cpp.bin
-          if-no-files-found: error
-          retention-days: 14
+      # Use a prerelease asset instead of Actions artifacts because this repository's
+      # Actions artifact storage quota is already exhausted. This is QC only:
+      # it does not change the separate OTA firmware repository or Firebase metadata.
+      - name: Publish QC build to a GitHub prerelease
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="firmware-qc-latest"
+          TITLE="JE X FYZ Firmware — QC Build (not OTA)"
+          BIN="build/firmware/JEXFYZ.cpp.bin"
+          NOTES="QC-only firmware build from source commit $GITHUB_SHA.
+          Firmware FW_VERSION remains V6.0.
+          This prerelease is for manual/local OTA testing only; the production OTA BIN and Firebase metadata are unchanged."
+
+          test -s "$BIN"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$BIN" --clobber
+            gh release edit "$TAG" \
+              --target "$GITHUB_SHA" \
+              --title "$TITLE" \
+              --notes "$NOTES" \
+              --prerelease
+          else
+            gh release create "$TAG" "$BIN" \
+              --target "$GITHUB_SHA" \
+              --title "$TITLE" \
+              --notes "$NOTES" \
+              --prerelease \
+              --latest=false
+          fi
+
+          gh release view "$TAG" \
+            --json assets,isPrerelease \
+            --jq '.assets[] | select(.name == "JEXFYZ.cpp.bin") | .name' \
+            | grep -Fx "JEXFYZ.cpp.bin"
+
+          VERIFY_DIR="$RUNNER_TEMP/firmware-qc-verify"
+          mkdir -p "$VERIFY_DIR"
+          gh release download "$TAG" \
+            --pattern "JEXFYZ.cpp.bin" \
+            --dir "$VERIFY_DIR" \
+            --clobber
+
+          LOCAL_SHA="$(sha256sum "$BIN" | awk '{print $1}')"
+          RELEASE_SHA="$(sha256sum "$VERIFY_DIR/JEXFYZ.cpp.bin" | awk '{print $1}')"
+          test "$LOCAL_SHA" = "$RELEASE_SHA"
+          echo "QC prerelease asset verified. SHA-256: $RELEASE_SHA"
