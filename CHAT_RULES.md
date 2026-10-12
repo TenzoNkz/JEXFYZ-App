@@ -9,12 +9,12 @@
 - @Thinking Eksekusi & Build App! = implement → audit → sync → commit → explicit App Build.
 
 ## CURRENT PHASE
-- **V5.9 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+- **V6.1 — source-only / DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## QC / SOURCE FREEZE
 - QC is validation-first, not feature-development.
 - Treat functional source as FROZEN during QC.
-- [CURRENT QC] V5.8 closes the demonstrated Peltier safety-lock and NTC single-sample findings only.
+- [HISTORICAL] V5.8/V5.9 QC records apply only to those historical source versions; current source is V6.1.
 - Only change functional source for a demonstrable/reproducible QC failure with a clear root cause.
 - Do not refactor or change unrelated behavior while closing a QC finding.
 - Record the finding, evidence, root cause, affected scope, fix, and re-audit result.
@@ -85,13 +85,13 @@
 - Current source/workflow always wins on conflicts.
 
 ## CURRENT STATUS
-- Phase: V5.9 DEVELOPMENT + QC / PRE-RELEASE.
+- Phase: V6.1 source-only DEVELOPMENT + QC / PRE-RELEASE.
 - Release status: NOT RELEASED.
-- Firmware: V5.9.
+- Firmware source: V6.1 (`firmware/JEXFYZ-V6.1.ino`); compile/BIN/flash unverified.
 - App: 1.0.0+3.
-- Firmware V5.9 source/static audit: PASS.
-- V5.7 physical OTA update was user-confirmed successful; V5.9 physical validation is UNVERIFIED.
-- V5.9 compile/BIN/flash/physical/OTA/App integration remain QC gates.
+- V6.1 source inventory: one NTC ADC-read call site and no `delay(` call site; this limited source check is not a compile or runtime test.
+- V5.7 physical OTA update was user-confirmed successful; V6.1 physical validation is UNVERIFIED.
+- V6.1 compile/BIN/flash/physical/OTA/App integration remain QC gates; no firmware compile workflow is active on `main`.
 - Latest verified downloadable App Build remains historical; V5.9 App Build was NOT executed by this source integration.
 - Current App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml.
 - OTA protection reminder: OTA_PROTECTION.md (documentation-only; no CI enforcement).
