@@ -1,20 +1,19 @@
-## CURRENT V6.0 EXECUTION — 2026-10-08
+## CURRENT V6.1 EXECUTION — 2026-10-12
 
-- [IMPLEMENTED] Firmware promoted V5.9 → V6.0 at firmware/JEXFYZ-V6.0.ino; FW_VERSION is V6.0.
-- [IMPLEMENTED] Adaptive Profile is runtime-only. Default after boot is HOTSIDE; HOTSIDE_BATTERY remains the optional second Adaptive mode and is not stored in Preferences.
-- [IMPLEMENTED] Persistent firmware settings are Hotside Limit, Battery 5V Limit, Battery 12V Limit, RGB ON/OFF, RGB Mode, RGB Brightness, and RGB Color.
-- [IMPLEMENTED] All persistent setting changes share a 10-second quiet-period debounce. Every new change resets the timer; after 10 seconds without change, only values different from the persisted NVS shadow are written.
-- [IMPLEMENTED] LED modes are now Static, Breath, Mirror Pulse, Comet, Dual Chase, Left/Right, and Rainbow. Center Out and Outer In are retired.
-- [IMPLEMENTED] Adaptive state LED feedback is now three orange blinks on successful Adaptive ON and three white blinks on successful Adaptive OFF; the previous red→green→blue Adaptive-OFF feedback is retired. OTA and Hotside safety LED indicators remain unchanged.
-- [IMPLEMENTED] Firmware publishes LED animation phase/cycle telemetry; App preview uses that firmware phase and mirrors the physical 4-left/4-right LED layout.
-- [FIX IMPLEMENTED] App release signing is now explicitly V1/V2/V3 with V4 signing disabled; the official JE X FYZ certificate identity remains mandatory.
-- [FIX IMPLEMENTED] App Build CI now requires V1, V2, and V3 verification, one signer, the official certificate fingerprint/DN, and a byte-for-byte re-download verification of the published GitHub Release asset.
-- [PRESERVED] OTA, single-radio Wi-Fi/BLE handoff, BLE/P1, GPIO mapping, NTC 1 Hz single-sample path, selector deadtime, voltage guard, Peltier soft-start, thermal safety, and Adaptive 5-second upward dwell were not intentionally changed.
-- [AUDIT PASS] Source-level invariants passed for V6.0 version alignment, LED mode set, HOTSIDE default, non-persistent Adaptive Profile, LED phase protocol, GPIO mapping, and single NTC ADC read path.
-- [UNVERIFIED] V6.0 ArduinoDroid compilation, BIN generation, ESP32-C3 flash, physical LED synchronization, thermal regression, Local/Online OTA regression, and App Build remain unverified.
-- [NOT RELEASED] Project remains DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED.
+- [IMPLEMENTED] Candidate firmware promoted from V6.0 to V6.1 at firmware/JEXFYZ-V6.1.ino; FW_VERSION is V6.1. The superseded V6.0 sketch is removed on this execution branch to preserve filename/version alignment and the one-active-sketch rule.
+- [QC FINDING] User reported hardware restart when enabling Adaptive from 12V with Fan and Peltier ON; after reboot the App showed Adaptive OFF and did not surface a reset reason. Adaptive ON/OFF status indicators were not observed. The source showed that Adaptive rail handoff did not explicitly stop Peltier before selector deadtime; this was a credible sequencing hazard, but the physical reset root cause remains unverified.
+- [FIX IMPLEMENTED] Adaptive ON now sets Peltier output OFF before selector outputs are released for the 200 ms deadtime. After validated completion at 5V, the existing 5 s Peltier OFF-to-ON soft-start is used to restore cooling.
+- [FIX IMPLEMENTED] Adaptive OFF also removes Peltier load before a required rail change and restores a previously requested Peltier state only after the safe 5V endpoint, through the same 5 s soft-start. Failed transitions retain the safety path instead of silently claiming the rail changed.
+- [FIX IMPLEMENTED] Adaptive ON orange feedback remains tied to successful activation. Adaptive OFF white feedback is deferred until the 5V transition completes and is skipped when NTC/Hotside safety owns the indication. A repeated OFF command when already OFF (including after reboot) is not a state change and does not emit the white transition indicator.
+- [DIAGNOSTIC] Firmware prints BOOT RESET REASON: ... to Serial at startup so a future reproduction can capture BROWNOUT/PANIC/WDT even if App Notify hides UNKNOWN/POWER_ON or BLE reconnects too late.
+- [PRESERVED] OTA workflow, BLE/P1, GPIO mapping, single-sample 1 Hz NTC reading, 200 ms selector deadtime, 1 s voltage guard, existing 5 s Adaptive upward dwell, and the App source were not intentionally changed. The only OTA-related source adjustment clears the new Adaptive staging flags at the existing safe-output boundary; OTA state-machine sequencing is unchanged.
+- [AUDIT PASS] Source-level checks passed for version/file alignment, balanced delimiters, zero executable delay(), zero while() loops, exactly one NTC ADC-read call, GPIO3/4/5/6 mapping, 200 ms deadtime, 1 s voltage guard, 5 s Peltier soft-start, and retained OTA priority markers.
+- [UNVERIFIED] ArduinoDroid/Core 3.3.7 compile, BIN generation, ESP32-C3 flash, physical reset/LED behavior, power-load regression, thermal regression, and Local/Online OTA runtime regression remain unverified. No firmware build or hardware test was available in this execution.
+- [APP BUILD] Not run; this is a firmware-only change and repository rules do not imply an App Build.
+- [NOT RELEASED] V6.1 remains DEVELOPMENT + QC / PRE-RELEASE — NOT RELEASED. The candidate is on branch fix/adaptive-power-sequencing; main remains at the V6.0 baseline pending review/merge.
 
-> Earlier V5.9 sections remain historical and do not override current V6.0 source/workflow.
+> Earlier V6.0/V5.9 records below are historical. For this QC fix, reconcile against the V6.1 candidate source on fix/adaptive-power-sequencing; it has not been merged to main.
+
 
 ## V5.9 APP LOCALIZATION / NOTIFY QC UPDATE — 2026-10-07
 - [IMPLEMENTED] English is the master/reference copy for all localized user-facing messages.
@@ -62,25 +61,22 @@
 
 
 ## CURRENT PHASE
-> **V5.9 — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
+> **V6.1 candidate — DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED**
 
 ## CURRENT TRUTH
 - Project: JE X FYZ / JE Cooler
 - Repository: TenzoNkz/JEXFYZ-App
-- Branch: main
-- Firmware: V5.9
-- Active Firmware source: firmware/JEXFYZ-V5.9.ino
-- Firmware source blob: 11879cda3e96411c16cc372a176dcef6b71ebe94
+- Execution branch: fix/adaptive-power-sequencing
+- Main baseline: V6.0 at 611acb446feab7483c108a55ed3f84a81fffe9e5 (unchanged pending review/merge)
+- Candidate Firmware: V6.1 at firmware/JEXFYZ-V6.1.ino
+- Candidate source blob: 3f8c61ef2add303b495b1cc19e6ee6be04cea028
 - Firmware compile/BIN/flash/physical regression: UNVERIFIED
+- Adaptive sequencing reset cause: UNVERIFIED; Peltier-off rail handoff mitigation implemented in candidate
 - OTA Protection reminder: ACTIVE in OTA_PROTECTION.md.
-- App version: 1.0.0+3
-- Package: com.horizontalzzz.jexfyz
-- App main source blob: df4a244723420f8057745275838d7e07c1e0c82a
-- App settings source blob: f11235bab559b291928550e06984532581ddad6a
-- App test source blob: 2da4bff01d3eed749eeba873e9ec2e577c04def9
+- App version: 1.0.0+3; App source unchanged by this fix
 - App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml
+- App Build: NOT RUN (not implied by firmware-only execution)
 - Release status: NOT RELEASED
-- This V5.9 execution did not run App Build.
 
 
 ## OTA PROTECTION REMINDER — 2026-10-06
