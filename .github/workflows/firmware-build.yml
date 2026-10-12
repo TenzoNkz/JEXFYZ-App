@@ -1,0 +1,85 @@
+name: JE X FYZ Firmware Compile
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "firmware/JEXFYZ-V6.0.ino"
+      - ".github/workflows/firmware-build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: jexfyz-firmware-compile
+  cancel-in-progress: true
+
+jobs:
+  compile:
+    name: Compile ESP32-C3 firmware
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v6
+
+      - name: Set up Arduino CLI
+        uses: arduino/setup-arduino-cli@v2
+
+      - name: Install official ESP32 Core 3.3.7
+        shell: bash
+        run: |
+          set -euo pipefail
+          arduino-cli config init
+          arduino-cli config add board_manager.additional_urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
+          arduino-cli core update-index
+          arduino-cli core install esp32:esp32@3.3.7
+
+      - name: Install pinned firmware library
+        run: arduino-cli lib install "Adafruit NeoPixel@1.12.3"
+
+      - name: Compile ESP32-C3 Dev Module
+        shell: bash
+        run: |
+          set -euo pipefail
+          SKETCH_DIR="$RUNNER_TEMP/JEXFYZ_V6_0"
+          mkdir -p "$SKETCH_DIR" build/firmware
+          cp firmware/JEXFYZ-V6.0.ino "$SKETCH_DIR/JEXFYZ_V6_0.ino"
+
+          arduino-cli compile \
+            --fqbn esp32:esp32:esp32c3:PartitionScheme=min_spiffs \
+            --warnings all \
+            --output-dir build/firmware \
+            "$SKETCH_DIR"
+
+          BUILT_BIN="build/firmware/JEXFYZ_V6_0.ino.bin"
+          test -s "$BUILT_BIN"
+
+          MAGIC="$(od -An -tx1 -N1 "$BUILT_BIN" | tr -d ' \n')"
+          if [ "$MAGIC" != "e9" ]; then
+            echo "Firmware image validation failed: expected ESP image magic E9, got $MAGIC"
+            exit 1
+          fi
+
+          SIZE="$(stat -c%s "$BUILT_BIN")"
+          MAX_SIZE=$((1792 * 1024))
+          if [ "$SIZE" -le 0 ] || [ "$SIZE" -gt "$MAX_SIZE" ]; then
+            echo "Firmware image size outside OTA limit: $SIZE bytes (max $MAX_SIZE)"
+            exit 1
+          fi
+
+          cp "$BUILT_BIN" build/firmware/JEXFYZ.cpp.bin
+          sha256sum build/firmware/JEXFYZ.cpp.bin
+          ls -lh build/firmware/JEXFYZ.cpp.bin
+          echo "Firmware source compiled successfully; image magic and OTA size limit passed."
+
+      - name: Upload compiled firmware for QC (not OTA release)
+        uses: actions/upload-artifact@v4
+        with:
+          name: JEXFYZ-V6.0-firmware-QC
+          path: build/firmware/JEXFYZ.cpp.bin
+          if-no-files-found: error
+          retention-days: 14
