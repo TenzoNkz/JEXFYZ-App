@@ -1,9 +1,10 @@
 # JE X FYZ — BUILD NOTES
 
 ## CURRENT PHASE
-- Firmware V5.9 is in **QC / PRE-RELEASE**.
-- V5.9 is **NOT RELEASED**.
-- App Build remains a separate explicit operation.
+- Firmware V6.1 candidate is in **QC / PRE-RELEASE** on branch fix/adaptive-power-sequencing.
+- main remains at V6.0 pending review/merge; V6.1 is **NOT RELEASED**.
+- Firmware compile/BIN/flash/physical QC is unverified.
+- App Build remains a separate explicit operation and was not requested.
 
 
 ## APP BUILD POLICY
