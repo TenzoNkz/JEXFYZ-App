@@ -352,6 +352,10 @@ enum class AdaptiveProfile : uint8_t {
 bool adaptiveOn = false;
 // Adaptive activation is deferred until the mandatory 5 V handoff physically completes.
 bool adaptiveStartPending = false;
+// Adaptive OFF also waits for a pending safe-5V handoff before restoring the prior Peltier state.
+bool adaptiveStopPending = false;
+bool adaptiveStopRestorePeltier = false;
+bool adaptiveStopIndicatorPending = false;
 Voltage adaptiveCeiling = Voltage::V12;
 AdaptiveProfile adaptiveProfile = AdaptiveProfile::HOTSIDE_PROTECTION;
 
@@ -1803,6 +1807,23 @@ static void completeVoltageTransition() {
     previousFanPwm = fanPwm;
   }
 
+  // Complete an Adaptive-OFF handoff only after the selector has reached 5 V.
+  // Peltier restoration goes through applyCoolingOutputs(), which enforces NTC/Hotside
+  // safety and starts the existing 5-second soft-start from a known OFF state.
+  if (adaptiveStopPending && currentVoltage == Voltage::V5) {
+    adaptiveStopPending = false;
+    if (adaptiveStopRestorePeltier) {
+      fanOn = true;
+      fanPwm = 100;
+      peltierOn = true;
+    }
+    adaptiveStopRestorePeltier = false;
+    if (adaptiveStopIndicatorPending) {
+      startAdaptiveStateIndicator(false);
+    }
+    adaptiveStopIndicatorPending = false;
+  }
+
   if (completedSource == VoltageRequestSource::HOTSTEP && adaptiveOn) {
     adaptiveHotStepPending = false;
     adaptiveHotsideRiseDueMs = 0;
@@ -2906,6 +2927,10 @@ static void applyOtaSafeOutputs() {
   fanOn = false;
   peltierOn = false;
   adaptiveOn = false;
+  adaptiveStartPending = false;
+  adaptiveStopPending = false;
+  adaptiveStopRestorePeltier = false;
+  adaptiveStopIndicatorPending = false;
   adaptiveCeiling = Voltage::V12;
   fanPwm = 100;
   currentVoltage = Voltage::V5;
@@ -3941,21 +3966,37 @@ static void setAdaptiveState(bool desired, String& reason) {
 
     // Stage 1: remain Adaptive-OFF while forcing the hardware to 5V.
     adaptiveStartPending = true;
+    adaptiveStopPending = false;
+    adaptiveStopRestorePeltier = false;
+    adaptiveStopIndicatorPending = false;
     adaptiveCeiling = Voltage::V12;
     adaptiveHotStepPending = false;
     peltierHotOffUntilMs = 0;
-
     adaptiveHotsideRiseDueMs = 0;
-    fanPwm = 100;
 
     if (currentVoltage == Voltage::V5 && !voltageTransition) {
+      // No selector handoff is required. activateAdaptiveAfterSafeFiveVolt()
+      // applies Fan=100%, validates Hotside again, and starts the indicator on success.
       activateAdaptiveAfterSafeFiveVolt();
       reason = adaptiveOn ? "OK" : "NTC_ERROR";
       return;
     }
 
+    // A rail handoff must never leave the Peltier PWM energized while both
+    // selector outputs are deasserted for the 200 ms break-before-make window.
+    const bool restorePeltierOnFailure = peltierOn;
+    bool previousFanOn = fanOn;
+    bool previousPeltierOn = peltierOn;
+    uint8_t previousFanPwm = fanPwm;
+    fanPwm = 100;
+    peltierOn = false;
+    applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
+    previousFanOn = fanOn;
+    previousPeltierOn = peltierOn;
+    previousFanPwm = fanPwm;
+
     if (voltageTransition) {
-      // Any in-flight voltage transition is redirected to the required 5V endpoint.
+      // Redirect the existing handoff to the required 5V endpoint after the load is off.
       pendingVoltage = Voltage::V5;
       reason = "STARTING";
       return;
@@ -3963,6 +4004,16 @@ static void setAdaptiveState(bool desired, String& reason) {
 
     if (!requestVoltage(Voltage::V5, VoltageRequestSource::ADAPTIVE, true)) {
       adaptiveStartPending = false;
+      if (restorePeltierOnFailure) {
+        const bool fanBeforeRestore = fanOn;
+        const bool peltierBeforeRestore = peltierOn;
+        const uint8_t pwmBeforeRestore = fanPwm;
+        peltierOn = true;
+        applyCoolingOutputs(
+            fanBeforeRestore,
+            peltierBeforeRestore,
+            pwmBeforeRestore);
+      }
       reason = "VOLTAGE_FORCE_FAILED";
       return;
     }
@@ -3973,31 +4024,64 @@ static void setAdaptiveState(bool desired, String& reason) {
 
   // OFF cancels an in-flight Adaptive start and retains the safe-5V behavior.
   const bool wasAdaptiveOn = adaptiveOn;
+  const bool restorePeltierAfterStop = peltierOn;
   bool previousFanOn = fanOn;
   bool previousPeltierOn = peltierOn;
   uint8_t previousFanPwm = fanPwm;
+
   adaptiveStartPending = false;
   adaptiveOn = false;
   adaptiveHotStepPending = false;
   peltierHotOffUntilMs = 0;
-
   adaptiveHotsideRiseDueMs = 0;
   adaptiveCeiling = Voltage::V12;
+  adaptiveStopPending = false;
+  adaptiveStopRestorePeltier = false;
+  adaptiveStopIndicatorPending = false;
   fanPwm = 100;
+
+  const bool handoffRequired =
+      currentVoltage != Voltage::V5 || voltageTransition;
+
+  // Turn the Peltier output off before commanding the selector back to 5V.
+  // Preserve whether it was running so it can be restored after the rail settles.
+  if (handoffRequired && peltierOn) {
+    peltierOn = false;
+  }
+  applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
+  previousFanOn = fanOn;
+  previousPeltierOn = peltierOn;
+  previousFanPwm = fanPwm;
 
   if (!forceAdaptiveFiveVolt()) {
     reason = "VOLTAGE_FORCE_FAILED";
+    if (handoffRequired && restorePeltierAfterStop) {
+      const bool fanBeforeRestore = fanOn;
+      const bool peltierBeforeRestore = peltierOn;
+      const uint8_t pwmBeforeRestore = fanPwm;
+      peltierOn = true;
+      applyCoolingOutputs(
+          fanBeforeRestore,
+          peltierBeforeRestore,
+          pwmBeforeRestore);
+      previousFanOn = fanOn;
+      previousPeltierOn = peltierOn;
+      previousFanPwm = fanPwm;
+    }
   } else {
     reason = "OK";
+    if (handoffRequired) {
+      adaptiveStopPending = true;
+      adaptiveStopRestorePeltier = restorePeltierAfterStop;
+      adaptiveStopIndicatorPending = wasAdaptiveOn;
+    } else if (wasAdaptiveOn) {
+      // At 5V already: the OFF state is complete, so show its indicator immediately.
+      startAdaptiveStateIndicator(false);
+    }
   }
 
   applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
-
-  if (reason == "OK" && wasAdaptiveOn) {
-    startAdaptiveStateIndicator(false);
-  }
 }
-
 static bool setRgbState(bool desired) {
   if (rgbOn == desired) return true;
 
@@ -4939,6 +5023,8 @@ void setup() {
 
   Serial.begin(115200);
   Serial.println();
+  Serial.print("BOOT: RESET_REASON=");
+  Serial.println(resetReasonText());
   Serial.print("JE X FYZ: BOOT ");
   Serial.print(FW_VERSION);
   Serial.println(" / CORE 3.3.7 ARDUINO STANDARD HEAP-DIAG");
