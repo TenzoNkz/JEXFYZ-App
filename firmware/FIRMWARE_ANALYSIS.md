@@ -2,17 +2,18 @@
 
 ### Online OTA legacy connection restoration — 2026-10-13
 
-- [FIXED IN SOURCE — NOT COMPILED] Firmware V6.3 uses the prior `cloudClient.setInsecure()` path again. The embedded CA PEM, CA validation call, `configTime()`, `TIME_SYNCING` state and 20-second NTP gate are removed. Wi-Fi success directly starts the blue indicator before the GitHub GET attempt.
+- [SOURCE FIX IMPLEMENTED] Firmware V6.3 uses the prior `cloudClient.setInsecure()` path again. The embedded CA PEM, CA validation call, `configTime()`, `TIME_SYNCING` state and 20-second NTP gate are removed. Wi-Fi success directly starts the blue indicator before the GitHub GET attempt.
 - [PRESERVED] GitHub raw BIN URL allowlisting, redirect blocking, size/image checks, safe outputs and OTA recovery remain present. The connection does not authenticate the HTTPS server certificate.
 - [TEST CONTRACT UPDATED — NOT RUN] `test/v6_3_qc_contract_test.dart` checks the new path and guards the allowlist/redirect behavior.
-- [UNVERIFIED] No firmware compile, BIN, flash, device test or OTA test has been performed.
+- [USER-REPORTED RESULT — 2026-10-13] The user reports V6.3 compiles successfully and Online OTA can connect to GitHub after the restoration. Full BIN transfer, `Update.end()`, restart and installed-version confirmation are not independently established. Since CA validation and NTP gating were removed together, the evidence does not isolate one of them as the sole root cause.
+- [NOT DONE BY ASSISTANT] No firmware compile, BIN generation/publication, flash or hardware OTA was performed in this assistant session.
 
 - [CURRENT TRUTH] Active Firmware source: `firmware/JEXFYZ-V6.3.ino`, blob `8a8c64ae2a3fc7ac722a02c05feaeb614087092a`; V6.2 was retired from the active tree. App source remains `lib/main.dart`, version `1.0.0+3`.
 - [FIXED] The manual Peltier safety latch now remains blocking until `enforceSafety()` observes Hotside at or below `hotLimit - 1°C` for five continuous seconds. One low sample can no longer bypass re-arm stability.
 - [PRESERVED] Adaptive thermal protection remains 30 seconds at 12 V, 9 V and 5 V, with Peltier OFF and Fan 100%. Five-second stable thermal recovery before the deadline cancels the timer; otherwise 12 V/9 V steps down and unrecovered 5 V enters terminal manual-restart lock. Thermal voltage restoration remains one step after each 60-second stable interval, bounded by the saved pre-downshift ceiling.
 - [CURRENT TRUTH] `pubspec.lock` is committed (blob `1e92812bfda2c28244a0556d71d1ec94084acc66`) and `.gitignore` is present. Earlier V6.2 notes about a missing lockfile are historical.
 - [TEST EVIDENCE — V6.2 CANDIDATE] GitHub Actions run 38362882150 recorded 45 passing Flutter tests. Its plain `flutter analyze` exited nonzero because 23 info-level deprecation notices were treated as fatal; the existing App release workflow uses `flutter analyze --no-fatal-infos`. This evidence predates the V6.3 latch patch and does not certify V6.3.
-- [UNVERIFIED] The added V6.3 latch regression has not been run. No V6.3 Firmware compile, BIN, flash, hardware, Android BLE pairing, or OTA regression has been performed. No APK Build was run.
+- [UNVERIFIED] The added V6.3 latch regression has not been run. The user reports compile and GitHub connectivity success, but end-to-end firmware installation, flash confirmation, Android BLE pairing and complete OTA regression remain unverified here. No APK Build was run.
 - [NOT RELEASED] V6.3 remains source-only DEVELOPMENT + QC / PRE-RELEASE. Production firmware repository and Firebase release metadata were not changed.
 
 ## HISTORICAL V6.2 FULL EXECUTION — 2026-10-13
