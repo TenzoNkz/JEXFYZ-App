@@ -65,7 +65,7 @@ void main() {
     expect(source, contains('static constexpr char AP_PASSWORD[] = "0987654321";'));
   });
 
-  test('Manual and Adaptive voltage transitions conditionally resume Peltier soft-start', () {
+  test('Manual and Adaptive transitions pause only an active soft-start and preserve full PWM', () {
     final source = File('firmware/JEXFYZ-V6.3.ino').readAsStringSync();
 
     expect(source, contains('VOLTAGE_DEADTIME_MS           = 200'));
@@ -100,13 +100,18 @@ void main() {
     expect(pauseStart, greaterThanOrEqualTo(0));
     expect(processStart, greaterThan(pauseStart));
     final pauseHelper = source.substring(pauseStart, processStart);
-    final captureRamp = pauseHelper.indexOf(
-      'peltierVoltageResumeSoftStart = peltierSoftStarting;',
-    );
+    final completedRampGuard = pauseHelper.indexOf('if (!peltierSoftStarting)');
+    final completeRampReturn = pauseHelper.indexOf('return;', completedRampGuard);
+    final captureRamp = pauseHelper.indexOf('peltierVoltageResumeSoftStart = true;');
     final clearRamp = pauseHelper.indexOf('peltierSoftStarting = false;');
+    expect(pauseHelper, contains('if (!peltierOn) return;'));
+    expect(completedRampGuard, greaterThanOrEqualTo(0));
+    expect(completeRampReturn, greaterThan(completedRampGuard));
+    expect(captureRamp, greaterThan(completeRampReturn));
+    expect(pauseHelper, contains('peltierVoltagePauseActive = false;'));
+    expect(pauseHelper, contains('peltierVoltageResumeSoftStart = false;'));
     expect(pauseHelper, contains('peltierVoltagePauseActive = true;'));
     expect(pauseHelper, contains('lastPeltierDuty = 0;'));
-    expect(captureRamp, greaterThanOrEqualTo(0));
     expect(clearRamp, greaterThan(captureRamp));
 
     final stopStart = source.indexOf('static void stopPeltierOutput()');
@@ -120,6 +125,10 @@ void main() {
     final processEnd = source.indexOf('static bool hotsideProtectionActiveNow()', processStart);
     final process = source.substring(processStart, processEnd);
     final transitionGate = process.indexOf('if (voltageTransition)');
+    final rampOnlyPauseGate = process.indexOf(
+      'if (peltierVoltagePauseActive && lastPeltierDuty != 0)',
+      transitionGate,
+    );
     final waitGate = process.indexOf('if (peltierVoltagePauseActive)');
     final guardCheck = process.indexOf(
       'millis() - lastVoltageTransitionCompleteMs < PELTIER_VOLTAGE_SETTLE_MS',
@@ -138,6 +147,7 @@ void main() {
     final fullDutyWrite = process.indexOf('ledcWrite(PIN_PELTIER, 255);', fullSpeedFallback);
 
     expect(transitionGate, greaterThanOrEqualTo(0));
+    expect(rampOnlyPauseGate, greaterThan(transitionGate));
     expect(waitGate, greaterThan(transitionGate));
     expect(guardCheck, greaterThan(waitGate));
     expect(savedRamp, greaterThan(guardCheck));
