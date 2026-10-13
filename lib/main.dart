@@ -1625,8 +1625,10 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (state != AppLifecycleState.resumed) return;
     if (connected && _bleReady && _bleSessionReady) {
       unawaited(_requestFreshSync(timeout: const Duration(seconds: 4)));
+    } else if (!connected && !otaRecoveryActive && !otaExpectedDisconnect) {
+      _startDisconnectRediscovery();
     } else {
-      _tryAutoConnect();
+      unawaited(_tryAutoConnect());
     }
   }
 
@@ -1640,7 +1642,11 @@ class _DashboardScreenState extends State<DashboardScreen>
   // changes Bluetooth power state.
   void _handleAutoConnectPreferenceChanged() {
     if (appAutoConnectNotifier.value) {
-      unawaited(_tryAutoConnect());
+      if (!connected && !otaRecoveryActive && !otaExpectedDisconnect) {
+        _startDisconnectRediscovery();
+      } else {
+        unawaited(_tryAutoConnect());
+      }
     } else if (!otaRecoveryActive && !otaExpectedDisconnect) {
       reconnectTimer?.cancel();
       reconnectTimer = null;
@@ -2079,7 +2085,13 @@ class _DashboardScreenState extends State<DashboardScreen>
     disconnectRediscoveryScanInProgress = false;
   }
 
-  void _startDisconnectRediscovery() {    if (!mounted || connected || _bleConnecting) return;
+  void _startDisconnectRediscovery() {
+    if (!mounted || connected || syncing || _bleConnecting) return;
+    if (!appAutoConnectNotifier.value ||
+        knownCoolerRemoteIdNotifier.value == null) {
+      _cancelDisconnectRediscovery();
+      return;
+    }
     if (reconnectTimer?.isActive ?? false) return;
 
     _cancelDisconnectRediscovery();
@@ -2088,6 +2100,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     Future<void> scanOnce() async {
       if (!mounted ||
           connected ||
+          syncing ||
           _bleConnecting ||
           (reconnectTimer?.isActive ?? false) ||
           attempts >= 10) {
@@ -2123,7 +2136,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         bluetoothAdapterOn: adapter == BluetoothAdapterState.on,
         legacyLocationReady: locationReady,
       )) {
-        disconnectRediscoveryScanInProgress = false;
+        _cancelDisconnectRediscovery();
         return;
       }
 
@@ -3583,12 +3596,27 @@ void _handleAckLine(String line) {
         timeout: const Duration(seconds: 4),
       );
       if (!ok) {
-        // Roll back definite command rejection only. Timeout/disconnect can mean
-        // firmware accepted OTA and began the single-radio handoff.
-        if (command == 'CLOUDOTA' &&
-            connected &&
-            _lastCommandAckReason != 'TIMEOUT' &&
-            _lastCommandAckReason != 'DISCONNECTED') {
+        final ambiguousCloudOtaStart = command == 'CLOUDOTA' &&
+            (_lastCommandAckReason == 'TIMEOUT' ||
+                _lastCommandAckReason == 'DISCONNECTED');
+        if (ambiguousCloudOtaStart) {
+          // Missing ACK is not proof of rejection: firmware may already have
+          // accepted CLOUDOTA and started its single-radio Wi-Fi handoff.
+          // Preserve OTA recovery flags so a disconnect/reconnect or OTA result
+          // can resolve the final state instead of showing a false rejection.
+          _showSnackBar(
+            JexText.phrase(
+              'OTA start was not confirmed. Waiting for device reconnection or OTA result.',
+              'Konfirmasi awal OTA belum diterima. Menunggu perangkat tersambung kembali atau hasil OTA.',
+              appLanguageNotifier.value,
+            ),
+            color: Colors.orangeAccent,
+          );
+          return;
+        }
+
+        // Roll back only a definite rejection while the BLE session is still up.
+        if (command == 'CLOUDOTA' && connected) {
           otaExpectedDisconnect = false;
           otaRecoveryActive = false;
           otaRecoveryScanInProgress = false;
