@@ -2,6 +2,8 @@
 
 Snapshot date: 2026-10-13 (Asia/Jakarta). This file replaces the previous snapshot; it is a boot/transfer protocol, not a substitute for checking live GitHub state.
 
+Current source-layout note: the V6.3 Online OTA trust-anchor PEM is stored in `firmware/JEXFYZ-OTA-Trust.h`; keep that header beside `JEXFYZ-V6.3.ino`. This is source organization only: CA-based HTTPS validation, GitHub raw-BIN allowlisting, NTP time sync, and redirect blocking remain active. Compile/runtime status is UNVERIFIED.
+
 ## 0. Mandatory boot and authority
 
 1. Read this file first, then fetch current `main` HEAD and source blobs.
@@ -25,11 +27,12 @@ Snapshot date: 2026-10-13 (Asia/Jakarta). This file replaces the previous snapsh
 
 - [VERIFIED] Repository: `TenzoNkz/JEXFYZ-App`; primary branch: `main`.
 - [VERIFIED] Functional/source checkpoint immediately before the transfer-document replacement: `b29fbd4d8b7569e5735d8d7d7d2554bca3c17865`, message “Scope OTA ambiguity regression assertion correctly”. Commit: https://github.com/TenzoNkz/JEXFYZ-App/commit/b29fbd4d8b7569e5735d8d7d7d2554bca3c17865. The previous documentation-only snapshot replacement is `69e3c6b383ff5ef86f354e087cb7531b7d9db8d8` (https://github.com/TenzoNkz/JEXFYZ-App/commit/69e3c6b383ff5ef86f354e087cb7531b7d9db8d8); it changed only `CHAT_TRANSFER.md`, not functional source.
-- [VERIFIED] Active Firmware source: `firmware/JEXFYZ-V6.3.ino`, blob `c2909e5ad4046596618175352934f89815f3e44c`; declares V6.3. V6.2 source was retired from active tree.
+- [VERIFIED BASELINE BEFORE THIS CHANGE] Active Firmware source was `firmware/JEXFYZ-V6.3.ino`, blob `c2909e5ad4046596618175352934f89815f3e44c`; this change moves its CA declaration into adjacent `firmware/JEXFYZ-OTA-Trust.h`. Fetch the live blobs before quoting the post-change IDs. V6.2 source was retired from the active tree.
 - [VERIFIED] App source: `lib/main.dart`, blob `535e396005a3bd1429db3096c627d87043b0e1b4`. Package `com.horizontalzzz.jexfyz`; pubspec version remains `1.0.0+3`.
 - [VERIFIED] `android/app/build.gradle` blob `d8681cb73156b61da7749633abd63e2fb8c287ba`; intentional `versionName "Telegram @horizontalzzz"` remains unchanged.
 - [VERIFIED] Latest V6.3 QC contract test: `test/v6_3_qc_contract_test.dart`, blob `985715321e0564346a9daab5a9edfc77b84341d8`.
 - [VERIFIED] Firmware regression test `test/firmware_touch_adaptive_sync_test.dart` remains part of the project; fetch its live blob before quoting a SHA.
+- [IMPLEMENTED IN SOURCE; NOT COMPILED] `firmware/JEXFYZ-OTA-Trust.h` keeps the ISRG Root X1 trust anchor separate from the V6.3 sketch. V6.3 still uses `cloudClient.setCACert(GITHUB_ROOT_CA)`; do not remove verification or use `setInsecure()`.
 - [VERIFIED] `pubspec.lock` is committed (blob `1e92812bfda2c28244a0556d71d1ec94084acc66`); `.gitignore` is present.
 - [VERIFIED] Only observed workflow in `.github/workflows/` is `.github/workflows/jexfyz-app-build-trigger.yml`, blob `6b1d6cd3c65c4913c288652ac7597e126b37d0cf`. It is manually issue-triggered with title `JE X FYZ — BUILD APP TRIGGER` and body token `JEXFYZ_BUILD_TRIGGER_V1`; normal pushes/PRs do not build the release APK.
 - [VERIFIED] Branch search returned `main`, `fix/adaptive-power-sequencing`, `diag/latest-stable-v16`, `diagnostic/v1.6-heap-check`, and `tmp-jexfyz-v5-test`. The non-main branches are not authorization to switch development context; main is authoritative.
@@ -70,6 +73,7 @@ Snapshot date: 2026-10-13 (Asia/Jakarta). This file replaces the previous snapsh
 - [VERIFIED WORKFLOW CONFIG] Java 17, Flutter 3.47.2 stable; workflow runs `flutter analyze --no-fatal-infos`, `flutter test`, and builds one obfuscated production-signed release APK after checks.
 - [USER REQUIREMENT] Do not trigger this workflow unless user explicitly says Build App.
 - [UNVERIFIED] Current V6.3 App source has not passed a new test/analyze/build run; do not report green status based on older CI evidence.
+- [UNVERIFIED] The firmware trust-header source-layout change has not been compiled; the header is a required sibling file when compiling the V6.3 sketch.
 
 ## 7. Persistent state files and what changed
 
