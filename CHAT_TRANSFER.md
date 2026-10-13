@@ -77,16 +77,17 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
 
 ## 7. Persistent state files and what changed
 
-- [VERIFIED] The V6.3 Online OTA connection restoration and the user's compile/GitHub connectivity result are recorded in the current project notes. Current observed blobs before the final transfer-snapshot update:
-  - `PROJECT_STATE.md`: `73c4cdfc12ba4f638cc576edfa7c222f83127a74`
-  - `HANDOVER.md`: `350f9fecaddb9ae7d03823f63a41e20f622311f0`
-  - `CHAT_RULES.md`: `22d60d0d62866f247e157f480af887b886c9896b`
-  - `APP_NOTES.md`: `75dc694894d61e864667beb511ad24c2574ba08f`
-  - `FIRMWARE_NOTES.md`: `bcd95fb4eb83272fdee19675c0f50c57deb5d3d0`
-  - `BUILD_NOTES.md`: `c385bdace4678642df1fe3a80f4080187a44ba72`
-  - `firmware/FIRMWARE_ANALYSIS.md`: `14cae2ea8769983a0851e5e33a25ae37991875fd`
-  - `OTA_PROTECTION.md`: `8307b6be041779c8b28dac242a49463a064527ef`
-  - `CHANGELOG.md`: `64b29c77f3cf3746f816350b96a62abc0f15c6f8`
+- [VERIFIED] The V6.3 Online OTA connection restoration, user-reported compile/GitHub connectivity result, and regression-prevention rules are recorded in the current project notes. Current observed blobs at reconciliation time:
+  - `PROJECT_STATE.md`: `769dbc44b9a7d159662e5189c2c12a403f4016fd`
+  - `HANDOVER.md`: `db0ba7cd3480de6f88c9c2f857eac8e60620198f`
+  - `CHAT_RULES.md`: `8551ee7df1c6fae0a61f1a3545253ac7e10f864a`
+  - `APP_NOTES.md`: `8791b4decb55f3a6df93ddf81c1bcb0436f86c0f`
+  - `FIRMWARE_NOTES.md`: `0a1fd6c2b13d61eff0a90915c36e4bdc84978144`
+  - `BUILD_NOTES.md`: `7e8efec367b04c8ff46f92f6515d63a2ac475e95`
+  - `firmware/FIRMWARE_ANALYSIS.md`: `50cf53ca48aff04ca32a99594fea5a0527b9d761`
+  - `OTA_PROTECTION.md`: `02a262c9ba2cf490ba3252985d5eba1ce4fbd0b5`
+  - `CHANGELOG.md`: `46a354c2e8ac78f1472523d24f02f7c4d4826b83`
+  - `OTA_REGRESSION_MEMORY.md`: `7c4dee64a75cec94cd6972e34bd39709abfec63a`
 - [CURRENT TRUTH] The current V6.3 Online OTA correction, user-reported compile/GitHub recovery, and no-recurrence policy are recorded across the project notes and the new canonical `OTA_REGRESSION_MEMORY.md`. The companion `TenzoNkz/JEXFYZ-Firmware` repository now has a README and mirrored OTA memory; its BIN was not changed.
 - [HISTORY/OBSOLETE] Older snapshots embedded below this file’s prior current-status header were contradictory and stale. This file is now being fully replaced to remove duplicate/obsolete snapshots; do not append another copy.
 
