@@ -951,13 +951,18 @@ static void beginPeltierSoftStart() {
   }
 }
 
-// Pause Peltier before touching the voltage selector. Keep the logical Peltier state
-// intact so the App request remains ON, but force physical PWM to 0%.
-// Capture ramp state before clearing it so a completed ramp can resume at 100%.
+// Pause Peltier only when a voltage change interrupts the 5 s ramp.
+// If the ramp already completed, keep GPIO5 at 100% throughout the rail change.
 static void pausePeltierForVoltageTransition() {
   if (!peltierOn) return;
 
-  peltierVoltageResumeSoftStart = peltierSoftStarting;
+  if (!peltierSoftStarting) {
+    peltierVoltagePauseActive = false;
+    peltierVoltageResumeSoftStart = false;
+    return;
+  }
+
+  peltierVoltageResumeSoftStart = true;
   peltierVoltagePauseActive = true;
   peltierSoftStarting = false;
   peltierSoftStartAtMs = 0;
@@ -974,9 +979,11 @@ static void processPeltierSoftStart() {
     return;
   }
 
-  // Fail closed while the selector is in break-before-make.
+  // During selector handoff, hold PWM at 0% only when an active soft-start
+  // was deliberately paused. A Peltier already at 100% keeps running unless
+  // the OFF/safety path above has explicitly stopped it.
   if (voltageTransition) {
-    if (lastPeltierDuty != 0) {
+    if (peltierVoltagePauseActive && lastPeltierDuty != 0) {
       ledcWrite(PIN_PELTIER, 0);
       lastPeltierDuty = 0;
     }
