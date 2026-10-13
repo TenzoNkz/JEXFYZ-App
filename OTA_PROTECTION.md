@@ -1,10 +1,10 @@
 ## CURRENT V6.3 EXECUTION STATUS — 2026-10-13
 
-### Current Online OTA trust-anchor layout — 2026-10-13
+### Current Online OTA single-file layout — 2026-10-13
 
-- [PRESERVED] ISRG Root X1 is stored in `firmware/JEXFYZ-OTA-Trust.h`; V6.3 includes it from the sketch and continues CA-validated HTTPS.
-- [PRESERVED] The GitHub raw-BIN allowlist and redirect blocking remain active. Do not replace certificate validation with `setInsecure()` as a cosmetic cleanup.
-- [UNVERIFIED] Source-layout change has not been compiled or tested on hardware; keep the header beside `JEXFYZ-V6.3.ino`.
+- [PRESERVED] ISRG Root X1 remains inline in `firmware/JEXFYZ-V6.3.ino`; the sketch does not depend on an additional firmware header.
+- [PRESERVED] CA-validated HTTPS, the GitHub raw-BIN allowlist and redirect blocking remain active. Do not replace verification with `setInsecure()`.
+- [UNVERIFIED] Single-file source layout has not been compiled or tested on hardware.
 
 ### APP BLE reconnect and Online OTA acknowledgement follow-up — 2026-10-13
 
