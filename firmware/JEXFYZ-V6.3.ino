@@ -65,7 +65,7 @@ enum class VoltageRequestSource : uint8_t;
 enum class AdaptiveProfile : uint8_t;
 
 /**
- * JE X FYZ — V6.2 Firmware
+ * JE X FYZ — V6.3 Firmware
  * ---------------------------------------------------------------------------
  * Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module
  * Framework: Arduino Standard + official Arduino-ESP32 Core 3.3.7
@@ -129,7 +129,7 @@ enum class AdaptiveProfile : uint8_t;
  * ---------------------------------------------------------------------------
  */
 
-static constexpr char FW_VERSION[] = "V6.2";
+static constexpr char FW_VERSION[] = "V6.3";
 
 // ============================================================================
 // ========================== HEAP DIAGNOSTIC BUILD ===========================
@@ -823,8 +823,8 @@ static void loadSettings() {
   // Purge retired persistent OTA history; OTA result handoff remains event-only.
   prefs.remove("lastOta");
 
-  // Adaptive Profile is runtime-only in V6.2. Discard the legacy persisted key
-  // so V5.x configuration cannot override the V6.2 HOTSIDE default.
+  // Adaptive Profile is runtime-only in V6.3. Discard the legacy persisted key
+  // so V5.x configuration cannot override the V6.3 HOTSIDE default.
   prefs.remove("adaptiveProfile");
   adaptiveProfile = AdaptiveProfile::HOTSIDE_PROTECTION;
 
@@ -1045,11 +1045,9 @@ static void clearAdaptiveThermalRecovery() {
 }
 
 static bool manualPeltierSafetyLatchBlocksPeltier() {
-  if (!manualPeltierSafetyLatch) return false;
-  if (!ntcValid || !isfinite(hotsideC)) return true;
-
-  return hotsideC >
-         static_cast<float>(hotLimit) - MANUAL_PELTIER_REARM_HYSTERESIS_C;
+  // Only enforceSafety() may clear this latch, after the full five-second
+  // Hotside stability window. A single sample at hotLimit - 1 C must not bypass it.
+  return manualPeltierSafetyLatch;
 }
 
 static bool safetyAllowsPeltier() {

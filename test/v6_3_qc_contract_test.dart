@@ -18,16 +18,16 @@ void main() {
     expect(normalizeLedColor(' #00FF80 '), '00FF80');
   });
 
-  test('V6.2 firmware keeps one calibrated NTC read and cooperative timing', () {
-    final source = File('firmware/JEXFYZ-V6.2.ino').readAsStringSync();
-    expect(source, contains('FW_VERSION[] = "V6.2"'));
+  test('V6.3 firmware keeps one calibrated NTC read and cooperative timing', () {
+    final source = File('firmware/JEXFYZ-V6.3.ino').readAsStringSync();
+    expect(source, contains('FW_VERSION[] = "V6.3"'));
     expect(RegExp(r'analogReadMilliVolts\(PIN_NTC\)').allMatches(source).length, 1);
     expect(RegExp(r'^\s*delay\s*\(', multiLine: true).hasMatch(source), isFalse);
     expect(RegExp(r'^\s*while\s*\(', multiLine: true).hasMatch(source), isFalse);
   });
 
   test('Adaptive protection has 30-second stages and 60-second voltage recovery', () {
-    final source = File('firmware/JEXFYZ-V6.2.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V6.3.ino').readAsStringSync();
     expect(source, contains('HOT_PELTIER_OFF_MS          = 30000'));
     expect(source, contains('HOTSIDE_REARM_STABLE_MS = 5000UL'));
     expect(source, contains('ADAPTIVE_VOLTAGE_RECOVERY_STABLE_MS = 60000UL'));
@@ -39,7 +39,7 @@ void main() {
   });
 
   test('Online OTA validates GitHub HTTPS; Local OTA scope stays unchanged', () {
-    final source = File('firmware/JEXFYZ-V6.2.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V6.3.ino').readAsStringSync();
     expect(source, contains('https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/'));
     expect(source, contains('cloudClient.setCACert(GITHUB_ROOT_CA)'));
     expect(source, isNot(contains('cloudClient.setInsecure()')));
@@ -51,7 +51,7 @@ void main() {
   });
 
   test('BLE command writes require encryption and bonding', () {
-    final source = File('firmware/JEXFYZ-V6.2.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V6.3.ino').readAsStringSync();
     expect(source, contains('#include <BLESecurity.h>'));
     expect(source, contains('BLESecurity::setAuthenticationMode(true, false, true)'));
     expect(source, contains('BLECharacteristic::PROPERTY_WRITE_ENC'));
@@ -78,4 +78,18 @@ void main() {
     expect(source, contains('runtimeOutputsKnown = false;'));
     expect(source, contains("stateKnown ? JexText.of(value ? 'on' : 'off', lang) : '--'"));
   });
+
+  test('manual Peltier lock cannot be bypassed by one threshold sample', () {
+    final source = File('firmware/JEXFYZ-V6.3.ino').readAsStringSync();
+    final start = source.indexOf('static bool manualPeltierSafetyLatchBlocksPeltier() {');
+    final end = source.indexOf('static bool safetyAllowsPeltier()', start);
+
+    expect(start, greaterThanOrEqualTo(0));
+    expect(end, greaterThan(start));
+    final helper = source.substring(start, end);
+    expect(helper, contains('return manualPeltierSafetyLatch;'));
+    expect(helper, isNot(contains('return hotsideC >')));
+    expect(source, contains('if (manualPeltierSafetyLatch && hotsideRearmStable)'));
+  });
+
 }
