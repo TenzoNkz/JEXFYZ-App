@@ -1783,7 +1783,7 @@ static bool requestVoltage(Voltage target, VoltageRequestSource source, bool byp
   voltageTransitionAt = millis();
   voltageTransitionSource = source;
 
-  // Pause an ON Peltier and force its PWM to 0% before selector outputs move.
+  // Only an in-progress soft-start is paused; a completed ramp stays at 100%.
   pausePeltierForVoltageTransition();
 
   // Force the Fan to 100% for every voltage transition. Fan speed can only be changed manually while already at 12V.
@@ -1958,7 +1958,7 @@ static void completeVoltageTransition() {
   }
 
   // A true OFF -> ON starts a 5 s ramp. Voltage transitions preserve the logical
-  // ON request and pause physical PWM; after settling, only an interrupted ramp restarts.
+  // ON request; only an interrupted ramp pauses physical PWM and restarts after settling.
   applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
   startVoltageIndicator();
 
