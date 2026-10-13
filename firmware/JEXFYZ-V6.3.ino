@@ -1938,8 +1938,8 @@ static void completeVoltageTransition() {
     fanPwm = 100;
   }
 
-  // Peltier soft-start is intentionally scoped only to a true OFF -> ON
-  // transition. Voltage changes preserve the current Peltier PWM state.
+  // A true OFF -> ON starts a 5 s ramp. Voltage transitions keep the logical
+  // request ON but pause physical PWM until the rail-settle gate starts a fresh ramp.
   applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
   startVoltageIndicator();
 
