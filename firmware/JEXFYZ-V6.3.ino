@@ -991,9 +991,8 @@ static void processPeltierSoftStart() {
     return;
   }
 
-  // Use the existing 1 s post-transition guard as rail-settle time. Resume the
-  // interrupted ramp only if it was still active; an already-complete ramp returns
-  // directly to full duty without being unnecessarily restarted.
+  // Apply the existing 1 s post-transition guard only to a paused active ramp.
+  // Completed ramps never set the pause flag and stay at 100% through selector handoff.
   if (peltierVoltagePauseActive) {
     if (millis() - lastVoltageTransitionCompleteMs < PELTIER_VOLTAGE_SETTLE_MS) {
       return;
