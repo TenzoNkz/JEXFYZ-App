@@ -1,6 +1,6 @@
 ## CURRENT V6.2 FULL EXECUTION — 2026-10-13
 
-- [CURRENT TRUTH] Active Firmware file: `firmware/JEXFYZ-V6.2.ino`; content blob SHA: `88d92f652a3cf973eb34bcfe3a9d73d9cbd87123`. The last Firmware source update is commit `cac71e8bdfc701a7ffb9b5e3fb1ea1bc6817884d`. V6.1 source is retired from the active tree.
+- [CURRENT TRUTH] Active Firmware file: `firmware/JEXFYZ-V6.2.ino`; content blob SHA: `88d92f652a3cf973eb34bcfe3a9d73d9cbd87123`. The last Firmware source update is commit `13377f00b49d9de0bbd31a872c0da7251be56e8d`. V6.1 source is retired from the active tree.
 - [CURRENT TRUTH] App file: `lib/main.dart`, blob SHA `b30c641efafa61661798c5d42c445c2773318195`, last App correction commit `116921bd28d280039ba191371fa276149466c802`. App version remains `1.0.0+3`.
 - [IMPLEMENTED IN SOURCE] Adaptive thermal safety uses 30-second dwell at 12 V, 9 V, and 5 V. Peltier turns OFF immediately and Fan remains at 100%. If Hotside reaches `hotLimit - 1°C` and remains there for 5 consecutive seconds before the 30-second deadline, the timer is cancelled, the rail is retained, and Peltier may resume. Otherwise 12 V/9 V steps down one rail, while an unrecovered 5 V stage enters terminal Adaptive/Peltier lock requiring manual restart.
 - [IMPLEMENTED IN SOURCE] After a thermal downshift, voltage recovery is one step at a time after 60 seconds continuously at or below `hotLimit - 1°C` at each rail, up to the saved pre-downshift Adaptive ceiling. The Battery Adaptive controller is gated while thermal recovery is active. Terminal 5 V lock does not auto-recover.
@@ -9,8 +9,8 @@
 - [IMPLEMENTED IN SOURCE] BLE command writes require encryption/bonding using Secure Connections with Just Works pairing. MITM/passkey is not enabled because the ESP32-C3 has no passkey display/input; Android first pairing and reconnect require physical verification.
 - [IMPLEMENTED IN SOURCE] App normal reconnect begins only after offline state is committed; Online OTA recovery is armed before `CLOUDOTA`; voltage success waits for matching `VOLTAGE` telemetry; LED confirmation normalizes optional `#`; Dashboard and Floating Monitor show unknown output status while disconnected; re-arm copy uses `hotLimit - 1°C`.
 - [IMPLEMENTED] Added `test/v6_2_qc_contract_test.dart`, updated `test/firmware_touch_adaptive_sync_test.dart` to the V6.2 path, and added Flutter/Dart/Android `.gitignore`.
-- [BLOCKED] `pubspec.lock` was not generated: no Flutter/Dart executable or local checkout was available to run a real dependency resolution. It was not fabricated.
-- [UNVERIFIED] `flutter test` and `flutter analyze` could not be run here because Flutter/Dart are unavailable. Firmware was not compiled, App APK was not built, BIN/flash/OTA/hardware/Android pairing tests were not performed.
+- [BLOCKED] `pubspec.lock` is absent from `main`. A temporary GitHub Actions run resolved dependencies, but its lockfile push was rejected as non-fast-forward; the subsequent test/analyze steps were skipped. The temporary workflow was removed and no lockfile was committed.
+- [UNVERIFIED] `flutter test` and `flutter analyze` remain unexecuted: the temporary Action skipped both after its lockfile push failed. This environment has no local Flutter/Dart toolchain. Firmware was not compiled, App APK was not built, BIN/flash/OTA/hardware/Android pairing tests were not performed.
 - [NOT RELEASED] V6.2 remains source-only DEVELOPMENT + QC / PRE-RELEASE. Production firmware repo/Firebase release metadata were not modified.
 
 # JE X FYZ — ACTIVE CHAT / ENGINEERING RULES
