@@ -47,7 +47,9 @@ enum class AdaptiveProfile : uint8_t;
  * - Fan PWM: 25 kHz, 8-bit, 50–100%.
  * - Peltier PWM: 20 kHz, 8-bit, 5 s soft-start.
  * - Peltier OFF -> ON always starts the 5 s soft-start.
- * - Ordinary voltage transitions preserve the existing Peltier PWM state.
+ * - Every accepted voltage transition pauses an ON Peltier at 0% PWM before
+ *   selector deadtime; after rail completion and the existing 1 s guard, a fresh
+ *   5 s soft-start begins from 0% PWM.
  * - Adaptive entry/exit turns Peltier OFF before the 200 ms selector handoff;
  *   a previously ON Peltier is restored after 5 V settles using the 5 s soft-start.
  *
@@ -347,6 +349,7 @@ bool peltierOn = false;
 bool touchVoltageAscending = true;
 bool peltierSoftStarting = false;
 uint32_t peltierSoftStartAtMs = 0;
+bool peltierVoltagePauseActive = false;
 uint8_t lastPeltierDuty = 0;
 enum class AdaptiveProfile : uint8_t {
   HOTSIDE_PROTECTION = 0,
@@ -923,6 +926,7 @@ static void writeFanPwm() {
 
 // Force the Peltier output to 0% and cancel any in-progress soft-start ramp.
 static void stopPeltierOutput() {
+  peltierVoltagePauseActive = false;
   peltierSoftStarting = false;
   peltierSoftStartAtMs = 0;
   if (lastPeltierDuty != 0) {
@@ -933,6 +937,7 @@ static void stopPeltierOutput() {
 
 // Restart the Peltier ramp from 0% whenever the contract requires a fresh soft-start.
 static void beginPeltierSoftStart() {
+  peltierVoltagePauseActive = false;
   peltierSoftStarting = true;
   peltierSoftStartAtMs = millis();
   if (lastPeltierDuty != 0) {
@@ -941,11 +946,44 @@ static void beginPeltierSoftStart() {
   }
 }
 
+// Pause Peltier before touching the voltage selector. Keep logical Peltier state
+// intact so the user request remains ON, but force the physical PWM output to 0%.
+static void pausePeltierForVoltageTransition() {
+  if (!peltierOn) return;
+
+  peltierVoltagePauseActive = true;
+  peltierSoftStarting = false;
+  peltierSoftStartAtMs = 0;
+  if (runtimeFeaturesReady) {
+    ledcWrite(PIN_PELTIER, 0);
+  }
+  lastPeltierDuty = 0;
+}
+
 // Advance the Peltier 5 s ramp cooperatively; no blocking wait is allowed here.
 static void processPeltierSoftStart() {
   if (!peltierOn) {
     stopPeltierOutput();
     return;
+  }
+
+  // Fail closed while the selector is in break-before-make.
+  if (voltageTransition) {
+    if (lastPeltierDuty != 0) {
+      ledcWrite(PIN_PELTIER, 0);
+      lastPeltierDuty = 0;
+    }
+    return;
+  }
+
+  // Re-use the existing 1 s post-transition guard as a rail-settle interval,
+  // then start a new full 5 s soft-start from 0%. No new guessed delay is added.
+  if (peltierVoltagePauseActive) {
+    if (millis() - lastVoltageTransitionCompleteMs < VOLTAGE_GUARD_MS) {
+      return;
+    }
+    peltierVoltagePauseActive = false;
+    beginPeltierSoftStart();
   }
 
   if (!peltierSoftStarting) {
@@ -1724,6 +1762,9 @@ static bool requestVoltage(Voltage target, VoltageRequestSource source, bool byp
   voltageTransitionAt = millis();
   voltageTransitionSource = source;
 
+  // Pause an ON Peltier and force its PWM to 0% before selector outputs move.
+  pausePeltierForVoltageTransition();
+
   // Force the Fan to 100% for every voltage transition. Fan speed can only be changed manually while already at 12V.
   const uint8_t previousTransitionFanPwm = fanPwm;
   fanPwm = 100;
@@ -1973,6 +2014,7 @@ static void forceSafeFiveVolt() {
 
   fanOn = true;
   peltierOn = false;
+  peltierVoltagePauseActive = false;
   peltierSoftStarting = false;
   peltierSoftStartAtMs = 0;
   adaptiveOn = false;
@@ -5033,6 +5075,7 @@ static void initializeRuntimeFeatures() {
   pendingVoltage = Voltage::V5;
   fanOn = false;
   peltierOn = false;
+  peltierVoltagePauseActive = false;
   peltierSoftStarting = false;
   peltierSoftStartAtMs = 0;
   lastPeltierDuty = 0;
@@ -5141,6 +5184,7 @@ void loop() {
     uint8_t previousFanPwm = fanPwm;
     fanOn = false;
     peltierOn = false;
+    peltierVoltagePauseActive = false;
     peltierSoftStarting = false;
     peltierSoftStartAtMs = 0;
     if (runtimeFeaturesReady) {
