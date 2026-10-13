@@ -1,5 +1,11 @@
 ## CURRENT V6.3 EXECUTION STATUS — 2026-10-13
 
+### Online OTA CA source-layout cleanup — 2026-10-13
+
+- [IMPLEMENTED IN SOURCE — NOT COMPILED] The ISRG Root X1 PEM definition is moved out of `firmware/JEXFYZ-V6.3.ino` into adjacent `firmware/JEXFYZ-OTA-Trust.h`, so the main sketch no longer contains the long certificate block.
+- [PRESERVED] Online OTA still validates HTTPS with `cloudClient.setCACert(GITHUB_ROOT_CA)`; the GitHub raw-BIN URL allowlist, 20-second NTP time-sync stage, and redirect blocking remain unchanged. `setInsecure()` is not used.
+- [UNVERIFIED] No compile, BIN, flash, OTA, or hardware validation has been performed for this source-layout change. The trust header must be kept beside the V6.3 sketch when compiling.
+
 - [CURRENT TRUTH] Active Firmware source: `firmware/JEXFYZ-V6.3.ino`, blob `c2909e5ad4046596618175352934f89815f3e44c`; V6.2 was retired from the active tree. App source remains `lib/main.dart`, version `1.0.0+3`.
 - [FIXED] The manual Peltier safety latch now remains blocking until `enforceSafety()` observes Hotside at or below `hotLimit - 1°C` for five continuous seconds. One low sample can no longer bypass re-arm stability.
 - [PRESERVED] Adaptive thermal protection remains 30 seconds at 12 V, 9 V and 5 V, with Peltier OFF and Fan 100%. Five-second stable thermal recovery before the deadline cancels the timer; otherwise 12 V/9 V steps down and unrecovered 5 V enters terminal manual-restart lock. Thermal voltage restoration remains one step after each 60-second stable interval, bounded by the saved pre-downshift ceiling.
