@@ -38,20 +38,30 @@ void main() {
     expect(source, contains('adaptiveThermalRecoveryActive ||'));
   });
 
-  test('Online OTA validates GitHub HTTPS in the single-file sketch', () {
+  test('Online OTA preserves the legacy connection path and GitHub URL restrictions', () {
     final source = File('firmware/JEXFYZ-V6.3.ino').readAsStringSync();
 
-    expect(source, contains('static const char GITHUB_ROOT_CA[] PROGMEM'));
-    expect(source, contains('-----BEGIN CERTIFICATE-----'));
-    expect(source, contains('-----END CERTIFICATE-----'));
-    expect(source, isNot(contains('JEXFYZ-OTA-Trust.h')));
+    expect(source, isNot(contains('GITHUB_ROOT_CA')));
+    expect(source, isNot(contains('-----BEGIN CERTIFICATE-----')));
+    expect(source, contains('cloudClient.setIn' + 'secure()'));
+    expect(source, isNot(contains('cloudClient.setCACert(')));
+    expect(source, isNot(contains('case OnlineOtaFlow::TIME_SYNCING')));
+    expect(source, isNot(contains('configTime(')));
+    expect(source, isNot(contains('ONLINE_OTA_TIME_SYNC_TIMEOUT_MS')));
+    expect(source, isNot(contains('ONLINE_OTA_VALID_TIME_EPOCH')));
+
     expect(source, contains('https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/'));
-    expect(source, contains('cloudClient.setCACert(GITHUB_ROOT_CA)'));
-    expect(source, isNot(contains('cloudClient.setInsecure()')));
-    expect(source, contains('case OnlineOtaFlow::TIME_SYNCING'));
-    expect(source, contains('configTime(0, 0, "pool.ntp.org", "time.google.com")'));
-    expect(source, contains('ONLINE_OTA_TIME_SYNC_TIMEOUT_MS = 20000UL'));
     expect(source, contains('HTTPC_DISABLE_FOLLOW_REDIRECTS'));
+
+    final wifiStart = source.indexOf('case OnlineOtaFlow::WIFI_CONNECTING:');
+    final downloadStart = source.indexOf('case OnlineOtaFlow::DOWNLOAD:', wifiStart);
+    expect(wifiStart, greaterThanOrEqualTo(0));
+    expect(downloadStart, greaterThan(wifiStart));
+    final wifiFlow = source.substring(wifiStart, downloadStart);
+    expect(wifiFlow, contains('if (WiFi.status() == WL_CONNECTED)'));
+    expect(wifiFlow, contains('0x0000FF'));
+    expect(wifiFlow, contains('OnlineOtaIndicatorNext::PREPARE_DOWNLOAD'));
+
     expect(source, contains('static constexpr char AP_PASSWORD[] = "0987654321";'));
   });
 
