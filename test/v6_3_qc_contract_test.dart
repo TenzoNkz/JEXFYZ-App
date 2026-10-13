@@ -134,7 +134,12 @@ void main() {
     expect(method, contains('Waiting for device reconnection or OTA result.'));
     expect(rejectedNotice, greaterThan(ambiguity));
 
-    final ambiguityBranch = method.substring(ambiguity, rejectedNotice);
+    final rollbackComment = method.indexOf(
+      '// Roll back only a definite rejection while the BLE session is still up.',
+      ambiguity,
+    );
+    expect(rollbackComment, greaterThan(ambiguity));
+    final ambiguityBranch = method.substring(ambiguity, rollbackComment);
     expect(ambiguityBranch, isNot(contains('otaExpectedDisconnect = false;')));
     expect(ambiguityBranch, isNot(contains('otaRecoveryActive = false;')));
   });
