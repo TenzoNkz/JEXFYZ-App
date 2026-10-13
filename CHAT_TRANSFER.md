@@ -85,7 +85,7 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
   - `FIRMWARE_NOTES.md`: `bcd95fb4eb83272fdee19675c0f50c57deb5d3d0`
   - `BUILD_NOTES.md`: `c385bdace4678642df1fe3a80f4080187a44ba72`
   - `firmware/FIRMWARE_ANALYSIS.md`: `14cae2ea8769983a0851e5e33a25ae37991875fd`
-  - `OTA_PROTECTION.md`: `98b597021c4c8bfa0041acf5c2bcb17a53ccf7ea`
+  - `OTA_PROTECTION.md`: `8307b6be041779c8b28dac242a49463a064527ef`
   - `CHANGELOG.md`: `64b29c77f3cf3746f816350b96a62abc0f15c6f8`
 - [CURRENT TRUTH] These persistent state files did not require additional edits for this transfer: the current App follow-up was already recorded. Only `CHAT_TRANSFER.md` is to be replaced in this operation.
 - [HISTORY/OBSOLETE] Older snapshots embedded below this file’s prior current-status header were contradictory and stale. This file is now being fully replaced to remove duplicate/obsolete snapshots; do not append another copy.
