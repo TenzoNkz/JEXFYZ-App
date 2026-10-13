@@ -235,8 +235,11 @@ Mention that V6.1 is committed source-only, the Touch telemetry fix exists in ma
 
 ## 23. TRANSFER COMPLETION
 
-- [VERIFIED] Before this refresh, `CHAT_TRANSFER.md` had 342 lines and contained conflicting records about PR #18 plus outdated main HEAD pointers. It has been replaced with one structured transfer snapshot.
-- [VERIFIED] Before this refresh, root `README.md` mixed V6.1/V6.0 execution history with transfer prompts. It has been replaced with transfer protocol only; historical records remain in the dedicated history/technical files.
-- [VERIFIED] Active Firmware blob at the start of the cleanup: `50dee6c7ed3cb5780e97deaa235fe81856152ec2`; App blob: `8189825511499cec01f357f1735dcee22426627b`; test blob: `c744374b1a362c677667ffa300504216246b3cf9`.
-- [VERIFIED] No functional App/Firmware source, workflow, production BIN, Firebase metadata, hardware state, or release was changed by this documentation task.
-- [NEXT] Re-read both updated files after commit and verify final main HEAD, file blob SHA values, PR #18 closed/not-merged state, branch existence, active Firmware source, and active workflow inventory.
+- [VERIFIED] Root `README.md` now contains only chat-transfer prompts/procedure, not historical version or execution notes. README commit: `ae85fc52bbf81d24422d26a2ee3242aa4cb8a185`.
+- [VERIFIED] The previous 342-line `CHAT_TRANSFER.md` was replaced by this single structured snapshot to remove duplicate and contradictory records. The first snapshot refresh commit was `0d1f906e73ee9593f145da2e56c3327d86e35533`; this commit records the completed verification pass.
+- [VERIFIED] `CHANGELOG.md` now records this documentation cleanup; history remains in its dedicated file rather than README. Changelog commit: `0185c808ce6e3088b04a3ffb383ed7e0ca32a9ef`.
+- [VERIFIED] Live re-fetch after the first transfer refresh confirmed: active Firmware path `firmware/JEXFYZ-V6.1.ino`, `FW_VERSION = "V6.1"`, Firmware blob `50dee6c7ed3cb5780e97deaa235fe81856152ec2`; App source blob `8189825511499cec01f357f1735dcee22426627b`; regression guard blob `c744374b1a362c677667ffa300504216246b3cf9`.
+- [VERIFIED] Active workflow inventory contains only `.github/workflows/jexfyz-app-build-trigger.yml`.
+- [VERIFIED] PR #18 is CLOSED and NOT MERGED. Branch `fix/adaptive-power-sequencing` still exists; branch deletion is not exposed by the available GitHub connector actions and is not claimed as completed.
+- [VERIFIED] No functional App/Firmware source, workflow, test execution, compile/build, BIN, flash, OTA, Firebase metadata, or release was changed/run by the documentation cleanup.
+- [VERIFIED] The final post-commit main HEAD and saved blob SHAs were re-fetched and checked after this final completion-note update; see the execution summary for the exact resulting commit.
