@@ -1,5 +1,14 @@
 ## CURRENT V6.3 EXECUTION STATUS — 2026-10-13
 
+### Peltier voltage-transition restart prevention — 2026-10-13
+
+- [FIXED IN SOURCE — NOT COMPILED] When an accepted voltage change occurs while the logical Peltier state is ON, firmware now forces physical GPIO5 PWM to 0% before opening the selector handoff. Fan remains enabled and is forced to 100%; the existing 200 ms break-before-make sequence remains unchanged.
+- [IMPLEMENTED IN SOURCE] After selector completion, PWM stays at 0% for 1,000 ms using `PELTIER_VOLTAGE_SETTLE_MS` (aliased to the existing `VOLTAGE_GUARD_MS`), then a new 5-second soft-start begins from 0%. This also protects transitions when Peltier had already reached full duty.
+- [REGRESSION CONTRACT ADDED — NOT RUN] `test/v6_3_qc_contract_test.dart` checks pause-before-selector ordering, the 1-second settle gate, restart of the fresh ramp, and retention of `BROWNOUT` reset diagnostics.
+- [USER-REPORTED SYMPTOM] Hardware restarted when changing from 5 V to 12 V with Peltier and Fan ON during soft-start. A power transient/brownout is a plausible hypothesis, not a confirmed reset cause; capture `BOOT: RESET_REASON=...` after the next user-side reproduction.
+- [UNVERIFIED] The latest source revision has not been compiled or tested on hardware. The earlier V6.3 compile report predates this fix. No BIN, flash, physical OTA, or release operation was performed.
+- [CANONICAL MEMORY] See [VOLTAGE_TRANSITION_MEMORY.md](VOLTAGE_TRANSITION_MEMORY.md) for the full incident record, exact timing contract, safeguards, and validation boundary.
+
 ### Online OTA connection regression correction — 2026-10-13
 
 - [SOURCE FIX IMPLEMENTED] V6.3 Online OTA restores the previous `cloudClient.setInsecure()` connection path. The inline ISRG Root X1 certificate, CA validation call, `configTime()`, `TIME_SYNCING` state, and 20-second NTP gate were removed. On Wi-Fi connection, the blue indicator runs directly before the GitHub GET attempt.
