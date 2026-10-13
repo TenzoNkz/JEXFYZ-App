@@ -27,7 +27,7 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
 
 - [VERIFIED] Repository: `TenzoNkz/JEXFYZ-App`; primary branch: `main`.
 - [VERIFIED] Latest functional OTA source restoration commit: `a87bbcecdca26b3648abff9cb88937e250b41f1f`; `firmware/JEXFYZ-V6.3.ino` now uses `cloudClient.setInsecure()` without the embedded CA or NTP gate. Commit: https://github.com/TenzoNkz/JEXFYZ-App/commit/a87bbcecdca26b3648abff9cb88937e250b41f1f. The OTA contract test update follows in commit `dc0d6ec13d3f58ab864e006e7defb543fd4752b6`.
-- [CURRENT SOURCE — LATEST REVISION NOT COMPILED] Active Firmware source is `firmware/JEXFYZ-V6.3.ino`, blob `61237855ad87878553828ac7c37830d754b7fd9e`; it remains one self-contained `.ino`. The earlier OTA fix uses `cloudClient.setInsecure()` with CA/NTP gate removed. User reported that prior revision compiled and GitHub connection recovered. The current revision additionally pauses Peltier PWM before voltage transitions, waits the settle gate, and restarts the 5 s soft-start; it has not been compiled. V6.2 source was retired from the active tree.
+- [CURRENT SOURCE — LATEST REVISION NOT COMPILED] Active Firmware source is `firmware/JEXFYZ-V6.3.ino`, blob `2ad3ff2c4545a9fa6f659fdd11283116dc255ec2`; it remains one self-contained `.ino`. The earlier OTA fix uses `cloudClient.setInsecure()` with CA/NTP gate removed. User reported that prior revision compiled and GitHub connection recovered. The current revision additionally pauses Peltier PWM before voltage transitions, waits the settle gate, and restarts the 5 s soft-start; it has not been compiled. V6.2 source was retired from the active tree.
 - [VERIFIED] App source: `lib/main.dart`, blob `535e396005a3bd1429db3096c627d87043b0e1b4`. Package `com.horizontalzzz.jexfyz`; pubspec version remains `1.0.0+3`.
 - [VERIFIED] `android/app/build.gradle` blob `d8681cb73156b61da7749633abd63e2fb8c287ba`; intentional `versionName "Telegram @horizontalzzz"` remains unchanged.
 - [VERIFIED] Latest V6.3 QC contract test: `test/v6_3_qc_contract_test.dart`, blob `c30cd8a2a522d67108ab718a703982a42270749b`.
@@ -92,7 +92,7 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
   - `CHANGELOG.md`: `939574970893cbc1e94abc167d056c41dccbbb52`
   - `OTA_REGRESSION_MEMORY.md`: `7c4dee64a75cec94cd6972e34bd39709abfec63a`
   - `VOLTAGE_TRANSITION_MEMORY.md`: `0675607d0ef978674a8a675b8767c14159f821fb`
-  - `firmware/JEXFYZ-V6.3.ino`: `61237855ad87878553828ac7c37830d754b7fd9e`
+  - `firmware/JEXFYZ-V6.3.ino`: `2ad3ff2c4545a9fa6f659fdd11283116dc255ec2`
   - `test/v6_3_qc_contract_test.dart`: `c30cd8a2a522d67108ab718a703982a42270749b`
 - [CURRENT TRUTH] The current V6.3 Online OTA correction, user-reported compile/GitHub recovery, and no-recurrence policy are recorded across the project notes and the new canonical `OTA_REGRESSION_MEMORY.md`. The companion `TenzoNkz/JEXFYZ-Firmware` repository now has a README and mirrored OTA memory; its BIN was not changed.
 - [HISTORY/OBSOLETE] Older snapshots embedded below this file’s prior current-status header were contradictory and stale. This file is now being fully replaced to remove duplicate/obsolete snapshots; do not append another copy.
