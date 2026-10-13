@@ -1,8 +1,8 @@
 # JE X FYZ / JE Cooler — CHAT TRANSFER SNAPSHOT
 
-Snapshot date: 2026-10-13 (Asia/Jakarta). This file replaces the previous snapshot; it is a boot/transfer protocol, not a substitute for checking live GitHub state.
+Snapshot date: 2026-10-14 (Asia/Jakarta). This file replaces the previous snapshot; it is a boot/transfer protocol, not a substitute for checking live GitHub state.
 
-Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setInsecure()`. The embedded CA certificate and OTA-only NTP time-sync gate are removed; blue feedback follows Wi-Fi connection before the GitHub GET attempt. The raw GitHub BIN URL allowlist and redirect blocking remain. This bypasses server certificate identity validation. [USER-REPORTED] Firmware compile succeeded and Online OTA connects to GitHub again after this change. Full transfer, flash/apply completion, successful reboot, and installed-version confirmation are not independently recorded here. Canonical Online OTA prevention record: [OTA_REGRESSION_MEMORY.md](OTA_REGRESSION_MEMORY.md). The Peltier rail-transition rule is tracked in [VOLTAGE_TRANSITION_MEMORY.md](VOLTAGE_TRANSITION_MEMORY.md): active soft-start pauses and restarts after settling, while a completed ramp keeps PWM at 100% throughout the transition. The current revision has not been compiled or hardware-tested.
+Current OTA source note: the Online OTA connection correction was introduced in the V6.3 revision and remains present in active V6.4 source via `cloudClient.setInsecure()`. The embedded CA certificate and OTA-only NTP time-sync gate are removed; blue feedback follows Wi-Fi connection before the GitHub GET attempt. The raw GitHub BIN URL allowlist and redirect blocking remain. This bypasses server certificate identity validation. [USER-REPORTED] Firmware compile succeeded and Online OTA connects to GitHub again after this change. Full transfer, flash/apply completion, successful reboot, and installed-version confirmation are not independently recorded here. Canonical Online OTA prevention record: [OTA_REGRESSION_MEMORY.md](OTA_REGRESSION_MEMORY.md). The Peltier rail-transition rule is tracked in [VOLTAGE_TRANSITION_MEMORY.md](VOLTAGE_TRANSITION_MEMORY.md): active soft-start pauses and restarts after settling, while a completed ramp keeps PWM at 100% throughout the transition. The current revision has not been compiled or hardware-tested.
 
 ## 0. Mandatory boot and authority
 
@@ -20,17 +20,18 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
 - [USER REQUIREMENT] Firmware compile/build, BIN generation, flash, OTA, Firebase/production metadata changes, and release each require their own explicit authorization.
 - [USER REQUIREMENT] Prefer direct commits to `main`; do not create branches or PRs unless requested.
 - [USER REQUIREMENT] User will compile Firmware themselves; do not compile on their behalf.
+- [MANDATORY VERSION RULE — NOW ALIGNED] Every functional Firmware source revision bumps `FW_VERSION`, matches the active `.ino` filename, and leaves only one active versioned `.ino`. The V6.4 source rename/version bump fixes the stale V6.3 alignment; source-only status does not imply a compiled BIN.
 - [USER-CONFIRMED] Android Gradle `versionName "Telegram @horizontalzzz"` is intentional creator/contact identity. Preserve it exactly.
 - Never claim a write, test, build, device validation, or release that did not occur.
 
 ## 2. Current repository checkpoint
 
-- [VERIFIED] Repository: `TenzoNkz/JEXFYZ-App`; primary branch: `main`.
+- [VERIFIED] Repository: `TenzoNkz/JEXFYZ-App`; primary branch: `main`. Pre-transfer main checkpoint was `fb9e96b2cb2dd66b79c94b4f55bea4780d3d894f`; this snapshot update creates a newer commit.
 - [VERIFIED] Latest functional OTA source restoration commit: `a87bbcecdca26b3648abff9cb88937e250b41f1f`; `firmware/JEXFYZ-V6.3.ino` now uses `cloudClient.setInsecure()` without the embedded CA or NTP gate. Commit: https://github.com/TenzoNkz/JEXFYZ-App/commit/a87bbcecdca26b3648abff9cb88937e250b41f1f. The OTA contract test update follows in commit `dc0d6ec13d3f58ab864e006e7defb543fd4752b6`.
-- [CURRENT SOURCE — LATEST REVISION NOT COMPILED] Active Firmware source is `firmware/JEXFYZ-V6.3.ino`; it remains one self-contained `.ino`. The earlier OTA fix uses `cloudClient.setInsecure()` with CA/NTP gate removed. User reported that prior revision compiled and GitHub connection recovered. The current revision pauses Peltier PWM only if a voltage change interrupts an active 5 s ramp; after the 1 s settle it restarts a full 5 s ramp. If the ramp had completed, PWM stays at 100% through selector movement without a forced OFF or re-ramp. It has not been compiled. V6.2 source was retired from the active tree.
+- [CURRENT SOURCE — LATEST REVISION NOT COMPILED] Active Firmware source is `firmware/JEXFYZ-V6.3.ino`; it remains one self-contained `.ino`. The earlier OTA fix uses `cloudClient.setInsecure()` with CA/NTP gate removed. User reported that prior revision compiled and GitHub connection recovered. The V6.4 revision pauses Peltier PWM only if a voltage change interrupts an active 5 s ramp; after the 1 s settle it restarts a full 5 s ramp. If the ramp had completed, PWM stays at 100% through selector movement without a forced OFF or re-ramp. `FW_VERSION` and the single active filename both align at V6.4. This revision has not been compiled. V6.2 and the stale V6.3 active filename are retired.
 - [VERIFIED] App source: `lib/main.dart`, blob `535e396005a3bd1429db3096c627d87043b0e1b4`. Package `com.horizontalzzz.jexfyz`; pubspec version remains `1.0.0+3`.
 - [VERIFIED] `android/app/build.gradle` blob `d8681cb73156b61da7749633abd63e2fb8c287ba`; intentional `versionName "Telegram @horizontalzzz"` remains unchanged.
-- [VERIFIED] Latest V6.3 QC contract test: `test/v6_3_qc_contract_test.dart`, blob `950153f50964c87d3d41eca173f7fc39631d9ca7`.
+- [VERIFIED] Latest V6.4 QC contract test: `test/v6_4_qc_contract_test.dart`, blob `f071c9642c1a06726d25b8c26a814845b02a55d6`.
 - [VERIFIED] Firmware regression test `test/firmware_touch_adaptive_sync_test.dart` remains part of the project; fetch its live blob before quoting a SHA.
 - [IMPLEMENTED IN SOURCE; PRIOR REVISION USER-REPORTED COMPILE SUCCESS] Online OTA uses `cloudClient.setInsecure()`; the embedded ISRG Root X1 PEM, CA validation, `configTime()`, and `TIME_SYNCING`/20-second NTP gate remain removed. Blue Wi-Fi feedback leads directly to the GitHub GET attempt. User-reported compile success and recovered GitHub connectivity refer to the earlier revision; the latest Peltier transition fix has not been compiled. This intentionally skips server certificate validation; the GitHub raw-BIN URL allowlist and redirect blocking remain.
 - [VERIFIED] `pubspec.lock` is committed (blob `1e92812bfda2c28244a0556d71d1ec94084acc66`); `.gitignore` is present.
@@ -43,7 +44,7 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
 - [IMPLEMENTED IN SOURCE; NOT RUNTIME-VERIFIED] BLE disconnect rediscovery should not start when Auto Connect is disabled or no known cooler identity exists; it cancels retry work when Bluetooth/permissions/location prerequisites fail, suppresses scanning while syncing, and retries after Auto Connect is enabled or app resumes while disconnected.
 - [IMPLEMENTED IN SOURCE; NOT RUNTIME-VERIFIED] A `CLOUDOTA` ACK timeout/disconnect is ambiguous, not proof of rejection. Keep OTA recovery state and show waiting-for-reconnect/result messaging. Roll back only on a definite rejection while BLE remains connected.
 - [IMPLEMENTED IN SOURCE] The V6.3 QC contract test includes static regression assertions for reconnect cancellation and ambiguous OTA ACK behavior.
-- [UNVERIFIED] Flutter tests and Dart analysis have not been run for this follow-up. The current environment reported no Flutter/Dart executable. A prior GitHub Actions run for the V6.2 candidate had 45 passing Flutter tests, but it does not validate current V6.3/current App changes.
+- [UNVERIFIED] Flutter tests and Dart analysis have not been run for this follow-up. The current environment reported no Flutter/Dart executable. A prior GitHub Actions run for the V6.2 candidate had 45 passing Flutter tests, but it does not validate current V6.4/current App changes.
 - [STATUS] User-reported compile/GitHub-connect success applies to the earlier V6.3 revision. The latest source including the Peltier voltage-transition fix is not compiled or hardware-tested. No APK build/Build App, assistant-side Firmware compile, BIN generation/publication, flash, independent physical BLE pairing, hardware thermal test, or complete OTA transfer/apply/reboot regression was performed in this session.
 - [CURRENT TRUTH] This snapshot records a separately authorized Peltier voltage-transition change. Read `VOLTAGE_TRANSITION_MEMORY.md` before any future transition-timing edit.
 
@@ -52,7 +53,7 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
 - [VERIFIED SOURCE] Target is ESP32-C3 Super Mini / ESP32-C3 Dev Module; logic 3.3 V.
 - [USER REQUIREMENT] Pin map: NTC GPIO0; Touch GPIO1; 12 V GPIO3; 9 V GPIO4; Peltier GPIO5; Fan GPIO6; WS2812 GPIO7.
 - [USER REQUIREMENT] NTC 10 kΩ + 10 kΩ, Beta 3950; one calibrated ADC sample per second; do not add median/multi-sample averaging. No blocking `delay()` or timing `while()`.
-- [USER REQUIREMENT] Hotside limit 40–50 °C, default 45 °C. Manual Peltier re-arm threshold is `hotLimit - 1 °C` plus five seconds stable, as reflected in current V6.3 source/notes.
+- [USER REQUIREMENT] Hotside limit 40–50 °C, default 45 °C. Manual Peltier re-arm threshold is `hotLimit - 1 °C` plus five seconds stable, as reflected in current V6.4 source/notes.
 - [VERIFIED STATIC SOURCE CONTRACT] V6.3 manual Peltier safety latch remains blocking until `enforceSafety()` observes Hotside at/below `hotLimit - 1°C` for five continuous seconds; a single low sample cannot bypass stability.
 - [VERIFIED STATIC SOURCE CONTRACT] Adaptive thermal protection has 30-second stages at 12 V, 9 V, and 5 V with Peltier OFF and Fan 100%. Five continuous seconds at/below `hotLimit - 1°C` before the stage deadline cancels the stage; otherwise it steps down 12→9→5 V. Unrecovered 5 V enters terminal lock requiring manual restart. Recovery up one rail requires 60 seconds stable per rail, capped by saved Adaptive ceiling.
 - [VERIFIED STATIC SOURCE CONTRACT] Touch long-press while Adaptive is active publishes `ADAPTIVE`, `ADAPTIVE_CEILING`, `FAN`, `PELTIER`, and `FAN_SPEED` telemetry before the `TOUCH_ADAPTIVE` ACK.
@@ -66,7 +67,7 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
 - [USER REQUIREMENT] ESP32-C3 has one radio path: Wi-Fi OTA and BLE must not own radio simultaneously. OTA flow, state machine, LED indications, recovery, and local OTA are protected; read `OTA_PROTECTION.md` before any OTA-related changes.
 - [VERIFIED SOURCE] Online OTA uses TLS via `cloudClient.setInsecure()` and only permits the allowlisted raw GitHub firmware URL prefix; redirects remain blocked. Because certificate verification is bypassed, HTTPS server identity is not authenticated. No custom SHA/signature layer was added; Firebase firmware metadata remains version + link.
 - [UNVERIFIED] Current Firebase rules/App Check enforcement and live metadata were not checked in this transfer.
-- [VERIFIED CURRENT REPOSITORY CHECKPOINT] Artifact repository `TenzoNkz/JEXFYZ-Firmware` contains `JEXFYZ.cpp.bin`; latest observed upload commit is `b345637acfdbd3f80ae6159a14cc09ddbc05f934` (2026-10-13T13:47:12Z). Matching the BIN to the V6.3 source blob/build provenance has not been independently verified. Do not assume or republish it without provenance and explicit authorization. Its README and OTA regression memory now document this boundary.
+- [VERIFIED CURRENT REPOSITORY CHECKPOINT] Artifact repository `TenzoNkz/JEXFYZ-Firmware` contains `JEXFYZ.cpp.bin`; latest observed upload commit is `b345637acfdbd3f80ae6159a14cc09ddbc05f934` (2026-10-13T13:47:12Z). Matching the BIN to the V6.4 source blob/build provenance has not been independently verified. Do not assume or republish it without provenance and explicit authorization. Its README and OTA regression memory now document this boundary.
 - [CROSS-REPO MEMORY LINKS] Firmware artifact repo README: https://github.com/TenzoNkz/JEXFYZ-Firmware/blob/main/README.md. Mirrored OTA prevention note: https://github.com/TenzoNkz/JEXFYZ-Firmware/blob/main/OTA_REGRESSION_MEMORY.md. Canonical Online OTA memory: https://github.com/TenzoNkz/JEXFYZ-App/blob/main/OTA_REGRESSION_MEMORY.md. Canonical voltage-transition memory: https://github.com/TenzoNkz/JEXFYZ-App/blob/main/VOLTAGE_TRANSITION_MEMORY.md. Mirrored transition memory: https://github.com/TenzoNkz/JEXFYZ-Firmware/blob/main/VOLTAGE_TRANSITION_MEMORY.md.
 - [USER REQUIREMENT] Do not publish BIN, edit Firebase metadata, flash, or initiate OTA during transfer or QC discussion.
 
@@ -75,31 +76,31 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
 - [VERIFIED] Workflow file: `.github/workflows/jexfyz-app-build-trigger.yml`; issue title `JE X FYZ — BUILD APP TRIGGER`; body token `JEXFYZ_BUILD_TRIGGER_V1`.
 - [VERIFIED WORKFLOW CONFIG] Java 17, Flutter 3.47.2 stable; workflow runs `flutter analyze --no-fatal-infos`, `flutter test`, and builds one obfuscated production-signed release APK after checks.
 - [USER REQUIREMENT] Do not trigger this workflow unless user explicitly says Build App.
-- [UNVERIFIED] Current V6.3 App source has not passed a new test/analyze/build run; do not report green status based on older CI evidence.
+- [UNVERIFIED] Current V6.4 firmware source and current App changes have not passed a new test/analyze/build run; do not report green status based on older CI evidence.
 - [USER-REPORTED] The corrected V6.3 source compiled successfully and GitHub connection recovered. [UNVERIFIED] The complete BIN transfer/apply/reboot result is not separately recorded; the assistant has not independently compiled or tested hardware.
 
 ## 7. Persistent state files and what changed
 
 - [VERIFIED] Current OTA/voltage-transition source behavior, user-reported earlier compile/GitHub connectivity result, and regression-prevention rules are recorded in project notes. Current observed blobs at reconciliation time:
-  - `PROJECT_STATE.md`: `feacfc66dbefed9a64d261c20b6977de9fb3b39e`
-  - `HANDOVER.md`: `54dc35dafe59d122fe02d555a6673e7dc9e4d39c`
-  - `CHAT_RULES.md`: `48e36554fb6878f81f7731ffe8bc0d1fded96e18`
-  - `APP_NOTES.md`: `06ae56fcf5c1e34e8497645df7c6ee1598340460`
-  - `FIRMWARE_NOTES.md`: `8627c25cd133749f0112edaa199f366995666ef0`
-  - `BUILD_NOTES.md`: `b9a56324782178b121f87bad31492d534c4f112d`
-  - `firmware/FIRMWARE_ANALYSIS.md`: `31b81c74bac13f507345993eb423ff514fd9c999`
-  - `OTA_PROTECTION.md`: `dadb1bec8d9be07e57704e06b2a99589971f2a71`
-  - `CHANGELOG.md`: `86dc12407def3becb544af65e743fcad0c1fffa1`
-  - `OTA_REGRESSION_MEMORY.md`: `7c4dee64a75cec94cd6972e34bd39709abfec63a`
-  - `VOLTAGE_TRANSITION_MEMORY.md`: `bddab7b6d0dc1c54c6619978fffdd84dd19d03b4`
-  - `firmware/JEXFYZ-V6.3.ino`: `4349126afaaf9ebe4f7aedce1ef084c9856ee579`
-  - `test/v6_3_qc_contract_test.dart`: `950153f50964c87d3d41eca173f7fc39631d9ca7`
-- [CURRENT TRUTH] The current V6.3 Online OTA correction, user-reported compile/GitHub recovery, and no-recurrence policy are recorded across the project notes and the new canonical `OTA_REGRESSION_MEMORY.md`. The companion `TenzoNkz/JEXFYZ-Firmware` repository now has a README and mirrored OTA memory; its BIN was not changed.
+  - `PROJECT_STATE.md`: `21440eaa7f590baefcf7189a06a155251ee37efb`
+  - `HANDOVER.md`: `3867c4a2b23d77e234e163ffae96c1cb61f92c48`
+  - `CHAT_RULES.md`: `5162171f88df4cc2407b7402ffbf8561f7fdf689`
+  - `APP_NOTES.md`: `ee6d188ee6a82fc73a10be4979c0ddefc18708c7`
+  - `FIRMWARE_NOTES.md`: `f9463f39031760c5dc29a8c575b992f1c85f1bdb`
+  - `BUILD_NOTES.md`: `ba4d69b10f8427769a547b112c2d9e5ac7d2686e`
+  - `firmware/FIRMWARE_ANALYSIS.md`: `9e009ec08b1dcac9d43b75f8b22473481ed45aaa`
+  - `OTA_PROTECTION.md`: `b68b762c618ed78b6f1c20fa133b58b26eff97bc`
+  - `CHANGELOG.md`: `0a0ddc64fba1d002c91f01ccfcdf264213bc46f1`
+  - `OTA_REGRESSION_MEMORY.md`: `904099dd44d704fca8566ad47905ba1a13388a5c`
+  - `VOLTAGE_TRANSITION_MEMORY.md`: `a63eb7c83062b4185f436ca3cf02cdb171a37d1b`
+  - `firmware/JEXFYZ-V6.4.ino`: `f0dd9d1ebdc7d9d0966384f557efa2e2123df792`
+  - `test/v6_4_qc_contract_test.dart`: `f071c9642c1a06726d25b8c26a814845b02a55d6`
+- [CURRENT TRUTH] The V6.3-origin Online OTA correction remains in current V6.4 source; user-reported compile/GitHub recovery and the no-recurrence policy are recorded across the project notes and the new canonical `OTA_REGRESSION_MEMORY.md`. The companion `TenzoNkz/JEXFYZ-Firmware` repository now has a README and mirrored OTA memory; its BIN was not changed.
 - [HISTORY/OBSOLETE] Older snapshots embedded below this file’s prior current-status header were contradictory and stale. This file is now being fully replaced to remove duplicate/obsolete snapshots; do not append another copy.
 
 ## 8. Historical validation ledger — do not overstate
 
-- [HISTORY — V6.2 CANDIDATE] GitHub Actions run #38362882150 recorded 45 Flutter tests passing. Plain `flutter analyze` returned nonzero due to 23 info-level deprecation notices. This is not evidence that the current V6.3 App or its latest regression test passed.
+- [HISTORY — V6.2 CANDIDATE] GitHub Actions run #38362882150 recorded 45 Flutter tests passing. Plain `flutter analyze` returned nonzero due to 23 info-level deprecation notices. This is not evidence that the current V6.4 Firmware source or its latest regression test passed.
 - [UNVERIFIED CURRENT] The earlier source revision's compile and GitHub-connect recovery are user-reported. The latest source revision containing the active-ramp-only pause and full-duty continuity change is not compiled or physically validated. Full OTA install/reboot, voltage-transition reset regression, Flutter test, Dart analysis, and APK build remain unverified.
 - [CURRENT TRUTH] Project remains DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED. No production BIN or Firebase metadata was modified by the App fixes or this transfer.
 
