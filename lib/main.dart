@@ -2191,7 +2191,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
     batteryTimer?.cancel();
 
-remove early reconnect    for (final waiters in _ackWaiters.values) {
+    for (final waiters in _ackWaiters.values) {
       for (final waiter in waiters) {
         if (!waiter.isCompleted) waiter.complete('DISCONNECTED');
       }
