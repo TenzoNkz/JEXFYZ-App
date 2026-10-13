@@ -2,7 +2,7 @@
 
 Snapshot date: 2026-10-13 (Asia/Jakarta). This file replaces the previous snapshot; it is a boot/transfer protocol, not a substitute for checking live GitHub state.
 
-Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setInsecure()`. The embedded CA certificate and OTA-only NTP time-sync gate are removed; blue feedback follows Wi-Fi connection before the GitHub GET attempt. The raw GitHub BIN URL allowlist and redirect blocking remain. This bypasses server certificate identity validation. [USER-REPORTED] Firmware compile succeeded and Online OTA connects to GitHub again after this change. Full transfer, flash/apply completion, successful reboot, and installed-version confirmation are not independently recorded here. Canonical Online OTA prevention record: [OTA_REGRESSION_MEMORY.md](OTA_REGRESSION_MEMORY.md). The Peltier rail-transition restart fix is tracked separately in [VOLTAGE_TRANSITION_MEMORY.md](VOLTAGE_TRANSITION_MEMORY.md); the latest source revision including that fix has not been compiled.
+Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setInsecure()`. The embedded CA certificate and OTA-only NTP time-sync gate are removed; blue feedback follows Wi-Fi connection before the GitHub GET attempt. The raw GitHub BIN URL allowlist and redirect blocking remain. This bypasses server certificate identity validation. [USER-REPORTED] Firmware compile succeeded and Online OTA connects to GitHub again after this change. Full transfer, flash/apply completion, successful reboot, and installed-version confirmation are not independently recorded here. Canonical Online OTA prevention record: [OTA_REGRESSION_MEMORY.md](OTA_REGRESSION_MEMORY.md). The Peltier rail-transition fix and conditional resume contract are tracked in [VOLTAGE_TRANSITION_MEMORY.md](VOLTAGE_TRANSITION_MEMORY.md); the current revision has not been compiled or hardware-tested.
 
 ## 0. Mandatory boot and authority
 
@@ -27,10 +27,10 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
 
 - [VERIFIED] Repository: `TenzoNkz/JEXFYZ-App`; primary branch: `main`.
 - [VERIFIED] Latest functional OTA source restoration commit: `a87bbcecdca26b3648abff9cb88937e250b41f1f`; `firmware/JEXFYZ-V6.3.ino` now uses `cloudClient.setInsecure()` without the embedded CA or NTP gate. Commit: https://github.com/TenzoNkz/JEXFYZ-App/commit/a87bbcecdca26b3648abff9cb88937e250b41f1f. The OTA contract test update follows in commit `dc0d6ec13d3f58ab864e006e7defb543fd4752b6`.
-- [CURRENT SOURCE — LATEST REVISION NOT COMPILED] Active Firmware source is `firmware/JEXFYZ-V6.3.ino`, blob `2ad3ff2c4545a9fa6f659fdd11283116dc255ec2`; it remains one self-contained `.ino`. The earlier OTA fix uses `cloudClient.setInsecure()` with CA/NTP gate removed. User reported that prior revision compiled and GitHub connection recovered. The current revision additionally pauses Peltier PWM before voltage transitions, waits the settle gate, and restarts the 5 s soft-start; it has not been compiled. V6.2 source was retired from the active tree.
+- [CURRENT SOURCE — LATEST REVISION NOT COMPILED] Active Firmware source is `firmware/JEXFYZ-V6.3.ino`; it remains one self-contained `.ino`. The earlier OTA fix uses `cloudClient.setInsecure()` with CA/NTP gate removed. User reported that prior revision compiled and GitHub connection recovered. The current revision pauses Peltier PWM before selector movement, saves whether the 5 s ramp was active, and after the 1 s settle either restarts a full 5 s ramp or restores 100% PWM without re-ramping. It has not been compiled. V6.2 source was retired from the active tree.
 - [VERIFIED] App source: `lib/main.dart`, blob `535e396005a3bd1429db3096c627d87043b0e1b4`. Package `com.horizontalzzz.jexfyz`; pubspec version remains `1.0.0+3`.
 - [VERIFIED] `android/app/build.gradle` blob `d8681cb73156b61da7749633abd63e2fb8c287ba`; intentional `versionName "Telegram @horizontalzzz"` remains unchanged.
-- [VERIFIED] Latest V6.3 QC contract test: `test/v6_3_qc_contract_test.dart`, blob `c30cd8a2a522d67108ab718a703982a42270749b`.
+- [VERIFIED] Latest V6.3 QC contract test: `test/v6_3_qc_contract_test.dart`, blob `0244ceaff0aa2366c3ebe2e0c13e7684f5b085cf`.
 - [VERIFIED] Firmware regression test `test/firmware_touch_adaptive_sync_test.dart` remains part of the project; fetch its live blob before quoting a SHA.
 - [IMPLEMENTED IN SOURCE; PRIOR REVISION USER-REPORTED COMPILE SUCCESS] Online OTA uses `cloudClient.setInsecure()`; the embedded ISRG Root X1 PEM, CA validation, `configTime()`, and `TIME_SYNCING`/20-second NTP gate remain removed. Blue Wi-Fi feedback leads directly to the GitHub GET attempt. User-reported compile success and recovered GitHub connectivity refer to the earlier revision; the latest Peltier transition fix has not been compiled. This intentionally skips server certificate validation; the GitHub raw-BIN URL allowlist and redirect blocking remain.
 - [VERIFIED] `pubspec.lock` is committed (blob `1e92812bfda2c28244a0556d71d1ec94084acc66`); `.gitignore` is present.
@@ -56,7 +56,7 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
 - [VERIFIED STATIC SOURCE CONTRACT] V6.3 manual Peltier safety latch remains blocking until `enforceSafety()` observes Hotside at/below `hotLimit - 1°C` for five continuous seconds; a single low sample cannot bypass stability.
 - [VERIFIED STATIC SOURCE CONTRACT] Adaptive thermal protection has 30-second stages at 12 V, 9 V, and 5 V with Peltier OFF and Fan 100%. Five continuous seconds at/below `hotLimit - 1°C` before the stage deadline cancels the stage; otherwise it steps down 12→9→5 V. Unrecovered 5 V enters terminal lock requiring manual restart. Recovery up one rail requires 60 seconds stable per rail, capped by saved Adaptive ceiling.
 - [VERIFIED STATIC SOURCE CONTRACT] Touch long-press while Adaptive is active publishes `ADAPTIVE`, `ADAPTIVE_CEILING`, `FAN`, `PELTIER`, and `FAN_SPEED` telemetry before the `TOUCH_ADAPTIVE` ACK.
-- [FIXED IN SOURCE — NOT COMPILED] Every accepted voltage transition while logical Peltier is ON forces GPIO5 PWM to 0% before selector output changes. The existing 200 ms break-before-make is preserved; after rail completion, Peltier waits 1 s (named `PELTIER_VOLTAGE_SETTLE_MS`, equal to the existing guard), then restarts a fresh 5 s soft-start. Safety/Peltier-OFF cancels pending restart. Reset diagnostics still expose `BROWNOUT`.
+- [FIXED IN SOURCE — NOT COMPILED] Every accepted voltage transition while logical Peltier is ON snapshots the prior ramp state and forces GPIO5 PWM to 0% before selector outputs change. The 200 ms break-before-make and 1 s settle guard are preserved. If soft-start was active, it restarts a fresh 5 s ramp; if complete, PWM returns to 100% without another ramp. Peltier-OFF/safety cancels pending resume. Reset diagnostics still expose `BROWNOUT`.
 - [HYPOTHESIS — NOT CONFIRMED] The reported immediate restart during 5 V → 12 V mid-soft-start may be caused by a current transient / supply brownout; capture `BOOT: RESET_REASON=...` after compiling and testing this latest source revision.
 - [UNVERIFIED] Static assertions do not prove compilation, real-time behavior, sensor accuracy, LEDs, cooling, or device safety. User-side compile/flash/device tests remain necessary.
 
@@ -81,19 +81,19 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
 ## 7. Persistent state files and what changed
 
 - [VERIFIED] Current OTA/voltage-transition source behavior, user-reported earlier compile/GitHub connectivity result, and regression-prevention rules are recorded in project notes. Current observed blobs at reconciliation time:
-  - `PROJECT_STATE.md`: `d244020343941d7e608e24a97e325e4df3cc79a9`
-  - `HANDOVER.md`: `dedf190787eba1d9f80871220401bd9d2dfed3f8`
-  - `CHAT_RULES.md`: `0ab1645008ce1b0ef376938646b7c863c8b5d90a`
-  - `APP_NOTES.md`: `d2347db05357f561528c8bada2ad73f20861fa08`
-  - `FIRMWARE_NOTES.md`: `0b9c36aaf9e955081b4618130c70683d42655a12`
-  - `BUILD_NOTES.md`: `3ed666aaaa3a445b97b0bb5af5d99f649e0cd5c8`
-  - `firmware/FIRMWARE_ANALYSIS.md`: `fbd508a39dbc6eda56bacf95a65787fd1a7a500b`
+  - `PROJECT_STATE.md`: `61b7e9d8c2216c287f92e3cfac23ee5fa1d94a1f`
+  - `HANDOVER.md`: `c7c2547eda9e58d65cc4d23fe6953e351dd458ac`
+  - `CHAT_RULES.md`: `0d463f0608cef65af814349d79b416038b99ae86`
+  - `APP_NOTES.md`: `188877eefa29866a05108d27ac9dd8aa65b51a56`
+  - `FIRMWARE_NOTES.md`: `ff9b8f3e37db73cb7880a83e193ca4a30c89956`
+  - `BUILD_NOTES.md`: `a29d8fcb9d01c880d2166c0b37dfc0b7a581cfa0`
+  - `firmware/FIRMWARE_ANALYSIS.md`: `03d0acbfd5a63996ab8fefa749e44b2566d9cc65`
   - `OTA_PROTECTION.md`: `dadb1bec8d9be07e57704e06b2a99589971f2a71`
-  - `CHANGELOG.md`: `f97bb2d6135dc093559883af984f4d82018d711a`
+  - `CHANGELOG.md`: `ce5c4a06b37da9e816b7466912572189e208d928`
   - `OTA_REGRESSION_MEMORY.md`: `7c4dee64a75cec94cd6972e34bd39709abfec63a`
-  - `VOLTAGE_TRANSITION_MEMORY.md`: `6beb594c265af8b20f02b88ff6b25511618ce097`
-  - `firmware/JEXFYZ-V6.3.ino`: `2ad3ff2c4545a9fa6f659fdd11283116dc255ec2`
-  - `test/v6_3_qc_contract_test.dart`: `c30cd8a2a522d67108ab718a703982a42270749b`
+  - `VOLTAGE_TRANSITION_MEMORY.md`: `af11ca8c8c67e66d941a9f5ebb0a2b0816fb9ec1`
+  - `firmware/JEXFYZ-V6.3.ino`: `bb76b9c4e78b0e77d23bd82b13d23da6f623e985`
+  - `test/v6_3_qc_contract_test.dart`: `0244ceaff0aa2366c3ebe2e0c13e7684f5b085cf`
 - [CURRENT TRUTH] The current V6.3 Online OTA correction, user-reported compile/GitHub recovery, and no-recurrence policy are recorded across the project notes and the new canonical `OTA_REGRESSION_MEMORY.md`. The companion `TenzoNkz/JEXFYZ-Firmware` repository now has a README and mirrored OTA memory; its BIN was not changed.
 - [HISTORY/OBSOLETE] Older snapshots embedded below this file’s prior current-status header were contradictory and stale. This file is now being fully replaced to remove duplicate/obsolete snapshots; do not append another copy.
 
@@ -109,4 +109,4 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
 2. Confirm PR states and inspect divergent branches without switching away from main.
 3. If user requests validation, run only the explicitly authorized validation; distinguish test/analyze from build, firmware compile, flash, and OTA.
 4. Prefer validating the new App regression test and full Flutter test/analyze before Build App, but do not run the build workflow without the explicit trigger command.
-5. The latest Peltier transition revision requires user-side compile. Then test 5 V → 12 V during the soft-start and after full duty, and capture `BOOT: RESET_REASON=...` / `RESET_REASON` telemetry if a restart occurs. Do not publish a BIN or infer hardware success from source-only checks.
+5. The latest Peltier transition revision requires user-side compile. Test Manual Volt and Adaptive transitions both during soft-start (expect a new full 5 s ramp from 0%) and after the ramp completes (expect 100% PWM after settling without re-ramping); confirm OFF/safety cancels resume. Capture `BOOT: RESET_REASON=...` / `RESET_REASON` telemetry if a restart occurs. Do not publish a BIN or infer hardware success from source-only checks.
