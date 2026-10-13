@@ -1,0 +1,53 @@
+name: Flutter Quality Checks
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "lib/**"
+      - "test/**"
+      - "firmware/**"
+      - "pubspec.yaml"
+      - ".github/workflows/flutter-quality.yml"
+  pull_request:
+    paths:
+      - "lib/**"
+      - "test/**"
+      - "firmware/**"
+      - "pubspec.yaml"
+      - ".github/workflows/flutter-quality.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Dependency resolution, regression tests, and analysis (no build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.47.2"
+          channel: stable
+          cache: true
+
+      - name: Resolve dependencies and generate lockfile
+        run: flutter pub get
+
+      - name: Run regression tests
+        run: flutter test
+
+      - name: Analyze Dart and Flutter sources
+        run: flutter analyze
+
+      - name: Upload generated dependency lockfile for review
+        if: always() && hashFiles('pubspec.lock') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: pubspec-lock-generated
+          path: pubspec.lock
+          if-no-files-found: error
+          retention-days: 7
