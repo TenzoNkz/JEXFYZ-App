@@ -85,7 +85,7 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
   - `HANDOVER.md`: `c7c2547eda9e58d65cc4d23fe6953e351dd458ac`
   - `CHAT_RULES.md`: `0d463f0608cef65af814349d79b416038b99ae86`
   - `APP_NOTES.md`: `188877eefa29866a05108d27ac9dd8aa65b51a56`
-  - `FIRMWARE_NOTES.md`: `ff9b8f3e37db73cb7880a83e193ca4a30c89956`
+  - `FIRMWARE_NOTES.md`: `ff9b8f3e37db73cb7880a83e193ca4a30c89956d`
   - `BUILD_NOTES.md`: `a29d8fcb9d01c880d2166c0b37dfc0b7a581cfa0`
   - `firmware/FIRMWARE_ANALYSIS.md`: `03d0acbfd5a63996ab8fefa749e44b2566d9cc65`
   - `OTA_PROTECTION.md`: `dadb1bec8d9be07e57704e06b2a99589971f2a71`
