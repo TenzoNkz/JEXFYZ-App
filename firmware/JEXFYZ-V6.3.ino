@@ -285,6 +285,8 @@ static constexpr uint8_t FAN_PWM_RESOLUTION = 8;
 static constexpr uint32_t PELTIER_PWM_FREQ = 20000;
 static constexpr uint8_t PELTIER_PWM_RESOLUTION = 8;
 static constexpr uint32_t PELTIER_SOFT_START_MS = 5000;
+// Use the established post-voltage guard as Peltier rail-settle time.
+static constexpr uint32_t PELTIER_VOLTAGE_SETTLE_MS = VOLTAGE_GUARD_MS;
 // Battery zone hysteresis prevents small sensor noise from chattering the target voltage around configured thresholds.
 static constexpr float BATTERY_HYSTERESIS_C = 0.5f;
 // Rapid Hotside-rise protection is intentionally absent; Hotside temperature limit is the sole thermal safety authority.
@@ -979,7 +981,7 @@ static void processPeltierSoftStart() {
   // Re-use the existing 1 s post-transition guard as a rail-settle interval,
   // then start a new full 5 s soft-start from 0%. No new guessed delay is added.
   if (peltierVoltagePauseActive) {
-    if (millis() - lastVoltageTransitionCompleteMs < VOLTAGE_GUARD_MS) {
+    if (millis() - lastVoltageTransitionCompleteMs < PELTIER_VOLTAGE_SETTLE_MS) {
       return;
     }
     peltierVoltagePauseActive = false;
