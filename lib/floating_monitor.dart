@@ -186,6 +186,8 @@ bool floatingMetricVisible(String metric, FloatingTelemetry telemetry) {
 // AI-METHOD / METRIC-STATUS-CONTRACT
 // Adaptive and Peltier are independent firmware-backed states; only Speed is gated by Fan.
 String floatingMetricStatus(String metric, FloatingTelemetry telemetry, AppLanguage language) {
+  // Output flags are authoritative only while the shared BLE session is connected.
+  if (!telemetry.connected) return '--';
   return switch (metric) {
     'A' => JexText.of(telemetry.adaptiveOn ? 'on' : 'off', language),
     'P' => JexText.of(telemetry.peltierOn ? 'on' : 'off', language),
