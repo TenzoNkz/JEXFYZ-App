@@ -1,3 +1,11 @@
+## AUTHORIZED V6.2 OTA EXCEPTION — 2026-10-13
+
+- Online OTA was explicitly approved for standard CA certificate verification to the already allowlisted GitHub raw BIN repository. The allowlist and existing download/update steps remain in place.
+- Local OTA is explicitly unchanged: no checksum, signature, or additional verification layer was added.
+- BLE write encryption/bonding was added because Online OTA credentials travel over the BLE command channel.
+- V6.2 OTA paths remain uncompiled and untested on hardware. No APK build, Firmware compile, BIN, flashing or OTA operation was performed.
+- This exception authorizes only the discussed Online HTTPS and BLE write protections; it does not grant broader OTA redesign.
+
 # JE X FYZ — OTA PROTECTION
 
 > 🔐 **OTA PROTECTED / FROZEN**
