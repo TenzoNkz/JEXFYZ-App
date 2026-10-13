@@ -6,8 +6,8 @@
 - After a thermal downshift, voltage recovery is one step per 60 seconds of continuous Hotside <= `hotLimit - 1°C`, no higher than the saved pre-downshift ceiling. Terminal 5 V lock cannot auto-recover. Manual re-arm uses the same -1°C threshold and 5-second stable qualification.
 - Online OTA retains the GitHub raw BIN allowlist and validates HTTPS with ISRG Root X1. BLE command writes require bonded Secure Connections with Just Works pairing; MITM/passkey is not configured due to no device input/display. Local OTA is unchanged.
 - App normal BLE reconnect order, OTA expected-disconnect race, voltage telemetry confirmation, LED color normalization, disconnected output unknown state, and -1°C safety copy are implemented.
-- Regression tests were added/updated; `.gitignore` added. No valid `pubspec.lock` could be generated in this environment because Flutter/Dart are unavailable; do not fabricate it.
-- Validation boundary: Flutter tests/analyze and firmware compilation are not run. No APK build, firmware BIN, flash, OTA, Android pairing or hardware test occurred. V6.2 is source-only DEVELOPMENT + QC / PRE-RELEASE, not released.
+- Regression tests were added/updated; `.gitignore` added. `pubspec.lock` is absent from `main`. A temporary GitHub Actions run resolved dependencies, but its lockfile push was rejected as non-fast-forward; tests/analyze were skipped and the temporary workflow was removed. No lockfile was committed.
+- Validation boundary: `flutter pub get` succeeded in a temporary GitHub Actions job, but its lockfile push failed as non-fast-forward, so test/analyze were skipped; that workflow was removed. No APK build, firmware compile/BIN, flash, OTA, Android pairing or hardware validation occurred. V6.2 is source-only DEVELOPMENT + QC / PRE-RELEASE, not released.
 
 ## CURRENT V6.1 TOUCH-ADAPTIVE TELEMETRY SYNC FIX — 2026-10-13
 
