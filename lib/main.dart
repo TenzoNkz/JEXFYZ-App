@@ -98,8 +98,15 @@ String otaStageLocalizationKey(String stage) {
 bool isSupportedP1Protocol(String value) =>
     value.trim().toUpperCase() == 'P1';
 
+int peltierRearmTarget(int hotLimit) => hotLimit - 1;
+
+String normalizeLedColor(String value) {
+  final normalized = value.trim().toUpperCase();
+  return normalized.startsWith('#') ? normalized.substring(1) : normalized;
+}
+
 String peltierRearmNotice(int hotLimit, AppLanguage language) {
-  final target = hotLimit - 2;
+  final target = peltierRearmTarget(hotLimit);
   return JexText.phrase(
     'Peltier is locked. Cool the Hotside to ≤ ' + target.toString() + '°C before restarting.',
     'Peltier terkunci. Dinginkan Hotside hingga ≤ ' + target.toString() + '°C sebelum menyalakan kembali.',
@@ -1506,6 +1513,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   bool protocolValid = false;
   bool _syncReadyAck = false;
   bool connected = false;
+  bool runtimeOutputsKnown = false;
   bool syncing = false;
   bool fullSyncReceived = false;
   bool voltageGuardActive = false;
@@ -1518,6 +1526,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   bool otaRecoveryScanInProgress = false;
   final Map<String, List<Completer<String>>> _ackWaiters = {};
   final Map<String, String> _syncSnapshot = {};
+  String _lastCommandAckReason = '';
   String _lastPeltierAckFailureReason = '';
   Future<void> _commandTransactionQueue = Future<void>.value();
   String? _pendingPhoneBatteryCommand;
@@ -1973,6 +1982,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       setState(() {
         syncing = true;
         connected = false;
+        runtimeOutputsKnown = false;
         dashboardReady = false;
         voltage = '--';
         hotsideTemp = '--';
@@ -1995,7 +2005,9 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     connectionSub = target.connectionState.listen((state) {
       if (state != BluetoothConnectionState.disconnected) return;
-      // AI-METHOD: _handleBleDisconnected — Central BLE teardown path; clear stale timers, ACKs, session state, and UI telemetry.
+    
+
+  // AI-METHOD: _handleBleDisconnected — Central BLE teardown path; clear stale timers, ACKs, session state, and UI telemetry.
       _handleBleDisconnected();
     });
 
@@ -2179,16 +2191,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
     batteryTimer?.cancel();
 
-    if (expectedOtaDisconnect) {
-      _cancelDisconnectRediscovery();
-      if (!(reconnectTimer?.isActive ?? false)) {
-        _startOtaReconnectMonitor();
-      }
-    } else {
-      _startDisconnectRediscovery();
-    }
-
-    for (final waiters in _ackWaiters.values) {
+remove early reconnect    for (final waiters in _ackWaiters.values) {
       for (final waiter in waiters) {
         if (!waiter.isCompleted) waiter.complete('DISCONNECTED');
       }
@@ -2198,9 +2201,14 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (!mounted) return;
     setState(() {
       connected = false;
+      runtimeOutputsKnown = false;
       syncing = false;
       dashboardReady = false;
       voltage = '--';
+      fanOn = false;
+      peltierOn = false;
+      adaptiveOn = false;
+      rgbOn = false;
       hotsideTemp = '--';
       phoneBatteryTemp = '--';
       phoneBatteryValid = false;
@@ -2214,6 +2222,16 @@ class _DashboardScreenState extends State<DashboardScreen>
     });
     _publishFloatingTelemetry();
 
+    // Start reconnect only after connected=false has been committed.
+    if (expectedOtaDisconnect) {
+      _cancelDisconnectRediscovery();
+      if (!(reconnectTimer?.isActive ?? false)) {
+        _startOtaReconnectMonitor();
+      }
+    } else {
+      _startDisconnectRediscovery();
+    }
+
     if (!expectedOtaDisconnect && appNotifyBluetoothNotifier.value) {
       unawaited(_postNotification(
         JexText.of('bluetoothDisconnected', appLanguageNotifier.value),
@@ -2222,6 +2240,8 @@ class _DashboardScreenState extends State<DashboardScreen>
       ));
     }
   }
+
+
 
 
   // AI-METHOD: _discoverServices — Discover exact JE X FYZ service/RX/TX, enable notifications, and complete SYNC/SYNC_READY.
@@ -2377,6 +2397,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         _applyTelemetryValue(entry.key, entry.value);
       }
       connected = true;
+      runtimeOutputsKnown = true;
       syncing = false;
       dashboardReady = true;
       notice = syncedOtaNotice.isNotEmpty
@@ -2511,6 +2532,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     bool showError = true,
     Duration timeout = const Duration(seconds: 3),
   }) async {
+    _lastCommandAckReason = '';
     final item = _ackItemForCommand(command);
     if (item == 'PELTIER') {
       _lastPeltierAckFailureReason = '';
@@ -2519,6 +2541,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     final ackFuture = _waitForAck(item, timeout: timeout);
     final sent = await sendCommand(command, showError: showError);
     if (!sent) {
+      _lastCommandAckReason = 'WRITE_FAILED';
       final waiters = _ackWaiters[item];
       if (waiters != null && waiters.isNotEmpty) {
         waiters.removeLast();
@@ -2527,6 +2550,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       return false;
     }
     final reason = await ackFuture;
+    _lastCommandAckReason = reason;
     final accepted = _isAckSuccessReason(reason);
     if (!accepted) return false;
 
@@ -2573,6 +2597,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (c == 'PELTIER:OFF') return const MapEntry('PELTIER', 'OFF');
     if (c == 'ADAPTIVE:ON') return const MapEntry('ADAPTIVE', 'ON');
     if (c == 'ADAPTIVE:OFF') return const MapEntry('ADAPTIVE', 'OFF');
+    if (c.startsWith('VOLTAGE:')) return MapEntry('VOLTAGE', c.substring(8));
     if (c == 'RGB:ON') return const MapEntry('RGB', 'ON');
     if (c == 'RGB:OFF') return const MapEntry('RGB', 'OFF');
     if (c.startsWith('MODE:')) return MapEntry('MODE', c.substring(5));
@@ -2596,6 +2621,8 @@ class _DashboardScreenState extends State<DashboardScreen>
         return peltierOn == (expected == 'ON');
       case 'ADAPTIVE':
         return adaptiveOn == (expected == 'ON');
+      case 'VOLTAGE':
+        return voltage.toUpperCase() == expected.toUpperCase();
       case 'RGB':
         return rgbOn == (expected == 'ON');
       case 'MODE':
@@ -2603,7 +2630,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       case 'BRIGHTNESS':
         return brightness == (int.tryParse(expected) ?? -1);
       case 'RGB_COLOR':
-        return rgbColor.toUpperCase() == expected.toUpperCase();
+        return normalizeLedColor(rgbColor) == normalizeLedColor(expected);
       case 'FAN_SPEED':
         return fanSpeed == (int.tryParse(expected) ?? -1);
       case 'TEMP_HOT_LIMIT':
@@ -3544,8 +3571,30 @@ void _handleAckLine(String line) {
     ];
 
     for (final command in commands) {
-      final ok = await _sendAndWaitAck(command, showError: false, timeout: const Duration(seconds: 4));
+      if (command == 'CLOUDOTA') {
+        otaExpectedDisconnect = true;
+        otaRecoveryActive = true;
+        otaRecoveryScanInProgress = false;
+      }
+
+      final ok = await _sendAndWaitAck(
+        command,
+        showError: false,
+        timeout: const Duration(seconds: 4),
+      );
       if (!ok) {
+        // Roll back definite command rejection only. Timeout/disconnect can mean
+        // firmware accepted OTA and began the single-radio handoff.
+        if (command == 'CLOUDOTA' &&
+            connected &&
+            _lastCommandAckReason != 'TIMEOUT' &&
+            _lastCommandAckReason != 'DISCONNECTED') {
+          otaExpectedDisconnect = false;
+          otaRecoveryActive = false;
+          otaRecoveryScanInProgress = false;
+          reconnectTimer?.cancel();
+          reconnectTimer = null;
+        }
         _showSnackBar(
           JexText.of('otaStartRejected', appLanguageNotifier.value),
           color: Colors.redAccent,
@@ -3554,10 +3603,6 @@ void _handleAckLine(String line) {
       }
       await Future<void>.delayed(const Duration(milliseconds: 80));
     }
-
-    otaExpectedDisconnect = true;
-    otaRecoveryActive = true;
-    otaRecoveryScanInProgress = false;
 
     _showSnackBar(
       JexText.of('otaInProgress', appLanguageNotifier.value),
@@ -4442,6 +4487,7 @@ void _handleAckLine(String line) {
     required bool value,
     required bool enabled,
     required Future<void> Function(bool) onChanged,
+    bool stateKnown = true,
     JexAnimatedIconKind? animatedKind,
   }) {
     final scheme = Theme.of(context).colorScheme;
@@ -4531,7 +4577,7 @@ void _handleAckLine(String line) {
           ),
           const SizedBox(width: 8),
           Text(
-            JexText.of(value ? 'on' : 'off', lang),
+            stateKnown ? JexText.of(value ? 'on' : 'off', lang) : '--',
             style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w900,
@@ -4542,6 +4588,7 @@ void _handleAckLine(String line) {
           _jexToggle(
             value: value,
             enabled: enabled,
+            stateKnown: stateKnown,
             accent: accent,
             onChanged: onChanged,
           ),
@@ -4555,10 +4602,27 @@ void _handleAckLine(String line) {
     required bool enabled,
     required Color accent,
     required Future<void> Function(bool) onChanged,
+    bool stateKnown = true,
   }) {
     final scheme = Theme.of(context).colorScheme;
+    if (!stateKnown) {
+      return Container(
+        width: jexSubmenuToggleWidth,
+        height: jexSubmenuToggleHeight,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: scheme.surfaceContainerHighest.withValues(alpha: .48),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: scheme.outlineVariant),
+        ),
+        child: Text(
+          '—',
+          style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 16, fontWeight: FontWeight.w900),
+        ),
+      );
+    }
     return GestureDetector(
-      onTap: enabled ? () => unawaited(onChanged(!value)) : null,
+      onTap: enabled && stateKnown ? () => unawaited(onChanged(!value)) : null,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         width: jexSubmenuToggleWidth,
@@ -4743,7 +4807,8 @@ void _handleAckLine(String line) {
                   icon: PhosphorIconsRegular.snowflake,
                   animatedKind: JexAnimatedIconKind.peltier,
                   value: peltierOn,
-                  enabled: connected && !adaptiveOn,
+                  enabled: connected && runtimeOutputsKnown && !adaptiveOn,
+                  stateKnown: runtimeOutputsKnown,
                   onChanged: _togglePeltier,
                 ),
                 const SizedBox(height: 8),
@@ -4753,7 +4818,8 @@ void _handleAckLine(String line) {
                   icon: PhosphorIconsRegular.fan,
                   animatedKind: JexAnimatedIconKind.fan,
                   value: fanOn,
-                  enabled: connected && !adaptiveOn && !peltierOn,
+                  enabled: connected && runtimeOutputsKnown && !adaptiveOn && !peltierOn,
+                  stateKnown: runtimeOutputsKnown,
                   onChanged: _toggleFan,
                 ),
                 const SizedBox(height: 10),
@@ -4859,7 +4925,8 @@ void _handleAckLine(String line) {
               icon: PhosphorIconsRegular.sparkle,
               animatedKind: JexAnimatedIconKind.adaptive,
               value: adaptiveOn,
-              enabled: connected,
+              enabled: connected && runtimeOutputsKnown,
+              stateKnown: runtimeOutputsKnown,
               onChanged: _toggleAdaptive,
             ),
           ),
@@ -5066,7 +5133,8 @@ void _handleAckLine(String line) {
                   icon: PhosphorIconsBold.lightbulb,
                   animatedKind: JexAnimatedIconKind.led,
                   value: rgbOn,
-                  enabled: connected,
+                  enabled: connected && runtimeOutputsKnown,
+                  stateKnown: runtimeOutputsKnown,
                   onChanged: _setRgb,
                 ),
                 const SizedBox(height: 9),
