@@ -26,9 +26,9 @@ Current OTA source note: the Online OTA connection correction was introduced in 
 
 ## 2. Current repository checkpoint
 
-- [VERIFIED] Repository: `TenzoNkz/JEXFYZ-App`; primary branch: `main`. Pre-transfer main checkpoint was `fb9e96b2cb2dd66b79c94b4f55bea4780d3d894f`; this snapshot update creates a newer commit.
+- [VERIFIED] Repository: `TenzoNkz/JEXFYZ-App`; primary branch: `main`. Pre-transfer main HEAD (before this snapshot update) was `c4ae23a04d3053de5f9946c7020d73bb089cb7c7`; this snapshot update creates a newer commit.
 - [VERIFIED] Latest functional OTA source restoration commit: `a87bbcecdca26b3648abff9cb88937e250b41f1f`; `firmware/JEXFYZ-V6.3.ino` now uses `cloudClient.setInsecure()` without the embedded CA or NTP gate. Commit: https://github.com/TenzoNkz/JEXFYZ-App/commit/a87bbcecdca26b3648abff9cb88937e250b41f1f. The OTA contract test update follows in commit `dc0d6ec13d3f58ab864e006e7defb543fd4752b6`.
-- [CURRENT SOURCE — LATEST REVISION NOT COMPILED] Active Firmware source is `firmware/JEXFYZ-V6.3.ino`; it remains one self-contained `.ino`. The earlier OTA fix uses `cloudClient.setInsecure()` with CA/NTP gate removed. User reported that prior revision compiled and GitHub connection recovered. The V6.4 revision pauses Peltier PWM only if a voltage change interrupts an active 5 s ramp; after the 1 s settle it restarts a full 5 s ramp. If the ramp had completed, PWM stays at 100% through selector movement without a forced OFF or re-ramp. `FW_VERSION` and the single active filename both align at V6.4. This revision has not been compiled. V6.2 and the stale V6.3 active filename are retired.
+- [CURRENT SOURCE — LATEST REVISION NOT COMPILED] Active Firmware source is `firmware/JEXFYZ-V6.4.ino`; it remains one self-contained `.ino`. The earlier OTA fix uses `cloudClient.setInsecure()` with CA/NTP gate removed. User reported that prior revision compiled and GitHub connection recovered. The V6.4 revision pauses Peltier PWM only if a voltage change interrupts an active 5 s ramp; after the 1 s settle it restarts a full 5 s ramp. If the ramp had completed, PWM stays at 100% through selector movement without a forced OFF or re-ramp. `FW_VERSION` and the single active filename both align at V6.4. This revision has not been compiled. V6.2 and the stale V6.3 active filename are retired.
 - [VERIFIED] App source: `lib/main.dart`, blob `535e396005a3bd1429db3096c627d87043b0e1b4`. Package `com.horizontalzzz.jexfyz`; pubspec version remains `1.0.0+3`.
 - [VERIFIED] `android/app/build.gradle` blob `d8681cb73156b61da7749633abd63e2fb8c287ba`; intentional `versionName "Telegram @horizontalzzz"` remains unchanged.
 - [VERIFIED] Latest V6.4 QC contract test: `test/v6_4_qc_contract_test.dart`, blob `f071c9642c1a06726d25b8c26a814845b02a55d6`.
@@ -95,6 +95,7 @@ Current OTA source note: the Online OTA connection correction was introduced in 
   - `VOLTAGE_TRANSITION_MEMORY.md`: `a63eb7c83062b4185f436ca3cf02cdb171a37d1b`
   - `firmware/JEXFYZ-V6.4.ino`: `f0dd9d1ebdc7d9d0966384f557efa2e2123df792`
   - `test/v6_4_qc_contract_test.dart`: `f071c9642c1a06726d25b8c26a814845b02a55d6`
+  - `test/firmware_touch_adaptive_sync_test.dart`: `a8df6ca2be18c3b7ed9c25e5c148f0d5056556d5`
 - [CURRENT TRUTH] The V6.3-origin Online OTA correction remains in current V6.4 source; user-reported compile/GitHub recovery and the no-recurrence policy are recorded across the project notes and the new canonical `OTA_REGRESSION_MEMORY.md`. The companion `TenzoNkz/JEXFYZ-Firmware` repository now has a README and mirrored OTA memory; its BIN was not changed.
 - [HISTORY/OBSOLETE] Older snapshots embedded below this file’s prior current-status header were contradictory and stale. This file is now being fully replaced to remove duplicate/obsolete snapshots; do not append another copy.
 
