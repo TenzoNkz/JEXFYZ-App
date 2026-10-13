@@ -65,6 +65,62 @@ void main() {
     expect(source, contains('static constexpr char AP_PASSWORD[] = "0987654321";'));
   });
 
+  test('Voltage transitions pause Peltier PWM and restart a fresh soft-start after the guard', () {
+    final source = File('firmware/JEXFYZ-V6.3.ino').readAsStringSync();
+
+    expect(source, contains('VOLTAGE_DEADTIME_MS           = 200'));
+    expect(source, contains('VOLTAGE_GUARD_MS             = 1000'));
+    expect(source, contains('PELTIER_SOFT_START_MS = 5000'));
+    expect(source, contains('bool peltierVoltagePauseActive = false;'));
+    expect(source, contains('static void pausePeltierForVoltageTransition()'));
+    expect(source, contains('ledcWrite(PIN_PELTIER, 0);'));
+
+    final requestStart = source.indexOf(
+      'static bool requestVoltage(Voltage target, VoltageRequestSource source, bool bypassGuard)',
+    );
+    final transitionStart = source.indexOf(
+      'static void completeVoltageTransition()',
+      requestStart,
+    );
+    expect(requestStart, greaterThanOrEqualTo(0));
+    expect(transitionStart, greaterThan(requestStart));
+
+    final request = source.substring(requestStart, transitionStart);
+    final markTransition = request.indexOf('voltageTransition = true;');
+    final pausePeltier = request.indexOf('pausePeltierForVoltageTransition();');
+    final selectorOff = request.indexOf('digitalWrite(PIN_9V, OUTPUT_OFF);');
+    expect(markTransition, greaterThanOrEqualTo(0));
+    expect(pausePeltier, greaterThan(markTransition));
+    expect(selectorOff, greaterThan(pausePeltier));
+
+    final pauseStart = source.indexOf('static void pausePeltierForVoltageTransition()');
+    final processStart = source.indexOf('static void processPeltierSoftStart()', pauseStart);
+    expect(pauseStart, greaterThanOrEqualTo(0));
+    expect(processStart, greaterThan(pauseStart));
+    final pauseHelper = source.substring(pauseStart, processStart);
+    expect(pauseHelper, contains('peltierVoltagePauseActive = true;'));
+    expect(pauseHelper, contains('peltierSoftStarting = false;'));
+    expect(pauseHelper, contains('lastPeltierDuty = 0;'));
+
+    final processEnd = source.indexOf('static bool hotsideProtectionActiveNow()', processStart);
+    final process = source.substring(processStart, processEnd);
+    final transitionGate = process.indexOf('if (voltageTransition)');
+    final waitGate = process.indexOf('if (peltierVoltagePauseActive)');
+    final guardCheck = process.indexOf(
+      'millis() - lastVoltageTransitionCompleteMs < VOLTAGE_GUARD_MS',
+    );
+    final freshRamp = process.indexOf('beginPeltierSoftStart();', waitGate);
+    expect(transitionGate, greaterThanOrEqualTo(0));
+    expect(waitGate, greaterThan(transitionGate));
+    expect(guardCheck, greaterThan(waitGate));
+    expect(freshRamp, greaterThan(guardCheck));
+
+    // Device diagnostics must continue to expose a brownout reset reason.
+    expect(source, contains('case ESP_RST_BROWNOUT: return "BROWNOUT";'));
+    expect(source, contains('Serial.println(resetReasonText());'));
+    expect(source, contains('sendDelta("RESET_REASON", resetReasonText());'));
+  });
+
   test('BLE command writes require encryption and bonding', () {
     final source = File('firmware/JEXFYZ-V6.3.ino').readAsStringSync();
     expect(source, contains('#include <BLESecurity.h>'));
