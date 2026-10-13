@@ -1,5 +1,19 @@
 ## CURRENT APP / V6.1 INTEGRATION STATUS — 2026-10-12
 
+## CURRENT V6.1 TOUCH-ADAPTIVE TELEMETRY SYNC FIX — 2026-10-13
+
+- [VERIFIED SOURCE DEFECT] The hardware Touch long-press path called `setAdaptiveState(false, reason)` and sent only `ACK:TOUCH_ADAPTIVE;REASON=OFF`; unlike the App BLE command handler, it did not publish the `ADAPTIVE` state delta. The App ACK handler displays the result but does not mutate the Adaptive state, so the dashboard switch and Floating Monitor could remain stale.
+- [IMPLEMENTED] The Touch Adaptive-OFF path now publishes authoritative `ADAPTIVE`, `ADAPTIVE_CEILING`, `FAN`, `PELTIER`, and `FAN_SPEED` state deltas before its Touch ACK. App continues to treat Firmware telemetry as authoritative; no speculative App-side state mutation was introduced.
+- [PRESERVED] The 200 ms selector deadtime, safe-5V handoff, 5-second Peltier OFF→ON soft-start, deferred white 3-blink OFF indicator, BLE UUIDs/P1, and protected OTA code were not intentionally changed. `VOLTAGE` remains reported by the existing completed-transition path rather than being misreported as already settled during selector deadtime.
+- [IMPLEMENTED] Added `test/firmware_touch_adaptive_sync_test.dart`, a static source-contract guard for the Touch telemetry sequence and App state-consumption path.
+- [STATIC AUDIT ONLY] Current V6.1 version/file alignment is retained; source inventory remains one `analogReadMilliVolts(PIN_NTC)` call site, no lexical `delay(` call site, and no lexical `while(` loop call site.
+- [UNVERIFIED] The new test has not been executed in this repository environment; no Flutter test/analyze, Arduino compile, BIN, flash, physical BLE/UI validation, App Build, or OTA regression was run as part of this change.
+- [NOT RELEASED] V6.1 remains DEVELOPMENT + QC / PRE-RELEASE. No production BIN or Firebase OTA metadata was changed.
+
+- [VERIFIED SOURCE AUDIT] App parser `_applyTelemetryValue('ADAPTIVE')` updates the shared `adaptiveOn` state, and Floating Monitor receives that same state through `_publishFloatingTelemetry()`. App functional source did not need modification for this defect.
+- [UNVERIFIED] App Flutter tests/analyze and App Build remain unrun; the added static source-contract test is not a BLE/UI runtime test.
+
+
 - [CURRENT TRUTH] App source remains version `1.0.0+3`, package `com.horizontalzzz.jexfyz`; no App source change is part of the V6.1 firmware fix.
 - [UNVERIFIED] App ↔ V6.1 integration and UI behavior on the physical device are not yet validated. No App Build was executed for V6.1.
 - [POLICY] The V5.9 integration/localization records below are historical records, not the current firmware target.

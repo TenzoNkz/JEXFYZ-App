@@ -84,10 +84,15 @@
 - Discussion memory sync must not change functional source.
 - Current source/workflow always wins on conflicts.
 
+## LATEST QC SOURCE FIX — 2026-10-13
+- [IMPLEMENTED] Touch long-press Adaptive-OFF now emits authoritative Adaptive/ceiling/Fan/Peltier/Fan-speed telemetry; source blob: 50dee6c7ed3cb5780e97deaa235fe81856152ec2.
+- [IMPLEMENTED] Added static source-contract regression test at test/firmware_touch_adaptive_sync_test.dart; test execution is UNVERIFIED.
+- [UNVERIFIED] Firmware compile/BIN/flash, App tests/Build, physical sync validation, and OTA regression remain open. Do not upgrade any gate to PASS.
+
 ## CURRENT STATUS
 - Phase: V6.1 source-only DEVELOPMENT + QC / PRE-RELEASE.
 - Release status: NOT RELEASED.
-- Firmware source: V6.1 (`firmware/JEXFYZ-V6.1.ino`); compile/BIN/flash unverified.
+- Firmware source: V6.1 (`firmware/JEXFYZ-V6.1.ino`); latest source blob 50dee6c7ed3cb5780e97deaa235fe81856152ec2; compile/BIN/flash unverified.
 - App: 1.0.0+3.
 - V6.1 source inventory: one NTC ADC-read call site and no `delay(` call site; this limited source check is not a compile or runtime test.
 - V5.7 physical OTA update was user-confirmed successful; V6.1 physical validation is UNVERIFIED.

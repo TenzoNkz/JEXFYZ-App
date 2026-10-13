@@ -4639,6 +4639,15 @@ static void executeTouchLong() {
     String reason;
     setAdaptiveState(false, reason);
 
+    // Touch bypasses handleCommand("ADAPTIVE:OFF"), so publish the authoritative
+    // mode and cooling snapshot here as well. App dashboard and Floating Monitor
+    // consume these state deltas; an ACK alone only reports the Touch outcome.
+    sendDelta("ADAPTIVE", boolText(adaptiveOn));
+    sendDelta("ADAPTIVE_CEILING", voltageToString(adaptiveCeiling));
+    sendDelta("FAN", boolText(fanOn));
+    sendDelta("PELTIER", boolText(peltierOn));
+    sendDelta("FAN_SPEED", String(fanPwm));
+
     if (adaptiveOn) {
       sendAck("TOUCH_ADAPTIVE", false, reason);
       return;

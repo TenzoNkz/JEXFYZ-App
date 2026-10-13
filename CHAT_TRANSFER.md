@@ -1,6 +1,6 @@
 # JE X FYZ — CHAT TRANSFER / BOOT PROTOCOL
 
-Snapshot date: 2026-10-12. Repository snapshot reconciled against `main` before this replacement. **This file is a transfer protocol, not source of truth.** Current source and active workflow win when records conflict.
+Snapshot date: 2026-10-13. Repository snapshot reconciled against `main` before this replacement. **This file is a transfer protocol, not source of truth.** Current source and active workflow win when records conflict.
 
 ## STATE LABELS
 
@@ -23,13 +23,26 @@ Use these labels literally and do not upgrade a claim without evidence:
 ## CURRENT TRUTH AT TRANSFER
 
 - [VERIFIED] Repository: `TenzoNkz/JEXFYZ-App`; authoritative branch: `main`.
-- [VERIFIED] Main HEAD immediately before this transfer-file replacement: `537af513153654e5b8d207b253352386dc3b73c1`.
-- [CURRENT TRUTH] Active Firmware: `firmware/JEXFYZ-V6.1.ino`; `FW_VERSION = "V6.1"`; source blob `c76e9a4f36d47d2dc8f9d9145e8064c14a7fda5f`.
+- [VERIFIED] Main HEAD immediately before this transfer-file replacement: `15ff2c7060be0af10497efffa9e5e170c9e65132`.
+- [CURRENT TRUTH] Active Firmware: `firmware/JEXFYZ-V6.1.ino`; `FW_VERSION = "V6.1"`; latest source blob after Touch telemetry fix `50dee6c7ed3cb5780e97deaa235fe81856152ec2`.
 - [COMMITTED] V6.1 safety fix commit: `5fa7a4033a1cf2c5989c5fb9511be75cf34b7dbe`; V6.1 active-source promotion/removal of the V6.0 .ino path: `167f44df6c379d6d2a7a03b47f6620c609a4136c`. Both are on `main`; no PR was used.
 - [CURRENT TRUTH] App: `1.0.0+3`; package `com.horizontalzzz.jexfyz`; source remains separate from the Firmware source change.
 - [CURRENT TRUTH] Phase: DEVELOPMENT + QC / PRE-RELEASE; **NOT RELEASED**.
 - [UNVERIFIED] V6.1 has not been compiled, turned into a BIN, flashed to the ESP32-C3, or validated on hardware in the recorded V6.1 promotion. Do not infer that the user's currently installed firmware is V6.1.
 - [USER REQUIREMENT] Documentation transfer does not authorize source changes, compile/build, BIN publication, flash/OTA, App Build, or release.
+
+## LATEST QC UPDATE — TOUCH ADAPTIVE-OFF TELEMETRY SYNC — 2026-10-13
+
+## CURRENT V6.1 TOUCH-ADAPTIVE TELEMETRY SYNC FIX — 2026-10-13
+
+- [VERIFIED SOURCE DEFECT] The hardware Touch long-press path called `setAdaptiveState(false, reason)` and sent only `ACK:TOUCH_ADAPTIVE;REASON=OFF`; unlike the App BLE command handler, it did not publish the `ADAPTIVE` state delta. The App ACK handler displays the result but does not mutate the Adaptive state, so the dashboard switch and Floating Monitor could remain stale.
+- [IMPLEMENTED] The Touch Adaptive-OFF path now publishes authoritative `ADAPTIVE`, `ADAPTIVE_CEILING`, `FAN`, `PELTIER`, and `FAN_SPEED` state deltas before its Touch ACK. App continues to treat Firmware telemetry as authoritative; no speculative App-side state mutation was introduced.
+- [PRESERVED] The 200 ms selector deadtime, safe-5V handoff, 5-second Peltier OFF→ON soft-start, deferred white 3-blink OFF indicator, BLE UUIDs/P1, and protected OTA code were not intentionally changed. `VOLTAGE` remains reported by the existing completed-transition path rather than being misreported as already settled during selector deadtime.
+- [IMPLEMENTED] Added `test/firmware_touch_adaptive_sync_test.dart`, a static source-contract guard for the Touch telemetry sequence and App state-consumption path.
+- [STATIC AUDIT ONLY] Current V6.1 version/file alignment is retained; source inventory remains one `analogReadMilliVolts(PIN_NTC)` call site, no lexical `delay(` call site, and no lexical `while(` loop call site.
+- [UNVERIFIED] The new test has not been executed in this repository environment; no Flutter test/analyze, Arduino compile, BIN, flash, physical BLE/UI validation, App Build, or OTA regression was run as part of this change.
+- [NOT RELEASED] V6.1 remains DEVELOPMENT + QC / PRE-RELEASE. No production BIN or Firebase OTA metadata was changed.
+
 
 ## REQUIRED CONTINUATION SUMMARY
 
@@ -41,6 +54,7 @@ The current workflow directory contains only `.github/workflows/jexfyz-app-build
 
 ### UNVERIFIED
 - [UNVERIFIED] Whether the V6.1 Adaptive transition fix eliminates the hardware restart.
+- [UNVERIFIED] Physical confirmation that the Touch Adaptive-OFF telemetry fix updates the App and Floating Monitor promptly.
 - [UNVERIFIED] Whether orange Adaptive ON and white Adaptive OFF indicators render correctly on the physical LED hardware.
 - [UNVERIFIED] Reset cause for the user's reported restart; no App reset-reason notice was observed and no Serial log was captured.
 - [UNVERIFIED] V6.1 compile, BIN, flash, physical safety regression, Local OTA, Online OTA/BLE recovery, and App ↔ V6.1 integration.
@@ -130,7 +144,7 @@ V6.0 is historical QC context only. Its former workflow/run/BIN evidence does no
 
 ## 6. FIRMWARE CONTRACT
 
-- [VERIFIED] Active path: `firmware/JEXFYZ-V6.1.ino`; `FW_VERSION = "V6.1"`; blob `c76e9a4f36d47d2dc8f9d9145e8064c14a7fda5f`.
+- [VERIFIED] Active path: `firmware/JEXFYZ-V6.1.ino`; `FW_VERSION = "V6.1"`; latest source blob `50dee6c7ed3cb5780e97deaa235fe81856152ec2`.
 - [COMMITTED] V6.1 source/fix commit `5fa7a4033a1cf2c5989c5fb9511be75cf34b7dbe`; active-source promotion commit `167f44df6c379d6d2a7a03b47f6620c609a4136c`.
 - [IMPLEMENTED] Adaptive ON: validate Fan + Peltier state, NTC and safety latch; before a selector handoff, turn Peltier PWM OFF, force Fan to 100%, and request safe 5V with the existing 200 ms selector deadtime. On safe-5V completion, activation revalidates safety and restores cooling through `applyCoolingOutputs()`, which owns the existing 5-second OFF→ON Peltier soft-start.
 - [IMPLEMENTED] Adaptive OFF: turn Peltier PWM OFF before requesting 5V when a rail handoff is required; preserve whether Peltier was previously running; after 5V settles, restore only through existing NTC/Hotside/Fan/safety gates and existing soft-start.
@@ -201,7 +215,7 @@ V6.0 is historical QC context only. Its former workflow/run/BIN evidence does no
 ## 13. SOURCE / COMMIT MAP
 
 ### Main source/config blobs
-- [VERIFIED] Active Firmware `firmware/JEXFYZ-V6.1.ino`: `c76e9a4f36d47d2dc8f9d9145e8064c14a7fda5f`.
+- [VERIFIED] Active Firmware `firmware/JEXFYZ-V6.1.ino` after Touch telemetry fix: `50dee6c7ed3cb5780e97deaa235fe81856152ec2`.
 - [VERIFIED] App main `lib/main.dart`: `8189825511499cec01f357f1735dcee22426627b`.
 - [VERIFIED] App settings `lib/app_settings.dart`: `0c29bed46b746c1171f61ee7b095c724474a5e6b`.
 - [VERIFIED] Floating monitor `lib/floating_monitor.dart`: `4cd980ea1cc53c663e60267b2c865f3ebb09d91d`.
