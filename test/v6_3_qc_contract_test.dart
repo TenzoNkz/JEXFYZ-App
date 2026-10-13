@@ -70,6 +70,7 @@ void main() {
 
     expect(source, contains('VOLTAGE_DEADTIME_MS           = 200'));
     expect(source, contains('VOLTAGE_GUARD_MS             = 1000'));
+    expect(source, contains('PELTIER_VOLTAGE_SETTLE_MS = VOLTAGE_GUARD_MS'));
     expect(source, contains('PELTIER_SOFT_START_MS = 5000'));
     expect(source, contains('bool peltierVoltagePauseActive = false;'));
     expect(source, contains('static void pausePeltierForVoltageTransition()'));
@@ -107,7 +108,7 @@ void main() {
     final transitionGate = process.indexOf('if (voltageTransition)');
     final waitGate = process.indexOf('if (peltierVoltagePauseActive)');
     final guardCheck = process.indexOf(
-      'millis() - lastVoltageTransitionCompleteMs < VOLTAGE_GUARD_MS',
+      'millis() - lastVoltageTransitionCompleteMs < PELTIER_VOLTAGE_SETTLE_MS',
     );
     final freshRamp = process.indexOf('beginPeltierSoftStart();', waitGate);
     expect(transitionGate, greaterThanOrEqualTo(0));
