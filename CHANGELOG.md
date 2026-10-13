@@ -1,3 +1,15 @@
+## CURRENT V6.2 FULL EXECUTION — 2026-10-13
+
+- Active Firmware: `firmware/JEXFYZ-V6.2.ino`, blob SHA `eaf7ac76d20b7ba67dfc5a0abf5b4ef7083b9265`; last Firmware source update commit `cac71e8bdfc701a7ffb9b5e3fb1ea1bc6817884d`. V6.1 source retired.
+- App: `lib/main.dart`, blob SHA `b30c641efafa61661798c5d42c445c2773318195`; latest App correction commit `116921bd28d280039ba191371fa276149466c802`; version unchanged at `1.0.0+3`.
+- Thermal rules: 30-second protection stage at 12 V, 9 V and 5 V; Peltier OFF immediately, Fan 100%. Hotside <= `hotLimit - 1°C` for 5 continuous seconds before the 30-second deadline cancels the stage and keeps the rail. Otherwise 12 V/9 V steps down one rail and an unrecovered 5 V stage enters terminal manual-restart lock.
+- Thermal voltage recovery: each upward rail needs 60 continuous seconds at or below `hotLimit - 1°C`, up to the saved Adaptive ceiling. Terminal 5 V lock does not auto-recover. Manual re-arm threshold is -1°C plus 5-second stability.
+- Online OTA uses HTTPS CA validation while retaining the raw GitHub allowlist for `TenzoNkz/JEXFYZ-Firmware`. BLE command writes require an encrypted bonded connection with Secure Connections/Just Works. Local OTA was intentionally left unchanged.
+- App updates: normal BLE reconnect scheduling after disconnect state update; OTA disconnect marker is armed before `CLOUDOTA`; voltage ACK is followed by authoritative `VOLTAGE` telemetry confirmation; RGB colors normalize optional `#`; Dashboard/Floating Monitor show unknown output status while offline; safety copy uses -1°C.
+- Regression tests added/updated; `.gitignore` added. `pubspec.lock` remains BLOCKED until real dependency resolution can run with Flutter/Dart—no lockfile was fabricated.
+- Validation: Flutter tests/analyze could not run because no Flutter/Dart executables or local checkout are available. No APK build, firmware compile, BIN, flash, OTA or physical-device validation was performed.
+- Release state: V6.2 source-only DEVELOPMENT + QC / PRE-RELEASE, NOT RELEASED. Production firmware repository and Firebase metadata were not changed.
+
 ## DOCUMENTATION HOUSEKEEPING — 2026-10-13
 
 - [COMMITTED] Root `README.md` is reserved for chat-transfer instructions; version/execution history was removed from README.
