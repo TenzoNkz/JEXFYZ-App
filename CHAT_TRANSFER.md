@@ -31,8 +31,6 @@ Use these labels literally and do not upgrade a claim without evidence:
 - [UNVERIFIED] V6.1 has not been compiled, turned into a BIN, flashed to the ESP32-C3, or validated on hardware in the recorded V6.1 promotion. Do not infer that the user's currently installed firmware is V6.1.
 - [USER REQUIREMENT] Documentation transfer does not authorize source changes, compile/build, BIN publication, flash/OTA, App Build, or release.
 
-## LATEST QC UPDATE — TOUCH ADAPTIVE-OFF TELEMETRY SYNC — 2026-10-13
-
 ## CURRENT V6.1 TOUCH-ADAPTIVE TELEMETRY SYNC FIX — 2026-10-13
 
 - [VERIFIED SOURCE DEFECT] The hardware Touch long-press path called `setAdaptiveState(false, reason)` and sent only `ACK:TOUCH_ADAPTIVE;REASON=OFF`; unlike the App BLE command handler, it did not publish the `ADAPTIVE` state delta. The App ACK handler displays the result but does not mutate the Adaptive state, so the dashboard switch and Floating Monitor could remain stale.
@@ -67,7 +65,7 @@ V6.0 is historical QC context only. Its former workflow/run/BIN evidence does no
 - [USER-CONFIRMED] The earlier physical 12V-output complaint was caused by a loose cable and was resolved by securing the cable; do not carry it forward as a confirmed Firmware bug.
 - [USER REQUIREMENT] Do not compile Firmware just because source execution is called “Full.” Compile/build must be explicitly requested.
 - [USER REQUIREMENT] Prefer direct commits to `main`; do not create a PR or a new working branch unless the user explicitly asks.
-- [BLOCKED] An unintended branch `fix/adaptive-power-sequencing` exists from the preceding conversation and has no matching PR. Its V6.1 blob is `3f8c61ef2add303b495b1cc19e6ee6be04cea028`, different from the authoritative `main` V6.1 blob `c76e9a4f36d47d2dc8f9d9145e8064c14a7fda5f`. The available GitHub connector does not expose a branch-delete operation; do not continue development from this divergent branch. Main remains the source of truth.
+- [BLOCKED] An unintended branch `fix/adaptive-power-sequencing` exists from the preceding conversation and has an open, unmerged [PR #18 — Fix Adaptive rail handoff and status indicators (V6.1)](https://github.com/TenzoNkz/JEXFYZ-App/pull/18). Its V6.1 blob is `3f8c61ef2add303b495b1cc19e6ee6be04cea028`, different from the authoritative `main` V6.1 blob after the Touch telemetry fix `50dee6c7ed3cb5780e97deaa235fe81856152ec2`. The available GitHub connector does not expose a branch-delete operation; do not merge this PR or continue development from the divergent branch without explicit instruction. Main remains the source of truth.
 
 ---
 
@@ -240,7 +238,7 @@ V6.0 is historical QC context only. Its former workflow/run/BIN evidence does no
 - [VERIFIED] Main active .ino filename and `FW_VERSION` agree on V6.1.
 - [VERIFIED] Basic source inventory: one `analogReadMilliVolts(PIN_NTC)` occurrence; no `delay(` occurrence. These are limited lexical checks only.
 - [VERIFIED] The old `.github/workflows/firmware-build.yml` file is absent from `main`; current `.github/workflows` listing contains only `jexfyz-app-build-trigger.yml`.
-- [VERIFIED] A search for a PR from the accidental branch found none.
+- [VERIFIED] Current GitHub state has an open, unmerged PR #18 from the accidental branch; main remains authoritative and this fix was committed directly to main.
 - [USER-CONFIRMED] Loose cable was the cause of the earlier 12V physical-output problem and was secured.
 
 ### UNVERIFIED
