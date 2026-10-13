@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:jexfyz_cooler/app_settings.dart';
+import 'package:jexfyz_cooler/floating_monitor.dart';
 import 'package:jexfyz_cooler/main.dart';
 
 void main() {
@@ -32,6 +34,8 @@ void main() {
     expect(source, contains('adaptiveThermalRecoveryActive'));
     expect(source, contains('currentVoltage == Voltage::V5'));
     expect(source, contains('startHotsideRecoveryLockIndicator();'));
+    expect(source, contains('now < peltierHotOffUntilMs &&'));
+    expect(source, contains('adaptiveThermalRecoveryActive ||'));
   });
 
   test('Online OTA validates GitHub HTTPS; Local OTA scope stays unchanged', () {
@@ -48,6 +52,19 @@ void main() {
     expect(source, contains('BLESecurity::setAuthenticationMode(true, false, true)'));
     expect(source, contains('BLECharacteristic::PROPERTY_WRITE_ENC'));
     expect(source, contains('setAccessPermissions(ESP_GATT_PERM_WRITE_ENC)'));
+  });
+
+  test('Floating Monitor uses unknown labels while the BLE session is offline', () {
+    const telemetry = FloatingTelemetry(
+      connected: false,
+      adaptiveOn: true,
+      peltierOn: true,
+      fanOn: true,
+      speed: 90,
+    );
+    expect(floatingMetricStatus('A', telemetry, AppLanguage.english), '--');
+    expect(floatingMetricStatus('P', telemetry, AppLanguage.english), '--');
+    expect(floatingMetricStatus('S', telemetry, AppLanguage.english), '--');
   });
 
   test('App waits for voltage telemetry and marks disconnected outputs unknown', () {
