@@ -1,5 +1,11 @@
 ## CURRENT V6.3 EXECUTION STATUS — 2026-10-13
 
+### Current Online OTA trust-anchor layout — 2026-10-13
+
+- [PRESERVED] ISRG Root X1 is stored in `firmware/JEXFYZ-OTA-Trust.h`; V6.3 includes it from the sketch and continues CA-validated HTTPS.
+- [PRESERVED] The GitHub raw-BIN allowlist and redirect blocking remain active. Do not replace certificate validation with `setInsecure()` as a cosmetic cleanup.
+- [UNVERIFIED] Source-layout change has not been compiled or tested on hardware; keep the header beside `JEXFYZ-V6.3.ino`.
+
 ### APP BLE reconnect and Online OTA acknowledgement follow-up — 2026-10-13
 
 - [FIXED IN APP SOURCE] Disconnect rediscovery now avoids starting when Auto Connect is disabled or no previously paired cooler identity is known. The retry loop is cancelled when Bluetooth/permissions/location prerequisites fail, and scanning is suppressed during BLE syncing. Retry starts again when Auto Connect is enabled or the app resumes while disconnected.
