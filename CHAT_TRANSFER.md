@@ -2,7 +2,7 @@
 
 Snapshot date: 2026-10-13 (Asia/Jakarta). This file replaces the previous snapshot; it is a boot/transfer protocol, not a substitute for checking live GitHub state.
 
-Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setInsecure()`. The embedded CA certificate and OTA-only NTP time-sync gate are removed; blue feedback follows Wi-Fi connection before the GitHub GET attempt. The raw GitHub BIN URL allowlist and redirect blocking remain. This bypasses server certificate identity validation. Firmware compile and runtime/hardware status remain UNVERIFIED.
+Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setInsecure()`. The embedded CA certificate and OTA-only NTP time-sync gate are removed; blue feedback follows Wi-Fi connection before the GitHub GET attempt. The raw GitHub BIN URL allowlist and redirect blocking remain. This bypasses server certificate identity validation. [USER-REPORTED] Firmware compile succeeded and Online OTA connects to GitHub again after this change. Full transfer, flash/apply completion, successful reboot, and installed-version confirmation are not independently recorded here.
 
 ## 0. Mandatory boot and authority
 
@@ -27,12 +27,12 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
 
 - [VERIFIED] Repository: `TenzoNkz/JEXFYZ-App`; primary branch: `main`.
 - [VERIFIED] Latest functional OTA source restoration commit: `a87bbcecdca26b3648abff9cb88937e250b41f1f`; `firmware/JEXFYZ-V6.3.ino` now uses `cloudClient.setInsecure()` without the embedded CA or NTP gate. Commit: https://github.com/TenzoNkz/JEXFYZ-App/commit/a87bbcecdca26b3648abff9cb88937e250b41f1f. The OTA contract test update follows in commit `dc0d6ec13d3f58ab864e006e7defb543fd4752b6`.
-- [CURRENT SOURCE — NOT COMPILED] Active Firmware source is `firmware/JEXFYZ-V6.3.ino`, blob `8a8c64ae2a3fc7ac722a02c05feaeb614087092a`; it remains one self-contained `.ino`, with `cloudClient.setInsecure()` used for Online OTA. Embedded CA and NTP gate are removed. V6.2 source was retired from the active tree.
+- [CURRENT SOURCE — USER-REPORTED COMPILE SUCCESS] Active Firmware source is `firmware/JEXFYZ-V6.3.ino`, blob `8a8c64ae2a3fc7ac722a02c05feaeb614087092a`; it remains one self-contained `.ino`, with `cloudClient.setInsecure()` used for Online OTA. Embedded CA and NTP gate are removed. User reports compile succeeded and GitHub connection works again. V6.2 source was retired from the active tree.
 - [VERIFIED] App source: `lib/main.dart`, blob `535e396005a3bd1429db3096c627d87043b0e1b4`. Package `com.horizontalzzz.jexfyz`; pubspec version remains `1.0.0+3`.
 - [VERIFIED] `android/app/build.gradle` blob `d8681cb73156b61da7749633abd63e2fb8c287ba`; intentional `versionName "Telegram @horizontalzzz"` remains unchanged.
 - [VERIFIED] Latest V6.3 QC contract test: `test/v6_3_qc_contract_test.dart`, blob `bf9d96cf671547e48465525c4661e48afd9863ee`.
 - [VERIFIED] Firmware regression test `test/firmware_touch_adaptive_sync_test.dart` remains part of the project; fetch its live blob before quoting a SHA.
-- [IMPLEMENTED IN SOURCE; NOT COMPILED] The previous Online OTA behavior is restored to `cloudClient.setInsecure()`. The embedded ISRG Root X1 PEM, CA validation, `configTime()`, and `TIME_SYNCING`/20-second NTP gate are removed. Blue Wi-Fi feedback now leads directly to the GitHub GET attempt. This intentionally skips server certificate validation; the GitHub raw-BIN URL allowlist and redirect blocking remain.
+- [IMPLEMENTED IN SOURCE; USER-REPORTED COMPILE SUCCESS] The previous Online OTA behavior is restored to `cloudClient.setInsecure()`. The embedded ISRG Root X1 PEM, CA validation, `configTime()`, and `TIME_SYNCING`/20-second NTP gate are removed. Blue Wi-Fi feedback now leads directly to the GitHub GET attempt. The user reports compilation succeeded and GitHub connectivity recovered. This intentionally skips server certificate validation; the GitHub raw-BIN URL allowlist and redirect blocking remain.
 - [VERIFIED] `pubspec.lock` is committed (blob `1e92812bfda2c28244a0556d71d1ec94084acc66`); `.gitignore` is present.
 - [VERIFIED] Only observed workflow in `.github/workflows/` is `.github/workflows/jexfyz-app-build-trigger.yml`, blob `6b1d6cd3c65c4913c288652ac7597e126b37d0cf`. It is manually issue-triggered with title `JE X FYZ — BUILD APP TRIGGER` and body token `JEXFYZ_BUILD_TRIGGER_V1`; normal pushes/PRs do not build the release APK.
 - [VERIFIED] Branch search returned `main`, `fix/adaptive-power-sequencing`, `diag/latest-stable-v16`, `diagnostic/v1.6-heap-check`, and `tmp-jexfyz-v5-test`. The non-main branches are not authorization to switch development context; main is authoritative.
@@ -44,7 +44,7 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
 - [IMPLEMENTED IN SOURCE; NOT RUNTIME-VERIFIED] A `CLOUDOTA` ACK timeout/disconnect is ambiguous, not proof of rejection. Keep OTA recovery state and show waiting-for-reconnect/result messaging. Roll back only on a definite rejection while BLE remains connected.
 - [IMPLEMENTED IN SOURCE] The V6.3 QC contract test includes static regression assertions for reconnect cancellation and ambiguous OTA ACK behavior.
 - [UNVERIFIED] Flutter tests and Dart analysis have not been run for this follow-up. The current environment reported no Flutter/Dart executable. A prior GitHub Actions run for the V6.2 candidate had 45 passing Flutter tests, but it does not validate current V6.3/current App changes.
-- [UNVERIFIED] No APK build/Build App, V6.3 Firmware compile, BIN generation/publication, firmware flash, physical BLE pairing, hardware thermal test, or OTA regression has been performed for the current state.
+- [STATUS] The user reports V6.3 compile success and restored GitHub connection. No APK build/Build App, assistant-side Firmware compile, BIN generation/publication, flash, independent physical BLE pairing, hardware thermal test, or complete OTA transfer/apply/reboot regression was performed in this session.
 - [CURRENT TRUTH] No source changes should be made as part of a transfer snapshot. The two App fixes above were already reflected in the observed source before this transfer operation.
 
 ## 4. Firmware contract and status
@@ -77,7 +77,7 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
 
 ## 7. Persistent state files and what changed
 
-- [VERIFIED] The V6.3 Online OTA connection restoration is recorded in the current project notes. Current observed blobs before the final transfer-snapshot update:
+- [VERIFIED] The V6.3 Online OTA connection restoration and the user's compile/GitHub connectivity result are recorded in the current project notes. Current observed blobs before the final transfer-snapshot update:
   - `PROJECT_STATE.md`: `73c4cdfc12ba4f638cc576edfa7c222f83127a74`
   - `HANDOVER.md`: `350f9fecaddb9ae7d03823f63a41e20f622311f0`
   - `CHAT_RULES.md`: `22d60d0d62866f247e157f480af887b886c9896b`
@@ -93,7 +93,7 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
 ## 8. Historical validation ledger — do not overstate
 
 - [HISTORY — V6.2 CANDIDATE] GitHub Actions run #38362882150 recorded 45 Flutter tests passing. Plain `flutter analyze` returned nonzero due to 23 info-level deprecation notices. This is not evidence that the current V6.3 App or its latest regression test passed.
-- [UNVERIFIED CURRENT] No V6.3 firmware compile, BIN, flash, hardware run, BLE pairing test, OTA test, Flutter test, Dart analysis, or APK build is verified for the latest state.
+- [UNVERIFIED CURRENT] The user reports V6.3 firmware compile success and restored GitHub connectivity after the `setInsecure()` rollback. A full OTA image transfer/apply/reboot confirmation, independent hardware verification, Flutter test, Dart analysis, and APK build are not verified.
 - [CURRENT TRUTH] Project remains DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED. No production BIN or Firebase metadata was modified by the App fixes or this transfer.
 
 ## 9. Next session checklist
