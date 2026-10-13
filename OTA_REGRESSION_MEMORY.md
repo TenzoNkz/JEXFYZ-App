@@ -1,11 +1,11 @@
 # JE X FYZ / JE Cooler — Online OTA Regression Memory
 
-Last updated: 2026-10-13 (Asia/Jakarta)
-Status: V6.3 source correction committed; compile and GitHub-connect recovery reported by user; full OTA apply/reboot is not independently verified.
+Last updated: 2026-10-14 (Asia/Jakarta)
+Status: The Online OTA correction was introduced in the V6.3 revision and remains in active V6.4 source; compile and GitHub-connect recovery were user-reported; full OTA apply/reboot is not independently verified.
 
 ## 1. Incident and observed symptom
 
-- Active source of truth is `firmware/JEXFYZ-V6.3.ino` in this repository, not the BIN-only production repository.
+- Active source of truth is `firmware/JEXFYZ-V6.4.ino` in this repository, not the BIN-only production repository.
 - The V6.3 Online OTA path contained an inline ISRG Root X1 PEM constant named `GITHUB_ROOT_CA`, configured via `cloudClient.setCACert(GITHUB_ROOT_CA)`.
 - The same path introduced an OTA-only asynchronous NTP gate: `configTime(0, 0, "pool.ntp.org", "time.google.com")`, `OnlineOtaFlow::TIME_SYNCING`, and a 20-second timeout.
 - User-reported symptom: Wi-Fi reached the connected state and the first blue indicator appeared, then a red indicator appeared at the GitHub connection stage. The device could not continue to the GitHub BIN response/download.
@@ -45,7 +45,7 @@ Important consequence: `setInsecure()` still encrypts the TLS channel but skips 
 3. **Do not infer a GitHub error from LEDs alone.** Blue then red narrows the failure stage, but the exact error needs `otaDiagnosticStage`, `otaDiagnosticErrorCode`, `otaDiagnosticError`, HTTP response code, or a serial/device log.
 4. **Protect OTA behavior.** Preserve Wi-Fi↔BLE single-radio handoff, safe outputs, retry/timeouts, raw BIN URL allowlist, redirect policy, stream/size/image validation, Update lifecycle, failure recovery, and final restart path. Unrelated work must not refactor this code.
 5. **Keep tests aligned with the chosen baseline.** Static regression checks should assert `setInsecure()` exists exactly on the Online OTA client path; the CA PEM and OTA-only NTP gate are absent; blue feedback leads to the GitHub connection attempt; the allowlist and redirect blocking remain. A test file is not evidence that the test ran.
-6. **Separate source from release artifact.** Canonical source is in `TenzoNkz/JEXFYZ-App/firmware/JEXFYZ-V6.3.ino`. `TenzoNkz/JEXFYZ-Firmware` is an artifact repository containing `JEXFYZ.cpp.bin`; do not assume its BIN matches current source unless build provenance or matching hashes/version are verified.
+6. **Separate source from release artifact.** Canonical source is in `TenzoNkz/JEXFYZ-App/firmware/JEXFYZ-V6.4.ino`. `TenzoNkz/JEXFYZ-Firmware` is an artifact repository containing `JEXFYZ.cpp.bin`; do not assume its BIN matches current source unless build provenance or matching hashes/version are verified.
 7. **Authorization boundaries remain active.** User compiles firmware. Do not trigger Build App, firmware compile, BIN generation/publication, flashing, physical OTA, Firebase/production metadata update, or release unless separately and explicitly requested.
 8. **Record status precisely.** The current known fact is user-reported compile success and restored GitHub connectivity. End-to-end installation is a separate QC gate until confirmed.
 
