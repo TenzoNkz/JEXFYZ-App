@@ -24,7 +24,7 @@ Snapshot date: 2026-10-13 (Asia/Jakarta). This file replaces the previous snapsh
 ## 2. Current repository checkpoint
 
 - [VERIFIED] Repository: `TenzoNkz/JEXFYZ-App`; primary branch: `main`.
-- [VERIFIED] Latest observed main HEAD at snapshot: `b29fbd4d8b7569e5735d8d7d7d2554bca3c17865`, message “Scope OTA ambiguity regression assertion correctly”. Commit: https://github.com/TenzoNkz/JEXFYZ-App/commit/b29fbd4d8b7569e5735d8d7d7d2554bca3c17865
+- [VERIFIED] Functional/source checkpoint immediately before the transfer-document replacement: `b29fbd4d8b7569e5735d8d7d7d2554bca3c17865`, message “Scope OTA ambiguity regression assertion correctly”. Commit: https://github.com/TenzoNkz/JEXFYZ-App/commit/b29fbd4d8b7569e5735d8d7d7d2554bca3c17865. The previous documentation-only snapshot replacement is `69e3c6b383ff5ef86f354e087cb7531b7d9db8d8` (https://github.com/TenzoNkz/JEXFYZ-App/commit/69e3c6b383ff5ef86f354e087cb7531b7d9db8d8); it changed only `CHAT_TRANSFER.md`, not functional source.
 - [VERIFIED] Active Firmware source: `firmware/JEXFYZ-V6.3.ino`, blob `c2909e5ad4046596618175352934f89815f3e44c`; declares V6.3. V6.2 source was retired from active tree.
 - [VERIFIED] App source: `lib/main.dart`, blob `535e396005a3bd1429db3096c627d87043b0e1b4`. Package `com.horizontalzzz.jexfyz`; pubspec version remains `1.0.0+3`.
 - [VERIFIED] `android/app/build.gradle` blob `d8681cb73156b61da7749633abd63e2fb8c287ba`; intentional `versionName "Telegram @horizontalzzz"` remains unchanged.
@@ -33,7 +33,7 @@ Snapshot date: 2026-10-13 (Asia/Jakarta). This file replaces the previous snapsh
 - [VERIFIED] `pubspec.lock` is committed (blob `1e92812bfda2c28244a0556d71d1ec94084acc66`); `.gitignore` is present.
 - [VERIFIED] Only observed workflow in `.github/workflows/` is `.github/workflows/jexfyz-app-build-trigger.yml`, blob `6b1d6cd3c65c4913c288652ac7597e126b37d0cf`. It is manually issue-triggered with title `JE X FYZ — BUILD APP TRIGGER` and body token `JEXFYZ_BUILD_TRIGGER_V1`; normal pushes/PRs do not build the release APK.
 - [VERIFIED] Branch search returned `main`, `fix/adaptive-power-sequencing`, `diag/latest-stable-v16`, `diagnostic/v1.6-heap-check`, and `tmp-jexfyz-v5-test`. The non-main branches are not authorization to switch development context; main is authoritative.
-- [UNVERIFIED AT THIS SNAPSHOT] Complete PR state was not conclusively reconciled by this query; check live PR list before acting. Historical PR #18 was recorded CLOSED/NOT MERGED, but do not assume that alone is the full current PR state.
+- [VERIFIED CURRENT QUERY] Open-PR search returned zero results. Closed-PR search returned #18, #7, #5, #4, #3, #2, and #1. The search connector does not expose a reliable merged flag in these results; closure is verified, but do not infer merged/unmerged status for each item solely from the closed list. Earlier project notes record PR #18 as CLOSED / NOT MERGED; confirm its merge field directly before relying on that distinction.
 
 ## 3. Current App follow-up in source
 
