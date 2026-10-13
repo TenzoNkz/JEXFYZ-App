@@ -1,0 +1,60 @@
+import 'dart:io';
+
+import 'package:flutter_test/flutter_test.dart';
+import 'package:jexfyz_cooler/main.dart';
+
+void main() {
+  test('Peltier re-arm target is hotLimit minus one degree', () {
+    expect(peltierRearmTarget(45), 44);
+    expect(peltierRearmTarget(40), 39);
+    expect(peltierRearmTarget(50), 49);
+  });
+
+  test('LED color confirmation normalizes optional hash and case', () {
+    expect(normalizeLedColor('FF0000'), 'FF0000');
+    expect(normalizeLedColor('#ff0000'), 'FF0000');
+    expect(normalizeLedColor(' #00FF80 '), '00FF80');
+  });
+
+  test('V6.2 firmware keeps one calibrated NTC read and cooperative timing', () {
+    final source = File('firmware/JEXFYZ-V6.2.ino').readAsStringSync();
+    expect(source, contains('FW_VERSION[] = "V6.2"'));
+    expect(RegExp(r'analogReadMilliVolts\(PIN_NTC\)').allMatches(source).length, 1);
+    expect(RegExp(r'(?m)^\s*delay\s*\(').hasMatch(source), isFalse);
+    expect(RegExp(r'(?m)^\s*while\s*\(').hasMatch(source), isFalse);
+  });
+
+  test('Adaptive protection has 30-second stages and 60-second voltage recovery', () {
+    final source = File('firmware/JEXFYZ-V6.2.ino').readAsStringSync();
+    expect(source, contains('HOT_PELTIER_OFF_MS          = 30000'));
+    expect(source, contains('HOTSIDE_REARM_STABLE_MS = 5000UL'));
+    expect(source, contains('ADAPTIVE_VOLTAGE_RECOVERY_STABLE_MS = 60000UL'));
+    expect(source, contains('adaptiveThermalRecoveryActive'));
+    expect(source, contains('currentVoltage == Voltage::V5'));
+    expect(source, contains('startHotsideRecoveryLockIndicator();'));
+  });
+
+  test('Online OTA validates GitHub HTTPS; Local OTA scope stays unchanged', () {
+    final source = File('firmware/JEXFYZ-V6.2.ino').readAsStringSync();
+    expect(source, contains('https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/'));
+    expect(source, contains('cloudClient.setCACert(GITHUB_ROOT_CA)'));
+    expect(source, isNot(contains('cloudClient.setInsecure()')));
+    expect(source, contains('static constexpr char AP_PASSWORD[] = "0987654321";'));
+  });
+
+  test('BLE command writes require encryption and bonding', () {
+    final source = File('firmware/JEXFYZ-V6.2.ino').readAsStringSync();
+    expect(source, contains('#include <BLESecurity.h>'));
+    expect(source, contains('BLESecurity::setAuthenticationMode(true, false, true)'));
+    expect(source, contains('BLECharacteristic::PROPERTY_WRITE_ENC'));
+    expect(source, contains('setAccessPermissions(ESP_GATT_PERM_WRITE_ENC)'));
+  });
+
+  test('App waits for voltage telemetry and marks disconnected outputs unknown', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    expect(source, contains("if (c.startsWith('VOLTAGE:')) return MapEntry('VOLTAGE', c.substring(8));"));
+    expect(source, contains("case 'VOLTAGE':\n        return voltage.toUpperCase() == expected.toUpperCase();"));
+    expect(source, contains('runtimeOutputsKnown = false;'));
+    expect(source, contains("stateKnown ? JexText.of(value ? 'on' : 'off', lang) : '--'"));
+  });
+}
