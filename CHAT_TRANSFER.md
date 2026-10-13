@@ -2,7 +2,7 @@
 
 Snapshot date: 2026-10-13 (Asia/Jakarta). This file replaces the previous snapshot; it is a boot/transfer protocol, not a substitute for checking live GitHub state.
 
-Current source-layout note: the V6.3 Online OTA trust-anchor PEM stays inside `firmware/JEXFYZ-V6.3.ino` immediately before `prepareOnlineOtaDownload()`. The firmware remains a single self-contained `.ino`; CA-based HTTPS validation, GitHub raw-BIN allowlisting, NTP time sync and redirect blocking remain active. Compile/runtime status is UNVERIFIED.
+Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setInsecure()`. The embedded CA certificate and OTA-only NTP time-sync gate are removed; blue feedback follows Wi-Fi connection before the GitHub GET attempt. The raw GitHub BIN URL allowlist and redirect blocking remain. This bypasses server certificate identity validation. Firmware compile and runtime/hardware status remain UNVERIFIED.
 
 ## 0. Mandatory boot and authority
 
@@ -26,13 +26,13 @@ Current source-layout note: the V6.3 Online OTA trust-anchor PEM stays inside `f
 ## 2. Current repository checkpoint
 
 - [VERIFIED] Repository: `TenzoNkz/JEXFYZ-App`; primary branch: `main`.
-- [VERIFIED] Functional/source checkpoint immediately before the transfer-document replacement: `b29fbd4d8b7569e5735d8d7d7d2554bca3c17865`, message “Scope OTA ambiguity regression assertion correctly”. Commit: https://github.com/TenzoNkz/JEXFYZ-App/commit/b29fbd4d8b7569e5735d8d7d7d2554bca3c17865. The previous documentation-only snapshot replacement is `69e3c6b383ff5ef86f354e087cb7531b7d9db8d8` (https://github.com/TenzoNkz/JEXFYZ-App/commit/69e3c6b383ff5ef86f354e087cb7531b7d9db8d8); it changed only `CHAT_TRANSFER.md`, not functional source.
-- [CURRENT SOURCE LAYOUT — NOT COMPILED] Active Firmware source is `firmware/JEXFYZ-V6.3.ino`; CA declaration stays inline in this single sketch, placed before `prepareOnlineOtaDownload()`. Re-fetch live blobs before quoting the post-change IDs. V6.2 source was retired from the active tree.
+- [VERIFIED] Latest functional OTA source restoration commit: `a87bbcecdca26b3648abff9cb88937e250b41f1f`; `firmware/JEXFYZ-V6.3.ino` now uses `cloudClient.setInsecure()` without the embedded CA or NTP gate. Commit: https://github.com/TenzoNkz/JEXFYZ-App/commit/a87bbcecdca26b3648abff9cb88937e250b41f1f. The OTA contract test update follows in commit `dc0d6ec13d3f58ab864e006e7defb543fd4752b6`.
+- [CURRENT SOURCE — NOT COMPILED] Active Firmware source is `firmware/JEXFYZ-V6.3.ino`; it remains one self-contained `.ino`, with `cloudClient.setInsecure()` used for Online OTA. Embedded CA and NTP gate are removed. V6.2 source was retired from the active tree.
 - [VERIFIED] App source: `lib/main.dart`, blob `535e396005a3bd1429db3096c627d87043b0e1b4`. Package `com.horizontalzzz.jexfyz`; pubspec version remains `1.0.0+3`.
 - [VERIFIED] `android/app/build.gradle` blob `d8681cb73156b61da7749633abd63e2fb8c287ba`; intentional `versionName "Telegram @horizontalzzz"` remains unchanged.
-- [VERIFIED] Latest V6.3 QC contract test: `test/v6_3_qc_contract_test.dart`, blob `985715321e0564346a9daab5a9edfc77b84341d8`.
+- [VERIFIED] Latest V6.3 QC contract test: `test/v6_3_qc_contract_test.dart`, blob `bf9d96cf671547e48465525c4661e48afd9863ee`.
 - [VERIFIED] Firmware regression test `test/firmware_touch_adaptive_sync_test.dart` remains part of the project; fetch its live blob before quoting a SHA.
-- [IMPLEMENTED IN SOURCE; NOT COMPILED] ISRG Root X1 remains inline in `firmware/JEXFYZ-V6.3.ino` so only one firmware `.ino` is needed. V6.3 still uses `cloudClient.setCACert(GITHUB_ROOT_CA)`; do not remove verification or use `setInsecure()`.
+- [IMPLEMENTED IN SOURCE; NOT COMPILED] The previous Online OTA behavior is restored to `cloudClient.setInsecure()`. The embedded ISRG Root X1 PEM, CA validation, `configTime()`, and `TIME_SYNCING`/20-second NTP gate are removed. Blue Wi-Fi feedback now leads directly to the GitHub GET attempt. This intentionally skips server certificate validation; the GitHub raw-BIN URL allowlist and redirect blocking remain.
 - [VERIFIED] `pubspec.lock` is committed (blob `1e92812bfda2c28244a0556d71d1ec94084acc66`); `.gitignore` is present.
 - [VERIFIED] Only observed workflow in `.github/workflows/` is `.github/workflows/jexfyz-app-build-trigger.yml`, blob `6b1d6cd3c65c4913c288652ac7597e126b37d0cf`. It is manually issue-triggered with title `JE X FYZ — BUILD APP TRIGGER` and body token `JEXFYZ_BUILD_TRIGGER_V1`; normal pushes/PRs do not build the release APK.
 - [VERIFIED] Branch search returned `main`, `fix/adaptive-power-sequencing`, `diag/latest-stable-v16`, `diagnostic/v1.6-heap-check`, and `tmp-jexfyz-v5-test`. The non-main branches are not authorization to switch development context; main is authoritative.
@@ -62,7 +62,7 @@ Current source-layout note: the V6.3 Online OTA trust-anchor PEM stays inside `f
 
 - BLE service UUID: `6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001`; RX: `6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001`; TX: `6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001`.
 - [USER REQUIREMENT] ESP32-C3 has one radio path: Wi-Fi OTA and BLE must not own radio simultaneously. OTA flow, state machine, LED indications, recovery, and local OTA are protected; read `OTA_PROTECTION.md` before any OTA-related changes.
-- [VERIFIED SOURCE] Online OTA validates HTTPS certificate chain using the configured ISRG Root X1 CA and only permits the allowlisted raw GitHub firmware URL prefix. No custom SHA/signature layer was added; Firebase firmware metadata remains version + link.
+- [VERIFIED SOURCE] Online OTA uses TLS via `cloudClient.setInsecure()` and only permits the allowlisted raw GitHub firmware URL prefix; redirects remain blocked. Because certificate verification is bypassed, HTTPS server identity is not authenticated. No custom SHA/signature layer was added; Firebase firmware metadata remains version + link.
 - [UNVERIFIED] Current Firebase rules/App Check enforcement and live metadata were not checked in this transfer.
 - [VERIFIED REPOSITORY CHECKPOINT FROM PRIOR AUDIT] Separate production repository `TenzoNkz/JEXFYZ-Firmware` had a `JEXFYZ.cpp.bin` upload whose timestamp predated V6.3 source. Do not assume production BIN corresponds to V6.3; verify version before any authorized release/OTA.
 - [USER REQUIREMENT] Do not publish BIN, edit Firebase metadata, flash, or initiate OTA during transfer or QC discussion.
@@ -77,16 +77,16 @@ Current source-layout note: the V6.3 Online OTA trust-anchor PEM stays inside `f
 
 ## 7. Persistent state files and what changed
 
-- [VERIFIED] At snapshot time, `PROJECT_STATE.md`, `HANDOVER.md`, `CHAT_RULES.md`, `APP_NOTES.md`, `FIRMWARE_NOTES.md`, `BUILD_NOTES.md`, `firmware/FIRMWARE_ANALYSIS.md`, `OTA_PROTECTION.md`, and `CHANGELOG.md` already contain the current V6.3 status and App reconnect/OTA acknowledgement follow-up. Their observed blobs were respectively:
-  - `PROJECT_STATE.md`: `c6becd8b774b2bef984180db08a3a49384ad08b7`
-  - `HANDOVER.md`: `dd3386d58cfa8455d723d3cddbfcbecb521dea09`
-  - `CHAT_RULES.md`: `ff5b724310c16643212e31bad20f58f7efb2f24a`
-  - `APP_NOTES.md`: `24e09e0c642f9980ce94280ee35b3c51fc41dd0a`
-  - `FIRMWARE_NOTES.md`: `e3d7e1fbedcf1cc1754202bb7cb352b7124ba2ba`
-  - `BUILD_NOTES.md`: `ec044b85b2492adde2673022991ea9ab0a80d3fa`
+- [VERIFIED] The V6.3 source restoration and current Online OTA contract are recorded in the current project notes. Current observed blobs after those edits:
+  - `PROJECT_STATE.md`: `73c4cdfc12ba4f638cc576edfa7c222f83127a74`
+  - `HANDOVER.md`: `d70380289979838a704248c7e07c01c133a2c770`
+  - `CHAT_RULES.md`: `c842b072413e0a661be22b46aea9f89e32aa91aa`
+  - `APP_NOTES.md`: `a2a96f397960b58d8d3a6bc6d553ddaea4807c29`
+  - `FIRMWARE_NOTES.md`: `bcd95fb4eb83272fdee19675c0f50c57deb5d3d0`
+  - `BUILD_NOTES.md`: `c385bdace4678642df1fe3a80f4080187a44ba72`
   - `firmware/FIRMWARE_ANALYSIS.md`: `a2dd82d1b53531c2efc3b251a2df2e38168a613f`
-  - `OTA_PROTECTION.md`: `73df0712e86a05611deb632450ebe99b335aaa2b`
-  - `CHANGELOG.md`: `960d962c76c0a46259665e2c4cc5a82e6d3918ed`
+  - `OTA_PROTECTION.md`: `98b597021c4c8bfa0041acf5c2bcb17a53ccf7ea`
+  - `CHANGELOG.md`: `64b29c77f3cf3746f816350b96a62abc0f15c6f8`
 - [CURRENT TRUTH] These persistent state files did not require additional edits for this transfer: the current App follow-up was already recorded. Only `CHAT_TRANSFER.md` is to be replaced in this operation.
 - [HISTORY/OBSOLETE] Older snapshots embedded below this file’s prior current-status header were contradictory and stale. This file is now being fully replaced to remove duplicate/obsolete snapshots; do not append another copy.
 
