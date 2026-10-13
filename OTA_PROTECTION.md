@@ -1,10 +1,13 @@
 ## CURRENT V6.3 EXECUTION STATUS — 2026-10-13
 
-### Current Online OTA single-file layout — 2026-10-13
+### Current Online OTA connection path — 2026-10-13
 
-- [PRESERVED] ISRG Root X1 remains inline in `firmware/JEXFYZ-V6.3.ino`; the sketch does not depend on an additional firmware header.
-- [PRESERVED] CA-validated HTTPS, the GitHub raw-BIN allowlist and redirect blocking remain active. Do not replace verification with `setInsecure()`.
-- [UNVERIFIED] Single-file source layout has not been compiled or tested on hardware.
+### Online OTA connection regression correction — 2026-10-13
+
+- [FIXED IN SOURCE — NOT COMPILED] V6.3 Online OTA now restores the previous `cloudClient.setInsecure()` connection path. The inline ISRG Root X1 certificate, CA validation call, `configTime()`, `TIME_SYNCING` state, and 20-second NTP gate were removed. On Wi-Fi connection, the blue indicator runs directly before the GitHub GET attempt.
+- [PRESERVED] The HTTPS transport, raw GitHub BIN URL allowlist for `TenzoNkz/JEXFYZ-Firmware`, redirect blocking, download size/image checks, safe-output sequencing, and OTA recovery path remain in place. `setInsecure()` does not validate the server certificate identity.
+- [TEST CONTRACT UPDATED — NOT RUN] `test/v6_3_qc_contract_test.dart` now asserts the restored connection path, removal of CA/NTP gates, blue-before-GitHub flow, and retention of the URL allowlist/redirect block.
+- [UNVERIFIED] This source change has not been compiled or tested on physical hardware. No BIN was generated, published, flashed, or installed; no OTA test was run.
 
 ### APP BLE reconnect and Online OTA acknowledgement follow-up — 2026-10-13
 
@@ -92,9 +95,9 @@ Dokumen ini **bukan** cryptographic signature, bukan CI enforcement, dan bukan p
 
 > **OTA sudah bekerja — jangan disentuh kecuali ada alasan OTA yang nyata.**
 
-## Online OTA TLS clock validation — 2026-10-13
+## HISTORICAL — V6.2 Online OTA TLS/CA clock validation (superseded by V6.3) — 2026-10-13
 
-- V6.2 Online OTA synchronizes system time before TLS validation and fails safely if the clock does not become valid within 20 seconds.
-- Redirects are disabled for the direct raw GitHub BIN endpoint; CA validation remains enabled, after NTP time is synchronized (20-second deadline).
+- [HISTORICAL / SUPERSEDED] V6.2 Online OTA synchronized system time before CA-validated HTTPS. This is no longer the active V6.3 connection path.
+- Redirects were disabled for the direct raw GitHub BIN endpoint; CA validation and the NTP gate were subsequently removed by the V6.3 legacy-path restoration.
 - Repository allowlist remains limited to `TenzoNkz/JEXFYZ-Firmware`; no custom firmware SHA/signature is added; Local OTA remains unchanged.
 - The unapproved temporary quality workflow was removed after it failed to push a generated lockfile; test/analyze steps were skipped and no lockfile was committed.
