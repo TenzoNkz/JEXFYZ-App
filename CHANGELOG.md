@@ -1,3 +1,10 @@
+## DOCUMENTATION HOUSEKEEPING — 2026-10-13
+
+- [COMMITTED] Root `README.md` is reserved for chat-transfer instructions; version/execution history was removed from README.
+- [COMMITTED] `CHAT_TRANSFER.md` was replaced with one reconciled, structured snapshot; stale duplicated/current-state claims were removed and PR #18 is recorded as closed/not merged.
+- [UNRESOLVED] Source branch `fix/adaptive-power-sequencing` still exists; the available GitHub connector did not provide a branch-delete action.
+- [DOCS ONLY] No App/Firmware functional source, workflow, compile, build, BIN, flash, OTA, Firebase metadata, or release was changed.
+
 ## CURRENT V6.1 TOUCH-ADAPTIVE TELEMETRY SYNC FIX — 2026-10-13
 
 - [VERIFIED SOURCE DEFECT] The hardware Touch long-press path called `setAdaptiveState(false, reason)` and sent only `ACK:TOUCH_ADAPTIVE;REASON=OFF`; unlike the App BLE command handler, it did not publish the `ADAPTIVE` state delta. The App ACK handler displays the result but does not mutate the Adaptive state, so the dashboard switch and Floating Monitor could remain stale.
