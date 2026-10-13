@@ -1,5 +1,11 @@
 ## CURRENT V6.3 EXECUTION STATUS — 2026-10-13
 
+### Online OTA CA source-layout cleanup — 2026-10-13
+
+- [IMPLEMENTED IN SOURCE — NOT COMPILED] The ISRG Root X1 PEM definition is moved out of `firmware/JEXFYZ-V6.3.ino` into adjacent `firmware/JEXFYZ-OTA-Trust.h`, so the main sketch no longer contains the long certificate block.
+- [PRESERVED] Online OTA still validates HTTPS with `cloudClient.setCACert(GITHUB_ROOT_CA)`; the GitHub raw-BIN URL allowlist, 20-second NTP time-sync stage, and redirect blocking remain unchanged. `setInsecure()` is not used.
+- [UNVERIFIED] No compile, BIN, flash, OTA, or hardware validation has been performed for this source-layout change. The trust header must be kept beside the V6.3 sketch when compiling.
+
 ### APP BLE reconnect and Online OTA acknowledgement follow-up — 2026-10-13
 
 - [FIXED IN APP SOURCE] Disconnect rediscovery now avoids starting when Auto Connect is disabled or no previously paired cooler identity is known. The retry loop is cancelled when Bluetooth/permissions/location prerequisites fail, and scanning is suppressed during BLE syncing. Retry starts again when Auto Connect is enabled or the app resumes while disconnected.
