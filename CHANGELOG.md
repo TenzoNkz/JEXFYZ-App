@@ -2,7 +2,7 @@
 
 - Firmware remains V6.2. Online OTA now synchronizes system time asynchronously after Wi-Fi connects and before CA-validated HTTPS begins. Time synchronization is bounded at 20 seconds and uses the existing OTA failure/recovery path on timeout.
 - Redirects are disabled for the allowlisted raw GitHub BIN URL. The configured public CA validation remains enabled; no SHA/custom signature was added, and Local OTA is unchanged.
-- Added QC assertions and a GitHub Actions quality workflow to resolve dependencies, commit generated `pubspec.lock` on main if needed, run `flutter test`, and run `flutter analyze`. The workflow does not build APK or firmware.
+- Added QC assertions. A temporary no-build quality workflow was briefly tested: `flutter pub get` succeeded, but pushing generated `pubspec.lock` was rejected as non-fast-forward, so `flutter test`/`flutter analyze` were skipped. The temporary workflow was removed; no lockfile was committed.
 - No compile, APK build, flash, device OTA, or physical test was performed; review CI and perform manual hardware validation before sign-off.
 
 ## CURRENT V6.2 FULL EXECUTION — 2026-10-13
@@ -13,8 +13,8 @@
 - Thermal voltage recovery: each upward rail needs 60 continuous seconds at or below `hotLimit - 1°C`, up to the saved Adaptive ceiling. Terminal 5 V lock does not auto-recover. Manual re-arm threshold is -1°C plus 5-second stability.
 - Online OTA uses HTTPS CA validation while retaining the raw GitHub allowlist for `TenzoNkz/JEXFYZ-Firmware`. BLE command writes require an encrypted bonded connection with Secure Connections/Just Works. Local OTA was intentionally left unchanged.
 - App updates: normal BLE reconnect scheduling after disconnect state update; OTA disconnect marker is armed before `CLOUDOTA`; voltage ACK is followed by authoritative `VOLTAGE` telemetry confirmation; RGB colors normalize optional `#`; Dashboard/Floating Monitor show unknown output status while offline; safety copy uses -1°C.
-- Regression tests added/updated; `.gitignore` added. `pubspec.lock` remains BLOCKED until real dependency resolution can run with Flutter/Dart—no lockfile was fabricated.
-- Validation: Flutter tests/analyze could not run because no Flutter/Dart executables or local checkout are available. No APK build, firmware compile, BIN, flash, OTA or physical-device validation was performed.
+- Regression tests added/updated; `.gitignore` added. `pubspec.lock` is absent from `main`: an ephemeral GitHub Actions `flutter pub get` succeeded, but the generated lockfile push was rejected as non-fast-forward. Test/analyze steps were skipped and the temporary workflow was removed.
+- Validation: a temporary quality workflow resolved dependencies but failed pushing `pubspec.lock` due non-fast-forward; tests/analyze were skipped and the temporary workflow was removed. No lockfile was committed. No APK build, firmware compile, BIN, flash, OTA or physical-device validation was performed.
 - Release state: V6.2 source-only DEVELOPMENT + QC / PRE-RELEASE, NOT RELEASED. Production firmware repository and Firebase metadata were not changed.
 
 ## DOCUMENTATION HOUSEKEEPING — 2026-10-13
