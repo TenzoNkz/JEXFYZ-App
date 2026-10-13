@@ -1,342 +1,242 @@
 # JE X FYZ — CHAT TRANSFER / BOOT PROTOCOL
 
-Snapshot date: 2026-10-13. Repository snapshot reconciled against `main` before this replacement. **This file is a transfer protocol, not source of truth.** Current source and active workflow win when records conflict.
+Snapshot date: 2026-10-13 (Asia/Jakarta). This snapshot was reconciled against `main` before the documentation refresh that began at HEAD `ae85fc52bbf81d24422d26a2ee3242aa4cb8a185`. Treat this file as a transfer guide and snapshot, not a substitute for checking the live repository.
 
 ## STATE LABELS
 
-Use these labels literally and do not upgrade a claim without evidence:
-
-- [USER REQUIREMENT] Explicit request/operational rule from the user.
-- [CONFIRMED] Directly confirmed by the user.
-- [VERIFIED] Rechecked against current repository/source/workflow or authoritative evidence.
-- [IMPLEMENTED] Present in source; does not mean built or runtime-tested.
-- [COMMITTED] Present in Git history.
-- [BUILT] Build/compile evidence exists for the named version/source only.
-- [TESTED] A named test was actually performed; include evidence.
-- [UNVERIFIED] Required validation evidence is absent.
-- [HYPOTHESIS] Plausible explanation, not established root cause.
-- [OBSOLETE] Must not be used as current truth.
-- [REJECTED] Explicitly rejected decision/approach.
-- [BLOCKED] Cannot be done safely or with available capability.
-- [OPEN QUESTION] Relevant unanswered question.
-
-## CURRENT TRUTH AT TRANSFER
-
-- [VERIFIED] Repository: `TenzoNkz/JEXFYZ-App`; authoritative branch: `main`.
-- [VERIFIED] Main HEAD immediately before this transfer-file replacement: `15ff2c7060be0af10497efffa9e5e170c9e65132`.
-- [CURRENT TRUTH] Active Firmware: `firmware/JEXFYZ-V6.1.ino`; `FW_VERSION = "V6.1"`; latest source blob after Touch telemetry fix `50dee6c7ed3cb5780e97deaa235fe81856152ec2`.
-- [COMMITTED] V6.1 safety fix commit: `5fa7a4033a1cf2c5989c5fb9511be75cf34b7dbe`; V6.1 active-source promotion/removal of the V6.0 .ino path: `167f44df6c379d6d2a7a03b47f6620c609a4136c`. Both are on `main`; no PR was used.
-- [CURRENT TRUTH] App: `1.0.0+3`; package `com.horizontalzzz.jexfyz`; source remains separate from the Firmware source change.
-- [CURRENT TRUTH] Phase: DEVELOPMENT + QC / PRE-RELEASE; **NOT RELEASED**.
-- [UNVERIFIED] V6.1 has not been compiled, turned into a BIN, flashed to the ESP32-C3, or validated on hardware in the recorded V6.1 promotion. Do not infer that the user's currently installed firmware is V6.1.
-- [USER REQUIREMENT] Documentation transfer does not authorize source changes, compile/build, BIN publication, flash/OTA, App Build, or release.
-
-## CURRENT V6.1 TOUCH-ADAPTIVE TELEMETRY SYNC FIX — 2026-10-13
-
-- [VERIFIED SOURCE DEFECT] The hardware Touch long-press path called `setAdaptiveState(false, reason)` and sent only `ACK:TOUCH_ADAPTIVE;REASON=OFF`; unlike the App BLE command handler, it did not publish the `ADAPTIVE` state delta. The App ACK handler displays the result but does not mutate the Adaptive state, so the dashboard switch and Floating Monitor could remain stale.
-- [IMPLEMENTED] The Touch Adaptive-OFF path now publishes authoritative `ADAPTIVE`, `ADAPTIVE_CEILING`, `FAN`, `PELTIER`, and `FAN_SPEED` state deltas before its Touch ACK. App continues to treat Firmware telemetry as authoritative; no speculative App-side state mutation was introduced.
-- [PRESERVED] The 200 ms selector deadtime, safe-5V handoff, 5-second Peltier OFF→ON soft-start, deferred white 3-blink OFF indicator, BLE UUIDs/P1, and protected OTA code were not intentionally changed. `VOLTAGE` remains reported by the existing completed-transition path rather than being misreported as already settled during selector deadtime.
-- [IMPLEMENTED] Added `test/firmware_touch_adaptive_sync_test.dart`, a static source-contract guard for the Touch telemetry sequence and App state-consumption path.
-- [STATIC AUDIT ONLY] Current V6.1 version/file alignment is retained; source inventory remains one `analogReadMilliVolts(PIN_NTC)` call site, no lexical `delay(` call site, and no lexical `while(` loop call site.
-- [UNVERIFIED] The new test has not been executed in this repository environment; no Flutter test/analyze, Arduino compile, BIN, flash, physical BLE/UI validation, App Build, or OTA regression was run as part of this change.
-- [NOT RELEASED] V6.1 remains DEVELOPMENT + QC / PRE-RELEASE. No production BIN or Firebase OTA metadata was changed.
-
-
-## REQUIRED CONTINUATION SUMMARY
-
-### CURRENT TRUTH
-Main contains V6.1 Adaptive rail-handoff source changes. The 12V physical issue from the preceding discussion was confirmed by the user to be a loose cable and was fixed physically. Separately, the user reported that the previously installed firmware restarts when Adaptive is enabled after selecting 12V and turning Fan + Peltier ON; after reboot Adaptive appears OFF and neither Adaptive ON orange nor OFF white feedback was observed. The V6.1 fix is not yet proven on hardware.
-
-### VERIFIED
-The current workflow directory contains only `.github/workflows/jexfyz-app-build-trigger.yml`. The previous firmware push-triggered compile workflow `.github/workflows/firmware-build.yml` is deleted in commit `32bc3c3fcb0c074e39d7ea49428f98d7845e4073`. The App Build workflow is issue-triggered and builds the Android App only. Current GitHub combined status for the recorded V6.1 source commit and pre-transfer main documentation HEAD returned no status entries; this is not evidence of a successful build.
-
-### UNVERIFIED
-- [UNVERIFIED] Whether the V6.1 Adaptive transition fix eliminates the hardware restart.
-- [UNVERIFIED] Physical confirmation that the Touch Adaptive-OFF telemetry fix updates the App and Floating Monitor promptly.
-- [UNVERIFIED] Whether orange Adaptive ON and white Adaptive OFF indicators render correctly on the physical LED hardware.
-- [UNVERIFIED] Reset cause for the user's reported restart; no App reset-reason notice was observed and no Serial log was captured.
-- [UNVERIFIED] V6.1 compile, BIN, flash, physical safety regression, Local OTA, Online OTA/BLE recovery, and App ↔ V6.1 integration.
-
-### HISTORY / OBSOLETE
-V6.0 is historical QC context only. Its former workflow/run/BIN evidence does not prove V6.1. Older V5.9 and V5.8 active-version statements in historical notes must not override `main` source V6.1. The former automatic Firmware compile workflow is no longer present on `main`.
-
-### CHAT-ONLY
-- [USER-REPORTED / UNVERIFIED] Reproduction sequence on the previously installed firmware: Manual 12V → Fan ON + Peltier ON → Adaptive ON → hardware restart; after reboot Adaptive is OFF. No RESET_REASON notification appeared, and the orange/white Adaptive indicator was not visible.
-- [USER-CONFIRMED] The earlier physical 12V-output complaint was caused by a loose cable and was resolved by securing the cable; do not carry it forward as a confirmed Firmware bug.
-- [USER REQUIREMENT] Do not compile Firmware just because source execution is called “Full.” Compile/build must be explicitly requested.
-- [USER REQUIREMENT] Prefer direct commits to `main`; do not create a PR or a new working branch unless the user explicitly asks.
-- [BLOCKED] An unintended branch `fix/adaptive-power-sequencing` exists from the preceding conversation and has an open, unmerged [PR #18 — Fix Adaptive rail handoff and status indicators (V6.1)](https://github.com/TenzoNkz/JEXFYZ-App/pull/18). Its V6.1 blob is `3f8c61ef2add303b495b1cc19e6ee6be04cea028`, different from the authoritative `main` V6.1 blob after the Touch telemetry fix `50dee6c7ed3cb5780e97deaa235fe81856152ec2`. The available GitHub connector does not expose a branch-delete operation; do not merge this PR or continue development from the divergent branch without explicit instruction. Main remains the source of truth.
-
----
+Use these labels precisely: [USER REQUIREMENT], [USER-CONFIRMED], [CURRENT TRUTH], [VERIFIED], [IMPLEMENTED], [COMMITTED], [BUILT], [TESTED], [UNVERIFIED], [HYPOTHESIS], [OBSOLETE], [REJECTED], [BLOCKED], [OPEN QUESTION].
 
 ## 0. READ FIRST / MANDATORY BOOT
 
-1. Read this file, then re-fetch `main` HEAD and reconcile active source/workflows before doing anything.
-2. Read `PROJECT_STATE.md`, `HANDOVER.md`, `CHAT_RULES.md`, `FIRMWARE_NOTES.md`, `firmware/FIRMWARE_ANALYSIS.md`, `APP_NOTES.md`, `OTA_PROTECTION.md`, `BUILD_NOTES.md`, `CHANGELOG.md` as relevant. Some historical sections may still mention old versions; never override current source with history.
-3. Do not ask the user to repeat facts recorded below or in authoritative docs.
-4. Do not modify functional source during a transfer/boot.
-5. Do not build, compile, flash, publish, perform OTA or build the App unless the user explicitly asks for that operation.
+1. Read this file first, then re-fetch live `main` HEAD.
+2. Read `PROJECT_STATE.md`, `HANDOVER.md`, `CHAT_RULES.md`, and the relevant current notes: `APP_NOTES.md`, `FIRMWARE_NOTES.md`, `firmware/FIRMWARE_ANALYSIS.md`, `OTA_PROTECTION.md`, `BUILD_NOTES.md`, and `CHANGELOG.md`.
+3. Inspect current Firmware source/version/blob, App source, current workflows, test files, PR #18 state, and the divergent branch.
+4. Do not alter source during boot/reconciliation. Report current truth and wait for a user command.
 
 ## 1. PROJECT IDENTITY
 
-- [CURRENT TRUTH] Project: JE X FYZ; App product name: JE Cooler; public hardware/app branding: JE X FYZ.
-- [CURRENT TRUTH] Hardware target: ESP32-C3 Super Mini / ESP32-C3 Dev Module.
-- [CURRENT TRUTH] Firmware source authority: `firmware/` in `TenzoNkz/JEXFYZ-App`.
+- [CURRENT TRUTH] Project/repository: JE X FYZ / JE Cooler — `TenzoNkz/JEXFYZ-App`; primary branch: `main`.
+- [CURRENT TRUTH] Firmware target: ESP32-C3 Super Mini / ESP32-C3 Dev Module.
+- [CURRENT TRUTH] Firmware source of record lives under `firmware/` in this repository.
 - [CURRENT TRUTH] Separate production firmware repository: `TenzoNkz/JEXFYZ-Firmware`.
-- [CURRENT TRUTH] App package: `com.horizontalzzz.jexfyz`; version `1.0.0+3`.
-- [CURRENT TRUTH] Release state: DEVELOPMENT + QC / PRE-RELEASE → NOT RELEASED.
+- [CURRENT TRUTH] Flutter Android App package: `com.horizontalzzz.jexfyz`; App version `1.0.0+3`.
+- [CURRENT TRUTH] Project phase: DEVELOPMENT + QC / PRE-RELEASE → **NOT RELEASED**.
 
 ## 2. AUTHORITY HIERARCHY
 
-1. Current `main` source/configuration and active workflow inventory.
-2. `PROJECT_STATE.md`.
-3. `firmware/FIRMWARE_ANALYSIS.md`, `FIRMWARE_NOTES.md`, `APP_NOTES.md`, `CHAT_RULES.md`, `OTA_PROTECTION.md`, `BUILD_NOTES.md`.
-4. `HANDOVER.md`, `CHANGELOG.md`.
-5. `CHAT_TRANSFER.md`.
-6. Current chat; then older chat history.
+Use this order when records disagree:
 
-- [POLICY] When documents conflict, record the conflict; current source/workflows win.
-- [POLICY] A committed source fix is not evidence of successful compile, BIN generation, flashing, OTA, or hardware behavior.
+1. Live current source, workflow, Git refs, and direct verification.
+2. `PROJECT_STATE.md`.
+3. Authoritative current technical notes.
+4. `CHAT_RULES.md`, `HANDOVER.md`, and `CHANGELOG.md`.
+5. This transfer file.
+6. Current chat, then older chats.
+
+History describes what was true at a past checkpoint. Never copy old version/status statements into current truth without verifying them.
 
 ## 3. USER COMMAND PROTOCOL
 
-- [USER REQUIREMENT] `@Thinking Diskusi!` — discussion/review only; no source modification, build, compile, flash, release, or publication.
-- [USER REQUIREMENT] `@Thinking Tanya Gemini!` — diagnosis/patch request; provide exact OLD → NEW proposal; do not silently execute.
-- [USER REQUIREMENT] `@Thinking Eksekusi!` — implement the approved scope, audit affected behavior, sync relevant documentation, and commit.
-- [USER REQUIREMENT] `@Thinking Eksekusi Full!` — broad implementation and affected audit/documentation/commit; **does not automatically authorize compile, build, BIN, flash/OTA, App Build, or release**.
-- [USER REQUIREMENT] Compile/build requires an explicit user instruction naming that operation; do not infer it from “Eksekusi,” “Eksekusi Full,” or documentation work.
-- [USER REQUIREMENT] `@Thinking Build App!` — explicit App Build operation.
-- [USER REQUIREMENT] `@Thinking Eksekusi & Build App!` — implement, audit, sync docs, commit, then execute the explicitly named App Build.
-- [USER REQUIREMENT] Commit directly to `main` unless the user explicitly requests a branch/PR. Do not create branches merely as a default.
-- [POLICY] Report accurately which actions were and were not run.
+- [USER REQUIREMENT] `Diskusi` means inspect/explain/recommend; do not write changes.
+- [USER REQUIREMENT] `Eksekusi` authorizes the discussed change only; do not broaden scope silently.
+- [USER REQUIREMENT] Build App only when the user explicitly asks for App Build.
+- [USER REQUIREMENT] Firmware compile/build must be explicitly requested separately. The user has said they will compile the current Firmware themselves later; do not compile it on their behalf unless explicitly instructed.
+- [USER REQUIREMENT] Prefer direct commits to `main`; do not create branches or PRs unless explicitly requested.
+- [USER REQUIREMENT] Do not flash hardware, trigger OTA, change Firebase/production metadata, or release without explicit authorization.
+- Never claim a write, test, build, or physical verification that did not happen.
 
 ## 4. CURRENT PROJECT MODE
 
-- [CURRENT TRUTH] V6.1 Firmware source-only QC; NOT RELEASED.
-- [IMPLEMENTED] Main has a targeted Adaptive rail-handoff change intended to prevent Peltier PWM remaining energized while selector rails are in break-before-make handoff; Adaptive OFF uses a corresponding safe 5V handoff.
-- [UNVERIFIED] The reported restart and missing indicators have not been validated away on physical hardware using V6.1.
-- [POLICY] Avoid unrelated refactors. Only change Firmware/App behavior for a reproducible defect with a clear diagnosis and approved scope.
-- [USER REQUIREMENT] No compile/build without explicit instruction, regardless of execution mode.
+- [CURRENT TRUTH] QC / PRE-RELEASE; source is frozen except for a reproducible, relevant defect with a clear root cause and a narrowly scoped fix.
+- [CURRENT TRUTH] Most recent functional task: fix App/Floating Monitor Adaptive state becoming stale when the user forces Adaptive OFF with the hardware Touch long-press.
+- [CURRENT TRUTH] Current next device-level step is user-side Firmware compile/flash and physical BLE/UI verification; assistant must not initiate compile or App Build without the matching explicit instruction.
+- [CURRENT TRUTH] App rebuild is not required for the Touch telemetry firmware change; no App Dart source was changed by that fix.
 
 ## 5. HARDWARE CONTRACT
 
-| Function | GPIO |
-| --- | ---: |
-| Hotside NTC | GPIO0 |
-| TTP223 touch input | GPIO1 |
-| 12V selector | GPIO3 |
-| 9V selector | GPIO4 |
-| Peltier PWM output | GPIO5 |
-| Fan PWM output | GPIO6 |
-| WS2812 LED data | GPIO7 |
+- [USER REQUIREMENT] GPIO map: NTC ADC GPIO0; Touch GPIO1; 12V selector GPIO3; 9V selector GPIO4; Peltier GPIO5; Fan GPIO6; WS2812 LED GPIO7.
+- [USER REQUIREMENT] ESP32-C3 logic is 3.3 V.
+- [USER REQUIREMENT] Touch: one short touch cycles voltage; double touch controls RGB; 5-second long press toggles paired Fan/Peltier in normal manual use. While Adaptive is ON, 5-second long press exits Adaptive.
+- [USER REQUIREMENT] Manual voltage sequence: 5 V → 9 V → 12 V → 9 V → 5 V → repeat.
+- [USER REQUIREMENT] Selector outputs use 200 ms break-before-make deadtime. Voltage guard is 1 second.
+- [USER REQUIREMENT] Fan PWM: 25 kHz, 8-bit, allowed adjustable range 50–100% in Manual 12 V mode; Fan safety override may force 100%.
+- [USER REQUIREMENT] Peltier PWM: 20 kHz; every OFF→ON transition must use the cooperative 5-second soft-start.
+- [USER REQUIREMENT] NTC: 10 kΩ sensor + 10 kΩ resistor, Beta 3950; exactly one calibrated ADC sample per second. Do not reintroduce median/multi-sample averaging.
+- [USER REQUIREMENT] Hotside limit setting range 40–50 °C, default 45 °C.
+- [USER REQUIREMENT] No blocking executable `delay()` and no timing `while()` loops.
+- [USER REQUIREMENT] Do not reintroduce `RAPID_HOTSIDE_RISE`.
+- [USER REQUIREMENT] Adaptive upward rail steps have a fresh 5-second dwell after each completed upward transition in both HOTSIDE and HOTSIDE_BATTERY profiles; downward thermal step-down is immediate.
+- [USER REQUIREMENT] Manual thermal protection preserves the selected rail, forces Fan 100% and Peltier OFF, and requires manual Peltier restart after thermal re-arm.
+- [USER REQUIREMENT] Peltier safety re-arm threshold is `hotLimit - 2 °C`. Normal Peltier ON/OFF must not produce an unrelated green/red LED cue; safety-state and re-arm cues are separate.
+- [USER REQUIREMENT] Adaptive ON confirmation blinks orange three times; Adaptive OFF confirmation blinks white three times. The Adaptive state indicator currently has priority over the voltage indicator during its animation.
 
-- [FROZEN] ESP32-C3 single-radio rule: Wi-Fi and BLE must not own the radio concurrently.
-- [FROZEN] Fan PWM: 25 kHz, 8-bit; user-controlled Manual range 50–100%; transitions force Fan 100%.
-- [FROZEN] Peltier PWM: 20 kHz; every genuine OFF→ON operation uses a cooperative 5-second soft-start.
-- [FROZEN] Voltage selector deadtime: 200 ms break-before-make; App/manual voltage guard: 1 second after a completed transition.
-- [FROZEN] NTC: 10K NTC + 10K fixed resistor, Beta 3950, existing 3.3 V divider reference design; sample cadence one calibrated ADC reading per second.
-- [FROZEN] Hotside limit: 40–50 °C, default 45 °C; Peltier re-arm hysteresis is 2 °C, i.e. Hotside must reach `hotLimit - 2 °C`.
-- [FROZEN] NTC fault: Fan 100%, Peltier OFF, Adaptive OFF, safe 5V.
-- [IMPLEMENTED] Adaptive thermal recovery uses a 30-second dwell on 12V/9V; 5V is terminal recovery-lock behavior if Hotside does not re-arm. Preserve existing red lock and two-green re-arm indicators.
-- [SAFETY] Never apply 12V directly to an ESP32-C3 GPIO. GPIO selectors are logic outputs; the power selector/driver stage is separate.
+## 6. FIRMWARE CONTRACT / ACTIVE SOURCE
 
-## 6. FIRMWARE CONTRACT
-
-- [VERIFIED] Active path: `firmware/JEXFYZ-V6.1.ino`; `FW_VERSION = "V6.1"`; latest source blob `50dee6c7ed3cb5780e97deaa235fe81856152ec2`.
-- [COMMITTED] V6.1 source/fix commit `5fa7a4033a1cf2c5989c5fb9511be75cf34b7dbe`; active-source promotion commit `167f44df6c379d6d2a7a03b47f6620c609a4136c`.
-- [IMPLEMENTED] Adaptive ON: validate Fan + Peltier state, NTC and safety latch; before a selector handoff, turn Peltier PWM OFF, force Fan to 100%, and request safe 5V with the existing 200 ms selector deadtime. On safe-5V completion, activation revalidates safety and restores cooling through `applyCoolingOutputs()`, which owns the existing 5-second OFF→ON Peltier soft-start.
-- [IMPLEMENTED] Adaptive OFF: turn Peltier PWM OFF before requesting 5V when a rail handoff is required; preserve whether Peltier was previously running; after 5V settles, restore only through existing NTC/Hotside/Fan/safety gates and existing soft-start.
-- [IMPLEMENTED] Adaptive ON feedback: 3 orange blinks after successful activation; OFF feedback: 3 white blinks after an actual ON→OFF transition completes the safe-5V handoff, or immediately if already at 5V. An already-OFF state after reboot does not constitute a new OFF transition, so no white indicator is expected merely by reissuing OFF.
-- [IMPLEMENTED] Firmware prints `BOOT: RESET_REASON=<reason>` to Serial during boot. This is a Serial diagnostic and is not proof the App will always show a notification after an abrupt reset.
-- [FROZEN] Both Adaptive profiles retain 5 seconds of cooperative wait after each upward voltage step; downward changes are immediate unless safety rules dictate otherwise.
-- [LIMITED SOURCE CHECK, NOT BUILD] The current source contains one `analogReadMilliVolts(PIN_NTC)` call site and no `delay(` call site in the source inventory. This limited check does not substitute for compiler validation.
-- [UNVERIFIED] V6.1 compile/BIN/flash, reset diagnosis, physical indicators, power stability, thermal behavior, and OTA regression.
+- [VERIFIED] Active path: `firmware/JEXFYZ-V6.1.ino`; source declares `FW_VERSION = "V6.1"`.
+- [VERIFIED] Active V6.1 source blob after the Touch telemetry fix: `50dee6c7ed3cb5780e97deaa235fe81856152ec2`.
+- [CURRENT TRUTH] V6.1 is committed source only for this current QC state. The current device's installed version is not proven by repository source alone.
+- [IMPLEMENTED] On Adaptive OFF, firmware safely hands selector control back to 5 V; pending work waits for the 5 V transition to complete, and output restoration goes through existing safety checks and the 5-second Peltier soft-start.
+- [IMPLEMENTED] Thermal behavior currently present in V6.1 source: `HOT_PELTIER_OFF_MS = 30000`; 12 V and 9 V Adaptive Hotside recovery stages use 30 seconds (red first 29 seconds, blue final 1 second). At 5 V, Adaptive enters terminal recovery lock with continuous red blink until thermal re-arm; there is no additional 30-second dwell at 5 V.
+- [OPEN QUESTION / SOURCE-CONTRACT MISMATCH] The user's earlier frozen thermal contract specified 20 seconds at each reached Adaptive rail, including a 20-second 5 V terminal stage. The current V6.1 source instead implements 30 seconds at 12 V/9 V and a terminal 5 V recovery lock. Source is authoritative for what is actually implemented, but this mismatch must not be silently treated as resolved. Do not change it as part of document cleanup; raise it only when the user explicitly returns to that QC requirement.
+- [IMPLEMENTED] Touch Adaptive-OFF path publishes the authoritative `ADAPTIVE`, `ADAPTIVE_CEILING`, `FAN`, `PELTIER`, and `FAN_SPEED` telemetry snapshot before `TOUCH_ADAPTIVE` ACK.
+- [VERIFIED STATIC AUDIT] One lexical call site for `analogReadMilliVolts(PIN_NTC)`; no lexical `delay(` or `while(` call sites in the active firmware file. These are static inventory checks only, not a compile.
+- [UNVERIFIED] Arduino compile, BIN, flash, physical operation, BLE telemetry timing, LEDs, cooling/thermal behavior, and OTA regression after the latest fix.
 
 ## 7. TOUCH CONTRACT
 
-- [FROZEN] TTP223 Active-High input.
-- [FROZEN] Single tap voltage cycle: 5V → 9V → 12V → 9V → 5V → repeat.
-- [FROZEN] Double tap toggles RGB; 5-second long press toggles cooling or exits Adaptive per current firmware logic.
-- [FROZEN] Startup grace 1000 ms; stable state qualification 30 ms; valid tap HIGH 60–500 ms; double-tap window 800 ms; long press 5000 ms.
-- [FROZEN] Touch feedback/control must remain cooperative/non-blocking; do not introduce executable `delay()` or timing busy-wait loops.
-- [CONFIRMED] The reported 12V physical issue was a loose cable and is fixed physically; do not reinterpret that as a confirmed touch-sequence Firmware bug.
+- [VERIFIED SOURCE] If Adaptive is active, the 5-second touch path invokes the existing Adaptive OFF path, sends a snapshot of the resulting state fields, then emits `TOUCH_ADAPTIVE` ACK.
+- [VERIFIED SOURCE] The App's ACK handler reports the command result; the App's displayed Adaptive state is driven by `ADAPTIVE` telemetry.
+- [IMPLEMENTED] This corrects the missing-state-delta defect without speculative App-side state mutation.
+- [UNVERIFIED] The user must verify on hardware that a long touch turns Adaptive OFF and that dashboard + Floating Monitor synchronize promptly.
 
 ## 8. APP CONTRACT
 
-- [CURRENT TRUTH] App version `1.0.0+3`; package `com.horizontalzzz.jexfyz`.
-- [VERIFIED] Current App main blob `8189825511499cec01f357f1735dcee22426627b`.
-- [IMPLEMENTED] App uses Firmware-reported telemetry as its control/state source; telemetry `VOLTAGE:12V` is a logical Firmware state, not a physical voltage measurement.
-- [IMPLEMENTED] BLE state-changing commands use serialized high-level confirmation; Peltier safety ACK reasons are retained for user-facing feedback.
-- [IMPLEMENTED] PHONE:BT battery temperature heartbeat is coalesced; App uses dedicated notification/floating-monitor MethodChannels and secure Wi-Fi credential storage.
-- [FROZEN] Android `versionName "Telegram @horizontalzzz"` is intentional.
-- [UNVERIFIED] Flutter analyze/tests and App ↔ V6.1 physical integration are not evidence-backed in the current V6.1 source promotion; no App Build was executed for V6.1.
+- [CURRENT TRUTH] App source: `lib/main.dart`; active observed blob: `8189825511499cec01f357f1735dcee22426627b`.
+- [CURRENT TRUTH] App uses `flutter_blue_plus`; displayed Adaptive state updates through the `ADAPTIVE` telemetry handler.
+- [CURRENT TRUTH] Floating Monitor uses the same in-memory Adaptive state (`adaptiveOn: connected && adaptiveOn`).
+- [CURRENT TRUTH] No App functional source edit was needed for the Touch telemetry fix; do not rebuild APK solely for this firmware telemetry change.
+- [UNVERIFIED] Runtime synchronization after the V6.1 firmware is compiled/flashed has not yet been confirmed on hardware.
 
 ## 9. BLE / P1 CONTRACT
 
-- [FROZEN] BLE name: `JE X FYZ`.
-- [FROZEN] Service UUID: `6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001`.
-- [FROZEN] RX UUID: `6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001`.
-- [FROZEN] TX UUID: `6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001`.
-- [FROZEN] Handshake: `SYNC` → `SYNC_READY`; `PROTOCOL=P1` must validate before App dashboard/session readiness.
-- [FROZEN] Intended single GATT session; Wi-Fi/BLE ownership remains exclusive.
-- [POLICY] Do not rewrite BLE protocol/UUIDs or bypass P1 for unrelated work.
+- Service UUID: `6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001`.
+- RX UUID: `6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001`.
+- TX UUID: `6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001`.
+- [USER REQUIREMENT] One intended GATT session; telemetry/state from Firmware is authoritative.
+- [USER REQUIREMENT] Hotside temperature is sent every second; other state/features are sent on change. Save preferences after 10 seconds without changes.
+- [USER REQUIREMENT] Preserve existing BLE command, P1/SYNC_READY, ACK, NOTIFY, and `PHONE:BT=` contracts. No speculative BLE protocol redesign.
 
 ## 10. OTA PROTECTED CONTRACT
 
-- [PROTECTED] Local OTA, Online OTA, OTA lifecycle/state machine, OTA priority, radio handoff, recovery, safe outputs, timeout/retry, image validation, URL/path handling, and App OTA version selection.
-- [FROZEN] Wi-Fi OTA radio ownership only after BLE/GATT has been torn down and Wi-Fi/BLE handoff settles.
-- [FROZEN] NTC/safe-output behavior remains effective during OTA safety ownership.
-- [FROZEN] Anti-downgrade is OFF: any valid firmware version different from the installed version can be selected; same version requires no update.
-- [FROZEN] No cryptographic OTA signature/CI-enforced OTA seal is active.
-- [POLICY] OTA change requires a demonstrated OTA defect, clear root cause, explicit discussion/approval, and a full OTA re-audit.
-- [UNVERIFIED] V6.1 Local OTA, Online OTA + BLE recovery, and physical release image behavior.
+Read `OTA_PROTECTION.md` before any OTA-related discussion or change. OTA is protected/frozen.
+
+- [USER REQUIREMENT] ESP32-C3 has one radio path: Wi-Fi OTA and BLE must not own radio simultaneously.
+- [USER REQUIREMENT] Tear down BLE/GATT before Wi-Fi takes radio ownership; restore BLE after Wi-Fi fully stops.
+- [USER REQUIREMENT] During OTA connection/update, put cooling and LEDs into the defined safe state.
+- [USER REQUIREMENT] Local OTA and Online OTA behavior, state machine, and recovery paths are protected. Do not adjust them for unrelated cleanup.
+- [USER REQUIREMENT] Firmware anti-downgrade policy is OFF: any valid firmware version different from the device version may update.
+- Preserve the defined OTA result indications and BLE recovery behavior; see `OTA_PROTECTION.md` for the exact sequence.
 
 ## 11. FIREBASE / OTA METADATA
 
-- [CURRENT TRUTH] Metadata endpoint: `https://je-x-fyz-default-rtdb.asia-southeast1.firebasedatabase.app/firmware_update.json`.
-- [CURRENT TRUTH] Production binary repository: `TenzoNkz/JEXFYZ-Firmware`; published filename `JEXFYZ.cpp.bin`.
-- [CURRENT TRUTH] Approved production raw URL: `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/main/JEXFYZ.cpp.bin`.
-- [FROZEN] Metadata uses version + URL; SHA is not required. Anti-downgrade stays OFF.
-- [VERIFIED] V6.1 source promotion did not modify the production firmware repository or Firebase metadata.
-- [UNVERIFIED] Current production BIN is not V6.1 by this source promotion; no V6.1 BIN was created or published.
+- [CURRENT TRUTH] Firmware metadata endpoint documented in notes: `https://je-x-fyz-default-rtdb.asia-southeast1.firebasedatabase.app/firmware_update.json`.
+- [CURRENT TRUTH] Production firmware repository: `TenzoNkz/JEXFYZ-Firmware`; published file name: `JEXFYZ.cpp.bin`.
+- [USER REQUIREMENT] Firmware metadata is version + link; do not add SHA as a Firebase firmware-linking requirement.
+- [UNVERIFIED] Current live Firebase metadata was not independently fetched/verified as part of this snapshot.
+- [NOT RELEASED] No production BIN or Firebase metadata was changed by the Touch telemetry fix or this documentation cleanup.
 
 ## 12. ANDROID / APP BUILD CONTRACT
 
-- [VERIFIED] Sole active workflow at `.github/workflows/jexfyz-app-build-trigger.yml`, blob `6b1d6cd3c65c4913c288652ac7597e126b37d0cf`.
-- [VERIFIED] Workflow trigger: GitHub Issues opened/reopened only; repository owner + exact issue title `JE X FYZ — BUILD APP TRIGGER` + token `JEXFYZ_BUILD_TRIGGER_V1`.
-- [FROZEN] Normal push/PR does not build/release the App. Workflow uses Ubuntu 24.04, Java 17, Flutter 3.47.2 stable, Gradle 9.3.1.
-- [FROZEN] One obfuscated production-signed `JEXFYZ-release.apk` is delivered through GitHub Release `jexfyz-latest`; Actions artifact upload is not used.
-- [VERIFIED] Documented Android SDK contract: minSdk 24, targetSdk 36, compileSdk 37.
-- [USER REQUIREMENT] App Build must be explicit. Firmware source execution and chat transfer do not imply App Build.
-- [UNVERIFIED] App Build against current source was not executed by the V6.1 source promotion or this transfer.
+- [USER REQUIREMENT] App Build is manual issue-trigger only.
+- Workflow: `.github/workflows/jexfyz-app-build-trigger.yml`.
+- Issue title: `JE X FYZ — BUILD APP TRIGGER`.
+- Required body token: `JEXFYZ_BUILD_TRIGGER_V1`.
+- Toolchain configured: Java 17, Flutter 3.47.2 stable, Gradle 9.3.1, `ubuntu-24.04`.
+- Output: one obfuscated, production-signed `JEXFYZ-release.apk` published as a GitHub Release asset.
+- [VERIFIED] Workflow directory contains only `jexfyz-app-build-trigger.yml`; normal pushes/PRs do not invoke this issue-triggered workflow.
+- [USER REQUIREMENT] Do not Build App unless the user explicitly asks.
+- [USER REQUIREMENT] Do not compile/build Firmware unless the user explicitly asks. User intends to compile it themselves later.
 
 ## 13. SOURCE / COMMIT MAP
 
-### Main source/config blobs
-- [VERIFIED] Active Firmware `firmware/JEXFYZ-V6.1.ino` after Touch telemetry fix: `50dee6c7ed3cb5780e97deaa235fe81856152ec2`.
-- [VERIFIED] App main `lib/main.dart`: `8189825511499cec01f357f1735dcee22426627b`.
-- [VERIFIED] App settings `lib/app_settings.dart`: `0c29bed46b746c1171f61ee7b095c724474a5e6b`.
-- [VERIFIED] Floating monitor `lib/floating_monitor.dart`: `4cd980ea1cc53c663e60267b2c865f3ebb09d91d`.
-- [VERIFIED] Test `test/widget_test.dart`: `a3ffbb349e30ece3c84f38f2863c2f8717c1e4a7`; `test/v5_9_contract_test.dart`: `92214dd90178c705844d3979d3f8f7bd17bcc4b8`.
-- [VERIFIED] MainActivity `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt`: `eeb135ef34b1d415196b86e6ffe1ac39d7bda5e2`.
-- [VERIFIED] `pubspec.yaml`: `8f558273e21692af9958f914527fdc62d623d63a`.
-- [VERIFIED] Android App gradle `android/app/build.gradle`: `d8681cb73156b61da7749633abd63e2fb8c287ba`.
-- [VERIFIED] App Build workflow `.github/workflows/jexfyz-app-build-trigger.yml`: `6b1d6cd3c65c4913c288652ac7597e126b37d0cf`.
-- [VERIFIED] Firmware analysis notes `firmware/FIRMWARE_ANALYSIS.md`: `3509ff87b50bcd100d9a71f45b1ad452591d3a99`.
-
-### Functional and workflow commits
-- [COMMITTED] V6.1 Adaptive safety fix: `5fa7a4033a1cf2c5989c5fb9511be75cf34b7dbe`.
-- [COMMITTED] Activate V6.1 source path; remove V6.0 path: `167f44df6c379d6d2a7a03b47f6620c609a4136c`.
-- [COMMITTED] Delete push-triggered Firmware compile workflow: `32bc3c3fcb0c074e39d7ea49428f98d7845e4073`.
-- [VERIFIED] Before transfer replacement, main HEAD was `537af513153654e5b8d207b253352386dc3b73c1`; this commit followed documentation syncs for PROJECT_STATE, HANDOVER, CHAT_RULES, BUILD_NOTES, OTA_PROTECTION, and APP_NOTES.
-- [HISTORICAL] V6.0 QC build evidence: workflow run #83 passed against V6.0 source; historical BIN SHA-256 `b50af3bf9b43f1f78425e4dbd273534f218acd8c58a539eb2426bf3d9d5b10a8`; this does not prove V6.1 build/runtime behavior.
-- [UNVERIFIED] V6.1 current Firmware compile, BIN, flash, and physical runtime evidence do not exist in the recorded promotion.
+- Repository: `TenzoNkz/JEXFYZ-App`; authoritative branch: `main`.
+- Main HEAD before this documentation refresh: `ae85fc52bbf81d24422d26a2ee3242aa4cb8a185` (README transfer-protocol cleanup commit).
+- Functional Touch telemetry synchronization commit: `74a49f08ae111da9b3fcd60d759aa0cce437e92d` — [view commit](https://github.com/TenzoNkz/JEXFYZ-App/commit/74a49f08ae111da9b3fcd60d759aa0cce437e92d).
+- Documentation reconciliation commit following that fix: `d9eeedbd03b53fb9db8c16a7889635bccc22f413` — [view commit](https://github.com/TenzoNkz/JEXFYZ-App/commit/d9eeedbd03b53fb9db8c16a7889635bccc22f413).
+- Active Firmware source/blob: `firmware/JEXFYZ-V6.1.ino` / `50dee6c7ed3cb5780e97deaa235fe81856152ec2`.
+- App source/blob: `lib/main.dart` / `8189825511499cec01f357f1735dcee22426627b`.
+- New static regression guard: `test/firmware_touch_adaptive_sync_test.dart` / `c744374b1a362c677667ffa300504216246b3cf9`.
+- Persistent state notes: `PROJECT_STATE.md`, `HANDOVER.md`, `CHAT_RULES.md`, `APP_NOTES.md`, `FIRMWARE_NOTES.md`, `BUILD_NOTES.md`, `OTA_PROTECTION.md`, `CHANGELOG.md`, `firmware/FIRMWARE_ANALYSIS.md`.
+- Root `README.md` is reserved exclusively for chat transfer prompts/procedure, not project history.
+- [CURRENT TRUTH] PR #18 is CLOSED and NOT MERGED: [Fix Adaptive rail handoff and status indicators (V6.1)](https://github.com/TenzoNkz/JEXFYZ-App/pull/18).
+- [BLOCKED] Source branch `fix/adaptive-power-sequencing` still exists; its head is `33740be782d976a881e285bbf8b86b3b485b83c1`, with V6.1 blob `3f8c61ef2add303b495b1cc19e6ee6be04cea028`, different from the authoritative `main` Firmware blob. The available GitHub connection provides no branch-delete action here. Do not merge it or continue development from it; `main` remains authoritative.
 
 ## 14. QC STATUS
 
-### VERIFIED
-- [VERIFIED] Main active .ino filename and `FW_VERSION` agree on V6.1.
-- [VERIFIED] Basic source inventory: one `analogReadMilliVolts(PIN_NTC)` occurrence; no `delay(` occurrence. These are limited lexical checks only.
-- [VERIFIED] The old `.github/workflows/firmware-build.yml` file is absent from `main`; current `.github/workflows` listing contains only `jexfyz-app-build-trigger.yml`.
-- [VERIFIED] Current GitHub state has an open, unmerged PR #18 from the accidental branch; main remains authoritative and this fix was committed directly to main.
-- [USER-CONFIRMED] Loose cable was the cause of the earlier 12V physical-output problem and was secured.
+- [IMPLEMENTED] Firmware publishes Touch Adaptive-OFF state snapshot before its ACK.
+- [IMPLEMENTED] Static source-contract test was added at `test/firmware_touch_adaptive_sync_test.dart`.
+- [UNVERIFIED] That test was not executed.
+- [UNVERIFIED] No `flutter analyze`, `flutter test`, Arduino compile, BIN generation, Firmware flash, physical BLE/App/Floating Monitor test, thermal regression, Local OTA regression, Online OTA regression, or App Build was performed for the latest fix/cleanup.
+- [UNVERIFIED] No current device version proof; do not assume the user's physical device is running V6.1.
+- [NOT RELEASED] Firmware remains source-only QC/PRE-RELEASE; no production release was made.
 
-### UNVERIFIED
-- [UNVERIFIED] V6.1 Arduino/ArduinoDroid compilation and memory/build size.
-- [UNVERIFIED] V6.1 BIN image magic, OTA size gate, checksum/provenance.
-- [UNVERIFIED] V6.1 flashing/update on the actual ESP32-C3 and version confirmation.
-- [UNVERIFIED] Adaptive ON from 12V with Fan + Peltier running; absence of restart; orange 3-blink cue.
-- [UNVERIFIED] Adaptive OFF rail handoff, Peltier restore, white 3-blink cue.
-- [UNVERIFIED] Serial reset log for a future restart; no reset reason was captured for the reported event.
-- [UNVERIFIED] Hotside/NTC fault safety regression, 5-second Adaptive upward dwell, thermal re-arm, Local OTA Golden Path, Online OTA + BLE recovery, App ↔ V6.1 integration.
-- [UNVERIFIED] Current App Flutter/Dart analysis/tests and App Build/release.
+## 15. RISKS / OPEN QUESTIONS
 
-## 15. RISKS
-
-- [RISK] Source-only fix must not be represented as a validated hardware fix.
-- [RISK] User may still have V6.0 or another image installed; verify actual device version after any future explicitly approved flash.
-- [RISK] A reset without an App notification is not enough to classify the root cause; capture `BOOT: RESET_REASON=` from Serial at 115200 baud if the issue recurs.
-- [RISK] A divergent accidental branch exists and must not be used as the source of truth.
-- [RISK] No Firmware compile workflow currently exists on main; do not recreate it or add automatic push-triggered compilation without explicit user approval.
+- [OPEN QUESTION] After the user compiles/flashes V6.1, does a hardware 5-second touch while Adaptive is ON make the App dashboard and Floating Monitor display OFF promptly?
+- [OPEN QUESTION] Do the orange ON and white OFF three-blink indicators display correctly on the physical WS2812 LED?
+- [OPEN QUESTION] Is the previously reported Adaptive-entry restart eliminated? The original reset cause remains unproven because no Serial reset-reason log was captured.
+- [OPEN QUESTION] The source/contract mismatch between 20-second expected Adaptive thermal dwell and actual 30-second 12 V/9 V source dwell plus terminal 5 V lock remains unresolved.
+- [BLOCKED] Branch deletion is not available through the current GitHub connector actions; PR #18 has been closed, but its branch still exists.
+- [USER-REPORTED] The earlier complaint that selecting 12 V did not affect hardware was traced to a loose cable and resolved by securing it. Do not re-open it as a confirmed firmware defect.
 
 ## 16. OBSOLETE / DO NOT REUSE
 
-- [OBSOLETE] Old `firmware/JEXFYZ-V6.0.ino` as active source; it was removed when V6.1 was promoted.
-- [OBSOLETE] V5.9/V5.8 labels as current Firmware version; those remain historical notes.
-- [OBSOLETE] The deleted `.github/workflows/firmware-build.yml` push-triggered compile workflow.
-- [OBSOLETE] Treating App `VOLTAGE:12V` telemetry as proof of measured physical 12V; Firmware reports logical state and has no dedicated output-rail voltage feedback in this design.
-- [OBSOLETE] Treating the earlier 12V issue as a confirmed software defect; the user confirmed a loose cable.
-- [REJECTED] Compile/build, App Build, flash, OTA, or release as an automatic side effect of a source-execution command or transfer.
-- [REJECTED] Using or blindly merging `fix/adaptive-power-sequencing`; main V6.1 blob is the authoritative source and differs from that branch's V6.1 blob.
+- [OBSOLETE] Previous active firmware paths/versions V5.8, V5.9, V6.0, and any old V6.1 branch blob are historical only; use the live source to establish current truth.
+- [OBSOLETE] Older text claiming PR #18 is open or that no PR exists is superseded: PR #18 is closed, not merged.
+- [OBSOLETE] Older text claiming the V6.1 source was built/flashed is not supported by current evidence.
+- [REJECTED] Reintroducing NTC median/multi-sample filtering, `RAPID_HOTSIDE_RISE`, blocking timing, or a second BLE GATT session.
+- [REJECTED] Blind merge/reuse of `fix/adaptive-power-sequencing`; its source differs from main.
+- [REJECTED] Triggering a Firmware compile or App Build without the user's explicit request.
 
 ## 17. GEMINI EVIDENCE
 
-- [UNVERIFIED] No authoritative Gemini response/result relevant to this Adaptive restart was supplied in this chat or recorded as evidence in the current project state.
-- [POLICY] Do not invent Gemini output, compatibility claims, or test results. If a Gemini patch is later requested, treat it as a proposal until reconciled with current source.
+- [UNVERIFIED] No new Gemini review or output was obtained during the latest Touch telemetry fix or this documentation cleanup. Do not fabricate or attribute evidence to Gemini.
+- If the user later provides Gemini recommendations, treat them as proposals; reconcile them against live source and frozen contracts before implementation.
 
 ## 18. FAILED APPROACHES / INCIDENT HISTORY
 
-- [CONFIRMED] The user objected when Firmware compilation appeared to happen without an explicit compile request.
-- [VERIFIED] A push-triggered Firmware compile workflow existed for V6.0 and was removed by commit `32bc3c3fcb0c074e39d7ea49428f98d7845e4073`; current workflow listing has only the issue-triggered App Build workflow.
-- [CHAT HISTORY] An unintended branch `fix/adaptive-power-sequencing` was created despite the user's preference for direct `main` commits. No PR exists; the branch contains a different V6.1 blob. Do not continue on that branch.
-- [HYPOTHESIS, NOT ROOT CAUSE] Restart during 12V → safe-5V Adaptive entry could involve voltage handoff/load behavior, but the V6.0 hardware cause was not proven as brownout or panic. V6.1 contains a targeted load-off handoff intended to address the risk; hardware validation remains pending.
-- [FAILED EVIDENCE] No App reset-reason notification was seen by the user; no Serial log was captured. Do not infer the reset cause.
+- [USER-CONFIRMED] User objected when Firmware compilation appeared to happen without an explicit compile request.
+- [VERIFIED] The old push-triggered Firmware compile workflow `.github/workflows/firmware-build.yml` is absent; deletion commit was `32bc3c3fcb0c074e39d7ea49428f98d7845e4073`. Current workflow directory contains only the manual App Build issue trigger.
+- [VERIFIED] An unintended branch `fix/adaptive-power-sequencing` led to PR #18; the PR was closed without merge, but the branch remains.
+- [HYPOTHESIS — NOT ROOT CAUSE] The previously reported restart during Adaptive entry may relate to power/rail handoff under load. The reset root cause is not established; require serial capture if it recurs.
+- [FAILED EVIDENCE] No device Serial log or confirmed hardware reset reason was captured. Do not claim the restart issue is resolved solely from static source.
 
 ## 19. EXACT QC SEQUENCE
 
-**Gate 0 — explicit authorization**
-1. Do not compile/build until the user explicitly requests Firmware compile/build. Do not silently run it because the user says “Eksekusi Full”.
-2. Confirm from source/documentation which Firmware version is actually installed on hardware; repository source version alone does not prove device version.
-
-**Only after the user explicitly authorizes Firmware compile/build**
-3. Compile `firmware/JEXFYZ-V6.1.ino` with the documented official Arduino-ESP32 Core 3.3.7 target `esp32:esp32:esp32c3:PartitionScheme=min_spiffs` and pinned NeoPixel library version used by the historical workflow (Adafruit NeoPixel 1.12.3); report exact command/tool/run.
-4. Verify BIN exists, ESP image first byte is `E9`, file is within the 1792 KiB OTA cap, and record SHA-256; do not publish to production repositories/Firebase as part of compile QC.
-5. Flash/update hardware only when separately authorized; verify it reports V6.1.
-
-**Physical regression after a verified V6.1 flash**
-6. Start in Manual 12V, turn Fan ON and Peltier ON, wait until the manual voltage transition guard has elapsed, then enable Adaptive once.
-7. Verify safe transition behavior: Peltier PWM drops before selectors are deasserted; both selector outputs remain OFF for 200 ms; 5V is selected; safety validates; Peltier re-enters through existing 5-second soft-start; orange 3-blink cue appears after successful Adaptive ON.
-8. Disable Adaptive from 9V/12V; verify Peltier is OFF during rail handoff, safe 5V completes, previous Peltier operation restores only if safety allows, and white 3-blink cue runs for actual ON→OFF. If Adaptive is already OFF after reboot, do not expect an OFF transition cue merely from reissuing OFF.
-9. If reset recurs, capture Serial at 115200 baud and preserve the exact `BOOT: RESET_REASON=` line before changing code.
-
-**Safety and regression gates**
-10. Test NTC fault, Fan/Peltier constraints, Hotside limit/re-arm at `hotLimit - 2 °C`, terminal 5V lock, 30-second thermal dwell at 12V/9V, and 5-second wait before upward Adaptive voltage steps.
-11. Run Local OTA Golden Path, then Online OTA + BLE recovery; keep Wi-Fi/BLE single-radio ownership and all protected OTA logic unchanged.
-12. Validate App ↔ V6.1 P1/SYNC/ACK/telemetry/NOTIFY and PHONE:BT contracts.
-13. Run App Build only if explicitly requested; Release Gate only after all required evidence is collected.
+1. [USER ACTION] User compiles `firmware/JEXFYZ-V6.1.ino` themselves. Do not start compile on the user's behalf without a direct explicit request.
+2. User verifies the exact compiled source/version, successful compilation, generated BIN, image magic/size, and SHA-256 locally. A static source audit is not a build proof.
+3. User flashes the device as their own authorized hardware action and confirms the device reports V6.1.
+4. With manual 12 V active, Fan and Peltier ON, allow the 1-second voltage guard to expire; enable Adaptive and verify Peltier-off-before-selector handoff, 200 ms deadtime, 5 V selection, safety gates, 5-second Peltier soft-start, and orange 3-blink confirmation.
+5. Disable Adaptive using the 5-second hardware touch while it is ON. Verify Firmware telemetry shows Adaptive OFF, then App dashboard switch and Floating Monitor synchronize, and check white 3-blink feedback after the safe 5 V transition.
+6. If restart recurs, capture Serial at 115200 baud and preserve the exact `BOOT: RESET_REASON=` line; do not infer brownout/panic without evidence.
+7. Run thermal-safety checks against the actual current source; keep the 20 s-versus-30 s behavior mismatch visible rather than silently changing it.
+8. Run Local OTA Golden Path and Online OTA/BLE recovery regression only when appropriately authorized; do not alter protected OTA code.
+9. App Build is a separate operation and must not be run for this firmware-only change unless explicitly requested.
 
 ## 20. NEW CHAT FIRST RESPONSE
 
-Report only, in Indonesian:
+Report in Indonesian using these headings:
 - CURRENT PROJECT TRUTH
 - REPOSITORY RECONCILIATION
 - VERIFIED
 - UNVERIFIED
 - KNOWN RISKS
 - NEXT EXACT QC GATE
+- WORKFLOW STATUS
 
-State clearly that V6.1 is committed source-only, not known to be compiled/flashed. Do not start a build or ask questions already answered here. Then wait for the user's next command.
+Mention that V6.1 is committed source-only, the Touch telemetry fix exists in main, PR #18 is closed/not merged but its branch remains, and no new build/test/flash was run. Then wait for the user's command.
 
 ## 21. TRANSFER / MEMORY RULES
 
-- [USER REQUIREMENT] At each context-limit event, replace this file; do not append another snapshot to the old transfer body.
-- [POLICY] Preserve meaningful current facts in PROJECT_STATE/HANDOVER; keep historical records in CHANGELOG/history.
-- [POLICY] Record source paths, blob SHAs, commit SHAs, workflow triggers, and actual build/test evidence.
-- [POLICY] Keep VERIFIED separate from USER-REPORTED, HYPOTHESIS, UNVERIFIED, and OBSOLETE.
-- [POLICY] Documentation sync never authorizes functional source change, build, release, or device actions.
+- At a context-limit event, replace this file; do not append duplicate snapshots.
+- Keep current facts in `PROJECT_STATE.md` and `HANDOVER.md`; detailed historical versions belong in `CHANGELOG.md` and history-specific notes.
+- Keep `README.md` exclusively for transfer prompts/procedure, never append project history there.
+- Record exact active paths/blob SHAs, commit SHAs, workflow triggers, PR/branch state, and actual test/build evidence.
+- Mark source implementation, build, hardware test, OTA regression, and release as separate gates.
+- Do not ask the user for facts already available in the current repository/context.
+- Documentation changes do not authorize source edits, compile, BIN publication, flash/OTA, App Build, or release.
 
 ## 22. CHAT-ONLY STATE
 
-- [CHAT-ONLY] User confirmed the earlier 12V hardware-output failure was a loose cable; this is resolved physically.
-- [CHAT-ONLY] User reported the installed device restarted when selecting 12V, turning Fan and Peltier ON, then immediately enabling Adaptive. After restart Adaptive showed OFF.
-- [CHAT-ONLY] User did not see an App RESET_REASON notice and did not see the expected orange Adaptive ON or white Adaptive OFF LED indicator.
-- [CHAT-ONLY] The V6.1 repository source now contains the Adaptive Peltier-off/5V-handoff changes, but the user has not confirmed compiling/flashing or physically testing V6.1.
-- [CHAT-ONLY] User requires direct-to-main workflow by default and explicitly objected to unrequested Firmware compilation.
+- [CHAT-ONLY] User says they will compile the Firmware themselves later.
+- [CHAT-ONLY] User asked that root `README.md` contain only chat transfer instructions, not historical execution notes. The README was cleaned accordingly in commit `ae85fc52bbf81d24422d26a2ee3242aa4cb8a185`.
+- [CHAT-ONLY] User asked to remove PR #18 from open PRs; it was closed but not merged. Branch deletion has not succeeded because the available connector provides no branch-delete action.
+- [CHAT-ONLY] User does not expect an App rebuild for the latest firmware telemetry fix.
 
 ## 23. TRANSFER COMPLETION
 
-- [VERIFIED] Before replacing this file, read the complete 345-line `CHAT_TRANSFER.md` at blob `523fa6d2a8fbaa25ffcac50d0c00c5ea11d103a9`.
-- [VERIFIED] Reconciled active `main` source, App source, workflow directory, PROJECT_STATE, HANDOVER, CHAT_RULES, FIRMWARE_NOTES, APP_NOTES, BUILD_NOTES, OTA_PROTECTION, CHANGELOG, README, and firmware analysis notes.
-- [VERIFIED] Main HEAD before transfer replacement: `537af513153654e5b8d207b253352386dc3b73c1`.
-- [VERIFIED] This operation updates documentation only; no functional Firmware/App source, compile, BIN, flash, OTA, App Build, release, or Firebase metadata change is authorized or performed.
-- [NEXT] After the transfer commit, re-read this file and verify the new HEAD, saved blob, active V6.1 source blob, and workflow inventory.
+- [VERIFIED] Before this refresh, `CHAT_TRANSFER.md` had 342 lines and contained conflicting records about PR #18 plus outdated main HEAD pointers. It has been replaced with one structured transfer snapshot.
+- [VERIFIED] Before this refresh, root `README.md` mixed V6.1/V6.0 execution history with transfer prompts. It has been replaced with transfer protocol only; historical records remain in the dedicated history/technical files.
+- [VERIFIED] Active Firmware blob at the start of the cleanup: `50dee6c7ed3cb5780e97deaa235fe81856152ec2`; App blob: `8189825511499cec01f357f1735dcee22426627b`; test blob: `c744374b1a362c677667ffa300504216246b3cf9`.
+- [VERIFIED] No functional App/Firmware source, workflow, production BIN, Firebase metadata, hardware state, or release was changed by this documentation task.
+- [NEXT] Re-read both updated files after commit and verify final main HEAD, file blob SHA values, PR #18 closed/not-merged state, branch existence, active Firmware source, and active workflow inventory.
