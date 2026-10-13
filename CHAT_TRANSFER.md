@@ -2,12 +2,12 @@
 
 Snapshot date: 2026-10-13 (Asia/Jakarta). This file replaces the previous snapshot; it is a boot/transfer protocol, not a substitute for checking live GitHub state.
 
-Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setInsecure()`. The embedded CA certificate and OTA-only NTP time-sync gate are removed; blue feedback follows Wi-Fi connection before the GitHub GET attempt. The raw GitHub BIN URL allowlist and redirect blocking remain. This bypasses server certificate identity validation. [USER-REPORTED] Firmware compile succeeded and Online OTA connects to GitHub again after this change. Full transfer, flash/apply completion, successful reboot, and installed-version confirmation are not independently recorded here.
+Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setInsecure()`. The embedded CA certificate and OTA-only NTP time-sync gate are removed; blue feedback follows Wi-Fi connection before the GitHub GET attempt. The raw GitHub BIN URL allowlist and redirect blocking remain. This bypasses server certificate identity validation. [USER-REPORTED] Firmware compile succeeded and Online OTA connects to GitHub again after this change. Full transfer, flash/apply completion, successful reboot, and installed-version confirmation are not independently recorded here. Canonical prevention record: [OTA_REGRESSION_MEMORY.md](OTA_REGRESSION_MEMORY.md).
 
 ## 0. Mandatory boot and authority
 
 1. Read this file first, then fetch current `main` HEAD and source blobs.
-2. Read `PROJECT_STATE.md`, `HANDOVER.md`, `CHAT_RULES.md`, `APP_NOTES.md`, `FIRMWARE_NOTES.md`, `firmware/FIRMWARE_ANALYSIS.md`, `OTA_PROTECTION.md`, `BUILD_NOTES.md`, and `CHANGELOG.md`.
+2. Read `PROJECT_STATE.md`, `HANDOVER.md`, `CHAT_RULES.md`, `APP_NOTES.md`, `FIRMWARE_NOTES.md`, `firmware/FIRMWARE_ANALYSIS.md`, `OTA_PROTECTION.md`, `OTA_REGRESSION_MEMORY.md`, `BUILD_NOTES.md`, and `CHANGELOG.md`.
 3. Verify current workflows, tests, open/closed PRs, and relevant branches.
 4. Authority order: live source/Git refs/workflows; `PROJECT_STATE.md`; technical notes; `HANDOVER.md`/`CHAT_RULES.md`/`CHANGELOG.md`; this file; chat-only state.
 5. Label statements as CURRENT TRUTH, VERIFIED, USER-REPORTED, UNVERIFIED, HYPOTHESIS, HISTORY/OBSOLETE, or CHAT-ONLY STATE. Never turn historical or user-reported facts into verified facts without evidence.
@@ -64,7 +64,7 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
 - [USER REQUIREMENT] ESP32-C3 has one radio path: Wi-Fi OTA and BLE must not own radio simultaneously. OTA flow, state machine, LED indications, recovery, and local OTA are protected; read `OTA_PROTECTION.md` before any OTA-related changes.
 - [VERIFIED SOURCE] Online OTA uses TLS via `cloudClient.setInsecure()` and only permits the allowlisted raw GitHub firmware URL prefix; redirects remain blocked. Because certificate verification is bypassed, HTTPS server identity is not authenticated. No custom SHA/signature layer was added; Firebase firmware metadata remains version + link.
 - [UNVERIFIED] Current Firebase rules/App Check enforcement and live metadata were not checked in this transfer.
-- [VERIFIED REPOSITORY CHECKPOINT FROM PRIOR AUDIT] Separate production repository `TenzoNkz/JEXFYZ-Firmware` had a `JEXFYZ.cpp.bin` upload whose timestamp predated V6.3 source. Do not assume production BIN corresponds to V6.3; verify version before any authorized release/OTA.
+- [VERIFIED CURRENT REPOSITORY CHECKPOINT] Artifact repository `TenzoNkz/JEXFYZ-Firmware` contains `JEXFYZ.cpp.bin`; latest observed upload commit is `b345637acfdbd3f80ae6159a14cc09ddbc05f934` (2026-10-13T13:47:12Z). Matching the BIN to the V6.3 source blob/build provenance has not been independently verified. Do not assume or republish it without provenance and explicit authorization. Its README and OTA regression memory now document this boundary.
 - [USER REQUIREMENT] Do not publish BIN, edit Firebase metadata, flash, or initiate OTA during transfer or QC discussion.
 
 ## 6. Android build and release
@@ -73,7 +73,7 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
 - [VERIFIED WORKFLOW CONFIG] Java 17, Flutter 3.47.2 stable; workflow runs `flutter analyze --no-fatal-infos`, `flutter test`, and builds one obfuscated production-signed release APK after checks.
 - [USER REQUIREMENT] Do not trigger this workflow unless user explicitly says Build App.
 - [UNVERIFIED] Current V6.3 App source has not passed a new test/analyze/build run; do not report green status based on older CI evidence.
-- [UNVERIFIED] The single-file source-layout update has not been compiled. Compile/test/runtime status remains unverified.
+- [USER-REPORTED] The corrected V6.3 source compiled successfully and GitHub connection recovered. [UNVERIFIED] The complete BIN transfer/apply/reboot result is not separately recorded; the assistant has not independently compiled or tested hardware.
 
 ## 7. Persistent state files and what changed
 
@@ -87,7 +87,7 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
   - `firmware/FIRMWARE_ANALYSIS.md`: `14cae2ea8769983a0851e5e33a25ae37991875fd`
   - `OTA_PROTECTION.md`: `8307b6be041779c8b28dac242a49463a064527ef`
   - `CHANGELOG.md`: `64b29c77f3cf3746f816350b96a62abc0f15c6f8`
-- [CURRENT TRUTH] These persistent state files did not require additional edits for this transfer: the current App follow-up was already recorded. Only `CHAT_TRANSFER.md` is to be replaced in this operation.
+- [CURRENT TRUTH] The current V6.3 Online OTA correction, user-reported compile/GitHub recovery, and no-recurrence policy are recorded across the project notes and the new canonical `OTA_REGRESSION_MEMORY.md`. The companion `TenzoNkz/JEXFYZ-Firmware` repository now has a README and mirrored OTA memory; its BIN was not changed.
 - [HISTORY/OBSOLETE] Older snapshots embedded below this file’s prior current-status header were contradictory and stale. This file is now being fully replaced to remove duplicate/obsolete snapshots; do not append another copy.
 
 ## 8. Historical validation ledger — do not overstate
@@ -98,8 +98,8 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
 
 ## 9. Next session checklist
 
-1. Re-fetch live main HEAD and all source/test/workflow blobs before making claims.
+1. Read `OTA_REGRESSION_MEMORY.md` before any OTA connection/TLS/time-sync change; re-fetch live `main` HEAD and all source/test/workflow blobs before making claims.
 2. Confirm PR states and inspect divergent branches without switching away from main.
 3. If user requests validation, run only the explicitly authorized validation; distinguish test/analyze from build, firmware compile, flash, and OTA.
 4. Prefer validating the new App regression test and full Flutter test/analyze before Build App, but do not run the build workflow without the explicit trigger command.
-5. If the user says they are ready, let them compile/flash V6.3 themselves and gather actual logs/results. Do not infer installed firmware version from source alone.
+5. The user reports V6.3 compile success and restored GitHub connectivity. For full QC, ask for or inspect the actual device result/diagnostic log for BIN download completion, update finalization, restart and booted version; do not infer this from source or compile alone.
