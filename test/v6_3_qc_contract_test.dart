@@ -65,7 +65,7 @@ void main() {
     expect(source, contains('static constexpr char AP_PASSWORD[] = "0987654321";'));
   });
 
-  test('Voltage transitions pause Peltier PWM and restart a fresh soft-start after the guard', () {
+  test('Manual and Adaptive voltage transitions conditionally resume Peltier soft-start', () {
     final source = File('firmware/JEXFYZ-V6.3.ino').readAsStringSync();
 
     expect(source, contains('VOLTAGE_DEADTIME_MS           = 200'));
@@ -73,6 +73,7 @@ void main() {
     expect(source, contains('PELTIER_VOLTAGE_SETTLE_MS = VOLTAGE_GUARD_MS'));
     expect(source, contains('PELTIER_SOFT_START_MS = 5000'));
     expect(source, contains('bool peltierVoltagePauseActive = false;'));
+    expect(source, contains('bool peltierVoltageResumeSoftStart = false;'));
     expect(source, contains('static void pausePeltierForVoltageTransition()'));
     expect(source, contains('ledcWrite(PIN_PELTIER, 0);'));
 
@@ -99,9 +100,22 @@ void main() {
     expect(pauseStart, greaterThanOrEqualTo(0));
     expect(processStart, greaterThan(pauseStart));
     final pauseHelper = source.substring(pauseStart, processStart);
+    final captureRamp = pauseHelper.indexOf(
+      'peltierVoltageResumeSoftStart = peltierSoftStarting;',
+    );
+    final clearRamp = pauseHelper.indexOf('peltierSoftStarting = false;');
     expect(pauseHelper, contains('peltierVoltagePauseActive = true;'));
-    expect(pauseHelper, contains('peltierSoftStarting = false;'));
     expect(pauseHelper, contains('lastPeltierDuty = 0;'));
+    expect(captureRamp, greaterThanOrEqualTo(0));
+    expect(clearRamp, greaterThan(captureRamp));
+
+    final stopStart = source.indexOf('static void stopPeltierOutput()');
+    final beginStart = source.indexOf('static void beginPeltierSoftStart()', stopStart);
+    expect(stopStart, greaterThanOrEqualTo(0));
+    expect(beginStart, greaterThan(stopStart));
+    final stopHelper = source.substring(stopStart, beginStart);
+    expect(stopHelper, contains('peltierVoltagePauseActive = false;'));
+    expect(stopHelper, contains('peltierVoltageResumeSoftStart = false;'));
 
     final processEnd = source.indexOf('static bool hotsideProtectionActiveNow()', processStart);
     final process = source.substring(processStart, processEnd);
@@ -110,11 +124,28 @@ void main() {
     final guardCheck = process.indexOf(
       'millis() - lastVoltageTransitionCompleteMs < PELTIER_VOLTAGE_SETTLE_MS',
     );
-    final freshRamp = process.indexOf('beginPeltierSoftStart();', waitGate);
+    final savedRamp = process.indexOf(
+      'const bool restartSoftStart = peltierVoltageResumeSoftStart;',
+      waitGate,
+    );
+    final clearSavedRamp = process.indexOf(
+      'peltierVoltageResumeSoftStart = false;',
+      savedRamp,
+    );
+    final conditionalRamp = process.indexOf('if (restartSoftStart)', clearSavedRamp);
+    final freshRamp = process.indexOf('beginPeltierSoftStart();', conditionalRamp);
+    final fullSpeedFallback = process.indexOf('if (!peltierSoftStarting)', conditionalRamp);
+    final fullDutyWrite = process.indexOf('ledcWrite(PIN_PELTIER, 255);', fullSpeedFallback);
+
     expect(transitionGate, greaterThanOrEqualTo(0));
     expect(waitGate, greaterThan(transitionGate));
     expect(guardCheck, greaterThan(waitGate));
-    expect(freshRamp, greaterThan(guardCheck));
+    expect(savedRamp, greaterThan(guardCheck));
+    expect(clearSavedRamp, greaterThan(savedRamp));
+    expect(conditionalRamp, greaterThan(clearSavedRamp));
+    expect(freshRamp, greaterThan(conditionalRamp));
+    expect(fullSpeedFallback, greaterThan(freshRamp));
+    expect(fullDutyWrite, greaterThan(fullSpeedFallback));
 
     // Device diagnostics must continue to expose a brownout reset reason.
     expect(source, contains('case ESP_RST_BROWNOUT: return "BROWNOUT";'));
