@@ -91,8 +91,8 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
   - `OTA_PROTECTION.md`: `dadb1bec8d9be07e57704e06b2a99589971f2a71`
   - `CHANGELOG.md`: `86dc12407def3becb544af65e743fcad0c1fffa1`
   - `OTA_REGRESSION_MEMORY.md`: `7c4dee64a75cec94cd6972e34bd39709abfec63a`
-  - `VOLTAGE_TRANSITION_MEMORY.md`: `ce126d39a137f44fc2203579b1da39a57fab437d`
-  - `firmware/JEXFYZ-V6.3.ino`: `53df1c606c793f82345efacb13f770121a9cd886`
+  - `VOLTAGE_TRANSITION_MEMORY.md`: `bddab7b6d0dc1c54c6619978fffdd84dd19d03b4`
+  - `firmware/JEXFYZ-V6.3.ino`: `4349126afaaf9ebe4f7aedce1ef084c9856ee579`
   - `test/v6_3_qc_contract_test.dart`: `950153f50964c87d3d41eca173f7fc39631d9ca7`
 - [CURRENT TRUTH] The current V6.3 Online OTA correction, user-reported compile/GitHub recovery, and no-recurrence policy are recorded across the project notes and the new canonical `OTA_REGRESSION_MEMORY.md`. The companion `TenzoNkz/JEXFYZ-Firmware` repository now has a README and mirrored OTA memory; its BIN was not changed.
 - [HISTORY/OBSOLETE] Older snapshots embedded below this file’s prior current-status header were contradictory and stale. This file is now being fully replaced to remove duplicate/obsolete snapshots; do not append another copy.
