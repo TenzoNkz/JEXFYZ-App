@@ -1,8 +1,8 @@
 ## CURRENT V6.3 EXECUTION STATUS — 2026-10-13
 
-### Online OTA trust-anchor source layout — 2026-10-13
+### Online OTA single-file source layout — 2026-10-13
 
-- [CHANGED IN SOURCE] Moved the ISRG Root X1 PEM block from the top of `firmware/JEXFYZ-V6.3.ino` into `firmware/JEXFYZ-OTA-Trust.h` to keep the sketch readable.
+- [CHANGED IN SOURCE] Kept the ISRG Root X1 PEM block within `firmware/JEXFYZ-V6.3.ino`, positioned before `prepareOnlineOtaDownload()`, so the firmware is a single standalone sketch.
 - [PRESERVED] CA-based HTTPS verification, GitHub raw-BIN URL allowlist, NTP time-sync stage, and redirect blocking. No `setInsecure()`, firmware compile, BIN, flash, OTA, or release was performed.
 
 ### APP BLE reconnect and Online OTA acknowledgement follow-up — 2026-10-13
