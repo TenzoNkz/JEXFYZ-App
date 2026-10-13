@@ -6,6 +6,7 @@
 - [PRESERVED] GitHub raw BIN URL allowlisting, redirect blocking, size/image checks, safe outputs and OTA recovery remain present. The connection does not authenticate the HTTPS server certificate.
 - [TEST CONTRACT UPDATED — NOT RUN] `test/v6_3_qc_contract_test.dart` checks the new path and guards the allowlist/redirect behavior.
 - [USER-REPORTED RESULT — 2026-10-13] The user reports V6.3 compiles successfully and Online OTA can connect to GitHub after the restoration. Full BIN transfer, `Update.end()`, restart and installed-version confirmation are not independently established. Since CA validation and NTP gating were removed together, the evidence does not isolate one of them as the sole root cause.
+- [CANONICAL REGRESSION MEMORY] Read [OTA_REGRESSION_MEMORY.md](../OTA_REGRESSION_MEMORY.md) before any Online OTA transport/TLS/time-sync change; it records the incident, evidence boundary, trade-off, and prevention rules.
 - [NOT DONE BY ASSISTANT] No firmware compile, BIN generation/publication, flash or hardware OTA was performed in this assistant session.
 
 - [CURRENT TRUTH] Active Firmware source: `firmware/JEXFYZ-V6.3.ino`, blob `8a8c64ae2a3fc7ac722a02c05feaeb614087092a`; V6.2 was retired from the active tree. App source remains `lib/main.dart`, version `1.0.0+3`.
