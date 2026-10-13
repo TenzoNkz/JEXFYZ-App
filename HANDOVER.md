@@ -1,3 +1,14 @@
+## CURRENT V6.2 FULL EXECUTION — 2026-10-13
+
+- Active Firmware file: `firmware/JEXFYZ-V6.2.ino`, blob SHA `eaf7ac76d20b7ba67dfc5a0abf5b4ef7083b9265`; last Firmware source update commit `cac71e8bdfc701a7ffb9b5e3fb1ea1bc6817884d`. V6.1 source has been retired from the active tree.
+- App file `lib/main.dart`, blob SHA `b30c641efafa61661798c5d42c445c2773318195`; latest App correction commit `116921bd28d280039ba191371fa276149466c802`; app version remains `1.0.0+3`.
+- Adaptive thermal stages: 30 s at 12 V, 9 V and 5 V; Peltier OFF immediately, Fan 100%. Recovery before the 30-second deadline requires Hotside <= `hotLimit - 1°C` for 5 consecutive seconds, cancelling the timer and retaining the rail. If unrecovered, 12 V/9 V steps down; 5 V enters terminal manual-restart lock.
+- After a thermal downshift, voltage recovery is one step per 60 seconds of continuous Hotside <= `hotLimit - 1°C`, no higher than the saved pre-downshift ceiling. Terminal 5 V lock cannot auto-recover. Manual re-arm uses the same -1°C threshold and 5-second stable qualification.
+- Online OTA retains the GitHub raw BIN allowlist and validates HTTPS with ISRG Root X1. BLE command writes require bonded Secure Connections with Just Works pairing; MITM/passkey is not configured due to no device input/display. Local OTA is unchanged.
+- App normal BLE reconnect order, OTA expected-disconnect race, voltage telemetry confirmation, LED color normalization, disconnected output unknown state, and -1°C safety copy are implemented.
+- Regression tests were added/updated; `.gitignore` added. No valid `pubspec.lock` could be generated in this environment because Flutter/Dart are unavailable; do not fabricate it.
+- Validation boundary: Flutter tests/analyze and firmware compilation are not run. No APK build, firmware BIN, flash, OTA, Android pairing or hardware test occurred. V6.2 is source-only DEVELOPMENT + QC / PRE-RELEASE, not released.
+
 ## CURRENT V6.1 TOUCH-ADAPTIVE TELEMETRY SYNC FIX — 2026-10-13
 
 - [VERIFIED SOURCE DEFECT] The hardware Touch long-press path called `setAdaptiveState(false, reason)` and sent only `ACK:TOUCH_ADAPTIVE;REASON=OFF`; unlike the App BLE command handler, it did not publish the `ADAPTIVE` state delta. The App ACK handler displays the result but does not mutate the Adaptive state, so the dashboard switch and Floating Monitor could remain stale.
