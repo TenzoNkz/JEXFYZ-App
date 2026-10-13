@@ -77,14 +77,14 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
 
 ## 7. Persistent state files and what changed
 
-- [VERIFIED] The V6.3 source restoration and current Online OTA contract are recorded in the current project notes. Current observed blobs after those edits:
+- [VERIFIED] The V6.3 Online OTA connection restoration is recorded in the current project notes. Current observed blobs before the final transfer-snapshot update:
   - `PROJECT_STATE.md`: `73c4cdfc12ba4f638cc576edfa7c222f83127a74`
-  - `HANDOVER.md`: `d70380289979838a704248c7e07c01c133a2c770`
-  - `CHAT_RULES.md`: `c842b072413e0a661be22b46aea9f89e32aa91aa`
-  - `APP_NOTES.md`: `a2a96f397960b58d8d3a6bc6d553ddaea4807c29`
+  - `HANDOVER.md`: `350f9fecaddb9ae7d03823f63a41e20f622311f0`
+  - `CHAT_RULES.md`: `22d60d0d62866f247e157f480af887b886c9896b`
+  - `APP_NOTES.md`: `75dc694894d61e864667beb511ad24c2574ba08f`
   - `FIRMWARE_NOTES.md`: `bcd95fb4eb83272fdee19675c0f50c57deb5d3d0`
   - `BUILD_NOTES.md`: `c385bdace4678642df1fe3a80f4080187a44ba72`
-  - `firmware/FIRMWARE_ANALYSIS.md`: `a2dd82d1b53531c2efc3b251a2df2e38168a613f`
+  - `firmware/FIRMWARE_ANALYSIS.md`: `14cae2ea8769983a0851e5e33a25ae37991875fd`
   - `OTA_PROTECTION.md`: `98b597021c4c8bfa0041acf5c2bcb17a53ccf7ea`
   - `CHANGELOG.md`: `64b29c77f3cf3746f816350b96a62abc0f15c6f8`
 - [CURRENT TRUTH] These persistent state files did not require additional edits for this transfer: the current App follow-up was already recorded. Only `CHAT_TRANSFER.md` is to be replaced in this operation.
