@@ -92,4 +92,52 @@ void main() {
     expect(source, contains('if (manualPeltierSafetyLatch && hotsideRearmStable)'));
   });
 
+  test('BLE rediscovery stops polling when passive Auto Connect prerequisites are unavailable', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final start = source.indexOf('void _startDisconnectRediscovery()');
+    final end = source.indexOf('void _handleBleDisconnected()', start);
+
+    expect(start, greaterThanOrEqualTo(0));
+    expect(end, greaterThan(start));
+    final method = source.substring(start, end);
+
+    final disabledGuard = method.indexOf('if (!appAutoConnectNotifier.value ||');
+    expect(disabledGuard, greaterThanOrEqualTo(0));
+    expect(
+      method.indexOf('_cancelDisconnectRediscovery();', disabledGuard),
+      greaterThan(disabledGuard),
+    );
+
+    final readinessGate = method.indexOf('if (!canAutoConnect(');
+    expect(readinessGate, greaterThanOrEqualTo(0));
+    expect(
+      method.indexOf('_cancelDisconnectRediscovery();', readinessGate),
+      greaterThan(readinessGate),
+    );
+    expect(method, contains('syncing ||'));
+  });
+
+  test('Cloud OTA timeout/disconnect remains ambiguous instead of showing rejection', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final start = source.indexOf('Future<void> _startCloudOta(');
+    final end = source.indexOf('void _startOtaReconnectMonitor()', start);
+
+    expect(start, greaterThanOrEqualTo(0));
+    expect(end, greaterThan(start));
+    final method = source.substring(start, end);
+
+    final ambiguity = method.indexOf('if (ambiguousCloudOtaStart)');
+    final rejectedNotice = method.indexOf("JexText.of('otaStartRejected'");
+    expect(ambiguity, greaterThanOrEqualTo(0));
+    expect(method, contains("_lastCommandAckReason == 'TIMEOUT'"));
+    expect(method, contains("_lastCommandAckReason == 'DISCONNECTED'"));
+    expect(method, contains('Waiting for device reconnection or OTA result.'));
+    expect(rejectedNotice, greaterThan(ambiguity));
+
+    final ambiguityBranch = method.substring(ambiguity, rejectedNotice);
+    expect(ambiguityBranch, isNot(contains('otaExpectedDisconnect = false;')));
+    expect(ambiguityBranch, isNot(contains('otaRecoveryActive = false;')));
+  });
+
+
 }
