@@ -2098,7 +2098,10 @@ static void processAdaptiveHotTimer() {
   const uint32_t now = millis();
 
   if (peltierHotOffUntilMs != 0) {
-    if (hotsideRearmStable && !voltageTransition && !adaptiveHotStepPending) {
+    if (now < peltierHotOffUntilMs &&
+        hotsideRearmStable &&
+        !voltageTransition &&
+        !adaptiveHotStepPending) {
       peltierHotOffUntilMs = 0;
       adaptiveHotsideRiseDueMs = 0;
       adaptiveVoltageRecoveryStableSinceMs = 0;
