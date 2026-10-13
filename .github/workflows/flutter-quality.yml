@@ -37,17 +37,24 @@ jobs:
       - name: Resolve dependencies and generate lockfile
         run: flutter pub get
 
+      # Temporary handoff for one manually reviewed lockfile commit. This step is
+      # removed immediately after pubspec.lock is captured; it does not write to Git.
+      - name: One-time lockfile content handoff
+        if: always() && hashFiles('pubspec.lock') != ''
+        run: |
+          python3 - <<'PY'
+          import base64
+          with open("pubspec.lock", "rb") as lock_file:
+              encoded = base64.b64encode(lock_file.read()).decode("ascii")
+          print("LOCKFILE_EXPORT_BEGIN")
+          for offset in range(0, len(encoded), 3000):
+              print("LOCKFILE_B64_CHUNK:" + encoded[offset:offset + 3000])
+          print("LOCKFILE_EXPORT_END")
+          PY
+
       - name: Run regression tests
         run: flutter test
 
       - name: Analyze Dart and Flutter sources
+        if: always()
         run: flutter analyze
-
-      - name: Upload generated dependency lockfile for review
-        if: always() && hashFiles('pubspec.lock') != ''
-        uses: actions/upload-artifact@v4
-        with:
-          name: pubspec-lock-generated
-          path: pubspec.lock
-          if-no-files-found: error
-          retention-days: 7

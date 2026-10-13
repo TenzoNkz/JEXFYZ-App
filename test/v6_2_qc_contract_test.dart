@@ -22,8 +22,8 @@ void main() {
     final source = File('firmware/JEXFYZ-V6.2.ino').readAsStringSync();
     expect(source, contains('FW_VERSION[] = "V6.2"'));
     expect(RegExp(r'analogReadMilliVolts\(PIN_NTC\)').allMatches(source).length, 1);
-    expect(RegExp(r'(?m)^\s*delay\s*\(').hasMatch(source), isFalse);
-    expect(RegExp(r'(?m)^\s*while\s*\(').hasMatch(source), isFalse);
+    expect(RegExp(r'^\s*delay\s*\(', multiLine: true).hasMatch(source), isFalse);
+    expect(RegExp(r'^\s*while\s*\(', multiLine: true).hasMatch(source), isFalse);
   });
 
   test('Adaptive protection has 30-second stages and 60-second voltage recovery', () {

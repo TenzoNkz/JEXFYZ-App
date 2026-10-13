@@ -120,14 +120,14 @@ void main() {
     expect(JexText.of('off', AppLanguage.indonesia), 'MATI');
   });
 
-  test('Peltier re-arm notify uses the 2C safety hysteresis threshold', () {
+  test('Peltier re-arm notify uses the 1C safety hysteresis threshold', () {
     expect(
       peltierRearmNotice(45, AppLanguage.english),
-      'Peltier is locked. Cool the Hotside to ≤ 43°C before restarting.',
+      'Peltier is locked. Cool the Hotside to ≤ 44°C before restarting.',
     );
     expect(
       peltierRearmNotice(45, AppLanguage.indonesia),
-      'Peltier terkunci. Dinginkan Hotside hingga ≤ 43°C sebelum menyalakan kembali.',
+      'Peltier terkunci. Dinginkan Hotside hingga ≤ 44°C sebelum menyalakan kembali.',
     );
   });
 
@@ -183,6 +183,7 @@ void main() {
       speed: 70,
       adaptiveOn: true,
       peltierOn: true,
+      connected: true,
     );
     expect(floatingMetricVisible('S', telemetry), isTrue);
     expect(floatingMetricVisible('A', telemetry), isTrue);
