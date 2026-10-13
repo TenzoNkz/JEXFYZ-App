@@ -38,16 +38,13 @@ void main() {
     expect(source, contains('adaptiveThermalRecoveryActive ||'));
   });
 
-  test('Online OTA validates GitHub HTTPS; Local OTA scope stays unchanged', () {
+  test('Online OTA validates GitHub HTTPS in the single-file sketch', () {
     final source = File('firmware/JEXFYZ-V6.3.ino').readAsStringSync();
-    final trust = File('firmware/JEXFYZ-OTA-Trust.h').readAsStringSync();
 
-    expect(source, contains('#include "JEXFYZ-OTA-Trust.h"'));
-    expect(source, isNot(contains('static const char GITHUB_ROOT_CA[] PROGMEM')));
-    expect(trust, contains('static const char GITHUB_ROOT_CA[] PROGMEM'));
-    expect(trust, contains('ISRG Root X1'));
-    expect(trust, contains('-----BEGIN CERTIFICATE-----'));
-    expect(trust, contains('-----END CERTIFICATE-----'));
+    expect(source, contains('static const char GITHUB_ROOT_CA[] PROGMEM'));
+    expect(source, contains('-----BEGIN CERTIFICATE-----'));
+    expect(source, contains('-----END CERTIFICATE-----'));
+    expect(source, isNot(contains('JEXFYZ-OTA-Trust.h')));
     expect(source, contains('https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/'));
     expect(source, contains('cloudClient.setCACert(GITHUB_ROOT_CA)'));
     expect(source, isNot(contains('cloudClient.setInsecure()')));
