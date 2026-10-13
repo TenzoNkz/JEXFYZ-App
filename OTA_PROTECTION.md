@@ -55,12 +55,12 @@ Jadi segel ini **tidak** mengubah kebijakan versi OTA.
 
 ## 🔒 Kondisi baseline
 
-OTA V5.7 sudah berhasil digunakan untuk memperbarui hardware sebelum QC V5.8.
-Active source saat ini adalah V6.1, tetapi source-only: belum dikompilasi, dibuat BIN, diflash, atau divalidasi pada hardware:
+OTA V5.7 berhasil digunakan untuk memperbarui hardware pada tahap historis sebelumnya.
+Active source saat ini adalah V6.2 dan tetap source-only: belum dikompilasi, dibuat BIN, diflash, atau divalidasi pada hardware:
 
-`firmware/JEXFYZ-V6.1.ino`
+`firmware/JEXFYZ-V6.2.ino`
 
-Keberhasilan OTA V5.7 adalah bukti historis untuk V5.7 saja, bukan bukti OTA V6.1.
+Keberhasilan OTA V5.7 adalah bukti historis untuk V5.7 saja, bukan bukti bahwa OTA V6.2 telah lulus hardware validation.
 
 Dokumen ini **bukan** cryptographic signature, bukan CI enforcement, dan bukan pengganti pengujian OTA pada hardware.
 
@@ -71,4 +71,6 @@ Dokumen ini **bukan** cryptographic signature, bukan CI enforcement, dan bukan p
 ## Online OTA TLS clock validation — 2026-10-13
 
 - V6.2 Online OTA synchronizes system time before TLS validation and fails safely if the clock does not become valid within 20 seconds.
-- Redirects are disabled for the raw GitHub BIN endpoint; CA validation remains enabled. No custom firmware SHA/signature is added; Local OTA remains unchanged.
+- Redirects are disabled for the direct raw GitHub BIN endpoint; CA validation remains enabled, after NTP time is synchronized (20-second deadline).
+- Repository allowlist remains limited to `TenzoNkz/JEXFYZ-Firmware`; no custom firmware SHA/signature is added; Local OTA remains unchanged.
+- The unapproved temporary quality workflow was removed after it failed to push a generated lockfile; test/analyze steps were skipped and no lockfile was committed.
