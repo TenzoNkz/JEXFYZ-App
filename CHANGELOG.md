@@ -1,11 +1,21 @@
-## Online OTA TLS clock validation — 2026-10-13
+## CURRENT V6.3 EXECUTION STATUS — 2026-10-13
+
+- [CURRENT TRUTH] Active Firmware source: `firmware/JEXFYZ-V6.3.ino`, blob `c2909e5ad4046596618175352934f89815f3e44c`; V6.2 was retired from the active tree. App source remains `lib/main.dart`, version `1.0.0+3`.
+- [FIXED] The manual Peltier safety latch now remains blocking until `enforceSafety()` observes Hotside at or below `hotLimit - 1°C` for five continuous seconds. One low sample can no longer bypass re-arm stability.
+- [PRESERVED] Adaptive thermal protection remains 30 seconds at 12 V, 9 V and 5 V, with Peltier OFF and Fan 100%. Five-second stable thermal recovery before the deadline cancels the timer; otherwise 12 V/9 V steps down and unrecovered 5 V enters terminal manual-restart lock. Thermal voltage restoration remains one step after each 60-second stable interval, bounded by the saved pre-downshift ceiling.
+- [CURRENT TRUTH] `pubspec.lock` is committed (blob `1e92812bfda2c28244a0556d71d1ec94084acc66`) and `.gitignore` is present. Earlier V6.2 notes about a missing lockfile are historical.
+- [TEST EVIDENCE — V6.2 CANDIDATE] GitHub Actions run 38362882150 recorded 45 passing Flutter tests. Its plain `flutter analyze` exited nonzero because 23 info-level deprecation notices were treated as fatal; the existing App release workflow uses `flutter analyze --no-fatal-infos`. This evidence predates the V6.3 latch patch and does not certify V6.3.
+- [UNVERIFIED] The added V6.3 latch regression has not been run. No V6.3 Firmware compile, BIN, flash, hardware, Android BLE pairing, or OTA regression has been performed. No APK Build was run.
+- [NOT RELEASED] V6.3 remains source-only DEVELOPMENT + QC / PRE-RELEASE. Production firmware repository and Firebase release metadata were not changed.
+
+## HISTORICAL V6.2 Online OTA TLS clock validation — 2026-10-13
 
 - Firmware remains V6.2. Online OTA now synchronizes system time asynchronously after Wi-Fi connects and before CA-validated HTTPS begins. Time synchronization is bounded at 20 seconds and uses the existing OTA failure/recovery path on timeout.
 - Redirects are disabled for the allowlisted raw GitHub BIN URL. The configured public CA validation remains enabled; no SHA/custom signature was added, and Local OTA is unchanged.
 - Added QC assertions. A temporary no-build quality workflow was briefly tested: `flutter pub get` succeeded, but pushing generated `pubspec.lock` was rejected as non-fast-forward, so `flutter test`/`flutter analyze` were skipped. The temporary workflow was removed; no lockfile was committed.
 - No compile, APK build, flash, device OTA, or physical test was performed; review CI and perform manual hardware validation before sign-off.
 
-## CURRENT V6.2 FULL EXECUTION — 2026-10-13
+## HISTORICAL V6.2 FULL EXECUTION — 2026-10-13
 
 - Active Firmware: `firmware/JEXFYZ-V6.2.ino`, blob SHA `88d92f652a3cf973eb34bcfe3a9d73d9cbd87123`; last Firmware source update commit `13377f00b49d9de0bbd31a872c0da7251be56e8d`. V6.1 source retired.
 - App: `lib/main.dart`, blob SHA `b30c641efafa61661798c5d42c445c2773318195`; latest App correction commit `116921bd28d280039ba191371fa276149466c802`; version unchanged at `1.0.0+3`.
