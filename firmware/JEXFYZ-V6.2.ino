@@ -2312,6 +2312,7 @@ static void evaluateAdaptiveBattery() {
       !ntcValid ||
       !batteryValid) return;
   if (adaptiveHotStepPending ||
+      adaptiveThermalRecoveryActive ||
       peltierHotOffUntilMs != 0 ||
       hotsideProtectionActiveNow()) return;
 
