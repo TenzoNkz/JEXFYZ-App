@@ -27,7 +27,7 @@ Current OTA source note: V6.3 Online OTA has been restored to `cloudClient.setIn
 
 - [VERIFIED] Repository: `TenzoNkz/JEXFYZ-App`; primary branch: `main`.
 - [VERIFIED] Latest functional OTA source restoration commit: `a87bbcecdca26b3648abff9cb88937e250b41f1f`; `firmware/JEXFYZ-V6.3.ino` now uses `cloudClient.setInsecure()` without the embedded CA or NTP gate. Commit: https://github.com/TenzoNkz/JEXFYZ-App/commit/a87bbcecdca26b3648abff9cb88937e250b41f1f. The OTA contract test update follows in commit `dc0d6ec13d3f58ab864e006e7defb543fd4752b6`.
-- [CURRENT SOURCE — NOT COMPILED] Active Firmware source is `firmware/JEXFYZ-V6.3.ino`; it remains one self-contained `.ino`, with `cloudClient.setInsecure()` used for Online OTA. Embedded CA and NTP gate are removed. V6.2 source was retired from the active tree.
+- [CURRENT SOURCE — NOT COMPILED] Active Firmware source is `firmware/JEXFYZ-V6.3.ino`, blob `8a8c64ae2a3fc7ac722a02c05feaeb614087092a`; it remains one self-contained `.ino`, with `cloudClient.setInsecure()` used for Online OTA. Embedded CA and NTP gate are removed. V6.2 source was retired from the active tree.
 - [VERIFIED] App source: `lib/main.dart`, blob `535e396005a3bd1429db3096c627d87043b0e1b4`. Package `com.horizontalzzz.jexfyz`; pubspec version remains `1.0.0+3`.
 - [VERIFIED] `android/app/build.gradle` blob `d8681cb73156b61da7749633abd63e2fb8c287ba`; intentional `versionName "Telegram @horizontalzzz"` remains unchanged.
 - [VERIFIED] Latest V6.3 QC contract test: `test/v6_3_qc_contract_test.dart`, blob `bf9d96cf671547e48465525c4661e48afd9863ee`.
