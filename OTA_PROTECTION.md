@@ -67,3 +67,8 @@ Dokumen ini **bukan** cryptographic signature, bukan CI enforcement, dan bukan p
 ### Prinsip utama
 
 > **OTA sudah bekerja — jangan disentuh kecuali ada alasan OTA yang nyata.**
+
+## Online OTA TLS clock validation — 2026-10-13
+
+- V6.2 Online OTA synchronizes system time before TLS validation and fails safely if the clock does not become valid within 20 seconds.
+- Redirects are disabled for the raw GitHub BIN endpoint; CA validation remains enabled. No custom firmware SHA/signature is added; Local OTA remains unchanged.

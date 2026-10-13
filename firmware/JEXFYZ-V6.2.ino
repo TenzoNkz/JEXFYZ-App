@@ -4,6 +4,7 @@
 #include <HTTPClient.h>
 #include <WiFiClientSecure.h>
 #include <BLESecurity.h>
+#include <time.h>
 
 // Standard public root CA used to validate the GitHub HTTPS certificate chain.
 static const char GITHUB_ROOT_CA[] PROGMEM = R"JEXCA(-----BEGIN CERTIFICATE-----
@@ -220,6 +221,8 @@ static constexpr uint32_t OTA_FAILURE_INDICATOR_MS    = 1000;
 static constexpr uint32_t WIFI_CONNECT_TIMEOUT_MS     = 15000;
 static constexpr uint8_t WIFI_CONNECT_MAX_ATTEMPTS      = 3;
 static constexpr uint32_t ONLINE_OTA_HTTP_TIMEOUT_MS  = 60000;
+static constexpr uint32_t ONLINE_OTA_TIME_SYNC_TIMEOUT_MS = 20000UL;
+static constexpr time_t ONLINE_OTA_VALID_TIME_EPOCH = 1700000000;
 static constexpr uint32_t ONLINE_OTA_RESULT_INDICATOR_MS = 1000;
 static constexpr uint32_t OTA_MAX_FIRMWARE_BYTES     = 1792UL * 1024UL;
 static_assert(OTA_MAX_FIRMWARE_BYTES <= 2 * 1024 * 1024,
@@ -244,6 +247,7 @@ enum class OnlineOtaFlow : uint8_t {
   IDLE,
   RADIO_TEARDOWN,
   WIFI_CONNECTING,
+  TIME_SYNCING,
   DOWNLOAD,
   FLASH_FINALIZE,
 };
@@ -3069,7 +3073,8 @@ static bool prepareOnlineOtaDownload() {
   onlineHttpResponseCode = 0;
   onlineHttpExpectedBytes = 0;
 
-  onlineHttpClient.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
+  // Direct raw GitHub URL only: do not follow a redirect to another host.
+  onlineHttpClient.setFollowRedirects(HTTPC_DISABLE_FOLLOW_REDIRECTS);
   onlineHttpClient.setConnectTimeout(15000);
   onlineHttpClient.setTimeout(ONLINE_OTA_HTTP_TIMEOUT_MS);
   onlineHttpClient.setReuse(false);
@@ -3416,11 +3421,13 @@ static void processOnlineOta() {
 
     case OnlineOtaFlow::WIFI_CONNECTING:
       if (WiFi.status() == WL_CONNECTED) {
+        // TLS certificate validation needs a plausible system clock. NTP is
+        // asynchronous; don't start HTTPS until time has been synchronized.
+        configTime(0, 0, "pool.ntp.org", "time.google.com");
+        cloudPhaseStartedAt = millis();
+        onlineOtaFlow = OnlineOtaFlow::TIME_SYNCING;
         setOtaDiagnosticStage("ONLINE_WIFI_CONNECTED");
         setOtaDiagnosticProgress(0);
-        startOnlineOtaResultIndicator(
-            0x0000FF,
-            OnlineOtaIndicatorNext::PREPARE_DOWNLOAD);
         return;
       }
 
@@ -3448,6 +3455,21 @@ static void processOnlineOta() {
         }
       }
       return;
+
+    case OnlineOtaFlow::TIME_SYNCING: {
+      if (time(nullptr) >= ONLINE_OTA_VALID_TIME_EPOCH) {
+        startOnlineOtaResultIndicator(
+            0x0000FF,
+            OnlineOtaIndicatorNext::PREPARE_DOWNLOAD);
+      } else if (millis() - cloudPhaseStartedAt >=
+                 ONLINE_OTA_TIME_SYNC_TIMEOUT_MS) {
+        failOnlineOta(
+            "ONLINE_GITHUB_CONNECT",
+            -105,
+            "SYSTEM_TIME_SYNC_TIMEOUT");
+      }
+      return;
+    }
 
     case OnlineOtaFlow::DOWNLOAD:
       // An active streaming state must be serviced on every loop pass; the downloader owns its own initialization guard.

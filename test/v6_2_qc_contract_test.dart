@@ -43,6 +43,10 @@ void main() {
     expect(source, contains('https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/'));
     expect(source, contains('cloudClient.setCACert(GITHUB_ROOT_CA)'));
     expect(source, isNot(contains('cloudClient.setInsecure()')));
+    expect(source, contains('case OnlineOtaFlow::TIME_SYNCING'));
+    expect(source, contains('configTime(0, 0, "pool.ntp.org", "time.google.com")'));
+    expect(source, contains('ONLINE_OTA_TIME_SYNC_TIMEOUT_MS = 20000UL'));
+    expect(source, contains('HTTPC_DISABLE_FOLLOW_REDIRECTS'));
     expect(source, contains('static constexpr char AP_PASSWORD[] = "0987654321";'));
   });
 

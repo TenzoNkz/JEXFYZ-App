@@ -1,3 +1,10 @@
+## Online OTA TLS clock validation — 2026-10-13
+
+- Firmware remains V6.2. Online OTA now synchronizes system time asynchronously after Wi-Fi connects and before CA-validated HTTPS begins. Time synchronization is bounded at 20 seconds and uses the existing OTA failure/recovery path on timeout.
+- Redirects are disabled for the allowlisted raw GitHub BIN URL. The configured public CA validation remains enabled; no SHA/custom signature was added, and Local OTA is unchanged.
+- Added QC assertions and a GitHub Actions quality workflow to resolve dependencies, commit generated `pubspec.lock` on main if needed, run `flutter test`, and run `flutter analyze`. The workflow does not build APK or firmware.
+- No compile, APK build, flash, device OTA, or physical test was performed; review CI and perform manual hardware validation before sign-off.
+
 ## CURRENT V6.2 FULL EXECUTION — 2026-10-13
 
 - Active Firmware: `firmware/JEXFYZ-V6.2.ino`, blob SHA `eaf7ac76d20b7ba67dfc5a0abf5b4ef7083b9265`; last Firmware source update commit `cac71e8bdfc701a7ffb9b5e3fb1ea1bc6817884d`. V6.1 source retired.
