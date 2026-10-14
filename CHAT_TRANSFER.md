@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — CHAT TRANSFER SNAPSHOT
 
-Snapshot date: 2026-10-14 (Asia/Jakarta). This detailed transfer file bridges project memory across chats. It is a snapshot, NOT a substitute for fetching live GitHub state; all hashes and status need rechecking after later commits.
+Snapshot date: 2026-10-14 (Asia/Jakarta). Live checkpoint before transfer replacement: 2026-10-14 14:15:33 Asia/Jakarta / 07:15:33 UTC, main HEAD `935323a46f542a26b216e8842045474112ff9516`. This detailed transfer file bridges project memory across chats. It is a snapshot, NOT a substitute for fetching live GitHub state; all hashes and status need rechecking after later commits.
 
 ## 0. New-chat boot — mandatory order
 
@@ -15,18 +15,18 @@ Snapshot date: 2026-10-14 (Asia/Jakarta). This detailed transfer file bridges pr
 
 ## 1. Repository checkpoint immediately before this transfer refresh
 
-- Canonical repository: TenzoNkz/JEXFYZ-App, private, branch `main`.
-- Main HEAD immediately before this transfer write: `9b921756b3a00314e960428faae2dd4b85593adf`. Relevant recent commits: LED/UI/notification source `a6d16361193416b7b6ffb95c47aa3604fc69c6eb`; legacy stored-color name compatibility `497a804b0f5eeabddc50e337954a231fe73b8679`; canonical memory/hash update `9b921756b3a00314e960428faae2dd4b85593adf`. This final transfer refresh is a documentation-only commit whose parent must be exactly `9b921756b3a00314e960428faae2dd4b85593adf`.
-- Recursive tree at pre-transfer HEAD: 65 entries, `truncated=false`. Open PR search returned 0. Branches observed: `diag/latest-stable-v16`, `diagnostic/v1.6-heap-check`, `fix/adaptive-power-sequencing`, `main`, `tmp-jexfyz-v5-test`. Closed PRs observed: #18, #7, #5, #4, #3, #2, #1; closed-PR connector records did not reliably expose merge status, so do not infer merge state from closure.
-- Active Firmware source: `firmware/JEXFYZ-V6.6.ino`, blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`; embedded `FW_VERSION = "V6.6"`. Exactly one active versioned `.ino` was found.
-- Active App source: `lib/main.dart`, blob `c0567d4652ba5b84ce82b2d382916754cd73d861`; settings `lib/app_settings.dart`, blob `232a7575460e5417f7b760f24b5057687a47ee1a`.
-- App package/version: `com.horizontalzzz.jexfyz` / `1.0.0+3`. Android Gradle `versionName "Telegram @horizontalzzz"` is intentional identity text and must remain unchanged.
-- Current test paths: `test/widget_test.dart` (blob `ef84c41fb09dac62cb749c4fed660b9a517ff4e8`), `test/v6_6_qc_contract_test.dart` (blob `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a`), `test/firmware_touch_adaptive_sync_test.dart`, `test/app_protocol_notify_contract_test.dart`. Test contracts cover preview visibility, localized 36-color palette, legacy color aliases, offline switches and Android notification source contracts; tests/analyze are NOT RUN.
-- Active build workflow: `.github/workflows/jexfyz-app-build-trigger.yml`; explicit issue title `JE X FYZ — BUILD APP TRIGGER` and required body token `JEXFYZ_BUILD_TRIGGER_V1`. No build was started by this execution.
-- Recent successful App Build evidence: [38520146994](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38520146994) on parent commit `1024eb8e145429913aacb52f4cf352e087885d44`; it predates the UI/notification source commit and is NOT validation of current source. Recent older failures #38519913851 and #38519669369 also predate this UI/notification commit.
-- Artifact repo `TenzoNkz/JEXFYZ-Firmware`: main HEAD `3dd4ed90d74eb8f8fbaa560dfda0e618b73a8754`; root contains only `JEXFYZ.cpp.bin`, SHA `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, 1,455,936 bytes. Provenance matching V6.6 source is UNVERIFIED; this task did not modify the BIN.
-- Execution scope: LED preview, named palette/color-picker, disconnected menu fallback, native Android notification presentation, legacy stored-color aliasing, regression-contract source files and canonical notes. No Firmware source/protocol, BIN, Firebase, OTA, flashing or release changes. Flutter tests/analyze, App Build and Firmware compile were NOT run. Physical UI and OEM notification behavior remain UNVERIFIED.
-- Phase: DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED.
+- **Live checkpoint:** 2026-10-14 14:15:33 Asia/Jakarta (2026-10-14T07:15:33Z).
+- **Canonical repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`.
+- **Main HEAD before this transfer write:** `935323a46f542a26b216e8842045474112ff9516`. Commit message: `docs: reconcile App QC and current build evidence`; parent `328c04d8574c103332d3c2f58d2f213ebc24f5ee`. The transfer replacement is a separate documentation-only commit with this exact parent.
+- **Tree:** 65 entries; 47 blobs; recursive tree `truncated=false`. Open PR search returned 0. Branch tips: `diag/latest-stable-v16` `ec77759d224c581870d98330d9278896ff29e50b`; `diagnostic/v1.6-heap-check` `1a4cd83b3ee82cdc2d86277dc4a0eb4c4238f8a3`; `fix/adaptive-power-sequencing` `33740be782d976a881e285bbf8b86b3b485b83c1`; `main` `935323a46f542a26b216e8842045474112ff9516`; `tmp-jexfyz-v5-test` `b388cba98ea1d9e92873df64ba3224d6cb99156d`.
+- **Active Firmware:** `firmware/JEXFYZ-V6.6.ino`, blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`, 164,410 bytes in Git tree; embedded `FW_VERSION = "V6.6"`. Exactly one active versioned .ino exists. Source/path align; compile remains unverified.
+- **App:** `lib/main.dart` blob `c0567d4652ba5b84ce82b2d382916754cd73d861` (244,465 bytes); `lib/app_settings.dart` blob `232a7575460e5417f7b760f24b5057687a47ee1a` (52,678 bytes). Package `com.horizontalzzz.jexfyz`; pubspec `1.0.0+3`; preserve Gradle `versionName "Telegram @horizontalzzz"`.
+- **Test files:** `test/widget_test.dart` `7130053768e7d5fb094a1b92c4a68c8427af3c36` (corrected obsolete 24-color expectation to 36 and removed duplicated notification contract); `test/v6_6_qc_contract_test.dart` `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a`; `test/firmware_touch_adaptive_sync_test.dart` `2d3fea509343a03b8d23623f4dcb2dd7fd972d39`; `test/app_protocol_notify_contract_test.dart` `92214dd90178c705844d3979d3f8f7bd17bcc4b8`. The files/contracts exist; Flutter test/analyze have NOT RUN in this reconciliation.
+- **App Build workflow:** `.github/workflows/jexfyz-app-build-trigger.yml` blob `7c41358311be195d43f011c1e9a4da98772fcb7d`. Manual issue-open/reopen, title `JE X FYZ — BUILD APP TRIGGER`, token `JEXFYZ_BUILD_TRIGGER_V1`. Toolchain last recorded: Ubuntu 24.04, Java 17, Flutter 3.47.2 stable, Gradle 9.3.1. Intended output: single obfuscated/shrunk production-signed normal APK `JEXFYZ-release.apk` to `jexfyz-latest`, no bundle/Actions artifact. No App Build run was triggered here.
+- **Build evidence:** latest observed successful App Build run `38520146994` on source commit `1024eb8e145429913aacb52f4cf352e087885d44` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38520146994), created `2026-10-14T06:05:01Z`. It predates the LED UI/notification changes and does NOT validate current `main`. Runs `38519913851` (failed, head `6497e7da65e23f0301f3844725f2ff99074f1c78`) and `38519669369` (failed, head `d643f22cee2964c6b0518779239268b58d7e46ef`) also predate those changes.
+- **Artifact repository:** `TenzoNkz/JEXFYZ-Firmware` main `3dd4ed90d74eb8f8fbaa560dfda0e618b73a8754`; root contains only `JEXFYZ.cpp.bin`, blob `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, 1,455,936 bytes. Its provenance matching active V6.6 remains UNVERIFIED; artifact unchanged.
+- **Current UI source behavior:** compact LED mode-name-only strip; core preview visibility independent of hardware brightness; centered responsive picker with 36 localized hue-ordered presets, no visible HEX values and preserved legacy color names; disabled OFF-looking knob-left fallback in CONTROL/ADAPTIVE/LED menus offline. Home/dashboard/Floating Monitor retain `--` for unknown physical telemetry. Android notifications use monochrome X small icon plus brand large icon, localized event body beneath JE X FYZ, app-open tap intent and non-empty localized BLE/Floating Monitor service bodies. Physical/OEM behavior remains UNVERIFIED.
+- **Operation boundary:** no Firmware source/protocol changes, compile, BIN, Firebase, flash/OTA/device operation, App Build, release or hardware validation was performed. Tests/analyze were NOT RUN. Phase remains DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED.
 
 ## 2. Permanent user commands and authorization limits
 
@@ -67,7 +67,7 @@ TenzoNkz/JEXFYZ-App is the single canonical home for App source, editable firmwa
 - archive/ARTIFACT_REPO_NOTES_PRE_BIN_ONLY_2026-10-14.md: verbatim artifact-repo notes copied before enforcing BIN-only.
 - Old archive content is never current truth. Recover a missing old fact from archives/Git history and transfer only that fact into its proper active note.
 
-TenzoNkz/JEXFYZ-Firmware must contain JEXFYZ.cpp.bin only. Do not re-add a README, firmware source, memory or notes there. Current observed BIN SHA: c1a6e1fe84967944d5e0f4ff85c92fbc265e2f88. Do not replace it without explicit authorization and verified provenance.
+TenzoNkz/JEXFYZ-Firmware must contain JEXFYZ.cpp.bin only. Do not re-add a README, firmware source, memory or notes there. Current observed BIN SHA: 68167e65d26137eeb1ce4d6d4ba798dc282454e6. Do not replace it without explicit authorization and verified provenance.
 
 ## 4. Firmware version policy — mandatory
 
@@ -107,7 +107,7 @@ Read VOLTAGE_TRANSITION_MEMORY.md completely before any rail/Peltier change.
 - Fan remains ON/forced 100% during the handoff.
 - Explicit Peltier-OFF, Hotside/NTC safety and OTA safe-output must stop Peltier and clear pending pause/resume state.
 - Adaptive entry/exit returns the selector to safe 5 V without forcing a separate Peltier OFF/ON cycle. `requestVoltage()` pauses only an active soft-start; a completed ramp stays at 100%. A Peltier already OFF stays OFF; explicit OFF/Hotside/NTC/OTA safety still overrides.
-- Contract test exists at `test/v6_6_qc_contract_test.dart` (blob `e3127eec860fce970fa598ca3015ed5ea61470bf`); Flutter tests were NOT RUN. Source assertions were inspected statically only.
+- Contract test exists at `test/v6_6_qc_contract_test.dart` (blob `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a`); Flutter tests were NOT RUN. Source assertions were inspected statically only.
 - User reported a restart at 5 V→12 V with Peltier/Fan ON during active ramp. Supply transient/brownout remains a hypothesis. If reproduced capture reset diagnostic and ideally supply voltage/Peltier current.
 - [SEPARATE USER-REPORTED INCIDENT — RESET REASON UNKNOWN] Hardware was also reported to restart when Adaptive was enabled after selecting 12 V and turning Peltier and Fan ON. Do not conflate this with the active-soft-start rail-change restart; V6.6 uses a safe-5V selector handoff without an extra Peltier OFF cycle, and physical reproduction/reset-reason capture remains open.
 
@@ -251,65 +251,65 @@ Read DESIGN_NOTES.md before any visual iteration.
 
 Never equate test file with passing run; compile with full OTA installation; blue LED with successful HTTP; ACK with hardware state; reboot with proven brownout; version bump with BIN build; or existing BIN with source provenance.
 
-## 16. Live blob fingerprints at pre-transfer HEAD `9b921756b3a00314e960428faae2dd4b85593adf`
+## 16. Live blob fingerprints at pre-transfer HEAD `935323a46f542a26b216e8842045474112ff9516`
 
-Hashes below are fetched from the fully fetched, non-truncated recursive tree immediately before the transfer-file commit. The future blob SHA of this file is deliberately not self-recorded.
+Fetched from the complete, non-truncated recursive tree immediately before this transfer write. `CHAT_TRANSFER.md` itself is intentionally omitted to avoid storing its own future blob SHA inside itself.
 
 Canonical memory and history:
-- `README.md`: `b96950e0f128499c240edb6b73e9b0eb776f2038`, 3343 bytes
-- `MEMORY_INDEX.md`: `dcec72982b174106f3f551cb821020b1d091a5ba`, 6182 bytes
-- `CHAT_RULES.md`: `1a7e671b9e801acc07b74fd2bc2372dd6d9ec105`, 8071 bytes
-- `PROJECT_STATE.md`: `7cd2fb8aac2c210edf6273344ed37ad37b2b497a`, 11612 bytes
-- `CHAT_TRANSFER_PROMPTS.md`: `cb2290bf2b1b404cde29fc1b68b90ebbc1e62f34`, 28068 bytes
-- `HANDOVER.md`: `3e068a54c4a4ad5afb795e8fd4b23d48fbe0df77`, 6114 bytes
-- `APP_NOTES.md`: `bcd67584aca6222d095a8d866493ccf558d48d2e`, 10559 bytes
-- `FIRMWARE_NOTES.md`: `339e50a1ed72ed61239f027eed5651241ff138c3`, 10771 bytes
-- `BUILD_NOTES.md`: `7627218cc6d2a3b3585ef63057b4eab9856fe916`, 2970 bytes
-- `DESIGN_NOTES.md`: `e04382659dfdd618de0a156046f140452d275dc7`, 2128 bytes
-- `CHANGELOG.md`: `2ff7420693ee84459faa3fb2f16f3ed78e605072`, 15406 bytes
-- `OTA_PROTECTION.md`: `06beb86b749b0f0e14c8cb517e43fe7c0f66a4e1`, 4259 bytes
-- `OTA_REGRESSION_MEMORY.md`: `aceb42527edf6eb3249c8d187ed368ad407c7bb0`, 3918 bytes
-- `VOLTAGE_TRANSITION_MEMORY.md`: `22e11fffe2d7346450adc60b5794551e998f18c2`, 5587 bytes
-- `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `8960cf46bcab7511c132c5e23c4f5c9a9eae6656`, 7309 bytes
+- `README.md`: `80743c19705f75785e3f6ed16c70021a2d3fdc5e` (3433 bytes)
+- `MEMORY_INDEX.md`: `65234e966207e8b0f2a392cf46f6198f3fddaf34` (6242 bytes)
+- `CHAT_RULES.md`: `1a7e671b9e801acc07b74fd2bc2372dd6d9ec105` (8071 bytes)
+- `PROJECT_STATE.md`: `30465449a428f859489d3a2a10264532be2e6f12` (11737 bytes)
+- `CHAT_TRANSFER_PROMPTS.md`: `cb2290bf2b1b404cde29fc1b68b90ebbc1e62f34` (28068 bytes)
+- `HANDOVER.md`: `6eb19897c7613835bb1e616486fdfb61d3fb4ec6` (6217 bytes)
+- `APP_NOTES.md`: `bcd67584aca6222d095a8d866493ccf558d48d2e` (10559 bytes)
+- `FIRMWARE_NOTES.md`: `339e50a1ed72ed61239f027eed5651241ff138c3` (10771 bytes)
+- `BUILD_NOTES.md`: `074da52631f0e8a23ec3d99abee5aa3e42ebbd12` (3018 bytes)
+- `DESIGN_NOTES.md`: `e04382659dfdd618de0a156046f140452d275dc7` (2128 bytes)
+- `CHANGELOG.md`: `630077113a97b1ebe10b10090966f4b9416c4006` (16582 bytes)
+- `OTA_PROTECTION.md`: `06beb86b749b0f0e14c8cb517e43fe7c0f66a4e1` (4259 bytes)
+- `OTA_REGRESSION_MEMORY.md`: `e961ca32a22ebf0fcba8ed221f12cc17a6429f52` (3953 bytes)
+- `VOLTAGE_TRANSITION_MEMORY.md`: `004d69793e09606699a28add4f48c3fa3e218afd` (5622 bytes)
+- `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `8960cf46bcab7511c132c5e23c4f5c9a9eae6656` (7309 bytes)
 
 Workflow, package, active source and tests:
-- `.github/workflows/jexfyz-app-build-trigger.yml`: `7c41358311be195d43f011c1e9a4da98772fcb7d`, 16290 bytes
-- `.gitignore`: `a51c5ad7dabd81d6a7e42181fa7d5c3a25bdac15`, 424 bytes
-- `pubspec.yaml`: `8f558273e21692af9958f914527fdc62d623d63a`, 833 bytes
-- `pubspec.lock`: `1e92812bfda2c28244a0556d71d1ec94084acc66`, 20203 bytes
-- `lib/main.dart`: `c0567d4652ba5b84ce82b2d382916754cd73d861`, 244465 bytes
-- `lib/app_settings.dart`: `232a7575460e5417f7b760f24b5057687a47ee1a`, 52678 bytes
-- `lib/floating_monitor.dart`: `cfc21b3dc198b925786aa98658d647b1d8a3637b`, 51218 bytes
-- `lib/jex_animated_glyph.dart`: `c9c5c2802cb0ed363c042620511148b0d58d36c4`, 1730 bytes
-- `firmware/JEXFYZ-V6.6.ino`: `f51ba6db5d0e91318f63fea4014bb87f7bf76222`, 164410 bytes
-- `test/v6_6_qc_contract_test.dart`: `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a`, 20211 bytes
-- `test/firmware_touch_adaptive_sync_test.dart`: `2d3fea509343a03b8d23623f4dcb2dd7fd972d39`, 1622 bytes
-- `test/app_protocol_notify_contract_test.dart`: `92214dd90178c705844d3979d3f8f7bd17bcc4b8`, 867 bytes
-- `test/widget_test.dart`: `ef84c41fb09dac62cb749c4fed660b9a517ff4e8`, 25056 bytes
+- `.github/workflows/jexfyz-app-build-trigger.yml`: `7c41358311be195d43f011c1e9a4da98772fcb7d` (16290 bytes)
+- `.gitignore`: `a51c5ad7dabd81d6a7e42181fa7d5c3a25bdac15` (424 bytes)
+- `pubspec.yaml`: `8f558273e21692af9958f914527fdc62d623d63a` (833 bytes)
+- `pubspec.lock`: `1e92812bfda2c28244a0556d71d1ec94084acc66` (20203 bytes)
+- `lib/main.dart`: `c0567d4652ba5b84ce82b2d382916754cd73d861` (244465 bytes)
+- `lib/app_settings.dart`: `232a7575460e5417f7b760f24b5057687a47ee1a` (52678 bytes)
+- `lib/floating_monitor.dart`: `cfc21b3dc198b925786aa98658d647b1d8a3637b` (51218 bytes)
+- `lib/jex_animated_glyph.dart`: `c9c5c2802cb0ed363c042620511148b0d58d36c4` (1730 bytes)
+- `firmware/JEXFYZ-V6.6.ino`: `f51ba6db5d0e91318f63fea4014bb87f7bf76222` (164410 bytes)
+- `test/v6_6_qc_contract_test.dart`: `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a` (20211 bytes)
+- `test/firmware_touch_adaptive_sync_test.dart`: `2d3fea509343a03b8d23623f4dcb2dd7fd972d39` (1622 bytes)
+- `test/app_protocol_notify_contract_test.dart`: `92214dd90178c705844d3979d3f8f7bd17bcc4b8` (867 bytes)
+- `test/widget_test.dart`: `7130053768e7d5fb094a1b92c4a68c8427af3c36` (23581 bytes)
 
 Android config, native source and visual assets:
-- `android/app/build.gradle`: `d8681cb73156b61da7749633abd63e2fb8c287ba`, 4671 bytes
-- `android/app/src/main/AndroidManifest.xml`: `d82504cee09092d304d8edc98272ddd0b4732519`, 3587 bytes
-- `android/app/proguard-rules.pro`: `50fc26f726ae8660fe04cf19da688431c8dca4a0`, 370 bytes
-- `android/build.gradle`: `ca11c0f28728b40577d25490811bcc2c8d05ca24`, 593 bytes
-- `android/settings.gradle`: `14545695cc9aba5912393ec293c284ee60d9ec10`, 1233 bytes
-- `android/gradle.properties`: `13564f62c79279ecfd4fe0a8a247a4d2a4b11451`, 296 bytes
-- `android/app/google-services.json`: `f3ed065a7ee56b2a44f0a943a48fa578ba72e0d7`, 761 bytes
-- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt`: `6c17a7e38c3a5b3f3f8fc6b3e5b38a99fd83081e`, 15940 bytes
-- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JeForegroundService.kt`: `9ea4dce7001bcd5cc10f9c1c7ad62f34ec54b03e`, 3350 bytes
-- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt`: `55972b64329a2e1cc91e29a172d0a97a118d8ac1`, 32562 bytes
-- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt`: `4ea74267bae804b4c0ad56e6db9fc7133008f779`, 1415 bytes
-- `android/app/src/main/res/drawable/ic_notification.xml`: `2148252fddee854dcd8a7890c04cb51588e87644`, 459 bytes
-- `android/app/src/main/res/drawable-nodpi/jexfyzicon.png`: `bad855f23416fd58aff194c30b7f8fd77f260ea8`, 436439 bytes
-- `assets/jexfyzicon.png`: `bad855f23416fd58aff194c30b7f8fd77f260ea8`, 436439 bytes
-- `assets/jexfyzcooler.png`: `fbc47e3197534ae35330c1f1793c99705e5165d1`, 1830171 bytes
+- `android/app/build.gradle`: `d8681cb73156b61da7749633abd63e2fb8c287ba` (4671 bytes)
+- `android/app/src/main/AndroidManifest.xml`: `d82504cee09092d304d8edc98272ddd0b4732519` (3587 bytes)
+- `android/app/proguard-rules.pro`: `50fc26f726ae8660fe04cf19da688431c8dca4a0` (370 bytes)
+- `android/build.gradle`: `ca11c0f28728b40577d25490811bcc2c8d05ca24` (593 bytes)
+- `android/settings.gradle`: `14545695cc9aba5912393ec293c284ee60d9ec10` (1233 bytes)
+- `android/gradle.properties`: `13564f62c79279ecfd4fe0a8a247a4d2a4b11451` (296 bytes)
+- `android/app/google-services.json`: `f3ed065a7ee56b2a44f0a943a48fa578ba72e0d7` (761 bytes)
+- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt`: `6c17a7e38c3a5b3f3f8fc6b3e5b38a99fd83081e` (15940 bytes)
+- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JeForegroundService.kt`: `9ea4dce7001bcd5cc10f9c1c7ad62f34ec54b03e` (3350 bytes)
+- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt`: `55972b64329a2e1cc91e29a172d0a97a118d8ac1` (32562 bytes)
+- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt`: `4ea74267bae804b4c0ad56e6db9fc7133008f779` (1415 bytes)
+- `android/app/src/main/res/drawable/ic_notification.xml`: `2148252fddee854dcd8a7890c04cb51588e87644` (459 bytes)
+- `android/app/src/main/res/drawable-nodpi/jexfyzicon.png`: `bad855f23416fd58aff194c30b7f8fd77f260ea8` (436439 bytes)
+- `assets/jexfyzicon.png`: `bad855f23416fd58aff194c30b7f8fd77f260ea8` (436439 bytes)
+- `assets/jexfyzcooler.png`: `fbc47e3197534ae35330c1f1793c99705e5165d1` (1830171 bytes)
 
 Forensic-only archives:
-- `archive/LEGACY_NOTES_SNAPSHOT_2026-10-14.md`: `65ece82c5e8a07908accb4a81bd4c80e469b55de`, 154262 bytes
-- `archive/LEGACY_TRANSFER_HISTORY_2026-10-14.md`: `0438b7006d437d2c24d9e76d6aca7352ad5b0b2b`, 101008 bytes
-- `archive/ARTIFACT_REPO_NOTES_PRE_BIN_ONLY_2026-10-14.md`: `10fab755affdbb8e29727390ad187fcb4bf6817d`, 13348 bytes
+- `archive/LEGACY_NOTES_SNAPSHOT_2026-10-14.md`: `65ece82c5e8a07908accb4a81bd4c80e469b55de` (154262 bytes)
+- `archive/LEGACY_TRANSFER_HISTORY_2026-10-14.md`: `0438b7006d437d2c24d9e76d6aca7352ad5b0b2b` (101008 bytes)
+- `archive/ARTIFACT_REPO_NOTES_PRE_BIN_ONLY_2026-10-14.md`: `10fab755affdbb8e29727390ad187fcb4bf6817d` (13348 bytes)
 
-Artifact repository (separate repo): `TenzoNkz/JEXFYZ-Firmware` main HEAD `3dd4ed90d74eb8f8fbaa560dfda0e618b73a8754`; root has only `JEXFYZ.cpp.bin`, SHA `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, size 1,455,936 bytes. Source/BIN provenance remains UNVERIFIED.
+Artifact repository separate check: `TenzoNkz/JEXFYZ-Firmware` main HEAD `3dd4ed90d74eb8f8fbaa560dfda0e618b73a8754`; root contains only `JEXFYZ.cpp.bin`, SHA `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, 1,455,936 bytes. Source/BIN provenance remains UNVERIFIED.
 
 
 ## 17. Final rule for the next chat
