@@ -96,4 +96,8 @@ Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 
 ## Validation status
 
-All the above are engineering contracts and remembered requirements; any claim about current source behavior must be reconciled to live V6.6 source. The user reported V6.6 compilation succeeded and Online OTA update succeeded. In this App-only execution, neither the compile log nor installed-version telemetry/source-to-BIN provenance was independently checked; physical thermal/LED tests and full OTA apply/reboot/recovery evidence remain separate QC gates. No Firmware source, BIN, Firebase metadata, flash or OTA operation was performed in this execution.
+[USER-CONFIRMED — 2026-10-14] The user states Firmware V6.6 is correct/final, compiles successfully, and Online OTA flash/update has succeeded twice using the same version V6.6. Do not change/recompile the Firmware, replace/publish the BIN, update Firebase, or initiate another OTA/flash unless the user explicitly reopens a Firmware task and separately authorizes the relevant operation.
+
+This is the user's acceptance report, not an assistant-witnessed compile/flash log. Preserve the current source/build evidence boundary: source-to-artifact BIN provenance is not independently established by this report alone. The previously reported restart symptoms and Adaptive-OFF boot indicator remain historical/unverified observations, not an active work queue while the user considers V6.6 final. The older request for rapid Hotside-rise shutdown/manual re-arm is still not implemented in the V6.6 contract; do not add it proactively after the user's final acceptance unless the user reopens that requirement.
+
+No Firmware source, BIN, Firebase metadata, flash or OTA operation was performed in this App-signing task.
