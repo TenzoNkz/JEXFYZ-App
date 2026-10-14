@@ -9,6 +9,8 @@ Validation state: source-only. Firmware compile, Flutter test execution, physica
 
 [USER-REPORTED — 2026-10-13] Hardware restarted when changing from 5 V to 12 V with Peltier and Fan ON while the 5-second Peltier soft-start was still active. No exact reset reason from that reproduction was supplied. Supply transient/brownout is a hypothesis, not a confirmed cause.
 
+[USER-REPORTED — EARLIER SEPARATE INCIDENT; RESET REASON UNAVAILABLE] The hardware was also reported to restart when Adaptive was enabled after selecting 12 V and turning Peltier and Fan ON. Do not assume this is the same root cause as the 5 V→12 V active-soft-start incident. Current V6.4 Adaptive entry requires a safe-5V handoff with Peltier OFF before rail movement; physical reproduction and reset-reason capture remain open.
+
 ## Current V6.4 transition contract
 
 Applies to normal voltage changes requested in Manual Volt and while Adaptive is active. Branch behavior is based on Peltier ramp state when a voltage transition is accepted.
