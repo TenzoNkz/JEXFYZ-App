@@ -1,17 +1,17 @@
 # JE X FYZ / JE Cooler — Voltage Transition & Peltier Soft-Start Memory
 
 Last reconciled: 2026-10-14 (Asia/Jakarta).
-Canonical source: `firmware/JEXFYZ-V6.5.ino` (last observed blob `645c93226d607084ef31408b8fdbba752646ccd5`).
-Static regression contract: `test/v6_5_qc_contract_test.dart` (last observed blob `99e6c6bed4b8094ddb2c9cfc181a3c4529d49c87`).
+Canonical source: `firmware/JEXFYZ-V6.6.ino` (last observed blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`).
+Static regression contract: `test/v6_6_qc_contract_test.dart` (last observed blob `e3127eec860fce970fa598ca3015ed5ea61470bf`).
 Validation state: source-only. Firmware compile, Flutter test execution, physical reproduction, current measurement and thermal/OTA regression remain unverified.
 
 ## Incident
 
 [USER-REPORTED — 2026-10-13] Hardware restarted when changing from 5 V to 12 V with Peltier and Fan ON while the 5-second Peltier soft-start was still active. No exact reset reason from that reproduction was supplied. Supply transient/brownout is a hypothesis, not a confirmed cause.
 
-[USER-REPORTED — EARLIER SEPARATE INCIDENT; RESET REASON UNAVAILABLE] The hardware was also reported to restart when Adaptive was enabled after selecting 12 V and turning Peltier and Fan ON. Do not assume this is the same root cause as the 5 V→12 V active-soft-start incident. Current V6.5 Adaptive entry requires a safe-5V selector handoff but no longer forces Peltier OFF solely for that handoff; physical reproduction and reset-reason capture remain open.
+[USER-REPORTED — EARLIER SEPARATE INCIDENT; RESET REASON UNAVAILABLE] The hardware was also reported to restart when Adaptive was enabled after selecting 12 V and turning Peltier and Fan ON. Do not assume this is the same root cause as the 5 V→12 V active-soft-start incident. Current V6.6 Adaptive entry requires a safe-5V selector handoff but no longer forces Peltier OFF solely for that handoff; physical reproduction and reset-reason capture remain open.
 
-## Current V6.5 transition contract
+## Current V6.6 transition contract
 
 Applies to normal voltage changes requested in Manual Volt and while Adaptive is active. Branch behavior is based on Peltier ramp state when a voltage transition is accepted.
 
@@ -40,7 +40,7 @@ The static test contract exists but was **not executed** as part of this memory 
 
 ## Hardware validation plan
 
-1. Compile the V6.5 source yourself with ArduinoDroid + Arduino-ESP32 Core 3.3.7.
+1. Compile the V6.6 source yourself with ArduinoDroid + Arduino-ESP32 Core 3.3.7.
 2. Manual Volt: during an active ramp, switch rail and confirm 0% → 200 ms selector deadtime → existing 1-second settle → fresh 5-second ramp.
 3. Manual Volt: after ramp reaches 100%, switch rail and confirm Peltier remains continuously active at 100%; no forced pause or extra ramp.
 4. Adaptive ON and OFF: repeat during active soft-start (0% pause, 200 ms deadtime, 1-second settle, fresh 5-second ramp) and after ramp completion (continuous 100%); confirm no additional Adaptive-specific OFF/ON cycle under normal conditions.

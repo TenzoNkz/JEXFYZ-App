@@ -31,7 +31,7 @@ enum class VoltageRequestSource : uint8_t;
 enum class AdaptiveProfile : uint8_t;
 
 /**
- * JE X FYZ — V6.5 Firmware
+ * JE X FYZ — V6.6 Firmware
  * ---------------------------------------------------------------------------
  * Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module
  * Framework: Arduino Standard + official Arduino-ESP32 Core 3.3.7
@@ -87,7 +87,7 @@ enum class AdaptiveProfile : uint8_t;
  * - OTA is supervised before normal application work.
  * - OTA safe outputs are all OFF and the physical selector is forced to 5 V.
  * - Local OTA uses the boot SoftAP; Online OTA uses the approved GitHub BIN URL.
- * - Normal RGB animation state is synchronized to the App through firmware LED phase/cycle telemetry.
+ * - Normal RGB animation state is synchronized through an atomic mode/phase/cycle snapshot emitted at BLE transmission time.
  * - Safety/OTA LED indications remain higher priority than decorative RGB animation.
  *
  * OTA indicators are state-machine driven and never use blocking delays.
@@ -99,7 +99,7 @@ enum class AdaptiveProfile : uint8_t;
  * ---------------------------------------------------------------------------
  */
 
-static constexpr char FW_VERSION[] = "V6.5";
+static constexpr char FW_VERSION[] = "V6.6";
 
 // ============================================================================
 // ========================== HEAP DIAGNOSTIC BUILD ===========================
@@ -237,6 +237,8 @@ static constexpr size_t BLE_TX_QUEUE_SIZE = 48;
 static constexpr size_t BLE_RX_QUEUE_SIZE = 8;
 static constexpr size_t BLE_RX_BUFFER_SIZE = 512;
 static constexpr uint32_t BLE_TX_INTERVAL_MS = 15;
+// Internal marker resolved when it reaches the BLE notification boundary.
+static constexpr char LED_SYNC_QUEUE_MARKER[] = "__JEXFYZ_LED_SYNC_SNAPSHOT__";
 static constexpr uint32_t ONLINE_OTA_START_WAIT_MS = 1500;
 static constexpr uint32_t BLE_START_RETRY_MS = 750;
 static constexpr uint8_t BLE_START_MAX_ATTEMPTS = 8;
@@ -328,12 +330,25 @@ enum class Voltage : uint8_t {
 enum class LedMode : uint8_t {
   STATIC = 1,
   BREATH = 2,
-  MIRROR_PULSE = 3,
   COMET = 4,
   DUAL_CHASE = 5,
   LEFT_RIGHT = 6,
   RAINBOW = 7,
 };
+
+static bool isSupportedLedModeId(int value) {
+  switch (value) {
+    case 1:
+    case 2:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+      return true;
+    default:
+      return false;
+  }
+}
 
 enum class VoltageRequestSource : uint8_t {
   MANUAL,
@@ -781,7 +796,13 @@ static void loadSettings() {
 
   rgbOn = prefs.getBool("rgbOn", false);
   const int storedMode = prefs.getUChar("rgbMode", 1);
-  rgbMode = static_cast<LedMode>(constrain(storedMode, 1, 7));
+  // Retire persisted Mirror Pulse (ID 3) and invalid values as Static.
+  rgbMode = isSupportedLedModeId(storedMode)
+      ? static_cast<LedMode>(storedMode)
+      : LedMode::STATIC;
+  if (storedMode != static_cast<int>(rgbMode)) {
+    prefs.putUChar("rgbMode", static_cast<uint8_t>(rgbMode));
+  }
   rgbBrightness = prefs.getUChar("brightness", 100);
   if (rgbBrightness < 1) rgbBrightness = 1;
   if (rgbBrightness > 100) rgbBrightness = 100;
@@ -1506,13 +1527,12 @@ static void startVoltageIndicator() {
 
 static uint32_t ledAnimationCycleMs(LedMode mode) {
   switch (mode) {
-    case LedMode::STATIC:       return 1000UL;
-    case LedMode::BREATH:       return 2200UL;
-    case LedMode::MIRROR_PULSE: return 2400UL;
-    case LedMode::COMET:        return 1600UL;
-    case LedMode::DUAL_CHASE:   return 900UL;
-    case LedMode::LEFT_RIGHT:   return 1800UL;
-    case LedMode::RAINBOW:      return 30000UL;
+    case LedMode::STATIC:     return 1000UL;
+    case LedMode::BREATH:     return 2200UL;
+    case LedMode::COMET:      return 1600UL;
+    case LedMode::DUAL_CHASE: return 900UL;
+    case LedMode::LEFT_RIGHT: return 1800UL;
+    case LedMode::RAINBOW:    return 30000UL;
   }
   return 1000UL;
 }
@@ -1522,8 +1542,8 @@ static uint32_t ledAnimationPhaseMs(uint32_t now) {
 }
 
 static void publishLedAnimationSync() {
-  sendDelta("LED_PHASE", String(ledAnimationPhaseMs(millis())));
-  sendDelta("LED_CYCLE_MS", String(ledAnimationCycleMs(rgbMode)));
+  // Queue one marker; serviceBleTx builds a fresh atomic tuple at transmit time.
+  sendText(LED_SYNC_QUEUE_MARKER);
 }
 
 static void renderCustomLedFrame(uint32_t now) {
@@ -1546,25 +1566,6 @@ static void renderCustomLedFrame(uint32_t now) {
       const float level = 0.12f + 0.88f * (0.5f + 0.5f * sinf(phase * 2.0f * PI));
       const uint32_t color = blendLevel(baseColor, baseBrightness, level);
       for (uint8_t i = 0; i < LED_COUNT; ++i) leds.setPixelColor(i, color);
-      break;
-    }
-
-    case LedMode::MIRROR_PULSE: {
-      // Two mirrored pulse heads travel from the inner pair to the outer pair,
-      // then return. The entire effect repeats on a deterministic 2.4 s cycle.
-      const float phase = (now % 2400UL) / 2400.0f;
-      const float sweep =
-          phase < 0.5f
-              ? (phase * 2.0f) * 3.0f
-              : ((1.0f - phase) * 2.0f) * 3.0f;
-
-      for (uint8_t pair = 0; pair < 4; ++pair) {
-        const float distance = fabsf(static_cast<float>(pair) - sweep);
-        const float level = max(0.0f, 1.0f - distance);
-        const uint32_t color = blendLevel(baseColor, baseBrightness, level);
-        leds.setPixelColor(LEFT_PIXELS[3 - pair], color);
-        leds.setPixelColor(RIGHT_PIXELS[3 - pair], color);
-      }
       break;
     }
 
@@ -2490,6 +2491,17 @@ static void serviceBleTx() {
   }
 
   if (payload.isEmpty()) return;
+
+  if (payload == String(LED_SYNC_QUEUE_MARKER) + "\n") {
+    // Capture the live mode and phase together immediately before notify().
+    // A queued phase sample can therefore never age while waiting behind BLE traffic.
+    const uint32_t syncNow = millis();
+    payload = "LED_SYNC:" +
+        String(static_cast<uint8_t>(rgbMode)) + "," +
+        String(ledAnimationPhaseMs(syncNow)) + "," +
+        String(ledAnimationCycleMs(rgbMode)) + "\n";
+  }
+
   txCharacteristic->setValue(payload);
   txCharacteristic->notify();
   bleNextNotifyAt = millis() + BLE_TX_INTERVAL_MS;
@@ -2610,8 +2622,7 @@ static void sendFullSync() {
   sendDelta("ADAPTIVE_PROFILE", adaptiveProfileText(effectiveAdaptiveProfile()));
   sendDelta("RGB", boolText(rgbOn));
   sendDelta("MODE", String(static_cast<uint8_t>(rgbMode)));
-  sendDelta("LED_PHASE", String(ledAnimationPhaseMs(millis())));
-  sendDelta("LED_CYCLE_MS", String(ledAnimationCycleMs(rgbMode)));
+  publishLedAnimationSync();
   sendDelta("BRIGHTNESS", String(rgbBrightness));
   sendDelta("RGB_COLOR", colorToHex(rgbColor));
   sendDelta("FAN_SPEED", String(fanPwm));
@@ -4345,6 +4356,11 @@ static void handleCommand(const String& command) {
     int value = 0;
     if (!parseIntRange(command.substring(5), 1, 7, value)) {
       sendAck("MODE", false, "INVALID");
+      return;
+    }
+
+    if (!isSupportedLedModeId(value)) {
+      sendAck("MODE", false, "UNSUPPORTED");
       return;
     }
 

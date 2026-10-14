@@ -32,7 +32,7 @@ Last reconciled against `main`: 2026-10-14 (Asia/Jakarta). This is a routing ind
 | `DESIGN_NOTES.md` | Approved grille, monogram, 1:1 geometry, assets and visual constraints |
 | `test/*.dart` | Regression contracts; presence does not mean they ran |
 | `.github/workflows/jexfyz-app-build-trigger.yml` | Authoritative explicit App Build workflow |
-| `firmware/JEXFYZ-V6.5.ino` | Canonical editable Firmware source |
+| `firmware/JEXFYZ-V6.6.ino` | Canonical editable Firmware source |
 | `archive/LEGACY_NOTES_SNAPSHOT_2026-10-14.md` | Verbatim pre-cleanup state/reference docs for forensic recovery only; contains stale claims |
 | `archive/LEGACY_TRANSFER_HISTORY_2026-10-14.md` | Verbatim pre-cleanup transfer/rules/history docs for recovery only; contains stale claims |
 | `archive/ARTIFACT_REPO_NOTES_PRE_BIN_ONLY_2026-10-14.md` | Verbatim prior notes from artifact repository before enforcing BIN-only policy; recovery only |

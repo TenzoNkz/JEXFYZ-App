@@ -26,7 +26,7 @@ Change OTA only if there is a demonstrated OTA defect and the user explicitly au
 
 ## Current Online OTA contract (must re-check live source)
 
-- Canonical editable Firmware source is in the App repo: `firmware/JEXFYZ-V6.5.ino`.
+- Canonical editable Firmware source is in the App repo: `firmware/JEXFYZ-V6.6.ino`.
 - The V6.3-origin restoration uses `cloudClient.setInsecure()`; embedded CA certificate validation, `setCACert()`, `configTime()`, `TIME_SYNCING`, epoch-validity gate and OTA-only 20-second NTP timeout are absent.
 - On successful Wi-Fi connection, blue indication proceeds to the GitHub GET attempt.
 - Raw URL allowlist remains restricted to `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/`.

@@ -4,10 +4,10 @@ Last source audit recorded: 2026-10-14 (Asia/Jakarta). Always fetch live source 
 
 ## Current source identity
 
-- Canonical editable source: `firmware/JEXFYZ-V6.5.ino`.
-- `FW_VERSION = "V6.5"`; source blob last observed: `645c93226d607084ef31408b8fdbba752646ccd5`.
+- Canonical editable source: `firmware/JEXFYZ-V6.6.ino`.
+- `FW_VERSION = "V6.6"`; source blob last observed: `f51ba6db5d0e91318f63fea4014bb87f7bf76222`.
 - Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module, Arduino-ESP32 Core 3.3.7, compiled by the user in ArduinoDroid.
-- This reference is not compile proof. V6.5 is source-only DEVELOPMENT + QC / PRE-RELEASE until separate compile, BIN provenance, physical and OTA gates are passed.
+- This reference is not compile proof. V6.6 is source-only DEVELOPMENT + QC / PRE-RELEASE until separate compile, BIN provenance, physical and OTA gates are passed.
 
 ## Architecture
 
@@ -17,6 +17,8 @@ Last source audit recorded: 2026-10-14 (Asia/Jakarta). Always fetch live source 
 - Local OTA starts from a boot SoftAP. Current constants are `BOOT_AP_TIMEOUT_MS = 10000` (no-client window) and `BOOT_AP_HARD_LIMIT_MS = 60000` (hard cap after AP interaction). BLE may start only after Wi-Fi is shut down and the existing 160 ms radio-settle interval elapses. Treat this as protected OTA/radio behavior.
 - Hotside NTC is the universal thermal safety input.
 - Firmware maintains authoritative hardware state and sends telemetry/state deltas to App. The App must not invent physical state from command ACK alone.
+- RGB sync uses one `LED_SYNC:<mode>,<phase_ms>,<cycle_ms>` tuple. An internal queue marker is expanded only in `serviceBleTx()` immediately before notification, so phase/mode/cycle are atomic and phase does not age in the BLE queue.
+- Firmware IDs are Static 1 (1000 ms), Breath 2 (2200 ms), Comet 4 (1600 ms), Dual Chase 5 (900 ms), Left/Right 6 (1800 ms), Rainbow 7 (30000 ms). ID 3 is retired; saved ID 3/invalid values migrate to Static and `MODE:3` is rejected.
 - App provides Android phone Battery temperature at 1 Hz via `PHONE:BT`; current Firmware Battery freshness TTL is 5 seconds and the Battery zones have 0.5°C hysteresis. The App’s Battery heartbeat does not change the one-calibrated-sample-per-second NTC rule.
 - Persistent setting writes share a quiet-period debounce; Adaptive Profile is runtime-only.
 

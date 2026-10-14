@@ -60,6 +60,16 @@ This file is the durable App behavior/design contract. Live `lib/` source and th
 
 - All user-facing safety, Notify, command, BLE connection and OTA messages use the localization layer.
 - LED color parsing normalizes optional `#` and letter case before confirmation.
+
+## LED mode and preview synchronization
+
+- Six App modes use stable firmware IDs: 01 Static (1), 02 Breath (2), 03 Comet (4), 04 Dual Chase (5), 05 Left ↔ Right (6), 06 Rainbow (7). ID 3 / Mirror Pulse is retired and never reused.
+- Firmware V6.6 emits one `LED_SYNC:<mode>,<phase_ms>,<cycle_ms>` tuple, computed immediately before BLE notify. Mode, phase and cycle arrive atomically, and the phase does not age while waiting in the queue.
+- The App interpolates the phase from a monotonic local clock and adjusts drift at later snapshots; a phase update must not restart the animation controller. Separate `LED_PHASE` and `LED_CYCLE_MS` handling remains a compatibility fallback for older V6.x firmware.
+- Preview pixel order follows the physical strip: right top→bottom indices 0–3, left bottom→top indices 4–7. The layout is left arrow, four left LEDs, centered mode number/name, four right LEDs, right arrow.
+- RGB base chroma is preserved in preview; brightness controls pixel alpha and glow rather than scaling RGB channels toward black. This does not change brightness commands or physical firmware rendering.
+- Firmware migrates saved mode ID 3/invalid values to Static and rejects new MODE:3 commands. On older firmware that still reports ID 3, the App labels the mode Unsupported rather than rendering Mirror Pulse; the user can select a supported mode.
+- Firmware safety/OTA indicators continue to override decorative RGB effects.
 - Do not change settings storage or defaults without a scoped task and regression review.
 - Firmware persistent preferences use a 10-second quiet period; Adaptive Profile itself is runtime-only. See `FIRMWARE_NOTES.md`.
 

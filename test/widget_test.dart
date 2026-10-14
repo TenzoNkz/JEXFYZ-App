@@ -310,24 +310,51 @@ void main() {
       expect(ledPaletteColor(hex), isA<Color>());
     }
   });
-  test('LED preview exposes the physical 4-left/4-right pixel map and new modes', () {
+  test('LED modes preserve firmware IDs while Mirror Pulse is retired', () {
+    expect(supportedLedModeIds, [1, 2, 4, 5, 6, 7]);
+    expect(isSupportedLedModeId(1), isTrue);
+    expect(isSupportedLedModeId(3), isFalse);
+    expect(ledModeDisplayIndex(4), 2);
+    expect(ledModeDisplayIndex(7), 5);
+    expect(ledFirmwareModeForDisplayIndex(2), 4);
+    expect(ledFirmwareModeForDisplayIndex(5), 7);
+  });
+
+  test('LED sync snapshot parses mode, phase and cycle atomically', () {
+    final parsed = LedSyncSnapshot.parse('4,1601,1600');
+    expect(parsed, isNotNull);
+    expect(parsed!.mode, 4);
+    expect(parsed.phaseMs, 1);
+    expect(parsed.cycleMs, 1600);
+    expect(LedSyncSnapshot.parse('4,20'), isNull);
+    expect(LedSyncSnapshot.parse('3,0,2400')?.mode, 3);
+    expect(LedSyncSnapshot.parse('8,0,1000'), isNull);
+  });
+
+  test('LED preview keeps chroma at low brightness and scales opacity separately', () {
+    final red = ledPreviewColors(mode: 1, phaseMs: 0, baseColor: '#FF0000').first;
+    expect(red.red, 255);
+    expect(red.green, 0);
+    expect(red.blue, 0);
+    expect(ledPreviewPixelOpacity(brightness: 1, level: 1), 0.08);
+    expect(ledPreviewPixelOpacity(brightness: 50, level: 1), 0.5);
+    expect(ledPreviewPixelOpacity(brightness: 100, level: 0), 0.08);
+  });
+
+  test('LED preview exposes the physical 4-left/4-right pixel map', () {
     final staticLevels = ledPreviewLevels(mode: 1, phaseMs: 0);
-    final mirrorStart = ledPreviewLevels(mode: 3, phaseMs: 0);
+    final retiredModeFallsBackToStatic = ledPreviewLevels(mode: 3, phaseMs: 0);
     final cometHead = ledPreviewLevels(mode: 4, phaseMs: 0);
     final dualChase = ledPreviewLevels(mode: 5, phaseMs: 0);
     final colors = ledPreviewColors(
       mode: 1,
       phaseMs: 0,
       baseColor: '#FFFFFF',
-      brightness: 50,
     );
 
     expect(staticLevels, hasLength(8));
     expect(staticLevels, everyElement(1.0));
-    expect(mirrorStart[3], 1.0);
-    expect(mirrorStart[4], 1.0);
-    expect(mirrorStart[0], 0.0);
-    expect(mirrorStart[7], 0.0);
+    expect(retiredModeFallsBackToStatic, everyElement(1.0));
     expect(cometHead[0], 1.0);
     expect(cometHead[7], greaterThan(0.0));
     expect(cometHead[6], greaterThan(0.0));
@@ -335,15 +362,15 @@ void main() {
     expect(dualChase[7], 1.0);
 
     expect(colors, hasLength(8));
-    expect(colors.first.red, 128);
-    expect(colors.first.green, 128);
-    expect(colors.first.blue, 128);
+    expect(colors.first.red, 255);
+    expect(colors.first.green, 255);
+    expect(colors.first.blue, 255);
   });
 
   test('LED preview timing matches the firmware animation cycles', () {
     expect(ledAnimationCycleMs(1), 1000);
     expect(ledAnimationCycleMs(2), 2200);
-    expect(ledAnimationCycleMs(3), 2400);
+    expect(ledAnimationCycleMs(3), 1000);
     expect(ledAnimationCycleMs(4), 1600);
     expect(ledAnimationCycleMs(5), 900);
     expect(ledAnimationCycleMs(6), 1800);
@@ -353,22 +380,21 @@ void main() {
       mode: 7,
       phaseMs: 5000,
       baseColor: '#FFFFFF',
-      brightness: 100,
     ).first;
     expect(yellow.red, greaterThan(240));
     expect(yellow.green, greaterThan(240));
     expect(yellow.blue, lessThan(20));
   });
 
-  test('LED localization uses the V6.0 mode set', () {
+  test('LED localization matches the six supported modes', () {
     expect(JexText.of('ledModeStatic', AppLanguage.english), 'Static');
     expect(JexText.of('ledModeBreath', AppLanguage.english), 'Breath');
-    expect(JexText.of('ledModeMirrorPulse', AppLanguage.english), 'Mirror Pulse');
     expect(JexText.of('ledModeComet', AppLanguage.english), 'Comet');
     expect(JexText.of('ledModeDualChase', AppLanguage.english), 'Dual Chase');
     expect(JexText.of('leftRight', AppLanguage.english), 'Left ↔ Right');
     expect(JexText.of('ledModeRainbow', AppLanguage.english), 'Rainbow');
-    expect(JexText.of('ledModeMirrorPulse', AppLanguage.indonesia), 'Pulsa Cermin');
+    expect(JexText.of('ledModeUnsupported', AppLanguage.english), 'Unsupported');
+    expect(JexText.of('ledModeUnsupported', AppLanguage.indonesia), 'Tidak didukung');
     expect(JexText.of('ledModeComet', AppLanguage.indonesia), 'Komet');
   });
 

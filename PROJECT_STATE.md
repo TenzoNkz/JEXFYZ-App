@@ -5,19 +5,20 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 ## Current release phase
 - **Phase:** DEVELOPMENT + QC / PRE-RELEASE.
 - **Release state:** NOT RELEASED.
-- **Active Firmware source:** firmware/JEXFYZ-V6.5.ino.
-- **Firmware constant:** FW_VERSION = "V6.5".
-- **Firmware source blob last observed:** 645c93226d607084ef31408b8fdbba752646ccd5.
-- **Active App source:** lib/main.dart, blob last observed 535e396005a3bd1429db3096c627d87043b0e1b4.
+- **Active Firmware source:** firmware/JEXFYZ-V6.6.ino.
+- **Firmware constant:** FW_VERSION = "V6.6".
+- **Firmware source blob last observed:** f51ba6db5d0e91318f63fea4014bb87f7bf76222.
+- **Active App source:** lib/main.dart, blob last observed 4d58c3548f09138526a7cf5f305ea7890d571251.
 - **Package/version:** com.horizontalzzz.jexfyz, pubspec 1.0.0+3.
 - **Android identity:** Gradle versionName "Telegram @horizontalzzz"; intentional, preserve exactly.
-- **QC contracts:** test/v6_5_qc_contract_test.dart, test/firmware_touch_adaptive_sync_test.dart, test/app_protocol_notify_contract_test.dart, test/widget_test.dart. Test execution must be checked independently.
+- **QC contracts:** test/v6_6_qc_contract_test.dart, test/firmware_touch_adaptive_sync_test.dart, test/app_protocol_notify_contract_test.dart, test/widget_test.dart. Test execution must be checked independently.
+- **LED App hashes:** `lib/main.dart` = 4d58c3548f09138526a7cf5f305ea7890d571251; `lib/app_settings.dart` = 9a0c0241ee4e87aa15b6db40bcac6c279b8a3a97; `test/widget_test.dart` = 9493a1ae4f19b6d7987a06d0732c8121812c4675; `test/v6_6_qc_contract_test.dart` = e3127eec860fce970fa598ca3015ed5ea61470bf.
 - **Workflow:** .github/workflows/jexfyz-app-build-trigger.yml; explicit title/token trigger only.
-- V6.5 has not been independently compiled or hardware-tested by the assistant. User-reported V6.3 compile/Online OTA connection success refers to the prior revision and does not certify V6.5.
-- Do not infer that the existing artifact BIN matches current V6.5 source; source/BIN provenance remains unverified.
+- V6.6 has not been independently compiled or hardware-tested by the assistant. User-reported V6.3 compile/Online OTA connection success refers to the prior revision and does not certify V6.6.
+- Do not infer that the existing artifact BIN matches current V6.6 source; source/BIN provenance remains unverified.
 - Latest checked open-PR search returned zero results. Fetch live state before acting.
 
-## Current V6.5 Firmware behavior
+## Current V6.6 Firmware behavior
 
 ### Rail transition / Peltier ramp
 - If Peltier is logically OFF, rail changes must not turn it ON.
@@ -28,17 +29,23 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 - User reported a restart when changing 5 V→12 V with Peltier/Fan ON during active soft-start. Supply transient/brownout is unconfirmed; collect BOOT: RESET_REASON=... if reproduced.
 - A separate earlier user report described a restart when enabling Adaptive at 12 V with Peltier/Fan already ON; exact reset reason and any shared root cause are unknown. Do not merge the two reports into one confirmed cause.
 
+### LED mode and App/firmware synchronization
+- Firmware V6.6 supports Static (1), Breath (2), Comet (4), Dual Chase (5), Left/Right (6), and Rainbow (7). ID 3 is retired; persisted ID 3/invalid values migrate to Static, and new mode-3 commands are rejected.
+- Firmware publishes one `LED_SYNC:<mode>,<phase_ms>,<cycle_ms>` tuple calculated at BLE notify time; App interpolates monotonically between snapshots and corrects drift without restarting the animation for every update.
+- LED preview uses one horizontal row: left arrow, four left pixels, centered number/name, four right pixels, right arrow. Base RGB chroma is preserved at low brightness; alpha/glow carries preview intensity.
+- App tests and firmware contract tests were updated but have NOT been run. V6.6 has not been compiled or physically validated; artifact BIN remains unchanged and provenance is unverified.
+
 ### Thermal / Adaptive safety
 - Hotside limit: 40–50°C, default 45°C; NTC is authoritative.
 - One calibrated ADC sample per second. No median/trimmed/multi-sample filter.
 - Manual Peltier re-arm needs Hotside <= hotLimit - 1°C for 5 continuous seconds.
 - Adaptive protection: 30-second stage at 12 V/9 V/5 V, Peltier OFF and Fan 100%; five stable seconds at/below hotLimit - 1°C before deadline cancels stage; otherwise step down one rail at 12/9 V or enter terminal manual-restart lock at unrecovered 5 V.
 - After thermal step-down, one-step upward restoration needs 60 continuous seconds at/below hotLimit - 1°C, capped by the saved pre-downshift ceiling.
-- V6.5 does not implement rapid Hotside rise/slope protection. A previous user request for immediate Peltier shutdown/manual re-arm on very rapid temperature rise is preserved as an unimplemented requirement, not current functionality.
+- V6.6 does not implement rapid Hotside rise/slope protection. A previous user request for immediate Peltier shutdown/manual re-arm on very rapid temperature rise is preserved as an unimplemented requirement, not current functionality.
 - HOTSIDE is startup default; HOTSIDE_BATTERY is runtime-only. Battery loss falls back to HOTSIDE behavior without silently changing profile.
 
 ### OTA
-- V6.3-origin correction remains in V6.5: Online OTA uses cloudClient.setInsecure(); embedded CA validation and OTA-only NTP/TIME_SYNCING gate are absent.
+- V6.3-origin correction remains in V6.6: Online OTA uses cloudClient.setInsecure(); embedded CA validation and OTA-only NTP/TIME_SYNCING gate are absent.
 - Blue feedback after Wi-Fi connection leads into GitHub GET. Raw GitHub BIN URL allowlist, redirect blocking, status/length/size/image checks, safe outputs, update lifecycle and failure recovery are protected.
 - Boot Local OTA SoftAP currently owns the single radio with a 10-second no-client timeout and 60-second hard limit after interaction; Wi-Fi shuts down and settles 160 ms before BLE owns the radio. This is a source-derived timing contract and must not be retuned during unrelated changes.
 - setInsecure() bypasses server certificate identity validation; this is a known security trade-off.
@@ -70,7 +77,7 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 - Do not trigger except explicit @Thinking Build App! or @Thinking Eksekusi & Build App!.
 
 ## Exact validation gates still open
-1. User-side ArduinoDroid + Core 3.3.7 compile of V6.5 and confirmation of source/version/BIN provenance.
+1. User-side ArduinoDroid + Core 3.3.7 compile of V6.6 and confirmation of source/version/BIN provenance.
 2. Physical active-ramp transition QC in Manual Volt and Adaptive.
 3. Physical completed-ramp transition QC: continuous 100% PWM.
 4. Peltier-OFF/safety cancellation, Hotside latch/re-arm, NTC invalid response and Adaptive thermal/recovery QC.

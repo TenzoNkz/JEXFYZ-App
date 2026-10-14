@@ -23,7 +23,7 @@ These are durable user rules. Current implementation facts must still be checked
 ## 3. Version and firmware-source rules — mandatory
 
 - Every **functional Firmware source change** must increment `FW_VERSION`.
-- The active `.ino` filename must match that version, e.g. `FW_VERSION = "V6.5"` ↔ `firmware/JEXFYZ-V6.5.ino`.
+- The active `.ino` filename must match that version, e.g. `FW_VERSION = "V6.6"` ↔ `firmware/JEXFYZ-V6.6.ino`.
 - Exactly one active versioned `.ino` may exist in `firmware/`.
 - Documentation-only changes do not require a firmware version bump.
 - A source version bump is **not** a BIN build, Firebase publication, OTA update, device flash, or release.
@@ -80,7 +80,7 @@ A docs-only task is not permission for a functional source edit. A firmware-only
 
 ## 9. Current known checkpoint (must refresh before use)
 
-- Active source currently expected: `firmware/JEXFYZ-V6.5.ino`, `FW_VERSION = "V6.5"`.
+- Active source currently expected: `firmware/JEXFYZ-V6.6.ino`, `FW_VERSION = "V6.6"`.
 - App package: `com.horizontalzzz.jexfyz`; pubspec version `1.0.0+3`; Gradle identity `Telegram @horizontalzzz`.
-- Current V6.5 is source-only and has not been independently compiled or hardware-tested by the assistant.
+- Current V6.6 is source-only and has not been independently compiled or hardware-tested by the assistant.
 - Last observed open-PR search returned zero; verify live state again.

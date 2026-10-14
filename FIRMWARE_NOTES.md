@@ -34,7 +34,7 @@ Durable hardware and behavior decisions belong here. For code-level structure se
 - Use cooperative `millis()` timing. No executable `delay()` or timing `while()` loops.
 - Every functional Firmware change increments `FW_VERSION`; filename must match; only one active versioned `.ino` may exist.
 
-## Peltier voltage-transition contract — V6.5
+## Peltier voltage-transition contract — V6.6
 
 Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 
@@ -55,7 +55,7 @@ Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 - After Adaptive thermal downshift, restoration proceeds upward one rail at a time after 60 seconds continuously at/below `hotLimit - 1°C`, no higher than the saved pre-downshift ceiling.
 - HOTSIDE is default Adaptive profile after boot. HOTSIDE_BATTERY is a runtime selectable profile, not persisted. When Battery sensor data is missing, fall back to HOTSIDE behavior without changing chosen profile.
 - No rapid Hotside-rise/slope protection is present in the known V6.x contract; do not claim it exists.
-- [HISTORICAL USER REQUIREMENT / NOT IMPLEMENTED IN V6.5] A prior request called for a very rapid Hotside rise to shut Peltier OFF immediately and require manual re-arm/restart. The active V6.5 contract does not implement slope/rate-of-rise protection; do not describe the request as completed. If reconsidered, discuss first, update source with a mandatory version bump and test the safety behavior.
+- [HISTORICAL USER REQUIREMENT / NOT IMPLEMENTED IN V6.6] A prior request called for a very rapid Hotside rise to shut Peltier OFF immediately and require manual re-arm/restart. The active V6.6 contract does not implement slope/rate-of-rise protection; do not describe the request as completed. If reconsidered, discuss first, update source with a mandatory version bump and test the safety behavior.
 - Keep thermal/NTC safety higher priority than App requests, normal RGB animation, or pending Peltier restart.
 
 ## Touch and indicators
@@ -64,6 +64,8 @@ Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 - User-approved Adaptive indicators: ON blinks orange 3 times; OFF blinks white 3 times. OFF feedback is deferred until safe 5 V handoff completes if Adaptive was active; if already safely at 5 V it may start immediately.
 - [USER-REPORTED HISTORICAL ISSUE / PHYSICAL STATUS UNVERIFIED] The white Adaptive-OFF three-blink indication was reported missing immediately after restart. A code path for Adaptive-OFF transition feedback does not by itself prove the initial boot-time OFF indication is shown; recheck exact source path and physically validate before calling this fixed.
 - Default manual voltage LED map: 5 V red, 9 V green, 12 V blue; customizable with reset-to-default.
+- Supported decorative RGB modes preserve firmware IDs: Static 1, Breath 2, Comet 4, Dual Chase 5, Left/Right 6, Rainbow 7. Mirror Pulse ID 3 is retired; stored ID 3/invalid values migrate to Static and new ID 3 commands are rejected.
+- Firmware sends one `LED_SYNC:<mode>,<phase_ms>,<cycle_ms>` tuple computed at BLE notification time. App preview interpolates monotonically and later snapshots correct phase drift without resetting animation each update.
 - Firmware-safety/OTA LED feedback has higher priority than decorative RGB animation.
 
 ## Settings persistence / telemetry
@@ -94,4 +96,4 @@ Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 
 ## Validation status
 
-All the above are engineering contracts and remembered requirements; any claim about what current source implements must be reconciled to the live V6.5 source. V6.5 compile, device flashing, physical thermal tests, end-to-end OTA and App integration are not independently verified at the last documented checkpoint.
+All the above are engineering contracts and remembered requirements; any claim about what current source implements must be reconciled to the live V6.6 source. V6.6 compile, device flashing, physical thermal/LED tests, end-to-end OTA and App integration are not independently verified at this checkpoint.

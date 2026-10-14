@@ -188,12 +188,14 @@ When rebuilding memory, explicitly reconcile each item below against the live so
 
 ### Firmware source identity, hardware and wiring
 
-- Source identity: exactly one active versioned `.ino`; filename matches embedded `FW_VERSION`; every functional Firmware change bumps version. Current known source expected V6.5, but always refetch.
+- Source identity: exactly one active versioned `.ino`; filename matches embedded `FW_VERSION`; every functional Firmware change bumps version. Current known source expected V6.6, but always refetch.
 - Board ESP32-C3 Super Mini / ESP32-C3 Dev Module at 3.3 V logic; GPIO0 NTC, GPIO1 TTP223, GPIO3 12 V selector, GPIO4 9 V selector, GPIO5 Peltier MOSFET, GPIO6 Fan MOSFET, GPIO7 WS2812.
 - MOSFET wiring memory: GPIO → R100 → Gate, 100 kΩ Gate–Source pull-down; Fan positive goes to supply and Fan negative to MOSFET Drain. Verify physical wiring and cables; a previously suspected 12 V selection failure was ultimately a loose cable.
 - NTC nominal 10 kΩ, fixed resistor 10 kΩ, Beta 3950, calibrated `analogReadMilliVolts()`, one sample per second. The user explicitly rejected median, trimmed-mean and multi-sample averaging; do not lose that rejected approach and its reason.
 - If NTC is invalid, check current source fail-safe contract rather than guessing. Known contract: Peltier OFF, Fan 100%, Adaptive OFF, safe 5 V selection.
 - Preserve hardware timings and control: Peltier 20 kHz/8-bit, normal OFF→ON five-second soft-start; Fan 25 kHz/8-bit, manual 50–100%, step 10; selector deadtime 200 ms; shared guard/settle 1 s; settings quiet debounce 10 s; HOTSIDE telemetry 1 Hz; state changes sent as deltas when changed.
+- LED mode IDs are Static 1, Breath 2, Comet 4, Dual Chase 5, Left/Right 6, Rainbow 7; ID 3/Mirror Pulse is retired, persisted ID 3 migrates to Static and `MODE:3` is rejected.
+- LED preview synchronization uses one `LED_SYNC:<mode>,<phase_ms>,<cycle_ms>` tuple generated at BLE notify time. App interpolates from snapshots via monotonic time and corrects drift without resetting animation on every update; older separate phase/cycle telemetry remains a compatibility fallback.
 - Adaptive ON/OFF returns the selector to safe 5 V without a separate Peltier OFF/ON cycle. The existing transition handler pauses only an active soft-start; a completed ramp remains at 100%, subject to explicit OFF and current Hotside/NTC/OTA safety.
 
 ### Thermal, Adaptive, Touch and indicators
@@ -203,7 +205,7 @@ When rebuilding memory, explicitly reconcile each item below against the live so
 - HOTSIDE is the startup default; HOTSIDE_BATTERY is runtime-selectable and not persisted. Battery input defaults are 5 V threshold 25°C and 12 V threshold 35°C, 0.5°C hysteresis, firmware data TTL 5 s. App sends `PHONE:BT` at 1 Hz and coalesces pending heartbeat. If battery data expires, fallback to HOTSIDE behavior without silently rewriting selected profile.
 - App presentation rule: do not display a standalone Battery Protection Guard. This does not suppress actual thermal safety or independently actionable localized Notify messages.
 - One TTP223 only; no separate Wi-Fi/BLE toggle. Retain startup calibration grace, qualification/tap/double-tap/long-press timings only after live source check. Current known timing record: ~1 s startup grace, 30 ms qualification, raw HIGH 60–500 ms tap, 800 ms double-tap window, 5 s long press.
-- Adaptive ON is orange three blinks; OFF is white three blinks, with OFF indicator deferred until safe 5 V handoff when required. Voltage LED defaults: 5 V red, 9 V green, 12 V blue; user-customizable/resettable. Decorative RGB never overrides safety/OTA indications. Preserve current seven RGB modes and phase sync where relevant.
+- Adaptive ON is orange three blinks; OFF is white three blinks, with OFF indicator deferred until safe 5 V handoff when required. Voltage LED defaults: 5 V red, 9 V green, 12 V blue; user-customizable/resettable. Decorative RGB never overrides safety/OTA indications. Preserve the six supported RGB mode IDs (1, 2, 4, 5, 6, 7) and atomic LED_SYNC phase synchronization.
 
 ### App product, BLE and user-visible behavior
 
@@ -218,7 +220,7 @@ When rebuilding memory, explicitly reconcile each item below against the live so
 ### OTA failure history, cloud contract and build operation
 
 - OTA is protected code with priority over normal work and safe outputs. Local OTA uses the boot SoftAP; currently 10-second no-client timeout, 60-second hard cap after AP interaction, 160 ms Wi-Fi-off settle before BLE owns the single radio. Reconcile to current source before quoting.
-- Online OTA earlier used CA certificate verification and OTA-only NTP/TIME_SYNCING gate; the observed user's failure was blue after Wi-Fi then red on the GitHub stage but no exact HTTP/TLS log was provided. The V6.3-origin correction removed CA/NTP together and restored `cloudClient.setInsecure()`, which user reported compiled and restored GitHub connection. This does not prove which removed factor alone caused the failure or validate V6.5. Trade-off: server identity is not authenticated.
+- Online OTA earlier used CA certificate verification and OTA-only NTP/TIME_SYNCING gate; the observed user's failure was blue after Wi-Fi then red on the GitHub stage but no exact HTTP/TLS log was provided. The V6.3-origin correction removed CA/NTP together and restored `cloudClient.setInsecure()`, which user reported compiled and restored GitHub connection. This does not prove which removed factor alone caused the failure or validate V6.6. Trade-off: server identity is not authenticated.
 - Keep the raw GitHub BIN allowlist, redirect blocking, status/length/size/image checks (`0xE9`), streaming Update lifecycle, safe outputs, recovery/restart semantics. No custom firmware SHA/signature field in Firebase OTA metadata; user expects version + link. Do not infer BIN provenance from path or upload date.
 - App OTA sequence is `OTAENTER → SSID → PASS → URL → VERSION → CLOUDOTA`; timeout/disconnect ACK is ambiguous and must preserve recovery state. Separate OTA transport, full transfer, Update finalization, reboot, BLE recovery, installed-version confirmation, and Firebase promotion evidence.
 - Build App is manual issue-trigger only: title `JE X FYZ — BUILD APP TRIGGER`, token `JEXFYZ_BUILD_TRIGGER_V1`; Java 17, Flutter 3.47.2 stable, Gradle 9.3.1, one obfuscated production-signed APK `JEXFYZ-release.apk` in release `jexfyz-latest`. Do not run it unless explicitly authorized. Preserve Gradle identity.
@@ -236,6 +238,6 @@ When rebuilding memory, explicitly reconcile each item below against the live so
 During every full reconciliation, separately preserve the following reports and their evidence status in the canonical memory:
 - The reported reset during Manual 5 V→12 V while Peltier/Fan were ON and Peltier soft-start was still active; reset reason was not captured and brownout is a hypothesis only.
 - A separate reported reset when switching Adaptive ON after selecting 12 V and enabling Peltier/Fan; do not assume the two reset reports share a cause. Capture reset telemetry and physical conditions if the user later authorizes reproduction.
-- The user previously requested rapid Hotside rise/rate-of-rise protection to turn Peltier OFF and require manual re-arm. This behavior is NOT implemented in current V6.5; record as unimplemented historical requirement, not as current functionality.
+- The user previously requested rapid Hotside rise/rate-of-rise protection to turn Peltier OFF and require manual re-arm. This behavior is NOT implemented in current V6.6; record as unimplemented historical requirement, not as current functionality.
 - The user reported the Adaptive-OFF white three-blink indication missing immediately after restart. A code path for OFF transition after user interaction does not prove boot-time initial OFF feedback; mark physical/boot behavior unverified until specifically checked.
 - Preserve the corrected physical-wiring finding that an apparent 12 V selector malfunction was later traced to a loose cable, and do not label it a code defect without evidence.

@@ -21,13 +21,13 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 
 - `TenzoNkz/JEXFYZ-App` is the canonical editable App + Firmware source repository and the sole home for project documentation/memories.
 - `TenzoNkz/JEXFYZ-Firmware` is intended to contain only the production OTA artifact `JEXFYZ.cpp.bin`. Do not add README, note, source, or memory files there.
-- The active editable firmware source is `firmware/JEXFYZ-V6.5.ino`. Its embedded `FW_VERSION`, filename and the single active versioned `.ino` must always match.
-- Firmware V6.5 is currently source-only DEVELOPMENT + QC / PRE-RELEASE until the user compiles and validates it. Do not infer that the artifact BIN matches this source.
+- The active editable firmware source is `firmware/JEXFYZ-V6.6.ino`. Its embedded `FW_VERSION`, filename and the single active versioned `.ino` must always match.
+- Firmware V6.6 is currently source-only DEVELOPMENT + QC / PRE-RELEASE until the user compiles and validates it. Do not infer that the artifact BIN matches this source.
 - App Gradle `versionName "Telegram @horizontalzzz"` is an intentional identity string; do not change it.
 
 ## Current validation boundary
 
-The V6.5 source and contract tests have been statically checked in the repository, but that does not mean `flutter test`, `flutter analyze`, ArduinoDroid compilation, BIN generation, physical testing, OTA, or App Build has run. See [PROJECT_STATE.md](PROJECT_STATE.md) for the current verified status.
+V6.6 and its LED App changes have source-level/static contract checks recorded, but Flutter tests/analyze, ArduinoDroid compilation, BIN generation, physical LED verification, OTA, or App Build have NOT been run. See [PROJECT_STATE.md](PROJECT_STATE.md) for the current verified status.
 
 ## Non-negotiable workflow
 

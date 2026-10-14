@@ -19,15 +19,15 @@ void main() {
   });
 
   test('Active firmware keeps one calibrated NTC read and cooperative timing', () {
-    final source = File('firmware/JEXFYZ-V6.5.ino').readAsStringSync();
-    expect(source, contains('FW_VERSION[] = "V6.5"'));
+    final source = File('firmware/JEXFYZ-V6.6.ino').readAsStringSync();
+    expect(source, contains('FW_VERSION[] = "V6.6"'));
     expect(RegExp(r'analogReadMilliVolts\(PIN_NTC\)').allMatches(source).length, 1);
     expect(RegExp(r'^\s*delay\s*\(', multiLine: true).hasMatch(source), isFalse);
     expect(RegExp(r'^\s*while\s*\(', multiLine: true).hasMatch(source), isFalse);
   });
 
   test('Adaptive protection has 30-second stages and 60-second voltage recovery', () {
-    final source = File('firmware/JEXFYZ-V6.5.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V6.6.ino').readAsStringSync();
     expect(source, contains('HOT_PELTIER_OFF_MS          = 30000'));
     expect(source, contains('HOTSIDE_REARM_STABLE_MS = 5000UL'));
     expect(source, contains('ADAPTIVE_VOLTAGE_RECOVERY_STABLE_MS = 60000UL'));
@@ -39,7 +39,7 @@ void main() {
   });
 
   test('Online OTA preserves the legacy connection path and GitHub URL restrictions', () {
-    final source = File('firmware/JEXFYZ-V6.5.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V6.6.ino').readAsStringSync();
 
     expect(source, isNot(contains('GITHUB_ROOT_CA')));
     expect(source, isNot(contains('-----BEGIN CERTIFICATE-----')));
@@ -66,7 +66,7 @@ void main() {
   });
 
   test('Manual and Adaptive transitions pause only an active soft-start and preserve full PWM', () {
-    final source = File('firmware/JEXFYZ-V6.5.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V6.6.ino').readAsStringSync();
 
     expect(source, contains('VOLTAGE_DEADTIME_MS           = 200'));
     expect(source, contains('VOLTAGE_GUARD_MS             = 1000'));
@@ -164,7 +164,7 @@ void main() {
   });
 
   test('Adaptive activation observes the new voltage-settle timestamp first', () {
-    final source = File('firmware/JEXFYZ-V6.5.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V6.6.ino').readAsStringSync();
     final start = source.indexOf('static void completeVoltageTransition() {');
     final end = source.indexOf('static float ntcTemperatureFromOhms', start);
 
@@ -189,7 +189,7 @@ void main() {
   });
 
   test('Adaptive ON/OFF handoffs do not force a redundant Peltier OFF cycle', () {
-    final source = File('firmware/JEXFYZ-V6.5.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V6.6.ino').readAsStringSync();
     final start = source.indexOf('static void setAdaptiveState(bool desired, String& reason) {');
     final end = source.indexOf('static bool setRgbState(bool desired)', start);
 
@@ -228,7 +228,7 @@ void main() {
   });
 
   test('Explicit Peltier OFF cancels deferred Adaptive-stop restoration', () {
-    final source = File('firmware/JEXFYZ-V6.5.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V6.6.ino').readAsStringSync();
     final start = source.indexOf('static bool setPeltierState(bool desired, String& reason) {');
     final end = source.indexOf('static bool forceAdaptiveFiveVolt()', start);
 
@@ -243,8 +243,68 @@ void main() {
     expect(peltierStop, greaterThan(cancelRestore));
   });
 
-  test('BLE command writes require encryption and bonding', () {
-    final source = File('firmware/JEXFYZ-V6.5.ino').readAsStringSync();
+  test('V6.6 and newer App mode state is updated only by atomic LED_SYNC', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final start = source.indexOf("case 'MODE':");
+    final end = source.indexOf("case 'LED_PHASE':", start);
+    expect(start, greaterThanOrEqualTo(0));
+    expect(end, greaterThan(start));
+    final handler = source.substring(start, end);
+    expect(handler, contains('parseFirmwareVersion(firmwareVersion)'));
+    expect(handler, contains('activeFirmware[1] >= 6'));
+    expect(handler, contains('if (!atomicLedSync)'));
+    expect(handler, contains('rgbMode = (int.tryParse(value) ?? rgbMode)'));
+    expect(source, contains("case 'LED_SYNC':"));
+  });
+
+  test('Firmware retires Mirror Pulse without renumbering other LED IDs', () {
+    final source = File('firmware/JEXFYZ-V6.6.ino').readAsStringSync();
+    expect(source, contains('STATIC = 1'));
+    expect(source, contains('BREATH = 2'));
+    expect(source, contains('COMET = 4'));
+    expect(source, contains('DUAL_CHASE = 5'));
+    expect(source, contains('LEFT_RIGHT = 6'));
+    expect(source, contains('RAINBOW = 7'));
+    expect(source, isNot(contains('MIRROR_PULSE')));
+    expect(source, contains('if (!isSupportedLedModeId(value))'));
+    expect(source, contains('prefs.putUChar("rgbMode", static_cast<uint8_t>(rgbMode))'));
+  });
+
+  test('Firmware emits atomic LED_SYNC snapshot at BLE notify time', () {
+    final source = File('firmware/JEXFYZ-V6.6.ino').readAsStringSync();
+    final serviceStart = source.indexOf('static void serviceBleTx() {');
+    final serviceEnd = source.indexOf('static void sendDelta(', serviceStart);
+    expect(serviceStart, greaterThanOrEqualTo(0));
+    expect(serviceEnd, greaterThan(serviceStart));
+    final service = source.substring(serviceStart, serviceEnd);
+    expect(service, contains('LED_SYNC_QUEUE_MARKER'));
+    expect(service, contains('const uint32_t syncNow = millis();'));
+    expect(service, contains('"LED_SYNC:"'));
+    expect(service, contains('ledAnimationPhaseMs(syncNow)'));
+    expect(service, contains('ledAnimationCycleMs(rgbMode)'));
+
+    final publisherStart = source.indexOf('static void publishLedAnimationSync()');
+    final publisherEnd = source.indexOf('static void renderCustomLedFrame(', publisherStart);
+    final publisher = source.substring(publisherStart, publisherEnd);
+    expect(publisher, contains('sendText(LED_SYNC_QUEUE_MARKER)'));
+    expect(publisher, isNot(contains('sendDelta("LED_PHASE"')));
+    expect(publisher, isNot(contains('sendDelta("LED_CYCLE_MS"')));
+  });
+
+  test('Full BLE sync sends atomic LED snapshot rather than two stale phase deltas', () {
+    final source = File('firmware/JEXFYZ-V6.6.ino').readAsStringSync();
+    final start = source.indexOf('static void sendFullSync() {');
+    final end = source.indexOf('static void sendHotsideTelemetry()', start);
+    expect(start, greaterThanOrEqualTo(0));
+    expect(end, greaterThan(start));
+    final sync = source.substring(start, end);
+    expect(sync, contains('publishLedAnimationSync()'));
+    expect(sync, isNot(contains('sendDelta("LED_PHASE"')));
+    expect(sync, isNot(contains('sendDelta("LED_CYCLE_MS"')));
+  });
+
+  test('BLE command writes require encryption and bonding', {
+    final source = File('firmware/JEXFYZ-V6.6.ino').readAsStringSync();
     expect(source, contains('#include <BLESecurity.h>'));
     expect(source, contains('BLESecurity::setAuthenticationMode(true, false, true)'));
     expect(source, contains('BLECharacteristic::PROPERTY_WRITE_ENC'));
@@ -273,7 +333,7 @@ void main() {
   });
 
   test('manual Peltier lock cannot be bypassed by one threshold sample', () {
-    final source = File('firmware/JEXFYZ-V6.5.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V6.6.ino').readAsStringSync();
     final start = source.indexOf('static bool manualPeltierSafetyLatchBlocksPeltier() {');
     final end = source.indexOf('static bool safetyAllowsPeltier()', start);
 

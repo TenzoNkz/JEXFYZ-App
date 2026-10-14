@@ -2,6 +2,17 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
+## 2026-10-14 — V6.6 LED mode removal, brightness preview and phase synchronization
+
+- Bumped active Firmware source to `firmware/JEXFYZ-V6.6.ino`, `FW_VERSION = "V6.6"`; exactly one active versioned `.ino` remains.
+- Retired Mirror Pulse ID 3 in Firmware and App without renumbering supported protocol IDs: Static 1, Breath 2, Comet 4, Dual Chase 5, Left/Right 6, Rainbow 7. Persisted ID 3/invalid values migrate to Static; new MODE:3 commands are rejected.
+- Replaced separate queued `LED_PHASE` and `LED_CYCLE_MS` updates with a single `LED_SYNC:<mode>,<phase_ms>,<cycle_ms>` tuple. The marker is resolved at the BLE notify boundary, so phase does not become stale while waiting in the queue. BLE UUID/P1 transport is unchanged.
+- App parses the tuple atomically and interpolates on a monotonic clock. New snapshots correct drift without restarting the animation controller on every phase update; separate legacy phase/cycle parsing remains for older firmware.
+- Reworked LED UI into one row: left arrow, four left pixels, centered mode number/name, four right pixels, right arrow; removed the old MODE header and duplicate caption. Unsupported ID 3 from older firmware is labelled Unsupported until the user selects a supported mode.
+- Fixed low-brightness preview by preserving RGB chroma and applying brightness through pixel alpha/glow rather than scaling all RGB channels toward black. Firmware brightness commands/hardware rendering are unchanged.
+- Added App tests for supported IDs, atomic snapshot parsing and low-brightness chroma; added firmware contract tests for retirement/migration of ID 3 and snapshot creation at notification time. Tests/analyze have NOT been run; static inspection is not runtime verification.
+- Firmware compile, BIN generation/provenance, physical LED verification, App Build/APK, Firebase, OTA, flash and release were NOT performed. V6.6 remains source-only DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED.
+
 ## 2026-10-14 — V6.5 Adaptive Peltier transition continuity
 
 - Bumped the active Firmware source to `firmware/JEXFYZ-V6.5.ino` and `FW_VERSION = "V6.5"`; retained exactly one active versioned `.ino`.

@@ -4,10 +4,10 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). Re-fetch live `main` and source hash
 
 ## Current state
 
-- Active Firmware source: `firmware/JEXFYZ-V6.5.ino`; `FW_VERSION = "V6.5"`; source blob observed at last reconciliation: `645c93226d607084ef31408b8fdbba752646ccd5`.
-- Active App source: `lib/main.dart`, last observed blob `535e396005a3bd1429db3096c627d87043b0e1b4`, pubspec version `1.0.0+3`, package `com.horizontalzzz.jexfyz`.
-- Current Firmware status: source-only DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED. V6.5 not independently compiled/hardware validated here.
-- Main V6.5 QC contract: `test/v6_5_qc_contract_test.dart`. It exists but has not been run in this task.
+- Active Firmware source: `firmware/JEXFYZ-V6.6.ino`; `FW_VERSION = "V6.6"`; source blob observed at last reconciliation: `f51ba6db5d0e91318f63fea4014bb87f7bf76222`.
+- Active App source: `lib/main.dart`, last observed blob `4d58c3548f09138526a7cf5f305ea7890d571251`, pubspec version `1.0.0+3`, package `com.horizontalzzz.jexfyz`.
+- Current Firmware status: source-only DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED. V6.6 not independently compiled/hardware validated here.
+- Main V6.6 QC contract: `test/v6_6_qc_contract_test.dart`. It exists but has not been run in this task.
 - Open PR search last returned zero. Verify live; use main by default.
 - Artifact repository `TenzoNkz/JEXFYZ-Firmware` is intended to contain only `JEXFYZ.cpp.bin`; all notes belong in this repo.
 - App memory explicitly records a 1 Hz Android phone-battery heartbeat, firmware 5-second battery-data freshness TTL, and the requirement not to display a standalone Battery Protection Guard. One-App/one-cooler exclusive pairing is a user design intent whose exact enforcement remains unverified.
@@ -22,7 +22,11 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). Re-fetch live `main` and source hash
 
 ## Exact next QC actions (only when authorized)
 
-1. User compiles active V6.5 using ArduinoDroid with Arduino-ESP32 Core 3.3.7. Confirm the binary/version provenance; do not assume the already-published BIN matches source.
+1. User compiles active V6.6 using ArduinoDroid with Arduino-ESP32 Core 3.3.7. Confirm binary/version provenance; do not assume the already-published BIN matches source.
+2. Pair App and Firmware V6.6 and test Static, Breath, Comet, Dual Chase, Left ↔ Right and Rainbow in order. Confirm Mirror Pulse is absent and ID 3 is migrated/rejected.
+3. Verify LED_SYNC on initial sync, mode switch, RGB ON/OFF and periodic updates; inspect lag/jumps under BLE traffic.
+4. Check saturated colors at 1%, 10%, 46% and 100% brightness, and confirm the one-row preview fits narrow screens: left arrow → four left LEDs → centered mode number/name → four right LEDs → right arrow.
+5. Run Flutter tests/analyze if available. Physical LED timing and firmware compile remain separate gates.
 2. With hardware, reproduce Manual Volt and Adaptive voltage changes while the 5-second soft-start is still active. Expected: GPIO5 PWM 0% during selector handoff, preserve 200 ms deadtime, hold through 1-second settle, then start a fresh 5-second ramp. Adaptive ON/OFF must not introduce a separate Peltier OFF cycle. Capture reset reason if reboot recurs.
 3. Repeat after soft-start completes, including Adaptive ON and OFF. Expected: Peltier PWM remains 100% continuously throughout rail transition unless explicit OFF or safety shuts it down; no Adaptive-specific OFF/ON cycle.
 4. Verify Peltier-OFF, Hotside/NTC protection and OTA safe-output cancel all pending ramp resume.
@@ -32,7 +36,8 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). Re-fetch live `main` and source hash
 
 ## Known uncertainty
 
-- User reported the V6.3 OTA connection correction compiled and Online OTA connected to GitHub. This does not prove V6.5 compile, complete BIN download/apply, reboot, or installed-version confirmation.
+- User reported the V6.3 OTA connection correction compiled and Online OTA connected to GitHub. This does not prove V6.6 compile, complete BIN download/apply, reboot, or installed-version confirmation.
+- LED synchronization uses atomic `LED_SYNC:<mode>,<phase_ms>,<cycle_ms>` snapshots created at BLE notify time; App preview interpolates from each snapshot with a monotonic clock. Physical synchronization still needs validation after matching V6.6 firmware is compiled and installed.
 - The 5 V→12 V reboot during active Peltier ramp could be a supply transient/brownout, but this has not been proved. Preserve and collect `BOOT: RESET_REASON=...` diagnostics.
 - The selected Online OTA path uses `cloudClient.setInsecure()`: HTTPS server certificate identity is not authenticated. This trade-off was chosen after the CA/NTP-gated attempt failed in the user's observed environment; don't change it without explicit discussion/approval.
 - No App Build, firmware compile, BIN publication, Firebase update, physical flash/OTA or release was performed by this handover/documentation refresh.

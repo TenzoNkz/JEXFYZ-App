@@ -744,10 +744,6 @@ class JexText {
       AppLanguage.english: 'Breath',
       AppLanguage.indonesia: 'Napas',
     },
-    'ledModeMirrorPulse': {
-      AppLanguage.english: 'Mirror Pulse',
-      AppLanguage.indonesia: 'Pulsa Cermin',
-    },
     'ledModeComet': {
       AppLanguage.english: 'Comet',
       AppLanguage.indonesia: 'Komet',
@@ -759,6 +755,10 @@ class JexText {
     'ledModeRainbow': {
       AppLanguage.english: 'Rainbow',
       AppLanguage.indonesia: 'Pelangi',
+    },
+    'ledModeUnsupported': {
+      AppLanguage.english: 'Unsupported',
+      AppLanguage.indonesia: 'Tidak didukung',
     },
     'currentVersion': {
       AppLanguage.english: 'Current',

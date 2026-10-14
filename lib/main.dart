@@ -183,13 +183,52 @@ Color ledPaletteColor(String hex) {
   return Color(0xFF000000 | rgb);
 }
 
-/// Firmware-owned LED animation timing helpers. The App preview mirrors the
-/// physical 4-left/4-right strip using the phase/cycle reported by the firmware.
+// Firmware IDs remain stable when a mode is retired.
+const List<int> supportedLedModeIds = <int>[1, 2, 4, 5, 6, 7];
+
+bool isSupportedLedModeId(int mode) => supportedLedModeIds.contains(mode);
+
+int ledModeDisplayIndex(int firmwareMode) =>
+    supportedLedModeIds.indexOf(firmwareMode);
+
+int ledFirmwareModeForDisplayIndex(int index) =>
+    supportedLedModeIds[index.clamp(0, supportedLedModeIds.length - 1).toInt()];
+
+class LedSyncSnapshot {
+  final int mode;
+  final int phaseMs;
+  final int cycleMs;
+
+  const LedSyncSnapshot({
+    required this.mode,
+    required this.phaseMs,
+    required this.cycleMs,
+  });
+
+  static LedSyncSnapshot? parse(String raw) {
+    final parts = raw.split(',');
+    if (parts.length != 3) return null;
+    final mode = int.tryParse(parts[0].trim());
+    final phase = int.tryParse(parts[1].trim());
+    final cycle = int.tryParse(parts[2].trim());
+    if (mode == null || mode < 1 || mode > 7 ||
+        phase == null || phase < 0 ||
+        cycle == null || cycle < 1 || cycle > 30000) {
+      return null;
+    }
+    return LedSyncSnapshot(
+      mode: mode,
+      phaseMs: phase % cycle,
+      cycleMs: cycle,
+    );
+  }
+}
+
+/// Firmware-owned LED animation timing helpers. Mode IDs stay aligned with firmware.
 int ledAnimationCycleMs(int mode) {
-  switch (mode.clamp(1, 7).toInt()) {
+  switch (mode) {
     case 1: return 1000;
     case 2: return 2200;
-    case 3: return 2400;
     case 4: return 1600;
     case 5: return 900;
     case 6: return 1800;
@@ -209,28 +248,14 @@ List<double> ledPreviewLevels({
   final cycle = ledAnimationCycleMs(safeMode);
   final phase = phaseMs < 0 ? 0 : phaseMs % cycle;
 
-  void setMirrorPair(int pair, double level) {
-    final clamped = level.clamp(0.0, 1.0).toDouble();
-    levels[3 - pair] = clamped;
-    levels[4 + pair] = clamped;
-  }
-
-  switch (safeMode) {
+  final activeMode = isSupportedLedModeId(safeMode) ? safeMode : 1;
+  switch (activeMode) {
     case 1:
       levels.fillRange(0, 8, 1);
     case 2:
       final breathingPhase = phase / 2200.0;
       final level = .12 + .88 * (.5 + .5 * math.sin(breathingPhase * math.pi * 2));
       levels.fillRange(0, 8, level);
-    case 3:
-      final normalized = phase / 2400.0;
-      final sweep = normalized < .5
-          ? (normalized * 2.0) * 3.0
-          : ((1.0 - normalized) * 2.0) * 3.0;
-      for (var pair = 0; pair < 4; pair++) {
-        final distance = (pair - sweep).abs();
-        setMirrorPair(pair, math.max(0.0, 1.0 - distance));
-      }
     case 4:
       final head = phase / 200.0;
       for (var pixel = 0; pixel < 8; pixel++) {
@@ -270,24 +295,29 @@ List<Color> ledPreviewColors({
   required int mode,
   required int phaseMs,
   required String baseColor,
-  required int brightness,
 }) {
-  final safeBrightness = brightness.clamp(1, 100).toDouble() / 100.0;
-  if (mode.clamp(1, 7).toInt() != 7) {
-    final rgb = ledPaletteColor(baseColor);
-    final scaled = Color.fromARGB(
-      255,
-      (rgb.red * safeBrightness).round().clamp(0, 255).toInt(),
-      (rgb.green * safeBrightness).round().clamp(0, 255).toInt(),
-      (rgb.blue * safeBrightness).round().clamp(0, 255).toInt(),
-    );
-    return List<Color>.filled(8, scaled);
+  // Keep full chroma here. Brightness belongs in painter alpha/glow, not RGB
+  // multiplication, which makes low-brightness colors collapse toward black.
+  if (mode != 7) {
+    final hex = normalizeLedColor(baseColor);
+    final normalizedHex = hex.length == 6 ? '#$hex' : baseColor;
+    final rgb = ledPaletteColor(normalizedHex);
+    return List<Color>.filled(8, rgb);
   }
 
   const cycleMs = 30000;
   final hue = ((phaseMs.clamp(0, cycleMs - 1)) / cycleMs) * 360.0;
-  final rainbow = HSVColor.fromAHSV(1, hue, 1, safeBrightness).toColor();
+  final rainbow = HSVColor.fromAHSV(1, hue, 1, 1).toColor();
   return List<Color>.filled(8, rainbow);
+}
+
+double ledPreviewPixelOpacity({
+  required int brightness,
+  required double level,
+}) {
+  final safeBrightness = brightness.clamp(1, 100).toDouble() / 100.0;
+  final safeLevel = level.clamp(0.0, 1.0).toDouble();
+  return math.max(.08, safeBrightness * safeLevel).clamp(.08, 1.0).toDouble();
 }
 
 class JexLedStripPreview extends StatefulWidget {
@@ -297,6 +327,13 @@ class JexLedStripPreview extends StatefulWidget {
   final bool active;
   final int ledPhaseMs;
   final int ledCycleMs;
+  final int ledSyncRevision;
+  final String modeNumber;
+  final String modeName;
+  final bool previousEnabled;
+  final bool nextEnabled;
+  final VoidCallback onPrevious;
+  final VoidCallback onNext;
 
   const JexLedStripPreview({
     super.key,
@@ -306,6 +343,13 @@ class JexLedStripPreview extends StatefulWidget {
     required this.active,
     required this.ledPhaseMs,
     required this.ledCycleMs,
+    required this.ledSyncRevision,
+    required this.modeNumber,
+    required this.modeName,
+    required this.previousEnabled,
+    required this.nextEnabled,
+    required this.onPrevious,
+    required this.onNext,
   });
 
   @override
@@ -315,12 +359,18 @@ class JexLedStripPreview extends StatefulWidget {
 class _JexLedStripPreviewState extends State<JexLedStripPreview>
     with SingleTickerProviderStateMixin {
   late final AnimationController controller;
+  late final Stopwatch _phaseClock;
+  int _phaseAnchorMs = 0;
+  int _phaseAnchorElapsedMs = 0;
 
   int _safeCycle(int value) => math.max(1, value);
 
   @override
   void initState() {
     super.initState();
+    _phaseClock = Stopwatch()..start();
+    _phaseAnchorMs = widget.ledPhaseMs % _safeCycle(widget.ledCycleMs);
+    _phaseAnchorElapsedMs = _phaseClock.elapsedMilliseconds;
     controller = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: _safeCycle(widget.ledCycleMs)),
@@ -334,20 +384,23 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
 
     if (widget.ledCycleMs != oldWidget.ledCycleMs) {
       controller.duration = Duration(milliseconds: _safeCycle(widget.ledCycleMs));
+      if (widget.active) controller.repeat();
     }
 
-    if (widget.active != oldWidget.active ||
-        widget.mode != oldWidget.mode ||
-        widget.ledPhaseMs != oldWidget.ledPhaseMs ||
-        widget.ledCycleMs != oldWidget.ledCycleMs) {
-      controller.reset();
+    if (widget.ledSyncRevision != oldWidget.ledSyncRevision) {
+      _phaseAnchorMs = widget.ledPhaseMs % _safeCycle(widget.ledCycleMs);
+      _phaseAnchorElapsedMs = _phaseClock.elapsedMilliseconds;
     }
 
-    if (widget.active) {
-      if (!controller.isAnimating) controller.repeat();
-    } else {
-      controller.stop();
-      controller.value = 0;
+    if (widget.active != oldWidget.active) {
+      if (widget.active) {
+        controller.repeat();
+      } else {
+        controller.stop();
+        controller.value = 0;
+      }
+    } else if (widget.active && !controller.isAnimating) {
+      controller.repeat();
     }
   }
 
@@ -357,6 +410,55 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
     super.dispose();
   }
 
+  Widget _modeArrow(BuildContext context, {required bool left, required bool enabled}) {
+    final scheme = Theme.of(context).colorScheme;
+    return InkWell(
+      onTap: enabled ? (left ? widget.onPrevious : widget.onNext) : null,
+      borderRadius: BorderRadius.circular(11),
+      child: Container(
+        width: 29,
+        height: 34,
+        decoration: BoxDecoration(
+          color: enabled
+              ? scheme.surface
+              : scheme.surfaceContainerHighest.withValues(alpha: .45),
+          borderRadius: BorderRadius.circular(11),
+          border: Border.all(color: scheme.outlineVariant),
+        ),
+        child: Icon(
+          left ? PhosphorIconsBold.caretLeft : PhosphorIconsBold.caretRight,
+          size: 18,
+          color: enabled
+              ? scheme.onSurface
+              : scheme.onSurfaceVariant.withValues(alpha: .30),
+        ),
+      ),
+    );
+  }
+
+  Widget _ledColumn({
+    required bool leftSide,
+    required List<double> levels,
+    required List<Color> colors,
+    required bool active,
+    required Color background,
+  }) {
+    return SizedBox(
+      width: 23,
+      height: 72,
+      child: CustomPaint(
+        painter: _JexLedStripPainter(
+          levels: levels,
+          colors: colors,
+          active: active,
+          brightness: widget.brightness,
+          leftSide: leftSide,
+          background: background,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final cycle = _safeCycle(widget.ledCycleMs);
@@ -364,30 +466,85 @@ class _JexLedStripPreviewState extends State<JexLedStripPreview>
       child: AnimatedBuilder(
         animation: controller,
         builder: (_, __) {
-          final controllerElapsed = (controller.value * cycle).round();
-          final syncedPhase =
-              (widget.ledPhaseMs + controllerElapsed) % cycle;
+          final elapsed = math.max(
+            0,
+            _phaseClock.elapsedMilliseconds - _phaseAnchorElapsedMs,
+          ).toInt();
+          final syncedPhase = ((_phaseAnchorMs + elapsed) % cycle).toInt();
+          final levels = ledPreviewLevels(mode: widget.mode, phaseMs: syncedPhase);
+          final colors = ledPreviewColors(
+            mode: widget.mode,
+            phaseMs: syncedPhase,
+            baseColor: widget.colorHex,
+          );
+          final background = Theme.of(context).brightness == Brightness.dark
+              ? const Color(0xFF20232A)
+              : const Color(0xFFF5F6F8);
+          final scheme = Theme.of(context).colorScheme;
 
           return SizedBox(
-            width: double.infinity,
             height: 72,
-            child: CustomPaint(
-              painter: _JexLedStripPainter(
-                levels: ledPreviewLevels(
-                  mode: widget.mode,
-                  phaseMs: syncedPhase,
+            child: Row(
+              children: [
+                _modeArrow(context, left: true, enabled: widget.previousEnabled),
+                const SizedBox(width: 4),
+                _ledColumn(
+                  leftSide: true,
+                  levels: levels,
+                  colors: colors,
+                  active: widget.active,
+                  background: background,
                 ),
-                colors: ledPreviewColors(
-                  mode: widget.mode,
-                  phaseMs: syncedPhase,
-                  baseColor: widget.colorHex,
-                  brightness: widget.brightness,
+                const SizedBox(width: 4),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: scheme.surface,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: scheme.outlineVariant),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          widget.modeNumber,
+                          maxLines: 1,
+                          style: TextStyle(
+                            color: scheme.primary,
+                            fontSize: 16,
+                            height: 1.0,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          widget.modeName.toUpperCase(),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: scheme.onSurface,
+                            fontSize: 8.5,
+                            height: 1.0,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                active: widget.active,
-                background: Theme.of(context).brightness == Brightness.dark
-                    ? const Color(0xFF20232A)
-                    : const Color(0xFFF5F6F8),
-              ),
+                const SizedBox(width: 4),
+                _ledColumn(
+                  leftSide: false,
+                  levels: levels,
+                  colors: colors,
+                  active: widget.active,
+                  background: background,
+                ),
+                const SizedBox(width: 4),
+                _modeArrow(context, left: false, enabled: widget.nextEnabled),
+              ],
             ),
           );
         },
@@ -400,68 +557,67 @@ class _JexLedStripPainter extends CustomPainter {
   final List<double> levels;
   final List<Color> colors;
   final bool active;
+  final int brightness;
+  final bool leftSide;
   final Color background;
 
   const _JexLedStripPainter({
     required this.levels,
     required this.colors,
     required this.active,
+    required this.brightness,
+    required this.leftSide,
     required this.background,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
+    final centerX = size.width / 2;
     final centerY = size.height / 2;
-    final radius = math.min(10.0, math.max(7.0, size.height * .12));
+    const radius = 6.2;
 
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        Rect.fromLTWH(10, centerY - 29, math.max(0, size.width - 20), 58),
-        const Radius.circular(19),
+        Rect.fromLTWH(1, centerY - 29, math.max(0, size.width - 2), 58),
+        const Radius.circular(12),
       ),
       Paint()..color = background,
     );
 
     final top = centerY - 22;
     const verticalGap = 14.7;
-    final leftX = size.width * .32;
-    final rightX = size.width * .68;
     const leftIndices = <int>[7, 6, 5, 4];
     const rightIndices = <int>[0, 1, 2, 3];
+    final indices = leftSide ? leftIndices : rightIndices;
+    final brightnessScale = brightness.clamp(1, 100).toDouble() / 100.0;
 
-    void drawPixel(int index, Offset center) {
+    for (var row = 0; row < 4; row++) {
+      final index = indices[row];
       final level = active ? levels[index] : .10;
       final color = colors[index];
-      if (active && level > .02) {
+      final center = Offset(centerX, top + verticalGap * row);
+      final pixelOpacity = active
+          ? ledPreviewPixelOpacity(brightness: brightness, level: level)
+          : .14;
+      final glowOpacity = active ? .14 * brightnessScale * level : 0.0;
+
+      if (glowOpacity > .002) {
         canvas.drawCircle(
           center,
-          radius + 3,
+          radius + 2.5,
           Paint()
-            ..color = color.withValues(alpha: .14 * level)
-            ..maskFilter = MaskFilter.blur(BlurStyle.normal, 7),
+            ..color = color.withValues(alpha: glowOpacity)
+            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5),
         );
       }
-      canvas.drawCircle(
-        center,
-        radius,
-        Paint()
-          ..color = color.withValues(
-            alpha: active ? level.clamp(.08, 1).toDouble() : .14,
-          ),
-      );
+      canvas.drawCircle(center, radius, Paint()..color = color.withValues(alpha: pixelOpacity));
       canvas.drawCircle(
         center.translate(-radius * .22, -radius * .22),
         radius * .20,
         Paint()..color = Colors.white.withValues(
-          alpha: active ? (.12 + .22 * level) : .05,
+          alpha: active ? (.08 + .16 * brightnessScale * level) : .05,
         ),
       );
-    }
-
-    for (var row = 0; row < 4; row++) {
-      final centerYPosition = top + verticalGap * row;
-      drawPixel(leftIndices[row], Offset(leftX, centerYPosition));
-      drawPixel(rightIndices[row], Offset(rightX, centerYPosition));
     }
   }
 
@@ -470,6 +626,8 @@ class _JexLedStripPainter extends CustomPainter {
       oldDelegate.levels != levels ||
       oldDelegate.colors != colors ||
       oldDelegate.active != active ||
+      oldDelegate.brightness != brightness ||
+      oldDelegate.leftSide != leftSide ||
       oldDelegate.background != background;
 }
 
@@ -1557,6 +1715,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   String rgbColor = '#FFFFFF';
   int ledPhaseMs = 0;
   int ledCycleMs = 1000;
+  int ledSyncRevision = 0;
   int fanSpeed = 100;
   int hotLimit = 45;
   int battery5Limit = 25;
@@ -2000,6 +2159,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         rgbOn = false;
         ledPhaseMs = 0;
         ledCycleMs = 1000;
+        ledSyncRevision++;
         safety = 'LOCKED';
         safetyReason = 'WAITING_FOR_SENSOR_VALIDATION';
         firmwareVersion = 'V?';
@@ -2935,13 +3095,33 @@ void _handleAckLine(String line) {
         rgbOn = value == 'ON';
         break;
       case 'MODE':
-        rgbMode = (int.tryParse(value) ?? rgbMode).clamp(1, 7).toInt();
+        // V6.6+ treats LED_SYNC as the atomic owner of mode/phase/cycle.
+        // Older firmware sends only MODE plus separate phase fields.
+        final activeFirmware = parseFirmwareVersion(firmwareVersion);
+        final atomicLedSync = activeFirmware != null &&
+            (activeFirmware[0] > 6 ||
+                (activeFirmware[0] == 6 && activeFirmware[1] >= 6));
+        if (!atomicLedSync) {
+          rgbMode = (int.tryParse(value) ?? rgbMode).clamp(1, 7).toInt();
+        }
         break;
+      case 'LED_SYNC':
+        final snapshot = LedSyncSnapshot.parse(value);
+        if (snapshot != null) {
+          rgbMode = snapshot.mode;
+          ledPhaseMs = snapshot.phaseMs;
+          ledCycleMs = snapshot.cycleMs;
+          ledSyncRevision++;
+        }
+        break;
+      // Backward compatibility for older firmware that emitted two separate fields.
       case 'LED_PHASE':
         ledPhaseMs = math.max(0, int.tryParse(value) ?? ledPhaseMs);
         break;
       case 'LED_CYCLE_MS':
         ledCycleMs = math.max(1, int.tryParse(value) ?? ledCycleMs);
+        ledPhaseMs %= ledCycleMs;
+        ledSyncRevision++;
         break;
       case 'BRIGHTNESS':
         brightness = (int.tryParse(value) ?? brightness).clamp(1, 100).toInt();
@@ -3276,11 +3456,11 @@ void _handleAckLine(String line) {
     }
   }
 
-  // AI-METHOD: _setMode — Set LED animation mode within the supported range.
-  Future<void> _setMode(int mode) async {
+  // AI-METHOD: _setMode — UI index maps to the stable firmware LED mode ID.
+  Future<void> _setMode(int displayIndex) async {
     if (!connected) return;
     try {
-      final next = mode.clamp(1, 7).toInt();
+      final next = ledFirmwareModeForDisplayIndex(displayIndex);
       final ok = await _sendAndConfirm('MODE:$next');
       if (!ok && mounted) {
         _showSnackBar(JexText.phrase('LED mode change was not confirmed.','Perubahan mode LED tidak terkonfirmasi.'));
@@ -5133,15 +5313,21 @@ void _handleAckLine(String line) {
     final modeNames = <String>[
       JexText.of('ledModeStatic', lang),
       JexText.of('ledModeBreath', lang),
-      JexText.of('ledModeMirrorPulse', lang),
       JexText.of('ledModeComet', lang),
       JexText.of('ledModeDualChase', lang),
       JexText.of('leftRight', lang),
       JexText.of('ledModeRainbow', lang),
     ];
-    final safeMode = rgbMode.clamp(1, 7);
-    final modeName = modeNames[safeMode - 1];
-    final colorEnabled = connected && rgbMode != 7;
+    final modeIndex = ledModeDisplayIndex(rgbMode);
+    final supportedMode = modeIndex >= 0;
+    final previewMode = supportedMode ? rgbMode : 1;
+    final modeName = supportedMode
+        ? modeNames[modeIndex]
+        : JexText.of('ledModeUnsupported', lang);
+    final modeNumber = supportedMode
+        ? (modeIndex + 1).toString().padLeft(2, '0')
+        : '--';
+    final colorEnabled = connected && supportedMode && rgbMode != 7;
     final scheme = Theme.of(context).colorScheme;
 
     return KeyedSubtree(
@@ -5174,81 +5360,20 @@ void _handleAckLine(String line) {
                   ),
                   child: Column(
                     children: [
-                      Row(
-                        children: [
-                          Text(
-                            JexText.of('mode', lang).toUpperCase(),
-                            style: TextStyle(
-                              color: scheme.onSurfaceVariant,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w900,
-                              letterSpacing: .75,
-                            ),
-                          ),
-                          const Spacer(),
-                          _ledModeButton(
-                            icon: PhosphorIconsBold.caretLeft,
-                            enabled: connected && safeMode > 1,
-                            onPressed: () => _setMode(safeMode - 1),
-                          ),
-                          const SizedBox(width: 6),
-                          Container(
-                            constraints: const BoxConstraints(minWidth: 84),
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: scheme.surface,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: scheme.outlineVariant),
-                            ),
-                            child: Column(
-                              children: [
-                                Text(
-                                  safeMode.toString().padLeft(2, '0'),
-                                  style: TextStyle(
-                                    color: scheme.primary,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                                ),
-                                Text(
-                                  modeName.toUpperCase(),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    color: scheme.onSurface,
-                                    fontSize: 8,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          _ledModeButton(
-                            icon: PhosphorIconsBold.caretRight,
-                            enabled: connected && safeMode < 7,
-                            onPressed: () => _setMode(safeMode + 1),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
                       JexLedStripPreview(
-                        mode: safeMode,
+                        mode: previewMode,
                         colorHex: rgbColor.toUpperCase(),
                         brightness: brightness,
-                        active: rgbOn && connected,
+                        active: rgbOn && connected && supportedMode,
                         ledPhaseMs: ledPhaseMs,
                         ledCycleMs: ledCycleMs,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        modeName.toUpperCase(),
-                        style: TextStyle(
-                          color: scheme.onSurface,
-                          fontSize: 9.5,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: .55,
-                        ),
+                        ledSyncRevision: ledSyncRevision,
+                        modeNumber: modeNumber,
+                        modeName: modeName,
+                        previousEnabled: connected && (modeIndex < 0 || modeIndex > 0),
+                        nextEnabled: connected && (modeIndex < 0 || modeIndex < supportedLedModeIds.length - 1),
+                        onPrevious: () => _setMode(modeIndex < 0 ? 0 : modeIndex - 1),
+                        onNext: () => _setMode(modeIndex < 0 ? 2 : modeIndex + 1),
                       ),
                     ],
                   ),
@@ -5358,36 +5483,6 @@ void _handleAckLine(String line) {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _ledModeButton({
-    required IconData icon,
-    required bool enabled,
-    required VoidCallback onPressed,
-  }) {
-    final scheme = Theme.of(context).colorScheme;
-    return InkWell(
-      onTap: enabled ? onPressed : null,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        width: 34,
-        height: 34,
-        decoration: BoxDecoration(
-          color: enabled
-              ? scheme.surface
-              : scheme.surfaceContainerHighest.withValues(alpha: .45),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: scheme.outlineVariant),
-        ),
-        child: Icon(
-          icon,
-          size: 19,
-          color: enabled
-              ? scheme.onSurface
-              : scheme.onSurfaceVariant.withValues(alpha: .30),
-        ),
       ),
     );
   }
