@@ -6,10 +6,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 
-// Use the real transparent JE X FYZ artwork as the only icon. Android's small-icon mask uses its alpha shape.
+// Use the simple monochrome JE monogram. Android masks this alpha silhouette for small icons.
 @Suppress("UNUSED_PARAMETER")
 internal fun Notification.Builder.setJexNotificationBranding(context: Context): Notification.Builder {
-    setSmallIcon(R.drawable.jexfyzicon)
+    setSmallIcon(R.drawable.ic_notification)
     return this
 }
 
