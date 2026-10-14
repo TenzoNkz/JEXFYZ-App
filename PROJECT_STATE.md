@@ -72,7 +72,7 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 ## Current UI execution status
 - Latest source changes on `main`: dashboard Fan rotation now follows BLE-reported voltage (5V slow / 9V medium / 12V fast); the Peltier indicator adds voltage-scaled frost density and a 520 ms frost fade when OFF. Color Picker is bottom-pinned, has no outer draggable/scrolling panel, and can be dismissed using localized Cancel without changing the selected color.
 - New widget contracts cover the three voltage classes, relative fan durations, Peltier frost intensity/particle count, picker bottom anchoring, Cancel behavior, and preserved color-selection path. Static source/readback checks passed. Flutter tests/analyze have NOT RUN because Flutter/Dart SDK is unavailable; Android rendering and physical appearance remain UNVERIFIED.
-- The user reported that the preceding App revision built successfully. The current source/test commits were added after that report and no APK has been built or published for these changes.
+- Latest live successful App Build run `38535535278` targets preceding commit `97c5497e2aa31184de425c264def6dec7844f734`; its analyze/tests/build/signature/release verification passed. Current source/test commits were made afterwards and no APK for this change set has been built or published.
 
 ## App Build
 - Only active workflow: .github/workflows/jexfyz-app-build-trigger.yml.
