@@ -71,7 +71,7 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 
 ## Current UI execution status
 - Implemented in `lib/main.dart`: the Fan rotor remains fully coloured and coasts down with an ease-out curve to its resting pose after OFF; the Peltier icon is a free-standing six-branch crystal (no square module/center box/corner bolts) that freezes fully coloured when OFF; Fan Speed wobbles its needle slightly while ON without changing telemetry percentage and returns smoothly to the far-left/0 mark over 520 ms when OFF.
-- Current App source blob: `3d756a5a38c76b252dc93c6151a3b864ebbbbb94`; updated widget-test source blob: `0f370d9ea4d7177608ce1fd5aab679c2c65d9cf3`. Regression source-contract tests were updated, but **Flutter tests/analyze were NOT run after this change**.
+- Current App source blob: `3d756a5a38c76b252dc93c6151a3b864ebbbbb94`; updated widget-test source blob: `99648e4c145b122949099b74581d47e6c472d9b9`. Regression source-contract tests were updated, but **Flutter tests/analyze were NOT run after this change**.
 - Latest successful App Build before this UI change and before signing-workflow hardening remains run `38556896542` on commit `67c5d26723c433b4af856c7759a967a3425bf67a`. That run's log reported V1=false, V2=true, V3=true.
 - Workflow hardening to require V1/V2/V3 is committed, but has not been build-verified. Existing release still targets the pre-fix commit. Device rendering/signature verification after new installation remain open.
 
