@@ -1,105 +1,50 @@
-## CURRENT V6.4 EXECUTION STATUS — 2026-10-14
+# JE X FYZ / JE Cooler — OTA Protection Contract
 
-- [VERSION ALIGNMENT — SOURCE ONLY] Active source is `firmware/JEXFYZ-V6.4.ino` with `FW_VERSION = "V6.4"`; the V6.3-named active file is retired. This revision has not been compiled; no BIN generation, flash/OTA, Firebase update, or release is implied.
+> **OTA PROTECTED / FROZEN.** Do not alter casually while fixing unrelated App or Firmware issues.
 
-### Current Online OTA connection path — 2026-10-13
+## Scope protected by this contract
 
-- [SOURCE FIX IMPLEMENTED] V6.3 Online OTA restores the previous `cloudClient.setInsecure()` connection path. The inline ISRG Root X1 certificate, CA validation call, `configTime()`, `TIME_SYNCING` state, and 20-second NTP gate were removed. On Wi-Fi connection, the blue indicator runs directly before the GitHub GET attempt.
-- [PRESERVED] The HTTPS transport, raw GitHub BIN URL allowlist for `TenzoNkz/JEXFYZ-Firmware`, redirect blocking, download size/image checks, safe-output sequencing, and OTA recovery path remain in place. `setInsecure()` does not validate the server certificate identity.
-- [TEST CONTRACT UPDATED — NOT RUN] `test/v6_4_qc_contract_test.dart` now asserts the restored connection path, removal of CA/NTP gates, blue-before-GitHub flow, and retention of the URL allowlist/redirect block.
-- [USER-REPORTED RESULT — 2026-10-13] The user reports that V6.3 compiled successfully after this correction and Online OTA can connect to GitHub again. This confirms the reported compile/connect result only; a complete BIN transfer, successful `Update.end()`, reboot, and confirmation of the new firmware version were not separately established here. Because CA validation and the OTA-only NTP gate were removed together, the available evidence does not isolate which one alone caused the earlier failure.
-- [CANONICAL REGRESSION MEMORY] Read [OTA_REGRESSION_MEMORY.md](OTA_REGRESSION_MEMORY.md) before any Online OTA transport/TLS/time-sync change; it records the incident, evidence boundary, trade-off, and prevention rules.
-- [NOT DONE BY ASSISTANT] No firmware compile, BIN generation/publication, flash, physical OTA run, or APK Build was performed by this assistant session.
+- Local OTA state machine and boot SoftAP path.
+- Online OTA connection, URL/path validation and image download.
+- OTA priority over ordinary control/UI work.
+- Wi-Fi↔BLE single-radio ownership handoff.
+- Output-safe state during OTA (Peltier and Fan OFF, selector safe at 5 V, LED/state-machine handling).
+- Timeout/retry state, progress/results, cancellation, update finalization, failure recovery and restart behavior.
+- App OTA version selection, protocol order, expected BLE disconnect, reconnect/P1 sync and result delivery.
+- URL allowlist, redirect blocking, HTTP/length/size/image checks and streaming update lifecycle.
 
-### APP BLE reconnect and Online OTA acknowledgement follow-up — 2026-10-13
+## Authorization required
 
-- [FIXED IN APP SOURCE] Disconnect rediscovery now avoids starting when Auto Connect is disabled or no previously paired cooler identity is known. The retry loop is cancelled when Bluetooth/permissions/location prerequisites fail, and scanning is suppressed during BLE syncing. Retry starts again when Auto Connect is enabled or the app resumes while disconnected.
-- [FIXED IN APP SOURCE] A missing `CLOUDOTA` ACK due to `TIMEOUT` or `DISCONNECTED` is treated as ambiguous, not as a definite rejection. The app preserves OTA recovery state and tells the user it is waiting for reconnection or an OTA result. A definite rejection while BLE remains connected still follows the rejection path.
-- [REGRESSION CONTRACTS ADDED — NOT RUN] `test/v6_4_qc_contract_test.dart` now checks both retry-loop cancellation and ambiguous OTA ACK handling. No Flutter tests or Dart analysis have run for this change because this environment has no Flutter/Dart executable.
-- [PRESERVED BY USER INSTRUCTION] `android/app/build.gradle` still has `versionName "Telegram @horizontalzzz"` as the user's intentional identity. It was not modified.
-- [VALIDATION BOUNDARY] Source and contract assertions were reviewed statically only; the user separately reports a successful firmware compile and restored GitHub connection. No Build App/APK build, BIN publication, flash, complete OTA install, or hardware validation was performed by this assistant session.
+Change OTA only if there is a demonstrated OTA defect and the user explicitly authorizes the change after discussion. Before editing:
+1. Read this file and `OTA_REGRESSION_MEMORY.md` completely.
+2. Identify exact symptom, logs/diagnostic stage and reproduction steps. Do not infer HTTP/TLS code from LED colors alone.
+3. State scope and safeguards. Change one variable at a time where possible.
+4. Update source-level contract tests and audit Local OTA, Online OTA, Wi-Fi/BLE handoff, safe outputs, timeouts, recovery and App reconnect end-to-end.
+5. Update the canonical memory, `PROJECT_STATE.md` if current state changed, `CHANGELOG.md` and `CHAT_TRANSFER.md`.
+6. Label test/compile/hardware evidence precisely. Static assertions are not an OTA success certificate.
 
-- [CURRENT TRUTH] Active Firmware source: `firmware/JEXFYZ-V6.4.ino`, blob `f0dd9d1ebdc7d9d0966384f557efa2e2123df792`; V6.2 was retired from the active tree. App source remains `lib/main.dart`, version `1.0.0+3`.
-- [FIXED] The manual Peltier safety latch now remains blocking until `enforceSafety()` observes Hotside at or below `hotLimit - 1°C` for five continuous seconds. One low sample can no longer bypass re-arm stability.
-- [PRESERVED] Adaptive thermal protection remains 30 seconds at 12 V, 9 V and 5 V, with Peltier OFF and Fan 100%. Five-second stable thermal recovery before the deadline cancels the timer; otherwise 12 V/9 V steps down and unrecovered 5 V enters terminal manual-restart lock. Thermal voltage restoration remains one step after each 60-second stable interval, bounded by the saved pre-downshift ceiling.
-- [CURRENT TRUTH] `pubspec.lock` is committed (blob `1e92812bfda2c28244a0556d71d1ec94084acc66`) and `.gitignore` is present. Earlier V6.2 notes about a missing lockfile are historical.
-- [TEST EVIDENCE — V6.2 CANDIDATE] GitHub Actions run 38362882150 recorded 45 passing Flutter tests. Its plain `flutter analyze` exited nonzero because 23 info-level deprecation notices were treated as fatal; the existing App release workflow uses `flutter analyze --no-fatal-infos`. This evidence predates the V6.3 latch patch and does not certify V6.3.
-- [UNVERIFIED] The added V6.3 latch regression has not been run. User-reported compile success and restored GitHub connectivity are recorded above, but a complete OTA transfer/apply/reboot proof is not established here. No BIN generation/publication, assistant-side flash, independent hardware validation, Android BLE pairing, or APK Build was performed.
-- [NOT RELEASED] V6.4 remains source-only DEVELOPMENT + QC / PRE-RELEASE. Production firmware repository and Firebase release metadata were not changed.
+## Current Online OTA contract (must re-check live source)
 
-## HISTORICAL V6.2 OTA EXCEPTION — 2026-10-13
+- Canonical editable Firmware source is in the App repo: `firmware/JEXFYZ-V6.4.ino`.
+- The V6.3-origin restoration uses `cloudClient.setInsecure()`; embedded CA certificate validation, `setCACert()`, `configTime()`, `TIME_SYNCING`, epoch-validity gate and OTA-only 20-second NTP timeout are absent.
+- On successful Wi-Fi connection, blue indication proceeds to the GitHub GET attempt.
+- Raw URL allowlist remains restricted to `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/`.
+- `HTTPC_DISABLE_FOLLOW_REDIRECTS`, HTTP status/length checks, download size limit, ESP image magic byte check (`0xE9`), streaming write/update lifecycle, output-safe sequence, failure recovery and restart semantics remain protected.
+- Known security trade-off: `setInsecure()` bypasses server certificate identity validation. This was chosen after the prior CA + NTP-gated path failed in the user's observed environment. The exact single cause was not isolated. Do not silently re-introduce CA/NTP validation.
+- Firebase OTA metadata remains firmware version + link; no added user-approved SHA/signature layer.
+- Artifact repo `TenzoNkz/JEXFYZ-Firmware` must contain `JEXFYZ.cpp.bin` only. Documentation lives in `TenzoNkz/JEXFYZ-App`.
 
-- Online OTA was explicitly approved for standard CA certificate verification to the already allowlisted GitHub raw BIN repository. The allowlist and existing download/update steps remain in place.
-- Local OTA is explicitly unchanged: no checksum, signature, or additional verification layer was added.
-- BLE write encryption/bonding was added because Online OTA credentials travel over the BLE command channel.
-- V6.2 OTA paths remain uncompiled and untested on hardware. No APK build, Firmware compile, BIN, flashing or OTA operation was performed.
-- This exception authorizes only the discussed Online HTTPS and BLE write protections; it does not grant broader OTA redesign.
+## App side contract
 
-# JE X FYZ — OTA PROTECTION
+- Expected OTA command order: `OTAENTER`, `SSID`, `PASS`, `URL`, `VERSION`, `CLOUDOTA`.
+- Mark the expected OTA disconnect/recovery before sending `CLOUDOTA`.
+- A `TIMEOUT` or `DISCONNECTED` acknowledgement is ambiguous, not proof of rejection. Keep recovery state and await reconnect/result. Roll back only on a definite rejection while the BLE session remains connected.
+- On reconnect, complete normal P1/session sync and surface the one-shot OTA result.
+- App-visible reason/status text must be localized and must not reveal internal protocol tokens.
 
-> 🔐 **OTA PROTECTED / FROZEN**
+## Version and release boundaries
 
-Dokumen ini adalah **segel pengingat engineering** untuk jalur OTA JE X FYZ.
-Tujuannya mencegah perubahan OTA secara tidak sengaja saat kita memperbaiki fitur lain.
-
-## 🚫 Jangan ubah sembarangan
-
-Bagian berikut dianggap **protected**:
-
-- Local OTA
-- Online OTA
-- OTA state machine
-- OTA priority / lifecycle
-- Wi-Fi ↔ BLE radio handoff
-- OTA recovery setelah gagal
-- OTA safety output
-- OTA timeout dan retry logic
-- Image validation
-- Firmware OTA URL/path contract
-- App OTA version-selection contract
-
-**Jangan melakukan refactor, cleanup, optimasi, atau perubahan kecil pada OTA hanya karena sedang mengerjakan fitur lain.**
-
-## ✅ Perubahan OTA hanya jika
-
-1. Ada bug OTA yang benar-benar terbukti.
-2. Root cause sudah jelas.
-3. Perubahan dibahas dan disetujui secara eksplisit.
-4. Setelah perubahan, seluruh jalur OTA diaudit ulang.
-
-## 📌 Kontrak versi
-
-**ANTI-DOWNGRADE: OFF**
-
-Versi firmware yang **valid dan berbeda** dari versi perangkat boleh di-update.
-
-Contoh:
-
-- V5.7 → V5.8 ✅
-- V5.7 → V5.6 ✅
-- V5.7 → V6.0 ✅
-- V5.7 → V5.7 ❌ tidak perlu update
-
-Jadi segel ini **tidak** mengubah kebijakan versi OTA.
-
-## 🔒 Kondisi baseline
-
-OTA V5.7 berhasil digunakan untuk memperbarui hardware pada tahap historis sebelumnya.
-Active source saat ini adalah V6.2 dan tetap source-only: belum dikompilasi, dibuat BIN, diflash, atau divalidasi pada hardware:
-
-`firmware/JEXFYZ-V6.2.ino`
-
-Keberhasilan OTA V5.7 adalah bukti historis untuk V5.7 saja, bukan bukti bahwa OTA V6.2 telah lulus hardware validation.
-
-Dokumen ini **bukan** cryptographic signature, bukan CI enforcement, dan bukan pengganti pengujian OTA pada hardware.
-
-### Prinsip utama
-
-> **OTA sudah bekerja — jangan disentuh kecuali ada alasan OTA yang nyata.**
-
-## HISTORICAL — V6.2 Online OTA TLS/CA clock validation (superseded by V6.3) — 2026-10-13
-
-- [HISTORICAL / SUPERSEDED] V6.2 Online OTA synchronized system time before CA-validated HTTPS. This is no longer the active V6.3 connection path.
-- Redirects were disabled for the direct raw GitHub BIN endpoint; CA validation and the NTP gate were subsequently removed by the V6.3 legacy-path restoration.
-- Repository allowlist remains limited to `TenzoNkz/JEXFYZ-Firmware`; no custom firmware SHA/signature is added; Local OTA remains unchanged.
-- The unapproved temporary quality workflow was removed after it failed to push a generated lockfile; test/analyze steps were skipped and no lockfile was committed.
+- Functional Firmware edits require version constant + active filename bump and exactly one active versioned `.ino`.
+- User compiles Firmware; no automatic compile as a side effect.
+- Never generate/publish BIN, change Firebase metadata, flash/OTA hardware, start App Build or release without separate explicit authorization.
+- Success at one gate (compile, BIN, BLE command, or Wi-Fi connect) does not prove end-to-end OTA install/reboot.
