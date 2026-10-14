@@ -27,7 +27,7 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 
 ## Current validation boundary
 
-V6.6 and its LED App changes have source-level/static contract checks recorded, but Flutter tests/analyze, ArduinoDroid compilation, BIN generation, physical LED verification, OTA, or App Build have NOT been run. See [PROJECT_STATE.md](PROJECT_STATE.md) for the current verified status.
+V6.6 and its LED App changes have source-level/static contract checks recorded, but the corrected UI test contracts/analyze, ArduinoDroid compilation, BIN generation, physical LED verification, OTA, or App Build have NOT been run. Test files present in the repository are not evidence of passing tests. See [PROJECT_STATE.md](PROJECT_STATE.md) for the current verified status.
 
 ## Non-negotiable workflow
 

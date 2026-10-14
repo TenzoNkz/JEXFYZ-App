@@ -301,8 +301,8 @@ void main() {
   });
 
   test('LED palette exposes current RGB colors', () {
-    expect(ledColorPalette, hasLength(24));
-    expect(ledColorPalette.first, '#FF0000');
+    expect(ledColorPalette, hasLength(36));
+    expect(ledColorPalette.first, '#FF1744');
     expect(ledColorPalette.last, '#FFFFFF');
     expect(ledColorPalette, contains('#FFFFFF'));
     expect(ledColorPalette, isNot(contains('#000000')));
@@ -419,26 +419,6 @@ void main() {
     expect(JexText.of('ledModeUnsupported', AppLanguage.english), 'Unsupported');
     expect(JexText.of('ledModeUnsupported', AppLanguage.indonesia), 'Tidak didukung');
     expect(JexText.of('ledModeComet', AppLanguage.indonesia), 'Komet');
-  });
-
-  test('Android notifications use JE X FYZ branding and meaningful foreground text', () {
-    final activity = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt').readAsStringSync();
-    final bleService = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JeForegroundService.kt').readAsStringSync();
-    final floatingService = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt').readAsStringSync();
-    final helper = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt').readAsStringSync();
-    final icon = File('android/app/src/main/res/drawable/ic_notification.xml').readAsStringSync();
-
-    expect(activity, contains('setJexNotificationBranding(this)'));
-    expect(activity, contains('jexNotificationContentIntent(this, id)'));
-    expect(activity, contains('requestNotificationPermission()'));
-    expect(helper, contains('R.drawable.ic_notification'));
-    expect(helper, contains('R.drawable.jexfyzicon'));
-    expect(bleService, contains('Bluetooth connected · cooler session active'));
-    expect(bleService, contains('Bluetooth terhubung · sesi cooler aktif'));
-    expect(floatingService, contains('Floating Monitor active'));
-    expect(floatingService, contains('Monitor Melayang aktif'));
-    expect(icon, contains('android:fillColor="#FFFFFFFF"'));
-    expect(activity, contains("JexText.of('bluetoothDisconnected', appLanguageNotifier.value)"));
   });
 
   test('Android notifications use JE X FYZ branding and meaningful foreground text', () {

@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Memory Index
 
-Last reconciled against `main`: 2026-10-14 (Asia/Jakarta). This is a routing index, not a substitute for checking GitHub live.
+Last fully reconciled against `main`: 2026-10-14 (Asia/Jakarta); verify live HEAD and blob fingerprints before acting. This is a routing index, not a substitute for checking GitHub live.
 
 ## New-chat boot order
 1. Read `CHAT_TRANSFER.md` completely.

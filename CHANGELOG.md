@@ -2,6 +2,15 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
+## 2026-10-14 — Chat-limit reconciliation and test-contract cleanup
+
+- Audited the latest non-truncated main tree and canonical notes; preserved the current source-only V6.6/NOT RELEASED boundary and the artifact repository BIN-only rule.
+- Corrected the stale widget-test palette expectation from 24 colors/old first color to 36 curated presets/current first color `#FF1744`, and removed the accidentally duplicated native notification source-contract test.
+- Corrected stale Build Notes: the latest observed successful App Build run is `38520146994` on `1024eb8e145429913aacb52f4cf352e087885d44`; it predates the LED UI/notification source changes and does not validate current source. Failures `38519913851` and `38519669369` also predate that work.
+- Reconciled current test SHA references in App/voltage/OTA memory and normalized the handover QC numbering. Current test files exist but tests/analyze were NOT RUN for this reconciliation.
+- No functional Firmware source change/version bump, App Build, Firmware compile, BIN, Firebase, OTA/flash/device operation or release was performed.
+- This entry records a documentation/test-contract correction, not a test pass.
+
 ## 2026-10-14 — LED preview/picker, disconnected menu fallback and Android notifications
 
 - Compactened the LED preview row, removed the numeric mode index, narrowed its center card, and darkened left/right LED column backgrounds for contrast.

@@ -2,7 +2,7 @@
 
 Last reconciled: 2026-10-14 (Asia/Jakarta).
 Canonical source: `firmware/JEXFYZ-V6.6.ino` (last observed blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`).
-Static regression contract: `test/v6_6_qc_contract_test.dart` (last observed blob `e3127eec860fce970fa598ca3015ed5ea61470bf`).
+Static regression contract: `test/v6_6_qc_contract_test.dart` (live blob `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a` at this checkpoint; tests were not executed).
 Validation state: source-only. Firmware compile, Flutter test execution, physical reproduction, current measurement and thermal/OTA regression remain unverified.
 
 ## Incident

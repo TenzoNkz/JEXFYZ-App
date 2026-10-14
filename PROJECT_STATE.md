@@ -12,7 +12,7 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 - **Package/version:** com.horizontalzzz.jexfyz, pubspec 1.0.0+3.
 - **Android identity:** Gradle versionName "Telegram @horizontalzzz"; intentional, preserve exactly.
 - **QC contracts:** test/v6_6_qc_contract_test.dart, test/firmware_touch_adaptive_sync_test.dart, test/app_protocol_notify_contract_test.dart, test/widget_test.dart. Test execution must be checked independently.
-- **Current App/UI hashes:** `lib/main.dart` = c0567d4652ba5b84ce82b2d382916754cd73d861; `lib/app_settings.dart` = 232a7575460e5417f7b760f24b5057687a47ee1a; `test/widget_test.dart` = ef84c41fb09dac62cb749c4fed660b9a517ff4e8; `test/v6_6_qc_contract_test.dart` = 2bee4d960d014f0765422dcb5ed1c9870ba6ee3a; `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt` = 6c17a7e38c3a5b3f3f8fc6b3e5b38a99fd83081e; `JeForegroundService.kt` = 9ea4dce7001bcd5cc10f9c1c7ad62f34ec54b03e; `FloatingMonitorService.kt` = 55972b64329a2e1cc91e29a172d0a97a118d8ac1; `JexNotificationUtils.kt` = 4ea74267bae804b4c0ad56e6db9fc7133008f779; `drawable/ic_notification.xml` = 2148252fddee854dcd8a7890c04cb51588e87644.
+- **Current App/UI hashes:** `lib/main.dart` = c0567d4652ba5b84ce82b2d382916754cd73d861; `lib/app_settings.dart` = 232a7575460e5417f7b760f24b5057687a47ee1a; `test/widget_test.dart` = 7130053768e7d5fb094a1b92c4a68c8427af3c36; `test/v6_6_qc_contract_test.dart` = 2bee4d960d014f0765422dcb5ed1c9870ba6ee3a; `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt` = 6c17a7e38c3a5b3f3f8fc6b3e5b38a99fd83081e; `JeForegroundService.kt` = 9ea4dce7001bcd5cc10f9c1c7ad62f34ec54b03e; `FloatingMonitorService.kt` = 55972b64329a2e1cc91e29a172d0a97a118d8ac1; `JexNotificationUtils.kt` = 4ea74267bae804b4c0ad56e6db9fc7133008f779; `drawable/ic_notification.xml` = 2148252fddee854dcd8a7890c04cb51588e87644.
 - **Workflow:** .github/workflows/jexfyz-app-build-trigger.yml; explicit title/token trigger only.
 - V6.6 has not been independently compiled or hardware-tested by the assistant. User-reported V6.3 compile/Online OTA connection success refers to the prior revision and does not certify V6.6.
 - Do not infer that the existing artifact BIN matches current V6.6 source; source/BIN provenance remains unverified.
@@ -71,7 +71,7 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 
 ## Current UI execution status
 - Source changes for the compact mode-name-only LED strip, brightness-independent preview, centered 36-color localized picker, disabled OFF-left menu fallback, and branded/localized Android notifications are present in the App/UI source changes.
-- Updated Flutter test contracts are NOT RUN. Android OEM notification rendering and narrow-screen physical layout behavior remain UNVERIFIED.
+- `test/widget_test.dart` now aligns the palette assertion with the 36 preset source and removes the duplicated notification contract block. Tests/analyze remain NOT RUN; Android OEM notification rendering and narrow-screen physical layout behavior remain UNVERIFIED.
 
 ## App Build
 - Only active workflow: .github/workflows/jexfyz-app-build-trigger.yml.

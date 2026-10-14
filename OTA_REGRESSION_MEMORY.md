@@ -15,7 +15,7 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This is the canonical incident recor
 - Removed the embedded CA PEM, `setCACert()`, `configTime()`, `TIME_SYNCING`, epoch-validity condition and OTA-only 20-second NTP time gate.
 - Flow is Wi-Fi success → blue feedback → `prepareOnlineOtaDownload()` → GitHub GET attempt.
 - Kept allowlisted URL prefix `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/`, redirect blocking, HTTP/length/size/image checks, ESP image magic byte `0xE9`, streaming Update lifecycle, all-safe output, OTA lifecycle and failure recovery.
-- Static test contract lives in `test/v6_6_qc_contract_test.dart` (last observed blob `e3127eec860fce970fa598ca3015ed5ea61470bf`). Presence of assertions does not mean the test was executed.
+- Static test contract lives in `test/v6_6_qc_contract_test.dart` (live blob `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a` at this checkpoint; tests were not executed). Presence of assertions does not mean the test was executed.
 
 ## User-reported evidence boundary
 

@@ -8,7 +8,7 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). Re-fetch live `main` and source hash
 - Active App source: `lib/main.dart`, current blob `c0567d4652ba5b84ce82b2d382916754cd73d861`, pubspec version `1.0.0+3`, package `com.horizontalzzz.jexfyz`.
 - Current Firmware status: source-only DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED. V6.6 not independently compiled/hardware validated here.
 - Main V6.6 QC contract: `test/v6_6_qc_contract_test.dart`. The current UI/notification execution updated `test/widget_test.dart` and `test/v6_6_qc_contract_test.dart`, but these tests have NOT been run.
-- Latest observed successful App Build run: `38520146994` on parent commit `1024eb8e145429913aacb52f4cf352e087885d44`; it does not validate the newer source commit on current `main`.
+- Latest observed successful App Build run: `38520146994` on commit `1024eb8e145429913aacb52f4cf352e087885d44`; it predates the LED UI/notification source changes and does not validate current source. The exact current test list and run evidence are refreshed in `CHAT_TRANSFER.md`.
 - Open PR search last returned zero. Verify live; use main by default.
 - Artifact repository `TenzoNkz/JEXFYZ-Firmware` is intended to contain only `JEXFYZ.cpp.bin`; all notes belong in this repo.
 - App memory explicitly records a 1 Hz Android phone-battery heartbeat, firmware 5-second battery-data freshness TTL, and the requirement not to display a standalone Battery Protection Guard. One-App/one-cooler exclusive pairing is a user design intent whose exact enforcement remains unverified.
@@ -28,12 +28,13 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). Re-fetch live `main` and source hash
 3. Verify LED_SYNC on initial sync, mode switch, RGB ON/OFF and periodic updates; inspect lag/jumps under BLE traffic.
 4. Check saturated colors at 1%, 10%, 46% and 100% brightness, and confirm the one-row preview fits narrow screens: left arrow → four left LEDs → centered localized mode name only (no numeric index) → four right LEDs → right arrow.
 5. Run Flutter tests/analyze if authorized and available. Check disconnected CONTROL/ADAPTIVE/LED toggles are OFF-looking, disabled and knob-left while dashboard/Floating Monitor still show unknown `--`. Validate notification icon, title/body, tap intent and permission request on Android 13+ and older supported Android. Physical LED timing and firmware compile remain separate gates.
-2. With hardware, reproduce Manual Volt and Adaptive voltage changes while the 5-second soft-start is still active. Expected: GPIO5 PWM 0% during selector handoff, preserve 200 ms deadtime, hold through 1-second settle, then start a fresh 5-second ramp. Adaptive ON/OFF must not introduce a separate Peltier OFF cycle. Capture reset reason if reboot recurs.
-3. Repeat after soft-start completes, including Adaptive ON and OFF. Expected: Peltier PWM remains 100% continuously throughout rail transition unless explicit OFF or safety shuts it down; no Adaptive-specific OFF/ON cycle.
-4. Verify Peltier-OFF, Hotside/NTC protection and OTA safe-output cancel all pending ramp resume.
-5. Verify Adaptive timeout/recovery, Hotside re-arm, Touch telemetry sync, LED feedback, Wi-Fi→BLE handoff and both OTA routes.
-6. Separately authorize/run Flutter test and analyze. A test file or static inspection alone is not a pass.
-7. Build App only on explicit `@Thinking Build App!` or `@Thinking Eksekusi & Build App!`, and only after reviewing the current workflow.
+
+6. With hardware, reproduce Manual Volt and Adaptive voltage changes while the 5-second soft-start is still active. Expected: GPIO5 PWM 0% during selector handoff, preserve 200 ms deadtime, hold through 1-second settle, then start a fresh 5-second ramp. Adaptive ON/OFF must not introduce a separate Peltier OFF cycle. Capture reset reason if reboot recurs.
+7. Repeat after soft-start completes, including Adaptive ON and OFF. Expected: Peltier PWM remains 100% continuously throughout rail transition unless explicit OFF or safety shuts it down; no Adaptive-specific OFF/ON cycle.
+8. Verify Peltier-OFF, Hotside/NTC protection and OTA safe-output cancel all pending ramp resume.
+9. Verify Adaptive timeout/recovery, Hotside re-arm, Touch telemetry sync, LED feedback, Wi-Fi→BLE handoff and both OTA routes.
+10. Separately authorize/run Flutter test and analyze. A test file or static inspection alone is not a pass.
+11. Build App only on explicit `@Thinking Build App!` or `@Thinking Eksekusi & Build App!`, and only after reviewing the current workflow.
 
 ## Known uncertainty
 
