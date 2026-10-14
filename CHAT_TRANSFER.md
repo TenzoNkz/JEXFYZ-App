@@ -16,16 +16,16 @@ Snapshot date: 2026-10-14 (Asia/Jakarta). This detailed transfer file bridges pr
 ## 1. Repository checkpoint immediately before this transfer refresh
 
 - Canonical repository: TenzoNkz/JEXFYZ-App, private, branch `main`.
-- Main HEAD immediately before this transfer write: `fb3f72f493c409a8cc568594a3dda2c69d2ae748`. This checkpoint includes the source/UI commit `a6d16361193416b7b6ffb95c47aa3604fc69c6eb` and documentation evidence reconciliation commit `fb3f72f493c409a8cc568594a3dda2c69d2ae748`. The final transfer refresh is a separate documentation-only commit whose parent must be exactly `fb3f72f493c409a8cc568594a3dda2c69d2ae748`.
+- Main HEAD immediately before this transfer write: `9b921756b3a00314e960428faae2dd4b85593adf`. Relevant recent commits: LED/UI/notification source `a6d16361193416b7b6ffb95c47aa3604fc69c6eb`; legacy stored-color name compatibility `497a804b0f5eeabddc50e337954a231fe73b8679`; canonical memory/hash update `9b921756b3a00314e960428faae2dd4b85593adf`. This final transfer refresh is a documentation-only commit whose parent must be exactly `9b921756b3a00314e960428faae2dd4b85593adf`.
 - Recursive tree at pre-transfer HEAD: 65 entries, `truncated=false`. Open PR search returned 0. Branches observed: `diag/latest-stable-v16`, `diagnostic/v1.6-heap-check`, `fix/adaptive-power-sequencing`, `main`, `tmp-jexfyz-v5-test`. Closed PRs observed: #18, #7, #5, #4, #3, #2, #1; closed-PR connector records did not reliably expose merge status, so do not infer merge state from closure.
 - Active Firmware source: `firmware/JEXFYZ-V6.6.ino`, blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`; embedded `FW_VERSION = "V6.6"`. Exactly one active versioned `.ino` was found.
-- Active App source: `lib/main.dart`, blob `a9e50590a72a7eab91f091092d998bfa5512ce7a`; settings `lib/app_settings.dart`, blob `bff5544fcb708a4d0c76ef443ff325ec5b3bee0e`.
+- Active App source: `lib/main.dart`, blob `c0567d4652ba5b84ce82b2d382916754cd73d861`; settings `lib/app_settings.dart`, blob `232a7575460e5417f7b760f24b5057687a47ee1a`.
 - App package/version: `com.horizontalzzz.jexfyz` / `1.0.0+3`. Android Gradle `versionName "Telegram @horizontalzzz"` is intentional identity text and must remain unchanged.
-- Current test paths: `test/widget_test.dart` (blob `0ba772d70a68ff6ae43f31145399dd12df4d45b1`), `test/v6_6_qc_contract_test.dart` (blob `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a`), `test/firmware_touch_adaptive_sync_test.dart`, `test/app_protocol_notify_contract_test.dart`. Tests/analyze are NOT RUN for the UI/notification commit; adding/updating a test file does not mean it passed.
+- Current test paths: `test/widget_test.dart` (blob `ef84c41fb09dac62cb749c4fed660b9a517ff4e8`), `test/v6_6_qc_contract_test.dart` (blob `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a`), `test/firmware_touch_adaptive_sync_test.dart`, `test/app_protocol_notify_contract_test.dart`. Test contracts cover preview visibility, localized 36-color palette, legacy color aliases, offline switches and Android notification source contracts; tests/analyze are NOT RUN.
 - Active build workflow: `.github/workflows/jexfyz-app-build-trigger.yml`; explicit issue title `JE X FYZ — BUILD APP TRIGGER` and required body token `JEXFYZ_BUILD_TRIGGER_V1`. No build was started by this execution.
-- Recent successful App Build evidence: [38520146994](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38520146994) on parent commit `1024eb8e145429913aacb52f4cf352e087885d44`; it predates the UI/notification commit and is NOT validation of the current source commit. Recent older failures #38519913851 and #38519669369 also predate this UI/notification commit.
+- Recent successful App Build evidence: [38520146994](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38520146994) on parent commit `1024eb8e145429913aacb52f4cf352e087885d44`; it predates the UI/notification source commit and is NOT validation of current source. Recent older failures #38519913851 and #38519669369 also predate this UI/notification commit.
 - Artifact repo `TenzoNkz/JEXFYZ-Firmware`: main HEAD `3dd4ed90d74eb8f8fbaa560dfda0e618b73a8754`; root contains only `JEXFYZ.cpp.bin`, SHA `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, 1,455,936 bytes. Provenance matching V6.6 source is UNVERIFIED; this task did not modify the BIN.
-- Execution scope: LED preview, named palette/color-picker, disconnected menu fallback, native Android notification presentation, regression-contract source files and canonical notes. No Firmware source/protocol, BIN, Firebase, OTA, flashing or release changes. Flutter tests/analyze, App Build and Firmware compile were NOT run. Physical UI and OEM notification behavior remain UNVERIFIED.
+- Execution scope: LED preview, named palette/color-picker, disconnected menu fallback, native Android notification presentation, legacy stored-color aliasing, regression-contract source files and canonical notes. No Firmware source/protocol, BIN, Firebase, OTA, flashing or release changes. Flutter tests/analyze, App Build and Firmware compile were NOT run. Physical UI and OEM notification behavior remain UNVERIFIED.
 - Phase: DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED.
 
 ## 2. Permanent user commands and authorization limits
@@ -134,6 +134,7 @@ Read VOLTAGE_TRANSITION_MEMORY.md completely before any rail/Peltier change.
 - App name JE Cooler; brand/header JE X FYZ. Flutter/Dart Android app uses flutter_blue_plus. Horizon Cooler App is primary architecture/UI reference.
 - UI direction: dark header, white rounded content panel, compact VOLTAGE/ADAPTIVE top tabs. Home includes Hotside/Battery temperatures, voltage indicator, Adaptive, Peltier/Fan, Fan speed and Notify reason.
 - Menu path: VOLTAGE → CONTROL → ADAPTIVE → LED → TEMPERATURE. Keep compact sideways submenu; don't redesign during QC.
+- LED UI: compact mode-name-only strip with four LEDs on each side; the swatches sit on darker contrast backdrops and preview visibility does not follow hardware Brightness. The centered Color Picker has 36 localized, hue-ordered named presets, shows no HEX labels, and retains localized names for previously stored legacy colors including the exact Cyan #00FFFF.
 - Manual voltage 5/9/12 V, remembered cycle 5→9→12→9→5. App guard is one second and voltage completion awaits authoritative matching VOLTAGE telemetry.
 - Fan PWM manual range 50–100%, practical increments 5/10; user setting belongs to Manual Volt, not Adaptive-managed fan.
 - Adaptive ON locks manual voltage touch; Adaptive ON/OFF returns to safe 5 V first. Previously running Peltier returns only when safe through normal five-second ramp.
@@ -227,7 +228,7 @@ Read DESIGN_NOTES.md before any visual iteration.
 3. Pair App and Firmware V6.6 and test Static (1), Breath (2), Comet (4), Dual Chase (5), Left ↔ Right (6), and Rainbow (7). Verify Mirror Pulse is absent, stored ID 3 migrates to Static, and MODE:3 is rejected.
 4. Verify LED_SYNC on initial P1 sync, mode change, RGB ON/OFF and periodic refresh. Observe phase drift/jumps under BLE traffic and queued telemetry.
 5. Check compact mode-name-only preview at narrow Android widths: left arrow → four left pixels → center mode name → four right pixels → right arrow. Check vivid colors with hardware Brightness at 1%, 10%, 46% and 100%; preview pixel visibility must not fade merely because hardware Brightness is low.
-6. Check the centered responsive Color Picker on narrow/wide displays: 36 curated hue-ordered presets, localized names, no visible HEX codes, clearly indicated current selection, and color selection still sends internal HEX through the existing COLOR protocol without changing the brightness value.
+6. Check the centered responsive Color Picker on narrow/wide displays: 36 curated hue-ordered presets, localized names, no visible HEX codes, clearly indicated current selection, legacy saved colors retain localized aliases (including Cyan #00FFFF), and color selection sends internal HEX through the existing COLOR protocol without changing brightness.
 7. Verify CONTROL/ADAPTIVE/LED while BLE is disconnected: OFF label and disabled left-position toggle; no command is sent. Confirm Home/dashboard and Floating Monitor still show `--` for unknown physical telemetry and that reconnect/full sync replaces the fallback with authoritative state.
 8. On Android 13+ and older supported Android, inspect small status-bar icon, full-color notification large icon, title/body order for connected/disconnected events, tap-to-open App, meaningful BLE/Floating Monitor service notification bodies, permission request and response. Verify language and notification preferences where applicable.
 9. Run Flutter tests/analyze and record exact output if execution environment supports and is authorized. The files exist but tests/analyze have NOT RUN in this execution.
@@ -250,7 +251,7 @@ Read DESIGN_NOTES.md before any visual iteration.
 
 Never equate test file with passing run; compile with full OTA installation; blue LED with successful HTTP; ACK with hardware state; reboot with proven brownout; version bump with BIN build; or existing BIN with source provenance.
 
-## 16. Live blob fingerprints at pre-transfer HEAD `fb3f72f493c409a8cc568594a3dda2c69d2ae748`
+## 16. Live blob fingerprints at pre-transfer HEAD `9b921756b3a00314e960428faae2dd4b85593adf`
 
 Hashes below are fetched from the fully fetched, non-truncated recursive tree immediately before the transfer-file commit. The future blob SHA of this file is deliberately not self-recorded.
 
@@ -258,14 +259,14 @@ Canonical memory and history:
 - `README.md`: `b96950e0f128499c240edb6b73e9b0eb776f2038`, 3343 bytes
 - `MEMORY_INDEX.md`: `dcec72982b174106f3f551cb821020b1d091a5ba`, 6182 bytes
 - `CHAT_RULES.md`: `1a7e671b9e801acc07b74fd2bc2372dd6d9ec105`, 8071 bytes
-- `PROJECT_STATE.md`: `8ff989910e8bf651ae1284d8212a2caa9fb0a866`, 11486 bytes
+- `PROJECT_STATE.md`: `7cd2fb8aac2c210edf6273344ed37ad37b2b497a`, 11612 bytes
 - `CHAT_TRANSFER_PROMPTS.md`: `cb2290bf2b1b404cde29fc1b68b90ebbc1e62f34`, 28068 bytes
-- `HANDOVER.md`: `7068cfa1829dca83da3d15bf80bc2bde243968d6`, 6114 bytes
-- `APP_NOTES.md`: `35bbf5152138b7a9ee5046fd84150a3684d3fc6a`, 10432 bytes
+- `HANDOVER.md`: `3e068a54c4a4ad5afb795e8fd4b23d48fbe0df77`, 6114 bytes
+- `APP_NOTES.md`: `bcd67584aca6222d095a8d866493ccf558d48d2e`, 10559 bytes
 - `FIRMWARE_NOTES.md`: `339e50a1ed72ed61239f027eed5651241ff138c3`, 10771 bytes
 - `BUILD_NOTES.md`: `7627218cc6d2a3b3585ef63057b4eab9856fe916`, 2970 bytes
 - `DESIGN_NOTES.md`: `e04382659dfdd618de0a156046f140452d275dc7`, 2128 bytes
-- `CHANGELOG.md`: `958eb87507045ae6d6fcf2957574d2026cd3871c`, 15229 bytes
+- `CHANGELOG.md`: `2ff7420693ee84459faa3fb2f16f3ed78e605072`, 15406 bytes
 - `OTA_PROTECTION.md`: `06beb86b749b0f0e14c8cb517e43fe7c0f66a4e1`, 4259 bytes
 - `OTA_REGRESSION_MEMORY.md`: `aceb42527edf6eb3249c8d187ed368ad407c7bb0`, 3918 bytes
 - `VOLTAGE_TRANSITION_MEMORY.md`: `22e11fffe2d7346450adc60b5794551e998f18c2`, 5587 bytes
@@ -276,15 +277,15 @@ Workflow, package, active source and tests:
 - `.gitignore`: `a51c5ad7dabd81d6a7e42181fa7d5c3a25bdac15`, 424 bytes
 - `pubspec.yaml`: `8f558273e21692af9958f914527fdc62d623d63a`, 833 bytes
 - `pubspec.lock`: `1e92812bfda2c28244a0556d71d1ec94084acc66`, 20203 bytes
-- `lib/main.dart`: `a9e50590a72a7eab91f091092d998bfa5512ce7a`, 243469 bytes
-- `lib/app_settings.dart`: `bff5544fcb708a4d0c76ef443ff325ec5b3bee0e`, 51420 bytes
+- `lib/main.dart`: `c0567d4652ba5b84ce82b2d382916754cd73d861`, 244465 bytes
+- `lib/app_settings.dart`: `232a7575460e5417f7b760f24b5057687a47ee1a`, 52678 bytes
 - `lib/floating_monitor.dart`: `cfc21b3dc198b925786aa98658d647b1d8a3637b`, 51218 bytes
 - `lib/jex_animated_glyph.dart`: `c9c5c2802cb0ed363c042620511148b0d58d36c4`, 1730 bytes
 - `firmware/JEXFYZ-V6.6.ino`: `f51ba6db5d0e91318f63fea4014bb87f7bf76222`, 164410 bytes
 - `test/v6_6_qc_contract_test.dart`: `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a`, 20211 bytes
 - `test/firmware_touch_adaptive_sync_test.dart`: `2d3fea509343a03b8d23623f4dcb2dd7fd972d39`, 1622 bytes
 - `test/app_protocol_notify_contract_test.dart`: `92214dd90178c705844d3979d3f8f7bd17bcc4b8`, 867 bytes
-- `test/widget_test.dart`: `0ba772d70a68ff6ae43f31145399dd12df4d45b1`, 24838 bytes
+- `test/widget_test.dart`: `ef84c41fb09dac62cb749c4fed660b9a517ff4e8`, 25056 bytes
 
 Android config, native source and visual assets:
 - `android/app/build.gradle`: `d8681cb73156b61da7749633abd63e2fb8c287ba`, 4671 bytes
