@@ -9,7 +9,11 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - Added `MEMORY_INDEX.md`, `CHAT_TRANSFER_PROMPTS.md`, and `DESIGN_NOTES.md`; established `README.md` as the project index and transfer prompts as a separate file.
 - Consolidated V6.4 Peltier transition logic into `VOLTAGE_TRANSITION_MEMORY.md`; preserved Online OTA incident and evidence boundary in `OTA_REGRESSION_MEMORY.md`.
 - Set documented repo boundary: all code source and memory under `TenzoNkz/JEXFYZ-App`; `TenzoNkz/JEXFYZ-Firmware` is intended to contain only `JEXFYZ.cpp.bin`.
-- Documentation-only operation; no functional source, test behavior, build workflow, BIN, Firebase, device or release was changed by the documentation updates. Tests were not run as part of the documentation cleanup.
+- Added verbatim archives of the legacy state/reference docs and transfer/rules/history snapshots before replacing them, plus an archive of the removed artifact-repository notes. Archives are for recovery only; old CURRENT/version statements inside them are stale.
+- Renamed the old `test/v5_9_contract_test.dart` to `test/app_protocol_notify_contract_test.dart` to reflect what it tests; test content is unchanged and has not been executed here.
+- Enforced the user-requested artifact repository split: removed README and duplicated note files from `TenzoNkz/JEXFYZ-Firmware`; verified the BIN itself was not modified.
+- Expanded transfer prompt templates with a mandatory memory-category checklist and an archive-recovery policy.
+- Documentation/test-path cleanup only; no functional App/Firmware behavior was intentionally changed, no tests were run, and no Build App, Firmware compile, BIN replacement, Firebase, device or release operation was performed.
 
 ## 2026-10-13 — V6.4 voltage-transition source contract
 
