@@ -275,10 +275,19 @@ jobs:
           test -s "$SIGNED_APK"
           mv "$SIGNED_APK" "$APK"
 
-          # APK minSdk is 24; verify from API 1 so the v1 scheme is exercised too.
-          SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --min-sdk-version 1 --verbose --print-certs "$APK" 2>&1)"
+          # Validate JAR/v1 independently; apksigner's Android-platform check follows minSdk=24.
+          set +e
+          JAR_SIGNATURE_OUTPUT="$(jarsigner -verify -verbose -certs "$APK" 2>&1)"
+          JAR_SIGNATURE_STATUS=$?
+          set -e
+          printf '%s\n' "$JAR_SIGNATURE_OUTPUT"
+          if [ "$JAR_SIGNATURE_STATUS" -ne 0 ] || ! grep -Eiq 'jar verified\.' <<< "$JAR_SIGNATURE_OUTPUT"; then
+            echo "JAR/v1 signature validation failed."
+            exit 1
+          fi
+
+          SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --verbose --print-certs "$APK" 2>&1)"
           printf '%s\n' "$SIGNATURE_OUTPUT"
-          grep -Fq "Verified using v1 scheme (JAR signing): true" <<< "$SIGNATURE_OUTPUT"
           grep -Fq "Verified using v2 scheme (APK Signature Scheme v2): true" <<< "$SIGNATURE_OUTPUT"
           grep -Fq "Verified using v3 scheme (APK Signature Scheme v3): true" <<< "$SIGNATURE_OUTPUT"
 
@@ -293,13 +302,21 @@ jobs:
           APK_SIGNER="$(find "$ANDROID_SDK_ROOT/build-tools" -type f -name apksigner 2>/dev/null | sort -V | tail -n 1)"
           test -n "$APK_SIGNER"
 
-          SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --min-sdk-version 1 --verbose --print-certs "$APK" 2>&1)"
+          # Verify the JAR/v1 signature separately from Android platform schemes.
+          set +e
+          JAR_SIGNATURE_OUTPUT="$(jarsigner -verify -certs "$APK" 2>&1)"
+          JAR_SIGNATURE_STATUS=$?
+          set -e
+          printf '%s\n' "$JAR_SIGNATURE_OUTPUT"
+          if [ "$JAR_SIGNATURE_STATUS" -ne 0 ] || ! grep -Eiq 'jar verified\.' <<< "$JAR_SIGNATURE_OUTPUT"; then
+            echo "JAR/v1 signature validation failed."
+            exit 1
+          fi
+
+          SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --verbose --print-certs "$APK" 2>&1)"
           printf '%s\n' "$SIGNATURE_OUTPUT"
 
-          # Require every APK signature scheme used by the release policy.
-          # V1 is kept for legacy/third-party APK verifiers (including MT Manager);
-          # V2/V3 are required for modern Android integrity verification.
-          grep -Fq "Verified using v1 scheme (JAR signing): true" <<< "$SIGNATURE_OUTPUT"
+          # Android platform verification covers the APK's declared minSdk (24).
           grep -Fq "Verified using v2 scheme (APK Signature Scheme v2): true" <<< "$SIGNATURE_OUTPUT"
           grep -Fq "Verified using v3 scheme (APK Signature Scheme v3): true" <<< "$SIGNATURE_OUTPUT"
           grep -Fq "Number of signers: 1" <<< "$SIGNATURE_OUTPUT"
@@ -396,10 +413,19 @@ jobs:
           APK_SIGNER="$(find "$ANDROID_SDK_ROOT/build-tools" -type f -name apksigner 2>/dev/null | sort -V | tail -n 1)"
           test -n "$APK_SIGNER"
 
-          DOWNLOADED_SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --min-sdk-version 1 --verbose --print-certs "$DOWNLOADED" 2>&1)"
+          set +e
+          DOWNLOADED_JAR_SIGNATURE_OUTPUT="$(jarsigner -verify -certs "$DOWNLOADED" 2>&1)"
+          DOWNLOADED_JAR_SIGNATURE_STATUS=$?
+          set -e
+          printf '%s\n' "$DOWNLOADED_JAR_SIGNATURE_OUTPUT"
+          if [ "$DOWNLOADED_JAR_SIGNATURE_STATUS" -ne 0 ] || ! grep -Eiq 'jar verified\.' <<< "$DOWNLOADED_JAR_SIGNATURE_OUTPUT"; then
+            echo "Downloaded JAR/v1 signature validation failed."
+            exit 1
+          fi
+
+          DOWNLOADED_SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --verbose --print-certs "$DOWNLOADED" 2>&1)"
           printf '%s\n' "$DOWNLOADED_SIGNATURE_OUTPUT"
 
-          grep -Fq "Verified using v1 scheme (JAR signing): true" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
           grep -Fq "Verified using v2 scheme (APK Signature Scheme v2): true" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
           grep -Fq "Verified using v3 scheme (APK Signature Scheme v3): true" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
           grep -Fq "Number of signers: 1" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
