@@ -347,7 +347,10 @@ void main() {
     expect(ledColorDisplayName('#FF1744', AppLanguage.indonesia), 'Merah Permen');
     expect(ledColorDisplayName('#A85D32', AppLanguage.indonesia), 'Cokelat');
     expect(ledColorDisplayName('#FFFFFF', AppLanguage.english), 'White');
-    expect(ledColorDisplayName('#FF0000', AppLanguage.english), 'Custom Color');
+    expect(ledColorDisplayName('#FF0000', AppLanguage.english), 'Red');
+    expect(ledColorDisplayName('#00FFFF', AppLanguage.english), 'Cyan');
+    expect(ledColorDisplayName('#FFB6C1', AppLanguage.english), 'Pink');
+    expect(ledColorDisplayName('#ABCDEF', AppLanguage.english), 'Custom Color');
     expect(ledColorPalette, isNot(contains('#000000')));
   });
 

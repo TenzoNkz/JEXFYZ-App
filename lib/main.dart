@@ -177,7 +177,7 @@ class LedColorPreset {
 
 const List<LedColorPreset> ledColorPresets = <LedColorPreset>[
   LedColorPreset('#FF1744', 'ledColorCandyRed'),
-  LedColorPreset('#DC143C', 'ledColorCrimson'),
+  LedColorPreset('#FF0000', 'ledColorRed'),
   LedColorPreset('#FF2400', 'ledColorScarlet'),
   LedColorPreset('#FF4500', 'ledColorVermilion'),
   LedColorPreset('#FF6347', 'ledColorCoral'),
@@ -196,7 +196,7 @@ const List<LedColorPreset> ledColorPresets = <LedColorPreset>[
   LedColorPreset('#00E676', 'ledColorMint'),
   LedColorPreset('#00A86B', 'ledColorJade'),
   LedColorPreset('#00CBB6', 'ledColorTurquoise'),
-  LedColorPreset('#00E5FF', 'ledColorCyan'),
+  LedColorPreset('#00FFFF', 'ledColorCyan'),
   LedColorPreset('#29B6F6', 'ledColorSkyBlue'),
   LedColorPreset('#168CFF', 'ledColorAzure'),
   LedColorPreset('#147DFF', 'ledColorElectricBlue'),
@@ -218,12 +218,39 @@ final List<String> ledColorPalette = List<String>.unmodifiable(
   ledColorPresets.map((preset) => preset.hex),
 );
 
+// Retain readable names for colors already stored by earlier app versions.
+// Aliases only affect presentation; RGB protocol values remain unchanged.
+const Map<String, String> legacyLedColorNameKeys = <String, String>{
+  '#DC143C': 'ledColorCrimson',
+  '#FF4000': 'ledColorOrangeRed',
+  '#FF8000': 'ledColorOrange',
+  '#FFC000': 'ledColorGoldenOrange',
+  '#FFFF00': 'ledColorYellow',
+  '#80FF00': 'ledColorSpringLime',
+  '#00FF00': 'ledColorGreen',
+  '#00FF80': 'ledColorSpringGreen',
+  '#00BFFF': 'ledColorDeepSkyBlue',
+  '#0080FF': 'ledColorAzure',
+  '#0040FF': 'ledColorBlue',
+  '#0000FF': 'ledColorBlue',
+  '#4000FF': 'ledColorIndigo',
+  '#8000FF': 'ledColorViolet',
+  '#BF00FF': 'ledColorNeonPurple',
+  '#FF0080': 'ledColorFuchsia',
+  '#FF4080': 'ledColorRosePink',
+  '#FF0040': 'ledColorScarlet',
+  '#FF8040': 'ledColorCoral',
+  '#FFB6C1': 'ledColorPink',
+};
+
 String ledColorDisplayName(String hex, [AppLanguage? language]) {
   final raw = hex.trim().toUpperCase();
   final normalized = raw.startsWith('#') ? raw : '#$raw';
   for (final preset in ledColorPresets) {
     if (preset.hex == normalized) return JexText.of(preset.nameKey, language);
   }
+  final legacyNameKey = legacyLedColorNameKeys[normalized];
+  if (legacyNameKey != null) return JexText.of(legacyNameKey, language);
   return JexText.of('customColor', language);
 }
 

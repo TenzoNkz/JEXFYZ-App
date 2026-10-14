@@ -480,6 +480,50 @@ class JexText {
       AppLanguage.english: 'Custom Color',
       AppLanguage.indonesia: 'Warna Kustom',
     },
+    'ledColorRed': {
+      AppLanguage.english: 'Red',
+      AppLanguage.indonesia: 'Merah',
+    },
+    'ledColorOrangeRed': {
+      AppLanguage.english: 'Orange Red',
+      AppLanguage.indonesia: 'Jingga Kemerahan',
+    },
+    'ledColorOrange': {
+      AppLanguage.english: 'Orange',
+      AppLanguage.indonesia: 'Jingga',
+    },
+    'ledColorGoldenOrange': {
+      AppLanguage.english: 'Golden Orange',
+      AppLanguage.indonesia: 'Jingga Emas',
+    },
+    'ledColorYellow': {
+      AppLanguage.english: 'Yellow',
+      AppLanguage.indonesia: 'Kuning',
+    },
+    'ledColorSpringLime': {
+      AppLanguage.english: 'Spring Lime',
+      AppLanguage.indonesia: 'Hijau Lime Muda',
+    },
+    'ledColorGreen': {
+      AppLanguage.english: 'Green',
+      AppLanguage.indonesia: 'Hijau',
+    },
+    'ledColorSpringGreen': {
+      AppLanguage.english: 'Spring Green',
+      AppLanguage.indonesia: 'Hijau Musim Semi',
+    },
+    'ledColorDeepSkyBlue': {
+      AppLanguage.english: 'Deep Sky Blue',
+      AppLanguage.indonesia: 'Biru Langit Cerah',
+    },
+    'ledColorBlue': {
+      AppLanguage.english: 'Blue',
+      AppLanguage.indonesia: 'Biru',
+    },
+    'ledColorPink': {
+      AppLanguage.english: 'Pink',
+      AppLanguage.indonesia: 'Merah Muda',
+    },
     'brightness': {
       AppLanguage.english: 'Brightness',
       AppLanguage.indonesia: 'Kecerahan',
