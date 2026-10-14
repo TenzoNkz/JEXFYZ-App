@@ -41,7 +41,7 @@ Use `MEMORY_INDEX.md` to find canonical notes. Use `CHANGELOG.md` for history on
  
 ## Latest UI and signature change-set boundary (2026-10-14)
 
-- Latest App UI source blob: `3d756a5a38c76b252dc93c6151a3b864ebbbbb94`; widget regression tests blob: `0f370d9ea4d7177608ce1fd5aab679c2c65d9cf3`.
+- Latest App UI source blob: `3d756a5a38c76b252dc93c6151a3b864ebbbbb94`; widget regression tests blob: `99648e4c145b122949099b74581d47e6c472d9b9`.
 - Fan OFF now uses ease-out coast-down over a short period-dependent travel and retains the resting pose; the blades and hub remain fully coloured. Peltier now renders a free-standing six-branch crystal only—no square module frame, inner box or corner bolts—and freezes at OFF with no fade. Fan Speed's gauge needle has a small organic wobble while ON; telemetry percentage remains stable, and OFF eases the needle to far-left/0 over 520 ms.
 - Regression tests were updated for these contracts, but **have not been run after the edits**. Last successful Flutter analyze/test run remains pre-change Build App run `38556896542`.
 - Separately, signing workflow fix blob `0e400cbdedfd54506ae3ac3255da41580c86d750` now requires V1/V2/V3 and has not yet been build-verified. No App Build was run in this execution.
