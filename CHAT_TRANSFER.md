@@ -16,11 +16,11 @@ Snapshot date: 2026-10-14 (Asia/Jakarta). This detailed transfer file bridges pr
 ## 1. Repository checkpoint immediately before this transfer refresh
 
 - Canonical repository: TenzoNkz/JEXFYZ-App, private, branch main.
-- Main HEAD immediately before this transfer write: 7d87cbc3767d7f35c63efbee3e791760144a7931. The source, contracts, and canonical memory updates are already committed at this HEAD. This final transfer refresh is the only change in the checkpoint commit, whose parent must be exactly 7d87cbc3767d7f35c63efbee3e791760144a7931. Re-fetch final HEAD and verify its parent after saving.
+- Main HEAD immediately before this transfer write: ce334cbc5c3572706fa0016be95efcde6d159b14. LED source, App source, tests, canonical notes, and hash updates are committed at this HEAD. This final transfer refresh is the only change in the checkpoint commit, whose parent must be exactly ce334cbc5c3572706fa0016be95efcde6d159b14. Re-fetch final HEAD and verify its parent after saving.
 - Last live open-PR search returned 0. Branches observed: diag/latest-stable-v16, diagnostic/v1.6-heap-check, fix/adaptive-power-sequencing, main, tmp-jexfyz-v5-test. Continue on main by default.
 - Closed-PR search returned #18, #7, #5, #4, #3, #2, #1. The connector’s closed-PR records do not reliably expose merge status; do not infer merged/unmerged from closure alone.
 - Active firmware source: firmware/JEXFYZ-V6.6.ino. FW_VERSION = "V6.6". Source blob: f51ba6db5d0e91318f63fea4014bb87f7bf76222. Exactly one active versioned .ino was found.
-- Active App source: lib/main.dart, blob 4d58c3548f09138526a7cf5f305ea7890d571251.
+- Active App source: lib/main.dart, blob e0371cac545dda2f2d5f099e4298c37c04160538.
 - App package/version: com.horizontalzzz.jexfyz / 1.0.0+3.
 - Android Gradle versionName "Telegram @horizontalzzz" is intentional identity text and must remain unchanged.
 - Test paths: test/v6_6_qc_contract_test.dart; test/firmware_touch_adaptive_sync_test.dart; test/app_protocol_notify_contract_test.dart; test/widget_test.dart. The V6.6 contract covers LED mode retirement, atomic LED_SYNC-at-notify, full sync and App mode-source behavior. Tests/analyze were NOT RUN.
@@ -126,7 +126,7 @@ Read VOLTAGE_TRANSITION_MEMORY.md completely before any rail/Peltier change.
 - Adaptive ON: orange 3 blinks. Adaptive OFF: white 3 blinks; if Adaptive was active, OFF feedback waits until safe 5 V handoff completes.
 - [USER-REPORTED HISTORICAL ISSUE / UNVERIFIED] White Adaptive-OFF three-blink feedback was previously reported missing immediately after restart. Transition feedback code alone does not prove boot-time initial OFF indication; specifically verify before claiming resolved.
 - Default voltage LEDs: 5 V red, 9 V green, 12 V blue; customizable/resettable.
-- Current RGB modes: Static ID 1, Breath ID 2, Comet ID 4, Dual Chase ID 5, Left/Right ID 6, Rainbow ID 7. Mirror Pulse ID 3 is retired; stored ID 3/invalid modes migrate to Static and new MODE:3 commands are rejected.
+- Current RGB modes: Static ID 1, Breath ID 2, Comet ID 4, Dual Chase ID 5, Left/Right ID 6, Rainbow ID 7. Mirror Pulse ID 3 is retired; stored ID 3/invalid modes migrate to Static and new MODE:3 commands are rejected. If the App encounters legacy ID 3 from older firmware, previous navigation selects Breath (ID 2) and next selects Comet (ID 4).
 - Firmware publishes one `LED_SYNC:<mode>,<phase_ms>,<cycle_ms>` snapshot computed at BLE notify time. App interpolates monotonically between snapshots and adjusts drift without resetting the animation on every update. Separate `LED_PHASE`/`LED_CYCLE_MS` remains a compatibility fallback for older V6.x firmware.
 - LED preview layout is left arrow → four left pixels → centered mode number/name → four right pixels → right arrow. Preview keeps RGB chroma at low brightness; alpha/glow scales preview intensity. Safety/OTA LED indication outranks decorative RGB.
 
@@ -257,9 +257,9 @@ Canonical memory docs:
 - `README.md`: `b96950e0f128499c240edb6b73e9b0eb776f2038`
 - `MEMORY_INDEX.md`: `399ef8c82aa71f6b31a56904b0faf36145909983`
 - `CHAT_RULES.md`: `1a7e671b9e801acc07b74fd2bc2372dd6d9ec105`
-- `PROJECT_STATE.md`: `4776fd600090b5dc34b20a5abb287dc67728cb39`
+- `PROJECT_STATE.md`: `11541dde9126833323ea1acda2daf0be087291bf`
 - `CHAT_TRANSFER_PROMPTS.md`: `516ee334529431ffd2a7f19d47f3c0fa15fcc090`
-- `HANDOVER.md`: `4bf3030521a12050ef19209e2f5b3e359b3c51b8`
+- `HANDOVER.md`: `37b6f89376ac3b709e6673484e410b2a65b99edc`
 - `APP_NOTES.md`: `9860bffc4204b787bde1b31444d63f3335a669a6`
 - `FIRMWARE_NOTES.md`: `339e50a1ed72ed61239f027eed5651241ff138c3`
 - `BUILD_NOTES.md`: `7627218cc6d2a3b3585ef63057b4eab9856fe916`
@@ -275,7 +275,7 @@ Workflow, package metadata, active source and tests:
 - `.gitignore`: `a51c5ad7dabd81d6a7e42181fa7d5c3a25bdac15`
 - `pubspec.yaml`: `8f558273e21692af9958f914527fdc62d623d63a`
 - `pubspec.lock`: `1e92812bfda2c28244a0556d71d1ec94084acc66`
-- `lib/main.dart`: `4d58c3548f09138526a7cf5f305ea7890d571251`
+- `lib/main.dart`: `e0371cac545dda2f2d5f099e4298c37c04160538`
 - `lib/app_settings.dart`: `9a0c0241ee4e87aa15b6db40bcac6c279b8a3a97`
 - `lib/floating_monitor.dart`: `cfc21b3dc198b925786aa98658d647b1d8a3637b`
 - `lib/jex_animated_glyph.dart`: `c9c5c2802cb0ed363c042620511148b0d58d36c4`
