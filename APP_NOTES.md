@@ -91,8 +91,12 @@ This file is the durable App behavior/design contract. Live `lib/` source and th
 
 ## Current App QC boundary
 
-The latest UI/notification source is committed on `main`, but the new widget/source contracts have NOT been run because Flutter/Dart SDK is unavailable in this execution environment. Source readback/static checks passed; this is not Flutter test/analyze or runtime proof. The latest live successful App Build is run `38545637192` on commit `9e790765f6683d342025317ce6594cc8519026de`; that APK predates the latest smooth animation, new Peltier crystal icon, resized dialogs and JE notification monogram. A new explicit Build App run and device QC are still required. App Build does not validate Firmware compile, BIN provenance, OTA or physical cooling behavior.
-
+- Latest App source (including phase-continuous Fan motion, geometric Peltier crystal/fades, resized dialogs and JE notification vector) was built in Actions run `38556896542` on commit `67c5d26723c433b4af856c7759a967a3425bf67a`; security/architecture audit, Dart analyze, Flutter tests, APK build and downloaded-release verification passed for that source.
+- The run's signing log reported V1=false, V2=true and V3=true; expected JE X FYZ signer certificate SHA-256 was present. The previous workflow did not enforce V1 through `apksigner`, despite requiring V1/V2/V3 in the signing command. The MT Manager screenshot reports `Signature: Verified failed`. Its installed-package record says last update 17:11 on 2026-10-14, before the latest APK release finished at 18:36 Asia/Jakarta; the shown installed copy therefore predates the latest release. These facts point to a signing-compatibility validation gap, but do not independently prove the exact cause of MT Manager's display.
+- Workflow hardening is now committed in `.github/workflows/jexfyz-app-build-trigger.yml` (blob `0e400cbdedfd54506ae3ac3255da41580c86d750`): explicitly sign/verify against API 23 for V1 compatibility and require V1, V2 and V3 verification for both the built APK and downloaded release asset. This does not lower Android manifest minSdk 24.
+- **Not yet verified:** no App Build has run after the signing-workflow fix, and no newly built APK has been installed/rechecked in MT Manager. The existing release remains from the pre-fix workflow. A new build is allowed only after explicit `@Thinking Build App!` or `@Thinking Eksekusi & Build App!`. App signature certification, package-manager acceptance and MT Manager's display are separate validation evidence.
+- Android OEM rendering, physical cooling behavior and Firmware OTA/device behavior remain separate from App CI results.
+ 
 ## Dashboard indicator motion
 
 - The seven Home indicators (Battery Temperature, Hotside Temperature, Voltage, Adaptive, Peltier, Fan and Fan Speed) use distinct custom Canvas artwork with layered fills, soft glows and per-icon motion rather than a shared line-pulse treatment.
