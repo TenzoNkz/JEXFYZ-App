@@ -14,6 +14,9 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - Enforced the user-requested artifact repository split: removed README and duplicated note files from `TenzoNkz/JEXFYZ-Firmware`; verified the BIN itself was not modified.
 - Expanded transfer prompt templates with a mandatory memory-category checklist and an archive-recovery policy.
 - Documentation/test-path cleanup only; no functional App/Firmware behavior was intentionally changed, no tests were run, and no Build App, Firmware compile, BIN replacement, Firebase, device or release operation was performed.
+- Full chat-limit memory reconciliation refreshed the canonical memory map and handover/prompts, and made two durable requirements explicit in `APP_NOTES.md`: do not display a standalone Battery Protection Guard; preserve the 1 Hz Android Battery heartbeat/5-second Firmware freshness TTL. The one-App/one-cooler pairing-lock intent is preserved as a user requirement while exclusive enforcement remains unverified.
+- Rechecked current Local OTA boot SoftAP/radio lifecycle from active source: 10-second no-client timeout, 60-second hard cap after interaction, and 160 ms Wi-Fi-off settle before BLE starts. Documented in Firmware technical/OTA references without changing protected code.
+- Transfer prompt now requires full-tree audit, local-link/path/hash checks, source-versus-test-versus-runtime evidence separation, archive handling, and replacement of `CHAT_TRANSFER.md` last. No functional source changed and no tests/build/compile/BIN/OTA/Firebase/flash/release operation was performed.
 
 ## 2026-10-13 — V6.4 voltage-transition source contract
 
