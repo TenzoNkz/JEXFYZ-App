@@ -529,6 +529,9 @@ void main() {
     expect(iconState, contains('frostTransitionController.forward(from: 0)'));
     expect(iconState, contains('_frostFromVisibility'));
     expect(iconState, contains('frostTransitionController.duration = widget.active'));
+    expect(iconState, contains('Duration(milliseconds: 360)'));
+    expect(iconState, contains('Duration(milliseconds: 420)'));
+    expect(iconState, contains('Duration(milliseconds: 520)'));
   });
 
   test('Peltier indicator uses a geometric crystal rather than a flower rotor', () {
