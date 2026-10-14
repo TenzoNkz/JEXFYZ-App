@@ -1025,6 +1025,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
   late final AnimationController frostTransitionController;
   double _frostFromIntensity = .24;
   double _frostFromParticleCount = 2;
+  double _frostFromVisibility = 0;
 
   void _syncAnimation() {
     if (widget.kind == JexAnimatedIconKind.generic) {
@@ -1035,10 +1036,8 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     if (!widget.active) {
       // Fan keeps its final coast angle across ordinary dashboard rebuilds. Peltier
       // keeps its fade-out animation alive until its frost has fully disappeared.
-      if (widget.kind == JexAnimatedIconKind.fan) {
-        return;
-      }
-      if (widget.kind == JexAnimatedIconKind.peltier && controller.isAnimating) {
+      if (widget.kind == JexAnimatedIconKind.fan ||
+          widget.kind == JexAnimatedIconKind.peltier) {
         return;
       }
       controller.stop();
@@ -1062,10 +1061,14 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     );
     _frostFromIntensity = jexPeltierFrostIntensity(widget.voltageLevel);
     _frostFromParticleCount = jexPeltierFrostParticleCount(widget.voltageLevel).toDouble();
+    _frostFromVisibility = 0;
     frostTransitionController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 420),
-    )..value = 1;
+    )..value = widget.kind == JexAnimatedIconKind.peltier ? 0 : 1;
+    if (widget.kind == JexAnimatedIconKind.peltier && widget.active) {
+      frostTransitionController.forward(from: 0);
+    }
     _syncAnimation();
   }
 
@@ -1074,8 +1077,8 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     super.didUpdateWidget(oldWidget);
     final voltageChanged = widget.voltageLevel != oldWidget.voltageLevel;
     final fanVoltageChanged = widget.kind == JexAnimatedIconKind.fan && voltageChanged;
-    final peltierVoltageChanged =
-        widget.kind == JexAnimatedIconKind.peltier && voltageChanged;
+    final peltierVisualChanged = widget.kind == JexAnimatedIconKind.peltier &&
+        (voltageChanged || widget.active != oldWidget.active);
 
     if (widget.kind != oldWidget.kind || fanVoltageChanged) {
       controller.duration = jexIconAnimationDuration(
@@ -1091,28 +1094,27 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       }
     }
 
-    if (peltierVoltageChanged) {
-      // Re-target from the current interpolated frost level if another voltage arrives
-      // while a transition is still running.
+    if (peltierVisualChanged) {
+      // Retarget from the currently displayed frost state on voltage or ON/OFF changes.
+      // If another change arrives mid-transition, continue from the interpolated value.
       final previousT = Curves.easeInOutCubic.transform(frostTransitionController.value);
       final previousIntensity = jexPeltierFrostIntensity(oldWidget.voltageLevel);
       final previousCount = jexPeltierFrostParticleCount(oldWidget.voltageLevel).toDouble();
+      final previousVisibility = oldWidget.active ? 1.0 : 0.0;
       _frostFromIntensity += (previousIntensity - _frostFromIntensity) * previousT;
       _frostFromParticleCount += (previousCount - _frostFromParticleCount) * previousT;
+      _frostFromVisibility += (previousVisibility - _frostFromVisibility) * previousT;
       frostTransitionController.forward(from: 0);
     }
 
     if (widget.active != oldWidget.active) {
-      if (widget.kind == JexAnimatedIconKind.peltier &&
-          oldWidget.active &&
-          !widget.active) {
-        controller.stop();
-        controller.value = 1;
-        controller.animateTo(
-          0,
-          duration: const Duration(milliseconds: 520),
-          curve: Curves.easeOutCubic,
-        );
+      if (widget.kind == JexAnimatedIconKind.peltier) {
+        if (widget.active) {
+          if (!controller.isAnimating) controller.repeat();
+        } else {
+          // Frost visibility animates independently; freezing the crystal phase prevents a snap.
+          controller.stop();
+        }
       } else if (widget.kind == JexAnimatedIconKind.fan &&
           oldWidget.active &&
           !widget.active) {
@@ -1175,6 +1177,8 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
               (frostTargetIntensity - _frostFromIntensity) * frostT;
           final frostParticleCount = _frostFromParticleCount +
               (frostTargetCount - _frostFromParticleCount) * frostT;
+          final frostVisibility = _frostFromVisibility +
+              ((widget.active ? 1.0 : 0.0) - _frostFromVisibility) * frostT;
           return CustomPaint(
             size: Size.square(widget.size),
             painter: _JexIconPainter(
@@ -1186,6 +1190,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
               voltageLevel: widget.voltageLevel,
               frostIntensityOverride: frostIntensity,
               frostParticleCountOverride: frostParticleCount,
+              frostVisibilityOverride: frostVisibility,
               warning: widget.warning,
             ),
           );
@@ -1204,6 +1209,7 @@ class _JexIconPainter extends CustomPainter {
   final int voltageLevel;
   final double? frostIntensityOverride;
   final double? frostParticleCountOverride;
+  final double? frostVisibilityOverride;
   final bool warning;
 
   const _JexIconPainter({
@@ -1215,6 +1221,7 @@ class _JexIconPainter extends CustomPainter {
     required this.voltageLevel,
     required this.frostIntensityOverride,
     required this.frostParticleCountOverride,
+    required this.frostVisibilityOverride,
     required this.warning,
   });
 
@@ -1441,7 +1448,9 @@ class _JexIconPainter extends CustomPainter {
         final center = Offset(cx, cy);
         final targetIntensity =
             frostIntensityOverride ?? jexPeltierFrostIntensity(voltageLevel);
-        final coolingFade = active ? 1.0 : p;
+        final coolingFade = (frostVisibilityOverride ?? (active ? 1.0 : p))
+            .clamp(0.0, 1.0)
+            .toDouble();
         final frostIntensity = targetIntensity * coolingFade;
         final moduleRect = Rect.fromLTWH(s * .12, s * .12, s * .76, s * .76);
         final module = RRect.fromRectAndRadius(moduleRect, Radius.circular(s * .14));
