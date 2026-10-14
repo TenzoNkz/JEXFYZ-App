@@ -5,7 +5,7 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). Re-fetch live `main` and source hash
 ## Current state
 
 - Active Firmware source: `firmware/JEXFYZ-V6.6.ino`; `FW_VERSION = "V6.6"`; source blob observed at last reconciliation: `f51ba6db5d0e91318f63fea4014bb87f7bf76222`.
-- Active App source: `lib/main.dart`, current blob `96a4c968e102a7ebc6b00d3932cf998829b1d07a`, pubspec version `1.0.0+3`, package `com.horizontalzzz.jexfyz`.
+- Active App source: `lib/main.dart`, current blob `2005f4c163d466f9015a564d5418af1e86e09b41`, pubspec version `1.0.0+3`, package `com.horizontalzzz.jexfyz`.
 - Firmware source remains V6.6 and release state remains DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED. User reported successful V6.6 compilation and Online OTA update, but compile logs/artifact provenance and complete physical QC were not independently verified here.
 - Main V6.6 QC contract: `test/v6_6_qc_contract_test.dart`. Latest widget/source contracts are in `test/widget_test.dart` (`3af190d4520a7b753f3f9fc963f788f4aa247f5c`); Flutter tests/analyze were NOT run because Flutter/Dart SDK is unavailable.
 - Latest live successful App Build: run `38545637192` on commit `9e790765f6683d342025317ce6594cc8519026de` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38545637192); security/architecture audit, dependency install, Dart analyze, Flutter tests, APK signing, release publication and downloaded-asset verification succeeded on that commit. Release `jexfyz-latest` contains one `JEXFYZ-release.apk` (54,505,507 bytes, SHA-256 `26b3746a9d6969475e72a56122d5c4051eaa8742f7d4e3559cc80f4fdb4d2b87`) targeting `9e790765`. That release predates the current animation/Peltier/dialog/JE-icon commits and is not a build of the current source.
@@ -52,7 +52,7 @@ Use `MEMORY_INDEX.md` to find canonical notes. Use `CHANGELOG.md` for history on
 ## Latest UI change-set boundary (2026-10-14)
 
 - Source updates: `lib/main.dart` (`2005f4c163d466f9015a564d5418af1e86e09b41`), `test/widget_test.dart` (`3af190d4520a7b753f3f9fc963f788f4aa247f5c`), `JexNotificationUtils.kt` (`aecfc87121f2195ef6724613c612d674ed95ae55`), and `drawable/ic_notification.xml` (`cda9e8404d14a62a61157ec59fae2e491c19f5f7`). Check live `main` for current hashes.
-- Fan rotation retains phase when changing voltage and coasts to a retained angle when OFF. Peltier uses a geometric thermoelectric-module/frost-crystal symbol, 420 ms smooth density/intensity interpolation, periodic crystal drift and a 520 ms OFF fade. Color Picker and Peltier Safety typography and touch targets are larger.
+- Fan rotation retains phase when changing voltage and coasts to a retained angle when OFF. Peltier uses a geometric thermoelectric-module/frost-crystal symbol, 420 ms smooth density/intensity interpolation, 360 ms ON fade-in, periodic crystal drift and a 520 ms OFF fade. Color Picker and Peltier Safety typography and touch targets are larger.
 - Android notification small icon is a bold white JE vector monogram on transparent background, as the sole small icon; no large icon is set. The full-color app icon/dashboard branding remains unchanged.
 - Flutter tests/analyze for current source were not run (Flutter/Dart SDK unavailable); no current-source App Build, Firmware compile, BIN/Firebase change, OTA/flash, device QC or release occurred. Latest successful App Build `38545637192` targets previous commit `9e790765` and does not contain these changes. Firmware V6.6/source was untouched.
 
