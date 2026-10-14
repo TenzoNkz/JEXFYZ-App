@@ -1,80 +1,33 @@
-# JE X FYZ — Chat Transfer Protocol
+# JE X FYZ / JE Cooler App
 
-This file is reserved **only for transferring work between ChatGPT conversations**. It is not a project changelog, execution diary, or technical source of truth. Current project state belongs in `CHAT_TRANSFER.md`; persistent state and technical history belong in their dedicated files.
+Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired with the ESP32-C3 firmware.
 
-## Prompt 1 — Chat-Limit Recap / Save to Repository
+## Start here
 
-Copy this prompt when the current conversation is nearing its context limit:
+1. [Memory Index](MEMORY_INDEX.md) — authoritative map of all project knowledge and where to write new decisions.
+2. [Chat Rules](CHAT_RULES.md) — commands, authorization boundaries, source/version rules, and memory protocol.
+3. [Current Project State](PROJECT_STATE.md) — live development status only; check GitHub before relying on it.
+4. [Chat Transfer Snapshot](CHAT_TRANSFER.md) — boot protocol and last-reconciled handover. Always refresh it against live `main`.
+5. [App Reference](APP_NOTES.md) — UI, controls, BLE, telemetry, and localization contracts.
+6. [Firmware Reference](FIRMWARE_NOTES.md) and [Firmware Technical Reference](firmware/FIRMWARE_TECHNICAL_REFERENCE.md) — hardware, control, sensor, safety, and implementation contracts.
+7. [OTA Protection](OTA_PROTECTION.md), [OTA Regression Memory](OTA_REGRESSION_MEMORY.md), and [Voltage Transition Memory](VOLTAGE_TRANSITION_MEMORY.md) — protected code paths and known regressions.
+8. [Build and Release](BUILD_NOTES.md) — explicit APK build procedure and validation boundaries.
+9. [Changelog](CHANGELOG.md) — historical changes; history never overrides current code.
+10. [Design Notes](DESIGN_NOTES.md) — approved grille, icon, and brand design constraints.
+11. [Transfer Prompt Templates](CHAT_TRANSFER_PROMPTS.md) — copy-ready prompts for saving context and starting a new chat.
 
-```text
-@Thinking CHAT-LIMIT RECAP — SAVE TO REPOSITORY
+## Repository boundaries
 
-Tujuan: rekonsiliasi state percakapan dengan repository, lalu REPLACE
-CHAT_TRANSFER.md dengan transfer protocol/snapshot terbaru.
+- `TenzoNkz/JEXFYZ-App` is the canonical editable App + Firmware source repository and the sole home for project documentation/memories.
+- `TenzoNkz/JEXFYZ-Firmware` is intended to contain only the production OTA artifact `JEXFYZ.cpp.bin`. Do not add README, note, source, or memory files there.
+- The active editable firmware source is `firmware/JEXFYZ-V6.4.ino`. Its embedded `FW_VERSION`, filename and the single active versioned `.ino` must always match.
+- Firmware V6.4 is currently source-only DEVELOPMENT + QC / PRE-RELEASE until the user compiles and validates it. Do not infer that the artifact BIN matches this source.
+- App Gradle `versionName "Telegram @horizontalzzz"` is an intentional identity string; do not change it.
 
-WAJIB:
-1. Baca CHAT_TRANSFER.md sebelum menggantinya.
-2. Verifikasi current main HEAD, source aktif, App source, workflow, dan status PR/branch yang relevan.
-3. Baca PROJECT_STATE.md, HANDOVER.md, CHAT_RULES.md, serta catatan teknis yang relevan.
-4. Pisahkan CURRENT TRUTH, VERIFIED, USER-REPORTED, UNVERIFIED, HYPOTHESIS,
-   HISTORY/OBSOLETE, dan CHAT-ONLY STATE.
-5. Simpan versi/path/blob SHA/commit SHA serta bukti compile, test, flash, dan OTA secara tepat.
-6. Replace CHAT_TRANSFER.md; jangan append snapshot duplikat.
-7. Update PROJECT_STATE.md/HANDOVER.md hanya jika state persisten memang berubah.
-8. Re-read file yang disimpan dan verifikasi commit serta isinya.
+## Current validation boundary
 
-BATASAN:
-- Jangan mengubah source fungsional hanya karena proses transfer.
-- Jangan compile Firmware, Build App, membuat BIN, flash/OTA, atau release tanpa
-  perintah eksplisit yang sesuai.
-- Prefer commit langsung ke main. Jangan membuat branch/PR kecuali diminta.
-- Jangan mengklaim test atau validasi yang tidak dijalankan.
-- Jika write gagal, tandai BLOCKED dan jangan mengklaim transfer tersimpan.
+The V6.4 source and contract tests have been statically checked in the repository, but that does not mean `flutter test`, `flutter analyze`, ArduinoDroid compilation, BIN generation, physical testing, OTA, or App Build has run. See [PROJECT_STATE.md](PROJECT_STATE.md) for the current verified status.
 
-Selesaikan verifikasi persistence dan laporkan bukti commit secara singkat.
-```
+## Non-negotiable workflow
 
-## Prompt 2 — New Chat Boot / QC Pre-Release
-
-Copy this prompt when opening a new conversation:
-
-```text
-@Thinking NEW CHAT BOOT — JE X FYZ / QC PRE-RELEASE
-
-Jangan memulai ulang project atau langsung mengubah source.
-
-MANDATORY BOOT:
-1. Baca CHAT_TRANSFER.md terlebih dahulu.
-2. Baca PROJECT_STATE.md, HANDOVER.md, dan CHAT_RULES.md.
-3. Baca APP_NOTES.md, FIRMWARE_NOTES.md, firmware/FIRMWARE_ANALYSIS.md,
-   OTA_PROTECTION.md, BUILD_NOTES.md, dan CHANGELOG.md bila relevan.
-4. Periksa current main HEAD, active Firmware source/version/blob,
-   App source, workflow aktif, PR/branch penting, dan status file yang relevan.
-5. Rekonsiliasi kontradiksi tanpa mengarang fakta.
-6. Jangan mengubah source saat boot/reconciliation.
-
-AUTHORITY:
-Current source + active workflow > PROJECT_STATE.md > authoritative current notes
-> CHAT_RULES.md/HANDOVER.md/CHANGELOG.md > CHAT_TRANSFER.md > current chat > old chat.
-
-QC:
-- Source presence/static audit bukan bukti compile, flash, atau physical behavior.
-- Jangan Build App kecuali user eksplisit meminta Build App.
-- Jangan compile/build Firmware kecuali user eksplisit meminta compile/build Firmware.
-- Jangan flash, mengubah production OTA metadata, atau release tanpa otorisasi.
-- Source fungsional frozen selama QC kecuali ada defect nyata dengan root cause jelas
-  dan fix yang sempit.
-- Jangan membuat PR/branch; default-nya commit langsung ke main bila ada izin eksekusi.
-
-FIRST RESPONSE (Indonesian):
-CURRENT PROJECT TRUTH
-REPOSITORY RECONCILIATION
-VERIFIED
-UNVERIFIED
-KNOWN RISKS
-NEXT EXACT QC GATE
-WORKFLOW STATUS
-
-Jangan minta user mengulang informasi yang sudah tersedia. Setelah laporan boot,
-tunggu perintah selanjutnya.
-```
+Read [CHAT_RULES.md](CHAT_RULES.md) before making changes. Discussion is read-only. Changes go directly to `main` unless the user explicitly requests another workflow. The user compiles firmware themselves. Run App Build only after an explicit `@Thinking Build App!` or `@Thinking Eksekusi & Build App!` request. A documentation edit never authorizes source changes, builds, release operations, Firebase changes, flash, or OTA.
