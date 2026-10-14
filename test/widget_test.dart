@@ -292,7 +292,7 @@ void main() {
     );
     expect(
       jexIconAnimationDuration(JexAnimatedIconKind.fan),
-      const Duration(milliseconds: 1050),
+      const Duration(milliseconds: 1450),
     );
     expect(
       jexIconAnimationDuration(JexAnimatedIconKind.adaptive),
