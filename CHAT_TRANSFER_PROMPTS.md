@@ -109,3 +109,63 @@ Before marking an execution complete:
 7. Verify post-write content, branch HEAD, blob hashes and no stale path/version references.
 8. Do not report an unrun test/build/compile/device check as passed.
 ```
+
+
+---
+
+## Mandatory memory inventory — include all categories before ending a transfer
+
+When reconciling or booting a chat, check every category below against the canonical current notes, the full legacy archives, and available chat/project context. Mark each as FOUND / UPDATED / HISTORICAL / NOT FOUND; never silently omit an unresolved category.
+
+### Product / App and Android
+- App name JE Cooler, JE X FYZ branding, package and `versionName`; Horizon Cooler architecture/design reference.
+- Main dashboard/Home labels, voltage/adaptive tabs, menu hierarchy VOLTAGE → CONTROL → ADAPTIVE → LED → TEMPERATURE, compact UI and cooler-image placement.
+- Manual 5/9/12 V cycle, 1-second voltage guard, default voltage LED colors and custom/reset behavior.
+- Fan PWM control range and the distinction between Manual and Adaptive fan speed.
+- Adaptive start/stop safe-5V behavior and touch-sensor lock.
+- Localization, safety/Notify copy, output-unknown while disconnected, authoritative telemetry vs ACK, state reconciliation and LED preview phase synchronization.
+- P1 protocol handshake, exact BLE service/RX/TX UUIDs, Secure BLE write/bonding constraints and no second Android GATT client.
+- Auto Connect and reconnection prerequisites; Floating Monitor seven stable metrics F/B/H/V/A/P/S, native bridge channel, permission/lifecycle contracts.
+- Battery temperature heartbeat, Hotside telemetry cadence and firmware notice/preferences storage.
+- Android package, target/min/compile SDK/tool versions, manifest permissions, services, release signing, R8 obfuscation, icon/assets, and preserved creator identity `versionName "Telegram @horizontalzzz"`.
+
+### Firmware / electronics / physical hardware
+- MCU and core: ESP32-C3 Super Mini / ESP32-C3 Dev Module, Arduino-ESP32 Core 3.3.7, single-radio Wi-Fi/BLE handoff.
+- Full GPIO pin map; MOSFET gate/source/wiring notes; selector polarity should be checked in source.
+- NTC resistance/Beta/divider supply, calibrated millivolt ADC function, single one-second sample, no median/multi-sample filters, fault/failsafe behavior.
+- Peltier/Fan PWM frequencies/resolution, ON soft-start, rail deadtime/guard, Fan continuity through transition.
+- Manual Peltier safety latch/hysteresis, Hotside range/default, Adaptive HOTSIDE/HOTSIDE_BATTERY rules, timeout, step-down, recovery, saved ceiling, terminal lock.
+- Touch TTP223 startup grace/debounce/qualification/tap/double-tap/long-press timing and approved Adaptive ON/OFF LED blink feedback.
+- WS2812/RGB mode list, default voltage LED map, persistent settings, one 10-second quiet-period debounce, runtime-only Adaptive Profile.
+- Reset-reason diagnostic handling and separation between a symptom and a proven physical root cause.
+- Version filename constant rule and exactly one active versioned `.ino`.
+
+### OTA, cloud, protocol and security
+- Local OTA Golden/Protected flow and Online OTA flow/state machine.
+- Single-radio Wi-Fi-to-BLE transition; outputs must be safe during OTA.
+- Exact OTA command/protocol sequence, expected disconnect, ACK timeout ambiguity, reconnect, P1 resync and result handling.
+- Current `setInsecure()` trade-off, removed CA/NTP-gate experiment, user-reported symptom/result, and what exact evidence remains unavailable.
+- Raw GitHub BIN URL allowlist, redirects, HTTP/length/size/image checks, `Update` lifecycle, error/recovery/restart.
+- Firebase metadata remains version + link; don't invent SHA/signature fields or imply that current BIN matches active source without provenance.
+- Every prior OTA regression, failed attempt and reason must remain recorded, even when the old implementation is superseded.
+
+### Decisions, failures and validation
+- Every explicit user requirement and every “do not do” instruction.
+- Every rejected approach, why it was rejected, side effects/trade-offs, known bug symptom and reproduction conditions.
+- Exact version/build/commit/test IDs only where directly verified; old IDs marked historical and discrepancies retained unresolved instead of guessing.
+- For each quality gate, record source review, static contract, test execution, compiler, BIN, flash, hardware, BLE, OTA install/reboot and release separately.
+- Include known open issues, pending verification, diagnostic evidence needed, and the precise next action.
+
+### Visual design and build/release
+- Approved white symmetric square grille, 1:1 outline, central purple X, four corner mounting holes, original internal pattern/frame, removal-only side protrusions, flat/no-effects/print-ready requirement.
+- Approved app icon/cooler assets and transparent 1:1 constraint.
+- Manual App Build issue title/token, current workflow, Java/Flutter/Gradle versions, production signing, one obfuscated APK, no bundle/artifact, no push-triggered builds.
+- Exact commands that authorize App Build vs Firmware compile/BIN/OTA/Firebase/flash/release; do not infer one authorization from another.
+
+### Repository hygiene and final transfer
+- App repo owns all source and every memory/note; artifact repo contains only `JEXFYZ.cpp.bin`.
+- Check the full recursive tree, docs and code/config references. Avoid printing secrets from configuration files.
+- Search the current (non-archive) files for stale versions, incorrect filenames, dead links, old workflow path names and contradictory “current” paragraphs.
+- Historical archives are preservation only. Search them for a missing past detail, then restore the useful fact to its canonical file with a clear historical/current label. Never quote archive “CURRENT” text as live truth.
+- Update `MEMORY_INDEX.md`, current-only `PROJECT_STATE.md`, subject-specific memory, `CHANGELOG.md`, `HANDOVER.md` if next steps changed, and replace `CHAT_TRANSFER.md` last.
+- Final confirmation must state current main HEAD, exact source/version/active .ino count, final test paths, workflow/PR state, artifact repo root, doc hashes and operations not performed.
