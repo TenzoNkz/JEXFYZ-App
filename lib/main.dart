@@ -1124,7 +1124,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
         const coastMs = 260;
         final coastDelta = (0.5 * coastMs / cycleMs).clamp(0.0, remaining).toDouble();
         final target = (controller.value + coastDelta).clamp(0.0, 1.0).toDouble();
-        final durationMs = (cycleMs * coastDelta * 2).round().clamp(60, 300);
+        final durationMs = (cycleMs * coastDelta * 2).round().clamp(60, 300).toInt();
         controller.animateTo(
           target,
           duration: Duration(milliseconds: durationMs),
