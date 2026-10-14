@@ -15,19 +15,18 @@ Snapshot date: 2026-10-14 (Asia/Jakarta). This detailed transfer file bridges pr
 
 ## 1. Repository checkpoint immediately before this transfer refresh
 
-- Canonical repository: TenzoNkz/JEXFYZ-App, private, branch main.
-- Main HEAD immediately before this transfer write: ce334cbc5c3572706fa0016be95efcde6d159b14. LED source, App source, tests, canonical notes, and hash updates are committed at this HEAD. This final transfer refresh is the only change in the checkpoint commit, whose parent must be exactly ce334cbc5c3572706fa0016be95efcde6d159b14. Re-fetch final HEAD and verify its parent after saving.
-- Last live open-PR search returned 0. Branches observed: diag/latest-stable-v16, diagnostic/v1.6-heap-check, fix/adaptive-power-sequencing, main, tmp-jexfyz-v5-test. Continue on main by default.
-- Closed-PR search returned #18, #7, #5, #4, #3, #2, #1. The connector’s closed-PR records do not reliably expose merge status; do not infer merged/unmerged from closure alone.
-- Active firmware source: firmware/JEXFYZ-V6.6.ino. FW_VERSION = "V6.6". Source blob: f51ba6db5d0e91318f63fea4014bb87f7bf76222. Exactly one active versioned .ino was found.
-- Active App source: lib/main.dart, blob e0371cac545dda2f2d5f099e4298c37c04160538.
-- App package/version: com.horizontalzzz.jexfyz / 1.0.0+3.
-- Android Gradle versionName "Telegram @horizontalzzz" is intentional identity text and must remain unchanged.
-- Test paths: test/v6_6_qc_contract_test.dart; test/firmware_touch_adaptive_sync_test.dart; test/app_protocol_notify_contract_test.dart; test/widget_test.dart. The V6.6 contract covers LED mode retirement, atomic LED_SYNC-at-notify, full sync and App mode-source behavior. Tests/analyze were NOT RUN.
-- Active build workflow: .github/workflows/jexfyz-app-build-trigger.yml, blob 7c41358311be195d43f011c1e9a4da98772fcb7d. Issue opened/reopened only; exact title JE X FYZ — BUILD APP TRIGGER plus token JEXFYZ_BUILD_TRIGGER_V1; no push/PR trigger. Toolchain Java 17 / Flutter 3.47.2 stable / Gradle 9.3.1; current workflow runs analyze, Flutter tests, one obfuscated signed APK build, certificate verification and release-asset verification. Re-fetch before every authorized build.
-- Artifact repo TenzoNkz/JEXFYZ-Firmware latest observed HEAD 2aee7dcbbed42b4067a9c708d4a1cf9179f5576b; root contains exactly JEXFYZ.cpp.bin, blob 651dc3ae528f90bf8b8b5cb693e649a452e328ea, size 1455920 bytes. No README/note/source files exist there. This LED task did not touch the BIN; provenance matching V6.6 is unverified.
+- Canonical repository: TenzoNkz/JEXFYZ-App, private, branch `main`.
+- Main HEAD immediately before this transfer write: `fb3f72f493c409a8cc568594a3dda2c69d2ae748`. This checkpoint includes the source/UI commit `a6d16361193416b7b6ffb95c47aa3604fc69c6eb` and documentation evidence reconciliation commit `fb3f72f493c409a8cc568594a3dda2c69d2ae748`. The final transfer refresh is a separate documentation-only commit whose parent must be exactly `fb3f72f493c409a8cc568594a3dda2c69d2ae748`.
+- Recursive tree at pre-transfer HEAD: 65 entries, `truncated=false`. Open PR search returned 0. Branches observed: `diag/latest-stable-v16`, `diagnostic/v1.6-heap-check`, `fix/adaptive-power-sequencing`, `main`, `tmp-jexfyz-v5-test`. Closed PRs observed: #18, #7, #5, #4, #3, #2, #1; closed-PR connector records did not reliably expose merge status, so do not infer merge state from closure.
+- Active Firmware source: `firmware/JEXFYZ-V6.6.ino`, blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`; embedded `FW_VERSION = "V6.6"`. Exactly one active versioned `.ino` was found.
+- Active App source: `lib/main.dart`, blob `a9e50590a72a7eab91f091092d998bfa5512ce7a`; settings `lib/app_settings.dart`, blob `bff5544fcb708a4d0c76ef443ff325ec5b3bee0e`.
+- App package/version: `com.horizontalzzz.jexfyz` / `1.0.0+3`. Android Gradle `versionName "Telegram @horizontalzzz"` is intentional identity text and must remain unchanged.
+- Current test paths: `test/widget_test.dart` (blob `0ba772d70a68ff6ae43f31145399dd12df4d45b1`), `test/v6_6_qc_contract_test.dart` (blob `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a`), `test/firmware_touch_adaptive_sync_test.dart`, `test/app_protocol_notify_contract_test.dart`. Tests/analyze are NOT RUN for the UI/notification commit; adding/updating a test file does not mean it passed.
+- Active build workflow: `.github/workflows/jexfyz-app-build-trigger.yml`; explicit issue title `JE X FYZ — BUILD APP TRIGGER` and required body token `JEXFYZ_BUILD_TRIGGER_V1`. No build was started by this execution.
+- Recent successful App Build evidence: [38520146994](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38520146994) on parent commit `1024eb8e145429913aacb52f4cf352e087885d44`; it predates the UI/notification commit and is NOT validation of the current source commit. Recent older failures #38519913851 and #38519669369 also predate this UI/notification commit.
+- Artifact repo `TenzoNkz/JEXFYZ-Firmware`: main HEAD `3dd4ed90d74eb8f8fbaa560dfda0e618b73a8754`; root contains only `JEXFYZ.cpp.bin`, SHA `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, 1,455,936 bytes. Provenance matching V6.6 source is UNVERIFIED; this task did not modify the BIN.
+- Execution scope: LED preview, named palette/color-picker, disconnected menu fallback, native Android notification presentation, regression-contract source files and canonical notes. No Firmware source/protocol, BIN, Firebase, OTA, flashing or release changes. Flutter tests/analyze, App Build and Firmware compile were NOT run. Physical UI and OEM notification behavior remain UNVERIFIED.
 - Phase: DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED.
-- This V6.6 LED source/memory update did not run Flutter tests/analyze, compile Firmware, build App/APK, create/replace BIN, edit Firebase, flash/OTA hardware or release. V6.6 remains source-only and NOT RELEASED.
 
 ## 2. Permanent user commands and authorization limits
 
@@ -128,7 +127,7 @@ Read VOLTAGE_TRANSITION_MEMORY.md completely before any rail/Peltier change.
 - Default voltage LEDs: 5 V red, 9 V green, 12 V blue; customizable/resettable.
 - Current RGB modes: Static ID 1, Breath ID 2, Comet ID 4, Dual Chase ID 5, Left/Right ID 6, Rainbow ID 7. Mirror Pulse ID 3 is retired; stored ID 3/invalid modes migrate to Static and new MODE:3 commands are rejected. If the App encounters legacy ID 3 from older firmware, previous navigation selects Breath (ID 2) and next selects Comet (ID 4).
 - Firmware publishes one `LED_SYNC:<mode>,<phase_ms>,<cycle_ms>` snapshot computed at BLE notify time. App interpolates monotonically between snapshots and adjusts drift without resetting the animation on every update. Separate `LED_PHASE`/`LED_CYCLE_MS` remains a compatibility fallback for older V6.x firmware.
-- LED preview layout is left arrow → four left pixels → centered mode number/name → four right pixels → right arrow. Preview keeps RGB chroma at low brightness; alpha/glow scales preview intensity. Safety/OTA LED indication outranks decorative RGB.
+- LED preview layout is left arrow → four left pixels → centered localized mode name only (no number) → four right pixels → right arrow. The center card is narrower and the whole preview strip is shorter. Left/right LED-column backgrounds are darker for contrast; pixel core visibility and glow are independent of the hardware Brightness slider, while animated mode levels and monotonic LED_SYNC interpolation remain active.
 
 ## 8. App UI, BLE/P1, telemetry
 
@@ -143,10 +142,11 @@ Read VOLTAGE_TRANSITION_MEMORY.md completely before any rail/Peltier change.
 - Auto Connect/reconnect respects preference, previously known cooler identity, Bluetooth/permission/location prerequisites and session sync; cancel retries/scans if prerequisites fail and suppress scans during sync.
 - Permanent App UI requirement: do not show a standalone Battery Protection Guard badge/guard state. Keep genuine, independently actionable localized safety/Notify messages; this rule is presentation-only and must not weaken thermal behavior.
 - Pairing intent: one authorized App identity/key-lock relationship per cooler firmware. Treat the exclusive 1:1 enforcement as UNVERIFIED until provisioning/source path and physical pairing behavior are verified; current static source confirms encrypted/bonded writes only.
-- App disconnected/unknown physical outputs show --, not stale ON/OFF.
+- Home/dashboard and Floating Monitor output telemetry show unknown (`--`) while BLE is disconnected, not stale values. CONTROL/ADAPTIVE/LED switch rows instead show a disabled OFF-looking toggle with the knob at left; this is visual fallback only and does not claim physical output state.
 - Touch Adaptive-OFF publishes ADAPTIVE, ADAPTIVE_CEILING, FAN, PELTIER, FAN_SPEED telemetry before its ACK.
 - CLOUDOTA TIMEOUT/DISCONNECTED is ambiguous. Preserve recovery state and wait for reconnection/result; only definite rejection while BLE connected permits rollback.
-- Localization English/Indonesia; English ON/OFF, Indonesian HIDUP/MATI. Machine protocol identifiers (BLE, P1, OTA, RGB, LED, NTC, FPS) remain untranslated. All safety/Notify/OTA visible text uses localization.
+- Android notifications use a dedicated monochrome X small icon with the full-color app icon as large icon. User notifications use JE X FYZ as title and localized event/status as body; tapping opens the App. BLE/Floating Monitor foreground notifications have meaningful localized bodies. Android 13+ requests permission on the first actual notification attempt; OEM display behavior remains device-dependent.
+- Localization English/Indonesia; English ON/OFF, Indonesian HIDUP/MATI.
 - Secure storage for preferences; cooler identity saved only after successful BLE/P1 session.
 - Floating Monitor stable metrics F/B/H/V/A/P/S; S is the only fan metric, not a separate Fan metric. If Fan OFF, S shows localized OFF/MATI. It never owns second BLE/GATT. Native channels include je_x_fyz/battery_temp, je_x_fyz/floating, je_x_fyz/security, je_x_fyz/notifications; MainActivity owns settings bridge, FloatingMonitorService owns WindowManager overlay, JeForegroundService backs an existing BLE session only.
 - Package com.horizontalzzz.jexfyz / version 1.0.0+3. Preserve Gradle versionName "Telegram @horizontalzzz". Brand PNG assets assets/jexfyzicon.png and assets/jexfyzcooler.png are transparent 1:1.
@@ -170,7 +170,7 @@ Read OTA_PROTECTION.md and OTA_REGRESSION_MEMORY.md fully before any OTA change.
 ## 10. App Build / release
 
 - App Build and Firmware compile are separate.
-- Latest observed successful App Build run is 38380312823 on `c21e2e52218e7f284ae8536855cf976199566975` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38380312823). It is a real successful run but targets an earlier commit, so it is NOT a fresh build/test certification of this transfer HEAD/source state. The four current test files are present and were not executed by this documentation task.
+- Latest observed successful App Build run is `38520146994` on `1024eb8e145429913aacb52f4cf352e087885d44` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38520146994). This successful run predates the UI/notification commit `a6d16361193416b7b6ffb95c47aa3604fc69c6eb`; it is not a fresh build/test of the current App source.
 - Only workflow: .github/workflows/jexfyz-app-build-trigger.yml.
 - Explicit trigger title: JE X FYZ — BUILD APP TRIGGER.
 - Required body token: JEXFYZ_BUILD_TRIGGER_V1.
@@ -222,20 +222,21 @@ Read DESIGN_NOTES.md before any visual iteration.
 
 ## 14. Exact open validation queue
 
-1. User compiles active V6.6 in ArduinoDroid with Arduino-ESP32 Core 3.3.7; keep the actual log and confirm firmware version.
-2. Establish whether the artifact BIN provenance matches V6.6 before any publication/OTA. Existing BIN was not changed by this task.
-3. Test the six supported LED modes in order: Static (1), Breath (2), Comet (4), Dual Chase (5), Left ↔ Right (6), Rainbow (7). Verify Mirror Pulse is absent, stored mode ID 3 migrates to Static, and MODE:3 is rejected.
-4. Verify LED_SYNC on initial P1 sync, mode change, RGB ON/OFF and periodic refresh. Check drift/jumps during BLE traffic and when other telemetry is queued.
-5. Test saturated colors at brightness 1%, 10%, 46% and 100%. Verify App preview retains hue while firmware remains authoritative for real brightness.
-6. Validate the one-row LED UI at narrow Android widths: left arrow → four left LEDs → centered number/name → four right LEDs → right arrow; verify arrows skip retired ID 3 and labels do not overflow.
-7. Run Flutter tests/analyze and record exact run/log if execution environment supports them. Source assertions and existing test files are not passing results.
-8. Physical Manual Volt and Adaptive transition while the five-second Peltier ramp is active: expect 0% PWM, 200 ms selector deadtime, one-second settle, then a fresh five-second ramp.
-9. Repeat rail transitions after the Peltier ramp completes: expect uninterrupted 100% PWM unless explicit OFF/safety requires shutdown.
-10. Verify Peltier-OFF/safety cancellation; Hotside latch/re-arm, 30/60-second Adaptive behavior, invalid NTC failsafe, and one-sample-per-second NTC.
-11. Confirm phone Battery heartbeat/freshness fallback and no standalone Battery Protection Guard. One-App-only pairing-lock remains unverified; test only if that scope is authorized.
-12. Confirm Touch telemetry, orange/white three-blink feedback including the historical boot-time OFF report, BLE/P1/reconnect and Wi-Fi/BLE radio handoff.
-13. Validate Local OTA, then separately Online OTA GET/image validation/Update completion/reboot/BLE recovery/installed version. LEDs alone are not an HTTP diagnosis.
-14. App Build only after explicit Build App command; Firmware compile is user-side. BIN/Firebase/flash/OTA/release require separate authorization and provenance/validation gates.
+1. User compiles active V6.6 in ArduinoDroid using Arduino-ESP32 Core 3.3.7; capture the actual compile log and confirm firmware version.
+2. Establish whether the artifact BIN provenance matches V6.6 before any publication/OTA. Current BIN was not changed by this App/UI task and its provenance remains unverified.
+3. Pair App and Firmware V6.6 and test Static (1), Breath (2), Comet (4), Dual Chase (5), Left ↔ Right (6), and Rainbow (7). Verify Mirror Pulse is absent, stored ID 3 migrates to Static, and MODE:3 is rejected.
+4. Verify LED_SYNC on initial P1 sync, mode change, RGB ON/OFF and periodic refresh. Observe phase drift/jumps under BLE traffic and queued telemetry.
+5. Check compact mode-name-only preview at narrow Android widths: left arrow → four left pixels → center mode name → four right pixels → right arrow. Check vivid colors with hardware Brightness at 1%, 10%, 46% and 100%; preview pixel visibility must not fade merely because hardware Brightness is low.
+6. Check the centered responsive Color Picker on narrow/wide displays: 36 curated hue-ordered presets, localized names, no visible HEX codes, clearly indicated current selection, and color selection still sends internal HEX through the existing COLOR protocol without changing the brightness value.
+7. Verify CONTROL/ADAPTIVE/LED while BLE is disconnected: OFF label and disabled left-position toggle; no command is sent. Confirm Home/dashboard and Floating Monitor still show `--` for unknown physical telemetry and that reconnect/full sync replaces the fallback with authoritative state.
+8. On Android 13+ and older supported Android, inspect small status-bar icon, full-color notification large icon, title/body order for connected/disconnected events, tap-to-open App, meaningful BLE/Floating Monitor service notification bodies, permission request and response. Verify language and notification preferences where applicable.
+9. Run Flutter tests/analyze and record exact output if execution environment supports and is authorized. The files exist but tests/analyze have NOT RUN in this execution.
+10. Physical Manual Volt and Adaptive transition while five-second Peltier soft-start is active: expect zero PWM during selector handoff, 200 ms deadtime, one-second settle and a fresh five-second ramp.
+11. Repeat rail transitions after the Peltier ramp completes: expect uninterrupted 100% PWM unless explicit OFF/safety requires shutdown.
+12. Verify Peltier-OFF/safety cancellation; Hotside latch/re-arm, 30/60-second Adaptive behavior, invalid NTC failsafe, one-sample-per-second NTC and touch telemetry/Adaptive ON-OFF indicator behavior.
+13. Validate phone Battery heartbeat/freshness fallback and no standalone Battery Protection Guard. Pairing-lock exclusivity remains unverified until separately authorized source/physical verification.
+14. Validate Local OTA, then separately Online OTA GET/image validation/Update completion/reboot/BLE recovery/installed version. LEDs alone are not an HTTP diagnosis.
+15. App Build only after explicit Build App command; Firmware compile is user-side. BIN/Firebase/flash/OTA/release require separate authorization and provenance/validation gates.
 
 ## 15. Evidence labels and don't guess
 
@@ -249,61 +250,66 @@ Read DESIGN_NOTES.md before any visual iteration.
 
 Never equate test file with passing run; compile with full OTA installation; blue LED with successful HTTP; ACK with hardware state; reboot with proven brownout; version bump with BIN build; or existing BIN with source provenance.
 
-## 16. Last-observed blob fingerprints
+## 16. Live blob fingerprints at pre-transfer HEAD `fb3f72f493c409a8cc568594a3dda2c69d2ae748`
 
-All hashes below are taken from the exact final candidate tree based on main HEAD `cd3eabce3d44cea84c306084d3f352471319c5df`. After committing, re-fetch main HEAD and verify the commit parent and every listed fingerprint. The future SHA of this file is deliberately not self-recorded.
+Hashes below are fetched from the fully fetched, non-truncated recursive tree immediately before the transfer-file commit. The future blob SHA of this file is deliberately not self-recorded.
 
-Canonical memory docs:
-- `README.md`: `b96950e0f128499c240edb6b73e9b0eb776f2038`
-- `MEMORY_INDEX.md`: `399ef8c82aa71f6b31a56904b0faf36145909983`
-- `CHAT_RULES.md`: `1a7e671b9e801acc07b74fd2bc2372dd6d9ec105`
-- `PROJECT_STATE.md`: `11541dde9126833323ea1acda2daf0be087291bf`
-- `CHAT_TRANSFER_PROMPTS.md`: `516ee334529431ffd2a7f19d47f3c0fa15fcc090`
-- `HANDOVER.md`: `37b6f89376ac3b709e6673484e410b2a65b99edc`
-- `APP_NOTES.md`: `9860bffc4204b787bde1b31444d63f3335a669a6`
-- `FIRMWARE_NOTES.md`: `339e50a1ed72ed61239f027eed5651241ff138c3`
-- `BUILD_NOTES.md`: `7627218cc6d2a3b3585ef63057b4eab9856fe916`
-- `CHANGELOG.md`: `ada939b5fc178175032c156e863ac4b33edeff35`
-- `DESIGN_NOTES.md`: `e04382659dfdd618de0a156046f140452d275dc7`
-- `OTA_PROTECTION.md`: `06beb86b749b0f0e14c8cb517e43fe7c0f66a4e1`
-- `OTA_REGRESSION_MEMORY.md`: `aceb42527edf6eb3249c8d187ed368ad407c7bb0`
-- `VOLTAGE_TRANSITION_MEMORY.md`: `22e11fffe2d7346450adc60b5794551e998f18c2`
-- `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `8960cf46bcab7511c132c5e23c4f5c9a9eae6656`
+Canonical memory and history:
+- `README.md`: `b96950e0f128499c240edb6b73e9b0eb776f2038`, 3343 bytes
+- `MEMORY_INDEX.md`: `dcec72982b174106f3f551cb821020b1d091a5ba`, 6182 bytes
+- `CHAT_RULES.md`: `1a7e671b9e801acc07b74fd2bc2372dd6d9ec105`, 8071 bytes
+- `PROJECT_STATE.md`: `8ff989910e8bf651ae1284d8212a2caa9fb0a866`, 11486 bytes
+- `CHAT_TRANSFER_PROMPTS.md`: `cb2290bf2b1b404cde29fc1b68b90ebbc1e62f34`, 28068 bytes
+- `HANDOVER.md`: `7068cfa1829dca83da3d15bf80bc2bde243968d6`, 6114 bytes
+- `APP_NOTES.md`: `35bbf5152138b7a9ee5046fd84150a3684d3fc6a`, 10432 bytes
+- `FIRMWARE_NOTES.md`: `339e50a1ed72ed61239f027eed5651241ff138c3`, 10771 bytes
+- `BUILD_NOTES.md`: `7627218cc6d2a3b3585ef63057b4eab9856fe916`, 2970 bytes
+- `DESIGN_NOTES.md`: `e04382659dfdd618de0a156046f140452d275dc7`, 2128 bytes
+- `CHANGELOG.md`: `958eb87507045ae6d6fcf2957574d2026cd3871c`, 15229 bytes
+- `OTA_PROTECTION.md`: `06beb86b749b0f0e14c8cb517e43fe7c0f66a4e1`, 4259 bytes
+- `OTA_REGRESSION_MEMORY.md`: `aceb42527edf6eb3249c8d187ed368ad407c7bb0`, 3918 bytes
+- `VOLTAGE_TRANSITION_MEMORY.md`: `22e11fffe2d7346450adc60b5794551e998f18c2`, 5587 bytes
+- `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `8960cf46bcab7511c132c5e23c4f5c9a9eae6656`, 7309 bytes
 
-Workflow, package metadata, active source and tests:
-- `.github/workflows/jexfyz-app-build-trigger.yml`: `7c41358311be195d43f011c1e9a4da98772fcb7d`
-- `.gitignore`: `a51c5ad7dabd81d6a7e42181fa7d5c3a25bdac15`
-- `pubspec.yaml`: `8f558273e21692af9958f914527fdc62d623d63a`
-- `pubspec.lock`: `1e92812bfda2c28244a0556d71d1ec94084acc66`
-- `lib/main.dart`: `e0371cac545dda2f2d5f099e4298c37c04160538`
-- `lib/app_settings.dart`: `9a0c0241ee4e87aa15b6db40bcac6c279b8a3a97`
-- `lib/floating_monitor.dart`: `cfc21b3dc198b925786aa98658d647b1d8a3637b`
-- `lib/jex_animated_glyph.dart`: `c9c5c2802cb0ed363c042620511148b0d58d36c4`
-- `firmware/JEXFYZ-V6.6.ino`: `f51ba6db5d0e91318f63fea4014bb87f7bf76222`
-- `test/v6_6_qc_contract_test.dart`: `e3127eec860fce970fa598ca3015ed5ea61470bf`
-- `test/firmware_touch_adaptive_sync_test.dart`: `a8df6ca2be18c3b7ed9c25e5c148f0d5056556d5`
-- `test/app_protocol_notify_contract_test.dart`: `92214dd90178c705844d3979d3f8f7bd17bcc4b8`
-- `test/widget_test.dart`: `9493a1ae4f19b6d7987a06d0732c8121812c4675`
+Workflow, package, active source and tests:
+- `.github/workflows/jexfyz-app-build-trigger.yml`: `7c41358311be195d43f011c1e9a4da98772fcb7d`, 16290 bytes
+- `.gitignore`: `a51c5ad7dabd81d6a7e42181fa7d5c3a25bdac15`, 424 bytes
+- `pubspec.yaml`: `8f558273e21692af9958f914527fdc62d623d63a`, 833 bytes
+- `pubspec.lock`: `1e92812bfda2c28244a0556d71d1ec94084acc66`, 20203 bytes
+- `lib/main.dart`: `a9e50590a72a7eab91f091092d998bfa5512ce7a`, 243469 bytes
+- `lib/app_settings.dart`: `bff5544fcb708a4d0c76ef443ff325ec5b3bee0e`, 51420 bytes
+- `lib/floating_monitor.dart`: `cfc21b3dc198b925786aa98658d647b1d8a3637b`, 51218 bytes
+- `lib/jex_animated_glyph.dart`: `c9c5c2802cb0ed363c042620511148b0d58d36c4`, 1730 bytes
+- `firmware/JEXFYZ-V6.6.ino`: `f51ba6db5d0e91318f63fea4014bb87f7bf76222`, 164410 bytes
+- `test/v6_6_qc_contract_test.dart`: `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a`, 20211 bytes
+- `test/firmware_touch_adaptive_sync_test.dart`: `2d3fea509343a03b8d23623f4dcb2dd7fd972d39`, 1622 bytes
+- `test/app_protocol_notify_contract_test.dart`: `92214dd90178c705844d3979d3f8f7bd17bcc4b8`, 867 bytes
+- `test/widget_test.dart`: `0ba772d70a68ff6ae43f31145399dd12df4d45b1`, 24838 bytes
 
 Android config, native source and visual assets:
-- `android/app/build.gradle`: `d8681cb73156b61da7749633abd63e2fb8c287ba`
-- `android/app/src/main/AndroidManifest.xml`: `d82504cee09092d304d8edc98272ddd0b4732519`
-- `android/app/proguard-rules.pro`: `50fc26f726ae8660fe04cf19da688431c8dca4a0`
-- `android/build.gradle`: `ca11c0f28728b40577d25490811bcc2c8d05ca24`
-- `android/settings.gradle`: `14545695cc9aba5912393ec293c284ee60d9ec10`
-- `android/gradle.properties`: `13564f62c79279ecfd4fe0a8a247a4d2a4b11451`
-- `android/app/google-services.json`: `f3ed065a7ee56b2a44f0a943a48fa578ba72e0d7`
-- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt`: `eeb135ef34b1d415196b86e6ffe1ac39d7bda5e2`
-- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JeForegroundService.kt`: `437655add9f12631570614314eef1db1fd9c4005`
-- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt`: `628aa4d06591b7e2c6e725cb6bc9a582063b025d`
-- `assets/jexfyzicon.png`: `bad855f23416fd58aff194c30b7f8fd77f260ea8`
-- `assets/jexfyzcooler.png`: `fbc47e3197534ae35330c1f1793c99705e5165d1`
-- `android/app/src/main/res/drawable-nodpi/jexfyzicon.png`: `bad855f23416fd58aff194c30b7f8fd77f260ea8`
+- `android/app/build.gradle`: `d8681cb73156b61da7749633abd63e2fb8c287ba`, 4671 bytes
+- `android/app/src/main/AndroidManifest.xml`: `d82504cee09092d304d8edc98272ddd0b4732519`, 3587 bytes
+- `android/app/proguard-rules.pro`: `50fc26f726ae8660fe04cf19da688431c8dca4a0`, 370 bytes
+- `android/build.gradle`: `ca11c0f28728b40577d25490811bcc2c8d05ca24`, 593 bytes
+- `android/settings.gradle`: `14545695cc9aba5912393ec293c284ee60d9ec10`, 1233 bytes
+- `android/gradle.properties`: `13564f62c79279ecfd4fe0a8a247a4d2a4b11451`, 296 bytes
+- `android/app/google-services.json`: `f3ed065a7ee56b2a44f0a943a48fa578ba72e0d7`, 761 bytes
+- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt`: `6c17a7e38c3a5b3f3f8fc6b3e5b38a99fd83081e`, 15940 bytes
+- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JeForegroundService.kt`: `9ea4dce7001bcd5cc10f9c1c7ad62f34ec54b03e`, 3350 bytes
+- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt`: `55972b64329a2e1cc91e29a172d0a97a118d8ac1`, 32562 bytes
+- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt`: `4ea74267bae804b4c0ad56e6db9fc7133008f779`, 1415 bytes
+- `android/app/src/main/res/drawable/ic_notification.xml`: `2148252fddee854dcd8a7890c04cb51588e87644`, 459 bytes
+- `android/app/src/main/res/drawable-nodpi/jexfyzicon.png`: `bad855f23416fd58aff194c30b7f8fd77f260ea8`, 436439 bytes
+- `assets/jexfyzicon.png`: `bad855f23416fd58aff194c30b7f8fd77f260ea8`, 436439 bytes
+- `assets/jexfyzcooler.png`: `fbc47e3197534ae35330c1f1793c99705e5165d1`, 1830171 bytes
 
 Forensic-only archives:
-- `archive/LEGACY_NOTES_SNAPSHOT_2026-10-14.md`: `65ece82c5e8a07908accb4a81bd4c80e469b55de`
-- `archive/LEGACY_TRANSFER_HISTORY_2026-10-14.md`: `0438b7006d437d2c24d9e76d6aca7352ad5b0b2b`
-- `archive/ARTIFACT_REPO_NOTES_PRE_BIN_ONLY_2026-10-14.md`: `10fab755affdbb8e29727390ad187fcb4bf6817d`
+- `archive/LEGACY_NOTES_SNAPSHOT_2026-10-14.md`: `65ece82c5e8a07908accb4a81bd4c80e469b55de`, 154262 bytes
+- `archive/LEGACY_TRANSFER_HISTORY_2026-10-14.md`: `0438b7006d437d2c24d9e76d6aca7352ad5b0b2b`, 101008 bytes
+- `archive/ARTIFACT_REPO_NOTES_PRE_BIN_ONLY_2026-10-14.md`: `10fab755affdbb8e29727390ad187fcb4bf6817d`, 13348 bytes
+
+Artifact repository (separate repo): `TenzoNkz/JEXFYZ-Firmware` main HEAD `3dd4ed90d74eb8f8fbaa560dfda0e618b73a8754`; root has only `JEXFYZ.cpp.bin`, SHA `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, size 1,455,936 bytes. Source/BIN provenance remains UNVERIFIED.
+
 
 ## 17. Final rule for the next chat
 
