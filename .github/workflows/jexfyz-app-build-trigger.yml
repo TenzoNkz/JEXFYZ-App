@@ -3,7 +3,7 @@
 # Based directly on the proven Release workflow that completed workflow run #2.
 # Normal push/PR events do not trigger this workflow.
 # Firmware source is intentionally stored in this App repository under firmware/.
-# The dedicated firmware repository may contain continuity source plus the published firmware BIN; this workflow builds the App only.
+# The App repository owns all editable source and memory; the dedicated firmware repository is BIN-only. This workflow builds the App only.
 # CI success proves App build validation only; it does not prove BLE/OTA/hardware runtime.
 
 name: JE X FYZ Build App
