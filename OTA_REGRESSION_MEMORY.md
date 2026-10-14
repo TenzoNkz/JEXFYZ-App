@@ -1,61 +1,46 @@
 # JE X FYZ / JE Cooler — Online OTA Regression Memory
 
-Last updated: 2026-10-14 (Asia/Jakarta)
-Status: The Online OTA correction was introduced in the V6.3 revision and remains in active V6.4 source; compile and GitHub-connect recovery were user-reported; full OTA apply/reboot is not independently verified.
+Last reconciled: 2026-10-14 (Asia/Jakarta). This is the canonical incident record in the App repo; check live source before editing the transport.
 
-## 1. Incident and observed symptom
+## Symptom and prior attempt
 
-- Active source of truth is `firmware/JEXFYZ-V6.4.ino` in this repository, not the BIN-only production repository.
-- The V6.3 Online OTA path contained an inline ISRG Root X1 PEM constant named `GITHUB_ROOT_CA`, configured via `cloudClient.setCACert(GITHUB_ROOT_CA)`.
-- The same path introduced an OTA-only asynchronous NTP gate: `configTime(0, 0, "pool.ntp.org", "time.google.com")`, `OnlineOtaFlow::TIME_SYNCING`, and a 20-second timeout.
-- User-reported symptom: Wi-Fi reached the connected state and the first blue indicator appeared, then a red indicator appeared at the GitHub connection stage. The device could not continue to the GitHub BIN response/download.
-- Do not invent an HTTP/TLS error code: no serial diagnostic transcript establishing a specific error code was supplied.
+- User reported Online OTA reached Wi-Fi connected/blue feedback, then failed/red indication at the GitHub connection/download stage after the path added an inline ISRG Root X1 PEM CA certificate plus an OTA-only NTP/time validation gate.
+- No serial transcript establishing an exact HTTP/TLS error code was supplied. Do not invent one based on LEDs.
+- The failed path used `GITHUB_ROOT_CA`, `cloudClient.setCACert(...)`, `configTime(0, 0, "pool.ntp.org", "time.google.com")`, `OnlineOtaFlow::TIME_SYNCING`, epoch-validity state and a 20-second gate.
 
-## 2. Correction applied to V6.3
+## Correction retained in active V6.4
 
-Commit: https://github.com/TenzoNkz/JEXFYZ-App/commit/a87bbcecdca26b3648abff9cb88937e250b41f1f
+- The correction originated in the then-current V6.3 source and remains in active `firmware/JEXFYZ-V6.4.ino` (last observed source blob `f0dd9d1ebdc7d9d0966384f557efa2e2123df792`).
+- Restored `cloudClient.setInsecure()` for the Online OTA client.
+- Removed the embedded CA PEM, `setCACert()`, `configTime()`, `TIME_SYNCING`, epoch-validity condition and OTA-only 20-second NTP time gate.
+- Flow is Wi-Fi success → blue feedback → `prepareOnlineOtaDownload()` → GitHub GET attempt.
+- Kept allowlisted URL prefix `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/`, redirect blocking, HTTP/length/size/image checks, ESP image magic byte `0xE9`, streaming Update lifecycle, all-safe output, OTA lifecycle and failure recovery.
+- Static test contract lives in `test/v6_4_qc_contract_test.dart` (last observed blob `f071c9642c1a06726d25b8c26a814845b02a55d6`). Presence of assertions does not mean the test was executed.
 
-Active source blob after correction: `8a8c64ae2a3fc7ac722a02c05feaeb614087092a`
+## User-reported evidence boundary
 
-- Removed the `GITHUB_ROOT_CA` PEM declaration and `setCACert()` call.
-- Restored `cloudClient.setInsecure()` for the Online OTA HTTPClient/TLS connection.
-- Removed the OTA-only `configTime()`, `TIME_SYNCING` state, epoch-validity condition, and 20-second NTP timeout gate.
-- Restored the observed sequence: Wi-Fi connects → blue indicator → `prepareOnlineOtaDownload()` → GitHub GET attempt.
-- Kept the target repository URL allowlist (`https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/`), redirect blocking, HTTP response/length checks, OTA size limit, ESP image magic-byte check (`0xE9`), streaming download, safe output shutdown, OTA lifecycle, and failure recovery.
-- The OTA contract source was updated in commit https://github.com/TenzoNkz/JEXFYZ-App/commit/dc0d6ec13d3f58ab864e006e7defb543fd4752b6. Live test blob: `bf9d96cf671547e48465525c4661e48afd9863ee`. The Flutter test itself has not been run.
+- User reported the V6.3 correction compiled successfully and Online OTA could connect to GitHub again.
+- That report refers to V6.3, before the V6.4 Peltier voltage-transition fix; it does not certify V6.4 compilation.
+- A complete BIN download, successful `Update.end()`, restart, BLE recovery and post-reboot installed-version confirmation were not independently established here.
+- CA verification and NTP gate were removed together; evidence does not isolate which one alone caused the earlier failure.
+- No assistant-side Firmware compile, BIN generation/publication, Firebase update, device flash, physical OTA or App Build was performed for the correction.
 
-## 3. User confirmation and exact evidence boundary
+## Security trade-off / approved baseline
 
-- [USER-REPORTED — 2026-10-13] User reports V6.3 compiled successfully after the correction and Online OTA could connect to GitHub again.
-- [NOT INDEPENDENTLY VERIFIED HERE] No build log or serial log was inspected by the assistant. The user report must be preserved as a user report, not upgraded to an assistant-performed compile/test.
-- [NOT CONFIRMED AS END-TO-END] A complete BIN body transfer, successful `Update.end()`, reboot, and post-reboot firmware version confirmation were not separately established in this record.
-- [NO ASSISTANT-SIDE RELEASE] The assistant did not compile the firmware, generate or publish a BIN, flash hardware, run physical OTA, edit Firebase release metadata, or Build App as part of this correction.
-- The user attributes the failure to the CA trust addition. Technically, the CA validation and the OTA-only NTP gate were removed in the same correction; therefore this is strong before/after evidence for the combined CA/TLS/time-gated path, but it does not isolate whether the CA PEM alone or the added NTP gate alone caused the failure. Do not rewrite this as a proven single-variable experiment.
+`setInsecure()` does not authenticate the HTTPS server certificate identity. The user chose restoration of this prior connection behavior after the observed CA/NTP-gated path failed. Keep this as an explicit security trade-off, not as “validated HTTPS identity.”
 
-## 4. Security decision made for the current build
+Do not add/remove CA roots, change certificate validation, add an NTP gate, or add TLS state transitions without:
+1. a demonstrated defect and explicit prior user approval;
+2. a recorded precise diagnostic stage/error (not LED-only interpretation);
+3. a one-variable-at-a-time experiment where practical;
+4. a complete re-audit of Wi-Fi/BLE handoff, output safety, URL allowlist, redirects, image checks, timeout/retries, Update lifecycle, failure recovery, App reconnect/P1 and result reporting.
 
-The user explicitly chose to restore the previous `setInsecure()` connection behavior because the CA-based Online OTA path failed in their observed environment.
+## Current static audit checklist
 
-Important consequence: `setInsecure()` still encrypts the TLS channel but skips peer certificate identity validation. URL allowlisting and redirect blocking constrain the requested URL/flow but do not cryptographically authenticate the GitHub server. Preserve the user-approved current behavior unless the user asks for a security redesign; do not silently re-add a CA, certificate pinning, or NTP dependency.
-
-## 5. Regression-prevention rules
-
-1. **Freeze the Online OTA transport baseline.** Do not add/remove a CA root, change `setInsecure()`/certificate validation, add time synchronization, or add a TLS state to the OTA state machine without prior discussion and explicit user approval.
-2. **One transport change at a time.** If a future experiment is authorized, record the exact source diff and diagnostic stage/result; change one variable at a time so the actual cause can be distinguished.
-3. **Do not infer a GitHub error from LEDs alone.** Blue then red narrows the failure stage, but the exact error needs `otaDiagnosticStage`, `otaDiagnosticErrorCode`, `otaDiagnosticError`, HTTP response code, or a serial/device log.
-4. **Protect OTA behavior.** Preserve Wi-Fi↔BLE single-radio handoff, safe outputs, retry/timeouts, raw BIN URL allowlist, redirect policy, stream/size/image validation, Update lifecycle, failure recovery, and final restart path. Unrelated work must not refactor this code.
-5. **Keep tests aligned with the chosen baseline.** Static regression checks should assert `setInsecure()` exists exactly on the Online OTA client path; the CA PEM and OTA-only NTP gate are absent; blue feedback leads to the GitHub connection attempt; the allowlist and redirect blocking remain. A test file is not evidence that the test ran.
-6. **Separate source from release artifact.** Canonical source is in `TenzoNkz/JEXFYZ-App/firmware/JEXFYZ-V6.4.ino`. `TenzoNkz/JEXFYZ-Firmware` is an artifact repository containing `JEXFYZ.cpp.bin`; do not assume its BIN matches current source unless build provenance or matching hashes/version are verified.
-7. **Authorization boundaries remain active.** User compiles firmware. Do not trigger Build App, firmware compile, BIN generation/publication, flashing, physical OTA, Firebase/production metadata update, or release unless separately and explicitly requested.
-8. **Record status precisely.** The current known fact is user-reported compile success and restored GitHub connectivity. End-to-end installation is a separate QC gate until confirmed.
-
-## 6. Current source audit
-
-At commit/source blob `8a8c64ae2a3fc7ac722a02c05feaeb614087092a`, static inspection found:
-- one `cloudClient.setInsecure()` call in the GitHub OTA preparation path;
-- no `GITHUB_ROOT_CA`, embedded certificate PEM, `setCACert()`, `configTime()`, `TIME_SYNCING`, or OTA-only NTP time gate;
-- target raw GitHub firmware URL prefix allowlist retained;
-- `HTTPC_DISABLE_FOLLOW_REDIRECTS` retained;
-- normal GitHub GET and failure-handling path retained.
-
-This is a static source audit only; it is not a firmware compile, runtime test, or full OTA success certificate.
+- [ ] Confirm active file and `FW_VERSION` on live `main`.
+- [ ] One `cloudClient.setInsecure()` call exists on the intended GitHub OTA client path.
+- [ ] No embedded CA PEM, `setCACert()`, `configTime()`, `TIME_SYNCING` or OTA-only NTP gate remains.
+- [ ] Raw GitHub URL prefix allowlist and redirect blocking remain.
+- [ ] HTTP status/length, image/size checks, safe output and update lifecycle remain.
+- [ ] App expected-disconnect/recovery logic and ambiguous-ACK behavior remain aligned.
+- [ ] Distinguish source review, test execution, compile, BIN, flash, end-to-end OTA and installed-version verification.
