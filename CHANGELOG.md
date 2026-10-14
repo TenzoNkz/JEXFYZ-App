@@ -2,6 +2,13 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
+## 2026-10-14 — Voltage-aware Fan/Peltier icons and bottom-pinned Color Picker
+
+- Fan dashboard motion now uses distinct continuous rotation durations from authoritative BLE-reported voltage: 5V slow (2600 ms), 9V medium (1250 ms), and 12V fast (620 ms). Peltier frost icon increases glow and crystal density across the same voltage classes and fades its frost overlay over 520 ms when switched OFF. These are illustrative visuals, not RPM or temperature/ice measurements; no firmware, BLE command, safety or physical LED behavior changed.
+- Pinned the LED Color Picker to the bottom safe area and removed the outer scroll view/top-offset positioning, preventing the panel from being dragged vertically. Added localized Cancel at the top-left; Cancel closes without sending a new colour, while swatch selection preserves the prior RGB command path.
+- Added widget contracts for voltage mapping, comparative fan timing, frost density/intensity, bottom anchoring and Cancel dismissal.
+- Static source transformation and live file readback checks passed. Flutter test/analyze and an APK build were NOT run; device rendering and physical appearance remain unverified. Firmware V6.6 was untouched by this App-only execution; the user's earlier compile/Online OTA report was not independently re-verified here.
+
 ## 2026-10-14 — Notification monogram, LED contrast, anchored menus and status-icon motion
 
 - Switched notification small-icon branding to the existing transparent JE X FYZ logo PNG (`R.drawable.jexfyzicon`) so Android uses the actual logo alpha shape, and removed `setLargeIcon`; only one logo appears at the left. The legacy X vector remains unused; title/body, tap intent and service messages remain unchanged.
