@@ -22,12 +22,12 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 - `TenzoNkz/JEXFYZ-App` is the canonical editable App + Firmware source repository and the sole home for project documentation/memories.
 - `TenzoNkz/JEXFYZ-Firmware` is intended to contain only the production OTA artifact `JEXFYZ.cpp.bin`. Do not add README, note, source, or memory files there.
 - The active editable firmware source is `firmware/JEXFYZ-V6.6.ino`. Its embedded `FW_VERSION`, filename and the single active versioned `.ino` must always match.
-- Firmware V6.6 is currently source-only DEVELOPMENT + QC / PRE-RELEASE until the user compiles and validates it. Do not infer that the artifact BIN matches this source.
+- Firmware source remains V6.6 / DEVELOPMENT + QC / PRE-RELEASE, NOT RELEASED. The user reported successful V6.6 compilation and Online OTA update; compile logs, installed-version telemetry and source-to-BIN provenance have not been independently re-verified here. Do not assume the artifact BIN matches this source.
 - App Gradle `versionName "Telegram @horizontalzzz"` is an intentional identity string; do not change it.
 
 ## Current validation boundary
 
-V6.6 and its LED App changes have source-level/static contract checks recorded, but the corrected UI test contracts/analyze, ArduinoDroid compilation, BIN generation, physical LED verification, OTA, or App Build have NOT been run. Test files present in the repository are not evidence of passing tests. See [PROJECT_STATE.md](PROJECT_STATE.md) for the current verified status.
+The current App source contains voltage-aware Fan/Peltier dashboard motion and a bottom-pinned Color Picker with Cancel. Static source/readback checks passed; Flutter test/analyze and App Build have NOT been run for these latest source commits. The user reported that V6.6 compiled and Online OTA updated successfully, but build logs, installed version, BIN provenance and physical thermal/LED QC still require evidence. This App-only execution did not change Firmware, BIN, Firebase or OTA state. Test files present in the repository are not evidence of passing tests. See [PROJECT_STATE.md](PROJECT_STATE.md) for current validation boundaries.
 
 ## Non-negotiable workflow
 
