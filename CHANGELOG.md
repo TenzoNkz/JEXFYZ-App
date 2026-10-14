@@ -2,6 +2,16 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
+
+## 2026-10-14 — APK signature verification hardening / Firmware V6.6 user acceptance
+
+- Investigated the user's MT Manager screenshot showing `Signature: Verified failed`. The latest successful App Build before this fix was run `38556896542` on commit `67c5d26723c433b4af856c7759a967a3425bf67a`; its log reported V1=false, V2=true and V3=true while the workflow accepted the build because it relied on `jarsigner`'s `jar verified.` text and did not require `apksigner` V1=true.
+- Hardened `.github/workflows/jexfyz-app-build-trigger.yml` to sign with `--min-sdk-version 23`, run `apksigner verify --min-sdk-version 23`, and fail unless V1/V2/V3 all verify on both the built APK and the re-downloaded release asset. Android manifest minSdk remains 24. This is a workflow-only change and has not been build-verified yet; no APK was built or published after this change.
+- The screenshot's installed-app metadata says last update 17:11 Asia/Jakarta, earlier than the latest successful run completing at 18:36, so the shown installed copy predates that release. The precise reason MT Manager shows failure remains unverified until a new APK is built, installed and checked.
+- User confirms Firmware V6.6 is final/correct and reports successful compilation plus two successful Online OTA flashes/updates on the same V6.6 version. Do not change/recompile/reflash Firmware unless the user explicitly reopens the task and separately authorizes the operation. Source-to-BIN provenance remains a separate unverified fact, not a reason to initiate another Firmware operation.
+- No App Build, Firmware compile, BIN update, Firebase change, physical OTA/flash or release operation was performed in this execution.
+
+
 ## 2026-10-14 — Chat-limit reconciliation after App UI execution
 
 - Re-read the prior transfer snapshot and canonical App/Firmware/OTA/build/design memories; refreshed current source/test hashes, current App build boundary, repository branch/PR and BIN-only artifact evidence in the transfer snapshot.
