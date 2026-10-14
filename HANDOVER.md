@@ -7,7 +7,7 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). Re-fetch live `main` and source hash
 - Active Firmware source: `firmware/JEXFYZ-V6.6.ino`; `FW_VERSION = "V6.6"`; source blob observed at last reconciliation: `f51ba6db5d0e91318f63fea4014bb87f7bf76222`.
 - Active App source: `lib/main.dart`, current blob `6012d2e2d60dcbf2c5a816c78e63edbfb04b44c2`, pubspec version `1.0.0+3`, package `com.horizontalzzz.jexfyz`.
 - Current Firmware status: source-only DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED. V6.6 not independently compiled/hardware validated here.
-- Main V6.6 QC contract: `test/v6_6_qc_contract_test.dart`. This UI/notification execution updated `test/widget_test.dart` (`9c18e801b242ba3bdfd68a414407d778461b83a4`); Flutter tests and analyze have NOT run.
+- Main V6.6 QC contract: `test/v6_6_qc_contract_test.dart`. This UI/notification execution updated `test/widget_test.dart` (`c8780386edcf8e6dfbff965fbba4ff2e8541655f`); Flutter tests and analyze have NOT run.
 - Latest observed successful App Build run: `38520146994` on commit `1024eb8e145429913aacb52f4cf352e087885d44`; it predates the LED UI/notification source changes and does not validate current source. The exact current test list and run evidence are refreshed in `CHAT_TRANSFER.md`.
 - Open PR search last returned zero. Verify live; use main by default.
 - Artifact repository `TenzoNkz/JEXFYZ-Firmware` is intended to contain only `JEXFYZ.cpp.bin`; all notes belong in this repo.
