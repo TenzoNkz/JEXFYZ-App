@@ -515,7 +515,7 @@ void main() {
     expect(JexText.of('ledModeComet', AppLanguage.indonesia), 'Komet');
   });
 
-  test('Fan voltage change keeps its angular phase and coasts on OFF', () {
+  test('Fan voltage change preserves phase and OFF coasts smoothly to a stop', () {
     final source = File('lib/main.dart').readAsStringSync();
     final stateStart = source.indexOf('class _JexAnimatedIconState');
     final stateEnd = source.indexOf('class _JexIconPainter', stateStart);
@@ -526,29 +526,75 @@ void main() {
     expect(iconState, contains('_animateFanToCycleBoundary();'));
     expect(iconState, contains('await controller.animateTo('));
     expect(iconState, contains('controller.repeat();'));
-    expect(iconState, contains('coastDelta'));
+    expect(iconState, contains('_coastFanToStop();'));
+    expect(iconState, contains('const coastCycles = .16;'));
+    expect(iconState, contains('Curves.easeOutCubic'));
+    expect(iconState, isNot(contains('coastDelta')));
     expect(iconState, contains('frostTransitionController.forward(from: 0)'));
-    expect(iconState, contains('_frostFromVisibility'));
+    expect(iconState, isNot(contains('_frostFromVisibility')));
     expect(iconState, contains('if (widget.active)'));
-    expect(iconState, contains('Duration(milliseconds: 360)'));
-    expect(iconState, contains('Duration(milliseconds: 420)'));
-    expect(iconState, contains('Duration(milliseconds: 520)'));
   });
 
-  test('Peltier indicator uses a geometric crystal rather than a flower rotor', () {
+  test('Peltier indicator is a full-bright frost crystal with no module box', () {
     final source = File('lib/main.dart').readAsStringSync();
     final peltierStart = source.indexOf('case JexAnimatedIconKind.peltier:');
     final peltierEnd = source.indexOf('case JexAnimatedIconKind.fan:', peltierStart);
     expect(peltierStart, isNonNegative);
     expect(peltierEnd, greaterThan(peltierStart));
     final peltier = source.substring(peltierStart, peltierEnd);
-    expect(peltier, contains('final moduleRect'));
+    expect(peltier, isNot(contains('moduleRect')));
+    expect(peltier, isNot(contains('drawRRect')));
     expect(peltier, contains('final branch = Path()'));
     expect(peltier, contains('Fractional opacity interpolates particle count'));
+    expect(peltier, contains('final rotation = angle / 6'));
+    expect(peltier, contains('final crystalColor = color.withValues(alpha: 1)'));
     expect(peltier, contains('math.sin(angle) * .035'));
-    expect(peltier, contains('frostVisibilityOverride'));
-    expect(peltier, contains('* coolingFade'));
+    expect(peltier, isNot(contains('frostVisibilityOverride')));
+    expect(peltier, isNot(contains('coolingFade')));
     expect(peltier, isNot(contains('final petal = Path()')));
+  });
+
+  test('Fan OFF keeps full-colour blades while the coast controller settles', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final bladeStart = source.indexOf('void _drawFanBlade');
+    final bladeEnd = source.indexOf('void _drawHeatWave', bladeStart);
+    final fanStart = source.indexOf('case JexAnimatedIconKind.fan:');
+    final fanEnd = source.indexOf('case JexAnimatedIconKind.speed:', fanStart);
+    expect(bladeStart, isNonNegative);
+    expect(bladeEnd, greaterThan(bladeStart));
+    expect(fanStart, isNonNegative);
+    expect(fanEnd, greaterThan(fanStart));
+    final blades = source.substring(bladeStart, bladeEnd);
+    final fan = source.substring(fanStart, fanEnd);
+    expect(blades, contains('alpha: .94'));
+    expect(blades, contains('alpha: .45'));
+    expect(blades, isNot(contains('active ? .94 : .60')));
+    expect(fan, contains('final rotation = angle;'));
+    expect(fan, contains('alpha: 1'));
+    expect(fan, isNot(contains('active ? 1 : .64')));
+  });
+
+  test('Fan Speed gauge gently wobbles ON and returns to zero smoothly OFF', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final stateStart = source.indexOf('class _JexAnimatedIconState');
+    final stateEnd = source.indexOf('class _JexIconPainter', stateStart);
+    final speedStart = source.indexOf('case JexAnimatedIconKind.speed:');
+    final speedEnd = source.indexOf('case JexAnimatedIconKind.led:', speedStart);
+    expect(stateStart, isNonNegative);
+    expect(stateEnd, greaterThan(stateStart));
+    expect(speedStart, isNonNegative);
+    expect(speedEnd, greaterThan(speedStart));
+    final iconState = source.substring(stateStart, stateEnd);
+    final speed = source.substring(speedStart, speedEnd);
+    expect(iconState, contains('_speedStopFromLevel = oldWidget.level'));
+    expect(iconState, contains('_speedIsStopping = true'));
+    expect(iconState, contains('Duration(milliseconds: 520)'));
+    expect(iconState, contains('_speedStopFromLevel * (1 - Curves.easeOutCubic.transform(controller.value))'));
+    expect(speed, contains('math.sin(angle) * .035 + math.sin(angle * 2.3) * .008'));
+    expect(speed, contains('final actual = level.clamp(0.0, 1.0).toDouble();'));
+    expect(speed, contains('alpha: 1'));
+    expect(speed, isNot(contains('active ? .96 : .44')));
+    expect(speed, isNot(contains('active ? 1 : .52')));
   });
 
   test('Peltier Safety dialog uses readable text and comfortable touch targets', () {
