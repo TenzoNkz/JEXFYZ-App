@@ -275,8 +275,8 @@ jobs:
           test -s "$SIGNED_APK"
           mv "$SIGNED_APK" "$APK"
 
-          # Fail early unless signing itself reports all three schemes as valid.
-          SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --verbose --print-certs "$APK" 2>&1)"
+          # APK minSdk is 24; verify from API 1 so the v1 scheme is exercised too.
+          SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --min-sdk-version 1 --verbose --print-certs "$APK" 2>&1)"
           printf '%s\n' "$SIGNATURE_OUTPUT"
           grep -Fq "Verified using v1 scheme (JAR signing): true" <<< "$SIGNATURE_OUTPUT"
           grep -Fq "Verified using v2 scheme (APK Signature Scheme v2): true" <<< "$SIGNATURE_OUTPUT"
@@ -293,7 +293,7 @@ jobs:
           APK_SIGNER="$(find "$ANDROID_SDK_ROOT/build-tools" -type f -name apksigner 2>/dev/null | sort -V | tail -n 1)"
           test -n "$APK_SIGNER"
 
-          SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --verbose --print-certs "$APK" 2>&1)"
+          SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --min-sdk-version 1 --verbose --print-certs "$APK" 2>&1)"
           printf '%s\n' "$SIGNATURE_OUTPUT"
 
           # Require every APK signature scheme used by the release policy.
@@ -396,7 +396,7 @@ jobs:
           APK_SIGNER="$(find "$ANDROID_SDK_ROOT/build-tools" -type f -name apksigner 2>/dev/null | sort -V | tail -n 1)"
           test -n "$APK_SIGNER"
 
-          DOWNLOADED_SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --verbose --print-certs "$DOWNLOADED" 2>&1)"
+          DOWNLOADED_SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --min-sdk-version 1 --verbose --print-certs "$DOWNLOADED" 2>&1)"
           printf '%s\n' "$DOWNLOADED_SIGNATURE_OUTPUT"
 
           grep -Fq "Verified using v1 scheme (JAR signing): true" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
