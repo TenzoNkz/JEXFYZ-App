@@ -254,11 +254,18 @@ class FloatingMonitorService : Service() {
             Notification.Builder(this)
         }
         return builder
-            .setSmallIcon(R.drawable.jexfyzicon)
+            .setJexNotificationBranding(this)
             .setContentTitle("JE X FYZ")
-            .setContentText("")
+            .setContentText(
+                if (data.language.equals("indonesia", ignoreCase = true))
+                    "Monitor Melayang aktif"
+                else
+                    "Floating Monitor active"
+            )
             .setOngoing(true)
             .setShowWhen(false)
+            .setCategory(Notification.CATEGORY_SERVICE)
+            .setContentIntent(jexNotificationContentIntent(this, NOTIFICATION_ID))
             .setPriority(Notification.PRIORITY_LOW)
             .build()
     }
@@ -323,9 +330,15 @@ class FloatingMonitorService : Service() {
             data.speed = obj.optInt("speed", 100)
             data.adaptiveOn = obj.optBoolean("adaptiveOn", false)
             data.peltierOn = obj.optBoolean("peltierOn", false)
-            data.language = obj.optString("language", "english").lowercase()
+            val nextLanguage = obj.optString("language", data.language).lowercase()
+            val languageChanged = nextLanguage != data.language
+            data.language = nextLanguage
             if (config.enabled) {
                 hudView?.invalidate()
+            }
+            if (languageChanged) {
+                getSystemService(NotificationManager::class.java)
+                    .notify(NOTIFICATION_ID, buildNotification())
             }
         } catch (_: Exception) {
         }

@@ -5,7 +5,7 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). Re-fetch live `main` and source hash
 ## Current state
 
 - Active Firmware source: `firmware/JEXFYZ-V6.6.ino`; `FW_VERSION = "V6.6"`; source blob observed at last reconciliation: `f51ba6db5d0e91318f63fea4014bb87f7bf76222`.
-- Active App source: `lib/main.dart`, last observed blob `e0371cac545dda2f2d5f099e4298c37c04160538`, pubspec version `1.0.0+3`, package `com.horizontalzzz.jexfyz`.
+- Active App source: `lib/main.dart`, current blob `a9e50590a72a7eab91f091092d998bfa5512ce7a`, pubspec version `1.0.0+3`, package `com.horizontalzzz.jexfyz`.
 - Current Firmware status: source-only DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED. V6.6 not independently compiled/hardware validated here.
 - Main V6.6 QC contract: `test/v6_6_qc_contract_test.dart`. It exists but has not been run in this task.
 - Open PR search last returned zero. Verify live; use main by default.
@@ -25,8 +25,8 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). Re-fetch live `main` and source hash
 1. User compiles active V6.6 using ArduinoDroid with Arduino-ESP32 Core 3.3.7. Confirm binary/version provenance; do not assume the already-published BIN matches source.
 2. Pair App and Firmware V6.6 and test Static, Breath, Comet, Dual Chase, Left ↔ Right and Rainbow in order. Confirm Mirror Pulse is absent and ID 3 is migrated/rejected.
 3. Verify LED_SYNC on initial sync, mode switch, RGB ON/OFF and periodic updates; inspect lag/jumps under BLE traffic.
-4. Check saturated colors at 1%, 10%, 46% and 100% brightness, and confirm the one-row preview fits narrow screens: left arrow → four left LEDs → centered mode number/name → four right LEDs → right arrow.
-5. Run Flutter tests/analyze if available. Physical LED timing and firmware compile remain separate gates.
+4. Check saturated colors at 1%, 10%, 46% and 100% brightness, and confirm the one-row preview fits narrow screens: left arrow → four left LEDs → centered localized mode name only (no numeric index) → four right LEDs → right arrow.
+5. Run Flutter tests/analyze if authorized and available. Check disconnected CONTROL/ADAPTIVE/LED toggles are OFF-looking, disabled and knob-left while dashboard/Floating Monitor still show unknown `--`. Validate notification icon, title/body, tap intent and permission request on Android 13+ and older supported Android. Physical LED timing and firmware compile remain separate gates.
 2. With hardware, reproduce Manual Volt and Adaptive voltage changes while the 5-second soft-start is still active. Expected: GPIO5 PWM 0% during selector handoff, preserve 200 ms deadtime, hold through 1-second settle, then start a fresh 5-second ramp. Adaptive ON/OFF must not introduce a separate Peltier OFF cycle. Capture reset reason if reboot recurs.
 3. Repeat after soft-start completes, including Adaptive ON and OFF. Expected: Peltier PWM remains 100% continuously throughout rail transition unless explicit OFF or safety shuts it down; no Adaptive-specific OFF/ON cycle.
 4. Verify Peltier-OFF, Hotside/NTC protection and OTA safe-output cancel all pending ramp resume.

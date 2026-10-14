@@ -329,7 +329,9 @@ void main() {
     expect(source, contains("if (c.startsWith('VOLTAGE:')) return MapEntry('VOLTAGE', c.substring(8));"));
     expect(source, contains("case 'VOLTAGE':\n        return voltage.toUpperCase() == expected.toUpperCase();"));
     expect(source, contains('runtimeOutputsKnown = false;'));
-    expect(source, contains("stateKnown ? JexText.of(value ? 'on' : 'off', lang) : '--'"));
+    expect(source, contains("stateKnown ? JexText.of(value ? 'on' : 'off', lang) : JexText.of('off', lang)"));
+    expect(source, contains('final displayedValue = stateKnown && value;'));
+    expect(source, contains('alignment: displayedValue ? Alignment.centerRight : Alignment.centerLeft'));
   });
 
   test('manual Peltier lock cannot be bypassed by one threshold sample', () {

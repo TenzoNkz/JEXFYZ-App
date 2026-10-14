@@ -332,6 +332,154 @@ class JexText {
       AppLanguage.english: 'Color',
       AppLanguage.indonesia: 'Warna',
     },
+    'ledColorCandyRed': {
+      AppLanguage.english: 'Candy Red',
+      AppLanguage.indonesia: 'Merah Permen',
+    },
+    'ledColorCrimson': {
+      AppLanguage.english: 'Crimson',
+      AppLanguage.indonesia: 'Merah Crimson',
+    },
+    'ledColorScarlet': {
+      AppLanguage.english: 'Scarlet',
+      AppLanguage.indonesia: 'Merah Scarlet',
+    },
+    'ledColorVermilion': {
+      AppLanguage.english: 'Vermilion',
+      AppLanguage.indonesia: 'Vermilion',
+    },
+    'ledColorCoral': {
+      AppLanguage.english: 'Coral',
+      AppLanguage.indonesia: 'Koral',
+    },
+    'ledColorSalmon': {
+      AppLanguage.english: 'Salmon',
+      AppLanguage.indonesia: 'Salmon',
+    },
+    'ledColorTangerine': {
+      AppLanguage.english: 'Tangerine',
+      AppLanguage.indonesia: 'Jingga Tangerine',
+    },
+    'ledColorPeach': {
+      AppLanguage.english: 'Peach',
+      AppLanguage.indonesia: 'Persik',
+    },
+    'ledColorCaramel': {
+      AppLanguage.english: 'Caramel',
+      AppLanguage.indonesia: 'Karamel',
+    },
+    'ledColorChocolate': {
+      AppLanguage.english: 'Chocolate',
+      AppLanguage.indonesia: 'Cokelat',
+    },
+    'ledColorAmber': {
+      AppLanguage.english: 'Amber',
+      AppLanguage.indonesia: 'Amber',
+    },
+    'ledColorGoldenYellow': {
+      AppLanguage.english: 'Golden Yellow',
+      AppLanguage.indonesia: 'Kuning Emas',
+    },
+    'ledColorLemon': {
+      AppLanguage.english: 'Lemon',
+      AppLanguage.indonesia: 'Lemon',
+    },
+    'ledColorChartreuse': {
+      AppLanguage.english: 'Chartreuse',
+      AppLanguage.indonesia: 'Hijau Chartreuse',
+    },
+    'ledColorLime': {
+      AppLanguage.english: 'Lime',
+      AppLanguage.indonesia: 'Hijau Lime',
+    },
+    'ledColorNeonGreen': {
+      AppLanguage.english: 'Neon Green',
+      AppLanguage.indonesia: 'Hijau Neon',
+    },
+    'ledColorEmerald': {
+      AppLanguage.english: 'Emerald',
+      AppLanguage.indonesia: 'Hijau Zamrud',
+    },
+    'ledColorMint': {
+      AppLanguage.english: 'Mint',
+      AppLanguage.indonesia: 'Hijau Mint',
+    },
+    'ledColorJade': {
+      AppLanguage.english: 'Jade',
+      AppLanguage.indonesia: 'Hijau Giok',
+    },
+    'ledColorTurquoise': {
+      AppLanguage.english: 'Turquoise',
+      AppLanguage.indonesia: 'Turkuois',
+    },
+    'ledColorCyan': {
+      AppLanguage.english: 'Cyan',
+      AppLanguage.indonesia: 'Sian',
+    },
+    'ledColorSkyBlue': {
+      AppLanguage.english: 'Sky Blue',
+      AppLanguage.indonesia: 'Biru Langit',
+    },
+    'ledColorAzure': {
+      AppLanguage.english: 'Azure',
+      AppLanguage.indonesia: 'Biru Azure',
+    },
+    'ledColorElectricBlue': {
+      AppLanguage.english: 'Electric Blue',
+      AppLanguage.indonesia: 'Biru Elektrik',
+    },
+    'ledColorRoyalBlue': {
+      AppLanguage.english: 'Royal Blue',
+      AppLanguage.indonesia: 'Biru Royal',
+    },
+    'ledColorIndigo': {
+      AppLanguage.english: 'Indigo',
+      AppLanguage.indonesia: 'Nila',
+    },
+    'ledColorBlueViolet': {
+      AppLanguage.english: 'Blue Violet',
+      AppLanguage.indonesia: 'Biru Violet',
+    },
+    'ledColorViolet': {
+      AppLanguage.english: 'Violet',
+      AppLanguage.indonesia: 'Violet',
+    },
+    'ledColorPurple': {
+      AppLanguage.english: 'Purple',
+      AppLanguage.indonesia: 'Ungu',
+    },
+    'ledColorNeonPurple': {
+      AppLanguage.english: 'Neon Purple',
+      AppLanguage.indonesia: 'Ungu Neon',
+    },
+    'ledColorOrchid': {
+      AppLanguage.english: 'Orchid',
+      AppLanguage.indonesia: 'Anggrek',
+    },
+    'ledColorMagenta': {
+      AppLanguage.english: 'Magenta',
+      AppLanguage.indonesia: 'Magenta',
+    },
+    'ledColorFuchsia': {
+      AppLanguage.english: 'Fuchsia',
+      AppLanguage.indonesia: 'Fuchsia',
+    },
+    'ledColorHotPink': {
+      AppLanguage.english: 'Hot Pink',
+      AppLanguage.indonesia: 'Merah Muda Neon',
+    },
+    'ledColorRosePink': {
+      AppLanguage.english: 'Rose Pink',
+      AppLanguage.indonesia: 'Merah Mawar',
+    },
+    'ledColorWhite': {
+      AppLanguage.english: 'White',
+      AppLanguage.indonesia: 'Putih',
+    },
+    'customColor': {
+      AppLanguage.english: 'Custom Color',
+      AppLanguage.indonesia: 'Warna Kustom',
+    },
     'brightness': {
       AppLanguage.english: 'Brightness',
       AppLanguage.indonesia: 'Kecerahan',

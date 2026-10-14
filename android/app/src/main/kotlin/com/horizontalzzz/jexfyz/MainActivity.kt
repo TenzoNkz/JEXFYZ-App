@@ -73,7 +73,9 @@ class MainActivity : FlutterActivity() {
                 }
 
                 "startBackgroundService" -> {
-                    result.success(startBackgroundService())
+                    val args = call.arguments as? Map<*, *>
+                    val language = args?.get("language")?.toString() ?: "english"
+                    result.success(startBackgroundService(language))
                 }
 
                 "stopBackgroundService" -> {
@@ -173,9 +175,11 @@ class MainActivity : FlutterActivity() {
     // Start foreground support for an already-active BLE session.
     // AI-METHOD / BACKGROUND-SERVICE-CONTRACT
     // Start the existing BLE-support foreground service without taking BLE ownership away from Flutter.
-    private fun startBackgroundService(): Boolean {
+    private fun startBackgroundService(language: String): Boolean {
         return try {
-            val intent = Intent(this, JeForegroundService::class.java)
+            val intent = Intent(this, JeForegroundService::class.java).apply {
+                putExtra(JeForegroundService.EXTRA_LANGUAGE, language)
+            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(intent)
             } else {
@@ -367,6 +371,8 @@ class MainActivity : FlutterActivity() {
             checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) !=
             PackageManager.PERMISSION_GRANTED
         ) {
+            // Ask on the first real notification attempt rather than dropping alerts silently.
+            requestNotificationPermission()
             return false
         }
         return try {
@@ -376,12 +382,14 @@ class MainActivity : FlutterActivity() {
                 @Suppress("DEPRECATION")
                 Notification.Builder(this)
             }
-                .setSmallIcon(R.drawable.jexfyzicon)
+                .setJexNotificationBranding(this)
                 .setContentTitle(title)
                 .setContentText(body)
                 .setAutoCancel(true)
                 .setShowWhen(true)
                 .setPriority(Notification.PRIORITY_DEFAULT)
+                .setCategory(Notification.CATEGORY_EVENT)
+                .setContentIntent(jexNotificationContentIntent(this, id))
                 .build()
             getSystemService(NotificationManager::class.java)
                 .notify(id, notification)

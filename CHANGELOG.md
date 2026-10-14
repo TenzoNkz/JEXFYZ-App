@@ -2,6 +2,16 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
+## 2026-10-14 — LED preview/picker, disconnected menu fallback and Android notifications
+
+- Compactened the LED preview row, removed the numeric mode index, narrowed its center card, and darkened left/right LED column backgrounds for contrast.
+- Decoupled LED preview core opacity/glow from the hardware Brightness setting so colors stay visible at low hardware brightness; Firmware brightness/protocol behavior is unchanged.
+- Replaced the code-only palette with 36 curated hue-ordered colors, localized names, and a centered responsive dialog. HEX values remain internal to the RGB command and are not displayed.
+- CONTROL/ADAPTIVE/LED menu switch rows show an OFF-looking disabled fallback with the toggle at left while BLE is disconnected. Home/dashboard and Floating Monitor remain unknown (`--`) when physical telemetry is unavailable.
+- Added monochrome Android notification icon plus the full-color branded large icon, fixed BLE event title/body order, added app-open tap intents and meaningful localized foreground service bodies, and requests Android 13+ notification permission at the first actual notification attempt.
+- Updated UI/source-contract tests and canonical memory. Tests/analyze are NOT RUN; Android OEM notification rendering, narrow-screen layout and hardware LED appearance remain UNVERIFIED.
+- No Firmware source/protocol, BIN, Firebase, OTA, flashing, release, App Build or Firmware compile operation was performed.
+
 ## 2026-10-14 — V6.6 LED mode removal, brightness preview and phase synchronization
 
 - Bumped active Firmware source to `firmware/JEXFYZ-V6.6.ino`, `FW_VERSION = "V6.6"`; exactly one active versioned `.ino` remains.

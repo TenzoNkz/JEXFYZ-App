@@ -21,7 +21,7 @@ Last reconciled against `main`: 2026-10-14 (Asia/Jakarta). This is a routing ind
 | `CHAT_TRANSFER.md` | Detailed transfer snapshot and boot checklist; verify against live main |
 | `CHAT_TRANSFER_PROMPTS.md` | Long copy-ready prompts for preserving memory and starting a new chat |
 | `HANDOVER.md` | Current next actions and unresolved validation gates |
-| `APP_NOTES.md` | UI/navigation, BLE/P1, telemetry, phone Battery heartbeat, Battery Protection Guard presentation rule, pairing-design caveat, localization, reconnect and App contracts |
+| `APP_NOTES.md` | UI/navigation, named LED palette/preview, offline menu fallback, Android notifications, BLE/P1, telemetry, phone Battery heartbeat, Battery Protection Guard presentation rule, pairing-design caveat, localization, reconnect and App contracts |
 | `FIRMWARE_NOTES.md` | Hardware, pins, sensor model, cooling, Adaptive, timing and safety contracts |
 | `firmware/FIRMWARE_TECHNICAL_REFERENCE.md` | Current code architecture and static invariants |
 | `OTA_PROTECTION.md` | Frozen OTA areas and required approval/re-audit |
@@ -30,6 +30,7 @@ Last reconciled against `main`: 2026-10-14 (Asia/Jakarta). This is a routing ind
 | `BUILD_NOTES.md` | Manual APK trigger, toolchain and release boundaries |
 | `CHANGELOG.md` | Historical decisions and superseded approaches |
 | `DESIGN_NOTES.md` | Approved grille, monogram, 1:1 geometry, assets and visual constraints |
+| `android/app/src/main/res/drawable/ic_notification.xml` + `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt` | Android notification small icon, full-color large icon and app-open PendingIntent |
 | `test/*.dart` | Regression contracts; presence does not mean they ran |
 | `.github/workflows/jexfyz-app-build-trigger.yml` | Authoritative explicit App Build workflow |
 | `firmware/JEXFYZ-V6.6.ino` | Canonical editable Firmware source |

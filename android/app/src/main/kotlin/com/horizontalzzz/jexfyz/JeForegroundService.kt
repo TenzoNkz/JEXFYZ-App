@@ -18,6 +18,7 @@ class JeForegroundService : Service() {
     companion object {
         private const val CHANNEL_ID = "je_x_fyz_background"
         private const val NOTIFICATION_ID = 2101
+        const val EXTRA_LANGUAGE = "language"
     }
 
     // Create the notification channel once for this service process.
@@ -28,7 +29,8 @@ class JeForegroundService : Service() {
 
     // Promote the service into connected-device foreground mode.
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val notification = buildNotification()
+        val language = intent?.getStringExtra(EXTRA_LANGUAGE) ?: "english"
+        val notification = buildNotification(language)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(
@@ -65,20 +67,27 @@ class JeForegroundService : Service() {
     }
 
     // Build the ongoing foreground notification.
-    private fun buildNotification(): Notification {
+    private fun buildNotification(language: String): Notification {
         val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Notification.Builder(this, CHANNEL_ID)
         } else {
             @Suppress("DEPRECATION")
             Notification.Builder(this)
         }
+        val content = if (language.equals("indonesia", ignoreCase = true)) {
+            "Bluetooth terhubung · sesi cooler aktif"
+        } else {
+            "Bluetooth connected · cooler session active"
+        }
 
         return builder
-            .setSmallIcon(R.drawable.jexfyzicon)
+            .setJexNotificationBranding(this)
             .setContentTitle("JE X FYZ")
-            .setContentText("")
+            .setContentText(content)
             .setOngoing(true)
             .setShowWhen(false)
+            .setCategory(Notification.CATEGORY_SERVICE)
+            .setContentIntent(jexNotificationContentIntent(this, NOTIFICATION_ID))
             .setPriority(Notification.PRIORITY_LOW)
             .build()
     }

@@ -32,7 +32,7 @@ This file is the durable App behavior/design contract. Live `lib/` source and th
 
 - App state must reflect physical Firmware telemetry, not only command ACKs or optimistic local writes.
 - A Touch Adaptive-OFF gesture must publish the authoritative Adaptive/ceiling/Fan/Peltier/Fan-speed telemetry so Dashboard and Floating Monitor cannot remain stale.
-- While BLE is offline or session state is unknown, show unknown output state (`--`) rather than stale on/off values.
+- Home/dashboard telemetry and Floating Monitor show unknown output state (`--`) while BLE is offline; they must not display stale physical state. CONTROL, ADAPTIVE, and LED menu switch rows instead use a disabled visual OFF fallback with the toggle knob at the left. This is presentation only, not confirmation that hardware outputs are OFF; controls remain disabled until BLE/P1 session sync and authoritative state are received.
 - Safety/Notify error state may be cleared only after healthy live safety telemetry, not from an unrelated success ACK.
 - Safety messages must be clear and localized; never expose raw protocol stage tokens or underscore-formatted internal reason strings to normal UI.
 - Hotside safety re-arm copy uses the current firmware rule: Hotside at or below `hotLimit - 1°C` continuously for five seconds.
@@ -46,6 +46,13 @@ This file is the durable App behavior/design contract. Live `lib/` source and th
 - Auto Connect/reconnect must respect the saved preference, a previously known/pair-associated cooler identity, Android Bluetooth/permission/location prerequisites, and BLE sync state. Cancel retries/scanning when prerequisites are unavailable and suppress scans while syncing.
 - Do not mutate UI physical state based only on Touch or control ACK. Consume authoritative state deltas.
 - Secure BLE command writes use encryption and bonding. Reconnect/first pairing still needs physical Android validation; Just Works does not provide MITM identity assurance without an input/display path.
+
+## Android notifications and icons
+
+- Android notification small icons use a dedicated monochrome X vector at `android/app/src/main/res/drawable/ic_notification.xml`, not the full-color launcher PNG. The full JE X FYZ icon is used as the notification large icon.
+- User notifications use `JE X FYZ` as the content title and the localized event/status as the body; connected/disconnected notifications must not reverse these fields. Tapping opens JE Cooler.
+- The BLE foreground-service notification has a meaningful localized connected-session body rather than an empty string. Floating Monitor uses the same branded icon and a non-empty service description.
+- When Android 13+ notification permission is absent, the first real notification attempt requests permission instead of silently dropping every alert. The actual display remains subject to user choice and Android/OEM behavior.
 
 ## Online OTA App state
 
@@ -66,8 +73,9 @@ This file is the durable App behavior/design contract. Live `lib/` source and th
 - Six App modes use stable firmware IDs: 01 Static (1), 02 Breath (2), 03 Comet (4), 04 Dual Chase (5), 05 Left ↔ Right (6), 06 Rainbow (7). ID 3 / Mirror Pulse is retired and never reused.
 - Firmware V6.6 emits one `LED_SYNC:<mode>,<phase_ms>,<cycle_ms>` tuple, computed immediately before BLE notify. Mode, phase and cycle arrive atomically, and the phase does not age while waiting in the queue.
 - The App interpolates the phase from a monotonic local clock and adjusts drift at later snapshots; a phase update must not restart the animation controller. Separate `LED_PHASE` and `LED_CYCLE_MS` handling remains a compatibility fallback for older V6.x firmware.
-- Preview pixel order follows the physical strip: right top→bottom indices 0–3, left bottom→top indices 4–7. The layout is left arrow, four left LEDs, centered mode number/name, four right LEDs, right arrow.
-- RGB base chroma is preserved in preview; brightness controls pixel alpha and glow rather than scaling RGB channels toward black. This does not change brightness commands or physical firmware rendering.
+- Preview pixel order follows the physical strip: right top→bottom indices 0–3, left bottom→top indices 4–7. The compact layout is left arrow, four left LEDs, centered localized mode name only (no numeric index), four right LEDs, right arrow.
+- LED-column backgrounds are slightly darker for contrast. Preview pixel visibility/glow is independent of the hardware Brightness slider, so colors stay vivid even at low hardware brightness; animation levels still distinguish the active mode. This does not change brightness commands or physical Firmware rendering.
+- The centered responsive Color Picker offers 36 curated hue-ordered presets without HEX labels. Names are localized (for example Candy Red / Merah Permen, Chocolate / Cokelat, Cyan / Sian, White / Putih); HEX values remain internal to the COLOR protocol command. Brightness remains the single intensity control.
 - Firmware migrates saved mode ID 3/invalid values to Static and rejects new MODE:3 commands. On older firmware that still reports ID 3, the App labels the mode Unsupported rather than rendering Mirror Pulse; the user can select a supported mode.
 - Firmware safety/OTA indicators continue to override decorative RGB effects.
 - Do not change settings storage or defaults without a scoped task and regression review.

@@ -1,3 +1,4 @@
+import 'dart:io';
 // AI-MEMORY / TEST CONTRACT
 // This file validates deterministic UI helpers, localization contracts, and pure parsing rules.
 // It does not prove BLE, Android OEM permission behavior, overlay compositing, OTA transport,
@@ -331,14 +332,33 @@ void main() {
     expect(LedSyncSnapshot.parse('8,0,1000'), isNull);
   });
 
-  test('LED preview keeps chroma at low brightness and scales opacity separately', () {
-    final red = ledPreviewColors(mode: 1, phaseMs: 0, baseColor: '#FF0000').first;
+  test('LED preview stays vivid independently of hardware Brightness', () {
+    final red = ledPreviewColors(mode: 1, phaseMs: 0, baseColor: '#FF1744').first;
     expect(red.red, 255);
-    expect(red.green, 0);
-    expect(red.blue, 0);
-    expect(ledPreviewPixelOpacity(brightness: 1, level: 1), 0.08);
-    expect(ledPreviewPixelOpacity(brightness: 50, level: 1), 0.5);
-    expect(ledPreviewPixelOpacity(brightness: 100, level: 0), 0.08);
+    expect(red.green, 23);
+    expect(red.blue, 68);
+    expect(ledPreviewPixelOpacity(level: 1), 1.0);
+    expect(ledPreviewPixelOpacity(level: 0), closeTo(.72, .001));
+  });
+
+  test('LED color palette has 36 hue-ordered presets with localized names', () {
+    expect(ledColorPalette, hasLength(36));
+    expect(ledColorDisplayName('#FF1744', AppLanguage.english), 'Candy Red');
+    expect(ledColorDisplayName('#FF1744', AppLanguage.indonesia), 'Merah Permen');
+    expect(ledColorDisplayName('#A85D32', AppLanguage.indonesia), 'Cokelat');
+    expect(ledColorDisplayName('#FFFFFF', AppLanguage.english), 'White');
+    expect(ledColorDisplayName('#FF0000', AppLanguage.english), 'Custom Color');
+    expect(ledColorPalette, isNot(contains('#000000')));
+  });
+
+  test('LED UI source exposes centered picker and OFF menu fallback', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    expect(source, contains('widget.modeName.toUpperCase()'));
+    expect(source, isNot(contains('widget.modeNumber')));
+    expect(source, contains('ledColorDisplayName(rgbColor, lang)'));
+    expect(source, contains("stateKnown ? JexText.of(value ? 'on' : 'off', lang) : JexText.of('off', lang)"));
+    expect(source, contains('final displayedValue = stateKnown && value;'));
+    expect(source, contains('constraints: const BoxConstraints(maxWidth: 420)'));
   });
 
   test('LED preview exposes the physical 4-left/4-right pixel map', () {
@@ -396,6 +416,46 @@ void main() {
     expect(JexText.of('ledModeUnsupported', AppLanguage.english), 'Unsupported');
     expect(JexText.of('ledModeUnsupported', AppLanguage.indonesia), 'Tidak didukung');
     expect(JexText.of('ledModeComet', AppLanguage.indonesia), 'Komet');
+  });
+
+  test('Android notifications use JE X FYZ branding and meaningful foreground text', () {
+    final activity = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt').readAsStringSync();
+    final bleService = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JeForegroundService.kt').readAsStringSync();
+    final floatingService = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt').readAsStringSync();
+    final helper = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt').readAsStringSync();
+    final icon = File('android/app/src/main/res/drawable/ic_notification.xml').readAsStringSync();
+
+    expect(activity, contains('setJexNotificationBranding(this)'));
+    expect(activity, contains('jexNotificationContentIntent(this, id)'));
+    expect(activity, contains('requestNotificationPermission()'));
+    expect(helper, contains('R.drawable.ic_notification'));
+    expect(helper, contains('R.drawable.jexfyzicon'));
+    expect(bleService, contains('Bluetooth connected · cooler session active'));
+    expect(bleService, contains('Bluetooth terhubung · sesi cooler aktif'));
+    expect(floatingService, contains('Floating Monitor active'));
+    expect(floatingService, contains('Monitor Melayang aktif'));
+    expect(icon, contains('android:fillColor="#FFFFFFFF"'));
+    expect(activity, contains("JexText.of('bluetoothDisconnected', appLanguageNotifier.value)"));
+  });
+
+  test('Android notifications use JE X FYZ branding and meaningful foreground text', () {
+    final activity = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt').readAsStringSync();
+    final bleService = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JeForegroundService.kt').readAsStringSync();
+    final floatingService = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt').readAsStringSync();
+    final helper = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt').readAsStringSync();
+    final icon = File('android/app/src/main/res/drawable/ic_notification.xml').readAsStringSync();
+
+    expect(activity, contains('setJexNotificationBranding(this)'));
+    expect(activity, contains('jexNotificationContentIntent(this, id)'));
+    expect(activity, contains('requestNotificationPermission()'));
+    expect(helper, contains('R.drawable.ic_notification'));
+    expect(helper, contains('R.drawable.jexfyzicon'));
+    expect(bleService, contains('Bluetooth connected · cooler session active'));
+    expect(bleService, contains('Bluetooth terhubung · sesi cooler aktif'));
+    expect(floatingService, contains('Floating Monitor active'));
+    expect(floatingService, contains('Monitor Melayang aktif'));
+    expect(icon, contains('android:fillColor="#FFFFFFFF"'));
+    expect(activity, contains("JexText.of('bluetoothDisconnected', appLanguageNotifier.value)"));
   });
 
   test('Light and Dark themes use inverse semantic text contrast', () {

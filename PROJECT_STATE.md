@@ -8,11 +8,11 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 - **Active Firmware source:** firmware/JEXFYZ-V6.6.ino.
 - **Firmware constant:** FW_VERSION = "V6.6".
 - **Firmware source blob last observed:** f51ba6db5d0e91318f63fea4014bb87f7bf76222.
-- **Active App source:** lib/main.dart, blob last observed e0371cac545dda2f2d5f099e4298c37c04160538.
+- **Active App source:** lib/main.dart, current blob a9e50590a72a7eab91f091092d998bfa5512ce7a.
 - **Package/version:** com.horizontalzzz.jexfyz, pubspec 1.0.0+3.
 - **Android identity:** Gradle versionName "Telegram @horizontalzzz"; intentional, preserve exactly.
 - **QC contracts:** test/v6_6_qc_contract_test.dart, test/firmware_touch_adaptive_sync_test.dart, test/app_protocol_notify_contract_test.dart, test/widget_test.dart. Test execution must be checked independently.
-- **LED App hashes:** `lib/main.dart` = e0371cac545dda2f2d5f099e4298c37c04160538; `lib/app_settings.dart` = 9a0c0241ee4e87aa15b6db40bcac6c279b8a3a97; `test/widget_test.dart` = 9493a1ae4f19b6d7987a06d0732c8121812c4675; `test/v6_6_qc_contract_test.dart` = e3127eec860fce970fa598ca3015ed5ea61470bf.
+- **Current App/UI hashes:** `lib/main.dart` = a9e50590a72a7eab91f091092d998bfa5512ce7a; `lib/app_settings.dart` = bff5544fcb708a4d0c76ef443ff325ec5b3bee0e; `test/widget_test.dart` = 0ba772d70a68ff6ae43f31145399dd12df4d45b1; `test/v6_6_qc_contract_test.dart` = 2bee4d960d014f0765422dcb5ed1c9870ba6ee3a; `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt` = 6c17a7e38c3a5b3f3f8fc6b3e5b38a99fd83081e; `JeForegroundService.kt` = 9ea4dce7001bcd5cc10f9c1c7ad62f34ec54b03e; `FloatingMonitorService.kt` = 55972b64329a2e1cc91e29a172d0a97a118d8ac1; `JexNotificationUtils.kt` = 4ea74267bae804b4c0ad56e6db9fc7133008f779; `drawable/ic_notification.xml` = 2148252fddee854dcd8a7890c04cb51588e87644.
 - **Workflow:** .github/workflows/jexfyz-app-build-trigger.yml; explicit title/token trigger only.
 - V6.6 has not been independently compiled or hardware-tested by the assistant. User-reported V6.3 compile/Online OTA connection success refers to the prior revision and does not certify V6.6.
 - Do not infer that the existing artifact BIN matches current V6.6 source; source/BIN provenance remains unverified.
@@ -32,7 +32,7 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 ### LED mode and App/firmware synchronization
 - Firmware V6.6 supports Static (1), Breath (2), Comet (4), Dual Chase (5), Left/Right (6), and Rainbow (7). ID 3 is retired; persisted ID 3/invalid values migrate to Static, and new mode-3 commands are rejected.
 - Firmware publishes one `LED_SYNC:<mode>,<phase_ms>,<cycle_ms>` tuple calculated at BLE notify time; App interpolates monotonically between snapshots and corrects drift without restarting the animation for every update.
-- LED preview uses one horizontal row: left arrow, four left pixels, centered number/name, four right pixels, right arrow. Base RGB chroma is preserved at low brightness; alpha/glow carries preview intensity.
+- LED preview uses a compact row: left arrow, four left pixels, centered localized mode name only (no numeric index), four right pixels and right arrow. LED-column backgrounds are slightly darker; preview core opacity/glow does not follow the hardware Brightness slider. The centered Color Picker has 36 hue-ordered named presets with localized names and no visible HEX codes.
 - App tests and firmware contract tests were updated but have NOT been run. V6.6 has not been compiled or physically validated; artifact BIN remains unchanged and provenance is unverified.
 
 ### Thermal / Adaptive safety
@@ -62,11 +62,16 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 ## Current App contracts
 - Firmware telemetry owns physical state; ACK alone is not proof of hardware state.
 - Voltage completion requires matching VOLTAGE telemetry.
-- App offline states must show unknown values (--) rather than stale state.
+- Home/dashboard and Floating Monitor telemetry show unknown values (`--`) while BLE is disconnected. CONTROL/ADAPTIVE/LED menu switch rows instead show a disabled OFF-looking fallback toggle positioned left; this is presentation only and must not be interpreted as physical output telemetry.
 - Auto Connect/reconnect respects preference, known cooler identity, Bluetooth/permission/location prerequisites and syncing state.
 - Ambiguous OTA ACK timeout/disconnect preserves recovery state until reconnect/result; only definite rejection while BLE remains connected permits rollback.
 - User-facing text is localized; internal protocol tokens are not exposed.
+- Android notifications use a monochrome X small icon and full-color branded large icon; event/status appears as localized body beneath the JE X FYZ title, tap opens the App, and BLE/Floating Monitor foreground notifications have meaningful non-empty descriptions. Android 13+ asks for permission at the first actual notification attempt.
 - Touch Adaptive-OFF publishes authoritative Adaptive/ceiling/Fan/Peltier/Fan-speed state deltas before acknowledgement.
+
+## Current UI execution status
+- Source changes for the compact mode-name-only LED strip, brightness-independent preview, centered 36-color localized picker, disabled OFF-left menu fallback, and branded/localized Android notifications are present in the App/UI source changes.
+- Updated Flutter test contracts are NOT RUN. Android OEM notification rendering and narrow-screen physical layout behavior remain UNVERIFIED.
 
 ## App Build
 - Only active workflow: .github/workflows/jexfyz-app-build-trigger.yml.
