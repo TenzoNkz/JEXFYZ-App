@@ -91,7 +91,7 @@ This file is the durable App behavior/design contract. Live `lib/` source and th
 
 ## Current App QC boundary
 
-The latest UI source is committed on `main`, but the newly added widget/source contracts have NOT been run because Flutter/Dart SDK is unavailable in this execution environment. Source readback/static contract checks passed; this is not Flutter test/analyze or runtime proof. The user reported a successful App Build for the preceding revision; the latest source changes below still need a new explicit Build App run and device QC. App Build does not validate Firmware compile, BIN provenance, OTA, or physical cooling behavior.
+The latest UI source is committed on `main`, but the new widget/source contracts have NOT been run because Flutter/Dart SDK is unavailable in this execution environment. Source readback/static contract checks passed; this is not Flutter test/analyze or runtime proof. The latest live successful App Build is run `38535535278` on preceding commit `97c5497e2aa31184de425c264def6dec7844f734`; that APK predates the latest voltage-aware icon and Color Picker changes, which still need a new explicit Build App run and device QC. App Build does not validate Firmware compile, BIN provenance, OTA, or physical cooling behavior.
 
 ## Dashboard indicator motion
 
