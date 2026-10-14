@@ -16,8 +16,9 @@ Snapshot date: 2026-10-14 (Asia/Jakarta). This detailed transfer file bridges pr
 ## 1. Repository checkpoint immediately before this transfer refresh
 
 - Canonical repository: TenzoNkz/JEXFYZ-App, private, branch main.
-- Main HEAD immediately before this transfer write: 8dbea6854fbc6e8b58327c0d2fb380ce38fbeac9. The final snapshot commit must have this exact parent. This snapshot is written last; its resulting commit must have this exact commit as parent. This update creates a newer docs-only commit; fetch the actual new HEAD after saving.
-- Last live open-PR search returned 0. Branches observed: main, fix/adaptive-power-sequencing, diag/latest-stable-v16, diagnostic/v1.6-heap-check, tmp-jexfyz-v5-test. Continue on main by default.
+- Main HEAD immediately before this transfer write: 2d01ef02051e1098d53e0ebcfd590f88decc02f0. This snapshot will be written last; its resulting commit must have this exact commit as parent. Re-fetch final HEAD and verify parent after saving.
+- Last live open-PR search returned 0. Branches observed: diag/latest-stable-v16, diagnostic/v1.6-heap-check, fix/adaptive-power-sequencing, main, tmp-jexfyz-v5-test. Continue on main by default.
+- Closed-PR search returned #18, #7, #5, #4, #3, #2, #1. The connector’s closed-PR records do not reliably expose merge status; do not infer merged/unmerged from closure alone.
 - Active firmware source: firmware/JEXFYZ-V6.4.ino. FW_VERSION = "V6.4". Source blob: f0dd9d1ebdc7d9d0966384f557efa2e2123df792. Exactly one active versioned .ino was found.
 - Active App source: lib/main.dart, blob 535e396005a3bd1429db3096c627d87043b0e1b4.
 - App package/version: com.horizontalzzz.jexfyz / 1.0.0+3.
@@ -249,7 +250,7 @@ Never equate test file with passing run; compile with full OTA installation; blu
 
 ## 16. Last-observed blob fingerprints
 
-All hashes below were fetched from live `main` at HEAD `8dbea6854fbc6e8b58327c0d2fb380ce38fbeac9` immediately before this snapshot write. They fingerprint this checkpoint only. The future SHA of this file is deliberately not self-recorded; verify its commit and parent after saving.
+All hashes below were fetched from live `main` at HEAD `2d01ef02051e1098d53e0ebcfd590f88decc02f0` immediately before this snapshot write. They fingerprint this checkpoint only. The future SHA of this file is deliberately not self-recorded; verify its commit and parent after saving.
 
 Canonical memory docs:
 - `README.md`: `8881b20dec2a7ea916b6d45e487156927516cd88`
