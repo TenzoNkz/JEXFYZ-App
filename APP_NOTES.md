@@ -63,6 +63,14 @@ This file is the durable App behavior/design contract. Live `lib/` source and th
 - Do not change settings storage or defaults without a scoped task and regression review.
 - Firmware persistent preferences use a 10-second quiet period; Adaptive Profile itself is runtime-only. See `FIRMWARE_NOTES.md`.
 
+## Phone battery telemetry and Battery Protection UI boundary
+
+- The App reads Android battery temperature through the native `je_x_fyz/battery_temp` MethodChannel (`getBatteryTemperature`) and sends `PHONE:BT=<Celsius>` every 1 second while a BLE session is ready. Invalid/unavailable readings send the invalid sentinel rather than a stale temperature.
+- The heartbeat queue coalesces pending battery messages so slow BLE transmission does not produce an unbounded backlog. Firmware considers phone Battery data valid only for its 5-second `BATTERY_VALID_TTL_MS`; when it expires, HOTSIDE_BATTERY behavior falls back to HOTSIDE control without silently changing the runtime-selected profile.
+- Current Battery-zone setting defaults: 5 V threshold 25°C and 12 V threshold 35°C; current firmware has a 0.5°C zone hysteresis. Live source remains authoritative if these values change.
+- **Permanent UI requirement:** do not display a standalone “Battery Protection Guard” badge/guard/status indicator in the App. This is a presentation rule, not permission to weaken thermal protection or suppress an independently actionable, localized safety/Notify message.
+- **Pairing design requirement / implementation status not established:** the project intent is one authorized App identity/one key-lock pairing relationship per cooler firmware. Current source-level checks confirm encrypted/bonded BLE writes, but do not establish an exclusive one-App-only provisioning/lock mechanism end-to-end. Do not claim the exclusive pairing lock is implemented until its concrete source flow and physical pairing behavior are verified.
+
 ## Current App QC boundary
 
 At the last reconciliation, source changes and static contract tests existed for BLE rediscovery cancellation, ambiguous OTA ACK, touch Adaptive-OFF telemetry, and voltage-transition telemetry handling. The latest test/analyze status must be checked live; these docs do not claim tests ran. App Build is separately authorized and does not validate Firmware compile, BIN, OTA, or physical cooling behavior.
