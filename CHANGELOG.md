@@ -2,6 +2,14 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
+## 2026-10-14 — Smooth voltage transitions, crystal Peltier icon, JE notification and dialog sizing
+
+- Fan voltage changes now change cycle duration without resetting the current angular phase; Fan OFF coasts forward into a retained resting pose. Peltier frost intensity/particle count smoothly interpolate across 5V/9V/12V rather than popping, and frost still fades when Peltier turns OFF.
+- Replaced the flower-like Peltier painter with a technical thermoelectric module frame and six-branched crystal symbol. Increased Color Picker title/selected-color/Cancel sizes and swatch height; increased Peltier Safety title/body/button typography, spacing and minimum tap targets without changing palette colors or the Fan-before-Peltier safety gate.
+- Android notification branding now uses a bold, white `JE` vector monogram on transparency as its sole small icon. No large icon is set; app icon and dashboard branding remain unchanged.
+- Added widget source contracts for phase continuity/coast-down, Peltier crystal/interpolation, responsive dialog sizing and the JE notification vector.
+- Static readback checks passed. Flutter tests/analyze and App Build were NOT run for this change set (Flutter/Dart SDK unavailable here). Current-source Android rendering and physical device QC remain unverified. No Firmware, BIN, Firebase, OTA, flash or release operation occurred.
+
 ## 2026-10-14 — Voltage-aware Fan/Peltier icons and bottom-pinned Color Picker
 
 - Fan dashboard motion now uses distinct continuous rotation durations from authoritative BLE-reported voltage: 5V slow (2600 ms), 9V medium (1250 ms), and 12V fast (620 ms). Peltier frost icon increases glow and crystal density across the same voltage classes and fades its frost overlay over 520 ms when switched OFF. These are illustrative visuals, not RPM or temperature/ice measurements; no firmware, BLE command, safety or physical LED behavior changed.
