@@ -76,7 +76,7 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 
 ## App Build
 - Only active workflow: .github/workflows/jexfyz-app-build-trigger.yml.
-- The latest independently observed successful workflow run recorded here is `38520146994` on commit `1024eb8e145429913aacb52f4cf352e087885d44` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38520146994), and it predates these changes. The user reported a successful build of the preceding revision, but that report does not establish a build of the current source.
+- Latest live successful App Build verified in this execution: run `38535535278` on commit `97c5497e2aa31184de425c264def6dec7844f734` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38535535278). Analyze, Flutter tests, obfuscated APK build, signature, publication and downloaded-asset verification passed on that commit. Release `jexfyz-latest` has one `JEXFYZ-release.apk` (54,506,164 bytes, SHA-256 `bb740029d24e1b76b41796d3ef979bc7c3ee7d96ff3fe96fdaacbcdb5ebf426b`) and targets `97c5497`. It predates the current animation/Color Picker commits; there is no fresh APK for the current source.
 - Trigger title: JE X FYZ — BUILD APP TRIGGER; body token JEXFYZ_BUILD_TRIGGER_V1.
 - Toolchain last recorded: Java 17, Flutter 3.47.2 stable, Gradle 9.3.1, Ubuntu 24.04.
 - Intended output: one obfuscated, production-signed ordinary APK named JEXFYZ-release.apk, uploaded to GitHub Release jexfyz-latest. No Play Store bundle or Actions artifact.
