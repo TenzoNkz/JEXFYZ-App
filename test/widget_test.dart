@@ -539,6 +539,7 @@ void main() {
     expect(peltier, contains('final moduleRect'));
     expect(peltier, contains('final branch = Path()'));
     expect(peltier, contains('Fractional opacity interpolates particle count'));
+    expect(peltier, contains('math.sin(angle) * .035'));
     expect(peltier, isNot(contains('final petal = Path()')));
   });
 
