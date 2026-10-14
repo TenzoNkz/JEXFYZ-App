@@ -262,9 +262,9 @@ jobs:
           # Require every APK signature scheme used by the release policy.
           # V1 is kept for legacy/third-party APK verifiers (including MT Manager);
           # V2/V3 are required for modern Android integrity verification.
-          grep -Fq "Verified using v1 scheme" <<< "$SIGNATURE_OUTPUT"
-          grep -Fq "Verified using v2 scheme" <<< "$SIGNATURE_OUTPUT"
-          grep -Fq "Verified using v3 scheme" <<< "$SIGNATURE_OUTPUT"
+          grep -Fq "Verified using v1 scheme (JAR signing): true" <<< "$SIGNATURE_OUTPUT"
+          grep -Fq "Verified using v2 scheme (APK Signature Scheme v2): true" <<< "$SIGNATURE_OUTPUT"
+          grep -Fq "Verified using v3 scheme (APK Signature Scheme v3): true" <<< "$SIGNATURE_OUTPUT"
           grep -Fq "Number of signers: 1" <<< "$SIGNATURE_OUTPUT"
           grep -Fq "$EXPECTED_SIGNING_CERT_DN" <<< "$SIGNATURE_OUTPUT"
           SIGNATURE_OUTPUT_LOWER="${SIGNATURE_OUTPUT,,}"
@@ -362,9 +362,9 @@ jobs:
           DOWNLOADED_SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --verbose --print-certs "$DOWNLOADED" 2>&1)"
           printf '%s\n' "$DOWNLOADED_SIGNATURE_OUTPUT"
 
-          grep -Fq "Verified using v1 scheme" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
-          grep -Fq "Verified using v2 scheme" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
-          grep -Fq "Verified using v3 scheme" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
+          grep -Fq "Verified using v1 scheme (JAR signing): true" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
+          grep -Fq "Verified using v2 scheme (APK Signature Scheme v2): true" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
+          grep -Fq "Verified using v3 scheme (APK Signature Scheme v3): true" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
           grep -Fq "Number of signers: 1" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
 
           DOWNLOADED_SIGNATURE_OUTPUT_LOWER="${DOWNLOADED_SIGNATURE_OUTPUT,,}"
