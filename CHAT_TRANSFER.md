@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — CHAT TRANSFER SNAPSHOT
 
-Snapshot date: 2026-10-14 (Asia/Jakarta). Live checkpoint before this transfer replacement: 2026-10-14 17:49:13 Asia/Jakarta / 10:49:13 UTC; canonical main HEAD before this transfer write is `b277a1f2816fca505cf24fc1c580ca4014fd301d` (`docs: record latest successful App Build and stale asset boundary`, parent `f14a1d1c3acc6620906a46ad94770d3a7d1a0f1c`, commit timestamp `2026-10-14T10:49:13Z`). This detailed transfer file bridges project memory across chats. It is a snapshot, NOT a substitute for fetching live GitHub state; verify live hashes/status after the transfer commit.
+Snapshot date: 2026-10-14 (Asia/Jakarta). Live checkpoint before this transfer replacement: 2026-10-14 18:06:03 Asia/Jakarta / 2026-10-14T11:06:03Z; canonical main HEAD before this transfer write is `ceeea335a4770530f18b25cf68ea7a3395409fbc` (`docs: log chat-limit reconciliation and latest validation boundary`, parent `3ccf8bb35d9a9106799f13308b8008825ec0af63`, commit timestamp `2026-10-14T11:01:13Z`). This detailed transfer file bridges project memory across chats. It is a snapshot, NOT a substitute for fetching live GitHub state; verify live hashes/status after the transfer commit.
 
 ## 0. New-chat boot — mandatory order
 
@@ -15,20 +15,20 @@ Snapshot date: 2026-10-14 (Asia/Jakarta). Live checkpoint before this transfer r
 
 ## 1. Repository checkpoint immediately before this transfer refresh
 
-- **Live checkpoint:** 2026-10-14 17:49:13 Asia/Jakarta / 10:49:13 UTC.
+- **Live checkpoint:** 2026-10-14 18:06:03 Asia/Jakarta / 2026-10-14T11:06:03Z.
 - **Canonical repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`.
-- **Main HEAD before this transfer write:** `b277a1f2816fca505cf24fc1c580ca4014fd301d`; message `docs: record latest successful App Build and stale asset boundary`; parent `f14a1d1c3acc6620906a46ad94770d3a7d1a0f1c`; commit timestamp `2026-10-14T10:49:13Z`. Recursive tree `a948ae6fcacff910bef9b1c660e96b0cfc0789f4`, `65` entries (`47` blobs), `truncated=false`.
-- **Live branch tips:** `diag/latest-stable-v16` `ec77759d224c581870d98330d9278896ff29e50b`; `diagnostic/v1.6-heap-check` `1a4cd83b3ee82cdc2d86277dc4a0eb4c4238f8a3`; `fix/adaptive-power-sequencing` `33740be782d976a881e285bbf8b86b3b485b83c1`; `main` `b277a1f2816fca505cf24fc1c580ca4014fd301d`; `tmp-jexfyz-v5-test` `b388cba98ea1d9e92873df64ba3224d6cb99156d`. Open PR search returned zero at the latest check.
-- **Active Firmware source:** `firmware/JEXFYZ-V6.6.ino`, blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`, `FW_VERSION = "V6.6"`. Exactly one active versioned .ino is tracked and filename/version align. User reported V6.6 compiled successfully and Online OTA update succeeded; compile log, installed-version telemetry and source-to-BIN provenance were not independently verified by this App-only execution. Physical thermal/LED QC remains separate.
-- **Current App identity/source:** `lib/main.dart` blob `2005f4c163d466f9015a564d5418af1e86e09b41` (264,948 bytes); `test/widget_test.dart` blob `3af190d4520a7b753f3f9fc963f788f4aa247f5c` (31,374 bytes); `lib/app_settings.dart` `232a7575460e5417f7b760f24b5057687a47ee1a`; `lib/floating_monitor.dart` `cfc21b3dc198b925786aa98658d647b1d8a3637b`. Package `com.horizontalzzz.jexfyz`, pubspec `1.0.0+3`; preserve Gradle `versionName "Telegram @horizontalzzz"`.
-- **Fan motion:** source uses BLE-reported voltage class: 5V = 2600 ms, 9V = 1250 ms, 12V = 620 ms. Speed changes travel from the current phase to the equivalent full-turn boundary at the new period, avoiding a rotation reset. Fan OFF coasts forward and retains its pose across dashboard rebuilds.
-- **Peltier icon/motion:** the old flower-like rotor is replaced by a framed thermoelectric module and a six-branched geometric frost crystal. Frost intensity/particle density interpolate over 420 ms on voltage changes, fade in over 360 ms on ON and out over 520 ms on OFF. Crystal branches, particles and center fully fade while the module frame remains visible; particle drift is periodic, without a loop-boundary jump. These are decorative indicators, not physical temperature/ice measurements.
-- **Dialog sizing:** Color Picker title 22sp, selected-color label/Cancel 15sp, swatches 42dp; it remains bottom-pinned with no draggable outer scroll panel and localized Cancel dismisses without sending RGB. Peltier Safety title 24sp, body 17sp, actions 16sp with 48–50dp touch targets. Existing Fan-before-Peltier approval gate remains unchanged.
-- **Notification icon:** `JexNotificationUtils.kt` uses `R.drawable.ic_notification` as the only small icon; the drawable is a bold white `JE` vector with transparent background. No large icon is set, and the full-color app icon/dashboard branding are unchanged.
-- **Latest verified successful App Build:** run `38545637192` on prior commit `9e790765f6683d342025317ce6594cc8519026de` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38545637192). Security/architecture audit, dependency install, Dart analyze, Flutter tests, APK build, V1/V2/V3 signing enforcement, signature verification, release upload and downloaded-asset verification passed on that commit. Release `jexfyz-latest` targets `9e790765f6683d342025317ce6594cc8519026de` and contains one `JEXFYZ-release.apk` (54,505,507 bytes; SHA-256 `26b3746a9d6969475e72a56122d5c4051eaa8742f7d4e3559cc80f4fdb4d2b87`). That run predates current App source/test/icon changes; the current source has NOT been built.
+- **Main HEAD immediately before this transfer write:** `ceeea335a4770530f18b25cf68ea7a3395409fbc`; message `docs: log chat-limit reconciliation and latest validation boundary`; parent `3ccf8bb35d9a9106799f13308b8008825ec0af63`; commit timestamp `2026-10-14T11:01:13Z`. Root tree `55c024868b8e4820d63d20d411c84b639c2c5975`; verified recursive inventory `65` entries, `47` blobs including the transfer file, `46` other files, `truncated=false`.
+- **Live branch tips:** `diag/latest-stable-v16` `ec77759d224c581870d98330d9278896ff29e50b`; `diagnostic/v1.6-heap-check` `1a4cd83b3ee82cdc2d86277dc4a0eb4c4238f8a3`; `fix/adaptive-power-sequencing` `33740be782d976a881e285bbf8b86b3b485b83c1`; `main` `ceeea335a4770530f18b25cf68ea7a3395409fbc`; `tmp-jexfyz-v5-test` `b388cba98ea1d9e92873df64ba3224d6cb99156d`. Open PRs: 0 (live REST query returned 0).
+- **Active Firmware source:** `firmware/JEXFYZ-V6.6.ino`, blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`, `FW_VERSION = "V6.6"`. Exactly one active versioned `.ino` is tracked and filename/version align. User reported V6.6 compiled successfully and Online OTA update succeeded; compile log, installed-version telemetry and source-to-BIN provenance remain independently unverified. Physical thermal/LED QC remains separate.
+- **Current App identity/source:** `lib/main.dart` blob `2005f4c163d466f9015a564d5418af1e86e09b41` (265,126 bytes); `test/widget_test.dart` blob `3af190d4520a7b753f3f9fc963f788f4aa247f5c` (31,374 bytes); `lib/app_settings.dart` `232a7575460e5417f7b760f24b5057687a47ee1a`; `lib/floating_monitor.dart` `cfc21b3dc198b925786aa98658d647b1d8a3637b`. Package `com.horizontalzzz.jexfyz`, pubspec `1.0.0+3`; preserve Gradle `versionName "Telegram @horizontalzzz"`.
+- **Current native notification files:** `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt` blob `aecfc87121f2195ef6724613c612d674ed95ae55`; `android/app/src/main/res/drawable/ic_notification.xml` blob `cda9e8404d14a62a61157ec59fae2e491c19f5f7`. The notification helper uses the transparent bold-white JE vector as the sole small icon and sets no large icon; launcher/app imagery still uses `jexfyzicon`.
+- **Fan motion:** source uses authoritative BLE-reported voltage class: 5V = 2600 ms, 9V = 1250 ms, 12V = 620 ms. Speed changes travel from current phase to the equivalent full-turn boundary at the new period; Fan OFF coasts forward and retains its pose through dashboard rebuilds.
+- **Peltier icon/motion:** the flower-like rotor is replaced by a framed thermoelectric module and six-branched frost crystal. Frost intensity/particle density interpolates over 420 ms on voltage changes, fades in over 360 ms on ON and out over 520 ms on OFF. Crystal branches, particles and center fade away while the module frame remains visible; particle drift is periodic to avoid loop-boundary jumps. This is decorative UI, not physical temperature/ice measurement.
+- **Dialog sizing:** Color Picker title 22sp, selected-color label/Cancel 15sp, swatches 42dp; bottom-pinned, no draggable outer scroll panel, and localized Cancel dismisses without sending RGB. Peltier Safety title 24sp, body 17sp, action text 16sp with 48–50dp targets. Existing Fan-before-Peltier approval gate is unchanged; palette colors are unchanged.
+- **Latest verified successful App Build:** run `38545637192` on prior commit `9e790765f6683d342025317ce6594cc8519026de` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38545637192). Security/architecture audit, dependency install, Dart analyze, Flutter tests, APK build, V1/V2/V3 signing enforcement, signature verification, release upload and downloaded-asset verification passed on that commit. Release `jexfyz-latest` targets `9e790765f6683d342025317ce6594cc8519026de` and contains one `JEXFYZ-release.apk` (54,505,507 bytes; SHA-256 `26b3746a9d6969475e72a56122d5c4051eaa8742f7d4e3559cc80f4fdb4d2b87`). That run predates the current App source/test/icon changes; the current source has NOT been built.
 - **Build workflow:** `.github/workflows/jexfyz-app-build-trigger.yml`, blob `e3af719f586a2e05fcbe9317592f4b8e083e3c06`. Trigger title `JE X FYZ — BUILD APP TRIGGER`, required body token `JEXFYZ_BUILD_TRIGGER_V1`, Ubuntu 24.04 / Java 17 / Flutter 3.47.2 / Gradle 9.3.1. No App Build was triggered for this execution.
-- **Artifact repository:** `TenzoNkz/JEXFYZ-Firmware` main HEAD `cc0a0ae32b826753525c3f2a4442526648cef631`, root tree `b4db8f4e86dfb97d3313c70428b92eb9d4bd7511`, root contains only `JEXFYZ.cpp.bin`, blob `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, 1,455,936 bytes. Provenance matching V6.6 source remains UNVERIFIED.
-- **Operation boundary:** App source, widget contracts and canonical memory/docs were updated directly on `main`; static source/readback checks passed. Flutter tests/analyze were NOT RUN for current source because Flutter/Dart SDK is unavailable; no current-source APK exists. No Firmware source/compile, BIN replacement, Firebase metadata, OTA/flash/device operation or release was performed. Phase remains DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED.
+- **Artifact repository:** `TenzoNkz/JEXFYZ-Firmware` main HEAD `cc0a0ae32b826753525c3f2a4442526648cef631`, root tree `b4db8f4e86dfb97d3313c70428b92eb9d4bd7511`; live recursive root contains only `JEXFYZ.cpp.bin`, blob `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, 1,455,936 bytes. Provenance matching V6.6 source remains UNVERIFIED.
+- **Operation boundary:** App source, widget contracts and canonical memory/docs are on `main`; no current-source Flutter test/analyze run is claimed because Flutter/Dart SDK is unavailable in this execution environment. No APK for the current source is verified. No Firmware source/compile, BIN replacement, Firebase metadata, OTA/flash/device operation or release occurred. Phase remains DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED.
 
 ## 2. Permanent user commands and authorization limits
 
@@ -248,23 +248,23 @@ Read DESIGN_NOTES.md before any visual iteration.
 
 Never equate test file with passing run; compile with full OTA installation; blue LED with successful HTTP; ACK with hardware state; reboot with proven brownout; version bump with BIN build; or existing BIN with source provenance.
 
-## 16. Live blob fingerprints at pre-transfer HEAD `b277a1f2816fca505cf24fc1c580ca4014fd301d`
+## 16. Live blob fingerprints at pre-transfer HEAD `ceeea335a4770530f18b25cf68ea7a3395409fbc`
 
-Fetched from live recursive tree `a948ae6fcacff910bef9b1c660e96b0cfc0789f4` immediately before this transfer write (`65` entries; `46` file blobs excluding this transfer file; `truncated=false`). The transfer file's own future SHA is intentionally omitted.
+Fetched from the live recursive tree `55c024868b8e4820d63d20d411c84b639c2c5975` immediately before this transfer write (65 entries; 47 blobs including the transfer file; 46 fingerprints listed below excluding this transfer file; `truncated=false`). The transfer file's own future blob SHA is intentionally omitted.
 
 Canonical project memory and docs:
 - `APP_NOTES.md`: `e8c6816f4bff1184d27f4d2042be9f415669eace` (13351 bytes)
-- `BUILD_NOTES.md`: `5e3bce930d9b90927be44ac1630009796acb0bf1` (3387 bytes)
-- `CHANGELOG.md`: `759967dcc703376febc982d54ff97a0b03415d8d` (22314 bytes)
+- `BUILD_NOTES.md`: `e398318ac75cf7378e10da920e0e321d4af97477` (3532 bytes)
+- `CHANGELOG.md`: `6e2166141df51494330f8a8621a9a8285799173e` (22445 bytes)
 - `CHAT_RULES.md`: `1a7e671b9e801acc07b74fd2bc2372dd6d9ec105` (8071 bytes)
 - `CHAT_TRANSFER_PROMPTS.md`: `cb2290bf2b1b404cde29fc1b68b90ebbc1e62f34` (28068 bytes)
 - `DESIGN_NOTES.md`: `e04382659dfdd618de0a156046f140452d275dc7` (2128 bytes)
 - `FIRMWARE_NOTES.md`: `0a4531a877cc4aa139d855481c765bf9073a0e76` (11026 bytes)
-- `HANDOVER.md`: `a886d603b8a4756ff7288111b1bad45cafd6ed6e` (8629 bytes)
-- `MEMORY_INDEX.md`: `dfdc40472c4290bf55cf161bc80c19857202ae2e` (6453 bytes)
+- `HANDOVER.md`: `776d65790e489bba5c11bd012e7afe81de013d44` (8648 bytes)
+- `MEMORY_INDEX.md`: `1b59b43fbcdeec26db02931b6ae44573f65b79a1` (6562 bytes)
 - `OTA_PROTECTION.md`: `06beb86b749b0f0e14c8cb517e43fe7c0f66a4e1` (4259 bytes)
 - `OTA_REGRESSION_MEMORY.md`: `e961ca32a22ebf0fcba8ed221f12cc17a6429f52` (3953 bytes)
-- `PROJECT_STATE.md`: `7d72e32c4193b4dd97910a84e358e4a1251c09af` (13528 bytes)
+- `PROJECT_STATE.md`: `034901a3fd38b96e29c3b1509c9b1df2efba816e` (13180 bytes)
 - `README.md`: `211e55e09511dbe4fda215142eed6e834bac91e9` (4114 bytes)
 - `VOLTAGE_TRANSITION_MEMORY.md`: `cf97f4745e6f5e33ce57beece5b2c1f742029b44` (5916 bytes)
 
