@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Memory Index
 
-Last reconciled against `main`: 2026-10-14 (Asia/Jakarta), after voltage-aware Home indicator and fixed Color Picker edits; verify live HEAD and blob fingerprints before acting. This is a routing index, not a substitute for checking GitHub live.
+Last reconciled against `main`: 2026-10-14 (Asia/Jakarta), after phase-continuous Fan motion, the geometric Peltier crystal and ON/OFF frost transitions, resized Color Picker/Peltier Safety dialogs, and the JE notification monogram. Verify live HEAD and blob fingerprints before acting; this is a routing index, not a substitute for checking GitHub live.
 
 ## New-chat boot order
 1. Read `CHAT_TRANSFER.md` completely.
