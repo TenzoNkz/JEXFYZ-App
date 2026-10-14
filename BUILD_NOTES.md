@@ -30,3 +30,5 @@
 ## Historical evidence — never assume current
 
 Previous documents recorded a successful App release run `37245703677`, source commit `fc4b89ce0c76b4b7826fc25cb8ac68ea843dc366`, and APK SHA-256 `a9d93bb3f359285bca1f2658f1336b502fd87539b0dec169282a9f2e59df1fc2` (asset ID `610989112`, size `54,327,520` bytes). Other historical records contain different run/asset IDs. These IDs are **historical only**; fetch current Actions/Releases before calling any run the latest build.
+
+- [LATEST OBSERVED AT MEMORY RECONCILIATION — NOT A BUILD OF THIS TRANSFER HEAD] Run `38380312823` completed successfully on source commit `c21e2e52218e7f284ae8536855cf976199566975` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38380312823). This confirms that run only; because its head differs from the current source checkpoint, do not present it as fresh validation of the current `main` state.
