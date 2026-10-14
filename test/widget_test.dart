@@ -423,6 +423,7 @@ void main() {
 
   test('Android notifications use JE X FYZ branding and meaningful foreground text', () {
     final activity = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt').readAsStringSync();
+    final appSource = File('lib/main.dart').readAsStringSync();
     final bleService = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JeForegroundService.kt').readAsStringSync();
     final floatingService = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt').readAsStringSync();
     final helper = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt').readAsStringSync();
@@ -438,7 +439,7 @@ void main() {
     expect(floatingService, contains('Floating Monitor active'));
     expect(floatingService, contains('Monitor Melayang aktif'));
     expect(icon, contains('android:fillColor="#FFFFFFFF"'));
-    expect(activity, contains("JexText.of('bluetoothDisconnected', appLanguageNotifier.value)"));
+    expect(appSource, contains("JexText.of('bluetoothDisconnected', appLanguageNotifier.value)"));
   });
 
   test('Light and Dark themes use inverse semantic text contrast', () {
