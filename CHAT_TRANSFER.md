@@ -16,7 +16,7 @@ Snapshot date: 2026-10-14 (Asia/Jakarta). This detailed transfer file bridges pr
 ## 1. Repository checkpoint immediately before this transfer refresh
 
 - Canonical repository: TenzoNkz/JEXFYZ-App, private, branch main.
-- Main HEAD immediately before this transfer write: cd3eabce3d44cea84c306084d3f352471319c5df. This snapshot will be written last; the final commit must have this exact commit as parent. This snapshot will be written last; its resulting commit must have this exact commit as parent. Re-fetch final HEAD and verify parent after saving.
+- Main HEAD immediately before this transfer write: 7d87cbc3767d7f35c63efbee3e791760144a7931. The source, contracts, and canonical memory updates are already committed at this HEAD. This final transfer refresh is the only change in the checkpoint commit, whose parent must be exactly 7d87cbc3767d7f35c63efbee3e791760144a7931. Re-fetch final HEAD and verify its parent after saving.
 - Last live open-PR search returned 0. Branches observed: diag/latest-stable-v16, diagnostic/v1.6-heap-check, fix/adaptive-power-sequencing, main, tmp-jexfyz-v5-test. Continue on main by default.
 - Closed-PR search returned #18, #7, #5, #4, #3, #2, #1. The connector’s closed-PR records do not reliably expose merge status; do not infer merged/unmerged from closure alone.
 - Active firmware source: firmware/JEXFYZ-V6.6.ino. FW_VERSION = "V6.6". Source blob: f51ba6db5d0e91318f63fea4014bb87f7bf76222. Exactly one active versioned .ino was found.
