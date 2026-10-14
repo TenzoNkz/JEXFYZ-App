@@ -14,8 +14,10 @@ Last source audit recorded: 2026-10-14 (Asia/Jakarta). Always fetch live source 
 - Cooperative main loop; time-based control uses `millis()` rather than blocking delays.
 - OTA is supervised before normal application work.
 - ESP32-C3's single radio path requires an explicit Wi-Fi/BLE ownership handoff.
+- Local OTA starts from a boot SoftAP. Current constants are `BOOT_AP_TIMEOUT_MS = 10000` (no-client window) and `BOOT_AP_HARD_LIMIT_MS = 60000` (hard cap after AP interaction). BLE may start only after Wi-Fi is shut down and the existing 160 ms radio-settle interval elapses. Treat this as protected OTA/radio behavior.
 - Hotside NTC is the universal thermal safety input.
 - Firmware maintains authoritative hardware state and sends telemetry/state deltas to App. The App must not invent physical state from command ACK alone.
+- App provides Android phone Battery temperature at 1 Hz via `PHONE:BT`; current Firmware Battery freshness TTL is 5 seconds and the Battery zones have 0.5°C hysteresis. The App’s Battery heartbeat does not change the one-calibrated-sample-per-second NTC rule.
 - Persistent setting writes share a quiet-period debounce; Adaptive Profile is runtime-only.
 
 ## Pin/output map
