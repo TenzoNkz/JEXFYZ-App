@@ -9,6 +9,7 @@ Last reconciled against `main`: 2026-10-14 (Asia/Jakarta). This is a routing ind
 4. Read all canonical subject files relevant to the task: App → `APP_NOTES.md`; Firmware/hardware → `FIRMWARE_NOTES.md` + `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`; OTA → `OTA_PROTECTION.md` + `OTA_REGRESSION_MEMORY.md`; Peltier rail transitions → `VOLTAGE_TRANSITION_MEMORY.md`; Build → `BUILD_NOTES.md`; approved visuals → `DESIGN_NOTES.md`.
 5. Read `HANDOVER.md` for exact next actions and `CHANGELOG.md` for history.
 6. Use `CHAT_TRANSFER_PROMPTS.md` at chat/context limit. Never rely only on old chat summaries.
+7. At context limit, use the full reconciliation prompt, inspect every repository text/config/test file and archive history as required, check local Markdown links, write the subject notes first, then replace `CHAT_TRANSFER.md` last.
 
 ## Canonical file map
 | File | Purpose |
@@ -20,7 +21,7 @@ Last reconciled against `main`: 2026-10-14 (Asia/Jakarta). This is a routing ind
 | `CHAT_TRANSFER.md` | Detailed transfer snapshot and boot checklist; verify against live main |
 | `CHAT_TRANSFER_PROMPTS.md` | Long copy-ready prompts for preserving memory and starting a new chat |
 | `HANDOVER.md` | Current next actions and unresolved validation gates |
-| `APP_NOTES.md` | UI/navigation, BLE/P1, telemetry, localization, reconnect and App contracts |
+| `APP_NOTES.md` | UI/navigation, BLE/P1, telemetry, phone Battery heartbeat, Battery Protection Guard presentation rule, pairing-design caveat, localization, reconnect and App contracts |
 | `FIRMWARE_NOTES.md` | Hardware, pins, sensor model, cooling, Adaptive, timing and safety contracts |
 | `firmware/FIRMWARE_TECHNICAL_REFERENCE.md` | Current code architecture and static invariants |
 | `OTA_PROTECTION.md` | Frozen OTA areas and required approval/re-audit |
@@ -62,3 +63,4 @@ Last reconciled against `main`: 2026-10-14 (Asia/Jakarta). This is a routing ind
 - After file moves/renames, update every Markdown link, prompt, path-based test, index and workflow comment; verify the final tree.
 - Legacy archives preserve exact pre-cleanup content. Their old current/version claims are deliberately stale and must not be copied into current notes.
 - Preserve approved decisions, rejected approaches and why, prior defects, symptoms, hypotheses, verification state and authorization limits. Do not fill memory gaps by guessing.
+- The App note is the canonical home for the requirement that a standalone Battery Protection Guard must not be displayed, the 1 Hz phone-battery heartbeat contract, and the unverified one-App/one-cooler pairing-lock design intent. Do not promote the pairing-lock intent to implemented status without source and physical evidence.
