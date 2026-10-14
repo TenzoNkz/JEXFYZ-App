@@ -2,18 +2,10 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
-## 2026-10-14 — Smooth voltage transitions, crystal Peltier icon, JE notification and dialog sizing
-
-- Fan voltage changes now change cycle duration without resetting the current angular phase; Fan OFF coasts forward into a retained resting pose. Peltier frost intensity/particle count smoothly interpolate across 5V/9V/12V rather than popping, and frost still fades when Peltier turns OFF.
-- Replaced the flower-like Peltier painter with a technical thermoelectric module frame and six-branched crystal symbol. Increased Color Picker title/selected-color/Cancel sizes and swatch height; increased Peltier Safety title/body/button typography, spacing and minimum tap targets without changing palette colors or the Fan-before-Peltier safety gate.
-- Android notification branding now uses a bold, white `JE` vector monogram on transparency as its sole small icon. No large icon is set; app icon and dashboard branding remain unchanged.
-- Added widget source contracts for phase continuity/coast-down, Peltier crystal/interpolation, responsive dialog sizing and the JE notification vector.
-- Static readback checks passed. Flutter tests/analyze and App Build were NOT run for this change set (Flutter/Dart SDK unavailable here). Current-source Android rendering and physical device QC remain unverified. No Firmware, BIN, Firebase, OTA, flash or release operation occurred.
-
 ## 2026-10-14 — Smooth motion, crystal Peltier, JE notification and dialog sizing
 
 - Fan voltage changes now update rotation duration without resetting angular phase; the controller travels smoothly to an equivalent full-turn boundary before continuing at the new speed, and Fan OFF coasts forward to a retained pose. Peltier frost intensity/particle count interpolate over 420 ms across voltage classes, fade in over 360 ms on ON and out over 520 ms on OFF; crystal branches, particles and center fade fully, periodic drift avoids loop-boundary jumps, while the thermoelectric frame remains visible.
-- Replaced the flower-like Peltier icon with a framed thermoelectric module and six-branched geometric frost crystal.
+- Replaced the flower-like Peltier icon with a framed thermoelectric module and six-branched geometric frost crystal. The Color Picker remains bottom-pinned with localized top-left Cancel that dismisses without sending RGB; all 36 curated presets and the existing color command path are retained.
 - Increased Color Picker title/selected-color/Cancel text and swatch height; increased Peltier Safety title/body/action typography, spacing and minimum touch targets. Palette colors and mandatory Fan-before-Peltier safety gate are unchanged.
 - Android notifications now use a bold white `JE` vector monogram with transparent background as the sole small icon; no large icon is set, and the full-color app icon remains unchanged.
 - Added widget contracts for phase continuity/coast-down, Peltier crystal geometry/interpolation, dialog sizing, and JE icon path. Static readback checks passed. Flutter tests/analyze and App Build were NOT run for these current commits (Flutter/Dart SDK unavailable); device rendering is unverified. No Firmware, BIN, Firebase, OTA, flash or release operation occurred.
@@ -25,7 +17,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - Added widget contracts for voltage mapping, comparative fan timing, frost density/intensity, bottom anchoring and Cancel dismissal.
 - Static source transformation and live file readback checks passed. Flutter test/analyze and an APK build were NOT run; device rendering and physical appearance remain unverified. Firmware V6.6 was untouched by this App-only execution; the user's earlier compile/Online OTA report was not independently re-verified here.
 
-## 2026-10-14 — Notification monogram, LED contrast, anchored menus and status-icon motion
+## 2026-10-14 — HISTORICAL / SUPERSEDED: notification logo, LED contrast, anchored menus and status-icon motion
 
 - Switched notification small-icon branding to the existing transparent JE X FYZ logo PNG (`R.drawable.jexfyzicon`) so Android uses the actual logo alpha shape, and removed `setLargeIcon`; only one logo appears at the left. The legacy X vector remains unused; title/body, tap intent and service messages remain unchanged.
 - Updated LED preview so Static/Rainbow remain fully vivid independently of hardware Brightness, while truly inactive Comet/Dual Chase pixels use a pale neutral baseline. Animation phase and physical firmware commands are unchanged.
@@ -43,7 +35,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - No functional Firmware source change/version bump, App Build, Firmware compile, BIN, Firebase, OTA/flash/device operation or release was performed.
 - This entry records a documentation/test-contract correction, not a test pass.
 
-## 2026-10-14 — LED preview/picker, disconnected menu fallback and Android notifications
+## 2026-10-14 — HISTORICAL / SUPERSEDED: LED preview/picker, disconnected menu fallback and Android notifications
 
 - Compactened the LED preview row, removed the numeric mode index, narrowed its center card, and darkened left/right LED column backgrounds for contrast.
 - Decoupled LED preview core opacity/glow from the hardware Brightness setting so colors stay visible at low hardware brightness; Firmware brightness/protocol behavior is unchanged.
@@ -151,7 +143,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 
 ## 2026-10-05 — V5.4–V5.6 adaptive/safety history (historical)
 
-- HOTSIDE adaptive safety historically used 10-second step-down dwell with fan/LED rules; subsequent versions changed thermal dwell, re-arm behavior and recovery. Do not apply this old 10-second policy to the active V6.5 contract without an explicitly approved change.
+- HOTSIDE adaptive safety historically used 10-second step-down dwell with fan/LED rules; subsequent versions changed thermal dwell, re-arm behavior and recovery. Do not apply this old 10-second policy to current V6.6 behavior; the current transition and timing contract lives in FIRMWARE_NOTES.md and VOLTAGE_TRANSITION_MEMORY.md.
 - Adaptive upward voltage dwell became 5 seconds after every completed increase in both profiles.
 - Historical GPIO mapping: NTC0, Touch1, 12V3, 9V4, Peltier5, Fan6, WS2812 7; 200 ms selector deadtime and 5-second Peltier OFF→ON ramp were retained across later versions.
 
