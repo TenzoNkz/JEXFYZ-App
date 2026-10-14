@@ -1515,7 +1515,7 @@ class _JexIconPainter extends CustomPainter {
           final particleStrength =
               (particleCountValue - i).clamp(0.0, 1.0).toDouble();
           if (particleStrength <= .001) continue;
-          final particleAngle = i * math.pi / 4 + (active ? p * .035 : 0.0);
+          final particleAngle = i * math.pi / 4 + (active ? math.sin(angle) * .035 : 0.0);
           final radius = s * (.405 + .018 * frostIntensity);
           final particle = Offset(
             cx + math.cos(particleAngle) * radius,
