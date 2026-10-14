@@ -82,5 +82,5 @@ A docs-only task is not permission for a functional source edit. A firmware-only
 
 - Active source currently expected: `firmware/JEXFYZ-V6.6.ino`, `FW_VERSION = "V6.6"`.
 - App package: `com.horizontalzzz.jexfyz`; pubspec version `1.0.0+3`; Gradle identity `Telegram @horizontalzzz`.
-- Current V6.6 is source-only and has not been independently compiled or hardware-tested by the assistant.
+- **User acceptance (2026-10-14):** the user considers Firmware V6.6 final/correct and reports successful compilation plus two successful Online OTA updates using the same V6.6 version. Do not reopen Firmware editing/compiling/BIN/Firebase/OTA/flash work unless the user explicitly requests it and separately authorizes the operation. The assistant did not independently witness those runs/logs; that evidence distinction does not override the user's acceptance.
 - Last observed open-PR search returned zero; verify live state again.
