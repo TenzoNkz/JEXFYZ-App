@@ -444,6 +444,9 @@ void main() {
     expect(colorDialog, isNot(contains('displayMenuOverlayTop(')));
     expect(colorDialog, isNot(contains('SingleChildScrollView')));
     expect(colorDialog, contains('onCancel:'));
+    expect(colorDialog, contains('fontSize: 22'));
+    expect(colorDialog, contains('fontSize: 15'));
+    expect(colorDialog, contains('mainAxisExtent: 42'));
     expect(source, contains("JexText.of('cancel', lang)"));
     expect(source, contains('colors: ledColorPresets'));
     expect(source, contains('constraints: const BoxConstraints(maxWidth: 420)'));
@@ -507,6 +510,46 @@ void main() {
     expect(JexText.of('ledModeComet', AppLanguage.indonesia), 'Komet');
   });
 
+  test('Fan voltage change keeps its angular phase and coasts on OFF', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final stateStart = source.indexOf('class _JexAnimatedIconState');
+    final stateEnd = source.indexOf('class _JexIconPainter', stateStart);
+    expect(stateStart, isNonNegative);
+    expect(stateEnd, greaterThan(stateStart));
+    final iconState = source.substring(stateStart, stateEnd);
+    expect(iconState, contains('fanVoltageChanged && widget.active && controller.isAnimating'));
+    expect(iconState, contains('controller.repeat();'));
+    expect(iconState, contains('coastDelta'));
+    expect(iconState, contains('controller.animateTo('));
+    expect(iconState, contains('frostTransitionController.forward(from: 0)'));
+  });
+
+  test('Peltier indicator uses a geometric crystal rather than a flower rotor', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final peltierStart = source.indexOf('case JexAnimatedIconKind.peltier:');
+    final peltierEnd = source.indexOf('case JexAnimatedIconKind.fan:', peltierStart);
+    expect(peltierStart, isNonNegative);
+    expect(peltierEnd, greaterThan(peltierStart));
+    final peltier = source.substring(peltierStart, peltierEnd);
+    expect(peltier, contains('final moduleRect'));
+    expect(peltier, contains('final branch = Path()'));
+    expect(peltier, contains('Fractional opacity interpolates particle count'));
+    expect(peltier, isNot(contains('final petal = Path()')));
+  });
+
+  test('Peltier Safety dialog uses readable text and comfortable touch targets', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final dialogStart = source.indexOf('showGeneralDialog<bool>');
+    final dialogEnd = source.indexOf('if (approved != true) return;', dialogStart);
+    expect(dialogStart, isNonNegative);
+    expect(dialogEnd, greaterThan(dialogStart));
+    final dialog = source.substring(dialogStart, dialogEnd);
+    expect(dialog, contains('fontSize: 24'));
+    expect(dialog, contains('fontSize: 17'));
+    expect(dialog, contains('minimumSize: const Size(86, 48)'));
+    expect(dialog, contains('minimumSize: const Size(142, 50)'));
+  });
+
   test('Android notifications use JE X FYZ branding and meaningful foreground text', () {
     final activity = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt').readAsStringSync();
     final appSource = File('lib/main.dart').readAsStringSync();
@@ -518,9 +561,12 @@ void main() {
     expect(activity, contains('setJexNotificationBranding(this)'));
     expect(activity, contains('jexNotificationContentIntent(this, id)'));
     expect(activity, contains('requestNotificationPermission()'));
-    expect(helper, contains('setSmallIcon(R.drawable.jexfyzicon)'));
-    expect(helper, isNot(contains('R.drawable.ic_notification')));
+    expect(helper, contains('setSmallIcon(R.drawable.ic_notification)'));
+    expect(helper, isNot(contains('R.drawable.jexfyzicon')));
     expect(helper, isNot(contains('setLargeIcon')));
+    expect(icon, contains('Bold JE monogram'));
+    expect(icon, contains('android:pathData='));
+    expect(icon, contains('M2,3 H10'));
     expect(icon, contains('Legacy monochrome X resource retained'));
     expect(bleService, contains('Bluetooth connected · cooler session active'));
     expect(bleService, contains('Bluetooth terhubung · sesi cooler aktif'));
