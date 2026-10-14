@@ -34,6 +34,7 @@ Last reconciled against `main`: 2026-10-14 (Asia/Jakarta). This is a routing ind
 | `firmware/JEXFYZ-V6.4.ino` | Canonical editable Firmware source |
 | `archive/LEGACY_NOTES_SNAPSHOT_2026-10-14.md` | Verbatim pre-cleanup state/reference docs for forensic recovery only; contains stale claims |
 | `archive/LEGACY_TRANSFER_HISTORY_2026-10-14.md` | Verbatim pre-cleanup transfer/rules/history docs for recovery only; contains stale claims |
+| `archive/ARTIFACT_REPO_NOTES_PRE_BIN_ONLY_2026-10-14.md` | Verbatim prior notes from artifact repository before enforcing BIN-only policy; recovery only |
 
 ## Source-of-truth order
 1. Live `main` source, tree, Git refs, workflow definitions and current CI/run data.
