@@ -21,10 +21,13 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). Re-fetch live `main` and source hash
 
 ## Exact next QC actions (only when authorized)
 
-1. Only after explicit `@Thinking Build App!` or `@Thinking Eksekusi & Build App!`, run the updated manual App Build workflow. Require `apksigner` V1/V2/V3=true on both built APK and re-downloaded release asset; verify expected certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0` and new release digest.
-2. Install the new APK and recheck MT Manager. The current screenshot shows installed last update 17:11 on 2026-10-14, before the latest release finished at 18:36, so it predates the latest release.
-3. After installation, inspect Fan phase transition/coast-down, geometric Peltier crystal fade, JE notification icon and enlarged dialogs on device.
-4. Firmware V6.6 is accepted as final by the user after two reported same-version Online OTA updates. Do not reopen firmware QC/change/compile/OTA without a new user request.
+1. Only after explicit `@Thinking Build App!` or `@Thinking Eksekusi & Build App!`, run the manual App Build workflow. Require `apksigner` V1/V2/V3 all true for both build output and the re-downloaded asset; verify the official certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0` and release digest.
+2. Install that APK and recheck MT Manager's signature display; exact cause of the prior failure remains unverified.
+3. Check on device: (a) Fan remains full colour and eases to a resting pose after OFF, (b) Peltier is a visible six-arm crystal without the square module/bolts and does not fade when OFF, (c) Speed needle gently wobbles only while ON and eases to far-left/0 after OFF while the percentage text stays stable during ON.
+4. Verify notification JE icon/tap and the already-enlarged Color Picker/Peltier Safety dialogs.
+5. Flutter tests/analyze for the latest source/test edits have not run yet. The full suite passed in run `38556896542` only on pre-change commit `67c5d26723c433b4af856c7759a967a3425bf67a`.
+6. Firmware V6.6 is user-accepted as final after two reported successful same-version Online OTA updates. Do not modify/recompile/reflash unless the user explicitly reopens Firmware work and separately authorizes the operation.
+
 ## Known uncertainty
 
 - MT Manager's exact reason for `Signature: Verified failed` is not independently identified. Live workflow logs show V1=false, V2/V3=true on the latest release; the updated workflow now requires V1 and has not yet been run.
@@ -38,6 +41,9 @@ Use `MEMORY_INDEX.md` to find canonical notes. Use `CHANGELOG.md` for history on
  
 ## Latest UI and signature change-set boundary (2026-10-14)
 
-- App UI source and widget tests passed in Build App run `38556896542` on commit `67c5d26723c433b4af856c7759a967a3425bf67a`; this included Fan phase continuity/coast-down, Peltier crystal/fades, dialog sizing and JE notification small icon.
-- The run logged V1=false, V2=true and V3=true. The workflow now signs/verifies with `--min-sdk-version 23` and hard-fails unless `apksigner` reports V1/V2/V3=true for build output and downloaded release asset. Manifest minSdk remains 24. This workflow fix has not yet been run; the release has not been rebuilt with it.
-- No Build App was run after this signing change; no Firmware source/compile/BIN/Firebase/OTA/flash operation or release update was performed in this execution.
+- Latest App UI source blob: `3d756a5a38c76b252dc93c6151a3b864ebbbbb94`; widget regression tests blob: `0f370d9ea4d7177608ce1fd5aab679c2c65d9cf3`.
+- Fan OFF now uses ease-out coast-down over a short period-dependent travel and retains the resting pose; the blades and hub remain fully coloured. Peltier now renders a free-standing six-branch crystal only—no square module frame, inner box or corner bolts—and freezes at OFF with no fade. Fan Speed's gauge needle has a small organic wobble while ON; telemetry percentage remains stable, and OFF eases the needle to far-left/0 over 520 ms.
+- Regression tests were updated for these contracts, but **have not been run after the edits**. Last successful Flutter analyze/test run remains pre-change Build App run `38556896542`.
+- Separately, signing workflow fix blob `0e400cbdedfd54506ae3ac3255da41580c86d750` now requires V1/V2/V3 and has not yet been build-verified. No App Build was run in this execution.
+- No Firmware source/compile/BIN/Firebase/OTA/flash operation was performed.
+
