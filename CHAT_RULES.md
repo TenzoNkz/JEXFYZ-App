@@ -73,6 +73,8 @@ A docs-only task is not permission for a functional source edit. A firmware-only
 - After any meaningful execution, record the durable decision/result/uncertainty in its canonical note. At chat-limit, read the old transfer snapshot completely, reconcile it with the repo, then replace it.
 - Update all references/hashes after renames; do not leave contradictory legacy “current truth” blocks.
 - Preserve user-approved designs, hard constraints, previous failures, rejected approaches and why they were rejected.
+- Persist project-specific presentation constraints explicitly. Current example: do not display a standalone Battery Protection Guard in App UI; keep the hardware safety function intact and continue to show independently actionable localized safety/Notify messages when applicable.
+- Preserve “one authorized App identity / one cooler firmware pairing lock” as a user design requirement, but do not claim an exclusive pairing lock exists until its current source/provisioning flow and physical behavior are verified.
 - Never convert a hypothesis/user-reported result into verified fact. Mark tests/builds as NOT RUN unless executed.
 - If repository state and a summary/memory conflict, fetch the repository; repository wins for current code/version, and user rules remain authoritative for authorization/preferences.
 
