@@ -444,9 +444,14 @@ void main() {
     expect(colorDialog, isNot(contains('displayMenuOverlayTop(')));
     expect(colorDialog, isNot(contains('SingleChildScrollView')));
     expect(colorDialog, contains('onCancel:'));
-    expect(colorDialog, contains('fontSize: 22'));
-    expect(colorDialog, contains('fontSize: 15'));
-    expect(colorDialog, contains('mainAxisExtent: 42'));
+    final colorCardStart = source.indexOf('class _JexColorPickerCard');
+    final colorCardEnd = source.indexOf('enum JexAnimatedIconKind', colorCardStart);
+    expect(colorCardStart, isNonNegative);
+    expect(colorCardEnd, greaterThan(colorCardStart));
+    final colorCard = source.substring(colorCardStart, colorCardEnd);
+    expect(colorCard, contains('fontSize: 22'));
+    expect(colorCard, contains('fontSize: 15'));
+    expect(colorCard, contains('mainAxisExtent: 42'));
     expect(source, contains("JexText.of('cancel', lang)"));
     expect(source, contains('colors: ledColorPresets'));
     expect(source, contains('constraints: const BoxConstraints(maxWidth: 420)'));
