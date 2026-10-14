@@ -27,7 +27,9 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 
 ## Current validation boundary
 
-The current App source (phase-continuous Fan motion, geometric Peltier crystal/fades, resized dialogs and JE notification small icon) passed Dart analyze and Flutter tests in successful Build App run `38556896542` on commit `67c5d26723c433b4af856c7759a967a3425bf67a`. That release's signature log reported V1=false, V2=true and V3=true. The workflow now explicitly requires V1/V2/V3 verification and signs/verifies against API 23 for V1 compatibility, but no App Build has run after that workflow fix; the release asset still predates the fix. The user's MT Manager screenshot shows the installed APK last updated at 17:11, before the latest release completed at 18:36 Asia/Jakarta. A new explicit Build App and device verification are still required. The user reports V6.6 compiled successfully and Online OTA updated twice on the same version; Firmware is accepted as final by the user. See [PROJECT_STATE.md](PROJECT_STATE.md) for current validation boundaries. 
+Current App source changes include natural Fan OFF coast-down with full-colour blades, a free-standing Peltier crystal without the square module/bolts and without OFF fading, and a subtly wobbling Fan Speed needle that eases to 0 when OFF. Widget source-contract tests were updated. Static source checks passed, but Flutter tests/analyze and device rendering were NOT run after these edits. The last successful build/test run predates these changes (Actions run `38556896542`).
+
+The APK signature workflow fix also remains unverified by a build. The prior build reported V1=false, V2/V3=true; the updated workflow requires all three schemes. Explicit `@Thinking Build App!` authorization is required before running that workflow. Firmware V6.6 is accepted as final by the user after two same-version Online OTA updates; do not reopen Firmware operations unless asked. See [PROJECT_STATE.md](PROJECT_STATE.md) and [HANDOVER.md](HANDOVER.md) for current validation boundaries.
 
 ## Non-negotiable workflow
 
