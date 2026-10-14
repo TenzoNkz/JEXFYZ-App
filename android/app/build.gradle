@@ -108,10 +108,10 @@ android {
                 // Explicitly enable the legacy and modern APK signing schemes.
                 // V1 keeps MT Manager/legacy verifiers compatible, while V2/V3
                 // provide the Android APK integrity schemes for modern devices.
-                enableV1Signing true
-                enableV2Signing true
-                enableV3Signing true
-                enableV4Signing false
+                enableV1Signing = true
+                enableV2Signing = true
+                enableV3Signing = true
+                enableV4Signing = false
             }
         }
     }
