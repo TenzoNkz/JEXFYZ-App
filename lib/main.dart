@@ -1033,11 +1033,12 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       return;
     }
     if (!widget.active) {
-      // Peltier frost fades away and Fan coasts forward to a stable pose.
-      // Neither should snap to the starting frame during a state change.
-      if ((widget.kind == JexAnimatedIconKind.peltier ||
-              widget.kind == JexAnimatedIconKind.fan) &&
-          controller.isAnimating) {
+      // Fan keeps its final coast angle across ordinary dashboard rebuilds. Peltier
+      // keeps its fade-out animation alive until its frost has fully disappeared.
+      if (widget.kind == JexAnimatedIconKind.fan) {
+        return;
+      }
+      if (widget.kind == JexAnimatedIconKind.peltier && controller.isAnimating) {
         return;
       }
       controller.stop();
