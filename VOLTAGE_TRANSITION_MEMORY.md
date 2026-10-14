@@ -1,53 +1,52 @@
 # JE X FYZ / JE Cooler — Voltage Transition & Peltier Soft-Start Memory
 
-Updated: 2026-10-14 (Asia/Jakarta)
-Status: Active-ramp-only pause and uninterrupted 100% Peltier duty implemented in V6.4 source; compile/test/runtime/hardware result not yet validated for this revision.
-Active source blob: `f0dd9d1ebdc7d9d0966384f557efa2e2123df792`.
-Regression contract blob: `f071c9642c1a06726d25b8c26a814845b02a55d6`.
+Last reconciled: 2026-10-14 (Asia/Jakarta).
+Canonical source: `firmware/JEXFYZ-V6.4.ino` (last observed blob `f0dd9d1ebdc7d9d0966384f557efa2e2123df792`).
+Static regression contract: `test/v6_4_qc_contract_test.dart` (last observed blob `f071c9642c1a06726d25b8c26a814845b02a55d6`).
+Validation state: source-only. Firmware compile, Flutter test execution, physical reproduction, current measurement and thermal/OTA regression remain unverified.
 
-## Incident report
+## Incident
 
-[USER-REPORTED — 2026-10-13] The physical hardware restarted when changing from 5 V to 12 V with Peltier and Fan ON while the 5-second Peltier soft-start was still active. The exact reset reason from that reproduction has not been supplied. A supply transient/brownout remains a plausible hypothesis, not a confirmed cause.
+[USER-REPORTED — 2026-10-13] Hardware restarted when changing from 5 V to 12 V with Peltier and Fan ON while the 5-second Peltier soft-start was still active. No exact reset reason from that reproduction was supplied. Supply transient/brownout is a hypothesis, not a confirmed cause.
 
-## Current transition contract
+## Current V6.4 transition contract
 
-This rule applies to normal voltage changes requested in Manual Volt and while Adaptive is active. It is based on the Peltier ramp state **when the voltage transition is accepted**:
+Applies to normal voltage changes requested in Manual Volt and while Adaptive is active. Branch behavior is based on Peltier ramp state when a voltage transition is accepted.
 
-1. If Peltier is logically ON and `peltierSoftStarting` is true, save that state and force physical GPIO5 PWM to 0% before selector outputs are de-asserted. Preserve the logical ON request so the App does not report a false OFF. If soft-start has already completed, do not write PWM 0%—keep physical Peltier PWM at 100% throughout the selector transition. Fan remains enabled and is forced to 100%.
-2. Keep the existing 200 ms break-before-make selector interval.
-3. For a paused in-progress ramp only, retain the existing 1,000 ms rail-settle wait through `PELTIER_VOLTAGE_SETTLE_MS = VOLTAGE_GUARD_MS`. A completed 100% ramp is not paused and needs no Peltier-resume wait.
-4. If the saved flag says the 5-second soft-start was still in progress, begin a **new full 5-second ramp from 0%** after settling.
-5. If the saved flag indicates soft-start had already completed, keep **100% PWM running continuously** through the transition; do not pause Peltier, force 0%, or add another 5-second ramp.
-6. If Peltier is OFF, do not enable it because of a voltage change. If an explicit Peltier-OFF request, thermal/sensor safety, or OTA safe-output path stops it during the transition, clear the saved resume state so it cannot restart automatically.
-7. Adaptive entry/exit remains its separate safe-5V mode handoff: it intentionally switches Peltier OFF and, when allowed, restores it through the normal OFF→ON 5-second soft-start. Adaptive's subsequent ordinary rail changes use the conditional rule above. Adaptive thermal HOTSTEP safety may deliberately force Peltier OFF and must take priority.
-8. The transition remains cooperative/non-blocking; no `delay()` or timing `while()` is introduced.
+1. If Peltier is logically OFF, voltage change must not enable it.
+2. If Peltier is logically ON and `peltierSoftStarting == true`, save the interrupted-ramp state and force GPIO5 PWM to 0% **before selector outputs are switched off**. Preserve logical Peltier-ON state to avoid false App OFF telemetry.
+3. Keep selector break-before-make at 200 ms.
+4. For the interrupted ramp only, keep GPIO5 at 0% through the existing 1,000 ms rail-settle guard (`PELTIER_VOLTAGE_SETTLE_MS`, alias of `VOLTAGE_GUARD_MS`), then start a new full 5,000 ms ramp from 0%.
+5. If soft-start has already completed and PWM is at 100%, do not write PWM 0%; keep 100% continuously through selector deadtime and transition completion. No unnecessary re-ramp.
+6. Fan remains ON/forced to 100% through the voltage handoff.
+7. Explicit Peltier-OFF, Hotside/NTC safety, or OTA safe-output must shut down Peltier and clear any pending pause/resume flags; a saved ramp must never restart after an overriding OFF/safety action.
+8. Adaptive entry/exit is its own safe-5V handoff: Peltier intentionally OFF before switching and, if it had been on and safety permits, restored only through the ordinary 5-second OFF→ON ramp.
+9. Keep cooperative/non-blocking timing. Do not introduce executable `delay()` or timing `while()`.
 
-## Timing contract
+## Static regression expectations
 
-- Selector break-before-make: 200 ms.
-- Paused in-progress ramp: remain at 0% through the 1,000 ms post-selector settle, then start a fresh 5,000 ms soft-start.
-- Already-completed ramp: maintain 100% PWM throughout selector deadtime and completion, unless OFF/safety forces shutdown.
-- The 1-second interval is an existing software guard, not laboratory proof of the rail's electrical settling time. Hardware validation remains required.
+- In `requestVoltage()`, transition acceptance is recorded before `pausePeltierForVoltageTransition()`; pause precedes selector output shutdown.
+- `pausePeltierForVoltageTransition()` returns without writing PWM or setting pause state when `peltierSoftStarting` is false.
+- Active-ramp path records the resume flag before clearing active soft-start and forcing PWM 0%.
+- During `voltageTransition`, the control path forces 0% only if `peltierVoltagePauseActive` is true.
+- After settle, only a captured interrupted ramp starts a fresh 5-second ramp.
+- Completed ramp keeps `ledcWrite(PIN_PELTIER, 255)` / 100% continuously.
+- `stopPeltierOutput()` clears both pending pause and saved-resume state.
+- Retain reset reason reporting, including `ESP_RST_BROWNOUT`, Serial `BOOT: RESET_REASON=...` and telemetry `RESET_REASON`.
 
-## Regression safeguards
+The static test contract exists but was **not executed** as part of this memory update. Do not call its presence a pass.
 
-- In `requestVoltage()`, accepted transition state is recorded before `pausePeltierForVoltageTransition()`; the pause must happen before selector outputs are switched OFF.
-- `pausePeltierForVoltageTransition()` must return without writing PWM or setting a pending pause when `peltierSoftStarting` is false; that state means the normal ramp has completed and the Peltier should remain at 100%.
-- If `peltierSoftStarting` is true, save the interrupted-ramp flag before clearing the active ramp and forcing PWM to 0%.
-- While `voltageTransition` is active, Peltier processing must only hold PWM at 0% when `peltierVoltagePauseActive` is true. A completed ramp must not be zeroed by the transition gate.
-- After `PELTIER_VOLTAGE_SETTLE_MS`, resume only the captured in-progress ramp with a fresh 5 s soft-start; the completed-ramp path remains at 100% throughout and has no pending resume.
-- `stopPeltierOutput()` must clear both pending pause and saved-resume state.
-- Preserve the 200 ms deadtime, 1-second guard, 5-second OFF→ON soft-start, Hotside/sensor safety latches, safe output path, and cooperative main loop.
-- Keep serial boot diagnostics and App `RESET_REASON` telemetry for `BROWNOUT`. If the hardware restarts again, record `BOOT: RESET_REASON=...` and the App telemetry before drawing a stronger root-cause conclusion.
+## Hardware validation plan
 
-## Validation status and release boundary
-
-- [SOURCE FIX IMPLEMENTED] V6.4 pauses Peltier only when a voltage transition interrupts an active ramp; already-completed soft-start keeps PWM at 100% through the voltage change.
-- [REGRESSION CONTRACT UPDATED — NOT RUN] The static Flutter test contract checks state capture, ordering, both resumption paths, stop-state cleanup, timing, and reset-reason diagnostics.
-- [STATIC REVIEW ONLY] No firmware compile, Dart/Flutter test, physical reproduction, supply/current measurement, thermal regression, or repeated Manual/Adaptive rail test has been performed for this revision.
-- The earlier user-reported compile result applied to a prior V6.3 revision and does not certify the current source.
-- No BIN was generated or published, no Firebase metadata was changed, and no device was flashed or OTA-updated by this change.
+1. Compile the V6.4 source yourself with ArduinoDroid + Arduino-ESP32 Core 3.3.7.
+2. Manual Volt: during an active ramp, switch rail and confirm 0% → 200 ms selector deadtime → existing 1-second settle → fresh 5-second ramp.
+3. Manual Volt: after ramp reaches 100%, switch rail and confirm Peltier remains continuously active at 100%; no forced pause or extra ramp.
+4. Repeat both cases in Adaptive under safe operating conditions.
+5. Verify Fan stays on/100% through handoff.
+6. Verify explicit OFF, NTC/Hotside safety and OTA safe output cancel resume.
+7. If reset recurs, record `BOOT: RESET_REASON=...` and diagnostic telemetry. A rail transient hypothesis needs evidence; ideally measure supply voltage and Peltier current.
+8. Run thermal, Manual/Adaptive, Local OTA and Online OTA regression separately; don't conflate the gates.
 
 ## Future-change rule
 
-Do not unconditionally pause Peltier on every voltage change, restart soft-start after it had completed, or bypass Peltier-OFF/safety cancellation. Any transition timing or behavior change must update the source-level contract and this memory first. Reset causality remains a hypothesis until real diagnostics and, ideally, supply/Peltier current measurements support it.
+Do not unconditionally pause Peltier on every voltage change, restart soft-start after it has completed, enable Peltier when it was OFF, or bypass safety cancellation. Any authorized change to transition timing/behavior must update source-level test contracts and this memory. All project memories belong in the App repository; the separate Firmware artifact repository must contain only `JEXFYZ.cpp.bin`.
