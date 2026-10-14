@@ -8,13 +8,13 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 - **Active Firmware source:** firmware/JEXFYZ-V6.6.ino.
 - **Firmware constant:** FW_VERSION = "V6.6".
 - **Firmware source blob last observed:** f51ba6db5d0e91318f63fea4014bb87f7bf76222.
-- **Active App source:** lib/main.dart, current blob 6012d2e2d60dcbf2c5a816c78e63edbfb04b44c2.
+- **Active App source:** lib/main.dart, current blob 96a4c968e102a7ebc6b00d3932cf998829b1d07a.
 - **Package/version:** com.horizontalzzz.jexfyz, pubspec 1.0.0+3.
 - **Android identity:** Gradle versionName "Telegram @horizontalzzz"; intentional, preserve exactly.
 - **QC contracts:** test/v6_6_qc_contract_test.dart, test/firmware_touch_adaptive_sync_test.dart, test/app_protocol_notify_contract_test.dart, test/widget_test.dart. Test execution must be checked independently.
-- **Current App/UI hashes:** `lib/main.dart` = 6012d2e2d60dcbf2c5a816c78e63edbfb04b44c2; `lib/app_settings.dart` = 232a7575460e5417f7b760f24b5057687a47ee1a; `test/widget_test.dart` = c8780386edcf8e6dfbff965fbba4ff2e8541655f; `test/v6_6_qc_contract_test.dart` = 2bee4d960d014f0765422dcb5ed1c9870ba6ee3a; `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt` = 6c17a7e38c3a5b3f3f8fc6b3e5b38a99fd83081e; `JeForegroundService.kt` = 9ea4dce7001bcd5cc10f9c1c7ad62f34ec54b03e; `FloatingMonitorService.kt` = 55972b64329a2e1cc91e29a172d0a97a118d8ac1; `JexNotificationUtils.kt` = d0b2d7cadd2c87f2807d9a6c8414962799ccc906; `drawable/ic_notification.xml` = d62800ff34ed3e63946871b0f9b811c5b40341a6.
+- **Current App/UI hashes:** `lib/main.dart` = 96a4c968e102a7ebc6b00d3932cf998829b1d07a; `lib/app_settings.dart` = 232a7575460e5417f7b760f24b5057687a47ee1a; `test/widget_test.dart` = dbdb8e8cb407c3b534747086027c5512aac9fe20; `test/v6_6_qc_contract_test.dart` = 2bee4d960d014f0765422dcb5ed1c9870ba6ee3a; `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt` = 6c17a7e38c3a5b3f3f8fc6b3e5b38a99fd83081e; `JeForegroundService.kt` = 9ea4dce7001bcd5cc10f9c1c7ad62f34ec54b03e; `FloatingMonitorService.kt` = 55972b64329a2e1cc91e29a172d0a97a118d8ac1; `JexNotificationUtils.kt` = d0b2d7cadd2c87f2807d9a6c8414962799ccc906; `drawable/ic_notification.xml` = d62800ff34ed3e63946871b0f9b811c5b40341a6.
 - **Workflow:** .github/workflows/jexfyz-app-build-trigger.yml; explicit title/token trigger only.
-- V6.6 has not been independently compiled or hardware-tested by the assistant. User-reported V6.3 compile/Online OTA connection success refers to the prior revision and does not certify V6.6.
+- **User-reported Firmware evidence:** V6.6 compiled successfully and Online OTA update succeeded. No compile log, installed-version telemetry or matching artifact provenance was re-verified in this App-only execution; physical thermal/LED QC remains separate.
 - Do not infer that the existing artifact BIN matches current V6.6 source; source/BIN provenance remains unverified.
 - Latest checked open-PR search returned zero results. Fetch live state before acting.
 
@@ -70,20 +70,20 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 - Touch Adaptive-OFF publishes authoritative Adaptive/ceiling/Fan/Peltier/Fan-speed state deltas before acknowledgement.
 
 ## Current UI execution status
-- Source changes now include the actual JE X FYZ transparent logo asset as the single notification small icon (no large icon), pale inactive Comet/Dual-Chase preview pixels, display-anchored standalone Color and Peltier Safety menus, and seven redesigned smooth dashboard indicator animations.
-- New widget/source-contract tests cover preview colour behaviour, menu anchoring, animation timing, and notification icon exclusivity. Flutter tests/analyze have NOT RUN in this environment because Flutter/Dart SDK is unavailable; Android OEM rendering, narrow-screen layout, and actual device appearance remain UNVERIFIED.
-- The user reported a successful App build and in-place installation before these latest UI changes. That report does not certify the current source commit; no APK was built or published for this change set.
+- Latest source changes on `main`: dashboard Fan rotation now follows BLE-reported voltage (5V slow / 9V medium / 12V fast); the Peltier indicator adds voltage-scaled frost density and a 520 ms frost fade when OFF. Color Picker is bottom-pinned, has no outer draggable/scrolling panel, and can be dismissed using localized Cancel without changing the selected color.
+- New widget contracts cover the three voltage classes, relative fan durations, Peltier frost intensity/particle count, picker bottom anchoring, Cancel behavior, and preserved color-selection path. Static source/readback checks passed. Flutter tests/analyze have NOT RUN because Flutter/Dart SDK is unavailable; Android rendering and physical appearance remain UNVERIFIED.
+- The user reported that the preceding App revision built successfully. The current source/test commits were added after that report and no APK has been built or published for these changes.
 
 ## App Build
 - Only active workflow: .github/workflows/jexfyz-app-build-trigger.yml.
-- The latest observed successful App Build run is `38520146994` on commit `1024eb8e145429913aacb52f4cf352e087885d44` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38520146994). It predates the current UI/notification source commit and is NOT a fresh build/test certification of current `main`.
+- The latest independently observed successful workflow run recorded here is `38520146994` on commit `1024eb8e145429913aacb52f4cf352e087885d44` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38520146994), and it predates these changes. The user reported a successful build of the preceding revision, but that report does not establish a build of the current source.
 - Trigger title: JE X FYZ — BUILD APP TRIGGER; body token JEXFYZ_BUILD_TRIGGER_V1.
 - Toolchain last recorded: Java 17, Flutter 3.47.2 stable, Gradle 9.3.1, Ubuntu 24.04.
 - Intended output: one obfuscated, production-signed ordinary APK named JEXFYZ-release.apk, uploaded to GitHub Release jexfyz-latest. No Play Store bundle or Actions artifact.
 - Do not trigger except explicit @Thinking Build App! or @Thinking Eksekusi & Build App!.
 
 ## Exact validation gates still open
-1. User-side ArduinoDroid + Core 3.3.7 compile of V6.6 and confirmation of source/version/BIN provenance.
+1. Preserve the user-reported successful V6.6 compile/Online OTA outcome; independently verify compile log, installed firmware version, and source-to-artifact BIN provenance before any new publish/update.
 2. Physical active-ramp transition QC in Manual Volt and Adaptive.
 3. Physical completed-ramp transition QC: continuous 100% PWM.
 4. Peltier-OFF/safety cancellation, Hotside latch/re-arm, NTC invalid response and Adaptive thermal/recovery QC.
