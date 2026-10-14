@@ -1027,6 +1027,38 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
   double _frostFromParticleCount = 2;
   double _frostFromVisibility = 0;
 
+  void _animateFanToCycleBoundary() {
+    if (!mounted ||
+        widget.kind != JexAnimatedIconKind.fan ||
+        !widget.active) {
+      return;
+    }
+    final cycleMs = jexIconAnimationDuration(
+      JexAnimatedIconKind.fan,
+      voltageLevel: widget.voltageLevel,
+    ).inMilliseconds;
+    final remaining = (1.0 - controller.value).clamp(0.0, 1.0).toDouble();
+    final durationMs = (cycleMs * remaining).round().clamp(16, cycleMs).toInt();
+    unawaited(_finishFanCycleBoundary(durationMs));
+  }
+
+  Future<void> _finishFanCycleBoundary(int durationMs) async {
+    try {
+      // Travel from the current angular phase to a full-turn boundary at the new
+      // angular speed, then resume full cycles. Phase 1 and phase 0 are the same pose.
+      await controller.animateTo(
+        1.0,
+        duration: Duration(milliseconds: durationMs),
+        curve: Curves.linear,
+      ).orCancel;
+      if (mounted && widget.kind == JexAnimatedIconKind.fan && widget.active) {
+        controller.repeat();
+      }
+    } on TickerCanceled {
+      // A newer voltage or ON/OFF transition superseded this phase-preserving travel.
+    }
+  }
+
   void _syncAnimation() {
     if (widget.kind == JexAnimatedIconKind.generic) {
       controller.stop();
@@ -1087,10 +1119,10 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       );
       if (widget.kind != oldWidget.kind) {
         controller.reset();
-      } else if (fanVoltageChanged && widget.active && controller.isAnimating) {
-        // repeat() starts from the current value. A full turn wraps onto the same
-        // visible pose, so voltage changes alter speed without snapping the rotor.
-        controller.repeat();
+      } else if (fanVoltageChanged && widget.active) {
+        // Do not call repeat() directly here: repeat resets phase to zero. Travel from
+        // the current phase to the equivalent full-turn boundary at the new speed.
+        _animateFanToCycleBoundary();
       }
     }
 
@@ -1142,7 +1174,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       } else if (widget.kind == JexAnimatedIconKind.fan &&
           !oldWidget.active &&
           widget.active) {
-        controller.repeat();
+        if (!fanVoltageChanged) _animateFanToCycleBoundary();
       } else {
         controller.reset();
       }
