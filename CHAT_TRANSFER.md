@@ -16,7 +16,7 @@ Snapshot date: 2026-10-14 (Asia/Jakarta). This detailed transfer file bridges pr
 ## 1. Repository checkpoint immediately before this transfer refresh
 
 - Canonical repository: TenzoNkz/JEXFYZ-App, private, branch main.
-- Main HEAD immediately before this transfer write: 52438b143171c6b7dfac27d928ecc6445bd80061. This snapshot is written last; its resulting commit must have this exact commit as parent. This update creates a newer docs-only commit; fetch the actual new HEAD after saving.
+- Main HEAD immediately before this transfer write: 8dbea6854fbc6e8b58327c0d2fb380ce38fbeac9. The final snapshot commit must have this exact parent. This snapshot is written last; its resulting commit must have this exact commit as parent. This update creates a newer docs-only commit; fetch the actual new HEAD after saving.
 - Last live open-PR search returned 0. Branches observed: main, fix/adaptive-power-sequencing, diag/latest-stable-v16, diagnostic/v1.6-heap-check, tmp-jexfyz-v5-test. Continue on main by default.
 - Active firmware source: firmware/JEXFYZ-V6.4.ino. FW_VERSION = "V6.4". Source blob: f0dd9d1ebdc7d9d0966384f557efa2e2123df792. Exactly one active versioned .ino was found.
 - Active App source: lib/main.dart, blob 535e396005a3bd1429db3096c627d87043b0e1b4.
@@ -109,6 +109,7 @@ Read VOLTAGE_TRANSITION_MEMORY.md completely before any rail/Peltier change.
 - Adaptive entry/exit uses its separate safe-5V handoff; restoration occurs only through safety gates and standard five-second OFF→ON ramp.
 - Contract test exists at test/v6_4_qc_contract_test.dart (blob f071c9642c1a06726d25b8c26a814845b02a55d6); it was not run in this cleanup.
 - User reported a restart at 5 V→12 V with Peltier/Fan ON during active ramp. Supply transient/brownout remains a hypothesis. If reproduced capture reset diagnostic and ideally supply voltage/Peltier current.
+- [SEPARATE USER-REPORTED INCIDENT — RESET REASON UNKNOWN] Hardware was also reported to restart when Adaptive was enabled after selecting 12 V and turning Peltier and Fan ON. Do not conflate this with the active-soft-start rail-change restart; V6.4 requires safe-5V Adaptive entry and physical reproduction/reset-reason capture remains open.
 
 ## 7. Thermal / Adaptive / touch / RGB
 
@@ -119,9 +120,10 @@ Read VOLTAGE_TRANSITION_MEMORY.md completely before any rail/Peltier change.
 - After thermal step-down, restore upward one rail after 60 continuous seconds stable at/below hotLimit - 1°C, no higher than saved Adaptive ceiling.
 - HOTSIDE is Adaptive default at boot; HOTSIDE_BATTERY is runtime-selectable and not persisted. Missing battery temperature falls back to HOTSIDE behavior without silently changing profile.
 - Phone Battery thresholds currently default to 25°C at 5 V and 35°C at 12 V, with 0.5°C hysteresis and 5-second firmware freshness TTL. App heartbeat is 1 Hz through `je_x_fyz/battery_temp` / `PHONE:BT`, and coalesces pending messages. This does not change NTC’s one-calibrated-sample-per-second requirement.
-- No rapid Hotside slope/rise protection in known V6.x contract.
+- No rapid Hotside slope/rise protection in known V6.x contract. [HISTORICAL USER REQUIREMENT / NOT IMPLEMENTED] A prior request asked for fast Hotside rise to shut Peltier OFF and require manual re-arm; V6.4 does not implement slope/rate-of-rise protection.
 - One TTP223 touch sensor; no separate Wi-Fi/BLE toggle. Gesture QC history: ~1,000 ms startup grace, 30 ms qualification, raw HIGH tap 60–500 ms, 800 ms double tap window from first valid release, 5,000 ms long press. Verify live source before changing.
 - Adaptive ON: orange 3 blinks. Adaptive OFF: white 3 blinks; if Adaptive was active, OFF feedback waits until safe 5 V handoff completes.
+- [USER-REPORTED HISTORICAL ISSUE / UNVERIFIED] White Adaptive-OFF three-blink feedback was previously reported missing immediately after restart. Transition feedback code alone does not prove boot-time initial OFF indication; specifically verify before claiming resolved.
 - Default voltage LEDs: 5 V red, 9 V green, 12 V blue; customizable/resettable.
 - Current RGB modes: Static, Breath, Mirror Pulse, Comet, Dual Chase, Left/Right, Rainbow; Center Out/Outer In retired.
 - Firmware publishes LED animation phase/cycle telemetry to sync App preview. Safety/OTA LED indication outranks decorative RGB. Old V5.x LED/thermal timing is historical; live source wins.
@@ -198,6 +200,7 @@ Read DESIGN_NOTES.md before any visual iteration.
 - `CHAT_TRANSFER_PROMPTS.md` is expanded to include complete tree and cross-reference audit rules plus a JE X FYZ durable-decision catalogue across hardware, thermal/Adaptive, App UI/BLE/P1, OTA/build and grille design. It preserves rejected approaches and evidence caveats.
 - The retired `firmware/FIRMWARE_ANALYSIS.md` remains archived; current code-level reference is `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`.
 - The old `test/v5_9_contract_test.dart` was already renamed to `test/app_protocol_notify_contract_test.dart`; contents unchanged, not run.
+- This reconciliation preserved two distinct reported restart incidents, the unimplemented rapid-Hotside-rise request, and the Adaptive-OFF-after-restart LED symptom as clearly unverified/historical; no functional source behavior changed.
 - Three dated `archive/LEGACY_*.md` snapshots remain untouched for forensic recovery; do not copy their old CURRENT/ACTIVE blocks into current notes.
 - Artifact repo was checked at the end of this pass and contains only `JEXFYZ.cpp.bin`; this task did not touch its content/blob. App repo remains sole location for all documentation.
 - No functional code changed in this reconciliation. No test/analyze, App Build, Firmware compile, BIN generation/publication, Firebase edit, flash/OTA or release was performed.
@@ -223,6 +226,8 @@ Read DESIGN_NOTES.md before any visual iteration.
 4. Repeat after the ramp completes: expect uninterrupted 100% PWM unless explicit OFF/safety.
 5. Verify Peltier-OFF/safety cancellation; Hotside latch/re-arm and 30/60-second Adaptive behavior; NTC fault failsafe; no multi-sample NTC filter.
 6. Verify phone Battery heartbeat/freshness fallback and the App display rule (no standalone Battery Protection Guard). One-App-only pairing-lock remains unverified; test only if user authorizes that scope.
+7. Confirm that the prior Adaptive-OFF white three-blink complaint does not remain at boot/restart; do not infer boot feedback from the OFF transition handler. The separate 12 V Adaptive-entry restart report also needs physical reproduction/reset reason if authorized.
+8. Rapid Hotside-rise/manual-re-arm behavior is a historical unimplemented request. Do not claim it is part of V6.4 or implement it without explicit discussion/authorization and a firmware version bump.
 7. Check touch telemetry, orange/white three-blink effects, default voltage LED map and App-authoritative physical-state display.
 8. If authorized, run Flutter tests/analyze and record exact run/log. The source contracts exist but were not run in this cleanup.
 9. Hardware-check BLE/P1 pairing/reconnect and radio handoff: Wi-Fi fully OFF plus 160 ms settle before BLE ownership; no concurrent Wi-Fi/BLE ownership.
@@ -244,26 +249,26 @@ Never equate test file with passing run; compile with full OTA installation; blu
 
 ## 16. Last-observed blob fingerprints
 
-All hashes below are from live `main` at HEAD `52438b143171c6b7dfac27d928ecc6445bd80061` immediately before this transfer snapshot write. They fingerprint that checkpoint; re-fetch before later work. This file’s own blob SHA is intentionally omitted because it does not exist until this replacement is committed.
+All hashes below were fetched from live `main` at HEAD `8dbea6854fbc6e8b58327c0d2fb380ce38fbeac9` immediately before this snapshot write. They fingerprint this checkpoint only. The future SHA of this file is deliberately not self-recorded; verify its commit and parent after saving.
 
 Canonical memory docs:
 - `README.md`: `8881b20dec2a7ea916b6d45e487156927516cd88`
 - `MEMORY_INDEX.md`: `b738806db407cf24b939a8a3966589c03f679a8a`
 - `CHAT_RULES.md`: `947ceaa6dd93972f45ce40f9e4b548fe10274e22`
-- `PROJECT_STATE.md`: `447ea4af886d9e250c35f6eb20be9eff0d6f67f3`
-- `CHAT_TRANSFER_PROMPTS.md`: `694c9c6ec6b6f7bea186a75641dbf3a8ce222831`
+- `PROJECT_STATE.md`: `08629b442c3e637543a2859242e4d009188a9b57`
+- `CHAT_TRANSFER_PROMPTS.md`: `50ebdc054a70d66cf62bb252cc345ae9b6af1c86`
 - `HANDOVER.md`: `ce213dbbdb3151e12d0e627f885c64773f0947a6`
 - `APP_NOTES.md`: `fb240cdfff4151ac896e63c8121543c2cabef489`
-- `FIRMWARE_NOTES.md`: `019bdb521087f3e1775d9c107d071d83c560ad3b`
+- `FIRMWARE_NOTES.md`: `768a402c46af89c1bf20011dd6091bbfac00e813`
 - `BUILD_NOTES.md`: `7627218cc6d2a3b3585ef63057b4eab9856fe916`
-- `CHANGELOG.md`: `6e716b6d98b1b740ad0348fcd88bd63ce14092b4`
+- `CHANGELOG.md`: `0b012efd2e6eb96b1ffd7cec007e90b6ec92c25f`
 - `DESIGN_NOTES.md`: `e04382659dfdd618de0a156046f140452d275dc7`
 - `OTA_PROTECTION.md`: `370fe25e6c9632f5ffe14ff27e4a61b35d30de45`
 - `OTA_REGRESSION_MEMORY.md`: `e1e1fe88b65843d9626ea63aab018607e69b454f`
-- `VOLTAGE_TRANSITION_MEMORY.md`: `b73cea92704d4949093136ad6287ad11f0bf9267`
+- `VOLTAGE_TRANSITION_MEMORY.md`: `232f18b16b960e669e3fddd65337cc82ac6a9b5e`
 - `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `389e873ab68ee7c041b5b25378010be4c1ff739b`
 
-Workflow, packages, active source and tests:
+Workflow, package metadata, active source and tests:
 - `.github/workflows/jexfyz-app-build-trigger.yml`: `7c41358311be195d43f011c1e9a4da98772fcb7d`
 - `.gitignore`: `a51c5ad7dabd81d6a7e42181fa7d5c3a25bdac15`
 - `pubspec.yaml`: `8f558273e21692af9958f914527fdc62d623d63a`
