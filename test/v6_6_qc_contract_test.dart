@@ -303,7 +303,7 @@ void main() {
     expect(sync, isNot(contains('sendDelta("LED_CYCLE_MS"')));
   });
 
-  test('BLE command writes require encryption and bonding', {
+  test('BLE command writes require encryption and bonding', () {
     final source = File('firmware/JEXFYZ-V6.6.ino').readAsStringSync();
     expect(source, contains('#include <BLESecurity.h>'));
     expect(source, contains('BLESecurity::setAuthenticationMode(true, false, true)'));
