@@ -7,7 +7,7 @@ Last source audit recorded: 2026-10-14 (Asia/Jakarta). Always fetch live source 
 - Canonical editable source: `firmware/JEXFYZ-V6.6.ino`.
 - `FW_VERSION = "V6.6"`; source blob last observed: `f51ba6db5d0e91318f63fea4014bb87f7bf76222`.
 - Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module, Arduino-ESP32 Core 3.3.7, compiled by the user in ArduinoDroid.
-- This reference is not compile proof. V6.6 is source-only DEVELOPMENT + QC / PRE-RELEASE until separate compile, BIN provenance, physical and OTA gates are passed.
+- This reference is not compile proof. The user reported that V6.6 compiled successfully and Online OTA update succeeded. The assistant did not independently verify the compile log, installed version or whether the artifact BIN matches this source; physical safety/thermal/LED regression and complete OTA recovery gates remain open. Release state remains DEVELOPMENT + QC / PRE-RELEASE, NOT RELEASED.
 
 ## Architecture
 
