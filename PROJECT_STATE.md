@@ -70,9 +70,11 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 - Touch Adaptive-OFF publishes authoritative Adaptive/ceiling/Fan/Peltier/Fan-speed state deltas before acknowledgement.
 
 ## Current UI execution status
-- Current App source includes phase-continuous Fan animation, geometric Peltier frost crystal/fades, resized dialogs, and the transparent JE notification icon.
-- Build App run `38556896542` on pre-signing-fix commit `67c5d26723c433b4af856c7759a967a3425bf67a` passed Dart analyze and Flutter tests for that App source, plus release download verification. Device appearance remains unverified.
-- Signing log reported V1=false, V2=true, V3=true. The workflow was hardened at commit `90d48ec3c97318b5aff4e147151eee96e41b5b25` to force/check V1 plus V2/V3; this workflow change has NOT been build-verified. Existing release has not yet been replaced with an APK built under the updated gate.
+- Implemented in `lib/main.dart`: the Fan rotor remains fully coloured and coasts down with an ease-out curve to its resting pose after OFF; the Peltier icon is a free-standing six-branch crystal (no square module/center box/corner bolts) that freezes fully coloured when OFF; Fan Speed wobbles its needle slightly while ON without changing telemetry percentage and returns smoothly to the far-left/0 mark over 520 ms when OFF.
+- Current App source blob: `3d756a5a38c76b252dc93c6151a3b864ebbbbb94`; updated widget-test source blob: `0f370d9ea4d7177608ce1fd5aab679c2c65d9cf3`. Regression source-contract tests were updated, but **Flutter tests/analyze were NOT run after this change**.
+- Latest successful App Build before this UI change and before signing-workflow hardening remains run `38556896542` on commit `67c5d26723c433b4af856c7759a967a3425bf67a`. That run's log reported V1=false, V2=true, V3=true.
+- Workflow hardening to require V1/V2/V3 is committed, but has not been build-verified. Existing release still targets the pre-fix commit. Device rendering/signature verification after new installation remain open.
+
 
 ## App Build
 - Only active workflow: `.github/workflows/jexfyz-app-build-trigger.yml`.
@@ -83,12 +85,13 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 - Do not trigger except explicit `@Thinking Build App!` or `@Thinking Eksekusi & Build App!`.
 
 ## Exact validation gates still open
-1. After explicit `@Thinking Build App!` authorization, run the updated manual App Build workflow and require `apksigner` V1, V2 and V3=true for both the built APK and re-downloaded release asset; verify the expected certificate digest and release SHA.
-2. Install that newly built APK and check its signature in MT Manager. The screenshot's installed-package `Last update` is 17:11 on 2026-10-14, before run `38556896542` finished at 18:36 Asia/Jakarta, so the shown installed copy predates the latest release.
-3. Physically inspect Fan phase transitions/coast-down, geometric Peltier frost fade, notification icon, and dialog sizing after installing the current APK.
-4. Firmware V6.6 is user-accepted as final after reported successful compilation and two same-version Online OTA updates; no further Firmware edit/compile is planned unless the user reports a new issue or explicitly reopens Firmware work.
+1. After explicit `@Thinking Build App!` authorization, run the manual App Build workflow; verify V1, V2, V3, expected certificate digest, run source SHA and downloaded release asset SHA. The updated signing workflow and the latest UI change remain unbuilt.
+2. Install that new APK and check its signature in MT Manager. The screenshot's installed package last-update time predates the latest release build; the exact cause of MT Manager's failure remains unverified.
+3. On the installed APK, check Fan OFF easing to a complete stop without dimming, Peltier crystal remains visible/full-colour with no square module or bolts when OFF, and Fan Speed needle gently wobbles ON but returns to the far-left/0 position OFF. Also inspect notification icon and enlarged dialogs.
+4. Flutter tests/analyze after the latest icon/animation edits remain NOT RUN. Run only in the authorized Build App workflow or another expressly approved validation path.
+5. Firmware V6.6 is user-accepted as final after two reported successful same-version Online OTA updates. Do not edit/compile Firmware or perform BIN/Firebase/OTA/flash operations unless the user reopens that task and separately authorizes it.
 
-## Repository split / operation boundary
+
 ## Repository split / operation boundary
 - All source and memories live in TenzoNkz/JEXFYZ-App.
 - TenzoNkz/JEXFYZ-Firmware must contain JEXFYZ.cpp.bin only; its notes were removed during this cleanup and the BIN was not touched. The last observed artifact root contains only the BIN; verify its live path/blob before any future publication.
