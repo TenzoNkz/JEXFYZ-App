@@ -51,7 +51,7 @@ Use `MEMORY_INDEX.md` to find canonical notes. Use `CHANGELOG.md` for history on
  
 ## Latest UI change-set boundary (2026-10-14)
 
-- Source updates: `lib/main.dart` (`f127555730edbc155e934404b39e1b27a76fc62f`), `test/widget_test.dart` (`d028271363dea79c2473d96faeb206bfb153837e`), `JexNotificationUtils.kt` (`aecfc87121f2195ef6724613c612d674ed95ae55`), and `drawable/ic_notification.xml` (`cda9e8404d14a62a61157ec59fae2e491c19f5f7`). Check live `main` for current hashes.
+- Source updates: `lib/main.dart` (`420f796d033198d86d6fb71be3629023ac8f2e0a`), `test/widget_test.dart` (`d028271363dea79c2473d96faeb206bfb153837e`), `JexNotificationUtils.kt` (`aecfc87121f2195ef6724613c612d674ed95ae55`), and `drawable/ic_notification.xml` (`cda9e8404d14a62a61157ec59fae2e491c19f5f7`). Check live `main` for current hashes.
 - Fan rotation retains phase when changing voltage and coasts to a retained angle when OFF. Peltier uses a geometric thermoelectric-module/frost-crystal symbol, 420 ms smooth density/intensity interpolation, periodic crystal drift and a 520 ms OFF fade. Color Picker and Peltier Safety typography and touch targets are larger.
 - Android notification small icon is a bold white JE vector monogram on transparent background, as the sole small icon; no large icon is set. The full-color app icon/dashboard branding remains unchanged.
 - Flutter tests/analyze for current source were not run (Flutter/Dart SDK unavailable); no current-source App Build, Firmware compile, BIN/Firebase change, OTA/flash, device QC or release occurred. Latest successful App Build `38535535278` targets previous commit `97c5497` and does not contain these changes. Firmware V6.6/source was untouched.
