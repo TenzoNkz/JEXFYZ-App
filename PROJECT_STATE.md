@@ -41,8 +41,16 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 - User reported the prior V6.3 source compiled and GitHub connection recovered. Full download/apply, restart and installed-version confirmation remain unverified.
 - Read both OTA memory documents before any related edit.
 
+## Phone Battery input / App display requirements
+
+- [SOURCE VERIFIED] App reads Android Battery temperature through `je_x_fyz/battery_temp` and sends `PHONE:BT=<Celsius>` at a one-second heartbeat while BLE is ready; pending heartbeat messages are coalesced.
+- [SOURCE VERIFIED] Firmware Battery input has a 5-second freshness TTL and 0.5°C Battery-zone hysteresis. Current configured zone defaults are 5 V = 25°C and 12 V = 35°C. If Battery data becomes stale, HOTSIDE_BATTERY runtime control falls back to HOTSIDE without silently changing the selected profile.
+- [USER REQUIREMENT] Do not display a standalone Battery Protection Guard badge/status in App UI. Do not weaken thermal safety or suppress independently actionable, localized safety/Notify messages.
+- [USER DESIGN REQUIREMENT / ENFORCEMENT UNVERIFIED] Pairing intent is one authorized App identity/key-lock relationship per cooler firmware. Current source proves encrypted/bonded writes but exclusive one-App provisioning/lock and physical pairing behavior are not established here.
+
 ## Current App contracts
 - Firmware telemetry owns physical state; ACK alone is not proof of hardware state.
+- Latest observed successful App Build workflow run is `38380312823` on commit `c21e2e52218e7f284ae8536855cf976199566975`; it predates this current main checkpoint and is not new validation of the present transfer/source state.
 - Voltage completion requires matching VOLTAGE telemetry.
 - App offline states must show unknown values (--) rather than stale state.
 - Auto Connect/reconnect respects preference, known cooler identity, Bluetooth/permission/location prerequisites and syncing state.
@@ -69,5 +77,5 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 
 ## Repository split / operation boundary
 - All source and memories live in TenzoNkz/JEXFYZ-App.
-- TenzoNkz/JEXFYZ-Firmware must contain JEXFYZ.cpp.bin only; its notes were removed during this cleanup and the BIN was not touched.
+- TenzoNkz/JEXFYZ-Firmware must contain JEXFYZ.cpp.bin only; its notes were removed during this cleanup and the BIN was not touched. The last observed artifact root contains only the BIN; verify its live path/blob before any future publication.
 - This documentation cleanup did not change functional source, run tests/build, compile Firmware, generate BIN, update Firebase, flash/OTA hardware or release.
