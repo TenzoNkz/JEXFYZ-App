@@ -1527,7 +1527,9 @@ class _JexIconPainter extends CustomPainter {
         canvas.save();
         canvas.translate(cx, cy);
         canvas.rotate(rotation);
-        final crystalColor = color.withValues(alpha: .62 + .34 * frostIntensity);
+        final crystalColor = color.withValues(
+          alpha: (.62 + .34 * frostIntensity) * coolingFade,
+        );
         for (var i = 0; i < 6; i++) {
           canvas.save();
           canvas.rotate(i * math.pi / 3);
@@ -1579,7 +1581,7 @@ class _JexIconPainter extends CustomPainter {
           canvas.drawPath(
             crystal,
             fill(Colors.white.withValues(
-              alpha: (.22 + .68 * frostIntensity) * particleStrength,
+              alpha: (.22 + .68 * frostIntensity) * particleStrength * coolingFade,
             )),
           );
         }
@@ -1598,9 +1600,19 @@ class _JexIconPainter extends CustomPainter {
           }
         }
         centerHex.close();
-        canvas.drawPath(centerHex, fill(color.withValues(alpha: .26 + .30 * frostIntensity)));
-        canvas.drawPath(centerHex, stroke(s * .021, color.withValues(alpha: .85)));
-        canvas.drawCircle(center, s * .025, fill(Colors.white.withValues(alpha: .80)));
+        canvas.drawPath(
+          centerHex,
+          fill(color.withValues(alpha: (.26 + .30 * frostIntensity) * coolingFade)),
+        );
+        canvas.drawPath(
+          centerHex,
+          stroke(s * .021, color.withValues(alpha: .85 * coolingFade)),
+        );
+        canvas.drawCircle(
+          center,
+          s * .025,
+          fill(Colors.white.withValues(alpha: .80 * coolingFade)),
+        );
         break;
 
             case JexAnimatedIconKind.fan:
