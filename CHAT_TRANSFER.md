@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — CHAT TRANSFER SNAPSHOT
 
-Snapshot date: 2026-10-14 (Asia/Jakarta). Live checkpoint before this transfer replacement: 2026-10-14 18:56:11 Asia/Jakarta / 2026-10-14T11:56:11Z; canonical main HEAD before this transfer write is `ae3451d34f068bfd43888583910190157d28d4b9` (`docs: record signature hardening and firmware acceptance`, parent `8257efc93d2d29769af2c92c585700d08120dbe4`, commit timestamp `2026-10-14T11:56:11Z`). This detailed transfer file bridges project memory across chats. It is a snapshot, NOT a substitute for fetching live GitHub state; verify live hashes/status after the transfer commit.
+Snapshot date: 2026-10-14 (Asia/Jakarta). Live checkpoint before this transfer replacement: 2026-10-14 18:59:50 Asia/Jakarta / 2026-10-14T11:59:50Z; canonical main HEAD before this transfer write is `2086ad04e350affa653214a9cf7389282de85260` (`docs: reconcile current app test and firmware evidence`, parent `95ef86bdce3edac6ce9647a2ce51fdd84085669f`, commit timestamp `2026-10-14T11:59:50Z`). This detailed transfer file bridges project memory across chats. It is a snapshot, NOT a substitute for fetching live GitHub state; verify live hashes/status after the transfer commit.
 
 ## 0. New-chat boot — mandatory order
 
@@ -15,10 +15,10 @@ Snapshot date: 2026-10-14 (Asia/Jakarta). Live checkpoint before this transfer r
 
 ## 1. Repository checkpoint immediately before this transfer refresh
 
-- **Live checkpoint:** 2026-10-14 18:56:11 Asia/Jakarta / 2026-10-14T11:56:11Z.
+- **Live checkpoint:** 2026-10-14 18:59:50 Asia/Jakarta / 2026-10-14T11:59:50Z.
 - **Canonical repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`.
-- **Main HEAD immediately before this transfer write:** `ae3451d34f068bfd43888583910190157d28d4b9`; message `docs: record signature hardening and firmware acceptance`; parent `8257efc93d2d29769af2c92c585700d08120dbe4`; commit timestamp `2026-10-14T11:56:11Z`. Root tree `1a9b63c77e5b83bd362b838ca73e52dd88114d89`; verified recursive inventory `65` entries, `47` blobs including the transfer file, `46` other blobs, `truncated=false.
-- **Live branch tips:** `diag/latest-stable-v16` `ec77759d224c581870d98330d9278896ff29e50b`; `diagnostic/v1.6-heap-check` `1a4cd83b3ee82cdc2d86277dc4a0eb4c4238f8a3`; `fix/adaptive-power-sequencing` `33740be782d976a881e285bbf8b86b3b485b83c1`; `tmp-jexfyz-v5-test` `b388cba98ea1d9e92873df64ba3224d6cb99156d`; `main` `ae3451d34f068bfd43888583910190157d28d4b9`. Open PRs: 0 (live REST query returned 0).
+- **Main HEAD immediately before this transfer write:** `2086ad04e350affa653214a9cf7389282de85260`; message `docs: reconcile current app test and firmware evidence`; parent `95ef86bdce3edac6ce9647a2ce51fdd84085669f`; commit timestamp `2026-10-14T11:59:50Z`. Root tree `7841fce5e263d5ac015124495ace9d63d899670a`; verified recursive inventory `65` entries, `47` blobs including the transfer file, `46` other blobs, `truncated=false`.
+- **Live branch tips:** `diag/latest-stable-v16` `ec77759d224c581870d98330d9278896ff29e50b`; `diagnostic/v1.6-heap-check` `1a4cd83b3ee82cdc2d86277dc4a0eb4c4238f8a3`; `fix/adaptive-power-sequencing` `33740be782d976a881e285bbf8b86b3b485b83c1`; `tmp-jexfyz-v5-test` `b388cba98ea1d9e92873df64ba3224d6cb99156d`; `main` `2086ad04e350affa653214a9cf7389282de85260`. Open PRs: 0 (live REST query returned 0).
 - **Active Firmware source:** `firmware/JEXFYZ-V6.6.ino`, blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`, `FW_VERSION = "V6.6"`. Exactly one active versioned `.ino` is tracked and filename/version align. **USER ACCEPTANCE 2026-10-14:** user considers V6.6 correct/final and reports successful compilation and two successful Online OTA flashes/updates with the same version V6.6. Do not modify/recompile/reflash unless the user explicitly reopens Firmware work and separately authorizes the operation. Source-to-BIN provenance remains independently unverified, but is not an active task by itself.
 - **Current App identity/source:** `lib/main.dart` blob `2005f4c163d466f9015a564d5418af1e86e09b41` (265,126 bytes); `test/widget_test.dart` blob `3af190d4520a7b753f3f9fc963f788f4aa247f5c` (31,374 bytes); `lib/app_settings.dart` `232a7575460e5417f7b760f24b5057687a47ee1a`; `lib/floating_monitor.dart` `cfc21b3dc198b925786aa98658d647b1d8a3637b`. Package `com.horizontalzzz.jexfyz`, pubspec `1.0.0+3`; preserve Gradle `versionName "Telegram @horizontalzzz"`.
 - **Current native notification files:** `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt` blob `aecfc87121f2195ef6724613c612d674ed95ae55`; `android/app/src/main/res/drawable/ic_notification.xml` blob `cda9e8404d14a62a61157ec59fae2e491c19f5f7`. The notification helper uses the transparent bold-white JE vector as the sole small icon and sets no large icon; launcher/app imagery still uses `jexfyzicon`.
@@ -109,7 +109,7 @@ Read VOLTAGE_TRANSITION_MEMORY.md completely before any rail/Peltier change.
 - Fan remains ON/forced 100% during the handoff.
 - Explicit Peltier-OFF, Hotside/NTC safety and OTA safe-output must stop Peltier and clear pending pause/resume state.
 - Adaptive entry/exit returns the selector to safe 5 V without forcing a separate Peltier OFF/ON cycle. `requestVoltage()` pauses only an active soft-start; a completed ramp stays at 100%. A Peltier already OFF stays OFF; explicit OFF/Hotside/NTC/OTA safety still overrides.
-- Contract test exists at `test/v6_6_qc_contract_test.dart` (blob `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a`); Flutter tests were NOT RUN. Source assertions were inspected statically only.
+- Contract test exists at `test/v6_6_qc_contract_test.dart` (blob `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a`). The full Flutter test suite passed in Build App run `38556896542` on pre-signing-fix commit `67c5d26723c433b4af856c7759a967a3425bf67a`; this confirms the test suite ran but does not prove physical Firmware runtime.
 - User reported a restart at 5 V→12 V with Peltier/Fan ON during active ramp. Supply transient/brownout remains a hypothesis. If reproduced capture reset diagnostic and ideally supply voltage/Peltier current.
 - [SEPARATE USER-REPORTED INCIDENT — RESET REASON UNKNOWN] Hardware was also reported to restart when Adaptive was enabled after selecting 12 V and turning Peltier and Fan ON. Do not conflate this with the active-soft-start rail-change restart; V6.6 uses a safe-5V selector handoff without an extra Peltier OFF cycle, and physical reproduction/reset-reason capture remains open.
 
@@ -239,9 +239,9 @@ Read DESIGN_NOTES.md before any visual iteration.
 
 Never equate test file with passing run; compile with full OTA installation; blue LED with successful HTTP; ACK with hardware state; reboot with proven brownout; version bump with BIN build; or existing BIN with source provenance.
 
-## 16. Live blob fingerprints at pre-transfer HEAD `ae3451d34f068bfd43888583910190157d28d4b9`
+## 16. Live blob fingerprints at pre-transfer HEAD `2086ad04e350affa653214a9cf7389282de85260`
 
-Fetched from live recursive tree `1a9b63c77e5b83bd362b838ca73e52dd88114d89` immediately before this transfer write (65 entries; 47 blobs including the transfer file; 46 fingerprints below excluding this transfer file; `truncated=false`). The transfer file's own new blob SHA is intentionally omitted.
+Fetched from live recursive tree `7841fce5e263d5ac015124495ace9d63d899670a` immediately before this transfer write (65 entries; 47 blobs including the transfer file; 46 fingerprints below excluding this transfer file; `truncated=false`). The transfer file's own new blob SHA is intentionally omitted.
 
 Canonical project memory and docs:
 - `APP_NOTES.md`: `6745b0f1b7e361141acac5a6b77dd33b26488dc3` (14553 bytes)
@@ -255,7 +255,7 @@ Canonical project memory and docs:
 - `MEMORY_INDEX.md`: `1b59b43fbcdeec26db02931b6ae44573f65b79a1` (6562 bytes)
 - `OTA_PROTECTION.md`: `06beb86b749b0f0e14c8cb517e43fe7c0f66a4e1` (4259 bytes)
 - `OTA_REGRESSION_MEMORY.md`: `e961ca32a22ebf0fcba8ed221f12cc17a6429f52` (3953 bytes)
-- `PROJECT_STATE.md`: `57befbfcf109c8e83eee4bbae98ee1d8913fb15a` (13128 bytes)
+- `PROJECT_STATE.md`: `a8051930035d376a2708db7d3a51a2925093c05b` (13458 bytes)
 - `README.md`: `f4b5b3aaeafcdc2e8737fa19a1b8381bd8784cd7` (4214 bytes)
 - `VOLTAGE_TRANSITION_MEMORY.md`: `cf97f4745e6f5e33ce57beece5b2c1f742029b44` (5916 bytes)
 
