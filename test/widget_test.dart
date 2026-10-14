@@ -526,7 +526,7 @@ void main() {
     expect(iconState, contains('_animateFanToCycleBoundary();'));
     expect(iconState, contains('await controller.animateTo('));
     expect(iconState, contains('controller.repeat();'));
-    expect(iconState, contains('_coastFanToStop();'));
+    expect(iconState, contains('unawaited(_coastFanToStop());'));
     expect(iconState, contains('const coastCycles = .16;'));
     expect(iconState, contains('Curves.easeOutCubic'));
     expect(iconState, isNot(contains('coastDelta')));
