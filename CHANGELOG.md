@@ -10,6 +10,14 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - Added widget source contracts for phase continuity/coast-down, Peltier crystal/interpolation, responsive dialog sizing and the JE notification vector.
 - Static readback checks passed. Flutter tests/analyze and App Build were NOT run for this change set (Flutter/Dart SDK unavailable here). Current-source Android rendering and physical device QC remain unverified. No Firmware, BIN, Firebase, OTA, flash or release operation occurred.
 
+## 2026-10-14 — Smooth motion, crystal Peltier, JE notification and dialog sizing
+
+- Fan voltage changes now update rotation duration without resetting angular phase; Fan OFF coasts forward to a retained pose. Peltier frost intensity/particle count interpolate over 420 ms across voltage classes, while periodic crystal drift avoids jumps at the loop boundary and the frost fades out over 520 ms when OFF.
+- Replaced the flower-like Peltier icon with a framed thermoelectric module and six-branched geometric frost crystal.
+- Increased Color Picker title/selected-color/Cancel text and swatch height; increased Peltier Safety title/body/action typography, spacing and minimum touch targets. Palette colors and mandatory Fan-before-Peltier safety gate are unchanged.
+- Android notifications now use a bold white `JE` vector monogram with transparent background as the sole small icon; no large icon is set, and the full-color app icon remains unchanged.
+- Added widget contracts for phase continuity/coast-down, Peltier crystal geometry/interpolation, dialog sizing, and JE icon path. Static readback checks passed. Flutter tests/analyze and App Build were NOT run for these current commits (Flutter/Dart SDK unavailable); device rendering is unverified. No Firmware, BIN, Firebase, OTA, flash or release operation occurred.
+
 ## 2026-10-14 — Voltage-aware Fan/Peltier icons and bottom-pinned Color Picker
 
 - Fan dashboard motion now uses distinct continuous rotation durations from authoritative BLE-reported voltage: 5V slow (2600 ms), 9V medium (1250 ms), and 12V fast (620 ms). Peltier frost icon increases glow and crystal density across the same voltage classes and fades its frost overlay over 520 ms when switched OFF. These are illustrative visuals, not RPM or temperature/ice measurements; no firmware, BLE command, safety or physical LED behavior changed.
