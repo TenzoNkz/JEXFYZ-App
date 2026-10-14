@@ -522,13 +522,14 @@ void main() {
     expect(stateStart, isNonNegative);
     expect(stateEnd, greaterThan(stateStart));
     final iconState = source.substring(stateStart, stateEnd);
-    expect(iconState, contains('fanVoltageChanged && widget.active && controller.isAnimating'));
+    expect(iconState, contains('fanVoltageChanged && widget.active'));
+    expect(iconState, contains('_animateFanToCycleBoundary();'));
+    expect(iconState, contains('await controller.animateTo('));
     expect(iconState, contains('controller.repeat();'));
     expect(iconState, contains('coastDelta'));
-    expect(iconState, contains('controller.animateTo('));
     expect(iconState, contains('frostTransitionController.forward(from: 0)'));
     expect(iconState, contains('_frostFromVisibility'));
-    expect(iconState, contains('frostTransitionController.duration = widget.active'));
+    expect(iconState, contains('if (widget.active)'));
     expect(iconState, contains('Duration(milliseconds: 360)'));
     expect(iconState, contains('Duration(milliseconds: 420)'));
     expect(iconState, contains('Duration(milliseconds: 520)'));
@@ -579,7 +580,7 @@ void main() {
     expect(icon, contains('Bold JE monogram'));
     expect(icon, contains('android:pathData='));
     expect(icon, contains('M2,3 H10'));
-    expect(icon, contains('Legacy monochrome X resource retained'));
+    expect(icon, isNot(contains('Legacy monochrome X resource retained')));
     expect(bleService, contains('Bluetooth connected · cooler session active'));
     expect(bleService, contains('Bluetooth terhubung · sesi cooler aktif'));
     expect(floatingService, contains('Floating Monitor active'));
