@@ -228,3 +228,13 @@ When rebuilding memory, explicitly reconcile each item below against the live so
 - Preserve icons/cooler PNG transparency and 1:1 aspect. All visual changes are scoped; don't invent a redesign.
 - Preserve failed/rejected methods and their reason in the appropriate current note/changelog, but label older claims as historical. A source contract/test file is not a run; compile is not OTA install; blue/red LED is not an HTTP diagnosis; version bump is not a BIN; reboot symptom is not proof of brownout; closed PR is not automatically merged.
 - At final boot snapshot include exact next steps, current and historical version boundary, current workflow and CI run SHA, all canonical document hashes, active tests, open PR/branch state, current BIN hash/provenance, and all not-run operations. Redact credentials and signing material.
+
+
+## Historic symptoms that must not be silently dropped
+
+During every full reconciliation, separately preserve the following reports and their evidence status in the canonical memory:
+- The reported reset during Manual 5 V→12 V while Peltier/Fan were ON and Peltier soft-start was still active; reset reason was not captured and brownout is a hypothesis only.
+- A separate reported reset when switching Adaptive ON after selecting 12 V and enabling Peltier/Fan; do not assume the two reset reports share a cause. Capture reset telemetry and physical conditions if the user later authorizes reproduction.
+- The user previously requested rapid Hotside rise/rate-of-rise protection to turn Peltier OFF and require manual re-arm. This behavior is NOT implemented in current V6.4; record as unimplemented historical requirement, not as current functionality.
+- The user reported the Adaptive-OFF white three-blink indication missing immediately after restart. A code path for OFF transition after user interaction does not prove boot-time initial OFF feedback; mark physical/boot behavior unverified until specifically checked.
+- Preserve the corrected physical-wiring finding that an apparent 12 V selector malfunction was later traced to a loose cable, and do not label it a code defect without evidence.
