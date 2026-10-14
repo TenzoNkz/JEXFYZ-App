@@ -55,12 +55,14 @@ Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 - After Adaptive thermal downshift, restoration proceeds upward one rail at a time after 60 seconds continuously at/below `hotLimit - 1°C`, no higher than the saved pre-downshift ceiling.
 - HOTSIDE is default Adaptive profile after boot. HOTSIDE_BATTERY is a runtime selectable profile, not persisted. When Battery sensor data is missing, fall back to HOTSIDE behavior without changing chosen profile.
 - No rapid Hotside-rise/slope protection is present in the known V6.x contract; do not claim it exists.
+- [HISTORICAL USER REQUIREMENT / NOT IMPLEMENTED IN V6.4] A prior request called for a very rapid Hotside rise to shut Peltier OFF immediately and require manual re-arm/restart. The active V6.4 contract does not implement slope/rate-of-rise protection; do not describe the request as completed. If reconsidered, discuss first, update source with a mandatory version bump and test the safety behavior.
 - Keep thermal/NTC safety higher priority than App requests, normal RGB animation, or pending Peltier restart.
 
 ## Touch and indicators
 
 - TTP223 gesture processing history: startup ignore/grace ~1,000 ms; qualified stable edge; 30 ms qualification; tap valid raw HIGH 60–500 ms; double tap window 800 ms from first valid release; long press 5,000 ms. Verify current source before changing these timings.
 - User-approved Adaptive indicators: ON blinks orange 3 times; OFF blinks white 3 times. OFF feedback is deferred until safe 5 V handoff completes if Adaptive was active; if already safely at 5 V it may start immediately.
+- [USER-REPORTED HISTORICAL ISSUE / PHYSICAL STATUS UNVERIFIED] The white Adaptive-OFF three-blink indication was reported missing immediately after restart. A code path for Adaptive-OFF transition feedback does not by itself prove the initial boot-time OFF indication is shown; recheck exact source path and physically validate before calling this fixed.
 - Default manual voltage LED map: 5 V red, 9 V green, 12 V blue; customizable with reset-to-default.
 - Firmware-safety/OTA LED feedback has higher priority than decorative RGB animation.
 
