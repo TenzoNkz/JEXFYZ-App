@@ -5,27 +5,28 @@ Snapshot date: 2026-10-14 (Asia/Jakarta). This detailed transfer file bridges pr
 ## 0. New-chat boot — mandatory order
 
 1. Read this entire CHAT_TRANSFER.md first, from first line to last line.
-2. Fetch live main HEAD, recursive tree, active Firmware .ino inventory and FW_VERSION, App source/version, all test paths, the actual workflow, open PR state and artifact repository root.
+2. Fetch live main HEAD, full recursive tree, every current source/config/test/workflow/document path and blob SHA, exactly one active Firmware .ino and its FW_VERSION, App source/package/version, Actions run IDs plus head SHAs, open/closed PR and branch state, and artifact repository root.
 3. Read MEMORY_INDEX.md, CHAT_RULES.md and PROJECT_STATE.md completely.
 4. Read all relevant canonical notes in full: App → APP_NOTES.md; Firmware/hardware → FIRMWARE_NOTES.md + firmware/FIRMWARE_TECHNICAL_REFERENCE.md; OTA → OTA_PROTECTION.md + OTA_REGRESSION_MEMORY.md; Peltier/rail change → VOLTAGE_TRANSITION_MEMORY.md; Build App → BUILD_NOTES.md + workflow; approved visuals → DESIGN_NOTES.md.
 5. Read HANDOVER.md for exact next actions and CHANGELOG.md for history. Do not rely only on remembered chat summaries where repository evidence exists.
 6. At context/chat limit, use Prompt A in CHAT_TRANSFER_PROMPTS.md: read this old transfer fully, reconcile all files with live main, then replace this file once at the end. Do not append another current-state block.
-7. Do not ask the user to repeat a saved decision. Search archives/Git history to recover any missing historical detail, then place the verified detail in its single canonical file with an appropriate current/historical/unverified label. Never guess.
+7. Do not ask the user to repeat a saved decision. Search archives/Git history to recover missing historical detail, then place it in one canonical file with a correct evidence label. Never guess. All three archive documents are forensic-only and their old internal CURRENT lines are not live truth.
+8. Audit every text, Markdown, source, configuration, workflow and test file in the repository. Check every Markdown link and every renamed path/version/workflow/test reference. Read complete relevant files, not just first-line excerpts.
 
 ## 1. Repository checkpoint immediately before this transfer refresh
 
 - Canonical repository: TenzoNkz/JEXFYZ-App, private, branch main.
-- Main HEAD immediately before this transfer write: 783b644c093c705caa99fde5a29b75f541f968a2. This update creates a newer docs-only commit; fetch the actual new HEAD after saving.
+- Main HEAD immediately before this transfer write: 52438b143171c6b7dfac27d928ecc6445bd80061. This snapshot is written last; its resulting commit must have this exact commit as parent. This update creates a newer docs-only commit; fetch the actual new HEAD after saving.
 - Last live open-PR search returned 0. Branches observed: main, fix/adaptive-power-sequencing, diag/latest-stable-v16, diagnostic/v1.6-heap-check, tmp-jexfyz-v5-test. Continue on main by default.
 - Active firmware source: firmware/JEXFYZ-V6.4.ino. FW_VERSION = "V6.4". Source blob: f0dd9d1ebdc7d9d0966384f557efa2e2123df792. Exactly one active versioned .ino was found.
 - Active App source: lib/main.dart, blob 535e396005a3bd1429db3096c627d87043b0e1b4.
 - App package/version: com.horizontalzzz.jexfyz / 1.0.0+3.
 - Android Gradle versionName "Telegram @horizontalzzz" is intentional identity text and must remain unchanged.
-- Test paths: test/v6_4_qc_contract_test.dart; test/firmware_touch_adaptive_sync_test.dart; test/app_protocol_notify_contract_test.dart; test/widget_test.dart. These exist; existence does not mean execution.
-- Active build workflow: .github/workflows/jexfyz-app-build-trigger.yml, blob 7c41358311be195d43f011c1e9a4da98772fcb7d. Re-fetch before any build.
-- Artifact repo TenzoNkz/JEXFYZ-Firmware latest observed HEAD ac6445bd5284c15d0fd66897213d1b6c68a1c729; root contains exactly JEXFYZ.cpp.bin, blob c1a6e1fe84967944d5e0f4ff85c92fbc265e2f88. Notes/README were removed per user instruction. BIN was not changed; provenance matching V6.4 is unverified.
+- Test paths: test/v6_4_qc_contract_test.dart; test/firmware_touch_adaptive_sync_test.dart; test/app_protocol_notify_contract_test.dart; test/widget_test.dart. These exist; existence does not mean execution. All four are still unrun during this memory task.
+- Active build workflow: .github/workflows/jexfyz-app-build-trigger.yml, blob 7c41358311be195d43f011c1e9a4da98772fcb7d. Issue opened/reopened only; exact title JE X FYZ — BUILD APP TRIGGER plus token JEXFYZ_BUILD_TRIGGER_V1; no push/PR trigger. Toolchain Java 17 / Flutter 3.47.2 stable / Gradle 9.3.1; current workflow runs analyze, Flutter tests, one obfuscated signed APK build, certificate verification and release-asset verification. Re-fetch before every authorized build.
+- Artifact repo TenzoNkz/JEXFYZ-Firmware latest observed HEAD ac6445bd5284c15d0fd66897213d1b6c68a1c729; root contains exactly JEXFYZ.cpp.bin, blob c1a6e1fe84967944d5e0f4ff85c92fbc265e2f88, size 1455936 bytes. No README/note/source files exist there. BIN is untouched and provenance matching V6.4 is unverified.
 - Phase: DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED.
-- In this cleanup, assistant did not run Flutter tests/analyze, compile Firmware, build App/APK, create/replace BIN, edit Firebase, flash/OTA hardware or release.
+- This full memory/doc reconciliation did not run Flutter tests/analyze, compile Firmware, build App/APK, create/replace BIN, edit Firebase, flash/OTA hardware or release. Current V6.4 remains source-only and NOT RELEASED.
 
 ## 2. Permanent user commands and authorization limits
 
@@ -93,6 +94,7 @@ TenzoNkz/JEXFYZ-Firmware must contain JEXFYZ.cpp.bin only. Do not re-add a READM
 - Hotside telemetry every second; other state deltas normally only when changed.
 - Persistent settings share a 10-second quiet-period debounce; every new change resets it, then only modified values are stored. Adaptive Profile is runtime-only.
 - Hotside NTC is the universal thermal input.
+- Local OTA boot SoftAP owns the only radio path: current no-client timeout is 10 seconds, hard cap is 60 seconds after AP interaction, Wi-Fi OFF settle is 160 ms before BLE ownership. OTA state/LED timing must be verified from source and must not be inferred from LEDs alone.
 
 ## 6. Current V6.4 voltage-transition contract
 
@@ -116,6 +118,7 @@ Read VOLTAGE_TRANSITION_MEMORY.md completely before any rail/Peltier change.
 - If it doesn't recover, 12 V/9 V steps down one rail; unrecovered 5 V enters a terminal lock requiring manual restart.
 - After thermal step-down, restore upward one rail after 60 continuous seconds stable at/below hotLimit - 1°C, no higher than saved Adaptive ceiling.
 - HOTSIDE is Adaptive default at boot; HOTSIDE_BATTERY is runtime-selectable and not persisted. Missing battery temperature falls back to HOTSIDE behavior without silently changing profile.
+- Phone Battery thresholds currently default to 25°C at 5 V and 35°C at 12 V, with 0.5°C hysteresis and 5-second firmware freshness TTL. App heartbeat is 1 Hz through `je_x_fyz/battery_temp` / `PHONE:BT`, and coalesces pending messages. This does not change NTC’s one-calibrated-sample-per-second requirement.
 - No rapid Hotside slope/rise protection in known V6.x contract.
 - One TTP223 touch sensor; no separate Wi-Fi/BLE toggle. Gesture QC history: ~1,000 ms startup grace, 30 ms qualification, raw HIGH tap 60–500 ms, 800 ms double tap window from first valid release, 5,000 ms long press. Verify live source before changing.
 - Adaptive ON: orange 3 blinks. Adaptive OFF: white 3 blinks; if Adaptive was active, OFF feedback waits until safe 5 V handoff completes.
@@ -134,6 +137,8 @@ Read VOLTAGE_TRANSITION_MEMORY.md completely before any rail/Peltier change.
 - BLE service UUID: 6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001. RX: 6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001. TX: 6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001. Protocol is P1.
 - Firmware telemetry is authoritative; command ACK alone is not proof of physical state.
 - Auto Connect/reconnect respects preference, previously known cooler identity, Bluetooth/permission/location prerequisites and session sync; cancel retries/scans if prerequisites fail and suppress scans during sync.
+- Permanent App UI requirement: do not show a standalone Battery Protection Guard badge/guard state. Keep genuine, independently actionable localized safety/Notify messages; this rule is presentation-only and must not weaken thermal behavior.
+- Pairing intent: one authorized App identity/key-lock relationship per cooler firmware. Treat the exclusive 1:1 enforcement as UNVERIFIED until provisioning/source path and physical pairing behavior are verified; current static source confirms encrypted/bonded writes only.
 - App disconnected/unknown physical outputs show --, not stale ON/OFF.
 - Touch Adaptive-OFF publishes ADAPTIVE, ADAPTIVE_CEILING, FAN, PELTIER, FAN_SPEED telemetry before its ACK.
 - CLOUDOTA TIMEOUT/DISCONNECTED is ambiguous. Preserve recovery state and wait for reconnection/result; only definite rejection while BLE connected permits rollback.
@@ -147,6 +152,7 @@ Read VOLTAGE_TRANSITION_MEMORY.md completely before any rail/Peltier change.
 Read OTA_PROTECTION.md and OTA_REGRESSION_MEMORY.md fully before any OTA change.
 
 - ESP32-C3 has one radio path. Wi-Fi OTA must completely shut OFF and settle before BLE advertising/session resumes.
+- Local OTA Boot SoftAP currently has `BOOT_AP_TIMEOUT_MS=10000`, `BOOT_AP_HARD_LIMIT_MS=60000`, and `WIFI_OFF_SETTLE_MS=160`. No concurrent Wi-Fi/BLE radio ownership; verify current values before any authorized OTA edit.
 - OTA has priority over normal application task. Safe output: Peltier/Fan OFF and selector forced safe at 5 V; retain state-machine indications and recovery.
 - App OTA command sequence: OTAENTER → SSID → PASS → URL → VERSION → CLOUDOTA. Arm expected disconnect/recovery before CLOUDOTA; reconnect and complete P1 sync before delivering final OTA result.
 - Earlier Online OTA experiment added embedded ISRG Root X1 CA/setCACert plus configTime/NTP/TIME_SYNCING 20-second gate. User observed Wi-Fi blue after connect and red failure at the GitHub attempt. No exact serial/HTTP error was supplied, so do not invent it from LED behavior.
@@ -160,6 +166,7 @@ Read OTA_PROTECTION.md and OTA_REGRESSION_MEMORY.md fully before any OTA change.
 ## 10. App Build / release
 
 - App Build and Firmware compile are separate.
+- Latest observed successful App Build run is 38380312823 on `c21e2e52218e7f284ae8536855cf976199566975` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38380312823). It is a real successful run but targets an earlier commit, so it is NOT a fresh build/test certification of this transfer HEAD/source state. The four current test files are present and were not executed by this documentation task.
 - Only workflow: .github/workflows/jexfyz-app-build-trigger.yml.
 - Explicit trigger title: JE X FYZ — BUILD APP TRIGGER.
 - Required body token: JEXFYZ_BUILD_TRIGGER_V1.
@@ -182,17 +189,18 @@ Read DESIGN_NOTES.md before any visual iteration.
 - “Enlarge only” means scale the existing approved design; do not invent or redesign pattern/logo/hole/frame.
 - Preserve transparent 1:1 icon/cooler PNG aspect ratio/transparency.
 
-## 12. Memory cleanup already completed this session
+## 12. Memory cleanup / reconciliation completed
 
-- Replaced README.md with project overview; moved old transfer-template content to CHAT_TRANSFER_PROMPTS.md.
-- Added MEMORY_INDEX.md, DESIGN_NOTES.md and firmware/FIRMWARE_TECHNICAL_REFERENCE.md.
-- Rewrote CHAT_RULES.md, PROJECT_STATE.md, HANDOVER.md, APP_NOTES.md, FIRMWARE_NOTES.md, BUILD_NOTES.md, CHANGELOG.md, OTA_PROTECTION.md, OTA_REGRESSION_MEMORY.md and VOLTAGE_TRANSITION_MEMORY.md to remove duplicate/stale “current” blocks.
-- Retired firmware/FIRMWARE_ANALYSIS.md and preserved the old file in an archive.
-- Renamed test/v5_9_contract_test.dart to test/app_protocol_notify_contract_test.dart because the assertions cover general P1/Notify contracts. Test contents unchanged; not run.
-- Corrected a workflow comment about repository roles, without intentionally changing workflow logic.
-- Preserved verbatim pre-cleanup notes/transfer/history in archive files so historic details are recoverable.
-- Deleted artifact repo README and mirrored OTA/transition notes according to the user's BIN-only rule. Rechecked root contains only JEXFYZ.cpp.bin with the same blob SHA.
-- Docs/test-path tidy only: no functional source code, App package/version, OTA transport, Firebase, BIN, physical device, build or release changed.
+- Canonical memory routing is in `MEMORY_INDEX.md`; the transfer snapshot is only a boot bridge. `PROJECT_STATE.md` is current-only and `CHANGELOG.md` retains labeled history.
+- README navigation, CHAT_RULES, PROJECT_STATE, HANDOVER, APP_NOTES, FIRMWARE_NOTES, BUILD_NOTES, CHANGELOG, firmware technical reference and OTA protection were updated where durable constraints or current evidence boundaries were missing.
+- `APP_NOTES.md` now records the one-second phone Battery heartbeat, firmware 5-second freshness TTL, default Battery zones, no standalone Battery Protection Guard UI, and the one-App/one-cooler pairing-lock intent as unverified implementation.
+- Firmware notes/technical reference/OTA protection now document the boot SoftAP 10-second no-client timeout, 60-second hard limit after interaction and 160 ms Wi-Fi-off settle before BLE radio ownership.
+- `CHAT_TRANSFER_PROMPTS.md` is expanded to include complete tree and cross-reference audit rules plus a JE X FYZ durable-decision catalogue across hardware, thermal/Adaptive, App UI/BLE/P1, OTA/build and grille design. It preserves rejected approaches and evidence caveats.
+- The retired `firmware/FIRMWARE_ANALYSIS.md` remains archived; current code-level reference is `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`.
+- The old `test/v5_9_contract_test.dart` was already renamed to `test/app_protocol_notify_contract_test.dart`; contents unchanged, not run.
+- Three dated `archive/LEGACY_*.md` snapshots remain untouched for forensic recovery; do not copy their old CURRENT/ACTIVE blocks into current notes.
+- Artifact repo was checked at the end of this pass and contains only `JEXFYZ.cpp.bin`; this task did not touch its content/blob. App repo remains sole location for all documentation.
+- No functional code changed in this reconciliation. No test/analyze, App Build, Firmware compile, BIN generation/publication, Firebase edit, flash/OTA or release was performed.
 
 ## 13. Historical version pointer — old history is not current
 
@@ -209,18 +217,18 @@ Read DESIGN_NOTES.md before any visual iteration.
 
 ## 14. Exact open validation queue
 
-1. User compiles V6.4 in ArduinoDroid with Arduino-ESP32 Core 3.3.7; retain actual build log and confirm FW_VERSION.
-2. Verify whether JEXFYZ.cpp.bin provenance matches V6.4 before publishing/using it.
-3. Physical Manual Volt and Adaptive change during active ramp: expect 0% PWM, 200 ms deadtime, one-second settle, fresh five-second ramp.
-4. Repeat after ramp complete: expect uninterrupted 100% PWM across transition unless OFF/safety.
-5. Verify Peltier OFF, Hotside/NTC protection and OTA safe-output all cancel pending ramp resume.
-6. Check single NTC sample/sec and fault failsafe, manual latch/re-arm, Adaptive 30-second thermal window, 60-second restore and terminal 5V lock.
-7. Check touch telemetry, orange/white 3-blink effect, voltage LED map and App authoritative physical state.
-8. If authorized, run Flutter test/analyze and record output. Contracts existing is not a pass.
-9. Physical-check encrypted/bonded P1 pairing/reconnect and complete Wi-Fi OFF before BLE advertises.
-10. Verify Local OTA; separately test Online OTA download, Update completion, reboot, BLE recovery/P1 sync and installed version.
-11. App Build only after explicit Build App command.
-12. Release only after source/BIN provenance, software and hardware/OTA gates and separate approval.
+1. User compiles active V6.4 in ArduinoDroid with Arduino-ESP32 Core 3.3.7; keep the actual log and confirm firmware version.
+2. Establish whether the artifact BIN provenance matches V6.4 before any publication/OTA. Current BIN path/size/hash are known; matching source provenance is not.
+3. Physical Manual Volt and Adaptive transition while the 5-second ramp is active: expect 0% PWM, selector 200 ms deadtime, one-second settle, then a new full 5-second ramp.
+4. Repeat after the ramp completes: expect uninterrupted 100% PWM unless explicit OFF/safety.
+5. Verify Peltier-OFF/safety cancellation; Hotside latch/re-arm and 30/60-second Adaptive behavior; NTC fault failsafe; no multi-sample NTC filter.
+6. Verify phone Battery heartbeat/freshness fallback and the App display rule (no standalone Battery Protection Guard). One-App-only pairing-lock remains unverified; test only if user authorizes that scope.
+7. Check touch telemetry, orange/white three-blink effects, default voltage LED map and App-authoritative physical-state display.
+8. If authorized, run Flutter tests/analyze and record exact run/log. The source contracts exist but were not run in this cleanup.
+9. Hardware-check BLE/P1 pairing/reconnect and radio handoff: Wi-Fi fully OFF plus 160 ms settle before BLE ownership; no concurrent Wi-Fi/BLE ownership.
+10. Validate Local OTA. Separately verify Online OTA GET, body length/image check, Update completion, restart, BLE/P1 recovery and installed version. Blue/red LEDs alone are insufficient error diagnosis.
+11. App Build only after explicit Build App command; use current workflow and report its run head SHA.
+12. Release/BIN/Firebase promotion only after source/BIN provenance, software and hardware/OTA gates, plus separate authorization.
 
 ## 15. Evidence labels and don't guess
 
@@ -236,47 +244,60 @@ Never equate test file with passing run; compile with full OTA installation; blu
 
 ## 16. Last-observed blob fingerprints
 
-The following were fetched at main HEAD 783b644c093c705caa99fde5a29b75f541f968a2 immediately before this transfer replacement. They are a record of that checkpoint, not timeless truth. Re-fetch after this commit.
+All hashes below are from live `main` at HEAD `52438b143171c6b7dfac27d928ecc6445bd80061` immediately before this transfer snapshot write. They fingerprint that checkpoint; re-fetch before later work. This file’s own blob SHA is intentionally omitted because it does not exist until this replacement is committed.
 
-Documents:
-- README.md: 0750ef1918c14390f62a18d0acec93039a9356f0
-- MEMORY_INDEX.md: 7024f9524a5d46e22ceafe7292827c5726e0fee4
-- CHAT_RULES.md: 0527cc02d6f07c422a7ded7776f0e655976bef4a
-- PROJECT_STATE.md: 8559bd8c6c597d75c2f7189e5a77be4eac5cdbac
-- CHAT_TRANSFER_PROMPTS.md: 5680d7ea049d1bfb39576222f09f2ec25e2041bb
-- HANDOVER.md: 155f0e55804cb45f54409b6773eb59a9c4b3e409
-- APP_NOTES.md: b6b2237562b7e15062a6a9e0e8b7f8d0756299d7
-- FIRMWARE_NOTES.md: 8714c5450175e9a32c36d954e07d8b7b18caf232
-- BUILD_NOTES.md: a114ab67bb71c49bcfa607046678b13fafba18c1
-- CHANGELOG.md: bb3bc8893fc81b6ef5ef923c0a0e50db487ba877
-- DESIGN_NOTES.md: e04382659dfdd618de0a156046f140452d275dc7
-- OTA_PROTECTION.md: b1b8efa5a9e0850da4a2f5efe88308dec7625a3f
-- OTA_REGRESSION_MEMORY.md: e1e1fe88b65843d9626ea63aab018607e69b454f
-- VOLTAGE_TRANSITION_MEMORY.md: b73cea92704d4949093136ad6287ad11f0bf9267
-- firmware/FIRMWARE_TECHNICAL_REFERENCE.md: 181e6e7b82994bb239bc931b42811bdf9bddaef4
-- workflow .github/workflows/jexfyz-app-build-trigger.yml: 7c41358311be195d43f011c1e9a4da98772fcb7d
-- .gitignore: a51c5ad7dabd81d6a7e42181fa7d5c3a25bdac15
-- pubspec.yaml: 8f558273e21692af9958f914527fdc62d623d63a
-- pubspec.lock: 1e92812bfda2c28244a0556d71d1ec94084acc66
+Canonical memory docs:
+- `README.md`: `8881b20dec2a7ea916b6d45e487156927516cd88`
+- `MEMORY_INDEX.md`: `b738806db407cf24b939a8a3966589c03f679a8a`
+- `CHAT_RULES.md`: `947ceaa6dd93972f45ce40f9e4b548fe10274e22`
+- `PROJECT_STATE.md`: `447ea4af886d9e250c35f6eb20be9eff0d6f67f3`
+- `CHAT_TRANSFER_PROMPTS.md`: `694c9c6ec6b6f7bea186a75641dbf3a8ce222831`
+- `HANDOVER.md`: `ce213dbbdb3151e12d0e627f885c64773f0947a6`
+- `APP_NOTES.md`: `fb240cdfff4151ac896e63c8121543c2cabef489`
+- `FIRMWARE_NOTES.md`: `019bdb521087f3e1775d9c107d071d83c560ad3b`
+- `BUILD_NOTES.md`: `7627218cc6d2a3b3585ef63057b4eab9856fe916`
+- `CHANGELOG.md`: `6e716b6d98b1b740ad0348fcd88bd63ce14092b4`
+- `DESIGN_NOTES.md`: `e04382659dfdd618de0a156046f140452d275dc7`
+- `OTA_PROTECTION.md`: `370fe25e6c9632f5ffe14ff27e4a61b35d30de45`
+- `OTA_REGRESSION_MEMORY.md`: `e1e1fe88b65843d9626ea63aab018607e69b454f`
+- `VOLTAGE_TRANSITION_MEMORY.md`: `b73cea92704d4949093136ad6287ad11f0bf9267`
+- `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `389e873ab68ee7c041b5b25378010be4c1ff739b`
 
-Sources/tests/config:
-- lib/main.dart: 535e396005a3bd1429db3096c627d87043b0e1b4
-- lib/app_settings.dart: 0c29bed46b746c1171f61ee7b095c724474a5e6b
-- lib/floating_monitor.dart: cfc21b3dc198b925786aa98658d647b1d8a3637b
-- lib/jex_animated_glyph.dart: c9c5c2802cb0ed363c042620511148b0d58d36c4
-- firmware/JEXFYZ-V6.4.ino: f0dd9d1ebdc7d9d0966384f557efa2e2123df792
-- test/v6_4_qc_contract_test.dart: f071c9642c1a06726d25b8c26a814845b02a55d6
-- test/firmware_touch_adaptive_sync_test.dart: a8df6ca2be18c3b7ed9c25e5c148f0d5056556d5
-- test/app_protocol_notify_contract_test.dart: 92214dd90178c705844d3979d3f8f7bd17bcc4b8
-- test/widget_test.dart: 3dc6ffaa5dac21db016bf7d7c86875036a902200
-- android/app/build.gradle: d8681cb73156b61da7749633abd63e2fb8c287ba
-- Android Manifest: d82504cee09092d304d8edc98272ddd0b4732519
-- MainActivity.kt: eeb135ef34b1d415196b86e6ffe1ac39d7bda5e2
-- JeForegroundService.kt: 437655add9f12631570614314eef1db1fd9c4005
-- FloatingMonitorService.kt: 628aa4d06591b7e2c6e725cb6bc9a582063b025d
-- android/app/google-services.json: f3ed065a7ee56b2a44f0a943a48fa578ba72e0d7; never display configuration data in chat.
-- assets/jexfyzicon.png + Android icon: bad855f23416fd58aff194c30b7f8fd77f260ea8
-- assets/jexfyzcooler.png: fbc47e3197534ae35330c1f1793c99705e5165d1
+Workflow, packages, active source and tests:
+- `.github/workflows/jexfyz-app-build-trigger.yml`: `7c41358311be195d43f011c1e9a4da98772fcb7d`
+- `.gitignore`: `a51c5ad7dabd81d6a7e42181fa7d5c3a25bdac15`
+- `pubspec.yaml`: `8f558273e21692af9958f914527fdc62d623d63a`
+- `pubspec.lock`: `1e92812bfda2c28244a0556d71d1ec94084acc66`
+- `lib/main.dart`: `535e396005a3bd1429db3096c627d87043b0e1b4`
+- `lib/app_settings.dart`: `0c29bed46b746c1171f61ee7b095c724474a5e6b`
+- `lib/floating_monitor.dart`: `cfc21b3dc198b925786aa98658d647b1d8a3637b`
+- `lib/jex_animated_glyph.dart`: `c9c5c2802cb0ed363c042620511148b0d58d36c4`
+- `firmware/JEXFYZ-V6.4.ino`: `f0dd9d1ebdc7d9d0966384f557efa2e2123df792`
+- `test/v6_4_qc_contract_test.dart`: `f071c9642c1a06726d25b8c26a814845b02a55d6`
+- `test/firmware_touch_adaptive_sync_test.dart`: `a8df6ca2be18c3b7ed9c25e5c148f0d5056556d5`
+- `test/app_protocol_notify_contract_test.dart`: `92214dd90178c705844d3979d3f8f7bd17bcc4b8`
+- `test/widget_test.dart`: `3dc6ffaa5dac21db016bf7d7c86875036a902200`
+
+Android config, native source and visual assets:
+- `android/app/build.gradle`: `d8681cb73156b61da7749633abd63e2fb8c287ba`
+- `android/app/src/main/AndroidManifest.xml`: `d82504cee09092d304d8edc98272ddd0b4732519`
+- `android/app/proguard-rules.pro`: `50fc26f726ae8660fe04cf19da688431c8dca4a0`
+- `android/build.gradle`: `ca11c0f28728b40577d25490811bcc2c8d05ca24`
+- `android/settings.gradle`: `14545695cc9aba5912393ec293c284ee60d9ec10`
+- `android/gradle.properties`: `13564f62c79279ecfd4fe0a8a247a4d2a4b11451`
+- `android/app/google-services.json`: `f3ed065a7ee56b2a44f0a943a48fa578ba72e0d7`
+- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt`: `eeb135ef34b1d415196b86e6ffe1ac39d7bda5e2`
+- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JeForegroundService.kt`: `437655add9f12631570614314eef1db1fd9c4005`
+- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt`: `628aa4d06591b7e2c6e725cb6bc9a582063b025d`
+- `assets/jexfyzicon.png`: `bad855f23416fd58aff194c30b7f8fd77f260ea8`
+- `assets/jexfyzcooler.png`: `fbc47e3197534ae35330c1f1793c99705e5165d1`
+- `android/app/src/main/res/drawable-nodpi/jexfyzicon.png`: `bad855f23416fd58aff194c30b7f8fd77f260ea8`
+
+Forensic-only archives:
+- `archive/LEGACY_NOTES_SNAPSHOT_2026-10-14.md`: `65ece82c5e8a07908accb4a81bd4c80e469b55de`
+- `archive/LEGACY_TRANSFER_HISTORY_2026-10-14.md`: `0438b7006d437d2c24d9e76d6aca7352ad5b0b2b`
+- `archive/ARTIFACT_REPO_NOTES_PRE_BIN_ONLY_2026-10-14.md`: `10fab755affdbb8e29727390ad187fcb4bf6817d`
+
 
 ## 17. Final rule for the next chat
 
