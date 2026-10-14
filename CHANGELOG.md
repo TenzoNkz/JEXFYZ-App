@@ -12,7 +12,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 
 ## 2026-10-14 — Smooth motion, crystal Peltier, JE notification and dialog sizing
 
-- Fan voltage changes now update rotation duration without resetting angular phase; Fan OFF coasts forward to a retained pose. Peltier frost intensity/particle count interpolate over 420 ms across voltage classes, fade in over 360 ms on ON and out over 520 ms on OFF; periodic crystal drift avoids loop-boundary jumps.
+- Fan voltage changes now update rotation duration without resetting angular phase; the controller travels smoothly to an equivalent full-turn boundary before continuing at the new speed, and Fan OFF coasts forward to a retained pose. Peltier frost intensity/particle count interpolate over 420 ms across voltage classes, fade in over 360 ms on ON and out over 520 ms on OFF; crystal branches, particles and center fade fully, periodic drift avoids loop-boundary jumps, while the thermoelectric frame remains visible.
 - Replaced the flower-like Peltier icon with a framed thermoelectric module and six-branched geometric frost crystal.
 - Increased Color Picker title/selected-color/Cancel text and swatch height; increased Peltier Safety title/body/action typography, spacing and minimum touch targets. Palette colors and mandatory Fan-before-Peltier safety gate are unchanged.
 - Android notifications now use a bold white `JE` vector monogram with transparent background as the sole small icon; no large icon is set, and the full-color app icon remains unchanged.
