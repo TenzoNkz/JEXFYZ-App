@@ -3,7 +3,7 @@
 Last reconciled: 2026-10-14 (Asia/Jakarta).
 Canonical source: `firmware/JEXFYZ-V6.6.ino` (last observed blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`).
 Static regression contract: `test/v6_6_qc_contract_test.dart` (live blob `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a` at this checkpoint; tests were not executed).
-Validation state: source-only. Firmware compile, Flutter test execution, physical reproduction, current measurement and thermal/OTA regression remain unverified.
+Validation state: user-reported successful V6.6 compile and Online OTA update; compile log, installed version and source-to-BIN provenance were not independently checked in this execution. Flutter tests, physical transition reproduction, current measurement and thermal/OTA regression remain unverified.
 
 ## Incident
 
@@ -40,7 +40,7 @@ The static test contract exists but was **not executed** as part of this memory 
 
 ## Hardware validation plan
 
-1. Compile the V6.6 source yourself with ArduinoDroid + Arduino-ESP32 Core 3.3.7.
+1. Preserve the user's report that V6.6 compiled with ArduinoDroid + Arduino-ESP32 Core 3.3.7; confirm the actual compile log and source-to-BIN version provenance before publication/OTA. Do not recompile solely for App-only UI edits.
 2. Manual Volt: during an active ramp, switch rail and confirm 0% → 200 ms selector deadtime → existing 1-second settle → fresh 5-second ramp.
 3. Manual Volt: after ramp reaches 100%, switch rail and confirm Peltier remains continuously active at 100%; no forced pause or extra ramp.
 4. Adaptive ON and OFF: repeat during active soft-start (0% pause, 200 ms deadtime, 1-second settle, fresh 5-second ramp) and after ramp completion (continuous 100%); confirm no additional Adaptive-specific OFF/ON cycle under normal conditions.
