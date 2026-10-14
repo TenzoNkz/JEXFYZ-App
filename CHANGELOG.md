@@ -3,6 +3,16 @@
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
 
+## 2026-10-14 — Fan coast-down, static Peltier crystal, natural Fan Speed gauge
+
+- Fan now eases through a short period-dependent coast-down when turned OFF, then holds its final rotor pose. Blade and hub colours are unchanged by OFF; the animation stops without dimming the icon.
+- Removed the square Peltier module frame, center box and corner bolts. The six-branched frost crystal and particles remain visible at full icon colour while OFF; its animation is frozen rather than faded out. Voltage-class intensity/particle interpolation remains active only as applicable while Peltier is ON.
+- Fan Speed keeps the reported percentage stable while ON and adds a subtle two-frequency needle wobble. On OFF, the pointer smoothly returns to zero over 520 ms, then rests without wobble; gauge, pointer and hub stay fully coloured.
+- Updated `test/widget_test.dart` source-contracts for phase-preserving Fan changes/coast-down, no-box/no-fade Peltier artwork, full-colour Fan blade/hub and Speed needle wobble/stop. Static source consistency checks passed; Flutter tests/analyze and device rendering were NOT run after these edits.
+- App-only presentation change. No Firmware source, BLE protocol, safety logic, BIN/Firebase, App Build, OTA, flash or release operation changed.
+
+
+
 ## 2026-10-14 — APK signature verification hardening / Firmware V6.6 user acceptance
 
 - Investigated the user's MT Manager screenshot showing `Signature: Verified failed`. The latest successful App Build before this fix was run `38556896542` on commit `67c5d26723c433b4af856c7759a967a3425bf67a`; its log reported V1=false, V2=true and V3=true while the workflow accepted the build because it relied on `jarsigner`'s `jar verified.` text and did not require `apksigner` V1=true.
