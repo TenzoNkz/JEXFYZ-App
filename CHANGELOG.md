@@ -2,6 +2,15 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
+## 2026-10-14 — Notification monogram, LED contrast, anchored menus and status-icon motion
+
+- Replaced the notification's X vector with a simplified monochrome JE X FYZ monogram and removed `setLargeIcon`; the notification builder now provides one logo on the left only. Launcher artwork, notification title/body, tap intent and service messages remain unchanged.
+- Updated LED preview so Static/Rainbow remain fully vivid independently of hardware Brightness, while truly inactive Comet/Dual Chase pixels use a pale neutral baseline. Animation phase and physical firmware commands are unchanged.
+- Kept Color Picker and Peltier Safety as separate dismissible menus but anchored each below the dashboard/display-tab region. Localized Cancel / Turn On Fan and the mandatory Fan-before-Peltier safety gate remain.
+- Replaced the dashboard indicator painter with per-kind filled forms, soft layered glows, smooth orbit/rotor motion and slower distinct cycles for Battery, Hotside, Voltage, Adaptive, Peltier, Fan and Fan Speed. This is App-only presentation.
+- Added/updated widget contracts for preview colour behaviour, menu anchoring, indicator timing and single-logo notifications.
+- Static source transformation checks passed. Flutter test/analyze and APK build were not run (Flutter/Dart SDK unavailable here); Android OEM rendering, current-source installation and physical UI appearance remain unverified. No firmware/BIN/Firebase/OTA/device/release operation occurred.
+
 ## 2026-10-14 — Chat-limit reconciliation and test-contract cleanup
 
 - Audited the latest non-truncated main tree and canonical notes; preserved the current source-only V6.6/NOT RELEASED boundary and the artifact repository BIN-only rule.

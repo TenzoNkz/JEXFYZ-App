@@ -4,20 +4,12 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Build
 
-// Android status-bar small icons are monochrome masks. Use the dedicated X glyph there
-// and the original full-color JE X FYZ launcher image as the large icon.
+// The monochrome JE X FYZ monogram is the sole notification icon. Intentionally no large icon.
+@Suppress("UNUSED_PARAMETER")
 internal fun Notification.Builder.setJexNotificationBranding(context: Context): Notification.Builder {
     setSmallIcon(R.drawable.ic_notification)
-    val source = BitmapFactory.decodeResource(context.resources, R.drawable.jexfyzicon)
-    if (source != null) {
-        val scaled = Bitmap.createScaledBitmap(source, 96, 96, true)
-        setLargeIcon(scaled)
-        if (scaled !== source) source.recycle()
-    }
     return this
 }
 

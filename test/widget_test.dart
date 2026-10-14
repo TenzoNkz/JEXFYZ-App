@@ -337,8 +337,54 @@ void main() {
     expect(red.red, 255);
     expect(red.green, 23);
     expect(red.blue, 68);
-    expect(ledPreviewPixelOpacity(level: 1), 1.0);
-    expect(ledPreviewPixelOpacity(level: 0), closeTo(.72, .001));
+    expect(ledPreviewPixelOpacity(mode: 1, level: 1, active: true), 1.0);
+    expect(ledPreviewPixelOpacity(mode: 1, level: 0, active: true), 1.0);
+    expect(ledPreviewPixelOpacity(mode: 7, level: .2, active: true), 1.0);
+  });
+
+  test('Patterned LED preview uses a pale baseline for truly inactive pixels', () {
+    final red = ledPaletteColor('#FF1744');
+    final inactiveComet = ledPreviewPixelColor(
+      mode: 4,
+      level: 0,
+      animatedColor: red,
+      active: true,
+      darkTheme: true,
+    );
+    final activeComet = ledPreviewPixelColor(
+      mode: 4,
+      level: 1,
+      animatedColor: red,
+      active: true,
+      darkTheme: true,
+    );
+    final poweredOff = ledPreviewPixelColor(
+      mode: 1,
+      level: 1,
+      animatedColor: red,
+      active: false,
+      darkTheme: true,
+    );
+
+    expect(inactiveComet, const Color(0xFFCDD4DF));
+    expect(activeComet, red);
+    expect(poweredOff, const Color(0xFFCDD4DF));
+    expect(ledPreviewPixelOpacity(mode: 4, level: 0, active: true), 1.0);
+  });
+
+  test('Display menus anchor to the display area on normal and short screens', () {
+    expect(displayMenuOverlayTop(screenWidth: 360, availableHeight: 900), 492.0);
+    expect(displayMenuOverlayTop(screenWidth: 360, availableHeight: 400), 256.0);
+  });
+
+  test('Dashboard indicators use distinct, slower motion cycles', () {
+    expect(jexIconAnimationDuration(JexAnimatedIconKind.battery), const Duration(milliseconds: 2600));
+    expect(jexIconAnimationDuration(JexAnimatedIconKind.hotside), const Duration(milliseconds: 3200));
+    expect(jexIconAnimationDuration(JexAnimatedIconKind.voltage), const Duration(milliseconds: 1900));
+    expect(jexIconAnimationDuration(JexAnimatedIconKind.adaptive), const Duration(milliseconds: 4600));
+    expect(jexIconAnimationDuration(JexAnimatedIconKind.peltier), const Duration(milliseconds: 3000));
+    expect(jexIconAnimationDuration(JexAnimatedIconKind.fan), const Duration(milliseconds: 1450));
+    expect(jexIconAnimationDuration(JexAnimatedIconKind.speed), const Duration(milliseconds: 1800));
   });
 
   test('LED color palette has 36 hue-ordered presets with localized names', () {
@@ -354,14 +400,17 @@ void main() {
     expect(ledColorPalette, isNot(contains('#000000')));
   });
 
-  test('LED UI source exposes centered picker and OFF menu fallback', () {
+  test('LED UI keeps its own color menu anchored to the display region', () {
     final source = File('lib/main.dart').readAsStringSync();
     expect(source, contains('widget.modeName.toUpperCase()'));
     expect(source, isNot(contains('widget.modeNumber')));
     expect(source, contains('ledColorDisplayName(rgbColor, lang)'));
     expect(source, contains("stateKnown ? JexText.of(value ? 'on' : 'off', lang) : JexText.of('off', lang)"));
     expect(source, contains('final displayedValue = stateKnown && value;'));
+    expect(source, contains('displayMenuOverlayTop('));
+    expect(source, contains('colors: ledColorPresets'));
     expect(source, contains('constraints: const BoxConstraints(maxWidth: 420)'));
+    expect(source, contains('showGeneralDialog<void>'));
   });
 
   test('LED preview exposes the physical 4-left/4-right pixel map', () {
@@ -433,7 +482,9 @@ void main() {
     expect(activity, contains('jexNotificationContentIntent(this, id)'));
     expect(activity, contains('requestNotificationPermission()'));
     expect(helper, contains('R.drawable.ic_notification'));
-    expect(helper, contains('R.drawable.jexfyzicon'));
+    expect(helper, isNot(contains('R.drawable.jexfyzicon')));
+    expect(helper, isNot(contains('setLargeIcon')));
+    expect(icon, contains('JE X FYZ monogram'));
     expect(bleService, contains('Bluetooth connected · cooler session active'));
     expect(bleService, contains('Bluetooth terhubung · sesi cooler aktif'));
     expect(floatingService, contains('Floating Monitor active'));

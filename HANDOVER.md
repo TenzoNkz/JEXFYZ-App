@@ -5,9 +5,9 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). Re-fetch live `main` and source hash
 ## Current state
 
 - Active Firmware source: `firmware/JEXFYZ-V6.6.ino`; `FW_VERSION = "V6.6"`; source blob observed at last reconciliation: `f51ba6db5d0e91318f63fea4014bb87f7bf76222`.
-- Active App source: `lib/main.dart`, current blob `c0567d4652ba5b84ce82b2d382916754cd73d861`, pubspec version `1.0.0+3`, package `com.horizontalzzz.jexfyz`.
+- Active App source: `lib/main.dart`, current blob `6012d2e2d60dcbf2c5a816c78e63edbfb04b44c2`, pubspec version `1.0.0+3`, package `com.horizontalzzz.jexfyz`.
 - Current Firmware status: source-only DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED. V6.6 not independently compiled/hardware validated here.
-- Main V6.6 QC contract: `test/v6_6_qc_contract_test.dart`. The current UI/notification execution updated `test/widget_test.dart` and `test/v6_6_qc_contract_test.dart`, but these tests have NOT been run.
+- Main V6.6 QC contract: `test/v6_6_qc_contract_test.dart`. This UI/notification execution updated `test/widget_test.dart` (`9c18e801b242ba3bdfd68a414407d778461b83a4`); Flutter tests and analyze have NOT run.
 - Latest observed successful App Build run: `38520146994` on commit `1024eb8e145429913aacb52f4cf352e087885d44`; it predates the LED UI/notification source changes and does not validate current source. The exact current test list and run evidence are refreshed in `CHAT_TRANSFER.md`.
 - Open PR search last returned zero. Verify live; use main by default.
 - Artifact repository `TenzoNkz/JEXFYZ-Firmware` is intended to contain only `JEXFYZ.cpp.bin`; all notes belong in this repo.
@@ -27,7 +27,7 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). Re-fetch live `main` and source hash
 2. Pair App and Firmware V6.6 and test Static, Breath, Comet, Dual Chase, Left ↔ Right and Rainbow in order. Confirm Mirror Pulse is absent and ID 3 is migrated/rejected.
 3. Verify LED_SYNC on initial sync, mode switch, RGB ON/OFF and periodic updates; inspect lag/jumps under BLE traffic.
 4. Check saturated colors at 1%, 10%, 46% and 100% brightness, and confirm the one-row preview fits narrow screens: left arrow → four left LEDs → centered localized mode name only (no numeric index) → four right LEDs → right arrow.
-5. Run Flutter tests/analyze if authorized and available. Check disconnected CONTROL/ADAPTIVE/LED toggles are OFF-looking, disabled and knob-left while dashboard/Floating Monitor still show unknown `--`. Validate notification icon, title/body, tap intent and permission request on Android 13+ and older supported Android. Physical LED timing and firmware compile remain separate gates.
+5. Run Flutter tests/analyze when a Flutter SDK/runner is available. Check disconnected CONTROL/ADAPTIVE/LED toggles remain OFF-looking, disabled and knob-left while dashboard/Floating Monitor show unknown `--`. Validate the single JE X FYZ notification monogram (no right-side large icon), title/body/tap intent and permission request on Android 13+ and older supported Android. Physically inspect the seven smooth Home indicator animations, pale inactive Comet/Dual Chase pixels, full-colour Static/Rainbow preview at low hardware Brightness, and display-anchored Color/Peltier Safety menus. Firmware compile and physical LED behavior remain separate gates.
 
 6. With hardware, reproduce Manual Volt and Adaptive voltage changes while the 5-second soft-start is still active. Expected: GPIO5 PWM 0% during selector handoff, preserve 200 ms deadtime, hold through 1-second settle, then start a fresh 5-second ramp. Adaptive ON/OFF must not introduce a separate Peltier OFF cycle. Capture reset reason if reboot recurs.
 7. Repeat after soft-start completes, including Adaptive ON and OFF. Expected: Peltier PWM remains 100% continuously throughout rail transition unless explicit OFF or safety shuts it down; no Adaptive-specific OFF/ON cycle.
@@ -47,3 +47,11 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). Re-fetch live `main` and source hash
 ## Reference routing
 
 Use `MEMORY_INDEX.md` to find canonical notes. Use `CHANGELOG.md` for history only. Never copy old V5.x/V6.1/V6.2 status blocks forward as current truth. The complete cross-chat startup and memory-reconciliation procedure is in `CHAT_TRANSFER_PROMPTS.md`.
+
+ 
+## Latest UI change-set boundary (2026-10-14)
+
+- Source updates: `lib/main.dart` (6012d2e2d60dcbf2c5a816c78e63edbfb04b44c2), `JexNotificationUtils.kt` (4156c17ffa9f871586f01a89dd507664cac81ba9), `drawable/ic_notification.xml` (787d1ccfaf758af4cc3f1be5cc4fa4d01a8ada3d), and `test/widget_test.dart` (9c18e801b242ba3bdfd68a414407d778461b83a4).
+- Dashboard status icons now use per-kind filled vector shapes, soft glows and natural motion cycles. Menu/palette and notification changes are presentation-only; firmware/protocol/control behavior remains unchanged.
+- Color and Peltier Safety remain distinct overlays but are anchored to the display-menu region. Notification branding uses one monochrome JE monogram at left only.
+- Flutter tests/analyze were not run in this execution (Flutter/Dart SDK unavailable); no App Build, firmware compile, BIN/Firebase change, OTA/flash, physical-device QC or release operation occurred. The user's report of successful installation refers to an earlier app build.

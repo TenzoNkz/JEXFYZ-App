@@ -49,7 +49,7 @@ This file is the durable App behavior/design contract. Live `lib/` source and th
 
 ## Android notifications and icons
 
-- Android notification small icons use a dedicated monochrome X vector at `android/app/src/main/res/drawable/ic_notification.xml`, not the full-color launcher PNG. The full JE X FYZ icon is used as the notification large icon.
+- Android notification small icons use a dedicated monochrome JE X FYZ monogram vector at `android/app/src/main/res/drawable/ic_notification.xml`. This is the sole notification icon: do not set a large icon or display a second logo on the right. Launcher artwork itself remains unchanged.
 - User notifications use `JE X FYZ` as the content title and the localized event/status as the body; connected/disconnected notifications must not reverse these fields. Tapping opens JE Cooler.
 - The BLE foreground-service notification has a meaningful localized connected-session body rather than an empty string. Floating Monitor uses the same branded icon and a non-empty service description.
 - When Android 13+ notification permission is absent, the first real notification attempt requests permission instead of silently dropping every alert. The actual display remains subject to user choice and Android/OEM behavior.
@@ -75,7 +75,7 @@ This file is the durable App behavior/design contract. Live `lib/` source and th
 - The App interpolates the phase from a monotonic local clock and adjusts drift at later snapshots; a phase update must not restart the animation controller. Separate `LED_PHASE` and `LED_CYCLE_MS` handling remains a compatibility fallback for older V6.x firmware.
 - Preview pixel order follows the physical strip: right top→bottom indices 0–3, left bottom→top indices 4–7. The compact layout is left arrow, four left LEDs, centered localized mode name only (no numeric index), four right LEDs, right arrow.
 - LED-column backgrounds are slightly darker for contrast. Preview pixel visibility/glow is independent of the hardware Brightness slider, so colors stay vivid even at low hardware brightness; animation levels still distinguish the active mode. This does not change brightness commands or physical Firmware rendering.
-- The centered responsive Color Picker offers 36 curated hue-ordered presets without HEX labels. Names are localized (for example Candy Red / Merah Permen, Chocolate / Cokelat, Cyan / Sian, White / Putih); HEX values remain internal to the COLOR protocol command. Previously stored colors from older palette versions retain localized legacy aliases (including the exact Cyan value #00FFFF). Brightness remains the single intensity control.
+- The separate responsive Color Picker offers 36 curated hue-ordered presets without HEX labels. It remains its own dismissible menu but is anchored below the dashboard/display tabs, not centered over the Home dashboard; short screens retain scrolling. Names are localized (for example Candy Red / Merah Permen, Chocolate / Cokelat, Cyan / Sian, White / Putih); HEX values remain internal to the COLOR protocol command. Previously stored colors from older palette versions retain localized legacy aliases (including the exact Cyan value #00FFFF). Brightness remains the single intensity control.
 - Firmware migrates saved mode ID 3/invalid values to Static and rejects new MODE:3 commands. On older firmware that still reports ID 3, the App labels the mode Unsupported rather than rendering Mirror Pulse; the user can select a supported mode.
 - Firmware safety/OTA indicators continue to override decorative RGB effects.
 - Do not change settings storage or defaults without a scoped task and regression review.
@@ -92,3 +92,11 @@ This file is the durable App behavior/design contract. Live `lib/` source and th
 ## Current App QC boundary
 
 At the last reconciliation, source changes and static contract tests existed for BLE rediscovery cancellation, ambiguous OTA ACK, touch Adaptive-OFF telemetry, and voltage-transition telemetry handling. The latest test/analyze status must be checked live; these docs do not claim tests ran. App Build is separately authorized and does not validate Firmware compile, BIN, OTA, or physical cooling behavior.
+
+## Dashboard indicator motion
+
+- The seven Home indicators (Battery Temperature, Hotside Temperature, Voltage, Adaptive, Peltier, Fan and Fan Speed) use distinct custom Canvas artwork with layered fills, soft glows and smoother per-icon motion rather than a shared line-pulse treatment.
+- Motion is gated by connected/authoritative state. Unknown/offline dashboard telemetry remains `--`; Fan/Peltier/Adaptive do not animate as active when their reported state is OFF. Generic navigation/action glyphs remain static.
+- Fan motion uses a filled, smoothly rotating three-blade rotor; Fan Speed uses a gauge/needle; Adaptive uses a soft orbit; thermal, voltage and cooling indicators each have distinct motion. This is App-only presentation and does not change firmware, BLE protocol, control behavior or physical LED indicators.
+- In LED preview, Static and Rainbow retain full-colour cores independently of hardware Brightness. Comet and Dual Chase display truly inactive pixels as pale neutral white-gray while illuminated pixels keep the selected colour and animation/glow follows the mode phase. Turning the LED preview off/disconnected also shows a subdued neutral baseline.
+- Color Picker and Peltier Safety remain separate menus, but both overlays are positioned relative to Home/dashboard height and begin in the display-menu region. Peltier Safety's localized Cancel / Turn On Fan actions and mandatory Fan-before-Peltier check remain intact.
