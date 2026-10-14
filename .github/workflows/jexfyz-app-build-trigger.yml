@@ -265,6 +265,7 @@ jobs:
             --ks-key-alias "$ANDROID_KEY_ALIAS" \
             --ks-pass env:ANDROID_KEYSTORE_PASSWORD \
             --key-pass env:ANDROID_KEY_PASSWORD \
+            --min-sdk-version 23 \
             --v1-signing-enabled true \
             --v2-signing-enabled true \
             --v3-signing-enabled true \
@@ -286,8 +287,10 @@ jobs:
             exit 1
           fi
 
-          SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --verbose --print-certs "$APK" 2>&1)"
+          # Verify V1 compatibility below API 24 plus modern V2/V3; manifest minSdk remains API 24.
+          SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --min-sdk-version 23 --verbose --print-certs "$APK" 2>&1)"
           printf '%s\n' "$SIGNATURE_OUTPUT"
+          grep -Fq "Verified using v1 scheme (JAR signing): true" <<< "$SIGNATURE_OUTPUT"
           grep -Fq "Verified using v2 scheme (APK Signature Scheme v2): true" <<< "$SIGNATURE_OUTPUT"
           grep -Fq "Verified using v3 scheme (APK Signature Scheme v3): true" <<< "$SIGNATURE_OUTPUT"
 
@@ -313,10 +316,12 @@ jobs:
             exit 1
           fi
 
-          SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --verbose --print-certs "$APK" 2>&1)"
+          # Verify V1 compatibility below API 24 plus modern V2/V3; manifest minSdk remains API 24.
+          SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --min-sdk-version 23 --verbose --print-certs "$APK" 2>&1)"
           printf '%s\n' "$SIGNATURE_OUTPUT"
 
           # Android platform verification covers the APK's declared minSdk (24).
+          grep -Fq "Verified using v1 scheme (JAR signing): true" <<< "$SIGNATURE_OUTPUT"
           grep -Fq "Verified using v2 scheme (APK Signature Scheme v2): true" <<< "$SIGNATURE_OUTPUT"
           grep -Fq "Verified using v3 scheme (APK Signature Scheme v3): true" <<< "$SIGNATURE_OUTPUT"
           grep -Fq "Number of signers: 1" <<< "$SIGNATURE_OUTPUT"
@@ -423,9 +428,10 @@ jobs:
             exit 1
           fi
 
-          DOWNLOADED_SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --verbose --print-certs "$DOWNLOADED" 2>&1)"
+          DOWNLOADED_SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --min-sdk-version 23 --verbose --print-certs "$DOWNLOADED" 2>&1)"
           printf '%s\n' "$DOWNLOADED_SIGNATURE_OUTPUT"
 
+          grep -Fq "Verified using v1 scheme (JAR signing): true" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
           grep -Fq "Verified using v2 scheme (APK Signature Scheme v2): true" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
           grep -Fq "Verified using v3 scheme (APK Signature Scheme v3): true" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
           grep -Fq "Number of signers: 1" <<< "$DOWNLOADED_SIGNATURE_OUTPUT"
