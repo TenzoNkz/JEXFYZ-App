@@ -245,6 +245,43 @@ jobs:
       - name: Build latest release APK
         run: flutter build apk --release --obfuscate --split-debug-info=build/symbols
 
+      # Explicitly sign all required APK schemes with the official production key.
+      # The current AGP build output may omit JAR/v1 signing even when requested
+      # by the Gradle DSL, so enforce it directly before verification/publication.
+      - name: Enforce V1/V2/V3 APK signing
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK="build/app/outputs/flutter-apk/app-release.apk"
+          SIGNED_APK="$RUNNER_TEMP/jexfyz-release-signed.apk"
+          APK_SIGNER="$(find "$ANDROID_SDK_ROOT/build-tools" -type f -name apksigner 2>/dev/null | sort -V | tail -n 1)"
+
+          test -s "$APK"
+          test -n "$APK_SIGNER"
+
+          "$APK_SIGNER" sign \
+            --ks "$ANDROID_KEYSTORE_FILE" \
+            --ks-type PKCS12 \
+            --ks-key-alias "$ANDROID_KEY_ALIAS" \
+            --ks-pass env:ANDROID_KEYSTORE_PASSWORD \
+            --key-pass env:ANDROID_KEY_PASSWORD \
+            --v1-signing-enabled true \
+            --v2-signing-enabled true \
+            --v3-signing-enabled true \
+            --v4-signing-enabled false \
+            --out "$SIGNED_APK" \
+            "$APK"
+
+          test -s "$SIGNED_APK"
+          mv "$SIGNED_APK" "$APK"
+
+          # Fail early unless signing itself reports all three schemes as valid.
+          SIGNATURE_OUTPUT="$("$APK_SIGNER" verify --verbose --print-certs "$APK" 2>&1)"
+          printf '%s\\n' "$SIGNATURE_OUTPUT"
+          grep -Fq "Verified using v1 scheme (JAR signing): true" <<< "$SIGNATURE_OUTPUT"
+          grep -Fq "Verified using v2 scheme (APK Signature Scheme v2): true" <<< "$SIGNATURE_OUTPUT"
+          grep -Fq "Verified using v3 scheme (APK Signature Scheme v3): true" <<< "$SIGNATURE_OUTPUT"
+
       # Verify the official JE X FYZ production certificate.
       - name: Verify APK signature
         shell: bash
