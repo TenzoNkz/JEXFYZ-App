@@ -2,6 +2,14 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
+## 2026-10-14 — Chat-limit reconciliation after App UI execution
+
+- Re-read the prior transfer snapshot and canonical App/Firmware/OTA/build/design memories; refreshed current source/test hashes, current App build boundary, repository branch/PR and BIN-only artifact evidence in the transfer snapshot.
+- Corrected stale active-App and build wording in current status/handover, refreshed memory routing, removed the duplicate newest UI entry, and explicitly marked older logo/large-icon descriptions as superseded by the transparent JE notification monogram.
+- Current source remains App-only UI work: phase-continuous Fan motion, geometric Peltier crystal with 360 ms ON fade / 420 ms voltage interpolation / 520 ms OFF fade, larger dialogs, and JE notification small icon. Firmware stays V6.6.
+- Flutter/Dart SDK is unavailable in this execution environment, so current-source Flutter tests/analyze were NOT run. Latest verified successful App Build is run `38545637192` on older source commit `9e790765f6683d342025317ce6594cc8519026de`; it does not contain the current changes.
+- No App Build, Firmware compile, BIN replacement/publication, Firebase update, OTA, flash/device operation or release was performed.
+
 ## 2026-10-14 — Smooth motion, crystal Peltier, JE notification and dialog sizing
 
 - Fan voltage changes now update rotation duration without resetting angular phase; the controller travels smoothly to an equivalent full-turn boundary before continuing at the new speed, and Fan OFF coasts forward to a retained pose. Peltier frost intensity/particle count interpolate over 420 ms across voltage classes, fade in over 360 ms on ON and out over 520 ms on OFF; crystal branches, particles and center fade fully, periodic drift avoids loop-boundary jumps, while the thermoelectric frame remains visible.
