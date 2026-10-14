@@ -775,13 +775,13 @@ class _JexColorPickerCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(22),
       clipBehavior: Clip.antiAlias,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 17),
+        padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
-              height: 34,
+              height: 46,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -790,7 +790,7 @@ class _JexColorPickerCard extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: scheme.onSurface,
-                      fontSize: 18,
+                      fontSize: 22,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
@@ -799,15 +799,15 @@ class _JexColorPickerCard extends StatelessWidget {
                     child: TextButton(
                       onPressed: onCancel,
                       style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        minimumSize: const Size(0, 34),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        minimumSize: const Size(64, 44),
+                        tapTargetSize: MaterialTapTargetSize.padded,
                       ),
                       child: Text(
                         JexText.of('cancel', lang),
                         style: TextStyle(
                           color: scheme.primary,
-                          fontSize: 12,
+                          fontSize: 15,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
@@ -816,13 +816,13 @@ class _JexColorPickerCard extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 7),
+            const SizedBox(height: 10),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 15,
-                  height: 15,
+                  width: 18,
+                  height: 18,
                   decoration: BoxDecoration(
                     color: selectedColor,
                     shape: BoxShape.circle,
@@ -835,13 +835,13 @@ class _JexColorPickerCard extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: scheme.primary,
-                    fontSize: 12,
+                    fontSize: 15,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 16),
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -850,7 +850,7 @@ class _JexColorPickerCard extends StatelessWidget {
                 crossAxisCount: 6,
                 crossAxisSpacing: 7,
                 mainAxisSpacing: 7,
-                mainAxisExtent: 38,
+                mainAxisExtent: 42,
               ),
               itemBuilder: (_, index) {
                 final preset = colors[index];
@@ -1020,8 +1020,11 @@ class JexAnimatedIcon extends StatefulWidget {
 }
 
 class _JexAnimatedIconState extends State<JexAnimatedIcon>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late final AnimationController controller;
+  late final AnimationController frostTransitionController;
+  double _frostFromIntensity = .24;
+  double _frostFromParticleCount = 2;
 
   void _syncAnimation() {
     if (widget.kind == JexAnimatedIconKind.generic) {
@@ -1030,8 +1033,11 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       return;
     }
     if (!widget.active) {
-      // Keep only the Peltier controller alive for its short frost fade-out.
-      if (widget.kind == JexAnimatedIconKind.peltier && controller.isAnimating) {
+      // Peltier frost fades away and Fan coasts forward to a stable pose.
+      // Neither should snap to the starting frame during a state change.
+      if ((widget.kind == JexAnimatedIconKind.peltier ||
+              widget.kind == JexAnimatedIconKind.fan) &&
+          controller.isAnimating) {
         return;
       }
       controller.stop();
@@ -1053,23 +1059,48 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
         voltageLevel: widget.voltageLevel,
       ),
     );
+    _frostFromIntensity = jexPeltierFrostIntensity(widget.voltageLevel);
+    _frostFromParticleCount = jexPeltierFrostParticleCount(widget.voltageLevel).toDouble();
+    frostTransitionController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 420),
+    )..value = 1;
     _syncAnimation();
   }
 
   @override
   void didUpdateWidget(covariant JexAnimatedIcon oldWidget) {
     super.didUpdateWidget(oldWidget);
-    final fanVoltageChanged = widget.kind == JexAnimatedIconKind.fan &&
-        widget.voltageLevel != oldWidget.voltageLevel;
+    final voltageChanged = widget.voltageLevel != oldWidget.voltageLevel;
+    final fanVoltageChanged = widget.kind == JexAnimatedIconKind.fan && voltageChanged;
+    final peltierVoltageChanged =
+        widget.kind == JexAnimatedIconKind.peltier && voltageChanged;
+
     if (widget.kind != oldWidget.kind || fanVoltageChanged) {
       controller.duration = jexIconAnimationDuration(
         widget.kind,
         voltageLevel: widget.voltageLevel,
       );
-      controller.reset();
+      if (widget.kind != oldWidget.kind) {
+        controller.reset();
+      } else if (fanVoltageChanged && widget.active && controller.isAnimating) {
+        // repeat() starts from the current value. A full turn wraps onto the same
+        // visible pose, so voltage changes alter speed without snapping the rotor.
+        controller.repeat();
+      }
     }
-    // Fan voltage changes restart the rotation cycle with a new speed.
-    // Peltier OFF fades the frost overlay instead of leaving ice particles frozen on-screen.
+
+    if (peltierVoltageChanged) {
+      // Re-target from the current interpolated frost level if another voltage arrives
+      // while a transition is still running.
+      final previousT = Curves.easeInOutCubic.transform(frostTransitionController.value);
+      final previousIntensity = jexPeltierFrostIntensity(oldWidget.voltageLevel);
+      final previousCount = jexPeltierFrostParticleCount(oldWidget.voltageLevel).toDouble();
+      _frostFromIntensity += (previousIntensity - _frostFromIntensity) * previousT;
+      _frostFromParticleCount += (previousCount - _frostFromParticleCount) * previousT;
+      frostTransitionController.forward(from: 0);
+    }
+
     if (widget.active != oldWidget.active) {
       if (widget.kind == JexAnimatedIconKind.peltier &&
           oldWidget.active &&
@@ -1081,6 +1112,27 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
           duration: const Duration(milliseconds: 520),
           curve: Curves.easeOutCubic,
         );
+      } else if (widget.kind == JexAnimatedIconKind.fan &&
+          oldWidget.active &&
+          !widget.active) {
+        final cycleMs = jexIconAnimationDuration(
+          JexAnimatedIconKind.fan,
+          voltageLevel: widget.voltageLevel,
+        ).inMilliseconds;
+        final remaining = (1.0 - controller.value).clamp(0.0, 1.0).toDouble();
+        const coastMs = 260;
+        final coastDelta = (0.5 * coastMs / cycleMs).clamp(0.0, remaining).toDouble();
+        final target = (controller.value + coastDelta).clamp(0.0, 1.0).toDouble();
+        final durationMs = (cycleMs * coastDelta * 2).round().clamp(60, 300);
+        controller.animateTo(
+          target,
+          duration: Duration(milliseconds: durationMs),
+          curve: Curves.easeOutCubic,
+        );
+      } else if (widget.kind == JexAnimatedIconKind.fan &&
+          !oldWidget.active &&
+          widget.active) {
+        controller.repeat();
       } else {
         controller.reset();
       }
@@ -1091,6 +1143,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
   @override
   void dispose() {
     controller.dispose();
+    frostTransitionController.dispose();
     super.dispose();
   }
 
@@ -1111,19 +1164,31 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     final level = widget.level.clamp(0.0, 1.0).toDouble();
     return RepaintBoundary(
       child: AnimatedBuilder(
-        animation: controller,
-        builder: (_, __) => CustomPaint(
-          size: Size.square(widget.size),
-          painter: _JexIconPainter(
-            kind: widget.kind,
-            color: widget.color,
-            progress: controller.value,
-            active: widget.active,
-            level: level,
-            voltageLevel: widget.voltageLevel,
-            warning: widget.warning,
-          ),
-        ),
+        animation: Listenable.merge(<Listenable>[controller, frostTransitionController]),
+        builder: (_, __) {
+          final frostT = Curves.easeInOutCubic.transform(frostTransitionController.value);
+          final frostTargetIntensity = jexPeltierFrostIntensity(widget.voltageLevel);
+          final frostTargetCount =
+              jexPeltierFrostParticleCount(widget.voltageLevel).toDouble();
+          final frostIntensity = _frostFromIntensity +
+              (frostTargetIntensity - _frostFromIntensity) * frostT;
+          final frostParticleCount = _frostFromParticleCount +
+              (frostTargetCount - _frostFromParticleCount) * frostT;
+          return CustomPaint(
+            size: Size.square(widget.size),
+            painter: _JexIconPainter(
+              kind: widget.kind,
+              color: widget.color,
+              progress: controller.value,
+              active: widget.active,
+              level: level,
+              voltageLevel: widget.voltageLevel,
+              frostIntensityOverride: frostIntensity,
+              frostParticleCountOverride: frostParticleCount,
+              warning: widget.warning,
+            ),
+          );
+        },
       ),
     );
   }
@@ -1136,6 +1201,8 @@ class _JexIconPainter extends CustomPainter {
   final bool active;
   final double level;
   final int voltageLevel;
+  final double? frostIntensityOverride;
+  final double? frostParticleCountOverride;
   final bool warning;
 
   const _JexIconPainter({
@@ -1145,6 +1212,8 @@ class _JexIconPainter extends CustomPainter {
     required this.active,
     required this.level,
     required this.voltageLevel,
+    required this.frostIntensityOverride,
+    required this.frostParticleCountOverride,
     required this.warning,
   });
 
@@ -1214,7 +1283,9 @@ class _JexIconPainter extends CustomPainter {
     final s = size.shortestSide;
     final cx = size.width / 2;
     final cy = size.height / 2;
-    final p = (active || kind == JexAnimatedIconKind.peltier)
+    final p = (active ||
+            kind == JexAnimatedIconKind.peltier ||
+            kind == JexAnimatedIconKind.fan)
         ? progress.clamp(0.0, 1.0).toDouble()
         : 0.0;
     final angle = p * math.pi * 2;
@@ -1367,71 +1438,123 @@ class _JexIconPainter extends CustomPainter {
 
       case JexAnimatedIconKind.peltier:
         final center = Offset(cx, cy);
-        final requestedIntensity = jexPeltierFrostIntensity(voltageLevel);
+        final targetIntensity =
+            frostIntensityOverride ?? jexPeltierFrostIntensity(voltageLevel);
         final coolingFade = active ? 1.0 : p;
-        final frostIntensity = requestedIntensity * coolingFade;
+        final frostIntensity = targetIntensity * coolingFade;
+        final moduleRect = Rect.fromLTWH(s * .12, s * .12, s * .76, s * .76);
+        final module = RRect.fromRectAndRadius(moduleRect, Radius.circular(s * .14));
+
+        // A thermoelectric module frame with a branched frost crystal gives the icon
+        // a technical cooling identity instead of the old flower-like rotor.
         _drawGlow(
           canvas,
           center,
-          s * (.18 + .055 * frostIntensity + .015 * pulse),
-          active ? .055 + .17 * frostIntensity + .025 * pulse : .025 + .10 * frostIntensity,
+          s * (.15 + .08 * frostIntensity + .012 * pulse),
+          active ? .04 + .18 * frostIntensity + .018 * pulse : .015 + .08 * frostIntensity,
         );
-        canvas.drawCircle(
-          center,
-          s * .35,
-          stroke(s * .025, color.withValues(alpha: active ? .08 + .25 * frostIntensity : .12 + .12 * frostIntensity)),
+        canvas.drawRRect(module, fill(color.withValues(alpha: .035 + .08 * frostIntensity)));
+        canvas.drawRRect(
+          module,
+          stroke(s * .036, color.withValues(alpha: .38 + .38 * frostIntensity)),
         );
-        // A 60° rotation is seamless for the six-fold snowflake. Voltage changes frost intensity,
-        // not the displayed temperature: 5V = light crystals, 9V = medium frost, 12V = dense ice.
-        final rotation = (active || coolingFade > .001) ? angle / 6 : 0.0;
-        for (var i = 0; i < 6; i++) {
-          canvas.save();
-          canvas.translate(cx, cy);
-          canvas.rotate(rotation + i * math.pi / 3);
-          final petal = Path()
-            ..moveTo(-s * .030, -s * .065)
-            ..cubicTo(-s * .075, -s * .15, -s * .060, -s * .27, 0, -s * (.345 + .020 * frostIntensity))
-            ..cubicTo(s * .060, -s * .27, s * .075, -s * .15, s * .030, -s * .065)
-            ..close();
-          canvas.drawPath(
-            petal,
-            fill(color.withValues(alpha: active ? .56 + .40 * frostIntensity + .04 * pulse : .52 + .16 * frostIntensity)),
-          );
-          canvas.drawPath(petal, stroke(s * .012, color.withValues(alpha: .35 + .30 * frostIntensity)));
+
+        for (final corner in <Offset>[
+          Offset(s * .22, s * .22),
+          Offset(s * .78, s * .22),
+          Offset(s * .22, s * .78),
+          Offset(s * .78, s * .78),
+        ]) {
           canvas.drawCircle(
-            Offset(0, -s * (.315 + .020 * frostIntensity)),
-            s * (.018 + .009 * frostIntensity),
-            fill(Colors.white.withValues(alpha: active ? .30 + .68 * frostIntensity : .20 + .30 * frostIntensity)),
+            corner,
+            s * .026,
+            fill(Colors.white.withValues(alpha: .26 + .38 * frostIntensity)),
           );
-          canvas.restore();
+          canvas.drawCircle(corner, s * .026, stroke(s * .009, color.withValues(alpha: .38)));
         }
 
-        // Small white ice crystals visibly accumulate with the selected operating voltage.
-        final particleCount = jexPeltierFrostParticleCount(voltageLevel);
-        for (var i = 0; i < particleCount; i++) {
-          final particleAngle = (i * math.pi * 2 / particleCount) + (active ? p * .18 : 0.0);
-          final radius = s * (.39 + .020 * frostIntensity);
+        // Each of the six crystal arms has fine branches and a crisp, sharp tip.
+        final rotation = (active || coolingFade > .001) ? angle / 6 : 0.0;
+        canvas.save();
+        canvas.translate(cx, cy);
+        canvas.rotate(rotation);
+        final crystalColor = color.withValues(alpha: .62 + .34 * frostIntensity);
+        for (var i = 0; i < 6; i++) {
+          canvas.save();
+          canvas.rotate(i * math.pi / 3);
+          final spine = Path()
+            ..moveTo(0, -s * .075)
+            ..lineTo(0, -s * (.285 + .018 * frostIntensity));
+          canvas.drawPath(spine, stroke(s * (.027 + .009 * frostIntensity), crystalColor));
+
+          final branch = Path()
+            ..moveTo(0, -s * .19)
+            ..lineTo(-s * .068, -s * .125)
+            ..moveTo(0, -s * .19)
+            ..lineTo(s * .068, -s * .125)
+            ..moveTo(0, -s * .265)
+            ..lineTo(-s * .044, -s * .222)
+            ..moveTo(0, -s * .265)
+            ..lineTo(s * .044, -s * .222);
+          canvas.drawPath(branch, stroke(s * (.020 + .006 * frostIntensity), crystalColor));
+
+          final tip = Path()
+            ..moveTo(-s * .036, -s * (.275 + .018 * frostIntensity))
+            ..lineTo(0, -s * (.323 + .018 * frostIntensity))
+            ..lineTo(s * .036, -s * (.275 + .018 * frostIntensity));
+          canvas.drawPath(tip, stroke(s * (.022 + .006 * frostIntensity), crystalColor));
+          canvas.restore();
+        }
+        canvas.restore();
+
+        final particleCountValue = frostParticleCountOverride ??
+            jexPeltierFrostParticleCount(voltageLevel).toDouble();
+        // Fractional opacity interpolates particle count instead of popping crystals in.
+        for (var i = 0; i < 8; i++) {
+          final particleStrength =
+              (particleCountValue - i).clamp(0.0, 1.0).toDouble();
+          if (particleStrength <= .001) continue;
+          final particleAngle = i * math.pi / 4 + (active ? p * .035 : 0.0);
+          final radius = s * (.405 + .018 * frostIntensity);
           final particle = Offset(
             cx + math.cos(particleAngle) * radius,
             cy + math.sin(particleAngle) * radius,
           );
-          final shard = s * (.007 + .015 * frostIntensity);
+          final shard = s * (.008 + .014 * frostIntensity);
           final crystal = Path()
             ..moveTo(particle.dx, particle.dy - shard)
-            ..lineTo(particle.dx + shard * .58, particle.dy)
+            ..lineTo(particle.dx + shard * .60, particle.dy)
             ..lineTo(particle.dx, particle.dy + shard)
-            ..lineTo(particle.dx - shard * .58, particle.dy)
+            ..lineTo(particle.dx - shard * .60, particle.dy)
             ..close();
           canvas.drawPath(
             crystal,
-            fill(Colors.white.withValues(alpha: active ? .26 + .70 * frostIntensity : .52 * frostIntensity)),
+            fill(Colors.white.withValues(
+              alpha: (.22 + .68 * frostIntensity) * particleStrength,
+            )),
           );
         }
-        canvas.drawCircle(center, s * .10, fill(color));
-        canvas.drawCircle(center, s * .043, fill(Colors.white.withValues(alpha: .70)));
+
+        final centerHex = Path();
+        for (var i = 0; i < 6; i++) {
+          final a = -math.pi / 2 + i * math.pi / 3;
+          final point = Offset(
+            cx + math.cos(a) * s * .105,
+            cy + math.sin(a) * s * .105,
+          );
+          if (i == 0) {
+            centerHex.moveTo(point.dx, point.dy);
+          } else {
+            centerHex.lineTo(point.dx, point.dy);
+          }
+        }
+        centerHex.close();
+        canvas.drawPath(centerHex, fill(color.withValues(alpha: .26 + .30 * frostIntensity)));
+        canvas.drawPath(centerHex, stroke(s * .021, color.withValues(alpha: .85)));
+        canvas.drawCircle(center, s * .025, fill(Colors.white.withValues(alpha: .80)));
         break;
 
-      case JexAnimatedIconKind.fan:
+            case JexAnimatedIconKind.fan:
         final rotation = active ? angle : 0.0;
         for (var i = 0; i < 3; i++) {
           _drawFanBlade(canvas, size, rotation + i * math.pi * 2 / 3);
@@ -3559,14 +3682,45 @@ void _handleAckLine(String line) {
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 420),
                         child: AlertDialog(
-                          title: Text(JexText.of('peltierSafety', appLanguageNotifier.value)),
-                          content: Text(JexText.of('fanRequiredPeltier', appLanguageNotifier.value)),
+                          insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                          titlePadding: const EdgeInsets.fromLTRB(26, 24, 26, 12),
+                          contentPadding: const EdgeInsets.fromLTRB(26, 0, 26, 8),
+                          actionsPadding: const EdgeInsets.fromLTRB(18, 8, 18, 20),
+                          actionsOverflowButtonSpacing: 10,
+                          title: Text(
+                            JexText.of('peltierSafety', appLanguageNotifier.value),
+                            style: const TextStyle(
+                              fontSize: 24,
+                              height: 1.12,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          content: Text(
+                            JexText.of('fanRequiredPeltier', appLanguageNotifier.value),
+                            style: const TextStyle(fontSize: 17, height: 1.35),
+                          ),
                           actions: [
                             TextButton(
+                              style: TextButton.styleFrom(
+                                minimumSize: const Size(86, 48),
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                textStyle: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                               onPressed: () => Navigator.pop(dialogContext, false),
                               child: Text(JexText.of('cancel', appLanguageNotifier.value)),
                             ),
                             FilledButton(
+                              style: FilledButton.styleFrom(
+                                minimumSize: const Size(142, 50),
+                                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
+                                textStyle: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
                               onPressed: () => Navigator.pop(dialogContext, true),
                               child: Text(JexText.of('turnOnFan', appLanguageNotifier.value)),
                             ),
