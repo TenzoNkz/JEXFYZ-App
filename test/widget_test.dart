@@ -291,13 +291,39 @@ void main() {
       isTrue,
     );
     expect(
-      jexIconAnimationDuration(JexAnimatedIconKind.fan),
-      const Duration(milliseconds: 1450),
+      jexIconAnimationDuration(JexAnimatedIconKind.fan, voltageLevel: 5),
+      const Duration(milliseconds: 2600),
+    );
+    expect(
+      jexIconAnimationDuration(JexAnimatedIconKind.fan, voltageLevel: 9),
+      const Duration(milliseconds: 1250),
+    );
+    expect(
+      jexIconAnimationDuration(JexAnimatedIconKind.fan, voltageLevel: 12),
+      const Duration(milliseconds: 620),
     );
     expect(
       jexIconAnimationDuration(JexAnimatedIconKind.adaptive),
       const Duration(milliseconds: 4600),
     );
+  });
+
+  test('Fan and Peltier indicator effects follow authoritative voltage classes', () {
+    expect(jexVoltageAnimationLevel('5V'), 5);
+    expect(jexVoltageAnimationLevel('9V'), 9);
+    expect(jexVoltageAnimationLevel('12V'), 12);
+    expect(jexVoltageAnimationLevel('--'), 5);
+
+    expect(jexIconAnimationDuration(JexAnimatedIconKind.fan, voltageLevel: 5).inMilliseconds,
+        greaterThan(jexIconAnimationDuration(JexAnimatedIconKind.fan, voltageLevel: 9).inMilliseconds));
+    expect(jexIconAnimationDuration(JexAnimatedIconKind.fan, voltageLevel: 9).inMilliseconds,
+        greaterThan(jexIconAnimationDuration(JexAnimatedIconKind.fan, voltageLevel: 12).inMilliseconds));
+
+    expect(jexPeltierFrostIntensity(5), lessThan(jexPeltierFrostIntensity(9)));
+    expect(jexPeltierFrostIntensity(9), lessThan(jexPeltierFrostIntensity(12)));
+    expect(jexPeltierFrostParticleCount(5), 2);
+    expect(jexPeltierFrostParticleCount(9), 5);
+    expect(jexPeltierFrostParticleCount(12), 8);
   });
 
   test('LED palette exposes current RGB colors', () {
@@ -383,7 +409,9 @@ void main() {
     expect(jexIconAnimationDuration(JexAnimatedIconKind.voltage), const Duration(milliseconds: 1900));
     expect(jexIconAnimationDuration(JexAnimatedIconKind.adaptive), const Duration(milliseconds: 4600));
     expect(jexIconAnimationDuration(JexAnimatedIconKind.peltier), const Duration(milliseconds: 3000));
-    expect(jexIconAnimationDuration(JexAnimatedIconKind.fan), const Duration(milliseconds: 1450));
+    expect(jexIconAnimationDuration(JexAnimatedIconKind.fan, voltageLevel: 5), const Duration(milliseconds: 2600));
+    expect(jexIconAnimationDuration(JexAnimatedIconKind.fan, voltageLevel: 9), const Duration(milliseconds: 1250));
+    expect(jexIconAnimationDuration(JexAnimatedIconKind.fan, voltageLevel: 12), const Duration(milliseconds: 620));
     expect(jexIconAnimationDuration(JexAnimatedIconKind.speed), const Duration(milliseconds: 1800));
   });
 
@@ -407,7 +435,16 @@ void main() {
     expect(source, contains('ledColorDisplayName(rgbColor, lang)'));
     expect(source, contains("stateKnown ? JexText.of(value ? 'on' : 'off', lang) : JexText.of('off', lang)"));
     expect(source, contains('final displayedValue = stateKnown && value;'));
-    expect(source, contains('displayMenuOverlayTop('));
+    final colorDialogStart = source.indexOf('Future<void> _showLedColorPicker() async {');
+    final colorDialogEnd = source.indexOf('// AI-METHOD: _openFirmwareSettings', colorDialogStart);
+    expect(colorDialogStart, isNonNegative);
+    expect(colorDialogEnd, greaterThan(colorDialogStart));
+    final colorDialog = source.substring(colorDialogStart, colorDialogEnd);
+    expect(colorDialog, contains('Alignment.bottomCenter'));
+    expect(colorDialog, isNot(contains('displayMenuOverlayTop(')));
+    expect(colorDialog, isNot(contains('SingleChildScrollView')));
+    expect(colorDialog, contains('onCancel:'));
+    expect(source, contains("JexText.of('cancel', lang)"));
     expect(source, contains('colors: ledColorPresets'));
     expect(source, contains('constraints: const BoxConstraints(maxWidth: 420)'));
     expect(source, contains('showGeneralDialog<void>'));
