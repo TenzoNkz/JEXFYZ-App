@@ -76,7 +76,6 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 - Latest live successful App Build run `38535535278` targets preceding commit `97c5497e2aa31184de425c264def6dec7844f734`; analyze/tests/build/signature/release verification passed on that commit. It predates the current source/test/native-icon changes; no APK for this change set has been built or published.
 
 ## App Build
-## App Build
 - Only active workflow: .github/workflows/jexfyz-app-build-trigger.yml.
 - Latest live successful App Build verified in this execution: run `38535535278` on commit `97c5497e2aa31184de425c264def6dec7844f734` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38535535278). Analyze, Flutter tests, obfuscated APK build, signature, publication and downloaded-asset verification passed on that commit. Release `jexfyz-latest` has one `JEXFYZ-release.apk` (54,506,164 bytes, SHA-256 `bb740029d24e1b76b41796d3ef979bc7c3ee7d96ff3fe96fdaacbcdb5ebf426b`) and targets `97c5497`. It predates the current animation/Color Picker commits; there is no fresh APK for the current source.
 - Trigger title: JE X FYZ — BUILD APP TRIGGER; body token JEXFYZ_BUILD_TRIGGER_V1.
