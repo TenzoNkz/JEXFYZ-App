@@ -527,6 +527,8 @@ void main() {
     expect(iconState, contains('coastDelta'));
     expect(iconState, contains('controller.animateTo('));
     expect(iconState, contains('frostTransitionController.forward(from: 0)'));
+    expect(iconState, contains('_frostFromVisibility'));
+    expect(iconState, contains('frostTransitionController.duration = widget.active'));
   });
 
   test('Peltier indicator uses a geometric crystal rather than a flower rotor', () {
@@ -540,6 +542,7 @@ void main() {
     expect(peltier, contains('final branch = Path()'));
     expect(peltier, contains('Fractional opacity interpolates particle count'));
     expect(peltier, contains('math.sin(angle) * .035'));
+    expect(peltier, contains('frostVisibilityOverride'));
     expect(peltier, isNot(contains('final petal = Path()')));
   });
 
