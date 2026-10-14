@@ -4,15 +4,13 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). Re-fetch live `main` and source hash
 
 ## Current state
 
-- Active Firmware source: `firmware/JEXFYZ-V6.6.ino`; `FW_VERSION = "V6.6"`; source blob observed at last reconciliation: `f51ba6db5d0e91318f63fea4014bb87f7bf76222`.
-- Active App source: `lib/main.dart`, current blob `2005f4c163d466f9015a564d5418af1e86e09b41`, pubspec version `1.0.0+3`, package `com.horizontalzzz.jexfyz`.
-- Firmware source remains V6.6 and release state remains DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED. User reported successful V6.6 compilation and Online OTA update, but compile logs/artifact provenance and complete physical QC were not independently verified here.
-- Main V6.6 QC contract: `test/v6_6_qc_contract_test.dart`. Latest widget/source contracts are in `test/widget_test.dart` (`3af190d4520a7b753f3f9fc963f788f4aa247f5c`); Flutter tests/analyze were NOT run because Flutter/Dart SDK is unavailable.
-- Latest live successful App Build: run `38545637192` on commit `9e790765f6683d342025317ce6594cc8519026de` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38545637192); security/architecture audit, dependency install, Dart analyze, Flutter tests, APK signing, release publication and downloaded-asset verification succeeded on that commit. Release `jexfyz-latest` contains one `JEXFYZ-release.apk` (54,505,507 bytes, SHA-256 `26b3746a9d6969475e72a56122d5c4051eaa8742f7d4e3559cc80f4fdb4d2b87`) targeting `9e790765`. That release predates the current animation/Peltier/dialog/JE-icon commits and is not a build of the current source.
-- Open PR search last returned zero. Verify live; use main by default.
-- Artifact repository `TenzoNkz/JEXFYZ-Firmware` is intended to contain only `JEXFYZ.cpp.bin`; all notes belong in this repo.
-- App memory explicitly records a 1 Hz Android phone-battery heartbeat, firmware 5-second battery-data freshness TTL, and the requirement not to display a standalone Battery Protection Guard. One-App/one-cooler exclusive pairing is a user design intent whose exact enforcement remains unverified.
-
+- Active Firmware source: `firmware/JEXFYZ-V6.6.ino`; `FW_VERSION = "V6.6"`; blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`.
+- **User acceptance:** user considers Firmware V6.6 final/correct and reports successful compile plus two successful Online OTA flashes/updates using the same version V6.6. Do not modify/recompile/reflash unless the user explicitly reopens Firmware work and separately authorizes it. Artifact source/BIN provenance remains unverified separately.
+- Active App source: `lib/main.dart`, blob `2005f4c163d466f9015a564d5418af1e86e09b41`; package `com.horizontalzzz.jexfyz`; pubspec `1.0.0+3`; preserve Gradle `versionName "Telegram @horizontalzzz"`.
+- Latest successful Build App before signing-workflow fix: run `38556896542` on commit `67c5d26723c433b4af856c7759a967a3425bf67a` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38556896542). Dart analyze and Flutter tests passed for the current App source, and the release asset passed V2/V3 verification and downloaded-asset digest check. APK SHA-256 `95e8c9460b69b8c58d183c2bb80102590cf6208c9a48008ba4dc3bf74e5fbd38`.
+- **Signature issue:** the successful run logged V1=false, V2=true, V3=true. Workflow commit `90d48ec3c97318b5aff4e147151eee96e41b5b25` now signs/verifies using API 23 for V1 compatibility and requires V1/V2/V3=true. This fix is not yet built or verified on device. The screenshot's installed app metadata says last updated 17:11, earlier than latest release completion at 18:36 Asia/Jakarta.
+- No open PRs were found at last live check. Work directly on `main` by default. Artifact repo `TenzoNkz/JEXFYZ-Firmware` must contain only `JEXFYZ.cpp.bin`.
+- Preserve existing App design and protocol requirements: 1 Hz Android battery-temperature heartbeat, five-second Firmware freshness TTL, no standalone Battery Protection Guard UI, and one-App/one-cooler exclusive pairing as an unverified design intent.
 ## First steps in the next session
 
 1. Read `CHAT_TRANSFER.md` in full and then `MEMORY_INDEX.md`, `CHAT_RULES.md`, `PROJECT_STATE.md`.
@@ -23,36 +21,23 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). Re-fetch live `main` and source hash
 
 ## Exact next QC actions (only when authorized)
 
-1. The user reports V6.6 compiled using ArduinoDroid/Core 3.3.7 and Online OTA update succeeded. Confirm the compile log, installed version and source-to-BIN provenance; do not recompile solely for these App-only changes or assume the existing BIN matches source.
-2. Pair App and Firmware V6.6 and test Static, Breath, Comet, Dual Chase, Left ↔ Right and Rainbow in order. Confirm Mirror Pulse is absent and ID 3 is migrated/rejected.
-3. Verify LED_SYNC on initial sync, mode switch, RGB ON/OFF and periodic updates; inspect lag/jumps under BLE traffic.
-4. Check saturated colors at 1%, 10%, 46% and 100% brightness, and confirm the one-row preview fits narrow screens: left arrow → four left LEDs → centered localized mode name only (no numeric index) → four right LEDs → right arrow.
-5. Run Flutter tests/analyze when a Flutter SDK/runner is available. The latest source commits were not tested here. Check disconnected CONTROL/ADAPTIVE/LED fallback, Home/Floating Monitor `--` unknown telemetry, the bold JE notification small-icon silhouette (no large icon), title/body/tap intent and Android notification permission. Physically inspect Fan phase continuity through 5V/9V/12V changes and coast-down on OFF, the geometric Peltier frost transition/fade, pale inactive Comet/Dual Chase pixels, vivid Static/Rainbow preview, the enlarged bottom-pinned Color Picker/Cancel, and enlarged Peltier Safety text/actions. The latest successful App Build is run `38545637192` on source `9e790765`; a fresh build is still required for current source/test/native-icon commits. Firmware and physical LED behavior remain separate gates.
-
-6. With hardware, reproduce Manual Volt and Adaptive voltage changes while the 5-second soft-start is still active. Expected: GPIO5 PWM 0% during selector handoff, preserve 200 ms deadtime, hold through 1-second settle, then start a fresh 5-second ramp. Adaptive ON/OFF must not introduce a separate Peltier OFF cycle. Capture reset reason if reboot recurs.
-7. Repeat after soft-start completes, including Adaptive ON and OFF. Expected: Peltier PWM remains 100% continuously throughout rail transition unless explicit OFF or safety shuts it down; no Adaptive-specific OFF/ON cycle.
-8. Verify Peltier-OFF, Hotside/NTC protection and OTA safe-output cancel all pending ramp resume.
-9. Verify Adaptive timeout/recovery, Hotside re-arm, Touch telemetry sync, LED feedback, Wi-Fi→BLE handoff and both OTA routes.
-10. Separately authorize/run Flutter test and analyze. A test file or static inspection alone is not a pass.
-11. Build App only on explicit `@Thinking Build App!` or `@Thinking Eksekusi & Build App!`, and only after reviewing the current workflow.
-
+1. Only after explicit `@Thinking Build App!` or `@Thinking Eksekusi & Build App!`, run the updated manual App Build workflow. Require `apksigner` V1/V2/V3=true on both built APK and re-downloaded release asset; verify expected certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0` and new release digest.
+2. Install the new APK and recheck MT Manager. The current screenshot shows installed last update 17:11 on 2026-10-14, before the latest release finished at 18:36, so it predates the latest release.
+3. After installation, inspect Fan phase transition/coast-down, geometric Peltier crystal fade, JE notification icon and enlarged dialogs on device.
+4. Firmware V6.6 is accepted as final by the user after two reported same-version Online OTA updates. Do not reopen firmware QC/change/compile/OTA without a new user request.
 ## Known uncertainty
 
-- User reported the V6.3-era Online OTA connection correction, and separately reports successful V6.6 compilation plus Online OTA update. The V6.6 compile log, built BIN provenance, complete installed-version confirmation and physical QC were not independently validated here.
-- LED synchronization uses atomic `LED_SYNC:<mode>,<phase_ms>,<cycle_ms>` snapshots created at BLE notify time; App preview interpolates from each snapshot with a monotonic clock. Physical synchronization still needs validation after matching V6.6 firmware is compiled and installed.
-- The 5 V→12 V reboot during active Peltier ramp could be a supply transient/brownout, but this has not been proved. Preserve and collect `BOOT: RESET_REASON=...` diagnostics.
-- The selected Online OTA path uses `cloudClient.setInsecure()`: HTTPS server certificate identity is not authenticated. This trade-off was chosen after the CA/NTP-gated attempt failed in the user's observed environment; don't change it without explicit discussion/approval.
-- No App Build, firmware compile, BIN publication, Firebase update, physical flash/OTA or release was performed by this handover/documentation refresh.
-
+- MT Manager's exact reason for `Signature: Verified failed` is not independently identified. Live workflow logs show V1=false, V2/V3=true on the latest release; the updated workflow now requires V1 and has not yet been run.
+- Screenshot app metadata last-update time is 17:11 local, while latest release build completed at 18:36 local. The installed APK shown is older than the release build; a new build plus install is needed to validate the signature change end-to-end.
+- V6.6 compile/Online OTA success twice is user-reported and accepted as final by the user. It does not alone establish the hosted BIN's source provenance. Do not run another Firmware operation unless separately asked.
+- The known historical request for rapid Hotside-rise shutdown/manual re-arm remains absent from the V6.6 source contract; do not implement proactively after user acceptance. The previous restart/Adaptive-OFF LED symptoms remain historical observations unless the user reopens them.
 ## Reference routing
 
 Use `MEMORY_INDEX.md` to find canonical notes. Use `CHANGELOG.md` for history only. Never copy old V5.x/V6.1/V6.2 status blocks forward as current truth. The complete cross-chat startup and memory-reconciliation procedure is in `CHAT_TRANSFER_PROMPTS.md`.
 
  
-## Latest UI change-set boundary (2026-10-14)
+## Latest UI and signature change-set boundary (2026-10-14)
 
-- Source updates: `lib/main.dart` (`2005f4c163d466f9015a564d5418af1e86e09b41`), `test/widget_test.dart` (`3af190d4520a7b753f3f9fc963f788f4aa247f5c`), `JexNotificationUtils.kt` (`aecfc87121f2195ef6724613c612d674ed95ae55`), and `drawable/ic_notification.xml` (`cda9e8404d14a62a61157ec59fae2e491c19f5f7`). Check live `main` for current hashes.
-- Fan rotation retains phase when changing voltage and coasts to a retained angle when OFF. Peltier uses a geometric thermoelectric-module/frost-crystal symbol, 420 ms smooth density/intensity interpolation, 360 ms ON fade-in, periodic crystal drift and a 520 ms OFF fade. Color Picker and Peltier Safety typography and touch targets are larger.
-- Android notification small icon is a bold white JE vector monogram on transparent background, as the sole small icon; no large icon is set. The full-color app icon/dashboard branding remains unchanged.
-- Flutter tests/analyze for current source were not run (Flutter/Dart SDK unavailable); no current-source App Build, Firmware compile, BIN/Firebase change, OTA/flash, device QC or release occurred. Latest successful App Build `38545637192` targets previous commit `9e790765` and does not contain these changes. Firmware V6.6/source was untouched.
-
+- App UI source and widget tests passed in Build App run `38556896542` on commit `67c5d26723c433b4af856c7759a967a3425bf67a`; this included Fan phase continuity/coast-down, Peltier crystal/fades, dialog sizing and JE notification small icon.
+- The run logged V1=false, V2=true and V3=true. The workflow now signs/verifies with `--min-sdk-version 23` and hard-fails unless `apksigner` reports V1/V2/V3=true for build output and downloaded release asset. Manifest minSdk remains 24. This workflow fix has not yet been run; the release has not been rebuilt with it.
+- No Build App was run after this signing change; no Firmware source/compile/BIN/Firebase/OTA/flash operation or release update was performed in this execution.
