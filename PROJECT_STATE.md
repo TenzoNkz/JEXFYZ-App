@@ -70,26 +70,28 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 - Touch Adaptive-OFF publishes authoritative Adaptive/ceiling/Fan/Peltier/Fan-speed state deltas before acknowledgement.
 
 ## Current UI execution status
-- Implemented in `lib/main.dart`: the Fan rotor remains fully coloured and coasts down with an ease-out curve to its resting pose after OFF; the Peltier icon is a free-standing six-branch crystal (no square module/center box/corner bolts) that freezes fully coloured when OFF; Fan Speed wobbles its needle slightly while ON without changing telemetry percentage and returns smoothly to the far-left/0 mark over 520 ms when OFF.
-- Current App source blob: `3d756a5a38c76b252dc93c6151a3b864ebbbbb94`; updated widget-test source blob: `99648e4c145b122949099b74581d47e6c472d9b9`. Regression source-contract tests were updated, but **Flutter tests/analyze were NOT run after this change**.
-- Latest successful App Build before this UI change and before signing-workflow hardening remains run `38556896542` on commit `67c5d26723c433b4af856c7759a967a3425bf67a`. That run's log reported V1=false, V2=true, V3=true.
-- Workflow hardening to require V1/V2/V3 is committed, but has not been build-verified. Existing release still targets the pre-fix commit. Device rendering/signature verification after new installation remain open.
+- Implemented in `lib/main.dart`: Fan OFF coasts down with an ease-out curve to its resting pose, with full-colour blades/hub; Peltier is a free-standing six-branch crystal without the square module/center box/corner bolts and freezes fully coloured at OFF; Fan Speed needle wobbles slightly while ON without changing the telemetry percentage and returns to far-left/0 over 520 ms when OFF.
+- Current App source blob: `3d756a5a38c76b252dc93c6151a3b864ebbbbb94`; widget regression tests blob: `99648e4c145b122949099b74581d47e6c472d9b9`. Static source consistency checks passed. **Flutter tests/analyze and device rendering have NOT been run after these changes.**
+- Latest successful Build App run is `38560939271` on earlier commit `2aa77113950ac462bd27fa6f1ca416371eaa7ad8`. That build's tests/analyze passed on its source, and V1/V2/V3 all verified true. It predates the icon/animation/test changes above.
+- MT Manager's earlier `Signature: Verified failed` remains unverified on the latest release. Run logs warn that `META-INF/services/b1` is not protected by the JAR/V1 signature; this warning is a lead, not proven cause of the UI label.
 
 
 ## App Build
 - Only active workflow: `.github/workflows/jexfyz-app-build-trigger.yml`.
-- Latest successful App Build before signing-workflow hardening: run `38556896542` on commit `67c5d26723c433b4af856c7759a967a3425bf67a` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38556896542). Security/architecture audit, dependency install, Dart analyze, Flutter tests, APK build, signing, release publication and downloaded-asset verification passed. Release `jexfyz-latest` targets that commit with one `JEXFYZ-release.apk` (54,521,947 bytes; SHA-256 `95e8c9460b69b8c58d183c2bb80102590cf6208c9a48008ba4dc3bf74e5fbd38`). However, its `apksigner` output reported V1=false, V2=true and V3=true. The new V1 gate in workflow blob `0e400cbdedfd54506ae3ac3255da41580c86d750` is not yet tested; no APK built under that fix exists.
+- Latest successful App Build after signing-workflow hardening: run `38560939271` on commit `2aa77113950ac462bd27fa6f1ca416371eaa7ad8` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38560939271). Security/architecture audit, dependency install, Dart analyze, Flutter tests, APK build, release publication and downloaded-asset verification passed for that source. The log verified V1/V2/V3=true for both produced APK and downloaded release asset using `apksigner verify --min-sdk-version 23`. Release `jexfyz-latest` has one `JEXFYZ-release.apk` (54,521,947 bytes; SHA-256 `95e8c9460b69b8c58d183c2bb80102590cf6208c9a48008ba4dc3bf74e5fbd38`). Log warns `META-INF/services/b1` is not protected by JAR/V1; MT Manager's precise failure label still needs device recheck.
+- That build predates the latest UI/test blobs listed in Current UI execution status; no APK has been built for these changes.
 - Trigger title: JE X FYZ — BUILD APP TRIGGER; body token JEXFYZ_BUILD_TRIGGER_V1.
 - Toolchain: Ubuntu 24.04, Java 17, Flutter 3.47.2 stable, Gradle 9.3.1.
 - Intended output: one obfuscated, production-signed ordinary APK `JEXFYZ-release.apk`, uploaded to GitHub Release `jexfyz-latest`; no Play Store bundle or Actions artifact.
 - Do not trigger except explicit `@Thinking Build App!` or `@Thinking Eksekusi & Build App!`.
 
+
 ## Exact validation gates still open
-1. After explicit `@Thinking Build App!` authorization, run the manual App Build workflow; verify V1, V2, V3, expected certificate digest, run source SHA and downloaded release asset SHA. The updated signing workflow and the latest UI change remain unbuilt.
-2. Install that new APK and check its signature in MT Manager. The screenshot's installed package last-update time predates the latest release build; the exact cause of MT Manager's failure remains unverified.
-3. On the installed APK, check Fan OFF easing to a complete stop without dimming, Peltier crystal remains visible/full-colour with no square module or bolts when OFF, and Fan Speed needle gently wobbles ON but returns to the far-left/0 position OFF. Also inspect notification icon and enlarged dialogs.
-4. Flutter tests/analyze after the latest icon/animation edits remain NOT RUN. Run only in the authorized Build App workflow or another expressly approved validation path.
-5. Firmware V6.6 is user-accepted as final after two reported successful same-version Online OTA updates. Do not edit/compile Firmware or perform BIN/Firebase/OTA/flash operations unless the user reopens that task and separately authorizes it.
+1. After explicit `@Thinking Build App!` authorization, build the current UI/test source and verify current-source test/analyze status, V1/V2/V3 signatures, official certificate digest, and re-downloaded asset SHA.
+2. Install the resulting APK and check MT Manager's signature display. Latest release verified V1/V2/V3=true, but the log warns `META-INF/services/b1` is not protected by JAR/V1. The exact reason for MT Manager's earlier failure remains unverified.
+3. On the installed APK, verify Fan easing to a full stop without dimming, the visible six-arm Peltier crystal with no square box/bolts or OFF fade, and the Speed needle wobble ON / smooth return to far-left/0 OFF.
+4. Recheck notification icon, dialog sizes/Cancel, BLE disconnect fallback and authoritative telemetry restore on device.
+5. Firmware V6.6 is user-accepted as final after two reported successful same-version Online OTA updates. Do not modify/compile Firmware or run BIN/Firebase/OTA/flash operations unless the user reopens that task and separately authorizes it.
 
 
 ## Repository split / operation boundary
