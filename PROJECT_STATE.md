@@ -8,11 +8,11 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 - **Active Firmware source:** firmware/JEXFYZ-V6.6.ino.
 - **Firmware constant:** FW_VERSION = "V6.6".
 - **Firmware source blob last observed:** f51ba6db5d0e91318f63fea4014bb87f7bf76222.
-- **Active App source:** lib/main.dart, blob last observed 4d58c3548f09138526a7cf5f305ea7890d571251.
+- **Active App source:** lib/main.dart, blob last observed e0371cac545dda2f2d5f099e4298c37c04160538.
 - **Package/version:** com.horizontalzzz.jexfyz, pubspec 1.0.0+3.
 - **Android identity:** Gradle versionName "Telegram @horizontalzzz"; intentional, preserve exactly.
 - **QC contracts:** test/v6_6_qc_contract_test.dart, test/firmware_touch_adaptive_sync_test.dart, test/app_protocol_notify_contract_test.dart, test/widget_test.dart. Test execution must be checked independently.
-- **LED App hashes:** `lib/main.dart` = 4d58c3548f09138526a7cf5f305ea7890d571251; `lib/app_settings.dart` = 9a0c0241ee4e87aa15b6db40bcac6c279b8a3a97; `test/widget_test.dart` = 9493a1ae4f19b6d7987a06d0732c8121812c4675; `test/v6_6_qc_contract_test.dart` = e3127eec860fce970fa598ca3015ed5ea61470bf.
+- **LED App hashes:** `lib/main.dart` = e0371cac545dda2f2d5f099e4298c37c04160538; `lib/app_settings.dart` = 9a0c0241ee4e87aa15b6db40bcac6c279b8a3a97; `test/widget_test.dart` = 9493a1ae4f19b6d7987a06d0732c8121812c4675; `test/v6_6_qc_contract_test.dart` = e3127eec860fce970fa598ca3015ed5ea61470bf.
 - **Workflow:** .github/workflows/jexfyz-app-build-trigger.yml; explicit title/token trigger only.
 - V6.6 has not been independently compiled or hardware-tested by the assistant. User-reported V6.3 compile/Online OTA connection success refers to the prior revision and does not certify V6.6.
 - Do not infer that the existing artifact BIN matches current V6.6 source; source/BIN provenance remains unverified.

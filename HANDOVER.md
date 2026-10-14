@@ -5,7 +5,7 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). Re-fetch live `main` and source hash
 ## Current state
 
 - Active Firmware source: `firmware/JEXFYZ-V6.6.ino`; `FW_VERSION = "V6.6"`; source blob observed at last reconciliation: `f51ba6db5d0e91318f63fea4014bb87f7bf76222`.
-- Active App source: `lib/main.dart`, last observed blob `4d58c3548f09138526a7cf5f305ea7890d571251`, pubspec version `1.0.0+3`, package `com.horizontalzzz.jexfyz`.
+- Active App source: `lib/main.dart`, last observed blob `e0371cac545dda2f2d5f099e4298c37c04160538`, pubspec version `1.0.0+3`, package `com.horizontalzzz.jexfyz`.
 - Current Firmware status: source-only DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED. V6.6 not independently compiled/hardware validated here.
 - Main V6.6 QC contract: `test/v6_6_qc_contract_test.dart`. It exists but has not been run in this task.
 - Open PR search last returned zero. Verify live; use main by default.

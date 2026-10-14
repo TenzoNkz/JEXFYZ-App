@@ -5372,7 +5372,7 @@ void _handleAckLine(String line) {
                         modeName: modeName,
                         previousEnabled: connected && (modeIndex < 0 || modeIndex > 0),
                         nextEnabled: connected && (modeIndex < 0 || modeIndex < supportedLedModeIds.length - 1),
-                        onPrevious: () => _setMode(modeIndex < 0 ? 0 : modeIndex - 1),
+                        onPrevious: () => _setMode(modeIndex < 0 ? 1 : modeIndex - 1),
                         onNext: () => _setMode(modeIndex < 0 ? 2 : modeIndex + 1),
                       ),
                     ],
