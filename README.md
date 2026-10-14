@@ -27,7 +27,7 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 
 ## Current validation boundary
 
-The current App source contains voltage-aware Fan/Peltier dashboard motion and a bottom-pinned Color Picker with Cancel. Static source/readback checks passed; Flutter test/analyze and App Build have NOT been run for these latest source commits. The user reported that V6.6 compiled and Online OTA updated successfully, but build logs, installed version, BIN provenance and physical thermal/LED QC still require evidence. This App-only execution did not change Firmware, BIN, Firebase or OTA state. Test files present in the repository are not evidence of passing tests. See [PROJECT_STATE.md](PROJECT_STATE.md) for current validation boundaries.
+The current App source contains phase-continuous Fan motion, a geometric Peltier frost crystal with interpolated density, larger Color Picker/Peltier Safety text and touch targets, and a transparent JE monogram notification small icon. Static source/readback checks passed; Flutter test/analyze and App Build have NOT been run for these latest commits. The latest verified successful App Build is run `38535535278` on an earlier source commit and does not include these changes. The user reported that V6.6 compiled and Online OTA updated successfully; compile logs, installed version, BIN provenance and physical thermal/LED QC remain separate evidence gates. This App-only execution did not change Firmware, BIN, Firebase or OTA. Test files present do not prove tests passed. See [PROJECT_STATE.md](PROJECT_STATE.md) for current validation boundaries.
 
 ## Non-negotiable workflow
 
