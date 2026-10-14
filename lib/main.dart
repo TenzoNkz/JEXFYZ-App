@@ -1034,8 +1034,8 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       return;
     }
     if (!widget.active) {
-      // Fan keeps its final coast angle across ordinary dashboard rebuilds. Peltier
-      // keeps its fade-out animation alive until its frost has fully disappeared.
+      // Keep the Fan's final coast angle and the Peltier's crystal pose across
+      // dashboard rebuilds; frost visibility is animated by its separate controller.
       if (widget.kind == JexAnimatedIconKind.fan ||
           widget.kind == JexAnimatedIconKind.peltier) {
         return;
