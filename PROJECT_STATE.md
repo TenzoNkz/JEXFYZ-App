@@ -51,7 +51,6 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 
 ## Current App contracts
 - Firmware telemetry owns physical state; ACK alone is not proof of hardware state.
-- Latest observed successful App Build workflow run is `38380312823` on commit `c21e2e52218e7f284ae8536855cf976199566975`; it predates this current main checkpoint and is not new validation of the present transfer/source state.
 - Voltage completion requires matching VOLTAGE telemetry.
 - App offline states must show unknown values (--) rather than stale state.
 - Auto Connect/reconnect respects preference, known cooler identity, Bluetooth/permission/location prerequisites and syncing state.
