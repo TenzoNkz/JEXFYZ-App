@@ -481,10 +481,10 @@ void main() {
     expect(activity, contains('setJexNotificationBranding(this)'));
     expect(activity, contains('jexNotificationContentIntent(this, id)'));
     expect(activity, contains('requestNotificationPermission()'));
-    expect(helper, contains('R.drawable.ic_notification'));
-    expect(helper, isNot(contains('R.drawable.jexfyzicon')));
+    expect(helper, contains('setSmallIcon(R.drawable.jexfyzicon)'));
+    expect(helper, isNot(contains('R.drawable.ic_notification')));
     expect(helper, isNot(contains('setLargeIcon')));
-    expect(icon, contains('JE X FYZ monogram'));
+    expect(icon, contains('Legacy monochrome X resource retained'));
     expect(bleService, contains('Bluetooth connected · cooler session active'));
     expect(bleService, contains('Bluetooth terhubung · sesi cooler aktif'));
     expect(floatingService, contains('Floating Monitor active'));

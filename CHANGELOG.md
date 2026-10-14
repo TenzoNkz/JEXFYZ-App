@@ -4,7 +4,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 
 ## 2026-10-14 — Notification monogram, LED contrast, anchored menus and status-icon motion
 
-- Replaced the notification's X vector with a simplified monochrome JE X FYZ monogram and removed `setLargeIcon`; the notification builder now provides one logo on the left only. Launcher artwork, notification title/body, tap intent and service messages remain unchanged.
+- Switched notification small-icon branding to the existing transparent JE X FYZ logo PNG (`R.drawable.jexfyzicon`) so Android uses the actual logo alpha shape, and removed `setLargeIcon`; only one logo appears at the left. The legacy X vector remains unused; title/body, tap intent and service messages remain unchanged.
 - Updated LED preview so Static/Rainbow remain fully vivid independently of hardware Brightness, while truly inactive Comet/Dual Chase pixels use a pale neutral baseline. Animation phase and physical firmware commands are unchanged.
 - Kept Color Picker and Peltier Safety as separate dismissible menus but anchored each below the dashboard/display-tab region. Localized Cancel / Turn On Fan and the mandatory Fan-before-Peltier safety gate remain.
 - Replaced the dashboard indicator painter with per-kind filled forms, soft layered glows, smooth orbit/rotor motion and slower distinct cycles for Battery, Hotside, Voltage, Adaptive, Peltier, Fan and Fan Speed. This is App-only presentation.

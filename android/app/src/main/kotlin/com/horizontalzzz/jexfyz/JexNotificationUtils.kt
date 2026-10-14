@@ -6,10 +6,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 
-// The monochrome JE X FYZ monogram is the sole notification icon. Intentionally no large icon.
+// Use the real transparent JE X FYZ artwork as the only icon. Android's small-icon mask uses its alpha shape.
 @Suppress("UNUSED_PARAMETER")
 internal fun Notification.Builder.setJexNotificationBranding(context: Context): Notification.Builder {
-    setSmallIcon(R.drawable.ic_notification)
+    setSmallIcon(R.drawable.jexfyzicon)
     return this
 }
 

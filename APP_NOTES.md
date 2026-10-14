@@ -49,7 +49,7 @@ This file is the durable App behavior/design contract. Live `lib/` source and th
 
 ## Android notifications and icons
 
-- Android notification small icons use a dedicated monochrome JE X FYZ monogram vector at `android/app/src/main/res/drawable/ic_notification.xml`. This is the sole notification icon: do not set a large icon or display a second logo on the right. Launcher artwork itself remains unchanged.
+- Android notification small icons use the existing transparent JE X FYZ logo asset at `android/app/src/main/res/drawable-nodpi/jexfyzicon.png` via `R.drawable.jexfyzicon` as the sole small icon. Android renders its alpha shape as a monochrome mask; do not set a large icon or show a second logo on the right. `drawable/ic_notification.xml` is a legacy X vector retained but not used for notification branding.
 - User notifications use `JE X FYZ` as the content title and the localized event/status as the body; connected/disconnected notifications must not reverse these fields. Tapping opens JE Cooler.
 - The BLE foreground-service notification has a meaningful localized connected-session body rather than an empty string. Floating Monitor uses the same branded icon and a non-empty service description.
 - When Android 13+ notification permission is absent, the first real notification attempt requests permission instead of silently dropping every alert. The actual display remains subject to user choice and Android/OEM behavior.

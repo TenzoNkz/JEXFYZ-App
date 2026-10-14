@@ -51,7 +51,7 @@ Use `MEMORY_INDEX.md` to find canonical notes. Use `CHANGELOG.md` for history on
  
 ## Latest UI change-set boundary (2026-10-14)
 
-- Source updates: `lib/main.dart` (6012d2e2d60dcbf2c5a816c78e63edbfb04b44c2), `JexNotificationUtils.kt` (4156c17ffa9f871586f01a89dd507664cac81ba9), `drawable/ic_notification.xml` (787d1ccfaf758af4cc3f1be5cc4fa4d01a8ada3d), and `test/widget_test.dart` (9c18e801b242ba3bdfd68a414407d778461b83a4).
+- Source updates: `lib/main.dart` (6012d2e2d60dcbf2c5a816c78e63edbfb04b44c2), `JexNotificationUtils.kt` (d0b2d7cadd2c87f2807d9a6c8414962799ccc906), `drawable/ic_notification.xml` (d62800ff34ed3e63946871b0f9b811c5b40341a6), and `test/widget_test.dart` (c8780386edcf8e6dfbff965fbba4ff2e8541655f).
 - Dashboard status icons now use per-kind filled vector shapes, soft glows and natural motion cycles. Menu/palette and notification changes are presentation-only; firmware/protocol/control behavior remains unchanged.
-- Color and Peltier Safety remain distinct overlays but are anchored to the display-menu region. Notification branding uses one monochrome JE monogram at left only.
+- Color and Peltier Safety remain distinct overlays but are anchored to the display-menu region. Notification branding uses the existing transparent `jexfyzicon.png` alpha shape as the sole small icon; no large icon is set. The old X vector resource remains unused.
 - Flutter tests/analyze were not run in this execution (Flutter/Dart SDK unavailable); no App Build, firmware compile, BIN/Firebase change, OTA/flash, physical-device QC or release operation occurred. The user's report of successful installation refers to an earlier app build.
