@@ -169,3 +169,14 @@ When reconciling or booting a chat, check every category below against the canon
 - Historical archives are preservation only. Search them for a missing past detail, then restore the useful fact to its canonical file with a clear historical/current label. Never quote archive “CURRENT” text as live truth.
 - Update `MEMORY_INDEX.md`, current-only `PROJECT_STATE.md`, subject-specific memory, `CHANGELOG.md`, `HANDOVER.md` if next steps changed, and replace `CHAT_TRANSFER.md` last.
 - Final confirmation must state current main HEAD, exact source/version/active .ino count, final test paths, workflow/PR state, artifact repo root, doc hashes and operations not performed.
+
+
+## Additional mandatory reconciliation gates — full repository memory
+
+- Inspect all current text, config, source, workflow and test files in the recursive tree, not only the listed note files. Read the whole prior CHAT_TRANSFER.md before replacing it. Read the listed docs fully and inspect the archives for missing historical decisions; archives are forensic only and never override live code.
+- Preserve explicit UI exclusions, including that a standalone Battery Protection Guard must not be shown in the App. Preserve phone Battery temperature telemetry separately from NTC sampling: App sends PHONE:BT at approximately 1 Hz while BLE is ready; Firmware freshness TTL is 5 seconds. The user’s one-App/one-cooler pairing-lock intent is a design requirement until exclusive enforcement is proved in source and physically verified.
+- Verify Local OTA boot SoftAP ownership and current timeouts in source (currently 10-second no-client timeout, 60-second hard limit after interaction, then Wi-Fi shutdown/radio settle before BLE). Do not change OTA logic during a memory cleanup.
+- Preserve Android identity versionName Telegram @horizontalzzz. App Build and firmware compile/BIN/OTA/Firebase/flash/release are separately gated operations. Documentation authorization is not build authorization.
+- Check every local Markdown link and all current path/version/workflow/test references after writing. Preserve archives byte-for-byte; restore relevant facts from them into canonical notes with honest historical labels.
+- Before replacing CHAT_TRANSFER.md, update all other canonical docs, indexes and prompt templates first. Record the live main HEAD immediately before the transfer write, then re-fetch the final transfer and verify its commit parent, file tree, source/version/hash, tests, workflow, PR state, and artifact-repository BIN-only contents. Never store CHAT_TRANSFER.md’s own future blob SHA inside its own contents.
+- Readable prior chats are not guaranteed to be available to every new context. Use current repository notes, transfer prompts, archives, Git history and available project context; never claim a missing chat was read, and report any unrecoverable gap instead of guessing.
