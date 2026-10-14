@@ -96,4 +96,4 @@ Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 
 ## Validation status
 
-All the above are engineering contracts and remembered requirements; any claim about what current source implements must be reconciled to the live V6.6 source. V6.6 compile, device flashing, physical thermal/LED tests, end-to-end OTA and App integration are not independently verified at this checkpoint.
+All the above are engineering contracts and remembered requirements; any claim about current source behavior must be reconciled to live V6.6 source. The user reported V6.6 compilation succeeded and Online OTA update succeeded. In this App-only execution, neither the compile log nor installed-version telemetry/source-to-BIN provenance was independently checked; physical thermal/LED tests and full OTA apply/reboot/recovery evidence remain separate QC gates. No Firmware source, BIN, Firebase metadata, flash or OTA operation was performed in this execution.
