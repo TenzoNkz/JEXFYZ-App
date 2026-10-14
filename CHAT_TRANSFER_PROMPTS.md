@@ -180,3 +180,51 @@ When reconciling or booting a chat, check every category below against the canon
 - Check every local Markdown link and all current path/version/workflow/test references after writing. Preserve archives byte-for-byte; restore relevant facts from them into canonical notes with honest historical labels.
 - Before replacing CHAT_TRANSFER.md, update all other canonical docs, indexes and prompt templates first. Record the live main HEAD immediately before the transfer write, then re-fetch the final transfer and verify its commit parent, file tree, source/version/hash, tests, workflow, PR state, and artifact-repository BIN-only contents. Never store CHAT_TRANSFER.md’s own future blob SHA inside its own contents.
 - Readable prior chats are not guaranteed to be available to every new context. Use current repository notes, transfer prompts, archives, Git history and available project context; never claim a missing chat was read, and report any unrecoverable gap instead of guessing.
+
+
+## JE X FYZ durable-decision ledger — do not omit during transfer
+
+When rebuilding memory, explicitly reconcile each item below against the live source and current user requirements. Retain it in the named canonical memory even if the immediate task is unrelated; classify implementation/evidence correctly.
+
+### Firmware source identity, hardware and wiring
+
+- Source identity: exactly one active versioned `.ino`; filename matches embedded `FW_VERSION`; every functional Firmware change bumps version. Current known source expected V6.4, but always refetch.
+- Board ESP32-C3 Super Mini / ESP32-C3 Dev Module at 3.3 V logic; GPIO0 NTC, GPIO1 TTP223, GPIO3 12 V selector, GPIO4 9 V selector, GPIO5 Peltier MOSFET, GPIO6 Fan MOSFET, GPIO7 WS2812.
+- MOSFET wiring memory: GPIO → R100 → Gate, 100 kΩ Gate–Source pull-down; Fan positive goes to supply and Fan negative to MOSFET Drain. Verify physical wiring and cables; a previously suspected 12 V selection failure was ultimately a loose cable.
+- NTC nominal 10 kΩ, fixed resistor 10 kΩ, Beta 3950, calibrated `analogReadMilliVolts()`, one sample per second. The user explicitly rejected median, trimmed-mean and multi-sample averaging; do not lose that rejected approach and its reason.
+- If NTC is invalid, check current source fail-safe contract rather than guessing. Known contract: Peltier OFF, Fan 100%, Adaptive OFF, safe 5 V selection.
+- Preserve hardware timings and control: Peltier 20 kHz/8-bit, normal OFF→ON five-second soft-start; Fan 25 kHz/8-bit, manual 50–100%, step 10; selector deadtime 200 ms; shared guard/settle 1 s; settings quiet debounce 10 s; HOTSIDE telemetry 1 Hz; state changes sent as deltas when changed.
+
+### Thermal, Adaptive, Touch and indicators
+
+- Hotside limit configurable 40–50°C, default 45°C. Manual Peltier re-arm requires Hotside <= hotLimit−1°C for five continuous seconds. One low sample must not bypass re-arm.
+- Adaptive 30-second thermal stages at 12 V / 9 V / 5 V, Peltier OFF and Fan 100%; five seconds stable at/below limit−1°C before deadline recovers, otherwise step down 12/9 or terminal-lock at 5 V. Restoration after thermal downshift goes up one rail only after 60 seconds continuously stable and never beyond saved ceiling. No rapid Hotside rise/slope protection is present in known V6.x.
+- HOTSIDE is the startup default; HOTSIDE_BATTERY is runtime-selectable and not persisted. Battery input defaults are 5 V threshold 25°C and 12 V threshold 35°C, 0.5°C hysteresis, firmware data TTL 5 s. App sends `PHONE:BT` at 1 Hz and coalesces pending heartbeat. If battery data expires, fallback to HOTSIDE behavior without silently rewriting selected profile.
+- App presentation rule: do not display a standalone Battery Protection Guard. This does not suppress actual thermal safety or independently actionable localized Notify messages.
+- One TTP223 only; no separate Wi-Fi/BLE toggle. Retain startup calibration grace, qualification/tap/double-tap/long-press timings only after live source check. Current known timing record: ~1 s startup grace, 30 ms qualification, raw HIGH 60–500 ms tap, 800 ms double-tap window, 5 s long press.
+- Adaptive ON is orange three blinks; OFF is white three blinks, with OFF indicator deferred until safe 5 V handoff when required. Voltage LED defaults: 5 V red, 9 V green, 12 V blue; user-customizable/resettable. Decorative RGB never overrides safety/OTA indications. Preserve current seven RGB modes and phase sync where relevant.
+
+### App product, BLE and user-visible behavior
+
+- Identity: App `JE Cooler`, brand/header `JE X FYZ`, package `com.horizontalzzz.jexfyz`, pubspec `1.0.0+3`; Gradle `versionName "Telegram @horizontalzzz"` is intentionally fixed.
+- UI layout reference: Horizon Cooler App; dark header, white rounded content panel, compact VOLTAGE/ADAPTIVE tabs, Home Hotside/Battery temps, voltage indicator, Adaptive, Peltier/Fan, Fan Speed and Notify reason. Menu order VOLTAGE → CONTROL → ADAPTIVE → LED → TEMPERATURE; do not redesign during QC.
+- Manual 5/9/12 V selection/cycle and 1-second guard. Manual Fan speed control is not Adaptive-controlled; Adaptive can demand 100% cooling. Manual transition completion must wait for authoritative Firmware `VOLTAGE` telemetry.
+- Firmware-owned state: ACK is not proof physical hardware changed. Disconnected dashboard/overlay outputs display unknown (`--`) rather than stale values. Touch Adaptive-OFF must publish state deltas before ACK.
+- Protocol P1 UUIDs: service `6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001`, RX `6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001`, TX `6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001`. BLE write encryption/bonding is present; one-App-only pairing lock remains unverified unless code/physical tests establish it.
+- Auto Connect is passive: it cannot enable Bluetooth or request BLE permissions by itself; requires known cooler identity, ready Bluetooth/permission/location prerequisites and no sync collision. Native services/channels must not create a second BLE/GATT client.
+- English/Indonesia localization; user-facing power states ON/OFF versus HIDUP/MATI; machine identifiers remain English.
+
+### OTA failure history, cloud contract and build operation
+
+- OTA is protected code with priority over normal work and safe outputs. Local OTA uses the boot SoftAP; currently 10-second no-client timeout, 60-second hard cap after AP interaction, 160 ms Wi-Fi-off settle before BLE owns the single radio. Reconcile to current source before quoting.
+- Online OTA earlier used CA certificate verification and OTA-only NTP/TIME_SYNCING gate; the observed user's failure was blue after Wi-Fi then red on the GitHub stage but no exact HTTP/TLS log was provided. The V6.3-origin correction removed CA/NTP together and restored `cloudClient.setInsecure()`, which user reported compiled and restored GitHub connection. This does not prove which removed factor alone caused the failure or validate V6.4. Trade-off: server identity is not authenticated.
+- Keep the raw GitHub BIN allowlist, redirect blocking, status/length/size/image checks (`0xE9`), streaming Update lifecycle, safe outputs, recovery/restart semantics. No custom firmware SHA/signature field in Firebase OTA metadata; user expects version + link. Do not infer BIN provenance from path or upload date.
+- App OTA sequence is `OTAENTER → SSID → PASS → URL → VERSION → CLOUDOTA`; timeout/disconnect ACK is ambiguous and must preserve recovery state. Separate OTA transport, full transfer, Update finalization, reboot, BLE recovery, installed-version confirmation, and Firebase promotion evidence.
+- Build App is manual issue-trigger only: title `JE X FYZ — BUILD APP TRIGGER`, token `JEXFYZ_BUILD_TRIGGER_V1`; Java 17, Flutter 3.47.2 stable, Gradle 9.3.1, one obfuscated production-signed APK `JEXFYZ-release.apk` in release `jexfyz-latest`. Do not run it unless explicitly authorized. Preserve Gradle identity.
+
+### Approved physical/visual design and memory discipline
+
+- Approved grille: solid white symmetric geometry, perfect square 1:1 outer contour, central purple X, four corner mounting holes. Preserve interior pattern/frame, remove only the two left/right midpoint protrusions when asked. Flat print-ready 2D, no shadow/bevel/gradient/texture. HZ monogram was tried and reverted; purple X is approved. “Enlarge only” changes scale, not design.
+- Preserve icons/cooler PNG transparency and 1:1 aspect. All visual changes are scoped; don't invent a redesign.
+- Preserve failed/rejected methods and their reason in the appropriate current note/changelog, but label older claims as historical. A source contract/test file is not a run; compile is not OTA install; blue/red LED is not an HTTP diagnosis; version bump is not a BIN; reboot symptom is not proof of brownout; closed PR is not automatically merged.
+- At final boot snapshot include exact next steps, current and historical version boundary, current workflow and CI run SHA, all canonical document hashes, active tests, open PR/branch state, current BIN hash/provenance, and all not-run operations. Redact credentials and signing material.
