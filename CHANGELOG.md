@@ -6,7 +6,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 
 - Compactened the LED preview row, removed the numeric mode index, narrowed its center card, and darkened left/right LED column backgrounds for contrast.
 - Decoupled LED preview core opacity/glow from the hardware Brightness setting so colors stay visible at low hardware brightness; Firmware brightness/protocol behavior is unchanged.
-- Replaced the code-only palette with 36 curated hue-ordered colors, localized names, and a centered responsive dialog. HEX values remain internal to the RGB command and are not displayed.
+- Replaced the code-only palette with 36 curated hue-ordered colors, localized names, and a centered responsive dialog. HEX values remain internal to the RGB command and are not displayed. Common colors stored by prior palette versions retain localized aliases; legacy Cyan #00FFFF and classic Red are still selectable without adding dark/light brightness variants.
 - CONTROL/ADAPTIVE/LED menu switch rows show an OFF-looking disabled fallback with the toggle at left while BLE is disconnected. Home/dashboard and Floating Monitor remain unknown (`--`) when physical telemetry is unavailable.
 - Added monochrome Android notification icon plus the full-color branded large icon, fixed BLE event title/body order, added app-open tap intents and meaningful localized foreground service bodies, and requests Android 13+ notification permission at the first actual notification attempt.
 - Updated UI/source-contract tests and canonical memory. Tests/analyze are NOT RUN; Android OEM notification rendering, narrow-screen layout and hardware LED appearance remain UNVERIFIED.

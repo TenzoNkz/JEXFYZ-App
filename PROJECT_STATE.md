@@ -8,11 +8,11 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 - **Active Firmware source:** firmware/JEXFYZ-V6.6.ino.
 - **Firmware constant:** FW_VERSION = "V6.6".
 - **Firmware source blob last observed:** f51ba6db5d0e91318f63fea4014bb87f7bf76222.
-- **Active App source:** lib/main.dart, current blob a9e50590a72a7eab91f091092d998bfa5512ce7a.
+- **Active App source:** lib/main.dart, current blob c0567d4652ba5b84ce82b2d382916754cd73d861.
 - **Package/version:** com.horizontalzzz.jexfyz, pubspec 1.0.0+3.
 - **Android identity:** Gradle versionName "Telegram @horizontalzzz"; intentional, preserve exactly.
 - **QC contracts:** test/v6_6_qc_contract_test.dart, test/firmware_touch_adaptive_sync_test.dart, test/app_protocol_notify_contract_test.dart, test/widget_test.dart. Test execution must be checked independently.
-- **Current App/UI hashes:** `lib/main.dart` = a9e50590a72a7eab91f091092d998bfa5512ce7a; `lib/app_settings.dart` = bff5544fcb708a4d0c76ef443ff325ec5b3bee0e; `test/widget_test.dart` = 0ba772d70a68ff6ae43f31145399dd12df4d45b1; `test/v6_6_qc_contract_test.dart` = 2bee4d960d014f0765422dcb5ed1c9870ba6ee3a; `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt` = 6c17a7e38c3a5b3f3f8fc6b3e5b38a99fd83081e; `JeForegroundService.kt` = 9ea4dce7001bcd5cc10f9c1c7ad62f34ec54b03e; `FloatingMonitorService.kt` = 55972b64329a2e1cc91e29a172d0a97a118d8ac1; `JexNotificationUtils.kt` = 4ea74267bae804b4c0ad56e6db9fc7133008f779; `drawable/ic_notification.xml` = 2148252fddee854dcd8a7890c04cb51588e87644.
+- **Current App/UI hashes:** `lib/main.dart` = c0567d4652ba5b84ce82b2d382916754cd73d861; `lib/app_settings.dart` = 232a7575460e5417f7b760f24b5057687a47ee1a; `test/widget_test.dart` = ef84c41fb09dac62cb749c4fed660b9a517ff4e8; `test/v6_6_qc_contract_test.dart` = 2bee4d960d014f0765422dcb5ed1c9870ba6ee3a; `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt` = 6c17a7e38c3a5b3f3f8fc6b3e5b38a99fd83081e; `JeForegroundService.kt` = 9ea4dce7001bcd5cc10f9c1c7ad62f34ec54b03e; `FloatingMonitorService.kt` = 55972b64329a2e1cc91e29a172d0a97a118d8ac1; `JexNotificationUtils.kt` = 4ea74267bae804b4c0ad56e6db9fc7133008f779; `drawable/ic_notification.xml` = 2148252fddee854dcd8a7890c04cb51588e87644.
 - **Workflow:** .github/workflows/jexfyz-app-build-trigger.yml; explicit title/token trigger only.
 - V6.6 has not been independently compiled or hardware-tested by the assistant. User-reported V6.3 compile/Online OTA connection success refers to the prior revision and does not certify V6.6.
 - Do not infer that the existing artifact BIN matches current V6.6 source; source/BIN provenance remains unverified.
@@ -32,7 +32,7 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 ### LED mode and App/firmware synchronization
 - Firmware V6.6 supports Static (1), Breath (2), Comet (4), Dual Chase (5), Left/Right (6), and Rainbow (7). ID 3 is retired; persisted ID 3/invalid values migrate to Static, and new mode-3 commands are rejected.
 - Firmware publishes one `LED_SYNC:<mode>,<phase_ms>,<cycle_ms>` tuple calculated at BLE notify time; App interpolates monotonically between snapshots and corrects drift without restarting the animation for every update.
-- LED preview uses a compact row: left arrow, four left pixels, centered localized mode name only (no numeric index), four right pixels and right arrow. LED-column backgrounds are slightly darker; preview core opacity/glow does not follow the hardware Brightness slider. The centered Color Picker has 36 hue-ordered named presets with localized names and no visible HEX codes.
+- LED preview uses a compact row: left arrow, four left pixels, centered localized mode name only (no numeric index), four right pixels and right arrow. LED-column backgrounds are slightly darker; preview core opacity/glow does not follow the hardware Brightness slider. The centered Color Picker has 36 hue-ordered named presets with localized names and no visible HEX codes. Existing stored colors from the previous palette keep localized name aliases; exact Cyan #00FFFF remains a selectable preset.
 - App tests and firmware contract tests were updated but have NOT been run. V6.6 has not been compiled or physically validated; artifact BIN remains unchanged and provenance is unverified.
 
 ### Thermal / Adaptive safety
