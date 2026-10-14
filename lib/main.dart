@@ -1555,7 +1555,9 @@ class _JexIconPainter extends CustomPainter {
         break;
 
             case JexAnimatedIconKind.fan:
-        final rotation = active ? angle : 0.0;
+        // During OFF coast-down the controller continues forward briefly. Its final
+        // phase is retained, so the rotor never jumps from its last angle to zero.
+        final rotation = (active || progress > .001) ? angle : 0.0;
         for (var i = 0; i < 3; i++) {
           _drawFanBlade(canvas, size, rotation + i * math.pi * 2 / 3);
         }
