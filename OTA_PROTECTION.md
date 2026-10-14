@@ -5,6 +5,7 @@
 ## Scope protected by this contract
 
 - Local OTA state machine and boot SoftAP path.
+- Boot SoftAP window and Wi-Fi→BLE radio handoff timings: current Firmware uses a 10-second no-client timeout, a 60-second AP hard limit, and a 160 ms Wi-Fi-off settle before BLE ownership. Verify live source before referring to a changed value; unrelated work must not retime this protected path.
 - Online OTA connection, URL/path validation and image download.
 - OTA priority over ordinary control/UI work.
 - Wi-Fi↔BLE single-radio ownership handoff.
