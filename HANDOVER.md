@@ -7,7 +7,8 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). Re-fetch live `main` and source hash
 - Active Firmware source: `firmware/JEXFYZ-V6.6.ino`; `FW_VERSION = "V6.6"`; source blob observed at last reconciliation: `f51ba6db5d0e91318f63fea4014bb87f7bf76222`.
 - Active App source: `lib/main.dart`, current blob `a9e50590a72a7eab91f091092d998bfa5512ce7a`, pubspec version `1.0.0+3`, package `com.horizontalzzz.jexfyz`.
 - Current Firmware status: source-only DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED. V6.6 not independently compiled/hardware validated here.
-- Main V6.6 QC contract: `test/v6_6_qc_contract_test.dart`. It exists but has not been run in this task.
+- Main V6.6 QC contract: `test/v6_6_qc_contract_test.dart`. The current UI/notification execution updated `test/widget_test.dart` and `test/v6_6_qc_contract_test.dart`, but these tests have NOT been run.
+- Latest observed successful App Build run: `38520146994` on parent commit `1024eb8e145429913aacb52f4cf352e087885d44`; it does not validate the newer source commit on current `main`.
 - Open PR search last returned zero. Verify live; use main by default.
 - Artifact repository `TenzoNkz/JEXFYZ-Firmware` is intended to contain only `JEXFYZ.cpp.bin`; all notes belong in this repo.
 - App memory explicitly records a 1 Hz Android phone-battery heartbeat, firmware 5-second battery-data freshness TTL, and the requirement not to display a standalone Battery Protection Guard. One-App/one-cooler exclusive pairing is a user design intent whose exact enforcement remains unverified.

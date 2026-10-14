@@ -75,7 +75,7 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 
 ## App Build
 - Only active workflow: .github/workflows/jexfyz-app-build-trigger.yml.
-- The latest observed successful App Build run is `38380312823` on commit `c21e2e52218e7f284ae8536855cf976199566975`; it predates the current transfer checkpoint and is not a fresh test/build of this exact `main` state.
+- The latest observed successful App Build run is `38520146994` on commit `1024eb8e145429913aacb52f4cf352e087885d44` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38520146994). It predates the current UI/notification source commit and is NOT a fresh build/test certification of current `main`.
 - Trigger title: JE X FYZ — BUILD APP TRIGGER; body token JEXFYZ_BUILD_TRIGGER_V1.
 - Toolchain last recorded: Java 17, Flutter 3.47.2 stable, Gradle 9.3.1, Ubuntu 24.04.
 - Intended output: one obfuscated, production-signed ordinary APK named JEXFYZ-release.apk, uploaded to GitHub Release jexfyz-latest. No Play Store bundle or Actions artifact.
