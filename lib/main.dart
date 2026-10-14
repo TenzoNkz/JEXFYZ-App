@@ -1104,6 +1104,13 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       _frostFromIntensity += (previousIntensity - _frostFromIntensity) * previousT;
       _frostFromParticleCount += (previousCount - _frostFromParticleCount) * previousT;
       _frostFromVisibility += (previousVisibility - _frostFromVisibility) * previousT;
+      if (widget.active != oldWidget.active) {
+        frostTransitionController.duration = widget.active
+            ? const Duration(milliseconds: 360)
+            : const Duration(milliseconds: 520);
+      } else {
+        frostTransitionController.duration = const Duration(milliseconds: 420);
+      }
       frostTransitionController.forward(from: 0);
     }
 
