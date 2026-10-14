@@ -547,6 +547,7 @@ void main() {
     expect(peltier, contains('Fractional opacity interpolates particle count'));
     expect(peltier, contains('math.sin(angle) * .035'));
     expect(peltier, contains('frostVisibilityOverride'));
+    expect(peltier, contains('* coolingFade'));
     expect(peltier, isNot(contains('final petal = Path()')));
   });
 
