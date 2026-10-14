@@ -5,9 +5,9 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). Re-fetch live `main` and source hash
 ## Current state
 
 - Active Firmware source: `firmware/JEXFYZ-V6.6.ino`; `FW_VERSION = "V6.6"`; source blob observed at last reconciliation: `f51ba6db5d0e91318f63fea4014bb87f7bf76222`.
-- Active App source: `lib/main.dart`, current blob `6012d2e2d60dcbf2c5a816c78e63edbfb04b44c2`, pubspec version `1.0.0+3`, package `com.horizontalzzz.jexfyz`.
-- Current Firmware status: source-only DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED. V6.6 not independently compiled/hardware validated here.
-- Main V6.6 QC contract: `test/v6_6_qc_contract_test.dart`. This UI/notification execution updated `test/widget_test.dart` (`c8780386edcf8e6dfbff965fbba4ff2e8541655f`); Flutter tests and analyze have NOT run.
+- Active App source: `lib/main.dart`, current blob `96a4c968e102a7ebc6b00d3932cf998829b1d07a`, pubspec version `1.0.0+3`, package `com.horizontalzzz.jexfyz`.
+- Firmware source remains V6.6 and release state remains DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED. User reported successful V6.6 compilation and Online OTA update, but compile logs/artifact provenance and complete physical QC were not independently verified here.
+- Main V6.6 QC contract: `test/v6_6_qc_contract_test.dart`. The latest App UI execution updated `test/widget_test.dart` (`dbdb8e8cb407c3b534747086027c5512aac9fe20`); Flutter tests/analyze were NOT run because Flutter/Dart SDK is unavailable.
 - Latest observed successful App Build run: `38520146994` on commit `1024eb8e145429913aacb52f4cf352e087885d44`; it predates the LED UI/notification source changes and does not validate current source. The exact current test list and run evidence are refreshed in `CHAT_TRANSFER.md`.
 - Open PR search last returned zero. Verify live; use main by default.
 - Artifact repository `TenzoNkz/JEXFYZ-Firmware` is intended to contain only `JEXFYZ.cpp.bin`; all notes belong in this repo.
@@ -51,7 +51,7 @@ Use `MEMORY_INDEX.md` to find canonical notes. Use `CHANGELOG.md` for history on
  
 ## Latest UI change-set boundary (2026-10-14)
 
-- Source updates: `lib/main.dart` (6012d2e2d60dcbf2c5a816c78e63edbfb04b44c2), `JexNotificationUtils.kt` (d0b2d7cadd2c87f2807d9a6c8414962799ccc906), `drawable/ic_notification.xml` (d62800ff34ed3e63946871b0f9b811c5b40341a6), and `test/widget_test.dart` (c8780386edcf8e6dfbff965fbba4ff2e8541655f).
-- Dashboard status icons now use per-kind filled vector shapes, soft glows and natural motion cycles. Menu/palette and notification changes are presentation-only; firmware/protocol/control behavior remains unchanged.
-- Color and Peltier Safety remain distinct overlays but are anchored to the display-menu region. Notification branding uses the existing transparent `jexfyzicon.png` alpha shape as the sole small icon; no large icon is set. The old X vector resource remains unused.
-- Flutter tests/analyze were not run in this execution (Flutter/Dart SDK unavailable); no App Build, firmware compile, BIN/Firebase change, OTA/flash, physical-device QC or release operation occurred. The user's report of successful installation refers to an earlier app build.
+- Source updates: `lib/main.dart` (`96a4c968e102a7ebc6b00d3932cf998829b1d07a`), `test/widget_test.dart` (`dbdb8e8cb407c3b534747086027c5512aac9fe20`), and the previously verified notification source/assets. See live `main` for current hashes.
+- Fan rotation is voltage-aware (5V slow / 9V medium / 12V fast); Peltier frost density/glow is voltage-scaled and fades when OFF. This is illustrative App animation only, with no firmware/BLE/control behavior change.
+- Color Picker is fixed to the bottom safe area, has a localized top-left Cancel button and no scrollable outer panel. Cancel dismisses without sending RGB; swatch selection retains the existing command path. Peltier Safety stays separate with its required Fan-before-Peltier gate.
+- Flutter tests/analyze were not run in this execution (Flutter/Dart SDK unavailable); no App Build, Firmware compile, BIN/Firebase change, OTA/flash, physical-device QC or release operation occurred in this execution. The user's earlier V6.6 compile/Online OTA and preceding App Build reports remain user-reported, not independently validated here.
