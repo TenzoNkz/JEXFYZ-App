@@ -8,7 +8,7 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 - **Active Firmware source:** firmware/JEXFYZ-V6.6.ino.
 - **Firmware constant:** FW_VERSION = "V6.6".
 - **Firmware source blob last observed:** f51ba6db5d0e91318f63fea4014bb87f7bf76222.
-- **Active App source:** lib/main.dart, current blob 96a4c968e102a7ebc6b00d3932cf998829b1d07a.
+- **Active App source:** `lib/main.dart`, current blob `2005f4c163d466f9015a564d5418af1e86e09b41`.
 - **Package/version:** com.horizontalzzz.jexfyz, pubspec 1.0.0+3.
 - **Android identity:** Gradle versionName "Telegram @horizontalzzz"; intentional, preserve exactly.
 - **QC contracts:** test/v6_6_qc_contract_test.dart, test/firmware_touch_adaptive_sync_test.dart, test/app_protocol_notify_contract_test.dart, test/widget_test.dart. Test execution must be checked independently.
@@ -73,7 +73,7 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 - Latest source changes on `main`: Fan speed changes preserve the current rotor phase at 5V/9V/12V and coast forward to a retained angle when OFF; the Peltier indicator is now a framed thermoelectric module with a six-branched frost crystal, smoothly interpolated frost intensity/particle density and periodic drift. Frost fades in over 360 ms on ON and fades out over 520 ms on OFF; voltage changes use a 420 ms transition.
 - The Color Picker now uses a 22sp title, 15sp selected-color/Cancel text and 42dp swatches while keeping 36 presets and bottom-pinned Cancel semantics. Peltier Safety uses a 24sp title, 17sp body, 16sp actions and larger 48–50dp action targets. Notification small icon is a bold JE monogram vector on transparency; no large icon is set.
 - Widget contracts cover phase continuity/coast-down, crystal Peltier geometry and interpolation, Cancel behavior, dialog sizing, and the JE vector icon. Static source/readback checks passed. Flutter tests/analyze have NOT RUN because Flutter/Dart SDK is unavailable; current-source Android rendering and physical appearance remain UNVERIFIED.
-- Latest verified successful App Build is run `38545637192` on commit `9e790765f6683d342025317ce6594cc8519026de` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38545637192). Analysis, Flutter tests, APK signing/build, publication and downloaded asset verification passed. Release `jexfyz-latest` contains one APK (54,505,507 bytes; SHA-256 `26b3746a9d6969475e72a56122d5c4051eaa8742f7d4e3559cc80f4fdb4d2b87`). That commit is older than the current animation/Peltier/dialog/JE-icon commits, so the current source has not been built.
+- No successful APK currently represents the source/test/icon blobs listed above; detailed latest verified App Build and asset evidence is recorded once in the App Build section below.
 
 ## App Build
 - Only active workflow: .github/workflows/jexfyz-app-build-trigger.yml.
