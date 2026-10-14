@@ -749,11 +749,13 @@ class _JexColorPickerCard extends StatelessWidget {
   final List<LedColorPreset> colors;
   final String selected;
   final ValueChanged<String> onSelected;
+  final VoidCallback onCancel;
 
   const _JexColorPickerCard({
     required this.colors,
     required this.selected,
     required this.onSelected,
+    required this.onCancel,
   });
 
   @override
@@ -778,13 +780,40 @@ class _JexColorPickerCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              JexText.of('color', lang),
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: scheme.onSurface,
-                fontSize: 18,
-                fontWeight: FontWeight.w900,
+            SizedBox(
+              height: 34,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Text(
+                    JexText.of('color', lang),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: scheme.onSurface,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton(
+                      onPressed: onCancel,
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        minimumSize: const Size(0, 34),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      child: Text(
+                        JexText.of('cancel', lang),
+                        style: TextStyle(
+                          color: scheme.primary,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 7),
@@ -902,14 +931,49 @@ bool jexIndicatorAnimationActive({
 }) =>
     connected && stateActive;
 
-Duration jexIconAnimationDuration(JexAnimatedIconKind kind) {
+int jexVoltageAnimationLevel(String voltage) {
+  return switch (voltage.trim().toUpperCase()) {
+    '5V' => 5,
+    '9V' => 9,
+    '12V' => 12,
+    _ => 5,
+  };
+}
+
+/// Visual intensity only; this does not estimate actual surface temperature or ice.
+double jexPeltierFrostIntensity(int voltageLevel) {
+  return switch (voltageLevel) {
+    5 => .24,
+    9 => .58,
+    12 => 1.0,
+    _ => .24,
+  };
+}
+
+int jexPeltierFrostParticleCount(int voltageLevel) {
+  return switch (voltageLevel) {
+    5 => 2,
+    9 => 5,
+    12 => 8,
+    _ => 2,
+  };
+}
+
+Duration jexIconAnimationDuration(
+  JexAnimatedIconKind kind, {
+  int voltageLevel = 5,
+}) {
   return switch (kind) {
     JexAnimatedIconKind.battery => const Duration(milliseconds: 2600),
     JexAnimatedIconKind.hotside => const Duration(milliseconds: 3200),
     JexAnimatedIconKind.voltage => const Duration(milliseconds: 1900),
     JexAnimatedIconKind.adaptive => const Duration(milliseconds: 4600),
     JexAnimatedIconKind.peltier => const Duration(milliseconds: 3000),
-    JexAnimatedIconKind.fan => const Duration(milliseconds: 1450),
+    JexAnimatedIconKind.fan => switch (voltageLevel) {
+        9 => const Duration(milliseconds: 1250),
+        12 => const Duration(milliseconds: 620),
+        _ => const Duration(milliseconds: 2600),
+      },
     JexAnimatedIconKind.speed => const Duration(milliseconds: 1800),
     JexAnimatedIconKind.led => const Duration(milliseconds: 1650),
     JexAnimatedIconKind.bluetooth => const Duration(milliseconds: 2800),
@@ -924,6 +988,7 @@ class JexAnimatedIcon extends StatefulWidget {
   final double size;
   final bool active;
   final double level;
+  final int voltageLevel;
   final bool warning;
 
   const JexAnimatedIcon({
@@ -934,6 +999,7 @@ class JexAnimatedIcon extends StatefulWidget {
     this.size = 24,
     this.active = false,
     this.level = 1,
+    this.voltageLevel = 5,
     this.warning = false,
   });
 
@@ -946,7 +1012,8 @@ class JexAnimatedIcon extends StatefulWidget {
     this.warning = false,
   })  : kind = JexAnimatedIconKind.generic,
         glyph = icon,
-        level = 1;
+        level = 1,
+        voltageLevel = 5;
 
   @override
   State<JexAnimatedIcon> createState() => _JexAnimatedIconState();
@@ -957,7 +1024,16 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
   late final AnimationController controller;
 
   void _syncAnimation() {
-    if (widget.kind == JexAnimatedIconKind.generic || !widget.active) {
+    if (widget.kind == JexAnimatedIconKind.generic) {
+      controller.stop();
+      controller.value = 0;
+      return;
+    }
+    if (!widget.active) {
+      // Keep only the Peltier controller alive for its short frost fade-out.
+      if (widget.kind == JexAnimatedIconKind.peltier && controller.isAnimating) {
+        return;
+      }
       controller.stop();
       controller.value = 0;
       return;
@@ -972,7 +1048,10 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     super.initState();
     controller = AnimationController(
       vsync: this,
-      duration: jexIconAnimationDuration(widget.kind),
+      duration: jexIconAnimationDuration(
+        widget.kind,
+        voltageLevel: widget.voltageLevel,
+      ),
     );
     _syncAnimation();
   }
@@ -980,14 +1059,31 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
   @override
   void didUpdateWidget(covariant JexAnimatedIcon oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.kind != oldWidget.kind) {
-      controller.duration = jexIconAnimationDuration(widget.kind);
+    final fanVoltageChanged = widget.kind == JexAnimatedIconKind.fan &&
+        widget.voltageLevel != oldWidget.voltageLevel;
+    if (widget.kind != oldWidget.kind || fanVoltageChanged) {
+      controller.duration = jexIconAnimationDuration(
+        widget.kind,
+        voltageLevel: widget.voltageLevel,
+      );
       controller.reset();
     }
-    // Transitioning OFF always freezes the painter at its canonical static pose.
-    // Transitioning ON starts a fresh motion cycle from phase zero.
+    // Fan voltage changes restart the rotation cycle with a new speed.
+    // Peltier OFF fades the frost overlay instead of leaving ice particles frozen on-screen.
     if (widget.active != oldWidget.active) {
-      controller.reset();
+      if (widget.kind == JexAnimatedIconKind.peltier &&
+          oldWidget.active &&
+          !widget.active) {
+        controller.stop();
+        controller.value = 1;
+        controller.animateTo(
+          0,
+          duration: const Duration(milliseconds: 520),
+          curve: Curves.easeOutCubic,
+        );
+      } else {
+        controller.reset();
+      }
     }
     _syncAnimation();
   }
@@ -1024,6 +1120,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
             progress: controller.value,
             active: widget.active,
             level: level,
+            voltageLevel: widget.voltageLevel,
             warning: widget.warning,
           ),
         ),
@@ -1038,6 +1135,7 @@ class _JexIconPainter extends CustomPainter {
   final double progress;
   final bool active;
   final double level;
+  final int voltageLevel;
   final bool warning;
 
   const _JexIconPainter({
@@ -1046,6 +1144,7 @@ class _JexIconPainter extends CustomPainter {
     required this.progress,
     required this.active,
     required this.level,
+    required this.voltageLevel,
     required this.warning,
   });
 
@@ -1115,7 +1214,9 @@ class _JexIconPainter extends CustomPainter {
     final s = size.shortestSide;
     final cx = size.width / 2;
     final cy = size.height / 2;
-    final p = active ? progress.clamp(0.0, 1.0).toDouble() : 0.0;
+    final p = (active || kind == JexAnimatedIconKind.peltier)
+        ? progress.clamp(0.0, 1.0).toDouble()
+        : 0.0;
     final angle = p * math.pi * 2;
     final pulse = .5 - .5 * math.cos(angle);
     final softPulse = .5 + .5 * math.sin(angle);
@@ -1266,27 +1367,65 @@ class _JexIconPainter extends CustomPainter {
 
       case JexAnimatedIconKind.peltier:
         final center = Offset(cx, cy);
-        _drawGlow(canvas, center, s * (.18 + .035 * pulse), active ? .14 + .08 * pulse : .02);
-        canvas.drawCircle(center, s * .35, stroke(s * .025, color.withValues(alpha: active ? .24 : .12)));
-        // A 60° rotation is seamless for the six-fold snowflake.
-        final rotation = active ? angle / 6 : 0.0;
+        final requestedIntensity = jexPeltierFrostIntensity(voltageLevel);
+        final coolingFade = active ? 1.0 : p;
+        final frostIntensity = requestedIntensity * coolingFade;
+        _drawGlow(
+          canvas,
+          center,
+          s * (.18 + .055 * frostIntensity + .015 * pulse),
+          active ? .055 + .17 * frostIntensity + .025 * pulse : .025 + .10 * frostIntensity,
+        );
+        canvas.drawCircle(
+          center,
+          s * .35,
+          stroke(s * .025, color.withValues(alpha: active ? .08 + .25 * frostIntensity : .12 + .12 * frostIntensity)),
+        );
+        // A 60° rotation is seamless for the six-fold snowflake. Voltage changes frost intensity,
+        // not the displayed temperature: 5V = light crystals, 9V = medium frost, 12V = dense ice.
+        final rotation = (active || coolingFade > .001) ? angle / 6 : 0.0;
         for (var i = 0; i < 6; i++) {
           canvas.save();
           canvas.translate(cx, cy);
           canvas.rotate(rotation + i * math.pi / 3);
           final petal = Path()
             ..moveTo(-s * .030, -s * .065)
-            ..cubicTo(-s * .075, -s * .15, -s * .060, -s * .27, 0, -s * .365)
+            ..cubicTo(-s * .075, -s * .15, -s * .060, -s * .27, 0, -s * (.345 + .020 * frostIntensity))
             ..cubicTo(s * .060, -s * .27, s * .075, -s * .15, s * .030, -s * .065)
             ..close();
-          canvas.drawPath(petal, fill(color.withValues(alpha: active ? .86 + .10 * pulse : .52)));
-          canvas.drawPath(petal, stroke(s * .012, color.withValues(alpha: .54)));
+          canvas.drawPath(
+            petal,
+            fill(color.withValues(alpha: active ? .56 + .40 * frostIntensity + .04 * pulse : .52 + .16 * frostIntensity)),
+          );
+          canvas.drawPath(petal, stroke(s * .012, color.withValues(alpha: .35 + .30 * frostIntensity)));
           canvas.drawCircle(
-            Offset(0, -s * .335),
-            s * .025,
-            fill(Colors.white.withValues(alpha: active ? .44 + .16 * softPulse : .20)),
+            Offset(0, -s * (.315 + .020 * frostIntensity)),
+            s * (.018 + .009 * frostIntensity),
+            fill(Colors.white.withValues(alpha: active ? .30 + .68 * frostIntensity : .20 + .30 * frostIntensity)),
           );
           canvas.restore();
+        }
+
+        // Small white ice crystals visibly accumulate with the selected operating voltage.
+        final particleCount = jexPeltierFrostParticleCount(voltageLevel);
+        for (var i = 0; i < particleCount; i++) {
+          final particleAngle = (i * math.pi * 2 / particleCount) + (active ? p * .18 : 0.0);
+          final radius = s * (.39 + .020 * frostIntensity);
+          final particle = Offset(
+            cx + math.cos(particleAngle) * radius,
+            cy + math.sin(particleAngle) * radius,
+          );
+          final shard = s * (.007 + .015 * frostIntensity);
+          final crystal = Path()
+            ..moveTo(particle.dx, particle.dy - shard)
+            ..lineTo(particle.dx + shard * .58, particle.dy)
+            ..lineTo(particle.dx, particle.dy + shard)
+            ..lineTo(particle.dx - shard * .58, particle.dy)
+            ..close();
+          canvas.drawPath(
+            crystal,
+            fill(Colors.white.withValues(alpha: active ? .26 + .70 * frostIntensity : .52 * frostIntensity)),
+          );
         }
         canvas.drawCircle(center, s * .10, fill(color));
         canvas.drawCircle(center, s * .043, fill(Colors.white.withValues(alpha: .70)));
@@ -1409,6 +1548,7 @@ class _JexIconPainter extends CustomPainter {
       oldDelegate.progress != progress ||
       oldDelegate.active != active ||
       oldDelegate.level != level ||
+      oldDelegate.voltageLevel != voltageLevel ||
       oldDelegate.warning != warning;
 }
 
@@ -3760,18 +3900,20 @@ void _handleAckLine(String line) {
         return SafeArea(
           child: LayoutBuilder(
             builder: (dialogContext, constraints) {
-              final top = displayMenuOverlayTop(
-                screenWidth: MediaQuery.sizeOf(dialogContext).width,
-                availableHeight: constraints.maxHeight,
-              );
-              return SingleChildScrollView(
-                padding: EdgeInsets.fromLTRB(16, top, 16, 16),
-                child: Center(
+              // Pin the palette to the bottom safe area. The panel itself does not
+              // scroll/drag; only color taps change the preview or close the dialog.
+              return Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 420),
                     child: _JexColorPickerCard(
                       colors: ledColorPresets,
                       selected: rgbColor.toUpperCase(),
+                      onCancel: () {
+                        if (dialogContext.mounted) Navigator.pop(dialogContext);
+                      },
                       onSelected: (value) async {
                         await _setRgbColor(value);
                         if (dialogContext.mounted) Navigator.pop(dialogContext);
@@ -3792,7 +3934,7 @@ void _handleAckLine(String line) {
           opacity: animation,
           child: ScaleTransition(
             scale: scale,
-            alignment: Alignment.topCenter,
+            alignment: Alignment.bottomCenter,
             child: child,
           ),
         );
@@ -4220,6 +4362,7 @@ void _handleAckLine(String line) {
     double level = 1,
     bool warning = false,
     bool? animationActive,
+    int voltageLevel = 5,
   }) {
     final display = value == '--' ? '--' : value + unit;
     final active = value != '--';
@@ -4283,6 +4426,7 @@ void _handleAckLine(String line) {
                             color: indicatorColor,
                             active: animationIsActive,
                             level: level,
+                            voltageLevel: voltageLevel,
                             warning: warning,
                           ),
                   ),
@@ -4360,6 +4504,7 @@ void _handleAckLine(String line) {
         stateActive: value,
       ),
       level: fanOn ? fanSpeed / 100 : 0,
+      voltageLevel: jexVoltageAnimationLevel(voltage),
     );
   }
 
