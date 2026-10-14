@@ -2,6 +2,15 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
+## 2026-10-14 — V6.5 Adaptive Peltier transition continuity
+
+- Bumped the active Firmware source to `firmware/JEXFYZ-V6.5.ino` and `FW_VERSION = "V6.5"`; retained exactly one active versioned `.ino`.
+- Adaptive ON/OFF still returns the selector to safe 5 V but no longer toggles the logical Peltier state OFF solely for that handoff. Both paths use the existing output reconciliation and voltage-transition pause helper.
+- An active five-second soft-start is paused by `requestVoltage()`, then restarted after selector deadtime and the existing one-second settle. The settle timestamp is set before Adaptive activation reconciles output state, so an old timestamp cannot shorten the wait. If the ramp has completed, PWM remains at 100%. A Peltier already OFF stays OFF.
+- Explicit user Peltier-OFF cancels deferred Adaptive-stop restoration; Hotside/NTC safety and OTA safe-output also remain higher priority. The change does not weaken thermal/OTA protections.
+- Renamed the active static contract to `test/v6_5_qc_contract_test.dart` and added a regression assertion that Adaptive ON/OFF handoff code does not introduce its own `peltierOn = false` cycle.
+- Static source/diff inspection only. Flutter tests/analyze, ArduinoDroid compile, BIN provenance, physical hardware tests, OTA, App Build and release were NOT run; V6.5 remains source-only and NOT RELEASED.
+
 ## 2026-10-14 — Memory-system cleanup / V6.4 checkpoint
 
 - Reconciled current source version to `firmware/JEXFYZ-V6.4.ino`, `FW_VERSION = "V6.4"`; one active versioned source file.
@@ -80,7 +89,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 
 ## 2026-10-05 — V5.4–V5.6 adaptive/safety history (historical)
 
-- HOTSIDE adaptive safety historically used 10-second step-down dwell with fan/LED rules; subsequent versions changed thermal dwell, re-arm behavior and recovery. Do not apply this old 10-second policy to the active V6.4 contract without an explicitly approved change.
+- HOTSIDE adaptive safety historically used 10-second step-down dwell with fan/LED rules; subsequent versions changed thermal dwell, re-arm behavior and recovery. Do not apply this old 10-second policy to the active V6.5 contract without an explicitly approved change.
 - Adaptive upward voltage dwell became 5 seconds after every completed increase in both profiles.
 - Historical GPIO mapping: NTC0, Touch1, 12V3, 9V4, Peltier5, Fan6, WS2812 7; 200 ms selector deadtime and 5-second Peltier OFF→ON ramp were retained across later versions.
 

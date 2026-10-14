@@ -16,18 +16,18 @@ Snapshot date: 2026-10-14 (Asia/Jakarta). This detailed transfer file bridges pr
 ## 1. Repository checkpoint immediately before this transfer refresh
 
 - Canonical repository: TenzoNkz/JEXFYZ-App, private, branch main.
-- Main HEAD immediately before this transfer write: 2d01ef02051e1098d53e0ebcfd590f88decc02f0. This snapshot will be written last; its resulting commit must have this exact commit as parent. Re-fetch final HEAD and verify parent after saving.
+- Main HEAD immediately before this transfer write: 7f6ae6435bd287ba49ff467bcb4378d2eb7c936b. This snapshot will be written last; its resulting commit must have this exact commit as parent. Re-fetch final HEAD and verify parent after saving.
 - Last live open-PR search returned 0. Branches observed: diag/latest-stable-v16, diagnostic/v1.6-heap-check, fix/adaptive-power-sequencing, main, tmp-jexfyz-v5-test. Continue on main by default.
 - Closed-PR search returned #18, #7, #5, #4, #3, #2, #1. The connector’s closed-PR records do not reliably expose merge status; do not infer merged/unmerged from closure alone.
-- Active firmware source: firmware/JEXFYZ-V6.4.ino. FW_VERSION = "V6.4". Source blob: f0dd9d1ebdc7d9d0966384f557efa2e2123df792. Exactly one active versioned .ino was found.
+- Active firmware source: firmware/JEXFYZ-V6.5.ino. FW_VERSION = "V6.5". Source blob: 645c93226d607084ef31408b8fdbba752646ccd5. Exactly one active versioned .ino was found.
 - Active App source: lib/main.dart, blob 535e396005a3bd1429db3096c627d87043b0e1b4.
 - App package/version: com.horizontalzzz.jexfyz / 1.0.0+3.
 - Android Gradle versionName "Telegram @horizontalzzz" is intentional identity text and must remain unchanged.
-- Test paths: test/v6_4_qc_contract_test.dart; test/firmware_touch_adaptive_sync_test.dart; test/app_protocol_notify_contract_test.dart; test/widget_test.dart. These exist; existence does not mean execution. All four are still unrun during this memory task.
+- Test paths: test/v6_5_qc_contract_test.dart; test/firmware_touch_adaptive_sync_test.dart; test/app_protocol_notify_contract_test.dart; test/widget_test.dart. The new Adaptive ON/OFF continuity regression assertion is in the V6.5 contract file. Tests were not executed for this change.
 - Active build workflow: .github/workflows/jexfyz-app-build-trigger.yml, blob 7c41358311be195d43f011c1e9a4da98772fcb7d. Issue opened/reopened only; exact title JE X FYZ — BUILD APP TRIGGER plus token JEXFYZ_BUILD_TRIGGER_V1; no push/PR trigger. Toolchain Java 17 / Flutter 3.47.2 stable / Gradle 9.3.1; current workflow runs analyze, Flutter tests, one obfuscated signed APK build, certificate verification and release-asset verification. Re-fetch before every authorized build.
-- Artifact repo TenzoNkz/JEXFYZ-Firmware latest observed HEAD ac6445bd5284c15d0fd66897213d1b6c68a1c729; root contains exactly JEXFYZ.cpp.bin, blob c1a6e1fe84967944d5e0f4ff85c92fbc265e2f88, size 1455936 bytes. No README/note/source files exist there. BIN is untouched and provenance matching V6.4 is unverified.
+- Artifact repo TenzoNkz/JEXFYZ-Firmware latest observed HEAD ac6445bd5284c15d0fd66897213d1b6c68a1c729; root contains exactly JEXFYZ.cpp.bin, blob c1a6e1fe84967944d5e0f4ff85c92fbc265e2f88, size 1455936 bytes. No README/note/source files exist there. BIN is untouched and provenance matching V6.5 is unverified.
 - Phase: DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED.
-- This full memory/doc reconciliation did not run Flutter tests/analyze, compile Firmware, build App/APK, create/replace BIN, edit Firebase, flash/OTA hardware or release. Current V6.4 remains source-only and NOT RELEASED.
+- This V6.5 source + memory synchronization did not run Flutter tests/analyze, compile Firmware, build App/APK, create/replace BIN, edit Firebase, flash/OTA hardware or release. V6.5 remains source-only and NOT RELEASED.
 
 ## 2. Permanent user commands and authorization limits
 
@@ -97,7 +97,7 @@ TenzoNkz/JEXFYZ-Firmware must contain JEXFYZ.cpp.bin only. Do not re-add a READM
 - Hotside NTC is the universal thermal input.
 - Local OTA boot SoftAP owns the only radio path: current no-client timeout is 10 seconds, hard cap is 60 seconds after AP interaction, Wi-Fi OFF settle is 160 ms before BLE ownership. OTA state/LED timing must be verified from source and must not be inferred from LEDs alone.
 
-## 6. Current V6.4 voltage-transition contract
+## 6. Current V6.5 voltage-transition contract
 
 Read VOLTAGE_TRANSITION_MEMORY.md completely before any rail/Peltier change.
 
@@ -107,10 +107,10 @@ Read VOLTAGE_TRANSITION_MEMORY.md completely before any rail/Peltier change.
 - If soft-start completed and Peltier is at full duty: maintain 100% PWM continuously throughout transition. Do not force 0%, needlessly pause, or add another ramp merely because the rail changed.
 - Fan remains ON/forced 100% during the handoff.
 - Explicit Peltier-OFF, Hotside/NTC safety and OTA safe-output must stop Peltier and clear pending pause/resume state.
-- Adaptive entry/exit uses its separate safe-5V handoff; restoration occurs only through safety gates and standard five-second OFF→ON ramp.
-- Contract test exists at test/v6_4_qc_contract_test.dart (blob f071c9642c1a06726d25b8c26a814845b02a55d6); it was not run in this cleanup.
+- Adaptive entry/exit returns the selector to safe 5 V without forcing a separate Peltier OFF/ON cycle. `requestVoltage()` pauses only an active soft-start; a completed ramp stays at 100%. A Peltier already OFF stays OFF; explicit OFF/Hotside/NTC/OTA safety still overrides.
+- Contract test exists at `test/v6_5_qc_contract_test.dart` (blob `99e6c6bed4b8094ddb2c9cfc181a3c4529d49c87`); Flutter tests were NOT RUN for this V6.5 change. Source assertions were inspected statically only.
 - User reported a restart at 5 V→12 V with Peltier/Fan ON during active ramp. Supply transient/brownout remains a hypothesis. If reproduced capture reset diagnostic and ideally supply voltage/Peltier current.
-- [SEPARATE USER-REPORTED INCIDENT — RESET REASON UNKNOWN] Hardware was also reported to restart when Adaptive was enabled after selecting 12 V and turning Peltier and Fan ON. Do not conflate this with the active-soft-start rail-change restart; V6.4 requires safe-5V Adaptive entry and physical reproduction/reset-reason capture remains open.
+- [SEPARATE USER-REPORTED INCIDENT — RESET REASON UNKNOWN] Hardware was also reported to restart when Adaptive was enabled after selecting 12 V and turning Peltier and Fan ON. Do not conflate this with the active-soft-start rail-change restart; V6.5 uses a safe-5V selector handoff without an extra Peltier OFF cycle, and physical reproduction/reset-reason capture remains open.
 
 ## 7. Thermal / Adaptive / touch / RGB
 
@@ -121,7 +121,7 @@ Read VOLTAGE_TRANSITION_MEMORY.md completely before any rail/Peltier change.
 - After thermal step-down, restore upward one rail after 60 continuous seconds stable at/below hotLimit - 1°C, no higher than saved Adaptive ceiling.
 - HOTSIDE is Adaptive default at boot; HOTSIDE_BATTERY is runtime-selectable and not persisted. Missing battery temperature falls back to HOTSIDE behavior without silently changing profile.
 - Phone Battery thresholds currently default to 25°C at 5 V and 35°C at 12 V, with 0.5°C hysteresis and 5-second firmware freshness TTL. App heartbeat is 1 Hz through `je_x_fyz/battery_temp` / `PHONE:BT`, and coalesces pending messages. This does not change NTC’s one-calibrated-sample-per-second requirement.
-- No rapid Hotside slope/rise protection in known V6.x contract. [HISTORICAL USER REQUIREMENT / NOT IMPLEMENTED] A prior request asked for fast Hotside rise to shut Peltier OFF and require manual re-arm; V6.4 does not implement slope/rate-of-rise protection.
+- No rapid Hotside slope/rise protection in known V6.x contract. [HISTORICAL USER REQUIREMENT / NOT IMPLEMENTED] A prior request asked for fast Hotside rise to shut Peltier OFF and require manual re-arm; V6.5 does not implement slope/rate-of-rise protection.
 - One TTP223 touch sensor; no separate Wi-Fi/BLE toggle. Gesture QC history: ~1,000 ms startup grace, 30 ms qualification, raw HIGH tap 60–500 ms, 800 ms double tap window from first valid release, 5,000 ms long press. Verify live source before changing.
 - Adaptive ON: orange 3 blinks. Adaptive OFF: white 3 blinks; if Adaptive was active, OFF feedback waits until safe 5 V handoff completes.
 - [USER-REPORTED HISTORICAL ISSUE / UNVERIFIED] White Adaptive-OFF three-blink feedback was previously reported missing immediately after restart. Transition feedback code alone does not prove boot-time initial OFF indication; specifically verify before claiming resolved.
@@ -164,7 +164,7 @@ Read OTA_PROTECTION.md and OTA_REGRESSION_MEMORY.md fully before any OTA change.
 - Keep allowlist prefix https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/, redirects disabled, HTTP/length/size checks, ESP image magic 0xE9, streaming Update lifecycle, safe output and failure recovery.
 - User does not want a custom firmware SHA/signature field in Firebase metadata; current intended data model is version + link.
 - Previously requested OTA indicator intent: Wi-Fi success blue then download/update; success green then restart; failure red then restore BLE without forced restart where state machine supports it. Check exact current source before describing details.
-- User report for V6.3 does not prove V6.4 compile, full BIN transfer, Update.end(), reboot, BLE recovery or installed version.
+- User report for V6.3 does not prove V6.5 compile, full BIN transfer, Update.end(), reboot, BLE recovery or installed version.
 
 ## 10. App Build / release
 
@@ -178,7 +178,7 @@ Read OTA_PROTECTION.md and OTA_REGRESSION_MEMORY.md fully before any OTA change.
 - Output intent: one obfuscated/minified/shrunk production-signed ordinary APK JEXFYZ-release.apk, uploaded to GitHub Release jexfyz-latest. No Play Store bundle or Actions artifact.
 - Historical signing SHA256 record: dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0; verify live before any signing claim.
 - Historical App run 37245703677, source commit fc4b89ce0c76b4b7826fc25cb8ac68ea843dc366, asset ID 610989112, APK SHA256 a9d93bb3f359285bca1f2658f1336b502fd87539b0dec169282a9f2e59df1fc2. Not evidence of latest release.
-- Historical V6.2 candidate run 38362882150 reported 45 Flutter tests passing, but plain flutter analyze exited nonzero due 23 info-level deprecations; doesn't validate current V6.4.
+- Historical V6.2 candidate run 38362882150 reported 45 Flutter tests passing, but plain flutter analyze exited nonzero due 23 info-level deprecations; doesn't validate current V6.5.
 - Build App only on explicit @Thinking Build App! or @Thinking Eksekusi & Build App!.
 
 ## 11. Approved grille / design memory
@@ -208,7 +208,7 @@ Read DESIGN_NOTES.md before any visual iteration.
 
 ## 13. Historical version pointer — old history is not current
 
-- V6.4: active source-only branch. Peltier voltage changes pause only active soft-start and preserve completed 100% duty. Compile/device gate remains open.
+- V6.5: active source-only branch. Peltier voltage changes pause only active soft-start and preserve completed 100% duty. Compile/device gate remains open.
 - V6.3-origin Online OTA fix remains present: setInsecure path; user-reported compile/connect result applies to V6.3.
 - V6.2: historical Adaptive thermal stages/recovery, safety latch, BLE/reconnect and OTA ACK changes.
 - V6.1: historical safe-5V Adaptive entry/exit, orange ON/white OFF indicator, reset diagnostics and Touch Adaptive-OFF telemetry.
@@ -221,14 +221,14 @@ Read DESIGN_NOTES.md before any visual iteration.
 
 ## 14. Exact open validation queue
 
-1. User compiles active V6.4 in ArduinoDroid with Arduino-ESP32 Core 3.3.7; keep the actual log and confirm firmware version.
-2. Establish whether the artifact BIN provenance matches V6.4 before any publication/OTA. Current BIN path/size/hash are known; matching source provenance is not.
+1. User compiles active V6.5 in ArduinoDroid with Arduino-ESP32 Core 3.3.7; keep the actual log and confirm firmware version.
+2. Establish whether the artifact BIN provenance matches V6.5 before any publication/OTA. Current BIN path/size/hash are known; matching source provenance is not.
 3. Physical Manual Volt and Adaptive transition while the 5-second ramp is active: expect 0% PWM, selector 200 ms deadtime, one-second settle, then a new full 5-second ramp.
 4. Repeat after the ramp completes: expect uninterrupted 100% PWM unless explicit OFF/safety.
 5. Verify Peltier-OFF/safety cancellation; Hotside latch/re-arm and 30/60-second Adaptive behavior; NTC fault failsafe; no multi-sample NTC filter.
 6. Verify phone Battery heartbeat/freshness fallback and the App display rule (no standalone Battery Protection Guard). One-App-only pairing-lock remains unverified; test only if user authorizes that scope.
 7. Confirm that the prior Adaptive-OFF white three-blink complaint does not remain at boot/restart; do not infer boot feedback from the OFF transition handler. The separate 12 V Adaptive-entry restart report also needs physical reproduction/reset reason if authorized.
-8. Rapid Hotside-rise/manual-re-arm behavior is a historical unimplemented request. Do not claim it is part of V6.4 or implement it without explicit discussion/authorization and a firmware version bump.
+8. Rapid Hotside-rise/manual-re-arm behavior is a historical unimplemented request. Do not claim it is part of V6.5 or implement it without explicit discussion/authorization and a firmware version bump.
 7. Check touch telemetry, orange/white three-blink effects, default voltage LED map and App-authoritative physical-state display.
 8. If authorized, run Flutter tests/analyze and record exact run/log. The source contracts exist but were not run in this cleanup.
 9. Hardware-check BLE/P1 pairing/reconnect and radio handoff: Wi-Fi fully OFF plus 160 ms settle before BLE ownership; no concurrent Wi-Fi/BLE ownership.
@@ -250,24 +250,24 @@ Never equate test file with passing run; compile with full OTA installation; blu
 
 ## 16. Last-observed blob fingerprints
 
-All hashes below were fetched from live `main` at HEAD `2d01ef02051e1098d53e0ebcfd590f88decc02f0` immediately before this snapshot write. They fingerprint this checkpoint only. The future SHA of this file is deliberately not self-recorded; verify its commit and parent after saving.
+All hashes below were fetched from live `main` at HEAD `7f6ae6435bd287ba49ff467bcb4378d2eb7c936b` immediately before this snapshot write. They fingerprint this checkpoint only. The future SHA of this file is deliberately not self-recorded; verify its commit and parent after saving.
 
 Canonical memory docs:
-- `README.md`: `8881b20dec2a7ea916b6d45e487156927516cd88`
-- `MEMORY_INDEX.md`: `b738806db407cf24b939a8a3966589c03f679a8a`
-- `CHAT_RULES.md`: `947ceaa6dd93972f45ce40f9e4b548fe10274e22`
-- `PROJECT_STATE.md`: `08629b442c3e637543a2859242e4d009188a9b57`
-- `CHAT_TRANSFER_PROMPTS.md`: `50ebdc054a70d66cf62bb252cc345ae9b6af1c86`
-- `HANDOVER.md`: `ce213dbbdb3151e12d0e627f885c64773f0947a6`
+- `README.md`: `fd1b2ce0e94c66bd99c9b92fe803504feadfdaea`
+- `MEMORY_INDEX.md`: `7723bebddc22358610463767e3b45a001ffcb828`
+- `CHAT_RULES.md`: `04918439bfb5d84a552c40f47da1164124c04c8a`
+- `PROJECT_STATE.md`: `0a452fed291269f5ec78249ad2f0a273d1ec2efa`
+- `CHAT_TRANSFER_PROMPTS.md`: `2e5d43f7edc8c156c9e0ff6cb2de069d82e16003`
+- `HANDOVER.md`: `42af3da1b3c9b6fd76359eb35a2f67bb83e2be1b`
 - `APP_NOTES.md`: `fb240cdfff4151ac896e63c8121543c2cabef489`
-- `FIRMWARE_NOTES.md`: `768a402c46af89c1bf20011dd6091bbfac00e813`
+- `FIRMWARE_NOTES.md`: `e56a1db34d4dd921a77bbaac4e9b07c5907efcc0`
 - `BUILD_NOTES.md`: `7627218cc6d2a3b3585ef63057b4eab9856fe916`
-- `CHANGELOG.md`: `0b012efd2e6eb96b1ffd7cec007e90b6ec92c25f`
+- `CHANGELOG.md`: `78c05b74d52b848c785bf4f21d6aba2964c00f4a`
 - `DESIGN_NOTES.md`: `e04382659dfdd618de0a156046f140452d275dc7`
-- `OTA_PROTECTION.md`: `370fe25e6c9632f5ffe14ff27e4a61b35d30de45`
-- `OTA_REGRESSION_MEMORY.md`: `e1e1fe88b65843d9626ea63aab018607e69b454f`
-- `VOLTAGE_TRANSITION_MEMORY.md`: `232f18b16b960e669e3fddd65337cc82ac6a9b5e`
-- `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `389e873ab68ee7c041b5b25378010be4c1ff739b`
+- `OTA_PROTECTION.md`: `e5348d2d2600f96b5e799e4c867678729b074254`
+- `OTA_REGRESSION_MEMORY.md`: `87814441a52c790e268aeb20bee15ce958699c67`
+- `VOLTAGE_TRANSITION_MEMORY.md`: `9c234a94bb331856eb821ccc612cd4ba2bed3edb`
+- `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `5a2e0c464c8beff4d5bc771081e6e3ca6fb2715e`
 
 Workflow, package metadata, active source and tests:
 - `.github/workflows/jexfyz-app-build-trigger.yml`: `7c41358311be195d43f011c1e9a4da98772fcb7d`
@@ -278,8 +278,8 @@ Workflow, package metadata, active source and tests:
 - `lib/app_settings.dart`: `0c29bed46b746c1171f61ee7b095c724474a5e6b`
 - `lib/floating_monitor.dart`: `cfc21b3dc198b925786aa98658d647b1d8a3637b`
 - `lib/jex_animated_glyph.dart`: `c9c5c2802cb0ed363c042620511148b0d58d36c4`
-- `firmware/JEXFYZ-V6.4.ino`: `f0dd9d1ebdc7d9d0966384f557efa2e2123df792`
-- `test/v6_4_qc_contract_test.dart`: `f071c9642c1a06726d25b8c26a814845b02a55d6`
+- `firmware/JEXFYZ-V6.5.ino`: `645c93226d607084ef31408b8fdbba752646ccd5`
+- `test/v6_5_qc_contract_test.dart`: `99e6c6bed4b8094ddb2c9cfc181a3c4529d49c87`
 - `test/firmware_touch_adaptive_sync_test.dart`: `a8df6ca2be18c3b7ed9c25e5c148f0d5056556d5`
 - `test/app_protocol_notify_contract_test.dart`: `92214dd90178c705844d3979d3f8f7bd17bcc4b8`
 - `test/widget_test.dart`: `3dc6ffaa5dac21db016bf7d7c86875036a902200`

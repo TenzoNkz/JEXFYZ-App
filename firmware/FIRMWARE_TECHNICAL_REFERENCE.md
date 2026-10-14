@@ -4,10 +4,10 @@ Last source audit recorded: 2026-10-14 (Asia/Jakarta). Always fetch live source 
 
 ## Current source identity
 
-- Canonical editable source: `firmware/JEXFYZ-V6.4.ino`.
-- `FW_VERSION = "V6.4"`; source blob last observed: `f0dd9d1ebdc7d9d0966384f557efa2e2123df792`.
+- Canonical editable source: `firmware/JEXFYZ-V6.5.ino`.
+- `FW_VERSION = "V6.5"`; source blob last observed: `645c93226d607084ef31408b8fdbba752646ccd5`.
 - Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module, Arduino-ESP32 Core 3.3.7, compiled by the user in ArduinoDroid.
-- This reference is not compile proof. V6.4 is source-only DEVELOPMENT + QC / PRE-RELEASE until separate compile, BIN provenance, physical and OTA gates are passed.
+- This reference is not compile proof. V6.5 is source-only DEVELOPMENT + QC / PRE-RELEASE until separate compile, BIN provenance, physical and OTA gates are passed.
 
 ## Architecture
 
@@ -47,9 +47,9 @@ The canonical detailed incident/contract is `VOLTAGE_TRANSITION_MEMORY.md`.
 - If the ramp is active, capture the interrupted state, force GPIO5 to 0%, retain selector 200 ms break-before-make, and restart a fresh five-second ramp after the one-second guard.
 - If ramp completion has already occurred, keep PWM at 100% throughout the rail transition. No forced 0%, no redundant ramp.
 - If Peltier is logically OFF, a voltage change never turns it on.
-- OFF command, thermal/NTC safety and OTA safe-output must cancel pending resume state.
+- OFF command, thermal/NTC safety and OTA safe-output must cancel pending resume state. Explicit Peltier OFF during Adaptive-stop also clears the deferred restore flag, preventing handoff completion from turning Peltier back on.
 - Fan remains on/forced to 100% during transition.
-- Adaptive mode entry/exit uses its distinct safe-5V handoff and restores prior Peltier operation only through safety gates and the regular 5-second OFF→ON ramp.
+- Adaptive mode entry/exit uses a safe-5V selector handoff without forcing an additional Peltier OFF/ON cycle. The common voltage-transition helper pauses only an active soft-start; a completed ramp stays at 100%. Explicit OFF and Hotside/NTC/OTA safety retain priority.
 - A reported restart during 5 V→12 V with active ramp is not proven to be brownout. Use `BOOT: RESET_REASON=...` and live telemetry for diagnosis.
 
 ## Hotside / Adaptive safety

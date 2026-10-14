@@ -31,7 +31,7 @@ enum class VoltageRequestSource : uint8_t;
 enum class AdaptiveProfile : uint8_t;
 
 /**
- * JE X FYZ — V6.4 Firmware
+ * JE X FYZ — V6.5 Firmware
  * ---------------------------------------------------------------------------
  * Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module
  * Framework: Arduino Standard + official Arduino-ESP32 Core 3.3.7
@@ -51,8 +51,9 @@ enum class AdaptiveProfile : uint8_t;
  *   after the existing 1 s guard, that interrupted ramp restarts for a full 5 s.
  * - If soft-start already completed, keep Peltier PWM at 100% throughout the selector
  *   transition unless a Peltier-OFF command or safety protection stops it.
- * - Adaptive entry/exit turns Peltier OFF before the 200 ms selector handoff;
- *   a previously ON Peltier is restored after 5 V settles using the 5 s soft-start.
+ * - Adaptive entry/exit returns the selector to 5 V without a separate Peltier OFF/ON cycle.
+ *   The rail-transition helper pauses only an active 5 s soft-start; a completed ramp stays
+ *   at 100%. An explicit OFF command or existing safety/OTA path can still stop the Peltier.
  *
  * Voltage/safety contract:
  * - Physical selector outputs: GPIO4 = 9 V, GPIO3 = 12 V.
@@ -98,7 +99,7 @@ enum class AdaptiveProfile : uint8_t;
  * ---------------------------------------------------------------------------
  */
 
-static constexpr char FW_VERSION[] = "V6.4";
+static constexpr char FW_VERSION[] = "V6.5";
 
 // ============================================================================
 // ========================== HEAP DIAGNOSTIC BUILD ===========================
@@ -364,7 +365,7 @@ enum class AdaptiveProfile : uint8_t {
 bool adaptiveOn = false;
 // Adaptive activation is deferred until the mandatory 5 V handoff physically completes.
 bool adaptiveStartPending = false;
-// Adaptive OFF also waits for a pending safe-5V handoff before restoring the prior Peltier state.
+// Adaptive OFF keeps a safety-gated restore pending through safe-5V handoff; explicit user OFF cancels it.
 bool adaptiveStopPending = false;
 bool adaptiveStopRestorePeltier = false;
 bool adaptiveStopIndicatorPending = false;
@@ -1894,6 +1895,11 @@ static void completeVoltageTransition() {
   voltageTransition = false;
   voltageTransitionSource = VoltageRequestSource::MANUAL;
 
+  // Start the settling guard before Adaptive activation reconciles output state.
+  // Otherwise an old timestamp could restart an interrupted soft-start too early.
+  voltageGuardArmed = true;
+  lastVoltageTransitionCompleteMs = millis();
+
   if (adaptiveStartPending && currentVoltage == Voltage::V5) {
     activateAdaptiveAfterSafeFiveVolt();
     previousFanOn = fanOn;
@@ -1902,8 +1908,9 @@ static void completeVoltageTransition() {
   }
 
   // Complete an Adaptive-OFF handoff only after the selector has reached 5 V.
-  // Peltier restoration goes through applyCoolingOutputs(), which enforces NTC/Hotside
-  // safety and starts the existing 5-second soft-start from a known OFF state.
+  // Keep a previously running Peltier request intact through the handoff; the common
+  // output reconciler still applies NTC/Hotside safety. Explicit user OFF clears the
+  // deferred restore flag so this completion path cannot turn it back on.
   if (adaptiveStopPending && currentVoltage == Voltage::V5) {
     adaptiveStopPending = false;
     if (adaptiveStopRestorePeltier) {
@@ -3902,6 +3909,8 @@ static bool setPeltierState(bool desired, String& reason) {
   }
 
   if (!desired) {
+    // An explicit user OFF always cancels a deferred Adaptive-stop restoration.
+    adaptiveStopRestorePeltier = false;
     if (peltierOn) {
       bool previousFanOn = fanOn;
       bool previousPeltierOn = peltierOn;
@@ -4075,21 +4084,18 @@ static void setAdaptiveState(bool desired, String& reason) {
       return;
     }
 
-    // A rail handoff must never leave the Peltier PWM energized while both
-    // selector outputs are deasserted for the 200 ms break-before-make window.
-    const bool restorePeltierOnFailure = peltierOn;
-    bool previousFanOn = fanOn;
-    bool previousPeltierOn = peltierOn;
-    uint8_t previousFanPwm = fanPwm;
+    // Keep Peltier state intact during the Adaptive safe-5V handoff.
+    // requestVoltage() pauses only an active soft-start; a completed ramp stays
+    // at 100%. The common safety path still overrides Peltier state if required.
+    const bool previousFanOn = fanOn;
+    const bool previousPeltierOn = peltierOn;
+    const uint8_t previousFanPwm = fanPwm;
     fanPwm = 100;
-    peltierOn = false;
     applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
-    previousFanOn = fanOn;
-    previousPeltierOn = peltierOn;
-    previousFanPwm = fanPwm;
 
     if (voltageTransition) {
-      // Redirect the existing handoff to the required 5V endpoint after the load is off.
+      // Redirect the existing handoff to the required 5V endpoint without
+      // forcing an additional Peltier OFF/ON cycle.
       pendingVoltage = Voltage::V5;
       reason = "STARTING";
       return;
@@ -4097,16 +4103,6 @@ static void setAdaptiveState(bool desired, String& reason) {
 
     if (!requestVoltage(Voltage::V5, VoltageRequestSource::ADAPTIVE, true)) {
       adaptiveStartPending = false;
-      if (restorePeltierOnFailure) {
-        const bool fanBeforeRestore = fanOn;
-        const bool peltierBeforeRestore = peltierOn;
-        const uint8_t pwmBeforeRestore = fanPwm;
-        peltierOn = true;
-        applyCoolingOutputs(
-            fanBeforeRestore,
-            peltierBeforeRestore,
-            pwmBeforeRestore);
-      }
       reason = "VOLTAGE_FORCE_FAILED";
       return;
     }
@@ -4137,11 +4133,10 @@ static void setAdaptiveState(bool desired, String& reason) {
   const bool handoffRequired =
       currentVoltage != Voltage::V5 || voltageTransition;
 
-  // Turn the Peltier output off before commanding the selector back to 5V.
-  // Preserve whether it was running so it can be restored after the rail settles.
-  if (handoffRequired && peltierOn) {
-    peltierOn = false;
-  }
+  // Keep the logical Peltier state intact during the safe-5V handoff.
+  // forceAdaptiveFiveVolt() routes rail changes through requestVoltage(), which
+  // pauses only an active soft-start; completed ramps stay at 100%. Explicit OFF
+  // and the existing Hotside/NTC/OTA safety paths still take precedence.
   applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
   previousFanOn = fanOn;
   previousPeltierOn = peltierOn;

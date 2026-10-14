@@ -8,19 +8,19 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This is the canonical incident recor
 - No serial transcript establishing an exact HTTP/TLS error code was supplied. Do not invent one based on LEDs.
 - The failed path used `GITHUB_ROOT_CA`, `cloudClient.setCACert(...)`, `configTime(0, 0, "pool.ntp.org", "time.google.com")`, `OnlineOtaFlow::TIME_SYNCING`, epoch-validity state and a 20-second gate.
 
-## Correction retained in active V6.4
+## Correction retained in active V6.5
 
-- The correction originated in the then-current V6.3 source and remains in active `firmware/JEXFYZ-V6.4.ino` (last observed source blob `f0dd9d1ebdc7d9d0966384f557efa2e2123df792`).
+- The correction originated in the then-current V6.3 source and remains in active `firmware/JEXFYZ-V6.5.ino` (last observed source blob `645c93226d607084ef31408b8fdbba752646ccd5`).
 - Restored `cloudClient.setInsecure()` for the Online OTA client.
 - Removed the embedded CA PEM, `setCACert()`, `configTime()`, `TIME_SYNCING`, epoch-validity condition and OTA-only 20-second NTP time gate.
 - Flow is Wi-Fi success → blue feedback → `prepareOnlineOtaDownload()` → GitHub GET attempt.
 - Kept allowlisted URL prefix `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/`, redirect blocking, HTTP/length/size/image checks, ESP image magic byte `0xE9`, streaming Update lifecycle, all-safe output, OTA lifecycle and failure recovery.
-- Static test contract lives in `test/v6_4_qc_contract_test.dart` (last observed blob `f071c9642c1a06726d25b8c26a814845b02a55d6`). Presence of assertions does not mean the test was executed.
+- Static test contract lives in `test/v6_5_qc_contract_test.dart` (last observed blob `99e6c6bed4b8094ddb2c9cfc181a3c4529d49c87`). Presence of assertions does not mean the test was executed.
 
 ## User-reported evidence boundary
 
 - User reported the V6.3 correction compiled successfully and Online OTA could connect to GitHub again.
-- That report refers to V6.3, before the V6.4 Peltier voltage-transition fix; it does not certify V6.4 compilation.
+- That report refers to V6.3, before the V6.4 Peltier voltage-transition fix; it does not certify V6.5 compilation.
 - A complete BIN download, successful `Update.end()`, restart, BLE recovery and post-reboot installed-version confirmation were not independently established here.
 - CA verification and NTP gate were removed together; evidence does not isolate which one alone caused the earlier failure.
 - No assistant-side Firmware compile, BIN generation/publication, Firebase update, device flash, physical OTA or App Build was performed for the correction.

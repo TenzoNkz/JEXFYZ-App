@@ -1,17 +1,17 @@
 # JE X FYZ / JE Cooler — Voltage Transition & Peltier Soft-Start Memory
 
 Last reconciled: 2026-10-14 (Asia/Jakarta).
-Canonical source: `firmware/JEXFYZ-V6.4.ino` (last observed blob `f0dd9d1ebdc7d9d0966384f557efa2e2123df792`).
-Static regression contract: `test/v6_4_qc_contract_test.dart` (last observed blob `f071c9642c1a06726d25b8c26a814845b02a55d6`).
+Canonical source: `firmware/JEXFYZ-V6.5.ino` (last observed blob `645c93226d607084ef31408b8fdbba752646ccd5`).
+Static regression contract: `test/v6_5_qc_contract_test.dart` (last observed blob `99e6c6bed4b8094ddb2c9cfc181a3c4529d49c87`).
 Validation state: source-only. Firmware compile, Flutter test execution, physical reproduction, current measurement and thermal/OTA regression remain unverified.
 
 ## Incident
 
 [USER-REPORTED — 2026-10-13] Hardware restarted when changing from 5 V to 12 V with Peltier and Fan ON while the 5-second Peltier soft-start was still active. No exact reset reason from that reproduction was supplied. Supply transient/brownout is a hypothesis, not a confirmed cause.
 
-[USER-REPORTED — EARLIER SEPARATE INCIDENT; RESET REASON UNAVAILABLE] The hardware was also reported to restart when Adaptive was enabled after selecting 12 V and turning Peltier and Fan ON. Do not assume this is the same root cause as the 5 V→12 V active-soft-start incident. Current V6.4 Adaptive entry requires a safe-5V handoff with Peltier OFF before rail movement; physical reproduction and reset-reason capture remain open.
+[USER-REPORTED — EARLIER SEPARATE INCIDENT; RESET REASON UNAVAILABLE] The hardware was also reported to restart when Adaptive was enabled after selecting 12 V and turning Peltier and Fan ON. Do not assume this is the same root cause as the 5 V→12 V active-soft-start incident. Current V6.5 Adaptive entry requires a safe-5V selector handoff but no longer forces Peltier OFF solely for that handoff; physical reproduction and reset-reason capture remain open.
 
-## Current V6.4 transition contract
+## Current V6.5 transition contract
 
 Applies to normal voltage changes requested in Manual Volt and while Adaptive is active. Branch behavior is based on Peltier ramp state when a voltage transition is accepted.
 
@@ -21,8 +21,8 @@ Applies to normal voltage changes requested in Manual Volt and while Adaptive is
 4. For the interrupted ramp only, keep GPIO5 at 0% through the existing 1,000 ms rail-settle guard (`PELTIER_VOLTAGE_SETTLE_MS`, alias of `VOLTAGE_GUARD_MS`), then start a new full 5,000 ms ramp from 0%.
 5. If soft-start has already completed and PWM is at 100%, do not write PWM 0%; keep 100% continuously through selector deadtime and transition completion. No unnecessary re-ramp.
 6. Fan remains ON/forced to 100% through the voltage handoff.
-7. Explicit Peltier-OFF, Hotside/NTC safety, or OTA safe-output must shut down Peltier and clear any pending pause/resume flags; a saved ramp must never restart after an overriding OFF/safety action.
-8. Adaptive entry/exit is its own safe-5V handoff: Peltier intentionally OFF before switching and, if it had been on and safety permits, restored only through the ordinary 5-second OFF→ON ramp.
+7. Explicit Peltier-OFF, Hotside/NTC safety, or OTA safe-output must shut down Peltier and clear any pending pause/resume flags; a saved ramp must never restart after an overriding OFF/safety action. If a user explicitly turns Peltier OFF during Adaptive-stop handoff, also clear `adaptiveStopRestorePeltier` so handoff completion cannot turn it back ON.
+8. Adaptive entry/exit still returns the selector to safe 5 V, but must preserve the logical Peltier-ON state through the handoff. `requestVoltage()` uses the existing pause helper: only an active soft-start is paused and restarted after the 1-second settle; a completed ramp stays at 100%. A Peltier already OFF stays OFF, and explicit OFF/Hotside/NTC/OTA safety can override.
 9. Keep cooperative/non-blocking timing. Do not introduce executable `delay()` or timing `while()`.
 
 ## Static regression expectations
@@ -40,10 +40,10 @@ The static test contract exists but was **not executed** as part of this memory 
 
 ## Hardware validation plan
 
-1. Compile the V6.4 source yourself with ArduinoDroid + Arduino-ESP32 Core 3.3.7.
+1. Compile the V6.5 source yourself with ArduinoDroid + Arduino-ESP32 Core 3.3.7.
 2. Manual Volt: during an active ramp, switch rail and confirm 0% → 200 ms selector deadtime → existing 1-second settle → fresh 5-second ramp.
 3. Manual Volt: after ramp reaches 100%, switch rail and confirm Peltier remains continuously active at 100%; no forced pause or extra ramp.
-4. Repeat both cases in Adaptive under safe operating conditions.
+4. Adaptive ON and OFF: repeat during active soft-start (0% pause, 200 ms deadtime, 1-second settle, fresh 5-second ramp) and after ramp completion (continuous 100%); confirm no additional Adaptive-specific OFF/ON cycle under normal conditions.
 5. Verify Fan stays on/100% through handoff.
 6. Verify explicit OFF, NTC/Hotside safety and OTA safe output cancel resume.
 7. If reset recurs, record `BOOT: RESET_REASON=...` and diagnostic telemetry. A rail transient hypothesis needs evidence; ideally measure supply voltage and Peltier current.

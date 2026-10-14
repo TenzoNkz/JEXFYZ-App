@@ -34,7 +34,7 @@ Durable hardware and behavior decisions belong here. For code-level structure se
 - Use cooperative `millis()` timing. No executable `delay()` or timing `while()` loops.
 - Every functional Firmware change increments `FW_VERSION`; filename must match; only one active versioned `.ino` may exist.
 
-## Peltier voltage-transition contract — V6.4
+## Peltier voltage-transition contract — V6.5
 
 Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 
@@ -43,7 +43,7 @@ Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 - If soft-start is already complete (full duty): do not force PWM to 0%. Keep PWM at 100% continuously through the selector transition unless OFF/safety commands require shutdown.
 - Fan stays ON/100% during handoff.
 - Peltier-OFF, Hotside/NTC safety or OTA safe outputs must clear the pending resume so output cannot restart after an overriding shutdown.
-- Adaptive entry/exit is its separate safe-5V handoff and can intentionally stop and later restore Peltier through the normal safety-gated ramp.
+- Adaptive entry/exit uses the safe-5V selector handoff without forcing an additional Peltier OFF/ON cycle. The shared transition helper pauses only an active soft-start; a completed ramp remains at 100%, while explicit OFF and existing safety/OTA paths retain priority.
 - User reported a restart during 5 V→12 V while Peltier/Fan were ON during soft-start. Supply transient/brownout is a hypothesis only. Capture reset diagnostics; do not claim cause without evidence.
 
 ## Hotside / Adaptive safety
@@ -55,7 +55,7 @@ Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 - After Adaptive thermal downshift, restoration proceeds upward one rail at a time after 60 seconds continuously at/below `hotLimit - 1°C`, no higher than the saved pre-downshift ceiling.
 - HOTSIDE is default Adaptive profile after boot. HOTSIDE_BATTERY is a runtime selectable profile, not persisted. When Battery sensor data is missing, fall back to HOTSIDE behavior without changing chosen profile.
 - No rapid Hotside-rise/slope protection is present in the known V6.x contract; do not claim it exists.
-- [HISTORICAL USER REQUIREMENT / NOT IMPLEMENTED IN V6.4] A prior request called for a very rapid Hotside rise to shut Peltier OFF immediately and require manual re-arm/restart. The active V6.4 contract does not implement slope/rate-of-rise protection; do not describe the request as completed. If reconsidered, discuss first, update source with a mandatory version bump and test the safety behavior.
+- [HISTORICAL USER REQUIREMENT / NOT IMPLEMENTED IN V6.5] A prior request called for a very rapid Hotside rise to shut Peltier OFF immediately and require manual re-arm/restart. The active V6.5 contract does not implement slope/rate-of-rise protection; do not describe the request as completed. If reconsidered, discuss first, update source with a mandatory version bump and test the safety behavior.
 - Keep thermal/NTC safety higher priority than App requests, normal RGB animation, or pending Peltier restart.
 
 ## Touch and indicators
@@ -94,4 +94,4 @@ Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 
 ## Validation status
 
-All the above are engineering contracts and remembered requirements; any claim about what current source implements must be reconciled to the live V6.4 source. V6.4 compile, device flashing, physical thermal tests, end-to-end OTA and App integration are not independently verified at the last documented checkpoint.
+All the above are engineering contracts and remembered requirements; any claim about what current source implements must be reconciled to the live V6.5 source. V6.5 compile, device flashing, physical thermal tests, end-to-end OTA and App integration are not independently verified at the last documented checkpoint.
