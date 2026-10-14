@@ -72,10 +72,18 @@ Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 - Persisted settings include Hotside limit, Battery 5 V/12 V limits, RGB enable, mode, brightness and color. Adaptive Profile remains runtime-only.
 - App must be kept synced using authoritative telemetry (Adaptive, ceiling, Fan, Peltier, Fan speed, Voltage), including hardware Touch changes.
 
+## Phone Battery Adaptive input / thresholds
+
+- Firmware receives phone battery temperature from App protocol `PHONE:BT=<Celsius>`; the App sends a heartbeat at 1 Hz while connected.
+- Current Battery-zone defaults are 25°C for 5 V and 35°C for 12 V, with 0.5°C hysteresis. Firmware marks the battery input stale after 5 seconds (`BATTERY_VALID_TTL_MS`).
+- With HOTSIDE_BATTERY selected and valid phone Battery data, the controller uses the battery zones inside the saved Adaptive voltage ceiling. When Battery data becomes stale/unavailable, runtime control falls back to HOTSIDE behavior while preserving the selected HOTSIDE_BATTERY profile; do not silently rewrite the profile.
+- This is separate from Hotside NTC sampling: the user explicitly rejected median, trimmed-mean and multi-sample NTC filtering; retain one calibrated NTC sample per second.
+
 ## Wi-Fi / BLE / OTA
 
 - OTA has priority over normal application tasks. Ensure safe output state while OTA runs: Peltier OFF, Fan OFF, LED/output handling according to protected OTA state machine, selector safe at 5 V.
 - Wi-Fi OTA and BLE use the same ESP32-C3 radio path; shut down Wi-Fi completely and allow it to settle before BLE owns the radio.
+- Boot-time Local OTA uses the protected Wi-Fi SoftAP window: `BOOT_AP_TIMEOUT_MS = 10000` (10 seconds with no client); a separate 60-second hard limit covers an AP session that was interacted with but does not proceed to upload. BLE must not start while Wi-Fi owns the single radio; complete Wi-Fi shutdown and its existing 160 ms settle before BLE takes ownership. Read `OTA_PROTECTION.md` before modifying these timings.
 - Read `OTA_PROTECTION.md` and `OTA_REGRESSION_MEMORY.md` before any change.
 - Current Online OTA path uses `cloudClient.setInsecure()`, removes embedded CA validation and OTA-only NTP/TIME_SYNCING gate, and starts GitHub GET after Wi-Fi connection feedback. This bypasses HTTPS server certificate identity validation; it was retained after the user-reported failure on the prior CA/NTP path.
 - Preserve allowlisted URL prefix `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/`, redirect blocking, response/length/size checks, ESP image magic check, streaming/update lifecycle, safe outputs, failure recovery and restart semantics.
