@@ -133,6 +133,41 @@ void main() {
   });
 
 
+  test('Thermal Battery segments and colour track the actual battery temperature', () {
+    expect(jexThermalBatteryLevel('20.0'), 0);
+    expect(jexThermalBatteryLevel('30.0°C'), closeTo(.5, 1e-9));
+    expect(jexThermalBatteryLevel('40.0'), 1);
+    expect(jexThermalBatteryLevel('45.0'), 1);
+    expect(jexThermalBatteryLevel('--'), 0);
+
+    expect(jexThermalBatteryColor('18.0'), jexThermalIceBlue);
+    expect(jexThermalBatteryColor('20.0'), jexThermalIceBlue);
+    expect(jexThermalBatteryColor('30.0'), jexThermalGreen);
+    expect(jexThermalBatteryColor('40.0'), jexThermalRed);
+    expect(jexThermalBatteryColor('45.0'), jexThermalRed);
+    expect(jexThermalBatteryColor('--'), jexThermalIceBlue);
+    expect(jexThermalBatteryColor('35.0'), isNot(jexThermalGreen));
+    expect(jexThermalBatteryColor('35.0'), isNot(jexThermalRed));
+  });
+
+  test('Hotside thermal colour follows the configured protection limit', () {
+    expect(jexHotsideTemperatureColor('20.0', hotLimit: 45), jexThermalIceBlue);
+    expect(jexHotsideTemperatureColor('45.0', hotLimit: 45), jexThermalRed);
+    expect(jexHotsideTemperatureColor('50.0', hotLimit: 50), jexThermalRed);
+    expect(jexHotsideTemperatureColor('--', hotLimit: 45), jexThermalIceBlue);
+    expect(jexTemperatureIndicatorLevel('45.0', minC: 20, maxC: 45), 1);
+    expect(jexTemperatureIndicatorLevel('44.0', minC: 20, maxC: 45), lessThan(1));
+  });
+
+  test('Voltage colour and energy are consistent for 5V, 9V and 12V', () {
+    expect(jexVoltageIndicatorColor('5V'), const Color(0xFFFF4D5A));
+    expect(jexVoltageIndicatorColor('9V'), const Color(0xFF52E6A2));
+    expect(jexVoltageIndicatorColor('12V'), const Color(0xFF4D8CFF));
+    expect(jexVoltageEnergyLevel('5V'), lessThan(jexVoltageEnergyLevel('9V')));
+    expect(jexVoltageEnergyLevel('9V'), lessThan(jexVoltageEnergyLevel('12V')));
+    expect(jexVoltageEnergyLevel('--'), 0);
+  });
+
   test('Home sensor icon levels are clamped and never invent a missing temperature', () {
     expect(
       jexTemperatureIndicatorLevel('45 °C', minC: 20, maxC: 60),
@@ -729,7 +764,8 @@ void main() {
     final voltage = source.substring(voltageStart, voltageEnd);
     expect(voltage, contains('canvas.clipPath(bolt)'));
     expect(voltage, contains('final sweepY = s * (.13 + .72 * (.5 - .5 * math.cos(angle)));'));
-    expect(voltage, contains('fill(Colors.white.withValues(alpha: .22 + .10 * pulse))'));
+    expect(voltage, contains('fill(Colors.white.withValues(alpha: .08 + .24 * voltageEnergy + .04 * pulse))'));
+    expect(voltage, contains('final voltageEnergy = level.clamp(0.0, 1.0).toDouble();'));
     final bluetoothStart = source.indexOf('case JexAnimatedIconKind.bluetooth:');
     final bluetoothEnd = source.indexOf('case JexAnimatedIconKind.generic:', bluetoothStart);
     expect(bluetoothStart, isNonNegative);

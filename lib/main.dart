@@ -1095,6 +1095,108 @@ double jexTemperatureIndicatorLevel(
   return ((temperature - minC) / (maxC - minC)).clamp(0.0, 1.0).toDouble();
 }
 
+
+const Color jexThermalIceBlue = Color(0xFF65DDFB);
+const Color jexThermalCyan = Color(0xFF42DDD6);
+const Color jexThermalGreen = Color(0xFF70E68D);
+const Color jexThermalAmber = Color(0xFFFFD166);
+const Color jexThermalOrange = Color(0xFFFF913F);
+const Color jexThermalRed = Color(0xFFFF464F);
+
+double? jexParseTemperatureC(String value) {
+  final match = RegExp(r'-?\\d+(?:[.,]\\d+)?').firstMatch(value.trim());
+  final raw = match?.group(0)?.replaceAll(',', '.');
+  final temperature = raw == null ? null : double.tryParse(raw);
+  return temperature != null && temperature.isFinite ? temperature : null;
+}
+
+Color _jexInterpolatePalette(
+  double value,
+  List<double> stops,
+  List<Color> colors,
+) {
+  if (stops.length != colors.length || stops.isEmpty) {
+    return jexThermalIceBlue;
+  }
+  final clamped = value.clamp(stops.first, stops.last).toDouble();
+  for (var i = 0; i < stops.length - 1; i++) {
+    if (clamped <= stops[i + 1]) {
+      final span = stops[i + 1] - stops[i];
+      final t = span <= 0
+          ? 1.0
+          : ((clamped - stops[i]) / span).clamp(0.0, 1.0).toDouble();
+      return Color.lerp(colors[i], colors[i + 1], t)!;
+    }
+  }
+  return colors.last;
+}
+
+/// Thermal Battery color tracks the actual phone battery temperature.
+/// Invalid telemetry uses an ice-blue resting color but is not rendered as a live value.
+Color jexThermalBatteryColor(String value) {
+  final temperature = jexParseTemperatureC(value);
+  if (temperature == null) return jexThermalIceBlue;
+  if (temperature <= 20) return jexThermalIceBlue;
+  if (temperature >= 40) return jexThermalRed;
+  return _jexInterpolatePalette(
+    temperature,
+    const <double>[20, 24, 30, 34, 37, 40],
+    const <Color>[
+      jexThermalIceBlue,
+      jexThermalCyan,
+      jexThermalGreen,
+      jexThermalAmber,
+      jexThermalOrange,
+      jexThermalRed,
+    ],
+  );
+}
+
+/// Battery shell segments represent thermal intensity: 20°C is empty, 30°C half,
+/// and 40°C or above is full. This is separate from phone battery capacity.
+double jexThermalBatteryLevel(String value) =>
+    jexTemperatureIndicatorLevel(value, minC: 20, maxC: 40, fallback: 0);
+
+/// Hotside color is normalized against the live firmware-configured hot limit.
+Color jexHotsideTemperatureColor(String value, {required double hotLimit}) {
+  final temperature = jexParseTemperatureC(value);
+  if (temperature == null || temperature <= 20) return jexThermalIceBlue;
+  final limit = hotLimit.isFinite && hotLimit > 20 ? hotLimit : 45.0;
+  final progress = ((temperature - 20) / (limit - 20))
+      .clamp(0.0, 1.0)
+      .toDouble();
+  return _jexInterpolatePalette(
+    progress,
+    const <double>[0, .28, .56, .80, 1],
+    const <Color>[
+      jexThermalIceBlue,
+      jexThermalCyan,
+      jexThermalAmber,
+      jexThermalOrange,
+      jexThermalRed,
+    ],
+  );
+}
+
+/// Voltage colors and energy have one source of truth for Home and submenu glyphs.
+Color jexVoltageIndicatorColor(String voltage) {
+  return switch (voltage.trim().toUpperCase()) {
+    '5V' => const Color(0xFFFF4D5A),
+    '9V' => const Color(0xFF52E6A2),
+    '12V' => const Color(0xFF4D8CFF),
+    _ => const Color(0xFF7F8592),
+  };
+}
+
+double jexVoltageEnergyLevel(String voltage) {
+  return switch (voltage.trim().toUpperCase()) {
+    '5V' => .32,
+    '9V' => .68,
+    '12V' => 1.0,
+    _ => 0.0,
+  };
+}
+
 class JexAnimatedIcon extends StatefulWidget {
   final JexAnimatedIconKind kind;
   final IconData? glyph;
@@ -1508,6 +1610,62 @@ class _JexIconPainter extends CustomPainter {
     );
   }
 
+  void _drawThermalFlames(
+    Canvas canvas,
+    Size size,
+    double phase, {
+    required double baseY,
+  }) {
+    final s = size.shortestSide;
+    const centers = <double>[.28, .50, .72];
+    for (var i = 0; i < centers.length; i++) {
+      final flicker = .5 + .5 * math.sin(phase * (1.7 + i * .23) + i * 1.8);
+      final halfWidth = s * (.043 + .012 * flicker);
+      final height = s * (.095 + .060 * flicker);
+      final sway = s * .012 * math.sin(phase * 1.3 + i * 2.1);
+      final x = s * centers[i] + sway;
+      final base = s * baseY;
+      final outer = Path()
+        ..moveTo(x - halfWidth, base)
+        ..cubicTo(
+          x - halfWidth * 1.05, base - height * .36,
+          x - halfWidth * .12, base - height * .63,
+          x + sway * .25, base - height,
+        )
+        ..cubicTo(
+          x + halfWidth * .52, base - height * .67,
+          x + halfWidth * 1.04, base - height * .34,
+          x + halfWidth, base,
+        )
+        ..close();
+      _drawGlow(canvas, Offset(x, base - height * .42), height * .46, .12 + .08 * flicker);
+      canvas.drawPath(
+        outer,
+        Paint()..color = Color.lerp(
+          const Color(0xFFFF3D36),
+          const Color(0xFFFF8A36),
+          flicker * .72,
+        )!.withValues(alpha: .92),
+      );
+      final innerWidth = halfWidth * .43;
+      final innerHeight = height * .53;
+      final inner = Path()
+        ..moveTo(x - innerWidth, base)
+        ..cubicTo(
+          x - innerWidth, base - innerHeight * .34,
+          x - innerWidth * .12, base - innerHeight * .62,
+          x + sway * .08, base - innerHeight,
+        )
+        ..cubicTo(
+          x + innerWidth * .54, base - innerHeight * .62,
+          x + innerWidth, base - innerHeight * .32,
+          x + innerWidth, base,
+        )
+        ..close();
+      canvas.drawPath(inner, Paint()..color = const Color(0xFFFFD978).withValues(alpha: .96));
+    }
+  }
+
   void _drawFanBlade(Canvas canvas, Size size, double angle) {
     final s = size.shortestSide;
     canvas.save();
@@ -1582,6 +1740,10 @@ class _JexIconPainter extends CustomPainter {
             );
           }
         }
+        if (level >= .999) {
+          // Thermal Battery reaches full at 40°C and above, then shows animated heat flames.
+          _drawThermalFlames(canvas, size, angle, baseY: .30);
+        }
         break;
 
       case JexAnimatedIconKind.hotside:
@@ -1636,6 +1798,10 @@ class _JexIconPainter extends CustomPainter {
             fill(Colors.white.withValues(alpha: .48 + .14 * softPulse)),
           );
         }
+        if (level >= .999) {
+          // The live Hotside level reaches 1 only at the configured limit.
+          _drawThermalFlames(canvas, size, angle, baseY: .18);
+        }
         break;
 
       case JexAnimatedIconKind.voltage:
@@ -1643,13 +1809,18 @@ class _JexIconPainter extends CustomPainter {
         // The bolt carries a moving charge sweep clipped to its own silhouette.
         final bolt = _bolt(s);
         final bounds = Rect.fromLTWH(s * .20, s * .04, s * .61, s * .92);
-        _drawGlow(canvas, Offset(cx, cy), s * .22,
-            active ? .10 + .05 * pulse : .018);
+        final voltageEnergy = level.clamp(0.0, 1.0).toDouble();
+        _drawGlow(
+          canvas,
+          Offset(cx, cy),
+          s * (.17 + .07 * voltageEnergy),
+          active ? .035 + .13 * voltageEnergy + .025 * pulse : .018,
+        );
         canvas.drawPath(
           bolt,
           Paint()
-            ..color = color.withValues(alpha: active ? .16 : .055)
-            ..maskFilter = MaskFilter.blur(BlurStyle.normal, s * .075),
+            ..color = color.withValues(alpha: active ? .08 + .24 * voltageEnergy : .055)
+            ..maskFilter = MaskFilter.blur(BlurStyle.normal, s * (.04 + .05 * voltageEnergy)),
         );
         canvas.drawPath(
           bolt,
@@ -1658,8 +1829,8 @@ class _JexIconPainter extends CustomPainter {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                color.withValues(alpha: active ? 1.0 : .72),
-                color.withValues(alpha: active ? .70 + .16 * pulse : .50),
+                color.withValues(alpha: active ? .48 + .52 * voltageEnergy : .72),
+                color.withValues(alpha: active ? .35 + .48 * voltageEnergy + .12 * pulse : .50),
               ],
             ).createShader(bounds),
         );
@@ -1670,12 +1841,34 @@ class _JexIconPainter extends CustomPainter {
           final sweepY = s * (.13 + .72 * (.5 - .5 * math.cos(angle)));
           canvas.drawRRect(
             RRect.fromRectAndRadius(
-              Rect.fromLTWH(s * .16, sweepY, s * .68, s * .11),
-              Radius.circular(s * .055),
+              Rect.fromLTWH(
+                s * .16,
+                sweepY,
+                s * .68,
+                s * (.045 + .075 * voltageEnergy),
+              ),
+              Radius.circular(s * (.025 + .035 * voltageEnergy)),
             ),
-            fill(Colors.white.withValues(alpha: .22 + .10 * pulse)),
+            fill(Colors.white.withValues(alpha: .08 + .24 * voltageEnergy + .04 * pulse)),
           );
           canvas.restore();
+
+          if (voltageEnergy >= .60) {
+            final sparkCount = voltageEnergy >= .95 ? 3 : 1;
+            for (var i = 0; i < sparkCount; i++) {
+              final sparkY = s * (.24 + i * .24);
+              final direction = i.isEven ? 1.0 : -1.0;
+              final spark = Path()
+                ..moveTo(cx + direction * s * .12, sparkY)
+                ..lineTo(cx + direction * s * (.20 + .025 * pulse), sparkY - s * .045)
+                ..lineTo(cx + direction * s * .15, sparkY + s * .012);
+              canvas.drawPath(
+                spark,
+                stroke(s * (.012 + .009 * voltageEnergy),
+                    Colors.white.withValues(alpha: .22 + .48 * voltageEnergy)),
+              );
+            }
+          }
         }
         break;
 
@@ -4798,17 +4991,21 @@ void _handleAckLine(String line) {
     // Light mode stays colorful while separating surface, outline, and glyph contrast.
     // The accent identifies the metric without becoming a harsh solid block.
     final mutedText = homeDark ? const Color(0xFFD4D7E0) : const Color(0xFF25282E);
-    final lightAccentOpacity = active ? .12 : .09;
-    final lightOutlineOpacity = active ? .50 : .36;
-    // Active state controls animation only. Inactive icons retain their full semantic color.
-    final indicatorColor = color;
-    final lightTextAccent = lightThemeAccentText(color);
-    final indicatorFill = homeDark
-        ? color.withValues(alpha: .12)
-        : color.withValues(alpha: lightAccentOpacity);
-    final indicatorBorder = homeDark
-        ? color.withValues(alpha: .52)
-        : color.withValues(alpha: lightOutlineOpacity);
+    return TweenAnimationBuilder<Color?>(
+      tween: ColorTween(end: color),
+      duration: const Duration(milliseconds: 560),
+      curve: Curves.easeInOutCubic,
+      builder: (context, animatedColor, child) {
+        final indicatorColor = animatedColor ?? color;
+        final lightAccentOpacity = active ? .12 : .09;
+        final lightOutlineOpacity = active ? .50 : .36;
+        final lightTextAccent = indicatorColor;
+        final indicatorFill = homeDark
+            ? indicatorColor.withValues(alpha: .12)
+            : indicatorColor.withValues(alpha: lightAccentOpacity);
+        final indicatorBorder = homeDark
+            ? indicatorColor.withValues(alpha: .52)
+            : indicatorColor.withValues(alpha: lightOutlineOpacity);
 
     return Padding(
       padding: EdgeInsets.zero,
@@ -4901,6 +5098,8 @@ void _handleAckLine(String line) {
           ),
         ),
       ),
+          );
+      },
     );
   }
 
@@ -5333,6 +5532,9 @@ void _handleAckLine(String line) {
     required Future<void> Function(bool) onChanged,
     bool stateKnown = true,
     JexAnimatedIconKind? animatedKind,
+    int voltageLevel = 5,
+    double animationLevel = 1.0,
+    Color? animationColor,
   }) {
     final scheme = Theme.of(context).colorScheme;
     final accent = scheme.primary;
@@ -5382,11 +5584,13 @@ void _handleAckLine(String line) {
                   : JexAnimatedIcon(
                       kind: animatedKind,
                       size: 22,
-                      color: value ? accent : scheme.onSurfaceVariant,
+                      color: animationColor ?? (value ? accent : scheme.onSurfaceVariant),
                       active: jexIndicatorAnimationActive(
                         connected: connected,
                         stateActive: value,
                       ),
+                      level: animationLevel,
+                      voltageLevel: voltageLevel,
                     ),
             ),
           ),
@@ -5637,6 +5841,9 @@ void _handleAckLine(String line) {
                   subtitle: '',
                   icon: PhosphorIconsRegular.snowflake,
                   animatedKind: JexAnimatedIconKind.peltier,
+                  animationColor: const Color(0xFF18DFFF),
+                  animationLevel: peltierOn ? 1.0 : 0.0,
+                  voltageLevel: jexVoltageAnimationLevel(voltage),
                   value: peltierOn,
                   enabled: connected && runtimeOutputsKnown && !adaptiveOn,
                   stateKnown: runtimeOutputsKnown,
@@ -5648,6 +5855,9 @@ void _handleAckLine(String line) {
                   subtitle: '',
                   icon: PhosphorIconsRegular.fan,
                   animatedKind: JexAnimatedIconKind.fan,
+                  animationColor: const Color(0xFF38E3AD),
+                  animationLevel: fanSpeed / 100,
+                  voltageLevel: jexVoltageAnimationLevel(voltage),
                   value: fanOn,
                   enabled: connected && runtimeOutputsKnown && !adaptiveOn && !peltierOn,
                   stateKnown: runtimeOutputsKnown,
@@ -5671,12 +5881,13 @@ void _handleAckLine(String line) {
                           JexAnimatedIcon(
                             kind: JexAnimatedIconKind.speed,
                             size: 25,
-                            color: fanOn ? scheme.primary : scheme.onSurfaceVariant,
+                            color: const Color(0xFFFFCD38),
                             active: jexIndicatorAnimationActive(
                               connected: connected,
                               stateActive: fanOn,
                             ),
                             level: fanSpeed / 100,
+                            voltageLevel: jexVoltageAnimationLevel(voltage),
                           ),
                           const SizedBox(width: 10),
                           Expanded(
@@ -5753,6 +5964,9 @@ void _handleAckLine(String line) {
               subtitle: '',
               icon: PhosphorIconsRegular.sparkle,
               animatedKind: JexAnimatedIconKind.adaptive,
+              animationColor: const Color(0xFFC05BFF),
+              animationLevel: adaptiveOn ? 1.0 : 0.0,
+              voltageLevel: jexVoltageAnimationLevel(voltage),
               value: adaptiveOn,
               enabled: connected && runtimeOutputsKnown,
               stateKnown: runtimeOutputsKnown,
@@ -6481,30 +6695,28 @@ void _handleAckLine(String line) {
                             JexText.of('batteryTemperature'),
                             batteryValue,
                             batteryValue == '--' ? '' : '°C',
-                            color: const Color(0xFFFFB52E),
+                            color: jexThermalBatteryColor(batteryValue),
                             icon: PhosphorIconsRegular.batteryHigh,
                             animatedKind: JexAnimatedIconKind.battery,
-                            level: jexTemperatureIndicatorLevel(
-                              batteryValue,
-                              minC: 15,
-                              maxC: 50,
-                              fallback: .36,
-                            ),
+                            level: jexThermalBatteryLevel(batteryValue),
                           ),
                           _homeMetric(
                             JexText.of('hotsideTemperature'),
                             hotValue,
                             hotValue == '--' ? '' : '°C',
                             color: safetyLocked
-                                ? const Color(0xFFFF5164)
-                                : const Color(0xFF22E6DE),
+                                ? jexThermalRed
+                                : jexHotsideTemperatureColor(
+                                    hotValue,
+                                    hotLimit: hotLimit.toDouble(),
+                                  ),
                             icon: PhosphorIconsRegular.thermometer,
                             animatedKind: JexAnimatedIconKind.hotside,
                             level: jexTemperatureIndicatorLevel(
                               hotValue,
                               minC: 20,
-                              maxC: 55,
-                              fallback: .42,
+                              maxC: hotLimit.toDouble(),
+                              fallback: 0,
                             ),
                             warning: safetyLocked,
                           ),
@@ -6512,9 +6724,11 @@ void _handleAckLine(String line) {
                             JexText.of('voltageIndicator'),
                             voltageValue,
                             '',
-                            color: const Color(0xFF4D8CFF),
+                            color: jexVoltageIndicatorColor(voltageValue),
                             icon: PhosphorIconsRegular.lightning,
                             animatedKind: JexAnimatedIconKind.voltage,
+                            level: jexVoltageEnergyLevel(voltageValue),
+                            voltageLevel: jexVoltageAnimationLevel(voltageValue),
                           ),
                           _homeMetric(
                             JexText.of('adaptiveMode'),
