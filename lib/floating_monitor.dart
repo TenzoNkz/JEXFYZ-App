@@ -167,6 +167,13 @@ class FloatingTelemetry {
       };
 }
 
+// AI-METHOD / METRIC-VISIBILITY-CONTRACT
+// Preserve the stable metric visibility policy for the native HUD and regression tests.
+// This pure helper is not a settings-page live preview; the middle preview UI was removed.
+bool floatingMetricVisible(String metric, FloatingTelemetry telemetry) {
+  return FloatingMetric.isValid(metric);
+}
+
 // AI-METHOD / METRIC-STATUS-CONTRACT
 // Adaptive and Peltier are independent firmware-backed states; only Speed is gated by Fan.
 String floatingMetricStatus(String metric, FloatingTelemetry telemetry, AppLanguage language) {
