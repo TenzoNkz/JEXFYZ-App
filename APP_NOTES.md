@@ -101,7 +101,7 @@ This file is the durable App behavior/design contract. Live `lib/` source and th
 
 ## Current App QC boundary
 
-- Current source: `lib/main.dart` blob `f4ee1e9b9e74f103e0f362db813dea642f285470`; current widget test `test/widget_test.dart` blob `4b7bf68f3c73d6ffe80509ccb75ce6e08607b020`.
+- Current source: `lib/main.dart` blob `c697497e16c94b8fe4fe8fd9bd1f9bc93598545f`; current widget test `test/widget_test.dart` blob `2a87292d5c4bc468ee6aad6810b249d284a28bae`.
 - Latest verified App Build is [run #35 / ID `38669526891`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38669526891) on code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`. Audit, dependency installation, Dart analyze, all 74 Flutter tests, release APK compilation, V1/V2/V3 signing, publication and re-downloaded asset verification passed.
 - Current release `jexfyz-latest` contains one `JEXFYZ-release.apk` (54,521,947 bytes), SHA-256 `77e57ece6c194ec97ce9f4e72d379f848173cd2cf905f66a74e6b037ad82e5c1`. Production certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. V1/V2/V3 independently verified on built and re-downloaded APKs.
 - Build #34 exposed a mismatch: the prior `Curves.easeInOutCubic` yielded 0.510125 at progress 0.5, while the regression contract expects 0.5. Current `jexSmoothFanSpeedLevel` uses symmetric cubic smoothstep `t*t*(3-2*t)`; the test was not loosened, and Build #35 passed it within all 74 Flutter tests.
