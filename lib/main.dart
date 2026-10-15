@@ -1183,10 +1183,9 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     final peltierVisualChanged = widget.kind == JexAnimatedIconKind.peltier &&
         (voltageChanged || widget.active != oldWidget.active);
     final speedVisualChanged = widget.kind == JexAnimatedIconKind.speed &&
-        (widget.kind != oldWidget.kind ||
-            oldWidget.kind != JexAnimatedIconKind.speed ||
+        (oldWidget.kind != JexAnimatedIconKind.speed ||
             widget.active != oldWidget.active ||
-            widget.level != oldWidget.level);
+            (widget.active && widget.level != oldWidget.level));
 
     if (speedVisualChanged) {
       _retargetSpeedLevel(
