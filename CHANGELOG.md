@@ -2,6 +2,13 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
+## 2026-10-16 — Icon/FPS repair source checkpoint (not yet built)
+
+- Source commit [`98cfe7ba4d0e9d569b84498d261ad1b67f66eee7`](https://github.com/TenzoNkz/JEXFYZ-App/commit/98cfe7ba4d0e9d569b84498d261ad1b67f66eee7) restores the Build #54 `_JexIconPainter` geometry while retaining interpolated activity effects.
+- Floating FPS now preserves the user-selected metric `F` when Shizuku is unavailable, checks focused-window information through a fixed `dumpsys window displays` operation with ActivityManager fallback, and separates verified zero-frame samples from first/invalid/reset samples.
+- Added source-contract assertions for the restored drawing primitives, metric selection persistence, foreground-window operation, and FPS sample validity.
+- **No** Dart analysis, Flutter tests, Kotlin compilation, APK build, release, or physical-device verification has been run for this checkpoint. Build #56 remains the latest verified release.
+
 ## 2026-10-16 — App Build #55 success; indicator/Floating Monitor/screen-FPS source released (device verification pending)
 
 - [Build #55 / run 38783100421](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38783100421), triggered by [issue #28](https://github.com/TenzoNkz/JEXFYZ-App/issues/28), built exact source commit `3ba172b3f35f4ec01732d5848a7ffc807663e710`. The functional source checkpoint `311a18934a3cbe86a2a4718442c92541f081183f` is included; commits afterward only synchronized documentation.
