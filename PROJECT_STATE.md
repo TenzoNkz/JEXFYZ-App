@@ -2,9 +2,15 @@
 
 Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use CHANGELOG.md for historical decisions and APP_BUILD_REPORT.md for build evidence.
 
+## Current unbuilt source repair — 2026-10-16
+
+- Current main source repair: `98cfe7ba4d0e9d569b84498d261ad1b67f66eee7` (not built, tested or device-verified). Latest verified release remains Build #56 from source `235f47b47af4f32582a7f18825ed76d2c6bba54f`.
+- Scope: restore Build #54 icon painter geometry while blending active effects; preserve Floating Monitor metric `F` when Shizuku is unavailable; read focused window via a restricted `dumpsys window displays` operation with ActivityManager fallback; do not show zero for unverified FPS samples.
+- No Firmware/BIN, Firebase, OTA, BLE hardware-control or thermal safety changes were made. Tests were updated but have not been run for this source commit.
+
 ## App identity and repository
 
-- Canonical App repo: TenzoNkz/JEXFYZ-App, branch main. Latest functional source/test checkpoint: 311a18934a3cbe86a2a4718442c92541f081183f; Build #56 built/tested that source using docs-only main commit 235f47b47af4f32582a7f18825ed76d2c6bba54f. The difference from Build #55's source was only CHAT_TRANSFER.md; no functional App repair was needed. Five branches and zero open PRs at the last verified tree check.
+- Canonical App repo: TenzoNkz/JEXFYZ-App, branch main. Current repair checkpoint: 98cfe7ba4d0e9d569b84498d261ad1b67f66eee7 (unbuilt/unverified). Latest verified release remains Build #56 from source 235f47b47af4f32582a7f18825ed76d2c6bba54f. Five branches and zero open PRs at the last verified tree check.
 - App/package: JE Cooler / JE X FYZ, com.horizontalzzz.jexfyz, pubspec version 1.0.0+3. Preserve Gradle versionName exactly as "Telegram @horizontalzzz".
 - Only active App build workflow: .github/workflows/jexfyz-app-build-trigger.yml; issue opened/reopened only; repository-owner, exact title and body-token guarded. Normal push/PR does not build/release.
 - Firmware artifact repo TenzoNkz/JEXFYZ-Firmware has exactly one tree entry: JEXFYZ.cpp.bin, 1,455,936 bytes, blob 68167e65d26137eeb1ce4d6d4ba798dc282454e6. Do not modify or inspect BIN payload during documentation work. This does not prove current source-to-BIN provenance.
@@ -25,14 +31,14 @@ Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use C
 
 ## Current source fingerprints
 
-- lib/main.dart: 69eef38d26282b94ad1bea297d812dfd8b9e91e3.
-- lib/floating_monitor.dart: f3ba1518e9f5158cd7f7a1fccac8df0fbac3b2fb.
+- lib/main.dart: d24885cf0a40472b9fb23ee6ce73ad772ae73672.
+- lib/floating_monitor.dart: 556217f0035e97fa6060041203151eec1c24ed76.
 - lib/app_settings.dart: 4c89bcb3c04142ce49440a11b92054365c26f7a6.
-- test/widget_test.dart: 2426eecea66a357d63ce10214a2d331224c81e37.
+- test/widget_test.dart: 5a9dc285729b6c85c4f70399cdf17282af1a5c33.
 - test/floating_monitor_layout_contract_test.dart: 7f861d449e518af68fc4ece7278241aa3ce8691b.
-- test/shizuku_fps_contract_test.dart: 798633a24907fd8aca567e70a6376dc59c6e41c9.
-- android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt: dd10ff0b2c23941badaa33949967fc373f98aeb9.
-- android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FpsShizukuUserService.kt: 1f5ed36dadaba9dc70ecfbe0793114b34c8ab08b.
+- test/shizuku_fps_contract_test.dart: 5a9efb60b02c1cfabf44a35434f67fb555419c92.
+- android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt: 44030753bf6a27ac0e9630f2d0f7ca0cc8e3bd0b.
+- android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FpsShizukuUserService.kt: e44fac7cec76979ef47a256a3e1d416d09ef7e22.
 - android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt: a139dfefe1121963c3a26b114b9b0fcc9f8fa16a.
 - android/app/src/main/aidl/com/horizontalzzz/jexfyz/IFpsShizukuUserService.aidl: 5bd6c269212e523b190f7164e0ad1d257ed5e6a5.
 - .github/workflows/jexfyz-app-build-trigger.yml: 585d190324e522fc08e66cc95bd7ee80c5f37664.
