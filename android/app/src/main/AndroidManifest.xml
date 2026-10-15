@@ -32,6 +32,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <!-- Development-only permission, explicitly granted via ADB for SurfaceFlinger FPS statistics. -->
+    <uses-permission android:name="android.permission.DUMP" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
