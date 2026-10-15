@@ -1,16 +1,17 @@
 # JE X FYZ / JE Cooler — Memory Index
 
-Reconciled against live GitHub main: 2026-10-16 00:04 Asia/Jakarta. Live code, Git refs, Actions results and Release assets supersede stale memory snapshots.
+Reconciled against live GitHub main: 2026-10-16. Live code, Git refs, Actions results and Release assets supersede stale memory snapshots.
 
 ## Verified checkpoint
 
-- Parent HEAD before this docs reconciliation: 329fd18e3c6ced8f43a7dbfaf7bf02206c17d42a. Recursive tree 80 entries, not truncated; five branches; zero open PRs.
+- Current documentation HEAD before this index update: 8c7084cc37fc9fb72d9591e99030eb74b94e3065; tree c13ace58ec38e356494582c7cd3580d4703a8921, not truncated, 80 entries; five branches; zero open PRs. Source implementation checkpoint (before documentation sync): 00c55d4b42a529bc436e252be1aa1d9a2cf39682.
 - App version 1.0.0+3, package com.horizontalzzz.jexfyz; preserve Android Gradle versionName "Telegram @horizontalzzz".
 - Latest successful release is Build #54 / run 38767611593 at source commit 437e7730dbcaf9666ae4828e546a45343bb4890c. Dart analysis, 86/86 Flutter tests, Android compile, V1/V2/V3 signing/certificate, matching source archive and downloaded-asset checks passed.
 - Release jexfyz-latest has JEXFYZ-release.apk, asset 644438898, SHA-256 cdf8a7f94424b9cb60be6e04489a9f0f0d8ddad43ab76c33c2e2c6333fa61327, and JEXFYZ-corresponding-source.zip, asset 644438897, SHA-256 3b208c987def59a7c1857ed0fcc9ca5d74d591767e5658dfab04c9c1be85450f.
-- Current source hashes: main.dart 72c450d9b1e8783e4b82b8e37a5f39e2d49b6289; floating_monitor.dart 05a61e5670ec09c9c46cf60466a1dd301dfe5352; app_settings.dart 46cc838f43a06c325af6f6832e200a4e1ed4f75d; widget_test.dart 520399fcdc6be4fd69cb48f50aa8961f5d9183c5; floating layout test 31d9aabf4ac0839855308b6bd2a0708fa399a3a9; Shizuku FPS test 798633a24907fd8aca567e70a6376dc59c6e41c9; workflow 585d190324e522fc08e66cc95bd7ee80c5f37664.
+- Current source hashes: main.dart 69eef38d26282b94ad1bea297d812dfd8b9e91e3; floating_monitor.dart 539172e927871415b60dff8e5321199237879c45; app_settings.dart 4c89bcb3c04142ce49440a11b92054365c26f7a6; native FloatingMonitorService.kt dd10ff0b2c23941badaa33949967fc373f98aeb9; widget_test.dart 9a0c07b02b5ea63914d735be777fe0a3df66b2bb; floating layout test bc5d3f9039f18e785c1268745de577bd388a731f; Shizuku FPS test 798633a24907fd8aca567e70a6376dc59c6e41c9; workflow 585d190324e522fc08e66cc95bd7ee80c5f37664.
 - Active Firmware source remains V6.6 at firmware/JEXFYZ-V6.6.ino, blob f51ba6db5d0e91318f63fea4014bb87f7bf76222. V6.6 compile/two same-version Online OTA reports are USER-REPORTED; source-to-BIN provenance UNVERIFIED.
-- Open physical issue: user screenshot shows Shizuku permission granted while F is -- and other telemetry is live. The screenshot is the JE Cooler settings page foreground; source intentionally skips JE Cooler's own package as a game. This is a plausible explanation, not a confirmed device diagnosis. See APP_NOTES.md / PROJECT_STATE.md.
+- Current main UI/FPS changes are source-only and UNBUILT. Contract tests were updated but not executed because Flutter/Dart are not available in this runtime. Build #54 remains latest verified release from source 437e7730dbcaf9666ae4828e546a45343bb4890c; its APK/source ZIP do not include current changes. @Thinking Eksekusi Build App! is required for analyze/test/build/release.
+- Open physical validation item: earlier screenshot showed Shizuku allowed while F was --. Current main source now follows the foreground window package across games, JE Cooler, launcher, Settings and system UI when matching SurfaceFlinger data is exposed, and returns 0 after baseline when a tracked layer is stable. This source fix is NOT device-verified; OEM permissions/layer naming may still leave data unavailable. See APP_NOTES.md / PROJECT_STATE.md.
 
 ## New-chat boot order
 
