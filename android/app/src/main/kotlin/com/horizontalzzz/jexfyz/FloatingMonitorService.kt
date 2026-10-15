@@ -397,8 +397,8 @@ class FloatingMonitorService : Service() {
     }
 
     // AI-METHOD / FOREGROUND-PACKAGE-DETECTION
-    // SurfaceFlinger exposes many system and background app layers. Only follow the app
-    // identified as resumed/focused by Android; never choose a random layer with the biggest delta.
+    // SurfaceFlinger exposes app, launcher, Settings and Android system layers.
+    // Follow the package behind the currently focused window instead of requiring a game.
     private fun readForegroundPackage(): String? {
         val result = runDumpsys("activity", "activities")
         if (!result.ok) return null
@@ -424,8 +424,8 @@ class FloatingMonitorService : Service() {
     }
 
     // AI-METHOD / FPS-SAMPLE-CALCULATION
-    // Compute per-layer frame deltas only for the app Android reports as currently resumed/focused.
-    // Never substitute display refreshRate or a busy background layer for game FPS.
+    // Compute per-layer frame deltas for the package behind the focused screen window.
+    // Never substitute display refreshRate or an unrelated background layer for presented FPS.
     private fun pollSurfaceFlinger(generation: Int) {
         if (!fpsMonitorWanted || generation != fpsGeneration) return
         if (!hasShizukuFpsPermission()) {
