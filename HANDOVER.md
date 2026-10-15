@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-10-16 Asia/Jakarta after Build #58. This report separates verified repository/CI state from runtime unknowns.
+Last reconciled: 2026-10-16 Asia/Jakarta after Build #58 and post-release FPS diagnostics. The latest diagnostic follow-up is not built; this report separates verified release facts from unbuilt source and runtime unknowns.
 
 ## Current App source/release
 
@@ -10,19 +10,20 @@ Last reconciled: 2026-10-16 Asia/Jakarta after Build #58. This report separates 
   - [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk) — asset `644929744`, `54,636,716` bytes, SHA-256 `88ee4aeadbba20279f36601dcf05e253746ba8189cefb125787db22a1553b2bd`.
   - [`JEXFYZ-corresponding-source.zip`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip) — asset `644929745`, `2,864,393` bytes, SHA-256 `c331bc2912999dee148922b90018a151a4a355cacc064c0d87653633fe5c4094`.
 - Certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. V1/V2/V3 and downloaded asset signatures verified. Warnings and exact attempt history are preserved in `APP_BUILD_REPORT.md`.
-- Build #57 had five stale source-contract assertions; test-only correction preceded Build #58, and no tests/gates were removed or weakened. Build #58 is the current successful release. No Firmware, BIN, Firebase, OTA, flashing or device operation was performed.
+- Build #57 had five stale source-contract assertions; test-only correction preceded Build #58, and no tests/gates were removed or weakened. Build #58 remains the current successful release. Post-release FPS diagnostic changes are in source only and are not in its APK. No Firmware, BIN, Firebase, OTA, flashing or device operation was performed.
 
 ## Open issue — Shizuku is granted, but F displays --
 
-- USER-REPORTED screenshot showed Shizuku permission granted while metric F showed `--` with JE Cooler settings foreground; no device status dump/logcat has been captured.
-- Build #58 includes the focused-window sampler and guarded frame-delta logic for JE Cooler, foreground apps, launcher, Settings and Android system UI when matching SurfaceFlinger layers are exposed. A present layer with no new presented-frame delta can report 0 after its baseline; `--` remains possible when identity/layer/access is unavailable.
-- Run #55 built and test-verified the source, but does not prove Shizuku UserService binds/runs on the target phone or that this OEM exposes the expected SurfaceFlinger layer. Next device check: keep Floating Monitor enabled, switch through JE Cooler, Settings/launcher, another app and an actual game; if F stays `--`, capture `fps_monitor_status` and native logs. Do not substitute panel refresh rate for measured FPS.
+- USER-REPORTED screenshot showed Shizuku permission granted and metric F selected while the overlay displayed `F:--`. This proves the overlay and selection are visible, but does not identify whether service, foreground detection or layer sampling failed.
+- Build #58 (release source `db11df355780174b1da7dcea4d5947bfa7ba7ca5`) includes the earlier focused-window sampler and guarded frame-delta logic. The user still observed `F:--` on that release.
+- Current post-release source checkpoint `becd7f20517fbdaa4bb9922501f28fbed2282223` adds a full `dumpsys window` fallback when `dumpsys window displays` yields no focus, does not report sampler `active` before a valid sample, and shows native statuses such as `foreground_unknown` and `no_layer_data` in Settings. **This checkpoint has not been analyzed, test-run, Kotlin-compiled, or built.**
+- Next step after this authorized source execution is the separate `@Thinking Eksekusi Build App!` command. Install the resulting APK and share the status line plus `F:--` outcome. Do not substitute panel refresh rate for measured FPS; Shizuku permission alone does not establish frame-statistics access.
 
 
 ## Current Floating Monitor UX
 
 - Position remains freely draggable; horizontal metric groups are centered, vertical rows share the same left edge. Size is 0.30×–1.00× in 0.05× increments (default 0.60×). Background opacity is 0–100% in 5% increments with endpoint labels only; no 50% midpoint. Background color/foreground contrast behavior remains.
-- Current source passed Build #58 Dart analysis, all 87 Flutter tests, Android release compilation/signing and release artifact checks. Physical overlay appearance, drag gestures, service lifecycle and live FPS values still require device validation.
+- Build #58 passed Dart analysis, all 87 Flutter tests, Android release compilation/signing and release artifact checks. The post-release diagnostic follow-up is not included in that APK and has not been validated. Physical overlay appearance, animation quality, service lifecycle and live FPS require build/device verification.
 
 
 ## Firmware/hardware boundary
