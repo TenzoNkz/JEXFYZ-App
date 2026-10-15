@@ -1,9 +1,17 @@
+## 2026-10-15 — Preserve Kadb; add corresponding-source and license checks to App Release (NOT YET BUILD-VERIFIED)
+
+- The selected technical route retains the current Wireless ADB/FPS functionality rather than swapping in a newer, less-audited pairing implementation.
+- Added the full upstream GPL-3.0 license text from SPAKE2-Java tag `1.0.5` as `third_party/spake2-java-1.0.5-GPL-3.0.txt` and packaged the same text under `android/app/src/main/assets/licenses/spake2-java-GPL-3.0.txt`. Added `third_party/THIRD_PARTY_NOTICES.md` listing Kadb 1.3.0 (Apache-2.0) and SPAKE2-Java 1.0.5 (GPL-3.0).
+- The revised official workflow will audit those notices, build the obfuscated APK, create `JEXFYZ-corresponding-source.zip` with exact-commit app/build/test source plus upstream Kadb tag `1.3.0` and SPAKE2-Java tag `1.0.5` including its pinned native submodule, publish that archive beside the single APK, and verify both downloaded SHA-256 values.
+- Workflow blob for the source/license steps: `187956b1344680eaf89f48fec28fd8a92e77f832`. This is NOT yet a passing build. The next action is an authorized Build App run, followed by evidence-based repair/retry until complete or a concrete external blocker is documented.
+- The source bundle is attached to the same private Release; the repository remains private. This packaging is a technical source-availability safeguard, not a legal opinion. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+
 ## 2026-10-15 — Repair Build #39 Maven resolution configuration (build still unverified)
 
 - Live main before this update: `a70d1ea3ec29e0656b8e0c071cb1e8a3c14626b5`; root tree `a2750f5956fb709d9a19a612e4db243d430a8a47` (71 entries / 52 blobs; recursive tree not truncated).
 - Build #39 / run `38705765370` failed at `:app:mergeReleaseNativeLibs` after security/architecture audit, Flutter dependency installation, Dart analysis and all 80 Flutter tests passed. Gradle could not find `com.github.Flyfish233:spake2-java:1.0.5`; APK/signing/release steps did not run.
 - Updated `android/build.gradle` to add `https://jitpack.io`, narrowly filtered to `com.github.Flyfish233:spake2-java`; blob SHA `bb8c0caf26927bd614bb9b05ef79366424063663`. This directly addresses the missing repository configuration but has not yet been run through Gradle, so success is NOT claimed.
-- The transitive SPAKE2 artifact is GPL-3.0 while Kadb itself is Apache-2.0. Because the Build App workflow automatically publishes a Release asset, the dependency/distribution route remains a required decision before any authorized Build App run. No workflow was triggered; the current Release asset is still Build #36's older APK.
+- The transitive SPAKE2 artifact is GPL-3.0 while Kadb itself is Apache-2.0. The next source change chooses to retain Kadb and extend the private Release with the exact corresponding-source ZIP and GPL license text; this packaging/distribution route itself must still pass the official workflow. No APK from #39 was published.
 - Updated current-state build notes, handover, index and transfer snapshot to preserve the exact run evidence and licensing gate. No Firmware, BIN, Firebase, OTA, flash, or physical device operation occurred.
 
 ## 2026-10-15 — Redesign animated Home status indicators and Notify connection labels
