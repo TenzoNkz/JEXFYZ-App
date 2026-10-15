@@ -12,10 +12,11 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 6. [Firmware Reference](FIRMWARE_NOTES.md) and [Firmware Technical Reference](firmware/FIRMWARE_TECHNICAL_REFERENCE.md) — hardware, control, sensor, safety, and implementation contracts.
 7. [OTA Protection](OTA_PROTECTION.md), [OTA Regression Memory](OTA_REGRESSION_MEMORY.md), and [Voltage Transition Memory](VOLTAGE_TRANSITION_MEMORY.md) — protected code paths and known regressions.
 8. [Build and Release](BUILD_NOTES.md) — explicit APK build procedure and validation boundaries.
-9. [Changelog](CHANGELOG.md) — historical changes; history never overrides current code.
-10. [Design Notes](DESIGN_NOTES.md) — approved grille, icon, and brand design constraints.
-11. [Transfer Prompt Templates](CHAT_TRANSFER_PROMPTS.md) — copy-ready prompts for saving context and starting a new chat.
-12. `archive/` contains verbatim legacy snapshots for forensic recovery only. Any old `CURRENT` status inside an archive is not live truth.
+9. [App Build Report](APP_BUILD_REPORT.md) — attempts, fixes, test/signing evidence and final build status shared with the Discussion chat.
+10. [Changelog](CHANGELOG.md) — historical changes; history never overrides current code.
+11. [Design Notes](DESIGN_NOTES.md) — approved grille, icon, and brand design constraints.
+12. [Transfer Prompt Templates](CHAT_TRANSFER_PROMPTS.md) — copy-ready prompts for saving context and starting a new chat.
+13. `archive/` contains verbatim legacy snapshots for forensic recovery only. Any old `CURRENT` status inside an archive is not live truth.
 
 ## Repository boundaries
 
@@ -35,4 +36,4 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 
 ## Non-negotiable workflow
 
-Read [CHAT_RULES.md](CHAT_RULES.md) before making changes. Discussion is read-only. Changes go directly to `main` unless the user explicitly requests another workflow. The user compiles firmware themselves. Run App Build only after an explicit `@Thinking Build App!` or `@Thinking Eksekusi & Build App!` request. A documentation edit never authorizes source changes, builds, release operations, Firebase changes, flash, or OTA. At a chat/context limit, follow Prompt A in `CHAT_TRANSFER_PROMPTS.md`, reconcile every memory/source file, and replace `CHAT_TRANSFER.md` last.
+Read [CHAT_RULES.md](CHAT_RULES.md) before making changes. Discussion is read-only. Changes go directly to `main` unless the user explicitly requests another workflow. The user compiles firmware themselves. Use `@Thinking #Diskusi!` for full read-only discussion; Gemini prompt/answer modes require `#Diskusi!` in the same command. Use `@Thinking #Eksekusi Full!` for approved full execution and `@Thinking #Build App!` for the entire App Build/retry/verification cycle. The sole App Build report is `APP_BUILD_REPORT.md`; the retired `#Eksekusi!` and `#Eksekusi & Build App!` commands are not valid. A documentation edit never authorizes source changes, builds, release operations, Firebase changes, flash, or OTA. At a chat/context limit, follow Prompt A in `CHAT_TRANSFER_PROMPTS.md`, reconcile every memory/source file, and replace `CHAT_TRANSFER.md` last.
