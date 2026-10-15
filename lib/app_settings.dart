@@ -580,6 +580,10 @@ class JexText {
       AppLanguage.english: 'Shizuku Access Denied',
       AppLanguage.indonesia: 'Akses Shizuku Ditolak',
     },
+    'grantShizukuAccess': {
+      AppLanguage.english: 'Grant Shizuku Access',
+      AppLanguage.indonesia: 'Beri Akses Shizuku',
+    },
     'fpsAccessDescription': {
       AppLanguage.english: 'JE X FYZ reads SurfaceFlinger frame statistics through Shizuku. FPS stays disabled until Shizuku is running and you explicitly approve JE X FYZ in the Shizuku permission dialog.',
       AppLanguage.indonesia: 'JE X FYZ membaca statistik frame SurfaceFlinger melalui Shizuku. FPS tetap nonaktif sampai Shizuku berjalan dan kamu menyetujui JE X FYZ melalui dialog izin Shizuku.',
