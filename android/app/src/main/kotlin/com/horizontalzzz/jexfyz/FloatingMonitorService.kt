@@ -600,7 +600,6 @@ class FloatingMonitorService : Service() {
                 status = "active"
             }
             hadInvalidCounter -> {
-                data.fps = "--"
                 fpsTrackedLayer = null
                 fpsMonitorStatus = "sample_invalid"
                 fpsMainHandler.post {
