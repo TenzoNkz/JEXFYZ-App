@@ -1,9 +1,15 @@
 name: JE X FYZ Hosted Runner Diagnostic
 
-# Manual diagnostic only. This workflow never checks out source, builds APKs,
-# reads secrets, or publishes release assets. Use it to isolate runner allocation.
+# Safe, isolated runner smoke test. This workflow never checks out source, builds APKs,
+# reads secrets, or publishes release assets. It supports manual dispatch and a
+# strict repository-owner issue trigger so runner allocation can be tested without
+# launching the release workflow.
 on:
   workflow_dispatch:
+  issues:
+    types:
+      - opened
+      - reopened
 
 permissions:
   contents: read
@@ -11,6 +17,13 @@ permissions:
 jobs:
   hosted-runner-smoke:
     name: Verify hosted runner allocation
+    if: >-
+      github.event_name == 'workflow_dispatch'
+      || (
+        github.event.issue.user.login == github.repository_owner
+        && github.event.issue.title == 'JE X FYZ — HOSTED RUNNER DIAGNOSTIC'
+        && contains(github.event.issue.body, 'JEXFYZ_RUNNER_DIAGNOSTIC_V1')
+      )
     runs-on: ubuntu-24.04
     timeout-minutes: 3
     steps:
@@ -18,11 +31,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          printf 'GITHUB_RUN_ID=%s\n' "$GITHUB_RUN_ID"
-          printf 'GITHUB_RUN_ATTEMPT=%s\n' "$GITHUB_RUN_ATTEMPT"
-          printf 'RUNNER_NAME=%s\n' "${RUNNER_NAME:-missing}"
-          printf 'RUNNER_OS=%s\n' "${RUNNER_OS:-missing}"
-          printf 'RUNNER_ARCH=%s\n' "${RUNNER_ARCH:-missing}"
+          printf 'GITHUB_RUN_ID=%s\\n' "$GITHUB_RUN_ID"
+          printf 'GITHUB_RUN_ATTEMPT=%s\\n' "$GITHUB_RUN_ATTEMPT"
+          printf 'RUNNER_NAME=%s\\n' "${RUNNER_NAME:-missing}"
+          printf 'RUNNER_OS=%s\\n' "${RUNNER_OS:-missing}"
+          printf 'RUNNER_ARCH=%s\\n' "${RUNNER_ARCH:-missing}"
           date -u '+UTC=%Y-%m-%dT%H:%M:%SZ'
           test -n "${RUNNER_NAME:-}"
           test "${RUNNER_OS:-}" = "Linux"
