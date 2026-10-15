@@ -166,6 +166,7 @@ class FloatingMonitorService : Service() {
             fpsFrameCounts.clear()
             fpsLastSampleAtMs = 0L
             fpsTrackedLayer = null
+            fpsLastPositiveLayer = null
             fpsTrackedPackage = null
             fpsMainHandler.post {
                 if (generation != fpsGeneration) return@post
@@ -203,6 +204,7 @@ class FloatingMonitorService : Service() {
         data.fps = "--"
         fpsTrackedPackage = null
         fpsTrackedLayer = null
+        fpsLastPositiveLayer = null
         hudView?.requestLayout()
         hudView?.invalidate()
 
@@ -317,6 +319,7 @@ class FloatingMonitorService : Service() {
             listOf("SurfaceFlinger", "--timestats", "-disable") -> FpsShizukuUserService.OP_STOP_CAPTURE
             listOf("activity", "activities") -> FpsShizukuUserService.OP_READ_FOREGROUND_ACTIVITY
             listOf("SurfaceFlinger", "--timestats", "-dump") -> FpsShizukuUserService.OP_READ_SURFACEFLINGER_STATS
+            listOf("window", "displays") -> FpsShizukuUserService.OP_READ_FOREGROUND_WINDOW
             else -> return DumpsysResult("", false, "unsupported_fps_operation")
         }
         val remote = acquireFpsUserService()
@@ -396,22 +399,28 @@ class FloatingMonitorService : Service() {
         return Regex("""[a-z][a-z0-9_]*(?:\.[a-z0-9_]+)+""").containsMatchIn(value)
     }
 
-    // AI-METHOD / FOREGROUND-PACKAGE-DETECTION
-    // SurfaceFlinger exposes app, launcher, Settings and Android system layers.
-    // Follow the package behind the currently focused window instead of requiring a game.
+    // Read focus fields only from WindowManager output and use ActivityManager as a fallback.
     private fun readForegroundPackage(): String? {
-        val result = runDumpsys("activity", "activities")
-        if (!result.ok) return null
+        val windowResult = runDumpsys("window", "displays")
+        if (windowResult.ok) {
+            val windowPatterns = listOf(
+                Regex("""(?m)^\s*mCurrentFocus\s*=\s*Window\{[^}]*\bu\d+\s+([A-Za-z0-9_.]+)/"""),
+                Regex("""(?m)^\s*mFocusedApp\s*=\s*ActivityRecord\{[^}]*\bu\d+\s+([A-Za-z0-9_.]+)/"""),
+            )
+            val focused = windowPatterns.firstNotNullOfOrNull { pattern ->
+                pattern.find(windowResult.output)?.groupValues?.get(1)
+            }
+            if (focused != null) return focused
+        }
 
-        // Focused window wins over the resumed Activity: system overlays, dialogs and
-        // launcher/system UI can be the screen the user is currently interacting with.
-        val patterns = listOf(
-            Regex("""(?m)^\s*mCurrentFocus\s*=\s*Window\{[^}]*\bu\d+\s+([A-Za-z0-9_.]+)/"""),
-            Regex("""(?m)^\s*mFocusedApp\s*=\s*ActivityRecord\{[^}]*\bu\d+\s+([A-Za-z0-9_.]+)/"""),
-            Regex("""(?m)^\s*(?:mResumedActivity|topResumedActivity)\s*[:=]\s*ActivityRecord\{[^}]*\bu\d+\s+([A-Za-z0-9_.]+)/"""),
+        val activityResult = runDumpsys("activity", "activities")
+        if (!activityResult.ok) return null
+        val activityPatterns = listOf(
+            Regex("""(?m)^\s*(?:mResumedActivity|topResumedActivity|ResumedActivity)\s*[:=]\s*ActivityRecord\{[^}]*\bu\d+\s+([A-Za-z0-9_.]+)/"""),
+            Regex("""(?m)^\s*(?:mResumedActivity|topResumedActivity|ResumedActivity)\s*[:=]\s*([A-Za-z0-9_.]+)/(?:[A-Za-z0-9_.$]+)"""),
         )
-        return patterns.firstNotNullOfOrNull { pattern ->
-            pattern.find(result.output)?.groupValues?.get(1)
+        return activityPatterns.firstNotNullOfOrNull { pattern ->
+            pattern.find(activityResult.output)?.groupValues?.get(1)
         }
     }
 
@@ -447,6 +456,7 @@ class FloatingMonitorService : Service() {
             fpsFrameCounts.clear()
             fpsLastSampleAtMs = 0L
             fpsTrackedLayer = null
+            fpsLastPositiveLayer = null
             fpsTrackedPackage = null
             fpsMainHandler.post {
                 if (generation != fpsGeneration) return@post
@@ -464,6 +474,7 @@ class FloatingMonitorService : Service() {
             fpsFrameCounts.clear()
             fpsLastSampleAtMs = 0L
             fpsTrackedLayer = null
+            fpsLastPositiveLayer = null
             fpsTrackedPackage = null
             fpsMainHandler.post {
                 if (generation != fpsGeneration) return@post
@@ -479,6 +490,7 @@ class FloatingMonitorService : Service() {
             fpsFrameCounts.clear()
             fpsLastSampleAtMs = 0L
             fpsTrackedLayer = null
+            fpsLastPositiveLayer = null
             fpsTrackedPackage = foregroundPackage
             fpsMainHandler.post {
                 if (generation != fpsGeneration) return@post
@@ -507,6 +519,7 @@ class FloatingMonitorService : Service() {
             fpsFrameCounts.clear()
             fpsLastSampleAtMs = 0L
             fpsTrackedLayer = null
+            fpsLastPositiveLayer = null
             fpsMainHandler.post {
                 if (generation != fpsGeneration) return@post
                 data.fps = "--"
@@ -519,40 +532,75 @@ class FloatingMonitorService : Service() {
 
         val elapsed = if (fpsLastSampleAtMs == 0L) 0L else now - fpsLastSampleAtMs
         val previous = fpsFrameCounts.toMap()
-        val candidates = layers.mapNotNull { layer ->
-            val old = previous[layer.name] ?: return@mapNotNull null
-            val delta = layer.totalFrames - old
-            if (delta < 0L || delta > 1200L || elapsed <= 0L) return@mapNotNull null
-            Triple(layer, delta, delta * 1000.0 / elapsed.toDouble())
-        }.filter { it.second > 0L && it.third.isFinite() && it.third <= 480.0 }
-
         fpsFrameCounts.clear()
         for (layer in layers) fpsFrameCounts[layer.name] = layer.totalFrames
+
+        // The first snapshot is a baseline, not a valid zero-FPS measurement.
         if (fpsLastSampleAtMs == 0L) {
             fpsLastSampleAtMs = now
             return
         }
         fpsLastSampleAtMs = now
 
-        val best = candidates.maxByOrNull { it.second }
-        // If no frame delta exists yet, still bind to a present foreground layer. A stable
-        // screen reports 0 FPS; it must not revert to -- merely because no new frame arrived.
-        val chosenLayer = best?.first?.name
-            ?: fpsTrackedLayer?.takeIf { tracked -> layers.any { it.name == tracked } }
-            ?: layers.maxByOrNull { it.totalFrames }?.name
-        val value = if (best != null) {
-            fpsTrackedLayer = chosenLayer
-            best.third.roundToInt().coerceIn(0, 480).toString()
-        } else if (chosenLayer != null) {
-            fpsTrackedLayer = chosenLayer
-            "0"
-        } else {
-            "--"
+        val elapsedValid = elapsed in MIN_VALID_FPS_SAMPLE_INTERVAL_MS..MAX_VALID_FPS_SAMPLE_INTERVAL_MS
+        if (!elapsedValid) {
+            fpsLastPositiveLayer = null
+            fpsMainHandler.post {
+                if (generation != fpsGeneration) return@post
+                data.fps = "--"
+                fpsMonitorStatus = "sample_invalid"
+                hudView?.requestLayout()
+                hudView?.invalidate()
+            }
+            return
+        }
+
+        val deltas = layers.mapNotNull { layer ->
+            val old = previous[layer.name] ?: return@mapNotNull null
+            val delta = layer.totalFrames - old
+            if (delta < 0L || delta > MAX_VALID_FPS_FRAME_DELTA) return@mapNotNull null
+            val fps = delta * 1000.0 / elapsed.toDouble()
+            if (!fps.isFinite() || fps > MAX_VALID_FPS_VALUE) return@mapNotNull null
+            Triple(layer, delta, fps)
+        }
+
+        // Zero is valid only for a layer with a previous positive sample in this session.
+        // Missing, reset and out-of-range samples clear that evidence instead of yielding false zero.
+        val lastPositiveName = fpsLastPositiveLayer
+        val lastPositiveSample = deltas.firstOrNull { it.first.name == lastPositiveName }
+        if (lastPositiveName != null && lastPositiveSample == null) {
+            fpsLastPositiveLayer = null
+        }
+
+        val bestPositive = deltas.filter { it.second > 0L }.maxByOrNull { it.second }
+        val verifiedZero = fpsLastPositiveLayer?.let { activeLayer ->
+            deltas.firstOrNull { it.first.name == activeLayer && it.second == 0L }
+        }
+
+        val value: String
+        val status: String
+        when {
+            bestPositive != null -> {
+                fpsTrackedLayer = bestPositive.first.name
+                fpsLastPositiveLayer = bestPositive.first.name
+                value = bestPositive.third.roundToInt().coerceIn(1, 480).toString()
+                status = "active"
+            }
+            verifiedZero != null -> {
+                fpsTrackedLayer = verifiedZero.first.name
+                value = "0"
+                status = "active"
+            }
+            else -> {
+                fpsTrackedLayer = null
+                value = "--"
+                status = "waiting_for_frames"
+            }
         }
         fpsMainHandler.post {
             if (generation != fpsGeneration) return@post
             data.fps = value
-            fpsMonitorStatus = if (value == "--") "waiting_for_frames" else "active"
+            fpsMonitorStatus = status
             hudView?.requestLayout()
             hudView?.invalidate()
         }
@@ -566,6 +614,10 @@ class FloatingMonitorService : Service() {
         private const val ACTION_CONFIG = "je_x_fyz.floating.CONFIG"
         private const val ACTION_DATA = "je_x_fyz.floating.DATA"
         private const val EXTRA_JSON = "json"
+        private const val MIN_VALID_FPS_SAMPLE_INTERVAL_MS = 250L
+        private const val MAX_VALID_FPS_SAMPLE_INTERVAL_MS = 5000L
+        private const val MAX_VALID_FPS_FRAME_DELTA = 1200L
+        private const val MAX_VALID_FPS_VALUE = 480.0
 
         @Volatile
         private var instance: FloatingMonitorService? = null
@@ -710,6 +762,7 @@ class FloatingMonitorService : Service() {
     private var fpsLastSampleAtMs = 0L
     private var fpsTrackedLayer: String? = null
     private var fpsTrackedPackage: String? = null
+    private var fpsLastPositiveLayer: String? = null
 
     // AI-METHOD / SERVICE-CREATE CONTRACT
     // Initialize WindowManager, notification channel, and the required specialUse foreground service.

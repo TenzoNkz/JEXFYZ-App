@@ -17,6 +17,7 @@ class FpsShizukuUserService : IFpsShizukuUserService.Stub() {
             OP_STOP_CAPTURE -> listOf("SurfaceFlinger", "--timestats", "-disable")
             OP_READ_FOREGROUND_ACTIVITY -> listOf("activity", "activities")
             OP_READ_SURFACEFLINGER_STATS -> listOf("SurfaceFlinger", "--timestats", "-dump")
+            OP_READ_FOREGROUND_WINDOW -> listOf("window", "displays")
             else -> return result("", false, "unsupported_fps_operation")
         }
         return runFixedDumpsys(arguments)
@@ -116,6 +117,7 @@ class FpsShizukuUserService : IFpsShizukuUserService.Stub() {
         const val OP_STOP_CAPTURE = 2
         const val OP_READ_FOREGROUND_ACTIVITY = 3
         const val OP_READ_SURFACEFLINGER_STATS = 4
+        const val OP_READ_FOREGROUND_WINDOW = 5
         private const val COMMAND_TIMEOUT_MS = 2500L
         private const val MAX_OUTPUT_BYTES = 2 * 1024 * 1024
     }

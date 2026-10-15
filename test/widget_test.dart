@@ -17,6 +17,16 @@ import 'package:jexfyz_cooler/app_settings.dart';
 import 'package:jexfyz_cooler/floating_monitor.dart';
 
 void main() {
+  test('Home icon painter restores Build #54 primitives and interpolates activity', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    expect(source, contains('void _drawThermalFlames('));
+    expect(source, contains('void _drawFanBlade('));
+    expect(source, contains('final softPulse = .5 + .5 * math.sin(angle);'));
+    expect(source, contains('oldDelegate.activity != activity'));
+    expect(source, contains('final strength = activity.clamp(0.0, 1.0).toDouble();'));
+    expect(source, isNot(contains('void _drawBlade(')));
+  });
+
   test('BLE session protocol gate accepts only P1', () {
     expect(isSupportedP1Protocol('P1'), isTrue);
     expect(isSupportedP1Protocol(' p1 '), isTrue);

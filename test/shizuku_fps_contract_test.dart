@@ -32,6 +32,8 @@ void main() {
     expect(floating, contains('_requestShizukuFpsAccess()'));
     expect(floating, contains("if (metric == 'F' && value)"));
     expect(floating, contains('shizuku_permission_granted'));
+    expect(floating, isNot(contains("config = config.copyWith(selected: Set<String>.from(config.selected)..remove('F'));")));
+    expect(floating, contains("refreshMonitor: config.enabled && config.selected.contains('F')"));
     expect(floating, isNot(contains('adb shell pm grant')));
     expect(floating, isNot(contains('adb shell pm revoke')));
     expect(floating, isNot(contains('WirelessAdbPairingBridge')));
@@ -44,6 +46,13 @@ void main() {
     expect(service, contains('runDumpsys("SurfaceFlinger", "--timestats", "-dump")'));
     expect(service, contains('.filter { layerBelongsToPackage(it.name, foregroundPackage) }'));
     expect(service, contains('delta * 1000.0 / elapsed.toDouble()'));
+    expect(service, contains('fpsLastPositiveLayer'));
+    expect(service, contains('verifiedZero'));
+    expect(service, contains('MIN_VALID_FPS_SAMPLE_INTERVAL_MS..MAX_VALID_FPS_SAMPLE_INTERVAL_MS'));
+    expect(service, contains('fpsMonitorStatus = "sample_invalid"'));
+    expect(service, contains('listOf("window", "displays") -> FpsShizukuUserService.OP_READ_FOREGROUND_WINDOW'));
+    expect(shizukuService, contains('listOf("window", "displays")'));
+    expect(shizukuService, contains('OP_READ_FOREGROUND_WINDOW'));
     expect(service, isNot(contains('android.permission.DUMP')));
     expect(service, isNot(contains('ProcessBuilder(')));
     expect(aidl, contains('Bundle executeFpsOperation(int operation) = 2;'));

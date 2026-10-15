@@ -382,7 +382,9 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       if (_waitingForOverlayPermission) unawaited(_finishOverlayPermissionFlow());
-      unawaited(_refreshFpsAccess());
+      unawaited(_refreshFpsAccess(
+        refreshMonitor: config.enabled && config.selected.contains('F'),
+      ));
     }
   }
 
@@ -435,10 +437,6 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     config = await _normalizeSelection(await FloatingStore.load());
     final access = await FloatingBridge.fpsAccessStatus();
     if (access != null) _applyFpsAccessFields(access);
-    if (!_fpsPermissionGranted && config.selected.contains('F')) {
-      config = config.copyWith(selected: Set<String>.from(config.selected)..remove('F'));
-      await FloatingStore.save(config);
-    }
     if (config.enabled) {
       final nativeState = await FloatingBridge.runtimeState();
       if (nativeState != null) {
@@ -518,15 +516,9 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   }
 
   Future<void> _applyFpsAccessState(
-    Map<String, dynamic> result, {
-    bool reconcileSelection = true,
-  }) async {
+    Map<String, dynamic> result,
+  ) async {
     _applyFpsAccessFields(result);
-    if (reconcileSelection && !_fpsPermissionGranted && config.selected.contains('F')) {
-      config = config.copyWith(selected: Set<String>.from(config.selected)..remove('F'));
-      await FloatingStore.save(config);
-      if (config.enabled) await FloatingBridge.updateConfig(config);
-    }
     if (mounted) setState(() {});
   }
 
@@ -583,7 +575,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
         await Future<void>.delayed(const Duration(milliseconds: 400));
         state = await FloatingBridge.fpsAccessStatus();
         if (state == null) continue;
-        await _applyFpsAccessState(state, reconcileSelection: false);
+        await _applyFpsAccessState(state);
         if (_fpsPermissionGranted) return true;
         if (!_shizukuAvailable || !_shizukuSupported) return false;
       }
