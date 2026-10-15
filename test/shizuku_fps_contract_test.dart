@@ -37,6 +37,8 @@ void main() {
     expect(floating, contains('floatingFpsStatusLabel(_fpsMonitorStatus, lang)'));
     expect(floating, contains("'no_layer_data'"));
     expect(floating, contains("'foreground_unknown'"));
+    expect(floating, contains('for (var i = 0; i < 10; i++)'));
+    expect(floating, contains('Duration(milliseconds: 350)'));
     expect(floating, isNot(contains('adb shell pm grant')));
     expect(floating, isNot(contains('adb shell pm revoke')));
     expect(floating, isNot(contains('WirelessAdbPairingBridge')));
@@ -53,6 +55,7 @@ void main() {
     expect(service, contains('hadInvalidCounter'));
     expect(service, contains('delta < 0L || delta > MAX_VALID_FPS_FRAME_DELTA'));
     expect(service, isNot(contains('fpsLastPositiveLayer')));
+    expect(service, contains('fpsPollingTask?.cancel(false)'));
     expect(service, contains('MIN_VALID_FPS_SAMPLE_INTERVAL_MS..MAX_VALID_FPS_SAMPLE_INTERVAL_MS'));
     expect(service, contains('fpsMonitorStatus = "sample_invalid"'));
     expect(service, contains('listOf("window", "displays") -> FpsShizukuUserService.OP_READ_FOREGROUND_WINDOW'));
