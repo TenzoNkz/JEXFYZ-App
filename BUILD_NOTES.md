@@ -19,6 +19,13 @@
 - Production signing certificate SHA-256 in prior build record: `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. Verify against live workflow/config before relying on it.
 - Preserve Android Gradle `versionName "Telegram @horizontalzzz"`.
 
+## Current blocker — Build #39 dependency and distribution gate (2026-10-15)
+
+- Build #39 `38705765370` passed the audit, Flutter dependency installation, Dart analysis and all 80 tests, then failed at `:app:mergeReleaseNativeLibs` because `com.github.Flyfish233:spake2-java:1.0.5` was not found in configured repositories.
+- `android/build.gradle` now adds `https://jitpack.io` with `includeModule("com.github.Flyfish233", "spake2-java")`. Current blob: `bb8c0caf26927bd614bb9b05ef79366424063663`. This is a source fix only; dependency resolution and APK assembly remain UNVERIFIED until a later authorized run.
+- **Before the auto-publishing Build App workflow:** Upstream `com.github.Flyfish233:spake2-java:1.0.5` declares GPL-3.0. Kadb 1.3.0 itself is Apache-2.0, but its runtime dependency chain includes that GPL component. This repository's Release workflow distributes an APK; adding a Maven repository does not settle source/distribution obligations. Do not trigger the auto-publishing `@Thinking #Build App!` workflow until the user explicitly selects and resolves the licensing/distribution route.
+- No Build #40 was triggered by this `#Eksekusi Full!` execution. The latest Release asset remains the older Build #36 APK.
+
 ## Validation sequence
 
 1. Inspect current branch/source and workflow.

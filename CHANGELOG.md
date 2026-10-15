@@ -1,3 +1,11 @@
+## 2026-10-15 — Repair Build #39 Maven resolution configuration (build still unverified)
+
+- Live main before this update: `a70d1ea3ec29e0656b8e0c071cb1e8a3c14626b5`; root tree `a2750f5956fb709d9a19a612e4db243d430a8a47` (71 entries / 52 blobs; recursive tree not truncated).
+- Build #39 / run `38705765370` failed at `:app:mergeReleaseNativeLibs` after security/architecture audit, Flutter dependency installation, Dart analysis and all 80 Flutter tests passed. Gradle could not find `com.github.Flyfish233:spake2-java:1.0.5`; APK/signing/release steps did not run.
+- Updated `android/build.gradle` to add `https://jitpack.io`, narrowly filtered to `com.github.Flyfish233:spake2-java`; blob SHA `bb8c0caf26927bd614bb9b05ef79366424063663`. This directly addresses the missing repository configuration but has not yet been run through Gradle, so success is NOT claimed.
+- The transitive SPAKE2 artifact is GPL-3.0 while Kadb itself is Apache-2.0. Because the Build App workflow automatically publishes a Release asset, the dependency/distribution route remains a required decision before any authorized Build App run. No workflow was triggered; the current Release asset is still Build #36's older APK.
+- Updated current-state build notes, handover, index and transfer snapshot to preserve the exact run evidence and licensing gate. No Firmware, BIN, Firebase, OTA, flash, or physical device operation occurred.
+
 ## 2026-10-15 — Redesign animated Home status indicators and Notify connection labels
 
 - Reworked the seven dashboard indicators with custom-painted, simplified geometry: segmented Battery Temperature, isolated Hotside thermometer, moving voltage charge sweep, Adaptive ring/orbit/core, reduced six-arm Peltier crystal, rotor blades with natural coast-down, and smooth telemetry-driven Fan Speed gauge.

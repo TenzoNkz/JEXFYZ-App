@@ -2,6 +2,12 @@
 
 Last reconciled: 2026-10-15 (Asia/Jakarta). This file is current-only; refresh the live repository before relying on it. History belongs in CHANGELOG.md; exact pre-cleanup copies are in archive and must not be treated as current.
 
+## Current App Build/QC blocker
+- **Latest completed attempt:** Build #39 / [run 38705765370](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38705765370), source commit `b9102695de25f61f0b985cab4cd384b4cda12534`. Security/architecture audit, Flutter dependency installation, Dart analysis and all 80 Flutter tests passed; APK assembly failed at `:app:mergeReleaseNativeLibs` because `com.github.Flyfish233:spake2-java:1.0.5` was absent from configured Maven repositories.
+- **Source patch in this execution:** `android/build.gradle` now has a JitPack repository restricted to module `com.github.Flyfish233:spake2-java`. Current blob SHA: `bb8c0caf26927bd614bb9b05ef79366424063663`. This configuration has not been exercised by Gradle yet; no successful APK build is claimed.
+- **Distribution gate:** Upstream `com.github.Flyfish233:spake2-java:1.0.5` declares GPL-3.0. Kadb 1.3.0 itself is Apache-2.0, but its runtime dependency chain includes that GPL component. This repository's Release workflow distributes an APK; adding a Maven repository does not settle source/distribution obligations. Do not trigger the auto-publishing `@Thinking #Build App!` workflow until the user explicitly selects and resolves the licensing/distribution route.
+- **Release artifact:** latest successful APK is still Build #36, source commit `893393388b99fc6d9e59c420070a159a29e45e9a`; it predates the Wireless ADB pairing and Home UI changes. No Build App workflow was triggered here.
+
 ## Current release phase
 - **Phase:** DEVELOPMENT + QC / PRE-RELEASE.
 - **Release state:** NOT RELEASED.
