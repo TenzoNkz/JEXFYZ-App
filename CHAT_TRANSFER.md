@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — CHAT TRANSFER SNAPSHOT
 
-Snapshot date: 2026-10-15 (Asia/Jakarta). This transfer is refreshed last. Live `main` HEAD immediately before this transfer write: `e1fb39b583cf693a55ca56ce5d433f03b985b40f`; verified root tree SHA `758c32a4f1ebb35e490c2876c714bc659c62c23c`. The full recursive tree was not truncated: 71 entries / 52 blobs, including 20 Markdown files and five Dart test files. This checkpoint includes Color Picker staged selection, Floating Monitor foreground SurfaceFlinger FPS/telemetry replay and notification-driven Wireless ADB pairing. Pairing uses Kadb 1.3.0, a fresh six-digit notification RemoteInput code, encrypted Android Keystore identity, local mDNS discovery and a fixed FPS DUMP grant. It is NOT BUILT and tests/analyze are NOT RUN. Do not confuse this parent checkpoint with the tree created by this transfer commit.
+Snapshot date: 2026-10-15 (Asia/Jakarta). This transfer is refreshed last. Live `main` HEAD immediately before this transfer write: `7cb50c9ef2a1db9132799842994ded37e21cf2b3`; root tree SHA `6f307f0f4395e0a099ec1a09916fbcf181656ea0`. The full recursive tree was not truncated: 71 entries / 52 blobs, including 20 Markdown files and five Dart test files. This checkpoint includes Color Picker staged selection, Floating Monitor foreground SurfaceFlinger FPS/telemetry replay, notification-driven Wireless ADB pairing and the new seven-icon Home animation / Notify-label redesign. Current post-Build #36 source is NOT BUILT; Flutter/Dart tests and analysis have NOT RUN. Do not confuse this parent checkpoint with the tree created by this transfer commit.
 
 ## 0. New-chat boot — mandatory order
 
@@ -17,9 +17,9 @@ Snapshot date: 2026-10-15 (Asia/Jakarta). This transfer is refreshed last. Live 
 
 - **Live checkpoint:** refreshed during this documentation-only protocol update on 2026-10-15 (Asia/Jakarta).
 - **Canonical repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`.
-- **Live checkpoint before this transfer write:** `main` HEAD `e1fb39b583cf693a55ca56ce5d433f03b985b40f`; root tree `758c32a4f1ebb35e490c2876c714bc659c62c23c` (71 entries / 52 blobs, 20 Markdown files, five Dart tests, not truncated). Five App branches exist: `diag/latest-stable-v16`, `diagnostic/v1.6-heap-check`, `fix/adaptive-power-sequencing`, `main`, `tmp-jexfyz-v5-test`; open PR count is zero. Latest Actions success is Build #36 / run `38689044316`, source commit `893393388b99fc6d9e59c420070a159a29e45e9a`. Its 77 tests and release gates passed for its source only. Wireless ADB changes are newer, unbuilt and absent from that APK. Refresh all facts next boot.
+- **Live checkpoint before this transfer write:** `main` HEAD `7cb50c9ef2a1db9132799842994ded37e21cf2b3`; root tree `6f307f0f4395e0a099ec1a09916fbcf181656ea0` (71 entries / 52 blobs, 20 Markdown files, five Dart tests, not truncated). Five App branches exist: `diag/latest-stable-v16`, `diagnostic/v1.6-heap-check`, `fix/adaptive-power-sequencing`, `main`, `tmp-jexfyz-v5-test`; open PR count is zero. Latest Actions success remains Build #36 / run `38689044316`, source commit `893393388b99fc6d9e59c420070a159a29e45e9a`. It passed its 77 tests and release gates only for its own earlier source; current Wireless ADB and Home UI redesign changes are newer and absent from that APK. Refresh facts next boot.
 - **Active Firmware source:** `firmware/JEXFYZ-V6.6.ino`, blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`, `FW_VERSION = "V6.6"`. Exactly one active versioned `.ino` is tracked and filename/version align. **USER ACCEPTANCE 2026-10-14:** user considers V6.6 correct/final and reports successful compilation and two successful Online OTA flashes/updates with the same version V6.6. Do not modify/recompile/reflash unless the user explicitly reopens Firmware work and separately authorizes the operation. Source-to-BIN provenance remains independently unverified, but is not an active task by itself.
-- **Current App identity/source:** `lib/main.dart` blob `c697497e16c94b8fe4fe8fd9bd1f9bc93598545f`; `lib/floating_monitor.dart` blob `c08c2a484f83a9cae7c7d4437b0573c1865cd424`; `lib/app_settings.dart` blob `6483031e239d71e0a0784c529e2f45a94fb5404b`; `test/widget_test.dart` blob `2a87292d5c4bc468ee6aad6810b249d284a28bae`; native `FloatingMonitorService.kt` blob `038f12b2ca82255a3b202b10dd770d5caa5b2bbf`; `MainActivity.kt` blob `12004b5b36b8339f7440e54f9a7330e5804e57ef`; AndroidManifest blob `bcf9b3e96b254dd6577035a6643b6935f7320085`. Package `com.horizontalzzz.jexfyz`, pubspec `1.0.0+3`; preserve Gradle `versionName "Telegram @horizontalzzz"`.
+- **Current App identity/source:** `lib/main.dart` blob `d097adea48988700a8a80ac423cc088959cfa1f6`; `lib/floating_monitor.dart` blob `bd230aee16fa77a0d8d2afb9f1a0c2d80cdcac86`; `lib/app_settings.dart` blob `c513cd4381ee960cd43612c4ac01e7954f651f62`; `test/widget_test.dart` blob `bf403ee3d29e8d2f3f6839b2244a00f1b60e8bdb`; native `FloatingMonitorService.kt` blob `038f12b2ca82255a3b202b10dd770d5caa5b2bbf`; `MainActivity.kt` blob `f7340e82a12cece063e310546dcba893e6a5a09f`; AndroidManifest blob `2124dcd969347d2c7bb1bd99374a398cf50d2387`. Package `com.horizontalzzz.jexfyz`, pubspec `1.0.0+3`; preserve Gradle `versionName "Telegram @horizontalzzz"`.
 - **Current native notification files:** `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt` blob `aecfc87121f2195ef6724613c612d674ed95ae55`; `android/app/src/main/res/drawable/ic_notification.xml` blob `cda9e8404d14a62a61157ec59fae2e491c19f5f7`. The notification helper uses the transparent bold-white JE vector as the sole small icon and sets no large icon; launcher/app imagery still uses `jexfyzicon`.
 - **Fan motion:** BLE voltage class continues to set speed: 5V = 2600 ms, 9V = 1250 ms, 12V = 620 ms. Voltage changes preserve phase by easing to an equivalent full-turn boundary. On OFF, the Fan coasts forward with ease-out over up to 0.16 turn (duration is scaled to current cycle), then retains the resting angle; blade/hub colours remain full-strength.
 - **Peltier icon/motion:** the square thermoelectric module frame, center box and corner bolts are removed. The icon is a free-standing six-branch frost crystal with particles. While ON, crystal drift animates and frost density/intensity interpolates over 420 ms across voltage classes; when OFF, controllers stop and the crystal freezes at its current pose at full colour. No OFF fade. This is decorative UI, not a physical ice or temperature measurement.
@@ -27,7 +27,7 @@ Snapshot date: 2026-10-15 (Asia/Jakarta). This transfer is refreshed last. Live 
 - **Latest successful App Build:** Build #36 / ID `38689044316` on code commit `893393388b99fc6d9e59c420070a159a29e45e9a` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38689044316). Security/architecture audit, dependency resolution, Dart analyze, all 77 Flutter tests, obfuscated APK build, V1/V2/V3 verification, production certificate validation, release publication and downloaded-asset verification passed. Release `jexfyz-latest` contains one `JEXFYZ-release.apk`, 54,620,251 bytes, SHA-256 `a5c9d97a3d28f7f711b0cd3c524289bc136cecec56d3b1d88821e43c713e9a13`; certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. Build #36 predates Wireless ADB pairing; current source is not included. JAR/V1 metadata warnings remain separate from passing V1/V2/V3 verification.
 - **Build workflow:** `.github/workflows/jexfyz-app-build-trigger.yml`, blob `0e400cbdedfd54506ae3ac3255da41580c86d750`. Build #36 verified V1/V2/V3 on the built APK and downloaded Release asset; Android manifest minSdk remains 24. JAR/V1 dependency META-INF warnings remain. Trigger title `JE X FYZ — BUILD APP TRIGGER`, token `JEXFYZ_BUILD_TRIGGER_V1`, Ubuntu 24.04 / Java 17 / Flutter 3.47.2 / Gradle 9.3.1. Pairing source after `893393388b99fc6d9e59c420070a159a29e45e9a` is absent from that APK.
 - **Artifact repository:** `TenzoNkz/JEXFYZ-Firmware` main HEAD `cc0a0ae32b826753525c3f2a4442526648cef631`, root tree `b4db8f4e86dfb97d3313c70428b92eb9d4bd7511`; live recursive root contains only `JEXFYZ.cpp.bin`, blob `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, 1,455,936 bytes. Provenance matching V6.6 source remains UNVERIFIED.
-- **Operation boundary:** Current main includes Color Picker staged selection, Floating Monitor foreground FPS/telemetry and notification-driven Wireless ADB pairing with mDNS multicast/notification-permission hardening. Pairing source and `test/adb_pairing_contract_test.dart` are NOT BUILT/NOT RUN; Flutter/Dart analysis/tests and Android/Kotlin compilation were not run here. No Build App workflow was triggered. Firmware V6.6 source/BIN, Firebase, OTA/flash, physical devices and hardware were not changed or operated. Pairing, permission grant, live FPS and physical overlay remain UNVERIFIED. Phase remains DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED.
+- **Operation boundary:** Current main includes Color Picker staged selection, Floating Monitor foreground FPS/telemetry and notification-driven Wireless ADB pairing with mDNS multicast/notification-permission hardening plus the latest seven-icon Home redraw and Notify connection-badge wording. Home changes add sensor-level interpolation and CONNECTED/DISCONNECTED badge labels; associated Widget tests have been authored but NOT RUN. Pairing source remains NOT BUILT/NOT RUN; Flutter/Dart analysis/tests and Android/Kotlin compilation were not run here. No Build App workflow was triggered. Firmware V6.6 source/BIN, Firebase, OTA/flash, physical devices and hardware were not changed or operated. Pairing, permission grant, live FPS, and physical UI/overlay behavior remain UNVERIFIED. Phase remains DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED.
 
 ## 2. Permanent Thinking commands and authorization limits
 
@@ -243,24 +243,24 @@ Read DESIGN_NOTES.md before any visual iteration.
 
 Never equate test file with passing run; compile with full OTA installation; blue LED with successful HTTP; ACK with hardware state; reboot with proven brownout; version bump with BIN build; or existing BIN with source provenance.
 
-## 16. Live blob fingerprints at pre-transfer HEAD `e1fb39b583cf693a55ca56ce5d433f03b985b40f`
+## 16. Live blob fingerprints at pre-transfer HEAD `7cb50c9ef2a1db9132799842994ded37e21cf2b3`
 
-Checkpoint fetched immediately before this final transfer replacement. The full recursive root tree is `758c32a4f1ebb35e490c2876c714bc659c62c23c` (71 entries / 52 blobs, 20 Markdown files, five Dart tests, non-truncated). These fingerprints refer to that verified parent checkpoint; this final transfer's blob/commit will differ.
+Checkpoint fetched immediately before this final transfer replacement. The full recursive root tree is `6f307f0f4395e0a099ec1a09916fbcf181656ea0` (71 entries / 52 blobs, 20 Markdown files, five Dart tests, non-truncated). These fingerprints refer to that verified parent checkpoint; this final transfer's blob/commit will differ.
 
 Canonical project memory:
-- `APP_NOTES.md`: `62dd9df05ee62df78935794bbbba694cef6dcc27`
+- `APP_NOTES.md`: `db3723be6377854f553fd4cdbc8f2b17b5464595`
 - `APP_BUILD_REPORT.md`: `397da3957affa90b207826d757b804018e0188e2`
 - `BUILD_NOTES.md`: `13de03cd56091320a213754c05bb8d048b9d29c6`
-- `CHANGELOG.md`: `7c296f76720ac58bdf74fef413f77286a9c2079a`
+- `CHANGELOG.md`: `9b9c4bee99499af07e87e5de693a0b98669bc085`
 - `CHAT_RULES.md`: `9fd735f74edac08404528cc7c61e4a03e96a1e8e`
 - `CHAT_TRANSFER_PROMPTS.md`: `5b252c88235ed92c82b7cb3fab5d02af9584a37c`
 - `DESIGN_NOTES.md`: `e04382659dfdd618de0a156046f140452d275dc7`
 - `FIRMWARE_NOTES.md`: `db53605779f157b3c966b15a07bef73199ca575d`
-- `HANDOVER.md`: `983ba37780185ba254c89d5f841ce94d1d3a8b86`
-- `MEMORY_INDEX.md`: `d211901b3e7912a97e4c869cf823bbadc1df3de8`
+- `HANDOVER.md`: `08f49173989f0e8c1b7b90739e92ddae095b7a1d`
+- `MEMORY_INDEX.md`: `e23dec09cbb82bc66a5fba28f44148d91465413e`
 - `OTA_PROTECTION.md`: `06beb86b749b0f0e14c8cb517e43fe7c0f66a4e1`
 - `OTA_REGRESSION_MEMORY.md`: `4342f3da76cf2962140146fbbe0ff8de5e956f4d`
-- `PROJECT_STATE.md`: `acac647da255c8bd243f8aa3a495eed1abef2779`
+- `PROJECT_STATE.md`: `af528b99721c3ac26bd6d5cc70cb8eb9391f06b3`
 - `README.md`: `713299ef587d3cfd425c84348f4823dbde6fa2c2`
 - `VOLTAGE_TRANSITION_MEMORY.md`: `1c2167659fd0ed8f5db16bf63eb7897344a690ea`
 
@@ -272,18 +272,18 @@ Workflow/configuration:
 - `android/app/src/main/AndroidManifest.xml`: `2124dcd969347d2c7bb1bd99374a398cf50d2387`
 - `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt`: `f7340e82a12cece063e310546dcba893e6a5a09f`
 - `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/WirelessAdbIdentityStore.kt`: `394eab93a17c563caf7db0511d4d36040c1c59ec`
-- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/WirelessAdbPairingService.kt`: `7f2099cac0c78008d395ec0bb83e32e5f6d55384`
+- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/WirelessAdbPairingService.kt`: `7f2099cac0c78008d8d8d8`
 - `third_party/Kadb-1.3.0-LICENSE.txt`: `261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64`
 
 App source:
-- `lib/main.dart`: `c697497e16c94b8fe4fe8fd9bd1f9bc93598545f`
+- `lib/main.dart`: `d097adea48988700a8a80ac423cc088959cfa1f6`
 - `lib/floating_monitor.dart`: `bd230aee16fa77a0d8d2afb9f1a0c2d80cdcac86`
-- `lib/app_settings.dart`: `851f55f10a5d7e5f9b8d7c8c0cb779dba0bca5b5`
+- `lib/app_settings.dart`: `c513cd4381ee960cd43612c4ac01e7954f651f62`
 - `lib/jex_animated_glyph.dart`: `c9c5c2802cb0ed363c042620511148b0d58d36c4`
 
 Tests:
 - `test/adb_pairing_contract_test.dart`: `03609184edc5b2df09f40e62ffe99959ea337bad` (authored, NOT RUN)
-- `test/widget_test.dart`: `2a87292d5c4bc468ee6aad6810b249d284a28bae`
+- `test/widget_test.dart`: `bf403ee3d29e8d2f3f6839b2244a00f1b60e8bdb` (Home icon-level and Notify status assertions added; NOT RUN)
 - `test/v6_6_qc_contract_test.dart`: `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a`
 - `test/firmware_touch_adaptive_sync_test.dart`: `2d3fea509343a03b8d23623f4dcb2dd7fd972d39`
 - `test/app_protocol_notify_contract_test.dart`: `92214dd90178c705844d3979d3f8f7bd17bcc4b8`
@@ -303,6 +303,7 @@ Additional native/visual files:
 - `firmware/JEXFYZ-V6.6.ino`: `f51ba6db5d0e91318f63fea4014bb87f7bf76222` (not changed)
 
 Artifact repository: `TenzoNkz/JEXFYZ-Firmware` main HEAD `cc0a0ae32b826753525c3f2a4442526648cef631`; root tree `b4db8f4e86dfb97d3313c70428b92eb9d4bd7511`; root contains only `JEXFYZ.cpp.bin`, blob `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, 1,455,936 bytes. Source/BIN provenance remains independently unverified.
+
 ## 17. Wireless ADB pairing recovery and Floating FPS execution outcome
 
 - `@Thinking Chat Stuck!` is a standalone recovery command. It inspects live output, repository and last verified checkpoint, avoids blind repeats and resumes only the last valid authorization. It does not trigger Build App or authorize Firmware/device operations.
@@ -313,6 +314,17 @@ Artifact repository: `TenzoNkz/JEXFYZ-Firmware` main HEAD `cc0a0ae32b826753525c3
 - Latest successful APK is Build #36 / run `38689044316` for older source commit `893393388b99fc6d9e59c420070a159a29e45e9a`; all 77 Flutter tests, Dart analyze, obfuscated APK, signing and Release re-download gates passed for that source. The APK does NOT include pairing. Full QC requires separate explicit `@Thinking #Build App!`.
 - Pairing discovery, RemoteInput, encrypted identity persistence, ADB connection, OEM DUMP grant, live game FPS and physical overlay behavior remain UNVERIFIED pending build/device testing.
 - Firmware V6.6 source, artifact BIN, Firebase, workflow trigger, OTA/flash and hardware were not changed or operated.
-## 18. Final rule for the next chat
+## 18. Home indicator animation + Notify label execution outcome
+
+- User approved a complete redraw of all seven Home status indicators while keeping the original Home layout, cooler image placement, and submenu structure unchanged.
+- Implemented in `lib/main.dart`: a separated thermometer tube/bulb with no crossing heat waves; segmented battery-temperature indicator; moving charge sweep clipped to the voltage bolt; compact Adaptive core/orbit; simplified six-arm Peltier crystal with four peripheral sparks; independently rotated Fan blades with the existing voltage-dependent speed and smooth coast-down; and a telemetry-driven Fan Speed gauge.
+- Added `jexTemperatureIndicatorLevel` to normalize valid Celsius readings into clamped animation levels. Battery and Hotside level changes retarget with 520 ms cubic easing. Missing telemetry receives only a neutral visual fallback while BLE/session gating remains authoritative. Adaptive orbit animation is active only when Adaptive state is ON.
+- Home Notify right-side badge now says CONNECTED / DISCONNECTED exactly in both app languages. The normal detail message “Bluetooth Disconnected” maps to DISCONNECTED rather than being misclassified as ERROR. Explicit failures, discovery errors, Connecting and Syncing remain distinct.
+- Regression assertions added in `test/widget_test.dart` for numeric parsing/clamps/missing sensor data and Notify status in English/Indonesian, including a normal Bluetooth-disconnect message. Static source assertions confirmed the single-backslash Dart regex, removed Hotside heat-wave strokes, required label translations and tests. Flutter/Dart/Gradle tools are unavailable here, so widget tests, Dart analysis, Android/Kotlin compile and visual motion are NOT RUN/UNVERIFIED.
+- Source/UI commit: `266548b1f97a36d745a2f34e7e0ba88bf2b6c056` (`feat(ui): redesign animated home indicators and notify status`). Follow-up fixes: `a6e6b9077226fd76ca2ef7423b7800955edab5bd` (temperature parser and normal disconnect semantics), `13dfe6080feb0072b9213f11c33068b2989b437a` (exact status text in both languages), `7cb50c9ef2a1db9132799842994ded37e21cf2b3` (current documentation fingerprints).
+- Current UI-related blobs: `lib/main.dart` `d097adea48988700a8a80ac423cc088959cfa1f6`; `lib/app_settings.dart` `c513cd4381ee960cd43612c4ac01e7954f651f62`; `test/widget_test.dart` `bf403ee3d29e8d2f3f6839b2244a00f1b60e8bdb`. This work has NOT been built into an APK; the last successful App Build remains #36 / `38689044316` on old commit `893393388b99fc6d9e59c420070a159a29e45e9a`. Next build requires the separate `@Thinking #Build App!` authorization and physical device verification.
+- The Home UI work did not touch Firmware V6.6 source/BIN, Firebase metadata, OTA, device flash or physical hardware. Artifact repository remains BIN-only and open PR count is zero.
+
+## 19. Final rule for the next chat
 
 Do not restart project development from this snapshot alone. Boot from live main, read canonical memories fully, preserve every durable user decision and rejected approach, recover missing history from archives without guessing, and persist meaningful outcomes in the correct canonical note. Replace the transfer file at the end of every substantial context-limit reconciliation, after reading its prior version completely.
