@@ -2,6 +2,14 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
+## 2026-10-15 — Color Picker staged selection and explicit dismissal
+
+- Changed `_JexColorPickerCard` to retain a local draft. Tapping any of the 36 palette swatches now updates only the checkmark/preview/name; it does not send BLE `COLOR` or close the modal.
+- Added localized top-right Select (`Select` / `Pilih`) and retained localized top-left Cancel (`Cancel` / `Batal`). Select applies the selected draft through the existing confirmed COLOR command and closes only when confirmed; selecting the already-active color closes without sending a redundant command. Failed/unconfirmed changes leave the modal open and the previous applied RGB state unchanged. Cancel discards the draft.
+- Set `barrierDismissible: false` and wrapped the modal content in `PopScope<void>(canPop: false)` so outside taps and system Back do not close it; Cancel/Select pop programmatically. Kept the six-column 36-color palette, bottom anchor, no-HEX names, swatch sizing and animation style.
+- Added Widget test source-contract assertions for staged selection, Select callback, localized label and blocked dismissal. **Tests/Dart analysis were NOT RUN**: the available execution environment has no Flutter or Dart SDK. No App Build/APK was triggered; physical UI behavior remains unverified. Next authorized build command is `@Thinking #Build App!`.
+- Files: `lib/main.dart`, `lib/app_settings.dart`, `test/widget_test.dart`, `APP_NOTES.md`, `PROJECT_STATE.md`, `HANDOVER.md`, `MEMORY_INDEX.md` and `CHAT_TRANSFER.md`. Firmware/workflow/Firebase/BIN/OTA/device state unchanged.
+
 ## 2026-10-15 — One-shot Build App chat-limit handoff
 
 - Clarified that a Build App chat reaching the context limit uses Prompt D from `CHAT_TRANSFER_PROMPTS.md` exactly once as the first message in the replacement Build App chat. The prompt loads live repository/build evidence and continues the existing work; there is no separate recap chat or recap prompt. Prompt A remains for broad project-memory reconciliation and is not the Build App handoff.
