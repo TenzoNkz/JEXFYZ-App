@@ -20,10 +20,11 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 
 ## Current source validation boundary — 2026-10-16
 
-- Latest verified release remains [Build #56](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38785365015), built from source commit `235f47b47af4f32582a7f18825ed76d2c6bba54f`. The current repair commit `98cfe7ba4d0e9d569b84498d261ad1b67f66eee7` is **not built or released**.
-- The source restores Build #54 icon geometry while blending activity effects through the existing controller. It preserves metric `F` when Shizuku is unavailable, reads focused-window fields through a fixed `dumpsys window displays` operation with an ActivityManager fallback, and distinguishes valid zero-frame samples from first/invalid/reset samples.
-- Source-contract assertions were updated, but Dart analysis, Flutter tests, Kotlin compilation, APK packaging and physical-device testing have **not** been run for this commit.
-- Without Shizuku, actual foreground app/game FPS remains unavailable. Do not substitute refresh rate (Hz) and label it FPS. Firmware, Firebase, OTA, BLE hardware control and thermal protections were not changed.
+- Latest verified release is [Build #58](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38793790061), exact source `db11df355780174b1da7dcea4d5947bfa7ba7ca5`. It passed Dart analysis, 87/87 Flutter tests, Android release build/signing, release publication and asset verification.
+- Current post-release diagnostic source checkpoint is `becd7f20517fbdaa4bb9922501f28fbed2282223). It improves foreground-window lookup with a full `dumpsys window` fallback when `dumpsys window displays` does not identify focus, keeps sampler status at `starting` until a valid sample is produced, and displays the actual native FPS state in Floating Monitor settings.
+- The post-Build #58 source/test changes have **not** been analyzed, test-run, Kotlin-compiled, built or device-verified. Build #58 remains the latest verified APK; it does not contain these follow-up changes.
+- FPS remains device-dependent. A Shizuku grant does not prove a UserService connection or matching SurfaceFlinger layer exists. The new UI status should help distinguish `foreground_unknown`, `no_layer_data`, `sample_invalid`, and service/command failures.
+- No Firmware/BIN, Firebase, OTA, BLE hardware-control or thermal-safety code was changed.
 
 ## Repository boundaries
 
