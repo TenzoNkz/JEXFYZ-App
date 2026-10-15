@@ -1,13 +1,13 @@
 // AI-MEMORY / FILE CONTRACT
 // File: floating_monitor.dart
 // Owns: Flutter Floating Monitor configuration UI, overlay permission flow,
-//       runtime reconciliation, live telemetry forwarding, and local preview.
+//       runtime reconciliation, ADB FPS permission flow, and live telemetry forwarding.
 // Native ownership: MainActivity opens Android Settings; FloatingMonitorService owns
 // WindowManager and the actual overlay window. This file never owns BLE/GATT.
 // Localization: read the shared AppLanguage notifier. English status = ON/OFF;
 // Indonesia status = HIDUP/MATI. Language selector labels are English / Indonesia.
 // Fan Speed invariant: S remains visible when selected; Fan OFF is presented as OFF/MATI.
-// The same invariant applies to Settings preview and native overlay presentation.
+// Selected metric presentation is owned by the native overlay; Settings contains no overlay preview.
 // Protocol identifiers are not translated.
 // Floating metric contract: S (Speed) is the only fan-related metric; there is no separate Fan metric.
 
@@ -134,7 +134,6 @@ class FloatingMetric {
 // The language field is intentionally derived at serialization time so native overlay
 // presentation follows the App-selected language rather than the phone locale.
 class FloatingTelemetry {
-  final String fps;
   final String battery;
   final String hotside;
   final String voltage;
@@ -145,7 +144,6 @@ class FloatingTelemetry {
   final bool connected;
 
   const FloatingTelemetry({
-    this.fps = '--',
     this.battery = '--',
     this.hotside = '--',
     this.voltage = '--',
@@ -157,7 +155,6 @@ class FloatingTelemetry {
   });
 
   Map<String, dynamic> toMap() => <String, dynamic>{
-        'fps': fps,
         'battery': battery,
         'hotside': hotside,
         'voltage': voltage,
@@ -168,19 +165,6 @@ class FloatingTelemetry {
         'connected': connected,
         'language': appLanguageNotifier.value.name,
       };
-}
-
-// AI-METHOD / METRIC-PRESENTATION-CONTRACT
-// Runtime-visible metric policy: Speed is the only metric hidden by Fan OFF.
-bool floatingMetricVisible(String metric, FloatingTelemetry telemetry) {
-  // All selected metrics stay visible; Fan Speed changes to OFF/MATI when Fan is OFF.
-  return metric == 'F' ||
-      metric == 'B' ||
-      metric == 'H' ||
-      metric == 'V' ||
-      metric == 'A' ||
-      metric == 'P' ||
-      metric == 'S';
 }
 
 // AI-METHOD / METRIC-STATUS-CONTRACT
@@ -302,6 +286,25 @@ class FloatingBridge {
     } catch (_) {}
     return null;
   }
+
+  // Query or refresh native FPS access state. The command never grants permission by itself;
+  // it only verifies the ADB-provided DUMP grant and starts/stops the existing sampler.
+  static Future<Map<String, dynamic>?> fpsAccessStatus({bool refresh = false}) async {
+    try {
+      final method = refresh ? 'refreshFpsMonitor' : 'getFpsAccessStatus';
+      final value = await _channel.invokeMethod<dynamic>(method);
+      if (value is Map) return Map<String, dynamic>.from(value);
+    } catch (_) {}
+    return null;
+  }
+
+  static Future<bool> openDeveloperOptions() async {
+    try {
+      return await _channel.invokeMethod<bool>('openDeveloperOptions') ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
 }
 
 // AI-MEMORY / SETTINGS-PAGE-CONTRACT
@@ -321,6 +324,9 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   bool loading = true;
   bool _waitingForOverlayPermission = false;
   bool _permissionResumeCheckRunning = false;
+  bool _fpsPermissionGranted = false;
+  bool _fpsStatusLoading = false;
+  String _fpsMonitorStatus = 'unknown';
   Timer? runtimeTimer;
 
   @override
@@ -337,8 +343,9 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   // One immediate check is intentionally avoided because OEM Settings/AppOps updates
   // may not be observable at the exact first resumed callback.
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed && _waitingForOverlayPermission) {
-      unawaited(_finishOverlayPermissionFlow());
+    if (state == AppLifecycleState.resumed) {
+      if (_waitingForOverlayPermission) unawaited(_finishOverlayPermissionFlow());
+      unawaited(_refreshFpsAccess());
     }
   }
 
@@ -427,6 +434,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
         }
       }
     }
+    unawaited(_refreshFpsAccess());
   }
 
   // AI-METHOD / CONFIG-APPLY CONTRACT
@@ -450,6 +458,124 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
       await Future<void>.delayed(const Duration(milliseconds: 120));
     }
     return false;
+  }
+
+  String _fpsAccessStatusLabel(AppLanguage language) {
+    if (!_fpsPermissionGranted) return JexText.of('fpsAccessMissing', language);
+    if (_fpsMonitorStatus == 'active') return JexText.of('fpsMonitorActive', language);
+    if (_fpsMonitorStatus.contains('blocked') ||
+        _fpsMonitorStatus.contains('denied') ||
+        _fpsMonitorStatus.contains('timeout') ||
+        _fpsMonitorStatus.contains('no_layer_data') ||
+        _fpsMonitorStatus.contains('dumpsys_')) {
+      return JexText.of('fpsDataUnavailable', language);
+    }
+    return JexText.of('fpsAccessGranted', language);
+  }
+
+  Future<void> _refreshFpsAccess({bool refreshMonitor = false}) async {
+    if (_fpsStatusLoading) return;
+    _fpsStatusLoading = true;
+    if (mounted) setState(() {});
+    try {
+      final result = await FloatingBridge.fpsAccessStatus(refresh: refreshMonitor);
+      if (!mounted || result == null) return;
+      _fpsPermissionGranted = result['fps_permission_granted'] == true;
+      _fpsMonitorStatus = result['fps_monitor_status']?.toString() ?? 'unknown';
+      if (mounted) setState(() {});
+      if (refreshMonitor && _fpsMonitorStatus == 'starting') {
+        for (var i = 0; i < 5; i++) {
+          await Future<void>.delayed(const Duration(milliseconds: 300));
+          final next = await FloatingBridge.fpsAccessStatus();
+          if (!mounted || next == null) return;
+          _fpsPermissionGranted = next['fps_permission_granted'] == true;
+          _fpsMonitorStatus = next['fps_monitor_status']?.toString() ?? 'unknown';
+          if (mounted) setState(() {});
+          if (_fpsMonitorStatus != 'starting') break;
+        }
+      }
+    } finally {
+      _fpsStatusLoading = false;
+      if (mounted) setState(() {});
+    }
+  }
+
+  Future<void> _showFpsAccessGuide() async {
+    const grantCommand =
+        'adb shell pm grant com.horizontalzzz.jexfyz android.permission.DUMP';
+    const revokeCommand =
+        'adb shell pm revoke com.horizontalzzz.jexfyz android.permission.DUMP';
+    final language = appLanguageNotifier.value;
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(JexText.of('fpsAccessTitle', language)),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(JexText.of('fpsAccessDescription', language)),
+              const SizedBox(height: 12),
+              Text(JexText.of('fpsAccessSteps', language)),
+              const SizedBox(height: 10),
+              SelectableText(
+                grantCommand,
+                style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+              ),
+              const SizedBox(height: 8),
+              Text(JexText.of('fpsAccessRevoke', language)),
+              SelectableText(
+                revokeCommand,
+                style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(JexText.of('cancel', language)),
+          ),
+          TextButton.icon(
+            onPressed: () async {
+              await Clipboard.setData(const ClipboardData(text: grantCommand));
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(JexText.of('adbCommandCopied', language))),
+                );
+              }
+            },
+            icon: const Icon(Icons.copy),
+            label: Text(JexText.of('copyAdbCommand', language)),
+          ),
+          TextButton.icon(
+            onPressed: () async {
+              await Clipboard.setData(const ClipboardData(text: revokeCommand));
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(JexText.of('adbRevokeCopied', language))),
+                );
+              }
+            },
+            icon: const Icon(Icons.copy),
+            label: Text(JexText.of('copyRevokeCommand', language)),
+          ),
+          FilledButton(
+            onPressed: () async {
+              final opened = await FloatingBridge.openDeveloperOptions();
+              if (dialogContext.mounted) Navigator.pop(dialogContext);
+              if (!opened && mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(JexText.of('developerSettingsFailed', language))),
+                );
+              }
+            },
+            child: Text(JexText.of('openDevOptions', language)),
+          ),
+        ],
+      ),
+    );
   }
 
   // AI-METHOD / NORMALIZATION CONTRACT
@@ -634,6 +760,64 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                 onChanged: _toggleEnabled,
               ),
               const SizedBox(height: 8),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(PhosphorIconsRegular.gauge, color: Theme.of(context).colorScheme.primary),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              JexText.of('fpsAccessTitle', lang),
+                              style: const TextStyle(fontWeight: FontWeight.w900),
+                            ),
+                          ),
+                          if (_fpsStatusLoading)
+                            const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Text(_fpsAccessStatusLabel(lang)),
+                      const SizedBox(height: 5),
+                      Text(
+                        JexText.of('fpsAccessHint', lang),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          fontSize: 12,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        children: [
+                          OutlinedButton.icon(
+                            onPressed: _showFpsAccessGuide,
+                            icon: const Icon(Icons.terminal),
+                            label: Text(JexText.of('setupAdb', lang)),
+                          ),
+                          TextButton.icon(
+                            onPressed: _fpsStatusLoading
+                                ? null
+                                : () => _refreshFpsAccess(refreshMonitor: true),
+                            icon: const Icon(Icons.refresh),
+                            label: Text(JexText.of('checkFpsAccess', lang)),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
               IgnorePointer(
                 ignoring: !config.enabled,
                 child: Opacity(
@@ -678,8 +862,6 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                         style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
                       ),
                       const SizedBox(height: 4),
-                      _livePreview(telemetry),
-                      const SizedBox(height: 8),
                       ReorderableListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
@@ -723,11 +905,29 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                         max: 1.0,
                         onChanged: (value) => _apply(config.copyWith(opacity: value)),
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 12),
                       Text(
-                        config.horizontal ? JexText.of('horizontal', lang) : JexText.of('vertical', lang),
-                        textAlign: TextAlign.center,
+                        JexText.of('orientation', lang),
                         style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
+                      ),
+                      const SizedBox(height: 7),
+                      SegmentedButton<bool>(
+                        segments: [
+                          ButtonSegment<bool>(
+                            value: true,
+                            label: Text(JexText.of('horizontal', lang)),
+                          ),
+                          ButtonSegment<bool>(
+                            value: false,
+                            label: Text(JexText.of('vertical', lang)),
+                          ),
+                        ],
+                        selected: <bool>{config.horizontal},
+                        onSelectionChanged: (value) {
+                          if (value.isNotEmpty) {
+                            _apply(config.copyWith(horizontal: value.first));
+                          }
+                        },
                       ),
                     ],
                   ),
@@ -737,95 +937,6 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
           );
         },
       ),
-    );
-  }
-
-  // AI-METHOD / PREVIEW-CONTRACT
-  // Render the same visibility rules as native overlay preview; selected Speed stays
-  // visible and becomes OFF/MATI when telemetry.fanOn is false.
-  Widget _livePreview(FloatingTelemetry telemetry) {
-    final visible = config.order.where((metric) {
-      if (!config.selected.contains(metric)) return false;
-      return floatingMetricVisible(metric, telemetry);
-    }).toList();
-
-    return Center(
-      child: GestureDetector(
-        onTap: config.enabled
-            ? () => _apply(config.copyWith(horizontal: !config.horizontal))
-            : null,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 160),
-          curve: Curves.easeOut,
-          padding: EdgeInsets.symmetric(
-            horizontal: 12 * config.size,
-            vertical: 8 * config.size,
-          ),
-          decoration: BoxDecoration(
-            color: Colors.black.withValues(alpha: (config.opacity * 0.86).clamp(0.0, 1.0)),
-            borderRadius: BorderRadius.circular(18 * config.size),
-            boxShadow: const [
-              BoxShadow(blurRadius: 12, offset: Offset(0, 5), color: Colors.black26),
-            ],
-          ),
-          child: Flex(
-            direction: config.horizontal ? Axis.horizontal : Axis.vertical,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (var i = 0; i < visible.length; i++) ...[
-                if (i > 0)
-                  config.horizontal
-                      ? SizedBox(width: 8 * config.size)
-                      : SizedBox(height: 5 * config.size),
-                _previewItem(visible[i], telemetry, config.style, config.size),
-              ],
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  // AI-METHOD / PREVIEW-ITEM-CONTRACT
-  // Translate live boolean states only for presentation; technical metric letters remain stable.
-  Widget _previewItem(String metric, FloatingTelemetry telemetry, FloatingDisplayStyle style, double size) {
-    final lang = appLanguageNotifier.value;
-    final value = switch (metric) {
-      'F' => telemetry.fps,
-      'B' => telemetry.battery == '--' ? '--' : telemetry.battery + '°',
-      'H' => telemetry.hotside == '--' ? '--' : telemetry.hotside + '°',
-      'V' => telemetry.voltage,
-      'A' => floatingMetricStatus('A', telemetry, lang),
-      'P' => floatingMetricStatus('P', telemetry, lang),
-      'S' => floatingMetricStatus('S', telemetry, lang),
-      _ => '--',
-    };
-
-    if (style == FloatingDisplayStyle.icons) {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          JexAnimatedGlyph(
-            icon: _metricIcon(metric),
-            size: 17 * size,
-            color: Colors.white,
-          ),
-          SizedBox(width: 4 * size),
-          Text(
-            value,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 11.5 * size,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-        ],
-      );
-    }
-
-    return Text(
-      metric + ':' + value,
-      style: TextStyle(color: Colors.white, fontSize: 11.5 * size, fontWeight: FontWeight.w800),
     );
   }
 
@@ -849,29 +960,6 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
         return JexText.of('speed', lang);
       default:
         return metric;
-    }
-  }
-
-  // AI-METHOD / METRIC-ICON-CONTRACT
-  // Select the visual glyph for each stable metric identifier; no protocol behavior is changed.
-  IconData _metricIcon(String metric) {
-    switch (metric) {
-      case 'F':
-        return PhosphorIconsRegular.gauge;
-      case 'B':
-        return PhosphorIconsRegular.batteryHigh;
-      case 'H':
-        return PhosphorIconsRegular.thermometer;
-      case 'V':
-        return PhosphorIconsRegular.lightning;
-      case 'A':
-        return PhosphorIconsRegular.sparkle;
-      case 'P':
-        return PhosphorIconsRegular.snowflake;
-      case 'S':
-        return PhosphorIconsRegular.fan;
-      default:
-        return PhosphorIconsRegular.circle;
     }
   }
 
