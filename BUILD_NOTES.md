@@ -2,10 +2,11 @@
 
 ## Authorization policy
 
-- App Build is a separate explicit operation. Execute it only after `@Thinking Build App!` or `@Thinking Eksekusi & Build App!`.
-- Firmware-only changes, documentation tidy-up, test changes or regular pushes do not authorize App Build.
-- Do not compile Firmware, generate/publish BIN, modify Firebase metadata, flash hardware, run physical OTA, or release unless separately authorized.
-- A passing App build/test does not establish Firmware compile, OTA success, physical safety or installed version.
+- The only App Build command is `@Thinking #Build App!`. It authorizes the complete App build/validation workflow, including justified App-scope repair, retries and the approved issue-triggered Release pipeline.
+- `@Thinking #Eksekusi Full!` does not authorize App Build; discussion, source edits, tests or regular pushes do not silently trigger the release workflow.
+- Retired standalone `#Eksekusi!` and combined `#Eksekusi & Build App!` commands must not be used.
+- Build App does not authorize Firmware compilation, BIN creation/publication/replacement, Firebase metadata changes, physical OTA, flashing, device operation, or unrelated release operations.
+- Never claim CI success proves BLE, cooling/safety behavior, Firmware compilation, OTA installation or installed device version.
 
 ## Current App Build workflow
 
@@ -26,6 +27,16 @@
 4. Verify APK name/count, signing, release asset and workflow outputs from live run data.
 5. Record exact run ID, source commit, asset ID/size/digest, and test/analyze results only when actually verified.
 6. If failure occurs, record exact failure and whether test/analyze were reached; do not imply skipped checks passed.
+
+## Build App repair/retry policy
+
+1. Start only from `@Thinking #Build App!`. Fetch current `main`, read this file and the full `.github/workflows/jexfyz-app-build-trigger.yml` before triggering.
+2. Follow the owner/title/token-validated manual issue workflow. Never change the workflow to build on push/PR merely to make triggering easier.
+3. When a check fails, inspect the exact failing step and logs. If the defect is within approved App scope, fix the cause rather than weakening tests or skipping a required gate; commit the fix to `main`, then trigger a fresh run and verify it targets the intended commit.
+4. Repeat only when a concrete repair was made or a transient failure has evidence-based reason to retry. Do not loop blindly. If blocked by missing repository permissions/secrets, external service, signing credentials, or device-side action, record the blocker and required action; report status as BLOCKED, not successful.
+5. Do not declare completion until workflow success, required analysis/tests, APK file/count, signing schemes, production certificate, Release publication and re-downloaded asset identity/checksum are all verified against live run output.
+6. Update `APP_BUILD_REPORT.md` during the workflow with every attempt and fix, and finish with source commit, trigger issue, run ID/link, test counts/status, APK name/count/size/SHA-256, signature checks, remaining warnings and unverified device checks. A successful Build App run should be understandable to a separate Discussion chat without needing this chat transcript.
+7. If fix would touch Firmware, protected OTA behavior, secrets, Firebase production metadata, or requires changing authorization boundaries, stop and ask for the separate required authorization; do not treat a Build App request as permission for those changes.
 
 ## Latest verified build result — 2026-10-15
 
