@@ -4,14 +4,12 @@ This is the durable evidence ledger for `@Thinking #Build App!`. A replacement B
 
 ## Current report status
 
-- **Latest App Build:** RUNNING — Build #38, [workflow run 38705213757](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38705213757), source commit `86ea939b284d2724389e3567fb4bf1a541c8303d`.
-- **Build #37:** FAILED at Dart analysis due the obsolete `_drawHeatWave` declaration in `lib/main.dart`; details and skipped gates are preserved in the attempt ledger. Fix commit `402161a9323fed0846f420569ae7118196c38946` removes only that unused method.
-- **Build #38 rerun:** invoked through the same validated owner/title/token issue trigger after the fix and #37 failure were recorded. New source commit includes the App-scope fix; no test/security gate was weakened.
-- **Current intended source:** Home indicator/Notify redesign, Wireless ADB pairing service and AES-GCM/Keystore identity store, native bridge/manifest/Gradle/Kadb 1.3.0, Color Picker/Floating Monitor changes, and added regression tests. Build #36 predates these changes.
-- **Current release is still the previous artifact until #38 completes:** Release `jexfyz-latest`, asset ID `642851650`, 54,620,251 bytes, SHA-256 `a5c9d97a3d28f7f711b0cd3c524289bc136cecec56d3b1d88821e43c713e9a13`. Do not describe it as containing #37/#38 source.
-- **Pending gates:** audit, dependency resolution, Dart analysis, full Flutter test totals, obfuscated APK build, V1/V2/V3, production certificate, Release target/asset identity, re-download SHA-256 and downloaded signing re-verification.
-- **Recurring warnings in prior successful builds:** JAR/V1 dependency/metadata entries (including `META-INF/services/a1` and `META-INF/services/b1`) are not protected under the JAR/V1 streaming interpretation, separately from passing APK V1/V2/V3 scheme gates. Four packages previously had newer versions incompatible with current constraints.
-- **Physical validation remains separate:** on-device UI/FPS/overlay, Wireless ADB pairing and DUMP grant, MT Manager signature interpretation, BLE/cooling, Firmware compile and OTA/flash are not proven by CI.
+- **Latest completed attempt:** Build #38 FAILED at Flutter tests ([run 38705213757](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38705213757)); Dart analysis passed after removal of the obsolete `_drawHeatWave` warning.
+- **Build #38 test outcome:** 77 passed, 3 failed. Failures are three stale source-pattern assertions in `test/widget_test.dart` for the Peltier painter, Fan blade method boundary, and voltage-sweep variable name. Run logs show the actual implementation now uses a six-spine/six-branch crystal with four small sparks, `_drawFanBlade` followed by the painter override (no heat-wave helper), and a clipped cosine `sweepY` charge sweep; the tests still referenced old source patterns. This is a test-contract drift finding; confirm corrected tests on a fresh run.
+- **Current repair in progress:** update those three assertions to check the actual implemented behavior/structure, without removing tests or weakening coverage. No APK was produced or published by #38.
+- **Latest published APK remains older:** [Release `jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest), asset ID `642851650`, 54,620,251 bytes, SHA-256 `a5c9d97a3d28f7f711b0cd3c524289bc136cecec56d3b1d88821e43c713e9a13`. Do not represent it as containing the current source.
+- **Recurring warnings:** JAR/V1 metadata entries including `META-INF/services/a1` and `META-INF/services/b1` were warned about on prior successful builds, independently of passing APK V1/V2/V3 checks. Dependency resolution previously noted four updates outside the current constraints.
+- **Physical/device checks:** Home animation rendering, Floating Monitor/FPS accuracy, Wireless ADB pairing/DUMP grant, MT Manager signature display, BLE/cooling and Firmware/OTA remain outside CI proof.
 
 
 ### Source changes that motivated Build #36 — pre-trigger checkpoint (historical)
@@ -50,14 +48,19 @@ Add a new dated section at the top of the attempt history (do not overwrite prio
 
 ## Attempt history
 
-### 2026-10-15 — Build #38 — RUNNING (retry after the analyzer fix)
+### 2026-10-15 — Build #38 — FAILED (three stale widget source-contract assertions)
 
-- **Status:** RUNNING / queued at initial verification; awaiting new run evidence.
-- **Trigger:** same validated issue [#13](https://github.com/TenzoNkz/JEXFYZ-App/issues/13), author/owner `TenzoNkz`, exact title `JE X FYZ — BUILD APP TRIGGER`, body token `JEXFYZ_BUILD_TRIGGER_V1`. Closed at `2026-10-15T08:22:33Z`, reopened at `08:22:36Z`. Live workflow blob `0e400cbdedfd54506ae3ac3255da41580c86d750` remains issue opened/reopened only; no push/PR shortcut.
-- **Run:** [Build #38 / 38705213757](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38705213757), event `issues`, exact branch/source `main` / `86ea939b284d2724389e3567fb4bf1a541c8303d`, queued at `2026-10-15T08:22:38Z`.
-- **Reason:** reruns Build #37 after the only fatal Dart analyzer warning was repaired. Build #37's audit and dependency installation passed but it failed analysis and correctly skipped tests/APK/signing/Release.
-- **Fix included:** commit `402161a9323fed0846f420569ae7118196c38946` deletes only unused private `_drawHeatWave` from `lib/main.dart`; the current Home-temperature design no longer draws heat-wave strokes, and no references to the helper remain.
-- **Required evidence:** fresh analyzer success, Flutter test count/results, release build, single APK, signing V1/V2/V3 and official certificate, publication target/asset ID/size/digest, downloaded asset SHA-256 equality and re-verification. Capture any new error and root cause before another retry. Firmware/BIN/Firebase/OTA/device remain out of scope.
+- **Status:** FAILED during Flutter tests before APK compilation. [Run 38705213757](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38705213757), source commit `86ea939b284d2724389e3567fb4bf1a541c8303d`, completed failure at `2026-10-15T08:24:35Z`.
+- **Passed before failure:** toolchain setup; Flutter local.properties; production signing preparation; Gradle-wrapper check; App-only security/architecture audit; `flutter pub get`; `flutter analyze --no-fatal-infos` after the #37 unused-painter fix.
+- **Test result:** `77 tests passed, 3 failed` (80 total). Test step `Run Flutter tests` failed and APK build, V1/V2/V3 signing enforcement, certificate verification, Release publication and downloaded-asset verification were skipped. No APK from #38 was published.
+- **Failures and root cause:**
+  1. `Peltier indicator is a full-bright frost crystal with no module box`: expected old source tokens `final branch = Path()`, `Fractional opacity interpolates particle count`, `final crystalColor = ...` and `math.sin(angle) * .035`; current painter instead builds six rotated `spine`/`branches` paths at full colour and four voltage-dependent sparks. Existing implementation is source-different from stale assertion tokens; review and keep coverage for the intended crystal.
+  2. `Fan OFF keeps full-colour blades while the coast controller settles`: test computed blade boundary by searching for deleted `void _drawHeatWave`, so it received `-1`. This is a stale delimiter after the #37 fix removed that unused helper. Use the next painter `@override void paint(` boundary while retaining colour/coast assertions.
+  3. `Repeating voltage and Bluetooth effects fade across loop boundaries`: expected obsolete horizontal `final sheenX` formula; the current Home redesign has a bolt-clipped vertical charge sweep `final sweepY = s * (.13 + .72 * (.5 - .5 * math.cos(angle)))`. Update the contract to assert the current back-and-forth clipped sweep and keep the Bluetooth squared-sine fade assertions.
+- **Repair plan:** adjust only the three source-contract tests in `test/widget_test.dart` to match the current, already-implemented crystal, full-colour Fan blade, and voltage sweep. Do not remove these tests, weaken assertions, or make UI changes solely to satisfy stale source-string matching.
+- **Current source included:** #37 fix commit `402161a9323fed0846f420569ae7118196c38946` removes the unused private `_drawHeatWave` declaration; no caller remains.
+- **Next:** commit the justified regression-contract alignment directly on `main`, then trigger the official issue workflow once and inspect all test/build/signing/Release gates. No firmware/BIN/Firebase/OTA/device operation.
+
 
 ### 2026-10-15 — Build #37 — FAILED (Dart analyzer warning; App-scope fix applied)
 
