@@ -118,3 +118,13 @@ This file is the durable App behavior/design contract. Live `lib/` source and th
 - LED status-preview pulses are periodic sine/cosine loops; navigation/action glyphs remain static by design. All of these are presentation-only; Firmware source, BLE command protocol, thermal safety and physical LEDs are unchanged.
 - Color Picker retains existing preview contrast, typography/swatch sizing and bottom-pinned six-column layout. Draft swatch selection is separate from applying the live RGB; localized Cancel discards the draft, localized Select applies it, and outside taps/system Back cannot dismiss the modal. Peltier Safety targets and the mandatory Fan-before-Peltier gate remain unchanged.
 
+
+
+## Home indicator animation redesign — 2026-10-15
+
+- Approved scope: keep the existing Home/dashboard layout and cooler image placement; redesign the seven status indicators (Battery Temperature, Hotside Temperature, Voltage Indicator, Adaptive Mode, Peltier Switch, Fan Switch and Fan Speed) as dedicated custom-painted graphics.
+- Battery Temperature uses three restrained thermal segments driven by the displayed Celsius reading. Hotside Temperature is now a single clean thermometer silhouette with a separated bulb; no decorative heat-wave strokes cross or overlap the glass. Both temperature level transitions are interpolated over 520 ms and use valid telemetry only.
+- Voltage keeps a moving charge sweep clipped to the lightning silhouette. Adaptive uses a minimal ring/orbit/core; Peltier uses a legible six-arm crystal with only four small peripheral sparks; Fan blades rotate independently around a stable hub and coast down on OFF; Fan Speed retains a telemetry-driven gauge with retargeted smooth transitions and a seamless small needle wobble.
+- Adaptive orbital motion stops when Adaptive is OFF. Motion is gated by the connected live session as before; no sensor value is treated as physical truth unless it comes from telemetry.
+- Home Notify's connection badge uses CONNECTED / DISCONNECTED in English and TERHUBUNG / TERPUTUS in Indonesian. Existing error, Connecting and Syncing states and the detailed body message are preserved.
+- Source/test update is committed separately from the explicit Build App workflow. These changes are NOT BUILT / NOT RUN in Flutter and still require the separate @Thinking #Build App! authorization for full CI QC and physical-device verification.

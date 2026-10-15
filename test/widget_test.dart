@@ -132,6 +132,45 @@ void main() {
     );
   });
 
+
+  test('Home sensor icon levels are clamped and never invent a missing temperature', () {
+    expect(
+      jexTemperatureIndicatorLevel('45 °C', minC: 20, maxC: 60),
+      closeTo(.625, .0001),
+    );
+    expect(jexTemperatureIndicatorLevel('20°C', minC: 20, maxC: 60), 0);
+    expect(jexTemperatureIndicatorLevel('80°C', minC: 20, maxC: 60), 1);
+    expect(
+      jexTemperatureIndicatorLevel('--', minC: 20, maxC: 60, fallback: .42),
+      .42,
+    );
+  });
+
+  test('Home Notify connection status says Connected/Disconnected in both languages', () {
+    String label({
+      required bool connected,
+      String notice = '',
+      bool connecting = false,
+      bool syncing = false,
+      AppLanguage language = AppLanguage.english,
+    }) =>
+        homeNotifyConnectionLabel(
+          notice: notice,
+          isConnecting: connecting,
+          isSyncing: syncing,
+          connected: connected,
+          language: language,
+        );
+
+    expect(label(connected: true), 'CONNECTED');
+    expect(label(connected: false), 'DISCONNECTED');
+    expect(label(connected: true, language: AppLanguage.indonesia), 'TERHUBUNG');
+    expect(label(connected: false, language: AppLanguage.indonesia), 'TERPUTUS');
+    expect(label(connected: false, connecting: true), 'CONNECTING');
+    expect(label(connected: false, syncing: true), 'SYNCING');
+    expect(label(connected: false, notice: 'Wireless ADB failed'), 'ERROR');
+  });
+
   test('Home Fan Speed shows 100% for Adaptive at 12V', () {
     expect(
       homeFanSpeedDisplay(

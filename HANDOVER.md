@@ -5,7 +5,7 @@ Last reconciled: 2026-10-15 (Asia/Jakarta). This is a working checklist, not aut
 ## Current code and release state
 
 - Canonical repo/branch: `TenzoNkz/JEXFYZ-App` / `main`; work directly on main, no PR/branch unless requested.
-- Current source snapshot: main includes Color Picker staged selection, Floating Monitor foreground SurfaceFlinger FPS/telemetry recovery, and notification-driven Wireless ADB pairing for FPS DUMP setup. `lib/main.dart` `c697497e16c94b8fe4fe8fd9bd1f9bc93598545f`; `lib/floating_monitor.dart` `bd230aee16fa77a0d8d2afb9f1a0c2d80cdcac86`; `lib/app_settings.dart` `851f55f10a5d7e5f9b8d7c8c0cb779dba0bca5b5`; `test/widget_test.dart` `2a87292d5c4bc468ee6aad6810b249d284a28bae`; `test/adb_pairing_contract_test.dart` `03609184edc5b2df09f40e62ffe99959ea337bad`; `WirelessAdbPairingService.kt` `7f2099cac0c78008d395ec0bb83e32e5f6d55384`; `WirelessAdbIdentityStore.kt` `394eab93a17c563caf7db0511d4d36040c1c59ec`; `MainActivity.kt` `f7340e82a12cece063e310546dcba893e6a5a09f`; `AndroidManifest.xml` `2124dcd969347d2c7bb1bd99374a398cf50d2387`.
+- Current source snapshot: main includes Color Picker staged selection, Floating Monitor foreground SurfaceFlinger FPS/telemetry recovery, and notification-driven Wireless ADB pairing for FPS DUMP setup. `lib/main.dart` `f71836992f7936d3d2b84dc2782a8adeeeeb61b8`; `lib/floating_monitor.dart` `bd230aee16fa77a0d8d2afb9f1a0c2d80cdcac86`; `lib/app_settings.dart` `e7952ce9a5b016de1516ca4667cc460714aea4da`; `test/widget_test.dart` `98c4149ba45bfc5061a695e1bba739bb8ebfc111`; `test/adb_pairing_contract_test.dart` `03609184edc5b2df09f40e62ffe99959ea337bad`; `WirelessAdbPairingService.kt` `7f2099cac0c78008d395ec0bb83e32e5f6d55384`; `WirelessAdbIdentityStore.kt` `394eab93a17c563caf7db0511d4d36040c1c59ec`; `MainActivity.kt` `f7340e82a12cece063e310546dcba893e6a5a09f`; `AndroidManifest.xml` `2124dcd969347d2c7bb1bd99374a398cf50d2387`.
 - App package/version: `com.horizontalzzz.jexfyz`, pubspec `1.0.0+3`; preserve Android Gradle `versionName "Telegram @horizontalzzz"`.
 - Latest successful App Build is [#36 / run `38689044316`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38689044316), built from older code commit `893393388b99fc6d9e59c420070a159a29e45e9a`; 77 Flutter tests and the full audit/analyze/APK signing/release re-download gates passed for that commit. The Wireless ADB pairing commits are newer and are NOT in that APK; this task did not trigger a new build.
 - Current Release `jexfyz-latest`: one `JEXFYZ-release.apk`, 54,521,947 bytes; SHA-256 `77e57ece6c194ec97ce9f4e72d379f848173cd2cf905f66a74e6b037ad82e5c1`. Production certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. JAR/V1 diagnostics warn that some dependency META-INF entries are not protected by that scheme; V1/V2/V3 separately passed on the built and re-downloaded APK.
@@ -60,3 +60,11 @@ Last reconciled: 2026-10-15 (Asia/Jakarta). This is a working checklist, not aut
 ## Canonical references
 
 Read `CHAT_TRANSFER.md` first at each new chat/context limit; use `MEMORY_INDEX.md` for routing. `PROJECT_STATE.md` is current-only; `CHANGELOG.md` is history-only; archive files are forensic-only and their embedded old CURRENT claims must not be copied forward.
+
+
+## Latest Home UI execution — 2026-10-15
+
+- Full redraw of all seven Home indicator kinds is committed: battery thermal segments, non-overlapping Hotside thermometer, moving voltage sweep, Adaptive orbit/core, reduced Peltier crystal, Fan rotor with coast-down, and telemetry-retargeted Fan Speed gauge.
+- Home Notify fallback badge now uses CONNECTED/DISCONNECTED (English) and TERHUBUNG/TERPUTUS (Indonesian); explicit errors and in-progress states remain unchanged.
+- New temperature normalization and Notify-label regression tests were added but have NOT RUN. This is source execution only, not an App Build. Request @Thinking #Build App! separately for Flutter tests/analyze, Android/Kotlin compile, release APK and signing/QC; then verify visual motion on a physical phone.
+- No firmware source/BIN, Firebase metadata, OTA, flash, or device was touched.

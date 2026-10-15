@@ -1,3 +1,11 @@
+## 2026-10-15 — Redesign animated Home status indicators and Notify connection labels
+
+- Reworked the seven dashboard indicators with custom-painted, simplified geometry: segmented Battery Temperature, isolated Hotside thermometer, moving voltage charge sweep, Adaptive ring/orbit/core, reduced six-arm Peltier crystal, rotor blades with natural coast-down, and smooth telemetry-driven Fan Speed gauge.
+- Removed the decorative heat waves running alongside/across the Hotside tube; liquid level now follows the Hotside reading. Battery and Hotside icon levels are mapped from valid Celsius text and eased over 520 ms rather than snapping on each telemetry refresh.
+- Adaptive icon motion now follows the actual Adaptive ON state. Fan speed and voltage-dependent rotor timing remain intact.
+- Home Notify connection badge now reads CONNECTED/DISCONNECTED (TERHUBUNG/TERPUTUS in Indonesian). Existing explicit error, connecting/syncing badges and detailed Notify body remain unchanged.
+- Added widget tests for sensor-level parsing/clamping and both-language Notify badge labels. Tests/analyze and APK build remain NOT RUN pending the separate @Thinking #Build App! authorization. No Firmware/BIN/Firebase/OTA/device operation was performed.
+
 ## 2026-10-15 — Recover and harden notification-driven Wireless ADB pairing
 
 - Recovered the authorized App execution from live main rather than duplicating the existing feature commit. Existing source commit 4ad5d99bcea96e865978e3003482661b1e26101f introduced the native notification flow, and 89855b59c8d6ee40151847e6633a07cb75aff6b0 repaired the mDNS-listener closure and identity temporary-file naming.

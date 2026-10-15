@@ -8,7 +8,7 @@ Last reconciled: 2026-10-15 (Asia/Jakarta). This file is current-only; refresh t
 - **Active Firmware source:** firmware/JEXFYZ-V6.6.ino.
 - **Firmware constant:** FW_VERSION = "V6.6".
 - **Firmware source blob last observed:** f51ba6db5d0e91318f63fea4014bb87f7bf76222.
-- **Active App source:** `lib/main.dart`, current blob `c697497e16c94b8fe4fe8fd9bd1f9bc93598545f`.
+- **Active App source:** `lib/main.dart`, current blob `f71836992f7936d3d2b84dc2782a8adeeeeb61b8`.
 - **Package/version:** com.horizontalzzz.jexfyz, pubspec 1.0.0+3.
 - **Android identity:** Gradle versionName "Telegram @horizontalzzz"; intentional, preserve exactly.
 - **QC contracts:** test/v6_6_qc_contract_test.dart, test/firmware_touch_adaptive_sync_test.dart, test/app_protocol_notify_contract_test.dart, test/widget_test.dart. Test execution must be checked independently.
@@ -106,3 +106,11 @@ Last reconciled: 2026-10-15 (Asia/Jakarta). This file is current-only; refresh t
 - All source and memories live in TenzoNkz/JEXFYZ-App.
 - TenzoNkz/JEXFYZ-Firmware must contain JEXFYZ.cpp.bin only; its notes were removed during this cleanup and the BIN was not touched. The last observed artifact root contains only the BIN; verify its live path/blob before any future publication.
 - Latest source changes include staged Color Picker selection, Floating Monitor foreground SurfaceFlinger FPS/telemetry recovery, notification-driven Wireless ADB pairing for FPS DUMP setup, Android Keystore-encrypted per-install ADB identity storage, and updated contract assertions. Build #36 (`893393388b99fc6d9e59c420070a159a29e45e9a`) succeeds for the earlier source only; pairing commits `4ad5d99bcea96e865978e3003482661b1e26101f`, `89855b59c8d6ee40151847e6633a07cb75aff6b0`, and the subsequent multicast/notification-permission fix remain NOT BUILT and tests NOT RUN.
+
+
+## Home indicator redesign — 2026-10-15
+
+- User approved a full seven-icon Home indicator redesign while preserving the existing Home layout and cooler image placement. Live implementation uses dedicated custom-painted battery, Hotside thermometer, voltage, Adaptive orbit, Peltier crystal, Fan rotor and Fan Speed gauge visuals.
+- Hotside's old lateral heat waves were removed from the thermometer body to eliminate clutter/overlap. Battery/Hotside icon levels now derive from valid displayed temperature readings and ease to changes over 520 ms. Adaptive motion is state-gated, and Notify connection badge language changed from ONLINE/OFFLINE to CONNECTED/DISCONNECTED (localized to TERHUBUNG/TERPUTUS in Indonesian); detailed notices and error/connecting/syncing states remain.
+- Current source blobs: lib/main.dart f71836992f7936d3d2b84dc2782a8adeeeeb61b8; lib/app_settings.dart e7952ce9a5b016de1516ca4667cc460714aea4da; test/widget_test.dart 98c4149ba45bfc5061a695e1bba739bb8ebfc111.
+- Tests were authored but NOT RUN for this source. No APK build/workflow was started. Next authorized QC step remains @Thinking #Build App!; physical appearance and motion must be checked on-device. Firmware V6.6, firmware BIN, Firebase, OTA and hardware remain untouched.

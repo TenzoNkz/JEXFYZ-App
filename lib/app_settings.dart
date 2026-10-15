@@ -728,6 +728,14 @@ class JexText {
       AppLanguage.english: 'OFFLINE',
       AppLanguage.indonesia: 'OFFLINE',
     },
+    'connected': {
+      AppLanguage.english: 'CONNECTED',
+      AppLanguage.indonesia: 'TERHUBUNG',
+    },
+    'disconnected': {
+      AppLanguage.english: 'DISCONNECTED',
+      AppLanguage.indonesia: 'TERPUTUS',
+    },
     'thermal': {
       AppLanguage.english: 'Thermal',
       AppLanguage.indonesia: 'Termal',
