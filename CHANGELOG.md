@@ -1,8 +1,16 @@
 # JE X FYZ / JE Cooler — Changelog
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
+## 2026-10-15 — App Build #54 success; physical Game FPS report remains unverified
 
-## CURRENT CHECKPOINT — Floating Monitor visual controls (2026-10-15)
+- Build #54 / run 38767611593 built App source commit 437e7730dbcaf9666ae4828e546a45343bb4890c. Dart analysis and all 86 Flutter tests passed; Android release APK compiled and passed explicit V1/V2/V3/certificate checks; corresponding source ZIP validated, published and re-downloaded with matching SHA-256. Release jexfyz-latest contains exactly one APK plus one source ZIP.
+- APK asset 644438898, 54,636,716 bytes, SHA-256 cdf8a7f94424b9cb60be6e04489a9f0f0d8ddad43ab76c33c2e2c6333fa61327. Source asset 644438897, 2,862,590 bytes, SHA-256 3b208c987def59a7c1857ed0fcc9ca5d74d591767e5658dfab04c9c1be85450f.
+- Builds #50–#53 exposed and repaired an analyzer warning, temperature-source parser assertions, AIDL transaction-ID mismatch, then an outdated AIDL assertion. Failures remain in APP_BUILD_REPORT.md; the gates were not weakened.
+- After the release, the user reported Shizuku permission granted while F remains --, with other telemetry showing in a screenshot of JE Cooler's settings page. Source deliberately does not count JE Cooler as a foreground game, so no_game_foreground is plausible but not a proven runtime diagnosis. Test with a real foreground game; if unresolved, capture fps_monitor_status and logs. CI does not prove live game FPS.
+- No Firmware compile, BIN/Firebase update, OTA, flash or physical-device operation was performed as part of the Build #54 source release/verification.
+
+
+## HISTORICAL / SUPERSEDED — Floating Monitor visual controls (2026-10-15; later included in Build #54)
 
 - Floating Monitor remains freely draggable. The alignment change is inside the box only: horizontal metric groups are centered as a group, and vertical rows are centered individually. Native WindowManager gravity stays `Gravity.TOP | Gravity.START`; drag offset persistence is preserved.
 - Native HUD spacing is tightened (5dp-scaled inter-metric gap, 8dp-scaled horizontal padding, 5dp-scaled vertical padding) and the corner radius is reduced.
@@ -18,14 +26,14 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - Firmware V6.6, firmware/BIN repository, Firebase, OTA, flash and physical device remain untouched.
 
 
-## CURRENT CHECKPOINT — Shizuku-gated FPS migration; tests/build pending (2026-10-15)
+## HISTORICAL / SUPERSEDED — Shizuku FPS migration source checkpoint (2026-10-15; later included in Build #54)
 
 - Shizuku permission is now the FPS gate: the user must have Shizuku running and approve JE X FYZ through Shizuku's own permission dialog before metric F can be selected.
 - Added official Shizuku provider integration, AIDL and restricted UserService with a fixed FPS operation allow-list. The ordinary app process no longer executes dumpsys or uses the manifest DUMP permission.
 - Removed Wireless ADB pairing/identity-store source, Kadb/SPAKE2 dependencies and licenses, ADB grant/revoke UI and obsolete pairing test. Added Shizuku API/provider 13.1.5, MIT notice/assets, updated workflow license/source packaging and a dedicated Shizuku contract test.
 - Source checkpoint: b4e4ec7e8d6c00f43e5378dcb7e2e4b7731adf4b. Widget and Shizuku source-contract tests are committed but have NOT RUN; no Android build or release was triggered. Current APK remains Build #49's older source 2b2d2886abb66481b7134e5036824f625ab5659d.
 - @Thinking Chat Stuck! recovered the latest source state and saved this report; it did not authorize an App Build. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
-## CURRENT CHECKPOINT — Thermal indicator source update; CI pending (2026-10-15)
+## HISTORICAL / SUPERSEDED — Thermal indicator source checkpoint (2026-10-15; later included in Build #54)
 
 - App source commit `8b58c7033a5462864b52cb921ca25c714bca902f` committed directly to `main`: `lib/main.dart` blob `3eeb4dff7b7fbb52a44022e5e2b130bc1826da23`; `test/widget_test.dart` blob `e673bdbc5ffa80791564b1138db28c6a8731aaec`.
 - Thermal Battery now treats its segmented fill as temperature level (20°C empty, 30°C half, 40°C+ full), transitions from ice blue through cyan/green/amber/orange to red, and shows animated fire at ≥40°C. Text and icon colors tween together. The existing phone battery-temperature read and one-second firmware heartbeat are unchanged.
@@ -34,7 +42,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - Last successful Release remains Build #49 from source `2b2d2886abb66481b7134e5036824f625ab5659d`; `jexfyz-latest` does not include commit `8b58c7033a5462864b52cb921ca25c714bca902f`. Run the explicitly authorized App Build workflow to analyze/test/build/sign/release the new source.
 - No firmware source/BIN, Firebase, OTA, flash or device operation occurred.
 
-## PREVIOUS CHECKPOINT — Build #49 successful App release (2026-10-15)
+## HISTORICAL / SUPERSEDED — Build #49 successful App release (2026-10-15; superseded by Build #54)
 
 - Official issue-triggered [Build #49 / run 38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916) used issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22) and built source commit `2b2d2886abb66481b7134e5036824f625ab5659d`. Job `116435785328`, hosted runner `1000002352`; run completed SUCCESS at 2026-10-15T13:06:51Z.
 - Security/architecture/license audit, dependency resolution, Dart analysis, all **80 Flutter tests**, obfuscated APK compilation, V1/V2/V3 signing and official production certificate checks all passed. The source ZIP passed integrity/content/path/license assertions. Release publication and re-downloaded APK/source verification passed; all main workflow steps succeeded.
@@ -44,14 +52,14 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - CI does **not** verify physical-phone UI, BLE/cooling/safety, FPS/overlay, installed Firmware or OTA behavior. No Firmware source/BIN/Firebase/OTA/flash/device operation occurred.
 
 
-## PREVIOUS CHECKPOINT — Command protocol and App build trigger rename (2026-10-15)
+## HISTORICAL — Command protocol and App build trigger rename (2026-10-15)
 
 - Canonical command spellings use no `#`: `@Thinking Diskusi!`, `@Thinking Diskusi! Tanya Gemini!`, `@Thinking Diskusi! Jawaban Gemini!`, `@Thinking Eksekusi Full!`, `@Thinking Eksekusi Build App!`, and standalone `@Thinking Chat Stuck!`. Legacy aliases `@Thinking Build App!` and `@Thinking Eksekusi & Build App!` are retired. Gemini commands still require `Diskusi!` in the same message.
 - Renamed the active workflow display name to `JE X FYZ Eksekusi Build App`; the file path remains `.github/workflows/jexfyz-app-build-trigger.yml` (blob `5c5af03075f87297a31f5ee26f0e42025f05977b`). Its guarded issue trigger now requires title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. Owner validation and issue opened/reopened-only behavior remain; no push/PR shortcut was added.
 - This execution changed command/workflow metadata and canonical docs only. No issue was opened/reopened, no App Build was run, no APK/source ZIP was published, and no Firmware, BIN, Firebase, OTA, flash or device operation occurred.
 - The runner blocker remains unresolved: Builds #41–#45 failed pre-step with `runner_id=0`; root cause is unknown. Diagnose account Actions budget/permissions/security and runner dispatch before any justified retry. Build #40 passed its 80-test/analyze/compile/signing/certificate gates but failed a stale source-path assertion, which was corrected in prior workflow source; no complete post-fix run has reached the steps.
 
-## PREVIOUS CHECKPOINT — Chat Stuck full repository-memory reconciliation (2026-10-15)
+## HISTORICAL — Chat Stuck full repository-memory reconciliation (2026-10-15)
 
 - Live App 'main' before this documentation-only reconciliation sequence: `41627c26189706bc9f4aabad15a83857cda55229`; root tree `a7a6ba4dc4bf5ea52f44c906a17ef480b370f70e`, 76 entries/55 blobs, recursive tree not truncated. Active workflow is `.github/workflows/jexfyz-app-build-trigger.yml` only; diagnostic workflow file was deleted from current main.
 - Build #45 / run `38719397780`, job `116369943522`, failed pre-step with `runner_id=0`, blank runner/group names and no logs. Builds #41–#45 share this signature. Diagnostic probes #1 `38722954080` (Ubuntu 24.04) and #2 `38723038511` (Ubuntu 22.04) also failed pre-step; #46 and #47 App-trigger workflow runs were skipped by its owner/title/token guard. The hosted runner/account root cause is unknown; do not blindly retry or reference the deleted diagnostic workflow.

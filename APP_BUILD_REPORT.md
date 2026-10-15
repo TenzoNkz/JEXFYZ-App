@@ -2,37 +2,42 @@
 
 This is the durable evidence ledger for `@Thinking Eksekusi Build App!`. A replacement Build App chat uses Prompt D in `CHAT_TRANSFER_PROMPTS.md` to load this file and continue the same workstream across a context limit; there is no separate Build App recap chat. Discussion can consult this ledger for evidence. It records only evidence actually present in GitHub Actions/Release outputs; a build, analysis, APK signature, release publication and physical-device verification are distinct gates.
 
-## Current source checkpoint — Shizuku-gated FPS migration (NOT BUILT)
+## Current source/release checkpoint — Build #54 SUCCESS; physical FPS remains UNVERIFIED
 
-- Current source checkpoint: `b4e4ec7e8d6c00f43e5378dcb7e2e4b7731adf4b`. FPS requires Shizuku Binder/API availability and explicit JE X FYZ permission. Fixed FPS operations cross AIDL into `FpsShizukuUserService`; ordinary app-process dumpsys has been removed.
-- Removed Wireless ADB pairing/identity-store, Kadb/SPAKE2 dependencies/licenses, ADB grant/revoke UI and manifest DUMP permission. Added Shizuku API/provider 13.1.5, MIT notice/assets and updated workflow source/license gates.
-- Key blobs: Floating UI `232fde06efda5bfaa2221825a04c0106ad5feb33`; app settings `6f99911bc59451473823aea1e1`; widget test `520399fcdc6be4fd69cb48f50aa8961f5d9183c5`; Shizuku contract `bd27d2c7adc20ab76bab504378a2353d01ab473b`; native monitor `bfc0956688bab5951ea2c626427a691ed63b6921`; UserService `1f5ed36dadaba9dc70ecfbe0793114b34c8ab08b`; Activity `a139dfefe1121963c3a26b114b9b0fcc9f8fa16a`; workflow `585d190324e522fc08e66cc95bd7ee80c5f37664`.
-- `@Thinking Chat Stuck!` did not run tests, Dart analysis, Android/Kotlin compilation or trigger App Build. Current source is NOT RUN / NOT BUILT / NOT RELEASED. Last verified Release is Build #49 from older source `2b2d2886abb66481b7134e5036824f625ab5659d`.
+- Canonical App main parent before this docs reconciliation: 329fd18e3c6ced8f43a7dbfaf7bf02206c17d42a. Latest source was built from commit 437e7730dbcaf9666ae4828e546a45343bb4890c; later main commits in this task are documentation-only.
+- Current source fingerprints: lib/main.dart 72c450d9b1e8783e4b82b8e37a5f39e2d49b6289; lib/floating_monitor.dart 05a61e5670ec09c9c46cf60466a1dd301dfe5352; lib/app_settings.dart 46cc838f43a06c325af6f6832e200a4e1ed4f75d; test/widget_test.dart 520399fcdc6be4fd69cb48f50aa8961f5d9183c5; test/floating_monitor_layout_contract_test.dart 31d9aabf4ac0839855308b6bd2a0708fa399a3a9; test/shizuku_fps_contract_test.dart 798633a24907fd8aca567e70a6376dc59c6e41c9.
+- Build #54 / run 38767611593, job 116534803134, completed success at 2026-10-15T16:21:50Z. Static audit, dependencies, Dart analysis, 86 Flutter tests, obfuscated APK build, V1/V2/V3 signing and production certificate validation all passed. Corresponding-source ZIP checks, Release publication and re-downloaded APK/source hash verification passed.
+- Release jexfyz-latest targets 437e7730dbcaf9666ae4828e546a45343bb4890c and contains exactly two intended assets: JEXFYZ-release.apk, asset 644438898, 54,636,716 bytes, SHA-256 cdf8a7f94424b9cb60be6e04489a9f0f0d8ddad43ab76c33c2e2c6333fa61327; JEXFYZ-corresponding-source.zip, asset 644438897, 2,862,590 bytes, SHA-256 3b208c987def59a7c1857ed0fcc9ca5d74d591767e5658dfab04c9c1be85450f.
+- Signing: V1/JAR, V2 and V3 verified true; one signer; expected production certificate DN and SHA-256 matched. Non-blocking analyzer, Gradle/Kotlin, package-update, ELF DWARF and jarsigner warnings remain documented in Build #54 result below.
+- CURRENT DEVICE ISSUE / USER-REPORTED: Shizuku status reports “Shizuku permission granted”, but F remains -- while other metrics are visible. The screenshot shows JE Cooler's own settings page foreground. Native pollSurfaceFlinger() deliberately returns no_game_foreground/-- when the focused app equals JE Cooler's own package, so that is plausible if no game is foreground; the exact device cause is UNVERIFIED. No fps_monitor_status dump/logcat was supplied.
+- Next diagnostic: try a real game in foreground while overlay remains enabled. If F stays --, capture the native FPS monitor status and logs for shizuku_userservice_unavailable/disconnected/error, surfaceflinger_blocked, dumpsys_timeout, foreground_unknown, no_game_foreground, no_layer_data or waiting_for_frames. Do not report a source fix or live FPS success without evidence.
+- No App source repair or build was triggered by this Chat Stuck/documentation reconciliation. No Firmware compile, BIN, Firebase, OTA, flash or device operation occurred.
 
-## Historical command/workflow rename — 2026-10-15
+## HISTORICAL — Command/workflow rename — 2026-10-15
 
 - Canonical App build command is `@Thinking Eksekusi Build App!`; remove `#` from all command spellings. Legacy aliases `@Thinking Build App!` and `@Thinking Eksekusi & Build App!` are retired. `@Thinking Eksekusi Full!` remains separate and does not authorize or launch the APK build.
 - Active workflow file remains `.github/workflows/jexfyz-app-build-trigger.yml`, now named `JE X FYZ Eksekusi Build App` (blob `5c5af03075f87297a31f5ee26f0e42025f05977b`). The issue-only trigger requires exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`, with the repository-owner check retained. No push/PR trigger was added.
 - Existing issue #13 uses the prior title/token and is not a valid trigger for the renamed guard as-is. This update did not edit/reopen an issue or start a workflow.
-- Build blocker remains unresolved: Builds #41–#45 failed before step 1 with `runner_id=0`; the root cause is unknown. No build, test, APK, source archive or Release verification ran as part of this command/workflow metadata update. Investigate Actions budget/policy/security and runner dispatch before any justified retry.
-- The last release still points to older Build #36 source and is not evidence for current main. The #40 run's 80 tests, APK assembly/signing and certificate checks passed before the old source-path assertion failed; no complete post-fix run has passed all release gates.
+- At that time the hosted-runner issue remained unresolved; Builds #41–#45 and the old runner-blocker note are historical. Later Build #54 passed the entire pipeline, so do not carry the prior block forward as current.
+- At that time the latest release pointed to older Build #36 source; this was later superseded by Builds #49 and #54. Build #40's partial success and source-path failure remain preserved as history.
 
 ## Current report status
 
-- **Current source — NOT RUN/NOT BUILT/NOT RELEASED:** checkpoint `b4e4ec7e8d6c00f43e5378dcb7e2e4b7731adf4b` adds Shizuku-gated FPS to existing thermal/Home UI. Updated widget/source-contract tests have not run.
-- **Latest App Build/Release:** Build #49 / run `38739077916` passed for older source `2b2d2886abb66481b7134e5036824f625ab5659d`. Its APK/source ZIP remain current release assets and do not contain the migration.
-- **Current workflow:** `.github/workflows/jexfyz-app-build-trigger.yml`, blob `585d190324e522fc08e66cc95bd7ee80c5f37664`. Issue-only owner/title/token trigger is unchanged; Shizuku/MIT audit and source ZIP changes have not run in CI.
-- **Next validation:** only `@Thinking Eksekusi Build App!` authorizes the analysis/test/build/sign/release loop. Chat Stuck recovery did not trigger it.
-- **Not yet verified:** Shizuku startup, explicit permission, UserService binding, Binder loss/revocation, live foreground-game FPS/OEM compatibility. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+- CURRENT / VERIFIED: Build #54 / run 38767611593 passed the complete App release gates for source commit 437e7730dbcaf9666ae4828e546a45343bb4890c. Exact APK and matching source ZIP are published on jexfyz-latest and were downloaded/hash-verified.
+- CURRENT / RELEASED: exactly one JEXFYZ-release.apk plus one JEXFYZ-corresponding-source.zip. Byte sizes, asset IDs, hashes, signing and certificate evidence are recorded above and in the Build #54 result.
+- USER-REPORTED / UNVERIFIED: Shizuku UI says permission granted, but Game FPS remains -- in a screenshot where JE Cooler's settings page appears foreground. Current source intentionally doesn't count JE Cooler as the game. Test with an actual foreground game and capture native status/logs if it remains --.
+- FIRMWARE: V6.6 is user-accepted final. Compile and two Online OTA successes are USER-REPORTED. App CI is not Firmware compilation or proof of source-to-BIN provenance, physical OTA, flash or cooling behavior.
+- This Chat Stuck reconciliation did not run/trigger a Build App, source fix or device operation. Only the existing Build #54 run supplies current build evidence.
+- Only active workflow is .github/workflows/jexfyz-app-build-trigger.yml. Keep its owner/title/token and issue-open/reopen guard intact; do not trigger another run without explicit Build App authorization.
 
 ## Attempt history
 
-### 2026-10-15 — Thermal indicator source update — NOT BUILT
+### HISTORICAL — Thermal indicator source update (later included in Build #54)
 - Source commit: `8b58c7033a5462864b52cb921ca25c714bca902f`; `lib/main.dart` blob `3eeb4dff7b7fbb52a44022e5e2b130bc1826da23`; `test/widget_test.dart` blob `e673bdbc5ffa80791564b1138db28c6a8731aaec`. Implemented thermal Battery segments/color/flames, Hotside colors/flames keyed to the configured `hotLimit`, graduated voltage color/energy levels, smooth shared Home icon/text color transitions, and voltage/speed parameters for matching submenu icons.
 - Added three regression test groups for Thermal Battery thresholds, Hotside limit colors, and 5V/9V/12V energy-color mapping; updated the existing voltage-sweep source contract. Tests have not been run, no Build App workflow was triggered, and no APK/Release/source ZIP has been regenerated for this source commit.
 - Phone battery-temperature telemetry and its firmware heartbeat were left unchanged. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
-### 2026-10-15 — Build #49 — SUCCESS
+### HISTORICAL — Build #49 success (superseded as latest by Build #54)
 - Run [38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916), issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22), source commit `2b2d2886abb66481b7134e5036824f625ab5659d`, job `116435785328`, hosted runner `1000002352`. Run completed success at 2026-10-15T13:06:51Z.
 - The security/architecture audit, dependency resolution, Dart analysis and **80 Flutter tests** passed. Obfuscated APK assembly, V1/V2/V3 enforcement, official certificate validation, source ZIP integrity/content checks, Release upload, and re-downloaded APK/source verification all passed.
 - Published Release `jexfyz-latest` targets the exact build source commit and has exactly two assets: APK (asset `643896939`, 56,087,614 bytes, SHA-256 `d365a99812470986de08be4df1bd54254fe1eb1ea1e3739806d03a6503e3c52a`) and source ZIP (asset `643896917`, 3,156,558 bytes, SHA-256 `51783b82eae47fc69ab08dd90521e5acdeed0988600042dd1bc3b94f5483dbc8`). Both published files were downloaded again and verified by the workflow.
@@ -140,7 +145,7 @@ This is the durable evidence ledger for `@Thinking Eksekusi Build App!`. A repla
 
 ---
 
-## LOAD + CONTINUE — 2026-10-15 — BLOCKED (hosted-runner dispatch; no new build run)
+## HISTORICAL — LOAD + CONTINUE blocked before subsequent Build #50–#54
 
 - **Disposition:** BLOCKED. The user explicitly authorized the Build App/QC workstream in this chat. This continuation loaded the live repository and current run/release evidence, investigated the repeated runner-start failure and recorded the exact boundary. It did **not** create a new issue-trigger or rerun an unchanged job, because there is no evidence that hosted-runner dispatch has recovered.
 - **Live repository checkpoint before this report update:** TenzoNkz/JEXFYZ-App, branch main, HEAD 25f9c6c5e3491218b5dd82275836e55d09d14d6e (commit URL: https://github.com/TenzoNkz/JEXFYZ-App/commit/25f9c6c5e3491218b5dd82275836e55d09d14d6e), root tree caedb197c70405bcfb828fe21e86ab84cf94ed10, 76 entries, recursive response not truncated. Five branches and zero open PRs; the live Actions query reports zero in-progress runs. Current workflow blob remains 5c5af03075f87297a31f5ee26f0e42025f05977b.
@@ -158,7 +163,7 @@ This is the durable evidence ledger for `@Thinking Eksekusi Build App!`. A repla
 
 ---
 
-## RETRY-GATE RECHECK — 2026-10-15 — BLOCKED (no evidence of runner recovery)
+## HISTORICAL — Retry-gate recheck before Build #50–#54
 
 - **Command received:** the user re-issued `@Thinking Eksekusi Build App!`. I resumed the same authorized App Build workstream and re-fetched live repository, Actions, workflow and Release state. The current `main` HEAD before this entry is `6c5aad364a50f91cf30925c9dd7be684fb2efd05`; active workflow blob remains `5c5af03075f87297a31f5ee26f0e42025f05977b`; current report blob before append is `cab907dfd6920333e6362f81ee785fcda03c6103`.
 - **No state change that justifies another trigger:** latest Actions query still lists Build #45 / run `38719397780` as the latest App Build run and no in-progress runs. Build #46 (`38722953908`) and #47 (`38723038530`) remain guard-skipped issue events, not runner tests. The old trigger issue #13 is deleted (GitHub API 410). The official workflow still requires issue opened/reopened by the repo owner, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`, and `ubuntu-24.04`.
@@ -172,7 +177,7 @@ This is the durable evidence ledger for `@Thinking Eksekusi Build App!`. A repla
 
 ---
 
-## PUBLIC STATUS TIMELINE CHECK — 2026-10-15 — BLOCKED (public incident does not explain current runner failures)
+## HISTORICAL — Public status timeline check before Build #50–#54
 
 - **Fresh official status-page review:** the live GitHub Status page currently says All Systems Operational; its incident history records no incidents on October 15, 2026 (https://www.githubstatus.com/). It records a resolved Actions/Issues/Projects degradation on October 12 (investigation began 12:21 UTC; mitigations were announced 14:35–14:37 UTC), and an October 13 incident affecting only delayed display/processing of workflow logs, explicitly saying actual workflows ran normally and no runs/check delays occurred. Relevant timestamped history appears on the status page at lines 119–170.
 - **Comparison to JE X FYZ failure timestamps:** Builds #41–#45 occurred on October 15 between 09:45:15 and 10:19:11 UTC, well after the publicly recorded October 12 mitigation; October 13's log-display incident is described by GitHub as not impacting workflow execution. Therefore the public incident history reviewed here does **not** establish a cause for the runner_id=0 failures on October 15. Account/repository-specific runner dispatch, entitlement, Actions policy or account security still needs investigation. Do not attribute these failures to the October 12/13 incidents without further evidence.
@@ -182,7 +187,7 @@ This is the durable evidence ledger for `@Thinking Eksekusi Build App!`. A repla
 
 ---
 
-## BUILD #48 — 2026-10-15 — BLOCKED BEFORE FIRST STEP
+## HISTORICAL — Build #48 blocked before first step
 
 - **Trigger:** issue [#21](https://github.com/TenzoNkz/JEXFYZ-App/issues/21), created by repository owner `TenzoNkz`, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. The workflow trigger was accepted and generated run #48. The trigger issue was closed after the workflow completed.
 - **Run:** [Build #48 / 38735820460](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38735820460), source/workflow commit `608a394f1b764ad8759ce240eafc90b6b9dd2c59`, created `2026-10-15T12:35:34Z`, completed `12:35:38Z`, conclusion `failure`. Job `116424719108` returned no steps (`[]`); log retrieval returned HTTP 404 `BlobNotFound`. There is no step log or evidence of checkout/analyze/test/compile/signing/source-archive/release execution.
@@ -192,7 +197,7 @@ This is the durable evidence ledger for `@Thinking Eksekusi Build App!`. A repla
 
 ---
 
-## BUILD #50 — 2026-10-15 — IN PROGRESS (Floating Monitor compact layout/appearance controls)
+## HISTORICAL — Build #50 initial Floating Monitor appearance attempt (failed at Dart analysis)
 
 - **Authorization/trigger:** user command `@Thinking Eksekusi Build App!`. Created official issue [#23](https://github.com/TenzoNkz/JEXFYZ-App/issues/23) by repository owner `TenzoNkz`, with exact required title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. No workflow changes, push/PR shortcut, branch or PR was used.
 - **Run:** [Build #50 / 38765636867](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38765636867), event `issues`, source commit `33b408aee056a58509854df53d306f1bf3b8f5da`, created `2026-10-15T16:02:45Z` (2026-10-15 23:02:45 Asia/Jakarta), attempt 1. Job `build`, ID `116527980121`.
@@ -200,7 +205,7 @@ This is the durable evidence ledger for `@Thinking Eksekusi Build App!`. A repla
 - **Source scope:** Floating Monitor metric group/row centering while preserving free drag, compact size `0.30×–0.80×` in `0.05×` steps and live numeric label, opacity `0–100%` with live percent, persisted Black/White background, contrasting foreground, and new contract tests (`test/floating_monitor_layout_contract_test.dart`). Live source blobs at trigger: `lib/floating_monitor.dart` `3516b742d39e86c8796a0e77f77c0e9c1f1c1110`; native `FloatingMonitorService.kt` `0c9cfdee776ca2f1de5daf2205d1f9f8da63683d`; `lib/app_settings.dart` `46cc838f43a06c325af6f6832e200a4e1ed4f75d`; new test `31d9aabf4ac0839855308b6bd2a0708fa399a3a9`.
 - **Gates/artifact fields:** pending. Record actual static-audit, dependency, Dart analyzer/test totals, APK filename/count/size/SHA-256, V1/V2/V3 and production-certificate checks, source ZIP, Release/tag, re-downloaded asset hashes, warnings and any unverified gates after live Actions/Release evidence is available. Physical-device rendering and FPS/BLE/cooling behavior remain out of CI scope.
 
-### BUILD #50 RESULT — FAILED AT DART ANALYSIS; NARROW APP-SCOPE REPAIR
+### HISTORICAL — Build #50 result — failed at Dart analysis; narrow App-scope repair
 
 - **Final result:** FAILED. [Build #50 / run 38765636867](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38765636867), job `116527980121`, source commit `33b408aee056a58509854df53d306f1bf3b8f5da`, runner `1000002353`. Run started at `2026-10-15T16:02:45Z` and concluded failure at `2026-10-15T16:03:55Z`.
 - **Verified gates:** runner dispatch, checkout, Java 17 / Flutter 3.47.2 / Gradle 9.3.1 setup, toolchain verification, local.properties, production signing environment preparation, wrapper fallback, static security/architecture/license audit, and `flutter pub get` all passed.
@@ -209,7 +214,7 @@ This is the durable evidence ledger for `@Thinking Eksekusi Build App!`. A repla
 - **Repair committed directly to main:** [`79730d50de47762071bf99ee030a23f1ac8b8b59`](https://github.com/TenzoNkz/JEXFYZ-App/commit/79730d50de47762071bf99ee030a23f1ac8b8b59), message `fix(fps): remove unused Shizuku uid state`. Removed only the unread `_shizukuUid` field and its assignment. No tests, security gates, or workflow conditions were weakened. The repair itself still requires fresh analyzer/test/build evidence.
 - **Next attempt:** a single new official issue-triggered Build App run is justified by this concrete repair. Do not treat Build #50 as release evidence; preserve the earlier history above.
 
-### BUILD #51 RESULT — FAILED AT FLUTTER TESTS; THERMAL PARSER REPAIR
+### HISTORICAL — Build #51 result — failed at Flutter tests; thermal parser repair
 
 - **Run:** [Build #51 / 38766215071](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38766215071), official trigger issue [#24](https://github.com/TenzoNkz/JEXFYZ-App/issues/24), source commit `63cca9019fc91a0d9e470af3f11f44e4cd51e58c`, job `116529968510`, runner `1000002353`. Run completed failure at `2026-10-15T16:08:29Z`.
 - **Verified gates:** runner dispatch, setup Java17/Flutter3.47.2/Gradle9.3.1, toolchain, production signing prep, security/architecture/license audit, dependency resolution and `flutter analyze --no-fatal-infos` passed.
@@ -218,7 +223,7 @@ This is the durable evidence ledger for `@Thinking Eksekusi Build App!`. A repla
 - **Repair committed directly to main:** [`3e8ef2574382b981906f22c5d145edf2ebcdd9a3`](https://github.com/TenzoNkz/JEXFYZ-App/commit/3e8ef2574382b981906f22c5d145edf2ebcdd9a3), message `fix(ui): correct thermal temperature parser regex`. Corrected the raw pattern to `r'-?\d+(?:[.,]\d+)?'`, consistent with the existing temperature indicator parser. Tests remain unchanged; fresh analyzer and all-tests evidence is required.
 - **Next attempt:** one official issue trigger is justified by the concrete parser fix. Do not publish or infer APK validity from Build #51.
 
-### BUILD #52 RESULT — FAILED AT AIDL COMPILE; INTERFACE TRANSACTION-ID REPAIR
+### HISTORICAL — Build #52 result — failed at AIDL compile; interface transaction-ID repair
 
 - **Run:** [Build #52 / 38766565895](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38766565895), official trigger issue [#25](https://github.com/TenzoNkz/JEXFYZ-App/issues/25), source commit `129a217271e529bce5fce75c0f980f3f5e04883c`, job `116531198661`, runner `1000002353`. Run failed at `2026-10-15T16:12:45Z` (2026-10-15 23:12:45 Asia/Jakarta).
 - **Verified gates:** setup/toolchain, signing-environment preparation, security/architecture/license audit, Flutter dependency resolution, `flutter analyze --no-fatal-infos`, and **all 86 Flutter tests passed** (both thermal regression tests that failed in #51 now pass).
@@ -227,7 +232,7 @@ This is the durable evidence ledger for `@Thinking Eksekusi Build App!`. A repla
 - **Repair committed directly to main:** [`c28b82f209ba2b2893f2b432cad262f73787f0bf`](https://github.com/TenzoNkz/JEXFYZ-App/commit/c28b82f209ba2b2893f2b432cad262f73787f0bf), message `fix(fps): assign explicit AIDL transaction IDs`. Assigned unique transaction ID `2` to `executeFpsOperation(int)` while preserving `exit() = 1` and Shizuku-reserved `destroy() = 16777114`; operation arguments and allow-list behavior are unchanged. The repair requires a fresh complete build to verify.
 - **Next attempt:** a single official issue-triggered Build App run is justified by the concrete AIDL compiler fix. Preserve this failure in history; no tests or gates were weakened.
 
-### BUILD #53 RESULT — AIDL COMPILER FIX EXPOSED STALE CONTRACT ASSERTION
+### HISTORICAL — Build #53 result — AIDL compiler fix exposed stale contract assertion
 
 - **Run:** [Build #53 / 38767300776](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38767300776), official trigger issue [#26](https://github.com/TenzoNkz/JEXFYZ-App/issues/26), source commit `a7cefe47a8af25d72bbcc46801d961b1e3c14d42`, job `116533739616`. Run completed failure at `2026-10-15T16:15:55Z`.
 - **Verified gates:** setup/toolchain, signing-environment preparation, security/architecture/license audit, dependency resolution, and Dart analysis all passed. The AIDL compiler stage was not reached because the test gate failed first; so the new AIDL transaction-ID repair has not yet been validated by an Android build.

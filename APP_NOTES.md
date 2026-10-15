@@ -83,13 +83,15 @@ This file is the durable App behavior/design contract. Live `lib/` source and th
 
 ## Floating Monitor and Shizuku-gated foreground FPS
 
-- The Floating Monitor settings page has no duplicate/live-preview pill in the middle of the screen. Display orientation is controlled explicitly by the Horizontal / Vertical selector.
-- FloatingMonitorService owns the overlay; Flutter remains the single BLE/GATT client and streams authoritative telemetry. After the native service attaches, replay the current telemetry snapshot. Native layout/redraw tracks live value width.
-- FPS never counts JE Cooler's Flutter FrameTiming. It samples SurfaceFlinger --timestats about once per second after identifying Android's resumed/focused package and filtering layers to that exact package. This measures compositor-presented frames, not necessarily game simulation/update rate.
-- HARD PERMISSION GATE: metric F cannot be selected unless Shizuku Binder is active, Shizuku API supports UserService (API 10+), and the user has explicitly approved JE X FYZ in Shizuku's permission UI. Legacy persisted F selection is removed when authorization is absent. Native code enforces the gate independently of Flutter.
-- EXECUTION BOUNDARY: the ordinary app process does not execute the FPS dumpsys. It calls IFpsShizukuUserService over AIDL using fixed operation IDs; FpsShizukuUserService maps only the allow-listed start/stop/focused-activity/SurfaceFlinger-stat operations. It accepts no arbitrary command string. If Shizuku/Binder/authorization is missing or lost, FPS sampling stops and displays --.
-- The previous Wireless ADB pairing/RemoteInput/Kadb/SPAKE2 path, encrypted ADB host-identity store, app-manifest DUMP permission, ADB grant/revoke command UI and old pairing contract test have been removed. Shizuku API/provider 13.1.5 is MIT-licensed; its notice is in third_party/THIRD_PARTY_NOTICES.md and the Android assets license folder.
-- VALIDATION STATUS: source and source-contract tests are committed, but Flutter tests, Dart analysis, Android/Kotlin compilation, Build App and physical-device Shizuku behavior have NOT RUN/NOT BEEN VERIFIED for this migration.
+- FloatingMonitorService owns the overlay window; Flutter remains the single BLE/GATT client and streams authoritative telemetry. After native service attachment, Flutter replays the current telemetry snapshot. Native layout/redraw tracks changing live-value width.
+- The overlay remains freely draggable with WindowManager gravity TOP | START and persisted coordinates. Alignment applies inside the box only: horizontal metric groups are centered as a group and vertical rows individually. The box has tighter spacing/padding and a smaller radius. Settings exposes Horizontal/Vertical orientation.
+- Appearance persists: Size 0.30×–0.80× in 0.05× steps (default 0.60×) with a numeric label; background opacity 0–100% with live percent and 0/50/100 labels; selectable Black/White background (default Black) with contrasting foreground text/icons. At 0%, only the background vanishes; text remains visible.
+- Stable metrics are F/B/H/V/A/P/S. Battery, Hotside, Voltage and output values use authoritative telemetry; disconnected output state is --. F is Game FPS, not the phone refresh-rate setting or JE Cooler's own Flutter frame timing.
+- Metric F requires Shizuku Binder active, API support for UserService (version 10+), and explicit JE X FYZ approval in the Shizuku permission UI. Native code checks the grant independently of Flutter. Legacy saved F selection is removed when authorization is missing.
+- Ordinary app process does not run dumpsys. It calls IFpsShizukuUserService over AIDL with fixed operation IDs. FpsShizukuUserService maps only allow-listed foreground-activity and SurfaceFlinger timestats operations. Arbitrary command strings are not accepted. Legacy Wireless ADB pairing/identity storage, Kadb/SPAKE2 and manifest DUMP paths are removed.
+- FPS identifies Android's resumed/focused package and matches SurfaceFlinger layers for that package. It deliberately returns -- when JE Cooler's own process is foreground or when focused-package/layer data is unavailable.
+- CURRENT DEVICE ISSUE / USER-REPORTED (screenshot received 2026-10-15/16 local time): Shizuku page shows “Shizuku permission granted” but F remains --; Battery/Hotside/Voltage/Adaptive/Peltier/Speed show values. The screenshot appears to show JE Cooler's own Floating Monitor settings page foreground. Since source explicitly refuses to count JE Cooler's own process as a game, this is consistent with the no_game_foreground branch, but does not prove it is the cause. “Permission granted” does not prove UserService start, SurfaceFlinger read access, or a matching game layer. No runtime status map/logcat was supplied. Next diagnostic: put an actual game in foreground while leaving the overlay enabled. If F remains --, capture native fps_monitor_status and logs for shizuku_userservice_unavailable/disconnected/error, surfaceflinger_blocked, dumpsys_timeout, foreground_unknown, no_game_foreground, no_layer_data or waiting_for_frames. Device/OEM behavior remains UNVERIFIED.
+- VALIDATION: App Build #54 passed Dart analysis, all 86 Flutter tests, Android build/signing and Release/source-ZIP verification for source commit 437e7730dbcaf9666ae4828e546a45343bb4890c. These CI results do not prove live in-game FPS; see APP_BUILD_REPORT.md.
 
 ## Phone battery telemetry and Battery Protection UI boundary
 
@@ -101,11 +103,11 @@ This file is the durable App behavior/design contract. Live `lib/` source and th
 
 ## Current App QC boundary
 
-- Current source hashes: lib/main.dart 3eeb4dff7b7fbb52a44022e5e2b130bc1826da23; lib/floating_monitor.dart 232fde06efda5bfaa2221825a04c0106ad5feb33; lib/app_settings.dart 6f99911bc59451473823aea91efe5377a0b6d0d1; test/widget_test.dart 520399fcdc6be4fd69cb48f50aa8961f5d9183c5; test/shizuku_fps_contract_test.dart bd27d2c7adc20ab76bab504378a2353d01ab473b.
-- **CI evidence, not device proof:** Build #39 and Build #40 passed Dart analysis and **80 Flutter tests**. Build #40 additionally passed the security/license audit, Flutter dependencies, obfuscated APK assembly, V1/V2/V3 signing and production certificate verification. It created a valid corresponding-source ZIP but stopped before publication because its path assertion expected an obsolete SPAKE2 source path. Current workflow uses the corrected path, but Builds #41–#45 and diagnostic probes #1/#2 failed before steps with `runner_id=0`; no complete post-fix release run has finished.
-- CURRENT RELEASE remains Build #49, source commit 2b2d2886abb66481b7134e5036824f625ab5659d. Its APK and matching source ZIP do NOT include the current thermal/Shizuku source commit b4e4ec7e8d6c00f43e5378dcb7e2e4b7731adf4b. Current main is NOT RELEASED.
-- V1/JAR validation has warned that some dependency `META-INF` entries are not protected by the JAR signature; that warning is distinct from the explicit successful V1/V2/V3 checks. The previous MT Manager display was not revalidated on an installed current-source APK.
-- NOT YET DEVICE VERIFIED: Home/Color Picker visuals; Floating Monitor overlay permission/position/orientation/lifecycle, telemetry replay; Shizuku startup, explicit app permission, Binder loss/revocation, UserService binding and in-game FPS per OEM; BLE/cooling; installed-device signature display. Firmware V6.6 compile/two online updates are USER-REPORTED and do not prove App behavior or source/BIN provenance.
+- Current App parent HEAD before the latest documentation reconciliation: 329fd18e3c6ced8f43a7dbfaf7bf02206c17d42a. Latest successful App release was built from source commit 437e7730dbcaf9666ae4828e546a45343bb4890c by Build #54 / run 38767611593.
+- Current source hashes: lib/main.dart 72c450d9b1e8783e4b82b8e37a5f39e2d49b6289; lib/floating_monitor.dart 05a61e5670ec09c9c46cf60466a1dd301dfe5352; lib/app_settings.dart 46cc838f43a06c325af6f6832e200a4e1ed4f75d; test/widget_test.dart 520399fcdc6be4fd69cb48f50aa8961f5d9183c5; test/floating_monitor_layout_contract_test.dart 31d9aabf4ac0839855308b6bd2a0708fa399a3a9; test/shizuku_fps_contract_test.dart 798633a24907fd8aca567e70a6376dc59c6e41c9.
+- Build #54 passed audit, dependency resolution, Dart analysis, 86/86 Flutter tests, obfuscated APK assembly, V1/V2/V3 verification, official certificate check, source ZIP checks, Release publication and downloaded-asset hash re-verification. Exact source/asset IDs and hashes are in BUILD_NOTES.md and APP_BUILD_REPORT.md.
+- Non-blocking Build #54 warnings are recorded in APP_BUILD_REPORT.md. Release checks do not establish physical-device rendering, live Game FPS, BLE/cooling/safety, Firmware compile, OTA/flash, or installed-device state.
+- The user's current physical report is that Shizuku permission is granted while F shows --. Since the screenshot shows JE Cooler's own settings page, the explicit no_game_foreground branch is a plausible explanation; live FPS remains UNVERIFIED until the overlay is tried with a real foreground game and, if needed, native status/logs are captured.
 
 ## Dashboard indicator motion
 
@@ -116,19 +118,3 @@ This file is the durable App behavior/design contract. Live `lib/` source and th
 - The voltage-bolt sheen uses a sinusoidal back-and-forth sweep instead of a linear sweep that resets at loop end. Bluetooth ripples use a squared-sine opacity envelope that is zero with zero slope at both ends, avoiding a flash when radius cycles wrap.
 - LED status-preview pulses are periodic sine/cosine loops; navigation/action glyphs remain static by design. All of these are presentation-only; Firmware source, BLE command protocol, thermal safety and physical LEDs are unchanged.
 - Color Picker retains existing preview contrast, typography/swatch sizing and bottom-pinned six-column layout. Draft swatch selection is separate from applying the live RGB; localized Cancel discards the draft, localized Select applies it, and outside taps/system Back cannot dismiss the modal. Peltier Safety targets and the mandatory Fan-before-Peltier gate remain unchanged.
-
-## CURRENT CHECKPOINT — Floating Monitor visual controls (2026-10-15)
-
-- Floating Monitor remains freely draggable. The alignment change is inside the box only: horizontal metric groups are centered as a group, and vertical rows are centered individually. Native WindowManager gravity stays `Gravity.TOP | Gravity.START`; drag offset persistence is preserved.
-- Native HUD spacing is tightened (5dp-scaled inter-metric gap, 8dp-scaled horizontal padding, 5dp-scaled vertical padding) and the corner radius is reduced.
-- Size is normalized to `0.30×–0.80×` in `0.05×` steps, with current numeric value shown in the menu. Default is `0.60×`.
-- Background Opacity covers `0–100%` (stored as normalized `0.0–1.0`), with live numeric percent and scale labels `0%`, `50%`, `100%`. At 0%, only the background vanishes; metric text remains visible.
-- Background color is user-selectable Black/White, persisted with FloatingConfig and applied natively; foreground text and icons switch to a contrasting color. Default remains Black and Opacity remains 90%.
-- Source/test blob hashes at this checkpoint:
-  - `lib/floating_monitor.dart`: `3516b742d39e86c8796a0e77f77c0e9c1f1c1110`
-  - `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt`: `0c9cfdee776ca2f1de5daf2205d1f9f8da63683d`
-  - `lib/app_settings.dart`: `46cc838f43a06c325af6f6832e200a4e1ed4f75d`
-  - `test/floating_monitor_layout_contract_test.dart`: `31d9aabf4ac0839855308b6bd2a0708fa399a3a9`
-- Source-level contract tests were added but are NOT RUN. No Dart analysis, Flutter test run, Android/Kotlin compile, APK build, release, workflow trigger or physical-device validation was performed. Build #49 remains the last verified APK and does not contain these changes.
-- Firmware V6.6, firmware/BIN repository, Firebase, OTA, flash and physical device remain untouched.
-

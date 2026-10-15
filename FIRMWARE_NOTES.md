@@ -103,3 +103,9 @@ This is the user's acceptance report, not an assistant-witnessed compile/flash l
 [APP CI EVIDENCE — NOT FIRMWARE COMPILE] Builds #39 and #40 ran all 80 Flutter tests, including `test/v6_6_qc_contract_test.dart` source assertions that read the V6.6 source. Build #40 compiled and signed the Android APK, but the Release pipeline stopped at the corresponding-source path assertion. These App CI checks are not an Arduino/ESP32 compile, BIN-provenance validation, physical sensor/thermal test or OTA proof. The user's separate firmware compile and two same-version Online OTA updates remain USER-REPORTED.
 
 No Firmware source, BIN, Firebase metadata, flash or OTA operation was performed in this App-signing task.
+
+
+## App CI evidence through Build #54 — not Firmware compilation
+
+- App Build #54 / run 38767611593 built App source commit 437e7730dbcaf9666ae4828e546a45343bb4890c and passed Dart analysis plus 86/86 Flutter tests, including the source-contract test that inspects Touch Adaptive-OFF synchronization in firmware/JEXFYZ-V6.6.ino. This is App CI evidence only; it did not invoke the Arduino/ESP32 compiler and does not prove physical thermal, BLE, selector, LED or OTA behavior.
+- The user reports that Firmware V6.6 compiled and completed two same-version Online OTA updates. These remain USER-REPORTED rather than independently witnessed logs. V6.6 stays user-accepted final; exact source-to-BIN provenance is UNVERIFIED. No Firmware source was changed and no compile/BIN/Firebase/OTA/flash/device action occurred during the memory reconciliation.

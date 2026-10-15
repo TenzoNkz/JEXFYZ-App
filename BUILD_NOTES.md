@@ -8,11 +8,16 @@
 - Build App does not authorize Firmware compilation, BIN creation/publication/replacement, Firebase metadata changes, physical OTA, flashing, device operation, or unrelated release operations.
 - Never claim CI success proves BLE, cooling/safety behavior, Firmware compilation, OTA installation or installed device version.
 
-## Current source changes — Build App still required
-- Latest successful published APK remains Build #49 / source `2b2d2886abb66481b7134e5036824f625ab5659d`. Current checkpoint `b4e4ec7e8d6c00f43e5378dcb7e2e4b7731adf4b` adds Shizuku-gated FPS after the existing thermal/Home UI changes.
-- Metric F requires Shizuku running, a supported Binder/UserService API, and explicit JE X FYZ permission. Native FPS uses a fixed-operation AIDL UserService. App-process dumpsys and manifest DUMP permission have been removed.
-- Wireless ADB pairing/identity store, Kadb/SPAKE2, grant/revoke UI and the old ADB contract test are removed. Shizuku API/provider 13.1.5 and MIT notice/assets are included; workflow audit/source ZIP packaging was updated.
-- Widget/source-contract tests, Dart analysis and Android/Kotlin compilation have NOT run for current source. **Do not claim release success** until an explicitly authorized `@Thinking Eksekusi Build App!` passes all gates.
+## CURRENT — Build #54 successful; latest source is released
+
+- Latest successful App Build is #54 / run 38767611593, source commit 437e7730dbcaf9666ae4828e546a45343bb4890c. It passed the entire mandatory pipeline.
+- Passed: static security/architecture/license audit, dependency resolution, Dart analysis, 86/86 Flutter tests, obfuscated APK build, V1/V2/V3 signing and official certificate check, corresponding-source ZIP validation, Release publication, and downloaded-asset hash/signature verification.
+- Release jexfyz-latest targets source commit 437e7730dbcaf9666ae4828e546a45343bb4890c and contains exactly one APK and one matching source archive:
+  - JEXFYZ-release.apk, asset 644438898, 54,636,716 bytes, SHA-256 cdf8a7f94424b9cb60be6e04489a9f0f0d8ddad43ab76c33c2e2c6333fa61327.
+  - JEXFYZ-corresponding-source.zip, asset 644438897, 2,862,590 bytes, SHA-256 3b208c987def59a7c1857ed0fcc9ca5d74d591767e5658dfab04c9c1be85450f.
+- Builds #50–#53 failed at distinct gates and were repaired without weakening test/security checks; full details remain in APP_BUILD_REPORT.md. Build #54 is the current success; do not report #49 as latest.
+- User's current runtime report remains open: Shizuku shows permission granted, yet F stays -- in a screenshot with JE Cooler's settings screen foreground. Native logic deliberately doesn't count the app itself as a game, so test with an actual foreground game before assuming a defect. No device status dump/logcat is available.
+- Non-blocking analyzer, Gradle/Kotlin, native DWARF and jarsigner warnings remain recorded in APP_BUILD_REPORT.md.
 
 ## Current App Build workflow
 
@@ -25,7 +30,7 @@
 - Production signing certificate SHA-256 in prior build record: `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. Verify against live workflow/config before relying on it.
 - Preserve Android Gradle `versionName "Telegram @horizontalzzz"`.
 
-## Latest App Build/Release — SUCCESS (2026-10-15)
+## HISTORICAL — Build #49 successful App release (superseded as latest by Build #54)
 - **Run:** [Build #49 / `38739077916`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916), issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22), source commit `2b2d2886abb66481b7134e5036824f625ab5659d`, job `116435785328`, runner `1000002352`. Every main step passed.
 - **Validation:** architecture/security/license audit, dependency resolution, Dart analysis and all 80 Flutter tests passed; release APK built obfuscated; V1/V2/V3 signing and official certificate verified; corresponding-source ZIP passed integrity/path/license checks; Release upload and re-downloaded APK/source verification passed.
 - **Release target:** `jexfyz-latest` now points at source commit `2b2d2886abb66481b7134e5036824f625ab5659d`. Exactly one APK plus one matching source archive:

@@ -1,248 +1,127 @@
-# JE X FYZ / JE Cooler — CHAT TRANSFER SNAPSHOT
+# JE X FYZ / JE Cooler — Chat Transfer Snapshot
 
-## 0. Snapshot scope and evidence boundary
+Snapshot timestamp: 2026-10-16 00:04 Asia/Jakarta.
+Read this entire file first in a new context, then re-fetch live GitHub. This is one handover, not a competing source of truth. PROJECT_STATE.md is current-only, APP_BUILD_REPORT.md is the authoritative build-attempt ledger, APP_NOTES.md and the Firmware/OTA notes are the subject-specific contracts, and CHANGELOG.md is historical.
 
-Snapshot refreshed after `@Thinking Chat Stuck!` recovery on 2026-10-15 (Asia/Jakarta). Build #49 is still the last successful Release; Shizuku FPS source/workflow changes are committed but their tests/build/release have not run. No build trigger was opened.
+## 1. Repository identity and snapshot evidence
 
-- App repo: TenzoNkz/JEXFYZ-App
-- Current implementation checkpoint: `b4e4ec7e8d6c00f43e5378dcb7e2e4b7731adf4b` (Shizuku FPS migration; later commits only update docs).
-- Current source blobs: main.dart `3eeb4dff7b7fbb52a44022e5e2b130bc1826da23`; Floating UI `232fde06efda5bfaa2221825a04c0106ad5feb33`; app settings `6f99911bc59451473823aea1e1`; widget tests `520399fcdc6be4fd69cb48f50aa8961f5d9183c5`; Shizuku FPS contract test `bd27d2c7adc20ab76bab504378a2353d01ab473b`.
-- Latest successful App build: [Build #49 / 38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916), source commit `2b2d2886abb66481b7134e5036824f625ab5659d`, issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22), job `116435785328`, runner `1000002352`. All 80 tests and release gates passed for that older source.
-- Latest Release: [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) still contains Build #49's APK and matching source ZIP; neither contains current source commit `b4e4ec7e8d6c00f43e5378dcb7e2e4b7731adf4b`.
-- Active App Build workflow: `.github/workflows/jexfyz-app-build-trigger.yml`, blob `585d190324e522fc08e66cc95bd7ee80c5f37664`; issue-only owner/title/token gate remains intact. Its Shizuku/MIT audit and source-bundle packaging changes have not run in CI.
-- Current changes include the existing thermal/Home animations plus Shizuku-gated FPS access. Metric F requires a running Shizuku Binder/API and explicit user approval; native FPS runs through a restricted fixed-operation AIDL UserService. Wireless ADB pairing, Kadb/SPAKE2, ADB identity-store code, manifest DUMP permission and grant/revoke UI are removed. Battery temperature reading and the one-second firmware heartbeat remain unchanged.
-- Thermal/widget assertions and the Shizuku FPS contract test are committed but NOT RUN. `@Thinking Chat Stuck!` does not trigger a build; the separate App Build command is `@Thinking Eksekusi Build App!`.
-- App version/package: 1.0.0+3 / com.horizontalzzz.jexfyz.
-- Firmware repo TenzoNkz/JEXFYZ-Firmware remains BIN-only. No Firmware/BIN/Firebase/OTA/flash/device operation was performed.
+- Canonical App/source/memory repository: TenzoNkz/JEXFYZ-App.
+- Canonical branch: main. Snapshot was audited against parent HEAD 329fd18e3c6ced8f43a7dbfaf7bf02206c17d42a immediately before this documentation-only reconciliation.
+- Parent recursive Git tree was fetched live, not truncated, and contained 80 entries. Five branches were live: diag/latest-stable-v16 (ec77759d224c581870d98330d9278896ff29e50b), diagnostic/v1.6-heap-check (1a4cd83b3ee82cdc2d86277dc4a0eb4c4238f8a3), fix/adaptive-power-sequencing (33740be782d976a881e285bbf8b86b3b485b83c1), main (329fd18e3c6ced8f43a7dbfaf7bf02206c17d42a), tmp-jexfyz-v5-test (b388cba98ea1d9e92873df64ba3224d6cb99156d). Open PR count: 0.
+- After this snapshot's commit, main HEAD will be the docs-only reconciliation commit whose parent is 329fd18e3c6ced8f43a7dbfaf7bf02206c17d42a. Re-fetch live HEAD/tree before any further work. This file intentionally does not store its own future blob SHA.
+- App artifact repo: TenzoNkz/JEXFYZ-Firmware. Live recursive tree was fetched and confirmed exactly one entry: JEXFYZ.cpp.bin, blob 68167e65d26137eeb1ce4d6d4ba798dc282454e6, 1,455,936 bytes. Never add notes there. The BIN source provenance is unverified.
 
+## 2. App version, source, active tests and workflow
 
+- App name JE Cooler, brand/header JE X FYZ. Package com.horizontalzzz.jexfyz. pubspec.yaml version 1.0.0+3. Preserve Android Gradle versionName exactly as "Telegram @horizontalzzz".
+- Current main source blobs at snapshot basis:
+  - lib/main.dart: 72c450d9b1e8783e4b82b8e37a5f39e2d49b6289.
+  - lib/floating_monitor.dart: 05a61e5670ec09c9c46cf60466a1dd301dfe5352.
+  - lib/app_settings.dart: 46cc838f43a06c325af6f6832e200a4e1ed4f75d.
+  - android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt: 0c9cfdee776ca2f1de5daf2205d1f9f8da63683d.
+  - android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FpsShizukuUserService.kt: 1f5ed36dadaba9dc70ecfbe0793114b34c8ab08b.
+  - android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt: a139dfefe1121963c3a26b114b9b0fcc9f8fa16a.
+  - android/app/src/main/aidl/com/horizontalzzz/jexfyz/IFpsShizukuUserService.aidl: 5bd6c269212e523b190f7164e0ad1d257ed5e6a5.
+  - android/app/src/main/AndroidManifest.xml: 393c9f9bfe02b9d71b2e3445ce873d5d16912ce1.
+  - android/app/build.gradle: cc35d2d3dbe603e7b5a7157d37dde222d646ea42.
+  - android/build.gradle: d6dbd400ba0baf2b33c14bb514745334a1e2ad33.
+  - pubspec.yaml: 8f558273e21692af9958f914527fdc62d623d63a; pubspec.lock: 1e92812bfda2c28244a0556d71d1ec94084acc66.
+  - .github/workflows/jexfyz-app-build-trigger.yml: 585d190324e522fc08e66cc95bd7ee80c5f37664.
+- Six active test files and current blobs:
+  - test/app_protocol_notify_contract_test.dart: 92214dd90178c705844d3979d3f8f7bd17bcc4b8.
+  - test/firmware_touch_adaptive_sync_test.dart: 2d3fea509343a03b8d23623f4dcb2dd7fd972d39.
+  - test/floating_monitor_layout_contract_test.dart: 31d9aabf4ac0839855308b6bd2a0708fa399a3a9.
+  - test/shizuku_fps_contract_test.dart: 798633a24907fd8aca567e70a6376dc59c6e41c9.
+  - test/v6_6_qc_contract_test.dart: 2bee4d960d014f0765422dcb5ed1c9870ba6ee3a.
+  - test/widget_test.dart: 520399fcdc6be4fd69cb48f50aa8961f5d9183c5.
+- Workflow: owner/title/token guarded issue opened/reopened only. Exact title JE X FYZ — EKSEKUSI BUILD APP TRIGGER; exact body token JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1. Normal push/PR doesn't run a build. Ubuntu 24.04, Java 17, Flutter 3.47.2 stable, Gradle 9.3.1. Pipeline runs static security/architecture/license audit, flutter pub get, Dart analyze, Flutter tests, release APK build/obfuscation, V1/V2/V3 signing/certificate checks, corresponding-source ZIP, Release publication and downloaded asset verification. One ordinary APK and one matching source ZIP; no Play Store bundle or Actions artifact.
+- Last observed live Actions runs: #54 success (38767611593), #53 failure (38767300776), #52 failure (38766565895), #51 failure (38766215071), #50 failure (38765636867), #49 older success (38739077916). Five branches, zero open PRs.
+- Build #50–#53 failures and repair reasons must stay in APP_BUILD_REPORT.md: #50 Dart analysis flagged private unused state, repaired in source; #51 exposed two over-escaped temperature parsing assertions, regex corrected; #52 AIDL compilation failed due inconsistent explicit/implicit transaction IDs, interface transaction ID corrected; #53 then exposed an outdated AIDL test assertion, corrected. No test was weakened to obtain green. Build #54 is the full success.
+- Latest successful Build #54, run 38767611593, job 116534803134, source commit 437e7730dbcaf9666ae4828e546a45343bb4890c, completed at 2026-10-15 16:21:50Z. Dart analysis passed; 86/86 Flutter tests passed; obfuscated APK build, signing and expected production certificate verification, source ZIP validation, release publication and re-downloaded asset/hash verification passed.
+- Release tag jexfyz-latest, target source commit 437e7730dbcaf9666ae4828e546a45343bb4890c. Exact assets:
+  - JEXFYZ-release.apk, ID 644438898, 54,636,716 bytes, SHA-256 cdf8a7f94424b9cb60be6e04489a9f0f0d8ddad43ab76c33c2e2c6333fa61327.
+  - JEXFYZ-corresponding-source.zip, ID 644438897, 2,862,590 bytes, SHA-256 3b208c987def59a7c1857ed0fcc9ca5d74d591767e5658dfab04c9c1be85450f.
+- Signing gates reported V1/JAR=true, V2=true, V3=true, one signer and expected production certificate DN/SHA-256 matched. Non-blocking warnings: analyzer deprecation infos (ReorderableListView, Radio groupValue/onChanged, Color getters), Kotlin Gradle Plugin future migration, Gradle update notice, dependency upgrades outside current constraints, native ELF DWARF metadata, and jarsigner self-signed/no-timestamp. These warnings are recorded; do not treat them as build failure because explicit mandatory gates passed.
+- CI is not device proof. It does not prove physical UI/drag/lifecycle, BLE/cooling, firmware compilation, actual FPS, OTA/flash, or source-to-BIN provenance.
 
-Evidence terms:
-- CURRENT / VERIFIED means directly checked against live source/repo/CI evidence.
-- SOURCE IMPLEMENTED / NOT RUN means implementation exists but its required execution has no evidence.
-- USER-REPORTED means the user reported it; do not present it as an assistant-witnessed result.
-- UNVERIFIED means the required evidence is missing.
-- HYPOTHESIS means possible, not demonstrated.
-- HISTORICAL / SUPERSEDED means it applies only to an older revision or path.
-- NOT RELEASED means no verified released artifact contains the current source.
-- A test contract is not proof a test ran; App CI is not Arduino firmware compilation; successful APK compilation is not release publication; visual LED feedback does not identify a specific HTTP/TLS error.
+## 3. Current Floating Monitor implementation and open FPS issue
 
-## 1. Current source, Release state, and next App Build action
+- Overlay position remains freely draggable. WindowManager gravity is TOP | START with saved coordinates; only the metric content is centered. Horizontal metric values center as a group; vertical items are individually centered. No screen-center lock.
+- Appearance settings persist: Size 0.30×–0.80× in 0.05× steps, default 0.60×, current number visible; background Opacity 0–100%, current percentage visible, scale marks 0%, 50%, 100%; Black/White background, default Black, foreground text/icons switch to a contrasting color. At opacity zero, only the background disappears. Tighter spacing/radius remain in source.
+- Seven stable metrics are F/B/H/V/A/P/S; S is the only fan-related display metric. Telemetry is authoritative, not ACK-based. If disconnected, output states remain -- instead of inferring physical OFF.
+- Shizuku migration: pinned API/provider 13.1.5 with MIT notice/license. FPS access requires Shizuku Binder available, Shizuku version >=10 and explicit JE X FYZ permission approved in Shizuku UI. UserService operations cross AIDL using fixed operation IDs. Ordinary app process does not run dumpsys and manifest does not request android.permission.DUMP. Removed legacy Wireless ADB pairing/identity storage, Kadb/SPAKE2 dependencies/licenses, ADB grant/revoke commands and old pairing test.
+- Native FPS samples SurfaceFlinger timestats once per second and matches layers against Android's resumed/focused foreground package; it does not substitute display refresh rate or random busy background layers. The service deliberately shows -- when JE Cooler's own app package is the foreground package, when focused app cannot be identified, when no matching layer exists, or when read access fails.
+- CURRENT DEVICE ISSUE / USER-REPORTED: the screenshot from the user shows “Shizuku permission granted” in settings but F:-- in the overlay pill, with B:41.5°, H:31.3°, V:12V, A:OFF, P:OFF, S:100. It appears the JE Cooler Floating Monitor settings page is foreground. This is consistent with the intentional no_game_foreground branch; it is a hypothesis, not verified cause. The permission label only proves authorization, not successful UserService binding or SurfaceFlinger read/layer match. No runtime fps_monitor_status dump/logcat was provided.
+- NEXT DEVICE DIAGNOSTIC: enable the overlay, launch an actual game, and leave the game foreground. If F stays --, collect exact native fps_monitor_status and logs. Distinguish shizuku_userservice_unavailable, shizuku_userservice_disconnected/error, surfaceflinger_blocked, dumpsys_timeout, foreground_unknown, no_game_foreground, no_layer_data and waiting_for_frames. Don't claim a source fix or replace real FPS with refresh-rate number without evidence. The user invited “ask Gemini if useful”; no Gemini connector was found and Gemini was not consulted. Shizuku UserService/live Game FPS behavior remains UNVERIFIED on this OEM.
 
-### Current source — IMPLEMENTED / NOT RUN / NOT RELEASED
-- Implementation checkpoint: `b4e4ec7e8d6c00f43e5378dcb7e2e4b7731adf4b`. This adds Shizuku-gated FPS authorization/execution after the existing Home/thermal UI work. Key source: Floating UI `232fde06efda5bfaa2221825a04c0106ad5feb33`; localization `6f99911bc59451473823aea1e1`; widget assertions `520399fcdc6be4fd69cb48f50aa8961f5d9183c5`; Shizuku contract test `bd27d2c7adc20ab76bab504378a2353d01ab473b`.
-- Before metric F can be selected, Shizuku must be running, its Binder/API must support UserService, and the user must approve JE X FYZ in Shizuku's permission UI. The native Floating Monitor enforces this gate independently of Flutter.
-- Elevated FPS reads are performed by `FpsShizukuUserService` through an AIDL fixed-operation interface. The normal app process no longer executes dumpsys or declares `android.permission.DUMP`; the old Wireless ADB pairing/Kadb/SPAKE2/ADB identity/grant/revoke path is removed.
-- Workflow static audit and corresponding-source packaging were updated for pinned Shizuku API/provider 13.1.5 and its MIT license notice. No tests, analyzer, Android/Kotlin compilation or App Build have run against this source. Current source is NOT RELEASED.
+## 4. Active Firmware, hardware and current safety contract
 
-### Latest verified App Build: SUCCESS for older source
-- Build #49 — [run 38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916); job `116435785328`, runner `1000002352`; source commit `2b2d2886abb66481b7134e5036824f625ab5659d`; issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22). All main steps passed, including 80 Flutter tests, APK, signing V1/V2/V3, production certificate, corresponding-source ZIP, Release publication and downloaded-asset verification. This result does not cover current thermal-animation source.
-- Release: [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest), APK `JEXFYZ-release.apk` SHA-256 `d365a99812470986de08be4df1bd54254fe1eb1ea1e3739806d03a6503e3c52a`, corresponding source ZIP SHA-256 `51783b82eae47fc69ab08dd90521e5acdeed0988600042dd1bc3b94f5483dbc8`. These assets are still Build #49's older revision.
-- Build #48's check annotation identified failed recent account payments or an insufficient spending limit; #49 allocated a runner and completed. No workflow modification/manual-dispatch trigger was needed.
-- Workflow trigger semantics remain issue-open/reopen only with the owner/title/token gate; active blob `585d190324e522fc08e66cc95bd7ee80c5f37664`. Shizuku/MIT audit and source ZIP changes are committed but have not run in CI.
+- Active editable sketch: firmware/JEXFYZ-V6.6.ino, blob f51ba6db5d0e91318f63fea4014bb87f7bf76222, FW_VERSION="V6.6". Live repository had exactly one active versioned .ino. App source does not include Firmware as a build dependency.
+- User considers Firmware V6.6 final/correct and reports compiling it plus two successful same-version Online OTA updates. USER-REPORTED only; this context did not independently witness build log or flashes. Source-to-BIN provenance remains UNVERIFIED. Do not compile Firmware, generate/replace/publish BIN or touch hardware without separate explicit authorization.
+- MCU ESP32-C3 Super Mini / ESP32-C3 Dev Module, 3.3 V logic, single radio path for Wi-Fi/BLE. Pin map: GPIO0 NTC ADC, GPIO1 TTP223 touch, GPIO3 12V selector, GPIO4 9V selector, GPIO5 Peltier MOSFET PWM, GPIO6 Fan MOSFET PWM, GPIO7 WS2812.
+- MOSFET memory: GPIO → R100 → Gate; 100 kΩ gate-source pull-down. Fan positive to supply, negative to MOSFET Drain. A prior apparent 12V selector problem was later traced to a loose cable, not established code defect.
+- NTC: nominal 10 kΩ, fixed resistor 10 kΩ, Beta 3950, 3.3V divider assumption, calibrated analogReadMilliVolts(), exactly one sample per second. User explicitly rejected median, trimmed-mean and multi-sample averaging; do not reintroduce.
+- Peltier PWM 20kHz/8-bit, normal OFF→ON soft-start 5 seconds. Fan PWM 25kHz/8-bit, manual 50–100%. Rail switch uses 200ms break-before-make and shared 1s settle. Fan stays ON/100% during handoff. If Peltier was OFF it stays OFF; if its ramp is active, pause GPIO5 to zero and restart a full 5-second soft-start after handoff; completed ramp remains at 100%. Explicit OFF, Hotside/NTC safety and OTA safe output cancel pending resume.
+- Hotside threshold range 40–50°C, default 45°C. Manual re-arm only after Hotside <= hotLimit−1°C for five continuous seconds. One low sample cannot bypass latch.
+- Adaptive temperature stages: 30 seconds at each of 12V/9V/5V with Peltier OFF, Fan 100%; five seconds stable at/below limit−1°C before deadline cancels a stage; otherwise 12/9 steps down and 5V terminal-locks. Recovery upward one rail at a time after 60 continuous seconds stable, capped at saved Adaptive ceiling. HOTSIDE default on boot; HOTSIDE_BATTERY runtime choice not persisted. App PHONE:BT heartbeat is 1Hz; firmware data TTL 5s, 0.5°C hysteresis, 5V threshold 25°C and 12V threshold 35°C; stale Battery data falls back to HOTSIDE without rewriting selected profile.
+- No standalone Battery Protection Guard UI. There is no separate Wi-Fi/BLE touch switch. Adaptive ON indicator is 3 orange blinks; OFF is 3 white blinks after safe handoff as applicable. User reported missing initial OFF white blink after restart; still physically unverified. Request for rapid Hotside-rise/rate-of-rise shutdown/manual re-arm remains unimplemented in known V6.6.
+- LED defaults: 5V red, 9V green, 12V blue; user-customizable/resettable. Supported RGB IDs: Static 1, Breath 2, Comet 4, Dual Chase 5, Left/Right 6, Rainbow 7. ID3/Mirror Pulse is retired and migrates to Static. LED sync uses one atomic LED_SYNC mode/phase/cycle tuple. Persistent settings debounce has a 10-second quiet period.
+- Touch timing record: about 1s startup grace, 30ms raw qualification/debounce, raw HIGH 60–500ms tap, 800ms double-tap window, 5s long press. Verify live source before adjusting.
+- Separate user-reported resets must remain separate: Manual 5V→12V with Fan/Peltier on during active Peltier soft-start, and entering Adaptive at 12V with Fan/Peltier on. Reset reason unknown; brownout is a hypothesis only.
 
-### Next action
-Use `@Thinking Eksekusi Build App!` to run Flutter analysis/tests, rebuild and sign the APK, verify the corresponding-source bundle, publish the new revision, and re-download/verify all Release assets. Do not claim the current source is released until those gates pass. Physical phone validation remains separate.
+## 5. App/BLE/UI and accepted visual design
 
+- UI reference: Horizon Cooler app architecture/design; dark header, white rounded content panel, compact dashboard. Menu order VOLTAGE → CONTROL → ADAPTIVE → LED → TEMPERATURE. Home holds Battery/Hotside temps, voltage, Adaptive, Peltier/Fan, Fan Speed and Notify reason; cooler image remains on right.
+- BLE protocol P1 UUIDs: service 6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001, RX 6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001, TX 6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001. Native Android services/overlay must not create a second BLE/GATT client. Encrypted/bonded writes exist; an exclusive one-App/one-cooler provisioning lock is a design requirement but exclusive enforcement remains UNVERIFIED.
+- Manual voltage switching has 1-second guard; Adaptive returns safe 5V and does not own manual Fan PWM; Adaptive can demand 100% cooling. Firmware telemetry is authoritative. ACK alone doesn't prove hardware action. Disconnected Home/Floating output states are --.
+- App phone Battery temp heartbeat PHONE:BT at about 1Hz and coalesces pending writes. Firmware data freshness TTL 5s. Do not render a standalone Battery Protection Guard.
+- LED Color Picker: 36 curated localized hue-ordered presets, no HEX labels, stage a draft before Select, Cancel discards, no outside-tap/system-back dismissal. Mode IDs above remain stable.
+- Dashboard custom visuals: segmented Battery thermometer/colors and fire at >=40°C; Hotside thermometer without overlapping heat waves and limit-aware color; voltage bolt uses sinusoidal/back-and-forth energy sweep; Adaptive orbit/core reflects actual ON; six-branch free-standing Peltier frost crystal has no module box/frame/bolts and no OFF fade; Fan rotor: 5V 2600ms / 9V 1250ms / 12V 620ms phase-continuous change and brief coast-down; Fan Speed gauge retargets over 420ms and returns to zero over 520ms with seamless integer-harmonic wobble. Bluetooth ripple uses a squared-sine opacity envelope to avoid a cycle seam flash. These are App illustrations, not measured ice/RPM.
+- Notify badge uses CONNECTED/DISCONNECTED consistently in both languages for plain connection state; real errors/in-progress continue to show richer status. Power state localizes ON/OFF vs HIDUP/MATI; machine protocol strings stay English. Android notifications use the transparent white JE monogram small icon only and a meaningful body/tap intent.
+- Approved grille design: white symmetric square, 1:1 outline, central purple X, four corner mounting holes, preserve interior pattern/frame, remove side-midpoint protrusions only when requested, flat print-ready 2D with no shadows/bevel/gradient/texture. HZ monogram is rejected; purple X is approved. PNG app/cooler icons must stay transparent 1:1.
 
-## 2. Repository boundaries and current inventory
+## 6. OTA/cloud/security decisions (protected)
 
-- TenzoNkz/JEXFYZ-App is the canonical editable App + Firmware source repository and the only repository for all project docs, history, handover and prompts.
-- TenzoNkz/JEXFYZ-Firmware is an artifact repository and must contain only JEXFYZ.cpp.bin. Live verified artifact root has exactly one file: blob 68167e65d26137eeb1ce4d6d4ba798dc282454e6, 1,455,936 bytes. Do not add notes or touch the BIN during docs work.
-- Canonical active workflow is `.github/workflows/jexfyz-app-build-trigger.yml` (blob `585d190324e522fc08e66cc95bd7ee80c5f37664`). Trigger remains issue opened/reopened, repo owner, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. Normal push/PR does not trigger it.
-- Branches at audited parent: diag/latest-stable-v16, diagnostic/v1.6-heap-check, fix/adaptive-power-sequencing, main, tmp-jexfyz-v5-test; open PR count = 0.
-- Do not rely on historical tree counts. The current tree at this checkpoint contains 79 entries; refresh live tree before the next task.
-- Keep all docs in App repo. Do not rename or delete a file without repairing every link, prompt, index and test reference.
-- Archived notes are immutable forensic snapshots. They contain duplicated and stale CURRENT TRUTH blocks for V5.x/V6.1/V6.2/V6.3/V6.4; do not quote those blocks as current truth.
+- Read OTA_PROTECTION.md and OTA_REGRESSION_MEMORY.md before any OTA/TLS/recovery change; read VOLTAGE_TRANSITION_MEMORY.md before rail/Peltier timing. Do not touch protected OTA code during unrelated cleanup.
+- Local OTA boot SoftAP: current known 10s no-client timeout, 60s hard cap after interaction, Wi-Fi shutdown and 160ms radio settle before BLE owns the radio again. Reconcile with live source before edits.
+- Online OTA currently uses cloudClient.setInsecure(), bypassing TLS certificate identity validation. An earlier embedded CA + OTA-only NTP/TIME_SYNCING gate was removed together after a user-reported blue Wi-Fi-success then red GitHub-connection-stage symptom. Exact HTTP/TLS root cause was not isolated; do not infer precise error from LEDs. Keep raw GitHub BIN URL allowlist, redirects blocked, HTTP/content-length/size/image checks, safe outputs, streaming Update lifecycle and error recovery.
+- Firebase firmware metadata is version + link; user explicitly rejected SHA field in Firebase. Do not invent signing/checksum metadata or source-to-BIN claims.
+- App OTA sequence OTAENTER → SSID → PASS → URL → VERSION → CLOUDOTA. Timeout/disconnect ACK is ambiguous, preserve recovery until reconnect/result. Separate transport, download, Update finalize, reboot, BLE recovery, installed version and Firebase promotion evidence.
+- One radio path means BLE and Wi-Fi are not concurrent; OTA has priority and Peltier/Fan/LED safe behavior remains protected.
 
-## 3. Current source identity and important hashes at the audited parent
+## 7. Authorization and permanent rules
 
-### Current App / Android / build source
+- @Thinking Diskusi! is full read-only discussion.
+- @Thinking Diskusi! Tanya Gemini! / Jawaban Gemini! only when Diskusi! is present in the same command.
+- @Thinking Eksekusi Full! executes approved source/docs/tests and may commit to main; it does NOT imply App Build, Firmware compile, BIN, Firebase, OTA, flash or device operations.
+- @Thinking Eksekusi Build App! is the only command authorizing complete App test/analyze/build/sign/release verification. Do not trigger the issue manually unless the command authorizes it. Current workflow checks owner, exact title and body token; no push/PR build.
+- @Thinking Chat Stuck! recovers last authorized work from live repo/logs without blind retries or scope expansion.
+- Retired aliases: @Thinking Build App!, @Thinking Eksekusi & Build App!, standalone @Thinking Eksekusi!.
+- Use main directly; no branch/PR unless asked. All source and memory stay in App repo; firmware artifact repo BIN-only. Do not expose google-services.json contents/signing material. File renames/deletes require every link/index/test path update.
+- User compiles Firmware. Every functional Firmware source edit requires FW_VERSION bump, matching file name and exactly one active versioned .ino. No blocking delay() or timing while loops. Preserve V6.6 final unless user explicitly reopens Firmware work.
+- Keep Android Gradle versionName "Telegram @horizontalzzz". No protected OTA changes without rereading protection/regression notes.
+- Never turn user-reported or hypothesized evidence into VERIFIED. CI/test source proves neither physical behavior nor OTA; LEDs do not prove a precise HTTP/TLS error; build success is not source-to-BIN provenance.
 
-- `lib/main.dart`: `3eeb4dff7b7fbb52a44022e5e2b130bc1826da23`.
-- `lib/floating_monitor.dart`: `232fde06efda5bfaa2221825a04c0106ad5feb33`.
-- `lib/app_settings.dart`: `6f99911bc59451473823aea91efe5377a0b6d0d1`.
-- `lib/jex_animated_glyph.dart`: `c9c5c2802cb0ed363c042620511148b0d58d36c4`.
-- `pubspec.yaml`: `8f558273e21692af9958f914527fdc62d623d63a`, version `1.0.0+3`; `pubspec.lock`: `1e92812bfda2c28244a0556d71d1ec94084acc66`.
-- `android/app/build.gradle`: `cc35d2d3dbe603e7b5a7157d37dde222d646ea42`; `android/build.gradle`: `d6dbd400ba0baf2b33c14bb514745334a1e2ad33`; `android/app/src/main/AndroidManifest.xml`: `393c9f9bfe02b9d71b2e3445ce873d5d16912ce1`; `android/app/proguard-rules.pro`: `50fc26f726ae8660fe04cf19da688431c8dca4a0`.
-- Package ID `com.horizontalzzz.jexfyz`. Gradle `versionName "Telegram @horizontalzzz"` is intentional; preserve it.
-- Canonical BLE P1 UUIDs: service `6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001`, RX `6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001`, TX `6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001`.
-- Native sources: FloatingMonitorService.kt `bfc0956688bab5951ea2c626427a691ed63b6921`; MainActivity.kt `a139dfefe1121963c3a26b114b9b0fcc9f8fa16a`; FpsShizukuUserService.kt `1f5ed36dadaba9dc70ecfbe0793114b34c8ab08b`; IFpsShizukuUserService.aidl `ddb0c442029d8f291e99eb6682bd2a690e6c9709`; JeForegroundService.kt `9ea4dce7001bcd5cc10f9c1c7ad62f34ec54b03e`; JexNotificationUtils.kt `aecfc87121f2195ef6724613c612d674ed95ae55`.
-- License notices: Shizuku MIT license `third_party/Shizuku-API-MIT.txt` `2a779796d4f141d0fe3a13c612c4c66414a3d65a`; third-party inventory `third_party/THIRD_PARTY_NOTICES.md` `4dcd7ea1d6979c081e0ebd5acb7db34f6e64e1f2`; same MIT license is bundled in Android assets. Old Kadb/SPAKE2/GPL licenses are deleted.
-- Old `WirelessAdbPairingService.kt`, `WirelessAdbIdentityStore.kt` and `test/adb_pairing_contract_test.dart` are absent from the current tree.
+## 8. Canonical document hashes at snapshot preparation
 
-### Test inventory / executed evidence
+The following blobs were prepared for the direct-to-main documentation reconciliation and must be read back and verified after commit:
 
-### Current test inventory / execution evidence
-- `test/shizuku_fps_contract_test.dart`: `bd27d2c7adc20ab76bab504378a2353d01ab473b` (committed, NOT RUN on current source).
-- `test/widget_test.dart`: `520399fcdc6be4fd69cb48f50aa8961f5d9183c5` (updated source assertions, NOT RUN on current source).
-- `test/app_protocol_notify_contract_test.dart`: `92214dd90178c705844d3979d3f8f7bd17bcc4b8`.
-- `test/firmware_touch_adaptive_sync_test.dart`: `2d3fea509343a03b8d23623f4dcb2dd7fd972d39`.
-- `test/v6_6_qc_contract_test.dart`: `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a`.
+- APP_NOTES.md: de981c991274e48597d9ab96dbc2fefdaf65b6e3.
+- README.md: 3ff1ace4c048c236ae69eaf96c1576e3470d663e.
+- PROJECT_STATE.md: bdc0c7c9089cb0a34a006e76977381f1cb787d99.
+- HANDOVER.md: 7d2be171b49b828a359d640cded31f81d87f3862.
+- MEMORY_INDEX.md: 92f140daca8d714d14510415dc9c55db7237c9cf.
+- BUILD_NOTES.md: da40e1315422bdbd2172278087a0b66c83a0e3e4.
+- APP_BUILD_REPORT.md: 68406ef39efff01950f3f73129d7a22c9ae9f153.
+- CHAT_RULES.md: 9ff0d3c2de489e635ece63985a9ae64ac22f8032.
+- CHANGELOG.md: f400951568dd813f3c811659fd6ed31117950afc.
+- FIRMWARE_NOTES.md: 2520bc0ee113de7499e36618272df7b82fd2788c.
+- firmware/FIRMWARE_TECHNICAL_REFERENCE.md: fd4bb56462d354a31ff114e8e2d53ace0ba864d8.
+- CHAT_TRANSFER.md is replaced in this commit; this document cannot include its own future blob SHA. The current file's SHA must be derived from the final tree.
 
-Historical CI: Build #49 run `38739077916` passed Dart analysis, all 80 Flutter tests and release gates for older source `2b2d2886abb66481b7134e5036824f625ab5659d`. This does not prove current Shizuku source has compiled or that the new tests pass. The prior ADB pairing test was deleted; presence of a new test file is not execution evidence.
+## 9. Required next action and validation boundary
 
-No current-source build/test was started during `@Thinking Chat Stuck!` recovery.
-
-## 4. Firmware source / hardware / timing — CURRENT source truth
-
-- Active editable source exactly firmware/JEXFYZ-V6.6.ino, embedded static constexpr char FW_VERSION[] = "V6.6" blob f51ba6db5d0e91318f63fea4014bb87f7bf76222, 164,378 bytes / 5,254 lines. Exactly one active versioned .ino and filename/version match. App tree contains no other active .ino.
-- Target ESP32-C3 Super Mini / ESP32-C3 Dev Module, 3.3V logic.
-- Pin map: GPIO0 NTC; GPIO1 TTP223; GPIO3 12V selector; GPIO4 9V selector; GPIO5 Peltier MOSFET; GPIO6 Fan MOSFET; GPIO7 WS2812. A source static_assert reinforces Peltier pin 5, Fan pin 6.
-- MOSFET wiring memory: GPIO → R100 → Gate; 100kΩ Gate–Source pull-down; Fan positive at supply and Fan negative at MOSFET Drain. Earlier apparent 12V selector defect was user-confirmed loose cable; do not label it a software defect.
-- NTC 10k nominal + 10k fixed resistor, Beta 3950, calibrated analogReadMilliVolts(PIN_NTC), exactly one sample/sec; user explicitly rejected median, trimmed mean and multi-sample averaging. On invalid NTC, fail safe per active code: Peltier OFF, Fan 100%, Adaptive OFF and safe 5V.
-- Peltier PWM 20kHz/8-bit, normal OFF→ON soft-start 5s. Fan PWM 25kHz/8-bit; manual target 50–100% in increments of 10; safety can force 100%. Rail selector break-before-make 200ms, shared 1,000ms guard/settle. Saved settings are flushed after a 10s quiet debounce.
-- Accepted voltage transition:
-  - Peltier logically OFF stays OFF across voltage switch.
-  - If Peltier ON and 5s ramp is still in progress, pause GPIO5 at 0% before switching selectors, keep 200ms deadtime + 1s settle, then begin a fresh 5s ramp.
-  - If ramp already completed, keep Peltier PWM at 100% across selector transition; no forced 0%, no redundant restart.
-  - Fan remains on/forced to 100% during rail transition.
-  - explicit Peltier OFF, Hotside/NTC safety and OTA clear/cancel pending resume.
-  - Adaptive ON/OFF still hands selector to safe 5V without forcing a redundant Peltier OFF cycle solely for handoff; safety and explicit OFF always override.
-  - Two reset symptoms reported separately: 5V→12V while Fan/Peltier on during active ramp, and enabling Adaptive while at 12V with Fan/Peltier on. Reset reason was not captured. Brownout is only a hypothesis; if user later authorizes reproduction, capture BOOT: RESET_REASON=... and telemetry. These issues are historical/not active work because the user accepted V6.6 final.
-- Thermal safety:
-  - Hotside limit 40–50°C; default 45°C.
-  - manual Peltier re-arm at hotside <= hotLimit - 1°C continuously 5s; no single sample bypass.
-  - Adaptive thermal stages of 30s at 12/9/5V, Peltier OFF, Fan 100%. Five seconds continuous stable at/below limit−1 before deadline cancels stage; otherwise step down at 12/9V or terminal manual-restart lock at 5V. Recovery rises one rail at a time after 60s continuously stable and does not exceed saved prior Adaptive ceiling.
-  - No rapid Hotside rate-of-rise protection is implemented. The older request for rapid rise Peltier shutdown and manual re-arm remains unimplemented; not to implement post-user acceptance unless separately reopened.
-- HOTSIDE startup default; HOTSIDE_BATTERY is runtime selectable, not persisted. App sends phone Battery PHONE:BT=<Celsius> heartbeat at 1Hz while BLE is ready; firmware TTL 5s; current thresholds 25°C at 5V and 35°C at 12V, hysteresis 0.5°C. Expired phone Battery falls back to HOTSIDE without rewriting profile. No standalone Battery Protection Guard UI.
-- TTP223 one touch sensor only (no separate WiFi/BLE toggle); timings approx 1s startup grace, 30ms qualify, 60–500ms tap, 800ms double-tap window, 5s long press.
-- LED mappings and sync below; no blocking delay() or timing while() in firmware source.
-
-### LED / App-firmware sync
-
-- Firmware IDs Static 1, Breath 2, Comet 4, Dual Chase 5, Left/Right 6, Rainbow 7. Mode 3/Mirror Pulse retired; stored invalid/ID3 migrate Static; new MODE:3 is rejected.
-- LED snapshot one atomic LED_SYNC:<mode>,<phase_ms>,<cycle_ms> based on BLE notify-time phase; App interpolates using monotonic time and corrects drift without restarting on every update. Old separate phase/cycle deltas are compatibility fallback.
-- Adaptive ON indicator: 3 orange blinks; Adaptive OFF: 3 white blinks, deferred until safe 5V handoff where needed. Boot-time OFF white blink missing after restart was user-reported and remains physical/boot behavior unverified.
-- Voltage color defaults: 5V red, 9V green, 12V blue; customizable/resettable. Safety/OTA indicators outrank decorative RGB.
-- User's accepted V6.6 report: compiled and two successful Online OTA updates with same version. USER-REPORTED; assistant did not inspect the Arduino compile/OTA logs, and binary provenance is not independently verified.
-
-## 5. OTA protections — DO NOT EDIT during unrelated cleanup
-
-- Before any OTA changes read OTA_PROTECTION.md blob 06beb86b749b0f0e14c8cb517e43fe7c0f66a4e1 and OTA_REGRESSION_MEMORY.md blob 4342f3da76cf2962140146fbbe0ff8de5e956f4d. Before any voltage/rail/Peltier timing edit also read VOLTAGE_TRANSITION_MEMORY.md blob 1c2167659fd0ed8f5db16bf63eb7897344a690ea.
-- Local OTA boot SoftAP has no-client timeout 10s, hard cap 60s after interaction, then Wi-Fi-off and 160ms radio settle before BLE owns radio. ESP32-C3 only has one radio path; do not allow BLE and Wi-Fi active together.
-- During OTA outputs are forced safe per protected state machine; do not refactor Local OTA, Online OTA, state machine, radio handoff, priority, timeouts, redirect policy, image checks, Update lifecycle, failure recovery or restart without a proven OTA defect, discussion/explicit approval and full re-audit.
-- Current Online OTA uses cloudClient.setInsecure(). The V6.3-origin change removed embedded CA validation and OTA-only NTP/TIME_SYNCING gate at the same time following user-reported blue Wi-Fi then red GitHub-stage failure. User then reported source compile and GitHub connectivity restored; exact HTTP/TLS cause was never isolated. setInsecure() encrypts but does not authenticate server certificate identity. Don't infer HTTP/TLS codes from LEDs; don't silently add CA/NTP gates.
-- Preserve raw GitHub firmware URL allowlist https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/, redirects disabled, response/length/size checks, ESP image magic byte 0xE9, streaming update, safe outputs and recovery/restart semantics.
-- OTA metadata intended by user is version + link only; no custom SHA/signature field without separate authorization. Do not assume the BIN matches current source without build provenance.
-- App OTA sequence: OTAENTER → SSID → PASS → URL → VERSION → CLOUDOTA; timeout/disconnect ACK is ambiguous, preserve recovery state until result/reconnect. Separate Wi-Fi join, GET/HTTP status, full byte transfer, image validity, Update.end, reboot, BLE reconnect, installed firmware version and Firebase promotion evidence.
-
-## 6. App UI / BLE / device behavior requirements
-
-- App product JE Cooler, brand/title/header JE X FYZ, package com.horizontalzzz.jexfyz, pubspec version 1.0.0+3. Gradle versionName "Telegram @horizontalzzz" immutable.
-- Visual reference Horizon Cooler App: dark header + white rounded content panel, compact VOLTAGE/ADAPTIVE tabs, Home shows Hotside/Battery temperatures, Voltage Indicator, Adaptive Mode, Peltier/Fan and Fan Speed plus Notify reason; menu order VOLTAGE → CONTROL → ADAPTIVE → LED → TEMPERATURE. Do not casually redesign during QC.
-- Firmware/telemetry is authoritative; ACK alone is not proof a physical output changed. Manual 5/9/12V cycle 5→9→12→9→5, one-second guard and wait for matching VOLTAGE telemetry before updating confirmed state. Manual Fan Speed is not Adaptive-controlled; Adaptive may demand 100% cooling.
-- BLE App does not make a second GATT client in native services. Auto-connect passive: it cannot enable Bluetooth or request permissions itself; requires known cooler identity, permissions, adapter on and no sync collision. Disconnect rediscovery stops if disabled/prerequisites unavailable. Machine protocol tokens remain English; UI localized English/Indonesia. On disconnected Home/Floating values, use --, not cached state; disabled OFF-looking switch rows are a visual fallback only.
-- App sends phone Battery heartbeat every second; pending heartbeats coalesced. No standalone Battery Protection Guard UI. One-App/one-cooler identity lock remains a user design requirement, not proven exclusive enforcement.
-- Color Picker: 36 localized color preset names; no HEX labels; hue order, legacy aliases incl Cyan #00FFFF, no pure black preset. Draft swatch selection does not send BLE command until localized Select; Cancel discards draft; outside/system Back blocked; modal bottom-pinned with larger readable type and touch targets. Select closes only after the existing confirmed COLOR path reports success; failed/unconfirmed leaves dialog open.
-- Submenus remain compact; OFF-looking toggles at left; no large center box. User requested separate reset buttons by function, not global reset. Preferences save 10s after no change and only changed data are sent.
-- Seven Home indicator animation implementation:
-  - Battery = segmented thermal bar driven by valid battery temp; Hotside = clean thermometer/bulb (heat-wave strokes removed to avoid overlap); both retarget 520ms, never invent missing sensor value.
-  - Voltage bolt has sinusoidal sweep clipped to bolt, no snap/reset at boundary.
-  - Adaptive ring/orbit/core moves only when actual Adaptive ON.
-  - Peltier is a free-standing bright six-branch frost crystal with four peripheral sparks; no box/frame/bolts and no OFF fade.
-  - Fan rotor follows authoritative voltage: 5V 2600ms, 9V 1250ms, 12V 620ms; phase preserved on rail changes; OFF eases out briefly (~0.16 turn) and full-color blades remain.
-  - Fan Speed gauge retargets from current rendered level to actual new target over 420ms; OFF takes 520ms to zero; needle wobble uses integer-frequency sine harmonics for seamless repeat. Reported % stays authoritative.
-  - Bluetooth ripples use squared-sine opacity with zero slope at loop edges.
-  - Notify labels are exactly CONNECTED/DISCONNECTED in both app languages; detailed notices/error/connecting/syncing remain intact. A plain Bluetooth Disconnected body is not itself an error; current state uses BLE flag.
-- Android notifications: use transparent white JE vector as the sole small notification icon, no large icon; localized meaningful body, tap opens App; Android13+ notification permission requested before native notification workflow.
-- Android native Floating Monitor:
-  - FloatingMonitorService.kt owns WindowManager overlay; Flutter is sole BLE client and streams telemetry. Settings center preview removed; explicit Horizontal/Vertical segmented control. Layout responds to live value width; replay current telemetry after service attach.
-  - FPS does not count Flutter FrameTiming or substitute phone display refresh rate. It samples SurfaceFlinger --timestats about once per second, filtered to the Android resumed/focused package and matching layer names.
-  - Hard gate: metric F requires Shizuku Binder/API availability and explicit JE X FYZ approval inside Shizuku's own permission UI. Native FloatingMonitorService independently enforces the gate; a saved F selection is removed when authorization is missing.
-  - FPS dumpsys work executes in FpsShizukuUserService through AIDL fixed operation IDs for capture on/off, focused activity and SurfaceFlinger stats. No arbitrary command text is accepted; the normal app process does not execute dumpsys or declare android.permission.DUMP in its manifest.
-  - The previous Wireless ADB pairing/RemoteInput/Kadb/SPAKE2/identity-store and manual ADB grant/revoke UI were removed. Shizuku API/provider 13.1.5 is MIT-licensed, with the notice and license bundled.
-  - The Shizuku contract/widget tests have NOT RUN on current source. Shizuku startup, explicit permission, UserService binding, Binder loss/revocation, actual foreground-game FPS and OEM compatibility remain UNVERIFIED.
-
-  - Source-contract tests passed in Build #39/#40 (80 tests) but phone/OEM behavior unverified.
-
-## 7. Approved visual asset design (preserve exactly)
-
-- Grille: solid white, symmetric square with exact 1:1 outer contour, purple X centered, four mounting holes in corners. Preserve interior original grille pattern/frame. If the request is to remove side protrusions, remove only left/right mid-side protrusions. Flat 2D, print-ready; no shadows, bevels, depth, gradient, texture or background. “Enlarge only” means scale only; do not redesign.
-- HZ monogram was tried and rejected/reverted; the centered purple X is approved.
-- App/cooler PNGs need transparency and 1:1 ratio; preserve approved current icon/cooler unless user explicitly asks.
-- App branding and notification icon are separate constraints: launcher uses jexfyzicon; notification small icon uses white JE vector only, no large icon.
-
-## 8. User decisions / failures / historical warnings to retain
-
-- Old source state blocks for V5.x, V6.1/V6.2/V6.3/V6.4 inside archive/LEGACY_NOTES_SNAPSHOT_2026-10-14.md and archive/LEGACY_TRANSFER_HISTORY_2026-10-14.md are historical forensic snapshots only. The current source is V6.6; never move legacy CURRENT TRUTH into live status.
-- NTC averaging attempts (V5.6 16-sample trimmed mean / multi-sample filters) were rejected and retired; use one calibrated reading per second.
-- A prior apparent 12V selector output issue was finally traced by user to loose cable, so it is not a confirmed firmware defect.
-- Two reset symptoms as above are separate. Without reset diagnostics, brownout is only a hypothesis.
-- Rapid Hotside-rise/rate-of-rise shutdown/manual-rearm was once requested but is not in V6.6. The user treats V6.6 as final; do not implement without request.
-- User-reported Adaptive-OFF white three-blink feedback missing after restart remains physical/boot behavior unverified; normal transition path isn't proof boot indication works.
-- OTA CA/NTP experiment: CA validation and OTA-only NTP gate were removed together after a reported stage failure; subsequent restored connection is reported, but no single factor isolated. setInsecure() doesn't authenticate server identity. Keep failed-path explanation and trade-off; no HTTP/TLS code was captured.
-- The previously added hosted-runner diagnostic workflow was tested on both ubuntu-24.04 and ubuntu-22.04 and failed before first step, then was deleted. Retain historical evidence but do not reference it as an active workflow.
-- Current Build #40 defect is specifically resolved at source level: correct SPAKE2 path uses src/main/java/com/flyfish233/crypto/spake2/Spake2Context.java. Remaining blocker is runner start/allocation; exact cause isn't known.
-- JAR/V1 signature inspection warned that some dependency META-INF entries were not protected by JAR signature; this warning is distinct from the explicit successful V1/V2/V3 checks. MT Manager on installed current-source APK has not been checked.
-- User explicitly said this conversation must not run App Build. This recovery is docs-only and must not trigger workflows.
-
-## 9. Permanent commands and authorization protocol
-
-- @Thinking Diskusi!: detailed read-only discussion, no repo writes.
-- @Thinking Diskusi! Tanya Gemini!: create one self-contained Gemini prompt, no patch.
-- @Thinking Diskusi! Jawaban Gemini!: evaluate pasted Gemini answer; no patch. Either Gemini subcommand without same-message Diskusi! is invalid.
-- @Thinking Eksekusi Full!: full approved code/docs scope, audit/tests/references/memory, direct commit to main; does not authorize App Build.
-- @Thinking Eksekusi Build App!: end-to-end App build and release/QC loop; may fix App-scope defects and rerun based on actual logs; must publish and verify both APK and corresponding-source bundle plus signing and hashes, or stop at an evidence-based blocker.
-- @Thinking Chat Stuck!: recover the current already-authorized job, inspect live state and evidence, stop blind retries, do not widen authorization or trigger a build.
-- Retired aliases: standalone `@Thinking Build App!`, combined `@Thinking Eksekusi & Build App!`, and standalone `@Thinking Eksekusi!` are invalid.
-- User compiles the firmware. No firmware compile, BIN creation/publishing, Firebase/production metadata mutation, physical OTA, flash/device operation or release outside the approved App Build workflow without separate explicit authorization.
-- Documentation-only work does not trigger firmware version bump. Any approved functional firmware change requires bump FW_VERSION, matching active .ino filename and exactly one active versioned .ino.
-- Work directly on main by default, no PR/branch unless requested.
-- Preserve Android versionName "Telegram @horizontalzzz" exactly.
-- After every material write, re-fetch HEAD/tree/blob hashes. Do not claim success without confirmed GitHub result.
-
-## 10. Canonical document map and parent-checkpoint blob fingerprints
-
-The canonical map is MEMORY_INDEX.md. At this reconciliation, prepared blobs for the documentation commit are listed below; their final live SHA must be re-fetched after commit. These values were obtained from GitHub create_blob responses, not inferred filenames.
-
-### Docs refreshed by the exact-threshold thermal indicator update
-- APP_BUILD_REPORT.md: 65cfe338309f9e2718f17b1bb6583982e02d48ae
-- BUILD_NOTES.md: ac645d08312285377c75ba5bcdb8a6b18ea61f88
-- CHANGELOG.md: 7fc27ec58ec79127c18bb290c64da74784437db8
-- HANDOVER.md: 4c25dec9444e4c1ca7516bd50a6354c085929181
-- MEMORY_INDEX.md: 037ab324af33eaeb25b5ffd796eed821db26b42a
-- PROJECT_STATE.md: cbe5fb41e8d131314b73bd7cacd687a76c3be0cb
-- CHAT_TRANSFER.md: final write; its future blob SHA is not embedded in itself.
-- Workflow unchanged: `.github/workflows/jexfyz-app-build-trigger.yml`, blob `5c5af03075f87297a31f5ee26f0e42025f05977b`.
-- Current source commit `8b58c7033a5462864b52cb921ca25c714bca902f`, tree `fe266a9384e2c953a01c618ebc4c5c7028a6bbf3`; tests still NOT RUN.
-
-
-### Canonical documents unchanged in this reconciliation (parent hashes)
-- APP_NOTES.md: 48edcb1106a9d3968efd3fe201cef325661189bb
-- FIRMWARE_NOTES.md: 3bf9e240a317cb5a2d07975ff7fabb0798205e24
-- DESIGN_NOTES.md: e04382659dfdd618de0a156046f140452d275dc7
-- OTA_PROTECTION.md: 06beb86b749b0f0e14c8cb517e43fe7c0f66a4e1
-- OTA_REGRESSION_MEMORY.md: 4342f3da76cf2962140146fbbe0ff8de5e956f4d
-- VOLTAGE_TRANSITION_MEMORY.md: 1c2167659fd0ed8f5db16bf63eb7897344a690ea
-- firmware/FIRMWARE_TECHNICAL_REFERENCE.md: 58937006c1a34f0a8439d3ac4c7dc13b771987b2
-
-### Current source/test hashes at the recovery checkpoint
-- Firmware: `firmware/JEXFYZ-V6.6.ino` blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222` (leave untouched; V6.6 is user-accepted final).
-- `lib/main.dart`: `3eeb4dff7b7fbb52a44022e5e2b130bc1826da23`.
-- `lib/floating_monitor.dart`: `232fde06efda5bfaa2221825a04c0106ad5feb33`.
-- `lib/app_settings.dart`: `6f99911bc59451473823aea91efe5377a0b6d0d1`.
-- `test/widget_test.dart`: `520399fcdc6be4fd69cb48f50aa8961f5d9183c5`; `test/shizuku_fps_contract_test.dart`: `bd27d2c7adc20ab76bab504378a2353d01ab473b`.
-- `MainActivity.kt`: `a139dfefe1121963c3a26b114b9b0fcc9f8fa16a`; `FloatingMonitorService.kt`: `bfc0956688bab5951ea2c626427a691ed63b6921`; `FpsShizukuUserService.kt`: `1f5ed36dadaba9dc70ecfbe0793114b34c8ab08b`; AIDL: `ddb0c442029d8f291e99eb6682bd2a690e6c9709`.
-- `AndroidManifest.xml`: `393c9f9bfe02b9d71b2e3445ce873d5d16912ce1`; app Gradle `cc35d2d3dbe603e7b5a7157d37dde222d646ea42`; workflow `585d190324e522fc08e66cc95bd7ee80c5f37664`.
-- `PROJECT_STATE.md`, `HANDOVER.md`, `APP_BUILD_REPORT.md`, `BUILD_NOTES.md`, `MEMORY_INDEX.md`, `APP_NOTES.md` and `CHANGELOG.md` now record the Shizuku design and validation boundary. `CHAT_TRANSFER.md` is refreshed in this commit.
-
-## 11. Final operation state
-
-This snapshot records that Build #49 from older source `2b2d2886abb66481b7134e5036824f625ab5659d` remains the last verified Release. Current source checkpoint `b4e4ec7e8d6c00f43e5378dcb7e2e4b7731adf4b` adds Shizuku-gated FPS authorization/execution. Current-source tests, analysis, Android build and Release were not run during Chat Stuck recovery. The issue-only workflow is unchanged in trigger semantics, with Shizuku/MIT audit and source packaging updates; no trigger issue was opened/reopened. Physical-device behavior remains unverified. No Firmware/BIN/Firebase/OTA/flash/device operation was performed.
-
-## CURRENT CHECKPOINT — Floating Monitor visual controls (2026-10-15)
-
-- Floating Monitor remains freely draggable. The alignment change is inside the box only: horizontal metric groups are centered as a group, and vertical rows are centered individually. Native WindowManager gravity stays `Gravity.TOP | Gravity.START`; drag offset persistence is preserved.
-- Native HUD spacing is tightened (5dp-scaled inter-metric gap, 8dp-scaled horizontal padding, 5dp-scaled vertical padding) and the corner radius is reduced.
-- Size is normalized to `0.30×–0.80×` in `0.05×` steps, with current numeric value shown in the menu. Default is `0.60×`.
-- Background Opacity covers `0–100%` (stored as normalized `0.0–1.0`), with live numeric percent and scale labels `0%`, `50%`, `100%`. At 0%, only the background vanishes; metric text remains visible.
-- Background color is user-selectable Black/White, persisted with FloatingConfig and applied natively; foreground text and icons switch to a contrasting color. Default remains Black and Opacity remains 90%.
-- Source/test blob hashes at this checkpoint:
-  - `lib/floating_monitor.dart`: `3516b742d39e86c8796a0e77f77c0e9c1f1c1110`
-  - `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt`: `0c9cfdee776ca2f1de5daf2205d1f9f8da63683d`
-  - `lib/app_settings.dart`: `46cc838f43a06c325af6f6832e200a4e1ed4f75d`
-  - `test/floating_monitor_layout_contract_test.dart`: `31d9aabf4ac0839855308b6bd2a0708fa399a3a9`
-- Source-level contract tests were added but are NOT RUN. No Dart analysis, Flutter test run, Android/Kotlin compile, APK build, release, workflow trigger or physical-device validation was performed. Build #49 remains the last verified APK and does not contain these changes.
-- Firmware V6.6, firmware/BIN repository, Firebase, OTA, flash and physical device remain untouched.
-
+1. Re-fetch live main HEAD/tree and re-read final versions/hashes of changed docs. Confirm recursive tree remains complete with same paths, no extra current-status sections, no missing links and exact source hashes unchanged.
+2. Confirm artifact repo remains a single JEXFYZ.cpp.bin entry; do not alter it.
+3. For FPS, test with a real foreground game with the overlay enabled. If still --, collect exact native status/logs before proposing any source fix. Do not blindly rebuild before diagnosis.
+4. Do not run an App Build, firmware compile, BIN generation/publication, Firebase change, OTA/flash or device operation as part of this memory reconciliation.
