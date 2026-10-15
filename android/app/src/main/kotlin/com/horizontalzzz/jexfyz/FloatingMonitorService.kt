@@ -167,7 +167,6 @@ class FloatingMonitorService : Service() {
             fpsLastSampleAtMs = 0L
             fpsTrackedLayer = null
             fpsTrackedPackage = null
-            fpsLastActiveAtMs = 0L
             fpsMainHandler.post {
                 if (generation != fpsGeneration) return@post
                 fpsMonitorStatus = "active"
@@ -204,7 +203,6 @@ class FloatingMonitorService : Service() {
         data.fps = "--"
         fpsTrackedPackage = null
         fpsTrackedLayer = null
-        fpsLastActiveAtMs = 0L
         hudView?.requestLayout()
         hudView?.invalidate()
 
@@ -450,7 +448,6 @@ class FloatingMonitorService : Service() {
             fpsLastSampleAtMs = 0L
             fpsTrackedLayer = null
             fpsTrackedPackage = null
-            fpsLastActiveAtMs = 0L
             fpsMainHandler.post {
                 if (generation != fpsGeneration) return@post
                 data.fps = "--"
@@ -468,7 +465,6 @@ class FloatingMonitorService : Service() {
             fpsLastSampleAtMs = 0L
             fpsTrackedLayer = null
             fpsTrackedPackage = null
-            fpsLastActiveAtMs = 0L
             fpsMainHandler.post {
                 if (generation != fpsGeneration) return@post
                 data.fps = "--"
@@ -483,7 +479,6 @@ class FloatingMonitorService : Service() {
             fpsFrameCounts.clear()
             fpsLastSampleAtMs = 0L
             fpsTrackedLayer = null
-            fpsLastActiveAtMs = 0L
             fpsTrackedPackage = foregroundPackage
             fpsMainHandler.post {
                 if (generation != fpsGeneration) return@post
@@ -512,7 +507,6 @@ class FloatingMonitorService : Service() {
             fpsFrameCounts.clear()
             fpsLastSampleAtMs = 0L
             fpsTrackedLayer = null
-            fpsLastActiveAtMs = 0L
             fpsMainHandler.post {
                 if (generation != fpsGeneration) return@post
                 data.fps = "--"
@@ -548,7 +542,6 @@ class FloatingMonitorService : Service() {
             ?: layers.maxByOrNull { it.totalFrames }?.name
         val value = if (best != null) {
             fpsTrackedLayer = chosenLayer
-            fpsLastActiveAtMs = now
             best.third.roundToInt().coerceIn(0, 480).toString()
         } else if (chosenLayer != null) {
             fpsTrackedLayer = chosenLayer
@@ -717,7 +710,6 @@ class FloatingMonitorService : Service() {
     private var fpsLastSampleAtMs = 0L
     private var fpsTrackedLayer: String? = null
     private var fpsTrackedPackage: String? = null
-    private var fpsLastActiveAtMs = 0L
 
     // AI-METHOD / SERVICE-CREATE CONTRACT
     // Initialize WindowManager, notification channel, and the required specialUse foreground service.
