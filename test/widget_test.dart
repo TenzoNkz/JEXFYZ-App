@@ -164,8 +164,8 @@ void main() {
 
     expect(label(connected: true), 'CONNECTED');
     expect(label(connected: false), 'DISCONNECTED');
-    expect(label(connected: true, language: AppLanguage.indonesia), 'TERHUBUNG');
-    expect(label(connected: false, language: AppLanguage.indonesia), 'TERPUTUS');
+    expect(label(connected: true, language: AppLanguage.indonesia), 'CONNECTED');
+    expect(label(connected: false, language: AppLanguage.indonesia), 'DISCONNECTED');
     expect(label(connected: false, connecting: true), 'CONNECTING');
     expect(label(connected: false, syncing: true), 'SYNCING');
     expect(label(connected: false, notice: 'Wireless ADB failed'), 'ERROR');

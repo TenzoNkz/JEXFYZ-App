@@ -3,7 +3,7 @@
 - Reworked the seven dashboard indicators with custom-painted, simplified geometry: segmented Battery Temperature, isolated Hotside thermometer, moving voltage charge sweep, Adaptive ring/orbit/core, reduced six-arm Peltier crystal, rotor blades with natural coast-down, and smooth telemetry-driven Fan Speed gauge.
 - Removed the decorative heat waves running alongside/across the Hotside tube; liquid level now follows the Hotside reading. Battery and Hotside icon levels are mapped from valid Celsius text and eased over 520 ms rather than snapping on each telemetry refresh.
 - Adaptive icon motion now follows the actual Adaptive ON state. Fan speed and voltage-dependent rotor timing remain intact.
-- Home Notify connection badge now reads CONNECTED/DISCONNECTED (TERHUBUNG/TERPUTUS in Indonesian). Existing explicit error, connecting/syncing badges and detailed Notify body remain unchanged.
+- Home Notify connection badge now reads CONNECTED/DISCONNECTED (same exact labels in both app languages). Existing explicit error, connecting/syncing badges and detailed Notify body remain unchanged.
 - Added widget tests for sensor-level parsing/clamping and both-language Notify badge labels, including the normal `Bluetooth Disconnected` notice staying DISCONNECTED rather than ERROR. Corrected the Celsius regex to parse digits/decimals in a raw Dart regular expression. Tests/analyze and APK build remain NOT RUN pending the separate @Thinking #Build App! authorization. No Firmware/BIN/Firebase/OTA/device operation was performed.
 
 ## 2026-10-15 — Recover and harden notification-driven Wireless ADB pairing
