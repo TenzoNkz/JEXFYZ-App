@@ -4,12 +4,14 @@ This is the durable evidence ledger for `@Thinking #Build App!`. A replacement B
 
 ## Current report status
 
-- **Latest completed attempt:** Build #38 FAILED at Flutter tests ([run 38705213757](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38705213757)); Dart analysis passed after removal of the obsolete `_drawHeatWave` warning.
-- **Build #38 test outcome:** 77 passed, 3 failed. Failures are three stale source-pattern assertions in `test/widget_test.dart` for the Peltier painter, Fan blade method boundary, and voltage-sweep variable name. Run logs show the actual implementation now uses a six-spine/six-branch crystal with four small sparks, `_drawFanBlade` followed by the painter override (no heat-wave helper), and a clipped cosine `sweepY` charge sweep; the tests still referenced old source patterns. This is a test-contract drift finding; confirm corrected tests on a fresh run.
-- **Test-contract repair:** committed in `91e5f243064b1900d98361a41b88fbe70a042e12` (`test(ui): align painter contracts with current Home indicators`). The three assertions now verify the six-arm frost crystal/four sparks, Fan blade source boundary after helper removal, and the current cosine charge sweep clipped to the bolt, while keeping the Bluetooth fade contract. No test was deleted or relaxed. A fresh official rerun is pending.
-- **Latest published APK remains older:** [Release `jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest), asset ID `642851650`, 54,620,251 bytes, SHA-256 `a5c9d97a3d28f7f711b0cd3c524289bc136cecec56d3b1d88821e43c713e9a13`. Do not represent it as containing the current source.
-- **Recurring warnings:** JAR/V1 metadata entries including `META-INF/services/a1` and `META-INF/services/b1` were warned about on prior successful builds, independently of passing APK V1/V2/V3 checks. Dependency resolution previously noted four updates outside the current constraints.
-- **Physical/device checks:** Home animation rendering, Floating Monitor/FPS accuracy, Wireless ADB pairing/DUMP grant, MT Manager signature display, BLE/cooling and Firmware/OTA remain outside CI proof.
+- **Latest App Build:** RUNNING — Build #39, [workflow run 38705765370](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38705765370), source commit `b9102695de25f61f0b985cab4cd384b4cda12534`.
+- **Build #37 FAILED:** Dart analysis found unused `_drawHeatWave`; the declaration was removed in `402161a9323fed0846f420569ae7118196c38946`. Failure is preserved below.
+- **Build #38 FAILED:** analyzer passed, then 77 tests passed and 3 failed due stale source-string assumptions in Peltier/Fan/voltage-painter tests. The test-contract repair is committed in `91e5f243064b1900d98361a41b88fbe70a042e12` and is now under fresh verification in #39; no tests were deleted and no assertions weakened.
+- **Current intended source:** Home icon animation/Notify status redesign, Wireless ADB pairing service and encrypted identity store, native bridge/manifest/Gradle/Kadb 1.3.0, Color Picker and Floating Monitor changes, and updated regression contracts.
+- **Current older published APK:** [Release `jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest), asset ID `642851650`, 54,620,251 bytes, SHA-256 `a5c9d97a3d28f7f711b0cd3c524289bc136cecec56d3b1d88821e43c713e9a13`. It does not contain the current fixes/changes. Await #39 to replace/re-verify.
+- **Pending gates:** security/architecture audit; dependency resolution; Dart analysis; all Flutter test totals; obfuscated APK; V1/V2/V3 and official certificate; single Release asset; Release target and asset identity; re-download SHA-256 equality; downloaded signature re-verification.
+- **Known prior warnings:** JAR/V1 unprotected dependency/metadata entries such as `META-INF/services/a1` and `META-INF/services/b1`, distinct from passing APK V1/V2/V3 checks; four packages previously had available versions incompatible with constraints.
+- **Physical validation remains separate:** Home animation rendering, Color Picker UI, foreground FPS accuracy/permission, native Wireless ADB pairing and DUMP grant, MT Manager signature display, BLE/cooling, Firmware compile and OTA/flash are not proven by CI.
 
 
 ### Source changes that motivated Build #36 — pre-trigger checkpoint (historical)
@@ -47,6 +49,15 @@ Add a new dated section at the top of the attempt history (do not overwrite prio
 8. Final disposition and next exact action. Only mark `SUCCESS` if all required App Build gates pass; use `BLOCKED` if further progress needs missing permission/secret, external service recovery or separate authorization.
 
 ## Attempt history
+
+### 2026-10-15 — Build #39 — RUNNING (retry after three test-contract fixes)
+
+- **Status:** RUNNING / queued at initial verification.
+- **Trigger:** issue [#13](https://github.com/TenzoNkz/JEXFYZ-App/issues/13), owner `TenzoNkz`, exact title `JE X FYZ — BUILD APP TRIGGER`, body token `JEXFYZ_BUILD_TRIGGER_V1`; closed at `2026-10-15T08:27:11Z`, reopened at `08:27:15Z`. The official workflow blob `0e400cbdedfd54506ae3ac3255da41580c86d750` remains issue-open/reopen with owner/title/token validation; no push/PR shortcut.
+- **Run:** [Build #39 / 38705765370](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38705765370), event `issues`, exact main commit `b9102695de25f61f0b985cab4cd384b4cda12534`, created `2026-10-15T08:27:17Z`.
+- **Fixes included:** `402161a9323fed0846f420569ae7118196c38946` removed the obsolete unused `_drawHeatWave` declaration identified by #37's Dart analyzer log. `91e5f243064b1900d98361a41b88fbe70a042e12` updated three stale source-contract assertions: current six-arm Peltier crystal/sparks, Fan blade painter boundary after helper removal, and current bolt-clipped cosine `sweepY` plus squared-sine Bluetooth fade.
+- **Prior failure evidence retained:** #37 stopped on `unused_element`; #38 stopped at Flutter tests with 77 passed, 3 failed; the exact gates and causes are documented immediately below in their respective failed attempt entries.
+- **Pending:** independently confirm Dart analysis and test result, then APK compile, V1/V2/V3/certificate verification, single published Release asset, and re-downloaded asset checksum/signature. No Firmware/BIN/Firebase/OTA/physical device operation.
 
 ### 2026-10-15 — Build #38 — FAILED (three stale widget source-contract assertions)
 
