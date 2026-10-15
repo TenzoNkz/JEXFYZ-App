@@ -6,6 +6,13 @@
 - Home Notify connection badge now reads CONNECTED/DISCONNECTED (same exact labels in both app languages). Existing explicit error, connecting/syncing badges and detailed Notify body remain unchanged.
 - Added widget tests for sensor-level parsing/clamping and both-language Notify badge labels, including the normal `Bluetooth Disconnected` notice staying DISCONNECTED rather than ERROR. Corrected the Celsius regex to parse digits/decimals in a raw Dart regular expression. Tests/analyze and APK build remain NOT RUN pending the separate @Thinking #Build App! authorization. No Firmware/BIN/Firebase/OTA/device operation was performed.
 
+## 2026-10-15 — Chat Stuck recovery and QC-state reconciliation
+
+- Recovered the already-authorized Home indicator/Notify execution from live `main`; no source re-implementation or new build was needed for this recovery.
+- Reconciled stale current App/widget-test fingerprints and the old Build #35 release checksum in `PROJECT_STATE.md` / `APP_NOTES.md`. The verified latest successful build is still #36 on its older source commit; current Home UI and Wireless ADB source are not present in that APK.
+- Static repository readback confirmed the Celsius regex, isolated Hotside thermometer (no heat-wave overlap), CONNECTED/DISCONNECTED labels in both language settings, and regression assertions including normal `Bluetooth Disconnected` handling.
+- Flutter/Dart/Gradle executables are unavailable in the current execution environment. Flutter tests, Dart analysis, Android/Kotlin compile, APK build and physical-device verification remain NOT RUN / UNVERIFIED. No Build App workflow, Firmware, BIN, Firebase, OTA, flash or physical device operation occurred.
+
 ## 2026-10-15 — Recover and harden notification-driven Wireless ADB pairing
 
 - Recovered the authorized App execution from live main rather than duplicating the existing feature commit. Existing source commit 4ad5d99bcea96e865978e3003482661b1e26101f introduced the native notification flow, and 89855b59c8d6ee40151847e6633a07cb75aff6b0 repaired the mDNS-listener closure and identity temporary-file naming.

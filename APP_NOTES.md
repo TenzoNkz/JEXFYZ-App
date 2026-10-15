@@ -101,7 +101,7 @@ This file is the durable App behavior/design contract. Live `lib/` source and th
 
 ## Current App QC boundary
 
-- Current source: `lib/main.dart` blob `c697497e16c94b8fe4fe8fd9bd1f9bc93598545f`; current widget test `test/widget_test.dart` blob `2a87292d5c4bc468ee6aad6810b249d284a28bae`.
+- Current source: `lib/main.dart` blob `d097adea48988700a8a80ac423cc088959cfa1f6`; current widget test `test/widget_test.dart` blob `bf403ee3d29e8d2f3f6839b2244a00f1b60e8bdb`.
 - Latest successful App Build is [Build #36 / run `38689044316`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38689044316), source commit `893393388b99fc6d9e59c420070a159a29e45e9a`: security/architecture audit, dependency resolution, Dart analyze, all 77 Flutter tests, obfuscated APK build, APK V1/V2/V3 checks, production certificate check, release publication and re-downloaded asset verification passed. This APK predates the later Wireless ADB pairing commits; it does NOT contain the pairing notification feature.
 - Current release `jexfyz-latest` contains one `JEXFYZ-release.apk` (54,620,251 bytes), SHA-256 `a5c9d97a3d28f7f711b0cd3c524289bc136cecec56d3b1d88821e43c713e9a13`. Production certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. V1/V2/V3 independently verified on built and re-downloaded APKs; this release asset does not include source commits added after `893393388b99fc6d9e59c420070a159a29e45e9a`.
 - Build #34 exposed a mismatch: the prior `Curves.easeInOutCubic` yielded 0.510125 at progress 0.5, while the regression contract expects 0.5. Current `jexSmoothFanSpeedLevel` uses symmetric cubic smoothstep `t*t*(3-2*t)`; the test was not loosened, and Build #35 passed it within all 74 Flutter tests.
