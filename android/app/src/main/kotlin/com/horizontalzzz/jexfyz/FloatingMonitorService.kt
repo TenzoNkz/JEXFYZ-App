@@ -181,10 +181,8 @@ class FloatingMonitorService : Service() {
         val timedOut = AtomicBoolean(false)
         val oversized = AtomicBoolean(false)
         val timeout = Runnable {
-            if (process.isAlive) {
-                timedOut.set(true)
-                process.destroy()
-            }
+            timedOut.set(true)
+            process.destroy()
         }
         fpsMainHandler.postDelayed(timeout, 2500)
 
