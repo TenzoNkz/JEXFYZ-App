@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Online OTA Regression Memory
 
-Last reconciled: 2026-10-14 (Asia/Jakarta). This is the canonical incident record in the App repo; check live source before editing the transport.
+Last reconciled: 2026-10-15 (Asia/Jakarta). This is the canonical incident record in the App repo; check live source before editing the transport.
 
 ## Symptom and prior attempt
 
@@ -15,7 +15,7 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This is the canonical incident recor
 - Removed the embedded CA PEM, `setCACert()`, `configTime()`, `TIME_SYNCING`, epoch-validity condition and OTA-only 20-second NTP time gate.
 - Flow is Wi-Fi success → blue feedback → `prepareOnlineOtaDownload()` → GitHub GET attempt.
 - Kept allowlisted URL prefix `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/`, redirect blocking, HTTP/length/size/image checks, ESP image magic byte `0xE9`, streaming Update lifecycle, all-safe output, OTA lifecycle and failure recovery.
-- Static test contract lives in `test/v6_6_qc_contract_test.dart` (live blob `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a` at this checkpoint; tests were not executed). Presence of assertions does not mean the test was executed.
+- Static test contract lives in `test/v6_6_qc_contract_test.dart` (current blob `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a`). It was run as part of App Build #35 (`38669526891`, code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`); all 74 Flutter tests passed. These are Dart/source-contract assertions, not physical Online OTA, Firmware compilation or end-to-end update/reboot validation.
 
 ## User-reported evidence boundary
 
