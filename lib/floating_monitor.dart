@@ -26,6 +26,14 @@ import 'jex_animated_glyph.dart';
 enum FloatingDisplayStyle { letters, icons }
 enum FloatingBackgroundColor { black, white }
 
+// Size is persisted in 0.05x increments for a predictable native overlay scale.
+double _normalizeFloatingSize(double value) {
+  final safe = value.isFinite ? value.clamp(0.30, 1.00).toDouble() : 0.60;
+  return (0.30 + ((safe - 0.30) / 0.05).round() * 0.05)
+      .clamp(0.30, 1.00)
+      .toDouble();
+}
+
 // AI-MEMORY / CONFIG MODEL
 // Persisted overlay presentation/settings only. Device state never belongs in this model.
 class FloatingConfig {
@@ -63,7 +71,7 @@ class FloatingConfig {
   }) {
     return FloatingConfig(
       enabled: enabled ?? this.enabled,
-      style: style ?? this.style,
+      style: FloatingDisplayStyle.letters,
       order: order ?? List<String>.from(this.order),
       selected: selected ?? Set<String>.from(this.selected),
       size: size ?? this.size,
@@ -96,10 +104,6 @@ class FloatingConfig {
     try {
       final decoded = jsonDecode(raw);
       if (decoded is! Map) return const FloatingConfig();
-      var style = FloatingDisplayStyle.letters;
-      try {
-        style = FloatingDisplayStyle.values.byName(decoded['style']?.toString() ?? '');
-      } catch (_) {}
       final rawOrder = decoded['order'];
       final rawSelected = decoded['selected'];
       final order = rawOrder is List
@@ -118,10 +122,10 @@ class FloatingConfig {
           : FloatingBackgroundColor.black;
       return FloatingConfig(
         enabled: decoded['enabled'] is bool ? decoded['enabled'] as bool : false,
-        style: style,
+        style: FloatingDisplayStyle.letters,
         order: order,
         selected: selected,
-        size: ((decoded['size'] as num?)?.toDouble() ?? 0.6).clamp(0.3, 0.8).toDouble(),
+        size: _normalizeFloatingSize((decoded['size'] as num?)?.toDouble() ?? 0.6),
         opacity: ((decoded['opacity'] as num?)?.toDouble() ?? 0.9).clamp(0.0, 1.0).toDouble(),
         backgroundColor: backgroundColor,
         horizontal: decoded['horizontal'] is bool ? decoded['horizontal'] as bool : true,
@@ -500,26 +504,6 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     return false;
   }
 
-  String _fpsAccessStatusLabel(AppLanguage language) {
-    if (!_shizukuAvailable) return JexText.of('shizukuNotRunning', language);
-    if (!_shizukuSupported) return JexText.of('shizukuUnsupported', language);
-    if (!_fpsPermissionGranted) return JexText.of('fpsAccessMissing', language);
-    if (_fpsMonitorStatus == 'active') return JexText.of('fpsMonitorActive', language);
-    if (_fpsMonitorStatus == 'no_game_foreground' ||
-        _fpsMonitorStatus == 'waiting_for_frames') {
-      return JexText.of('fpsWaitingForGame', language);
-    }
-    if (_fpsMonitorStatus.contains('blocked') ||
-        _fpsMonitorStatus.contains('denied') ||
-        _fpsMonitorStatus.contains('timeout') ||
-        _fpsMonitorStatus.contains('no_layer_data') ||
-        _fpsMonitorStatus.contains('foreground_unknown') ||
-        _fpsMonitorStatus.contains('dumpsys_')) {
-      return JexText.of('fpsDataUnavailable', language);
-    }
-    return JexText.of('fpsAccessGranted', language);
-  }
-
   void _applyFpsAccessFields(Map<String, dynamic> result) {
     _shizukuAvailable = result['shizuku_available'] == true;
     _shizukuSupported = result['shizuku_supported'] == true;
@@ -830,7 +814,9 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              JexText.of('fpsAccessTitle', lang),
+                              _fpsPermissionGranted
+                                  ? JexText.of('shizukuAccessGranted', lang)
+                                  : JexText.of('shizukuAccessDenied', lang),
                               style: const TextStyle(fontWeight: FontWeight.w900),
                             ),
                           ),
@@ -843,15 +829,6 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                         ],
                       ),
                       const SizedBox(height: 6),
-                      Text(_fpsAccessStatusLabel(lang)),
-                      const SizedBox(height: 5),
-                      Text(
-                        JexText.of('fpsAccessHint', lang),
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          fontSize: 12,
-                        ),
-                      ),
                       const SizedBox(height: 8),
                       Wrap(
                         spacing: 8,
@@ -861,11 +838,6 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                             onPressed: _fpsStatusLoading ? null : _requestShizukuFpsAccess,
                             icon: const Icon(Icons.shield_outlined),
                             label: Text(JexText.of('requestShizukuPermission', lang)),
-                          ),
-                          OutlinedButton.icon(
-                            onPressed: _fpsStatusLoading ? null : _openShizukuManager,
-                            icon: const Icon(Icons.open_in_new),
-                            label: Text(JexText.of('openShizuku', lang)),
                           ),
                           TextButton.icon(
                             onPressed: _fpsStatusLoading
@@ -888,38 +860,6 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        JexText.of('displayStyle', lang),
-                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
-                      ),
-                      const SizedBox(height: 7),
-                      SegmentedButton<FloatingDisplayStyle>(
-                        segments: [
-                          ButtonSegment(
-                            value: FloatingDisplayStyle.letters,
-                            label: Text(JexText.of('letters', lang)),
-                            icon: JexAnimatedGlyph(
-                              icon: PhosphorIconsRegular.textAa,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                              size: 18,
-                            ),
-                          ),
-                          ButtonSegment(
-                            value: FloatingDisplayStyle.icons,
-                            label: Text(JexText.of('icons', lang)),
-                            icon: JexAnimatedGlyph(
-                              icon: PhosphorIconsRegular.stack,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                              size: 18,
-                            ),
-                          ),
-                        ],
-                        selected: <FloatingDisplayStyle>{config.style},
-                        onSelectionChanged: (value) {
-                          if (value.isNotEmpty) _apply(config.copyWith(style: value.first));
-                        },
-                      ),
-                      const SizedBox(height: 16),
                       Text(
                         JexText.of('functions', lang),
                         style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
@@ -959,10 +899,10 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                         value: config.size,
                         valueLabel: '${config.size.toStringAsFixed(2)}×',
                         min: 0.30,
-                        max: 0.80,
-                        divisions: 10,
+                        max: 1.00,
+                        divisions: 14,
                         minLabel: '0.30×',
-                        maxLabel: '0.80×',
+                        maxLabel: '1.00×',
                         onChanged: (value) => _apply(config.copyWith(size: value)),
                       ),
                       _sliderRow(
@@ -971,9 +911,8 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                         valueLabel: '${(config.opacity * 100).round()}%',
                         min: 0.0,
                         max: 1.0,
-                        divisions: 100,
+                        divisions: 20,
                         minLabel: '0%',
-                        midLabel: '50%',
                         maxLabel: '100%',
                         onChanged: (value) => _apply(config.copyWith(opacity: value)),
                       ),
