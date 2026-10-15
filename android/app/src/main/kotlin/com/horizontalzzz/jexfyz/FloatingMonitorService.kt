@@ -170,7 +170,9 @@ class FloatingMonitorService : Service() {
             fpsTrackedPackage = null
             fpsMainHandler.post {
                 if (generation != fpsGeneration) return@post
-                fpsMonitorStatus = "active"
+                // Capture is enabled, but no valid FPS sample exists until the sampler
+                // observes at least two compatible frame-counter snapshots.
+                fpsMonitorStatus = "starting"
                 data.fps = "--"
                 hudView?.requestLayout()
                 hudView?.invalidate()
@@ -320,6 +322,7 @@ class FloatingMonitorService : Service() {
             listOf("activity", "activities") -> FpsShizukuUserService.OP_READ_FOREGROUND_ACTIVITY
             listOf("SurfaceFlinger", "--timestats", "-dump") -> FpsShizukuUserService.OP_READ_SURFACEFLINGER_STATS
             listOf("window", "displays") -> FpsShizukuUserService.OP_READ_FOREGROUND_WINDOW
+            listOf("window") -> FpsShizukuUserService.OP_READ_FOREGROUND_WINDOW_FULL
             else -> return DumpsysResult("", false, "unsupported_fps_operation")
         }
         val remote = acquireFpsUserService()
@@ -399,25 +402,34 @@ class FloatingMonitorService : Service() {
         return Regex("""[a-z][a-z0-9_]*(?:\.[a-z0-9_]+)+""").containsMatchIn(value)
     }
 
-    // Read focus fields only from WindowManager output and use ActivityManager as a fallback.
+    // Prefer the focused WindowManager window. Some OEM builds omit focus fields from
+    // "window displays", so retry the complete WindowManager dump before ActivityManager.
     private fun readForegroundPackage(): String? {
-        val windowResult = runDumpsys("window", "displays")
-        if (windowResult.ok) {
-            val windowPatterns = listOf(
-                Regex("""(?m)^\s*mCurrentFocus\s*=\s*Window\{[^}]*\bu\d+\s+([A-Za-z0-9_.]+)/"""),
-                Regex("""(?m)^\s*mFocusedApp\s*=\s*ActivityRecord\{[^}]*\bu\d+\s+([A-Za-z0-9_.]+)/"""),
+        fun focusedPackage(output: String): String? {
+            val patterns = listOf(
+                Regex("""\bmCurrentFocus\s*=\s*Window\{[^\r\n}]*\bu\d+\s+([A-Za-z0-9_.]+)/"""),
+                Regex("""\bmFocusedApp\s*=\s*[^\r\n]*?\bu\d+\s+([A-Za-z0-9_.]+)/"""),
             )
-            val focused = windowPatterns.firstNotNullOfOrNull { pattern ->
-                pattern.find(windowResult.output)?.groupValues?.get(1)
+            return patterns.firstNotNullOfOrNull { pattern ->
+                pattern.find(output)?.groupValues?.get(1)
             }
-            if (focused != null) return focused
+        }
+
+        val displaysResult = runDumpsys("window", "displays")
+        if (displaysResult.ok) {
+            focusedPackage(displaysResult.output)?.let { return it }
+        }
+
+        val fullWindowResult = runDumpsys("window")
+        if (fullWindowResult.ok) {
+            focusedPackage(fullWindowResult.output)?.let { return it }
         }
 
         val activityResult = runDumpsys("activity", "activities")
         if (!activityResult.ok) return null
         val activityPatterns = listOf(
-            Regex("""(?m)^\s*(?:mResumedActivity|topResumedActivity|ResumedActivity)\s*[:=]\s*ActivityRecord\{[^}]*\bu\d+\s+([A-Za-z0-9_.]+)/"""),
-            Regex("""(?m)^\s*(?:mResumedActivity|topResumedActivity|ResumedActivity)\s*[:=]\s*([A-Za-z0-9_.]+)/(?:[A-Za-z0-9_.$]+)"""),
+            Regex("""\b(?:mResumedActivity|topResumedActivity|ResumedActivity)\s*[:=]\s*ActivityRecord\{[^\r\n}]*\bu\d+\s+([A-Za-z0-9_.]+)/"""),
+            Regex("""\b(?:mResumedActivity|topResumedActivity|ResumedActivity)\s*[:=]\s*[^\r\n]*?\bu\d+\s+([A-Za-z0-9_.]+)/"""),
         )
         return activityPatterns.firstNotNullOfOrNull { pattern ->
             pattern.find(activityResult.output)?.groupValues?.get(1)
