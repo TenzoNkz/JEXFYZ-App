@@ -2,6 +2,13 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
+## CURRENT CHECKPOINT — Shizuku-gated FPS migration; tests/build pending (2026-10-15)
+
+- Shizuku permission is now the FPS gate: the user must have Shizuku running and approve JE X FYZ through Shizuku's own permission dialog before metric F can be selected.
+- Added official Shizuku provider integration, AIDL and restricted UserService with a fixed FPS operation allow-list. The ordinary app process no longer executes dumpsys or uses the manifest DUMP permission.
+- Removed Wireless ADB pairing/identity-store source, Kadb/SPAKE2 dependencies and licenses, ADB grant/revoke UI and obsolete pairing test. Added Shizuku API/provider 13.1.5, MIT notice/assets, updated workflow license/source packaging and a dedicated Shizuku contract test.
+- Source checkpoint: b4e4ec7e8d6c00f43e5378dcb7e2e4b7731adf4b. Widget and Shizuku source-contract tests are committed but have NOT RUN; no Android build or release was triggered. Current APK remains Build #49's older source 2b2d2886abb66481b7134e5036824f625ab5659d.
+- @Thinking Chat Stuck! recovered the latest source state and saved this report; it did not authorize an App Build. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 ## CURRENT CHECKPOINT — Thermal indicator source update; CI pending (2026-10-15)
 
 - App source commit `8b58c7033a5462864b52cb921ca25c714bca902f` committed directly to `main`: `lib/main.dart` blob `3eeb4dff7b7fbb52a44022e5e2b130bc1826da23`; `test/widget_test.dart` blob `e673bdbc5ffa80791564b1138db28c6a8731aaec`.
