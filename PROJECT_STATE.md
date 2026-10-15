@@ -70,10 +70,9 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 - Touch Adaptive-OFF publishes authoritative Adaptive/ceiling/Fan/Peltier/Fan-speed state deltas before acknowledgement.
 
 ## Current UI execution status
-- Implemented in `lib/main.dart`: Fan OFF coasts down with an ease-out curve to its resting pose, with full-colour blades/hub; Peltier is a free-standing six-branch crystal without the square module/center box/corner bolts and freezes fully coloured at OFF; Fan Speed needle wobbles slightly while ON without changing the telemetry percentage and returns to far-left/0 over 520 ms when OFF.
-- Current App source blob: `3d756a5a38c76b252dc93c6151a3b864ebbbbb94`; widget regression tests blob: `99648e4c145b122949099b74581d47e6c472d9b9`. Static source consistency checks passed. **Flutter tests/analyze and device rendering have NOT been run after these changes.**
-- Latest successful Build App run is `38560939271` on earlier commit `2aa77113950ac462bd27fa6f1ca416371eaa7ad8`. That build's tests/analyze passed on its source, and V1/V2/V3 all verified true. It predates the icon/animation/test changes above.
-- MT Manager's earlier `Signature: Verified failed` remains unverified on the latest release. Run logs warn that `META-INF/services/b1` is not protected by the JAR/V1 signature; this warning is a lead, not proven cause of the UI label.
+- Current App source includes smooth Fan OFF coast-down with full-colour blades/hub; a box-free, full-colour Peltier crystal that freezes when OFF; retargetable Fan Speed gauge animation (420 ms for speed changes, 520 ms OFF→0) and seamless integer-harmonic needle wobble; sinusoidal voltage sheen; and boundary-faded Bluetooth ripples.
+- Current source blob: `a1818d281fdbea900bf9cde5b83c40d09d61dcc3`; latest widget regression-test blob: `4b7bf68f3c73d6ffe80509ccb75ce6e08607b020`. Static readback checks passed. **Flutter tests/analyze and device rendering have NOT been run after these latest edits.**
+- Latest successful Build App run remains `38560939271` on earlier commit `2aa77113950ac462bd27fa6f1ca416371eaa7ad8`. Dart analyze, Flutter tests and V1/V2/V3 APK verification passed for that older source; the release warning `META-INF/services/b1` is not protected by JAR/V1. MT Manager's earlier signature label remains to be rechecked on device.
 
 
 ## App Build
@@ -87,11 +86,11 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 
 
 ## Exact validation gates still open
-1. After explicit `@Thinking Build App!` authorization, build the current UI/test source and verify current-source test/analyze status, V1/V2/V3 signatures, official certificate digest, and re-downloaded asset SHA.
-2. Install the resulting APK and check MT Manager's signature display. Latest release verified V1/V2/V3=true, but the log warns `META-INF/services/b1` is not protected by JAR/V1. The exact reason for MT Manager's earlier failure remains unverified.
-3. On the installed APK, verify Fan easing to a full stop without dimming, the visible six-arm Peltier crystal with no square box/bolts or OFF fade, and the Speed needle wobble ON / smooth return to far-left/0 OFF.
-4. Recheck notification icon, dialog sizes/Cancel, BLE disconnect fallback and authoritative telemetry restore on device.
-5. Firmware V6.6 is user-accepted as final after two reported successful same-version Online OTA updates. Do not modify/compile Firmware or run BIN/Firebase/OTA/flash operations unless the user reopens that task and separately authorizes it.
+1. After explicit `@Thinking Build App!` authorization, validate current-source Dart analyze/Flutter tests and build the updated APK. Existing successful run `38560939271` predates the present animation/test edits.
+2. Inspect signature results for the new APK and downloaded asset; require V1/V2/V3 true and recheck MT Manager's exact label. Prior CI warned about `META-INF/services/b1` not being protected by JAR/V1.
+3. On device, verify Fan OFF ease-out, Peltier box-free/no-fade OFF, Speed gauge transitions to each new speed without a snap, smooth OFF→0, stable percentage text, seamless wobble loop, voltage sheen and Bluetooth ripple loops.
+4. Verify notification JE icon/tap, dialog sizes/Cancel, BLE disconnect fallback and authoritative telemetry restore after reconnect.
+5. Firmware V6.6 is final by user acceptance after two reported same-version successful Online OTA updates. Do not edit/compile Firmware or operate BIN/Firebase/OTA/flash unless the user explicitly reopens that work and separately authorizes the action.
 
 
 ## Repository split / operation boundary
