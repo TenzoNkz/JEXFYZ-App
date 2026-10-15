@@ -53,7 +53,7 @@ Reconciled against live GitHub main: 2026-10-16. Live code, Git refs, Actions re
 | CHANGELOG.md | Historical behavior/decision/failure ledger, not current truth |
 | DESIGN_NOTES.md | Approved grille, icons/cooler and visual requirements |
 | .github/workflows/jexfyz-app-build-trigger.yml | Authoritative manual issue-triggered App Build workflow |
-| test/*.dart | Seven? active test files tracked in repo; Build #58 ran the complete configured suite: 87/87 passed. File presence alone is not execution evidence |
+| test/*.dart | Six active test files; Build #58 ran the complete configured suite: 87/87 passed. File presence alone is not execution evidence |
 | firmware/JEXFYZ-V6.6.ino | Current editable Firmware source, one versioned active sketch |
 | archive/*.md | Immutable forensic snapshots; archived “CURRENT” claims are not live truth |
 
