@@ -2,7 +2,15 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
-## 2026-10-16 — Indicator redesign, Floating Monitor controls and foreground screen FPS (source updated; NOT BUILT)
+## 2026-10-16 — App Build #55 success; indicator/Floating Monitor/screen-FPS source released (device verification pending)
+
+- [Build #55 / run 38783100421](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38783100421), triggered by [issue #28](https://github.com/TenzoNkz/JEXFYZ-App/issues/28), built exact source commit `3ba172b3f35f4ec01732d5848a7ffc807663e710`. The functional source checkpoint `311a18934a3cbe86a2a4718442c92541f081183f` is included; commits afterward only synchronized documentation.
+- All release gates passed: architecture/security/license audit, dependency resolution, Dart analysis, 86/86 Flutter tests, obfuscated APK compilation, explicit V1/V2/V3 signing and certificate checks, source archive validation, Release publication and downloaded asset identity/hash/signature verification.
+- Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) has exactly one [APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk) (asset 644735661, 54,538,412 bytes, SHA-256 `1ae3ef476c170ab0a9d78a77264c5281d60341a931db102c7b8645e4b0dadd19`) and one [matching source ZIP](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip) (asset 644735668, 2,860,630 bytes, SHA-256 `112b14a95f4b21fa04cdd5684e4a0124ee4b50cb17636bcef149e71a20481dce`).
+- The new indicator colors/animations, Floating Monitor controls and focused-window SurfaceFlinger FPS code are now built and CI-tested. Actual device rendering, Shizuku UserService operation and OEM foreground FPS/layer availability remain UNVERIFIED pending phone-side checks.
+- Non-blocking warnings include 23 Dart deprecation infos, 11 dependency updates outside constraints, Kotlin Gradle Plugin 2.2.20 and Gradle 9.3.1 migration notices, native DWARF metadata, jarsigner self-signed/no-timestamp/META-INF warnings and a post-job cache-write scope warning. All required signature/checksum gates passed; no Firmware/BIN/Firebase/OTA/flash/device action occurred.
+
+## HISTORICAL — 2026-10-16 — Indicator redesign, Floating Monitor controls and foreground screen FPS (pre-Build #55 checkpoint)
 
 - Source changes committed directly to App main through latest source/test checkpoint `311a18934a3cbe86a2a4718442c92541f081183f`; the recursive tree is complete with 80 entries. No PR was opened.
 - Home indicators: disconnected states retain semantic low-state accents instead of black/grey; Battery is Ice Blue through 30°C and Burning Red from 40°C with a smooth intervening palette; Hotside is Ice Blue through 30°C and transitions to Burning Red at the configured Hotside Limit. These are presentation thresholds only and do not change Firmware safety logic. Manual voltage text/accents are 5V red, 9V green, 12V blue.
@@ -10,7 +18,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - Floating Monitor size is now 0.30×–1.00× in 0.05× increments, including Flutter runtime synchronization and native overlay bounds; opacity snaps to 5% increments and removes the 50% midpoint label; Display Style is removed with legacy Icons settings normalized to Letters; vertical rows are left-aligned. Shizuku UI shows only Access Granted/Denied and Grant Shizuku Access / Check Access.
 - FPS sampler no longer blocks JE Cooler, launcher, Settings or Android system UI as foreground targets. It prioritizes focused-window package identity and matches that package's SurfaceFlinger layers. After the initial baseline, a visible layer with no new presented frames reports 0 rather than returning to -- solely due to a stable frame count. Real device/OEM SurfaceFlinger access remains UNVERIFIED.
 - Updated source-contract tests for thermal bounds, voltage/disconnected colors, animation geometry/transitions, Floating Monitor migration/slider steps and generic foreground screen FPS. Flutter/Dart tests and analysis were NOT RUN because this runtime has no Flutter or Dart executables. No Android/App build, APK release or physical-device validation was performed.
-- Latest verified release remains Build #54 / run 38767611593 from source `437e7730dbcaf9666ae4828e546a45343bb4890c`. Its APK/source ZIP do NOT contain these latest changes. The separate command `@Thinking Eksekusi Build App!` is required to run the gated release pipeline. Firmware source, BIN-only artifact repo, Firebase, OTA and physical hardware were not touched.
+- At this point in the timeline, Build #54 was the latest verified release and did not include this newer source. Build #55 subsequently built and released these changes; see the current Build #55 entry above. Firmware source, BIN-only artifact repo, Firebase, OTA and physical hardware were not touched.
 ## 2026-10-15 — App Build #54 success; physical Game FPS report remains unverified
 
 - Build #54 / run 38767611593 built App source commit 437e7730dbcaf9666ae4828e546a45343bb4890c. Dart analysis and all 86 Flutter tests passed; Android release APK compiled and passed explicit V1/V2/V3/certificate checks; corresponding source ZIP validated, published and re-downloaded with matching SHA-256. Release jexfyz-latest contains exactly one APK plus one source ZIP.
@@ -20,7 +28,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - No Firmware compile, BIN/Firebase update, OTA, flash or physical-device operation was performed as part of the Build #54 source release/verification.
 
 
-## HISTORICAL / SUPERSEDED — Floating Monitor visual controls (2026-10-15; later included in Build #54)
+## HISTORICAL / SUPERSEDED — Floating Monitor visual controls (2026-10-15; later included in Build #55)
 
 - Floating Monitor remains freely draggable. The alignment change is inside the box only: horizontal metric groups are centered as a group, and vertical rows are centered individually. Native WindowManager gravity stays `Gravity.TOP | Gravity.START`; drag offset persistence is preserved.
 - Native HUD spacing is tightened (5dp-scaled inter-metric gap, 8dp-scaled horizontal padding, 5dp-scaled vertical padding) and the corner radius is reduced.
@@ -36,14 +44,14 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - Firmware V6.6, firmware/BIN repository, Firebase, OTA, flash and physical device remain untouched.
 
 
-## HISTORICAL / SUPERSEDED — Shizuku FPS migration source checkpoint (2026-10-15; later included in Build #54)
+## HISTORICAL / SUPERSEDED — Shizuku FPS migration source checkpoint (2026-10-15; later included in Build #55)
 
 - Shizuku permission is now the FPS gate: the user must have Shizuku running and approve JE X FYZ through Shizuku's own permission dialog before metric F can be selected.
 - Added official Shizuku provider integration, AIDL and restricted UserService with a fixed FPS operation allow-list. The ordinary app process no longer executes dumpsys or uses the manifest DUMP permission.
 - Removed Wireless ADB pairing/identity-store source, Kadb/SPAKE2 dependencies and licenses, ADB grant/revoke UI and obsolete pairing test. Added Shizuku API/provider 13.1.5, MIT notice/assets, updated workflow license/source packaging and a dedicated Shizuku contract test.
 - Source checkpoint: b4e4ec7e8d6c00f43e5378dcb7e2e4b7731adf4b. Widget and Shizuku source-contract tests are committed but have NOT RUN; no Android build or release was triggered. Current APK remains Build #49's older source 2b2d2886abb66481b7134e5036824f625ab5659d.
 - @Thinking Chat Stuck! recovered the latest source state and saved this report; it did not authorize an App Build. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
-## HISTORICAL / SUPERSEDED — Thermal indicator source checkpoint (2026-10-15; later included in Build #54)
+## HISTORICAL / SUPERSEDED — Thermal indicator source checkpoint (2026-10-15; later included in Build #55)
 
 - App source commit `8b58c7033a5462864b52cb921ca25c714bca902f` committed directly to `main`: `lib/main.dart` blob `3eeb4dff7b7fbb52a44022e5e2b130bc1826da23`; `test/widget_test.dart` blob `e673bdbc5ffa80791564b1138db28c6a8731aaec`.
 - Thermal Battery now treats its segmented fill as temperature level (20°C empty, 30°C half, 40°C+ full), transitions from ice blue through cyan/green/amber/orange to red, and shows animated fire at ≥40°C. Text and icon colors tween together. The existing phone battery-temperature read and one-second firmware heartbeat are unchanged.
@@ -52,7 +60,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - Last successful Release remains Build #49 from source `2b2d2886abb66481b7134e5036824f625ab5659d`; `jexfyz-latest` does not include commit `8b58c7033a5462864b52cb921ca25c714bca902f`. Run the explicitly authorized App Build workflow to analyze/test/build/sign/release the new source.
 - No firmware source/BIN, Firebase, OTA, flash or device operation occurred.
 
-## HISTORICAL / SUPERSEDED — Build #49 successful App release (2026-10-15; superseded by Build #54)
+## HISTORICAL / SUPERSEDED — Build #49 successful App release (2026-10-15; superseded by Build #55)
 
 - Official issue-triggered [Build #49 / run 38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916) used issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22) and built source commit `2b2d2886abb66481b7134e5036824f625ab5659d`. Job `116435785328`, hosted runner `1000002352`; run completed SUCCESS at 2026-10-15T13:06:51Z.
 - Security/architecture/license audit, dependency resolution, Dart analysis, all **80 Flutter tests**, obfuscated APK compilation, V1/V2/V3 signing and official production certificate checks all passed. The source ZIP passed integrity/content/path/license assertions. Release publication and re-downloaded APK/source verification passed; all main workflow steps succeeded.
