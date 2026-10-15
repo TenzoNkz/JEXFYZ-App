@@ -225,7 +225,7 @@ The canonical map is MEMORY_INDEX.md. At this reconciliation, prepared blobs for
 - CHANGELOG.md: 68ac4d6198bf28f82b17399cc7c922c3b9587f8d (freshly corrected to state that the earlier diagnostic “not run” claim was only true at the time; later outcomes are historical)
 - FIRMWARE_NOTES.md: 3bf9e240a317cb5a2d07975ff7fabb0798205e24
 - HANDOVER.md: d4265ae15ce9ed4375085fc8d8755e17cf21e949
-- MEMORY_INDEX.md: 269c99230c7f12c153017f92b5a7cb50d4cf0212
+- MEMORY_INDEX.md: ab0f808872b5abb27826b395878fb4eb495f4559
 - PROJECT_STATE.md: 1cc8ccbad75cf1b206c041fd01ec1c032ad06b4b
 - README.md: ff71e7ee6ecb5f63b2c92e0c9e0c938e97b9a615
 - firmware/FIRMWARE_TECHNICAL_REFERENCE.md: 58937006c1a34f0a8439d3ac4c7dc13b771987b2
