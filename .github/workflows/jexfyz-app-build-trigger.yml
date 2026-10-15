@@ -225,20 +225,20 @@ jobs:
           if re.search(r"""(?m)^\s*(?:import|export|part)\s+['"][^'"]*firmware/""", source):
               raise SystemExit("JE X FYZ audit failed; App Dart code imports firmware source")
 
-          # License/source distribution contract for the transitive Kadb pairing implementation.
-          root_gradle = Path("android/build.gradle").read_text(encoding="utf-8")
+          # Pinned Shizuku API/provider dependency and its MIT notice are part of release compliance.
+          app_gradle = Path("android/app/build.gradle").read_text(encoding="utf-8")
           notices = Path("third_party/THIRD_PARTY_NOTICES.md")
-          gpl_source_license = Path("third_party/spake2-java-1.0.5-GPL-3.0.txt")
-          gpl_apk_license = Path("android/app/src/main/assets/licenses/spake2-java-GPL-3.0.txt")
-          if 'includeModule("com.github.Flyfish233", "spake2-java")' not in root_gradle:
-              raise SystemExit("License audit failed; SPAKE2 Maven repository is not narrowly scoped")
-          for path in [notices, gpl_source_license, gpl_apk_license]:
+          shizuku_notice = Path("third_party/Shizuku-API-MIT.txt")
+          shizuku_apk_license = Path("android/app/src/main/assets/licenses/shizuku-api-MIT.txt")
+          if 'dev.rikka.shizuku:api:13.1.5' not in app_gradle or 'dev.rikka.shizuku:provider:13.1.5' not in app_gradle:
+              raise SystemExit("Shizuku audit failed; pinned API/provider dependency is missing")
+          for path in [notices, shizuku_notice, shizuku_apk_license]:
               if not path.is_file() or path.stat().st_size == 0:
-                  raise SystemExit("License audit failed; missing license/source notice: " + str(path))
-          if "GNU GENERAL PUBLIC LICENSE" not in gpl_source_license.read_text(encoding="utf-8"):
-              raise SystemExit("License audit failed; upstream GPL-3.0 license text is missing")
-          if "GPL-3.0" not in notices.read_text(encoding="utf-8") or "Apache License 2.0" not in notices.read_text(encoding="utf-8"):
-              raise SystemExit("License audit failed; third-party license inventory is incomplete")
+                  raise SystemExit("License audit failed; missing Shizuku notice/license: " + str(path))
+          if "MIT License" not in shizuku_notice.read_text(encoding="utf-8"):
+              raise SystemExit("License audit failed; Shizuku MIT license text is missing")
+          if "Shizuku API 13.1.5" not in notices.read_text(encoding="utf-8"):
+              raise SystemExit("License audit failed; Shizuku API is missing from third-party inventory")
 
           print("JE X FYZ App-only security, architecture and third-party license audit passed.")
           PY
@@ -357,8 +357,8 @@ jobs:
           test -s "build/app/outputs/flutter-apk/JEXFYZ-release.apk"
           ls -lh "build/app/outputs/flutter-apk/JEXFYZ-release.apk"
 
-      # Package the corresponding source for the exact APK commit and its ADB libraries.
-      # The Release remains private; the source asset is delivered to the same authorized recipients.
+      # Package corresponding App source for the exact source commit used by the APK.
+      # Shizuku API is a pinned MIT-licensed Maven dependency; no ADB pairing code remains.
       - name: Package corresponding source archive
         shell: bash
         run: |
@@ -366,11 +366,10 @@ jobs:
 
           SOURCE_PARENT="$RUNNER_TEMP/jexfyz-source"
           SOURCE_ROOT="$SOURCE_PARENT/JEXFYZ-corresponding-source"
-          THIRD_PARTY_SOURCE="$SOURCE_ROOT/third_party/source"
           SOURCE_ARCHIVE="$GITHUB_WORKSPACE/build/app/outputs/flutter-apk/JEXFYZ-corresponding-source.zip"
-          mkdir -p "$SOURCE_ROOT" "$THIRD_PARTY_SOURCE" "$(dirname "$SOURCE_ARCHIVE")"
+          mkdir -p "$SOURCE_ROOT" "$(dirname "$SOURCE_ARCHIVE")"
 
-          # App source, build configuration, assets, locks and tests from the exact checked-out commit.
+          # App source, build configuration, licenses, assets, locks and tests from exact checked-out commit.
           git archive --format=tar "$GITHUB_SHA" \
             lib assets android test pubspec.yaml pubspec.lock README.md third_party \
             | tar -xf - -C "$SOURCE_ROOT"
@@ -381,34 +380,24 @@ jobs:
             cp -a android/gradle/wrapper/gradle-wrapper.jar "$SOURCE_ROOT/android/gradle/wrapper/gradle-wrapper.jar"
           fi
 
-          # Retain exact upstream source tags and the pinned SPAKE2 native submodule used by the APK.
-          git -c advice.detachedHead=false clone --depth 1 --branch 1.3.0 \
-            https://github.com/flyfishxu/Kadb.git "$RUNNER_TEMP/kadb-source"
-          git -c advice.detachedHead=false clone --depth 1 --branch 1.0.5 --recurse-submodules \
-            https://github.com/Flyfish233/spake2-java.git "$RUNNER_TEMP/spake2-java-source"
-          cp -a "$RUNNER_TEMP/kadb-source" "$THIRD_PARTY_SOURCE/Kadb-1.3.0"
-          cp -a "$RUNNER_TEMP/spake2-java-source" "$THIRD_PARTY_SOURCE/spake2-java-1.0.5"
-          find "$THIRD_PARTY_SOURCE" -name .git -prune -exec rm -rf {} +
-          find "$THIRD_PARTY_SOURCE" -type f -name .git -delete
-
           cat > "$SOURCE_ROOT/SOURCE_BUNDLE_README.md" <<EOF2
           # JE X FYZ corresponding source bundle
 
           - Exact App source commit used for the APK: $GITHUB_SHA
-          - Flutter application source, Android host source, build configuration, assets and tests are included in this archive.
-          - Kadb source tag: 1.3.0 (Apache-2.0); copy is under third_party/source/Kadb-1.3.0/.
-          - SPAKE2-Java source tag: 1.0.5 (GPL-3.0), including its pinned native submodule; copy is under third_party/source/spake2-java-1.0.5/.
-          - Third-party notices and license texts are included in the source tree; the GPL-3.0 license is also packaged in APK assets.
+          - Flutter application source, Android host source, AIDL interface, build configuration, assets, tests and pinned dependency declarations are included in this archive.
+          - Shizuku API/provider Maven coordinates: dev.rikka.shizuku:api:13.1.5 and dev.rikka.shizuku:provider:13.1.5.
+          - Shizuku API 13.1.5 is MIT-licensed. The notice and full license text are included at third_party/THIRD_PARTY_NOTICES.md and third_party/Shizuku-API-MIT.txt; the MIT license is also packaged in APK assets.
+          - This App no longer contains Wireless ADB pairing or ADB permission-grant commands.
           - This source archive is attached to the same private GitHub Release as JEXFYZ-release.apk.
           EOF2
 
           (cd "$SOURCE_PARENT" && zip -qr "$SOURCE_ARCHIVE" JEXFYZ-corresponding-source)
           test -s "$SOURCE_ARCHIVE"
           unzip -t "$SOURCE_ARCHIVE"
-          unzip -l "$SOURCE_ARCHIVE" | grep -F 'JEXFYZ-corresponding-source/third_party/source/Kadb-1.3.0/README.md'
-          unzip -l "$SOURCE_ARCHIVE" | grep -F 'JEXFYZ-corresponding-source/third_party/source/spake2-java-1.0.5/src/main/java/com/flyfish233/crypto/spake2/Spake2Context.java'
+          unzip -l "$SOURCE_ARCHIVE" | grep -F 'JEXFYZ-corresponding-source/android/app/src/main/aidl/com/horizontalzzz/jexfyz/IFpsShizukuUserService.aidl'
+          unzip -l "$SOURCE_ARCHIVE" | grep -F 'JEXFYZ-corresponding-source/third_party/Shizuku-API-MIT.txt'
           unzip -p "$SOURCE_ARCHIVE" JEXFYZ-corresponding-source/SOURCE_BUNDLE_README.md | grep -F "$GITHUB_SHA"
-          unzip -l build/app/outputs/flutter-apk/JEXFYZ-release.apk | grep -F 'assets/licenses/spake2-java-GPL-3.0.txt'
+          unzip -l build/app/outputs/flutter-apk/JEXFYZ-release.apk | grep -F 'assets/licenses/shizuku-api-MIT.txt'
           echo "Corresponding source archive prepared for $GITHUB_SHA"
 
       # Publish one APK plus the source archive as GitHub Release assets.
@@ -434,7 +423,7 @@ jobs:
           App version: $APP_VERSION
           Source commit: $GITHUB_SHA
           APK: JEXFYZ-release.apk
-          Corresponding source: JEXFYZ-corresponding-source.zip (App source commit $GITHUB_SHA; includes Kadb 1.3.0 and SPAKE2-Java 1.0.5 source and licenses)."
+          Corresponding source: JEXFYZ-corresponding-source.zip (App source commit $GITHUB_SHA; includes the Shizuku UserService/AIDL code and pinned MIT-licensed Shizuku API declarations)."
 
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             echo "Updating existing GitHub Release $RELEASE_TAG"
