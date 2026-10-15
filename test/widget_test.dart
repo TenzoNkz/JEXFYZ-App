@@ -197,6 +197,51 @@ void main() {
     expect(floatingMetricStatus('S', telemetry, AppLanguage.indonesia), 'MATI');
   });
 
+  test('Floating Monitor settings removes the center preview and exposes explicit orientation', () {
+    final floating = File('lib/floating_monitor.dart').readAsStringSync();
+
+    expect(floating, isNot(contains('Widget _livePreview(')));
+    expect(floating, isNot(contains('_livePreview(telemetry)')));
+    expect(floating, contains("JexText.of('orientation', lang)"));
+    expect(floating, contains('SegmentedButton<bool>('));
+    expect(floating, contains("JexText.of('fpsAccessTitle', lang)"));
+    expect(floating, contains("adb shell pm grant com.horizontalzzz.jexfyz android.permission.DUMP"));
+    expect(floating, contains("adb shell pm revoke com.horizontalzzz.jexfyz android.permission.DUMP"));
+  });
+
+  test('Game FPS is sourced from focused SurfaceFlinger layers, not JE Cooler frame timing', () {
+    final appSource = File('lib/main.dart').readAsStringSync();
+    final nativeService = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt').readAsStringSync();
+    final activity = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt').readAsStringSync();
+    final manifest = File('android/app/src/main/AndroidManifest.xml').readAsStringSync();
+    final settings = File('lib/app_settings.dart').readAsStringSync();
+
+    expect(appSource, isNot(contains('FrameTiming')));
+    expect(appSource, isNot(contains('addTimingsCallback')));
+    expect(nativeService, contains('android.permission.DUMP'));
+    expect(nativeService, contains('private fun readForegroundPackage()'));
+    expect(nativeService, contains('private fun layerBelongsToPackage('));
+    expect(nativeService, contains('.filter { layerBelongsToPackage(it.name, foregroundPackage) }'));
+    expect(nativeService, contains('runDumpsys("SurfaceFlinger", "--timestats", "-dump")'));
+    expect(nativeService, contains('delta * 1000.0 / elapsed.toDouble()'));
+    expect(manifest, contains('android.permission.DUMP'));
+    expect(activity, contains('"getFpsAccessStatus"'));
+    expect(activity, contains('"refreshFpsMonitor"'));
+    expect(settings, contains("'fpsWaitingForGame'"));
+  });
+
+  test('Floating Monitor replays telemetry after service startup and resizes for live values', () {
+    final floating = File('lib/floating_monitor.dart').readAsStringSync();
+    final nativeService = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt').readAsStringSync();
+
+    expect(floating, contains('await FloatingBridge.updateData(floatingTelemetryNotifier.value)'));
+    expect(nativeService, contains('data.connected = obj.optBoolean("connected", false)'));
+    expect(nativeService, contains('hudView?.requestLayout()'));
+    expect(nativeService, contains('A" -> "A:" + if (!data.connected) "--"'));
+    expect(nativeService, contains('P" -> "P:" + if (!data.connected) "--"'));
+    expect(nativeService, contains('S" -> "S:" + if (!data.connected) "--"'));
+  });
+
   test('OTA result notifications accept one-shot success/failure/up-to-date events', () {
     expect(isTransientOtaResultEvent('OTA_SUCCESS|MODE=ONLINE|STAGE=ONLINE_FLASH_SUCCESS|VERSION=V2.5|PROGRESS=100'), isTrue);
     expect(isTransientOtaResultEvent('OTA_FAILED|MODE=LOCAL|STAGE=LOCAL_IMAGE_VERIFY|CODE=5|ERROR=UPDATE_FAILED|PROGRESS=100'), isTrue);
