@@ -294,7 +294,7 @@ void main() {
     expect(floating, contains('SegmentedButton<bool>('));
     expect(floating, contains("JexText.of('shizukuAccessGranted', lang)"));
     expect(floating, contains("JexText.of('shizukuAccessDenied', lang)"));
-    expect(floating, contains("JexText.of('requestShizukuPermission', lang)"));
+    expect(floating, contains("JexText.of('grantShizukuAccess', lang)"));
     expect(floating, contains("JexText.of('checkFpsAccess', lang)"));
     expect(floating, contains("FloatingBridge.requestShizukuFpsPermission()"));
     expect(floating, isNot(contains("JexText.of('fpsAccessTitle', lang)")));
