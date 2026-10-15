@@ -4240,28 +4240,28 @@ void _handleAckLine(String line) {
           canPop: false,
           child: SafeArea(
             child: LayoutBuilder(
-            builder: (dialogContext, constraints) {
-              // Pin the palette to the bottom safe area. The panel itself does not
-              // scroll/drag; swatch taps stage a preview, and only Cancel or Select closes it.
-              return Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 420),
-                    child: _JexColorPickerCard(
-                      colors: ledColorPresets,
-                      selected: rgbColor.toUpperCase(),
-                      onCancel: () {
-                        if (dialogContext.mounted) Navigator.pop(dialogContext);
-                      },
-                      onSelect: _setRgbColor,
+              builder: (dialogContext, constraints) {
+                // Pin the palette to the bottom safe area. The panel itself does not
+                // scroll/drag; swatch taps stage a preview, and only Cancel or Select closes it.
+                return Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 420),
+                      child: _JexColorPickerCard(
+                        colors: ledColorPresets,
+                        selected: rgbColor.toUpperCase(),
+                        onCancel: () {
+                          if (dialogContext.mounted) Navigator.pop(dialogContext);
+                        },
+                        onSelect: _setRgbColor,
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
-          ),
+                );
+              },
+            ),
           ),
         );
       },
