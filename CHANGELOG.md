@@ -3,6 +3,15 @@
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
 
+## 2026-10-15 — Fan Speed midpoint correction and App Build #35
+
+- Build #34 correctly stopped before APK compilation: 73 Flutter tests passed and one failed in `Fan Speed level retargeting eases between values without abrupt jumps`. The test expected the easing curve to return exactly 0.5 at progress 0.5, while `Curves.easeInOutCubic` returned 0.510125.
+- Corrected `jexSmoothFanSpeedLevel` in `lib/main.dart` to use symmetric cubic smoothstep `t * t * (3.0 - 2.0 * t)`, preserving eased motion with zero velocity at the endpoints and an exact midpoint. This fixes the intended UI interpolation contract rather than weakening the test.
+- App Build #35 passed on code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`: security/architecture audit, dependency installation, Dart analyze, all 74 Flutter tests, APK compilation, V1/V2/V3 verification, release publication and re-downloaded asset verification.
+- Published one `JEXFYZ-release.apk` at `jexfyz-latest` (54,521,947 bytes), SHA-256 `77e57ece6c194ec97ce9f4e72d379f848173cd2cf905f66a74e6b037ad82e5c1`. Production certificate SHA-256 matched `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`; V1/V2/V3 verified true for both built APK and downloaded release asset.
+- JAR/V1 verification still reports dependency `META-INF` entries not protected by the JAR signature, including `META-INF/services/a1` and `META-INF/services/b1`. Record this as a warning; it does not negate the separate successful V2/V3 results.
+- This was App-only work. No Firmware compile, BIN change/publication, Firebase edit, OTA/flash or physical hardware validation occurred; device-side animation and MT Manager inspection remain open.
+
 ## 2026-10-15 — Smooth Fan Speed retargeting and seamless indicator loops
 
 - Added `jexSmoothFanSpeedLevel`, with a dedicated retargetable `AnimationController` for the Fan Speed gauge. Each new active speed target interpolates from the currently displayed value over 420 ms; another target arriving mid-transition starts from the current interpolated position rather than jumping back. Fan OFF smoothly retargets the gauge to zero over 520 ms; the telemetry percentage remains authoritative.
