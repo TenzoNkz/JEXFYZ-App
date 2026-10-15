@@ -2,6 +2,10 @@
 
 This file is the durable App behavior/design contract. Live `lib/` source and the current workflow remain authoritative for implementation.
 
+## Current source repair checkpoint (2026-10-16)
+
+Repair commit `98cfe7ba4d0e9d569b84498d261ad1b67f66eee7` restores Build #54 icon drawing geometry, preserves the Floating Monitor FPS selection when Shizuku is unavailable, adds a fixed WindowManager foreground-focus operation, and avoids false zero FPS on first/invalid samples. This source checkpoint has not been built or test-run; Build #56 remains the latest verified release. Physical-device FPS behavior remains unverified. Firmware, Firebase, OTA, BLE hardware-control and thermal protection code were not changed.
+
 ## Identity and package
 
 - User-facing app name: **JE Cooler**; branding/header: **JE X FYZ**.
