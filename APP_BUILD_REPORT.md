@@ -4,14 +4,14 @@ This is the durable evidence ledger for `@Thinking #Build App!`. A replacement B
 
 ## Current report status
 
-- **Latest completed App Build attempt:** Build #37 FAILED at Dart analysis ([run 38704826445](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38704826445)); root cause was an obsolete unused `_drawHeatWave` helper in `lib/main.dart`. App-scope fix is committed as `402161a9323fed0846f420569ae7118196c38946`; authorized rerun will follow the validated issue-trigger path after this failure and repair are recorded.
-- **Trigger:** validated owner issue [#13](https://github.com/TenzoNkz/JEXFYZ-App/issues/13), exact title `JE X FYZ — BUILD APP TRIGGER`, required body token `JEXFYZ_BUILD_TRIGGER_V1`; closed at `2026-10-15T08:19:17Z`, reopened at `08:19:20Z`.
-- **Source now under test:** Home animation/Notify redesign; Wireless ADB pairing service, encrypted identity storage and native bridge; related regression tests; Foreground FPS/Color Picker changes previously included in Build #36. Build #36 does not cover these latest source additions.
-- **Live source fingerprints:** `lib/main.dart` `d097adea48988700a8a80ac423cc088959cfa1f6`; `lib/floating_monitor.dart` `bd230aee16fa77a0d8d2afb9f1a0c2d80cdcac86`; `lib/app_settings.dart` `c513cd4381ee960cd43612c4ac01e7954f651f62`; `test/widget_test.dart` `bf403ee3d29e8d2f3f6839b2244a00f1b60e8bdb`; `test/adb_pairing_contract_test.dart` `03609184edc5b2df09f40e62ffe99959ea337bad`; `WirelessAdbPairingService.kt` `7f2099cac0c78008d395ec0bb83e32e5f6d55384`; `WirelessAdbIdentityStore.kt` `394eab93a17c563caf7db0511d4d36040c1c59ec`; `MainActivity.kt` `f7340e82a12cece063e310546dcba893e6a5a09f`; Manifest `2124dcd969347d2c7bb1bd99374a398cf50d2387`.
-- **Current published APK until Build #37 completes:** previous Release asset ID `642851650`, 54,620,251 bytes, SHA-256 `a5c9d97a3d28f7f711b0cd3c524289bc136cecec56d3b1d88821e43c713e9a13`. Do not represent this older APK as containing Build #37 source.
-- **Required pending gates:** security/architecture audit, dependency install, Dart analysis, full Flutter test totals, obfuscated APK build, V1/V2/V3, production certificate, publication to `jexfyz-latest`, re-downloaded asset size/identity/SHA-256 equality and re-verification.
-- **Known recurring warnings:** JAR/V1 dependency/metadata entries such as `META-INF/services/a1` and `META-INF/services/b1` remain reported by earlier successful builds, distinct from passing APK V1/V2/V3 checks. Dependency resolver previously warned four packages have newer incompatible versions; Build #37 evidence will determine whether these recur.
-- **Physical/device checks remain separate:** install/rendering, native Wireless ADB pairing, DUMP grant, foreground game FPS, overlay behavior, MT Manager signature display, BLE/cooling and Firmware/OTA are not proven by CI.
+- **Latest App Build:** RUNNING — Build #38, [workflow run 38705213757](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38705213757), source commit `86ea939b284d2724389e3567fb4bf1a541c8303d`.
+- **Build #37:** FAILED at Dart analysis due the obsolete `_drawHeatWave` declaration in `lib/main.dart`; details and skipped gates are preserved in the attempt ledger. Fix commit `402161a9323fed0846f420569ae7118196c38946` removes only that unused method.
+- **Build #38 rerun:** invoked through the same validated owner/title/token issue trigger after the fix and #37 failure were recorded. New source commit includes the App-scope fix; no test/security gate was weakened.
+- **Current intended source:** Home indicator/Notify redesign, Wireless ADB pairing service and AES-GCM/Keystore identity store, native bridge/manifest/Gradle/Kadb 1.3.0, Color Picker/Floating Monitor changes, and added regression tests. Build #36 predates these changes.
+- **Current release is still the previous artifact until #38 completes:** Release `jexfyz-latest`, asset ID `642851650`, 54,620,251 bytes, SHA-256 `a5c9d97a3d28f7f711b0cd3c524289bc136cecec56d3b1d88821e43c713e9a13`. Do not describe it as containing #37/#38 source.
+- **Pending gates:** audit, dependency resolution, Dart analysis, full Flutter test totals, obfuscated APK build, V1/V2/V3, production certificate, Release target/asset identity, re-download SHA-256 and downloaded signing re-verification.
+- **Recurring warnings in prior successful builds:** JAR/V1 dependency/metadata entries (including `META-INF/services/a1` and `META-INF/services/b1`) are not protected under the JAR/V1 streaming interpretation, separately from passing APK V1/V2/V3 scheme gates. Four packages previously had newer versions incompatible with current constraints.
+- **Physical validation remains separate:** on-device UI/FPS/overlay, Wireless ADB pairing and DUMP grant, MT Manager signature interpretation, BLE/cooling, Firmware compile and OTA/flash are not proven by CI.
 
 
 ### Source changes that motivated Build #36 — pre-trigger checkpoint (historical)
@@ -49,6 +49,15 @@ Add a new dated section at the top of the attempt history (do not overwrite prio
 8. Final disposition and next exact action. Only mark `SUCCESS` if all required App Build gates pass; use `BLOCKED` if further progress needs missing permission/secret, external service recovery or separate authorization.
 
 ## Attempt history
+
+### 2026-10-15 — Build #38 — RUNNING (retry after the analyzer fix)
+
+- **Status:** RUNNING / queued at initial verification; awaiting new run evidence.
+- **Trigger:** same validated issue [#13](https://github.com/TenzoNkz/JEXFYZ-App/issues/13), author/owner `TenzoNkz`, exact title `JE X FYZ — BUILD APP TRIGGER`, body token `JEXFYZ_BUILD_TRIGGER_V1`. Closed at `2026-10-15T08:22:33Z`, reopened at `08:22:36Z`. Live workflow blob `0e400cbdedfd54506ae3ac3255da41580c86d750` remains issue opened/reopened only; no push/PR shortcut.
+- **Run:** [Build #38 / 38705213757](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38705213757), event `issues`, exact branch/source `main` / `86ea939b284d2724389e3567fb4bf1a541c8303d`, queued at `2026-10-15T08:22:38Z`.
+- **Reason:** reruns Build #37 after the only fatal Dart analyzer warning was repaired. Build #37's audit and dependency installation passed but it failed analysis and correctly skipped tests/APK/signing/Release.
+- **Fix included:** commit `402161a9323fed0846f420569ae7118196c38946` deletes only unused private `_drawHeatWave` from `lib/main.dart`; the current Home-temperature design no longer draws heat-wave strokes, and no references to the helper remain.
+- **Required evidence:** fresh analyzer success, Flutter test count/results, release build, single APK, signing V1/V2/V3 and official certificate, publication target/asset ID/size/digest, downloaded asset SHA-256 equality and re-verification. Capture any new error and root cause before another retry. Firmware/BIN/Firebase/OTA/device remain out of scope.
 
 ### 2026-10-15 — Build #37 — FAILED (Dart analyzer warning; App-scope fix applied)
 
