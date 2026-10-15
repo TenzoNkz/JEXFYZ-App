@@ -337,8 +337,14 @@ void main() {
     expect(nativeService, contains('private fun isCandidateApplicationLayer(name: String): Boolean'));
     expect(nativeService, isNot(contains('foregroundPackage == packageName')));
     expect(nativeService, isNot(contains('"no_game_foreground"')));
-    expect(nativeService, contains('?: layers.maxByOrNull { it.totalFrames }?.name'));
-    expect(nativeService, contains('} else if (chosenLayer != null)'));
+    expect(nativeService, contains('runDumpsys("window", "displays")'));
+    expect(nativeService, contains('val activityResult = runDumpsys("activity", "activities")'));
+    expect(nativeService, contains('val bestPositive = deltas.filter { it.second > 0L }.maxByOrNull { it.second }'));
+    expect(nativeService, contains('val lastPositiveSample = deltas.firstOrNull { it.first.name == lastPositiveName }'));
+    expect(nativeService, contains('val verifiedZero = fpsLastPositiveLayer?.let { activeLayer ->'));
+    expect(nativeService, contains('fpsMonitorStatus = "sample_invalid"'));
+    expect(nativeService, isNot(contains('?: layers.maxByOrNull { it.totalFrames }?.name')));
+    expect(nativeService, isNot(contains('} else if (chosenLayer != null)')));
     expect(nativeService, contains('delta * 1000.0 / elapsed.toDouble()'));
     expect(manifest, isNot(contains('android.permission.DUMP')));
     expect(manifest, contains('rikka.shizuku.ShizukuProvider'));
@@ -737,16 +743,18 @@ void main() {
     expect(peltier, isNot(contains('moduleRect')));
     expect(peltier, contains('final spine = Path()'));
     expect(peltier, contains('final branches = Path()'));
-    expect(peltier, contains('canvas.rotate(phase / 6)'));
+    expect(peltier, contains('canvas.rotate(angle / 6)'));
     expect(peltier, contains('for (var i = 0; i < 6; i++)'));
-    expect(peltier, contains('for (var i = 0; i < particles; i++)'));
-    expect(peltier, contains('final frost = frostIntensityOverride ??'));
+    expect(peltier, contains('for (var i = 0; i < 4; i++)'));
+    expect(peltier, contains('final frostIntensity ='));
+    expect(peltier, contains('final particleCountValue = frostParticleCountOverride ??'));
+    expect(peltier, contains('final radius = s * (.405 + .010 * math.sin(angle + i));'));
     expect(peltier, isNot(contains('final petal = Path()')));
   });
 
   test('Fan animation uses compact blades and the same soft activity transition as other indicators', () {
     final source = File('lib/main.dart').readAsStringSync();
-    final bladeStart = source.indexOf('void _drawBlade');
+    final bladeStart = source.indexOf('void _drawFanBlade(');
     final bladeEnd = source.indexOf('void paint(Canvas canvas, Size size)', bladeStart);
     final fanStart = source.indexOf('case JexAnimatedIconKind.fan:');
     final fanEnd = source.indexOf('case JexAnimatedIconKind.speed:', fanStart);
@@ -757,9 +765,10 @@ void main() {
     final blades = source.substring(bladeStart, bladeEnd);
     final fan = source.substring(fanStart, fanEnd);
     expect(blades, contains('alpha: .94'));
-    expect(blades, contains('s * .395'));
-    expect(fan, contains('_drawBlade(canvas, s, phase + i * math.pi * 2 / 3, strength)'));
-    expect(fan, contains('canvas.drawCircle(hub, s * .078, fill(c))'));
+    expect(blades, contains('canvas.rotate(angle)'));
+    expect(blades, contains('s * .445'));
+    expect(fan, contains('_drawFanBlade(canvas, size, rotation + i * math.pi * 2 / 3)'));
+    expect(fan, contains('canvas.drawCircle(hub, s * .079, fill(color.withValues(alpha: 1)))'));
     expect(source, contains('activityTransitionController.animateTo('));
     expect(source, contains('curve: Curves.easeInOutCubic'));
   });
@@ -784,7 +793,8 @@ void main() {
     expect(iconState, contains('Duration(milliseconds: 520)'));
     expect(speed, contains('jexFanSpeedNeedleWobble(progress)'));
     expect(speed, contains('final actual = level.clamp(0.0, 1.0).toDouble();'));
-    expect(speed, contains('alpha: .44 + .52 * strength'));
+    expect(speed, contains('stroke(s * .060, color.withValues(alpha: .62 + (.96 - .62) * strength))'));
+    expect(speed, contains('final needleWobble = jexFanSpeedNeedleWobble(progress) * strength;'));
     expect(source, contains('activityTransitionController.value'));
   });
 
@@ -796,9 +806,9 @@ void main() {
     expect(voltageEnd, greaterThan(voltageStart));
     final voltage = source.substring(voltageStart, voltageEnd);
     expect(voltage, contains('canvas.clipPath(bolt)'));
-    expect(voltage, contains('final shineY = s * (.12 + .68 * (.5 - .5 * math.cos(phase)));'));
-    expect(voltage, contains('fill(Colors.white.withValues(alpha: .24 * strength))'));
-    expect(voltage, contains('final energy = level.clamp(0.0, 1.0).toDouble();'));
+    expect(voltage, contains('final sweepY = s * (.13 + .72 * (.5 - .5 * math.cos(angle)));'));
+    expect(voltage, contains('fill(Colors.white.withValues(alpha: (.08 + .24 * voltageEnergy + .04 * pulse) * strength))'));
+    expect(voltage, contains('final voltageEnergy = level.clamp(0.0, 1.0).toDouble();'));
     final bluetoothStart = source.indexOf('case JexAnimatedIconKind.bluetooth:');
     final bluetoothEnd = source.indexOf('case JexAnimatedIconKind.generic:', bluetoothStart);
     expect(bluetoothStart, isNonNegative);
