@@ -10,7 +10,7 @@ Use the canonical command spellings below. The main command decides what is auth
 - `@Thinking #Diskusi! #Tanya Gemini!` — create one complete, self-contained prompt for Gemini based on the agreed discussion, current technical context, exact question, constraints, desired evidence and expected answer format. Do not execute the proposed patch.
 - `@Thinking #Diskusi! #Jawaban Gemini!` — the user has pasted Gemini's answer. Evaluate it against live source, canonical project memory, technical correctness and the agreed discussion. Do not accept it automatically or execute anything while in discussion mode.
 - `@Thinking #Eksekusi Full!` — execute the approved scope fully: scoped changes, relevant audit/tests, cross-reference and documentation reconciliation, canonical memory/index/state/changelog updates, verification and commit to `main`. **Does not authorize App Build or Firmware/device operations.**
-- `@Thinking #Build App!` — own the end-to-end App Build/QC loop: inspect the live workflow and latest source; run the explicit issue-trigger workflow; inspect logs and fix App-scope build/test/signing/artifact faults; repeat validation/build after justified fixes until the success gates pass, or stop with an evidence-based blocker if further work requires unavailable access or separate approval. Record every attempt, fixes, verification and final status in `APP_BUILD_REPORT.md` so the separate Discussion chat can continue from repository evidence.
+- `@Thinking #Build App!` — own the end-to-end App Build/QC loop: inspect the live workflow and latest source; run the explicit issue-trigger workflow; inspect logs and fix App-scope build/test/signing/artifact faults; repeat validation/build after justified fixes until the success gates pass, or stop with an evidence-based blocker if further work requires unavailable access or separate approval. Record every attempt, fixes, verification and final status in `APP_BUILD_REPORT.md` so the same Build App workstream can resume across context limits through one LOAD + CONTINUE prompt; there is no separate Build App recap chat.
 
 Retired commands: standalone `@Thinking #Eksekusi!` and combined `@Thinking #Eksekusi & Build App!` are removed. Do not recommend or execute them. `#Build App!` is now the only App Build command; it does not authorize Firmware compile, BIN/Firebase changes, physical OTA, flashing, device operation or unrelated release operations outside the approved workflow.
 
@@ -84,6 +84,11 @@ A docs-only task is not permission for a functional source edit. A firmware-only
 - Preserve “one authorized App identity / one cooler firmware pairing lock” as a user design requirement, but do not claim an exclusive pairing lock exists until its current source/provisioning flow and physical behavior are verified.
 - Never convert a hypothesis/user-reported result into verified fact. Mark tests/builds as NOT RUN unless executed.
 - If repository state and a summary/memory conflict, fetch the repository; repository wins for current code/version, and user rules remain authoritative for authorization/preferences.
+
+
+### Build App chat-limit handoff
+
+When a Build App chat reaches its context/chat limit, use Prompt D in `CHAT_TRANSFER_PROMPTS.md` exactly once as the opening message of the replacement Build App chat. Prompt D starts with `@Thinking #Build App!`, loads live repository state and `APP_BUILD_REPORT.md`, then continues the same build/QC operation. Do not open a separate recap chat, do not use project-wide Prompt A for this handoff, and do not stop at a boot summary waiting for another command. Prompt A remains for broad project-memory reconciliation; Prompt B remains a read-only general/Discussion boot.
 
 ## 9. Current known checkpoint (must refresh before use)
 
