@@ -2,6 +2,14 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
+## 2026-10-15 — Thinking protocol replacement and App Build report
+
+- Replaced the permanent command model: `#Diskusi!` is full read-only analysis; `#Tanya Gemini!` and `#Jawaban Gemini!` are valid only when paired with `#Diskusi!` in the same command; `#Eksekusi Full!` is the sole full-execution command; `#Build App!` owns end-to-end App Build, App-scope repairs/retries, release-artifact verification and durable reporting.
+- Retired standalone `#Eksekusi!` and combined `#Eksekusi & Build App!`. A missing-parent Gemini command must be rejected without answering its substantive content.
+- Added `APP_BUILD_REPORT.md` as the shared build evidence ledger for source commit, trigger/run IDs, failure analysis/fixes, test/analyze results, APK identity/checksum/signing, warnings, blockers and device-side unknowns.
+- Updated `CHAT_RULES.md`, `BUILD_NOTES.md`, `HANDOVER.md`, `README.md`, `PROJECT_STATE.md`, `MEMORY_INDEX.md` and `CHAT_TRANSFER_PROMPTS.md`. This documentation-only change does not start App Build or modify app/Firmware source, the build workflow, BIN, Firebase, OTA or hardware.
+- Previous App Build #35 / run `38669526891` remains the last known successful run in these records until a new live run is explicitly triggered and verified. Physical-device rendering and MT Manager verification remain separate open gates.
+
 
 ## 2026-10-15 — Chat-limit reconciliation after Build #35
 
