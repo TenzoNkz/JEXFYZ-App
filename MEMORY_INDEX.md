@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Memory Index
 
-Last reconciled against live `main` on 2026-10-15 (Asia/Jakarta). Latest verified App Build is #35 / run `38669526891`, built from code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`; Dart analyze and all 74 Flutter tests passed, the obfuscated APK was verified with V1/V2/V3, and the published asset was downloaded and checked. This index routes memory; always fetch live HEAD and blob fingerprints before acting. Device-side rendering/signature inspection and Firmware/hardware validation remain separate gates.
+Last reconciled against live `main` on 2026-10-15 (Asia/Jakarta). Latest verified App Build remains #35 / run `38669526891`, built from older code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`; its Dart analyze and 74 Flutter tests passed, APK V1/V2/V3 checks passed, and the release asset was verified. Newer Color Picker source/test changes have been committed but are UNBUILT and their added tests have NOT RUN. This index routes memory; always fetch live HEAD and blob fingerprints before acting. Device-side rendering/signature inspection and Firmware/hardware validation remain separate gates.
 ## New-chat boot order
 1. Read `CHAT_TRANSFER.md` completely.
 2. Fetch live `main` HEAD, recursive tree, active Firmware source, App source, tests, build workflow and open-PR state.
@@ -27,7 +27,7 @@ Last reconciled against live `main` on 2026-10-15 (Asia/Jakarta). Latest verifie
 | `CHAT_TRANSFER.md` | Detailed transfer snapshot and boot checklist; verify against live main |
 | `CHAT_TRANSFER_PROMPTS.md` | Prompt A = broad project-memory reconciliation; Prompt B = read-only general/Discussion boot; Prompt C = persist a lasting decision; Prompt D = one-shot Build App chat-limit LOAD + CONTINUE (no recap chat) |
 | `HANDOVER.md` | Current next actions and unresolved validation gates |
-| `APP_NOTES.md` | UI/navigation, named LED palette/preview, voltage-aware Fan motion/coast-down, full-colour box-free Peltier crystal, retargetable Fan Speed gauge/zero return and seamless needle wobble, sinusoidal voltage sheen and Bluetooth ripple envelope, resized Color Picker/Peltier Safety dialogs, bottom-pinned Color Picker + Cancel, offline menu fallback, JE notification monogram, BLE/P1, telemetry, phone Battery heartbeat, Battery Protection Guard presentation rule, pairing-design caveat, localization, reconnect and App contracts |
+| `APP_NOTES.md` | UI/navigation, named LED palette/preview, voltage-aware Fan motion/coast-down, full-colour box-free Peltier crystal, retargetable Fan Speed gauge/zero return and seamless needle wobble, sinusoidal voltage sheen and Bluetooth ripple envelope, staged Color Picker draft with top-left Cancel/top-right Select and blocked outside/back dismissal, Peltier Safety dialogs, offline menu fallback, JE notification monogram, BLE/P1, telemetry, phone Battery heartbeat, Battery Protection Guard presentation rule, pairing-design caveat, localization, reconnect and App contracts |
 | `FIRMWARE_NOTES.md` | Hardware, pins, sensor model, cooling, Adaptive, timing and safety contracts |
 | `firmware/FIRMWARE_TECHNICAL_REFERENCE.md` | Current code architecture and static invariants |
 | `OTA_PROTECTION.md` | Frozen OTA areas and required approval/re-audit |
