@@ -95,6 +95,7 @@ class FloatingMonitorService : Service() {
         val generation = ++fpsGeneration
         fpsMonitorStatus = "starting"
         data.fps = "--"
+        hudView?.requestLayout()
         hudView?.invalidate()
 
         fpsExecutor.execute {
@@ -106,6 +107,7 @@ class FloatingMonitorService : Service() {
                     fpsMonitorWanted = false
                     fpsMonitorStatus = start.error ?: "surfaceflinger_blocked"
                     data.fps = if (fpsMonitorStatus == "permission_missing") "ADB" else "--"
+                    hudView?.requestLayout()
                     hudView?.invalidate()
                 }
                 return@execute
@@ -126,6 +128,7 @@ class FloatingMonitorService : Service() {
                 if (generation != fpsGeneration) return@post
                 fpsMonitorStatus = "active"
                 data.fps = "--"
+                hudView?.requestLayout()
                 hudView?.invalidate()
             }
             fpsPollingTask = fpsExecutor.scheduleWithFixedDelay(
@@ -144,6 +147,7 @@ class FloatingMonitorService : Service() {
         val shouldDisable = fpsCaptureEnabled
         if (!wasWanted && !shouldDisable && fpsMonitorStatus == reason) {
             data.fps = if (reason == "permission_missing") "ADB" else "--"
+            hudView?.requestLayout()
             hudView?.invalidate()
             return
         }
@@ -157,6 +161,7 @@ class FloatingMonitorService : Service() {
         fpsTrackedPackage = null
         fpsTrackedLayer = null
         fpsLastActiveAtMs = 0L
+        hudView?.requestLayout()
         hudView?.invalidate()
 
         if (shouldDisable) {
@@ -354,6 +359,7 @@ class FloatingMonitorService : Service() {
                 if (generation != fpsGeneration) return@post
                 data.fps = "--"
                 fpsMonitorStatus = "foreground_unknown"
+                hudView?.requestLayout()
                 hudView?.invalidate()
             }
             return
@@ -370,6 +376,7 @@ class FloatingMonitorService : Service() {
                 if (generation != fpsGeneration) return@post
                 data.fps = "--"
                 fpsMonitorStatus = "no_game_foreground"
+                hudView?.requestLayout()
                 hudView?.invalidate()
             }
             return
@@ -385,6 +392,7 @@ class FloatingMonitorService : Service() {
                 if (generation != fpsGeneration) return@post
                 data.fps = "--"
                 fpsMonitorStatus = "waiting_for_frames"
+                hudView?.requestLayout()
                 hudView?.invalidate()
             }
         }
@@ -412,6 +420,7 @@ class FloatingMonitorService : Service() {
                 if (generation != fpsGeneration) return@post
                 data.fps = "--"
                 fpsMonitorStatus = "no_layer_data"
+                hudView?.requestLayout()
                 hudView?.invalidate()
             }
             return
@@ -451,6 +460,7 @@ class FloatingMonitorService : Service() {
             if (generation != fpsGeneration) return@post
             data.fps = value
             fpsMonitorStatus = if (value == "--") "waiting_for_frames" else "active"
+            hudView?.requestLayout()
             hudView?.invalidate()
         }
     }
