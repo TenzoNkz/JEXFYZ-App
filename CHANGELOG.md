@@ -5,7 +5,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 ## 2026-10-16 — Post-Build #58 FPS diagnostics (not yet built)
 
 - After Build #58 was installed, the user reported a screenshot showing Shizuku access granted and metric `F` selected while the overlay still displayed `F:--`.
-- Follow-up source checkpoint before documentation updates: `becd7f20517fbdaa4bb9922501f28fbed2282223`. It retries a full, fixed `dumpsys window` operation when `dumpsys window displays` does not yield a parseable focused package, keeps sampler status at `starting` until a valid FPS sample exists, and shows the native sampler status in Settings.
+- Follow-up source/test checkpoint before documentation updates: `6e9b4c73db12c51f4452717d8cf102f49d325dcf`. It retries a full, fixed `dumpsys window` operation when `dumpsys window displays` does not yield a parseable focused package; keeps sampler status at `starting` until a valid sample exists; accepts 0 only after two matching layer snapshots in a valid interval; distinguishes counter resets/invalid samples; cancels stale polling tasks on retry; and shows native sampler status in Settings.
 - Added assertions for the WindowManager fallback, sampler status feedback, and readable status labels. These post-release changes have **not** had Dart analysis, Flutter tests, Kotlin compilation, APK build, release, or physical-device verification. Build #58 remains the latest verified APK and does not contain this follow-up.
 
 ## 2026-10-16 — Icon/FPS source repair included in Build #58
