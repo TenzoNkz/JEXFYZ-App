@@ -59,6 +59,17 @@
                 android:value="JE X FYZ user-enabled floating monitor overlay" />
         </service>
 
+        <!-- User-initiated local Wireless ADB pairing for the existing Game FPS permission flow. -->
+        <service
+            android:name=".WirelessAdbPairingService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="JE Cooler user-started local Wireless debugging pairing and FPS permission setup" />
+        </service>
+
         <!-- Flutter host activity. -->
         <activity
             android:name=".MainActivity"

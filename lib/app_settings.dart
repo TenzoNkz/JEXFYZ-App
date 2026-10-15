@@ -561,20 +561,20 @@ class JexText {
       AppLanguage.indonesia: 'Akses FPS Game',
     },
     'fpsAccessDescription': {
-      AppLanguage.english: 'JE Cooler reads Android SurfaceFlinger frame statistics to calculate frame-rate samples. Android cannot grant this permission to itself.',
-      AppLanguage.indonesia: 'JE Cooler membaca statistik frame SurfaceFlinger Android untuk menghitung FPS. Android tidak mengizinkan aplikasi memberi izin ini kepada dirinya sendiri.',
+      AppLanguage.english: 'JE Cooler reads Android SurfaceFlinger frame statistics to calculate frame-rate samples. You may pair this app with this phone through Android Wireless debugging; after you enter its six-digit code in the notification, JE Cooler requests only the fixed DUMP permission needed for FPS.',
+      AppLanguage.indonesia: 'JE Cooler membaca statistik frame SurfaceFlinger Android untuk menghitung FPS. Kamu dapat memasangkan aplikasi ini dengan HP sendiri melalui Wireless debugging Android; setelah kode enam digit dimasukkan lewat notifikasi, JE Cooler hanya meminta izin DUMP tetap yang diperlukan untuk FPS.',
     },
     'fpsAccessSteps': {
-      AppLanguage.english: 'Connect the phone to a computer with Android Platform-Tools. Enable Developer options and USB debugging, approve the RSA prompt, run the grant command below in the computer terminal, then return here and check access. Wireless debugging with a paired computer also works.',
-      AppLanguage.indonesia: 'Hubungkan HP ke komputer dengan Android Platform-Tools. Aktifkan Opsi developer dan USB debugging, setujui dialog RSA, jalankan perintah grant di terminal komputer, lalu kembali dan periksa akses. Wireless debugging dengan komputer yang sudah dipasangkan juga bisa digunakan.',
+      AppLanguage.english: 'Recommended: tap Pair with Wireless debugging, open Developer options → Wireless debugging → Pair device with pairing code, keep that dialog open, then enter the six-digit code in JE Cooler’s ongoing notification. After pairing, the app attempts one fixed FPS permission grant. Or run the manual command below from a trusted ADB computer.',
+      AppLanguage.indonesia: 'Disarankan: tekan Pair dengan Wireless debugging, buka Opsi developer → Wireless debugging → Pasangkan perangkat dengan kode pairing, biarkan dialog terbuka, lalu masukkan kode enam digit lewat notifikasi JE Cooler. Setelah pairing, aplikasi mencoba satu perintah grant izin FPS yang tetap. Atau jalankan perintah manual di bawah dari komputer ADB tepercaya.',
     },
     'fpsAccessRevoke': {
       AppLanguage.english: 'To revoke the permission later, run:',
       AppLanguage.indonesia: 'Untuk mencabut izin nanti, jalankan:',
     },
     'fpsAccessHint': {
-      AppLanguage.english: 'This route needs a one-time ADB grant of Android’s development-only DUMP permission. It is powerful, so use the grant only on your own phone; JE Cooler runs fixed Activity/SurfaceFlinger queries and stores no frame dumps. Revoke access with the command below. Some ROMs may refuse the grant or hide frame data.',
-      AppLanguage.indonesia: 'Jalur ini memerlukan grant ADB satu kali untuk izin DUMP Android khusus pengembangan. Izin ini kuat, jadi jalankan hanya di HP sendiri; JE Cooler hanya menjalankan query Activity/SurfaceFlinger tetap dan tidak menyimpan dump frame. Cabut izin dengan perintah di bawah. Sebagian ROM dapat menolak grant atau menyembunyikan data frame.',
+      AppLanguage.english: 'DUMP is a powerful development-only system-dump permission. The notification flow requires a fresh six-digit code from this phone’s Wireless debugging screen and then sends only the fixed grant command for FPS; no arbitrary shell command or remote host is exposed. Use this only on your own phone. Revoke with the command below or forget JE Cooler in Wireless debugging / revoke ADB authorizations. Some ROMs may block the grant or hide frame data.',
+      AppLanguage.indonesia: 'DUMP adalah izin system-dump khusus pengembangan yang sangat kuat. Alur notifikasi memerlukan kode enam digit baru dari layar Wireless debugging HP ini lalu hanya mengirim perintah grant FPS yang tetap; tidak ada perintah shell bebas atau host jarak jauh. Gunakan hanya di HP sendiri. Cabut dengan perintah di bawah atau lupakan JE Cooler di Wireless debugging / cabut otorisasi ADB. Sebagian ROM dapat menolak grant atau menyembunyikan data frame.',
     },
     'fpsAccessGranted': {
       AppLanguage.english: 'ADB permission granted',
@@ -603,6 +603,18 @@ class JexText {
     'checkFpsAccess': {
       AppLanguage.english: 'Check access',
       AppLanguage.indonesia: 'Periksa akses',
+    },
+    'pairWirelessAdb': {
+      AppLanguage.english: 'Pair with Wireless debugging',
+      AppLanguage.indonesia: 'Pair dengan Wireless debugging',
+    },
+    'adbPairingStarted': {
+      AppLanguage.english: 'Pairing notification started. Follow its instructions and enter the current six-digit code.',
+      AppLanguage.indonesia: 'Notifikasi pairing dimulai. Ikuti petunjuknya dan masukkan kode enam digit yang sedang aktif.',
+    },
+    'adbPairingStartFailed': {
+      AppLanguage.english: 'Could not start pairing. Android 11+ and JE Cooler notifications must be enabled.',
+      AppLanguage.indonesia: 'Pairing tidak dapat dimulai. Android 11+ dan notifikasi JE Cooler harus aktif.',
     },
     'copyAdbCommand': {
       AppLanguage.english: 'Copy grant command',

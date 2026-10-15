@@ -40,6 +40,8 @@ class MainActivity : FlutterActivity() {
     private val FLOATING_CHANNEL = "je_x_fyz/floating"
     // Production release-integrity bridge.
     private val SECURITY_CHANNEL = "je_x_fyz/security"
+    // Separate channel for user-authorized Wireless Debugging pairing; never mixed with overlay APIs.
+    private val ADB_PAIRING_CHANNEL = "je_x_fyz/adb_pairing"
     private val NOTIFICATION_CHANNEL = "je_x_fyz/notifications"
 
     // Register the stable MethodChannel APIs consumed by Flutter. Method names and channel names
@@ -149,6 +151,28 @@ class MainActivity : FlutterActivity() {
             }
         }
 
+
+        // AI-METHOD / WIRELESS-ADB-PAIRING-CONTRACT
+        // Only starts the user-visible notification flow; it never accepts shell commands from Flutter.
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            ADB_PAIRING_CHANNEL
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "startWirelessAdbPairing" -> {
+                    val requestedLanguage = call.argument<String>("language") ?: "english"
+                    val notificationsEnabled = getSystemService(NotificationManager::class.java).areNotificationsEnabled()
+                    val permissionGranted = Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+                        checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+                    result.success(
+                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
+                            notificationsEnabled && permissionGranted &&
+                            WirelessAdbPairingService.start(this, requestedLanguage)
+                    )
+                }
+                else -> result.notImplemented()
+            }
+        }
 
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,

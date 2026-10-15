@@ -314,6 +314,24 @@ class FloatingBridge {
   }
 }
 
+// AI-MEMORY / WIRELESS-ADB-PAIRING-BRIDGE-CONTRACT
+// Starts only the native user-visible pairing notification; there is no arbitrary-command API.
+class WirelessAdbPairingBridge {
+  static const MethodChannel _channel = MethodChannel('je_x_fyz/adb_pairing');
+
+  static Future<bool> start(AppLanguage language) async {
+    try {
+      return await _channel.invokeMethod<bool>(
+            'startWirelessAdbPairing',
+            <String, Object>{'language': language.name},
+          ) ??
+          false;
+    } catch (_) {
+      return false;
+    }
+  }
+}
+
 // AI-MEMORY / SETTINGS-PAGE-CONTRACT
 // User configuration screen for Floating Monitor; native overlay execution stays outside Flutter.
 class FloatingSettingsPage extends StatefulWidget {
@@ -535,6 +553,30 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
               Text(JexText.of('fpsAccessDescription', language)),
               const SizedBox(height: 12),
               Text(JexText.of('fpsAccessSteps', language)),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () async {
+                    final started = await WirelessAdbPairingBridge.start(language);
+                    if (dialogContext.mounted) Navigator.pop(dialogContext);
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            JexText.of(
+                              started ? 'adbPairingStarted' : 'adbPairingStartFailed',
+                              language,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  icon: const Icon(Icons.phonelink_lock),
+                  label: Text(JexText.of('pairWirelessAdb', language)),
+                ),
+              ),
               const SizedBox(height: 10),
               SelectableText(
                 grantCommand,
