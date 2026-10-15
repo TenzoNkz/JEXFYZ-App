@@ -10,6 +10,13 @@ Last reconciled against live `main` on 2026-10-15 (Asia/Jakarta). Latest verifie
 6. Use `CHAT_TRANSFER_PROMPTS.md` at chat/context limit. Never rely only on old chat summaries.
 7. At context limit, use the full reconciliation prompt, inspect every repository text/config/test file and archive history as required, check local Markdown links, write the subject notes first, then replace `CHAT_TRANSFER.md` last.
 
+## Command protocol quick reference
+- Full read-only planning: `@Thinking #Diskusi!`.
+- Gemini prompt/answer only with parent: `@Thinking #Diskusi! #Tanya Gemini!` and `@Thinking #Diskusi! #Jawaban Gemini!`; reject either without `#Diskusi!` and do not handle the substantive request.
+- Full authorized execution: `@Thinking #Eksekusi Full!`; it does not trigger App Build.
+- Full App Build retry/verification/report loop: `@Thinking #Build App!`.
+- Retired: standalone `#Eksekusi!` and combined `#Eksekusi & Build App!`.
+
 ## Canonical file map
 | File | Purpose |
 |---|---|
@@ -26,7 +33,8 @@ Last reconciled against live `main` on 2026-10-15 (Asia/Jakarta). Latest verifie
 | `OTA_PROTECTION.md` | Frozen OTA areas and required approval/re-audit |
 | `OTA_REGRESSION_MEMORY.md` | Online OTA incident, current transport, trade-off and evidence boundary |
 | `VOLTAGE_TRANSITION_MEMORY.md` | Peltier soft-start interruption, timing contract and physical QC plan |
-| `BUILD_NOTES.md` | Manual APK trigger, toolchain and release boundaries |
+| `BUILD_NOTES.md` | Manual APK trigger, end-to-end retry policy, toolchain and release boundaries |
+| `APP_BUILD_REPORT.md` | Durable per-attempt Build App log shared with the separate Discussion chat; source/run IDs, fixes, tests, artifact checksum, blockers and unverified gates |
 | `CHANGELOG.md` | Historical decisions and superseded approaches |
 | `DESIGN_NOTES.md` | Approved grille, monogram, 1:1 geometry, assets and visual constraints |
 | `android/app/src/main/res/drawable/ic_notification.xml` + `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt` | Android notification JE monochrome small-icon vector and app-open PendingIntent |
@@ -58,7 +66,7 @@ Last reconciled against live `main` on 2026-10-15 (Asia/Jakarta). Latest verifie
 
 ## Persistence / reorganization rules
 - Store all project source and memory in `TenzoNkz/JEXFYZ-App`. The separate `TenzoNkz/JEXFYZ-Firmware` repository must contain only `JEXFYZ.cpp.bin`.
-- Each lasting decision belongs in one canonical subject file. Update current state when it changes, add a concise changelog entry for meaningful behavior/rule changes, and refresh CHAT_TRANSFER after a substantial execution.
+- Each lasting decision belongs in one canonical subject file. The single App Build evidence log is `APP_BUILD_REPORT.md`; keep `PROJECT_STATE.md` concise and point to this log rather than duplicating every attempt. Update current state when it changes, add a concise changelog entry for meaningful behavior/rule changes, and refresh CHAT_TRANSFER after a substantial execution.
 - At context limit, read the previous transfer snapshot completely, inventory live repo, reconcile current claims/hashes, then replace the whole snapshot. Never append another current-status block.
 - After file moves/renames, update every Markdown link, prompt, path-based test, index and workflow comment; verify the final tree.
 - Legacy archives preserve exact pre-cleanup content. Their old current/version claims are deliberately stale and must not be copied into current notes.
