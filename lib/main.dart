@@ -1131,20 +1131,20 @@ Color _jexInterpolatePalette(
   return colors.last;
 }
 
-/// Thermal Battery color tracks the actual phone battery temperature.
-/// Invalid telemetry uses an ice-blue resting color but is not rendered as a live value.
+/// Battery temperature uses the same clear visual bounds: ice blue through 30°C,
+/// transitioning smoothly through cyan/amber/orange to burning red at 40°C and above.
+/// Invalid telemetry uses an ice-blue resting accent, never a fabricated live reading.
 Color jexThermalBatteryColor(String value) {
   final temperature = jexParseTemperatureC(value);
-  if (temperature == null) return jexThermalIceBlue;
-  if (temperature <= 20) return jexThermalIceBlue;
+  if (temperature == null || temperature <= 30) return jexThermalIceBlue;
   if (temperature >= 40) return jexThermalRed;
+  final progress = ((temperature - 30) / 10).clamp(0.0, 1.0).toDouble();
   return _jexInterpolatePalette(
-    temperature,
-    const <double>[20, 24, 30, 34, 37, 40],
+    progress,
+    const <double>[0, .25, .55, .80, 1],
     const <Color>[
       jexThermalIceBlue,
       jexThermalCyan,
-      jexThermalGreen,
       jexThermalAmber,
       jexThermalOrange,
       jexThermalRed,
@@ -1152,10 +1152,10 @@ Color jexThermalBatteryColor(String value) {
   );
 }
 
-/// Battery shell segments represent thermal intensity: 20°C is empty, 30°C half,
-/// and 40°C or above is full. This is separate from phone battery capacity.
+/// Battery shell segments represent the 30–40°C thermal colour band.
+/// The fill is not phone battery capacity.
 double jexThermalBatteryLevel(String value) =>
-    jexTemperatureIndicatorLevel(value, minC: 20, maxC: 40, fallback: 0);
+    jexTemperatureIndicatorLevel(value, minC: 30, maxC: 40, fallback: 0);
 
 /// Fire overlays are controlled by exact live temperature thresholds, not eased visual fill.
 bool jexThermalBatteryFireActive(String value) {
@@ -1170,14 +1170,13 @@ bool jexHotsideFireActive(String value, {required double hotLimit}) {
       temperature >= hotLimit;
 }
 
-/// Hotside stays ice blue through 30°C and reaches burning red at 40°C.
-/// A lower configured safety limit may turn it red sooner. Visual color never replaces
-/// or changes firmware-owned thermal protection.
+/// Hotside stays ice blue through 30°C and reaches burning red at the configured Hotside limit.
+/// Visual color never replaces or changes firmware-owned thermal protection.
 Color jexHotsideTemperatureColor(String value, {required double hotLimit}) {
   final temperature = jexParseTemperatureC(value);
   if (temperature == null || temperature <= 30) return jexThermalIceBlue;
   final limit = hotLimit.isFinite && hotLimit > 0 ? hotLimit : 45.0;
-  final redAt = math.min(40.0, limit);
+  final redAt = limit;
   if (redAt <= 30 || temperature >= redAt) return jexThermalRed;
   final progress = ((temperature - 30) / (redAt - 30))
       .clamp(0.0, 1.0)
@@ -6448,7 +6447,7 @@ void _handleAckLine(String line) {
                             level: jexTemperatureIndicatorLevel(
                               hotValue,
                               minC: 30,
-                              maxC: math.min(40.0, hotLimit.toDouble()),
+                              maxC: hotLimit.toDouble(),
                               fallback: 0,
                             ),
                             warning: safetyLocked || hotsideAtLimit,
