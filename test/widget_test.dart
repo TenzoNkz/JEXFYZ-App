@@ -153,11 +153,16 @@ void main() {
     expect(jexThermalBatteryColor('35.0'), isNot(jexThermalRed));
   });
 
-  test('Hotside thermal colour follows the configured protection limit', () {
-    expect(jexHotsideTemperatureColor('20.0', hotLimit: 45), jexThermalIceBlue);
-    expect(jexHotsideTemperatureColor('45.0', hotLimit: 45), jexThermalRed);
-    expect(jexHotsideTemperatureColor('50.0', hotLimit: 50), jexThermalRed);
+  test('Hotside starts ice blue at 30C and reaches red by 40C or the lower safety limit', () {
+    expect(jexHotsideTemperatureColor('29.9', hotLimit: 45), jexThermalIceBlue);
+    expect(jexHotsideTemperatureColor('30.0', hotLimit: 45), jexThermalIceBlue);
     expect(jexHotsideTemperatureColor('--', hotLimit: 45), jexThermalIceBlue);
+    expect(jexHotsideTemperatureColor('35.0', hotLimit: 45), isNot(jexThermalIceBlue));
+    expect(jexHotsideTemperatureColor('39.99', hotLimit: 45), isNot(jexThermalRed));
+    expect(jexHotsideTemperatureColor('40.0', hotLimit: 45), jexThermalRed);
+    expect(jexHotsideTemperatureColor('45.0', hotLimit: 45), jexThermalRed);
+    expect(jexHotsideTemperatureColor('35.0', hotLimit: 35), jexThermalRed);
+    expect(jexHotsideTemperatureColor('50.0', hotLimit: 50), jexThermalRed);
     expect(jexHotsideFireActive('44.99', hotLimit: 45), isFalse);
     expect(jexHotsideFireActive('45.0', hotLimit: 45), isTrue);
     expect(jexHotsideFireActive('--', hotLimit: 45), isFalse);
@@ -165,10 +170,11 @@ void main() {
     expect(jexTemperatureIndicatorLevel('44.0', minC: 20, maxC: 45), lessThan(1));
   });
 
-  test('Voltage colour and energy are consistent for 5V, 9V and 12V', () {
+  test('Voltage colour and energy are consistent for 5V, 9V, 12V and disconnected fallback', () {
     expect(jexVoltageIndicatorColor('5V'), const Color(0xFFFF4D5A));
     expect(jexVoltageIndicatorColor('9V'), const Color(0xFF52E6A2));
     expect(jexVoltageIndicatorColor('12V'), const Color(0xFF4D8CFF));
+    expect(jexVoltageIndicatorColor('--'), const Color(0xFFFF4D5A));
     expect(jexVoltageEnergyLevel('5V'), lessThan(jexVoltageEnergyLevel('9V')));
     expect(jexVoltageEnergyLevel('9V'), lessThan(jexVoltageEnergyLevel('12V')));
     expect(jexVoltageEnergyLevel('--'), 0);
@@ -700,7 +706,7 @@ void main() {
     expect(iconState, contains('if (widget.active)'));
   });
 
-  test('Peltier indicator is a full-bright frost crystal with no module box', () {
+  test('Peltier crystal is symmetric and its particles remain in a bounded ring', () {
     final source = File('lib/main.dart').readAsStringSync();
     final peltierStart = source.indexOf('case JexAnimatedIconKind.peltier:');
     final peltierEnd = source.indexOf('case JexAnimatedIconKind.fan:', peltierStart);
@@ -708,26 +714,18 @@ void main() {
     expect(peltierEnd, greaterThan(peltierStart));
     final peltier = source.substring(peltierStart, peltierEnd);
     expect(peltier, isNot(contains('moduleRect')));
-    expect(peltier, isNot(contains('drawRRect')));
     expect(peltier, contains('final spine = Path()'));
     expect(peltier, contains('final branches = Path()'));
-    expect(peltier, contains('final particleCountValue = frostParticleCountOverride ??'));
-    expect(peltier, contains('final voltageStrength = ((particleCountValue - 2.0) / 6.0)'));
-    expect(peltier, contains('canvas.rotate(angle / 6)'));
+    expect(peltier, contains('canvas.rotate(phase / 6)'));
     expect(peltier, contains('for (var i = 0; i < 6; i++)'));
-    expect(peltier, contains('for (var i = 0; i < 4; i++)'));
-    expect(peltier, contains('color.withValues(alpha: 1)'));
-    expect(peltier, contains('fill(color.withValues(alpha: .28 + .52 * voltageStrength))'));
-    expect(peltier, contains('fill(Colors.white.withValues(alpha: .86))'));
-    expect(peltier, contains('math.sin(angle + i)'));
-    expect(peltier, isNot(contains('frostVisibilityOverride')));
-    expect(peltier, isNot(contains('coolingFade')));
+    expect(peltier, contains('for (var i = 0; i < particles; i++)'));
+    expect(peltier, contains('final frost = frostIntensityOverride ??'));
     expect(peltier, isNot(contains('final petal = Path()')));
   });
 
-  test('Fan OFF keeps full-colour blades while the coast controller settles', () {
+  test('Fan animation uses compact blades and the same soft activity transition as other indicators', () {
     final source = File('lib/main.dart').readAsStringSync();
-    final bladeStart = source.indexOf('void _drawFanBlade');
+    final bladeStart = source.indexOf('void _drawBlade');
     final bladeEnd = source.indexOf('void paint(Canvas canvas, Size size)', bladeStart);
     final fanStart = source.indexOf('case JexAnimatedIconKind.fan:');
     final fanEnd = source.indexOf('case JexAnimatedIconKind.speed:', fanStart);
@@ -738,14 +736,14 @@ void main() {
     final blades = source.substring(bladeStart, bladeEnd);
     final fan = source.substring(fanStart, fanEnd);
     expect(blades, contains('alpha: .94'));
-    expect(blades, contains('alpha: .45'));
-    expect(blades, isNot(contains('active ? .94 : .60')));
-    expect(fan, contains('final rotation = angle;'));
-    expect(fan, contains('alpha: 1'));
-    expect(fan, isNot(contains('active ? 1 : .64')));
+    expect(blades, contains('s * .395'));
+    expect(fan, contains('_drawBlade(canvas, s, phase + i * math.pi * 2 / 3, strength)'));
+    expect(fan, contains('canvas.drawCircle(hub, s * .078, fill(c))'));
+    expect(source, contains('activityTransitionController.animateTo('));
+    expect(source, contains('curve: Curves.easeInOutCubic'));
   });
 
-  test('Fan Speed gauge retargets smoothly and wobbles without loop jumps', () {
+  test('Fan Speed gauge retargets smoothly and fades its motion on state changes', () {
     final source = File('lib/main.dart').readAsStringSync();
     final stateStart = source.indexOf('class _JexAnimatedIconState');
     final stateEnd = source.indexOf('class _JexIconPainter', stateStart);
@@ -758,20 +756,18 @@ void main() {
     final iconState = source.substring(stateStart, stateEnd);
     final speed = source.substring(speedStart, speedEnd);
     expect(iconState, contains('late final AnimationController speedLevelTransitionController;'));
+    expect(iconState, contains('late final AnimationController activityTransitionController;'));
     expect(iconState, contains('final current = _currentSpeedLevel();'));
     expect(iconState, contains('speedLevelTransitionController.forward(from: 0)'));
     expect(iconState, contains('Duration(milliseconds: 420)'));
     expect(iconState, contains('Duration(milliseconds: 520)'));
-    expect(iconState, contains('final displayedLevel = widget.kind == JexAnimatedIconKind.speed'));
     expect(speed, contains('jexFanSpeedNeedleWobble(progress)'));
-    expect(source, isNot(contains('math.sin(angle * 2.3)')));
     expect(speed, contains('final actual = level.clamp(0.0, 1.0).toDouble();'));
-    expect(speed, contains('alpha: 1'));
-    expect(speed, isNot(contains('active ? .96 : .44')));
-    expect(speed, isNot(contains('active ? 1 : .52')));
+    expect(speed, contains('alpha: .44 + .52 * strength'));
+    expect(source, contains('activityTransitionController.value'));
   });
 
-  test('Voltage charge sweep returns smoothly and Bluetooth effects fade across loop boundaries', () {
+  test('Voltage sweep stays clipped to its bolt and Bluetooth ripples fade smoothly', () {
     final source = File('lib/main.dart').readAsStringSync();
     final voltageStart = source.indexOf('case JexAnimatedIconKind.voltage:');
     final voltageEnd = source.indexOf('case JexAnimatedIconKind.adaptive:', voltageStart);
@@ -779,16 +775,16 @@ void main() {
     expect(voltageEnd, greaterThan(voltageStart));
     final voltage = source.substring(voltageStart, voltageEnd);
     expect(voltage, contains('canvas.clipPath(bolt)'));
-    expect(voltage, contains('final sweepY = s * (.13 + .72 * (.5 - .5 * math.cos(angle)));'));
-    expect(voltage, contains('fill(Colors.white.withValues(alpha: .08 + .24 * voltageEnergy + .04 * pulse))'));
-    expect(voltage, contains('final voltageEnergy = level.clamp(0.0, 1.0).toDouble();'));
+    expect(voltage, contains('final shineY = s * (.12 + .68 * (.5 - .5 * math.cos(phase)));'));
+    expect(voltage, contains('fill(Colors.white.withValues(alpha: .24 * strength))'));
+    expect(voltage, contains('final energy = level.clamp(0.0, 1.0).toDouble();'));
     final bluetoothStart = source.indexOf('case JexAnimatedIconKind.bluetooth:');
     final bluetoothEnd = source.indexOf('case JexAnimatedIconKind.generic:', bluetoothStart);
     expect(bluetoothStart, isNonNegative);
     expect(bluetoothEnd, greaterThan(bluetoothStart));
     final bluetooth = source.substring(bluetoothStart, bluetoothEnd);
     expect(bluetooth, contains('math.pow(math.sin(math.pi * wave), 2).toDouble()'));
-    expect(bluetooth, isNot(contains('alpha: .34 * (1 - wave)')));
+    expect(bluetooth, contains('* strength'));
   });
 
   test('Peltier Safety dialog uses readable text and comfortable touch targets', () {
