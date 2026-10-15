@@ -1,3 +1,11 @@
+## 2026-10-15 — Isolate hosted-runner dispatch failures; add manual smoke workflow
+
+- Live parent checkpoint: `main` `16369c8b1723732eb94c73689b4f9d1a85a20641`, root tree `ed1b3bdcdc1f2e1ea983ba6b256c0e2947126ff7` (76 entries / 55 blobs, recursive tree not truncated). Latest attempt #45 / run `38719397780` / job `116369943522` fails in about two seconds with `runner_id=0`, empty runner metadata and zero steps; no logs exist. Builds #41–#45 share the pattern.
+- Compared with Build #40 / run `38713854518`, where runner `1000002340` executed through audit, 80 Flutter tests, APK assembly, signing and production certificate verification. #40 failed only at the source-archive path assertion; publication was skipped.
+- Added `.github/workflows/hosted-runner-diagnostic.yml` (blob `8364d906b5c8570d7bda8c0ea3aef4a308931ff7`): manual-only `workflow_dispatch`, same `ubuntu-24.04` hosted label, no checkout/secrets/build/release, emits only non-sensitive runner metadata. It has **not** been run; it is diagnostic for the separate Build App workstream, not a workaround for GitHub's runner service.
+- Reconciled build report, state, handover, build notes, README, memory index and transfer snapshot. No App Build/diagnostic workflow was triggered; no APK/source ZIP was published; no Firmware/BIN/Firebase/OTA/flash/device action occurred.
+- Evidence: [Build #45](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38719397780), [GitHub Status](https://www.githubstatus.com/), [Community #208438](https://github.com/orgs/community/discussions/208438), [Community #207926](https://github.com/orgs/community/discussions/207926). Exact repository/account root cause remains unconfirmed without a running job or GitHub-side diagnostic.
+
 ## 2026-10-15 — Build #40 source archive assertion failure and path repair prepared
 
 - [Build #40 / run 38713854518](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38713854518) built source commit `d638f6941d9ac16a228f4b78ed001ca2e925f716`. Security/license audit, Flutter dependency installation, Dart analysis and **80 tests passed**; APK build, V1/V2/V3 signing and official certificate verification passed.

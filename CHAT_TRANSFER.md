@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — CHAT TRANSFER SNAPSHOT
 
-Snapshot date: 2026-10-15 (Asia/Jakarta). This transfer is refreshed last. Parent checkpoint before this update: `main` HEAD `d638f6941d9ac16a228f4b78ed001ca2e925f716`, tree `e497c41249c7af91ca3d128c84fbed7ad61eca79`. Build #40 / run `38713854518` passed audit/license checks, dependency installation, Dart analysis, 80 Flutter tests, obfuscated APK build, V1/V2/V3 signing and official certificate verification. The generated source ZIP passed integrity validation, but the step failed on an incorrect SPAKE2 source path assertion. The workflow path has been corrected in pending blob `225584c8feaf8e43ff7228fd6ab3dc84491e34ba`; it must be committed and the full Build App workflow rerun. No Release publication occurred in #40, so the latest released APK remains the older Build #36 asset. Continue without asking the user to choose a technical route: retain Kadb/Wireless ADB, embed the GPL license, publish matching source ZIP alongside exactly one APK to the same private Release, and verify both downloaded hashes.
+Snapshot date: 2026-10-15 (Asia/Jakarta). Parent checkpoint before this update: `main` HEAD `16369c8b1723732eb94c73689b4f9d1a85a20641`, root tree `ed1b3bdcdc1f2e1ea983ba6b256c0e2947126ff7` (76 entries / 55 blobs; recursive tree not truncated). Latest attempt Build #45 / [run 38719397780](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38719397780) and Builds #41–#45 failed before the first step with `runner_id=0`, blank runner/group names and no logs. GitHub Status showed Actions operational; matching failures are discussed at [Community #208438](https://github.com/orgs/community/discussions/208438) and [#207926](https://github.com/orgs/community/discussions/207926). The exact account/repository cause is unconfirmed. Build #40 / [run 38713854518](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38713854518) obtained runner `1000002340` and passed audit, 80 tests, APK assembly and signing, failing only at the subsequently corrected SPAKE2 source-archive path assertion. This update adds manual-only `.github/workflows/hosted-runner-diagnostic.yml` (blob `8364d906b5c8570d7bda8c0ea3aef4a308931ff7`) using the same `ubuntu-24.04` label with no checkout, secrets, APK build or release. It has NOT been dispatched; this `#Eksekusi Full!` task did not trigger the diagnostic or Build App. In the separate Build App workstream, run the diagnostic first; if it fails with runner_id 0, inspect account Actions minutes/spending budget, repository Actions permissions/allowed actions, account verification restrictions and check-run annotations, then escalate to GitHub Support if settings are normal. Do not change the release workflow runner label based only on this evidence.
 
 ## 0. New-chat boot — mandatory order
 
@@ -17,8 +17,8 @@ Snapshot date: 2026-10-15 (Asia/Jakarta). This transfer is refreshed last. Paren
 
 - **Live checkpoint:** refreshed during this documentation-only protocol update on 2026-10-15 (Asia/Jakarta).
 - **Canonical repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`.
-- **Live checkpoint before this transfer write:** `main` HEAD `e3067f1290ebb0f763e02609f273559e889fddfe`; root tree `afb741a49573222455d82bf34500cccd84c55599` (71 entries / 52 blobs, 20 Markdown files, five Dart tests, not truncated). Five App branches exist: `diag/latest-stable-v16`, `diagnostic/v1.6-heap-check`, `fix/adaptive-power-sequencing`, `main`, `tmp-jexfyz-v5-test`; open PR count is zero. Latest Actions success is Build #36 / run `38689044316`, source commit `893393388b99fc6d9e59c420070a159a29e45e9a`. Its 77 tests and release gates passed only for its own earlier source; current Wireless ADB and Home UI redesign changes are newer and absent from that APK. Project state and release fingerprints were reconciled before this transfer refresh.
-- **Latest failed Build App attempt:** [#39 / run 38705765370](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38705765370) on source commit `b9102695de25f61f0b985cab4cd384b4cda12534`; analysis and 80 tests passed, APK assembly failed for the missing SPAKE2 artifact. This source update adds a restricted JitPack declaration (new `android/build.gradle` blob `bb8c0caf26927bd614bb9b05ef79366424063663`), not a build result.
+- **Live checkpoint before this transfer write:** `main` HEAD `16369c8b1723732eb94c73689b4f9d1a85a20641`; root tree `ed1b3bdcdc1f2e1ea983ba6b256c0e2947126ff7` (76 entries / 55 blobs, recursive tree not truncated). Five App branches exist: `diag/latest-stable-v16`, `diagnostic/v1.6-heap-check`, `fix/adaptive-power-sequencing`, `main`, `tmp-jexfyz-v5-test`; open PR count is zero. Latest Actions success is Build #36 / run `38689044316`, source commit `893393388b99fc6d9e59c420070a159a29e45e9a`. Its 77 tests and release gates passed only for its own earlier source; current Wireless ADB and Home UI redesign changes are newer and absent from that APK. Project state and release fingerprints were reconciled before this transfer refresh.
+- **Latest failed Build App attempt:** [#45 / run 38719397780](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38719397780), workflow commit `8a24619ebfdf6fad2e546be9524d43c61dd0094c`; job `116369943522` failed before step 1 with `runner_id=0`/zero steps. Build #40 remains the most recent attempt that executed steps; APK/signing passed but source-archive validation stopped publication.
 - **Active Firmware source:** `firmware/JEXFYZ-V6.6.ino`, blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`, `FW_VERSION = "V6.6"`. Exactly one active versioned `.ino` is tracked and filename/version align. **USER ACCEPTANCE 2026-10-14:** user considers V6.6 correct/final and reports successful compilation and two successful Online OTA flashes/updates with the same version V6.6. Do not modify/recompile/reflash unless the user explicitly reopens Firmware work and separately authorizes the operation. Source-to-BIN provenance remains independently unverified, but is not an active task by itself.
 - **Current App identity/source:** `lib/main.dart` blob `d097adea48988700a8a80ac423cc088959cfa1f6`; `lib/floating_monitor.dart` blob `bd230aee16fa77a0d8d2afb9f1a0c2d80cdcac86`; `lib/app_settings.dart` blob `c513cd4381ee960cd43612c4ac01e7954f651f62`; `test/widget_test.dart` blob `bf403ee3d29e8d2f3f6839b2244a00f1b60e8bdb`; native `FloatingMonitorService.kt` blob `038f12b2ca82255a3b202b10dd770d5caa5b2bbf`; `MainActivity.kt` blob `f7340e82a12cece063e310546dcba893e6a5a09f`; AndroidManifest blob `2124dcd969347d2c7bb1bd99374a398cf50d2387`. Package `com.horizontalzzz.jexfyz`, pubspec `1.0.0+3`; preserve Gradle `versionName "Telegram @horizontalzzz"`.
 - **Current native notification files:** `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt` blob `aecfc87121f2195ef6724613c612d674ed95ae55`; `android/app/src/main/res/drawable/ic_notification.xml` blob `cda9e8404d14a62a61157ec59fae2e491c19f5f7`. The notification helper uses the transparent bold-white JE vector as the sole small icon and sets no large icon; launcher/app imagery still uses `jexfyzicon`.
@@ -28,7 +28,7 @@ Snapshot date: 2026-10-15 (Asia/Jakarta). This transfer is refreshed last. Paren
 - **Latest successful App Build:** Build #36 / ID `38689044316` on code commit `893393388b99fc6d9e59c420070a159a29e45e9a` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38689044316). Security/architecture audit, dependency resolution, Dart analyze, all 77 Flutter tests, obfuscated APK build, V1/V2/V3 verification, production certificate validation, release publication and downloaded-asset verification passed. Release `jexfyz-latest` contains one `JEXFYZ-release.apk`, 54,620,251 bytes, SHA-256 `a5c9d97a3d28f7f711b0cd3c524289bc136cecec56d3b1d88821e43c713e9a13`; certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. Build #36 predates Wireless ADB pairing; current source is not included. JAR/V1 metadata warnings remain separate from passing V1/V2/V3 verification.
 - **Build workflow:** `.github/workflows/jexfyz-app-build-trigger.yml`, blob `0e400cbdedfd54506ae3ac3255da41580c86d750`. Build #36 verified V1/V2/V3 on the built APK and downloaded Release asset; Android manifest minSdk remains 24. JAR/V1 dependency META-INF warnings remain. Trigger title `JE X FYZ — BUILD APP TRIGGER`, token `JEXFYZ_BUILD_TRIGGER_V1`, Ubuntu 24.04 / Java 17 / Flutter 3.47.2 / Gradle 9.3.1. Pairing source after `893393388b99fc6d9e59c420070a159a29e45e9a` is absent from that APK.
 - **Artifact repository:** `TenzoNkz/JEXFYZ-Firmware` main HEAD `cc0a0ae32b826753525c3f2a4442526648cef631`, root tree `b4db8f4e86dfb97d3313c70428b92eb9d4bd7511`; live recursive root contains only `JEXFYZ.cpp.bin`, blob `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, 1,455,936 bytes. Provenance matching V6.6 source remains UNVERIFIED.
-- **Operation boundary:** Build #40 passed the app tests and APK/signature gates but did not publish because the corresponding-source archive validation used an incorrect source path. The corrected workflow path is `src/main/java/com/flyfish233/crypto/spake2/Spake2Context.java` in tag 1.0.5 (pending blob `225584c8feaf8e43ff7228fd6ab3dc84491e34ba`). Continue to the next official build and resolve all gates; no Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+- **Operation boundary:** Build #40 passed test/APK/signature gates but did not publish because source-archive validation failed; that path is corrected in workflow `225584c8feaf8e43ff7228fd6ab3dc84491e34ba`. Builds #41–#45 failed pre-step. This update adds a manual-only hosted-runner diagnostic `8364d906b5c8570d7bda8c0ea3aef4a308931ff7`, not an App build. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
 ## 2. Permanent Thinking commands and authorization limits
 
@@ -244,15 +244,15 @@ Read DESIGN_NOTES.md before any visual iteration.
 
 Never equate test file with passing run; compile with full OTA installation; blue LED with successful HTTP; ACK with hardware state; reboot with proven brownout; version bump with BIN build; or existing BIN with source provenance.
 
-## 16. Live blob fingerprints at pre-transfer HEAD `d638f6941d9ac16a228f4b78ed001ca2e925f716`
+## 16. Live blob fingerprints at pre-transfer HEAD `16369c8b1723732eb94c73689b4f9d1a85a20641`
 
-Checkpoint fetched immediately before this final transfer replacement. The recursive root tree is `e497c41249c7af91ca3d128c84fbed7ad61eca79` (76 entries / 55 blobs, non-truncated). These fingerprints refer to that verified parent checkpoint; this final transfer's blob/commit will differ.
+Checkpoint fetched immediately before this final transfer replacement. The recursive root tree is `ed1b3bdcdc1f2e1ea983ba6b256c0e2947126ff7` (76 entries / 55 blobs, recursive tree not truncated). These fingerprints refer to that verified parent checkpoint; this final transfer's blob/commit will differ.
 
 Canonical project memory:
 - `APP_NOTES.md`: `9c383ae3b4e2c53b553b3c5825fa7f4a4ada0dcb`
-- `APP_BUILD_REPORT.md`: `a9a235a5301b282baa1229f54f624c7c26bd4801`
-- `BUILD_NOTES.md`: `276274d5695e4ff7b2eca327cc9bf1c13ff7b41b`
-- `CHANGELOG.md`: `39c17f1a6b6d4e26f724e4253d532228e198b314`
+- `APP_BUILD_REPORT.md`: `57d605a663ca4f75578fa5c40a41428561780517`
+- `BUILD_NOTES.md`: `7ad524cf788e6530a5136a0ed29aa0d8c7106443`
+- `CHANGELOG.md`: `76c6883b7375103daee8b4885fd1662fa841cc94`
 - `CHAT_RULES.md`: `9fd735f74edac08404528cc7c61e4a03e96a1e8e`
 - `CHAT_TRANSFER_PROMPTS.md`: `5b252c88235ed92c82b7cb3fab5d02af9584a37c`
 - `DESIGN_NOTES.md`: `e04382659dfdd618de0a156046f140452d275dc7`
@@ -262,11 +262,12 @@ Canonical project memory:
 - `OTA_PROTECTION.md`: `06beb86b749b0f0e14c8cb517e43fe7c0f66a4e1`
 - `OTA_REGRESSION_MEMORY.md`: `4342f3da76cf2962140146fbbe0ff8de5e956f4d`
 - `PROJECT_STATE.md`: `7f29382eea586b0a93e6c31b576b3b739c6e58a3`
-- `README.md`: `8d59077cf8c8dd89c15c5ca534cceff841296004`
+- `README.md`: `1670c82fcd3895e5a238444435620ac7049c34c1`
 - `VOLTAGE_TRANSITION_MEMORY.md`: `1c2167659fd0ed8f5db16bf63eb7897344a690ea`
 
 Workflow/configuration:
-- `.github/workflows/jexfyz-app-build-trigger.yml`: `187956b1344680eaf89f48fec28fd8a92e77f832`
+- `.github/workflows/jexfyz-app-build-trigger.yml`: `225584c8feaf8e43ff7228fd6ab3dc84491e34ba`
+- `.github/workflows/hosted-runner-diagnostic.yml` (added by this update): `8364d906b5c8570d7bda8c0ea3aef4a308931ff7` (manual only; NOT RUN)
 - `pubspec.yaml`: `8f558273e21692af9958f914527fdc62d623d63a`
 - `pubspec.lock`: `1e92812bfda2c28244a0556d71d1ec94084acc66`
 - `android/app/build.gradle`: `05a0b863cfc6d73dc3789e364d7000eee0f3db0e`
