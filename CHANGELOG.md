@@ -2,6 +2,11 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
+## 2026-10-15 — One-shot Build App chat-limit handoff
+
+- Clarified that a Build App chat reaching the context limit uses Prompt D from `CHAT_TRANSFER_PROMPTS.md` exactly once as the first message in the replacement Build App chat. The prompt loads live repository/build evidence and continues the existing work; there is no separate recap chat or recap prompt. Prompt A remains for broad project-memory reconciliation and is not the Build App handoff.
+- Aligned `CHAT_RULES.md`, `BUILD_NOTES.md`, `APP_BUILD_REPORT.md`, `HANDOVER.md`, `MEMORY_INDEX.md`, `PROJECT_STATE.md`, `README.md` and the refreshed `CHAT_TRANSFER.md` with this single-load handoff model. Documentation-only; no App/Firmware source or workflow changed, and no App Build was run.
+
 ## 2026-10-15 — Thinking protocol replacement and App Build report
 
 - Replaced the permanent command model: `#Diskusi!` is full read-only analysis; `#Tanya Gemini!` and `#Jawaban Gemini!` are valid only when paired with `#Diskusi!` in the same command; `#Eksekusi Full!` is the sole full-execution command; `#Build App!` owns end-to-end App Build, App-scope repairs/retries, release-artifact verification and durable reporting.
