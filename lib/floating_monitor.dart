@@ -34,6 +34,11 @@ double _normalizeFloatingSize(double value) {
       .toDouble();
 }
 
+double _normalizeFloatingOpacity(double value) {
+  final safe = value.isFinite ? value.clamp(0.0, 1.0).toDouble() : 0.9;
+  return ((safe * 20).round() / 20).clamp(0.0, 1.0).toDouble();
+}
+
 // AI-MEMORY / CONFIG MODEL
 // Persisted overlay presentation/settings only. Device state never belongs in this model.
 class FloatingConfig {
@@ -74,8 +79,8 @@ class FloatingConfig {
       style: FloatingDisplayStyle.letters,
       order: order ?? List<String>.from(this.order),
       selected: selected ?? Set<String>.from(this.selected),
-      size: size ?? this.size,
-      opacity: opacity ?? this.opacity,
+      size: _normalizeFloatingSize(size ?? this.size),
+      opacity: _normalizeFloatingOpacity(opacity ?? this.opacity),
       backgroundColor: backgroundColor ?? this.backgroundColor,
       horizontal: horizontal ?? this.horizontal,
     );
@@ -126,7 +131,7 @@ class FloatingConfig {
         order: order,
         selected: selected,
         size: _normalizeFloatingSize((decoded['size'] as num?)?.toDouble() ?? 0.6),
-        opacity: ((decoded['opacity'] as num?)?.toDouble() ?? 0.9).clamp(0.0, 1.0).toDouble(),
+        opacity: _normalizeFloatingOpacity((decoded['opacity'] as num?)?.toDouble() ?? 0.9),
         backgroundColor: backgroundColor,
         horizontal: decoded['horizontal'] is bool ? decoded['horizontal'] as bool : true,
       );
@@ -596,17 +601,6 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     }
   }
 
-  Future<void> _openShizukuManager() async {
-    final opened = await FloatingBridge.openShizukuSetup();
-    if (!opened && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(JexText.of('shizukuOpenFailed', appLanguageNotifier.value))),
-      );
-    }
-  }
-
-
-
   // AI-METHOD / NORMALIZATION CONTRACT
   // Guarantee a valid seven-metric selection for legacy/empty persisted configurations.
   Future<FloatingConfig> _normalizeSelection(FloatingConfig value) async {
@@ -828,7 +822,6 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                             ),
                         ],
                       ),
-                      const SizedBox(height: 6),
                       const SizedBox(height: 8),
                       Wrap(
                         spacing: 8,
