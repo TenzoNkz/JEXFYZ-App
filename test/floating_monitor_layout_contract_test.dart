@@ -46,6 +46,8 @@ void main() {
     expect(floating, contains('config.size.toStringAsFixed(2)'));
     expect(floating, contains('max: 1.00'));
     expect(floating, contains('divisions: 14'));
+    expect(floating, isNot(contains('size.toDouble().clamp(0.3, 0.8)')));
+    expect(floating, contains('size.toDouble().clamp(0.3, 1.0)'));
     expect(floating, contains("maxLabel: '1.00×'"));
     expect(floating, contains('(config.opacity * 100).round()'));
     expect(floating, contains("minLabel: '0%'"));
