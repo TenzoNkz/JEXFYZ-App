@@ -31,11 +31,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          printf 'GITHUB_RUN_ID=%s\\n' "$GITHUB_RUN_ID"
-          printf 'GITHUB_RUN_ATTEMPT=%s\\n' "$GITHUB_RUN_ATTEMPT"
-          printf 'RUNNER_NAME=%s\\n' "${RUNNER_NAME:-missing}"
-          printf 'RUNNER_OS=%s\\n' "${RUNNER_OS:-missing}"
-          printf 'RUNNER_ARCH=%s\\n' "${RUNNER_ARCH:-missing}"
+          printf 'GITHUB_RUN_ID=%s\n' "$GITHUB_RUN_ID"
+          printf 'GITHUB_RUN_ATTEMPT=%s\n' "$GITHUB_RUN_ATTEMPT"
+          printf 'RUNNER_NAME=%s\n' "${RUNNER_NAME:-missing}"
+          printf 'RUNNER_OS=%s\n' "${RUNNER_OS:-missing}"
+          printf 'RUNNER_ARCH=%s\n' "${RUNNER_ARCH:-missing}"
           date -u '+UTC=%Y-%m-%dT%H:%M:%SZ'
           test -n "${RUNNER_NAME:-}"
           test "${RUNNER_OS:-}" = "Linux"
