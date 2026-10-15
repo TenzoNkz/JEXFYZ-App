@@ -988,8 +988,10 @@ double jexSmoothFanSpeedLevel({
   required double to,
   required double progress,
 }) {
-  final t = Curves.easeInOutCubic.transform(progress.clamp(0.0, 1.0).toDouble());
-  return from + (to - from) * t;
+  final t = progress.clamp(0.0, 1.0).toDouble();
+  // Symmetric cubic smoothstep: exact midpoint and zero velocity at both ends.
+  final eased = t * t * (3.0 - 2.0 * t);
+  return from + (to - from) * eased;
 }
 
 /// Small periodic needle movement. Integer harmonics keep the wobble seamless
