@@ -385,14 +385,6 @@ class FloatingMonitorService : Service() {
         private const val EXTRA_JSON = "json"
         private const val MAX_FPS_DUMP_BYTES = 2 * 1024 * 1024
 
-        private const val CHANNEL_ID = "je_x_fyz_floating"
-        private const val NOTIFICATION_ID = 2301
-        private const val ACTION_START = "je_x_fyz.floating.START"
-        private const val ACTION_STOP = "je_x_fyz.floating.STOP"
-        private const val ACTION_CONFIG = "je_x_fyz.floating.CONFIG"
-        private const val ACTION_DATA = "je_x_fyz.floating.DATA"
-        private const val EXTRA_JSON = "json"
-
         @Volatile
         private var instance: FloatingMonitorService? = null
 
