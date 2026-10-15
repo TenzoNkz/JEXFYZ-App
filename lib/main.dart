@@ -142,7 +142,6 @@ String homeNotifyConnectionLabel({
   if (custom.contains('FAILED') ||
       custom.contains('ERROR') ||
       custom.contains('NOT FOUND') ||
-      custom.contains('DISCONNECTED') ||
       custom.contains('SERVICE DISCOVERY')) {
     return JexText.of('error', language);
   }
@@ -1089,7 +1088,7 @@ double jexTemperatureIndicatorLevel(
 }) {
   final safeFallback = fallback.clamp(0.0, 1.0).toDouble();
   if (!minC.isFinite || !maxC.isFinite || maxC <= minC) return safeFallback;
-  final match = RegExp(r'-?\\d+(?:[.,]\\d+)?').firstMatch(value.trim());
+  final match = RegExp(r'-?\d+(?:[.,]\d+)?').firstMatch(value.trim());
   final raw = match?.group(0)?.replaceAll(',', '.');
   final temperature = raw == null ? null : double.tryParse(raw);
   if (temperature == null || !temperature.isFinite) return safeFallback;

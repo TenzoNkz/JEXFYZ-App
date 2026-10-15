@@ -128,3 +128,5 @@ This file is the durable App behavior/design contract. Live `lib/` source and th
 - Adaptive orbital motion stops when Adaptive is OFF. Motion is gated by the connected live session as before; no sensor value is treated as physical truth unless it comes from telemetry.
 - Home Notify's connection badge uses CONNECTED / DISCONNECTED in English and TERHUBUNG / TERPUTUS in Indonesian. Existing error, Connecting and Syncing states and the detailed body message are preserved.
 - Source/test update is committed separately from the explicit Build App workflow. These changes are NOT BUILT / NOT RUN in Flutter and still require the separate @Thinking #Build App! authorization for full CI QC and physical-device verification.
+
+- Follow-up audit clarified that the ordinary “Bluetooth Disconnected” notice is not itself classified as an error badge; the right-side connection status now reflects the live BLE flag, while failed scan/discovery and explicit error messages still show ERROR.

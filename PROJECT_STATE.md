@@ -8,7 +8,7 @@ Last reconciled: 2026-10-15 (Asia/Jakarta). This file is current-only; refresh t
 - **Active Firmware source:** firmware/JEXFYZ-V6.6.ino.
 - **Firmware constant:** FW_VERSION = "V6.6".
 - **Firmware source blob last observed:** f51ba6db5d0e91318f63fea4014bb87f7bf76222.
-- **Active App source:** `lib/main.dart`, current blob `f71836992f7936d3d2b84dc2782a8adeeeeb61b8`.
+- **Active App source:** `lib/main.dart`, current blob `d097adea48988700a8a80ac423cc088959cfa1f6`.
 - **Package/version:** com.horizontalzzz.jexfyz, pubspec 1.0.0+3.
 - **Android identity:** Gradle versionName "Telegram @horizontalzzz"; intentional, preserve exactly.
 - **QC contracts:** test/v6_6_qc_contract_test.dart, test/firmware_touch_adaptive_sync_test.dart, test/app_protocol_notify_contract_test.dart, test/widget_test.dart. Test execution must be checked independently.
@@ -112,5 +112,5 @@ Last reconciled: 2026-10-15 (Asia/Jakarta). This file is current-only; refresh t
 
 - User approved a full seven-icon Home indicator redesign while preserving the existing Home layout and cooler image placement. Live implementation uses dedicated custom-painted battery, Hotside thermometer, voltage, Adaptive orbit, Peltier crystal, Fan rotor and Fan Speed gauge visuals.
 - Hotside's old lateral heat waves were removed from the thermometer body to eliminate clutter/overlap. Battery/Hotside icon levels now derive from valid displayed temperature readings and ease to changes over 520 ms. Adaptive motion is state-gated, and Notify connection badge language changed from ONLINE/OFFLINE to CONNECTED/DISCONNECTED (localized to TERHUBUNG/TERPUTUS in Indonesian); detailed notices and error/connecting/syncing states remain.
-- Current source blobs: lib/main.dart f71836992f7936d3d2b84dc2782a8adeeeeb61b8; lib/app_settings.dart e7952ce9a5b016de1516ca4667cc460714aea4da; test/widget_test.dart 98c4149ba45bfc5061a695e1bba739bb8ebfc111.
+- Current source blobs: lib/main.dart d097adea48988700a8a80ac423cc088959cfa1f6; lib/app_settings.dart e7952ce9a5b016de1516ca4667cc460714aea4da; test/widget_test.dart 10c53a742da199ef19171b70384fdc7f3fa1fe2c.
 - Tests were authored but NOT RUN for this source. No APK build/workflow was started. Next authorized QC step remains @Thinking #Build App!; physical appearance and motion must be checked on-device. Firmware V6.6, firmware BIN, Firebase, OTA and hardware remain untouched.

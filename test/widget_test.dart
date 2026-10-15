@@ -169,6 +169,8 @@ void main() {
     expect(label(connected: false, connecting: true), 'CONNECTING');
     expect(label(connected: false, syncing: true), 'SYNCING');
     expect(label(connected: false, notice: 'Wireless ADB failed'), 'ERROR');
+    expect(label(connected: false, notice: 'Bluetooth Disconnected'), 'DISCONNECTED');
+    expect(label(connected: true, notice: 'Bluetooth Disconnected'), 'CONNECTED');
   });
 
   test('Home Fan Speed shows 100% for Adaptive at 12V', () {
