@@ -4,11 +4,11 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 
 ## CURRENT CHECKPOINT — Thermal indicator source update; CI pending (2026-10-15)
 
-- App source commit `4d0295dc67163b4950ffa5492236d03c1201311e` committed directly to `main`: `lib/main.dart` blob `4d95ae799c4c86ae65c1fdbe2cf6d37eeee68d58`; `test/widget_test.dart` blob `9bca8deb33074af3f0c91551e5d522fa4bfc6c0a`.
+- App source commit `8b58c7033a5462864b52cb921ca25c714bca902f` committed directly to `main`: `lib/main.dart` blob `3eeb4dff7b7fbb52a44022e5e2b130bc1826da23`; `test/widget_test.dart` blob `e673bdbc5ffa80791564b1138db28c6a8731aaec`.
 - Thermal Battery now treats its segmented fill as temperature level (20°C empty, 30°C half, 40°C+ full), transitions from ice blue through cyan/green/amber/orange to red, and shows animated fire at ≥40°C. Text and icon colors tween together. The existing phone battery-temperature read and one-second firmware heartbeat are unchanged.
 - Hotside color/fill follows the configured live firmware `hotLimit`; fire appears at the configured limit. Voltage uses red/green/blue at 5V/9V/12V and graduated discharge energy. Home/menu Fan/Peltier/Adaptive indicators now get matching semantic colors and voltage/speed state parameters.
 - Added three thermal unit-test groups and an updated voltage painter source-contract test. They have **not been run**; no Build App workflow was triggered and no APK/source bundle was regenerated for this source.
-- Last successful Release remains Build #49 from source `2b2d2886abb66481b7134e5036824f625ab5659d`; `jexfyz-latest` does not include commit `4d0295dc67163b4950ffa5492236d03c1201311e`. Run the explicitly authorized App Build workflow to analyze/test/build/sign/release the new source.
+- Last successful Release remains Build #49 from source `2b2d2886abb66481b7134e5036824f625ab5659d`; `jexfyz-latest` does not include commit `8b58c7033a5462864b52cb921ca25c714bca902f`. Run the explicitly authorized App Build workflow to analyze/test/build/sign/release the new source.
 - No firmware source/BIN, Firebase, OTA, flash or device operation occurred.
 
 ## PREVIOUS CHECKPOINT — Build #49 successful App release (2026-10-15)

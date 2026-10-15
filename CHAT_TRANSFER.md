@@ -5,10 +5,10 @@
 Snapshot reconciled from live GitHub on 2026-10-15 (Asia/Jakarta). The last successful Release is Build #49; current App source advanced afterward and is not built/released yet.
 
 - App repo: TenzoNkz/JEXFYZ-App
-- Branch: main; current source implementation commit: `4d0295dc67163b4950ffa5492236d03c1201311e`, tree `b5505ffe9af18e76af95104df0a4021602a1029e`
-- Current source blobs: `lib/main.dart` `4d95ae799c4c86ae65c1fdbe2cf6d37eeee68d58`; `test/widget_test.dart` `9bca8deb33074af3f0c91551e5d522fa4bfc6c0a`
+- Branch: main; current source implementation commit: `8b58c7033a5462864b52cb921ca25c714bca902f`, tree `fe266a9384e2c953a01c618ebc4c5c7028a6bbf3`
+- Current source blobs: `lib/main.dart` `3eeb4dff7b7fbb52a44022e5e2b130bc1826da23`; `test/widget_test.dart` `e673bdbc5ffa80791564b1138db28c6a8731aaec`
 - Latest successful App build: [Build #49 / 38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916), source commit `2b2d2886abb66481b7134e5036824f625ab5659d`, issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22), job `116435785328`, runner `1000002352`. All 80 tests and release gates passed for that older source.
-- Latest Release: [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) has the Build #49 APK and matching source ZIP; neither contains current source commit `4d0295dc67163b4950ffa5492236d03c1201311e`.
+- Latest Release: [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) has the Build #49 APK and matching source ZIP; neither contains current source commit `8b58c7033a5462864b52cb921ca25c714bca902f`.
 - Active App Build workflow: `.github/workflows/jexfyz-app-build-trigger.yml`, blob `5c5af03075f87297a31f5ee26f0e42025f05977b`; issue-only, owner/title/token gated; no manual trigger.
 - Current changes: thermal Battery segments/colors/flames driven by actual temperature; Hotside limit-driven color/fire; red/green/blue graduated Voltage; smooth icon/text color transitions; Home/menu Peltier/Fan/Adaptive/Fan Speed parameters synchronized. Battery-temperature reading and firmware heartbeat preserved.
 - Three thermal helper tests and a voltage painter source-contract update were committed, but have NOT RUN. Next authorized action for validation/release is `@Thinking Eksekusi Build App!`.
@@ -30,7 +30,7 @@ Evidence terms:
 ## 1. Current source, Release state, and next App Build action
 
 ### Current source — IMPLEMENTED / NOT RUN / NOT RELEASED
-- Source commit `4d0295dc67163b4950ffa5492236d03c1201311e`; main Dart blob `4d95ae799c4c86ae65c1fdbe2cf6d37eeee68d58`; widget test blob `9bca8deb33074af3f0c91551e5d522fa4bfc6c0a`. Thermal Battery segments/color/fire, Hotside live-limit color/fire, graduated 5V/9V/12V energy effect, smooth shared Home icon/text color tweening, and matching submenu Fan/Peltier/Adaptive/Fan Speed parameters are committed. Tests/analyzer have not run on this revision.
+- Source commit `8b58c7033a5462864b52cb921ca25c714bca902f`; main Dart blob `3eeb4dff7b7fbb52a44022e5e2b130bc1826da23`; widget test blob `e673bdbc5ffa80791564b1138db28c6a8731aaec`. Thermal Battery segments/color/fire, Hotside live-limit color/fire, graduated 5V/9V/12V energy effect, smooth shared Home icon/text color tweening, and matching submenu Fan/Peltier/Adaptive/Fan Speed parameters are committed. Tests/analyzer have not run on this revision.
 - Battery temperature acquisition and the existing one-second firmware heartbeat remain unchanged. Visual changes do not modify Firmware safety behavior. No firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
 ### Latest verified App Build: SUCCESS for older source
@@ -205,16 +205,16 @@ Executed:
 
 The canonical map is MEMORY_INDEX.md. At this reconciliation, prepared blobs for the documentation commit are listed below; their final live SHA must be re-fetched after commit. These values were obtained from GitHub create_blob responses, not inferred filenames.
 
-### Docs refreshed by the thermal indicator implementation record
-- APP_BUILD_REPORT.md: 3c99e3242e9f1180d91da0717d68c645c5096f7e
-- BUILD_NOTES.md: dd98a8d7b721f16409a2b2fd2e3e9caa1b9efb6e
-- CHANGELOG.md: 7df44878327fc5c04ccd6ab0afa1ba6775b98e98
-- HANDOVER.md: 84a078dff940cbd1abbedb93aab1a323ea0220cb
-- MEMORY_INDEX.md: 55b4a818c0b3841db6b3c16d455991af5e576805
-- PROJECT_STATE.md: ea14fa9e469751bd9e58e8e3665508c0cae6b354
-- CHAT_TRANSFER.md: this is the final write; its future blob SHA is intentionally not embedded in itself.
-- `.github/workflows/jexfyz-app-build-trigger.yml` remains unchanged, blob `5c5af03075f87297a31f5ee26f0e42025f05977b`.
-- Current source implementation commit `4d0295dc67163b4950ffa5492236d03c1201311e`; following docs-only commit must not alter source or workflow.
+### Docs refreshed by the exact-threshold thermal indicator update
+- APP_BUILD_REPORT.md: 65cfe338309f9e2718f17b1bb6583982e02d48ae
+- BUILD_NOTES.md: ac645d08312285377c75ba5bcdb8a6b18ea61f88
+- CHANGELOG.md: 7fc27ec58ec79127c18bb290c64da74784437db8
+- HANDOVER.md: 4c25dec9444e4c1ca7516bd50a6354c085929181
+- MEMORY_INDEX.md: 037ab324af33eaeb25b5ffd796eed821db26b42a
+- PROJECT_STATE.md: cbe5fb41e8d131314b73bd7cacd687a76c3be0cb
+- CHAT_TRANSFER.md: final write; its future blob SHA is not embedded in itself.
+- Workflow unchanged: `.github/workflows/jexfyz-app-build-trigger.yml`, blob `5c5af03075f87297a31f5ee26f0e42025f05977b`.
+- Current source commit `8b58c7033a5462864b52cb921ca25c714bca902f`, tree `fe266a9384e2c953a01c618ebc4c5c7028a6bbf3`; tests still NOT RUN.
 
 
 ### Canonical documents unchanged in this reconciliation (parent hashes)
@@ -243,4 +243,4 @@ The canonical map is MEMORY_INDEX.md. At this reconciliation, prepared blobs for
 
 ## 11. Final operation state
 
-This snapshot records that latest successful Release remains Build #49 from source `2b2d2886abb66481b7134e5036824f625ab5659d`, while current main source commit `4d0295dc67163b4950ffa5492236d03c1201311e` adds untested thermal animations. No test/build/release was run for the current source; follow the next-action steps in §1 before claiming it is released. The issue-only workflow is unchanged and no manual trigger was added. Physical-device behavior remains unverified. No Firmware/BIN/Firebase/OTA/flash/device operation was performed.
+This snapshot records that latest successful Release remains Build #49 from source `2b2d2886abb66481b7134e5036824f625ab5659d`, while current main source commit `8b58c7033a5462864b52cb921ca25c714bca902f` adds untested thermal animations. No test/build/release was run for the current source; follow the next-action steps in §1 before claiming it is released. The issue-only workflow is unchanged and no manual trigger was added. Physical-device behavior remains unverified. No Firmware/BIN/Firebase/OTA/flash/device operation was performed.

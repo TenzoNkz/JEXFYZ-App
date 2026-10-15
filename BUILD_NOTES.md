@@ -9,7 +9,7 @@
 - Never claim CI success proves BLE, cooling/safety behavior, Firmware compilation, OTA installation or installed device version.
 
 ## Current source changes — Build App still required
-- Latest successful published APK is Build #49 / source `2b2d2886abb66481b7134e5036824f625ab5659d`. Current App source is now newer: thermal-animation source commit `4d0295dc67163b4950ffa5492236d03c1201311e` (`lib/main.dart` blob `4d95ae799c4c86ae65c1fdbe2cf6d37eeee68d58`; `test/widget_test.dart` blob `9bca8deb33074af3f0c91551e5d522fa4bfc6c0a`).
+- Latest successful published APK is Build #49 / source `2b2d2886abb66481b7134e5036824f625ab5659d`. Current App source is now newer: thermal-animation source commit `8b58c7033a5462864b52cb921ca25c714bca902f` (`lib/main.dart` blob `3eeb4dff7b7fbb52a44022e5e2b130bc1826da23`; `test/widget_test.dart` blob `e673bdbc5ffa80791564b1138db28c6a8731aaec`).
 - Implemented: Thermal Battery uses temperature-driven segments (20°C empty, 30°C half, ≥40°C full), ice-blue→cyan→green→amber→orange→red with animated flame at ≥40°C, and temperature text shares the smoothly interpolated icon color. Existing battery-temperature read and firmware heartbeat remain unchanged.
 - Hotside uses live firmware `hotLimit` for normalized colour/level and animated flame at the limit. Voltage uses red/green/blue at 5V/9V/12V with graduated energy/sweep. Home and menu Fan/Peltier/Adaptive icons now receive matching semantic colors and actual voltage/speed parameters.
 - Three new thermal helper test groups and the voltage-sweep source-contract update are committed. Tests/analyzer have not run against this commit. **Do not claim the new source is released** until the separately authorized `@Thinking Eksekusi Build App!` passes the complete build/release gates.
