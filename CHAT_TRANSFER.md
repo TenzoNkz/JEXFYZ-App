@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — CHAT TRANSFER SNAPSHOT
 
-Snapshot date: 2026-10-15 (Asia/Jakarta). This transfer is refreshed last. Live `main` HEAD immediately before this transfer write: `c144a4811b3ebb48a436d79b98e1e99712a22b2a`. This checkpoint includes Color Picker Select/Cancel staging, Floating Monitor preview removal/orientation controls, ADB-only SurfaceFlinger FPS sampling filtered to Android's focused package, telemetry replay/layout refresh, recovery-command documentation, and source-contract assertions. Full recursive tree/root SHA was not returned in this operation; re-fetch the full recursive tree at next boot. Do not reuse historical tree-root/count data as live truth.
+Snapshot date: 2026-10-15 (Asia/Jakarta). This transfer is refreshed last. Live `main` HEAD immediately before this transfer write: `0389250a29e9d81165113ff59d68da08c5f029be`; its verified parent tree SHA is `53816e47932881301d7f88416347c854ec346bc3`. The full recursive tree was not truncated: 66 entries / 48 blobs, including 20 Markdown files (17 canonical/current docs and three forensic archives) and four Dart test files. This checkpoint includes the Color Picker staged flow, Floating Monitor preview removal/orientation controls, user-controlled ADB-only SurfaceFlinger FPS sampling filtered to Android's focused package, telemetry startup replay/layout refresh, and the standalone Chat Stuck recovery command. Do not confuse this parent tree fingerprint with the tree created by this transfer commit.
 
 ## 0. New-chat boot — mandatory order
 
@@ -17,7 +17,7 @@ Snapshot date: 2026-10-15 (Asia/Jakarta). This transfer is refreshed last. Live 
 
 - **Live checkpoint:** refreshed during this documentation-only protocol update on 2026-10-15 (Asia/Jakarta).
 - **Canonical repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`.
-- **Live checkpoint before this transfer write:** `main` HEAD `c144a4811b3ebb48a436d79b98e1e99712a22b2a`. This preceding work includes code, tests and canonical documentation changes. The recursive tree/root SHA is still unavailable from the connector and must be retrieved fresh at next boot. Recheck branches/open PRs next boot rather than assuming prior results remain current.
+- **Live checkpoint before this transfer write:** `main` HEAD `0389250a29e9d81165113ff59d68da08c5f029be`; parent tree `53816e47932881301d7f88416347c854ec346bc3` (full recursive result: 66 entries, 48 blobs, no truncation). At this checkpoint five App branches existed: `diag/latest-stable-v16`, `diagnostic/v1.6-heap-check`, `fix/adaptive-power-sequencing`, `main`, and `tmp-jexfyz-v5-test`; open PR count was zero. Latest observed Actions run remains Build #35 / `38669526891` success for older source commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`; #34 / `38668919132` failed before APK compilation on its one regression assertion. Newer source edits remain unbuilt. Refresh all these facts on next boot.
 - **Active Firmware source:** `firmware/JEXFYZ-V6.6.ino`, blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`, `FW_VERSION = "V6.6"`. Exactly one active versioned `.ino` is tracked and filename/version align. **USER ACCEPTANCE 2026-10-14:** user considers V6.6 correct/final and reports successful compilation and two successful Online OTA flashes/updates with the same version V6.6. Do not modify/recompile/reflash unless the user explicitly reopens Firmware work and separately authorizes the operation. Source-to-BIN provenance remains independently unverified, but is not an active task by itself.
 - **Current App identity/source:** `lib/main.dart` blob `c697497e16c94b8fe4fe8fd9bd1f9bc93598545f`; `lib/floating_monitor.dart` blob `c08c2a484f83a9cae7c7d4437b0573c1865cd424`; `lib/app_settings.dart` blob `6483031e239d71e0a0784c529e2f45a94fb5404b`; `test/widget_test.dart` blob `2a87292d5c4bc468ee6aad6810b249d284a28bae`; native `FloatingMonitorService.kt` blob `038f12b2ca82255a3b202b10dd770d5caa5b2bbf`; `MainActivity.kt` blob `12004b5b36b8339f7440e54f9a7330e5804e57ef`; AndroidManifest blob `bcf9b3e96b254dd6577035a6643b6935f7320085`. Package `com.horizontalzzz.jexfyz`, pubspec `1.0.0+3`; preserve Gradle `versionName "Telegram @horizontalzzz"`.
 - **Current native notification files:** `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt` blob `aecfc87121f2195ef6724613c612d674ed95ae55`; `android/app/src/main/res/drawable/ic_notification.xml` blob `cda9e8404d14a62a61157ec59fae2e491c19f5f7`. The notification helper uses the transparent bold-white JE vector as the sole small icon and sets no large icon; launcher/app imagery still uses `jexfyzicon`.
@@ -201,7 +201,7 @@ Read DESIGN_NOTES.md before any visual iteration.
 - `APP_NOTES.md` now records the one-second phone Battery heartbeat, firmware 5-second freshness TTL, default Battery zones, no standalone Battery Protection Guard UI, and the one-App/one-cooler pairing-lock intent as unverified implementation.
 - Firmware notes/technical reference/OTA protection now document the boot SoftAP 10-second no-client timeout, 60-second hard limit after interaction and 160 ms Wi-Fi-off settle before BLE radio ownership.
 - `CHAT_TRANSFER_PROMPTS.md` is expanded to include complete tree and cross-reference audit rules plus a JE X FYZ durable-decision catalogue across hardware, thermal/Adaptive, App UI/BLE/P1, OTA/build and grille design. It preserves rejected approaches and evidence caveats.
-- The retired `firmware/FIRMWARE_ANALYSIS.md` remains archived; current code-level reference is `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`.
+- The retired path `firmware/FIRMWARE_ANALYSIS.md` is not present as an individual file in the live tree; prior context remains in the legacy archive snapshots. The current code-level reference is `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`.
 - The old `test/v5_9_contract_test.dart` was already renamed to `test/app_protocol_notify_contract_test.dart`; contents unchanged, not run.
 - This reconciliation preserved two distinct reported restart incidents, the unimplemented rapid-Hotside-rise request, and the Adaptive-OFF-after-restart LED symptom as clearly unverified/historical; no functional source behavior changed.
 - Three dated `archive/LEGACY_*.md` snapshots remain untouched for forensic recovery; do not copy their old CURRENT/ACTIVE blocks into current notes.
@@ -243,24 +243,24 @@ Read DESIGN_NOTES.md before any visual iteration.
 
 Never equate test file with passing run; compile with full OTA installation; blue LED with successful HTTP; ACK with hardware state; reboot with proven brownout; version bump with BIN build; or existing BIN with source provenance.
 
-## 16. Live blob fingerprints at pre-transfer HEAD `c144a4811b3ebb48a436d79b98e1e99712a22b2a`
+## 16. Live blob fingerprints at pre-transfer HEAD `0389250a29e9d81165113ff59d68da08c5f029be`
 
-Checkpoint taken immediately before this transfer replacement. The documentation, App source, localization, widget-test and native FPS/overlay blobs below were fetched from live `main`. The connector did not provide the current recursive tree/root-tree SHA; verify a complete recursive tree on next boot. This transfer file's own new blob SHA is intentionally omitted.
+Checkpoint taken immediately before this transfer replacement. The documentation, App source, localization, widget-test and native FPS/overlay blobs below were fetched from live `main`. The full recursive tree at the pre-transfer parent is `53816e47932881301d7f88416347c854ec346bc3` (66 entries, 48 blobs, non-truncated); tree and file fingerprints below all refer to this verified parent checkpoint. This transfer file's own new blob SHA is intentionally omitted.
 
 Canonical project memory and docs:
 - `APP_NOTES.md`: `cf3c5561b70f19e5ad5f59035577e2a5764cc487`
 - `APP_BUILD_REPORT.md`: `df3919a43451fbdd99f1951d54d24a18f68e4bd2`
 - `BUILD_NOTES.md`: `13de03cd56091320a213754c05bb8d048b9d29c6`
-- `CHANGELOG.md`: `222096f4436c35f08495029ec5bfd7861c4e60b3`
+- `CHANGELOG.md`: `8f0f81289171176deaad9816158bbd276d87e938`
 - `CHAT_RULES.md`: `9fd735f74edac08404528cc7c61e4a03e96a1e8e`
-- `CHAT_TRANSFER_PROMPTS.md`: `dbb88e237a60cd57691abd18d62478b31a9c4e6b`
+- `CHAT_TRANSFER_PROMPTS.md`: `5b252c88235ed92c82b7cb3fab5d02af9584a37c`
 - `DESIGN_NOTES.md`: `e04382659dfdd618de0a156046f140452d275dc7` (2128 bytes)
 - `FIRMWARE_NOTES.md`: `db53605779f157b3c966b15a07bef73199ca575d` (11583 bytes)
 - `HANDOVER.md`: `2dda2f1a22d36dff09c2f6f479c57d05d59bce3f`
-- `MEMORY_INDEX.md`: `0dc85bdc55dfd959f391daa9061d0f74b241bc17`
+- `MEMORY_INDEX.md`: `f94e18b71f7805d485da42516353a3298c1cdf7b`
 - `OTA_PROTECTION.md`: `06beb86b749b0f0e14c8cb517e43fe7c0f66a4e1` (4259 bytes)
 - `OTA_REGRESSION_MEMORY.md`: `4342f3da76cf2962140146fbbe0ff8de5e956f4d`
-- `PROJECT_STATE.md`: `8ce87f24a42ba3ef27a3009c9d02e27978921fae`
+- `PROJECT_STATE.md`: `331bbd6b9972b9c2f16792932cc7c0c2c85240ed`
 - `README.md`: `713299ef587d3cfd425c84348f4823dbde6fa2c2`
 - `VOLTAGE_TRANSITION_MEMORY.md`: `1c2167659fd0ed8f5db16bf63eb7897344a690ea`
 
@@ -302,7 +302,7 @@ Visual assets:
 - `assets/jexfyzicon.png`: `bad855f23416fd58aff194c30b7f8fd77f260ea8` (436439 bytes)
 
 Firmware source and technical reference:
-- `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `59e38e34eb01455618932b7872490dfe79bc2208` (7545 bytes)
+- `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `21b93fd525f04663d9a5e528fb926334d2acb816` (8043 bytes)
 - `firmware/JEXFYZ-V6.6.ino`: `f51ba6db5d0e91318f63fea4014bb87f7bf76222` (164410 bytes)
 
 Forensic-only archives:
@@ -321,6 +321,9 @@ Artifact repository separate check: `TenzoNkz/JEXFYZ-Firmware` main HEAD `cc0a0a
 - Regression assertions in `test/widget_test.dart` now cover the Color Picker draft flow, no settings preview/explicit orientation, ADB grant/revoke wiring, focused SurfaceFlinger package filtering, no Flutter `FrameTiming`, telemetry replay and disconnected output state. Static source readback checks passed, plus a small Kotlin smoke-check of example foreground-package regex formats. Dart/Flutter analysis/tests and full Android/Kotlin build were NOT RUN because the Flutter/Dart/Gradle toolchain is unavailable in this execution environment; the smoke-check is not project compilation.
 - Latest source fingerprints are in section 16. Current source changes are NOT BUILT; no App Build workflow was triggered. Latest verified APK remains Build #35 / run `38669526891` on older source commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`. The next full QC cycle requires explicit `@Thinking #Build App!`.
 - Firmware V6.6 source, firmware artifact BIN, Firebase, App Build workflow/trigger, OTA, flash and physical hardware were not changed or operated. ADB FPS accuracy, ROM permission behavior, background survival, real-time frame changes during an actual game, and physical overlay behavior remain UNVERIFIED until build/device testing.
+- Chat Stuck recovery disposition: RECOVERED for repository/workflow checkpoint continuity. The previous repetitive fingerprint-only update loop was stopped; a grouped documentation commit `0389250a29e9d81165113ff59d68da08c5f029be` fixed the stale Floating Monitor hash in PROJECT_STATE, expanded memory routing, repaired Prompt C numbering, and recorded the evidence-first recovery in CHANGELOG. This transfer is the final snapshot update for that reconciliation.
+- Local Markdown link audit: all 17 current/non-archive Markdown files had no missing local link targets. Eighteen relative-link occurrences in the three forensic archive snapshots point to canonical files from their original pre-archive locations; those archives were kept byte-for-byte unchanged, and their internal old links remain a documented historical exception.
+- The live current Firmware technical reference blob is `21b93fd525f04663d9a5e528fb926334d2acb816` (8,043 bytes in the tree); do not reuse the superseded `59e38e34eb01455618932b7872490dfe79bc2208` fingerprint.
 
 ## 18. Final rule for the next chat
 
