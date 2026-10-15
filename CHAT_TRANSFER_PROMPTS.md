@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Chat Transfer Prompt Templates
 
-Use these templates when a conversation is nearing its context limit or a new chat is started. They are intended to recover the project from repository memory, not from a model's imperfect conversational recall. Current command gate: `@Thinking #Diskusi!`, `@Thinking #Diskusi! #Tanya Gemini!`, `@Thinking #Diskusi! #Jawaban Gemini!`, `@Thinking #Eksekusi Full!`, and `@Thinking #Build App!`. The two Gemini subcommands are invalid without `#Diskusi!`; App Build outcomes belong in `APP_BUILD_REPORT.md`.
+Use these templates to move the correct workstream across a context/chat limit without relying on imperfect chat recall. Prompt A is for broad project-memory reconciliation; Prompt B is a read-only general/Discussion boot. For a Build App chat limit, use Prompt D exactly once as the first message in the replacement Build App chat: it loads the current repository/build evidence and continues the same work. There is no separate Build App recap chat or recap prompt. Current command gate: `@Thinking #Diskusi!`, `@Thinking #Diskusi! #Tanya Gemini!`, `@Thinking #Diskusi! #Jawaban Gemini!`, `@Thinking #Eksekusi Full!`, and `@Thinking #Build App!`. The two Gemini subcommands are invalid without `#Diskusi!`; App Build attempts and evidence belong in `APP_BUILD_REPORT.md`.
 
 ---
 
@@ -105,7 +105,7 @@ Before marking an execution complete:
 3. Update PROJECT_STATE.md only if current state or validation gates changed.
 4. Add a concise dated CHANGELOG entry for significant source/config/architecture changes.
 5. Refresh CHAT_TRANSFER.md if the current checkpoint has changed; always read its old content first.
-6. For any App Build attempt, append the exact run outcome, source commit, fixes, tests, APK/checksum/signing checks and unresolved gates to APP_BUILD_REPORT.md so a separate Discussion chat has a durable record.
+6. For any App Build attempt, append the exact run outcome, source commit, fixes, tests, APK/checksum/signing checks and unresolved gates to APP_BUILD_REPORT.md so the next Build App chat can resume through the one-shot Prompt D LOAD + CONTINUE; a Discussion chat may also consult the same evidence record.
 6. Update MEMORY_INDEX.md and all cross-links if file paths/names changed.
 7. Verify post-write content, branch HEAD, blob hashes and no stale path/version references.
 8. Do not report an unrun test/build/compile/device check as passed.
@@ -113,6 +113,63 @@ Before marking an execution complete:
 
 
 ---
+
+## Prompt D — Build App chat-limit LOAD + CONTINUE (use once; no recap chat)
+
+Use this prompt only when the current Build App chat itself reaches its context/chat limit. Paste it once as the opening message of the replacement Build App chat. It combines loading repository evidence and continuing the existing App Build operation. **Do not create a separate recap chat, run Prompt A for this handoff, or send a second prompt just to start the build.**
+
+```text
+@Thinking #Build App! BUILD APP CHAT-LIMIT LOAD — CONTINUE FROM LIVE REPOSITORY EVIDENCE
+
+PROJECT: JE X FYZ / JE Cooler
+CANONICAL REPOSITORY: TenzoNkz/JEXFYZ-App
+CANONICAL BRANCH: main
+
+PURPOSE
+This is a one-shot LOAD + CONTINUE handoff for an already-authorized Build App workstream that reached the chat/context limit. The prior transcript may no longer be available; repository memory and APP_BUILD_REPORT.md are the durable state. Load and verify them, then continue the same Build App/QC operation without a separate recap stage.
+
+1. LOAD LIVE STATE FIRST
+- Read CHAT_TRANSFER.md fully.
+- Fetch live main HEAD and the current repository tree/file identities.
+- Read CHAT_RULES.md, MEMORY_INDEX.md, PROJECT_STATE.md, HANDOVER.md, BUILD_NOTES.md, APP_BUILD_REPORT.md, and the complete current .github/workflows/jexfyz-app-build-trigger.yml.
+- Inspect the current App source, relevant tests, Android/package/signing configuration and dependency files needed for the current failure or build.
+- Read all relevant prior entries in APP_BUILD_REPORT.md, including the exact last run/commit, failed steps, fixes already made, and unresolved gates.
+- Verify current Actions runs, Releases and trigger state from live GitHub evidence. Do not trust historical run IDs or source SHAs without fetching them.
+
+2. RESUME THE EXISTING BUILD OPERATION — DO NOT RECAP
+- Determine whether an intended workflow run is still in progress, failed, blocked, or already passed all required gates.
+- If the intended run is in progress, continue monitoring/verifying that run; do not create a duplicate trigger.
+- If it failed, inspect the exact log and root cause. Repair only authorized App-scope causes, preserve tests/security gates, commit the justified fix directly to main, and start a fresh run using the current official workflow.
+- If blocked, continue any permitted investigation and record the exact blocker and required action.
+- If the existing target commit already passed every required gate and the exact release asset has been independently verified, do not start an unnecessary duplicate build. Verify evidence, complete the report, and close as SUCCESS.
+- Continue the work in this chat without stopping after a boot summary and waiting for another prompt. The user has already supplied the Build App command by using this handoff prompt.
+
+3. OFFICIAL BUILD WORKFLOW
+- Re-fetch and follow the live .github/workflows/jexfyz-app-build-trigger.yml. Documented trigger title: JE X FYZ — BUILD APP TRIGGER. Required body token: JEXFYZ_BUILD_TRIGGER_V1. Verify owner/title/token checks before triggering.
+- Never change the workflow to run on push/PR as a shortcut.
+- Inspect actual results for security/architecture checks, dependency resolution, Dart analysis, Flutter tests, APK build, signing verification, Release publication and re-downloaded asset verification.
+- Repair App-scope failures by fixing root causes; never weaken/delete tests or skip mandatory gates just to obtain a green run.
+- Retry only after a concrete repair or evidence-based transient failure; do not loop blindly.
+
+4. REQUIRED DURABLE RECORD
+- Append every new attempt, exact run ID/URL, source commit, failing step, root cause, code/doc fix, rerun and verification result to APP_BUILD_REPORT.md.
+- Record Dart/test results and counts; APK filename/count/size/SHA-256; V1/V2/V3 and production-certificate verification; Release/tag and re-downloaded asset identity; warnings and all remaining unverified checks.
+- Preserve past failures and successful history. Do not rewrite history to hide a failure.
+- Re-fetch the updated report and verify the final main HEAD and report blob after writing.
+
+5. AUTHORIZATION BOUNDARIES
+- Work directly on main; do not create branches or PRs unless explicitly requested.
+- Preserve Gradle versionName "Telegram @horizontalzzz".
+- This command authorizes App Build, App-scope fixes required for the build, relevant tests, artifact verification and APP_BUILD_REPORT.md updates only.
+- Do not compile/edit Firmware, generate/replace/publish BIN, modify Firebase production metadata, perform OTA/flash, operate hardware/device, expose secrets, or perform unrelated release work without separate explicit authorization.
+- Do not infer physical-device rendering, BLE/cooling behavior or OTA success from CI results.
+- If progress needs unavailable permission/secret, external service recovery, user/device action or separate authorization, stop at that boundary, record BLOCKED and the exact next action. Never claim success without evidence.
+
+6. FINAL DISPOSITION
+Report SUCCESS only when every mandatory App Build/release gate has verified evidence; otherwise report BLOCKED or FAILED accurately. Give the source commit, run URL, trigger details, test results, APK/signing/checksum/release evidence and unresolved checks. Keep the response concise.
+
+IMPORTANT: This Prompt D is used once when a Build App chat reaches its context limit. It is the LOAD + CONTINUE prompt for the replacement Build App chat. There is no Build App recap chat or separate recap prompt. Do not replace CHAT_TRANSFER.md or run the general project-memory reconciliation Prompt A just to transfer the Build App work.
+```
 
 ## Mandatory memory inventory — include all categories before ending a transfer
 
