@@ -120,6 +120,7 @@ class FloatingMonitorService : Service() {
             fpsFrameCounts.clear()
             fpsLastSampleAtMs = 0L
             fpsTrackedLayer = null
+            fpsTrackedPackage = null
             fpsLastActiveAtMs = 0L
             fpsMainHandler.post {
                 if (generation != fpsGeneration) return@post
@@ -153,6 +154,9 @@ class FloatingMonitorService : Service() {
         fpsPollingTask = null
         fpsMonitorStatus = reason
         data.fps = if (reason == "permission_missing") "ADB" else "--"
+        fpsTrackedPackage = null
+        fpsTrackedLayer = null
+        fpsLastActiveAtMs = 0L
         hudView?.invalidate()
 
         if (shouldDisable) {
@@ -301,8 +305,34 @@ class FloatingMonitorService : Service() {
         return Regex("""[a-z][a-z0-9_]*(?:\.[a-z0-9_]+)+""").containsMatchIn(value)
     }
 
+    // AI-METHOD / FOREGROUND-PACKAGE-DETECTION
+    // SurfaceFlinger exposes many system and background app layers. Only follow the app
+    // identified as resumed/focused by Android; never choose a random layer with the biggest delta.
+    private fun readForegroundPackage(): String? {
+        val result = runDumpsys("activity", "activities")
+        if (!result.ok) return null
+
+        val patterns = listOf(
+            Regex("""(?m)^\s*(?:mResumedActivity|topResumedActivity)\s*[:=]\s*ActivityRecord\{[^}]*\bu\d+\s+([A-Za-z0-9_.]+)/"""),
+            Regex("""(?m)^\s*mCurrentFocus\s*=\s*Window\{[^}]*\bu\d+\s+([A-Za-z0-9_.]+)/"""),
+            Regex("""(?m)^\s*mFocusedApp\s*=\s*ActivityRecord\{[^}]*\bu\d+\s+([A-Za-z0-9_.]+)/"""),
+        )
+        return patterns.firstNotNullOfOrNull { pattern ->
+            pattern.find(result.output)?.groupValues?.get(1)
+        }
+    }
+
+    // Match a compositor layer to a single exact package boundary to avoid counting another
+    // app or a similarly prefixed package as this foreground app.
+    private fun layerBelongsToPackage(layerName: String, foregroundPackage: String): Boolean {
+        return layerName.contains("$foregroundPackage/") ||
+            layerName.startsWith("$foregroundPackage#") ||
+            layerName == foregroundPackage
+    }
+
     // AI-METHOD / FPS-SAMPLE-CALCULATION
-    // FPS uses per-layer frame-count deltas over the sampling interval, never screen refreshRate.
+    // Compute per-layer frame deltas only for the app Android reports as currently resumed/focused.
+    // Never substitute display refreshRate or a busy background layer for game FPS.
     private fun pollSurfaceFlinger(generation: Int) {
         if (!fpsMonitorWanted || generation != fpsGeneration) return
         if (!hasFpsDumpPermission()) {
@@ -311,6 +341,52 @@ class FloatingMonitorService : Service() {
                 stopFpsMonitor("permission_missing")
             }
             return
+        }
+
+        val foregroundPackage = readForegroundPackage()
+        if (foregroundPackage == null) {
+            fpsFrameCounts.clear()
+            fpsLastSampleAtMs = 0L
+            fpsTrackedLayer = null
+            fpsTrackedPackage = null
+            fpsLastActiveAtMs = 0L
+            fpsMainHandler.post {
+                if (generation != fpsGeneration) return@post
+                data.fps = "--"
+                fpsMonitorStatus = "foreground_unknown"
+                hudView?.invalidate()
+            }
+            return
+        }
+
+        // Do not report JE Cooler’s own settings frames or Android system UI as game FPS.
+        if (foregroundPackage == packageName || !isCandidateApplicationLayer(foregroundPackage)) {
+            fpsFrameCounts.clear()
+            fpsLastSampleAtMs = 0L
+            fpsTrackedLayer = null
+            fpsTrackedPackage = null
+            fpsLastActiveAtMs = 0L
+            fpsMainHandler.post {
+                if (generation != fpsGeneration) return@post
+                data.fps = "--"
+                fpsMonitorStatus = "no_game_foreground"
+                hudView?.invalidate()
+            }
+            return
+        }
+
+        if (fpsTrackedPackage != foregroundPackage) {
+            fpsFrameCounts.clear()
+            fpsLastSampleAtMs = 0L
+            fpsTrackedLayer = null
+            fpsLastActiveAtMs = 0L
+            fpsTrackedPackage = foregroundPackage
+            fpsMainHandler.post {
+                if (generation != fpsGeneration) return@post
+                data.fps = "--"
+                fpsMonitorStatus = "waiting_for_frames"
+                hudView?.invalidate()
+            }
         }
 
         val result = runDumpsys("SurfaceFlinger", "--timestats", "-dump")
@@ -325,14 +401,18 @@ class FloatingMonitorService : Service() {
         val now = SystemClock.elapsedRealtime()
         val layers = parseLayerFrameCounts(result.output)
             .filter { isCandidateApplicationLayer(it.name) }
+            .filter { layerBelongsToPackage(it.name, foregroundPackage) }
+
         if (layers.isEmpty()) {
+            fpsFrameCounts.clear()
+            fpsLastSampleAtMs = 0L
+            fpsTrackedLayer = null
+            fpsLastActiveAtMs = 0L
             fpsMainHandler.post {
                 if (generation != fpsGeneration) return@post
-                if (fpsLastSampleAtMs != 0L && now - fpsLastSampleAtMs > 3500L) {
-                    data.fps = "--"
-                    fpsMonitorStatus = "no_layer_data"
-                    hudView?.invalidate()
-                }
+                data.fps = "--"
+                fpsMonitorStatus = "no_layer_data"
+                hudView?.invalidate()
             }
             return
         }
@@ -528,6 +608,7 @@ class FloatingMonitorService : Service() {
     private val fpsFrameCounts = mutableMapOf<String, Long>() // FPS worker thread only.
     private var fpsLastSampleAtMs = 0L
     private var fpsTrackedLayer: String? = null
+    private var fpsTrackedPackage: String? = null
     private var fpsLastActiveAtMs = 0L
 
     // AI-METHOD / SERVICE-CREATE CONTRACT
