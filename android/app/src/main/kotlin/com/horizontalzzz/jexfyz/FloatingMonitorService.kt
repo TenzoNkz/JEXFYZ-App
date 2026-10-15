@@ -389,25 +389,12 @@ class FloatingMonitorService : Service() {
         return parsed.distinctBy { it.name }
     }
 
+    // Allow any current foreground package, including JE Cooler itself, launchers,
+    // Settings and Android system UI. Exact package-boundary matching below prevents
+    // unrelated/background layers from being mixed into the screen sample.
     private fun isCandidateApplicationLayer(name: String): Boolean {
-        val value = name.lowercase()
-        if (value.contains(packageName.lowercase())) return false
-        val systemFragments = listOf(
-            "com.android.systemui",
-            "com.android.launcher",
-            "com.google.android.apps.nexuslauncher",
-            "com.miui.home",
-            "com.oplus.launcher",
-            "wallpaper",
-            "statusbar",
-            "navigationbar",
-            "inputmethod",
-            "keyboard",
-            "permissioncontroller",
-            "surfaceflinger",
-            "systemui",
-        )
-        if (systemFragments.any { value.contains(it) }) return false
+        val value = name.trim().lowercase()
+        if (value.isEmpty() || value.contains("surfaceflinger")) return false
         return Regex("""[a-z][a-z0-9_]*(?:\.[a-z0-9_]+)+""").containsMatchIn(value)
     }
 
@@ -418,10 +405,12 @@ class FloatingMonitorService : Service() {
         val result = runDumpsys("activity", "activities")
         if (!result.ok) return null
 
+        // Focused window wins over the resumed Activity: system overlays, dialogs and
+        // launcher/system UI can be the screen the user is currently interacting with.
         val patterns = listOf(
-            Regex("""(?m)^\s*(?:mResumedActivity|topResumedActivity)\s*[:=]\s*ActivityRecord\{[^}]*\bu\d+\s+([A-Za-z0-9_.]+)/"""),
             Regex("""(?m)^\s*mCurrentFocus\s*=\s*Window\{[^}]*\bu\d+\s+([A-Za-z0-9_.]+)/"""),
             Regex("""(?m)^\s*mFocusedApp\s*=\s*ActivityRecord\{[^}]*\bu\d+\s+([A-Za-z0-9_.]+)/"""),
+            Regex("""(?m)^\s*(?:mResumedActivity|topResumedActivity)\s*[:=]\s*ActivityRecord\{[^}]*\bu\d+\s+([A-Za-z0-9_.]+)/"""),
         )
         return patterns.firstNotNullOfOrNull { pattern ->
             pattern.find(result.output)?.groupValues?.get(1)
@@ -472,8 +461,9 @@ class FloatingMonitorService : Service() {
             return
         }
 
-        // Do not report JE Cooler’s own settings frames or Android system UI as game FPS.
-        if (foregroundPackage == packageName || !isCandidateApplicationLayer(foregroundPackage)) {
+        // Track the exact focused package regardless of whether it is a game, App UI,
+        // launcher, Settings, or Android system UI. Reject only unparseable identities.
+        if (!isCandidateApplicationLayer(foregroundPackage)) {
             fpsFrameCounts.clear()
             fpsLastSampleAtMs = 0L
             fpsTrackedLayer = null
@@ -482,7 +472,7 @@ class FloatingMonitorService : Service() {
             fpsMainHandler.post {
                 if (generation != fpsGeneration) return@post
                 data.fps = "--"
-                fpsMonitorStatus = "no_game_foreground"
+                fpsMonitorStatus = "foreground_unknown"
                 hudView?.requestLayout()
                 hudView?.invalidate()
             }
@@ -551,17 +541,20 @@ class FloatingMonitorService : Service() {
         fpsLastSampleAtMs = now
 
         val best = candidates.maxByOrNull { it.second }
+        // If no frame delta exists yet, still bind to a present foreground layer. A stable
+        // screen reports 0 FPS; it must not revert to -- merely because no new frame arrived.
         val chosenLayer = best?.first?.name
-        val value = when {
-            best != null -> {
-                fpsTrackedLayer = chosenLayer
-                fpsLastActiveAtMs = now
-                best.third.roundToInt().coerceIn(0, 480).toString()
-            }
-            fpsTrackedLayer != null && layers.any { it.name == fpsTrackedLayer } -> {
-                if (now - fpsLastActiveAtMs <= 3000L) "0" else "--"
-            }
-            else -> "--"
+            ?: fpsTrackedLayer?.takeIf { tracked -> layers.any { it.name == tracked } }
+            ?: layers.maxByOrNull { it.totalFrames }?.name
+        val value = if (best != null) {
+            fpsTrackedLayer = chosenLayer
+            fpsLastActiveAtMs = now
+            best.third.roundToInt().coerceIn(0, 480).toString()
+        } else if (chosenLayer != null) {
+            fpsTrackedLayer = chosenLayer
+            "0"
+        } else {
+            "--"
         }
         fpsMainHandler.post {
             if (generation != fpsGeneration) return@post
