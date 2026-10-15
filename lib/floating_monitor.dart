@@ -450,7 +450,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
         }
         if (nativeSize is num) {
           next = next.copyWith(
-            size: nativeSize.toDouble().clamp(0.3, 0.8).toDouble(),
+            size: nativeSize.toDouble().clamp(0.3, 1.0).toDouble(),
           );
         }
         if (next.horizontal != config.horizontal || next.size != config.size) {
