@@ -2,15 +2,21 @@
 
 These are durable user rules. Current implementation facts must still be checked against live source and workflows.
 
-## 1. Command protocol
+## 1. Command protocol — strict command validation
 
-- `@Thinking Diskusi!` — inspect, read, compare and discuss only. **No repository writes**, functional source edits, builds, releases, Firebase changes, BIN changes, flash or OTA.
-- `@Thinking Tanya Gemini!` — diagnosis/patch request; return precise OLD → NEW patch instructions unless the user states another format.
-- `@Thinking Eksekusi!` — perform only the agreed change, its direct tests/audit and required memory sync.
-- `@Thinking Eksekusi Full!` — perform the authorized change plus full scope audit, relevant tests/contracts, documentation reconciliation, memory/index/transfer refresh and commit. **It does not imply App Build, firmware compile, BIN generation, flash, OTA or release.**
-- `@Thinking Build App!` — explicit App Build operation. It must follow the manual issue-trigger workflow, not a push-trigger or informal compile.
-- `@Thinking Eksekusi & Build App!` — execute the approved code task and then perform the explicitly authorized App Build workflow.
-- Do not execute firmware compile merely because firmware source changed. The user compiles firmware themselves.
+Use the canonical command spellings below. The main command decides what is authorized; never infer a missing command from the message body.
+
+- `@Thinking #Diskusi!` — full technical discussion before execution: inspect, read, compare, analyze risks, reconcile requirements and prepare the proposed plan. **Read-only; no repository writes or source edits.**
+- `@Thinking #Diskusi! #Tanya Gemini!` — create one complete, self-contained prompt for Gemini based on the agreed discussion, current technical context, exact question, constraints, desired evidence and expected answer format. Do not execute the proposed patch.
+- `@Thinking #Diskusi! #Jawaban Gemini!` — the user has pasted Gemini's answer. Evaluate it against live source, canonical project memory, technical correctness and the agreed discussion. Do not accept it automatically or execute anything while in discussion mode.
+- `@Thinking #Eksekusi Full!` — execute the approved scope fully: scoped changes, relevant audit/tests, cross-reference and documentation reconciliation, canonical memory/index/state/changelog updates, verification and commit to `main`. **Does not authorize App Build or Firmware/device operations.**
+- `@Thinking #Build App!` — own the end-to-end App Build/QC loop: inspect the live workflow and latest source; run the explicit issue-trigger workflow; inspect logs and fix App-scope build/test/signing/artifact faults; repeat validation/build after justified fixes until the success gates pass, or stop with an evidence-based blocker if further work requires unavailable access or separate approval. Record every attempt, fixes, verification and final status in `APP_BUILD_REPORT.md` so the separate Discussion chat can continue from repository evidence.
+
+Retired commands: standalone `@Thinking #Eksekusi!` and combined `@Thinking #Eksekusi & Build App!` are removed. Do not recommend or execute them. `#Build App!` is now the only App Build command; it does not authorize Firmware compile, BIN/Firebase changes, physical OTA, flashing, device operation or unrelated release operations outside the approved workflow.
+
+**Required parent command for Gemini:** `#Tanya Gemini!` and `#Jawaban Gemini!` are discussion subcommands, not standalone commands. If either appears without `#Diskusi!` in the same command, reject the command format without answering its substantive question, producing the prompt, or analyzing the pasted answer. Briefly ask the user to resend with the correct parent command. The primary commands `#Diskusi!`, `#Eksekusi Full!` and `#Build App!` do not require one another as prefixes.
+
+For command-format errors, do not silently infer intent. Explain only that the required main command is missing/invalid and show the valid format.
 
 ## 2. Branch and write protocol
 
@@ -34,10 +40,10 @@ These are durable user rules. Current implementation facts must still be checked
 ## 4. Hard authorization boundaries
 
 Do not perform any of these without separate, explicit user authorization:
-- App Build/APK release workflow.
+- End-to-end App Build/APK Release workflow is authorized only by `@Thinking #Build App!` and must be documented in `APP_BUILD_REPORT.md`.
 - Firmware compile/build, BIN generation or publication.
 - Flashing, physical OTA, device operations or Firebase/production metadata updates.
-- Release/prerelease creation or replacement of the artifact BIN.
+- Any release/prerelease operation outside the approved App Build workflow or replacement of the artifact BIN.
 - Functional code changes while the user is asking for Discussion only.
 
 A docs-only task is not permission for a functional source edit. A firmware-only change does not automatically require App Build. App Build does not prove firmware compile or hardware behavior.
@@ -53,6 +59,7 @@ A docs-only task is not permission for a functional source edit. A firmware-only
 - Android Gradle `versionName "Telegram @horizontalzzz"` is intentional identity text; preserve it exactly.
 - Build one ordinary obfuscated production-signed APK; do not create a Play Store app bundle.
 - App Build is manual issue-trigger only, title `JE X FYZ — BUILD APP TRIGGER`, body token `JEXFYZ_BUILD_TRIGGER_V1`. Normal push/PR must not produce an APK.
+- `@Thinking #Build App!` owns retries for App-scope failures; each run/fix must be recorded in `APP_BUILD_REPORT.md`. Stop with a precise blocker if progress requires unavailable permissions, secrets, user/device action or separate authorization.
 - Current workflow `.github/workflows/jexfyz-app-build-trigger.yml` is authoritative. Re-read it before any build; never rely only on old run hashes.
 - Do not add firmware SHA/signature/checksum semantics to Firebase OTA metadata without explicit user approval; intended metadata is firmware version + link.
 - Do not add a second BLE radio / concurrent Wi-Fi+BLE model: ESP32-C3 has one radio path. Wi-Fi OTA and BLE ownership must hand off.
