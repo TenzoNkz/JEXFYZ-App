@@ -1,9 +1,9 @@
 # JE X FYZ / JE Cooler — Voltage Transition & Peltier Soft-Start Memory
 
-Last reconciled: 2026-10-14 (Asia/Jakarta).
+Last reconciled: 2026-10-15 (Asia/Jakarta).
 Canonical source: `firmware/JEXFYZ-V6.6.ino` (last observed blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`).
 Static regression contract: `test/v6_6_qc_contract_test.dart` (live blob `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a` at this checkpoint; tests were not executed).
-Validation state: user-reported successful V6.6 compile and Online OTA update; compile log, installed version and source-to-BIN provenance were not independently checked in this execution. Flutter tests, physical transition reproduction, current measurement and thermal/OTA regression remain unverified.
+Validation state (2026-10-15): App Build #35 (`38669526891`, code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`) passed Dart analyze and all 74 Flutter tests, including the V6.6 source-contract file. This does not constitute Arduino compile or physical rail-transition validation. The user reports V6.6 compiled and Online OTA succeeded twice; compile log, installed version and source-to-BIN provenance were not independently checked. Physical transition reproduction, current measurement and end-to-end thermal/OTA regression remain unverified.
 
 ## Incident
 
