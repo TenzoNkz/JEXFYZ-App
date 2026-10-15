@@ -5,8 +5,8 @@ Snapshot checked against live GitHub main on 2026-10-16 (Asia/Jakarta). Read thi
 ## 1. Repository identity and current Git checkpoint
 
 - Canonical App source/memory repository: [TenzoNkz/JEXFYZ-App](https://github.com/TenzoNkz/JEXFYZ-App), branch `main`.
-- Main HEAD when this snapshot was prepared and before replacing this file: `d4a018147cc91e9089c759cc1e82f0fd506aff72`; recursive tree `0b510e014f663907fd5123a42a4472c1c1bad1e9), full/not truncated, 80 entries. Five branches exist; zero open PRs.
-- Latest source/test checkpoint (functional changes; docs commits followed): `311a18934a3cbe86a2a4718442c92541f081183f`; tree at that point `8c16a479d5aaeb81f0c2cb30a4446ee310e3f7ec), full/not truncated, 80 entries.
+- Main HEAD when this snapshot was prepared and before replacing this file: `d4a018147cc91e9089c759cc1e82f0fd506aff72`; recursive tree `0b510e014f663907fd5123a42a4472c1c1bad1e9`, full/not truncated, 80 entries. Five branches exist; zero open PRs.
+- Latest source/test checkpoint (functional changes; docs commits followed): `311a18934a3cbe86a2a4718442c92541f081183f`; tree at that point `8c16a479d5aaeb81f0c2cb30a4446ee310e3f7ec`, full/not truncated, 80 entries.
 - Exact artifact repository: [TenzoNkz/JEXFYZ-Firmware](https://github.com/TenzoNkz/JEXFYZ-Firmware). Its live main tree was rechecked and contains exactly one entry: `JEXFYZ.cpp.bin`, blob `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, 1,455,936 bytes. Keep this repo BIN-only; source notes/memory belong in the App repo. Source-to-BIN provenance is not independently verified.
 - No new branches or PRs were created. All edits in this workstream were committed directly to `main`.
 
