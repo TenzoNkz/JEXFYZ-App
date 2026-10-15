@@ -166,7 +166,6 @@ class FloatingMonitorService : Service() {
             fpsFrameCounts.clear()
             fpsLastSampleAtMs = 0L
             fpsTrackedLayer = null
-            fpsLastPositiveLayer = null
             fpsTrackedPackage = null
             fpsMainHandler.post {
                 if (generation != fpsGeneration) return@post
@@ -206,7 +205,6 @@ class FloatingMonitorService : Service() {
         data.fps = "--"
         fpsTrackedPackage = null
         fpsTrackedLayer = null
-        fpsLastPositiveLayer = null
         hudView?.requestLayout()
         hudView?.invalidate()
 
@@ -468,7 +466,6 @@ class FloatingMonitorService : Service() {
             fpsFrameCounts.clear()
             fpsLastSampleAtMs = 0L
             fpsTrackedLayer = null
-            fpsLastPositiveLayer = null
             fpsTrackedPackage = null
             fpsMainHandler.post {
                 if (generation != fpsGeneration) return@post
@@ -486,7 +483,6 @@ class FloatingMonitorService : Service() {
             fpsFrameCounts.clear()
             fpsLastSampleAtMs = 0L
             fpsTrackedLayer = null
-            fpsLastPositiveLayer = null
             fpsTrackedPackage = null
             fpsMainHandler.post {
                 if (generation != fpsGeneration) return@post
@@ -502,7 +498,6 @@ class FloatingMonitorService : Service() {
             fpsFrameCounts.clear()
             fpsLastSampleAtMs = 0L
             fpsTrackedLayer = null
-            fpsLastPositiveLayer = null
             fpsTrackedPackage = foregroundPackage
             fpsMainHandler.post {
                 if (generation != fpsGeneration) return@post
@@ -531,7 +526,6 @@ class FloatingMonitorService : Service() {
             fpsFrameCounts.clear()
             fpsLastSampleAtMs = 0L
             fpsTrackedLayer = null
-            fpsLastPositiveLayer = null
             fpsMainHandler.post {
                 if (generation != fpsGeneration) return@post
                 data.fps = "--"
@@ -556,7 +550,6 @@ class FloatingMonitorService : Service() {
 
         val elapsedValid = elapsed in MIN_VALID_FPS_SAMPLE_INTERVAL_MS..MAX_VALID_FPS_SAMPLE_INTERVAL_MS
         if (!elapsedValid) {
-            fpsLastPositiveLayer = null
             fpsMainHandler.post {
                 if (generation != fpsGeneration) return@post
                 data.fps = "--"
@@ -567,26 +560,30 @@ class FloatingMonitorService : Service() {
             return
         }
 
+        var hadInvalidCounter = false
         val deltas = layers.mapNotNull { layer ->
             val old = previous[layer.name] ?: return@mapNotNull null
             val delta = layer.totalFrames - old
-            if (delta < 0L || delta > MAX_VALID_FPS_FRAME_DELTA) return@mapNotNull null
+            if (delta < 0L || delta > MAX_VALID_FPS_FRAME_DELTA) {
+                hadInvalidCounter = true
+                return@mapNotNull null
+            }
             val fps = delta * 1000.0 / elapsed.toDouble()
-            if (!fps.isFinite() || fps > MAX_VALID_FPS_VALUE) return@mapNotNull null
+            if (!fps.isFinite() || fps > MAX_VALID_FPS_VALUE) {
+                hadInvalidCounter = true
+                return@mapNotNull null
+            }
             Triple(layer, delta, fps)
         }
 
-        // Zero is valid only for a layer with a previous positive sample in this session.
-        // Missing, reset and out-of-range samples clear that evidence instead of yielding false zero.
-        val lastPositiveName = fpsLastPositiveLayer
-        val lastPositiveSample = deltas.firstOrNull { it.first.name == lastPositiveName }
-        if (lastPositiveName != null && lastPositiveSample == null) {
-            fpsLastPositiveLayer = null
-        }
-
         val bestPositive = deltas.filter { it.second > 0L }.maxByOrNull { it.second }
-        val verifiedZero = fpsLastPositiveLayer?.let { activeLayer ->
-            deltas.firstOrNull { it.first.name == activeLayer && it.second == 0L }
+        // A zero is valid after two snapshots of the same currently matched layer and a
+        // valid interval. It does not require a prior positive sample (static screens may
+        // never produce one); first snapshots, missing layers and reset counters remain --.
+        val validZero = if (fpsTrackedLayer != null) {
+            deltas.firstOrNull { it.first.name == fpsTrackedLayer && it.second == 0L }
+        } else {
+            deltas.firstOrNull { it.second == 0L }
         }
 
         val value: String
@@ -594,14 +591,26 @@ class FloatingMonitorService : Service() {
         when {
             bestPositive != null -> {
                 fpsTrackedLayer = bestPositive.first.name
-                fpsLastPositiveLayer = bestPositive.first.name
                 value = bestPositive.third.roundToInt().coerceIn(1, 480).toString()
                 status = "active"
             }
-            verifiedZero != null -> {
-                fpsTrackedLayer = verifiedZero.first.name
+            validZero != null -> {
+                fpsTrackedLayer = validZero.first.name
                 value = "0"
                 status = "active"
+            }
+            hadInvalidCounter -> {
+                data.fps = "--"
+                fpsTrackedLayer = null
+                fpsMonitorStatus = "sample_invalid"
+                fpsMainHandler.post {
+                    if (generation != fpsGeneration) return@post
+                    data.fps = "--"
+                    fpsMonitorStatus = "sample_invalid"
+                    hudView?.requestLayout()
+                    hudView?.invalidate()
+                }
+                return
             }
             else -> {
                 fpsTrackedLayer = null
@@ -774,7 +783,6 @@ class FloatingMonitorService : Service() {
     private var fpsLastSampleAtMs = 0L
     private var fpsTrackedLayer: String? = null
     private var fpsTrackedPackage: String? = null
-    private var fpsLastPositiveLayer: String? = null
 
     // AI-METHOD / SERVICE-CREATE CONTRACT
     // Initialize WindowManager, notification channel, and the required specialUse foreground service.
