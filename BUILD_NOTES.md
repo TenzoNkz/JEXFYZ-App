@@ -8,16 +8,18 @@
 - Build App does not authorize Firmware compilation, BIN creation/publication/replacement, Firebase metadata changes, physical OTA, flashing, device operation, or unrelated release operations.
 - Never claim CI success proves BLE, cooling/safety behavior, Firmware compilation, OTA installation or installed device version.
 
-## CURRENT — Build #54 successful; latest source is released
+## CURRENT — Build #55 successful; latest source is released
 
-- Latest successful App Build is #54 / run 38767611593, source commit 437e7730dbcaf9666ae4828e546a45343bb4890c. It passed the entire mandatory pipeline.
-- Passed: static security/architecture/license audit, dependency resolution, Dart analysis, 86/86 Flutter tests, obfuscated APK build, V1/V2/V3 signing and official certificate check, corresponding-source ZIP validation, Release publication, and downloaded-asset hash/signature verification.
-- Release jexfyz-latest targets source commit 437e7730dbcaf9666ae4828e546a45343bb4890c and contains exactly one APK and one matching source archive:
-  - JEXFYZ-release.apk, asset 644438898, 54,636,716 bytes, SHA-256 cdf8a7f94424b9cb60be6e04489a9f0f0d8ddad43ab76c33c2e2c6333fa61327.
-  - JEXFYZ-corresponding-source.zip, asset 644438897, 2,862,590 bytes, SHA-256 3b208c987def59a7c1857ed0fcc9ca5d74d591767e5658dfab04c9c1be85450f.
-- Builds #50–#53 failed at distinct gates and were repaired without weakening test/security checks; full details remain in APP_BUILD_REPORT.md. Build #54 is the current success; do not report #49 as latest.
-- User's current runtime report remains open: Shizuku shows permission granted, yet F stays -- in a screenshot with JE Cooler's settings screen foreground. Native logic deliberately doesn't count the app itself as a game, so test with an actual foreground game before assuming a defect. No device status dump/logcat is available.
-- Non-blocking analyzer, Gradle/Kotlin, native DWARF and jarsigner warnings remain recorded in APP_BUILD_REPORT.md.
+- Latest successful App Build is [Build #55 / run 38783100421](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38783100421), triggered by owner-authored [issue #28](https://github.com/TenzoNkz/JEXFYZ-App/issues/28); the run completed successfully at 2026-10-15T18:13:16Z (2026-10-16 01:13:16 Asia/Jakarta).
+- Exact checked-out source and Release target: `3ba172b3f35f4ec01732d5848a7ffc807663e710`. Functional source/test checkpoint `311a18934a3cbe86a2a4718442c92541f081183f` is included; the commits after that checkpoint changed project documentation only. Current source fingerprints: `lib/main.dart` `69eef38d26282b94ad1bea297d812dfd8b9e91e3`; `lib/floating_monitor.dart` `f3ba1518e9f5158cd7f7a1fccac8df0fbac3b2fb`; `lib/app_settings.dart` `4c89bcb3c04142ce49440a11b92054365c26f7a6`; `test/widget_test.dart` `2426eecea66a357d63ce10214a2d331224c81e37`; `test/floating_monitor_layout_contract_test.dart` `7f861d449e518af68fc4ece7278241aa3ce8691b`; `test/shizuku_fps_contract_test.dart` `798633a24907fd8aca567e70a6376dc59c6e41c9`; native `FloatingMonitorService.kt` `dd10ff0b2c23941badaa33949967fc373f98aeb9`.
+- All mandatory workflow gates passed: security/architecture/license audit, dependency resolution, Dart analysis, **86/86 Flutter tests**, obfuscated Android release build, V1/V2/V3 signing enforcement, production certificate identity check, matching source ZIP integrity/content checks, publication and re-downloaded asset/hash/signature checks.
+- Release `jexfyz-latest` ([release page](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest)) contains exactly one APK and one corresponding source ZIP:
+  - [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk) — asset ID `644735661`, `54,538,412` bytes, SHA-256 `1ae3ef476c170ab0a9d78a77264c5281d60341a931db102c7b8645e4b0dadd19`.
+  - [`JEXFYZ-corresponding-source.zip`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip) — asset ID `644735668`, `2,860,630` bytes, SHA-256 `112b14a95f4b21fa04cdd5684e4a0124ee4b50cb17636bcef149e71a20481dce`.
+- The source/test changes for Home indicator colors/animations, Floating Monitor appearance and foreground SurfaceFlinger FPS are now **built and CI-tested**. Actual phone rendering, Shizuku UserService/runtime permission behavior, OEM SurfaceFlinger layer access and real foreground FPS remain **NOT DEVICE-VERIFIED**; CI cannot prove them.
+- Non-blocking warnings: 23 Dart analyzer info-level deprecations; 11 packages newer than current constraints; Kotlin Gradle Plugin 2.2.20 future-compatibility notice; Gradle 9.3.1 out-of-date notice; native ELF DWARF debug information remains unobfuscated; `jarsigner` reports the expected self-signed certificate/no timestamp and META-INF entries outside V1 coverage. Explicit APK V1, V2 and V3 checks passed and matched the expected production certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`.
+- The post-job Flutter pub-cache write was denied because the token had no writable cache scope; it was a non-blocking cleanup/cache warning. No Firmware source/BIN, Firebase metadata, physical OTA, flashing or device operation was performed.
+
 
 ## Current App Build workflow
 
@@ -30,7 +32,7 @@
 - Production signing certificate SHA-256 in prior build record: `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. Verify against live workflow/config before relying on it.
 - Preserve Android Gradle `versionName "Telegram @horizontalzzz"`.
 
-## HISTORICAL — Build #49 successful App release (superseded as latest by Build #54)
+## HISTORICAL — Build #49 successful App release (superseded as latest by Build #55)
 - **Run:** [Build #49 / `38739077916`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916), issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22), source commit `2b2d2886abb66481b7134e5036824f625ab5659d`, job `116435785328`, runner `1000002352`. Every main step passed.
 - **Validation:** architecture/security/license audit, dependency resolution, Dart analysis and all 80 Flutter tests passed; release APK built obfuscated; V1/V2/V3 signing and official certificate verified; corresponding-source ZIP passed integrity/path/license checks; Release upload and re-downloaded APK/source verification passed.
 - **Release target:** `jexfyz-latest` now points at source commit `2b2d2886abb66481b7134e5036824f625ab5659d`. Exactly one APK plus one matching source archive:
