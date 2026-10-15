@@ -4236,8 +4236,10 @@ void _handleAckLine(String line) {
       barrierColor: Colors.black.withValues(alpha: .48),
       transitionDuration: const Duration(milliseconds: 210),
       pageBuilder: (dialogContext, _, __) {
-        return SafeArea(
-          child: LayoutBuilder(
+        return PopScope<void>(
+          canPop: false,
+          child: SafeArea(
+            child: LayoutBuilder(
             builder: (dialogContext, constraints) {
               // Pin the palette to the bottom safe area. The panel itself does not
               // scroll/drag; swatch taps stage a preview, and only Cancel or Select closes it.
@@ -4259,6 +4261,7 @@ void _handleAckLine(String line) {
                 ),
               );
             },
+          ),
           ),
         );
       },
