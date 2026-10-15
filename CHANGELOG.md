@@ -2,6 +2,16 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
+## 2026-10-15 — Floating Monitor foreground FPS, telemetry recovery and Chat Stuck
+
+- Removed the live preview pill from the center of Floating Monitor settings. Orientation is now selected explicitly using Horizontal / Vertical controls.
+- Removed Flutter app-window frame counting as the FPS source. The native overlay now uses SurfaceFlinger `--timestats` frame-count deltas, resolved to Android's resumed/focused foreground package and matching layer names; it does not substitute the phone's refresh-rate setting or a busy background app's layer. Sample values are updated about once per second while the overlay is attached and FPS metric F is selected.
+- Added a user-controlled ADB setup/check flow for Android development-only `android.permission.DUMP`, with fixed grant/revoke commands, Developer Options shortcut and localized status text. Android documents DUMP as a powerful development permission not intended for third-party apps; JE Cooler must disclose this, never grant it to itself, execute only fixed Activity/SurfaceFlinger dumps, and show unavailable status when OEM/API output is blocked. No Shizuku integration is included in this revision.
+- Corrected the likely overlay-start data race: if live telemetry was published before the native overlay service existed, the bridge dropped that update. The latest authoritative telemetry snapshot is now resent after the service starts/restores, and native HUD requests layout as well as redraw when values change. Native status values remain unknown (`--`) when BLE is disconnected; OFF is shown only with a valid connected snapshot.
+- Added source-contract regression assertions for preview removal/orientation selection, ADB bridge and grant/revoke commands, focused-package FPS filtering, no Flutter frame counter, telemetry replay, and disconnected status. Dart/Flutter tests and analysis were NOT RUN because those SDKs are unavailable in this execution environment; the changes are NOT BUILT, physical ADB permission/FPS behavior is UNVERIFIED, and no App Build was triggered.
+- Added `@Thinking Chat Stuck!` as a standalone recovery command: stop blind retries, inspect live logs/repository/workflow/checkpoint, continue only the most recent valid authorization, avoid duplicate commits/builds, and report `RECOVERED`, `BLOCKED` or `FAILED`. It never implies Build App or Firmware/device authorization.
+- Updated `lib/floating_monitor.dart`, `lib/app_settings.dart`, `lib/main.dart`, `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt`, `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt`, `android/app/src/main/AndroidManifest.xml`, `test/widget_test.dart`, and canonical notes/rules. Firmware V6.6, firmware BIN, Firebase, workflow trigger and physical device were not changed or operated.
+
 ## 2026-10-15 — Color Picker staged selection and explicit dismissal
 
 - Changed `_JexColorPickerCard` to retain a local draft. Tapping any of the 36 palette swatches now updates only the checkmark/preview/name; it does not send BLE `COLOR` or close the modal.
