@@ -135,6 +135,9 @@ class FloatingMonitorService : Service() {
         }
         if (fpsMonitorWanted && fpsMonitorStatus in setOf("starting", "active")) return
 
+        // Replace any stale polling loop before starting a new capture generation.
+        fpsPollingTask?.cancel(false)
+        fpsPollingTask = null
         fpsMonitorWanted = true
         val generation = ++fpsGeneration
         fpsMonitorStatus = "starting"
