@@ -24,7 +24,7 @@ jobs:
         && github.event.issue.title == 'JE X FYZ — HOSTED RUNNER DIAGNOSTIC'
         && contains(github.event.issue.body, 'JEXFYZ_RUNNER_DIAGNOSTIC_V1')
       )
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     timeout-minutes: 3
     steps:
       - name: Emit non-sensitive runner diagnostics
