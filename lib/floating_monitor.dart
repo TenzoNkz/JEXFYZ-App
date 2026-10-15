@@ -294,8 +294,7 @@ class FloatingBridge {
     return null;
   }
 
-  // Query or refresh native FPS access state. The command never grants permission by itself;
-  // it only verifies the ADB-provided DUMP grant and starts/stops the existing sampler.
+  // Read Shizuku-backed FPS authorization status. FPS remains locked until user approval.
   static Future<Map<String, dynamic>?> fpsAccessStatus({bool refresh = false}) async {
     try {
       final method = refresh ? 'refreshFpsMonitor' : 'getFpsAccessStatus';
@@ -305,32 +304,24 @@ class FloatingBridge {
     return null;
   }
 
-  static Future<bool> openDeveloperOptions() async {
+  static Future<Map<String, dynamic>?> requestShizukuFpsPermission() async {
     try {
-      return await _channel.invokeMethod<bool>('openDeveloperOptions') ?? false;
+      final value = await _channel.invokeMethod<dynamic>('requestShizukuFpsPermission');
+      if (value is Map) return Map<String, dynamic>.from(value);
+    } catch (_) {}
+    return null;
+  }
+
+  static Future<bool> openShizukuSetup() async {
+    try {
+      return await _channel.invokeMethod<bool>('openShizukuSetup') ?? false;
     } catch (_) {
       return false;
     }
   }
 }
 
-// AI-MEMORY / WIRELESS-ADB-PAIRING-BRIDGE-CONTRACT
-// Starts only the native user-visible pairing notification; there is no arbitrary-command API.
-class WirelessAdbPairingBridge {
-  static const MethodChannel _channel = MethodChannel('je_x_fyz/adb_pairing');
 
-  static Future<bool> start(AppLanguage language) async {
-    try {
-      return await _channel.invokeMethod<bool>(
-            'startWirelessAdbPairing',
-            <String, Object>{'language': language.name},
-          ) ??
-          false;
-    } catch (_) {
-      return false;
-    }
-  }
-}
 
 // AI-MEMORY / SETTINGS-PAGE-CONTRACT
 // User configuration screen for Floating Monitor; native overlay execution stays outside Flutter.
@@ -350,7 +341,11 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   bool _waitingForOverlayPermission = false;
   bool _permissionResumeCheckRunning = false;
   bool _fpsPermissionGranted = false;
+  bool _shizukuAvailable = false;
+  bool _shizukuSupported = false;
+  int _shizukuUid = -1;
   bool _fpsStatusLoading = false;
+  bool _fpsPermissionRequestPending = false;
   String _fpsMonitorStatus = 'unknown';
   Timer? runtimeTimer;
 
@@ -421,6 +416,12 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   // runtime overlay attachment are both confirmed.
   Future<void> _load() async {
     config = await _normalizeSelection(await FloatingStore.load());
+    final access = await FloatingBridge.fpsAccessStatus();
+    if (access != null) _applyFpsAccessFields(access);
+    if (!_fpsPermissionGranted && config.selected.contains('F')) {
+      config = config.copyWith(selected: Set<String>.from(config.selected)..remove('F'));
+      await FloatingStore.save(config);
+    }
     if (config.enabled) {
       final nativeState = await FloatingBridge.runtimeState();
       if (nativeState != null) {
@@ -491,6 +492,8 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   }
 
   String _fpsAccessStatusLabel(AppLanguage language) {
+    if (!_shizukuAvailable) return JexText.of('shizukuNotRunning', language);
+    if (!_shizukuSupported) return JexText.of('shizukuUnsupported', language);
     if (!_fpsPermissionGranted) return JexText.of('fpsAccessMissing', language);
     if (_fpsMonitorStatus == 'active') return JexText.of('fpsMonitorActive', language);
     if (_fpsMonitorStatus == 'no_game_foreground' ||
@@ -508,24 +511,45 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     return JexText.of('fpsAccessGranted', language);
   }
 
+  void _applyFpsAccessFields(Map<String, dynamic> result) {
+    _shizukuAvailable = result['shizuku_available'] == true;
+    _shizukuSupported = result['shizuku_supported'] == true;
+    _fpsPermissionGranted = _shizukuAvailable &&
+        _shizukuSupported &&
+        result['shizuku_permission_granted'] == true;
+    _shizukuUid = result['shizuku_uid'] is num
+        ? (result['shizuku_uid'] as num).toInt()
+        : -1;
+    _fpsMonitorStatus = result['fps_monitor_status']?.toString() ?? 'unknown';
+  }
+
+  Future<void> _applyFpsAccessState(
+    Map<String, dynamic> result, {
+    bool reconcileSelection = true,
+  }) async {
+    _applyFpsAccessFields(result);
+    if (reconcileSelection && !_fpsPermissionGranted && config.selected.contains('F')) {
+      config = config.copyWith(selected: Set<String>.from(config.selected)..remove('F'));
+      await FloatingStore.save(config);
+      if (config.enabled) await FloatingBridge.updateConfig(config);
+    }
+    if (mounted) setState(() {});
+  }
+
   Future<void> _refreshFpsAccess({bool refreshMonitor = false}) async {
-    if (_fpsStatusLoading) return;
+    if (_fpsStatusLoading || _fpsPermissionRequestPending) return;
     _fpsStatusLoading = true;
     if (mounted) setState(() {});
     try {
       final result = await FloatingBridge.fpsAccessStatus(refresh: refreshMonitor);
       if (!mounted || result == null) return;
-      _fpsPermissionGranted = result['fps_permission_granted'] == true;
-      _fpsMonitorStatus = result['fps_monitor_status']?.toString() ?? 'unknown';
-      if (mounted) setState(() {});
+      await _applyFpsAccessState(result);
       if (refreshMonitor && _fpsMonitorStatus == 'starting') {
         for (var i = 0; i < 5; i++) {
           await Future<void>.delayed(const Duration(milliseconds: 300));
           final next = await FloatingBridge.fpsAccessStatus();
           if (!mounted || next == null) return;
-          _fpsPermissionGranted = next['fps_permission_granted'] == true;
-          _fpsMonitorStatus = next['fps_monitor_status']?.toString() ?? 'unknown';
-          if (mounted) setState(() {});
+          await _applyFpsAccessState(next);
           if (_fpsMonitorStatus != 'starting') break;
         }
       }
@@ -535,107 +559,63 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     }
   }
 
-  Future<void> _showFpsAccessGuide() async {
-    const grantCommand =
-        'adb shell pm grant com.horizontalzzz.jexfyz android.permission.DUMP';
-    const revokeCommand =
-        'adb shell pm revoke com.horizontalzzz.jexfyz android.permission.DUMP';
-    final language = appLanguageNotifier.value;
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(JexText.of('fpsAccessTitle', language)),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(JexText.of('fpsAccessDescription', language)),
-              const SizedBox(height: 12),
-              Text(JexText.of('fpsAccessSteps', language)),
-              const SizedBox(height: 10),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: () async {
-                    final started = await WirelessAdbPairingBridge.start(language);
-                    if (dialogContext.mounted) Navigator.pop(dialogContext);
-                    if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            JexText.of(
-                              started ? 'adbPairingStarted' : 'adbPairingStartFailed',
-                              language,
-                            ),
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                  icon: const Icon(Icons.phonelink_lock),
-                  label: Text(JexText.of('pairWirelessAdb', language)),
-                ),
-              ),
-              const SizedBox(height: 10),
-              SelectableText(
-                grantCommand,
-                style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
-              ),
-              const SizedBox(height: 8),
-              Text(JexText.of('fpsAccessRevoke', language)),
-              SelectableText(
-                revokeCommand,
-                style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: Text(JexText.of('cancel', language)),
-          ),
-          TextButton.icon(
-            onPressed: () async {
-              await Clipboard.setData(const ClipboardData(text: grantCommand));
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(JexText.of('adbCommandCopied', language))),
-                );
-              }
-            },
-            icon: const Icon(Icons.copy),
-            label: Text(JexText.of('copyAdbCommand', language)),
-          ),
-          TextButton.icon(
-            onPressed: () async {
-              await Clipboard.setData(const ClipboardData(text: revokeCommand));
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(JexText.of('adbRevokeCopied', language))),
-                );
-              }
-            },
-            icon: const Icon(Icons.copy),
-            label: Text(JexText.of('copyRevokeCommand', language)),
-          ),
-          FilledButton(
-            onPressed: () async {
-              final opened = await FloatingBridge.openDeveloperOptions();
-              if (dialogContext.mounted) Navigator.pop(dialogContext);
-              if (!opened && mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(JexText.of('developerSettingsFailed', language))),
-                );
-              }
-            },
-            child: Text(JexText.of('openDevOptions', language)),
-          ),
-        ],
-      ),
-    );
+  Future<bool> _requestShizukuFpsAccess() async {
+    if (_fpsPermissionRequestPending) return false;
+    _fpsPermissionRequestPending = true;
+    _fpsStatusLoading = true;
+    if (mounted) setState(() {});
+    try {
+      var state = await FloatingBridge.fpsAccessStatus();
+      if (state != null) await _applyFpsAccessState(state);
+      if (_fpsPermissionGranted) return true;
+
+      if (!_shizukuAvailable || !_shizukuSupported) {
+        await FloatingBridge.openShizukuSetup();
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(JexText.of(
+              _shizukuAvailable ? 'shizukuUnsupported' : 'shizukuNotRunning',
+              appLanguageNotifier.value,
+            ))),
+          );
+        }
+        return false;
+      }
+
+      final requested = await FloatingBridge.requestShizukuFpsPermission();
+      if (requested == null) return false;
+      final deadline = DateTime.now().add(const Duration(seconds: 60));
+      while (mounted && DateTime.now().isBefore(deadline)) {
+        await Future<void>.delayed(const Duration(milliseconds: 400));
+        state = await FloatingBridge.fpsAccessStatus();
+        if (state == null) continue;
+        await _applyFpsAccessState(state, reconcileSelection: false);
+        if (_fpsPermissionGranted) return true;
+        if (!_shizukuAvailable || !_shizukuSupported) return false;
+      }
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(JexText.of('shizukuPermissionDenied', appLanguageNotifier.value))),
+        );
+      }
+      return false;
+    } finally {
+      _fpsPermissionRequestPending = false;
+      _fpsStatusLoading = false;
+      if (mounted) setState(() {});
+    }
   }
+
+  Future<void> _openShizukuManager() async {
+    final opened = await FloatingBridge.openShizukuSetup();
+    if (!opened && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(JexText.of('shizukuOpenFailed', appLanguageNotifier.value))),
+      );
+    }
+  }
+
+
 
   // AI-METHOD / NORMALIZATION CONTRACT
   // Guarantee a valid seven-metric selection for legacy/empty persisted configurations.
@@ -781,6 +761,10 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   // AI-METHOD / METRIC-CONTRACT
   // Add/remove one metric from the persisted selection; runtime state never removes S.
   Future<void> _toggleMetric(String metric, bool value) async {
+    if (metric == 'F' && value) {
+      final authorized = _fpsPermissionGranted || await _requestShizukuFpsAccess();
+      if (!authorized || !mounted) return;
+    }
     final next = Set<String>.from(config.selected);
     if (value) {
       next.add(metric);
@@ -789,7 +773,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     }
     await _apply(config.copyWith(selected: next));
     if (metric == 'F') {
-      await _refreshFpsAccess(refreshMonitor: config.enabled);
+      await _refreshFpsAccess(refreshMonitor: config.enabled && value);
     }
   }
 
@@ -867,10 +851,15 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                         spacing: 8,
                         runSpacing: 4,
                         children: [
+                          FilledButton.icon(
+                            onPressed: _fpsStatusLoading ? null : _requestShizukuFpsAccess,
+                            icon: const Icon(Icons.shield_outlined),
+                            label: Text(JexText.of('requestShizukuPermission', lang)),
+                          ),
                           OutlinedButton.icon(
-                            onPressed: _showFpsAccessGuide,
-                            icon: const Icon(Icons.terminal),
-                            label: Text(JexText.of('setupAdb', lang)),
+                            onPressed: _fpsStatusLoading ? null : _openShizukuManager,
+                            icon: const Icon(Icons.open_in_new),
+                            label: Text(JexText.of('openShizuku', lang)),
                           ),
                           TextButton.icon(
                             onPressed: _fpsStatusLoading

@@ -561,28 +561,24 @@ class JexText {
       AppLanguage.indonesia: 'Akses FPS Game',
     },
     'fpsAccessDescription': {
-      AppLanguage.english: 'JE Cooler reads Android SurfaceFlinger frame statistics to calculate frame-rate samples. You may pair this app with this phone through Android Wireless debugging; after you enter its six-digit code in the notification, JE Cooler requests only the fixed DUMP permission needed for FPS.',
-      AppLanguage.indonesia: 'JE Cooler membaca statistik frame SurfaceFlinger Android untuk menghitung FPS. Kamu dapat memasangkan aplikasi ini dengan HP sendiri melalui Wireless debugging Android; setelah kode enam digit dimasukkan lewat notifikasi, JE Cooler hanya meminta izin DUMP tetap yang diperlukan untuk FPS.',
+      AppLanguage.english: 'JE X FYZ reads SurfaceFlinger frame statistics through Shizuku. FPS stays disabled until Shizuku is running and you explicitly approve JE X FYZ in the Shizuku permission dialog.',
+      AppLanguage.indonesia: 'JE X FYZ membaca statistik frame SurfaceFlinger melalui Shizuku. FPS tetap nonaktif sampai Shizuku berjalan dan kamu menyetujui JE X FYZ melalui dialog izin Shizuku.',
     },
     'fpsAccessSteps': {
-      AppLanguage.english: 'Recommended: tap Pair with Wireless debugging, open Developer options → Wireless debugging → Pair device with pairing code, keep that dialog open, then enter the six-digit code in JE Cooler’s ongoing notification. After pairing, the app attempts one fixed FPS permission grant. Or run the manual command below from a trusted ADB computer.',
-      AppLanguage.indonesia: 'Disarankan: tekan Pair dengan Wireless debugging, buka Opsi developer → Wireless debugging → Pasangkan perangkat dengan kode pairing, biarkan dialog terbuka, lalu masukkan kode enam digit lewat notifikasi JE Cooler. Setelah pairing, aplikasi mencoba satu perintah grant izin FPS yang tetap. Atau jalankan perintah manual di bawah dari komputer ADB tepercaya.',
-    },
-    'fpsAccessRevoke': {
-      AppLanguage.english: 'To revoke the permission later, run:',
-      AppLanguage.indonesia: 'Untuk mencabut izin nanti, jalankan:',
+      AppLanguage.english: 'Start Shizuku, then tap Grant Shizuku permission and approve the request. FPS sampling runs in a restricted Shizuku UserService and accepts only fixed frame-statistics operations.',
+      AppLanguage.indonesia: 'Jalankan Shizuku, lalu tekan Beri izin Shizuku dan setujui permintaan. Pengukuran FPS berjalan di Shizuku UserService terbatas yang hanya menerima operasi statistik frame yang telah ditentukan.',
     },
     'fpsAccessHint': {
-      AppLanguage.english: 'DUMP is a powerful development-only system-dump permission. The notification flow requires a fresh six-digit code from this phone’s Wireless debugging screen and then sends only the fixed grant command for FPS; no arbitrary shell command or remote host is exposed. Use this only on your own phone. Revoke with the command below or forget JE Cooler in Wireless debugging / revoke ADB authorizations. Some ROMs may block the grant or hide frame data.',
-      AppLanguage.indonesia: 'DUMP adalah izin system-dump khusus pengembangan yang sangat kuat. Alur notifikasi memerlukan kode enam digit baru dari layar Wireless debugging HP ini lalu hanya mengirim perintah grant FPS yang tetap; tidak ada perintah shell bebas atau host jarak jauh. Gunakan hanya di HP sendiri. Cabut dengan perintah di bawah atau lupakan JE Cooler di Wireless debugging / cabut otorisasi ADB. Sebagian ROM dapat menolak grant atau menyembunyikan data frame.',
+      AppLanguage.english: 'The available access level depends on how Shizuku was started (Shell or Root). Non-root Shizuku usually needs to be started again after reboot. Some Android builds may block game frame data even after access is granted.',
+      AppLanguage.indonesia: 'Tingkat akses mengikuti cara Shizuku dijalankan (Shell atau Root). Shizuku non-root biasanya perlu dijalankan lagi setelah HP restart. Sebagian versi Android dapat memblokir data frame game walaupun izin sudah diberikan.',
     },
     'fpsAccessGranted': {
-      AppLanguage.english: 'ADB permission granted',
-      AppLanguage.indonesia: 'Izin ADB sudah diberikan',
+      AppLanguage.english: 'Shizuku permission granted',
+      AppLanguage.indonesia: 'Izin Shizuku sudah diberikan',
     },
     'fpsAccessMissing': {
-      AppLanguage.english: 'ADB permission not granted',
-      AppLanguage.indonesia: 'Izin ADB belum diberikan',
+      AppLanguage.english: 'Shizuku permission not granted',
+      AppLanguage.indonesia: 'Izin Shizuku belum diberikan',
     },
     'fpsMonitorActive': {
       AppLanguage.english: 'Live SurfaceFlinger FPS sampling is active',
@@ -593,53 +589,39 @@ class JexText {
       AppLanguage.indonesia: 'Menunggu aplikasi/game di depan merender frame',
     },
     'fpsDataUnavailable': {
-      AppLanguage.english: 'Permission is present, but this device did not provide usable game frame data.',
-      AppLanguage.indonesia: 'Izin tersedia, tetapi perangkat ini tidak memberikan data frame game yang dapat digunakan.',
+      AppLanguage.english: 'Shizuku access is present, but this device did not provide usable game frame data.',
+      AppLanguage.indonesia: 'Akses Shizuku tersedia, tetapi perangkat ini tidak memberikan data frame game yang dapat digunakan.',
     },
-    'setupAdb': {
-      AppLanguage.english: 'Set up ADB access',
-      AppLanguage.indonesia: 'Atur akses ADB',
+    'shizukuNotRunning': {
+      AppLanguage.english: 'Shizuku is not running. Start the Shizuku service first.',
+      AppLanguage.indonesia: 'Shizuku belum berjalan. Jalankan layanan Shizuku terlebih dahulu.',
+    },
+    'shizukuUnsupported': {
+      AppLanguage.english: 'This Shizuku version is too old. UserService requires Shizuku API 10 or newer.',
+      AppLanguage.indonesia: 'Versi Shizuku terlalu lama. UserService memerlukan Shizuku API 10 atau lebih baru.',
+    },
+    'requestShizukuPermission': {
+      AppLanguage.english: 'Grant Shizuku permission',
+      AppLanguage.indonesia: 'Beri izin Shizuku',
+    },
+    'openShizuku': {
+      AppLanguage.english: 'Open Shizuku',
+      AppLanguage.indonesia: 'Buka Shizuku',
     },
     'checkFpsAccess': {
       AppLanguage.english: 'Check access',
       AppLanguage.indonesia: 'Periksa akses',
     },
-    'pairWirelessAdb': {
-      AppLanguage.english: 'Pair with Wireless debugging',
-      AppLanguage.indonesia: 'Pair dengan Wireless debugging',
+    'shizukuPermissionDenied': {
+      AppLanguage.english: 'Shizuku permission was not granted. FPS remains disabled.',
+      AppLanguage.indonesia: 'Izin Shizuku belum diberikan. FPS tetap nonaktif.',
     },
-    'adbPairingStarted': {
-      AppLanguage.english: 'Pairing notification started. Follow its instructions and enter the current six-digit code.',
-      AppLanguage.indonesia: 'Notifikasi pairing dimulai. Ikuti petunjuknya dan masukkan kode enam digit yang sedang aktif.',
+    'shizukuOpenFailed': {
+      AppLanguage.english: 'Could not open Shizuku or its download page.',
+      AppLanguage.indonesia: 'Shizuku atau halaman unduhnya tidak dapat dibuka.',
     },
-    'adbPairingStartFailed': {
-      AppLanguage.english: 'Could not start pairing. Android 11+ and JE Cooler notifications must be enabled.',
-      AppLanguage.indonesia: 'Pairing tidak dapat dimulai. Android 11+ dan notifikasi JE Cooler harus aktif.',
-    },
-    'copyAdbCommand': {
-      AppLanguage.english: 'Copy grant command',
-      AppLanguage.indonesia: 'Salin perintah grant',
-    },
-    'copyRevokeCommand': {
-      AppLanguage.english: 'Copy revoke command',
-      AppLanguage.indonesia: 'Salin perintah cabut izin',
-    },
-    'adbCommandCopied': {
-      AppLanguage.english: 'ADB grant command copied',
-      AppLanguage.indonesia: 'Perintah grant ADB disalin',
-    },
-    'adbRevokeCopied': {
-      AppLanguage.english: 'ADB revoke command copied',
-      AppLanguage.indonesia: 'Perintah cabut izin ADB disalin',
-    },
-    'openDevOptions': {
-      AppLanguage.english: 'Open Developer options',
-      AppLanguage.indonesia: 'Buka Opsi developer',
-    },
-    'developerSettingsFailed': {
-      AppLanguage.english: 'Could not open Developer options on this device.',
-      AppLanguage.indonesia: 'Opsi developer tidak dapat dibuka di perangkat ini.',
-    },
+
+
     'orientation': {
       AppLanguage.english: 'Orientation',
       AppLanguage.indonesia: 'Orientasi',
