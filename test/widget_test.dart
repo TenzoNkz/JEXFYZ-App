@@ -133,9 +133,10 @@ void main() {
   });
 
 
-  test('Thermal Battery segments and colour track the actual battery temperature', () {
+  test('Battery thermal colours stay ice blue through 30C and turn red at 40C', () {
     expect(jexThermalBatteryLevel('20.0'), 0);
-    expect(jexThermalBatteryLevel('30.0°C'), closeTo(.5, 1e-9));
+    expect(jexThermalBatteryLevel('30.0°C'), 0);
+    expect(jexThermalBatteryLevel('35.0'), closeTo(.5, 1e-9));
     expect(jexThermalBatteryLevel('40.0'), 1);
     expect(jexThermalBatteryLevel('45.0'), 1);
     expect(jexThermalBatteryLevel('--'), 0);
@@ -145,29 +146,30 @@ void main() {
 
     expect(jexThermalBatteryColor('18.0'), jexThermalIceBlue);
     expect(jexThermalBatteryColor('20.0'), jexThermalIceBlue);
-    expect(jexThermalBatteryColor('30.0'), jexThermalGreen);
+    expect(jexThermalBatteryColor('30.0'), jexThermalIceBlue);
+    expect(jexThermalBatteryColor('35.0'), isNot(jexThermalIceBlue));
+    expect(jexThermalBatteryColor('35.0'), isNot(jexThermalRed));
     expect(jexThermalBatteryColor('40.0'), jexThermalRed);
     expect(jexThermalBatteryColor('45.0'), jexThermalRed);
     expect(jexThermalBatteryColor('--'), jexThermalIceBlue);
-    expect(jexThermalBatteryColor('35.0'), isNot(jexThermalGreen));
-    expect(jexThermalBatteryColor('35.0'), isNot(jexThermalRed));
   });
 
-  test('Hotside starts ice blue at 30C and reaches red by 40C or the lower safety limit', () {
+  test('Hotside colour starts ice blue at 30C and reaches red at its configured limit', () {
     expect(jexHotsideTemperatureColor('29.9', hotLimit: 45), jexThermalIceBlue);
     expect(jexHotsideTemperatureColor('30.0', hotLimit: 45), jexThermalIceBlue);
     expect(jexHotsideTemperatureColor('--', hotLimit: 45), jexThermalIceBlue);
     expect(jexHotsideTemperatureColor('35.0', hotLimit: 45), isNot(jexThermalIceBlue));
-    expect(jexHotsideTemperatureColor('39.99', hotLimit: 45), isNot(jexThermalRed));
-    expect(jexHotsideTemperatureColor('40.0', hotLimit: 45), jexThermalRed);
+    expect(jexHotsideTemperatureColor('40.0', hotLimit: 45), isNot(jexThermalRed));
+    expect(jexHotsideTemperatureColor('44.99', hotLimit: 45), isNot(jexThermalRed));
     expect(jexHotsideTemperatureColor('45.0', hotLimit: 45), jexThermalRed);
     expect(jexHotsideTemperatureColor('35.0', hotLimit: 35), jexThermalRed);
+    expect(jexHotsideTemperatureColor('49.99', hotLimit: 50), isNot(jexThermalRed));
     expect(jexHotsideTemperatureColor('50.0', hotLimit: 50), jexThermalRed);
     expect(jexHotsideFireActive('44.99', hotLimit: 45), isFalse);
     expect(jexHotsideFireActive('45.0', hotLimit: 45), isTrue);
     expect(jexHotsideFireActive('--', hotLimit: 45), isFalse);
-    expect(jexTemperatureIndicatorLevel('45.0', minC: 20, maxC: 45), 1);
-    expect(jexTemperatureIndicatorLevel('44.0', minC: 20, maxC: 45), lessThan(1));
+    expect(jexTemperatureIndicatorLevel('45.0', minC: 30, maxC: 45), 1);
+    expect(jexTemperatureIndicatorLevel('44.0', minC: 30, maxC: 45), lessThan(1));
   });
 
   test('Voltage colour and energy are consistent for 5V, 9V, 12V and disconnected fallback', () {
