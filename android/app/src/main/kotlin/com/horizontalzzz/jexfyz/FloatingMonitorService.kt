@@ -22,6 +22,7 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.graphics.Canvas
 import android.graphics.Color
@@ -29,7 +30,10 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PixelFormat
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
+import android.os.SystemClock
 import android.provider.Settings
 import android.view.Gravity
 import android.view.MotionEvent
@@ -37,6 +41,11 @@ import android.view.ScaleGestureDetector
 import android.view.WindowManager
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.ByteArrayOutputStream
+import java.util.concurrent.Executors
+import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.max
@@ -45,7 +54,339 @@ import kotlin.math.roundToInt
 
 class FloatingMonitorService : Service() {
 
+    private data class DumpsysResult(
+        val output: String,
+        val ok: Boolean,
+        val error: String? = null,
+    )
+
+    private data class LayerFrameCount(
+        val name: String,
+        val totalFrames: Long,
+    )
+
+    private fun hasFpsDumpPermission(): Boolean =
+        checkSelfPermission("android.permission.DUMP") == PackageManager.PERMISSION_GRANTED
+
+    private fun fpsAccessStateMap(): Map<String, Any?> = mapOf(
+        "fps_permission_granted" to hasFpsDumpPermission(),
+        "fps_monitor_active" to (fpsMonitorStatus == "active"),
+        "fps_monitor_status" to fpsMonitorStatus,
+    )
+
+    // AI-METHOD / FPS-SAMPLER-ELIGIBILITY
+    // Never poll global frame statistics unless the visible overlay is attached and F is selected.
+    private fun refreshFpsMonitor() {
+        val shouldRun = config.enabled &&
+            config.selected.contains("F") &&
+            hudView?.isAttachedToWindow == true
+
+        if (!shouldRun) {
+            stopFpsMonitor("monitor_off")
+            return
+        }
+        if (!hasFpsDumpPermission()) {
+            stopFpsMonitor("permission_missing")
+            return
+        }
+        if (fpsMonitorWanted && fpsMonitorStatus in setOf("starting", "active")) return
+
+        fpsMonitorWanted = true
+        val generation = ++fpsGeneration
+        fpsMonitorStatus = "starting"
+        data.fps = "--"
+        hudView?.invalidate()
+
+        fpsExecutor.execute {
+            val start = runDumpsys("SurfaceFlinger", "--timestats", "-clear", "-enable")
+            if (!start.ok) {
+                fpsCaptureEnabled = false
+                fpsMainHandler.post {
+                    if (generation != fpsGeneration) return@post
+                    fpsMonitorWanted = false
+                    fpsMonitorStatus = start.error ?: "surfaceflinger_blocked"
+                    data.fps = if (fpsMonitorStatus == "permission_missing") "ADB" else "--"
+                    hudView?.invalidate()
+                }
+                return@execute
+            }
+
+            if (!fpsMonitorWanted || generation != fpsGeneration) {
+                runDumpsys("SurfaceFlinger", "--timestats", "-disable")
+                return@execute
+            }
+
+            fpsCaptureEnabled = true
+            fpsFrameCounts.clear()
+            fpsLastSampleAtMs = 0L
+            fpsTrackedLayer = null
+            fpsLastActiveAtMs = 0L
+            fpsMainHandler.post {
+                if (generation != fpsGeneration) return@post
+                fpsMonitorStatus = "active"
+                data.fps = "--"
+                hudView?.invalidate()
+            }
+            fpsPollingTask = fpsExecutor.scheduleWithFixedDelay(
+                { pollSurfaceFlinger(generation) },
+                1,
+                1,
+                TimeUnit.SECONDS,
+            )
+        }
+    }
+
+    // AI-METHOD / FPS-SAMPLER-STOP
+    // Clear stale readings and disable the global SurfaceFlinger collector on an orderly stop.
+    private fun stopFpsMonitor(reason: String) {
+        val wasWanted = fpsMonitorWanted
+        val shouldDisable = fpsCaptureEnabled
+        if (!wasWanted && !shouldDisable && fpsMonitorStatus == reason) {
+            data.fps = if (reason == "permission_missing") "ADB" else "--"
+            hudView?.invalidate()
+            return
+        }
+
+        fpsMonitorWanted = false
+        fpsGeneration += 1
+        fpsPollingTask?.cancel(false)
+        fpsPollingTask = null
+        fpsMonitorStatus = reason
+        data.fps = if (reason == "permission_missing") "ADB" else "--"
+        hudView?.invalidate()
+
+        if (shouldDisable) {
+            fpsCaptureEnabled = false
+            fpsExecutor.execute {
+                runDumpsys("SurfaceFlinger", "--timestats", "-disable")
+            }
+        }
+    }
+
+    // AI-METHOD / SURFACEFLINGER-COMMAND
+    // Only fixed arguments are passed; no game/process name or user text is ever executed as a command.
+    private fun runDumpsys(vararg arguments: String): DumpsysResult {
+        if (!hasFpsDumpPermission()) {
+            return DumpsysResult("", false, "permission_missing")
+        }
+
+        val process = try {
+            ProcessBuilder(listOf("/system/bin/dumpsys") + arguments)
+                .redirectErrorStream(true)
+                .start()
+        } catch (_: Exception) {
+            return DumpsysResult("", false, "dumpsys_unavailable")
+        }
+
+        val timedOut = AtomicBoolean(false)
+        val oversized = AtomicBoolean(false)
+        val timeout = Runnable {
+            if (process.isAlive) {
+                timedOut.set(true)
+                process.destroy()
+            }
+        }
+        fpsMainHandler.postDelayed(timeout, 2500)
+
+        val output = try {
+            val sink = ByteArrayOutputStream()
+            val buffer = ByteArray(8192)
+            process.inputStream.use { input ->
+                while (true) {
+                    val count = input.read(buffer)
+                    if (count < 0) break
+                    if (sink.size() + count > MAX_FPS_DUMP_BYTES) {
+                        oversized.set(true)
+                        process.destroy()
+                        break
+                    }
+                    sink.write(buffer, 0, count)
+                }
+            }
+            sink.toString(Charsets.UTF_8.name())
+        } catch (_: Exception) {
+            ""
+        } finally {
+            fpsMainHandler.removeCallbacks(timeout)
+        }
+
+        val exitCode = try {
+            process.waitFor()
+        } catch (_: InterruptedException) {
+            Thread.currentThread().interrupt()
+            process.destroy()
+            return DumpsysResult(output, false, "dumpsys_interrupted")
+        }
+
+        if (timedOut.get()) return DumpsysResult(output, false, "dumpsys_timeout")
+        if (oversized.get()) return DumpsysResult(output, false, "dumpsys_output_too_large")
+        if (output.contains("Permission Denial", ignoreCase = true) ||
+            output.contains("Permission denial", ignoreCase = true)
+        ) {
+            return DumpsysResult(output, false, "surfaceflinger_blocked")
+        }
+        if (exitCode != 0) return DumpsysResult(output, false, "dumpsys_exit_$exitCode")
+        return DumpsysResult(output, true)
+    }
+
+    // AI-METHOD / SURFACEFLINGER-STATS-PARSER
+    // Support the JSON and line-oriented forms seen in Android SurfaceFlinger timestats dumps.
+    private fun parseLayerFrameCounts(output: String): List<LayerFrameCount> {
+        val fromJson = try {
+            val root = JSONObject(output)
+            val stats = root.optJSONObject("stats")
+            if (stats == null) emptyList() else {
+                val parsed = mutableListOf<LayerFrameCount>()
+                val keys = stats.keys()
+                while (keys.hasNext()) {
+                    val name = keys.next()
+                    val layer = stats.optJSONObject(name) ?: continue
+                    val total = layer.optLong("totalFrames", -1L)
+                    if (total >= 0L) parsed.add(LayerFrameCount(name, total))
+                }
+                parsed
+            }
+        } catch (_: Exception) {
+            emptyList()
+        }
+        if (fromJson.isNotEmpty()) return fromJson
+
+        val namePattern = Regex("""^\s*layerName\s*=\s*(.+?)\s*$""")
+        val framePattern = Regex("""^\s*totalFrames\s*=\s*(\d+)\s*$""")
+        val parsed = mutableListOf<LayerFrameCount>()
+        var currentName: String? = null
+        var currentFrames: Long? = null
+        fun flush() {
+            val name = currentName
+            val frames = currentFrames
+            if (name != null && frames != null && frames >= 0L) {
+                parsed.add(LayerFrameCount(name.trim().trim('"'), frames))
+            }
+        }
+
+        for (line in output.lineSequence()) {
+            val nameMatch = namePattern.find(line)
+            if (nameMatch != null) {
+                flush()
+                currentName = nameMatch.groupValues[1].trim().trim('"', ',')
+                currentFrames = null
+                continue
+            }
+            val frameMatch = framePattern.find(line)
+            if (frameMatch != null && currentName != null) {
+                currentFrames = frameMatch.groupValues[1].toLongOrNull()
+            }
+        }
+        flush()
+        return parsed.distinctBy { it.name }
+    }
+
+    private fun isCandidateApplicationLayer(name: String): Boolean {
+        val value = name.lowercase()
+        if (value.contains(packageName.lowercase())) return false
+        val systemFragments = listOf(
+            "com.android.systemui",
+            "com.android.launcher",
+            "com.google.android.apps.nexuslauncher",
+            "com.miui.home",
+            "com.oplus.launcher",
+            "wallpaper",
+            "statusbar",
+            "navigationbar",
+            "inputmethod",
+            "keyboard",
+            "permissioncontroller",
+            "surfaceflinger",
+            "systemui",
+        )
+        if (systemFragments.any { value.contains(it) }) return false
+        return Regex("""[a-z][a-z0-9_]*(?:\.[a-z0-9_]+)+""").containsMatchIn(value)
+    }
+
+    // AI-METHOD / FPS-SAMPLE-CALCULATION
+    // FPS uses per-layer frame-count deltas over the sampling interval, never screen refreshRate.
+    private fun pollSurfaceFlinger(generation: Int) {
+        if (!fpsMonitorWanted || generation != fpsGeneration) return
+        if (!hasFpsDumpPermission()) {
+            fpsMainHandler.post {
+                if (generation != fpsGeneration) return@post
+                stopFpsMonitor("permission_missing")
+            }
+            return
+        }
+
+        val result = runDumpsys("SurfaceFlinger", "--timestats", "-dump")
+        if (!result.ok) {
+            fpsMainHandler.post {
+                if (generation != fpsGeneration) return@post
+                stopFpsMonitor(result.error ?: "surfaceflinger_blocked")
+            }
+            return
+        }
+
+        val now = SystemClock.elapsedRealtime()
+        val layers = parseLayerFrameCounts(result.output)
+            .filter { isCandidateApplicationLayer(it.name) }
+        if (layers.isEmpty()) {
+            fpsMainHandler.post {
+                if (generation != fpsGeneration) return@post
+                if (fpsLastSampleAtMs != 0L && now - fpsLastSampleAtMs > 3500L) {
+                    data.fps = "--"
+                    fpsMonitorStatus = "no_layer_data"
+                    hudView?.invalidate()
+                }
+            }
+            return
+        }
+
+        val elapsed = if (fpsLastSampleAtMs == 0L) 0L else now - fpsLastSampleAtMs
+        val previous = fpsFrameCounts.toMap()
+        val candidates = layers.mapNotNull { layer ->
+            val old = previous[layer.name] ?: return@mapNotNull null
+            val delta = layer.totalFrames - old
+            if (delta < 0L || delta > 1200L || elapsed <= 0L) return@mapNotNull null
+            Triple(layer, delta, delta * 1000.0 / elapsed.toDouble())
+        }.filter { it.second > 0L && it.third.isFinite() && it.third <= 480.0 }
+
+        fpsFrameCounts.clear()
+        for (layer in layers) fpsFrameCounts[layer.name] = layer.totalFrames
+        if (fpsLastSampleAtMs == 0L) {
+            fpsLastSampleAtMs = now
+            return
+        }
+        fpsLastSampleAtMs = now
+
+        val best = candidates.maxByOrNull { it.second }
+        val chosenLayer = best?.first?.name
+        val value = when {
+            best != null -> {
+                fpsTrackedLayer = chosenLayer
+                fpsLastActiveAtMs = now
+                best.third.roundToInt().coerceIn(0, 480).toString()
+            }
+            fpsTrackedLayer != null && layers.any { it.name == fpsTrackedLayer } -> {
+                if (now - fpsLastActiveAtMs <= 3000L) "0" else "--"
+            }
+            else -> "--"
+        }
+        fpsMainHandler.post {
+            if (generation != fpsGeneration) return@post
+            data.fps = value
+            fpsMonitorStatus = if (value == "--") "waiting_for_frames" else "active"
+            hudView?.invalidate()
+        }
+    }
+
     companion object {
+        private const val CHANNEL_ID = "je_x_fyz_floating"
+        private const val NOTIFICATION_ID = 2301
+        private const val ACTION_START = "je_x_fyz.floating.START"
+        private const val ACTION_STOP = "je_x_fyz.floating.STOP"
+        private const val ACTION_CONFIG = "je_x_fyz.floating.CONFIG"
+        private const val ACTION_DATA = "je_x_fyz.floating.DATA"
+        private const val EXTRA_JSON = "json"
+        private const val MAX_FPS_DUMP_BYTES = 2 * 1024 * 1024
+
         private const val CHANNEL_ID = "je_x_fyz_floating"
         private const val NOTIFICATION_ID = 2301
         private const val ACTION_START = "je_x_fyz.floating.START"
@@ -109,12 +450,34 @@ class FloatingMonitorService : Service() {
                     "window_add_succeeded" to false,
                     "window_add_error" to null,
                     "view_attached_to_window" to false,
+                    "fps_permission_granted" to (context.checkSelfPermission("android.permission.DUMP") == PackageManager.PERMISSION_GRANTED),
+                    "fps_monitor_active" to false,
+                    "fps_monitor_status" to if (context.checkSelfPermission("android.permission.DUMP") == PackageManager.PERMISSION_GRANTED) "monitor_off" else "permission_missing",
                     "horizontal" to prefs.getBoolean("horizontal", true),
                     "size" to prefs.getFloat("size", 1.0f).toDouble(),
                     "x" to prefs.getInt("x", 16),
                     "y" to prefs.getInt("y", 120),
                 )
             }
+        }
+
+        // AI-METHOD / FPS ACCESS STATUS CONTRACT
+        // Report the narrowly scoped ADB DUMP grant and native FPS sampler state.
+        fun fpsAccessStatus(context: Context): Map<String, Any?> {
+            return instance?.fpsAccessStateMap() ?: mapOf(
+                "fps_permission_granted" to
+                    (context.checkSelfPermission("android.permission.DUMP") == PackageManager.PERMISSION_GRANTED),
+                "fps_monitor_active" to false,
+                "fps_monitor_status" to if (
+                    context.checkSelfPermission("android.permission.DUMP") == PackageManager.PERMISSION_GRANTED
+                ) "monitor_off" else "permission_missing",
+            )
+        }
+
+        // Refresh the sampler only when a real attached overlay and the F metric are selected.
+        fun refreshFpsMonitor(context: Context): Map<String, Any?> {
+            instance?.refreshFpsMonitor()
+            return fpsAccessStatus(context)
         }
 
         // AI-METHOD / DATA CONTRACT
@@ -146,6 +509,7 @@ class FloatingMonitorService : Service() {
         var speed: Int = 100,
         var adaptiveOn: Boolean = false,
         var peltierOn: Boolean = false,
+        var connected: Boolean = false,
         var language: String = "english",
     )
 
@@ -159,6 +523,22 @@ class FloatingMonitorService : Service() {
     private var windowAddError: String? = null
     private var viewAttachedToWindow = false
     private val prefs by lazy { getSharedPreferences("jexfyz_floating_native_v1", Context.MODE_PRIVATE) }
+
+    // FPS capture runs off the main thread and samples SurfaceFlinger totals once per second.
+    // It is active only while the user-enabled overlay is attached and metric F is selected.
+    private val fpsMainHandler = Handler(Looper.getMainLooper())
+    private val fpsExecutor = Executors.newSingleThreadScheduledExecutor { task ->
+        Thread(task, "JE-FPS-Monitor").apply { isDaemon = true }
+    }
+    @Volatile private var fpsMonitorWanted = false
+    @Volatile private var fpsCaptureEnabled = false
+    @Volatile private var fpsMonitorStatus = "monitor_off"
+    @Volatile private var fpsGeneration = 0
+    @Volatile private var fpsPollingTask: ScheduledFuture<*>? = null
+    private val fpsFrameCounts = mutableMapOf<String, Long>() // FPS worker thread only.
+    private var fpsLastSampleAtMs = 0L
+    private var fpsTrackedLayer: String? = null
+    private var fpsLastActiveAtMs = 0L
 
     // AI-METHOD / SERVICE-CREATE CONTRACT
     // Initialize WindowManager, notification channel, and the required specialUse foreground service.
@@ -199,6 +579,7 @@ class FloatingMonitorService : Service() {
     override fun onDestroy() {
         removeOverlay()
         instance = null
+        fpsExecutor.shutdown()
         super.onDestroy()
     }
 
@@ -223,6 +604,9 @@ class FloatingMonitorService : Service() {
             "size" to config.size.toDouble(),
             "x" to if (::layoutParams.isInitialized) layoutParams.x else 16,
             "y" to if (::layoutParams.isInitialized) layoutParams.y else 120,
+            "fps_permission_granted" to (checkSelfPermission("android.permission.DUMP") == PackageManager.PERMISSION_GRANTED),
+            "fps_monitor_active" to (fpsMonitorStatus == "active"),
+            "fps_monitor_status" to fpsMonitorStatus,
         )
     }
 
@@ -313,6 +697,7 @@ class FloatingMonitorService : Service() {
             } else {
                 removeOverlay()
             }
+            refreshFpsMonitor()
         } catch (_: Exception) {
         }
     }
@@ -322,7 +707,7 @@ class FloatingMonitorService : Service() {
     private fun applyData(json: String) {
         try {
             val obj = JSONObject(json)
-            data.fps = obj.optString("fps", "--")
+            // FPS is owned by the native SurfaceFlinger sampler, not Flutter frame timing.
             data.battery = obj.optString("battery", "--")
             data.hotside = obj.optString("hotside", "--")
             data.voltage = obj.optString("voltage", "--")
@@ -330,6 +715,7 @@ class FloatingMonitorService : Service() {
             data.speed = obj.optInt("speed", 100)
             data.adaptiveOn = obj.optBoolean("adaptiveOn", false)
             data.peltierOn = obj.optBoolean("peltierOn", false)
+            data.connected = obj.optBoolean("connected", false)
             val nextLanguage = obj.optString("language", data.language).lowercase()
             val languageChanged = nextLanguage != data.language
             data.language = nextLanguage
@@ -442,6 +828,7 @@ class FloatingMonitorService : Service() {
     // AI-METHOD / DETACH-CONTRACT
     // Remove the attached view safely and clear attach state even when WindowManager reports an error.
     private fun removeOverlay() {
+        stopFpsMonitor("monitor_off")
         val view = hudView ?: run {
             viewAttachedToWindow = false
             return
@@ -565,12 +952,12 @@ class FloatingMonitorService : Service() {
             val offText = if (data.language == "indonesia") "MATI" else "OFF"
             return when (metric) {
                 "F" -> "F:" + data.fps
-                "B" -> "B:" + if (data.battery == "--") "--" else data.battery + "°"
-                "H" -> "H:" + if (data.hotside == "--") "--" else data.hotside + "°"
-                "V" -> "V:" + data.voltage
-                "A" -> "A:" + if (data.adaptiveOn) onText else offText
-                "P" -> "P:" + if (data.peltierOn) onText else offText
-                "S" -> "S:" + if (data.fanOn) data.speed.toString() else offText
+                "B" -> "B:" + if (!data.connected || data.battery == "--") "--" else data.battery + "°"
+                "H" -> "H:" + if (!data.connected || data.hotside == "--") "--" else data.hotside + "°"
+                "V" -> "V:" + if (data.connected) data.voltage else "--"
+                "A" -> "A:" + if (!data.connected) "--" else if (data.adaptiveOn) onText else offText
+                "P" -> "P:" + if (!data.connected) "--" else if (data.peltierOn) onText else offText
+                "S" -> "S:" + if (!data.connected) "--" else if (data.fanOn) data.speed.toString() else offText
                 else -> ""
             }
         }
