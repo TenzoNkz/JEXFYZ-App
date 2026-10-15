@@ -3,6 +3,17 @@
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
 
+## 2026-10-15 — Chat-limit reconciliation after Build #35
+
+- Reconciled the current App/UI checkpoint against live `main`, recursive tree, source/tests, active build workflow, Actions run, Release asset, branch/open-PR state and artifact-repository root. Build #35 targets code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`; this documentation reconciliation does not change that code or run another build.
+- Corrected stale “tests not run/latest build #33” statements in README, Memory Index, App Reference and Handover. Removed the duplicate current-state section from Handover, corrected the easing reference, clarified Build #34's failed midpoint assertion versus the symmetric cubic fix, and separated CI validation from device validation.
+- Updated Firmware technical/OTA/voltage references so the Build #35 Flutter/source-contract run is acknowledged without implying Firmware compilation or physical OTA verification.
+- Build #35 evidence: Dart analyze and all 74 Flutter tests passed; one `JEXFYZ-release.apk` (54,521,947 bytes) was built, V1/V2/V3 verified, published and re-downloaded; SHA-256 `77e57ece6c194ec97ce9f4e72d379f848173cd2cf905f66a74e6b037ad82e5c1`. JAR/V1 META-INF warnings remain documented.
+- Firmware V6.6 source/BIN, workflow, Firebase metadata, physical hardware and OTA were not changed or operated. The user's V6.6 compile/two Online OTA successes remain user-reported; source-to-BIN provenance and device-side rendering/MT Manager verification remain unverified.
+
+
+
+
 ## 2026-10-15 — Fan Speed midpoint correction and App Build #35
 
 - Build #34 correctly stopped before APK compilation: 73 Flutter tests passed and one failed in `Fan Speed level retargeting eases between values without abrupt jumps`. The test expected the easing curve to return exactly 0.5 at progress 0.5, while `Curves.easeInOutCubic` returned 0.510125.
@@ -12,7 +23,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - JAR/V1 verification still reports dependency `META-INF` entries not protected by the JAR signature, including `META-INF/services/a1` and `META-INF/services/b1`. Record this as a warning; it does not negate the separate successful V2/V3 results.
 - This was App-only work. No Firmware compile, BIN change/publication, Firebase edit, OTA/flash or physical hardware validation occurred; device-side animation and MT Manager inspection remain open.
 
-## 2026-10-15 — Smooth Fan Speed retargeting and seamless indicator loops
+## HISTORICAL / SUPERSEDED — 2026-10-15 — Smooth Fan Speed retargeting and seamless indicator loops
 
 - Added `jexSmoothFanSpeedLevel`, with a dedicated retargetable `AnimationController` for the Fan Speed gauge. Each new active speed target interpolates from the currently displayed value over 420 ms; another target arriving mid-transition starts from the current interpolated position rather than jumping back. Fan OFF smoothly retargets the gauge to zero over 520 ms; the telemetry percentage remains authoritative.
 - Replaced the Fan Speed needle's non-integer wobble harmonic with integer harmonics so both position and slope match across the loop's 0/1 boundary.
@@ -23,7 +34,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 
 
 
-## 2026-10-15 — Smooth status animation loops and retargetable Fan Speed gauge
+## HISTORICAL / SUPERSEDED — 2026-10-15 — Smooth status animation loops and retargetable Fan Speed gauge
 
 - Added a dedicated Fan Speed value-transition controller, separate from the cyclic wobble controller. Each active speed change retargets from the currently rendered gauge level to the latest target over 420 ms; if another target arrives mid-transition, it continues from the current interpolation. OFF animates to 0 over 520 ms and later OFF telemetry changes no longer restart that transition.
 - Replaced the non-integer needle wobble harmonic with integer harmonics so position and slope repeat cleanly at the animation loop boundary.
@@ -34,7 +45,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 
 
 
-## 2026-10-14 — Fan coast-down, static Peltier crystal, natural Fan Speed gauge
+## HISTORICAL / SUPERSEDED — 2026-10-14 — Fan coast-down, static Peltier crystal, natural Fan Speed gauge
 
 - Fan now eases through a short period-dependent coast-down when turned OFF, then holds its final rotor pose. Blade and hub colours are unchanged by OFF; the animation stops without dimming the icon.
 - Removed the square Peltier module frame, center box and corner bolts. The six-branched frost crystal and particles remain visible at full icon colour while OFF; its animation is frozen rather than faded out. Voltage-class intensity/particle interpolation remains active only as applicable while Peltier is ON.
@@ -44,7 +55,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 
 
 
-## 2026-10-14 — APK signature verification hardening / Firmware V6.6 user acceptance
+## HISTORICAL / SUPERSEDED — 2026-10-14 — APK signature verification hardening / Firmware V6.6 user acceptance
 
 - Investigated the user's MT Manager screenshot showing `Signature: Verified failed`. The latest successful App Build before this fix was run `38556896542` on commit `67c5d26723c433b4af856c7759a967a3425bf67a`; its log reported V1=false, V2=true and V3=true while the workflow accepted the build because it relied on `jarsigner`'s `jar verified.` text and did not require `apksigner` V1=true.
 - Hardened `.github/workflows/jexfyz-app-build-trigger.yml` to sign with `--min-sdk-version 23`, run `apksigner verify --min-sdk-version 23`, and fail unless V1/V2/V3 all verify on both the built APK and the re-downloaded release asset. Android manifest minSdk remains 24. The workflow change was subsequently exercised in Actions run `38560939271` on commit `2aa77113950ac462bd27fa6f1ca416371eaa7ad8`: V1/V2/V3 all verified true on the produced APK and re-downloaded release asset. The run passed tests/analyze for that earlier source, not the current Fan/Peltier/Speed edits. Its log warns `META-INF/services/b1` is not protected by JAR/V1. No device-side recheck of MT Manager's label has yet confirmed the cause.
@@ -53,7 +64,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - No App Build, Firmware compile, BIN update, Firebase change, physical OTA/flash or release operation was performed in this execution.
 
 
-## 2026-10-14 — Chat-limit reconciliation after App UI execution
+## HISTORICAL / SUPERSEDED — 2026-10-14 — Chat-limit reconciliation after App UI execution
 
 - Re-read the prior transfer snapshot and canonical App/Firmware/OTA/build/design memories; refreshed current source/test hashes, current App build boundary, repository branch/PR and BIN-only artifact evidence in the transfer snapshot.
 - Corrected stale active-App and build wording in current status/handover, refreshed memory routing, removed the duplicate newest UI entry, and explicitly marked older logo/large-icon descriptions as superseded by the transparent JE notification monogram.
@@ -61,7 +72,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - Flutter/Dart SDK is unavailable in this execution environment, so current-source Flutter tests/analyze were NOT run. Latest verified successful App Build is run `38545637192` on older source commit `9e790765f6683d342025317ce6594cc8519026de`; it does not contain the current changes.
 - No App Build, Firmware compile, BIN replacement/publication, Firebase update, OTA, flash/device operation or release was performed.
 
-## 2026-10-14 — Smooth motion, crystal Peltier, JE notification and dialog sizing
+## HISTORICAL / SUPERSEDED — 2026-10-14 — Smooth motion, crystal Peltier, JE notification and dialog sizing
 
 - Fan voltage changes now update rotation duration without resetting angular phase; the controller travels smoothly to an equivalent full-turn boundary before continuing at the new speed, and Fan OFF coasts forward to a retained pose. Peltier frost intensity/particle count interpolate over 420 ms across voltage classes, fade in over 360 ms on ON and out over 520 ms on OFF; crystal branches, particles and center fade fully, periodic drift avoids loop-boundary jumps, while the thermoelectric frame remains visible.
 - Replaced the flower-like Peltier icon with a framed thermoelectric module and six-branched geometric frost crystal. The Color Picker remains bottom-pinned with localized top-left Cancel that dismisses without sending RGB; all 36 curated presets and the existing color command path are retained.
@@ -69,7 +80,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - Android notifications now use a bold white `JE` vector monogram with transparent background as the sole small icon; no large icon is set, and the full-color app icon remains unchanged.
 - Added widget contracts for phase continuity/coast-down, Peltier crystal geometry/interpolation, dialog sizing, and JE icon path. Static readback checks passed. Flutter tests/analyze and App Build were NOT run for these current commits (Flutter/Dart SDK unavailable); device rendering is unverified. No Firmware, BIN, Firebase, OTA, flash or release operation occurred.
 
-## 2026-10-14 — Voltage-aware Fan/Peltier icons and bottom-pinned Color Picker
+## HISTORICAL / SUPERSEDED — 2026-10-14 — Voltage-aware Fan/Peltier icons and bottom-pinned Color Picker
 
 - Fan dashboard motion now uses distinct continuous rotation durations from authoritative BLE-reported voltage: 5V slow (2600 ms), 9V medium (1250 ms), and 12V fast (620 ms). Peltier frost icon increases glow and crystal density across the same voltage classes and fades its frost overlay over 520 ms when switched OFF. These are illustrative visuals, not RPM or temperature/ice measurements; no firmware, BLE command, safety or physical LED behavior changed.
 - Pinned the LED Color Picker to the bottom safe area and removed the outer scroll view/top-offset positioning, preventing the panel from being dragged vertically. Added localized Cancel at the top-left; Cancel closes without sending a new colour, while swatch selection preserves the prior RGB command path.
@@ -85,7 +96,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - Added/updated widget contracts for preview colour behaviour, menu anchoring, indicator timing and single-logo notifications.
 - Static source transformation checks passed. Flutter test/analyze and APK build were not run (Flutter/Dart SDK unavailable here); Android OEM rendering, current-source installation and physical UI appearance remain unverified. No firmware/BIN/Firebase/OTA/device/release operation occurred.
 
-## 2026-10-14 — Chat-limit reconciliation and test-contract cleanup
+## HISTORICAL / SUPERSEDED — 2026-10-14 — Chat-limit reconciliation and test-contract cleanup
 
 - Audited the latest non-truncated main tree and canonical notes; preserved the current source-only V6.6/NOT RELEASED boundary and the artifact repository BIN-only rule.
 - Corrected the stale widget-test palette expectation from 24 colors/old first color to 36 curated presets/current first color `#FF1744`, and removed the accidentally duplicated native notification source-contract test.
@@ -104,7 +115,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - Updated UI/source-contract tests and canonical memory. Tests/analyze are NOT RUN; Android OEM notification rendering, narrow-screen layout and hardware LED appearance remain UNVERIFIED.
 - No Firmware source/protocol, BIN, Firebase, OTA, flashing, release, App Build or Firmware compile operation was performed.
 
-## 2026-10-14 — V6.6 LED mode removal, brightness preview and phase synchronization
+## HISTORICAL / SUPERSEDED — 2026-10-14 — V6.6 LED mode removal, brightness preview and phase synchronization
 
 - Bumped active Firmware source to `firmware/JEXFYZ-V6.6.ino`, `FW_VERSION = "V6.6"`; exactly one active versioned `.ino` remains.
 - Retired Mirror Pulse ID 3 in Firmware and App without renumbering supported protocol IDs: Static 1, Breath 2, Comet 4, Dual Chase 5, Left/Right 6, Rainbow 7. Persisted ID 3/invalid values migrate to Static; new MODE:3 commands are rejected.
@@ -115,7 +126,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - Added App tests for supported IDs, atomic snapshot parsing and low-brightness chroma; added firmware contract tests for retirement/migration of ID 3 and snapshot creation at notification time. Tests/analyze have NOT been run; static inspection is not runtime verification.
 - Firmware compile, BIN generation/provenance, physical LED verification, App Build/APK, Firebase, OTA, flash and release were NOT performed. V6.6 remains source-only DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED.
 
-## 2026-10-14 — V6.5 Adaptive Peltier transition continuity
+## HISTORICAL / SUPERSEDED — 2026-10-14 — V6.5 Adaptive Peltier transition continuity
 
 - Bumped the active Firmware source to `firmware/JEXFYZ-V6.5.ino` and `FW_VERSION = "V6.5"`; retained exactly one active versioned `.ino`.
 - Adaptive ON/OFF still returns the selector to safe 5 V but no longer toggles the logical Peltier state OFF solely for that handoff. Both paths use the existing output reconciliation and voltage-transition pause helper.
@@ -124,7 +135,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - Renamed the active static contract to `test/v6_5_qc_contract_test.dart` and added a regression assertion that Adaptive ON/OFF handoff code does not introduce its own `peltierOn = false` cycle.
 - Static source/diff inspection only. Flutter tests/analyze, ArduinoDroid compile, BIN provenance, physical hardware tests, OTA, App Build and release were NOT run; V6.5 remains source-only and NOT RELEASED.
 
-## 2026-10-14 — Memory-system cleanup / V6.4 checkpoint
+## HISTORICAL / SUPERSEDED — 2026-10-14 — Memory-system cleanup / V6.4 checkpoint
 
 - Reconciled current source version to `firmware/JEXFYZ-V6.4.ino`, `FW_VERSION = "V6.4"`; one active versioned source file.
 - Replaced stale, duplicated “current status” blocks in the current-state, handover, App, Firmware, build and rules documents with canonical focused references.
@@ -142,7 +153,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - Preserved two separate user-reported restart incidents in current memory: (1) Manual 5 V→12 V during active Peltier soft-start and (2) enabling Adaptive from 12 V with Peltier/Fan ON. Reset reason is unknown in both reports; brownout remains a hypothesis, and they must not be conflated.
 - Preserved the prior user request for rapid Hotside-rise shutdown/manual re-arm as NOT IMPLEMENTED in V6.4, and the historical report that the Adaptive-OFF white three-blink indicator was missing immediately after restart. Transition/boot LED code and physical status still require direct verification; no source behavior was changed in this docs task.
 
-## 2026-10-13 — V6.4 voltage-transition source contract
+## HISTORICAL / SUPERSEDED — 2026-10-13 — V6.4 voltage-transition source contract
 
 - A voltage transition pauses GPIO5 Peltier PWM at 0% only if the existing 5-second soft-start is active when a normal Manual Volt/Adaptive transition is accepted.
 - Interrupted soft-start stays paused through selector handoff and the existing 1-second settle, then starts a fresh full 5-second ramp.
@@ -151,7 +162,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - Reason: user reported a hardware restart during 5 V→12 V with Peltier/Fan ON during active ramp. Supply transient/brownout remains unconfirmed. Reset diagnostics must be captured if reproduced.
 - Test contract: `test/v6_4_qc_contract_test.dart`. Test is present but unrun. V6.4 compile and physical checks remain pending.
 
-## 2026-10-13 — V6.3-origin Online OTA connection restoration
+## HISTORICAL / SUPERSEDED — 2026-10-13 — V6.3-origin Online OTA connection restoration
 
 - User-reported failure: Wi-Fi showed connection/blue feedback, then failure/red feedback at the GitHub connection stage after adding an embedded ISRG Root X1 CA validation path and OTA-only NTP/time-sync gate.
 - Restored `cloudClient.setInsecure()`; removed embedded CA, `setCACert()`, `configTime()`, `TIME_SYNCING`, epoch-validity and the 20-second NTP gate. On Wi-Fi connection, blue feedback proceeds to the GitHub GET attempt.
@@ -159,13 +170,13 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - User reported this V6.3 revision compiled and GitHub connection succeeded. The CA and NTP changes were removed together; evidence does not isolate which alone caused the prior failure. This is not evidence that the later V6.4 source compiled or that full BIN apply/reboot succeeded.
 - Known trade-off: `setInsecure()` bypasses server certificate identity validation. Do not silently change this baseline; require explicit discussion and one-variable-at-a-time evidence.
 
-## 2026-10-13 — App BLE rediscovery and OTA ACK handling
+## HISTORICAL / SUPERSEDED — 2026-10-13 — App BLE rediscovery and OTA ACK handling
 
 - BLE rediscovery avoids starting if Auto Connect is disabled or paired cooler identity is unknown; cancels polling if Bluetooth/permission/location prerequisites fail; suppresses scanning while syncing.
 - `CLOUDOTA` ACK `TIMEOUT`/`DISCONNECTED` is treated as ambiguous rather than rejection; preserve OTA recovery state until reconnect/result. Definite rejection only rolls back while the BLE session remains connected.
 - Static test contracts updated; the test run itself remains unverified.
 
-## 2026-10-13 — Touch Adaptive-OFF telemetry and safety latch
+## HISTORICAL / SUPERSEDED — 2026-10-13 — Touch Adaptive-OFF telemetry and safety latch
 
 - Touch long-press Adaptive-OFF must publish authoritative Adaptive state/ceiling, Fan, Peltier and Fan-speed telemetry before the Touch ACK so App/Floating Monitor doesn't retain stale state.
 - Manual Peltier safety latch cannot be bypassed by a single low Hotside sample; require Hotside at/below `hotLimit - 1°C` for 5 continuous seconds.
@@ -212,6 +223,6 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - Output became one `JEXFYZ-release.apk` asset on GitHub Release `jexfyz-latest`; normal pushes and PRs must not publish the APK.
 - Exact previous build runs/assets are historical; verify live Release/Actions state before use.
 
-## Pre-V5 history
+## HISTORICAL / SUPERSEDED — Pre-V5 history
 
 Detailed V4.x/V5.0–V5.3 changes are retained in earlier commit history and the previous changelog entries. When investigating an old regression, inspect the relevant commits and source diff, but never treat an old baseline as current implementation.
