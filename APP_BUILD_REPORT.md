@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — App Build Report
 
-This is the durable evidence ledger for `@Thinking #Build App!`. The separate Discussion chat must use this file to resume App Build context. It records only evidence actually present in GitHub Actions/Release outputs; a build, analysis, APK signature, release publication and physical-device verification are distinct gates.
+This is the durable evidence ledger for `@Thinking #Build App!`. A replacement Build App chat uses Prompt D in `CHAT_TRANSFER_PROMPTS.md` to load this file and continue the same workstream across a context limit; there is no separate Build App recap chat. Discussion can consult this ledger for evidence. It records only evidence actually present in GitHub Actions/Release outputs; a build, analysis, APK signature, release publication and physical-device verification are distinct gates.
 
 ## Current report status
 
@@ -45,6 +45,7 @@ Add a new dated section at the top of the attempt history (do not overwrite prio
 ## Cross-chat usage
 
 - Build App chat owns run execution and appends each attempt here.
+- When a Build App chat reaches context limit, the replacement Build App chat starts with Prompt D once. Prompt D loads this ledger + live workflow/run state and continues execution; do not create a separate recap chat or run Prompt A for this handoff.
 - Discussion chat must read this file before recommending what to fix, claiming current build state, or asking for another build.
 - `PROJECT_STATE.md` and `HANDOVER.md` should keep only latest concise status and point here for attempt-by-attempt details.
 - Never edit successful history to hide failures. Record retries/fixes as new entries.
