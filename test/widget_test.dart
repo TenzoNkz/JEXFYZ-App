@@ -292,9 +292,14 @@ void main() {
     expect(floating, isNot(contains('_livePreview(telemetry)')));
     expect(floating, contains("JexText.of('orientation', lang)"));
     expect(floating, contains('SegmentedButton<bool>('));
-    expect(floating, contains("JexText.of('fpsAccessTitle', lang)"));
+    expect(floating, contains("JexText.of('shizukuAccessGranted', lang)"));
+    expect(floating, contains("JexText.of('shizukuAccessDenied', lang)"));
     expect(floating, contains("JexText.of('requestShizukuPermission', lang)"));
+    expect(floating, contains("JexText.of('checkFpsAccess', lang)"));
     expect(floating, contains("FloatingBridge.requestShizukuFpsPermission()"));
+    expect(floating, isNot(contains("JexText.of('fpsAccessTitle', lang)")));
+    expect(floating, isNot(contains("JexText.of('fpsAccessHint', lang)")));
+    expect(floating, isNot(contains("_openShizukuManager")));
     expect(floating, isNot(contains("adb shell pm grant")));
     expect(floating, isNot(contains("adb shell pm revoke")));
     expect(floating, isNot(contains("WirelessAdbPairingBridge")));
