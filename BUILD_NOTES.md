@@ -19,12 +19,15 @@
 - Production signing certificate SHA-256 in prior build record: `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. Verify against live workflow/config before relying on it.
 - Preserve Android Gradle `versionName "Telegram @horizontalzzz"`.
 
-## Current blocker — Build #40 source-archive assertion (2026-10-15)
+## Current App Build blocker — hosted runner dispatch (2026-10-15)
 
-- Build #40 `38713854518` on `d638f6941d9ac16a228f4b78ed001ca2e925f716` passed the audit/license checks, dependency installation, Dart analysis and all 80 tests, then successfully built the obfuscated APK and passed V1/V2/V3 plus official certificate verification.
-- The source archive was created and passed ZIP integrity validation, but the packaging step failed because it expected the obsolete path `android/src/main/java/io/github/muntashirakon/crypto/spake2/Spake2Context.java`. Correct tag-1.0.5 source path is `src/main/java/com/flyfish233/crypto/spake2/Spake2Context.java`.
-- Workflow correction prepared in blob `225584c8feaf8e43ff7228fd6ab3dc84491e34ba`; publish/re-download gates were skipped in #40. Commit the correction, then rerun the official issue-trigger workflow and inspect all gates.
-- Retain Kadb 1.3.0 and Wireless ADB. The workflow embeds the GPL-3.0 license text in APK assets, creates a corresponding-source ZIP for the exact App commit with Kadb 1.3.0 and SPAKE2-Java 1.0.5 sources, publishes exactly one APK plus that ZIP to the same private Release, and compares SHA-256 values after re-download. This is a technical source-availability safeguard, not a legal opinion.
+- Current source is `main` commit `f9ca1e98aaed10712f77502c3441cb98904e3594`, including the correction to the corresponding-source archive's SPAKE2-Java 1.0.5 path assertion.
+- Build #40 `38713854518` on `d638f6941d9ac16a228f4b78ed001ca2e925f716` passed the audit/license checks, Flutter dependency install, Dart analysis, all 80 tests, obfuscated APK compilation and V1/V2/V3 plus production certificate validation. It failed only because the corresponding-source step checked an obsolete path. The corrected path is `src/main/java/com/flyfish233/crypto/spake2/Spake2Context.java`.
+- Build #41–#44 on the corrected source did not reach any workflow step. Runs: #41 `38715261426` (attempt 2 job `116356817322`), #42 `38715656340` (attempt 2 job `116357869559`), #43 `38715911768` (attempt 1 job `116358423340`) and #44 `38718952314` (attempt 1 job `116368449764`, attempt 2 job `116368665443`). Every observed failed job completed in about three seconds with `runner_id=0`, empty runner name and zero steps; no usable logs exist.
+- One explicit retry of Build #44 failed with the same signature. The observed pattern is consistent with hosted-runner dispatch/infrastructure trouble, but the exact cause is not confirmed. GitHub Status showed Actions operational at the time checked; similar symptoms were reported in GitHub Community: https://github.com/orgs/community/discussions/208438 and https://github.com/orgs/community/discussions/209031.
+- **Release status:** no APK or source bundle was published by #40–#44. Release tag `jexfyz-latest` still targets older Build #36 commit `893393388b99fc6d9e59c420070a159a29e45e9a`. Do not describe the latest source as released.
+- **Distribution route already chosen:** retain Kadb 1.3.0 and Wireless ADB. Include the GPL-3.0 license text in APK assets, and package the exact App source plus Kadb 1.3.0 and SPAKE2-Java 1.0.5 source/licenses as `JEXFYZ-corresponding-source.zip` alongside exactly one APK in the same private Release. Continue this existing route; do not ask the user to choose A/B again. This is a technical source-availability safeguard, not a legal opinion.
+- **Next:** pause blind issue-trigger retries until GitHub runner allocation works again. Then run the existing official workflow against current `main`; verify audit, all 80 tests, obfuscated APK, V1/V2/V3 and production certificate, source-bundle integrity/path/tag/license, one APK plus one source ZIP, and both downloaded hashes/signatures.
 
 ## Validation sequence
 
