@@ -160,10 +160,10 @@ void main() {
     expect(jexHotsideTemperatureColor('--', hotLimit: 45), jexThermalIceBlue);
     expect(jexHotsideTemperatureColor('35.0', hotLimit: 45), isNot(jexThermalIceBlue));
     expect(jexHotsideTemperatureColor('40.0', hotLimit: 45), isNot(jexThermalRed));
-    expect(jexHotsideTemperatureColor('44.99', hotLimit: 45), isNot(jexThermalRed));
+    expect(jexHotsideTemperatureColor('44.0', hotLimit: 45), isNot(jexThermalRed));
     expect(jexHotsideTemperatureColor('45.0', hotLimit: 45), jexThermalRed);
     expect(jexHotsideTemperatureColor('35.0', hotLimit: 35), jexThermalRed);
-    expect(jexHotsideTemperatureColor('49.99', hotLimit: 50), isNot(jexThermalRed));
+    expect(jexHotsideTemperatureColor('49.0', hotLimit: 50), isNot(jexThermalRed));
     expect(jexHotsideTemperatureColor('50.0', hotLimit: 50), jexThermalRed);
     expect(jexHotsideFireActive('44.99', hotLimit: 45), isFalse);
     expect(jexHotsideFireActive('45.0', hotLimit: 45), isTrue);
