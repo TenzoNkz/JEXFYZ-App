@@ -745,28 +745,63 @@ class _JexLedStripPainter extends CustomPainter {
       oldDelegate.background != background;
 }
 
-class _JexColorPickerCard extends StatelessWidget {
+class _JexColorPickerCard extends StatefulWidget {
   final List<LedColorPreset> colors;
   final String selected;
-  final ValueChanged<String> onSelected;
+  final Future<bool> Function(String) onSelect;
   final VoidCallback onCancel;
 
   const _JexColorPickerCard({
     required this.colors,
     required this.selected,
-    required this.onSelected,
+    required this.onSelect,
     required this.onCancel,
   });
+
+  @override
+  State<_JexColorPickerCard> createState() => _JexColorPickerCardState();
+}
+
+class _JexColorPickerCardState extends State<_JexColorPickerCard> {
+  late String _draftSelected;
+  bool _isApplying = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _draftSelected = widget.selected.trim().toUpperCase();
+  }
+
+  @override
+  void didUpdateWidget(covariant _JexColorPickerCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!_isApplying && oldWidget.selected != widget.selected) {
+      _draftSelected = widget.selected.trim().toUpperCase();
+    }
+  }
+
+  Future<void> _applySelection() async {
+    if (_isApplying) return;
+
+    setState(() => _isApplying = true);
+    try {
+      final applied = await widget.onSelect(_draftSelected);
+      if (applied && mounted) Navigator.of(context).pop();
+    } finally {
+      if (mounted) setState(() => _isApplying = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final lang = appLanguageNotifier.value;
-    final selectedName = ledColorDisplayName(selected, lang);
-    final normalizedSelected = selected.trim().toUpperCase();
-    final selectedColor = normalizedSelected.startsWith('#') && normalizedSelected.length == 7
-        ? ledPaletteColor(normalizedSelected)
-        : scheme.surfaceContainerHighest;
+    final selectedName = ledColorDisplayName(_draftSelected, lang);
+    final normalizedSelected = _draftSelected.trim().toUpperCase();
+    final selectedColor =
+        normalizedSelected.startsWith('#') && normalizedSelected.length == 7
+            ? ledPaletteColor(normalizedSelected)
+            : scheme.surfaceContainerHighest;
 
     return Material(
       color: scheme.surface,
@@ -797,7 +832,7 @@ class _JexColorPickerCard extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: TextButton(
-                      onPressed: onCancel,
+                      onPressed: _isApplying ? null : widget.onCancel,
                       style: TextButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         minimumSize: const Size(64, 44),
@@ -805,6 +840,25 @@ class _JexColorPickerCard extends StatelessWidget {
                       ),
                       child: Text(
                         JexText.of('cancel', lang),
+                        style: TextStyle(
+                          color: scheme.primary,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: _isApplying ? null : _applySelection,
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        minimumSize: const Size(64, 44),
+                        tapTargetSize: MaterialTapTargetSize.padded,
+                      ),
+                      child: Text(
+                        JexText.of('select', lang),
                         style: TextStyle(
                           color: scheme.primary,
                           fontSize: 15,
@@ -845,7 +899,7 @@ class _JexColorPickerCard extends StatelessWidget {
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: colors.length,
+              itemCount: widget.colors.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 6,
                 crossAxisSpacing: 7,
@@ -853,7 +907,7 @@ class _JexColorPickerCard extends StatelessWidget {
                 mainAxisExtent: 42,
               ),
               itemBuilder: (_, index) {
-                final preset = colors[index];
+                final preset = widget.colors[index];
                 final value = preset.hex;
                 final isSelected = normalizedSelected == value;
                 final isWhite = value == '#FFFFFF';
@@ -866,7 +920,12 @@ class _JexColorPickerCard extends StatelessWidget {
                     selected: isSelected,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(11),
-                      onTap: () => onSelected(value),
+                      onTap: _isApplying
+                          ? null
+                          : () {
+                              if (_draftSelected == value) return;
+                              setState(() => _draftSelected = value);
+                            },
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 120),
                         decoration: BoxDecoration(
@@ -4015,10 +4074,11 @@ void _handleAckLine(String line) {
   }
 
   // AI-METHOD: _setRgbColor — Apply one palette color to firmware RGB color.
-  Future<void> _setRgbColor(String hex) async {
-    if (!connected || rgbMode == 7) return;
+  Future<bool> _setRgbColor(String hex) async {
+    if (!connected || rgbMode == 7) return false;
     final value = hex.trim().toUpperCase();
-    if (!ledColorPalette.contains(value)) return;
+    if (!ledColorPalette.contains(value)) return false;
+    if (value == rgbColor.toUpperCase()) return true;
 
     try {
       final ok = await _sendAndConfirm('COLOR:' + value.substring(1));
@@ -4026,15 +4086,17 @@ void _handleAckLine(String line) {
         if (mounted) {
           _showSnackBar(JexText.phrase('Color change was not confirmed.','Perubahan warna tidak terkonfirmasi.'));
         }
-        return;
+        return false;
       }
 
       if (mounted) {
         setState(() => rgbColor = value);
       }
+      return true;
     } catch (e) {
       debugPrint('LED color command: $e');
       if (mounted) _showSnackBar(JexText.phrase('LED color command failed.','Perintah warna LED gagal.'));
+      return false;
     }
   }
 
@@ -4169,7 +4231,7 @@ void _handleAckLine(String line) {
 
     await showGeneralDialog<void>(
       context: context,
-      barrierDismissible: true,
+      barrierDismissible: false,
       barrierLabel: JexText.of('color', appLanguageNotifier.value),
       barrierColor: Colors.black.withValues(alpha: .48),
       transitionDuration: const Duration(milliseconds: 210),
@@ -4178,7 +4240,7 @@ void _handleAckLine(String line) {
           child: LayoutBuilder(
             builder: (dialogContext, constraints) {
               // Pin the palette to the bottom safe area. The panel itself does not
-              // scroll/drag; only color taps change the preview or close the dialog.
+              // scroll/drag; swatch taps stage a preview, and only Cancel or Select closes it.
               return Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
@@ -4191,10 +4253,7 @@ void _handleAckLine(String line) {
                       onCancel: () {
                         if (dialogContext.mounted) Navigator.pop(dialogContext);
                       },
-                      onSelected: (value) async {
-                        await _setRgbColor(value);
-                        if (dialogContext.mounted) Navigator.pop(dialogContext);
-                      },
+                      onSelect: _setRgbColor,
                     ),
                   ),
                 ),
