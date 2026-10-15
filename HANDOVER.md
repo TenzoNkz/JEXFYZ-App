@@ -5,9 +5,9 @@ Last reconciled: 2026-10-15 (Asia/Jakarta). This is a working checklist, not aut
 ## Current code and release state
 
 - Canonical repo/branch: `TenzoNkz/JEXFYZ-App` / `main`; work directly on main, no PR/branch unless requested.
-- Current editable App source commit: `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`. `lib/main.dart` blob `f4ee1e9b9e74f103e0f362db813dea642f285470`; `test/widget_test.dart` blob `4b7bf68f3c73d6ffe80509ccb75ce6e08607b020`.
+- Latest Color Picker source edit is in commit `8f32f366acb8e8d6a2744d2c2a0756e911098d81`; the current main checkpoint including its regression assertions is `1f7d1bc907395e797da148db5cc18e7cbe5164fb`. `lib/main.dart` blob `150ca0e34478e27d6fd62ed55f19411d71c2a287`; `lib/app_settings.dart` blob `f784a83baf312b563a1d3255dda4c012a9baee1a`; `test/widget_test.dart` blob `f3c7c4a0dd15f4aec24d14006d467dd46b551641`.
 - App package/version: `com.horizontalzzz.jexfyz`, pubspec `1.0.0+3`; preserve Android Gradle `versionName "Telegram @horizontalzzz"`.
-- Latest successful App Build is [#35 / run `38669526891`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38669526891) for that code commit. Audit, dependency installation, Dart analyze, all 74 Flutter tests, APK build, V1/V2/V3 verification, Release publication and re-downloaded asset verification passed.
+- Latest successful App Build remains [#35 / run `38669526891`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38669526891) for older code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`. The current Color Picker changes are newer and are NOT in that APK. No App Build was triggered for this execution; Dart/Flutter tests/analyze were not run in this environment.
 - Current Release `jexfyz-latest`: one `JEXFYZ-release.apk`, 54,521,947 bytes; SHA-256 `77e57ece6c194ec97ce9f4e72d379f848173cd2cf905f66a74e6b037ad82e5c1`. Production certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. JAR/V1 diagnostics warn that some dependency META-INF entries are not protected by that scheme; V1/V2/V3 separately passed on the built and re-downloaded APK.
 - Build #34 failed one midpoint regression assertion (expected 0.5; the prior `Curves.easeInOutCubic` produced 0.510125). The code now uses symmetric cubic smoothstep `t*t*(3-2*t)`; Build #35 passed the unchanged midpoint test as part of all 74 tests.
 - CI cannot prove physical Android rendering, cooler BLE operation, Fan/Peltier behavior, MT Manager's signature display or physical OTA. The older MT Manager `Signature: Verified failed` report is historical and its cause remains unverified; recheck against installed #35 APK if the user raises it.
@@ -18,7 +18,7 @@ Last reconciled: 2026-10-15 (Asia/Jakarta). This is a working checklist, not aut
 - Peltier indicator is a six-branch crystal with no square module frame/center box/bolts. While ON, motion and voltage-class frost interpolation run; OFF freezes the full-colour crystal without fade. This is decorative UI, not a physical ice/temperature measurement.
 - Fan Speed gauge retargets from the current rendered value to each new target over 420 ms; OFF eases to zero over 520 ms. The reported percentage remains authoritative. Integer-frequency wobble is continuous at its cycle seam.
 - Voltage sheen sweeps sinusoidally back and forth. Bluetooth ripples use a squared-sine opacity envelope that reaches zero with zero slope at loop boundaries.
-- Color Picker: 36 localized hue-ordered presets, no HEX text, bottom pinned, Cancel dismisses without sending RGB. Existing Fan-before-Peltier confirmation is unchanged. Notification branding is a transparent white JE vector small icon, with no large icon. See `APP_NOTES.md` and `DESIGN_NOTES.md`.
+- Color Picker: 36 localized hue-ordered presets with no HEX text, bottom pinned. Swatches stage a local draft only; the localized top-right Select sends the confirmed COLOR command and closes only after success. The top-left Cancel discards the draft. Outside taps and Android system Back are blocked, so only the action buttons close the dialog. Updated source regression assertions cover these contracts, but they have not been run; physical behavior is also unverified. Existing Fan-before-Peltier confirmation is unchanged. Notification branding is a transparent white JE vector small icon, with no large icon. See `APP_NOTES.md` and `DESIGN_NOTES.md`.
 
 ## Firmware/hardware boundary
 
@@ -53,7 +53,7 @@ Last reconciled: 2026-10-15 (Asia/Jakarta). This is a working checklist, not aut
 
 1. Install the #35 APK and inspect MT Manager's signature display; do not conflate the JAR/V1 META-INF warning with separately passing V1/V2/V3 scheme checks.
 2. On device verify Fan coast-down/full colour, Peltier crystal OFF pose, repeated/mid-transition Fan Speed target changes, OFF-to-zero, needle wobble seam, voltage sheen and Bluetooth ripple loop boundary.
-3. Verify notification icon/tap, dialog sizing/Cancel, offline output `--`, BLE reconnect authoritative telemetry and physical behavior. CI source-level tests are not hardware tests.
+3. When separately authorized with `@Thinking #Build App!`, run Dart analysis/tests and the official App Build/QC workflow against the updated source, inspect the built APK and record evidence. The Color Picker assertions currently have not been executed. Separately verify notification icon/tap, Color Picker staged selection/Select/Cancel/outside/back behavior, offline output `--`, BLE reconnect authoritative telemetry and physical behavior. CI source-level tests are not hardware tests.
 4. Do not reopen Firmware tasks unless the user explicitly changes their V6.6 final acceptance.
 
 ## Canonical references
