@@ -36,12 +36,18 @@ Last reconciled: 2026-10-15 (Asia/Jakarta). This is a working checklist, not aut
 - Online OTA currently uses `cloudClient.setInsecure()`; this bypasses server certificate identity validation. The earlier CA + NTP-gated path was removed together after user-reported blue-then-red failure; the precise root cause was not isolated. Do not infer HTTP/TLS error codes from LEDs.
 - App repo owns all docs, memory, source and transfer prompts. `TenzoNkz/JEXFYZ-Firmware` must contain `JEXFYZ.cpp.bin` only. Last verified artifact tree had exactly that file (blob `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, 1,455,936 bytes); verify live before future actions. Provenance to V6.6 remains unverified.
 
-## Permanent authorization rules
+## Permanent command protocol and authorization rules
 
-- `@Thinking Diskusi!` is read-only; `@Thinking Eksekusi!` is scoped; `@Thinking Eksekusi Full!` does not imply Build App/Firmware compile; `@Thinking Build App!` and `@Thinking Eksekusi & Build App!` explicitly authorize App Build workflow only.
-- App Build uses issue #13 title `JE X FYZ — BUILD APP TRIGGER`, body token `JEXFYZ_BUILD_TRIGGER_V1`; re-read `.github/workflows/jexfyz-app-build-trigger.yml` before build. Current toolchain Java 17 / Flutter 3.47.2 / Gradle 9.3.1; one obfuscated production-signed APK, no App Bundle/Actions artifact.
-- User compiles Firmware; do not start firmware compile, BIN creation/publishing/replacement, Firebase update, flash, OTA, or device operation unless specifically and separately authorized.
-- Every functional Firmware change requires a version bump + matching filename + one active versioned `.ino`. Preserve Gradle identity `Telegram @horizontalzzz`. Never print credential values or signing secrets.
+- `@Thinking #Diskusi!`: full discussion/analysis only; no repository writes.
+- `@Thinking #Diskusi! #Tanya Gemini!`: prepare one complete Gemini prompt from the agreed discussion.
+- `@Thinking #Diskusi! #Jawaban Gemini!`: evaluate the user's pasted Gemini answer against source and project memory. Either Gemini subcommand without `#Diskusi!` in the same command must be rejected without processing its substantive content.
+- `@Thinking #Eksekusi Full!`: full approved implementation, related audit/tests/docs/memory verification and commit. It does not imply Build App.
+- `@Thinking #Build App!`: end-to-end App Build, justified App-scope fixes/retries, successful artifact/release verification and mandatory `APP_BUILD_REPORT.md` update.
+- Retired: standalone `#Eksekusi!` and combined `#Eksekusi & Build App!`; never use or suggest them.
+- Build uses issue title `JE X FYZ — BUILD APP TRIGGER`, body token `JEXFYZ_BUILD_TRIGGER_V1`; re-read workflow before triggering.
+- Build App does not authorize Firmware compile/source change, BIN/Firebase mutation, physical OTA, flash, device operations or unrelated releases. User compiles Firmware.
+- Preserve Gradle `versionName "Telegram @horizontalzzz"`. Work directly on `main`, no PR/branch unless requested.
+- Report verified results only; distinguish CI from physical-device validation.
 
 ## Exact next QC actions (only when separately authorized)
 
