@@ -552,6 +552,18 @@ class JexText {
       AppLanguage.english: 'Opacity',
       AppLanguage.indonesia: 'Transparansi',
     },
+    'backgroundColor': {
+      AppLanguage.english: 'Background Color',
+      AppLanguage.indonesia: 'Warna Latar',
+    },
+    'black': {
+      AppLanguage.english: 'Black',
+      AppLanguage.indonesia: 'Hitam',
+    },
+    'white': {
+      AppLanguage.english: 'White',
+      AppLanguage.indonesia: 'Putih',
+    },
     'fps': {
       AppLanguage.english: 'FPS',
       AppLanguage.indonesia: 'FPS',

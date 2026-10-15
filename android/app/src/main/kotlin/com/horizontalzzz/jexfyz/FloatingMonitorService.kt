@@ -644,7 +644,7 @@ class FloatingMonitorService : Service() {
                     "fps_monitor_active" to false,
                     "fps_monitor_status" to shizukuFpsAccessSnapshot().toStatusMap("monitor_off", false)["fps_monitor_status"],
                     "horizontal" to prefs.getBoolean("horizontal", true),
-                    "size" to prefs.getFloat("size", 1.0f).toDouble(),
+                    "size" to prefs.getFloat("size", 0.6f).coerceIn(0.3f, 0.8f).toDouble(),
                     "x" to prefs.getInt("x", 16),
                     "y" to prefs.getInt("y", 120),
                 )
@@ -676,8 +676,9 @@ class FloatingMonitorService : Service() {
         var style: String = "letters",
         var order: MutableList<String> = mutableListOf("F", "B", "H", "V", "A", "P", "S"),
         var selected: MutableSet<String> = mutableSetOf(),
-        var size: Float = 1.0f,
+        var size: Float = 0.6f,
         var opacity: Float = 0.9f,
+        var backgroundColor: String = "black",
         var horizontal: Boolean = true,
     )
 
@@ -851,8 +852,9 @@ class FloatingMonitorService : Service() {
             val obj = JSONObject(json)
             config.enabled = obj.optBoolean("enabled", false)
             config.style = obj.optString("style", "letters")
-            config.size = obj.optDouble("size", 1.0).toFloat().coerceIn(0.65f, 1.8f)
-            config.opacity = obj.optDouble("opacity", 0.9).toFloat().coerceIn(0.35f, 1.0f)
+            config.size = obj.optDouble("size", 0.6).toFloat().coerceIn(0.3f, 0.8f)
+            config.opacity = obj.optDouble("opacity", 0.9).toFloat().coerceIn(0.0f, 1.0f)
+            config.backgroundColor = if (obj.optString("backgroundColor", "black").equals("white", ignoreCase = true)) "white" else "black"
             config.horizontal = obj.optBoolean("horizontal", true)
 
             val parsedOrder = mutableListOf<String>()
@@ -1046,7 +1048,7 @@ class FloatingMonitorService : Service() {
     // AI-METHOD / RESIZE-CONTRACT
     // Apply bounded user scaling and persist it; actual window geometry is updated through WindowManager.
     private fun resizeOverlay(newSize: Float) {
-        config.size = newSize.coerceIn(0.65f, 1.8f)
+        config.size = newSize.coerceIn(0.3f, 0.8f)
         prefs.edit().putFloat("size", config.size).apply()
         hudView?.requestLayout()
         hudView?.invalidate()
@@ -1117,9 +1119,9 @@ class FloatingMonitorService : Service() {
             textPaint.textSize = textSize
             val horizontal = config.horizontal
             val metrics = visibleMetrics
-            val gap = dp(8f * size)
-            val padX = dp(11f * size)
-            val padY = dp(7f * size)
+            val gap = dp(5f * size)
+            val padX = dp(8f * size)
+            val padY = dp(5f * size)
 
             var width = padX * 2
             var height = padY * 2
@@ -1171,14 +1173,23 @@ class FloatingMonitorService : Service() {
         }
 
         // AI-METHOD / DRAW-CONTRACT
-        // Draw the HUD background and visible metrics using the current live telemetry snapshot.
+        // Draw a compact HUD, center the metric group within its own box, and contrast text/icons
+        // against the selected background. WindowManager position remains freely draggable.
         override fun onDraw(canvas: Canvas) {
             super.onDraw(canvas)
             val scale = config.size
-            val radius = dp(16f * scale)
+            val radius = dp(12f * scale)
+            val isWhiteBackground = config.backgroundColor == "white"
+            val foreground = if (isWhiteBackground) Color.rgb(24, 27, 32) else Color.WHITE
+            val background = if (isWhiteBackground) Color.WHITE else Color.rgb(10, 10, 12)
+            textPaint.color = foreground
+            iconPaint.color = foreground
+            fillPaint.color = foreground
             bgPaint.color = Color.argb(
-                (config.opacity.coerceIn(0.0f, 1.0f) * 225f).roundToInt(),
-                10, 10, 12,
+                (config.opacity.coerceIn(0.0f, 1.0f) * 255f).roundToInt(),
+                Color.red(background),
+                Color.green(background),
+                Color.blue(background),
             )
             canvas.drawRoundRect(
                 0f,
@@ -1191,18 +1202,25 @@ class FloatingMonitorService : Service() {
             )
 
             val metrics = visibleMetrics
-            val padX = dp(11f * scale)
-            val padY = dp(7f * scale)
-            val gap = dp(8f * scale)
-            var cursor = if (config.horizontal) padX else padY
-
-            for (metric in metrics) {
-                val itemH = itemHeight(metric)
-                if (config.horizontal) {
-                    drawMetric(canvas, metric, cursor, padY + itemH * 0.72f, scale)
+            val padY = dp(5f * scale)
+            val gap = dp(5f * scale)
+            val fontMetrics = textPaint.fontMetrics
+            val centeredBaseline = (height - fontMetrics.ascent - fontMetrics.descent) / 2f
+            if (config.horizontal) {
+                val contentWidth = metrics.sumOf { itemWidth(it).toDouble() }.toFloat() +
+                    gap * (metrics.size - 1).coerceAtLeast(0)
+                var cursor = (width - contentWidth) / 2f
+                for (metric in metrics) {
+                    drawMetric(canvas, metric, cursor, centeredBaseline, scale)
                     cursor += itemWidth(metric) + gap
-                } else {
-                    drawMetric(canvas, metric, padX, cursor + itemH * 0.72f, scale)
+                }
+            } else {
+                var cursor = padY
+                for (metric in metrics) {
+                    val itemH = itemHeight(metric)
+                    val baseline = cursor + (itemH - fontMetrics.descent - fontMetrics.ascent) / 2f
+                    val centeredX = (width - itemWidth(metric)) / 2f
+                    drawMetric(canvas, metric, centeredX, baseline, scale)
                     cursor += itemH + gap
                 }
             }

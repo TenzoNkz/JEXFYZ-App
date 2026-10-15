@@ -1,7 +1,7 @@
 // AI-MEMORY / FILE CONTRACT
 // File: floating_monitor.dart
 // Owns: Flutter Floating Monitor configuration UI, overlay permission flow,
-//       runtime reconciliation, ADB FPS permission flow, and live telemetry forwarding.
+//       runtime reconciliation, Shizuku FPS permission flow, and live telemetry forwarding.
 // Native ownership: MainActivity opens Android Settings; FloatingMonitorService owns
 // WindowManager and the actual overlay window. This file never owns BLE/GATT.
 // Localization: read the shared AppLanguage notifier. English status = ON/OFF;
@@ -24,6 +24,7 @@ import 'app_settings.dart';
 import 'jex_animated_glyph.dart';
 
 enum FloatingDisplayStyle { letters, icons }
+enum FloatingBackgroundColor { black, white }
 
 // AI-MEMORY / CONFIG MODEL
 // Persisted overlay presentation/settings only. Device state never belongs in this model.
@@ -34,6 +35,7 @@ class FloatingConfig {
   final Set<String> selected;
   final double size;
   final double opacity;
+  final FloatingBackgroundColor backgroundColor;
   final bool horizontal;
 
   const FloatingConfig({
@@ -41,8 +43,9 @@ class FloatingConfig {
     this.style = FloatingDisplayStyle.letters,
     this.order = const <String>['F', 'B', 'H', 'V', 'A', 'P', 'S'],
     this.selected = const <String>{'F', 'B', 'H', 'V', 'A', 'P', 'S'},
-    this.size = 1.0,
+    this.size = 0.6,
     this.opacity = 0.9,
+    this.backgroundColor = FloatingBackgroundColor.black,
     this.horizontal = true,
   });
 
@@ -55,6 +58,7 @@ class FloatingConfig {
     Set<String>? selected,
     double? size,
     double? opacity,
+    FloatingBackgroundColor? backgroundColor,
     bool? horizontal,
   }) {
     return FloatingConfig(
@@ -64,6 +68,7 @@ class FloatingConfig {
       selected: selected ?? Set<String>.from(this.selected),
       size: size ?? this.size,
       opacity: opacity ?? this.opacity,
+      backgroundColor: backgroundColor ?? this.backgroundColor,
       horizontal: horizontal ?? this.horizontal,
     );
   }
@@ -79,6 +84,7 @@ class FloatingConfig {
         'selected': selected.toList(),
         'size': size,
         'opacity': opacity,
+        'backgroundColor': backgroundColor.name,
         'horizontal': horizontal,
       };
 
@@ -107,13 +113,17 @@ class FloatingConfig {
           if (!order.contains(metric)) order.add(metric);
         }
       }
+      final backgroundColor = decoded['backgroundColor']?.toString() == 'white'
+          ? FloatingBackgroundColor.white
+          : FloatingBackgroundColor.black;
       return FloatingConfig(
         enabled: decoded['enabled'] is bool ? decoded['enabled'] as bool : false,
         style: style,
         order: order,
         selected: selected,
-        size: ((decoded['size'] as num?)?.toDouble() ?? 1.0).clamp(0.65, 1.8).toDouble(),
-        opacity: ((decoded['opacity'] as num?)?.toDouble() ?? 0.9).clamp(0.35, 1.0).toDouble(),
+        size: ((decoded['size'] as num?)?.toDouble() ?? 0.6).clamp(0.3, 0.8).toDouble(),
+        opacity: ((decoded['opacity'] as num?)?.toDouble() ?? 0.9).clamp(0.0, 1.0).toDouble(),
+        backgroundColor: backgroundColor,
         horizontal: decoded['horizontal'] is bool ? decoded['horizontal'] as bool : true,
       );
     } catch (_) {
@@ -433,7 +443,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
         }
         if (nativeSize is num) {
           next = next.copyWith(
-            size: nativeSize.toDouble().clamp(0.65, 1.8).toDouble(),
+            size: nativeSize.toDouble().clamp(0.3, 0.8).toDouble(),
           );
         }
         if (next.horizontal != config.horizontal || next.size != config.size) {
@@ -742,7 +752,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
       next = next.copyWith(horizontal: horizontal);
     }
     if (size is num && (size.toDouble() - config.size).abs() > 0.005) {
-      next = next.copyWith(size: size.toDouble().clamp(0.65, 1.8).toDouble());
+      next = next.copyWith(size: size.toDouble().clamp(0.3, 0.8).toDouble());
     }
     if (next.horizontal != config.horizontal || next.size != config.size) {
       config = next;
@@ -951,16 +961,51 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                       _sliderRow(
                         label: JexText.of('size', lang),
                         value: config.size,
-                        min: 0.65,
-                        max: 1.8,
+                        valueLabel: '${config.size.toStringAsFixed(2)}×',
+                        min: 0.30,
+                        max: 0.80,
+                        divisions: 10,
+                        minLabel: '0.30×',
+                        maxLabel: '0.80×',
                         onChanged: (value) => _apply(config.copyWith(size: value)),
                       ),
                       _sliderRow(
                         label: JexText.of('opacity', lang),
                         value: config.opacity,
-                        min: 0.35,
+                        valueLabel: '${(config.opacity * 100).round()}%',
+                        min: 0.0,
                         max: 1.0,
+                        divisions: 100,
+                        minLabel: '0%',
+                        midLabel: '50%',
+                        maxLabel: '100%',
                         onChanged: (value) => _apply(config.copyWith(opacity: value)),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        JexText.of('backgroundColor', lang),
+                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
+                      ),
+                      const SizedBox(height: 7),
+                      SegmentedButton<FloatingBackgroundColor>(
+                        segments: [
+                          ButtonSegment<FloatingBackgroundColor>(
+                            value: FloatingBackgroundColor.black,
+                            label: Text(JexText.of('black', lang)),
+                            icon: const Icon(Icons.dark_mode_outlined),
+                          ),
+                          ButtonSegment<FloatingBackgroundColor>(
+                            value: FloatingBackgroundColor.white,
+                            label: Text(JexText.of('white', lang)),
+                            icon: const Icon(Icons.light_mode_outlined),
+                          ),
+                        ],
+                        selected: <FloatingBackgroundColor>{config.backgroundColor},
+                        onSelectionChanged: (value) {
+                          if (value.isNotEmpty) {
+                            _apply(config.copyWith(backgroundColor: value.first));
+                          }
+                        },
                       ),
                       const SizedBox(height: 12),
                       Text(
@@ -1021,19 +1066,66 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   }
 
   // AI-METHOD / SLIDER-CONTRACT
-  // Render a localized numeric presentation control without coupling it to device commands.
+  // Display the active numeric value and stable scale marks above/below each presentation slider.
   Widget _sliderRow({
     required String label,
     required double value,
+    required String valueLabel,
     required double min,
     required double max,
+    required String minLabel,
+    String? midLabel,
+    required String maxLabel,
+    int? divisions,
     required ValueChanged<double> onChanged,
   }) {
-    return Row(
-      children: [
-        SizedBox(width: 66, child: Text(label, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800))),
-        Expanded(child: Slider(min: min, max: max, value: value, onChanged: onChanged)),
-      ],
+    final scaleLabels = <Widget>[
+      Text(minLabel, style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurfaceVariant)),
+      if (midLabel != null)
+        Text(midLabel, style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurfaceVariant)),
+      Text(maxLabel, style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurfaceVariant)),
+    ];
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  label,
+                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
+                ),
+              ),
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(7),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  child: Text(
+                    valueLabel,
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Slider(
+            min: min,
+            max: max,
+            divisions: divisions,
+            value: value.clamp(min, max).toDouble(),
+            onChanged: onChanged,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: scaleLabels,
+          ),
+        ],
+      ),
     );
   }
 }

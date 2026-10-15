@@ -230,3 +230,19 @@ The canonical map is MEMORY_INDEX.md. At this reconciliation, prepared blobs for
 ## 11. Final operation state
 
 This snapshot records that Build #49 from older source `2b2d2886abb66481b7134e5036824f625ab5659d` remains the last verified Release. Current source checkpoint `b4e4ec7e8d6c00f43e5378dcb7e2e4b7731adf4b` adds Shizuku-gated FPS authorization/execution. Current-source tests, analysis, Android build and Release were not run during Chat Stuck recovery. The issue-only workflow is unchanged in trigger semantics, with Shizuku/MIT audit and source packaging updates; no trigger issue was opened/reopened. Physical-device behavior remains unverified. No Firmware/BIN/Firebase/OTA/flash/device operation was performed.
+
+## CURRENT CHECKPOINT — Floating Monitor visual controls (2026-10-15)
+
+- Floating Monitor remains freely draggable. The alignment change is inside the box only: horizontal metric groups are centered as a group, and vertical rows are centered individually. Native WindowManager gravity stays `Gravity.TOP | Gravity.START`; drag offset persistence is preserved.
+- Native HUD spacing is tightened (5dp-scaled inter-metric gap, 8dp-scaled horizontal padding, 5dp-scaled vertical padding) and the corner radius is reduced.
+- Size is normalized to `0.30×–0.80×` in `0.05×` steps, with current numeric value shown in the menu. Default is `0.60×`.
+- Background Opacity covers `0–100%` (stored as normalized `0.0–1.0`), with live numeric percent and scale labels `0%`, `50%`, `100%`. At 0%, only the background vanishes; metric text remains visible.
+- Background color is user-selectable Black/White, persisted with FloatingConfig and applied natively; foreground text and icons switch to a contrasting color. Default remains Black and Opacity remains 90%.
+- Source/test blob hashes at this checkpoint:
+  - `lib/floating_monitor.dart`: `3516b742d39e86c8796a0e77f77c0e9c1f1c1110`
+  - `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt`: `0c9cfdee776ca2f1de5daf2205d1f9f8da63683d`
+  - `lib/app_settings.dart`: `46cc838f43a06c325af6f6832e200a4e1ed4f75d`
+  - `test/floating_monitor_layout_contract_test.dart`: `31d9aabf4ac0839855308b6bd2a0708fa399a3a9`
+- Source-level contract tests were added but are NOT RUN. No Dart analysis, Flutter test run, Android/Kotlin compile, APK build, release, workflow trigger or physical-device validation was performed. Build #49 remains the last verified APK and does not contain these changes.
+- Firmware V6.6, firmware/BIN repository, Firebase, OTA, flash and physical device remain untouched.
+
