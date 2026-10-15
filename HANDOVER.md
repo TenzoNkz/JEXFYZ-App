@@ -16,7 +16,7 @@ Last reconciled: 2026-10-16 Asia/Jakarta after Build #58 and post-release FPS di
 
 - USER-REPORTED screenshot showed Shizuku permission granted and metric F selected while the overlay displayed `F:--`. This proves the overlay and selection are visible, but does not identify whether service, foreground detection or layer sampling failed.
 - Build #58 (release source `db11df355780174b1da7dcea4d5947bfa7ba7ca5`) includes the earlier focused-window sampler and guarded frame-delta logic. The user still observed `F:--` on that release.
-- Current post-release source checkpoint `becd7f20517fbdaa4bb9922501f28fbed2282223` adds a full `dumpsys window` fallback when `dumpsys window displays` yields no focus, does not report sampler `active` before a valid sample, and shows native statuses such as `foreground_unknown` and `no_layer_data` in Settings. **This checkpoint has not been analyzed, test-run, Kotlin-compiled, or built.**
+- Current post-release source/test checkpoint `6e9b4c73db12c51f4452717d8cf102f49d325dcf` adds a full `dumpsys window` fallback when `dumpsys window displays` yields no focus, keeps `starting` until a valid sample exists, accepts `0 FPS` after two matching layer snapshots with a valid zero delta, distinguishes counter resets, cancels stale polling tasks on retry, and shows native statuses such as `foreground_unknown` and `no_layer_data` in Settings. **This checkpoint has not been analyzed, test-run, Kotlin-compiled, or built.**
 - Next step after this authorized source execution is the separate `@Thinking Eksekusi Build App!` command. Install the resulting APK and share the status line plus `F:--` outcome. Do not substitute panel refresh rate for measured FPS; Shizuku permission alone does not establish frame-statistics access.
 
 
