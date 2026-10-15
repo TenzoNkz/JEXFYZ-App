@@ -6,7 +6,7 @@ Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use C
 
 - Latest verified release is [Build #58 / run `38793790061`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38793790061), exact release source `db11df355780174b1da7dcea4d5947bfa7ba7ca5`. It passed Dart analysis, 87/87 Flutter tests, Android release build/signing and downloaded artifact verification.
 - Build #58 includes the earlier icon painter restore `98cfe7ba4d0e9d569b84498d261ad1b67f66eee7` and test-contract correction `432c30ec538ff7de6c7e77f0c68bac313f4f8015`.
-- **Current post-release diagnostic patch is not built/tested:** latest source checkpoint `becd7f20517fbdaa4bb9922501f28fbed2282223` adds a full `dumpsys window` fallback, keeps sampler status at `starting` until a valid sample exists, and displays actual native FPS status in Floating Monitor settings. Current automated source/test changes remain pending Build App validation.
+- **Current post-release diagnostic patch is not built/tested:** latest source/test checkpoint `6e9b4c73db12c51f4452717d8cf102f49d325dcf` adds a full `dumpsys window` fallback, keeps sampler status at `starting` until a valid sample exists, accepts zero only after two matching layer snapshots over a valid interval, distinguishes invalid/reset counters, cancels stale polling loops on retry, and displays actual native FPS status in Settings. Current automated source/test changes remain pending Build App validation.
 - The screenshot showing Shizuku granted plus `F:--` does not by itself establish the runtime root cause. The new status line should distinguish foreground detection, layer availability, invalid samples and service/command failures. Physical FPS remains device-unverified.
 - No Firmware/BIN, Firebase metadata, OTA, BLE hardware-control or thermal-safety changes were made.
 
@@ -32,12 +32,12 @@ Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use C
 ## Current source fingerprints
 
 - lib/main.dart: d24885cf0a40472b9fb23ee6ce73ad772ae73672.
-- lib/floating_monitor.dart: b6283ec5e244903c9cbaa413c449ea67dd7293e8.
+- lib/floating_monitor.dart: d43bd17a7adebf7c9f95fc5fdf921ba2a22a231b.
 - lib/app_settings.dart: 4c89bcb3c04142ce49440a11b92054365c26f7a6.
 - test/widget_test.dart: 1729eb5407ae781bc82ce34a0f7af2cb1ca9d439.
 - test/floating_monitor_layout_contract_test.dart: 7f861d449e518af68fc4ece7278241aa3ce8691b.
-- test/shizuku_fps_contract_test.dart: 99855b6bb5e7424b9ebb2d8bebd4c1b7a65747c0.
-- android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt: 694e0545a5fe3c9a818ba428fc0d71b31626c55c.
+- test/shizuku_fps_contract_test.dart: 93aca6d5f5ad6c3c4723b2545eaf997cf8ee996f.
+- android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt: c7ca3e75c28b53ea8cda207836befbe04a2e5a6f.
 - android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FpsShizukuUserService.kt: 9f70d480bd31a4875653add70804ab50fc15b747.
 - android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt: a139dfefe1121963c3a26b114b9b0fcc9f8fa16a.
 - android/app/src/main/aidl/com/horizontalzzz/jexfyz/IFpsShizukuUserService.aidl: 5bd6c269212e523b190f7164e0ad1d257ed5e6a5.
