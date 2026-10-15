@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Memory Index
 
-Last reconciled against live `main` on 2026-10-15 (Asia/Jakarta). Latest verified App Build remains #35 / run `38669526891`, built from older code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`; its Dart analyze and 74 Flutter tests passed, APK V1/V2/V3 checks passed, and the release asset was verified. Newer Color Picker source/test changes have been committed but are UNBUILT and their added tests have NOT RUN. This index routes memory; always fetch live HEAD and blob fingerprints before acting. Device-side rendering/signature inspection and Firmware/hardware validation remain separate gates.
+Last reconciled against live `main` on 2026-10-15 (Asia/Jakarta). Latest verified App Build remains #35 / run `38669526891`, built from older code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`; its Dart analyze and 74 Flutter tests passed, APK V1/V2/V3 checks passed, and the release asset was verified. Newer Color Picker and Floating Monitor/ADB FPS source/test changes have been committed but are UNBUILT and their added tests have NOT RUN. `@Thinking Chat Stuck!` is a valid recovery command. This index routes memory; always fetch live HEAD and blob fingerprints before acting. Device-side rendering/signature inspection and Firmware/hardware validation remain separate gates.
 ## New-chat boot order
 1. Read `CHAT_TRANSFER.md` completely.
 2. Fetch live `main` HEAD, recursive tree, active Firmware source, App source, tests, build workflow and open-PR state.
@@ -15,6 +15,7 @@ Last reconciled against live `main` on 2026-10-15 (Asia/Jakarta). Latest verifie
 - Gemini prompt/answer only with parent: `@Thinking #Diskusi! #Tanya Gemini!` and `@Thinking #Diskusi! #Jawaban Gemini!`; reject either without `#Diskusi!` and do not handle the substantive request.
 - Full authorized execution: `@Thinking #Eksekusi Full!`; it does not trigger App Build.
 - Full App Build retry/verification/report loop: `@Thinking #Build App!`.
+- Emergency recovery: `@Thinking Chat Stuck!` — inspect live logs/state and resume the last verified checkpoint under the existing authorization; no blind retries or automatic build.
 - Retired: standalone `#Eksekusi!` and combined `#Eksekusi & Build App!`.
 
 ## Canonical file map
