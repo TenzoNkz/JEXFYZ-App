@@ -2,11 +2,14 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
-## 2026-10-16 — Post-Build #58 FPS diagnostics (not yet built)
+## 2026-10-16 — Build #60 release verified: FPS diagnostics built (device validation pending)
 
-- After Build #58 was installed, the user reported a screenshot showing Shizuku access granted and metric `F` selected while the overlay still displayed `F:--`.
-- Follow-up source/test checkpoint before documentation updates: `6e9b4c73db12c51f4452717d8cf102f49d325dcf`. It retries a full, fixed `dumpsys window` operation when `dumpsys window displays` does not yield a parseable focused package; keeps sampler status at `starting` until a valid sample exists; accepts 0 only after two matching layer snapshots in a valid interval; distinguishes counter resets/invalid samples; cancels stale polling tasks on retry; and shows native sampler status in Settings.
-- Added assertions for the WindowManager fallback, sampler status feedback, and readable status labels. These post-release changes have **not** had Dart analysis, Flutter tests, Kotlin compilation, APK build, release, or physical-device verification. Build #58 remains the latest verified APK and does not contain this follow-up.
+- Build #60 / [run `38817543342`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38817543342), trigger [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33), succeeded on exact source commit `b5f00a1b3690d62c11772a91bd3a6732bb0d4bf3`.
+- All release gates passed: security/architecture/license audit, dependency resolution, Dart analysis, **88/88 Flutter tests**, obfuscated APK build, V1/V2/V3 signature and production certificate, matching-source ZIP, Release publication and re-downloaded asset hash/signature verification.
+- Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) contains APK asset `645381550` (`54,636,716` bytes, SHA-256 `47892215de179c8cb2975ad5c99b8b3b1398559873352411ed74d001aa001274`) and source ZIP asset `645381553` (`2,866,092` bytes, SHA-256 `dd9bdc1f8082c70ab2ff73892f5434057d36cedc870fd92184b8ed579e2b538a`), both matching commit `b5f00a1b3690d62c11772a91bd3a6732bb0d4bf3`.
+- Diagnostic checkpoint `6e9b4c73db12c51f4452717d8cf102f49d325dcf` adds a fixed full `dumpsys window` fallback, waits for a valid sample, distinguishes valid zero from missing/invalid/reset snapshots, cancels stale FPS polling tasks on retry, and displays native sampler status in Settings.
+- Build #59 exposed one outdated assertion expecting `lastPositiveSample` / `verifiedZero` even though the current implementation correctly uses `validZero` without requiring a prior positive sample. Test-only repair `7a576e60f0938cec94fcddb96340cd5376fa15de` asserts the current behavior and full-window fallback. Build #60 passed all tests; no test/gate was deleted or weakened.
+- **Physical-device behavior remains UNVERIFIED:** live FPS, Shizuku UserService behavior, OEM SurfaceFlinger access, overlay layout and animation rendering still need a device check. CI does not validate Firmware/BIN, Firebase, OTA, BLE hardware control or cooling safety. No Firmware/BIN/Firebase/OTA/flash/device action occurred.
 
 ## 2026-10-16 — Icon/FPS source repair included in Build #58
 
