@@ -583,8 +583,10 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
       if (!mounted || result == null) return;
       await _applyFpsAccessState(result);
       if (refreshMonitor && _fpsMonitorStatus == 'starting') {
-        for (var i = 0; i < 5; i++) {
-          await Future<void>.delayed(const Duration(milliseconds: 300));
+        // SurfaceFlinger needs two frame-counter snapshots. Poll long enough to observe
+        // the second interval instead of leaving the Settings label stuck at "starting".
+        for (var i = 0; i < 10; i++) {
+          await Future<void>.delayed(const Duration(milliseconds: 350));
           final next = await FloatingBridge.fpsAccessStatus();
           if (!mounted || next == null) return;
           await _applyFpsAccessState(next);
