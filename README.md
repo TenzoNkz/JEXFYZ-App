@@ -27,9 +27,9 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 
 ## Current validation boundary
 
-Current App source changes include natural Fan OFF coast-down with full-colour blades, a free-standing Peltier crystal without the square module/bolts and without OFF fading, and a subtly wobbling Fan Speed needle that eases to 0 when OFF. Widget source-contract tests were updated. Static source checks passed, but Flutter tests/analyze and device rendering were NOT run after these edits. The last successful build/test run predates these changes (Actions run `38556896542`).
+Latest App source smooths the Fan Speed gauge between telemetry targets over 420 ms from its currently rendered value, returns OFF to zero over 520 ms, and uses loop-continuous needle wobble. The voltage-bolt sheen now moves sinusoidally, and Bluetooth ripple rings fade to transparent smoothly at each repeat boundary. Fan coast-down and the full-colour box-free Peltier OFF pose remain.
 
-The updated signing workflow was exercised successfully in Actions run `38560939271`: V1, V2 and V3 verified true for the built APK and re-downloaded asset. The log still warns `META-INF/services/b1` is not protected by JAR/V1, and MT Manager's earlier `Signature: Verified failed` label has not been rechecked on the latest release. The current Fan/Peltier/Speed icon edits post-date that successful run; explicit `@Thinking Build App!` authorization is required to build and test those edits. Firmware V6.6 is accepted as final by the user after two same-version Online OTA updates; do not reopen Firmware operations unless asked. See [PROJECT_STATE.md](PROJECT_STATE.md) and [HANDOVER.md](HANDOVER.md) for current validation boundaries.
+Regression tests have been updated, but Flutter tests/analyze and device rendering were NOT run after the current source changes. Latest successful Build App run `38560939271` predates these edits; it verified V1/V2/V3 on the APK and downloaded asset but warned `META-INF/services/b1` is not protected by JAR/V1. MT Manager's earlier signature label still needs a device recheck. Build App requires explicit `@Thinking Build App!` authorization. Firmware V6.6 is user-accepted as final; do not reopen Firmware operations unless requested. See [PROJECT_STATE.md](PROJECT_STATE.md) and [HANDOVER.md](HANDOVER.md).
 
 ## Non-negotiable workflow
 
