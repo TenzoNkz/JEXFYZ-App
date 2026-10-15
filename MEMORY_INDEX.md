@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Memory Index
 
-Last reconciled against `main`: 2026-10-14 (Asia/Jakarta), including Fan OFF coast-down, the full-colour box-free Peltier crystal, natural Fan Speed needle motion, and updated source-contract tests. These latest UI tests/build/device checks remain unrun. Verify live HEAD and blob fingerprints before acting; this is a routing index, not a substitute for checking GitHub live.
+Last reconciled against `main`: 2026-10-15 (Asia/Jakarta), including a retargetable Fan Speed gauge (420 ms), smooth OFF-to-zero (520 ms), loop-seamless needle wobble, sinusoidal voltage sheen, and fading Bluetooth ripple boundaries. Latest Flutter tests/analyze/build/device checks remain unrun after these changes. Verify live HEAD and blob fingerprints before acting; this is a routing index, not a substitute for checking GitHub live.
 
 ## New-chat boot order
 1. Read `CHAT_TRANSFER.md` completely.
@@ -21,7 +21,7 @@ Last reconciled against `main`: 2026-10-14 (Asia/Jakarta), including Fan OFF coa
 | `CHAT_TRANSFER.md` | Detailed transfer snapshot and boot checklist; verify against live main |
 | `CHAT_TRANSFER_PROMPTS.md` | Long copy-ready prompts for preserving memory and starting a new chat |
 | `HANDOVER.md` | Current next actions and unresolved validation gates |
-| `APP_NOTES.md` | UI/navigation, named LED palette/preview, voltage-aware Fan motion/coast-down, free-standing full-colour Peltier crystal that freezes when OFF, Fan Speed needle wobble/zero return, resized Color Picker/Peltier Safety dialogs, bottom-pinned Color Picker + Cancel, offline menu fallback, JE notification monogram, BLE/P1, telemetry, phone Battery heartbeat, Battery Protection Guard presentation rule, pairing-design caveat, localization, reconnect and App contracts |
+| `APP_NOTES.md` | UI/navigation, named LED palette/preview, voltage-aware Fan motion/coast-down, full-colour box-free Peltier crystal, retargetable Fan Speed gauge/zero return and seamless needle wobble, sinusoidal voltage sheen and Bluetooth ripple envelope, resized Color Picker/Peltier Safety dialogs, bottom-pinned Color Picker + Cancel, offline menu fallback, JE notification monogram, BLE/P1, telemetry, phone Battery heartbeat, Battery Protection Guard presentation rule, pairing-design caveat, localization, reconnect and App contracts |
 | `FIRMWARE_NOTES.md` | Hardware, pins, sensor model, cooling, Adaptive, timing and safety contracts |
 | `firmware/FIRMWARE_TECHNICAL_REFERENCE.md` | Current code architecture and static invariants |
 | `OTA_PROTECTION.md` | Frozen OTA areas and required approval/re-audit |
