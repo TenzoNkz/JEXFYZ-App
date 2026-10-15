@@ -326,6 +326,21 @@ void main() {
     expect(jexPeltierFrostParticleCount(12), 8);
   });
 
+  test('Fan Speed level retargeting eases between values without abrupt jumps', () {
+    expect(jexSmoothFanSpeedLevel(from: .2, to: .8, progress: 0), closeTo(.2, 1e-9));
+    expect(jexSmoothFanSpeedLevel(from: .2, to: .8, progress: .5), closeTo(.5, 1e-9));
+    expect(jexSmoothFanSpeedLevel(from: .2, to: .8, progress: 1), closeTo(.8, 1e-9));
+    expect(jexSmoothFanSpeedLevel(from: .2, to: .8, progress: .25), lessThan(.35));
+    expect(jexSmoothFanSpeedLevel(from: .2, to: .8, progress: .75), greaterThan(.65));
+  });
+
+  test('Fan Speed needle wobble is periodic at the repeat boundary', () {
+    expect(jexFanSpeedNeedleWobble(0), closeTo(0, 1e-9));
+    expect(jexFanSpeedNeedleWobble(1), closeTo(0, 1e-9));
+    expect(jexFanSpeedNeedleWobble(.25), closeTo(.035, 1e-9));
+    expect(jexFanSpeedNeedleWobble(.75), closeTo(-.035, 1e-9));
+  });
+
   test('LED palette exposes current RGB colors', () {
     expect(ledColorPalette, hasLength(36));
     expect(ledColorPalette.first, '#FF1744');
@@ -574,7 +589,7 @@ void main() {
     expect(fan, isNot(contains('active ? 1 : .64')));
   });
 
-  test('Fan Speed gauge gently wobbles ON and returns to zero smoothly OFF', () {
+  test('Fan Speed gauge retargets smoothly and wobbles without loop jumps', () {
     final source = File('lib/main.dart').readAsStringSync();
     final stateStart = source.indexOf('class _JexAnimatedIconState');
     final stateEnd = source.indexOf('class _JexIconPainter', stateStart);
@@ -586,11 +601,14 @@ void main() {
     expect(speedEnd, greaterThan(speedStart));
     final iconState = source.substring(stateStart, stateEnd);
     final speed = source.substring(speedStart, speedEnd);
-    expect(iconState, contains('_speedStopFromLevel = oldWidget.level'));
-    expect(iconState, contains('_speedIsStopping = true'));
+    expect(iconState, contains('late final AnimationController speedLevelTransitionController;'));
+    expect(iconState, contains('final current = _currentSpeedLevel();'));
+    expect(iconState, contains('speedLevelTransitionController.forward(from: 0)'));
+    expect(iconState, contains('Duration(milliseconds: 420)'));
     expect(iconState, contains('Duration(milliseconds: 520)'));
-    expect(iconState, contains('_speedStopFromLevel * (1 - Curves.easeOutCubic.transform(controller.value))'));
-    expect(speed, contains('math.sin(angle) * .035 + math.sin(angle * 2.3) * .008'));
+    expect(iconState, contains('final displayedLevel = widget.kind == JexAnimatedIconKind.speed'));
+    expect(speed, contains('jexFanSpeedNeedleWobble(progress)'));
+    expect(source, isNot(contains('math.sin(angle * 2.3)')));
     expect(speed, contains('final actual = level.clamp(0.0, 1.0).toDouble();'));
     expect(speed, contains('alpha: 1'));
     expect(speed, isNot(contains('active ? .96 : .44')));
