@@ -1755,10 +1755,14 @@ class _JexIconPainter extends CustomPainter {
           for (var i = 0; i < 2; i++) {
             final wave = (p + i * .5) % 1.0;
             final radius = s * (.28 + .20 * wave);
+            // Each ripple is transparent at both ends of its cycle. The raised
+            // sine envelope has zero slope at the repeat boundary, so a new ring
+            // emerges gently rather than flashing on when wave wraps to zero.
+            final fade = math.pow(math.sin(math.pi * wave), 2).toDouble();
             canvas.drawArc(
               Rect.fromCircle(center: Offset(s * .49, cy), radius: radius),
               -math.pi * .47, math.pi * .94, false,
-              stroke(s * .022, color.withValues(alpha: .34 * (1 - wave))),
+              stroke(s * .022, color.withValues(alpha: .34 * fade)),
             );
           }
           _drawGlow(canvas, Offset(cx, cy), s * .12, .055 + .035 * softPulse);
