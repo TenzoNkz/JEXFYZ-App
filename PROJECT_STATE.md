@@ -2,11 +2,12 @@
 
 Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use CHANGELOG.md for historical decisions and APP_BUILD_REPORT.md for build evidence.
 
-## Current verified App source/release — 2026-10-16
+## Current App source/release — 2026-10-16
 
-- Latest successful App Build is [#58 / run `38793790061`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38793790061), triggered by [issue #31](https://github.com/TenzoNkz/JEXFYZ-App/issues/31). Exact source/release target: `db11df355780174b1da7dcea4d5947bfa7ba7ca5`. All workflow steps passed; Dart analysis passed and **87/87 Flutter tests passed**.
-- Production source checkpoint `98cfe7ba4d0e9d569b84498d261ad1b67f66eee7` and source-contract test correction `432c30ec538ff7de6c7e77f0c68bac313f4f8015` are now built and CI-tested. Build #57's five stale source-contract failures were corrected without deleting tests or relaxing gates; Build #58 completed successfully.
-- Scope remains App-only: restore icon painter geometry and smooth interpolation; preserve Floating Monitor FPS selection and use focused-window / guarded frame-delta sampling. Phone-side rendering and real foreground FPS remain unverified.
+- Latest verified release is [Build #58 / run `38793790061`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38793790061), exact release source `db11df355780174b1da7dcea4d5947bfa7ba7ca5`. It passed Dart analysis, 87/87 Flutter tests, Android release build/signing and downloaded artifact verification.
+- Build #58 includes the earlier icon painter restore `98cfe7ba4d0e9d569b84498d261ad1b67f66eee7` and test-contract correction `432c30ec538ff7de6c7e77f0c68bac313f4f8015`.
+- **Current post-release diagnostic patch is not built/tested:** latest source checkpoint `becd7f20517fbdaa4bb9922501f28fbed2282223` adds a full `dumpsys window` fallback, keeps sampler status at `starting` until a valid sample exists, and displays actual native FPS status in Floating Monitor settings. Current automated source/test changes remain pending Build App validation.
+- The screenshot showing Shizuku granted plus `F:--` does not by itself establish the runtime root cause. The new status line should distinguish foreground detection, layer availability, invalid samples and service/command failures. Physical FPS remains device-unverified.
 - No Firmware/BIN, Firebase metadata, OTA, BLE hardware-control or thermal-safety changes were made.
 
 ## App identity and repository
@@ -31,13 +32,13 @@ Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use C
 ## Current source fingerprints
 
 - lib/main.dart: d24885cf0a40472b9fb23ee6ce73ad772ae73672.
-- lib/floating_monitor.dart: 556217f0035e97fa6060041203151eec1c24ed76.
+- lib/floating_monitor.dart: b6283ec5e244903c9cbaa413c449ea67dd7293e8.
 - lib/app_settings.dart: 4c89bcb3c04142ce49440a11b92054365c26f7a6.
-- test/widget_test.dart: d8e89083cbc6674962a5f9e013579477783243ad.
+- test/widget_test.dart: 1729eb5407ae781bc82ce34a0f7af2cb1ca9d439.
 - test/floating_monitor_layout_contract_test.dart: 7f861d449e518af68fc4ece7278241aa3ce8691b.
-- test/shizuku_fps_contract_test.dart: 5a9efb60b02c1cfabf44a35434f67fb555419c92.
-- android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt: 44030753bf6a27ac0e9630f2d0f7ca0cc8e3bd0b.
-- android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FpsShizukuUserService.kt: e44fac7cec76979ef47a256a3e1d416d09ef7e22.
+- test/shizuku_fps_contract_test.dart: 99855b6bb5e7424b9ebb2d8bebd4c1b7a65747c0.
+- android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt: 694e0545a5fe3c9a818ba428fc0d71b31626c55c.
+- android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FpsShizukuUserService.kt: 9f70d480bd31a4875653add70804ab50fc15b747.
 - android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt: a139dfefe1121963c3a26b114b9b0fcc9f8fa16a.
 - android/app/src/main/aidl/com/horizontalzzz/jexfyz/IFpsShizukuUserService.aidl: 5bd6c269212e523b190f7164e0ad1d257ed5e6a5.
 - .github/workflows/jexfyz-app-build-trigger.yml: 585d190324e522fc08e66cc95bd7ee80c5f37664.
@@ -53,8 +54,9 @@ Six active test files: test/app_protocol_notify_contract_test.dart; test/firmwar
 ## Current physical-device validation pending — Shizuku FPS
 
 - USER-REPORTED screenshot: Shizuku access appears granted, but overlay metric F showed --. The original screenshot was captured in JE Cooler's own settings screen; this alone did not prove why FPS data was absent.
-- Current main source has been changed to monitor the package behind the focused window, including JE Cooler, launcher, Settings and Android system UI when SurfaceFlinger supplies matching layer data. It uses presented-frame deltas, not nominal screen refresh rate. An existing foreground layer with no new frame delta should display 0 after a sample interval.
-- This behavior is a source change only. It has NOT been verified on the user's physical phone, and OEM/Android restrictions may still deny SurfaceFlinger data. Build #58 now passes Flutter/Dart QC and App release checks for this checkpoint; only physical-device FPS/overlay validation remains open. A Shizuku permission grant alone does not prove that the UserService starts or that layer data is accessible.
+- Build #58's FPS source uses focused-window identity and frame-delta validation, but the target phone still showed `F:--` despite Shizuku being granted. This points to a remaining runtime/sample path problem, not an overlay-enable or checkbox problem.
+- Current unbuilt source follow-up retries `dumpsys window` when `dumpsys window displays` has no parseable focus; keeps native state at `starting` until a valid sample; and displays the native sampler status in Settings. The source does not yet prove which runtime stage is failing.
+- Install/build validation is still required for these latest changes. Once available, use the status line to decide whether to inspect foreground detection, SurfaceFlinger layer matching, command/service failure or invalid samples. Do not claim device FPS works without a valid displayed measurement.
 
 ## Current Floating Monitor appearance
 
