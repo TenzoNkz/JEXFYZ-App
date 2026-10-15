@@ -1,7 +1,6 @@
 # JE X FYZ / JE Cooler — Memory Index
 
-Last reconciled against `main`: 2026-10-15 (Asia/Jakarta), including a retargetable Fan Speed gauge (420 ms), smooth OFF-to-zero (520 ms), loop-seamless needle wobble, sinusoidal voltage sheen, and fading Bluetooth ripple boundaries. Latest successful CI run `38566673160` on older source `4dccbd7eedcae4a8d1a9cd2b41d5cfda9055416b`; current animation edits still need tests/analyze/build/device QC. Verify live HEAD and blob fingerprints before acting; this is a routing index, not a substitute for checking GitHub live.
-
+Last reconciled against live `main` on 2026-10-15 (Asia/Jakarta). Latest verified App Build is #35 / run `38669526891`, built from code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`; Dart analyze and all 74 Flutter tests passed, the obfuscated APK was verified with V1/V2/V3, and the published asset was downloaded and checked. This index routes memory; always fetch live HEAD and blob fingerprints before acting. Device-side rendering/signature inspection and Firmware/hardware validation remain separate gates.
 ## New-chat boot order
 1. Read `CHAT_TRANSFER.md` completely.
 2. Fetch live `main` HEAD, recursive tree, active Firmware source, App source, tests, build workflow and open-PR state.
