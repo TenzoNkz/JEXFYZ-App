@@ -305,7 +305,7 @@ void main() {
     expect(floating, isNot(contains("WirelessAdbPairingBridge")));
   });
 
-  test('Game FPS is sourced from focused SurfaceFlinger layers, not JE Cooler frame timing', () {
+  test('Screen FPS follows the current foreground window for apps and system UI', () {
     final appSource = File('lib/main.dart').readAsStringSync();
     final nativeService = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt').readAsStringSync();
     final activity = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt').readAsStringSync();
@@ -319,9 +319,14 @@ void main() {
     expect(nativeService, isNot(contains('android.permission.DUMP')));
     expect(nativeService, isNot(contains('ProcessBuilder(')));
     expect(nativeService, contains('private fun readForegroundPackage()'));
+    expect(nativeService, contains('mCurrentFocus'));
     expect(nativeService, contains('private fun layerBelongsToPackage('));
     expect(nativeService, contains('.filter { layerBelongsToPackage(it.name, foregroundPackage) }'));
-    expect(nativeService, contains('runDumpsys("SurfaceFlinger", "--timestats", "-dump")'));
+    expect(nativeService, contains('private fun isCandidateApplicationLayer(name: String): Boolean'));
+    expect(nativeService, isNot(contains('foregroundPackage == packageName')));
+    expect(nativeService, isNot(contains('"no_game_foreground"')));
+    expect(nativeService, contains('?: layers.maxByOrNull { it.totalFrames }?.name'));
+    expect(nativeService, contains('} else if (chosenLayer != null)'));
     expect(nativeService, contains('delta * 1000.0 / elapsed.toDouble()'));
     expect(manifest, isNot(contains('android.permission.DUMP')));
     expect(manifest, contains('rikka.shizuku.ShizukuProvider'));
@@ -332,7 +337,6 @@ void main() {
     expect(activity, isNot(contains('ADB_PAIRING_CHANNEL')));
     expect(settings, contains("'fpsWaitingForGame'"));
   });
-
   test('Floating Monitor replays telemetry after service startup and resizes for live values', () {
     final floating = File('lib/floating_monitor.dart').readAsStringSync();
     final nativeService = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt').readAsStringSync();
