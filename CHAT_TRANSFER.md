@@ -2,16 +2,16 @@
 
 ## 0. Snapshot scope and evidence boundary
 
-Snapshot reconciled from live GitHub on 2026-10-15 (Asia/Jakarta). The last successful Release is Build #49; current App source advanced afterward and is not built/released yet.
+Snapshot refreshed after `@Thinking Chat Stuck!` recovery on 2026-10-15 (Asia/Jakarta). Build #49 is still the last successful Release; Shizuku FPS source/workflow changes are committed but their tests/build/release have not run. No build trigger was opened.
 
 - App repo: TenzoNkz/JEXFYZ-App
-- Branch: main; current source implementation commit: `8b58c7033a5462864b52cb921ca25c714bca902f`, tree `fe266a9384e2c953a01c618ebc4c5c7028a6bbf3`
-- Current source blobs: `lib/main.dart` `3eeb4dff7b7fbb52a44022e5e2b130bc1826da23`; `test/widget_test.dart` `e673bdbc5ffa80791564b1138db28c6a8731aaec`
+- Current implementation checkpoint: `b4e4ec7e8d6c00f43e5378dcb7e2e4b7731adf4b` (Shizuku FPS migration; later commits only update docs).
+- Current source blobs: main.dart `3eeb4dff7b7fbb52a44022e5e2b130bc1826da23`; Floating UI `232fde06efda5bfaa2221825a04c0106ad5feb33`; app settings `6f99911bc59451473823aea1e1`; widget tests `520399fcdc6be4fd69cb48f50aa8961f5d9183c5`; Shizuku FPS contract test `bd27d2c7adc20ab76bab504378a2353d01ab473b`.
 - Latest successful App build: [Build #49 / 38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916), source commit `2b2d2886abb66481b7134e5036824f625ab5659d`, issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22), job `116435785328`, runner `1000002352`. All 80 tests and release gates passed for that older source.
-- Latest Release: [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) has the Build #49 APK and matching source ZIP; neither contains current source commit `8b58c7033a5462864b52cb921ca25c714bca902f`.
-- Active App Build workflow: `.github/workflows/jexfyz-app-build-trigger.yml`, blob `5c5af03075f87297a31f5ee26f0e42025f05977b`; issue-only, owner/title/token gated; no manual trigger.
-- Current changes: thermal Battery segments/colors/flames driven by actual temperature; Hotside limit-driven color/fire; red/green/blue graduated Voltage; smooth icon/text color transitions; Home/menu Peltier/Fan/Adaptive/Fan Speed parameters synchronized. Battery-temperature reading and firmware heartbeat preserved.
-- Three thermal helper tests and a voltage painter source-contract update were committed, but have NOT RUN. Next authorized action for validation/release is `@Thinking Eksekusi Build App!`.
+- Latest Release: [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) still contains Build #49's APK and matching source ZIP; neither contains current source commit `b4e4ec7e8d6c00f43e5378dcb7e2e4b7731adf4b`.
+- Active App Build workflow: `.github/workflows/jexfyz-app-build-trigger.yml`, blob `585d190324e522fc08e66cc95bd7ee80c5f37664`; issue-only owner/title/token gate remains intact. Its Shizuku/MIT audit and source-bundle packaging changes have not run in CI.
+- Current changes include the existing thermal/Home animations plus Shizuku-gated FPS access. Metric F requires a running Shizuku Binder/API and explicit user approval; native FPS runs through a restricted fixed-operation AIDL UserService. Wireless ADB pairing, Kadb/SPAKE2, ADB identity-store code, manifest DUMP permission and grant/revoke UI are removed. Battery temperature reading and the one-second firmware heartbeat remain unchanged.
+- Thermal/widget assertions and the Shizuku FPS contract test are committed but NOT RUN. `@Thinking Chat Stuck!` does not trigger a build; the separate App Build command is `@Thinking Eksekusi Build App!`.
 - App version/package: 1.0.0+3 / com.horizontalzzz.jexfyz.
 - Firmware repo TenzoNkz/JEXFYZ-Firmware remains BIN-only. No Firmware/BIN/Firebase/OTA/flash/device operation was performed.
 
@@ -30,14 +30,16 @@ Evidence terms:
 ## 1. Current source, Release state, and next App Build action
 
 ### Current source — IMPLEMENTED / NOT RUN / NOT RELEASED
-- Source commit `8b58c7033a5462864b52cb921ca25c714bca902f`; main Dart blob `3eeb4dff7b7fbb52a44022e5e2b130bc1826da23`; widget test blob `e673bdbc5ffa80791564b1138db28c6a8731aaec`. Thermal Battery segments/color/fire, Hotside live-limit color/fire, graduated 5V/9V/12V energy effect, smooth shared Home icon/text color tweening, and matching submenu Fan/Peltier/Adaptive/Fan Speed parameters are committed. Tests/analyzer have not run on this revision.
-- Battery temperature acquisition and the existing one-second firmware heartbeat remain unchanged. Visual changes do not modify Firmware safety behavior. No firmware/BIN/Firebase/OTA/flash/device operation occurred.
+- Implementation checkpoint: `b4e4ec7e8d6c00f43e5378dcb7e2e4b7731adf4b`. This adds Shizuku-gated FPS authorization/execution after the existing Home/thermal UI work. Key source: Floating UI `232fde06efda5bfaa2221825a04c0106ad5feb33`; localization `6f99911bc59451473823aea1e1`; widget assertions `520399fcdc6be4fd69cb48f50aa8961f5d9183c5`; Shizuku contract test `bd27d2c7adc20ab76bab504378a2353d01ab473b`.
+- Before metric F can be selected, Shizuku must be running, its Binder/API must support UserService, and the user must approve JE X FYZ in Shizuku's permission UI. The native Floating Monitor enforces this gate independently of Flutter.
+- Elevated FPS reads are performed by `FpsShizukuUserService` through an AIDL fixed-operation interface. The normal app process no longer executes dumpsys or declares `android.permission.DUMP`; the old Wireless ADB pairing/Kadb/SPAKE2/ADB identity/grant/revoke path is removed.
+- Workflow static audit and corresponding-source packaging were updated for pinned Shizuku API/provider 13.1.5 and its MIT license notice. No tests, analyzer, Android/Kotlin compilation or App Build have run against this source. Current source is NOT RELEASED.
 
 ### Latest verified App Build: SUCCESS for older source
 - Build #49 — [run 38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916); job `116435785328`, runner `1000002352`; source commit `2b2d2886abb66481b7134e5036824f625ab5659d`; issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22). All main steps passed, including 80 Flutter tests, APK, signing V1/V2/V3, production certificate, corresponding-source ZIP, Release publication and downloaded-asset verification. This result does not cover current thermal-animation source.
 - Release: [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest), APK `JEXFYZ-release.apk` SHA-256 `d365a99812470986de08be4df1bd54254fe1eb1ea1e3739806d03a6503e3c52a`, corresponding source ZIP SHA-256 `51783b82eae47fc69ab08dd90521e5acdeed0988600042dd1bc3b94f5483dbc8`. These assets are still Build #49's older revision.
 - Build #48's check annotation identified failed recent account payments or an insufficient spending limit; #49 allocated a runner and completed. No workflow modification/manual-dispatch trigger was needed.
-- Workflow remains unchanged: `.github/workflows/jexfyz-app-build-trigger.yml`, blob `5c5af03075f87297a31f5ee26f0e42025f05977b`; issue-open/reopen only, exact owner/title/token gate, no push/PR/manual trigger.
+- Workflow trigger semantics remain issue-open/reopen only with the owner/title/token gate; active blob `585d190324e522fc08e66cc95bd7ee80c5f37664`. Shizuku/MIT audit and source ZIP changes are committed but have not run in CI.
 
 ### Next action
 Use `@Thinking Eksekusi Build App!` to run Flutter analysis/tests, rebuild and sign the APK, verify the corresponding-source bundle, publish the new revision, and re-download/verify all Release assets. Do not claim the current source is released until those gates pass. Physical phone validation remains separate.
@@ -47,7 +49,7 @@ Use `@Thinking Eksekusi Build App!` to run Flutter analysis/tests, rebuild and s
 
 - TenzoNkz/JEXFYZ-App is the canonical editable App + Firmware source repository and the only repository for all project docs, history, handover and prompts.
 - TenzoNkz/JEXFYZ-Firmware is an artifact repository and must contain only JEXFYZ.cpp.bin. Live verified artifact root has exactly one file: blob 68167e65d26137eeb1ce4d6d4ba798dc282454e6, 1,455,936 bytes. Do not add notes or touch the BIN during docs work.
-- Canonical active workflow is .github/workflows/jexfyz-app-build-trigger.yml (blob 5c5af03075f87297a31f5ee26f0e42025f05977b). Its trigger is issue opened/reopened, owner must equal repo owner, exact title JE X FYZ — EKSEKUSI BUILD APP TRIGGER, body token JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1. Normal push/PR is not intended to start this release workflow.
+- Canonical active workflow is `.github/workflows/jexfyz-app-build-trigger.yml` (blob `585d190324e522fc08e66cc95bd7ee80c5f37664`). Trigger remains issue opened/reopened, repo owner, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. Normal push/PR does not trigger it.
 - Branches at audited parent: diag/latest-stable-v16, diagnostic/v1.6-heap-check, fix/adaptive-power-sequencing, main, tmp-jexfyz-v5-test; open PR count = 0.
 - Do not rely on older tree counts in history. This snapshot's parent is 76 tree entries / 55 blobs; fetch the live tree on the next task.
 - Keep all docs in App repo. Do not rename or delete a file without repairing every link, prompt, index and test reference.
@@ -72,29 +74,31 @@ Use `@Thinking Eksekusi Build App!` to run Flutter analysis/tests, rebuild and s
 - Package ID com.horizontalzzz.jexfyz. Gradle versionName "Telegram @horizontalzzz" is intentional user identity; preserve exactly.
 - Canonical BLE P1 UUIDs in current source: service 6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001, RX 6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001, TX 6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001.
 - Native relevant sources:
-  - FloatingMonitorService.kt 038f12b2ca82255a3b202b10dd770d5caa5b2bbf
-  - JeForegroundService.kt 9ea4dce7001bcd5cc10f9c1c7ad62f34ec54b03e
-  - JexNotificationUtils.kt aecfc87121f2195ef6724613c612d674ed95ae55
-  - MainActivity.kt f7340e82a12cece063e310546dcba893e6a5a09f
-  - WirelessAdbIdentityStore.kt 394eab93a17c563caf7db0511d4d36040c1c59ec
-  - WirelessAdbPairingService.kt 7f2099cac0c78008d395ec0bb83e32e5f6d55384
+  - FloatingMonitorService.kt `bfc0956688bab5951ea2c626427a691ed63b6921`
+  - MainActivity.kt `a139dfefe1121963c3a26b114b9b0fcc9f8fa16a`
+  - FpsShizukuUserService.kt `1f5ed36dadaba9dc70ecfbe0793114b34c8ab08b`
+  - IFpsShizukuUserService.aidl `ddb0c442029d8f291e99eb6682bd2a690e6c9709`
+  - JeForegroundService.kt `9ea4dce7001bcd5cc10f9c1c7ad62f34ec54b03e`
+  - JexNotificationUtils.kt `aecfc87121f2195ef6724613c612d674ed95ae55`
+  - WirelessAdbPairingService.kt and WirelessAdbIdentityStore.kt are deleted from current tree.
+- License/notice files: Shizuku MIT license `third_party/Shizuku-API-MIT.txt` (`2a779796d4f141d0fe3a13c612c4c66414a3d65a`), notice `third_party/THIRD_PARTY_NOTICES.md` (`4dcd7ea1d6979c081e0ebd5acb7db34f6e64e1f2`), plus a bundled MIT license asset. Old Kadb/SPAKE2/GPL license files are deleted.
+
 - Assets: assets/jexfyzcooler.png blob fbc47e3197534ae35330c1f1793c99705e5165d1, size 1,830,171; assets/jexfyzicon.png and Android nodpi icon bad855f23416fd58aff194c30b7f8fd77f260ea8, 436,439; notification vector cda9e8404d14a62a61157ec59fae2e491c19f5f7.
 - License/notice files: third_party/Kadb-1.3.0-LICENSE.txt 261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64; third_party/THIRD_PARTY_NOTICES.md ec505ebc22dac34924bf3318158061ae693cb9d5; GPL-3.0 SPAKE2 license at both App third_party and Android assets is blob e72bfddabc15be5718a7cc061ac10e47741d8219.
 - pubspec.yaml dependencies include Flutter, flutter_blue_plus, firebase_core, firebase_app_check, flutter_secure_storage, permission_handler, phosphor_icons; dev deps flutter_test and flutter_lints.
 
 ### Test inventory / executed evidence
 
-All five live tests were read completely:
-- test/adb_pairing_contract_test.dart: 03609184edc5b2df09f40e62ffe99959ea337bad
-- test/app_protocol_notify_contract_test.dart: 92214dd90178c705844d3979d3f8f7bd17bcc4b8
-- test/firmware_touch_adaptive_sync_test.dart: 2d3fea509343a03b8d23623f4dcb2dd7fd972d39
-- test/v6_6_qc_contract_test.dart: 2bee4d960d014f0765422dcb5ed1c9870ba6ee3a
-- test/widget_test.dart: 98c0c11d1c39b48cb5fc6657c3a0ca7d677b2d1b
+### Current test inventory / execution evidence
+- `test/shizuku_fps_contract_test.dart`: `bd27d2c7adc20ab76bab504378a2353d01ab473b` (committed, NOT RUN on current source).
+- `test/widget_test.dart`: `520399fcdc6be4fd69cb48f50aa8961f5d9183c5` (updated source assertions, NOT RUN on current source).
+- `test/app_protocol_notify_contract_test.dart`: `92214dd90178c705844d3979d3f8f7bd17bcc4b8`.
+- `test/firmware_touch_adaptive_sync_test.dart`: `2d3fea509343a03b8d23623f4dcb2dd7fd972d39`.
+- `test/v6_6_qc_contract_test.dart`: `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a`.
 
-Executed:
-- Build #39 run 38705765370: Dart analysis passed and 80 tests passed, APK fail on missing SPAKE2 Maven artifact.
-- Build #40 run 38713854518: Dart analysis + 80 tests passed, APK compile/signing/certificate passed, source ZIP valid, failed only obsolete path grep. #41–#45 did not reach any step.
-- Presence of a test file is never test execution proof. App CI is not firmware build or phone validation.
+Historical CI: Build #49 run `38739077916` passed Dart analysis, all 80 Flutter tests and release gates for older source `2b2d2886abb66481b7134e5036824f625ab5659d`. This does not prove current Shizuku source has compiled or that the new tests pass. The prior ADB pairing test was deleted; presence of a new test file is not execution evidence.
+
+No current-source build/test was started during `@Thinking Chat Stuck!` recovery.
 
 ## 4. Firmware source / hardware / timing — CURRENT source truth
 
@@ -160,9 +164,12 @@ Executed:
 - Android notifications: use transparent white JE vector as the sole small notification icon, no large icon; localized meaningful body, tap opens App; Android13+ notification permission requested before native notification workflow.
 - Android native Floating Monitor:
   - FloatingMonitorService.kt owns WindowManager overlay; Flutter is sole BLE client and streams telemetry. Settings center preview removed; explicit Horizontal/Vertical segmented control. Layout responds to live value width; replay current telemetry after service attach.
-  - FPS does not count Flutter FrameTiming and does not substitute phone display refresh rate. Uses native dumpsys SurfaceFlinger --timestats, frames every approx 1s, filtered by Android resumed/focused package and matching layer names. Poll only if enabled, overlay attached, metric F selected and android.permission.DUMP granted. Unknown package/layer/no frames/blocked dump -> -- or explicit ADB, never fake FPS. This measures compositor-presented frames; not necessarily game simulation/update rate.
-  - FPS DUMP permission is a powerful signature|privileged|development permission. Access is user-controlled. Native Android 11+ Wireless ADB flow: foreground notification, NSD/mDNS _adb-tls-pairing._tcp., fresh six-digit code via RemoteInput, loopback Kadb 1.3.0 pairing, discover _adb-tls-connect._tcp., only fixed pm grant com.horizontalzzz.jexfyz android.permission.DUMP, independently query permission state. No arbitrary shell/remote host/port. Do not turn USB/Wireless debugging on itself. Pairing code not stored. ADB identity AES-GCM encrypted with Android Keystore inside noBackupFilesDir; stays paired until forgotten/revoked. Manual trusted-computer ADB grant/revoke fallback remains.
-  - Kadb 1.3.0 is Apache-2.0, transitive SPAKE2-Java 1.0.5 is GPL-3.0. Workflow aims to include GPL license in APK and release one matching-source ZIP including exact App commit plus upstream Kadb 1.3.0/SPAKE2-Java 1.0.5 sources/licenses, alongside one APK in same private Release. The packaging route is technical safeguards, not legal advice. Build #40 reached APK/Signing but failed path assertion before publishing; no published source ZIP/current APK.
+  - FPS does not count Flutter FrameTiming or substitute phone display refresh rate. It samples SurfaceFlinger --timestats about once per second, filtered to the Android resumed/focused package and matching layer names.
+  - Hard gate: metric F requires Shizuku Binder/API availability and explicit JE X FYZ approval inside Shizuku's own permission UI. Native FloatingMonitorService independently enforces the gate; a saved F selection is removed when authorization is missing.
+  - FPS dumpsys work executes in FpsShizukuUserService through AIDL fixed operation IDs for capture on/off, focused activity and SurfaceFlinger stats. No arbitrary command text is accepted; the normal app process does not execute dumpsys or declare android.permission.DUMP in its manifest.
+  - The previous Wireless ADB pairing/RemoteInput/Kadb/SPAKE2/identity-store and manual ADB grant/revoke UI were removed. Shizuku API/provider 13.1.5 is MIT-licensed, with the notice and license bundled.
+  - The Shizuku contract/widget tests have NOT RUN on current source. Shizuku startup, explicit permission, UserService binding, Binder loss/revocation, actual foreground-game FPS and OEM compatibility remain UNVERIFIED.
+
   - Source-contract tests passed in Build #39/#40 (80 tests) but phone/OEM behavior unverified.
 
 ## 7. Approved visual asset design (preserve exactly)
@@ -226,21 +233,16 @@ The canonical map is MEMORY_INDEX.md. At this reconciliation, prepared blobs for
 - VOLTAGE_TRANSITION_MEMORY.md: 1c2167659fd0ed8f5db16bf63eb7897344a690ea
 - firmware/FIRMWARE_TECHNICAL_REFERENCE.md: 58937006c1a34f0a8439d3ac4c7dc13b771987b2
 
-### Current source/test hashes (unchanged in this documentation work)
-- firmware/JEXFYZ-V6.6.ino: f51ba6db5d0e91318f63fea4014bb87f7bf76222
-- lib/main.dart: 74b6bcc47d69ccf114f710ed73dfcefe93037111
-- lib/floating_monitor.dart: bd230aee16fa77a0d8d2afb9f1a0c2d80cdcac86
-- lib/app_settings.dart: c513cd4381ee960cd43612c4ac01e7954f651f62
-- test/adb_pairing_contract_test.dart: 03609184edc5b2df09f40e62ffe99959ea337bad
-- test/app_protocol_notify_contract_test.dart: 92214dd90178c705844d3979d3f8f7bd17bcc4b8
-- test/firmware_touch_adaptive_sync_test.dart: 2d3fea509343a03b8d23623f4dcb2dd7fd972d39
-- test/v6_6_qc_contract_test.dart: 2bee4d960d014f0765422dcb5ed1c9870ba6ee3a
-- test/widget_test.dart: 98c0c11d1c39b48cb5fc6657c3a0ca7d677b2d1b
-- pubspec.yaml: 8f558273e21692af9958f914527fdc62d623d63a; pubspec.lock: 1e92812bfda2c28244a0556d71d1ec94084acc66
-- android/app/build.gradle: 05a0b863cfc6d73dc3789e364d7000eee0f3db0e; android/app/src/main/AndroidManifest.xml: 2124dcd969347d2c7bb1bd99374a398cf50d2387; android/build.gradle: bb8c0caf26927bd614bb9b05ef79366424063663
-- android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt: 038f12b2ca82255a3b202b10dd770d5caa5b2bbf; MainActivity.kt: f7340e82a12cece063e310546dcba893e6a5a09f; WirelessAdbPairingService.kt: 7f2099cac0c78008d395ec0bb83e32e5f6d55384; WirelessAdbIdentityStore.kt: 394eab93a17c563caf7db0511d4d36040c1c59ec
-- GPL and third-party notice files are listed in §3 above.
+### Current source/test hashes at the recovery checkpoint
+- Firmware: `firmware/JEXFYZ-V6.6.ino` blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222` (leave untouched; V6.6 is user-accepted final).
+- `lib/main.dart`: `3eeb4dff7b7fbb52a44022e5e2b130bc1826da23`.
+- `lib/floating_monitor.dart`: `232fde06efda5bfaa2221825a04c0106ad5feb33`.
+- `lib/app_settings.dart`: `6f99911bc59451473823aea1e1` (short fingerprint; fetch live file for full SHA).
+- `test/widget_test.dart`: `520399fcdc6be4fd69cb48f50aa8961f5d9183c5`; `test/shizuku_fps_contract_test.dart`: `bd27d2c7adc20ab76bab504378a2353d01ab473b`.
+- `MainActivity.kt`: `a139dfefe1121963c3a26b114b9b0fcc9f8fa16a`; `FloatingMonitorService.kt`: `bfc0956688bab5951ea2c626427a691ed63b6921`; `FpsShizukuUserService.kt`: `1f5ed36dadaba9dc70ecfbe0793114b34c8ab08b`; AIDL: `ddb0c442029d8f291e99eb6682bd2a690e6c9709`.
+- `AndroidManifest.xml`: `393c9f9bfe02b9d71b2e3445ce873d5d16912ce1`; app Gradle `cc35d2d3dbe603e7b5a7157d37dde222d646ea42`; workflow `585d190324e522fc08e66cc95bd7ee80c5f37664`.
+- `PROJECT_STATE.md`, `HANDOVER.md`, `APP_BUILD_REPORT.md`, `BUILD_NOTES.md`, `MEMORY_INDEX.md`, `APP_NOTES.md` and `CHANGELOG.md` now record the Shizuku design and validation boundary. `CHAT_TRANSFER.md` is refreshed in this commit.
 
 ## 11. Final operation state
 
-This snapshot records that latest successful Release remains Build #49 from source `2b2d2886abb66481b7134e5036824f625ab5659d`, while current main source commit `8b58c7033a5462864b52cb921ca25c714bca902f` adds untested thermal animations. No test/build/release was run for the current source; follow the next-action steps in §1 before claiming it is released. The issue-only workflow is unchanged and no manual trigger was added. Physical-device behavior remains unverified. No Firmware/BIN/Firebase/OTA/flash/device operation was performed.
+This snapshot records that Build #49 from older source `2b2d2886abb66481b7134e5036824f625ab5659d` remains the last verified Release. Current source checkpoint `b4e4ec7e8d6c00f43e5378dcb7e2e4b7731adf4b` adds Shizuku-gated FPS authorization/execution. Current-source tests, analysis, Android build and Release were not run during Chat Stuck recovery. The issue-only workflow is unchanged in trigger semantics, with Shizuku/MIT audit and source packaging updates; no trigger issue was opened/reopened. Physical-device behavior remains unverified. No Firmware/BIN/Firebase/OTA/flash/device operation was performed.
