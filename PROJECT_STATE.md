@@ -1,10 +1,10 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled from live GitHub on 2026-10-16 00:04 Asia/Jakarta. This file is current-only. Use CHANGELOG.md for historical decisions and APP_BUILD_REPORT.md for each build attempt.
+Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use CHANGELOG.md for historical decisions and APP_BUILD_REPORT.md for build evidence.
 
 ## App identity and repository
 
-- Canonical App repo: TenzoNkz/JEXFYZ-App, branch main. Parent HEAD before this documentation reconciliation: 329fd18e3c6ced8f43a7dbfaf7bf02206c17d42a. Recursive tree had 80 entries and was not truncated; 5 branches, 0 open PRs.
+- Canonical App repo: TenzoNkz/JEXFYZ-App, branch main. Current source execution checkpoint before doc synchronization: 00c55d4b42a529bc436e252be1aa1d9a2cf39682. Its recursive tree had 80 entries and was not truncated; 5 branches, 0 open PRs. Subsequent commits in this task update memory/docs only.
 - App/package: JE Cooler / JE X FYZ, com.horizontalzzz.jexfyz, pubspec version 1.0.0+3. Preserve Gradle versionName exactly as "Telegram @horizontalzzz".
 - Only active App build workflow: .github/workflows/jexfyz-app-build-trigger.yml; issue opened/reopened only; repository-owner, exact title and body-token guarded. Normal push/PR does not build/release.
 - Firmware artifact repo TenzoNkz/JEXFYZ-Firmware has exactly one tree entry: JEXFYZ.cpp.bin, 1,455,936 bytes, blob 68167e65d26137eeb1ce4d6d4ba798dc282454e6. Do not modify or inspect BIN payload during documentation work. This does not prove current source-to-BIN provenance.
@@ -18,16 +18,17 @@ Last reconciled from live GitHub on 2026-10-16 00:04 Asia/Jakarta. This file is 
   - JEXFYZ-corresponding-source.zip, asset ID 644438897, 2,862,590 bytes, SHA-256 3b208c987def59a7c1857ed0fcc9ca5d74d591767e5658dfab04c9c1be85450f.
 - Build attempts #50–#53 and their root causes/fixes are preserved in APP_BUILD_REPORT.md; #54 is the current successful release. Do not repeat outdated claims that #49 is the latest.
 - Non-blocking warnings: analyzer deprecation infos, Gradle/Kotlin migration notices, dependency updates outside current constraints, native ELF DWARF debug metadata, and jarsigner self-signed/no-timestamp warnings. Explicit V1/V2/V3 and expected certificate identity checks passed. Details in APP_BUILD_REPORT.md.
+- Build #54 remains the latest verified RELEASE, not the current source checkpoint. The newer indicator/Floating Monitor/screen-FPS source changes are unbuilt and do not appear in the published APK/source ZIP.
 
 ## Current source fingerprints
 
-- lib/main.dart: 72c450d9b1e8783e4b82b8e37a5f39e2d49b6289.
-- lib/floating_monitor.dart: 05a61e5670ec09c9c46cf60466a1dd301dfe5352.
-- lib/app_settings.dart: 46cc838f43a06c325af6f6832e200a4e1ed4f75d.
-- test/widget_test.dart: 520399fcdc6be4fd69cb48f50aa8961f5d9183c5.
-- test/floating_monitor_layout_contract_test.dart: 31d9aabf4ac0839855308b6bd2a0708fa399a3a9.
+- lib/main.dart: 69eef38d26282b94ad1bea297d812dfd8b9e91e3.
+- lib/floating_monitor.dart: 539172e927871415b60dff8e5321199237879c45.
+- lib/app_settings.dart: 4c89bcb3c04142ce49440a11b92054365c26f7a6.
+- test/widget_test.dart: 9a0c07b02b5ea63914d735be777fe0a3df66b2bb.
+- test/floating_monitor_layout_contract_test.dart: bc5d3f9039f18e785c1268745de577bd388a731f.
 - test/shizuku_fps_contract_test.dart: 798633a24907fd8aca567e70a6376dc59c6e41c9.
-- android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt: 0c9cfdee776ca2f1de5daf2205d1f9f8da63683d.
+- android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt: dd10ff0b2c23941badaa33949967fc373f98aeb9.
 - android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FpsShizukuUserService.kt: 1f5ed36dadaba9dc70ecfbe0793114b34c8ab08b.
 - android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt: a139dfefe1121963c3a26b114b9b0fcc9f8fa16a.
 - android/app/src/main/aidl/com/horizontalzzz/jexfyz/IFpsShizukuUserService.aidl: 5bd6c269212e523b190f7164e0ad1d257ed5e6a5.
@@ -41,19 +42,19 @@ Build #54 used source commit 437e7730; current main parent HEAD 329fd18 is one d
 
 Six active test files: test/app_protocol_notify_contract_test.dart; test/firmware_touch_adaptive_sync_test.dart; test/floating_monitor_layout_contract_test.dart; test/shizuku_fps_contract_test.dart; test/v6_6_qc_contract_test.dart; test/widget_test.dart. Build #54 ran all and passed 86/86. Test/source-contract success does not establish physical-device behavior.
 
-## Open physical-device issue: Shizuku granted, F remains --
+## Current physical-device validation pending — Shizuku FPS
 
-- USER-REPORTED screenshot: permission card says “Shizuku permission granted”, yet the overlay pill shows F:--, while Battery 41.5°C, Hotside 31.3°C, Voltage 12V, Adaptive OFF, Peltier OFF and Speed 100 are visible.
-- The same screenshot appears to show the JE Cooler Floating Monitor settings screen in the foreground. Native pollSurfaceFlinger() explicitly sets no_game_foreground and keeps FPS -- when the focused package equals JE Cooler's own package. Thus the screenshot is consistent with the app correctly refusing to count its own UI, but this is a plausible explanation, not a confirmed device diagnosis.
-- Permission grant is only one gate. It doesn't prove UserService binding, /system/bin/dumpsys access, focused-app parsing or a matching SurfaceFlinger layer. No runtime status dump/logcat has been supplied.
-- Next step is a device test with an actual game in foreground while the overlay remains enabled. If F stays --, capture fps_monitor_status and logs for shizuku_userservice_unavailable/disconnected/error, surfaceflinger_blocked, dumpsys_timeout, foreground_unknown, no_game_foreground, no_layer_data or waiting_for_frames. Do not report a confirmed cause before there is evidence. Gemini was not consulted; available plugin search did not find a Gemini connector.
-  
+- USER-REPORTED screenshot: Shizuku access appears granted, but overlay metric F showed --. The original screenshot was captured in JE Cooler's own settings screen; this alone did not prove why FPS data was absent.
+- Current main source has been changed to monitor the package behind the focused window, including JE Cooler, launcher, Settings and Android system UI when SurfaceFlinger supplies matching layer data. It uses presented-frame deltas, not nominal screen refresh rate. An existing foreground layer with no new frame delta should display 0 after a sample interval.
+- This behavior is a source change only. It has NOT been verified on the user's physical phone, and OEM/Android restrictions may still deny SurfaceFlinger data. Flutter/Dart tests and App build have not been run for this checkpoint. A Shizuku permission grant alone does not prove that the UserService starts or that layer data is accessible.
+
 ## Current Floating Monitor appearance
 
-- Freely draggable overlay; text group/rows centered inside the compact box, without locking the box to the screen center.
-- Size 0.30×–0.80×, 0.05× steps, default 0.60×, with a numeric label.
-- Opacity affects the background only, 0–100%, with live percentage and 0/50/100 marks.
-- Black/White background selector, default Black; text and icons auto-contrast. Opacity 0% hides the background only. These source and test contracts are included in Build #54.
+- Freely draggable overlay with saved coordinates. Horizontal metrics center as a group; vertical Letters rows share one left edge. Display Style is removed and persisted Icons configurations migrate to Letters.
+- Size 0.30×–1.00×, 0.05× steps (14 intervals), default 0.60×. Slider, persistence normalization and native runtime scaling share the same range.
+- Opacity is 0–100% in 5% steps with current percentage and endpoint labels only; the 50% midpoint label is removed. Legacy persisted opacity snaps to the nearest 5%.
+- Black/White background selector, default Black; foreground contrasts automatically. Opacity 0% hides the background only.
+- Shizuku card contains only Granted/Denied status, Grant Shizuku Access and Check Access; explanatory paragraphs and Open Shizuku button are removed.
 
 ## Current Firmware/hardware reference
 
