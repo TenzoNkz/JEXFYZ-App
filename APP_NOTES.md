@@ -2,9 +2,9 @@
 
 This file is the durable App behavior/design contract. Live `lib/` source and the current workflow remain authoritative for implementation.
 
-## Current source repair checkpoint (2026-10-16)
+## Current source and build verification checkpoint (2026-10-16)
 
-Repair commit `98cfe7ba4d0e9d569b84498d261ad1b67f66eee7` restores Build #54 icon drawing geometry, preserves the Floating Monitor FPS selection when Shizuku is unavailable, adds a fixed WindowManager foreground-focus operation, and avoids false zero FPS on first/invalid samples. This source checkpoint has not been built or test-run; Build #56 remains the latest verified release. Physical-device FPS behavior remains unverified. Firmware, Firebase, OTA, BLE hardware-control and thermal protection code were not changed.
+Production source checkpoint `98cfe7ba4d0e9d569b84498d261ad1b67f66eee7` restores Build #54 icon drawing geometry with smooth active-effect interpolation, preserves Floating Monitor FPS selection when Shizuku is unavailable, adds a fixed WindowManager foreground-focus operation, and avoids false zero FPS on first/invalid samples. Test-contract correction: `432c30ec538ff7de6c7e77f0c68bac313f4f8015`. Build #58 (`38793790061`, source `db11df355780174b1da7dcea4d5947bfa7ba7ca5`) passed Dart analysis, 87/87 Flutter tests, obfuscated Android release build, V1/V2/V3 signing/certificate checks and downloaded Release asset verification. Actual FPS, Shizuku runtime behavior and rendering remain device-unverified. Firmware, Firebase, OTA, BLE hardware-control and thermal protection code were not changed.
 
 ## Identity and package
 
