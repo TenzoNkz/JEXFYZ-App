@@ -981,6 +981,24 @@ Duration jexIconAnimationDuration(
   };
 }
 
+/// Smoothly retargets the Fan Speed arc/needle without snapping when BLE reports
+/// another speed before the previous visual transition has completed.
+double jexSmoothFanSpeedLevel({
+  required double from,
+  required double to,
+  required double progress,
+}) {
+  final t = Curves.easeInOutCubic.transform(progress.clamp(0.0, 1.0).toDouble());
+  return from + (to - from) * t;
+}
+
+/// Small periodic needle movement. Integer harmonics keep the wobble seamless
+/// when the repeating animation wraps from 1.0 back to 0.0.
+double jexFanSpeedNeedleWobble(double progress) {
+  final angle = progress.clamp(0.0, 1.0).toDouble() * math.pi * 2;
+  return math.sin(angle) * .035 + math.sin(angle * 2) * .008;
+}
+
 class JexAnimatedIcon extends StatefulWidget {
   final JexAnimatedIconKind kind;
   final IconData? glyph;
@@ -1023,10 +1041,25 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     with TickerProviderStateMixin {
   late final AnimationController controller;
   late final AnimationController frostTransitionController;
+  late final AnimationController speedLevelTransitionController;
   double _frostFromIntensity = .24;
   double _frostFromParticleCount = 2;
-  double _speedStopFromLevel = 0;
-  bool _speedIsStopping = false;
+  double _speedFromLevel = 0;
+  double _speedTargetLevel = 0;
+
+  double _currentSpeedLevel() => jexSmoothFanSpeedLevel(
+        from: _speedFromLevel,
+        to: _speedTargetLevel,
+        progress: speedLevelTransitionController.value,
+      );
+
+  void _retargetSpeedLevel(double target, {required Duration duration}) {
+    final current = _currentSpeedLevel();
+    _speedFromLevel = current;
+    _speedTargetLevel = target.clamp(0.0, 1.0).toDouble();
+    speedLevelTransitionController.duration = duration;
+    speedLevelTransitionController.forward(from: 0);
+  }
 
   void _animateFanToCycleBoundary() {
     if (!mounted ||
@@ -1099,8 +1132,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       // Keep the Fan's coast-down/resting pose, the Peltier's crystal pose, and
       // the Fan Speed needle while it smoothly returns to zero.
       if (widget.kind == JexAnimatedIconKind.fan ||
-          widget.kind == JexAnimatedIconKind.peltier ||
-          (widget.kind == JexAnimatedIconKind.speed && _speedIsStopping)) {
+          widget.kind == JexAnimatedIconKind.peltier) {
         return;
       }
       controller.stop();
@@ -1131,6 +1163,15 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     if (widget.kind == JexAnimatedIconKind.peltier && widget.active) {
       frostTransitionController.forward(from: 0);
     }
+    final initialSpeedLevel = widget.kind == JexAnimatedIconKind.speed && widget.active
+        ? widget.level.clamp(0.0, 1.0).toDouble()
+        : 0.0;
+    _speedFromLevel = initialSpeedLevel;
+    _speedTargetLevel = initialSpeedLevel;
+    speedLevelTransitionController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 420),
+    )..value = 1;
     _syncAnimation();
   }
 
@@ -1141,6 +1182,23 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     final fanVoltageChanged = widget.kind == JexAnimatedIconKind.fan && voltageChanged;
     final peltierVisualChanged = widget.kind == JexAnimatedIconKind.peltier &&
         (voltageChanged || widget.active != oldWidget.active);
+    final speedVisualChanged = widget.kind == JexAnimatedIconKind.speed &&
+        (widget.kind != oldWidget.kind ||
+            oldWidget.kind != JexAnimatedIconKind.speed ||
+            widget.active != oldWidget.active ||
+            widget.level != oldWidget.level);
+
+    if (speedVisualChanged) {
+      _retargetSpeedLevel(
+        widget.active ? widget.level : 0.0,
+        duration: widget.active
+            ? const Duration(milliseconds: 420)
+            : const Duration(milliseconds: 520),
+      );
+    } else if (oldWidget.kind == JexAnimatedIconKind.speed &&
+        widget.kind != JexAnimatedIconKind.speed) {
+      speedLevelTransitionController.stop();
+    }
 
     if (widget.kind != oldWidget.kind || fanVoltageChanged) {
       controller.duration = jexIconAnimationDuration(
@@ -1191,19 +1249,9 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
           !oldWidget.active &&
           widget.active) {
         if (!fanVoltageChanged) _animateFanToCycleBoundary();
-      } else if (widget.kind == JexAnimatedIconKind.speed &&
-          oldWidget.active &&
-          !widget.active) {
-        _speedStopFromLevel = oldWidget.level.clamp(0.0, 1.0).toDouble();
-        _speedIsStopping = true;
-        controller.duration = const Duration(milliseconds: 520);
-        controller.forward(from: 0);
-      } else if (widget.kind == JexAnimatedIconKind.speed &&
-          !oldWidget.active &&
-          widget.active) {
-        _speedIsStopping = false;
-        controller.duration = jexIconAnimationDuration(JexAnimatedIconKind.speed);
-        controller.repeat();
+      } else if (widget.kind == JexAnimatedIconKind.speed) {
+        // The displayed value uses its own retargetable controller, independent
+        // from the looping phase used for the needle's natural ON wobble.
       } else {
         controller.reset();
       }
@@ -1215,6 +1263,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
   void dispose() {
     controller.dispose();
     frostTransitionController.dispose();
+    speedLevelTransitionController.dispose();
     super.dispose();
   }
 
@@ -1235,7 +1284,9 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     final level = widget.level.clamp(0.0, 1.0).toDouble();
     return RepaintBoundary(
       child: AnimatedBuilder(
-        animation: Listenable.merge(<Listenable>[controller, frostTransitionController]),
+        animation: Listenable.merge(
+          <Listenable>[controller, frostTransitionController, speedLevelTransitionController],
+        ),
         builder: (_, __) {
           final frostT = Curves.easeInOutCubic.transform(frostTransitionController.value);
           final frostTargetIntensity = jexPeltierFrostIntensity(widget.voltageLevel);
@@ -1245,10 +1296,8 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
               (frostTargetIntensity - _frostFromIntensity) * frostT;
           final frostParticleCount = _frostFromParticleCount +
               (frostTargetCount - _frostFromParticleCount) * frostT;
-          final displayedLevel = widget.kind == JexAnimatedIconKind.speed && !widget.active
-              ? (_speedIsStopping
-                  ? _speedStopFromLevel * (1 - Curves.easeOutCubic.transform(controller.value))
-                  : 0.0)
+          final displayedLevel = widget.kind == JexAnimatedIconKind.speed
+              ? _currentSpeedLevel()
               : level;
           return CustomPaint(
             size: Size.square(widget.size),
@@ -1470,7 +1519,9 @@ class _JexIconPainter extends CustomPainter {
         if (active) {
           canvas.save();
           canvas.clipPath(bolt);
-          final sheenX = s * (-.18 + 1.25 * p);
+          // A sinusoidal sweep reverses smoothly at both ends, avoiding the
+          // abrupt left-to-right reset at the repeat boundary.
+          final sheenX = s * (.46 + .62 * math.sin(angle));
           canvas.drawRRect(
             RRect.fromRectAndRadius(
               Rect.fromLTWH(sheenX, s * .12, s * .14, s * .80),
@@ -1649,9 +1700,7 @@ class _JexIconPainter extends CustomPainter {
             stroke(s * .066, color.withValues(alpha: .96)));
         // The value arc remains anchored to telemetry; only the needle has a tiny,
         // organic wobble while active, simulating a live gauge without changing percent.
-        final needleWobble = active
-            ? math.sin(angle) * .035 + math.sin(angle * 2.3) * .008
-            : 0.0;
+        final needleWobble = active ? jexFanSpeedNeedleWobble(progress) : 0.0;
         final needleAngle = start + sweep * actual + needleWobble;
         final tip = Offset(
           cx + math.cos(needleAngle) * s * .285,
