@@ -6446,8 +6446,8 @@ void _handleAckLine(String line) {
                             animatedKind: JexAnimatedIconKind.hotside,
                             level: jexTemperatureIndicatorLevel(
                               hotValue,
-                              minC: 20,
-                              maxC: hotLimit.toDouble(),
+                              minC: 30,
+                              maxC: math.min(40.0, hotLimit.toDouble()),
                               fallback: 0,
                             ),
                             warning: safetyLocked || hotsideAtLimit,
