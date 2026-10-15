@@ -42,7 +42,7 @@ Last reconciled: 2026-10-15 (Asia/Jakarta). This is a working checklist, not aut
 - `@Thinking #Diskusi! #Tanya Gemini!`: prepare one complete Gemini prompt from the agreed discussion.
 - `@Thinking #Diskusi! #Jawaban Gemini!`: evaluate the user's pasted Gemini answer against source and project memory. Either Gemini subcommand without `#Diskusi!` in the same command must be rejected without processing its substantive content.
 - `@Thinking #Eksekusi Full!`: full approved implementation, related audit/tests/docs/memory verification and commit. It does not imply Build App.
-- `@Thinking #Build App!`: end-to-end App Build, justified App-scope fixes/retries, successful artifact/release verification and mandatory `APP_BUILD_REPORT.md` update.
+- `@Thinking #Build App!`: end-to-end App Build, justified App-scope fixes/retries, successful artifact/release verification and mandatory `APP_BUILD_REPORT.md` update. When this Build App chat reaches context limit, use Prompt D in `CHAT_TRANSFER_PROMPTS.md` once as the replacement chat's opening message; it loads and continues from evidence, with no separate recap chat.
 - Retired: standalone `#Eksekusi!` and combined `#Eksekusi & Build App!`; never use or suggest them.
 - Build uses issue title `JE X FYZ — BUILD APP TRIGGER`, body token `JEXFYZ_BUILD_TRIGGER_V1`; re-read workflow before triggering.
 - Build App does not authorize Firmware compile/source change, BIN/Firebase mutation, physical OTA, flash, device operations or unrelated releases. User compiles Firmware.
