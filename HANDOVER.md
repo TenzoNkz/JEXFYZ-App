@@ -1,14 +1,14 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-10-14 (Asia/Jakarta). Re-fetch live `main` and source hashes before acting; this handover is a guide, not proof of current repository state.
+Last reconciled: 2026-10-15 (Asia/Jakarta). Re-fetch live `main` and source hashes before acting; this handover is a guide, not proof of current repository state.
 
 ## Current state
 
 - Active Firmware source: `firmware/JEXFYZ-V6.6.ino`; `FW_VERSION = "V6.6"`; blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`.
 - **User acceptance:** Firmware V6.6 is final/correct by user report after successful compilation and two successful Online OTA updates using the same V6.6 version. Do not reopen Firmware work without explicit request/authorization.
 - Active App source: `lib/main.dart`, blob `a1818d281fdbea900bf9cde5b83c40d09d61dcc3`; latest widget test `test/widget_test.dart`, blob `4b7bf68f3c73d6ffe80509ccb75ce6e08607b020`; package `com.horizontalzzz.jexfyz`; pubspec `1.0.0+3`; preserve Gradle `versionName "Telegram @horizontalzzz"`.
-- Latest successful Build App: run `38560939271` on older commit `2aa77113950ac462bd27fa6f1ca416371eaa7ad8`; V1/V2/V3 verified true on the built APK and downloaded asset. It predates current animation/test edits; log warns `META-INF/services/b1` is not protected by JAR/V1. Current APK not yet built.
-- Latest animation changes: smooth Fan Speed retarget from the current visual level to each new target (420 ms), smooth OFF-to-zero (520 ms), a loop-seamless wobble, a sinusoidal voltage sheen and Bluetooth ripples that fade out smoothly at repeat boundaries. Existing Fan coast-down and Peltier no-box/full-colour OFF behavior retained. Static source checks passed; Flutter tests/analyze and device rendering were not run after these changes.
+- Latest successful Build App: run `38566673160` on earlier commit `4dccbd7eedcae4a8d1a9cd2b41d5cfda9055416b`; Dart analyze/tests passed and V1/V2/V3 verified true for the built APK/downloaded asset. Release SHA-256 `f7ae531834c17fea0dd187307e2e8961dca65aa87b96754082b41475bfc9c845`. Logs warn `META-INF/services/a1` and `META-INF/services/b1` are not protected by JAR/V1. The current-source animation edits post-date that build.
+- Latest animation changes: smooth Fan Speed retarget from the current visual level to each new target (420 ms), smooth OFF-to-zero (520 ms), loop-seamless wobble, sinusoidal voltage sheen and Bluetooth ripples with squared-sine fade at repeat boundaries. Existing Fan coast-down and Peltier no-box/full-colour OFF behavior retained. Static checks passed; current-source Flutter tests/analyze and device rendering were not run.
 - No open PRs at last live check. Work directly on `main`; artifact repository `TenzoNkz/JEXFYZ-Firmware` must contain only `JEXFYZ.cpp.bin`.
 - Preserve App constraints: one-second Android battery heartbeat, five-second Firmware freshness TTL, no standalone Battery Protection Guard UI, and one-App/one-cooler exclusive pairing as an unverified design intent.
 
@@ -45,6 +45,6 @@ Use `MEMORY_INDEX.md` to find canonical notes. Use `CHANGELOG.md` for history on
 - Fan OFF coast-down, Peltier crystal/no box and Speed OFF→0 remain in place. Fan Speed visual value now has its own retargetable controller: new values interpolate from the current displayed level over 420 ms, including when another value arrives mid-transition. OFF targets 0 over 520 ms; its ON needle wobble uses integer harmonics for a seamless loop.
 - Voltage sheen now sweeps back-and-forth sinusoidally; Bluetooth ring opacity uses a squared-sine envelope that fades to zero with zero slope at loop boundaries. Those changes target visible repeat-loop resets.
 - Added deterministic regression tests for value interpolation/easing, wobble endpoint continuity and voltage/Bluetooth loop contracts, and updated the prior Speed source-contract test. Static checks passed, but Flutter tests/analyze and device rendering have NOT run for these changes.
-- Latest successful Build App run remains `38560939271` on older source commit `2aa77113950ac462bd27fa6f1ca416371eaa7ad8`. It verified V1/V2/V3 but logged a `META-INF/services/b1` JAR/V1 coverage warning; device verification remains open.
+- Latest successful Build App run remains `38566673160` on older source commit `4dccbd7eedcae4a8d1a9cd2b41d5cfda9055416b`. It verified V1/V2/V3 but logged JAR/V1 warnings for `META-INF/services/a1` and `META-INF/services/b1`; the MT Manager label still needs a device recheck.
 - No App Build, Firmware compile, BIN replacement, Firebase update, OTA/flash or hardware operation was performed.
 
