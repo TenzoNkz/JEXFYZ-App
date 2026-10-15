@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — CHAT TRANSFER SNAPSHOT
 
-Snapshot date: 2026-10-15 (Asia/Jakarta). This transfer is refreshed last. Live main HEAD immediately before this transfer write: 78c311912f75cf8fe08b4b3e7190c9fe407c6e27, after the Color Picker staged-selection source, localization, regression-test and documentation updates. The current recursive tree/root SHA was not returned by the available connector; re-fetch the full recursive tree on next boot and do not reuse historical tree-root/count data as live truth. This file is a boot bridge, not a substitute for fetching live GitHub state.
+Snapshot date: 2026-10-15 (Asia/Jakarta). This transfer is refreshed last. Live main HEAD immediately before this transfer write: 1690decd6b2b395fa171abc54bded83c02e3a4fe, after documenting the current Color Picker staged-selection source status in APP_BUILD_REPORT.md. The current recursive tree/root SHA was not returned by the available connector; re-fetch the full recursive tree on next boot and do not reuse historical tree-root/count data as live truth. This file is a boot bridge, not a substitute for fetching live GitHub state.
 
 ## 0. New-chat boot — mandatory order
 
@@ -17,7 +17,7 @@ Snapshot date: 2026-10-15 (Asia/Jakarta). This transfer is refreshed last. Live 
 
 - **Live checkpoint:** refreshed during this documentation-only protocol update on 2026-10-15 (Asia/Jakarta).
 - **Canonical repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`.
-- **Live checkpoint before this transfer write:** main HEAD 78c311912f75cf8fe08b4b3e7190c9fe407c6e27. The preceding work includes the Color Picker source behavior, localization and regression assertions plus canonical documentation updates. The previously checked branch/PR record showed five branch names and zero open PRs; recheck live state next boot. The current recursive tree/root SHA was not returned by the available connector, so retrieve it afresh.
+- **Live checkpoint before this transfer write:** main HEAD 1690decd6b2b395fa171abc54bded83c02e3a4fe. The preceding work includes the Color Picker source behavior, localization, regression assertions and the correction to APP_BUILD_REPORT.md so the older Build #35 continuation note is explicitly historical. The previously checked branch/PR record showed five branch names and zero open PRs; recheck live state next boot. The current recursive tree/root SHA was not returned by the available connector, so retrieve it afresh.
 - **Active Firmware source:** `firmware/JEXFYZ-V6.6.ino`, blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`, `FW_VERSION = "V6.6"`. Exactly one active versioned `.ino` is tracked and filename/version align. **USER ACCEPTANCE 2026-10-14:** user considers V6.6 correct/final and reports successful compilation and two successful Online OTA flashes/updates with the same version V6.6. Do not modify/recompile/reflash unless the user explicitly reopens Firmware work and separately authorizes the operation. Source-to-BIN provenance remains independently unverified, but is not an active task by itself.
 - **Current App identity/source:** `lib/main.dart` blob `150ca0e34478e27d6fd62ed55f19411d71c2a287`; `test/widget_test.dart` blob `f3c7c4a0dd15f4aec24d14006d467dd46b551641`; `lib/app_settings.dart` blob `f784a83baf312b563a1d3255dda4c012a9baee1a`; `lib/floating_monitor.dart` blob `cfc21b3dc198b925786aa98658d647b1d8a3637b`. Package `com.horizontalzzz.jexfyz`, pubspec `1.0.0+3`; preserve Gradle `versionName "Telegram @horizontalzzz"`.
 - **Current native notification files:** `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt` blob `aecfc87121f2195ef6724613c612d674ed95ae55`; `android/app/src/main/res/drawable/ic_notification.xml` blob `cda9e8404d14a62a61157ec59fae2e491c19f5f7`. The notification helper uses the transparent bold-white JE vector as the sole small icon and sets no large icon; launcher/app imagery still uses `jexfyzicon`.
@@ -241,13 +241,13 @@ Read DESIGN_NOTES.md before any visual iteration.
 
 Never equate test file with passing run; compile with full OTA installation; blue LED with successful HTTP; ACK with hardware state; reboot with proven brownout; version bump with BIN build; or existing BIN with source provenance.
 
-## 16. Live blob fingerprints at pre-transfer HEAD 78c311912f75cf8fe08b4b3e7190c9fe407c6e27
+## 16. Live blob fingerprints at pre-transfer HEAD 1690decd6b2b395fa171abc54bded83c02e3a4fe
 
 Checkpoint taken immediately before this transfer replacement. The documentation, App source, localization, and widget-test hashes below were re-fetched from live main; other unchanged source/config/test/workflow hashes are carried forward from the previous verified checkpoint.
 
 Canonical project memory and docs:
 - `APP_NOTES.md`: `c617f56ef3aac43a1b8ad07d882839584a38ec07`
-- `APP_BUILD_REPORT.md`: `6a83a61cc9b56093224fa3292b3ce9aff641e237`
+- `APP_BUILD_REPORT.md`: `f8e4bcb7e349f359f0bf4a68c1eebe67d48a9ecb`
 - `BUILD_NOTES.md`: `13de03cd56091320a213754c05bb8d048b9d29c6`
 - `CHANGELOG.md`: `dd4097e01ff2088d2e4a7f456f0810890db6ee7b`
 - `CHAT_RULES.md`: `6efb399c4946621e67d38f288d6f7b63900c8870`
@@ -314,7 +314,7 @@ Artifact repository separate check: `TenzoNkz/JEXFYZ-Firmware` main HEAD `cc0a0a
 - This `@Thinking #Eksekusi Full!` execution implemented the agreed Color Picker interaction: swatches update a local draft; localized Select applies the current draft through confirmed COLOR and closes only on success; Cancel discards the draft; outside taps and Android system Back are blocked. Select is localized as English `Select` and Indonesian `Pilih`. Failure/unconfirmed apply keeps the dialog open and preserves the prior applied RGB state.
 - Updated `test/widget_test.dart` with source-contract assertions for Select, draft-only swatches, localization and dismissal guards. Static repository readback checks passed, but Dart/Flutter tests and analysis were NOT RUN because those SDKs are not installed in this execution environment. No App Build/APK was triggered; the fix is NOT YET BUILT.
 - Updated canonical `APP_NOTES.md`, `PROJECT_STATE.md`, `HANDOVER.md`, `MEMORY_INDEX.md` and `CHANGELOG.md`. Latest successful App Build remains #35 / run `38669526891`, source commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`; that artifact does not contain this new Color Picker behavior.
-- Latest pre-transfer main HEAD: 78c311912f75cf8fe08b4b3e7190c9fe407c6e27. Updated document and source/test blob hashes are listed in section 16. Firmware source V6.6, build workflow, BIN, Firebase, OTA, flash and hardware were not changed or operated. Artifact repository remains outside this scoped work.
+- Latest pre-transfer main HEAD: 1690decd6b2b395fa171abc54bded83c02e3a4fe. Updated document and source/test blob hashes are listed in section 16. The current source change and its updated regression assertions are NOT BUILT/NOT RUN, and this execution did not trigger Build App. Firmware source V6.6, build workflow, BIN, Firebase, OTA, flash and hardware were not changed or operated. Artifact repository remains outside this scoped work.
 
 ## 18. Final rule for the next chat
 ## 18. Final rule for the next chat
