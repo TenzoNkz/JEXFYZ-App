@@ -13,7 +13,7 @@ Snapshot reconciled from live GitHub on 2026-10-15 (Asia/Jakarta). This file is 
 - App version/package: 1.0.0+3 / com.horizontalzzz.jexfyz
 - Active firmware source in the App repo: firmware/JEXFYZ-V6.6.ino; embedded FW_VERSION = "V6.6"
 - Artifact repo: TenzoNkz/JEXFYZ-Firmware, main HEAD cc0a0ae32b826753525c3f2a4442526648cef631, root contains only JEXFYZ.cpp.bin
-- The documentation update that refreshes this snapshot is committed after the audited parent. Re-fetch live HEAD and blob hashes on the next chat; this file intentionally does not attempt to store its own future blob SHA.
+- The documentation updates that refresh this snapshot are committed in a documentation-only sequence after the audited code parent. Re-fetch live HEAD and blob hashes on the next chat; this file intentionally does not attempt to store its own future blob SHA.
 
 Evidence terms:
 - CURRENT / VERIFIED means directly checked against live source/repo/CI evidence.
@@ -218,11 +218,11 @@ Executed:
 
 The canonical map is MEMORY_INDEX.md. At this reconciliation, prepared blobs for the documentation commit are listed below; their final live SHA must be re-fetched after commit. These values were obtained from GitHub create_blob responses, not inferred filenames.
 
-### Docs being updated in the same documentation-only commit
+### Docs refreshed by this documentation-only reconciliation sequence
 - APP_BUILD_REPORT.md: 01390267c649cc5836d24f22586eef7a8ca2a4ad
 - APP_NOTES.md: 48edcb1106a9d3968efd3fe201cef325661189bb
 - BUILD_NOTES.md: 0944bc65de5fef21304b670d8c83bf47bf904687
-- CHANGELOG.md: 4327266fb5e28bb2dd7a35c14f0ac26b0e849fcb (freshly corrected to state that the earlier diagnostic “not run” claim was only true at the time; later outcomes are historical)
+- CHANGELOG.md: f31f750058676e3ddfbce43ddf9db8d2ab8749c6 (freshly corrected to state that the earlier diagnostic “not run” claim was only true at the time; later outcomes are historical)
 - FIRMWARE_NOTES.md: 3bf9e240a317cb5a2d07975ff7fabb0798205e24
 - HANDOVER.md: d4265ae15ce9ed4375085fc8d8755e17cf21e949
 - MEMORY_INDEX.md: ab0f808872b5abb27826b395878fb4eb495f4559
