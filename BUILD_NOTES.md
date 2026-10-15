@@ -8,7 +8,7 @@
 - Build App does not authorize Firmware compilation, BIN creation/publication/replacement, Firebase metadata changes, physical OTA, flashing, device operation, or unrelated release operations.
 - Never claim CI success proves BLE, cooling/safety behavior, Firmware compilation, OTA installation or installed device version.
 
-## CURRENT — Build #58 successful; current release verified
+## CURRENT — Build #58 release verified; post-release FPS patch unbuilt
 
 - Latest successful App Build is [Build #58 / run `38793790061`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38793790061), triggered by owner-authored [issue #31](https://github.com/TenzoNkz/JEXFYZ-App/issues/31); it completed at `2026-10-15T19:29:59Z` (`2026-10-16 02:29:59 Asia/Jakarta`).
 - Exact source/release target: `db11df355780174b1da7dcea4d5947bfa7ba7ca5`. This includes the production repair checkpoint `98cfe7ba4d0e9d569b84498d261ad1b67f66eee7` and test-only source-contract update `432c30ec538ff7de6c7e77f0c68bac313f4f8015`.
@@ -19,7 +19,7 @@
 - Expected certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`; V1/V2/V3 verification passed for built and re-downloaded APKs.
 - Build #57 / run `38793336598` is preserved as a failed test-gate attempt. It reported 82 passing and 5 failing source-contract tests that expected superseded FPS/icon painter expressions; audit, dependencies and Dart analysis had passed, and release steps did not run. The five assertions were updated in test-only commit `432c30ec538ff7de6c7e77f0c68bac313f4f8015`; no tests were deleted and no gates weakened. Build #58 proves the post-fix test suite and release pipeline pass.
 - Non-blocking warnings: 23 Dart deprecation infos, Gradle `9.3.1` out of date, native ELF DWARF debug information not obfuscated, self-signed/no-timestamp JAR signing and META-INF notices, and pub-cache write denied due to token scope. None failed a required gate. Detail is in `APP_BUILD_REPORT.md`.
-- Current source is built and CI-tested. Physical overlay rendering, Shizuku UserService runtime/permission behavior, OEM SurfaceFlinger layer access and true foreground FPS remain **NOT DEVICE-VERIFIED**. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+- Build #58's exact release source `db11df355780174b1da7dcea4d5947bfa7ba7ca5` is built and CI-tested. The current main source has a follow-up diagnostic patch at `becd7f20517fbdaa4bb9922501f28fbed2282223`: fixed full `dumpsys window` fallback, honest `starting` state until a valid sample, and visible native FPS status. That follow-up is **NOT analyzed, test-run, Kotlin-compiled, built or released**. Build #58 remains the latest verified APK and doesn't contain it. Actual phone FPS remains **NOT DEVICE-VERIFIED**. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
 ## Current App Build workflow
 
