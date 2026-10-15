@@ -1157,6 +1157,19 @@ Color jexThermalBatteryColor(String value) {
 double jexThermalBatteryLevel(String value) =>
     jexTemperatureIndicatorLevel(value, minC: 20, maxC: 40, fallback: 0);
 
+/// Fire overlays are controlled by exact live temperature thresholds, not eased visual fill.
+bool jexThermalBatteryFireActive(String value) {
+  final temperature = jexParseTemperatureC(value);
+  return temperature != null && temperature >= 40;
+}
+
+bool jexHotsideFireActive(String value, {required double hotLimit}) {
+  final temperature = jexParseTemperatureC(value);
+  return temperature != null &&
+      hotLimit.isFinite &&
+      temperature >= hotLimit;
+}
+
 /// Hotside color is normalized against the live firmware-configured hot limit.
 Color jexHotsideTemperatureColor(String value, {required double hotLimit}) {
   final temperature = jexParseTemperatureC(value);
@@ -1740,8 +1753,8 @@ class _JexIconPainter extends CustomPainter {
             );
           }
         }
-        if (level >= .999) {
-          // Thermal Battery reaches full at 40°C and above, then shows animated heat flames.
+        if (level >= .999 && warning) {
+          // Thermal fill is eased, but fire itself requires the actual 40°C threshold.
           _drawThermalFlames(canvas, size, angle, baseY: .30);
         }
         break;
@@ -1798,8 +1811,8 @@ class _JexIconPainter extends CustomPainter {
             fill(Colors.white.withValues(alpha: .48 + .14 * softPulse)),
           );
         }
-        if (level >= .999) {
-          // The live Hotside level reaches 1 only at the configured limit.
+        if (level >= .999 && warning) {
+          // Actual telemetry must reach the configured limit before the flame is shown.
           _drawThermalFlames(canvas, size, angle, baseY: .18);
         }
         break;
@@ -2127,7 +2140,7 @@ class _JexIconPainter extends CustomPainter {
         break;
     }
 
-    if (warning) {
+    if (warning && kind != JexAnimatedIconKind.battery) {
       final warningAlpha = active ? .42 + .24 * pulse : .22;
       canvas.drawCircle(
         Offset(cx, cy),
@@ -6588,6 +6601,7 @@ void _handleAckLine(String line) {
   Widget _buildHomeArea(double height) {
     final batteryValue = connected && phoneBatteryValid ? phoneBatteryTemp : '--';
     final hotValue = connected ? hotsideTemp : '--';
+    final hotsideAtLimit = jexHotsideFireActive(hotValue, hotLimit: hotLimit.toDouble());
     final voltageValue = connected && voltage != '--' ? voltage : '--';
     final adaptiveValue = connected
         ? JexText.of(adaptiveOn ? 'on' : 'off', appLanguageNotifier.value)
@@ -6699,6 +6713,7 @@ void _handleAckLine(String line) {
                             icon: PhosphorIconsRegular.batteryHigh,
                             animatedKind: JexAnimatedIconKind.battery,
                             level: jexThermalBatteryLevel(batteryValue),
+                            warning: jexThermalBatteryFireActive(batteryValue),
                           ),
                           _homeMetric(
                             JexText.of('hotsideTemperature'),
@@ -6718,7 +6733,7 @@ void _handleAckLine(String line) {
                               maxC: hotLimit.toDouble(),
                               fallback: 0,
                             ),
-                            warning: safetyLocked,
+                            warning: safetyLocked || hotsideAtLimit,
                           ),
                           _homeMetric(
                             JexText.of('voltageIndicator'),

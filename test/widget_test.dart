@@ -139,6 +139,9 @@ void main() {
     expect(jexThermalBatteryLevel('40.0'), 1);
     expect(jexThermalBatteryLevel('45.0'), 1);
     expect(jexThermalBatteryLevel('--'), 0);
+    expect(jexThermalBatteryFireActive('39.99'), isFalse);
+    expect(jexThermalBatteryFireActive('40.0'), isTrue);
+    expect(jexThermalBatteryFireActive('--'), isFalse);
 
     expect(jexThermalBatteryColor('18.0'), jexThermalIceBlue);
     expect(jexThermalBatteryColor('20.0'), jexThermalIceBlue);
@@ -155,6 +158,9 @@ void main() {
     expect(jexHotsideTemperatureColor('45.0', hotLimit: 45), jexThermalRed);
     expect(jexHotsideTemperatureColor('50.0', hotLimit: 50), jexThermalRed);
     expect(jexHotsideTemperatureColor('--', hotLimit: 45), jexThermalIceBlue);
+    expect(jexHotsideFireActive('44.99', hotLimit: 45), isFalse);
+    expect(jexHotsideFireActive('45.0', hotLimit: 45), isTrue);
+    expect(jexHotsideFireActive('--', hotLimit: 45), isFalse);
     expect(jexTemperatureIndicatorLevel('45.0', minC: 20, maxC: 45), 1);
     expect(jexTemperatureIndicatorLevel('44.0', minC: 20, maxC: 45), lessThan(1));
   });
