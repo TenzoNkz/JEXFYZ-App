@@ -141,8 +141,12 @@ class MainActivity : FlutterActivity() {
                 }
 
                 "requestShizukuFpsPermission" -> {
-                    val access = shizukuFpsAccessSnapshot()
-                    val requestStarted = access.available && access.supported && !access.granted
+                    val available = runCatching { Shizuku.pingBinder() }.getOrDefault(false)
+                    val supported = available && runCatching { Shizuku.getVersion() >= 10 }.getOrDefault(false)
+                    val granted = supported && runCatching {
+                        Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED
+                    }.getOrDefault(false)
+                    val requestStarted = available && supported && !granted
                     if (requestStarted) {
                         try {
                             Shizuku.requestPermission(SHIZUKU_PERMISSION_REQUEST_CODE)
