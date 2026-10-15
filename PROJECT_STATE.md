@@ -4,7 +4,7 @@ Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use C
 
 ## App identity and repository
 
-- Canonical App repo: TenzoNkz/JEXFYZ-App, branch main. Latest source/test checkpoint on main: a0b2e1252e9a8ec69372a3274af122f86a1e2eb3. Recursive tree is complete at 80 entries; 5 branches, 0 open PRs. Remaining commits update memory/docs only.
+- Canonical App repo: TenzoNkz/JEXFYZ-App, branch main. Latest source/test checkpoint on main: 311a18934a3cbe86a2a4718442c92541f081183f. Recursive tree is complete at 80 entries; 5 branches, 0 open PRs. Remaining commits update memory/docs only.
 - App/package: JE Cooler / JE X FYZ, com.horizontalzzz.jexfyz, pubspec version 1.0.0+3. Preserve Gradle versionName exactly as "Telegram @horizontalzzz".
 - Only active App build workflow: .github/workflows/jexfyz-app-build-trigger.yml; issue opened/reopened only; repository-owner, exact title and body-token guarded. Normal push/PR does not build/release.
 - Firmware artifact repo TenzoNkz/JEXFYZ-Firmware has exactly one tree entry: JEXFYZ.cpp.bin, 1,455,936 bytes, blob 68167e65d26137eeb1ce4d6d4ba798dc282454e6. Do not modify or inspect BIN payload during documentation work. This does not prove current source-to-BIN provenance.
@@ -23,10 +23,10 @@ Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use C
 ## Current source fingerprints
 
 - lib/main.dart: 69eef38d26282b94ad1bea297d812dfd8b9e91e3.
-- lib/floating_monitor.dart: 539172e927871415b60dff8e5321199237879c45.
+- lib/floating_monitor.dart: f3ba1518e9f5158cd7f7a1fccac8df0fbac3b2fb.
 - lib/app_settings.dart: 4c89bcb3c04142ce49440a11b92054365c26f7a6.
 - test/widget_test.dart: 2426eecea66a357d63ce10214a2d331224c81e37.
-- test/floating_monitor_layout_contract_test.dart: bc5d3f9039f18e785c1268745de577bd388a731f.
+- test/floating_monitor_layout_contract_test.dart: 7f861d449e518af68fc4ece7278241aa3ce8691b.
 - test/shizuku_fps_contract_test.dart: 798633a24907fd8aca567e70a6376dc59c6e41c9.
 - android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt: dd10ff0b2c23941badaa33949967fc373f98aeb9.
 - android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FpsShizukuUserService.kt: 1f5ed36dadaba9dc70ecfbe0793114b34c8ab08b.
