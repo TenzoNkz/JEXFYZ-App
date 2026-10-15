@@ -1,3 +1,12 @@
+## 2026-10-15 — Recover and harden notification-driven Wireless ADB pairing
+
+- Recovered the authorized App execution from live main rather than duplicating the existing feature commit. Existing source commit 4ad5d99bcea96e865978e3003482661b1e26101f introduced the native notification flow, and 89855b59c8d6ee40151847e6633a07cb75aff6b0 repaired the mDNS-listener closure and identity temporary-file naming.
+- Hardened local mDNS discovery: declare ACCESS_NETWORK_STATE, ACCESS_WIFI_STATE and CHANGE_WIFI_MULTICAST_STATE; acquire a short-lived WifiManager.MulticastLock only while discovery is active; release it on stop/failure/destroy. Fixed the permission confirmation loop to stop once Android confirms android.permission.DUMP.
+- When Android 13+ notification permission is missing, the Activity now requests it and requires the user to retry before starting the pairing notification. Pairing remains user-started; the native service only accepts a fresh six-digit code through RemoteInput, uses local loopback ADB, runs one fixed pm grant com.horizontalzzz.jexfyz android.permission.DUMP, and independently verifies permission state.
+- Enhanced test/adb_pairing_contract_test.dart with assertions for discovery permissions, multicast-lock lifecycle and notification-permission request. Static authoring checks passed in this recovery run; Flutter/Dart tests, Dart analysis and Android/Kotlin compilation were NOT RUN.
+- Updated current App notes, state, handover and index; CHAT_TRANSFER.md is updated separately after the resulting parent commit is verified last. Build #36 (run 38689044316, source 893393388b99fc6d9e59c420070a159a29e45e9) remains the latest successful APK, but it predates all Wireless ADB pairing changes. The pairing feature remains NOT BUILT and device behavior UNVERIFIED.
+- No App Build workflow, Release update, Firmware source/BIN, Firebase, OTA, physical flash/device operation or hardware was touched.
+
 ## 2026-10-15 — Chat Stuck recovery and transfer checkpoint reconciliation
 
 - Resumed the authorized chat-limit reconciliation from live `main` after inspecting the prior recovery checkpoint; stopped repetitive fingerprint-only updates and used an evidence-first, grouped documentation update.
