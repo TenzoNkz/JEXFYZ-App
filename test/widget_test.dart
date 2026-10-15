@@ -440,6 +440,8 @@ void main() {
     expect(ledColorDisplayName('#00FFFF', AppLanguage.english), 'Cyan');
     expect(ledColorDisplayName('#FFB6C1', AppLanguage.english), 'Pink');
     expect(ledColorDisplayName('#ABCDEF', AppLanguage.english), 'Custom Color');
+    expect(JexText.of('select', AppLanguage.english), 'Select');
+    expect(JexText.of('select', AppLanguage.indonesia), 'Pilih');
     expect(ledColorPalette, isNot(contains('#000000')));
   });
 
@@ -459,6 +461,8 @@ void main() {
     expect(colorDialog, isNot(contains('displayMenuOverlayTop(')));
     expect(colorDialog, isNot(contains('SingleChildScrollView')));
     expect(colorDialog, contains('onCancel:'));
+    expect(colorDialog, contains('barrierDismissible: false'));
+    expect(colorDialog, contains('onSelect: _setRgbColor'));
     final colorCardStart = source.indexOf('class _JexColorPickerCard');
     final colorCardEnd = source.indexOf('enum JexAnimatedIconKind', colorCardStart);
     expect(colorCardStart, isNonNegative);
@@ -467,7 +471,15 @@ void main() {
     expect(colorCard, contains('fontSize: 22'));
     expect(colorCard, contains('fontSize: 15'));
     expect(colorCard, contains('mainAxisExtent: 42'));
+    expect(colorCard, contains('alignment: Alignment.centerRight'));
+    expect(colorCard, contains("JexText.of('select', lang)"));
+    expect(colorCard, contains('onPressed: _isApplying ? null : _applySelection'));
+    expect(colorCard, contains('setState(() => _draftSelected = value)'));
+    expect(colorCard, contains('final applied = await widget.onSelect(_draftSelected);'));
+    expect(colorCard, contains('if (applied && mounted) Navigator.of(context).pop()'));
+    expect(colorCard, isNot(contains('onTap: () => widget.onSelect(')));
     expect(source, contains("JexText.of('cancel', lang)"));
+    expect(source, contains('Future<bool> _setRgbColor(String hex) async'));
     expect(source, contains('colors: ledColorPresets'));
     expect(source, contains('constraints: const BoxConstraints(maxWidth: 420)'));
     expect(source, contains('showGeneralDialog<void>'));
