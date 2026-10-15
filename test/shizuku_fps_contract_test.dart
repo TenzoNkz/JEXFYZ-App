@@ -53,7 +53,7 @@ void main() {
     expect(shizukuService, contains('ProcessBuilder(listOf("/system/bin/dumpsys") + arguments)'));
     expect(shizukuService, isNot(contains('command: String')));
     expect(shizukuService, isNot(contains('intent.getStringExtra("command")')));
-    expect(mainWidgetTest, isNot(contains('adb shell pm grant')));
-    expect(mainWidgetTest, isNot(contains('adb shell pm revoke')));
+    expect(mainWidgetTest, isNot(contains('adb shell pm grant com.horizontalzzz.jexfyz android.permission.DUMP')));
+    expect(mainWidgetTest, isNot(contains('adb shell pm revoke com.horizontalzzz.jexfyz android.permission.DUMP')));
   });
 }
