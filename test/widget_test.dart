@@ -462,6 +462,7 @@ void main() {
     expect(colorDialog, isNot(contains('SingleChildScrollView')));
     expect(colorDialog, contains('onCancel:'));
     expect(colorDialog, contains('barrierDismissible: false'));
+    expect(colorDialog, contains('PopScope<void>(\n          canPop: false'));
     expect(colorDialog, contains('onSelect: _setRgbColor'));
     final colorCardStart = source.indexOf('class _JexColorPickerCard');
     final colorCardEnd = source.indexOf('enum JexAnimatedIconKind', colorCardStart);
