@@ -644,7 +644,7 @@ class FloatingMonitorService : Service() {
                     "fps_monitor_active" to false,
                     "fps_monitor_status" to shizukuFpsAccessSnapshot().toStatusMap("monitor_off", false)["fps_monitor_status"],
                     "horizontal" to prefs.getBoolean("horizontal", true),
-                    "size" to prefs.getFloat("size", 0.6f).coerceIn(0.3f, 0.8f).toDouble(),
+                    "size" to prefs.getFloat("size", 0.6f).coerceIn(0.3f, 1.0f).toDouble(),
                     "x" to prefs.getInt("x", 16),
                     "y" to prefs.getInt("y", 120),
                 )
@@ -851,8 +851,8 @@ class FloatingMonitorService : Service() {
         try {
             val obj = JSONObject(json)
             config.enabled = obj.optBoolean("enabled", false)
-            config.style = obj.optString("style", "letters")
-            config.size = obj.optDouble("size", 0.6).toFloat().coerceIn(0.3f, 0.8f)
+            config.style = "letters"
+            config.size = obj.optDouble("size", 0.6).toFloat().coerceIn(0.3f, 1.0f)
             config.opacity = obj.optDouble("opacity", 0.9).toFloat().coerceIn(0.0f, 1.0f)
             config.backgroundColor = if (obj.optString("backgroundColor", "black").equals("white", ignoreCase = true)) "white" else "black"
             config.horizontal = obj.optBoolean("horizontal", true)
@@ -1048,7 +1048,7 @@ class FloatingMonitorService : Service() {
     // AI-METHOD / RESIZE-CONTRACT
     // Apply bounded user scaling and persist it; actual window geometry is updated through WindowManager.
     private fun resizeOverlay(newSize: Float) {
-        config.size = newSize.coerceIn(0.3f, 0.8f)
+        config.size = newSize.coerceIn(0.3f, 1.0f)
         prefs.edit().putFloat("size", config.size).apply()
         hudView?.requestLayout()
         hudView?.invalidate()
@@ -1219,8 +1219,9 @@ class FloatingMonitorService : Service() {
                 for (metric in metrics) {
                     val itemH = itemHeight(metric)
                     val baseline = cursor + (itemH - fontMetrics.descent - fontMetrics.ascent) / 2f
-                    val centeredX = (width - itemWidth(metric)) / 2f
-                    drawMetric(canvas, metric, centeredX, baseline, scale)
+                    // Use one left edge for every row; varying text lengths must not alter alignment.
+                    val leftX = dp(8f * scale)
+                    drawMetric(canvas, metric, leftX, baseline, scale)
                     cursor += itemH + gap
                 }
             }
