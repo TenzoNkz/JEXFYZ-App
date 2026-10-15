@@ -26,6 +26,58 @@ import 'jex_animated_glyph.dart';
 enum FloatingDisplayStyle { letters, icons }
 enum FloatingBackgroundColor { black, white }
 
+// Translate the native sampler state into a compact, actionable status beside Shizuku access.
+// Keep the raw native code for diagnosis without suggesting that permission alone proves FPS works.
+String floatingFpsStatusLabel(String status, AppLanguage language) {
+  final isIndonesian = language == AppLanguage.indonesia;
+  final message = switch (status) {
+    'monitor_off' => isIndonesian ? 'Pemantauan FPS tidak aktif' : 'FPS monitoring is off',
+    'starting' => isIndonesian ? 'Sedang mengambil sampel FPS pertama' : 'Waiting for the first FPS sample',
+    'active' => isIndonesian ? 'Sampel FPS valid tersedia' : 'Valid FPS sample available',
+    'foreground_unknown' => isIndonesian
+        ? 'Jendela aplikasi depan tidak terdeteksi'
+        : 'Foreground window was not detected',
+    'no_layer_data' => isIndonesian
+        ? 'Layer SurfaceFlinger yang cocok tidak ditemukan'
+        : 'No matching SurfaceFlinger layer was found',
+    'waiting_for_frames' => isIndonesian
+        ? 'Menunggu sampel frame yang valid'
+        : 'Waiting for a valid frame sample',
+    'sample_invalid' => isIndonesian
+        ? 'Interval atau counter sampel tidak valid'
+        : 'Sample interval or frame counter is invalid',
+    'shizuku_not_running' => isIndonesian ? 'Layanan Shizuku tidak berjalan' : 'Shizuku service is not running',
+    'shizuku_unsupported' => isIndonesian ? 'Versi Shizuku tidak didukung' : 'Shizuku version is unsupported',
+    'shizuku_permission_missing' => isIndonesian ? 'Izin Shizuku belum diberikan' : 'Shizuku permission is missing',
+    'shizuku_userservice_unavailable' => isIndonesian
+        ? 'Shizuku UserService gagal tersambung'
+        : 'Shizuku UserService could not connect',
+    'shizuku_userservice_disconnected' => isIndonesian
+        ? 'Koneksi Shizuku UserService terputus'
+        : 'Shizuku UserService disconnected',
+    'shizuku_userservice_error' => isIndonesian
+        ? 'Terjadi kesalahan pada Shizuku UserService'
+        : 'Shizuku UserService returned an error',
+    'surfaceflinger_blocked' => isIndonesian
+        ? 'Akses statistik SurfaceFlinger gagal'
+        : 'SurfaceFlinger frame-statistics access failed',
+    'dumpsys_timeout' => isIndonesian
+        ? 'Perintah pengukuran FPS kehabisan waktu'
+        : 'FPS system command timed out',
+    'dumpsys_output_too_large' => isIndonesian
+        ? 'Output perintah FPS terlalu besar'
+        : 'FPS command output was too large',
+    'dumpsys_unavailable' => isIndonesian
+        ? 'Perintah dumpsys tidak tersedia'
+        : 'The dumpsys command is unavailable',
+    _ => status.startsWith('dumpsys_exit_')
+        ? (isIndonesian ? 'Perintah FPS gagal' : 'FPS system command failed')
+        : (isIndonesian ? 'Status FPS belum diketahui' : 'FPS status is unknown'),
+  };
+  if (status == 'active' || status == 'monitor_off') return message;
+  return '$message ($status)';
+}
+
 // Size is persisted in 0.05x increments for a predictable native overlay scale.
 double _normalizeFloatingSize(double value) {
   final safe = value.isFinite ? value.clamp(0.30, 1.00).toDouble() : 0.60;
@@ -813,6 +865,20 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                             ),
                         ],
                       ),
+                      if (config.selected.contains('F')) ...[
+                        const SizedBox(height: 4),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 2),
+                          child: Text(
+                            floatingFpsStatusLabel(_fpsMonitorStatus, lang),
+                            style: TextStyle(
+                              fontSize: 11,
+                              height: 1.25,
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ),
+                      ],
                       const SizedBox(height: 8),
                       Wrap(
                         spacing: 8,
