@@ -556,6 +556,78 @@ class JexText {
       AppLanguage.english: 'FPS',
       AppLanguage.indonesia: 'FPS',
     },
+    'fpsAccessTitle': {
+      AppLanguage.english: 'Game FPS Access',
+      AppLanguage.indonesia: 'Akses FPS Game',
+    },
+    'fpsAccessDescription': {
+      AppLanguage.english: 'JE Cooler reads Android SurfaceFlinger frame statistics to calculate frame-rate samples. Android cannot grant this permission to itself.',
+      AppLanguage.indonesia: 'JE Cooler membaca statistik frame SurfaceFlinger Android untuk menghitung FPS. Android tidak mengizinkan aplikasi memberi izin ini kepada dirinya sendiri.',
+    },
+    'fpsAccessSteps': {
+      AppLanguage.english: 'Connect the phone to a computer with Android Platform-Tools. Enable Developer options and USB debugging, approve the RSA prompt, run the grant command below in the computer terminal, then return here and check access. Wireless debugging with a paired computer also works.',
+      AppLanguage.indonesia: 'Hubungkan HP ke komputer dengan Android Platform-Tools. Aktifkan Opsi developer dan USB debugging, setujui dialog RSA, jalankan perintah grant di terminal komputer, lalu kembali dan periksa akses. Wireless debugging dengan komputer yang sudah dipasangkan juga bisa digunakan.',
+    },
+    'fpsAccessRevoke': {
+      AppLanguage.english: 'To revoke the permission later, run:',
+      AppLanguage.indonesia: 'Untuk mencabut izin nanti, jalankan:',
+    },
+    'fpsAccessHint': {
+      AppLanguage.english: 'A one-time ADB grant is required; no root or Shizuku app is needed for this route. Frame-data support varies by Android ROM.',
+      AppLanguage.indonesia: 'Izin ADB diberikan satu kali; jalur ini tidak memerlukan root atau aplikasi Shizuku. Dukungan data frame dapat berbeda antar-ROM Android.',
+    },
+    'fpsAccessGranted': {
+      AppLanguage.english: 'ADB permission granted',
+      AppLanguage.indonesia: 'Izin ADB sudah diberikan',
+    },
+    'fpsAccessMissing': {
+      AppLanguage.english: 'ADB permission not granted',
+      AppLanguage.indonesia: 'Izin ADB belum diberikan',
+    },
+    'fpsMonitorActive': {
+      AppLanguage.english: 'Live SurfaceFlinger FPS sampling is active',
+      AppLanguage.indonesia: 'Pengukuran FPS SurfaceFlinger sedang aktif',
+    },
+    'fpsDataUnavailable': {
+      AppLanguage.english: 'Permission is present, but this device did not provide usable game frame data.',
+      AppLanguage.indonesia: 'Izin tersedia, tetapi perangkat ini tidak memberikan data frame game yang dapat digunakan.',
+    },
+    'setupAdb': {
+      AppLanguage.english: 'Set up ADB access',
+      AppLanguage.indonesia: 'Atur akses ADB',
+    },
+    'checkFpsAccess': {
+      AppLanguage.english: 'Check access',
+      AppLanguage.indonesia: 'Periksa akses',
+    },
+    'copyAdbCommand': {
+      AppLanguage.english: 'Copy grant command',
+      AppLanguage.indonesia: 'Salin perintah grant',
+    },
+    'copyRevokeCommand': {
+      AppLanguage.english: 'Copy revoke command',
+      AppLanguage.indonesia: 'Salin perintah cabut izin',
+    },
+    'adbCommandCopied': {
+      AppLanguage.english: 'ADB grant command copied',
+      AppLanguage.indonesia: 'Perintah grant ADB disalin',
+    },
+    'adbRevokeCopied': {
+      AppLanguage.english: 'ADB revoke command copied',
+      AppLanguage.indonesia: 'Perintah cabut izin ADB disalin',
+    },
+    'openDevOptions': {
+      AppLanguage.english: 'Open Developer options',
+      AppLanguage.indonesia: 'Buka Opsi developer',
+    },
+    'developerSettingsFailed': {
+      AppLanguage.english: 'Could not open Developer options on this device.',
+      AppLanguage.indonesia: 'Opsi developer tidak dapat dibuka di perangkat ini.',
+    },
+    'orientation': {
+      AppLanguage.english: 'Orientation',
+      AppLanguage.indonesia: 'Orientasi',
+    },
     'battery': {
       AppLanguage.english: 'Battery',
       AppLanguage.indonesia: 'Baterai',
