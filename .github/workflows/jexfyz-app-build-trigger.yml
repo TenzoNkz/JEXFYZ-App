@@ -406,7 +406,7 @@ jobs:
           test -s "$SOURCE_ARCHIVE"
           unzip -t "$SOURCE_ARCHIVE"
           unzip -l "$SOURCE_ARCHIVE" | grep -F 'JEXFYZ-corresponding-source/third_party/source/Kadb-1.3.0/README.md'
-          unzip -l "$SOURCE_ARCHIVE" | grep -F 'JEXFYZ-corresponding-source/third_party/source/spake2-java-1.0.5/android/src/main/java/io/github/muntashirakon/crypto/spake2/Spake2Context.java'
+          unzip -l "$SOURCE_ARCHIVE" | grep -F 'JEXFYZ-corresponding-source/third_party/source/spake2-java-1.0.5/src/main/java/com/flyfish233/crypto/spake2/Spake2Context.java'
           unzip -p "$SOURCE_ARCHIVE" JEXFYZ-corresponding-source/SOURCE_BUNDLE_README.md | grep -F "$GITHUB_SHA"
           unzip -l build/app/outputs/flutter-apk/JEXFYZ-release.apk | grep -F 'assets/licenses/spake2-java-GPL-3.0.txt'
           echo "Corresponding source archive prepared for $GITHUB_SHA"

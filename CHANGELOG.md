@@ -1,3 +1,9 @@
+## 2026-10-15 — Build #40 source archive assertion failure and path repair prepared
+
+- [Build #40 / run 38713854518](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38713854518) built source commit `d638f6941d9ac16a228f4b78ed001ca2e925f716`. Security/license audit, Flutter dependency installation, Dart analysis and **80 tests passed**; APK build, V1/V2/V3 signing and official certificate verification passed.
+- Corresponding-source ZIP was created and its integrity check passed. Packaging failed only because a follow-up path grep expected the obsolete `android/src/main/java/io/github/muntashirakon/crypto/spake2/Spake2Context.java`; correct source-tag path is `src/main/java/com/flyfish233/crypto/spake2/Spake2Context.java`.
+- Prepared workflow blob `225584c8feaf8e43ff7228fd6ab3dc84491e34ba` corrects the path check. Release publication and downloaded-asset verification were skipped; no new APK was published. Next action is commit the workflow correction and run the official build again.
+
 ## 2026-10-15 — Preserve Kadb; add corresponding-source and license checks to App Release (NOT YET BUILD-VERIFIED)
 
 - The selected technical route retains the current Wireless ADB/FPS functionality rather than swapping in a newer, less-audited pairing implementation.

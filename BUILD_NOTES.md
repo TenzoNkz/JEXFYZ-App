@@ -19,12 +19,12 @@
 - Production signing certificate SHA-256 in prior build record: `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. Verify against live workflow/config before relying on it.
 - Preserve Android Gradle `versionName "Telegram @horizontalzzz"`.
 
-## Current blocker — Build #39 dependency and distribution gate (2026-10-15)
+## Current blocker — Build #40 source-archive assertion (2026-10-15)
 
-- Build #39 `38705765370` passed the audit, Flutter dependency installation, Dart analysis and all 80 tests, then failed at `:app:mergeReleaseNativeLibs` because `com.github.Flyfish233:spake2-java:1.0.5` was not found in configured repositories.
-- `android/build.gradle` now adds `https://jitpack.io` with `includeModule("com.github.Flyfish233", "spake2-java")`. Current blob: `bb8c0caf26927bd614bb9b05ef79366424063663`. This is a source fix only; dependency resolution and APK assembly remain UNVERIFIED until a later authorized run.
-- **Execution route:** Selected route for the current execution: retain Kadb 1.3.0/Wireless ADB and provide the exact App source plus upstream Kadb 1.3.0 and SPAKE2-Java 1.0.5 sources and their licenses as `JEXFYZ-corresponding-source.zip`, attached to the same private Release as the APK. Include the GPL-3.0 text inside the APK and source bundle, verify exactly one APK plus one corresponding-source asset, and compare the source bundle after re-download. This route keeps the repository private and provides source to the same release recipients; it is a technical distribution safeguard, not a legal opinion. Continue the build workflow without asking the user to choose a technical route; record any concrete legal or access limitation if discovered.
-- Workflow source blob: `187956b1344680eaf89f48fec28fd8a92e77f832`; it checks the GPL license notice, packages source for the exact commit plus Kadb 1.3.0/SPAKE2-Java 1.0.5 sources, publishes one APK and one ZIP, and verifies both downloaded hashes. This workflow change is not yet build-verified. The latest published APK remains Build #36 until a complete run succeeds.
+- Build #40 `38713854518` on `d638f6941d9ac16a228f4b78ed001ca2e925f716` passed the audit/license checks, dependency installation, Dart analysis and all 80 tests, then successfully built the obfuscated APK and passed V1/V2/V3 plus official certificate verification.
+- The source archive was created and passed ZIP integrity validation, but the packaging step failed because it expected the obsolete path `android/src/main/java/io/github/muntashirakon/crypto/spake2/Spake2Context.java`. Correct tag-1.0.5 source path is `src/main/java/com/flyfish233/crypto/spake2/Spake2Context.java`.
+- Workflow correction prepared in blob `225584c8feaf8e43ff7228fd6ab3dc84491e34ba`; publish/re-download gates were skipped in #40. Commit the correction, then rerun the official issue-trigger workflow and inspect all gates.
+- Retain Kadb 1.3.0 and Wireless ADB. The workflow embeds the GPL-3.0 license text in APK assets, creates a corresponding-source ZIP for the exact App commit with Kadb 1.3.0 and SPAKE2-Java 1.0.5 sources, publishes exactly one APK plus that ZIP to the same private Release, and compares SHA-256 values after re-download. This is a technical source-availability safeguard, not a legal opinion.
 
 ## Validation sequence
 

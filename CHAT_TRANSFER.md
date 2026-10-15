@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — CHAT TRANSFER SNAPSHOT
 
-Snapshot date: 2026-10-15 (Asia/Jakarta). This transfer is being refreshed last. The verified parent checkpoint immediately before this write is `main` HEAD `e3067f1290ebb0f763e02609f273559e889fddfe`, root tree `afb741a49573222455d82bf34500cccd84c55599`. Build #39 / run `38705765370` passed the audit, dependency installation, Dart analysis and all 80 Flutter tests on its own pre-fix commit, but failed APK assembly because `com.github.Flyfish233:spake2-java:1.0.5` was absent from Maven repos. `android/build.gradle` has a JitPack resolver filtered to that module (blob `bb8c0caf26927bd614bb9b05ef79366424063663`). The route chosen for this execution retains Kadb/Wireless ADB and adds the full GPL-3.0 license to APK assets plus a corresponding-source ZIP with the exact App commit, Kadb 1.3.0 source and SPAKE2-Java 1.0.5 source/native submodule, distributed beside the APK through the same private Release. Workflow blob `187956b1344680eaf89f48fec28fd8a92e77f832` has not yet been build-verified. The next step is to run the official Build App workflow and continue repairs from its exact logs; no claim of APK success is made.
+Snapshot date: 2026-10-15 (Asia/Jakarta). This transfer is refreshed last. Parent checkpoint before this update: `main` HEAD `d638f6941d9ac16a228f4b78ed001ca2e925f716`, tree `e497c41249c7af91ca3d128c84fbed7ad61eca79`. Build #40 / run `38713854518` passed audit/license checks, dependency installation, Dart analysis, 80 Flutter tests, obfuscated APK build, V1/V2/V3 signing and official certificate verification. The generated source ZIP passed integrity validation, but the step failed on an incorrect SPAKE2 source path assertion. The workflow path has been corrected in pending blob `225584c8feaf8e43ff7228fd6ab3dc84491e34ba`; it must be committed and the full Build App workflow rerun. No Release publication occurred in #40, so the latest released APK remains the older Build #36 asset. Continue without asking the user to choose a technical route: retain Kadb/Wireless ADB, embed the GPL license, publish matching source ZIP alongside exactly one APK to the same private Release, and verify both downloaded hashes.
 
 ## 0. New-chat boot — mandatory order
 
@@ -28,7 +28,7 @@ Snapshot date: 2026-10-15 (Asia/Jakarta). This transfer is being refreshed last.
 - **Latest successful App Build:** Build #36 / ID `38689044316` on code commit `893393388b99fc6d9e59c420070a159a29e45e9a` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38689044316). Security/architecture audit, dependency resolution, Dart analyze, all 77 Flutter tests, obfuscated APK build, V1/V2/V3 verification, production certificate validation, release publication and downloaded-asset verification passed. Release `jexfyz-latest` contains one `JEXFYZ-release.apk`, 54,620,251 bytes, SHA-256 `a5c9d97a3d28f7f711b0cd3c524289bc136cecec56d3b1d88821e43c713e9a13`; certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. Build #36 predates Wireless ADB pairing; current source is not included. JAR/V1 metadata warnings remain separate from passing V1/V2/V3 verification.
 - **Build workflow:** `.github/workflows/jexfyz-app-build-trigger.yml`, blob `0e400cbdedfd54506ae3ac3255da41580c86d750`. Build #36 verified V1/V2/V3 on the built APK and downloaded Release asset; Android manifest minSdk remains 24. JAR/V1 dependency META-INF warnings remain. Trigger title `JE X FYZ — BUILD APP TRIGGER`, token `JEXFYZ_BUILD_TRIGGER_V1`, Ubuntu 24.04 / Java 17 / Flutter 3.47.2 / Gradle 9.3.1. Pairing source after `893393388b99fc6d9e59c420070a159a29e45e9a` is absent from that APK.
 - **Artifact repository:** `TenzoNkz/JEXFYZ-Firmware` main HEAD `cc0a0ae32b826753525c3f2a4442526648cef631`, root tree `b4db8f4e86dfb97d3313c70428b92eb9d4bd7511`; live recursive root contains only `JEXFYZ.cpp.bin`, blob `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, 1,455,936 bytes. Provenance matching V6.6 source remains UNVERIFIED.
-- **Operation boundary:** Current main includes Color Picker staged selection, Floating Monitor foreground FPS/telemetry and notification-driven Wireless ADB pairing with mDNS multicast/notification-permission hardening plus the seven-icon Home redraw and Notify status wording. Build #39 passed Dart analysis and all 80 Flutter tests, but APK assembly failed at `:app:mergeReleaseNativeLibs` due to the missing SPAKE2 artifact. This source update adds a filtered JitPack resolver but was not build-verified and did not trigger another workflow. The selected route keeps Kadb and provides matching source plus the GPL notice with the APK; the workflow's archive, dependency resolution, APK signing and release checks remain pending. Firmware V6.6 source/BIN, Firebase, OTA/flash, physical devices and hardware were not changed or operated. Pairing, permission grant, live FPS, and physical UI/overlay behavior remain UNVERIFIED. Phase remains DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED.
+- **Operation boundary:** Build #40 passed the app tests and APK/signature gates but did not publish because the corresponding-source archive validation used an incorrect source path. The corrected workflow path is `src/main/java/com/flyfish233/crypto/spake2/Spake2Context.java` in tag 1.0.5 (pending blob `225584c8feaf8e43ff7228fd6ab3dc84491e34ba`). Continue to the next official build and resolve all gates; no Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
 ## 2. Permanent Thinking commands and authorization limits
 
@@ -244,15 +244,15 @@ Read DESIGN_NOTES.md before any visual iteration.
 
 Never equate test file with passing run; compile with full OTA installation; blue LED with successful HTTP; ACK with hardware state; reboot with proven brownout; version bump with BIN build; or existing BIN with source provenance.
 
-## 16. Live blob fingerprints at pre-transfer HEAD `e3067f1290ebb0f763e02609f273559e889fddfe`
+## 16. Live blob fingerprints at pre-transfer HEAD `d638f6941d9ac16a228f4b78ed001ca2e925f716`
 
-Checkpoint fetched immediately before this final transfer replacement. The full recursive root tree is `afb741a49573222455d82bf34500cccd84c55599` (71 entries / 52 blobs, 20 Markdown files, five Dart tests, non-truncated). These fingerprints refer to that verified parent checkpoint; this final transfer's blob/commit will differ.
+Checkpoint fetched immediately before this final transfer replacement. The recursive root tree is `e497c41249c7af91ca3d128c84fbed7ad61eca79` (76 entries / 55 blobs, non-truncated). These fingerprints refer to that verified parent checkpoint; this final transfer's blob/commit will differ.
 
 Canonical project memory:
 - `APP_NOTES.md`: `9c383ae3b4e2c53b553b3c5825fa7f4a4ada0dcb`
-- `APP_BUILD_REPORT.md`: `f35777a9705963b9b71fbf736970d552f8a8c6aa`
-- `BUILD_NOTES.md`: `5a1a2ac57ddbd131a972e2d2544364f776054bc5`
-- `CHANGELOG.md`: `d732a49506c238b1858c0b081c25a0b6179f1ce8`
+- `APP_BUILD_REPORT.md`: `a9a235a5301b282baa1229f54f624c7c26bd4801`
+- `BUILD_NOTES.md`: `276274d5695e4ff7b2eca327cc9bf1c13ff7b41b`
+- `CHANGELOG.md`: `39c17f1a6b6d4e26f724e4253d532228e198b314`
 - `CHAT_RULES.md`: `9fd735f74edac08404528cc7c61e4a03e96a1e8e`
 - `CHAT_TRANSFER_PROMPTS.md`: `5b252c88235ed92c82b7cb3fab5d02af9584a37c`
 - `DESIGN_NOTES.md`: `e04382659dfdd618de0a156046f140452d275dc7`
@@ -262,11 +262,11 @@ Canonical project memory:
 - `OTA_PROTECTION.md`: `06beb86b749b0f0e14c8cb517e43fe7c0f66a4e1`
 - `OTA_REGRESSION_MEMORY.md`: `4342f3da76cf2962140146fbbe0ff8de5e956f4d`
 - `PROJECT_STATE.md`: `7f29382eea586b0a93e6c31b576b3b739c6e58a3`
-- `README.md`: `713299ef587d3cfd425c84348f4823dbde6fa2c2`
+- `README.md`: `8d59077cf8c8dd89c15c5ca534cceff841296004`
 - `VOLTAGE_TRANSITION_MEMORY.md`: `1c2167659fd0ed8f5db16bf63eb7897344a690ea`
 
 Workflow/configuration:
-- `.github/workflows/jexfyz-app-build-trigger.yml`: `0e400cbdedfd54506ae3ac3255da41580c86d750`
+- `.github/workflows/jexfyz-app-build-trigger.yml`: `187956b1344680eaf89f48fec28fd8a92e77f832`
 - `pubspec.yaml`: `8f558273e21692af9958f914527fdc62d623d63a`
 - `pubspec.lock`: `1e92812bfda2c28244a0556d71d1ec94084acc66`
 - `android/app/build.gradle`: `05a0b863cfc6d73dc3789e364d7000eee0f3db0e`
