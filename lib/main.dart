@@ -56,7 +56,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
-import 'dart:ui' show FrameTiming;
 
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -2164,9 +2163,6 @@ class _DashboardScreenState extends State<DashboardScreen>
   Timer? disconnectRediscoveryTimer;
   StreamSubscription<List<ScanResult>>? disconnectRediscoverySub;
   bool disconnectRediscoveryScanInProgress = false;
-  Timer? fpsTimer;
-  int frameCount = 0;
-  int currentFps = 0;
   bool hotAlertArmed = true;
 
   bool _bleReady = false;
@@ -2241,12 +2237,6 @@ class _DashboardScreenState extends State<DashboardScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     appAutoConnectNotifier.addListener(_handleAutoConnectPreferenceChanged);
-    WidgetsBinding.instance.addTimingsCallback(_recordFrameTimings);
-    fpsTimer = Timer.periodic(const Duration(seconds: 1), (_) {
-      currentFps = frameCount;
-      frameCount = 0;
-      _publishFloatingTelemetry();
-    });
     WidgetsBinding.instance.addPostFrameCallback((_) => _tryAutoConnect());
     try {
       FlutterBluePlus.setOperationQueueMode(OperationQueueMode.perDevice);
@@ -2259,8 +2249,6 @@ class _DashboardScreenState extends State<DashboardScreen>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     appAutoConnectNotifier.removeListener(_handleAutoConnectPreferenceChanged);
-    WidgetsBinding.instance.removeTimingsCallback(_recordFrameTimings);
-    fpsTimer?.cancel();
     disconnectRediscoverySub?.cancel();
     connectionSub?.cancel();
     notificationSub?.cancel();
@@ -2292,10 +2280,6 @@ class _DashboardScreenState extends State<DashboardScreen>
     } else {
       unawaited(_tryAutoConnect());
     }
-  }
-
-  void _recordFrameTimings(List<FrameTiming> timings) {
-    frameCount += timings.length;
   }
 
   // AI-METHOD / AUTO-CONNECT-PREFERENCE-CONTRACT
@@ -2381,7 +2365,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   void _publishFloatingTelemetry() {
     final telemetry = FloatingTelemetry(
-      fps: currentFps > 0 ? currentFps.toString() : '--',
+      // FPS is measured by the native SurfaceFlinger collector while the overlay is active.
       battery: connected && phoneBatteryValid ? phoneBatteryTemp : '--',
       hotside: connected ? hotsideTemp : '--',
       voltage: connected ? voltage : '--',
