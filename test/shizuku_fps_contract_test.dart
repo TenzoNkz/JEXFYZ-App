@@ -34,6 +34,9 @@ void main() {
     expect(floating, contains('shizuku_permission_granted'));
     expect(floating, isNot(contains("config = config.copyWith(selected: Set<String>.from(config.selected)..remove('F'));")));
     expect(floating, contains("refreshMonitor: config.enabled && config.selected.contains('F')"));
+    expect(floating, contains('floatingFpsStatusLabel(_fpsMonitorStatus, lang)'));
+    expect(floating, contains("'no_layer_data'"));
+    expect(floating, contains("'foreground_unknown'"));
     expect(floating, isNot(contains('adb shell pm grant')));
     expect(floating, isNot(contains('adb shell pm revoke')));
     expect(floating, isNot(contains('WirelessAdbPairingBridge')));
@@ -51,8 +54,13 @@ void main() {
     expect(service, contains('MIN_VALID_FPS_SAMPLE_INTERVAL_MS..MAX_VALID_FPS_SAMPLE_INTERVAL_MS'));
     expect(service, contains('fpsMonitorStatus = "sample_invalid"'));
     expect(service, contains('listOf("window", "displays") -> FpsShizukuUserService.OP_READ_FOREGROUND_WINDOW'));
+    expect(service, contains('listOf("window") -> FpsShizukuUserService.OP_READ_FOREGROUND_WINDOW_FULL'));
+    expect(service, contains('val fullWindowResult = runDumpsys("window")'));
+    expect(service, contains('fpsMonitorStatus = "starting"'));
     expect(shizukuService, contains('listOf("window", "displays")'));
+    expect(shizukuService, contains('listOf("window")'));
     expect(shizukuService, contains('OP_READ_FOREGROUND_WINDOW'));
+    expect(shizukuService, contains('OP_READ_FOREGROUND_WINDOW_FULL'));
     expect(service, isNot(contains('android.permission.DUMP')));
     expect(service, isNot(contains('ProcessBuilder(')));
     expect(aidl, contains('Bundle executeFpsOperation(int operation) = 2;'));
