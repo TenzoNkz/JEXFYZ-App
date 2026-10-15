@@ -1,6 +1,16 @@
 # JE X FYZ / JE Cooler — Changelog
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
+
+## 2026-10-16 — Indicator redesign, Floating Monitor controls and foreground screen FPS (source updated; NOT BUILT)
+
+- Source changes committed directly to App main at source checkpoint `00c55d4b42a529bc436e252be1aa1d9a2cf39682`; the recursive tree contains 80 entries and remains untruncated. No PR was opened.
+- Home indicators: disconnected states retain semantic low-state accents instead of black/grey; Battery is Ice Blue through 30°C and Burning Red from 40°C with a smooth intervening palette; Hotside is Ice Blue through 30°C and transitions to Burning Red at the configured Hotside Limit. These are presentation thresholds only and do not change Firmware safety logic. Manual voltage text/accents are 5V red, 9V green, 12V blue.
+- Icon painter redesigned with tighter geometry, bounded effects, clipped energy sheen, smooth activity transitions and phase preservation rather than resetting every icon to its first frame. Fan, Speed, Adaptive, Peltier, Battery, Hotside, Voltage and Bluetooth artwork use the revised painter.
+- Floating Monitor size is now 0.30×–1.00× in 0.05× increments; opacity snaps to 5% increments and removes the 50% midpoint label; Display Style is removed with legacy Icons settings normalized to Letters; vertical rows are left-aligned. Shizuku UI shows only Access Granted/Denied and Grant Shizuku Access / Check Access.
+- FPS sampler no longer blocks JE Cooler, launcher, Settings or Android system UI as foreground targets. It prioritizes focused-window package identity and matches that package's SurfaceFlinger layers. After the initial baseline, a visible layer with no new presented frames reports 0 rather than returning to -- solely due to a stable frame count. Real device/OEM SurfaceFlinger access remains UNVERIFIED.
+- Updated source-contract tests for thermal bounds, voltage/disconnected colors, animation geometry/transitions, Floating Monitor migration/slider steps and generic foreground screen FPS. Flutter/Dart tests and analysis were NOT RUN because this runtime has no Flutter or Dart executables. No Android/App build, APK release or physical-device validation was performed.
+- Latest verified release remains Build #54 / run 38767611593 from source `437e7730dbcaf9666ae4828e546a45343bb4890c`. Its APK/source ZIP do NOT contain these latest changes. The separate command `@Thinking Eksekusi Build App!` is required to run the gated release pipeline. Firmware source, BIN-only artifact repo, Firebase, OTA and physical hardware were not touched.
 ## 2026-10-15 — App Build #54 success; physical Game FPS report remains unverified
 
 - Build #54 / run 38767611593 built App source commit 437e7730dbcaf9666ae4828e546a45343bb4890c. Dart analysis and all 86 Flutter tests passed; Android release APK compiled and passed explicit V1/V2/V3/certificate checks; corresponding source ZIP validated, published and re-downloaded with matching SHA-256. Release jexfyz-latest contains exactly one APK plus one source ZIP.
