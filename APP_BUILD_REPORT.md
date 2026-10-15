@@ -4,7 +4,7 @@ This is the durable evidence ledger for `@Thinking #Build App!`. A replacement B
 
 ## Current report status
 
-- **Latest App Build:** RUNNING — Build #39, [workflow run 38705765370](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38705765370), source commit `b9102695de25f61f0b985cab4cd384b4cda12534`.
+- **Latest attempt:** BLOCKED — Build #39 ([run 38705765370](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38705765370)) passed analysis and all 80 Flutter tests, but APK assembly failed because transitive artifact `com.github.Flyfish233:spake2-java:1.0.5` is absent from configured Maven repositories. Its upstream license is GPL-3.0; do not rerun the auto-publishing Release workflow until the licensing/distribution route is decided.
 - **Build #37 FAILED:** Dart analysis found unused `_drawHeatWave`; the declaration was removed in `402161a9323fed0846f420569ae7118196c38946`. Failure is preserved below.
 - **Build #38 FAILED:** analyzer passed, then 77 tests passed and 3 failed due stale source-string assumptions in Peltier/Fan/voltage-painter tests. The test-contract repair is committed in `91e5f243064b1900d98361a41b88fbe70a042e12` and is now under fresh verification in #39; no tests were deleted and no assertions weakened.
 - **Current intended source:** Home icon animation/Notify status redesign, Wireless ADB pairing service and encrypted identity store, native bridge/manifest/Gradle/Kadb 1.3.0, Color Picker and Floating Monitor changes, and updated regression contracts.
@@ -50,14 +50,14 @@ Add a new dated section at the top of the attempt history (do not overwrite prio
 
 ## Attempt history
 
-### 2026-10-15 — Build #39 — RUNNING (retry after three test-contract fixes)
+### 2026-10-15 — Build #39 — FAILED (Gradle dependency resolution; release BLOCKED)
 
-- **Status:** RUNNING / queued at initial verification.
+- **Status:** FAILED at `:app:mergeReleaseNativeLibs`; no new APK was produced or published. A subsequent automatic release build is BLOCKED until the GPL-3.0 dependency/distribution implications are resolved.
 - **Trigger:** issue [#13](https://github.com/TenzoNkz/JEXFYZ-App/issues/13), owner `TenzoNkz`, exact title `JE X FYZ — BUILD APP TRIGGER`, body token `JEXFYZ_BUILD_TRIGGER_V1`; closed at `2026-10-15T08:27:11Z`, reopened at `08:27:15Z`. The official workflow blob `0e400cbdedfd54506ae3ac3255da41580c86d750` remains issue-open/reopen with owner/title/token validation; no push/PR shortcut.
 - **Run:** [Build #39 / 38705765370](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38705765370), event `issues`, exact main commit `b9102695de25f61f0b985cab4cd384b4cda12534`, created `2026-10-15T08:27:17Z`.
 - **Fixes included:** `402161a9323fed0846f420569ae7118196c38946` removed the obsolete unused `_drawHeatWave` declaration identified by #37's Dart analyzer log. `91e5f243064b1900d98361a41b88fbe70a042e12` updated three stale source-contract assertions: current six-arm Peltier crystal/sparks, Fan blade painter boundary after helper removal, and current bolt-clipped cosine `sweepY` plus squared-sine Bluetooth fade.
 - **Prior failure evidence retained:** #37 stopped on `unused_element`; #38 stopped at Flutter tests with 77 passed, 3 failed; the exact gates and causes are documented immediately below in their respective failed attempt entries.
-- **Pending:** independently confirm Dart analysis and test result, then APK compile, V1/V2/V3/certificate verification, single published Release asset, and re-downloaded asset checksum/signature. No Firmware/BIN/Firebase/OTA/physical device operation.
+- **Confirmed by run log:** security/architecture audit, dependency resolution, Dart analysis, and all 80 Flutter tests passed. APK assembly failed because `com.github.Flyfish233:spake2-java:1.0.5` could not be found in Google Maven, Maven Central, or Flutter's Maven repository; required by Kadb 1.3.0. The artifact is published via JitPack and its upstream LICENSE is GPL-3.0. Signing, certificate check, Release publication and asset re-download gates were skipped. Do not add JitPack and rerun the auto-publishing release until the licensing path is explicitly resolved.
 
 ### 2026-10-15 — Build #38 — FAILED (three stale widget source-contract assertions)
 
