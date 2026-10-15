@@ -3,6 +3,17 @@
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
 
+## 2026-10-15 — Smooth status animation loops and retargetable Fan Speed gauge
+
+- Added a dedicated Fan Speed value-transition controller, separate from the cyclic wobble controller. Each active speed change retargets from the currently rendered gauge level to the latest target over 420 ms; if another target arrives mid-transition, it continues from the current interpolation. OFF animates to 0 over 520 ms and later OFF telemetry changes no longer restart that transition.
+- Replaced the non-integer needle wobble harmonic with integer harmonics so position and slope repeat cleanly at the animation loop boundary.
+- Changed voltage-bolt sheen from a one-way linear sweep that snapped at the repeat boundary to a sinusoidal back-and-forth sweep.
+- Changed Bluetooth ripple opacity to a squared-sine envelope that reaches transparency with zero slope at both ends of each loop, avoiding a flash on ring reset.
+- Added deterministic regression tests for eased interpolation endpoints/midpoints, loop-seamless needle wobble, the voltage sheen, and Bluetooth ripple envelope. Updated the prior Speed source-contract test.
+- Static source/readback checks passed. Flutter tests/analyze and device rendering were NOT run after these edits; no APK contains this source yet. No Build App, Firmware compile, BIN, Firebase, OTA, flash, or hardware action occurred.
+
+
+
 ## 2026-10-14 — Fan coast-down, static Peltier crystal, natural Fan Speed gauge
 
 - Fan now eases through a short period-dependent coast-down when turned OFF, then holds its final rotor pose. Blade and hub colours are unchanged by OFF; the animation stops without dimming the icon.
