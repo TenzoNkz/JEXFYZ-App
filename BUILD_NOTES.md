@@ -19,14 +19,16 @@
 - Production signing certificate SHA-256 in prior build record: `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. Verify against live workflow/config before relying on it.
 - Preserve Android Gradle `versionName "Telegram @horizontalzzz"`.
 
-## Current App Build blocker — hosted runner dispatch (2026-10-15)
+## Latest App Build/Release — SUCCESS (2026-10-15)
+- **Run:** [Build #49 / `38739077916`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916), issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22), source commit `2b2d2886abb66481b7134e5036824f625ab5659d`, job `116435785328`, runner `1000002352`. Every main step passed.
+- **Validation:** architecture/security/license audit, dependency resolution, Dart analysis and all 80 Flutter tests passed; release APK built obfuscated; V1/V2/V3 signing and official certificate verified; corresponding-source ZIP passed integrity/path/license checks; Release upload and re-downloaded APK/source verification passed.
+- **Release target:** `jexfyz-latest` now points at source commit `2b2d2886abb66481b7134e5036824f625ab5659d`. Exactly one APK plus one matching source archive:
+  - `JEXFYZ-release.apk`, asset `643896939`, 56,087,614 bytes, SHA-256 `d365a99812470986de08be4df1bd54254fe1eb1ea1e3739806d03a6503e3c52a`.
+  - `JEXFYZ-corresponding-source.zip`, asset `643896917`, 3,156,558 bytes, SHA-256 `51783b82eae47fc69ab08dd90521e5acdeed0988600042dd1bc3b94f5483dbc8`.
+- **Earlier cause:** Build #48's UI annotation said recent account payments failed or the spending limit needed to be increased. Build #49 now confirms the workflow could allocate a runner and finish; no workflow edits or manual-dispatch trigger were added. The exact off-repo billing fix is not independently observed.
+- **Non-blocking note:** post-job Gradle cache write warned that its token had no writable scopes; the full build job and every release gate still concluded success. This cache warning did not prevent artifact verification or Release publication.
+- **Out of scope:** no Firmware compile/source edit, BIN, Firebase, physical OTA, flash or device operation. App CI does not prove hardware behavior.
 
-- **Current main checkpoint before this report update:** `608a394f1b764ad8759ce240eafc90b6b9dd2c59`, tree `5ed77afe1823e47455569931fc888814601cc36d` (76 entries; recursive tree verified not truncated). This report update records Build #48 without editing the build workflow or App source.
-- **Latest release-trigger run:** [Build #48 / `38735820460`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38735820460), issue #21, source/workflow commit `608a394f1b764ad8759ce240eafc90b6b9dd2c59`. Job `116424719108` failed about four seconds after creation. Live steps returned `[]`; log retrieval returned `BlobNotFound`, so no workflow step ran.
-- **Last build reaching actual steps:** [Build #40 / `38713854518`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38713854518) passed audit/license checks, `flutter pub get`, Dart analyze, all 80 Flutter tests, APK compilation, V1/V2/V3 signing and production certificate check. It made a valid source ZIP but failed one grep because its path was obsolete. The path is corrected in current workflow blob `5c5af03075f87297a31f5ee26f0e42025f05977b`; the complete corrected release run has not yet reached its steps.
-- **Release status:** Build #40 through #48 yielded no new release asset. Tag `jexfyz-latest` still targets Build #36 commit `893393388b99fc6d9e59c420070a159a29e45e9a`; exactly one older APK is published. Current source and matching source archive remain NOT RELEASED.
-- **Next exact step:** no more trigger/rerun without new evidence. Build #48 successfully entered the renamed workflow but failed before steps, mirroring #41–#45. Repository owner should inspect Actions usage/budget/spending cap, Actions permissions/allowed actions, and account security/verification; if normal, send runs #41–#45 and #48 with job IDs to GitHub Support. Retry only once hosted runner dispatch is demonstrably restored or new account-specific evidence justifies it.
-- **Scope boundary:** user-authorized Build #48 trigger ran but no workflow steps executed; no APK/release mutation or source archive was produced. No Firmware compilation, BIN publication, Firebase, OTA, flash or device operation occurred.
 
 ## Validation sequence
 

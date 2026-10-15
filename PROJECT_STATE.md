@@ -2,16 +2,18 @@
 
 Last reconciled: 2026-10-15 (Asia/Jakarta). This file is current-only; refresh the live repository before relying on it. History belongs in CHANGELOG.md; exact pre-cleanup copies are in archive and must not be treated as current.
 
-## Current App Build/QC blocker
-- **Latest release-trigger attempt:** Build #48 / [run 38735820460](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38735820460), source commit `608a394f1b764ad8759ce240eafc90b6b9dd2c59`, triggered by issue [#21](https://github.com/TenzoNkz/JEXFYZ-App/issues/21). Job `116424719108` failed in ~4 seconds; steps endpoint returned `[]` and logs returned `BlobNotFound`. No test, analysis, APK build/signing or release step ran.
-- **Same runner-start symptom:** Builds #41–#45 and new Build #48 failed before any workflow step. Earlier jobs explicitly reported `runner_id=0`; #48 has the same empty-step/no-log pattern, although its runner ID was not exposed by the connected job reader. #46/`38722953908` and #47/`38723038530` were skipped by the guard, not build attempts. Diagnostic probes #1/#2 on Ubuntu 24.04/22.04 also failed pre-step; their workflow has been deleted. Root cause remains unconfirmed.
-- **Last run to execute steps:** Build #40 / [run 38713854518](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38713854518) passed the audit, dependencies, Dart analysis, **80 Flutter tests**, obfuscated APK build, V1/V2/V3 signing and production certificate validation, then failed on the old SPAKE2 source path assertion. The active workflow blob `5c5af03075f87297a31f5ee26f0e42025f05977b` checks the corrected path; no post-fix run has reached steps.
-- **Release remains NOT RELEASED for current source:** tag `jexfyz-latest` still contains only Build #36's older APK (source commit `893393388b99fc6d9e59c420070a159a29e45e9a`); it excludes current Wireless ADB pairing and Home UI changes. Release publication and downloaded APK/source SHA validation have not passed for current main.
-- **Source/license route:** retain Kadb 1.3.0 and Wireless ADB; the official workflow includes the GPL-3.0 notice in APK assets and packages the matching App + third-party source ZIP beside exactly one APK. This route has not passed the complete release gates; see `APP_BUILD_REPORT.md` for run IDs and evidence.
-- **Next action:** Build #48 was the one isolated trigger test using the renamed workflow/title/token, and it still failed before steps without a log. Do not trigger again without new evidence. Inspect Actions usage/spending cap, repository Actions permissions/allowed actions, and account security/verification restrictions. If normal, escalate runs #41–#45 and #48 (job `116424719108`) to GitHub Support. Reattempt only after runner dispatch is demonstrably restored or new account-specific evidence supports one isolated attempt.
+## Latest App Build/QC — SUCCESS (2026-10-15)
+- **Latest run:** [Build #49 / run 38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916), official issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22), source commit `2b2d2886abb66481b7134e5036824f625ab5659d`, job `116435785328`, hosted runner `1000002352`. Run completed success at 2026-10-15T13:06:51Z.
+- **All 80 Flutter tests passed.** Toolchain, architecture/security/license audit, dependency installation, Dart analysis, obfuscated APK assembly, production signing, V1/V2/V3 and certificate checks, source-bundle packaging, Release publication, and re-downloaded asset verification all passed.
+- **Published Release:** [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) targets the exact build source commit. APK: `JEXFYZ-release.apk`, asset `643896939`, 56,087,614 bytes, SHA-256 `d365a99812470986de08be4df1bd54254fe1eb1ea1e3739806d03a6503e3c52a`. Matching source: `JEXFYZ-corresponding-source.zip`, asset `643896917`, 3,156,558 bytes, SHA-256 `51783b82eae47fc69ab08dd90521e5acdeed0988600042dd1bc3b94f5483dbc8`.
+- **Root cause of Build #48:** its GitHub annotation stated recent account payments had failed or the spending limit needed to be increased. Build #49 proves that a hosted runner could again be allocated and the full workflow completed. The actual billing change made outside GitHub's repository configuration was not inspected; no workflow workaround was needed.
+- **Prior build defect now verified fixed:** Build #40's obsolete SPAKE2 source path assertion has passed in #49. The corresponding-source archive contains the required Kadb 1.3.0 / SPAKE2-Java 1.0.5 source and license entries.
+- **Scope boundary:** App CI/release gates are verified. Physical-device behavior, BLE, cooling/safety, actual FPS/overlay behavior, Firmware compilation, OTA, and device flashing are not verified by this run. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+
+
 ## Current release phase
-- **Phase:** DEVELOPMENT + QC / PRE-RELEASE.
-- **Release state:** NOT RELEASED.
+- **App phase:** Build/Release QC completed for App source commit `2b2d2886abb66481b7134e5036824f625ab5659d`; physical-device validation remains unverified.
+- **App Release state:** RELEASED / VERIFIED for source commit `2b2d2886abb66481b7134e5036824f625ab5659d` (Build #49). Firmware state remains governed separately below.
 - **Active Firmware source:** firmware/JEXFYZ-V6.6.ino.
 - **Firmware constant:** FW_VERSION = "V6.6".
 - **Firmware source blob last observed:** f51ba6db5d0e91318f63fea4014bb87f7bf76222.
@@ -78,8 +80,8 @@ Last reconciled: 2026-10-15 (Asia/Jakarta). This file is current-only; refresh t
 
 ## Current App implementation and validation boundary
 - Source implemented on current `main`: staged Color Picker draft with explicit Select/Cancel, seven Home indicator animations and CONNECTED/DISCONNECTED Notify labels, Floating Monitor explicit orientation and live-telemetry replay, native SurfaceFlinger foreground FPS sampling, and notification-driven Wireless ADB pairing with encrypted identity and fixed DUMP grant flow.
-- **CI evidence:** Builds #39 and #40 each ran Dart analysis and all 80 Flutter tests successfully. Build #40 additionally compiled the obfuscated APK and passed V1/V2/V3 signing plus official production-certificate validation. It did not publish because a source-archive path assertion failed; the assertion is corrected in current workflow.
-- **Current release boundary:** Builds #41–#45 and diagnostic probes #1/#2 then failed before the first workflow step with `runner_id=0`; no logs identify the exact root cause. The diagnostic workflow used during those probes was deleted from current main and is not an available workflow. Build #46/#47 were skipped by the release guard. Current source has no verified release APK.
+- **CI evidence:** Build #49 / run `38739077916` passed the security/architecture audit, `flutter pub get`, Dart analysis, all 80 Flutter tests, obfuscated APK build, V1/V2/V3 signing, production-certificate verification, matching source-archive packaging, Release publication and downloaded-asset checks. See `APP_BUILD_REPORT.md` for exact asset digests.
+- **Current release boundary:** Build #48 failed before step 1; its check annotation identified failed recent account payments or an insufficient spending limit. Build #49 then allocated runner `1000002352` and completed the post-fix workflow successfully. The current App source is released via `jexfyz-latest`; physical-device validation remains open.
 - **Physical validation still UNVERIFIED:** Home/Color Picker rendering on a phone; overlay permission and service lifecycle; FPS accuracy on an actual game/OEM; Wireless ADB/mDNS/RemoteInput, DUMP grant/revocation and encrypted identity behavior; BLE/cooling, safety, installed-device signature display and OTA/flash. CI passes do not prove those behaviors.
 - Historical source-only claims that said these tests/APK had never run are superseded by #39/#40 evidence. Do not infer that a later source change or a test file implies a passing run unless the exact current commit is covered by a completed workflow.
 
@@ -88,9 +90,9 @@ Last reconciled: 2026-10-15 (Asia/Jakarta). This file is current-only; refresh t
 - Standalone `Eksekusi!` and `Eksekusi & Build App!` are retired. A Gemini subcommand without `Diskusi!` in the same command is invalid and its substantive request must not be answered.
 - Current build-report register: `APP_BUILD_REPORT.md`. Build attempts, repairs, run links, validation, APK checksum and remaining blockers must be written there for cross-chat continuity.
 - Build App context-limit continuity: use Prompt D in `CHAT_TRANSFER_PROMPTS.md` once as the first message in the replacement Build App chat. It LOADs live state and continues the existing work; no separate recap chat/prompt. Prompt A is only for broad project-memory reconciliation.
-- These source/documentation updates did not trigger App Build; Build #36 is the latest observed successful run, and its APK predates the current Wireless ADB and seven-icon Home animation updates.
+- Build #49 verified the current App source and updated `jexfyz-latest`; subsequent documentation-only updates do not alter the released App source or re-trigger the build.
 - Only active workflow: `.github/workflows/jexfyz-app-build-trigger.yml`; explicit owner/title/token issue trigger only.
-- Latest successful run is Build #36 above; Build #36 passed 77 Flutter tests and release gates for source commit `893393388b99fc6d9e59c420070a159a29e45e9a` only.
+- Latest successful run is Build #49, which passed all 80 Flutter tests and all release gates for source commit `2b2d2886abb66481b7134e5036824f625ab5659d`; Build #36 remains historical.
 - Keep one obfuscated, production-signed ordinary APK named `JEXFYZ-release.apk` on release tag `jexfyz-latest`; no Play Store bundle or Actions artifact.
 - Trigger title: `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`; body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`.
 - Toolchain: Ubuntu 24.04, Java 17, Flutter 3.47.2 stable, Gradle 9.3.1.

@@ -1,10 +1,10 @@
 # JE X FYZ / JE Cooler — Memory Index
 
-Code/source checkpoint before the Build #48 evidence update: `main` HEAD `608a394f1b764ad8759ce240eafc90b6b9dd2c59`, tree `5ed77afe1823e47455569931fc888814601cc36d` (76 entries, recursive tree not truncated). Current App/Firmware source fingerprints are unchanged; this update documents a failed pre-step Actions attempt.
+Current source/release checkpoint as verified on 2026-10-15 (Asia/Jakarta): App `main` was at `2b2d2886abb66481b7134e5036824f625ab5659d` when Build #49 ran (tree `b7ff2f8dac773f323cf6b0d06e59fc443ac642ed`). Build #49 / run `38739077916` completed SUCCESS after all 80 Flutter tests, analysis, obfuscated APK build, V1/V2/V3 and certificate checks, corresponding-source ZIP verification, Release publication and re-downloaded asset validation. The official issue-only trigger and workflow blob `5c5af03075f87297a31f5ee26f0e42025f05977b` were unchanged.
 
-Current release/QC truth is canonical in `APP_BUILD_REPORT.md`: Build #48 / run `38735820460` triggered by issue #21 failed before the first workflow step (~4 seconds, empty step list and `BlobNotFound` log). Previous #41–#45 explicitly reported `runner_id=0`; #48 has the same externally visible no-step/no-log pattern, but the connected job reader did not provide its runner ID. No current-source APK or source archive was released.
+Current release truth is canonical in `APP_BUILD_REPORT.md`. Release `jexfyz-latest` targets source commit `2b2d2886abb66481b7134e5036824f625ab5659d` and has exactly one APK (`JEXFYZ-release.apk`, SHA-256 `d365a99812470986de08be4df1bd54254fe1eb1ea1e3739806d03a6503e3c52a`) plus one matching source bundle (`JEXFYZ-corresponding-source.zip`, SHA-256 `51783b82eae47fc69ab08dd90521e5acdeed0988600042dd1bc3b94f5483dbc8`). Both were downloaded and verified by the workflow.
 
-The current task triggered one authorized App Build attempt via issue #21; run #48 failed before steps and the issue was closed. No APK/source ZIP was produced or published. No Firmware compile, BIN/Firebase/OTA/flash/device operation was performed.
+Build #48 previously failed before step 1, and its UI annotation identified failed recent account payments or an insufficient spending limit. Build #49 allocated runner `1000002352` and completed successfully; the exact external billing action is not independently known. The subsequent commit for documentation/memory updates does not alter the released App source. No Firmware/BIN/Firebase/OTA/flash/device action was performed.
 
 ## New-chat boot order
 1. Read `CHAT_TRANSFER.md` completely.

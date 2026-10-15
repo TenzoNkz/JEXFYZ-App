@@ -3,14 +3,16 @@
 Last reconciled: 2026-10-15 (Asia/Jakarta). This is a working checklist, not authority over live GitHub state. Re-fetch HEAD, tree, current source hashes, Actions and release before acting.
 
 ## Current code and release state
+- **Current App source commit built and released:** `2b2d2886abb66481b7134e5036824f625ab5659d`, via [Build #49 / run 38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916). The subsequent commit is documentation-only and does not change App source or the workflow.
+- **Run result:** SUCCESS, run finished 2026-10-15T13:06:51Z; job `116435785328`, runner `1000002352`. All main workflow steps passed, including all 80 Flutter tests, analyzer, obfuscated APK build, production signing V1/V2/V3 and certificate, corresponding-source ZIP integrity, publication and downloaded-asset checks.
+- **Release:** [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) now targets the current build source revision and contains exactly two verified assets:
+  - APK: `JEXFYZ-release.apk`, asset `643896939`, 56,087,614 bytes; SHA-256 `d365a99812470986de08be4df1bd54254fe1eb1ea1e3739806d03a6503e3c52a`.
+  - Matching source: `JEXFYZ-corresponding-source.zip`, asset `643896917`, 3,156,558 bytes; SHA-256 `51783b82eae47fc69ab08dd90521e5acdeed0988600042dd1bc3b94f5483dbc8`.
+- **Build #48 diagnosis:** its job annotation named failed recent account payments or a spending limit needing an increase. Build #49 allocated a hosted runner and passed without workflow modification. The precise off-repository billing action isn't independently known.
+- **Current workflow unchanged:** `.github/workflows/jexfyz-app-build-trigger.yml`, blob `5c5af03075f87297a31f5ee26f0e42025f05977b`; issue-only trigger and owner/title/token validation are retained. No manual trigger was introduced.
+- **Current App identity:** package `com.horizontalzzz.jexfyz`, version `1.0.0+3`; preserve Gradle `versionName "Telegram @horizontalzzz"`.
+- **Physical validation remains unverified:** installed-phone UI, overlay/FPS behavior, BLE/cooling/safety, Wireless ADB runtime and actual device state were not exercised by CI. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
-Current `main` HEAD before the latest Build #48 report update: `608a394f1b764ad8759ce240eafc90b6b9dd2c59`, tree `5ed77afe1823e47455569931fc888814601cc36d` (76 entries, no truncation).
-- **Latest release-trigger attempt:** [Build #48 / run 38735820460](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38735820460), from issue #21 and source commit `608a394f1b764ad8759ce240eafc90b6b9dd2c59`, failed before step 1. Job `116424719108` finished in ~4 seconds; steps=`[]`, log retrieval=`BlobNotFound`. No app build step executed.
-- **Last real build execution:** Build #40 / [run 38713854518](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38713854518) passed the audit, Flutter dependencies, Dart analysis, 80 Flutter tests, obfuscated APK assembly, V1/V2/V3 signing and production certificate verification, then failed at the SPAKE2 source path assertion. That path is corrected in current workflow blob `5c5af03075f87297a31f5ee26f0e42025f05977b`; Build #48 did not reach the corrected assertion.
-- **Release state:** current source is **NOT RELEASED**. `jexfyz-latest` still has Build #36's old APK (source commit `893393388b99fc6d9e59c420070a159a29e45e9a`, asset ID `642851650`, 54,620,251 bytes, SHA-256 `a5c9d97a3d28f7f711b0cd3c524289bc136cecec56d3b1d88821e43c713e9a13`). Exactly one APK is published; no current source ZIP is published.
-- **Current source identity:** package `com.horizontalzzz.jexfyz`, pubspec `1.0.0+3`; retain Gradle `versionName "Telegram @horizontalzzz"`. `lib/main.dart` `74b6bcc47d69ccf114f710ed73dfcefe93037111`; `lib/floating_monitor.dart` `bd230aee16fa77a0d8d2afb9f1a0c2d80cdcac86`; `lib/app_settings.dart` `c513cd4381ee960cd43612c4ac01e7954f651f62`; `test/widget_test.dart` `98c0c11d1c39b48cb5fc6657c3a0ca7d677b2d1b`; `test/adb_pairing_contract_test.dart` `03609184edc5b2df09f40e62ffe99959ea337bad`; `FloatingMonitorService.kt` `038f12b2ca82255a3b202b10dd770d5caa5b2bbf`; `MainActivity.kt` `f7340e82a12cece063e310546dcba893e6a5a09f`.
-Build #48 was triggered by this user-authorized workstream through issue #21; it failed before steps. Issue #21 was closed after the run.
-- **Next step:** do not re-trigger without new evidence. Inspect Actions usage/spending, repository Actions permissions/allowed actions, and account security/verification; if normal, contact GitHub Support with #41–#45 and #48 (job `116424719108`).
 
 ## Current App motion contract
 
@@ -52,9 +54,9 @@ Build #48 was triggered by this user-authorized workstream through issue #21; it
 
 ## Exact next QC actions (only when separately authorized)
 
-1. Install the #35 APK and inspect MT Manager's signature display; do not conflate the JAR/V1 META-INF warning with separately passing V1/V2/V3 scheme checks.
+1. Install the latest Build #49 APK and inspect MT Manager's signature display. CI verified V1/V2/V3 and the production certificate, but MT Manager's exact on-device signature interpretation is still unverified.
 2. On device verify Fan coast-down/full colour, Peltier crystal OFF pose, repeated/mid-transition Fan Speed target changes, OFF-to-zero, needle wobble seam, voltage sheen and Bluetooth ripple loop boundary.
-3. When separately authorized with `@Thinking Eksekusi Build App!`, run Dart analysis/tests and the official App Build/QC workflow against the updated source, inspect the built APK and record evidence. Pairing source and its enhanced `test/adb_pairing_contract_test.dart` are NOT BUILT/NOT RUN. On device verify notification permission prompt, Wireless Debugging mDNS discovery + RemoteInput pairing code, ADB connection and fixed DUMP grant, identity persistence/revocation/failure fallback; then verify Color Picker staged selection/Select/Cancel/outside/back, foreground FPS layer/parser, variable game FPS, overlay telemetry replay/background survival and connected/disconnected `--`. CI source contracts are not physical-device tests.
+3. Build #49 has already run Dart analysis/tests and the complete official App Build/QC/release gates for source commit `2b2d2886abb66481b7134e5036824f625ab5659d`. Do not run a duplicate build without App source changes or a new explicit request. Pairing/FPS/overlay still need physical-device QA. On device verify notification permission prompt, Wireless Debugging mDNS discovery + RemoteInput pairing code, ADB connection and fixed DUMP grant, identity persistence/revocation/failure fallback; then verify Color Picker staged selection/Select/Cancel/outside/back, foreground FPS layer/parser, variable game FPS, overlay telemetry replay/background survival and connected/disconnected `--`. CI source contracts are not physical-device tests.
 4. Do not reopen Firmware tasks unless the user explicitly changes their V6.6 final acceptance.
 
 ## Canonical references

@@ -2,18 +2,19 @@
 
 ## 0. Snapshot scope and evidence boundary
 
-Snapshot reconciled from live GitHub on 2026-10-15 (Asia/Jakarta). This file is the full boot snapshot for the canonical project and is refreshed last in the memory update. The verified repository checkpoint immediately before the authorized Build #48 attempt was:
+Snapshot reconciled from live GitHub on 2026-10-15 (Asia/Jakarta). This snapshot records the verified successful Build #49 and is refreshed last in the memory update. The build used this App source checkpoint before the following documentation-only commit:
 
 - App repo: TenzoNkz/JEXFYZ-App
 - Branch: main
-- Parent HEAD: 608a394f1b764ad8759ce240eafc90b6b9dd2c59
-- Parent root tree: 5ed77afe1823e47455569931fc888814601cc36d — 76 tree entries / 55 blobs; recursive response not truncated
-- Branches: 5; open PRs: 0
-- Active App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml, current workflow blob 5c5af03075f87297a31f5ee26f0e42025f05977b
+- App source at build time: `2b2d2886abb66481b7134e5036824f625ab5659d`
+- Parent tree at build time: `b7ff2f8dac773f323cf6b0d06e59fc443ac642ed` — 76 tree entries; recursive response not truncated
+- Active App Build workflow: `.github/workflows/jexfyz-app-build-trigger.yml`, blob `5c5af03075f87297a31f5ee26f0e42025f05977b`
+- Successful run: [Build #49 / 38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916), trigger issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22), job `116435785328`, runner `1000002352`. All main steps succeeded, including 80 tests, obfuscated APK, production signing, source ZIP, publication and downloaded-asset verification.
+- App Release `jexfyz-latest` points to the exact source commit at build time and contains `JEXFYZ-release.apk` (asset `643896939`, 56,087,614 bytes, SHA-256 `d365a99812470986de08be4df1bd54254fe1eb1ea1e3739806d03a6503e3c52a`) plus `JEXFYZ-corresponding-source.zip` (asset `643896917`, 3,156,558 bytes, SHA-256 `51783b82eae47fc69ab08dd90521e5acdeed0988600042dd1bc3b94f5483dbc8`).
 - App version/package: 1.0.0+3 / com.horizontalzzz.jexfyz
-- Active firmware source in the App repo: firmware/JEXFYZ-V6.6.ino; embedded FW_VERSION = "V6.6"
-- Artifact repo: TenzoNkz/JEXFYZ-Firmware, main HEAD cc0a0ae32b826753525c3f2a4442526648cef631, root contains only JEXFYZ.cpp.bin
-- This snapshot captures authorized Build #48 / run 38735820460, triggered by issue #21 on source commit 608a394f1b764ad8759ce240eafc90b6b9dd2c59. Job 116424719108 failed before steps; steps=[] and log retrieval returned BlobNotFound. No build/test/signing/release stage ran. Re-fetch live HEAD and blob hashes on the next chat; this file intentionally does not store its own future blob SHA.
+- Active firmware source in the App repo: `firmware/JEXFYZ-V6.6.ino`; embedded `FW_VERSION = "V6.6"`
+- Artifact repo: TenzoNkz/JEXFYZ-Firmware remains BIN-only. No Firmware/BIN/Firebase/OTA/flash/device operation was performed.
+
 
 Evidence terms:
 - CURRENT / VERIFIED means directly checked against live source/repo/CI evidence.
@@ -27,35 +28,27 @@ Evidence terms:
 
 ## 1. Current release/build state — read first for App Build work
 
-### App Build evidence, in order
-
-- Build #48 — run `38735820460`, https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38735820460, source/workflow commit `608a394f1b764ad8759ce240eafc90b6b9dd2c59`, trigger issue [#21](https://github.com/TenzoNkz/JEXFYZ-App/issues/21). Job `116424719108` failed about four seconds after creation, the live steps endpoint returned `[]`, and log fetch returned `BlobNotFound`; no workflow build/test step ran. The issue was closed after the run. This is consistent with the earlier pre-runner failure pattern but its runner_id was not exposed.
-- Build #40 — APK compiled/signed; publication blocked: run 38713854518, source commit d638f6941d9ac16a228f4b78ed001ca2e925f716. Security/architecture/license audit, Flutter dependency install, Dart analysis, all 80 Flutter tests, obfuscated APK assembly, V1/V2/V3 signing, and official production-certificate verification passed. The workflow made JEXFYZ-corresponding-source.zip and unzip -t passed. It then stopped because a grep asserted the wrong SPAKE2 Java source path. Expected old path was android/src/main/java/io/github/muntashirakon/crypto/spake2/Spake2Context.java; actual tag-1.0.5 file is src/main/java/com/flyfish233/crypto/spake2/Spake2Context.java. Release upload and post-download checksum/signature gates were skipped.
-- Path assertion correction remains present in the renamed workflow blob 5c5af03075f87297a31f5ee26f0e42025f05977b for the correct SPAKE2 source path. The repair is source-level verified by reading the workflow, but a full post-fix run has not yet reached that step.
-- Builds #41–#45 — no runner/zero steps: these failed before the workflow executed a step, so no Dart tests/APK/signing/source archive/release ran in those attempts:
-  - #41: run 38715261426, job 116356817322 (attempt 2)
-  - #42: run 38715656340, job 116357869559 (attempt 2)
-  - #43: run 38715911768, job 116358423340
-  - #44: run 38718952314, jobs 116368449764 and 116368665443 (attempts 1/2)
-  - #45: https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38719397780, job 116369943522
-  All observed failures finished in about 2–4 seconds with runner_id=0, blank/empty runner metadata and steps=[]. No usable logs were created. This is consistent with hosted-runner dispatch/provisioning or account/repository restrictions, but the actual cause is unknown. GitHub Status was reported operational during a controlled attempt; that does not prove this repository/account configuration is healthy.
-- Separate diagnostic probes (HISTORICAL; workflow deleted): diagnostic run #1 38722954080 used ubuntu-24.04; diagnostic run #2 38723038511 used ubuntu-22.04. Both failed before step 1 with runner_id=0 and no useful logs. The file .github/workflows/hosted-runner-diagnostic.yml was subsequently deleted from current main by commit 41627c26189706bc9f4aabad15a83857cda55229; do not tell the next chat to run that workflow because it is not present. The result does not identify a root cause.
-- Release trigger runs #46 (38722953908) and #47 (38723038530) were skipped by the release workflow's owner/title/token guard; they were not App builds.
-- Build #39: run 38705765370, https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38705765370, passed audit/dependency resolution/Dart analysis/all 80 Flutter tests, then failed at :app:mergeReleaseNativeLibs because com.github.Flyfish233:spake2-java:1.0.5 could not be resolved. android/build.gradle now adds JitPack narrowly scoped to com.github.Flyfish233:spake2-java (blob bb8c0caf26927bd614bb9b05ef79366424063663), and Build #40 later proved that dependency resolution and APK compilation/signing worked.
-- Build #36 — last successful release: run 38689044316, https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38689044316, built source commit 893393388b99fc6d9e59c420070a159a29e45e9a. It passed security/architecture audit, dependencies, Dart analysis, 77 Flutter tests, obfuscated APK build, V1/V2/V3 signing, official certificate checks, release publication, re-download checksum comparison and downloaded signature verification. It validates only that older source revision, not later Wireless ADB or Home UI commits.
+### Latest verified App Build: SUCCESS
+- Build #49 — [run 38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916); job `116435785328`, runner `1000002352`; source commit `2b2d2886abb66481b7134e5036824f625ab5659d`; trigger issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22). Run completed SUCCESS at 2026-10-15T13:06:51Z.
+- All main steps passed: setup/toolchain, security/architecture audit, `flutter pub get`, Dart analysis, **80 Flutter tests**, obfuscated APK, V1/V2/V3 signing, production-certificate validation, matching source bundle packaging/integrity checks, release upload and downloaded asset verification.
+- Previous Build #48 was blocked before step 1. Its screenshot annotation explicitly said recent account payments had failed or the spending limit needed increasing. Build #49 allocated a hosted runner and passed the complete workflow without changing the workflow file or adding manual dispatch. The exact billing action outside the repository is not independently known.
+- Current official workflow is unchanged: `.github/workflows/jexfyz-app-build-trigger.yml`, blob `5c5af03075f87297a31f5ee26f0e42025f05977b`. Trigger remains issue `opened/reopened`, repository-owner gate, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. No push/PR/manual trigger was added.
 
 ### Current published artifact
+- Release: [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest)
+- Exact App source commit used for this release: `2b2d2886abb66481b7134e5036824f625ab5659d`. The following documentation-only commit leaves App source/workflow unchanged.
+- APK: [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk), asset ID `643896939`, 56,087,614 bytes, SHA-256 `d365a99812470986de08be4df1bd54254fe1eb1ea1e3739806d03a6503e3c52a`.
+- Matching source: [`JEXFYZ-corresponding-source.zip`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip), asset ID `643896917`, 3,156,558 bytes, SHA-256 `51783b82eae47fc69ab08dd90521e5acdeed0988600042dd1bc3b94f5483dbc8`.
+- The workflow downloaded both assets again; the APK hash, production signing identity and V1/V2/V3 signatures and source archive/commit were verified. The signing certificate SHA-256 is `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`.
 
-- Release tag: https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest
-- Target commit: 893393388b99fc6d9e59c420070a159a29e45e9a (Build #36)
-- Exactly one asset: JEXFYZ-release.apk, asset ID 642851650, 54,620,251 bytes
-- SHA-256: a5c9d97a3d28f7f711b0cd3c524289bc136cecec56d3b1d88821e43c713e9a13
-- Production certificate SHA-256: dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0
-- Current source is NOT RELEASED. Existing APK predates the Wireless ADB pairing and latest Home UI source. No current matching source ZIP has been published.
+### Historical build evidence / remaining boundaries
+- Build #40 (run `38713854518`) passed its analyzer/tests/APK/signing but failed on the stale SPAKE2 source-path assertion; Build #49 proves the corrected path/bundle pipeline passes.
+- Builds #41–#48 include prior pre-step failures; #48's visible error was a billing/spending restriction. Do not describe runner allocation as unresolved for Build #49; its runner successfully ran.
+- CI does **not** prove physical-phone UI, FPS/overlay, BLE, cooling/safety, Firmware compile, installed-device state or OTA. These require separate physical validation. Do not run Firmware/BIN/Firebase/OTA/flash/device operations without explicit separate authorization.
 
-### Exact next action for the separate Build App workstream
+### Next action for App Build work
+Build #49 and its Release gates are complete. Do not duplicate the build without App source/workflow changes or a new explicit request. If current source later changes, use `@Thinking Eksekusi Build App!`, trigger only through the same validated issue workflow, and require every test/signing/source/release/download gate to pass. Physical-device validation remains a separate task.
 
-Do not trigger from this general recovery chat and do not repeatedly reopen the issue without new information. In the dedicated Build App chat, inspect GitHub account Actions usage/minutes/budget/spending cap, repository Settings → Actions permissions/allowed actions, account security/verification restrictions, and check-run annotations where accessible. If those are normal, escalate the specific job/run IDs above to GitHub Support to investigate hosted-runner dispatch. Build #48 is the latest trigger attempt and it failed before steps. Do not re-trigger without new evidence. First inspect Actions usage/spending, repository Actions permissions/allowed actions, and account security/verification; if normal, contact GitHub Support with run/job IDs for #41–#45 and #48. Once runner dispatch is demonstrably restored, use @Thinking Eksekusi Build App!, trigger with a new issue using the current exact title/token, repair any actual source/archive failure shown by logs, and require every release gate to pass before calling the build successful. Do not use the deleted diagnostic workflow.
 
 ## 2. Repository boundaries and current inventory
 
@@ -219,18 +212,16 @@ Executed:
 
 The canonical map is MEMORY_INDEX.md. At this reconciliation, prepared blobs for the documentation commit are listed below; their final live SHA must be re-fetched after commit. These values were obtained from GitHub create_blob responses, not inferred filenames.
 
-### Docs refreshed by the latest Build #48 record
-- APP_BUILD_REPORT.md: 041aa67f836d81843511ce2f8be5f2cfd2175fc8
-- BUILD_NOTES.md: ece12faf0659f9c865da7b77fa9339ea074a36c0
-- CHANGELOG.md: 79a0140502c2edd0bd198413a8a53568baff2f31
-- HANDOVER.md: f56fe6a1d92a5dae4a8a6d0af28e05400b96464a
-- MEMORY_INDEX.md: 9e569e103b2bb3f09a496750e8423879fcb4170e
-- PROJECT_STATE.md: d3bce30d06223c1112c5874493c3ae4b7f6e671c
-- README.md: 1c7c8fb01f2c41b750fffa86df0d92dece588f19
-- CHAT_RULES.md: 1547399a12444d2ec2be65385ddc901a6eb65c7f
-- CHAT_TRANSFER_PROMPTS.md: ccb473293fefd6d166f79b634724235ea6615f1a
-- .github/workflows/jexfyz-app-build-trigger.yml: 5c5af03075f87297a31f5ee26f0e42025f05977b
-- CHAT_TRANSFER.md: this is the final write; its future hash is intentionally not embedded in itself.
+### Docs refreshed by the Build #49 success record
+- APP_BUILD_REPORT.md: ec4b63561395c3289e288781a415e26608d1e788
+- BUILD_NOTES.md: f5076623bdfb684555a72db6cefe567fdfa00ead
+- CHANGELOG.md: 22c5323ddfef60acdd53d53d0dcbd09f3bf80ee7
+- HANDOVER.md: 5462b95fe0a8b4bad2d68c50680accdff5b46ca4
+- MEMORY_INDEX.md: 6f1f2ff01369dae56a2898591d9a1dd6e4e9bc11
+- PROJECT_STATE.md: c7382c97d59a02b2e9cb85bc66576723e2d8b14c
+- CHAT_TRANSFER.md: this is the final write; its future blob SHA is intentionally not embedded in itself.
+- `.github/workflows/jexfyz-app-build-trigger.yml` remains unchanged, blob `5c5af03075f87297a31f5ee26f0e42025f05977b`.
+- App source commit used by Build #49: `2b2d2886abb66481b7134e5036824f625ab5659d`; the documentation commit does not alter the released source.
 
 ### Canonical documents unchanged in this reconciliation (parent hashes)
 - APP_NOTES.md: 48edcb1106a9d3968efd3fe201cef325661189bb
@@ -258,4 +249,4 @@ The canonical map is MEMORY_INDEX.md. At this reconciliation, prepared blobs for
 
 ## 11. Final operation state
 
-This snapshot records current source/test truth at parent `608a394f1b764ad8759ce240eafc90b6b9dd2c59` and the authorized Build #48 attempt. The issue-only workflow is named JE X FYZ Eksekusi Build App and uses title JE X FYZ — EKSEKUSI BUILD APP TRIGGER plus token JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1. Issue #21 triggered run 38735820460 and was closed after it failed before the first step; its job step list was empty and log fetch returned BlobNotFound. Build #40 is still the last run that executed tests/build steps; its SPAKE2 source path assertion has been corrected but never passed in a full post-fix run. Current release remains old Build #36 and current main is NOT RELEASED. Diagnose Actions usage/policy/security and escalate runner dispatch to GitHub Support before another trigger. No App/Firmware source, BIN, Firebase, OTA, flash, device or release asset was changed.
+This snapshot records the verified Build #49 completion for App source commit `2b2d2886abb66481b7134e5036824f625ab5659d`. Build #49 / run `38739077916`, job `116435785328`, runner `1000002352`, completed SUCCESS after all 80 Flutter tests, APK build, production signing, matching source archive, release publication and downloaded-asset verification. Release `jexfyz-latest` contains exactly one APK and one matching source ZIP with hashes recorded in §1. Build #48's annotation identified the previous pre-step blocker as failed recent account payments or an insufficient spending limit; the current workflow is unchanged and no manual trigger was added. This following docs-only commit does not change the released App source. Physical-device behavior remains unverified. No Firmware/BIN/Firebase/OTA/flash/device operation was performed.

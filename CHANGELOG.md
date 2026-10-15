@@ -2,14 +2,15 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
-## CURRENT CHECKPOINT — Build #48 blocked before first step (2026-10-15)
+## CURRENT CHECKPOINT — Build #49 successful App release (2026-10-15)
 
-- The user authorized the end-to-end App Build command. The current issue-only workflow was triggered once with issue [#21](https://github.com/TenzoNkz/JEXFYZ-App/issues/21), correct title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, and token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; the issue was closed after the workflow completed.
-- Build #48 / [run 38735820460](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38735820460), source/workflow commit `608a394f1b764ad8759ce240eafc90b6b9dd2c59`, failed about four seconds after start. Job `116424719108` returned no steps and its log fetch returned `BlobNotFound`. No tests, Dart analysis, APK compilation/signing, source archive, publication or download verification ran.
-- Builds #41–#45 previously exposed `runner_id=0`, empty runner/group metadata and no steps. Build #48 has the same no-step/no-log pattern, but its runner ID was not exposed by the connected job reader; the root cause remains unknown.
-- Build #40 passed audit/dependencies, Dart analysis, all 80 Flutter tests, obfuscated APK assembly, V1/V2/V3 signing and production certificate verification, but failed an obsolete SPAKE2 source-archive path assertion. The active workflow now contains the corrected path; Build #48 never reached that step, so a full post-fix pass is still unverified.
-- No new APK/source ZIP was published. Release `jexfyz-latest` still targets old Build #36 source and current main remains NOT RELEASED. Next action is external: verify Actions usage/spending, repository Actions permissions/allowed actions, and account security/verification; if normal, contact GitHub Support using runs #41–#45 and #48 with job IDs. Do not repeat the unchanged trigger without new evidence.
-- This execution did not edit App/Firmware source or the workflow and did not perform any Firmware/BIN/Firebase/OTA/flash/device operation.
+- Official issue-triggered [Build #49 / run 38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916) used issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22) and built source commit `2b2d2886abb66481b7134e5036824f625ab5659d`. Job `116435785328`, hosted runner `1000002352`; run completed SUCCESS at 2026-10-15T13:06:51Z.
+- Security/architecture/license audit, dependency resolution, Dart analysis, all **80 Flutter tests**, obfuscated APK compilation, V1/V2/V3 signing and official production certificate checks all passed. The source ZIP passed integrity/content/path/license assertions. Release publication and re-downloaded APK/source verification passed; all main workflow steps succeeded.
+- Release `jexfyz-latest` now targets the exact built source revision and has two assets only: `JEXFYZ-release.apk` (asset `643896939`, 56,087,614 bytes, SHA-256 `d365a99812470986de08be4df1bd54254fe1eb1ea1e3739806d03a6503e3c52a`) and `JEXFYZ-corresponding-source.zip` (asset `643896917`, 3,156,558 bytes, SHA-256 `51783b82eae47fc69ab08dd90521e5acdeed0988600042dd1bc3b94f5483dbc8`). The downloaded APK/source were independently verified by the workflow.
+- Build #48's job annotation identified the pre-step blocker as recent account payment failure or a spending limit that needed increasing. Build #49 subsequently allocated a hosted runner and completed the full release pipeline without changing the workflow or adding manual dispatch; the precise external billing action is unknown.
+- Workflow remains issue-open/reopen only, guarded by repository owner, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. No push/PR/manual trigger was added.
+- CI does **not** verify physical-phone UI, BLE/cooling/safety, FPS/overlay, installed Firmware or OTA behavior. No Firmware source/BIN/Firebase/OTA/flash/device operation occurred.
+
 
 ## PREVIOUS CHECKPOINT — Command protocol and App build trigger rename (2026-10-15)
 
