@@ -6,9 +6,9 @@ Last reconciled: 2026-10-15 (Asia/Jakarta). Re-fetch live `main` and source hash
 
 - Active Firmware source: `firmware/JEXFYZ-V6.6.ino`; `FW_VERSION = "V6.6"`; blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`.
 - **User acceptance:** Firmware V6.6 is final/correct by user report after successful compilation and two successful Online OTA updates using the same V6.6 version. Do not reopen Firmware work without explicit request/authorization.
-- Active App source: `lib/main.dart`, blob `a1818d281fdbea900bf9cde5b83c40d09d61dcc3`; latest widget test `test/widget_test.dart`, blob `4b7bf68f3c73d6ffe80509ccb75ce6e08607b020`; package `com.horizontalzzz.jexfyz`; pubspec `1.0.0+3`; preserve Gradle `versionName "Telegram @horizontalzzz"`.
-- Latest successful Build App: run `38566673160` on earlier commit `4dccbd7eedcae4a8d1a9cd2b41d5cfda9055416b`; Dart analyze/tests passed and V1/V2/V3 verified true for the built APK/downloaded asset. Release SHA-256 `f7ae531834c17fea0dd187307e2e8961dca65aa87b96754082b41475bfc9c845`. Logs warn `META-INF/services/a1` and `META-INF/services/b1` are not protected by JAR/V1. The current-source animation edits post-date that build.
-- Latest animation changes: smooth Fan Speed retarget from the current visual level to each new target (420 ms), smooth OFF-to-zero (520 ms), loop-seamless wobble, sinusoidal voltage sheen and Bluetooth ripples with squared-sine fade at repeat boundaries. Existing Fan coast-down and Peltier no-box/full-colour OFF behavior retained. Static checks passed; current-source Flutter tests/analyze and device rendering were not run.
+- Active App source: `lib/main.dart`, blob `f4ee1e9b9e74f103e0f362db813dea642f285470`; latest widget test `test/widget_test.dart`, blob `4b7bf68f3c73d6ffe80509ccb75ce6e08607b020`; package `com.horizontalzzz.jexfyz`; pubspec `1.0.0+3`; preserve Gradle `versionName "Telegram @horizontalzzz"`.
+- Latest successful Build App: run `38669526891` (Build #35) on code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`; Dart analyze and all 74 Flutter tests passed, APK build/publication and downloaded-asset verification passed, and V1/V2/V3 all verified true. Release SHA-256 `77e57ece6c194ec97ce9f4e72d379f848173cd2cf905f66a74e6b037ad82e5c1`. JAR/V1 logs still warn that various META-INF entries (including services/a1 and services/b1) are not protected; physical install/MT Manager validation remains open.
+- Latest animation changes: smooth Fan Speed retarget from the current visual level to each new target (420 ms), symmetric cubic smoothstep interpolation with exact 0.5 midpoint, smooth OFF-to-zero (520 ms), loop-seamless wobble, sinusoidal voltage sheen and Bluetooth ripples with squared-sine fade at repeat boundaries. Existing Fan coast-down and Peltier no-box/full-colour OFF behavior retained. Build #35 passed Dart analyze and all 74 Flutter tests; device rendering has not been verified.
 - No open PRs at last live check. Work directly on `main`; artifact repository `TenzoNkz/JEXFYZ-Firmware` must contain only `JEXFYZ.cpp.bin`.
 - Preserve App constraints: one-second Android battery heartbeat, five-second Firmware freshness TTL, no standalone Battery Protection Guard UI, and one-App/one-cooler exclusive pairing as an unverified design intent.
 
@@ -22,7 +22,7 @@ Last reconciled: 2026-10-15 (Asia/Jakarta). Re-fetch live `main` and source hash
 
 ## Exact next QC actions (only when authorized)
 
-1. Only after explicit `@Thinking Build App!` or `@Thinking Eksekusi & Build App!`, run the manual App Build workflow on the current `main`; record Dart analyze/test results, signing V1/V2/V3, certificate digest and release asset SHA.
+1. Latest authorized Build #35 is complete; next validation is device-side install/rendering and signature display. Only trigger another App Build after an explicit new `@Thinking Build App!` or `@Thinking Eksekusi & Build App!` command.
 2. Install the new APK and inspect the signature in MT Manager. Previous CI verified V1/V2/V3 but warned `META-INF/services/b1` is not protected by JAR/V1; earlier MT Manager result is still unverified.
 3. Check Fan coast-down/full colour; Peltier box-free/no-fade OFF; Fan Speed interpolation through several target changes including a second change mid-transition; ON wobble seam; OFF smoothly to 0; and voltage/Bluetooth loop boundaries.
 4. Flutter tests/analyze and device rendering after source blob `a1818d281fdbea900bf9cde5b83c40d09d61dcc3` and test blob `4b7bf68f3c73d6ffe80509ccb75ce6e08607b020` have not been run yet.
@@ -41,10 +41,10 @@ Use `MEMORY_INDEX.md` to find canonical notes. Use `CHANGELOG.md` for history on
  
 ## Latest UI and signature change-set boundary (2026-10-15)
 
-- Current App source blob: `a1818d281fdbea900bf9cde5b83c40d09d61dcc3`; widget regression test blob: `4b7bf68f3c73d6ffe80509ccb75ce6e08607b020`.
+- Current App source blob: `f4ee1e9b9e74f103e0f362db813dea642f285470`; widget regression test blob: `4b7bf68f3c73d6ffe80509ccb75ce6e08607b020`.
 - Fan OFF coast-down, Peltier crystal/no box and Speed OFF→0 remain in place. Fan Speed visual value now has its own retargetable controller: new values interpolate from the current displayed level over 420 ms, including when another value arrives mid-transition. OFF targets 0 over 520 ms; its ON needle wobble uses integer harmonics for a seamless loop.
 - Voltage sheen now sweeps back-and-forth sinusoidally; Bluetooth ring opacity uses a squared-sine envelope that fades to zero with zero slope at loop boundaries. Those changes target visible repeat-loop resets.
 - Added deterministic regression tests for value interpolation/easing, wobble endpoint continuity and voltage/Bluetooth loop contracts, and updated the prior Speed source-contract test. Static checks passed, but Flutter tests/analyze and device rendering have NOT run for these changes.
-- Latest successful Build App run remains `38566673160` on older source commit `4dccbd7eedcae4a8d1a9cd2b41d5cfda9055416b`. It verified V1/V2/V3 but logged JAR/V1 warnings for `META-INF/services/a1` and `META-INF/services/b1`; the MT Manager label still needs a device recheck.
-- No App Build, Firmware compile, BIN replacement, Firebase update, OTA/flash or hardware operation was performed.
+- Latest successful Build App is run `38669526891` / Build #35 on code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`. All 74 Flutter tests/analyze passed; built and re-downloaded APK passed V1/V2/V3 and matched release SHA-256 `77e57ece6c194ec97ce9f4e72d379f848173cd2cf905f66a74e6b037ad82e5c1`. JAR/V1 warnings for META-INF entries remain; MT Manager's on-device label still needs checking.
+- App Build #35 was completed. No Firmware compile, BIN replacement, Firebase update, OTA/flash or physical hardware operation was performed.
 
