@@ -2,18 +2,19 @@
 
 ## 0. Snapshot scope and evidence boundary
 
-Snapshot reconciled from live GitHub on 2026-10-15 (Asia/Jakarta). This snapshot records the verified successful Build #49 and is refreshed last in the memory update. The build used this App source checkpoint before the following documentation-only commit:
+Snapshot reconciled from live GitHub on 2026-10-15 (Asia/Jakarta). The last successful Release is Build #49; current App source advanced afterward and is not built/released yet.
 
 - App repo: TenzoNkz/JEXFYZ-App
-- Branch: main
-- App source at build time: `2b2d2886abb66481b7134e5036824f625ab5659d`
-- Parent tree at build time: `b7ff2f8dac773f323cf6b0d06e59fc443ac642ed` — 76 tree entries; recursive response not truncated
-- Active App Build workflow: `.github/workflows/jexfyz-app-build-trigger.yml`, blob `5c5af03075f87297a31f5ee26f0e42025f05977b`
-- Successful run: [Build #49 / 38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916), trigger issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22), job `116435785328`, runner `1000002352`. All main steps succeeded, including 80 tests, obfuscated APK, production signing, source ZIP, publication and downloaded-asset verification.
-- App Release `jexfyz-latest` points to the exact source commit at build time and contains `JEXFYZ-release.apk` (asset `643896939`, 56,087,614 bytes, SHA-256 `d365a99812470986de08be4df1bd54254fe1eb1ea1e3739806d03a6503e3c52a`) plus `JEXFYZ-corresponding-source.zip` (asset `643896917`, 3,156,558 bytes, SHA-256 `51783b82eae47fc69ab08dd90521e5acdeed0988600042dd1bc3b94f5483dbc8`).
-- App version/package: 1.0.0+3 / com.horizontalzzz.jexfyz
-- Active firmware source in the App repo: `firmware/JEXFYZ-V6.6.ino`; embedded `FW_VERSION = "V6.6"`
-- Artifact repo: TenzoNkz/JEXFYZ-Firmware remains BIN-only. No Firmware/BIN/Firebase/OTA/flash/device operation was performed.
+- Branch: main; current source implementation commit: `4d0295dc67163b4950ffa5492236d03c1201311e`, tree `b5505ffe9af18e76af95104df0a4021602a1029e`
+- Current source blobs: `lib/main.dart` `4d95ae799c4c86ae65c1fdbe2cf6d37eeee68d58`; `test/widget_test.dart` `9bca8deb33074af3f0c91551e5d522fa4bfc6c0a`
+- Latest successful App build: [Build #49 / 38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916), source commit `2b2d2886abb66481b7134e5036824f625ab5659d`, issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22), job `116435785328`, runner `1000002352`. All 80 tests and release gates passed for that older source.
+- Latest Release: [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) has the Build #49 APK and matching source ZIP; neither contains current source commit `4d0295dc67163b4950ffa5492236d03c1201311e`.
+- Active App Build workflow: `.github/workflows/jexfyz-app-build-trigger.yml`, blob `5c5af03075f87297a31f5ee26f0e42025f05977b`; issue-only, owner/title/token gated; no manual trigger.
+- Current changes: thermal Battery segments/colors/flames driven by actual temperature; Hotside limit-driven color/fire; red/green/blue graduated Voltage; smooth icon/text color transitions; Home/menu Peltier/Fan/Adaptive/Fan Speed parameters synchronized. Battery-temperature reading and firmware heartbeat preserved.
+- Three thermal helper tests and a voltage painter source-contract update were committed, but have NOT RUN. Next authorized action for validation/release is `@Thinking Eksekusi Build App!`.
+- App version/package: 1.0.0+3 / com.horizontalzzz.jexfyz.
+- Firmware repo TenzoNkz/JEXFYZ-Firmware remains BIN-only. No Firmware/BIN/Firebase/OTA/flash/device operation was performed.
+
 
 
 Evidence terms:
@@ -26,28 +27,20 @@ Evidence terms:
 - NOT RELEASED means no verified released artifact contains the current source.
 - A test contract is not proof a test ran; App CI is not Arduino firmware compilation; successful APK compilation is not release publication; visual LED feedback does not identify a specific HTTP/TLS error.
 
-## 1. Current release/build state — read first for App Build work
+## 1. Current source, Release state, and next App Build action
 
-### Latest verified App Build: SUCCESS
-- Build #49 — [run 38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916); job `116435785328`, runner `1000002352`; source commit `2b2d2886abb66481b7134e5036824f625ab5659d`; trigger issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22). Run completed SUCCESS at 2026-10-15T13:06:51Z.
-- All main steps passed: setup/toolchain, security/architecture audit, `flutter pub get`, Dart analysis, **80 Flutter tests**, obfuscated APK, V1/V2/V3 signing, production-certificate validation, matching source bundle packaging/integrity checks, release upload and downloaded asset verification.
-- Previous Build #48 was blocked before step 1. Its screenshot annotation explicitly said recent account payments had failed or the spending limit needed increasing. Build #49 allocated a hosted runner and passed the complete workflow without changing the workflow file or adding manual dispatch. The exact billing action outside the repository is not independently known.
-- Current official workflow is unchanged: `.github/workflows/jexfyz-app-build-trigger.yml`, blob `5c5af03075f87297a31f5ee26f0e42025f05977b`. Trigger remains issue `opened/reopened`, repository-owner gate, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. No push/PR/manual trigger was added.
+### Current source — IMPLEMENTED / NOT RUN / NOT RELEASED
+- Source commit `4d0295dc67163b4950ffa5492236d03c1201311e`; main Dart blob `4d95ae799c4c86ae65c1fdbe2cf6d37eeee68d58`; widget test blob `9bca8deb33074af3f0c91551e5d522fa4bfc6c0a`. Thermal Battery segments/color/fire, Hotside live-limit color/fire, graduated 5V/9V/12V energy effect, smooth shared Home icon/text color tweening, and matching submenu Fan/Peltier/Adaptive/Fan Speed parameters are committed. Tests/analyzer have not run on this revision.
+- Battery temperature acquisition and the existing one-second firmware heartbeat remain unchanged. Visual changes do not modify Firmware safety behavior. No firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
-### Current published artifact
-- Release: [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest)
-- Exact App source commit used for this release: `2b2d2886abb66481b7134e5036824f625ab5659d`. The following documentation-only commit leaves App source/workflow unchanged.
-- APK: [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk), asset ID `643896939`, 56,087,614 bytes, SHA-256 `d365a99812470986de08be4df1bd54254fe1eb1ea1e3739806d03a6503e3c52a`.
-- Matching source: [`JEXFYZ-corresponding-source.zip`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip), asset ID `643896917`, 3,156,558 bytes, SHA-256 `51783b82eae47fc69ab08dd90521e5acdeed0988600042dd1bc3b94f5483dbc8`.
-- The workflow downloaded both assets again; the APK hash, production signing identity and V1/V2/V3 signatures and source archive/commit were verified. The signing certificate SHA-256 is `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`.
+### Latest verified App Build: SUCCESS for older source
+- Build #49 — [run 38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916); job `116435785328`, runner `1000002352`; source commit `2b2d2886abb66481b7134e5036824f625ab5659d`; issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22). All main steps passed, including 80 Flutter tests, APK, signing V1/V2/V3, production certificate, corresponding-source ZIP, Release publication and downloaded-asset verification. This result does not cover current thermal-animation source.
+- Release: [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest), APK `JEXFYZ-release.apk` SHA-256 `d365a99812470986de08be4df1bd54254fe1eb1ea1e3739806d03a6503e3c52a`, corresponding source ZIP SHA-256 `51783b82eae47fc69ab08dd90521e5acdeed0988600042dd1bc3b94f5483dbc8`. These assets are still Build #49's older revision.
+- Build #48's check annotation identified failed recent account payments or an insufficient spending limit; #49 allocated a runner and completed. No workflow modification/manual-dispatch trigger was needed.
+- Workflow remains unchanged: `.github/workflows/jexfyz-app-build-trigger.yml`, blob `5c5af03075f87297a31f5ee26f0e42025f05977b`; issue-open/reopen only, exact owner/title/token gate, no push/PR/manual trigger.
 
-### Historical build evidence / remaining boundaries
-- Build #40 (run `38713854518`) passed its analyzer/tests/APK/signing but failed on the stale SPAKE2 source-path assertion; Build #49 proves the corrected path/bundle pipeline passes.
-- Builds #41–#48 include prior pre-step failures; #48's visible error was a billing/spending restriction. Do not describe runner allocation as unresolved for Build #49; its runner successfully ran.
-- CI does **not** prove physical-phone UI, FPS/overlay, BLE, cooling/safety, Firmware compile, installed-device state or OTA. These require separate physical validation. Do not run Firmware/BIN/Firebase/OTA/flash/device operations without explicit separate authorization.
-
-### Next action for App Build work
-Build #49 and its Release gates are complete. Do not duplicate the build without App source/workflow changes or a new explicit request. If current source later changes, use `@Thinking Eksekusi Build App!`, trigger only through the same validated issue workflow, and require every test/signing/source/release/download gate to pass. Physical-device validation remains a separate task.
+### Next action
+Use `@Thinking Eksekusi Build App!` to run Flutter analysis/tests, rebuild and sign the APK, verify the corresponding-source bundle, publish the new revision, and re-download/verify all Release assets. Do not claim the current source is released until those gates pass. Physical phone validation remains separate.
 
 
 ## 2. Repository boundaries and current inventory
@@ -212,16 +205,17 @@ Executed:
 
 The canonical map is MEMORY_INDEX.md. At this reconciliation, prepared blobs for the documentation commit are listed below; their final live SHA must be re-fetched after commit. These values were obtained from GitHub create_blob responses, not inferred filenames.
 
-### Docs refreshed by the Build #49 success record
-- APP_BUILD_REPORT.md: ec4b63561395c3289e288781a415e26608d1e788
-- BUILD_NOTES.md: f5076623bdfb684555a72db6cefe567fdfa00ead
-- CHANGELOG.md: 22c5323ddfef60acdd53d53d0dcbd09f3bf80ee7
-- HANDOVER.md: 5462b95fe0a8b4bad2d68c50680accdff5b46ca4
-- MEMORY_INDEX.md: 6f1f2ff01369dae56a2898591d9a1dd6e4e9bc11
-- PROJECT_STATE.md: c7382c97d59a02b2e9cb85bc66576723e2d8b14c
+### Docs refreshed by the thermal indicator implementation record
+- APP_BUILD_REPORT.md: 3c99e3242e9f1180d91da0717d68c645c5096f7e
+- BUILD_NOTES.md: dd98a8d7b721f16409a2b2fd2e3e9caa1b9efb6e
+- CHANGELOG.md: 7df44878327fc5c04ccd6ab0afa1ba6775b98e98
+- HANDOVER.md: 84a078dff940cbd1abbedb93aab1a323ea0220cb
+- MEMORY_INDEX.md: 55b4a818c0b3841db6b3c16d455991af5e576805
+- PROJECT_STATE.md: ea14fa9e469751bd9e58e8e3665508c0cae6b354
 - CHAT_TRANSFER.md: this is the final write; its future blob SHA is intentionally not embedded in itself.
 - `.github/workflows/jexfyz-app-build-trigger.yml` remains unchanged, blob `5c5af03075f87297a31f5ee26f0e42025f05977b`.
-- App source commit used by Build #49: `2b2d2886abb66481b7134e5036824f625ab5659d`; the documentation commit does not alter the released source.
+- Current source implementation commit `4d0295dc67163b4950ffa5492236d03c1201311e`; following docs-only commit must not alter source or workflow.
+
 
 ### Canonical documents unchanged in this reconciliation (parent hashes)
 - APP_NOTES.md: 48edcb1106a9d3968efd3fe201cef325661189bb
@@ -249,4 +243,4 @@ The canonical map is MEMORY_INDEX.md. At this reconciliation, prepared blobs for
 
 ## 11. Final operation state
 
-This snapshot records the verified Build #49 completion for App source commit `2b2d2886abb66481b7134e5036824f625ab5659d`. Build #49 / run `38739077916`, job `116435785328`, runner `1000002352`, completed SUCCESS after all 80 Flutter tests, APK build, production signing, matching source archive, release publication and downloaded-asset verification. Release `jexfyz-latest` contains exactly one APK and one matching source ZIP with hashes recorded in §1. Build #48's annotation identified the previous pre-step blocker as failed recent account payments or an insufficient spending limit; the current workflow is unchanged and no manual trigger was added. This following docs-only commit does not change the released App source. Physical-device behavior remains unverified. No Firmware/BIN/Firebase/OTA/flash/device operation was performed.
+This snapshot records that latest successful Release remains Build #49 from source `2b2d2886abb66481b7134e5036824f625ab5659d`, while current main source commit `4d0295dc67163b4950ffa5492236d03c1201311e` adds untested thermal animations. No test/build/release was run for the current source; follow the next-action steps in §1 before claiming it is released. The issue-only workflow is unchanged and no manual trigger was added. Physical-device behavior remains unverified. No Firmware/BIN/Firebase/OTA/flash/device operation was performed.

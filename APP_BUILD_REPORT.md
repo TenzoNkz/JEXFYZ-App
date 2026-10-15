@@ -12,6 +12,8 @@ This is the durable evidence ledger for `@Thinking Eksekusi Build App!`. A repla
 
 ## Current report status
 
+- **Current main source — NOT YET BUILT/RELEASED:** Thermal Battery and indicator synchronization are implemented in source commit `4d0295dc67163b4950ffa5492236d03c1201311e` (`lib/main.dart` blob `4d95ae799c4c86ae65c1fdbe2cf6d37eeee68d58`; `test/widget_test.dart` blob `9bca8deb33074af3f0c91551e5d522fa4bfc6c0a`). The source now uses battery-temperature-driven segment fill and colour, Hotside limit-based colour/flames, graduated voltage colour/energy, smooth Home icon/text colour transitions, and matching Home/menu animation parameters. Three new unit-test groups and an updated voltage-painter source-contract test were added. These tests have **not been run** by Flutter/CI yet. Build #49 and Release `jexfyz-latest` still represent the older source commit listed below; no APK containing these latest changes is claimed.
+
 - **Latest App Build/Release:** [Build #49 / run 38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916) completed **SUCCESS** on 2026-10-15 at 13:06:51Z. Official issue trigger [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22) used the current title/token and was closed after dispatch. Workflow file/blob is unchanged: `.github/workflows/jexfyz-app-build-trigger.yml`, `5c5af03075f87297a31f5ee26f0e42025f05977b`.
 - **Build source commit:** `2b2d2886abb66481b7134e5036824f625ab5659d`, on `main` at build time (tree `b7ff2f8dac773f323cf6b0d06e59fc443ac642ed`). The follow-up commit for build-report/memory documentation does not change App source or the workflow and is not part of the APK's source revision.
 - **Job/runner:** job `116435785328`, GitHub-hosted runner `1000002352`. Runner allocation and all workflow stages completed normally.
@@ -26,6 +28,11 @@ This is the durable evidence ledger for `@Thinking Eksekusi Build App!`. A repla
 
 
 ## Attempt history
+
+### 2026-10-15 — Thermal indicator source update — NOT BUILT
+- Source commit: `4d0295dc67163b4950ffa5492236d03c1201311e`; `lib/main.dart` blob `4d95ae799c4c86ae65c1fdbe2cf6d37eeee68d58`; `test/widget_test.dart` blob `9bca8deb33074af3f0c91551e5d522fa4bfc6c0a`. Implemented thermal Battery segments/color/flames, Hotside colors/flames keyed to the configured `hotLimit`, graduated voltage color/energy levels, smooth shared Home icon/text color transitions, and voltage/speed parameters for matching submenu icons.
+- Added three regression test groups for Thermal Battery thresholds, Hotside limit colors, and 5V/9V/12V energy-color mapping; updated the existing voltage-sweep source contract. Tests have not been run, no Build App workflow was triggered, and no APK/Release/source ZIP has been regenerated for this source commit.
+- Phone battery-temperature telemetry and its firmware heartbeat were left unchanged. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
 ### 2026-10-15 — Build #49 — SUCCESS
 - Run [38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916), issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22), source commit `2b2d2886abb66481b7134e5036824f625ab5659d`, job `116435785328`, hosted runner `1000002352`. Run completed success at 2026-10-15T13:06:51Z.

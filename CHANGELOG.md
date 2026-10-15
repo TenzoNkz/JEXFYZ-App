@@ -2,7 +2,16 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
-## CURRENT CHECKPOINT — Build #49 successful App release (2026-10-15)
+## CURRENT CHECKPOINT — Thermal indicator source update; CI pending (2026-10-15)
+
+- App source commit `4d0295dc67163b4950ffa5492236d03c1201311e` committed directly to `main`: `lib/main.dart` blob `4d95ae799c4c86ae65c1fdbe2cf6d37eeee68d58`; `test/widget_test.dart` blob `9bca8deb33074af3f0c91551e5d522fa4bfc6c0a`.
+- Thermal Battery now treats its segmented fill as temperature level (20°C empty, 30°C half, 40°C+ full), transitions from ice blue through cyan/green/amber/orange to red, and shows animated fire at ≥40°C. Text and icon colors tween together. The existing phone battery-temperature read and one-second firmware heartbeat are unchanged.
+- Hotside color/fill follows the configured live firmware `hotLimit`; fire appears at the configured limit. Voltage uses red/green/blue at 5V/9V/12V and graduated discharge energy. Home/menu Fan/Peltier/Adaptive indicators now get matching semantic colors and voltage/speed state parameters.
+- Added three thermal unit-test groups and an updated voltage painter source-contract test. They have **not been run**; no Build App workflow was triggered and no APK/source bundle was regenerated for this source.
+- Last successful Release remains Build #49 from source `2b2d2886abb66481b7134e5036824f625ab5659d`; `jexfyz-latest` does not include commit `4d0295dc67163b4950ffa5492236d03c1201311e`. Run the explicitly authorized App Build workflow to analyze/test/build/sign/release the new source.
+- No firmware source/BIN, Firebase, OTA, flash or device operation occurred.
+
+## PREVIOUS CHECKPOINT — Build #49 successful App release (2026-10-15)
 
 - Official issue-triggered [Build #49 / run 38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916) used issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22) and built source commit `2b2d2886abb66481b7134e5036824f625ab5659d`. Job `116435785328`, hosted runner `1000002352`; run completed SUCCESS at 2026-10-15T13:06:51Z.
 - Security/architecture/license audit, dependency resolution, Dart analysis, all **80 Flutter tests**, obfuscated APK compilation, V1/V2/V3 signing and official production certificate checks all passed. The source ZIP passed integrity/content/path/license assertions. Release publication and re-downloaded APK/source verification passed; all main workflow steps succeeded.

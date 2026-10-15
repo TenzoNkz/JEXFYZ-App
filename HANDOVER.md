@@ -3,16 +3,14 @@
 Last reconciled: 2026-10-15 (Asia/Jakarta). This is a working checklist, not authority over live GitHub state. Re-fetch HEAD, tree, current source hashes, Actions and release before acting.
 
 ## Current code and release state
-- **Current App source commit built and released:** `2b2d2886abb66481b7134e5036824f625ab5659d`, via [Build #49 / run 38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916). The subsequent commit is documentation-only and does not change App source or the workflow.
-- **Run result:** SUCCESS, run finished 2026-10-15T13:06:51Z; job `116435785328`, runner `1000002352`. All main workflow steps passed, including all 80 Flutter tests, analyzer, obfuscated APK build, production signing V1/V2/V3 and certificate, corresponding-source ZIP integrity, publication and downloaded-asset checks.
-- **Release:** [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) now targets the current build source revision and contains exactly two verified assets:
-  - APK: `JEXFYZ-release.apk`, asset `643896939`, 56,087,614 bytes; SHA-256 `d365a99812470986de08be4df1bd54254fe1eb1ea1e3739806d03a6503e3c52a`.
-  - Matching source: `JEXFYZ-corresponding-source.zip`, asset `643896917`, 3,156,558 bytes; SHA-256 `51783b82eae47fc69ab08dd90521e5acdeed0988600042dd1bc3b94f5483dbc8`.
-- **Build #48 diagnosis:** its job annotation named failed recent account payments or a spending limit needing an increase. Build #49 allocated a hosted runner and passed without workflow modification. The precise off-repository billing action isn't independently known.
-- **Current workflow unchanged:** `.github/workflows/jexfyz-app-build-trigger.yml`, blob `5c5af03075f87297a31f5ee26f0e42025f05977b`; issue-only trigger and owner/title/token validation are retained. No manual trigger was introduced.
+- **Current App source commit:** thermal indicator update `4d0295dc67163b4950ffa5492236d03c1201311e`; `lib/main.dart` blob `4d95ae799c4c86ae65c1fdbe2cf6d37eeee68d58`; `test/widget_test.dart` blob `9bca8deb33074af3f0c91551e5d522fa4bfc6c0a`. This source is committed on `main`, but the new tests/analyzer have NOT RUN and no APK containing it has been published.
+- **Last successful Build App:** [Build #49 / run 38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916), source `2b2d2886abb66481b7134e5036824f625ab5659d`, job `116435785328`, runner `1000002352`; all 80 tests and release/signing/source/download gates passed for that older source only.
+- **Current release:** [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) contains Build #49's APK and matching source archive. It does not contain thermal-animation source commit `4d0295dc67163b4950ffa5492236d03c1201311e`.
+- **Implementation in current source:** Thermal Battery segments/colors follow actual battery temperature (20°C empty, 30°C half, ≥40°C full/red/flames); Hotside color/level follows live firmware `hotLimit` with fire at the limit; Voltage transitions across red 5V, green 9V, blue 12V and scales energy effect; Home icon and text colours tween together; Fan/Peltier/Adaptive/Fan Speed menu glyphs receive matching semantic colour plus actual voltage/speed parameters. Battery-temperature telemetry and the existing one-second firmware heartbeat are unchanged.
+- **Tests:** three new helper-test groups plus an updated voltage painter source-contract assertion are committed but not executed. Use `@Thinking Eksekusi Build App!` next to analyze, run Flutter tests, assemble/sign APK, verify the source bundle and publish/re-download assets.
+- **Current workflow unchanged:** `.github/workflows/jexfyz-app-build-trigger.yml`, blob `5c5af03075f87297a31f5ee26f0e42025f05977b`; issue-only trigger and owner/title/token validation remain intact. No manual trigger was introduced.
 - **Current App identity:** package `com.horizontalzzz.jexfyz`, version `1.0.0+3`; preserve Gradle `versionName "Telegram @horizontalzzz"`.
-- **Physical validation remains unverified:** installed-phone UI, overlay/FPS behavior, BLE/cooling/safety, Wireless ADB runtime and actual device state were not exercised by CI. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
-
+- **Physical validation remains unverified:** installed-phone UI, overlay/FPS, BLE/cooling/safety, Wireless ADB runtime and device state need separate QA. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
 ## Current App motion contract
 
