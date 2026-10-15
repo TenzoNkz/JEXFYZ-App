@@ -230,7 +230,8 @@ class WirelessAdbPairingService : Service() {
         stopDiscovery()
         currentServiceType = serviceType
         resolvingNames.clear()
-        val listener = object : NsdManager.DiscoveryListener {
+        lateinit var listener: NsdManager.DiscoveryListener
+        listener = object : NsdManager.DiscoveryListener {
             override fun onDiscoveryStarted(serviceType: String) = Unit
 
             override fun onServiceFound(serviceInfo: NsdServiceInfo) {
@@ -579,10 +580,10 @@ class WirelessAdbPairingService : Service() {
     private fun servicePendingIntent(intent: Intent, requestCode: Int, mutable: Boolean): PendingIntent {
         var flags = PendingIntent.FLAG_UPDATE_CURRENT
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            flags = flags or if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && mutable) {
-                PendingIntent.FLAG_MUTABLE
-            } else {
-                PendingIntent.FLAG_IMMUTABLE
+            flags = flags or when {
+                mutable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> PendingIntent.FLAG_MUTABLE
+                mutable -> 0
+                else -> PendingIntent.FLAG_IMMUTABLE
             }
         }
         return PendingIntent.getForegroundService(this, requestCode, intent, flags)

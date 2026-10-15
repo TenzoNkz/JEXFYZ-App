@@ -143,7 +143,7 @@ internal object WirelessAdbIdentityStore {
     }
 
     private fun writeAtomically(file: File, encrypted: ByteArray) {
-        val temporary = File(file.parentFile, "\${file.name}.tmp")
+        val temporary = File(file.parentFile, "${file.name}.tmp")
         try {
             FileOutputStream(temporary).use { output ->
                 output.write(encrypted)
