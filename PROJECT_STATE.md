@@ -4,21 +4,23 @@ Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use C
 
 ## App identity and repository
 
-- Canonical App repo: TenzoNkz/JEXFYZ-App, branch main. Latest functional source/test checkpoint: 311a18934a3cbe86a2a4718442c92541f081183f; Build #55 verified that source using docs-only main commit 3ba172b3f35f4ec01732d5848a7ffc807663e710. Recursive tree is complete at 80 entries; 5 branches, 0 open PRs. Remaining commits update memory/docs only.
+- Canonical App repo: TenzoNkz/JEXFYZ-App, branch main. Latest functional source/test checkpoint: 311a18934a3cbe86a2a4718442c92541f081183f; Build #56 built/tested that source using docs-only main commit 235f47b47af4f32582a7f18825ed76d2c6bba54f. The difference from Build #55's source was only CHAT_TRANSFER.md; no functional App repair was needed. Five branches and zero open PRs at the last verified tree check.
 - App/package: JE Cooler / JE X FYZ, com.horizontalzzz.jexfyz, pubspec version 1.0.0+3. Preserve Gradle versionName exactly as "Telegram @horizontalzzz".
 - Only active App build workflow: .github/workflows/jexfyz-app-build-trigger.yml; issue opened/reopened only; repository-owner, exact title and body-token guarded. Normal push/PR does not build/release.
 - Firmware artifact repo TenzoNkz/JEXFYZ-Firmware has exactly one tree entry: JEXFYZ.cpp.bin, 1,455,936 bytes, blob 68167e65d26137eeb1ce4d6d4ba798dc282454e6. Do not modify or inspect BIN payload during documentation work. This does not prove current source-to-BIN provenance.
 
 ## Latest App release — verified
 
-- Build #55 / run `38783100421`, URL https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38783100421. Completed successfully at 2026-10-15 18:13:16Z (2026-10-16 01:13:16 Asia/Jakarta); build/release source commit `3ba172b3f35f4ec01732d5848a7ffc807663e710`.
-- Passed security/architecture/license audit, dependency resolution, Dart analysis, all 86 Flutter tests, obfuscated APK compilation, V1/V2/V3 signing, expected production certificate validation, corresponding-source archive checks, Release publication and downloaded-asset hash/signature verification.
-- Current release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) targets Build #55 and contains exactly two assets:
-  - [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk), asset ID `644735661`, 54,538,412 bytes, SHA-256 `1ae3ef476c170ab0a9d78a77264c5281d60341a931db102c7b8645e4b0dadd19`.
-  - [`JEXFYZ-corresponding-source.zip`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip), asset ID `644735668`, 2,860,630 bytes, SHA-256 `112b14a95f4b21fa04cdd5684e4a0124ee4b50cb17636bcef149e71a20481dce`.
-- Analyzer reported 23 non-fatal deprecation infos. Also recorded: 11 dependency updates outside constraints, Kotlin Gradle Plugin 2.2.20 future-compatibility notice, outdated Gradle 9.3.1, unobfuscated native DWARF data, and jarsigner self-signed/no-timestamp/META-INF warnings. V1/V2/V3 and expected certificate checks passed.
-- Functional source/test checkpoint `311a18934a3cbe86a2a4718442c92541f081183f` and unchanged functional files are built/tested in Build #55; docs-only commits advanced the checked-out source SHA to `3ba172b3f35f4ec01732d5848a7ffc807663e710`.
-- **Still unverified on physical device:** smooth visual transitions/geometry, Shizuku service lifecycle, OEM SurfaceFlinger access and actual foreground FPS. App CI does not prove phone/OEM behavior or Firmware/BLE/cooling/OTA behavior.
+- Build #56 / run `38785365015`, URL https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38785365015. Completed successfully at 2026-10-15 18:29:26Z (2026-10-16 01:29:26 Asia/Jakarta); build/release source commit `235f47b47af4f32582a7f18825ed76d2c6bba54f`, triggered by [issue #29](https://github.com/TenzoNkz/JEXFYZ-App/issues/29).
+- Passed security/architecture/license audit, dependency resolution, Dart analysis, **86/86 Flutter tests**, obfuscated APK compilation, V1/V2/V3 signing, expected production certificate validation, corresponding-source archive checks, Release publication, and re-downloaded asset/hash/signature verification.
+- Current release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) targets Build #56 and contains exactly two assets:
+  - [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk), asset ID `644776225`, `54,538,412` bytes, SHA-256 `1ae3ef476c170ab0a9d78a77264c5281d60341a931db102c7b8645e4b0dadd19`.
+  - [`JEXFYZ-corresponding-source.zip`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip), asset ID `644776227`, `2,860,746` bytes, SHA-256 `546d9e6bd99b84273e3b2dca8aa85ced979e118c0704ad97a0a16ff5e9e046c3`.
+- Signature: V1/JAR=true, V2=true, V3=true; one signer. Expected production certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0` matched.
+- Relative to Build #55, current main SHA `235f47b47af4f32582a7f18825ed76d2c6bba54f` changes only `CHAT_TRANSFER.md`; no functional App repair was needed. APK bytes are identical to Build #55; the matching source ZIP changed and now contains the exact Build #56 source snapshot.
+- Warnings remain non-blocking: 23 analyzer info-level deprecation findings, Kotlin Gradle Plugin `2.2.20` future-compatibility notice, Gradle `9.3.1` out-of-date notice, native ELF DWARF information not obfuscated, self-signed/no-timestamp certificate and META-INF JAR warnings. Flutter pub-cache write was denied at post-job cleanup because the token lacks writable cache scope; it did not fail any required gate.
+- **Physical-device behavior remains unverified:** icon transitions, Shizuku UserService runtime, OEM SurfaceFlinger access and real foreground FPS must still be tested on-device. CI does not establish BLE, cooling, Firmware or OTA behavior.
+- No Firmware source/BIN, Firebase metadata, physical OTA, flashing or device operation was performed.
 
 
 ## Current source fingerprints
@@ -37,11 +39,11 @@ Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use C
 - pubspec.yaml: 8f558273e21692af9958f914527fdc62d623d63a; pubspec.lock: 1e92812bfda2c28244a0556d71d1ec94084acc66.
 - android/app/build.gradle: cc35d2d3dbe603e7b5a7157d37dde222d646ea42; android/build.gradle: d6dbd400ba0baf2b33c14bb514745334a1e2ad33; AndroidManifest.xml: 393c9f9bfe02b9d71b2e3445ce873d5d16912ce1.
 
-Build #55 used source commit 3ba172b3f35f4ec01732d5848a7ffc807663e710; functional source checkpoint 311a18934a3cbe86a2a4718442c92541f081183f was unchanged by later documentation-only commits. Gradle versionName remains unchanged.
+Build #56 used release source commit 235f47b47af4f32582a7f18825ed76d2c6bba54f; functional source checkpoint 311a18934a3cbe86a2a4718442c92541f081183f remains unchanged by the documentation-only handoff update. Gradle versionName remains unchanged.
 
 ## Active tests and QC scope
 
-Six active test files: test/app_protocol_notify_contract_test.dart; test/firmware_touch_adaptive_sync_test.dart; test/floating_monitor_layout_contract_test.dart; test/shizuku_fps_contract_test.dart; test/v6_6_qc_contract_test.dart; test/widget_test.dart. Build #55 ran all and passed 86/86. Test/source-contract success does not establish physical-device behavior.
+Six active test files: test/app_protocol_notify_contract_test.dart; test/firmware_touch_adaptive_sync_test.dart; test/floating_monitor_layout_contract_test.dart; test/shizuku_fps_contract_test.dart; test/v6_6_qc_contract_test.dart; test/widget_test.dart. Build #56 ran all and passed 86/86. Test/source-contract success does not establish physical-device behavior.
 
 ## Current physical-device validation pending — Shizuku FPS
 
