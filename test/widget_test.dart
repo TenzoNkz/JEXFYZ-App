@@ -615,6 +615,18 @@ void main() {
     expect(speed, isNot(contains('active ? 1 : .52')));
   });
 
+  test('Repeating voltage and Bluetooth effects fade across loop boundaries', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    expect(source, contains('final sheenX = s * (.46 + .62 * math.sin(angle));'));
+    final bluetoothStart = source.indexOf('case JexAnimatedIconKind.bluetooth:');
+    final bluetoothEnd = source.indexOf('case JexAnimatedIconKind.generic:', bluetoothStart);
+    expect(bluetoothStart, isNonNegative);
+    expect(bluetoothEnd, greaterThan(bluetoothStart));
+    final bluetooth = source.substring(bluetoothStart, bluetoothEnd);
+    expect(bluetooth, contains('math.pow(math.sin(math.pi * wave), 2).toDouble()'));
+    expect(bluetooth, isNot(contains('alpha: .34 * (1 - wave)')));
+  });
+
   test('Peltier Safety dialog uses readable text and comfortable touch targets', () {
     final source = File('lib/main.dart').readAsStringSync();
     final dialogStart = source.indexOf('showGeneralDialog<bool>');
