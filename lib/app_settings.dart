@@ -569,8 +569,8 @@ class JexText {
       AppLanguage.indonesia: 'FPS',
     },
     'fpsAccessTitle': {
-      AppLanguage.english: 'Game FPS Access',
-      AppLanguage.indonesia: 'Akses FPS Game',
+      AppLanguage.english: 'Shizuku Access',
+      AppLanguage.indonesia: 'Akses Shizuku',
     },
     'shizukuAccessGranted': {
       AppLanguage.english: 'Shizuku Access Granted',
@@ -609,12 +609,12 @@ class JexText {
       AppLanguage.indonesia: 'Pengukuran FPS SurfaceFlinger sedang aktif',
     },
     'fpsWaitingForGame': {
-      AppLanguage.english: 'Waiting for a foreground app/game to render frames',
-      AppLanguage.indonesia: 'Menunggu aplikasi/game di depan merender frame',
+      AppLanguage.english: 'Waiting for foreground screen frames',
+      AppLanguage.indonesia: 'Menunggu frame layar aktif',
     },
     'fpsDataUnavailable': {
-      AppLanguage.english: 'Shizuku access is present, but this device did not provide usable game frame data.',
-      AppLanguage.indonesia: 'Akses Shizuku tersedia, tetapi perangkat ini tidak memberikan data frame game yang dapat digunakan.',
+      AppLanguage.english: 'Shizuku is allowed, but foreground screen frame data is unavailable.',
+      AppLanguage.indonesia: 'Shizuku diizinkan, tetapi data frame layar aktif tidak tersedia.',
     },
     'shizukuNotRunning': {
       AppLanguage.english: 'Shizuku is not running. Start the Shizuku service first.',
