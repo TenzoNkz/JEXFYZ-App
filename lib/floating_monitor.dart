@@ -430,11 +430,16 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
           await FloatingStore.save(config);
         } else {
           await FloatingBridge.updateConfig(config);
+          // Telemetry emitted before the native overlay service started is intentionally
+          // not queued. Push the current authoritative snapshot after attachment.
+          await FloatingBridge.updateData(floatingTelemetryNotifier.value);
           _startRuntimeSync();
         }
       }
     }
-    unawaited(_refreshFpsAccess());
+    unawaited(_refreshFpsAccess(
+      refreshMonitor: config.enabled && config.selected.contains('F'),
+    ));
   }
 
   // AI-METHOD / CONFIG-APPLY CONTRACT
@@ -463,10 +468,15 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   String _fpsAccessStatusLabel(AppLanguage language) {
     if (!_fpsPermissionGranted) return JexText.of('fpsAccessMissing', language);
     if (_fpsMonitorStatus == 'active') return JexText.of('fpsMonitorActive', language);
+    if (_fpsMonitorStatus == 'no_game_foreground' ||
+        _fpsMonitorStatus == 'waiting_for_frames') {
+      return JexText.of('fpsWaitingForGame', language);
+    }
     if (_fpsMonitorStatus.contains('blocked') ||
         _fpsMonitorStatus.contains('denied') ||
         _fpsMonitorStatus.contains('timeout') ||
         _fpsMonitorStatus.contains('no_layer_data') ||
+        _fpsMonitorStatus.contains('foreground_unknown') ||
         _fpsMonitorStatus.contains('dumpsys_')) {
       return JexText.of('fpsDataUnavailable', language);
     }
@@ -657,8 +667,14 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
       return;
     }
     await FloatingStore.save(next);
+    // A snapshot may have been published before the service was attached and therefore
+    // dropped by the native bridge. Always seed newly-started overlay with live state.
+    await FloatingBridge.updateData(floatingTelemetryNotifier.value);
     _startRuntimeSync();
     if (mounted) setState(() => config = next);
+    unawaited(_refreshFpsAccess(
+      refreshMonitor: next.selected.contains('F'),
+    ));
   }
 
   // AI-METHOD / RUNTIME-SYNC-CONTRACT
@@ -715,14 +731,17 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
 
   // AI-METHOD / METRIC-CONTRACT
   // Add/remove one metric from the persisted selection; runtime state never removes S.
-  void _toggleMetric(String metric, bool value) {
+  Future<void> _toggleMetric(String metric, bool value) async {
     final next = Set<String>.from(config.selected);
     if (value) {
       next.add(metric);
     } else {
       next.remove(metric);
     }
-    _apply(config.copyWith(selected: next));
+    await _apply(config.copyWith(selected: next));
+    if (metric == 'F') {
+      await _refreshFpsAccess(refreshMonitor: config.enabled);
+    }
   }
 
   // AI-METHOD / ORDER-CONTRACT
