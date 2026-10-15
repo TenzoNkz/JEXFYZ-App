@@ -1170,12 +1170,16 @@ bool jexHotsideFireActive(String value, {required double hotLimit}) {
       temperature >= hotLimit;
 }
 
-/// Hotside color is normalized against the live firmware-configured hot limit.
+/// Hotside stays ice blue through 30°C and reaches burning red at 40°C.
+/// A lower configured safety limit may turn it red sooner. Visual color never replaces
+/// or changes firmware-owned thermal protection.
 Color jexHotsideTemperatureColor(String value, {required double hotLimit}) {
   final temperature = jexParseTemperatureC(value);
-  if (temperature == null || temperature <= 20) return jexThermalIceBlue;
-  final limit = hotLimit.isFinite && hotLimit > 20 ? hotLimit : 45.0;
-  final progress = ((temperature - 20) / (limit - 20))
+  if (temperature == null || temperature <= 30) return jexThermalIceBlue;
+  final limit = hotLimit.isFinite && hotLimit > 0 ? hotLimit : 45.0;
+  final redAt = math.min(40.0, limit);
+  if (redAt <= 30 || temperature >= redAt) return jexThermalRed;
+  final progress = ((temperature - 30) / (redAt - 30))
       .clamp(0.0, 1.0)
       .toDouble();
   return _jexInterpolatePalette(
@@ -1197,7 +1201,8 @@ Color jexVoltageIndicatorColor(String voltage) {
     '5V' => const Color(0xFFFF4D5A),
     '9V' => const Color(0xFF52E6A2),
     '12V' => const Color(0xFF4D8CFF),
-    _ => const Color(0xFF7F8592),
+    // Unknown/disconnected voltage falls back to the lowest manual-voltage accent.
+    _ => const Color(0xFFFF4D5A),
   };
 }
 
@@ -5095,9 +5100,10 @@ void _handleAckLine(String line) {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        color: homeDark
-                            ? (active ? indicatorColor : const Color(0xFF7F8592))
-                            : lightTextAccent,
+                        // Preserve semantic accents while disconnected; unavailable data is --.
+                        color: active
+                            ? lightTextAccent
+                            : indicatorColor.withValues(alpha: .82),
                         fontSize: 18.5,
                         fontWeight: FontWeight.w900,
                         height: 0.95,
@@ -5768,7 +5774,7 @@ void _handleAckLine(String line) {
   Widget _voltageChoiceCustom(String target, String mode, bool locked) {
     final active = voltage == target;
     final scheme = Theme.of(context).colorScheme;
-    final accent = scheme.primary;
+    final accent = jexVoltageIndicatorColor(target);
     return InkWell(
       onTap: locked ? null : () => _requestVoltage(target),
       borderRadius: BorderRadius.circular(18),
@@ -5797,7 +5803,7 @@ void _handleAckLine(String line) {
               child: Text(
                 target,
                 style: TextStyle(
-                  color: scheme.onSurface,
+                  color: jexVoltageIndicatorColor(target),
                   fontSize: 16,
                   fontWeight: FontWeight.w900,
                 ),
