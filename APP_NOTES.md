@@ -19,6 +19,22 @@ This file is the durable App behavior/design contract. Live `lib/` source and th
 - Cooler image belongs on the right in the established compact layout. Do not casually redesign the approved visual identity.
 - Use `DESIGN_NOTES.md` for the approved grille/icon/design constraints.
 
+## Home indicators: colors and animations
+
+- Disconnected telemetry must render as unknown (--) without switching the icon/text to black or generic grey. Retain each metric's lowest semantic accent as a visual fallback; this is not a claim that the device output is ON or OFF.
+- Battery temperature: Ice Blue at or below 30°C, a smooth cyan/amber/orange transition from 30–40°C, and Burning Red at or above 40°C. Battery thermal fill uses the same 30–40°C band; the ≥40°C warning threshold remains exact.
+- Hotside temperature: Ice Blue at or below 30°C, smooth transition above 30°C, and Burning Red at the configured Hotside Limit. The visual palette/fill must track the current limit; it must never alter or replace Firmware-owned safety behavior.
+- Manual Voltage selection text and semantic accent: 5V red, 9V green, 12V blue. Unknown/disconnected voltage uses the 5V/lowest-voltage red fallback.
+- Home status icons use compact, bounded Canvas shapes with a shared eased activity transition. State changes should fade/retarget instead of resetting animation phase; shapes and decorative effects must stay within their drawing bounds. Fan rotation keeps its voltage-dependent phase-continuous cycle and OFF coast-down. Peltier remains a six-branched free-standing frost crystal.
+
+## Floating Monitor presentation contract
+
+- Stable metrics remain F/B/H/V/A/P/S. The display is Letters-only; legacy saved Icons configuration migrates to Letters and the style selector is removed.
+- Size slider is 0.30×–1.00× in 0.05× steps (14 intervals), default 0.60×. Persisted values snap into that range. Native pinch scaling and runtime geometry must accept the same upper bound.
+- Background opacity is 0–100% in 5% increments; the displayed number remains visible, but the 50% midpoint label is removed. Legacy values snap to the nearest 5%. Opacity affects the background only, not metric text.
+- Horizontal metrics remain centered as one group. Vertical letter rows share a single left edge. The floating window remains freely draggable; WindowManager gravity stays TOP | START and saved position is unchanged.
+- Shizuku card is compact: status Shizuku Access Granted or Shizuku Access Denied, plus only Grant Shizuku Access and Check Access. No explanatory paragraphs or Open Shizuku button. Access status reports permission/service availability, not successful FPS measurement by itself.
+
 ## Controls and voltage
 
 - Manual voltage levels: 5 V, 9 V, 12 V. Expected user touch cycle is 5→9→12→9→5, with the established ~1-second manual-switch guard.
@@ -81,17 +97,18 @@ This file is the durable App behavior/design contract. Live `lib/` source and th
 - Do not change settings storage or defaults without a scoped task and regression review.
 - Firmware persistent preferences use a 10-second quiet period; Adaptive Profile itself is runtime-only. See `FIRMWARE_NOTES.md`.
 
-## Floating Monitor and Shizuku-gated foreground FPS
+## Floating Monitor and Shizuku-gated foreground screen FPS
 
 - FloatingMonitorService owns the overlay window; Flutter remains the single BLE/GATT client and streams authoritative telemetry. After native service attachment, Flutter replays the current telemetry snapshot. Native layout/redraw tracks changing live-value width.
-- The overlay remains freely draggable with WindowManager gravity TOP | START and persisted coordinates. Alignment applies inside the box only: horizontal metric groups are centered as a group and vertical rows individually. The box has tighter spacing/padding and a smaller radius. Settings exposes Horizontal/Vertical orientation.
-- Appearance persists: Size 0.30×–0.80× in 0.05× steps (default 0.60×) with a numeric label; background opacity 0–100% with live percent and 0/50/100 labels; selectable Black/White background (default Black) with contrasting foreground text/icons. At 0%, only the background vanishes; text remains visible.
-- Stable metrics are F/B/H/V/A/P/S. Battery, Hotside, Voltage and output values use authoritative telemetry; disconnected output state is --. F is Game FPS, not the phone refresh-rate setting or JE Cooler's own Flutter frame timing.
-- Metric F requires Shizuku Binder active, API support for UserService (version 10+), and explicit JE X FYZ approval in the Shizuku permission UI. Native code checks the grant independently of Flutter. Legacy saved F selection is removed when authorization is missing.
-- Ordinary app process does not run dumpsys. It calls IFpsShizukuUserService over AIDL with fixed operation IDs. FpsShizukuUserService maps only allow-listed foreground-activity and SurfaceFlinger timestats operations. Arbitrary command strings are not accepted. Legacy Wireless ADB pairing/identity storage, Kadb/SPAKE2 and manifest DUMP paths are removed.
-- FPS identifies Android's resumed/focused package and matches SurfaceFlinger layers for that package. It deliberately returns -- when JE Cooler's own process is foreground or when focused-package/layer data is unavailable.
-- CURRENT DEVICE ISSUE / USER-REPORTED (screenshot received 2026-10-15/16 local time): Shizuku page shows “Shizuku permission granted” but F remains --; Battery/Hotside/Voltage/Adaptive/Peltier/Speed show values. The screenshot appears to show JE Cooler's own Floating Monitor settings page foreground. Since source explicitly refuses to count JE Cooler's own process as a game, this is consistent with the no_game_foreground branch, but does not prove it is the cause. “Permission granted” does not prove UserService start, SurfaceFlinger read access, or a matching game layer. No runtime status map/logcat was supplied. Next diagnostic: put an actual game in foreground while leaving the overlay enabled. If F remains --, capture native fps_monitor_status and logs for shizuku_userservice_unavailable/disconnected/error, surfaceflinger_blocked, dumpsys_timeout, foreground_unknown, no_game_foreground, no_layer_data or waiting_for_frames. Device/OEM behavior remains UNVERIFIED.
-- VALIDATION: App Build #54 passed Dart analysis, all 86 Flutter tests, Android build/signing and Release/source-ZIP verification for source commit 437e7730dbcaf9666ae4828e546a45343bb4890c. These CI results do not prove live in-game FPS; see APP_BUILD_REPORT.md.
+- The overlay remains freely draggable with WindowManager gravity TOP | START and persisted coordinates. Horizontal metrics center as one group; vertical letter rows all share the same left edge. Size is 0.30×–1.00× in 0.05× steps (default 0.60×). Background opacity is 0–100% in 5% steps with live percent and endpoint marks only; midpoint 50% is removed. Black/White background and contrast behavior remain.
+- The metric set is F/B/H/V/A/P/S. When BLE telemetry is disconnected, live device values are -- and no stale output state is inferred.
+- FPS no longer requires a game foreground. The native sampler prioritizes Android's focused window and tracks the exact corresponding package/layer; this includes JE Cooler, apps, Settings, launchers and Android system UI when their layer data is exposed. It measures deltas of SurfaceFlinger-presented frames, not the panel's nominal refresh rate or Flutter frame timing. If a foreground layer exists without frame-count growth, show 0 after the first sample interval; show -- when focused identity/layer data or SurfaceFlinger access is genuinely unavailable.
+- Metric F still requires Shizuku Binder availability, API support for UserService (version 10+) and explicit JE X FYZ approval in the Shizuku permission UI. Shizuku Access Granted confirms the permission gate, not that the foreground layer is readable. No app process executes dumpsys and Android manifest does not request android.permission.DUMP.
+- Native UserService executes only fixed allow-listed foreground-activity and SurfaceFlinger timestats operations through AIDL. Arbitrary command strings are never accepted. Legacy Wireless ADB pairing/identity-store, Kadb/SPAKE2 and manifest DUMP routes remain removed.
+- SCREEN FPS IS SOURCE-CHANGED BUT NOT DEVICE-VERIFIED: different Android/OEM builds may deny or expose different SurfaceFlinger layers. No runtime status map/logcat from the target phone has yet been captured. CI/tests cannot prove that this phone will supply all foreground layer data.
+- No Flutter/Dart test, analyzer, Android compile/build, APK release or physical-device validation has been run for this current source checkpoint. The previous verified release remains Build #54 from commit 437e7730dbcaf9666ae4828e546a45343bb4890c; it does not contain these current edits.
+
+
 
 ## Phone battery telemetry and Battery Protection UI boundary
 
@@ -103,18 +120,16 @@ This file is the durable App behavior/design contract. Live `lib/` source and th
 
 ## Current App QC boundary
 
-- Current App parent HEAD before the latest documentation reconciliation: 329fd18e3c6ced8f43a7dbfaf7bf02206c17d42a. Latest successful App release was built from source commit 437e7730dbcaf9666ae4828e546a45343bb4890c by Build #54 / run 38767611593.
-- Current source hashes: lib/main.dart 72c450d9b1e8783e4b82b8e37a5f39e2d49b6289; lib/floating_monitor.dart 05a61e5670ec09c9c46cf60466a1dd301dfe5352; lib/app_settings.dart 46cc838f43a06c325af6f6832e200a4e1ed4f75d; test/widget_test.dart 520399fcdc6be4fd69cb48f50aa8961f5d9183c5; test/floating_monitor_layout_contract_test.dart 31d9aabf4ac0839855308b6bd2a0708fa399a3a9; test/shizuku_fps_contract_test.dart 798633a24907fd8aca567e70a6376dc59c6e41c9.
-- Build #54 passed audit, dependency resolution, Dart analysis, 86/86 Flutter tests, obfuscated APK assembly, V1/V2/V3 verification, official certificate check, source ZIP checks, Release publication and downloaded-asset hash re-verification. Exact source/asset IDs and hashes are in BUILD_NOTES.md and APP_BUILD_REPORT.md.
-- Non-blocking Build #54 warnings are recorded in APP_BUILD_REPORT.md. Release checks do not establish physical-device rendering, live Game FPS, BLE/cooling/safety, Firmware compile, OTA/flash, or installed-device state.
-- The user's current physical report is that Shizuku permission is granted while F shows --. Since the screenshot shows JE Cooler's own settings page, the explicit no_game_foreground branch is a plausible explanation; live FPS remains UNVERIFIED until the overlay is tried with a real foreground game and, if needed, native status/logs are captured.
+- Last verified App release is Build #54 / run 38767611593, built from source commit 437e7730dbcaf9666ae4828e546a45343bb4890c. Current main source has newer unbuilt UI, indicator and screen-FPS changes. Keep release evidence and source checkpoint separate.
+- Current source blobs as of the execution source checkpoint: lib/main.dart 69eef38d26282b94ad1bea297d812dfd8b9e91e3; lib/floating_monitor.dart 539172e927871415b60dff8e5321199237879c45; lib/app_settings.dart 4c89bcb3c04142ce49440a11b92054365c26f7a6; test/widget_test.dart 9a0c07b02b5ea63914d735be777fe0a3df66b2bb; test/floating_monitor_layout_contract_test.dart bc5d3f9039f18e785c1268745de577bd388a731f; android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt dd10ff0b2c23941badaa33949967fc373f98aeb9.
+- Contract tests were updated for 30–40°C Battery color/fill, limit-aware Hotside color/fill, 5V/9V/12V colors and disconnected fallback, 0.30×–1.00× size, 5% opacity snapping, Letters-only migration, vertical left alignment, simple Shizuku UI and generic foreground screen FPS logic. Source-contract tests have NOT RUN in this environment; Flutter and Dart executables are unavailable here.
+- Do not claim current source is compiled, installed or physically verified. Build #54 passed for its own old source and does not validate these new changes. The explicit @Thinking Eksekusi Build App! command remains the separate release authorization.
+
+
 
 ## Dashboard indicator motion
 
-- The seven Home indicators use custom Canvas artwork. Active motion remains driven by the looping controller; repeating effects must return visually continuously at the 0→1 boundary.
-- Fan rotation follows BLE voltage classes: 5V = 2600 ms, 9V = 1250 ms, 12V = 620 ms. Voltage changes preserve angular phase by travelling to an equivalent full-turn boundary. Fan OFF decelerates with ease-out over a short period-dependent travel (up to 0.16 turn) and holds the final pose, with full-colour blades/hub.
-- Peltier is a free-standing six-branched frost crystal without square frame, center box or corner bolts. Crystal/particles move while active and frost intensity/count interpolates over 420 ms on voltage changes. OFF stops/fixes the animation with the full-colour crystal still visible; there is no OFF fade.
-- Fan Speed now interpolates its actual visual gauge level from the currently displayed level to each new active target with symmetric cubic smoothstep (`t*t*(3-2*t)`) over 420 ms. Rapid target changes retarget from the current interpolated value, not from the prior target or zero. OFF animates the visual target to 0 over 520 ms and settles at the far-left mark. The reported percentage remains authoritative and static. ON wobble is only a subtle needle offset using integer-frequency sine harmonics, so it is continuous across repeat.
-- The voltage-bolt sheen uses a sinusoidal back-and-forth sweep instead of a linear sweep that resets at loop end. Bluetooth ripples use a squared-sine opacity envelope that is zero with zero slope at both ends, avoiding a flash when radius cycles wrap.
-- LED status-preview pulses are periodic sine/cosine loops; navigation/action glyphs remain static by design. All of these are presentation-only; Firmware source, BLE command protocol, thermal safety and physical LEDs are unchanged.
-- Color Picker retains existing preview contrast, typography/swatch sizing and bottom-pinned six-column layout. Draft swatch selection is separate from applying the live RGB; localized Cancel discards the draft, localized Select applies it, and outside taps/system Back cannot dismiss the modal. Peltier Safety targets and the mandatory Fan-before-Peltier gate remain unchanged.
+- Dashboard status indicators now use a cleaner, bounded Canvas design with consistent rounded strokes and fewer competing decorative elements. State changes use a separate eased activity controller and preserve animation phase instead of resetting regular icons to frame zero.
+- Battery indicator remains segmented, but its visual thermal band now runs from Ice Blue at ≤30°C to Burning Red at ≥40°C. Hotside transitions from Ice Blue at ≤30°C to Burning Red at the configured Hotside Limit; neither palette changes safety decisions.
+- Voltage bolt sheen moves back and forth continuously and remains clipped to the bolt shape. Bluetooth ripples use an opacity curve that approaches zero smoothly at the loop boundary. Adaptive remains a compact orbital ring/core. Peltier uses a six-branch crystal with bounded particles and no module box. Fan uses compact blades; its 5V/9V/12V rotation periods and phase-continuous voltage transition/coast behavior remain. Fan Speed retargets the current gauge smoothly.
+- These are App-side visual changes. They do not change Firmware source, BLE command protocol, thermal safety or physical LED rendering. Animations/visual bounds are source-edited but have not been exercised on a physical phone.
