@@ -27,8 +27,14 @@ void main() {
 
     final stepped = FloatingConfig.fromJson('{"size":0.63,"style":"icons"}');
     expect(stepped.size, closeTo(0.65, 0.0001));
+    expect(stepped.opacity, closeTo(0.9, 0.0001));
     expect(stepped.style, FloatingDisplayStyle.letters);
     expect(stepped.toMap()['style'], 'letters');
+
+    final legacyOpacity = FloatingConfig.fromJson('{"size":0.63,"opacity":0.18}');
+    expect(legacyOpacity.size, closeTo(0.65, 0.0001));
+    expect(legacyOpacity.opacity, closeTo(0.20, 0.0001));
+    expect(legacyOpacity.copyWith(opacity: 0.33).opacity, closeTo(0.35, 0.0001));
     expect(largest.opacity, 1);
     expect(largest.backgroundColor, FloatingBackgroundColor.black);
   });
