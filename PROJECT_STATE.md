@@ -70,15 +70,16 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 - Touch Adaptive-OFF publishes authoritative Adaptive/ceiling/Fan/Peltier/Fan-speed state deltas before acknowledgement.
 
 ## Current UI execution status
-- Current App source includes smooth Fan OFF coast-down with full-colour blades/hub; a box-free, full-colour Peltier crystal that freezes when OFF; retargetable Fan Speed gauge animation (420 ms for speed changes, 520 ms OFF→0) and seamless integer-harmonic needle wobble; sinusoidal voltage sheen; and boundary-faded Bluetooth ripples.
-- Current source blob: `a1818d281fdbea900bf9cde5b83c40d09d61dcc3`; latest widget regression-test blob: `4b7bf68f3c73d6ffe80509ccb75ce6e08607b020`. Static readback checks passed. **Flutter tests/analyze and device rendering have NOT been run after these latest edits.**
-- Latest successful Build App run remains `38560939271` on earlier commit `2aa77113950ac462bd27fa6f1ca416371eaa7ad8`. Dart analyze, Flutter tests and V1/V2/V3 APK verification passed for that older source; the release warning `META-INF/services/b1` is not protected by JAR/V1. MT Manager's earlier signature label remains to be rechecked on device.
+- Current App source includes Fan OFF coast-down/full-colour blades, box-free Peltier crystal/no OFF fade, retargetable Fan Speed gauge from current rendered level to new target over 420 ms and OFF-to-zero over 520 ms, loop-seamless integer-harmonic needle wobble, sinusoidal voltage sheen, and squared-sine Bluetooth ripple fade at loop edges.
+- Current source blob: `a1818d281fdbea900bf9cde5b83c40d09d61dcc3`; latest widget test blob: `4b7bf68f3c73d6ffe80509ccb75ce6e08607b020`. Static readback checks passed. **Current-source Flutter tests/analyze and device rendering have NOT been run after these edits.**
+- Latest successful Build App run `38566673160` on earlier commit `4dccbd7eedcae4a8d1a9cd2b41d5cfda9055416b`; Dart analyze and Flutter tests passed there. V1/V2/V3 were true for the built and re-downloaded APK, SHA-256 `f7ae531834c17fea0dd187307e2e8961dca65aa87b96754082b41475bfc9c845`. This build predates current retargetable Fan Speed, voltage-sheen and Bluetooth-ripple changes.
+- The run warns `META-INF/services/a1` and `META-INF/services/b1` are not protected by JAR/V1. The prior MT Manager screenshot predates this newer release, and its exact signature label has not been rechecked on the later APK.
 
 
 ## App Build
 - Only active workflow: `.github/workflows/jexfyz-app-build-trigger.yml`.
-- Latest successful App Build after signing-workflow hardening: run `38560939271` on commit `2aa77113950ac462bd27fa6f1ca416371eaa7ad8` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38560939271). Security/architecture audit, dependency install, Dart analyze, Flutter tests, APK build, release publication and downloaded-asset verification passed for that source. The log verified V1/V2/V3=true for both produced APK and downloaded release asset using `apksigner verify --min-sdk-version 23`. Release `jexfyz-latest` has one `JEXFYZ-release.apk` (54,521,947 bytes; SHA-256 `95e8c9460b69b8c58d183c2bb80102590cf6208c9a48008ba4dc3bf74e5fbd38`). Log warns `META-INF/services/b1` is not protected by JAR/V1; MT Manager's precise failure label still needs device recheck.
-- That build predates the latest UI/test blobs listed in Current UI execution status; no APK has been built for these changes.
+- Latest successful App Build: run `38566673160` on commit `4dccbd7eedcae4a8d1a9cd2b41d5cfda9055416b` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38566673160). Audit, dependency install, Dart analyze, Flutter tests, APK build, release publication and re-downloaded asset verification passed for that earlier source. V1/V2/V3 verified true for built APK and downloaded asset using `apksigner verify --min-sdk-version 23`. Release `jexfyz-latest` has one `JEXFYZ-release.apk` (54,521,947 bytes; SHA-256 `f7ae531834c17fea0dd187307e2e8961dca65aa87b96754082b41475bfc9c845`). Logs warn `META-INF/services/a1` and `META-INF/services/b1` are not protected by JAR/V1; V3.1=false is not enforced by the workflow.
+- This build predates current App source/test blobs above; no APK has been built for the latest smoother animation edits.
 - Trigger title: JE X FYZ — BUILD APP TRIGGER; body token JEXFYZ_BUILD_TRIGGER_V1.
 - Toolchain: Ubuntu 24.04, Java 17, Flutter 3.47.2 stable, Gradle 9.3.1.
 - Intended output: one obfuscated, production-signed ordinary APK `JEXFYZ-release.apk`, uploaded to GitHub Release `jexfyz-latest`; no Play Store bundle or Actions artifact.
@@ -86,11 +87,12 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 
 
 ## Exact validation gates still open
-1. After explicit `@Thinking Build App!` authorization, validate current-source Dart analyze/Flutter tests and build the updated APK. Existing successful run `38560939271` predates the present animation/test edits.
-2. Inspect signature results for the new APK and downloaded asset; require V1/V2/V3 true and recheck MT Manager's exact label. Prior CI warned about `META-INF/services/b1` not being protected by JAR/V1.
-3. On device, verify Fan OFF ease-out, Peltier box-free/no-fade OFF, Speed gauge transitions to each new speed without a snap, smooth OFF→0, stable percentage text, seamless wobble loop, voltage sheen and Bluetooth ripple loops.
-4. Verify notification JE icon/tap, dialog sizes/Cancel, BLE disconnect fallback and authoritative telemetry restore after reconnect.
-5. Firmware V6.6 is final by user acceptance after two reported same-version successful Online OTA updates. Do not edit/compile Firmware or operate BIN/Firebase/OTA/flash unless the user explicitly reopens that work and separately authorizes the action.
+1. After explicit `@Thinking Build App!` authorization, validate current-source Dart analyze/Flutter tests and build the updated APK. Existing successful run `38566673160` predates the present Fan Speed retargeting, voltage-sheen and Bluetooth-ripple edits.
+2. Verify V1/V2/V3 on the new APK and re-downloaded release asset; check certificate digest and asset SHA. Prior CI warned `META-INF/services/a1` and `META-INF/services/b1` are not protected by JAR/V1.
+3. Install the resulting APK and recheck MT Manager's signature display; the screenshot predates run `38566673160`, so current-device evidence is missing.
+4. On device, verify Fan OFF ease-out, box-free full-colour Peltier OFF, Fan Speed transitioning smoothly through changes including a mid-transition retarget, OFF-to-zero, seam-free wobble, sinusoidal voltage sheen and non-flashing Bluetooth ripple loops.
+5. Verify notification JE icon/tap, dialog sizes/Cancel, BLE disconnect fallback and authoritative telemetry restore after reconnect.
+6. Firmware V6.6 is user-accepted as final after two reported same-version successful Online OTA updates. Do not edit/compile Firmware or operate BIN/Firebase/OTA/flash unless the user explicitly reopens that work and separately authorizes it.
 
 
 ## Repository split / operation boundary
