@@ -164,11 +164,16 @@ class MainActivity : FlutterActivity() {
                     val notificationsEnabled = getSystemService(NotificationManager::class.java).areNotificationsEnabled()
                     val permissionGranted = Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
                         checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
-                    result.success(
-                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
-                            notificationsEnabled && permissionGranted &&
-                            WirelessAdbPairingService.start(this, requestedLanguage)
-                    )
+                    when {
+                        Build.VERSION.SDK_INT < Build.VERSION_CODES.R -> result.success(false)
+                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !permissionGranted -> {
+                            // Ask in the Activity first; the user can tap Pair again after granting.
+                            requestNotificationPermission()
+                            result.success(false)
+                        }
+                        !notificationsEnabled || !permissionGranted -> result.success(false)
+                        else -> result.success(WirelessAdbPairingService.start(this, requestedLanguage))
+                    }
                 }
                 else -> result.notImplemented()
             }

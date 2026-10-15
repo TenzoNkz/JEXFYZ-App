@@ -13,16 +13,23 @@ void main() {
 
     expect(gradle, contains('com.flyfishxu:kadb:1.3.0'));
     expect(manifest, contains('android:name=".WirelessAdbPairingService"'));
+    expect(manifest, contains('android.permission.ACCESS_NETWORK_STATE'));
+    expect(manifest, contains('android.permission.ACCESS_WIFI_STATE'));
+    expect(manifest, contains('android.permission.CHANGE_WIFI_MULTICAST_STATE'));
     expect(manifest, contains('android:exported="false"'));
     expect(manifest, contains('android:foregroundServiceType="specialUse"'));
     expect(activity, contains('"je_x_fyz/adb_pairing"'));
     expect(activity, contains('"startWirelessAdbPairing"'));
+    expect(activity, contains('requestNotificationPermission()'));
     expect(floating, contains("MethodChannel('je_x_fyz/adb_pairing')"));
     expect(floating, contains('WirelessAdbPairingBridge.start(language)'));
     expect(service, contains('RemoteInput.Builder(EXTRA_CODE)'));
     expect(service, contains('Regex("[0-9]{6}")'));
     expect(service, contains('Kadb.pair(LOOPBACK, requestedPort, code, "JE Cooler")'));
     expect(service, contains('Kadb.create(LOOPBACK, port'));
+    expect(service, contains('acquireMulticastLock()'));
+    expect(service, contains('releaseMulticastLock()'));
+    expect(service, contains('createMulticastLock("JE-Cooler-Wireless-ADB")'));
     expect(service, contains('private const val GRANT_DUMP_COMMAND = "pm grant com.horizontalzzz.jexfyz android.permission.DUMP"'));
     expect(service, isNot(contains('intent.getStringExtra("command")')));
     expect(identity, contains('AES/GCM/NoPadding'));

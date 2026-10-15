@@ -11,6 +11,7 @@ import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
+import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
@@ -82,6 +83,7 @@ class WirelessAdbPairingService : Service() {
     private var pairingPort = 0
     @Volatile private var stage = Stage.IDLE
     private var timeoutRunnable: Runnable? = null
+    private var multicastLock: WifiManager.MulticastLock? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -228,6 +230,7 @@ class WirelessAdbPairingService : Service() {
 
     private fun beginDiscovery(serviceType: String) {
         stopDiscovery()
+        acquireMulticastLock()
         currentServiceType = serviceType
         resolvingNames.clear()
         lateinit var listener: NsdManager.DiscoveryListener
@@ -299,6 +302,7 @@ class WirelessAdbPairingService : Service() {
                 discoveryListener = null
                 currentServiceType = null
                 resolvingNames.clear()
+                releaseMulticastLock()
                 stage = Stage.FAILED
                 cancelTimeout()
                 updateOngoing(
@@ -316,6 +320,7 @@ class WirelessAdbPairingService : Service() {
                 if (discoveryListener === this) {
                     discoveryListener = null
                     currentServiceType = null
+                    releaseMulticastLock()
                 }
             }
         }
@@ -326,6 +331,7 @@ class WirelessAdbPairingService : Service() {
         } catch (_: Exception) {
             discoveryListener = null
             currentServiceType = null
+            releaseMulticastLock()
             stage = Stage.FAILED
             cancelTimeout()
             updateOngoing(
@@ -348,10 +354,10 @@ class WirelessAdbPairingService : Service() {
             }
 
             var permissionGranted = false
-            repeat(10) {
+            for (attempt in 0 until 10) {
                 if (checkSelfPermission("android.permission.DUMP") == android.content.pm.PackageManager.PERMISSION_GRANTED) {
                     permissionGranted = true
-                    return@repeat
+                    break
                 }
                 Thread.sleep(200)
             }
@@ -429,6 +435,34 @@ class WirelessAdbPairingService : Service() {
                 nsdManager.stopServiceDiscovery(listener)
             } catch (_: Exception) {
             }
+        }
+        releaseMulticastLock()
+    }
+
+    /**
+     * Android 11/12 and older Android 13 extension levels may need an explicit multicast lock
+     * while mDNS runs. Keep it only during active discovery; never hold it while waiting for input
+     * or during TLS pairing/shell work.
+     */
+    private fun acquireMulticastLock() {
+        if (multicastLock?.isHeld == true) return
+        try {
+            val wifiManager = getSystemService(Context.WIFI_SERVICE) as WifiManager
+            multicastLock = wifiManager.createMulticastLock("JE-Cooler-Wireless-ADB").apply {
+                setReferenceCounted(false)
+                acquire()
+            }
+        } catch (_: Exception) {
+            multicastLock = null
+        }
+    }
+
+    private fun releaseMulticastLock() {
+        val held = multicastLock ?: return
+        multicastLock = null
+        try {
+            if (held.isHeld) held.release()
+        } catch (_: Exception) {
         }
     }
 
