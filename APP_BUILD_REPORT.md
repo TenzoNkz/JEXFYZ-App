@@ -17,7 +17,19 @@ This is the durable evidence ledger for `@Thinking #Build App!`. A replacement B
 
 ## Attempt history
 
-### 2026-10-15 — Build #39 — FAILED (Gradle dependency resolution; release BLOCKED)
+### HISTORICAL — Builds #41–#45 — Hosted runner never started (BLOCKED)
+- Builds #41–#45 failed before the workflow executed any step. #41 run 38715261426 attempt 2/job 116356817322; #42 run 38715656340 attempt 2/job 116357869559; #43 run 38715911768/job 116358423340; #44 run 38718952314/jobs 116368449764 and 116368665443; #45 run 38719397780/job 116369943522.
+- Every observed job ended within a few seconds with runner_id=0, blank runner metadata, steps=[] and no useful logs. App test/analyze/build/signing/source-archive/release stages did not start in these attempts.
+- Diagnostic probes #1 (run 38722954080, ubuntu-24.04) and #2 (run 38723038511, ubuntu-22.04) also failed before first step. The diagnostic workflow used for those probes was subsequently deleted from current main by commit 41627c26189706bc9f4aabad15a83857cda55229; do not describe it as an available workflow. Exact hosted-runner/account root cause remains unknown.
+- App-trigger runs #46 (38722953908) and #47 (38723038530) were skipped by the workflow owner/title/body-token guard, not builds.
+- **Next action:** no blind retries. Inspect account Actions usage/spending budget, repository Actions permissions/allowed actions, account security/verification and check-run annotations. If settings appear normal, escalate the run/job IDs to GitHub Support; retry only after runner dispatch is working.
+
+### HISTORICAL — Build #40 — APK/signing passed; source-archive assertion failed
+- Run 38713854518, source commit d638f6941d9ac16a228f4b78ed001ca2e925f716, hosted runner 1000002340.
+- Security/architecture/license audit, dependency install, Dart analysis, all 80 Flutter tests, obfuscated APK build, V1/V2/V3 signing and production certificate verification passed. The corresponding-source ZIP was built and passed unzip integrity testing.
+- Publication stopped at a grep assertion for the wrong SPAKE2 tag-1.0.5 path. Actual source path is src/main/java/com/flyfish233/crypto/spake2/Spake2Context.java; current workflow blob 225584c8feaf8e43ff7228fd6ab3dc84491e34ba contains the correction. A full post-fix Release run has not reached workflow steps, so no replacement APK/source ZIP is published.
+
+### HISTORICAL — 2026-10-15 — Build #39 — FAILED (Gradle dependency resolution; release BLOCKED)
 
 - **Status:** FAILED at `:app:mergeReleaseNativeLibs`; no new APK was produced or published. At the time, the GPL-3.0 distribution path was unresolved; the current execution now implements a source/license bundle path in the workflow, which still needs full build verification.
 - **Trigger:** issue [#13](https://github.com/TenzoNkz/JEXFYZ-App/issues/13), owner `TenzoNkz`, exact title `JE X FYZ — BUILD APP TRIGGER`, body token `JEXFYZ_BUILD_TRIGGER_V1`; closed at `2026-10-15T08:27:11Z`, reopened at `08:27:15Z`. The official workflow blob `0e400cbdedfd54506ae3ac3255da41580c86d750` remains issue-open/reopen with owner/title/token validation; no push/PR shortcut.
@@ -26,7 +38,7 @@ This is the durable evidence ledger for `@Thinking #Build App!`. A replacement B
 - **Prior failure evidence retained:** #37 stopped on `unused_element`; #38 stopped at Flutter tests with 77 passed, 3 failed; the exact gates and causes are documented immediately below in their respective failed attempt entries.
 - **Confirmed by run log:** security/architecture audit, dependency resolution, Dart analysis, and all 80 Flutter tests passed. APK assembly failed because `com.github.Flyfish233:spake2-java:1.0.5` could not be found in Google Maven, Maven Central, or Flutter's Maven repository; required by Kadb 1.3.0. The artifact is published via JitPack and its upstream LICENSE is GPL-3.0. Signing, certificate check, Release publication and asset re-download gates were skipped. The current follow-up has since added narrowly filtered JitPack and corresponding-source/license packaging; no successful rerun is claimed yet.
 
-### 2026-10-15 — Build #38 — FAILED (three stale widget source-contract assertions)
+### HISTORICAL — 2026-10-15 — Build #38 — FAILED (three stale widget source-contract assertions)
 
 - **Status:** FAILED during Flutter tests before APK compilation. [Run 38705213757](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38705213757), source commit `86ea939b284d2724389e3567fb4bf1a541c8303d`, completed failure at `2026-10-15T08:24:35Z`.
 - **Passed before failure:** toolchain setup; Flutter local.properties; production signing preparation; Gradle-wrapper check; App-only security/architecture audit; `flutter pub get`; `flutter analyze --no-fatal-infos` after the #37 unused-painter fix.
@@ -40,7 +52,7 @@ This is the durable evidence ledger for `@Thinking #Build App!`. A replacement B
 - **Next:** commit the justified regression-contract alignment directly on `main`, then trigger the official issue workflow once and inspect all test/build/signing/Release gates. No firmware/BIN/Firebase/OTA/device operation.
 
 
-### 2026-10-15 — Build #37 — FAILED (Dart analyzer warning; App-scope fix applied)
+### HISTORICAL — 2026-10-15 — Build #37 — FAILED (Dart analyzer warning; App-scope fix applied)
 
 - **Status:** FAILED before Flutter tests or APK build. Run [38704826445](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38704826445), source commit `5735fddc12eee07cd46c86df17ecdb53492711b7`, completed failure at `2026-10-15T08:21:22Z`.
 - **Trigger:** issue [#13](https://github.com/TenzoNkz/JEXFYZ-App/issues/13), owner `TenzoNkz`, exact title `JE X FYZ — BUILD APP TRIGGER`, body token `JEXFYZ_BUILD_TRIGGER_V1`; closed `2026-10-15T08:19:17Z`, reopened `08:19:20Z`. The active workflow and owner/title/token checks were unchanged.
@@ -52,7 +64,7 @@ This is the durable evidence ledger for `@Thinking #Build App!`. A replacement B
 - **Evidence boundary:** this failure indicates Dart static analysis is blocked only by the unused helper warning found in the live log. The fix still requires confirmation from a fresh analyzer run. Do not claim test/build/signing/release success until fresh evidence exists.
 
 
-### 2026-10-15 — Build #36 — SUCCESS (Color Picker + Floating Monitor/FPS updates)
+### HISTORICAL — 2026-10-15 — Build #36 — SUCCESS (Color Picker + Floating Monitor/FPS updates)
 
 - **Status:** SUCCESS for the complete authorized App Build/Release gate set.
 - **Trigger:** [issue #13](https://github.com/TenzoNkz/JEXFYZ-App/issues/13), exact title `JE X FYZ — BUILD APP TRIGGER`, body token `JEXFYZ_BUILD_TRIGGER_V1`, author/repository owner `TenzoNkz`. The live workflow blob `0e400cbdedfd54506ae3ac3255da41580c86d750` checks owner/title/token and listens only for issue `opened`/`reopened`; no push/PR trigger was added. Issue #13 was closed at `2026-10-15T05:51:12Z` and reopened at `2026-10-15T05:51:15Z` to invoke the official trigger.
@@ -84,7 +96,7 @@ This is the durable evidence ledger for `@Thinking #Build App!`. A replacement B
 - **Not verified by CI / remaining checks:** physical-device installation/rendering, MT Manager's displayed signature interpretation, BLE/cooling/safety behavior, Firmware compilation, OTA/flash, and installed Firmware version remain outside this App Build success claim.
 - **Result:** the existing built App source and its exact published Release asset have verified CI evidence; no functional App repair or rerun was needed for the documentation-only commits after Build #35.
 
-### 2026-10-15 — Build #35 — SUCCESS (last verified prior repository checkpoint)
+### HISTORICAL — 2026-10-15 — Build #35 — SUCCESS (last verified prior repository checkpoint)
 
 - Workflow run: [38669526891](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38669526891).
 - Built commit: `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`.

@@ -219,10 +219,10 @@ Executed:
 The canonical map is MEMORY_INDEX.md. At this reconciliation, prepared blobs for the documentation commit are listed below; their final live SHA must be re-fetched after commit. These values were obtained from GitHub create_blob responses, not inferred filenames.
 
 ### Docs being updated in the same documentation-only commit
-- APP_BUILD_REPORT.md: a5e7e80c19bb014d53e1faed36e7cac0c11318ef
+- APP_BUILD_REPORT.md: 01390267c649cc5836d24f22586eef7a8ca2a4ad
 - APP_NOTES.md: 48edcb1106a9d3968efd3fe201cef325661189bb
 - BUILD_NOTES.md: 0944bc65de5fef21304b670d8c83bf47bf904687
-- CHANGELOG.md: 68ac4d6198bf28f82b17399cc7c922c3b9587f8d (freshly corrected to state that the earlier diagnostic “not run” claim was only true at the time; later outcomes are historical)
+- CHANGELOG.md: 4327266fb5e28bb2dd7a35c14f0ac26b0e849fcb (freshly corrected to state that the earlier diagnostic “not run” claim was only true at the time; later outcomes are historical)
 - FIRMWARE_NOTES.md: 3bf9e240a317cb5a2d07975ff7fabb0798205e24
 - HANDOVER.md: d4265ae15ce9ed4375085fc8d8755e17cf21e949
 - MEMORY_INDEX.md: ab0f808872b5abb27826b395878fb4eb495f4559

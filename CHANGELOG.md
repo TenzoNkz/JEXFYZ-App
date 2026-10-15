@@ -1,4 +1,8 @@
-## 2026-10-15 — Chat Stuck full repository-memory reconciliation (current checkpoint)
+# JE X FYZ / JE Cooler — Changelog
+
+Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
+
+## CURRENT CHECKPOINT — Chat Stuck full repository-memory reconciliation (2026-10-15)
 
 - Live App 'main' before this documentation commit: `41627c26189706bc9f4aabad15a83857cda55229`; root tree `a7a6ba4dc4bf5ea52f44c906a17ef480b370f70e`, 76 entries/55 blobs, recursive tree not truncated. Active workflow is `.github/workflows/jexfyz-app-build-trigger.yml` only; diagnostic workflow file was deleted from current main.
 - Build #45 / run `38719397780`, job `116369943522`, failed pre-step with `runner_id=0`, blank runner/group names and no logs. Builds #41–#45 share this signature. Diagnostic probes #1 `38722954080` (Ubuntu 24.04) and #2 `38723038511` (Ubuntu 22.04) also failed pre-step; #46 and #47 App-trigger workflow runs were skipped by its owner/title/token guard. The hosted runner/account root cause is unknown; do not blindly retry or reference the deleted diagnostic workflow.
@@ -16,13 +20,13 @@
 - Reconciled build report, state, handover, build notes, README, memory index and transfer snapshot. No App Build/diagnostic workflow was triggered; no APK/source ZIP was published; no Firmware/BIN/Firebase/OTA/flash/device action occurred.
 - Evidence: [Build #45](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38719397780), [GitHub Status](https://www.githubstatus.com/), [Community #208438](https://github.com/orgs/community/discussions/208438), [Community #207926](https://github.com/orgs/community/discussions/207926). Exact repository/account root cause remains unconfirmed without a running job or GitHub-side diagnostic.
 
-## 2026-10-15 — Build #40 source archive assertion failure and path repair prepared
+## HISTORICAL — 2026-10-15 — Build #40 source archive assertion failure and path repair prepared
 
 - [Build #40 / run 38713854518](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38713854518) built source commit `d638f6941d9ac16a228f4b78ed001ca2e925f716`. Security/license audit, Flutter dependency installation, Dart analysis and **80 tests passed**; APK build, V1/V2/V3 signing and official certificate verification passed.
 - Corresponding-source ZIP was created and its integrity check passed. Packaging failed only because a follow-up path grep expected the obsolete `android/src/main/java/io/github/muntashirakon/crypto/spake2/Spake2Context.java`; correct source-tag path is `src/main/java/com/flyfish233/crypto/spake2/Spake2Context.java`.
 - Prepared workflow blob `225584c8feaf8e43ff7228fd6ab3dc84491e34ba` corrects the path check. Release publication and downloaded-asset verification were skipped; no new APK was published. Next action is commit the workflow correction and run the official build again.
 
-## 2026-10-15 — Preserve Kadb; add corresponding-source and license checks to App Release (NOT YET BUILD-VERIFIED)
+## HISTORICAL — 2026-10-15 — Preserve Kadb; add corresponding-source and license checks to App Release (NOT YET BUILD-VERIFIED)
 
 - The selected technical route retains the current Wireless ADB/FPS functionality rather than swapping in a newer, less-audited pairing implementation.
 - Added the full upstream GPL-3.0 license text from SPAKE2-Java tag `1.0.5` as `third_party/spake2-java-1.0.5-GPL-3.0.txt` and packaged the same text under `android/app/src/main/assets/licenses/spake2-java-GPL-3.0.txt`. Added `third_party/THIRD_PARTY_NOTICES.md` listing Kadb 1.3.0 (Apache-2.0) and SPAKE2-Java 1.0.5 (GPL-3.0).
@@ -30,7 +34,7 @@
 - Workflow blob for the source/license steps: `187956b1344680eaf89f48fec28fd8a92e77f832`. This is NOT yet a passing build. The next action is an authorized Build App run, followed by evidence-based repair/retry until complete or a concrete external blocker is documented.
 - The source bundle is attached to the same private Release; the repository remains private. This packaging is a technical source-availability safeguard, not a legal opinion. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
-## 2026-10-15 — Repair Build #39 Maven resolution configuration (build still unverified)
+## HISTORICAL — 2026-10-15 — Repair Build #39 Maven resolution configuration (build still unverified)
 
 - Live main before this update: `a70d1ea3ec29e0656b8e0c071cb1e8a3c14626b5`; root tree `a2750f5956fb709d9a19a612e4db243d430a8a47` (71 entries / 52 blobs; recursive tree not truncated).
 - Build #39 / run `38705765370` failed at `:app:mergeReleaseNativeLibs` after security/architecture audit, Flutter dependency installation, Dart analysis and all 80 Flutter tests passed. Gradle could not find `com.github.Flyfish233:spake2-java:1.0.5`; APK/signing/release steps did not run.
@@ -38,7 +42,7 @@
 - The transitive SPAKE2 artifact is GPL-3.0 while Kadb itself is Apache-2.0. The next source change chooses to retain Kadb and extend the private Release with the exact corresponding-source ZIP and GPL license text; this packaging/distribution route itself must still pass the official workflow. No APK from #39 was published.
 - Updated current-state build notes, handover, index and transfer snapshot to preserve the exact run evidence and licensing gate. No Firmware, BIN, Firebase, OTA, flash, or physical device operation occurred.
 
-## 2026-10-15 — Redesign animated Home status indicators and Notify connection labels
+## HISTORICAL — 2026-10-15 — Redesign animated Home status indicators and Notify connection labels
 
 - Reworked the seven dashboard indicators with custom-painted, simplified geometry: segmented Battery Temperature, isolated Hotside thermometer, moving voltage charge sweep, Adaptive ring/orbit/core, reduced six-arm Peltier crystal, rotor blades with natural coast-down, and smooth telemetry-driven Fan Speed gauge.
 - Removed the decorative heat waves running alongside/across the Hotside tube; liquid level now follows the Hotside reading. Battery and Hotside icon levels are mapped from valid Celsius text and eased over 520 ms rather than snapping on each telemetry refresh.
@@ -46,14 +50,14 @@
 - Home Notify connection badge now reads CONNECTED/DISCONNECTED (same exact labels in both app languages). Existing explicit error, connecting/syncing badges and detailed Notify body remain unchanged.
 - Added widget tests for sensor-level parsing/clamping and both-language Notify badge labels, including the normal `Bluetooth Disconnected` notice staying DISCONNECTED rather than ERROR. Corrected the Celsius regex to parse digits/decimals in a raw Dart regular expression. Tests/analyze and APK build remain NOT RUN pending the separate @Thinking #Build App! authorization. No Firmware/BIN/Firebase/OTA/device operation was performed.
 
-## 2026-10-15 — Chat Stuck recovery and QC-state reconciliation
+## HISTORICAL — 2026-10-15 — Chat Stuck recovery and QC-state reconciliation
 
 - Recovered the already-authorized Home indicator/Notify execution from live `main`; no source re-implementation or new build was needed for this recovery.
 - Reconciled stale current App/widget-test fingerprints and the old Build #35 release checksum in `PROJECT_STATE.md` / `APP_NOTES.md`. The verified latest successful build is still #36 on its older source commit; current Home UI and Wireless ADB source are not present in that APK.
 - Static repository readback confirmed the Celsius regex, isolated Hotside thermometer (no heat-wave overlap), CONNECTED/DISCONNECTED labels in both language settings, and regression assertions including normal `Bluetooth Disconnected` handling.
 - Flutter/Dart/Gradle executables are unavailable in the current execution environment. Flutter tests, Dart analysis, Android/Kotlin compile, APK build and physical-device verification remain NOT RUN / UNVERIFIED. No Build App workflow, Firmware, BIN, Firebase, OTA, flash or physical device operation occurred.
 
-## 2026-10-15 — Recover and harden notification-driven Wireless ADB pairing
+## HISTORICAL — 2026-10-15 — Recover and harden notification-driven Wireless ADB pairing
 
 - Recovered the authorized App execution from live main rather than duplicating the existing feature commit. Existing source commit 4ad5d99bcea96e865978e3003482661b1e26101f introduced the native notification flow, and 89855b59c8d6ee40151847e6633a07cb75aff6b0 repaired the mDNS-listener closure and identity temporary-file naming.
 - Hardened local mDNS discovery: declare ACCESS_NETWORK_STATE, ACCESS_WIFI_STATE and CHANGE_WIFI_MULTICAST_STATE; acquire a short-lived WifiManager.MulticastLock only while discovery is active; release it on stop/failure/destroy. Fixed the permission confirmation loop to stop once Android confirms android.permission.DUMP.
@@ -62,7 +66,7 @@
 - Updated current App notes, state, handover and index; CHAT_TRANSFER.md is updated separately after the resulting parent commit is verified last. Build #36 (run 38689044316, source 893393388b99fc6d9e59c420070a159a29e45e9) remains the latest successful APK, but it predates all Wireless ADB pairing changes. The pairing feature remains NOT BUILT and device behavior UNVERIFIED.
 - No App Build workflow, Release update, Firmware source/BIN, Firebase, OTA, physical flash/device operation or hardware was touched.
 
-## 2026-10-15 — Chat Stuck recovery and transfer checkpoint reconciliation
+## HISTORICAL — 2026-10-15 — Chat Stuck recovery and transfer checkpoint reconciliation
 
 - Resumed the authorized chat-limit reconciliation from live `main` after inspecting the prior recovery checkpoint; stopped repetitive fingerprint-only updates and used an evidence-first, grouped documentation update.
 - Rechecked the full recursive App repository tree: 66 entries, 48 tracked files, including 20 Markdown files and four Dart tests; tree response was not truncated. Active Firmware inventory remains exactly `firmware/JEXFYZ-V6.6.ino` with `FW_VERSION = "V6.6"`. The artifact repository contains only `JEXFYZ.cpp.bin`.
@@ -70,11 +74,7 @@
 - Corrected a stale Floating Monitor hash in `PROJECT_STATE.md`, expanded `MEMORY_INDEX.md` routing for the ADB/SurfaceFlinger FPS and telemetry work, and fixed duplicate list numbering in Prompt C. `CHAT_TRANSFER.md` is refreshed separately and last after the resulting parent commit and document fingerprints are verified.
 - Current Color Picker and Floating Monitor/ADB FPS code remains SOURCE IMPLEMENTED / NOT RUN / NOT BUILT. Flutter/Dart analysis/tests and Android/Kotlin build were not run in this environment; device-side permission granting and dynamic foreground game FPS remain UNVERIFIED. Build #35 remains valid only for its older source commit.
 - No Firmware source, BIN, Firebase metadata, protected OTA code, build workflow, release, physical device or hardware was changed or operated.
-# JE X FYZ / JE Cooler — Changelog
-
-Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
-
-## 2026-10-15 — Floating Monitor foreground FPS, telemetry recovery and Chat Stuck
+## HISTORICAL — 2026-10-15 — Floating Monitor foreground FPS, telemetry recovery and Chat Stuck
 
 - Removed the live preview pill from the center of Floating Monitor settings. Orientation is now selected explicitly using Horizontal / Vertical controls.
 - Removed Flutter app-window frame counting as the FPS source. The native overlay now uses SurfaceFlinger `--timestats` frame-count deltas, resolved to Android's resumed/focused foreground package and matching layer names; it does not substitute the phone's refresh-rate setting or a busy background app's layer. Sample values are updated about once per second while the overlay is attached and FPS metric F is selected.
@@ -84,7 +84,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - Added `@Thinking Chat Stuck!` as a standalone recovery command: stop blind retries, inspect live logs/repository/workflow/checkpoint, continue only the most recent valid authorization, avoid duplicate commits/builds, and report `RECOVERED`, `BLOCKED` or `FAILED`. It never implies Build App or Firmware/device authorization.
 - Updated `lib/floating_monitor.dart`, `lib/app_settings.dart`, `lib/main.dart`, `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt`, `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt`, `android/app/src/main/AndroidManifest.xml`, `test/widget_test.dart`, and canonical notes/rules. Firmware V6.6, firmware BIN, Firebase, workflow trigger and physical device were not changed or operated.
 
-## 2026-10-15 — Color Picker staged selection and explicit dismissal
+## HISTORICAL — 2026-10-15 — Color Picker staged selection and explicit dismissal
 
 - Changed `_JexColorPickerCard` to retain a local draft. Tapping any of the 36 palette swatches now updates only the checkmark/preview/name; it does not send BLE `COLOR` or close the modal.
 - Added localized top-right Select (`Select` / `Pilih`) and retained localized top-left Cancel (`Cancel` / `Batal`). Select applies the selected draft through the existing confirmed COLOR command and closes only when confirmed; selecting the already-active color closes without sending a redundant command. Failed/unconfirmed changes leave the modal open and the previous applied RGB state unchanged. Cancel discards the draft.
@@ -92,12 +92,12 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - Added Widget test source-contract assertions for staged selection, Select callback, localized label and blocked dismissal. **Tests/Dart analysis were NOT RUN**: the available execution environment has no Flutter or Dart SDK. No App Build/APK was triggered; physical UI behavior remains unverified. Next authorized build command is `@Thinking #Build App!`.
 - Files: `lib/main.dart`, `lib/app_settings.dart`, `test/widget_test.dart`, `APP_NOTES.md`, `PROJECT_STATE.md`, `HANDOVER.md`, `MEMORY_INDEX.md` and `CHAT_TRANSFER.md`. Firmware/workflow/Firebase/BIN/OTA/device state unchanged.
 
-## 2026-10-15 — One-shot Build App chat-limit handoff
+## HISTORICAL — 2026-10-15 — One-shot Build App chat-limit handoff
 
 - Clarified that a Build App chat reaching the context limit uses Prompt D from `CHAT_TRANSFER_PROMPTS.md` exactly once as the first message in the replacement Build App chat. The prompt loads live repository/build evidence and continues the existing work; there is no separate recap chat or recap prompt. Prompt A remains for broad project-memory reconciliation and is not the Build App handoff.
 - Aligned `CHAT_RULES.md`, `BUILD_NOTES.md`, `APP_BUILD_REPORT.md`, `HANDOVER.md`, `MEMORY_INDEX.md`, `PROJECT_STATE.md`, `README.md` and the refreshed `CHAT_TRANSFER.md` with this single-load handoff model. Documentation-only; no App/Firmware source or workflow changed, and no App Build was run.
 
-## 2026-10-15 — Thinking protocol replacement and App Build report
+## HISTORICAL — 2026-10-15 — Thinking protocol replacement and App Build report
 
 - Replaced the permanent command model: `#Diskusi!` is full read-only analysis; `#Tanya Gemini!` and `#Jawaban Gemini!` are valid only when paired with `#Diskusi!` in the same command; `#Eksekusi Full!` is the sole full-execution command; `#Build App!` owns end-to-end App Build, App-scope repairs/retries, release-artifact verification and durable reporting.
 - Retired standalone `#Eksekusi!` and combined `#Eksekusi & Build App!`. A missing-parent Gemini command must be rejected without answering its substantive content.
@@ -106,7 +106,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - Previous App Build #35 / run `38669526891` remains the last known successful run in these records until a new live run is explicitly triggered and verified. Physical-device rendering and MT Manager verification remain separate open gates.
 
 
-## 2026-10-15 — Chat-limit reconciliation after Build #35
+## HISTORICAL — 2026-10-15 — Chat-limit reconciliation after Build #35
 
 - Reconciled the current App/UI checkpoint against live `main`, recursive tree, source/tests, active build workflow, Actions run, Release asset, branch/open-PR state and artifact-repository root. Build #35 targets code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`; this documentation reconciliation does not change that code or run another build.
 - Corrected stale “tests not run/latest build #33” statements in README, Memory Index, App Reference and Handover. Removed the duplicate current-state section from Handover, corrected the easing reference, clarified Build #34's failed midpoint assertion versus the symmetric cubic fix, and separated CI validation from device validation.
@@ -117,7 +117,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 
 
 
-## 2026-10-15 — Fan Speed midpoint correction and App Build #35
+## HISTORICAL — 2026-10-15 — Fan Speed midpoint correction and App Build #35
 
 - Build #34 correctly stopped before APK compilation: 73 Flutter tests passed and one failed in `Fan Speed level retargeting eases between values without abrupt jumps`. The test expected the easing curve to return exactly 0.5 at progress 0.5, while `Curves.easeInOutCubic` returned 0.510125.
 - Corrected `jexSmoothFanSpeedLevel` in `lib/main.dart` to use symmetric cubic smoothstep `t * t * (3.0 - 2.0 * t)`, preserving eased motion with zero velocity at the endpoints and an exact midpoint. This fixes the intended UI interpolation contract rather than weakening the test.
