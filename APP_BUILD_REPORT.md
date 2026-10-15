@@ -2,16 +2,17 @@
 
 This is the durable evidence ledger for `@Thinking Eksekusi Build App!`. A replacement Build App chat uses Prompt D in `CHAT_TRANSFER_PROMPTS.md` to load this file and continue the same workstream across a context limit; there is no separate Build App recap chat. Discussion can consult this ledger for evidence. It records only evidence actually present in GitHub Actions/Release outputs; a build, analysis, APK signature, release publication and physical-device verification are distinct gates.
 
-## Current source/release checkpoint — Build #54 SUCCESS; physical FPS remains UNVERIFIED
+## Latest verified release: Build #54 SUCCESS; current main source changes NOT BUILT; physical screen FPS UNVERIFIED
 
-- Canonical App main parent before this docs reconciliation: 329fd18e3c6ced8f43a7dbfaf7bf02206c17d42a. Latest source was built from commit 437e7730dbcaf9666ae4828e546a45343bb4890c; later main commits in this task are documentation-only.
-- Current source fingerprints: lib/main.dart 72c450d9b1e8783e4b82b8e37a5f39e2d49b6289; lib/floating_monitor.dart 05a61e5670ec09c9c46cf60466a1dd301dfe5352; lib/app_settings.dart 46cc838f43a06c325af6f6832e200a4e1ed4f75d; test/widget_test.dart 520399fcdc6be4fd69cb48f50aa8961f5d9183c5; test/floating_monitor_layout_contract_test.dart 31d9aabf4ac0839855308b6bd2a0708fa399a3a9; test/shizuku_fps_contract_test.dart 798633a24907fd8aca567e70a6376dc59c6e41c9.
-- Build #54 / run 38767611593, job 116534803134, completed success at 2026-10-15T16:21:50Z. Static audit, dependencies, Dart analysis, 86 Flutter tests, obfuscated APK build, V1/V2/V3 signing and production certificate validation all passed. Corresponding-source ZIP checks, Release publication and re-downloaded APK/source hash verification passed.
-- Release jexfyz-latest targets 437e7730dbcaf9666ae4828e546a45343bb4890c and contains exactly two intended assets: JEXFYZ-release.apk, asset 644438898, 54,636,716 bytes, SHA-256 cdf8a7f94424b9cb60be6e04489a9f0f0d8ddad43ab76c33c2e2c6333fa61327; JEXFYZ-corresponding-source.zip, asset 644438897, 2,862,590 bytes, SHA-256 3b208c987def59a7c1857ed0fcc9ca5d74d591767e5658dfab04c9c1be85450f.
-- Signing: V1/JAR, V2 and V3 verified true; one signer; expected production certificate DN and SHA-256 matched. Non-blocking analyzer, Gradle/Kotlin, package-update, ELF DWARF and jarsigner warnings remain documented in Build #54 result below.
-- CURRENT DEVICE ISSUE / USER-REPORTED: Shizuku status reports “Shizuku permission granted”, but F remains -- while other metrics are visible. The screenshot shows JE Cooler's own settings page foreground. Native pollSurfaceFlinger() deliberately returns no_game_foreground/-- when the focused app equals JE Cooler's own package, so that is plausible if no game is foreground; the exact device cause is UNVERIFIED. No fps_monitor_status dump/logcat was supplied.
-- Next diagnostic: try a real game in foreground while overlay remains enabled. If F stays --, capture the native FPS monitor status and logs for shizuku_userservice_unavailable/disconnected/error, surfaceflinger_blocked, dumpsys_timeout, foreground_unknown, no_game_foreground, no_layer_data or waiting_for_frames. Do not report a source fix or live FPS success without evidence.
-- No App source repair or build was triggered by this Chat Stuck/documentation reconciliation. No Firmware compile, BIN, Firebase, OTA, flash or device operation occurred.
+- Latest verified APK/source-ZIP release is still Build #54 / run 38767611593, source commit 437e7730dbcaf9666ae4828e546a45343bb4890c. Its release evidence below remains valid for that exact source only.
+- Current source checkpoint before memory/doc synchronization: 00c55d4b42a529bc436e252be1aa1d9a2cf39682. The current main source is newer than Build #54 and contains unbuilt indicator animation, thermal/voltage colour, Floating Monitor controls and foreground screen-FPS changes. These changes are NOT included in the currently published APK/source ZIP.
+- Current source fingerprints: lib/main.dart 69eef38d26282b94ad1bea297d812dfd8b9e91e3; lib/floating_monitor.dart 539172e927871415b60dff8e5321199237879c45; lib/app_settings.dart 4c89bcb3c04142ce49440a11b92054365c26f7a6; test/widget_test.dart 9a0c07b02b5ea63914d735be777fe0a3df66b2bb; test/floating_monitor_layout_contract_test.dart bc5d3f9039f18e785c1268745de577bd388a731f; Shizuku test remains 798633a24907fd8aca567e70a6376dc59c6e41c9; native FloatingMonitorService.kt dd10ff0b2c23941badaa33949967fc373f98aeb9.
+- Source-contract tests were updated for Battery and Hotside thresholds, voltage/disconnected fallback colors, animation geometry/state transitions, size/opacity steps, Letters migration, vertical alignment, simplified Shizuku UI and foreground screen FPS. They have NOT RUN in this environment; Flutter/Dart executables are unavailable. No Dart analyze, Flutter test, Kotlin/Android compilation or APK build has been performed for this checkpoint.
+- SCREEN FPS SOURCE CHANGE: the sampler now follows the focused window package across JE Cooler, foreground apps, launcher, Settings and Android system UI when matching SurfaceFlinger data is exposed. A present layer with zero frame delta reports 0 after baseline sampling instead of returning -- solely because it is static. This implementation is not physically verified on the user's phone; Shizuku permission grant is not proof that OEM SurfaceFlinger layer data can be read.
+- Next authorized verification step is the explicit @Thinking Eksekusi Build App! workflow. Do not trigger that workflow from @Thinking Eksekusi Full!. After the authorized build/test gates pass, install/test the APK on-device across app UI, Settings/launcher and a game; capture native FPS status/logs if the foreground layer still reports unavailable.
+- Firmware source/BIN repo, Firebase, OTA, flash and physical hardware were not touched.
+
+
 
 ## HISTORICAL — Command/workflow rename — 2026-10-15
 
@@ -23,12 +24,13 @@ This is the durable evidence ledger for `@Thinking Eksekusi Build App!`. A repla
 
 ## Current report status
 
-- CURRENT / VERIFIED: Build #54 / run 38767611593 passed the complete App release gates for source commit 437e7730dbcaf9666ae4828e546a45343bb4890c. Exact APK and matching source ZIP are published on jexfyz-latest and were downloaded/hash-verified.
-- CURRENT / RELEASED: exactly one JEXFYZ-release.apk plus one JEXFYZ-corresponding-source.zip. Byte sizes, asset IDs, hashes, signing and certificate evidence are recorded above and in the Build #54 result.
-- USER-REPORTED / UNVERIFIED: Shizuku UI says permission granted, but Game FPS remains -- in a screenshot where JE Cooler's settings page appears foreground. Current source intentionally doesn't count JE Cooler as the game. Test with an actual foreground game and capture native status/logs if it remains --.
-- FIRMWARE: V6.6 is user-accepted final. Compile and two Online OTA successes are USER-REPORTED. App CI is not Firmware compilation or proof of source-to-BIN provenance, physical OTA, flash or cooling behavior.
-- This Chat Stuck reconciliation did not run/trigger a Build App, source fix or device operation. Only the existing Build #54 run supplies current build evidence.
-- Only active workflow is .github/workflows/jexfyz-app-build-trigger.yml. Keep its owner/title/token and issue-open/reopen guard intact; do not trigger another run without explicit Build App authorization.
+- CURRENT / VERIFIED RELEASE: Build #54 / run 38767611593 passed the release gates for source commit 437e7730dbcaf9666ae4828e546a45343bb4890c. Its exact APK and matching source ZIP remain published on jexfyz-latest and were downloaded/hash-verified.
+- CURRENT / UNBUILT SOURCE: current main contains newer source checkpoint 00c55d4b42a529bc436e252be1aa1d9a2cf39682 before doc sync. Its UI/animation/thermal/voltage/foreground FPS changes are not yet analyzed, tested, compiled, packaged or released.
+- USER-REPORTED / UNVERIFIED DEVICE BEHAVIOR: earlier screenshot showed Shizuku allowed while F remained --. The current code no longer excludes JE Cooler or restricts collection to games, but actual SurfaceFlinger access and per-OEM foreground layer mapping remain unverified until the new source is built and run on-device.
+- FIRMWARE: V6.6 is user-accepted final. Compilation and two same-version Online OTA successes are USER-REPORTED. This task made no Firmware/BIN/Firebase/OTA/flash/device changes.
+- No Build App pipeline was run. The only active workflow is .github/workflows/jexfyz-app-build-trigger.yml, guarded by repository owner, exact title and body token; the separate @Thinking Eksekusi Build App! authorization is required.
+
+
 
 ## Attempt history
 
