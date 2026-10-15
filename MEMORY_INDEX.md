@@ -7,8 +7,8 @@ Last reconciled against live `main` on 2026-10-15 (Asia/Jakarta). Latest verifie
 3. Read `MEMORY_INDEX.md`, `CHAT_RULES.md` and `PROJECT_STATE.md` completely.
 4. Read all canonical subject files relevant to the task: App → `APP_NOTES.md`; Firmware/hardware → `FIRMWARE_NOTES.md` + `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`; OTA → `OTA_PROTECTION.md` + `OTA_REGRESSION_MEMORY.md`; Peltier rail transitions → `VOLTAGE_TRANSITION_MEMORY.md`; Build → `BUILD_NOTES.md`; approved visuals → `DESIGN_NOTES.md`.
 5. Read `HANDOVER.md` for exact next actions and `CHANGELOG.md` for history.
-6. Use `CHAT_TRANSFER_PROMPTS.md` at chat/context limit. Never rely only on old chat summaries.
-7. At context limit, use the full reconciliation prompt, inspect every repository text/config/test file and archive history as required, check local Markdown links, write the subject notes first, then replace `CHAT_TRANSFER.md` last.
+6. For general/Discussion chat limits, use Prompt A for a full project-memory reconciliation when needed, or Prompt B for a read-only new-chat boot. For a Build App chat limit, use Prompt D exactly once as the first message in the replacement Build App chat; it loads live state and continues the work. No separate recap chat/prompt.
+7. Only the general project-memory reconciliation Prompt A replaces `CHAT_TRANSFER.md`, and only when that reconciliation is actually needed. A Build App handoff uses `APP_BUILD_REPORT.md` + Prompt D; do not run Prompt A or replace `CHAT_TRANSFER.md` just to transfer Build App work.
 
 ## Command protocol quick reference
 - Full read-only planning: `@Thinking #Diskusi!`.
@@ -25,7 +25,7 @@ Last reconciled against live `main` on 2026-10-15 (Asia/Jakarta). Latest verifie
 | `CHAT_RULES.md` | Permanent commands, user authorization, versioning, repository separation and persistence rules |
 | `PROJECT_STATE.md` | Current state and unverified gates only; no historical status dumps |
 | `CHAT_TRANSFER.md` | Detailed transfer snapshot and boot checklist; verify against live main |
-| `CHAT_TRANSFER_PROMPTS.md` | Long copy-ready prompts for preserving memory and starting a new chat |
+| `CHAT_TRANSFER_PROMPTS.md` | Prompt A = broad project-memory reconciliation; Prompt B = read-only general/Discussion boot; Prompt C = persist a lasting decision; Prompt D = one-shot Build App chat-limit LOAD + CONTINUE (no recap chat) |
 | `HANDOVER.md` | Current next actions and unresolved validation gates |
 | `APP_NOTES.md` | UI/navigation, named LED palette/preview, voltage-aware Fan motion/coast-down, full-colour box-free Peltier crystal, retargetable Fan Speed gauge/zero return and seamless needle wobble, sinusoidal voltage sheen and Bluetooth ripple envelope, resized Color Picker/Peltier Safety dialogs, bottom-pinned Color Picker + Cancel, offline menu fallback, JE notification monogram, BLE/P1, telemetry, phone Battery heartbeat, Battery Protection Guard presentation rule, pairing-design caveat, localization, reconnect and App contracts |
 | `FIRMWARE_NOTES.md` | Hardware, pins, sensor model, cooling, Adaptive, timing and safety contracts |
@@ -34,7 +34,7 @@ Last reconciled against live `main` on 2026-10-15 (Asia/Jakarta). Latest verifie
 | `OTA_REGRESSION_MEMORY.md` | Online OTA incident, current transport, trade-off and evidence boundary |
 | `VOLTAGE_TRANSITION_MEMORY.md` | Peltier soft-start interruption, timing contract and physical QC plan |
 | `BUILD_NOTES.md` | Manual APK trigger, end-to-end retry policy, toolchain and release boundaries |
-| `APP_BUILD_REPORT.md` | Durable per-attempt Build App log shared with the separate Discussion chat; source/run IDs, fixes, tests, artifact checksum, blockers and unverified gates |
+| `APP_BUILD_REPORT.md` | Durable per-attempt Build App evidence ledger; Prompt D uses it to load and continue the same Build App work across context limits. Discussion may consult it for evidence; no separate Build App recap chat |
 | `CHANGELOG.md` | Historical decisions and superseded approaches |
 | `DESIGN_NOTES.md` | Approved grille, monogram, 1:1 geometry, assets and visual constraints |
 | `android/app/src/main/res/drawable/ic_notification.xml` + `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt` | Android notification JE monochrome small-icon vector and app-open PendingIntent |
