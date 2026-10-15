@@ -3,14 +3,13 @@
 Last reconciled: 2026-10-15 (Asia/Jakarta). This is a working checklist, not authority over live GitHub state. Re-fetch HEAD, tree, current source hashes, Actions and release before acting.
 
 ## Current code and release state
-- **Current App source commit:** thermal indicator update `8b58c7033a5462864b52cb921ca25c714bca902f`; `lib/main.dart` blob `3eeb4dff7b7fbb52a44022e5e2b130bc1826da23`; `test/widget_test.dart` blob `e673bdbc5ffa80791564b1138db28c6a8731aaec`. This source is committed on `main`, but the new tests/analyzer have NOT RUN and no APK containing it has been published.
-- **Last successful Build App:** [Build #49 / run 38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916), source `2b2d2886abb66481b7134e5036824f625ab5659d`, job `116435785328`, runner `1000002352`; all 80 tests and release/signing/source/download gates passed for that older source only.
-- **Current release:** `jexfyz-latest` contains Build #49's APK and matching source archive, which do not contain current source commit `b4e4ec7e8d6c00f43e5378dcb7e2e4b7731adf4b` or the Shizuku FPS migration.
-- **Implementation in current source:** thermal Battery/Hotside/Voltage animations, Home/menu motion and staged Color Picker remain. FPS requires Shizuku Binder/API support and explicit permission; fixed FPS operations are executed by the restricted UserService/AIDL. Old Wireless ADB/Kadb/SPAKE2/grant UI is removed. Battery temperature telemetry and its one-second firmware heartbeat are unchanged.
-- **Tests:** three new helper-test groups plus an updated voltage painter source-contract assertion are committed but not executed. Use `@Thinking Eksekusi Build App!` next to analyze, run Flutter tests, assemble/sign APK, verify the source bundle and publish/re-download assets.
-- **Current workflow unchanged:** `.github/workflows/jexfyz-app-build-trigger.yml`, blob `5c5af03075f87297a31f5ee26f0e42025f05977b`; issue-only trigger and owner/title/token validation remain intact. No manual trigger was introduced.
-- **Current App identity:** package `com.horizontalzzz.jexfyz`, version `1.0.0+3`; preserve Gradle `versionName "Telegram @horizontalzzz"`.
-- **Physical validation remains unverified:** installed-phone UI, Shizuku service/permission dialog, UserService binding, live game FPS, overlay/FPS lifecycle, BLE/cooling/safety and device state need separate QA. No build or Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+- **Current source checkpoint:** `b4e4ec7e8d6c00f43e5378dcb7e2e4b7731adf4b`; Floating UI `232fde06efda5bfaa2221825a04c0106ad5feb33`; app settings `6f99911bc59451473823aea91efe5377a0b6d0d1`; widget tests `520399fcdc6be4fd69cb48f50aa8961f5d9183c5`; Shizuku contract test `bd27d2c7adc20ab76bab504378a2353d01ab473b`. Source is committed, but tests/analyzer/Android build have NOT run.
+- **Last successful Build App:** [Build #49 / run 38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916), source `2b2d2886abb66481b7134e5036824f625ab5659d`; all 80 tests and release gates passed for older source only.
+- **Current release:** `jexfyz-latest` contains Build #49's APK and matching source ZIP; neither contains Shizuku FPS migration source.
+- **FPS design:** metric F requires Shizuku running, supported Binder/UserService and explicit user approval. Fixed FPS operations execute via AIDL UserService; old Wireless ADB/Kadb/SPAKE2/identity-store/grant-revoke UI was removed.
+- **Build workflow:** `.github/workflows/jexfyz-app-build-trigger.yml`, blob `585d190324e522fc08e66cc95bd7ee80c5f37664`; trigger gate unchanged; Shizuku/MIT audit and source ZIP updates NOT RUN.
+- **Tests:** widget assertions and the Shizuku FPS contract test are committed but NOT RUN. `@Thinking Chat Stuck!` does not trigger a build; use `@Thinking Eksekusi Build App!` only when separately authorized.
+- **Physical validation remains unverified:** phone UI, Shizuku permission/Binder/UserService, live foreground FPS, overlay lifecycle, BLE/cooling/safety. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
 ## Current App motion contract
 

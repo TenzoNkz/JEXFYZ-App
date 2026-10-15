@@ -2,6 +2,13 @@
 
 This is the durable evidence ledger for `@Thinking Eksekusi Build App!`. A replacement Build App chat uses Prompt D in `CHAT_TRANSFER_PROMPTS.md` to load this file and continue the same workstream across a context limit; there is no separate Build App recap chat. Discussion can consult this ledger for evidence. It records only evidence actually present in GitHub Actions/Release outputs; a build, analysis, APK signature, release publication and physical-device verification are distinct gates.
 
+## Current source checkpoint — Shizuku-gated FPS migration (NOT BUILT)
+
+- Current source checkpoint: `b4e4ec7e8d6c00f43e5378dcb7e2e4b7731adf4b`. FPS requires Shizuku Binder/API availability and explicit JE X FYZ permission. Fixed FPS operations cross AIDL into `FpsShizukuUserService`; ordinary app-process dumpsys has been removed.
+- Removed Wireless ADB pairing/identity-store, Kadb/SPAKE2 dependencies/licenses, ADB grant/revoke UI and manifest DUMP permission. Added Shizuku API/provider 13.1.5, MIT notice/assets and updated workflow source/license gates.
+- Key blobs: Floating UI `232fde06efda5bfaa2221825a04c0106ad5feb33`; app settings `6f99911bc59451473823aea1e1`; widget test `520399fcdc6be4fd69cb48f50aa8961f5d9183c5`; Shizuku contract `bd27d2c7adc20ab76bab504378a2353d01ab473b`; native monitor `bfc0956688bab5951ea2c626427a691ed63b6921`; UserService `1f5ed36dadaba9dc70ecfbe0793114b34c8ab08b`; Activity `a139dfefe1121963c3a26b114b9b0fcc9f8fa16a`; workflow `585d190324e522fc08e66cc95bd7ee80c5f37664`.
+- `@Thinking Chat Stuck!` did not run tests, Dart analysis, Android/Kotlin compilation or trigger App Build. Current source is NOT RUN / NOT BUILT / NOT RELEASED. Last verified Release is Build #49 from older source `2b2d2886abb66481b7134e5036824f625ab5659d`.
+
 ## Historical command/workflow rename — 2026-10-15
 
 - Canonical App build command is `@Thinking Eksekusi Build App!`; remove `#` from all command spellings. Legacy aliases `@Thinking Build App!` and `@Thinking Eksekusi & Build App!` are retired. `@Thinking Eksekusi Full!` remains separate and does not authorize or launch the APK build.
@@ -12,20 +19,11 @@ This is the durable evidence ledger for `@Thinking Eksekusi Build App!`. A repla
 
 ## Current report status
 
-- **Current main source — NOT YET BUILT/RELEASED:** Thermal Battery and indicator synchronization are implemented in source commit `8b58c7033a5462864b52cb921ca25c714bca902f` (`lib/main.dart` blob `3eeb4dff7b7fbb52a44022e5e2b130bc1826da23`; `test/widget_test.dart` blob `e673bdbc5ffa80791564b1138db28c6a8731aaec`). The source now uses battery-temperature-driven segment fill and colour, Hotside limit-based colour/flames, graduated voltage colour/energy, smooth Home icon/text colour transitions, and matching Home/menu animation parameters. Three new unit-test groups and an updated voltage-painter source-contract test were added. These tests have **not been run** by Flutter/CI yet. Build #49 and Release `jexfyz-latest` still represent the older source commit listed below; no APK containing these latest changes is claimed.
-
-- **Latest App Build/Release:** [Build #49 / run 38739077916](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916) completed **SUCCESS** on 2026-10-15 at 13:06:51Z. Official issue trigger [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22) used the current title/token and was closed after dispatch. Workflow file/blob is unchanged: `.github/workflows/jexfyz-app-build-trigger.yml`, `5c5af03075f87297a31f5ee26f0e42025f05977b`.
-- **Build source commit:** `2b2d2886abb66481b7134e5036824f625ab5659d`, on `main` at build time (tree `b7ff2f8dac773f323cf6b0d06e59fc443ac642ed`). The follow-up commit for build-report/memory documentation does not change App source or the workflow and is not part of the APK's source revision.
-- **Job/runner:** job `116435785328`, GitHub-hosted runner `1000002352`. Runner allocation and all workflow stages completed normally.
-- **Validation passed:** toolchain setup; production signing-secret preparation; security/architecture/license audit; `flutter pub get`; `flutter analyze --no-fatal-infos`; **all 80 Flutter tests**; obfuscated release APK build; explicit V1/V2/V3 signature enforcement; official production certificate check; source-bundle creation and ZIP/path/license checks; release publication; re-download and checksum/signature verification of the published assets. Every main workflow step completed successfully.
-- **Production identity verified:** certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. V1/JAR, V2 and V3 signatures verified for both build output and downloaded APK; one signer.
-- **Release:** [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) now targets source commit `2b2d2886abb66481b7134e5036824f625ab5659d`, with exactly one APK and one matching source ZIP:
-  - `JEXFYZ-release.apk` — asset ID `643896939`, 56,087,614 bytes; SHA-256 `d365a99812470986de08be4df1bd54254fe1eb1ea1e3739806d03a6503e3c52a`. [Download APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk).
-  - `JEXFYZ-corresponding-source.zip` — asset ID `643896917`, 3,156,558 bytes; SHA-256 `51783b82eae47fc69ab08dd90521e5acdeed0988600042dd1bc3b94f5483dbc8`. [Download matching source bundle](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip).
-  The workflow downloaded both assets again and verified content/hashes; the downloaded APK SHA-256 matched `d365a99812470986de08be4df1bd54254fe1eb1ea1e3739806d03a6503e3c52a`.
-- **Previous blocker identified:** Build #48's GitHub annotation stated that the job was not started because recent account payments had failed or the spending limit needed to be increased. Build #49 now proves GitHub Actions was able to allocate a runner and complete the release. The precise billing change made outside the repository was not inspected. No workflow workaround or manual trigger was added.
-- **Remaining boundary:** CI verifies App build/release gates only; physical-phone UI/FPS/overlay, BLE/cooling, hardware safety, Firmware compilation, OTA and installed-device verification remain outside this run and are not claimed. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
-
+- **Current source — NOT RUN/NOT BUILT/NOT RELEASED:** checkpoint `b4e4ec7e8d6c00f43e5378dcb7e2e4b7731adf4b` adds Shizuku-gated FPS to existing thermal/Home UI. Updated widget/source-contract tests have not run.
+- **Latest App Build/Release:** Build #49 / run `38739077916` passed for older source `2b2d2886abb66481b7134e5036824f625ab5659d`. Its APK/source ZIP remain current release assets and do not contain the migration.
+- **Current workflow:** `.github/workflows/jexfyz-app-build-trigger.yml`, blob `585d190324e522fc08e66cc95bd7ee80c5f37664`. Issue-only owner/title/token trigger is unchanged; Shizuku/MIT audit and source ZIP changes have not run in CI.
+- **Next validation:** only `@Thinking Eksekusi Build App!` authorizes the analysis/test/build/sign/release loop. Chat Stuck recovery did not trigger it.
+- **Not yet verified:** Shizuku startup, explicit permission, UserService binding, Binder loss/revocation, live foreground-game FPS/OEM compatibility. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
 ## Attempt history
 

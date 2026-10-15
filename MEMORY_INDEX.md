@@ -1,10 +1,10 @@
 # JE X FYZ / JE Cooler — Memory Index
 
-Current source/release checkpoint verified from live GitHub on 2026-10-15 (Asia/Jakarta): latest source implementation commit is `8b58c7033a5462864b52cb921ca25c714bca902f` (tree `fe266a9384e2c953a01c618ebc4c5c7028a6bbf3`), with `lib/main.dart` blob `3eeb4dff7b7fbb52a44022e5e2b130bc1826da23` and `test/widget_test.dart` blob `e673bdbc5ffa80791564b1138db28c6a8731aaec`. This commit implements the new thermal Battery segments/color/fire, Hotside limit-normalized color/fire, graduated voltage color/energy, tweened icon/text colors, and synchronized Home/menu indicator parameters. Three new unit-test groups and one source-contract assertion update are committed, but no Flutter analysis/test or App Build has been run for this source.
+Current source/release checkpoint on 2026-10-15: implementation commit `b4e4ec7e8d6c00f43e5378dcb7e2e4b7731adf4b` adds Shizuku-gated FPS after existing thermal/Home UI. Key blobs: Floating UI `232fde06efda5bfaa2221825a04c0106ad5feb33`; app settings `6f99911bc59451473823aea1e1`; widget test `520399fcdc6be4fd69cb48f50aa8961f5d9183c5`; Shizuku contract test `bd27d2c7adc20ab76bab504378a2353d01ab473b`; native monitor `bfc0956688bab5951ea2c626427a691ed63b6921`; UserService `1f5ed36dadaba9dc70ecfbe0793114b34c8ab08b`.
 
-The last verified published App remains Build #49 / run `38739077916`, built from older source commit `2b2d2886abb66481b7134e5036824f625ab5659d`. Release `jexfyz-latest` and its APK/source ZIP hashes are recorded in `APP_BUILD_REPORT.md`; they do **not** include the thermal-animation commit. Workflow `.github/workflows/jexfyz-app-build-trigger.yml` remains unchanged at blob `5c5af03075f87297a31f5ee26f0e42025f05977b`, issue-only owner/title/token gated, with no manual trigger.
+Metric F requires Shizuku running and explicit approval for JE X FYZ. FPS uses fixed operation IDs over AIDL. The old Wireless ADB pairing/Kadb/SPAKE2/grant-revoke path is removed. Source/tests/workflow changes are committed but NOT RUN/NOT BUILT/NOT RELEASED.
 
-Phone battery temperature acquisition and its one-second firmware heartbeat were not changed. Hotside's UI limit uses existing firmware telemetry `hotLimit`; no firmware state, safety logic, source/BIN, Firebase, OTA, flashing or device operation was touched.
+Last verified release remains Build #49 / run `38739077916`, source `2b2d2886abb66481b7134e5036824f625ab5659d`; `jexfyz-latest` does not include current Shizuku code. Workflow `.github/workflows/jexfyz-app-build-trigger.yml` blob `585d190324e522fc08e66cc95bd7ee80c5f37664`; issue-only trigger unchanged, Shizuku/MIT audit/source packaging updated but not run.
 
 ## New-chat boot order
 1. Read `CHAT_TRANSFER.md` completely.

@@ -9,14 +9,14 @@
 - Never claim CI success proves BLE, cooling/safety behavior, Firmware compilation, OTA installation or installed device version.
 
 ## Current source changes — Build App still required
-- Latest successful published APK is Build #49 / source `2b2d2886abb66481b7134e5036824f625ab5659d`. Current App source is now newer: thermal-animation source commit `8b58c7033a5462864b52cb921ca25c714bca902f` (`lib/main.dart` blob `3eeb4dff7b7fbb52a44022e5e2b130bc1826da23`; `test/widget_test.dart` blob `e673bdbc5ffa80791564b1138db28c6a8731aaec`).
-- Implemented: Thermal Battery uses temperature-driven segments (20°C empty, 30°C half, ≥40°C full), ice-blue→cyan→green→amber→orange→red with animated flame at ≥40°C, and temperature text shares the smoothly interpolated icon color. Existing battery-temperature read and firmware heartbeat remain unchanged.
-- Hotside uses live firmware `hotLimit` for normalized colour/level and animated flame at the limit. Voltage uses red/green/blue at 5V/9V/12V with graduated energy/sweep. Home and menu Fan/Peltier/Adaptive icons now receive matching semantic colors and actual voltage/speed parameters.
-- Three new thermal helper test groups and the voltage-sweep source-contract update are committed. Tests/analyzer have not run against this commit. **Do not claim the new source is released** until the separately authorized `@Thinking Eksekusi Build App!` passes the complete build/release gates.
+- Latest successful published APK remains Build #49 / source `2b2d2886abb66481b7134e5036824f625ab5659d`. Current checkpoint `b4e4ec7e8d6c00f43e5378dcb7e2e4b7731adf4b` adds Shizuku-gated FPS after the existing thermal/Home UI changes.
+- Metric F requires Shizuku running, a supported Binder/UserService API, and explicit JE X FYZ permission. Native FPS uses a fixed-operation AIDL UserService. App-process dumpsys and manifest DUMP permission have been removed.
+- Wireless ADB pairing/identity store, Kadb/SPAKE2, grant/revoke UI and the old ADB contract test are removed. Shizuku API/provider 13.1.5 and MIT notice/assets are included; workflow audit/source ZIP packaging was updated.
+- Widget/source-contract tests, Dart analysis and Android/Kotlin compilation have NOT run for current source. **Do not claim release success** until an explicitly authorized `@Thinking Eksekusi Build App!` passes all gates.
 
 ## Current App Build workflow
 
-- Active workflow path: `.github/workflows/jexfyz-app-build-trigger.yml` — fetch live definition before every authorized build.
+- Active workflow path: `.github/workflows/jexfyz-app-build-trigger.yml` (blob `585d190324e522fc08e66cc95bd7ee80c5f37664`) — fetch live definition before every authorized build.
 - Trigger title: `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`.
 - Required body token: `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`.
 - Manual issue-open/reopen trigger only, with owner/title/token validation. Normal push/PR must not generate a release APK.
