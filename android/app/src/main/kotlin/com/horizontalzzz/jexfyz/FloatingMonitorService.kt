@@ -22,6 +22,8 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.ComponentName
+import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.graphics.Canvas
@@ -33,6 +35,8 @@ import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.os.RemoteException
+import rikka.shizuku.Shizuku
 import android.os.SystemClock
 import android.provider.Settings
 import android.view.Gravity
@@ -41,16 +45,49 @@ import android.view.ScaleGestureDetector
 import android.view.WindowManager
 import org.json.JSONArray
 import org.json.JSONObject
-import java.io.ByteArrayOutputStream
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
+
+private data class ShizukuFpsAccessSnapshot(
+    val available: Boolean,
+    val supported: Boolean,
+    val granted: Boolean,
+    val uid: Int,
+) {
+    fun toStatusMap(monitorStatus: String, monitorActive: Boolean): Map<String, Any?> {
+        val status = when {
+            !available -> "shizuku_not_running"
+            !supported -> "shizuku_unsupported"
+            !granted -> "shizuku_permission_missing"
+            else -> monitorStatus
+        }
+        return mapOf(
+            "fps_permission_granted" to granted,
+            "shizuku_available" to available,
+            "shizuku_supported" to supported,
+            "shizuku_permission_granted" to granted,
+            "shizuku_uid" to uid,
+            "fps_monitor_active" to (monitorActive && granted),
+            "fps_monitor_status" to status,
+        )
+    }
+}
+
+private fun shizukuFpsAccessSnapshot(): ShizukuFpsAccessSnapshot {
+    val available = runCatching { Shizuku.pingBinder() }.getOrDefault(false)
+    if (!available) return ShizukuFpsAccessSnapshot(false, false, false, -1)
+    val supported = runCatching { Shizuku.getVersion() >= 10 }.getOrDefault(false)
+    if (!supported) return ShizukuFpsAccessSnapshot(true, false, false, -1)
+    val granted = runCatching { Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED }.getOrDefault(false)
+    val uid = if (granted) runCatching { Shizuku.getUid() }.getOrDefault(-1) else -1
+    return ShizukuFpsAccessSnapshot(true, true, granted, uid)
+}
 
 class FloatingMonitorService : Service() {
 
@@ -65,14 +102,12 @@ class FloatingMonitorService : Service() {
         val totalFrames: Long,
     )
 
-    private fun hasFpsDumpPermission(): Boolean =
-        checkSelfPermission("android.permission.DUMP") == PackageManager.PERMISSION_GRANTED
+    private fun hasShizukuFpsPermission(): Boolean = shizukuFpsAccessSnapshot().let {
+        it.available && it.supported && it.granted
+    }
 
-    private fun fpsAccessStateMap(): Map<String, Any?> = mapOf(
-        "fps_permission_granted" to hasFpsDumpPermission(),
-        "fps_monitor_active" to (fpsMonitorStatus == "active"),
-        "fps_monitor_status" to fpsMonitorStatus,
-    )
+    private fun fpsAccessStateMap(): Map<String, Any?> =
+        shizukuFpsAccessSnapshot().toStatusMap(fpsMonitorStatus, fpsMonitorStatus == "active")
 
     // AI-METHOD / FPS-SAMPLER-ELIGIBILITY
     // Never poll global frame statistics unless the visible overlay is attached and F is selected.
@@ -85,8 +120,17 @@ class FloatingMonitorService : Service() {
             stopFpsMonitor("monitor_off")
             return
         }
-        if (!hasFpsDumpPermission()) {
-            stopFpsMonitor("permission_missing")
+        val access = shizukuFpsAccessSnapshot()
+        if (!access.available) {
+            stopFpsMonitor("shizuku_not_running")
+            return
+        }
+        if (!access.supported) {
+            stopFpsMonitor("shizuku_unsupported")
+            return
+        }
+        if (!access.granted) {
+            stopFpsMonitor("shizuku_permission_missing")
             return
         }
         if (fpsMonitorWanted && fpsMonitorStatus in setOf("starting", "active")) return
@@ -106,7 +150,7 @@ class FloatingMonitorService : Service() {
                     if (generation != fpsGeneration) return@post
                     fpsMonitorWanted = false
                     fpsMonitorStatus = start.error ?: "surfaceflinger_blocked"
-                    data.fps = if (fpsMonitorStatus == "permission_missing") "ADB" else "--"
+                    data.fps = "--"
                     hudView?.requestLayout()
                     hudView?.invalidate()
                 }
@@ -146,7 +190,7 @@ class FloatingMonitorService : Service() {
         val wasWanted = fpsMonitorWanted
         val shouldDisable = fpsCaptureEnabled
         if (!wasWanted && !shouldDisable && fpsMonitorStatus == reason) {
-            data.fps = if (reason == "permission_missing") "ADB" else "--"
+            data.fps = "--"
             hudView?.requestLayout()
             hudView?.invalidate()
             return
@@ -157,7 +201,7 @@ class FloatingMonitorService : Service() {
         fpsPollingTask?.cancel(false)
         fpsPollingTask = null
         fpsMonitorStatus = reason
-        data.fps = if (reason == "permission_missing") "ADB" else "--"
+        data.fps = "--"
         fpsTrackedPackage = null
         fpsTrackedLayer = null
         fpsLastActiveAtMs = 0L
@@ -166,75 +210,132 @@ class FloatingMonitorService : Service() {
 
         if (shouldDisable) {
             fpsCaptureEnabled = false
-            fpsExecutor.execute {
-                runDumpsys("SurfaceFlinger", "--timestats", "-disable")
+            if (hasShizukuFpsPermission()) {
+                fpsExecutor.execute { runDumpsys("SurfaceFlinger", "--timestats", "-disable") }
+            } else {
+                fpsExecutor.execute { releaseFpsUserService() }
             }
-        }
-    }
-
-    // AI-METHOD / SURFACEFLINGER-COMMAND
-    // Only fixed arguments are passed; no game/process name or user text is ever executed as a command.
-    private fun runDumpsys(vararg arguments: String): DumpsysResult {
-        if (!hasFpsDumpPermission()) {
-            return DumpsysResult("", false, "permission_missing")
-        }
-
-        val process = try {
-            ProcessBuilder(listOf("/system/bin/dumpsys") + arguments)
-                .redirectErrorStream(true)
-                .start()
-        } catch (_: Exception) {
-            return DumpsysResult("", false, "dumpsys_unavailable")
-        }
-
-        val timedOut = AtomicBoolean(false)
-        val oversized = AtomicBoolean(false)
-        val timeout = Runnable {
-            timedOut.set(true)
-            process.destroy()
-        }
-        fpsMainHandler.postDelayed(timeout, 2500)
-
-        val output = try {
-            val sink = ByteArrayOutputStream()
-            val buffer = ByteArray(8192)
-            process.inputStream.use { input ->
-                while (true) {
-                    val count = input.read(buffer)
-                    if (count < 0) break
-                    if (sink.size() + count > MAX_FPS_DUMP_BYTES) {
-                        oversized.set(true)
-                        process.destroy()
-                        break
-                    }
-                    sink.write(buffer, 0, count)
-                }
-            }
-            sink.toString(Charsets.UTF_8.name())
-        } catch (_: Exception) {
-            ""
-        } finally {
-            fpsMainHandler.removeCallbacks(timeout)
-        }
-
-        val exitCode = try {
-            process.waitFor()
-        } catch (_: InterruptedException) {
-            Thread.currentThread().interrupt()
-            process.destroy()
-            return DumpsysResult(output, false, "dumpsys_interrupted")
-        }
-
-        if (timedOut.get()) return DumpsysResult(output, false, "dumpsys_timeout")
-        if (oversized.get()) return DumpsysResult(output, false, "dumpsys_output_too_large")
-        if (output.contains("Permission Denial", ignoreCase = true) ||
-            output.contains("Permission denial", ignoreCase = true)
+        } else if (reason == "shizuku_not_running" ||
+            reason == "shizuku_unsupported" ||
+            reason == "shizuku_permission_missing"
         ) {
-            return DumpsysResult(output, false, "surfaceflinger_blocked")
+            fpsExecutor.execute { releaseFpsUserService() }
         }
-        if (exitCode != 0) return DumpsysResult(output, false, "dumpsys_exit_$exitCode")
-        return DumpsysResult(output, true)
     }
+
+    // FPS UserService binding. Only a fixed set of read-only FPS operations cross Binder.
+    private val fpsUserServiceLock = Any()
+    @Volatile private var fpsUserService: IFpsShizukuUserService? = null
+    @Volatile private var fpsUserServiceBindingRequested = false
+
+    private val fpsUserServiceArgs by lazy {
+        Shizuku.UserServiceArgs(ComponentName(this, FpsShizukuUserService::class.java))
+            .daemon(false)
+            .processNameSuffix("fps")
+            .debuggable(false)
+            .version(BuildConfig.VERSION_CODE)
+    }
+
+    private val fpsUserServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+            synchronized(fpsUserServiceLock) {
+                fpsUserService = IFpsShizukuUserService.Stub.asInterface(service)
+                fpsUserServiceBindingRequested = true
+            }
+        }
+        override fun onServiceDisconnected(name: ComponentName) {
+            resetFpsUserServiceBinding()
+            fpsMainHandler.post {
+                if (fpsMonitorWanted) stopFpsMonitor("shizuku_userservice_disconnected")
+            }
+        }
+    }
+
+    private fun acquireFpsUserService(): IFpsShizukuUserService? {
+        if (!hasShizukuFpsPermission()) return null
+        var shouldBind = false
+        synchronized(fpsUserServiceLock) {
+            val existing = fpsUserService
+            if (existing != null && runCatching { existing.asBinder().isBinderAlive }.getOrDefault(false)) return existing
+            if (!fpsUserServiceBindingRequested) {
+                fpsUserServiceBindingRequested = true
+                shouldBind = true
+            }
+        }
+        if (shouldBind) {
+            try {
+                Shizuku.bindUserService(fpsUserServiceArgs, fpsUserServiceConnection)
+            } catch (_: Exception) {
+                synchronized(fpsUserServiceLock) { fpsUserServiceBindingRequested = false }
+                return null
+            }
+        }
+        val deadline = SystemClock.elapsedRealtime() + 6000L
+        while (SystemClock.elapsedRealtime() < deadline && hasShizukuFpsPermission()) {
+            val remote = synchronized(fpsUserServiceLock) { fpsUserService }
+            if (remote != null && runCatching { remote.asBinder().isBinderAlive }.getOrDefault(false)) return remote
+            try {
+                Thread.sleep(35)
+            } catch (_: InterruptedException) {
+                Thread.currentThread().interrupt()
+                return null
+            }
+        }
+        releaseFpsUserService()
+        return null
+    }
+
+    private fun resetFpsUserServiceBinding() {
+        synchronized(fpsUserServiceLock) {
+            fpsUserService = null
+            fpsUserServiceBindingRequested = false
+        }
+    }
+
+    private fun releaseFpsUserService() {
+        val shouldUnbind = synchronized(fpsUserServiceLock) {
+            val wasRequested = fpsUserServiceBindingRequested
+            fpsUserService = null
+            fpsUserServiceBindingRequested = false
+            wasRequested
+        }
+        if (shouldUnbind && shizukuFpsAccessSnapshot().available) {
+            try {
+                Shizuku.unbindUserService(fpsUserServiceArgs, fpsUserServiceConnection, true)
+            } catch (_: Exception) {
+                // Binder may have restarted or stopped.
+            }
+        }
+    }
+
+    // Relay a whitelisted FPS operation to Shizuku; arbitrary command strings are never accepted.
+    private fun runDumpsys(vararg arguments: String): DumpsysResult {
+        val access = shizukuFpsAccessSnapshot()
+        if (!access.available) return DumpsysResult("", false, "shizuku_not_running")
+        if (!access.supported) return DumpsysResult("", false, "shizuku_unsupported")
+        if (!access.granted) return DumpsysResult("", false, "shizuku_permission_missing")
+        val operation = when (arguments.toList()) {
+            listOf("SurfaceFlinger", "--timestats", "-clear", "-enable") -> FpsShizukuUserService.OP_START_CAPTURE
+            listOf("SurfaceFlinger", "--timestats", "-disable") -> FpsShizukuUserService.OP_STOP_CAPTURE
+            listOf("activity", "activities") -> FpsShizukuUserService.OP_READ_FOREGROUND_ACTIVITY
+            listOf("SurfaceFlinger", "--timestats", "-dump") -> FpsShizukuUserService.OP_READ_SURFACEFLINGER_STATS
+            else -> return DumpsysResult("", false, "unsupported_fps_operation")
+        }
+        val remote = acquireFpsUserService()
+            ?: return DumpsysResult("", false, "shizuku_userservice_unavailable")
+        return try {
+            val bundle = remote.executeFpsOperation(operation)
+            DumpsysResult(bundle.getString("output", ""), bundle.getBoolean("ok", false), bundle.getString("error"))
+        } catch (_: RemoteException) {
+            releaseFpsUserService()
+            DumpsysResult("", false, "shizuku_userservice_disconnected")
+        } catch (_: Exception) {
+            releaseFpsUserService()
+            DumpsysResult("", false, "shizuku_userservice_error")
+        }
+    }
+
+
 
     // AI-METHOD / SURFACEFLINGER-STATS-PARSER
     // Support the JSON and line-oriented forms seen in Android SurfaceFlinger timestats dumps.
@@ -340,10 +441,16 @@ class FloatingMonitorService : Service() {
     // Never substitute display refreshRate or a busy background layer for game FPS.
     private fun pollSurfaceFlinger(generation: Int) {
         if (!fpsMonitorWanted || generation != fpsGeneration) return
-        if (!hasFpsDumpPermission()) {
+        if (!hasShizukuFpsPermission()) {
+            val access = shizukuFpsAccessSnapshot()
+            val reason = when {
+                !access.available -> "shizuku_not_running"
+                !access.supported -> "shizuku_unsupported"
+                else -> "shizuku_permission_missing"
+            }
             fpsMainHandler.post {
                 if (generation != fpsGeneration) return@post
-                stopFpsMonitor("permission_missing")
+                stopFpsMonitor(reason)
             }
             return
         }
@@ -473,7 +580,6 @@ class FloatingMonitorService : Service() {
         private const val ACTION_CONFIG = "je_x_fyz.floating.CONFIG"
         private const val ACTION_DATA = "je_x_fyz.floating.DATA"
         private const val EXTRA_JSON = "json"
-        private const val MAX_FPS_DUMP_BYTES = 2 * 1024 * 1024
 
         @Volatile
         private var instance: FloatingMonitorService? = null
@@ -530,9 +636,13 @@ class FloatingMonitorService : Service() {
                     "window_add_succeeded" to false,
                     "window_add_error" to null,
                     "view_attached_to_window" to false,
-                    "fps_permission_granted" to (context.checkSelfPermission("android.permission.DUMP") == PackageManager.PERMISSION_GRANTED),
+                    "fps_permission_granted" to shizukuFpsAccessSnapshot().granted,
+                    "shizuku_available" to shizukuFpsAccessSnapshot().available,
+                    "shizuku_supported" to shizukuFpsAccessSnapshot().supported,
+                    "shizuku_permission_granted" to shizukuFpsAccessSnapshot().granted,
+                    "shizuku_uid" to shizukuFpsAccessSnapshot().uid,
                     "fps_monitor_active" to false,
-                    "fps_monitor_status" to if (context.checkSelfPermission("android.permission.DUMP") == PackageManager.PERMISSION_GRANTED) "monitor_off" else "permission_missing",
+                    "fps_monitor_status" to shizukuFpsAccessSnapshot().toStatusMap("monitor_off", false)["fps_monitor_status"],
                     "horizontal" to prefs.getBoolean("horizontal", true),
                     "size" to prefs.getFloat("size", 1.0f).toDouble(),
                     "x" to prefs.getInt("x", 16),
@@ -544,14 +654,8 @@ class FloatingMonitorService : Service() {
         // AI-METHOD / FPS ACCESS STATUS CONTRACT
         // Report the narrowly scoped ADB DUMP grant and native FPS sampler state.
         fun fpsAccessStatus(context: Context): Map<String, Any?> {
-            return instance?.fpsAccessStateMap() ?: mapOf(
-                "fps_permission_granted" to
-                    (context.checkSelfPermission("android.permission.DUMP") == PackageManager.PERMISSION_GRANTED),
-                "fps_monitor_active" to false,
-                "fps_monitor_status" to if (
-                    context.checkSelfPermission("android.permission.DUMP") == PackageManager.PERMISSION_GRANTED
-                ) "monitor_off" else "permission_missing",
-            )
+            return instance?.fpsAccessStateMap()
+                ?: shizukuFpsAccessSnapshot().toStatusMap("monitor_off", false)
         }
 
         // Refresh the sampler only when a real attached overlay and the F metric are selected.
@@ -660,6 +764,7 @@ class FloatingMonitorService : Service() {
     override fun onDestroy() {
         removeOverlay()
         instance = null
+        fpsExecutor.execute { releaseFpsUserService() }
         fpsExecutor.shutdown()
         super.onDestroy()
     }
@@ -685,9 +790,13 @@ class FloatingMonitorService : Service() {
             "size" to config.size.toDouble(),
             "x" to if (::layoutParams.isInitialized) layoutParams.x else 16,
             "y" to if (::layoutParams.isInitialized) layoutParams.y else 120,
-            "fps_permission_granted" to (checkSelfPermission("android.permission.DUMP") == PackageManager.PERMISSION_GRANTED),
-            "fps_monitor_active" to (fpsMonitorStatus == "active"),
-            "fps_monitor_status" to fpsMonitorStatus,
+            "fps_permission_granted" to shizukuFpsAccessSnapshot().granted,
+            "shizuku_available" to shizukuFpsAccessSnapshot().available,
+            "shizuku_supported" to shizukuFpsAccessSnapshot().supported,
+            "shizuku_permission_granted" to shizukuFpsAccessSnapshot().granted,
+            "shizuku_uid" to shizukuFpsAccessSnapshot().uid,
+            "fps_monitor_active" to (fpsMonitorStatus == "active" && hasShizukuFpsPermission()),
+            "fps_monitor_status" to shizukuFpsAccessSnapshot().toStatusMap(fpsMonitorStatus, fpsMonitorStatus == "active")["fps_monitor_status"],
         )
     }
 
