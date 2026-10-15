@@ -68,6 +68,7 @@ if (productionSigningReady) {
 android {
     buildFeatures {
         buildConfig = true
+        aidl = true
     }
 
     namespace "com.horizontalzzz.jexfyz"
@@ -143,6 +144,6 @@ flutter {
 
 // AOSP Wireless Debugging pairing/shell client. Pin to the Kotlin 2.2-compatible release.
 dependencies {
-    implementation "com.flyfishxu:kadb:1.3.0"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2"
+    implementation "dev.rikka.shizuku:api:13.1.5"
+    implementation "dev.rikka.shizuku:provider:13.1.5"
 }

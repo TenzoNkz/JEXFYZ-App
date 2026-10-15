@@ -287,8 +287,11 @@ void main() {
     expect(floating, contains("JexText.of('orientation', lang)"));
     expect(floating, contains('SegmentedButton<bool>('));
     expect(floating, contains("JexText.of('fpsAccessTitle', lang)"));
-    expect(floating, contains("adb shell pm grant com.horizontalzzz.jexfyz android.permission.DUMP"));
-    expect(floating, contains("adb shell pm revoke com.horizontalzzz.jexfyz android.permission.DUMP"));
+    expect(floating, contains("JexText.of('requestShizukuPermission', lang)"));
+    expect(floating, contains("FloatingBridge.requestShizukuFpsPermission()"));
+    expect(floating, isNot(contains("adb shell pm grant")));
+    expect(floating, isNot(contains("adb shell pm revoke")));
+    expect(floating, isNot(contains("WirelessAdbPairingBridge")));
   });
 
   test('Game FPS is sourced from focused SurfaceFlinger layers, not JE Cooler frame timing', () {
@@ -300,15 +303,22 @@ void main() {
 
     expect(appSource, isNot(contains('FrameTiming')));
     expect(appSource, isNot(contains('addTimingsCallback')));
-    expect(nativeService, contains('android.permission.DUMP'));
+    expect(nativeService, contains('Shizuku.checkSelfPermission()'));
+    expect(nativeService, contains('Shizuku.bindUserService(fpsUserServiceArgs, fpsUserServiceConnection)'));
+    expect(nativeService, isNot(contains('android.permission.DUMP')));
+    expect(nativeService, isNot(contains('ProcessBuilder(')));
     expect(nativeService, contains('private fun readForegroundPackage()'));
     expect(nativeService, contains('private fun layerBelongsToPackage('));
     expect(nativeService, contains('.filter { layerBelongsToPackage(it.name, foregroundPackage) }'));
     expect(nativeService, contains('runDumpsys("SurfaceFlinger", "--timestats", "-dump")'));
     expect(nativeService, contains('delta * 1000.0 / elapsed.toDouble()'));
-    expect(manifest, contains('android.permission.DUMP'));
+    expect(manifest, isNot(contains('android.permission.DUMP')));
+    expect(manifest, contains('rikka.shizuku.ShizukuProvider'));
+    expect(manifest, isNot(contains('.WirelessAdbPairingService')));
     expect(activity, contains('"getFpsAccessStatus"'));
     expect(activity, contains('"refreshFpsMonitor"'));
+    expect(activity, contains('"requestShizukuFpsPermission"'));
+    expect(activity, isNot(contains('ADB_PAIRING_CHANNEL')));
     expect(settings, contains("'fpsWaitingForGame'"));
   });
 

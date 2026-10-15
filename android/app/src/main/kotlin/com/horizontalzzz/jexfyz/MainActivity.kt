@@ -18,7 +18,10 @@ import android.app.Notification
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.Uri
 import android.content.pm.PackageManager
+import android.os.Bundle
+import rikka.shizuku.Shizuku
 import android.location.LocationManager
 import android.os.BatteryManager
 import android.os.Build
@@ -40,9 +43,33 @@ class MainActivity : FlutterActivity() {
     private val FLOATING_CHANNEL = "je_x_fyz/floating"
     // Production release-integrity bridge.
     private val SECURITY_CHANNEL = "je_x_fyz/security"
-    // Separate channel for user-authorized Wireless Debugging pairing; never mixed with overlay APIs.
-    private val ADB_PAIRING_CHANNEL = "je_x_fyz/adb_pairing"
     private val NOTIFICATION_CHANNEL = "je_x_fyz/notifications"
+    private val SHIZUKU_PERMISSION_REQUEST_CODE = 2305
+
+    private val shizukuBinderReceivedListener = Shizuku.OnBinderReceivedListener {
+        FloatingMonitorService.refreshFpsMonitor(this)
+    }
+    private val shizukuBinderDeadListener = Shizuku.OnBinderDeadListener {
+        FloatingMonitorService.refreshFpsMonitor(this)
+    }
+    private val shizukuPermissionResultListener =
+        Shizuku.OnRequestPermissionResultListener { requestCode, _ ->
+            if (requestCode == SHIZUKU_PERMISSION_REQUEST_CODE) FloatingMonitorService.refreshFpsMonitor(this)
+        }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Shizuku.addBinderReceivedListenerSticky(shizukuBinderReceivedListener)
+        Shizuku.addBinderDeadListener(shizukuBinderDeadListener)
+        Shizuku.addRequestPermissionResultListener(shizukuPermissionResultListener)
+    }
+
+    override fun onDestroy() {
+        Shizuku.removeBinderReceivedListener(shizukuBinderReceivedListener)
+        Shizuku.removeBinderDeadListener(shizukuBinderDeadListener)
+        Shizuku.removeRequestPermissionResultListener(shizukuPermissionResultListener)
+        super.onDestroy()
+    }
 
     // Register the stable MethodChannel APIs consumed by Flutter. Method names and channel names
     // are app contracts; changes here require matching Dart bridge changes.
@@ -105,10 +132,6 @@ class MainActivity : FlutterActivity() {
                     result.success(openOverlaySettings())
                 }
 
-                "openDeveloperOptions" -> {
-                    result.success(openDeveloperOptions())
-                }
-
                 "getFpsAccessStatus" -> {
                     result.success(FloatingMonitorService.fpsAccessStatus(this))
                 }
@@ -116,6 +139,23 @@ class MainActivity : FlutterActivity() {
                 "refreshFpsMonitor" -> {
                     result.success(FloatingMonitorService.refreshFpsMonitor(this))
                 }
+
+                "requestShizukuFpsPermission" -> {
+                    val access = shizukuFpsAccessSnapshot()
+                    val requestStarted = access.available && access.supported && !access.granted
+                    if (requestStarted) {
+                        try {
+                            Shizuku.requestPermission(SHIZUKU_PERMISSION_REQUEST_CODE)
+                        } catch (_: Exception) {
+                            // Flutter rereads authoritative status after the request.
+                        }
+                    }
+                    result.success(FloatingMonitorService.fpsAccessStatus(this) + mapOf(
+                        "shizuku_permission_requested" to requestStarted,
+                    ))
+                }
+
+                "openShizukuSetup" -> result.success(openShizukuSetup())
 
                 "startFloatingMonitor" -> {
                     val json = call.arguments?.toString() ?: "{}"
@@ -151,33 +191,6 @@ class MainActivity : FlutterActivity() {
             }
         }
 
-
-        // AI-METHOD / WIRELESS-ADB-PAIRING-CONTRACT
-        // Only starts the user-visible notification flow; it never accepts shell commands from Flutter.
-        MethodChannel(
-            flutterEngine.dartExecutor.binaryMessenger,
-            ADB_PAIRING_CHANNEL
-        ).setMethodCallHandler { call, result ->
-            when (call.method) {
-                "startWirelessAdbPairing" -> {
-                    val requestedLanguage = call.argument<String>("language") ?: "english"
-                    val notificationsEnabled = getSystemService(NotificationManager::class.java).areNotificationsEnabled()
-                    val permissionGranted = Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
-                        checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
-                    when {
-                        Build.VERSION.SDK_INT < Build.VERSION_CODES.R -> result.success(false)
-                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !permissionGranted -> {
-                            // Ask in the Activity first; the user can tap Pair again after granting.
-                            requestNotificationPermission()
-                            result.success(false)
-                        }
-                        !notificationsEnabled || !permissionGranted -> result.success(false)
-                        else -> result.success(WirelessAdbPairingService.start(this, requestedLanguage))
-                    }
-                }
-                else -> result.notImplemented()
-            }
-        }
 
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
@@ -243,21 +256,15 @@ class MainActivity : FlutterActivity() {
         }
     }
 
-    // Open public Developer Options so the user can enable USB/Wireless Debugging for
-    // the one-time ADB grant. JE Cooler never enables debugging or grants DUMP to itself.
-    private fun openDeveloperOptions(): Boolean {
-        val intent = Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS)
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    // Open Shizuku when installed; otherwise open its official download page.
+    private fun openShizukuSetup(): Boolean {
         return try {
-            startActivity(intent)
+            val launch = packageManager.getLaunchIntentForPackage("moe.shizuku.privileged.api")
+            if (launch != null) startActivity(launch)
+            else startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://shizuku.rikka.app/download/")))
             true
         } catch (_: Exception) {
-            try {
-                startActivity(Intent(Settings.ACTION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-                true
-            } catch (_: Exception) {
-                false
-            }
+            false
         }
     }
 

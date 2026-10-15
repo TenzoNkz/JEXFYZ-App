@@ -7,14 +7,6 @@ allprojects {
         google()
         mavenCentral()
 
-        // Kadb 1.3.0 resolves its SPAKE2 runtime artifact from JitPack.
-        // Keep this repository scoped to the exact missing module.
-        maven {
-            url = uri("https://jitpack.io")
-            content {
-                includeModule("com.github.Flyfish233", "spake2-java")
-            }
-        }
     }
 }
 
