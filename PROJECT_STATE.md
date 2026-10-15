@@ -77,12 +77,17 @@ Last reconciled: 2026-10-15 (Asia/Jakarta). This file is current-only; refresh t
 - Latest release contains one `JEXFYZ-release.apk` (54,521,947 bytes) at [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest); asset SHA-256 `77e57ece6c194ec97ce9f4e72d379f848173cd2cf905f66a74e6b037ad82e5c1`. Production certificate SHA-256: `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. The workflow verified V1/V2/V3 on the built APK and re-downloaded release asset. JAR/V1 still reports non-protected META-INF entries; this warning is distinct from the successful V1/V2/V3 verification.
 - Physical device rendering, installing the APK on the user's phone, and MT Manager's displayed signature result have NOT been verified by CI.
 
-## App Build
+## App Build and Thinking command protocol
+- Canonical commands: `@Thinking #Diskusi!`; Gemini subcommands only as `@Thinking #Diskusi! #Tanya Gemini!` or `@Thinking #Diskusi! #Jawaban Gemini!`; full execution `@Thinking #Eksekusi Full!`; end-to-end App build `@Thinking #Build App!`.
+- Standalone `#Eksekusi!` and `#Eksekusi & Build App!` are retired. A Gemini subcommand without `#Diskusi!` in the same command is invalid and its substantive request must not be answered.
+- Current build-report register: `APP_BUILD_REPORT.md`. Build attempts, repairs, run links, validation, APK checksum and remaining blockers must be written there for cross-chat continuity.
+- This documentation update does not rerun App Build; Build #35 below remains the latest observed successful run until live Actions data says otherwise.
 - Only active workflow: `.github/workflows/jexfyz-app-build-trigger.yml`; explicit owner/title/token issue trigger only.
 - Latest successful run is Build #35 above. Failed Build #34 was correctly blocked before APK compilation because one regression test failed; no failed-run APK was published.
 - Keep one obfuscated, production-signed ordinary APK named `JEXFYZ-release.apk` on release tag `jexfyz-latest`; no Play Store bundle or Actions artifact.
 - Trigger title: `JE X FYZ — BUILD APP TRIGGER`; body token `JEXFYZ_BUILD_TRIGGER_V1`.
 - Toolchain: Ubuntu 24.04, Java 17, Flutter 3.47.2 stable, Gradle 9.3.1.
+- The `@Thinking #Build App!` operation must inspect and follow the active manual issue-trigger workflow, repair/retry App-scope failures, verify the final release asset and record every attempt in `APP_BUILD_REPORT.md`. It must report BLOCKED rather than claim success if required external access or separate authorization is unavailable.
 - Firmware remains out of scope. The user accepts Firmware V6.6 as final; do not compile Firmware, generate/replace BIN, edit Firebase, flash hardware or run physical OTA without separate explicit authorization.
 
 ## Exact validation gates still open
