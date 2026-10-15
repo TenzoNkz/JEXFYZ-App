@@ -2,18 +2,18 @@
 
 ## 0. Snapshot scope and evidence boundary
 
-Snapshot reconciled from live GitHub on 2026-10-15 (Asia/Jakarta). This file is the full boot snapshot for the canonical project and is refreshed last in the memory update. The verified repository checkpoint BEFORE this command/workflow metadata commit was:
+Snapshot reconciled from live GitHub on 2026-10-15 (Asia/Jakarta). This file is the full boot snapshot for the canonical project and is refreshed last in the memory update. The verified repository checkpoint immediately before the authorized Build #48 attempt was:
 
 - App repo: TenzoNkz/JEXFYZ-App
 - Branch: main
-- Parent HEAD: e4d3ffe48e50173f85f4c6d854e03ffba47e8acd
-- Parent root tree: 1e91b96631d485821e340cc27de8497aee80cf5e — 76 tree entries / 55 blobs; recursive response not truncated
+- Parent HEAD: 608a394f1b764ad8759ce240eafc90b6b9dd2c59
+- Parent root tree: 5ed77afe1823e47455569931fc888814601cc36d — 76 tree entries / 55 blobs; recursive response not truncated
 - Branches: 5; open PRs: 0
 - Active App Build workflow: .github/workflows/jexfyz-app-build-trigger.yml, current workflow blob 5c5af03075f87297a31f5ee26f0e42025f05977b
 - App version/package: 1.0.0+3 / com.horizontalzzz.jexfyz
 - Active firmware source in the App repo: firmware/JEXFYZ-V6.6.ino; embedded FW_VERSION = "V6.6"
 - Artifact repo: TenzoNkz/JEXFYZ-Firmware, main HEAD cc0a0ae32b826753525c3f2a4442526648cef631, root contains only JEXFYZ.cpp.bin
-- This commit changes canonical command spellings and the active App-build workflow name/issue guard only. It does not run App Build or modify App/Firmware source, the BIN artifact, Firebase, OTA, flash or device state. Re-fetch live HEAD and blob hashes on the next chat; this file intentionally does not store its own future blob SHA.
+- This snapshot captures authorized Build #48 / run 38735820460, triggered by issue #21 on source commit 608a394f1b764ad8759ce240eafc90b6b9dd2c59. Job 116424719108 failed before steps; steps=[] and log retrieval returned BlobNotFound. No build/test/signing/release stage ran. Re-fetch live HEAD and blob hashes on the next chat; this file intentionally does not store its own future blob SHA.
 
 Evidence terms:
 - CURRENT / VERIFIED means directly checked against live source/repo/CI evidence.
@@ -29,6 +29,7 @@ Evidence terms:
 
 ### App Build evidence, in order
 
+- Build #48 — run `38735820460`, https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38735820460, source/workflow commit `608a394f1b764ad8759ce240eafc90b6b9dd2c59`, trigger issue [#21](https://github.com/TenzoNkz/JEXFYZ-App/issues/21). Job `116424719108` failed about four seconds after creation, the live steps endpoint returned `[]`, and log fetch returned `BlobNotFound`; no workflow build/test step ran. The issue was closed after the run. This is consistent with the earlier pre-runner failure pattern but its runner_id was not exposed.
 - Build #40 — APK compiled/signed; publication blocked: run 38713854518, source commit d638f6941d9ac16a228f4b78ed001ca2e925f716. Security/architecture/license audit, Flutter dependency install, Dart analysis, all 80 Flutter tests, obfuscated APK assembly, V1/V2/V3 signing, and official production-certificate verification passed. The workflow made JEXFYZ-corresponding-source.zip and unzip -t passed. It then stopped because a grep asserted the wrong SPAKE2 Java source path. Expected old path was android/src/main/java/io/github/muntashirakon/crypto/spake2/Spake2Context.java; actual tag-1.0.5 file is src/main/java/com/flyfish233/crypto/spake2/Spake2Context.java. Release upload and post-download checksum/signature gates were skipped.
 - Path assertion correction remains present in the renamed workflow blob 5c5af03075f87297a31f5ee26f0e42025f05977b for the correct SPAKE2 source path. The repair is source-level verified by reading the workflow, but a full post-fix run has not yet reached that step.
 - Builds #41–#45 — no runner/zero steps: these failed before the workflow executed a step, so no Dart tests/APK/signing/source archive/release ran in those attempts:
@@ -54,7 +55,7 @@ Evidence terms:
 
 ### Exact next action for the separate Build App workstream
 
-Do not trigger from this general recovery chat and do not repeatedly reopen the issue without new information. In the dedicated Build App chat, inspect GitHub account Actions usage/minutes/budget/spending cap, repository Settings → Actions permissions/allowed actions, account security/verification restrictions, and check-run annotations where accessible. If those are normal, escalate the specific job/run IDs above to GitHub Support to investigate hosted-runner dispatch. Once runner dispatch is demonstrably working, use @Thinking Eksekusi Build App!, run the existing official issue-trigger workflow against current main, fix any actual source/archive failure from logs, and require every release gate to pass before calling the build successful. Do not use the deleted diagnostic workflow.
+Do not trigger from this general recovery chat and do not repeatedly reopen the issue without new information. In the dedicated Build App chat, inspect GitHub account Actions usage/minutes/budget/spending cap, repository Settings → Actions permissions/allowed actions, account security/verification restrictions, and check-run annotations where accessible. If those are normal, escalate the specific job/run IDs above to GitHub Support to investigate hosted-runner dispatch. Build #48 is the latest trigger attempt and it failed before steps. Do not re-trigger without new evidence. First inspect Actions usage/spending, repository Actions permissions/allowed actions, and account security/verification; if normal, contact GitHub Support with run/job IDs for #41–#45 and #48. Once runner dispatch is demonstrably restored, use @Thinking Eksekusi Build App!, trigger with a new issue using the current exact title/token, repair any actual source/archive failure shown by logs, and require every release gate to pass before calling the build successful. Do not use the deleted diagnostic workflow.
 
 ## 2. Repository boundaries and current inventory
 
@@ -218,17 +219,17 @@ Executed:
 
 The canonical map is MEMORY_INDEX.md. At this reconciliation, prepared blobs for the documentation commit are listed below; their final live SHA must be re-fetched after commit. These values were obtained from GitHub create_blob responses, not inferred filenames.
 
-### Docs refreshed by the command/workflow reconciliation in this commit
-- APP_BUILD_REPORT.md: cd85563f7f3a5bc1d03a91cbb01baa05f724ea38
-- BUILD_NOTES.md: 827c3c0dc2a6214d8ad3b369c58d10e9530aa9b0
-- CHANGELOG.md: 04335a52f0aa52dd6a64f4a0c341e5ab89f55fb3
-- HANDOVER.md: fb8aabdd320d8d1932d44b18cde6e38ed35ab56a
-- MEMORY_INDEX.md: 6eeb48edd03260d85b584d1c0e28b6a6a22b6fee
-- PROJECT_STATE.md: f0d90608b1f1140d98191931ec2d258cf10317e7
+### Docs refreshed by the latest Build #48 record
+- APP_BUILD_REPORT.md: 041aa67f836d81843511ce2f8be5f2cfd2175fc8
+- BUILD_NOTES.md: ece12faf0659f9c865da7b77fa9339ea074a36c0
+- CHANGELOG.md: 79a0140502c2edd0bd198413a8a53568baff2f31
+- HANDOVER.md: f56fe6a1d92a5dae4a8a6d0af28e05400b96464a
+- MEMORY_INDEX.md: 9e569e103b2bb3f09a496750e8423879fcb4170e
+- PROJECT_STATE.md: d3bce30d06223c1112c5874493c3ae4b7f6e671c
 - README.md: 1c7c8fb01f2c41b750fffa86df0d92dece588f19
 - CHAT_RULES.md: 1547399a12444d2ec2be65385ddc901a6eb65c7f
 - CHAT_TRANSFER_PROMPTS.md: ccb473293fefd6d166f79b634724235ea6615f1a
-- .github/workflows/jexfyz-app-build-trigger.yml: 5c5af03075f87297a31f5ee26f0e42025f05977b (renamed manual issue-triggered release workflow)
+- .github/workflows/jexfyz-app-build-trigger.yml: 5c5af03075f87297a31f5ee26f0e42025f05977b
 - CHAT_TRANSFER.md: this is the final write; its future hash is intentionally not embedded in itself.
 
 ### Canonical documents unchanged in this reconciliation (parent hashes)
@@ -257,4 +258,4 @@ The canonical map is MEMORY_INDEX.md. At this reconciliation, prepared blobs for
 
 ## 11. Final operation state
 
-This snapshot records source/test truth at audited parent e4d3ffe48e50173f85f4c6d854e03ffba47e8acd plus the command/workflow metadata change committed on top. The next chat MUST fetch live main, recursive tree, source hashes, branch/PR state and Actions before acting. Current App release is blocked by repeated pre-runner failure and is not published with current code; exact runner-dispatch root cause is unconfirmed. Active workflow is now named JE X FYZ Eksekusi Build App and uses title JE X FYZ — EKSEKUSI BUILD APP TRIGGER plus token JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1; old issue #13 does not satisfy the new guard as-is. No App Build, Firmware compile, BIN generation/publication, Firebase change, OTA, flash, device operation, or release was performed in this reconciliation.
+This snapshot records current source/test truth at parent `608a394f1b764ad8759ce240eafc90b6b9dd2c59` and the authorized Build #48 attempt. The issue-only workflow is named JE X FYZ Eksekusi Build App and uses title JE X FYZ — EKSEKUSI BUILD APP TRIGGER plus token JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1. Issue #21 triggered run 38735820460 and was closed after it failed before the first step; its job step list was empty and log fetch returned BlobNotFound. Build #40 is still the last run that executed tests/build steps; its SPAKE2 source path assertion has been corrected but never passed in a full post-fix run. Current release remains old Build #36 and current main is NOT RELEASED. Diagnose Actions usage/policy/security and escalate runner dispatch to GitHub Support before another trigger. No App/Firmware source, BIN, Firebase, OTA, flash, device or release asset was changed.

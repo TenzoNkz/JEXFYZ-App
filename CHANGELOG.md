@@ -2,7 +2,16 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
-## CURRENT CHECKPOINT — Command protocol and App build trigger rename (2026-10-15)
+## CURRENT CHECKPOINT — Build #48 blocked before first step (2026-10-15)
+
+- The user authorized the end-to-end App Build command. The current issue-only workflow was triggered once with issue [#21](https://github.com/TenzoNkz/JEXFYZ-App/issues/21), correct title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, and token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; the issue was closed after the workflow completed.
+- Build #48 / [run 38735820460](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38735820460), source/workflow commit `608a394f1b764ad8759ce240eafc90b6b9dd2c59`, failed about four seconds after start. Job `116424719108` returned no steps and its log fetch returned `BlobNotFound`. No tests, Dart analysis, APK compilation/signing, source archive, publication or download verification ran.
+- Builds #41–#45 previously exposed `runner_id=0`, empty runner/group metadata and no steps. Build #48 has the same no-step/no-log pattern, but its runner ID was not exposed by the connected job reader; the root cause remains unknown.
+- Build #40 passed audit/dependencies, Dart analysis, all 80 Flutter tests, obfuscated APK assembly, V1/V2/V3 signing and production certificate verification, but failed an obsolete SPAKE2 source-archive path assertion. The active workflow now contains the corrected path; Build #48 never reached that step, so a full post-fix pass is still unverified.
+- No new APK/source ZIP was published. Release `jexfyz-latest` still targets old Build #36 source and current main remains NOT RELEASED. Next action is external: verify Actions usage/spending, repository Actions permissions/allowed actions, and account security/verification; if normal, contact GitHub Support using runs #41–#45 and #48 with job IDs. Do not repeat the unchanged trigger without new evidence.
+- This execution did not edit App/Firmware source or the workflow and did not perform any Firmware/BIN/Firebase/OTA/flash/device operation.
+
+## PREVIOUS CHECKPOINT — Command protocol and App build trigger rename (2026-10-15)
 
 - Canonical command spellings use no `#`: `@Thinking Diskusi!`, `@Thinking Diskusi! Tanya Gemini!`, `@Thinking Diskusi! Jawaban Gemini!`, `@Thinking Eksekusi Full!`, `@Thinking Eksekusi Build App!`, and standalone `@Thinking Chat Stuck!`. Legacy aliases `@Thinking Build App!` and `@Thinking Eksekusi & Build App!` are retired. Gemini commands still require `Diskusi!` in the same message.
 - Renamed the active workflow display name to `JE X FYZ Eksekusi Build App`; the file path remains `.github/workflows/jexfyz-app-build-trigger.yml` (blob `5c5af03075f87297a31f5ee26f0e42025f05977b`). Its guarded issue trigger now requires title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. Owner validation and issue opened/reopened-only behavior remain; no push/PR shortcut was added.
