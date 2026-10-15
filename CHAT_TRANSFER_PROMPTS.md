@@ -1,13 +1,13 @@
 # JE X FYZ / JE Cooler — Chat Transfer Prompt Templates
 
-Use these templates when a conversation is nearing its context limit or a new chat is started. They are intended to recover the project from repository memory, not from a model's imperfect conversational recall.
+Use these templates when a conversation is nearing its context limit or a new chat is started. They are intended to recover the project from repository memory, not from a model's imperfect conversational recall. Current command gate: `@Thinking #Diskusi!`, `@Thinking #Diskusi! #Tanya Gemini!`, `@Thinking #Diskusi! #Jawaban Gemini!`, `@Thinking #Eksekusi Full!`, and `@Thinking #Build App!`. The two Gemini subcommands are invalid without `#Diskusi!`; App Build outcomes belong in `APP_BUILD_REPORT.md`.
 
 ---
 
 ## Prompt A — Chat limit / reconcile and save everything
 
 ```text
-@Thinking Eksekusi Full! CHAT-LIMIT RECONCILIATION — READ EVERYTHING, RECONCILE, SAVE TO REPOSITORY
+@Thinking #Eksekusi Full! CHAT-LIMIT RECONCILIATION — READ EVERYTHING, RECONCILE, SAVE TO REPOSITORY
 
 PROJECT: JE X FYZ / JE Cooler
 CANONICAL REPO: TenzoNkz/JEXFYZ-App
@@ -80,7 +80,7 @@ DONE CONDITIONS
 ## Prompt B — New chat boot / learn before asking questions
 
 ```text
-@Thinking Diskusi! NEW CHAT BOOT — LOAD JE X FYZ MEMORY BEFORE DOING ANYTHING
+@Thinking #Diskusi! NEW CHAT BOOT — LOAD JE X FYZ MEMORY BEFORE DOING ANYTHING
 
 Work on JE X FYZ / JE Cooler from repository memory. Do not assume this chat is the first conversation.
 
@@ -88,7 +88,7 @@ Work on JE X FYZ / JE Cooler from repository memory. Do not assume this chat is 
 2. Fetch live TenzoNkz/JEXFYZ-App main HEAD and recursive tree. Then read MEMORY_INDEX.md, CHAT_RULES.md, PROJECT_STATE.md and HANDOVER.md fully.
 3. Read the complete subject reference that matches the current request. For App: APP_NOTES.md. For Firmware/hardware: FIRMWARE_NOTES.md + firmware/FIRMWARE_TECHNICAL_REFERENCE.md. For OTA: OTA_PROTECTION.md + OTA_REGRESSION_MEMORY.md. For voltage/Peltier sequencing: VOLTAGE_TRANSITION_MEMORY.md. For Build App: BUILD_NOTES.md and the actual workflow. For grille/visuals: DESIGN_NOTES.md. Use CHANGELOG.md only for history.
 4. Inspect current source/test/workflow and verify all current claims. Do not trust an old SHA/path/version without a live fetch.
-5. Learn the permanent rules: Discussion is read-only; Execute is narrow; Execute Full includes relevant audit/memory sync but not App Build or Firmware compile; Build App only on explicit request; user compiles firmware; no BIN/Firebase/OTA/flash/release without separate explicit authorization; work directly on main; keep App Gradle identity unchanged.
+5. Learn and enforce the current Thinking protocol from CHAT_RULES.md. `@Thinking #Diskusi!` is full read-only discussion. Gemini prompt/answer commands require `#Diskusi!` in the same message. `@Thinking #Eksekusi Full!` executes only approved work and never implies Build App. `@Thinking #Build App!` owns end-to-end App build, App-scope repair/retry, artifact verification and `APP_BUILD_REPORT.md` logging. Reject missing-parent Gemini commands without processing their substantive content. The old standalone `#Eksekusi!` and combined `#Eksekusi & Build App!` commands are retired.
 6. Respect repository split: App repo owns all code source and every note/memory. Firmware artifact repo must contain JEXFYZ.cpp.bin only.
 7. Preserve every approved requirement, previous failure and rejected approach. Never ask the user to repeat details already in the repository or available project context. If something is missing, report the exact gap rather than inventing.
 8. Return a compact boot report: current HEAD/source version/hash, App version, workflow/test/PR state, relevant constraints, known bugs and exact unverified gates. Then wait for the user's next command. Do not write changes or start any build during boot.
@@ -105,6 +105,7 @@ Before marking an execution complete:
 3. Update PROJECT_STATE.md only if current state or validation gates changed.
 4. Add a concise dated CHANGELOG entry for significant source/config/architecture changes.
 5. Refresh CHAT_TRANSFER.md if the current checkpoint has changed; always read its old content first.
+6. For any App Build attempt, append the exact run outcome, source commit, fixes, tests, APK/checksum/signing checks and unresolved gates to APP_BUILD_REPORT.md so a separate Discussion chat has a durable record.
 6. Update MEMORY_INDEX.md and all cross-links if file paths/names changed.
 7. Verify post-write content, branch HEAD, blob hashes and no stale path/version references.
 8. Do not report an unrun test/build/compile/device check as passed.
