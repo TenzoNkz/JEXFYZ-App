@@ -1514,7 +1514,8 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
         // The displayed value uses its own retargetable controller, independent
         // from the looping phase used for the needle's natural ON wobble.
       } else {
-        controller.reset();
+        // Preserve the animation phase. The activity transition fades motion smoothly
+        // on/off rather than snapping a status icon back to its first frame.
       }
     }
     _syncAnimation();
