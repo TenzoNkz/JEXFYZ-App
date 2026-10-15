@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — CHAT TRANSFER SNAPSHOT
 
-Snapshot date: 2026-10-15 (Asia/Jakarta). This transfer is refreshed last. Live `main` HEAD immediately before this transfer write: `c203e5a31b804c1b2bd592e1a13507962cf00908` after the direct-main Build App chat-limit protocol documentation updates. The current recursive tree/root SHA was not returned by the available connector during the repository checks; re-fetch the full recursive tree on next boot and do not reuse historical tree-root/count data as live truth. This file is a boot bridge, not a substitute for fetching live GitHub state.
+Snapshot date: 2026-10-15 (Asia/Jakarta). This transfer is refreshed last. Live main HEAD immediately before this transfer write: 78c311912f75cf8fe08b4b3e7190c9fe407c6e27, after the Color Picker staged-selection source, localization, regression-test and documentation updates. The current recursive tree/root SHA was not returned by the available connector; re-fetch the full recursive tree on next boot and do not reuse historical tree-root/count data as live truth. This file is a boot bridge, not a substitute for fetching live GitHub state.
 
 ## 0. New-chat boot — mandatory order
 
@@ -17,17 +17,17 @@ Snapshot date: 2026-10-15 (Asia/Jakarta). This transfer is refreshed last. Live 
 
 - **Live checkpoint:** refreshed during this documentation-only protocol update on 2026-10-15 (Asia/Jakarta).
 - **Canonical repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`.
-- **Live checkpoint before this transfer write:** `main` HEAD `c203e5a31b804c1b2bd592e1a13507962cf00908`. The preceding commit sequence updates only protocol/memory documentation. The latest fully checked branch/PR record from the preceding checkpoint showed five branch names and zero open PRs; recheck live state next boot. The current recursive tree/root SHA was not returned by the available connector, so retrieve it afresh.
+- **Live checkpoint before this transfer write:** main HEAD 78c311912f75cf8fe08b4b3e7190c9fe407c6e27. The preceding work includes the Color Picker source behavior, localization and regression assertions plus canonical documentation updates. The previously checked branch/PR record showed five branch names and zero open PRs; recheck live state next boot. The current recursive tree/root SHA was not returned by the available connector, so retrieve it afresh.
 - **Active Firmware source:** `firmware/JEXFYZ-V6.6.ino`, blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`, `FW_VERSION = "V6.6"`. Exactly one active versioned `.ino` is tracked and filename/version align. **USER ACCEPTANCE 2026-10-14:** user considers V6.6 correct/final and reports successful compilation and two successful Online OTA flashes/updates with the same version V6.6. Do not modify/recompile/reflash unless the user explicitly reopens Firmware work and separately authorizes the operation. Source-to-BIN provenance remains independently unverified, but is not an active task by itself.
-- **Current App identity/source:** `lib/main.dart` blob `f4ee1e9b9e74f103e0f362db813dea642f285470` (267,270 bytes); `test/widget_test.dart` blob `4b7bf68f3c73d6ffe80509ccb75ce6e08607b020` (35,762 bytes); `lib/app_settings.dart` `232a7575460e5417f7b760f24b5057687a47ee1a`; `lib/floating_monitor.dart` `cfc21b3dc198b925786aa98658d647b1d8a3637b`. Package `com.horizontalzzz.jexfyz`, pubspec `1.0.0+3`; preserve Gradle `versionName "Telegram @horizontalzzz"`.
+- **Current App identity/source:** `lib/main.dart` blob `150ca0e34478e27d6fd62ed55f19411d71c2a287`; `test/widget_test.dart` blob `f3c7c4a0dd15f4aec24d14006d467dd46b551641`; `lib/app_settings.dart` blob `f784a83baf312b563a1d3255dda4c012a9baee1a`; `lib/floating_monitor.dart` blob `cfc21b3dc198b925786aa98658d647b1d8a3637b`. Package `com.horizontalzzz.jexfyz`, pubspec `1.0.0+3`; preserve Gradle `versionName "Telegram @horizontalzzz"`.
 - **Current native notification files:** `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt` blob `aecfc87121f2195ef6724613c612d674ed95ae55`; `android/app/src/main/res/drawable/ic_notification.xml` blob `cda9e8404d14a62a61157ec59fae2e491c19f5f7`. The notification helper uses the transparent bold-white JE vector as the sole small icon and sets no large icon; launcher/app imagery still uses `jexfyzicon`.
 - **Fan motion:** BLE voltage class continues to set speed: 5V = 2600 ms, 9V = 1250 ms, 12V = 620 ms. Voltage changes preserve phase by easing to an equivalent full-turn boundary. On OFF, the Fan coasts forward with ease-out over up to 0.16 turn (duration is scaled to current cycle), then retains the resting angle; blade/hub colours remain full-strength.
 - **Peltier icon/motion:** the square thermoelectric module frame, center box and corner bolts are removed. The icon is a free-standing six-branch frost crystal with particles. While ON, crystal drift animates and frost density/intensity interpolates over 420 ms across voltage classes; when OFF, controllers stop and the crystal freezes at its current pose at full colour. No OFF fade. This is decorative UI, not a physical ice or temperature measurement.
-- **Dialog sizing:** Color Picker title 22sp, selected-color label/Cancel 15sp, swatches 42dp; bottom-pinned, no draggable outer scroll panel, and localized Cancel dismisses without sending RGB. Peltier Safety title 24sp, body 17sp, action text 16sp with 48–50dp targets. Existing Fan-before-Peltier approval gate is unchanged; palette colors are unchanged.
+- **Dialog sizing/interaction:** Color Picker title 22sp, selected-color label/action buttons 15sp, swatches 42dp; bottom-pinned, no draggable outer scroll panel. Swatches change only the draft preview/checkmark/name. Localized top-left Cancel discards the draft; localized top-right Select applies the existing confirmed COLOR command and closes only on success. Outside taps and Android system Back are blocked. Updated regression assertions have NOT RUN. Peltier Safety title 24sp, body 17sp, action text 16sp with 48–50dp targets. Fan-before-Peltier approval gate and the 36 palette colors are unchanged.
 - **Latest successful App Build:** run #35 / ID `38669526891` on code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38669526891). Security/architecture audit, dependency resolution, Dart analyze, all 74 Flutter tests, APK build, V1/V2/V3 verification and re-downloaded release-asset verification passed. The release contains one `JEXFYZ-release.apk` (54,521,947 bytes; SHA-256 `77e57ece6c194ec97ce9f4e72d379f848173cd2cf905f66a74e6b037ad82e5c1`). Production certificate SHA-256 is `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. JAR/V1 still warns that various dependency `META-INF` entries (including `META-INF/services/a1` and `META-INF/services/b1`) are not protected; V1/V2/V3 validations nevertheless passed on the built and downloaded APK. Physical-device rendering/MT Manager verification remains open.
-- **Build workflow:** `.github/workflows/jexfyz-app-build-trigger.yml`, blob `0e400cbdedfd54506ae3ac3255da41580c86d750`. Build #35 verified V1/V2/V3 on both built APK and downloaded release asset using the explicit min-SDK verification path; Android manifest minSdk remains 24. JAR/V1 warnings for dependency `META-INF` entries remain. Trigger title `JE X FYZ — BUILD APP TRIGGER`, required body token `JEXFYZ_BUILD_TRIGGER_V1`, Ubuntu 24.04 / Java 17 / Flutter 3.47.2 / Gradle 9.3.1. Current smooth-animation source is now built and tested.
+- **Build workflow:** `.github/workflows/jexfyz-app-build-trigger.yml`, blob `0e400cbdedfd54506ae3ac3255da41580c86d750`. Build #35 verified V1/V2/V3 on both built APK and downloaded release asset using the explicit min-SDK verification path; Android manifest minSdk remains 24. JAR/V1 warnings for dependency `META-INF` entries remain. Trigger title `JE X FYZ — BUILD APP TRIGGER`, required body token `JEXFYZ_BUILD_TRIGGER_V1`, Ubuntu 24.04 / Java 17 / Flutter 3.47.2 / Gradle 9.3.1. Build #35 covers earlier UI source; the Color Picker staged-selection update is newer than that APK and is NOT built or tested yet.
 - **Artifact repository:** `TenzoNkz/JEXFYZ-Firmware` main HEAD `cc0a0ae32b826753525c3f2a4442526648cef631`, root tree `b4db8f4e86dfb97d3313c70428b92eb9d4bd7511`; live recursive root contains only `JEXFYZ.cpp.bin`, blob `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, 1,455,936 bytes. Provenance matching V6.6 source remains UNVERIFIED.
-- **Operation boundary:** Current App source blob `f4ee1e9b9e74f103e0f362db813dea642f285470` and widget test blob `4b7bf68f3c73d6ffe80509ccb75ce6e08607b020` are built/tested by run #35, code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`. Build #34 on prior commit failed one Fan Speed midpoint assertion and was correctly blocked before APK compilation; symmetric cubic smoothstep fixed the contract, then 74 tests and analyze passed. Device rendering remains UNVERIFIED. No Firmware source/compile, BIN replacement, Firebase metadata, OTA/flash/device operation occurred. User accepts Firmware V6.6 as final after two same-version Online OTA updates. Phase remains DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED.
+- **Operation boundary:** Current App source blob `150ca0e34478e27d6fd62ed55f19411d71c2a287`, localization blob `f784a83baf312b563a1d3255dda4c012a9baee1a`, and widget test blob `f3c7c4a0dd15f4aec24d14006d467dd46b551641` contain the Color Picker draft-selection fix and source-contract assertions. They are newer than Build #35 and have NOT been analyzed, tested or built. Latest prior successful build remains #35 on commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`; no Build App workflow was triggered for this `#Eksekusi Full!` task. Flutter/Dart were unavailable in the execution environment, so tests/analyze were not run. Device rendering remains UNVERIFIED. No Firmware source/compile, BIN replacement, Firebase metadata, OTA/flash/device operation occurred. User accepts Firmware V6.6 as final after two same-version Online OTA updates. Phase remains DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED.
 
 ## 2. Permanent Thinking commands and authorization limits
 
@@ -137,12 +137,12 @@ Read VOLTAGE_TRANSITION_MEMORY.md completely before any rail/Peltier change.
 - App name JE Cooler; brand/header JE X FYZ. Flutter/Dart Android app uses `flutter_blue_plus`; Horizon Cooler App remains the primary architecture/UI reference.
 - UI direction: dark header, white rounded content panel, compact VOLTAGE/ADAPTIVE top tabs. Home includes Hotside/Battery temperatures, voltage, Adaptive, Peltier/Fan, Fan speed and Notify reason.
 - Menu path: VOLTAGE → CONTROL → ADAPTIVE → LED → TEMPERATURE. Keep the compact sideways submenu; no unrelated redesign during QC.
-- LED UI: compact mode-name-only strip with four LEDs on each side; preview visibility is independent of hardware Brightness. Color Picker has 36 localized hue-ordered presets, no HEX labels, legacy aliases including Cyan #00FFFF, and is pinned to the bottom safe area. Localized top-left Cancel dismisses without sending RGB; swatch selection retains the COLOR command path.
+- LED UI: compact mode-name-only strip with four LEDs on each side; preview visibility is independent of hardware Brightness. Color Picker has 36 localized hue-ordered presets, no HEX labels, legacy aliases including Cyan #00FFFF, and is pinned to the bottom safe area. Swatches stage a draft with local checkmark/preview/name only; no BLE COLOR command is sent until localized top-right Select. Select applies through confirmed COLOR and closes only on success; a failed/unconfirmed command leaves the current applied RGB unchanged and the dialog open. Localized top-left Cancel discards the draft. Outside taps and system Back cannot dismiss the modal.
 - Dashboard Fan rotor follows authoritative BLE voltage: 5V = 2600 ms, 9V = 1250 ms, 12V = 620 ms. Voltage transitions preserve angular phase; Fan OFF eases forward to a full stop and retains its final pose with full-colour blades/hub.
 - Peltier dashboard symbol is now a free-standing six-arm crystal (no square frame, center box or corner bolts). Frost intensity/density transitions over 420 ms across voltage classes while ON; when OFF, the full-colour crystal freezes in place and does not fade. Crystal drift is periodic when animated; this is only visual feedback, not a physical ice/temperature measurement.
 - Fan Speed keeps its percentage bound to authoritative telemetry. A dedicated controller retargets its visible gauge from the current rendered level to the new target over 420 ms; a further target arriving mid-transition continues from the current visible level. OFF eases to 0 over 520 ms. The subtle ON needle wobble uses integer-frequency sine harmonics and is continuous at the loop boundary.
 - Voltage-bolt sheen moves sinusoidally back and forth instead of snapping to the left edge. Bluetooth ripples use a squared-sine opacity envelope that reaches transparency with zero slope at repeat boundaries.
-- Color Picker typography: 22sp title, 15sp selected-color label and Cancel, 42dp swatches and 44dp Cancel touch target. Peltier Safety: 24sp title, 17sp body, 16sp actions, larger responsive padding and 48–50dp button targets. No palette-color change. The Fan-before-Peltier gate and Cancel/Turn On Fan semantics remain unchanged.
+- Color Picker typography: 22sp title, 15sp selected-color label and actions, 42dp swatches, and 44dp Cancel/Select targets. Peltier Safety: 24sp title, 17sp body, 16sp actions, larger responsive padding and 48–50dp button targets. Palette colors are unchanged. The Fan-before-Peltier gate and Cancel/Turn On Fan semantics remain unchanged.
 - Android notifications use a bold white `JE` vector monogram with transparent background as the sole small icon (`R.drawable.ic_notification`); no large icon is set. Event/status stays the localized body below JE X FYZ, tap opens the App, BLE/Floating Monitor service messages stay meaningful, and Android 13+ permission flow remains unchanged.
 - Manual voltage: 5/9/12 V with sequence 5→9→12→9→5. Command completion awaits authoritative matching voltage telemetry.
 - Fan PWM manual range 50–100%; setting belongs to Manual Volt, not Adaptive-managed Fan. Firmware telemetry is authoritative; ACK alone does not prove physical state.
@@ -177,7 +177,7 @@ Read OTA_PROTECTION.md and OTA_REGRESSION_MEMORY.md fully before any OTA change.
 
 - App Build and Firmware compile are separate operations; `@Thinking #Eksekusi Full!` does not imply Build App.
 - Prior successful App Build before current loop/speed edits was run `38566673160` on commit `4dccbd7eedcae4a8d1a9cd2b41d5cfda9055416b`; it validated the prior source only. The current source build is run #35 `38669526891`, commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`; 74 tests/analyze passed, V1/V2/V3 and downloaded asset verified, asset SHA-256 `77e57ece6c194ec97ce9f4e72d379f848173cd2cf905f66a74e6b037ad82e5c1`.
-- Current source adds retargetable Fan Speed interpolation, integer-harmonic loop-seamless wobble, sinusoidal voltage sheen and a squared-sine Bluetooth ripple envelope; `jexSmoothFanSpeedLevel` now uses symmetric cubic smoothstep after Build #34 revealed the prior curve's midpoint did not satisfy the explicit test contract. Build #35 then passed all 74 Flutter tests and Dart analyze.
+- Build #35 includes retargetable Fan Speed interpolation, integer-harmonic loop-seamless wobble, sinusoidal voltage sheen and a squared-sine Bluetooth ripple envelope; `jexSmoothFanSpeedLevel` uses symmetric cubic smoothstep after Build #34 revealed the prior curve's midpoint did not satisfy the explicit test contract. Build #35 passed all 74 Flutter tests and Dart analyze for its own source commit. The later Color Picker staged-selection change is unbuilt and its new regression assertions have not run.
 - Active workflow `.github/workflows/jexfyz-app-build-trigger.yml`, blob `0e400cbdedfd54506ae3ac3255da41580c86d750`. Trigger title `JE X FYZ — BUILD APP TRIGGER`, body token `JEXFYZ_BUILD_TRIGGER_V1`; only owner/title/token-validated issue-open/reopen. Normal push/PR must not build APK.
 - Toolchain: Ubuntu 24.04, Java 17, Flutter 3.47.2 stable, Gradle 9.3.1. Intended output: one obfuscated, production-signed normal APK `JEXFYZ-release.apk`, release tag `jexfyz-latest`; no Play Store bundle/Actions artifact.
 - The only App Build command is `@Thinking #Build App!`. It owns end-to-end build/validation, justified App-scope repairs and re-runs, Release/asset verification, and a required durable entry in `APP_BUILD_REPORT.md`. It does not authorize Firmware compile, BIN, Firebase, OTA, flash or device operations. Latest previously verified success remains Build #35 / run `38669526891`; do not call this documentation commit a new build.
@@ -224,8 +224,8 @@ Read DESIGN_NOTES.md before any visual iteration.
 1. Latest authorized manual App Build #35 is complete on code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`; it passed Dart analyze, all 74 Flutter tests, V1/V2/V3 checks and downloaded release verification. Next is device-side install/rendering and MT Manager verification.
 2. Build #35 asset SHA-256 is `77e57ece6c194ec97ce9f4e72d379f848173cd2cf905f66a74e6b037ad82e5c1`; V1/V2/V3 passed for built and downloaded assets. JAR/V1 warns that some dependency META-INF entries remain unprotected, including `META-INF/services/a1` and `META-INF/services/b1`.
 3. On device, verify Fan coast-down/full colour; box-free Peltier crystal/no OFF fade; Speed gauge animates smoothly from each current value to successive target changes (including an update mid-transition), percentage text stays authoritative, ON wobble has no loop jump and OFF reaches far-left/0 over 520 ms.
-4. Verify voltage sheen has no snap at either endpoint, Bluetooth ripples fade smoothly when radius wraps, plus notification JE icon/tap, dialog sizes/Cancel, offline `--` fallback and authoritative state after reconnect.
-5. The current widget regression suite and Dart analyze passed on Build #35 (74 tests). Physical device rendering and MT Manager verification remain UNVERIFIED.
+4. Verify voltage sheen has no snap at either endpoint, Bluetooth ripples fade smoothly when radius wraps, plus notification JE icon/tap, Color Picker draft preview/Select confirmation/Cancel rollback/outside and system-Back blocking, offline `--` fallback and authoritative state after reconnect.
+5. Build #35's widget regression suite and Dart analyze passed on its older source commit (74 tests). The subsequent Color Picker tests/source changes have NOT RUN in Flutter/Dart; physical device rendering and MT Manager verification remain UNVERIFIED.
 6. Preserve no-standalone Battery Protection Guard UI, 1 Hz phone Battery heartbeat/five-second Firmware freshness TTL and one-App/one-cooler pairing as unverified enforcement.
 7. Firmware V6.6 is final by user acceptance after two reported successful same-version Online OTA updates. Do not edit/compile Firmware or run BIN/Firebase/OTA/flash operations unless user explicitly reopens Firmware work and separately authorizes it. The historical rapid-Hotside-rise request remains unimplemented; do not add proactively.
 8. App Build #35 and release publication completed successfully. No Firmware compile, BIN/Firebase/OTA/flash or physical hardware operation was performed.
@@ -241,24 +241,24 @@ Read DESIGN_NOTES.md before any visual iteration.
 
 Never equate test file with passing run; compile with full OTA installation; blue LED with successful HTTP; ACK with hardware state; reboot with proven brownout; version bump with BIN build; or existing BIN with source provenance.
 
-## 16. Live blob fingerprints at pre-transfer HEAD `c203e5a31b804c1b2bd592e1a13507962cf00908`
+## 16. Live blob fingerprints at pre-transfer HEAD 78c311912f75cf8fe08b4b3e7190c9fe407c6e27
 
-Checkpoint taken immediately before this transfer replacement. The canonical-document blob hashes below reflect the direct-main documentation commits from this handoff; unchanged source/config/test/workflow hashes are carried forward from the preceding verified checkpoint. The connector did not provide a current recursive tree/root-tree SHA, so tree enumeration and tree-root verification remain a required next-boot check. This transfer file's own new blob SHA is intentionally omitted.
+Checkpoint taken immediately before this transfer replacement. The documentation, App source, localization, and widget-test hashes below were re-fetched from live main; other unchanged source/config/test/workflow hashes are carried forward from the previous verified checkpoint.
 
 Canonical project memory and docs:
-- `APP_NOTES.md`: `9a656031e92fe16318e1d5c454fc3f92557196ee`
+- `APP_NOTES.md`: `c617f56ef3aac43a1b8ad07d882839584a38ec07`
 - `APP_BUILD_REPORT.md`: `6a83a61cc9b56093224fa3292b3ce9aff641e237`
 - `BUILD_NOTES.md`: `13de03cd56091320a213754c05bb8d048b9d29c6`
-- `CHANGELOG.md`: `a35cd0cf1de3b9830499353cf2d71a98ba0b3020`
+- `CHANGELOG.md`: `dd4097e01ff2088d2e4a7f456f0810890db6ee7b`
 - `CHAT_RULES.md`: `6efb399c4946621e67d38f288d6f7b63900c8870`
 - `CHAT_TRANSFER_PROMPTS.md`: `53b4b98703afb37e8ad5e55f28ceb69faeb93b6c`
 - `DESIGN_NOTES.md`: `e04382659dfdd618de0a156046f140452d275dc7` (2128 bytes)
 - `FIRMWARE_NOTES.md`: `db53605779f157b3c966b15a07bef73199ca575d` (11583 bytes)
-- `HANDOVER.md`: `401881eeea851335f2c782c3d7eec69c7396a789`
-- `MEMORY_INDEX.md`: `e35072ac5bf0a2fc4b50b369356043e592cc52a7`
+- `HANDOVER.md`: `2fb29892bf6f1d2d79ffd0baa209cd468744c102`
+- `MEMORY_INDEX.md`: `94923a8972258944242e958cc05dd60bbf1fa031`
 - `OTA_PROTECTION.md`: `06beb86b749b0f0e14c8cb517e43fe7c0f66a4e1` (4259 bytes)
 - `OTA_REGRESSION_MEMORY.md`: `4342f3da76cf2962140146fbbe0ff8de5e956f4d`
-- `PROJECT_STATE.md`: `b2bdb5e941bab889522651f946026d1c7835376e`
+- `PROJECT_STATE.md`: `55cf0c517cd2480cc6f7d1a77c6083cc916e4be3`
 - `README.md`: `e1811590b443a9ea3a2b4c32eee0e15ff9758b29`
 - `VOLTAGE_TRANSITION_MEMORY.md`: `1c2167659fd0ed8f5db16bf63eb7897344a690ea`
 
@@ -269,16 +269,16 @@ Workflow and package files:
 - `pubspec.yaml`: `8f558273e21692af9958f914527fdc62d623d63a` (833 bytes)
 
 App source:
-- `lib/app_settings.dart`: `232a7575460e5417f7b760f24b5057687a47ee1a` (52678 bytes)
+- `lib/app_settings.dart`: `f784a83baf312b563a1d3255dda4c012a9baee1a`
 - `lib/floating_monitor.dart`: `cfc21b3dc198b925786aa98658d647b1d8a3637b` (51218 bytes)
 - `lib/jex_animated_glyph.dart`: `c9c5c2802cb0ed363c042620511148b0d58d36c4` (1730 bytes)
-- `lib/main.dart`: `f4ee1e9b9e74f103e0f362db813dea642f285470` (267270 bytes)
+- `lib/main.dart`: `150ca0e34478e27d6fd62ed55f19411d71c2a287`
 
 Tests:
 - `test/app_protocol_notify_contract_test.dart`: `92214dd90178c705844d3979d3f8f7bd17bcc4b8` (867 bytes)
 - `test/firmware_touch_adaptive_sync_test.dart`: `2d3fea509343a03b8d23623f4dcb2dd7fd972d39` (1622 bytes)
 - `test/v6_6_qc_contract_test.dart`: `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a` (20211 bytes)
-- `test/widget_test.dart`: `4b7bf68f3c73d6ffe80509ccb75ce6e08607b020` (35762 bytes)
+- `test/widget_test.dart`: `f3c7c4a0dd15f4aec24d14006d467dd46b551641`
 
 Android configuration, native code and icons:
 - `android/app/build.gradle`: `6e216204908603d213700bcfcbc7f040f73d96f8` (4679 bytes)
@@ -309,14 +309,14 @@ Forensic-only archives:
 - `archive/LEGACY_TRANSFER_HISTORY_2026-10-14.md`: `0438b7006d437d2c24d9e76d6aca7352ad5b0b2b` (101008 bytes)
 
 Artifact repository separate check: `TenzoNkz/JEXFYZ-Firmware` main HEAD `cc0a0ae32b826753525c3f2a4442526648cef631`; live root has only `JEXFYZ.cpp.bin`, blob `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, 1,455,936 bytes. Source/BIN provenance remains independently unverified.
-## 17. Current documentation-protocol execution outcome
+## 17. Latest Color Picker execution outcome
 
-- This documentation-only execution clarified the Build App chat-limit handoff: Prompt D is used exactly once in the replacement Build App chat to LOAD + CONTINUE from repository/build evidence; there is no separate Build App recap chat/prompt. It updated command rules, Prompt D, build notes/report, handover, index, project state, README and changelog.
-- Latest pre-transfer `main` HEAD: `c203e5a31b804c1b2bd592e1a13507962cf00908`. Latest recorded App Build remains #35 / `38669526891`, built commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`; this documentation-only update did not trigger a new build.
-- Updated document blob SHA values are listed in section 16. App source, widget tests, Firmware source and build workflow were not changed. No tests/analyze/App Build were run because this was a documentation/protocol update.
-- Artifact repository `TenzoNkz/JEXFYZ-Firmware` was re-fetched: `JEXFYZ.cpp.bin` remains blob `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, base64 content was not materialized for display. The repository root is expected to remain BIN-only; recursive root enumeration was not returned by the available connector in this task. Firmware V6.6/BIN, Firebase, OTA, flash and hardware remain untouched.
-- Live branch names checked: `diag/latest-stable-v16`, `diagnostic/v1.6-heap-check`, `fix/adaptive-power-sequencing`, `main`, `tmp-jexfyz-v5-test`. Open PR count: 0. Branch-tip SHAs and current recursive tree SHA still require retrieval on next boot.
+- This `@Thinking #Eksekusi Full!` execution implemented the agreed Color Picker interaction: swatches update a local draft; localized Select applies the current draft through confirmed COLOR and closes only on success; Cancel discards the draft; outside taps and Android system Back are blocked. Select is localized as English `Select` and Indonesian `Pilih`. Failure/unconfirmed apply keeps the dialog open and preserves the prior applied RGB state.
+- Updated `test/widget_test.dart` with source-contract assertions for Select, draft-only swatches, localization and dismissal guards. Static repository readback checks passed, but Dart/Flutter tests and analysis were NOT RUN because those SDKs are not installed in this execution environment. No App Build/APK was triggered; the fix is NOT YET BUILT.
+- Updated canonical `APP_NOTES.md`, `PROJECT_STATE.md`, `HANDOVER.md`, `MEMORY_INDEX.md` and `CHANGELOG.md`. Latest successful App Build remains #35 / run `38669526891`, source commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`; that artifact does not contain this new Color Picker behavior.
+- Latest pre-transfer main HEAD: 78c311912f75cf8fe08b4b3e7190c9fe407c6e27. Updated document and source/test blob hashes are listed in section 16. Firmware source V6.6, build workflow, BIN, Firebase, OTA, flash and hardware were not changed or operated. Artifact repository remains outside this scoped work.
 
+## 18. Final rule for the next chat
 ## 18. Final rule for the next chat
 
 Do not restart project development from this snapshot alone. Boot from live main, read canonical memories fully, preserve every durable user decision and rejected approach, recover missing history from archives without guessing, and persist meaningful outcomes in the correct canonical note. Replace the transfer file at the end of every substantial context-limit reconciliation, after reading its prior version completely.
