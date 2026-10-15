@@ -106,9 +106,9 @@ Before marking an execution complete:
 4. Add a concise dated CHANGELOG entry for significant source/config/architecture changes.
 5. Refresh CHAT_TRANSFER.md if the current checkpoint has changed; always read its old content first.
 6. For any App Build attempt, append the exact run outcome, source commit, fixes, tests, APK/checksum/signing checks and unresolved gates to APP_BUILD_REPORT.md so the next Build App chat can resume through the one-shot Prompt D LOAD + CONTINUE; a Discussion chat may also consult the same evidence record.
-6. Update MEMORY_INDEX.md and all cross-links if file paths/names changed.
-7. Verify post-write content, branch HEAD, blob hashes and no stale path/version references.
-8. Do not report an unrun test/build/compile/device check as passed.
+7. Update MEMORY_INDEX.md and all cross-links if file paths/names changed.
+8. Verify post-write content, branch HEAD, blob hashes and no stale path/version references.
+9. Do not report an unrun test/build/compile/device check as passed.
 ```
 
 

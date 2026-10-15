@@ -1,3 +1,11 @@
+## 2026-10-15 — Chat Stuck recovery and transfer checkpoint reconciliation
+
+- Resumed the authorized chat-limit reconciliation from live `main` after inspecting the prior recovery checkpoint; stopped repetitive fingerprint-only updates and used an evidence-first, grouped documentation update.
+- Rechecked the full recursive App repository tree: 66 entries, 48 tracked files, including 20 Markdown files and four Dart tests; tree response was not truncated. Active Firmware inventory remains exactly `firmware/JEXFYZ-V6.6.ino` with `FW_VERSION = "V6.6"`. The artifact repository contains only `JEXFYZ.cpp.bin`.
+- Reconfirmed five App branches and zero open pull requests at the checkpoint. The only authorized workflow remains the manual issue-triggered App workflow; no App Build or Firmware/device operation was triggered.
+- Corrected a stale Floating Monitor hash in `PROJECT_STATE.md`, expanded `MEMORY_INDEX.md` routing for the ADB/SurfaceFlinger FPS and telemetry work, and fixed duplicate list numbering in Prompt C. `CHAT_TRANSFER.md` is refreshed separately and last after the resulting parent commit and document fingerprints are verified.
+- Current Color Picker and Floating Monitor/ADB FPS code remains SOURCE IMPLEMENTED / NOT RUN / NOT BUILT. Flutter/Dart analysis/tests and Android/Kotlin build were not run in this environment; device-side permission granting and dynamic foreground game FPS remain UNVERIFIED. Build #35 remains valid only for its older source commit.
+- No Firmware source, BIN, Firebase metadata, protected OTA code, build workflow, release, physical device or hardware was changed or operated.
 # JE X FYZ / JE Cooler — Changelog
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
