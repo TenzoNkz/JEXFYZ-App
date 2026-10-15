@@ -658,11 +658,17 @@ void main() {
     final peltier = source.substring(peltierStart, peltierEnd);
     expect(peltier, isNot(contains('moduleRect')));
     expect(peltier, isNot(contains('drawRRect')));
-    expect(peltier, contains('final branch = Path()'));
-    expect(peltier, contains('Fractional opacity interpolates particle count'));
-    expect(peltier, contains('final rotation = angle / 6'));
-    expect(peltier, contains('final crystalColor = color.withValues(alpha: 1)'));
-    expect(peltier, contains('math.sin(angle) * .035'));
+    expect(peltier, contains('final spine = Path()'));
+    expect(peltier, contains('final branches = Path()'));
+    expect(peltier, contains('final particleCountValue = frostParticleCountOverride ??'));
+    expect(peltier, contains('final voltageStrength = ((particleCountValue - 2.0) / 6.0)'));
+    expect(peltier, contains('canvas.rotate(angle / 6)'));
+    expect(peltier, contains('for (var i = 0; i < 6; i++)'));
+    expect(peltier, contains('for (var i = 0; i < 4; i++)'));
+    expect(peltier, contains('color.withValues(alpha: 1)'));
+    expect(peltier, contains('fill(color.withValues(alpha: .28 + .52 * voltageStrength))'));
+    expect(peltier, contains('fill(Colors.white.withValues(alpha: .86))'));
+    expect(peltier, contains('math.sin(angle + i)'));
     expect(peltier, isNot(contains('frostVisibilityOverride')));
     expect(peltier, isNot(contains('coolingFade')));
     expect(peltier, isNot(contains('final petal = Path()')));
@@ -671,7 +677,7 @@ void main() {
   test('Fan OFF keeps full-colour blades while the coast controller settles', () {
     final source = File('lib/main.dart').readAsStringSync();
     final bladeStart = source.indexOf('void _drawFanBlade');
-    final bladeEnd = source.indexOf('void _drawHeatWave', bladeStart);
+    final bladeEnd = source.indexOf('void paint(Canvas canvas, Size size)', bladeStart);
     final fanStart = source.indexOf('case JexAnimatedIconKind.fan:');
     final fanEnd = source.indexOf('case JexAnimatedIconKind.speed:', fanStart);
     expect(bladeStart, isNonNegative);
@@ -714,9 +720,16 @@ void main() {
     expect(speed, isNot(contains('active ? 1 : .52')));
   });
 
-  test('Repeating voltage and Bluetooth effects fade across loop boundaries', () {
+  test('Voltage charge sweep returns smoothly and Bluetooth effects fade across loop boundaries', () {
     final source = File('lib/main.dart').readAsStringSync();
-    expect(source, contains('final sheenX = s * (.46 + .62 * math.sin(angle));'));
+    final voltageStart = source.indexOf('case JexAnimatedIconKind.voltage:');
+    final voltageEnd = source.indexOf('case JexAnimatedIconKind.adaptive:', voltageStart);
+    expect(voltageStart, isNonNegative);
+    expect(voltageEnd, greaterThan(voltageStart));
+    final voltage = source.substring(voltageStart, voltageEnd);
+    expect(voltage, contains('canvas.clipPath(bolt)'));
+    expect(voltage, contains('final sweepY = s * (.13 + .72 * (.5 - .5 * math.cos(angle)));'));
+    expect(voltage, contains('fill(Colors.white.withValues(alpha: .22 + .10 * pulse))'));
     final bluetoothStart = source.indexOf('case JexAnimatedIconKind.bluetooth:');
     final bluetoothEnd = source.indexOf('case JexAnimatedIconKind.generic:', bluetoothStart);
     expect(bluetoothStart, isNonNegative);
