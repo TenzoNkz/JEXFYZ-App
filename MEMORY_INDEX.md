@@ -4,7 +4,7 @@ Code/source checkpoint audited immediately before this documentation-only reconc
 
 Current release/QC truth is canonical in `APP_BUILD_REPORT.md`: Build #45 / run `38719397780` failed before the first step with `runner_id=0` and no logs; #41–#45 share this signature. Diagnostic probes #1/#2 (on Ubuntu 24.04/22.04) also failed before steps; the diagnostic workflow has since been deleted from current `main` by commit `41627c26189706bc9f4aabad15a83857cda55229` and is not available to run. Root cause for hosted runner dispatch remains unknown. Build #40 passed the security/license audit, dependency resolution, Dart analysis, all 80 Flutter tests, obfuscated APK compile, signing V1/V2/V3 and production certificate verification; its generated source ZIP passed integrity, then a wrong source-path assertion stopped publication. Current workflow has the corrected path, but no complete post-fix run has reached steps. Public `jexfyz-latest` still contains only the older Build #36 APK (commit `893393388b99fc6d9e59c420070a159a29e45e9a`); current source is NOT RELEASED.
 
-Artifact repo `TenzoNkz/JEXFYZ-Firmware` main `cc0a0ae32b826753525c3f2a4442526648cef631` contains only `JEXFYZ.cpp.bin` (blob `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, 1,455,936 bytes); source/BIN provenance remains unverified. Five App branches, zero open PRs. The active App Build workflow is only `.github/workflows/jexfyz-app-build-trigger.yml` (blob `225584c8feaf8e43ff7228fd6ab3dc84491e34ba`). For runner failures, see `APP_BUILD_REPORT.md` and `BUILD_NOTES.md`; don't blindly retry or direct the next chat to the removed diagnostic file. This recovery updates documentation only: no App Build, firmware compile, BIN/Firebase/OTA/flash/device or release operation was performed.
+Artifact repo `TenzoNkz/JEXFYZ-Firmware` main `cc0a0ae32b826753525c3f2a4442526648cef631` contains only `JEXFYZ.cpp.bin` (blob `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, 1,455,936 bytes); source/BIN provenance remains unverified. Five App branches, zero open PRs. The active App Build workflow is only `.github/workflows/jexfyz-app-build-trigger.yml` (blob `5c5af03075f87297a31f5ee26f0e42025f05977b`). For runner failures, see `APP_BUILD_REPORT.md` and `BUILD_NOTES.md`; don't blindly retry or direct the next chat to the removed diagnostic file. This execution updated the command protocol and the App Build workflow name/trigger guard only; no App Build, firmware compile, BIN/Firebase/OTA/flash/device or release operation was performed.
 
 ## New-chat boot order
 1. Read `CHAT_TRANSFER.md` completely.
@@ -16,12 +16,12 @@ Artifact repo `TenzoNkz/JEXFYZ-Firmware` main `cc0a0ae32b826753525c3f2a444252664
 7. Only the general project-memory reconciliation Prompt A replaces `CHAT_TRANSFER.md`, and only when that reconciliation is actually needed. A Build App handoff uses `APP_BUILD_REPORT.md` + Prompt D; do not run Prompt A or replace `CHAT_TRANSFER.md` just to transfer Build App work.
 
 ## Command protocol quick reference
-- Full read-only planning: `@Thinking #Diskusi!`.
-- Gemini prompt/answer only with parent: `@Thinking #Diskusi! #Tanya Gemini!` and `@Thinking #Diskusi! #Jawaban Gemini!`; reject either without `#Diskusi!` and do not handle the substantive request.
-- Full authorized execution: `@Thinking #Eksekusi Full!`; it does not trigger App Build.
-- Full App Build retry/verification/report loop: `@Thinking #Build App!`.
+- Full read-only planning: `@Thinking Diskusi!`.
+- Gemini prompt/answer only with parent: `@Thinking Diskusi! Tanya Gemini!` and `@Thinking Diskusi! Jawaban Gemini!`; reject either without `Diskusi!` and do not handle the substantive request.
+- Full authorized execution: `@Thinking Eksekusi Full!`; it does not trigger App Build.
+- Full App Build retry/verification/report loop: `@Thinking Eksekusi Build App!`.
 - Emergency recovery: `@Thinking Chat Stuck!` — inspect live logs/state and resume the last verified checkpoint under the existing authorization; no blind retries or automatic build.
-- Retired: standalone `#Eksekusi!` and combined `#Eksekusi & Build App!`.
+- Retired aliases: `@Thinking Build App!`, `@Thinking Eksekusi & Build App!`, and standalone `@Thinking Eksekusi!` are invalid. The command `@Thinking Eksekusi Full!` never triggers App Build.
 
 ## Canonical file map
 | File | Purpose |

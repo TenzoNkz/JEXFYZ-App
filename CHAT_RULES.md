@@ -6,16 +6,16 @@ These are durable user rules. Current implementation facts must still be checked
 
 Use the canonical command spellings below. The main command decides what is authorized; never infer a missing command from the message body.
 
-- `@Thinking #Diskusi!` — full technical discussion before execution: inspect, read, compare, analyze risks, reconcile requirements and prepare the proposed plan. **Read-only; no repository writes or source edits.**
-- `@Thinking #Diskusi! #Tanya Gemini!` — create one complete, self-contained prompt for Gemini based on the agreed discussion, current technical context, exact question, constraints, desired evidence and expected answer format. Do not execute the proposed patch.
-- `@Thinking #Diskusi! #Jawaban Gemini!` — the user has pasted Gemini's answer. Evaluate it against live source, canonical project memory, technical correctness and the agreed discussion. Do not accept it automatically or execute anything while in discussion mode.
-- `@Thinking #Eksekusi Full!` — execute the approved scope fully: scoped changes, relevant audit/tests, cross-reference and documentation reconciliation, canonical memory/index/state/changelog updates, verification and commit to `main`. **Does not authorize App Build or Firmware/device operations.**
-- `@Thinking #Build App!` — own the end-to-end App Build/QC loop: inspect the live workflow and latest source; run the explicit issue-trigger workflow; inspect logs and fix App-scope build/test/signing/artifact faults; repeat validation/build after justified fixes until the success gates pass, or stop with an evidence-based blocker if further work requires unavailable access or separate approval. Record every attempt, fixes, verification and final status in `APP_BUILD_REPORT.md` so the same Build App workstream can resume across context limits through one LOAD + CONTINUE prompt; there is no separate Build App recap chat.
+- `@Thinking Diskusi!` — full technical discussion before execution: inspect, read, compare, analyze risks, reconcile requirements and prepare the proposed plan. **Read-only; no repository writes or source edits.**
+- `@Thinking Diskusi! Tanya Gemini!` — create one complete, self-contained prompt for Gemini based on the agreed discussion, current technical context, exact question, constraints, desired evidence and expected answer format. Do not execute the proposed patch.
+- `@Thinking Diskusi! Jawaban Gemini!` — the user has pasted Gemini's answer. Evaluate it against live source, canonical project memory, technical correctness and the agreed discussion. Do not accept it automatically or execute anything while in discussion mode.
+- `@Thinking Eksekusi Full!` — execute the approved scope fully: scoped changes, relevant audit/tests, cross-reference and documentation reconciliation, canonical memory/index/state/changelog updates, verification and commit to `main`. **Does not authorize App Build or Firmware/device operations.**
+- `@Thinking Eksekusi Build App!` — the single end-to-end App Build/QC command: load live state/workflow, investigate the actual blocker, repair App-scope faults from evidence, rerun necessary test/build gates, and continue the same loop without requiring a second command for each justified repair/retry. Retry only after a concrete fix or evidence-based transient condition; never retry blindly. Stop with an evidence-based blocker when permissions, runner allocation, secrets, device action or separate approval is required. Log every attempt/fix/result in `APP_BUILD_REPORT.md`; Prompt D is one-shot LOAD + CONTINUE, not a recap stage.
 - `@Thinking Chat Stuck!` — emergency recovery for work that has stalled, stopped unexpectedly, or errored. Stop blind/repetitive retries; inspect the actual tool output, logs, live repository/Actions state and last verified checkpoint; then resume the most recent valid, already-authorized task without duplicating commits, side effects or builds. Report `RECOVERED`, `BLOCKED` or `FAILED` with evidence. This command does not widen authorization or trigger a build by itself. If the prior task scope cannot be established, perform read-only diagnosis and request a valid execution command before writing.
 
-Retired commands: standalone `@Thinking #Eksekusi!` and combined `@Thinking #Eksekusi & Build App!` are removed. Do not recommend or execute them. `#Build App!` is now the only App Build command; it does not authorize Firmware compile, BIN/Firebase changes, physical OTA, flashing, device operation or unrelated release operations outside the approved workflow.
+Retired aliases: `@Thinking Build App!` and `@Thinking Eksekusi & Build App!` are invalid and must not be recommended or executed. All canonical commands use no `#` prefix. `@Thinking Eksekusi Build App!` is the only App Build command; it does not authorize Firmware compile, BIN/Firebase changes, physical OTA, flashing, device operation or unrelated releases outside its approved workflow.
 
-**Required parent command for Gemini:** `#Tanya Gemini!` and `#Jawaban Gemini!` are discussion subcommands, not standalone commands. If either appears without `#Diskusi!` in the same command, reject the command format without answering its substantive question, producing the prompt, or analyzing the pasted answer. Briefly ask the user to resend with the correct parent command. The primary commands `#Diskusi!`, `#Eksekusi Full!`, `#Build App!` and standalone `@Thinking Chat Stuck!` do not require one another as prefixes.
+**Required parent command for Gemini:** `Tanya Gemini!` and `Jawaban Gemini!` are discussion subcommands, not standalone commands. If either appears without `Diskusi!` in the same command, reject the command format without answering its substantive question, producing the prompt, or analyzing the pasted answer. Briefly ask the user to resend with the correct parent command. The primary commands `Diskusi!`, `Eksekusi Full!`, `Eksekusi Build App!` and standalone `@Thinking Chat Stuck!` do not require one another as prefixes.
 
 For command-format errors, do not silently infer intent. Explain only that the required main command is missing/invalid and show the valid format. `@Thinking Chat Stuck!` is a valid standalone recovery command; it inherits the scope of the most recent valid in-progress command and never authorizes App Build/Firmware/device work by itself.
 
@@ -41,7 +41,7 @@ For command-format errors, do not silently infer intent. Explain only that the r
 ## 4. Hard authorization boundaries
 
 Do not perform any of these without separate, explicit user authorization:
-- End-to-end App Build/APK Release workflow is authorized only by `@Thinking #Build App!` and must be documented in `APP_BUILD_REPORT.md`.
+- End-to-end App Build/APK Release workflow is authorized only by `@Thinking Eksekusi Build App!` and must be documented in `APP_BUILD_REPORT.md`.
 - Firmware compile/build, BIN generation or publication.
 - Flashing, physical OTA, device operations or Firebase/production metadata updates.
 - Any release/prerelease operation outside the approved App Build workflow or replacement of the artifact BIN.
@@ -59,8 +59,8 @@ A docs-only task is not permission for a functional source edit. A firmware-only
 
 - Android Gradle `versionName "Telegram @horizontalzzz"` is intentional identity text; preserve it exactly.
 - Build one ordinary obfuscated production-signed APK; do not create a Play Store app bundle.
-- App Build is manual issue-trigger only, title `JE X FYZ — BUILD APP TRIGGER`, body token `JEXFYZ_BUILD_TRIGGER_V1`. Normal push/PR must not produce an APK.
-- `@Thinking #Build App!` owns retries for App-scope failures; each run/fix must be recorded in `APP_BUILD_REPORT.md`. Stop with a precise blocker if progress requires unavailable permissions, secrets, user/device action or separate authorization.
+- App Build is manual issue-trigger only, title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. Normal push/PR must not produce an APK.
+- `@Thinking Eksekusi Build App!` owns retries for App-scope failures; each run/fix must be recorded in `APP_BUILD_REPORT.md`. Stop with a precise blocker if progress requires unavailable permissions, secrets, user/device action or separate authorization.
 - Current workflow `.github/workflows/jexfyz-app-build-trigger.yml` is authoritative. Re-read it before any build; never rely only on old run hashes.
 - Do not add firmware SHA/signature/checksum semantics to Firebase OTA metadata without explicit user approval; intended metadata is firmware version + link.
 - Do not add a second BLE radio / concurrent Wi-Fi+BLE model: ESP32-C3 has one radio path. Wi-Fi OTA and BLE ownership must hand off.
@@ -89,7 +89,7 @@ A docs-only task is not permission for a functional source edit. A firmware-only
 
 ### Build App chat-limit handoff
 
-When a Build App chat reaches its context/chat limit, use Prompt D in `CHAT_TRANSFER_PROMPTS.md` exactly once as the opening message of the replacement Build App chat. Prompt D starts with `@Thinking #Build App!`, loads live repository state and `APP_BUILD_REPORT.md`, then continues the same build/QC operation. Do not open a separate recap chat, do not use project-wide Prompt A for this handoff, and do not stop at a boot summary waiting for another command. Prompt A remains for broad project-memory reconciliation; Prompt B remains a read-only general/Discussion boot.
+When a Build App chat reaches its context/chat limit, use Prompt D in `CHAT_TRANSFER_PROMPTS.md` exactly once as the opening message of the replacement Build App chat. Prompt D starts with `@Thinking Eksekusi Build App!`, loads live repository state and `APP_BUILD_REPORT.md`, then continues the same build/QC operation. Do not open a separate recap chat, do not use project-wide Prompt A for this handoff, and do not stop at a boot summary waiting for another command. Prompt A remains for broad project-memory reconciliation; Prompt B remains a read-only general/Discussion boot.
 
 ## 9. Current known checkpoint (must refresh before use)
 

@@ -20,7 +20,7 @@ Last reconciled: 2026-10-15 (Asia/Jakarta). This file is current-only; refresh t
 - **Android identity:** Gradle versionName "Telegram @horizontalzzz"; intentional, preserve exactly.
 - **QC contracts:** test/v6_6_qc_contract_test.dart, test/firmware_touch_adaptive_sync_test.dart, test/app_protocol_notify_contract_test.dart, test/widget_test.dart. Test execution must be checked independently.
 - **Current App/UI hashes:** `lib/main.dart` `74b6bcc47d69ccf114f710ed73dfcefe93037111`; `lib/floating_monitor.dart` `bd230aee16fa77a0d8d2afb9f1a0c2d80cdcac86`; `lib/app_settings.dart` `c513cd4381ee960cd43612c4ac01e7954f651f62`; `test/widget_test.dart` `98c0c11d1c39b48cb5fc6657c3a0ca7d677b2d1b`; `test/adb_pairing_contract_test.dart` `03609184edc5b2df09f40e62ffe99959ea337bad`; `MainActivity.kt` `f7340e82a12cece063e310546dcba893e6a5a09f`; `WirelessAdbPairingService.kt` `7f2099cac0c78008d395ec0bb83e32e5f6d55384`; `WirelessAdbIdentityStore.kt` `394eab93a17c563caf7db0511d4d36040c1c59ec`; `AndroidManifest.xml` `2124dcd969347d2c7bb1bd99374a398cf50d2387`.
-- **Workflow:** .github/workflows/jexfyz-app-build-trigger.yml; explicit title/token trigger only.
+- **Workflow:** .github/workflows/jexfyz-app-build-trigger.yml; current workflow blob `5c5af03075f87297a31f5ee26f0e42025f05977b`; title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; manual issue opened/reopened only, guarded by repository owner/title/token.
 - **User-confirmed Firmware acceptance (2026-10-14):** user considers V6.6 correct/final and reports successful compilation plus two successful Online OTA flashes/updates using the same V6.6 version. Do not change/recompile/reflash Firmware unless the user explicitly reopens Firmware work and separately authorizes the operation. Source-to-artifact BIN provenance remains independently unverified, but is not an active work item by itself.
 - Do not infer that the existing artifact BIN matches current V6.6 source; source/BIN provenance remains unverified.
 - Latest checked open-PR search returned zero results. Fetch live state before acting.
@@ -84,17 +84,17 @@ Last reconciled: 2026-10-15 (Asia/Jakarta). This file is current-only; refresh t
 - Historical source-only claims that said these tests/APK had never run are superseded by #39/#40 evidence. Do not infer that a later source change or a test file implies a passing run unless the exact current commit is covered by a completed workflow.
 
 ## App Build and Thinking command protocol
-- Canonical commands: `@Thinking #Diskusi!`; Gemini subcommands only as `@Thinking #Diskusi! #Tanya Gemini!` or `@Thinking #Diskusi! #Jawaban Gemini!`; full execution `@Thinking #Eksekusi Full!`; end-to-end App build `@Thinking #Build App!`; emergency recovery `@Thinking Chat Stuck!`.
-- Standalone `#Eksekusi!` and `#Eksekusi & Build App!` are retired. A Gemini subcommand without `#Diskusi!` in the same command is invalid and its substantive request must not be answered.
+- Canonical commands: `@Thinking Diskusi!`; Gemini subcommands only as `@Thinking Diskusi! Tanya Gemini!` or `@Thinking Diskusi! Jawaban Gemini!`; full execution `@Thinking Eksekusi Full!`; end-to-end App build `@Thinking Eksekusi Build App!`; emergency recovery `@Thinking Chat Stuck!`.
+- Standalone `Eksekusi!` and `Eksekusi & Build App!` are retired. A Gemini subcommand without `Diskusi!` in the same command is invalid and its substantive request must not be answered.
 - Current build-report register: `APP_BUILD_REPORT.md`. Build attempts, repairs, run links, validation, APK checksum and remaining blockers must be written there for cross-chat continuity.
 - Build App context-limit continuity: use Prompt D in `CHAT_TRANSFER_PROMPTS.md` once as the first message in the replacement Build App chat. It LOADs live state and continues the existing work; no separate recap chat/prompt. Prompt A is only for broad project-memory reconciliation.
 - These source/documentation updates did not trigger App Build; Build #36 is the latest observed successful run, and its APK predates the current Wireless ADB and seven-icon Home animation updates.
 - Only active workflow: `.github/workflows/jexfyz-app-build-trigger.yml`; explicit owner/title/token issue trigger only.
 - Latest successful run is Build #36 above; Build #36 passed 77 Flutter tests and release gates for source commit `893393388b99fc6d9e59c420070a159a29e45e9a` only.
 - Keep one obfuscated, production-signed ordinary APK named `JEXFYZ-release.apk` on release tag `jexfyz-latest`; no Play Store bundle or Actions artifact.
-- Trigger title: `JE X FYZ — BUILD APP TRIGGER`; body token `JEXFYZ_BUILD_TRIGGER_V1`.
+- Trigger title: `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`; body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`.
 - Toolchain: Ubuntu 24.04, Java 17, Flutter 3.47.2 stable, Gradle 9.3.1.
-- The `@Thinking #Build App!` operation must inspect and follow the active manual issue-trigger workflow, repair/retry App-scope failures, verify the final release asset and record every attempt in `APP_BUILD_REPORT.md`. It must report BLOCKED rather than claim success if required external access or separate authorization is unavailable.
+- The `@Thinking Eksekusi Build App!` operation must inspect and follow the active manual issue-trigger workflow, repair/retry App-scope failures, verify the final release asset and record every attempt in `APP_BUILD_REPORT.md`. It must report BLOCKED rather than claim success if required external access or separate authorization is unavailable.
 - Firmware remains out of scope. The user accepts Firmware V6.6 as final; do not compile Firmware, generate/replace BIN, edit Firebase, flash hardware or run physical OTA without separate explicit authorization.
 
 ## Exact validation gates still open

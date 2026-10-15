@@ -2,17 +2,17 @@
 
 ## Authorization policy
 
-- The only App Build command is `@Thinking #Build App!`. It authorizes the complete App build/validation workflow, including justified App-scope repair, retries and the approved issue-triggered Release pipeline.
-- `@Thinking #Eksekusi Full!` does not authorize App Build; discussion, source edits, tests or regular pushes do not silently trigger the release workflow.
-- Retired standalone `#Eksekusi!` and combined `#Eksekusi & Build App!` commands must not be used.
+- The only App Build command is `@Thinking Eksekusi Build App!`. It authorizes the complete App build/validation workflow, including justified App-scope repair, retries and the approved issue-triggered Release pipeline.
+- `@Thinking Eksekusi Full!` does not authorize App Build; discussion, source edits, tests or regular pushes do not silently trigger the release workflow.
+- Retired aliases `@Thinking Build App!` and `@Thinking Eksekusi & Build App!`, plus standalone `@Thinking Eksekusi!`, must not be used. `@Thinking Eksekusi Full!` does not authorize App Build.
 - Build App does not authorize Firmware compilation, BIN creation/publication/replacement, Firebase metadata changes, physical OTA, flashing, device operation, or unrelated release operations.
 - Never claim CI success proves BLE, cooling/safety behavior, Firmware compilation, OTA installation or installed device version.
 
 ## Current App Build workflow
 
 - Active workflow path: `.github/workflows/jexfyz-app-build-trigger.yml` — fetch live definition before every authorized build.
-- Trigger title: `JE X FYZ — BUILD APP TRIGGER`.
-- Required body token: `JEXFYZ_BUILD_TRIGGER_V1`.
+- Trigger title: `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`.
+- Required body token: `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`.
 - Manual issue-open/reopen trigger only, with owner/title/token validation. Normal push/PR must not generate a release APK.
 - Toolchain last recorded in workflow: Ubuntu 24.04, Java 17, Flutter 3.47.2 stable, Gradle 9.3.1.
 - Intended output: exactly one obfuscated, production-signed ordinary Android APK, filename `JEXFYZ-release.apk`, published to GitHub Release `jexfyz-latest`. No Play Store bundle and no Actions artifact upload.
@@ -21,9 +21,9 @@
 
 ## Current App Build blocker — hosted runner dispatch (2026-10-15)
 
-- **Current `main`:** `41627c26189706bc9f4aabad15a83857cda55229`. Current release workflow is `.github/workflows/jexfyz-app-build-trigger.yml` (blob `225584c8feaf8e43ff7228fd6ab3dc84491e34ba`); `.github/workflows/hosted-runner-diagnostic.yml` is **not present** on current main. Its diagnostic probes ran historically and both failed before any step.
+- **Verified pre-change main at start of protocol update:** e4d3ffe48e50173f85f4c6d854e03ffba47e8acd; audited root tree 1e91b96631d485821e340cc27de8497aee80cf5e (76 entries, 55 blobs). This execution adds command/workflow metadata only; it does not run the App Build.
 - **Latest release-trigger run:** [Build #45 / `38719397780`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38719397780), workflow commit `8a24619ebfdf6fad2e546be9524d43c61dd0094c`, failed in ~2 seconds with job `116369943522`, `runner_id=0`, blank runner/group names and zero steps. Builds #41–#45 share this symptom. Diagnostic #1 `38722954080` on `ubuntu-24.04` and #2 `38723038511` on `ubuntu-22.04` behaved the same. Root cause is unconfirmed; do not infer a source/build failure from these zero-step jobs.
-- **Last build reaching actual steps:** [Build #40 / `38713854518`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38713854518) passed audit/license checks, `flutter pub get`, Dart analyze, all 80 Flutter tests, APK compilation, V1/V2/V3 signing and production certificate check. It made a valid source ZIP but failed one grep because its path was obsolete. The path is corrected in current workflow blob `225584c8feaf8e43ff7228fd6ab3dc84491e34ba`; the complete corrected release run has not yet reached its steps.
+- **Last build reaching actual steps:** [Build #40 / `38713854518`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38713854518) passed audit/license checks, `flutter pub get`, Dart analyze, all 80 Flutter tests, APK compilation, V1/V2/V3 signing and production certificate check. It made a valid source ZIP but failed one grep because its path was obsolete. The path is corrected in current workflow blob `5c5af03075f87297a31f5ee26f0e42025f05977b`; the complete corrected release run has not yet reached its steps.
 - **Release status:** #40–#45 produced no new release asset. Tag `jexfyz-latest` still targets Build #36 commit `893393388b99fc6d9e59c420070a159a29e45e9a`; exactly one old APK is currently published. Do not describe current source as released.
 - **Next exact step in the separate Build App workstream:** no further retry until new evidence. Inspect GitHub account Actions usage/budget/spending cap, repository Settings → Actions permissions/allowed-actions, account security/verification restrictions, and check-run annotations when accessible. If normal, escalate the run/job IDs in `APP_BUILD_REPORT.md` to GitHub Support. Do not instruct the next chat to run `hosted-runner-diagnostic.yml`, because that file has been deleted from current main. After hosted runner dispatch is restored, run the official release workflow against current main and verify source ZIP + APK re-download checks.
 - **Scope boundary:** this document/recovery task did not trigger App Build, Firmware compilation, BIN publication, Firebase, OTA, flashing or device operations.
@@ -39,7 +39,7 @@
 
 ## Build App repair/retry policy
 
-1. Start only from `@Thinking #Build App!`. Fetch current `main`, read this file and the full `.github/workflows/jexfyz-app-build-trigger.yml` before triggering.
+1. Start only from `@Thinking Eksekusi Build App!`. Fetch current `main`, read this file and the full `.github/workflows/jexfyz-app-build-trigger.yml` before triggering.
 2. Follow the owner/title/token-validated manual issue workflow. Never change the workflow to build on push/PR merely to make triggering easier.
 3. When a check fails, inspect the exact failing step and logs. If the defect is within approved App scope, fix the cause rather than weakening tests or skipping a required gate; commit the fix to `main`, then trigger a fresh run and verify it targets the intended commit.
 4. Repeat only when a concrete repair was made or a transient failure has evidence-based reason to retry. Do not loop blindly. If blocked by missing repository permissions/secrets, external service, signing credentials, or device-side action, record the blocker and required action; report status as BLOCKED, not successful.

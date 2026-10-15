@@ -1,13 +1,13 @@
 # JE X FYZ / JE Cooler — Chat Transfer Prompt Templates
 
-Use these templates to move the correct workstream across a context/chat limit without relying on imperfect chat recall. Prompt A is for broad project-memory reconciliation; Prompt B is a read-only general/Discussion boot. For a Build App chat limit, use Prompt D exactly once as the first message in the replacement Build App chat: it loads the current repository/build evidence and continues the same work. There is no separate Build App recap chat or recap prompt. Current command gate: `@Thinking #Diskusi!`, `@Thinking #Diskusi! #Tanya Gemini!`, `@Thinking #Diskusi! #Jawaban Gemini!`, `@Thinking #Eksekusi Full!`, `@Thinking #Build App!`, and standalone recovery command `@Thinking Chat Stuck!`. Chat Stuck halts blind retries, inspects live logs/state and resumes only the most recent valid authorization; it does not independently trigger a build or expand scope. The two Gemini subcommands are invalid without `#Diskusi!`; App Build attempts and evidence belong in `APP_BUILD_REPORT.md`.
+Use these templates to move the correct workstream across a context/chat limit without relying on imperfect chat recall. Prompt A is for broad project-memory reconciliation; Prompt B is a read-only general/Discussion boot. For a Build App chat limit, use Prompt D exactly once as the first message in the replacement Build App chat: it loads the current repository/build evidence and continues the same work. There is no separate Build App recap chat or recap prompt. Current command gate: `@Thinking Diskusi!`, `@Thinking Diskusi! Tanya Gemini!`, `@Thinking Diskusi! Jawaban Gemini!`, `@Thinking Eksekusi Full!`, `@Thinking Eksekusi Build App!`, and standalone recovery command `@Thinking Chat Stuck!`. Chat Stuck halts blind retries, inspects live logs/state and resumes only the most recent valid authorization; it does not independently trigger a build or expand scope. The two Gemini subcommands are invalid without `Diskusi!`; App Build attempts and evidence belong in `APP_BUILD_REPORT.md`.
 
 ---
 
 ## Prompt A — Chat limit / reconcile and save everything
 
 ```text
-@Thinking #Eksekusi Full! CHAT-LIMIT RECONCILIATION — READ EVERYTHING, RECONCILE, SAVE TO REPOSITORY
+@Thinking Eksekusi Full! CHAT-LIMIT RECONCILIATION — READ EVERYTHING, RECONCILE, SAVE TO REPOSITORY
 
 PROJECT: JE X FYZ / JE Cooler
 CANONICAL REPO: TenzoNkz/JEXFYZ-App
@@ -80,7 +80,7 @@ DONE CONDITIONS
 ## Prompt B — New chat boot / learn before asking questions
 
 ```text
-@Thinking #Diskusi! NEW CHAT BOOT — LOAD JE X FYZ MEMORY BEFORE DOING ANYTHING
+@Thinking Diskusi! NEW CHAT BOOT — LOAD JE X FYZ MEMORY BEFORE DOING ANYTHING
 
 Work on JE X FYZ / JE Cooler from repository memory. Do not assume this chat is the first conversation.
 
@@ -88,7 +88,7 @@ Work on JE X FYZ / JE Cooler from repository memory. Do not assume this chat is 
 2. Fetch live TenzoNkz/JEXFYZ-App main HEAD and recursive tree. Then read MEMORY_INDEX.md, CHAT_RULES.md, PROJECT_STATE.md and HANDOVER.md fully.
 3. Read the complete subject reference that matches the current request. For App: APP_NOTES.md. For Firmware/hardware: FIRMWARE_NOTES.md + firmware/FIRMWARE_TECHNICAL_REFERENCE.md. For OTA: OTA_PROTECTION.md + OTA_REGRESSION_MEMORY.md. For voltage/Peltier sequencing: VOLTAGE_TRANSITION_MEMORY.md. For Build App: BUILD_NOTES.md and the actual workflow. For grille/visuals: DESIGN_NOTES.md. Use CHANGELOG.md only for history.
 4. Inspect current source/test/workflow and verify all current claims. Do not trust an old SHA/path/version without a live fetch.
-5. Learn and enforce the current Thinking protocol from CHAT_RULES.md. `@Thinking #Diskusi!` is full read-only discussion. Gemini prompt/answer commands require `#Diskusi!` in the same message. `@Thinking #Eksekusi Full!` executes only approved work and never implies Build App. `@Thinking #Build App!` owns end-to-end App build, App-scope repair/retry, artifact verification and `APP_BUILD_REPORT.md` logging. `@Thinking Chat Stuck!` is a standalone recovery command that resumes the last authorized operation from evidence without blindly retrying or broadening permission. Reject missing-parent Gemini commands without processing their substantive content. The old standalone `#Eksekusi!` and combined `#Eksekusi & Build App!` commands are retired.
+5. Learn and enforce the current Thinking protocol from CHAT_RULES.md. `@Thinking Diskusi!` is full read-only discussion. Gemini prompt/answer commands require `Diskusi!` in the same message. `@Thinking Eksekusi Full!` executes only approved work and never implies Build App. `@Thinking Eksekusi Build App!` owns end-to-end App build, App-scope repair/retry, artifact verification and `APP_BUILD_REPORT.md` logging. `@Thinking Chat Stuck!` is a standalone recovery command that resumes the last authorized operation from evidence without blindly retrying or broadening permission. Reject missing-parent Gemini commands without processing their substantive content. The old standalone `Eksekusi!` and combined `Eksekusi & Build App!` commands are retired.
 6. Respect repository split: App repo owns all code source and every note/memory. Firmware artifact repo must contain JEXFYZ.cpp.bin only.
 7. Preserve every approved requirement, previous failure and rejected approach. Never ask the user to repeat details already in the repository or available project context. If something is missing, report the exact gap rather than inventing.
 8. Return a compact boot report: current HEAD/source version/hash, App version, workflow/test/PR state, relevant constraints, known bugs and exact unverified gates. Then wait for the user's next command. Do not write changes or start any build during boot.
@@ -119,7 +119,7 @@ Before marking an execution complete:
 Use this prompt only when the current Build App chat itself reaches its context/chat limit. Paste it once as the opening message of the replacement Build App chat. It combines loading repository evidence and continuing the existing App Build operation. **Do not create a separate recap chat, run Prompt A for this handoff, or send a second prompt just to start the build.**
 
 ```text
-@Thinking #Build App! BUILD APP CHAT-LIMIT LOAD — CONTINUE FROM LIVE REPOSITORY EVIDENCE
+@Thinking Eksekusi Build App! BUILD APP CHAT-LIMIT LOAD — CONTINUE FROM LIVE REPOSITORY EVIDENCE
 
 PROJECT: JE X FYZ / JE Cooler
 CANONICAL REPOSITORY: TenzoNkz/JEXFYZ-App
@@ -139,13 +139,14 @@ This is a one-shot LOAD + CONTINUE handoff for an already-authorized Build App w
 2. RESUME THE EXISTING BUILD OPERATION — DO NOT RECAP
 - Determine whether an intended workflow run is still in progress, failed, blocked, or already passed all required gates.
 - If the intended run is in progress, continue monitoring/verifying that run; do not create a duplicate trigger.
-- If it failed, inspect the exact log and root cause. Repair only authorized App-scope causes, preserve tests/security gates, commit the justified fix directly to main, and start a fresh run using the current official workflow.
+- If it failed, inspect the exact log and root cause. Repair only authorized App-scope causes, preserve tests/security gates, commit the justified fix directly to main, and start a fresh run using the current official workflow when retry is evidence-based.
+- If the job failed before step 1 with `runner_id=0`, missing runner details or no steps, do not re-trigger the same unchanged job. Investigate Actions usage/budget, repository/account Actions policy, security/verification restrictions and available check-run evidence; escalate to GitHub Support when appropriate. Resume the build only when runner dispatch is demonstrably working or new evidence supports one justified retry.
 - If blocked, continue any permitted investigation and record the exact blocker and required action.
 - If the existing target commit already passed every required gate and the exact release asset has been independently verified, do not start an unnecessary duplicate build. Verify evidence, complete the report, and close as SUCCESS.
 - Continue the work in this chat without stopping after a boot summary and waiting for another prompt. The user has already supplied the Build App command by using this handoff prompt.
 
 3. OFFICIAL BUILD WORKFLOW
-- Re-fetch and follow the live .github/workflows/jexfyz-app-build-trigger.yml. Documented trigger title: JE X FYZ — BUILD APP TRIGGER. Required body token: JEXFYZ_BUILD_TRIGGER_V1. Verify owner/title/token checks before triggering.
+- Re-fetch and follow the live .github/workflows/jexfyz-app-build-trigger.yml. Documented trigger title: JE X FYZ — EKSEKUSI BUILD APP TRIGGER. Required body token: JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1. Verify owner/title/token checks before triggering.
 - Never change the workflow to run on push/PR as a shortcut.
 - Inspect actual results for security/architecture checks, dependency resolution, Dart analysis, Flutter tests, APK build, signing verification, Release publication and re-downloaded asset verification.
 - Repair App-scope failures by fixing root causes; never weaken/delete tests or skip mandatory gates just to obtain a green run.
@@ -281,7 +282,7 @@ When rebuilding memory, explicitly reconcile each item below against the live so
 - Online OTA earlier used CA certificate verification and OTA-only NTP/TIME_SYNCING gate; the observed user's failure was blue after Wi-Fi then red on the GitHub stage but no exact HTTP/TLS log was provided. The V6.3-origin correction removed CA/NTP together and restored `cloudClient.setInsecure()`, which user reported compiled and restored GitHub connection. This does not prove which removed factor alone caused the failure or validate V6.6. Trade-off: server identity is not authenticated.
 - Keep the raw GitHub BIN allowlist, redirect blocking, status/length/size/image checks (`0xE9`), streaming Update lifecycle, safe outputs, recovery/restart semantics. No custom firmware SHA/signature field in Firebase OTA metadata; user expects version + link. Do not infer BIN provenance from path or upload date.
 - App OTA sequence is `OTAENTER → SSID → PASS → URL → VERSION → CLOUDOTA`; timeout/disconnect ACK is ambiguous and must preserve recovery state. Separate OTA transport, full transfer, Update finalization, reboot, BLE recovery, installed-version confirmation, and Firebase promotion evidence.
-- Build App is manual issue-trigger only: title `JE X FYZ — BUILD APP TRIGGER`, token `JEXFYZ_BUILD_TRIGGER_V1`; Java 17, Flutter 3.47.2 stable, Gradle 9.3.1, one obfuscated production-signed APK `JEXFYZ-release.apk` in release `jexfyz-latest`. Do not run it unless explicitly authorized. Preserve Gradle identity.
+- Build App is manual issue-trigger only: title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; Java 17, Flutter 3.47.2 stable, Gradle 9.3.1, one obfuscated production-signed APK `JEXFYZ-release.apk` in release `jexfyz-latest`. Do not run it unless explicitly authorized. Preserve Gradle identity.
 
 ### Approved physical/visual design and memory discipline
 

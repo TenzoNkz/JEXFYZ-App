@@ -2,7 +2,14 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
-## CURRENT CHECKPOINT — Chat Stuck full repository-memory reconciliation (2026-10-15)
+## CURRENT CHECKPOINT — Command protocol and App build trigger rename (2026-10-15)
+
+- Canonical command spellings use no `#`: `@Thinking Diskusi!`, `@Thinking Diskusi! Tanya Gemini!`, `@Thinking Diskusi! Jawaban Gemini!`, `@Thinking Eksekusi Full!`, `@Thinking Eksekusi Build App!`, and standalone `@Thinking Chat Stuck!`. Legacy aliases `@Thinking Build App!` and `@Thinking Eksekusi & Build App!` are retired. Gemini commands still require `Diskusi!` in the same message.
+- Renamed the active workflow display name to `JE X FYZ Eksekusi Build App`; the file path remains `.github/workflows/jexfyz-app-build-trigger.yml` (blob `5c5af03075f87297a31f5ee26f0e42025f05977b`). Its guarded issue trigger now requires title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. Owner validation and issue opened/reopened-only behavior remain; no push/PR shortcut was added.
+- This execution changed command/workflow metadata and canonical docs only. No issue was opened/reopened, no App Build was run, no APK/source ZIP was published, and no Firmware, BIN, Firebase, OTA, flash or device operation occurred.
+- The runner blocker remains unresolved: Builds #41–#45 failed pre-step with `runner_id=0`; root cause is unknown. Diagnose account Actions budget/permissions/security and runner dispatch before any justified retry. Build #40 passed its 80-test/analyze/compile/signing/certificate gates but failed a stale source-path assertion, which was corrected in prior workflow source; no complete post-fix run has reached the steps.
+
+## PREVIOUS CHECKPOINT — Chat Stuck full repository-memory reconciliation (2026-10-15)
 
 - Live App 'main' before this documentation-only reconciliation sequence: `41627c26189706bc9f4aabad15a83857cda55229`; root tree `a7a6ba4dc4bf5ea52f44c906a17ef480b370f70e`, 76 entries/55 blobs, recursive tree not truncated. Active workflow is `.github/workflows/jexfyz-app-build-trigger.yml` only; diagnostic workflow file was deleted from current main.
 - Build #45 / run `38719397780`, job `116369943522`, failed pre-step with `runner_id=0`, blank runner/group names and no logs. Builds #41–#45 share this signature. Diagnostic probes #1 `38722954080` (Ubuntu 24.04) and #2 `38723038511` (Ubuntu 22.04) also failed pre-step; #46 and #47 App-trigger workflow runs were skipped by its owner/title/token guard. The hosted runner/account root cause is unknown; do not blindly retry or reference the deleted diagnostic workflow.

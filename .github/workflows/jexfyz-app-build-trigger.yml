@@ -1,12 +1,12 @@
 # AI CI MEMORY:
-# JE X FYZ App Build — active single explicit issue-triggered release workflow.
+# JE X FYZ Eksekusi Build App — active single explicit issue-triggered release workflow.
 # Based directly on the proven Release workflow that completed workflow run #2.
 # Normal push/PR events do not trigger this workflow.
 # Firmware source is intentionally stored in this App repository under firmware/.
 # The App repository owns all editable source and memory; the dedicated firmware repository is BIN-only. This workflow builds the App only.
 # CI success proves App build validation only; it does not prove BLE/OTA/hardware runtime.
 
-name: JE X FYZ Build App
+name: JE X FYZ Eksekusi Build App
 
 on:
   issues:
@@ -31,8 +31,8 @@ jobs:
   build:
     if: >-
       github.event.issue.user.login == github.repository_owner
-      && github.event.issue.title == 'JE X FYZ — BUILD APP TRIGGER'
-      && contains(github.event.issue.body, 'JEXFYZ_BUILD_TRIGGER_V1')
+      && github.event.issue.title == 'JE X FYZ — EKSEKUSI BUILD APP TRIGGER'
+      && contains(github.event.issue.body, 'JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1')
     runs-on: ubuntu-24.04
     timeout-minutes: 30
 
