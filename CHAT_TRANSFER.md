@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — CHAT TRANSFER SNAPSHOT
 
-Snapshot date: 2026-10-15 (Asia/Jakarta). Live checkpoint immediately before this final transfer refresh: `main` HEAD `26e76533c2dfaa9975212658f804aeef32269a10`, commit `docs: add persistent App Build evidence report`, parent `08b61f080db5925939425fb9d8610e4fc13db2ba`, commit time `2026-10-15T03:18:24Z`. This transfer file is being refreshed last. The connected GitHub operations did not return the current recursive tree root SHA in this execution; do not reuse the old tree SHA/count as live truth. Re-fetch the complete recursive tree on next boot. This file is a boot bridge, not a substitute for fetching the next live GitHub state.
+Snapshot date: 2026-10-15 (Asia/Jakarta). Live checkpoint immediately before this final transfer refresh: `main` HEAD `f0bc58cbe7f437f66b229cf740d069a44910c0c1`, commit `docs: refresh transfer with new Thinking protocol`, parent `26e76533c2dfaa9975212658f804aeef32269a10`, commit time `2026-10-15T03:21:01Z`. This transfer file is being refreshed last. The connected GitHub operations did not return the current recursive tree root SHA in this execution; do not reuse the old tree SHA/count as live truth. Re-fetch the complete recursive tree on next boot. This file is a boot bridge, not a substitute for fetching the next live GitHub state.
 
 ## 0. New-chat boot — mandatory order
 
@@ -17,7 +17,7 @@ Snapshot date: 2026-10-15 (Asia/Jakarta). Live checkpoint immediately before thi
 
 - **Live checkpoint:** 2026-10-15 09:20:24 Asia/Jakarta / 2026-10-15T02:20:24Z UTC.
 - **Canonical repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`.
-- **Live checkpoint before this transfer write:** `main` HEAD `26e76533c2dfaa9975212658f804aeef32269a10`; message `docs: add persistent App Build evidence report`; parent `08b61f080db5925939425fb9d8610e4fc13db2ba`; commit time `2026-10-15T03:18:24Z`. This pass verified five branch names (`diag/latest-stable-v16`, `diagnostic/v1.6-heap-check`, `fix/adaptive-power-sequencing`, `main`, `tmp-jexfyz-v5-test`) and zero open PRs; branch tip SHAs and current recursive tree SHA were not returned by the available connector. The last known recursive-tree checkpoint (`140fbbf...`, 65 entries/47 blobs) is stale; one new `APP_BUILD_REPORT.md` was added since then, so refetch tree rather than assuming counts or root SHA.
+- **Live checkpoint before this transfer write:** `main` HEAD `f0bc58cbe7f437f66b229cf740d069a44910c0c1`; message `docs: refresh transfer with new Thinking protocol`; parent `26e76533c2dfaa9975212658f804aeef32269a10`; commit time `2026-10-15T03:21:01Z`. This pass verified five branch names (`diag/latest-stable-v16`, `diagnostic/v1.6-heap-check`, `fix/adaptive-power-sequencing`, `main`, `tmp-jexfyz-v5-test`) and zero open PRs; branch tip SHAs and current recursive tree SHA were not returned by the available connector. A new `APP_BUILD_REPORT.md` exists; refetch the recursive tree rather than assuming the old root SHA/count.
 - **Active Firmware source:** `firmware/JEXFYZ-V6.6.ino`, blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`, `FW_VERSION = "V6.6"`. Exactly one active versioned `.ino` is tracked and filename/version align. **USER ACCEPTANCE 2026-10-14:** user considers V6.6 correct/final and reports successful compilation and two successful Online OTA flashes/updates with the same version V6.6. Do not modify/recompile/reflash unless the user explicitly reopens Firmware work and separately authorizes the operation. Source-to-BIN provenance remains independently unverified, but is not an active task by itself.
 - **Current App identity/source:** `lib/main.dart` blob `f4ee1e9b9e74f103e0f362db813dea642f285470` (267,270 bytes); `test/widget_test.dart` blob `4b7bf68f3c73d6ffe80509ccb75ce6e08607b020` (35,762 bytes); `lib/app_settings.dart` `232a7575460e5417f7b760f24b5057687a47ee1a`; `lib/floating_monitor.dart` `cfc21b3dc198b925786aa98658d647b1d8a3637b`. Package `com.horizontalzzz.jexfyz`, pubspec `1.0.0+3`; preserve Gradle `versionName "Telegram @horizontalzzz"`.
 - **Current native notification files:** `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt` blob `aecfc87121f2195ef6724613c612d674ed95ae55`; `android/app/src/main/res/drawable/ic_notification.xml` blob `cda9e8404d14a62a61157ec59fae2e491c19f5f7`. The notification helper uses the transparent bold-white JE vector as the sole small icon and sets no large icon; launcher/app imagery still uses `jexfyzicon`.
@@ -241,26 +241,26 @@ Read DESIGN_NOTES.md before any visual iteration.
 
 Never equate test file with passing run; compile with full OTA installation; blue LED with successful HTTP; ACK with hardware state; reboot with proven brownout; version bump with BIN build; or existing BIN with source provenance.
 
-## 16. Live blob fingerprints at pre-transfer HEAD `26e76533c2dfaa9975212658f804aeef32269a10`
+## 16. Live blob fingerprints at pre-transfer HEAD `f0bc58cbe7f437f66b229cf740d069a44910c0c1`
 
 Checkpoint taken immediately before this transfer replacement. File hashes below are refreshed for canonical memory, application source/tests/config and firmware paths that were checked live. The connector did not provide a current recursive tree/root-tree SHA, so tree enumeration and tree-root verification remain a required next-boot check. This transfer file's own new blob SHA is intentionally omitted.
 
 Canonical project memory and docs:
-- `APP_NOTES.md`: `9a656031e92fe16318e1d5c454fc3f92557196ee` (14082 chars)
-- `APP_BUILD_REPORT.md`: `f2b2f5966942a8a7035fe37017a82ed99d0b5b99` (5070 chars)
-- `BUILD_NOTES.md`: `06469d1f542198fa81eea0f6c6b34aaef4a1c4c5` (7816 bytes)
-- `CHANGELOG.md`: `80bfc5813d19cda538ae3c819f1c77ae449b05ab` (30115 bytes)
-- `CHAT_RULES.md`: `572e9596500e047c757857677931039860d877b4` (8427 bytes)
-- `CHAT_TRANSFER_PROMPTS.md`: `5eff4d6c02c6693572881a86419ddb7d7026430c` (28068 bytes)
+- `APP_NOTES.md`: `9a656031e92fe16318e1d5c454fc3f92557196ee`
+- `APP_BUILD_REPORT.md`: `f2b2f5966942a8a7035fe37017a82ed99d0b5b99`
+- `BUILD_NOTES.md`: `06469d1f542198fa81eea0f6c6b34aaef4a1c4c5`
+- `CHANGELOG.md`: `80bfc5813d19cda538ae3c819f1c77ae449b05ab`
+- `CHAT_RULES.md`: `572e9596500e047c757857677931039860d877b4`
+- `CHAT_TRANSFER_PROMPTS.md`: `5eff4d6c02c6693572881a86419ddb7d7026430c`
 - `DESIGN_NOTES.md`: `e04382659dfdd618de0a156046f140452d275dc7` (2128 bytes)
 - `FIRMWARE_NOTES.md`: `db53605779f157b3c966b15a07bef73199ca575d` (11583 bytes)
-- `HANDOVER.md`: `3c4eb2bb5c4f17a323a23077c61b43a0e0cbf15e` (7127 bytes)
-- `MEMORY_INDEX.md`: `758dfe9d05903fbecdf3f156e7ef547527217712` (6859 bytes)
+- `HANDOVER.md`: `3c4eb2bb5c4f17a323a23077c61b43a0e0cbf15e`
+- `MEMORY_INDEX.md`: `758dfe9d05903fbecdf3f156e7ef547527217712`
 - `OTA_PROTECTION.md`: `06beb86b749b0f0e14c8cb517e43fe7c0f66a4e1` (4259 bytes)
-- `OTA_REGRESSION_MEMORY.md`: `4342f3da76cf2962140146fbbe0ff8de5e956f4d` (3953 bytes)
-- `PROJECT_STATE.md`: `a8097a93a1fb2c9c0b5b2c2acffd855be3eceee0` (14383 bytes)
-- `README.md`: `8715c857a1199e2e3baabbcbece919c815109457` (4344 bytes)
-- `VOLTAGE_TRANSITION_MEMORY.md`: `1c2167659fd0ed8f5db16bf63eb7897344a690ea` (5916 bytes)
+- `OTA_REGRESSION_MEMORY.md`: `4342f3da76cf2962140146fbbe0ff8de5e956f4d`
+- `PROJECT_STATE.md`: `a8097a93a1fb2c9c0b5b2c2acffd855be3eceee0`
+- `README.md`: `8715c857a1199e2e3baabbcbece919c815109457`
+- `VOLTAGE_TRANSITION_MEMORY.md`: `1c2167659fd0ed8f5db16bf63eb7897344a690ea`
 
 Workflow and package files:
 - `.github/workflows/jexfyz-app-build-trigger.yml`: `0e400cbdedfd54506ae3ac3255da41580c86d750` (19662 bytes)
@@ -312,7 +312,7 @@ Artifact repository separate check: `TenzoNkz/JEXFYZ-Firmware` main HEAD `cc0a0a
 ## 17. Current documentation-protocol execution outcome
 
 - This documentation-only execution updated the permanent command protocol, Build App end-to-end repair/retry policy, prompt templates, project state, handover, repository navigation and changelog, and created `APP_BUILD_REPORT.md`.
-- Latest pre-transfer `main` HEAD: `26e76533c2dfaa9975212658f804aeef32269a10`; latest recorded Build App is still #35 / `38669526891`, built commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`.
+- Latest pre-transfer `main` HEAD: `f0bc58cbe7f437f66b229cf740d069a44910c0c1`; latest recorded Build App is still #35 / `38669526891`, built commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`.
 - Updated document SHA values are listed in section 16. App source, widget tests, Firmware source and build workflow were not changed in this protocol pass. No tests/analyze/App Build were run because changes are documentation-only.
 - Artifact repository `TenzoNkz/JEXFYZ-Firmware` was re-fetched: `JEXFYZ.cpp.bin` remains blob `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, base64 content was not materialized for display. The repository root is expected to remain BIN-only; recursive root enumeration was not returned by the available connector in this task. Firmware V6.6/BIN, Firebase, OTA, flash and hardware remain untouched.
 - Live branch names checked: `diag/latest-stable-v16`, `diagnostic/v1.6-heap-check`, `fix/adaptive-power-sequencing`, `main`, `tmp-jexfyz-v5-test`. Open PR count: 0. Branch-tip SHAs and current recursive tree SHA still require retrieval on next boot.
