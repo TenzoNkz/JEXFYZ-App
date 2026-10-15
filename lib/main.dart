@@ -1525,16 +1525,6 @@ class _JexIconPainter extends CustomPainter {
     canvas.restore();
   }
 
-  void _drawHeatWave(Canvas canvas, Size size, double x, double drift, double alpha) {
-    final s = size.shortestSide;
-    final px = s * (x + drift);
-    final path = Path()
-      ..moveTo(px, s * .28)
-      ..cubicTo(px - s * .045, s * .34, px + s * .045, s * .39, px, s * .45)
-      ..cubicTo(px - s * .045, s * .51, px + s * .045, s * .56, px, s * .62);
-    canvas.drawPath(path, stroke(s * .025, color.withValues(alpha: alpha)));
-  }
-
   @override
   void paint(Canvas canvas, Size size) {
     final s = size.shortestSide;
