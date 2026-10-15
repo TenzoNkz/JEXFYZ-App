@@ -20,10 +20,10 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 
 ## Current source validation boundary — 2026-10-16
 
-- Latest verified release is [Build #58](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38793790061), exact source `db11df355780174b1da7dcea4d5947bfa7ba7ca5`. It passed Dart analysis, 87/87 Flutter tests, Android release build/signing, publication and asset verification.
-- Current post-release source/test checkpoint is `6e9b4c73db12c51f4452717d8cf102f49d325dcf`. It adds a fixed full `dumpsys window` fallback, keeps FPS status at `starting` until a valid measurement exists, accepts `0 FPS` only after two matching layer snapshots in a valid interval, distinguishes counter reset/invalid states, cancels stale poll loops on retry, and surfaces the native FPS status in Settings.
-- This follow-up has **not** been analyzed, test-run, Kotlin-compiled, built or device-verified. Build #58 remains the latest verified APK; it does not contain these changes.
-- FPS still depends on Shizuku service operation and SurfaceFlinger layer availability on the target Android/OEM. No Firmware/BIN, Firebase, OTA, BLE hardware-control or thermal-safety code was changed.
+- Latest verified release is [Build #60](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38817543342), exact source `b5f00a1b3690d62c11772a91bd3a6732bb0d4bf3`. It passed audit, dependency resolution, Dart analysis, **88/88 Flutter tests**, Android release build/signing, publication and re-downloaded asset verification.
+- Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) has one APK (asset `645381550`, `54,636,716` bytes; SHA-256 `47892215de179c8cb2975ad5c99b8b3b1398559873352411ed74d001aa001274`) and one matching source ZIP (asset `645381553`, `2,866,092` bytes; SHA-256 `dd9bdc1f8082c70ab2ff73892f5434057d36cedc870fd92184b8ed579e2b538a`). Both match the exact Build #60 source marker.
+- The FPS diagnostic source from `6e9b4c73db12c51f4452717d8cf102f49d325dcf` is now built/CI-tested: full WindowManager fallback, delayed `starting` resolution until a valid sample, valid zero-frame sampling, reset/invalid distinction, stale poll cancellation and native status feedback. Test correction `7a576e60f0938cec94fcddb96340cd5376fa15de` fixed one obsolete assertion exposed by Build #59; Build #60 then passed the full suite. No test/gate was removed or weakened.
+- Actual FPS, Shizuku UserService behavior, OEM SurfaceFlinger layer access and phone-side rendering remain **NOT DEVICE-VERIFIED**. No Firmware/BIN, Firebase, OTA, BLE hardware-control or thermal-safety code was changed.
 
 ## Repository boundaries
 
