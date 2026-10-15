@@ -46,7 +46,9 @@ void main() {
     expect(service, contains('delta * 1000.0 / elapsed.toDouble()'));
     expect(service, isNot(contains('android.permission.DUMP')));
     expect(service, isNot(contains('ProcessBuilder(')));
-    expect(aidl, contains('Bundle executeFpsOperation(int operation);'));
+    expect(aidl, contains('Bundle executeFpsOperation(int operation) = 2;'));
+    expect(aidl, contains('void destroy() = 16777114;'));
+    expect(aidl, contains('void exit() = 1;'));
     expect(shizukuService, contains('override fun executeFpsOperation(operation: Int): Bundle'));
     expect(shizukuService, contains('OP_START_CAPTURE'));
     expect(shizukuService, contains('OP_READ_FOREGROUND_ACTIVITY'));
