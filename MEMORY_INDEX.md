@@ -4,14 +4,13 @@ Reconciled against live GitHub main: 2026-10-16. Live code, Git refs, Actions re
 
 ## Verified checkpoint
 
-- Latest source/test checkpoint before the remaining docs sync: 311a18934a3cbe86a2a4718442c92541f081183f; tree 8c16a479d5aaeb81f0c2cb30a4446ee310e3f7ec, not truncated, 80 entries; five branches; zero open PRs.
-- App version 1.0.0+3, package com.horizontalzzz.jexfyz; preserve Android Gradle versionName "Telegram @horizontalzzz".
-- Latest successful release is Build #54 / run 38767611593 at source commit 437e7730dbcaf9666ae4828e546a45343bb4890c. Dart analysis, 86/86 Flutter tests, Android compile, V1/V2/V3 signing/certificate, matching source archive and downloaded-asset checks passed.
-- Release jexfyz-latest has JEXFYZ-release.apk, asset 644438898, SHA-256 cdf8a7f94424b9cb60be6e04489a9f0f0d8ddad43ab76c33c2e2c6333fa61327, and JEXFYZ-corresponding-source.zip, asset 644438897, SHA-256 3b208c987def59a7c1857ed0fcc9ca5d74d591767e5658dfab04c9c1be85450f.
-- Current source hashes: main.dart 69eef38d26282b94ad1bea297d812dfd8b9e91e3; floating_monitor.dart f3ba1518e9f5158cd7f7a1fccac8df0fbac3b2fb; app_settings.dart 4c89bcb3c04142ce49440a11b92054365c26f7a6; native FloatingMonitorService.kt dd10ff0b2c23941badaa33949967fc373f98aeb9; widget_test.dart 2426eecea66a357d63ce10214a2d331224c81e37; floating layout test 7f861d449e518af68fc4ece7278241aa3ce8691b; Shizuku FPS test 798633a24907fd8aca567e70a6376dc59c6e41c9; workflow 585d190324e522fc08e66cc95bd7ee80c5f37664.
-- Active Firmware source remains V6.6 at firmware/JEXFYZ-V6.6.ino, blob f51ba6db5d0e91318f63fea4014bb87f7bf76222. V6.6 compile/two same-version Online OTA reports are USER-REPORTED; source-to-BIN provenance UNVERIFIED.
-- Current main UI/FPS changes are source-only and UNBUILT. Contract tests were updated but not executed because Flutter/Dart are not available in this runtime. Build #54 remains latest verified release from source 437e7730dbcaf9666ae4828e546a45343bb4890c; its APK/source ZIP do not include current changes. @Thinking Eksekusi Build App! is required for analyze/test/build/release.
-- Open physical validation item: earlier screenshot showed Shizuku allowed while F was --. Current main source now follows the foreground window package across games, JE Cooler, launcher, Settings and system UI when matching SurfaceFlinger data is exposed, and returns 0 after baseline when a tracked layer is stable. This source fix is NOT device-verified; OEM permissions/layer naming may still leave data unavailable. See APP_NOTES.md / PROJECT_STATE.md.
+- Latest successful App release is Build #55 / run `38783100421`, source commit `3ba172b3f35f4ec01732d5848a7ffc807663e710`; audit, dependency resolution, Dart analysis, 86/86 Flutter tests, obfuscated Android APK, V1/V2/V3 signing/certificate, matching source archive and downloaded asset identity/hash/signature checks all passed.
+- Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) contains one `JEXFYZ-release.apk` (asset 644735661, SHA-256 `1ae3ef476c170ab0a9d78a77264c5281d60341a931db102c7b8645e4b0dadd19`) and one `JEXFYZ-corresponding-source.zip` (asset 644735668, SHA-256 `112b14a95f4b21fa04cdd5684e4a0124ee4b50cb17636bcef149e71a20481dce`). Exact sizes and all warnings are in `APP_BUILD_REPORT.md`.
+- Functional source/test checkpoint `311a18934a3cbe86a2a4718442c92541f081183f` is built and test-verified by Build #55; the exact checkout/Release points to docs-only successor `3ba172b3f35f4ec01732d5848a7ffc807663e710`.
+- Current source hashes: `main.dart` `69eef38d26282b94ad1bea297d812dfd8b9e91e3`; `floating_monitor.dart` `f3ba1518e9f5158cd7f7a1fccac8df0fbac3b2fb`; `app_settings.dart` `4c89bcb3c04142ce49440a11b92054365c26f7a6`; native `FloatingMonitorService.kt` `dd10ff0b2c23941badaa33949967fc373f98aeb9`; `widget_test.dart` `2426eecea66a357d63ce10214a2d331224c81e37`; floating layout test `7f861d449e518af68fc4ece7278241aa3ce8691b`; Shizuku FPS test `798633a24907fd8aca567e70a6376dc59c6e41c9`; workflow `585d190324e522fc08e66cc95bd7ee80c5f37664`.
+- Current Home indicator, Floating Monitor, and screen-FPS source is **BUILT/CI-TESTED**. Physical icon rendering, Shizuku UserService/runtime permission behavior and OEM SurfaceFlinger/real foreground FPS remain **UNVERIFIED** until device tests/logs.
+- Active Firmware source remains V6.6 at `firmware/JEXFYZ-V6.6.ino`, blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`. Compile/two same-version Online OTA reports are USER-REPORTED; source-to-BIN provenance UNVERIFIED.
+
 
 ## New-chat boot order
 
@@ -54,7 +53,7 @@ Reconciled against live GitHub main: 2026-10-16. Live code, Git refs, Actions re
 | CHANGELOG.md | Historical behavior/decision/failure ledger, not current truth |
 | DESIGN_NOTES.md | Approved grille, icons/cooler and visual requirements |
 | .github/workflows/jexfyz-app-build-trigger.yml | Authoritative manual issue-triggered App Build workflow |
-| test/*.dart | Six active test files; Build #54 ran 86/86. File presence alone is not execution evidence |
+| test/*.dart | Six active test files; Build #55 ran 86/86. File presence alone is not execution evidence |
 | firmware/JEXFYZ-V6.6.ino | Current editable Firmware source, one versioned active sketch |
 | archive/*.md | Immutable forensic snapshots; archived “CURRENT” claims are not live truth |
 
