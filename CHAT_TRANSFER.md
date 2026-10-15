@@ -1,12 +1,13 @@
 # JE X FYZ / JE Cooler — Chat Transfer Snapshot
 
-Snapshot checked against live GitHub main on 2026-10-16 (Asia/Jakarta), after successful Build #58 and current-note reconciliation. Read this file first in a new context, then fetch the live repository again. Live source/Git/Actions/Release evidence takes precedence over this snapshot. Production source repair and test-contract fix are built and CI-tested by Build #58; physical-device behavior remains unverified. `PROJECT_STATE.md` is current-only; `APP_NOTES.md` carries detailed App contracts; `APP_BUILD_REPORT.md` is the authoritative attempt/build evidence ledger; `CHANGELOG.md` is historical.
+Snapshot checked against live GitHub main on 2026-10-16 (Asia/Jakarta), after Build #58 plus follow-up FPS diagnostics. Read this file first in a new context, then fetch live repository state again. Build #58's production painter/FPS repair and 87-test checkpoint are built/CI-tested; the newer foreground fallback, validated-zero, stale-poll cancellation and status-display follow-up is source-only and unbuilt. Physical-device behavior remains unverified. `PROJECT_STATE.md` is current-only; `APP_NOTES.md` carries detailed App contracts; `APP_BUILD_REPORT.md` is the authoritative attempt/build evidence ledger; `CHANGELOG.md` is historical.
 
 ## 1. Repository identity and current Git checkpoint
 
 - Canonical App source/memory repository: [TenzoNkz/JEXFYZ-App](https://github.com/TenzoNkz/JEXFYZ-App), branch `main`.
-- Main HEAD immediately before this final transfer-file update: `c2be58fcf5b2f274c386b29a30085836c0ebeec4` (last current-note update before this transfer-file commit).
-- Build #58 / run `38793790061` succeeded with source/release target `db11df355780174b1da7dcea4d5947bfa7ba7ca5`. It includes production source repair checkpoint `98cfe7ba4d0e9d569b84498d261ad1b67f66eee7` and test-contract correction `432c30ec538ff7de6c7e77f0c68bac313f4f8015`; Dart analysis passed, **87/87 Flutter tests passed**, and all build/sign/release/asset verification gates passed. Only actual phone-side behavior remains unverified.
+- Main HEAD immediately before this final transfer-file update: `515368aa538dc4bb70e52381dfe9fe9668cffc20` (last current-note update before replacing this file).
+- Build #58 / run `38793790061` succeeded with release source `db11df355780174b1da7dcea4d5947bfa7ba7ca5`. It includes production source repair `98cfe7ba4d0e9d569b84498d261ad1b67f66eee7` and test-contract correction `432c30ec538ff7de6c7e77f0c68bac313f4f8015`; Dart analysis passed, **87/87 Flutter tests passed**, and all build/sign/release/asset verification gates passed.
+- Current post-release source/test checkpoint `6e9b4c73db12c51f4452717d8cf102f49d325dcf` is **not built or tested**. It adds a full WindowManager fallback, accurate starting/error status, valid zero-frame samples after two matching snapshots, counter-reset handling, cancellation of stale polling loops, and visible native FPS status. Physical device FPS is still unverified.
 - Exact artifact repository: [TenzoNkz/JEXFYZ-Firmware](https://github.com/TenzoNkz/JEXFYZ-Firmware). Its live main tree was rechecked and contains exactly one entry: `JEXFYZ.cpp.bin`, blob `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, 1,455,936 bytes. Keep this repo BIN-only; source notes/memory belong in the App repo. Source-to-BIN provenance is not independently verified.
 - No new branches or PRs were created. All edits in this workstream were committed directly to `main`.
 
@@ -22,19 +23,19 @@ Snapshot checked against live GitHub main on 2026-10-16 (Asia/Jakarta), after su
 ## 3. Current source fingerprints
 
 - Build #58 exact source/release commit: `db11df355780174b1da7dcea4d5947bfa7ba7ca5`. Main HEAD immediately before this final transfer-file replacement: `c2be58fcf5b2f274c386b29a30085836c0ebeec4`. Documentation-only commits after the release keep release provenance fixed at the Build #58 source SHA.
-- Current implementation and test blobs:
+- Current source/test blobs after the post-release follow-up (not built):
   - `lib/main.dart`: `d24885cf0a40472b9fb23ee6ce73ad772ae73672`.
-  - `lib/floating_monitor.dart`: `556217f0035e97fa6060041203151eec1c24ed76`.
+  - `lib/floating_monitor.dart`: `d43bd17a7adebf7c9f95fc5fdf921ba2a22a231b`.
   - `lib/app_settings.dart`: `4c89bcb3c04142ce49440a11b92054365c26f7a6`.
-  - `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt`: `44030753bf6a27ac0e9630f2d0f7ca0cc8e3bd0b`.
-  - `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FpsShizukuUserService.kt`: `e44fac7cec76979ef47a256a3e1d416d09ef7e22`.
+  - `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt`: `c7ca3e75c28b53ea8cda207836befbe04a2e5a6f`.
+  - `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FpsShizukuUserService.kt`: `9f70d480bd31a4875653add70804ab50fc15b747`.
   - `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt`: `a139dfefe1121963c3a26b114b9b0fcc9f8fa16a`.
   - `android/app/src/main/aidl/com/horizontalzzz/jexfyz/IFpsShizukuUserService.aidl`: `5bd6c269212e523b190f7164e0ad1d257ed5e6a5`.
-  - `test/widget_test.dart`: `d8e89083cbc6674962a5f9e013579477783243ad`.
+  - `test/widget_test.dart`: `1729eb5407ae781bc82ce34a0f7af2cb1ca9d439`.
   - `test/floating_monitor_layout_contract_test.dart`: `7f861d449e518af68fc4ece7278241aa3ce8691b`.
-  - `test/shizuku_fps_contract_test.dart`: `5a9efb60b02c1cfabf44a35434f67fb555419c92`.
+  - `test/shizuku_fps_contract_test.dart`: `93aca6d5f5ad6c3c4723b2545eaf997cf8ee996f`.
   - Workflow `.github/workflows/jexfyz-app-build-trigger.yml`: `585d190324e522fc08e66cc95bd7ee80c5f37664`.
-- Current docs immediately before this transfer-file replacement: `APP_BUILD_REPORT.md` `607cd3e3b1a5f919f283ed811ddb7336f8cb4910`; `PROJECT_STATE.md` `51442a04a640e3d26637e62e9fd5a4229da4d47c`; `MEMORY_INDEX.md` `6c7b26e2a7d644cea5de1da3541e4233ac720772`; `BUILD_NOTES.md` `b1da762bec97f4bec168bf55f4f106d4ce50ab0c`; `HANDOVER.md` `18e2a79206158724d39a79e3bc688c0df915a53c`; `APP_NOTES.md` `79894714cf8f5fb9cf0dc808d4ebe8f8b7f1265f`. This file is updated last; re-fetch its new blob/main HEAD after this commit rather than attempting self-reference.
+- Current docs immediately before this transfer-file replacement: `APP_BUILD_REPORT.md` `35066035f0911e1c392c431893caa0bf50742d41`; `PROJECT_STATE.md` `043396b2dac26861664d96ddd3ed070949e24974`; `MEMORY_INDEX.md` `d9b60254fabe5d9246494e56836f9d7c87331204`; `BUILD_NOTES.md` `b6f704b2f7e9a093248b7336bc2cdb25af339f07`; `HANDOVER.md` `78c9cd07ae7f84be4b84c2c41f2c8f63f36ba0da`; `APP_NOTES.md` `0d937e72917a485140635ee0862bf1e451f5a142`; `CHANGELOG.md` `eb41b99781bdc3319e05f9e9122b224351c68849`; `README.md` `f111b0d6bf079235c1422ec44bd28a6b8543d93c`. This file is updated last; re-fetch its new blob/main HEAD after this commit rather than attempting self-reference.
 - Build #58 passed the complete configured App tests and release workflow; history for all earlier attempts, warnings and exact artifacts is kept in `APP_BUILD_REPORT.md`.
 
 ## 4. Current Home indicator and animation contracts
@@ -53,7 +54,7 @@ Snapshot checked against live GitHub main on 2026-10-16 (Asia/Jakarta), after su
 - Opacity is 0–100% in 5% increments; show its current numeric value but no 50% midpoint label. Legacy persisted opacity values snap to the nearest 5%. Opacity changes the background only, not metric text.
 - Horizontal metrics remain centered as one group. Vertical Letters rows share the same left edge. The overlay remains freely draggable; WindowManager gravity is TOP | START and saved coordinates remain intact.
 - Shizuku card is compact: status `Shizuku Access Granted` or `Shizuku Access Denied`, and only `Grant Shizuku Access` and `Check Access`. No long help paragraphs or `Open Shizuku` button.
-- FPS is intended to be **foreground screen FPS, not game-only FPS**. The native sampler now prefers the focused window identity and attempts to match that package against SurfaceFlinger timestamp layers, including JE Cooler, apps, launcher, Settings and Android system UI if the OEM exposes matching layers. It attempts a compositor-layer FPS estimate from SurfaceFlinger frame counters, not display refresh rate or Flutter frame timing; counter semantics and layer availability are Android/OEM-dependent. Zero is allowed only for a valid interval on the same layer after a previously positive sample in the current tracking session. First, missing, reset, out-of-range or invalid samples use --.
+- FPS is intended to be **foreground screen FPS, not game-only FPS**. The native sampler uses focused-window identity and tries `dumpsys window displays`, full `dumpsys window`, then ActivityManager fallback before matching the foreground package to SurfaceFlinger layers. It estimates compositor-layer FPS from counter deltas, not display refresh rate or Flutter frame timing; exact semantics/layer availability are Android/OEM-dependent. A valid `0 FPS` is displayed after two matching layer snapshots over a valid interval with zero delta, even if the layer has not previously produced a positive sample. First snapshots, missing layers, counter resets, invalid intervals and command/service failures are not represented as zero. The post-release source changes implementing this have not been built/tested yet.
 - FPS source implementation remains **NOT DEVICE-VERIFIED** despite Build #58 passing CI. Shizuku permission granted does not prove the UserService binds successfully or that a particular Android/OEM exposes SurfaceFlinger layer statistics. After installing/testing Build #58, switch the overlay across JE Cooler, Settings/launcher, apps and an actual game; capture native `fps_monitor_status` and logs if data remains unavailable. Do not infer device behavior from source-contract checks alone.
 
 ## 6. Firmware/hardware baseline and protections — unchanged here
@@ -66,11 +67,11 @@ Snapshot checked against live GitHub main on 2026-10-16 (Asia/Jakarta), after su
 
 ## 7. Current repair scope and unverified points
 
-- `lib/main.dart`: Build #54 `_JexIconPainter` drawing geometry restored; current activity controller provides an interpolated strength parameter. The existing fan phase/coast and Peltier retarget controllers were retained rather than blindly rewritten.
-- `lib/floating_monitor.dart`: Shizuku-unavailable state no longer destructively removes persisted metric `F`; sampler refresh is requested when returning to the app if the enabled overlay still has `F` selected.
-- Native FPS: fixed UserService operation `dumpsys window displays` is whitelisted; `dumpsys activity activities` remains the fallback. First/invalid/reset/out-of-range samples should render `--`; zero is only accepted for the same previously-positive layer in a valid interval.
-- Added source-contract assertions for restored drawing primitives, F selection persistence, WindowManager operation and sample-state handling. Those tests were **not run**.
-- Open verification: inspect visual output on device; run Dart/Flutter/Kotlin validation; test Shizuku bind/command output, foreground package and SurfaceFlinger layer matching on the actual Android/OEM version. Current static source checks cannot prove physical FPS.
+- `lib/main.dart`: Build #54 `_JexIconPainter` drawing geometry restored with the current activity controller blending effects; Build #58 compiled that restoration and passed CI, but phone animation quality remains unverified.
+- `lib/floating_monitor.dart`: preserves metric `F` while Shizuku is unavailable, refreshes status on resume, displays native sampler diagnostics, and waits longer for a starting sampler to report a real state. These post-Build #58 changes are unbuilt.
+- Native FPS follow-up: fixed UserService operations permit `dumpsys window displays`, full `dumpsys window`, and ActivityManager fallback; valid zero is accepted after two matched layer snapshots within a valid interval; reset/invalid counters show `--` with a diagnostic status; retries cancel stale scheduled poll tasks.
+- New source-contract assertions check status labels, fallback commands, valid-zero behavior and retry lifecycle. They have **not been run**.
+- Open verification: execute App analysis/Flutter tests/Kotlin compile/APK build via the separately authorized Build App command, then verify status line/FPS on the phone. Current static checks cannot prove physical FPS or visual smoothness.
 
 ## 7. Authorization protocol and next validation
 
