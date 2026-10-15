@@ -4,7 +4,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 
 ## 2026-10-16 — Indicator redesign, Floating Monitor controls and foreground screen FPS (source updated; NOT BUILT)
 
-- Source changes committed directly to App main at source checkpoint `00c55d4b42a529bc436e252be1aa1d9a2cf39682`; the recursive tree contains 80 entries and remains untruncated. No PR was opened.
+- Source changes committed directly to App main through latest source/test checkpoint `a0b2e1252e9a8ec69372a3274af122f86a1e2eb3`; the recursive tree is complete with 80 entries. No PR was opened.
 - Home indicators: disconnected states retain semantic low-state accents instead of black/grey; Battery is Ice Blue through 30°C and Burning Red from 40°C with a smooth intervening palette; Hotside is Ice Blue through 30°C and transitions to Burning Red at the configured Hotside Limit. These are presentation thresholds only and do not change Firmware safety logic. Manual voltage text/accents are 5V red, 9V green, 12V blue.
 - Icon painter redesigned with tighter geometry, bounded effects, clipped energy sheen, smooth activity transitions and phase preservation rather than resetting every icon to its first frame. Fan, Speed, Adaptive, Peltier, Battery, Hotside, Voltage and Bluetooth artwork use the revised painter.
 - Floating Monitor size is now 0.30×–1.00× in 0.05× increments; opacity snaps to 5% increments and removes the 50% midpoint label; Display Style is removed with legacy Icons settings normalized to Letters; vertical rows are left-aligned. Shizuku UI shows only Access Granted/Denied and Grant Shizuku Access / Check Access.
