@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Memory Index
 
-Last reconciled against `main`: 2026-10-15 (Asia/Jakarta), including a retargetable Fan Speed gauge (420 ms), smooth OFF-to-zero (520 ms), loop-seamless needle wobble, sinusoidal voltage sheen, and fading Bluetooth ripple boundaries. Latest Flutter tests/analyze/build/device checks remain unrun after these changes. Verify live HEAD and blob fingerprints before acting; this is a routing index, not a substitute for checking GitHub live.
+Last reconciled against `main`: 2026-10-15 (Asia/Jakarta), including a retargetable Fan Speed gauge (420 ms), smooth OFF-to-zero (520 ms), loop-seamless needle wobble, sinusoidal voltage sheen, and fading Bluetooth ripple boundaries. Latest successful CI run `38566673160` on older source `4dccbd7eedcae4a8d1a9cd2b41d5cfda9055416b`; current animation edits still need tests/analyze/build/device QC. Verify live HEAD and blob fingerprints before acting; this is a routing index, not a substitute for checking GitHub live.
 
 ## New-chat boot order
 1. Read `CHAT_TRANSFER.md` completely.
