@@ -103,6 +103,18 @@ class MainActivity : FlutterActivity() {
                     result.success(openOverlaySettings())
                 }
 
+                "openDeveloperOptions" -> {
+                    result.success(openDeveloperOptions())
+                }
+
+                "getFpsAccessStatus" -> {
+                    result.success(FloatingMonitorService.fpsAccessStatus(this))
+                }
+
+                "refreshFpsMonitor" -> {
+                    result.success(FloatingMonitorService.refreshFpsMonitor(this))
+                }
+
                 "startFloatingMonitor" -> {
                     val json = call.arguments?.toString() ?: "{}"
                     result.success(FloatingMonitorService.start(this, json))
@@ -199,6 +211,24 @@ class MainActivity : FlutterActivity() {
             stopService(Intent(this, JeForegroundService::class.java))
         } catch (_: Exception) {
             false
+        }
+    }
+
+    // Open public Developer Options so the user can enable USB/Wireless Debugging for
+    // the one-time ADB grant. JE Cooler never enables debugging or grants DUMP to itself.
+    private fun openDeveloperOptions(): Boolean {
+        val intent = Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        return try {
+            startActivity(intent)
+            true
+        } catch (_: Exception) {
+            try {
+                startActivity(Intent(Settings.ACTION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                true
+            } catch (_: Exception) {
+                false
+            }
         }
     }
 
