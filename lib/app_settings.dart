@@ -704,6 +704,10 @@ class JexText {
       AppLanguage.english: 'Cancel',
       AppLanguage.indonesia: 'Batal',
     },
+    'select': {
+      AppLanguage.english: 'Select',
+      AppLanguage.indonesia: 'Pilih',
+    },
     'turnOnFan': {
       AppLanguage.english: 'Turn On Fan',
       AppLanguage.indonesia: 'Nyalakan Kipas',
