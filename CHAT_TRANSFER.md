@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — CHAT TRANSFER SNAPSHOT
 
-Snapshot date: 2026-10-15 (Asia/Jakarta). Live checkpoint before this transfer replacement: main HEAD `41c9798e463197ac176974ce227a2d2e4ce0cd34`, commit `docs: record smooth animation and speed gauge updates`, parent `ecd95e21011abd8e75788119ab6a73e855cb3cc4`, timestamp `2026-10-15T01:58:35Z` UTC / 2026-10-15 08:58:35 Asia/Jakarta. This file is the cross-chat memory bridge, not a substitute for fetching the next live GitHub state.
+Snapshot date: 2026-10-15 (Asia/Jakarta). Live checkpoint before this transfer replacement: main HEAD `140fbbf9f56120fbbc882e0036313263f0f2bd3e`, commit `docs: record fan speed fix and app build`, parent `cacd297399645a3c4ff69d4396e5a4e7840736e3`, timestamp `2026-10-15T02:20:24Z` UTC / 2026-10-15 09:20:24 Asia/Jakarta. This file is the cross-chat memory bridge, not a substitute for fetching the next live GitHub state.
 
 ## 0. New-chat boot — mandatory order
 
@@ -15,20 +15,20 @@ Snapshot date: 2026-10-15 (Asia/Jakarta). Live checkpoint before this transfer r
 
 ## 1. Repository checkpoint immediately before this transfer refresh
 
-- **Live checkpoint:** 2026-10-15 08:58:35 Asia/Jakarta / 2026-10-15T01:58:35Z UTC.
+- **Live checkpoint:** 2026-10-15 09:20:24 Asia/Jakarta / 2026-10-15T02:20:24Z UTC.
 - **Canonical repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`.
-- **Main HEAD immediately before this transfer write:** `41c9798e463197ac176974ce227a2d2e4ce0cd34`; message `docs: record smooth animation and speed gauge updates`; parent `ecd95e21011abd8e75788119ab6a73e855cb3cc4`; commit time `2026-10-15T01:58:35Z` UTC; root tree `f3b9154c7242e88c15253f9679dbb55d5e8ec62e`; recursive tree has 65 entries / 47 blobs including this transfer / 46 other blobs; `truncated=false`.
+- **Main HEAD immediately before this transfer write:** `140fbbf9f56120fbbc882e0036313263f0f2bd3e`; message `docs: record fan speed fix and app build`; parent `cacd297399645a3c4ff69d4396e5a4e7840736e3`; commit time `2026-10-15T02:20:24Z` UTC; root tree `23296fad4ec4089d82a4c8f07dd90d3a69e704d8`; recursive tree has 65 entries / 47 blobs including this transfer / 46 other blobs; `truncated=false`.
 - **Live branch tips:** `diag/latest-stable-v16` `ec77759d224c581870d98330d9278896ff29e50b`; `diagnostic/v1.6-heap-check` `1a4cd83b3ee82cdc2d86277dc4a0eb4c4238f8a3`; `fix/adaptive-power-sequencing` `33740be782d976a881e285bbf8b86b3b485b83c1`; `main` `41c9798e463197ac176974ce227a2d2e4ce0cd34`; `tmp-jexfyz-v5-test` `b388cba98ea1d9e92873df64ba3224d6cb99156d`. Open PRs: 0.
 - **Active Firmware source:** `firmware/JEXFYZ-V6.6.ino`, blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`, `FW_VERSION = "V6.6"`. Exactly one active versioned `.ino` is tracked and filename/version align. **USER ACCEPTANCE 2026-10-14:** user considers V6.6 correct/final and reports successful compilation and two successful Online OTA flashes/updates with the same version V6.6. Do not modify/recompile/reflash unless the user explicitly reopens Firmware work and separately authorizes the operation. Source-to-BIN provenance remains independently unverified, but is not an active task by itself.
-- **Current App identity/source:** `lib/main.dart` blob `a1818d281fdbea900bf9cde5b83c40d09d61dcc3` (267,000 bytes); `test/widget_test.dart` blob `4b7bf68f3c73d6ffe80509ccb75ce6e08607b020` (35,748 bytes); `lib/app_settings.dart` `232a7575460e5417f7b760f24b5057687a47ee1a`; `lib/floating_monitor.dart` `cfc21b3dc198b925786aa98658d647b1d8a3637b`. Package `com.horizontalzzz.jexfyz`, pubspec `1.0.0+3`; preserve Gradle `versionName "Telegram @horizontalzzz"`.
+- **Current App identity/source:** `lib/main.dart` blob `f4ee1e9b9e74f103e0f362db813dea642f285470` (267,270 bytes); `test/widget_test.dart` blob `4b7bf68f3c73d6ffe80509ccb75ce6e08607b020` (35,762 bytes); `lib/app_settings.dart` `232a7575460e5417f7b760f24b5057687a47ee1a`; `lib/floating_monitor.dart` `cfc21b3dc198b925786aa98658d647b1d8a3637b`. Package `com.horizontalzzz.jexfyz`, pubspec `1.0.0+3`; preserve Gradle `versionName "Telegram @horizontalzzz"`.
 - **Current native notification files:** `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt` blob `aecfc87121f2195ef6724613c612d674ed95ae55`; `android/app/src/main/res/drawable/ic_notification.xml` blob `cda9e8404d14a62a61157ec59fae2e491c19f5f7`. The notification helper uses the transparent bold-white JE vector as the sole small icon and sets no large icon; launcher/app imagery still uses `jexfyzicon`.
 - **Fan motion:** BLE voltage class continues to set speed: 5V = 2600 ms, 9V = 1250 ms, 12V = 620 ms. Voltage changes preserve phase by easing to an equivalent full-turn boundary. On OFF, the Fan coasts forward with ease-out over up to 0.16 turn (duration is scaled to current cycle), then retains the resting angle; blade/hub colours remain full-strength.
 - **Peltier icon/motion:** the square thermoelectric module frame, center box and corner bolts are removed. The icon is a free-standing six-branch frost crystal with particles. While ON, crystal drift animates and frost density/intensity interpolates over 420 ms across voltage classes; when OFF, controllers stop and the crystal freezes at its current pose at full colour. No OFF fade. This is decorative UI, not a physical ice or temperature measurement.
 - **Dialog sizing:** Color Picker title 22sp, selected-color label/Cancel 15sp, swatches 42dp; bottom-pinned, no draggable outer scroll panel, and localized Cancel dismisses without sending RGB. Peltier Safety title 24sp, body 17sp, action text 16sp with 48–50dp targets. Existing Fan-before-Peltier approval gate is unchanged; palette colors are unchanged.
-- **Latest successful App Build before the current retargetable-speed/loop edits:** run `38566673160` on commit `4dccbd7eedcae4a8d1a9cd2b41d5cfda9055416b` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38566673160). Audit, dependency resolution, Dart analyze, Flutter tests, APK build and downloaded release verification passed for that earlier source. V1/V2/V3 were true for built APK and downloaded asset with `--min-sdk-version 23`. Release `jexfyz-latest` contains one `JEXFYZ-release.apk` (54,521,947 bytes; SHA-256 `f7ae531834c17fea0dd187307e2e8961dca65aa87b96754082b41475bfc9c845`). The log warns `META-INF/services/a1` and `META-INF/services/b1` are not protected by JAR/V1. This build predates the current Fan Speed retargeting, loop-seamless needle wobble, sinusoidal voltage sheen and Bluetooth ripple fade edits.
-- **Build workflow:** `.github/workflows/jexfyz-app-build-trigger.yml`, blob `0e400cbdedfd54506ae3ac3255da41580c86d750`. Signing hardening was exercised by run `38566673160`: V1/V2/V3=true for build APK and downloaded release asset using `--min-sdk-version 23`; Android manifest minSdk remains 24. JAR/V1 warnings for `META-INF/services/a1` and `META-INF/services/b1` remain. Trigger title `JE X FYZ — BUILD APP TRIGGER`, required body token `JEXFYZ_BUILD_TRIGGER_V1`, Ubuntu 24.04 / Java 17 / Flutter 3.47.2 / Gradle 9.3.1. Current smooth-animation source has not been built.
+- **Latest successful App Build:** run #35 / ID `38669526891` on code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38669526891). Security/architecture audit, dependency resolution, Dart analyze, all 74 Flutter tests, APK build, V1/V2/V3 verification and re-downloaded release-asset verification passed. The release contains one `JEXFYZ-release.apk` (54,521,947 bytes; SHA-256 `77e57ece6c194ec97ce9f4e72d379f848173cd2cf905f66a74e6b037ad82e5c1`). Production certificate SHA-256 is `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. JAR/V1 still warns that various dependency `META-INF` entries (including `META-INF/services/a1` and `META-INF/services/b1`) are not protected; V1/V2/V3 validations nevertheless passed on the built and downloaded APK. Physical-device rendering/MT Manager verification remains open.
+- **Build workflow:** `.github/workflows/jexfyz-app-build-trigger.yml`, blob `0e400cbdedfd54506ae3ac3255da41580c86d750`. Build #35 verified V1/V2/V3 on both built APK and downloaded release asset using the explicit min-SDK verification path; Android manifest minSdk remains 24. JAR/V1 warnings for dependency `META-INF` entries remain. Trigger title `JE X FYZ — BUILD APP TRIGGER`, required body token `JEXFYZ_BUILD_TRIGGER_V1`, Ubuntu 24.04 / Java 17 / Flutter 3.47.2 / Gradle 9.3.1. Current smooth-animation source is now built and tested.
 - **Artifact repository:** `TenzoNkz/JEXFYZ-Firmware` main HEAD `cc0a0ae32b826753525c3f2a4442526648cef631`, root tree `b4db8f4e86dfb97d3313c70428b92eb9d4bd7511`; live recursive root contains only `JEXFYZ.cpp.bin`, blob `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, 1,455,936 bytes. Provenance matching V6.6 source remains UNVERIFIED.
-- **Operation boundary:** Current App source blob `a1818d281fdbea900bf9cde5b83c40d09d61dcc3` and widget regression-test blob `4b7bf68f3c73d6ffe80509ccb75ce6e08607b020` are committed on `main`. Static source/readback checks passed, but Flutter tests/analyze and device rendering have NOT run after these edits. Latest successful CI run `38566673160` tested/built earlier commit `4dccbd7eedcae4a8d1a9cd2b41d5cfda9055416b`, not current source. No App Build occurred for this animation task. No Firmware source/compile, BIN replacement, Firebase metadata, OTA/flash/device operation occurred. User accepts Firmware V6.6 as final after two same-version Online OTA updates. Phase remains DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED.
+- **Operation boundary:** Current App source blob `f4ee1e9b9e74f103e0f362db813dea642f285470` and widget test blob `4b7bf68f3c73d6ffe80509ccb75ce6e08607b020` are built/tested by run #35, code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`. Build #34 on prior commit failed one Fan Speed midpoint assertion and was correctly blocked before APK compilation; symmetric cubic smoothstep fixed the contract, then 74 tests and analyze passed. Device rendering remains UNVERIFIED. No Firmware source/compile, BIN replacement, Firebase metadata, OTA/flash/device operation occurred. User accepts Firmware V6.6 as final after two same-version Online OTA updates. Phase remains DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED.
 
 ## 2. Permanent user commands and authorization limits
 
@@ -175,11 +175,11 @@ Read OTA_PROTECTION.md and OTA_REGRESSION_MEMORY.md fully before any OTA change.
 ## 10. App Build / release
 
 - App Build and Firmware compile are separate operations; `@Thinking Eksekusi Full!` does not imply Build App.
-- Latest successful App Build before current loop/speed edits is run `38566673160` on commit `4dccbd7eedcae4a8d1a9cd2b41d5cfda9055416b` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38566673160). Audit, dependency resolution, Dart analyze, Flutter tests, APK build and release re-download verification passed for that older source. V1/V2/V3 verified true for built APK and downloaded asset. Release asset SHA-256 `f7ae531834c17fea0dd187307e2e8961dca65aa87b96754082b41475bfc9c845`; logs warn `META-INF/services/a1` and `META-INF/services/b1` are not protected by JAR/V1.
-- Current source adds retargetable Fan Speed interpolation, integer-harmonic loop-seamless wobble, sinusoidal voltage sheen and a squared-sine Bluetooth ripple envelope; regression contracts cover these behaviors. These current source/test edits have NOT been run through Flutter tests/analyze or built.
+- Prior successful App Build before current loop/speed edits was run `38566673160` on commit `4dccbd7eedcae4a8d1a9cd2b41d5cfda9055416b`; it validated the prior source only. The current source build is run #35 `38669526891`, commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`; 74 tests/analyze passed, V1/V2/V3 and downloaded asset verified, asset SHA-256 `77e57ece6c194ec97ce9f4e72d379f848173cd2cf905f66a74e6b037ad82e5c1`.
+- Current source adds retargetable Fan Speed interpolation, integer-harmonic loop-seamless wobble, sinusoidal voltage sheen and a squared-sine Bluetooth ripple envelope; `jexSmoothFanSpeedLevel` now uses symmetric cubic smoothstep after Build #34 revealed the prior curve's midpoint did not satisfy the explicit test contract. Build #35 then passed all 74 Flutter tests and Dart analyze.
 - Active workflow `.github/workflows/jexfyz-app-build-trigger.yml`, blob `0e400cbdedfd54506ae3ac3255da41580c86d750`. Trigger title `JE X FYZ — BUILD APP TRIGGER`, body token `JEXFYZ_BUILD_TRIGGER_V1`; only owner/title/token-validated issue-open/reopen. Normal push/PR must not build APK.
 - Toolchain: Ubuntu 24.04, Java 17, Flutter 3.47.2 stable, Gradle 9.3.1. Intended output: one obfuscated, production-signed normal APK `JEXFYZ-release.apk`, release tag `jexfyz-latest`; no Play Store bundle/Actions artifact.
-- App Build only after explicit `@Thinking Build App!` or `@Thinking Eksekusi & Build App!`. No App Build was run for this animation task.
+- App Build only after explicit `@Thinking Build App!` or `@Thinking Eksekusi & Build App!`. This task's explicitly authorized App Build #35 completed successfully.
 ## 11. Approved grille / design memory
 
 Read DESIGN_NOTES.md before any visual iteration.
@@ -220,14 +220,14 @@ Read DESIGN_NOTES.md before any visual iteration.
 
 ## 14. Exact open validation queue
 
-1. After explicit `@Thinking Build App!` or `@Thinking Eksekusi & Build App!`, run the manual workflow on current `main`; record current source SHA, actual Dart analyze/Flutter test results, signing schemes, certificate digest and downloaded release asset SHA.
-2. Build run `38566673160` passed on older commit `4dccbd7eedcae4a8d1a9cd2b41d5cfda9055416b`, not on current source. It verified V1/V2/V3 but warns `META-INF/services/a1` and `META-INF/services/b1` are not protected by JAR/V1.
+1. Latest authorized manual App Build #35 is complete on code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`; it passed Dart analyze, all 74 Flutter tests, V1/V2/V3 checks and downloaded release verification. Next is device-side install/rendering and MT Manager verification.
+2. Build #35 asset SHA-256 is `77e57ece6c194ec97ce9f4e72d379f848173cd2cf905f66a74e6b037ad82e5c1`; V1/V2/V3 passed for built and downloaded assets. JAR/V1 warns that some dependency META-INF entries remain unprotected, including `META-INF/services/a1` and `META-INF/services/b1`.
 3. On device, verify Fan coast-down/full colour; box-free Peltier crystal/no OFF fade; Speed gauge animates smoothly from each current value to successive target changes (including an update mid-transition), percentage text stays authoritative, ON wobble has no loop jump and OFF reaches far-left/0 over 520 ms.
 4. Verify voltage sheen has no snap at either endpoint, Bluetooth ripples fade smoothly when radius wraps, plus notification JE icon/tap, dialog sizes/Cancel, offline `--` fallback and authoritative state after reconnect.
-5. Current widget regression test includes deterministic interpolation/easing, needle boundary and voltage/Bluetooth loop tests, but **Flutter tests/analyze and device rendering have not been run after current edits**.
+5. The current widget regression suite and Dart analyze passed on Build #35 (74 tests). Physical device rendering and MT Manager verification remain UNVERIFIED.
 6. Preserve no-standalone Battery Protection Guard UI, 1 Hz phone Battery heartbeat/five-second Firmware freshness TTL and one-App/one-cooler pairing as unverified enforcement.
 7. Firmware V6.6 is final by user acceptance after two reported successful same-version Online OTA updates. Do not edit/compile Firmware or run BIN/Firebase/OTA/flash operations unless user explicitly reopens Firmware work and separately authorizes it. The historical rapid-Hotside-rise request remains unimplemented; do not add proactively.
-8. No App Build, Firmware compile, BIN/Firebase/OTA/flash or release operation was performed for this animation task.
+8. App Build #35 and release publication completed successfully. No Firmware compile, BIN/Firebase/OTA/flash or physical hardware operation was performed.
 ## 15. Evidence labels and don't guess
 
 - CURRENT / VERIFIED = directly rechecked live repo/run.
@@ -240,23 +240,23 @@ Read DESIGN_NOTES.md before any visual iteration.
 
 Never equate test file with passing run; compile with full OTA installation; blue LED with successful HTTP; ACK with hardware state; reboot with proven brownout; version bump with BIN build; or existing BIN with source provenance.
 
-## 16. Live blob fingerprints at pre-transfer HEAD `41c9798e463197ac176974ce227a2d2e4ce0cd34`
+## 16. Live blob fingerprints at pre-transfer HEAD `140fbbf9f56120fbbc882e0036313263f0f2bd3e`
 
-Fetched from live recursive tree for commit `41c9798e463197ac176974ce227a2d2e4ce0cd34` (root tree `f3b9154c7242e88c15253f9679dbb55d5e8ec62e`; 65 entries, 47 blobs including this transfer, 46 other blobs; `truncated=false`). This transfer file's own new blob SHA is intentionally omitted.
+Fetched from live recursive tree for commit `140fbbf9f56120fbbc882e0036313263f0f2bd3e` (root tree `23296fad4ec4089d82a4c8f07dd90d3a69e704d8`; 65 entries, 47 blobs including this transfer, 46 other blobs; `truncated=false`). This transfer file's own new blob SHA is intentionally omitted.
 
 Canonical project memory and docs:
 - `APP_NOTES.md`: `2e24b49f87f3a02681a4f242c4ae99239921d9f8` (14109 bytes)
-- `BUILD_NOTES.md`: `fee1985c4fb1e4fc8ca2177689a740123005d3db` (6004 bytes)
-- `CHANGELOG.md`: `28547082b372ee391360d9c88a6f6289c53a88a5` (28426 bytes)
+- `BUILD_NOTES.md`: `a433ab55688b6770416f287e535dc61094e338ad` (7816 bytes)
+- `CHANGELOG.md`: `193a2fbf9e5db66ed1c55d658d5c9e55d7346463` (30115 bytes)
 - `CHAT_RULES.md`: `b5bc4743bc5ef0fbf9297020799ae8dba00974bd` (8427 bytes)
 - `CHAT_TRANSFER_PROMPTS.md`: `cb2290bf2b1b404cde29fc1b68b90ebbc1e62f34` (28068 bytes)
 - `DESIGN_NOTES.md`: `e04382659dfdd618de0a156046f140452d275dc7` (2128 bytes)
 - `FIRMWARE_NOTES.md`: `db53605779f157b3c966b15a07bef73199ca575d` (11583 bytes)
-- `HANDOVER.md`: `06198716bd8d6bc35890bafcf7ce382e84085589` (6830 bytes)
+- `HANDOVER.md`: `6cec3d94deb522d247aa545530d97fb673c9c0c3` (7127 bytes)
 - `MEMORY_INDEX.md`: `3be937ccf9f359166f88f2d20bcfb1a8824fe10d` (6859 bytes)
 - `OTA_PROTECTION.md`: `06beb86b749b0f0e14c8cb517e43fe7c0f66a4e1` (4259 bytes)
 - `OTA_REGRESSION_MEMORY.md`: `e961ca32a22ebf0fcba8ed221f12cc17a6429f52` (3953 bytes)
-- `PROJECT_STATE.md`: `a0eac140d444e22fa825ad3c84903da8edbd65c5` (14394 bytes)
+- `PROJECT_STATE.md`: `a2266a15bfcdd26d705380fc599955fc9fe6c7df` (14383 bytes)
 - `README.md`: `f0eca08bc811c8e89cf127e37486ceeae2171b0e` (4344 bytes)
 - `VOLTAGE_TRANSITION_MEMORY.md`: `cf97f4745e6f5e33ce57beece5b2c1f742029b44` (5916 bytes)
 
@@ -270,7 +270,7 @@ App source:
 - `lib/app_settings.dart`: `232a7575460e5417f7b760f24b5057687a47ee1a` (52678 bytes)
 - `lib/floating_monitor.dart`: `cfc21b3dc198b925786aa98658d647b1d8a3637b` (51218 bytes)
 - `lib/jex_animated_glyph.dart`: `c9c5c2802cb0ed363c042620511148b0d58d36c4` (1730 bytes)
-- `lib/main.dart`: `a1818d281fdbea900bf9cde5b83c40d09d61dcc3` (267178 bytes)
+- `lib/main.dart`: `f4ee1e9b9e74f103e0f362db813dea642f285470` (267270 bytes)
 
 Tests:
 - `test/app_protocol_notify_contract_test.dart`: `92214dd90178c705844d3979d3f8f7bd17bcc4b8` (867 bytes)
