@@ -20,11 +20,10 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 
 ## Current source validation boundary — 2026-10-16
 
-- Latest verified release is [Build #58](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38793790061), exact source `db11df355780174b1da7dcea4d5947bfa7ba7ca5`. It passed Dart analysis, 87/87 Flutter tests, Android release build/signing, release publication and asset verification.
-- Current post-release diagnostic source checkpoint is `becd7f20517fbdaa4bb9922501f28fbed2282223). It improves foreground-window lookup with a full `dumpsys window` fallback when `dumpsys window displays` does not identify focus, keeps sampler status at `starting` until a valid sample is produced, and displays the actual native FPS state in Floating Monitor settings.
-- The post-Build #58 source/test changes have **not** been analyzed, test-run, Kotlin-compiled, built or device-verified. Build #58 remains the latest verified APK; it does not contain these follow-up changes.
-- FPS remains device-dependent. A Shizuku grant does not prove a UserService connection or matching SurfaceFlinger layer exists. The new UI status should help distinguish `foreground_unknown`, `no_layer_data`, `sample_invalid`, and service/command failures.
-- No Firmware/BIN, Firebase, OTA, BLE hardware-control or thermal-safety code was changed.
+- Latest verified release is [Build #58](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38793790061), exact source `db11df355780174b1da7dcea4d5947bfa7ba7ca5`. It passed Dart analysis, 87/87 Flutter tests, Android release build/signing, publication and asset verification.
+- Current post-release source/test checkpoint is `6e9b4c73db12c51f4452717d8cf102f49d325dcf`. It adds a fixed full `dumpsys window` fallback, keeps FPS status at `starting` until a valid measurement exists, accepts `0 FPS` only after two matching layer snapshots in a valid interval, distinguishes counter reset/invalid states, cancels stale poll loops on retry, and surfaces the native FPS status in Settings.
+- This follow-up has **not** been analyzed, test-run, Kotlin-compiled, built or device-verified. Build #58 remains the latest verified APK; it does not contain these changes.
+- FPS still depends on Shizuku service operation and SurfaceFlinger layer availability on the target Android/OEM. No Firmware/BIN, Firebase, OTA, BLE hardware-control or thermal-safety code was changed.
 
 ## Repository boundaries
 
