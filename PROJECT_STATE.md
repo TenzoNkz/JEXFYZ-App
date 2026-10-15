@@ -81,6 +81,7 @@ Last reconciled: 2026-10-15 (Asia/Jakarta). This file is current-only; refresh t
 - Canonical commands: `@Thinking #Diskusi!`; Gemini subcommands only as `@Thinking #Diskusi! #Tanya Gemini!` or `@Thinking #Diskusi! #Jawaban Gemini!`; full execution `@Thinking #Eksekusi Full!`; end-to-end App build `@Thinking #Build App!`.
 - Standalone `#Eksekusi!` and `#Eksekusi & Build App!` are retired. A Gemini subcommand without `#Diskusi!` in the same command is invalid and its substantive request must not be answered.
 - Current build-report register: `APP_BUILD_REPORT.md`. Build attempts, repairs, run links, validation, APK checksum and remaining blockers must be written there for cross-chat continuity.
+- Build App context-limit continuity: use Prompt D in `CHAT_TRANSFER_PROMPTS.md` once as the first message in the replacement Build App chat. It LOADs live state and continues the existing work; no separate recap chat/prompt. Prompt A is only for broad project-memory reconciliation.
 - This documentation update does not rerun App Build; Build #35 below remains the latest observed successful run until live Actions data says otherwise.
 - Only active workflow: `.github/workflows/jexfyz-app-build-trigger.yml`; explicit owner/title/token issue trigger only.
 - Latest successful run is Build #35 above. Failed Build #34 was correctly blocked before APK compilation because one regression test failed; no failed-run APK was published.
