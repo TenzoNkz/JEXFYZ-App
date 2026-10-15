@@ -27,9 +27,11 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 
 ## Current validation boundary
 
-Latest App source smooths the Fan Speed gauge between telemetry targets over 420 ms from its currently rendered value, returns OFF to zero over 520 ms, and uses loop-continuous needle wobble. The voltage-bolt sheen now moves sinusoidally, and Bluetooth ripple rings fade to transparent smoothly at each repeat boundary. Fan coast-down and the full-colour box-free Peltier OFF pose remain.
-
-Regression tests have been updated, but Flutter tests/analyze and device rendering were NOT run after the current source changes. Latest successful Build App run `38566673160` on older source commit `4dccbd7eedcae4a8d1a9cd2b41d5cfda9055416b` predates these edits; it verified V1/V2/V3 on the APK and downloaded asset but warned `META-INF/services/a1` and `META-INF/services/b1` are not protected by JAR/V1. MT Manager's earlier signature label still needs a device recheck. Build App requires explicit `@Thinking Build App!` authorization. Firmware V6.6 is user-accepted as final; do not reopen Firmware operations unless requested. See [PROJECT_STATE.md](PROJECT_STATE.md) and [HANDOVER.md](HANDOVER.md).
+- Current App UI source: `lib/main.dart` blob `f4ee1e9b9e74f103e0f362db813dea642f285470`; widget tests: `test/widget_test.dart` blob `4b7bf68f3c73d6ffe80509ccb75ce6e08607b020`.
+- Fan Speed retargets to the newest telemetry target over 420 ms, including mid-transition changes, and returns to zero over 520 ms when Fan turns OFF. Symmetric cubic smoothstep has an exact midpoint; needle wobble wraps seamlessly. Fan coast-down/full-colour blades and the box-free full-colour Peltier crystal OFF pose remain. Voltage sheen and Bluetooth ripple opacity transition continuously at loop boundaries.
+- **Latest verified App Build:** [Build #35 / run `38669526891`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38669526891), code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`. Security/architecture audit, dependency install, Dart analyze, **74 Flutter tests**, APK build, V1/V2/V3 signing, GitHub Release publication and re-downloaded asset verification passed.
+- Release `jexfyz-latest` has exactly one `JEXFYZ-release.apk` (54,521,947 bytes). SHA-256: `77e57ece6c194ec97ce9f4e72d379f848173cd2cf905f66a74e6b037ad82e5c1`. Expected production certificate SHA-256 matched. JAR/V1 diagnostics still warn that dependency `META-INF` entries are not protected by that scheme; this is recorded separately from successful V1/V2/V3 verification.
+- **Not proven by CI:** physical install/rendering, MT Manager's signature interpretation, BLE with the cooler, cooling/safety behavior and physical OTA. Firmware V6.6 compile/Online OTA success is user-reported; source-to-BIN provenance remains unverified. No new Firmware operation is authorized by this docs checkpoint.
 
 ## Non-negotiable workflow
 
