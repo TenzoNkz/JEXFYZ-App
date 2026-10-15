@@ -198,6 +198,37 @@ jobs:
           if activity.count('"startFloatingMonitor"') != 1 or activity.count('"getFloatingRuntimeState"') != 1:
               raise SystemExit("JE X FYZ audit failed; Floating methods are not isolated to the dedicated channel")
 
+          # FPS elevated access must use explicit Shizuku consent and the restricted UserService.
+          fps_host = Path("android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt").read_text(encoding="utf-8")
+          fps_userservice = Path("android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FpsShizukuUserService.kt").read_text(encoding="utf-8")
+          fps_aidl = Path("android/app/src/main/aidl/com/horizontalzzz/jexfyz/IFpsShizukuUserService.aidl").read_text(encoding="utf-8")
+          if "rikka.shizuku.ShizukuProvider" not in manifest:
+              raise SystemExit("FPS audit failed; Shizuku provider is missing")
+          for token, content in [
+              ("Shizuku.requestPermission", activity),
+              ("Shizuku.checkSelfPermission()", fps_host),
+              ("Shizuku.bindUserService", fps_host),
+              ("executeFpsOperation(int operation)", fps_aidl),
+              ("OP_READ_SURFACEFLINGER_STATS", fps_userservice),
+          ]:
+              if token not in content:
+                  raise SystemExit("FPS audit failed; missing Shizuku contract: " + token)
+          if "android.permission.DUMP" in manifest or "ProcessBuilder(" in fps_host:
+              raise SystemExit("FPS audit failed; direct app-process DUMP execution is forbidden")
+          legacy_fps_tokens = [
+              "WirelessAdbPairingService",
+              "WirelessAdbIdentityStore",
+              "ADB_PAIRING_CHANNEL",
+              "startWirelessAdbPairing",
+              "com.flyfishxu:kadb",
+              "adb shell pm grant com.horizontalzzz.jexfyz android.permission.DUMP",
+              "adb shell pm revoke com.horizontalzzz.jexfyz android.permission.DUMP",
+          ]
+          active_fps_sources = manifest + activity + floating + fps_host + fps_userservice + pubspec + Path("android/app/build.gradle").read_text(encoding="utf-8")
+          legacy = [token for token in legacy_fps_tokens if token in active_fps_sources]
+          if legacy:
+              raise SystemExit("FPS audit failed; legacy ADB pairing path found: " + ", ".join(legacy))
+
           # Firmware .ino source is intentionally stored in this App repository.
           # It must not be referenced as a Flutter source/build dependency.
           firmware_dir = Path("firmware")
