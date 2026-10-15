@@ -3,6 +3,17 @@
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
 
+## 2026-10-15 — Smooth Fan Speed retargeting and seamless indicator loops
+
+- Added `jexSmoothFanSpeedLevel`, with a dedicated retargetable `AnimationController` for the Fan Speed gauge. Each new active speed target interpolates from the currently displayed value over 420 ms; another target arriving mid-transition starts from the current interpolated position rather than jumping back. Fan OFF smoothly retargets the gauge to zero over 520 ms; the telemetry percentage remains authoritative.
+- Replaced the Fan Speed needle's non-integer wobble harmonic with integer harmonics so both position and slope match across the loop's 0/1 boundary.
+- Changed the voltage-bolt highlight from a one-way linear sweep with a snap-back to a sinusoidal back-and-forth movement.
+- Changed Bluetooth connection ripple opacity to a squared-sine envelope, transparent with zero slope at cycle edges, avoiding a visible ring flash when the radius wraps.
+- Added regression contracts for interpolation endpoints/easing, wobble boundary continuity, and voltage/Bluetooth loop effects. Static source/readback checks passed; Flutter tests/analyze and device rendering have not run for these edits.
+- No App Build, Firmware compile, BIN/Firebase update, OTA/flash, or release operation was performed for this animation task.
+
+
+
 ## 2026-10-15 — Smooth status animation loops and retargetable Fan Speed gauge
 
 - Added a dedicated Fan Speed value-transition controller, separate from the cyclic wobble controller. Each active speed change retargets from the currently rendered gauge level to the latest target over 420 ms; if another target arrives mid-transition, it continues from the current interpolation. OFF animates to 0 over 520 ms and later OFF telemetry changes no longer restart that transition.
