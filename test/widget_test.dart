@@ -27,6 +27,21 @@ void main() {
     expect(source, isNot(contains('void _drawBlade(')));
   });
 
+  test('Floating FPS status distinguishes access from measurement failures', () {
+    final noLayer = floatingFpsStatusLabel('no_layer_data', AppLanguage.indonesia);
+    expect(noLayer, contains('SurfaceFlinger'));
+    expect(noLayer, contains('(no_layer_data)'));
+
+    final foreground = floatingFpsStatusLabel('foreground_unknown', AppLanguage.english);
+    expect(foreground, contains('Foreground window'));
+    expect(foreground, contains('(foreground_unknown)'));
+
+    expect(
+      floatingFpsStatusLabel('active', AppLanguage.english),
+      'Valid FPS sample available',
+    );
+  });
+
   test('BLE session protocol gate accepts only P1', () {
     expect(isSupportedP1Protocol('P1'), isTrue);
     expect(isSupportedP1Protocol(' p1 '), isTrue);
