@@ -21,7 +21,7 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 ## Current source validation boundary — 2026-10-16
 
 - Latest verified release remains [Build #56](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38785365015), built from source commit `235f47b47af4f32582a7f18825ed76d2c6bba54f`. The current repair commit `98cfe7ba4d0e9d569b84498d261ad1b67f66eee7` is **not built or released**.
-- The source restores Build #54 icon geometry while blending activity effects through the existing controller. It preserves metric `F) when Shizuku is unavailable, reads focused-window fields through a fixed `dumpsys window displays` operation with an ActivityManager fallback, and distinguishes valid zero-frame samples from first/invalid/reset samples.
+- The source restores Build #54 icon geometry while blending activity effects through the existing controller. It preserves metric `F` when Shizuku is unavailable, reads focused-window fields through a fixed `dumpsys window displays` operation with an ActivityManager fallback, and distinguishes valid zero-frame samples from first/invalid/reset samples.
 - Source-contract assertions were updated, but Dart analysis, Flutter tests, Kotlin compilation, APK packaging and physical-device testing have **not** been run for this commit.
 - Without Shizuku, actual foreground app/game FPS remains unavailable. Do not substitute refresh rate (Hz) and label it FPS. Firmware, Firebase, OTA, BLE hardware control and thermal protections were not changed.
 
