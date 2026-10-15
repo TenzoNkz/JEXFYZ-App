@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — CHAT TRANSFER SNAPSHOT
 
-Snapshot date: 2026-10-15 (Asia/Jakarta). This transfer is refreshed last. Live main HEAD immediately before this transfer write: 1690decd6b2b395fa171abc54bded83c02e3a4fe, after documenting the current Color Picker staged-selection source status in APP_BUILD_REPORT.md. The current recursive tree/root SHA was not returned by the available connector; re-fetch the full recursive tree on next boot and do not reuse historical tree-root/count data as live truth. This file is a boot bridge, not a substitute for fetching live GitHub state.
+Snapshot date: 2026-10-15 (Asia/Jakarta). This transfer is refreshed last. Live `main` HEAD immediately before this transfer write: `c144a4811b3ebb48a436d79b98e1e99712a22b2a`. This checkpoint includes Color Picker Select/Cancel staging, Floating Monitor preview removal/orientation controls, ADB-only SurfaceFlinger FPS sampling filtered to Android's focused package, telemetry replay/layout refresh, recovery-command documentation, and source-contract assertions. Full recursive tree/root SHA was not returned in this operation; re-fetch the full recursive tree at next boot. Do not reuse historical tree-root/count data as live truth.
 
 ## 0. New-chat boot — mandatory order
 
@@ -17,9 +17,9 @@ Snapshot date: 2026-10-15 (Asia/Jakarta). This transfer is refreshed last. Live 
 
 - **Live checkpoint:** refreshed during this documentation-only protocol update on 2026-10-15 (Asia/Jakarta).
 - **Canonical repository/branch:** `TenzoNkz/JEXFYZ-App` / `main`.
-- **Live checkpoint before this transfer write:** main HEAD 1690decd6b2b395fa171abc54bded83c02e3a4fe. The preceding work includes the Color Picker source behavior, localization, regression assertions and the correction to APP_BUILD_REPORT.md so the older Build #35 continuation note is explicitly historical. The previously checked branch/PR record showed five branch names and zero open PRs; recheck live state next boot. The current recursive tree/root SHA was not returned by the available connector, so retrieve it afresh.
+- **Live checkpoint before this transfer write:** `main` HEAD `c144a4811b3ebb48a436d79b98e1e99712a22b2a`. This preceding work includes code, tests and canonical documentation changes. The recursive tree/root SHA is still unavailable from the connector and must be retrieved fresh at next boot. Recheck branches/open PRs next boot rather than assuming prior results remain current.
 - **Active Firmware source:** `firmware/JEXFYZ-V6.6.ino`, blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`, `FW_VERSION = "V6.6"`. Exactly one active versioned `.ino` is tracked and filename/version align. **USER ACCEPTANCE 2026-10-14:** user considers V6.6 correct/final and reports successful compilation and two successful Online OTA flashes/updates with the same version V6.6. Do not modify/recompile/reflash unless the user explicitly reopens Firmware work and separately authorizes the operation. Source-to-BIN provenance remains independently unverified, but is not an active task by itself.
-- **Current App identity/source:** `lib/main.dart` blob `150ca0e34478e27d6fd62ed55f19411d71c2a287`; `test/widget_test.dart` blob `f3c7c4a0dd15f4aec24d14006d467dd46b551641`; `lib/app_settings.dart` blob `f784a83baf312b563a1d3255dda4c012a9baee1a`; `lib/floating_monitor.dart` blob `cfc21b3dc198b925786aa98658d647b1d8a3637b`. Package `com.horizontalzzz.jexfyz`, pubspec `1.0.0+3`; preserve Gradle `versionName "Telegram @horizontalzzz"`.
+- **Current App identity/source:** `lib/main.dart` blob `c697497e16c94b8fe4fe8fd9bd1f9bc93598545f`; `lib/floating_monitor.dart` blob `c08c2a484f83a9cae7c7d4437b0573c1865cd424`; `lib/app_settings.dart` blob `6483031e239d71e0a0784c529e2f45a94fb5404b`; `test/widget_test.dart` blob `2a87292d5c4bc468ee6aad6810b249d284a28bae`; native `FloatingMonitorService.kt` blob `038f12b2ca82255a3b202b10dd770d5caa5b2bbf`; `MainActivity.kt` blob `12004b5b36b8339f7440e54f9a7330e5804e57ef`; AndroidManifest blob `bcf9b3e96b254dd6577035a6643b6935f7320085`. Package `com.horizontalzzz.jexfyz`, pubspec `1.0.0+3`; preserve Gradle `versionName "Telegram @horizontalzzz"`.
 - **Current native notification files:** `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt` blob `aecfc87121f2195ef6724613c612d674ed95ae55`; `android/app/src/main/res/drawable/ic_notification.xml` blob `cda9e8404d14a62a61157ec59fae2e491c19f5f7`. The notification helper uses the transparent bold-white JE vector as the sole small icon and sets no large icon; launcher/app imagery still uses `jexfyzicon`.
 - **Fan motion:** BLE voltage class continues to set speed: 5V = 2600 ms, 9V = 1250 ms, 12V = 620 ms. Voltage changes preserve phase by easing to an equivalent full-turn boundary. On OFF, the Fan coasts forward with ease-out over up to 0.16 turn (duration is scaled to current cycle), then retains the resting angle; blade/hub colours remain full-strength.
 - **Peltier icon/motion:** the square thermoelectric module frame, center box and corner bolts are removed. The icon is a free-standing six-branch frost crystal with particles. While ON, crystal drift animates and frost density/intensity interpolates over 420 ms across voltage classes; when OFF, controllers stop and the crystal freezes at its current pose at full colour. No OFF fade. This is decorative UI, not a physical ice or temperature measurement.
@@ -27,7 +27,7 @@ Snapshot date: 2026-10-15 (Asia/Jakarta). This transfer is refreshed last. Live 
 - **Latest successful App Build:** run #35 / ID `38669526891` on code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38669526891). Security/architecture audit, dependency resolution, Dart analyze, all 74 Flutter tests, APK build, V1/V2/V3 verification and re-downloaded release-asset verification passed. The release contains one `JEXFYZ-release.apk` (54,521,947 bytes; SHA-256 `77e57ece6c194ec97ce9f4e72d379f848173cd2cf905f66a74e6b037ad82e5c1`). Production certificate SHA-256 is `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. JAR/V1 still warns that various dependency `META-INF` entries (including `META-INF/services/a1` and `META-INF/services/b1`) are not protected; V1/V2/V3 validations nevertheless passed on the built and downloaded APK. Physical-device rendering/MT Manager verification remains open.
 - **Build workflow:** `.github/workflows/jexfyz-app-build-trigger.yml`, blob `0e400cbdedfd54506ae3ac3255da41580c86d750`. Build #35 verified V1/V2/V3 on both built APK and downloaded release asset using the explicit min-SDK verification path; Android manifest minSdk remains 24. JAR/V1 warnings for dependency `META-INF` entries remain. Trigger title `JE X FYZ — BUILD APP TRIGGER`, required body token `JEXFYZ_BUILD_TRIGGER_V1`, Ubuntu 24.04 / Java 17 / Flutter 3.47.2 / Gradle 9.3.1. Build #35 covers earlier UI source; the Color Picker staged-selection update is newer than that APK and is NOT built or tested yet.
 - **Artifact repository:** `TenzoNkz/JEXFYZ-Firmware` main HEAD `cc0a0ae32b826753525c3f2a4442526648cef631`, root tree `b4db8f4e86dfb97d3313c70428b92eb9d4bd7511`; live recursive root contains only `JEXFYZ.cpp.bin`, blob `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, 1,455,936 bytes. Provenance matching V6.6 source remains UNVERIFIED.
-- **Operation boundary:** Current App source blob `150ca0e34478e27d6fd62ed55f19411d71c2a287`, localization blob `f784a83baf312b563a1d3255dda4c012a9baee1a`, and widget test blob `f3c7c4a0dd15f4aec24d14006d467dd46b551641` contain the Color Picker draft-selection fix and source-contract assertions. They are newer than Build #35 and have NOT been analyzed, tested or built. Latest prior successful build remains #35 on commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`; no Build App workflow was triggered for this `#Eksekusi Full!` task. Flutter/Dart were unavailable in the execution environment, so tests/analyze were not run. Device rendering remains UNVERIFIED. No Firmware source/compile, BIN replacement, Firebase metadata, OTA/flash/device operation occurred. User accepts Firmware V6.6 as final after two same-version Online OTA updates. Phase remains DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED.
+- **Operation boundary:** Current source/test updates include the Color Picker draft + Select/Cancel behavior and Floating Monitor ADB FPS/telemetry fixes; they are newer than Build #35 and have NOT been analyzed, tested or built. No Build App workflow was triggered by this recovery or preceding Eksekusi Full. Flutter/Dart SDKs are unavailable in this environment. Firmware V6.6, BIN, Firebase, workflow trigger, OTA/flash and physical hardware were not changed or operated. FPS permission and accuracy, OEM SurfaceFlinger layer output, overlay survival and physical UI behavior remain UNVERIFIED. Phase remains DEVELOPMENT + QC / PRE-RELEASE; NOT RELEASED.
 
 ## 2. Permanent Thinking commands and authorization limits
 
@@ -37,6 +37,7 @@ Snapshot date: 2026-10-15 (Asia/Jakarta). This transfer is refreshed last. Live 
 - **Required parent:** either Gemini subcommand without `#Diskusi!` in the same command is invalid. Reject it without processing its substantive request; ask for the correct command format only.
 - `@Thinking #Eksekusi Full!` — execute the agreed scope, related audit/tests, doc/index/state/changelog reconciliation, verification and commit to `main`. It does NOT authorize App Build or Firmware/device operations.
 - `@Thinking #Build App!` — run the entire App Build/QC loop, inspect exact logs, fix App-scope failures without weakening gates, re-run after evidence-based fixes, verify APK/signing/release asset, and update `APP_BUILD_REPORT.md`. At a Build App chat limit, the replacement Build App chat uses Prompt D once to LOAD + CONTINUE from live evidence; there is no separate recap chat.
+- `@Thinking Chat Stuck!` — standalone emergency recovery. Halt blind retries, inspect logs/current repository/workflow/checkpoint, and resume only the last valid authorized task; avoid duplicate commits/builds and report `RECOVERED`, `BLOCKED` or `FAILED`. It does not itself authorize a Build App/Firmware/device operation.
 - Retired commands: standalone `#Eksekusi!` and combined `#Eksekusi & Build App!`. Do not suggest or use them. The user has approved this updated protocol.
 - If build progress is blocked by permissions/secrets, external services, hardware/device checks or work requiring separate authorization, record `BLOCKED` with the exact needed action; never report false success or loop blindly.
 - Build workflow manual trigger title: `JE X FYZ — BUILD APP TRIGGER`; body token `JEXFYZ_BUILD_TRIGGER_V1`. Read the live workflow before any future build.
@@ -156,6 +157,7 @@ Read VOLTAGE_TRANSITION_MEMORY.md completely before any rail/Peltier change.
 - CLOUDOTA TIMEOUT/DISCONNECTED is ambiguous; preserve recovery state and await reconnection/result. Only definite rejection with BLE still connected permits rollback.
 - Localization English/Indonesia; English ON/OFF, Indonesian HIDUP/MATI. Secure preferences; cooler identity only saved after successful BLE/P1 session.
 - Floating Monitor metrics are F/B/H/V/A/P/S; S is the only Fan-related metric. It never owns a second BLE/GATT session. Keep Battery phone heartbeat at 1 Hz and firmware 5-second freshness TTL; no standalone Battery Protection Guard.
+- Floating settings no longer render the middle live preview; orientation uses explicit Horizontal/Vertical controls. FPS has been moved from Flutter `FrameTiming` to native SurfaceFlinger `--timestats`, filtered to the app Android reports resumed/focused; no screen-refresh-rate substitution or selection of a random busy layer. Sampling runs only while overlay is enabled/attached and F is selected. Android's development-only `android.permission.DUMP` requires a manual grant via a trusted ADB computer; the UI includes grant/revoke commands and warns the permission is powerful. Some OEM builds may deny the grant or hide layer data. No Shizuku fallback is implemented.
 
 ## 9. OTA / cloud — do not casually edit
 
@@ -241,25 +243,25 @@ Read DESIGN_NOTES.md before any visual iteration.
 
 Never equate test file with passing run; compile with full OTA installation; blue LED with successful HTTP; ACK with hardware state; reboot with proven brownout; version bump with BIN build; or existing BIN with source provenance.
 
-## 16. Live blob fingerprints at pre-transfer HEAD 1690decd6b2b395fa171abc54bded83c02e3a4fe
+## 16. Live blob fingerprints at pre-transfer HEAD `c144a4811b3ebb48a436d79b98e1e99712a22b2a`
 
-Checkpoint taken immediately before this transfer replacement. The documentation, App source, localization, and widget-test hashes below were re-fetched from live main; other unchanged source/config/test/workflow hashes are carried forward from the previous verified checkpoint.
+Checkpoint taken immediately before this transfer replacement. The documentation, App source, localization, widget-test and native FPS/overlay blobs below were fetched from live `main`. The connector did not provide the current recursive tree/root-tree SHA; verify a complete recursive tree on next boot. This transfer file's own new blob SHA is intentionally omitted.
 
 Canonical project memory and docs:
-- `APP_NOTES.md`: `c617f56ef3aac43a1b8ad07d882839584a38ec07`
-- `APP_BUILD_REPORT.md`: `f8e4bcb7e349f359f0bf4a68c1eebe67d48a9ecb`
+- `APP_NOTES.md`: `cf3c5561b70f19e5ad5f59035577e2a5764cc487`
+- `APP_BUILD_REPORT.md`: `df3919a43451fbdd99f1951d54d24a18f68e4bd2`
 - `BUILD_NOTES.md`: `13de03cd56091320a213754c05bb8d048b9d29c6`
-- `CHANGELOG.md`: `dd4097e01ff2088d2e4a7f456f0810890db6ee7b`
-- `CHAT_RULES.md`: `6efb399c4946621e67d38f288d6f7b63900c8870`
-- `CHAT_TRANSFER_PROMPTS.md`: `53b4b98703afb37e8ad5e55f28ceb69faeb93b6c`
+- `CHANGELOG.md`: `222096f4436c35f08495029ec5bfd7861c4e60b3`
+- `CHAT_RULES.md`: `9fd735f74edac08404528cc7c61e4a03e96a1e8e`
+- `CHAT_TRANSFER_PROMPTS.md`: `dbb88e237a60cd57691abd18d62478b31a9c4e6b`
 - `DESIGN_NOTES.md`: `e04382659dfdd618de0a156046f140452d275dc7` (2128 bytes)
 - `FIRMWARE_NOTES.md`: `db53605779f157b3c966b15a07bef73199ca575d` (11583 bytes)
-- `HANDOVER.md`: `2fb29892bf6f1d2d79ffd0baa209cd468744c102`
-- `MEMORY_INDEX.md`: `94923a8972258944242e958cc05dd60bbf1fa031`
+- `HANDOVER.md`: `2dda2f1a22d36dff09c2f6f479c57d05d59bce3f`
+- `MEMORY_INDEX.md`: `0dc85bdc55dfd959f391daa9061d0f74b241bc17`
 - `OTA_PROTECTION.md`: `06beb86b749b0f0e14c8cb517e43fe7c0f66a4e1` (4259 bytes)
 - `OTA_REGRESSION_MEMORY.md`: `4342f3da76cf2962140146fbbe0ff8de5e956f4d`
-- `PROJECT_STATE.md`: `55cf0c517cd2480cc6f7d1a77c6083cc916e4be3`
-- `README.md`: `e1811590b443a9ea3a2b4c32eee0e15ff9758b29`
+- `PROJECT_STATE.md`: `8ce87f24a42ba3ef27a3009c9d02e27978921fae`
+- `README.md`: `713299ef587d3cfd425c84348f4823dbde6fa2c2`
 - `VOLTAGE_TRANSITION_MEMORY.md`: `1c2167659fd0ed8f5db16bf63eb7897344a690ea`
 
 Workflow and package files:
@@ -269,26 +271,26 @@ Workflow and package files:
 - `pubspec.yaml`: `8f558273e21692af9958f914527fdc62d623d63a` (833 bytes)
 
 App source:
-- `lib/app_settings.dart`: `f784a83baf312b563a1d3255dda4c012a9baee1a`
-- `lib/floating_monitor.dart`: `cfc21b3dc198b925786aa98658d647b1d8a3637b` (51218 bytes)
+- `lib/app_settings.dart`: `6483031e239d71e0a0784c529e2f45a94fb5404b`
+- `lib/floating_monitor.dart`: `c08c2a484f83a9cae7c7d4437b0573c1865cd424`
 - `lib/jex_animated_glyph.dart`: `c9c5c2802cb0ed363c042620511148b0d58d36c4` (1730 bytes)
-- `lib/main.dart`: `150ca0e34478e27d6fd62ed55f19411d71c2a287`
+- `lib/main.dart`: `c697497e16c94b8fe4fe8fd9bd1f9bc93598545f`
 
 Tests:
 - `test/app_protocol_notify_contract_test.dart`: `92214dd90178c705844d3979d3f8f7bd17bcc4b8` (867 bytes)
 - `test/firmware_touch_adaptive_sync_test.dart`: `2d3fea509343a03b8d23623f4dcb2dd7fd972d39` (1622 bytes)
 - `test/v6_6_qc_contract_test.dart`: `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a` (20211 bytes)
-- `test/widget_test.dart`: `f3c7c4a0dd15f4aec24d14006d467dd46b551641`
+- `test/widget_test.dart`: `2a87292d5c4bc468ee6aad6810b249d284a28bae`
 
 Android configuration, native code and icons:
 - `android/app/build.gradle`: `6e216204908603d213700bcfcbc7f040f73d96f8` (4679 bytes)
 - `android/app/google-services.json`: `f3ed065a7ee56b2a44f0a943a48fa578ba72e0d7` (761 bytes)
 - `android/app/proguard-rules.pro`: `50fc26f726ae8660fe04cf19da688431c8dca4a0` (370 bytes)
-- `android/app/src/main/AndroidManifest.xml`: `d82504cee09092d304d8edc98272ddd0b4732519` (3587 bytes)
-- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt`: `55972b64329a2e1cc91e29a172d0a97a118d8ac1` (32562 bytes)
+- `android/app/src/main/AndroidManifest.xml`: `bcf9b3e96b254dd6577035a6643b6935f7320085`
+- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt`: `038f12b2ca82255a3b202b10dd770d5caa5b2bbf`
 - `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JeForegroundService.kt`: `9ea4dce7001bcd5cc10f9c1c7ad62f34ec54b03e` (3350 bytes)
 - `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JexNotificationUtils.kt`: `aecfc87121f2195ef6724613c612d674ed95ae55` (1043 bytes)
-- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt`: `6c17a7e38c3a5b3f3f8fc6b3e5b38a99fd83081e` (15940 bytes)
+- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt`: `12004b5b36b8339f7440e54f9a7330e5804e57ef`
 - `android/app/src/main/res/drawable-nodpi/jexfyzicon.png`: `bad855f23416fd58aff194c30b7f8fd77f260ea8` (436439 bytes)
 - `android/app/src/main/res/drawable/ic_notification.xml`: `cda9e8404d14a62a61157ec59fae2e491c19f5f7` (516 bytes)
 - `android/build.gradle`: `ca11c0f28728b40577d25490811bcc2c8d05ca24` (593 bytes)
@@ -309,14 +311,17 @@ Forensic-only archives:
 - `archive/LEGACY_TRANSFER_HISTORY_2026-10-14.md`: `0438b7006d437d2c24d9e76d6aca7352ad5b0b2b` (101008 bytes)
 
 Artifact repository separate check: `TenzoNkz/JEXFYZ-Firmware` main HEAD `cc0a0ae32b826753525c3f2a4442526648cef631`; live root has only `JEXFYZ.cpp.bin`, blob `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, 1,455,936 bytes. Source/BIN provenance remains independently unverified.
-## 17. Latest Color Picker execution outcome
+## 17. Latest Chat Stuck recovery and Floating FPS execution outcome
 
-- This `@Thinking #Eksekusi Full!` execution implemented the agreed Color Picker interaction: swatches update a local draft; localized Select applies the current draft through confirmed COLOR and closes only on success; Cancel discards the draft; outside taps and Android system Back are blocked. Select is localized as English `Select` and Indonesian `Pilih`. Failure/unconfirmed apply keeps the dialog open and preserves the prior applied RGB state.
-- Updated `test/widget_test.dart` with source-contract assertions for Select, draft-only swatches, localization and dismissal guards. Static repository readback checks passed, but Dart/Flutter tests and analysis were NOT RUN because those SDKs are not installed in this execution environment. No App Build/APK was triggered; the fix is NOT YET BUILT.
-- Updated canonical `APP_NOTES.md`, `PROJECT_STATE.md`, `HANDOVER.md`, `MEMORY_INDEX.md` and `CHANGELOG.md`. Latest successful App Build remains #35 / run `38669526891`, source commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`; that artifact does not contain this new Color Picker behavior.
-- Latest pre-transfer main HEAD: 1690decd6b2b395fa171abc54bded83c02e3a4fe. Updated document and source/test blob hashes are listed in section 16. The current source change and its updated regression assertions are NOT BUILT/NOT RUN, and this execution did not trigger Build App. Firmware source V6.6, build workflow, BIN, Firebase, OTA, flash and hardware were not changed or operated. Artifact repository remains outside this scoped work.
+- `@Thinking Chat Stuck!` is now a documented standalone recovery command. Its behavior is to inspect live output/logs/current repository and the last verified checkpoint, stop blind repeats, continue only the last valid authorization and return `RECOVERED`, `BLOCKED` or `FAILED`. It does not grant more permissions or trigger Build App itself.
+- Floating Monitor settings center preview was removed; Horizontal/Vertical is controlled explicitly. The removed preview widget is not referenced by the settings page. A pure `floatingMetricVisible()` helper was retained for existing regression/test model contracts.
+- FPS calculation no longer depends on JE Cooler's Flutter `FrameTiming`. Native `FloatingMonitorService` uses SurfaceFlinger TimeStats counters and filters to layer names belonging to Android's resumed/focused package. FPS sampling is approx. once per second while the native overlay is attached and metric F is selected. It explicitly shows unavailable/waiting rather than substituting screen refresh rate or unrelated background layers.
+- Added manual ADB FPS access UI, Developer Options shortcut, access-status check, and grant/revoke commands for `android.permission.DUMP`. Android treats DUMP as a powerful development-only permission; JE Cooler does not grant it to itself and executes only fixed Activity/SurfaceFlinger query arguments. OEM ROMs may reject the grant or expose different layer formats; Shizuku fallback is not implemented.
+- Fixed the native overlay's initial-data race by replaying the latest authoritative Flutter telemetry after the service starts/restores. Native HUD now requests a layout pass as well as redraw when live values change, so changing values such as `F:--`→`F:120` can resize. BLE-disconnected physical metrics still show `--`, not false OFF.
+- Regression assertions in `test/widget_test.dart` now cover the Color Picker draft flow, no settings preview/explicit orientation, ADB grant/revoke wiring, focused SurfaceFlinger package filtering, no Flutter `FrameTiming`, telemetry replay and disconnected output state. Static source readback checks passed, plus a small Kotlin smoke-check of example foreground-package regex formats. Dart/Flutter analysis/tests and full Android/Kotlin build were NOT RUN because the Flutter/Dart/Gradle toolchain is unavailable in this execution environment; the smoke-check is not project compilation.
+- Latest source fingerprints are in section 16. Current source changes are NOT BUILT; no App Build workflow was triggered. Latest verified APK remains Build #35 / run `38669526891` on older source commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`. The next full QC cycle requires explicit `@Thinking #Build App!`.
+- Firmware V6.6 source, firmware artifact BIN, Firebase, App Build workflow/trigger, OTA, flash and physical hardware were not changed or operated. ADB FPS accuracy, ROM permission behavior, background survival, real-time frame changes during an actual game, and physical overlay behavior remain UNVERIFIED until build/device testing.
 
-## 18. Final rule for the next chat
 ## 18. Final rule for the next chat
 
 Do not restart project development from this snapshot alone. Boot from live main, read canonical memories fully, preserve every durable user decision and rejected approach, recover missing history from archives without guessing, and persist meaningful outcomes in the correct canonical note. Replace the transfer file at the end of every substantial context-limit reconciliation, after reading its prior version completely.
