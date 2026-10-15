@@ -353,7 +353,6 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   bool _fpsPermissionGranted = false;
   bool _shizukuAvailable = false;
   bool _shizukuSupported = false;
-  int _shizukuUid = -1;
   bool _fpsStatusLoading = false;
   bool _fpsPermissionRequestPending = false;
   String _fpsMonitorStatus = 'unknown';
@@ -527,9 +526,6 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     _fpsPermissionGranted = _shizukuAvailable &&
         _shizukuSupported &&
         result['shizuku_permission_granted'] == true;
-    _shizukuUid = result['shizuku_uid'] is num
-        ? (result['shizuku_uid'] as num).toInt()
-        : -1;
     _fpsMonitorStatus = result['fps_monitor_status']?.toString() ?? 'unknown';
   }
 
