@@ -573,8 +573,8 @@ class JexText {
       AppLanguage.indonesia: 'Untuk mencabut izin nanti, jalankan:',
     },
     'fpsAccessHint': {
-      AppLanguage.english: 'A one-time ADB grant is required; no root or Shizuku app is needed for this route. Frame-data support varies by Android ROM.',
-      AppLanguage.indonesia: 'Izin ADB diberikan satu kali; jalur ini tidak memerlukan root atau aplikasi Shizuku. Dukungan data frame dapat berbeda antar-ROM Android.',
+      AppLanguage.english: 'This route needs a one-time ADB grant of Android’s development-only DUMP permission. It is powerful, so use the grant only on your own phone; JE Cooler runs fixed Activity/SurfaceFlinger queries and stores no frame dumps. Revoke access with the command below. Some ROMs may refuse the grant or hide frame data.',
+      AppLanguage.indonesia: 'Jalur ini memerlukan grant ADB satu kali untuk izin DUMP Android khusus pengembangan. Izin ini kuat, jadi jalankan hanya di HP sendiri; JE Cooler hanya menjalankan query Activity/SurfaceFlinger tetap dan tidak menyimpan dump frame. Cabut izin dengan perintah di bawah. Sebagian ROM dapat menolak grant atau menyembunyikan data frame.',
     },
     'fpsAccessGranted': {
       AppLanguage.english: 'ADB permission granted',
@@ -587,6 +587,10 @@ class JexText {
     'fpsMonitorActive': {
       AppLanguage.english: 'Live SurfaceFlinger FPS sampling is active',
       AppLanguage.indonesia: 'Pengukuran FPS SurfaceFlinger sedang aktif',
+    },
+    'fpsWaitingForGame': {
+      AppLanguage.english: 'Waiting for a foreground app/game to render frames',
+      AppLanguage.indonesia: 'Menunggu aplikasi/game di depan merender frame',
     },
     'fpsDataUnavailable': {
       AppLanguage.english: 'Permission is present, but this device did not provide usable game frame data.',
