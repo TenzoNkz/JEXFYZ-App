@@ -51,41 +51,25 @@ Use `@Thinking Eksekusi Build App!` to run Flutter analysis/tests, rebuild and s
 - TenzoNkz/JEXFYZ-Firmware is an artifact repository and must contain only JEXFYZ.cpp.bin. Live verified artifact root has exactly one file: blob 68167e65d26137eeb1ce4d6d4ba798dc282454e6, 1,455,936 bytes. Do not add notes or touch the BIN during docs work.
 - Canonical active workflow is `.github/workflows/jexfyz-app-build-trigger.yml` (blob `585d190324e522fc08e66cc95bd7ee80c5f37664`). Trigger remains issue opened/reopened, repo owner, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. Normal push/PR does not trigger it.
 - Branches at audited parent: diag/latest-stable-v16, diagnostic/v1.6-heap-check, fix/adaptive-power-sequencing, main, tmp-jexfyz-v5-test; open PR count = 0.
-- Do not rely on older tree counts in history. This snapshot's parent is 76 tree entries / 55 blobs; fetch the live tree on the next task.
+- Do not rely on historical tree counts. The current tree at this checkpoint contains 79 entries; refresh live tree before the next task.
 - Keep all docs in App repo. Do not rename or delete a file without repairing every link, prompt, index and test reference.
 - Archived notes are immutable forensic snapshots. They contain duplicated and stale CURRENT TRUTH blocks for V5.x/V6.1/V6.2/V6.3/V6.4; do not quote those blocks as current truth.
 
 ## 3. Current source identity and important hashes at the audited parent
 
-### App / Android / build
+### Current App / Android / build source
 
-- lib/main.dart: 74b6bcc47d69ccf114f710ed73dfcefe93037111
-- lib/floating_monitor.dart: bd230aee16fa77a0d8d2afb9f1a0c2d80cdcac86
-- lib/app_settings.dart: c513cd4381ee960cd43612c4ac01e7954f651f62
-- lib/jex_animated_glyph.dart: c9c5c2802cb0ed363c042620511148b0d58d36c4
-- pubspec.yaml: 8f558273e21692af9958f914527fdc62d623d63a, version 1.0.0+3
-- pubspec.lock: 1e92812bfda2c28244a0556d71d1ec94084acc66
-- android/app/build.gradle: 05a0b863cfc6d73dc3789e364d7000eee0f3db0e
-- android/settings.gradle: 14545695cc9aba5912393ec293c284ee60d9ec10
-- android/gradle.properties: 13564f62c79279ecfd4fe0a8a247a4d2a4b11451
-- android/app/src/main/AndroidManifest.xml: 2124dcd969347d2c7bb1bd99374a398cf50d2387
-- android/app/proguard-rules.pro: 50fc26f726ae8660fe04cf19da688431c8dca4a0
-- android/app/google-services.json: f3ed065a7ee56b2a44f0a943a48fa578ba72e0d7; never display or copy credential contents.
-- Package ID com.horizontalzzz.jexfyz. Gradle versionName "Telegram @horizontalzzz" is intentional user identity; preserve exactly.
-- Canonical BLE P1 UUIDs in current source: service 6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001, RX 6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001, TX 6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001.
-- Native relevant sources:
-  - FloatingMonitorService.kt `bfc0956688bab5951ea2c626427a691ed63b6921`
-  - MainActivity.kt `a139dfefe1121963c3a26b114b9b0fcc9f8fa16a`
-  - FpsShizukuUserService.kt `1f5ed36dadaba9dc70ecfbe0793114b34c8ab08b`
-  - IFpsShizukuUserService.aidl `ddb0c442029d8f291e99eb6682bd2a690e6c9709`
-  - JeForegroundService.kt `9ea4dce7001bcd5cc10f9c1c7ad62f34ec54b03e`
-  - JexNotificationUtils.kt `aecfc87121f2195ef6724613c612d674ed95ae55`
-  - WirelessAdbPairingService.kt and WirelessAdbIdentityStore.kt are deleted from current tree.
-- License/notice files: Shizuku MIT license `third_party/Shizuku-API-MIT.txt` (`2a779796d4f141d0fe3a13c612c4c66414a3d65a`), notice `third_party/THIRD_PARTY_NOTICES.md` (`4dcd7ea1d6979c081e0ebd5acb7db34f6e64e1f2`), plus a bundled MIT license asset. Old Kadb/SPAKE2/GPL license files are deleted.
-
-- Assets: assets/jexfyzcooler.png blob fbc47e3197534ae35330c1f1793c99705e5165d1, size 1,830,171; assets/jexfyzicon.png and Android nodpi icon bad855f23416fd58aff194c30b7f8fd77f260ea8, 436,439; notification vector cda9e8404d14a62a61157ec59fae2e491c19f5f7.
-- License/notice files: third_party/Kadb-1.3.0-LICENSE.txt 261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64; third_party/THIRD_PARTY_NOTICES.md ec505ebc22dac34924bf3318158061ae693cb9d5; GPL-3.0 SPAKE2 license at both App third_party and Android assets is blob e72bfddabc15be5718a7cc061ac10e47741d8219.
-- pubspec.yaml dependencies include Flutter, flutter_blue_plus, firebase_core, firebase_app_check, flutter_secure_storage, permission_handler, phosphor_icons; dev deps flutter_test and flutter_lints.
+- `lib/main.dart`: `3eeb4dff7b7fbb52a44022e5e2b130bc1826da23`.
+- `lib/floating_monitor.dart`: `232fde06efda5bfaa2221825a04c0106ad5feb33`.
+- `lib/app_settings.dart`: `6f99911bc59451473823aea91efe5377a0b6d0d1`.
+- `lib/jex_animated_glyph.dart`: `c9c5c2802cb0ed363c042620511148b0d58d36c4`.
+- `pubspec.yaml`: `8f558273e21692af9958f914527fdc62d623d63a`, version `1.0.0+3`; `pubspec.lock`: `1e92812bfda2c28244a0556d71d1ec94084acc66`.
+- `android/app/build.gradle`: `cc35d2d3dbe603e7b5a7157d37dde222d646ea42`; `android/build.gradle`: `d6dbd400ba0baf2b33c14bb514745334a1e2ad33`; `android/app/src/main/AndroidManifest.xml`: `393c9f9bfe02b9d71b2e3445ce873d5d16912ce1`; `android/app/proguard-rules.pro`: `50fc26f726ae8660fe04cf19da688431c8dca4a0`.
+- Package ID `com.horizontalzzz.jexfyz`. Gradle `versionName "Telegram @horizontalzzz"` is intentional; preserve it.
+- Canonical BLE P1 UUIDs: service `6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001`, RX `6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001`, TX `6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001`.
+- Native sources: FloatingMonitorService.kt `bfc0956688bab5951ea2c626427a691ed63b6921`; MainActivity.kt `a139dfefe1121963c3a26b114b9b0fcc9f8fa16a`; FpsShizukuUserService.kt `1f5ed36dadaba9dc70ecfbe0793114b34c8ab08b`; IFpsShizukuUserService.aidl `ddb0c442029d8f291e99eb6682bd2a690e6c9709`; JeForegroundService.kt `9ea4dce7001bcd5cc10f9c1c7ad62f34ec54b03e`; JexNotificationUtils.kt `aecfc87121f2195ef6724613c612d674ed95ae55`.
+- License notices: Shizuku MIT license `third_party/Shizuku-API-MIT.txt` `2a779796d4f141d0fe3a13c612c4c66414a3d65a`; third-party inventory `third_party/THIRD_PARTY_NOTICES.md` `4dcd7ea1d6979c081e0ebd5acb7db34f6e64e1f2`; same MIT license is bundled in Android assets. Old Kadb/SPAKE2/GPL licenses are deleted.
+- Old `WirelessAdbPairingService.kt`, `WirelessAdbIdentityStore.kt` and `test/adb_pairing_contract_test.dart` are absent from the current tree.
 
 ### Test inventory / executed evidence
 
@@ -237,7 +221,7 @@ The canonical map is MEMORY_INDEX.md. At this reconciliation, prepared blobs for
 - Firmware: `firmware/JEXFYZ-V6.6.ino` blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222` (leave untouched; V6.6 is user-accepted final).
 - `lib/main.dart`: `3eeb4dff7b7fbb52a44022e5e2b130bc1826da23`.
 - `lib/floating_monitor.dart`: `232fde06efda5bfaa2221825a04c0106ad5feb33`.
-- `lib/app_settings.dart`: `6f99911bc59451473823aea1e1` (short fingerprint; fetch live file for full SHA).
+- `lib/app_settings.dart`: `6f99911bc59451473823aea91efe5377a0b6d0d1`.
 - `test/widget_test.dart`: `520399fcdc6be4fd69cb48f50aa8961f5d9183c5`; `test/shizuku_fps_contract_test.dart`: `bd27d2c7adc20ab76bab504378a2353d01ab473b`.
 - `MainActivity.kt`: `a139dfefe1121963c3a26b114b9b0fcc9f8fa16a`; `FloatingMonitorService.kt`: `bfc0956688bab5951ea2c626427a691ed63b6921`; `FpsShizukuUserService.kt`: `1f5ed36dadaba9dc70ecfbe0793114b34c8ab08b`; AIDL: `ddb0c442029d8f291e99eb6682bd2a690e6c9709`.
 - `AndroidManifest.xml`: `393c9f9bfe02b9d71b2e3445ce873d5d16912ce1`; app Gradle `cc35d2d3dbe603e7b5a7157d37dde222d646ea42`; workflow `585d190324e522fc08e66cc95bd7ee80c5f37664`.
