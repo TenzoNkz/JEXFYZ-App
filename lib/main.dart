@@ -1104,7 +1104,7 @@ const Color jexThermalOrange = Color(0xFFFF913F);
 const Color jexThermalRed = Color(0xFFFF464F);
 
 double? jexParseTemperatureC(String value) {
-  final match = RegExp(r'-?\\d+(?:[.,]\\d+)?').firstMatch(value.trim());
+  final match = RegExp(r'-?\d+(?:[.,]\d+)?').firstMatch(value.trim());
   final raw = match?.group(0)?.replaceAll(',', '.');
   final temperature = raw == null ? null : double.tryParse(raw);
   return temperature != null && temperature.isFinite ? temperature : null;
