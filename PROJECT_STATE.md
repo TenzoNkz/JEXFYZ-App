@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh the live repository before relying on it. History belongs in CHANGELOG.md; exact pre-cleanup copies are in archive and must not be treated as current.
+Last reconciled: 2026-10-15 (Asia/Jakarta). This file is current-only; refresh the live repository before relying on it. History belongs in CHANGELOG.md; exact pre-cleanup copies are in archive and must not be treated as current.
 
 ## Current release phase
 - **Phase:** DEVELOPMENT + QC / PRE-RELEASE.
@@ -8,11 +8,11 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 - **Active Firmware source:** firmware/JEXFYZ-V6.6.ino.
 - **Firmware constant:** FW_VERSION = "V6.6".
 - **Firmware source blob last observed:** f51ba6db5d0e91318f63fea4014bb87f7bf76222.
-- **Active App source:** `lib/main.dart`, current blob `2005f4c163d466f9015a564d5418af1e86e09b41`.
+- **Active App source:** `lib/main.dart`, current blob `f4ee1e9b9e74f103e0f362db813dea642f285470`.
 - **Package/version:** com.horizontalzzz.jexfyz, pubspec 1.0.0+3.
 - **Android identity:** Gradle versionName "Telegram @horizontalzzz"; intentional, preserve exactly.
 - **QC contracts:** test/v6_6_qc_contract_test.dart, test/firmware_touch_adaptive_sync_test.dart, test/app_protocol_notify_contract_test.dart, test/widget_test.dart. Test execution must be checked independently.
-- **Current App/UI hashes:** `lib/main.dart` = 2005f4c163d466f9015a564d5418af1e86e09b41; `lib/app_settings.dart` = 232a7575460e5417f7b760f24b5057687a47ee1a; `test/widget_test.dart` = 3af190d4520a7b753f3f9fc963f788f4aa247f5c; `test/v6_6_qc_contract_test.dart` = 2bee4d960d014f0765422dcb5ed1c9870ba6ee3a; `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt` = 6c17a7e38c3a5b3f3f8fc6b3e5b38a99fd83081e; `JeForegroundService.kt` = 9ea4dce7001bcd5cc10f9c1c7ad62f34ec54b03e; `FloatingMonitorService.kt` = 55972b64329a2e1cc91e29a172d0a97a118d8ac1; `JexNotificationUtils.kt` = aecfc87121f2195ef6724613c612d674ed95ae55; `drawable/ic_notification.xml` = cda9e8404d14a62a61157ec59fae2e491c19f5f7.
+- **Current App/UI hashes:** `lib/main.dart` = f4ee1e9b9e74f103e0f362db813dea642f285470; `lib/app_settings.dart` = 232a7575460e5417f7b760f24b5057687a47ee1a; `test/widget_test.dart` = 4b7bf68f3c73d6ffe80509ccb75ce6e08607b020; `test/v6_6_qc_contract_test.dart` = 2bee4d960d014f0765422dcb5ed1c9870ba6ee3a; `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt` = 6c17a7e38c3a5b3f3f8fc6b3e5b38a99fd83081e; `JeForegroundService.kt` = 9ea4dce7001bcd5cc10f9c1c7ad62f34ec54b03e; `FloatingMonitorService.kt` = 55972b64329a2e1cc91e29a172d0a97a118d8ac1; `JexNotificationUtils.kt` = aecfc87121f2195ef6724613c612d674ed95ae55; `drawable/ic_notification.xml` = cda9e8404d14a62a61157ec59fae2e491c19f5f7.
 - **Workflow:** .github/workflows/jexfyz-app-build-trigger.yml; explicit title/token trigger only.
 - **User-confirmed Firmware acceptance (2026-10-14):** user considers V6.6 correct/final and reports successful compilation plus two successful Online OTA flashes/updates using the same V6.6 version. Do not change/recompile/reflash Firmware unless the user explicitly reopens Firmware work and separately authorizes the operation. Source-to-artifact BIN provenance remains independently unverified, but is not an active work item by itself.
 - Do not infer that the existing artifact BIN matches current V6.6 source; source/BIN provenance remains unverified.
@@ -70,32 +70,29 @@ Last reconciled: 2026-10-14 (Asia/Jakarta). This file is current-only; refresh t
 - Touch Adaptive-OFF publishes authoritative Adaptive/ceiling/Fan/Peltier/Fan-speed state deltas before acknowledgement.
 
 ## Current UI execution status
-- Current App source includes Fan OFF coast-down/full-colour blades, box-free Peltier crystal/no OFF fade, retargetable Fan Speed gauge from current rendered level to new target over 420 ms and OFF-to-zero over 520 ms, loop-seamless integer-harmonic needle wobble, sinusoidal voltage sheen, and squared-sine Bluetooth ripple fade at loop edges.
-- Current source blob: `a1818d281fdbea900bf9cde5b83c40d09d61dcc3`; latest widget test blob: `4b7bf68f3c73d6ffe80509ccb75ce6e08607b020`. Static readback checks passed. **Current-source Flutter tests/analyze and device rendering have NOT been run after these edits.**
-- Latest successful Build App run `38566673160` on earlier commit `4dccbd7eedcae4a8d1a9cd2b41d5cfda9055416b`; Dart analyze and Flutter tests passed there. V1/V2/V3 were true for the built and re-downloaded APK, SHA-256 `f7ae531834c17fea0dd187307e2e8961dca65aa87b96754082b41475bfc9c845`. This build predates current retargetable Fan Speed, voltage-sheen and Bluetooth-ripple changes.
-- The run warns `META-INF/services/a1` and `META-INF/services/b1` are not protected by JAR/V1. The prior MT Manager screenshot predates this newer release, and its exact signature label has not been rechecked on the later APK.
-
+- Current App source includes Fan OFF coast-down/full-colour blades, box-free Peltier crystal/no OFF fade, retargetable Fan Speed gauge from current rendered level to a new target over 420 ms and OFF-to-zero over 520 ms, loop-seamless integer-harmonic needle wobble, sinusoidal voltage sheen, and squared-sine Bluetooth ripple fade at loop edges.
+- Current source blob: `f4ee1e9b9e74f103e0f362db813dea642f285470`; current widget test blob: `4b7bf68f3c73d6ffe80509ccb75ce6e08607b020`. `jexSmoothFanSpeedLevel` uses symmetric cubic smoothstep so its midpoint is exactly 0.5 with eased, zero-velocity endpoints.
+- Build #34 on commit `5332b3a4b93d1852fc52632694dc2425ab20edb0` exposed a mismatch between the test's exact midpoint contract and `Curves.easeInOutCubic` (actual level 0.510125). Fixed the function in commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`. Build #35 then passed all 74 Flutter tests and Dart analyze on that exact code commit.
+- Latest successful Build App run: [#35](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38669526891), commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`. Security/architecture audit, dependency resolution, Dart analyze, 74 Flutter tests, release APK compilation, V1/V2/V3 signing, release publication and re-downloaded asset verification passed.
+- Latest release contains one `JEXFYZ-release.apk` (54,521,947 bytes) at [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest); asset SHA-256 `77e57ece6c194ec97ce9f4e72d379f848173cd2cf905f66a74e6b037ad82e5c1`. Production certificate SHA-256: `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. The workflow verified V1/V2/V3 on the built APK and re-downloaded release asset. JAR/V1 still reports non-protected META-INF entries; this warning is distinct from the successful V1/V2/V3 verification.
+- Physical device rendering, installing the APK on the user's phone, and MT Manager's displayed signature result have NOT been verified by CI.
 
 ## App Build
-- Only active workflow: `.github/workflows/jexfyz-app-build-trigger.yml`.
-- Latest successful App Build: run `38566673160` on commit `4dccbd7eedcae4a8d1a9cd2b41d5cfda9055416b` (https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38566673160). Audit, dependency install, Dart analyze, Flutter tests, APK build, release publication and re-downloaded asset verification passed for that earlier source. V1/V2/V3 verified true for built APK and downloaded asset using `apksigner verify --min-sdk-version 23`. Release `jexfyz-latest` has one `JEXFYZ-release.apk` (54,521,947 bytes; SHA-256 `f7ae531834c17fea0dd187307e2e8961dca65aa87b96754082b41475bfc9c845`). Logs warn `META-INF/services/a1` and `META-INF/services/b1` are not protected by JAR/V1; V3.1=false is not enforced by the workflow.
-- This build predates current App source/test blobs above; no APK has been built for the latest smoother animation edits.
-- Trigger title: JE X FYZ — BUILD APP TRIGGER; body token JEXFYZ_BUILD_TRIGGER_V1.
+- Only active workflow: `.github/workflows/jexfyz-app-build-trigger.yml`; explicit owner/title/token issue trigger only.
+- Latest successful run is Build #35 above. Failed Build #34 was correctly blocked before APK compilation because one regression test failed; no failed-run APK was published.
+- Keep one obfuscated, production-signed ordinary APK named `JEXFYZ-release.apk` on release tag `jexfyz-latest`; no Play Store bundle or Actions artifact.
+- Trigger title: `JE X FYZ — BUILD APP TRIGGER`; body token `JEXFYZ_BUILD_TRIGGER_V1`.
 - Toolchain: Ubuntu 24.04, Java 17, Flutter 3.47.2 stable, Gradle 9.3.1.
-- Intended output: one obfuscated, production-signed ordinary APK `JEXFYZ-release.apk`, uploaded to GitHub Release `jexfyz-latest`; no Play Store bundle or Actions artifact.
-- Do not trigger except explicit `@Thinking Build App!` or `@Thinking Eksekusi & Build App!`.
-
+- Firmware remains out of scope. The user accepts Firmware V6.6 as final; do not compile Firmware, generate/replace BIN, edit Firebase, flash hardware or run physical OTA without separate explicit authorization.
 
 ## Exact validation gates still open
-1. After explicit `@Thinking Build App!` authorization, validate current-source Dart analyze/Flutter tests and build the updated APK. Existing successful run `38566673160` predates the present Fan Speed retargeting, voltage-sheen and Bluetooth-ripple edits.
-2. Verify V1/V2/V3 on the new APK and re-downloaded release asset; check certificate digest and asset SHA. Prior CI warned `META-INF/services/a1` and `META-INF/services/b1` are not protected by JAR/V1.
-3. Install the resulting APK and recheck MT Manager's signature display; the screenshot predates run `38566673160`, so current-device evidence is missing.
-4. On device, verify Fan OFF ease-out, box-free full-colour Peltier OFF, Fan Speed transitioning smoothly through changes including a mid-transition retarget, OFF-to-zero, seam-free wobble, sinusoidal voltage sheen and non-flashing Bluetooth ripple loops.
-5. Verify notification JE icon/tap, dialog sizes/Cancel, BLE disconnect fallback and authoritative telemetry restore after reconnect.
-6. Firmware V6.6 is user-accepted as final after two reported same-version successful Online OTA updates. Do not edit/compile Firmware or operate BIN/Firebase/OTA/flash unless the user explicitly reopens that work and separately authorizes it.
-
+1. Install Build #35 on a physical Android device and recheck MT Manager's signature display; CI confirms the APK schemes but does not establish OEM tooling interpretation.
+2. On device, verify Fan OFF ease-out/full colour; box-free full-colour Peltier OFF; Fan Speed interpolation through repeated changes including a mid-transition retarget, ON wobble seam and OFF-to-zero; voltage sheen and Bluetooth ripple loop boundaries.
+3. Verify notification JE icon/tap, dialog sizes/Cancel, BLE disconnect fallback, and authoritative telemetry restoration after reconnect.
+4. Preserve no-standalone Battery Protection Guard UI, one-second phone Battery heartbeat/five-second Firmware freshness TTL, and exclusive one-App/one-cooler pairing as unverified enforcement.
+5. Firmware V6.6 is user-accepted as final after two reported same-version successful Online OTA updates. Do not edit/compile Firmware or operate BIN/Firebase/OTA/flash unless the user explicitly reopens that work and separately authorizes it.
 
 ## Repository split / operation boundary
 - All source and memories live in TenzoNkz/JEXFYZ-App.
 - TenzoNkz/JEXFYZ-Firmware must contain JEXFYZ.cpp.bin only; its notes were removed during this cleanup and the BIN was not touched. The last observed artifact root contains only the BIN; verify its live path/blob before any future publication.
-- This execution changed the App Build signing-validation workflow and reconciled project notes. No App Build was run after the workflow change; no Firmware compile, BIN generation/replacement, Firebase update, physical OTA/flash, or release publication was performed here.
+- This execution corrected Fan Speed interpolation, completed App Build #35 successfully and refreshed current project-state notes. No Firmware compile, BIN generation/replacement, Firebase update, physical OTA/flash or hardware validation was performed.
