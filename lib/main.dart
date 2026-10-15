@@ -1256,6 +1256,7 @@ class JexAnimatedIcon extends StatefulWidget {
 class _JexAnimatedIconState extends State<JexAnimatedIcon>
     with TickerProviderStateMixin {
   late final AnimationController controller;
+  late final AnimationController activityTransitionController;
   late final AnimationController frostTransitionController;
   late final AnimationController speedLevelTransitionController;
   late final AnimationController indicatorLevelTransitionController;
@@ -1366,8 +1367,8 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
           widget.kind == JexAnimatedIconKind.peltier) {
         return;
       }
+      // Keep the last frame as the resting pose instead of snapping to phase zero.
       controller.stop();
-      controller.value = 0;
       return;
     }
     if (!controller.isAnimating) {
@@ -1384,6 +1385,11 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
         widget.kind,
         voltageLevel: widget.voltageLevel,
       ),
+    );
+    activityTransitionController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 340),
+      value: widget.active ? 1 : 0,
     );
     _frostFromIntensity = jexPeltierFrostIntensity(widget.voltageLevel);
     _frostFromParticleCount = jexPeltierFrostParticleCount(widget.voltageLevel).toDouble();
@@ -1415,6 +1421,15 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
   @override
   void didUpdateWidget(covariant JexAnimatedIcon oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (widget.active != oldWidget.active) {
+      unawaited(
+        activityTransitionController.animateTo(
+          widget.active ? 1.0 : 0.0,
+          duration: Duration(milliseconds: widget.active ? 360 : 440),
+          curve: Curves.easeInOutCubic,
+        ),
+      );
+    }
     if (widget.kind != oldWidget.kind) {
       indicatorLevelTransitionController.stop();
       _indicatorLevelFrom = widget.level.clamp(0.0, 1.0).toDouble();
@@ -1508,6 +1523,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
   @override
   void dispose() {
     controller.dispose();
+    activityTransitionController.dispose();
     frostTransitionController.dispose();
     speedLevelTransitionController.dispose();
     indicatorLevelTransitionController.dispose();
@@ -1533,6 +1549,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
         animation: Listenable.merge(
           <Listenable>[
             controller,
+            activityTransitionController,
             frostTransitionController,
             speedLevelTransitionController,
             indicatorLevelTransitionController,
@@ -1557,6 +1574,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
               color: widget.color,
               progress: controller.value,
               active: widget.active,
+              activity: activityTransitionController.value,
               level: displayedLevel,
               voltageLevel: widget.voltageLevel,
               frostIntensityOverride: frostIntensity,
@@ -1575,6 +1593,7 @@ class _JexIconPainter extends CustomPainter {
   final Color color;
   final double progress;
   final bool active;
+  final double activity;
   final double level;
   final int voltageLevel;
   final double? frostIntensityOverride;
@@ -1586,6 +1605,7 @@ class _JexIconPainter extends CustomPainter {
     required this.color,
     required this.progress,
     required this.active,
+    required this.activity,
     required this.level,
     required this.voltageLevel,
     required this.frostIntensityOverride,
@@ -1593,20 +1613,16 @@ class _JexIconPainter extends CustomPainter {
     required this.warning,
   });
 
-  Paint stroke(double width, [Color? paintColor]) {
-    return Paint()
-      ..color = paintColor ?? color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = width
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
-  }
+  Paint stroke(double width, [Color? c]) => Paint()
+    ..color = c ?? color
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = width
+    ..strokeCap = StrokeCap.round
+    ..strokeJoin = StrokeJoin.round;
 
-  Paint fill([Color? paintColor]) {
-    return Paint()
-      ..color = paintColor ?? color
-      ..style = PaintingStyle.fill;
-  }
+  Paint fill([Color? c]) => Paint()
+    ..color = c ?? color
+    ..style = PaintingStyle.fill;
 
   Path _bolt(double s) => Path()
     ..moveTo(s * .56, s * .07)
@@ -1617,541 +1633,233 @@ class _JexIconPainter extends CustomPainter {
     ..lineTo(s * .54, s * .37)
     ..close();
 
-  void _drawGlow(Canvas canvas, Offset center, double radius, double alpha) {
+  void _glow(Canvas canvas, Offset center, double radius, double opacity) {
+    final alpha = opacity.clamp(0.0, .20).toDouble();
     if (alpha <= .001) return;
-    canvas.drawCircle(
-      center,
-      radius,
-      Paint()
-        ..color = color.withValues(alpha: alpha)
-        ..maskFilter = MaskFilter.blur(BlurStyle.normal, radius * .46),
-    );
+    canvas.drawCircle(center, radius, Paint()
+      ..color = color.withValues(alpha: alpha)
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, radius * .38));
   }
 
-  void _drawThermalFlames(
-    Canvas canvas,
-    Size size,
-    double phase, {
-    required double baseY,
-  }) {
-    final s = size.shortestSide;
-    const centers = <double>[.28, .50, .72];
-    for (var i = 0; i < centers.length; i++) {
-      final flicker = .5 + .5 * math.sin(phase * (1.7 + i * .23) + i * 1.8);
-      final halfWidth = s * (.043 + .012 * flicker);
-      final height = s * (.095 + .060 * flicker);
-      final sway = s * .012 * math.sin(phase * 1.3 + i * 2.1);
-      final x = s * centers[i] + sway;
-      final base = s * baseY;
-      final outer = Path()
-        ..moveTo(x - halfWidth, base)
-        ..cubicTo(
-          x - halfWidth * 1.05, base - height * .36,
-          x - halfWidth * .12, base - height * .63,
-          x + sway * .25, base - height,
-        )
-        ..cubicTo(
-          x + halfWidth * .52, base - height * .67,
-          x + halfWidth * 1.04, base - height * .34,
-          x + halfWidth, base,
-        )
-        ..close();
-      _drawGlow(canvas, Offset(x, base - height * .42), height * .46, .12 + .08 * flicker);
-      canvas.drawPath(
-        outer,
-        Paint()..color = Color.lerp(
-          const Color(0xFFFF3D36),
-          const Color(0xFFFF8A36),
-          flicker * .72,
-        )!.withValues(alpha: .92),
-      );
-      final innerWidth = halfWidth * .43;
-      final innerHeight = height * .53;
-      final inner = Path()
-        ..moveTo(x - innerWidth, base)
-        ..cubicTo(
-          x - innerWidth, base - innerHeight * .34,
-          x - innerWidth * .12, base - innerHeight * .62,
-          x + sway * .08, base - innerHeight,
-        )
-        ..cubicTo(
-          x + innerWidth * .54, base - innerHeight * .62,
-          x + innerWidth, base - innerHeight * .32,
-          x + innerWidth, base,
-        )
-        ..close();
-      canvas.drawPath(inner, Paint()..color = const Color(0xFFFFD978).withValues(alpha: .96));
-    }
-  }
-
-  void _drawFanBlade(Canvas canvas, Size size, double angle) {
-    final s = size.shortestSide;
+  void _drawBlade(Canvas canvas, double s, double angle, double strength) {
     canvas.save();
-    canvas.translate(size.width / 2, size.height / 2);
+    canvas.translate(s / 2, s / 2);
     canvas.rotate(angle);
     final blade = Path()
-      ..moveTo(-s * .035, s * .025)
-      ..cubicTo(-s * .12, -s * .06, -s * .23, -s * .22, -s * .12, -s * .36)
-      ..cubicTo(-s * .055, -s * .445, s * .09, -s * .405, s * .105, -s * .29)
-      ..cubicTo(s * .12, -s * .18, s * .075, -s * .085, s * .035, -s * .025)
+      ..moveTo(-s * .025, s * .025)
+      ..cubicTo(-s * .10, -s * .015, -s * .19, -s * .15, -s * .125, -s * .285)
+      ..cubicTo(-s * .08, -s * .37, s * .035, -s * .395, s * .09, -s * .30)
+      ..cubicTo(s * .135, -s * .21, s * .075, -s * .075, s * .025, -s * .02)
       ..close();
-    // OFF affects motion only; the rotor remains fully coloured at rest.
     canvas.drawPath(blade, fill(color.withValues(alpha: .94)));
-    canvas.drawPath(blade, stroke(s * .014, color.withValues(alpha: .45)));
+    canvas.drawPath(blade, stroke(s * .012, color.withValues(alpha: .35 + .10 * strength)));
     canvas.restore();
   }
 
   @override
   void paint(Canvas canvas, Size size) {
     final s = size.shortestSide;
+    if (s <= 0) return;
     final cx = size.width / 2;
     final cy = size.height / 2;
-    final p = (active ||
-            kind == JexAnimatedIconKind.peltier ||
-            kind == JexAnimatedIconKind.fan)
-        ? progress.clamp(0.0, 1.0).toDouble()
-        : 0.0;
-    final angle = p * math.pi * 2;
-    final pulse = .5 - .5 * math.cos(angle);
-    final softPulse = .5 + .5 * math.sin(angle);
-
+    final phase = progress.clamp(0.0, 1.0).toDouble() * math.pi * 2;
+    final pulse = .5 - .5 * math.cos(phase);
+    final strength = activity.clamp(0.0, 1.0).toDouble();
+    final c = color;
     canvas.save();
+
     switch (kind) {
       case JexAnimatedIconKind.battery:
-
-        // Battery-temperature indicator: crisp shell plus three data-driven thermal segments.
-        final bodyRect = Rect.fromLTWH(s * .105, s * .285, s * .70, s * .43);
-        final body = RRect.fromRectAndRadius(bodyRect, Radius.circular(s * .105));
-        _drawGlow(canvas, Offset(cx - s * .01, cy), s * .29,
-            active ? .045 + .045 * pulse : .012);
-        canvas.drawRRect(body, fill(color.withValues(alpha: .035)));
-        canvas.drawRRect(body, stroke(s * .050, color.withValues(alpha: .95)));
-        final terminal = RRect.fromRectAndRadius(
-          Rect.fromLTWH(s * .825, s * .405, s * .075, s * .19),
-          Radius.circular(s * .025),
+        final shell = RRect.fromRectAndRadius(
+          Rect.fromLTWH(s * .10, s * .30, s * .70, s * .40),
+          Radius.circular(s * .085),
         );
-        canvas.drawRRect(terminal, fill(color.withValues(alpha: .95)));
-        const barHeights = <double>[.19, .27, .19];
+        _glow(canvas, Offset(cx - s * .02, cy), s * .25, .025 + .05 * strength * pulse);
+        canvas.drawRRect(shell, fill(c.withValues(alpha: .045)));
+        canvas.drawRRect(shell, stroke(s * .048, c.withValues(alpha: .74 + .22 * strength)));
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(Rect.fromLTWH(s * .825, s * .405, s * .075, s * .19), Radius.circular(s * .025)),
+          fill(c.withValues(alpha: .9)),
+        );
         for (var i = 0; i < 3; i++) {
-          final intensity = (level * 3.0 - i).clamp(0.0, 1.0).toDouble();
-          final barHeight = s * barHeights[i];
-          final rect = Rect.fromLTWH(
-            s * (.205 + i * .185),
-            cy - barHeight / 2,
-            s * .095,
-            barHeight,
+          final amount = (level * 3 - i).clamp(0.0, 1.0).toDouble();
+          final bar = RRect.fromRectAndRadius(
+            Rect.fromLTWH(s * (.205 + i * .185), cy - s * .115, s * .095, s * .23),
+            Radius.circular(s * .025),
           );
-          canvas.drawRRect(
-            RRect.fromRectAndRadius(rect, Radius.circular(s * .028)),
-            fill(color.withValues(
-              alpha: active ? .12 + .76 * intensity * (.93 + .07 * pulse) : .10,
-            )),
-          );
-          if (active && intensity > .12) {
-            canvas.drawRRect(
-              RRect.fromRectAndRadius(
-                Rect.fromLTWH(rect.left + s * .018, rect.top + s * .018,
-                    rect.width - s * .036, s * .018),
-                Radius.circular(s * .009),
-              ),
-              fill(Colors.white.withValues(alpha: .14 + .16 * softPulse)),
-            );
-          }
+          canvas.drawRRect(bar, fill(c.withValues(alpha: .14 + .76 * amount * (.94 + .06 * strength * pulse))));
         }
-        if (level >= .999 && warning) {
-          // Thermal fill is eased, but fire itself requires the actual 40°C threshold.
-          _drawThermalFlames(canvas, size, angle, baseY: .30);
+        if (strength > .01) {
+          canvas.save();
+          canvas.clipRRect(shell);
+          final shineX = s * (.16 + .50 * (.5 - .5 * math.cos(phase)));
+          canvas.drawRRect(
+            RRect.fromRectAndRadius(Rect.fromLTWH(shineX, s * .335, s * .045, s * .33), Radius.circular(s * .02)),
+            fill(Colors.white.withValues(alpha: .12 * strength)),
+          );
+          canvas.restore();
         }
         break;
 
       case JexAnimatedIconKind.hotside:
-
-        // Thermometer is deliberately isolated: no heat-wave ornaments cross or overlap its glass.
-        // Its mercury height smoothly follows the last valid Hotside Celsius reading.
-        final thermalLevel = level.clamp(0.0, 1.0).toDouble();
-        final tubeRect = Rect.fromLTWH(s * .405, s * .13, s * .19, s * .535);
-        final tube = RRect.fromRectAndRadius(tubeRect, Radius.circular(s * .095));
-        canvas.drawRRect(tube, fill(color.withValues(alpha: .055)));
-        canvas.drawRRect(tube, stroke(s * .047, color.withValues(alpha: .96)));
-        final fluidHeight = s * .36 * thermalLevel;
+        final tube = RRect.fromRectAndRadius(Rect.fromLTWH(s * .405, s * .13, s * .19, s * .535), Radius.circular(s * .095));
+        final thermal = level.clamp(0.0, 1.0).toDouble();
+        canvas.drawRRect(tube, fill(c.withValues(alpha: .055)));
+        canvas.drawRRect(tube, stroke(s * .047, c.withValues(alpha: .74 + .22 * strength)));
+        final fluidHeight = s * .36 * thermal;
         if (fluidHeight > .01) {
-          final fluidRect = Rect.fromLTWH(
-            s * .463,
-            s * .646 - fluidHeight,
-            s * .074,
-            fluidHeight,
-          );
+          canvas.save();
+          canvas.clipRRect(tube);
           canvas.drawRRect(
-            RRect.fromRectAndRadius(fluidRect, Radius.circular(s * .035)),
-            fill(color.withValues(alpha: active ? .88 : .42)),
+            RRect.fromRectAndRadius(
+              Rect.fromLTWH(s * .463, s * .646 - fluidHeight, s * .074, fluidHeight + s * .03),
+              Radius.circular(s * .035),
+            ),
+            fill(c.withValues(alpha: .28 + .68 * strength)),
           );
-          if (active) {
-            final shimmerY = fluidRect.bottom -
-                fluidRect.height * (.34 + .24 * softPulse);
-            canvas.drawCircle(
-              Offset(cx, shimmerY),
-              s * .018,
-              fill(Colors.white.withValues(alpha: .28 + .20 * pulse)),
-            );
-          }
+          canvas.restore();
         }
         final bulb = Offset(cx, s * .735);
-        _drawGlow(
-          canvas,
-          bulb,
-          s * .18,
-          active ? .08 + .13 * thermalLevel + .035 * pulse : .018,
-        );
-        canvas.drawCircle(bulb, s * .132, fill(color.withValues(alpha: .12)));
-        canvas.drawCircle(bulb, s * .132, stroke(s * .048, color));
-        canvas.drawCircle(
-          bulb,
-          s * .074,
-          fill(color.withValues(alpha: active ? .36 + .60 * thermalLevel : .34)),
-        );
-        if (active) {
-          canvas.drawCircle(
-            Offset(cx - s * .025, bulb.dy - s * .025),
-            s * .018,
-            fill(Colors.white.withValues(alpha: .48 + .14 * softPulse)),
-          );
-        }
-        if (level >= .999 && warning) {
-          // Actual telemetry must reach the configured limit before the flame is shown.
-          _drawThermalFlames(canvas, size, angle, baseY: .18);
-        }
+        _glow(canvas, bulb, s * .16, .025 + .09 * strength * thermal);
+        canvas.drawCircle(bulb, s * .132, fill(c.withValues(alpha: .12)));
+        canvas.drawCircle(bulb, s * .132, stroke(s * .048, c));
+        canvas.drawCircle(bulb, s * .074, fill(c.withValues(alpha: .40 + .48 * strength * thermal)));
+        canvas.drawCircle(Offset(cx - s * .025, bulb.dy - s * .025), s * .016,
+          fill(Colors.white.withValues(alpha: .24 + .25 * strength)));
         break;
 
       case JexAnimatedIconKind.voltage:
-
-        // The bolt carries a moving charge sweep clipped to its own silhouette.
         final bolt = _bolt(s);
-        final bounds = Rect.fromLTWH(s * .20, s * .04, s * .61, s * .92);
-        final voltageEnergy = level.clamp(0.0, 1.0).toDouble();
-        _drawGlow(
-          canvas,
-          Offset(cx, cy),
-          s * (.17 + .07 * voltageEnergy),
-          active ? .035 + .13 * voltageEnergy + .025 * pulse : .018,
-        );
-        canvas.drawPath(
-          bolt,
-          Paint()
-            ..color = color.withValues(alpha: active ? .08 + .24 * voltageEnergy : .055)
-            ..maskFilter = MaskFilter.blur(BlurStyle.normal, s * (.04 + .05 * voltageEnergy)),
-        );
-        canvas.drawPath(
-          bolt,
-          Paint()
-            ..shader = LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                color.withValues(alpha: active ? .48 + .52 * voltageEnergy : .72),
-                color.withValues(alpha: active ? .35 + .48 * voltageEnergy + .12 * pulse : .50),
-              ],
-            ).createShader(bounds),
-        );
-        canvas.drawPath(bolt, stroke(s * .014, color.withValues(alpha: .86)));
-        if (active) {
+        final energy = level.clamp(0.0, 1.0).toDouble();
+        _glow(canvas, Offset(cx, cy), s * .22, .025 + .10 * strength * energy);
+        canvas.drawPath(bolt, fill(c.withValues(alpha: .20 + .54 * energy)));
+        canvas.drawPath(bolt, stroke(s * .018, c.withValues(alpha: .86)));
+        if (strength > .01) {
           canvas.save();
           canvas.clipPath(bolt);
-          final sweepY = s * (.13 + .72 * (.5 - .5 * math.cos(angle)));
+          final shineY = s * (.12 + .68 * (.5 - .5 * math.cos(phase)));
           canvas.drawRRect(
-            RRect.fromRectAndRadius(
-              Rect.fromLTWH(
-                s * .16,
-                sweepY,
-                s * .68,
-                s * (.045 + .075 * voltageEnergy),
-              ),
-              Radius.circular(s * (.025 + .035 * voltageEnergy)),
-            ),
-            fill(Colors.white.withValues(alpha: .08 + .24 * voltageEnergy + .04 * pulse)),
+            RRect.fromRectAndRadius(Rect.fromLTWH(s * .18, shineY, s * .62, s * (.035 + .055 * energy)), Radius.circular(s * .025)),
+            fill(Colors.white.withValues(alpha: .24 * strength)),
           );
           canvas.restore();
-
-          if (voltageEnergy >= .60) {
-            final sparkCount = voltageEnergy >= .95 ? 3 : 1;
-            for (var i = 0; i < sparkCount; i++) {
-              final sparkY = s * (.24 + i * .24);
-              final direction = i.isEven ? 1.0 : -1.0;
-              final spark = Path()
-                ..moveTo(cx + direction * s * .12, sparkY)
-                ..lineTo(cx + direction * s * (.20 + .025 * pulse), sparkY - s * .045)
-                ..lineTo(cx + direction * s * .15, sparkY + s * .012);
-              canvas.drawPath(
-                spark,
-                stroke(s * (.012 + .009 * voltageEnergy),
-                    Colors.white.withValues(alpha: .22 + .48 * voltageEnergy)),
-              );
-            }
-          }
         }
         break;
 
       case JexAnimatedIconKind.adaptive:
-
-        // Adaptive core: one closed ring, one true orbit, and a compact reactor core.
         final center = Offset(cx, cy);
-        _drawGlow(canvas, center, s * .19,
-            active ? .09 + .09 * pulse : .015);
-        canvas.drawCircle(
-          center,
-          s * .315,
-          stroke(s * .027, color.withValues(alpha: active ? .34 : .19)),
-        );
+        canvas.drawCircle(center, s * .33, stroke(s * .027, c.withValues(alpha: .36 + .34 * strength)));
         canvas.drawArc(
-          Rect.fromCircle(center: center, radius: s * .315),
-          -math.pi * .72,
-          math.pi * 1.44,
-          false,
-          stroke(s * .055, color.withValues(alpha: active ? .78 : .38)),
+          Rect.fromCircle(center: center, radius: s * .33),
+          -math.pi * .72 + phase * .10, math.pi * 1.10, false,
+          stroke(s * .045, c.withValues(alpha: .38 + .54 * strength)),
         );
         canvas.save();
         canvas.translate(cx, cy);
-        canvas.rotate(active ? angle : -.20);
-        canvas.drawOval(
-          Rect.fromCenter(center: Offset.zero, width: s * .76, height: s * .43),
-          stroke(s * .023, color.withValues(alpha: active ? .38 : .17)),
-        );
-        canvas.drawCircle(
-          Offset(s * .38, 0),
-          s * .048,
-          fill(color.withValues(alpha: active ? .96 : .48)),
-        );
-        if (active) {
-          canvas.drawCircle(
-            Offset(-s * .38, 0),
-            s * .027,
-            fill(color.withValues(alpha: .36 + .24 * softPulse)),
-          );
-        }
+        canvas.rotate(phase * .18);
+        canvas.drawOval(Rect.fromCenter(center: Offset.zero, width: s * .72, height: s * .40),
+          stroke(s * .023, c.withValues(alpha: .20 + .38 * strength)));
+        canvas.drawCircle(Offset(s * .36, 0), s * .043, fill(c.withValues(alpha: .28 + .70 * strength)));
         canvas.restore();
-        canvas.drawCircle(
-          center,
-          s * .105,
-          fill(color.withValues(alpha: active ? .78 + .15 * pulse : .36)),
-        );
-        canvas.drawCircle(
-          center,
-          s * .052,
-          fill(Colors.white.withValues(alpha: active ? .62 : .24)),
-        );
+        _glow(canvas, center, s * .15, .025 + .08 * strength * pulse);
+        canvas.drawCircle(center, s * .105, fill(c.withValues(alpha: .52 + .36 * strength)));
+        canvas.drawCircle(center, s * .045, fill(Colors.white.withValues(alpha: .30 + .40 * strength)));
         break;
 
       case JexAnimatedIconKind.peltier:
-
         final center = Offset(cx, cy);
-        final frostIntensity =
-            frostIntensityOverride ?? jexPeltierFrostIntensity(voltageLevel);
-        // A readable six-arm crystal replaces the dense, overlapping star geometry.
-        _drawGlow(
-          canvas,
-          center,
-          s * (.15 + .05 * frostIntensity),
-          .08 + .075 * frostIntensity + (active ? .012 * pulse : 0),
-        );
+        final frost = frostIntensityOverride ?? jexPeltierFrostIntensity(voltageLevel);
+        final particleValue = frostParticleCountOverride ?? jexPeltierFrostParticleCount(voltageLevel).toDouble();
+        final particles = (particleValue / 2).ceil().clamp(1, 4);
+        _glow(canvas, center, s * .17, .03 + .08 * frost * strength);
         canvas.save();
         canvas.translate(cx, cy);
-        // A 60-degree phase is visually identical for a sixfold crystal, so the loop seam is invisible.
-        canvas.rotate(angle / 6);
+        canvas.rotate(phase / 6);
         for (var i = 0; i < 6; i++) {
           canvas.save();
           canvas.rotate(i * math.pi / 3);
-          final spine = Path()
-            ..moveTo(0, -s * .075)
-            ..lineTo(0, -s * (.285 + .012 * frostIntensity));
-          canvas.drawPath(
-            spine,
-            stroke(s * (.027 + .004 * frostIntensity), color.withValues(alpha: 1)),
-          );
+          final spine = Path()..moveTo(0, -s * .06)..lineTo(0, -s * (.285 + .01 * frost));
+          canvas.drawPath(spine, stroke(s * .025, c.withValues(alpha: .65 + .32 * strength)));
           final branches = Path()
-            ..moveTo(0, -s * .205)
-            ..lineTo(-s * .066, -s * .145)
-            ..moveTo(0, -s * .205)
-            ..lineTo(s * .066, -s * .145);
-          canvas.drawPath(
-            branches,
-            stroke(s * (.023 + .003 * frostIntensity), color.withValues(alpha: 1)),
-          );
+            ..moveTo(0, -s * .19)..lineTo(-s * .06, -s * .135)
+            ..moveTo(0, -s * .19)..lineTo(s * .06, -s * .135);
+          canvas.drawPath(branches, stroke(s * .021, c.withValues(alpha: .62 + .32 * strength)));
           canvas.restore();
         }
         canvas.restore();
-        // Only four small peripheral ice sparks: readable at 22dp, never piled on the arms.
-        final particleCountValue = frostParticleCountOverride ??
-            jexPeltierFrostParticleCount(voltageLevel).toDouble();
-        final voltageStrength = ((particleCountValue - 2.0) / 6.0)
-            .clamp(0.0, 1.0)
-            .toDouble();
-        for (var i = 0; i < 4; i++) {
-          final particleAngle = math.pi / 4 + i * math.pi / 2 + .025 * math.sin(angle + i);
-          final radius = s * (.405 + .010 * math.sin(angle + i));
-          final particle = Offset(
-            cx + math.cos(particleAngle) * radius,
-            cy + math.sin(particleAngle) * radius,
-          );
+        for (var i = 0; i < particles; i++) {
+          final angle = math.pi / 4 + i * math.pi / 2;
           canvas.drawCircle(
-            particle,
-            s * (.020 + .010 * frostIntensity),
-            fill(color.withValues(alpha: .28 + .52 * voltageStrength)),
+            Offset(cx + math.cos(angle) * s * .37, cy + math.sin(angle) * s * .37),
+            s * .014,
+            fill(c.withValues(alpha: .18 + .48 * strength * (.6 + .4 * pulse))),
           );
         }
-        canvas.drawCircle(
-          center,
-          s * .091,
-          fill(color.withValues(alpha: .68 + .24 * frostIntensity)),
-        );
-        canvas.drawCircle(
-          center,
-          s * .030,
-          fill(Colors.white.withValues(alpha: .86)),
-        );
+        canvas.drawCircle(center, s * .075, fill(c.withValues(alpha: .72 + .24 * strength)));
+        canvas.drawCircle(center, s * .028, fill(Colors.white.withValues(alpha: .50 + .35 * strength)));
         break;
 
       case JexAnimatedIconKind.fan:
-
-        // Three independently rendered blades rotate around a stable hub. Existing
-        // voltage-dependent controller timing and ease-out coast-down remain authoritative.
-        final rotation = angle;
         for (var i = 0; i < 3; i++) {
-          _drawFanBlade(canvas, size, rotation + i * math.pi * 2 / 3);
+          _drawBlade(canvas, s, phase + i * math.pi * 2 / 3, strength);
         }
         final hub = Offset(cx, cy);
-        _drawGlow(canvas, hub, s * .13, active ? .07 + .05 * pulse : .025);
-        canvas.drawCircle(hub, s * .079, fill(color.withValues(alpha: 1)));
-        canvas.drawCircle(hub, s * .030, fill(Colors.white.withValues(alpha: .76)));
-        if (active) {
-          final airflowOpacity = .16 + .10 * softPulse;
-          canvas.drawArc(
-            Rect.fromCircle(center: hub, radius: s * .405),
-            angle - .50,
-            .34,
-            false,
-            stroke(s * .016, color.withValues(alpha: airflowOpacity)),
-          );
+        _glow(canvas, hub, s * .12, .025 + .07 * strength * pulse);
+        if (strength > .01) {
+          canvas.drawArc(Rect.fromCircle(center: hub, radius: s * .425), phase - .36, .38, false,
+            stroke(s * .014, c.withValues(alpha: .18 * strength)));
         }
+        canvas.drawCircle(hub, s * .078, fill(c));
+        canvas.drawCircle(hub, s * .027, fill(Colors.white.withValues(alpha: .72)));
         break;
 
       case JexAnimatedIconKind.speed:
-
-        // Telemetry sets the gauge level; the retargetable controller eases to new
-        // readings while the needle's small harmonic wobble remains loop-seamless.
         final gauge = Rect.fromCircle(center: Offset(cx, cy), radius: s * .35);
         const start = math.pi * .79;
         const sweep = math.pi * 1.42;
         final actual = level.clamp(0.0, 1.0).toDouble();
-        canvas.drawArc(
-          gauge,
-          start,
-          sweep,
-          false,
-          stroke(s * .052, color.withValues(alpha: .25)),
-        );
-        if (active && actual > .01) {
-          canvas.drawArc(
-            gauge,
-            start,
-            sweep * actual,
-            false,
-            stroke(s * .085, color.withValues(alpha: .12)),
-          );
-        }
-        canvas.drawArc(
-          gauge,
-          start,
-          sweep * actual,
-          false,
-          stroke(s * .060, color.withValues(alpha: active ? .96 : .62)),
-        );
-        final needleWobble = active ? jexFanSpeedNeedleWobble(progress) : 0.0;
-        final needleAngle = start + sweep * actual + needleWobble;
-        final tip = Offset(
-          cx + math.cos(needleAngle) * s * .275,
-          cy + math.sin(needleAngle) * s * .275,
-        );
-        final needle = Path()
-          ..moveTo(
-            cx - math.sin(needleAngle) * s * .022,
-            cy + math.cos(needleAngle) * s * .022,
-          )
-          ..lineTo(tip.dx, tip.dy)
-          ..lineTo(
-            cx + math.sin(needleAngle) * s * .022,
-            cy - math.cos(needleAngle) * s * .022,
-          )
-          ..close();
-        canvas.drawPath(needle, fill(color.withValues(alpha: 1)));
-        _drawGlow(canvas, Offset(cx, cy), s * .088, active ? .07 + .035 * pulse : .018);
-        canvas.drawCircle(Offset(cx, cy), s * .054, fill(color.withValues(alpha: 1)));
-        canvas.drawCircle(Offset(cx, cy), s * .021, fill(Colors.white.withValues(alpha: .66)));
+        canvas.drawArc(gauge, start, sweep, false, stroke(s * .047, c.withValues(alpha: .23)));
+        canvas.drawArc(gauge, start, sweep * actual, false, stroke(s * .060, c.withValues(alpha: .44 + .52 * strength)));
+        final needleAngle = start + sweep * actual + jexFanSpeedNeedleWobble(progress) * strength;
+        final tip = Offset(cx + math.cos(needleAngle) * s * .27, cy + math.sin(needleAngle) * s * .27);
+        canvas.drawLine(Offset(cx, cy), tip, stroke(s * .033, c.withValues(alpha: .72 + .27 * strength)));
+        _glow(canvas, Offset(cx, cy), s * .085, .025 + .06 * strength * pulse);
+        canvas.drawCircle(Offset(cx, cy), s * .052, fill(c));
+        canvas.drawCircle(Offset(cx, cy), s * .020, fill(Colors.white.withValues(alpha: .72)));
         break;
 
       case JexAnimatedIconKind.led:
-        for (var i = 0; i < 8; i++) {
-          final wave = active ? .5 + .5 * math.cos(angle - i * math.pi / 4) : .20;
-          final dot = Offset(s * (.10 + i * .114), cy);
-          if (active && wave > .48) {
-            canvas.drawCircle(
-              dot,
-              s * (.09 + .025 * wave),
-              Paint()
-                ..color = color.withValues(alpha: .10 + .06 * wave)
-                ..maskFilter = MaskFilter.blur(BlurStyle.normal, s * .025),
-            );
-          }
-          canvas.drawCircle(dot, s * .052,
-              fill(color.withValues(alpha: active ? .48 + .50 * wave : .28)));
-          canvas.drawCircle(
-            dot.translate(-s * .015, -s * .015), s * .012,
-            fill(Colors.white.withValues(alpha: active ? .42 : .10)),
-          );
+        for (var i = 0; i < 7; i++) {
+          final x = s * (.12 + i * .126);
+          final wave = .5 + .5 * math.cos(phase - i * math.pi / 3);
+          canvas.drawCircle(Offset(x, cy), s * .050, fill(c.withValues(alpha: .20 + .72 * strength * wave)));
+          canvas.drawCircle(Offset(x - s * .012, cy - s * .014), s * .012,
+            fill(Colors.white.withValues(alpha: .12 + .30 * strength * wave)));
         }
         break;
 
       case JexAnimatedIconKind.bluetooth:
-        final bt = Path()
-          ..moveTo(cx, s * .10)
-          ..lineTo(s * .70, s * .29)
-          ..lineTo(cx, s * .50)
-          ..lineTo(s * .70, s * .71)
-          ..lineTo(cx, s * .90)
-          ..lineTo(cx, s * .10)
-          ..moveTo(s * .18, s * .29)
-          ..lineTo(s * .70, s * .71)
-          ..moveTo(s * .18, s * .71)
-          ..lineTo(s * .70, s * .29);
-        canvas.drawPath(bt, stroke(s * .055, color.withValues(alpha: active ? 1 : .62)));
-        if (active) {
-          for (var i = 0; i < 2; i++) {
-            final wave = (p + i * .5) % 1.0;
-            final radius = s * (.28 + .20 * wave);
-            // Each ripple is transparent at both ends of its cycle. The raised
-            // sine envelope has zero slope at the repeat boundary, so a new ring
-            // emerges gently rather than flashing on when wave wraps to zero.
-            final fade = math.pow(math.sin(math.pi * wave), 2).toDouble();
-            canvas.drawArc(
-              Rect.fromCircle(center: Offset(s * .49, cy), radius: radius),
-              -math.pi * .47, math.pi * .94, false,
-              stroke(s * .022, color.withValues(alpha: .34 * fade)),
-            );
-          }
-          _drawGlow(canvas, Offset(cx, cy), s * .12, .055 + .035 * softPulse);
+        final symbol = Path()
+          ..moveTo(cx, s * .13)..lineTo(s * .70, s * .30)..lineTo(cx, s * .50)
+          ..lineTo(s * .70, s * .70)..lineTo(cx, s * .87)..lineTo(cx, s * .13)
+          ..moveTo(s * .20, s * .30)..lineTo(s * .70, s * .70)
+          ..moveTo(s * .20, s * .70)..lineTo(s * .70, s * .30);
+        canvas.drawPath(symbol, stroke(s * .050, c.withValues(alpha: .65 + .33 * strength)));
+        for (var i = 0; i < 2; i++) {
+          final wave = (progress + i * .5) % 1.0;
+          final fade = math.pow(math.sin(math.pi * wave), 2).toDouble() * strength;
+          canvas.drawArc(Rect.fromCircle(center: Offset(cx, cy), radius: s * (.27 + .13 * wave)),
+            -math.pi * .38, math.pi * .76, false, stroke(s * .018, c.withValues(alpha: .26 * fade)));
         }
         break;
 
       case JexAnimatedIconKind.generic:
-        // Navigation/action glyphs remain static; only status indicators receive motion.
         break;
     }
 
-    if (warning && kind != JexAnimatedIconKind.battery) {
-      final warningAlpha = active ? .42 + .24 * pulse : .22;
-      canvas.drawCircle(
-        Offset(cx, cy),
-        s * (.455 + (active ? .018 * pulse : 0)),
-        stroke(s * .022, color.withValues(alpha: warningAlpha)),
-      );
+    if (warning) {
+      canvas.drawCircle(Offset(cx, cy), s * .445,
+        stroke(s * .018, c.withValues(alpha: .34 + .14 * pulse * strength)));
     }
     canvas.restore();
   }
@@ -2162,8 +1870,11 @@ class _JexIconPainter extends CustomPainter {
       oldDelegate.color != color ||
       oldDelegate.progress != progress ||
       oldDelegate.active != active ||
+      oldDelegate.activity != activity ||
       oldDelegate.level != level ||
       oldDelegate.voltageLevel != voltageLevel ||
+      oldDelegate.frostIntensityOverride != frostIntensityOverride ||
+      oldDelegate.frostParticleCountOverride != frostParticleCountOverride ||
       oldDelegate.warning != warning;
 }
 
