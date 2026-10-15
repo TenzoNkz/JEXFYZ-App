@@ -4,9 +4,14 @@ This is the durable evidence ledger for `@Thinking #Build App!`. A replacement B
 
 ## Current report status
 
-### Current source updates beyond last successful build — NOT BUILT / TESTS NOT RUN
+- **Current App Build:** Build #36 / [run 38689044316](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38689044316) is QUEUED/RUNNING against exact `main` source commit `893393388b99fc6d9e59c420070a159a29e45e9a`. Triggered on 2026-10-15 by reopening validated owner issue [#13](https://github.com/TenzoNkz/JEXFYZ-App/issues/13).
+- **Build #36 target source:** current `lib/main.dart` blob `c697497e16c94b8fe4fe8fd9bd1f9bc93598545f`; `lib/floating_monitor.dart` `c08c2a484f83a9cae7c7d4437b0573c1865cd424`; `lib/app_settings.dart` `6483031e239d71e0a0784c529e2f45a94fb5404b`; `test/widget_test.dart` `2a87292d5c4bc468ee6aad6810b249d284a28bae`; native `FloatingMonitorService.kt` `038f12b2ca82255a3b202b10dd770d5caa5b2bbf`; `MainActivity.kt` `12004b5b36b8339f7440e54f9a7330e5804e57ef`; `AndroidManifest.xml` `bcf9b3e96b254dd6577035a6643b6935f7320085`.
+- **Most recent fully successful build before #36:** Build #35 / [38669526891](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38669526891), source commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8). Its old APK does **not** cover the Color Picker/Floating Monitor/foreground FPS changes now targeted by #36.
+- **Current expected Release:** stable tag `jexfyz-latest`; the prior asset is not evidence for #36 until its workflow publishes and independently verifies a new asset.
 
-- **Status:** Source and source-contract assertions are committed; Android/Dart analysis, Flutter tests, APK build, signing and release checks have NOT RUN for these changes. No App Build workflow was triggered by `@Thinking #Eksekusi Full!` or the recovery command.
+### Source changes that motivated Build #36 — pre-trigger checkpoint (historical)
+
+- **Status at this pre-trigger checkpoint:** Source and source-contract assertions were committed but Android/Dart analysis, Flutter tests, APK build, signing and release checks had NOT RUN. This note is retained as the pre-trigger state; Build #36 below now owns their validation.
 - **Repository checkpoint before this report update:** `main` HEAD `48c8eb7226e54e2d38e4a2840f96c03915faa141`. This checkpoint includes Color Picker, Floating Monitor/foreground FPS code, regression assertions and canonical command/memory updates. Updating this evidence ledger and the final `CHAT_TRANSFER.md` snapshot is documentation only.
 - **Current source fingerprints:** `lib/main.dart` `c697497e16c94b8fe4fe8fd9bd1f9bc93598545f`; `lib/floating_monitor.dart` `c08c2a484f83a9cae7c7d4437b0573c1865cd424`; `lib/app_settings.dart` `6483031e239d71e0a0784c529e2f45a94fb5404b`; `test/widget_test.dart` `2a87292d5c4bc468ee6aad6810b249d284a28bae`; `FloatingMonitorService.kt` `038f12b2ca82255a3b202b10dd770d5caa5b2bbf`; `MainActivity.kt` `12004b5b36b8339f7440e54f9a7330e5804e57ef`; `AndroidManifest.xml` `bcf9b3e96b254dd6577035a6643b6935f7320085`.
 - **Color Picker:** The 36 swatches stage a local draft; localized Select sends the confirmed `COLOR` command and closes only after success. Cancel discards the draft; outside taps and system Back cannot close the dialog.
@@ -39,6 +44,15 @@ Add a new dated section at the top of the attempt history (do not overwrite prio
 8. Final disposition and next exact action. Only mark `SUCCESS` if all required App Build gates pass; use `BLOCKED` if further progress needs missing permission/secret, external service recovery or separate authorization.
 
 ## Attempt history
+
+### 2026-10-15 — Build #36 — RUNNING (Color Picker + Floating Monitor/FPS updates)
+
+- **Status:** RUNNING (run created and queued; inspect the live run before finalizing).
+- **Trigger:** [issue #13](https://github.com/TenzoNkz/JEXFYZ-App/issues/13), exact title `JE X FYZ — BUILD APP TRIGGER`, body token `JEXFYZ_BUILD_TRIGGER_V1`, author/repository owner `TenzoNkz`. The live workflow blob `0e400cbdedfd54506ae3ac3255da41580c86d750` checks owner/title/token and only listens to issue `opened`/`reopened`; no push/PR trigger was added. Issue #13 was closed at `2026-10-15T05:51:12Z` and reopened at `2026-10-15T05:51:15Z` to invoke the official path.
+- **Workflow run:** [38689044316](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38689044316), run #36, event `issues`, branch `main`, exact source commit `893393388b99fc6d9e59c420070a159a29e45e9a`, created `2026-10-15T05:51:17Z`. No duplicate run was present before this trigger.
+- **Why a new build was required:** the new main source differs from Build #35. App changes include staged Color Picker draft/Select/Cancel behavior; Floating Monitor orientation instead of a settings-center live preview; native SurfaceFlinger/TimeStats FPS scoped to the resumed/focused foreground package; replaying authoritative telemetry after native overlay startup; native overlay layout/resizing on live value changes; and regression assertions for the new UI/native wiring. These changes must be tested on this build and cannot inherit Build #35's results.
+- **Current fingerprints at trigger:** `lib/main.dart` `c697497e16c94b8fe4fe8fd9bd1f9bc93598545f`; `lib/floating_monitor.dart` `c08c2a484f83a9cae7c7d4437b0573c1865cd424`; `lib/app_settings.dart` `6483031e239d71e0a0784c529e2f45a94fb5404b`; `test/widget_test.dart` `2a87292d5c4bc468ee6aad6810b249d284a28bae`; `FloatingMonitorService.kt` `038f12b2ca82255a3b202b10dd770d5caa5b2bbf`; `MainActivity.kt` `12004b5b36b8339f7440e54f9a7330e5804e57ef`; `AndroidManifest.xml` `bcf9b3e96b254dd6577035a6643b6935f7320085`. Pubspec/lock, Android Gradle signing config and workflow remain at their recorded current blobs; preserve `versionName "Telegram @horizontalzzz"`.
+- **Required remaining evidence:** security/architecture audit, dependency resolution, Dart analyze, exact Flutter test totals, release APK build, exactly one `JEXFYZ-release.apk`, V1/V2/V3, production certificate, updated `jexfyz-latest` Release target and asset identity, independent re-download SHA-256 equality and re-verification. Add exact failing step/root cause/fix if any gate fails. Do not claim CI proves device FPS, physical rendering, BLE, cooling, or hardware behavior.
 
 ### HISTORICAL — 2026-10-15 — Prompt D LOAD + CONTINUE verification — SUCCESS (existing Build #35; pre-Color-Picker edit)
 
