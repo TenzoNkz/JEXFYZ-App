@@ -66,7 +66,6 @@ class FloatingConfig {
   // Clone configuration with only the supplied presentation fields changed.
   FloatingConfig copyWith({
     bool? enabled,
-    FloatingDisplayStyle? style,
     List<String>? order,
     Set<String>? selected,
     double? size,
@@ -830,7 +829,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                           FilledButton.icon(
                             onPressed: _fpsStatusLoading ? null : _requestShizukuFpsAccess,
                             icon: const Icon(Icons.shield_outlined),
-                            label: Text(JexText.of('requestShizukuPermission', lang)),
+                            label: Text(JexText.of('grantShizukuAccess', lang)),
                           ),
                           TextButton.icon(
                             onPressed: _fpsStatusLoading
