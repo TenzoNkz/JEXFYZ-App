@@ -80,7 +80,9 @@ The canonical detailed incident/contract is `VOLTAGE_TRANSITION_MEMORY.md`.
 - No custom SHA/signature layer is part of the user-approved Firebase OTA metadata model; version + link only.
 - Never assume the artifact BIN is compiled from current source until source/version/build provenance is verified.
 
-The App's source-contract tests for Firmware V6.6 were included in the App Build #35 Flutter suite (run `38669526891`, code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`); Dart analyze and all 74 Flutter tests passed. This is a Dart/source-text contract run, not Arduino compilation or physical validation. V6.6 compile/two same-version Online OTA successes are user-reported; independent compile logs, installed version, full physical behavior and source-to-BIN provenance remain unverified.
+**HISTORICAL App source-contract evidence:** Build #35 / run `38669526891` on commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8` passed Dart analyze and 74 Flutter tests including earlier V6.6 source assertions; that proves only those older App/test gates.
+
+**LATER App source-contract evidence:** Build #39 and #40 each passed 80 Flutter tests, including `test/v6_6_qc_contract_test.dart` which reads the V6.6 source. Build #40 also passed Android APK compilation and signing before source-archive validation stopped publication. Neither result is an Arduino/ESP32 Firmware compile or physical OTA proof. V6.6 compile/two same-version Online OTA successes remain USER-REPORTED; independent logs, installed version, physical behavior and source-to-BIN provenance remain unverified.
 
 ## Static versus runtime validation
 

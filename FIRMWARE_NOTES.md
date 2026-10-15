@@ -100,4 +100,6 @@ Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 
 This is the user's acceptance report, not an assistant-witnessed compile/flash log. Preserve the current source/build evidence boundary: source-to-artifact BIN provenance is not independently established by this report alone. The previously reported restart symptoms and Adaptive-OFF boot indicator remain historical/unverified observations, not an active work queue while the user considers V6.6 final. The older request for rapid Hotside-rise shutdown/manual re-arm is still not implemented in the V6.6 contract; do not add it proactively after the user's final acceptance unless the user reopens that requirement.
 
+[APP CI EVIDENCE — NOT FIRMWARE COMPILE] Builds #39 and #40 ran all 80 Flutter tests, including `test/v6_6_qc_contract_test.dart` source assertions that read the V6.6 source. Build #40 compiled and signed the Android APK, but the Release pipeline stopped at the corresponding-source path assertion. These App CI checks are not an Arduino/ESP32 compile, BIN-provenance validation, physical sensor/thermal test or OTA proof. The user's separate firmware compile and two same-version Online OTA updates remain USER-REPORTED.
+
 No Firmware source, BIN, Firebase metadata, flash or OTA operation was performed in this App-signing task.
