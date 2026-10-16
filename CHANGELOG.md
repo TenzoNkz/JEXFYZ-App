@@ -33,7 +33,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - Confirmed Build #62 source/release commit `42a72d863b10adfb5d6a0ee332a2f879a78173a4` remains the exact published source. Comparison of release source to current `main` found documentation-only commits; no App source, test, workflow, Firmware source or artifact was changed after that release source.
 - No Firmware compile, BIN generation/publication, Firebase/production metadata, OTA, flash, hardware/device operation, App Build trigger or release operation occurred during this documentation reconciliation.
 
-## 2026-10-16 — Build #62 release verified; Shizuku binding lifecycle built and CI-tested
+## HISTORICAL / SUPERSEDED — 2026-10-16 — Build #62 release verified; Shizuku binding lifecycle built and CI-tested (superseded by Build #65)
 
 - Build #62 / [Actions run `38841458441`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38841458441) passed the complete guarded App release workflow against source `42a72d863b10adfb5d6a0ee332a2f879a78173a4`. All 20 active workflow steps passed, including audit, dependencies, Dart analysis, **88/88 Flutter tests**, obfuscated APK compilation, V1/V2/V3 plus expected certificate checks, source ZIP validation, release publication and re-downloaded asset identity/hash/signature verification.
 - It includes Shizuku UserService binding lifecycle checkpoint `225cc9ae4c67b3fbb76426db3b2503ef6934aaae`. The test-only fix in `test/widget_test.dart` matches the per-attempt bind call and current WindowManager foreground diagnostics; no native behavior was weakened and no test was deleted.
