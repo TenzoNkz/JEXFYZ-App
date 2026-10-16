@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — App Reference
 
-This file is the durable App behavior/design contract. Live source and the current workflow remain authoritative. The FPS TimeStats sampling/parser patch is built and CI-tested by Build #65; physical FPS behavior remains unverified on a target phone/OEM.
+This file is the durable App behavior/design contract. Live source and the current workflow remain authoritative. Build #65 is the latest verified release, but current main includes a post-release Shizuku binding-timeout repair at `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d` that has **not been built or CI-tested**; target-device FPS remains unverified.
 
 ## Current source and build verification checkpoint (2026-10-16)
 
@@ -10,7 +10,8 @@ Build #63 had one stale widget assertion (87 passed, 1 failed); the test-only re
 
 The current sampler reads bounded 64-layer SurfaceFlinger TimeStats every 500 ms, uses per-interval `averageFPS`, matches `packageName` when supplied, falls back to exact layer matching, and prefers SurfaceView/BLAST. Physical-device FPS, successful Shizuku binding on the target phone, OEM TimeStats visibility and visual rendering remain unverified. No Firmware, Firebase, OTA, BLE hardware-control or thermal-safety code was changed.
 
-**Current built source:** binding-lifecycle checkpoint `225cc9ae4c67b3fbb76426db3b2503ef6934aaae` and TimeStats patch `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620` are included in Build #65. The native `FpsTimeStatsParserTest.kt` suite passed under `:app:testDebugUnitTest`; actual behavior on the target phone/OEM still requires device validation.
+**Latest verified release:** binding-lifecycle checkpoint `225cc9ae4c67b3fbb76426db3b2503ef6934aaae` and TimeStats patch `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620` are included in Build #65. The native `FpsTimeStatsParserTest.kt` suite passed under `:app:testDebugUnitTest`.
+**Current main follow-up — NOT BUILT:** commit `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d` increases the client UserService binding deadline from 6 to 35 seconds, aligned with Shizuku's 30-second server startup window plus callback grace; Settings polls status for 50.4 seconds and copy/test contracts are updated. This is an evidence-based fix for the screenshot's premature local timeout, not proof that the phone's service will connect. It has not been built or CI-tested.
 
 ## Identity and package
 
@@ -116,7 +117,7 @@ The current sampler reads bounded 64-layer SurfaceFlinger TimeStats every 500 ms
 - Foreground detection checks `mCurrentFocus`, `mFocusedWindow`, `mFocusedApp`, resumed/top-activity markers and WindowManager/ActivityManager fallbacks. If TimeStats provides `packageName`, the sampler matches it exactly; otherwise it uses package-boundary matching in `layerName`. Valid `SurfaceView`/BLAST layers are preferred over generic app layers.
 - Native parser unit tests cover averageFPS parsing, multiline layer names, invalid/insufficient samples, static zero and SurfaceView/BLAST preference. Build #65 passed all four JUnit cases under `:app:testDebugUnitTest`.
 - Metric F still requires Shizuku Binder availability, UserService support and explicit JE X FYZ approval in the Shizuku permission UI. Shizuku Access Granted confirms only the permission gate, not that the foreground layer is readable.
-- **Built/CI-tested:** Build #65 includes binding lifecycle hardening, TimeStats parsing and its native JUnit gate; all 88 Flutter tests and release checks passed. **Not device-verified:** actual service binding on the target phone, OEM TimeStats/layer visibility, live foreground FPS and overlay/rendering behavior. Install the latest APK and capture Settings status plus filtered `JexFpsDiag` logs if F remains `--`.
+- **Build #65 release / verified:** binding lifecycle hardening, TimeStats parsing and its native JUnit gate passed CI. **Current main / not built:** timeout repair `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d` now aligns the client deadline to Shizuku's service-start window and extends Settings polling, but the target-phone binding has not been proven. Run `@Thinking Eksekusi Build App!` before installing an APK containing this change. Actual binding, OEM TimeStats/layer visibility, live foreground FPS and overlay behavior remain device-unverified.
 
 ## Phone battery telemetry and Battery Protection UI boundary
 
@@ -132,7 +133,7 @@ The current sampler reads bounded 64-layer SurfaceFlinger TimeStats every 500 ms
 - Build #65 passed App audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, obfuscated APK build, V1/V2/V3 signing and production-certificate checks, matching-source ZIP validation, publication and downloaded-asset hash/signature verification.
 - APK SHA-256: `6823d87dbe25ded3ee5fd399ff231423078f9a33e814d7a80aed8ed1fe1b5b87`; source ZIP SHA-256: `df96a3cf43c860370d776995bff2ef4861ccf9f5e84744b49adb0cdab79d13cc`.
 - Release `jexfyz-latest` contains exactly one APK (`JEXFYZ-release.apk`, asset `646151731`, `54,636,716` bytes) and one matching source ZIP (asset `646151729`, `2,874,038` bytes). The workflow re-downloaded both and verified hash/source identity; the APK passed V1/V2/V3 and certificate checks.
-- Current source blobs: `lib/main.dart` `d24885cf0a40472b9fb23ee6ce73ad772ae73672`; `lib/floating_monitor.dart` `bae089f1f950bd70fe7e6f90e8afa1726293664f`; `lib/app_settings.dart` `4c89bcb3c04142ce49440a11b92054365c26f7a6`; native `FloatingMonitorService.kt` `0f9544c4e5f568531426e771f81e950397c86a7`; `FpsShizukuUserService.kt` `8bb6181b4c86e1a2ae2c635969646303b6d84483`; `FpsTimeStatsParser.kt` `66b5e3f489f4e160407d87c40d1ecee54e13282f`; native parser JUnit `FpsTimeStatsParserTest.kt` `ab6c63c627c05d9987de4d4af731f2ed86acde5b`; `test/widget_test.dart` `e9edc694dbc9f400fe034d99d1254628dc39a89f`.
+- Current source blobs: `lib/main.dart` `d24885cf0a40472b9fb23ee6ce73ad772ae73672`; `lib/floating_monitor.dart` `e4ef455f466c13055873e3b872ecb87d6cc36e5b`; `lib/app_settings.dart` `4c89bcb3c04142ce49440a11b92054365c26f7a6`; native `FloatingMonitorService.kt` `dca4c9c349949e967dfc174395f4033138382f6e`; `FpsShizukuUserService.kt` `8bb6181b4c86e1a2ae2c635969646303b6d84483`; `FpsTimeStatsParser.kt` `66b5e3f489f4e160407d87c40d1ecee54e13282f`; native parser JUnit `FpsTimeStatsParserTest.kt` `ab6c63c627c05d9987de4d4af731f2ed86acde5b`; `test/widget_test.dart` `4b05e025e7765b30d04c20ada0322a17517025b9`.
 - Build #63/#64 failure causes and repairs are preserved in `APP_BUILD_REPORT.md`; Build #65 verifies the TimeStats patch but cannot establish target-device binding, OEM access or visual behavior.
 
 ## Dashboard indicator motion

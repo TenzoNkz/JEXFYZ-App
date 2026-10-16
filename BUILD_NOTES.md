@@ -8,7 +8,7 @@
 - Build App does not authorize Firmware compilation, BIN creation/publication/replacement, Firebase metadata changes, physical OTA, flashing, device operation, or unrelated release operations.
 - Never claim CI success proves BLE, cooling/safety behavior, Firmware compilation, OTA installation or installed device version.
 
-## CURRENT — Build #65 release verified; physical FPS remains unverified
+## CURRENT — Build #65 release verified; bind-timeout repair awaits Build App
 
 - Latest successful App Build is [Build #65 / run `38851040144`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38851040144), exact source/release target `f301c1fbbafa3d6c17803d9a2f50bae390dc1343`, triggered through guarded owner-authored [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). It completed at `2026-10-16T04:37:21Z` (`2026-10-16 11:37:21 Asia/Jakarta`).
 - The release includes TimeStats FPS sampling/parser patch `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620`, native `FpsTimeStatsParserTest.kt` JUnit tests, a narrow widget assertion repair `14347cd731b2c471fea9937f796ca21f8defc261`, and Gradle heap `-Xmx4096M`.
@@ -19,7 +19,8 @@
 - Signing: V1/JAR=true, V2=true, V3=true, one signer; expected production certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID` and SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0` matched built and downloaded APK.
 - Build #63 failed one stale Flutter source-contract assertion (87 passed, 1 failed); test-only fix aligned it to TimeStats layer matching. Build #64 passed Flutter tests but native JUnit failed from `Java heap space` in JetifyTransform with the old 2 GiB Gradle heap. The evidence-based fix increased it to `-Xmx4096M`; Build #65 then passed both gates and the full release pipeline. No test/gate was removed or weakened.
 - Non-blocking warnings: 23 Dart deprecation infos, Gradle `9.3.1` out-of-date notice, native ELF DWARF debug information remains unobfuscated, self-signed/no-timestamp JAR and META-INF coverage warnings, and pub-cache save denied by token scope. None failed a required gate.
-- **Not verified by CI:** target-device Shizuku UserService binding, OEM TimeStats visibility, live foreground FPS and overlay/icon rendering. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+- **Current main follow-up NOT BUILT/CI-TESTED:** commit `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d` extends the local UserService bind deadline from 6s to 35s (the official Shizuku server allows 30s for startup) and extends Settings' sampler status polling to 50.4s. The code and updated contract assertions have not been run through CI and are not in Build #65's APK. The next software gate is `@Thinking Eksekusi Build App!`.
+- **Not verified by CI/device:** target-device Shizuku UserService binding, OEM TimeStats visibility, live foreground FPS and overlay/icon rendering. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
 ## HISTORICAL — Build #49 successful App release (superseded as latest by Build #65)
 - **Run:** [Build #49 / `38739077916`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916), issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22), source commit `2b2d2886abb66481b7134e5036824f625ab5659d`, job `116435785328`, runner `1000002352`. Every main step passed.

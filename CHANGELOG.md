@@ -2,6 +2,13 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
+## 2026-10-16 — Shizuku UserService bind timeout repair committed; build pending
+
+- Screenshot evidence showed permission granted but `UserService did not connect within 6 seconds (shizuku_userservice_timeout)`. Official Shizuku's UserServiceManager allows up to 30 seconds for a process to start; the App's 6-second client timeout could retire/unbind a slow valid cold start before the server's startup window expired.
+- Source commit `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d` changes the local deadline to 35 seconds (server's 30-second startup allowance plus callback grace), extends Settings polling to 50.4 seconds and updates localized status text and source-contract tests.
+- **NOT BUILT / NOT CI-TESTED:** this was `@Thinking Eksekusi Full!`, not Build App. Build #65 remains the latest verified release and does not include this repair. The timeout alignment is evidence-based mitigation; service connection/FPS on the target phone remains unverified.
+- App-only scope. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+
 ## 2026-10-16 — Build #65 release verified: TimeStats parser and JUnit gate passed
 
 - Build #65 / [Actions run `38851040144`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38851040144) passed the full guarded App release workflow against source `f301c1fbbafa3d6c17803d9a2f50bae390dc1343`. All **21 active steps passed**, including App audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, obfuscated APK, V1/V2/V3 signing and certificate, matching source ZIP, Release publication and downloaded-asset verification.
