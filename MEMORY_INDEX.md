@@ -49,11 +49,11 @@ Reconciled against live GitHub main: 2026-10-16. Live code, Git refs, Actions re
 | OTA_REGRESSION_MEMORY.md | CA/NTP experiment, setInsecure trade-off and failure evidence |
 | VOLTAGE_TRANSITION_MEMORY.md | Peltier ramp, rail changes, recovery rules and validation |
 | BUILD_NOTES.md | Active App workflow/toolchain/build-requirements and historical build milestones |
-| APP_BUILD_REPORT.md | Authoritative build-attempt ledger; Build #67 is latest verified release, including sampler watchdog checkpoint `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46` |
+| APP_BUILD_REPORT.md | Authoritative build-attempt ledger; Build #68 is latest verified release, including sampler watchdog checkpoint `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46` |
 | CHANGELOG.md | Historical behavior/decision/failure ledger, not current truth |
 | DESIGN_NOTES.md | Approved grille, icons/cooler and visual requirements |
 | .github/workflows/jexfyz-app-build-trigger.yml | Authoritative manual issue-triggered App Build workflow |
-| test/*.dart and Android native JUnit | Build #67 passed 88/88 Flutter tests, four parser JUnit cases and five watchdog-policy JUnit cases. CI does not establish real-device FPS or binding. |
+| test/*.dart and Android native JUnit | Build #68 passed 88/88 Flutter tests, four parser JUnit cases and five watchdog-policy JUnit cases. CI does not establish real-device FPS or binding. |
 | firmware/JEXFYZ-V6.6.ino | Current editable Firmware source, one versioned active sketch |
 | archive/*.md | Immutable, verbatim forensic snapshots; archived “CURRENT” claims are not live truth. Root-relative links retained from originals may not resolve from the archive subdirectory; use canonical root docs and do not rewrite archives |
 
