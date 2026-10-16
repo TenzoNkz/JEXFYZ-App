@@ -16,7 +16,7 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 10. [Changelog](CHANGELOG.md) — historical changes; history never overrides current code.
 11. [Design Notes](DESIGN_NOTES.md) — approved grille, icon, and brand design constraints.
 12. [Transfer Prompt Templates](CHAT_TRANSFER_PROMPTS.md) — copy-ready prompts for saving context and starting a new chat.
-13. `archive/` contains verbatim legacy snapshots for forensic recovery only. Any old `CURRENT` status inside an archive is not live truth.
+13. `archive/` contains immutable, verbatim legacy snapshots for forensic recovery only. Any old `CURRENT` status inside an archive is not live truth. Some root-relative links retained from the original documents do not resolve when the snapshot is viewed inside `archive/`; this is intentional to preserve the snapshots byte-for-byte. Use the canonical root-level files linked above for navigation.
 
 ## Current source validation boundary — 2026-10-16
 
