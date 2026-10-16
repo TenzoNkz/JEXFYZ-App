@@ -287,6 +287,11 @@ jobs:
       - name: Run Flutter tests
         run: flutter test
 
+      # Exercise native TimeStats parsing independently of Dart source-contract tests.
+      - name: Run native FPS parser unit tests
+        working-directory: android
+        run: ./gradlew --no-daemon :app:testDebugUnitTest
+
       # Obfuscated production APK plus symbols.
       - name: Build latest release APK
         run: flutter build apk --release --obfuscate --split-debug-info=build/symbols

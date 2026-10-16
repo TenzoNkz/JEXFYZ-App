@@ -21,7 +21,7 @@ class FpsShizukuUserService : IFpsShizukuUserService.Stub() {
             OP_START_CAPTURE -> listOf("SurfaceFlinger", "--timestats", "-clear", "-enable")
             OP_STOP_CAPTURE -> listOf("SurfaceFlinger", "--timestats", "-disable")
             OP_READ_FOREGROUND_ACTIVITY -> listOf("activity", "activities")
-            OP_READ_SURFACEFLINGER_STATS -> listOf("SurfaceFlinger", "--timestats", "-dump")
+            OP_READ_SURFACEFLINGER_STATS -> listOf("SurfaceFlinger", "--timestats", "-dump", "-clear", "-maxlayers", "64")
             OP_READ_FOREGROUND_WINDOW -> listOf("window", "displays")
             OP_READ_FOREGROUND_WINDOW_FULL -> listOf("window")
             else -> return result("", false, "unsupported_fps_operation")
@@ -50,7 +50,7 @@ class FpsShizukuUserService : IFpsShizukuUserService.Stub() {
         listOf("SurfaceFlinger", "--timestats", "-clear", "-enable") -> "capture_start"
         listOf("SurfaceFlinger", "--timestats", "-disable") -> "capture_stop"
         listOf("activity", "activities") -> "foreground_activity"
-        listOf("SurfaceFlinger", "--timestats", "-dump") -> "surfaceflinger_stats"
+        listOf("SurfaceFlinger", "--timestats", "-dump", "-clear", "-maxlayers", "64") -> "surfaceflinger_stats"
         listOf("window", "displays") -> "foreground_window"
         listOf("window") -> "foreground_window_full"
         else -> "unknown_operation"
@@ -132,8 +132,10 @@ class FpsShizukuUserService : IFpsShizukuUserService.Stub() {
 
         val output = snapshot(sink, sinkLock)
         val elapsedMs = SystemClock.elapsedRealtime() - startedAtMs
-        val permissionDenied = output.contains("Permission Denial", ignoreCase = true) ||
-            output.contains("Permission denial", ignoreCase = true)
+        val permissionDenied = Regex(
+            """permission\s+(?:denial|denied)|not allowed|requires\s+android\.permission\.DUMP""",
+            RegexOption.IGNORE_CASE,
+        ).containsMatchIn(output)
         val permissionError = if (operation == "capture_start" ||
             operation == "capture_stop" ||
             operation == "surfaceflinger_stats"
@@ -168,7 +170,7 @@ class FpsShizukuUserService : IFpsShizukuUserService.Stub() {
         const val OP_READ_SURFACEFLINGER_STATS = 4
         const val OP_READ_FOREGROUND_WINDOW = 5
         const val OP_READ_FOREGROUND_WINDOW_FULL = 6
-        private const val COMMAND_TIMEOUT_MS = 2500L
+        private const val COMMAND_TIMEOUT_MS = 5000L
         private const val TAG = "JexFpsDiag"
         private const val MAX_OUTPUT_BYTES = 2 * 1024 * 1024
     }
