@@ -354,7 +354,7 @@ void main() {
     expect(appSource, isNot(contains('FrameTiming')));
     expect(appSource, isNot(contains('addTimingsCallback')));
     expect(nativeService, contains('Shizuku.checkSelfPermission()'));
-    expect(nativeService, contains('Shizuku.bindUserService(fpsUserServiceArgs, fpsUserServiceConnection)'));
+    expect(nativeService, contains('Shizuku.bindUserService(currentAttempt.args, currentAttempt.connection)'));
     expect(nativeService, isNot(contains('android.permission.DUMP')));
     expect(nativeService, isNot(contains('ProcessBuilder(')));
     expect(nativeService, contains('private fun readForegroundPackage()'));
@@ -365,11 +365,14 @@ void main() {
     expect(nativeService, isNot(contains('foregroundPackage == packageName')));
     expect(nativeService, isNot(contains('"no_game_foreground"')));
     expect(nativeService, contains('runDumpsys("window", "displays")'));
+    expect(nativeService, contains('val focused = focusedPackage(displaysResult.output)'));
+    expect(nativeService, contains(r'foreground_detected source=window_displays package=$focused'));
     expect(nativeService, contains('val activityResult = runDumpsys("activity", "activities")'));
     expect(nativeService, contains('val bestPositive = deltas.filter { it.second > 0L }.maxByOrNull { it.second }'));
     expect(nativeService, contains('val validZero = if (fpsTrackedLayer != null)'));
     expect(nativeService, contains('val fullWindowResult = runDumpsys("window")'));
-    expect(nativeService, contains('focusedPackage(fullWindowResult.output)?.let { return it }'));
+    expect(nativeService, contains('val focused = focusedPackage(fullWindowResult.output)'));
+    expect(nativeService, contains(r'foreground_detected source=window_full package=$focused'));
     expect(nativeService, isNot(contains('fpsLastPositiveLayer')));
     expect(nativeService, contains('fpsMonitorStatus = "sample_invalid"'));
     expect(nativeService, isNot(contains('?: layers.maxByOrNull { it.totalFrames }?.name')));
