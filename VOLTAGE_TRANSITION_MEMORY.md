@@ -1,9 +1,9 @@
 # JE X FYZ / JE Cooler — Voltage Transition & Peltier Soft-Start Memory
 
-Last reconciled: 2026-10-15 (Asia/Jakarta).
+Last reconciled: 2026-10-16 (Asia/Jakarta).
 Canonical source: `firmware/JEXFYZ-V6.6.ino` (last observed blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`).
 Static regression contract: `test/v6_6_qc_contract_test.dart` (live blob `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a` at this checkpoint; tests were not executed).
-Validation state (2026-10-15): App Build #35 (`38669526891`, code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`) passed Dart analyze and all 74 Flutter tests, including the V6.6 source-contract file. This does not constitute Arduino compile or physical rail-transition validation. The user reports V6.6 compiled and Online OTA succeeded twice; compile log, installed version and source-to-BIN provenance were not independently checked. Physical transition reproduction, current measurement and end-to-end thermal/OTA regression remain unverified.
+Validation state (2026-10-16): App Build #62 (`38841458441`, release source `42a72d863b10adfb5d6a0ee332a2f879a78173a4`) passed Dart analysis and **88/88 Flutter tests**, including the current V6.6 source-contract file `test/v6_6_qc_contract_test.dart` blob `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a`. This is App-side static/source-contract CI evidence, not an Arduino compile or physical rail-transition validation. The user reports V6.6 compiled and Online OTA succeeded twice; compile log, installed version and source-to-BIN provenance were not independently checked. Physical transition reproduction, current measurement and end-to-end thermal/OTA regression remain unverified.
 
 ## Incident
 
@@ -36,7 +36,7 @@ Applies to normal voltage changes requested in Manual Volt and while Adaptive is
 - `stopPeltierOutput()` clears both pending pause and saved-resume state.
 - Retain reset reason reporting, including `ESP_RST_BROWNOUT`, Serial `BOOT: RESET_REASON=...` and telemetry `RESET_REASON`.
 
-The static test contract exists but was **not executed** as part of this memory update. Do not call its presence a pass.
+At the original 2026-10-15 memory update the contract had not yet been executed. It was subsequently exercised by Build #62 as part of 88/88 App tests; that does not prove Firmware compilation or physical behavior.
 
 ## Hardware validation plan
 

@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Online OTA Regression Memory
 
-Last reconciled: 2026-10-15 (Asia/Jakarta). This is the canonical incident record in the App repo; check live source before editing the transport.
+Last reconciled: 2026-10-16 (Asia/Jakarta). This is the canonical incident record in the App repo; check live source before editing the transport.
 
 ## Symptom and prior attempt
 
@@ -34,6 +34,12 @@ Do not add/remove CA roots, change certificate validation, add an NTP gate, or a
 2. a recorded precise diagnostic stage/error (not LED-only interpretation);
 3. a one-variable-at-a-time experiment where practical;
 4. a complete re-audit of Wi-Fi/BLE handoff, output safety, URL allowlist, redirects, image checks, timeout/retries, Update lifecycle, failure recovery, App reconnect/P1 and result reporting.
+
+## Latest evidence boundary — 2026-10-16
+
+- Live source remains `firmware/JEXFYZ-V6.6.ino`, `FW_VERSION="V6.6"`, blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`. The artifact repo is BIN-only; its BIN provenance against this source is not independently verified.
+- Build #62 / run `38841458441` ran 88/88 App Flutter tests, including `test/v6_6_qc_contract_test.dart` blob `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a`. That test checks source contracts; it is not an Arduino compile, physical Online OTA, update-apply/reboot or installed-version proof.
+- The V6.6 compile and two same-version Online OTA successes remain USER-REPORTED. Keep the `setInsecure()` certificate-identity trade-off explicit and do not infer the earlier HTTP/TLS failure root cause from LEDs alone.
 
 ## Current static audit checklist
 
