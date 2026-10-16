@@ -89,7 +89,7 @@ This is the durable evidence ledger for `@Thinking Eksekusi Build App!`. A repla
 - **Passed:** toolchain setup, signing-secret preparation, static security/architecture/license audit, dependency resolution and Dart analysis.
 - **Failed:** Flutter tests: **87 passed, 1 failed**. `test/widget_test.dart`, test “Screen FPS follows the current foreground window for apps and system UI”, expected obsolete call `Shizuku.bindUserService(fpsUserServiceArgs, fpsUserServiceConnection)`; current implementation correctly uses attempt-scoped `Shizuku.bindUserService(currentAttempt.args, currentAttempt.connection)`. The failure stack identifies `test/widget_test.dart:357`.
 - **Repair plan/evidence:** update that assertion to the current attempt-scoped bind call and replace the old `focusedPackage(fullWindowResult.output)?.let { return it }` expectation with checks for the current parsed `focused` value and `foreground_detected source=window_full` diagnostic. This adjusts assertions to live source behavior; it does not modify the binding implementation, delete tests or relax release gates.
-- APK build, signing, source archive, publication and downloaded-asset validation were skipped by the workflow due to the failed test gate. At that checkpoint Build #60 was still the latest verified release; subsequent Build #62 passed all gates and is now the latest verified release.
+- APK build, signing, source archive, publication and downloaded-asset validation were skipped by the workflow due to the failed test gate. At that checkpoint Build #60 was still the latest verified release; Build #62 then superseded it, and Build #65 is now the latest verified release.
 
 ### BUILD #60 RESULT — SUCCESS (FULL APP BUILD + RELEASE VERIFIED)
 
