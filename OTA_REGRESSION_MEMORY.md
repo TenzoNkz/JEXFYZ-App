@@ -38,12 +38,12 @@ Do not add/remove CA roots, change certificate validation, add an NTP gate, or a
 ## Latest evidence boundary — 2026-10-16
 
 - Live source remains `firmware/JEXFYZ-V6.6.ino`, `FW_VERSION="V6.6"`, blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`. The artifact repo is BIN-only; its BIN provenance against this source is not independently verified.
-- Build #62 / run `38841458441` ran 88/88 App Flutter tests, including `test/v6_6_qc_contract_test.dart` blob `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a`. That test checks source contracts; it is not an Arduino compile, physical Online OTA, update-apply/reboot or installed-version proof.
+- Build #65 / run `38851040144` passed 88/88 App Flutter tests and the native FPS parser JUnit gate. The App test suite includes `test/v6_6_qc_contract_test.dart` (source-contract assertions); none of these is an Arduino compile, physical Online OTA, update-apply/reboot or installed-version proof.
 - The V6.6 compile and two same-version Online OTA successes remain USER-REPORTED. Keep the `setInsecure()` certificate-identity trade-off explicit and do not infer the earlier HTTP/TLS failure root cause from LEDs alone.
 
 ## Preflight checklist for a future explicitly authorized OTA change — NOT RUN by this reconciliation
 
-Leave these unchecked until an authorized OTA task performs each check against the live source. Build #62's App source-contract tests are not a full Local/Online OTA audit, Firmware compile, or device OTA test. This documentation reconciliation did not modify or execute the protected OTA path.
+Leave these unchecked until an authorized OTA task performs each check against the live source. Build #65's App source-contract and FPS parser tests are not a full Local/Online OTA audit, Firmware compile, or device OTA test. This documentation reconciliation did not modify or execute the protected OTA path.
 
 - [ ] Confirm active file and `FW_VERSION` on live `main`.
 - [ ] One `cloudClient.setInsecure()` call exists on the intended GitHub OTA client path.
