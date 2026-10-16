@@ -2,14 +2,22 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
-## 2026-10-16 — FPS TimeStats sampling repair committed to main; build pending
+## 2026-10-16 — Build #65 release verified: TimeStats parser and JUnit gate passed
+
+- Build #65 / [Actions run `38851040144`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38851040144) passed the full guarded App release workflow against source `f301c1fbbafa3d6c17803d9a2f50bae390dc1343`. All **21 active steps passed**, including App audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, obfuscated APK, V1/V2/V3 signing and certificate, matching source ZIP, Release publication and downloaded-asset verification.
+- Includes TimeStats sampling/parser patch `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620`, test-only widget contract repair `14347cd731b2c471fea9937f796ca21f8defc261`, and Gradle heap increased to `-Xmx4096M`.
+- Release `jexfyz-latest` contains APK asset `646151731` (54,636,716 bytes; SHA-256 `6823d87dbe25ded3ee5fd399ff231423078f9a33e814d7a80aed8ed1fe1b5b87`) and matching source ZIP asset `646151729` (2,874,038 bytes; SHA-256 `df96a3cf43c860370d776995bff2ef4861ccf9f5e84744b49adb0cdab79d13cc`). Both were re-downloaded; asset hashes, embedded source marker and production APK signatures match the release source.
+- Build #63 failed on a stale source-contract assertion (87 passed, 1 failed); assertion repair was test-only. Build #64 passed Flutter tests but native Kotlin/JUnit hit `Java heap space` under the old 2 GiB heap. Raising Gradle heap to 4 GiB resolved that resource failure; Build #65 passed both gates and the entire release pipeline without removing tests or weakening gates.
+- Still NOT DEVICE-VERIFIED: actual Shizuku UserService binding on the target phone, OEM TimeStats visibility, foreground FPS and overlay/icon rendering. This was App-only; no Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+
+## HISTORICAL / SUPERSEDED — 2026-10-16 — FPS TimeStats sampling repair committed to main (later verified by Build #65)
 
 - Source commit `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620` changes Floating Monitor sampling to bounded `SurfaceFlinger --timestats -dump -clear -maxlayers 64` calls every 500 ms, uses per-interval `averageFPS`, prefers SurfaceView/BLAST, matches TimeStats `packageName` when available, broadens foreground marker parsing and improves permission-error classification.
 - Added `FpsTimeStatsParser.kt`, four native JUnit parser tests, JUnit dependency and guarded workflow step `:app:testDebugUnitTest`; updated Flutter source-contract assertions to the new method.
-- **NOT BUILT / NOT CI-TESTED:** this execution did not start an App build. Build #62 at source `42a72d863b10adfb5d6a0ee332a2f879a78173a4` remains the latest verified release and does not include this patch. Physical Shizuku, OEM TimeStats layer visibility and live FPS remain unverified; no claim of 100% device success is made.
+- **State at initial recording:** this entry initially described an unbuilt patch; Build #63 later exposed one stale widget assertion and Build #64 hit the 2 GiB Gradle heap during the native JUnit gate. Build #65 then passed the repaired tests and full release pipeline. Physical Shizuku, OEM TimeStats visibility and live FPS remain unverified; no claim of 100% device success is made.
 - Repository boundary: App source/docs/tests/workflow only. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
-## 2026-10-16 — Chat Stuck recovery: final memory and reference audit
+## HISTORICAL / AS-OF-BUILD-62 — Chat Stuck recovery: final memory and reference audit
 
 - Recovered the authorized full project-memory reconciliation against live `main`, rather than retrying previous writes blindly. Confirmed the recursive tree is complete/not truncated (80 entries), five branches exist with zero open PRs, the only active App build workflow is the guarded issue-triggered `.github/workflows/jexfyz-app-build-trigger.yml`, Build #62 remains the latest verified release, and current `main` changes after its source target are documentation/memory only.
 - Rechecked the current App identity/version, Android Gradle `versionName "Telegram @horizontalzzz"`, active Firmware `firmware/JEXFYZ-V6.6.ino` with `FW_VERSION="V6.6"`, all six active tests and their current blob IDs, exact Build #62 source/release and asset hashes, branch/PR state, and artifact-repo tree. `TenzoNkz/JEXFYZ-Firmware` still contains exactly `JEXFYZ.cpp.bin`; its source-to-BIN provenance remains unverified.
@@ -18,7 +26,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - Read the existing `CHAT_TRANSFER.md` in full before replacing it. This transfer file is the last file to be written; it will be re-read with its new blob SHA/HEAD after the other docs are verified.
 - No App source, tests, active workflow, Firmware source/BIN, Firebase, OTA, physical device, App Build or Release was changed or triggered by this reconciliation. Release #62 remains the latest verified artifact; physical Shizuku/FPS/overlay behavior remains unverified.
 
-## 2026-10-16 — Full project-memory reconciliation after Build #62
+## HISTORICAL / AS-OF-BUILD-62 — Full project-memory reconciliation after Build #62
 
 - Audited live App `main`, the complete recursive tree, current App/Firmware source identities, guarded Build App workflow, all six active test files, current Actions/Release evidence, five branches, zero open PRs, and the BIN-only artifact repository.
 - Corrected stale current-state documentation: README's duplicate validation block still cited Build #60 artifact IDs/hashes; PROJECT_STATE still called the now-Build-#62-verified Shizuku lifecycle patch "unbuilt"; MEMORY_INDEX still directed readers to preserve only older Build #54; the Firmware Technical Reference incorrectly labeled user-accepted V6.6 "NOT RELEASED", and FIRMWARE_NOTES.md still cited Build #54 as its latest App CI evidence. Those statements were reconciled to live verified/current and user-reported/unverified evidence.
