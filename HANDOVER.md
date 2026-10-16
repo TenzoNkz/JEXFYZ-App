@@ -36,4 +36,4 @@ Last reconciled: 2026-10-16 Asia/Jakarta after Build #67. The sampler exception-
 
 1. First, test FPS with an actual game in the foreground while Floating Monitor remains enabled.
 2. If F stays --, capture exact fps_monitor_status plus native logs before proposing a source fix. Do not immediately rebuild without diagnostic evidence.
-3. Keep Build #66 success plus Build #63/#64 failure/repair records in `APP_BUILD_REPORT.md`. Physical-device FPS/visual validation is the immediate open check; CI does not replace on-device diagnostics.
+3. Keep Build #67 success and Build #63–#66 failure/repair records in `APP_BUILD_REPORT.md`. Physical-device FPS/visual validation is the immediate open check; CI does not replace on-device diagnostics.
