@@ -2,6 +2,14 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
+## 2026-10-16 — FPS sampler exception isolation and progress watchdog committed; Build App pending
+
+- After Build #66, the user's screenshot showed Shizuku access granted but the Floating Monitor still showed `starting` and `F:--`. This is the visible status, not proof of the exact runtime cause.
+- Source commit `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46` wraps capture startup and periodic TimeStats polling in exception handling. This prevents an unexpected polling exception from silently cancelling future scheduled executions without a status.
+- Added a main-handler progress watchdog: 60 seconds without startup progress and 30 seconds without polling progress. It reports `sampler_start_timeout` or `sampler_stalled`, cancels on sampler stop, and adds localized exception status messages. New pure Kotlin `FpsSamplerWatchdogPolicy.kt` and five JUnit policy tests were added; Flutter source-contract assertions were updated.
+- **NOT TESTED / NOT BUILT:** `@Thinking Eksekusi Full!` authorizes source/test/documentation changes, not App Build. Build #66 remains the latest verified APK and does not include this patch. Root cause on the target phone and actual FPS remain unverified pending test/build and device evidence.
+- App-only. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+
 ## 2026-10-16 — Build #66 verified; Shizuku bind-timeout mitigation included
 
 - Build #66 / [Actions run `38859288444`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38859288444) passed the full guarded App release pipeline against source/release commit `a2b19d4708f3075730132ac16f375f2a352aa50a`. All **21 active workflow steps passed**, including audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, APK obfuscation/build, V1/V2/V3 signature/certificate checks, source ZIP validation, Release publication and downloaded asset verification.

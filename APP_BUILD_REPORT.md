@@ -2,6 +2,12 @@
 
 This is the durable evidence ledger for `@Thinking Eksekusi Build App!`. A replacement Build App chat uses Prompt D in `CHAT_TRANSFER_PROMPTS.md` to load this file and continue the same workstream across a context limit; there is no separate Build App recap chat. It records verified GitHub Actions/Release evidence and distinguishes CI gates from physical-device validation.
 
+## CURRENT MAIN FOLLOW-UP — NOT BUILT / NOT TESTED (2026-10-16)
+
+- Source commit `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46` wraps capture startup and periodic TimeStats polling in exception handling so an unexpected exception cannot silently cancel the scheduled sampling loop. It adds visible failure statuses, a main-handler watchdog (60 seconds without startup progress; 30 seconds without polling progress), and five pure Kotlin watchdog-policy JUnit tests. Flutter source-contract assertions and localized status labels were updated.
+- **No tests or Build App workflow were run for this commit.** Build #66 remains the latest verified release at `a2b19d4708f3075730132ac16f375f2a352aa50a`; its APK does not contain this patch. Source inspection is not a test pass and target-device FPS remains unverified.
+- App-only scope. No Firmware/BIN, Firebase, OTA, flash or device operation occurred.
+
 **LATEST VERIFIED RELEASE — Build #66:** source/release commit `a2b19d4708f3075730132ac16f375f2a352aa50a`. This release includes the Shizuku UserService bind-timeout repair from `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d`: client binding deadline 35 seconds, aligned with Shizuku's 30-second process startup allowance plus callback grace; Settings polls sampler startup status for 50.4 seconds. Build #66 passed audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, obfuscated APK build, V1/V2/V3 signing/certificate validation, matching source archive, Release publication and downloaded asset verification.
 
 **Current release record:** [Build #66 / run `38859288444`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38859288444). All **21/21 active workflow steps passed**. The timeout repair and updated tests are now built/CI-tested; actual Shizuku service binding, OEM TimeStats visibility, foreground FPS and overlay rendering remain **not device-verified**.
@@ -30,7 +36,8 @@ This is the durable evidence ledger for `@Thinking Eksekusi Build App!`. A repla
 
 ## Current report status
 
-- **CURRENT / VERIFIED RELEASE:** Build #66 / run `38859288444` passed all required gates for source commit `a2b19d4708f3075730132ac16f375f2a352aa50a`. Release `jexfyz-latest` targets that exact SHA and has one verified APK plus one matching source ZIP; both were downloaded again and hashes/signatures/source identity verified.
+- **CURRENT / VERIFIED RELEASE:** Build #66 / run `38859288444` passed all required gates for release source `a2b19d4708f3075730132ac16f375f2a352aa50a`. Release `jexfyz-latest` targets that exact SHA with a verified APK and matching source ZIP.
+- **CURRENT MAIN / NOT BUILT OR TESTED:** sampler recovery commit `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46` and five native watchdog-policy tests are not part of Build #66. Record their outcome only after `@Thinking Eksekusi Build App!` authorizes the workflow.
 - **RELEASE SOURCE / BUILT:** Shizuku bind-timeout repair `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d` and its updated timeout/status tests are built/CI-tested in Build #66. The 35-second client deadline and 50.4-second Settings poll contract passed Dart analysis, **88/88 Flutter tests**, native JUnit, Android build/signing and release asset checks.
 - **HISTORICAL / FAILED ATTEMPT:** Build #65 / run `38851040144` passed the previous TimeStats/parser source with 88/88 Flutter tests, native JUnit, APK/sign/release gates; it did not include the later 35-second timeout repair. The repair is now verified by Build #66.
 - **HISTORICAL / FAILED ATTEMPT:** Build #64 / run `38850654562` passed audit, dependencies, Dart analysis and 88/88 Flutter tests but failed native JUnit compilation when JetifyTransform exhausted the previous 2 GiB Gradle heap. The evidence-based fix raised the heap to `-Xmx4096M`; Build #65 and #66 passed the native gate.
