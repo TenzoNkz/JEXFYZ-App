@@ -8,31 +8,20 @@
 - Build App does not authorize Firmware compilation, BIN creation/publication/replacement, Firebase metadata changes, physical OTA, flashing, device operation, or unrelated release operations.
 - Never claim CI success proves BLE, cooling/safety behavior, Firmware compilation, OTA installation or installed device version.
 
-## CURRENT — Build #60 release verified; current main UserService patch not built
+## CURRENT — Build #62 release verified; physical FPS remains unverified
 
-- Latest successful App Build is [Build #60 / run `38817543342`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38817543342), triggered by owner-authored [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33); it completed at `2026-10-15T22:35:39Z` (`2026-10-16 05:35:39 Asia/Jakarta`).
-- Exact source/release target: `b5f00a1b3690d62c11772a91bd3a6732bb0d4bf3`. It includes the post-Build #58 diagnostic patch `6e9b4c73db12c51f4452717d8cf102f49d325dcf` and its test-contract correction `7a576e60f0938cec94fcddb96340cd5376fa15de`.
-- All 20 active workflow steps passed: App-only security/architecture/third-party-license audit, dependencies, Dart analysis, **88/88 Flutter tests**, obfuscated Android release build, V1/V2/V3 signature/certificate checks, corresponding source ZIP, publication and re-downloaded asset/hash/signature verification.
-- Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) targets Build #60 and contains exactly one APK and one matching source ZIP:
-  - [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk) — asset ID `645381550`, `54,636,716` bytes, SHA-256 `47892215de179c8cb2975ad5c99b8b3b1398559873352411ed74d001aa001274`.
-  - [`JEXFYZ-corresponding-source.zip`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip) — asset ID `645381553`, `2,866,092` bytes, SHA-256 `dd9bdc1f8082c70ab2ff73892f5434057d36cedc870fd92184b8ed579e2b538a`.
-- Expected certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`; V1/V2/V3 verification passed for built and downloaded APKs.
-- Build #59 / run `38817257209` failed at one stale FPS source-contract assertion (87 passed, 1 failed) after audit, dependencies and Dart analysis passed. The test-only correction `7a576e60f0938cec94fcddb96340cd5376fa15de` updated the assertion to `validZero` and full-window fallback. Build #60 then verified the updated source and full release pipeline successfully.
-- Non-blocking warnings: 23 Dart deprecation infos, Gradle `9.3.1` out of date, native ELF DWARF data not obfuscated, self-signed/no-timestamp JAR warning and META-INF notices, and pub-cache save denied due to token scope. None failed a mandatory gate. Full warnings/attempt history remain in `APP_BUILD_REPORT.md`.
-- Build #60 source and its 88/88 tests are built/CI-tested. **Current main source-only patch** `225cc9ae4c67b3fbb76426db3b2503ef6934aaae` replaces shared UserService binding state with attempt-scoped tags/connections/latches, explicit failure codes, late-callback-safe cleanup and filtered diagnostics. Its updated tests have not been run; Dart analysis, Flutter tests, Kotlin compile and APK build remain pending for this patch. Physical overlay appearance, Shizuku UserService behavior, OEM SurfaceFlinger access and real FPS remain **NOT DEVICE-VERIFIED**. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+- Latest successful App Build is [Build #62 / run `38841458441`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38841458441), from exact source `42a72d863b10adfb5d6a0ee332a2f879a78173a4`, triggered by owner-authored guarded [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33); completed at `2026-10-16T02:43:37Z` (`2026-10-16 09:43:37 Asia/Jakarta`).
+- The source includes Shizuku UserService lifecycle checkpoint `225cc9ae4c67b3fbb76426db3b2503ef6934aaae` and the test-contract correction for attempt-scoped binding and current WindowManager fallback diagnostics.
+- All 20 active workflow steps passed: App-only security/architecture/third-party-license audit, dependencies, Dart analysis, **88/88 Flutter tests**, obfuscated Android release APK build, V1/V2/V3 signing/certificate checks, corresponding source ZIP, publication and re-downloaded asset/hash/signature verification.
+- Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) targets Build #62 and contains exactly one APK plus one matching source ZIP:
+  - [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk) — asset ID `645909183`, `54,636,716` bytes, SHA-256 `f71a971aad4face7df78f9cdc1ee82f8d47c4700d9d05692fc77a24deaca6b37`.
+  - [`JEXFYZ-corresponding-source.zip`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip) — asset ID `645909184`, `2,871,177` bytes, SHA-256 `61a22a8a7319a1be8b9cc8a7d2c39ab485ffa5c462946e23d745e333d76ab087`.
+- Expected certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. V1/V2/V3 verified for built and downloaded APKs.
+- Build #61 / run `38841172623` failed at the widget-test gate (87 passed, 1 failed) because a stale assertion expected the previous shared binding names and parser fallback. The exact fix changed only source-contract assertions; Build #62 passed after the correction. No test was removed and no gate was weakened.
+- Non-blocking warnings: 23 Dart deprecation infos, Gradle `9.3.1` out of date, native ELF DWARF data not obfuscated, self-signed/no-timestamp JAR warning and META-INF notices, and pub-cache save denied due to token scope. Details and every attempt are in `APP_BUILD_REPORT.md`.
+- The APK now includes the Shizuku binding lifecycle hardening, but physical Shizuku UserService behavior, OEM SurfaceFlinger access, live foreground FPS and overlay rendering remain **NOT DEVICE-VERIFIED**. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
-## Current App Build workflow
-
-- Active workflow path: `.github/workflows/jexfyz-app-build-trigger.yml` (blob `585d190324e522fc08e66cc95bd7ee80c5f37664`) — fetch live definition before every authorized build.
-- Trigger title: `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`.
-- Required body token: `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`.
-- Manual issue-open/reopen trigger only, with owner/title/token validation. Normal push/PR must not generate a release APK.
-- Toolchain last recorded in workflow: Ubuntu 24.04, Java 17, Flutter 3.47.2 stable, Gradle 9.3.1.
-- Intended output: exactly one obfuscated, production-signed ordinary Android APK, filename `JEXFYZ-release.apk`, published to GitHub Release `jexfyz-latest`. No Play Store bundle and no Actions artifact upload.
-- Production signing certificate SHA-256 in prior build record: `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. Verify against live workflow/config before relying on it.
-- Preserve Android Gradle `versionName "Telegram @horizontalzzz"`.
-
-## HISTORICAL — Build #49 successful App release (superseded as latest by Build #60)
+## HISTORICAL — Build #49 successful App release (superseded as latest by Build #62)
 - **Run:** [Build #49 / `38739077916`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916), issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22), source commit `2b2d2886abb66481b7134e5036824f625ab5659d`, job `116435785328`, runner `1000002352`. Every main step passed.
 - **Validation:** architecture/security/license audit, dependency resolution, Dart analysis and all 80 Flutter tests passed; release APK built obfuscated; V1/V2/V3 signing and official certificate verified; corresponding-source ZIP passed integrity/path/license checks; Release upload and re-downloaded APK/source verification passed.
 - **Release target:** `jexfyz-latest` now points at source commit `2b2d2886abb66481b7134e5036824f625ab5659d`. Exactly one APK plus one matching source archive:
