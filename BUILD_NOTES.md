@@ -22,7 +22,7 @@
 - Non-blocking warnings: 23 Dart deprecation infos, Gradle `9.3.1` out of date, native ELF DWARF data not obfuscated, self-signed/no-timestamp JAR warning and META-INF notices, cache save denied due to token scope. None failed a mandatory gate. Complete attempt-by-attempt evidence remains in `APP_BUILD_REPORT.md`.
 - The binding/watchdog code is built and CI-tested; physical Shizuku service binding, OEM TimeStats access, live foreground FPS and overlay rendering remain **NOT DEVICE-VERIFIED**. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
-## HISTORICAL — Build #49 successful App release (superseded as latest by Build #67)
+## HISTORICAL — Build #49 successful App release (superseded as latest by Build #68)
 - **Run:** [Build #49 / `38739077916`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916), issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22), source commit `2b2d2886abb66481b7134e5036824f625ab5659d`, job `116435785328`, runner `1000002352`. Every main step passed.
 - **Validation:** architecture/security/license audit, dependency resolution, Dart analysis and all 80 Flutter tests passed; release APK built obfuscated; V1/V2/V3 signing and official certificate verified; corresponding-source ZIP passed integrity/path/license checks; Release upload and re-downloaded APK/source verification passed.
 - **Release target:** `jexfyz-latest` now points at source commit `2b2d2886abb66481b7134e5036824f625ab5659d`. Exactly one APK plus one matching source archive:
