@@ -2,6 +2,13 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
+## 2026-10-16 — FPS TimeStats sampling repair committed to main; build pending
+
+- Source commit `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620` changes Floating Monitor sampling to bounded `SurfaceFlinger --timestats -dump -clear -maxlayers 64` calls every 500 ms, uses per-interval `averageFPS`, prefers SurfaceView/BLAST, matches TimeStats `packageName` when available, broadens foreground marker parsing and improves permission-error classification.
+- Added `FpsTimeStatsParser.kt`, four native JUnit parser tests, JUnit dependency and guarded workflow step `:app:testDebugUnitTest`; updated Flutter source-contract assertions to the new method.
+- **NOT BUILT / NOT CI-TESTED:** this execution did not start an App build. Build #62 at source `42a72d863b10adfb5d6a0ee332a2f879a78173a4` remains the latest verified release and does not include this patch. Physical Shizuku, OEM TimeStats layer visibility and live FPS remain unverified; no claim of 100% device success is made.
+- Repository boundary: App source/docs/tests/workflow only. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+
 ## 2026-10-16 — Chat Stuck recovery: final memory and reference audit
 
 - Recovered the authorized full project-memory reconciliation against live `main`, rather than retrying previous writes blindly. Confirmed the recursive tree is complete/not truncated (80 entries), five branches exist with zero open PRs, the only active App build workflow is the guarded issue-triggered `.github/workflows/jexfyz-app-build-trigger.yml`, Build #62 remains the latest verified release, and current `main` changes after its source target are documentation/memory only.

@@ -8,7 +8,7 @@
 - Build App does not authorize Firmware compilation, BIN creation/publication/replacement, Firebase metadata changes, physical OTA, flashing, device operation, or unrelated release operations.
 - Never claim CI success proves BLE, cooling/safety behavior, Firmware compilation, OTA installation or installed device version.
 
-## CURRENT — Build #62 release verified; physical FPS remains unverified
+## CURRENT — Build #62 release verified; main FPS patch awaits Build App
 
 - Latest successful App Build is [Build #62 / run `38841458441`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38841458441), from exact source `42a72d863b10adfb5d6a0ee332a2f879a78173a4`, triggered by owner-authored guarded [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33); completed at `2026-10-16T02:43:37Z` (`2026-10-16 09:43:37 Asia/Jakarta`).
 - The source includes Shizuku UserService lifecycle checkpoint `225cc9ae4c67b3fbb76426db3b2503ef6934aaae` and the test-contract correction for attempt-scoped binding and current WindowManager fallback diagnostics.
@@ -19,7 +19,8 @@
 - Expected certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. V1/V2/V3 verified for built and downloaded APKs.
 - Build #61 / run `38841172623` failed at the widget-test gate (87 passed, 1 failed) because a stale assertion expected the previous shared binding names and parser fallback. The exact fix changed only source-contract assertions; Build #62 passed after the correction. No test was removed and no gate was weakened.
 - Non-blocking warnings: 23 Dart deprecation infos, Gradle `9.3.1` out of date, native ELF DWARF data not obfuscated, self-signed/no-timestamp JAR warning and META-INF notices, and pub-cache save denied due to token scope. Details and every attempt are in `APP_BUILD_REPORT.md`.
-- The APK now includes the Shizuku binding lifecycle hardening, but physical Shizuku UserService behavior, OEM SurfaceFlinger access, live foreground FPS and overlay rendering remain **NOT DEVICE-VERIFIED**. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+- Current `main` contains an additional FPS patch at `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620`: bounded `averageFPS` TimeStats polling, packageName-aware layer matching, SurfaceView/BLAST preference, a native parser and four JUnit tests. The guarded workflow now runs `:app:testDebugUnitTest` before APK compilation.
+- **The new patch has not been built or CI-tested. Build #62 is still the latest verified release** and its APK does not contain this new patch. Physical Shizuku UserService behavior, OEM SurfaceFlinger access, live foreground FPS and overlay rendering remain **NOT DEVICE-VERIFIED**. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
 ## HISTORICAL — Build #49 successful App release (superseded as latest by Build #62)
 - **Run:** [Build #49 / `38739077916`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916), issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22), source commit `2b2d2886abb66481b7134e5036824f625ab5659d`, job `116435785328`, runner `1000002352`. Every main step passed.

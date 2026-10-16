@@ -7,12 +7,12 @@ Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use C
 - Latest verified release is [Build #62 / run `38841458441`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38841458441), source/release commit `42a72d863b10adfb5d6a0ee332a2f879a78173a4`, triggered through guarded issue [#33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). Audit, dependencies, Dart analysis, **88/88 Flutter tests**, obfuscated APK build, V1/V2/V3 signing, certificate, matching source archive and downloaded asset checks all passed.
 - Build #62 includes Shizuku UserService lifecycle hardening checkpoint `225cc9ae4c67b3fbb76426db3b2503ef6934aaae` and a test-only correction aligning the widget test with attempt-scoped binding and current WindowManager diagnostics. Build #61's single stale source-contract failure and exact repair are recorded in `APP_BUILD_REPORT.md`; no tests or gates were removed.
 - The Shizuku change uses per-attempt `UserServiceArgs` tags/connections/latches, rejects and cleans late callbacks, exposes bind/timeout/dead-Binder/remote-call status, and avoids rebinding solely to disable capture after Binder failure. It is now analyzed, tested and Android-built by Build #62. Physical FPS and overlay behavior remain device-unverified.
-- The screenshot showing Shizuku granted plus `F:--` does not establish the runtime root cause. Physical FPS and overlay rendering remain device-unverified.
+- The screenshot showing Shizuku granted plus `F:--` does not establish the runtime root cause. Current main changes FPS sampling to per-interval `averageFPS`, bounded 64-layer dumps cleared each poll, packageName-aware matching, SurfaceView/BLAST preference, expanded OEM foreground markers, and a native JUnit parser suite. Source commit `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620` is **not yet built/tested by CI**; device FPS still remains unverified.
 - No Firmware/BIN, Firebase metadata, OTA, BLE hardware-control or thermal-safety changes were made.
 
 ## App identity and repository
 
-- Canonical App repo: TenzoNkz/JEXFYZ-App, branch `main`. Latest verified release is Build #62 from source `42a72d863b10adfb5d6a0ee332a2f879a78173a4`; it includes Shizuku binding lifecycle hardening and passed 88/88 Flutter tests plus all release checks. Live reconciliation on 2026-10-16 verified **5 branches and 0 open PRs**. All commits after the release source are documentation/memory updates; App/Firmware source and tests remain identical to the verified Build #62 source tree.
+- Canonical App repo: TenzoNkz/JEXFYZ-App, branch `main`. Latest verified release remains Build #62 from source `42a72d863b10adfb5d6a0ee332a2f879a78173a4`; it passed 88/88 Flutter tests plus all release gates. Current `main` is `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620` and includes an FPS TimeStats sampling/parser repair plus native parser tests and a new workflow test gate. **This patch has not been built or CI-tested; do not describe current main as release-equivalent.**
 - App/package: JE Cooler / JE X FYZ, com.horizontalzzz.jexfyz, pubspec version 1.0.0+3. Preserve Gradle versionName exactly as "Telegram @horizontalzzz".
 - Only active App build workflow: .github/workflows/jexfyz-app-build-trigger.yml; issue opened/reopened only; repository-owner, exact title and body-token guarded. Normal push/PR does not build/release.
 - Firmware artifact repo TenzoNkz/JEXFYZ-Firmware has exactly one tree entry: JEXFYZ.cpp.bin, 1,455,936 bytes, blob 68167e65d26137eeb1ce4d6d4ba798dc282454e6. Do not modify or inspect BIN payload during documentation work. This does not prove current source-to-BIN provenance.
@@ -33,7 +33,10 @@ Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use C
 - lib/main.dart: d24885cf0a40472b9fb23ee6ce73ad772ae73672.
 - lib/floating_monitor.dart: bae089f1f950bd70fe7e6f90e8afa1726293664f.
 - lib/app_settings.dart: 4c89bcb3c04142ce49440a11b92054365c26f7a6.
-- test/widget_test.dart: eb5b0b9b820ca48a8df47bf74ec64992cbd08232.
+- Current main `FloatingMonitorService.kt`: `0f9544c4e5f568531426e771f81e950397c86a7`.
+- Current main `FpsShizukuUserService.kt`: `8bb6181b4c86e1a2ae2c635969646303b6d84483`.
+- New main `FpsTimeStatsParser.kt`: `66b5e3f489f4e160407d87c40d1ecee54e13282f`; `FpsTimeStatsParserTest.kt`: `ab6c63c627c05d9987de4d4af731f2ed86acde5b`.
+- Current `widget_test.dart`: `e2b79bf3023e15ebd4f5cac5edd9a3e1cd48a612`; `shizuku_fps_contract_test.dart`: `276ebde11c7462a5090fb7b2a3518a6c080e9872`; workflow: `df7cbfee8d6fb8ef12683a35b0419c5d3980a4e3`; Gradle: `46d503aef8320864632d3eb2bf7536048b8fd96f`.
 - test/floating_monitor_layout_contract_test.dart: 7f861d449e518af68fc4ece7278241aa3ce8691b.
 - test/shizuku_fps_contract_test.dart: 5996eb0d899bf9abf8eae68f554a7a409faa00f1.
 - android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt: d6f3231fecbc4c8669dedeae5d1484d2cdb6a415.
@@ -48,7 +51,7 @@ Build #62 used release source commit 42a72d863b10adfb5d6a0ee332a2f879a78173a4; i
 
 ## Active tests and QC scope
 
-Six active test files: test/app_protocol_notify_contract_test.dart; test/firmware_touch_adaptive_sync_test.dart; test/floating_monitor_layout_contract_test.dart; test/shizuku_fps_contract_test.dart; test/v6_6_qc_contract_test.dart; test/widget_test.dart. Build #62 ran the current release-source tests and passed 88/88, including the per-attempt Shizuku binding/source-contract assertions. Test/source-contract success does not establish physical-device behavior.
+Six active Dart test files remain: `test/app_protocol_notify_contract_test.dart`, `test/firmware_touch_adaptive_sync_test.dart`, `test/floating_monitor_layout_contract_test.dart`, `test/shizuku_fps_contract_test.dart`, `test/v6_6_qc_contract_test.dart`, and `test/widget_test.dart`. Current main additionally adds native JUnit parser tests in `android/app/src/test/kotlin/com/horizontalzzz/jexfyz/FpsTimeStatsParserTest.kt` and makes `:app:testDebugUnitTest` a workflow gate. Build #62 passed 88/88 on its release source; these new main tests/gate have **not been run**. Nothing here establishes physical-device behavior.
 
 ## Current physical-device validation pending — Shizuku FPS
 

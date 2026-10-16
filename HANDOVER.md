@@ -1,10 +1,10 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-10-16 (Asia/Jakarta) after Build #62 and the Chat Stuck full-memory audit. Current App/Firmware source and tests remain source-equivalent to the verified Build #62 target; only canonical documentation/memory changed in this reconciliation. Physical FPS, service binding on the target phone and overlay visuals remain unverified.
+Last reconciled: 2026-10-16 (Asia/Jakarta) after the FPS source repair. Build #62 remains the latest verified release, but current `main` now includes unbuilt FPS source/test changes at `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620`. The new source and JUnit workflow gate have not been CI-tested. Physical FPS, service binding on the target phone and overlay visuals remain unverified.
 
 ## Current App source/release
 
-- Canonical repo/branch: TenzoNkz/JEXFYZ-App / `main`. Live reconciliation verified five branches and zero open PRs. Latest successful App Build: [#62 / run 38841458441](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38841458441); trigger [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). Exact source/release target: `42a72d863b10adfb5d6a0ee332a2f879a78173a4`, including Shizuku binding lifecycle checkpoint `225cc9ae4c67b3fbb76426db3b2503ef6934aaae` and test-only contract repair. Changes after this source SHA are documentation-only.
+- Canonical repo/branch: TenzoNkz/JEXFYZ-App / `main`. Latest successful release: [Build #62 / run 38841458441](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38841458441); exact release source `42a72d863b10adfb5d6a0ee332a2f879a78173a4`. Current `main` is `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620` and includes the FPS TimeStats parser/sampling patch and JUnit gate. No build has run for this new commit, so do not treat it as the release source yet.
 - All release gates passed: App audit, dependency resolution, Dart analysis, **88/88 Flutter tests**, obfuscated release APK, V1/V2/V3 and production certificate verification, matching source ZIP, Release publication and re-downloaded asset identity/hash/signature checks.
 - Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) contains exactly:
   - [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk) — asset `645909183`, `54,636,716` bytes, SHA-256 `f71a971aad4face7df78f9cdc1ee82f8d47c4700d9d05692fc77a24deaca6b37`.
@@ -17,7 +17,7 @@ Last reconciled: 2026-10-16 (Asia/Jakarta) after Build #62 and the Chat Stuck fu
 - User previously reported Shizuku permission granted while overlay metric F displayed `F:--`. This still does not prove the precise runtime cause.
 - Build #62 includes attempt-scoped tagged Shizuku UserService binding, a connection/latch per attempt, late-callback-safe cleanup, explicit bind/timeout/dead-Binder/remote-call failures, filtered lifecycle/command/foreground/layer/sample logs, and cleanup protection against starting a new bind only to disable capture after Binder failure.
 - Current release source was analyzed, **88/88 Flutter tests passed**, Android-built and production-signed. Release target is `42a72d863b10adfb5d6a0ee332a2f879a78173a4`. The actual target device/OEM is not available to CI; successful build is not proof that Shizuku binds or SurfaceFlinger exposes usable layer statistics.
-- Next action: install the Build #62 APK and test the floating F metric as foreground changes among JE Cooler, Settings/launcher, other apps and a real game. Capture the Settings sampler-status line and filtered `JexFpsDiag` logs if F remains `--`. Do not substitute panel refresh rate for foreground FPS.
+- Next software gate: use `@Thinking Eksekusi Build App!` to run the updated workflow, including native JUnit parser tests, against current main `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620`; the current patch has not been built. After a successful release and install, test F while foregrounding JE Cooler, Settings/launcher, other apps and a game. If F remains `--`, capture Settings sampler status and filtered `JexFpsDiag` logs. Do not substitute panel refresh rate for foreground FPS.
 
 ## Current Floating Monitor UX
 
