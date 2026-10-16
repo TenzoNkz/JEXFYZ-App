@@ -8,24 +8,19 @@
 - Build App does not authorize Firmware compilation, BIN creation/publication/replacement, Firebase metadata changes, physical OTA, flashing, device operation, or unrelated release operations.
 - Never claim CI success proves BLE, cooling/safety behavior, Firmware compilation, OTA installation or installed device version.
 
-## CURRENT — Build #67 release verified; physical FPS remains unverified
+## CURRENT — Build #68 release verified; physical FPS remains unverified
 
-- Latest successful App Build is [Build #67 / run `38890997565`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38890997565), release source `8efbfebe1b12e162dccddbdf68b8627d8723f756`.
-- Build #67 includes sampler exception isolation and watchdog checkpoint `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46`: startup and periodic TimeStats failures are caught and surfaced, with a 60-second startup-progress timeout and 30-second polling-progress timeout. Five pure Kotlin watchdog-policy JUnit tests and updated Flutter contract assertions passed.
-- All **21 active workflow steps passed**: App security/architecture/third-party-license audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, obfuscated Android release build, V1/V2/V3 signing/certificate checks, matching source ZIP, publication and re-downloaded asset/hash/signature verification.
-- Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) targets Build #67 and contains one APK plus one matching source ZIP:
-  - [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk) — asset ID `647067767`, `54,636,716` bytes, SHA-256 `40e2f3233d94cb8f624a3ffc50677f058840057800b8b1a172ba0eaf2881a102`.
-  - [`JEXFYZ-corresponding-source.zip`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip) — asset ID `647067768`, `2,877,328` bytes, SHA-256 `4b5403d27d74167cd2c15ca6c5eb780d9622b5be0924c42c04256e240d9545cd`.
-- Expected certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. V1/V2/V3 verified for built and downloaded APKs.
-- Build #66’s 35-second Shizuku bind deadline and 50.4-second Settings polling remain included; Build #67 adds the sampler watchdog. Both are CI-tested; whether the target phone's UserService binds and OEM exposes usable TimeStats remains unverified.
-- Non-blocking warnings: 23 Dart deprecation infos, Gradle `9.3.1` out of date, native ELF DWARF debug info not obfuscated, self-signed/no-timestamp JAR and META-INF coverage warnings, and pub-cache save denied due to token scope. Full attempt history is in `APP_BUILD_REPORT.md`.
-- No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
-
-## HISTORICAL — Build #65 release verified; superseded by Build #66
-
-- Build #65 / [run `38851040144`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38851040144), source `f301c1fbbafa3d6c17803d9a2f50bae390dc1343`, was the previous successful release. It passed 88/88 Flutter tests, native parser JUnit, APK obfuscation/build, V1/V2/V3 signing/certificate, source archive and downloaded asset verification.
-- Build #65 included TimeStats patch `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620`, native parser/JUnit, the widget contract repair and Gradle heap `-Xmx4096M`; **it did not include** the later 35-second bind timeout repair `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d`. Build #66 verified that follow-up.
-- Previous asset hashes: APK `6823d87dbe25ded3ee5fd399ff231423078f9a33e814d7a80aed8ed1fe1b5b87`; source ZIP `df96a3cf43c860370d776995bff2ef4861ccf9f5e84744b49adb0cdab79d13cc`. See `APP_BUILD_REPORT.md` for the full attempt ledger.
+- Latest successful App Build is [Build #68 / run `38894177060`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38894177060), from exact source/release target `1f35dcbc3c8bc85410e765b58430b4b485366c2c`; triggered by owner-authored guarded [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). It completed at `2026-10-16T11:36:51Z` (`2026-10-16 18:36:51 Asia/Jakarta`).
+- Build #68 re-ran release gates for the functionally unchanged code in Build #67. Functional checkpoint `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46`, Shizuku timeout `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d`, and TimeStats parser `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620` are included.
+- All **21 active workflow steps passed**: App-only security/architecture/third-party-license audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, obfuscated Android release build, V1/V2/V3 signature/certificate checks, matching source ZIP, publication and re-downloaded asset/hash/signature verification.
+- Native Gradle tests reported `BUILD SUCCESSFUL in 1m 52s`; four TimeStats parser JUnit tests and five watchdog-policy JUnit tests passed.
+- Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) targets Build #68 and contains exactly one APK and one matching source ZIP:
+  - [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk) — asset ID `647139769`, `54,636,716` bytes, SHA-256 `40e2f3233d94cb8f624a3ffc50677f058840057800b8b1a172ba0eaf2881a102`.
+  - [`JEXFYZ-corresponding-source.zip`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip) — asset ID `647139772`, `2,877,222` bytes, SHA-256 `d957f4c966d725d848b6ebf39fb54a1affe4ce7d21cc2a773ce40a623493a317`.
+- Expected certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. V1/V2/V3 verification passed for built and downloaded APKs.
+- The APK hash is identical to Build #67 because the functional code is unchanged; the source ZIP now records Build #68's exact HEAD and is independently verified.
+- Non-blocking warnings: 23 Dart deprecation infos, Gradle `9.3.1` out of date, native ELF DWARF data not obfuscated, self-signed/no-timestamp JAR warning and META-INF notices, cache save denied due to token scope. None failed a mandatory gate. Complete attempt-by-attempt evidence remains in `APP_BUILD_REPORT.md`.
+- The binding/watchdog code is built and CI-tested; physical Shizuku service binding, OEM TimeStats access, live foreground FPS and overlay rendering remain **NOT DEVICE-VERIFIED**. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
 ## HISTORICAL — Build #49 successful App release (superseded as latest by Build #67)
 - **Run:** [Build #49 / `38739077916`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916), issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22), source commit `2b2d2886abb66481b7134e5036824f625ab5659d`, job `116435785328`, runner `1000002352`. Every main step passed.
