@@ -1,28 +1,29 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-10-16 (Asia/Jakarta) after the FPS source repair. Build #62 remains the latest verified release, but current `main` now includes unbuilt FPS source/test changes at `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620`. The new source and JUnit workflow gate have not been CI-tested. Physical FPS, service binding on the target phone and overlay visuals remain unverified.
+Last reconciled: 2026-10-16 (Asia/Jakarta) after Build #65. The FPS TimeStats sampling/parser patch and native JUnit gate are now built and CI-tested; actual Shizuku binding, OEM TimeStats visibility, foreground FPS and overlay rendering remain unverified on the target phone.
 
 ## Current App source/release
 
-- Canonical repo/branch: TenzoNkz/JEXFYZ-App / `main`. Latest successful release: [Build #62 / run 38841458441](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38841458441); exact release source `42a72d863b10adfb5d6a0ee332a2f879a78173a4`. Current `main` is `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620` and includes the FPS TimeStats parser/sampling patch and JUnit gate. No build has run for this new commit, so do not treat it as the release source yet.
-- All release gates passed: App audit, dependency resolution, Dart analysis, **88/88 Flutter tests**, obfuscated release APK, V1/V2/V3 and production certificate verification, matching source ZIP, Release publication and re-downloaded asset identity/hash/signature checks.
+- Canonical repo/branch: TenzoNkz/JEXFYZ-App / `main`. Latest successful App Build: [#65 / run 38851040144](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38851040144); trigger [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). Exact source/release target: `f301c1fbbafa3d6c17803d9a2f50bae390dc1343`.
+- Build #65 includes TimeStats FPS sampling/parser patch `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620`, four native parser JUnit cases, widget test-contract correction `14347cd731b2c471fea9937f796ca21f8defc261`, and Gradle heap `-Xmx4096M`.
+- All release gates passed: App audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, obfuscated release APK, V1/V2/V3 signing and production certificate, matching source ZIP, release publication and re-downloaded asset hash/signature/source-marker checks.
 - Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) contains exactly:
-  - [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk) — asset `645909183`, `54,636,716` bytes, SHA-256 `f71a971aad4face7df78f9cdc1ee82f8d47c4700d9d05692fc77a24deaca6b37`.
-  - [`JEXFYZ-corresponding-source.zip`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip) — asset `645909184`, `2,871,177` bytes, SHA-256 `61a22a8a7319a1be8b9cc8a7d2c39ab485ffa5c462946e23d745e333d76ab087`.
-- Certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. V1/V2/V3 and downloaded APK signatures verified.
-- Build #61 exposed one stale widget-test assertion (87 passed, 1 failed); Build #62 includes the source-contract correction, then passed the full 88-test suite and all release gates. No test was deleted or weakened. Full attempt history lives in `APP_BUILD_REPORT.md`. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+  - [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk) — asset `646151731`, `54,636,716` bytes, SHA-256 `6823d87dbe25ded3ee5fd399ff231423078f9a33e814d7a80aed8ed1fe1b5b87`.
+  - [`JEXFYZ-corresponding-source.zip`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip) — asset `646151729`, `2,874,038` bytes, SHA-256 `df96a3cf43c860370d776995bff2ef4861ccf9f5e84744b49adb0cdab79d13cc`.
+- Certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. Built and downloaded APK both passed V1/V2/V3 verification with one signer.
+- Build #63 had one stale widget assertion (87 passed, 1 failed); Build #64 passed Flutter tests but native JUnit hit `Java heap space` with a 2 GiB Gradle heap. Assertion repair plus 4 GiB heap change are recorded in `APP_BUILD_REPORT.md`. Build #65 passed the full pipeline without removing tests or weakening gates. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
 ## Open issue — physical Shizuku FPS still unverified
 
-- User previously reported Shizuku permission granted while overlay metric F displayed `F:--`. This still does not prove the precise runtime cause.
-- Build #62 includes attempt-scoped tagged Shizuku UserService binding, a connection/latch per attempt, late-callback-safe cleanup, explicit bind/timeout/dead-Binder/remote-call failures, filtered lifecycle/command/foreground/layer/sample logs, and cleanup protection against starting a new bind only to disable capture after Binder failure.
-- Current release source was analyzed, **88/88 Flutter tests passed**, Android-built and production-signed. Release target is `42a72d863b10adfb5d6a0ee332a2f879a78173a4`. The actual target device/OEM is not available to CI; successful build is not proof that Shizuku binds or SurfaceFlinger exposes usable layer statistics.
-- Next software gate: use `@Thinking Eksekusi Build App!` to run the updated workflow, including native JUnit parser tests, against current main `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620`; the current patch has not been built. After a successful release and install, test F while foregrounding JE Cooler, Settings/launcher, other apps and a game. If F remains `--`, capture Settings sampler status and filtered `JexFpsDiag` logs. Do not substitute panel refresh rate for foreground FPS.
+- User previously reported Shizuku access granted while overlay metric F displayed `F:--`. That screenshot does not prove the exact runtime cause.
+- Build #65 includes attempt-scoped tagged Shizuku UserService binding/latch cleanup and TimeStats FPS sampling: bounded `SurfaceFlinger --timestats -dump -clear -maxlayers 64` interval samples every 500 ms, per-layer `averageFPS`, packageName-aware matching, exact layer package fallback and SurfaceView/BLAST preference.
+- CI passed Dart analysis, **88/88 Flutter tests**, native parser JUnit tests, Android release compilation/signing, and release asset checks. CI cannot prove the target OEM's UserService binding or TimeStats layer availability.
+- Next action: install the Build #65 APK and test floating F as foreground changes between JE Cooler, Settings/launcher, another app and a real game. Capture the Settings sampler-status line and filtered `JexFpsDiag` logs if F remains `--`. Do not infer FPS from panel refresh rate.
 
 ## Current Floating Monitor UX
 
 - Position remains freely draggable; horizontal metric groups are centered, vertical rows share the same left edge. Size is 0.30×–1.00× in 0.05× increments (default 0.60×). Background opacity is 0–100% in 5% increments with endpoint labels only; no 50% midpoint. Background color/foreground contrast behavior remains.
-- Build #62 passed Dart analysis, all 88 Flutter tests, Android release compilation/signing and release artifact checks, including the Shizuku lifecycle patch. Physical overlay appearance, animation quality, service runtime and live FPS still require device validation.
+- Build #65 passed Dart analysis, 88/88 Flutter tests, native parser JUnit, Android release compilation/signing and release artifact checks. Physical overlay appearance, animation quality, service runtime and live FPS still require device validation.
 
 
 ## Firmware/hardware boundary
@@ -42,4 +43,4 @@ Last reconciled: 2026-10-16 (Asia/Jakarta) after the FPS source repair. Build #6
 
 1. First, test FPS with an actual game in the foreground while Floating Monitor remains enabled.
 2. If F stays --, capture exact fps_monitor_status plus native logs before proposing a source fix. Do not immediately rebuild without diagnostic evidence.
-3. Keep Build #62 success and Build #61 failure/repair records in `APP_BUILD_REPORT.md`. Physical-device FPS/visual validation is the immediate open check; CI does not replace on-device diagnostics.
+3. Keep Build #65 success plus Build #63/#64 failure/repair records in `APP_BUILD_REPORT.md`. Physical-device FPS/visual validation is the immediate open check; CI does not replace on-device diagnostics.
