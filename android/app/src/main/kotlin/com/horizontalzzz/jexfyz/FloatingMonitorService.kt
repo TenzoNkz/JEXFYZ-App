@@ -227,8 +227,12 @@ class FloatingMonitorService : Service() {
     private fun stopFpsMonitor(reason: String) {
         val wasWanted = fpsMonitorWanted
         val shouldDisable = fpsCaptureEnabled
-        val hasBinding = synchronized(fpsUserServiceLock) {
-            currentFpsUserServiceBinding != null
+        val (hasBinding, activeServiceReady) = synchronized(fpsUserServiceLock) {
+            val active = currentFpsUserServiceBinding
+            val remoteAlive = active?.state == FpsBindingState.CONNECTED &&
+                runCatching { active.remote?.asBinder()?.isBinderAlive == true }
+                    .getOrDefault(false)
+            (active != null) to remoteAlive
         }
         if (!wasWanted && !shouldDisable && !hasBinding && fpsMonitorStatus == reason) {
             data.fps = "--"
@@ -248,7 +252,10 @@ class FloatingMonitorService : Service() {
         hudView?.requestLayout()
         hudView?.invalidate()
 
+        // Do not create a fresh UserService merely to disable capture after its Binder failed.
+        // Only an already connected/alive UserService may receive the orderly disable command.
         val shouldTryDisable = shouldDisable &&
+            activeServiceReady &&
             reason != "shizuku_userservice_disconnected" &&
             hasShizukuFpsPermission()
         fpsCaptureEnabled = false

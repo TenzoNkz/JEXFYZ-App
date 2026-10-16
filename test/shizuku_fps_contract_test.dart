@@ -51,6 +51,10 @@ void main() {
     expect(settings, isNot(contains('pairWirelessAdb')));
     expect(settings, isNot(contains('copyAdbCommand')));
     expect(service, contains('Shizuku.checkSelfPermission()'));
+    expect(service, contains('val (hasBinding, activeServiceReady) = synchronized(fpsUserServiceLock)'));
+    expect(service, contains('shouldDisable &&'));
+    expect(service, contains('activeServiceReady'));
+    expect(service, contains('Only an already connected/alive UserService may receive the orderly disable command.'));
     expect(service, contains('Shizuku.bindUserService(currentAttempt.args, currentAttempt.connection)'));
     expect(service, contains('private enum class FpsBindingState'));
     expect(service, contains('CountDownLatch(1)'));
