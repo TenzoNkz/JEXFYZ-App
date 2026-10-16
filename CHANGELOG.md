@@ -2,16 +2,24 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
-## 2026-10-16 — Shizuku UserService binding lifecycle hardened (source-only; not built)
+## 2026-10-16 — Build #62 release verified; Shizuku binding lifecycle built and CI-tested
 
-- Current functional source/test checkpoint: `225cc9ae4c67b3fbb76426db3b2503ef6934aaae`, following commits `faedb1057904375c2add46eb731dd96d91bcfa41`, `806af710d14fd31bc09098628ed719db5a4baa7f`, `c53b21587ef8681cfb7aecb2f0159672e4e8fda4` and `891edea5c1c9e8e66db399106d7f1721f89dee61`.
+- Build #62 / [Actions run `38841458441`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38841458441) passed the complete guarded App release workflow against source `42a72d863b10adfb5d6a0ee332a2f879a78173a4`. All 20 active workflow steps passed, including audit, dependencies, Dart analysis, **88/88 Flutter tests**, obfuscated APK compilation, V1/V2/V3 plus expected certificate checks, source ZIP validation, release publication and re-downloaded asset identity/hash/signature verification.
+- It includes Shizuku UserService binding lifecycle checkpoint `225cc9ae4c67b3fbb76426db3b2503ef6934aaae`. The test-only fix in `test/widget_test.dart` matches the per-attempt bind call and current WindowManager foreground diagnostics; no native behavior was weakened and no test was deleted.
+- Release `jexfyz-latest` targets the exact source and has one APK asset `645909183` (54,636,716 bytes; SHA-256 `f71a971aad4face7df78f9cdc1ee82f8d47c4700d9d05692fc77a24deaca6b37`) plus one matching source ZIP asset `645909184` (2,871,177 bytes; SHA-256 `61a22a8a7319a1be8b9cc8a7d2c39ab485ffa5c462946e23d745e333d76ab087`). Both were re-downloaded; APK V1/V2/V3 and production certificate checks passed.
+- Build #61 / run `38841172623` is preserved as a failed attempt: audit/dependencies/analyzer passed, then the stale widget assertion failed (87 passed, 1 failed); APK/release steps were correctly skipped. Build #62 passed after the source-contract repair, without weakening or deleting gates.
+- Not proven by CI: actual Shizuku binding/lifecycle on the target phone, OEM SurfaceFlinger layer access, foreground FPS and overlay rendering. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+
+## 2026-10-16 — Shizuku UserService binding lifecycle hardened (source checkpoint later verified by Build #62)
+
+- Source checkpoint subsequently included in Build #62: `225cc9ae4c67b3fbb76426db3b2503ef6934aaae`, following commits `faedb1057904375c2add46eb731dd96d91bcfa41`, `806af710d14fd31bc09098628ed719db5a4baa7f`, `c53b21587ef8681cfb7aecb2f0159672e4e8fda4` and `891edea5c1c9e8e66db399106d7f1721f89dee61`.
 - Replaced shared Shizuku binding state with per-attempt `UserServiceArgs` tag, `ServiceConnection`, generation and `CountDownLatch`. Binding/timeout/disconnect/cancellation are explicit states; late callbacks are rejected and cleaned by that attempt's tag, not a newer attempt's service.
 - Exposes precise binding/remote failure codes; adds bounded logs for bind/callback/cleanup, UserService UID, command exit/error/output size, foreground source, matched layer and final frame sample. Raw dumpsys output is not logged. Stop cleanup now attempts `--disable` only when an existing connected/alive UserService is available, avoiding an immediate rebind after Binder failure.
 - Updated `test/shizuku_fps_contract_test.dart` and `test/widget_test.dart`, including raw-string fixes for literal `# JE X FYZ / JE Cooler — Changelog
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
- assertions. Static source assertions were inspected, but Dart analysis, Flutter tests, Kotlin compilation, APK build and physical-device verification have **not** been run. Build #60 remains the latest verified release and does not include this checkpoint.
+ assertions. At the time this source-only history entry was first recorded, analysis/tests/build had not yet run. Build #61 exposed one stale widget-test assertion; the test-only correction in commit `42a72d863b10adfb5d6a0ee332a2f879a78173a4` resolved it, and Build #62 later passed all 88 tests plus the full Android release/signing/asset pipeline. Physical-device verification remains pending.
 
 ## 2026-10-16 — Build #60 release verified: FPS diagnostics built (device validation pending)
 
