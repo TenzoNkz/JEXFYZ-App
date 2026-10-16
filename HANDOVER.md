@@ -1,31 +1,23 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-10-16 (Asia/Jakarta) after sampler exception-isolation/watchdog source commit `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46`. Build #66 remains latest verified APK; the new repair and five watchdog tests are NOT BUILT/TESTED. Actual UserService binding, OEM TimeStats visibility, FPS and overlay rendering remain unverified.
+Last reconciled: 2026-10-16 Asia/Jakarta after Build #67. The sampler exception-isolation/watchdog checkpoint is included in the successful APK and passed the Flutter and native JUnit gates. Physical FPS, target-phone Shizuku binding and overlay visuals remain unverified.
 
 ## Current App source/release
 
-- Canonical repo/branch: TenzoNkz/JEXFYZ-App / `main`. Latest successful App Build: [#66 / run 38859288444](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38859288444); trigger [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). Exact release source: `a2b19d4708f3075730132ac16f375f2a352aa50a`, includes timeout fix `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d`.
-- Build #66 includes the 35-second native bind deadline and 50.4-second Settings wait, TimeStats patch `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620`, four parser JUnit cases and Gradle heap `-Xmx4096M`.
-- Current main adds `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46`: catches startup/poll errors, adds localized sampler failure states and a main-handler watchdog (60s startup, 30s polling stall). Five native policy tests and source contracts are present but NOT RUN/BUILT.
-- All release gates passed: App audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, obfuscated release APK, V1/V2/V3 signing and production certificate, matching source ZIP, release publication and re-downloaded asset hash/signature/source-marker checks.
+- Canonical repo/branch: TenzoNkz/JEXFYZ-App / main. Latest successful App Build: [#67 / run 38890997565](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38890997565); trigger [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). Exact source/release target: `8efbfebe1b12e162dccddbdf68b8627d8723f756`, including sampler watchdog checkpoint `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46` and prior Shizuku binding/timeout fixes.
+- All release gates passed: App audit, dependency resolution, Dart analysis, **88/88 Flutter tests**, native TimeStats parser and watchdog-policy JUnit tests, obfuscated release APK, V1/V2/V3 and production certificate verification, matching source ZIP, Release publication and re-downloaded asset identity/hash/signature checks.
 - Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) contains exactly:
-  - [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk) — asset `646344237`, `54,636,716` bytes, SHA-256 `cae0364670324511551742295a40fc4208399a5de4330b5a18d5d43ca5d488cf`.
-  - [`JEXFYZ-corresponding-source.zip`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip) — asset `646344244`, `2,874,306` bytes, SHA-256 `9a3a008e377fa6bdcc7d4add2fecbce9167df88b2b0ce924512ca703e5eeac69`.
-- Certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. Built and downloaded APK passed V1/V2/V3 verification with one signer.
-- Build #63/#64 Flutter/JUnit failures and evidence-based repairs are recorded in `APP_BUILD_REPORT.md`; Build #66 passes every gate without removing tests or weakening gates. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+  - [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk) — asset `647067767`, `54,636,716` bytes, SHA-256 `40e2f3233d94cb8f624a3ffc50677f058840057800b8b1a172ba0eaf2881a102`.
+  - [`JEXFYZ-corresponding-source.zip`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip) — asset `647067768`, `2,877,328` bytes, SHA-256 `4b5403d27d74167cd2c15ca6c5eb780d9622b5be0924c42c04256e240d9545cd`.
+- Certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. V1/V2/V3 and downloaded APK signatures verified.
+- Build #66/#65 history plus Build #63/#64 failures/repairs remains in `APP_BUILD_REPORT.md`. Build #67 passed the same full gates after adding the watchdog and updated source contracts; no test/gate was removed or weakened. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
 ## Open issue — physical Shizuku FPS still unverified
 
-- User previously reported Shizuku access granted while overlay metric F displayed `F:--` and later `shizuku_userservice_timeout`. These screenshots do not prove the precise runtime cause.
-- Build #66 includes attempt-scoped tagged Shizuku binding, TimeStats sampling, and the timeout repair: `FPS_USER_SERVICE_BIND_TIMEOUT_MS = 35_000L`, with Settings polling for 50.4 seconds. Flutter tests, four native parser JUnit cases, Android release compilation/signing and downloaded release asset checks passed.
-- The 35-second deadline aligns with Shizuku's 30-second startup allowance plus callback grace, but successful build/CI does not prove that the target phone's UserService binds or that its OEM exposes usable TimeStats layer data.
-- Next action: run `@Thinking Eksekusi Build App!` for current main `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46`. After the new APK passes gates and is installed, test foreground F across apps/game; if `F:--` persists, capture status and `JexFpsDiag` logs (`sampler_exception`, `sampler_watchdog_timeout`, `bind_requested`, `bind_connected`, `layer_match`, `frame_sample`).
-
-## Current Floating Monitor UX
-
-- Position remains freely draggable; horizontal metric groups are centered, vertical rows share the same left edge. Size is 0.30×–1.00× in 0.05× increments (default 0.60×). Background opacity is 0–100% in 5% increments with endpoint labels only; no 50% midpoint. Background color/foreground contrast behavior remains.
-- Build #66 passed Dart analysis, 88/88 Flutter tests, native parser JUnit, Android release compilation/signing and release artifact checks. Physical overlay appearance, animation quality, service runtime and live FPS still require device validation.
-
+- User previously reported Shizuku permission granted while overlay metric F displayed `F:--`, and a prior status was `shizuku_userservice_timeout`. These are runtime symptoms, not proof of the exact cause.
+- Current release contains attempt-scoped tagged Shizuku UserService binding, 35-second client deadline, 50.4-second Settings poll wait, TimeStats sampler exception isolation and a main-handler watchdog. The watchdog reports startup stall at 60 seconds and polling stall at 30 seconds and has five unit tests.
+- Build #67 source was analyzed, **88/88 Flutter tests passed**, four TimeStats parser JUnit and five watchdog policy JUnit cases passed, and Android release compilation/signing + downloaded asset verification succeeded. CI cannot prove target phone/OEM binding or usable TimeStats access.
+- Next action: install Build #67 APK and test the floating F metric across JE Cooler, Settings/launcher, other apps and a real game. If F remains `--`, capture the exact Settings sampler-status line and filtered `JexFpsDiag` logs, including `sampler_exception`, `sampler_watchdog_timeout`, `bind_requested`, `bind_connected`, `layer_match` and `frame_sample`. Do not infer FPS from panel refresh rate.
 
 ## Firmware/hardware boundary
 
