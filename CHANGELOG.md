@@ -2,7 +2,15 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
-## 2026-10-16 — Build #68 release verified; full release gates rerun
+## 2026-10-16 — Build #69 release verified; native FPS tests rerun
+
+- Build #69 / [Actions run `38896502185`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38896502185) passed the complete guarded App release workflow against exact source/release HEAD `01212c32a802ca0e67f559307fe4e19a667489c6`. All **21 active workflow steps passed**, including audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, APK obfuscation/build, V1/V2/V3 signing/certificate, source ZIP, Release publication and re-downloaded asset verification.
+- Native Gradle tests completed with `BUILD SUCCESSFUL in 1m 30s`: four TimeStats parser cases and five watchdog-policy cases. Functional source remains unchanged from Build #67/#68 and includes TimeStats parser `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620`, Shizuku bind timeout `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d`, and sampler exception isolation/watchdog `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46`. No test/gate was removed or weakened.
+- Release `jexfyz-latest` targets Build #69. APK asset `647189019` (`54,636,716` bytes; SHA-256 `40e2f3233d94cb8f624a3ffc50677f058840057800b8b1a172ba0eaf2881a102`) and source ZIP asset `647189016` (`2,877,171` bytes; SHA-256 `1ab19e552c128d09773794738a6a4340abfa82086fa83f2d7e883ed62f60a699`) were both re-downloaded and verified. APK hash is unchanged from Builds #67/#68 because functional code did not change; ZIP source marker matches Build #69 HEAD.
+- Expected production certificate remains `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID` / SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`; built/downloaded APK V1/V2/V3 all true with one signer.
+- Device boundary unchanged: physical Shizuku UserService binding, OEM TimeStats visibility, foreground FPS and overlay rendering remain **NOT DEVICE-VERIFIED**. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+
+## HISTORICAL / SUPERSEDED — Build #68 release verified; full release gates rerun
 
 - Build #68 / [Actions run `38894177060`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38894177060) passed the complete guarded App release workflow against release/HEAD commit `1f35dcbc3c8bc85410e765b58430b4b485366c2c`. All **21 active workflow steps passed**, including audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, APK obfuscation/build, V1/V2/V3 signing/certificate, source ZIP, Release publication and downloaded asset verification.
 - Native JUnit step completed with `BUILD SUCCESSFUL in 1m 52s`: four TimeStats parser cases plus five watchdog-policy cases. Functional source is unchanged from Build #67; its sampler watchdog/exception isolation, 35-second Shizuku bind timeout / 50.4-second Settings polling and TimeStats layer parser remain included. No test/gate was removed or weakened.
