@@ -39,11 +39,13 @@ Actual phone Shizuku binding, OEM TimeStats layer visibility, foreground FPS and
 
 ## Floating Monitor presentation contract
 
-- Stable metrics remain F/B/H/V/A/P/S. The display is Letters-only; legacy saved Icons configuration migrates to Letters and the style selector is removed.
-- Size slider is 0.30×–1.00× in 0.05× steps (14 intervals), default 0.60×. Persisted values snap into that range. Native pinch scaling and runtime geometry must accept the same upper bound.
+- Exactly six metrics are supported in the current source: **B/H/V/A/P/F** — Battery Temperature, Hotside Temperature, Voltage, Adaptive, Peltier, and Fan Speed. The floating label F means Fan Speed; FPS is retired.
+- Persisted metric schema version 2 migrates older schema-v1 configurations: old F (FPS) selections are discarded and old S (Speed) selections migrate to F. Config is normalized before it is sent to the native overlay so an old seven-metric order cannot reintroduce a retired metric.
+- The display is Letters-only; legacy saved Icons configuration migrates to Letters and the style selector remains removed.
+- Size slider is 0.30×–1.00× in 0.05× steps (14 intervals), default 0.60×. Persisted values snap into that range. Native pinch scaling and runtime geometry accept the same upper bound.
 - Background opacity is 0–100% in 5% increments; the displayed number remains visible, but the 50% midpoint label is removed. Legacy values snap to the nearest 5%. Opacity affects the background only, not metric text.
 - Horizontal metrics remain centered as one group. Vertical letter rows share a single left edge. The floating window remains freely draggable; WindowManager gravity stays TOP | START and saved position is unchanged.
-- Shizuku card is compact: status Shizuku Access Granted or Shizuku Access Denied, plus only Grant Shizuku Access and Check Access. No explanatory paragraphs or Open Shizuku button. Access status reports permission/service availability, not successful FPS measurement by itself.
+- Floating Monitor has no Shizuku permission card or privileged FPS sampler. Fan Speed shows its live speed while Fan is on, localized OFF/MATI while Fan is off, and unknown (--) while disconnected.
 
 ## Controls and voltage
 
@@ -107,16 +109,14 @@ Actual phone Shizuku binding, OEM TimeStats layer visibility, foreground FPS and
 - Do not change settings storage or defaults without a scoped task and regression review.
 - Firmware persistent preferences use a 10-second quiet period; Adaptive Profile itself is runtime-only. See `FIRMWARE_NOTES.md`.
 
-## Floating Monitor and Shizuku-gated foreground screen FPS
+## Floating Monitor implementation and current source state
 
 - FloatingMonitorService owns the overlay window; Flutter remains the single BLE/GATT client and streams authoritative telemetry. After native service attachment, Flutter replays the current telemetry snapshot. Native layout/redraw tracks changing live-value width.
-- The overlay remains freely draggable with WindowManager gravity TOP | START and persisted coordinates. Horizontal metrics center as one group; vertical letter rows all share the same left edge. Size is 0.30×–1.00× in 0.05× steps (default 0.60×). Background opacity is 0–100% in 5% steps with live percent and endpoint marks only; midpoint 50% is removed. Black/White background and contrast behavior remain.
-- The metric set is F/B/H/V/A/P/S. When BLE telemetry is disconnected, live device values are -- and no stale output state is inferred.
-- FPS is not game-only FPS. Native sampling follows focused-window identity across JE Cooler, apps, Settings, launchers and Android system UI when matching TimeStats layer data is exposed. It calculates compositor-layer FPS from TimeStats interval counters, not panel refresh rate or Flutter frame timing.
-- Foreground detection uses the fixed Shizuku UserService operations. TimeStats sampling is bounded to 64 layers per snapshot and runs every 500 ms, uses per-interval `averageFPS`, matches `packageName` where supplied and prefers SurfaceView/BLAST layers.
-- The release validated by Build #68 includes exception isolation around sampler startup and each periodic poll. A main-handler progress watchdog sets `sampler_start_timeout` after 60 seconds without startup progress and `sampler_stalled` after 30 seconds without sample progress. Failure states are surfaced instead of silently cancelling future polling.
-- Metric F still requires Shizuku permission/Binder availability, UserService support and explicit JE X FYZ approval. Shizuku Access Granted confirms the permission gate, not successful service binding or readable OEM layer statistics.
-- **Built/CI-tested:** Build #69 revalidated the binding-timeout and sampler-watchdog fixes; Dart analysis, 88/88 Flutter tests, four native parser JUnit cases, five watchdog-policy JUnit cases, Android release compilation/signing and downloaded asset verification all passed. **Not device-verified:** actual Shizuku service binding on the target phone, OEM layer visibility, live foreground FPS and overlay/rendering behavior. Phone-side status/log capture is still required.
+- The overlay remains freely draggable with WindowManager gravity TOP | START and persisted coordinates. Horizontal metrics center as one group; vertical letter rows all share the same left edge. Size is 0.30×–1.00× in 0.05× steps (default 0.60×). Background opacity is 0–100% in 5% steps with live percent and endpoint marks only; Black/White background and text contrast remain.
+- Current metrics are B/H/V/A/P/F. F is Fan Speed. When BLE telemetry is disconnected, live device values are unknown (--) and no stale output state is inferred.
+- FPS, SurfaceFlinger TimeStats sampling, Shizuku permission UI/provider/UserService/AIDL, related parser/watchdog tests and Shizuku-only license files are removed from active App source. The release workflow audit and source archive packaging no longer depend on them.
+- Schema version 2 maps old schema-v1 S (Speed) to F (Fan Speed) and drops old schema-v1 F (FPS). Flutter contract tests cover migration and removal of FPS/Shizuku UI.
+- Build #69 remains the latest verified release, but it predates this FPS removal. Current source changes, tests and workflow edits have NOT YET BEEN BUILT OR TESTED. The Build #69 APK still contains the old FPS implementation. App Build requires the separate @Thinking Eksekusi Build App! authorization.
 
 ## Phone battery telemetry and Battery Protection UI boundary
 
@@ -128,11 +128,11 @@ Actual phone Shizuku binding, OEM TimeStats layer visibility, foreground FPS and
 
 ## Current App QC boundary
 
-- Latest verified App release is Build #69 / run `38896502185`, source/release commit `01212c32a802ca0e67f559307fe4e19a667489c6`. It includes Home indicator restoration, Floating Monitor controls, foreground TimeStats diagnostics, Shizuku binding timeout, and sampler exception/watchdog behavior.
-- Build #69 passed architecture/security/license audit, dependency resolution, Dart analysis and all **88 Flutter tests**, native parser/watchdog-policy JUnit tests, obfuscated APK creation, V1/V2/V3 signing and production-certificate checks, matching-source ZIP validation, publication and downloaded asset hash/signature verification. APK SHA-256: `40e2f3233d94cb8f624a3ffc50677f058840057800b8b1a172ba0eaf2881a102`; source ZIP SHA-256: `1ab19e552c128d09773794738a6a4340abfa82086fa83f2d7e883ed62f60a699`.
-- Release `jexfyz-latest` contains exactly one APK (`JEXFYZ-release.apk`, asset `647189019`, `54,636,716` bytes, SHA-256 `40e2f3233d94cb8f624a3ffc50677f058840057800b8b1a172ba0eaf2881a102`) and matching source ZIP (asset `647189016`, `2,877,171` bytes, SHA-256 `1ab19e552c128d09773794738a6a4340abfa82086fa83f2d7e883ed62f60a699`). Both were re-downloaded and validated against Build #69 HEAD.
-- Current source blobs: `lib/main.dart` `d24885cf0a40472b9fb23ee6ce73ad772ae73672`; `lib/floating_monitor.dart` `fc88e61d8a9b0d0483d1ff5f08699b253a092a3c`; `lib/app_settings.dart` `4c89bcb3c04142ce49440a11b92054365c26f7a6`; `test/widget_test.dart` `4b05e025e7765b30d04c20ada0322a17517025b9`; `test/shizuku_fps_contract_test.dart` `0e60e2a8ec3458f6cafd3cd082d6437d4598a0ac`; native `FloatingMonitorService.kt` `8d575b448cb08b57674a07f5ddfed329079f3840`; `FpsSamplerWatchdogPolicyTest.kt` `fc3fe8aa3d7fe70ca8aafa7716ddd912ed5ffccb`.
-- The functional source is built/CI-tested by Build #69. Physical Shizuku UserService binding, OEM TimeStats data, real foreground FPS and phone rendering remain **NOT DEVICE-VERIFIED**; install and test the latest APK and capture Settings status / filtered `JexFpsDiag` logs if `F:--` persists. See `APP_BUILD_REPORT.md` for attempt details and warnings.
+- Latest verified release is Build #69 / run 38896502185, source/release commit 01212c32a802ca0e67f559307fe4e19a667489c6. It predates the later decision to remove FPS from current source.
+- Build #69 passed architecture/security/license audit, dependency resolution, Dart analysis and all 88 Flutter tests, native parser/watchdog-policy JUnit tests, obfuscated APK creation, V1/V2/V3 signing and production-certificate checks, matching-source ZIP validation, publication and downloaded asset hash/signature verification. APK SHA-256: 40e2f3233d94cb8f624a3ffc50677f058840057800b8b1a172ba0eaf2881a102; source ZIP SHA-256: 1ab19e552c128d09773794738a6a4340abfa82086fa83f2d7e883ed62f60a699.
+- Prepared source blobs for this FPS-removal change: lib/floating_monitor.dart 31b45ea08b08ac7fc25ebd991dca873b889fdd14; lib/app_settings.dart 20f1ce0f838345c9eee4cbacde22255cb7852435; android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt 2d47a1ca766e454318e3c33911ffd7a7da234dbf; android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt bd17c34211e8eb5c4723e06937ae47f0071b5e8b; AndroidManifest.xml c374b5d3ad6448b8b3e99a420ed7e8c49d38497a; android/app/build.gradle 060cdd36a4f7d4d2fa4c97a1b6a15954b8355350; .github/workflows/jexfyz-app-build-trigger.yml 8a8533aff7e0e0e01412bf522e1966e81aa1a39f.
+- Flutter tests now cover legacy metric migration and absence of FPS/Shizuku UI. The changed source and test suites have NOT RUN / NOT BUILT in this task. FPS-specific Android parser/watchdog JUnit files and the Shizuku-only Dart contract test are retired; the Android unit-test/compile workflow gate remains.
+- No Firmware source/BIN, Firebase metadata, OTA, BLE hardware-control or thermal-safety code was changed. Firmware V6.6 remains outside scope.
 
 ## Dashboard indicator motion
 

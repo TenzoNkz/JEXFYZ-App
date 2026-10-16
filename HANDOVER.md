@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-10-16 Asia/Jakarta after Build #69 and recovery of the latest App Build command. Build #69 verified the current functionally unchanged App source through the full release gates. Physical foreground FPS, target-phone Shizuku binding and overlay visuals remain unverified.
+Last reconciled: 2026-10-16 Asia/Jakarta during FPS-removal execution. Build #69 remains the latest verified release, but active main source is being simplified beyond that release and is not yet built.
 
 ## Current App source/release
 
@@ -12,16 +12,18 @@ Last reconciled: 2026-10-16 Asia/Jakarta after Build #69 and recovery of the lat
 - Expected certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. Built and downloaded APKs passed V1/V2/V3 and one-signer checks.
 - Build #69 re-ran the functionally unchanged source from Build #68; four TimeStats parser JUnit tests, five watchdog-policy JUnit tests and all 88 Flutter tests passed. Build #63/#64 failures and repairs remain in `APP_BUILD_REPORT.md`. No tests or gates were removed/weakened; no Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
-## Open issue — physical Shizuku FPS still unverified
+## Current App source change — FPS retired
 
-- User previously reported Shizuku permission granted while overlay metric F displayed `F:--`, and an earlier status was `shizuku_userservice_timeout`. These symptoms do not establish the runtime cause.
-- Current release includes attempt-scoped Shizuku UserService binding, 35-second client deadline, 50.4-second Settings polling, TimeStats parsing, exception-isolated sampling and startup/polling-progress watchdogs. Startup watchdog is 60 seconds; polling-stall watchdog is 30 seconds. Source/tests are built and CI-tested, but CI cannot prove service binding or layer visibility on the target OEM.
-- Next action: install Build #69, then test the floating F metric while switching foreground among JE Cooler, Settings/launcher, other apps and a real game. If F remains `--`, capture Settings sampler status and filtered `JexFpsDiag` logs, including `sampler_exception`, `sampler_watchdog_timeout`, bind/layer/frame events. Do not substitute panel refresh rate for measured foreground FPS.
+- The user decided to remove FPS instead of continuing device-specific sampler diagnosis after repeated F:-- failures. The current source targets six Floating Monitor metrics: B/H/V/A/P/F; F is Fan Speed. The Shizuku card, SurfaceFlinger sampler, permission bridge, provider/dependency, AIDL/UserService, FPS-specific tests and Shizuku-only license files are removed from current source.
+- Legacy persisted schema v1 mapped F to FPS and S to Fan Speed. Schema v2 discards old FPS F and migrates old S to Fan Speed F, so an old FPS selection cannot be displayed as a fan-speed reading.
+- Source edits, regression tests, workflow audit and current-state documentation have been committed, but have not yet been verified by Flutter/Dart/native CI or an APK build. Build #69 is earlier and its APK still contains FPS.
+- Next release action, when separately authorized: @Thinking Eksekusi Build App! The existing guarded issue-trigger workflow must verify the native Kotlin compile gate, Dart analysis/tests, security audit, source archive, signing and Release assets. No Firmware/BIN/Firebase/OTA/flash/device operation is part of this source-change task.
 
 ## Current Floating Monitor UX
 
+- Six metrics only: B/H/V/A/P/F, with F for Fan Speed. FPS has been removed from active source.
 - Position remains freely draggable; horizontal metric groups are centered, vertical rows share the same left edge. Size is 0.30×–1.00× in 0.05× increments (default 0.60×). Background opacity is 0–100% in 5% increments with endpoint labels only; no 50% midpoint.
-- Build #69 passed Dart analysis, all 88 Flutter tests, native parser/watchdog JUnit tests, Android release compilation/signing and release artifact verification. Phone-side rendering, animation quality, service lifecycle and live FPS remain NOT DEVICE-VERIFIED.
+- Current six-metric source has NOT BEEN BUILT or device-verified. Build #69 evidence applies to earlier source.
 
 ## Firmware/hardware boundary
 
@@ -38,6 +40,6 @@ Last reconciled: 2026-10-16 Asia/Jakarta after Build #69 and recovery of the lat
 
 ## Canonical next actions
 
-1. First, test FPS with an actual game in the foreground while Floating Monitor remains enabled.
-2. If F stays --, capture exact fps_monitor_status plus native logs before proposing a source fix. Do not immediately rebuild without diagnostic evidence.
-3. Keep Build #69 success and Build #63/#64 failure/repair records in `APP_BUILD_REPORT.md`. Physical-device FPS/visual validation is the immediate open check; CI does not replace on-device diagnostics.
+1. Complete the FPS-removal source commit and static cross-file audit; verify main contains no active FPS/Shizuku components and no stale seven-metric contract.
+2. Run App Build only after the separate @Thinking Eksekusi Build App! command. Use the existing guarded issue-trigger workflow; do not introduce push/PR release triggers.
+3. Keep Firmware V6.6, the BIN-only artifact repo, Firebase metadata, OTA and physical hardware untouched.

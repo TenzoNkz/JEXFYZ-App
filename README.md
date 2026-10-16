@@ -20,11 +20,11 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 
 ## Current source validation boundary — 2026-10-16
 
-- Latest verified release is [Build #69](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38896502185), exact source/release HEAD `01212c32a802ca0e67f559307fe4e19a667489c6`. It passed audit, dependency resolution, Dart analysis, **88/88 Flutter tests**, native TimeStats parser/watchdog-policy JUnit tests, obfuscated Android release build, V1/V2/V3 signing/certificate checks, publication and re-downloaded asset verification. Functional source is unchanged from Build #67/#68.
+- Latest verified release remains [Build #69](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38896502185), exact source/release HEAD `01212c32a802ca0e67f559307fe4e19a667489c6`. It passed audit, dependency resolution, Dart analysis, **88/88 Flutter tests**, native TimeStats parser/watchdog-policy JUnit tests, obfuscated Android release build, V1/V2/V3 signing/certificate checks, publication and re-downloaded asset verification. Build #69 predates the current FPS-removal source change; its APK still contains FPS.
 - Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) has one APK (asset `647189019`, `54,636,716` bytes; SHA-256 `40e2f3233d94cb8f624a3ffc50677f058840057800b8b1a172ba0eaf2881a102`) and one matching source ZIP (asset `647189016`, `2,877,171` bytes; SHA-256 `1ab19e552c128d09773794738a6a4340abfa82086fa83f2d7e883ed62f60a699`). Both were re-downloaded and verified against the exact Build #69 source marker.
 - Build #63 failed one stale widget assertion (87 passed, 1 failed). Build #64 passed Flutter tests but native JUnit ran out of Java heap under the old 2 GiB Gradle heap. The assertion was fixed and Gradle heap raised to `-Xmx4096M`; Builds #65–#69 then passed complete release gates without deleting tests or weakening gates.
 - **Latest release / CI-tested:** Build #69 revalidated TimeStats parser checkpoint `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620`, Shizuku bind timeout `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d` and sampler watchdog checkpoint `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46`. Five watchdog-policy JUnit cases, four TimeStats parser JUnit cases and all 88 Flutter tests passed.
-- Gradle heap remains `-Xmx4096M`. Physical Shizuku UserService binding, OEM TimeStats visibility, actual foreground FPS and overlay rendering remain **NOT DEVICE-VERIFIED**. No Firmware/BIN, Firebase, OTA, BLE hardware-control or thermal-safety code was changed.
+- Current main source removes FPS and Shizuku completely, keeps six Floating Monitor metrics B/H/V/A/P/F, and maps legacy schema-v1 Speed S to Fan Speed F while dropping old FPS F. This source change has **NOT YET BEEN BUILT OR TESTED**; Build #69 is still the latest verified release for the earlier source. No Firmware/BIN, Firebase, OTA, BLE hardware-control or thermal-safety code was changed.
 
 ## Repository boundaries
 
@@ -37,7 +37,7 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 ## Remaining validation outside CI
 
 - Build #69 is the latest verified release for source `01212c32a802ca0e67f559307fe4e19a667489c6`. Full audit/test/build/signing/source archive/Release/download verification evidence is in `APP_BUILD_REPORT.md`.
-- Install Build #69 and physically verify Shizuku UserService binding/lifecycle on the target phone, OEM TimeStats layer visibility, foreground FPS and overlay/icon rendering. If `F:--` persists, collect Settings sampler status and filtered `JexFpsDiag` logs, particularly `sampler_exception`, `sampler_watchdog_timeout`, `bind_requested`, `bind_connected`, `layer_match`, and `frame_sample`. CI does not verify device behavior.
+- Next step is the separately authorized App Build workflow for the current six-metric source. Build #69 is not validation of FPS removal. After the new APK is released, verify Floating Monitor overlay rendering and live telemetry on the phone; CI alone does not prove device behavior.
 - Firmware V6.6 is USER-ACCEPTED FINAL according to the user's report. Its compile log and source-to-BIN provenance remain independently unverified. App CI does not imply Firmware compilation, BIN provenance, Firebase, OTA, flash, BLE hardware or thermal-safety validation.
 
 ## Non-negotiable workflow

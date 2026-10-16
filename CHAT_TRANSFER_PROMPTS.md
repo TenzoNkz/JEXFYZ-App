@@ -184,7 +184,7 @@ When reconciling or booting a chat, check every category below against the canon
 - Adaptive start/stop safe-5V behavior and touch-sensor lock.
 - Localization, safety/Notify copy, output-unknown while disconnected, authoritative telemetry vs ACK, state reconciliation and LED preview phase synchronization.
 - P1 protocol handshake, exact BLE service/RX/TX UUIDs, Secure BLE write/bonding constraints and no second Android GATT client.
-- Auto Connect and reconnection prerequisites; Floating Monitor seven stable metrics F/B/H/V/A/P/S, native bridge channel, permission/lifecycle contracts.
+- Auto Connect and reconnection prerequisites; current Floating Monitor six metrics B/H/V/A/P/F (F=Fan Speed), legacy schema-v1 S→F migration and old F=FPS removal, native bridge channel and permission/lifecycle contracts.
 - Battery temperature heartbeat, Hotside telemetry cadence and firmware notice/preferences storage.
 - Android package, target/min/compile SDK/tool versions, manifest permissions, services, release signing, R8 obfuscation, icon/assets, and preserved creator identity `versionName "Telegram @horizontalzzz"`.
 

@@ -7,8 +7,8 @@ package com.horizontalzzz.jexfyz
 // Permission authority: Settings.canDrawOverlays() is the public Android SYSTEM_ALERT_WINDOW gate.
 // Window authority: WindowManager.addView()/removeView() determine actual attachment.
 // Localization: Flutter sends the selected AppLanguage with telemetry. English status = ON/OFF;
-// Indonesia status = HIDUP/MATI. The metric identifiers F/B/H/V/A/P/S stay unchanged.
-// Fan Speed invariant: metric S remains rendered; when Fan telemetry is OFF, S reports localized OFF/MATI.
+// Indonesia status = HIDUP/MATI. The supported metric identifiers are B/H/V/A/P/F.
+// Fan Speed invariant: metric F renders speed; when Fan telemetry is OFF, F reports localized OFF/MATI.
 // Do not create a BLE/GATT client here; telemetry is supplied by MainActivity/Flutter.
 // Do not add vendor-specific hidden APIs as a default compatibility mechanism.
 
@@ -22,9 +22,6 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.content.ComponentName
-import android.content.ServiceConnection
-import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.graphics.Canvas
 import android.graphics.Color
@@ -32,1010 +29,20 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PixelFormat
 import android.os.Build
-import android.os.Handler
 import android.os.IBinder
-import android.os.Looper
-import android.os.RemoteException
-import rikka.shizuku.Shizuku
-import android.os.SystemClock
-import android.util.Log
 import android.provider.Settings
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.WindowManager
-import org.json.JSONArray
 import org.json.JSONObject
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledFuture
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
-private data class ShizukuFpsAccessSnapshot(
-    val available: Boolean,
-    val supported: Boolean,
-    val granted: Boolean,
-    val uid: Int,
-) {
-    fun toStatusMap(monitorStatus: String, monitorActive: Boolean): Map<String, Any?> {
-        val status = when {
-            !available -> "shizuku_not_running"
-            !supported -> "shizuku_unsupported"
-            !granted -> "shizuku_permission_missing"
-            else -> monitorStatus
-        }
-        return mapOf(
-            "fps_permission_granted" to granted,
-            "shizuku_available" to available,
-            "shizuku_supported" to supported,
-            "shizuku_permission_granted" to granted,
-            "shizuku_uid" to uid,
-            "fps_monitor_active" to (monitorActive && granted),
-            "fps_monitor_status" to status,
-        )
-    }
-}
-
-private fun shizukuFpsAccessSnapshot(): ShizukuFpsAccessSnapshot {
-    val available = runCatching { Shizuku.pingBinder() }.getOrDefault(false)
-    if (!available) return ShizukuFpsAccessSnapshot(false, false, false, -1)
-    val supported = runCatching { Shizuku.getVersion() >= 10 }.getOrDefault(false)
-    if (!supported) return ShizukuFpsAccessSnapshot(true, false, false, -1)
-    val granted = runCatching { Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED }.getOrDefault(false)
-    val uid = if (granted) runCatching { Shizuku.getUid() }.getOrDefault(-1) else -1
-    return ShizukuFpsAccessSnapshot(true, true, granted, uid)
-}
-
 class FloatingMonitorService : Service() {
-
-    private data class DumpsysResult(
-        val output: String,
-        val ok: Boolean,
-        val error: String? = null,
-    )
-
-    private enum class FpsBindingState {
-        BINDING, CONNECTED, FAILED, TIMED_OUT, DISCONNECTED, CANCELLED
-    }
-
-    /**
-     * One object per bind attempt. The connection, latch, args/tag and cleanup flag are
-     * deliberately attempt-scoped so a callback from an old attempt cannot mutate a new one.
-     */
-    private class FpsUserServiceBindingAttempt(
-        val generation: Long,
-        val args: Shizuku.UserServiceArgs,
-        val startedAtMs: Long,
-    ) {
-        val connectedLatch = CountDownLatch(1)
-        val cleanupStarted = AtomicBoolean(false)
-        @Volatile var state: FpsBindingState = FpsBindingState.BINDING
-        @Volatile var remote: IFpsShizukuUserService? = null
-        @Volatile var errorCode: String? = null
-        lateinit var connection: ServiceConnection
-    }
-
-    private data class FpsServiceAcquireResult(
-        val attempt: FpsUserServiceBindingAttempt? = null,
-        val errorCode: String? = null,
-    )
-
-    private fun hasShizukuFpsPermission(): Boolean = shizukuFpsAccessSnapshot().let {
-        it.available && it.supported && it.granted
-    }
-
-    private fun fpsAccessStateMap(): Map<String, Any?> =
-        shizukuFpsAccessSnapshot().toStatusMap(fpsMonitorStatus, fpsMonitorStatus == "active")
-
-    // AI-METHOD / FPS-SAMPLER-ELIGIBILITY
-    // Never poll global frame statistics unless the visible overlay is attached and F is selected.
-    private fun refreshFpsMonitor() {
-        val shouldRun = config.enabled &&
-            config.selected.contains("F") &&
-            hudView?.isAttachedToWindow == true
-
-        if (!shouldRun) {
-            stopFpsMonitor("monitor_off")
-            return
-        }
-        val access = shizukuFpsAccessSnapshot()
-        if (!access.available) {
-            stopFpsMonitor("shizuku_not_running")
-            return
-        }
-        if (!access.supported) {
-            stopFpsMonitor("shizuku_unsupported")
-            return
-        }
-        if (!access.granted) {
-            stopFpsMonitor("shizuku_permission_missing")
-            return
-        }
-        if (fpsMonitorWanted && fpsMonitorStatus in setOf(
-                "starting", "active", "waiting_for_frames", "foreground_unknown", "no_layer_data", "sample_invalid",
-            )
-        ) return
-
-        // Retire an old scheduled loop before opening a new generation. A failed previous
-        // attempt is restartable; only healthy states above are treated as already running.
-        fpsPollingTask?.cancel(false)
-        fpsPollingTask = null
-        cancelFpsSamplerWatchdog()
-        fpsMonitorWanted = true
-        val generation = ++fpsGeneration
-        fpsMonitorStatus = "starting"
-        fpsLastProgressAtMs = SystemClock.elapsedRealtime()
-        data.fps = "--"
-        hudView?.requestLayout()
-        hudView?.invalidate()
-        armFpsSamplerWatchdog(generation)
-
-        try {
-            fpsExecutor.execute {
-                try {
-                    val start = runDumpsys("SurfaceFlinger", "--timestats", "-clear", "-enable")
-                    if (!start.ok) {
-                        fpsCaptureEnabled = false
-                        fpsMainHandler.post {
-                            if (generation != fpsGeneration) return@post
-                            cancelFpsSamplerWatchdog()
-                            fpsMonitorWanted = false
-                            fpsMonitorStatus = start.error ?: "surfaceflinger_blocked"
-                            data.fps = "--"
-                            hudView?.requestLayout()
-                            hudView?.invalidate()
-                        }
-                        releaseFpsUserService()
-                        return@execute
-                    }
-
-                    if (!fpsMonitorWanted || generation != fpsGeneration) {
-                        val stopResult = runDumpsys("SurfaceFlinger", "--timestats", "-disable")
-                        if (!stopResult.ok) {
-                            Log.w(FPS_DIAG_TAG, "stale_capture_disable_failed error=${stopResult.error ?: "unknown"}")
-                        }
-                        releaseFpsUserService()
-                        return@execute
-                    }
-
-                    fpsCaptureEnabled = true
-                    fpsTrackedPackage = null
-                    fpsLastProgressAtMs = SystemClock.elapsedRealtime()
-                    fpsMainHandler.post {
-                        if (generation != fpsGeneration) return@post
-                        fpsMonitorStatus = "starting"
-                        data.fps = "--"
-                        hudView?.requestLayout()
-                        hudView?.invalidate()
-                    }
-                    fpsPollingTask = fpsExecutor.scheduleWithFixedDelay(
-                        { pollSurfaceFlingerSafely(generation) },
-                        FPS_SAMPLE_INTERVAL_MS,
-                        FPS_SAMPLE_INTERVAL_MS,
-                        TimeUnit.MILLISECONDS,
-                    )
-                } catch (error: Exception) {
-                    reportFpsSamplerException(generation, "capture_start", "sampler_start_exception", error)
-                }
-            }
-        } catch (error: Exception) {
-            reportFpsSamplerException(generation, "executor_submit", "sampler_executor_unavailable", error)
-        }
-    }
-
-    // An uncaught exception in a ScheduledExecutorService periodic task cancels all future runs.
-    // Keep each sample isolated so a single native/OEM failure becomes a visible status, not a silent stall.
-    private fun pollSurfaceFlingerSafely(generation: Int) {
-        try {
-            pollSurfaceFlinger(generation)
-        } catch (error: Exception) {
-            reportFpsSamplerException(generation, "poll", "sampler_poll_exception", error)
-        } finally {
-            if (generation == fpsGeneration && fpsMonitorWanted) {
-                fpsLastProgressAtMs = SystemClock.elapsedRealtime()
-            }
-        }
-    }
-
-    private fun reportFpsSamplerException(
-        generation: Int,
-        stage: String,
-        status: String,
-        error: Exception,
-    ) {
-        Log.e(
-            FPS_DIAG_TAG,
-            "sampler_exception stage=$stage generation=$generation type=${error.javaClass.simpleName}",
-            error,
-        )
-        fpsMainHandler.post {
-            if (generation != fpsGeneration || !fpsMonitorWanted) return@post
-            stopFpsMonitor(status)
-        }
-    }
-
-    // The main-handler watchdog remains independent from the single FPS worker.
-    private fun armFpsSamplerWatchdog(generation: Int) {
-        cancelFpsSamplerWatchdog()
-        val watchdog = object : Runnable {
-            override fun run() {
-                if (generation != fpsGeneration || !fpsMonitorWanted) {
-                    if (fpsSamplerWatchdog === this) fpsSamplerWatchdog = null
-                    return
-                }
-                val state = fpsMonitorStatus
-                val idleMs = (SystemClock.elapsedRealtime() - fpsLastProgressAtMs).coerceAtLeast(0L)
-                val failureStatus = FpsSamplerWatchdogPolicy.failureStatusIfStalled(state, idleMs)
-                if (failureStatus != null) {
-                    fpsSamplerWatchdog = null
-                    Log.e(
-                        FPS_DIAG_TAG,
-                        "sampler_watchdog_timeout generation=$generation status=$state " +
-                            "idleMs=$idleMs failure=$failureStatus",
-                    )
-                    stopFpsMonitor(failureStatus)
-                    return
-                }
-                if (FpsSamplerWatchdogPolicy.timeoutMs(state) == null) {
-                    fpsSamplerWatchdog = null
-                    return
-                }
-                fpsMainHandler.postDelayed(this, FpsSamplerWatchdogPolicy.CHECK_INTERVAL_MS)
-            }
-        }
-        fpsSamplerWatchdog = watchdog
-        fpsMainHandler.postDelayed(watchdog, FpsSamplerWatchdogPolicy.CHECK_INTERVAL_MS)
-    }
-
-    private fun cancelFpsSamplerWatchdog() {
-        fpsSamplerWatchdog?.let(fpsMainHandler::removeCallbacks)
-        fpsSamplerWatchdog = null
-    }
-
-    // AI-METHOD / FPS-SAMPLER-STOP
-    // Clear stale readings and disable the global SurfaceFlinger collector on an orderly stop.
-    private fun stopFpsMonitor(reason: String) {
-        cancelFpsSamplerWatchdog()
-        val wasWanted = fpsMonitorWanted
-        val shouldDisable = fpsCaptureEnabled
-        val (hasBinding, activeServiceReady) = synchronized(fpsUserServiceLock) {
-            val active = currentFpsUserServiceBinding
-            val remoteAlive = active?.state == FpsBindingState.CONNECTED &&
-                runCatching { active.remote?.asBinder()?.isBinderAlive == true }
-                    .getOrDefault(false)
-            (active != null) to remoteAlive
-        }
-        if (!wasWanted && !shouldDisable && !hasBinding && fpsMonitorStatus == reason) {
-            data.fps = "--"
-            hudView?.requestLayout()
-            hudView?.invalidate()
-            return
-        }
-
-        fpsMonitorWanted = false
-        fpsGeneration += 1
-        fpsPollingTask?.cancel(false)
-        fpsPollingTask = null
-        fpsMonitorStatus = reason
-        data.fps = "--"
-        fpsTrackedPackage = null
-        hudView?.requestLayout()
-        hudView?.invalidate()
-
-        // Do not create a fresh UserService merely to disable capture after its Binder failed.
-        // Only an already connected/alive UserService may receive the orderly disable command.
-        val shouldTryDisable = shouldDisable &&
-            activeServiceReady &&
-            reason != "shizuku_userservice_disconnected" &&
-            hasShizukuFpsPermission()
-        fpsCaptureEnabled = false
-
-        if (shouldTryDisable) {
-            // The executor serializes an orderly disable with any in-flight FPS operation.
-            fpsExecutor.execute {
-                val result = runDumpsys("SurfaceFlinger", "--timestats", "-disable")
-                if (!result.ok) {
-                    Log.w(FPS_DIAG_TAG, "capture_disable_failed error=${result.error ?: "unknown"}")
-                }
-                releaseFpsUserService()
-            }
-        } else {
-            // Wake a blocked bind waiter immediately; Binder cleanup runs off the UI thread.
-            retireFpsUserServiceBinding()?.let { scheduleFpsUserServiceCleanup(it) }
-        }
-    }
-
-    // FPS UserService binding. Every attempt has its own tag and ServiceConnection:
-    // a late callback/cleanup can never unbind a newer attempt's service.
-    private val fpsUserServiceLock = Any()
-    @Volatile private var currentFpsUserServiceBinding: FpsUserServiceBindingAttempt? = null
-    private var fpsUserServiceBindingGeneration = 0L
-
-    private fun createFpsUserServiceArgs(generation: Long): Shizuku.UserServiceArgs {
-        val suffix = "${android.os.Process.myPid()}_${SystemClock.elapsedRealtime()}_${generation}"
-        return Shizuku.UserServiceArgs(ComponentName(this, FpsShizukuUserService::class.java))
-            // Fixed prefix + per-attempt identity isolates stale cleanup from a new binding.
-            .tag("jex_fps_service_v1_$suffix")
-            .daemon(false)
-            .processNameSuffix("fps_$suffix")
-            .debuggable(false)
-            .version(BuildConfig.VERSION_CODE)
-    }
-
-    private fun createFpsUserServiceConnection(
-        attempt: FpsUserServiceBindingAttempt,
-    ): ServiceConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            val binderAlive = runCatching { service.isBinderAlive }.getOrDefault(false)
-            val remote = if (binderAlive) {
-                runCatching { IFpsShizukuUserService.Stub.asInterface(service) }.getOrNull()
-            } else {
-                null
-            }
-
-            var accepted = false
-            var invalidActiveAttempt = false
-            var duplicateConnection = false
-            synchronized(fpsUserServiceLock) {
-                if (currentFpsUserServiceBinding === attempt &&
-                    attempt.state == FpsBindingState.BINDING
-                ) {
-                    if (binderAlive && remote != null) {
-                        attempt.remote = remote
-                        attempt.state = FpsBindingState.CONNECTED
-                        attempt.errorCode = null
-                        accepted = true
-                    } else {
-                        attempt.remote = null
-                        attempt.state = FpsBindingState.FAILED
-                        attempt.errorCode = "shizuku_userservice_dead"
-                        currentFpsUserServiceBinding = null
-                        invalidActiveAttempt = true
-                    }
-                } else if (currentFpsUserServiceBinding === attempt &&
-                    attempt.state == FpsBindingState.CONNECTED
-                ) {
-                    // A duplicate callback for the same live attempt is harmless.
-                    duplicateConnection = true
-                }
-            }
-            attempt.connectedLatch.countDown()
-
-            when {
-                accepted -> Log.d(
-                    FPS_DIAG_TAG,
-                    "bind_connected generation=${attempt.generation} binderAlive=true",
-                )
-                duplicateConnection -> Log.d(
-                    FPS_DIAG_TAG,
-                    "bind_duplicate_connected_ignored generation=${attempt.generation}",
-                )
-                else -> {
-                    Log.w(
-                        FPS_DIAG_TAG,
-                        "bind_late_or_invalid_callback generation=${attempt.generation} " +
-                            "state=${attempt.state} binderAlive=$binderAlive " +
-                            "activeFailure=$invalidActiveAttempt",
-                    )
-                    scheduleFpsUserServiceCleanup(attempt)
-                }
-            }
-        }
-
-        override fun onServiceDisconnected(name: ComponentName) {
-            val wasCurrent = synchronized(fpsUserServiceLock) {
-                val active = currentFpsUserServiceBinding === attempt &&
-                    attempt.state in setOf(FpsBindingState.BINDING, FpsBindingState.CONNECTED)
-                if (active) {
-                    currentFpsUserServiceBinding = null
-                    attempt.remote = null
-                    attempt.state = FpsBindingState.DISCONNECTED
-                    attempt.errorCode = "shizuku_userservice_disconnected"
-                }
-                attempt.connectedLatch.countDown()
-                active
-            }
-            Log.w(
-                FPS_DIAG_TAG,
-                "bind_disconnected generation=${attempt.generation} wasCurrent=$wasCurrent",
-            )
-            scheduleFpsUserServiceCleanup(attempt)
-            if (wasCurrent) {
-                fpsMainHandler.post {
-                    if (fpsMonitorWanted) stopFpsMonitor("shizuku_userservice_disconnected")
-                }
-            }
-        }
-    }
-
-    private fun createFpsUserServiceBindingAttemptLocked(): FpsUserServiceBindingAttempt {
-        val generation = ++fpsUserServiceBindingGeneration
-        val attempt = FpsUserServiceBindingAttempt(
-            generation = generation,
-            args = createFpsUserServiceArgs(generation),
-            startedAtMs = SystemClock.elapsedRealtime(),
-        )
-        attempt.connection = createFpsUserServiceConnection(attempt)
-        currentFpsUserServiceBinding = attempt
-        return attempt
-    }
-
-    private fun acquireFpsUserService(): FpsServiceAcquireResult {
-        val access = shizukuFpsAccessSnapshot()
-        when {
-            !access.available -> return FpsServiceAcquireResult(errorCode = "shizuku_not_running")
-            !access.supported -> return FpsServiceAcquireResult(errorCode = "shizuku_unsupported")
-            !access.granted -> return FpsServiceAcquireResult(errorCode = "shizuku_permission_missing")
-        }
-
-        var attempt: FpsUserServiceBindingAttempt? = null
-        var shouldBind = false
-        var staleAttempt: FpsUserServiceBindingAttempt? = null
-        synchronized(fpsUserServiceLock) {
-            val existing = currentFpsUserServiceBinding
-            when {
-                existing == null -> {
-                    attempt = createFpsUserServiceBindingAttemptLocked()
-                    shouldBind = true
-                }
-                existing.state == FpsBindingState.BINDING -> {
-                    attempt = existing
-                }
-                existing.state == FpsBindingState.CONNECTED &&
-                    runCatching { existing.remote?.asBinder()?.isBinderAlive == true }
-                        .getOrDefault(false) -> {
-                    attempt = existing
-                }
-                else -> {
-                    if (existing.state == FpsBindingState.CONNECTED) {
-                        existing.state = FpsBindingState.FAILED
-                        existing.errorCode = "shizuku_userservice_dead"
-                        existing.remote = null
-                    }
-                    staleAttempt = existing
-                    currentFpsUserServiceBinding = null
-                    attempt = createFpsUserServiceBindingAttemptLocked()
-                    shouldBind = true
-                }
-            }
-        }
-
-        staleAttempt?.let { cleanupFpsUserServiceAttempt(it) }
-        val currentAttempt = attempt
-            ?: return FpsServiceAcquireResult(errorCode = "shizuku_userservice_unavailable")
-
-        if (shouldBind) {
-            Log.d(
-                FPS_DIAG_TAG,
-                "bind_requested generation=${currentAttempt.generation} " +
-                    "taggedAttempt=true timeoutMs=$FPS_USER_SERVICE_BIND_TIMEOUT_MS",
-            )
-            try {
-                Shizuku.bindUserService(currentAttempt.args, currentAttempt.connection)
-                Log.d(FPS_DIAG_TAG, "bind_call_returned generation=${currentAttempt.generation}")
-            } catch (error: Exception) {
-                val acceptedFailure = synchronized(fpsUserServiceLock) {
-                    if (currentFpsUserServiceBinding === currentAttempt &&
-                        currentAttempt.state == FpsBindingState.BINDING
-                    ) {
-                        currentFpsUserServiceBinding = null
-                        currentAttempt.state = FpsBindingState.FAILED
-                        currentAttempt.errorCode = "shizuku_bind_exception"
-                        currentAttempt.remote = null
-                        true
-                    } else {
-                        false
-                    }
-                }
-                currentAttempt.connectedLatch.countDown()
-                Log.e(
-                    FPS_DIAG_TAG,
-                    "bind_exception generation=${currentAttempt.generation} " +
-                        "exception=${error.javaClass.simpleName}",
-                )
-                if (acceptedFailure) {
-                    cleanupFpsUserServiceAttempt(currentAttempt)
-                    return FpsServiceAcquireResult(errorCode = "shizuku_bind_exception")
-                }
-            }
-        }
-
-        val remainingMs = (FPS_USER_SERVICE_BIND_TIMEOUT_MS -
-            (SystemClock.elapsedRealtime() - currentAttempt.startedAtMs)).coerceAtLeast(0L)
-        if (currentAttempt.state == FpsBindingState.BINDING && remainingMs > 0L) {
-            val signalled = try {
-                currentAttempt.connectedLatch.await(remainingMs, TimeUnit.MILLISECONDS)
-            } catch (_: InterruptedException) {
-                Thread.currentThread().interrupt()
-                val cancelled = synchronized(fpsUserServiceLock) {
-                    if (currentFpsUserServiceBinding === currentAttempt &&
-                        currentAttempt.state == FpsBindingState.BINDING
-                    ) {
-                        currentFpsUserServiceBinding = null
-                        currentAttempt.state = FpsBindingState.CANCELLED
-                        currentAttempt.errorCode = "shizuku_bind_interrupted"
-                        true
-                    } else {
-                        false
-                    }
-                }
-                currentAttempt.connectedLatch.countDown()
-                Log.w(
-                    FPS_DIAG_TAG,
-                    "bind_interrupted generation=${currentAttempt.generation} active=$cancelled",
-                )
-                cleanupFpsUserServiceAttempt(currentAttempt)
-                return FpsServiceAcquireResult(errorCode = "shizuku_bind_interrupted")
-            }
-
-            if (!signalled) {
-                val timedOut = synchronized(fpsUserServiceLock) {
-                    if (currentFpsUserServiceBinding === currentAttempt &&
-                        currentAttempt.state == FpsBindingState.BINDING
-                    ) {
-                        currentFpsUserServiceBinding = null
-                        currentAttempt.state = FpsBindingState.TIMED_OUT
-                        currentAttempt.errorCode = "shizuku_userservice_timeout"
-                        currentAttempt.remote = null
-                        true
-                    } else {
-                        false
-                    }
-                }
-                currentAttempt.connectedLatch.countDown()
-                if (timedOut) {
-                    Log.w(
-                        FPS_DIAG_TAG,
-                        "bind_timeout generation=${currentAttempt.generation} " +
-                            "elapsedMs=${SystemClock.elapsedRealtime() - currentAttempt.startedAtMs}",
-                    )
-                    cleanupFpsUserServiceAttempt(currentAttempt)
-                }
-            }
-        } else if (currentAttempt.state == FpsBindingState.BINDING) {
-            val timedOut = synchronized(fpsUserServiceLock) {
-                if (currentFpsUserServiceBinding === currentAttempt &&
-                    currentAttempt.state == FpsBindingState.BINDING
-                ) {
-                    currentFpsUserServiceBinding = null
-                    currentAttempt.state = FpsBindingState.TIMED_OUT
-                    currentAttempt.errorCode = "shizuku_userservice_timeout"
-                    currentAttempt.remote = null
-                    true
-                } else {
-                    false
-                }
-            }
-            currentAttempt.connectedLatch.countDown()
-            if (timedOut) {
-                Log.w(FPS_DIAG_TAG, "bind_timeout generation=${currentAttempt.generation} deadlineElapsed=true")
-                cleanupFpsUserServiceAttempt(currentAttempt)
-            }
-        }
-
-        var cleanupAfterDecision: FpsUserServiceBindingAttempt? = null
-        val result = synchronized(fpsUserServiceLock) {
-            when (currentAttempt.state) {
-                FpsBindingState.CONNECTED -> {
-                    val remote = currentAttempt.remote
-                    if (currentFpsUserServiceBinding === currentAttempt &&
-                        remote != null &&
-                        runCatching { remote.asBinder().isBinderAlive }.getOrDefault(false)
-                    ) {
-                        FpsServiceAcquireResult(attempt = currentAttempt)
-                    } else {
-                        if (currentFpsUserServiceBinding === currentAttempt) {
-                            currentFpsUserServiceBinding = null
-                        }
-                        currentAttempt.state = FpsBindingState.FAILED
-                        currentAttempt.errorCode = "shizuku_userservice_dead"
-                        currentAttempt.remote = null
-                        cleanupAfterDecision = currentAttempt
-                        FpsServiceAcquireResult(errorCode = "shizuku_userservice_dead")
-                    }
-                }
-                FpsBindingState.FAILED,
-                FpsBindingState.TIMED_OUT,
-                FpsBindingState.DISCONNECTED,
-                FpsBindingState.CANCELLED -> {
-                    cleanupAfterDecision = currentAttempt
-                    FpsServiceAcquireResult(
-                        errorCode = currentAttempt.errorCode ?: "shizuku_userservice_unavailable",
-                    )
-                }
-                FpsBindingState.BINDING -> {
-                    if (currentFpsUserServiceBinding === currentAttempt) {
-                        currentFpsUserServiceBinding = null
-                    }
-                    currentAttempt.state = FpsBindingState.TIMED_OUT
-                    currentAttempt.errorCode = "shizuku_userservice_timeout"
-                    cleanupAfterDecision = currentAttempt
-                    FpsServiceAcquireResult(errorCode = "shizuku_userservice_timeout")
-                }
-            }
-        }
-        cleanupAfterDecision?.let { cleanupFpsUserServiceAttempt(it) }
-        if (result.attempt != null) {
-            Log.d(
-                FPS_DIAG_TAG,
-                "bind_ready generation=${currentAttempt.generation} remoteAlive=true",
-            )
-        } else {
-            Log.w(
-                FPS_DIAG_TAG,
-                "bind_failed generation=${currentAttempt.generation} " +
-                    "state=${currentAttempt.state} error=${result.errorCode}",
-            )
-        }
-        return result
-    }
-
-    /**
-     * Detach one attempt and cancel any latch waiter synchronously. Cleanup must occur outside
-     * the lock because Shizuku calls are Binder IPC and may call back into ServiceConnection.
-     */
-    private fun retireFpsUserServiceBinding(
-        expected: FpsUserServiceBindingAttempt? = null,
-    ): FpsUserServiceBindingAttempt? = synchronized(fpsUserServiceLock) {
-        val active = currentFpsUserServiceBinding
-        val target = expected ?: active ?: return@synchronized null
-        if (active === target) currentFpsUserServiceBinding = null
-        if (target.state == FpsBindingState.BINDING ||
-            target.state == FpsBindingState.CONNECTED
-        ) {
-            target.state = FpsBindingState.CANCELLED
-            target.errorCode = "shizuku_userservice_cancelled"
-        }
-        target.remote = null
-        target.connectedLatch.countDown()
-        target
-    }
-
-    private fun releaseFpsUserService(
-        expected: FpsUserServiceBindingAttempt? = null,
-    ) {
-        retireFpsUserServiceBinding(expected)?.let { cleanupFpsUserServiceAttempt(it) }
-    }
-
-    private fun scheduleFpsUserServiceCleanup(attempt: FpsUserServiceBindingAttempt) {
-        if (fpsExecutor.isShutdown) {
-            cleanupFpsUserServiceAttempt(attempt)
-            return
-        }
-        try {
-            fpsExecutor.execute { cleanupFpsUserServiceAttempt(attempt) }
-        } catch (_: Exception) {
-            cleanupFpsUserServiceAttempt(attempt)
-        }
-    }
-
-    private fun cleanupFpsUserServiceAttempt(attempt: FpsUserServiceBindingAttempt) {
-        if (!attempt.cleanupStarted.compareAndSet(false, true)) return
-        val connection = attempt.connection
-        if (!runCatching { Shizuku.pingBinder() }.getOrDefault(false)) {
-            attempt.cleanupStarted.set(false)
-            Log.w(
-                FPS_DIAG_TAG,
-                "bind_cleanup_deferred generation=${attempt.generation} reason=shizuku_binder_unavailable",
-            )
-            return
-        }
-
-        var callbackDetached = false
-        var remoteRemoved = false
-        try {
-            // First remove this attempt's callback registration, then remove its tagged process.
-            Shizuku.unbindUserService(attempt.args, connection, false)
-            callbackDetached = true
-        } catch (error: Exception) {
-            Log.w(
-                FPS_DIAG_TAG,
-                "bind_callback_detach_failed generation=${attempt.generation} " +
-                    "exception=${error.javaClass.simpleName}",
-            )
-        }
-        try {
-            // Per-attempt tags ensure this cannot remove a newer attempt's service.
-            Shizuku.unbindUserService(attempt.args, null, true)
-            remoteRemoved = true
-        } catch (error: Exception) {
-            Log.w(
-                FPS_DIAG_TAG,
-                "bind_remote_remove_failed generation=${attempt.generation} " +
-                    "exception=${error.javaClass.simpleName}",
-            )
-        }
-        if (!callbackDetached || !remoteRemoved) attempt.cleanupStarted.set(false)
-        Log.d(
-            FPS_DIAG_TAG,
-            "bind_cleanup generation=${attempt.generation} " +
-                "callbackDetached=$callbackDetached remoteRemoved=$remoteRemoved",
-        )
-    }
-
-    // Relay a whitelisted FPS operation to Shizuku; arbitrary command strings are never accepted.
-    private fun runDumpsys(vararg arguments: String): DumpsysResult {
-        val access = shizukuFpsAccessSnapshot()
-        if (!access.available) return DumpsysResult("", false, "shizuku_not_running")
-        if (!access.supported) return DumpsysResult("", false, "shizuku_unsupported")
-        if (!access.granted) return DumpsysResult("", false, "shizuku_permission_missing")
-        val operation = when (arguments.toList()) {
-            listOf("SurfaceFlinger", "--timestats", "-clear", "-enable") -> FpsShizukuUserService.OP_START_CAPTURE
-            listOf("SurfaceFlinger", "--timestats", "-disable") -> FpsShizukuUserService.OP_STOP_CAPTURE
-            listOf("activity", "activities") -> FpsShizukuUserService.OP_READ_FOREGROUND_ACTIVITY
-            listOf("SurfaceFlinger", "--timestats", "-dump", "-clear", "-maxlayers", "64") -> FpsShizukuUserService.OP_READ_SURFACEFLINGER_STATS
-            listOf("window", "displays") -> FpsShizukuUserService.OP_READ_FOREGROUND_WINDOW
-            listOf("window") -> FpsShizukuUserService.OP_READ_FOREGROUND_WINDOW_FULL
-            else -> return DumpsysResult("", false, "unsupported_fps_operation")
-        }
-        val operationName = when (operation) {
-            FpsShizukuUserService.OP_START_CAPTURE -> "capture_start"
-            FpsShizukuUserService.OP_STOP_CAPTURE -> "capture_stop"
-            FpsShizukuUserService.OP_READ_FOREGROUND_ACTIVITY -> "foreground_activity"
-            FpsShizukuUserService.OP_READ_SURFACEFLINGER_STATS -> "surfaceflinger_stats"
-            FpsShizukuUserService.OP_READ_FOREGROUND_WINDOW -> "foreground_window"
-            FpsShizukuUserService.OP_READ_FOREGROUND_WINDOW_FULL -> "foreground_window_full"
-            else -> "unknown_operation"
-        }
-        val acquired = acquireFpsUserService()
-        val attempt = acquired.attempt
-            ?: return DumpsysResult("", false, acquired.errorCode ?: "shizuku_userservice_unavailable")
-        val remote = attempt.remote
-        if (remote == null || !runCatching { remote.asBinder().isBinderAlive }.getOrDefault(false)) {
-            releaseFpsUserService(attempt)
-            return DumpsysResult("", false, "shizuku_userservice_dead")
-        }
-        return try {
-            val bundle = remote.executeFpsOperation(operation)
-            val output = bundle.getString("output", "")
-            val ok = bundle.getBoolean("ok", false)
-            val error = bundle.getString("error")
-            val remoteUid = bundle.getInt("uid", -1)
-            Log.d(
-                FPS_DIAG_TAG,
-                "remote_call operation=$operationName generation=${attempt.generation} " +
-                    "remoteUid=$remoteUid ok=$ok error=${error ?: "none"} outputChars=${output.length}",
-            )
-            DumpsysResult(output, ok, error)
-        } catch (_: RemoteException) {
-            Log.e(
-                FPS_DIAG_TAG,
-                "remote_call_exception operation=$operationName generation=${attempt.generation} type=RemoteException",
-            )
-            releaseFpsUserService(attempt)
-            DumpsysResult("", false, "shizuku_userservice_remote_exception")
-        } catch (error: Exception) {
-            Log.e(
-                FPS_DIAG_TAG,
-                "remote_call_exception operation=$operationName generation=${attempt.generation} " +
-                    "type=${error.javaClass.simpleName}",
-            )
-            releaseFpsUserService(attempt)
-            DumpsysResult("", false, "shizuku_userservice_error")
-        }
-    }
-
-
-
-    // AI-METHOD / SURFACEFLINGER-STATS-PARSER
-    // Prefer per-interval averageFPS; totalFrames is a minimum-data guard, not a delta counter.
-    private fun parseLayerFrameCounts(output: String): List<FpsTimeStatsLayer> {
-        val fromJson = try {
-            val stats = JSONObject(output).optJSONObject("stats")
-            if (stats == null) emptyList() else {
-                val parsed = mutableListOf<FpsTimeStatsLayer>()
-                val keys = stats.keys()
-                while (keys.hasNext()) {
-                    val name = keys.next()
-                    val layer = stats.optJSONObject(name) ?: continue
-                    val frames = layer.optLong("totalFrames", -1L)
-                    if (frames >= 0L) {
-                        val rawPackage = layer.optString("packageName", "")
-                        parsed.add(FpsTimeStatsLayer(
-                            name = name,
-                            totalFrames = frames,
-                            averageFps = layer.optDouble("averageFPS", layer.optDouble("averageFps", Double.NaN)),
-                            packageName = rawPackage.takeIf { it.isNotBlank() && it != "null" },
-                        ))
-                    }
-                }
-                parsed
-            }
-        } catch (_: Exception) { emptyList() }
-        if (fromJson.isNotEmpty()) return fromJson
-        return FpsTimeStatsParser.parseLines(output)
-    }
-
-    private fun isPackageIdentifier(value: String): Boolean =
-        value == "android" || Regex("""^[A-Za-z][A-Za-z0-9_]*(?:\\.[A-Za-z0-9_]+)+$""").matches(value)
-
-    private fun isCandidateApplicationLayer(name: String): Boolean {
-        val value = name.trim()
-        if (value.isEmpty() || value.contains("surfaceflinger", ignoreCase = true)) return false
-        return Regex("""[A-Za-z][A-Za-z0-9_]*(?:\\.[A-Za-z0-9_]+)+""").containsMatchIn(value)
-    }
-
-    private fun isCandidateApplicationLayer(layer: FpsTimeStatsLayer): Boolean {
-        val packageName = layer.packageName?.trim()
-        return if (!packageName.isNullOrEmpty()) isPackageIdentifier(packageName)
-        else isCandidateApplicationLayer(layer.name)
-    }
-
-    // Try multiple focus markers found across Android/OEM WindowManager and ActivityManager dumps.
-    private fun readForegroundPackage(): String? {
-        fun packageFromFocusLine(line: String): String? {
-            val patterns = listOf(
-                Regex("""\\bu\\d+\\s+([A-Za-z0-9_.]+)/"""),
-                Regex("""([A-Za-z][A-Za-z0-9_]*(?:\\.[A-Za-z0-9_]+)+)/"""),
-            )
-            val component = patterns.firstNotNullOfOrNull { it.find(line)?.groupValues?.get(1) }
-            if (component != null && isPackageIdentifier(component)) return component
-            return Regex("""[A-Za-z][A-Za-z0-9_]*(?:\\.[A-Za-z0-9_]+)+""")
-                .findAll(line).map { it.value }.lastOrNull()?.takeIf(::isPackageIdentifier)
-        }
-
-        fun focusedPackage(output: String): String? {
-            val markers = listOf(
-                "mCurrentFocus", "mFocusedWindow", "mFocusedApp",
-                "topResumedActivity", "mResumedActivity", "ResumedActivity", "topActivity",
-            )
-            val lines = output.lineSequence().toList()
-            for (marker in markers) for (line in lines) {
-                if (!line.contains(marker)) continue
-                packageFromFocusLine(line)?.let { return it }
-            }
-            return null
-        }
-
-        val displaysResult = runDumpsys("window", "displays")
-        if (displaysResult.ok) {
-            val focused = focusedPackage(displaysResult.output)
-            if (focused != null) {
-                Log.d(FPS_DIAG_TAG, "foreground_detected source=window_displays package=$focused")
-                return focused
-            }
-        } else {
-            Log.w(FPS_DIAG_TAG, "foreground_lookup_failed source=window_displays error=${displaysResult.error ?: "unknown"}")
-        }
-        val fullWindowResult = runDumpsys("window")
-        if (fullWindowResult.ok) {
-            val focused = focusedPackage(fullWindowResult.output)
-            if (focused != null) {
-                Log.d(FPS_DIAG_TAG, "foreground_detected source=window_full package=$focused")
-                return focused
-            }
-        } else {
-            Log.w(FPS_DIAG_TAG, "foreground_lookup_failed source=window_full error=${fullWindowResult.error ?: "unknown"}")
-        }
-        val activityResult = runDumpsys("activity", "activities")
-        if (!activityResult.ok) {
-            Log.w(FPS_DIAG_TAG, "foreground_lookup_failed source=activity error=${activityResult.error ?: "unknown"}")
-            return null
-        }
-        val resumed = focusedPackage(activityResult.output)
-        if (resumed == null) Log.w(FPS_DIAG_TAG, "foreground_unknown allSourcesTried=true")
-        else Log.d(FPS_DIAG_TAG, "foreground_detected source=activity package=$resumed")
-        return resumed
-    }
-
-    // Trust packageName when TimeStats supplies it; otherwise use an exact package component boundary.
-    private fun layerBelongsToPackage(layer: FpsTimeStatsLayer, foregroundPackage: String): Boolean {
-        val packageName = layer.packageName?.trim()
-        if (!packageName.isNullOrEmpty()) return packageName == foregroundPackage
-        return layer.name.contains("$foregroundPackage/") ||
-            layer.name.startsWith("$foregroundPackage#") ||
-            layer.name == foregroundPackage
-    }
-
-    // AI-METHOD / FPS-SAMPLE-CALCULATION
-    // Sample the current TimeStats interval, clear after each bounded dump, and use averageFPS.
-    // Prefer SurfaceView/BLAST layers, as the working Shizuku TimeStats reference does.
-    private fun pollSurfaceFlinger(generation: Int) {
-        if (!fpsMonitorWanted || generation != fpsGeneration) return
-        if (!hasShizukuFpsPermission()) {
-            val access = shizukuFpsAccessSnapshot()
-            val reason = when {
-                !access.available -> "shizuku_not_running"
-                !access.supported -> "shizuku_unsupported"
-                else -> "shizuku_permission_missing"
-            }
-            fpsMainHandler.post {
-                if (generation != fpsGeneration) return@post
-                stopFpsMonitor(reason)
-            }
-            return
-        }
-
-        val foregroundPackage = readForegroundPackage()
-        if (foregroundPackage == null || !isPackageIdentifier(foregroundPackage)) {
-            Log.w(FPS_DIAG_TAG, "fps_sample_blocked reason=foreground_unknown")
-            fpsTrackedPackage = null
-            fpsMainHandler.post {
-                if (generation != fpsGeneration) return@post
-                data.fps = "--"
-                fpsMonitorStatus = "foreground_unknown"
-                hudView?.requestLayout()
-                hudView?.invalidate()
-            }
-            return
-        }
-
-        if (fpsTrackedPackage != foregroundPackage) {
-            fpsTrackedPackage = foregroundPackage
-            fpsMainHandler.post {
-                if (generation != fpsGeneration) return@post
-                data.fps = "--"
-                fpsMonitorStatus = "waiting_for_frames"
-                hudView?.requestLayout()
-                hudView?.invalidate()
-            }
-        }
-
-        val result = runDumpsys(
-            "SurfaceFlinger", "--timestats", "-dump", "-clear", "-maxlayers",
-            MAX_TIME_STATS_LAYERS.toString(),
-        )
-        if (!result.ok) {
-            Log.w(FPS_DIAG_TAG, "fps_sample_blocked reason=surfaceflinger_dump error=${result.error ?: "unknown"}")
-            fpsMainHandler.post {
-                if (generation != fpsGeneration) return@post
-                stopFpsMonitor(result.error ?: "surfaceflinger_blocked")
-            }
-            return
-        }
-
-        val parsedLayers = parseLayerFrameCounts(result.output)
-        val candidateLayers = parsedLayers.filter { isCandidateApplicationLayer(it) }
-        val matchedLayers = candidateLayers.filter { layerBelongsToPackage(it, foregroundPackage) }
-        val validLayers = matchedLayers.filter { it.hasUsableSample }
-        Log.d(
-            FPS_DIAG_TAG,
-            "layer_match package=$foregroundPackage candidateLayers=${candidateLayers.size} " +
-                "matchedLayers=${matchedLayers.size} validLayers=${validLayers.size} outputChars=${result.output.length}",
-        )
-
-        if (validLayers.isEmpty()) {
-            val returnedLayers = candidateLayers.take(MAX_DIAGNOSTIC_LAYERS).joinToString(";") { layer ->
-                "${layer.name.take(100)}(frames=${layer.totalFrames},fps=${layer.averageFps},pkg=${layer.packageName ?: "-"})"
-            }
-            Log.w(
-                FPS_DIAG_TAG,
-                "fps_sample_blocked reason=${if (matchedLayers.isEmpty()) "no_layer_data" else "no_valid_sample"} package=$foregroundPackage layers=$returnedLayers",
-            )
-            fpsMainHandler.post {
-                if (generation != fpsGeneration) return@post
-                data.fps = "--"
-                fpsMonitorStatus = if (matchedLayers.isEmpty()) "no_layer_data" else "waiting_for_frames"
-                hudView?.requestLayout()
-                hudView?.invalidate()
-            }
-            return
-        }
-
-        val chosen = validLayers.sortedWith(
-            compareByDescending<FpsTimeStatsLayer> { it.prefersSurfaceLayer }
-                .thenByDescending { it.totalFrames },
-        ).first()
-        val value = chosen.averageFps.roundToInt().coerceIn(0, MAX_VALID_FPS_VALUE.roundToInt()).toString()
-        Log.d(
-            FPS_DIAG_TAG,
-            "frame_sample package=$foregroundPackage chosenLayer=${chosen.name.take(140)} " +
-                "packageName=${chosen.packageName ?: "-"} totalFrames=${chosen.totalFrames} averageFPS=${chosen.averageFps} fps=$value status=active",
-        )
-        fpsMainHandler.post {
-            if (generation != fpsGeneration) return@post
-            data.fps = value
-            fpsMonitorStatus = "active"
-            hudView?.requestLayout()
-            hudView?.invalidate()
-        }
-    }
 
     companion object {
         private const val CHANNEL_ID = "je_x_fyz_floating"
@@ -1045,15 +52,6 @@ class FloatingMonitorService : Service() {
         private const val ACTION_CONFIG = "je_x_fyz.floating.CONFIG"
         private const val ACTION_DATA = "je_x_fyz.floating.DATA"
         private const val EXTRA_JSON = "json"
-        private const val FPS_SAMPLE_INTERVAL_MS = 500L
-        private const val MAX_TIME_STATS_LAYERS = 64
-        private const val MAX_DIAGNOSTIC_LAYERS = 12
-        private const val MAX_VALID_FPS_VALUE = 480.0
-        // Shizuku's UserServiceManager allows 30 seconds for a service process to start.
-        // Leave 5 seconds for Binder callback delivery; a 6-second client timeout can unbind
-        // a valid cold start before Shizuku's own startup window expires.
-        private const val FPS_USER_SERVICE_BIND_TIMEOUT_MS = 35_000L
-        private const val FPS_DIAG_TAG = "JexFpsDiag"
 
         @Volatile
         private var instance: FloatingMonitorService? = null
@@ -1110,32 +108,12 @@ class FloatingMonitorService : Service() {
                     "window_add_succeeded" to false,
                     "window_add_error" to null,
                     "view_attached_to_window" to false,
-                    "fps_permission_granted" to shizukuFpsAccessSnapshot().granted,
-                    "shizuku_available" to shizukuFpsAccessSnapshot().available,
-                    "shizuku_supported" to shizukuFpsAccessSnapshot().supported,
-                    "shizuku_permission_granted" to shizukuFpsAccessSnapshot().granted,
-                    "shizuku_uid" to shizukuFpsAccessSnapshot().uid,
-                    "fps_monitor_active" to false,
-                    "fps_monitor_status" to shizukuFpsAccessSnapshot().toStatusMap("monitor_off", false)["fps_monitor_status"],
                     "horizontal" to prefs.getBoolean("horizontal", true),
                     "size" to prefs.getFloat("size", 0.6f).coerceIn(0.3f, 1.0f).toDouble(),
                     "x" to prefs.getInt("x", 16),
                     "y" to prefs.getInt("y", 120),
                 )
             }
-        }
-
-        // AI-METHOD / FPS ACCESS STATUS CONTRACT
-        // Report the narrowly scoped ADB DUMP grant and native FPS sampler state.
-        fun fpsAccessStatus(context: Context): Map<String, Any?> {
-            return instance?.fpsAccessStateMap()
-                ?: shizukuFpsAccessSnapshot().toStatusMap("monitor_off", false)
-        }
-
-        // Refresh the sampler only when a real attached overlay and the F metric are selected.
-        fun refreshFpsMonitor(context: Context): Map<String, Any?> {
-            instance?.refreshFpsMonitor()
-            return fpsAccessStatus(context)
         }
 
         // AI-METHOD / DATA CONTRACT
@@ -1148,7 +126,7 @@ class FloatingMonitorService : Service() {
     private data class Config(
         var enabled: Boolean = false,
         var style: String = "letters",
-        var order: MutableList<String> = mutableListOf("F", "B", "H", "V", "A", "P", "S"),
+        var order: MutableList<String> = mutableListOf("B", "H", "V", "A", "P", "F"),
         var selected: MutableSet<String> = mutableSetOf(),
         var size: Float = 0.6f,
         var opacity: Float = 0.9f,
@@ -1160,7 +138,6 @@ class FloatingMonitorService : Service() {
     // Live presentation data forwarded from Flutter. The language is presentation state,
     // not device protocol state, and therefore never changes BLE command semantics.
     private data class Data(
-        var fps: String = "--",
         var battery: String = "--",
         var hotside: String = "--",
         var voltage: String = "--",
@@ -1182,21 +159,6 @@ class FloatingMonitorService : Service() {
     private var windowAddError: String? = null
     private var viewAttachedToWindow = false
     private val prefs by lazy { getSharedPreferences("jexfyz_floating_native_v1", Context.MODE_PRIVATE) }
-
-    // FPS capture runs off the main thread and samples SurfaceFlinger totals once per second.
-    // It is active only while the user-enabled overlay is attached and metric F is selected.
-    private val fpsMainHandler = Handler(Looper.getMainLooper())
-    private val fpsExecutor = Executors.newSingleThreadScheduledExecutor { task ->
-        Thread(task, "JE-FPS-Monitor").apply { isDaemon = true }
-    }
-    @Volatile private var fpsMonitorWanted = false
-    @Volatile private var fpsCaptureEnabled = false
-    @Volatile private var fpsMonitorStatus = "monitor_off"
-    @Volatile private var fpsGeneration = 0
-    @Volatile private var fpsPollingTask: ScheduledFuture<*>? = null
-    @Volatile private var fpsLastProgressAtMs = 0L
-    private var fpsSamplerWatchdog: Runnable? = null
-    private var fpsTrackedPackage: String? = null
 
     // AI-METHOD / SERVICE-CREATE CONTRACT
     // Initialize WindowManager, notification channel, and the required specialUse foreground service.
@@ -1235,11 +197,8 @@ class FloatingMonitorService : Service() {
     // AI-METHOD / SERVICE-DESTROY CONTRACT
     // Remove any attached overlay and clear the singleton instance used by the MethodChannel bridge.
     override fun onDestroy() {
-        cancelFpsSamplerWatchdog()
         removeOverlay()
         instance = null
-        fpsExecutor.execute { releaseFpsUserService() }
-        fpsExecutor.shutdown()
         super.onDestroy()
     }
 
@@ -1264,14 +223,7 @@ class FloatingMonitorService : Service() {
             "size" to config.size.toDouble(),
             "x" to if (::layoutParams.isInitialized) layoutParams.x else 16,
             "y" to if (::layoutParams.isInitialized) layoutParams.y else 120,
-            "fps_permission_granted" to shizukuFpsAccessSnapshot().granted,
-            "shizuku_available" to shizukuFpsAccessSnapshot().available,
-            "shizuku_supported" to shizukuFpsAccessSnapshot().supported,
-            "shizuku_permission_granted" to shizukuFpsAccessSnapshot().granted,
-            "shizuku_uid" to shizukuFpsAccessSnapshot().uid,
-            "fps_monitor_active" to (fpsMonitorStatus == "active" && hasShizukuFpsPermission()),
-            "fps_monitor_status" to shizukuFpsAccessSnapshot().toStatusMap(fpsMonitorStatus, fpsMonitorStatus == "active")["fps_monitor_status"],
-        )
+                                    )
     }
 
     // AI-METHOD / NOTIFICATION-CONTRACT
@@ -1335,12 +287,12 @@ class FloatingMonitorService : Service() {
             if (order != null) {
                 for (i in 0 until order.length()) {
                     val value = order.optString(i)
-                    if (value in listOf("F", "B", "H", "V", "A", "P", "S") && !parsedOrder.contains(value)) {
+                    if (value in listOf("B", "H", "V", "A", "P", "F") && !parsedOrder.contains(value)) {
                         parsedOrder.add(value)
                     }
                 }
             }
-            for (metric in listOf("F", "B", "H", "V", "A", "P", "S")) {
+            for (metric in listOf("B", "H", "V", "A", "P", "F")) {
                 if (!parsedOrder.contains(metric)) parsedOrder.add(metric)
             }
             config.order = parsedOrder
@@ -1350,7 +302,7 @@ class FloatingMonitorService : Service() {
             if (selectedArray != null) {
                 for (i in 0 until selectedArray.length()) {
                     val value = selectedArray.optString(i)
-                    if (value in listOf("F", "B", "H", "V", "A", "P", "S")) selected.add(value)
+                    if (value in listOf("B", "H", "V", "A", "P", "F")) selected.add(value)
                 }
             }
             config.selected = selected
@@ -1362,7 +314,6 @@ class FloatingMonitorService : Service() {
             } else {
                 removeOverlay()
             }
-            refreshFpsMonitor()
         } catch (_: Exception) {
         }
     }
@@ -1372,7 +323,6 @@ class FloatingMonitorService : Service() {
     private fun applyData(json: String) {
         try {
             val obj = JSONObject(json)
-            // FPS is owned by the native SurfaceFlinger sampler, not Flutter frame timing.
             data.battery = obj.optString("battery", "--")
             data.hotside = obj.optString("hotside", "--")
             data.voltage = obj.optString("voltage", "--")
@@ -1496,7 +446,6 @@ class FloatingMonitorService : Service() {
     // AI-METHOD / DETACH-CONTRACT
     // Remove the attached view safely and clear attach state even when WindowManager reports an error.
     private fun removeOverlay() {
-        stopFpsMonitor("monitor_off")
         val view = hudView ?: run {
             viewAttachedToWindow = false
             return
@@ -1571,7 +520,7 @@ class FloatingMonitorService : Service() {
         private var density = resources.displayMetrics.density
 
         // AI-MEMORY / VISIBILITY-INVARIANT
-        // Selected metrics remain visible. S (Fan Speed) reports OFF/MATI when Fan is OFF.
+        // Selected metrics remain visible. F (Fan Speed) reports OFF/MATI when Fan is OFF.
         private val visibleMetrics: List<String>
             get() = config.order.filter { config.selected.contains(it) }
 
@@ -1585,7 +534,7 @@ class FloatingMonitorService : Service() {
         private fun dp(value: Float): Float = value * density
 
         // AI-METHOD / MEASURE-CONTRACT
-        // Measure only metrics currently selected and visible; S is omitted when Fan is OFF.
+        // Measure only metrics currently selected and visible; F shows OFF when Fan is OFF.
         override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
             val size = config.size
             val textSize = dp(11.5f * size)
@@ -1619,13 +568,12 @@ class FloatingMonitorService : Service() {
             val onText = if (data.language == "indonesia") "HIDUP" else "ON"
             val offText = if (data.language == "indonesia") "MATI" else "OFF"
             return when (metric) {
-                "F" -> "F:" + data.fps
                 "B" -> "B:" + if (!data.connected || data.battery == "--") "--" else data.battery + "°"
                 "H" -> "H:" + if (!data.connected || data.hotside == "--") "--" else data.hotside + "°"
                 "V" -> "V:" + if (data.connected) data.voltage else "--"
                 "A" -> "A:" + if (!data.connected) "--" else if (data.adaptiveOn) onText else offText
                 "P" -> "P:" + if (!data.connected) "--" else if (data.peltierOn) onText else offText
-                "S" -> "S:" + if (!data.connected) "--" else if (data.fanOn) data.speed.toString() else offText
+                "F" -> "F:" + if (!data.connected) "--" else if (data.fanOn) data.speed.toString() else offText
                 else -> ""
             }
         }
@@ -1769,7 +717,7 @@ class FloatingMonitorService : Service() {
                     }
                     canvas.drawCircle(cx, cy, dp(2f * scale), iconPaint)
                 }
-                "S" -> {
+                "F" -> {
                     for (angle in 0 until 360 step 120) {
                         val rad = Math.toRadians(angle.toDouble())
                         val p = Path().apply {

@@ -16,12 +16,11 @@ package com.horizontalzzz.jexfyz
 
 import android.app.Notification
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
-import android.content.pm.PackageManager
 import android.os.Bundle
-import rikka.shizuku.Shizuku
 import android.location.LocationManager
 import android.os.BatteryManager
 import android.os.Build
@@ -44,35 +43,7 @@ class MainActivity : FlutterActivity() {
     // Production release-integrity bridge.
     private val SECURITY_CHANNEL = "je_x_fyz/security"
     private val NOTIFICATION_CHANNEL = "je_x_fyz/notifications"
-    private val SHIZUKU_PERMISSION_REQUEST_CODE = 2305
 
-    private val shizukuBinderReceivedListener = Shizuku.OnBinderReceivedListener {
-        FloatingMonitorService.refreshFpsMonitor(this)
-    }
-    private val shizukuBinderDeadListener = Shizuku.OnBinderDeadListener {
-        FloatingMonitorService.refreshFpsMonitor(this)
-    }
-    private val shizukuPermissionResultListener =
-        Shizuku.OnRequestPermissionResultListener { requestCode, _ ->
-            if (requestCode == SHIZUKU_PERMISSION_REQUEST_CODE) FloatingMonitorService.refreshFpsMonitor(this)
-        }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Shizuku.addBinderReceivedListenerSticky(shizukuBinderReceivedListener)
-        Shizuku.addBinderDeadListener(shizukuBinderDeadListener)
-        Shizuku.addRequestPermissionResultListener(shizukuPermissionResultListener)
-    }
-
-    override fun onDestroy() {
-        Shizuku.removeBinderReceivedListener(shizukuBinderReceivedListener)
-        Shizuku.removeBinderDeadListener(shizukuBinderDeadListener)
-        Shizuku.removeRequestPermissionResultListener(shizukuPermissionResultListener)
-        super.onDestroy()
-    }
-
-    // Register the stable MethodChannel APIs consumed by Flutter. Method names and channel names
-    // are app contracts; changes here require matching Dart bridge changes.
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
@@ -132,35 +103,6 @@ class MainActivity : FlutterActivity() {
                     result.success(openOverlaySettings())
                 }
 
-                "getFpsAccessStatus" -> {
-                    result.success(FloatingMonitorService.fpsAccessStatus(this))
-                }
-
-                "refreshFpsMonitor" -> {
-                    result.success(FloatingMonitorService.refreshFpsMonitor(this))
-                }
-
-                "requestShizukuFpsPermission" -> {
-                    val available = runCatching { Shizuku.pingBinder() }.getOrDefault(false)
-                    val supported = available && runCatching { Shizuku.getVersion() >= 10 }.getOrDefault(false)
-                    val granted = supported && runCatching {
-                        Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED
-                    }.getOrDefault(false)
-                    val requestStarted = available && supported && !granted
-                    if (requestStarted) {
-                        try {
-                            Shizuku.requestPermission(SHIZUKU_PERMISSION_REQUEST_CODE)
-                        } catch (_: Exception) {
-                            // Flutter rereads authoritative status after the request.
-                        }
-                    }
-                    result.success(FloatingMonitorService.fpsAccessStatus(this) + mapOf(
-                        "shizuku_permission_requested" to requestStarted,
-                    ))
-                }
-
-                "openShizukuSetup" -> result.success(openShizukuSetup())
-
                 "startFloatingMonitor" -> {
                     val json = call.arguments?.toString() ?: "{}"
                     result.success(FloatingMonitorService.start(this, json))
@@ -194,7 +136,6 @@ class MainActivity : FlutterActivity() {
                 else -> result.notImplemented()
             }
         }
-
 
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
@@ -255,18 +196,6 @@ class MainActivity : FlutterActivity() {
     private fun stopBackgroundService(): Boolean {
         return try {
             stopService(Intent(this, JeForegroundService::class.java))
-        } catch (_: Exception) {
-            false
-        }
-    }
-
-    // Open Shizuku when installed; otherwise open its official download page.
-    private fun openShizukuSetup(): Boolean {
-        return try {
-            val launch = packageManager.getLaunchIntentForPackage("moe.shizuku.privileged.api")
-            if (launch != null) startActivity(launch)
-            else startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://shizuku.rikka.app/download/")))
-            true
         } catch (_: Exception) {
             false
         }

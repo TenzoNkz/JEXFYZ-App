@@ -39,6 +39,15 @@ void main() {
     expect(largest.backgroundColor, FloatingBackgroundColor.black);
   });
 
+  test('Floating Monitor legacy configuration migrates S to F and drops old FPS F', () {
+    final migrated = FloatingConfig.fromJson(
+      '{"order":["F","B","H","V","A","P","S"],"selected":["S"]}',
+    );
+    expect(migrated.order, <String>['B', 'H', 'V', 'A', 'P', 'F']);
+    expect(migrated.selected, <String>{'F'});
+    expect(migrated.toMap()['metricSchemaVersion'], FloatingMetric.schemaVersion);
+  });
+
   test('Floating Monitor settings show live numeric values and opacity marks', () {
     final floating = File('lib/floating_monitor.dart').readAsStringSync();
     final settings = File('lib/app_settings.dart').readAsStringSync();

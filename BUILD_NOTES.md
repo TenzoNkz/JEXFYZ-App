@@ -8,7 +8,7 @@
 - Build App does not authorize Firmware compilation, BIN creation/publication/replacement, Firebase metadata changes, physical OTA, flashing, device operation, or unrelated release operations.
 - Never claim CI success proves BLE, cooling/safety behavior, Firmware compilation, OTA installation or installed device version.
 
-## CURRENT — Build #69 release verified; physical FPS remains unverified
+## LATEST VERIFIED RELEASE — Build #69 (current main source has since retired FPS; new source not yet built)
 
 - Latest successful App Build is [Build #69 / run `38896502185`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38896502185), from exact source/release target `01212c32a802ca0e67f559307fe4e19a667489c6`; triggered by owner-authored guarded [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). It completed at `2026-10-16T11:56:09Z` (`2026-10-16 18:56:09 Asia/Jakarta`).
 - Build #69 re-ran the functionally unchanged App source last functionally released in Build #67, including TimeStats parser checkpoint `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620`, Shizuku bind timeout `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d`, and sampler exception-isolation/watchdog `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46`.
@@ -20,7 +20,7 @@
 - Expected certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. V1/V2/V3 verification passed for built and downloaded APKs; one signer was reported.
 - The APK hash is unchanged from Builds #67/#68 because the functional source did not change; the source ZIP records Build #69's exact HEAD. Both assets were re-downloaded and verified.
 - Non-blocking warnings: 23 Dart deprecation infos, Gradle `9.3.1` out of date, native ELF DWARF data not obfuscated, self-signed/no-timestamp JAR warning and META-INF notices, cache save denied due to token scope. None failed a mandatory gate. Complete attempt evidence remains in `APP_BUILD_REPORT.md`.
-- Source/build validation is complete; physical Shizuku service binding, OEM TimeStats access, live foreground FPS and overlay rendering remain **NOT DEVICE-VERIFIED**. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+- Build #69 verification applies to the prior source, which still contained FPS. Current main source removes FPS/Shizuku and changes Floating Monitor to six metrics with F=Fan Speed; this new source has **NOT YET BEEN BUILT OR TESTED**. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
 ## HISTORICAL — Build #49 successful App release (superseded as latest by Build #69)
 - **Run:** [Build #49 / `38739077916`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916), issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22), source commit `2b2d2886abb66481b7134e5036824f625ab5659d`, job `116435785328`, runner `1000002352`. Every main step passed.

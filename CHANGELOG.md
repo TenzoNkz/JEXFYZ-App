@@ -1,5 +1,13 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-16 — FPS retired; Floating Monitor Fan Speed label changed to F (source pending Build App)
+
+- User approved removing FPS instead of continuing device-specific sampler diagnosis after repeated F:-- failures. Current source removes SurfaceFlinger/TimeStats polling, Shizuku permission/setup/status flow, Shizuku API/provider dependency and Manifest provider, UserService/AIDL, parser/watchdog source and tests, Shizuku-only Dart contract test, Shizuku license/notice files, and workflow requirements that bundled them.
+- Floating Monitor now exposes six metrics only: B (Battery), H (Hotside), V (Voltage), A (Adaptive), P (Peltier), F (Fan Speed). Fan Speed telemetry/control behavior remains unchanged; only the Floating Monitor identifier/label changes to F.
+- Persisted schema version 2 migrates older schema-v1 metric identifiers: legacy S maps to Fan Speed F; legacy F (FPS) is dropped, so an FPS selection cannot be misread as fan speed. Flutter contract tests cover migration and FPS/Shizuku UI removal.
+- Build #69 (source/release commit 01212c32a802ca0e67f559307fe4e19a667489c6) remains the latest verified APK/source release and predates this change. Current source/tests/workflow edits are NOT YET TESTED OR BUILT. No App Build was triggered; no Firmware/BIN/Firebase/OTA/flash/device operations occurred.
+
+
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
 ## 2026-10-16 — Build #69 release verified; native FPS tests rerun

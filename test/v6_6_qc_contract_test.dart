@@ -321,7 +321,7 @@ void main() {
     );
     expect(floatingMetricStatus('A', telemetry, AppLanguage.english), '--');
     expect(floatingMetricStatus('P', telemetry, AppLanguage.english), '--');
-    expect(floatingMetricStatus('S', telemetry, AppLanguage.english), '--');
+    expect(floatingMetricStatus('F', telemetry, AppLanguage.english), '--');
   });
 
   test('App waits for voltage telemetry and marks disconnected outputs unknown', () {

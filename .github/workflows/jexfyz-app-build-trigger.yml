@@ -198,36 +198,30 @@ jobs:
           if activity.count('"startFloatingMonitor"') != 1 or activity.count('"getFloatingRuntimeState"') != 1:
               raise SystemExit("JE X FYZ audit failed; Floating methods are not isolated to the dedicated channel")
 
-          # FPS elevated access must use explicit Shizuku consent and the restricted UserService.
-          fps_host = Path("android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt").read_text(encoding="utf-8")
-          fps_userservice = Path("android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FpsShizukuUserService.kt").read_text(encoding="utf-8")
-          fps_aidl = Path("android/app/src/main/aidl/com/horizontalzzz/jexfyz/IFpsShizukuUserService.aidl").read_text(encoding="utf-8")
-          if "rikka.shizuku.ShizukuProvider" not in manifest:
-              raise SystemExit("FPS audit failed; Shizuku provider is missing")
-          for token, content in [
-              ("Shizuku.requestPermission", activity),
-              ("Shizuku.checkSelfPermission()", fps_host),
-              ("Shizuku.bindUserService", fps_host),
-              ("executeFpsOperation(int operation)", fps_aidl),
-              ("OP_READ_SURFACEFLINGER_STATS", fps_userservice),
-          ]:
-              if token not in content:
-                  raise SystemExit("FPS audit failed; missing Shizuku contract: " + token)
-          if "android.permission.DUMP" in manifest or "ProcessBuilder(" in fps_host:
-              raise SystemExit("FPS audit failed; direct app-process DUMP execution is forbidden")
-          legacy_fps_tokens = [
-              "WirelessAdbPairingService",
-              "WirelessAdbIdentityStore",
-              "ADB_PAIRING_CHANNEL",
-              "startWirelessAdbPairing",
-              "com.flyfishxu:kadb",
-              "adb shell pm grant com.horizontalzzz.jexfyz android.permission.DUMP",
-              "adb shell pm revoke com.horizontalzzz.jexfyz android.permission.DUMP",
+          # Floating Monitor must stay independent of privileged FPS/Shizuku integrations.
+          if "rikka.shizuku.ShizukuProvider" in manifest or "dev.rikka.shizuku:" in gradle:
+              raise SystemExit("JE X FYZ audit failed; retired FPS/Shizuku integration remains")
+          retired_paths = [
+              "android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FpsShizukuUserService.kt",
+              "android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FpsTimeStatsParser.kt",
+              "android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FpsSamplerWatchdogPolicy.kt",
+              "android/app/src/test/kotlin/com/horizontalzzz/jexfyz/FpsTimeStatsParserTest.kt",
+              "android/app/src/test/kotlin/com/horizontalzzz/jexfyz/FpsSamplerWatchdogPolicyTest.kt",
+              "android/app/src/main/aidl/com/horizontalzzz/jexfyz/IFpsShizukuUserService.aidl",
+              "android/app/src/main/assets/licenses/shizuku-api-MIT.txt",
+              "third_party/Shizuku-API-MIT.txt",
+              "third_party/THIRD_PARTY_NOTICES.md",
+              "test/shizuku_fps_contract_test.dart",
           ]
-          active_fps_sources = manifest + activity + floating + fps_host + fps_userservice + pubspec + Path("android/app/build.gradle").read_text(encoding="utf-8")
-          legacy = [token for token in legacy_fps_tokens if token in active_fps_sources]
-          if legacy:
-              raise SystemExit("FPS audit failed; legacy ADB pairing path found: " + ", ".join(legacy))
+          leftovers = [path for path in retired_paths if Path(path).exists()]
+          if leftovers:
+              raise SystemExit("JE X FYZ audit failed; retired FPS/Shizuku files remain: " + ", ".join(leftovers))
+          if "FloatingBridge.fpsAccessStatus" in floating or "requestShizukuFpsPermission" in activity:
+              raise SystemExit("JE X FYZ audit failed; retired FPS permission bridge remains")
+          if '"F" -> "F:" + if (!data.connected) "--" else if (data.fanOn) data.speed.toString() else offText' not in Path("android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt").read_text(encoding="utf-8"):
+              raise SystemExit("JE X FYZ audit failed; Floating metric F must display Fan Speed")
+          if "metricSchemaVersion" not in floating or "fromStored" not in floating:
+              raise SystemExit("JE X FYZ audit failed; legacy Floating Monitor metric migration is missing")
 
           # Firmware .ino source is intentionally stored in this App repository.
           # It must not be referenced as a Flutter source/build dependency.
@@ -256,22 +250,7 @@ jobs:
           if re.search(r"""(?m)^\s*(?:import|export|part)\s+['"][^'"]*firmware/""", source):
               raise SystemExit("JE X FYZ audit failed; App Dart code imports firmware source")
 
-          # Pinned Shizuku API/provider dependency and its MIT notice are part of release compliance.
-          app_gradle = Path("android/app/build.gradle").read_text(encoding="utf-8")
-          notices = Path("third_party/THIRD_PARTY_NOTICES.md")
-          shizuku_notice = Path("third_party/Shizuku-API-MIT.txt")
-          shizuku_apk_license = Path("android/app/src/main/assets/licenses/shizuku-api-MIT.txt")
-          if 'dev.rikka.shizuku:api:13.1.5' not in app_gradle or 'dev.rikka.shizuku:provider:13.1.5' not in app_gradle:
-              raise SystemExit("Shizuku audit failed; pinned API/provider dependency is missing")
-          for path in [notices, shizuku_notice, shizuku_apk_license]:
-              if not path.is_file() or path.stat().st_size == 0:
-                  raise SystemExit("License audit failed; missing Shizuku notice/license: " + str(path))
-          if "MIT License" not in shizuku_notice.read_text(encoding="utf-8"):
-              raise SystemExit("License audit failed; Shizuku MIT license text is missing")
-          if "Shizuku API 13.1.5" not in notices.read_text(encoding="utf-8"):
-              raise SystemExit("License audit failed; Shizuku API is missing from third-party inventory")
-
-          print("JE X FYZ App-only security, architecture and third-party license audit passed.")
+          print("JE X FYZ App-only security, architecture and Floating Monitor audit passed.")
           PY
 
       # Resolve the Dart/Flutter dependency graph.
@@ -287,8 +266,8 @@ jobs:
       - name: Run Flutter tests
         run: flutter test
 
-      # Exercise native TimeStats parsing independently of Dart source-contract tests.
-      - name: Run native FPS parser unit tests
+      # Keep the Android unit-test/compile gate for native source changes.
+      - name: Run Android unit-test gate
         working-directory: android
         run: ./gradlew --no-daemon :app:testDebugUnitTest
 
@@ -394,7 +373,6 @@ jobs:
           ls -lh "build/app/outputs/flutter-apk/JEXFYZ-release.apk"
 
       # Package corresponding App source for the exact source commit used by the APK.
-      # Shizuku API is a pinned MIT-licensed Maven dependency; no ADB pairing code remains.
       - name: Package corresponding source archive
         shell: bash
         run: |
@@ -405,9 +383,9 @@ jobs:
           SOURCE_ARCHIVE="$GITHUB_WORKSPACE/build/app/outputs/flutter-apk/JEXFYZ-corresponding-source.zip"
           mkdir -p "$SOURCE_ROOT" "$(dirname "$SOURCE_ARCHIVE")"
 
-          # App source, build configuration, licenses, assets, locks and tests from exact checked-out commit.
+          # App source, build configuration, assets, locks and tests from exact checked-out commit.
           git archive --format=tar "$GITHUB_SHA" \
-            lib assets android test pubspec.yaml pubspec.lock README.md third_party \
+            lib assets android test pubspec.yaml pubspec.lock README.md \
             | tar -xf - -C "$SOURCE_ROOT"
           # The release workflow generates this launcher because wrapper binaries are intentionally not tracked.
           cp -a android/gradlew "$SOURCE_ROOT/android/gradlew"
@@ -420,20 +398,18 @@ jobs:
           # JE X FYZ corresponding source bundle
 
           - Exact App source commit used for the APK: $GITHUB_SHA
-          - Flutter application source, Android host source, AIDL interface, build configuration, assets, tests and pinned dependency declarations are included in this archive.
-          - Shizuku API/provider Maven coordinates: dev.rikka.shizuku:api:13.1.5 and dev.rikka.shizuku:provider:13.1.5.
-          - Shizuku API 13.1.5 is MIT-licensed. The notice and full license text are included at third_party/THIRD_PARTY_NOTICES.md and third_party/Shizuku-API-MIT.txt; the MIT license is also packaged in APK assets.
-          - This App no longer contains Wireless ADB pairing or ADB permission-grant commands.
+          - Flutter application source, Android host source, build configuration, assets and tests are included in this archive.
+          - Floating Monitor supports six live metrics: Battery, Hotside, Voltage, Adaptive, Peltier and Fan Speed (F).
+          - FPS sampling and its Shizuku/SurfaceFlinger integration have been removed from the App.
           - This source archive is attached to the same private GitHub Release as JEXFYZ-release.apk.
           EOF2
 
           (cd "$SOURCE_PARENT" && zip -qr "$SOURCE_ARCHIVE" JEXFYZ-corresponding-source)
           test -s "$SOURCE_ARCHIVE"
           unzip -t "$SOURCE_ARCHIVE"
-          unzip -l "$SOURCE_ARCHIVE" | grep -F 'JEXFYZ-corresponding-source/android/app/src/main/aidl/com/horizontalzzz/jexfyz/IFpsShizukuUserService.aidl'
-          unzip -l "$SOURCE_ARCHIVE" | grep -F 'JEXFYZ-corresponding-source/third_party/Shizuku-API-MIT.txt'
+          unzip -l "$SOURCE_ARCHIVE" | grep -F 'JEXFYZ-corresponding-source/android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt'
+          unzip -l "$SOURCE_ARCHIVE" | grep -F 'JEXFYZ-corresponding-source/lib/floating_monitor.dart'
           unzip -p "$SOURCE_ARCHIVE" JEXFYZ-corresponding-source/SOURCE_BUNDLE_README.md | grep -F "$GITHUB_SHA"
-          unzip -l build/app/outputs/flutter-apk/JEXFYZ-release.apk | grep -F 'assets/licenses/shizuku-api-MIT.txt'
           echo "Corresponding source archive prepared for $GITHUB_SHA"
 
       # Publish one APK plus the source archive as GitHub Release assets.
@@ -459,7 +435,7 @@ jobs:
           App version: $APP_VERSION
           Source commit: $GITHUB_SHA
           APK: JEXFYZ-release.apk
-          Corresponding source: JEXFYZ-corresponding-source.zip (App source commit $GITHUB_SHA; includes the Shizuku UserService/AIDL code and pinned MIT-licensed Shizuku API declarations)."
+          Corresponding source: JEXFYZ-corresponding-source.zip (App source commit $GITHUB_SHA; includes the six-metric Floating Monitor with Fan Speed labeled F)."
 
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             echo "Updating existing GitHub Release $RELEASE_TAG"

@@ -3,7 +3,7 @@
 // Owns: persisted App preferences, language/theme notifiers, and the single JexText localization table.
 // Localization contract: language names are English/Indonesia; English power states are ON/OFF;
 // Indonesian power states are HIDUP/MATI.
-// Technical identifiers (BLE, P1, OTA, RGB, LED, NTC, FPS) remain untranslated.
+// Technical identifiers (BLE, P1, OTA, RGB, LED and NTC) remain untranslated.
 // BLE protocol tokens are never localized here; this file only defines user-facing presentation.
 // Storage keys are compatibility contracts and must not be changed casually.
 
@@ -168,7 +168,6 @@ class AppSettingsStore {
     } catch (_) {}
   }
 }
-
 
 // AI-MEMORY / KNOWN-COOLER-CONTRACT
 // Persists only the identity of a cooler that completed a real BLE/P1 session.
@@ -564,87 +563,6 @@ class JexText {
       AppLanguage.english: 'White',
       AppLanguage.indonesia: 'Putih',
     },
-    'fps': {
-      AppLanguage.english: 'FPS',
-      AppLanguage.indonesia: 'FPS',
-    },
-    'fpsAccessTitle': {
-      AppLanguage.english: 'Shizuku Access',
-      AppLanguage.indonesia: 'Akses Shizuku',
-    },
-    'shizukuAccessGranted': {
-      AppLanguage.english: 'Shizuku Access Granted',
-      AppLanguage.indonesia: 'Akses Shizuku Diberikan',
-    },
-    'shizukuAccessDenied': {
-      AppLanguage.english: 'Shizuku Access Denied',
-      AppLanguage.indonesia: 'Akses Shizuku Ditolak',
-    },
-    'grantShizukuAccess': {
-      AppLanguage.english: 'Grant Shizuku Access',
-      AppLanguage.indonesia: 'Beri Akses Shizuku',
-    },
-    'fpsAccessDescription': {
-      AppLanguage.english: 'JE X FYZ reads SurfaceFlinger frame statistics through Shizuku. FPS stays disabled until Shizuku is running and you explicitly approve JE X FYZ in the Shizuku permission dialog.',
-      AppLanguage.indonesia: 'JE X FYZ membaca statistik frame SurfaceFlinger melalui Shizuku. FPS tetap nonaktif sampai Shizuku berjalan dan kamu menyetujui JE X FYZ melalui dialog izin Shizuku.',
-    },
-    'fpsAccessSteps': {
-      AppLanguage.english: 'Start Shizuku, then tap Grant Shizuku permission and approve the request. FPS sampling runs in a restricted Shizuku UserService and accepts only fixed frame-statistics operations.',
-      AppLanguage.indonesia: 'Jalankan Shizuku, lalu tekan Beri izin Shizuku dan setujui permintaan. Pengukuran FPS berjalan di Shizuku UserService terbatas yang hanya menerima operasi statistik frame yang telah ditentukan.',
-    },
-    'fpsAccessHint': {
-      AppLanguage.english: 'The available access level depends on how Shizuku was started (Shell or Root). Non-root Shizuku usually needs to be started again after reboot. Some Android builds may block game frame data even after access is granted.',
-      AppLanguage.indonesia: 'Tingkat akses mengikuti cara Shizuku dijalankan (Shell atau Root). Shizuku non-root biasanya perlu dijalankan lagi setelah HP restart. Sebagian versi Android dapat memblokir data frame game walaupun izin sudah diberikan.',
-    },
-    'fpsAccessGranted': {
-      AppLanguage.english: 'Shizuku permission granted',
-      AppLanguage.indonesia: 'Izin Shizuku sudah diberikan',
-    },
-    'fpsAccessMissing': {
-      AppLanguage.english: 'Shizuku permission not granted',
-      AppLanguage.indonesia: 'Izin Shizuku belum diberikan',
-    },
-    'fpsMonitorActive': {
-      AppLanguage.english: 'Live SurfaceFlinger FPS sampling is active',
-      AppLanguage.indonesia: 'Pengukuran FPS SurfaceFlinger sedang aktif',
-    },
-    'fpsWaitingForGame': {
-      AppLanguage.english: 'Waiting for foreground screen frames',
-      AppLanguage.indonesia: 'Menunggu frame layar aktif',
-    },
-    'fpsDataUnavailable': {
-      AppLanguage.english: 'Shizuku is allowed, but foreground screen frame data is unavailable.',
-      AppLanguage.indonesia: 'Shizuku diizinkan, tetapi data frame layar aktif tidak tersedia.',
-    },
-    'shizukuNotRunning': {
-      AppLanguage.english: 'Shizuku is not running. Start the Shizuku service first.',
-      AppLanguage.indonesia: 'Shizuku belum berjalan. Jalankan layanan Shizuku terlebih dahulu.',
-    },
-    'shizukuUnsupported': {
-      AppLanguage.english: 'This Shizuku version is too old. UserService requires Shizuku API 10 or newer.',
-      AppLanguage.indonesia: 'Versi Shizuku terlalu lama. UserService memerlukan Shizuku API 10 atau lebih baru.',
-    },
-    'requestShizukuPermission': {
-      AppLanguage.english: 'Grant Shizuku permission',
-      AppLanguage.indonesia: 'Beri izin Shizuku',
-    },
-    'openShizuku': {
-      AppLanguage.english: 'Open Shizuku',
-      AppLanguage.indonesia: 'Buka Shizuku',
-    },
-    'checkFpsAccess': {
-      AppLanguage.english: 'Check access',
-      AppLanguage.indonesia: 'Periksa akses',
-    },
-    'shizukuPermissionDenied': {
-      AppLanguage.english: 'Shizuku permission was not granted. FPS remains disabled.',
-      AppLanguage.indonesia: 'Izin Shizuku belum diberikan. FPS tetap nonaktif.',
-    },
-    'shizukuOpenFailed': {
-      AppLanguage.english: 'Could not open Shizuku or its download page.',
-      AppLanguage.indonesia: 'Shizuku atau halaman unduhnya tidak dapat dibuka.',
-    },
-
 
     'orientation': {
       AppLanguage.english: 'Orientation',

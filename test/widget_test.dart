@@ -27,33 +27,6 @@ void main() {
     expect(source, isNot(contains('void _drawBlade(')));
   });
 
-  test('Floating FPS status distinguishes access from measurement failures', () {
-    final noLayer = floatingFpsStatusLabel('no_layer_data', AppLanguage.indonesia);
-    expect(noLayer, contains('SurfaceFlinger'));
-    expect(noLayer, contains('(no_layer_data)'));
-
-    final foreground = floatingFpsStatusLabel('foreground_unknown', AppLanguage.english);
-    expect(foreground, contains('Foreground window'));
-    expect(foreground, contains('(foreground_unknown)'));
-
-    expect(
-      floatingFpsStatusLabel('active', AppLanguage.english),
-      'Valid FPS sample available',
-    );
-
-    final bindTimeout = floatingFpsStatusLabel(
-      'shizuku_userservice_timeout',
-      AppLanguage.english,
-    );
-    expect(bindTimeout, contains('35 seconds'));
-    expect(bindTimeout, contains('(shizuku_userservice_timeout)'));
-
-    expect(
-      floatingFpsStatusLabel('fps_status_timeout', AppLanguage.indonesia),
-      contains('50 detik'),
-    );
-  });
-
   test('BLE session protocol gate accepts only P1', () {
     expect(isSupportedP1Protocol('P1'), isTrue);
     expect(isSupportedP1Protocol(' p1 '), isTrue);
@@ -295,14 +268,16 @@ void main() {
     );
   });
 
-  test('Floating Monitor exposes Speed as the only fan-related metric', () {
+  test('Floating Monitor migrates legacy FPS and Speed configuration to six metrics', () {
     final config = FloatingConfig.fromJson(
-      '{"order":["FAN","F","B","H","V","A","P","S"],"selected":["FAN","S"]}',
+      '{"order":["F","B","H","V","A","P","S"],"selected":["F","S"]}',
     );
-    expect(config.order.contains('FAN'), isFalse);
-    expect(config.order.contains('S'), isTrue);
-    expect(config.selected.contains('FAN'), isFalse);
-    expect(config.selected.contains('S'), isTrue);
+    expect(config.order, <String>['B', 'H', 'V', 'A', 'P', 'F']);
+    expect(config.selected, <String>{'F'});
+    expect(config.toMap()['metricSchemaVersion'], FloatingMetric.schemaVersion);
+    final current = FloatingConfig.fromJson(config.toJson());
+    expect(current.order, config.order);
+    expect(current.selected, config.selected);
   });
 
   test('Floating Monitor state presentation keeps Adaptive and Peltier independent from Fan', () {
@@ -313,83 +288,32 @@ void main() {
       peltierOn: true,
       connected: true,
     );
-    expect(floatingMetricVisible('S', telemetry), isTrue);
+    expect(floatingMetricVisible('F', telemetry), isTrue);
     expect(floatingMetricVisible('A', telemetry), isTrue);
     expect(floatingMetricVisible('P', telemetry), isTrue);
     expect(floatingMetricStatus('A', telemetry, AppLanguage.english), 'ON');
     expect(floatingMetricStatus('P', telemetry, AppLanguage.english), 'ON');
     expect(floatingMetricStatus('A', telemetry, AppLanguage.indonesia), 'HIDUP');
     expect(floatingMetricStatus('P', telemetry, AppLanguage.indonesia), 'HIDUP');
-    expect(floatingMetricStatus('S', telemetry, AppLanguage.english), 'OFF');
-    expect(floatingMetricStatus('S', telemetry, AppLanguage.indonesia), 'MATI');
+    expect(floatingMetricStatus('F', telemetry, AppLanguage.english), 'OFF');
+    expect(floatingMetricStatus('F', telemetry, AppLanguage.indonesia), 'MATI');
   });
 
-  test('Floating Monitor settings removes the center preview and exposes explicit orientation', () {
+  test('Floating Monitor settings keeps overlay controls and removes FPS and Shizuku UI', () {
     final floating = File('lib/floating_monitor.dart').readAsStringSync();
+    final native = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt').readAsStringSync();
 
     expect(floating, isNot(contains('Widget _livePreview(')));
     expect(floating, isNot(contains('_livePreview(telemetry)')));
     expect(floating, contains("JexText.of('orientation', lang)"));
     expect(floating, contains('SegmentedButton<bool>('));
-    expect(floating, contains("JexText.of('shizukuAccessGranted', lang)"));
-    expect(floating, contains("JexText.of('shizukuAccessDenied', lang)"));
-    expect(floating, contains("JexText.of('grantShizukuAccess', lang)"));
-    expect(floating, contains("JexText.of('checkFpsAccess', lang)"));
-    expect(floating, contains("FloatingBridge.requestShizukuFpsPermission()"));
-    expect(floating, isNot(contains("JexText.of('fpsAccessTitle', lang)")));
-    expect(floating, isNot(contains("JexText.of('fpsAccessHint', lang)")));
-    expect(floating, isNot(contains("_openShizukuManager")));
-    expect(floating, isNot(contains("adb shell pm grant")));
-    expect(floating, isNot(contains("adb shell pm revoke")));
-    expect(floating, isNot(contains("WirelessAdbPairingBridge")));
+    expect(floating, isNot(contains('Shizuku')));
+    expect(floating, isNot(contains('fpsAccessStatus')));
+    expect(floating, contains("case 'F':\n        return JexText.of('speed', lang);"));
+    expect(native, contains('"F" -> "F:" + if (!data.connected) "--" else if (data.fanOn) data.speed.toString() else offText'));
+    expect(native, isNot(contains('SurfaceFlinger')));
   });
 
-  test('Screen FPS follows the current foreground window for apps and system UI', () {
-    final appSource = File('lib/main.dart').readAsStringSync();
-    final nativeService = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt').readAsStringSync();
-    final activity = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt').readAsStringSync();
-    final manifest = File('android/app/src/main/AndroidManifest.xml').readAsStringSync();
-    final settings = File('lib/app_settings.dart').readAsStringSync();
-
-    expect(appSource, isNot(contains('FrameTiming')));
-    expect(appSource, isNot(contains('addTimingsCallback')));
-    expect(nativeService, contains('Shizuku.checkSelfPermission()'));
-    expect(nativeService, contains('Shizuku.bindUserService(currentAttempt.args, currentAttempt.connection)'));
-    expect(nativeService, isNot(contains('android.permission.DUMP')));
-    expect(nativeService, isNot(contains('ProcessBuilder(')));
-    expect(nativeService, contains('private fun readForegroundPackage()'));
-    expect(nativeService, contains('mCurrentFocus'));
-    expect(nativeService, contains('private fun layerBelongsToPackage('));
-    expect(nativeService, contains('val matchedLayers = candidateLayers.filter { layerBelongsToPackage(it, foregroundPackage) }'));
-    expect(nativeService, contains('private fun isCandidateApplicationLayer(name: String): Boolean'));
-    expect(nativeService, isNot(contains('foregroundPackage == packageName')));
-    expect(nativeService, isNot(contains('"no_game_foreground"')));
-    expect(nativeService, contains('runDumpsys("window", "displays")'));
-    expect(nativeService, contains('val focused = focusedPackage(displaysResult.output)'));
-    expect(nativeService, contains(r'foreground_detected source=window_displays package=$focused'));
-    expect(nativeService, contains('val activityResult = runDumpsys("activity", "activities")'));
-    expect(nativeService, contains('averageFPS'));
-    expect(nativeService, contains('FpsTimeStatsParser.parseLines(output)'));
-    expect(nativeService, contains('layerBelongsToPackage(it, foregroundPackage)'));
-    expect(nativeService, contains('MAX_TIME_STATS_LAYERS = 64'));
-    expect(nativeService, contains('it.prefersSurfaceLayer'));
-    expect(nativeService, contains('val fullWindowResult = runDumpsys("window")'));
-    expect(nativeService, contains('val focused = focusedPackage(fullWindowResult.output)'));
-    expect(nativeService, contains(r'foreground_detected source=window_full package=$focused'));
-    expect(nativeService, isNot(contains('fpsLastPositiveLayer')));
-    expect(nativeService, contains('fpsMonitorStatus = "waiting_for_frames"'));
-    expect(nativeService, isNot(contains('?: layers.maxByOrNull { it.totalFrames }?.name')));
-    expect(nativeService, isNot(contains('} else if (chosenLayer != null)')));
-    expect(nativeService, isNot(contains('delta * 1000.0 / elapsed.toDouble()')));
-    expect(manifest, isNot(contains('android.permission.DUMP')));
-    expect(manifest, contains('rikka.shizuku.ShizukuProvider'));
-    expect(manifest, isNot(contains('.WirelessAdbPairingService')));
-    expect(activity, contains('"getFpsAccessStatus"'));
-    expect(activity, contains('"refreshFpsMonitor"'));
-    expect(activity, contains('"requestShizukuFpsPermission"'));
-    expect(activity, isNot(contains('ADB_PAIRING_CHANNEL')));
-    expect(settings, contains("'fpsWaitingForGame'"));
-  });
   test('Floating Monitor replays telemetry after service startup and resizes for live values', () {
     final floating = File('lib/floating_monitor.dart').readAsStringSync();
     final nativeService = File('android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt').readAsStringSync();
@@ -399,7 +323,7 @@ void main() {
     expect(nativeService, contains('hudView?.requestLayout()'));
     expect(nativeService, contains('A" -> "A:" + if (!data.connected) "--"'));
     expect(nativeService, contains('P" -> "P:" + if (!data.connected) "--"'));
-    expect(nativeService, contains('S" -> "S:" + if (!data.connected) "--"'));
+    expect(nativeService, contains('F" -> "F:" + if (!data.connected) "--"'));
   });
 
   test('OTA result notifications accept one-shot success/failure/up-to-date events', () {

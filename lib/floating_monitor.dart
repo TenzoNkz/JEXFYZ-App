@@ -1,15 +1,15 @@
 // AI-MEMORY / FILE CONTRACT
 // File: floating_monitor.dart
 // Owns: Flutter Floating Monitor configuration UI, overlay permission flow,
-//       runtime reconciliation, Shizuku FPS permission flow, and live telemetry forwarding.
+//       runtime reconciliation and live telemetry forwarding.
 // Native ownership: MainActivity opens Android Settings; FloatingMonitorService owns
 // WindowManager and the actual overlay window. This file never owns BLE/GATT.
 // Localization: read the shared AppLanguage notifier. English status = ON/OFF;
 // Indonesia status = HIDUP/MATI. Language selector labels are English / Indonesia.
-// Fan Speed invariant: S remains visible when selected; Fan OFF is presented as OFF/MATI.
+// Fan Speed uses floating metric F; Fan OFF is presented as OFF/MATI.
 // Selected metric presentation is owned by the native overlay; Settings contains no overlay preview.
 // Protocol identifiers are not translated.
-// Floating metric contract: S (Speed) is the only fan-related metric; there is no separate Fan metric.
+// Floating metric contract: F (Fan Speed) is the only fan-related metric; no separate Fan toggle exists.
 
 import 'dart:async';
 import 'dart:convert';
@@ -25,97 +25,6 @@ import 'jex_animated_glyph.dart';
 
 enum FloatingDisplayStyle { letters, icons }
 enum FloatingBackgroundColor { black, white }
-
-// Translate the native sampler state into a compact, actionable status beside Shizuku access.
-// Keep the raw native code for diagnosis without suggesting that permission alone proves FPS works.
-String floatingFpsStatusLabel(String status, AppLanguage language) {
-  final isIndonesian = language == AppLanguage.indonesia;
-  final message = switch (status) {
-    'monitor_off' => isIndonesian ? 'Pemantauan FPS tidak aktif' : 'FPS monitoring is off',
-    'starting' => isIndonesian ? 'Sedang mengambil sampel FPS pertama' : 'Waiting for the first FPS sample',
-    'fps_status_timeout' => isIndonesian
-        ? 'Status FPS tidak berubah setelah 50 detik; periksa koneksi native'
-        : 'FPS status did not update within 50 seconds; inspect native connection',
-    'active' => isIndonesian ? 'Sampel FPS valid tersedia' : 'Valid FPS sample available',
-    'foreground_unknown' => isIndonesian
-        ? 'Jendela aplikasi depan tidak terdeteksi'
-        : 'Foreground window was not detected',
-    'no_layer_data' => isIndonesian
-        ? 'Layer SurfaceFlinger yang cocok tidak ditemukan'
-        : 'No matching SurfaceFlinger layer was found',
-    'waiting_for_frames' => isIndonesian
-        ? 'Menunggu sampel frame yang valid'
-        : 'Waiting for a valid frame sample',
-    'sample_invalid' => isIndonesian
-        ? 'Interval atau counter sampel tidak valid'
-        : 'Sample interval or frame counter is invalid',
-    'sampler_start_exception' => isIndonesian
-        ? 'Terjadi exception saat memulai sampler FPS'
-        : 'An exception occurred while starting the FPS sampler',
-    'sampler_poll_exception' => isIndonesian
-        ? 'Terjadi exception saat membaca sampel FPS'
-        : 'An exception occurred while reading an FPS sample',
-    'sampler_executor_unavailable' => isIndonesian
-        ? 'Worker sampler FPS tidak tersedia'
-        : 'FPS sampler worker is unavailable',
-    'sampler_start_timeout' => isIndonesian
-        ? 'Sampler FPS tidak menyelesaikan startup dalam 60 detik'
-        : 'FPS sampler did not finish startup within 60 seconds',
-    'sampler_stalled' => isIndonesian
-        ? 'Sampler FPS tidak menunjukkan progress selama 30 detik'
-        : 'FPS sampler stopped making progress for 30 seconds',
-    'shizuku_not_running' => isIndonesian ? 'Layanan Shizuku tidak berjalan' : 'Shizuku service is not running',
-    'shizuku_unsupported' => isIndonesian ? 'Versi Shizuku tidak didukung' : 'Shizuku version is unsupported',
-    'shizuku_permission_missing' => isIndonesian ? 'Izin Shizuku belum diberikan' : 'Shizuku permission is missing',
-    'shizuku_userservice_unavailable' => isIndonesian
-        ? 'Shizuku UserService tidak tersedia'
-        : 'Shizuku UserService is unavailable',
-    'shizuku_bind_exception' => isIndonesian
-        ? 'Permintaan bind Shizuku gagal'
-        : 'Shizuku UserService bind request failed',
-    'shizuku_userservice_timeout' => isIndonesian
-        ? 'UserService tidak tersambung dalam 35 detik'
-        : 'UserService did not connect within 35 seconds',
-    'shizuku_userservice_dead' => isIndonesian
-        ? 'Binder UserService tidak aktif'
-        : 'UserService Binder is not alive',
-    'shizuku_userservice_cancelled' => isIndonesian
-        ? 'Koneksi UserService dibatalkan'
-        : 'UserService connection was cancelled',
-    'shizuku_bind_interrupted' => isIndonesian
-        ? 'Menunggu koneksi UserService terhenti'
-        : 'Waiting for UserService was interrupted',
-    'shizuku_userservice_remote_exception' => isIndonesian
-        ? 'Pemanggilan Binder UserService gagal'
-        : 'UserService Binder call failed',
-    'shizuku_userservice_disconnected' => isIndonesian
-        ? 'Koneksi Shizuku UserService terputus'
-        : 'Shizuku UserService disconnected',
-    'shizuku_userservice_error' => isIndonesian
-        ? 'Terjadi kesalahan pada Shizuku UserService'
-        : 'Shizuku UserService returned an error',
-    'surfaceflinger_blocked' => isIndonesian
-        ? 'Akses statistik SurfaceFlinger gagal'
-        : 'SurfaceFlinger frame-statistics access failed',
-    'dumpsys_permission_denied' => isIndonesian
-        ? 'Akses perintah diagnostik ditolak'
-        : 'Permission denied for the FPS diagnostic command',
-    'dumpsys_timeout' => isIndonesian
-        ? 'Perintah pengukuran FPS kehabisan waktu'
-        : 'FPS system command timed out',
-    'dumpsys_output_too_large' => isIndonesian
-        ? 'Output perintah FPS terlalu besar'
-        : 'FPS command output was too large',
-    'dumpsys_unavailable' => isIndonesian
-        ? 'Perintah dumpsys tidak tersedia'
-        : 'The dumpsys command is unavailable',
-    _ => status.startsWith('dumpsys_exit_')
-        ? (isIndonesian ? 'Perintah FPS gagal' : 'FPS system command failed')
-        : (isIndonesian ? 'Status FPS belum diketahui' : 'FPS status is unknown'),
-  };
-  if (status == 'active' || status == 'monitor_off') return message;
-  return '$message ($status)';
-}
 
 // Size is persisted in 0.05x increments for a predictable native overlay scale.
 double _normalizeFloatingSize(double value) {
@@ -145,8 +54,8 @@ class FloatingConfig {
   const FloatingConfig({
     this.enabled = false,
     this.style = FloatingDisplayStyle.letters,
-    this.order = const <String>['F', 'B', 'H', 'V', 'A', 'P', 'S'],
-    this.selected = const <String>{'F', 'B', 'H', 'V', 'A', 'P', 'S'},
+    this.order = const <String>['B', 'H', 'V', 'A', 'P', 'F'],
+    this.selected = const <String>{'B', 'H', 'V', 'A', 'P', 'F'},
     this.size = 0.6,
     this.opacity = 0.9,
     this.backgroundColor = FloatingBackgroundColor.black,
@@ -183,6 +92,7 @@ class FloatingConfig {
   Map<String, dynamic> toMap() => <String, dynamic>{
         'enabled': enabled,
         'style': style.name,
+        'metricSchemaVersion': FloatingMetric.schemaVersion,
         'order': order,
         'selected': selected.toList(),
         'size': size,
@@ -199,18 +109,25 @@ class FloatingConfig {
     try {
       final decoded = jsonDecode(raw);
       if (decoded is! Map) return const FloatingConfig();
+      final storedSchema = (decoded['metricSchemaVersion'] as num?)?.toInt() ?? 1;
+      final legacyMetrics = storedSchema < FloatingMetric.schemaVersion;
       final rawOrder = decoded['order'];
       final rawSelected = decoded['selected'];
       final order = rawOrder is List
-          ? rawOrder.map((e) => e.toString()).where(FloatingMetric.isValid).toList()
-          : <String>['F', 'B', 'H', 'V', 'A', 'P', 'S'];
+          ? rawOrder
+              .map((e) => FloatingMetric.fromStored(e.toString(), legacy: legacyMetrics))
+              .whereType<String>()
+              .toSet()
+              .toList()
+          : List<String>.from(FloatingMetric.defaultOrder);
       final selected = rawSelected is List
-          ? rawSelected.map((e) => e.toString()).where(FloatingMetric.isValid).toSet()
-          : <String>{'F', 'B', 'H', 'V', 'A', 'P', 'S'};
-      if (order.length != 7) {
-        for (final metric in FloatingMetric.defaultOrder) {
-          if (!order.contains(metric)) order.add(metric);
-        }
+          ? rawSelected
+              .map((e) => FloatingMetric.fromStored(e.toString(), legacy: legacyMetrics))
+              .whereType<String>()
+              .toSet()
+          : FloatingMetric.defaultOrder.toSet();
+      for (final metric in FloatingMetric.defaultOrder) {
+        if (!order.contains(metric)) order.add(metric);
       }
       final backgroundColor = decoded['backgroundColor']?.toString() == 'white'
           ? FloatingBackgroundColor.white
@@ -232,14 +149,25 @@ class FloatingConfig {
 }
 
 class FloatingMetric {
-  static const List<String> defaultOrder = <String>['F', 'B', 'H', 'V', 'A', 'P', 'S'];
-  // AI-METHOD / METRIC-VALIDATION-CONTRACT
-  // Accept only the seven stable floating metric identifiers.
+  static const int schemaVersion = 2;
+  static const List<String> defaultOrder = <String>['B', 'H', 'V', 'A', 'P', 'F'];
+
+  // Legacy schema v1 used F for FPS and S for Fan Speed. Drop old FPS
+  // selections and migrate the old Speed identifier to the new F identifier.
+  static String? fromStored(String value, {required bool legacy}) {
+    if (legacy) {
+      if (value == 'F') return null;
+      if (value == 'S') return 'F';
+    }
+    return isValid(value) ? value : null;
+  }
+
+  // Accept only the six supported floating metric identifiers.
   static bool isValid(String value) => defaultOrder.contains(value);
 }
 
 // AI-MEMORY / TELEMETRY MODEL
-// Snapshot of Dashboard telemetry used by the Flutter preview and forwarded to native.
+// Snapshot of Dashboard telemetry forwarded to the native overlay.
 // The language field is intentionally derived at serialization time so native overlay
 // presentation follows the App-selected language rather than the phone locale.
 class FloatingTelemetry {
@@ -291,7 +219,7 @@ String floatingMetricStatus(String metric, FloatingTelemetry telemetry, AppLangu
   return switch (metric) {
     'A' => JexText.of(telemetry.adaptiveOn ? 'on' : 'off', language),
     'P' => JexText.of(telemetry.peltierOn ? 'on' : 'off', language),
-    'S' => telemetry.fanOn ? telemetry.speed.toString() : JexText.of('off', language),
+    'F' => telemetry.fanOn ? telemetry.speed.toString() : JexText.of('off', language),
     _ => '--',
   };
 }
@@ -403,31 +331,7 @@ class FloatingBridge {
     return null;
   }
 
-  // Read Shizuku-backed FPS authorization status. FPS remains locked until user approval.
-  static Future<Map<String, dynamic>?> fpsAccessStatus({bool refresh = false}) async {
-    try {
-      final method = refresh ? 'refreshFpsMonitor' : 'getFpsAccessStatus';
-      final value = await _channel.invokeMethod<dynamic>(method);
-      if (value is Map) return Map<String, dynamic>.from(value);
-    } catch (_) {}
-    return null;
-  }
 
-  static Future<Map<String, dynamic>?> requestShizukuFpsPermission() async {
-    try {
-      final value = await _channel.invokeMethod<dynamic>('requestShizukuFpsPermission');
-      if (value is Map) return Map<String, dynamic>.from(value);
-    } catch (_) {}
-    return null;
-  }
-
-  static Future<bool> openShizukuSetup() async {
-    try {
-      return await _channel.invokeMethod<bool>('openShizukuSetup') ?? false;
-    } catch (_) {
-      return false;
-    }
-  }
 }
 
 
@@ -449,12 +353,6 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   bool loading = true;
   bool _waitingForOverlayPermission = false;
   bool _permissionResumeCheckRunning = false;
-  bool _fpsPermissionGranted = false;
-  bool _shizukuAvailable = false;
-  bool _shizukuSupported = false;
-  bool _fpsStatusLoading = false;
-  bool _fpsPermissionRequestPending = false;
-  String _fpsMonitorStatus = 'unknown';
   Timer? runtimeTimer;
 
   @override
@@ -473,9 +371,6 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       if (_waitingForOverlayPermission) unawaited(_finishOverlayPermissionFlow());
-      unawaited(_refreshFpsAccess(
-        refreshMonitor: config.enabled && config.selected.contains('F'),
-      ));
     }
   }
 
@@ -526,8 +421,6 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   // runtime overlay attachment are both confirmed.
   Future<void> _load() async {
     config = await _normalizeSelection(await FloatingStore.load());
-    final access = await FloatingBridge.fpsAccessStatus();
-    if (access != null) _applyFpsAccessFields(access);
     if (config.enabled) {
       final nativeState = await FloatingBridge.runtimeState();
       if (nativeState != null) {
@@ -569,9 +462,6 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
         }
       }
     }
-    unawaited(_refreshFpsAccess(
-      refreshMonitor: config.enabled && config.selected.contains('F'),
-    ));
   }
 
   // AI-METHOD / CONFIG-APPLY CONTRACT
@@ -597,101 +487,8 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     return false;
   }
 
-  void _applyFpsAccessFields(Map<String, dynamic> result) {
-    _shizukuAvailable = result['shizuku_available'] == true;
-    _shizukuSupported = result['shizuku_supported'] == true;
-    _fpsPermissionGranted = _shizukuAvailable &&
-        _shizukuSupported &&
-        result['shizuku_permission_granted'] == true;
-    _fpsMonitorStatus = result['fps_monitor_status']?.toString() ?? 'unknown';
-  }
-
-  Future<void> _applyFpsAccessState(
-    Map<String, dynamic> result,
-  ) async {
-    _applyFpsAccessFields(result);
-    if (mounted) setState(() {});
-  }
-
-  Future<void> _refreshFpsAccess({bool refreshMonitor = false}) async {
-    if (_fpsStatusLoading || _fpsPermissionRequestPending) return;
-    _fpsStatusLoading = true;
-    if (mounted) setState(() {});
-    try {
-      final result = await FloatingBridge.fpsAccessStatus(refresh: refreshMonitor);
-      if (!mounted || result == null) return;
-      await _applyFpsAccessState(result);
-      if (refreshMonitor && _fpsMonitorStatus == 'starting') {
-        // Shizuku's server allows 30 seconds for UserService startup; native binding waits
-        // 35 seconds. Poll for 50.4 seconds (144 x 350 ms) so Settings does not time out
-        // before a slow cold start, the first command, and the initial FPS sample can resolve.
-        for (var i = 0; i < 144; i++) {
-          await Future<void>.delayed(const Duration(milliseconds: 350));
-          final next = await FloatingBridge.fpsAccessStatus();
-          if (!mounted || next == null) return;
-          await _applyFpsAccessState(next);
-          if (_fpsMonitorStatus != 'starting') break;
-        }
-        if (_fpsMonitorStatus == 'starting') {
-          _fpsMonitorStatus = 'fps_status_timeout';
-          if (mounted) setState(() {});
-        }
-      }
-    } finally {
-      _fpsStatusLoading = false;
-      if (mounted) setState(() {});
-    }
-  }
-
-  Future<bool> _requestShizukuFpsAccess() async {
-    if (_fpsPermissionRequestPending) return false;
-    _fpsPermissionRequestPending = true;
-    _fpsStatusLoading = true;
-    if (mounted) setState(() {});
-    try {
-      var state = await FloatingBridge.fpsAccessStatus();
-      if (state != null) await _applyFpsAccessState(state);
-      if (_fpsPermissionGranted) return true;
-
-      if (!_shizukuAvailable || !_shizukuSupported) {
-        await FloatingBridge.openShizukuSetup();
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(JexText.of(
-              _shizukuAvailable ? 'shizukuUnsupported' : 'shizukuNotRunning',
-              appLanguageNotifier.value,
-            ))),
-          );
-        }
-        return false;
-      }
-
-      final requested = await FloatingBridge.requestShizukuFpsPermission();
-      if (requested == null) return false;
-      final deadline = DateTime.now().add(const Duration(seconds: 60));
-      while (mounted && DateTime.now().isBefore(deadline)) {
-        await Future<void>.delayed(const Duration(milliseconds: 400));
-        state = await FloatingBridge.fpsAccessStatus();
-        if (state == null) continue;
-        await _applyFpsAccessState(state);
-        if (_fpsPermissionGranted) return true;
-        if (!_shizukuAvailable || !_shizukuSupported) return false;
-      }
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(JexText.of('shizukuPermissionDenied', appLanguageNotifier.value))),
-        );
-      }
-      return false;
-    } finally {
-      _fpsPermissionRequestPending = false;
-      _fpsStatusLoading = false;
-      if (mounted) setState(() {});
-    }
-  }
-
   // AI-METHOD / NORMALIZATION CONTRACT
-  // Guarantee a valid seven-metric selection for legacy/empty persisted configurations.
+  // Restore all six supported metrics if an old/empty selection would leave the overlay blank.
   Future<FloatingConfig> _normalizeSelection(FloatingConfig value) async {
     if (value.selected.isNotEmpty) return value;
     final normalized = value.copyWith(
@@ -702,8 +499,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   }
 
   // AI-METHOD / ENABLE-CONTRACT
-  // User-facing master toggle. Permission is obtained first, then the native service is
-  // started and verified before enabled=true is persisted.
+  // User-facing master toggle. Start and verify the native overlay before persisting enabled=true.
   Future<void> _toggleEnabled(bool value) async {
     if (!value) {
       config = config.copyWith(enabled: false);
@@ -774,9 +570,6 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     await FloatingBridge.updateData(floatingTelemetryNotifier.value);
     _startRuntimeSync();
     if (mounted) setState(() => config = next);
-    unawaited(_refreshFpsAccess(
-      refreshMonitor: next.selected.contains('F'),
-    ));
   }
 
   // AI-METHOD / RUNTIME-SYNC-CONTRACT
@@ -832,12 +625,8 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   }
 
   // AI-METHOD / METRIC-CONTRACT
-  // Add/remove one metric from the persisted selection; runtime state never removes S.
+  // Add/remove one supported floating metric; Fan Speed uses identifier F.
   Future<void> _toggleMetric(String metric, bool value) async {
-    if (metric == 'F' && value) {
-      final authorized = _fpsPermissionGranted || await _requestShizukuFpsAccess();
-      if (!authorized || !mounted) return;
-    }
     final next = Set<String>.from(config.selected);
     if (value) {
       next.add(metric);
@@ -845,13 +634,10 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
       next.remove(metric);
     }
     await _apply(config.copyWith(selected: next));
-    if (metric == 'F') {
-      await _refreshFpsAccess(refreshMonitor: config.enabled && value);
-    }
   }
 
   // AI-METHOD / ORDER-CONTRACT
-  // Reorder the seven known floating metrics without changing their identifiers.
+  // Reorder the six supported floating metrics without changing their identifiers.
   void _reorder(int oldIndex, int newIndex) {
     final order = List<String>.from(config.order);
     if (newIndex > oldIndex) newIndex -= 1;
@@ -885,70 +671,6 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                 onChanged: _toggleEnabled,
               ),
               const SizedBox(height: 8),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(PhosphorIconsRegular.gauge, color: Theme.of(context).colorScheme.primary),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              _fpsPermissionGranted
-                                  ? JexText.of('shizukuAccessGranted', lang)
-                                  : JexText.of('shizukuAccessDenied', lang),
-                              style: const TextStyle(fontWeight: FontWeight.w900),
-                            ),
-                          ),
-                          if (_fpsStatusLoading)
-                            const SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            ),
-                        ],
-                      ),
-                      if (config.selected.contains('F')) ...[
-                        const SizedBox(height: 4),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 2),
-                          child: Text(
-                            floatingFpsStatusLabel(_fpsMonitorStatus, lang),
-                            style: TextStyle(
-                              fontSize: 11,
-                              height: 1.25,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                        ),
-                      ],
-                      const SizedBox(height: 8),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 4,
-                        children: [
-                          FilledButton.icon(
-                            onPressed: _fpsStatusLoading ? null : _requestShizukuFpsAccess,
-                            icon: const Icon(Icons.shield_outlined),
-                            label: Text(JexText.of('grantShizukuAccess', lang)),
-                          ),
-                          TextButton.icon(
-                            onPressed: _fpsStatusLoading
-                                ? null
-                                : () => _refreshFpsAccess(refreshMonitor: true),
-                            icon: const Icon(Icons.refresh),
-                            label: Text(JexText.of('checkFpsAccess', lang)),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
               IgnorePointer(
                 ignoring: !config.enabled,
                 child: Opacity(
@@ -968,7 +690,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                         onReorder: _reorder,
                         itemBuilder: (context, index) {
                           final metric = config.order[index];
-                          // All seven metrics remain selectable; Speed is a state/value, not a separate Fan toggle.
+                          // All six metrics remain selectable; Fan Speed uses F.
                           final checked = config.selected.contains(metric);
                           return KeyedSubtree(
                             key: ValueKey<String>('floating-$metric'),
@@ -1078,7 +800,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   String _metricLabel(String metric, AppLanguage lang) {
     switch (metric) {
       case 'F':
-        return JexText.of('fps', lang);
+        return JexText.of('speed', lang);
       case 'B':
         return JexText.of('battery', lang);
       case 'H':
@@ -1089,8 +811,6 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
         return JexText.of('adaptive', lang);
       case 'P':
         return JexText.of('peltier', lang);
-      case 'S':
-        return JexText.of('speed', lang);
       default:
         return metric;
     }

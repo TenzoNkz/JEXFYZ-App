@@ -4,13 +4,13 @@ Reconciled against live GitHub main: 2026-10-16. Live code, Git refs, Actions re
 
 ## Verified checkpoint
 
-- Latest successful App release is Build #69 / run `38896502185`, source/release commit `01212c32a802ca0e67f559307fe4e19a667489c6`. App audit, dependency resolution, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, obfuscated APK, V1/V2/V3 signing/certificate, matching source archive and downloaded asset hash/signature checks all passed. Full evidence is in `APP_BUILD_REPORT.md`.
+- Latest verified App release is Build #69 / run `38896502185`, source/release commit `01212c32a802ca0e67f559307fe4e19a667489c6`. The prior FPS-enabled source passed App audit, dependency resolution, Dart analysis, 88/88 Flutter tests, native parser/watchdog tests, obfuscated APK, V1/V2/V3 signing, source archive and downloaded asset checks. Full evidence is in APP_BUILD_REPORT.md. Build #69 does NOT validate the subsequent FPS-removal source change on current main.
 - Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) contains one [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk) (asset `647189019`, `54,636,716` bytes, SHA-256 `40e2f3233d94cb8f624a3ffc50677f058840057800b8b1a172ba0eaf2881a102`) and one matching [`JEXFYZ-corresponding-source.zip`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip) (asset `647189016`, `2,877,171` bytes, SHA-256 `1ab19e552c128d09773794738a6a4340abfa82086fa83f2d7e883ed62f60a699`). Both were re-downloaded and verified against the exact Build #69 source marker.
-- Build #69 passed four TimeStats parser JUnit cases and five watchdog-policy JUnit cases plus all 88 Flutter tests. It revalidated sampler watchdog `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46`, binding timeout `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d`, and TimeStats parser `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620`. Build #69 re-ran functionally unchanged code from #68; no tests or gates were removed/weakened.
+- Current main source retires FPS/Shizuku completely and supports Floating Monitor metrics B/H/V/A/P/F (F=Fan Speed). Persisted schema-v1 S migrates to F; old F (FPS) is dropped. Current source/tests/workflow have NOT YET BEEN BUILT OR TESTED; App Build is a separate authorization. Historical parser/watchdog JUnit results remain part of Build #69's old-source evidence.
 - Build #63 / run `38850417086` failed one stale TimeStats widget assertion (87 passed, 1 failed); test-only repair in `14347cd731b2c471fea9937f796ca21f8defc261` aligned package matching to the TimeStats layer object. Build #64 / run `38850654562` passed Flutter tests but native JUnit failed from Java heap exhaustion during JetifyTransform. Raising Gradle heap to `-Xmx4096M` resolved it; Builds #65–#69 passed full release gates.
 - Source tree hash references remain in this index below; functional source remains equivalent to Build #67 commit `8efbfebe1b12e162dccddbdf68b8627d8723f756`; Build #69 packages exact documentation HEAD `01212c32a802ca0e67f559307fe4e19a667489c6`.
-- Non-blocking findings: 23 Dart deprecation infos, Gradle 9.3.1 out of date, native ELF DWARF debug info not obfuscated, self-signed/no-timestamp JAR and META-INF warnings, and cache save denied by token scope. Full details in `APP_BUILD_REPORT.md`.
-- Active Firmware remains user-accepted V6.6. Build #69 was App-only: no Firmware compilation, BIN publication, Firebase, OTA, flashing or device operation. Target-phone Shizuku binding, OEM TimeStats visibility, live FPS and overlay rendering remain **UNVERIFIED**.
+- Non-blocking Build #69 findings: 23 Dart deprecation infos, Gradle 9.3.1 out of date, native ELF DWARF debug info not obfuscated, self-signed/no-timestamp JAR and META-INF warnings, and cache save denied by token scope. Full details in APP_BUILD_REPORT.md.
+- Active Firmware remains user-accepted V6.6. FPS removal is App-only; no Firmware compilation, BIN publication, Firebase, OTA, flashing or device operation occurred. Current source's overlay rendering remains unverified and the source has not yet been built.
 
 ## New-chat boot order
 
@@ -19,7 +19,7 @@ Reconciled against live GitHub main: 2026-10-16. Live code, Git refs, Actions re
 3. Read CHAT_RULES.md, MEMORY_INDEX.md, PROJECT_STATE.md and HANDOVER.md fully.
 4. Subject routing: App → APP_NOTES.md; hardware/Firmware → FIRMWARE_NOTES.md + firmware/FIRMWARE_TECHNICAL_REFERENCE.md; OTA → OTA_PROTECTION.md + OTA_REGRESSION_MEMORY.md; rail/Peltier → VOLTAGE_TRANSITION_MEMORY.md; build → BUILD_NOTES.md + APP_BUILD_REPORT.md + exact live workflow; grille/assets → DESIGN_NOTES.md. CHANGELOG.md is history only.
 5. For a full memory reconciliation, use Prompt A in CHAT_TRANSFER_PROMPTS.md, read the prior transfer completely, update other current notes first and replace CHAT_TRANSFER.md last. For a Build App chat limit, use Prompt D exactly once as the next Build App chat's first message; it loads and continues the same operation without a recap stage.
-6. Use live source and GitHub evidence as ground truth. All-green App CI does not prove physical FPS/BLE/Firmware/OTA behavior.
+6. Use live source and GitHub evidence as ground truth. All-green App CI does not prove physical overlay telemetry, BLE, Firmware, or OTA behavior.
 
 ## Permanent command and authorization protocol
 
@@ -42,7 +42,7 @@ Reconciled against live GitHub main: 2026-10-16. Live code, Git refs, Actions re
 | CHAT_TRANSFER.md | Detailed current boot snapshot, replaced at chat limit after reading old content |
 | CHAT_TRANSFER_PROMPTS.md | Prompt A full reconciliation, Prompt B read-only boot, Prompt C persistence, Prompt D one-shot Build App load+continue |
 | HANDOVER.md | Current handover and next diagnostic/action |
-| APP_NOTES.md | App UI, menu, BLE, telemetry, Floating Monitor and Shizuku FPS contracts |
+| APP_NOTES.md | App UI, menu, BLE, telemetry and six-metric Floating Monitor contracts (B/H/V/A/P/F) |
 | FIRMWARE_NOTES.md | Hardware pins, NTC, safety, Adaptive, transitions, LED and telemetry contracts |
 | firmware/FIRMWARE_TECHNICAL_REFERENCE.md | Firmware architecture/static invariants; not compile proof |
 | OTA_PROTECTION.md | Protected Local/Online OTA flow and gates |
@@ -53,7 +53,7 @@ Reconciled against live GitHub main: 2026-10-16. Live code, Git refs, Actions re
 | CHANGELOG.md | Historical behavior/decision/failure ledger, not current truth |
 | DESIGN_NOTES.md | Approved grille, icons/cooler and visual requirements |
 | .github/workflows/jexfyz-app-build-trigger.yml | Authoritative manual issue-triggered App Build workflow |
-| test/*.dart and Android native JUnit | Build #69 passed 88/88 Flutter tests, four parser JUnit cases and five watchdog-policy JUnit cases. CI does not establish real-device FPS or binding. |
+| test/*.dart and Android native unit-test gate | Five Dart test files remain; current schema migration and FPS-removal tests have NOT RUN. Build #69's 88/88 tests and native FPS JUnit results apply to older source. |
 | firmware/JEXFYZ-V6.6.ino | Current editable Firmware source, one versioned active sketch |
 | archive/*.md | Immutable, verbatim forensic snapshots; archived “CURRENT” claims are not live truth. Root-relative links retained from originals may not resolve from the archive subdirectory; use canonical root docs and do not rewrite archives |
 
