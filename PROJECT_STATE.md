@@ -74,7 +74,7 @@ Six active Dart test files remain. Build #68 passed 88/88 Flutter tests, four Ti
 - USER-REPORTED screenshot: Shizuku access appears granted, but overlay metric F showed --. The original screenshot was captured in JE Cooler's own settings screen; this alone did not prove why FPS data was absent.
 - Build #58's FPS source uses focused-window identity and frame-delta validation, but the target phone still showed `F:--` despite Shizuku being granted. This points to a remaining runtime/sample path problem, not an overlay-enable or checkbox problem.
 - **Build #62 includes and CI-tested** binding-lifecycle checkpoint `225cc9ae4c67b3fbb76426db3b2503ef6934aaae`: each UserService attempt has its own `UserServiceArgs` tag, `ServiceConnection`, generation and latch; stale callbacks are rejected/cleaned, bind exception/timeout/dead Binder/remote AIDL errors are distinguished, and filtered binding/command/foreground/layer/frame diagnostics are available. Cleanup avoids starting a fresh UserService only to disable capture after the active Binder has failed.
-- **Next action:** Build #67 now includes and CI-tests `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46`. Install the new APK and test foreground FPS; if `F:--` persists, capture Settings status and filtered `JexFpsDiag` logs before proposing another source fix. CI cannot prove device behavior.
+- **Next action:** Build #68 revalidated `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46`. Install the latest APK and test foreground FPS; if `F:--` persists, capture Settings status and filtered `JexFpsDiag` logs before proposing another source fix. CI cannot prove device behavior.
 
 ## Current Floating Monitor appearance
 
