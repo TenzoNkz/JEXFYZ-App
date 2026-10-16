@@ -4,7 +4,7 @@ Last reconciled: 2026-10-16 Asia/Jakarta after Build #62. The Shizuku UserServic
 
 ## Current App source/release
 
-- Canonical repo/branch: TenzoNkz/JEXFYZ-App / main. Latest successful App Build: [#62 / run 38841458441](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38841458441); trigger [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). Exact source/release target: `42a72d863b10adfb5d6a0ee332a2f879a78173a4`, including Shizuku binding lifecycle checkpoint `225cc9ae4c67b3fbb76426db3b2503ef6934aaae` and test-only contract repair.
+- Canonical repo/branch: TenzoNkz/JEXFYZ-App / `main`. Live reconciliation verified five branches and zero open PRs. Latest successful App Build: [#62 / run 38841458441](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38841458441); trigger [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). Exact source/release target: `42a72d863b10adfb5d6a0ee332a2f879a78173a4`, including Shizuku binding lifecycle checkpoint `225cc9ae4c67b3fbb76426db3b2503ef6934aaae` and test-only contract repair. Changes after this source SHA are documentation-only.
 - All release gates passed: App audit, dependency resolution, Dart analysis, **88/88 Flutter tests**, obfuscated release APK, V1/V2/V3 and production certificate verification, matching source ZIP, Release publication and re-downloaded asset identity/hash/signature checks.
 - Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) contains exactly:
   - [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk) — asset `645909183`, `54,636,716` bytes, SHA-256 `f71a971aad4face7df78f9cdc1ee82f8d47c4700d9d05692fc77a24deaca6b37`.

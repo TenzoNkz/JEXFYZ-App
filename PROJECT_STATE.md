@@ -12,12 +12,12 @@ Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use C
 
 ## App identity and repository
 
-- Canonical App repo: TenzoNkz/JEXFYZ-App, branch main. Latest verified release is Build #62 from source `42a72d863b10adfb5d6a0ee332a2f879a78173a4`; it includes Shizuku binding lifecycle hardening and passed 88/88 Flutter tests plus all release checks. Branch/PR counts were not rechecked in this build pass.
+- Canonical App repo: TenzoNkz/JEXFYZ-App, branch `main`. Latest verified release is Build #62 from source `42a72d863b10adfb5d6a0ee332a2f879a78173a4`; it includes Shizuku binding lifecycle hardening and passed 88/88 Flutter tests plus all release checks. Live reconciliation on 2026-10-16 verified **5 branches and 0 open PRs**. Twelve documentation-only commits follow the release source; no App/Firmware source or tests differ from the verified Build #62 source tree.
 - App/package: JE Cooler / JE X FYZ, com.horizontalzzz.jexfyz, pubspec version 1.0.0+3. Preserve Gradle versionName exactly as "Telegram @horizontalzzz".
 - Only active App build workflow: .github/workflows/jexfyz-app-build-trigger.yml; issue opened/reopened only; repository-owner, exact title and body-token guarded. Normal push/PR does not build/release.
 - Firmware artifact repo TenzoNkz/JEXFYZ-Firmware has exactly one tree entry: JEXFYZ.cpp.bin, 1,455,936 bytes, blob 68167e65d26137eeb1ce4d6d4ba798dc282454e6. Do not modify or inspect BIN payload during documentation work. This does not prove current source-to-BIN provenance.
 
-## Latest App release — verified
+## Build #62 release artifact and signing record
 
 - Build #62 / run `38841458441`, URL https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38841458441. Completed successfully at 2026-10-16 02:43:37Z (2026-10-16 09:43:37 Asia/Jakarta); exact source commit `42a72d863b10adfb5d6a0ee332a2f879a78173a4`, triggered by guarded [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33).
 - Passed security/architecture/license audit, dependencies, Dart analysis, **88/88 Flutter tests**, obfuscated APK compilation, V1/V2/V3 signing, expected production certificate verification, matching source-archive validation, publication and re-downloaded asset identity/hash/signature checks. The Build #62 test repair and prior Build #61 failure are kept in `APP_BUILD_REPORT.md`.
@@ -54,8 +54,8 @@ Six active test files: test/app_protocol_notify_contract_test.dart; test/firmwar
 
 - USER-REPORTED screenshot: Shizuku access appears granted, but overlay metric F showed --. The original screenshot was captured in JE Cooler's own settings screen; this alone did not prove why FPS data was absent.
 - Build #58's FPS source uses focused-window identity and frame-delta validation, but the target phone still showed `F:--` despite Shizuku being granted. This points to a remaining runtime/sample path problem, not an overlay-enable or checkbox problem.
-- Current unbuilt binding-lifecycle follow-up gives each UserService attempt its own `UserServiceArgs` tag, `ServiceConnection`, generation and latch; rejects stale callbacks; separates synchronous bind exception, six-second timeout, dead Binder and remote AIDL exception; and logs sanitized binding/command/foreground/layer/frame status. Cleanup does not start a new UserService solely to disable capture after the active Binder has failed.
-- Commit `225cc9ae4c67b3fbb76426db3b2503ef6934aaae` is included in Build #62's verified APK and source archive. Physical test remains pending: install the released APK, check Settings' exact sampler status plus `F:` value across JE Cooler, Settings/launcher, other apps and a real game, and capture filtered `JexFpsDiag` logs if `F` remains `--`. Do not claim FPS works without a valid measurement.
+- **Build #62 includes and CI-tested** binding-lifecycle checkpoint `225cc9ae4c67b3fbb76426db3b2503ef6934aaae`: each UserService attempt has its own `UserServiceArgs` tag, `ServiceConnection`, generation and latch; stale callbacks are rejected/cleaned, bind exception/timeout/dead Binder/remote AIDL errors are distinguished, and filtered binding/command/foreground/layer/frame diagnostics are available. Cleanup avoids starting a fresh UserService only to disable capture after the active Binder has failed.
+- **Remaining gate is on-device, not a pending build:** install the Build #62 release, check Settings' exact sampler status and `F:` while foregrounding JE Cooler, Settings/launcher, another app and a real game. If `F` remains `--`, capture filtered `JexFpsDiag` logs. CI does not prove runtime binding, SurfaceFlinger access or a valid live FPS measurement.
 
 ## Current Floating Monitor appearance
 

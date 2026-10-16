@@ -34,14 +34,11 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 - The user considers Firmware V6.6 correct/final and reports successful compilation plus two successful Online OTA updates with the same V6.6 version. Do not modify/recompile/reflash it unless the user reopens Firmware work and separately authorizes the operation. Source-to-BIN provenance remains independently unverified; do not infer it from the user report.
 - App Gradle `versionName "Telegram @horizontalzzz"` is an intentional identity string; do not change it.
 
-## Current validation boundary
+## Remaining validation outside CI
 
-- Canonical App repo is TenzoNkz/JEXFYZ-App, branch main. Latest verified release is [Build #62 / run 38841458441](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38841458441), source commit `42a72d863b10adfb5d6a0ee332a2f879a78173a4`. Audit, dependencies, Dart analysis, **88/88 Flutter tests**, obfuscated APK compilation, V1/V2/V3 signing, production certificate verification, matching source archive, publication and downloaded-asset verification all passed.
-- Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) contains exactly two verified assets: [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk) (asset `645381550`, `54,636,716` bytes; SHA-256 `47892215de179c8cb2975ad5c99b8b3b1398559873352411ed74d001aa001274`) and [`JEXFYZ-corresponding-source.zip`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip) (asset `645381553`, `2,866,092` bytes; SHA-256 `dd9bdc1f8082c70ab2ff73892f5434057d36cedc870fd92184b8ed579e2b538a`). See `APP_BUILD_REPORT.md` for the full attempt history and verification evidence.
-- Build #62 verifies Shizuku lifecycle checkpoint `225cc9ae4c67b3fbb76426db3b2503ef6934aaae` and test-only repair in commit `42a72d863b10adfb5d6a0ee332a2f879a78173a4`. Physical UserService binding, OEM layer access, live FPS and visual rendering remain **NOT DEVICE-VERIFIED**.
-- Shizuku remains the explicit FPS permission/execution path using the restricted AIDL UserService. Shizuku permission alone does not prove service binding or SurfaceFlinger layer availability. Actual phone FPS, overlay rendering and OEM behavior remain **NOT DEVICE-VERIFIED**.
-- Only active workflow is `.github/workflows/jexfyz-app-build-trigger.yml`. It is owner/title/token-guarded and listens to issue opened/reopened; normal push/PR does not build/release. Only `@Thinking Eksekusi Build App!` authorizes that operation.
-- Firmware source remains `firmware/JEXFYZ-V6.6.ino`, `FW_VERSION="V6.6"`. User compiles firmware; V6.6 is user-accepted final. App CI does not imply Firmware/BIN/Firebase/OTA/flash/device action.
+- Build #62 verified the current App source through audit, dependencies, Dart analysis, **88/88 Flutter tests**, obfuscated APK compilation, production V1/V2/V3 signing, certificate checks, matching source archive, publication and re-downloaded asset verification. The immutable release details appear once above and in `APP_BUILD_REPORT.md`.
+- Physical verification is still required for Shizuku UserService binding/lifecycle on the target phone, OEM SurfaceFlinger layer visibility, foreground FPS, and overlay/icon rendering. The release pipeline cannot verify those behaviors.
+- Firmware V6.6 is USER-ACCEPTED FINAL according to the user's report. Its compile log and source-to-BIN provenance remain unverified independently. App CI does not imply Firmware compile, BIN provenance, Firebase, OTA, flash, BLE hardware or thermal-safety validation.
 
 ## Non-negotiable workflow
 

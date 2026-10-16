@@ -1,13 +1,13 @@
 # JE X FYZ — Firmware Technical Reference
 
-Last source audit recorded: 2026-10-15 (Asia/Jakarta). Always fetch live source and compare before relying on line locations/hashes.
+Last live source/hash and safety-reference reconciliation: 2026-10-16 (Asia/Jakarta). Always fetch live source and compare before relying on line locations/hashes.
 
 ## Current source identity
 
 - Canonical editable source: `firmware/JEXFYZ-V6.6.ino`.
 - `FW_VERSION = "V6.6"`; source blob last observed: `f51ba6db5d0e91318f63fea4014bb87f7bf76222`.
 - Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module, Arduino-ESP32 Core 3.3.7, compiled by the user in ArduinoDroid.
-- This reference is not compile proof. The user reported that V6.6 compiled successfully and Online OTA update succeeded. The assistant did not independently verify the compile log, installed version or whether the artifact BIN matches this source; physical safety/thermal/LED regression and complete OTA recovery gates remain open. Release state remains DEVELOPMENT + QC / PRE-RELEASE, NOT RELEASED.
+- **Acceptance state: USER-ACCEPTED FINAL V6.6.** The user reports a successful compile and two successful same-version Online OTA updates. This reference is not compile proof: the compile log, installed-device version, and provenance connecting this source to the artifact-repository BIN were not independently verified. Physical safety/thermal/LED behavior and the complete OTA apply/reboot/reconnect gates remain UNVERIFIED; do not infer formal artifact provenance or physical validation from the acceptance report.
 
 ## Architecture
 
