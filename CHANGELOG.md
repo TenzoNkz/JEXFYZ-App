@@ -2,14 +2,22 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
-## 2026-10-16 — Shizuku UserService bind timeout repair committed; build pending
+## 2026-10-16 — Build #66 verified; Shizuku bind-timeout mitigation included
+
+- Build #66 / [Actions run `38859288444`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38859288444) passed the full guarded App release pipeline against source/release commit `a2b19d4708f3075730132ac16f375f2a352aa50a`. All **21 active workflow steps passed**, including audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, APK obfuscation/build, V1/V2/V3 signature/certificate checks, source ZIP validation, Release publication and downloaded asset verification.
+- It includes timeout fix `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d`: native UserService binding deadline `35_000L`, localized 35-second status message, and Settings polling every 350 ms up to 144 iterations (50.4 seconds). This corrects the previous 6-second local deadline that could abandon a cold start before Shizuku's 30-second server window expired.
+- Release `jexfyz-latest` targets the exact source. APK asset `646344237` (54,636,716 bytes; SHA-256 `cae0364670324511551742295a40fc4208399a5de4330b5a18d5d43ca5d488cf`) and source ZIP asset `646344244` (2,874,306 bytes; SHA-256 `9a3a008e377fa6bdcc7d4add2fecbce9167df88b2b0ce924512ca703e5eeac69`) were re-downloaded and verified. V1/V2/V3 and production certificate checks passed.
+- Build #63's stale widget assertion and Build #64's 2 GiB Gradle heap failure plus their repairs remain recorded below. Build #65 verified the prior TimeStats implementation; Build #66 then verified the timeout repair without removing tests or gates.
+- Still NOT DEVICE-VERIFIED: actual Shizuku service binding on the target phone, OEM TimeStats availability, foreground FPS and overlay rendering. App-only operation; no Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+
+## HISTORICAL — 2026-10-16 — Shizuku UserService bind timeout repair committed; later verified by Build #66
 
 - Screenshot evidence showed permission granted but `UserService did not connect within 6 seconds (shizuku_userservice_timeout)`. Official Shizuku's UserServiceManager allows up to 30 seconds for a process to start; the App's 6-second client timeout could retire/unbind a slow valid cold start before the server's startup window expired.
 - Source commit `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d` changes the local deadline to 35 seconds (server's 30-second startup allowance plus callback grace), extends Settings polling to 50.4 seconds and updates localized status text and source-contract tests.
-- **NOT BUILT / NOT CI-TESTED:** this was `@Thinking Eksekusi Full!`, not Build App. Build #65 remains the latest verified release and does not include this repair. The timeout alignment is evidence-based mitigation; service connection/FPS on the target phone remains unverified.
+- **Initial state when committed:** this was `@Thinking Eksekusi Full!`, not Build App, so source commit `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d` was initially unbuilt. Build #66 later validated it through Dart analysis, 88/88 Flutter tests, native JUnit, Android release build/signing and downloaded asset verification. The timeout alignment remains an evidence-based mitigation; service connection/FPS on the target phone is still unverified.
 - App-only scope. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
-## 2026-10-16 — Build #65 release verified: TimeStats parser and JUnit gate passed
+## HISTORICAL — Build #65 release verified (superseded by Build #66)
 
 - Build #65 / [Actions run `38851040144`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38851040144) passed the full guarded App release workflow against source `f301c1fbbafa3d6c17803d9a2f50bae390dc1343`. All **21 active steps passed**, including App audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, obfuscated APK, V1/V2/V3 signing and certificate, matching source ZIP, Release publication and downloaded-asset verification.
 - Includes TimeStats sampling/parser patch `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620`, test-only widget contract repair `14347cd731b2c471fea9937f796ca21f8defc261`, and Gradle heap increased to `-Xmx4096M`.
