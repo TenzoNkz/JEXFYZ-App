@@ -8,18 +8,18 @@
 - Build App does not authorize Firmware compilation, BIN creation/publication/replacement, Firebase metadata changes, physical OTA, flashing, device operation, or unrelated release operations.
 - Never claim CI success proves BLE, cooling/safety behavior, Firmware compilation, OTA installation or installed device version.
 
-## CURRENT — Build #66 release verified; sampler recovery patch awaits Build App
+## CURRENT — Build #67 release verified; physical FPS remains unverified
 
-- Latest successful App Build is [Build #66 / run `38859288444`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38859288444), release source `a2b19d4708f3075730132ac16f375f2a352aa50a`.
-- **Current main follow-up — NOT RUN / NOT BUILT:** `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46` adds startup/poll exception handling, localized failure statuses, an independent watchdog and five native policy JUnit cases. It is not in Build #66. `@Thinking Eksekusi Full!` does not authorize a build; next gate is `@Thinking Eksekusi Build App!`.
-- Build #66 includes timeout fix `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d`: native UserService bind deadline `35_000L`, localized 35-second timeout status, and Settings polling every 350 ms up to 144 iterations (50.4 seconds). The code is now built/CI-tested; whether the service binds on the target phone remains unverified.
-- All **21 active workflow steps passed**: App security/architecture/third-party-license audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, obfuscated Android release build, V1/V2/V3 signing/certificate checks, corresponding source ZIP, publication and re-downloaded asset/hash/signature verification.
-- Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) targets Build #66 and contains one APK plus one matching source ZIP:
-  - [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk) — asset ID `646344237`, `54,636,716` bytes, SHA-256 `cae0364670324511551742295a40fc4208399a5de4330b5a18d5d43ca5d488cf`.
-  - [`JEXFYZ-corresponding-source.zip`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip) — asset ID `646344244`, `2,874,306` bytes, SHA-256 `9a3a008e377fa6bdcc7d4add2fecbce9167df88b2b0ce924512ca703e5eeac69`.
+- Latest successful App Build is [Build #67 / run `38890997565`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38890997565), release source `8efbfebe1b12e162dccddbdf68b8627d8723f756`.
+- Build #67 includes sampler exception isolation and watchdog checkpoint `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46`: startup and periodic TimeStats failures are caught and surfaced, with a 60-second startup-progress timeout and 30-second polling-progress timeout. Five pure Kotlin watchdog-policy JUnit tests and updated Flutter contract assertions passed.
+- All **21 active workflow steps passed**: App security/architecture/third-party-license audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, obfuscated Android release build, V1/V2/V3 signing/certificate checks, matching source ZIP, publication and re-downloaded asset/hash/signature verification.
+- Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) targets Build #67 and contains one APK plus one matching source ZIP:
+  - [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk) — asset ID `647067767`, `54,636,716` bytes, SHA-256 `40e2f3233d94cb8f624a3ffc50677f058840057800b8b1a172ba0eaf2881a102`.
+  - [`JEXFYZ-corresponding-source.zip`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip) — asset ID `647067768`, `2,877,328` bytes, SHA-256 `4b5403d27d74167cd2c15ca6c5eb780d9622b5be0924c42c04256e240d9545cd`.
 - Expected certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. V1/V2/V3 verified for built and downloaded APKs.
-- Non-blocking warnings: 23 Dart deprecation infos, Gradle `9.3.1` out of date, native ELF DWARF debug information not obfuscated, self-signed/no-timestamp JAR and META-INF coverage warnings, and pub-cache save denied due to token scope. Full attempt history is in `APP_BUILD_REPORT.md`.
-- Actual Shizuku binding/UID permissions, OEM TimeStats visibility, live foreground FPS and overlay rendering remain **NOT DEVICE-VERIFIED**. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+- Build #66’s 35-second Shizuku bind deadline and 50.4-second Settings polling remain included; Build #67 adds the sampler watchdog. Both are CI-tested; whether the target phone's UserService binds and OEM exposes usable TimeStats remains unverified.
+- Non-blocking warnings: 23 Dart deprecation infos, Gradle `9.3.1` out of date, native ELF DWARF debug info not obfuscated, self-signed/no-timestamp JAR and META-INF coverage warnings, and pub-cache save denied due to token scope. Full attempt history is in `APP_BUILD_REPORT.md`.
+- No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
 ## HISTORICAL — Build #65 release verified; superseded by Build #66
 
@@ -27,7 +27,7 @@
 - Build #65 included TimeStats patch `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620`, native parser/JUnit, the widget contract repair and Gradle heap `-Xmx4096M`; **it did not include** the later 35-second bind timeout repair `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d`. Build #66 verified that follow-up.
 - Previous asset hashes: APK `6823d87dbe25ded3ee5fd399ff231423078f9a33e814d7a80aed8ed1fe1b5b87`; source ZIP `df96a3cf43c860370d776995bff2ef4861ccf9f5e84744b49adb0cdab79d13cc`. See `APP_BUILD_REPORT.md` for the full attempt ledger.
 
-## HISTORICAL — Build #49 successful App release (superseded as latest by Build #66)
+## HISTORICAL — Build #49 successful App release (superseded as latest by Build #67)
 - **Run:** [Build #49 / `38739077916`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916), issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22), source commit `2b2d2886abb66481b7134e5036824f625ab5659d`, job `116435785328`, runner `1000002352`. Every main step passed.
 - **Validation:** architecture/security/license audit, dependency resolution, Dart analysis and all 80 Flutter tests passed; release APK built obfuscated; V1/V2/V3 signing and official certificate verified; corresponding-source ZIP passed integrity/path/license checks; Release upload and re-downloaded APK/source verification passed.
 - **Release target:** `jexfyz-latest` now points at source commit `2b2d2886abb66481b7134e5036824f625ab5659d`. Exactly one APK plus one matching source archive:
