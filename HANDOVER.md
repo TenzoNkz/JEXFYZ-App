@@ -22,7 +22,7 @@ Last reconciled: 2026-10-16 Asia/Jakarta after Build #62. The Shizuku UserServic
 ## Current Floating Monitor UX
 
 - Position remains freely draggable; horizontal metric groups are centered, vertical rows share the same left edge. Size is 0.30×–1.00× in 0.05× increments (default 0.60×). Background opacity is 0–100% in 5% increments with endpoint labels only; no 50% midpoint. Background color/foreground contrast behavior remains.
-- Build #60 passed Dart analysis, all 88 Flutter tests, Android release compilation/signing and release artifact checks. Physical overlay appearance, animation quality, service lifecycle, Shizuku runtime and live FPS still require device validation.
+- Build #62 passed Dart analysis, all 88 Flutter tests, Android release compilation/signing and release artifact checks, including the Shizuku lifecycle patch. Physical overlay appearance, animation quality, service runtime and live FPS still require device validation.
 
 
 ## Firmware/hardware boundary
@@ -42,4 +42,4 @@ Last reconciled: 2026-10-16 Asia/Jakarta after Build #62. The Shizuku UserServic
 
 1. First, test FPS with an actual game in the foreground while Floating Monitor remains enabled.
 2. If F stays --, capture exact fps_monitor_status plus native logs before proposing a source fix. Do not immediately rebuild without diagnostic evidence.
-3. Keep Build #60 success plus Build #59 test failure and repair records in `APP_BUILD_REPORT.md`. Physical-device FPS/visual validation is the immediate open check; CI does not replace on-device diagnostics.
+3. Keep Build #62 success and Build #61 failure/repair records in `APP_BUILD_REPORT.md`. Physical-device FPS/visual validation is the immediate open check; CI does not replace on-device diagnostics.
