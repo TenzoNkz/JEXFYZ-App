@@ -4,7 +4,7 @@ Last reconciled: 2026-10-16 (Asia/Jakarta).
 Canonical source: `firmware/JEXFYZ-V6.6.ino`, blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`.
 Static regression contract: `test/v6_6_qc_contract_test.dart`, blob `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a`.
 
-**App-side validation evidence:** Build #62 / run [`38841458441`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38841458441), release source `42a72d863b10adfb5d6a0ee332a2f879a78173a4`, passed Dart analysis and **88/88 Flutter tests**, including source-contract assertions over the file above. These assertions are not an Arduino/ESP32 compile or physical rail-transition validation. The user reports V6.6 compiled and Online OTA succeeded twice; compile logs, installed version and source-to-BIN provenance were not independently checked. Physical transition reproduction, current measurement, and end-to-end thermal/OTA behavior remain unverified.
+**App-side validation evidence:** Build #65 / run [`38851040144`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38851040144), release source `f301c1fbbafa3d6c17803d9a2f50bae390dc1343`, passed Dart analysis, **88/88 Flutter tests**, and native FPS parser JUnit. App source-contract assertions are not an Arduino/ESP32 compile or physical rail-transition validation. The user reports V6.6 compiled and Online OTA succeeded twice; compile logs, installed version and source-to-BIN provenance were not independently checked. Physical transition reproduction, current measurement, and end-to-end thermal/OTA behavior remain unverified.
 
 ## Incident
 
