@@ -2,6 +2,15 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
+## 2026-10-16 — Chat Stuck recovery: final memory and reference audit
+
+- Recovered the authorized full project-memory reconciliation against live `main`, rather than retrying previous writes blindly. Confirmed the recursive tree is complete/not truncated (80 entries), five branches exist with zero open PRs, the only active App build workflow is the guarded issue-triggered `.github/workflows/jexfyz-app-build-trigger.yml`, Build #62 remains the latest verified release, and current `main` changes after its source target are documentation/memory only.
+- Rechecked the current App identity/version, Android Gradle `versionName "Telegram @horizontalzzz"`, active Firmware `firmware/JEXFYZ-V6.6.ino` with `FW_VERSION="V6.6"`, all six active tests and their current blob IDs, exact Build #62 source/release and asset hashes, branch/PR state, and artifact-repo tree. `TenzoNkz/JEXFYZ-Firmware` still contains exactly `JEXFYZ.cpp.bin`; its source-to-BIN provenance remains unverified.
+- Corrected the stale opening validation sentence in `VOLTAGE_TRANSITION_MEMORY.md`: Build #62 executed the App Flutter suite and passed 88/88, including source-contract checks in `test/v6_6_qc_contract_test.dart`; this is not Arduino compile or physical voltage-transition evidence. Marked the OTA static checklist as a future explicitly authorized preflight that was not run in this reconciliation.
+- Audited Markdown links across all 21 Markdown files. Active canonical docs have no missing local Markdown targets. Some root-relative links in the three frozen `archive/*.md` snapshots no longer resolve when viewed from the `archive/` subdirectory; archives were intentionally left byte-for-byte unchanged, and README/MEMORY_INDEX now document the caveat and direct readers to canonical root files.
+- Read the existing `CHAT_TRANSFER.md` in full before replacing it. This transfer file is the last file to be written; it will be re-read with its new blob SHA/HEAD after the other docs are verified.
+- No App source, tests, active workflow, Firmware source/BIN, Firebase, OTA, physical device, App Build or Release was changed or triggered by this reconciliation. Release #62 remains the latest verified artifact; physical Shizuku/FPS/overlay behavior remains unverified.
+
 ## 2026-10-16 — Full project-memory reconciliation after Build #62
 
 - Audited live App `main`, the complete recursive tree, current App/Firmware source identities, guarded Build App workflow, all six active test files, current Actions/Release evidence, five branches, zero open PRs, and the BIN-only artifact repository.
