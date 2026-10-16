@@ -8,9 +8,10 @@
 - Build App does not authorize Firmware compilation, BIN creation/publication/replacement, Firebase metadata changes, physical OTA, flashing, device operation, or unrelated release operations.
 - Never claim CI success proves BLE, cooling/safety behavior, Firmware compilation, OTA installation or installed device version.
 
-## CURRENT — Build #66 release verified; physical FPS remains unverified
+## CURRENT — Build #66 release verified; sampler recovery patch awaits Build App
 
-- Latest successful App Build is [Build #66 / run `38859288444`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38859288444), exact source/release target `a2b19d4708f3075730132ac16f375f2a352aa50a`, triggered by owner-authored guarded [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33); completed at `2026-10-16T06:11:34Z` (`2026-10-16 13:11:34 Asia/Jakarta`).
+- Latest successful App Build is [Build #66 / run `38859288444`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38859288444), release source `a2b19d4708f3075730132ac16f375f2a352aa50a`.
+- **Current main follow-up — NOT RUN / NOT BUILT:** `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46` adds startup/poll exception handling, localized failure statuses, an independent watchdog and five native policy JUnit cases. It is not in Build #66. `@Thinking Eksekusi Full!` does not authorize a build; next gate is `@Thinking Eksekusi Build App!`.
 - Build #66 includes timeout fix `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d`: native UserService bind deadline `35_000L`, localized 35-second timeout status, and Settings polling every 350 ms up to 144 iterations (50.4 seconds). The code is now built/CI-tested; whether the service binds on the target phone remains unverified.
 - All **21 active workflow steps passed**: App security/architecture/third-party-license audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, obfuscated Android release build, V1/V2/V3 signing/certificate checks, corresponding source ZIP, publication and re-downloaded asset/hash/signature verification.
 - Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) targets Build #66 and contains one APK plus one matching source ZIP:

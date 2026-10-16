@@ -1,11 +1,12 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-10-16 (Asia/Jakarta) after Build #66. The Shizuku binding-timeout repair is now included in the latest verified APK; actual UserService binding on the phone, OEM TimeStats visibility, foreground FPS and overlay rendering remain unverified.
+Last reconciled: 2026-10-16 (Asia/Jakarta) after sampler exception-isolation/watchdog source commit `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46`. Build #66 remains latest verified APK; the new repair and five watchdog tests are NOT BUILT/TESTED. Actual UserService binding, OEM TimeStats visibility, FPS and overlay rendering remain unverified.
 
 ## Current App source/release
 
 - Canonical repo/branch: TenzoNkz/JEXFYZ-App / `main`. Latest successful App Build: [#66 / run 38859288444](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38859288444); trigger [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). Exact release source: `a2b19d4708f3075730132ac16f375f2a352aa50a`, includes timeout fix `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d`.
-- Build #66 includes the 35-second native UserService bind deadline and 50.4-second Settings status wait, plus the TimeStats FPS sampling/parser patch `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620`, four native parser JUnit cases and Gradle heap `-Xmx4096M`.
+- Build #66 includes the 35-second native bind deadline and 50.4-second Settings wait, TimeStats patch `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620`, four parser JUnit cases and Gradle heap `-Xmx4096M`.
+- Current main adds `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46`: catches startup/poll errors, adds localized sampler failure states and a main-handler watchdog (60s startup, 30s polling stall). Five native policy tests and source contracts are present but NOT RUN/BUILT.
 - All release gates passed: App audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, obfuscated release APK, V1/V2/V3 signing and production certificate, matching source ZIP, release publication and re-downloaded asset hash/signature/source-marker checks.
 - Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) contains exactly:
   - [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk) — asset `646344237`, `54,636,716` bytes, SHA-256 `cae0364670324511551742295a40fc4208399a5de4330b5a18d5d43ca5d488cf`.
@@ -18,7 +19,7 @@ Last reconciled: 2026-10-16 (Asia/Jakarta) after Build #66. The Shizuku binding-
 - User previously reported Shizuku access granted while overlay metric F displayed `F:--` and later `shizuku_userservice_timeout`. These screenshots do not prove the precise runtime cause.
 - Build #66 includes attempt-scoped tagged Shizuku binding, TimeStats sampling, and the timeout repair: `FPS_USER_SERVICE_BIND_TIMEOUT_MS = 35_000L`, with Settings polling for 50.4 seconds. Flutter tests, four native parser JUnit cases, Android release compilation/signing and downloaded release asset checks passed.
 - The 35-second deadline aligns with Shizuku's 30-second startup allowance plus callback grace, but successful build/CI does not prove that the target phone's UserService binds or that its OEM exposes usable TimeStats layer data.
-- Next action: install [Build #66 APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk) and test foreground F across JE Cooler, Settings/launcher, another app and a real game. If F remains `--`, capture the Settings sampler status and filtered `JexFpsDiag` logs, especially `bind_requested`, `bind_timeout`, `user_service_started` and `bind_connected`. Do not infer FPS from panel refresh rate.
+- Next action: run `@Thinking Eksekusi Build App!` for current main `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46`. After the new APK passes gates and is installed, test foreground F across apps/game; if `F:--` persists, capture status and `JexFpsDiag` logs (`sampler_exception`, `sampler_watchdog_timeout`, `bind_requested`, `bind_connected`, `layer_match`, `frame_sample`).
 
 ## Current Floating Monitor UX
 
