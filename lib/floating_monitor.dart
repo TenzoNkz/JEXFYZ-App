@@ -82,6 +82,9 @@ String floatingFpsStatusLabel(String status, AppLanguage language) {
     'surfaceflinger_blocked' => isIndonesian
         ? 'Akses statistik SurfaceFlinger gagal'
         : 'SurfaceFlinger frame-statistics access failed',
+    'dumpsys_permission_denied' => isIndonesian
+        ? 'Akses perintah diagnostik ditolak'
+        : 'Permission denied for the FPS diagnostic command',
     'dumpsys_timeout' => isIndonesian
         ? 'Perintah pengukuran FPS kehabisan waktu'
         : 'FPS system command timed out',

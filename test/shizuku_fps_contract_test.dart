@@ -90,6 +90,10 @@ void main() {
     expect(shizukuService, contains('OP_READ_FOREGROUND_WINDOW_FULL'));
     expect(shizukuService, contains('operation_started id=$operation name=$name uid='));
     expect(shizukuService, contains('command_finished operation=$operation uid=$uid exitCode=$exitCode'));
+    expect(shizukuService, contains('dumpsys_permission_denied'));
+    expect(service, contains('foreground_detected source=window_displays package=$focused'));
+    expect(service, contains('layer_match package=$foregroundPackage candidateLayers='));
+    expect(service, contains('frame_sample package=$foregroundPackage chosenLayer='));
     expect(shizukuService, contains('user_service_started uid='));
     expect(service, isNot(contains('android.permission.DUMP')));
     expect(service, isNot(contains('ProcessBuilder(')));

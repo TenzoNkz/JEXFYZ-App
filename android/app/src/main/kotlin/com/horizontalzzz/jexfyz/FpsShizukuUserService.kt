@@ -134,10 +134,18 @@ class FpsShizukuUserService : IFpsShizukuUserService.Stub() {
         val elapsedMs = SystemClock.elapsedRealtime() - startedAtMs
         val permissionDenied = output.contains("Permission Denial", ignoreCase = true) ||
             output.contains("Permission denial", ignoreCase = true)
+        val permissionError = if (operation == "capture_start" ||
+            operation == "capture_stop" ||
+            operation == "surfaceflinger_stats"
+        ) {
+            "surfaceflinger_blocked"
+        } else {
+            "dumpsys_permission_denied"
+        }
         val error = when {
             timedOut.get() -> "dumpsys_timeout"
             oversized.get() -> "dumpsys_output_too_large"
-            permissionDenied -> "surfaceflinger_blocked"
+            permissionDenied -> permissionError
             exitCode != 0 -> "dumpsys_exit_$exitCode"
             else -> null
         }

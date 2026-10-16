@@ -816,23 +816,44 @@ class FloatingMonitorService : Service() {
 
         val displaysResult = runDumpsys("window", "displays")
         if (displaysResult.ok) {
-            focusedPackage(displaysResult.output)?.let { return it }
+            val focused = focusedPackage(displaysResult.output)
+            if (focused != null) {
+                Log.d(FPS_DIAG_TAG, "foreground_detected source=window_displays package=$focused")
+                return focused
+            }
+        } else {
+            Log.w(FPS_DIAG_TAG, "foreground_lookup_failed source=window_displays error=${displaysResult.error ?: "unknown"}")
         }
 
         val fullWindowResult = runDumpsys("window")
         if (fullWindowResult.ok) {
-            focusedPackage(fullWindowResult.output)?.let { return it }
+            val focused = focusedPackage(fullWindowResult.output)
+            if (focused != null) {
+                Log.d(FPS_DIAG_TAG, "foreground_detected source=window_full package=$focused")
+                return focused
+            }
+        } else {
+            Log.w(FPS_DIAG_TAG, "foreground_lookup_failed source=window_full error=${fullWindowResult.error ?: "unknown"}")
         }
 
         val activityResult = runDumpsys("activity", "activities")
-        if (!activityResult.ok) return null
+        if (!activityResult.ok) {
+            Log.w(FPS_DIAG_TAG, "foreground_lookup_failed source=activity error=${activityResult.error ?: "unknown"}")
+            return null
+        }
         val activityPatterns = listOf(
             Regex("""\b(?:mResumedActivity|topResumedActivity|ResumedActivity)\s*[:=]\s*ActivityRecord\{[^\r\n}]*\bu\d+\s+([A-Za-z0-9_.]+)/"""),
             Regex("""\b(?:mResumedActivity|topResumedActivity|ResumedActivity)\s*[:=]\s*[^\r\n]*?\bu\d+\s+([A-Za-z0-9_.]+)/"""),
         )
-        return activityPatterns.firstNotNullOfOrNull { pattern ->
+        val resumed = activityPatterns.firstNotNullOfOrNull { pattern ->
             pattern.find(activityResult.output)?.groupValues?.get(1)
         }
+        if (resumed == null) {
+            Log.w(FPS_DIAG_TAG, "foreground_unknown allSourcesTried=true")
+        } else {
+            Log.d(FPS_DIAG_TAG, "foreground_detected source=activity package=$resumed")
+        }
+        return resumed
     }
 
     // Match a compositor layer to a single exact package boundary to avoid counting another
@@ -864,6 +885,7 @@ class FloatingMonitorService : Service() {
 
         val foregroundPackage = readForegroundPackage()
         if (foregroundPackage == null) {
+            Log.w(FPS_DIAG_TAG, "fps_sample_blocked reason=foreground_unknown")
             fpsFrameCounts.clear()
             fpsLastSampleAtMs = 0L
             fpsTrackedLayer = null
@@ -911,6 +933,7 @@ class FloatingMonitorService : Service() {
 
         val result = runDumpsys("SurfaceFlinger", "--timestats", "-dump")
         if (!result.ok) {
+            Log.w(FPS_DIAG_TAG, "fps_sample_blocked reason=surfaceflinger_dump error=${result.error ?: "unknown"}")
             fpsMainHandler.post {
                 if (generation != fpsGeneration) return@post
                 stopFpsMonitor(result.error ?: "surfaceflinger_blocked")
@@ -919,11 +942,16 @@ class FloatingMonitorService : Service() {
         }
 
         val now = SystemClock.elapsedRealtime()
-        val layers = parseLayerFrameCounts(result.output)
+        val candidateLayers = parseLayerFrameCounts(result.output)
             .filter { isCandidateApplicationLayer(it.name) }
-            .filter { layerBelongsToPackage(it.name, foregroundPackage) }
+        val layers = candidateLayers.filter { layerBelongsToPackage(it.name, foregroundPackage) }
+        Log.d(
+            FPS_DIAG_TAG,
+            "layer_match package=$foregroundPackage candidateLayers=${candidateLayers.size} matchedLayers=${layers.size}",
+        )
 
         if (layers.isEmpty()) {
+            Log.w(FPS_DIAG_TAG, "fps_sample_blocked reason=no_layer_data package=$foregroundPackage")
             fpsFrameCounts.clear()
             fpsLastSampleAtMs = 0L
             fpsTrackedLayer = null
@@ -1017,6 +1045,11 @@ class FloatingMonitorService : Service() {
                 status = "waiting_for_frames"
             }
         }
+        Log.d(
+            FPS_DIAG_TAG,
+            "frame_sample package=$foregroundPackage chosenLayer=${fpsTrackedLayer ?: "none"} " +
+                "delta=${bestPositive?.second ?: validZero?.second ?: -1L} elapsedMs=$elapsed fps=$value status=$status",
+        )
         fpsMainHandler.post {
             if (generation != fpsGeneration) return@post
             data.fps = value
