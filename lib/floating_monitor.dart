@@ -34,8 +34,8 @@ String floatingFpsStatusLabel(String status, AppLanguage language) {
     'monitor_off' => isIndonesian ? 'Pemantauan FPS tidak aktif' : 'FPS monitoring is off',
     'starting' => isIndonesian ? 'Sedang mengambil sampel FPS pertama' : 'Waiting for the first FPS sample',
     'fps_status_timeout' => isIndonesian
-        ? 'Status FPS tidak berubah setelah 12 detik; periksa koneksi native'
-        : 'FPS status did not update within 12 seconds; inspect native connection',
+        ? 'Status FPS tidak berubah setelah 50 detik; periksa koneksi native'
+        : 'FPS status did not update within 50 seconds; inspect native connection',
     'active' => isIndonesian ? 'Sampel FPS valid tersedia' : 'Valid FPS sample available',
     'foreground_unknown' => isIndonesian
         ? 'Jendela aplikasi depan tidak terdeteksi'
@@ -59,8 +59,8 @@ String floatingFpsStatusLabel(String status, AppLanguage language) {
         ? 'Permintaan bind Shizuku gagal'
         : 'Shizuku UserService bind request failed',
     'shizuku_userservice_timeout' => isIndonesian
-        ? 'UserService tidak tersambung dalam 6 detik'
-        : 'UserService did not connect within 6 seconds',
+        ? 'UserService tidak tersambung dalam 35 detik'
+        : 'UserService did not connect within 35 seconds',
     'shizuku_userservice_dead' => isIndonesian
         ? 'Binder UserService tidak aktif'
         : 'UserService Binder is not alive',
@@ -607,10 +607,10 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
       if (!mounted || result == null) return;
       await _applyFpsAccessState(result);
       if (refreshMonitor && _fpsMonitorStatus == 'starting') {
-        // SurfaceFlinger needs two frame-counter snapshots. Poll long enough to observe
-        // the second interval instead of leaving the Settings label stuck at "starting".
-        // Covers the native 6s binding deadline, command timeout, and initial frame snapshots.
-        for (var i = 0; i < 36; i++) {
+        // Shizuku's server allows 30 seconds for UserService startup; native binding waits
+        // 35 seconds. Poll for 50.4 seconds (144 x 350 ms) so Settings does not time out
+        // before a slow cold start, the first command, and the initial FPS sample can resolve.
+        for (var i = 0; i < 144; i++) {
           await Future<void>.delayed(const Duration(milliseconds: 350));
           final next = await FloatingBridge.fpsAccessStatus();
           if (!mounted || next == null) return;

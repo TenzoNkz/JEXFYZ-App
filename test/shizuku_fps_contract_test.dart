@@ -38,7 +38,9 @@ void main() {
     expect(floating, contains('floatingFpsStatusLabel(_fpsMonitorStatus, lang)'));
     expect(floating, contains("'no_layer_data'"));
     expect(floating, contains("'foreground_unknown'"));
-    expect(floating, contains('for (var i = 0; i < 36; i++)'));
+    expect(floating, contains('for (var i = 0; i < 144; i++)'));
+    expect(floating, contains('UserService did not connect within 35 seconds'));
+    expect(service, contains('FPS_USER_SERVICE_BIND_TIMEOUT_MS = 35_000L'));
     expect(floating, contains('Duration(milliseconds: 350)'));
     expect(floating, contains("'fps_status_timeout'"));
     expect(floating, contains("'shizuku_bind_exception'"));

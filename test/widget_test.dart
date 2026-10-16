@@ -45,12 +45,12 @@ void main() {
       'shizuku_userservice_timeout',
       AppLanguage.english,
     );
-    expect(bindTimeout, contains('6 seconds'));
+    expect(bindTimeout, contains('35 seconds'));
     expect(bindTimeout, contains('(shizuku_userservice_timeout)'));
 
     expect(
       floatingFpsStatusLabel('fps_status_timeout', AppLanguage.indonesia),
-      contains('12 detik'),
+      contains('50 detik'),
     );
   });
 

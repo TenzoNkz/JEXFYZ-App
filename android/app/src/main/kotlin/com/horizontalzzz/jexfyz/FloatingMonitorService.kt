@@ -963,7 +963,10 @@ class FloatingMonitorService : Service() {
         private const val MAX_TIME_STATS_LAYERS = 64
         private const val MAX_DIAGNOSTIC_LAYERS = 12
         private const val MAX_VALID_FPS_VALUE = 480.0
-        private const val FPS_USER_SERVICE_BIND_TIMEOUT_MS = 6000L
+        // Shizuku's UserServiceManager allows 30 seconds for a service process to start.
+        // Leave 5 seconds for Binder callback delivery; a 6-second client timeout can unbind
+        // a valid cold start before Shizuku's own startup window expires.
+        private const val FPS_USER_SERVICE_BIND_TIMEOUT_MS = 35_000L
         private const val FPS_DIAG_TAG = "JexFpsDiag"
 
         @Volatile
