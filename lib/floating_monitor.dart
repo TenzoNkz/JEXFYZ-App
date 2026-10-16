@@ -33,6 +33,9 @@ String floatingFpsStatusLabel(String status, AppLanguage language) {
   final message = switch (status) {
     'monitor_off' => isIndonesian ? 'Pemantauan FPS tidak aktif' : 'FPS monitoring is off',
     'starting' => isIndonesian ? 'Sedang mengambil sampel FPS pertama' : 'Waiting for the first FPS sample',
+    'fps_status_timeout' => isIndonesian
+        ? 'Status FPS tidak berubah setelah 12 detik; periksa koneksi native'
+        : 'FPS status did not update within 12 seconds; inspect native connection',
     'active' => isIndonesian ? 'Sampel FPS valid tersedia' : 'Valid FPS sample available',
     'foreground_unknown' => isIndonesian
         ? 'Jendela aplikasi depan tidak terdeteksi'
@@ -50,8 +53,26 @@ String floatingFpsStatusLabel(String status, AppLanguage language) {
     'shizuku_unsupported' => isIndonesian ? 'Versi Shizuku tidak didukung' : 'Shizuku version is unsupported',
     'shizuku_permission_missing' => isIndonesian ? 'Izin Shizuku belum diberikan' : 'Shizuku permission is missing',
     'shizuku_userservice_unavailable' => isIndonesian
-        ? 'Shizuku UserService gagal tersambung'
-        : 'Shizuku UserService could not connect',
+        ? 'Shizuku UserService tidak tersedia'
+        : 'Shizuku UserService is unavailable',
+    'shizuku_bind_exception' => isIndonesian
+        ? 'Permintaan bind Shizuku gagal'
+        : 'Shizuku UserService bind request failed',
+    'shizuku_userservice_timeout' => isIndonesian
+        ? 'UserService tidak tersambung dalam 6 detik'
+        : 'UserService did not connect within 6 seconds',
+    'shizuku_userservice_dead' => isIndonesian
+        ? 'Binder UserService tidak aktif'
+        : 'UserService Binder is not alive',
+    'shizuku_userservice_cancelled' => isIndonesian
+        ? 'Koneksi UserService dibatalkan'
+        : 'UserService connection was cancelled',
+    'shizuku_bind_interrupted' => isIndonesian
+        ? 'Menunggu koneksi UserService terhenti'
+        : 'Waiting for UserService was interrupted',
+    'shizuku_userservice_remote_exception' => isIndonesian
+        ? 'Pemanggilan Binder UserService gagal'
+        : 'UserService Binder call failed',
     'shizuku_userservice_disconnected' => isIndonesian
         ? 'Koneksi Shizuku UserService terputus'
         : 'Shizuku UserService disconnected',
@@ -585,12 +606,17 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
       if (refreshMonitor && _fpsMonitorStatus == 'starting') {
         // SurfaceFlinger needs two frame-counter snapshots. Poll long enough to observe
         // the second interval instead of leaving the Settings label stuck at "starting".
-        for (var i = 0; i < 10; i++) {
+        // Covers the native 6s binding deadline, command timeout, and initial frame snapshots.
+        for (var i = 0; i < 36; i++) {
           await Future<void>.delayed(const Duration(milliseconds: 350));
           final next = await FloatingBridge.fpsAccessStatus();
           if (!mounted || next == null) return;
           await _applyFpsAccessState(next);
           if (_fpsMonitorStatus != 'starting') break;
+        }
+        if (_fpsMonitorStatus == 'starting') {
+          _fpsMonitorStatus = 'fps_status_timeout';
+          if (mounted) setState(() {});
         }
       }
     } finally {

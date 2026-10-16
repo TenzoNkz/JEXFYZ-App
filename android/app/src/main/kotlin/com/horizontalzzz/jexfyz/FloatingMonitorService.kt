@@ -38,6 +38,7 @@ import android.os.Looper
 import android.os.RemoteException
 import rikka.shizuku.Shizuku
 import android.os.SystemClock
+import android.util.Log
 import android.provider.Settings
 import android.view.Gravity
 import android.view.MotionEvent
@@ -45,9 +46,11 @@ import android.view.ScaleGestureDetector
 import android.view.WindowManager
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.max
@@ -100,6 +103,32 @@ class FloatingMonitorService : Service() {
     private data class LayerFrameCount(
         val name: String,
         val totalFrames: Long,
+    )
+
+    private enum class FpsBindingState {
+        BINDING, CONNECTED, FAILED, TIMED_OUT, DISCONNECTED, CANCELLED
+    }
+
+    /**
+     * One object per bind attempt. The connection, latch, args/tag and cleanup flag are
+     * deliberately attempt-scoped so a callback from an old attempt cannot mutate a new one.
+     */
+    private class FpsUserServiceBindingAttempt(
+        val generation: Long,
+        val args: Shizuku.UserServiceArgs,
+        val startedAtMs: Long,
+    ) {
+        val connectedLatch = CountDownLatch(1)
+        val cleanupStarted = AtomicBoolean(false)
+        @Volatile var state: FpsBindingState = FpsBindingState.BINDING
+        @Volatile var remote: IFpsShizukuUserService? = null
+        @Volatile var errorCode: String? = null
+        lateinit var connection: ServiceConnection
+    }
+
+    private data class FpsServiceAcquireResult(
+        val attempt: FpsUserServiceBindingAttempt? = null,
+        val errorCode: String? = null,
     )
 
     private fun hasShizukuFpsPermission(): Boolean = shizukuFpsAccessSnapshot().let {
@@ -193,7 +222,10 @@ class FloatingMonitorService : Service() {
     private fun stopFpsMonitor(reason: String) {
         val wasWanted = fpsMonitorWanted
         val shouldDisable = fpsCaptureEnabled
-        if (!wasWanted && !shouldDisable && fpsMonitorStatus == reason) {
+        val hasBinding = synchronized(fpsUserServiceLock) {
+            currentFpsUserServiceBinding != null
+        }
+        if (!wasWanted && !shouldDisable && !hasBinding && fpsMonitorStatus == reason) {
             data.fps = "--"
             hudView?.requestLayout()
             hudView?.invalidate()
@@ -211,104 +243,432 @@ class FloatingMonitorService : Service() {
         hudView?.requestLayout()
         hudView?.invalidate()
 
-        if (shouldDisable) {
-            fpsCaptureEnabled = false
-            if (hasShizukuFpsPermission()) {
-                fpsExecutor.execute { runDumpsys("SurfaceFlinger", "--timestats", "-disable") }
-            } else {
-                fpsExecutor.execute { releaseFpsUserService() }
+        val shouldTryDisable = shouldDisable &&
+            reason != "shizuku_userservice_disconnected" &&
+            hasShizukuFpsPermission()
+        fpsCaptureEnabled = false
+
+        if (shouldTryDisable) {
+            // The executor serializes an orderly disable with any in-flight FPS operation.
+            fpsExecutor.execute {
+                val result = runDumpsys("SurfaceFlinger", "--timestats", "-disable")
+                if (!result.ok) {
+                    Log.w(FPS_DIAG_TAG, "capture_disable_failed error=${result.error ?: "unknown"}")
+                }
+                releaseFpsUserService()
             }
-        } else if (reason == "shizuku_not_running" ||
-            reason == "shizuku_unsupported" ||
-            reason == "shizuku_permission_missing"
-        ) {
-            fpsExecutor.execute { releaseFpsUserService() }
+        } else {
+            // Wake a blocked bind waiter immediately; Binder cleanup runs off the UI thread.
+            retireFpsUserServiceBinding()?.let { scheduleFpsUserServiceCleanup(it) }
         }
     }
 
-    // FPS UserService binding. Only a fixed set of read-only FPS operations cross Binder.
+    // FPS UserService binding. Every attempt has its own tag and ServiceConnection:
+    // a late callback/cleanup can never unbind a newer attempt's service.
     private val fpsUserServiceLock = Any()
-    @Volatile private var fpsUserService: IFpsShizukuUserService? = null
-    @Volatile private var fpsUserServiceBindingRequested = false
+    @Volatile private var currentFpsUserServiceBinding: FpsUserServiceBindingAttempt? = null
+    private var fpsUserServiceBindingGeneration = 0L
 
-    private val fpsUserServiceArgs by lazy {
-        Shizuku.UserServiceArgs(ComponentName(this, FpsShizukuUserService::class.java))
+    private fun createFpsUserServiceArgs(generation: Long): Shizuku.UserServiceArgs {
+        val suffix = "${android.os.Process.myPid()}_${generation}"
+        return Shizuku.UserServiceArgs(ComponentName(this, FpsShizukuUserService::class.java))
+            // Fixed prefix + per-attempt identity isolates stale cleanup from a new binding.
+            .tag("jex_fps_service_v1_$suffix")
             .daemon(false)
-            .processNameSuffix("fps")
+            .processNameSuffix("fps_$suffix")
             .debuggable(false)
             .version(BuildConfig.VERSION_CODE)
     }
 
-    private val fpsUserServiceConnection = object : ServiceConnection {
+    private fun createFpsUserServiceConnection(
+        attempt: FpsUserServiceBindingAttempt,
+    ): ServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
+            val binderAlive = runCatching { service.isBinderAlive }.getOrDefault(false)
+            val remote = if (binderAlive) {
+                runCatching { IFpsShizukuUserService.Stub.asInterface(service) }.getOrNull()
+            } else {
+                null
+            }
+
+            var accepted = false
+            var invalidActiveAttempt = false
+            var duplicateConnection = false
             synchronized(fpsUserServiceLock) {
-                fpsUserService = IFpsShizukuUserService.Stub.asInterface(service)
-                fpsUserServiceBindingRequested = true
+                if (currentFpsUserServiceBinding === attempt &&
+                    attempt.state == FpsBindingState.BINDING
+                ) {
+                    if (binderAlive && remote != null) {
+                        attempt.remote = remote
+                        attempt.state = FpsBindingState.CONNECTED
+                        attempt.errorCode = null
+                        accepted = true
+                    } else {
+                        attempt.remote = null
+                        attempt.state = FpsBindingState.FAILED
+                        attempt.errorCode = "shizuku_userservice_dead"
+                        currentFpsUserServiceBinding = null
+                        invalidActiveAttempt = true
+                    }
+                } else if (currentFpsUserServiceBinding === attempt &&
+                    attempt.state == FpsBindingState.CONNECTED
+                ) {
+                    // A duplicate callback for the same live attempt is harmless.
+                    duplicateConnection = true
+                }
+            }
+            attempt.connectedLatch.countDown()
+
+            when {
+                accepted -> Log.d(
+                    FPS_DIAG_TAG,
+                    "bind_connected generation=${attempt.generation} binderAlive=true",
+                )
+                duplicateConnection -> Log.d(
+                    FPS_DIAG_TAG,
+                    "bind_duplicate_connected_ignored generation=${attempt.generation}",
+                )
+                else -> {
+                    Log.w(
+                        FPS_DIAG_TAG,
+                        "bind_late_or_invalid_callback generation=${attempt.generation} " +
+                            "state=${attempt.state} binderAlive=$binderAlive " +
+                            "activeFailure=$invalidActiveAttempt",
+                    )
+                    scheduleFpsUserServiceCleanup(attempt)
+                }
             }
         }
+
         override fun onServiceDisconnected(name: ComponentName) {
-            resetFpsUserServiceBinding()
-            fpsMainHandler.post {
-                if (fpsMonitorWanted) stopFpsMonitor("shizuku_userservice_disconnected")
+            val wasCurrent = synchronized(fpsUserServiceLock) {
+                val active = currentFpsUserServiceBinding === attempt &&
+                    attempt.state in setOf(FpsBindingState.BINDING, FpsBindingState.CONNECTED)
+                if (active) {
+                    currentFpsUserServiceBinding = null
+                    attempt.remote = null
+                    attempt.state = FpsBindingState.DISCONNECTED
+                    attempt.errorCode = "shizuku_userservice_disconnected"
+                }
+                attempt.connectedLatch.countDown()
+                active
+            }
+            Log.w(
+                FPS_DIAG_TAG,
+                "bind_disconnected generation=${attempt.generation} wasCurrent=$wasCurrent",
+            )
+            scheduleFpsUserServiceCleanup(attempt)
+            if (wasCurrent) {
+                fpsMainHandler.post {
+                    if (fpsMonitorWanted) stopFpsMonitor("shizuku_userservice_disconnected")
+                }
             }
         }
     }
 
-    private fun acquireFpsUserService(): IFpsShizukuUserService? {
-        if (!hasShizukuFpsPermission()) return null
+    private fun createFpsUserServiceBindingAttemptLocked(): FpsUserServiceBindingAttempt {
+        val generation = ++fpsUserServiceBindingGeneration
+        val attempt = FpsUserServiceBindingAttempt(
+            generation = generation,
+            args = createFpsUserServiceArgs(generation),
+            startedAtMs = SystemClock.elapsedRealtime(),
+        )
+        attempt.connection = createFpsUserServiceConnection(attempt)
+        currentFpsUserServiceBinding = attempt
+        return attempt
+    }
+
+    private fun acquireFpsUserService(): FpsServiceAcquireResult {
+        val access = shizukuFpsAccessSnapshot()
+        when {
+            !access.available -> return FpsServiceAcquireResult(errorCode = "shizuku_not_running")
+            !access.supported -> return FpsServiceAcquireResult(errorCode = "shizuku_unsupported")
+            !access.granted -> return FpsServiceAcquireResult(errorCode = "shizuku_permission_missing")
+        }
+
+        var attempt: FpsUserServiceBindingAttempt? = null
         var shouldBind = false
+        var staleAttempt: FpsUserServiceBindingAttempt? = null
         synchronized(fpsUserServiceLock) {
-            val existing = fpsUserService
-            if (existing != null && runCatching { existing.asBinder().isBinderAlive }.getOrDefault(false)) return existing
-            if (!fpsUserServiceBindingRequested) {
-                fpsUserServiceBindingRequested = true
-                shouldBind = true
+            val existing = currentFpsUserServiceBinding
+            when {
+                existing == null -> {
+                    attempt = createFpsUserServiceBindingAttemptLocked()
+                    shouldBind = true
+                }
+                existing.state == FpsBindingState.BINDING -> {
+                    attempt = existing
+                }
+                existing.state == FpsBindingState.CONNECTED &&
+                    runCatching { existing.remote?.asBinder()?.isBinderAlive == true }
+                        .getOrDefault(false) -> {
+                    attempt = existing
+                }
+                else -> {
+                    if (existing.state == FpsBindingState.CONNECTED) {
+                        existing.state = FpsBindingState.FAILED
+                        existing.errorCode = "shizuku_userservice_dead"
+                        existing.remote = null
+                    }
+                    staleAttempt = existing
+                    currentFpsUserServiceBinding = null
+                    attempt = createFpsUserServiceBindingAttemptLocked()
+                    shouldBind = true
+                }
             }
         }
+
+        staleAttempt?.let { cleanupFpsUserServiceAttempt(it) }
+        val currentAttempt = attempt
+            ?: return FpsServiceAcquireResult(errorCode = "shizuku_userservice_unavailable")
+
         if (shouldBind) {
+            Log.d(
+                FPS_DIAG_TAG,
+                "bind_requested generation=${currentAttempt.generation} " +
+                    "taggedAttempt=true timeoutMs=$FPS_USER_SERVICE_BIND_TIMEOUT_MS",
+            )
             try {
-                Shizuku.bindUserService(fpsUserServiceArgs, fpsUserServiceConnection)
-            } catch (_: Exception) {
-                synchronized(fpsUserServiceLock) { fpsUserServiceBindingRequested = false }
-                return null
+                Shizuku.bindUserService(currentAttempt.args, currentAttempt.connection)
+                Log.d(FPS_DIAG_TAG, "bind_call_returned generation=${currentAttempt.generation}")
+            } catch (error: Exception) {
+                val acceptedFailure = synchronized(fpsUserServiceLock) {
+                    if (currentFpsUserServiceBinding === currentAttempt &&
+                        currentAttempt.state == FpsBindingState.BINDING
+                    ) {
+                        currentFpsUserServiceBinding = null
+                        currentAttempt.state = FpsBindingState.FAILED
+                        currentAttempt.errorCode = "shizuku_bind_exception"
+                        currentAttempt.remote = null
+                        true
+                    } else {
+                        false
+                    }
+                }
+                currentAttempt.connectedLatch.countDown()
+                Log.e(
+                    FPS_DIAG_TAG,
+                    "bind_exception generation=${currentAttempt.generation} " +
+                        "exception=${error.javaClass.simpleName}",
+                )
+                if (acceptedFailure) {
+                    cleanupFpsUserServiceAttempt(currentAttempt)
+                    return FpsServiceAcquireResult(errorCode = "shizuku_bind_exception")
+                }
             }
         }
-        val deadline = SystemClock.elapsedRealtime() + 6000L
-        while (SystemClock.elapsedRealtime() < deadline && hasShizukuFpsPermission()) {
-            val remote = synchronized(fpsUserServiceLock) { fpsUserService }
-            if (remote != null && runCatching { remote.asBinder().isBinderAlive }.getOrDefault(false)) return remote
-            try {
-                Thread.sleep(35)
+
+        val remainingMs = (FPS_USER_SERVICE_BIND_TIMEOUT_MS -
+            (SystemClock.elapsedRealtime() - currentAttempt.startedAtMs)).coerceAtLeast(0L)
+        if (currentAttempt.state == FpsBindingState.BINDING && remainingMs > 0L) {
+            val signalled = try {
+                currentAttempt.connectedLatch.await(remainingMs, TimeUnit.MILLISECONDS)
             } catch (_: InterruptedException) {
                 Thread.currentThread().interrupt()
-                return null
+                val cancelled = synchronized(fpsUserServiceLock) {
+                    if (currentFpsUserServiceBinding === currentAttempt &&
+                        currentAttempt.state == FpsBindingState.BINDING
+                    ) {
+                        currentFpsUserServiceBinding = null
+                        currentAttempt.state = FpsBindingState.CANCELLED
+                        currentAttempt.errorCode = "shizuku_bind_interrupted"
+                        true
+                    } else {
+                        false
+                    }
+                }
+                currentAttempt.connectedLatch.countDown()
+                Log.w(
+                    FPS_DIAG_TAG,
+                    "bind_interrupted generation=${currentAttempt.generation} active=$cancelled",
+                )
+                cleanupFpsUserServiceAttempt(currentAttempt)
+                return FpsServiceAcquireResult(errorCode = "shizuku_bind_interrupted")
+            }
+
+            if (!signalled) {
+                val timedOut = synchronized(fpsUserServiceLock) {
+                    if (currentFpsUserServiceBinding === currentAttempt &&
+                        currentAttempt.state == FpsBindingState.BINDING
+                    ) {
+                        currentFpsUserServiceBinding = null
+                        currentAttempt.state = FpsBindingState.TIMED_OUT
+                        currentAttempt.errorCode = "shizuku_userservice_timeout"
+                        currentAttempt.remote = null
+                        true
+                    } else {
+                        false
+                    }
+                }
+                currentAttempt.connectedLatch.countDown()
+                if (timedOut) {
+                    Log.w(
+                        FPS_DIAG_TAG,
+                        "bind_timeout generation=${currentAttempt.generation} " +
+                            "elapsedMs=${SystemClock.elapsedRealtime() - currentAttempt.startedAtMs}",
+                    )
+                    cleanupFpsUserServiceAttempt(currentAttempt)
+                }
+            }
+        } else if (currentAttempt.state == FpsBindingState.BINDING) {
+            val timedOut = synchronized(fpsUserServiceLock) {
+                if (currentFpsUserServiceBinding === currentAttempt &&
+                    currentAttempt.state == FpsBindingState.BINDING
+                ) {
+                    currentFpsUserServiceBinding = null
+                    currentAttempt.state = FpsBindingState.TIMED_OUT
+                    currentAttempt.errorCode = "shizuku_userservice_timeout"
+                    currentAttempt.remote = null
+                    true
+                } else {
+                    false
+                }
+            }
+            currentAttempt.connectedLatch.countDown()
+            if (timedOut) {
+                Log.w(FPS_DIAG_TAG, "bind_timeout generation=${currentAttempt.generation} deadlineElapsed=true")
+                cleanupFpsUserServiceAttempt(currentAttempt)
             }
         }
-        releaseFpsUserService()
-        return null
-    }
 
-    private fun resetFpsUserServiceBinding() {
-        synchronized(fpsUserServiceLock) {
-            fpsUserService = null
-            fpsUserServiceBindingRequested = false
-        }
-    }
-
-    private fun releaseFpsUserService() {
-        val shouldUnbind = synchronized(fpsUserServiceLock) {
-            val wasRequested = fpsUserServiceBindingRequested
-            fpsUserService = null
-            fpsUserServiceBindingRequested = false
-            wasRequested
-        }
-        if (shouldUnbind && shizukuFpsAccessSnapshot().available) {
-            try {
-                Shizuku.unbindUserService(fpsUserServiceArgs, fpsUserServiceConnection, true)
-            } catch (_: Exception) {
-                // Binder may have restarted or stopped.
+        var cleanupAfterDecision: FpsUserServiceBindingAttempt? = null
+        val result = synchronized(fpsUserServiceLock) {
+            when (currentAttempt.state) {
+                FpsBindingState.CONNECTED -> {
+                    val remote = currentAttempt.remote
+                    if (currentFpsUserServiceBinding === currentAttempt &&
+                        remote != null &&
+                        runCatching { remote.asBinder().isBinderAlive }.getOrDefault(false)
+                    ) {
+                        FpsServiceAcquireResult(attempt = currentAttempt)
+                    } else {
+                        if (currentFpsUserServiceBinding === currentAttempt) {
+                            currentFpsUserServiceBinding = null
+                        }
+                        currentAttempt.state = FpsBindingState.FAILED
+                        currentAttempt.errorCode = "shizuku_userservice_dead"
+                        currentAttempt.remote = null
+                        cleanupAfterDecision = currentAttempt
+                        FpsServiceAcquireResult(errorCode = "shizuku_userservice_dead")
+                    }
+                }
+                FpsBindingState.FAILED,
+                FpsBindingState.TIMED_OUT,
+                FpsBindingState.DISCONNECTED,
+                FpsBindingState.CANCELLED -> {
+                    cleanupAfterDecision = currentAttempt
+                    FpsServiceAcquireResult(
+                        errorCode = currentAttempt.errorCode ?: "shizuku_userservice_unavailable",
+                    )
+                }
+                FpsBindingState.BINDING -> {
+                    if (currentFpsUserServiceBinding === currentAttempt) {
+                        currentFpsUserServiceBinding = null
+                    }
+                    currentAttempt.state = FpsBindingState.TIMED_OUT
+                    currentAttempt.errorCode = "shizuku_userservice_timeout"
+                    cleanupAfterDecision = currentAttempt
+                    FpsServiceAcquireResult(errorCode = "shizuku_userservice_timeout")
+                }
             }
         }
+        cleanupAfterDecision?.let { cleanupFpsUserServiceAttempt(it) }
+        if (result.attempt != null) {
+            Log.d(
+                FPS_DIAG_TAG,
+                "bind_ready generation=${currentAttempt.generation} remoteAlive=true",
+            )
+        } else {
+            Log.w(
+                FPS_DIAG_TAG,
+                "bind_failed generation=${currentAttempt.generation} " +
+                    "state=${currentAttempt.state} error=${result.errorCode}",
+            )
+        }
+        return result
+    }
+
+    /**
+     * Detach one attempt and cancel any latch waiter synchronously. Cleanup must occur outside
+     * the lock because Shizuku calls are Binder IPC and may call back into ServiceConnection.
+     */
+    private fun retireFpsUserServiceBinding(
+        expected: FpsUserServiceBindingAttempt? = null,
+    ): FpsUserServiceBindingAttempt? = synchronized(fpsUserServiceLock) {
+        val active = currentFpsUserServiceBinding
+        val target = expected ?: active ?: return@synchronized null
+        if (active === target) currentFpsUserServiceBinding = null
+        if (target.state == FpsBindingState.BINDING ||
+            target.state == FpsBindingState.CONNECTED
+        ) {
+            target.state = FpsBindingState.CANCELLED
+            target.errorCode = "shizuku_userservice_cancelled"
+        }
+        target.remote = null
+        target.connectedLatch.countDown()
+        target
+    }
+
+    private fun releaseFpsUserService(
+        expected: FpsUserServiceBindingAttempt? = null,
+    ) {
+        retireFpsUserServiceBinding(expected)?.let { cleanupFpsUserServiceAttempt(it) }
+    }
+
+    private fun scheduleFpsUserServiceCleanup(attempt: FpsUserServiceBindingAttempt) {
+        if (fpsExecutor.isShutdown) {
+            cleanupFpsUserServiceAttempt(attempt)
+            return
+        }
+        try {
+            fpsExecutor.execute { cleanupFpsUserServiceAttempt(attempt) }
+        } catch (_: Exception) {
+            cleanupFpsUserServiceAttempt(attempt)
+        }
+    }
+
+    private fun cleanupFpsUserServiceAttempt(attempt: FpsUserServiceBindingAttempt) {
+        if (!attempt.cleanupStarted.compareAndSet(false, true)) return
+        val connection = attempt.connection
+        if (!runCatching { Shizuku.pingBinder() }.getOrDefault(false)) {
+            attempt.cleanupStarted.set(false)
+            Log.w(
+                FPS_DIAG_TAG,
+                "bind_cleanup_deferred generation=${attempt.generation} reason=shizuku_binder_unavailable",
+            )
+            return
+        }
+
+        var callbackDetached = false
+        var remoteRemoved = false
+        try {
+            // First remove this attempt's callback registration, then remove its tagged process.
+            Shizuku.unbindUserService(attempt.args, connection, false)
+            callbackDetached = true
+        } catch (error: Exception) {
+            Log.w(
+                FPS_DIAG_TAG,
+                "bind_callback_detach_failed generation=${attempt.generation} " +
+                    "exception=${error.javaClass.simpleName}",
+            )
+        }
+        try {
+            // Per-attempt tags ensure this cannot remove a newer attempt's service.
+            Shizuku.unbindUserService(attempt.args, null, true)
+            remoteRemoved = true
+        } catch (error: Exception) {
+            Log.w(
+                FPS_DIAG_TAG,
+                "bind_remote_remove_failed generation=${attempt.generation} " +
+                    "exception=${error.javaClass.simpleName}",
+            )
+        }
+        if (!callbackDetached || !remoteRemoved) attempt.cleanupStarted.set(false)
+        Log.d(
+            FPS_DIAG_TAG,
+            "bind_cleanup generation=${attempt.generation} " +
+                "callbackDetached=$callbackDetached remoteRemoved=$remoteRemoved",
+        )
     }
 
     // Relay a whitelisted FPS operation to Shizuku; arbitrary command strings are never accepted.
@@ -326,16 +686,49 @@ class FloatingMonitorService : Service() {
             listOf("window") -> FpsShizukuUserService.OP_READ_FOREGROUND_WINDOW_FULL
             else -> return DumpsysResult("", false, "unsupported_fps_operation")
         }
-        val remote = acquireFpsUserService()
-            ?: return DumpsysResult("", false, "shizuku_userservice_unavailable")
+        val operationName = when (operation) {
+            FpsShizukuUserService.OP_START_CAPTURE -> "capture_start"
+            FpsShizukuUserService.OP_STOP_CAPTURE -> "capture_stop"
+            FpsShizukuUserService.OP_READ_FOREGROUND_ACTIVITY -> "foreground_activity"
+            FpsShizukuUserService.OP_READ_SURFACEFLINGER_STATS -> "surfaceflinger_stats"
+            FpsShizukuUserService.OP_READ_FOREGROUND_WINDOW -> "foreground_window"
+            FpsShizukuUserService.OP_READ_FOREGROUND_WINDOW_FULL -> "foreground_window_full"
+            else -> "unknown_operation"
+        }
+        val acquired = acquireFpsUserService()
+        val attempt = acquired.attempt
+            ?: return DumpsysResult("", false, acquired.errorCode ?: "shizuku_userservice_unavailable")
+        val remote = attempt.remote
+        if (remote == null || !runCatching { remote.asBinder().isBinderAlive }.getOrDefault(false)) {
+            releaseFpsUserService(attempt)
+            return DumpsysResult("", false, "shizuku_userservice_dead")
+        }
         return try {
             val bundle = remote.executeFpsOperation(operation)
-            DumpsysResult(bundle.getString("output", ""), bundle.getBoolean("ok", false), bundle.getString("error"))
+            val output = bundle.getString("output", "")
+            val ok = bundle.getBoolean("ok", false)
+            val error = bundle.getString("error")
+            val remoteUid = bundle.getInt("uid", -1)
+            Log.d(
+                FPS_DIAG_TAG,
+                "remote_call operation=$operationName generation=${attempt.generation} " +
+                    "remoteUid=$remoteUid ok=$ok error=${error ?: "none"} outputChars=${output.length}",
+            )
+            DumpsysResult(output, ok, error)
         } catch (_: RemoteException) {
-            releaseFpsUserService()
-            DumpsysResult("", false, "shizuku_userservice_disconnected")
-        } catch (_: Exception) {
-            releaseFpsUserService()
+            Log.e(
+                FPS_DIAG_TAG,
+                "remote_call_exception operation=$operationName generation=${attempt.generation} type=RemoteException",
+            )
+            releaseFpsUserService(attempt)
+            DumpsysResult("", false, "shizuku_userservice_remote_exception")
+        } catch (error: Exception) {
+            Log.e(
+                FPS_DIAG_TAG,
+                "remote_call_exception operation=$operationName generation=${attempt.generation} " +
+                    "type=${error.javaClass.simpleName}",
+            )
+            releaseFpsUserService(attempt)
             DumpsysResult("", false, "shizuku_userservice_error")
         }
     }
@@ -640,6 +1033,8 @@ class FloatingMonitorService : Service() {
         private const val MAX_VALID_FPS_SAMPLE_INTERVAL_MS = 5000L
         private const val MAX_VALID_FPS_FRAME_DELTA = 1200L
         private const val MAX_VALID_FPS_VALUE = 480.0
+        private const val FPS_USER_SERVICE_BIND_TIMEOUT_MS = 6000L
+        private const val FPS_DIAG_TAG = "JexFpsDiag"
 
         @Volatile
         private var instance: FloatingMonitorService? = null

@@ -3,6 +3,7 @@ package com.horizontalzzz.jexfyz
 import android.os.Bundle
 import android.os.SystemClock
 import android.system.Os
+import android.util.Log
 import androidx.annotation.Keep
 import java.io.ByteArrayOutputStream
 import java.nio.charset.Charset
@@ -11,6 +12,10 @@ import java.util.concurrent.atomic.AtomicBoolean
 /** Restricted FPS bridge in Shizuku's approved Shell/Root process. No caller command is accepted. */
 @Keep
 class FpsShizukuUserService : IFpsShizukuUserService.Stub() {
+    init {
+        Log.i(TAG, "user_service_started uid=${currentUid()}")
+    }
+
     override fun executeFpsOperation(operation: Int): Bundle {
         val arguments = when (operation) {
             OP_START_CAPTURE -> listOf("SurfaceFlinger", "--timestats", "-clear", "-enable")
@@ -21,7 +26,9 @@ class FpsShizukuUserService : IFpsShizukuUserService.Stub() {
             OP_READ_FOREGROUND_WINDOW_FULL -> listOf("window")
             else -> return result("", false, "unsupported_fps_operation")
         }
-        return runFixedDumpsys(arguments)
+        val name = operationName(arguments)
+        Log.d(TAG, "operation_started id=$operation name=$name uid=${currentUid()}")
+        return runFixedDumpsys(arguments, name)
     }
 
     @Keep
@@ -29,20 +36,38 @@ class FpsShizukuUserService : IFpsShizukuUserService.Stub() {
 
     override fun exit() { destroy() }
 
+    private fun currentUid(): Int = runCatching { Os.getuid() }.getOrDefault(-1)
+
     private fun result(output: String, ok: Boolean, error: String? = null): Bundle =
         Bundle().apply {
             putString("output", output)
             putBoolean("ok", ok)
             putString("error", error)
-            putInt("uid", runCatching { Os.getuid() }.getOrDefault(-1))
+            putInt("uid", currentUid())
         }
 
-    private fun runFixedDumpsys(arguments: List<String>): Bundle {
+    private fun operationName(arguments: List<String>): String = when (arguments) {
+        listOf("SurfaceFlinger", "--timestats", "-clear", "-enable") -> "capture_start"
+        listOf("SurfaceFlinger", "--timestats", "-disable") -> "capture_stop"
+        listOf("activity", "activities") -> "foreground_activity"
+        listOf("SurfaceFlinger", "--timestats", "-dump") -> "surfaceflinger_stats"
+        listOf("window", "displays") -> "foreground_window"
+        listOf("window") -> "foreground_window_full"
+        else -> "unknown_operation"
+    }
+
+    private fun runFixedDumpsys(arguments: List<String>, operation: String): Bundle {
+        val startedAtMs = SystemClock.elapsedRealtime()
+        val uid = currentUid()
         val process = try {
             ProcessBuilder(listOf("/system/bin/dumpsys") + arguments)
                 .redirectErrorStream(true)
                 .start()
-        } catch (_: Exception) {
+        } catch (error: Exception) {
+            Log.e(
+                TAG,
+                "command_start_failed operation=$operation uid=$uid exception=${error.javaClass.simpleName}",
+            )
             return result("", false, "dumpsys_unavailable")
         }
 
@@ -97,17 +122,32 @@ class FpsShizukuUserService : IFpsShizukuUserService.Stub() {
         } catch (_: InterruptedException) {
             Thread.currentThread().interrupt()
             process.destroy()
-            return result(snapshot(sink, sinkLock), false, "dumpsys_interrupted")
+            val output = snapshot(sink, sinkLock)
+            Log.w(
+                TAG,
+                "command_interrupted operation=$operation uid=$uid outputChars=${output.length}",
+            )
+            return result(output, false, "dumpsys_interrupted")
         }
 
         val output = snapshot(sink, sinkLock)
-        if (timedOut.get()) return result(output, false, "dumpsys_timeout")
-        if (oversized.get()) return result(output, false, "dumpsys_output_too_large")
-        if (output.contains("Permission Denial", ignoreCase = true) ||
+        val elapsedMs = SystemClock.elapsedRealtime() - startedAtMs
+        val permissionDenied = output.contains("Permission Denial", ignoreCase = true) ||
             output.contains("Permission denial", ignoreCase = true)
-        ) return result(output, false, "surfaceflinger_blocked")
-        if (exitCode != 0) return result(output, false, "dumpsys_exit_$exitCode")
-        return result(output, true)
+        val error = when {
+            timedOut.get() -> "dumpsys_timeout"
+            oversized.get() -> "dumpsys_output_too_large"
+            permissionDenied -> "surfaceflinger_blocked"
+            exitCode != 0 -> "dumpsys_exit_$exitCode"
+            else -> null
+        }
+        Log.log(
+            if (error == null) Log.DEBUG else Log.WARN,
+            TAG,
+            "command_finished operation=$operation uid=$uid exitCode=$exitCode " +
+                "ok=${error == null} error=${error ?: "none"} outputChars=${output.length} durationMs=$elapsedMs",
+        )
+        return if (error == null) result(output, true) else result(output, false, error)
     }
 
     private fun snapshot(sink: ByteArrayOutputStream, lock: Any): String =
@@ -121,6 +161,7 @@ class FpsShizukuUserService : IFpsShizukuUserService.Stub() {
         const val OP_READ_FOREGROUND_WINDOW = 5
         const val OP_READ_FOREGROUND_WINDOW_FULL = 6
         private const val COMMAND_TIMEOUT_MS = 2500L
+        private const val TAG = "JexFpsDiag"
         private const val MAX_OUTPUT_BYTES = 2 * 1024 * 1024
     }
 }
