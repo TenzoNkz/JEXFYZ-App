@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — App Reference
 
-This file is the durable App behavior/design contract. Live source and the current workflow remain authoritative. Build #66 remains latest verified APK release; current main contains unbuilt sampler exception/watchdog repair `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46`.
+This file is the durable App behavior/design contract. Live source and the current workflow remain authoritative. Build #67 is the latest verified APK release and includes sampler exception/watchdog repair `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46`.
 
 ## Current source and build verification checkpoint (2026-10-16)
 
