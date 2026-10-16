@@ -28,7 +28,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 
  assertions. At the time this source-only history entry was first recorded, analysis/tests/build had not yet run. Build #61 exposed one stale widget-test assertion; the test-only correction in commit `42a72d863b10adfb5d6a0ee332a2f879a78173a4` resolved it, and Build #62 later passed all 88 tests plus the full Android release/signing/asset pipeline. Physical-device verification remains pending.
 
-## 2026-10-16 — Build #60 release verified: FPS diagnostics built (device validation pending)
+## HISTORICAL / SUPERSEDED — 2026-10-16 — Build #60 release verified (superseded by Build #62)
 
 - Build #60 / [run `38817543342`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38817543342), trigger [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33), succeeded on exact source commit `b5f00a1b3690d62c11772a91bd3a6732bb0d4bf3`.
 - All release gates passed: security/architecture/license audit, dependency resolution, Dart analysis, **88/88 Flutter tests**, obfuscated APK build, V1/V2/V3 signature and production certificate, matching-source ZIP, Release publication and re-downloaded asset hash/signature verification.
