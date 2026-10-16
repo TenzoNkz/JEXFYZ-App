@@ -55,7 +55,7 @@ Reconciled against live GitHub main: 2026-10-16. Live code, Git refs, Actions re
 | .github/workflows/jexfyz-app-build-trigger.yml | Authoritative manual issue-triggered App Build workflow |
 | test/*.dart | Six active test files; Build #62 ran the complete configured suite: 88/88 passed. File presence alone is not execution evidence |
 | firmware/JEXFYZ-V6.6.ino | Current editable Firmware source, one versioned active sketch |
-| archive/*.md | Immutable forensic snapshots; archived “CURRENT” claims are not live truth |
+| archive/*.md | Immutable, verbatim forensic snapshots; archived “CURRENT” claims are not live truth. Root-relative links retained from originals may not resolve from the archive subdirectory; use canonical root docs and do not rewrite archives |
 
 ## Evidence labels and sources
 
