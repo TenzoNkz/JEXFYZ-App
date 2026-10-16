@@ -4,31 +4,31 @@ Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use C
 
 ## Current App source/release — 2026-10-16
 
-- Latest verified App release is [Build #65 / run `38851040144`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38851040144), source/release commit `f301c1fbbafa3d6c17803d9a2f50bae390dc1343`, triggered through guarded issue [#33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). Audit, dependencies, Dart analysis, **88/88 Flutter tests**, native FPS parser JUnit tests, obfuscated APK build, V1/V2/V3 signing, certificate, matching source archive and downloaded asset checks all passed.
-- Build #65 includes the TimeStats sampling/parser patch `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620`, test-only widget contract correction, and Gradle heap increase to `-Xmx4096M`. Build #63 and #64 failures and their evidence-based repairs are recorded in `APP_BUILD_REPORT.md`; no test/gate was removed or weakened.
-- Shizuku binding lifecycle hardening and TimeStats parsing passed CI in Build #65; physical service binding and live FPS did not. Screenshot follow-up source commit `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d` raises the UserService binding deadline from 6s to 35s because Shizuku's server permits 30s for process startup, and extends Settings polling to 50.4s. This is **current main only, not built/CI-tested**; Build #65 remains the latest verified release.
-- The TimeStats sampler reads bounded 64-layer `averageFPS` samples every 500 ms, matches `packageName` when supplied, falls back to exact layer package matching, and prefers SurfaceView/BLAST layers. Shizuku permission or CI success does not establish that the target OEM exposes valid TimeStats. If `F:--` persists on device, capture Settings sampler status and `JexFpsDiag` logs.
+- Latest verified App release is [Build #66 / run `38859288444`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38859288444), source/release commit `a2b19d4708f3075730132ac16f375f2a352aa50a`, triggered through guarded issue [#33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). Audit, dependencies, Dart analysis, **88/88 Flutter tests**, native FPS parser JUnit tests, obfuscated APK build, V1/V2/V3 signing, certificate, matching source archive and downloaded asset checks all passed.
+- Build #66 includes Shizuku bind-timeout repair `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d`: native bind deadline is 35 seconds and Settings polls sampler status for 50.4 seconds. The timeout and UI/test contracts passed full CI; the target phone's actual UserService binding and FPS remain unverified.
+- The bounded TimeStats sampler/parser `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620`, four native JUnit parser cases, widget contract fixes and Gradle heap increase to `-Xmx4096M` also passed in the pipeline. Build #63/#64 failures and repairs are preserved in `APP_BUILD_REPORT.md`; no test/gate was removed or weakened.
+- TimeStats samples are bounded to 64 layers and read every 500 ms; the sampler uses interval `averageFPS`, matches `packageName` when supplied, falls back to exact layer package matching and prefers SurfaceView/BLAST layers. Shizuku permission or CI success does not establish that a specific OEM exposes valid TimeStats. If `F:--` persists, capture Settings sampler status and `JexFpsDiag` logs.
 - No Firmware/BIN, Firebase metadata, OTA, BLE hardware-control or thermal-safety changes were made.
 
 ## App identity and repository
 
-- Canonical App repo: TenzoNkz/JEXFYZ-App, branch `main`. Latest verified release is Build #65 from source `f301c1fbbafa3d6c17803d9a2f50bae390dc1343`; its TimeStats/parser patch and 4 GiB Gradle heap passed the release pipeline. Current main is newer and includes source repair commit `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d` (35s Shizuku bind deadline, 50.4s Settings status wait and updated tests). **This post-release change is not built or CI-tested; the release APK does not contain it.** Device binding/FPS remain unverified.
+- Canonical App repo: TenzoNkz/JEXFYZ-App, branch `main`. Latest verified release is Build #66 from source `a2b19d4708f3075730132ac16f375f2a352aa50a`; it includes the 35-second Shizuku bind deadline, 50.4-second Settings status wait and updated timeout contracts. The release pipeline passed all gates; device binding/FPS remain unverified.
 - App/package: JE Cooler / JE X FYZ, com.horizontalzzz.jexfyz, pubspec version 1.0.0+3. Preserve Gradle versionName exactly as "Telegram @horizontalzzz".
 - Only active App build workflow: .github/workflows/jexfyz-app-build-trigger.yml; issue opened/reopened only; repository-owner, exact title and body-token guarded. Normal push/PR does not build/release.
 - Firmware artifact repo TenzoNkz/JEXFYZ-Firmware has exactly one tree entry: JEXFYZ.cpp.bin, 1,455,936 bytes, blob 68167e65d26137eeb1ce4d6d4ba798dc282454e6. Do not modify or inspect BIN payload during documentation work. This does not prove current source-to-BIN provenance.
 
-## Latest release artifact and signing record — Build #65
+## Latest release artifact and signing record — Build #66
 
-- Build #65 / run `38851040144`, URL https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38851040144. Completed successfully at 2026-10-16 04:37:21Z (2026-10-16 11:37:21 Asia/Jakarta); source commit `f301c1fbbafa3d6c17803d9a2f50bae390dc1343`.
+- Build #66 / run `38859288444`, URL https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38859288444. Completed successfully at 2026-10-16 06:11:34Z (2026-10-16 13:11:34 Asia/Jakarta); source commit `a2b19d4708f3075730132ac16f375f2a352aa50a`.
 - Passed security/architecture/license audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, obfuscated APK compilation, V1/V2/V3 signing, expected production certificate verification, matching source archive, publication and re-downloaded asset identity/hash/signature checks. All 21 active workflow steps passed.
-- Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) targets Build #65 and contains exactly two assets:
-  - [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk), asset ID `646151731`, `54,636,716` bytes, SHA-256 `6823d87dbe25ded3ee5fd399ff231423078f9a33e814d7a80aed8ed1fe1b5b87`.
-  - [`JEXFYZ-corresponding-source.zip`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip), asset ID `646151729`, `2,874,038` bytes, SHA-256 `df96a3cf43c860370d776995bff2ef4861ccf9f5e84744b49adb0cdab79d13cc`.
-- Signing: V1/JAR=true, V2=true, V3=true; one signer. Certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0` matched for the built and downloaded APK.
+- Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) targets Build #66 and contains exactly two assets:
+  - [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk), asset ID `646344237`, `54,636,716` bytes, SHA-256 `cae0364670324511551742295a40fc4208399a5de4330b5a18d5d43ca5d488cf`.
+  - [`JEXFYZ-corresponding-source.zip`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip), asset ID `646344244`, `2,874,306` bytes, SHA-256 `9a3a008e377fa6bdcc7d4add2fecbce9167df88b2b0ce924512ca703e5eeac69`.
+- Signing: V1/JAR=true, V2=true, V3=true; one signer. Certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0` matched for built and downloaded APK.
 - Non-blocking warnings: 23 Dart deprecation infos, Gradle `9.3.1` out-of-date notice, native ELF DWARF data not obfuscated, self-signed/no-timestamp JAR and META-INF notices, cache save denied by token scope. None failed a required gate.
-- Actual Shizuku UserService binding, OEM TimeStats visibility, live foreground FPS and phone overlay rendering remain not device-verified. Build #65 is App-only; it did not compile Firmware, change BIN/Firebase or perform OTA/flash/device operations.
+- Actual Shizuku UserService binding, OEM TimeStats visibility, live foreground FPS and phone overlay rendering remain not device-verified. Build #66 was App-only: no Firmware compilation, BIN publication, Firebase, OTA, flashing or device operation occurred.
 
-## Historical release artifact and signing record — Build #62 (superseded by #65)
+## Historical release artifact and signing record — Build #62 (superseded by #66)
 
 - Build #62 / run `38841458441`, URL https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38841458441. Completed successfully at 2026-10-16 02:43:37Z (2026-10-16 09:43:37 Asia/Jakarta); exact source commit `42a72d863b10adfb5d6a0ee332a2f879a78173a4`, triggered by guarded [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33).
 - Passed security/architecture/license audit, dependencies, Dart analysis, **88/88 Flutter tests**, obfuscated APK compilation, V1/V2/V3 signing, expected production certificate verification, matching source-archive validation, publication and re-downloaded asset identity/hash/signature checks. The Build #62 test repair and prior Build #61 failure are kept in `APP_BUILD_REPORT.md`.
@@ -41,7 +41,7 @@ Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use C
 
 ## Current source fingerprints
 
-- Release source commit: `f301c1fbbafa3d6c17803d9a2f50bae390dc1343` (Build #65). Later canonical documentation commits do not change functional release source.
+- Release source commit: `a2b19d4708f3075730132ac16f375f2a352aa50a` (Build #66). Later canonical documentation commits do not change functional release source.
 - `lib/main.dart`: `d24885cf0a40472b9fb23ee6ce73ad772ae73672`.
 - `lib/floating_monitor.dart`: `e4ef455f466c13055873e3b872ecb87d6cc36e5b`.
 - `lib/app_settings.dart`: `4c89bcb3c04142ce49440a11b92054365c26f7a6`.
@@ -51,18 +51,18 @@ Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use C
 - `test/widget_test.dart`: `4b05e025e7765b30d04c20ada0322a17517025b9`; `test/shizuku_fps_contract_test.dart`: `dbe64f4db9a1ebedc10aea1e27607e84ccf54824`; `test/floating_monitor_layout_contract_test.dart`: `7f861d449e518af68fc4ece7278241aa3ce8691b`.
 - `.github/workflows/jexfyz-app-build-trigger.yml`: `df7cbfee8d6fb8ef12683a35b0419c5d3980a4e3`.
 - `android/app/build.gradle`: `46d503aef8320864632d3eb2bf7536048b8fd96f`; `android/gradle.properties`: `37ecfaa0b981a17640bb33ef01e7789ae8e4501e` (`-Xmx4096M`); `android/settings.gradle`: `14545695cc9aba5912393ec293c284ee60d9ec10`; `pubspec.yaml`: `8f558273e21692af9958f914527fdc62d623d63a`; `pubspec.lock`: `1e92812bfda2c28244a0556d71d1ec94084acc66`.
-- Active Firmware remains user-accepted V6.6. Build #65 was App-only; no Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+- Active Firmware remains user-accepted V6.6. Build #66 was App-only; no Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
 ## Active tests and QC scope
 
-Six active Dart test files remain: `test/app_protocol_notify_contract_test.dart`, `test/firmware_touch_adaptive_sync_test.dart`, `test/floating_monitor_layout_contract_test.dart`, `test/shizuku_fps_contract_test.dart`, `test/v6_6_qc_contract_test.dart`, and `test/widget_test.dart`. Build #65 passed **88/88 Flutter tests** and the native `:app:testDebugUnitTest` gate. Physical-device behavior remains outside CI proof.
+Six active Dart test files remain: `test/app_protocol_notify_contract_test.dart`, `test/firmware_touch_adaptive_sync_test.dart`, `test/floating_monitor_layout_contract_test.dart`, `test/shizuku_fps_contract_test.dart`, `test/v6_6_qc_contract_test.dart`, and `test/widget_test.dart`. Build #66 passed **88/88 Flutter tests** and the native `:app:testDebugUnitTest` gate, including the timeout contract updates. Physical-device behavior remains outside CI proof.
 
 ## Current physical-device validation pending — Shizuku FPS
 
 - USER-REPORTED screenshot: Shizuku access appears granted, but overlay metric F showed --. The original screenshot was captured in JE Cooler's own settings screen; this alone did not prove why FPS data was absent.
 - Build #58's FPS source uses focused-window identity and frame-delta validation, but the target phone still showed `F:--` despite Shizuku being granted. This points to a remaining runtime/sample path problem, not an overlay-enable or checkbox problem.
 - **Build #62 includes and CI-tested** binding-lifecycle checkpoint `225cc9ae4c67b3fbb76426db3b2503ef6934aaae`: each UserService attempt has its own `UserServiceArgs` tag, `ServiceConnection`, generation and latch; stale callbacks are rejected/cleaned, bind exception/timeout/dead Binder/remote AIDL errors are distinguished, and filtered binding/command/foreground/layer/frame diagnostics are available. Cleanup avoids starting a fresh UserService only to disable capture after the active Binder has failed.
-- **Next gate is an authorized Build App:** source repair `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d` is not in Build #65. Run `@Thinking Eksekusi Build App!` to validate current source/tests and produce a new APK. Then install it and test Settings/launcher, another app and a real game; if `F` remains `--`, capture Settings status and filtered `JexFpsDiag` logs. CI does not prove real UserService binding, OEM TimeStats visibility or a valid live FPS measurement.
+- **Next action is physical-device validation:** install the [Build #66 APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk), test F while foreground changes among JE Cooler, Settings/launcher, another app and a real game, and capture Settings status plus filtered `JexFpsDiag` logs if it remains `--`. The timeout patch is built/CI-tested, but CI cannot prove target-phone binding or OEM TimeStats visibility.
 
 ## Current Floating Monitor appearance
 
