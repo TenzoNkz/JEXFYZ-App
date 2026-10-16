@@ -62,7 +62,12 @@ void main() {
     expect(service, contains('shizuku_userservice_remote_exception'));
     expect(service, contains('Shizuku.unbindUserService(attempt.args, connection, false)'));
     expect(service, contains('Shizuku.unbindUserService(attempt.args, null, true)'));
-    expect(service, contains('Log.d(FPS_DIAG_TAG, "remote_call operation='));
+    expect(service, contains('remote_call operation=$operationName generation='));
+    expect(service, contains('bind_timeout generation='));
+    expect(service, contains('bind_exception generation='));
+    expect(service, contains('bind_late_or_invalid_callback'));
+    expect(service, contains('bind_cleanup generation='));
+    expect(service, isNot(contains('fpsUserServiceArgs by lazy')));
     expect(service, isNot(contains('fpsUserServiceBindingRequested')));
     expect(service, isNot(contains('Thread.sleep(35)')));
     expect(service, contains('runDumpsys("SurfaceFlinger", "--timestats", "-dump")'));

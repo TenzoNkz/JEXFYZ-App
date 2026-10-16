@@ -40,6 +40,18 @@ void main() {
       floatingFpsStatusLabel('active', AppLanguage.english),
       'Valid FPS sample available',
     );
+
+    final bindTimeout = floatingFpsStatusLabel(
+      'shizuku_userservice_timeout',
+      AppLanguage.english,
+    );
+    expect(bindTimeout, contains('6 seconds'));
+    expect(bindTimeout, contains('(shizuku_userservice_timeout)'));
+
+    expect(
+      floatingFpsStatusLabel('fps_status_timeout', AppLanguage.indonesia),
+      contains('12 detik'),
+    );
   });
 
   test('BLE session protocol gate accepts only P1', () {

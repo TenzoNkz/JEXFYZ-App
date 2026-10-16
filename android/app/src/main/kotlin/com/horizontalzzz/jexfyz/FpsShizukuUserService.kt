@@ -141,7 +141,7 @@ class FpsShizukuUserService : IFpsShizukuUserService.Stub() {
             exitCode != 0 -> "dumpsys_exit_$exitCode"
             else -> null
         }
-        Log.log(
+        Log.println(
             if (error == null) Log.DEBUG else Log.WARN,
             TAG,
             "command_finished operation=$operation uid=$uid exitCode=$exitCode " +

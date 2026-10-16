@@ -186,11 +186,16 @@ class FloatingMonitorService : Service() {
                     hudView?.requestLayout()
                     hudView?.invalidate()
                 }
+                releaseFpsUserService()
                 return@execute
             }
 
             if (!fpsMonitorWanted || generation != fpsGeneration) {
-                runDumpsys("SurfaceFlinger", "--timestats", "-disable")
+                val stopResult = runDumpsys("SurfaceFlinger", "--timestats", "-disable")
+                if (!stopResult.ok) {
+                    Log.w(FPS_DIAG_TAG, "stale_capture_disable_failed error=${stopResult.error ?: "unknown"}")
+                }
+                releaseFpsUserService()
                 return@execute
             }
 
@@ -270,7 +275,7 @@ class FloatingMonitorService : Service() {
     private var fpsUserServiceBindingGeneration = 0L
 
     private fun createFpsUserServiceArgs(generation: Long): Shizuku.UserServiceArgs {
-        val suffix = "${android.os.Process.myPid()}_${generation}"
+        val suffix = "${android.os.Process.myPid()}_${SystemClock.elapsedRealtime()}_${generation}"
         return Shizuku.UserServiceArgs(ComponentName(this, FpsShizukuUserService::class.java))
             // Fixed prefix + per-attempt identity isolates stale cleanup from a new binding.
             .tag("jex_fps_service_v1_$suffix")
