@@ -12,7 +12,7 @@ Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use C
 
 ## App identity and repository
 
-- Canonical App repo: TenzoNkz/JEXFYZ-App, branch `main`. Latest verified release is Build #62 from source `42a72d863b10adfb5d6a0ee332a2f879a78173a4`; it includes Shizuku binding lifecycle hardening and passed 88/88 Flutter tests plus all release checks. Live reconciliation on 2026-10-16 verified **5 branches and 0 open PRs**. Twelve documentation-only commits follow the release source; no App/Firmware source or tests differ from the verified Build #62 source tree.
+- Canonical App repo: TenzoNkz/JEXFYZ-App, branch `main`. Latest verified release is Build #62 from source `42a72d863b10adfb5d6a0ee332a2f879a78173a4`; it includes Shizuku binding lifecycle hardening and passed 88/88 Flutter tests plus all release checks. Live reconciliation on 2026-10-16 verified **5 branches and 0 open PRs**. All commits after the release source are documentation/memory updates; App/Firmware source and tests remain identical to the verified Build #62 source tree.
 - App/package: JE Cooler / JE X FYZ, com.horizontalzzz.jexfyz, pubspec version 1.0.0+3. Preserve Gradle versionName exactly as "Telegram @horizontalzzz".
 - Only active App build workflow: .github/workflows/jexfyz-app-build-trigger.yml; issue opened/reopened only; repository-owner, exact title and body-token guarded. Normal push/PR does not build/release.
 - Firmware artifact repo TenzoNkz/JEXFYZ-Firmware has exactly one tree entry: JEXFYZ.cpp.bin, 1,455,936 bytes, blob 68167e65d26137eeb1ce4d6d4ba798dc282454e6. Do not modify or inspect BIN payload during documentation work. This does not prove current source-to-BIN provenance.
