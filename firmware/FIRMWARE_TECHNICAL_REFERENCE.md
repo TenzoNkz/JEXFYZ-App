@@ -89,6 +89,6 @@ The canonical detailed incident/contract is `VOLTAGE_TRANSITION_MEMORY.md`.
 Static source assertions and file/blob checks can verify paths, constants and ordering. They cannot certify Arduino compilation, electrical stability, real NTC accuracy, LEDs, cooling, safety response, BLE pairing, full OTA apply or reboot. Record each validation gate separately.
 
 
-## App CI boundary — Build #62 (2026-10-16), not Firmware compile proof
+## App CI boundary — Build #65 (2026-10-16), not Firmware compile proof
 
-App Build #62 / run `38841458441` passed 88 Flutter tests, including source-contract checks over `firmware/JEXFYZ-V6.6.ino`. This does not compile the Arduino/ESP32 sketch, prove source-to-BIN provenance, or prove physical safety/OTA behavior. Firmware V6.6 remains USER-ACCEPTED FINAL; compilation and two same-version Online OTA updates are USER-REPORTED. No firmware source change was made by this memory reconciliation.
+App Build #65 / run `38851040144` passed 88 Flutter tests plus the native FPS parser JUnit gate. App source-contract checks over `firmware/JEXFYZ-V6.6.ino` do not compile the Arduino/ESP32 sketch, prove source-to-BIN provenance, or prove physical safety/OTA behavior. Firmware V6.6 remains USER-ACCEPTED FINAL; compilation and two same-version Online OTA updates are USER-REPORTED. No firmware source/BIN, Firebase, OTA, flash or device operation occurred during this App build.
