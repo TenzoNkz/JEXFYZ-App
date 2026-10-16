@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-10-16 Asia/Jakarta after Build #67. The sampler exception-isolation/watchdog checkpoint is included in the successful APK and passed the Flutter and native JUnit gates. Physical FPS, target-phone Shizuku binding and overlay visuals remain unverified.
+Last reconciled: 2026-10-16 Asia/Jakarta after Build #68. The sampler exception-isolation/watchdog checkpoint is included in the verified APK and passed Flutter and native JUnit gates. Physical FPS, target-phone Shizuku binding and overlay visuals remain unverified.
 
 ## Current App source/release
 
