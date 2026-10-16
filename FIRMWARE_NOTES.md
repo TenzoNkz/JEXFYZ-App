@@ -105,7 +105,7 @@ This is the user's acceptance report, not an assistant-witnessed compile/flash l
 No Firmware source, BIN, Firebase metadata, flash or OTA operation was performed in this App-signing task.
 
 
-## Current App CI evidence through Build #62 — not Firmware compilation
+## Current App CI evidence through Build #65 — not Firmware compilation
 
-- App Build #62 / run `38841458441`, exact source `42a72d863b10adfb5d6a0ee332a2f879a78173a4`, passed Dart analysis and **88/88 Flutter tests**, including `test/v6_6_qc_contract_test.dart` blob `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a`. Those test assertions check source contracts and do not invoke the Arduino/ESP32 compiler or prove physical rail transitions, NTC accuracy, LED behavior, OTA transfer/apply/reboot or installed version.
+- App Build #65 / run `38851040144`, exact source `f301c1fbbafa3d6c17803d9a2f50bae390dc1343`, passed Dart analysis, **88/88 Flutter tests** and the native FPS parser JUnit gate, plus Android release/signing and downloaded asset checks. These App tests check source contracts and parser logic; they do not invoke the Arduino/ESP32 compiler or prove physical rail transitions, NTC accuracy, LED behavior, OTA transfer/apply/reboot or installed version.
 - The user reports that Firmware V6.6 compiled and completed two same-version Online OTA updates. These remain USER-REPORTED rather than independently witnessed logs. V6.6 is USER-ACCEPTED FINAL; exact source-to-BIN provenance remains UNVERIFIED. No Firmware source was changed and no compile/BIN/Firebase/OTA/flash/device action occurred during this memory reconciliation.
