@@ -157,65 +157,151 @@ class FloatingMonitorService : Service() {
             stopFpsMonitor("shizuku_permission_missing")
             return
         }
-        if (fpsMonitorWanted && fpsMonitorStatus in setOf("starting", "active")) return
+        if (fpsMonitorWanted && fpsMonitorStatus in setOf(
+                "starting", "active", "waiting_for_frames", "foreground_unknown", "no_layer_data", "sample_invalid",
+            )
+        ) return
 
-        // Replace any stale polling loop before starting a new capture generation.
+        // Retire an old scheduled loop before opening a new generation. A failed previous
+        // attempt is restartable; only healthy states above are treated as already running.
         fpsPollingTask?.cancel(false)
         fpsPollingTask = null
+        cancelFpsSamplerWatchdog()
         fpsMonitorWanted = true
         val generation = ++fpsGeneration
         fpsMonitorStatus = "starting"
+        fpsLastProgressAtMs = SystemClock.elapsedRealtime()
         data.fps = "--"
         hudView?.requestLayout()
         hudView?.invalidate()
+        armFpsSamplerWatchdog(generation)
 
-        fpsExecutor.execute {
-            val start = runDumpsys("SurfaceFlinger", "--timestats", "-clear", "-enable")
-            if (!start.ok) {
-                fpsCaptureEnabled = false
-                fpsMainHandler.post {
-                    if (generation != fpsGeneration) return@post
-                    fpsMonitorWanted = false
-                    fpsMonitorStatus = start.error ?: "surfaceflinger_blocked"
-                    data.fps = "--"
-                    hudView?.requestLayout()
-                    hudView?.invalidate()
+        try {
+            fpsExecutor.execute {
+                try {
+                    val start = runDumpsys("SurfaceFlinger", "--timestats", "-clear", "-enable")
+                    if (!start.ok) {
+                        fpsCaptureEnabled = false
+                        fpsMainHandler.post {
+                            if (generation != fpsGeneration) return@post
+                            cancelFpsSamplerWatchdog()
+                            fpsMonitorWanted = false
+                            fpsMonitorStatus = start.error ?: "surfaceflinger_blocked"
+                            data.fps = "--"
+                            hudView?.requestLayout()
+                            hudView?.invalidate()
+                        }
+                        releaseFpsUserService()
+                        return@execute
+                    }
+
+                    if (!fpsMonitorWanted || generation != fpsGeneration) {
+                        val stopResult = runDumpsys("SurfaceFlinger", "--timestats", "-disable")
+                        if (!stopResult.ok) {
+                            Log.w(FPS_DIAG_TAG, "stale_capture_disable_failed error=${stopResult.error ?: "unknown"}")
+                        }
+                        releaseFpsUserService()
+                        return@execute
+                    }
+
+                    fpsCaptureEnabled = true
+                    fpsTrackedPackage = null
+                    fpsLastProgressAtMs = SystemClock.elapsedRealtime()
+                    fpsMainHandler.post {
+                        if (generation != fpsGeneration) return@post
+                        fpsMonitorStatus = "starting"
+                        data.fps = "--"
+                        hudView?.requestLayout()
+                        hudView?.invalidate()
+                    }
+                    fpsPollingTask = fpsExecutor.scheduleWithFixedDelay(
+                        { pollSurfaceFlingerSafely(generation) },
+                        FPS_SAMPLE_INTERVAL_MS,
+                        FPS_SAMPLE_INTERVAL_MS,
+                        TimeUnit.MILLISECONDS,
+                    )
+                } catch (error: Exception) {
+                    reportFpsSamplerException(generation, "capture_start", "sampler_start_exception", error)
                 }
-                releaseFpsUserService()
-                return@execute
             }
-
-            if (!fpsMonitorWanted || generation != fpsGeneration) {
-                val stopResult = runDumpsys("SurfaceFlinger", "--timestats", "-disable")
-                if (!stopResult.ok) {
-                    Log.w(FPS_DIAG_TAG, "stale_capture_disable_failed error=${stopResult.error ?: "unknown"}")
-                }
-                releaseFpsUserService()
-                return@execute
-            }
-
-            fpsCaptureEnabled = true
-            fpsTrackedPackage = null
-            fpsMainHandler.post {
-                if (generation != fpsGeneration) return@post
-                // Each poll reads averageFPS from the latest bounded TimeStats interval.
-                fpsMonitorStatus = "starting"
-                data.fps = "--"
-                hudView?.requestLayout()
-                hudView?.invalidate()
-            }
-            fpsPollingTask = fpsExecutor.scheduleWithFixedDelay(
-                { pollSurfaceFlinger(generation) },
-                FPS_SAMPLE_INTERVAL_MS,
-                FPS_SAMPLE_INTERVAL_MS,
-                TimeUnit.MILLISECONDS,
-            )
+        } catch (error: Exception) {
+            reportFpsSamplerException(generation, "executor_submit", "sampler_executor_unavailable", error)
         }
+    }
+
+    // An uncaught exception in a ScheduledExecutorService periodic task cancels all future runs.
+    // Keep each sample isolated so a single native/OEM failure becomes a visible status, not a silent stall.
+    private fun pollSurfaceFlingerSafely(generation: Int) {
+        try {
+            pollSurfaceFlinger(generation)
+        } catch (error: Exception) {
+            reportFpsSamplerException(generation, "poll", "sampler_poll_exception", error)
+        } finally {
+            if (generation == fpsGeneration && fpsMonitorWanted) {
+                fpsLastProgressAtMs = SystemClock.elapsedRealtime()
+            }
+        }
+    }
+
+    private fun reportFpsSamplerException(
+        generation: Int,
+        stage: String,
+        status: String,
+        error: Exception,
+    ) {
+        Log.e(
+            FPS_DIAG_TAG,
+            "sampler_exception stage=$stage generation=$generation type=${error.javaClass.simpleName}",
+            error,
+        )
+        fpsMainHandler.post {
+            if (generation != fpsGeneration || !fpsMonitorWanted) return@post
+            stopFpsMonitor(status)
+        }
+    }
+
+    // The main-handler watchdog remains independent from the single FPS worker.
+    private fun armFpsSamplerWatchdog(generation: Int) {
+        cancelFpsSamplerWatchdog()
+        val watchdog = object : Runnable {
+            override fun run() {
+                if (generation != fpsGeneration || !fpsMonitorWanted) {
+                    if (fpsSamplerWatchdog === this) fpsSamplerWatchdog = null
+                    return
+                }
+                val state = fpsMonitorStatus
+                val idleMs = (SystemClock.elapsedRealtime() - fpsLastProgressAtMs).coerceAtLeast(0L)
+                val failureStatus = FpsSamplerWatchdogPolicy.failureStatusIfStalled(state, idleMs)
+                if (failureStatus != null) {
+                    fpsSamplerWatchdog = null
+                    Log.e(
+                        FPS_DIAG_TAG,
+                        "sampler_watchdog_timeout generation=$generation status=$state " +
+                            "idleMs=$idleMs failure=$failureStatus",
+                    )
+                    stopFpsMonitor(failureStatus)
+                    return
+                }
+                if (FpsSamplerWatchdogPolicy.timeoutMs(state) == null) {
+                    fpsSamplerWatchdog = null
+                    return
+                }
+                fpsMainHandler.postDelayed(this, FpsSamplerWatchdogPolicy.CHECK_INTERVAL_MS)
+            }
+        }
+        fpsSamplerWatchdog = watchdog
+        fpsMainHandler.postDelayed(watchdog, FpsSamplerWatchdogPolicy.CHECK_INTERVAL_MS)
+    }
+
+    private fun cancelFpsSamplerWatchdog() {
+        fpsSamplerWatchdog?.let(fpsMainHandler::removeCallbacks)
+        fpsSamplerWatchdog = null
     }
 
     // AI-METHOD / FPS-SAMPLER-STOP
     // Clear stale readings and disable the global SurfaceFlinger collector on an orderly stop.
     private fun stopFpsMonitor(reason: String) {
+        cancelFpsSamplerWatchdog()
         val wasWanted = fpsMonitorWanted
         val shouldDisable = fpsCaptureEnabled
         val (hasBinding, activeServiceReady) = synchronized(fpsUserServiceLock) {
@@ -1108,6 +1194,8 @@ class FloatingMonitorService : Service() {
     @Volatile private var fpsMonitorStatus = "monitor_off"
     @Volatile private var fpsGeneration = 0
     @Volatile private var fpsPollingTask: ScheduledFuture<*>? = null
+    @Volatile private var fpsLastProgressAtMs = 0L
+    private var fpsSamplerWatchdog: Runnable? = null
     private var fpsTrackedPackage: String? = null
 
     // AI-METHOD / SERVICE-CREATE CONTRACT
@@ -1147,6 +1235,7 @@ class FloatingMonitorService : Service() {
     // AI-METHOD / SERVICE-DESTROY CONTRACT
     // Remove any attached overlay and clear the singleton instance used by the MethodChannel bridge.
     override fun onDestroy() {
+        cancelFpsSamplerWatchdog()
         removeOverlay()
         instance = null
         fpsExecutor.execute { releaseFpsUserService() }

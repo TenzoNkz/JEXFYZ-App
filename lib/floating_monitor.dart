@@ -49,6 +49,21 @@ String floatingFpsStatusLabel(String status, AppLanguage language) {
     'sample_invalid' => isIndonesian
         ? 'Interval atau counter sampel tidak valid'
         : 'Sample interval or frame counter is invalid',
+    'sampler_start_exception' => isIndonesian
+        ? 'Terjadi exception saat memulai sampler FPS'
+        : 'An exception occurred while starting the FPS sampler',
+    'sampler_poll_exception' => isIndonesian
+        ? 'Terjadi exception saat membaca sampel FPS'
+        : 'An exception occurred while reading an FPS sample',
+    'sampler_executor_unavailable' => isIndonesian
+        ? 'Worker sampler FPS tidak tersedia'
+        : 'FPS sampler worker is unavailable',
+    'sampler_start_timeout' => isIndonesian
+        ? 'Sampler FPS tidak menyelesaikan startup dalam 60 detik'
+        : 'FPS sampler did not finish startup within 60 seconds',
+    'sampler_stalled' => isIndonesian
+        ? 'Sampler FPS tidak menunjukkan progress selama 30 detik'
+        : 'FPS sampler stopped making progress for 30 seconds',
     'shizuku_not_running' => isIndonesian ? 'Layanan Shizuku tidak berjalan' : 'Shizuku service is not running',
     'shizuku_unsupported' => isIndonesian ? 'Versi Shizuku tidak didukung' : 'Shizuku version is unsupported',
     'shizuku_permission_missing' => isIndonesian ? 'Izin Shizuku belum diberikan' : 'Shizuku permission is missing',
