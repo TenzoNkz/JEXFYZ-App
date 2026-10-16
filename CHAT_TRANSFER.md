@@ -1,11 +1,11 @@
 # JE X FYZ / JE Cooler — Chat Transfer Snapshot
 
-Snapshot checked against live GitHub main on 2026-10-16 (Asia/Jakarta) after Build #65 and the full current-document sync. Build #65 is the latest verified App release: 88/88 Flutter tests, native FPS parser JUnit, APK obfuscation/build, V1/V2/V3 signing/certificate, source archive and downloaded assets all passed. The TimeStats sampling/parser patch is included in the APK; physical Shizuku binding, OEM TimeStats visibility, foreground FPS and overlay rendering remain **NOT DEVICE-VERIFIED**. `PROJECT_STATE.md` is current-only; `APP_NOTES.md` owns detailed App behavior; `APP_BUILD_REPORT.md` is the authoritative build-attempt ledger; `CHANGELOG.md` is history only.
+Snapshot checked against live GitHub main on 2026-10-16 (Asia/Jakarta) after the post-Build-#65 Shizuku UserService timeout repair and canonical memory refresh. Build #65 is still the latest verified App release: 88/88 Flutter tests, native FPS parser JUnit, APK obfuscation/build, V1/V2/V3 signing/certificate, source archive and downloaded assets all passed. Current main includes bind-timeout repair commit `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d`, but that change and its updated tests are **NOT BUILT / NOT CI-TESTED** and are not in the Build #65 APK. Physical Shizuku binding, OEM TimeStats visibility, foreground FPS and overlay rendering remain **NOT DEVICE-VERIFIED**. `PROJECT_STATE.md` is current-only; `APP_NOTES.md` owns detailed App behavior; `APP_BUILD_REPORT.md` is the authoritative build-attempt ledger; `CHANGELOG.md` is history only.
 
 ## 1. Repository identity and current Git checkpoint
 
 - Canonical App source/memory repository: [TenzoNkz/JEXFYZ-App](https://github.com/TenzoNkz/JEXFYZ-App), branch `main`.
-- Main HEAD immediately before this final transfer-file replacement: `82f61e7047e705d2d962dc830873a62bc6300b8b` (documentation commit refreshing the Firmware technical reference's App-CI boundary). Current recursive tree is complete/not truncated: **87 entries**.
+- Main HEAD immediately before this final transfer-file replacement: `6abdc745aaf4a71fe40b2716d52ce2170868aecf` (canonical documentation refresh after source repair commit `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d`). Recursive tree is complete/not truncated: **87 entries, 57 blobs and 30 trees**.
 - Latest verified release is Build #65 / run `38851040144`, exact release/source commit `f301c1fbbafa3d6c17803d9a2f50bae390dc1343`. It passed App audit, dependencies, Dart analysis, **88/88 Flutter tests**, native FPS parser JUnit, obfuscated APK build, V1/V2/V3 signing/certificate checks, matching source ZIP, publication and downloaded-asset verification. Trigger used the guarded owner/title/token [issue #33](https://github.com/TenzoNkz/JEXFYZ-App), via the configured issue-reopen event.
 - Build #63 / run `38850417086` failed one stale TimeStats widget assertion (87 passed, 1 failed); the test-only repair aligns layer matching to the TimeStats layer object. Build #64 / run `38850654562` passed Flutter tests but the native JUnit gate hit `Java heap space` during JetifyTransform using the prior 2 GiB Gradle heap. The widget assertion and heap were repaired; Build #65 passed both gates and all 21 release workflow steps. No tests/gates were removed or weakened.
 - FPS diagnostic source `6e9b4c73db12c51f4452717d8cf102f49d325dcf`, binding lifecycle checkpoint `225cc9ae4c67b3fbb76426db3b2503ef6934aaae`, TimeStats patch `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620` and widget test correction `14347cd731b2c471fea9937f796ca21f8defc261` are included in the verified Build #65 source.
@@ -26,32 +26,26 @@ Snapshot checked against live GitHub main on 2026-10-16 (Asia/Jakarta) after Bui
 
 ## 3. Current source fingerprints
 
-- Functional release source: `f301c1fbbafa3d6c17803d9a2f50bae390dc1343`. Git comparison from that source to the current main head shows only canonical documentation/memory commits after Build #65; functional source/config/test fingerprints below remain equivalent to the release checkout.
+- Latest verified release source remains `f301c1fbbafa3d6c17803d9a2f50bae390dc1343` (Build #65). Current main is newer: it contains source repair `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d` plus documentation/state commit `6abdc745aaf4a71fe40b2716d52ce2170868aecf`. The timeout repair changes functional source and test contracts; it is **NOT BUILT / NOT CI-TESTED** and current main must not be described as release-equivalent.
 - `lib/main.dart`: `d24885cf0a40472b9fb23ee6ce73ad772ae73672`.
-- `lib/floating_monitor.dart`: `bae089f1f950bd70fe7e6f90e8afa1726293664f`.
+- `lib/floating_monitor.dart`: `e4ef455f466c13055873e3b872ecb87d6cc36e5b` (35-second bind error copy and 50.4-second status polling; updated tests not run).
 - `lib/app_settings.dart`: `4c89bcb3c04142ce49440a11b92054365c26f7a6`.
-- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt`: `0f9544c4e5f568531426e771f81e950397c86a7`.
+- `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt`: `dca4c9c349949e967dfc174395f4033138382f6e` (local UserService binding deadline 35 seconds).
 - `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FpsShizukuUserService.kt`: `8bb6181b4c86e1a2ae2c635969646303b6d84483`.
 - `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FpsTimeStatsParser.kt`: `66b5e3f489f4e160407d87c40d1ecee54e13282f`; native JUnit `FpsTimeStatsParserTest.kt`: `ab6c63c627c05d9987de4d4af731f2ed86acde5b` (four cases passed under Build #65).
 - `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt`: `a139dfefe1121963c3a26b114b9b0fcc9f8fa16a`; AIDL `IFpsShizukuUserService.aidl`: `5bd6c269212e523b190f7164e0ad1d257ed5e6a5`.
-- `test/widget_test.dart`: `e9edc694dbc9f400fe034d99d1254628dc39a89f`; `test/shizuku_fps_contract_test.dart`: `276ebde11c7462a5090fb7b2a3518a6c080e9872`; `test/floating_monitor_layout_contract_test.dart`: `7f861d449e518af68fc4ece7278241aa3ce8691b`; `test/v6_6_qc_contract_test.dart`: `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a`; `test/app_protocol_notify_contract_test.dart`: `92214dd90178c705844d3979d3f8f7bd17bcc4b8`; `test/firmware_touch_adaptive_sync_test.dart`: `2d3fea509343a03b8d23623f4dcb2dd7fd972d39`.
+- `test/widget_test.dart`: `4b05e025e7765b30d04c20ada0322a17517025b9`; `test/shizuku_fps_contract_test.dart`: `dbe64f4db9a1ebedc10aea1e27607e84ccf54824` (updated timeout contract; NOT RUN); `test/floating_monitor_layout_contract_test.dart`: `7f861d449e518af68fc4ece7278241aa3ce8691b`; `test/v6_6_qc_contract_test.dart`: `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a`; `test/app_protocol_notify_contract_test.dart`: `92214dd90178c705844d3979d3f8f7bd17bcc4b8`; `test/firmware_touch_adaptive_sync_test.dart`: `2d3fea509343a03b8d23623f4dcb2dd7fd972d39`.
 - `android/app/build.gradle`: `46d503aef8320864632d3eb2bf7536048b8fd96f`; `android/build.gradle`: `d6dbd400ba0baf2b33c14bb514745334a1e2ad33`; `android/settings.gradle`: `14545695cc9aba5912393ec293c284ee60d9ec10`; `android/gradle.properties`: `37ecfaa0b981a17640bb33ef01e7789ae8e4501e` (`-Xmx4096M`); `pubspec.yaml`: `8f558273e21692af9958f914527fdc62d623d63a`; `pubspec.lock`: `1e92812bfda2c28244a0556d71d1ec94084acc66`; workflow `.github/workflows/jexfyz-app-build-trigger.yml`: `df7cbfee8d6fb8ef12683a35b0419c5d3980a4e3`.
-- Canonical documentation blobs immediately before this transfer-only replacement:
-  - `APP_BUILD_REPORT.md`: `4f3c763fa94b6cafc79ec44bad239a7fe32772f3`.
-  - `PROJECT_STATE.md`: `3219d1a0059b5dafc6e0b8932f68ac00122d70ff`.
-  - `MEMORY_INDEX.md`: `3c4f1f70c209e143f3eecc355f0e8968db29fdc9`.
-  - `BUILD_NOTES.md`: `9deb2bd6ae74723b366a79d14c95d87b61efb97c`.
-  - `HANDOVER.md`: `5e0db36a7c173d7ff3e2262a06bb67b8abf56600`.
-  - `APP_NOTES.md`: `a464542e52617932f5e0e7d0d161c7d1d2df7414`.
-  - `CHANGELOG.md`: `c4d10334da8106874bf0a6e26131901c061cfbf7`.
-  - `README.md`: `ef87e324224a7ecfeadcf58fef41432da80afe80`.
-  - `CHAT_RULES.md`: `cbb8d9cdd7feea06993e25351a4df5ce09fa2420`.
-  - `FIRMWARE_NOTES.md`: `d3d3f06b1f96559f15460cd558839c22cc5d4fd4`.
-  - `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `d4d7fa07b52bc5103b70de4beff17fe46a981dd4`.
-  - `OTA_PROTECTION.md`: `06beb86b749b0f0e14c8cb517e43fe7c0f66a4e1`.
-  - `OTA_REGRESSION_MEMORY.md`: `d65f7dc90d6ab1f9bce2b23164683b984cdc32da`.
-  - `VOLTAGE_TRANSITION_MEMORY.md`: `2ccbaf4effc85fb49b79c97e41d637db6f69d84b`.
-  - `CHAT_TRANSFER_PROMPTS.md`: `ccb473293fefd6d166f79b634724235ea6615f1a`; `DESIGN_NOTES.md`: `e04382659dfdd618de0a156046f140452d275dc7`; `third_party/THIRD_PARTY_NOTICES.md`: `4dcd7ea1d6979c081e0ebd5acb7db34f6e64e1f2`.
+- Canonical documentation blob fingerprints immediately before this transfer-only replacement:
+  - `APP_BUILD_REPORT.md`: `6e75c0ccaeea3905937aa08d57f1129cc851f40c`.
+  - `PROJECT_STATE.md`: `8ac79fca1c903a353135933603fd40730212a931`.
+  - `MEMORY_INDEX.md`: `9052086d85b2d6928e90806f515e28da7f2dfd10`.
+  - `BUILD_NOTES.md`: `a7f47be4000281c5c4060ae4f9a7f5d584db4206`.
+  - `HANDOVER.md`: `492633ec9bf53e47d35c6009c3af61f435ca3010`.
+  - `APP_NOTES.md`: `215e7cfab70d03b51b4deec328aa63329caa9236`.
+  - `CHANGELOG.md`: `e30de9ed703b01d3f095341536ff3481f0eef740`.
+  - `README.md`: `92b93d4731c8ad63d80ac21f24900b74600b986d`.
+  - Unchanged relevant files include `CHAT_RULES.md`: `cbb8d9cdd7feea06993e25351a4df5ce09fa2420`; `FIRMWARE_NOTES.md`: `d3d3f06b1f96559f15460cd558839c22cc5d4fd4`; `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `d4d7fa07b52bc5103b70de4beff17fe46a981dd4`; `OTA_PROTECTION.md`: `06beb86b749b0f0e14c8cb517e43fe7c0f66a4e1`; `OTA_REGRESSION_MEMORY.md`: `d65f7dc90d6ab1f9bce2b23164683b984cdc32da`; `VOLTAGE_TRANSITION_MEMORY.md`: `2ccbaf4effc85fb49b79c97e41d637db6f69d84b`; `CHAT_TRANSFER_PROMPTS.md`: `ccb473293fefd6d166f79b634724235ea6615f1a`; `DESIGN_NOTES.md`: `e04382659dfdd618de0a156046f140452d275dc7`; `third_party/THIRD_PARTY_NOTICES.md`: `4dcd7ea1d6979c081e0ebd5acb7db34f6e64e1f2`.
 - This file is updated last. Do not write any other file after the transfer-only commit.
 
 ## 4. Current Home indicator and animation contracts
@@ -73,7 +67,7 @@ Snapshot checked against live GitHub main on 2026-10-16 (Asia/Jakarta) after Bui
 - Shizuku card is compact: status `Shizuku Access Granted` or `Shizuku Access Denied`, and only `Grant Shizuku Access` and `Check Access`. No long help paragraphs or `Open Shizuku` button. Access Granted proves permission/Binder prerequisites only; it does not establish successful UserService binding or readable SurfaceFlinger layers.
 - FPS is intended to be **foreground screen FPS, not game-only FPS**. Build #65 includes Shizuku TimeStats sampling: bounded `dumpsys SurfaceFlinger --timestats -dump -clear -maxlayers 64` every 500 ms and per-layer `averageFPS`, with `packageName` matching when available and exact layer-name fallback. It prefers SurfaceView/BLAST layers, uses expanded foreground markers and logs candidate/matched layers and unusable samples. Flutter contract tests and four native parser JUnit cases passed in Build #65; actual TimeStats access remains device-dependent.
 - Binding lifecycle checkpoint `225cc9ae4c67b3fbb76426db3b2503ef6934aaae` adds per-attempt UserService binding identities/tags, asynchronous latch wait, late-callback rejection, typed bind/timeout/dead-Binder/remote-call failures, bounded native diagnostics and cleanup guarded by the availability of an existing connected Binder. Build #65 passed Dart analysis, 88/88 Flutter tests, native parser JUnit, Android release compilation/signing and asset re-download checks.
-- Shizuku binding lifecycle repair and TimeStats sampling are built/CI-tested by Build #65. They remain **NOT DEVICE-VERIFIED** on the target phone/OEM. Install the Build #65 release and switch the overlay across JE Cooler, Settings/launcher, other apps and a real game; capture `fps_monitor_status` and filtered `JexFpsDiag` logs if data remains unavailable. Do not infer device behavior from source-contract checks alone.
+- Build #65's binding lifecycle and TimeStats patch are built/CI-tested but remain **NOT DEVICE-VERIFIED**. Screenshot follow-up commit `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d` extends the client deadline from 6s to 35s to avoid retiring a cold-start UserService before Shizuku's 30s server startup window ends; Settings status polling is 50.4s. **The fix/tests are NOT BUILT/CI-TESTED**, and the Build #65 APK does not include them. Next use `@Thinking Eksekusi Build App!`; after that build passes, install the new APK and test foreground apps/game. If timeout persists, capture Settings status and filtered `JexFpsDiag` logs. Do not infer device success from source checks alone.
 
 ## 6. Firmware/hardware baseline and protections — unchanged here
 
