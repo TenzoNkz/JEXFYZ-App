@@ -360,7 +360,7 @@ void main() {
     expect(nativeService, contains('private fun readForegroundPackage()'));
     expect(nativeService, contains('mCurrentFocus'));
     expect(nativeService, contains('private fun layerBelongsToPackage('));
-    expect(nativeService, contains('.filter { layerBelongsToPackage(it.name, foregroundPackage) }'));
+    expect(nativeService, contains('val matchedLayers = candidateLayers.filter { layerBelongsToPackage(it, foregroundPackage) }'));
     expect(nativeService, contains('private fun isCandidateApplicationLayer(name: String): Boolean'));
     expect(nativeService, isNot(contains('foregroundPackage == packageName')));
     expect(nativeService, isNot(contains('"no_game_foreground"')));
