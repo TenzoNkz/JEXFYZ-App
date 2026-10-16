@@ -2,15 +2,23 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
-## 2026-10-16 — FPS sampler exception isolation and progress watchdog committed; Build App pending
+## 2026-10-16 — Build #67 release verified; sampler watchdog built and CI-tested
+
+- Build #67 / [Actions run `38890997565`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38890997565) passed the full guarded App pipeline against release/source commit `8efbfebe1b12e162dccddbdf68b8627d8723f756`. All **21 active workflow steps passed**, including audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, APK build, V1/V2/V3 signing/certificate validation, source archive, Release publication and downloaded asset verification.
+- It includes sampler exception-isolation/watchdog checkpoint `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46`, with a 60-second startup-progress timeout and 30-second polling-progress timeout, localized failure statuses, and five pure Kotlin watchdog-policy JUnit cases. Four existing TimeStats parser JUnit tests and all 88 Flutter tests also passed. No tests or gates were removed/weakened.
+- Release `jexfyz-latest` targets the exact Build #67 source and contains one APK asset `647067767` (54,636,716 bytes; SHA-256 `40e2f3233d94cb8f624a3ffc50677f058840057800b8b1a172ba0eaf2881a102`) plus one matching source ZIP asset `647067768` (2,877,328 bytes; SHA-256 `4b5403d27d74167cd2c15ca6c5eb780d9622b5be0924c42c04256e240d9545cd`). Both were re-downloaded and verified. V1/V2/V3 and production certificate checks passed.
+- The earlier Build #66 Shizuku bind timeout repair (35-second client deadline, 50.4-second Settings polling) remains included and verified.
+- Still NOT DEVICE-VERIFIED: Shizuku UserService binding on the target phone, OEM TimeStats visibility, real foreground FPS and overlay rendering. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+
+## HISTORICAL / SUPERSEDED — FPS sampler exception isolation and progress watchdog first committed (later verified by Build #67)
 
 - After Build #66, the user's screenshot showed Shizuku access granted but the Floating Monitor still showed `starting` and `F:--`. This is the visible status, not proof of the exact runtime cause.
 - Source commit `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46` wraps capture startup and periodic TimeStats polling in exception handling. This prevents an unexpected polling exception from silently cancelling future scheduled executions without a status.
 - Added a main-handler progress watchdog: 60 seconds without startup progress and 30 seconds without polling progress. It reports `sampler_start_timeout` or `sampler_stalled`, cancels on sampler stop, and adds localized exception status messages. New pure Kotlin `FpsSamplerWatchdogPolicy.kt` and five JUnit policy tests were added; Flutter source-contract assertions were updated.
-- **NOT TESTED / NOT BUILT:** `@Thinking Eksekusi Full!` authorizes source/test/documentation changes, not App Build. Build #66 remains the latest verified APK and does not include this patch. Root cause on the target phone and actual FPS remain unverified pending test/build and device evidence.
+- **State when this entry was first recorded:** `@Thinking Eksekusi Full!` authorized source/test/documentation changes, not App Build, so the code was initially untested/unbuilt. Build #67 later passed 88/88 Flutter tests, four TimeStats parser JUnit tests, five watchdog-policy JUnit tests and the full Android release pipeline, so this patch is now built/CI-tested. Root cause on the target phone and actual FPS remain unverified pending device evidence.
 - App-only. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
-## 2026-10-16 — Build #66 verified; Shizuku bind-timeout mitigation included
+## HISTORICAL — Build #66 verified; superseded by Build #67
 
 - Build #66 / [Actions run `38859288444`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38859288444) passed the full guarded App release pipeline against source/release commit `a2b19d4708f3075730132ac16f375f2a352aa50a`. All **21 active workflow steps passed**, including audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, APK obfuscation/build, V1/V2/V3 signature/certificate checks, source ZIP validation, Release publication and downloaded asset verification.
 - It includes timeout fix `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d`: native UserService binding deadline `35_000L`, localized 35-second status message, and Settings polling every 350 ms up to 144 iterations (50.4 seconds). This corrects the previous 6-second local deadline that could abandon a cold start before Shizuku's 30-second server window expired.
@@ -25,7 +33,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 - **Initial state when committed:** this was `@Thinking Eksekusi Full!`, not Build App, so source commit `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d` was initially unbuilt. Build #66 later validated it through Dart analysis, 88/88 Flutter tests, native JUnit, Android release build/signing and downloaded asset verification. The timeout alignment remains an evidence-based mitigation; service connection/FPS on the target phone is still unverified.
 - App-only scope. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
-## HISTORICAL — Build #65 release verified (superseded by Build #66)
+## HISTORICAL — Build #65 release verified (superseded by Build #66, later #67)
 
 - Build #65 / [Actions run `38851040144`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38851040144) passed the full guarded App release workflow against source `f301c1fbbafa3d6c17803d9a2f50bae390dc1343`. All **21 active steps passed**, including App audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, obfuscated APK, V1/V2/V3 signing and certificate, matching source ZIP, Release publication and downloaded-asset verification.
 - Includes TimeStats sampling/parser patch `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620`, test-only widget contract repair `14347cd731b2c471fea9937f796ca21f8defc261`, and Gradle heap increased to `-Xmx4096M`.
