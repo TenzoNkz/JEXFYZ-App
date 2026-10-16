@@ -2,7 +2,15 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
-## 2026-10-16 — Build #67 release verified; sampler watchdog built and CI-tested
+## 2026-10-16 — Build #68 release verified; full release gates rerun
+
+- Build #68 / [Actions run `38894177060`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38894177060) passed the complete guarded App release workflow against release/HEAD commit `1f35dcbc3c8bc85410e765b58430b4b485366c2c`. All **21 active workflow steps passed**, including audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, APK obfuscation/build, V1/V2/V3 signing/certificate, source ZIP, Release publication and downloaded asset verification.
+- Native JUnit step completed with `BUILD SUCCESSFUL in 1m 52s`: four TimeStats parser cases plus five watchdog-policy cases. Functional source is unchanged from Build #67; its sampler watchdog/exception isolation, 35-second Shizuku bind timeout / 50.4-second Settings polling and TimeStats layer parser remain included. No test/gate was removed or weakened.
+- Release `jexfyz-latest` targets exact source commit. APK asset `647139769` (`54,636,716` bytes; SHA-256 `40e2f3233d94cb8f624a3ffc50677f058840057800b8b1a172ba0eaf2881a102`) and matching source ZIP asset `647139772` (`2,877,222` bytes; SHA-256 `d957f4c966d725d848b6ebf39fb54a1affe4ce7d21cc2a773ce40a623493a317`) were both re-downloaded and verified. The APK hash matches Build #67 because no functional code changed; the ZIP source marker matches Build #68 HEAD.
+- Expected production certificate DN/SHA-256 remain `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID` / `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`; built/downloaded APK V1/V2/V3 all true with one signer.
+- Not verified by CI: actual target-phone Shizuku service binding, OEM TimeStats visibility, foreground FPS and overlay rendering. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+
+## HISTORICAL / SUPERSEDED — Build #67 release verified; sampler watchdog built and CI-tested
 
 - Build #67 / [Actions run `38890997565`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38890997565) passed the full guarded App pipeline against release/source commit `8efbfebe1b12e162dccddbdf68b8627d8723f756`. All **21 active workflow steps passed**, including audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, APK build, V1/V2/V3 signing/certificate validation, source archive, Release publication and downloaded asset verification.
 - It includes sampler exception-isolation/watchdog checkpoint `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46`, with a 60-second startup-progress timeout and 30-second polling-progress timeout, localized failure statuses, and five pure Kotlin watchdog-policy JUnit cases. Four existing TimeStats parser JUnit tests and all 88 Flutter tests also passed. No tests or gates were removed/weakened.
