@@ -36,8 +36,8 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 
 ## Remaining validation outside CI
 
-- Build #68 is the latest verified release for source `1f35dcbc3c8bc85410e765b58430b4b485366c2c`. Full audit/test/build/signing/source archive/Release/download verification evidence is in `APP_BUILD_REPORT.md`.
-- Install Build #68 and physically verify Shizuku UserService binding/lifecycle on the target phone, OEM TimeStats layer visibility, foreground FPS and overlay/icon rendering. If `F:--` persists, collect Settings sampler status and filtered `JexFpsDiag` logs, particularly `sampler_exception`, `sampler_watchdog_timeout`, `bind_requested`, `bind_connected`, `layer_match`, and `frame_sample`. CI does not verify device behavior.
+- Build #69 is the latest verified release for source `01212c32a802ca0e67f559307fe4e19a667489c6`. Full audit/test/build/signing/source archive/Release/download verification evidence is in `APP_BUILD_REPORT.md`.
+- Install Build #69 and physically verify Shizuku UserService binding/lifecycle on the target phone, OEM TimeStats layer visibility, foreground FPS and overlay/icon rendering. If `F:--` persists, collect Settings sampler status and filtered `JexFpsDiag` logs, particularly `sampler_exception`, `sampler_watchdog_timeout`, `bind_requested`, `bind_connected`, `layer_match`, and `frame_sample`. CI does not verify device behavior.
 - Firmware V6.6 is USER-ACCEPTED FINAL according to the user's report. Its compile log and source-to-BIN provenance remain independently unverified. App CI does not imply Firmware compilation, BIN provenance, Firebase, OTA, flash, BLE hardware or thermal-safety validation.
 
 ## Non-negotiable workflow
