@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-10-16 Asia/Jakarta after Build #60. The FPS diagnostic source is now built and CI-tested; physical FPS and visual behavior remain unverified.
+Last reconciled: 2026-10-16 Asia/Jakarta after Build #60 and source-only Shizuku binding hardening. Build #60 remains verified; the current UserService lifecycle patch has not been built/tested. Physical FPS and visual behavior remain unverified.
 
 ## Current App source/release
 
@@ -17,7 +17,8 @@ Last reconciled: 2026-10-16 Asia/Jakarta after Build #60. The FPS diagnostic sou
 - USER-REPORTED screenshot showed Shizuku permission granted and metric F selected while the overlay displayed `F:--`. This proves the overlay and selection are visible, but does not identify whether service, foreground detection or layer sampling failed.
 - Build #58 had the earlier focused-window sampler and guarded frame-delta logic; the user still observed `F:--` on that release.
 - Build #60 source `b5f00a1b3690d62c11772a91bd3a6732bb0d4bf3` includes diagnostic checkpoint `6e9b4c73db12c51f4452717d8cf102f49d325dcf`: full `dumpsys window` fallback when `dumpsys window displays` yields no focus, `starting` until valid sample, `0 FPS` after two matching layer snapshots with valid zero delta, counter-reset diagnostics, stale poll cancellation on retry and native status feedback in Settings. Dart analysis, 88/88 Flutter tests, Android release build and signing/release verification passed. Actual FPS/runtime remains unverified.
-- Next step is on-device validation of Build #60. Install the resulting APK and share the status line plus `F:` outcome while switching through JE Cooler, Settings/launcher, another app and an actual game. Do not substitute panel refresh rate for measured FPS; Shizuku permission alone does not establish frame-statistics access.
+- Current main source/test checkpoint `225cc9ae4c67b3fbb76426db3b2503ef6934aaae` adds per-attempt tagged Shizuku binding, safe late-callback cleanup, explicit bind/timeout/dead-Binder/remote-call errors, sanitized lifecycle/command/foreground/layer/sample logs, and a guard against rebinding solely to disable capture after Binder failure. It has not had Dart analysis, Flutter tests, Kotlin compile or APK build; Build #60 does not include it.
+- Next action: `@Thinking Eksekusi Build App!` to analyze/test/compile/package this source. Then install the resulting APK and share the Settings status line plus `F:` value and, if needed, filtered `JexFpsDiag` logs. Do not substitute panel refresh rate for measured FPS; Shizuku permission alone does not establish frame-statistics access.
 
 
 ## Current Floating Monitor UX

@@ -8,7 +8,7 @@
 - Build App does not authorize Firmware compilation, BIN creation/publication/replacement, Firebase metadata changes, physical OTA, flashing, device operation, or unrelated release operations.
 - Never claim CI success proves BLE, cooling/safety behavior, Firmware compilation, OTA installation or installed device version.
 
-## CURRENT — Build #60 release verified; FPS diagnostic patch built
+## CURRENT — Build #60 release verified; current main UserService patch not built
 
 - Latest successful App Build is [Build #60 / run `38817543342`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38817543342), triggered by owner-authored [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33); it completed at `2026-10-15T22:35:39Z` (`2026-10-16 05:35:39 Asia/Jakarta`).
 - Exact source/release target: `b5f00a1b3690d62c11772a91bd3a6732bb0d4bf3`. It includes the post-Build #58 diagnostic patch `6e9b4c73db12c51f4452717d8cf102f49d325dcf` and its test-contract correction `7a576e60f0938cec94fcddb96340cd5376fa15de`.
@@ -19,7 +19,7 @@
 - Expected certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`; V1/V2/V3 verification passed for built and downloaded APKs.
 - Build #59 / run `38817257209` failed at one stale FPS source-contract assertion (87 passed, 1 failed) after audit, dependencies and Dart analysis passed. The test-only correction `7a576e60f0938cec94fcddb96340cd5376fa15de` updated the assertion to `validZero` and full-window fallback. Build #60 then verified the updated source and full release pipeline successfully.
 - Non-blocking warnings: 23 Dart deprecation infos, Gradle `9.3.1` out of date, native ELF DWARF data not obfuscated, self-signed/no-timestamp JAR warning and META-INF notices, and pub-cache save denied due to token scope. None failed a mandatory gate. Full warnings/attempt history remain in `APP_BUILD_REPORT.md`.
-- Current source is built and CI-tested. Physical overlay appearance, Shizuku UserService runtime/permission behavior, OEM SurfaceFlinger layer access and true foreground FPS remain **NOT DEVICE-VERIFIED**. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+- Build #60 source and its 88/88 tests are built/CI-tested. **Current main source-only patch** `225cc9ae4c67b3fbb76426db3b2503ef6934aaae` replaces shared UserService binding state with attempt-scoped tags/connections/latches, explicit failure codes, late-callback-safe cleanup and filtered diagnostics. Its updated tests have not been run; Dart analysis, Flutter tests, Kotlin compile and APK build remain pending for this patch. Physical overlay appearance, Shizuku UserService behavior, OEM SurfaceFlinger access and real FPS remain **NOT DEVICE-VERIFIED**. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
 ## Current App Build workflow
 

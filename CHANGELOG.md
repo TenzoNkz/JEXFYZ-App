@@ -2,6 +2,17 @@
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
+## 2026-10-16 — Shizuku UserService binding lifecycle hardened (source-only; not built)
+
+- Current functional source/test checkpoint: `225cc9ae4c67b3fbb76426db3b2503ef6934aaae`, following commits `faedb1057904375c2add46eb731dd96d91bcfa41`, `806af710d14fd31bc09098628ed719db5a4baa7f`, `c53b21587ef8681cfb7aecb2f0159672e4e8fda4` and `891edea5c1c9e8e66db399106d7f1721f89dee61`.
+- Replaced shared Shizuku binding state with per-attempt `UserServiceArgs` tag, `ServiceConnection`, generation and `CountDownLatch`. Binding/timeout/disconnect/cancellation are explicit states; late callbacks are rejected and cleaned by that attempt's tag, not a newer attempt's service.
+- Exposes precise binding/remote failure codes; adds bounded logs for bind/callback/cleanup, UserService UID, command exit/error/output size, foreground source, matched layer and final frame sample. Raw dumpsys output is not logged. Stop cleanup now attempts `--disable` only when an existing connected/alive UserService is available, avoiding an immediate rebind after Binder failure.
+- Updated `test/shizuku_fps_contract_test.dart` and `test/widget_test.dart`, including raw-string fixes for literal `# JE X FYZ / JE Cooler — Changelog
+
+Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
+
+ assertions. Static source assertions were inspected, but Dart analysis, Flutter tests, Kotlin compilation, APK build and physical-device verification have **not** been run. Build #60 remains the latest verified release and does not include this checkpoint.
+
 ## 2026-10-16 — Build #60 release verified: FPS diagnostics built (device validation pending)
 
 - Build #60 / [run `38817543342`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38817543342), trigger [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33), succeeded on exact source commit `b5f00a1b3690d62c11772a91bd3a6732bb0d4bf3`.

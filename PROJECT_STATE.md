@@ -6,7 +6,7 @@ Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use C
 
 - Latest verified release is [Build #60 / run `38817543342`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38817543342), exact release source `b5f00a1b3690d62c11772a91bd3a6732bb0d4bf3`; official trigger [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). It passed audit, dependencies, Dart analysis, **88/88 Flutter tests**, release build/signing and downloaded asset verification.
 - Build #60 includes post-Build #58 FPS diagnostics patch `6e9b4c73db12c51f4452717d8cf102f49d325dcf` and test-contract correction `7a576e60f0938cec94fcddb96340cd5376fa15de`. Build #59's single stale assertion failure was repaired and remains recorded in `APP_BUILD_REPORT.md`; no tests or gates were removed.
-- FPS diagnostics try `dumpsys window displays`, then full `dumpsys window`, then ActivityManager; keep status `starting` until a valid sample; accept valid zero after two matching snapshots; distinguish reset/invalid counters; cancel stale polling on retry; and surface native sampler status in Settings.
+- Build #60 includes FPS diagnostics using `dumpsys window displays` → full `dumpsys window` → ActivityManager fallback, valid-zero sampling, reset/invalid distinction and native status feedback. **Current main follow-up, not built/tested:** `225cc9ae4c67b3fbb76426db3b2503ef6934aaae` adds attempt-scoped Shizuku binding state, unique tagged connection attempts, timeout/dead-Binder/remote-exception codes, late-callback-safe cleanup and binding/command/layer/sample logs. Build #60 does not include this patch.
 - The screenshot showing Shizuku granted plus `F:--` does not establish the runtime root cause. Physical FPS and overlay rendering remain device-unverified.
 - No Firmware/BIN, Firebase metadata, OTA, BLE hardware-control or thermal-safety changes were made.
 
@@ -31,13 +31,13 @@ Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use C
 ## Current source fingerprints
 
 - lib/main.dart: d24885cf0a40472b9fb23ee6ce73ad772ae73672.
-- lib/floating_monitor.dart: d43bd17a7adebf7c9f95fc5fdf921ba2a22a231b.
+- lib/floating_monitor.dart: bae089f1f950bd70fe7e6f90e8afa1726293664f.
 - lib/app_settings.dart: 4c89bcb3c04142ce49440a11b92054365c26f7a6.
-- test/widget_test.dart: f8a8ff0f5f6527a0a6f6e2c453fe5c0836437785.
+- test/widget_test.dart: 0ca7ea700776b062025ca0445329c86ca9dbe72f.
 - test/floating_monitor_layout_contract_test.dart: 7f861d449e518af68fc4ece7278241aa3ce8691b.
-- test/shizuku_fps_contract_test.dart: 93aca6d5f5ad6c3c4723b2545eaf997cf8ee996f.
-- android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt: c7ca3e75c28b53ea8cda207836befbe04a2e5a6f.
-- android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FpsShizukuUserService.kt: 9f70d480bd31a4875653add70804ab50fc15b747.
+- test/shizuku_fps_contract_test.dart: 5996eb0d899bf9abf8eae68f554a7a409faa00f1.
+- android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt: d6f3231fecbc4c8669dedeae5d1484d2cdb6a415.
+- android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FpsShizukuUserService.kt: 5c4e04e87897ea2f9432809c3be4d29bff378315.
 - android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt: a139dfefe1121963c3a26b114b9b0fcc9f8fa16a.
 - android/app/src/main/aidl/com/horizontalzzz/jexfyz/IFpsShizukuUserService.aidl: 5bd6c269212e523b190f7164e0ad1d257ed5e6a5.
 - .github/workflows/jexfyz-app-build-trigger.yml: 585d190324e522fc08e66cc95bd7ee80c5f37664.
@@ -48,14 +48,14 @@ Build #60 used release source commit b5f00a1b3690d62c11772a91bd3a6732bb0d4bf3; F
 
 ## Active tests and QC scope
 
-Six active test files: test/app_protocol_notify_contract_test.dart; test/firmware_touch_adaptive_sync_test.dart; test/floating_monitor_layout_contract_test.dart; test/shizuku_fps_contract_test.dart; test/v6_6_qc_contract_test.dart; test/widget_test.dart. Build #60 ran all active tests and passed 88/88. Test/source-contract success does not establish physical-device behavior.
+Six active test files: test/app_protocol_notify_contract_test.dart; test/firmware_touch_adaptive_sync_test.dart; test/floating_monitor_layout_contract_test.dart; test/shizuku_fps_contract_test.dart; test/v6_6_qc_contract_test.dart; test/widget_test.dart. Build #60 ran the release-source tests and passed 88/88. The current main follow-up changes `shizuku_fps_contract_test.dart` and `widget_test.dart`; those updated tests have not been run. Test/source-contract success does not establish physical-device behavior.
 
 ## Current physical-device validation pending — Shizuku FPS
 
 - USER-REPORTED screenshot: Shizuku access appears granted, but overlay metric F showed --. The original screenshot was captured in JE Cooler's own settings screen; this alone did not prove why FPS data was absent.
 - Build #58's FPS source uses focused-window identity and frame-delta validation, but the target phone still showed `F:--` despite Shizuku being granted. This points to a remaining runtime/sample path problem, not an overlay-enable or checkbox problem.
-- Current unbuilt source follow-up retries `dumpsys window` when `dumpsys window displays` has no parseable focus; keeps native state at `starting` until a valid sample; and displays the native sampler status in Settings. The source does not yet prove which runtime stage is failing.
-- Install/build validation is still required for these latest changes. Once available, use the status line to decide whether to inspect foreground detection, SurfaceFlinger layer matching, command/service failure or invalid samples. Do not claim device FPS works without a valid displayed measurement.
+- Current unbuilt binding-lifecycle follow-up gives each UserService attempt its own `UserServiceArgs` tag, `ServiceConnection`, generation and latch; rejects stale callbacks; separates synchronous bind exception, six-second timeout, dead Binder and remote AIDL exception; and logs sanitized binding/command/foreground/layer/frame status. Cleanup does not start a new UserService solely to disable capture after the active Binder has failed.
+- Commit `225cc9ae4c67b3fbb76426db3b2503ef6934aaae` is source/test-only. Dart analysis, Flutter tests and Kotlin compilation have not been run; Build #60 does not contain this follow-up. After the separately authorized Build App, capture the new exact status plus `JexFpsDiag` logs to identify which stage fails. Do not claim FPS works without a valid measurement.
 
 ## Current Floating Monitor appearance
 
