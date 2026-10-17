@@ -6,8 +6,8 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
 
 ## 1. Current Git and repository state
 
-- Canonical editable App, Firmware source and all project notes/memory: TenzoNkz/JEXFYZ-App, branch `main`. HEAD immediately before this transfer-only write: `023f8fbb92ae11f23a1ca33364d7af6ecd10caaa`, message “docs(memory): update indicator motion source checkpoint”, tree SHA `9cb3e954ad26f2f316c751c1d2518675c43a659e`. Re-fetch the branch and tree at the next boot.
-- Recent relevant commits: FPS retirement source commit `8217a2e8d19dc82e9fe3bfa7e4e1c1692d0b7941`; Build #70 source commit `eb1224232241ca5d44d43e25919fd228875029ab`; post-release indicator-motion source commit `2ce326240d38918d9f685145504b1d51c0ea11ec`; regression tests commit `db6ae59a8bf00a6d8116823465079c90ddb9f02a`. The new motion/toggle source is NOT RELEASED and needs a separate App Build/QC run.
+- Canonical editable App, Firmware source and all project notes/memory: TenzoNkz/JEXFYZ-App, branch `main`. HEAD immediately before this transfer-only write: `03de0802ed615693912bff9f10e6fd53d42bdc48`, message “docs(memory): update revised motion test fingerprint”, tree SHA `8a8cc49ef11dc6c2d520472ea5cda3ee5235406d`. Re-fetch the branch and tree at the next boot.
+- Recent relevant commits: FPS retirement source commit `8217a2e8d19dc82e9fe3bfa7e4e1c1692d0b7941`; Build #70 source commit `eb1224232241ca5d44d43e25919fd228875029ab`; post-release indicator-motion source commit `2ce326240d38918d9f685145504b1d51c0ea11ec`; regression tests commit `db6ae59a8bf00a6d8116823465079c90ddb9f02a`; source-contract assertion correction commit `43166a81ac6e727a8ac33a7ebc5cde6df3ceedc5`. The new motion/toggle source is NOT RELEASED and needs a separate App Build/QC run.
 - Five branches observed: main; diag/latest-stable-v16; diagnostic/v1.6-heap-check; fix/adaptive-power-sequencing; tmp-jexfyz-v5-test. Open pull requests: zero. Refresh this data next boot.
 - Artifact repo TenzoNkz/JEXFYZ-Firmware was re-fetched and its root tree contains exactly one blob: JEXFYZ.cpp.bin, 1,455,936 bytes, SHA/blob 68167e65d26137eeb1ce4d6d4ba798dc282454e6. No BIN payload was read or edited. Its provenance from the source sketch remains UNVERIFIED.
 - No files are intentionally removed in this memory transaction. Frozen archive files are preserved byte-for-byte. Their root-relative links may not resolve from inside archive/; one example is a link from archive/ARTIFACT_REPO_NOTES_PRE_BIN_ONLY_2026-10-14.md to VOLTAGE_TRANSITION_MEMORY.md, which resolves incorrectly under archive/. Do not rewrite the forensic archive to “fix” this; canonical root files are the current references.
@@ -39,7 +39,7 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
   - pubspec.yaml — 8f558273e21692af9958f914527fdc62d623d63a; pubspec.lock — 1e92812bfda2c28244a0556d71d1ec94084acc66.
   - .github/workflows/jexfyz-app-build-trigger.yml — 8a8533aff7e0e0e01412bf522e1966e81aa1a39f.
 - Five active Dart tests and current blob SHAs:
-  - test/widget_test.dart — `ce03201590667befb8e3d05b0a9788665fdd54a8`. New source-contract tests cover animation phase continuity/flame loop seam, Peltier spark orbit/fade and manual-voltage toggle styling; they have NOT RUN.
+  - test/widget_test.dart — `032cefebf89e08f92fddaf992184c7580c185b2a`. New source-contract tests cover animation phase continuity/flame loop seam, Peltier spark orbit/fade and manual-voltage toggle styling; the helper-call assertion was aligned with implementation, but these tests have NOT RUN.
   - test/floating_monitor_layout_contract_test.dart — 87e805095202ac3edfe55b9aeb3138c7c6886375.
   - test/v6_6_qc_contract_test.dart — 083e0d19389c235b84f9785ee665d8ed8789e37f.
   - test/app_protocol_notify_contract_test.dart — 92214dd90178c705844d3979d3f8f7bd17bcc4b8.
@@ -133,9 +133,9 @@ Current canonical responsibility:
 - CHANGELOG.md = historical decisions/failures; DESIGN_NOTES.md = approved design.
 - archive/*.md = immutable forensic snapshots only.
 
-Verified blob hashes after first reconciliation commit:
+Selected current blob hashes before this transfer-only snapshot refresh:
 - README.md 099b93fb35eb34d1657dc63036de3d04094f3029
-- MEMORY_INDEX.md f22a739fbdba77ccd6d341ba4a2dba25101730e0
+- MEMORY_INDEX.md c832172f412013468cb2155dc9d7085282452eb9
 - CHAT_RULES.md db3b1faabf0a21dd5368d6f634bf7c1bc7f01dee
 - PROJECT_STATE.md b9b534f7f404d5e72c7d9b3be48cd500e5539ad0
 - HANDOVER.md 4a500b9d00c4f5c615240c417cd82fa326e40756
