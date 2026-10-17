@@ -20,11 +20,11 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 
 ## Current release and source validation boundary — 2026-10-17
 
-- Latest verified App release is Build #70 (run 38998407325), exact source/release commit eb1224232241ca5d44d43e25919fd228875029ab. It removes FPS/Shizuku and implements Floating Monitor schema v2 with six metrics B/H/V/A/P/F (F=Fan Speed).
-- All 21 active workflow steps passed. Dart analysis completed with 23 info-level deprecation findings; 86/86 Flutter tests passed. Android production app compilation and the configured :app:testDebugUnitTest task succeeded; native unit-test compile/test tasks were NO-SOURCE, so no native JUnit cases ran after FPS-specific tests were removed.
-- APK: https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk; asset 649412242, 54,538,331 bytes, SHA-256 229aaae5745456498d35f356ee6e0cdde81e7bb29f37238b1172f99f992ab404. Corresponding source ZIP: https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip; asset 649412243, 2,847,010 bytes, SHA-256 d0a79cdaf99b169b68cda04c5c3162062f493f0cb6f6ec02c1531950e4bbd8ae. Details/signing/warnings are in APP_BUILD_REPORT.md.
-- Release tag jexfyz-latest targets eb1224232241ca5d44d43e25919fd228875029ab. Current main is newer because it contains documentation and one stale-comment-only cleanup; no post-Build-#70 functional behavior change is intended.
-- Physical Floating Monitor layout, live BLE metrics/Fan Speed, icon/animation smoothness and all firmware/cooling/OTA behavior remain NOT DEVICE-VERIFIED. Build #70 is App CI/release evidence, not firmware compile or hardware proof.
+- Latest verified App release is Build #71 (run 39008259484), exact source/release commit `d9e026f70ec62455763de05048cba1557edfaf23`. It includes FPS/Shizuku retirement plus the refined dashboard-indicator motion and manual-voltage-toggle styling.
+- All 21 active workflow steps passed. Dart analysis completed with 23 info-level deprecation findings; **88/88 Flutter tests passed**. Android production compilation and configured `:app:testDebugUnitTest` gate succeeded; native test tasks were NO-SOURCE, so no native JUnit cases ran.
+- APK: https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk; asset 649710440, 54,603,867 bytes, SHA-256 `fdffa5d61ad403153c544cd3a62ea130e810844930f9de96fdd28343f6d041ca`. Matching source ZIP: https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip; asset 649710439, 2,847,410 bytes, SHA-256 `3d7dc30fa99d3bfb86bee069e4a9b60292942f215c11c27e519f0b51ca8a24b0`. Both were re-downloaded and verified.
+- Release tag `jexfyz-latest` targets `d9e026f70ec62455763de05048cba1557edfaf23`. Full run, signing, warnings, and source-marker evidence are in `APP_BUILD_REPORT.md`.
+- Physical Floating Monitor layout, indicator animation smoothness, manual-voltage-toggle appearance, live BLE metrics/Fan Speed and all firmware/cooling/OTA behavior remain **NOT DEVICE-VERIFIED**. Build #71 is App CI/release evidence, not firmware compile or hardware proof.
 
 ## Repository boundaries
 
