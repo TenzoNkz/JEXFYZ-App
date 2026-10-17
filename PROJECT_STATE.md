@@ -2,18 +2,19 @@
 
 Last reconciled from live GitHub on 2026-10-17. This file is current-only. Use CHANGELOG.md for historical decisions and APP_BUILD_REPORT.md for build evidence.
 
-## Current App source/release state — Build #70 verified after FPS retirement
+## Current App source/release state — Build #70 remains the latest verified release
 
-- Latest verified App release: Build #70 / run 38998407325, exact source/release commit eb1224232241ca5d44d43e25919fd228875029ab. The released source removes FPS/Shizuku and changes Floating Monitor to six metrics B/H/V/A/P/F, with F=Fan Speed. Main now includes later documentation commits and a nonfunctional stale-comment cleanup only.
+- Latest verified App release: Build #70 / run 38998407325, exact source/release commit eb1224232241ca5d44d43e25919fd228875029ab. The released source removes FPS/Shizuku and changes Floating Monitor to six metrics B/H/V/A/P/F, with F=Fan Speed. Main now also includes post-release dashboard-indicator motion and manual-voltage-toggle source changes; these are not part of Build #70.
 - All 21 active release workflow steps passed. Dart analysis completed with 23 info-level deprecation messages; 86/86 Flutter tests passed. Android production compile and configured :app:testDebugUnitTest task succeeded. Native JUnit test tasks were NO-SOURCE because the FPS-specific native tests were removed; no native JUnit test cases ran.
 - Release jexfyz-latest targets eb1224232241ca5d44d43e25919fd228875029ab. APK asset 649412242, 54,538,331 bytes, SHA-256 229aaae5745456498d35f356ee6e0cdde81e7bb29f37238b1172f99f992ab404. Matching source ZIP asset 649412243, 2,847,010 bytes, SHA-256 d0a79cdaf99b169b68cda04c5c3162062f493f0cb6f6ec02c1531950e4bbd8ae. Both were re-downloaded and verified. Complete evidence is in APP_BUILD_REPORT.md.
 - Signing: V1/JAR, V2 and V3 verified true with one signer; production certificate SHA-256 dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0. Non-blocking warnings are detailed in APP_BUILD_REPORT.md.
 - Build #69 and earlier FPS-enabled releases are HISTORICAL/SUPERSEDED. Physical overlay appearance, live BLE telemetry/Fan Speed, animation smoothness and all firmware/cooling/OTA behavior remain UNVERIFIED on the phone.
+- Post-Build-70 source changes currently on main: indicators continue through a 440 ms OFF fade before pausing and resume from the retained phase at the next equivalent loop boundary; thermal flame loops are seam-compatible; Peltier sparks orbit around the stable six-branch crystal; manual voltage toggles use the neutral theme-primary style while labels keep their semantic colors. Regression source-contract tests were added. This source state is **NOT RELEASED**; Flutter tests/analyze, Android build/release gates and phone validation have **NOT RUN** for these edits.
 - No Firmware source/BIN, Firebase, OTA, flash or device operation occurred.
 
 ## App identity and repository
 
-- Canonical App repo: TenzoNkz/JEXFYZ-App, branch `main`. Latest verified release is Build #70 from `eb1224232241ca5d44d43e25919fd228875029ab`; current main is newer only due to memory/docs and comment-only correction. Overlay rendering remains unverified on the phone.
+- Canonical App repo: TenzoNkz/JEXFYZ-App, branch `main`. Latest verified release is Build #70 from `eb1224232241ca5d44d43e25919fd228875029ab`; current main includes post-Build-70 indicator/toggle changes that have not been built or released. Overlay and icon-animation rendering remain unverified on the phone.
 - App/package: JE Cooler / JE X FYZ, com.horizontalzzz.jexfyz, pubspec version 1.0.0+3. Preserve Gradle versionName exactly as "Telegram @horizontalzzz".
 - Only active App build workflow: .github/workflows/jexfyz-app-build-trigger.yml; issue opened/reopened only; repository-owner, exact title and body-token guarded. Normal push/PR does not build/release.
 - Firmware artifact repo TenzoNkz/JEXFYZ-Firmware has exactly one tree entry: JEXFYZ.cpp.bin, 1,455,936 bytes, blob 68167e65d26137eeb1ce4d6d4ba798dc282454e6. Do not modify or inspect BIN payload during documentation work. This does not prove current source-to-BIN provenance.
