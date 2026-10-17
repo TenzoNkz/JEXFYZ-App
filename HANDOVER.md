@@ -1,15 +1,15 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled against live GitHub on 2026-10-17 (Asia/Jakarta). Build #70 verifies FPS retirement in the released source. Read CHAT_TRANSFER.md for the full technical boot snapshot; this file records the immediate state and next action.
+Last reconciled against live GitHub on 2026-10-17 (Asia/Jakarta). Build #70 remains the latest verified release; main now contains scoped post-release dashboard-motion and manual-voltage-toggle edits that have not been built. Read CHAT_TRANSFER.md for current hashes and the next action.
 
 ## Current App and release state
 
-- Canonical repo: TenzoNkz/JEXFYZ-App, branch main. Audit baseline HEAD before this memory transaction: 927aed0070f1fbfde0b3ddbe80d2afd8e708a413. Five branches, zero open PRs.
+- Canonical repo: TenzoNkz/JEXFYZ-App, branch `main`. Main contains post-Build-70 icon-motion and manual-voltage-toggle source changes. Live HEAD/blob fingerprints are recorded in `CHAT_TRANSFER.md`; five branches and zero open PRs were observed before this scoped work.
 - Latest verified App release: Build #70 / run 38998407325, source commit eb1224232241ca5d44d43e25919fd228875029ab. All 21 active workflow steps passed, 86/86 Flutter tests passed, Dart analysis and Android production compile/gate passed, and APK/source ZIP signature/hash/source checks passed.
 - Native JUnit test tasks reported NO-SOURCE because FPS-specific native parser/watchdog tests were retired; do not report native JUnit cases as passed in Build #70.
 - APK asset 649412242, 54,538,331 bytes, SHA-256 229aaae5745456498d35f356ee6e0cdde81e7bb29f37238b1172f99f992ab404: https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk
 - Corresponding source ZIP asset 649412243, 2,847,010 bytes, SHA-256 d0a79cdaf99b169b68cda04c5c3162062f493f0cb6f6ec02c1531950e4bbd8ae: https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip
-- Release tag jexfyz-latest targets exact source commit eb1224232241ca5d44d43e25919fd228875029ab. Main has later docs and a nonfunctional stale-comment correction; no later functional app change is intended. APP_BUILD_REPORT.md has the full verified ledger.
+- Release tag jexfyz-latest targets exact source commit eb1224232241ca5d44d43e25919fd228875029ab. Newer source edits are not released; `APP_BUILD_REPORT.md` remains the authoritative ledger for the last actual build. No new build was triggered here.
 
 ## FPS retirement and current Floating Monitor
 
@@ -27,6 +27,6 @@ Last reconciled against live GitHub on 2026-10-17 (Asia/Jakarta). Build #70 veri
 
 ## Immediate next step and authorization
 
-1. User/device validation of Build #70: install the released APK and check B/H/V/A/P/F, especially F reflects Fan Speed telemetry and not old FPS.
-2. Any code change later: use @Thinking Diskusi! to discuss, @Thinking Eksekusi Full! for authorized scoped source/tests/docs and memory work, and separately @Thinking Eksekusi Build App! for a fresh App build/release. @Thinking Chat Stuck! only recovers the last authorized task.
-3. No Build App, Firmware compile, Firebase, OTA/flash, or physical device operation was performed in this reconciliation.
+1. Next authorized action: `@Thinking Eksekusi Build App!` to run Flutter tests/analyze, Android compile/build and the guarded release/signature gates on the new main source. `Eksekusi Full!` did not authorize a build; do not claim these edits passed CI yet.
+2. After a successful new build, install that APK and visually check phase continuity when indicators switch OFF/ON, the Peltier spark orbit, and the restored neutral manual VOLTAGE toggle colors on the phone. Build #70 cannot validate these post-release changes.
+3. Firmware/BIN/Firebase/OTA/flash/device operations were not performed or authorized in this task.
