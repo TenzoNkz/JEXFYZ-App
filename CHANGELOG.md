@@ -6,7 +6,18 @@
 - Thermal flame motion uses integer harmonics to match its shape at the loop boundary; Battery segments have a subtle staggered ripple. The six-branch Peltier crystal stays visually stable while four bounded sparks orbit smoothly and fade with activity. These remain decorative App visuals only.
 - Manual 5V/9V/12V rows stay neutral. Their active toggle uses the theme primary color without a check glyph, while voltage labels retain red/green/blue semantic colors. Other shared control toggles and the voltage command/lock/telemetry logic remain unchanged.
 - Added source-contract regressions for activity fade/pause/resume, loop-compatible flame motion, Peltier spark orbit and manual voltage toggle styling.
-- Source/tests/docs are committed to `main`, but this work is **NOT RELEASED**. Flutter tests, Dart analysis, Android production build, release/signature gates and physical-phone animation/toggle checks were **NOT RUN** under `Eksekusi Full`; Build #70 remains the latest verified release.
+- Source/tests/docs were committed under `Eksekusi Full`, which did not start a release build. Build #71 subsequently passed Dart analysis, 88/88 Flutter tests, Android production compilation/configured gate, APK signing, source archive and Release asset verification for these changes. Physical-phone animation/toggle checks remain pending.
+
+
+## 2026-10-17 — Build #71 release verified: dashboard motion and manual voltage toggle
+
+- Build #71 / [Actions run `39008259484`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39008259484) completed successfully against exact source/release commit `d9e026f70ec62455763de05048cba1557edfaf23`. All 21 active workflow steps passed: audit, dependencies, Dart analysis, **88/88 Flutter tests**, Android production compilation/configured gate, APK obfuscation, V1/V2/V3 signature/certificate checks, matching source ZIP, Release publication and re-downloaded asset verification.
+- It includes motion-continuity refinements: OFF animation continues during the 440 ms fade before pausing; reactivation resumes retained phase and advances to an equivalent loop boundary; thermal flame geometry is loop-seam compatible; Battery segments ripple subtly; four bounded Peltier sparks orbit around the stable six-branch crystal.
+- Manual VOLTAGE rows stay neutral, with only the active toggle using theme primary and no redundant check glyph; 5V/9V/12V labels retain red/green/blue semantic color. Voltage command/lock/telemetry behavior and other shared toggles remain unchanged.
+- APK asset `649710440`, 54,603,867 bytes, SHA-256 `fdffa5d61ad403153c544cd3a62ea130e810844930f9de96fdd28343f6d041ca`; matching source ZIP asset `649710439`, 2,847,410 bytes, SHA-256 `3d7dc30fa99d3bfb86bee069e4a9b60292942f215c11c27e519f0b51ca8a24b0`. Release `jexfyz-latest` targets the exact source SHA and the workflow verified both downloaded assets.
+- The configured Gradle `:app:testDebugUnitTest` gate passed, but Kotlin/Java unit-test compile/test tasks were NO-SOURCE after FPS-specific native test cases were retired; do not count native JUnit cases as executed in Build #71.
+- Physical animation smoothness, overlay layout, manual toggle visuals and live BLE/Fan Speed behavior remain **NOT DEVICE-VERIFIED**. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+
 
 
 ## 2026-10-17 — Build #70 release verified after FPS retirement
