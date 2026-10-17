@@ -389,6 +389,25 @@ void main() {
     expect(jexSubmenuToggleHeight, 32.0);
   });
 
+  test('Manual voltage toggles stay theme-colored while labels keep voltage accents', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final choiceStart = source.indexOf('Widget _voltageChoiceCustom(');
+    final choiceEnd = source.indexOf('// AI-METHOD / CONTROL-TAB CONTRACT', choiceStart);
+    expect(choiceStart, isNonNegative);
+    expect(choiceEnd, greaterThan(choiceStart));
+    final choice = source.substring(choiceStart, choiceEnd);
+    expect(choice, contains('color: jexVoltageIndicatorColor(target)'));
+    expect(choice, contains('accent: scheme.primary,'));
+    expect(choice, contains('showCheck: false,'));
+    expect(choice, isNot(contains('accent: accent,')));
+
+    final toggleStart = source.indexOf('Widget _jexToggle(');
+    final toggleEnd = source.indexOf('Widget _smoothList(', toggleStart);
+    final toggle = source.substring(toggleStart, toggleEnd);
+    expect(toggle, contains('bool showCheck = true'));
+    expect(toggle, contains('displayedValue && showCheck'));
+  });
+
   test('JE X FYZ voltage helper accepts only supported voltages', () {
     expect(isVoltageCommand('5V'), isTrue);
     expect(isVoltageCommand('9v'), isTrue);
@@ -692,6 +711,22 @@ void main() {
     expect(iconState, contains('if (widget.active)'));
   });
 
+  test('Indicator motion fades before pausing and resumes at a cycle boundary', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final stateStart = source.indexOf('class _JexAnimatedIconState');
+    final stateEnd = source.indexOf('class _JexIconPainter', stateStart);
+    expect(stateStart, isNonNegative);
+    expect(stateEnd, greaterThan(stateStart));
+    final state = source.substring(stateStart, stateEnd);
+    expect(state, contains('Future<void> _animateActivityTransition(bool active) async'));
+    expect(state, contains('if (!active && widget.kind != JexAnimatedIconKind.fan)'));
+    expect(state, contains('Future<void> _finishIconCycleBoundary(int durationMs) async'));
+    expect(state, contains('curve: Curves.linear'));
+    expect(state, contains('_resumeCycleWithoutPhaseSnap();'));
+    expect(source, contains('final harmonic = (i + 1).toDouble();'));
+    expect(source, isNot(contains('phase * (1.7 + i * .23)')));
+  });
+
   test('Peltier crystal is symmetric and its particles remain in a bounded ring', () {
     final source = File('lib/main.dart').readAsStringSync();
     final peltierStart = source.indexOf('case JexAnimatedIconKind.peltier:');
@@ -702,12 +737,15 @@ void main() {
     expect(peltier, isNot(contains('moduleRect')));
     expect(peltier, contains('final spine = Path()'));
     expect(peltier, contains('final branches = Path()'));
-    expect(peltier, contains('canvas.rotate(angle / 6)'));
+    expect(peltier, isNot(contains('canvas.rotate(angle / 6)')));
     expect(peltier, contains('for (var i = 0; i < 6; i++)'));
     expect(peltier, contains('for (var i = 0; i < 4; i++)'));
     expect(peltier, contains('final frostIntensity ='));
     expect(peltier, contains('final particleCountValue = frostParticleCountOverride ??'));
-    expect(peltier, contains('final radius = s * (.405 + .010 * math.sin(angle + i));'));
+    expect(peltier, contains('final particleAngle = angle + math.pi / 4 + i * math.pi / 2;'));
+    expect(peltier, contains('final radius = s * (.405 + .012 * math.sin(particlePhase));'));
+    expect(peltier, contains('final particleOpacity ='));
+    expect(peltier, contains('(.20 + .80 * strength'));
     expect(peltier, isNot(contains('final petal = Path()')));
   });
 
