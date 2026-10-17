@@ -36,8 +36,8 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 
 ## Remaining validation outside CI
 
-- Build #70 is the latest verified release for source `eb1224232241ca5d44d43e25919fd228875029ab`. Full audit/test/build/signing/source archive/Release/download verification evidence is in `APP_BUILD_REPORT.md`.
-- Next step is device-side validation of the Build #70 six-metric overlay and live telemetry. FPS removal has already been built and release-verified; CI alone does not prove device behavior.
+- Build #71 is the latest verified release for source `d9e026f70ec62455763de05048cba1557edfaf23`. Full audit/test/build/signing/source archive/Release/download verification evidence is in `APP_BUILD_REPORT.md`.
+- Next step is device-side validation of Build #71 indicator motion/toggle styling, six-metric overlay and live telemetry. FPS removal has already been built and release-verified; CI alone does not prove device behavior.
 - Firmware V6.6 is USER-ACCEPTED FINAL according to the user's report. Its compile log and source-to-BIN provenance remain independently unverified. App CI does not imply Firmware compilation, BIN provenance, Firebase, OTA, flash, BLE hardware or thermal-safety validation.
 
 ## Non-negotiable workflow
