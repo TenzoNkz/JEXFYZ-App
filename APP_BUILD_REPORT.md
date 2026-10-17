@@ -2,6 +2,13 @@
 
 This is the durable evidence ledger for `@Thinking Eksekusi Build App!`. A replacement Build App chat uses Prompt D in `CHAT_TRANSFER_PROMPTS.md` to load this file and continue the same workstream across a context limit; there is no separate Build App recap chat. It records verified GitHub Actions/Release evidence and distinguishes CI gates from physical-device validation.
 
+## CURRENT ATTEMPT — BUILD #70 IN PROGRESS
+
+- **Run:** [Build #70 / run `38998407325`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38998407325), official guarded issue [#33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33) reopened on 2026-10-17. Exact required title and body token were re-verified; repository owner is `TenzoNkz`.
+- **Source target:** `eb1224232241ca5d44d43e25919fd228875029ab` on `main`. This target includes FPS/Shizuku retirement, schema-v2 Floating Monitor migration, and metric F=Fan Speed. Build #69 predates these changes and is not evidence for them.
+- **Trigger/workflow:** current `.github/workflows/jexfyz-app-build-trigger.yml` blob `8a8533aff7e0e0e01412bf522e1966e81aa1a39f`; event is `issues`, status initially `queued`. Owner/title/token checks, six-metric/FPS-retirement audit, Flutter analysis/tests, Android `:app:testDebugUnitTest`, obfuscated APK, V1/V2/V3 and certificate checks, corresponding source ZIP, Release publication and re-download verification remain enabled.
+- **Initial disposition:** IN PROGRESS. No source fix or duplicate trigger has been made. Final step results, test counts, APK/checksum/signing/source archive/Release identity and any failure root cause will be appended when this exact run completes.
+
 ## LATEST VERIFIED RELEASE — Build #69 SUCCESS
 
 - Latest verified source/release commit: `01212c32a802ca0e67f559307fe4e19a667489c6`. This is the current `main` HEAD that triggered Build #69; functional App source remains unchanged from Build #68/#67, so the produced APK hash is unchanged.
