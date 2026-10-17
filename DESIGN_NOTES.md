@@ -20,6 +20,13 @@ This file stores durable, user-approved visual constraints. Do not reinterpret a
 - UI direction: dark header, white rounded main content panel, compact navigation; VOLTAGE and ADAPTIVE are the principal modes. Cooler image sits on the right in the established Horizon Cooler-inspired layout.
 - If a future visual request supplies an image, preserve unmentioned geometry/details and edit only what the user asked to change.
 
+## Dashboard indicator motion and manual voltage selector
+
+- Keep the existing Home icon silhouettes, bounded Canvas geometry, semantic meaning and established interface identity; animation refinement is not permission to redesign the dashboard.
+- State changes use a separate eased activity transition. On OFF, animated detail continues through the fade before pausing; on ON, the retained phase advances to the next equivalent cycle boundary rather than restarting at frame zero. Periodic shapes must match at the loop seam, including thermal flames.
+- Peltier remains a steady, free-standing six-branch crystal. Four small bounded ice sparks orbit around it smoothly; intensity is illustrative only and must not imply measured ice, cooling performance or sensor data.
+- The manual VOLTAGE rows remain neutral. 5V/9V/12V labels keep red/green/blue semantic colors, while the active toggle uses the theme primary color and has no redundant check glyph. Do not alter selector commands, lock conditions or authoritative telemetry behavior.
+
 ## Visual-change protocol
 
 1. Inspect the exact latest reference or source image.
