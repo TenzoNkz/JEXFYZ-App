@@ -22,10 +22,12 @@ This file stores durable, user-approved visual constraints. Do not reinterpret a
 
 ## Dashboard indicator motion and manual voltage selector
 
-- Keep the existing Home icon silhouettes, bounded Canvas geometry, semantic meaning and established interface identity; animation refinement is not permission to redesign the dashboard.
+- The user explicitly replaced the earlier Home-icon-silhouette lock on 2026-10-17. Redesign all animated dashboard indicators as integrated, restrained 2D silhouettes with organic phase-continuous motion. Avoid decorative stacks of glow, rings, sparks, flames, or highlight sweeps. Preserve semantic color, bounded Canvas geometry, brand identity and layout.
 - State changes use a separate eased activity transition. On OFF, animated detail continues through the fade before pausing; on ON, the retained phase advances to the next equivalent cycle boundary rather than restarting at frame zero. Periodic shapes must match at the loop seam, including thermal flames.
-- Peltier remains a steady, free-standing six-branch crystal. Four small bounded ice sparks orbit around it smoothly; intensity is illustrative only and must not imply measured ice, cooling performance or sensor data.
+- Peltier is one six-branch crystal shape with subtle self-motion, not orbiting sparks. Fan is one coherent rotor; Battery/Hotside use internal thermal fill; Voltage one bolt; Adaptive one morphing loop; LED one travelling wave; Bluetooth has no ripple rings. All motion is illustrative, not telemetry or a claim about cooling performance.
 - The manual VOLTAGE rows remain neutral. 5V/9V/12V labels keep red/green/blue semantic colors, while the active toggle uses the theme primary color and has no redundant check glyph. Do not alter selector commands, lock conditions or authoritative telemetry behavior.
+
+- LED contract: RGB ON/OFF controls only custom RGB effects. Voltage, thermal/safety, Adaptive, OTA/error and other system indicators remain independent; saved master Brightness applies to every physical WS2812 indication. Phone-side preview remains readable at low hardware Brightness.
 
 ## Visual-change protocol
 

@@ -56,9 +56,9 @@ Last reconciled from live GitHub on 2026-10-17. This file is current-only. Use C
 ## Current source fingerprints
 
 - Latest verified released functional source: Build #71 commit d9e026f70ec62455763de05048cba1557edfaf23, including the motion/toggle changes. Subsequent documentation updates must not be mistaken for a new functional source build.
-- Current Flutter source blobs: lib/main.dart c10a708022ca8e8defbe1583b47fb0b10ddda8ed; lib/floating_monitor.dart 31b45ea08b08ac7fc25ebd991dca873b889fdd14; lib/app_settings.dart 20f1ce0f838345c9eee4cbacde22255cb7852435; test/widget_test.dart 032cefebf89e08f92fddaf992184c7580c185b2a; test/floating_monitor_layout_contract_test.dart 87e805095202ac3edfe55b9aeb3138c7c6886375; test/v6_6_qc_contract_test.dart 083e0d19389c235b84f9785ee665d8ed8789e37f.
+- Current Flutter source blobs: lib/main.dart 3bb9a772e7e4a192cd9b4457846b111e28ec305a; lib/floating_monitor.dart 31b45ea08b08ac7fc25ebd991dca873b889fdd14; lib/app_settings.dart 77faaa80264ed65ab5c104588978bb903e9f89db; test/widget_test.dart 66861cad0638433bd7b575439bb4a2b637f1f856; test/floating_monitor_layout_contract_test.dart 87e805095202ac3edfe55b9aeb3138c7c6886375; test/v6_7_qc_contract_test.dart 6b71cc2ebbef9b3f1c9757728067eec4d11ff5ee; test/firmware_touch_adaptive_sync_test.dart 94c0f074247f47fce7d939a72b0130eb1b2d70fa.
 - Native App source: FloatingMonitorService.kt 7368df11ecb369f8b71607c82e6a1b44472cc79b; MainActivity.kt bd17c34211e8eb5c4723e06937ae47f0071b5e8b; AndroidManifest.xml c374b5d3ad6448b8b3e99a420ed7e8c49d38497a; android/app/build.gradle 060cdd36a4f7d4d2fa4c97a1b6a15954b8355350; workflow .github/workflows/jexfyz-app-build-trigger.yml 8a8533aff7e0e0e01412bf522e1966e81aa1a39f.
-- Five active Dart tests: widget_test.dart 032cefebf89e08f92fddaf992184c7580c185b2a; floating_monitor_layout_contract_test.dart 87e805095202ac3edfe55b9aeb3138c7c6886375; v6_6_qc_contract_test.dart 083e0d19389c235b84f9785ee665d8ed8789e37f; app_protocol_notify_contract_test.dart 92214dd90178c705844d3979d3f8f7bd17bcc4b8; firmware_touch_adaptive_sync_test.dart 2d3fea509343a03b8d23623f4dcb2dd7fd972d39.
+- Five active Dart tests: widget_test.dart 66861cad0638433bd7b575439bb4a2b637f1f856; floating_monitor_layout_contract_test.dart 87e805095202ac3edfe55b9aeb3138c7c6886375; v6_7_qc_contract_test.dart 6b71cc2ebbef9b3f1c9757728067eec4d11ff5ee; app_protocol_notify_contract_test.dart 92214dd90178c705844d3979d3f8f7bd17bcc4b8; firmware_touch_adaptive_sync_test.dart 94c0f074247f47fce7d939a72b0130eb1b2d70fa.
 - FPS UserService/parser/watchdog and native tests, Shizuku AIDL/provider/dependencies, Shizuku-only Dart contract and license/notice files are absent from current main tree. Workflow audit prevents their reintroduction and retains the Android production compile/test gate.
 - Build #71 passed 88/88 Flutter tests and release gates. Native JUnit cases did not run because the unit-test tasks were NO-SOURCE after FPS-specific native tests were retired. Physical-device behavior remains UNVERIFIED.
 
@@ -81,13 +81,19 @@ Five active Dart test files remain; Build #71 ran 88/88 successfully. Native FPS
 - Black/White background selector, default Black; foreground contrasts automatically. Opacity 0% hides the background only.
 - The Shizuku/FPS access card is removed. Fan Speed is the F metric; the six current identifiers are B/H/V/A/P/F.
 
+## Current source-only changes after Build #71
+
+- `main` contains the integrated 2D animated indicator redesign, localized labels/copy, RGB-only toggle gating, master physical LED brightness, and Firmware V6.7 Adaptive 12V Fan PWM. These changes are not included in released APK Build #71.
+- Adaptive Fan: reaching the configured Hotside limit immediately forces 100%; downshift requires ten recent one-second NTC samples, average and every sample at/below `hotLimit - 2°C`, no meaningful warming trend and one continuous stable 10-second interval. Then reduce 10 points every 10 seconds to a 50% floor. Loss of margin/warming raises 10 points per fresh sample. Adaptive 5V/9V and existing thermal safety remain unchanged.
+- Flutter tests/Dart analysis/Android build were not run; V6.7 was not compiled. No APK release, BIN/Firebase publication, OTA, flash or physical-device action occurred.
+
 ## Current Firmware/hardware reference
 
-- Active source firmware/JEXFYZ-V6.6.ino, blob f51ba6db5d0e91318f63fea4014bb87f7bf76222, FW_VERSION="V6.6", exactly one active versioned .ino.
+- Active source firmware/JEXFYZ-V6.7.ino, blob 1d0fa0d5e308b9789fd1c32211ce0a127d497f6a, FW_VERSION="V6.7", exactly one active versioned .ino.
 - MCU ESP32-C3 Super Mini/Dev Module. GPIO0 NTC ADC; GPIO1 TTP223; GPIO3 12V selector; GPIO4 9V selector; GPIO5 Peltier MOSFET PWM; GPIO6 Fan MOSFET PWM; GPIO7 WS2812. NTC 10k + 10k divider, Beta 3950, 3.3 V assumption, calibrated millivolt read once/sec.
 - Thermal reference: Hotside 40–50°C, default 45°C; manual re-arm at hotLimit−1°C continuously for 5 s. Adaptive 30 s stage at 12/9/5 V, Peltier off/Fan 100%; stable recovery 5 s cancels; otherwise step down/terminal-lock at 5 V. Upward recovery after 60 s stable, capped by saved ceiling. HOTSIDE startup default, HOTSIDE_BATTERY runtime-only. App PHONE:BT heartbeat 1 Hz, Firmware TTL 5 s; no standalone Battery Protection Guard UI.
 - Peltier 20kHz/8-bit, normal OFF→ON soft-start 5s; Fan 25kHz/8-bit; selector break-before-make 200ms and 1s settle. Active ramp is paused/restarted across rail changes; completed ramp stays at 100%; outputs/safety take priority.
-- User accepts Firmware V6.6 as final and reports compilation/two same-version Online OTA updates. Those are USER-REPORTED; source-to-BIN provenance remains UNVERIFIED. Do not compile Firmware or change BIN, Firebase or hardware.
+- V6.6 compile/two-OTA claims are historical USER-REPORTED evidence. The user reopened and authorized V6.7 Adaptive Fan PWM source work; V6.7 remains uncompiled/unpublished. Do not compile Firmware or change BIN, Firebase or hardware without separate explicit authorization.
 - Read FIRMWARE_NOTES.md and firmware/FIRMWARE_TECHNICAL_REFERENCE.md before Firmware discussion. Read OTA_PROTECTION.md + OTA_REGRESSION_MEMORY.md before any OTA work, and VOLTAGE_TRANSITION_MEMORY.md before rail/Peltier timing work. Keep OTA protected.
 
 ## Authorization rules

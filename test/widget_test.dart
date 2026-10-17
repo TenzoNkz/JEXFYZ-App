@@ -17,14 +17,24 @@ import 'package:jexfyz_cooler/app_settings.dart';
 import 'package:jexfyz_cooler/floating_monitor.dart';
 
 void main() {
-  test('Home icon painter restores Build #54 primitives and interpolates activity', () {
+  test('Dashboard indicators use integrated 2D silhouettes instead of stacked ornaments', () {
     final source = File('lib/main.dart').readAsStringSync();
-    expect(source, contains('void _drawThermalFlames('));
-    expect(source, contains('void _drawFanBlade('));
-    expect(source, contains('final softPulse = .5 + .5 * math.sin(angle);'));
-    expect(source, contains('oldDelegate.activity != activity'));
-    expect(source, contains('final strength = activity.clamp(0.0, 1.0).toDouble();'));
-    expect(source, isNot(contains('void _drawBlade(')));
+    final start = source.indexOf('class _JexIconPainter extends CustomPainter {');
+    final end = source.indexOf('const MethodChannel securityChannel', start);
+    expect(start, greaterThanOrEqualTo(0));
+    expect(end, greaterThan(start));
+    final painter = source.substring(start, end);
+    expect(painter, contains('Path _batterySilhouette'));
+    expect(painter, contains('Path _hotsideSilhouette'));
+    expect(painter, contains('Path _adaptiveLoop'));
+    expect(painter, contains('Path _crystalSilhouette'));
+    expect(painter, contains('Path _fanSilhouette'));
+    expect(painter, contains('final warningBlend ='));
+    expect(painter, isNot(contains('_drawGlow')));
+    expect(painter, isNot(contains('_drawThermalFlames')));
+    expect(painter, isNot(contains('_drawFanBlade')));
+    expect(painter, isNot(contains('sparkCount')));
+    expect(painter, isNot(contains('particleAngle')));
   });
 
   test('BLE session protocol gate accepts only P1', () {
@@ -112,7 +122,14 @@ void main() {
     // Indonesia uses baku UI terminology while coding identifiers remain English.
     expect(JexText.of('temperature', AppLanguage.indonesia), 'Suhu');
     expect(JexText.of('batteryTemperature', AppLanguage.indonesia), 'Suhu Baterai');
-    expect(JexText.of('hotsideTemperature', AppLanguage.indonesia), 'Suhu Hotside');
+    expect(JexText.of('hotsideTemperature', AppLanguage.indonesia), 'Suhu Panas');
+    expect(JexText.of('hotsideTemperature', AppLanguage.english), 'Hotside Temperature');
+    expect(JexText.of('speed', AppLanguage.english), 'Fan');
+    expect(JexText.of('speed', AppLanguage.indonesia), 'Kipas');
+    expect(JexText.of('fanSpeedLabel', AppLanguage.english), 'Fan Speed');
+    expect(JexText.of('fanSpeedLabel', AppLanguage.indonesia), 'Kecepatan Kipas');
+    expect(JexText.of('power', AppLanguage.english), 'RGB Power');
+    expect(JexText.of('power', AppLanguage.indonesia), 'Daya RGB');
     expect(JexText.of('voltage', AppLanguage.indonesia), 'Tegangan');
     expect(JexText.of('voltageIndicator', AppLanguage.indonesia), 'Indikator Tegangan');
     expect(JexText.of('brightness', AppLanguage.indonesia), 'Kecerahan');
@@ -232,7 +249,7 @@ void main() {
     expect(label(connected: true, notice: 'Bluetooth Disconnected'), 'CONNECTED');
   });
 
-  test('Home Fan Speed shows 100% for Adaptive at 12V', () {
+  test('Home Fan Speed shows authoritative PWM in Adaptive and Manual at 12V', () {
     expect(
       homeFanSpeedDisplay(
         connected: true,
@@ -242,7 +259,7 @@ void main() {
         fanSpeed: 70,
         offLabel: 'OFF',
       ),
-      '100%',
+      '70%',
     );
     expect(
       homeFanSpeedDisplay(
@@ -660,6 +677,32 @@ void main() {
     expect(colors.first.blue, 255);
   });
 
+  test('Voltage and Bluetooth indicators avoid stacked sweeps and ripple rings', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final painterStart = source.indexOf('class _JexIconPainter extends CustomPainter {');
+    final painterEnd = source.indexOf('const MethodChannel securityChannel', painterStart);
+    expect(painterStart, isNonNegative);
+    expect(painterEnd, greaterThan(painterStart));
+    final painter = source.substring(painterStart, painterEnd);
+    final voltageStart = painter.indexOf('case JexAnimatedIconKind.voltage:');
+    final voltageEnd = painter.indexOf('case JexAnimatedIconKind.adaptive:', voltageStart);
+    final bluetoothStart = painter.indexOf('case JexAnimatedIconKind.bluetooth:');
+    final bluetoothEnd = painter.indexOf('case JexAnimatedIconKind.generic:', bluetoothStart);
+    expect(voltageStart, isNonNegative);
+    expect(voltageEnd, greaterThan(voltageStart));
+    expect(bluetoothStart, isNonNegative);
+    expect(bluetoothEnd, greaterThan(bluetoothStart));
+    final voltage = painter.substring(voltageStart, voltageEnd);
+    final bluetooth = painter.substring(bluetoothStart, bluetoothEnd);
+    expect(voltage, contains('final bolt = _bolt(s);'));
+    expect(voltage, isNot(contains('sheen')));
+    expect(voltage, isNot(contains('spark')));
+    expect(bluetooth, contains('final glyph = Path()'));
+    expect(bluetooth, contains('canvas.drawPath(glyph'));
+    expect(bluetooth, isNot(contains('drawArc')));
+    expect(bluetooth, isNot(contains('drawCircle')));
+  });
+
   test('LED preview timing matches the firmware animation cycles', () {
     expect(ledAnimationCycleMs(1), 1000);
     expect(ledAnimationCycleMs(2), 2200);
@@ -684,11 +727,29 @@ void main() {
     expect(JexText.of('ledModeBreath', AppLanguage.english), 'Breath');
     expect(JexText.of('ledModeComet', AppLanguage.english), 'Comet');
     expect(JexText.of('ledModeDualChase', AppLanguage.english), 'Dual Chase');
-    expect(JexText.of('leftRight', AppLanguage.english), 'Left ↔ Right');
+    expect(JexText.of('leftRight', AppLanguage.english), 'Left / Right');
+    expect(JexText.of('leftRight', AppLanguage.indonesia), 'Kiri / Kanan');
     expect(JexText.of('ledModeRainbow', AppLanguage.english), 'Rainbow');
     expect(JexText.of('ledModeUnsupported', AppLanguage.english), 'Unsupported');
     expect(JexText.of('ledModeUnsupported', AppLanguage.indonesia), 'Tidak didukung');
     expect(JexText.of('ledModeComet', AppLanguage.indonesia), 'Komet');
+  });
+
+  test('Fan rotor keeps one integrated silhouette and smooth phase-controlled motion', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final painterStart = source.indexOf('class _JexIconPainter extends CustomPainter {');
+    final painterEnd = source.indexOf('const MethodChannel securityChannel', painterStart);
+    final stateStart = source.indexOf('class _JexAnimatedIconState');
+    final stateEnd = source.indexOf('class _JexIconPainter', stateStart);
+    expect(painterStart, isNonNegative);
+    expect(painterEnd, greaterThan(painterStart));
+    final painter = source.substring(painterStart, painterEnd);
+    final state = source.substring(stateStart, stateEnd);
+    expect(painter, contains('final rotor = _fanSilhouette(s, angle);'));
+    expect(painter, contains('canvas.drawPath(rotor, _fill('));
+    expect(painter, isNot(contains('_drawFanBlade')));
+    expect(state, contains('_animateFanToCycleBoundary();'));
+    expect(state, contains('unawaited(_coastFanToStop());'));
   });
 
   test('Fan voltage change preserves phase and OFF coasts smoothly to a stop', () {
@@ -727,49 +788,6 @@ void main() {
     expect(source, isNot(contains('phase * (1.7 + i * .23)')));
   });
 
-  test('Peltier crystal is symmetric and its particles remain in a bounded ring', () {
-    final source = File('lib/main.dart').readAsStringSync();
-    final peltierStart = source.indexOf('case JexAnimatedIconKind.peltier:');
-    final peltierEnd = source.indexOf('case JexAnimatedIconKind.fan:', peltierStart);
-    expect(peltierStart, isNonNegative);
-    expect(peltierEnd, greaterThan(peltierStart));
-    final peltier = source.substring(peltierStart, peltierEnd);
-    expect(peltier, isNot(contains('moduleRect')));
-    expect(peltier, contains('final spine = Path()'));
-    expect(peltier, contains('final branches = Path()'));
-    expect(peltier, isNot(contains('canvas.rotate(angle / 6)')));
-    expect(peltier, contains('for (var i = 0; i < 6; i++)'));
-    expect(peltier, contains('for (var i = 0; i < 4; i++)'));
-    expect(peltier, contains('final frostIntensity ='));
-    expect(peltier, contains('final particleCountValue = frostParticleCountOverride ??'));
-    expect(peltier, contains('final particleAngle = angle + math.pi / 4 + i * math.pi / 2;'));
-    expect(peltier, contains('final radius = s * (.405 + .012 * math.sin(particlePhase));'));
-    expect(peltier, contains('final particleOpacity ='));
-    expect(peltier, contains('(.20 + .80 * strength'));
-    expect(peltier, isNot(contains('final petal = Path()')));
-  });
-
-  test('Fan animation uses compact blades and the same soft activity transition as other indicators', () {
-    final source = File('lib/main.dart').readAsStringSync();
-    final bladeStart = source.indexOf('void _drawFanBlade(');
-    final bladeEnd = source.indexOf('void paint(Canvas canvas, Size size)', bladeStart);
-    final fanStart = source.indexOf('case JexAnimatedIconKind.fan:');
-    final fanEnd = source.indexOf('case JexAnimatedIconKind.speed:', fanStart);
-    expect(bladeStart, isNonNegative);
-    expect(bladeEnd, greaterThan(bladeStart));
-    expect(fanStart, isNonNegative);
-    expect(fanEnd, greaterThan(fanStart));
-    final blades = source.substring(bladeStart, bladeEnd);
-    final fan = source.substring(fanStart, fanEnd);
-    expect(blades, contains('alpha: .94'));
-    expect(blades, contains('canvas.rotate(angle)'));
-    expect(blades, contains('s * .445'));
-    expect(fan, contains('_drawFanBlade(canvas, size, rotation + i * math.pi * 2 / 3)'));
-    expect(fan, contains('canvas.drawCircle(hub, s * .079, fill(color.withValues(alpha: 1)))'));
-    expect(source, contains('unawaited(_animateActivityTransition(widget.active));'));
-    expect(source, contains('curve: Curves.easeInOutCubic'));
-  });
-
   test('Fan Speed gauge retargets smoothly and fades its motion on state changes', () {
     final source = File('lib/main.dart').readAsStringSync();
     final stateStart = source.indexOf('class _JexAnimatedIconState');
@@ -783,36 +801,27 @@ void main() {
     final iconState = source.substring(stateStart, stateEnd);
     final speed = source.substring(speedStart, speedEnd);
     expect(iconState, contains('late final AnimationController speedLevelTransitionController;'));
-    expect(iconState, contains('late final AnimationController activityTransitionController;'));
     expect(iconState, contains('final current = _currentSpeedLevel();'));
     expect(iconState, contains('speedLevelTransitionController.forward(from: 0)'));
     expect(iconState, contains('Duration(milliseconds: 420)'));
     expect(iconState, contains('Duration(milliseconds: 520)'));
-    expect(speed, contains('jexFanSpeedNeedleWobble(progress)'));
-    expect(speed, contains('final actual = level.clamp(0.0, 1.0).toDouble();'));
-    expect(speed, contains('stroke(s * .060, color.withValues(alpha: .62 + (.96 - .62) * strength))'));
-    expect(speed, contains('final needleWobble = jexFanSpeedNeedleWobble(progress) * strength;'));
-    expect(source, contains('activityTransitionController.value'));
+    expect(speed, contains('final needleAngle = start + sweep * safeLevel;'));
+    expect(speed, contains('final needle = Path()..moveTo(cx, cy)..lineTo(tip.dx, tip.dy);'));
   });
 
-  test('Voltage sweep stays clipped to its bolt and Bluetooth ripples fade smoothly', () {
+  test('Integrated indicator animation preserves seamless phase transitions', () {
     final source = File('lib/main.dart').readAsStringSync();
-    final voltageStart = source.indexOf('case JexAnimatedIconKind.voltage:');
-    final voltageEnd = source.indexOf('case JexAnimatedIconKind.adaptive:', voltageStart);
-    expect(voltageStart, isNonNegative);
-    expect(voltageEnd, greaterThan(voltageStart));
-    final voltage = source.substring(voltageStart, voltageEnd);
-    expect(voltage, contains('canvas.clipPath(bolt)'));
-    expect(voltage, contains('final sweepY = s * (.13 + .72 * (.5 - .5 * math.cos(angle)));'));
-    expect(voltage, contains('fill(Colors.white.withValues(alpha: (.08 + .24 * voltageEnergy + .04 * pulse) * strength))'));
-    expect(voltage, contains('final voltageEnergy = level.clamp(0.0, 1.0).toDouble();'));
-    final bluetoothStart = source.indexOf('case JexAnimatedIconKind.bluetooth:');
-    final bluetoothEnd = source.indexOf('case JexAnimatedIconKind.generic:', bluetoothStart);
-    expect(bluetoothStart, isNonNegative);
-    expect(bluetoothEnd, greaterThan(bluetoothStart));
-    final bluetooth = source.substring(bluetoothStart, bluetoothEnd);
-    expect(bluetooth, contains('math.pow(math.sin(math.pi * wave), 2).toDouble()'));
-    expect(bluetooth, contains('* strength'));
+    final stateStart = source.indexOf('class _JexAnimatedIconState');
+    final stateEnd = source.indexOf('class _JexIconPainter', stateStart);
+    expect(stateStart, isNonNegative);
+    expect(stateEnd, greaterThan(stateStart));
+    final state = source.substring(stateStart, stateEnd);
+    expect(state, contains('unawaited(_animateActivityTransition(widget.active));'));
+    expect(state, contains('late final AnimationController activityTransitionController;'));
+    expect(state, contains('late final AnimationController speedLevelTransitionController;'));
+    expect(state, contains('Duration(milliseconds: active ? 360 : 440)'));
+    expect(state, contains('Curves.easeInOutCubic'));
+    expect(state, contains('unawaited(_coastFanToStop());'));
   });
 
   test('Peltier Safety dialog uses readable text and comfortable touch targets', () {

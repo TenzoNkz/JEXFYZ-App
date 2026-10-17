@@ -215,7 +215,7 @@ class KnownCoolerStore {
 // AI-MEMORY / LOCALIZATION CONTRACT
 // Every visible application string must come from this table or JexText.phrase().
 // Never translate frozen protocol tokens such as FAN:ON or RGB:OFF.
-// Power-state presentation is English ON/OFF and Indonesian HIDUP/MATI.
+// Power states use ON/OFF in English and HIDUP/MATI in Indonesian. Floating metric F is labelled Fan/Kipas; PWM control retains Fan Speed/Kecepatan Kipas.
 // Language-selector presentation is always English / Indonesia.
 class JexText {
   static const Map<String, Map<AppLanguage, String>> _values = {
@@ -320,8 +320,8 @@ class JexText {
       AppLanguage.indonesia: 'Suhu',
     },
     'power': {
-      AppLanguage.english: 'Power',
-      AppLanguage.indonesia: 'Daya',
+      AppLanguage.english: 'RGB Power',
+      AppLanguage.indonesia: 'Daya RGB',
     },
     'fan': {
       AppLanguage.english: 'Fan',
@@ -389,7 +389,7 @@ class JexText {
     },
     'ledColorLime': {
       AppLanguage.english: 'Lime',
-      AppLanguage.indonesia: 'Hijau Lime',
+      AppLanguage.indonesia: 'Hijau Limau',
     },
     'ledColorNeonGreen': {
       AppLanguage.english: 'Neon Green',
@@ -409,11 +409,11 @@ class JexText {
     },
     'ledColorTurquoise': {
       AppLanguage.english: 'Turquoise',
-      AppLanguage.indonesia: 'Turkuois',
+      AppLanguage.indonesia: 'Turkuas',
     },
     'ledColorCyan': {
       AppLanguage.english: 'Cyan',
-      AppLanguage.indonesia: 'Sian',
+      AppLanguage.indonesia: 'Cyan',
     },
     'ledColorSkyBlue': {
       AppLanguage.english: 'Sky Blue',
@@ -509,7 +509,7 @@ class JexText {
     },
     'ledColorSpringGreen': {
       AppLanguage.english: 'Spring Green',
-      AppLanguage.indonesia: 'Hijau Musim Semi',
+      AppLanguage.indonesia: 'Hijau Spring',
     },
     'ledColorDeepSkyBlue': {
       AppLanguage.english: 'Deep Sky Blue',
@@ -589,8 +589,8 @@ class JexText {
       AppLanguage.indonesia: 'Peltier',
     },
     'speed': {
-      AppLanguage.english: 'Speed',
-      AppLanguage.indonesia: 'Kecepatan',
+      AppLanguage.english: 'Fan',
+      AppLanguage.indonesia: 'Kipas',
     },
     'voltageIndicator': {
       AppLanguage.english: 'Voltage Indicator',
@@ -654,11 +654,11 @@ class JexText {
     },
     'connected': {
       AppLanguage.english: 'CONNECTED',
-      AppLanguage.indonesia: 'CONNECTED',
+      AppLanguage.indonesia: 'TERHUBUNG',
     },
     'disconnected': {
       AppLanguage.english: 'DISCONNECTED',
-      AppLanguage.indonesia: 'DISCONNECTED',
+      AppLanguage.indonesia: 'TERPUTUS',
     },
     'thermal': {
       AppLanguage.english: 'Thermal',
@@ -666,7 +666,7 @@ class JexText {
     },
     'hotsideLimit': {
       AppLanguage.english: 'Hotside Limit',
-      AppLanguage.indonesia: 'Batas Hotside',
+      AppLanguage.indonesia: 'Batas Suhu Panas',
     },
     'batteryZones': {
       AppLanguage.english: 'Battery Zones',
@@ -706,11 +706,11 @@ class JexText {
     },
     'hotsideProtection': {
       AppLanguage.english: 'Hotside Protection',
-      AppLanguage.indonesia: 'Perlindungan Hotside',
+      AppLanguage.indonesia: 'Perlindungan Suhu Panas',
     },
     'hotsideBattery': {
       AppLanguage.english: 'Hotside + Battery',
-      AppLanguage.indonesia: 'Hotside + Baterai',
+      AppLanguage.indonesia: 'Suhu Panas + Baterai',
     },
     'peltierSafety': {
       AppLanguage.english: 'Peltier Safety',
@@ -826,11 +826,11 @@ class JexText {
     },
     'hSideProtection': {
       AppLanguage.english: 'Hotside Protection',
-      AppLanguage.indonesia: 'Perlindungan Hotside',
+      AppLanguage.indonesia: 'Perlindungan Suhu Panas',
     },
     'hSideBattery': {
       AppLanguage.english: 'Hotside + Battery',
-      AppLanguage.indonesia: 'Hotside + Baterai',
+      AppLanguage.indonesia: 'Suhu Panas + Baterai',
     },
     'batteryTemperature': {
       AppLanguage.english: 'Battery Temperature',
@@ -838,7 +838,7 @@ class JexText {
     },
     'hotsideTemperature': {
       AppLanguage.english: 'Hotside Temperature',
-      AppLanguage.indonesia: 'Suhu Hotside',
+      AppLanguage.indonesia: 'Suhu Panas',
     },
     'fanSpeed': {
       AppLanguage.english: 'Fan Speed',
@@ -958,7 +958,7 @@ class JexText {
     },
     'ledModeBreath': {
       AppLanguage.english: 'Breath',
-      AppLanguage.indonesia: 'Napas',
+      AppLanguage.indonesia: 'Bernapas',
     },
     'ledModeComet': {
       AppLanguage.english: 'Comet',
@@ -1282,11 +1282,11 @@ class JexText {
     },
     'firmwareMetadataCheckFailed': {
       AppLanguage.english: 'Firmware metadata unavailable. Check Firebase read access.',
-      AppLanguage.indonesia: 'Metadata firmware tidak tersedia. Periksa akses baca Firebase.',
+      AppLanguage.indonesia: 'Data versi firmware tidak tersedia. Periksa izin baca Firebase.',
     },
     'leftRight': {
-      AppLanguage.english: 'Left ↔ Right',
-      AppLanguage.indonesia: 'Kiri ↔ Kanan',
+      AppLanguage.english: 'Left / Right',
+      AppLanguage.indonesia: 'Kiri / Kanan',
     },
     'mode': {
       AppLanguage.english: 'Mode',

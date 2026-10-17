@@ -31,7 +31,40 @@ enum class VoltageRequestSource : uint8_t;
 enum class AdaptiveProfile : uint8_t;
 
 /**
- * JE X FYZ — V6.6 Firmware
+ * JE X FYZ — #include <Arduino.h>
+#include <WiFi.h>
+#include <WebServer.h>
+#include <HTTPClient.h>
+#include <WiFiClientSecure.h>
+#include <BLESecurity.h>
+
+#include <Preferences.h>
+#include <Adafruit_NeoPixel.h>
+#include <math.h>
+#include <atomic>
+#include <cstring>
+#include "esp_heap_caps.h"
+#include "esp_system.h"
+
+#include <BLEDevice.h>
+#include <BLEServer.h>
+#include <BLEUtils.h>
+#include <BLE2902.h>
+
+#include <Update.h>
+
+// ArduinoDroid auto-generates function prototypes before the sketch body.
+// Keep all sketch-scoped enum types visible to those generated prototypes.
+enum class OtaState : uint8_t;
+enum class OnlineOtaFlow : uint8_t;
+enum class OnlineOtaIndicatorNext : uint8_t;
+enum class Voltage : uint8_t;
+enum class LedMode : uint8_t;
+enum class VoltageRequestSource : uint8_t;
+enum class AdaptiveProfile : uint8_t;
+
+/**
+ * JE X FYZ — V6.7 Firmware
  * ---------------------------------------------------------------------------
  * Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module
  * Framework: Arduino Standard + official Arduino-ESP32 Core 3.3.7
@@ -99,7 +132,7 @@ enum class AdaptiveProfile : uint8_t;
  * ---------------------------------------------------------------------------
  */
 
-static constexpr char FW_VERSION[] = "V6.6";
+static constexpr char FW_VERSION[] = "V6.7";
 
 // ============================================================================
 // ========================== HEAP DIAGNOSTIC BUILD ===========================
@@ -284,6 +317,11 @@ static constexpr int BATTERY12_LIMIT_MAX = 40;
 static constexpr uint8_t FAN_PWM_MIN = 50;
 static constexpr uint8_t FAN_PWM_MAX = 100;
 static constexpr uint8_t FAN_PWM_STEP = 10;
+static constexpr uint8_t ADAPTIVE_FAN_WINDOW_SAMPLES = 10;
+static constexpr float ADAPTIVE_FAN_SAFE_MARGIN_C = 2.0f;
+static constexpr float ADAPTIVE_FAN_TREND_TOLERANCE_C = 0.25f;
+static constexpr uint32_t ADAPTIVE_FAN_DOWNSTEP_MS = 10000UL;
+static constexpr uint32_t ADAPTIVE_FAN_UPSTEP_MS = 1000UL;
 static constexpr uint32_t FAN_PWM_FREQ = 25000;
 static constexpr uint8_t FAN_PWM_RESOLUTION = 8;
 static constexpr uint32_t PELTIER_PWM_FREQ = 20000;
@@ -401,6 +439,19 @@ int battery5Limit = 25;
 int battery12Limit = 35;
 
 uint8_t fanPwm = 100;
+
+// Adaptive 12 V Fan PWM uses a rolling window of existing one-second NTC samples.
+// The ADC sampler itself remains single-sample and is never averaged or delayed.
+float adaptiveFanTemperatureSamples[ADAPTIVE_FAN_WINDOW_SAMPLES] = {};
+uint8_t adaptiveFanSampleCount = 0;
+uint8_t adaptiveFanSampleIndex = 0;
+uint32_t adaptiveFanLastSampleProcessedMs = 0;
+uint32_t adaptiveFanLastDownStepMs = 0;
+uint32_t adaptiveFanLastUpStepMs = 0;
+uint32_t adaptiveFanStableWindowStartedMs = 0;
+bool adaptiveFanStableWindowTiming = false;
+float adaptiveFanPreviousTemperatureC = NAN;
+float adaptiveFanAverageTemperatureC = NAN;
 
 bool rgbOn = false;
 LedMode rgbMode = LedMode::STATIC;
@@ -563,6 +614,7 @@ static bool requestVoltage(Voltage target, VoltageRequestSource source, bool byp
 static void activateAdaptiveAfterSafeFiveVolt();
 static void publishSafetyReason();
 static void evaluateAdaptiveBattery();
+static void processAdaptiveFanControl();
 static void serviceBleTx();
 static void clearBleTxQueue();
 static void clearBleRxQueue();static void processBleRxQueue();
@@ -1255,7 +1307,7 @@ static bool processHotsideLimitIndicator() {
         const uint32_t indicatorColor =
             finalBlueWindow ? 0x0000FF : 0xFF0000;
         const bool ledOn = (phase & 0x01U) == 0;
-        showAll(ledOn ? indicatorColor : 0x000000, 255);
+        showAll(ledOn ? indicatorColor : 0x000000, hardwareBrightness());
       }
       return true;
     }
@@ -1280,7 +1332,7 @@ static bool processHotsideLimitIndicator() {
     if (phase != hotsideLimitIndicatorLastPhase) {
       hotsideLimitIndicatorLastPhase = phase;
       const bool ledOn = (phase & 0x01U) == 0;
-      showAll(ledOn ? 0xFF0000 : 0x000000, 255);
+      showAll(ledOn ? 0xFF0000 : 0x000000, hardwareBrightness());
     }
     return true;
   }
@@ -1295,7 +1347,7 @@ static bool processHotsideLimitIndicator() {
         const bool ledOn =
             (phase < HOT_LIMIT_REARM_GREEN_BLINKS * 2U) &&
             ((phase & 0x01U) == 0);
-        showAll(ledOn ? 0x00FF00 : 0x000000, 255);
+        showAll(ledOn ? 0x00FF00 : 0x000000, hardwareBrightness());
       }
       return true;
     }
@@ -1338,7 +1390,7 @@ static bool processAdaptiveStateIndicator() {
       const bool ledOn =
           phase < (ADAPTIVE_STATE_INDICATOR_BLINKS * 2UL) &&
           ((phase & 0x01U) == 0);
-      showAll(ledOn ? adaptiveStateIndicatorColor : 0x000000, 255);
+      showAll(ledOn ? adaptiveStateIndicatorColor : 0x000000, hardwareBrightness());
     }
     return true;
   }
@@ -1360,7 +1412,7 @@ static void renderBlink(uint32_t color) {
 
   ledBlinkAt = millis();
   ledBlinkPhase = !ledBlinkPhase;
-  showAll(ledBlinkPhase ? color : 0x000000, 255);}
+  showAll(ledBlinkPhase ? color : 0x000000, hardwareBrightness());}
 
 static void startOnlineOtaResultIndicator(
     uint32_t color,
@@ -1385,7 +1437,7 @@ static bool processOnlineOtaResultIndicator() {
     if (phase != onlineResultIndicatorLastPhase) {
       onlineResultIndicatorLastPhase = phase;
       const bool ledOn = (phase == 0U || phase == 2U);
-      showAll(ledOn ? onlineResultIndicatorColor : 0x000000, 255);
+      showAll(ledOn ? onlineResultIndicatorColor : 0x000000, hardwareBrightness());
     }
     return true;
   }
@@ -1496,7 +1548,7 @@ static bool processLocalOtaResultIndicator() {
     if (phase != localOtaResultIndicatorLastPhase) {
       localOtaResultIndicatorLastPhase = phase;
       const bool ledOn = (phase == 0U || phase == 2U);
-      showAll(ledOn ? 0x00FF00 : 0x000000, 255);
+      showAll(ledOn ? 0x00FF00 : 0x000000, hardwareBrightness());
     }
     return true;
   }
@@ -1514,12 +1566,7 @@ static bool processLocalOtaResultIndicator() {
 }
 
 static void startVoltageIndicator() {
-  if (!rgbOn) {
-    voltageIndicatorActive = false;
-    stopUserLedOutput();
-    return;
-  }
-
+  // Voltage indication is independent of the user RGB effect switch.
   voltageIndicatorActive = true;
   voltageIndicatorUntil = millis() + 1000;
   showAll(currentVoltageColor(), hardwareBrightness());
@@ -1712,25 +1759,28 @@ static void processLeds() {
     return;
   }
 
-  if (!rgbOn) {
-    if (!ledsForcedOff) {
-      stopUserLedOutput();
-      ledsForcedOff = true;
-    }
-    return;  }
-
-  ledsForcedOff = false;
-
+  // Voltage is a system indicator, not a user RGB effect. Let it finish with RGB disabled.
   if (voltageIndicatorActive) {
     if (millis() >= voltageIndicatorUntil) {
       voltageIndicatorActive = false;
-      startUserLedEffect();
+      if (rgbOn) startUserLedEffect();
+      else stopUserLedOutput();
     } else if (millis() - lastLedFrameAtMs >= LED_FRAME_INTERVAL_MS) {
       lastLedFrameAtMs = millis();
       showAll(currentVoltageColor(), hardwareBrightness());
     }
     return;
   }
+
+  if (!rgbOn) {
+    if (!ledsForcedOff) {
+      stopUserLedOutput();
+      ledsForcedOff = true;
+    }
+    return;
+  }
+
+  ledsForcedOff = false;
 
   renderCustomLedFrame(millis());
 }
@@ -2108,7 +2158,10 @@ static void enforceSafety() {
                !adaptiveHotStepPending &&
                peltierHotOffUntilMs == 0) {
       fanOn = true;
-      fanPwm = 100;
+      // At 12 V, Adaptive Fan PWM may reduce speed only when the rolling
+      // temperature window proves Hotside is safely below the configured limit.
+      // At 5 V and 9 V retain the existing full-speed Adaptive behavior.
+      if (currentVoltage != Voltage::V12) fanPwm = 100;
       peltierOn = true;
     }
   } else if (hotNow) {
@@ -2248,6 +2301,144 @@ static void processAdaptiveHotTimer() {
     adaptiveHotsideRiseDueMs = now + 5000UL;
     sendDelta("SAFETY_REASON", "ADAPTIVE_RISE_WAIT");
   }
+}
+
+
+static void resetAdaptiveFanControlWindow() {
+  adaptiveFanSampleCount = 0;
+  adaptiveFanSampleIndex = 0;
+  adaptiveFanPreviousTemperatureC = NAN;
+  adaptiveFanAverageTemperatureC = NAN;
+  adaptiveFanLastDownStepMs = 0;
+  adaptiveFanLastUpStepMs = 0;
+  adaptiveFanStableWindowStartedMs = 0;
+  adaptiveFanStableWindowTiming = false;
+  // Do not replay a stale NTC reading when eligibility resumes.
+  adaptiveFanLastSampleProcessedMs = lastNtcReadMs;
+}
+
+static void setAdaptiveFanPwm(uint8_t target) {
+  target = target < FAN_PWM_MIN ? FAN_PWM_MIN : target;
+  target = target > FAN_PWM_MAX ? FAN_PWM_MAX : target;
+  if (fanPwm == target) return;
+
+  const bool previousFanOn = fanOn;
+  const bool previousPeltierOn = peltierOn;
+  const uint8_t previousFanPwm = fanPwm;
+  fanPwm = target;
+  applyCoolingOutputs(previousFanOn, previousPeltierOn, previousFanPwm);
+}
+
+// Adaptive 12 V Fan controller. It consumes only fresh readings from sampleNtcIfDue():
+// ten accepted one-second samples are averaged for downshift permission; the raw/latest
+// sample and the existing safety authority always retain priority.
+// No blocking delays, time-waiting loops, or extra ADC reads are introduced.
+static void processAdaptiveFanControl() {
+  if (!ntcValid) {
+    resetAdaptiveFanControlWindow();
+    return;
+  }
+
+  if (!adaptiveOn || currentVoltage != Voltage::V12) {
+    resetAdaptiveFanControlWindow();
+    return;
+  }
+
+  // Reaching the configured Hotside limit immediately forces full Fan speed.
+  // enforceSafety() later in loop remains authoritative for Peltier and rail safety.
+  if (hotsideProtectionActiveNow() || hotsideC >= static_cast<float>(hotLimit)) {
+    setAdaptiveFanPwm(FAN_PWM_MAX);
+    resetAdaptiveFanControlWindow();
+    return;
+  }
+
+  // Never downshift during transitions, an Adaptive thermal dwell, or while
+  // the Peltier is paused. The established safety flow holds the Fan at 100%.
+  if (voltageTransition || adaptiveHotStepPending ||
+      peltierHotOffUntilMs != 0 || !fanOn || !peltierOn) {
+    setAdaptiveFanPwm(FAN_PWM_MAX);
+    resetAdaptiveFanControlWindow();
+    return;
+  }
+
+  if (lastNtcReadMs == adaptiveFanLastSampleProcessedMs) return;
+  adaptiveFanLastSampleProcessedMs = lastNtcReadMs;
+  const uint32_t now = millis();
+  const float currentSample = hotsideC;
+  const float previousSample = adaptiveFanPreviousTemperatureC;
+
+  adaptiveFanTemperatureSamples[adaptiveFanSampleIndex] = currentSample;
+  adaptiveFanSampleIndex =
+      static_cast<uint8_t>((adaptiveFanSampleIndex + 1U) % ADAPTIVE_FAN_WINDOW_SAMPLES);
+  if (adaptiveFanSampleCount < ADAPTIVE_FAN_WINDOW_SAMPLES) {
+    ++adaptiveFanSampleCount;
+  }
+
+  float sum = 0.0f;
+  bool allBelowSafeThreshold = adaptiveFanSampleCount == ADAPTIVE_FAN_WINDOW_SAMPLES;
+  const float safeThreshold =
+      static_cast<float>(hotLimit) - ADAPTIVE_FAN_SAFE_MARGIN_C;
+  for (uint8_t i = 0; i < adaptiveFanSampleCount; ++i) {
+    const float sample = adaptiveFanTemperatureSamples[i];
+    sum += sample;
+    if (!isfinite(sample) || sample > safeThreshold) {
+      allBelowSafeThreshold = false;
+    }
+  }
+  adaptiveFanAverageTemperatureC =
+      adaptiveFanSampleCount == 0 ? NAN : sum / adaptiveFanSampleCount;
+  const bool noMeaningfulRise =
+      !isfinite(previousSample) ||
+      currentSample <= previousSample + ADAPTIVE_FAN_TREND_TOLERANCE_C;
+  const bool currentSampleSafe =
+      isfinite(currentSample) && currentSample <= safeThreshold;
+  if (!currentSampleSafe || !noMeaningfulRise) {
+    adaptiveFanStableWindowStartedMs = 0;
+    adaptiveFanStableWindowTiming = false;
+  } else if (!adaptiveFanStableWindowTiming) {
+    adaptiveFanStableWindowStartedMs = now;
+    adaptiveFanStableWindowTiming = true;
+  }
+  const bool stablePeriodReached =
+      adaptiveFanStableWindowTiming &&
+      now - adaptiveFanStableWindowStartedMs >= ADAPTIVE_FAN_DOWNSTEP_MS;
+  const bool stableAndCool =
+      allBelowSafeThreshold &&
+      isfinite(adaptiveFanAverageTemperatureC) &&
+      adaptiveFanAverageTemperatureC <= safeThreshold &&
+      noMeaningfulRise &&
+      stablePeriodReached;
+
+  if (stableAndCool) {
+    adaptiveFanLastUpStepMs = 0;
+    // The first downshift is allowed after a complete cool 10-second window;
+    // every further downshift requires another full 10-second dwell.
+    if (fanPwm > FAN_PWM_MIN &&
+        (adaptiveFanLastDownStepMs == 0 ||
+         now - adaptiveFanLastDownStepMs >= ADAPTIVE_FAN_DOWNSTEP_MS)) {
+      const uint8_t next =
+          fanPwm > FAN_PWM_MIN + FAN_PWM_STEP
+              ? static_cast<uint8_t>(fanPwm - FAN_PWM_STEP)
+              : FAN_PWM_MIN;
+      setAdaptiveFanPwm(next);
+      adaptiveFanLastDownStepMs = now;
+    }
+  } else {
+    // Lost margin or a warming trend cancels the downshift dwell. Restore
+    // speed more quickly (one 10% step per new second) while below limit;
+    // a limit hit above has already taken the immediate 100% path.
+    adaptiveFanLastDownStepMs = 0;
+    if (fanPwm < FAN_PWM_MAX &&
+        (adaptiveFanLastUpStepMs == 0 ||
+         now - adaptiveFanLastUpStepMs >= ADAPTIVE_FAN_UPSTEP_MS)) {
+      const uint16_t next = static_cast<uint16_t>(fanPwm) + FAN_PWM_STEP;
+      setAdaptiveFanPwm(static_cast<uint8_t>(
+          next > FAN_PWM_MAX ? FAN_PWM_MAX : next));
+      adaptiveFanLastUpStepMs = now;
+    }
+  }
+
+  adaptiveFanPreviousTemperatureC = currentSample;
 }
 
 static String safetyReason() {
@@ -5204,6 +5395,7 @@ void loop() {
   completeVoltageTransition();
   processAdaptiveHotsideFallback();
   evaluateAdaptiveBattery();
+  processAdaptiveFanControl();
 
   const bool bootCoolingLocked =
       bootApActive &&

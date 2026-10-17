@@ -30,15 +30,15 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 
 - `TenzoNkz/JEXFYZ-App` is the canonical editable App + Firmware source repository and the sole home for project documentation/memories.
 - `TenzoNkz/JEXFYZ-Firmware` is intended to contain only the production OTA artifact `JEXFYZ.cpp.bin`. Do not add README, note, source, or memory files there.
-- The active editable firmware source is `firmware/JEXFYZ-V6.6.ino`. Its embedded `FW_VERSION`, filename and the single active versioned `.ino` must always match.
-- The user considers Firmware V6.6 correct/final and reports successful compilation plus two successful Online OTA updates with the same V6.6 version. Do not modify/recompile/reflash it unless the user reopens Firmware work and separately authorizes the operation. Source-to-BIN provenance remains independently unverified; do not infer it from the user report.
+- The active editable Firmware source is `firmware/JEXFYZ-V6.7.ino` (`FW_VERSION="V6.7"`, blob `1d0fa0d5e308b9789fd1c32211ce0a127d497f6a`). V6.7 is source-only/uncompiled; filename, embedded version and exactly-one-active-sketch must match.
+- V6.6 compile/two-same-version OTA statements are historical user reports. The user reopened source work and authorized a V6.7 Adaptive Fan PWM change; V6.7 was not compiled, published, OTA-applied or installed. Source-to-BIN provenance remains unverified.
 - App Gradle `versionName "Telegram @horizontalzzz"` is an intentional identity string; do not change it.
 
 ## Remaining validation outside CI
 
 - Build #71 is the latest verified release for source `d9e026f70ec62455763de05048cba1557edfaf23`. Full audit/test/build/signing/source archive/Release/download verification evidence is in `APP_BUILD_REPORT.md`.
 - Next step is device-side validation of Build #71 indicator motion/toggle styling, six-metric overlay and live telemetry. FPS removal has already been built and release-verified; CI alone does not prove device behavior.
-- Firmware V6.6 is USER-ACCEPTED FINAL according to the user's report. Its compile log and source-to-BIN provenance remain independently unverified. App CI does not imply Firmware compilation, BIN provenance, Firebase, OTA, flash, BLE hardware or thermal-safety validation.
+- Build #71 remains the latest verified APK; the current source-only UI/Firmware V6.7 changes are not built or device-verified. Its compile log and source-to-BIN provenance remain independently unverified. App CI does not imply Firmware compilation, BIN provenance, Firebase, OTA, flash, BLE hardware or thermal-safety validation.
 
 ## Non-negotiable workflow
 

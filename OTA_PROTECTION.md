@@ -24,9 +24,11 @@ Change OTA only if there is a demonstrated OTA defect and the user explicitly au
 5. Update the canonical memory, `PROJECT_STATE.md` if current state changed, `CHANGELOG.md` and `CHAT_TRANSFER.md`.
 6. Label test/compile/hardware evidence precisely. Static assertions are not an OTA success certificate.
 
+Current source pointer is `firmware/JEXFYZ-V6.7.ino` (`FW_VERSION="V6.7"`, blob `1d0fa0d5e308b9789fd1c32211ce0a127d497f6a`). The changes target Fan PWM and LED handling, not the OTA transport sequence. V6.7 remains uncompiled and has not been OTA-tested.
+
 ## Current Online OTA contract (must re-check live source)
 
-- Canonical editable Firmware source is in the App repo: `firmware/JEXFYZ-V6.6.ino`.
+- Canonical editable Firmware source is in the App repo: `firmware/JEXFYZ-V6.7.ino`.
 - The V6.3-origin restoration uses `cloudClient.setInsecure()`; embedded CA certificate validation, `setCACert()`, `configTime()`, `TIME_SYNCING`, epoch-validity gate and OTA-only 20-second NTP timeout are absent.
 - On successful Wi-Fi connection, blue indication proceeds to the GitHub GET attempt.
 - Raw URL allowlist remains restricted to `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/`.

@@ -184,7 +184,7 @@ When reconciling or booting a chat, check every category below against the canon
 - Adaptive start/stop safe-5V behavior and touch-sensor lock.
 - Localization, safety/Notify copy, output-unknown while disconnected, authoritative telemetry vs ACK, state reconciliation and LED preview phase synchronization.
 - P1 protocol handshake, exact BLE service/RX/TX UUIDs, Secure BLE write/bonding constraints and no second Android GATT client.
-- Auto Connect and reconnection prerequisites; current Floating Monitor six metrics B/H/V/A/P/F (F=Fan Speed), legacy schema-v1 S→F migration and old F=FPS removal, native bridge channel and permission/lifecycle contracts.
+- Auto Connect and reconnection prerequisites; current Floating Monitor metrics B/H/V/A/P/F (F labelled Fan/Kipas and showing live speed), legacy schema-v1 S→F migration and old F=FPS removal, native bridge channel and permission/lifecycle contracts.
 - Battery temperature heartbeat, Hotside telemetry cadence and firmware notice/preferences storage.
 - Android package, target/min/compile SDK/tool versions, manifest permissions, services, release signing, R8 obfuscation, icon/assets, and preserved creator identity `versionName "Telegram @horizontalzzz"`.
 
@@ -269,7 +269,7 @@ When rebuilding memory, explicitly reconcile each item below against the live so
 ### App product, BLE and user-visible behavior
 
 - Identity: App `JE Cooler`, brand/header `JE X FYZ`, package `com.horizontalzzz.jexfyz`, pubspec `1.0.0+3`; Gradle `versionName "Telegram @horizontalzzz"` is intentionally fixed.
-- UI layout reference: Horizon Cooler App; dark header, white rounded content panel, compact VOLTAGE/ADAPTIVE tabs, Home Hotside/Battery temps, voltage indicator, Adaptive, Peltier/Fan, Fan Speed and Notify reason. Menu order VOLTAGE → CONTROL → ADAPTIVE → LED → TEMPERATURE; do not redesign during QC.
+- UI layout reference: Horizon Cooler App; dark header, white rounded content panel, compact VOLTAGE/ADAPTIVE tabs, Home Hotside/Battery temps, voltage indicator, Adaptive, Peltier/Fan, Fan Speed and Notify reason. Menu order VOLTAGE → CONTROL → ADAPTIVE → LED → TEMPERATURE; the user explicitly approved a full redesign of animated dashboard indicators; keep grille/logo, app identity, cards, main layout and unrelated control behavior unchanged.
 - Manual 5/9/12 V selection/cycle and 1-second guard. Manual Fan speed control is not Adaptive-controlled; Adaptive can demand 100% cooling. Manual transition completion must wait for authoritative Firmware `VOLTAGE` telemetry.
 - Firmware-owned state: ACK is not proof physical hardware changed. Disconnected dashboard/Home and Floating Monitor outputs display unknown (`--`); CONTROL/ADAPTIVE/LED switch rows use an OFF-looking disabled toggle at left as presentation only, not a claim of physical state. Touch Adaptive-OFF must publish state deltas before ACK.
 - Protocol P1 UUIDs: service `6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001`, RX `6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001`, TX `6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001`. BLE write encryption/bonding is present; one-App-only pairing lock remains unverified unless code/physical tests establish it.

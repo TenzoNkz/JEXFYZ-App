@@ -14,19 +14,19 @@ Last reconciled against live GitHub on 2026-10-17 (Asia/Jakarta) after Build #71
 ## FPS retirement and current Floating Monitor
 
 - User decided to retire FPS after repeated F:--/Shizuku UserService failures. FPS, SurfaceFlinger TimeStats sampling, Shizuku permission/status UI/API/provider/dependency, UserService/AIDL, FPS-only tests and Shizuku-only notice/license files were removed from active source.
-- The HUD has exactly six metrics: B (Battery), H (Hotside), V (Voltage), A (Adaptive), P (Peltier), F (Fan Speed). Schema v2 drops old schema-v1 F (FPS) and maps old S (Speed) to F. Fan telemetry and firmware speed control are unchanged.
+- The HUD has exactly six metrics: B (Battery), H (Hotside), V (Voltage), A (Adaptive), P (Peltier), F (Fan/Kipas label; current value is live speed). Schema v2 drops old schema-v1 F (FPS) and maps old S (Speed) to F. Fan telemetry and firmware speed control are unchanged.
 - Overlay remains Letters-only, freely draggable, with saved coordinates; horizontal metrics centered as a group, vertical rows left aligned; size 0.30×–1.00× by 0.05× (default 0.60×); background opacity 0–100% by 5%, current value and endpoint marks only, no midpoint. Physical layout and live BLE metric behavior remain UNVERIFIED on the phone.
-- Install/update using the Build #71 APK. Verify indicator phase continuity across OFF/ON, Peltier spark motion, the neutral active manual-voltage toggle with red/green/blue labels, and all six Floating Monitor metrics plus live Fan Speed. FPS/Shizuku diagnostics are retired; do not treat CI as proof of phone-side visuals or live BLE telemetry.
+- Build #71 remains the latest verified APK but does not contain the current integrated 2D icon, localization/RGB-brightness or V6.7 Adaptive Fan source changes. A new APK needs separate `@Thinking Eksekusi Build App!` authorization; physical visuals and telemetry remain unverified.
 
 ## Firmware / OTA boundary
 
-- Firmware source: firmware/JEXFYZ-V6.6.ino; blob f51ba6db5d0e91318f63fea4014bb87f7bf76222; FW_VERSION="V6.6"; exactly one versioned active .ino. User accepts V6.6 as final and reports compile plus two same-version Online OTA updates. USER-REPORTED; source-to-BIN provenance remains UNVERIFIED.
+- Firmware source: `firmware/JEXFYZ-V6.7.ino`, blob `1d0fa0d5e308b9789fd1c32211ce0a127d497f6a`; `FW_VERSION="V6.7"`; exactly one active versioned sketch. V6.7 is source-only/uncompiled. V6.6 compile/OTA reports are historical user reports; no BIN/Firebase/OTA/device action occurred in this task.
 - Artifact repository TenzoNkz/JEXFYZ-Firmware contains exactly JEXFYZ.cpp.bin, 1,455,936 bytes, blob 68167e65d26137eeb1ce4d6d4ba798dc282454e6. Do not read/change the BIN or add notes there.
 - Do not compile Firmware, publish/replace BIN, edit Firebase metadata, flash/OTA hardware or perform device actions without separate explicit approval. User compiles Firmware. Preserve Android versionName "Telegram @horizontalzzz".
 - OTA is protected/frozen. Read OTA_PROTECTION.md and OTA_REGRESSION_MEMORY.md before any OTA/TLS/recovery edit; read VOLTAGE_TRANSITION_MEMORY.md before rail/Peltier timing edits. setInsecure() bypasses server-certificate identity verification; CA and NTP gates were removed together after a user-reported failure, but one cause was not isolated. Do not infer HTTP/TLS errors from LEDs.
 
 ## Immediate next step and authorization
 
-1. Install [the Build #71 APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk) and visually check indicator phase continuity across OFF/ON, Peltier spark orbit, Battery ripple/flame loop smoothness, and the neutral active manual VOLTAGE toggle. Also verify six metric labels and live Fan Speed.
+1. Build #71 remains the latest verified APK. If a new APK is separately authorized with `@Thinking Eksekusi Build App!`, verify the integrated 2D icon redesign, localized labels, RGB-only toggle/master brightness, and Floating Monitor live Fan telemetry on a real phone.
 2. If visuals or telemetry differ from the contract, capture screenshots/video and relevant live state first; do not infer on-device behavior from CI test pass alone.
 3. Firmware/BIN/Firebase/OTA/flash/device operations were not performed or authorized in this App build.

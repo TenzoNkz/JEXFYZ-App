@@ -6,9 +6,20 @@ This file is the durable App behavior/design contract. Live source and the curre
 
 - Build #71 (run `39008259484`, released source commit `d9e026f70ec62455763de05048cba1557edfaf23`) passed all 21 active workflow steps. Dart analysis had 23 info-level deprecations; **88/88 Flutter tests passed**; Android production compile/configured gate, APK obfuscation, V1/V2/V3 signing/certificate, corresponding source ZIP and re-downloaded Release asset checks passed.
 - Native JUnit compile/test tasks were NO-SOURCE after FPS-only native tests were retired; no native JUnit test cases ran in Build #71. Full log and artifact digests are in `APP_BUILD_REPORT.md`.
-- Build #70 retired FPS and Shizuku. Floating Monitor supports B/H/V/A/P/F with F=Fan Speed. Schema v2 drops legacy schema-v1 F (FPS) and maps S (Speed) to F. Build #71 carries the new dashboard-indicator motion continuity and manual-voltage-toggle style changes in the verified APK/source ZIP.
+- Build #70 retired FPS and Shizuku. Floating Monitor supports B/H/V/A/P/F; F is labelled Fan/Kipas and carries the live fan-speed value. Schema v2 drops legacy schema-v1 F (FPS) and maps S (Speed) to F. Build #71 remains the latest verified APK; the source-only changes below are not included in that release.
 - Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) targets `d9e026f70ec62455763de05048cba1557edfaf23`. APK asset `649710440`, 54,603,867 bytes, SHA-256 `fdffa5d61ad403153c544cd3a62ea130e810844930f9de96fdd28343f6d041ca`; source ZIP asset `649710439`, 2,847,410 bytes, SHA-256 `3d7dc30fa99d3bfb86bee069e4a9b60292942f215c11c27e519f0b51ca8a24b0`. Both were re-downloaded and verified.
 - Physical phone rendering, actual animation smoothness, active manual-toggle appearance and BLE/Fan Speed behavior remain **NOT DEVICE-VERIFIED**.
+
+## Current source-only scope after Build #71
+
+- **Current `main` is source-only after Build #71:** integrated 2D animated indicator redesign, English/Indonesian label/copy adjustments, RGB-only toggle gating, master physical-LED brightness, and Firmware V6.7 Adaptive 12V Fan PWM. Build #71 remains the latest verified APK and does not include these edits.
+- Flutter tests/Dart analysis/Android build were not run. Firmware V6.7 was not compiled. No APK release, BIN/Firebase publication, OTA, flash, or physical-device action occurred.
+- Dashboard indicators now use integrated 2D silhouettes and restrained phase-continuous motion. Approved brand, grille/logo, cards, layout and control semantics remain unchanged.
+- Labels: Indonesian dashboard `Suhu Panas`, English `Hotside Temperature` (Hotside is always unhyphenated); Floating Monitor F label `Kipas` / `Fan`; PWM setting `Kecepatan Kipas` / `Fan Speed`; RGB toggle `Daya RGB` / `RGB Power`; direction `Kiri / Kanan` / `Left / Right` without a center emoji/glyph.
+- Adaptive Fan PWM at 12V is automatic only in Adaptive mode. Reaching the configured Hotside limit immediately forces Fan PWM to 100%.
+- Downshift requires ten recent one-second NTC samples, their rolling average and every sample at/below `hotLimit - 2°C`, no meaningful warming trend, and one continuous stable 10-second interval. Decrease by 10 percentage points every 10 seconds, down to a 50% floor.
+- Losing the safe margin or detecting a warming trend cancels downshift and raises PWM by 10 points per fresh one-second sample. Adaptive 5V/9V keep existing 100% Fan behavior. Existing Peltier/thermal safety logic retains authority.
+- NTC acquisition remains one calibrated reading per second. Averaging is used only for Fan PWM downshift permission; no extra ADC reads or blocking timing loops were introduced.
 
 ## Identity and package
 
@@ -33,11 +44,11 @@ This file is the durable App behavior/design contract. Live source and the curre
 - Battery temperature: Ice Blue at or below 30°C, a smooth cyan/amber/orange transition from 30–40°C, and Burning Red at or above 40°C. Battery thermal fill uses the same 30–40°C band; the ≥40°C warning threshold remains exact.
 - Hotside temperature: Ice Blue at or below 30°C, smooth transition above 30°C, and Burning Red at the configured Hotside Limit. The visual palette/fill must track the current limit; it must never alter or replace Firmware-owned safety behavior.
 - Manual Voltage labels retain their semantic accent: 5V red, 9V green, 12V blue; unknown/disconnected voltage uses the 5V/lowest-voltage red fallback. The 5V/9V/12V rows stay neutral and the active toggle alone uses the theme primary color, without an extra check glyph. The shared switch helper and other control toggles keep their existing styling.
-- Home status icons use compact, bounded Canvas shapes with a shared eased activity transition. OFF transitions keep the motion running through the 440 ms fade-out before pausing; ON transitions resume from the retained phase and travel to the next equivalent full-cycle boundary instead of jumping to phase zero. Repeating effects must meet at the same pose at both ends of the cycle; thermal flame flicker uses integer harmonics. Battery segments use a subtle staggered ripple. Peltier keeps a stable six-branched free-standing crystal while four bounded frost sparks orbit smoothly; motion remains decorative, not a claim about actual ice/cooling. Fan rotation keeps its voltage-dependent phase-continuous cycle and dedicated OFF coast-down.
+- Home indicators use bounded integrated Canvas silhouettes with one dominant 2D motion per icon. OFF transitions run through the 440 ms fade before pausing; ON transitions resume from retained phase at an equivalent cycle boundary. Battery/Hotside use internal thermal fill, Voltage one bolt, Adaptive a morphing loop, Peltier one six-branch crystal, Fan one coherent rotor, LED one travelling wave, Bluetooth its glyph without ripple rings or glow stacks.
 
 ## Floating Monitor presentation contract
 
-- Exactly six metrics are supported in the current source: **B/H/V/A/P/F** — Battery Temperature, Hotside Temperature, Voltage, Adaptive, Peltier, and Fan Speed. The floating label F means Fan Speed; FPS is retired.
+- Exactly six metrics are supported: **B/H/V/A/P/F** — Battery Temperature, Hotside, Voltage, Adaptive, Peltier and Fan. F is labelled `Fan` / `Kipas`; it displays live PWM speed while running, localized OFF/MATI while the Fan is off, and `--` when disconnected; FPS is retired.
 - Persisted metric schema version 2 migrates older schema-v1 configurations: old F (FPS) selections are discarded and old S (Speed) selections migrate to F. Config is normalized before it is sent to the native overlay so an old seven-metric order cannot reintroduce a retired metric.
 - The display is Letters-only; legacy saved Icons configuration migrates to Letters and the style selector remains removed.
 - Size slider is 0.30×–1.00× in 0.05× steps (14 intervals), default 0.60×. Persisted values snap into that range. Native pinch scaling and runtime geometry accept the same upper bound.
@@ -50,7 +61,7 @@ This file is the durable App behavior/design contract. Live source and the curre
 - Manual voltage levels: 5 V, 9 V, 12 V. Expected user touch cycle is 5→9→12→9→5, with the established ~1-second manual-switch guard.
 - Voltage indicator LED default mapping: 5 V red, 9 V green, 12 V blue. Users can customize colors and reset to defaults.
 - PWM Fan speed control belongs in the CONTROL submenu; increments should be practical (multiples of 5 or 10).
-- PWM Fan speed adjustment applies only to Manual Volt at 12 V, not Adaptive mode. Adaptive controls its own Fan behavior.
+- Manual PWM control remains available only in Manual mode at 12V. Adaptive manages PWM automatically at 12V; Adaptive at 5V or 9V retains established full-speed Fan behavior.
 - Adaptive ON locks the manual voltage touch sensor. Toggling Adaptive ON/OFF returns hardware to safe 5 V first. When leaving Adaptive, restore a previously running Peltier only through the safety gates and its normal 5-second OFF→ON soft-start.
 - The App must not claim rail transition complete until matching authoritative `VOLTAGE` telemetry confirms it.
 
@@ -96,8 +107,8 @@ This file is the durable App behavior/design contract. Live source and the curre
 
 ## LED mode and preview synchronization
 
-- Six App modes use stable firmware IDs: 01 Static (1), 02 Breath (2), 03 Comet (4), 04 Dual Chase (5), 05 Left ↔ Right (6), 06 Rainbow (7). ID 3 / Mirror Pulse is retired and never reused.
-- Firmware V6.6 emits one `LED_SYNC:<mode>,<phase_ms>,<cycle_ms>` tuple, computed immediately before BLE notify. Mode, phase and cycle arrive atomically, and the phase does not age while waiting in the queue.
+- Six App modes use stable firmware IDs: 01 Static (1), 02 Breath (2), 03 Comet (4), 04 Dual Chase (5), 05 Left / Right (6), 06 Rainbow (7). ID 3 / Mirror Pulse is retired and never reused.
+- Firmware V6.7 emits one `LED_SYNC:<mode>,<phase_ms>,<cycle_ms>` tuple, computed immediately before BLE notify. Mode, phase and cycle arrive atomically, and the phase does not age while waiting in the queue.
 - The App interpolates the phase from a monotonic local clock and adjusts drift at later snapshots; a phase update must not restart the animation controller. Separate `LED_PHASE` and `LED_CYCLE_MS` handling remains a compatibility fallback for older V6.x firmware.
 - Preview pixel order follows the physical strip: right top→bottom indices 0–3, left bottom→top indices 4–7. The compact layout is left arrow, four left LEDs, centered localized mode name only (no numeric index), four right LEDs, right arrow.
 - LED-column backgrounds are slightly darker for contrast. Preview pixel visibility/glow is independent of the hardware Brightness slider, so colors stay vivid even at low hardware brightness; animation levels still distinguish the active mode. This does not change brightness commands or physical Firmware rendering.
@@ -111,7 +122,7 @@ This file is the durable App behavior/design contract. Live source and the curre
 
 - FloatingMonitorService owns the overlay window; Flutter remains the single BLE/GATT client and streams authoritative telemetry. After native service attachment, Flutter replays the current telemetry snapshot. Native layout/redraw tracks changing live-value width.
 - The overlay remains freely draggable with WindowManager gravity TOP | START and persisted coordinates. Horizontal metrics center as one group; vertical letter rows all share the same left edge. Size is 0.30×–1.00× in 0.05× steps (default 0.60×). Background opacity is 0–100% in 5% steps with live percent and endpoint marks only; Black/White background and text contrast remain.
-- Current metrics are B/H/V/A/P/F. F is Fan Speed. When BLE telemetry is disconnected, live device values are unknown (--) and no stale output state is inferred.
+- Current metrics are B/H/V/A/P/F. F is labelled Fan/Kipas and displays live PWM speed while running. When BLE telemetry is disconnected, live device values are unknown (--) and no stale output state is inferred.
 - FPS, SurfaceFlinger TimeStats sampling, Shizuku permission UI/provider/UserService/AIDL, related parser/watchdog tests and Shizuku-only license files are removed from active App source. The release workflow audit and source archive packaging no longer depend on them.
 - Schema version 2 maps old schema-v1 S (Speed) to F (Fan Speed) and drops old schema-v1 F (FPS). Flutter contract tests cover migration and removal of FPS/Shizuku UI.
 - Build #71 is the latest verified release; it includes FPS/Shizuku retirement plus indicator-motion/manual-voltage-toggle refinements. CI verified 88/88 Flutter tests, Android production compilation/configured gate, signing, source archive and release assets. Phone overlay visuals and live BLE telemetry remain unverified.

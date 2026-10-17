@@ -76,6 +76,14 @@ Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 - Persisted settings include Hotside limit, Battery 5 V/12 V limits, RGB enable, mode, brightness and color. Adaptive Profile remains runtime-only.
 - App must be kept synced using authoritative telemetry (Adaptive, ceiling, Fan, Peltier, Fan speed, Voltage), including hardware Touch changes.
 
+## Adaptive Fan PWM at 12V — V6.7 source-only, uncompiled
+
+- Adaptive Fan PWM at 12V is automatic only in Adaptive mode. Reaching the configured Hotside limit immediately forces Fan PWM to 100%.
+- Downshift requires ten recent one-second NTC samples, their rolling average and every sample at/below `hotLimit - 2°C`, no meaningful warming trend, and one continuous stable 10-second interval. Decrease by 10 percentage points every 10 seconds, down to a 50% floor.
+- Losing the safe margin or detecting a warming trend cancels downshift and raises PWM by 10 points per fresh one-second sample. Adaptive 5V/9V keep existing 100% Fan behavior. Existing Peltier/thermal safety logic retains authority.
+- NTC acquisition remains one calibrated reading per second. Averaging is used only for Fan PWM downshift permission; no extra ADC reads or blocking timing loops were introduced.
+Active source: `firmware/JEXFYZ-V6.7.ino`, blob `1d0fa0d5e308b9789fd1c32211ce0a127d497f6a`. It has not been compiled, published, OTA-applied or tested on hardware.
+
 ## Phone Battery Adaptive input / thresholds
 
 - Firmware receives phone battery temperature from App protocol `PHONE:BT=<Celsius>`; the App sends a heartbeat at 1 Hz while connected.
@@ -96,7 +104,7 @@ Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 
 ## Validation status
 
-[USER-CONFIRMED — 2026-10-14] The user states Firmware V6.6 is correct/final, compiles successfully, and Online OTA flash/update has succeeded twice using the same version V6.6. Do not change/recompile the Firmware, replace/publish the BIN, update Firebase, or initiate another OTA/flash unless the user explicitly reopens a Firmware task and separately authorizes the relevant operation.
+[HISTORICAL USER-REPORTED — 2026-10-14] The user reported V6.6 was accepted, compiled and updated twice over Online OTA. On 2026-10-17 the user reopened Firmware source work and authorized a V6.7 Adaptive Fan PWM change. That earlier compile/OTA report does not validate V6.7; V6.7 remains uncompiled.
 
 This is the user's acceptance report, not an assistant-witnessed compile/flash log. Preserve the current source/build evidence boundary: source-to-artifact BIN provenance is not independently established by this report alone. The previously reported restart symptoms and Adaptive-OFF boot indicator remain historical/unverified observations, not an active work queue while the user considers V6.6 final. The older request for rapid Hotside-rise shutdown/manual re-arm is still not implemented in the V6.6 contract; do not add it proactively after the user's final acceptance unless the user reopens that requirement.
 

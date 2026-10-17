@@ -126,8 +126,8 @@ String homeFanSpeedDisplay({
   if (!connected) return '--';
   if (!fanOn) return offLabel;
   if (voltage == '5V' || voltage == '9V') return '100%';
-  if (voltage == '12V' && adaptiveOn) return '100%';
-  if (voltage == '12V' && !adaptiveOn) return '$fanSpeed%';
+  // At 12 V, show authoritative live PWM in both Manual and Adaptive.
+  if (voltage == '12V') return '$fanSpeed%';
   return '--';
 }
 
@@ -1653,113 +1653,112 @@ class _JexIconPainter extends CustomPainter {
     required this.warning,
   });
 
-  Paint stroke(double width, [Color? paintColor]) {
-    return Paint()
-      ..color = paintColor ?? color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = width
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
-  }
+  Paint _stroke(double width, Color paintColor) => Paint()
+    ..color = paintColor
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = width
+    ..strokeCap = StrokeCap.round
+    ..strokeJoin = StrokeJoin.round;
 
-  Paint fill([Color? paintColor]) {
-    return Paint()
-      ..color = paintColor ?? color
-      ..style = PaintingStyle.fill;
-  }
+  Paint _fill(Color paintColor) => Paint()
+    ..color = paintColor
+    ..style = PaintingStyle.fill;
+
+  Path _batterySilhouette(double s) => Path()
+    ..addRRect(RRect.fromRectAndRadius(
+      Rect.fromLTWH(s * .12, s * .26, s * .70, s * .48),
+      Radius.circular(s * .085),
+    ))
+    ..addRRect(RRect.fromRectAndRadius(
+      Rect.fromLTWH(s * .82, s * .405, s * .075, s * .19),
+      Radius.circular(s * .025),
+    ));
+
+  Path _hotsideSilhouette(double s) => Path()
+    ..addRRect(RRect.fromRectAndRadius(
+      Rect.fromLTWH(s * .405, s * .10, s * .19, s * .56),
+      Radius.circular(s * .095),
+    ))
+    ..addOval(Rect.fromCircle(center: Offset(s * .50, s * .735), radius: s * .135));
 
   Path _bolt(double s) => Path()
-    ..moveTo(s * .56, s * .07)
-    ..lineTo(s * .25, s * .53)
-    ..lineTo(s * .47, s * .53)
-    ..lineTo(s * .39, s * .93)
-    ..lineTo(s * .76, s * .37)
-    ..lineTo(s * .54, s * .37)
+    ..moveTo(s * .57, s * .07)
+    ..lineTo(s * .27, s * .52)
+    ..lineTo(s * .475, s * .52)
+    ..lineTo(s * .405, s * .925)
+    ..lineTo(s * .755, s * .37)
+    ..lineTo(s * .545, s * .37)
     ..close();
 
-  void _drawGlow(Canvas canvas, Offset center, double radius, double alpha) {
-    if (alpha <= .001) return;
-    canvas.drawCircle(
-      center,
-      radius,
-      Paint()
-        ..color = color.withValues(alpha: alpha)
-        ..maskFilter = MaskFilter.blur(BlurStyle.normal, radius * .46),
-    );
-  }
-
-  void _drawThermalFlames(
-    Canvas canvas,
-    Size size,
-    double phase, {
-    required double baseY,
-  }) {
-    final s = size.shortestSide;
-    const centers = <double>[.28, .50, .72];
-    for (var i = 0; i < centers.length; i++) {
-      final harmonic = (i + 1).toDouble();
-      final flicker = .5 + .5 * math.sin(phase * harmonic + i * 1.8);
-      final halfWidth = s * (.043 + .012 * flicker);
-      final height = s * (.095 + .060 * flicker);
-      final sway = s * .012 * math.sin(phase * harmonic + i * 2.1);
-      final x = s * centers[i] + sway;
-      final base = s * baseY;
-      final outer = Path()
-        ..moveTo(x - halfWidth, base)
-        ..cubicTo(
-          x - halfWidth * 1.05, base - height * .36,
-          x - halfWidth * .12, base - height * .63,
-          x + sway * .25, base - height,
-        )
-        ..cubicTo(
-          x + halfWidth * .52, base - height * .67,
-          x + halfWidth * 1.04, base - height * .34,
-          x + halfWidth, base,
-        )
-        ..close();
-      _drawGlow(canvas, Offset(x, base - height * .42), height * .46, .12 + .08 * flicker);
-      canvas.drawPath(
-        outer,
-        Paint()..color = Color.lerp(
-          const Color(0xFFFF3D36),
-          const Color(0xFFFF8A36),
-          flicker * .72,
-        )!.withValues(alpha: .92),
-      );
-      final innerWidth = halfWidth * .43;
-      final innerHeight = height * .53;
-      final inner = Path()
-        ..moveTo(x - innerWidth, base)
-        ..cubicTo(
-          x - innerWidth, base - innerHeight * .34,
-          x - innerWidth * .12, base - innerHeight * .62,
-          x + sway * .08, base - innerHeight,
-        )
-        ..cubicTo(
-          x + innerWidth * .54, base - innerHeight * .62,
-          x + innerWidth, base - innerHeight * .32,
-          x + innerWidth, base,
-        )
-        ..close();
-      canvas.drawPath(inner, Paint()..color = const Color(0xFFFFD978).withValues(alpha: .96));
-    }
-  }
-
-  void _drawFanBlade(Canvas canvas, Size size, double angle) {
-    final s = size.shortestSide;
-    canvas.save();
-    canvas.translate(size.width / 2, size.height / 2);
-    canvas.rotate(angle);
-    final blade = Path()
-      ..moveTo(-s * .035, s * .025)
-      ..cubicTo(-s * .12, -s * .06, -s * .23, -s * .22, -s * .12, -s * .36)
-      ..cubicTo(-s * .055, -s * .445, s * .09, -s * .405, s * .105, -s * .29)
-      ..cubicTo(s * .12, -s * .18, s * .075, -s * .085, s * .035, -s * .025)
+  Path _adaptiveLoop(double s, double phase) {
+    final cx = s / 2;
+    final cy = s / 2;
+    final wave = math.sin(phase);
+    final counterWave = math.cos(phase);
+    return Path()
+      ..moveTo(cx, cy - s * (.31 + .018 * wave))
+      ..cubicTo(cx + s * (.22 + .018 * counterWave), cy - s * (.33 + .015 * wave),
+          cx + s * (.34 + .012 * wave), cy - s * (.12 + .014 * counterWave),
+          cx + s * (.31 + .015 * counterWave), cy + s * .015)
+      ..cubicTo(cx + s * (.30 + .016 * wave), cy + s * (.22 + .012 * counterWave),
+          cx + s * (.12 + .014 * counterWave), cy + s * (.33 + .014 * wave),
+          cx, cy + s * (.31 + .018 * wave))
+      ..cubicTo(cx - s * (.22 + .018 * counterWave), cy + s * (.33 + .015 * wave),
+          cx - s * (.34 + .012 * wave), cy + s * (.12 + .014 * counterWave),
+          cx - s * (.31 + .015 * counterWave), cy - s * .015)
+      ..cubicTo(cx - s * (.30 + .016 * wave), cy - s * (.22 + .012 * counterWave),
+          cx - s * (.12 + .014 * counterWave), cy - s * (.33 + .014 * wave),
+          cx, cy - s * (.31 + .018 * wave))
       ..close();
-    // OFF affects motion only; the rotor remains fully coloured at rest.
-    canvas.drawPath(blade, fill(color.withValues(alpha: .94)));
-    canvas.drawPath(blade, stroke(s * .014, color.withValues(alpha: .45)));
-    canvas.restore();
+  }
+
+  Path _crystalSilhouette(double s) {
+    final cx = s / 2;
+    final cy = s / 2;
+    final path = Path();
+    for (var i = 0; i < 6; i++) {
+      final a = -math.pi / 2 + i * math.pi / 3;
+      final outer = Offset(cx + math.cos(a) * s * .34, cy + math.sin(a) * s * .34);
+      final branchA = Offset(cx + math.cos(a - .24) * s * .22, cy + math.sin(a - .24) * s * .22);
+      final branchB = Offset(cx + math.cos(a + .24) * s * .22, cy + math.sin(a + .24) * s * .22);
+      path
+        ..moveTo(cx, cy)
+        ..lineTo(outer.dx, outer.dy)
+        ..moveTo(branchA.dx, branchA.dy)
+        ..lineTo(outer.dx, outer.dy)
+        ..lineTo(branchB.dx, branchB.dy);
+    }
+    return path;
+  }
+
+  Offset _fanPoint(double x, double y, double angle, double cx, double cy) =>
+      Offset(cx + x * math.cos(angle) - y * math.sin(angle),
+          cy + x * math.sin(angle) + y * math.cos(angle));
+
+  Path _fanSilhouette(double s, double angle) {
+    final cx = s / 2;
+    final cy = s / 2;
+    final path = Path();
+    for (var i = 0; i < 3; i++) {
+      final a = angle + i * math.pi * 2 / 3;
+      final p0 = _fanPoint(-s * .025, s * .03, a, cx, cy);
+      final p1 = _fanPoint(-s * .12, -s * .06, a, cx, cy);
+      final p2 = _fanPoint(-s * .235, -s * .24, a, cx, cy);
+      final p3 = _fanPoint(-s * .12, -s * .365, a, cx, cy);
+      final p4 = _fanPoint(-s * .025, -s * .43, a, cx, cy);
+      final p5 = _fanPoint(s * .095, -s * .395, a, cx, cy);
+      final p6 = _fanPoint(s * .105, -s * .285, a, cx, cy);
+      final p7 = _fanPoint(s * .09, -s * .16, a, cx, cy);
+      final p8 = _fanPoint(s * .035, -s * .025, a, cx, cy);
+      path
+        ..moveTo(p0.dx, p0.dy)
+        ..cubicTo(p1.dx, p1.dy, p2.dx, p2.dy, p3.dx, p3.dy)
+        ..cubicTo(p4.dx, p4.dy, p5.dx, p5.dy, p6.dx, p6.dy)
+        ..cubicTo(p7.dx, p7.dy, p8.dx, p8.dy, p0.dx, p0.dy)
+        ..close();
+    }
+    path.addOval(Rect.fromCircle(center: Offset(cx, cy), radius: s * .078));
+    return path;
   }
 
   @override
@@ -1768,455 +1767,132 @@ class _JexIconPainter extends CustomPainter {
     final cx = size.width / 2;
     final cy = size.height / 2;
     final strength = activity.clamp(0.0, 1.0).toDouble();
-    // Restore Build #54 geometry and interpolate activity-dependent effects.
     final p = progress.clamp(0.0, 1.0).toDouble();
     final angle = p * math.pi * 2;
-    final pulse = .5 - .5 * math.cos(angle);
-    final softPulse = .5 + .5 * math.sin(angle);
+    final pulse = math.sin(angle);
+    final safeLevel = level.clamp(0.0, 1.0).toDouble();
+    final warningBlend = warning ? (.12 + .06 * (pulse + 1) / 2) : 0.0;
+    final mainColor = Color.lerp(color, const Color(0xFFFF5B55), warningBlend)!;
+    final opacity = (.62 + .36 * strength).clamp(0.0, 1.0).toDouble();
+    final breath = 1.0 + (active ? .018 * pulse * strength : 0.0);
 
     canvas.save();
+    canvas.translate(cx, cy);
+    canvas.scale(breath);
+    canvas.translate(-cx, -cy);
+
     switch (kind) {
       case JexAnimatedIconKind.battery:
-
-        // Battery-temperature indicator: crisp shell plus three data-driven thermal segments.
-        final bodyRect = Rect.fromLTWH(s * .105, s * .285, s * .70, s * .43);
-        final body = RRect.fromRectAndRadius(bodyRect, Radius.circular(s * .105));
-        _drawGlow(canvas, Offset(cx - s * .01, cy), s * .29,
-            .012 + (.045 + .045 * pulse - .012) * strength);
-        canvas.drawRRect(body, fill(color.withValues(alpha: .035)));
-        canvas.drawRRect(body, stroke(s * .050, color.withValues(alpha: .95)));
-        final terminal = RRect.fromRectAndRadius(
-          Rect.fromLTWH(s * .825, s * .405, s * .075, s * .19),
-          Radius.circular(s * .025),
+        final shell = _batterySilhouette(s);
+        canvas.drawPath(shell, _fill(mainColor.withValues(alpha: .055 + .07 * strength)));
+        canvas.drawPath(shell, _stroke(s * .045, mainColor.withValues(alpha: opacity)));
+        final inner = RRect.fromRectAndRadius(
+          Rect.fromLTWH(s * .17, s * .31, s * .60, s * .38),
+          Radius.circular(s * .055),
         );
-        canvas.drawRRect(terminal, fill(color.withValues(alpha: .95)));
-        const barHeights = <double>[.19, .27, .19];
-        for (var i = 0; i < 3; i++) {
-          final intensity = (level * 3.0 - i).clamp(0.0, 1.0).toDouble();
-          final barPulse = .5 - .5 * math.cos(angle - i * math.pi / 3);
-          final barHeight = s * barHeights[i];
-          final rect = Rect.fromLTWH(
-            s * (.205 + i * .185),
-            cy - barHeight / 2,
-            s * .095,
-            barHeight,
-          );
-          canvas.drawRRect(
-            RRect.fromRectAndRadius(rect, Radius.circular(s * .028)),
-            fill(color.withValues(
-              alpha: .10 + ((.12 + .76 * intensity * (.90 + .10 * barPulse)) - .10) * strength,
-            )),
-          );
-          if (strength > .001 && intensity > .12) {
-            canvas.drawRRect(
-              RRect.fromRectAndRadius(
-                Rect.fromLTWH(rect.left + s * .018, rect.top + s * .018,
-                    rect.width - s * .036, s * .018),
-                Radius.circular(s * .009),
-              ),
-              fill(Colors.white.withValues(alpha: (.14 + .16 * barPulse) * strength)),
-            );
-          }
+        canvas.save();
+        canvas.clipRRect(inner);
+        final fluidHeight = inner.height * safeLevel;
+        if (fluidHeight > 0) {
+          canvas.drawRect(Rect.fromLTWH(inner.left, inner.bottom - fluidHeight, inner.width, fluidHeight),
+              _fill(mainColor.withValues(alpha: .30 + .56 * strength)));
         }
-        if (level >= .999 && warning) {
-          // Thermal fill is eased, but fire itself requires the actual 40°C threshold.
-          _drawThermalFlames(canvas, size, angle, baseY: .30);
-        }
+        canvas.restore();
         break;
 
       case JexAnimatedIconKind.hotside:
-
-        // Thermometer is deliberately isolated: no heat-wave ornaments cross or overlap its glass.
-        // Its mercury height smoothly follows the last valid Hotside Celsius reading.
-        final thermalLevel = level.clamp(0.0, 1.0).toDouble();
-        final tubeRect = Rect.fromLTWH(s * .405, s * .13, s * .19, s * .535);
-        final tube = RRect.fromRectAndRadius(tubeRect, Radius.circular(s * .095));
-        canvas.drawRRect(tube, fill(color.withValues(alpha: .055)));
-        canvas.drawRRect(tube, stroke(s * .047, color.withValues(alpha: .96)));
-        final fluidHeight = s * .36 * thermalLevel;
-        if (fluidHeight > .01) {
-          final fluidRect = Rect.fromLTWH(
-            s * .463,
-            s * .646 - fluidHeight,
-            s * .074,
-            fluidHeight,
-          );
-          canvas.drawRRect(
-            RRect.fromRectAndRadius(fluidRect, Radius.circular(s * .035)),
-            fill(color.withValues(alpha: .42 + (.88 - .42) * strength)),
-          );
-          if (strength > .001) {
-            final shimmerY = fluidRect.bottom -
-                fluidRect.height * (.34 + .24 * softPulse);
-            canvas.drawCircle(
-              Offset(cx, shimmerY),
-              s * .018,
-              fill(Colors.white.withValues(alpha: (.28 + .20 * pulse) * strength)),
-            );
-          }
-        }
-        final bulb = Offset(cx, s * .735);
-        _drawGlow(
-          canvas,
-          bulb,
-          s * .18,
-          .018 + (.08 + .13 * thermalLevel + .035 * pulse - .018) * strength,
+        final shell = _hotsideSilhouette(s);
+        canvas.drawPath(shell, _fill(mainColor.withValues(alpha: .04 + .04 * strength)));
+        canvas.drawPath(shell, _stroke(s * .045, mainColor.withValues(alpha: opacity)));
+        final tubeInner = RRect.fromRectAndRadius(
+          Rect.fromLTWH(s * .465, s * .16, s * .07, s * .47),
+          Radius.circular(s * .035),
         );
-        canvas.drawCircle(bulb, s * .132, fill(color.withValues(alpha: .12)));
-        canvas.drawCircle(bulb, s * .132, stroke(s * .048, color));
-        canvas.drawCircle(
-          bulb,
-          s * .074,
-          fill(color.withValues(alpha: .34 + (.36 + .60 * thermalLevel - .34) * strength)),
-        );
-        if (strength > .001) {
-          canvas.drawCircle(
-            Offset(cx - s * .025, bulb.dy - s * .025),
-            s * .018,
-            fill(Colors.white.withValues(alpha: (.48 + .14 * softPulse) * strength)),
-          );
+        canvas.save();
+        canvas.clipPath(shell);
+        canvas.save();
+        canvas.clipRRect(tubeInner);
+        final fluidHeight = tubeInner.height * safeLevel;
+        if (fluidHeight > 0) {
+          canvas.drawRect(Rect.fromLTWH(tubeInner.left, tubeInner.bottom - fluidHeight, tubeInner.width, fluidHeight),
+              _fill(mainColor.withValues(alpha: .35 + .55 * strength)));
         }
-        if (level >= .999 && warning) {
-          // Actual telemetry must reach the configured limit before the flame is shown.
-          _drawThermalFlames(canvas, size, angle, baseY: .18);
-        }
+        canvas.restore();
+        canvas.drawCircle(Offset(cx, s * .735), s * .075,
+            _fill(mainColor.withValues(alpha: .30 + .55 * strength)));
+        canvas.restore();
         break;
 
       case JexAnimatedIconKind.voltage:
-
-        // The bolt carries a moving charge sweep clipped to its own silhouette.
         final bolt = _bolt(s);
-        final bounds = Rect.fromLTWH(s * .20, s * .04, s * .61, s * .92);
-        final voltageEnergy = level.clamp(0.0, 1.0).toDouble();
-        _drawGlow(
-          canvas,
-          Offset(cx, cy),
-          s * (.17 + .07 * voltageEnergy),
-          .018 + (.035 + .13 * voltageEnergy + .025 * pulse - .018) * strength,
-        );
-        canvas.drawPath(
-          bolt,
-          Paint()
-            ..color = color.withValues(alpha: .055 + (.08 + .24 * voltageEnergy - .055) * strength)
-            ..maskFilter = MaskFilter.blur(BlurStyle.normal, s * (.04 + .05 * voltageEnergy)),
-        );
-        canvas.drawPath(
-          bolt,
-          Paint()
-            ..shader = LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                color.withValues(alpha: .72 + (.48 + .52 * voltageEnergy - .72) * strength),
-                color.withValues(alpha: .50 + (.35 + .48 * voltageEnergy + .12 * pulse - .50) * strength),
-              ],
-            ).createShader(bounds),
-        );
-        canvas.drawPath(bolt, stroke(s * .014, color.withValues(alpha: .86)));
-        if (strength > .001) {
-          canvas.save();
-          canvas.clipPath(bolt);
-          final sweepY = s * (.13 + .72 * (.5 - .5 * math.cos(angle)));
-          canvas.drawRRect(
-            RRect.fromRectAndRadius(
-              Rect.fromLTWH(
-                s * .16,
-                sweepY,
-                s * .68,
-                s * (.045 + .075 * voltageEnergy),
-              ),
-              Radius.circular(s * (.025 + .035 * voltageEnergy)),
-            ),
-            fill(Colors.white.withValues(alpha: (.08 + .24 * voltageEnergy + .04 * pulse) * strength)),
-          );
-          canvas.restore();
-
-          if (voltageEnergy >= .60) {
-            final sparkCount = voltageEnergy >= .95 ? 3 : 1;
-            for (var i = 0; i < sparkCount; i++) {
-              final sparkY = s * (.24 + i * .24);
-              final direction = i.isEven ? 1.0 : -1.0;
-              final spark = Path()
-                ..moveTo(cx + direction * s * .12, sparkY)
-                ..lineTo(cx + direction * s * (.20 + .025 * pulse), sparkY - s * .045)
-                ..lineTo(cx + direction * s * .15, sparkY + s * .012);
-              canvas.drawPath(
-                spark,
-                stroke(s * (.012 + .009 * voltageEnergy),
-                    Colors.white.withValues(alpha: (.22 + .48 * voltageEnergy) * strength)),
-              );
-            }
-          }
-        }
+        canvas.save();
+        canvas.translate(cx, cy);
+        canvas.rotate(active ? .018 * pulse : 0.0);
+        canvas.translate(-cx, -cy);
+        canvas.drawPath(bolt, _fill(mainColor.withValues(alpha: .78 + .18 * strength)));
+        canvas.drawPath(bolt, _stroke(s * .018, mainColor.withValues(alpha: opacity)));
+        canvas.restore();
         break;
 
       case JexAnimatedIconKind.adaptive:
-
-        // Adaptive core: one closed ring, one true orbit, and a compact reactor core.
-        final center = Offset(cx, cy);
-        _drawGlow(canvas, center, s * .19,
-            .015 + (.09 + .09 * pulse - .015) * strength);
-        canvas.drawCircle(
-          center,
-          s * .315,
-          stroke(s * .027, color.withValues(alpha: .19 + (.34 - .19) * strength)),
-        );
-        canvas.drawArc(
-          Rect.fromCircle(center: center, radius: s * .315),
-          -math.pi * .72,
-          math.pi * 1.44,
-          false,
-          stroke(s * .055, color.withValues(alpha: .38 + (.78 - .38) * strength)),
-        );
-        canvas.save();
-        canvas.translate(cx, cy);
-        canvas.rotate(-.20 + (angle + .20) * strength);
-        canvas.drawOval(
-          Rect.fromCenter(center: Offset.zero, width: s * .76, height: s * .43),
-          stroke(s * .023, color.withValues(alpha: .17 + (.38 - .17) * strength)),
-        );
-        canvas.drawCircle(
-          Offset(s * .38, 0),
-          s * .048,
-          fill(color.withValues(alpha: .48 + (.96 - .48) * strength)),
-        );
-        if (strength > .001) {
-          canvas.drawCircle(
-            Offset(-s * .38, 0),
-            s * .027,
-            fill(color.withValues(alpha: (.36 + .24 * softPulse) * strength)),
-          );
-        }
-        canvas.restore();
-        canvas.drawCircle(
-          center,
-          s * .105,
-          fill(color.withValues(alpha: .36 + (.78 + .15 * pulse - .36) * strength)),
-        );
-        canvas.drawCircle(
-          center,
-          s * .052,
-          fill(Colors.white.withValues(alpha: .24 + (.62 - .24) * strength)),
-        );
+        canvas.drawPath(_adaptiveLoop(s, angle), _stroke(s * .058, mainColor.withValues(alpha: opacity)));
         break;
 
       case JexAnimatedIconKind.peltier:
-
-        final center = Offset(cx, cy);
-        final frostIntensity =
-            frostIntensityOverride ?? jexPeltierFrostIntensity(voltageLevel);
-        // A readable six-arm crystal replaces the dense, overlapping star geometry.
-        _drawGlow(
-          canvas,
-          center,
-          s * (.15 + .05 * frostIntensity),
-          .08 + .075 * frostIntensity + .012 * pulse * strength,
-        );
-        canvas.save();
-        canvas.translate(cx, cy);
-        // Keep the symmetric six-branch crystal steady; the surrounding sparks carry
-        // the motion, so rotation never looks like a stalled or broken animation.
-        for (var i = 0; i < 6; i++) {
-          canvas.save();
-          canvas.rotate(i * math.pi / 3);
-          final spine = Path()
-            ..moveTo(0, -s * .075)
-            ..lineTo(0, -s * (.285 + .012 * frostIntensity));
-          canvas.drawPath(
-            spine,
-            stroke(s * (.027 + .004 * frostIntensity), color.withValues(alpha: 1)),
-          );
-          final branches = Path()
-            ..moveTo(0, -s * .205)
-            ..lineTo(-s * .066, -s * .145)
-            ..moveTo(0, -s * .205)
-            ..lineTo(s * .066, -s * .145);
-          canvas.drawPath(
-            branches,
-            stroke(s * (.023 + .003 * frostIntensity), color.withValues(alpha: 1)),
-          );
-          canvas.restore();
-        }
-        canvas.restore();
-        // Four ice sparks orbit in a bounded ring with a subtle radial shimmer.
-        final particleCountValue = frostParticleCountOverride ??
-            jexPeltierFrostParticleCount(voltageLevel).toDouble();
-        final voltageStrength = ((particleCountValue - 2.0) / 6.0)
-            .clamp(0.0, 1.0)
-            .toDouble();
-        for (var i = 0; i < 4; i++) {
-          final particlePhase = angle + i * math.pi / 2;
-          final particleAngle = angle + math.pi / 4 + i * math.pi / 2;
-          final particlePulse = .5 + .5 * math.sin(angle * 2 + i * math.pi / 2);
-          final radius = s * (.405 + .012 * math.sin(particlePhase));
-          final particle = Offset(
-            cx + math.cos(particleAngle) * radius,
-            cy + math.sin(particleAngle) * radius,
-          );
-          final particleOpacity = (.28 + .52 * voltageStrength) *
-              (.20 + .80 * strength * (.70 + .30 * particlePulse));
-          canvas.drawCircle(
-            particle,
-            s * (.018 + .009 * frostIntensity * (.85 + .15 * particlePulse)),
-            fill(color.withValues(alpha: particleOpacity)),
-          );
-        }
-        canvas.drawCircle(
-          center,
-          s * .091,
-          fill(color.withValues(alpha: .68 + .24 * frostIntensity)),
-        );
-        canvas.drawCircle(
-          center,
-          s * .030,
-          fill(Colors.white.withValues(alpha: .86)),
-        );
+        final crystal = _crystalSilhouette(s);
+        final crystalWidth = s * (.042 + .006 * (frostIntensityOverride ?? .5));
+        canvas.drawPath(crystal, _stroke(crystalWidth, mainColor.withValues(alpha: opacity)));
         break;
 
       case JexAnimatedIconKind.fan:
-
-        // Three independently rendered blades rotate around a stable hub. Existing
-        // voltage-dependent controller timing and ease-out coast-down remain authoritative.
-        final rotation = angle;
-        for (var i = 0; i < 3; i++) {
-          _drawFanBlade(canvas, size, rotation + i * math.pi * 2 / 3);
-        }
-        final hub = Offset(cx, cy);
-        _drawGlow(canvas, hub, s * .13, .025 + (.07 + .05 * pulse - .025) * strength);
-        canvas.drawCircle(hub, s * .079, fill(color.withValues(alpha: 1)));
-        canvas.drawCircle(hub, s * .030, fill(Colors.white.withValues(alpha: .76)));
-        if (strength > .001) {
-          final airflowOpacity = (.16 + .10 * softPulse) * strength;
-          canvas.drawArc(
-            Rect.fromCircle(center: hub, radius: s * .405),
-            angle - .50,
-            .34,
-            false,
-            stroke(s * .016, color.withValues(alpha: airflowOpacity)),
-          );
-        }
+        final rotor = _fanSilhouette(s, angle);
+        canvas.drawPath(rotor, _fill(mainColor.withValues(alpha: .90 + .08 * strength)));
+        canvas.drawPath(rotor, _stroke(s * .012, mainColor.withValues(alpha: .65 + .25 * strength)));
         break;
 
       case JexAnimatedIconKind.speed:
-
-        // Telemetry sets the gauge level; the retargetable controller eases to new
-        // readings while the needle's small harmonic wobble remains loop-seamless.
-        final gauge = Rect.fromCircle(center: Offset(cx, cy), radius: s * .35);
+        final gauge = Rect.fromCircle(center: Offset(cx, cy), radius: s * .34);
         const start = math.pi * .79;
         const sweep = math.pi * 1.42;
-        final actual = level.clamp(0.0, 1.0).toDouble();
-        canvas.drawArc(
-          gauge,
-          start,
-          sweep,
-          false,
-          stroke(s * .052, color.withValues(alpha: .25)),
-        );
-        if (strength > .001 && actual > .01) {
-          canvas.drawArc(
-            gauge,
-            start,
-            sweep * actual,
-            false,
-            stroke(s * .085, color.withValues(alpha: .12 * strength)),
-          );
-        }
-        canvas.drawArc(
-          gauge,
-          start,
-          sweep * actual,
-          false,
-          stroke(s * .060, color.withValues(alpha: .62 + (.96 - .62) * strength)),
-        );
-        final needleWobble = jexFanSpeedNeedleWobble(progress) * strength;
-        final needleAngle = start + sweep * actual + needleWobble;
-        final tip = Offset(
-          cx + math.cos(needleAngle) * s * .275,
-          cy + math.sin(needleAngle) * s * .275,
-        );
-        final needle = Path()
-          ..moveTo(
-            cx - math.sin(needleAngle) * s * .022,
-            cy + math.cos(needleAngle) * s * .022,
-          )
-          ..lineTo(tip.dx, tip.dy)
-          ..lineTo(
-            cx + math.sin(needleAngle) * s * .022,
-            cy - math.cos(needleAngle) * s * .022,
-          )
-          ..close();
-        canvas.drawPath(needle, fill(color.withValues(alpha: 1)));
-        _drawGlow(canvas, Offset(cx, cy), s * .088, .018 + (.07 + .035 * pulse - .018) * strength);
-        canvas.drawCircle(Offset(cx, cy), s * .054, fill(color.withValues(alpha: 1)));
-        canvas.drawCircle(Offset(cx, cy), s * .021, fill(Colors.white.withValues(alpha: .66)));
+        canvas.drawArc(gauge, start, sweep, false,
+            _stroke(s * .045, mainColor.withValues(alpha: .25 + .24 * strength)));
+        final needleAngle = start + sweep * safeLevel;
+        final tip = Offset(cx + math.cos(needleAngle) * s * .265,
+            cy + math.sin(needleAngle) * s * .265);
+        final needle = Path()..moveTo(cx, cy)..lineTo(tip.dx, tip.dy);
+        canvas.drawPath(needle, _stroke(s * .055, mainColor.withValues(alpha: opacity)));
+        canvas.drawCircle(Offset(cx, cy), s * .045, _fill(mainColor.withValues(alpha: opacity)));
         break;
 
       case JexAnimatedIconKind.led:
-        for (var i = 0; i < 8; i++) {
-          final wave = .20 + (.5 + .5 * math.cos(angle - i * math.pi / 4) - .20) * strength;
-          final dot = Offset(s * (.10 + i * .114), cy);
-          if (strength > .001 && wave > .48) {
-            canvas.drawCircle(
-              dot,
-              s * (.09 + .025 * wave),
-              Paint()
-                ..color = color.withValues(alpha: (.10 + .06 * wave) * strength)
-                ..maskFilter = MaskFilter.blur(BlurStyle.normal, s * .025),
-            );
-          }
-          canvas.drawCircle(dot, s * .052,
-              fill(color.withValues(alpha: .28 + (.48 + .50 * wave - .28) * strength)));
-          canvas.drawCircle(
-            dot.translate(-s * .015, -s * .015), s * .012,
-            fill(Colors.white.withValues(alpha: .10 + (.42 - .10) * strength)),
-          );
+        final wave = Path();
+        for (var i = 0; i <= 24; i++) {
+          final x = s * (.12 + .76 * i / 24);
+          final y = cy + math.sin(angle - i * math.pi / 8) * s * (.12 + .035 * strength);
+          if (i == 0) wave.moveTo(x, y); else wave.lineTo(x, y);
         }
+        canvas.drawPath(wave, _stroke(s * .058, mainColor.withValues(alpha: opacity)));
         break;
 
       case JexAnimatedIconKind.bluetooth:
-        final bt = Path()
-          ..moveTo(cx, s * .10)
+        final glyph = Path()
+          ..moveTo(cx, s * .12)
           ..lineTo(s * .70, s * .29)
           ..lineTo(cx, s * .50)
           ..lineTo(s * .70, s * .71)
-          ..lineTo(cx, s * .90)
-          ..lineTo(cx, s * .10)
-          ..moveTo(s * .18, s * .29)
-          ..lineTo(s * .70, s * .71)
-          ..moveTo(s * .18, s * .71)
-          ..lineTo(s * .70, s * .29);
-        canvas.drawPath(bt, stroke(s * .055, color.withValues(alpha: .62 + .38 * strength)));
-        if (strength > .001) {
-          for (var i = 0; i < 2; i++) {
-            final wave = (p + i * .5) % 1.0;
-            final radius = s * (.28 + .20 * wave);
-            // Each ripple is transparent at both ends of its cycle. The raised
-            // sine envelope has zero slope at the repeat boundary, so a new ring
-            // emerges gently rather than flashing on when wave wraps to zero.
-            final fade = math.pow(math.sin(math.pi * wave), 2).toDouble();
-            canvas.drawArc(
-              Rect.fromCircle(center: Offset(s * .49, cy), radius: radius),
-              -math.pi * .47, math.pi * .94, false,
-              stroke(s * .022, color.withValues(alpha: .34 * fade * strength)),
-            );
-          }
-          _drawGlow(canvas, Offset(cx, cy), s * .12, (.055 + .035 * softPulse) * strength);
-        }
+          ..lineTo(cx, s * .88)
+          ..lineTo(cx, s * .12)
+          ..moveTo(s * .20, s * .29)
+          ..lineTo(s * .68, s * .71)
+          ..moveTo(s * .20, s * .71)
+          ..lineTo(s * .68, s * .29);
+        canvas.drawPath(glyph, _stroke(s * .06, mainColor.withValues(alpha: opacity)));
         break;
 
       case JexAnimatedIconKind.generic:
-        // Navigation/action glyphs remain static; only status indicators receive motion.
         break;
     }
 
-    if (warning && kind != JexAnimatedIconKind.battery) {
-      final warningAlpha = .22 + (.42 + .24 * pulse - .22) * strength;
-      canvas.drawCircle(
-        Offset(cx, cy),
-        s * (.455 + .018 * pulse * strength),
-        stroke(s * .022, color.withValues(alpha: warningAlpha)),
-      );
-    }
     canvas.restore();
   }
 
@@ -4165,7 +3841,7 @@ void _handleAckLine(String line) {
         voltageGuardTimer?.cancel();
         if (mounted) {
           setState(() => voltageGuardActive = false);
-          _showSnackBar(JexText.phrase('Voltage change not confirmed.','Perubahan tegangan tidak terkonfirmasi.'));
+          _showSnackBar(JexText.phrase('The device did not confirm the voltage change.','Perangkat belum mengonfirmasi perubahan tegangan.'));
         }
       }
     } catch (e) {
@@ -4173,7 +3849,7 @@ void _handleAckLine(String line) {
       voltageGuardTimer?.cancel();
       if (mounted) {
         setState(() => voltageGuardActive = false);
-        _showSnackBar(JexText.phrase('Voltage change failed.','Perubahan tegangan gagal.'));
+        _showSnackBar(JexText.phrase('Voltage change failed.','Perintah perubahan tegangan gagal.'));
       }
     }
   }
@@ -4188,11 +3864,11 @@ void _handleAckLine(String line) {
         enabled ? 'FAN:ON' : 'FAN:OFF',
       );
       if (!ok && mounted) {
-        _showSnackBar(JexText.phrase('Fan change was not confirmed.','Perubahan kipas tidak terkonfirmasi.'), color: Colors.orangeAccent);
+        _showSnackBar(JexText.phrase('The device did not confirm the Fan change.','Perangkat belum mengonfirmasi perubahan kipas.'), color: Colors.orangeAccent);
       }
     } catch (e) {
       debugPrint('Fan command: $e');
-      if (mounted) _showSnackBar(JexText.phrase('Fan command failed.','Perintah kipas gagal.'), color: Colors.orangeAccent);
+      if (mounted) _showSnackBar(JexText.phrase('Fan command failed.','Perintah kipas gagal dijalankan.'), color: Colors.orangeAccent);
     }
   }
 
@@ -4339,7 +4015,7 @@ void _handleAckLine(String line) {
         timeout: const Duration(seconds: 6),
       );
       if (!ok && mounted) {
-        _showSnackBar(JexText.phrase('Peltier change was not confirmed. ${safetyReason == 'NONE' ? '' : safetyReason}','Perubahan Peltier tidak terkonfirmasi. ${safetyReason == 'NONE' ? '' : safetyReason}'), color: Colors.orangeAccent);
+        _showSnackBar(JexText.phrase('The device did not confirm the Peltier change. ${safetyReason == 'NONE' ? '' : safetyReason}','Perangkat belum mengonfirmasi perubahan Peltier. ${safetyReason == 'NONE' ? '' : safetyReason}'), color: Colors.orangeAccent);
       }
     } catch (e) {
       debugPrint('Peltier command: $e');
@@ -4360,7 +4036,7 @@ void _handleAckLine(String line) {
         timeout: const Duration(seconds: 4),
       );
       if (!ok && mounted) {
-        _showSnackBar(JexText.phrase('Adaptive Mode change was not confirmed.','Perubahan Mode Adaptif tidak terkonfirmasi.'), color: Colors.orangeAccent);
+        _showSnackBar(JexText.phrase('The device did not confirm the Adaptive Mode change.','Perangkat belum mengonfirmasi perubahan Mode Adaptif.'), color: Colors.orangeAccent);
       }
     } finally {
       if (mounted) {
@@ -4379,7 +4055,7 @@ void _handleAckLine(String line) {
         'RGB:' + (enabled ? 'ON' : 'OFF'),
       );
       if (!ok && mounted) {
-        _showSnackBar(JexText.phrase('LED power change was not confirmed.','Perubahan daya LED tidak terkonfirmasi.'));
+        _showSnackBar(JexText.phrase('The device did not confirm the RGB power change.','Perangkat belum mengonfirmasi perubahan daya RGB.'));
       }
     } catch (e) {
       debugPrint('LED power command: $e');
@@ -4422,7 +4098,7 @@ void _handleAckLine(String line) {
 
       if (mounted) {
         setState(() => brightness = previous);
-        _showSnackBar(JexText.phrase('LED brightness change was not confirmed.','Perubahan kecerahan LED tidak terkonfirmasi.'));
+        _showSnackBar(JexText.phrase('The device did not confirm the brightness change.','Perangkat belum mengonfirmasi perubahan kecerahan.'));
       }
     } catch (e) {
       debugPrint('LED brightness command: $e');
@@ -4472,7 +4148,7 @@ void _handleAckLine(String line) {
       final ok = await _sendAndConfirm('FANSPEED:$next');
       if (!ok && mounted) {
         setState(() => fanSpeedDraft = fanSpeed);
-        _showSnackBar(JexText.phrase('Fan speed change was not confirmed.','Perubahan kecepatan kipas tidak terkonfirmasi.'));
+        _showSnackBar(JexText.phrase('The device did not confirm the fan-speed change.','Perangkat belum mengonfirmasi perubahan kecepatan kipas.'));
       }
     } catch (e) {
       debugPrint('Fan speed command: $e');
@@ -4547,7 +4223,7 @@ void _handleAckLine(String line) {
     if (!connected || adaptiveOn) return;
     try {
       final ok = await _sendAndConfirm('RESET:TEMPERATURE');
-      if (!ok && mounted) _showSnackBar(JexText.phrase('Temperature settings were not confirmed.','Pengaturan suhu tidak terkonfirmasi.'));
+      if (!ok && mounted) _showSnackBar(JexText.phrase('The device did not confirm the temperature settings.','Perangkat belum mengonfirmasi pengaturan suhu.'));
     } catch (e) {
       debugPrint('Temperature reset: $e');
       if (mounted) _showSnackBar(JexText.phrase('Temperature settings failed.','Pengaturan suhu gagal.'));
@@ -4580,7 +4256,7 @@ void _handleAckLine(String line) {
     final ok = await _sendAndConfirm('ADAPTIVE_PROFILE:' + profile);
     if (!ok && mounted) {
       _showSnackBar(
-        JexText.phrase('Adaptive profile change was not confirmed by the device.','Perubahan profil Adaptif tidak terkonfirmasi.'),
+        JexText.phrase('The device did not confirm the Adaptive profile change.','Perangkat belum mengonfirmasi perubahan profil Adaptive.'),
         color: Colors.orangeAccent,
       );
     }
@@ -4935,27 +4611,27 @@ void _handleAckLine(String line) {
   String _friendlyReason(String reason) {
     switch (reason) {
       case 'NTC_ERROR':
-        return JexText.phrase('Temperature sensor error. Peltier is locked.', 'Sensor suhu bermasalah. Peltier terkunci.');
+        return JexText.phrase('Temperature sensor error. Peltier is locked.', 'Sensor suhu bermasalah. Peltier dikunci untuk keselamatan.');
       case 'HOTSIDE_PROTECTION':
         return peltierRearmNotice(hotLimit, appLanguageNotifier.value);
       case 'PELTIER_SAFETY_LATCH':
         return peltierRearmNotice(hotLimit, appLanguageNotifier.value);
       case 'VOLTAGE_STEP_FAILED':
-        return JexText.phrase('Adaptive voltage step failed.', 'Perubahan tegangan Adaptive gagal.');
+        return JexText.phrase('Adaptive voltage step failed.', 'Perpindahan tegangan Adaptive gagal.');
       case 'VOLTAGE_FORCE_FAILED':
-        return JexText.phrase('Safety could not switch to the required 5V state.', 'Sistem keselamatan tidak dapat beralih ke 5V.');
+        return JexText.phrase('Safety could not switch to the required 5V state.', 'Sistem keselamatan tidak dapat mengalihkan tegangan ke 5V.');
       case 'ADAPTIVE_RISE_WAIT':
-        return JexText.phrase('Adaptive is waiting before raising voltage.', 'Adaptive menunggu sebelum menaikkan tegangan.');
+        return JexText.phrase('Adaptive is waiting before raising the voltage.', 'Adaptive menunggu sebelum menaikkan tegangan.');
       case 'ADAPTIVE_STARTING':
         return JexText.phrase('Adaptive Mode is starting.', 'Mode Adaptif sedang dimulai.');
       case 'FAN_REQUIRED':
-        return JexText.phrase('Fan must be on before Peltier can start.', 'Kipas harus aktif sebelum Peltier dapat dimulai.');
+        return JexText.phrase('Turn on the Fan before starting the Peltier.', 'Nyalakan kipas sebelum menyalakan Peltier.');
       case 'PELTIER_ON':
-        return JexText.phrase('Fan control is locked while Peltier is on.', 'Kendali kipas terkunci saat Peltier aktif.');
+        return JexText.phrase('Fan control is locked while the Peltier is on.', 'Kontrol kipas terkunci saat Peltier menyala.');
       case 'ADAPTIVE_ACTIVE':
-        return JexText.phrase('Manual cooling controls are locked while Adaptive Mode is active.', 'Kendali pendinginan manual terkunci saat Mode Adaptif aktif.');
+        return JexText.phrase('Manual cooling controls are locked while Adaptive Mode is active.', 'Kontrol pendinginan manual terkunci saat Mode Adaptif aktif.');
       case 'MANUAL_12V_ONLY':
-        return JexText.phrase('Fan speed can only be changed at 12V in Manual Mode.', 'Kecepatan kipas hanya dapat diubah pada 12V dalam Mode Manual.');
+        return JexText.phrase('Fan speed can only be adjusted at 12V in Manual Mode.', 'Kecepatan kipas hanya dapat diatur pada 12V dalam Mode Manual.');
       case 'VOLTAGE_TRANSITION':
         return JexText.phrase('Voltage change is in progress. Please wait.', 'Perubahan tegangan sedang berlangsung. Tunggu sebentar.');
       case 'VOLTAGE_GUARD_OR_BUSY':
@@ -4965,7 +4641,7 @@ void _handleAckLine(String line) {
       case 'RATE_LIMIT':
         return JexText.phrase('Command was sent too quickly. Please wait and try again.', 'Perintah terlalu cepat. Tunggu sebentar, lalu coba lagi.');
       case 'RANGE_50_100_STEP_10':
-        return JexText.phrase('Fan speed must be 50%–100% in 10% steps.', 'Kecepatan kipas harus 50%–100% dengan langkah 10%.');
+        return JexText.phrase('Fan speed must be between 50% and 100% in 10% steps.', 'Kecepatan kipas harus antara 50% dan 100% dengan kelipatan 10%.');
       case 'MUST_BE_BELOW_BATT12':
         return JexText.phrase('5V battery limit must stay below the 12V battery limit.', 'Batas baterai 5V harus di bawah batas baterai 12V.');
       case 'MUST_BE_ABOVE_BATT5':
