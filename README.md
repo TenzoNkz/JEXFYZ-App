@@ -18,13 +18,13 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 12. [Transfer Prompt Templates](CHAT_TRANSFER_PROMPTS.md) — copy-ready prompts for saving context and starting a new chat.
 13. `archive/` contains immutable, verbatim legacy snapshots for forensic recovery only. Any old `CURRENT` status inside an archive is not live truth. Some root-relative links retained from the original documents do not resolve when the snapshot is viewed inside `archive/`; this is intentional to preserve the snapshots byte-for-byte. Use the canonical root-level files linked above for navigation.
 
-## Current source validation boundary — 2026-10-17
+## Current release and source validation boundary — 2026-10-17
 
-- Latest verified release remains [Build #69](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38896502185), exact source/release HEAD `01212c32a802ca0e67f559307fe4e19a667489c6`. It passed audit, dependency resolution, Dart analysis, **88/88 Flutter tests**, native TimeStats parser/watchdog-policy JUnit tests, obfuscated Android release build, V1/V2/V3 signing/certificate checks, publication and re-downloaded asset verification. Build #69 predates the current FPS-removal source change; its APK still contains FPS.
-- Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) has one APK (asset `647189019`, `54,636,716` bytes; SHA-256 `40e2f3233d94cb8f624a3ffc50677f058840057800b8b1a172ba0eaf2881a102`) and one matching source ZIP (asset `647189016`, `2,877,171` bytes; SHA-256 `1ab19e552c128d09773794738a6a4340abfa82086fa83f2d7e883ed62f60a699`). Both were re-downloaded and verified against the exact Build #69 source marker.
-- Build #63 failed one stale widget assertion (87 passed, 1 failed). Build #64 passed Flutter tests but native JUnit ran out of Java heap under the old 2 GiB Gradle heap. The assertion was fixed and Gradle heap raised to `-Xmx4096M`; Builds #65–#69 then passed complete release gates without deleting tests or weakening gates.
-- **Latest release / CI-tested:** Build #69 revalidated TimeStats parser checkpoint `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620`, Shizuku bind timeout `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d` and sampler watchdog checkpoint `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46`. Five watchdog-policy JUnit cases, four TimeStats parser JUnit cases and all 88 Flutter tests passed.
-- Current main source removes FPS and Shizuku completely, keeps six Floating Monitor metrics B/H/V/A/P/F, and maps legacy schema-v1 Speed S to Fan Speed F while dropping old FPS F. This source change has **NOT YET BEEN BUILT OR TESTED**; Build #69 is still the latest verified release for the earlier source. No Firmware/BIN, Firebase, OTA, BLE hardware-control or thermal-safety code was changed.
+- Latest verified App release is Build #70 (run 38998407325), exact source/release commit eb1224232241ca5d44d43e25919fd228875029ab. It removes FPS/Shizuku and implements Floating Monitor schema v2 with six metrics B/H/V/A/P/F (F=Fan Speed).
+- All 21 active workflow steps passed. Dart analysis completed with 23 info-level deprecation findings; 86/86 Flutter tests passed. Android production app compilation and the configured :app:testDebugUnitTest task succeeded; native unit-test compile/test tasks were NO-SOURCE, so no native JUnit cases ran after FPS-specific tests were removed.
+- APK: https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk; asset 649412242, 54,538,331 bytes, SHA-256 229aaae5745456498d35f356ee6e0cdde81e7bb29f37238b1172f99f992ab404. Corresponding source ZIP: https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip; asset 649412243, 2,847,010 bytes, SHA-256 d0a79cdaf99b169b68cda04c5c3162062f493f0cb6f6ec02c1531950e4bbd8ae. Details/signing/warnings are in APP_BUILD_REPORT.md.
+- Release tag jexfyz-latest targets eb1224232241ca5d44d43e25919fd228875029ab. Current main is newer because it contains documentation and one stale-comment-only cleanup; no post-Build-#70 functional behavior change is intended.
+- Physical Floating Monitor layout, live BLE metrics/Fan Speed, icon/animation smoothness and all firmware/cooling/OTA behavior remain NOT DEVICE-VERIFIED. Build #70 is App CI/release evidence, not firmware compile or hardware proof.
 
 ## Repository boundaries
 
@@ -36,8 +36,8 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 
 ## Remaining validation outside CI
 
-- Build #69 is the latest verified release for source `01212c32a802ca0e67f559307fe4e19a667489c6`. Full audit/test/build/signing/source archive/Release/download verification evidence is in `APP_BUILD_REPORT.md`.
-- Next step is the separately authorized App Build workflow for the current six-metric source. Build #69 is not validation of FPS removal. After the new APK is released, verify Floating Monitor overlay rendering and live telemetry on the phone; CI alone does not prove device behavior.
+- Build #70 is the latest verified release for source `eb1224232241ca5d44d43e25919fd228875029ab`. Full audit/test/build/signing/source archive/Release/download verification evidence is in `APP_BUILD_REPORT.md`.
+- Next step is device-side validation of the Build #70 six-metric overlay and live telemetry. FPS removal has already been built and release-verified; CI alone does not prove device behavior.
 - Firmware V6.6 is USER-ACCEPTED FINAL according to the user's report. Its compile log and source-to-BIN provenance remain independently unverified. App CI does not imply Firmware compilation, BIN provenance, Firebase, OTA, flash, BLE hardware or thermal-safety validation.
 
 ## Non-negotiable workflow

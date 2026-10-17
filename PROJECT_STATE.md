@@ -1,24 +1,24 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use CHANGELOG.md for historical decisions and APP_BUILD_REPORT.md for build evidence.
+Last reconciled from live GitHub on 2026-10-17. This file is current-only. Use CHANGELOG.md for historical decisions and APP_BUILD_REPORT.md for build evidence.
 
-## Current App source/release state — FPS removal pending Build App
+## Current App source/release state — Build #70 verified after FPS retirement
 
-- Latest verified release remains Build #69 / run 38896502185 from source/release commit 01212c32a802ca0e67f559307fe4e19a667489c6. It passed audit, Dart analysis, 88/88 Flutter tests, native FPS parser/watchdog JUnit tests, obfuscated APK build, V1/V2/V3 signing, source archive, publication and downloaded-asset verification (21 workflow steps).
-- Build #69 predates the user-approved decision to remove FPS and Shizuku. Its APK and source archive still contain the old seven-metric/Sampler implementation; the old release hash and run remain historical evidence, not validation of current main.
-- The current source change removes SurfaceFlinger/TimeStats sampling, Shizuku permission/status UI and APIs, provider/dependency, UserService/AIDL, parser/watchdog classes/tests, and Shizuku-only notice/license files. Floating Monitor now uses six metrics B/H/V/A/P/F, with F=Fan Speed.
-- Persisted schema version 2 drops legacy schema-v1 F (FPS) and maps legacy S (Speed) to Fan Speed F. Flutter source tests cover migration and absence of FPS/Shizuku UI.
-- **Current main source, tests and workflow have NOT YET BEEN BUILT OR TESTED.** The next validation is the separately authorized @Thinking Eksekusi Build App! workflow; no App Build was run by this source task.
-- No Firmware/BIN, Firebase metadata, OTA, BLE hardware-control or thermal-safety code was changed. No device operation occurred.
+- Latest verified App release: Build #70 / run 38998407325, exact source/release commit eb1224232241ca5d44d43e25919fd228875029ab. The released source removes FPS/Shizuku and changes Floating Monitor to six metrics B/H/V/A/P/F, with F=Fan Speed. Main now includes later documentation commits and a nonfunctional stale-comment cleanup only.
+- All 21 active release workflow steps passed. Dart analysis completed with 23 info-level deprecation messages; 86/86 Flutter tests passed. Android production compile and configured :app:testDebugUnitTest task succeeded. Native JUnit test tasks were NO-SOURCE because the FPS-specific native tests were removed; no native JUnit test cases ran.
+- Release jexfyz-latest targets eb1224232241ca5d44d43e25919fd228875029ab. APK asset 649412242, 54,538,331 bytes, SHA-256 229aaae5745456498d35f356ee6e0cdde81e7bb29f37238b1172f99f992ab404. Matching source ZIP asset 649412243, 2,847,010 bytes, SHA-256 d0a79cdaf99b169b68cda04c5c3162062f493f0cb6f6ec02c1531950e4bbd8ae. Both were re-downloaded and verified. Complete evidence is in APP_BUILD_REPORT.md.
+- Signing: V1/JAR, V2 and V3 verified true with one signer; production certificate SHA-256 dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0. Non-blocking warnings are detailed in APP_BUILD_REPORT.md.
+- Build #69 and earlier FPS-enabled releases are HISTORICAL/SUPERSEDED. Physical overlay appearance, live BLE telemetry/Fan Speed, animation smoothness and all firmware/cooling/OTA behavior remain UNVERIFIED on the phone.
+- No Firmware source/BIN, Firebase, OTA, flash or device operation occurred.
 
 ## App identity and repository
 
-- Canonical App repo: TenzoNkz/JEXFYZ-App, branch `main`. Latest verified release is Build #69 from `01212c32a802ca0e67f559307fe4e19a667489c6`; current main has a newer FPS-removal source change that is not yet built. Overlay rendering remains unverified on the phone.
+- Canonical App repo: TenzoNkz/JEXFYZ-App, branch `main`. Latest verified release is Build #70 from `eb1224232241ca5d44d43e25919fd228875029ab`; current main is newer only due to memory/docs and comment-only correction. Overlay rendering remains unverified on the phone.
 - App/package: JE Cooler / JE X FYZ, com.horizontalzzz.jexfyz, pubspec version 1.0.0+3. Preserve Gradle versionName exactly as "Telegram @horizontalzzz".
 - Only active App build workflow: .github/workflows/jexfyz-app-build-trigger.yml; issue opened/reopened only; repository-owner, exact title and body-token guarded. Normal push/PR does not build/release.
 - Firmware artifact repo TenzoNkz/JEXFYZ-Firmware has exactly one tree entry: JEXFYZ.cpp.bin, 1,455,936 bytes, blob 68167e65d26137eeb1ce4d6d4ba798dc282454e6. Do not modify or inspect BIN payload during documentation work. This does not prove current source-to-BIN provenance.
 
-## Latest release artifact and signing record — Build #69
+## HISTORICAL / SUPERSEDED — Build #69 release artifact and signing record
 
 - Build #69 / run `38896502185`, URL https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38896502185. Completed at 2026-10-16 11:56:09Z (2026-10-16 18:56:09 Asia/Jakarta); exact source/release commit `01212c32a802ca0e67f559307fe4e19a667489c6`.
 - Passed security/architecture/license audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, obfuscated APK compilation, V1/V2/V3 signing, expected production certificate, matching source archive, publication and re-downloaded asset checks. All 21 active workflow steps passed.
@@ -28,9 +28,9 @@ Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use C
 - Signing: V1/JAR=true, V2=true, V3=true; one signer. Certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0` matched for built and downloaded APKs.
 - Build #69 reran four TimeStats parser JUnit cases and five watchdog-policy JUnit cases; native tests succeeded in 1m 30s. All 88 Flutter tests passed. Functional source is unchanged from Build #67/#68; APK hash remains the same while the source ZIP carries the new HEAD marker.
 - Non-blocking warnings: 23 Dart deprecation infos, Gradle `9.3.1` out-of-date, native ELF DWARF data not obfuscated, self-signed/no-timestamp JAR and META-INF notices, cache save denied by token scope. None failed a required gate.
-- Build #69's verification is for the earlier FPS-enabled source. Current six-metric source has not yet passed App CI/build; no Firmware source/BIN, Firebase metadata, OTA, flash or device operation occurred.
+- Build #70 verified the current six-metric source through App CI and release gates. No Firmware source/BIN, Firebase metadata, OTA, flash or device operation occurred.
 
-## Historical release artifact and signing record — Build #66 (superseded by #68)
+## HISTORICAL / SUPERSEDED — Build #66 release artifact and signing record
 
 - Build #66 / run `38859288444`, URL https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38859288444. Completed successfully at 2026-10-16 06:11:34Z (2026-10-16 13:11:34 Asia/Jakarta); source commit `a2b19d4708f3075730132ac16f375f2a352aa50a`.
 - Passed security/architecture/license audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, obfuscated APK compilation, V1/V2/V3 signing, expected production certificate verification, matching source archive, publication and re-downloaded asset identity/hash/signature checks. All 21 active workflow steps passed.
@@ -41,7 +41,7 @@ Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use C
 - Non-blocking warnings: 23 Dart deprecation infos, Gradle `9.3.1` out-of-date notice, native ELF DWARF data not obfuscated, self-signed/no-timestamp JAR and META-INF notices, cache save denied by token scope. None failed a required gate.
 - Actual Shizuku UserService binding, OEM TimeStats visibility, live foreground FPS and phone overlay rendering remain not device-verified. Build #66 was App-only: no Firmware compilation, BIN publication, Firebase, OTA, flashing or device operation occurred.
 
-## Historical release artifact and signing record — Build #62 (superseded by #66)
+## HISTORICAL / SUPERSEDED — Build #62 release artifact and signing record
 
 - Build #62 / run `38841458441`, URL https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38841458441. Completed successfully at 2026-10-16 02:43:37Z (2026-10-16 09:43:37 Asia/Jakarta); exact source commit `42a72d863b10adfb5d6a0ee332a2f879a78173a4`, triggered by guarded [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33).
 - Passed security/architecture/license audit, dependencies, Dart analysis, **88/88 Flutter tests**, obfuscated APK compilation, V1/V2/V3 signing, expected production certificate verification, matching source-archive validation, publication and re-downloaded asset identity/hash/signature checks. The Build #62 test repair and prior Build #61 failure are kept in `APP_BUILD_REPORT.md`.
@@ -54,31 +54,23 @@ Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use C
 
 ## Current source fingerprints
 
-- Latest verified release source remains Build #69 commit 01212c32a802ca0e67f559307fe4e19a667489c6. The current main source revision removes FPS and is not yet built or tested.
-- Current source blobs prepared for the FPS-removal change:
-  - lib/floating_monitor.dart: 31b45ea08b08ac7fc25ebd991dca873b889fdd14
-  - lib/app_settings.dart: 20f1ce0f838345c9eee4cbacde22255cb7852435
-  - android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt: 7368df11ecb369f8b71607c82e6a1b44472cc79b
-  - android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt: bd17c34211e8eb5c4723e06937ae47f0071b5e8b
-  - android/app/src/main/AndroidManifest.xml: c374b5d3ad6448b8b3e99a420ed7e8c49d38497a
-  - android/app/build.gradle: 060cdd36a4f7d4d2fa4c97a1b6a15954b8355350
-  - .github/workflows/jexfyz-app-build-trigger.yml: 8a8533aff7e0e0e01412bf522e1966e81aa1a39f
-  - test/widget_test.dart: 4e5a6d4fdc02e39ba5420a12cad9c39f9f82882e
-  - test/floating_monitor_layout_contract_test.dart: 87e805095202ac3edfe55b9aeb3138c7c6886375
-  - test/v6_6_qc_contract_test.dart: 083e0d19389c235b84f9785ee665d8ed8789e37f
-- This source change deletes the following FPS/Shizuku-only paths: FpsShizukuUserService.kt, FpsTimeStatsParser.kt, FpsSamplerWatchdogPolicy.kt, their native tests, IFpsShizukuUserService.aidl, Shizuku-only Dart contract tests and license/notice files.
-- Current active Dart test suite has five files. FPS-specific native parser/watchdog tests are removed with the retired feature; the workflow keeps an Android unit-test/compile gate. CI result is NOT RUN for the current source.
+- Latest verified released functional source: Build #70 commit eb1224232241ca5d44d43e25919fd228875029ab. Current main is newer due to memory/docs and a comment-only cleanup; no post-Build-#70 functional change is intended.
+- Current Flutter source: lib/main.dart now has blob 55a41942d2fc6f32fd488318beea5468044f343e after the stale-comment-only correction in this reconciliation; lib/floating_monitor.dart 31b45ea08b08ac7fc25ebd991dca873b889fdd14; lib/app_settings.dart 20f1ce0f838345c9eee4cbacde22255cb7852435.
+- Native App source: FloatingMonitorService.kt 7368df11ecb369f8b71607c82e6a1b44472cc79b; MainActivity.kt bd17c34211e8eb5c4723e06937ae47f0071b5e8b; AndroidManifest.xml c374b5d3ad6448b8b3e99a420ed7e8c49d38497a; android/app/build.gradle 060cdd36a4f7d4d2fa4c97a1b6a15954b8355350; workflow .github/workflows/jexfyz-app-build-trigger.yml 8a8533aff7e0e0e01412bf522e1966e81aa1a39f.
+- Five active Dart tests: widget_test.dart 4e5a6d4fdc02e39ba5420a12cad9c39f9f82882e; floating_monitor_layout_contract_test.dart 87e805095202ac3edfe55b9aeb3138c7c6886375; v6_6_qc_contract_test.dart 083e0d19389c235b84f9785ee665d8ed8789e37f; app_protocol_notify_contract_test.dart 92214dd90178c705844d3979d3f8f7bd17bcc4b8; firmware_touch_adaptive_sync_test.dart 2d3fea509343a03b8d23623f4dcb2dd7fd972d39.
+- FPS UserService/parser/watchdog and native tests, Shizuku AIDL/provider/dependencies, Shizuku-only Dart contract and license/notice files are absent from current main tree. Workflow audit prevents their reintroduction and retains the Android production compile/test gate.
+- Build #70 passed 86/86 Flutter tests and release gates. Native JUnit cases did not run because the test tasks were NO-SOURCE. Physical-device behavior remains UNVERIFIED.
 
 ## Active tests and QC scope
 
-Five active Dart test files remain. Build #69's 88/88 Flutter tests and native FPS JUnit results apply only to the prior source. Current migration/UI tests and Android compile gate have NOT RUN; physical overlay behavior remains outside CI proof.
+Five active Dart test files remain; Build #70 ran 86/86 successfully. Native FPS JUnit tests were removed and no native JUnit cases ran in Build #70 (NO-SOURCE). Physical overlay behavior remains outside CI proof.
 
 ## Current Floating Monitor state
 
 - Supported metrics are B (Battery), H (Hotside), V (Voltage), A (Adaptive), P (Peltier) and F (Fan Speed). No FPS or Shizuku UI/runtime remains in the intended current source.
 - Persisted schema v1 compatibility: discard old F (FPS); migrate old S (Speed) to new F (Fan Speed). Schema v2 is serialized in FloatingConfig and sent to native overlay.
 - The repeated F:-- / shizuku_userservice_timeout reports are historical symptoms and the reason FPS was retired; they are not an active diagnostic task for current main.
-- Current source changes, Flutter contract tests and workflow audit are not yet built/tested. Follow the separate Build App authorization boundary.
+- Build #70 passed the Flutter contract tests, workflow audit, Android production compile/gate and release checks for this six-metric source. Physical overlay behavior remains unverified. Further App Build is only for a new scoped change.
 
 ## Current Floating Monitor appearance
 

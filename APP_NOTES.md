@@ -2,11 +2,12 @@
 
 This file is the durable App behavior/design contract. Live source and the current workflow remain authoritative.
 
-## Latest verified release versus current source (2026-10-17)
+## Latest verified release and current source — 2026-10-17
 
-Build #69 ([run 38896502185](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38896502185), release HEAD 01212c32a802ca0e67f559307fe4e19a667489c6) passed App audit, dependency resolution, Dart analysis, 88/88 Flutter tests, native parser/watchdog JUnit tests, obfuscated Android release build, V1/V2/V3 signing/certificate checks, source archive validation and downloaded Release asset verification. APK SHA-256 remains 40e2f3233d94cb8f624a3ffc50677f058840057800b8b1a172ba0eaf2881a102; matching source archive SHA-256 is 1ab19e552c128d09773794738a6a4340abfa82086fa83f2d7e883ed62f60a699. These results apply to the prior FPS-enabled source only.
-
-The user then approved retiring FPS completely. Current main source commit 8217a2e8d19dc82e9fe3bfa7e4e1c1692d0b7941 removes the Shizuku/SurfaceFlinger sampler and changes Floating Monitor to six metrics B/H/V/A/P/F, where F is Fan Speed. Current source/tests have NOT YET BEEN BUILT OR TESTED, and the Build #69 APK still contains the retired FPS code. Only the separately authorized App Build command can validate and release the new source.
+- Build #70 (run 38998407325, released source commit eb1224232241ca5d44d43e25919fd228875029ab) passed all 21 active workflow steps. Dart analysis completed with 23 info-level deprecations; 86/86 Flutter tests passed; Android production compile/gate, APK obfuscation, V1/V2/V3 signing/certificate, corresponding source ZIP and re-downloaded Release asset checks passed.
+- Native JUnit compile/test tasks were NO-SOURCE after FPS-only native tests were removed; do not count any native JUnit test cases as executed in Build #70. Full log and artifact digests are in APP_BUILD_REPORT.md.
+- Build #70 retires FPS and Shizuku. Floating Monitor supports B/H/V/A/P/F with F=Fan Speed. Schema v2 discards legacy schema-v1 F (FPS) and maps S (Speed) to F. The released APK/source ZIP target commit eb1224232241ca5d44d43e25919fd228875029ab.
+- Main has subsequent memory/documentation and a comment-only correction. The release marker remains the exact source for Build #70. Physical overlay appearance, BLE/Fan Speed behavior and animation smoothness are NOT DEVICE-VERIFIED.
 
 ## Identity and package
 
@@ -112,7 +113,7 @@ The user then approved retiring FPS completely. Current main source commit 8217a
 - Current metrics are B/H/V/A/P/F. F is Fan Speed. When BLE telemetry is disconnected, live device values are unknown (--) and no stale output state is inferred.
 - FPS, SurfaceFlinger TimeStats sampling, Shizuku permission UI/provider/UserService/AIDL, related parser/watchdog tests and Shizuku-only license files are removed from active App source. The release workflow audit and source archive packaging no longer depend on them.
 - Schema version 2 maps old schema-v1 S (Speed) to F (Fan Speed) and drops old schema-v1 F (FPS). Flutter contract tests cover migration and removal of FPS/Shizuku UI.
-- Build #69 remains the latest verified release, but it predates this FPS removal. Current source changes, tests and workflow edits have NOT YET BEEN BUILT OR TESTED. The Build #69 APK still contains the old FPS implementation. App Build requires the separate @Thinking Eksekusi Build App! authorization.
+- Build #70 is the latest verified release and includes FPS/Shizuku retirement. CI verified the source/test/build/signing/source archive and release assets; phone overlay visuals and live BLE telemetry remain unverified.
 
 ## Phone battery telemetry and Battery Protection UI boundary
 
@@ -124,11 +125,10 @@ The user then approved retiring FPS completely. Current main source commit 8217a
 
 ## Current App QC boundary
 
-- Latest verified release is Build #69 / run 38896502185, source/release commit 01212c32a802ca0e67f559307fe4e19a667489c6. It predates the later decision to remove FPS from current source.
-- Build #69 passed architecture/security/license audit, dependency resolution, Dart analysis and all 88 Flutter tests, native parser/watchdog-policy JUnit tests, obfuscated APK creation, V1/V2/V3 signing and production-certificate checks, matching-source ZIP validation, publication and downloaded asset hash/signature verification. APK SHA-256: 40e2f3233d94cb8f624a3ffc50677f058840057800b8b1a172ba0eaf2881a102; source ZIP SHA-256: 1ab19e552c128d09773794738a6a4340abfa82086fa83f2d7e883ed62f60a699.
-- Prepared source blobs for this FPS-removal change: lib/floating_monitor.dart 31b45ea08b08ac7fc25ebd991dca873b889fdd14; lib/app_settings.dart 20f1ce0f838345c9eee4cbacde22255cb7852435; android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt 7368df11ecb369f8b71607c82e6a1b44472cc79b; android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt bd17c34211e8eb5c4723e06937ae47f0071b5e8b; AndroidManifest.xml c374b5d3ad6448b8b3e99a420ed7e8c49d38497a; android/app/build.gradle 060cdd36a4f7d4d2fa4c97a1b6a15954b8355350; .github/workflows/jexfyz-app-build-trigger.yml 8a8533aff7e0e0e01412bf522e1966e81aa1a39f.
-- Flutter tests now cover legacy metric migration and absence of FPS/Shizuku UI. The changed source and test suites have NOT RUN / NOT BUILT in this task. FPS-specific Android parser/watchdog JUnit files and the Shizuku-only Dart contract test are retired; the Android unit-test/compile workflow gate remains.
-- No Firmware source/BIN, Firebase metadata, OTA, BLE hardware-control or thermal-safety code was changed. Firmware V6.6 remains outside scope.
+- Latest verified release: Build #70 / run 38998407325, released source commit eb1224232241ca5d44d43e25919fd228875029ab.
+- 86/86 Flutter tests passed. Dart analysis and all 21 active release workflow steps passed, including Android production compile/gate, obfuscated APK, V1/V2/V3 certificate checks, matching source ZIP and re-downloaded Release asset verification. Native JUnit tasks were NO-SOURCE after FPS-specific native test files were removed.
+- APK asset 649412242, 54,538,331 bytes, SHA-256 229aaae5745456498d35f356ee6e0cdde81e7bb29f37238b1172f99f992ab404. Matching source ZIP asset 649412243, 2,847,010 bytes, SHA-256 d0a79cdaf99b169b68cda04c5c3162062f493f0cb6f6ec02c1531950e4bbd8ae. Certificate/warning/step detail remains in APP_BUILD_REPORT.md.
+- Physical overlay layout, live BLE telemetry/Fan Speed value, phone animation and actual BLE/Firmware/thermal/OTA behavior remain UNVERIFIED. Build #70 was App-only.
 
 ## Dashboard indicator motion
 

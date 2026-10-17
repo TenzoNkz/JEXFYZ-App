@@ -1,6 +1,6 @@
 # JE X FYZ — Firmware Technical Reference
 
-Last live source/hash and safety-reference reconciliation: 2026-10-16 (Asia/Jakarta). Always fetch live source and compare before relying on line locations/hashes.
+Last source/safety-reference reconciliation: 2026-10-17 (Asia/Jakarta). Latest verified App release is Build #70, but it is App-only and does not prove Firmware compile, BIN provenance, or physical OTA/safety behavior. Always fetch live source and compare before relying on line locations/hashes.
 
 ## Current source identity
 
@@ -89,6 +89,6 @@ The canonical detailed incident/contract is `VOLTAGE_TRANSITION_MEMORY.md`.
 Static source assertions and file/blob checks can verify paths, constants and ordering. They cannot certify Arduino compilation, electrical stability, real NTC accuracy, LEDs, cooling, safety response, BLE pairing, full OTA apply or reboot. Record each validation gate separately.
 
 
-## App CI boundary — Build #65 (2026-10-16), not Firmware compile proof
+## HISTORICAL / SUPERSEDED App CI boundary — Build #65 (2026-10-16), not Firmware compile proof
 
-App Build #65 / run `38851040144` passed 88 Flutter tests plus the native FPS parser JUnit gate. App source-contract checks over `firmware/JEXFYZ-V6.6.ino` do not compile the Arduino/ESP32 sketch, prove source-to-BIN provenance, or prove physical safety/OTA behavior. Firmware V6.6 remains USER-ACCEPTED FINAL; compilation and two same-version Online OTA updates are USER-REPORTED. No firmware source/BIN, Firebase, OTA, flash or device operation occurred during this App build.
+App Build #65 / run 38851040144 historically passed 88 Flutter tests plus the native FPS parser JUnit gate. Later Build #70 verified the App's FPS-retirement source (86/86 Flutter tests, native JUnit tasks NO-SOURCE); neither run is a Firmware compile. App source-contract checks over `firmware/JEXFYZ-V6.6.ino` do not compile the Arduino/ESP32 sketch, prove source-to-BIN provenance, or prove physical safety/OTA behavior. Firmware V6.6 remains USER-ACCEPTED FINAL; compilation and two same-version Online OTA updates are USER-REPORTED. No firmware source/BIN, Firebase, OTA, flash or device operation occurred during this App build.

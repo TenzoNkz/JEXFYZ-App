@@ -2695,7 +2695,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   void _publishFloatingTelemetry() {
     final telemetry = FloatingTelemetry(
-      // FPS is measured by the native SurfaceFlinger collector while the overlay is active.
+      // Publish the current authoritative telemetry for the six-metric Floating Monitor.
       battery: connected && phoneBatteryValid ? phoneBatteryTemp : '--',
       hotside: connected ? hotsideTemp : '--',
       voltage: connected ? voltage : '--',

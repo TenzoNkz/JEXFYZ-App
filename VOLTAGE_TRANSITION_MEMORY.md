@@ -1,10 +1,10 @@
 # JE X FYZ / JE Cooler — Voltage Transition & Peltier Soft-Start Memory
 
-Last reconciled: 2026-10-16 (Asia/Jakarta).
+Last reconciled: 2026-10-17 (Asia/Jakarta).
 Canonical source: `firmware/JEXFYZ-V6.6.ino`, blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`.
-Static regression contract: `test/v6_6_qc_contract_test.dart`, blob `2bee4d960d014f0765422dcb5ed1c9870ba6ee3a`.
+Static regression contract: test/v6_6_qc_contract_test.dart. Current blob must be re-fetched from main before relying on the prior hash.
 
-**App-side validation evidence:** Build #65 / run [`38851040144`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38851040144), release source `f301c1fbbafa3d6c17803d9a2f50bae390dc1343`, passed Dart analysis, **88/88 Flutter tests**, and native FPS parser JUnit. App source-contract assertions are not an Arduino/ESP32 compile or physical rail-transition validation. The user reports V6.6 compiled and Online OTA succeeded twice; compile logs, installed version and source-to-BIN provenance were not independently checked. Physical transition reproduction, current measurement, and end-to-end thermal/OTA behavior remain unverified.
+**HISTORICAL App-side validation evidence:** Build #65 / run 38851040144 passed 88/88 Flutter tests and native FPS parser JUnit. Later App Build #70 / run 38998407325 passed 86/86 Flutter tests and released the FPS-retired App source; native JUnit tasks were NO-SOURCE. App source-contract assertions are not an Arduino/ESP32 compile or physical rail-transition validation. The user reports V6.6 compiled and Online OTA succeeded twice; compile logs, installed version and source-to-BIN provenance were not independently checked. Physical transition reproduction, current measurement, and end-to-end thermal/OTA behavior remain unverified.
 
 ## Incident
 
@@ -37,7 +37,7 @@ Applies to normal voltage changes requested in Manual Volt and while Adaptive is
 - `stopPeltierOutput()` clears both pending pause and saved-resume state.
 - Retain reset reason reporting, including `ESP_RST_BROWNOUT`, Serial `BOOT: RESET_REASON=...` and telemetry `RESET_REASON`.
 
-Historical clarification: the contract was not yet executed when this memory was initially written on 2026-10-15. Build #62 later ran the App test suite and passed 88/88, including this contract; that does not prove Firmware compilation or physical behavior.
+Historical clarification: the contract was not yet executed when first written on 2026-10-15. Build #62 later ran the App test suite and passed 88/88 including this contract; Build #70 is the latest App release, but neither App run proves Firmware compilation or physical behavior.
 
 ## Hardware validation plan
 

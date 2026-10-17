@@ -1,16 +1,25 @@
 # JE X FYZ / JE Cooler — Changelog
 
-## 2026-10-16 — FPS retired; Floating Monitor Fan Speed label changed to F (source pending Build App)
+## 2026-10-17 — Build #70 release verified after FPS retirement
+
+- Build #70 / run 38998407325 succeeded on exact source/release commit eb1224232241ca5d44d43e25919fd228875029ab. All 21 active workflow steps passed: audit, dependency resolution, Dart analysis (23 info-level deprecations), 86/86 Flutter tests, Android production compile/configured gate, obfuscated APK, V1/V2/V3 signature/certificate checks, matching source archive, publication and re-downloaded artifact verification.
+- Build #70 includes FPS/Shizuku retirement and six Floating Monitor metrics B/H/V/A/P/F, with F=Fan Speed. Persisted schema v2 drops old schema-v1 F (FPS) and migrates S (Speed) to F.
+- Native JUnit tasks were NO-SOURCE after FPS-specific parser/watchdog native tests were removed; no native JUnit cases ran in Build #70. Do not report the old Build #69 parser/watchdog test results as Build #70 test results.
+- Released APK: asset 649412242, 54,538,331 bytes, SHA-256 229aaae5745456498d35f356ee6e0cdde81e7bb29f37238b1172f99f992ab404. Corresponding source ZIP: asset 649412243, 2,847,010 bytes, SHA-256 d0a79cdaf99b169b68cda04c5c3162062f493f0cb6f6ec02c1531950e4bbd8ae. Both match release target source commit eb1224232241ca5d44d43e25919fd228875029ab and were downloaded and verified by the workflow.
+- Physical Floating Monitor visual/telemetry checks remain UNVERIFIED. Build #70 was App-only; no Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+
+
+## HISTORICAL / SUPERSEDED — 2026-10-16 — FPS retired; Floating Monitor Fan Speed label changed to F (later validated by Build #70)
 
 - User approved removing FPS instead of continuing device-specific sampler diagnosis after repeated F:-- failures. Current source removes SurfaceFlinger/TimeStats polling, Shizuku permission/setup/status flow, Shizuku API/provider dependency and Manifest provider, UserService/AIDL, parser/watchdog source and tests, Shizuku-only Dart contract test, Shizuku license/notice files, and workflow requirements that bundled them.
 - Floating Monitor now exposes six metrics only: B (Battery), H (Hotside), V (Voltage), A (Adaptive), P (Peltier), F (Fan Speed). Fan Speed telemetry/control behavior remains unchanged; only the Floating Monitor identifier/label changes to F.
 - Persisted schema version 2 migrates older schema-v1 metric identifiers: legacy S maps to Fan Speed F; legacy F (FPS) is dropped, so an FPS selection cannot be misread as fan speed. Flutter contract tests cover migration and FPS/Shizuku UI removal.
-- Build #69 (source/release commit 01212c32a802ca0e67f559307fe4e19a667489c6) remains the latest verified APK/source release and predates this change. Current source/tests/workflow edits are NOT YET TESTED OR BUILT. No App Build was triggered; no Firmware/BIN/Firebase/OTA/flash/device operations occurred.
+- At this checkpoint Build #69 was the latest verified release; that status was superseded by Build #70 on 2026-10-17, which validated the FPS-removal source. No Firmware/BIN/Firebase/OTA/flash/device operations occurred as part of this changelog update.
 
 
 Chronological record of durable App/Firmware decisions and prior approaches. Live source defines current implementation; older version entries are always historical.
 
-## 2026-10-16 — Build #69 release verified; native FPS tests rerun
+## HISTORICAL / SUPERSEDED — 2026-10-16 — Build #69 release verified; native FPS tests rerun (superseded by Build #70)
 
 - Build #69 / [Actions run `38896502185`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38896502185) passed the complete guarded App release workflow against exact source/release HEAD `01212c32a802ca0e67f559307fe4e19a667489c6`. All **21 active workflow steps passed**, including audit, dependencies, Dart analysis, **88/88 Flutter tests**, native `:app:testDebugUnitTest`, APK obfuscation/build, V1/V2/V3 signing/certificate, source ZIP, Release publication and re-downloaded asset verification.
 - Native Gradle tests completed with `BUILD SUCCESSFUL in 1m 30s`: four TimeStats parser cases and five watchdog-policy cases. Functional source remains unchanged from Build #67/#68 and includes TimeStats parser `f527b5ec82b7a3e4f563eb28f4ac50438ed6b620`, Shizuku bind timeout `34880ba490bfbd0d38c4b10ab69a683ca7b4a29d`, and sampler exception isolation/watchdog `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46`. No test/gate was removed or weakened.

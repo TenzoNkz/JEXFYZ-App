@@ -1,45 +1,32 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-10-17 Asia/Jakarta after FPS removal was committed to main. Build #69 remains the latest verified release, but active main source has since been simplified and is not yet built.
+Last reconciled against live GitHub on 2026-10-17 (Asia/Jakarta). Build #70 verifies FPS retirement in the released source. Read CHAT_TRANSFER.md for the full technical boot snapshot; this file records the immediate state and next action.
 
-## Current App source/release
+## Current App and release state
 
-- Canonical repo/branch: TenzoNkz/JEXFYZ-App / main. Latest successful App Build: [#69 / run 38896502185](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38896502185); trigger [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). Exact source/release target: `01212c32a802ca0e67f559307fe4e19a667489c6`. This is a documentation-only advancement over functional App source from Build #67 `8efbfebe1b12e162dccddbdf68b8627d8723f756`.
-- All 21 release gates passed: App audit, dependency resolution, Dart analysis, **88/88 Flutter tests**, native TimeStats parser/watchdog-policy JUnit tests, obfuscated APK, V1/V2/V3 and production certificate verification, matching source ZIP, Release publication and re-downloaded asset hash/signature checks.
-- Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) contains exactly:
-  - [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk) — asset `647189019`, `54,636,716` bytes, SHA-256 `40e2f3233d94cb8f624a3ffc50677f058840057800b8b1a172ba0eaf2881a102`.
-  - [`JEXFYZ-corresponding-source.zip`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip) — asset `647189016`, `2,877,171` bytes, SHA-256 `1ab19e552c128d09773794738a6a4340abfa82086fa83f2d7e883ed62f60a699`.
-- Expected certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. Built and downloaded APKs passed V1/V2/V3 and one-signer checks.
-- Build #69 re-ran the functionally unchanged source from Build #68; four TimeStats parser JUnit tests, five watchdog-policy JUnit tests and all 88 Flutter tests passed. Build #63/#64 failures and repairs remain in `APP_BUILD_REPORT.md`. No tests or gates were removed/weakened; no Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+- Canonical repo: TenzoNkz/JEXFYZ-App, branch main. Audit baseline HEAD before this memory transaction: 927aed0070f1fbfde0b3ddbe80d2afd8e708a413. Five branches, zero open PRs.
+- Latest verified App release: Build #70 / run 38998407325, source commit eb1224232241ca5d44d43e25919fd228875029ab. All 21 active workflow steps passed, 86/86 Flutter tests passed, Dart analysis and Android production compile/gate passed, and APK/source ZIP signature/hash/source checks passed.
+- Native JUnit test tasks reported NO-SOURCE because FPS-specific native parser/watchdog tests were retired; do not report native JUnit cases as passed in Build #70.
+- APK asset 649412242, 54,538,331 bytes, SHA-256 229aaae5745456498d35f356ee6e0cdde81e7bb29f37238b1172f99f992ab404: https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk
+- Corresponding source ZIP asset 649412243, 2,847,010 bytes, SHA-256 d0a79cdaf99b169b68cda04c5c3162062f493f0cb6f6ec02c1531950e4bbd8ae: https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip
+- Release tag jexfyz-latest targets exact source commit eb1224232241ca5d44d43e25919fd228875029ab. Main has later docs and a nonfunctional stale-comment correction; no later functional app change is intended. APP_BUILD_REPORT.md has the full verified ledger.
 
-## Current App source change — FPS retired
+## FPS retirement and current Floating Monitor
 
-- The user decided to remove FPS instead of continuing device-specific sampler diagnosis after repeated F:-- failures. The current source targets six Floating Monitor metrics: B/H/V/A/P/F; F is Fan Speed. The Shizuku card, SurfaceFlinger sampler, permission bridge, provider/dependency, AIDL/UserService, FPS-specific tests and Shizuku-only license files are removed from current source.
-- Legacy persisted schema v1 mapped F to FPS and S to Fan Speed. Schema v2 discards old FPS F and migrates old S to Fan Speed F, so an old FPS selection cannot be displayed as a fan-speed reading.
-- Source edits, regression tests, workflow audit and current-state documentation have been committed, but have not yet been verified by Flutter/Dart/native CI or an APK build. Build #69 is earlier and its APK still contains FPS.
-- Next release action, when separately authorized: @Thinking Eksekusi Build App! The existing guarded issue-trigger workflow must verify the native Kotlin compile gate, Dart analysis/tests, security audit, source archive, signing and Release assets. No Firmware/BIN/Firebase/OTA/flash/device operation is part of this source-change task.
+- User decided to retire FPS after repeated F:--/Shizuku UserService failures. FPS, SurfaceFlinger TimeStats sampling, Shizuku permission/status UI/API/provider/dependency, UserService/AIDL, FPS-only tests and Shizuku-only notice/license files were removed from active source.
+- The HUD has exactly six metrics: B (Battery), H (Hotside), V (Voltage), A (Adaptive), P (Peltier), F (Fan Speed). Schema v2 drops old schema-v1 F (FPS) and maps old S (Speed) to F. Fan telemetry and firmware speed control are unchanged.
+- Overlay remains Letters-only, freely draggable, with saved coordinates; horizontal metrics centered as a group, vertical rows left aligned; size 0.30×–1.00× by 0.05× (default 0.60×); background opacity 0–100% by 5%, current value and endpoint marks only, no midpoint. Physical layout and live BLE metric behavior remain UNVERIFIED on the phone.
+- Install/update using the Build #70 APK and verify the six metric labels plus the Fan Speed value from live telemetry. FPS diagnostics are retired; no new build is needed just to validate FPS removal.
 
-## Current Floating Monitor UX
+## Firmware / OTA boundary
 
-- Six metrics only: B/H/V/A/P/F, with F for Fan Speed. FPS has been removed from active source.
-- Position remains freely draggable; horizontal metric groups are centered, vertical rows share the same left edge. Size is 0.30×–1.00× in 0.05× increments (default 0.60×). Background opacity is 0–100% in 5% increments with endpoint labels only; no 50% midpoint.
-- Current six-metric source has NOT BEEN BUILT or device-verified. Build #69 evidence applies to earlier source.
+- Firmware source: firmware/JEXFYZ-V6.6.ino; blob f51ba6db5d0e91318f63fea4014bb87f7bf76222; FW_VERSION="V6.6"; exactly one versioned active .ino. User accepts V6.6 as final and reports compile plus two same-version Online OTA updates. USER-REPORTED; source-to-BIN provenance remains UNVERIFIED.
+- Artifact repository TenzoNkz/JEXFYZ-Firmware contains exactly JEXFYZ.cpp.bin, 1,455,936 bytes, blob 68167e65d26137eeb1ce4d6d4ba798dc282454e6. Do not read/change the BIN or add notes there.
+- Do not compile Firmware, publish/replace BIN, edit Firebase metadata, flash/OTA hardware or perform device actions without separate explicit approval. User compiles Firmware. Preserve Android versionName "Telegram @horizontalzzz".
+- OTA is protected/frozen. Read OTA_PROTECTION.md and OTA_REGRESSION_MEMORY.md before any OTA/TLS/recovery edit; read VOLTAGE_TRANSITION_MEMORY.md before rail/Peltier timing edits. setInsecure() bypasses server-certificate identity verification; CA and NTP gates were removed together after a user-reported failure, but one cause was not isolated. Do not infer HTTP/TLS errors from LEDs.
 
-## Firmware/hardware boundary
+## Immediate next step and authorization
 
-- Active source: firmware/JEXFYZ-V6.6.ino; blob f51ba6db5d0e91318f63fea4014bb87f7bf76222; FW_VERSION="V6.6"; exactly one versioned active .ino.
-- User accepts V6.6 as final and reports compiling it plus two same-version Online OTA updates. Those events are USER-REPORTED, not assistant-witnessed; source-to-BIN provenance remains UNVERIFIED. No Firmware edit/compile, BIN generation/publication, Firebase metadata change, physical OTA/flash or device operation is authorized/performed here.
-- Pin map: GPIO0 NTC; GPIO1 TTP223; GPIO3 12V selector; GPIO4 9V selector; GPIO5 Peltier MOSFET PWM; GPIO6 Fan MOSFET PWM; GPIO7 WS2812. NTC nominal 10k with 10k divider and Beta3950; calibrated ADC reading, one sample/sec. Full safety/timing memory lives in FIRMWARE_NOTES.md and VOLTAGE_TRANSITION_MEMORY.md.
-
-## OTA, command, and repository rules
-
-- OTA remains protected. Read OTA_PROTECTION.md and OTA_REGRESSION_MEMORY.md before any OTA edit; read VOLTAGE_TRANSITION_MEMORY.md before rail/Peltier changes. Online OTA's setInsecure bypasses server-certificate identity checks; CA and NTP gates were removed together after a user report, but the single cause was not isolated. Never infer a precise HTTP/TLS error from red/blue LED feedback.
-- Artifact repo live tree verified to contain only JEXFYZ.cpp.bin, blob 68167e65d26137eeb1ce4d6d4ba798dc282454e6, size 1,455,936 bytes.
-- App repo owns source and all notes/memory. Preserve Android Gradle versionName "Telegram @horizontalzzz". Use main directly; no branch/PR unless requested.
-- @Thinking Diskusi! is read-only. @Thinking Eksekusi Full! does not imply App Build. @Thinking Eksekusi Build App! is the only App Build command; Chat Stuck does not broaden authorization. No Firmware build, BIN/Firebase/OTA/flash/device action without separate explicit permission.
-
-## Canonical next actions
-
-1. Run App Build only after the separate @Thinking Eksekusi Build App! command; use the existing guarded issue-trigger workflow and verify analysis, tests, Kotlin compile, source archive and release checks.
-2. After a new APK is released, verify six-metric Floating Monitor rendering and live Fan Speed telemetry on the phone.
-3. Keep Firmware V6.6, the BIN-only artifact repo, Firebase metadata, OTA and physical hardware untouched.
+1. User/device validation of Build #70: install the released APK and check B/H/V/A/P/F, especially F reflects Fan Speed telemetry and not old FPS.
+2. Any code change later: use @Thinking Diskusi! to discuss, @Thinking Eksekusi Full! for authorized scoped source/tests/docs and memory work, and separately @Thinking Eksekusi Build App! for a fresh App build/release. @Thinking Chat Stuck! only recovers the last authorized task.
+3. No Build App, Firmware compile, Firebase, OTA/flash, or physical device operation was performed in this reconciliation.

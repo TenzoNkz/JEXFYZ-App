@@ -1,16 +1,14 @@
 # JE X FYZ / JE Cooler — Memory Index
 
-Reconciled against live GitHub main: 2026-10-16. Live code, Git refs, Actions results and Release assets supersede stale memory snapshots.
+Reconciled against live GitHub main: 2026-10-17. Live code, Git refs, Actions results and Release assets supersede stale memory snapshots.
 
-## Verified checkpoint
+## Current verified checkpoint
 
-- Latest verified App release is Build #69 / run `38896502185`, source/release commit `01212c32a802ca0e67f559307fe4e19a667489c6`. The prior FPS-enabled source passed App audit, dependency resolution, Dart analysis, 88/88 Flutter tests, native parser/watchdog tests, obfuscated APK, V1/V2/V3 signing, source archive and downloaded asset checks. Full evidence is in APP_BUILD_REPORT.md. Build #69 does NOT validate the subsequent FPS-removal source change on current main.
-- Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) contains one [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk) (asset `647189019`, `54,636,716` bytes, SHA-256 `40e2f3233d94cb8f624a3ffc50677f058840057800b8b1a172ba0eaf2881a102`) and one matching [`JEXFYZ-corresponding-source.zip`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip) (asset `647189016`, `2,877,171` bytes, SHA-256 `1ab19e552c128d09773794738a6a4340abfa82086fa83f2d7e883ed62f60a699`). Both were re-downloaded and verified against the exact Build #69 source marker.
-- Current main source retires FPS/Shizuku completely and supports Floating Monitor metrics B/H/V/A/P/F (F=Fan Speed). Persisted schema-v1 S migrates to F; old F (FPS) is dropped. Current source/tests/workflow have NOT YET BEEN BUILT OR TESTED; App Build is a separate authorization. Historical parser/watchdog JUnit results remain part of Build #69's old-source evidence.
-- Build #63 / run `38850417086` failed one stale TimeStats widget assertion (87 passed, 1 failed); test-only repair in `14347cd731b2c471fea9937f796ca21f8defc261` aligned package matching to the TimeStats layer object. Build #64 / run `38850654562` passed Flutter tests but native JUnit failed from Java heap exhaustion during JetifyTransform. Raising Gradle heap to `-Xmx4096M` resolved it; Builds #65–#69 passed full release gates.
-- Source tree hash references remain in this index below; functional source remains equivalent to Build #67 commit `8efbfebe1b12e162dccddbdf68b8627d8723f756`; Build #69 packages exact documentation HEAD `01212c32a802ca0e67f559307fe4e19a667489c6`.
-- Non-blocking Build #69 findings: 23 Dart deprecation infos, Gradle 9.3.1 out of date, native ELF DWARF debug info not obfuscated, self-signed/no-timestamp JAR and META-INF warnings, and cache save denied by token scope. Full details in APP_BUILD_REPORT.md.
-- Active Firmware remains user-accepted V6.6. FPS removal is App-only; no Firmware compilation, BIN publication, Firebase, OTA, flashing or device operation occurred. Current source's overlay rendering remains unverified and the source has not yet been built.
+- Latest successful App release is Build #70 / run 38998407325, exact released source commit eb1224232241ca5d44d43e25919fd228875029ab. All 21 active workflow steps passed: audit, dependencies, Dart analysis, 86/86 Flutter tests, Android production compile/gate, obfuscated APK, V1/V2/V3 signing/certificate, source archive and re-downloaded Release asset verification. Native JUnit tasks were NO-SOURCE after FPS native tests were removed; no native JUnit cases ran. Full evidence is in APP_BUILD_REPORT.md.
+- APK: https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk; asset 649412242, 54,538,331 bytes, SHA-256 229aaae5745456498d35f356ee6e0cdde81e7bb29f37238b1172f99f992ab404. Source ZIP: https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip; asset 649412243, 2,847,010 bytes, SHA-256 d0a79cdaf99b169b68cda04c5c3162062f493f0cb6f6ec02c1531950e4bbd8ae. Release tag targets eb1224232241ca5d44d43e25919fd228875029ab.
+- FPS/Shizuku retirement is implemented and Build #70 verified the source. Floating Monitor supports B/H/V/A/P/F; F=Fan Speed. Schema-v1 saved F (FPS) is discarded and S (Speed) migrates to F in schema v2. Physical overlay, BLE telemetry and fan-speed display remain UNVERIFIED on the phone.
+- Current main audit baseline before this memory transaction: 927aed0070f1fbfde0b3ddbe80d2afd8e708a413. Five branches, zero open PRs. Artifact repo tree contains only JEXFYZ.cpp.bin, blob 68167e65d26137eeb1ce4d6d4ba798dc282454e6, size 1,455,936 bytes; source-to-BIN provenance remains UNVERIFIED.
+- Firmware source is firmware/JEXFYZ-V6.6.ino, blob f51ba6db5d0e91318f63fea4014bb87f7bf76222, FW_VERSION="V6.6", exactly one active versioned .ino. User accepts V6.6 as final and reports compile plus two same-version Online OTA successes; USER-REPORTED, not independently witnessed. Preserve firmware/BIN/Firebase/OTA boundaries.
 
 ## New-chat boot order
 
@@ -49,11 +47,11 @@ Reconciled against live GitHub main: 2026-10-16. Live code, Git refs, Actions re
 | OTA_REGRESSION_MEMORY.md | CA/NTP experiment, setInsecure trade-off and failure evidence |
 | VOLTAGE_TRANSITION_MEMORY.md | Peltier ramp, rail changes, recovery rules and validation |
 | BUILD_NOTES.md | Active App workflow/toolchain/build-requirements and historical build milestones |
-| APP_BUILD_REPORT.md | Authoritative build-attempt ledger; Build #69 is latest verified release, including sampler watchdog checkpoint `946171c8f8f4db0899cd0cb1ec8bb0fcc53aad46` |
+| APP_BUILD_REPORT.md | Authoritative build-attempt ledger; Build #70 is latest verified release. FPS parser/watchdog runs are historical. |
 | CHANGELOG.md | Historical behavior/decision/failure ledger, not current truth |
 | DESIGN_NOTES.md | Approved grille, icons/cooler and visual requirements |
 | .github/workflows/jexfyz-app-build-trigger.yml | Authoritative manual issue-triggered App Build workflow |
-| test/*.dart and Android native unit-test gate | Five Dart test files remain; current schema migration and FPS-removal tests have NOT RUN. Build #69's 88/88 tests and native FPS JUnit results apply to older source. |
+| test/*.dart and Android native unit-test gate | Five Dart test files remain; Build #70 ran 86/86 Flutter tests. Native JUnit tasks were NO-SOURCE after retired FPS test removal. |
 | firmware/JEXFYZ-V6.6.ino | Current editable Firmware source, one versioned active sketch |
 | archive/*.md | Immutable, verbatim forensic snapshots; archived “CURRENT” claims are not live truth. Root-relative links retained from originals may not resolve from the archive subdirectory; use canonical root docs and do not rewrite archives |
 
@@ -72,7 +70,7 @@ Source of truth ordering: live main code/tree/Refs and exact Actions/Release evi
 ## Repository and memory persistence rules
 
 - All source, documentation, tests and memory stay in TenzoNkz/JEXFYZ-App. TenzoNkz/JEXFYZ-Firmware is BIN-only.
-- The live artifact repo tree was re-fetched during the 2026-10-16 reconciliation and is exactly one file: `JEXFYZ.cpp.bin`, blob `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, size 1,455,936 bytes. This does not establish that the BIN was produced from the current source.
+- The live artifact repo tree was re-fetched during the 2026-10-17 reconciliation and is exactly one file: `JEXFYZ.cpp.bin`, blob `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, size 1,455,936 bytes. This does not establish that the BIN was produced from the current source.
 - Each durable decision has one canonical subject file. Update PROJECT_STATE.md for current state; APP_BUILD_REPORT.md for every build attempt; CHANGELOG.md for significant history; MEMORY_INDEX.md for changed routing; replace CHAT_TRANSFER.md last at context limit.
 - Do not output credential contents from google-services.json or signing environment. Keep archives byte-for-byte and restore useful facts to canonical notes with explicit historical labels.
 - User accepts Firmware V6.6 as final. Do not edit/compile Firmware, generate/publish/replace BIN, alter Firebase, OTA/flash or operate hardware without separate explicit authorization. Functional Firmware edits require FW_VERSION bump, matching filename and exactly one active versioned .ino. Do not introduce blocking delay()/timing while loops.

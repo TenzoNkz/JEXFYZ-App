@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Firmware & Hardware Reference
 
-Durable hardware and behavior decisions belong here. For code-level structure see `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`; for protected OTA use `OTA_PROTECTION.md`; for incidents read the two dedicated regression-memory files.
+Durable hardware and behavior decisions belong here. For code-level structure see firmware/FIRMWARE_TECHNICAL_REFERENCE.md; for protected OTA use OTA_PROTECTION.md; for incidents read the two dedicated regression-memory files. Latest App release Build #70 is App-only and is not Firmware compilation or OTA proof.
 
 ## Hardware platform and pinout
 
@@ -100,12 +100,12 @@ Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 
 This is the user's acceptance report, not an assistant-witnessed compile/flash log. Preserve the current source/build evidence boundary: source-to-artifact BIN provenance is not independently established by this report alone. The previously reported restart symptoms and Adaptive-OFF boot indicator remain historical/unverified observations, not an active work queue while the user considers V6.6 final. The older request for rapid Hotside-rise shutdown/manual re-arm is still not implemented in the V6.6 contract; do not add it proactively after the user's final acceptance unless the user reopens that requirement.
 
-[HISTORICAL APP CI EVIDENCE — BUILDS #39/#40, NOT FIRMWARE COMPILE] Builds #39 and #40 ran 80 Flutter tests, including then-current `test/v6_6_qc_contract_test.dart` assertions over V6.6 source. Build #40 compiled/signed the Android APK but stopped before publication at a source-archive path assertion. These historical App CI checks are not an Arduino/ESP32 compile, BIN-provenance validation, physical sensor/thermal test or OTA proof.
+[HISTORICAL / SUPERSEDED APP CI EVIDENCE — BUILDS #39/#40, NOT FIRMWARE COMPILE] Builds #39 and #40 ran 80 Flutter tests, including then-current `test/v6_6_qc_contract_test.dart` assertions over V6.6 source. Build #40 compiled/signed the Android APK but stopped before publication at a source-archive path assertion. These historical App CI checks are not an Arduino/ESP32 compile, BIN-provenance validation, physical sensor/thermal test or OTA proof.
 
 No Firmware source, BIN, Firebase metadata, flash or OTA operation was performed in this App-signing task.
 
 
-## Current App CI evidence through Build #65 — not Firmware compilation
+## HISTORICAL / SUPERSEDED App CI evidence — Build #65 (later App Build #70; not Firmware compilation)
 
 - App Build #65 / run `38851040144`, exact source `f301c1fbbafa3d6c17803d9a2f50bae390dc1343`, passed Dart analysis, **88/88 Flutter tests** and the native FPS parser JUnit gate, plus Android release/signing and downloaded asset checks. These App tests check source contracts and parser logic; they do not invoke the Arduino/ESP32 compiler or prove physical rail transitions, NTC accuracy, LED behavior, OTA transfer/apply/reboot or installed version.
 - The user reports that Firmware V6.6 compiled and completed two same-version Online OTA updates. These remain USER-REPORTED rather than independently witnessed logs. V6.6 is USER-ACCEPTED FINAL; exact source-to-BIN provenance remains UNVERIFIED. No Firmware source was changed and no compile/BIN/Firebase/OTA/flash/device action occurred during this memory reconciliation.
