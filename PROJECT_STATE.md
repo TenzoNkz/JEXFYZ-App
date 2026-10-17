@@ -2,14 +2,14 @@
 
 Last reconciled from live GitHub on 2026-10-17. This file is current-only. Use CHANGELOG.md for historical decisions and APP_BUILD_REPORT.md for build evidence.
 
-## Current App source/release state — Build #70 remains the latest verified release
+## Current App source/release state — Build #71 verified
 
-- Latest verified App release: Build #70 / run 38998407325, exact source/release commit eb1224232241ca5d44d43e25919fd228875029ab. The released source removes FPS/Shizuku and changes Floating Monitor to six metrics B/H/V/A/P/F, with F=Fan Speed. Main now also includes post-release dashboard-indicator motion and manual-voltage-toggle source changes; these are not part of Build #70.
-- All 21 active release workflow steps passed. Dart analysis completed with 23 info-level deprecation messages; 86/86 Flutter tests passed. Android production compile and configured :app:testDebugUnitTest task succeeded. Native JUnit test tasks were NO-SOURCE because the FPS-specific native tests were removed; no native JUnit test cases ran.
-- Release jexfyz-latest targets eb1224232241ca5d44d43e25919fd228875029ab. APK asset 649412242, 54,538,331 bytes, SHA-256 229aaae5745456498d35f356ee6e0cdde81e7bb29f37238b1172f99f992ab404. Matching source ZIP asset 649412243, 2,847,010 bytes, SHA-256 d0a79cdaf99b169b68cda04c5c3162062f493f0cb6f6ec02c1531950e4bbd8ae. Both were re-downloaded and verified. Complete evidence is in APP_BUILD_REPORT.md.
-- Signing: V1/JAR, V2 and V3 verified true with one signer; production certificate SHA-256 dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0. Non-blocking warnings are detailed in APP_BUILD_REPORT.md.
-- Build #69 and earlier FPS-enabled releases are HISTORICAL/SUPERSEDED. Physical overlay appearance, live BLE telemetry/Fan Speed, animation smoothness and all firmware/cooling/OTA behavior remain UNVERIFIED on the phone.
-- Post-Build-70 source changes currently on main: indicators continue through a 440 ms OFF fade before pausing and resume from the retained phase at the next equivalent loop boundary; thermal flame loops are seam-compatible; Peltier sparks orbit around the stable six-branch crystal; manual voltage toggles use the neutral theme-primary style while labels keep their semantic colors. Regression source-contract tests were added. This source state is **NOT RELEASED**; Flutter tests/analyze, Android build/release gates and phone validation have **NOT RUN** for these edits.
+- Latest verified App release: Build #71 / run `39008259484`, exact source/release commit `d9e026f70ec62455763de05048cba1557edfaf23`. This release includes post-Build-70 dashboard-indicator motion continuity refinements and manual-voltage-toggle styling.
+- All 21 active release workflow steps passed. Dart analysis reported 23 info-level deprecations; **88/88 Flutter tests passed**. Android production compile and configured `:app:testDebugUnitTest` gate succeeded in 1m34s; native JUnit tasks were NO-SOURCE after FPS-specific tests were removed, so no native JUnit cases ran.
+- Release `jexfyz-latest` targets `d9e026f70ec62455763de05048cba1557edfaf23`. APK asset `649710440`, 54,603,867 bytes, SHA-256 `fdffa5d61ad403153c544cd3a62ea130e810844930f9de96fdd28343f6d041ca`. Matching source ZIP asset `649710439`, 2,847,410 bytes, SHA-256 `3d7dc30fa99d3bfb86bee069e4a9b60292942f215c11c27e519f0b51ca8a24b0`. Both were re-downloaded and verified. Full evidence is in `APP_BUILD_REPORT.md`.
+- Signing: V1/JAR, V2 and V3 verified true with one signer; production certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. Non-blocking warnings are detailed in the report.
+- Dashboard indicators now continue through a 440 ms OFF fade before pausing and resume from the retained phase at an equivalent loop boundary; flame cycles join smoothly, Battery segments ripple subtly, and four Peltier sparks orbit the stable six-branch crystal. Manual-voltage rows remain neutral; only the active toggle uses theme-primary while labels retain red/green/blue semantics.
+- Physical overlay appearance, actual animation smoothness, toggle styling on-device and live BLE/Fan Speed telemetry remain UNVERIFIED on the phone. Build #71 is App CI/release evidence, not firmware compile or hardware proof.
 - No Firmware source/BIN, Firebase, OTA, flash or device operation occurred.
 
 ## App identity and repository
@@ -29,7 +29,7 @@ Last reconciled from live GitHub on 2026-10-17. This file is current-only. Use C
 - Signing: V1/JAR=true, V2=true, V3=true; one signer. Certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0` matched for built and downloaded APKs.
 - Build #69 reran four TimeStats parser JUnit cases and five watchdog-policy JUnit cases; native tests succeeded in 1m 30s. All 88 Flutter tests passed. Functional source is unchanged from Build #67/#68; APK hash remains the same while the source ZIP carries the new HEAD marker.
 - Non-blocking warnings: 23 Dart deprecation infos, Gradle `9.3.1` out-of-date, native ELF DWARF data not obfuscated, self-signed/no-timestamp JAR and META-INF notices, cache save denied by token scope. None failed a required gate.
-- Build #70 verified the current six-metric source through App CI and release gates. No Firmware source/BIN, Firebase metadata, OTA, flash or device operation occurred.
+- Build #71 verified the six-metric source plus indicator-motion/manual-toggle refinements through App CI and release gates. No Firmware source/BIN, Firebase metadata, OTA, flash or device operation occurred.
 
 ## HISTORICAL / SUPERSEDED — Build #66 release artifact and signing record
 
@@ -55,23 +55,23 @@ Last reconciled from live GitHub on 2026-10-17. This file is current-only. Use C
 
 ## Current source fingerprints
 
-- Latest verified released functional source: Build #70 commit eb1224232241ca5d44d43e25919fd228875029ab. Current main is newer due to memory/docs and a comment-only cleanup; no post-Build-#70 functional change is intended.
-- Current Flutter source: lib/main.dart now has blob 55a41942d2fc6f32fd488318beea5468044f343e after the stale-comment-only correction in this reconciliation; lib/floating_monitor.dart 31b45ea08b08ac7fc25ebd991dca873b889fdd14; lib/app_settings.dart 20f1ce0f838345c9eee4cbacde22255cb7852435.
+- Latest verified released functional source: Build #71 commit d9e026f70ec62455763de05048cba1557edfaf23, including the motion/toggle changes. Subsequent documentation updates must not be mistaken for a new functional source build.
+- Current Flutter source blobs: lib/main.dart c10a708022ca8e8defbe1583b47fb0b10ddda8ed; lib/floating_monitor.dart 31b45ea08b08ac7fc25ebd991dca873b889fdd14; lib/app_settings.dart 20f1ce0f838345c9eee4cbacde22255cb7852435; test/widget_test.dart 032cefebf89e08f92fddaf992184c7580c185b2a; test/floating_monitor_layout_contract_test.dart 87e805095202ac3edfe55b9aeb3138c7c6886375; test/v6_6_qc_contract_test.dart 083e0d19389c235b84f9785ee665d8ed8789e37f.
 - Native App source: FloatingMonitorService.kt 7368df11ecb369f8b71607c82e6a1b44472cc79b; MainActivity.kt bd17c34211e8eb5c4723e06937ae47f0071b5e8b; AndroidManifest.xml c374b5d3ad6448b8b3e99a420ed7e8c49d38497a; android/app/build.gradle 060cdd36a4f7d4d2fa4c97a1b6a15954b8355350; workflow .github/workflows/jexfyz-app-build-trigger.yml 8a8533aff7e0e0e01412bf522e1966e81aa1a39f.
 - Five active Dart tests: widget_test.dart 4e5a6d4fdc02e39ba5420a12cad9c39f9f82882e; floating_monitor_layout_contract_test.dart 87e805095202ac3edfe55b9aeb3138c7c6886375; v6_6_qc_contract_test.dart 083e0d19389c235b84f9785ee665d8ed8789e37f; app_protocol_notify_contract_test.dart 92214dd90178c705844d3979d3f8f7bd17bcc4b8; firmware_touch_adaptive_sync_test.dart 2d3fea509343a03b8d23623f4dcb2dd7fd972d39.
 - FPS UserService/parser/watchdog and native tests, Shizuku AIDL/provider/dependencies, Shizuku-only Dart contract and license/notice files are absent from current main tree. Workflow audit prevents their reintroduction and retains the Android production compile/test gate.
-- Build #70 passed 86/86 Flutter tests and release gates. Native JUnit cases did not run because the test tasks were NO-SOURCE. Physical-device behavior remains UNVERIFIED.
+- Build #71 passed 88/88 Flutter tests and release gates. Native JUnit cases did not run because the unit-test tasks were NO-SOURCE after FPS-specific native tests were retired. Physical-device behavior remains UNVERIFIED.
 
 ## Active tests and QC scope
 
-Five active Dart test files remain; Build #70 ran 86/86 successfully. Native FPS JUnit tests were removed and no native JUnit cases ran in Build #70 (NO-SOURCE). Physical overlay behavior remains outside CI proof.
+Five active Dart test files remain; Build #71 ran 88/88 successfully. Native FPS JUnit tests were removed and no native JUnit cases ran in Build #71 (NO-SOURCE). Physical overlay behavior remains outside CI proof.
 
 ## Current Floating Monitor state
 
 - Supported metrics are B (Battery), H (Hotside), V (Voltage), A (Adaptive), P (Peltier) and F (Fan Speed). No FPS or Shizuku UI/runtime remains in the intended current source.
 - Persisted schema v1 compatibility: discard old F (FPS); migrate old S (Speed) to new F (Fan Speed). Schema v2 is serialized in FloatingConfig and sent to native overlay.
 - The repeated F:-- / shizuku_userservice_timeout reports are historical symptoms and the reason FPS was retired; they are not an active diagnostic task for current main.
-- Build #70 passed the Flutter contract tests, workflow audit, Android production compile/gate and release checks for this six-metric source. Physical overlay behavior remains unverified. Further App Build is only for a new scoped change.
+- Build #71 passed the Flutter contract tests for motion continuity and manual-voltage toggle styling, workflow audit, Android production compile/configured gate and release checks. Physical overlay behavior remains unverified. Further App Build is only for a new scoped change.
 
 ## Current Floating Monitor appearance
 
