@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Firmware & Hardware Reference
 
-Durable hardware and behavior decisions belong here. For code-level structure see firmware/FIRMWARE_TECHNICAL_REFERENCE.md; for protected OTA use OTA_PROTECTION.md; for incidents read the two dedicated regression-memory files. Latest App release Build #70 is App-only and is not Firmware compilation or OTA proof.
+Durable hardware and behavior decisions belong here. For code-level structure see firmware/FIRMWARE_TECHNICAL_REFERENCE.md; for protected OTA use OTA_PROTECTION.md; for incidents read the two dedicated regression-memory files. Latest App release Build #71 is App-only and is not Firmware compilation or OTA proof.
 
 ## Hardware platform and pinout
 
