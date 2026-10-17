@@ -7,7 +7,7 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
 ## 1. Current Git and repository state
 
 - Canonical App/Firmware source and project-memory repository: `TenzoNkz/JEXFYZ-App`, branch `main`.
-- Parent HEAD immediately before this transfer-only commit: `d6354792bd81b2309cd341d492103ed4d77a181f`, message `feat: redesign indicators and adaptive fan PWM`, tree SHA `148681797d273ed6575a46f65b996953cc70ea65`. Recursive tree is complete/not truncated: 67 entries (49 blobs, 18 trees). Exactly one active versioned Firmware sketch exists: `firmware/JEXFYZ-V6.7.ino`. Re-fetch branch/tree at next boot.
+- Parent HEAD immediately before this transfer-only commit: `e373b6f6fdb10e92fce99fde6862251efacee67c`, message `docs: reconcile V6.7 firmware status`, tree SHA `cc05d0aecafaebba86bf244b595e7934f6c5c5f2`. Recursive tree is complete/not truncated: 67 entries (49 blobs, 18 trees). Exactly one active versioned Firmware sketch exists: `firmware/JEXFYZ-V6.7.ino`. Re-fetch branch/tree at next boot.
 - Latest verified release: Build #71 / [Actions run `39008259484`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39008259484), exact release/source commit `d9e026f70ec62455763de05048cba1557edfaf23`. Completed at `2026-10-17T06:05:54Z` (`2026-10-17 13:05:54 Asia/Jakarta`). All 21 active workflow steps passed: audit, dependencies, Dart analysis, **88/88 Flutter tests**, Android production compilation/configured gate, obfuscated APK, V1/V2/V3 signing and certificate checks, source ZIP, Release publication and re-downloaded asset verification.
 - Build #70 is historical and verified FPS/Shizuku retirement plus schema-v2 migration to six metrics B/H/V/A/P/F (F=Fan Speed). Build #71 is newer and includes the post-Build-70 motion/toggle refinements.
 - Build #71 was triggered through owner/title/token-guarded [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). Issue owner `TenzoNkz`, title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; workflow blob `8a8533aff7e0e0e01412bf522e1966e81aa1a39f` is unchanged and listens only to issue opened/reopened. No push/PR/dispatch bypass.
@@ -22,7 +22,7 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
 - Signing: one signer; expected certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`; RSA key 4096 bits.
 - `flutter analyze --no-fatal-infos` passed with 23 info-level deprecation findings; 88/88 Flutter tests passed. The configured Gradle unit-test gate succeeded, but Kotlin/Java unit-test compilation and `:app:testDebugUnitTest` were NO-SOURCE after FPS-specific native tests were retired. **No native JUnit cases ran in Build #71.**
 - Non-blocking warnings: Gradle 9.3.1 out-of-date; native ELF DWARF information not obfuscated; JAR/META-INF V1 coverage and self-signed/no-timestamp certificate notices; pub-cache save denied by token scope. None failed a required release gate.
-- CI does not prove phone visuals, live BLE/Fan Speed telemetry, Firmware compilation, cooling/thermal safety, OTA/reboot/installed version, physical flash or hardware behavior. No Firmware source/BIN, Firebase, OTA, flash or device operation occurred.
+- CI does not prove phone visuals, live BLE/Fan Speed telemetry, Firmware compilation, cooling/thermal safety, OTA/reboot/installed version, physical flash or hardware behavior. Source-only Firmware V6.7 edits are in commit `d6354792bd81b2309cd341d492103ed4d77a181f`; no Firmware compile, BIN/Firebase publication, OTA, flash or device operation occurred.
 
 ## 3. Current source fingerprints and canonical docs
 
@@ -48,10 +48,10 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
   - `CHANGELOG.md`: `002644d53454b117ac5bc8d9bc44df222ffd0418`.
   - `README.md`: `a5bb31bec9a83c03daddbab9cd127d537660a90e`.
   - `CHAT_RULES.md`: `eae86f7e921b3eb49337bea87a39255eabb7b4c3`.
-  - `FIRMWARE_NOTES.md`: `32248ddfd38fef424c19502ba55ba239010ff84d`.
-  - `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `4af64f254ce9f12cf5d34806f9c4f46f4900fdf4`.
+  - `FIRMWARE_NOTES.md`: `aa61ac32e756e87342d4070c216d699f63949a46`.
+  - `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `7e46c981d6d30b5a1c540ffee540be5b3ff19b67`.
   - `OTA_PROTECTION.md`: `767364ed6c8afd87104f0348490a5afd245d2fe3`.
-  - `OTA_REGRESSION_MEMORY.md`: `e8c7986496b6dcc555823ee699a0a46deb6554c7`.
+  - `OTA_REGRESSION_MEMORY.md`: `82746f375758d075e0cfbc8100d63f37193df9cf`.
   - `VOLTAGE_TRANSITION_MEMORY.md`: `4de77610a070f5691ac3046c7055c6e8a332b77b`.
   - `DESIGN_NOTES.md`: `e2bc96eea271fb33cf176c1ea45131dc7e5782da`.
   - `CHAT_TRANSFER_PROMPTS.md`: `f838a490437407f714a04dce8e504e704bf39df1`.
