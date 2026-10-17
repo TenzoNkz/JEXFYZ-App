@@ -1,5 +1,14 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-17 — Dashboard motion continuity and manual voltage toggle styling
+
+- Indicator motion now continues through the eased OFF fade before pausing. Reactivation preserves the last phase and travels to the next equivalent cycle boundary rather than restarting from phase zero. The Fan retains its separate voltage-phase handoff and coast-down behavior.
+- Thermal flame motion uses integer harmonics to match its shape at the loop boundary; Battery segments have a subtle staggered ripple. The six-branch Peltier crystal stays visually stable while four bounded sparks orbit smoothly and fade with activity. These remain decorative App visuals only.
+- Manual 5V/9V/12V rows stay neutral. Their active toggle uses the theme primary color without a check glyph, while voltage labels retain red/green/blue semantic colors. Other shared control toggles and the voltage command/lock/telemetry logic remain unchanged.
+- Added source-contract regressions for activity fade/pause/resume, loop-compatible flame motion, Peltier spark orbit and manual voltage toggle styling.
+- Source/tests/docs are committed to `main`, but this work is **NOT RELEASED**. Flutter tests, Dart analysis, Android production build, release/signature gates and physical-phone animation/toggle checks were **NOT RUN** under `Eksekusi Full`; Build #70 remains the latest verified release.
+
+
 ## 2026-10-17 — Build #70 release verified after FPS retirement
 
 - Build #70 / run 38998407325 succeeded on exact source/release commit eb1224232241ca5d44d43e25919fd228875029ab. All 21 active workflow steps passed: audit, dependency resolution, Dart analysis (23 info-level deprecations), 86/86 Flutter tests, Android production compile/configured gate, obfuscated APK, V1/V2/V3 signature/certificate checks, matching source archive, publication and re-downloaded artifact verification.
