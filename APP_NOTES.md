@@ -4,10 +4,11 @@ This file is the durable App behavior/design contract. Live source and the curre
 
 ## Latest verified release and current source — 2026-10-17
 
-- Build #70 (run 38998407325, released source commit eb1224232241ca5d44d43e25919fd228875029ab) passed all 21 active workflow steps. Dart analysis completed with 23 info-level deprecations; 86/86 Flutter tests passed; Android production compile/gate, APK obfuscation, V1/V2/V3 signing/certificate, corresponding source ZIP and re-downloaded Release asset checks passed.
-- Native JUnit compile/test tasks were NO-SOURCE after FPS-only native tests were removed; do not count any native JUnit test cases as executed in Build #70. Full log and artifact digests are in APP_BUILD_REPORT.md.
-- Build #70 retires FPS and Shizuku. Floating Monitor supports B/H/V/A/P/F with F=Fan Speed. Schema v2 discards legacy schema-v1 F (FPS) and maps S (Speed) to F. The released APK/source ZIP target commit eb1224232241ca5d44d43e25919fd228875029ab.
-- Build #70 remains the exact verified release source. Main now has post-release indicator-motion and manual-voltage-toggle source changes that are NOT INCLUDED in Build #70. Physical phone rendering and BLE/Fan Speed behavior remain NOT DEVICE-VERIFIED.
+- Build #71 (run `39008259484`, released source commit `d9e026f70ec62455763de05048cba1557edfaf23`) passed all 21 active workflow steps. Dart analysis had 23 info-level deprecations; **88/88 Flutter tests passed**; Android production compile/configured gate, APK obfuscation, V1/V2/V3 signing/certificate, corresponding source ZIP and re-downloaded Release asset checks passed.
+- Native JUnit compile/test tasks were NO-SOURCE after FPS-only native tests were retired; no native JUnit test cases ran in Build #71. Full log and artifact digests are in `APP_BUILD_REPORT.md`.
+- Build #70 retired FPS and Shizuku. Floating Monitor supports B/H/V/A/P/F with F=Fan Speed. Schema v2 drops legacy schema-v1 F (FPS) and maps S (Speed) to F. Build #71 carries the new dashboard-indicator motion continuity and manual-voltage-toggle style changes in the verified APK/source ZIP.
+- Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) targets `d9e026f70ec62455763de05048cba1557edfaf23`. APK asset `649710440`, 54,603,867 bytes, SHA-256 `fdffa5d61ad403153c544cd3a62ea130e810844930f9de96fdd28343f6d041ca`; source ZIP asset `649710439`, 2,847,410 bytes, SHA-256 `3d7dc30fa99d3bfb86bee069e4a9b60292942f215c11c27e519f0b51ca8a24b0`. Both were re-downloaded and verified.
+- Physical phone rendering, actual animation smoothness, active manual-toggle appearance and BLE/Fan Speed behavior remain **NOT DEVICE-VERIFIED**.
 
 ## Identity and package
 
@@ -113,7 +114,7 @@ This file is the durable App behavior/design contract. Live source and the curre
 - Current metrics are B/H/V/A/P/F. F is Fan Speed. When BLE telemetry is disconnected, live device values are unknown (--) and no stale output state is inferred.
 - FPS, SurfaceFlinger TimeStats sampling, Shizuku permission UI/provider/UserService/AIDL, related parser/watchdog tests and Shizuku-only license files are removed from active App source. The release workflow audit and source archive packaging no longer depend on them.
 - Schema version 2 maps old schema-v1 S (Speed) to F (Fan Speed) and drops old schema-v1 F (FPS). Flutter contract tests cover migration and removal of FPS/Shizuku UI.
-- Build #70 is the latest verified release and includes FPS/Shizuku retirement. CI verified the source/test/build/signing/source archive and release assets; phone overlay visuals and live BLE telemetry remain unverified.
+- Build #71 is the latest verified release; it includes FPS/Shizuku retirement plus indicator-motion/manual-voltage-toggle refinements. CI verified 88/88 Flutter tests, Android production compilation/configured gate, signing, source archive and release assets. Phone overlay visuals and live BLE telemetry remain unverified.
 
 ## Phone battery telemetry and Battery Protection UI boundary
 
@@ -125,10 +126,10 @@ This file is the durable App behavior/design contract. Live source and the curre
 
 ## Current App QC boundary
 
-- Latest verified release: Build #70 / run 38998407325, released source commit eb1224232241ca5d44d43e25919fd228875029ab.
-- 86/86 Flutter tests passed. Dart analysis and all 21 active release workflow steps passed, including Android production compile/gate, obfuscated APK, V1/V2/V3 certificate checks, matching source ZIP and re-downloaded Release asset verification. Native JUnit tasks were NO-SOURCE after FPS-specific native test files were removed.
-- APK asset 649412242, 54,538,331 bytes, SHA-256 229aaae5745456498d35f356ee6e0cdde81e7bb29f37238b1172f99f992ab404. Matching source ZIP asset 649412243, 2,847,010 bytes, SHA-256 d0a79cdaf99b169b68cda04c5c3162062f493f0cb6f6ec02c1531950e4bbd8ae. Certificate/warning/step detail remains in APP_BUILD_REPORT.md.
-- Physical overlay layout, live BLE telemetry/Fan Speed value, phone animation and actual BLE/Firmware/thermal/OTA behavior remain UNVERIFIED. Build #70 was App-only.
+- Latest verified release: Build #71 / run 39008259484, released source commit d9e026f70ec62455763de05048cba1557edfaf23.
+- 88/88 Flutter tests passed. Dart analysis and all 21 active release workflow steps passed, including Android production compile/configured gate, obfuscated APK, V1/V2/V3 certificate checks, matching source ZIP and re-downloaded Release asset verification. Native JUnit tasks were NO-SOURCE after FPS-specific native test files were removed; no native JUnit cases ran.
+- APK asset 649710440, 54,603,867 bytes, SHA-256 fdffa5d61ad403153c544cd3a62ea130e810844930f9de96fdd28343f6d041ca. Matching source ZIP asset 649710439, 2,847,410 bytes, SHA-256 3d7dc30fa99d3bfb86bee069e4a9b60292942f215c11c27e519f0b51ca8a24b0. Certificate/warning/step detail remains in APP_BUILD_REPORT.md.
+- Physical overlay layout, live BLE telemetry/Fan Speed value, phone animation and actual BLE/Firmware/thermal/OTA behavior remain UNVERIFIED. Build #71 was App-only.
 
 ## Dashboard indicator motion
 
