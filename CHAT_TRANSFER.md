@@ -1,13 +1,13 @@
 # JE X FYZ / JE Cooler — Chat Transfer Snapshot
 
-Snapshot date: 2026-10-17 (Asia/Jakarta). Prepared against live TenzoNkz/JEXFYZ-App main HEAD 407de3c8625ffd1085c8d46dcba73f7eedf3ef91, after the canonical-memory reconciliation commit. This transfer file is being committed last as a transfer-only follow-up; it deliberately does not include its own future blob/commit hash. Always fetch live main again at the next boot.
+Snapshot date: 2026-10-17 (Asia/Jakarta). Prepared against live TenzoNkz/JEXFYZ-App main after the scoped dashboard-indicator motion/manual-voltage-toggle commits and canonical-memory updates. This transfer file is being committed last as a transfer-only follow-up; it deliberately does not include its own future blob/commit hash. Always fetch live main again at the next boot.
 
 Source-of-truth order: live main source/tree and exact Actions/Release evidence → CHAT_RULES.md for authorization → PROJECT_STATE.md for current state → subject reference files and APP_BUILD_REPORT.md → HANDOVER.md / this snapshot → CHANGELOG.md for history → archive/*.md for forensic recovery only. Archived “CURRENT” wording is not live truth.
 
 ## 1. Current Git and repository state
 
-- Canonical editable App, Firmware source and all project notes/memory: TenzoNkz/JEXFYZ-App, branch main. HEAD immediately before this transfer-only write: 407de3c8625ffd1085c8d46dcba73f7eedf3ef91, message “docs(memory): reconcile current state after Build 70”. Its tree SHA is 57228048b5a381ebb1d8a02647b3170a110d4c56. Recursive tree was complete, not truncated, with 67 entries.
-- Recent relevant commits: FPS retirement source commit 8217a2e8d19dc82e9fe3bfa7e4e1c1692d0b7941; Build #70 release source commit eb1224232241ca5d44d43e25919fd228875029ab; memory/build reconciliation commit 407de3c8625ffd1085c8d46dcba73f7eedf3ef91. Later than the release commit, main has memory/docs changes and a comment-only correction in lib/main.dart; no post-Build-70 functional App change is intended.
+- Canonical editable App, Firmware source and all project notes/memory: TenzoNkz/JEXFYZ-App, branch `main`. HEAD immediately before this transfer-only write: `023f8fbb92ae11f23a1ca33364d7af6ecd10caaa`, message “docs(memory): update indicator motion source checkpoint”, tree SHA `9cb3e954ad26f2f316c751c1d2518675c43a659e`. Re-fetch the branch and tree at the next boot.
+- Recent relevant commits: FPS retirement source commit `8217a2e8d19dc82e9fe3bfa7e4e1c1692d0b7941`; Build #70 source commit `eb1224232241ca5d44d43e25919fd228875029ab`; post-release indicator-motion source commit `2ce326240d38918d9f685145504b1d51c0ea11ec`; regression tests commit `db6ae59a8bf00a6d8116823465079c90ddb9f02a`. The new motion/toggle source is NOT RELEASED and needs a separate App Build/QC run.
 - Five branches observed: main; diag/latest-stable-v16; diagnostic/v1.6-heap-check; fix/adaptive-power-sequencing; tmp-jexfyz-v5-test. Open pull requests: zero. Refresh this data next boot.
 - Artifact repo TenzoNkz/JEXFYZ-Firmware was re-fetched and its root tree contains exactly one blob: JEXFYZ.cpp.bin, 1,455,936 bytes, SHA/blob 68167e65d26137eeb1ce4d6d4ba798dc282454e6. No BIN payload was read or edited. Its provenance from the source sketch remains UNVERIFIED.
 - No files are intentionally removed in this memory transaction. Frozen archive files are preserved byte-for-byte. Their root-relative links may not resolve from inside archive/; one example is a link from archive/ARTIFACT_REPO_NOTES_PRE_BIN_ONLY_2026-10-14.md to VOLTAGE_TRANSITION_MEMORY.md, which resolves incorrectly under archive/. Do not rewrite the forensic archive to “fix” this; canonical root files are the current references.
@@ -21,7 +21,7 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
 - Matching corresponding-source archive: JEXFYZ-corresponding-source.zip, asset 649412243, size 2,847,010 bytes, SHA-256 d0a79cdaf99b169b68cda04c5c3162062f493f0cb6f6ec02c1531950e4bbd8ae. Download: https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip
 - Signing: V1/JAR, V2 and V3 verified true, one signer. Production certificate SHA-256 dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0. Non-blocking warnings and exact workflow output are recorded in APP_BUILD_REPORT.md.
 - Build #70 is the first verified release after FPS/Shizuku retirement. Build #69 and earlier are historical FPS-enabled builds. Build #70 is App CI/build/release evidence, not proof of physical BLE, Fan Speed, cooling, Firmware, thermal safety or OTA behavior.
-- No App Build workflow was triggered during this memory reconciliation. The Build #70 run above happened earlier and is documented evidence.
+- No App Build workflow was triggered for the indicator-motion/manual-toggle change. `Eksekusi Full!` authorizes scoped source/tests/docs/memory work, not release. Build #70 remains the last verified release and does not contain these edits.
 
 ## 3. App identity, active workflow and source fingerprints
 
@@ -29,7 +29,7 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
 - Toolchain from the live workflow: Java 17, Flutter 3.47.2 stable, Gradle 9.3.1.
 - Only active build workflow: .github/workflows/jexfyz-app-build-trigger.yml, blob 8a8533aff7e0e0e01412bf522e1966e81aa1a39f. It triggers only on issues opened/reopened and requires repository owner, exact title “JE X FYZ — EKSEKUSI BUILD APP TRIGGER” and body token JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1. Never add push/PR build triggers.
 - Main app source fingerprints at the checkpoint above:
-  - lib/main.dart — 55a41942d2fc6f32fd488318beea5468044f343e. This includes a comment-only correction replacing obsolete wording that said FPS was measured by SurfaceFlinger.
+  - lib/main.dart — `c10a708022ca8e8defbe1583b47fb0b10ddda8ed`. Post-Build-70 source adds fade-before-pause activity transitions, retained-phase resume at equivalent cycle boundaries, loop-seam-safe thermal flames, a subtle Battery segment ripple, four orbiting Peltier sparks, and neutral theme-primary manual-voltage toggles. NOT RELEASED; tests/build have not run.
   - lib/floating_monitor.dart — 31b45ea08b08ac7fc25ebd991dca873b889fdd14.
   - lib/app_settings.dart — 20f1ce0f838345c9eee4cbacde22255cb7852435.
   - android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt — 7368df11ecb369f8b71607c82e6a1b44472cc79b.
@@ -39,7 +39,7 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
   - pubspec.yaml — 8f558273e21692af9958f914527fdc62d623d63a; pubspec.lock — 1e92812bfda2c28244a0556d71d1ec94084acc66.
   - .github/workflows/jexfyz-app-build-trigger.yml — 8a8533aff7e0e0e01412bf522e1966e81aa1a39f.
 - Five active Dart tests and current blob SHAs:
-  - test/widget_test.dart — 4e5a6d4fdc02e39ba5420a12cad9c39f9f82882e.
+  - test/widget_test.dart — `ce03201590667befb8e3d05b0a9788665fdd54a8`. New source-contract tests cover animation phase continuity/flame loop seam, Peltier spark orbit/fade and manual-voltage toggle styling; they have NOT RUN.
   - test/floating_monitor_layout_contract_test.dart — 87e805095202ac3edfe55b9aeb3138c7c6886375.
   - test/v6_6_qc_contract_test.dart — 083e0d19389c235b84f9785ee665d8ed8789e37f.
   - test/app_protocol_notify_contract_test.dart — 92214dd90178c705844d3979d3f8f7bd17bcc4b8.
@@ -135,19 +135,19 @@ Current canonical responsibility:
 
 Verified blob hashes after first reconciliation commit:
 - README.md 099b93fb35eb34d1657dc63036de3d04094f3029
-- MEMORY_INDEX.md 5a2f4878b22d6140fa746a1e0fda964fcbae74e9
+- MEMORY_INDEX.md f22a739fbdba77ccd6d341ba4a2dba25101730e0
 - CHAT_RULES.md db3b1faabf0a21dd5368d6f634bf7c1bc7f01dee
-- PROJECT_STATE.md 39be6c25c6d2bce447994500ea3f538a7221f6b1
-- HANDOVER.md 4c4f76d6392c1cc7d2cea0403645ecfb0e11d2a3
-- APP_NOTES.md 507dd7513b4154d06c138ec187c0cb98e098c7e5
+- PROJECT_STATE.md b9b534f7f404d5e72c7d9b3be48cd500e5539ad0
+- HANDOVER.md 4a500b9d00c4f5c615240c417cd82fa326e40756
+- APP_NOTES.md 29e947b03cd8e6b7a5499de5bed4e1b651c6d19d
 - FIRMWARE_NOTES.md e4d43acadfae36178c5c812c4b622d7a11adc663
 - firmware/FIRMWARE_TECHNICAL_REFERENCE.md c001884d70a411dee8037bca24badd0b8345b97c
 - OTA_PROTECTION.md 06beb86b749b0f0e14c8cb517e43fe7c0f66a4e1
 - OTA_REGRESSION_MEMORY.md cd570a9bb70d36beeb19445eb236369f93fbe974
 - VOLTAGE_TRANSITION_MEMORY.md 8b27203d6f7ab7a19608a5ca4db5b59e64b64b17
 - BUILD_NOTES.md e62c86ccd247dcb3b5137461bfadb94fdcefced0
-- CHANGELOG.md a89be3ccd0b67539f6f72dc408240b596b962c48
-- DESIGN_NOTES.md e04382659dfdd618de0a156046f140452d275dc7
+- CHANGELOG.md a07f860d4f0aa8c79f0117fb09507867faf8ea3a
+- DESIGN_NOTES.md 5672906b840947aebcc6b3c7092605249f6fd6d6
 - CHAT_TRANSFER_PROMPTS.md 91a5167f6c3dc6c3a3f66f5cef4e99b4c19d9ab3
 - APP_BUILD_REPORT.md 8330ef4fa522fa5913d4e1fd6f95d43b87eeb2a5
 - .github/workflows/jexfyz-app-build-trigger.yml 8a8533aff7e0e0e01412bf522e1966e81aa1a39f
@@ -162,6 +162,6 @@ Verified blob hashes after first reconciliation commit:
 - HYPOTHESIS: brownout for historical resets; whether CA or NTP alone caused the earlier OTA failure.
 - HISTORICAL / SUPERSEDED: Build #69 and earlier FPS/Shizuku source/results, old V5.x–V6.x source snapshots, archive CURRENT claims.
 - NOT RELEASED: source states without a corresponding verified release (Build #70 itself is the latest verified App release; Firmware BIN provenance is separate).
-- Immediate next action: install/update using the Build #70 APK and physically verify Floating Monitor metrics B/H/V/A/P/F, especially F shows live Fan Speed rather than FPS. No new build is needed merely to validate FPS retirement.
+- Immediate next action: run `@Thinking Eksekusi Build App!` for the post-Build-70 source, because `Eksekusi Full!` did not authorize Flutter tests, analysis, Android build or release. After a passing build, install its APK and inspect OFF/ON motion continuity, the Peltier spark orbit and neutral theme-primary voltage toggles on a physical phone.
 - For a new source change, discuss with @Thinking Diskusi!, then @Thinking Eksekusi Full! for approved source/tests/memory and separately @Thinking Eksekusi Build App! for release. @Thinking Chat Stuck! only recovers the previous authorized task and never expands permission.
-- No Firmware compile, BIN read/change/publication, Firebase update, OTA/flash, App Build, release trigger or physical device operation was performed during this reconciliation.
+- Source/tests and current notes were updated on `main`. Flutter tests, Dart analysis, Android build/release/signature gates and physical-phone checks were NOT RUN. No Firmware compile, BIN read/change/publication, Firebase update, OTA/flash, App Build, release trigger or physical device operation occurred.
