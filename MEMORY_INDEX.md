@@ -48,7 +48,7 @@ Reconciled against live GitHub main: 2026-10-17. Live code, Git refs, Actions re
 | OTA_REGRESSION_MEMORY.md | CA/NTP experiment, setInsecure trade-off and failure evidence |
 | VOLTAGE_TRANSITION_MEMORY.md | Peltier ramp, rail changes, recovery rules and validation |
 | BUILD_NOTES.md | Active App workflow/toolchain/build-requirements and historical build milestones |
-| APP_BUILD_REPORT.md | Authoritative build-attempt ledger; Build #70 is latest verified release. FPS parser/watchdog runs are historical. |
+| APP_BUILD_REPORT.md | Authoritative build-attempt ledger; Build #71 is latest verified release. FPS parser/watchdog runs are historical. |
 | CHANGELOG.md | Historical behavior/decision/failure ledger, not current truth |
 | DESIGN_NOTES.md | Approved grille, icons/cooler and visual requirements |
 | .github/workflows/jexfyz-app-build-trigger.yml | Authoritative manual issue-triggered App Build workflow |
