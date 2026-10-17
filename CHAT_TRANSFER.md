@@ -1,14 +1,14 @@
 # JE X FYZ / JE Cooler — Chat Transfer Snapshot
 
-Snapshot reconciled against live GitHub main on 2026-10-16 (Asia/Jakarta), after commit 8217a2e8d19dc82e9fe3bfa7e4e1c1692d0b7941 removed FPS and Shizuku from active App source. Build #69 remains the latest verified APK/release, but it predates this change and its APK/source archive still contain the old FPS implementation. The current six-metric source, migration tests and updated workflow have NOT YET BEEN BUILT OR TESTED. PROJECT_STATE.md is current-only; APP_NOTES.md owns App behavior; APP_BUILD_REPORT.md is the build ledger; CHANGELOG.md is history only.
+Snapshot reconciled against live GitHub main on 2026-10-17 (Asia/Jakarta). FPS removal was committed in 8217a2e8d19dc82e9fe3bfa7e4e1c1692d0b7941; Build #69 remains the latest verified APK/release, but it predates this change and its APK/source archive still contain the old FPS implementation. The current six-metric source, migration tests and updated workflow have NOT YET BEEN BUILT OR TESTED. PROJECT_STATE.md is current-only; APP_NOTES.md owns App behavior; APP_BUILD_REPORT.md is the build ledger; CHANGELOG.md is history only.
 
 ## 1. Repository identity and current Git checkpoint
 
 - Canonical App source/memory repository: TenzoNkz/JEXFYZ-App, branch main.
-- Main HEAD immediately before this transfer-file replacement: 8217a2e8d19dc82e9fe3bfa7e4e1c1692d0b7941 (commit message: Remove FPS and label Floating Fan Speed as F). Recursive tree is complete/not truncated: 67 entries, 49 blobs and 18 trees. The commit was made directly on main; no branch or PR was created.
+- Parent HEAD before this follow-up reconciliation: 7121695751ac73611fd897b75f1f4052584104af (commit message: Refresh chat transfer snapshot after FPS removal). Recursive tree is complete/not truncated: 67 entries, 49 blobs and 18 trees; no open PRs. FPS source removal remains in commit 8217a2e8d19dc82e9fe3bfa7e4e1c1692d0b7941, committed directly on main.
 - Latest verified release remains Build #69 / run 38896502185 from release/source commit 01212c32a802ca0e67f559307fe4e19a667489c6. It passed all 21 release workflow steps: architecture/security audit, dependencies, Dart analysis, 88/88 Flutter tests, native FPS parser/watchdog JUnit, obfuscated APK, V1/V2/V3 signing/certificate, source ZIP, Release publication and downloaded-asset checks. Those results apply to the prior FPS-enabled source, not current main.
 - Build #69 APK SHA-256: 40e2f3233d94cb8f624a3ffc50677f058840057800b8b1a172ba0eaf2881a102; matching source ZIP SHA-256: 1ab19e552c128d09773794738a6a4340abfa82086fa83f2d7e883ed62f60a699. Current release tag jexfyz-latest still targets Build #69 and has exactly one APK plus one source ZIP. Do not label that release as containing the FPS-removal change.
-- The current main commit removes FPS/Shizuku runtime integration and switches Floating Monitor to six metrics B/H/V/A/P/F, with F=Fan Speed. New source/tests/workflow have NOT RUN / NOT BUILT; only static source/cross-file audit was performed here.
+- The current main source removes FPS/Shizuku runtime integration and switches Floating Monitor to six metrics B/H/V/A/P/F, with F=Fan Speed. A follow-up cleanup changes only a stale HUD comment and reconciles current-only documentation; source/tests/workflow still have NOT RUN / NOT BUILT.
 - Branches: diag/latest-stable-v16, diagnostic/v1.6-heap-check, fix/adaptive-power-sequencing, main, tmp-jexfyz-v5-test. Open pull requests: zero.
 - Dedicated Firmware repository TenzoNkz/JEXFYZ-Firmware remains BIN-only: exactly JEXFYZ.cpp.bin, 1,455,936 bytes, blob 68167e65d26137eeb1ce4d6d4ba798dc282454e6. Source-to-BIN provenance remains unverified. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
@@ -24,12 +24,12 @@ Snapshot reconciled against live GitHub main on 2026-10-16 (Asia/Jakarta), after
 
 ## 3. Current source fingerprints
 
-- Current main commit for FPS removal: 8217a2e8d19dc82e9fe3bfa7e4e1c1692d0b7941. Current source changes remain NOT YET BUILT/TESTED.
+- FPS-removal source commit: 8217a2e8d19dc82e9fe3bfa7e4e1c1692d0b7941; parent documentation-snapshot commit: 7121695751ac73611fd897b75f1f4052584104af. This follow-up source/comment and current-note reconciliation is not built/tested.
 - Current implementation/test blobs:
   - lib/main.dart: d24885cf0a40472b9fb23ee6ce73ad772ae73672 (unchanged).
   - lib/floating_monitor.dart: 31b45ea08b08ac7fc25ebd991dca873b889fdd14; six metrics and schema-v2 migration.
   - lib/app_settings.dart: 20f1ce0f838345c9eee4cbacde22255cb7852435; FPS/Shizuku status strings removed.
-  - android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt: 2d47a1ca766e454318e3c33911ffd7a7da234dbf; native overlay retained, sampler removed, F renders Fan Speed.
+  - android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt: 7368df11ecb369f8b71607c82e6a1b44472cc79b; native overlay retained, sampler removed, stale FPS-only HUD comment removed, F renders Fan Speed.
   - android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt: bd17c34211e8eb5c4723e06937ae47f0071b5e8b; permission/status bridge removed, overlay channels retained.
   - android/app/src/main/AndroidManifest.xml: c374b5d3ad6448b8b3e99a420ed7e8c49d38497a; Shizuku provider/query removed.
   - android/app/build.gradle: 060cdd36a4f7d4d2fa4c97a1b6a15954b8355350; Shizuku API/provider and unused native JUnit dependency removed.
@@ -40,7 +40,7 @@ Snapshot reconciled against live GitHub main on 2026-10-16 (Asia/Jakarta), after
   - test/app_protocol_notify_contract_test.dart: 92214dd90178c705844d3979d3f8f7bd17bcc4b8.
   - test/firmware_touch_adaptive_sync_test.dart: 2d3fea509343a03b8d23623f4dcb2dd7fd972d39.
 - Removed active paths: FpsShizukuUserService.kt, FpsTimeStatsParser.kt, FpsSamplerWatchdogPolicy.kt and both native FPS JUnit files; IFpsShizukuUserService.aidl; android/app/src/main/assets/licenses/shizuku-api-MIT.txt; test/shizuku_fps_contract_test.dart; third_party/Shizuku-API-MIT.txt; third_party/THIRD_PARTY_NOTICES.md. Verified recursive tree contains no path with FPS/Shizuku names.
-- Canonical docs at the end of the source commit: APP_BUILD_REPORT.md 9d624ac13ddac291ef401d547a199ab2a85838a6; PROJECT_STATE.md ffe29d66737613fefed1538723ad1ee696656882; MEMORY_INDEX.md 4e7d6f60a913aea3894a702e7a95c564c633d209; BUILD_NOTES.md cbf3a47c10a6c5ac26bc56615b6f1d4fb244222a; HANDOVER.md 01eb22ec6d24a4abb70ad2d6d413aecfe8ab9cc0; APP_NOTES.md 6047ec51db902883d308ee62e9aec637c1535634; CHANGELOG.md 66d2d274ababed3b9551f04a48019d1859c32079; README.md 181a01cb5e1124f91e8fa66801ccff83d5e8585a; CHAT_RULES.md 3ca9f302419215b7036d3b8062e2068ea22edf2f; CHAT_TRANSFER_PROMPTS.md 91a5167f6c3dc6c3a3f66f5cef4e99b4c19d9ab3.
+- Canonical docs prepared for this follow-up: APP_BUILD_REPORT.md remains unchanged at 9d624ac13ddac291ef401d547a199ab2a85838a6; PROJECT_STATE.md 3ddff3ff1c0e02173879e34c2874e65777d3202f; MEMORY_INDEX.md 4e7d6f60a913aea3894a702e7a95c564c633d209; BUILD_NOTES.md cbf3a47c10a6c5ac26bc56615b6f1d4fb244222a; HANDOVER.md 4dae34b68c89d0be106fcf2acb768c77cc34aa4a; APP_NOTES.md 6fe2adfcf4c1e5ae5fad617ccf0bdb09a7b85e5d; CHANGELOG.md 66d2d274ababed3b9551f04a48019d1859c32079; README.md 64a5a02a1ad3d71dff380afdf9e991c0a73c4bbb; CHAT_RULES.md 3ca9f302419215b7036d3b8062e2068ea22edf2f; CHAT_TRANSFER_PROMPTS.md 91a5167f6c3dc6c3a3f66f5cef4e99b4c19d9ab3.
 - Build report remains untouched because no Build App attempt was made. Old Build #63/#64 failures and repairs remain in APP_BUILD_REPORT.md; Build #69's old-source pass remains the latest release record.
 
 ## 4. Current Home indicator and animation contracts

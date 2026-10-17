@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled: 2026-10-16 Asia/Jakarta during FPS-removal execution. Build #69 remains the latest verified release, but active main source is being simplified beyond that release and is not yet built.
+Last reconciled: 2026-10-17 Asia/Jakarta after FPS removal was committed to main. Build #69 remains the latest verified release, but active main source has since been simplified and is not yet built.
 
 ## Current App source/release
 
@@ -40,6 +40,6 @@ Last reconciled: 2026-10-16 Asia/Jakarta during FPS-removal execution. Build #69
 
 ## Canonical next actions
 
-1. Complete the FPS-removal source commit and static cross-file audit; verify main contains no active FPS/Shizuku components and no stale seven-metric contract.
-2. Run App Build only after the separate @Thinking Eksekusi Build App! command. Use the existing guarded issue-trigger workflow; do not introduce push/PR release triggers.
+1. Run App Build only after the separate @Thinking Eksekusi Build App! command; use the existing guarded issue-trigger workflow and verify analysis, tests, Kotlin compile, source archive and release checks.
+2. After a new APK is released, verify six-metric Floating Monitor rendering and live Fan Speed telemetry on the phone.
 3. Keep Firmware V6.6, the BIN-only artifact repo, Firebase metadata, OTA and physical hardware untouched.

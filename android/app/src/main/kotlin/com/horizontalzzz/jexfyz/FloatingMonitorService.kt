@@ -335,7 +335,7 @@ class FloatingMonitorService : Service() {
             val languageChanged = nextLanguage != data.language
             data.language = nextLanguage
             if (config.enabled) {
-                // Values can change measured HUD width (for example FPS 60 -> 120 or
+                // Values can change HUD width (for example Fan Speed 50 -> 100 or
                 // Hotside changing from -- to a numeric temperature), not just its pixels.
                 hudView?.requestLayout()
                 hudView?.invalidate()

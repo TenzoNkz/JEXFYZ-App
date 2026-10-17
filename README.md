@@ -18,7 +18,7 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 12. [Transfer Prompt Templates](CHAT_TRANSFER_PROMPTS.md) — copy-ready prompts for saving context and starting a new chat.
 13. `archive/` contains immutable, verbatim legacy snapshots for forensic recovery only. Any old `CURRENT` status inside an archive is not live truth. Some root-relative links retained from the original documents do not resolve when the snapshot is viewed inside `archive/`; this is intentional to preserve the snapshots byte-for-byte. Use the canonical root-level files linked above for navigation.
 
-## Current source validation boundary — 2026-10-16
+## Current source validation boundary — 2026-10-17
 
 - Latest verified release remains [Build #69](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38896502185), exact source/release HEAD `01212c32a802ca0e67f559307fe4e19a667489c6`. It passed audit, dependency resolution, Dart analysis, **88/88 Flutter tests**, native TimeStats parser/watchdog-policy JUnit tests, obfuscated Android release build, V1/V2/V3 signing/certificate checks, publication and re-downloaded asset verification. Build #69 predates the current FPS-removal source change; its APK still contains FPS.
 - Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) has one APK (asset `647189019`, `54,636,716` bytes; SHA-256 `40e2f3233d94cb8f624a3ffc50677f058840057800b8b1a172ba0eaf2881a102`) and one matching source ZIP (asset `647189016`, `2,877,171` bytes; SHA-256 `1ab19e552c128d09773794738a6a4340abfa82086fa83f2d7e883ed62f60a699`). Both were re-downloaded and verified against the exact Build #69 source marker.

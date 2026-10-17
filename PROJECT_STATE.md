@@ -58,7 +58,7 @@ Last reconciled from live GitHub on 2026-10-16. This file is current-only. Use C
 - Current source blobs prepared for the FPS-removal change:
   - lib/floating_monitor.dart: 31b45ea08b08ac7fc25ebd991dca873b889fdd14
   - lib/app_settings.dart: 20f1ce0f838345c9eee4cbacde22255cb7852435
-  - android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt: 2d47a1ca766e454318e3c33911ffd7a7da234dbf
+  - android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt: 7368df11ecb369f8b71607c82e6a1b44472cc79b
   - android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt: bd17c34211e8eb5c4723e06937ae47f0071b5e8b
   - android/app/src/main/AndroidManifest.xml: c374b5d3ad6448b8b3e99a420ed7e8c49d38497a
   - android/app/build.gradle: 060cdd36a4f7d4d2fa4c97a1b6a15954b8355350
