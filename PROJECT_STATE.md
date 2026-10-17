@@ -14,7 +14,7 @@ Last reconciled from live GitHub on 2026-10-17. This file is current-only. Use C
 
 ## App identity and repository
 
-- Canonical App repo: TenzoNkz/JEXFYZ-App, branch `main`. Latest verified release is Build #70 from `eb1224232241ca5d44d43e25919fd228875029ab`; current main includes post-Build-70 indicator/toggle changes that have not been built or released. Overlay and icon-animation rendering remain unverified on the phone.
+- Canonical App repo: TenzoNkz/JEXFYZ-App, branch `main`. Latest verified release is Build #71 from `d9e026f70ec62455763de05048cba1557edfaf23`; it includes the post-Build-70 indicator motion and manual-voltage toggle changes. Overlay and icon-animation rendering remain unverified on the phone.
 - App/package: JE Cooler / JE X FYZ, com.horizontalzzz.jexfyz, pubspec version 1.0.0+3. Preserve Gradle versionName exactly as "Telegram @horizontalzzz".
 - Only active App build workflow: .github/workflows/jexfyz-app-build-trigger.yml; issue opened/reopened only; repository-owner, exact title and body-token guarded. Normal push/PR does not build/release.
 - Firmware artifact repo TenzoNkz/JEXFYZ-Firmware has exactly one tree entry: JEXFYZ.cpp.bin, 1,455,936 bytes, blob 68167e65d26137eeb1ce4d6d4ba798dc282454e6. Do not modify or inspect BIN payload during documentation work. This does not prove current source-to-BIN provenance.
