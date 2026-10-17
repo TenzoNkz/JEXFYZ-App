@@ -1,13 +1,13 @@
 # JE X FYZ / JE Cooler — Chat Transfer Snapshot
 
-Snapshot reconciled against live TenzoNkz/JEXFYZ-App main on 2026-10-17 after successful Build #71 and full canonical-document synchronization. Build #71 is the latest verified release; the dashboard-indicator motion continuity and manual-voltage-toggle changes are included in the APK/source ZIP. Physical-phone visual/telemetry checks remain pending. This file is committed last and deliberately excludes its own future blob/commit hash.
+Snapshot reconciled against live `main` on 2026-10-17 after source-only integrated 2D icon, localization/LED, and V6.7 Adaptive Fan PWM changes. Build #71 remains the latest verified APK; current `main` changes are unbuilt/uncompiled and not in that release. Physical visuals and hardware behavior remain unverified. This file is committed last and deliberately excludes its own future blob/commit hash.
 
 Source-of-truth order: live main source/tree and exact Actions/Release evidence → CHAT_RULES.md for authorization → PROJECT_STATE.md for current state → subject reference files and APP_BUILD_REPORT.md → HANDOVER.md / this snapshot → CHANGELOG.md for history → archive/*.md for forensic recovery only. Archived “CURRENT” wording is not live truth.
 
 ## 1. Current Git and repository state
 
 - Canonical App/Firmware source and project-memory repository: `TenzoNkz/JEXFYZ-App`, branch `main`.
-- Parent HEAD immediately before this transfer-only commit: `d1e855a1e57a2dfaaaa73fc18f8dbc81414a557a`, message `docs(state): correct widget test blob fingerprint`, tree SHA `b592283ac1f899b80722e5121823676a9f47fd7b`. Recursive tree is complete, not truncated: 67 entries (49 blobs, 18 trees). Re-fetch branch/tree at next boot.
+- Parent HEAD immediately before this transfer-only commit: `d6354792bd81b2309cd341d492103ed4d77a181f`, message `feat: redesign indicators and adaptive fan PWM`, tree SHA `148681797d273ed6575a46f65b996953cc70ea65`. Recursive tree is complete/not truncated: 67 entries (49 blobs, 18 trees). Exactly one active versioned Firmware sketch exists: `firmware/JEXFYZ-V6.7.ino`. Re-fetch branch/tree at next boot.
 - Latest verified release: Build #71 / [Actions run `39008259484`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39008259484), exact release/source commit `d9e026f70ec62455763de05048cba1557edfaf23`. Completed at `2026-10-17T06:05:54Z` (`2026-10-17 13:05:54 Asia/Jakarta`). All 21 active workflow steps passed: audit, dependencies, Dart analysis, **88/88 Flutter tests**, Android production compilation/configured gate, obfuscated APK, V1/V2/V3 signing and certificate checks, source ZIP, Release publication and re-downloaded asset verification.
 - Build #70 is historical and verified FPS/Shizuku retirement plus schema-v2 migration to six metrics B/H/V/A/P/F (F=Fan Speed). Build #71 is newer and includes the post-Build-70 motion/toggle refinements.
 - Build #71 was triggered through owner/title/token-guarded [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). Issue owner `TenzoNkz`, title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; workflow blob `8a8533aff7e0e0e01412bf522e1966e81aa1a39f` is unchanged and listens only to issue opened/reopened. No push/PR/dispatch bypass.
@@ -26,40 +26,40 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
 
 ## 3. Current source fingerprints and canonical docs
 
-- Functional release source is `d9e026f70ec62455763de05048cba1557edfaf23`. Later repository writes are documentation-only; do not mistake current documentation HEAD for a new functional build.
+- Latest **verified release source** remains `d9e026f70ec62455763de05048cba1557edfaf23` (Build #71). Current `main` functional source is `d6354792bd81b2309cd341d492103ed4d77a181f`; it includes new unbuilt changes and must not be mistaken for a verified APK.
 - Current source/test blobs:
-  - `lib/main.dart`: `c10a708022ca8e8defbe1583b47fb0b10ddda8ed`.
+  - `lib/main.dart`: `3bb9a772e7e4a192cd9b4457846b111e28ec305a`.
   - `lib/floating_monitor.dart`: `31b45ea08b08ac7fc25ebd991dca873b889fdd14`.
-  - `lib/app_settings.dart`: `20f1ce0f838345c9eee4cbacde22255cb7852435`.
-  - `test/widget_test.dart`: `032cefebf89e08f92fddaf992184c7580c185b2a`.
+  - `lib/app_settings.dart`: `77faaa80264ed65ab5c104588978bb903e9f89db`.
+  - `test/widget_test.dart`: `66861cad0638433bd7b575439bb4a2b637f1f856`.
   - `test/floating_monitor_layout_contract_test.dart`: `87e805095202ac3edfe55b9aeb3138c7c6886375`.
-  - `test/v6_6_qc_contract_test.dart`: `083e0d19389c235b84f9785ee665d8ed8789e37f`.
+  - `test/v6_7_qc_contract_test.dart`: `6b71cc2ebbef9b3f1c9757728067eec4d11ff5ee`.
   - `test/app_protocol_notify_contract_test.dart`: `92214dd90178c705844d3979d3f8f7bd17bcc4b8`.
-  - `test/firmware_touch_adaptive_sync_test.dart`: `2d3fea509343a03b8d23623f4dcb2dd7fd972d39`.
-  - Native `FloatingMonitorService.kt`: `7368df11ecb369f8b71607c82e6a1b44472cc79b`; `MainActivity.kt`: `bd17c34211e8eb5c4723e06937ae47f0071b5e8b`; `AndroidManifest.xml`: `c374b5d3ad6448b8b3e99a420ed7e8c49d38497a`; `android/app/build.gradle`: `060cdd36a4f7d4d2fa4c97a1b6a15954b8355350`.
+  - `test/firmware_touch_adaptive_sync_test.dart`: `94c0f074247f47fce7d939a72b0130eb1b2d70fa`.
+  - Native `FloatingMonitorService.kt`: `8312cc12d391cde5f76b146ff98075856d32bae2`; `MainActivity.kt`: `bd17c34211e8eb5c4723e06937ae47f0071b5e8b`; `AndroidManifest.xml`: `c374b5d3ad6448b8b3e99a420ed7e8c49d38497a`; `android/app/build.gradle`: `060cdd36a4f7d4d2fa4c97a1b6a15954b8355350`.
   - Active workflow `.github/workflows/jexfyz-app-build-trigger.yml`: `8a8533aff7e0e0e01412bf522e1966e81aa1a39f`.
 - Canonical docs immediately before this transfer-only commit:
   - `APP_BUILD_REPORT.md`: `2c9d2701aef8d02ff71f89214418b8f9aa3d0b6b`.
-  - `PROJECT_STATE.md`: `bdb340004b02e0ffbbe96475e5ae1794ea763f3f`.
-  - `MEMORY_INDEX.md`: `f616bf170e37c17038b77afacf419a878974c91d`.
+  - `PROJECT_STATE.md`: `369b673cf9055408b330f781f0d24b08396f5803`.
+  - `MEMORY_INDEX.md`: `cd51978a4223fb3a43f87e5943e276081b2bca6d`.
   - `BUILD_NOTES.md`: `821f3370bbf6816874681195ceff21a36faf5573`.
-  - `HANDOVER.md`: `f46bf5927990621ae816fea71bbf7a7b55152bdb`.
-  - `APP_NOTES.md`: `19631ba2b88fad5f20f83a8212bc4537861f29ec`.
-  - `CHANGELOG.md`: `e93531cec680022dd8bb8cd0cd99f2c94b063eec`.
-  - `README.md`: `0047b83def754b0f8f2daa424f6ad4debd4956b9`.
-  - `CHAT_RULES.md`: `c0aac5d9f078788b5201b551f95d9b424a748911`.
-  - `FIRMWARE_NOTES.md`: `5dbf1a08565f3d9f5d53941417122754aa167d5e`.
-  - `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `071784beefc3197e71a3ef3c5b3fff2ad39e701a`.
-  - `OTA_PROTECTION.md`: `06beb86b749b0f0e14c8cb517e43fe7c0f66a4e1`.
-  - `OTA_REGRESSION_MEMORY.md`: `51974545d21b2fd12d821aed7ff076ffcf07786a`.
-  - `VOLTAGE_TRANSITION_MEMORY.md`: `8c45c9c87cbe5deb13a689e5cd06dfd94ac2ca8b`.
-  - `DESIGN_NOTES.md`: `5672906b840947aebcc6b3c7092605249f6fd6d6`.
-  - `CHAT_TRANSFER_PROMPTS.md`: `91a5167f6c3dc6c3a3f66f5cef4e99b4c19d9ab3`.
+  - `HANDOVER.md`: `2d1626f10251133de3c5ba89a8bdf33a62cf71d9`.
+  - `APP_NOTES.md`: `4607cd20dbc87d97975440038661aaa338d6e24f`.
+  - `CHANGELOG.md`: `002644d53454b117ac5bc8d9bc44df222ffd0418`.
+  - `README.md`: `a5bb31bec9a83c03daddbab9cd127d537660a90e`.
+  - `CHAT_RULES.md`: `eae86f7e921b3eb49337bea87a39255eabb7b4c3`.
+  - `FIRMWARE_NOTES.md`: `32248ddfd38fef424c19502ba55ba239010ff84d`.
+  - `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `4af64f254ce9f12cf5d34806f9c4f46f4900fdf4`.
+  - `OTA_PROTECTION.md`: `767364ed6c8afd87104f0348490a5afd245d2fe3`.
+  - `OTA_REGRESSION_MEMORY.md`: `e8c7986496b6dcc555823ee699a0a46deb6554c7`.
+  - `VOLTAGE_TRANSITION_MEMORY.md`: `4de77610a070f5691ac3046c7055c6e8a332b77b`.
+  - `DESIGN_NOTES.md`: `e2bc96eea271fb33cf176c1ea45131dc7e5782da`.
+  - `CHAT_TRANSFER_PROMPTS.md`: `f838a490437407f714a04dce8e504e704bf39df1`.
 
-## 4. Current Floating Monitor: FPS retired, F means Fan Speed
+## 4. Current Floating Monitor: FPS retired, F label is Fan/Kipas
 
 - The user chose to remove FPS entirely after repeated F:-- and Shizuku UserService failures rather than continue speculative device-specific FPS fixes. This decision was implemented in Build #70 and is included in the current release.
-- Exactly six metric IDs: B (Battery Temperature), H (Hotside Temperature), V (Voltage), A (Adaptive), P (Peltier), F (Fan Speed). F means Fan Speed, not FPS. Fan telemetry and Firmware speed control were not changed.
+- Exactly six metric IDs: B (Battery Temperature), H (Hotside Temperature), V (Voltage), A (Adaptive), P (Peltier), F (Fan Speed). F is labelled Fan/Kipas and its numeric value shows live fan speed, not FPS. Fan telemetry and Firmware speed control were not changed.
 - Persisted schema v2 migrates legacy schema v1: old F (FPS) selections are discarded; old S (Speed/Fan Speed) migrates to F. This avoids interpreting a saved FPS setting as a Fan Speed value.
 - FPS SurfaceFlinger/TimeStats sampler and watchdog/parser, Shizuku permission/status UI/API/provider/dependency, UserService/AIDL, FPS-specific tests, Shizuku-only Dart contract, and Shizuku-only notice/license files are removed. The active workflow audit guards against their reintroduction.
 - Overlay contract: Letters-only (legacy Icons normalize to Letters), freely draggable with saved coordinates; horizontal metrics centered as a group, vertical rows share a left edge; size 0.30×–1.00× in 0.05× increments (default 0.60×); opacity 0–100% in 5% steps, current percent/endpoints, no midpoint; opacity affects background only. Fan on displays live speed, Fan off localized OFF/MATI, disconnected output is `--`.
@@ -88,10 +88,10 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
 - LED color picker uses 36 curated hue-ordered presets with localized names and no HEX UI. Swatches update local draft only; explicit Select sends confirmed COLOR, Cancel discards without BLE write. Existing LED mode IDs Static 1, Breath 2, Comet 4, Dual Chase 5, Left/Right 6, Rainbow 7 remain; mode 3/Mirror Pulse is retired.
 - Approved printable JE X FYZ grille is exact symmetric 1:1 square, white geometric grille, purple central X, four corner holes, preserve pattern/frame. Flat 2D, no shadow/bevel/gradient/texture/invented elements. Transparent assets: `assets/jexfyzicon.png`, `assets/jexfyzcooler.png`, Android icon `android/app/src/main/res/drawable-nodpi/jexfyzicon.png`.
 
-## 7. Firmware V6.6 and hardware baseline (not changed here)
+## 7. Active Firmware V6.7 and hardware baseline (source-only; not compiled)
 
-- Canonical editable source: firmware/JEXFYZ-V6.6.ino, blob f51ba6db5d0e91318f63fea4014bb87f7bf76222; embedded FW_VERSION = "V6.6"; exactly one active versioned .ino. Target ESP32-C3 Super Mini/Dev Module, Arduino-ESP32 Core 3.3.7, user compiles using ArduinoDroid.
-- User accepts Firmware V6.6 as final/correct and reports successful compilation plus two successful same-version Online OTA updates. This is USER-REPORTED, not assistant-witnessed logs. Installed version and source-to-BIN provenance remain UNVERIFIED. Do not reopen/compile/reflash firmware or promote BIN/Firebase unless user reopens that task and separately authorizes it.
+- Canonical active source: `firmware/JEXFYZ-V6.7.ino`, blob `1d0fa0d5e308b9789fd1c32211ce0a127d497f6a`; embedded `FW_VERSION="V6.7"`; exactly one active versioned `.ino`. Target ESP32-C3 Super Mini/Dev Module, Arduino-ESP32 Core 3.3.7; user compiles via ArduinoDroid. V6.7 is source-only and uncompiled.
+- V6.6 compile/two-same-version-OTA statements are historical USER-REPORTED evidence. The user reopened source work and authorized V6.7 Adaptive Fan PWM; V6.7 has no compile, BIN/source provenance, OTA, flash or device validation. No such operation was performed in this task.
 - ESP32-C3 has one radio path: Wi-Fi OTA and BLE may not own the radio concurrently; explicitly transfer ownership.
 - Pin map: GPIO0 Hotside NTC ADC; GPIO1 TTP223 touch input; GPIO3 12 V selector; GPIO4 9 V selector; GPIO5 Peltier MOSFET PWM; GPIO6 Fan MOSFET PWM; GPIO7 WS2812.
 - MOSFET wiring memory: GPIO → R100 → gate; 100 kΩ gate-source pull-down. Fan positive goes to supply (“Decoy” as written in user note); fan negative goes to MOSFET Drain. A prior 12 V selector problem was later traced to a loose cable, not established code defect; verify physical wiring before changing code.
@@ -100,7 +100,7 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
 - Peltier PWM is 20 kHz/8-bit, ordinary OFF→ON has 5 s soft-start; Fan PWM is 25 kHz/8-bit, manual target 50–100%, safety can force 100%. Selector break-before-make is 200 ms and shared rail guard/settle is 1 s. Use cooperative millis() timing; no executable delay() or timing while loops.
 - During voltage transition, if soft-start is active, capture interrupted-ramp state, force GPIO5 PWM 0% before selector output changes, wait 200 ms deadtime plus existing 1 s settle, then start a fresh 5 s ramp. If ramp is completed/full duty 100%, do not force PWM to zero and do not re-ramp; keep it continuous. If Peltier was logically OFF, voltage change must not turn it on. Fan stays ON/100% during handoff. Explicit OFF/Hotside/NTC/OTA safety cancels pending resume.
 - Adaptive uses a 30 s thermal stage at each of 12 V, 9 V, 5 V; Peltier OFF/Fan 100%. Five continuous seconds at/below hotLimit−1°C before expiry cancels/recovers the dwell; otherwise 12 V and 9 V step down one rail and unrecovered 5 V enters terminal lock requiring manual restart. Following thermal downshift, recover upward one rail after 60 s stable and never above saved pre-downshift ceiling. HOTSIDE is startup default; HOTSIDE_BATTERY is runtime selectable and not persisted. Missing/stale phone Battery data causes HOTSIDE fallback without rewriting the selected profile.
-- HISTORICAL / NOT IMPLEMENTED in V6.6: user asked for rapid Hotside rise/rate-of-rise shutdown and manual re-arm. Do not claim this exists or add it without reopening the requirement.
+- HISTORICAL / NOT IMPLEMENTED in V6.x: user asked for rapid Hotside rise/rate-of-rise shutdown and manual re-arm. V6.7 changes Fan PWM trend response only; it does not add a separate rapid Hotside-rise shutdown.
 - Reported reset incidents are distinct: (1) 5 V→12 V while Peltier/Fan ON and soft-start active; (2) Adaptive ON after selecting 12 V and enabling Peltier/Fan. Reset reason was not captured. Brownout/supply transient is a HYPOTHESIS only. If user later authorizes reproduction, capture BOOT: RESET_REASON and telemetry; do not assume same root cause for both incidents.
 - TTP223 is the only touch sensor; there is no separate Wi-Fi/BLE switch. Recorded timing reference: ~1 s startup grace, 30 ms qualification, raw HIGH tap 60–500 ms, 800 ms double-tap window from first valid release, 5 s long press; inspect current source before changing.
 - Adaptive ON indication: three orange blinks. Adaptive OFF: three white blinks, deferred until safe 5 V handoff if needed. A missing white boot/OFF indication was reported historically; physical initial-boot behavior is UNVERIFIED.
@@ -141,33 +141,34 @@ Current canonical responsibility:
 
 Canonical document blob hashes immediately before this transfer-only write:
 - `APP_BUILD_REPORT.md`: `2c9d2701aef8d02ff71f89214418b8f9aa3d0b6b`.
-- `PROJECT_STATE.md`: `bdb340004b02e0ffbbe96475e5ae1794ea763f3f`.
-- `MEMORY_INDEX.md`: `f616bf170e37c17038b77afacf419a878974c91d`.
+- `PROJECT_STATE.md`: `369b673cf9055408b330f781f0d24b08396f5803`.
+- `MEMORY_INDEX.md`: `cd51978a4223fb3a43f87e5943e276081b2bca6d`.
 - `BUILD_NOTES.md`: `821f3370bbf6816874681195ceff21a36faf5573`.
-- `HANDOVER.md`: `f46bf5927990621ae816fea71bbf7a7b55152bdb`.
-- `APP_NOTES.md`: `19631ba2b88fad5f20f83a8212bc4537861f29ec`.
-- `CHANGELOG.md`: `e93531cec680022dd8bb8cd0cd99f2c94b063eec`.
-- `README.md`: `0047b83def754b0f8f2daa424f6ad4debd4956b9`.
-- `CHAT_RULES.md`: `c0aac5d9f078788b5201b551f95d9b424a748911`.
-- `FIRMWARE_NOTES.md`: `5dbf1a08565f3d9f5d53941417122754aa167d5e`.
-- `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `071784beefc3197e71a3ef3c5b3fff2ad39e701a`.
-- `OTA_PROTECTION.md`: `06beb86b749b0f0e14c8cb517e43fe7c0f66a4e1`.
-- `OTA_REGRESSION_MEMORY.md`: `51974545d21b2fd12d821aed7ff076ffcf07786a`.
-- `VOLTAGE_TRANSITION_MEMORY.md`: `8c45c9c87cbe5deb13a689e5cd06dfd94ac2ca8b`.
-- `DESIGN_NOTES.md`: `5672906b840947aebcc6b3c7092605249f6fd6d6`.
-- `CHAT_TRANSFER_PROMPTS.md`: `91a5167f6c3dc6c3a3f66f5cef4e99b4c19d9ab3`.
+- `HANDOVER.md`: `2d1626f10251133de3c5ba89a8bdf33a62cf71d9`.
+- `APP_NOTES.md`: `4607cd20dbc87d97975440038661aaa338d6e24f`.
+- `CHANGELOG.md`: `002644d53454b117ac5bc8d9bc44df222ffd0418`.
+- `README.md`: `a5bb31bec9a83c03daddbab9cd127d537660a90e`.
+- `CHAT_RULES.md`: `eae86f7e921b3eb49337bea87a39255eabb7b4c3`.
+- `FIRMWARE_NOTES.md`: `32248ddfd38fef424c19502ba55ba239010ff84d`.
+- `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `4af64f254ce9f12cf5d34806f9c4f46f4900fdf4`.
+- `OTA_PROTECTION.md`: `767364ed6c8afd87104f0348490a5afd245d2fe3`.
+- `OTA_REGRESSION_MEMORY.md`: `e8c7986496b6dcc555823ee699a0a46deb6554c7`.
+- `VOLTAGE_TRANSITION_MEMORY.md`: `4de77610a070f5691ac3046c7055c6e8a332b77b`.
+- `DESIGN_NOTES.md`: `e2bc96eea271fb33cf176c1ea45131dc7e5782da`.
+- `CHAT_TRANSFER_PROMPTS.md`: `f838a490437407f714a04dce8e504e704bf39df1`.
 - `.github/workflows/jexfyz-app-build-trigger.yml`: `8a8533aff7e0e0e01412bf522e1966e81aa1a39f`.
 - This file is being committed last; do not embed its own future hash.
 
 ## 11. Evidence labels and exact next actions
 
 - **CURRENT / VERIFIED:** Build #71 / run `39008259484` passed 88/88 Flutter tests and all 21 active workflow steps. Release `jexfyz-latest` targets exact source `d9e026f70ec62455763de05048cba1557edfaf23`.
-- **CURRENT / RELEASED:** Dashboard indicator phase continuity/fade timing, flame loop seam, Battery segment ripple, orbiting Peltier sparks, neutral manual-voltage rows with theme-primary active toggle, and six Floating Monitor metrics B/H/V/A/P/F (F=Fan Speed).
+- **LATEST VERIFIED RELEASE (Build #71):** phase-continuous indicators and manual-voltage-toggle styling.
+- **CURRENT SOURCE ONLY / NOT BUILT:** integrated 2D indicator redesign, EN/ID label/copy changes, RGB-only toggle gate, master physical LED Brightness and V6.7 Adaptive 12V Fan PWM.
 - **TEST CAVEAT:** the configured Gradle unit-test gate passed but native JUnit compilation/testing was NO-SOURCE in #71; no native JUnit cases ran.
 - **NOT DEVICE-VERIFIED:** phone-side icon/animation smoothness, toggle appearance, overlay geometry, live BLE/Fan Speed telemetry, BLE pairing exclusivity, Firmware thermal/LED behavior, source-to-BIN provenance and end-to-end OTA/reboot/installed version.
 - **HISTORICAL / SUPERSEDED:** Build #70 and earlier release details, FPS/Shizuku code/results, older Firmware snapshots and archive CURRENT claims. Full build attempt history is in `APP_BUILD_REPORT.md`.
-- **USER-REPORTED:** user accepts Firmware V6.6 as final and reports successful compile plus two same-version Online OTA updates; not independently witnessed.
-- **Immediate next action:** install [Build #71 APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk). Verify OFF/ON phase continuity, flame/Battery/Peltier effects, neutral manual-voltage rows/active theme-primary toggle, and B/H/V/A/P/F with live Fan Speed. Capture screenshots/video and relevant telemetry if any result differs from contract.
+- **HISTORICAL USER-REPORTED:** V6.6 compile/two-same-version-OTA statements remain historical; they do not validate current uncompiled V6.7.
+- **Immediate next step:** if a new APK is required, use the separate `@Thinking Eksekusi Build App!` authorization. Build #71 does not contain the source-only changes above. Phone-side visuals, live BLE telemetry and physical Firmware behavior remain unverified.
 - For a new functional source change, use `@Thinking Diskusi!` then `@Thinking Eksekusi Full!` for approved source/tests/docs and separately `@Thinking Eksekusi Build App!` for CI/release. `@Thinking Chat Stuck!` only resumes the last authorized task and never expands permission.
 - Build #71 and canonical notes are on `main`; physical-device checks remain pending. No Firmware compile, BIN read/change/publication, Firebase update, OTA/flash or physical-device operation occurred.
 
