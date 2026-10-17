@@ -766,7 +766,7 @@ void main() {
     expect(blades, contains('s * .445'));
     expect(fan, contains('_drawFanBlade(canvas, size, rotation + i * math.pi * 2 / 3)'));
     expect(fan, contains('canvas.drawCircle(hub, s * .079, fill(color.withValues(alpha: 1)))'));
-    expect(source, contains('activityTransitionController.animateTo('));
+    expect(source, contains('unawaited(_animateActivityTransition(widget.active));'));
     expect(source, contains('curve: Curves.easeInOutCubic'));
   });
 
