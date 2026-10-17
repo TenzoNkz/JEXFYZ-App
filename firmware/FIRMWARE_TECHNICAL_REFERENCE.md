@@ -1,6 +1,6 @@
 # JE X FYZ — Firmware Technical Reference
 
-Last source/safety-reference reconciliation: 2026-10-17 (Asia/Jakarta). Latest verified App release is Build #70, but it is App-only and does not prove Firmware compile, BIN provenance, or physical OTA/safety behavior. Always fetch live source and compare before relying on line locations/hashes.
+Last source/safety-reference reconciliation: 2026-10-17 (Asia/Jakarta). Latest verified App release is Build #71, but it is App-only and does not prove Firmware compile, BIN provenance, or physical OTA/safety behavior. Always fetch live source and compare before relying on line locations/hashes.
 
 ## Current source identity
 
