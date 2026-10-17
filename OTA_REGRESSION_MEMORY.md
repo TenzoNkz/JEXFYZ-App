@@ -8,14 +8,14 @@ Last reconciled: 2026-10-17 (Asia/Jakarta). This is the canonical incident recor
 - No serial transcript establishing an exact HTTP/TLS error code was supplied. Do not invent one based on LEDs.
 - The failed path used `GITHUB_ROOT_CA`, `cloudClient.setCACert(...)`, `configTime(0, 0, "pool.ntp.org", "time.google.com")`, `OnlineOtaFlow::TIME_SYNCING`, epoch-validity state and a 20-second gate.
 
-## Correction retained in active V6.6
+## Historical OTA correction present in current V6.7 source
 
 - The correction originated in the then-current V6.3 source and remains in active `firmware/JEXFYZ-V6.7.ino` (last observed source blob `1d0fa0d5e308b9789fd1c32211ce0a127d497f6a`).
 - Restored `cloudClient.setInsecure()` for the Online OTA client.
 - Removed the embedded CA PEM, `setCACert()`, `configTime()`, `TIME_SYNCING`, epoch-validity condition and OTA-only 20-second NTP time gate.
 - Flow is Wi-Fi success → blue feedback → `prepareOnlineOtaDownload()` → GitHub GET attempt.
 - Kept allowlisted URL prefix `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/`, redirect blocking, HTTP/length/size/image checks, ESP image magic byte `0xE9`, streaming Update lifecycle, all-safe output, OTA lifecycle and failure recovery.
-- Static test contract lives in `test/v6_7_qc_contract_test.dart` (current main blob `083e0d19389c235b84f9785ee665d8ed8789e37f`). It was run as part of App Build #35 (`38669526891`, code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`); all 74 Flutter tests passed. These are Dart/source-contract assertions, not physical Online OTA, Firmware compilation or end-to-end update/reboot validation.
+- Static test contract lives in `test/v6_7_qc_contract_test.dart` (current main blob `6b71cc2ebbef9b3f1c9757728067eec4d11ff5ee`). It was run as part of App Build #35 (`38669526891`, code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`); all 74 Flutter tests passed. These are Dart/source-contract assertions, not physical Online OTA, Firmware compilation or end-to-end update/reboot validation.
 
 ## User-reported evidence boundary
 
@@ -37,7 +37,7 @@ Do not add/remove CA roots, change certificate validation, add an NTP gate, or a
 
 ## Latest evidence boundary — 2026-10-17
 
-- Current source is `firmware/JEXFYZ-V6.7.ino`, `FW_VERSION="V6.7"` (uncompiled)., blob `1d0fa0d5e308b9789fd1c32211ce0a127d497f6a`. The artifact repo is BIN-only; its BIN provenance against this source is not independently verified.
+- Current source is `firmware/JEXFYZ-V6.7.ino`, `FW_VERSION="V6.7"`, blob `1d0fa0d5e308b9789fd1c32211ce0a127d497f6a` (uncompiled). The artifact repo is BIN-only; its BIN provenance against this source is not independently verified.
 - HISTORICAL App Build #65 / run 38851040144 passed 88/88 Flutter tests and an FPS parser JUnit gate. Later App Build #70 / run 38998407325 passed 86/86 Flutter tests and the FPS-retired source's release gates; native JUnit tasks were NO-SOURCE. Neither App run is an Arduino compile, physical Online OTA, update-apply/reboot or installed-version proof.
 - Latest App release Build #71 is App-only and does not validate the OTA transport or Firmware. The V6.6 compile and two same-version Online OTA successes remain USER-REPORTED. Keep the setInsecure() certificate-identity trade-off explicit and do not infer the earlier HTTP/TLS failure root cause from LEDs alone.
 
