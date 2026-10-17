@@ -39,7 +39,7 @@ Do not add/remove CA roots, change certificate validation, add an NTP gate, or a
 
 - Live source remains `firmware/JEXFYZ-V6.6.ino`, `FW_VERSION="V6.6"`, blob `f51ba6db5d0e91318f63fea4014bb87f7bf76222`. The artifact repo is BIN-only; its BIN provenance against this source is not independently verified.
 - HISTORICAL App Build #65 / run 38851040144 passed 88/88 Flutter tests and an FPS parser JUnit gate. Later App Build #70 / run 38998407325 passed 86/86 Flutter tests and the FPS-retired source's release gates; native JUnit tasks were NO-SOURCE. Neither App run is an Arduino compile, physical Online OTA, update-apply/reboot or installed-version proof.
-- Latest App release Build #70 is App-only and does not validate the OTA transport or Firmware. The V6.6 compile and two same-version Online OTA successes remain USER-REPORTED. Keep the setInsecure() certificate-identity trade-off explicit and do not infer the earlier HTTP/TLS failure root cause from LEDs alone.
+- Latest App release Build #71 is App-only and does not validate the OTA transport or Firmware. The V6.6 compile and two same-version Online OTA successes remain USER-REPORTED. Keep the setInsecure() certificate-identity trade-off explicit and do not infer the earlier HTTP/TLS failure root cause from LEDs alone.
 
 ## Preflight checklist for a future explicitly authorized OTA change — NOT RUN by this reconciliation
 
