@@ -1353,6 +1353,66 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     }
   }
 
+  Future<void> _animateActivityTransition(bool active) async {
+    try {
+      await activityTransitionController
+          .animateTo(
+            active ? 1.0 : 0.0,
+            duration: Duration(milliseconds: active ? 360 : 440),
+            curve: Curves.easeInOutCubic,
+          )
+          .orCancel;
+      if (!mounted || widget.active != active) return;
+      // Let the moving details finish fading before pausing their phase. This
+      // avoids stopping a sweep, shimmer, or particle orbit in mid-transition.
+      if (!active && widget.kind != JexAnimatedIconKind.fan) {
+        controller.stop();
+      }
+    } on TickerCanceled {
+      // A newer state transition retargeted this activity fade.
+    }
+  }
+
+  void _resumeCycleWithoutPhaseSnap() {
+    if (!mounted ||
+        !widget.active ||
+        widget.kind == JexAnimatedIconKind.generic ||
+        controller.isAnimating) {
+      return;
+    }
+    final cycleMs = jexIconAnimationDuration(
+      widget.kind,
+      voltageLevel: widget.voltageLevel,
+    ).inMilliseconds;
+    final remaining = (1.0 - controller.value).clamp(0.0, 1.0).toDouble();
+    if (remaining <= 0.0001) {
+      controller.repeat();
+      return;
+    }
+    final durationMs = (cycleMs * remaining).round().clamp(16, cycleMs).toInt();
+    unawaited(_finishIconCycleBoundary(durationMs));
+  }
+
+  Future<void> _finishIconCycleBoundary(int durationMs) async {
+    try {
+      await controller
+          .animateTo(
+            1.0,
+            duration: Duration(milliseconds: durationMs),
+            curve: Curves.linear,
+          )
+          .orCancel;
+      if (mounted &&
+          widget.kind != JexAnimatedIconKind.generic &&
+          widget.active) {
+        // Phase 1 and phase 0 must paint the same pose for seamless looping.
+        controller.repeat();
+      }
+    } on TickerCanceled {
+      // A newer activation or a completed fade superseded this phase travel.
+    }
+  }
+
   void _syncAnimation() {
     if (widget.kind == JexAnimatedIconKind.generic) {
       controller.stop();
@@ -1360,18 +1420,20 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       return;
     }
     if (!widget.active) {
-      // Keep the Fan's coast-down/resting pose, the Peltier's crystal pose, and
-      // the Fan Speed needle while it smoothly returns to zero.
-      if (widget.kind == JexAnimatedIconKind.fan ||
-          widget.kind == JexAnimatedIconKind.peltier) {
-        return;
+      // Fan uses its physical coast-down. Other indicators continue through their
+      // activity fade and pause only after that transition reaches its resting state.
+      if (widget.kind != JexAnimatedIconKind.fan &&
+          activityTransitionController.value <= 0.001) {
+        controller.stop();
       }
-      // Keep the last frame as the resting pose instead of snapping to phase zero.
-      controller.stop();
       return;
     }
     if (!controller.isAnimating) {
-      controller.repeat();
+      if (widget.kind == JexAnimatedIconKind.fan) {
+        _animateFanToCycleBoundary();
+      } else {
+        _resumeCycleWithoutPhaseSnap();
+      }
     }
   }
 
@@ -1421,13 +1483,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
   void didUpdateWidget(covariant JexAnimatedIcon oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.active != oldWidget.active) {
-      unawaited(
-        activityTransitionController.animateTo(
-          widget.active ? 1.0 : 0.0,
-          duration: Duration(milliseconds: widget.active ? 360 : 440),
-          curve: Curves.easeInOutCubic,
-        ),
-      );
+      unawaited(_animateActivityTransition(widget.active));
     }
     if (widget.kind != oldWidget.kind) {
       indicatorLevelTransitionController.stop();
@@ -1493,28 +1549,12 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       }
     }
 
-    if (widget.active != oldWidget.active) {
-      if (widget.kind == JexAnimatedIconKind.peltier) {
-        if (widget.active) {
-          if (!controller.isAnimating) controller.repeat();
-        } else {
-          // Frost visibility animates independently; freezing the crystal phase prevents a snap.
-          controller.stop();
-        }
-      } else if (widget.kind == JexAnimatedIconKind.fan &&
-          oldWidget.active &&
-          !widget.active) {
+    if (widget.active != oldWidget.active &&
+        widget.kind == JexAnimatedIconKind.fan) {
+      if (oldWidget.active && !widget.active) {
         unawaited(_coastFanToStop());
-      } else if (widget.kind == JexAnimatedIconKind.fan &&
-          !oldWidget.active &&
-          widget.active) {
+      } else if (!oldWidget.active && widget.active) {
         if (!fanVoltageChanged) _animateFanToCycleBoundary();
-      } else if (widget.kind == JexAnimatedIconKind.speed) {
-        // The displayed value uses its own retargetable controller, independent
-        // from the looping phase used for the needle's natural ON wobble.
-      } else {
-        // Preserve the animation phase. The activity transition fades motion smoothly
-        // on/off rather than snapping a status icon back to its first frame.
       }
     }
     _syncAnimation();
@@ -1657,10 +1697,11 @@ class _JexIconPainter extends CustomPainter {
     final s = size.shortestSide;
     const centers = <double>[.28, .50, .72];
     for (var i = 0; i < centers.length; i++) {
-      final flicker = .5 + .5 * math.sin(phase * (1.7 + i * .23) + i * 1.8);
+      final harmonic = (i + 1).toDouble();
+      final flicker = .5 + .5 * math.sin(phase * harmonic + i * 1.8);
       final halfWidth = s * (.043 + .012 * flicker);
       final height = s * (.095 + .060 * flicker);
-      final sway = s * .012 * math.sin(phase * 1.3 + i * 2.1);
+      final sway = s * .012 * math.sin(phase * harmonic + i * 2.1);
       final x = s * centers[i] + sway;
       final base = s * baseY;
       final outer = Path()
@@ -1752,6 +1793,7 @@ class _JexIconPainter extends CustomPainter {
         const barHeights = <double>[.19, .27, .19];
         for (var i = 0; i < 3; i++) {
           final intensity = (level * 3.0 - i).clamp(0.0, 1.0).toDouble();
+          final barPulse = .5 - .5 * math.cos(angle - i * math.pi / 3);
           final barHeight = s * barHeights[i];
           final rect = Rect.fromLTWH(
             s * (.205 + i * .185),
@@ -1762,7 +1804,7 @@ class _JexIconPainter extends CustomPainter {
           canvas.drawRRect(
             RRect.fromRectAndRadius(rect, Radius.circular(s * .028)),
             fill(color.withValues(
-              alpha: .10 + ((.12 + .76 * intensity * (.93 + .07 * pulse)) - .10) * strength,
+              alpha: .10 + ((.12 + .76 * intensity * (.90 + .10 * barPulse)) - .10) * strength,
             )),
           );
           if (strength > .001 && intensity > .12) {
@@ -1772,7 +1814,7 @@ class _JexIconPainter extends CustomPainter {
                     rect.width - s * .036, s * .018),
                 Radius.circular(s * .009),
               ),
-              fill(Colors.white.withValues(alpha: (.14 + .16 * softPulse) * strength)),
+              fill(Colors.white.withValues(alpha: (.14 + .16 * barPulse) * strength)),
             );
           }
         }
@@ -1972,8 +2014,8 @@ class _JexIconPainter extends CustomPainter {
         );
         canvas.save();
         canvas.translate(cx, cy);
-        // A 60-degree phase is visually identical for a sixfold crystal, so the loop seam is invisible.
-        canvas.rotate(angle / 6);
+        // Keep the symmetric six-branch crystal steady; the surrounding sparks carry
+        // the motion, so rotation never looks like a stalled or broken animation.
         for (var i = 0; i < 6; i++) {
           canvas.save();
           canvas.rotate(i * math.pi / 3);
@@ -1996,23 +2038,27 @@ class _JexIconPainter extends CustomPainter {
           canvas.restore();
         }
         canvas.restore();
-        // Only four small peripheral ice sparks: readable at 22dp, never piled on the arms.
+        // Four ice sparks orbit in a bounded ring with a subtle radial shimmer.
         final particleCountValue = frostParticleCountOverride ??
             jexPeltierFrostParticleCount(voltageLevel).toDouble();
         final voltageStrength = ((particleCountValue - 2.0) / 6.0)
             .clamp(0.0, 1.0)
             .toDouble();
         for (var i = 0; i < 4; i++) {
-          final particleAngle = math.pi / 4 + i * math.pi / 2 + .025 * math.sin(angle + i);
-          final radius = s * (.405 + .010 * math.sin(angle + i));
+          final particlePhase = angle + i * math.pi / 2;
+          final particleAngle = angle + math.pi / 4 + i * math.pi / 2;
+          final particlePulse = .5 + .5 * math.sin(angle * 2 + i * math.pi / 2);
+          final radius = s * (.405 + .012 * math.sin(particlePhase));
           final particle = Offset(
             cx + math.cos(particleAngle) * radius,
             cy + math.sin(particleAngle) * radius,
           );
+          final particleOpacity = (.28 + .52 * voltageStrength) *
+              (.20 + .80 * strength * (.70 + .30 * particlePulse));
           canvas.drawCircle(
             particle,
-            s * (.020 + .010 * frostIntensity),
-            fill(color.withValues(alpha: .28 + .52 * voltageStrength)),
+            s * (.018 + .009 * frostIntensity * (.85 + .15 * particlePulse)),
+            fill(color.withValues(alpha: particleOpacity)),
           );
         }
         canvas.drawCircle(
@@ -5689,6 +5735,7 @@ void _handleAckLine(String line) {
     required Color accent,
     required Future<void> Function(bool) onChanged,
     bool stateKnown = true,
+    bool showCheck = true,
   }) {
     final scheme = Theme.of(context).colorScheme;
     // Offline fallback is a visual default only, not confirmed hardware telemetry.
@@ -5733,7 +5780,7 @@ void _handleAckLine(String line) {
                   ),
               ],
             ),
-            child: displayedValue
+            child: displayedValue && showCheck
                 ? const Icon(Icons.check, size: 15, color: Colors.white)
                 : null,
           ),
@@ -5793,7 +5840,6 @@ void _handleAckLine(String line) {
   Widget _voltageChoiceCustom(String target, String mode, bool locked) {
     final active = voltage == target;
     final scheme = Theme.of(context).colorScheme;
-    final accent = jexVoltageIndicatorColor(target);
     return InkWell(
       onTap: locked ? null : () => _requestVoltage(target),
       borderRadius: BorderRadius.circular(18),
@@ -5843,7 +5889,8 @@ void _handleAckLine(String line) {
             _jexToggle(
               value: active,
               enabled: !locked,
-              accent: accent,
+              accent: scheme.primary,
+              showCheck: false,
               onChanged: (_) async => _requestVoltage(target),
             ),
           ],
