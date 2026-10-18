@@ -56,6 +56,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
+import 'dart:ui' show ImageFilter;
 
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -1008,6 +1009,23 @@ bool jexIndicatorAnimationActive({
 }) =>
     connected && stateActive;
 
+enum DisplayMenuLockReason { none, bluetoothDisconnected, adaptiveActive }
+
+/// Applies a single lock overlay to the selected submenu; Bluetooth has priority.
+DisplayMenuLockReason displayMenuLockReason({
+  required bool connected,
+  required bool adaptiveActive,
+  required bool adaptiveTransitioning,
+  required int tabIndex,
+}) {
+  if (!connected) return DisplayMenuLockReason.bluetoothDisconnected;
+  final adaptiveLocksTab = tabIndex == 0 || tabIndex == 1 || tabIndex == 4;
+  if ((adaptiveActive || adaptiveTransitioning) && adaptiveLocksTab) {
+    return DisplayMenuLockReason.adaptiveActive;
+  }
+  return DisplayMenuLockReason.none;
+}
+
 int jexVoltageAnimationLevel(String voltage) {
   return switch (voltage.trim().toUpperCase()) {
     '5V' => 5,
@@ -1365,9 +1383,9 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       if (!mounted || widget.active != active) return;
       // Let the moving details finish fading before pausing their phase. This
       // avoids stopping a sweep, shimmer, or particle orbit in mid-transition.
-      if (!active && widget.kind != JexAnimatedIconKind.fan) {
-        controller.stop();
-      }
+      // Non-Fan status icons keep a restrained idle cycle after active effects fade.
+      // Idle motion is decorative and does not claim a physical output is ON.
+      // The Fan itself still coasts down and stays still when OFF.
     } on TickerCanceled {
       // A newer state transition retargeted this activity fade.
     }
@@ -1420,11 +1438,10 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       return;
     }
     if (!widget.active) {
-      // Fan uses its physical coast-down. Other indicators continue through their
-      // activity fade and pause only after that transition reaches its resting state.
-      if (widget.kind != JexAnimatedIconKind.fan &&
-          activityTransitionController.value <= 0.001) {
-        controller.stop();
+      // Keep distinct, low-amplitude idle motion for non-Fan indicators.
+      // Fan is different: an OFF rotor should coast down and remain still.
+      if (widget.kind != JexAnimatedIconKind.fan && !controller.isAnimating) {
+        controller.repeat();
       }
       return;
     }
@@ -1674,12 +1691,18 @@ class _JexIconPainter extends CustomPainter {
       Radius.circular(s * .025),
     ));
 
+  // One continuous outer contour avoids a seam where the thermometer tube meets its bulb.
   Path _hotsideSilhouette(double s) => Path()
-    ..addRRect(RRect.fromRectAndRadius(
-      Rect.fromLTWH(s * .405, s * .10, s * .19, s * .56),
-      Radius.circular(s * .095),
-    ))
-    ..addOval(Rect.fromCircle(center: Offset(s * .50, s * .735), radius: s * .135));
+    ..moveTo(s * .425, s * .135)
+    ..cubicTo(s * .425, s * .09, s * .455, s * .065, s * .50, s * .065)
+    ..cubicTo(s * .545, s * .065, s * .575, s * .09, s * .575, s * .135)
+    ..lineTo(s * .575, s * .605)
+    ..cubicTo(s * .575, s * .645, s * .607, s * .67, s * .625, s * .705)
+    ..cubicTo(s * .67, s * .785, s * .615, s * .875, s * .545, s * .90)
+    ..cubicTo(s * .515, s * .91, s * .485, s * .91, s * .455, s * .90)
+    ..cubicTo(s * .385, s * .875, s * .33, s * .785, s * .375, s * .705)
+    ..cubicTo(s * .393, s * .67, s * .425, s * .645, s * .425, s * .605)
+    ..close();
 
   Path _bolt(double s) => Path()
     ..moveTo(s * .57, s * .07)
@@ -1690,26 +1713,52 @@ class _JexIconPainter extends CustomPainter {
     ..lineTo(s * .545, s * .37)
     ..close();
 
-  Path _adaptiveLoop(double s, double phase) {
-    final cx = s / 2;
-    final cy = s / 2;
-    final wave = math.sin(phase);
-    final counterWave = math.cos(phase);
-    return Path()
-      ..moveTo(cx, cy - s * (.31 + .018 * wave))
-      ..cubicTo(cx + s * (.22 + .018 * counterWave), cy - s * (.33 + .015 * wave),
-          cx + s * (.34 + .012 * wave), cy - s * (.12 + .014 * counterWave),
-          cx + s * (.31 + .015 * counterWave), cy + s * .015)
-      ..cubicTo(cx + s * (.30 + .016 * wave), cy + s * (.22 + .012 * counterWave),
-          cx + s * (.12 + .014 * counterWave), cy + s * (.33 + .014 * wave),
-          cx, cy + s * (.31 + .018 * wave))
-      ..cubicTo(cx - s * (.22 + .018 * counterWave), cy + s * (.33 + .015 * wave),
-          cx - s * (.34 + .012 * wave), cy + s * (.12 + .014 * counterWave),
-          cx - s * (.31 + .015 * counterWave), cy - s * .015)
-      ..cubicTo(cx - s * (.30 + .016 * wave), cy - s * (.22 + .012 * counterWave),
-          cx - s * (.12 + .014 * counterWave), cy - s * (.33 + .014 * wave),
-          cx, cy - s * (.31 + .018 * wave))
+  void _drawAdaptiveArrowHead(Canvas canvas, Offset tip, double direction, double length, Color color) {
+    final wingA = Offset(
+      tip.dx - math.cos(direction - .72) * length,
+      tip.dy - math.sin(direction - .72) * length,
+    );
+    final wingB = Offset(
+      tip.dx - math.cos(direction + .72) * length,
+      tip.dy - math.sin(direction + .72) * length,
+    );
+    final arrow = Path()
+      ..moveTo(tip.dx, tip.dy)
+      ..lineTo(wingA.dx, wingA.dy)
+      ..lineTo(wingB.dx, wingB.dy)
       ..close();
+    canvas.drawPath(arrow, _fill(color));
+  }
+
+  // Two directional arcs travel around the cycle instead of morphing into an empty ring.
+  void _drawAdaptiveFlow(Canvas canvas, double s, double phase, Color color, double strength) {
+    final center = Offset(s / 2, s / 2);
+    final radius = s * .29;
+    final orbit = Rect.fromCircle(center: center, radius: radius);
+    final wave = (math.sin(phase * 2) + 1) / 2;
+    canvas.drawCircle(center, radius,
+        _stroke(s * .035, color.withValues(alpha: .12 + .09 * strength)));
+    for (var i = 0; i < 2; i++) {
+      final start = phase + i * math.pi;
+      const sweep = 2.28;
+      final tint = color.withValues(
+        alpha: (.18 + .72 * strength) *
+            (.70 + .30 * math.sin(phase + i * math.pi).abs()),
+      );
+      canvas.drawArc(orbit, start, sweep, false, _stroke(s * .065, tint));
+      final end = start + sweep;
+      final tip = Offset(center.dx + math.cos(end) * radius,
+          center.dy + math.sin(end) * radius);
+      _drawAdaptiveArrowHead(canvas, tip, end + math.pi / 2,
+          s * (.105 + .018 * wave), tint);
+    }
+    final flowAngle = phase * 2 + .6;
+    canvas.drawCircle(
+      Offset(center.dx + math.cos(flowAngle) * radius,
+          center.dy + math.sin(flowAngle) * radius),
+      s * .027,
+      _fill(color.withValues(alpha: .12 + .60 * strength)),
+    );
   }
 
   Path _crystalSilhouette(double s) {
@@ -1774,7 +1823,9 @@ class _JexIconPainter extends CustomPainter {
     final warningBlend = warning ? (.12 + .06 * (pulse + 1) / 2) : 0.0;
     final mainColor = Color.lerp(color, const Color(0xFFFF5B55), warningBlend)!;
     final opacity = (.62 + .36 * strength).clamp(0.0, 1.0).toDouble();
-    final breath = 1.0 + (active ? .018 * pulse * strength : 0.0);
+    final idleBreath = .0045 * pulse;
+    final activeBreath = .014 * pulse * strength;
+    final breath = 1.0 + idleBreath + activeBreath;
 
     canvas.save();
     canvas.translate(cx, cy);
@@ -1794,19 +1845,46 @@ class _JexIconPainter extends CustomPainter {
         canvas.clipRRect(inner);
         final fluidHeight = inner.height * safeLevel;
         if (fluidHeight > 0) {
-          canvas.drawRect(Rect.fromLTWH(inner.left, inner.bottom - fluidHeight, inner.width, fluidHeight),
-              _fill(mainColor.withValues(alpha: .30 + .56 * strength)));
+          canvas.drawRect(
+            Rect.fromLTWH(inner.left, inner.bottom - fluidHeight, inner.width, fluidHeight),
+            _fill(mainColor.withValues(alpha: .30 + .56 * strength)),
+          );
+          final sheenWidth = inner.width * .18;
+          final sheenRect = Rect.fromLTWH(
+            inner.left + (inner.width - sheenWidth) * p,
+            inner.bottom - fluidHeight,
+            sheenWidth,
+            fluidHeight,
+          );
+          canvas.drawRect(
+            sheenRect,
+            Paint()
+              ..shader = LinearGradient(
+                colors: <Color>[
+                  Colors.transparent,
+                  mainColor.withValues(alpha: .10 + .24 * strength),
+                  Colors.transparent,
+                ],
+              ).createShader(sheenRect),
+          );
+        } else {
+          final idleGlintX = inner.left + inner.width * p;
+          canvas.drawLine(
+            Offset(idleGlintX, inner.top + s * .035),
+            Offset(idleGlintX, inner.bottom - s * .035),
+            _stroke(s * .018, mainColor.withValues(alpha: .10 + .08 * (pulse + 1) / 2)),
+          );
         }
         canvas.restore();
         break;
 
       case JexAnimatedIconKind.hotside:
         final shell = _hotsideSilhouette(s);
-        canvas.drawPath(shell, _fill(mainColor.withValues(alpha: .04 + .04 * strength)));
+        canvas.drawPath(shell, _fill(mainColor.withValues(alpha: .045 + .04 * strength)));
         canvas.drawPath(shell, _stroke(s * .045, mainColor.withValues(alpha: opacity)));
         final tubeInner = RRect.fromRectAndRadius(
-          Rect.fromLTWH(s * .465, s * .16, s * .07, s * .47),
-          Radius.circular(s * .035),
+          Rect.fromLTWH(s * .455, s * .17, s * .09, s * .45),
+          Radius.circular(s * .045),
         );
         canvas.save();
         canvas.clipPath(shell);
@@ -1814,34 +1892,76 @@ class _JexIconPainter extends CustomPainter {
         canvas.clipRRect(tubeInner);
         final fluidHeight = tubeInner.height * safeLevel;
         if (fluidHeight > 0) {
-          canvas.drawRect(Rect.fromLTWH(tubeInner.left, tubeInner.bottom - fluidHeight, tubeInner.width, fluidHeight),
-              _fill(mainColor.withValues(alpha: .35 + .55 * strength)));
+          canvas.drawRect(
+            Rect.fromLTWH(tubeInner.left, tubeInner.bottom - fluidHeight, tubeInner.width, fluidHeight),
+            _fill(mainColor.withValues(alpha: .35 + .55 * strength)),
+          );
+          final sheenRect = Rect.fromLTWH(
+            tubeInner.left + tubeInner.width * .18,
+            tubeInner.bottom - fluidHeight,
+            tubeInner.width * .34,
+            fluidHeight,
+          );
+          canvas.drawRect(sheenRect,
+              _fill(Colors.white.withValues(alpha: .10 + .15 * strength)));
         }
         canvas.restore();
-        canvas.drawCircle(Offset(cx, s * .735), s * .075,
-            _fill(mainColor.withValues(alpha: .30 + .55 * strength)));
+        final bulbRadius = s * (.035 + .048 * safeLevel);
+        canvas.drawCircle(
+          Offset(cx, s * .775), bulbRadius,
+          _fill(mainColor.withValues(alpha: .28 + .45 * strength + .05 * (pulse + 1) / 2)),
+        );
+        canvas.drawCircle(
+          Offset(cx - s * .018, s * .758),
+          s * (.013 + .008 * (pulse + 1) / 2),
+          _fill(Colors.white.withValues(alpha: .10 + .13 * strength)),
+        );
         canvas.restore();
         break;
 
       case JexAnimatedIconKind.voltage:
         final bolt = _bolt(s);
-        canvas.save();
-        canvas.translate(cx, cy);
-        canvas.rotate(active ? .018 * pulse : 0.0);
-        canvas.translate(-cx, -cy);
-        canvas.drawPath(bolt, _fill(mainColor.withValues(alpha: .78 + .18 * strength)));
+        canvas.drawPath(bolt, _fill(mainColor.withValues(alpha: .76 + .20 * strength)));
         canvas.drawPath(bolt, _stroke(s * .018, mainColor.withValues(alpha: opacity)));
+        canvas.save();
+        canvas.clipPath(bolt);
+        final sweepRect = Rect.fromLTWH(s * (-.18 + 1.15 * p), s * .08, s * .15, s * .82);
+        canvas.drawRect(
+          sweepRect,
+          Paint()
+            ..shader = LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: <Color>[
+                Colors.transparent,
+                Colors.white.withValues(alpha: .08 + .20 * strength),
+                Colors.transparent,
+              ],
+            ).createShader(Rect.fromLTWH(0, 0, s, s)),
+        );
         canvas.restore();
         break;
 
       case JexAnimatedIconKind.adaptive:
-        canvas.drawPath(_adaptiveLoop(s, angle), _stroke(s * .058, mainColor.withValues(alpha: opacity)));
+        _drawAdaptiveFlow(canvas, s, angle, mainColor, strength);
         break;
 
       case JexAnimatedIconKind.peltier:
         final crystal = _crystalSilhouette(s);
         final crystalWidth = s * (.042 + .006 * (frostIntensityOverride ?? .5));
         canvas.drawPath(crystal, _stroke(crystalWidth, mainColor.withValues(alpha: opacity)));
+        // A restrained highlight travels along the six crystal branches; no sparks.
+        for (var i = 0; i < 6; i++) {
+          final a = -math.pi / 2 + i * math.pi / 3;
+          final branchPulse = (math.sin(angle * 2 - i * math.pi / 3) + 1) / 2;
+          final outer = Offset(cx + math.cos(a) * s * .34, cy + math.sin(a) * s * .34);
+          final inner = Offset(cx + math.cos(a) * s * .13, cy + math.sin(a) * s * .13);
+          canvas.drawLine(
+            inner, outer,
+            _stroke(crystalWidth * (.42 + .30 * branchPulse),
+              mainColor.withValues(alpha: .13 + (.15 + .48 * branchPulse) * (.18 + .82 * strength))),
+          );
+        }
         break;
 
       case JexAnimatedIconKind.fan:
@@ -1855,8 +1975,12 @@ class _JexIconPainter extends CustomPainter {
         const start = math.pi * .79;
         const sweep = math.pi * 1.42;
         canvas.drawArc(gauge, start, sweep, false,
-            _stroke(s * .045, mainColor.withValues(alpha: .25 + .24 * strength)));
-        final needleAngle = start + sweep * safeLevel;
+            _stroke(s * .045, mainColor.withValues(alpha: .20 + .30 * strength)));
+        final glintStart = start + sweep * p;
+        canvas.drawArc(gauge, glintStart, sweep * .12, false,
+            _stroke(s * .055, mainColor.withValues(alpha: .12 + .44 * strength)));
+        final needleAngle = start + sweep * safeLevel +
+            (active ? jexFanSpeedNeedleWobble(p) : 0.0);
         final tip = Offset(cx + math.cos(needleAngle) * s * .265,
             cy + math.sin(needleAngle) * s * .265);
         final needle = Path()..moveTo(cx, cy)..lineTo(tip.dx, tip.dy);
@@ -1868,10 +1992,15 @@ class _JexIconPainter extends CustomPainter {
         final wave = Path();
         for (var i = 0; i <= 24; i++) {
           final x = s * (.12 + .76 * i / 24);
-          final y = cy + math.sin(angle - i * math.pi / 8) * s * (.12 + .035 * strength);
+          final y = cy + math.sin(angle - i * math.pi / 8) * s * (.10 + .045 * strength);
           if (i == 0) wave.moveTo(x, y); else wave.lineTo(x, y);
         }
         canvas.drawPath(wave, _stroke(s * .058, mainColor.withValues(alpha: opacity)));
+        final dotX = s * (.12 + .76 * p);
+        final dotY = cy + math.sin(angle - ((dotX / s - .12) / .76) * math.pi * 3) *
+            s * (.10 + .045 * strength);
+        canvas.drawCircle(Offset(dotX, dotY), s * .045,
+            _fill(mainColor.withValues(alpha: .24 + .66 * strength)));
         break;
 
       case JexAnimatedIconKind.bluetooth:
@@ -1886,7 +2015,12 @@ class _JexIconPainter extends CustomPainter {
           ..lineTo(s * .68, s * .71)
           ..moveTo(s * .20, s * .71)
           ..lineTo(s * .68, s * .29);
-        canvas.drawPath(glyph, _stroke(s * .06, mainColor.withValues(alpha: opacity)));
+        final bluetoothAlpha = opacity * (.82 + .18 * (math.sin(angle) + 1) / 2);
+        canvas.drawPath(glyph, _stroke(s * .06, mainColor.withValues(alpha: bluetoothAlpha)));
+        // A travelling highlight follows the glyph stem; no ripple rings.
+        final stemY = s * (.20 + .60 * p);
+        canvas.drawLine(Offset(cx, stemY - s * .055), Offset(cx, stemY + s * .055),
+            _stroke(s * .075, mainColor.withValues(alpha: .16 + .38 * strength)));
         break;
 
       case JexAnimatedIconKind.generic:
@@ -1905,7 +2039,9 @@ class _JexIconPainter extends CustomPainter {
       oldDelegate.activity != activity ||
       oldDelegate.level != level ||
       oldDelegate.voltageLevel != voltageLevel ||
-      oldDelegate.warning != warning;
+      oldDelegate.warning != warning ||
+      oldDelegate.frostIntensityOverride != frostIntensityOverride ||
+      oldDelegate.frostParticleCountOverride != frostParticleCountOverride;
 }
 
 const MethodChannel securityChannel = MethodChannel('je_x_fyz/security');
@@ -4998,7 +5134,7 @@ void _handleAckLine(String line) {
         connected: connected,
         stateActive: fanOn,
       ),
-      level: fanSpeed / 100,
+      level: connected && fanOn ? fanSpeed / 100 : 0.0,
     );
   }
 
@@ -5379,6 +5515,9 @@ void _handleAckLine(String line) {
     int voltageLevel = 5,
     double animationLevel = 1.0,
     Color? animationColor,
+    bool showStateLabel = true,
+    bool showCheck = true,
+    bool neutralRow = false,
   }) {
     final scheme = Theme.of(context).colorScheme;
     final accent = scheme.primary;
@@ -5386,14 +5525,14 @@ void _handleAckLine(String line) {
     final lightTheme = Theme.of(context).brightness == Brightness.light;
     final rowFill = lightTheme
         ? const Color(0xFFF5F6F8)
-        : (value
-            ? accent.withValues(alpha: .075)
-            : scheme.surfaceContainerHighest.withValues(alpha: .34));
+        : (neutralRow
+            ? scheme.surfaceContainerHighest.withValues(alpha: .26)
+            : (value ? accent.withValues(alpha: .075) : scheme.surfaceContainerHighest.withValues(alpha: .34)));
     final rowBorder = lightTheme
         ? const Color(0xFFDDE1E7)
-        : (value
-            ? accent.withValues(alpha: .28)
-            : scheme.outlineVariant.withValues(alpha: .72));
+        : (neutralRow
+            ? scheme.outlineVariant.withValues(alpha: .68)
+            : (value ? accent.withValues(alpha: .28) : scheme.outlineVariant.withValues(alpha: .72)));
     return AnimatedContainer(
       duration: const Duration(milliseconds: 180),
       curve: Curves.easeOutCubic,
@@ -5413,9 +5552,9 @@ void _handleAckLine(String line) {
             decoration: BoxDecoration(
               color: lightTheme
                   ? const Color(0xFFE9EBEF)
-                  : (value
-                      ? accent.withValues(alpha: .12)
-                      : scheme.surfaceContainerHighest.withValues(alpha: .72)),
+                  : (neutralRow
+                      ? scheme.surfaceContainerHighest.withValues(alpha: .72)
+                      : (value ? accent.withValues(alpha: .12) : scheme.surfaceContainerHighest.withValues(alpha: .72))),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Center(
@@ -5467,21 +5606,24 @@ void _handleAckLine(String line) {
               ],
             ),
           ),
-          const SizedBox(width: 8),
-          Text(
-            stateKnown ? JexText.of(value ? 'on' : 'off', lang) : JexText.of('off', lang),
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w900,
-              color: value ? accent : scheme.onSurfaceVariant,
+          if (showStateLabel) ...[
+            const SizedBox(width: 8),
+            Text(
+              stateKnown ? JexText.of(value ? 'on' : 'off', lang) : JexText.of('off', lang),
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w900,
+                color: value ? accent : scheme.onSurfaceVariant,
+              ),
             ),
-          ),
-          const SizedBox(width: 8),
+            const SizedBox(width: 8),
+          ],
           _jexToggle(
             value: value,
             enabled: enabled,
             stateKnown: stateKnown,
             accent: accent,
+            showCheck: showCheck,
             onChanged: onChanged,
           ),
         ],
@@ -5683,6 +5825,9 @@ void _handleAckLine(String line) {
               children: [
                 _switchRow(
                   title: JexText.of('peltier', lang),
+                  showStateLabel: false,
+                  showCheck: false,
+                  neutralRow: true;
                   subtitle: '',
                   icon: PhosphorIconsRegular.snowflake,
                   animatedKind: JexAnimatedIconKind.peltier,
@@ -5806,6 +5951,9 @@ void _handleAckLine(String line) {
             padding: const EdgeInsets.all(9),
             child: _switchRow(
               title: JexText.of('adaptiveSwitch', lang),
+              showStateLabel: false,
+              showCheck: false,
+              neutralRow: true;
               subtitle: '',
               icon: PhosphorIconsRegular.sparkle,
               animatedKind: JexAnimatedIconKind.adaptive,
@@ -6020,6 +6168,9 @@ void _handleAckLine(String line) {
               children: [
                 _switchRow(
                   title: JexText.of('power', lang),
+                  showStateLabel: false,
+                  showCheck: false,
+                  neutralRow: true;
                   subtitle: '',
                   icon: PhosphorIconsBold.lightbulb,
                   animatedKind: JexAnimatedIconKind.led,
@@ -6416,7 +6567,7 @@ void _handleAckLine(String line) {
 
   // AI-METHOD: _buildTabContent — Select submenu content by tab index.
   Widget _buildTabContent() {
-    return switch (tabIndex) {
+    final content = switch (tabIndex) {
       0 => _buildVoltageTab(key: const ValueKey('voltage-tab')),
       1 => _buildControlTab(key: const ValueKey('control-tab')),
       2 => _buildAdaptiveTab(key: const ValueKey('adaptive-tab')),
@@ -6424,6 +6575,81 @@ void _handleAckLine(String line) {
       4 => _buildTemperatureTab(key: const ValueKey('temperature-tab')),
       _ => const SizedBox.shrink(),
     };
+    final lockReason = displayMenuLockReason(
+      connected: connected,
+      adaptiveActive: adaptiveOn,
+      adaptiveTransitioning: adaptiveTransitioning,
+      tabIndex: tabIndex,
+    );
+    return lockReason == DisplayMenuLockReason.none
+        ? content
+        : _lockedDisplayMenu(content, lockReason);
+  }
+
+  /// Blurs the complete submenu, then centers one lock panel above all of its content.
+  /// Navigation tabs and the Bluetooth Home control live outside this Stack and remain usable.
+  Widget _lockedDisplayMenu(Widget content, DisplayMenuLockReason reason) {
+    final disconnected = reason == DisplayMenuLockReason.bluetoothDisconnected;
+    final scheme = Theme.of(context).colorScheme;
+    final title = disconnected
+        ? JexText.phrase('CONNECT TO JE X FYZ FIRST', 'HUBUNGKAN KE JE X FYZ TERLEBIH DAHULU')
+        : JexText.phrase('LOCKED BY ADAPTIVE MODE', 'TERKUNCI OLEH MODE ADAPTIF');
+    final detail = disconnected
+        ? JexText.phrase('Connect your cooler to unlock this menu.', 'Hubungkan perangkat JE X FYZ untuk membuka menu ini.')
+        : JexText.phrase('Turn Adaptive Mode off to edit these settings.', 'Matikan Mode Adaptif untuk mengubah pengaturan ini.');
+    return ClipRect(
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          ImageFiltered(
+            imageFilter: ImageFilter.blur(sigmaX: 4.8, sigmaY: 4.8),
+            child: IgnorePointer(child: content),
+          ),
+          Positioned.fill(
+            child: ColoredBox(color: scheme.surface.withValues(alpha: .46)),
+          ),
+          Positioned.fill(
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 270),
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 14),
+                  padding: const EdgeInsets.fromLTRB(18, 20, 18, 18),
+                  decoration: BoxDecoration(
+                    color: scheme.surface.withValues(alpha: .96),
+                    borderRadius: BorderRadius.circular(22),
+                    border: Border.all(color: scheme.outlineVariant.withValues(alpha: .92), width: 1.1),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(color: Colors.black.withValues(alpha: .12), blurRadius: 20, offset: const Offset(0, 7)),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        PhosphorIconsBold.lock,
+                        size: 38,
+                        color: disconnected ? const Color(0xFF4D8CFF) : const Color(0xFFC05BFF),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(title, textAlign: TextAlign.center, style: TextStyle(
+                        color: scheme.onSurface, fontSize: 14, height: 1.2,
+                        fontWeight: FontWeight.w900, letterSpacing: .25,
+                      )),
+                      const SizedBox(height: 7),
+                      Text(detail, textAlign: TextAlign.center, style: TextStyle(
+                        color: scheme.onSurfaceVariant, fontSize: 11.5, height: 1.3,
+                        fontWeight: FontWeight.w600,
+                      )),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   // AI-METHOD / HOME-CONTRACT
