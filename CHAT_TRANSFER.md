@@ -1,13 +1,13 @@
 # JE X FYZ / JE Cooler — Chat Transfer Snapshot
 
-Snapshot reconciled against live `main` on 2026-10-18 after the source-only indicator-motion, toggle and whole-submenu lock-overlay update. Build #73 remains the latest verified APK; the newest UI source changes are not included in that release. Flutter validation and physical-device behavior remain unverified. This file is committed last and deliberately excludes its own future blob/commit hash.
+Snapshot reconciled against live `main` on 2026-10-18 after the source-only indicator-motion, toggle and whole-submenu lock-overlay update, including improved Adaptive arrow visibility while idle. Build #73 remains the latest verified APK; the newest UI source changes are not included in that release. Flutter validation and physical-device behavior remain unverified. This file is committed last and deliberately excludes its own future blob/commit hash.
 
 Source-of-truth order: live main source/tree and exact Actions/Release evidence → CHAT_RULES.md for authorization → PROJECT_STATE.md for current state → subject reference files and APP_BUILD_REPORT.md → HANDOVER.md / this snapshot → CHANGELOG.md for history → archive/*.md for forensic recovery only. Archived “CURRENT” wording is not live truth.
 
 ## 1. Current Git and repository state
 
 - Canonical App/Firmware source and project-memory repository: `TenzoNkz/JEXFYZ-App`, branch `main`.
-- Parent HEAD immediately before this transfer-only commit: `e4aff2f954f0d070dec94afc262f618e55d939a2`, message `docs(memory): refresh main.dart fingerprint in MEMORY_INDEX.md`. This sequence modified only existing App/test/docs files; the complete tree remains 67 entries (49 blobs, 18 trees), with exactly one active versioned Firmware sketch: `firmware/JEXFYZ-V6.7.ino`. The current tree SHA was not exposed by the connector response; re-fetch the recursive tree at next boot.
+- Parent HEAD immediately before this transfer-only commit: `b4313d0f85ac9c6435f09fb87e7de70b59f60e73`, message `docs: refresh Adaptive indicator source fingerprint in MEMORY_INDEX.md`. This sequence modified only existing App/test/docs files; the complete tree remains 67 entries (49 blobs, 18 trees), with exactly one active versioned Firmware sketch: `firmware/JEXFYZ-V6.7.ino`. The current tree SHA was not exposed by the connector response; re-fetch the recursive tree at next boot.
 - Latest verified release: Build #73 / [Actions run `39098410865`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39098410865), exact release/source commit `f1e81450428ffb113a76d430590c312ad6fa4781`. Completed at `2026-10-18T04:55:19Z` (`2026-10-18 11:55:19 Asia/Jakarta`). All 21 active workflow steps passed: audit, dependencies, Dart analysis, **91/91 Flutter tests**, Android production compilation/configured gate, obfuscated APK, V1/V2/V3 signing and certificate checks, source ZIP, Release publication and re-downloaded asset verification.
 - Build #70 is historical and verified FPS/Shizuku retirement plus schema-v2 migration to six metrics B/H/V/A/P/F (F=Fan Speed). Build #71 is newer and includes the post-Build-70 motion/toggle refinements.
 - Build #71 was triggered through owner/title/token-guarded [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). Issue owner `TenzoNkz`, title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; workflow blob `8a8533aff7e0e0e01412bf522e1966e81aa1a39f` is unchanged and listens only to issue opened/reopened. No push/PR/dispatch bypass.
@@ -28,7 +28,7 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
 
 - Latest **verified release source** remains `f1e81450428ffb113a76d430590c312ad6fa4781` (Build #73). It includes the TamperScreen profanity/contact behavior. The subsequent Hotside/indicator-animation/toggle/menu-lock update is source-only after Build #73 and must not be mistaken for a verified APK.
 - Current source/test blobs:
-  - `lib/main.dart`: `63591804c6a5003c2297a7fa179fc16ae7391496`.
+  - `lib/main.dart`: `0f6335435570691c5e9509f3f1a2619cf351e732`.
   - `lib/floating_monitor.dart`: `31b45ea08b08ac7fc25ebd991dca873b889fdd14`.
   - `lib/app_settings.dart`: `36927823c91904a35d87d2f21bd77932a2214e83`.
   - `test/widget_test.dart`: `661130f0bc2197478cc5f0e083324bdc41c8e6a3`.
@@ -40,12 +40,12 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
   - Active workflow `.github/workflows/jexfyz-app-build-trigger.yml`: `8a8533aff7e0e0e01412bf522e1966e81aa1a39f`.
 - Canonical docs immediately before this transfer-only commit:
   - `APP_BUILD_REPORT.md`: `2c9d2701aef8d02ff71f89214418b8f9aa3d0b6b`.
-  - `PROJECT_STATE.md`: `bbdd0e2ec61e9a7259f70058ec3d63549205cbc7`.
-  - `MEMORY_INDEX.md`: `8f14ff7f1eebea2531fcfb3fbb6764dd84871a0a`.
+  - `PROJECT_STATE.md`: `747f77183e44da654d10abb5421c7c2e4db4bb76`.
+  - `MEMORY_INDEX.md`: `d6a5ac316ba400bc4e4070323ca37834833b7478`.
   - `BUILD_NOTES.md`: `821f3370bbf6816874681195ceff21a36faf5573`.
-  - `HANDOVER.md`: `3cadfce204a3fb999d9081963740ef687adb4b35`.
-  - `APP_NOTES.md`: `6b80c3e24a6ea55d9b109fc44f18800771680233`.
-  - `CHANGELOG.md`: `ba6b3035817e3b2a31dcc6bec4d9f7c481d02bd4`.
+  - `HANDOVER.md`: `3508d8a1d6e2aac5460b32a7ef0778a6ac11cfc7`.
+  - `APP_NOTES.md`: `0af4ce1c0f6eb0ecc302455dafe382de0c336a59`.
+  - `CHANGELOG.md`: `9f0170d2c4ea71ea4a5d3993ec93215b5bdd76bc`.
   - `README.md`: `a5bb31bec9a83c03daddbab9cd127d537660a90e`.
   - `CHAT_RULES.md`: `eae86f7e921b3eb49337bea87a39255eabb7b4c3`.
   - `FIRMWARE_NOTES.md`: `aa61ac32e756e87342d4070c216d699f63949a46`.
@@ -63,11 +63,11 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
 
 ## 3B. Source-only indicator / toggle / submenu lock update — 2026-10-18
 
-- Hotside contour is one continuous tube-to-bulb silhouette; liquid fill/highlight is separate from the outer stroke. Battery, Hotside, Voltage, Adaptive, Peltier, Fan, Speed, LED and Bluetooth have distinct phase-driven effects. Non-Fan indicators retain restrained idle motion after the 440 ms active fade; that motion is illustrative, not a claim about physical output. Fan rotation remains state-specific and coasts to rest while OFF.
+- Hotside contour is one continuous tube-to-bulb silhouette; liquid fill/highlight is separate from the outer stroke. Battery, Hotside, Voltage, Adaptive, Peltier, Fan, Speed, LED and Bluetooth have distinct phase-driven effects. Adaptive's two directional arcs and flowing dot remain visible at idle and strengthen when active. Non-Fan indicators retain restrained idle motion after the 440 ms active fade; that motion is illustrative, not a claim about physical output. Fan rotation remains state-specific and coasts to rest while OFF.
 - Peltier, Adaptive and LED submenu toggles use neutral rows like Manual Voltage, omit the knob checkmark and adjacent ON/OFF label, and keep theme-primary toggle accent. BLE/Firmware state authority and command gating are unchanged.
 - If Bluetooth is disconnected, the complete selected submenu is blurred/dimmed under one centered lock card; top-level tabs and Home Bluetooth remain usable. If connected but Adaptive is active/transitioning, only Voltage, Control and Temperature use the whole-menu blur and centered lock. Messages: CONNECT TO JE X FYZ FIRST / HUBUNGKAN KE JE X FYZ TERLEBIH DAHULU and LOCKED BY ADAPTIVE MODE / TERKUNCI OLEH MODE ADAPTIF.
 - Four widget contracts cover lock policy, centered overlay, three switch rows, continuous Hotside contour and motion signatures. These are SOURCE IMPLEMENTED / NOT RUN: Flutter/Dart runtime is unavailable. No App Build, native compile, physical test, Firmware, BIN/Firebase, OTA/flash or device operations were performed.
-- Current fingerprints: lib/main.dart 63591804c6a5003c2297a7fa179fc16ae7391496; test/widget_test.dart 661130f0bc2197478cc5f0e083324bdc41c8e6a3; lib/app_settings.dart 36927823c91904a35d87d2f21bd77932a2214e83; MainActivity.kt ef35590cfc91fafe5dec104b7cfd7828011185bf.
+- Current fingerprints: lib/main.dart 0f6335435570691c5e9509f3f1a2619cf351e732; test/widget_test.dart 661130f0bc2197478cc5f0e083324bdc41c8e6a3; lib/app_settings.dart 36927823c91904a35d87d2f21bd77932a2214e83; MainActivity.kt ef35590cfc91fafe5dec104b7cfd7828011185bf.
 
 ## 4. Current Floating Monitor: FPS retired, F label is Fan/Kipas
 
@@ -154,12 +154,12 @@ Current canonical responsibility:
 
 Canonical document blob hashes immediately before this transfer-only write:
 - `APP_BUILD_REPORT.md`: `2c9d2701aef8d02ff71f89214418b8f9aa3d0b6b`.
-- `PROJECT_STATE.md`: `bbdd0e2ec61e9a7259f70058ec3d63549205cbc7`.
-- `MEMORY_INDEX.md`: `8f14ff7f1eebea2531fcfb3fbb6764dd84871a0a`.
+- `PROJECT_STATE.md`: `747f77183e44da654d10abb5421c7c2e4db4bb76`.
+- `MEMORY_INDEX.md`: `d6a5ac316ba400bc4e4070323ca37834833b7478`.
 - `BUILD_NOTES.md`: `821f3370bbf6816874681195ceff21a36faf5573`.
-- `HANDOVER.md`: `3cadfce204a3fb999d9081963740ef687adb4b35`.
-- `APP_NOTES.md`: `6b80c3e24a6ea55d9b109fc44f18800771680233`.
-- `CHANGELOG.md`: `ba6b3035817e3b2a31dcc6bec4d9f7c481d02bd4`.
+- `HANDOVER.md`: `3508d8a1d6e2aac5460b32a7ef0778a6ac11cfc7`.
+- `APP_NOTES.md`: `0af4ce1c0f6eb0ecc302455dafe382de0c336a59`.
+- `CHANGELOG.md`: `9f0170d2c4ea71ea4a5d3993ec93215b5bdd76bc`.
 - `README.md`: `a5bb31bec9a83c03daddbab9cd127d537660a90e`.
 - `CHAT_RULES.md`: `eae86f7e921b3eb49337bea87a39255eabb7b4c3`.
 - `FIRMWARE_NOTES.md`: `aa61ac32e756e87342d4070c216d699f63949a46`.
