@@ -27,7 +27,7 @@ This file is the durable App behavior/design contract. Live source and the curre
 - On a rejected release launch, `main()` continues to mount only `TamperApp` / `TamperScreen`. The visible screen is deliberately opaque: JE X FYZ branding plus a dense, scrollable Indonesian slang/profanity wall. It does not explain the reason or display technical terms.
 - The bottom-pinned `HUBUNGI DEVELOPER` button calls the existing `je_x_fyz/security` MethodChannel's `openDeveloperContact` method. Android dispatches `ACTION_VIEW` to `https://t.me/horizontalzzz`; the username/URL is not printed in the UI. Launch failure leaves the warning visible and does not grant entry.
 - The certificate-verification decision is unchanged. The screen is triggered only by the existing official signing check returning false; ordinary application errors are not relabelled as tampering.
-- Source/test contract hashes before this follow-up UI change: `lib/main.dart` `6e1189010bb942c59ec68ac31f75c1a522e04a4d`; `test/widget_test.dart` `661130f0bc2197478cc5f0e083324bdc41c8e6a3`. The latest follow-up source hashes are recorded in `PROJECT_STATE.md` and `CHAT_TRANSFER.md`.
+- Current source/test fingerprints after this UI change: `lib/main.dart` `6e1189010bb942c59ec68ac31f75c1a522e04a4d`; `test/widget_test.dart` `661130f0bc2197478cc5f0e083324bdc41c8e6a3`. Flutter/Dart tests are still not run for this follow-up.
 - A widget contract covers the visible-copy restrictions and contact channel. **Flutter tests and Dart analysis were NOT RUN** in this execution environment (Flutter/Dart SDK unavailable; GitHub clone could not resolve DNS). No App Build/APK or device validation occurred. Build #73 is the latest verified APK; it includes the tamper warning/contact change, but not the subsequent icon/toggle/menu-lock updates.
 
 ## Identity and package
@@ -141,7 +141,7 @@ This file is the durable App behavior/design contract. Live source and the curre
 - Current metrics are B/H/V/A/P/F. F is labelled Fan/Kipas and displays live PWM speed while running. When BLE telemetry is disconnected, live device values are unknown (--) and no stale output state is inferred.
 - FPS, SurfaceFlinger TimeStats sampling, Shizuku permission UI/provider/UserService/AIDL, related parser/watchdog tests and Shizuku-only license files are removed from active App source. The release workflow audit and source archive packaging no longer depend on them.
 - Schema version 2 maps old schema-v1 S (Speed) to F (Fan Speed) and drops old schema-v1 F (FPS). Flutter contract tests cover migration and removal of FPS/Shizuku UI.
-- Build #71 is the latest verified release; it includes FPS/Shizuku retirement plus indicator-motion/manual-voltage-toggle refinements. CI verified 88/88 Flutter tests, Android production compilation/configured gate, signing, source archive and release assets. Phone overlay visuals and live BLE telemetry remain unverified.
+- Build #73 is the latest verified release (run `39098410865`, source `f1e81450428ffb113a76d430590c312ad6fa4781`); 91/91 Flutter tests and all 21 workflow steps passed. It includes the TamperScreen change but not the later Hotside/animation/toggle/menu-lock UI work. The new source/test contracts are not run; phone overlay visuals and live BLE telemetry remain unverified.
 
 ## Phone battery telemetry and Battery Protection UI boundary
 
@@ -153,9 +153,9 @@ This file is the durable App behavior/design contract. Live source and the curre
 
 ## Current App QC boundary
 
-- Latest verified release: Build #71 / run 39008259484, released source commit d9e026f70ec62455763de05048cba1557edfaf23.
-- 88/88 Flutter tests passed. Dart analysis and all 21 active release workflow steps passed, including Android production compile/configured gate, obfuscated APK, V1/V2/V3 certificate checks, matching source ZIP and re-downloaded Release asset verification. Native JUnit tasks were NO-SOURCE after FPS-specific native test files were removed; no native JUnit cases ran.
-- APK asset 649710440, 54,603,867 bytes, SHA-256 fdffa5d61ad403153c544cd3a62ea130e810844930f9de96fdd28343f6d041ca. Matching source ZIP asset 649710439, 2,847,410 bytes, SHA-256 3d7dc30fa99d3bfb86bee069e4a9b60292942f215c11c27e519f0b51ca8a24b0. Certificate/warning/step detail remains in APP_BUILD_REPORT.md.
+- Latest verified release: Build #73 / run `39098410865`, released source commit `f1e81450428ffb113a76d430590c312ad6fa4781`.
+- 91/91 Flutter tests passed in Build #73. Dart analysis and all 21 active release workflow steps passed, including Android production compile/configured gate, obfuscated APK, V1/V2/V3 certificate checks, matching source ZIP and re-downloaded Release asset verification. Native JUnit tasks were NO-SOURCE after FPS-specific native test files were removed; no native JUnit cases ran. Follow-up Hotside/animation/toggle/menu-lock changes are source-only, and their added tests/analysis were not run.
+- APK asset `652517541`, 54,538,331 bytes, SHA-256 `90ed2f36658ea0e4fa487d43ea7e4347545c9875b13d703ec9c2765445eea48b`. Matching source ZIP asset `652517543`, 2,846,735 bytes, SHA-256 `ed7429aa9f6cb36e327d6d7b85efdf0b895ee8529c09a159053b98c8628902ef`. Certificate/warning/step detail remains in APP_BUILD_REPORT.md.
 - Physical overlay layout, live BLE telemetry/Fan Speed value, phone animation and actual BLE/Firmware/thermal/OTA behavior remain UNVERIFIED. Build #71 was App-only.
 
 ## Dashboard indicator motion
