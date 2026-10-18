@@ -1,5 +1,14 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-18 — Distinct indicator motion, aligned toggles and centered menu locks (source-only)
+
+- Rebuilt the Hotside thermometer into one continuous tube/bulb contour, eliminating the overlapping internal outline. Added distinct, phase-driven effects for Battery fill, Hotside liquid/bulb, Voltage flash, Adaptive directional arrows, Peltier branch highlights, Speed gauge glint, LED wave/dot and Bluetooth stem pulse. Fan rotation retains voltage-aware phase behavior and coast-down; no Bluetooth ripple rings or Peltier orbiting sparks were added.
+- Non-Fan indicators keep quiet ambient cycles after the 440 ms active-state fade. These are visual-only idle motion, not a claim about physical output state. Fan OFF still coasts to a resting position.
+- Peltier, Adaptive and LED switch rows now use neutral surfaces like Manual Voltage; their knob no longer includes a checkmark and the adjacent ON/OFF label is omitted. Theme-primary toggle accent and all BLE state/enable/command gates remain in place.
+- Added a centralized menu-lock policy. Bluetooth disconnected blurs/dims the entire active submenu and centers one lock panel; top tabs and Home Bluetooth remain usable. Adaptive active/transitioning applies the same one-panel treatment only to Voltage, Control and Temperature. The content beneath the blur ignores pointer input.
+- Added four Flutter test contracts for the lock matrix, one centered overlay, toggle styling and indicator contour/motion signatures. **Tests and Dart analysis were not run** because this environment has no Flutter/Dart executable. Build #73 remains the latest verified APK and does not contain this change; no APK build/CI, native compile, firmware, cloud or device actions were triggered.
+- Source blobs: `lib/main.dart` `6e1189010bb942c59ec68ac31f75c1a522e04a4d`; `test/widget_test.dart` `661130f0bc2197478cc5f0e083324bdc41c8e6a3`.
+
 ## 2026-10-18 — Opaque profanity warning screen and developer contact (source-only)
 
 - Replaced the explanatory launch-rejection page with a dense, scrollable Indonesian slang/profanity wall; the page no longer shows a technical reason or any of the forbidden diagnostic wording. The warning remains JE X FYZ branded and keeps the contact action pinned at the bottom.
