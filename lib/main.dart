@@ -1001,8 +1001,8 @@ enum JexAnimatedIconKind {
 
 // JE X FYZ custom motion: every status icon has its own rhythm. Generic action
 // glyphs intentionally stay static; only device/status indicators animate.
-// Global JE X FYZ indicator motion gate.
-// Device/status animation is legal only when BLE is connected and the indicator state is active.
+// Shared active-state gate; the kind-aware policy below handles continuous sensors.
+// Battery, Hotside and Voltage loop while connected; outputs require an active known state.
 bool jexIndicatorAnimationActive({
   required bool connected,
   required bool stateActive,
