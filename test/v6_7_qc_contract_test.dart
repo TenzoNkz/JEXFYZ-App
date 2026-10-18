@@ -432,7 +432,7 @@ void main() {
     expect(source, contains('ADAPTIVE_FAN_WINDOW_SAMPLES = 10'));
     expect(source, contains('ADAPTIVE_FAN_SAFE_MARGIN_C = 2.0f'));
     expect(source, contains('ADAPTIVE_FAN_DOWNSTEP_MS = 10000UL'));
-    expect(source, contains('ADAPTIVE_FAN_UPSTEP_MS = 1000UL'));
+    expect(source, contains('ADAPTIVE_FAN_UPSTEP_MS = 3000UL'));
     expect(source, contains('adaptiveFanStableWindowStartedMs'));
     expect(source, contains('stablePeriodReached'));
     expect(source, contains('currentSampleSafe'));
