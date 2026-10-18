@@ -6,9 +6,9 @@ Last source/safety-reference reconciliation: 2026-10-18 (Asia/Jakarta). Latest v
 
 - Canonical editable source: `firmware/JEXFYZ-V6.7.ino`.
 - `FW_VERSION = "V6.7"`; source blob `efe6eaa62c178ab536fb68c06a310e54826cbaf2`.
-- **Status: SOURCE-ONLY / UNCOMPILED.** Earlier V6.6 compile/two-OTA statements remain historical user reports and do not validate V6.7.
+- **Status: USER-REPORTED COMPILED AND UPDATED ONLINE; NOT INDEPENDENTLY VERIFIED.** On 2026-10-18 the user reported successful V6.7 compilation and online update; this task did not inspect compile logs, the resulting BIN, OTA logs or current installed version.
 - Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module, Arduino-ESP32 Core 3.3.7, compiled by the user in ArduinoDroid.
-- Historical V6.6 acceptance is USER-REPORTED: the user reported a successful compile and two same-version Online OTA updates. Those reports do not validate the active V6.7 source. V6.7 is uncompiled; current installed-device version, source-to-BIN provenance, physical safety/thermal/LED behavior and the full OTA apply/reboot/reconnect gates remain UNVERIFIED.
+- Historical V6.6 acceptance is USER-REPORTED: the user reported a successful compile and two same-version Online OTA updates. The V6.7 compile/online update is also USER-REPORTED, but neither report independently proves source-to-BIN provenance or current device behavior. The current installed-device version, physical safety/thermal/LED behavior and full OTA apply/reboot/reconnect gates remain UNVERIFIED.
 
 ## Architecture
 
@@ -65,13 +65,13 @@ The canonical detailed incident/contract is `VOLTAGE_TRANSITION_MEMORY.md`.
 - HOTSIDE is the startup default; HOTSIDE_BATTERY is runtime selectable but is not persisted. Battery sensor loss falls back to HOTSIDE behavior without changing the user's profile selection.
 - No rapid Hotside slope/rise protection is present in the known V6.x contract.
 
-## Adaptive Fan PWM at 12V — V6.7 trend-gating correction (source-only contract)
+## Adaptive Fan PWM at 12V — V6.7 trend-gating correction (source behavior and validation boundary)
 
 - Adaptive Fan PWM at 12V is automatic only in Adaptive mode. Reaching the configured Hotside limit immediately forces Fan PWM to 100%; Adaptive 5V/9V retain the established 100% Fan behavior.
 - Downshift requires ten fresh one-second NTC samples, every sample and the rolling average at/below `hotLimit - 2°C`, no confirmed warming trend, and one continuous stable 10-second interval. Decrease by 10 percentage points every 10 seconds, down to a 50% floor.
 - **Correction:** the controller now holds its present PWM if downshift eligibility is not met but no warming trend is confirmed. Upshift requires four consecutive one-second readings spanning at least 0.25°C and at least two of the three intervals rising; each upshift adds 10 points and is bounded by a 3-second minimum interval. This prevents one-sample noise or an incomplete stable window from ramping PWM to 100%.
 - The ten-sample downshift window and four-sample trend check reuse the existing calibrated NTC readings. NTC acquisition remains one sample per second; no extra ADC reads, blocking delays or timing loops are introduced. Existing Hotside/Peltier/rail safety remains authoritative.
-- The active V6.7 source remains source-only and uncompiled. Static source contracts do not prove Arduino compilation, real sensor behavior or physical cooling/safety performance.
+- The user reports successful V6.7 compilation and online update on 2026-10-18; this was not independently verified in this task. Static source contracts do not prove binary/source identity, current installed version, real sensor behavior or physical cooling/safety performance.
 
 ## Touch / indicators / preferences
 
