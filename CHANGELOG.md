@@ -1,5 +1,14 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-18 — Adaptive Fan PWM consistency fix (V6.7 source-only)
+
+- Fixed the 12V Adaptive Fan controller so a failed downshift qualification no longer triggers an unconditional PWM increase. This was the source of the abrupt, inconsistent speed ramp.
+- The upshift now requires four consecutive one-second samples spanning at least 0.25°C warming, with at least two of the three intervals rising. It raises PWM by one 10-point step and waits at least 3 seconds before another increase.
+- Downshift remains guarded by ten fresh NTC samples, every sample and the rolling average at/below `hotLimit - 2°C`, no confirmed warming trend, and a 10-second stable window. Decrease by 10 points no more often than every 10 seconds, with a 50% floor.
+- Kept immediate 100% Fan response at the configured Hotside limit, Adaptive 5V/9V full-speed behavior, GPIO5 Peltier / GPIO6 Fan mapping, one calibrated NTC reading per second, voltage-transition timing, and all OTA/safety paths unchanged.
+- Added a source-contract regression test for warming-trend gating and the upshift interval. Static pre-write assertions passed.
+- Active source `firmware/JEXFYZ-V6.7.ino` blob: `efe6eaa62c178ab536fb68c06a310e54826cbaf2` (source edit commit 317a27bfc89fca69e7c6d46005d9411a0e928f3d: https://github.com/TenzoNkz/JEXFYZ-App/commit/317a27bfc89fca69e7c6d46005d9411a0e928f3d). **Not compiled, not built into BIN, not published, not OTA-applied, and not tested on hardware.** No App build was triggered, per project authorization rules; Firmware artifact repo, Firebase and device were untouched.
+
 ## 2026-10-18 — Full chat-limit memory reconciliation (documentation-only)
 
 - Reconciled current canonical status from live `main`, complete recursive tree inventory (67 entries: 49 blobs / 18 trees, not truncated), five branches, zero open PRs, five active Dart test files, the issue/title/token-guarded App workflow, current App/Firmware versions and exact source blobs.
