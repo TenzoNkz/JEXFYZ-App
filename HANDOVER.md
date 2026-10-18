@@ -26,7 +26,7 @@ Last reconciled against live GitHub on 2026-10-18 (Asia/Jakarta). Build #73 rema
 - User decided to retire FPS after repeated F:--/Shizuku UserService failures. FPS, SurfaceFlinger TimeStats sampling, Shizuku permission/status UI/API/provider/dependency, UserService/AIDL, FPS-only tests and Shizuku-only notice/license files were removed from active source.
 - The HUD has exactly six metrics: B (Battery), H (Hotside), V (Voltage), A (Adaptive), P (Peltier), F (Fan/Kipas label; current value is live speed). Schema v2 drops old schema-v1 F (FPS) and maps old S (Speed) to F. Fan telemetry and firmware speed control are unchanged.
 - Overlay remains Letters-only, freely draggable, with saved coordinates; horizontal metrics centered as a group, vertical rows left aligned; size 0.30×–1.00× by 0.05× (default 0.60×); background opacity 0–100% by 5%, current value and endpoint marks only, no midpoint. Physical layout and live BLE metric behavior remain UNVERIFIED on the phone.
-- Build #71 remains the latest verified APK but does not contain the current integrated 2D icon, localization/RGB-brightness or V6.7 Adaptive Fan source changes. A new APK needs separate `@Thinking Eksekusi Build App!` authorization; physical visuals and telemetry remain unverified.
+- Build #73 remains the latest verified APK but does not contain the current Hotside contour, indicator animations, Peltier/Adaptive/LED toggle styling or centered menu-lock overlays. A new APK needs separate `@Thinking Eksekusi Build App!` authorization; tests for these source-only changes have not been run and physical visuals remain unverified.
 
 ## Firmware / OTA boundary
 
@@ -37,6 +37,6 @@ Last reconciled against live GitHub on 2026-10-18 (Asia/Jakarta). Build #73 rema
 
 ## Immediate next step and authorization
 
-1. Build #71 remains the latest verified APK. If a new APK is separately authorized with `@Thinking Eksekusi Build App!`, verify the integrated 2D icon redesign, localized labels, RGB-only toggle/master brightness, and Floating Monitor live Fan telemetry on a real phone.
+1. Build #73 remains the latest verified APK. If a new APK is separately authorized with `@Thinking Eksekusi Build App!`, verify the current Hotside contour, all indicator motions, Peltier/Adaptive/LED toggle styling and whole-submenu centered lock overlay on a real phone, alongside existing BLE/Fan telemetry.
 2. If visuals or telemetry differ from the contract, capture screenshots/video and relevant live state first; do not infer on-device behavior from CI test pass alone.
 3. Firmware/BIN/Firebase/OTA/flash/device operations were not performed or authorized in this App build.
