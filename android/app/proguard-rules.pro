@@ -5,7 +5,3 @@
 # JE X FYZ release shrinking/obfuscation
 # Keep the launcher Activity and its MethodChannels reachable.
 -keep class com.horizontalzzz.jexfyz.MainActivity { *; }
-# Shizuku dynamically creates the FPS UserService and invokes the generated AIDL Binder.
--keep class com.horizontalzzz.jexfyz.FpsShizukuUserService { *; }
--keep interface com.horizontalzzz.jexfyz.IFpsShizukuUserService { *; }
--keep class com.horizontalzzz.jexfyz.IFpsShizukuUserService$Stub { *; }
