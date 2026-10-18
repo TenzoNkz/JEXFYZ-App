@@ -1,13 +1,13 @@
 # JE X FYZ / JE Cooler — Chat Transfer Snapshot
 
-Snapshot reconciled against live `main` on 2026-10-18 after the source-only TamperScreen profanity-wall and developer-contact update. Build #71 remains the latest verified APK; current `main` changes are not included in that release. Flutter validation and device behavior remain unverified. This file is committed last and deliberately excludes its own future blob/commit hash.
+Snapshot reconciled against live `main` on 2026-10-18 after the source-only TamperScreen profanity-wall/developer-contact update and a follow-up widget assertion case-normalization fix. Build #71 remains the latest verified APK; current `main` changes are not included in that release. Flutter validation and device behavior remain unverified. This file is committed last and deliberately excludes its own future blob/commit hash.
 
 Source-of-truth order: live main source/tree and exact Actions/Release evidence → CHAT_RULES.md for authorization → PROJECT_STATE.md for current state → subject reference files and APP_BUILD_REPORT.md → HANDOVER.md / this snapshot → CHANGELOG.md for history → archive/*.md for forensic recovery only. Archived “CURRENT” wording is not live truth.
 
 ## 1. Current Git and repository state
 
 - Canonical App/Firmware source and project-memory repository: `TenzoNkz/JEXFYZ-App`, branch `main`.
-- Parent HEAD for this update sequence: `75a6c314f1734bb919001be7951eab88a73a10e8`, message `feat: add opaque tamper warning and developer contact`, tree SHA `810f0b63036b09b77293304c0755986f1cfefd69`. A final transfer-only commit follows it. The complete tree retains 67 entries (49 blobs, 18 trees); exactly one active versioned Firmware sketch remains: `firmware/JEXFYZ-V6.7.ino`. Re-fetch branch/tree at next boot.
+- Parent HEAD immediately before this transfer-only commit: `e1923ab66b4a4bb0f31a69f00d541b7c60528dcd`, message `docs(memory): refresh tamper-screen test hash`. Changes in this recovery update only existing source/test/docs files; the tree entry count remains 67 (49 blobs, 18 trees), with exactly one active versioned Firmware sketch: `firmware/JEXFYZ-V6.7.ino`. The current tree SHA was not exposed by the connector response; re-fetch the recursive tree at next boot.
 - Latest verified release: Build #71 / [Actions run `39008259484`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39008259484), exact release/source commit `d9e026f70ec62455763de05048cba1557edfaf23`. Completed at `2026-10-17T06:05:54Z` (`2026-10-17 13:05:54 Asia/Jakarta`). All 21 active workflow steps passed: audit, dependencies, Dart analysis, **88/88 Flutter tests**, Android production compilation/configured gate, obfuscated APK, V1/V2/V3 signing and certificate checks, source ZIP, Release publication and re-downloaded asset verification.
 - Build #70 is historical and verified FPS/Shizuku retirement plus schema-v2 migration to six metrics B/H/V/A/P/F (F=Fan Speed). Build #71 is newer and includes the post-Build-70 motion/toggle refinements.
 - Build #71 was triggered through owner/title/token-guarded [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). Issue owner `TenzoNkz`, title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; workflow blob `8a8533aff7e0e0e01412bf522e1966e81aa1a39f` is unchanged and listens only to issue opened/reopened. No push/PR/dispatch bypass.
@@ -26,12 +26,12 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
 
 ## 3. Current source fingerprints and canonical docs
 
-- Latest **verified release source** remains `d9e026f70ec62455763de05048cba1557edfaf23` (Build #71). Current `main` functional source is now `75a6c314f1734bb919001be7951eab88a73a10e8`; it includes the current unbuilt changes and must not be mistaken for a verified APK.
+- Latest **verified release source** remains `d9e026f70ec62455763de05048cba1557edfaf23` (Build #71). The TamperScreen source change is commit `75a6c314f1734bb919001be7951eab88a73a10e8`; the follow-up widget assertion case-normalization fix is commit `d123f64840e28ce9a332ccd7a4a489f37448ea05`. The current `main` source remains unbuilt and must not be mistaken for a verified APK.
 - Current source/test blobs:
   - `lib/main.dart`: `bf2007203455c64c2dd840a84b31368063df44eb`.
   - `lib/floating_monitor.dart`: `31b45ea08b08ac7fc25ebd991dca873b889fdd14`.
   - `lib/app_settings.dart`: `36927823c91904a35d87d2f21bd77932a2214e83`.
-  - `test/widget_test.dart`: `767e7843f379c854fe7c8ab98293b4ec36008c88`.
+  - `test/widget_test.dart`: `605d79e5019ba0cbe857d47d22db23e9204003a0`.
   - `test/floating_monitor_layout_contract_test.dart`: `87e805095202ac3edfe55b9aeb3138c7c6886375`.
   - `test/v6_7_qc_contract_test.dart`: `6b71cc2ebbef9b3f1c9757728067eec4d11ff5ee`.
   - `test/app_protocol_notify_contract_test.dart`: `92214dd90178c705844d3979d3f8f7bd17bcc4b8`.
@@ -40,12 +40,12 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
   - Active workflow `.github/workflows/jexfyz-app-build-trigger.yml`: `8a8533aff7e0e0e01412bf522e1966e81aa1a39f`.
 - Canonical docs immediately before this transfer-only commit:
   - `APP_BUILD_REPORT.md`: `2c9d2701aef8d02ff71f89214418b8f9aa3d0b6b`.
-  - `PROJECT_STATE.md`: `9b8ac14546ceb860063e9f30e6adf5bc94e5178f`.
-  - `MEMORY_INDEX.md`: `361592140e20089f1962645307db9f2f64911831`.
+  - `PROJECT_STATE.md`: `b5d5d09f0143ea481d432791ecd68bcf44950221`.
+  - `MEMORY_INDEX.md`: `92cc03db9ee8038bca915e798568d5bbfd48a668`.
   - `BUILD_NOTES.md`: `821f3370bbf6816874681195ceff21a36faf5573`.
-  - `HANDOVER.md`: `d9ba8aff1228a125c0a205f8f20e1bda049b76a6`.
-  - `APP_NOTES.md`: `0290b359bea249ae12d26791b6d7480c162302b2`.
-  - `CHANGELOG.md`: `b42cefa06e0c07811cf89411e27b940719bffa86`.
+  - `HANDOVER.md`: `3cd9d1eec7fdd17bb8cdd7586e9fe4d52b445dc8`.
+  - `APP_NOTES.md`: `eeaa2adccddc9a2001bc3bf36567319499fe94d7`.
+  - `CHANGELOG.md`: `7109ca410b92f9d6ce00eb71574b7bc9d9cb06e5`.
   - `README.md`: `a5bb31bec9a83c03daddbab9cd127d537660a90e`.
   - `CHAT_RULES.md`: `eae86f7e921b3eb49337bea87a39255eabb7b4c3`.
   - `FIRMWARE_NOTES.md`: `aa61ac32e756e87342d4070c216d699f63949a46`.
@@ -62,7 +62,7 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
 - When that existing gate rejects startup, Flutter displays `TamperApp` / `TamperScreen` instead of the normal application. Screen copy is a dense, scrollable wall of uncensored Indonesian slang/profanity; it intentionally gives no technical reason and avoids visible references to the cause, verification terms or developer account.
 - The fixed bottom action is exactly `HUBUNGI DEVELOPER`. It calls the existing `je_x_fyz/security` MethodChannel method `openDeveloperContact`; Android invokes `ACTION_VIEW` for `https://t.me/horizontalzzz`. The account name and target URL are not displayed on the warning screen. A launch failure does not continue to the normal app.
 - `test/widget_test.dart` adds a UI/contact contract covering the profanity copy, absence of technical diagnosis, and mocked channel invocation. The new tests and Dart analysis were **NOT RUN**: the current tool runtime has no Flutter/Dart executable and GitHub clone failed DNS resolution. Static preparatory assertions passed; these are not runtime test results.
-- Source-only files: `lib/main.dart` `bf2007203455c64c2dd840a84b31368063df44eb`; `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt` `ef35590cfc91fafe5dec104b7cfd7828011185bf`; `lib/app_settings.dart` `36927823c91904a35d87d2f21bd77932a2214e83`; `test/widget_test.dart` `767e7843f379c854fe7c8ab98293b4ec36008c88`.
+- Source-only files: `lib/main.dart` `bf2007203455c64c2dd840a84b31368063df44eb`; `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt` `ef35590cfc91fafe5dec104b7cfd7828011185bf`; `lib/app_settings.dart` `36927823c91904a35d87d2f21bd77932a2214e83`; `test/widget_test.dart` `605d79e5019ba0cbe857d47d22db23e9204003a0`.
 - Build #71 / run `39008259484` from `d9e026f70ec62455763de05048cba1557edfaf23` remains the latest verified APK; it does not include this change. No App Build, Android compile, physical test, Firmware compile, BIN, Firebase, OTA or device operation was performed.
 
 ## 4. Current Floating Monitor: FPS retired, F label is Fan/Kipas
@@ -150,12 +150,12 @@ Current canonical responsibility:
 
 Canonical document blob hashes immediately before this transfer-only write:
 - `APP_BUILD_REPORT.md`: `2c9d2701aef8d02ff71f89214418b8f9aa3d0b6b`.
-- `PROJECT_STATE.md`: `9b8ac14546ceb860063e9f30e6adf5bc94e5178f`.
-- `MEMORY_INDEX.md`: `361592140e20089f1962645307db9f2f64911831`.
+- `PROJECT_STATE.md`: `b5d5d09f0143ea481d432791ecd68bcf44950221`.
+- `MEMORY_INDEX.md`: `92cc03db9ee8038bca915e798568d5bbfd48a668`.
 - `BUILD_NOTES.md`: `821f3370bbf6816874681195ceff21a36faf5573`.
-- `HANDOVER.md`: `d9ba8aff1228a125c0a205f8f20e1bda049b76a6`.
-- `APP_NOTES.md`: `0290b359bea249ae12d26791b6d7480c162302b2`.
-- `CHANGELOG.md`: `b42cefa06e0c07811cf89411e27b940719bffa86`.
+- `HANDOVER.md`: `3cd9d1eec7fdd17bb8cdd7586e9fe4d52b445dc8`.
+- `APP_NOTES.md`: `eeaa2adccddc9a2001bc3bf36567319499fe94d7`.
+- `CHANGELOG.md`: `7109ca410b92f9d6ce00eb71574b7bc9d9cb06e5`.
 - `README.md`: `a5bb31bec9a83c03daddbab9cd127d537660a90e`.
 - `CHAT_RULES.md`: `eae86f7e921b3eb49337bea87a39255eabb7b4c3`.
 - `FIRMWARE_NOTES.md`: `aa61ac32e756e87342d4070c216d699f63949a46`.
