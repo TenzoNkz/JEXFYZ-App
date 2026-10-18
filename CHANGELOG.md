@@ -1,5 +1,13 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-19 — Explicitly static TamperScreen warning icon and app-source audit (source-only)
+
+- Replaced the TamperScreen warning symbol's generic `JexAnimatedIcon.glyph` wrapper with a direct Flutter `Icon`. The generic wrapper already returned a plain `Icon`, so the previous `active/warning` arguments were inert for this glyph; this cleanup makes the no-animation intent explicit without changing its shape, size, color or surrounding frame.
+- Added regression assertions requiring a static Icon, disallowing the generic animation wrapper in `TamperScreen`, and preserving the existing warning glyph. All 10 text strings/order, text colors/typography, rounded boxes, header and developer-contact behavior remain unchanged.
+- Audit against `DESIGN_NOTES.md`: Battery/Hotside/Voltage loop while BLE is connected (even when a displayed reading is unknown); Adaptive/Peltier/Fan/Fan Speed/LED animate only when authoritative state is ON; OFF output icons are static except the Fan's permitted one-shot connected coast-down; Bluetooth remains static. Existing color-threshold, BLE/state, menu-lock and temperature presentation contracts are already present, so no unrelated control/thermal behavior was changed.
+- Current source blobs: `lib/main.dart` `522e108dd78d9b413316a6c79c8a4f0144f5e58f`; `test/widget_test.dart` `5098c30291cbd70422cd351f03cd9325f0870258`.
+- Build #80 / [run 39171729285](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39171729285) remains the latest verified APK, source `4e9f14b959cdbf60136158187db26d0bb65f6287`. It includes the rounded text-box layout and Home animation/state-gating work, but not this direct-Icon simplification. Flutter tests/analyzer and App Build were **NOT RUN** for this post-Build-80 delta; no Firmware/BIN/Firebase/OTA/flash/device operation was performed.
+
 ## 2026-10-18 — Tamper warning text-block layout polish (source-only)
 
 - Wrapped each of the 10 existing `_insult` text items in a consistent dark rounded rectangle with a subtle border, fixed horizontal padding and uniform outer spacing to make long lines wrap more evenly.
