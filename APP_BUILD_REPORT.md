@@ -47,7 +47,7 @@ This is the durable evidence ledger for `@Thinking Eksekusi Build App!`. A repla
 - **APK / SIGNING:** asset 652517541, 54,538,331 bytes, SHA-256 90ed2f36658ea0e4fa487d43ea7e4347545c9875b13d703ec9c2765445eea48b. V1/V2/V3 signatures and expected production-certificate SHA-256 dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0 all verified against the built and re-downloaded APK.
 - **SOURCE ARCHIVE:** asset 652517543, 2,846,735 bytes, SHA-256 ed7429aa9f6cb36e327d6d7b85efdf0b895ee8529c09a159053b98c8628902ef. Archive integrity, embedded exact-source marker and re-downloaded hash match f1e81450428ffb113a76d430590c312ad6fa4781.
 - **QC:** all 21 active workflow steps passed; Dart analysis has 23 non-fatal info-level deprecation findings; 91/91 Flutter tests passed. Gradle production compilation/configured gate succeeded, but native JUnit test tasks are NO-SOURCE and no native cases ran.
-- **HISTORY / BOUNDARIES:** Build #72’s 89-pass/2-fail test-gate result and the justified test-contract repair remain preserved below. Build #71 and earlier history are retained. Physical-device BLE/rendering/cooling/OTA and Firmware are not verified by this CI run. APP_BUILD_REPORT.md is the only post-build file changed after Build #73’s exact source checkout.
+- **HISTORY / BOUNDARIES:** Build #72’s 89-pass/2-fail test-gate result and the justified test-contract repair remain preserved below. Build #71 and earlier history are retained. Physical-device BLE/rendering/cooling/OTA and Firmware are not verified by this CI run. Subsequent documentation and source-only UI commits on `main` are not part of the Build #73 release source; this file remains the authoritative release-attempt ledger.
 
 ## Attempt history
 
