@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Memory Index
 
-Reconciled against live GitHub main: 2026-10-18. Live code, Git refs, Actions results and Release assets supersede stale memory snapshots.
+Reconciled against live GitHub main: 2026-10-18 (Asia/Jakarta); current App tree audited with `truncated=false`. Live code, Git refs, Actions results and Release assets supersede stale memory snapshots.
 
 ## Current verified checkpoint
 
@@ -72,7 +72,7 @@ Source of truth ordering: live main code/tree/Refs and exact Actions/Release evi
 ## Repository and memory persistence rules
 
 - All source, documentation, tests and memory stay in TenzoNkz/JEXFYZ-App. TenzoNkz/JEXFYZ-Firmware is BIN-only.
-- The live artifact repo tree was re-fetched during the 2026-10-17 reconciliation and is exactly one file: `JEXFYZ.cpp.bin`, blob `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, size 1,455,936 bytes. This does not establish that the BIN was produced from the current source.
+- The live artifact repo tree was re-fetched on 2026-10-18 and is complete/not truncated with exactly one entry: `JEXFYZ.cpp.bin`, blob `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, size 1,455,936 bytes. The BIN payload was not downloaded/read, and source-to-BIN provenance is UNVERIFIED.
 - Each durable decision has one canonical subject file. Update PROJECT_STATE.md for current state; APP_BUILD_REPORT.md for every build attempt; CHANGELOG.md for significant history; MEMORY_INDEX.md for changed routing; replace CHAT_TRANSFER.md last at context limit.
 - Do not output credential contents from google-services.json or signing environment. Keep archives byte-for-byte and restore useful facts to canonical notes with explicit historical labels.
 - V6.6 was previously user-accepted; current source is V6.7 after explicit source-change authorization and remains uncompiled. Do not edit/compile Firmware, generate/publish/replace BIN, alter Firebase, OTA/flash or operate hardware without separate explicit authorization. Functional Firmware edits require FW_VERSION bump, matching filename and exactly one active versioned .ino. Do not introduce blocking delay()/timing while loops.
