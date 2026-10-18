@@ -1,5 +1,13 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-18 — Full chat-limit memory reconciliation (documentation-only)
+
+- Reconciled current canonical status from live `main`, complete recursive tree inventory (67 entries: 49 blobs / 18 trees, not truncated), five branches, zero open PRs, five active Dart test files, the issue/title/token-guarded App workflow, current App/Firmware versions and exact source blobs.
+- Corrected current documentation to distinguish Build #73 (latest verified App release) from later source-only Hotside/indicator/toggle/menu-lock UI changes. Removed the duplicate obsolete Build #71 source-only block in `PROJECT_STATE.md` and removed the duplicated older Dashboard animation contract from `APP_NOTES.md`.
+- Refreshed release/QC checkpoints, active source fingerprints, current visual requirements, V6.7 transition-memory wording and OTA evidence boundary. Preserved useful older Build/Firmware evidence as explicitly historical; archive snapshots remain immutable forensic files.
+- Confirmed `TenzoNkz/JEXFYZ-Firmware` remains BIN-only with exactly `JEXFYZ.cpp.bin`; its payload was not read and source-to-BIN provenance remains unverified. No App source changes, tests, Dart analysis, App Build, firmware compile, BIN publication, Firebase, OTA, flash or device operations were performed as part of the memory reconciliation.
+- The updated `CHAT_TRANSFER.md` is written last and records current live hashes plus exact verified/unverified boundaries.
+
 ## 2026-10-18 — Distinct indicator motion, aligned toggles and centered menu locks (source-only)
 
 - Rebuilt the Hotside thermometer into one continuous tube/bulb contour, eliminating the overlapping internal outline. Added distinct, phase-driven effects for Battery fill, Hotside liquid/bulb, Voltage flash, Adaptive directional arrows, Peltier branch highlights, Speed gauge glint, LED wave/dot and Bluetooth stem pulse. Fan rotation retains voltage-aware phase behavior and coast-down; no Bluetooth ripple rings or Peltier orbiting sparks were added.
@@ -9,22 +17,22 @@
 - Added four Flutter test contracts for the lock matrix, one centered overlay, toggle styling and indicator contour/motion signatures. **Tests and Dart analysis were not run** because this environment has no Flutter/Dart executable. Build #73 remains the latest verified APK and does not contain this change; no APK build/CI, native compile, firmware, cloud or device actions were triggered.
 - Source blobs: `lib/main.dart` `0f6335435570691c5e9509f3f1a2619cf351e732`; `test/widget_test.dart` `661130f0bc2197478cc5f0e083324bdc41c8e6a3`.
 
-## 2026-10-18 — Opaque profanity warning screen and developer contact (source-only)
+## HISTORICAL / SOURCE CHECKPOINT — 2026-10-18 — Opaque profanity warning screen and developer contact (later included by Build #73)
 
 - Replaced the explanatory launch-rejection page with a dense, scrollable Indonesian slang/profanity wall; the page no longer shows a technical reason or any of the forbidden diagnostic wording. The warning remains JE X FYZ branded and keeps the contact action pinned at the bottom.
 - Replaced the old Exit button with the single label `HUBUNGI DEVELOPER`. The existing security MethodChannel routes this action to Android `ACTION_VIEW` for `https://t.me/horizontalzzz`, without displaying the handle/URL on the screen.
 - Preserved the pre-existing native signing-certificate gate and its debug-build allowance. This check compares signing identity; it should not be described as universal runtime detection of every tamper method.
-- Added a Flutter widget contract for the copy, forbidden visible terms, and contact callback. A follow-up static review fixed a case-sensitive matcher in that new test; the test and Dart analysis remain NOT RUN. Source blobs: main.dart `bf2007203455c64c2dd840a84b31368063df44eb`, MainActivity.kt `ef35590cfc91fafe5dec104b7cfd7828011185bf`, app_settings.dart `36927823c91904a35d87d2f21bd77932a2214e83`, widget_test.dart `605d79e5019ba0cbe857d47d22db23e9204003a0`.
-- Static text/bridge checks passed during preparation. Flutter tests/Dart analysis were **NOT RUN** because the runtime has no Flutter/Dart SDK and GitHub clone could not resolve DNS. No APK build/release, firmware, BIN, Firebase, OTA, flash or device operation occurred; Build #71 remains the latest verified APK.
+- Added a Flutter widget contract for the copy, forbidden visible terms, and contact callback. A follow-up static review fixed a case-sensitive matcher in that test; these initial contracts had not yet been run at this checkpoint. Source hashes shown here are **historical checkpoint hashes** from the original TamperScreen update, not current `main`: `lib/main.dart` `bf2007203455c64c2dd840a84b31368063df44eb`, `MainActivity.kt` `ef35590cfc91fafe5dec104b7cfd7828011185bf`, `lib/app_settings.dart` `36927823c91904a35d87d2f21bd77932a2214e83`, `test/widget_test.dart` `605d79e5019ba0cbe857d47d22db23e9204003a0`.
+- Static text/bridge checks passed at that checkpoint. Flutter tests/Dart analysis were **NOT RUN** there. Build #73 later included the TamperScreen/contact behavior; the subsequent Hotside/indicator/toggle/menu-lock work remains source-only after Build #73. No App Build or physical-device validation occurred in this documentation reconciliation.
 
-## 2026-10-17 — Integrated 2D indicators, localization, master LED brightness and Adaptive V6.7 Fan PWM (source-only)
+## HISTORICAL / SOURCE CHECKPOINT — 2026-10-17 — Integrated 2D indicators, localization, master LED brightness and Adaptive V6.7 Fan PWM
 
 - Replaced stacked dashboard painter visuals with integrated 2D shapes and restrained phase-continuous motion; kept app identity, grille/logo, cards, layout and control semantics. Tests now check integrated silhouettes and retain Fan motion/gauge coverage.
 - Refined EN/ID copy: dashboard `Suhu Panas` / `Hotside Temperature` (Hotside remains unhyphenated); Floating Monitor F is `Kipas` / `Fan` while PWM setting stays `Kecepatan Kipas` / `Fan Speed`; RGB toggle is `Daya RGB` / `RGB Power`; direction is `Kiri / Kanan` / `Left / Right`, without a center glyph.
 - RGB ON/OFF gates only the user RGB effect. Voltage and system indicators remain independent, and lit physical `showAll` status paths use the master hardware Brightness; preview pixels remain readable at low hardware brightness.
 - Active Firmware source advanced to V6.7 with a matching filename. Adaptive Fan PWM at 12V requires ten recent one-second NTC samples, average and every sample at/below `hotLimit - 2°C`, no meaningful warming trend and one stable 10-second interval before reducing 10 points every 10 seconds to 50%. Lost margin/warming raises 10 points per new sample; reaching the configured Hotside limit forces 100% immediately. Adaptive 5V/9V and existing Peltier/thermal safety remain unchanged.
-- Current blobs: `lib/main.dart` 3bb9a772e7e4a192cd9b4457846b111e28ec305a; `lib/app_settings.dart` 77faaa80264ed65ab5c104588978bb903e9f89db; `firmware/JEXFYZ-V6.7.ino` 1d0fa0d5e308b9789fd1c32211ce0a127d497f6a; `test/widget_test.dart` 66861cad0638433bd7b575439bb4a2b637f1f856; `test/v6_7_qc_contract_test.dart` 6b71cc2ebbef9b3f1c9757728067eec4d11ff5ee; `test/firmware_touch_adaptive_sync_test.dart` 94c0f074247f47fce7d939a72b0130eb1b2d70fa.
-- Static source checks only. Flutter tests/Dart analysis/Android build were not run, Firmware V6.7 was not compiled, and no APK release, BIN/Firebase publication, OTA, flash or physical-device validation occurred. Build #71 remains latest verified APK and does not contain these changes.
+- Blob hashes at the 2026-10-17 source checkpoint (historical, not current `main`): `lib/main.dart` `3bb9a772e7e4a192cd9b4457846b111e28ec305a`; `lib/app_settings.dart` `77faaa80264ed65ab5c104588978bb903e9f89db`; `firmware/JEXFYZ-V6.7.ino` `1d0fa0d5e308b9789fd1c32211ce0a127d497f6a`; `test/widget_test.dart` `66861cad0638433bd7b575439bb4a2b637f1f856`; `test/v6_7_qc_contract_test.dart` `6b71cc2ebbef9b3f1c9757728067eec4d11ff5ee`; `test/firmware_touch_adaptive_sync_test.dart` `94c0f074247f47fce7d939a72b0130eb1b2d70fa`.
+- Static source checks only at that source checkpoint. Flutter tests/Dart analysis/Android build were not run, Firmware V6.7 was not compiled, and no BIN/Firebase publication, OTA, flash or physical-device validation occurred. Build #73 later verified the App source in its own exact source ZIP; it still does not prove Firmware compilation or BIN provenance. The newer UI edits on 2026-10-18 are not included in Build #73.
 ## 2026-10-17 — Dashboard motion continuity and manual voltage toggle styling
 
 - Indicator motion now continues through the eased OFF fade before pausing. Reactivation preserves the last phase and travels to the next equivalent cycle boundary rather than restarting from phase zero. The Fan retains its separate voltage-phase handoff and coast-down behavior.
@@ -34,7 +42,7 @@
 - Source/tests/docs were committed under `Eksekusi Full`, which did not start a release build. Build #71 subsequently passed Dart analysis, 88/88 Flutter tests, Android production compilation/configured gate, APK signing, source archive and Release asset verification for these changes. Physical-phone animation/toggle checks remain pending.
 
 
-## 2026-10-17 — Build #71 release verified: dashboard motion and manual voltage toggle
+## HISTORICAL / SUPERSEDED — Build #71 release verified: dashboard motion and manual voltage toggle (superseded by Build #73)
 
 - Build #71 / [Actions run `39008259484`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39008259484) completed successfully against exact source/release commit `d9e026f70ec62455763de05048cba1557edfaf23`. All 21 active workflow steps passed: audit, dependencies, Dart analysis, **88/88 Flutter tests**, Android production compilation/configured gate, APK obfuscation, V1/V2/V3 signature/certificate checks, matching source ZIP, Release publication and re-downloaded asset verification.
 - It includes motion-continuity refinements: OFF animation continues during the 440 ms fade before pausing; reactivation resumes retained phase and advances to an equivalent loop boundary; thermal flame geometry is loop-seam compatible; Battery segments ripple subtly; four bounded Peltier sparks orbit around the stable six-branch crystal.
