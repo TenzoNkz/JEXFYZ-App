@@ -1038,7 +1038,7 @@ void main() {
     expect(stateStart, isNonNegative);
     expect(stateEnd, greaterThan(stateStart));
     final iconState = source.substring(stateStart, stateEnd);
-    expect(iconState, contains('fanVoltageChanged && widget.active'));
+    expect(iconState, contains('else if ((fanVoltageChanged || fanSpeedChanged) && widget.active)'));
     expect(iconState, contains('_animateFanToCycleBoundary();'));
     expect(iconState, contains('await controller.animateTo('));
     expect(iconState, contains('controller.repeat();'));
