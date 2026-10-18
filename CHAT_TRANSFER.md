@@ -1,13 +1,13 @@
 # JE X FYZ / JE Cooler — Chat Transfer Snapshot
 
-Snapshot reconciled against live `main` on 2026-10-18 after the source-only indicator-motion, toggle and whole-submenu lock-overlay update, including improved Adaptive arrow visibility while idle. Build #73 remains the latest verified APK; the newest UI source changes are not included in that release. Flutter validation and physical-device behavior remain unverified. This file is committed last and deliberately excludes its own future blob/commit hash.
+Snapshot reconciled against live `main` at 2026-10-18T06:43:14Z (2026-10-18 13:43:14 Asia/Jakarta), after complete memory/config reconciliation. Build #73 remains the latest verified APK; the newest UI source changes and current memory-only cleanup are not included in that release. Flutter validation and physical-device behavior remain unverified. This file is written last and deliberately excludes its own future blob/commit hash.
 
 Source-of-truth order: live main source/tree and exact Actions/Release evidence → CHAT_RULES.md for authorization → PROJECT_STATE.md for current state → subject reference files and APP_BUILD_REPORT.md → HANDOVER.md / this snapshot → CHANGELOG.md for history → archive/*.md for forensic recovery only. Archived “CURRENT” wording is not live truth.
 
 ## 1. Current Git and repository state
 
 - Canonical App/Firmware source and project-memory repository: `TenzoNkz/JEXFYZ-App`, branch `main`.
-- Parent HEAD immediately before this transfer-only commit: `b4313d0f85ac9c6435f09fb87e7de70b59f60e73`, message `docs: refresh Adaptive indicator source fingerprint in MEMORY_INDEX.md`. This sequence modified only existing App/test/docs files; the complete tree remains 67 entries (49 blobs, 18 trees), with exactly one active versioned Firmware sketch: `firmware/JEXFYZ-V6.7.ino`. The current tree SHA was not exposed by the connector response; re-fetch the recursive tree at next boot.
+- Parent HEAD immediately before this transfer-only commit: `5a7d44b0600cbabf09e3670cd02f9bccd9c8109d`, message `docs(build): restore Build 71 historical release summary`, parent `861094fa3f88ea8d42b6ddb8d474a5ebfa731bee`, tree SHA `6c413a42a7616c15feda1207732714c06bdbf495`. Live recursive tree SHA equals `6c413a42a7616c15feda1207732714c06bdbf495`, complete/not truncated, 67 entries (49 blobs / 18 trees). Main has five branches and zero open PRs. This update replaces this file last; re-fetch the final HEAD/parent/tree after commit.
 - Latest verified release: Build #73 / [Actions run `39098410865`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39098410865), exact release/source commit `f1e81450428ffb113a76d430590c312ad6fa4781`. Completed at `2026-10-18T04:55:19Z` (`2026-10-18 11:55:19 Asia/Jakarta`). All 21 active workflow steps passed: audit, dependencies, Dart analysis, **91/91 Flutter tests**, Android production compilation/configured gate, obfuscated APK, V1/V2/V3 signing and certificate checks, source ZIP, Release publication and re-downloaded asset verification.
 - Build #70 is historical and verified FPS/Shizuku retirement plus schema-v2 migration to six metrics B/H/V/A/P/F (F=Fan Speed). Build #71 is newer and includes the post-Build-70 motion/toggle refinements.
 - Build #71 was triggered through owner/title/token-guarded [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). Issue owner `TenzoNkz`, title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; workflow blob `8a8533aff7e0e0e01412bf522e1966e81aa1a39f` is unchanged and listens only to issue opened/reopened. No push/PR/dispatch bypass.
@@ -27,7 +27,7 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
 ## 3. Current source fingerprints and canonical docs
 
 - Latest **verified release source** remains `f1e81450428ffb113a76d430590c312ad6fa4781` (Build #73). It includes the TamperScreen profanity/contact behavior. The subsequent Hotside/indicator-animation/toggle/menu-lock update is source-only after Build #73 and must not be mistaken for a verified APK.
-- Current source/test blobs:
+- Current source/test/config blobs, re-fetched from the complete `main` tree:
   - `lib/main.dart`: `0f6335435570691c5e9509f3f1a2619cf351e732`.
   - `lib/floating_monitor.dart`: `31b45ea08b08ac7fc25ebd991dca873b889fdd14`.
   - `lib/app_settings.dart`: `36927823c91904a35d87d2f21bd77932a2214e83`.
@@ -38,23 +38,26 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
   - `test/firmware_touch_adaptive_sync_test.dart`: `94c0f074247f47fce7d939a72b0130eb1b2d70fa`.
   - Native `FloatingMonitorService.kt`: `8312cc12d391cde5f76b146ff98075856d32bae2`; `MainActivity.kt`: `ef35590cfc91fafe5dec104b7cfd7828011185bf`; `AndroidManifest.xml`: `c374b5d3ad6448b8b3e99a420ed7e8c49d38497a`; `android/app/build.gradle`: `060cdd36a4f7d4d2fa4c97a1b6a15954b8355350`.
   - Active workflow `.github/workflows/jexfyz-app-build-trigger.yml`: `8a8533aff7e0e0e01412bf522e1966e81aa1a39f`.
+  - Current app configuration: `pubspec.yaml` `8f558273e21692af9958f914527fdc62d623d63a`; `pubspec.lock` `1e92812bfda2c28244a0556d71d1ec94084acc66`; `android/app/build.gradle` `060cdd36a4f7d4d2fa4c97a1b6a15954b8355350`; `AndroidManifest.xml` `c374b5d3ad6448b8b3e99a420ed7e8c49d38497a`; `android/app/proguard-rules.pro` `50fc26f726ae8660fe04cf19da688431c8dca4a0`; `.github/workflows/jexfyz-app-build-trigger.yml` `8a8533aff7e0e0e01412bf522e1966e81aa1a39f`.
+  - Firebase config file `android/app/google-services.json`: blob `f3ed065a7ee56b2a44f0a943a48fa578ba72e0d7`, 761 bytes. Only JSON structure was checked; no credential values are included in this transfer snapshot.
 - Canonical docs immediately before this transfer-only commit:
-  - `APP_BUILD_REPORT.md`: `2c9d2701aef8d02ff71f89214418b8f9aa3d0b6b`.
-  - `PROJECT_STATE.md`: `747f77183e44da654d10abb5421c7c2e4db4bb76`.
-  - `MEMORY_INDEX.md`: `d6a5ac316ba400bc4e4070323ca37834833b7478`.
-  - `BUILD_NOTES.md`: `821f3370bbf6816874681195ceff21a36faf5573`.
-  - `HANDOVER.md`: `3508d8a1d6e2aac5460b32a7ef0778a6ac11cfc7`.
-  - `APP_NOTES.md`: `0af4ce1c0f6eb0ecc302455dafe382de0c336a59`.
-  - `CHANGELOG.md`: `9f0170d2c4ea71ea4a5d3993ec93215b5bdd76bc`.
-  - `README.md`: `a5bb31bec9a83c03daddbab9cd127d537660a90e`.
-  - `CHAT_RULES.md`: `eae86f7e921b3eb49337bea87a39255eabb7b4c3`.
-  - `FIRMWARE_NOTES.md`: `aa61ac32e756e87342d4070c216d699f63949a46`.
-  - `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `7e46c981d6d30b5a1c540ffee540be5b3ff19b67`.
+  - `APP_BUILD_REPORT.md`: `efe84c67d8b2df27bd9694f2e71f613b16a1a450`.
+  - `PROJECT_STATE.md`: `5b27f1636d4f25ae4b60b9658f9c779bd7729626`.
+  - `MEMORY_INDEX.md`: `96d05826fc9cbbb1b3f4c70935d5777278138446`.
+  - `BUILD_NOTES.md`: `f211ef98aabc641e85efde4fc43c71fc6d6aacd7`.
+  - `HANDOVER.md`: `55bf6d6825798a9dd6a7ee6e232c7dbe4442bd5d`.
+  - `APP_NOTES.md`: `29a1d14c19d28fd38a18084b229045b8f3fba9f6`.
+  - `CHANGELOG.md`: `47c77758224d13dde5b18c024a87db48f934e51c`.
+  - `README.md`: `9aa587a005035a859c93764d08a195d105c54278`.
+  - `CHAT_RULES.md`: `51e878baa0a775c44444da2771f4fec2533d25c6`.
+  - `FIRMWARE_NOTES.md`: `9e128e88ff836230b55c906065765ba944668bf6`.
+  - `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `6fa16e938e200b4f279cf7f05c013dee12f5675a`.
   - `OTA_PROTECTION.md`: `767364ed6c8afd87104f0348490a5afd245d2fe3`.
-  - `OTA_REGRESSION_MEMORY.md`: `82746f375758d075e0cfbc8100d63f37193df9cf`.
-  - `VOLTAGE_TRANSITION_MEMORY.md`: `4de77610a070f5691ac3046c7055c6e8a332b77b`.
-  - `DESIGN_NOTES.md`: `e2bc96eea271fb33cf176c1ea45131dc7e5782da`.
-  - `CHAT_TRANSFER_PROMPTS.md`: `f838a490437407f714a04dce8e504e704bf39df1`.
+  - `OTA_REGRESSION_MEMORY.md`: `1eb7365d0e31cdb8ab06e4d63ce9d6f33ca7bba9`.
+  - `VOLTAGE_TRANSITION_MEMORY.md`: `d61828c7de7efeefd8e1f79cc3f41b625541d62a`.
+  - `DESIGN_NOTES.md`: `c30e0d174a678a83224e3a62878a371e9b2f978c`.
+  - `CHAT_TRANSFER_PROMPTS.md`: `64fc43d66a2f8df1a710fcdfecc02b4345ad7fa5`.
+  - `android/app/proguard-rules.pro`: `50fc26f726ae8660fe04cf19da688431c8dca4a0` (obsolete FPS/Shizuku class keep rules removed; config-only cleanup).
 
 ## 3A. TamperScreen profanity/contact update — included by Build #73
 
@@ -96,7 +99,7 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
 - Main design direction is based on Horizon Cooler App: dark header, white rounded content panel, compact cards, VOLTAGE and ADAPTIVE principal tabs, cooler visual on the right. Intended sub-menu hierarchy: VOLTAGE → CONTROL → ADAPTIVE → LED → TEMPERATURE. Keep changes scoped; do not rework approved identity without explicit request.
 - Home indicators: disconnected value unknown but preserve lowest semantic accent instead of black/grey; color alone does not assert hardware output. Battery is Ice Blue at ≤30°C, smooth cyan/amber/orange transition through 30–40°C, Burning Red at ≥40°C. Hotside is Ice Blue ≤30°C, smooth above and Burning Red at configured Hotside Limit. Visual palettes never replace Firmware safety.
 - Manual voltage: neutral 5V/9V/12V rows; only the active toggle uses theme-primary, without a check glyph; labels retain 5V red, 9V green, 12V blue semantics; unknown voltage falls back to 5V red. Voltage command/lock/telemetry logic and other shared switches remain unchanged.
-- Build #71 adds eased activity continuity: OFF transitions run through a 440 ms fade before pausing; ON resumes from retained phase at an equivalent loop boundary rather than jumping to frame zero. Thermal flame geometry meets at the loop seam, Battery bar segments ripple gently, and four bounded Peltier sparks orbit a stable six-branch crystal. Fan keeps voltage-dependent phase handoff/coast-down. These are illustrative animations, not actual RPM/ice/cooling measurements.
+- Build #71 introduced earlier eased phase-continuity/manual-voltage styling and is historical. The newer source-only UI behavior is documented in section 3B and DESIGN_NOTES.md: continuous Hotside contour; Battery travelling sheen; clipped Voltage flash; Adaptive directional arcs/arrowheads; Peltier branch highlights without orbiting sparks; Fan-specific phase/coast-down; Speed gauge glint/retarget; LED wave/dot; Bluetooth glyph-stem pulse without rings. Non-Fan indicators use restrained idle movement after the 440 ms state-emphasis fade; this is illustrative, not sensor telemetry. The current Hotside/animation/toggle/menu-lock source is not in Build #73 and has not been run on a device.
 - **CI verified but not device verified:** Build #71 passed 88/88 Flutter tests and release gates for these changes. Physical animation smoothness, geometry and toggle appearance remain unverified on a phone.
 - LED color picker uses 36 curated hue-ordered presets with localized names and no HEX UI. Swatches update local draft only; explicit Select sends confirmed COLOR, Cancel discards without BLE write. Existing LED mode IDs Static 1, Breath 2, Comet 4, Dual Chase 5, Left/Right 6, Rainbow 7 remain; mode 3/Mirror Pulse is retired.
 - Approved printable JE X FYZ grille is exact symmetric 1:1 square, white geometric grille, purple central X, four corner holes, preserve pattern/frame. Flat 2D, no shadow/bevel/gradient/texture/invented elements. Transparent assets: `assets/jexfyzicon.png`, `assets/jexfyzcooler.png`, Android icon `android/app/src/main/res/drawable-nodpi/jexfyzicon.png`.
@@ -137,7 +140,7 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
 - FPS was retired after repeated F:--/Shizuku failures at the user's direction; the precise runtime root cause was never established. Do not revive speculative APIs/parsers or invent native surface attribution.
 - Historical Build #39 Maven resolution failure, Build #40 source archive path failure and Builds #41–#45 no-runner failures remain historical; Build #49 later succeeded. A source-contract test does not prove it ran; App CI does not prove Firmware compile, BIN provenance, OTA/reboot or physical safety.
 
-## 10. Canonical memory inventory and blob hashes at the parent snapshot
+## 10. Canonical memory inventory and live blob hashes at the parent snapshot
 
 Current canonical responsibility:
 - `PROJECT_STATE.md`: current verified state only.
@@ -153,22 +156,22 @@ Current canonical responsibility:
 - `CHANGELOG.md`: historical decisions/failures; `DESIGN_NOTES.md`: approved design; `archive/*.md`: immutable forensic snapshots.
 
 Canonical document blob hashes immediately before this transfer-only write:
-- `APP_BUILD_REPORT.md`: `2c9d2701aef8d02ff71f89214418b8f9aa3d0b6b`.
-- `PROJECT_STATE.md`: `747f77183e44da654d10abb5421c7c2e4db4bb76`.
-- `MEMORY_INDEX.md`: `d6a5ac316ba400bc4e4070323ca37834833b7478`.
-- `BUILD_NOTES.md`: `821f3370bbf6816874681195ceff21a36faf5573`.
-- `HANDOVER.md`: `3508d8a1d6e2aac5460b32a7ef0778a6ac11cfc7`.
-- `APP_NOTES.md`: `0af4ce1c0f6eb0ecc302455dafe382de0c336a59`.
-- `CHANGELOG.md`: `9f0170d2c4ea71ea4a5d3993ec93215b5bdd76bc`.
-- `README.md`: `a5bb31bec9a83c03daddbab9cd127d537660a90e`.
-- `CHAT_RULES.md`: `eae86f7e921b3eb49337bea87a39255eabb7b4c3`.
-- `FIRMWARE_NOTES.md`: `aa61ac32e756e87342d4070c216d699f63949a46`.
-- `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `7e46c981d6d30b5a1c540ffee540be5b3ff19b67`.
+- `APP_BUILD_REPORT.md`: `efe84c67d8b2df27bd9694f2e71f613b16a1a450`.
+- `PROJECT_STATE.md`: `5b27f1636d4f25ae4b60b9658f9c779bd7729626`.
+- `MEMORY_INDEX.md`: `96d05826fc9cbbb1b3f4c70935d5777278138446`.
+- `BUILD_NOTES.md`: `f211ef98aabc641e85efde4fc43c71fc6d6aacd7`.
+- `HANDOVER.md`: `55bf6d6825798a9dd6a7ee6e232c7dbe4442bd5d`.
+- `APP_NOTES.md`: `29a1d14c19d28fd38a18084b229045b8f3fba9f6`.
+- `CHANGELOG.md`: `47c77758224d13dde5b18c024a87db48f934e51c`.
+- `README.md`: `9aa587a005035a859c93764d08a195d105c54278`.
+- `CHAT_RULES.md`: `51e878baa0a775c44444da2771f4fec2533d25c6`.
+- `FIRMWARE_NOTES.md`: `9e128e88ff836230b55c906065765ba944668bf6`.
+- `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `6fa16e938e200b4f279cf7f05c013dee12f5675a`.
 - `OTA_PROTECTION.md`: `767364ed6c8afd87104f0348490a5afd245d2fe3`.
-- `OTA_REGRESSION_MEMORY.md`: `82746f375758d075e0cfbc8100d63f37193df9cf`.
-- `VOLTAGE_TRANSITION_MEMORY.md`: `4de77610a070f5691ac3046c7055c6e8a332b77b`.
-- `DESIGN_NOTES.md`: `e2bc96eea271fb33cf176c1ea45131dc7e5782da`.
-- `CHAT_TRANSFER_PROMPTS.md`: `f838a490437407f714a04dce8e504e704bf39df1`.
+- `OTA_REGRESSION_MEMORY.md`: `1eb7365d0e31cdb8ab06e4d63ce9d6f33ca7bba9`.
+- `VOLTAGE_TRANSITION_MEMORY.md`: `d61828c7de7efeefd8e1f79cc3f41b625541d62a`.
+- `DESIGN_NOTES.md`: `c30e0d174a678a83224e3a62878a371e9b2f978c`.
+- `CHAT_TRANSFER_PROMPTS.md`: `64fc43d66a2f8df1a710fcdfecc02b4345ad7fa5`.
 - `.github/workflows/jexfyz-app-build-trigger.yml`: `8a8533aff7e0e0e01412bf522e1966e81aa1a39f`.
 - This file is being committed last; do not embed its own future hash.
 
@@ -176,12 +179,15 @@ Canonical document blob hashes immediately before this transfer-only write:
 
 - **CURRENT / VERIFIED:** Build #73 / run `39098410865` passed 91/91 Flutter tests and all 21 active workflow steps. Release `jexfyz-latest` targets exact source `f1e81450428ffb113a76d430590c312ad6fa4781`.
 - **LATEST VERIFIED RELEASE (Build #73):** includes the TamperScreen profanity/contact behavior and earlier indicator/manual-voltage changes.
-- **CURRENT SOURCE ONLY / NOT BUILT / NOT RUN:** Hotside contour/ambient motion improvements, distinct animations for each indicator, Peltier/Adaptive/LED toggles without checkmarks or adjacent labels, and Bluetooth/Adaptive whole-submenu lock overlays. Four current UI tests were added but have not run; Build #73 does not include them.
-- **TEST CAVEAT:** the configured Gradle unit-test gate passed but native JUnit compilation/testing was NO-SOURCE in #71; no native JUnit cases ran.
+- **CURRENT SOURCE ONLY / NOT BUILT / NOT RUN:** Hotside contour/ambient motion improvements, distinct animations for each indicator, Peltier/Adaptive/LED toggles without checkmarks or adjacent labels, Bluetooth/Adaptive whole-submenu lock overlays, dead ProGuard keep-rule cleanup, and current doc/memory reconciliation. Four current UI tests were added but have not run; Build #73 does not include the UI changes. The ProGuard edit removed keep rules only for already-retired FPS/Shizuku classes.
+- **TEST CAVEAT:** the configured Gradle unit-test gate passed in Build #73, but native JUnit compilation/testing was NO-SOURCE in Build #73; no native JUnit cases ran.
 - **NOT DEVICE-VERIFIED:** phone-side icon/animation smoothness, toggle appearance, overlay geometry, live BLE/Fan Speed telemetry, BLE pairing exclusivity, Firmware thermal/LED behavior, source-to-BIN provenance and end-to-end OTA/reboot/installed version.
 - **HISTORICAL / SUPERSEDED:** Build #70 and earlier release details, FPS/Shizuku code/results, older Firmware snapshots and archive CURRENT claims. Full build attempt history is in `APP_BUILD_REPORT.md`.
 - **HISTORICAL USER-REPORTED:** V6.6 compile/two-same-version-OTA statements remain historical; they do not validate current uncompiled V6.7.
 - **Immediate next step:** if these source-only UI changes need a distributable APK, use the separate `@Thinking Eksekusi Build App!` authorization. Build #73 does not include the current Hotside/animation/toggle/menu-lock changes. Tests, phone-side visuals, BLE telemetry and physical Firmware behavior remain unverified.
 - For a new functional source change, use `@Thinking Diskusi!` then `@Thinking Eksekusi Full!` for approved source/tests/docs and separately `@Thinking Eksekusi Build App!` for CI/release. `@Thinking Chat Stuck!` only resumes the last authorized task and never expands permission.
+- Current workflow is `.github/workflows/jexfyz-app-build-trigger.yml`, blob `8a8533aff7e0e0e01412bf522e1966e81aa1a39f`; event gate is issues opened/reopened only, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`, repository-owner guard retained. No workflow file was changed and no Build App trigger was emitted in this task.
+- All durable current notes route through `MEMORY_INDEX.md`: source/build evidence via `APP_BUILD_REPORT.md`/`BUILD_NOTES.md`; current project truth via `PROJECT_STATE.md`; app UI/protocol via `APP_NOTES.md`; hardware/Firmware via `FIRMWARE_NOTES.md` and `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`; OTA via `OTA_PROTECTION.md`/`OTA_REGRESSION_MEMORY.md`; transition rules via `VOLTAGE_TRANSITION_MEMORY.md`; approved visual contracts via `DESIGN_NOTES.md`; permanent authorization through `CHAT_RULES.md`. Archive snapshots are immutable forensic history.
+- This reconciliation changed documentation plus `android/app/proguard-rules.pro` to remove obsolete FPS/Shizuku keep rules; it did not change Dart, Kotlin, Firmware source or protocol logic. Flutter tests, Dart analysis, App Build, Firmware compile, BIN publication, Firebase, OTA, flash and physical-device operations were not performed.
 - Build #73 and canonical notes are on `main`; physical-device checks remain pending. No Firmware compile, BIN read/change/publication, Firebase update, OTA/flash or physical-device operation occurred.
 
