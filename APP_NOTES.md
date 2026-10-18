@@ -142,7 +142,7 @@ This file is the durable App behavior/design contract. Live source and the curre
 - Current metrics are B/H/V/A/P/F. F is labelled Fan/Kipas and displays live PWM speed while running. When BLE telemetry is disconnected, live device values are unknown (--) and no stale output state is inferred.
 - FPS, SurfaceFlinger TimeStats sampling, Shizuku permission UI/provider/UserService/AIDL, related parser/watchdog tests and Shizuku-only license files are removed from active App source. The release workflow audit and source archive packaging no longer depend on them.
 - Schema version 2 maps old schema-v1 S (Speed) to F (Fan Speed) and drops old schema-v1 F (FPS). Flutter contract tests cover migration and removal of FPS/Shizuku UI.
-- Build #73 is the latest verified release (run `39098410865`, source `f1e81450428ffb113a76d430590c312ad6fa4781`); 91/91 Flutter tests and all 21 workflow steps passed. It includes the TamperScreen change but not the later Hotside/animation/toggle/menu-lock UI work. The new source/test contracts are not run; phone overlay visuals and live BLE telemetry remain unverified.
+- Build #80 is the latest verified release (run `39171729285`, source/release `4e9f14b959cdbf60136158187db26d0bb65f6287`); 96/96 Flutter tests and all 21 workflow steps passed. It includes the TamperScreen rounded-block layout and the current Hotside/animation/toggle/menu-lock UI work. The explicit direct-Icon warning-symbol cleanup is source-only after Build #80; tests and analyzer have not run for that final delta. Phone overlay visuals and live BLE telemetry remain unverified.
 
 ## Phone battery telemetry and Battery Protection UI boundary
 
@@ -154,7 +154,7 @@ This file is the durable App behavior/design contract. Live source and the curre
 
 ## Current App QC boundary
 
-- Latest verified release: Build #73 / run `39098410865`, released source commit `f1e81450428ffb113a76d430590c312ad6fa4781`.
+- Latest verified release: Build #80 / run `39171729285`, released source commit `4e9f14b959cdbf60136158187db26d0bb65f6287`. 96/96 Flutter tests and all 21 workflow steps passed; native JUnit tasks were NO-SOURCE. The APK/source ZIP asset identifiers and hashes are recorded in the current release summary at the start of this file and in `APP_BUILD_REPORT.md`.
 - 91/91 Flutter tests passed in Build #73. Dart analysis and all 21 active release workflow steps passed, including Android production compile/configured gate, obfuscated APK, V1/V2/V3 certificate checks, matching source ZIP and re-downloaded Release asset verification. Native JUnit tasks were NO-SOURCE after FPS-specific native test files were removed; no native JUnit cases ran. Follow-up Hotside/animation/toggle/menu-lock changes are source-only, and their added tests/analysis were not run.
 - APK asset `652517541`, 54,538,331 bytes, SHA-256 `90ed2f36658ea0e4fa487d43ea7e4347545c9875b13d703ec9c2765445eea48b`. Matching source ZIP asset `652517543`, 2,846,735 bytes, SHA-256 `ed7429aa9f6cb36e327d6d7b85efdf0b895ee8529c09a159053b98c8628902ef`. Certificate/warning/step detail remains in APP_BUILD_REPORT.md.
 - Physical overlay layout, live BLE telemetry/Fan Speed value, phone animation and actual BLE/Firmware/thermal/OTA behavior remain UNVERIFIED. Build #73 was App-only and does not prove physical behavior.
