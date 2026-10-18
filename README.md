@@ -18,11 +18,11 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 12. [Transfer Prompt Templates](CHAT_TRANSFER_PROMPTS.md) — copy-ready prompts for saving context and starting a new chat.
 13. `archive/` contains immutable, verbatim legacy snapshots for forensic recovery only. Any old `CURRENT` status inside an archive is not live truth. Some root-relative links retained from the original documents do not resolve when the snapshot is viewed inside `archive/`; this is intentional to preserve the snapshots byte-for-byte. Use the canonical root-level files linked above for navigation.
 
-## Current release and source validation boundary — 2026-10-18
+## Current release and source validation boundary — 2026-10-19
 
-- Latest verified App release is Build #73 / [Actions run 39098410865](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39098410865), exact source/release commit `f1e81450428ffb113a76d430590c312ad6fa4781`. All 21 workflow steps passed, Dart analysis reported 23 info-level deprecations and **91/91 Flutter tests passed**. Android production compile/configured gate, obfuscated APK, V1/V2/V3 signing/certificate, corresponding source ZIP, release publication and downloaded-asset verification passed. Native JUnit tasks were NO-SOURCE; no native JUnit cases ran.
-- APK asset 652517541, 54,538,331 bytes, SHA-256 `90ed2f36658ea0e4fa487d43ea7e4347545c9875b13d703ec9c2765445eea48b`. Matching source ZIP asset 652517543, 2,846,735 bytes, SHA-256 `ed7429aa9f6cb36e327d6d7b85efdf0b895ee8529c09a159053b98c8628902ef`. Release `jexfyz-latest` targets the exact Build #73 source commit. Details live in `APP_BUILD_REPORT.md`.
-- Build #73 includes the TamperScreen profanity/contact screen, but **does not include** the later source-only Hotside contour, per-indicator motion, Peltier/Adaptive/LED toggle styling and Bluetooth/Adaptive submenu lock overlays. Four new UI test contracts exist but tests and analysis for these newest changes were NOT RUN; no APK build was triggered by this reconciliation.
+- Latest verified App release is Build #80 / [Actions run 39171729285](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39171729285), exact source/release commit `4e9f14b959cdbf60136158187db26d0bb65f6287`. All 21 workflow steps passed, Dart analysis reported 23 info-level deprecations and **96/96 Flutter tests passed**. Android production build/configured gate, obfuscated APK, V1/V2/V3 signing/certificate, matching source ZIP, Release publication and downloaded-asset verification passed. Native JUnit tasks were NO-SOURCE; no native JUnit cases ran.
+- APK asset 654626935, 54,620,251 bytes, SHA-256 `b403ccd3813f1974b82703730fce2c60bab972b067bc7ac4875d51d0e55558c6`. Matching source ZIP asset 654626933, 2,852,944 bytes, SHA-256 `bae47230267438073c9fd2bdf9ee58bfd768a5fcdfedf7102983c05dc23bf0cc`. `jexfyz-latest` targets the exact Build #80 source commit. Details are in `APP_BUILD_REPORT.md`.
+- Build #80 includes the TamperScreen rounded text blocks, state-gated Home indicator motion, toggle styles and menu-lock overlays. The only source-only change after it is the explicit plain-`Icon` warning glyph cleanup and its regression assertion. Flutter/Dart tests and analysis for this latest delta were not run; physical phone UI, BLE telemetry and cooling/safety remain outside CI proof.
 - Active Firmware sketch is `firmware/JEXFYZ-V6.7.ino`, embedded `FW_VERSION="V6.7"`, matching filename, exactly one active versioned sketch. V6.7 remains source-only/uncompiled; prior V6.6 compile/two-OTA reports are historical user reports, and source-to-BIN provenance remains UNVERIFIED.
 - Physical phone visuals, BLE/Fan telemetry, Firmware compilation, OTA, reboot and thermal/electrical behavior remain outside the verified App CI evidence.
 
@@ -30,14 +30,14 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 
 - `TenzoNkz/JEXFYZ-App` is the canonical editable App + Firmware source repository and the sole home for project documentation/memories.
 - `TenzoNkz/JEXFYZ-Firmware` is intended to contain only the production OTA artifact `JEXFYZ.cpp.bin`. Do not add README, note, source, or memory files there.
-- The active editable Firmware source is `firmware/JEXFYZ-V6.7.ino` (`FW_VERSION="V6.7"`, blob `1d0fa0d5e308b9789fd1c32211ce0a127d497f6a`). V6.7 is source-only/uncompiled; filename, embedded version and exactly-one-active-sketch must match.
-- V6.6 compile/two-same-version OTA statements are historical user reports. The user reopened source work and authorized a V6.7 Adaptive Fan PWM change; V6.7 was not compiled, published, OTA-applied or installed. Source-to-BIN provenance remains unverified.
+- The active editable Firmware source is `firmware/JEXFYZ-V6.7.ino` (`FW_VERSION="V6.7"`, blob `efe6eaa62c178ab536fb68c06a310e54826cbaf2`). The user reports successful compilation and online update; this is USER-REPORTED and not independently verified. Source-to-BIN provenance remains UNVERIFIED.
+- V6.6 compile/two-same-version OTA statements are historical user reports. V6.7 has a separate user-reported compile/online-update success; no independent compile log, BIN identity, OTA evidence or current device version was inspected.
 - App Gradle `versionName "Telegram @horizontalzzz"` is an intentional identity string; do not change it.
 
 ## Remaining validation outside CI
 
-- Build #73 is the latest verified release for source `f1e81450428ffb113a76d430590c312ad6fa4781`; full release evidence and hashes are in `APP_BUILD_REPORT.md`.
-- Next verification step, after a separately authorized `@Thinking Eksekusi Build App!`, is device-side validation of the current Hotside contour, per-indicator motion, toggle styling, centered submenu lock overlays and live BLE/Fan telemetry. The current UI source/tests remain NOT RUN and are not in Build #73.
+- Build #80 is the latest verified release for source `4e9f14b959cdbf60136158187db26d0bb65f6287`; full release evidence and hashes are in `APP_BUILD_REPORT.md`. The latest source-only warning-icon cleanup needs a separately authorized `@Thinking Eksekusi Build App!` before claiming it is released.
+- Next verification step, after a separately authorized `@Thinking Eksekusi Build App!`, is device-side validation of the explicitly static warning icon and established Home indicator animations/state gating, plus BLE/Fan telemetry. The current direct-Icon cleanup and its test assertion are not in Build #80.
 - App CI does not prove Firmware compilation, source-to-BIN provenance, Firebase, OTA, flash, BLE hardware, thermal/electrical safety or installed device version.
 
 ## Non-negotiable workflow
