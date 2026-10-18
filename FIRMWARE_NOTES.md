@@ -76,13 +76,13 @@ Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 - Persisted settings include Hotside limit, Battery 5 V/12 V limits, RGB enable, mode, brightness and color. Adaptive Profile remains runtime-only.
 - App must be kept synced using authoritative telemetry (Adaptive, ceiling, Fan, Peltier, Fan speed, Voltage), including hardware Touch changes.
 
-## Adaptive Fan PWM at 12V — V6.7 source-only, uncompiled
+## Adaptive Fan PWM at 12V — V6.7 trend-gating correction (source-only, uncompiled)
 
-- Adaptive Fan PWM at 12V is automatic only in Adaptive mode. Reaching the configured Hotside limit immediately forces Fan PWM to 100%.
-- Downshift requires ten recent one-second NTC samples, their rolling average and every sample at/below `hotLimit - 2°C`, no meaningful warming trend, and one continuous stable 10-second interval. Decrease by 10 percentage points every 10 seconds, down to a 50% floor.
-- Losing the safe margin or detecting a warming trend cancels downshift and raises PWM by 10 points per fresh one-second sample. Adaptive 5V/9V keep existing 100% Fan behavior. Existing Peltier/thermal safety logic retains authority.
-- NTC acquisition remains one calibrated reading per second. Averaging is used only for Fan PWM downshift permission; no extra ADC reads or blocking timing loops were introduced.
-Active source: `firmware/JEXFYZ-V6.7.ino`, blob `1d0fa0d5e308b9789fd1c32211ce0a127d497f6a`. It has not been compiled, published, OTA-applied or tested on hardware.
+- Adaptive Fan PWM at 12V is automatic only in Adaptive mode. Reaching the configured Hotside limit immediately forces Fan PWM to 100%; Adaptive 5V/9V retain the established 100% Fan behavior.
+- Downshift remains conservative: ten fresh one-second NTC samples, every sample and the rolling average at/below `hotLimit - 2°C`, no confirmed warming trend, and one continuous stable 10-second interval. Decrease by 10 percentage points every 10 seconds, with a 50% floor.
+- **Correction:** failure to qualify for downshift no longer causes an automatic PWM increase. Upshift requires four consecutive one-second readings spanning at least 0.25°C of warming, with at least two of the three intervals rising. Each confirmed upshift adds 10 percentage points and is limited to one step per 3 seconds. A lone noisy sample or a merely incomplete stable window holds the current PWM.
+- NTC acquisition remains one calibrated ADC reading per second. The four-sample trend and ten-sample downshift qualification reuse those readings; there are no extra ADC reads, blocking delays or timing loops. Existing thermal, Peltier, voltage-transition and OTA safety logic retains priority.
+Active source: `firmware/JEXFYZ-V6.7.ino`, blob `efe6eaa62c178ab536fb68c06a310e54826cbaf2`. It has not been compiled, published, OTA-applied or tested on hardware.
 
 ## Phone Battery Adaptive input / thresholds
 
