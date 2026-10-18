@@ -37,9 +37,9 @@ Do not add/remove CA roots, change certificate validation, add an NTP gate, or a
 
 ## Latest evidence boundary — 2026-10-18
 
-- Current source is `firmware/JEXFYZ-V6.7.ino`, `FW_VERSION="V6.7"`, blob `1d0fa0d5e308b9789fd1c32211ce0a127d497f6a` (uncompiled). The artifact repo is BIN-only; its BIN provenance against this source is not independently verified.
+- Current source is `firmware/JEXFYZ-V6.7.ino`, `FW_VERSION="V6.7"`, blob `efe6eaa62c178ab536fb68c06a310e54826cbaf2`. On 2026-10-18 the user reported compilation and online update success. This is USER-REPORTED; source-to-BIN provenance against the artifact repo and the current installed-device version are not independently verified.
 - HISTORICAL App Build #65 / run 38851040144 passed 88/88 Flutter tests and an FPS parser JUnit gate. Later App Build #70 / run 38998407325 passed 86/86 Flutter tests and the FPS-retired source's release gates; native JUnit tasks were NO-SOURCE. Neither App run is an Arduino compile, physical Online OTA, update-apply/reboot or installed-version proof.
-- Latest verified App release Build #73 (run `39098410865`, source/release `f1e81450428ffb113a76d430590c312ad6fa4781`) is App-only and does not validate the OTA transport or Firmware. V6.6 compile/two same-version Online OTA successes remain USER-REPORTED; V6.7 remains uncompiled and hosted BIN provenance is unverified. The V6.6 compile and two same-version Online OTA successes remain USER-REPORTED. Keep the setInsecure() certificate-identity trade-off explicit and do not infer the earlier HTTP/TLS failure root cause from LEDs alone.
+- Latest verified App release Build #73 (run `39098410865`, source/release `f1e81450428ffb113a76d430590c312ad6fa4781`) is App-only and does not validate the OTA transport or Firmware compile/BIN identity. The user reports V6.7 compiled and completed an online update; the report has not been independently verified. Hosted BIN provenance and current installed version remain unverified. Keep the setInsecure() certificate-identity trade-off explicit and do not infer the earlier HTTP/TLS failure root cause from LEDs alone.
 
 ## Preflight checklist for a future explicitly authorized OTA change — NOT RUN by this reconciliation
 
