@@ -10,7 +10,7 @@ Static regression contract: test/v6_7_qc_contract_test.dart. Current blob must b
 
 [USER-REPORTED — 2026-10-13] Hardware restarted when changing from 5 V to 12 V with Peltier and Fan ON while the 5-second Peltier soft-start was still active. No exact reset reason from that reproduction was supplied. Supply transient/brownout is a hypothesis, not a confirmed cause.
 
-[USER-REPORTED — EARLIER SEPARATE INCIDENT; RESET REASON UNAVAILABLE] The hardware was also reported to restart when Adaptive was enabled after selecting 12 V and turning Peltier and Fan ON. Do not assume this is the same root cause as the 5 V→12 V active-soft-start incident. Current V6.6 Adaptive entry requires a safe-5V selector handoff but no longer forces Peltier OFF solely for that handoff; physical reproduction and reset-reason capture remain open.
+[USER-REPORTED — EARLIER SEPARATE INCIDENT; RESET REASON UNAVAILABLE] The hardware was also reported to restart when Adaptive was enabled after selecting 12 V and turning Peltier and Fan ON. Do not assume this is the same root cause as the 5 V→12 V active-soft-start incident. The V6.7 source retains a safe-5V selector handoff without forcing Peltier OFF solely for that handoff; physical reproduction and reset-reason capture remain open.
 
 ## Current V6.7 transition contract
 
