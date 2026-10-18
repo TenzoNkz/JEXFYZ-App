@@ -1739,7 +1739,7 @@ class _JexIconPainter extends CustomPainter {
       final start = phase + i * math.pi;
       const sweep = 2.28;
       final tint = color.withValues(
-        alpha: (.18 + .72 * strength) *
+        alpha: (.38 + .52 * strength) *
             (.70 + .30 * math.sin(phase + i * math.pi).abs()),
       );
       canvas.drawArc(orbit, start, sweep, false, _stroke(s * .065, tint));
@@ -1754,7 +1754,7 @@ class _JexIconPainter extends CustomPainter {
       Offset(center.dx + math.cos(flowAngle) * radius,
           center.dy + math.sin(flowAngle) * radius),
       s * .027,
-      _fill(color.withValues(alpha: .12 + .60 * strength)),
+      _fill(color.withValues(alpha: .28 + .50 * strength)),
     );
   }
 
