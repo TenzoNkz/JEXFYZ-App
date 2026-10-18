@@ -20,6 +20,10 @@
 
 ## HISTORICAL / SUPERSEDED — Build #71 (verified release; superseded by Build #73)
 
+- Build #71 / [Actions run `39008259484`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39008259484) released exact source `d9e026f70ec62455763de05048cba1557edfaf23`; all 21 active workflow steps passed with **88/88 Flutter tests**, 23 non-fatal Dart deprecation infos, Android compile/configured gate, APK obfuscation, V1/V2/V3 certificate checks, matching source ZIP and downloaded-asset verification.
+- APK asset `649710440`, 54,603,867 bytes, SHA-256 `fdffa5d61ad403153c544cd3a62ea130e810844930f9de96fdd28343f6d041ca`; source ZIP asset `649710439`, 2,847,410 bytes, SHA-256 `3d7dc30fa99d3bfb86bee069e4a9b60292942f215c11c27e519f0b51ca8a24b0`. Build #71 included the 440ms OFF fade/phase-continuity refinements and neutral manual-voltage selector styling.
+- Native JUnit compile/test tasks were NO-SOURCE after FPS-specific tests were retired; no native JUnit cases ran. Physical-device animation, overlay and BLE behavior remained unverified. Build #73 later superseded it as the latest verified release.
+
 ## HISTORICAL / SUPERSEDED — Build #49 successful App release (superseded by Build #70)
 - **Run:** [Build #49 / `38739077916`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/38739077916), issue [#22](https://github.com/TenzoNkz/JEXFYZ-App/issues/22), source commit `2b2d2886abb66481b7134e5036824f625ab5659d`, job `116435785328`, runner `1000002352`. Every main step passed.
 - **Validation:** architecture/security/license audit, dependency resolution, Dart analysis and all 80 Flutter tests passed; release APK built obfuscated; V1/V2/V3 signing and official certificate verified; corresponding-source ZIP passed integrity/path/license checks; Release upload and re-downloaded APK/source verification passed.
