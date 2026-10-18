@@ -2,18 +2,18 @@
 
 This file is the durable App behavior/design contract. Live source and the current workflow remain authoritative.
 
-## Latest verified release and current source — 2026-10-17
+## Latest verified release and current source — 2026-10-18
 
-- Build #71 (run `39008259484`, released source commit `d9e026f70ec62455763de05048cba1557edfaf23`) passed all 21 active workflow steps. Dart analysis had 23 info-level deprecations; **88/88 Flutter tests passed**; Android production compile/configured gate, APK obfuscation, V1/V2/V3 signing/certificate, corresponding source ZIP and re-downloaded Release asset checks passed.
-- Native JUnit compile/test tasks were NO-SOURCE after FPS-only native tests were retired; no native JUnit test cases ran in Build #71. Full log and artifact digests are in `APP_BUILD_REPORT.md`.
-- Build #70 retired FPS and Shizuku. Floating Monitor supports B/H/V/A/P/F; F is labelled Fan/Kipas and carries the live fan-speed value. Schema v2 drops legacy schema-v1 F (FPS) and maps S (Speed) to F. Build #71 remains the latest verified APK; the source-only changes below are not included in that release.
-- Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) targets `d9e026f70ec62455763de05048cba1557edfaf23`. APK asset `649710440`, 54,603,867 bytes, SHA-256 `fdffa5d61ad403153c544cd3a62ea130e810844930f9de96fdd28343f6d041ca`; source ZIP asset `649710439`, 2,847,410 bytes, SHA-256 `3d7dc30fa99d3bfb86bee069e4a9b60292942f215c11c27e519f0b51ca8a24b0`. Both were re-downloaded and verified.
-- Physical phone rendering, actual animation smoothness, active manual-toggle appearance and BLE/Fan Speed behavior remain **NOT DEVICE-VERIFIED**.
+- Latest verified App release: Build #73 / [Actions run `39098410865`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39098410865), source/release commit `f1e81450428ffb113a76d430590c312ad6fa4781`. All 21 active workflow steps passed; Dart analysis reported 23 info-level deprecation findings and **91/91 Flutter tests passed**. Android production compilation/configured gate, obfuscated APK, V1/V2/V3 signing/certificate, matching source ZIP, Release publish and re-downloaded asset checks passed.
+- Native JUnit compile/test tasks were NO-SOURCE after FPS-only native tests were retired; no native JUnit cases ran in Build #73. Full evidence and artifact digests are in `APP_BUILD_REPORT.md`.
+- Floating Monitor supports B/H/V/A/P/F; F is Fan/Kipas and carries the live Fan Speed value. Schema v2 removes legacy F (FPS) and migrates S (Speed) to F.
+- Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) targets `f1e81450428ffb113a76d430590c312ad6fa4781`. APK asset `652517541`, 54,538,331 bytes, SHA-256 `90ed2f36658ea0e4fa487d43ea7e4347545c9875b13d703ec9c2765445eea48b`; source ZIP asset `652517543`, 2,846,735 bytes, SHA-256 `ed7429aa9f6cb36e327d6d7b85efdf0b895ee8529c09a159053b98c8628902ef`. Both were re-downloaded and verified.
+- Build #73 is the latest verified APK, but does **not** contain the newest indicator, toggle, and submenu-lock updates described below. Physical phone rendering, animation smoothness and live BLE/Fan Speed behavior remain **NOT DEVICE-VERIFIED**.
 
-## Current source-only scope after Build #71
+## Current source-only scope after Build #73
 
-- **Current `main` is source-only after Build #71:** integrated 2D animated indicator redesign, English/Indonesian label/copy adjustments, RGB-only toggle gating, master physical-LED brightness, and Firmware V6.7 Adaptive 12V Fan PWM. Build #71 remains the latest verified APK and does not include these edits.
-- Flutter tests/Dart analysis/Android build were not run. Firmware V6.7 was not compiled. No APK release, BIN/Firebase publication, OTA, flash, or physical-device action occurred.
+- **Current `main` has source-only UI updates after Build #73:** the Hotside thermometer contour, distinct per-indicator motion, Peltier/Adaptive/LED toggle styling, and whole-submenu lock overlays are not included in Build #73. The existing V6.7 Adaptive Fan PWM firmware source remains uncompiled.
+- The latest UI tests and Dart analysis were not run in this environment; the Flutter/Dart SDK is unavailable. No new APK build/release, firmware compile, BIN/Firebase publication, OTA, flash, or physical-device action occurred.
 - Dashboard indicators now use integrated 2D silhouettes and restrained phase-continuous motion. Approved brand, grille/logo, cards, layout and control semantics remain unchanged.
 - Labels: Indonesian dashboard `Suhu Panas`, English `Hotside Temperature` (Hotside is always unhyphenated); Floating Monitor F label `Kipas` / `Fan`; PWM setting `Kecepatan Kipas` / `Fan Speed`; RGB toggle `Daya RGB` / `RGB Power`; direction `Kiri / Kanan` / `Left / Right` without a center emoji/glyph.
 - Adaptive Fan PWM at 12V is automatic only in Adaptive mode. Reaching the configured Hotside limit immediately forces Fan PWM to 100%.
@@ -21,14 +21,14 @@ This file is the durable App behavior/design contract. Live source and the curre
 - Losing the safe margin or detecting a warming trend cancels downshift and raises PWM by 10 points per fresh one-second sample. Adaptive 5V/9V keep existing 100% Fan behavior. Existing Peltier/thermal safety logic retains authority.
 - NTC acquisition remains one calibrated reading per second. Averaging is used only for Fan PWM downshift permission; no extra ADC reads or blocking timing loops were introduced.
 
-## Tamper warning screen and developer contact — source-only after Build #71
+## Tamper warning screen and developer contact — included by Build #73
 
 - The native launch gate in `MainActivity.isOfficialBuild()` allows local debug builds, then compares the installed APK signing certificate against the configured official production signer; an absent configured certificate, mismatch, or native exception rejects the launch. This is a signing-identity gate, not proof of detecting every possible tamper technique.
 - On a rejected release launch, `main()` continues to mount only `TamperApp` / `TamperScreen`. The visible screen is deliberately opaque: JE X FYZ branding plus a dense, scrollable Indonesian slang/profanity wall. It does not explain the reason or display technical terms.
 - The bottom-pinned `HUBUNGI DEVELOPER` button calls the existing `je_x_fyz/security` MethodChannel's `openDeveloperContact` method. Android dispatches `ACTION_VIEW` to `https://t.me/horizontalzzz`; the username/URL is not printed in the UI. Launch failure leaves the warning visible and does not grant entry.
 - The certificate-verification decision is unchanged. The screen is triggered only by the existing official signing check returning false; ordinary application errors are not relabelled as tampering.
-- Source/test contract hashes after this change: `lib/main.dart` `bf2007203455c64c2dd840a84b31368063df44eb`; `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt` `ef35590cfc91fafe5dec104b7cfd7828011185bf`; `lib/app_settings.dart` `36927823c91904a35d87d2f21bd77932a2214e83`; `test/widget_test.dart` `605d79e5019ba0cbe857d47d22db23e9204003a0`.
-- A widget contract covers the visible-copy restrictions and contact channel. **Flutter tests and Dart analysis were NOT RUN** in this execution environment (Flutter/Dart SDK unavailable; GitHub clone could not resolve DNS). No App Build/APK or device validation occurred. Build #71 remains the latest verified APK and does not include this source change.
+- Source/test contract hashes before this follow-up UI change: `lib/main.dart` `6e1189010bb942c59ec68ac31f75c1a522e04a4d`; `test/widget_test.dart` `661130f0bc2197478cc5f0e083324bdc41c8e6a3`. The latest follow-up source hashes are recorded in `PROJECT_STATE.md` and `CHAT_TRANSFER.md`.
+- A widget contract covers the visible-copy restrictions and contact channel. **Flutter tests and Dart analysis were NOT RUN** in this execution environment (Flutter/Dart SDK unavailable; GitHub clone could not resolve DNS). No App Build/APK or device validation occurred. Build #73 is the latest verified APK; it includes the tamper warning/contact change, but not the subsequent icon/toggle/menu-lock updates.
 
 ## Identity and package
 
@@ -53,7 +53,14 @@ This file is the durable App behavior/design contract. Live source and the curre
 - Battery temperature: Ice Blue at or below 30°C, a smooth cyan/amber/orange transition from 30–40°C, and Burning Red at or above 40°C. Battery thermal fill uses the same 30–40°C band; the ≥40°C warning threshold remains exact.
 - Hotside temperature: Ice Blue at or below 30°C, smooth transition above 30°C, and Burning Red at the configured Hotside Limit. The visual palette/fill must track the current limit; it must never alter or replace Firmware-owned safety behavior.
 - Manual Voltage labels retain their semantic accent: 5V red, 9V green, 12V blue; unknown/disconnected voltage uses the 5V/lowest-voltage red fallback. The 5V/9V/12V rows stay neutral and the active toggle alone uses the theme primary color, without an extra check glyph. The shared switch helper and other control toggles keep their existing styling.
-- Home indicators use bounded integrated Canvas silhouettes with one dominant 2D motion per icon. OFF transitions run through the 440 ms fade before pausing; ON transitions resume from retained phase at an equivalent cycle boundary. Battery/Hotside use internal thermal fill, Voltage one bolt, Adaptive a morphing loop, Peltier one six-branch crystal, Fan one coherent rotor, LED one travelling wave, Bluetooth its glyph without ripple rings or glow stacks.
+- Home indicators use bounded Canvas silhouettes with distinct motion. Active emphasis fades over 440 ms into quiet ambient cycles for non-Fan icons; their phase stays continuous. Fan rotation is the exception: its rotor coasts down and stays still when OFF. Battery has a travelling fill sheen; Hotside uses one continuous tube-to-bulb contour and an inner liquid highlight; Voltage gets a clipped bolt flash; Adaptive uses two moving directional arcs and arrowheads; Peltier gets restrained sequential branch highlights without orbiting sparks; Fan is one coherent rotor; Speed has a moving gauge glint and retargeted needle; LED uses a travelling wave/dot; Bluetooth pulses its glyph/stem without ripple rings or glow stacks.
+
+## Display submenu locking and switch-row contract
+
+- The five display submenus are Voltage (0), Control (1), Adaptive (2), LED (3) and Temperature (4). When Bluetooth is disconnected, a single overlay blurs the entire selected submenu content (including its heading and cards), dims it, and centers one lock panel over that area. The top-level tab strip and Home Bluetooth control remain outside the overlay and usable.
+- Bluetooth lock copy: `CONNECT TO JE X FYZ FIRST` / `HUBUNGKAN KE JE X FYZ TERLEBIH DAHULU`. If connected but Adaptive is ON or transitioning, one matching overlay applies only to Voltage, Control and Temperature: `LOCKED BY ADAPTIVE MODE` / `TERKUNCI OLEH MODE ADAPTIF`. Adaptive and LED remain usable in Adaptive mode. Bluetooth lock takes priority.
+- The overlay uses a single `ImageFiltered` blur plus one centered lock panel and an absorbing dim layer; the underlying submenu is under `IgnorePointer` so it cannot be operated through the blur. This is a presentation gate in addition to the existing per-control enable/command checks, not a replacement for them.
+- Peltier, Adaptive and LED `_switchRow` controls now match Manual Voltage’s visual convention: neutral row/icon surface, theme-primary toggle accent, no check mark in the knob and no ON/OFF text immediately before the toggle. Fan’s shared row behavior is otherwise retained. State telemetry and BLE command gating are unchanged.
 
 ## Floating Monitor presentation contract
 
