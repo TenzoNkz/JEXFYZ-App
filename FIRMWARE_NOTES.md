@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Firmware & Hardware Reference
 
-Durable hardware and behavior decisions belong here. For code-level structure see firmware/FIRMWARE_TECHNICAL_REFERENCE.md; for protected OTA use OTA_PROTECTION.md; for incidents read the two dedicated regression-memory files. Latest App release Build #71 is App-only and is not Firmware compilation or OTA proof.
+Durable hardware and behavior decisions belong here. For code-level structure see firmware/FIRMWARE_TECHNICAL_REFERENCE.md; for protected OTA use OTA_PROTECTION.md; for incidents read the two dedicated regression-memory files. Latest verified App release is Build #73; it is App-only and is not Firmware compilation or OTA proof.
 
 ## Hardware platform and pinout
 
@@ -34,7 +34,7 @@ Durable hardware and behavior decisions belong here. For code-level structure se
 - Use cooperative `millis()` timing. No executable `delay()` or timing `while()` loops.
 - Every functional Firmware change increments `FW_VERSION`; filename must match; only one active versioned `.ino` may exist.
 
-## Peltier voltage-transition contract — V6.6
+## Current Peltier voltage-transition contract — V6.7
 
 Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 
@@ -55,7 +55,7 @@ Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 - After Adaptive thermal downshift, restoration proceeds upward one rail at a time after 60 seconds continuously at/below `hotLimit - 1°C`, no higher than the saved pre-downshift ceiling.
 - HOTSIDE is default Adaptive profile after boot. HOTSIDE_BATTERY is a runtime selectable profile, not persisted. When Battery sensor data is missing, fall back to HOTSIDE behavior without changing chosen profile.
 - No rapid Hotside-rise/slope protection is present in the known V6.x contract; do not claim it exists.
-- [HISTORICAL USER REQUIREMENT / NOT IMPLEMENTED IN V6.6] A prior request called for a very rapid Hotside rise to shut Peltier OFF immediately and require manual re-arm/restart. The active V6.6 contract does not implement slope/rate-of-rise protection; do not describe the request as completed. If reconsidered, discuss first, update source with a mandatory version bump and test the safety behavior.
+- [HISTORICAL USER REQUIREMENT / STILL NOT IMPLEMENTED IN V6.7] A prior request called for a very rapid Hotside rise to shut Peltier OFF immediately and require manual re-arm/restart. The active V6.7 contract does not implement slope/rate-of-rise protection; do not describe the request as completed. If reconsidered, discuss first, update source with a mandatory version bump and test the safety behavior.
 - Keep thermal/NTC safety higher priority than App requests, normal RGB animation, or pending Peltier restart.
 
 ## Touch and indicators
