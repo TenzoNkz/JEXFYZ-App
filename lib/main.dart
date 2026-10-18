@@ -6940,12 +6940,10 @@ void _handleAckLine(String line) {
   Widget _buildHomeArea(double height) {
     final batteryValue = connected && phoneBatteryValid ? phoneBatteryTemp : '--';
     final hotValue = connected ? hotsideTemp : '--';
-    final hotsideAtLimit = jexHotsideFireActive(hotValue, hotLimit: hotLimit.toDouble());
     final voltageValue = connected && voltage != '--' ? voltage : '--';
     final adaptiveValue = connected
         ? JexText.of(adaptiveOn ? 'on' : 'off', appLanguageNotifier.value)
-        : '--';    final safetyLocked =
-        connected && safety.trim().toUpperCase() != 'OK';
+        : '--';
     final headerDark = appThemeNotifier.value != AppThemePreset.light;
     final headerForeground = headerDark ? const Color(0xFFF7F8FC) : const Color(0xFF16181D);
 
