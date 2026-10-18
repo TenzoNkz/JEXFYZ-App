@@ -1,13 +1,13 @@
 # JE X FYZ / JE Cooler — Chat Transfer Snapshot
 
-Snapshot reconciled against live `main` at 2026-10-18T06:43:14Z (2026-10-18 13:43:14 Asia/Jakarta), after complete memory/config reconciliation. Build #73 remains the latest verified APK; the newest UI source changes and current memory-only cleanup are not included in that release. Flutter validation and physical-device behavior remain unverified. This file is written last and deliberately excludes its own future blob/commit hash.
+Snapshot reconciled against live `main` at 2026-10-18T06:51:48Z (2026-10-18 13:51:48 Asia/Jakarta), after the final source/config/doc audit. Build #73 remains the latest verified APK; the newest UI source changes and current memory-only/config-comment cleanup are not included in that release. Flutter validation and physical-device behavior remain unverified. This file is written last and deliberately excludes its own future blob/commit hash.
 
 Source-of-truth order: live main source/tree and exact Actions/Release evidence → CHAT_RULES.md for authorization → PROJECT_STATE.md for current state → subject reference files and APP_BUILD_REPORT.md → HANDOVER.md / this snapshot → CHANGELOG.md for history → archive/*.md for forensic recovery only. Archived “CURRENT” wording is not live truth.
 
 ## 1. Current Git and repository state
 
 - Canonical App/Firmware source and project-memory repository: `TenzoNkz/JEXFYZ-App`, branch `main`.
-- Parent HEAD immediately before this transfer-only commit: `5a7d44b0600cbabf09e3670cd02f9bccd9c8109d`, message `docs(build): restore Build 71 historical release summary`, parent `861094fa3f88ea8d42b6ddb8d474a5ebfa731bee`, tree SHA `6c413a42a7616c15feda1207732714c06bdbf495`. Live recursive tree SHA equals `6c413a42a7616c15feda1207732714c06bdbf495`, complete/not truncated, 67 entries (49 blobs / 18 trees). Main has five branches and zero open PRs. This update replaces this file last; re-fetch the final HEAD/parent/tree after commit.
+- Parent HEAD immediately before this transfer-only commit: `931c6493600846aeb4667e35cb0998ec4de97dca`, message `docs(changelog): record stale Gradle comment cleanup`, parent `152d01988e3665ee33a7df0d31cfc300a519d618`, tree SHA `e7f0d6add62460248712421c1d6b79bd9bcb2836`. The complete live recursive App tree remains 67 entries (49 blobs / 18 trees), not truncated. Main has five branches and zero open PRs. This update replaces this file last; re-fetch the final HEAD/parent/tree after commit.
 - Latest verified release: Build #73 / [Actions run `39098410865`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39098410865), exact release/source commit `f1e81450428ffb113a76d430590c312ad6fa4781`. Completed at `2026-10-18T04:55:19Z` (`2026-10-18 11:55:19 Asia/Jakarta`). All 21 active workflow steps passed: audit, dependencies, Dart analysis, **91/91 Flutter tests**, Android production compilation/configured gate, obfuscated APK, V1/V2/V3 signing and certificate checks, source ZIP, Release publication and re-downloaded asset verification.
 - Build #70 is historical and verified FPS/Shizuku retirement plus schema-v2 migration to six metrics B/H/V/A/P/F (F=Fan Speed). Build #71 is newer and includes the post-Build-70 motion/toggle refinements.
 - Build #71 was triggered through owner/title/token-guarded [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). Issue owner `TenzoNkz`, title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; workflow blob `8a8533aff7e0e0e01412bf522e1966e81aa1a39f` is unchanged and listens only to issue opened/reopened. No push/PR/dispatch bypass.
@@ -38,16 +38,16 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
   - `test/firmware_touch_adaptive_sync_test.dart`: `94c0f074247f47fce7d939a72b0130eb1b2d70fa`.
   - Native `FloatingMonitorService.kt`: `8312cc12d391cde5f76b146ff98075856d32bae2`; `MainActivity.kt`: `ef35590cfc91fafe5dec104b7cfd7828011185bf`; `AndroidManifest.xml`: `c374b5d3ad6448b8b3e99a420ed7e8c49d38497a`; `android/app/build.gradle`: `060cdd36a4f7d4d2fa4c97a1b6a15954b8355350`.
   - Active workflow `.github/workflows/jexfyz-app-build-trigger.yml`: `8a8533aff7e0e0e01412bf522e1966e81aa1a39f`.
-  - Current app configuration: `pubspec.yaml` `8f558273e21692af9958f914527fdc62d623d63a`; `pubspec.lock` `1e92812bfda2c28244a0556d71d1ec94084acc66`; `android/app/build.gradle` `060cdd36a4f7d4d2fa4c97a1b6a15954b8355350`; `AndroidManifest.xml` `c374b5d3ad6448b8b3e99a420ed7e8c49d38497a`; `android/app/proguard-rules.pro` `50fc26f726ae8660fe04cf19da688431c8dca4a0`; `.github/workflows/jexfyz-app-build-trigger.yml` `8a8533aff7e0e0e01412bf522e1966e81aa1a39f`.
+  - Current app configuration: `pubspec.yaml` `8f558273e21692af9958f914527fdc62d623d63a`; `pubspec.lock` `1e92812bfda2c28244a0556d71d1ec94084acc66`; `android/app/build.gradle` `060cdd36a4f7d4d2fa4c97a1b6a15954b8355350`; `android/gradle.properties` `aeb7ffd8c41e6c668c1eeb4e656755e5b1cc18f6`; `AndroidManifest.xml` `c374b5d3ad6448b8b3e99a420ed7e8c49d38497a`; `android/app/proguard-rules.pro` `50fc26f726ae8660fe04cf19da688431c8dca4a0`; `.github/workflows/jexfyz-app-build-trigger.yml` `8a8533aff7e0e0e01412bf522e1966e81aa1a39f`.
   - Firebase config file `android/app/google-services.json`: blob `f3ed065a7ee56b2a44f0a943a48fa578ba72e0d7`, 761 bytes. Only JSON structure was checked; no credential values are included in this transfer snapshot.
 - Canonical docs immediately before this transfer-only commit:
   - `APP_BUILD_REPORT.md`: `efe84c67d8b2df27bd9694f2e71f613b16a1a450`.
-  - `PROJECT_STATE.md`: `5b27f1636d4f25ae4b60b9658f9c779bd7729626`.
+  - `PROJECT_STATE.md`: `c9b1be5a500f24eb77df9f36ba927abe6937d77b`.
   - `MEMORY_INDEX.md`: `96d05826fc9cbbb1b3f4c70935d5777278138446`.
   - `BUILD_NOTES.md`: `f211ef98aabc641e85efde4fc43c71fc6d6aacd7`.
-  - `HANDOVER.md`: `55bf6d6825798a9dd6a7ee6e232c7dbe4442bd5d`.
+  - `HANDOVER.md`: `11e50c36e5662e56c89921b0523cea57a7e1fba9`.
   - `APP_NOTES.md`: `29a1d14c19d28fd38a18084b229045b8f3fba9f6`.
-  - `CHANGELOG.md`: `47c77758224d13dde5b18c024a87db48f934e51c`.
+  - `CHANGELOG.md`: `05c0ec7b97dfc890ab1008b2c3ad8a1a8c3e614e`.
   - `README.md`: `9aa587a005035a859c93764d08a195d105c54278`.
   - `CHAT_RULES.md`: `51e878baa0a775c44444da2771f4fec2533d25c6`.
   - `FIRMWARE_NOTES.md`: `9e128e88ff836230b55c906065765ba944668bf6`.
@@ -58,6 +58,7 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
   - `DESIGN_NOTES.md`: `c30e0d174a678a83224e3a62878a371e9b2f978c`.
   - `CHAT_TRANSFER_PROMPTS.md`: `64fc43d66a2f8df1a710fcdfecc02b4345ad7fa5`.
   - `android/app/proguard-rules.pro`: `50fc26f726ae8660fe04cf19da688431c8dca4a0` (obsolete FPS/Shizuku class keep rules removed; config-only cleanup).
+  - `android/gradle.properties`: `aeb7ffd8c41e6c668c1eeb4e656755e5b1cc18f6` (replaced the stale FPS-parser test comment only; Gradle values were unchanged).
 
 ## 3A. TamperScreen profanity/contact update — included by Build #73
 
@@ -157,12 +158,12 @@ Current canonical responsibility:
 
 Canonical document blob hashes immediately before this transfer-only write:
 - `APP_BUILD_REPORT.md`: `efe84c67d8b2df27bd9694f2e71f613b16a1a450`.
-- `PROJECT_STATE.md`: `5b27f1636d4f25ae4b60b9658f9c779bd7729626`.
+- `PROJECT_STATE.md`: `c9b1be5a500f24eb77df9f36ba927abe6937d77b`.
 - `MEMORY_INDEX.md`: `96d05826fc9cbbb1b3f4c70935d5777278138446`.
 - `BUILD_NOTES.md`: `f211ef98aabc641e85efde4fc43c71fc6d6aacd7`.
-- `HANDOVER.md`: `55bf6d6825798a9dd6a7ee6e232c7dbe4442bd5d`.
+- `HANDOVER.md`: `11e50c36e5662e56c89921b0523cea57a7e1fba9`.
 - `APP_NOTES.md`: `29a1d14c19d28fd38a18084b229045b8f3fba9f6`.
-- `CHANGELOG.md`: `47c77758224d13dde5b18c024a87db48f934e51c`.
+- `CHANGELOG.md`: `05c0ec7b97dfc890ab1008b2c3ad8a1a8c3e614e`.
 - `README.md`: `9aa587a005035a859c93764d08a195d105c54278`.
 - `CHAT_RULES.md`: `51e878baa0a775c44444da2771f4fec2533d25c6`.
 - `FIRMWARE_NOTES.md`: `9e128e88ff836230b55c906065765ba944668bf6`.
@@ -188,6 +189,6 @@ Canonical document blob hashes immediately before this transfer-only write:
 - For a new functional source change, use `@Thinking Diskusi!` then `@Thinking Eksekusi Full!` for approved source/tests/docs and separately `@Thinking Eksekusi Build App!` for CI/release. `@Thinking Chat Stuck!` only resumes the last authorized task and never expands permission.
 - Current workflow is `.github/workflows/jexfyz-app-build-trigger.yml`, blob `8a8533aff7e0e0e01412bf522e1966e81aa1a39f`; event gate is issues opened/reopened only, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`, repository-owner guard retained. No workflow file was changed and no Build App trigger was emitted in this task.
 - All durable current notes route through `MEMORY_INDEX.md`: source/build evidence via `APP_BUILD_REPORT.md`/`BUILD_NOTES.md`; current project truth via `PROJECT_STATE.md`; app UI/protocol via `APP_NOTES.md`; hardware/Firmware via `FIRMWARE_NOTES.md` and `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`; OTA via `OTA_PROTECTION.md`/`OTA_REGRESSION_MEMORY.md`; transition rules via `VOLTAGE_TRANSITION_MEMORY.md`; approved visual contracts via `DESIGN_NOTES.md`; permanent authorization through `CHAT_RULES.md`. Archive snapshots are immutable forensic history.
-- This reconciliation changed documentation plus `android/app/proguard-rules.pro` to remove obsolete FPS/Shizuku keep rules; it did not change Dart, Kotlin, Firmware source or protocol logic. Flutter tests, Dart analysis, App Build, Firmware compile, BIN publication, Firebase, OTA, flash and physical-device operations were not performed.
+- This reconciliation changed documentation plus two config-only files: `android/app/proguard-rules.pro` removed keep rules for already-retired FPS/Shizuku classes, and `android/gradle.properties` had a stale FPS-parser test comment corrected (no Gradle values changed). No Dart/Kotlin/Firmware source or protocol logic changed. Flutter tests, Dart analysis, App Build, Firmware compile, BIN publication, Firebase, OTA, flash and physical-device operations were not performed.
 - Build #73 and canonical notes are on `main`; physical-device checks remain pending. No Firmware compile, BIN read/change/publication, Firebase update, OTA/flash or physical-device operation occurred.
 
