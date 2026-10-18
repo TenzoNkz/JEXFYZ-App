@@ -77,7 +77,7 @@ void main() {
     expect(screenContract, isNot(contains('integrity')));
     expect(screenContract, isNot(contains('integritas')));
     expect(screenContract, isNot(contains('official build')));
-    expect(screenContract, contains('openDeveloperContact'));
+    expect(screenContract, contains('opendevelopercontact'));
 
     final nativeSource = File(
       'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt',
