@@ -65,12 +65,11 @@ Last reconciled from live GitHub on 2026-10-18. This file is current-only. Use C
 
 ## Current source fingerprints
 
-- Latest verified released functional source: Build #71 commit d9e026f70ec62455763de05048cba1557edfaf23, including the motion/toggle changes. Subsequent documentation updates must not be mistaken for a new functional source build.
-- Current Flutter source blobs: `lib/main.dart` `0f6335435570691c5e9509f3f1a2619cf351e732`; `lib/floating_monitor.dart` `31b45ea08b08ac7fc25ebd991dca873b889fdd14`; `lib/app_settings.dart` `36927823c91904a35d87d2f21bd77932a2214e83`; `test/widget_test.dart` `661130f0bc2197478cc5f0e083324bdc41c8e6a3`; `test/floating_monitor_layout_contract_test.dart` `87e805095202ac3edfe55b9aeb3138c7c6886375`; `test/v6_7_qc_contract_test.dart` `6b71cc2ebbef9b3f1c9757728067eec4d11ff5ee`; `test/firmware_touch_adaptive_sync_test.dart` `94c0f074247f47fce7d939a72b0130eb1b2d70fa`; native `MainActivity.kt` `ef35590cfc91fafe5dec104b7cfd7828011185bf`.
-- Native App source: FloatingMonitorService.kt 7368df11ecb369f8b71607c82e6a1b44472cc79b; MainActivity.kt bd17c34211e8eb5c4723e06937ae47f0071b5e8b; AndroidManifest.xml c374b5d3ad6448b8b3e99a420ed7e8c49d38497a; android/app/build.gradle 060cdd36a4f7d4d2fa4c97a1b6a15954b8355350; workflow .github/workflows/jexfyz-app-build-trigger.yml 8a8533aff7e0e0e01412bf522e1966e81aa1a39f.
-- Five active Dart tests: widget_test.dart 66861cad0638433bd7b575439bb4a2b637f1f856; floating_monitor_layout_contract_test.dart 87e805095202ac3edfe55b9aeb3138c7c6886375; v6_7_qc_contract_test.dart 6b71cc2ebbef9b3f1c9757728067eec4d11ff5ee; app_protocol_notify_contract_test.dart 92214dd90178c705844d3979d3f8f7bd17bcc4b8; firmware_touch_adaptive_sync_test.dart 94c0f074247f47fce7d939a72b0130eb1b2d70fa.
-- FPS UserService/parser/watchdog and native tests, Shizuku AIDL/provider/dependencies, Shizuku-only Dart contract and license/notice files are absent from current main tree. Workflow audit prevents their reintroduction and retains the Android production compile/test gate.
-- Build #71 passed 88/88 Flutter tests and release gates. Native JUnit cases did not run because the unit-test tasks were NO-SOURCE after FPS-specific native tests were retired. Physical-device behavior remains UNVERIFIED.
+- Latest verified released source is Build #73 commit `f1e81450428ffb113a76d430590c312ad6fa4781`. The current UI source checkpoint on `main` is later than Build #73 and remains SOURCE IMPLEMENTED / NOT RUN / NOT RELEASED.
+- Current source blobs: `lib/main.dart` `0f6335435570691c5e9509f3f1a2619cf351e732`; `lib/floating_monitor.dart` `31b45ea08b08ac7fc25ebd991dca873b889fdd14`; `lib/app_settings.dart` `36927823c91904a35d87d2f21bd77932a2214e83`; `lib/jex_animated_glyph.dart` `c9c5c2802cb0ed363c042620511148b0d58d36c4`.
+- Current tests: `test/widget_test.dart` `661130f0bc2197478cc5f0e083324bdc41c8e6a3`; `test/floating_monitor_layout_contract_test.dart` `87e805095202ac3edfe55b9aeb3138c7c6886375`; `test/v6_7_qc_contract_test.dart` `6b71cc2ebbef9b3f1c9757728067eec4d11ff5ee`; `test/app_protocol_notify_contract_test.dart` `92214dd90178c705844d3979d3f8f7bd17bcc4b8`; `test/firmware_touch_adaptive_sync_test.dart` `94c0f074247f47fce7d939a72b0130eb1b2d70fa`.
+- Current Android source/config: `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt` `ef35590cfc91fafe5dec104b7cfd7828011185bf`; `FloatingMonitorService.kt` `8312cc12d391cde5f76b146ff98075856d32bae2`; `JeForegroundService.kt` `9ea4dce7001bcd5cc10f9c1c7ad62f34ec54b03e`; `JexNotificationUtils.kt` `aecfc87121f2195ef6724613c612d674ed95ae55`; `AndroidManifest.xml` `c374b5d3ad6448b8b3e99a420ed7e8c49d38497a`; `android/app/build.gradle` `060cdd36a4f7d4d2fa4c97a1b6a15954b8355350`.
+- Active Firmware source `firmware/JEXFYZ-V6.7.ino` `1d0fa0d5e308b9789fd1c32211ce0a127d497f6a`; active workflow `.github/workflows/jexfyz-app-build-trigger.yml` `8a8533aff7e0e0e01412bf522e1966e81aa1a39f`.
 
 ## Active tests and QC scope
 
@@ -90,12 +89,6 @@ Five active Dart test files remain; Build #71 ran 88/88 successfully. Native FPS
 - Opacity is 0–100% in 5% steps with current percentage and endpoint labels only; the 50% midpoint label is removed. Legacy persisted opacity snaps to the nearest 5%.
 - Black/White background selector, default Black; foreground contrasts automatically. Opacity 0% hides the background only.
 - The Shizuku/FPS access card is removed. Fan Speed is the F metric; the six current identifiers are B/H/V/A/P/F.
-
-## Current source-only changes after Build #71
-
-- `main` contains the integrated 2D animated indicator redesign, localized labels/copy, RGB-only toggle gating, master physical LED brightness, and Firmware V6.7 Adaptive 12V Fan PWM. These changes are not included in released APK Build #71.
-- Adaptive Fan: reaching the configured Hotside limit immediately forces 100%; downshift requires ten recent one-second NTC samples, average and every sample at/below `hotLimit - 2°C`, no meaningful warming trend and one continuous stable 10-second interval. Then reduce 10 points every 10 seconds to a 50% floor. Loss of margin/warming raises 10 points per fresh sample. Adaptive 5V/9V and existing thermal safety remain unchanged.
-- Flutter tests/Dart analysis/Android build were not run; V6.7 was not compiled. No APK release, BIN/Firebase publication, OTA, flash or physical-device action occurred.
 
 ## Current Firmware/hardware reference
 
