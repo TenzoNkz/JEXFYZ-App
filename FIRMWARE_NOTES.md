@@ -76,13 +76,13 @@ Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 - Persisted settings include Hotside limit, Battery 5 V/12 V limits, RGB enable, mode, brightness and color. Adaptive Profile remains runtime-only.
 - App must be kept synced using authoritative telemetry (Adaptive, ceiling, Fan, Peltier, Fan speed, Voltage), including hardware Touch changes.
 
-## Adaptive Fan PWM at 12V — V6.7 trend-gating correction (source-only, uncompiled)
+## Adaptive Fan PWM at 12V — V6.7 trend-gating correction (user-reported compile/online update; not independently verified)
 
 - Adaptive Fan PWM at 12V is automatic only in Adaptive mode. Reaching the configured Hotside limit immediately forces Fan PWM to 100%; Adaptive 5V/9V retain the established 100% Fan behavior.
 - Downshift remains conservative: ten fresh one-second NTC samples, every sample and the rolling average at/below `hotLimit - 2°C`, no confirmed warming trend, and one continuous stable 10-second interval. Decrease by 10 percentage points every 10 seconds, with a 50% floor.
 - **Correction:** failure to qualify for downshift no longer causes an automatic PWM increase. Upshift requires four consecutive one-second readings spanning at least 0.25°C of warming, with at least two of the three intervals rising. Each confirmed upshift adds 10 percentage points and is limited to one step per 3 seconds. A lone noisy sample or a merely incomplete stable window holds the current PWM.
 - NTC acquisition remains one calibrated ADC reading per second. The four-sample trend and ten-sample downshift qualification reuse those readings; there are no extra ADC reads, blocking delays or timing loops. Existing thermal, Peltier, voltage-transition and OTA safety logic retains priority.
-Active source: `firmware/JEXFYZ-V6.7.ino`, blob `efe6eaa62c178ab536fb68c06a310e54826cbaf2`. It has not been compiled, published, OTA-applied or tested on hardware.
+Active source: `firmware/JEXFYZ-V6.7.ino`, blob `efe6eaa62c178ab536fb68c06a310e54826cbaf2`. On 2026-10-18 the user reported V6.7 compiled successfully and was updated online. This is USER-REPORTED; compile output, resulting BIN, source-to-BIN provenance, OTA logs and current installed-device version were not independently inspected in this task.
 
 ## Phone Battery Adaptive input / thresholds
 
@@ -104,7 +104,7 @@ Active source: `firmware/JEXFYZ-V6.7.ino`, blob `efe6eaa62c178ab536fb68c06a310e5
 
 ## Validation status
 
-[HISTORICAL USER-REPORTED — 2026-10-14] The user reported V6.6 was accepted, compiled and updated twice over Online OTA. On 2026-10-17 the user reopened Firmware source work and authorized a V6.7 Adaptive Fan PWM change. That earlier compile/OTA report does not validate V6.7; V6.7 remains uncompiled.
+[HISTORICAL USER-REPORTED — 2026-10-14] The user reported V6.6 was accepted, compiled and updated twice over Online OTA. On 2026-10-17 the user reopened Firmware source work and authorized a V6.7 Adaptive Fan PWM change. The separate V6.7 compile/online-update report was provided on 2026-10-18; it remains USER-REPORTED and does not prove exact source-to-BIN identity or current installed-device behavior.
 
 This is the 2026-10-14 user report, not an assistant-witnessed compile/flash log. Source-to-BIN provenance remains unverified. Previously reported restart symptoms and Adaptive-OFF boot indication remain historical/unverified. The separate request for rapid Hotside-rise shutdown/manual re-arm remains unimplemented; V6.7 adds Adaptive Fan PWM trend response, not a hard rate-of-rise shutdown or manual re-arm. Do not expand into that separate safety feature without explicit scope approval.
 
