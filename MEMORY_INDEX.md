@@ -53,7 +53,7 @@ Reconciled against live GitHub main: 2026-10-18. Live code, Git refs, Actions re
 | CHANGELOG.md | Historical behavior/decision/failure ledger, not current truth |
 | DESIGN_NOTES.md | Approved grille, icons/cooler and visual requirements |
 | .github/workflows/jexfyz-app-build-trigger.yml | Authoritative manual issue-triggered App Build workflow |
-| test/*.dart and Android native unit-test gate | Five Dart test files remain; Build #70 ran 86/86 Flutter tests. Native JUnit tasks were NO-SOURCE after retired FPS test removal. |
+| test/*.dart and Android native unit-test gate | Build #73 passed 91/91 Flutter tests; native JUnit tasks were NO-SOURCE. Four indicator/toggle/menu-lock contracts were added after Build #73 and have NOT RUN. |
 | firmware/JEXFYZ-V6.7.ino | Current editable Firmware source, one versioned active sketch |
 | archive/*.md | Immutable, verbatim forensic snapshots; archived “CURRENT” claims are not live truth. Root-relative links retained from originals may not resolve from the archive subdirectory; use canonical root docs and do not rewrite archives |
 
