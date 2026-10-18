@@ -318,10 +318,12 @@ static constexpr uint8_t FAN_PWM_MIN = 50;
 static constexpr uint8_t FAN_PWM_MAX = 100;
 static constexpr uint8_t FAN_PWM_STEP = 10;
 static constexpr uint8_t ADAPTIVE_FAN_WINDOW_SAMPLES = 10;
+static constexpr uint8_t ADAPTIVE_FAN_TREND_WINDOW_SAMPLES = 4;
 static constexpr float ADAPTIVE_FAN_SAFE_MARGIN_C = 2.0f;
 static constexpr float ADAPTIVE_FAN_TREND_TOLERANCE_C = 0.25f;
 static constexpr uint32_t ADAPTIVE_FAN_DOWNSTEP_MS = 10000UL;
-static constexpr uint32_t ADAPTIVE_FAN_UPSTEP_MS = 1000UL;
+// A confirmed warming trend may increase PWM by one 10-point step no more often than every 3 s.
+static constexpr uint32_t ADAPTIVE_FAN_UPSTEP_MS = 3000UL;
 static constexpr uint32_t FAN_PWM_FREQ = 25000;
 static constexpr uint8_t FAN_PWM_RESOLUTION = 8;
 static constexpr uint32_t PELTIER_PWM_FREQ = 20000;
@@ -2330,9 +2332,10 @@ static void setAdaptiveFanPwm(uint8_t target) {
 }
 
 // Adaptive 12 V Fan controller. It consumes only fresh readings from sampleNtcIfDue():
-// ten accepted one-second samples are averaged for downshift permission; the raw/latest
-// sample and the existing safety authority always retain priority.
-// No blocking delays, time-waiting loops, or extra ADC reads are introduced.
+// ten accepted one-second samples govern downshift eligibility, while four recent samples
+// must confirm a cumulative warming trend before PWM can increase. A failed downshift
+// condition alone must never increase speed. Safety retains priority; no extra ADC reads,
+// blocking delays, or time-waiting loops are introduced.
 static void processAdaptiveFanControl() {
   if (!ntcValid) {
     resetAdaptiveFanControlWindow();
@@ -2392,7 +2395,44 @@ static void processAdaptiveFanControl() {
       currentSample <= previousSample + ADAPTIVE_FAN_TREND_TOLERANCE_C;
   const bool currentSampleSafe =
       isfinite(currentSample) && currentSample <= safeThreshold;
-  if (!currentSampleSafe || !noMeaningfulRise) {
+
+  // Confirm a warming trend across four consecutive 1 Hz readings, not from a
+  // single noisy jump. The window must rise by at least 0.25 C and have at least
+  // two strictly rising intervals. A failed downshift condition is not itself
+  // evidence that Fan speed needs to increase.
+  bool warmingTrendConfirmed = false;
+  if (adaptiveFanSampleCount >= ADAPTIVE_FAN_TREND_WINDOW_SAMPLES) {
+    const uint8_t oldestTrendIndex = static_cast<uint8_t>(
+        (adaptiveFanSampleIndex + ADAPTIVE_FAN_WINDOW_SAMPLES -
+         ADAPTIVE_FAN_TREND_WINDOW_SAMPLES) %
+        ADAPTIVE_FAN_WINDOW_SAMPLES);
+    const uint8_t middleTrendIndex1 = static_cast<uint8_t>(
+        (adaptiveFanSampleIndex + ADAPTIVE_FAN_WINDOW_SAMPLES - 3U) %
+        ADAPTIVE_FAN_WINDOW_SAMPLES);
+    const uint8_t middleTrendIndex2 = static_cast<uint8_t>(
+        (adaptiveFanSampleIndex + ADAPTIVE_FAN_WINDOW_SAMPLES - 2U) %
+        ADAPTIVE_FAN_WINDOW_SAMPLES);
+    const uint8_t newestTrendIndex = static_cast<uint8_t>(
+        (adaptiveFanSampleIndex + ADAPTIVE_FAN_WINDOW_SAMPLES - 1U) %
+        ADAPTIVE_FAN_WINDOW_SAMPLES);
+    const float oldestTrendSample = adaptiveFanTemperatureSamples[oldestTrendIndex];
+    const float middleTrendSample1 = adaptiveFanTemperatureSamples[middleTrendIndex1];
+    const float middleTrendSample2 = adaptiveFanTemperatureSamples[middleTrendIndex2];
+    const float newestTrendSample = adaptiveFanTemperatureSamples[newestTrendIndex];
+    uint8_t risingIntervals = 0;
+    if (middleTrendSample1 > oldestTrendSample) ++risingIntervals;
+    if (middleTrendSample2 > middleTrendSample1) ++risingIntervals;
+    if (newestTrendSample > middleTrendSample2) ++risingIntervals;
+    warmingTrendConfirmed =
+        isfinite(oldestTrendSample) &&
+        isfinite(middleTrendSample1) &&
+        isfinite(middleTrendSample2) &&
+        isfinite(newestTrendSample) &&
+        newestTrendSample - oldestTrendSample >= ADAPTIVE_FAN_TREND_TOLERANCE_C &&
+        risingIntervals >= 2;
+  }
+
+  if (!currentSampleSafe || !noMeaningfulRise || warmingTrendConfirmed) {
     adaptiveFanStableWindowStartedMs = 0;
     adaptiveFanStableWindowTiming = false;
   } else if (!adaptiveFanStableWindowTiming) {
@@ -2407,12 +2447,12 @@ static void processAdaptiveFanControl() {
       isfinite(adaptiveFanAverageTemperatureC) &&
       adaptiveFanAverageTemperatureC <= safeThreshold &&
       noMeaningfulRise &&
+      !warmingTrendConfirmed &&
       stablePeriodReached;
 
   if (stableAndCool) {
-    adaptiveFanLastUpStepMs = 0;
-    // The first downshift is allowed after a complete cool 10-second window;
-    // every further downshift requires another full 10-second dwell.
+    // The first downshift is allowed only after a complete cool, stable 10-second
+    // window; every further downshift requires another full 10-second dwell.
     if (fanPwm > FAN_PWM_MIN &&
         (adaptiveFanLastDownStepMs == 0 ||
          now - adaptiveFanLastDownStepMs >= ADAPTIVE_FAN_DOWNSTEP_MS)) {
@@ -2424,11 +2464,12 @@ static void processAdaptiveFanControl() {
       adaptiveFanLastDownStepMs = now;
     }
   } else {
-    // Lost margin or a warming trend cancels the downshift dwell. Restore
-    // speed more quickly (one 10% step per new second) while below limit;
-    // a limit hit above has already taken the immediate 100% path.
+    // Keep the current PWM when the temperature is merely noisy or not yet
+    // stable enough to authorize a downshift. Increase speed only on a confirmed
+    // warming trend, with a bounded 3-second minimum between 10-point steps.
     adaptiveFanLastDownStepMs = 0;
-    if (fanPwm < FAN_PWM_MAX &&
+    if (warmingTrendConfirmed &&
+        fanPwm < FAN_PWM_MAX &&
         (adaptiveFanLastUpStepMs == 0 ||
          now - adaptiveFanLastUpStepMs >= ADAPTIVE_FAN_UPSTEP_MS)) {
       const uint16_t next = static_cast<uint16_t>(fanPwm) + FAN_PWM_STEP;
