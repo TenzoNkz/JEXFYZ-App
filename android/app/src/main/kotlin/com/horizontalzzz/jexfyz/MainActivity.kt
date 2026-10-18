@@ -143,6 +143,7 @@ class MainActivity : FlutterActivity() {
         ).setMethodCallHandler { call, result ->
             when (call.method) {
                 "isOfficialBuild" -> result.success(isOfficialBuild())
+                "openDeveloperContact" -> result.success(openDeveloperContact())
                 else -> result.notImplemented()
             }
         }
@@ -239,6 +240,17 @@ class MainActivity : FlutterActivity() {
                 )
                 actual == expected
             }
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    // Open the developer contact URL from the intentionally terse warning screen.
+    // Keep the account out of rendered UI; Android may route the URL to Telegram or a browser.
+    private fun openDeveloperContact(): Boolean {
+        return try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/horizontalzzz")))
+            true
         } catch (_: Exception) {
             false
         }

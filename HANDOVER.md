@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled against live GitHub on 2026-10-17 (Asia/Jakarta) after Build #71. Dashboard motion continuity and manual-voltage-toggle styling are now included in the latest verified APK; phone-side visuals and live telemetry remain unverified.
+Last reconciled against live GitHub on 2026-10-18 (Asia/Jakarta). Build #71 remains the latest verified APK; a new source-only warning-screen change has not been included in a release. Dashboard motion continuity and manual-voltage-toggle styling are now included in the latest verified APK; phone-side visuals and live telemetry remain unverified.
 
 ## Current App and release state
 
@@ -10,6 +10,14 @@ Last reconciled against live GitHub on 2026-10-17 (Asia/Jakarta) after Build #71
 - APK asset `649710440`, `54,603,867` bytes, SHA-256 `fdffa5d61ad403153c544cd3a62ea130e810844930f9de96fdd28343f6d041ca`: https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk
 - Corresponding source ZIP asset `649710439`, `2,847,410` bytes, SHA-256 `3d7dc30fa99d3bfb86bee069e4a9b60292942f215c11c27e519f0b51ca8a24b0`: https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip
 - Release tag `jexfyz-latest` targets exact source commit `d9e026f70ec62455763de05048cba1557edfaf23`. Full build evidence and non-blocking warnings are in `APP_BUILD_REPORT.md`. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+
+## Source-only warning-screen change — 2026-10-18
+
+- The existing Android gate compares the installed APK signing certificate with the configured official signer (debug builds remain allowed); the check itself was not weakened or rewritten.
+- When that gate rejects launch, the warning page now uses only JE X FYZ branding and full-screen-style Indonesian slang/profanity copy, with scrollable text and a fixed bottom button. It intentionally does not explain the trigger or show technical diagnosis.
+- `HUBUNGI DEVELOPER` opens `https://t.me/horizontalzzz` through Android `ACTION_VIEW`; account details do not appear on-screen. If the OS cannot launch the URL, the warning stays visible.
+- Source blobs: main.dart `bf2007203455c64c2dd840a84b31368063df44eb`, MainActivity.kt `ef35590cfc91fafe5dec104b7cfd7828011185bf`, app_settings.dart `36927823c91904a35d87d2f21bd77932a2214e83`, widget_test.dart `767e7843f379c854fe7c8ab98293b4ec36008c88`.
+- Widget contract added but **NOT RUN**: no local Flutter/Dart SDK is installed and `git clone` was blocked by DNS resolution. No APK Build App, native compile, physical-device test or firmware/cloud action was performed. Build #71 is still the latest verified APK.
 
 ## FPS retirement and current Floating Monitor
 

@@ -2071,84 +2071,168 @@ class TamperApp extends StatelessWidget {
 class TamperScreen extends StatelessWidget {
   const TamperScreen({super.key});
 
+  Future<void> _contactDeveloper() async {
+    try {
+      await securityChannel.invokeMethod<bool>('openDeveloperContact');
+    } catch (error) {
+      // Keep the screen intentionally opaque if the external launch cannot be completed.
+      debugPrint('Developer contact launch failed: $error');
+    }
+  }
+
+  Widget _insult(
+    String text, {
+    Color color = Colors.white,
+    double size = 14,
+    FontWeight weight = FontWeight.w800,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Text(
+        text,
+        textAlign: TextAlign.center,
+        softWrap: true,
+        style: TextStyle(
+          color: color,
+          fontSize: size,
+          height: 1.18,
+          fontWeight: weight,
+          letterSpacing: 0.18,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    const background = Color(0xFF09090B);
+    const hotRed = Color(0xFFFF4654);
+    final compact = MediaQuery.sizeOf(context).width < 370;
+
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: background,
       body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(28),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 88,
-                  height: 88,
-                  decoration: BoxDecoration(
-                    color: const Color(0x18FF453A),
-                    borderRadius: BorderRadius.circular(28),
-                    border: Border.all(color: const Color(0x40FF453A)),
-                  ),
-                  child: JexAnimatedIcon.glyph(
-                    icon: PhosphorIconsBold.warning,
-                    color: Colors.redAccent,
-                    size: 44,
-                    active: true,
-                    warning: true,
+        child: Column(
+          children: [
+            Expanded(
+              child: LayoutBuilder(
+                builder: (context, constraints) => SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight > 18
+                          ? constraints.maxHeight - 18
+                          : 0,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const SizedBox(height: 4),
+                        Center(
+                          child: Container(
+                            width: 58,
+                            height: 58,
+                            decoration: BoxDecoration(
+                              color: const Color(0x223A0B10),
+                              borderRadius: BorderRadius.circular(18),
+                              border: Border.all(color: const Color(0x8870232A)),
+                            ),
+                            child: JexAnimatedIcon.glyph(
+                              icon: PhosphorIconsBold.warning,
+                              color: hotRed,
+                              size: 32,
+                              active: true,
+                              warning: true,
+                            ),
+                          ),
+                        ),
+                        const Text(
+                          headerName,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 21,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                        _insult(
+                          'WOI, KONTOL!!!',
+                          color: hotRed,
+                          size: compact ? 24 : 27,
+                        ),
+                        _insult(
+                          'ANJING! BANGSAT! BAJINGAN! BRENGSEK! KEPARAT! KAMPRET! JANCOK! ASU!',
+                          color: Colors.white,
+                          size: compact ? 13 : 15,
+                        ),
+                        _insult(
+                          'KONTOL! MEMEK! BABI! MONYET! GOBLOK! TOLOL! BEGO! DONGO! SINTING! TAI!',
+                          color: hotRed,
+                          size: compact ? 14 : 16,
+                        ),
+                        _insult(
+                          'MUKA LO KAYA TAI, KELAKUAN KAYA MONYET! BACOT LO GEDE BANGET, OTAK LO DI MANA, HAH?!',
+                          size: compact ? 13 : 15,
+                        ),
+                        _insult(
+                          'DASAR BABI GOBLOK! TOLOL MAKSIMAL! BEGO KEBANGETAN! BANGSAT NGGAK KETULUNGAN! SOK JAGO, SOK KERAS, SOK PALING PINTER!',
+                          color: const Color(0xFFFF737D),
+                          size: compact ? 13 : 15,
+                        ),
+                        _insult(
+                          'ANJING LO! KONTOL LO! MEMEK LO! MONYET LO! BABI LO! BRENGSEK! KAMPRET! BAJINGAN!',
+                          size: compact ? 14 : 16,
+                        ),
+                        _insult(
+                          'NGACA DULU, WOI! BACOT KAYA DEWA, OTAK KAYA KOSONG! DASAR KEPARAT! TAI! JANCOK! ASU!',
+                          color: hotRed,
+                          size: compact ? 13 : 15,
+                        ),
+                        _insult(
+                          'WOI, BAJINGAN! BANGSAT! SETAN KEPARAT! DONGO! GOBLOK! TOLOL! BEGO! KELEWAT BEGO!',
+                          size: compact ? 13 : 15,
+                        ),
+                        _insult(
+                          'ANJING! KONTOL! MEMEK! TAI! BABI! MONYET! KAMPRET! BRENGSEK! KEPARAT! JANCOK! ASU!',
+                          color: const Color(0xFFFF737D),
+                          size: compact ? 14 : 16,
+                        ),
+                        _insult(
+                          'SOK JAGO BANGET, PADAHAL BEGO KEBANGETAN! DASAR BANGSAT, OTAK KOSONG, BACOT DOANG!',
+                          size: compact ? 13 : 15,
+                        ),
+                        const SizedBox(height: 4),
+                      ],
+                    ),
                   ),
                 ),
-                const SizedBox(height: 24),
-                const Text(
-                  headerName,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 26,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                const SizedBox(height: 14),
-                Text(
-                  JexText.phrase('OFFICIAL BUILD\nINTEGRITY CHECK FAILED', 'BUILD RESMI\nPEMERIKSAAN INTEGRITAS GAGAL', appLanguageNotifier.value),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.redAccent,
-                    fontSize: 25,
-                    height: 1.05,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  JexText.of('officialBuildFailed', appLanguageNotifier.value),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 14,
-                    height: 1.35,
-                  ),
-                ),
-                const SizedBox(height: 28),
-                FilledButton(
-                  onPressed: () => SystemNavigator.pop(),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+              child: SizedBox(
+                width: double.infinity,
+                height: 54,
+                child: FilledButton(
+                  onPressed: _contactDeveloper,
                   style: FilledButton.styleFrom(
-                    backgroundColor: const Color(0xFF2A2B31),
+                    backgroundColor: const Color(0xFFB42332),
                     foregroundColor: Colors.white,
-                    minimumSize: const Size(160, 48),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
+                    textStyle: const TextStyle(
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.35,
+                    ),
                   ),
-                  child: Text(
-                    JexText.of('exit', appLanguageNotifier.value).toUpperCase(),
-                    style: TextStyle(fontWeight: FontWeight.w900),
-                  ),
+                  child: const Text('HUBUNGI DEVELOPER'),
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );

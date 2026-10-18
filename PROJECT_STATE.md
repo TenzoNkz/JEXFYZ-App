@@ -1,8 +1,8 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled from live GitHub on 2026-10-17. This file is current-only. Use CHANGELOG.md for historical decisions and APP_BUILD_REPORT.md for build evidence.
+Last reconciled from live GitHub on 2026-10-18. This file is current-only. Use CHANGELOG.md for historical decisions and APP_BUILD_REPORT.md for build evidence.
 
-## Current App source/release state — Build #71 verified
+## Current App source/release state — Build #71 remains latest verified APK
 
 - Latest verified App release: Build #71 / run `39008259484`, exact source/release commit `d9e026f70ec62455763de05048cba1557edfaf23`. This release includes post-Build-70 dashboard-indicator motion continuity refinements and manual-voltage-toggle styling.
 - All 21 active release workflow steps passed. Dart analysis reported 23 info-level deprecations; **88/88 Flutter tests passed**. Android production compile and configured `:app:testDebugUnitTest` gate succeeded in 1m34s; native JUnit tasks were NO-SOURCE after FPS-specific tests were removed, so no native JUnit cases ran.
@@ -11,6 +11,15 @@ Last reconciled from live GitHub on 2026-10-17. This file is current-only. Use C
 - Dashboard indicators now continue through a 440 ms OFF fade before pausing and resume from the retained phase at an equivalent loop boundary; flame cycles join smoothly, Battery segments ripple subtly, and four Peltier sparks orbit the stable six-branch crystal. Manual-voltage rows remain neutral; only the active toggle uses theme-primary while labels retain red/green/blue semantics.
 - Physical overlay appearance, actual animation smoothness, toggle styling on-device and live BLE/Fan Speed telemetry remain UNVERIFIED on the phone. Build #71 is App CI/release evidence, not firmware compile or hardware proof.
 - No Firmware source/BIN, Firebase, OTA, flash or device operation occurred.
+
+## Tamper warning screen and developer contact — source-only after Build #71
+
+- The native launch gate in `MainActivity.isOfficialBuild()` allows local debug builds, then compares the installed APK signing certificate against the configured official production signer; an absent configured certificate, mismatch, or native exception rejects the launch. This is a signing-identity gate, not proof of detecting every possible tamper technique.
+- On a rejected release launch, `main()` continues to mount only `TamperApp` / `TamperScreen`. The visible screen is deliberately opaque: JE X FYZ branding plus a dense, scrollable Indonesian slang/profanity wall. It does not explain the reason or display technical terms.
+- The bottom-pinned `HUBUNGI DEVELOPER` button calls the existing `je_x_fyz/security` MethodChannel's `openDeveloperContact` method. Android dispatches `ACTION_VIEW` to `https://t.me/horizontalzzz`; the username/URL is not printed in the UI. Launch failure leaves the warning visible and does not grant entry.
+- The certificate-verification decision is unchanged. The screen is triggered only by the existing official signing check returning false; ordinary application errors are not relabelled as tampering.
+- Source/test contract hashes after this change: `lib/main.dart` `bf2007203455c64c2dd840a84b31368063df44eb`; `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt` `ef35590cfc91fafe5dec104b7cfd7828011185bf`; `lib/app_settings.dart` `36927823c91904a35d87d2f21bd77932a2214e83`; `test/widget_test.dart` `767e7843f379c854fe7c8ab98293b4ec36008c88`.
+- A widget contract covers the visible-copy restrictions and contact channel. **Flutter tests and Dart analysis were NOT RUN** in this execution environment (Flutter/Dart SDK unavailable; GitHub clone could not resolve DNS). No App Build/APK or device validation occurred. Build #71 remains the latest verified APK and does not include this source change.
 
 ## App identity and repository
 

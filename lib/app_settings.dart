@@ -1108,14 +1108,6 @@ class JexText {
       AppLanguage.english: 'Connect to JE X FYZ automatically when it is advertising.',
       AppLanguage.indonesia: 'Hubungkan JE X FYZ secara otomatis saat perangkat menyiarkan sinyal.',
     },
-    'officialBuildFailed': {
-      AppLanguage.english: 'This application cannot continue because its integrity check failed.',
-      AppLanguage.indonesia: 'Aplikasi ini tidak dapat dilanjutkan karena pemeriksaan integritas gagal.',
-    },
-    'exit': {
-      AppLanguage.english: 'Exit',
-      AppLanguage.indonesia: 'Keluar',
-    },
     'connection': {
       AppLanguage.english: 'Connection',
       AppLanguage.indonesia: 'Koneksi',

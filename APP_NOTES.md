@@ -21,6 +21,15 @@ This file is the durable App behavior/design contract. Live source and the curre
 - Losing the safe margin or detecting a warming trend cancels downshift and raises PWM by 10 points per fresh one-second sample. Adaptive 5V/9V keep existing 100% Fan behavior. Existing Peltier/thermal safety logic retains authority.
 - NTC acquisition remains one calibrated reading per second. Averaging is used only for Fan PWM downshift permission; no extra ADC reads or blocking timing loops were introduced.
 
+## Tamper warning screen and developer contact — source-only after Build #71
+
+- The native launch gate in `MainActivity.isOfficialBuild()` allows local debug builds, then compares the installed APK signing certificate against the configured official production signer; an absent configured certificate, mismatch, or native exception rejects the launch. This is a signing-identity gate, not proof of detecting every possible tamper technique.
+- On a rejected release launch, `main()` continues to mount only `TamperApp` / `TamperScreen`. The visible screen is deliberately opaque: JE X FYZ branding plus a dense, scrollable Indonesian slang/profanity wall. It does not explain the reason or display technical terms.
+- The bottom-pinned `HUBUNGI DEVELOPER` button calls the existing `je_x_fyz/security` MethodChannel's `openDeveloperContact` method. Android dispatches `ACTION_VIEW` to `https://t.me/horizontalzzz`; the username/URL is not printed in the UI. Launch failure leaves the warning visible and does not grant entry.
+- The certificate-verification decision is unchanged. The screen is triggered only by the existing official signing check returning false; ordinary application errors are not relabelled as tampering.
+- Source/test contract hashes after this change: `lib/main.dart` `bf2007203455c64c2dd840a84b31368063df44eb`; `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt` `ef35590cfc91fafe5dec104b7cfd7828011185bf`; `lib/app_settings.dart` `36927823c91904a35d87d2f21bd77932a2214e83`; `test/widget_test.dart` `767e7843f379c854fe7c8ab98293b4ec36008c88`.
+- A widget contract covers the visible-copy restrictions and contact channel. **Flutter tests and Dart analysis were NOT RUN** in this execution environment (Flutter/Dart SDK unavailable; GitHub clone could not resolve DNS). No App Build/APK or device validation occurred. Build #71 remains the latest verified APK and does not include this source change.
+
 ## Identity and package
 
 - User-facing app name: **JE Cooler**; branding/header: **JE X FYZ**.

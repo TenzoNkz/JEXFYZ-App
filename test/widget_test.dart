@@ -17,6 +17,80 @@ import 'package:jexfyz_cooler/app_settings.dart';
 import 'package:jexfyz_cooler/floating_monitor.dart';
 
 void main() {
+  testWidgets('tamper screen shows an insult-only wall and opens developer contact',
+      (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    var contactRequested = false;
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(securityChannel, (call) async {
+      if (call.method == 'openDeveloperContact') {
+        contactRequested = true;
+        return true;
+      }
+      return null;
+    });
+    addTearDown(() {
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(securityChannel, null);
+    });
+
+    await tester.pumpWidget(const TamperApp());
+    await tester.pump();
+
+    expect(find.text('HUBUNGI DEVELOPER'), findsOneWidget);
+    expect(find.textContaining('KONTOL'), findsWidgets);
+    expect(find.textContaining('MEMEK'), findsWidgets);
+    expect(find.textContaining('ANJING'), findsWidgets);
+    expect(find.textContaining('MONYET'), findsWidgets);
+    expect(find.textContaining('BABI'), findsWidgets);
+
+    final renderedText = tester
+        .widgetList<Text>(find.byType(Text))
+        .map((widget) => widget.data ?? widget.textSpan?.toPlainText() ?? '')
+        .join(' ')
+        .toLowerCase();
+    for (final forbidden in [
+      'integrity',
+      'integritas',
+      'build',
+      'verifikasi',
+      'modifikasi',
+      'telegram',
+      '@horizontalzzz',
+      'exit',
+    ]) {
+      expect(renderedText, isNot(contains(forbidden)));
+    }
+
+    final screenSource = File('lib/main.dart').readAsStringSync();
+    final screenStart = screenSource.indexOf('class TamperScreen extends StatelessWidget {');
+    final screenEnd = screenSource.indexOf('\nclass JeCoolerApp extends StatelessWidget {', screenStart);
+    expect(screenStart, isNonNegative);
+    expect(screenEnd, greaterThan(screenStart));
+    final screenContract = screenSource.substring(screenStart, screenEnd).toLowerCase();
+    expect(screenContract, isNot(contains('integrity')));
+    expect(screenContract, isNot(contains('integritas')));
+    expect(screenContract, isNot(contains('official build')));
+    expect(screenContract, contains('openDeveloperContact'));
+
+    final nativeSource = File(
+      'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt',
+    ).readAsStringSync();
+    expect(nativeSource, contains('"openDeveloperContact" -> result.success(openDeveloperContact())'));
+    expect(nativeSource, contains('Uri.parse("https://t.me/horizontalzzz")'));
+
+    await tester.tap(find.text('HUBUNGI DEVELOPER'));
+    await tester.pump();
+    expect(contactRequested, isTrue);
+    expect(tester.takeException(), isNull);
+  });
+
   test('Dashboard indicators use integrated 2D silhouettes instead of stacked ornaments', () {
     final source = File('lib/main.dart').readAsStringSync();
     final start = source.indexOf('class _JexIconPainter extends CustomPainter {');

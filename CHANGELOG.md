@@ -1,5 +1,13 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-18 — Opaque profanity warning screen and developer contact (source-only)
+
+- Replaced the explanatory launch-rejection page with a dense, scrollable Indonesian slang/profanity wall; the page no longer shows a technical reason or any of the forbidden diagnostic wording. The warning remains JE X FYZ branded and keeps the contact action pinned at the bottom.
+- Replaced the old Exit button with the single label `HUBUNGI DEVELOPER`. The existing security MethodChannel routes this action to Android `ACTION_VIEW` for `https://t.me/horizontalzzz`, without displaying the handle/URL on the screen.
+- Preserved the pre-existing native signing-certificate gate and its debug-build allowance. This check compares signing identity; it should not be described as universal runtime detection of every tamper method.
+- Added a Flutter widget contract for the copy, forbidden visible terms, and contact callback. Source blobs: main.dart `bf2007203455c64c2dd840a84b31368063df44eb`, MainActivity.kt `ef35590cfc91fafe5dec104b7cfd7828011185bf`, app_settings.dart `36927823c91904a35d87d2f21bd77932a2214e83`, widget_test.dart `767e7843f379c854fe7c8ab98293b4ec36008c88`.
+- Static text/bridge checks passed during preparation. Flutter tests/Dart analysis were **NOT RUN** because the runtime has no Flutter/Dart SDK and GitHub clone could not resolve DNS. No APK build/release, firmware, BIN, Firebase, OTA, flash or device operation occurred; Build #71 remains the latest verified APK.
+
 ## 2026-10-17 — Integrated 2D indicators, localization, master LED brightness and Adaptive V6.7 Fan PWM (source-only)
 
 - Replaced stacked dashboard painter visuals with integrated 2D shapes and restrained phase-continuous motion; kept app identity, grille/logo, cards, layout and control semantics. Tests now check integrated silhouettes and retain Fan motion/gauge coverage.
