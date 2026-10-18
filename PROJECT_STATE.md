@@ -69,7 +69,7 @@ Last reconciled from live GitHub on 2026-10-18. This file is current-only. Use C
 - Current source blobs: `lib/main.dart` `0f6335435570691c5e9509f3f1a2619cf351e732`; `lib/floating_monitor.dart` `31b45ea08b08ac7fc25ebd991dca873b889fdd14`; `lib/app_settings.dart` `36927823c91904a35d87d2f21bd77932a2214e83`; `lib/jex_animated_glyph.dart` `c9c5c2802cb0ed363c042620511148b0d58d36c4`.
 - Current tests: `test/widget_test.dart` `661130f0bc2197478cc5f0e083324bdc41c8e6a3`; `test/floating_monitor_layout_contract_test.dart` `87e805095202ac3edfe55b9aeb3138c7c6886375`; `test/v6_7_qc_contract_test.dart` `6b71cc2ebbef9b3f1c9757728067eec4d11ff5ee`; `test/app_protocol_notify_contract_test.dart` `92214dd90178c705844d3979d3f8f7bd17bcc4b8`; `test/firmware_touch_adaptive_sync_test.dart` `94c0f074247f47fce7d939a72b0130eb1b2d70fa`.
 - Current Android source/config: `android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt` `ef35590cfc91fafe5dec104b7cfd7828011185bf`; `FloatingMonitorService.kt` `8312cc12d391cde5f76b146ff98075856d32bae2`; `JeForegroundService.kt` `9ea4dce7001bcd5cc10f9c1c7ad62f34ec54b03e`; `JexNotificationUtils.kt` `aecfc87121f2195ef6724613c612d674ed95ae55`; `AndroidManifest.xml` `c374b5d3ad6448b8b3e99a420ed7e8c49d38497a`; `android/app/build.gradle` `060cdd36a4f7d4d2fa4c97a1b6a15954b8355350`; `android/app/proguard-rules.pro` `50fc26f726ae8660fe04cf19da688431c8dca4a0`; `android/gradle.properties` `aeb7ffd8c41e6c668c1eeb4e656755e5b1cc18f6`; `pubspec.yaml` `8f558273e21692af9958f914527fdc62d623d63a`.
-- Active Firmware source `firmware/JEXFYZ-V6.7.ino` `1d0fa0d5e308b9789fd1c32211ce0a127d497f6a`; active workflow `.github/workflows/jexfyz-app-build-trigger.yml` `8a8533aff7e0e0e01412bf522e1966e81aa1a39f`.
+- Active Firmware source `firmware/JEXFYZ-V6.7.ino` `efe6eaa62c178ab536fb68c06a310e54826cbaf2`; active workflow `.github/workflows/jexfyz-app-build-trigger.yml` `8a8533aff7e0e0e01412bf522e1966e81aa1a39f`.
 
 ## Active tests and QC scope
 
@@ -92,10 +92,11 @@ Five active Dart test files remain; Build #71 ran 88/88 successfully. Native FPS
 
 ## Current Firmware/hardware reference
 
-- Active source firmware/JEXFYZ-V6.7.ino, blob 1d0fa0d5e308b9789fd1c32211ce0a127d497f6a, FW_VERSION="V6.7", exactly one active versioned .ino.
+- Active source firmware/JEXFYZ-V6.7.ino, blob efe6eaa62c178ab536fb68c06a310e54826cbaf2, FW_VERSION="V6.7", exactly one active versioned .ino.
 - MCU ESP32-C3 Super Mini/Dev Module. GPIO0 NTC ADC; GPIO1 TTP223; GPIO3 12V selector; GPIO4 9V selector; GPIO5 Peltier MOSFET PWM; GPIO6 Fan MOSFET PWM; GPIO7 WS2812. NTC 10k + 10k divider, Beta 3950, 3.3 V assumption, calibrated millivolt read once/sec.
 - Thermal reference: Hotside 40–50°C, default 45°C; manual re-arm at hotLimit−1°C continuously for 5 s. Adaptive 30 s stage at 12/9/5 V, Peltier off/Fan 100%; stable recovery 5 s cancels; otherwise step down/terminal-lock at 5 V. Upward recovery after 60 s stable, capped by saved ceiling. HOTSIDE startup default, HOTSIDE_BATTERY runtime-only. App PHONE:BT heartbeat 1 Hz, Firmware TTL 5 s; no standalone Battery Protection Guard UI.
 - Peltier 20kHz/8-bit, normal OFF→ON soft-start 5s; Fan 25kHz/8-bit; selector break-before-make 200ms and 1s settle. Active ramp is paused/restarted across rail changes; completed ramp stays at 100%; outputs/safety take priority.
+- Adaptive 12V Fan downshift requires ten safe fresh samples plus a stable 10-second window; upshift only follows a four-reading (≥0.25°C) confirmed warming trend, one 10-point step no more often than every 3 seconds. Hotside limit still forces 100%; 5V/9V remain at 100%. Current source blob efe6eaa62c178ab536fb68c06a310e54826cbaf2; source-only, uncompiled.
 - V6.6 compile/two-OTA claims are historical USER-REPORTED evidence. The user reopened and authorized V6.7 Adaptive Fan PWM source work; V6.7 remains uncompiled/unpublished. Do not compile Firmware or change BIN, Firebase or hardware without separate explicit authorization.
 - Read FIRMWARE_NOTES.md and firmware/FIRMWARE_TECHNICAL_REFERENCE.md before Firmware discussion. Read OTA_PROTECTION.md + OTA_REGRESSION_MEMORY.md before any OTA work, and VOLTAGE_TRANSITION_MEMORY.md before rail/Peltier timing work. Keep OTA protected.
 
