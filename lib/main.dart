@@ -5827,7 +5827,7 @@ void _handleAckLine(String line) {
                   title: JexText.of('peltier', lang),
                   showStateLabel: false,
                   showCheck: false,
-                  neutralRow: true;
+                  neutralRow: true,
                   subtitle: '',
                   icon: PhosphorIconsRegular.snowflake,
                   animatedKind: JexAnimatedIconKind.peltier,
@@ -5953,7 +5953,7 @@ void _handleAckLine(String line) {
               title: JexText.of('adaptiveSwitch', lang),
               showStateLabel: false,
               showCheck: false,
-              neutralRow: true;
+              neutralRow: true,
               subtitle: '',
               icon: PhosphorIconsRegular.sparkle,
               animatedKind: JexAnimatedIconKind.adaptive,
@@ -6170,7 +6170,7 @@ void _handleAckLine(String line) {
                   title: JexText.of('power', lang),
                   showStateLabel: false,
                   showCheck: false,
-                  neutralRow: true;
+                  neutralRow: true,
                   subtitle: '',
                   icon: PhosphorIconsBold.lightbulb,
                   animatedKind: JexAnimatedIconKind.led,
