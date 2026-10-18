@@ -210,6 +210,18 @@ void main() {
     expect(screenContract, isNot(contains('integritas')));
     expect(screenContract, isNot(contains('official build')));
     expect(screenContract, contains('opendevelopercontact'));
+    expect(
+      screenContract,
+      contains('padding: const edgeinsets.symmetric(horizontal: 12, vertical: 4)'),
+    );
+    expect(screenContract, contains('color: const color(0xff101014)'));
+    expect(screenContract, contains('borderradius: borderradius.circular(12)'));
+    expect(
+      screenContract,
+      contains('border.all(color: const color(0xff30252a), width: 1)'),
+    );
+    expect(screenContract, contains('textalign: textalign.center'));
+    expect(screenContract, contains('softwrap: true'));
 
     final nativeSource = File(
       'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt',
