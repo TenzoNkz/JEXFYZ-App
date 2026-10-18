@@ -296,7 +296,7 @@ void main() {
     );
   });
 
-  test('Home Notify connection status says Connected/Disconnected in both languages', () {
+  test('Home Notify connection status is localized in English and Indonesian', () {
     String label({
       required bool connected,
       String notice = '',
@@ -314,8 +314,8 @@ void main() {
 
     expect(label(connected: true), 'CONNECTED');
     expect(label(connected: false), 'DISCONNECTED');
-    expect(label(connected: true, language: AppLanguage.indonesia), 'CONNECTED');
-    expect(label(connected: false, language: AppLanguage.indonesia), 'DISCONNECTED');
+    expect(label(connected: true, language: AppLanguage.indonesia), 'TERHUBUNG');
+    expect(label(connected: false, language: AppLanguage.indonesia), 'TERPUTUS');
     expect(label(connected: false, connecting: true), 'CONNECTING');
     expect(label(connected: false, syncing: true), 'SYNCING');
     expect(label(connected: false, notice: 'Wireless ADB failed'), 'ERROR');
@@ -858,8 +858,17 @@ void main() {
     expect(state, contains('Future<void> _finishIconCycleBoundary(int durationMs) async'));
     expect(state, contains('curve: Curves.linear'));
     expect(state, contains('_resumeCycleWithoutPhaseSnap();'));
-    expect(source, contains('final harmonic = (i + 1).toDouble();'));
-    expect(source, isNot(contains('phase * (1.7 + i * .23)')));
+    final painterStart = source.indexOf('class _JexIconPainter extends CustomPainter {');
+    final painterEnd = source.indexOf('const MethodChannel securityChannel', painterStart);
+    expect(painterStart, isNonNegative);
+    expect(painterEnd, greaterThan(painterStart));
+    final painter = source.substring(painterStart, painterEnd);
+    expect(painter, contains('Path _adaptiveLoop(double s, double phase)'));
+    expect(painter, contains('final wave = math.sin(phase);'));
+    expect(painter, contains('final counterWave = math.cos(phase);'));
+    expect(painter, contains('_adaptiveLoop(s, angle)'));
+    expect(painter, contains('final breath = 1.0 + (active ? .018 * pulse * strength : 0.0);'));
+    expect(painter, isNot(contains('_drawThermalFlames')));
   });
 
   test('Fan Speed gauge retargets smoothly and fades its motion on state changes', () {
