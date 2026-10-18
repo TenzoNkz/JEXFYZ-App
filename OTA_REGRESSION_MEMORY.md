@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Online OTA Regression Memory
 
-Last reconciled: 2026-10-17 (Asia/Jakarta). This is the canonical incident record in the App repo; check live source before editing the transport.
+Last reconciled: 2026-10-18 (Asia/Jakarta). This is the canonical incident record in the App repo; check live source before editing the transport.
 
 ## Symptom and prior attempt
 
@@ -39,7 +39,7 @@ Do not add/remove CA roots, change certificate validation, add an NTP gate, or a
 
 - Current source is `firmware/JEXFYZ-V6.7.ino`, `FW_VERSION="V6.7"`, blob `1d0fa0d5e308b9789fd1c32211ce0a127d497f6a` (uncompiled). The artifact repo is BIN-only; its BIN provenance against this source is not independently verified.
 - HISTORICAL App Build #65 / run 38851040144 passed 88/88 Flutter tests and an FPS parser JUnit gate. Later App Build #70 / run 38998407325 passed 86/86 Flutter tests and the FPS-retired source's release gates; native JUnit tasks were NO-SOURCE. Neither App run is an Arduino compile, physical Online OTA, update-apply/reboot or installed-version proof.
-- Latest App release Build #71 is App-only and does not validate the OTA transport or Firmware. The V6.6 compile and two same-version Online OTA successes remain USER-REPORTED. Keep the setInsecure() certificate-identity trade-off explicit and do not infer the earlier HTTP/TLS failure root cause from LEDs alone.
+- Latest verified App release Build #73 (run `39098410865`, source/release `f1e81450428ffb113a76d430590c312ad6fa4781`) is App-only and does not validate the OTA transport or Firmware. V6.6 compile/two same-version Online OTA successes remain USER-REPORTED; V6.7 remains uncompiled and hosted BIN provenance is unverified. The V6.6 compile and two same-version Online OTA successes remain USER-REPORTED. Keep the setInsecure() certificate-identity trade-off explicit and do not infer the earlier HTTP/TLS failure root cause from LEDs alone.
 
 ## Preflight checklist for a future explicitly authorized OTA change — NOT RUN by this reconciliation
 
