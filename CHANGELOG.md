@@ -8,13 +8,13 @@
 - Current source blobs: `lib/main.dart` `522e108dd78d9b413316a6c79c8a4f0144f5e58f`; `test/widget_test.dart` `5098c30291cbd70422cd351f03cd9325f0870258`.
 - Build #80 / [run 39171729285](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39171729285) remains the latest verified APK, source `4e9f14b959cdbf60136158187db26d0bb65f6287`. It includes the rounded text-box layout and Home animation/state-gating work, but not this direct-Icon simplification. Flutter tests/analyzer and App Build were **NOT RUN** for this post-Build-80 delta; no Firmware/BIN/Firebase/OTA/flash/device operation was performed.
 
-## 2026-10-18 — Tamper warning text-block layout polish (source-only)
+## 2026-10-18 — Tamper warning text-block layout polish (included by Build #80)
 
 - Wrapped each of the 10 existing `_insult` text items in a consistent dark rounded rectangle with a subtle border, fixed horizontal padding and uniform outer spacing to make long lines wrap more evenly.
 - Exact visible wording and order, each item's text colour and typography, JE X FYZ branding, warning icon, `HUBUNGI DEVELOPER` label, pinned button placement and security/contact behavior are unchanged. No security-gate or contact-channel logic changed.
 - Added widget-contract assertions for the shared padding, background, rounded corners, border, centering and wrapping.
 - Source blobs: `lib/main.dart` `57cf250b4de48b683252e9f27aa2a3cf9e3bd7bd`; `test/widget_test.dart` `7e52166a51b41481f7a9ff2a82677ebcdefbf656`.
-- Flutter tests/Dart analysis and App Build were **NOT RUN**. Build #73 remains the latest verified APK; it does not include this layout change. No Firmware source/artifact, Firebase, OTA or device operation was performed by the assistant in this task.
+- This follow-up's source checkpoint preceded Build #80; Build #80 later included the rounded-box layout and its widget contract as part of the verified release. The subsequent direct-Icon warning symbol cleanup is recorded in the 2026-10-19 entry above and remains source-only. No Firmware source/artifact, Firebase, OTA or device operation was performed for this layout task.
 
 ## 2026-10-18 — User-reported Firmware V6.7 compile and online update
 
