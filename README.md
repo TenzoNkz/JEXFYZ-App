@@ -18,13 +18,13 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 12. [Transfer Prompt Templates](CHAT_TRANSFER_PROMPTS.md) — copy-ready prompts for saving context and starting a new chat.
 13. `archive/` contains immutable, verbatim legacy snapshots for forensic recovery only. Any old `CURRENT` status inside an archive is not live truth. Some root-relative links retained from the original documents do not resolve when the snapshot is viewed inside `archive/`; this is intentional to preserve the snapshots byte-for-byte. Use the canonical root-level files linked above for navigation.
 
-## Current release and source validation boundary — 2026-10-17
+## Current release and source validation boundary — 2026-10-18
 
-- Latest verified App release is Build #71 (run 39008259484), exact source/release commit `d9e026f70ec62455763de05048cba1557edfaf23`. It includes FPS/Shizuku retirement plus the refined dashboard-indicator motion and manual-voltage-toggle styling.
-- All 21 active workflow steps passed. Dart analysis completed with 23 info-level deprecation findings; **88/88 Flutter tests passed**. Android production compilation and configured `:app:testDebugUnitTest` gate succeeded; native test tasks were NO-SOURCE, so no native JUnit cases ran.
-- APK: https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk; asset 649710440, 54,603,867 bytes, SHA-256 `fdffa5d61ad403153c544cd3a62ea130e810844930f9de96fdd28343f6d041ca`. Matching source ZIP: https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip; asset 649710439, 2,847,410 bytes, SHA-256 `3d7dc30fa99d3bfb86bee069e4a9b60292942f215c11c27e519f0b51ca8a24b0`. Both were re-downloaded and verified.
-- Release tag `jexfyz-latest` targets `d9e026f70ec62455763de05048cba1557edfaf23`. Full run, signing, warnings, and source-marker evidence are in `APP_BUILD_REPORT.md`.
-- Physical Floating Monitor layout, indicator animation smoothness, manual-voltage-toggle appearance, live BLE metrics/Fan Speed and all firmware/cooling/OTA behavior remain **NOT DEVICE-VERIFIED**. Build #71 is App CI/release evidence, not firmware compile or hardware proof.
+- Latest verified App release is Build #73 / [Actions run 39098410865](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39098410865), exact source/release commit `f1e81450428ffb113a76d430590c312ad6fa4781`. All 21 workflow steps passed, Dart analysis reported 23 info-level deprecations and **91/91 Flutter tests passed**. Android production compile/configured gate, obfuscated APK, V1/V2/V3 signing/certificate, corresponding source ZIP, release publication and downloaded-asset verification passed. Native JUnit tasks were NO-SOURCE; no native JUnit cases ran.
+- APK asset 652517541, 54,538,331 bytes, SHA-256 `90ed2f36658ea0e4fa487d43ea7e4347545c9875b13d703ec9c2765445eea48b`. Matching source ZIP asset 652517543, 2,846,735 bytes, SHA-256 `ed7429aa9f6cb36e327d6d7b85efdf0b895ee8529c09a159053b98c8628902ef`. Release `jexfyz-latest` targets the exact Build #73 source commit. Details live in `APP_BUILD_REPORT.md`.
+- Build #73 includes the TamperScreen profanity/contact screen, but **does not include** the later source-only Hotside contour, per-indicator motion, Peltier/Adaptive/LED toggle styling and Bluetooth/Adaptive submenu lock overlays. Four new UI test contracts exist but tests and analysis for these newest changes were NOT RUN; no APK build was triggered by this reconciliation.
+- Active Firmware sketch is `firmware/JEXFYZ-V6.7.ino`, embedded `FW_VERSION="V6.7"`, matching filename, exactly one active versioned sketch. V6.7 remains source-only/uncompiled; prior V6.6 compile/two-OTA reports are historical user reports, and source-to-BIN provenance remains UNVERIFIED.
+- Physical phone visuals, BLE/Fan telemetry, Firmware compilation, OTA, reboot and thermal/electrical behavior remain outside the verified App CI evidence.
 
 ## Repository boundaries
 
@@ -36,9 +36,9 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 
 ## Remaining validation outside CI
 
-- Build #71 is the latest verified release for source `d9e026f70ec62455763de05048cba1557edfaf23`. Full audit/test/build/signing/source archive/Release/download verification evidence is in `APP_BUILD_REPORT.md`.
-- Next step is device-side validation of Build #71 indicator motion/toggle styling, six-metric overlay and live telemetry. FPS removal has already been built and release-verified; CI alone does not prove device behavior.
-- Build #71 remains the latest verified APK; the current source-only UI/Firmware V6.7 changes are not built or device-verified. Its compile log and source-to-BIN provenance remain independently unverified. App CI does not imply Firmware compilation, BIN provenance, Firebase, OTA, flash, BLE hardware or thermal-safety validation.
+- Build #73 is the latest verified release for source `f1e81450428ffb113a76d430590c312ad6fa4781`; full release evidence and hashes are in `APP_BUILD_REPORT.md`.
+- Next verification step, after a separately authorized `@Thinking Eksekusi Build App!`, is device-side validation of the current Hotside contour, per-indicator motion, toggle styling, centered submenu lock overlays and live BLE/Fan telemetry. The current UI source/tests remain NOT RUN and are not in Build #73.
+- App CI does not prove Firmware compilation, source-to-BIN provenance, Firebase, OTA, flash, BLE hardware, thermal/electrical safety or installed device version.
 
 ## Non-negotiable workflow
 
