@@ -35,7 +35,7 @@ Do not add/remove CA roots, change certificate validation, add an NTP gate, or a
 3. a one-variable-at-a-time experiment where practical;
 4. a complete re-audit of Wi-Fi/BLE handoff, output safety, URL allowlist, redirects, image checks, timeout/retries, Update lifecycle, failure recovery, App reconnect/P1 and result reporting.
 
-## Latest evidence boundary — 2026-10-17
+## Latest evidence boundary — 2026-10-18
 
 - Current source is `firmware/JEXFYZ-V6.7.ino`, `FW_VERSION="V6.7"`, blob `1d0fa0d5e308b9789fd1c32211ce0a127d497f6a` (uncompiled). The artifact repo is BIN-only; its BIN provenance against this source is not independently verified.
 - HISTORICAL App Build #65 / run 38851040144 passed 88/88 Flutter tests and an FPS parser JUnit gate. Later App Build #70 / run 38998407325 passed 86/86 Flutter tests and the FPS-retired source's release gates; native JUnit tasks were NO-SOURCE. Neither App run is an Arduino compile, physical Online OTA, update-apply/reboot or installed-version proof.
