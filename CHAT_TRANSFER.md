@@ -7,7 +7,7 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
 ## 1. Current Git and repository state
 
 - Canonical App/Firmware source and project-memory repository: `TenzoNkz/JEXFYZ-App`, branch `main`.
-- Parent HEAD immediately before this transfer-only commit: `e1923ab66b4a4bb0f31a69f00d541b7c60528dcd`, message `docs(memory): refresh tamper-screen test hash`. Changes in this recovery update only existing source/test/docs files; the tree entry count remains 67 (49 blobs, 18 trees), with exactly one active versioned Firmware sketch: `firmware/JEXFYZ-V6.7.ino`. The current tree SHA was not exposed by the connector response; re-fetch the recursive tree at next boot.
+- Parent HEAD immediately before this transfer-only commit: `df9a78bdd1fac72a232e02de27ccf98821b3e969`, message `docs(changelog): note tamper test assertion repair`. Changes in this recovery update only existing source/test/docs files; the tree entry count remains 67 (49 blobs, 18 trees), with exactly one active versioned Firmware sketch: `firmware/JEXFYZ-V6.7.ino`. The current tree SHA was not exposed by the connector response; re-fetch the recursive tree at next boot.
 - Latest verified release: Build #71 / [Actions run `39008259484`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39008259484), exact release/source commit `d9e026f70ec62455763de05048cba1557edfaf23`. Completed at `2026-10-17T06:05:54Z` (`2026-10-17 13:05:54 Asia/Jakarta`). All 21 active workflow steps passed: audit, dependencies, Dart analysis, **88/88 Flutter tests**, Android production compilation/configured gate, obfuscated APK, V1/V2/V3 signing and certificate checks, source ZIP, Release publication and re-downloaded asset verification.
 - Build #70 is historical and verified FPS/Shizuku retirement plus schema-v2 migration to six metrics B/H/V/A/P/F (F=Fan Speed). Build #71 is newer and includes the post-Build-70 motion/toggle refinements.
 - Build #71 was triggered through owner/title/token-guarded [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). Issue owner `TenzoNkz`, title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; workflow blob `8a8533aff7e0e0e01412bf522e1966e81aa1a39f` is unchanged and listens only to issue opened/reopened. No push/PR/dispatch bypass.
@@ -45,7 +45,7 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
   - `BUILD_NOTES.md`: `821f3370bbf6816874681195ceff21a36faf5573`.
   - `HANDOVER.md`: `3cd9d1eec7fdd17bb8cdd7586e9fe4d52b445dc8`.
   - `APP_NOTES.md`: `eeaa2adccddc9a2001bc3bf36567319499fe94d7`.
-  - `CHANGELOG.md`: `7109ca410b92f9d6ce00eb71574b7bc9d9cb06e5`.
+  - `CHANGELOG.md`: `731ae64401ad09233002cca4e553b9e44b160650`.
   - `README.md`: `a5bb31bec9a83c03daddbab9cd127d537660a90e`.
   - `CHAT_RULES.md`: `eae86f7e921b3eb49337bea87a39255eabb7b4c3`.
   - `FIRMWARE_NOTES.md`: `aa61ac32e756e87342d4070c216d699f63949a46`.
@@ -155,7 +155,7 @@ Canonical document blob hashes immediately before this transfer-only write:
 - `BUILD_NOTES.md`: `821f3370bbf6816874681195ceff21a36faf5573`.
 - `HANDOVER.md`: `3cd9d1eec7fdd17bb8cdd7586e9fe4d52b445dc8`.
 - `APP_NOTES.md`: `eeaa2adccddc9a2001bc3bf36567319499fe94d7`.
-- `CHANGELOG.md`: `7109ca410b92f9d6ce00eb71574b7bc9d9cb06e5`.
+- `CHANGELOG.md`: `731ae64401ad09233002cca4e553b9e44b160650`.
 - `README.md`: `a5bb31bec9a83c03daddbab9cd127d537660a90e`.
 - `CHAT_RULES.md`: `eae86f7e921b3eb49337bea87a39255eabb7b4c3`.
 - `FIRMWARE_NOTES.md`: `aa61ac32e756e87342d4070c216d699f63949a46`.
