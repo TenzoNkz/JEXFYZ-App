@@ -986,7 +986,7 @@ void main() {
     expect(stateEnd, greaterThan(stateStart));
     final state = source.substring(stateStart, stateEnd);
     expect(state, contains('Future<void> _animateActivityTransition(bool active) async'));
-    expect(state, contains('Keep distinct low-amplitude idle motion for non-Fan indicators.'));
+    expect(state, contains('if (widget.kind != JexAnimatedIconKind.fan && !controller.isAnimating)'));
     expect(state, contains('controller.repeat();'));
     expect(state, contains('Future<void> _finishIconCycleBoundary(int durationMs) async'));
     expect(state, contains('curve: Curves.linear'));
