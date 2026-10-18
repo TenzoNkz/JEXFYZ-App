@@ -5,7 +5,7 @@
 - Reconciled current canonical status from live `main`, complete recursive tree inventory (67 entries: 49 blobs / 18 trees, not truncated), five branches, zero open PRs, five active Dart test files, the issue/title/token-guarded App workflow, current App/Firmware versions and exact source blobs.
 - Corrected current documentation to distinguish Build #73 (latest verified App release) from later source-only Hotside/indicator/toggle/menu-lock UI changes. Removed the duplicate obsolete Build #71 source-only block in `PROJECT_STATE.md` and removed the duplicated older Dashboard animation contract from `APP_NOTES.md`.
 - Refreshed release/QC checkpoints, active source fingerprints, current visual requirements, V6.7 transition-memory wording and OTA evidence boundary. Removed obsolete Shizuku/FPS R8 keep rules from the active ProGuard config and corrected the transfer prompt's current Firmware-version wording. Preserved useful older Build/Firmware evidence as explicitly historical; archive snapshots remain immutable forensic files.
-- Confirmed `TenzoNkz/JEXFYZ-Firmware` remains BIN-only with exactly `JEXFYZ.cpp.bin`; its payload was not read and source-to-BIN provenance remains unverified. No App source changes, tests, Dart analysis, App Build, firmware compile, BIN publication, Firebase, OTA, flash or device operations were performed as part of the memory reconciliation.
+- Confirmed `TenzoNkz/JEXFYZ-Firmware` remains BIN-only with exactly `JEXFYZ.cpp.bin`; its payload was not read and source-to-BIN provenance remains unverified. No executable Dart/Kotlin or Firmware source changed in the memory reconciliation; one obsolete ProGuard keep-rule block for already-retired FPS/Shizuku classes and transfer-prompt wording were cleaned. Tests, Dart analysis, App Build, firmware compile, BIN publication, Firebase, OTA, flash and device operations were not performed.
 - The updated `CHAT_TRANSFER.md` is written last and records current live hashes plus exact verified/unverified boundaries.
 
 ## 2026-10-18 — Distinct indicator motion, aligned toggles and centered menu locks (source-only)
@@ -573,7 +573,7 @@ Chronological record of durable App/Firmware decisions and prior approaches. Liv
 
 ## 2026-10-05 — V5.4–V5.6 adaptive/safety history (historical)
 
-- HOTSIDE adaptive safety historically used 10-second step-down dwell with fan/LED rules; subsequent versions changed thermal dwell, re-arm behavior and recovery. Do not apply this old 10-second policy to current V6.6 behavior; the current transition and timing contract lives in FIRMWARE_NOTES.md and VOLTAGE_TRANSITION_MEMORY.md.
+- HOTSIDE adaptive safety historically used 10-second step-down dwell with fan/LED rules; subsequent versions changed thermal dwell, re-arm behavior and recovery. Do not apply this old 10-second policy to current V6.7 behavior; the current transition and timing contract lives in FIRMWARE_NOTES.md and VOLTAGE_TRANSITION_MEMORY.md.
 - Adaptive upward voltage dwell became 5 seconds after every completed increase in both profiles.
 - Historical GPIO mapping: NTC0, Touch1, 12V3, 9V4, Peltier5, Fan6, WS2812 7; 200 ms selector deadtime and 5-second Peltier OFF→ON ramp were retained across later versions.
 
