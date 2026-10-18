@@ -1009,6 +1009,26 @@ bool jexIndicatorAnimationActive({
 }) =>
     connected && stateActive;
 
+/// Battery, Hotside and Voltage are continuous indicators while BLE is online.
+/// Output indicators only animate while their authoritative state is active.
+bool jexIconAnimationPermitted({
+  required bool connected,
+  required JexAnimatedIconKind kind,
+  required bool stateActive,
+}) {
+  if (!connected ||
+      kind == JexAnimatedIconKind.generic ||
+      kind == JexAnimatedIconKind.bluetooth) {
+    return false;
+  }
+  if (kind == JexAnimatedIconKind.battery ||
+      kind == JexAnimatedIconKind.hotside ||
+      kind == JexAnimatedIconKind.voltage) {
+    return true;
+  }
+  return stateActive;
+}
+
 enum DisplayMenuLockReason { none, bluetoothDisconnected, adaptiveActive }
 
 /// Applies a single lock overlay to the selected submenu; Bluetooth has priority.
@@ -1038,8 +1058,8 @@ int jexVoltageAnimationLevel(String voltage) {
 /// Visual intensity only; this does not estimate actual surface temperature or ice.
 double jexPeltierFrostIntensity(int voltageLevel) {
   return switch (voltageLevel) {
-    5 => .24,
-    9 => .58,
+    5 => .25,
+    9 => .50,
     12 => 1.0,
     _ => .24,
   };
@@ -1047,9 +1067,9 @@ double jexPeltierFrostIntensity(int voltageLevel) {
 
 int jexPeltierFrostParticleCount(int voltageLevel) {
   return switch (voltageLevel) {
-    5 => 2,
-    9 => 5,
-    12 => 8,
+    5 => 3,
+    9 => 6,
+    12 => 14,
     _ => 2,
   };
 }
@@ -1057,18 +1077,27 @@ int jexPeltierFrostParticleCount(int voltageLevel) {
 Duration jexIconAnimationDuration(
   JexAnimatedIconKind kind, {
   int voltageLevel = 5,
+  double fanSpeedLevel = 1.0,
 }) {
+  if (kind == JexAnimatedIconKind.fan) {
+    final baseMilliseconds = switch (voltageLevel) {
+      9 => 1250,
+      12 => 620,
+      _ => 2600,
+    };
+    // Voltage sets the base rotor class; at 12V, live PWM adjusts angular speed.
+    final pwmFactor = voltageLevel == 12
+        ? fanSpeedLevel.clamp(.35, 1.0).toDouble()
+        : 1.0;
+    return Duration(milliseconds: (baseMilliseconds / pwmFactor).round());
+  }
   return switch (kind) {
     JexAnimatedIconKind.battery => const Duration(milliseconds: 2600),
     JexAnimatedIconKind.hotside => const Duration(milliseconds: 3200),
     JexAnimatedIconKind.voltage => const Duration(milliseconds: 1900),
     JexAnimatedIconKind.adaptive => const Duration(milliseconds: 4600),
     JexAnimatedIconKind.peltier => const Duration(milliseconds: 3000),
-    JexAnimatedIconKind.fan => switch (voltageLevel) {
-        9 => const Duration(milliseconds: 1250),
-        12 => const Duration(milliseconds: 620),
-        _ => const Duration(milliseconds: 2600),
-      },
+    JexAnimatedIconKind.fan => const Duration(milliseconds: 2600),
     JexAnimatedIconKind.speed => const Duration(milliseconds: 1800),
     JexAnimatedIconKind.led => const Duration(milliseconds: 1650),
     JexAnimatedIconKind.bluetooth => const Duration(milliseconds: 2800),
@@ -1225,8 +1254,8 @@ Color jexVoltageIndicatorColor(String voltage) {
 
 double jexVoltageEnergyLevel(String voltage) {
   return switch (voltage.trim().toUpperCase()) {
-    '5V' => .32,
-    '9V' => .68,
+    '5V' => .25,
+    '9V' => .50,
     '12V' => 1.0,
     _ => 0.0,
   };
@@ -1236,6 +1265,7 @@ class JexAnimatedIcon extends StatefulWidget {
   final JexAnimatedIconKind kind;
   final IconData? glyph;
   final Color color;
+  final bool connected;
   final double size;
   final bool active;
   final double level;
@@ -1248,6 +1278,7 @@ class JexAnimatedIcon extends StatefulWidget {
     this.glyph,
     required this.color,
     this.size = 24,
+    this.connected = false,
     this.active = false,
     this.level = 1,
     this.voltageLevel = 5,
@@ -1261,7 +1292,8 @@ class JexAnimatedIcon extends StatefulWidget {
     this.size = 24,
     this.active = false,
     this.warning = false,
-  })  : kind = JexAnimatedIconKind.generic,
+  })  : connected = false,
+        kind = JexAnimatedIconKind.generic,
         glyph = icon,
         level = 1,
         voltageLevel = 5;
@@ -1283,6 +1315,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
   double _speedTargetLevel = 0;
   double _indicatorLevelFrom = 0;
   double _indicatorLevelTarget = 0;
+  bool _fanCoasting = false;
 
   double _currentSpeedLevel() => jexSmoothFanSpeedLevel(
         from: _speedFromLevel,
@@ -1312,6 +1345,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
 
   void _animateFanToCycleBoundary() {
     if (!mounted ||
+        !widget.connected ||
         widget.kind != JexAnimatedIconKind.fan ||
         !widget.active) {
       return;
@@ -1319,6 +1353,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     final cycleMs = jexIconAnimationDuration(
       JexAnimatedIconKind.fan,
       voltageLevel: widget.voltageLevel,
+      fanSpeedLevel: widget.level,
     ).inMilliseconds;
     final remaining = (1.0 - controller.value).clamp(0.0, 1.0).toDouble();
     final durationMs = (cycleMs * remaining).round().clamp(16, cycleMs).toInt();
@@ -1327,23 +1362,22 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
 
   Future<void> _finishFanCycleBoundary(int durationMs) async {
     try {
-      // Travel from the current angular phase to a full-turn boundary at the new
-      // angular speed, then resume full cycles. Phase 1 and phase 0 are the same pose.
       await controller.animateTo(
         1.0,
         duration: Duration(milliseconds: durationMs),
         curve: Curves.linear,
       ).orCancel;
-      if (mounted && widget.kind == JexAnimatedIconKind.fan && widget.active) {
+      if (mounted && widget.connected && widget.kind == JexAnimatedIconKind.fan && widget.active) {
         controller.repeat();
       }
     } on TickerCanceled {
-      // A newer voltage or ON/OFF transition superseded this phase-preserving travel.
+      // A newer voltage/PWM, connection or ON/OFF transition superseded this travel.
     }
   }
 
   Future<void> _coastFanToStop() async {
     if (!mounted ||
+        !widget.connected ||
         widget.kind != JexAnimatedIconKind.fan ||
         widget.active) {
       return;
@@ -1351,13 +1385,17 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     final cycleMs = jexIconAnimationDuration(
       JexAnimatedIconKind.fan,
       voltageLevel: widget.voltageLevel,
+      fanSpeedLevel: widget.level,
     ).inMilliseconds;
     const coastCycles = .16;
     final remaining = (1.0 - controller.value).clamp(0.0, 1.0).toDouble();
     final travel = math.min(coastCycles, remaining);
-    if (travel <= 0) return;
-    // Ease out over enough time that initial angular speed matches the running Fan,
-    // then decelerates gradually to a complete stop instead of snapping.
+    if (travel <= 0) {
+      controller.stop();
+      _fanCoasting = false;
+      return;
+    }
+    _fanCoasting = true;
     final durationMs = (cycleMs * travel * 3).round().clamp(60, cycleMs * 3).toInt();
     final target = (controller.value + travel).clamp(0.0, 1.0).toDouble();
     try {
@@ -1367,7 +1405,15 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
         curve: Curves.easeOutCubic,
       ).orCancel;
     } on TickerCanceled {
-      // A new Fan ON/OFF or voltage change superseded the coast-down.
+      // A newer Fan ON/OFF or connection transition superseded the coast-down.
+    } finally {
+      _fanCoasting = false;
+      if (mounted && !widget.active) {
+        controller.stop();
+        activityTransitionController.stop();
+        activityTransitionController.value = 0;
+        if (!widget.connected) controller.value = 0;
+      }
     }
   }
 
@@ -1380,9 +1426,8 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
             curve: Curves.easeInOutCubic,
           )
           .orCancel;
-      if (!mounted || widget.active != active) return;
-      // The activity emphasis has faded. Non-Fan controllers continue their
-      // decorative idle cycle; Fan coast-down is handled by its separate path.
+      if (!mounted || widget.active != active || !widget.connected) return;
+      // This transition affects in-shape highlights only, never base glyph opacity.
     } on TickerCanceled {
       // A newer state transition retargeted this activity fade.
     }
@@ -1390,14 +1435,17 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
 
   void _resumeCycleWithoutPhaseSnap() {
     if (!mounted ||
+        !widget.connected ||
         !widget.active ||
         widget.kind == JexAnimatedIconKind.generic ||
+        widget.kind == JexAnimatedIconKind.bluetooth ||
         controller.isAnimating) {
       return;
     }
     final cycleMs = jexIconAnimationDuration(
       widget.kind,
       voltageLevel: widget.voltageLevel,
+      fanSpeedLevel: widget.level,
     ).inMilliseconds;
     final remaining = (1.0 - controller.value).clamp(0.0, 1.0).toDouble();
     if (remaining <= 0.0001) {
@@ -1418,28 +1466,54 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
           )
           .orCancel;
       if (mounted &&
-          widget.kind != JexAnimatedIconKind.generic &&
-          widget.active) {
-        // Phase 1 and phase 0 must paint the same pose for seamless looping.
+          jexIconAnimationPermitted(
+            connected: widget.connected,
+            kind: widget.kind,
+            stateActive: widget.active,
+          )) {
         controller.repeat();
       }
     } on TickerCanceled {
-      // A newer activation or a completed fade superseded this phase travel.
+      // A newer activation or disconnect superseded this phase travel.
     }
   }
 
+  void _stopAnimationsForDisconnect() {
+    _fanCoasting = false;
+    controller.stop();
+    activityTransitionController.stop();
+    frostTransitionController.stop();
+    speedLevelTransitionController.stop();
+    indicatorLevelTransitionController.stop();
+    controller.value = 0;
+    activityTransitionController.value = 0;
+    frostTransitionController.value = 0;
+    _speedFromLevel = 0;
+    _speedTargetLevel = 0;
+    speedLevelTransitionController.value = 1;
+    _indicatorLevelFrom = widget.level.clamp(0.0, 1.0).toDouble();
+    _indicatorLevelTarget = _indicatorLevelFrom;
+    indicatorLevelTransitionController.value = 1;
+  }
+
   void _syncAnimation() {
-    if (widget.kind == JexAnimatedIconKind.generic) {
-      controller.stop();
-      controller.value = 0;
-      return;
-    }
-    if (!widget.active) {
-      // Keep distinct, low-amplitude idle motion for non-Fan indicators.
-      // Fan is different: an OFF rotor should coast down and remain still.
-      if (widget.kind != JexAnimatedIconKind.fan && !controller.isAnimating) {
-        controller.repeat();
+    final animationPermitted = jexIconAnimationPermitted(
+      connected: widget.connected,
+      kind: widget.kind,
+      stateActive: widget.active,
+    );
+    if (!animationPermitted) {
+      if (widget.kind == JexAnimatedIconKind.fan &&
+          _fanCoasting &&
+          widget.connected) {
+        return;
       }
+      controller.stop();
+      if (widget.kind != JexAnimatedIconKind.fan || !widget.connected) {
+        controller.value = 0;
+      }
+      activityTransitionController.stop();
+      activityTransitionController.value = 0;
       return;
     }
     if (!controller.isAnimating) {
@@ -1459,6 +1533,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       duration: jexIconAnimationDuration(
         widget.kind,
         voltageLevel: widget.voltageLevel,
+        fanSpeedLevel: widget.level,
       ),
     );
     activityTransitionController = AnimationController(
@@ -1496,8 +1571,18 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
   @override
   void didUpdateWidget(covariant JexAnimatedIcon oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (!widget.connected) {
+      _stopAnimationsForDisconnect();
+      return;
+    }
     if (widget.active != oldWidget.active) {
-      unawaited(_animateActivityTransition(widget.active));
+      if (widget.active) {
+        unawaited(_animateActivityTransition(true));
+      } else {
+        // OFF icons become static immediately; only connected Fan has a one-shot coast.
+        activityTransitionController.stop();
+        activityTransitionController.value = 0;
+      }
     }
     if (widget.kind != oldWidget.kind) {
       indicatorLevelTransitionController.stop();
@@ -1511,6 +1596,8 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     }
     final voltageChanged = widget.voltageLevel != oldWidget.voltageLevel;
     final fanVoltageChanged = widget.kind == JexAnimatedIconKind.fan && voltageChanged;
+    final fanSpeedChanged = widget.kind == JexAnimatedIconKind.fan &&
+        widget.level != oldWidget.level;
     final peltierVisualChanged = widget.kind == JexAnimatedIconKind.peltier &&
         (voltageChanged || widget.active != oldWidget.active);
     final speedVisualChanged = widget.kind == JexAnimatedIconKind.speed &&
@@ -1530,16 +1617,16 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       speedLevelTransitionController.stop();
     }
 
-    if (widget.kind != oldWidget.kind || fanVoltageChanged) {
+    if (widget.kind != oldWidget.kind || fanVoltageChanged || fanSpeedChanged) {
       controller.duration = jexIconAnimationDuration(
         widget.kind,
         voltageLevel: widget.voltageLevel,
+        fanSpeedLevel: widget.level,
       );
       if (widget.kind != oldWidget.kind) {
         controller.reset();
-      } else if (fanVoltageChanged && widget.active) {
-        // Do not call repeat() directly here: repeat resets phase to zero. Travel from
-        // the current phase to the equivalent full-turn boundary at the new speed.
+      } else if ((fanVoltageChanged || fanSpeedChanged) && widget.active) {
+        // Travel to an equivalent full-turn boundary at the new voltage/PWM speed.
         _animateFanToCycleBoundary();
       }
     }
@@ -1568,7 +1655,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       if (oldWidget.active && !widget.active) {
         unawaited(_coastFanToStop());
       } else if (!oldWidget.active && widget.active) {
-        if (!fanVoltageChanged) _animateFanToCycleBoundary();
+        if (!fanVoltageChanged && !fanSpeedChanged) _animateFanToCycleBoundary();
       }
     }
     _syncAnimation();
@@ -1728,19 +1815,18 @@ class _JexIconPainter extends CustomPainter {
   }
 
   // Two directional arcs travel around the cycle instead of morphing into an empty ring.
+  // Active Adaptive uses directional arcs; its OFF glyph remains full-colour.
   void _drawAdaptiveFlow(Canvas canvas, double s, double phase, Color color, double strength) {
     final center = Offset(s / 2, s / 2);
     final radius = s * .29;
     final orbit = Rect.fromCircle(center: center, radius: radius);
     final wave = (math.sin(phase * 2) + 1) / 2;
-    canvas.drawCircle(center, radius,
-        _stroke(s * .035, color.withValues(alpha: .12 + .09 * strength)));
+    canvas.drawCircle(center, radius, _stroke(s * .035, color.withValues(alpha: .22)));
     for (var i = 0; i < 2; i++) {
       final start = phase + i * math.pi;
       const sweep = 2.28;
       final tint = color.withValues(
-        alpha: (.38 + .52 * strength) *
-            (.70 + .30 * math.sin(phase + i * math.pi).abs()),
+        alpha: .76 + .18 * math.sin(phase + i * math.pi).abs(),
       );
       canvas.drawArc(orbit, start, sweep, false, _stroke(s * .065, tint));
       final end = start + sweep;
@@ -1754,7 +1840,7 @@ class _JexIconPainter extends CustomPainter {
       Offset(center.dx + math.cos(flowAngle) * radius,
           center.dy + math.sin(flowAngle) * radius),
       s * .027,
-      _fill(color.withValues(alpha: .28 + .50 * strength)),
+      _fill(color.withValues(alpha: .72 + .18 * strength)),
     );
   }
 
@@ -1807,6 +1893,136 @@ class _JexIconPainter extends CustomPainter {
     return path;
   }
 
+  void _drawThermalFlames(
+    Canvas canvas,
+    double s,
+    double phase,
+    Color hotColor,
+    double intensity,
+  ) {
+    final cx = s / 2;
+    final strength = intensity.clamp(0.0, 1.0).toDouble();
+    if (strength <= 0) return;
+    // Thirty bounded ember trails provide a dense warning at the exact
+    // configured thermal threshold without an unbounded particle load.
+    for (var i = 0; i < 30; i++) {
+      final seed = i * 2.399963229728653;
+      final rise = (phase / (math.pi * 2) * (1.8 + (i % 4) * .18) + i * .173) % 1.0;
+      final spread = .19 + (i % 5) * .047;
+      final x = (cx + math.sin(seed + phase * .24) * s * spread)
+          .clamp(s * .035, s * .965)
+          .toDouble();
+      final y = s * (.88 - rise * .68);
+      final trailLength = s * (.035 + (i % 4) * .009) * strength;
+      final ember = i % 5 == 0
+          ? const Color(0xFFFFF1A3)
+          : (i % 2 == 0 ? const Color(0xFFFF8738) : hotColor);
+      final alpha = (.76 + .22 * ((i % 3) / 2)).clamp(0.0, 1.0).toDouble();
+      canvas.drawLine(
+        Offset(x, y + trailLength),
+        Offset(x + math.sin(seed + phase) * s * .014, y),
+        _stroke(s * (.012 + (i % 3) * .003), ember.withValues(alpha: alpha)),
+      );
+      canvas.drawCircle(
+        Offset(x, y),
+        s * (.018 + (i % 4) * .004) * strength,
+        _fill(ember.withValues(alpha: alpha)),
+      );
+    }
+  }
+
+  void _drawFrostParticles(
+    Canvas canvas,
+    double s,
+    double phase,
+    Color frostColor, {
+    required double intensity,
+    required double particleCount,
+    required bool moving,
+  }) {
+    final count = particleCount.round().clamp(2, 14).toInt();
+    final cx = s / 2;
+    final cy = s / 2;
+    final strength = intensity.clamp(0.0, 1.0).toDouble();
+    for (var i = 0; i < count; i++) {
+      final seed = i * 2.399963229728653;
+      final radius = s * (.14 + (i % 4) * .061);
+      final driftX = moving ? math.sin(phase * 1.15 + seed) * s * .025 : 0.0;
+      final driftY = moving ? math.cos(phase * 1.25 + seed * .7) * s * .022 : 0.0;
+      final point = Offset(
+        (cx + math.cos(seed) * radius + driftX).clamp(s * .07, s * .93).toDouble(),
+        (cy + math.sin(seed) * radius + driftY).clamp(s * .07, s * .93).toDouble(),
+      );
+      final alpha = (.46 + .48 * strength) * (.84 + .16 * ((i % 3) / 2));
+      final particleSize = s * (.014 + .018 * strength);
+      final particleColor = i % 4 == 0 ? Colors.white : frostColor;
+      if (i % 3 == 0) {
+        canvas.drawLine(
+          Offset(point.dx - particleSize, point.dy),
+          Offset(point.dx + particleSize, point.dy),
+          _stroke(s * .012, particleColor.withValues(alpha: alpha)),
+        );
+        canvas.drawLine(
+          Offset(point.dx, point.dy - particleSize),
+          Offset(point.dx, point.dy + particleSize),
+          _stroke(s * .012, particleColor.withValues(alpha: alpha)),
+        );
+      } else {
+        canvas.drawCircle(
+          point,
+          particleSize * .58,
+          _fill(particleColor.withValues(alpha: alpha)),
+        );
+      }
+    }
+  }
+
+  void _drawFanAirflow(
+    Canvas canvas,
+    double s,
+    double phase,
+    Color airColor,
+    int voltageClass,
+    double pwmLevel,
+  ) {
+    final voltagePower = switch (voltageClass) {
+      9 => .50,
+      12 => 1.0,
+      _ => .25,
+    };
+    final pwmFactor = voltageClass == 12
+        ? pwmLevel.clamp(0.0, 1.0).toDouble()
+        : 1.0;
+    final airflowPower = voltagePower * pwmFactor;
+    if (airflowPower <= 0) return;
+    final streakCount = (airflowPower * 4).ceil().clamp(1, 4).toInt();
+    final phase01 = (phase / (math.pi * 2)) % 1.0;
+    for (var i = 0; i < streakCount; i++) {
+      final lane = streakCount == 1 ? .5 : i / (streakCount - 1);
+      final y = s * (.34 + lane * .32);
+      final offset = (phase01 + i * .31) % 1.0;
+      final x1 = s * (.70 + offset * .095);
+      final x2 = (x1 + s * (.10 + .17 * airflowPower))
+          .clamp(x1, s * .985)
+          .toDouble();
+      final path = Path()
+        ..moveTo(x1, y)
+        ..cubicTo(
+          x1 + (x2 - x1) * .35,
+          y - s * (.035 + .035 * airflowPower),
+          x1 + (x2 - x1) * .68,
+          y + s * (.035 + .035 * airflowPower),
+          x2,
+          y,
+        );
+      canvas.drawPath(
+        path,
+        _stroke(s * (.016 + .020 * airflowPower),
+            airColor.withValues(alpha: .42 + .48 * airflowPower)),
+      );
+    }
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
     final s = size.shortestSide;
@@ -1817,12 +2033,11 @@ class _JexIconPainter extends CustomPainter {
     final angle = p * math.pi * 2;
     final pulse = math.sin(angle);
     final safeLevel = level.clamp(0.0, 1.0).toDouble();
-    final warningBlend = warning ? (.12 + .06 * (pulse + 1) / 2) : 0.0;
+    final warningBlend = warning && active ? (.12 + .06 * (pulse + 1) / 2) : 0.0;
     final mainColor = Color.lerp(color, const Color(0xFFFF5B55), warningBlend)!;
-    final opacity = (.62 + .36 * strength).clamp(0.0, 1.0).toDouble();
-    final idleBreath = .0045 * pulse;
-    final activeBreath = .014 * pulse * strength;
-    final breath = 1.0 + idleBreath + activeBreath;
+    // The semantic glyph colour and opacity never depend on ON/OFF state.
+    const opacity = 1.0;
+    final breath = active ? 1.0 + .014 * pulse * strength : 1.0;
 
     canvas.save();
     canvas.translate(cx, cy);
@@ -1832,7 +2047,7 @@ class _JexIconPainter extends CustomPainter {
     switch (kind) {
       case JexAnimatedIconKind.battery:
         final shell = _batterySilhouette(s);
-        canvas.drawPath(shell, _fill(mainColor.withValues(alpha: .055 + .07 * strength)));
+        canvas.drawPath(shell, _fill(mainColor.withValues(alpha: .10)));
         canvas.drawPath(shell, _stroke(s * .045, mainColor.withValues(alpha: opacity)));
         final inner = RRect.fromRectAndRadius(
           Rect.fromLTWH(s * .17, s * .31, s * .60, s * .38),
@@ -1844,7 +2059,7 @@ class _JexIconPainter extends CustomPainter {
         if (fluidHeight > 0) {
           canvas.drawRect(
             Rect.fromLTWH(inner.left, inner.bottom - fluidHeight, inner.width, fluidHeight),
-            _fill(mainColor.withValues(alpha: .30 + .56 * strength)),
+            _fill(mainColor.withValues(alpha: .86)),
           );
           final sheenWidth = inner.width * .18;
           final sheenRect = Rect.fromLTWH(
@@ -1859,7 +2074,7 @@ class _JexIconPainter extends CustomPainter {
               ..shader = LinearGradient(
                 colors: <Color>[
                   Colors.transparent,
-                  mainColor.withValues(alpha: .10 + .24 * strength),
+                  mainColor.withValues(alpha: .36),
                   Colors.transparent,
                 ],
               ).createShader(sheenRect),
@@ -1869,15 +2084,18 @@ class _JexIconPainter extends CustomPainter {
           canvas.drawLine(
             Offset(idleGlintX, inner.top + s * .035),
             Offset(idleGlintX, inner.bottom - s * .035),
-            _stroke(s * .018, mainColor.withValues(alpha: .10 + .08 * (pulse + 1) / 2)),
+            _stroke(s * .018, mainColor.withValues(alpha: .30 + .12 * (pulse + 1) / 2)),
           );
         }
         canvas.restore();
+        if (warning && active) {
+          _drawThermalFlames(canvas, s, angle, jexThermalRed, 1.0);
+        }
         break;
 
       case JexAnimatedIconKind.hotside:
         final shell = _hotsideSilhouette(s);
-        canvas.drawPath(shell, _fill(mainColor.withValues(alpha: .045 + .04 * strength)));
+        canvas.drawPath(shell, _fill(mainColor.withValues(alpha: .10)));
         canvas.drawPath(shell, _stroke(s * .045, mainColor.withValues(alpha: opacity)));
         final tubeInner = RRect.fromRectAndRadius(
           Rect.fromLTWH(s * .455, s * .17, s * .09, s * .45),
@@ -1891,7 +2109,7 @@ class _JexIconPainter extends CustomPainter {
         if (fluidHeight > 0) {
           canvas.drawRect(
             Rect.fromLTWH(tubeInner.left, tubeInner.bottom - fluidHeight, tubeInner.width, fluidHeight),
-            _fill(mainColor.withValues(alpha: .35 + .55 * strength)),
+            _fill(mainColor.withValues(alpha: .90)),
           );
           final sheenRect = Rect.fromLTWH(
             tubeInner.left + tubeInner.width * .18,
@@ -1899,83 +2117,140 @@ class _JexIconPainter extends CustomPainter {
             tubeInner.width * .34,
             fluidHeight,
           );
-          canvas.drawRect(sheenRect,
-              _fill(Colors.white.withValues(alpha: .10 + .15 * strength)));
+          canvas.drawRect(sheenRect, _fill(Colors.white.withValues(alpha: .28)));
         }
         canvas.restore();
         final bulbRadius = s * (.035 + .048 * safeLevel);
         canvas.drawCircle(
           Offset(cx, s * .775), bulbRadius,
-          _fill(mainColor.withValues(alpha: .28 + .45 * strength + .05 * (pulse + 1) / 2)),
+          _fill(mainColor.withValues(alpha: .72 + .12 * (pulse + 1) / 2)),
         );
         canvas.drawCircle(
           Offset(cx - s * .018, s * .758),
-          s * (.013 + .008 * (pulse + 1) / 2),
-          _fill(Colors.white.withValues(alpha: .10 + .13 * strength)),
+          s * .021,
+          _fill(Colors.white.withValues(alpha: .40)),
         );
         canvas.restore();
+        if (warning && active) {
+          _drawThermalFlames(canvas, s, angle, jexThermalRed, 1.0);
+        }
         break;
 
       case JexAnimatedIconKind.voltage:
         final bolt = _bolt(s);
-        canvas.drawPath(bolt, _fill(mainColor.withValues(alpha: .76 + .20 * strength)));
+        // 25%, 50%, 100% are the voltage-specific lightning intensities.
+        canvas.drawPath(bolt, _fill(mainColor.withValues(alpha: .58 + .36 * safeLevel)));
         canvas.drawPath(bolt, _stroke(s * .018, mainColor.withValues(alpha: opacity)));
-        canvas.save();
-        canvas.clipPath(bolt);
-        final sweepRect = Rect.fromLTWH(s * (-.18 + 1.15 * p), s * .08, s * .15, s * .82);
-        canvas.drawRect(
-          sweepRect,
-          Paint()
-            ..shader = LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: <Color>[
-                Colors.transparent,
-                Colors.white.withValues(alpha: .08 + .20 * strength),
-                Colors.transparent,
-              ],
-            ).createShader(Rect.fromLTWH(0, 0, s, s)),
-        );
-        canvas.restore();
+        if (active) {
+          canvas.save();
+          canvas.clipPath(bolt);
+          final streakCount = switch (voltageLevel) {
+            9 => 2,
+            12 => 4,
+            _ => 1,
+          };
+          for (var i = 0; i < streakCount; i++) {
+            final t = (i + 1) / (streakCount + 1);
+            final y = s * (.17 + .64 * t);
+            final x = s * (.47 + .045 * math.sin(angle + i * .7));
+            canvas.drawLine(
+              Offset(x - s * .065, y + s * .045),
+              Offset(x + s * .065, y - s * .045),
+              _stroke(s * (.018 + .010 * safeLevel),
+                  Colors.white.withValues(alpha: .24 + .58 * safeLevel)),
+            );
+          }
+          final sweepRect = Rect.fromLTWH(s * (-.18 + 1.15 * p), s * .08, s * .15, s * .82);
+          canvas.drawRect(
+            sweepRect,
+            Paint()
+              ..shader = LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: <Color>[
+                  Colors.transparent,
+                  Colors.white.withValues(alpha: .08 + .30 * safeLevel),
+                  Colors.transparent,
+                ],
+              ).createShader(Rect.fromLTWH(0, 0, s, s)),
+          );
+          canvas.restore();
+        }
         break;
 
       case JexAnimatedIconKind.adaptive:
-        _drawAdaptiveFlow(canvas, s, angle, mainColor, strength);
+        _drawAdaptiveFlow(canvas, s, active ? angle : 0.0, mainColor, strength);
         break;
 
       case JexAnimatedIconKind.peltier:
         final crystal = _crystalSilhouette(s);
-        final crystalWidth = s * (.042 + .006 * (frostIntensityOverride ?? .5));
+        final frostPower = (frostIntensityOverride ?? .5).clamp(0.0, 1.0).toDouble();
+        final crystalWidth = s * (.042 + .006 * frostPower);
         canvas.drawPath(crystal, _stroke(crystalWidth, mainColor.withValues(alpha: opacity)));
-        // A restrained highlight travels along the six crystal branches; no sparks.
+        // Frost details scale to voltage, but freeze into a bright resting pose when OFF.
+        final frostAngle = active ? angle : 0.0;
         for (var i = 0; i < 6; i++) {
           final a = -math.pi / 2 + i * math.pi / 3;
-          final branchPulse = (math.sin(angle * 2 - i * math.pi / 3) + 1) / 2;
+          final branchPulse = (math.sin(frostAngle * 2 - i * math.pi / 3) + 1) / 2;
           final outer = Offset(cx + math.cos(a) * s * .34, cy + math.sin(a) * s * .34);
           final inner = Offset(cx + math.cos(a) * s * .13, cy + math.sin(a) * s * .13);
           canvas.drawLine(
-            inner, outer,
-            _stroke(crystalWidth * (.42 + .30 * branchPulse),
-              mainColor.withValues(alpha: .13 + (.15 + .48 * branchPulse) * (.18 + .82 * strength))),
+            inner,
+            outer,
+            _stroke(
+              crystalWidth * (.42 + .30 * branchPulse),
+              mainColor.withValues(alpha: .18 + .55 * frostPower * (.55 + .45 * branchPulse)),
+            ),
           );
         }
+        _drawFrostParticles(
+          canvas,
+          s,
+          frostAngle,
+          mainColor,
+          intensity: frostPower,
+          particleCount: frostParticleCountOverride ?? 3,
+          moving: active,
+        );
         break;
 
       case JexAnimatedIconKind.fan:
+        if (active) {
+          _drawFanAirflow(canvas, s, angle, mainColor, voltageLevel, safeLevel);
+        }
         final rotor = _fanSilhouette(s, angle);
-        canvas.drawPath(rotor, _fill(mainColor.withValues(alpha: .90 + .08 * strength)));
-        canvas.drawPath(rotor, _stroke(s * .012, mainColor.withValues(alpha: .65 + .25 * strength)));
+        canvas.drawPath(rotor, _fill(mainColor.withValues(alpha: .96)));
+        canvas.drawPath(rotor, _stroke(s * .012, mainColor.withValues(alpha: .88)));
         break;
 
       case JexAnimatedIconKind.speed:
         final gauge = Rect.fromCircle(center: Offset(cx, cy), radius: s * .34);
         const start = math.pi * .79;
         const sweep = math.pi * 1.42;
+        // Scale, ticks and needle retain their full semantic colour in standby.
         canvas.drawArc(gauge, start, sweep, false,
-            _stroke(s * .045, mainColor.withValues(alpha: .20 + .30 * strength)));
-        final glintStart = start + sweep * p;
-        canvas.drawArc(gauge, glintStart, sweep * .12, false,
-            _stroke(s * .055, mainColor.withValues(alpha: .12 + .44 * strength)));
+            _stroke(s * .045, mainColor.withValues(alpha: .62)));
+        const tickCount = 9;
+        for (var i = 0; i < tickCount; i++) {
+          final t = i / (tickCount - 1);
+          final tickAngle = start + sweep * t;
+          final inner = Offset(cx + math.cos(tickAngle) * s * .285,
+              cy + math.sin(tickAngle) * s * .285);
+          final outer = Offset(cx + math.cos(tickAngle) * s * .325,
+              cy + math.sin(tickAngle) * s * .325);
+          canvas.drawLine(
+            inner,
+            outer,
+            _stroke(s * .018, mainColor.withValues(alpha: .60 + .30 * (t <= safeLevel ? 1 : 0))),
+          );
+        }
+        if (active && safeLevel > 0) {
+          canvas.drawArc(gauge, start, sweep * safeLevel, false,
+              _stroke(s * .052, mainColor.withValues(alpha: .92)));
+          final glintStart = start + sweep * p;
+          canvas.drawArc(gauge, glintStart, sweep * .12, false,
+              _stroke(s * .055, mainColor.withValues(alpha: .72)));
+        }
         final needleAngle = start + sweep * safeLevel +
             (active ? jexFanSpeedNeedleWobble(p) : 0.0);
         final tip = Offset(cx + math.cos(needleAngle) * s * .265,
@@ -1986,18 +2261,19 @@ class _JexIconPainter extends CustomPainter {
         break;
 
       case JexAnimatedIconKind.led:
+        final ledAngle = active ? angle : 0.0;
         final wave = Path();
         for (var i = 0; i <= 24; i++) {
           final x = s * (.12 + .76 * i / 24);
-          final y = cy + math.sin(angle - i * math.pi / 8) * s * (.10 + .045 * strength);
+          final y = cy + math.sin(ledAngle - i * math.pi / 8) * s * (.10 + .045 * strength);
           if (i == 0) wave.moveTo(x, y); else wave.lineTo(x, y);
         }
         canvas.drawPath(wave, _stroke(s * .058, mainColor.withValues(alpha: opacity)));
-        final dotX = s * (.12 + .76 * p);
-        final dotY = cy + math.sin(angle - ((dotX / s - .12) / .76) * math.pi * 3) *
+        final dotX = s * (.12 + .76 * (active ? p : 0.0));
+        final dotY = cy + math.sin(ledAngle - ((dotX / s - .12) / .76) * math.pi * 3) *
             s * (.10 + .045 * strength);
         canvas.drawCircle(Offset(dotX, dotY), s * .045,
-            _fill(mainColor.withValues(alpha: .24 + .66 * strength)));
+            _fill(mainColor.withValues(alpha: .82 + .14 * strength)));
         break;
 
       case JexAnimatedIconKind.bluetooth:
@@ -2012,12 +2288,8 @@ class _JexIconPainter extends CustomPainter {
           ..lineTo(s * .68, s * .71)
           ..moveTo(s * .20, s * .71)
           ..lineTo(s * .68, s * .29);
-        final bluetoothAlpha = opacity * (.82 + .18 * (math.sin(angle) + 1) / 2);
-        canvas.drawPath(glyph, _stroke(s * .06, mainColor.withValues(alpha: bluetoothAlpha)));
-        // A travelling highlight follows the glyph stem; no ripple rings.
-        final stemY = s * (.20 + .60 * p);
-        canvas.drawLine(Offset(cx, stemY - s * .055), Offset(cx, stemY + s * .055),
-            _stroke(s * .075, mainColor.withValues(alpha: .16 + .38 * strength)));
+        // Connection status is represented by colour, not Bluetooth-icon motion.
+        canvas.drawPath(glyph, _stroke(s * .06, mainColor.withValues(alpha: 1.0)));
         break;
 
       case JexAnimatedIconKind.generic:
@@ -5020,7 +5292,12 @@ void _handleAckLine(String line) {
                             kind: animatedKind,
                             size: 22,
                             color: indicatorColor,
-                            active: animationIsActive,
+                            connected: connected,
+                            active: jexIconAnimationPermitted(
+                              connected: connected,
+                              kind: animatedKind,
+                              stateActive: animationActive ?? active,
+                            ),
                             level: level,
                             voltageLevel: voltageLevel,
                             warning: warning,
@@ -5564,9 +5841,11 @@ void _handleAckLine(String line) {
                   : JexAnimatedIcon(
                       kind: animatedKind,
                       size: 22,
-                      color: animationColor ?? (value ? accent : scheme.onSurfaceVariant),
-                      active: jexIndicatorAnimationActive(
+                      color: animationColor ?? accent,
+                      connected: connected,
+                      active: jexIconAnimationPermitted(
                         connected: connected,
+                        kind: animatedKind,
                         stateActive: value,
                       ),
                       level: animationLevel,
@@ -5839,6 +6118,9 @@ void _handleAckLine(String line) {
                 const SizedBox(height: 8),
                 _switchRow(
                   title: JexText.of('fan', lang),
+                  showStateLabel: false,
+                  showCheck: false,
+                  neutralRow: true,
                   subtitle: '',
                   icon: PhosphorIconsRegular.fan,
                   animatedKind: JexAnimatedIconKind.fan,
@@ -5869,6 +6151,7 @@ void _handleAckLine(String line) {
                             kind: JexAnimatedIconKind.speed,
                             size: 25,
                             color: const Color(0xFFFFCD38),
+                            connected: connected,
                             active: jexIndicatorAnimationActive(
                               connected: connected,
                               stateActive: fanOn,
@@ -6687,8 +6970,10 @@ void _handleAckLine(String line) {
                           kind: JexAnimatedIconKind.bluetooth,
                           color: connected ? const Color(0xFF4D8CFF) : headerForeground,
                           size: 25,
-                          active: jexIndicatorAnimationActive(
+                          connected: connected,
+                          active: jexIconAnimationPermitted(
                             connected: connected,
+                            kind: JexAnimatedIconKind.bluetooth,
                             stateActive: true,
                           ),
                         ),
@@ -6788,7 +7073,10 @@ void _handleAckLine(String line) {
                               maxC: hotLimit.toDouble(),
                               fallback: 0,
                             ),
-                            warning: safetyLocked || hotsideAtLimit,
+                            warning: connected && jexHotsideFireActive(
+                              hotValue,
+                              hotLimit: hotLimit.toDouble(),
+                            ),
                           ),
                           _homeMetric(
                             JexText.of('voltageIndicator'),
