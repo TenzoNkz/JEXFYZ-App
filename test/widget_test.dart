@@ -17,6 +17,137 @@ import 'package:jexfyz_cooler/app_settings.dart';
 import 'package:jexfyz_cooler/floating_monitor.dart';
 
 void main() {
+  test('Display-menu lock policy covers all disconnected menus and Adaptive-only restrictions', () {
+    for (var tab = 0; tab < 5; tab++) {
+      expect(
+        displayMenuLockReason(
+          connected: false,
+          adaptiveActive: false,
+          adaptiveTransitioning: false,
+          tabIndex: tab,
+        ),
+        DisplayMenuLockReason.bluetoothDisconnected,
+        reason: 'Disconnected submenu $tab must receive the full-menu Bluetooth lock.',
+      );
+    }
+
+    for (var tab = 0; tab < 5; tab++) {
+      final expected = const <int>{0, 1, 4}.contains(tab)
+          ? DisplayMenuLockReason.adaptiveActive
+          : DisplayMenuLockReason.none;
+      expect(
+        displayMenuLockReason(
+          connected: true,
+          adaptiveActive: true,
+          adaptiveTransitioning: false,
+          tabIndex: tab,
+        ),
+        expected,
+        reason: 'Adaptive should lock Voltage, Control, and Temperature only.',
+      );
+    }
+
+    expect(
+      displayMenuLockReason(
+        connected: true,
+        adaptiveActive: false,
+        adaptiveTransitioning: true,
+        tabIndex: 1,
+      ),
+      DisplayMenuLockReason.adaptiveActive,
+    );
+    expect(
+      displayMenuLockReason(
+        connected: true,
+        adaptiveActive: false,
+        adaptiveTransitioning: false,
+        tabIndex: 2,
+      ),
+      DisplayMenuLockReason.none,
+    );
+  });
+
+  test('Display lock overlays blur one complete submenu and center one lock panel', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final tabsStart = source.indexOf('Widget _buildTabContent()');
+    final tabsEnd = source.indexOf('// AI-METHOD / HOME-CONTRACT', tabsStart);
+    expect(tabsStart, isNonNegative);
+    expect(tabsEnd, greaterThan(tabsStart));
+    final lockSource = source.substring(tabsStart, tabsEnd);
+    expect(lockSource, contains('_lockedDisplayMenu(content, lockReason)'));
+    expect(lockSource, contains('ImageFiltered('));
+    expect(lockSource, contains('ImageFilter.blur(sigmaX: 4.8, sigmaY: 4.8)'));
+    expect(lockSource, contains('IgnorePointer(child: content)'));
+    expect(lockSource, contains('Positioned.fill('));
+    expect(lockSource, contains('child: Center('));
+    expect(lockSource, contains('CONNECT TO JE X FYZ FIRST'));
+    expect(lockSource, contains('LOCKED BY ADAPTIVE MODE'));
+    expect(lockSource, isNot(contains('_tab(')));
+
+    final buildStart = source.indexOf('Widget build(BuildContext context) {', source.indexOf('class _DashboardScreenState'));
+    final dashboardBuild = source.substring(buildStart);
+    expect(dashboardBuild.indexOf('_tab(JexText.of'), lessThan(dashboardBuild.indexOf('_buildTabContent()')));
+  });
+
+  test('Peltier Adaptive and LED switches mirror manual Voltage without labels or checkmarks', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final rowStart = source.indexOf('Widget _switchRow(');
+    final rowEnd = source.indexOf('Widget _jexToggle(', rowStart);
+    expect(rowStart, isNonNegative);
+    expect(rowEnd, greaterThan(rowStart));
+    final row = source.substring(rowStart, rowEnd);
+    expect(row, contains('bool showStateLabel = true'));
+    expect(row, contains('bool showCheck = true'));
+    expect(row, contains('bool neutralRow = false'));
+    expect(row, contains('if (showStateLabel) ...['));
+    expect(row, contains('showCheck: showCheck,'));
+
+    for (final marker in [
+      "title: JexText.of('peltier', lang)",
+      "title: JexText.of('adaptiveSwitch', lang)",
+      "title: JexText.of('power', lang)",
+    ]) {
+      final start = source.indexOf(marker);
+      final end = source.indexOf('onChanged:', start);
+      expect(start, isNonNegative, reason: 'Missing switch row: $marker');
+      expect(end, greaterThan(start));
+      final call = source.substring(start, end);
+      expect(call, contains('showStateLabel: false'));
+      expect(call, contains('showCheck: false'));
+      expect(call, contains('neutralRow: true'));
+    }
+  });
+
+  test('Hotside contour is continuous and indicator painters have distinct motion signatures', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final shellStart = source.indexOf('Path _hotsideSilhouette(double s)');
+    final shellEnd = source.indexOf('void _drawAdaptiveArrowHead', shellStart);
+    expect(shellStart, isNonNegative);
+    expect(shellEnd, greaterThan(shellStart));
+    final hotsideShell = source.substring(shellStart, shellEnd);
+    expect(hotsideShell, contains('..cubicTo('));
+    expect(hotsideShell, isNot(contains('..addRRect(')));
+    expect(hotsideShell, isNot(contains('..addOval(')));
+
+    final painterStart = source.indexOf('class _JexIconPainter extends CustomPainter {');
+    final painterEnd = source.indexOf('const MethodChannel securityChannel', painterStart);
+    final painter = source.substring(painterStart, painterEnd);
+    for (final effect in [
+      'final sheenRect',
+      'final bulbRadius',
+      '_drawAdaptiveFlow(canvas, s, angle, mainColor, strength)',
+      'final branchPulse',
+      'final sweepRect',
+      'final glintStart',
+      'final dotX',
+      'final bluetoothAlpha',
+      'final rotor = _fanSilhouette(s, angle)',
+    ]) {
+      expect(painter, contains(effect), reason: 'Missing distinct motion: $effect');
+    }
+    expect(painter, isNot(contains('_adaptiveLoop(s, angle)')));
+  });
+
   testWidgets('tamper screen shows an insult-only wall and opens developer contact',
       (tester) async {
     tester.view.physicalSize = const Size(390, 844);
@@ -100,7 +231,8 @@ void main() {
     final painter = source.substring(start, end);
     expect(painter, contains('Path _batterySilhouette'));
     expect(painter, contains('Path _hotsideSilhouette'));
-    expect(painter, contains('Path _adaptiveLoop'));
+    expect(painter, contains('void _drawAdaptiveFlow'));
+    expect(painter, contains('void _drawAdaptiveArrowHead'));
     expect(painter, contains('Path _crystalSilhouette'));
     expect(painter, contains('Path _fanSilhouette'));
     expect(painter, contains('final warningBlend ='));
@@ -846,7 +978,7 @@ void main() {
     expect(iconState, contains('if (widget.active)'));
   });
 
-  test('Indicator motion fades before pausing and resumes at a cycle boundary', () {
+  test('Indicator motion fades into a quiet idle cycle and resumes without a phase snap', () {
     final source = File('lib/main.dart').readAsStringSync();
     final stateStart = source.indexOf('class _JexAnimatedIconState');
     final stateEnd = source.indexOf('class _JexIconPainter', stateStart);
@@ -854,7 +986,8 @@ void main() {
     expect(stateEnd, greaterThan(stateStart));
     final state = source.substring(stateStart, stateEnd);
     expect(state, contains('Future<void> _animateActivityTransition(bool active) async'));
-    expect(state, contains('if (!active && widget.kind != JexAnimatedIconKind.fan)'));
+    expect(state, contains('Keep distinct low-amplitude idle motion for non-Fan indicators.'));
+    expect(state, contains('controller.repeat();'));
     expect(state, contains('Future<void> _finishIconCycleBoundary(int durationMs) async'));
     expect(state, contains('curve: Curves.linear'));
     expect(state, contains('_resumeCycleWithoutPhaseSnap();'));
@@ -863,11 +996,10 @@ void main() {
     expect(painterStart, isNonNegative);
     expect(painterEnd, greaterThan(painterStart));
     final painter = source.substring(painterStart, painterEnd);
-    expect(painter, contains('Path _adaptiveLoop(double s, double phase)'));
-    expect(painter, contains('final wave = math.sin(phase);'));
-    expect(painter, contains('final counterWave = math.cos(phase);'));
-    expect(painter, contains('_adaptiveLoop(s, angle)'));
-    expect(painter, contains('final breath = 1.0 + (active ? .018 * pulse * strength : 0.0);'));
+    expect(painter, contains('_drawAdaptiveFlow(canvas, s, angle, mainColor, strength)'));
+    expect(painter, contains('final idleBreath = .0045 * pulse;'));
+    expect(painter, contains('final activeBreath = .014 * pulse * strength;'));
+    expect(painter, contains('_drawAdaptiveArrowHead'));
     expect(painter, isNot(contains('_drawThermalFlames')));
   });
 
@@ -888,7 +1020,8 @@ void main() {
     expect(iconState, contains('speedLevelTransitionController.forward(from: 0)'));
     expect(iconState, contains('Duration(milliseconds: 420)'));
     expect(iconState, contains('Duration(milliseconds: 520)'));
-    expect(speed, contains('final needleAngle = start + sweep * safeLevel;'));
+    expect(speed, contains('final needleAngle = start + sweep * safeLevel +'));
+    expect(speed, contains('final glintStart = start + sweep * p;'));
     expect(speed, contains('final needle = Path()..moveTo(cx, cy)..lineTo(tip.dx, tip.dy);'));
   });
 
