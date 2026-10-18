@@ -2493,16 +2493,24 @@ class TamperScreen extends StatelessWidget {
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Text(
-        text,
-        textAlign: TextAlign.center,
-        softWrap: true,
-        style: TextStyle(
-          color: color,
-          fontSize: size,
-          height: 1.18,
-          fontWeight: weight,
-          letterSpacing: 0.18,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        decoration: BoxDecoration(
+          color: const Color(0xFF101014),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFF30252A), width: 1),
+        ),
+        child: Text(
+          text,
+          textAlign: TextAlign.center,
+          softWrap: true,
+          style: TextStyle(
+            color: color,
+            fontSize: size,
+            height: 1.18,
+            fontWeight: weight,
+            letterSpacing: 0.18,
+          ),
         ),
       ),
     );
