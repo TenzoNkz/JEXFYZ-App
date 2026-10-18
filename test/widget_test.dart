@@ -141,7 +141,7 @@ void main() {
       'final sweepRect',
       'final glintStart',
       'final dotX',
-      'Connection status is represented by colour, not motion.',
+      'Connection status is represented by colour, not Bluetooth-icon motion.',
       'final rotor = _fanSilhouette(s, angle)',
     ]) {
       expect(painter, contains(effect), reason: 'Missing distinct motion: $effect');
