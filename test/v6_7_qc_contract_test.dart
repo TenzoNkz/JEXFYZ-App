@@ -38,6 +38,31 @@ void main() {
     expect(source, contains('adaptiveThermalRecoveryActive ||'));
   });
 
+  test('Adaptive Fan PWM only increases on a confirmed warming trend', () {
+    final source = File('firmware/JEXFYZ-V6.7.ino').readAsStringSync();
+    expect(source, contains('ADAPTIVE_FAN_TREND_WINDOW_SAMPLES = 4;'));
+    expect(source, contains('ADAPTIVE_FAN_UPSTEP_MS = 3000UL;'));
+
+    final start = source.indexOf('static void processAdaptiveFanControl() {');
+    final end = source.indexOf('static String safetyReason()', start);
+    expect(start, greaterThanOrEqualTo(0));
+    expect(end, greaterThan(start));
+    final controller = source.substring(start, end);
+
+    expect(controller, contains('adaptiveFanSampleCount >= ADAPTIVE_FAN_TREND_WINDOW_SAMPLES'));
+    expect(controller, contains('newestTrendSample - oldestTrendSample >= ADAPTIVE_FAN_TREND_TOLERANCE_C'));
+    expect(controller, contains('risingIntervals >= 2'));
+    expect(controller, contains('if (warmingTrendConfirmed &&'));
+    expect(controller, contains('now - adaptiveFanLastUpStepMs >= ADAPTIVE_FAN_UPSTEP_MS'));
+    expect(
+      controller,
+      isNot(contains('Lost margin or a warming trend cancels downshift and raises')),
+    );
+
+    // Keep the independent hard-limit path intact.
+    expect(source, contains('hotsideC >= static_cast<float>(hotLimit)'));
+  });
+
   test('Online OTA preserves the legacy connection path and GitHub URL restrictions', () {
     final source = File('firmware/JEXFYZ-V6.7.ino').readAsStringSync();
 
