@@ -1,23 +1,25 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Last reconciled against live GitHub on 2026-10-18 (Asia/Jakarta). Build #71 remains the latest verified APK; a new source-only warning-screen change has not been included in a release. Dashboard motion continuity and manual-voltage-toggle styling are now included in the latest verified APK; phone-side visuals and live telemetry remain unverified.
+Last reconciled against live GitHub on 2026-10-18 (Asia/Jakarta). Build #73 remains the latest verified APK. The Hotside/indicator motion, Peltier/Adaptive/LED toggle and whole-submenu lock-overlay changes below are source-only after Build #73, not built or device-verified.
 
 ## Current App and release state
 
-- Canonical repo: TenzoNkz/JEXFYZ-App, branch `main`. Latest verified App release: [Build #71 / run 39008259484](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39008259484), source commit `d9e026f70ec62455763de05048cba1557edfaf23`.
-- All 21 active workflow steps passed: App audit, dependencies, Dart analysis, **88/88 Flutter tests**, Android production compile/configured gate, obfuscated APK, V1/V2/V3 signing/certificate, matching source ZIP, Release publication and re-downloaded asset/hash/signature checks.
-- Android unit-test gate succeeded, but native unit-test compile/test tasks were NO-SOURCE after FPS-specific native tests were retired; no native JUnit cases ran in Build #71.
-- APK asset `649710440`, `54,603,867` bytes, SHA-256 `fdffa5d61ad403153c544cd3a62ea130e810844930f9de96fdd28343f6d041ca`: https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk
-- Corresponding source ZIP asset `649710439`, `2,847,410` bytes, SHA-256 `3d7dc30fa99d3bfb86bee069e4a9b60292942f215c11c27e519f0b51ca8a24b0`: https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip
-- Release tag `jexfyz-latest` targets exact source commit `d9e026f70ec62455763de05048cba1557edfaf23`. Full build evidence and non-blocking warnings are in `APP_BUILD_REPORT.md`. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+- Canonical repo: `TenzoNkz/JEXFYZ-App`, branch `main`. Latest verified release: [Build #73 / run 39098410865](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39098410865), exact source commit `f1e81450428ffb113a76d430590c312ad6fa4781`.
+- All 21 release workflow steps passed for Build #73; Flutter analysis reported 23 info-level deprecations and **91/91 Flutter tests passed**. Android production compilation/configured gate, obfuscated APK, V1/V2/V3 signing/certificate, matching source ZIP and re-downloaded asset verification passed. Native JUnit compile/test tasks were NO-SOURCE, so no native JUnit cases ran.
+- APK [JEXFYZ-release.apk](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk): asset `652517541`, `54,538,331` bytes, SHA-256 `90ed2f36658ea0e4fa487d43ea7e4347545c9875b13d703ec9c2765445eea48b`.
+- Matching [JEXFYZ-corresponding-source.zip](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip): asset `652517543`, `2,846,735` bytes, SHA-256 `ed7429aa9f6cb36e327d6d7b85efdf0b895ee8529c09a159053b98c8628902ef`. Both release assets were re-downloaded and verified against the exact source marker.
+- Build #73 includes the previous TamperScreen profanity/contact behavior, but **does not include** the current changes described next.
 
-## Source-only warning-screen change — 2026-10-18
+## Source-only UI update — 2026-10-18
 
-- The existing Android gate compares the installed APK signing certificate with the configured official signer (debug builds remain allowed); the check itself was not weakened or rewritten.
-- When that gate rejects launch, the warning page now uses only JE X FYZ branding and full-screen-style Indonesian slang/profanity copy, with scrollable text and a fixed bottom button. It intentionally does not explain the trigger or show technical diagnosis.
-- `HUBUNGI DEVELOPER` opens `https://t.me/horizontalzzz` through Android `ACTION_VIEW`; account details do not appear on-screen. If the OS cannot launch the URL, the warning stays visible.
-- Source blobs: main.dart `bf2007203455c64c2dd840a84b31368063df44eb`, MainActivity.kt `ef35590cfc91fafe5dec104b7cfd7828011185bf`, app_settings.dart `36927823c91904a35d87d2f21bd77932a2214e83`, widget_test.dart `605d79e5019ba0cbe857d47d22db23e9204003a0`.
-- Widget contract added but **NOT RUN**: no local Flutter/Dart SDK is installed and `git clone` was blocked by DNS resolution. No APK Build App, native compile, physical-device test or firmware/cloud action was performed. Build #71 is still the latest verified APK.
+- Hotside: replaced the separated tube and bulb outlines with one continuous outer contour; liquid fill/highlight is clipped within the silhouette.
+- Indicator animation: Battery has a travelling fill sheen; Hotside gets a liquid/bulb highlight; Voltage gets a clipped bolt flash; Adaptive uses two moving directional arcs plus arrowheads; Peltier gets sequential branch highlights without sparks; Fan keeps phase-controlled rotor/coast-down; Speed adds gauge glint/retargeted needle; LED has a travelling wave/dot; Bluetooth stem highlight/pulse keeps the existing no-ripple-ring rule.
+- All non-Fan indicator kinds retain restrained idle motion after the 440 ms fade. This is visual ambient movement only and does not claim hardware is active. The Fan rotor remains stopped once OFF coast-down completes.
+- Peltier, Adaptive and LED switches now use neutral surfaces like Manual Voltage, hide the knob check and adjacent ON/OFF label, and keep theme-primary toggle accent. Fan switch presentation is unchanged.
+- When Bluetooth is disconnected, all five submenu areas (Voltage, Control, Adaptive, LED, Temperature) share one blur/dim layer and one lock panel centered over the entire selected submenu. Tabs/Home Bluetooth remain usable. When connected and Adaptive is active or transitioning, only Voltage/Control/Temperature receive the centered `LOCKED BY ADAPTIVE MODE` overlay. The underlying submenu is ignored for pointer input.
+- New test contracts cover the lock-policy matrix, centered one-overlay structure, three switch styles, continuous Hotside contour and distinct animation signatures.
+- Current source/test fingerprints: `lib/main.dart` `6e1189010bb942c59ec68ac31f75c1a522e04a4d`; `test/widget_test.dart` `661130f0bc2197478cc5f0e083324bdc41c8e6a3`; `lib/app_settings.dart` `36927823c91904a35d87d2f21bd77932a2214e83`; Android `MainActivity.kt` `ef35590cfc91fafe5dec104b7cfd7828011185bf`.
+- **Flutter tests/Dart analysis were not run** for this current UI update: Flutter/Dart executables are not available in this runtime. Static checks were used, not runtime evidence. No App Build, Android compile, physical-phone test, Firmware compile, BIN/Firebase, OTA, flash or device operation occurred. Build #73 remains the latest verified APK.
 
 ## FPS retirement and current Floating Monitor
 
