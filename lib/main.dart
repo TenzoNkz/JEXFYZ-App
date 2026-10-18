@@ -5376,10 +5376,10 @@ void _handleAckLine(String line) {
       icon: icon,
       animatedKind: animatedKind,
       animationActive: jexIndicatorAnimationActive(
-        connected: connected,
-        stateActive: value,
-      ),
-      level: fanOn ? fanSpeed / 100 : 0,
+      connected: connected,
+      stateActive: runtimeOutputsKnown && value,
+    ),
+    level: runtimeOutputsKnown && fanOn ? fanSpeed / 100 : 0,
       voltageLevel: jexVoltageAnimationLevel(voltage),
     );
   }
@@ -5405,10 +5405,10 @@ void _handleAckLine(String line) {
       icon: PhosphorIconsRegular.gauge,
       animatedKind: JexAnimatedIconKind.speed,
       animationActive: jexIndicatorAnimationActive(
-        connected: connected,
-        stateActive: fanOn,
-      ),
-      level: connected && fanOn ? fanSpeed / 100 : 0.0,
+      connected: connected,
+      stateActive: runtimeOutputsKnown && fanOn,
+    ),
+    level: connected && runtimeOutputsKnown && fanOn ? fanSpeed / 100 : 0.0,
     );
   }
 
@@ -5846,7 +5846,7 @@ void _handleAckLine(String line) {
                       active: jexIconAnimationPermitted(
                         connected: connected,
                         kind: animatedKind,
-                        stateActive: value,
+                        stateActive: stateKnown && value,
                       ),
                       level: animationLevel,
                       voltageLevel: voltageLevel,
@@ -6152,11 +6152,12 @@ void _handleAckLine(String line) {
                             size: 25,
                             color: const Color(0xFFFFCD38),
                             connected: connected,
-                            active: jexIndicatorAnimationActive(
+                            active: jexIconAnimationPermitted(
                               connected: connected,
-                              stateActive: fanOn,
+                              kind: JexAnimatedIconKind.speed,
+                              stateActive: runtimeOutputsKnown && fanOn,
                             ),
-                            level: fanSpeed / 100,
+                            level: runtimeOutputsKnown && fanOn ? fanSpeed / 100 : 0.0,
                             voltageLevel: jexVoltageAnimationLevel(voltage),
                           ),
                           const SizedBox(width: 10),
@@ -7059,12 +7060,10 @@ void _handleAckLine(String line) {
                             JexText.of('hotsideTemperature'),
                             hotValue,
                             hotValue == '--' ? '' : '°C',
-                            color: safetyLocked
-                                ? jexThermalRed
-                                : jexHotsideTemperatureColor(
-                                    hotValue,
-                                    hotLimit: hotLimit.toDouble(),
-                                  ),
+                            color: jexHotsideTemperatureColor(
+                              hotValue,
+                              hotLimit: hotLimit.toDouble(),
+                            ),
                             icon: PhosphorIconsRegular.thermometer,
                             animatedKind: JexAnimatedIconKind.hotside,
                             level: jexTemperatureIndicatorLevel(
@@ -7095,7 +7094,7 @@ void _handleAckLine(String line) {
                             color: const Color(0xFFC05BFF),
                             icon: PhosphorIconsRegular.sparkle,
                             animatedKind: JexAnimatedIconKind.adaptive,
-                            animationActive: adaptiveOn,
+                            animationActive: connected && runtimeOutputsKnown && adaptiveOn,
                             level: adaptiveOn ? 1.0 : 0.0,
                           ),
                           _homeStateChip(
