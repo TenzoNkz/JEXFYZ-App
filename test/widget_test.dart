@@ -1081,7 +1081,7 @@ void main() {
     expect(painter, contains('_drawThermalFlames'));
     expect(painter, contains('_drawFrostParticles'));
     expect(painter, contains('_drawFanAirflow'));
-    expect(painter, contains('final tickCount = 9'));
+    expect(painter, contains('const tickCount = 9'));
     expect(painter, contains('_drawAdaptiveArrowHead'));
 
     final bluetoothStart = painter.indexOf('case JexAnimatedIconKind.bluetooth:');
@@ -1112,7 +1112,7 @@ void main() {
     expect(speed, contains('final needleAngle = start + sweep * safeLevel +'));
     expect(speed, contains('final glintStart = start + sweep * p;'));
     expect(speed, contains('final needle = Path()..moveTo(cx, cy)..lineTo(tip.dx, tip.dy);'));
-    expect(speed, contains('final tickCount = 9'));
+    expect(speed, contains('const tickCount = 9'));
     expect(speed, contains('if (active && safeLevel > 0)'));
     expect(speed, contains('mainColor.withValues(alpha: .92)'));
   });
