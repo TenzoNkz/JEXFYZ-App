@@ -136,12 +136,12 @@ void main() {
     for (final effect in [
       'final sheenRect',
       'final bulbRadius',
-      '_drawAdaptiveFlow(canvas, s, angle, mainColor, strength)',
+      '_drawAdaptiveFlow(canvas, s, active ? angle : 0.0, mainColor, strength)',
       'final branchPulse',
       'final sweepRect',
       'final glintStart',
       'final dotX',
-      'final bluetoothAlpha',
+      'Connection status is represented by colour, not motion.',
       'final rotor = _fanSilhouette(s, angle)',
     ]) {
       expect(painter, contains(effect), reason: 'Missing distinct motion: $effect');
@@ -238,7 +238,9 @@ void main() {
     expect(painter, contains('Path _fanSilhouette'));
     expect(painter, contains('final warningBlend ='));
     expect(painter, isNot(contains('_drawGlow')));
-    expect(painter, isNot(contains('_drawThermalFlames')));
+    expect(painter, contains('_drawThermalFlames'));
+    expect(painter, contains('_drawFrostParticles'));
+    expect(painter, contains('_drawFanAirflow'));
     expect(painter, isNot(contains('_drawFanBlade')));
     expect(painter, isNot(contains('sparkCount')));
     expect(painter, isNot(contains('particleAngle')));
