@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Voltage Transition & Peltier Soft-Start Memory
 
-Last reconciled: 2026-10-17 (Asia/Jakarta).
+Last reconciled: 2026-10-18 (Asia/Jakarta).
 Canonical active source: `firmware/JEXFYZ-V6.7.ino`, blob `1d0fa0d5e308b9789fd1c32211ce0a127d497f6a` (source-only, uncompiled).
 Static regression contract: test/v6_7_qc_contract_test.dart. Current blob must be re-fetched from main before relying on the prior hash.
 
@@ -12,7 +12,7 @@ Static regression contract: test/v6_7_qc_contract_test.dart. Current blob must b
 
 [USER-REPORTED — EARLIER SEPARATE INCIDENT; RESET REASON UNAVAILABLE] The hardware was also reported to restart when Adaptive was enabled after selecting 12 V and turning Peltier and Fan ON. Do not assume this is the same root cause as the 5 V→12 V active-soft-start incident. Current V6.6 Adaptive entry requires a safe-5V selector handoff but no longer forces Peltier OFF solely for that handoff; physical reproduction and reset-reason capture remain open.
 
-## Current V6.6 transition contract
+## Current V6.7 transition contract
 
 Applies to normal voltage changes requested in Manual Volt and while Adaptive is active. Branch behavior is based on Peltier ramp state when a voltage transition is accepted.
 
@@ -37,7 +37,7 @@ Applies to normal voltage changes requested in Manual Volt and while Adaptive is
 - `stopPeltierOutput()` clears both pending pause and saved-resume state.
 - Retain reset reason reporting, including `ESP_RST_BROWNOUT`, Serial `BOOT: RESET_REASON=...` and telemetry `RESET_REASON`.
 
-Historical clarification: the contract was not yet executed when first written on 2026-10-15. Build #62 later ran the App test suite and passed 88/88 including this contract; Build #71 is the latest App release, but no App run proves Firmware compilation or physical behavior.
+Historical clarification: the contract was not yet executed when first written on 2026-10-15. Build #62 later ran the App test suite and passed 88/88 including this contract; Build #73 is the latest verified App release, but no App run proves Firmware compilation or physical behavior.
 
 ## Hardware validation plan
 
