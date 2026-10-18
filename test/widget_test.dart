@@ -176,6 +176,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('HUBUNGI DEVELOPER'), findsOneWidget);
+    expect(find.byType(Icon), findsOneWidget);
     expect(find.textContaining('KONTOL'), findsWidgets);
     expect(find.textContaining('MEMEK'), findsWidgets);
     expect(find.textContaining('ANJING'), findsWidgets);
@@ -210,6 +211,9 @@ void main() {
     expect(screenContract, isNot(contains('integritas')));
     expect(screenContract, isNot(contains('official build')));
     expect(screenContract, contains('opendevelopercontact'));
+    expect(screenContract, contains('child: icon('));
+    expect(screenContract, contains('phosphoriconsbold.warning'));
+    expect(screenContract, isNot(contains('jexanimatedicon.glyph')));
     expect(
       screenContract,
       contains('padding: const edgeinsets.symmetric(horizontal: 12, vertical: 4)'),
