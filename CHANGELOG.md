@@ -1,5 +1,18 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-18 — Tamper warning text-block layout polish (source-only)
+
+- Wrapped each of the 10 existing `_insult` text items in a consistent dark rounded rectangle with a subtle border, fixed horizontal padding and uniform outer spacing to make long lines wrap more evenly.
+- Exact visible wording and order, each item's text colour and typography, JE X FYZ branding, warning icon, `HUBUNGI DEVELOPER` label, pinned button placement and security/contact behavior are unchanged. No security-gate or contact-channel logic changed.
+- Added widget-contract assertions for the shared padding, background, rounded corners, border, centering and wrapping.
+- Source blobs: `lib/main.dart` `57cf250b4de48b683252e9f27aa2a3cf9e3bd7bd`; `test/widget_test.dart` `7e52166a51b41481f7a9ff2a82677ebcdefbf656`.
+- Flutter tests/Dart analysis and App Build were **NOT RUN**. Build #73 remains the latest verified APK; it does not include this layout change. No Firmware source/artifact, Firebase, OTA or device operation was performed by the assistant in this task.
+
+## 2026-10-18 — User-reported Firmware V6.7 compile and online update
+
+- The user reports V6.7 compiled successfully and was updated online. This is **USER-REPORTED**; no compile log, resulting BIN, source-to-BIN provenance, OTA log or current installed-device version was independently inspected as part of this App-only task.
+- The active App-repository source remains `firmware/JEXFYZ-V6.7.ino`, blob `efe6eaa62c178ab536fb68c06a310e54826cbaf2`; no Firmware source or the BIN-only `TenzoNkz/JEXFYZ-Firmware` repository was modified in this task.
+
 ## 2026-10-18 — Adaptive Fan PWM consistency fix (V6.7 source-only)
 
 - Fixed the 12V Adaptive Fan controller so a failed downshift qualification no longer triggers an unconditional PWM increase. This was the source of the abrupt, inconsistent speed ramp.
