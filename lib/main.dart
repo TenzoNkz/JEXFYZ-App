@@ -1381,11 +1381,8 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
           )
           .orCancel;
       if (!mounted || widget.active != active) return;
-      // Let the moving details finish fading before pausing their phase. This
-      // avoids stopping a sweep, shimmer, or particle orbit in mid-transition.
-      // Non-Fan status icons keep a restrained idle cycle after active effects fade.
-      // Idle motion is decorative and does not claim a physical output is ON.
-      // The Fan itself still coasts down and stays still when OFF.
+      // The activity emphasis has faded. Non-Fan controllers continue their
+      // decorative idle cycle; Fan coast-down is handled by its separate path.
     } on TickerCanceled {
       // A newer state transition retargeted this activity fade.
     }
