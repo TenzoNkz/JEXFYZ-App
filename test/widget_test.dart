@@ -104,6 +104,7 @@ void main() {
 
     for (final marker in [
       "title: JexText.of('peltier', lang)",
+      "title: JexText.of('fan', lang)",
       "title: JexText.of('adaptiveSwitch', lang)",
       "title: JexText.of('power', lang)",
     ]) {
@@ -648,7 +649,7 @@ void main() {
     expect(isDifferentFirmwareVersion('V1.8', 'V1.8'), isFalse);
   });
 
-  test('JE X FYZ custom indicator motion is gated by BLE and state', () {
+  test('JE X FYZ indicator animation policy follows connection and output state', () {
     expect(
       jexIndicatorAnimationActive(connected: false, stateActive: true),
       isFalse,
@@ -661,6 +662,63 @@ void main() {
       jexIndicatorAnimationActive(connected: true, stateActive: true),
       isTrue,
     );
+
+    for (final kind in [
+      JexAnimatedIconKind.battery,
+      JexAnimatedIconKind.hotside,
+      JexAnimatedIconKind.voltage,
+    ]) {
+      expect(
+        jexIconAnimationPermitted(connected: true, kind: kind, stateActive: false),
+        isTrue,
+        reason: '$kind is a continuous telemetry indicator while connected.',
+      );
+      expect(
+        jexIconAnimationPermitted(connected: false, kind: kind, stateActive: true),
+        isFalse,
+        reason: '$kind must stop immediately when Bluetooth disconnects.',
+      );
+    }
+
+    for (final kind in [
+      JexAnimatedIconKind.adaptive,
+      JexAnimatedIconKind.peltier,
+      JexAnimatedIconKind.fan,
+      JexAnimatedIconKind.speed,
+      JexAnimatedIconKind.led,
+    ]) {
+      expect(
+        jexIconAnimationPermitted(connected: true, kind: kind, stateActive: false),
+        isFalse,
+        reason: '$kind must be static while OFF.',
+      );
+      expect(
+        jexIconAnimationPermitted(connected: true, kind: kind, stateActive: true),
+        isTrue,
+      );
+      expect(
+        jexIconAnimationPermitted(connected: false, kind: kind, stateActive: true),
+        isFalse,
+      );
+    }
+    expect(
+      jexIconAnimationPermitted(
+        connected: true,
+        kind: JexAnimatedIconKind.bluetooth,
+        stateActive: true,
+      ),
+      isFalse,
+      reason: 'Bluetooth connection state is indicated by colour, not motion.',
+    );
+    expect(
+      jexIconAnimationPermitted(
+        connected: true,
+        kind: JexAnimatedIconKind.generic,
+        stateActive: true,
+      ),
+      isFalse,
+    );
+
     expect(
       jexIconAnimationDuration(JexAnimatedIconKind.fan, voltageLevel: 5),
       const Duration(milliseconds: 2600),
@@ -672,6 +730,14 @@ void main() {
     expect(
       jexIconAnimationDuration(JexAnimatedIconKind.fan, voltageLevel: 12),
       const Duration(milliseconds: 620),
+    );
+    expect(
+      jexIconAnimationDuration(
+        JexAnimatedIconKind.fan,
+        voltageLevel: 12,
+        fanSpeedLevel: .5,
+      ),
+      const Duration(milliseconds: 1240),
     );
     expect(
       jexIconAnimationDuration(JexAnimatedIconKind.adaptive),
@@ -690,11 +756,16 @@ void main() {
     expect(jexIconAnimationDuration(JexAnimatedIconKind.fan, voltageLevel: 9).inMilliseconds,
         greaterThan(jexIconAnimationDuration(JexAnimatedIconKind.fan, voltageLevel: 12).inMilliseconds));
 
-    expect(jexPeltierFrostIntensity(5), lessThan(jexPeltierFrostIntensity(9)));
-    expect(jexPeltierFrostIntensity(9), lessThan(jexPeltierFrostIntensity(12)));
-    expect(jexPeltierFrostParticleCount(5), 2);
-    expect(jexPeltierFrostParticleCount(9), 5);
-    expect(jexPeltierFrostParticleCount(12), 8);
+    expect(jexVoltageEnergyLevel('5V'), .25);
+    expect(jexVoltageEnergyLevel('9V'), .50);
+    expect(jexVoltageEnergyLevel('12V'), 1.0);
+
+    expect(jexPeltierFrostIntensity(5), .25);
+    expect(jexPeltierFrostIntensity(9), .50);
+    expect(jexPeltierFrostIntensity(12), 1.0);
+    expect(jexPeltierFrostParticleCount(5), 3);
+    expect(jexPeltierFrostParticleCount(9), 6);
+    expect(jexPeltierFrostParticleCount(12), 14);
   });
 
   test('Fan Speed level retargeting eases between values without abrupt jumps', () {
@@ -978,29 +1049,45 @@ void main() {
     expect(iconState, contains('if (widget.active)'));
   });
 
-  test('Indicator motion fades into a quiet idle cycle and resumes without a phase snap', () {
+  test('Indicator animations stop on disconnect and OFF glyphs stay fully coloured', () {
     final source = File('lib/main.dart').readAsStringSync();
     final stateStart = source.indexOf('class _JexAnimatedIconState');
     final stateEnd = source.indexOf('class _JexIconPainter', stateStart);
-    expect(stateStart, isNonNegative);
-    expect(stateEnd, greaterThan(stateStart));
-    final state = source.substring(stateStart, stateEnd);
-    expect(state, contains('Future<void> _animateActivityTransition(bool active) async'));
-    expect(state, contains('if (widget.kind != JexAnimatedIconKind.fan && !controller.isAnimating)'));
-    expect(state, contains('controller.repeat();'));
-    expect(state, contains('Future<void> _finishIconCycleBoundary(int durationMs) async'));
-    expect(state, contains('curve: Curves.linear'));
-    expect(state, contains('_resumeCycleWithoutPhaseSnap();'));
     final painterStart = source.indexOf('class _JexIconPainter extends CustomPainter {');
     final painterEnd = source.indexOf('const MethodChannel securityChannel', painterStart);
+    expect(stateStart, isNonNegative);
+    expect(stateEnd, greaterThan(stateStart));
     expect(painterStart, isNonNegative);
     expect(painterEnd, greaterThan(painterStart));
+
+    final state = source.substring(stateStart, stateEnd);
     final painter = source.substring(painterStart, painterEnd);
-    expect(painter, contains('_drawAdaptiveFlow(canvas, s, angle, mainColor, strength)'));
-    expect(painter, contains('final idleBreath = .0045 * pulse;'));
-    expect(painter, contains('final activeBreath = .014 * pulse * strength;'));
+    expect(state, contains('void _stopAnimationsForDisconnect()'));
+    expect(state, contains('frostTransitionController.stop();'));
+    expect(state, contains('speedLevelTransitionController.stop();'));
+    expect(state, contains('jexIconAnimationPermitted('));
+    expect(state, contains('if (!widget.connected)'));
+    expect(state, contains('_fanCoasting'));
+    expect(state, contains('_resumeCycleWithoutPhaseSnap();'));
+    expect(state, contains('Future<void> _finishIconCycleBoundary(int durationMs) async'));
+    expect(state, contains('curve: Curves.linear'));
+    expect(state, isNot(contains('widget.kind != JexAnimatedIconKind.fan && !controller.isAnimating')));
+
+    expect(painter, contains('const opacity = 1.0;'));
+    expect(painter, contains('final breath = active ? 1.0 + .014 * pulse * strength : 1.0;'));
+    expect(painter, isNot(contains('final idleBreath')));
+    expect(painter, contains('_drawThermalFlames'));
+    expect(painter, contains('_drawFrostParticles'));
+    expect(painter, contains('_drawFanAirflow'));
+    expect(painter, contains('final tickCount = 9'));
     expect(painter, contains('_drawAdaptiveArrowHead'));
-    expect(painter, isNot(contains('_drawThermalFlames')));
+
+    final bluetoothStart = painter.indexOf('case JexAnimatedIconKind.bluetooth:');
+    final bluetoothEnd = painter.indexOf('case JexAnimatedIconKind.generic:', bluetoothStart);
+    final bluetooth = painter.substring(bluetoothStart, bluetoothEnd);
+    expect(bluetooth, contains('canvas.drawPath(glyph'));
+    expect(bluetooth, isNot(contains('drawCircle')));
+    expect(bluetooth, isNot(contains('drawArc')));
   });
 
   test('Fan Speed gauge retargets smoothly and fades its motion on state changes', () {
@@ -1023,6 +1110,9 @@ void main() {
     expect(speed, contains('final needleAngle = start + sweep * safeLevel +'));
     expect(speed, contains('final glintStart = start + sweep * p;'));
     expect(speed, contains('final needle = Path()..moveTo(cx, cy)..lineTo(tip.dx, tip.dy);'));
+    expect(speed, contains('final tickCount = 9'));
+    expect(speed, contains('if (active && safeLevel > 0)'));
+    expect(speed, contains('mainColor.withValues(alpha: .92)'));
   });
 
   test('Integrated indicator animation preserves seamless phase transitions', () {
@@ -1032,7 +1122,7 @@ void main() {
     expect(stateStart, isNonNegative);
     expect(stateEnd, greaterThan(stateStart));
     final state = source.substring(stateStart, stateEnd);
-    expect(state, contains('unawaited(_animateActivityTransition(widget.active));'));
+    expect(state, contains('unawaited(_animateActivityTransition(true));'));
     expect(state, contains('late final AnimationController activityTransitionController;'));
     expect(state, contains('late final AnimationController speedLevelTransitionController;'));
     expect(state, contains('Duration(milliseconds: active ? 360 : 440)'));
