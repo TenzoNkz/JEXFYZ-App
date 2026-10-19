@@ -2,6 +2,14 @@
 
 This is the durable evidence ledger for `@Thinking Eksekusi Build App!`. A replacement Build App chat uses Prompt D in `CHAT_TRANSFER_PROMPTS.md` to load this file and continue the same workstream across a context limit; there is no separate Build App recap chat. It records verified GitHub Actions/Release evidence and distinguishes CI gates from physical-device validation.
 
+## CURRENT SOURCE FOLLOW-UP AFTER BUILD #99 — STATIC ICON-STATE REDRAW (NOT RUN / NOT RELEASED)
+
+- Live baseline at the start of this source follow-up: main HEAD 210693091a04132dc16a312eaec0876ac5e7d7d8. Latest successful artifact remains Build #99 at exact source bc1498d5b3db7621ee18f5ca6f021e6013c73b09 (102/102 Flutter tests; analyzer exit 0 with 25 info-level findings/no errors or warnings; full guarded APK/source-ZIP/signing/release-tag verification).
+- Current new source blob lib/main.dart: 6a008c5c3e5ba7118e948e0b1f36277c01e73529; test blob test/widget_test.dart: 94dad7a7506fbcbeea63f300ea25b7f32299d471. This source/test delta is NOT RUN / NOT ANALYZED / NOT RELEASED and is not in Build #99.
+- Reworks static/idle poses across all seven icons: Battery recessed chamber and non-quantitative thermal emblem when unknown; Hotside recessed tube, fixed graduations and bulb bezel; Voltage bevelled/inset bolt face; Adaptive stronger dual arrows/orbit track; Peltier stronger faceted six-arm crystal and no frozen flakes while inactive; Fan bearing and three blade highlights while retaining exactly three blades and three fixed ribbons; Fan Speed recessed semicircle, 11 ticks and layered pivot while keeping needle hidden for unknown PWM.
+- Build #99's tested smoothness remains the baseline: phase-periodic falling particles and boundary fades, 26 dp Home icon, decoupled Peltier crystal motion, accumulated Fan phase with smoothstep angular-rate retarget. This new source changes static/unknown-state rendering but not BLE protocol, telemetry, controls, warning thresholds, PWM mapping, semantic colours or safety logic.
+- New source/tests were not executed in this source task. Real-device rendering/smoothness remains UNVERIFIED. No App Build/release, Firmware/BIN, Firebase, OTA, flash or hardware operation occurred.
+
 ## LATEST SUCCESSFUL APP BUILD — BUILD #99 (ANIMATION SMOOTHNESS REWORK RELEASED AND VERIFIED)
 
 - **Build:** [Build #99 / Actions run 39230380636](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39230380636) completed with conclusion **success** at `2026-10-19T09:35:07Z` (2026-10-19 16:35:07 Asia/Jakarta). Exact checked-out App source commit: **`bc1498d5b3db7621ee18f5ca6f021e6013c73b09`**. All 21 main workflow steps and all cleanup steps completed successfully.
