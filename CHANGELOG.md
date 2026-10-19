@@ -7,7 +7,7 @@
 - Applied a shared blurred luminous-core treatment to Battery/Hotside, Voltage, Adaptive arcs, Peltier crystal, Fan rotor and Fan Speed active arc/needle. Voltage branch-spine animation, two-arrow Adaptive flow, falling Peltier snow and the half-circle PWM gauge stay data/state driven.
 - Added/updated source-contract tests for falling fire, three-blade rotor geometry, helper boundaries and unchanged state gates. These tests have NOT RUN in this execution.
 - Baseline successful release is Build #92 / [Actions run 39211726896](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39211726896), exact source `6610fecb3e47d9941cbf96043b7da3b2a869753b`, 98/98 Flutter tests passed. This source follow-up is newer than Build #92 and is NOT RUN / NOT RELEASED. No App Build, Firmware/BIN/Firebase/OTA/flash or device operation occurred.
-- Live source/test blobs after this patch: `lib/main.dart` `18f0a4d11948c7d584e8eeff5fd88eb6230d17e8`; `test/widget_test.dart` `d4a4006fd74b9e4a348b1ddcac1ae31a043a1b53`. Documentation and final transfer hashes will be re-fetched after the last write.
+- Live source/test blobs after this patch: `lib/main.dart` `ec8d682432946bd5b9afea925685855d632610b8`; `test/widget_test.dart` `ab0862470846455465b65ec294d33d39c07aac62`. Documentation and final transfer hashes will be re-fetched after the last write.
 
 
 ## 2026-10-19 — Finalize Industrial Premium / Precise icon-motion policy (source follow-up; NOT RELEASED)
