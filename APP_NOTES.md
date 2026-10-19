@@ -2,7 +2,7 @@
 
 This file is the durable App behavior/design contract. Live source and the current workflow remain authoritative.
 
-## Latest successful App build and current source boundary — 2026-10-19
+## Latest successful App build and current source boundary — 2026-10-20
 
 - Latest successful release is Build #106 / https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39279938461, packaged from source `9f90cf6063ee7786613f8b5dfa1c6b0412d89638`. Analyzer exited 0 with 25 info-level findings and no errors/warnings; 108 Flutter tests passed; the configured Android gate, production APK signature/certificate, corresponding source ZIP, downloaded asset digest, and source-marker checks passed.
 - Build #106 APK asset ID `656702702`, 54,734,939 bytes, SHA-256 `bab332a4312c628178e384a88d513cf8546ff15ab4b4e3f3becf2e70b10830cc`. Source ZIP asset ID `656702729`, 2,866,720 bytes, SHA-256 `0bb86c4e6bd7d3cb7a6bb894658bd707acee48bac106fc5227f8adcba584ec98`. The `jexfyz-latest` tag and Release target the Build #106 source.
