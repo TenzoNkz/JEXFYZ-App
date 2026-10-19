@@ -59,7 +59,7 @@ Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #106 is 
 | `OTA_REGRESSION_MEMORY.md` | CA/NTP experiment, failure evidence, `setInsecure()` security trade-off and preflight |
 | `VOLTAGE_TRANSITION_MEMORY.md` | Peltier ramp, rail handoff, cancellation/recovery rules and hardware validation plan |
 | `BUILD_NOTES.md` | Active App build procedure, toolchain, authorization and validation boundaries |
-| `APP_BUILD_REPORT.md` | Authoritative complete build attempts/fixes/results; current Build #83 and blocked Release handoff |
+| `APP_BUILD_REPORT.md` | Authoritative complete App Build attempts/fixes/results; Build #106 is latest successful artifact, current App UI follow-up is unvalidated |
 | `CHANGELOG.md` | Significant history and superseded decisions; never override current source |
 | `DESIGN_NOTES.md` | Approved grille/logo/assets and dashboard motion/layout contracts |
 | `.github/workflows/jexfyz-app-build-trigger.yml` | Authoritative guarded manual App Build workflow |
