@@ -1,5 +1,14 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-19 — Repair App Build workflow YAML tag-verification placement (execution pending)
+
+- **WORKFLOW-ONLY FIX:** commit [`0c266f3064d77a394d660acd16595ff43166fb7f`](https://github.com/TenzoNkz/JEXFYZ-App/commit/0c266f3064d77a394d660acd16595ff43166fb7f) updates `.github/workflows/jexfyz-app-build-trigger.yml` to blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`.
+- Removed four duplicate tag-check shell statements that had been left outside any step's `run: |` block. The final independent `refs/tags/jexfyz-latest == GITHUB_SHA` check now resides inside the downloaded-asset verification script. The publish step still updates the stable tag and asserts its target.
+- Preserved the single guarded trigger: `issues.opened/reopened`, repository owner, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. No push/PR/dispatch bypass, new secret, branch or PR was added. Android `versionName "Telegram @horizontalzzz"` remains untouched.
+- Runs #84–#87 are push-event zero-job failures, not App Builds. The official issue-triggered run remains #83; issue #34 had the required title/token but did not produce a new issue-event run. The malformed YAML was a concrete syntax defect and a plausible contributor to the failures, but post-fix dispatch recovery is **UNVERIFIED**; Settings/event delivery access is still unavailable through the connected read interface.
+- Release handoff remains **BLOCKED**: Build #83 Release metadata/assets reference source `dfc7e6633298498bb6eac21182c9306d5e3cac1d`, but live `refs/tags/jexfyz-latest` still points to `9136f11799143d91eb58e947ea10e9e576bb579f`. Do not manually move the tag or claim success. A separately authorized `@Thinking Eksekusi Build App!` and independent post-run ref/asset verification are required.
+- No App Build, release workflow, firmware/BIN compile/publication, Firebase metadata, OTA, flash, or device operation was run as part of this documentation reconciliation.
+
 ## 2026-10-19 — Repair malformed tag verification placement in App Build workflow (unverified until next official run)
 
 - Diagnosed a concrete workflow YAML defect: four tag-verification shell statements sat outside all `run: |` blocks after the Release-publish step, before the next step declaration. This is a likely cause of the #84–#87 push-triggered failures with no jobs and the absent newer issue-event run; only a subsequent official Actions run can confirm recovery.
