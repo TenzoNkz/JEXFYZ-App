@@ -48,16 +48,20 @@ This file stores durable, user-approved visual constraints. Do not reinterpret a
 - Fan Speed: semicircular gauge and value-driven needle with the existing PWM/unknown-state mapping.
 - Build #95 is the latest verified release for this icon family. It passed 99/99 Flutter tests; this does not prove physical-screen smoothness.
 
-## Animation smoothness rework after Build #95 — SOURCE ONLY / NOT RUN / NOT RELEASED
+## Smoothness rework validated in Build #99
 
-- Review of the live source and supplied recording identified likely stiffness contributors: 4.2–6.4 second cycles for tiny glyphs; very small fire/snow particles; non-integer phase drift that can snap at cycle wrap; whole-icon breathing; crystal spin locked to the snowfall phase; and Fan PWM/voltage updates changing angular rate abruptly when the repeating controller duration changes.
-- Battery/Hotside/Voltage/Adaptive/Peltier cycle targets are now 1500/1650/1000/2300/2100 ms. These are UI animation cadences only; they do not change telemetry, controls, or safety thresholds.
-- Falling fire uses larger tapered ember shapes and smooth boundary fade; lateral drift uses integer harmonics, avoiding a phase discontinuity at wrap. Falling snow is enlarged, gains independent per-particle phase/drift/rotation, and fades at clipping boundaries. Repeated per-particle blur filters are removed.
-- The primary Peltier crystal now stays visually anchored with only a tiny periodic rock rather than making a full revolution at the snowfall rate.
-- Fan keeps exactly three blades and its existing voltage/PWM target policy. An unbounded accumulated radian phase and integrated smoothstep angular-rate simulation retarget speed over 420 ms without resetting rotor angle. Confirmed OFF decelerates to zero; BLE disconnect resets phase under the existing contract.
-- Removed whole-icon breathing scale. Main Home glyph drawable size increases from 22 to 26 logical pixels inside the existing 38×38 tile; overall card/dashboard layout is unchanged. Painter repaint tracking includes `valueKnown` and `fanCoasting`.
-- Source blob `lib/main.dart`: `f0bc1375799e7b9e4466a3124ddb031d5f58e522`; test blob `test/widget_test.dart`: `aaf911cdcf5e23a23b80c2ef47ca4e11d406f9cf`. Tests were updated for cadence values, particle fade math, fan phase/rate integration, crystal motion separation, repaint dependencies, and Home drawable size.
-- Neither `flutter` nor `dart` CLI is installed in the current execution environment. The new tests/analyzer were **NOT RUN**. These source changes are not included in Build #95; physical-phone smoothness and profile-mode frame performance remain UNVERIFIED. No App Build, Firmware, BIN, Firebase, OTA, flash or device operation occurred.
+- Build #99 / [Actions run 39230380636](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39230380636) validated the seven-icon motion baseline: 102/102 Flutter tests passed; analyzer had 25 info-level findings and no errors/warnings; required Android/APK/signing/source-ZIP/Release-tag checks passed. This evidence applies to Build #99 source, not later redraws.
+- Cadences are Battery 1500 ms, Hotside 1650 ms, Voltage 1000 ms, Adaptive 2300 ms, Peltier 2100 ms. Falling particles use deterministic phase, larger geometry and boundary fades; whole-icon breathing was removed; Peltier crystal rocking is separate from snowfall; Fan uses integrated angular-rate retarget from accumulated phase; Home glyph is 26 dp within the unchanged 38×38 tile.
+- Build #99 source blob: lib/main.dart 30d864c2f03c40fd4d0b6926a9958153f2a3b236; test blob: test/widget_test.dart 711a44b00eadee2e2bcd24e48383128f0d70ccc9.
+
+## Static / unknown-state icon-family redraw after Build #99 — SOURCE ONLY / NOT RUN / NOT RELEASED
+
+- The disconnected-state screenshot showed thin/empty glyphs when animation stopped. This follow-up changes static geometry itself rather than adding more idle animation.
+- Battery gets a recessed dark window and a subtle semantic-colour thermal emblem in unknown state, never fabricated numeric fill. Hotside gets a dark tube, fixed graduations and a bulb bezel; its live column only reflects valid data.
+- Voltage gets a shadowed, inset bolt face; travelling pulse remains state-gated. Adaptive gets stronger twin arrows, thicker arcs and a recessed orbit track, with no idle glow when inactive.
+- Peltier's six-arm crystal and centre facet are stronger at rest; secondary flakes are not drawn as frozen particles when not allowed to move. Fan gets a bearing ring, dark blade outline and per-blade specular strips without changing its exact three-blade geometry or three fixed airflow ribbons.
+- Speedometer gets a recessed track, 11 graded ticks and layered pivot. The actual needle remains visible only for valid authoritative PWM.
+- Source blob lib/main.dart: 6a008c5c3e5ba7118e948e0b1f36277c01e73529; test blob test/widget_test.dart: 94dad7a7506fbcbeea63f300ea25b7f32299d471. These changes are NOT RUN / NOT RELEASED and do not appear in Build #99. Physical-device appearance/smoothness remains UNVERIFIED.
 
 ## Static action glyphs versus animated status indicators
 
