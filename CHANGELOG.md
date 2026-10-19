@@ -1,5 +1,14 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-19 — Oval thermal bursts, Voltage edge pulses and left-aligned NOTIFY (source-only; NOT RUN / NOT RELEASED)
+
+- Replaced the animated tapered flame tongues and falling teardrop fragments on Battery/Hotside with clipped deterministic rounded-oval ember bursts. Battery bursts rise/spread from the lower chamber; Hotside bursts are taller and clipped to the thermometer silhouette. Existing warning predicates, threshold values and 280 ms warning transition remain unchanged.
+- Removed Battery’s moving fill sheen/idle scanline and Hotside bulb pulsing. Static/unknown-state silhouettes remain intact.
+- Replaced Voltage’s central electrical spine and internal branch strikes with two phase-offset pulses that travel along the closed outer bolt contour. The bolt face/core remain static; 5V/9V/12V semantic colors and existing animation gates remain unchanged.
+- Kept Home NOTIFY badge-free, with left-aligned heading/body and natural one/two-line wrapping. Kept compact 41 dp Home metric rows and 48 dp Notify slot/minimum to avoid the previous overflow.
+- Regression source contracts were updated for oval particles, edge pulses, absence of old animation painters and left-aligned NOTIFY. Flutter/Dart tests and analyzer have NOT RUN for this source follow-up. Build #106 succeeded on older source and does not include these changes.
+- Current blobs: `lib/main.dart` `7e09a3d28b4efe24bdced858db4274cf70806284`; `lib/app_settings.dart` `8f228000d38d73038c06f569c052b1af601288a5`; `test/widget_test.dart` `5a82cf79e6c5c40fc34489ce90cf1200cf9faccb`. Adaptive, Peltier, Fan, Fan Speed, BLE/protocol/telemetry/safety behavior, Firmware/BIN, Firebase/OTA/device operations and the guarded workflow were not changed.
+
 ## 2026-10-19 — Clean centered Home NOTIFY card and bilingual copy polish (source-only; NOT RUN / NOT RELEASED)
 
 - Removed the separate right-side CONNECTED/DISCONNECTED badge. The card retains the `NOTIFY • category` heading and centers the heading/body while keeping the status icon on the left.
