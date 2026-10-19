@@ -9,12 +9,12 @@
 - Regression source contracts were updated for oval particles, edge pulses, absence of old animation painters and left-aligned NOTIFY. Flutter/Dart tests and analyzer have NOT RUN for this source follow-up. Build #106 succeeded on older source and does not include these changes.
 - Current blobs: `lib/main.dart` `7e09a3d28b4efe24bdced858db4274cf70806284`; `lib/app_settings.dart` `8f228000d38d73038c06f569c052b1af601288a5`; `test/widget_test.dart` `5a82cf79e6c5c40fc34489ce90cf1200cf9faccb`. Adaptive, Peltier, Fan, Fan Speed, BLE/protocol/telemetry/safety behavior, Firmware/BIN, Firebase/OTA/device operations and the guarded workflow were not changed.
 
-## 2026-10-19 — Clean centered Home NOTIFY card and bilingual copy polish (source-only; NOT RUN / NOT RELEASED)
+## HISTORICAL — Clean centered Home NOTIFY card and bilingual copy polish (superseded by left-aligned layout)
 
-- Removed the separate right-side CONNECTED/DISCONNECTED badge. The card retains the `NOTIFY • category` heading and centers the heading/body while keeping the status icon on the left.
-- Replaced fixed-height, one-line `FittedBox` scaling with a content-driven card and readable body text that naturally stays on one line when short and wraps to at most two centered lines when needed.
+- At that earlier iteration, the separate right-side CONNECTED/DISCONNECTED badge was removed and the heading/body were centered. That alignment was later rejected; the active design now left-aligns both lines while retaining the badge-free card.
+- Replaced fixed-height, one-line `FittedBox` scaling with a content-driven card and readable body text that wraps to at most two lines. The earlier centering in this historical revision was superseded by left alignment.
 - Polished bilingual connection, OTA, and accepted-setting wording (fan speed, Hotside limit, and 5V/12V battery limits). OTA envelopes/legacy internal result tokens are routed through the dedicated localized result formatter before general message normalization; raw firmware reason IDs and OTA ERROR/CODE/event identifiers remain internal.
-- Updated regression source contracts for badge removal, centered two-line layout, OTA formatting order, bilingual safety copy, and OTA summaries. Flutter/Dart tests and analyzer have NOT RUN (no Flutter/Dart executable in this execution environment). Build #100 remains the latest successful release and does not include this source update.
+- Updated regression source contracts for badge removal, centered two-line layout, OTA formatting order, bilingual safety copy, and OTA summaries. This entry records the earlier intermediate source only; the active regression contract now requires left alignment. Build #106 is the latest successful release and does not include the current UI changes.
 - Source blobs: `lib/main.dart` `b0d3a18f79b903bc8574d03a95cbc134b9234f20`; `lib/app_settings.dart` `8f228000d38d73038c06f569c052b1af601288a5`; `test/widget_test.dart` `df1b400b46cbe1e1e79c95e0cf537fbe4d7efd98`. No BLE/control/safety semantics, Firmware/BIN/Firebase/OTA/device operations or release artifacts changed.
 
 ## 2026-10-19 — Professional Home STATUS / NOTIFY copy, localization and OTA summaries (source-only; NOT RUN / NOT RELEASED)
@@ -22,7 +22,7 @@
 - Added shared localized reason mapping and Home-notification normalization so known firmware/safety reasons become actionable English/Indonesian copy and identifiers such as `PELTIER_SAFETY_LATCH` are not shown in the UI.
 - Command-confirmation/failure messages and category labels are normalized in English/Indonesian: STATUS / STATUS, CONNECTION / KONEKSI, SYNC / SINKRONISASI, WARNING / PERINGATAN, ERROR / ERROR.
 - OTA results no longer display raw `ERROR`/`CODE` fields, internal `SUCCESS_*`/failure suffixes, or unknown mode tokens. The Home card uses concise localized outcome summaries with recognized mode/stage/version details where appropriate.
-- Regression assertions cover Peltier latch copy, voltage and command failures, unknown-reason fallback, localized category labels, and bilingual OTA summary formatting. Tests/analyzer have NOT RUN; Build #100 remains latest release and does not include this source follow-up.
+- Regression assertions cover Peltier latch copy, voltage and command failures, unknown-reason fallback, localized category labels, and bilingual OTA summary formatting. That source revision was never validated/released, and it is superseded by later source and Build #106.
 - Code/test blobs: `lib/main.dart` `51b52042b6429ae2e4a4f2508685cd8326af68c8`; `test/widget_test.dart` `9d80171a12af084748b88fcdd06d3d6b3cf65e1f`. No BLE protocol, firmware safety predicate, telemetry semantics, Firmware/BIN, Firebase/OTA operation or hardware behavior was changed.
 
 
