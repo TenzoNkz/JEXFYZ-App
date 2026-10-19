@@ -1,14 +1,14 @@
 # JE X FYZ / JE Cooler — Memory Index
 
-Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #106 is the latest successful App release; Home NOTIFY/animation edits remain NOT RUN / NOT RELEASED. Active Firmware source is V6.8 with new Adaptive Fan temperature tiers; not compiled/installed. This file is the navigation index; `PROJECT_STATE.md` carries current state, subject files own detailed contracts, `APP_BUILD_REPORT.md` owns build evidence, `CHANGELOG.md` owns history, and `CHAT_TRANSFER.md` is the detailed next-chat boot snapshot. Live source, Git refs, Actions and Release metadata override memory.
+Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #108 is the latest successful App release; the newest Home metric-spacing/NOTIFY Row correction is NOT RUN / NOT RELEASED. Active Firmware source is V6.8 with new Adaptive Fan temperature tiers; not compiled/installed. This file is the navigation index; `PROJECT_STATE.md` carries current state, subject files own detailed contracts, `APP_BUILD_REPORT.md` owns build evidence, `CHANGELOG.md` owns history, and `CHAT_TRANSFER.md` is the detailed next-chat boot snapshot. Live source, Git refs, Actions and Release metadata override memory.
 
 ## Current verified release and source checkpoint
 
-- Latest successful release is Build #106 / Actions run 39279938461, packaged source `9f90cf6063ee7786613f8b5dfa1c6b0412d89638`. Analyzer exited 0 with 25 info findings/no errors or warnings; 108 Flutter tests passed; Android gate and release-asset validation passed.
-- Build #106 APK asset ID `656702702`, SHA-256 `bab332a4312c628178e384a88d513cf8546ff15ab4b4e3f3becf2e70b10830cc`; source ZIP asset ID `656702729`, SHA-256 `0bb86c4e6bd7d3cb7a6bb894658bd707acee48bac106fc5227f8adcba584ec98`.
-- Current Home NOTIFY alignment and icon-animation source is NOT RUN / NOT RELEASED: `lib/main.dart` `7e09a3d28b4efe24bdced858db4274cf70806284`; `lib/app_settings.dart` `8f228000d38d73038c06f569c052b1af601288a5`; `test/widget_test.dart` `5a82cf79e6c5c40fc34489ce90cf1200cf9faccb`.
+- Latest successful release is Build #108 / Actions run 39294761979, packaged source `51f401c90085b0bef5599375f7819d0294375938`. Analyzer exited 0 with 25 info findings/no errors or warnings; 107 Flutter tests passed; Android gate and APK/source ZIP validation passed.
+- Build #108 APK asset ID `656953696`, SHA-256 `a7e46390a2b8a487eb85e69d33af685dbc79f9814c201cce9fd255e1164cf8ed`; source ZIP asset ID `656953697`, SHA-256 `4b3095747a711888afa9879e70cd8d3fc74b22659e68f338e6e8cbc2430d12be`.
+- Current Home geometry correction is NOT RUN / NOT RELEASED: `lib/main.dart` `0341122a53e7a6bb00d9f079bfcb350b385c83cb`; `test/widget_test.dart` `b240231403c26071e618f3da1e82b379ff912adf`. It restores 44 dp metric rows and the original icon-left/text-left Notify Row, removes only the connection badge, and reserves 56 dp for two-line copy.
 - Home NOTIFY uses left-aligned bilingual copy, no CONNECTED/DISCONNECTED badge, and at most two readable lines. Battery/Hotside use clipped oval thermal bursts; Voltage uses outer-contour pulses. Raw reason/OTA identifiers remain hidden.
-- Tests/analyzer have NOT RUN for the current source. Build #106 remains the latest successful release and does not include these changes. No Firmware/BIN/Firebase/OTA/device operation occurred.
+- Tests/analyzer have NOT RUN for the current geometry source. Build #108 remains the latest successful release and does not include these changes. No Firmware/BIN/Firebase/OTA/device operation occurred.
 
 ## Current visual-state redraw checklist
 
