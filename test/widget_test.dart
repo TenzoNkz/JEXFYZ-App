@@ -428,7 +428,8 @@ void main() {
     expect(painter, contains('_drawFanAirflow'));
     expect(painter, isNot(contains('_drawFanBlade')));
     expect(painter, isNot(contains('sparkCount')));
-    expect(painter, isNot(contains('particleAngle')));
+    // Smooth particle drift uses a deterministic periodic angle derived from normalized fall progress.
+    expect(painter, contains('final particleAngle = fall * math.pi * 2 + seed;'));
   });
 
   test('BLE session protocol gate accepts only P1', () {
@@ -1350,7 +1351,8 @@ void main() {
     expect(iconState, isNot(contains('_animateFanToCycleBoundary')));
     expect(iconState, isNot(contains('_fanCoastStartProgress')));
     expect(iconState, contains('_resetFanRotation();'));
-    expect(painter, contains('jexNormalizedFanProgress(fanPhaseController.value)'));
+    // The normalized accumulated phase is passed into the painter from the widget build method.
+    expect(source, contains('jexNormalizedFanProgress(fanPhaseController.value)'));
   });
 
   test('Indicator animations stop on disconnect and OFF glyphs stay fully coloured', () {
