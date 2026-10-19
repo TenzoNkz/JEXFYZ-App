@@ -1,3 +1,11 @@
+## 2026-10-20 — V6.8 Adaptive Fan PWM temperature tiers (source-only; NOT COMPILED / NOT INSTALLED)
+
+- Bumped the active Firmware source to `firmware/JEXFYZ-V6.8.ino`, embedded `FW_VERSION="V6.8"`, blob `4f8011337fc3c9e3f1ace717fbd7179e1331bff8`. Exactly one active versioned sketch will remain after the V6.7 source rename is completed.
+- Replaced the previous 12 V Adaptive Fan trend/stability algorithm (ten-sample downshift window, four-sample warming trend, 10-second down-step gate and 3-second up-step gate) with a deterministic target lookup against `delta = hotLimit - hotsideC`: delta ≤1°C →100%, 2°C →90%, 3°C →80%, 4°C →70%, 5°C →60%, and ≥6°C →50%. Fractional inputs use half-degree boundaries between whole-degree tiers.
+- The Hotside limit/protection path still forces 100%; Adaptive 5 V/9 V still stays at 100%. Existing invalid-NTC fail-safe, voltage transitions, thermal dwell, Fan/Peltier state constraints, manual-control gating, BLE protocol and OTA implementation were preserved. NTC remains one calibrated sample per second; no filter, delay, or timing loop was added.
+- Renamed the source-contract suite to `test/firmware_qc_contract_test.dart`, updated source paths and added coverage assertions for every PWM tier, removal of old trend/timer state and retained safety gates. The Touch/Adaptive sync test now reads V6.8.
+- Static source checks were performed; Flutter contract tests and Arduino compilation have NOT RUN. V6.8 is not compiled/installed; source-to-BIN identity, current installed version, and physical Fan/thermal behavior remain UNVERIFIED. No BIN/Firebase/OTA/flash/device operation occurred.
+
 # JE X FYZ / JE Cooler — Changelog
 
 ## 2026-10-19 — Oval thermal bursts, Voltage edge pulses and left-aligned NOTIFY (source-only; NOT RUN / NOT RELEASED)
