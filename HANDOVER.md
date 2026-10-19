@@ -29,7 +29,7 @@ Refreshed against live `main` on 2026-10-19 (Asia/Jakarta). The newest verified 
 - User decided to retire FPS after repeated F:--/Shizuku UserService failures. FPS, SurfaceFlinger TimeStats sampling, Shizuku permission/status UI/API/provider/dependency, UserService/AIDL, FPS-only tests and Shizuku-only notice/license files were removed from active source.
 - The HUD has exactly six metrics: B (Battery), H (Hotside), V (Voltage), A (Adaptive), P (Peltier), F (Fan/Kipas label; current value is live speed). Schema v2 drops old schema-v1 F (FPS) and maps old S (Speed) to F. Fan telemetry and firmware speed control are unchanged.
 - Overlay remains Letters-only, freely draggable, with saved coordinates; horizontal metrics centered as a group, vertical rows left aligned; size 0.30×–1.00× by 0.05× (default 0.60×); background opacity 0–100% by 5%, current value and endpoint marks only, no midpoint. Physical layout and live BLE metric behavior remain UNVERIFIED on the phone.
-- Build #91 is the latest successful artifact run and exercised the repaired tag-check workflow; release metadata and `jexfyz-latest` matched the Build #91 source. The current generic-action glyph follow-up is newer and remains untested/unreleased pending the separate Build App command.
+- Build #92 is the latest successful artifact run and exercised the repaired tag-check workflow; release metadata and `jexfyz-latest` matched the Build #92 source. The current seven-icon visual follow-up is newer and remains untested/unreleased pending the separate Build App command.
 
 ## Firmware / OTA boundary
 
