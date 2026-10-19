@@ -156,8 +156,11 @@ void main() {
       expect(normalizedPainter, contains(feature), reason: 'Missing shared icon finish: $feature');
     }
 
-    expect(painter, contains('void _drawFallingFlameParticles('));
-    expect(painter, contains('Path _fallingFlameDropPath('));
+    expect(painter, contains('void _drawThermalBurstParticles('));
+    expect(painter, contains('void _drawVoltageEdgePulse('));
+    expect(painter, isNot(contains('void _drawThermalFlames(')));
+    expect(painter, isNot(contains('void _drawFallingFlameParticles(')));
+    expect(painter, isNot(contains('Path _fallingFlameDropPath(')));
     expect(painter, contains('for (var i = 0; i < 3; i++)'));
     expect(source, contains('JexAnimatedIconKind.adaptive'));
     expect(source, contains('JexAnimatedIconKind.peltier'));
@@ -209,7 +212,7 @@ void main() {
     expect(source, contains('size: 26,'));
   });
 
-  test('Thermal icons use falling fire, Peltier uses falling snow, and indicators have distinct signatures', () {
+  test('Thermal icons use oval ember bursts, Voltage uses edge pulses, and other icons keep their signatures', () {
     final source = File('lib/main.dart').readAsStringSync();
     final shellStart = source.indexOf('Path _hotsideSilhouette(double s)');
     final shellEnd = source.indexOf('void _drawAdaptiveArrowHead', shellStart);
@@ -228,7 +231,7 @@ void main() {
       'final bulbRadius',
       '_drawAdaptiveFlow(canvas, s, active ? angle : 0.0, mainColor, strength)',
       'final branchPulse',
-      'final electricalSpine = Path()',
+      'void _drawVoltageEdgePulse(',
       'metric.extractPath(tail, head)',
       'Path _flameTonguePath(',
       'void _drawSnowflake(',
@@ -252,7 +255,10 @@ void main() {
     expect(source, contains('TickerFuture _retargetFanRotation('));
     expect(source, contains('jexNormalizedFanProgress(fanPhaseController.value)'));
     expect(painter, isNot(contains('_adaptiveLoop(s, angle)')));
-    expect(painter, contains('inner.left - sheenWidth + (inner.width + sheenWidth * 2) * p'));
+    expect(painter, isNot(contains('inner.left - sheenWidth + (inner.width + sheenWidth * 2) * p')));
+    expect(painter, isNot(contains('final idleGlintX')));
+    expect(painter, isNot(contains('valueKnown ? .82 + .10 * pulse : .60')));
+    expect(painter, isNot(contains('final electricalSpine = Path()')));
     expect(painter, contains('final dotX = active ? s * (-.06 + 1.12 * p) : s * .12;'));
     expect(painter, contains('canvas.clipRect(Rect.fromLTWH(0, 0, s, s));'));
     expect(painter, isNot(contains('final flowAngle = phase * 2 + .6;')));
