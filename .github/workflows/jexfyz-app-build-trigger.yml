@@ -472,10 +472,6 @@ jobs:
           test "$ASSET_COUNT" = "2"
           echo "GitHub Release assets verified: exactly one APK plus one matching source archive."
 
-      # Re-download the exact published asset and verify it
-          TAG_TARGET_SHA="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${RELEASE_TAG}" --jq '.object.sha')"
-          test "$TAG_TARGET_SHA" = "$GITHUB_SHA"
-          echo "Release tag verified for source commit: $TAG_TARGET_SHA" again.
       # This closes the release-delivery loop: the bytes users receive from
       # GitHub must be identical to the signed APK that passed CI verification.
       - name: Verify downloaded GitHub Release asset
@@ -488,6 +484,11 @@ jobs:
           APK="build/app/outputs/flutter-apk/JEXFYZ-release.apk"
           SOURCE_ARCHIVE="build/app/outputs/flutter-apk/JEXFYZ-corresponding-source.zip"
           RELEASE_TAG="jexfyz-latest"
+          # Independently verify the Git ref in the same final step that checks
+          # the downloaded release bytes. Release metadata alone is insufficient.
+          TAG_TARGET_SHA="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${RELEASE_TAG}" --jq '.object.sha')"
+          test "$TAG_TARGET_SHA" = "$GITHUB_SHA"
+          echo "Release tag verified for source commit: $TAG_TARGET_SHA"
           DOWNLOADED="$RUNNER_TEMP/release-verify/JEXFYZ-release.apk"
           DOWNLOADED_SOURCE="$RUNNER_TEMP/release-verify/JEXFYZ-corresponding-source.zip"
 
