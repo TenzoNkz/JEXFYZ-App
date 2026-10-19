@@ -8,7 +8,7 @@ Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #106 is 
 - Build #106 APK asset ID `656702702`, SHA-256 `bab332a4312c628178e384a88d513cf8546ff15ab4b4e3f3becf2e70b10830cc`; source ZIP asset ID `656702729`, SHA-256 `0bb86c4e6bd7d3cb7a6bb894658bd707acee48bac106fc5227f8adcba584ec98`.
 - Current Home NOTIFY alignment and icon-animation source is NOT RUN / NOT RELEASED: `lib/main.dart` `7e09a3d28b4efe24bdced858db4274cf70806284`; `lib/app_settings.dart` `8f228000d38d73038c06f569c052b1af601288a5`; `test/widget_test.dart` `5a82cf79e6c5c40fc34489ce90cf1200cf9faccb`.
 - Home NOTIFY uses left-aligned bilingual copy, no CONNECTED/DISCONNECTED badge, and at most two readable lines. Battery/Hotside use clipped oval thermal bursts; Voltage uses outer-contour pulses. Raw reason/OTA identifiers remain hidden.
-- Tests/analyzer have NOT RUN for the current source. Build #106 remains latest release and does not include these changes
+- Tests/analyzer have NOT RUN for the current source. Build #106 remains the latest successful release and does not include these changes. No Firmware/BIN/Firebase/OTA/device operation occurred.
 
 ## Current visual-state redraw checklist
 
