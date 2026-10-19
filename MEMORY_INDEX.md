@@ -1,14 +1,14 @@
 # JE X FYZ / JE Cooler — Memory Index
 
-Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #100 is the latest successful release; notification copy edits are newer source and untested/unreleased. This file is the navigation index; `PROJECT_STATE.md` carries current state, subject files own detailed contracts, `APP_BUILD_REPORT.md` owns build evidence, `CHANGELOG.md` owns history, and `CHAT_TRANSFER.md` is the detailed next-chat boot snapshot. Live source, Git refs, Actions and Release metadata override memory.
+Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #100 is the latest successful release; Home NOTIFY copy/layout edits are newer source and untested/unreleased. This file is the navigation index; `PROJECT_STATE.md` carries current state, subject files own detailed contracts, `APP_BUILD_REPORT.md` owns build evidence, `CHANGELOG.md` owns history, and `CHAT_TRANSFER.md` is the detailed next-chat boot snapshot. Live source, Git refs, Actions and Release metadata override memory.
 
 ## Current verified release and source checkpoint
 
 - Latest successful release is Build #100 / https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39237262140, packaged source 51bea70b2ca17f285bf35c3e547dc44c70f26d59. All 21 workflow steps passed; 103/103 Flutter tests passed; analyzer exited 0 with 25 info-level findings and no errors/warnings; APK signature/certificate, matching source ZIP, downloaded asset digests and Release/tag/source equality passed. Native JUnit tasks were NO-SOURCE.
 - Build #100 APK asset ID 655957943, SHA-256 a59c0a37b2025ad2b250bd4354b887379d96658e9f7757692691fa23b7b4d0a2; source ZIP asset ID 655957946, SHA-256 e60c4705097009d843b624bf8f0f989770a76aba6fdfbdd8d2159d77f98890f1.
-- Current Home STATUS/NOTIFY copy and OTA diagnostic sanitization follow-up is source-only / NOT RUN / NOT RELEASED: lib/main.dart 51b52042b6429ae2e4a4f2508685cd8326af68c8; lib/app_settings.dart e91ecd2a00eafdec3f681daabb74fd49fcd25bf2; test/widget_test.dart 9d80171a12af084748b88fcdd06d3d6b3cf65e1f.
-- Home notification body has a shared localization policy for safety reasons and command failures, suppresses raw identifiers such as PELTIER_SAFETY_LATCH, and uses concise labels STATUS / CONNECTION / SYNC / WARNING / ERROR with Indonesian equivalents.
-- Build #100 remains latest release and does not include these changes. New tests are not run. No Firmware/BIN/Firebase/OTA/device operation occurred.
+- Current Home STATUS/NOTIFY copy/layout source is NOT RUN / NOT RELEASED: `lib/main.dart` `5282fb226c818b8f4601ec89953c0c47ff4861e9`; `lib/app_settings.dart` `562e42c4dc1ee2ac0c15b3f7211e55fa7b11bac6`; `test/widget_test.dart` `0ebbf0cd03f041a44afa314d66b77278e26c646e`.
+- The Home card removes the connection badge, centers its heading/message, and allows natural two-line copy; normalization maps safety reasons, hides raw tokens, localizes common failures/OTA summaries, and sends OTA envelopes to their formatter before generic cleanup.
+- Tests/analyzer have NOT RUN. Build #100 remains latest release and does not include this follow-up. No Firmware/BIN/Firebase/OTA/device operation occurred.
 
 ## Current visual-state redraw checklist
 
