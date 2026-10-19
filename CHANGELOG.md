@@ -2,7 +2,7 @@
 
 ## 2026-10-19 — Refresh dashboard icon motion (source-only; NOT RELEASED)
 
-- Replaced fixed-lane thermal flicker with phase-compatible tapered lava tongues and rising/fading teardrop fragments; Battery and Hotside use distinct plume shapes while preserving their existing telemetry thresholds/colours.
+- Replaced fixed-lane thermal flicker with phase-compatible tapered lava tongues and rising/fading teardrop fragments; their warning layer eases over 280 ms when the exact threshold predicate changes; Battery and Hotside use distinct plume shapes while preserving their existing telemetry thresholds/colours.
 - Voltage adds two staggered branch strikes to its travelling closed-spine current pulse. Adaptive receives a restrained inner highlight/halo. Peltier retains the six-branch snow crystal and falling branched flakes with an added faceted center.
 - Fan rotor changed to five swept blades and a layered hub. Exactly three fixed airflow ribbons remain behind the rotor; their geometry, count, width and colour are independent of voltage/PWM. Rotor angular velocity still follows the existing voltage/PWM policy; airflow fades only during the permitted connected coast-down.
 - Fan Speed uses a true upper-half semicircle gauge (left endpoint 0/off, right endpoint 100%), smoothly retargets the authoritative PWM, and hides the needle when current output/speed state is unknown. Fixed the speed-icon wiring so event-driven retargeting is separate from the no-loop animation policy.
