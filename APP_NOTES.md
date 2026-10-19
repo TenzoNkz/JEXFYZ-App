@@ -140,7 +140,7 @@ This file is the durable App behavior/design contract. Live source and the curre
 - Current metrics are B/H/V/A/P/F. F is labelled Fan/Kipas and displays live PWM speed while running. When BLE telemetry is disconnected, live device values are unknown (--) and no stale output state is inferred.
 - FPS, SurfaceFlinger TimeStats sampling, Shizuku permission UI/provider/UserService/AIDL, related parser/watchdog tests and Shizuku-only license files are removed from active App source. The release workflow audit and source archive packaging no longer depend on them.
 - Schema version 2 maps old schema-v1 S (Speed) to F (Fan Speed) and drops old schema-v1 F (FPS). Flutter contract tests cover migration and removal of FPS/Shizuku UI.
-- Build #83 / run `39192430789` remains the latest successful App artifact and includes the rounded TamperScreen blocks, static warning Icon and then-current Home painter/test source. It predates the current dashboard animation refresh, which is SOURCE IMPLEMENTED / NOT RUN / NOT RELEASED. The overall release handoff remains blocked by the stale Git tag; the post-Build-#83 workflow repair is still untested. Phone overlay visuals and live BLE telemetry remain unverified.
+- Historical Build #83 / run `39192430789` included the rounded TamperScreen blocks and its then-current Home painter/test source; it was superseded by verified Build #91. The latest successful artifact, release/tag consistency, and exact APK/source-ZIP evidence are recorded in the current release section above. The small generic-action glyph follow-up after Build #91 is SOURCE IMPLEMENTED / NOT RUN / NOT RELEASED. Phone overlay visuals and live BLE telemetry remain unverified.
 
 ## Phone battery telemetry and Battery Protection UI boundary
 
@@ -153,4 +153,4 @@ This file is the durable App behavior/design contract. Live source and the curre
 ## Physical validation boundary
 
 - Build #83 verifies the App source/test contracts, APK signing and published artifact bytes, but not OEM/phone rendering, animation smoothness, BLE connection/reconnect, live Fan Speed telemetry, exclusive pairing behavior, physical cooling/electrical safety, Firmware compile/source-to-BIN identity or end-to-end OTA/reboot/installed-version state.
-- The workflow-only tag-ref correction is newer than Build #83 and has not yet been executed by Actions. The latest Release handoff remains blocked until a separately authorized App Build successfully runs and the exact `jexfyz-latest` Git tag matches that run's source SHA.
+- The workflow tag-ref correction was exercised successfully in Build #91; its Release metadata and `jexfyz-latest` tag matched that run's source SHA. The current generic-action glyph follow-up is newer than Build #91 and requires a separately authorized App Build to validate/release it.
