@@ -842,7 +842,7 @@ void main() {
     expect(formatter, contains('localizedOtaFailureSummary('));
     expect(formatter, contains('localizedOtaSuccessSummary('));
     expect(formatter, isNot(contains("fields['ERROR']")));
-    expect(formatter, isNot(contains('code $code')));
+    expect(formatter, isNot(contains('code \$code')));
     expect(formatter, isNot(contains("raw.replaceAll('_', ' ').toLowerCase()")));
 
     final compactStart = source.indexOf('String _compactNotifyMessage(String message)');
