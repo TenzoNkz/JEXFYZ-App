@@ -64,12 +64,12 @@ Reconciled against live GitHub `main` on 2026-10-19 (Asia/Jakarta). This file is
 | `firmware/JEXFYZ-V6.7.ino` | Active editable V6.7 source; user compiles separately |
 | `archive/*.md` | Immutable forensic snapshots; stale “CURRENT” claims remain historical, paths retained verbatim |
 
-## Source fingerprints (live main before this index write)
+## Source fingerprints (live main after approved glyph follow-up; exact final hashes in CHAT_TRANSFER.md)
 
-- `lib/main.dart`: `f52c1921dffd7fa360cfc01bb41cfecf352acdb6` (source-only dashboard refresh; NOT RELEASED)
+- `lib/main.dart`: `b13793f4ff5c5471690f49999240194bd2e4c271` (Home painter validated by Build #91; follow-up does not change this file)
 - `lib/app_settings.dart`: `36927823c91904a35d87d2f21bd77932a2214e83`
 - `lib/floating_monitor.dart`: `31b45ea08b08ac7fc25ebd991dca873b889fdd14`
-- `test/widget_test.dart`: `dbb62587a5aefdf9af623dcd45781837cb28e8b0` (updated animation contracts; NOT RUN)
+- `test/widget_test.dart`: `5f1c5345f6ea1e0114c72360414362d3667be276` (includes new static-action-glyph source contract; follow-up NOT RUN)
 - `test/floating_monitor_layout_contract_test.dart`: `87e805095202ac3edfe55b9aeb3138c7c6886375`
 - `test/v6_7_qc_contract_test.dart`: `52671a0c9014ab48cfe3475d775d4457fede7124`
 - `test/app_protocol_notify_contract_test.dart`: `92214dd90178c705844d3979d3f8f7bd17bcc4b8`
