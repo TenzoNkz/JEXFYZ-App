@@ -2240,7 +2240,8 @@ class _JexIconPainter extends CustomPainter {
             ..lineTo(s * .455, s * .695)
             ..lineTo(s * .645, s * .405)
             ..lineTo(s * .535, s * .405)
-            ..lineTo(s * .595, s * .255);
+            ..lineTo(s * .595, s * .255)
+            ..close();
 
           canvas.save();
           canvas.clipPath(bolt);
