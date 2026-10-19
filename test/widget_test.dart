@@ -141,7 +141,7 @@ void main() {
     expect(painterEnd, greaterThan(painterStart));
     final painter = source.substring(painterStart, painterEnd);
     // Normalize layout so this source-contract test accepts intentional multiline painter calls.
-    final normalizedPainter = painter.replaceAll(RegExp(r'\s+'), ' ');
+    final normalizedPainter = painter.replaceAll(RegExp(r'\(\s+'), '(').replaceAll(RegExp(r'\s+'), ' ');
 
     for (final feature in [
       'void _drawGlow(',
