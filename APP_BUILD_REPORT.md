@@ -1,3 +1,15 @@
+## CURRENT REQUEST — APP BUILD PREFLIGHT (2026-10-20; OFFICIAL TRIGGER PENDING)
+
+- Command received: `@Thinking Eksekusi Build App!`. This authorizes the guarded end-to-end App QC/build/release loop and scoped App-only fixes grounded in CI evidence.
+- Live baseline before this report-only checkpoint: `main` HEAD `42fa9a820b99d58e2a27a7bbdba1a922b4008deb`; recursive tree verified non-truncated (67 entries). The newest prior run is Build #106 / run `39279938461`, completed **success** on source `9f90cf6063ee7786613f8b5dfa1c6b0412d89638`; no Actions run is currently queued or in progress.
+- Build #106 remains the latest verified release baseline only. Its 108 Flutter tests, analyzer, configured Android gate, official signing/certificate, source-archive integrity, downloaded Release assets and source-marker checks passed, but it does **not** validate current `main`. Current UI/test source was updated after that packaged commit; current UI follow-up has not yet had analyzer/tests/build/release verification.
+- Current UI/test pointers recorded by the live transfer snapshot: `lib/main.dart` `7e09a3d28b4efe24bdced858db4274cf70806284`, `lib/app_settings.dart` `8f228000d38d73038c06f569c052b1af601288a5`, and `test/widget_test.dart` `5a82cf79e6c5c40fc34489ce90cf1200cf9faccb`. The App tree also carries Firmware V6.8 source/test contracts; this App workflow is **not** Firmware compilation and cannot prove BIN provenance or hardware behavior.
+- Guarded workflow re-read: `.github/workflows/jexfyz-app-build-trigger.yml`, blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; event types are only `issues/opened` and `issues/reopened`; guard requires repository-owner author, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. Existing issue #34 is open and meets all three checks. Trigger will be emitted by closing then reopening **that same issue**, so only the allowed `issues/reopened` event can start the official workflow. No push/PR/dispatch trigger or workflow edit will be added.
+- Android `versionName "Telegram @horizontalzzz"` remains unchanged. Scope exclusions: no Firmware compile, BIN generation/publication, Firebase production metadata, OTA, flashing or physical-device action.
+- **Preflight recorded; official trigger pending.** After triggering, append the exact run number/source SHA, inspect each gate and logs, apply only evidence-based App-scope repairs, and record final release/signature/source-archive digests or the precise blocker below.
+
+---
+
 ## LATEST SUCCESSFUL APP BUILD — BUILD #106 (VERIFIED RELEASE; CURRENT UI FOLLOW-UP PENDING)
 
 - **Build #106:** [Actions run 39279938461](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39279938461) completed successfully on source commit `9f90cf6063ee7786613f8b5dfa1c6b0412d89638`. Analyzer exited 0 with 25 info-level findings and no errors/warnings; **108 Flutter tests passed**; the configured Android Gradle gate passed; APK signing, official certificate, corresponding source archive, downloaded asset digest and exact source-marker checks passed.
