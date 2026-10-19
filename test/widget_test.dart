@@ -17,6 +17,20 @@ import 'package:jexfyz_cooler/app_settings.dart';
 import 'package:jexfyz_cooler/floating_monitor.dart';
 
 void main() {
+  test('Generic action glyphs stay static outside telemetry-driven indicators', () {
+    final glyph = File('lib/jex_animated_glyph.dart').readAsStringSync();
+    final app = File('lib/main.dart').readAsStringSync();
+
+    expect(glyph, contains('class JexAnimatedGlyph extends StatelessWidget'));
+    expect(glyph, contains('RepaintBoundary'));
+    expect(glyph, contains('child: Icon('));
+    expect(glyph, isNot(contains('AnimationController')));
+    expect(glyph, isNot(contains('.repeat(')));
+    expect(glyph, isNot(contains('Transform.scale')));
+    expect(app, contains('class _JexAnimatedIconState'));
+    expect(app, contains('jexIconAnimationPermitted'));
+  });
+
   test('Display-menu lock policy covers all disconnected menus and Adaptive-only restrictions', () {
     for (var tab = 0; tab < 5; tab++) {
       expect(
