@@ -1,3 +1,11 @@
+## CURRENT SOURCE FOLLOW-UP — HOME STATUS / NOTIFY COPY AND LOCALIZATION (NOT RUN / NOT RELEASED)
+
+- Baseline at execution start was main HEAD 27f1b572af2db8c73d325defed196086207649c8. Latest successful release remains Build #100 from source 51bea70b2ca17f285bf35c3e547dc44c70f26d59.
+- Changes centralize localized reason mapping, remove raw internal tokens including PELTIER_SAFETY_LATCH from visible UI, standardize confirmation-failure copy in English/Indonesian, and shorten Home status-category labels.
+- Code/test blobs: lib/main.dart 931b7e2d074b1006622b0f83cc6db3f8ce43a400; lib/app_settings.dart e91ecd2a00eafdec3f681daabb74fd49fcd25bf2; test/widget_test.dart ff419072b6eca1f3dc2c932b6290e3d664f75c17.
+- Regression tests were added but have NOT RUN. Flutter/Dart analyzer was not run. No APK/build/release was run; no Firmware/BIN/Firebase/OTA/flash/device action occurred.
+- Build #100 remains latest and does not contain this follow-up. Separate @Thinking Eksekusi Build App! authorization is required for official validation/release.
+
 ## LATEST SUCCESSFUL APP BUILD — BUILD #100 (STATIC ICON-STATE REDRAW RELEASED AND VERIFIED)
 
 - **Build:** [Build #100 / Actions run 39237262140](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39237262140) completed with conclusion **success** at `2026-10-19T10:30:39Z` (2026-10-19 17:30:39 Asia/Jakarta). Exact checked-out App source commit: **`51bea70b2ca17f285bf35c3e547dc44c70f26d59`**. All 21 main workflow steps and all cleanup steps completed successfully.
