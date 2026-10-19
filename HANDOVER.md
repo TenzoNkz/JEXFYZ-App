@@ -1,27 +1,26 @@
 # JE X FYZ / JE Cooler — Current Handover
 
+Reconciled against live GitHub on 2026-10-19 (Asia/Jakarta). Latest successful release is Build #95 from `cd691b874ddb0e454ba69891a3e0da3001df892f`, with 99/99 Flutter tests passing and all guarded release checks verified. Current animation-smoothness changes are newer source, **NOT RUN / NOT RELEASED**. No analyzer/test/build was run in this source-only follow-up. Final post-write HEAD/tree and fingerprints are in `CHAT_TRANSFER.md`.
+
 Refreshed against live `main` on 2026-10-19 (Asia/Jakarta). The newest verified artifact is Build #92 from `6610fecb3e47d9941cbf96043b7da3b2a869753b`, with 98/98 Flutter tests passing and all guarded release checks verified. This task adds a newer seven-icon source/test follow-up; it is **NOT RUN / NOT RELEASED**. Exact post-write HEAD/tree/source/doc hashes belong in `CHAT_TRANSFER.md`. No App Build or Firmware/device operation is authorized by this command.
 
 ## Latest successful build and current source boundary
 
-- Latest successful verified artifact remains **Build #92** / [Actions run `39211726896`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39211726896), source commit `6610fecb3e47d9941cbf96043b7da3b2a869753b`. All 21 workflow steps passed; **98/98 Flutter tests passed**, analysis passed with 23 informational deprecations, Android configured gate, obfuscated APK, required V1/V2/V3 signing/certificate, corresponding-source ZIP, downloaded asset hashes, and Release/tag/source equality passed. Native JUnit tasks were NO-SOURCE.
-- Build #92 APK: asset `655482761`, 54,636,635 bytes, SHA-256 `ee3ce9cb9697b8bcabf4da829fc64c16524bbe914eb83901f5d21c855d706926`. Source ZIP: asset `655482764`, 2,857,021 bytes, SHA-256 `7ec969d092638790dd36b5d71c758b68cdc11a0e8db2bdfb390c812f541e677a`.
-- **Current follow-up after Build #92:** `lib/main.dart` changes thermal warning to include falling fire particles inside Battery/Hotside; converts Fan from five narrow blades to exactly three broad swept blades; and adds a consistent, restrained luminous-core effect to Battery/Hotside, Voltage, Adaptive, Peltier, Fan, and the Fan Speed gauge. The six-branch snow crystal, two-arrow Adaptive motion, Voltage spine/branch pulse, PWM gauge state gates and fixed three airflow ribbons remain distinct.
-- Source/test blobs: `lib/main.dart` `ec8d682432946bd5b9afea925685855d632610b8`; `test/widget_test.dart` `ab0862470846455465b65ec294d33d39c07aac62`. Regression contracts now cover falling fire, exactly three rotor blades, and the shared luminous-core style. They have **NOT RUN**.
-- Follow-up state: **SOURCE IMPLEMENTED / NOT RUN / NOT RELEASED**. Build #92 remains the latest successful APK and does not contain this follow-up. No Dart analysis, Flutter tests, App Build/release, firmware/BIN/Firebase/OTA/flash or device operation was performed in this Full execution.
+- Latest successful verified artifact remains **Build #95** / [Actions run 39217718351](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39217718351), packaged from `cd691b874ddb0e454ba69891a3e0da3001df892f`. **99/99 Flutter tests passed**; analyzer passed with 23 info-level deprecations; all 21 guarded release steps, APK signatures/certificate, source ZIP, asset integrity and Release/tag/source checks passed. Native JUnit tasks were NO-SOURCE.
+- APK asset `655596091` SHA-256 `856718ada30c5ef5081b5bb28a5e00c3b9d234e00ebced58a211112cc381140d`; source ZIP `655596090` SHA-256 `262d552e564b7c0a1727048a2e2897777ff18fa7296381a77f2c10236784ce7e`.
+- Current source follow-up after Build #95 is **NOT RUN / NOT RELEASED**. Source blob `lib/main.dart` `f0bc1375799e7b9e4466a3124ddb031d5f58e522`; test blob `test/widget_test.dart` `653a67f3c946bb10c0da350f9677e19b3275ed58`. Flutter/Dart CLI is unavailable, so analysis and tests were not run.
+- Motion changes address slow icon cycles, tiny fire/snow particles, visible phase wrap, whole-glyph breathing, Peltier crystal rotation coupled to snowfall, and abrupt Fan angular-rate changes. Cycles are Battery 1500 ms, Hotside 1650 ms, Voltage 1000 ms, Adaptive 2300 ms, Peltier 2100 ms. Fire/snow gain smooth boundary fades and periodic drift; main Home glyph becomes 26 dp inside the same 38 dp tile; Fan speed is integrated from persistent phase and smoothly retargeted across voltage/PWM changes.
+- Device/control invariants remain unchanged. No App Build/release, Firmware/BIN/Firebase/OTA/flash/device operation was performed. Physical-device smoothness remains UNVERIFIED.
 
-## Approved seven-icon behavior
+## Current approved motion details
 
-- **Battery Temperature:** recognizable battery shell and temperature level; warning state adds anchored heat tongues and three pointed ember particles falling inside the battery cavity, fading in and out.
-- **Hotside Temperature:** continuous thermometer contour and live temperature column; warning state adds falling embers clipped to the thermometer body and a restrained thermal halo. Existing configured threshold is unchanged.
-- **Voltage:** lightning bolt with luminous core, pulsed current along its closed spine and staggered internal branch strikes; 5V red, 9V green, 12V blue.
-- **Adaptive:** two opposite arrowheads on separate arcs rotate together when authoritative Adaptive state is ON; OFF remains full-colour and static.
-- **Peltier:** six-branch snowflake/crystal with faceted core and falling branched snowflakes behind it. State/intensity policy remains unchanged.
-- **Fan:** exactly three broad swept blades, layered hub, smooth phase rotation according to existing voltage/PWM policy, and exactly three fixed airflow ribbons behind it. The airflow does not change shape/count/colour with PWM; only the rotor changes speed.
-- **Fan Speed:** upper-half gauge and smooth retargeting to known PWM. OFF maps to the established left endpoint, 100% to right; unknown/disconnected values hide the needle.
-- Generic navigation/settings glyphs remain static. Bluetooth remains static and indicates state through semantic colour. BLE disconnect stops/resets telemetry-driven icon animation.
-- Floating Monitor is still letter-only B/H/V/A/P/F (F = Fan Speed); replacing those letters with pictograms requires a separate design/layout approval. All values remain firmware-telemetry-derived; no fabricated OFF or 0 values.
-- Visual preview, physical-screen motion, live BLE/PWM response and thermal/safety behavior are **UNVERIFIED** until separately validated. Only `@Thinking Eksekusi Build App!` authorizes App analyzer/test/build/release workflow.
+- Battery/Hotside: three larger falling ember teardrops; existing warning predicates/thresholds and 280 ms transition remain.
+- Voltage: existing path-following bolt current, unchanged semantic 5V red / 9V green / 12V blue.
+- Adaptive: two opposing circular arrows; active-only animation; stable OFF pose.
+- Peltier: falling branched snow fades at boundaries; primary six-branch crystal stays anchored with a subtle rock.
+- Fan: exactly three blades and three fixed airflow ribbons. Existing voltage/PWM target mapping remains; rotation integrates angular rate and preserves accumulated phase.
+- Fan Speed: semicircular gauge and existing PWM mapping remain; unknown/disconnected values do not produce a needle.
+
 
 
 ## FPS retirement and current Floating Monitor
