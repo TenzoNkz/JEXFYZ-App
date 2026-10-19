@@ -181,6 +181,33 @@ void main() {
     expect(airflow, contains('These streamlines orbit inside the rotor footprint'));
     expect(airflow, contains('math.sin(startAngle)'));
     expect(airflow, isNot(contains('final x1 = s * (.70 + offset * .095)')));
+
+    final peltierStart = painter.indexOf('case JexAnimatedIconKind.peltier:');
+    final peltierEnd = painter.indexOf('case JexAnimatedIconKind.fan:', peltierStart);
+    final peltier = painter.substring(peltierStart, peltierEnd);
+    expect(peltier, contains('canvas.rotate(frostAngle)'));
+    expect(peltier, contains('moving: active'));
+    expect(
+      peltier.indexOf('_drawFrostParticles'),
+      lessThan(peltier.indexOf('canvas.rotate(frostAngle)')),
+      reason: 'Snowflakes should be drawn behind the rotating crystal.',
+    );
+
+    final voltageStart = painter.indexOf('case JexAnimatedIconKind.voltage:');
+    final voltageEnd = painter.indexOf('case JexAnimatedIconKind.adaptive:', voltageStart);
+    final voltage = painter.substring(voltageStart, voltageEnd);
+    expect(voltage, contains('final electricalSpine = Path()'));
+    expect(voltage, contains('..close();'));
+    expect(voltage, contains('metric.extractPath'));
+
+    final fanStart = painter.indexOf('case JexAnimatedIconKind.fan:');
+    final fanEnd = painter.indexOf('case JexAnimatedIconKind.speed:', fanStart);
+    final fan = painter.substring(fanStart, fanEnd);
+    expect(
+      fan.indexOf('_drawFanAirflow'),
+      lessThan(fan.indexOf('final rotor = _fanSilhouette')),
+      reason: 'Airflow must be painted behind the fan rotor.',
+    );
   });
 
   testWidgets('tamper screen shows an insult-only wall and opens developer contact',
