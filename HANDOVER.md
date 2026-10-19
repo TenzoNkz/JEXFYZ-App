@@ -26,7 +26,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #108 is 
 - User decided to retire FPS after repeated F:--/Shizuku UserService failures. FPS, SurfaceFlinger TimeStats sampling, Shizuku permission/status UI/API/provider/dependency, UserService/AIDL, FPS-only tests and Shizuku-only notice/license files were removed from active source.
 - The HUD has exactly six metrics: B (Battery), H (Hotside), V (Voltage), A (Adaptive), P (Peltier), F (Fan/Kipas label; current value is live speed). Schema v2 drops old schema-v1 F (FPS) and maps old S (Speed) to F. Fan telemetry and firmware speed control are unchanged.
 - Overlay remains Letters-only, freely draggable, with saved coordinates; horizontal metrics centered as a group, vertical rows left aligned; size 0.30×–1.00× by 0.05× (default 0.60×); background opacity 0–100% by 5%, current value and endpoint marks only, no midpoint. Physical layout and live BLE metric behavior remain UNVERIFIED on the phone.
-Historical note: Build #95 was a successful intermediate release, later superseded by Build #100 and then Build #106. The current left-aligned NOTIFY and Battery/Hotside/Voltage visual follow-up is newer than Build #106 and remains untested/unreleased pending separate validation.
+Historical note: Build #95 was a successful intermediate release, later superseded by Builds #100, #106 and #108. The current Home geometry correction (44 dp metric rows, original left-icon/text-left NOTIFY Row, badge removed, 56 dp card/slot) is newer than Build #108 and remains untested/unreleased pending separate validation.
 
 ## Firmware / OTA boundary
 
