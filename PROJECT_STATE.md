@@ -1,33 +1,35 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Current state refreshed against live GitHub `main` on 2026-10-19 (Asia/Jakarta). Latest successful released artifact is Build #95 at source `cd691b874ddb0e454ba69891a3e0da3001df892f`. The animation smoothness follow-up is newer source and **NOT RUN / NOT RELEASED**. `CHAT_TRANSFER.md` records final HEAD/tree and changed blobs; `APP_BUILD_REPORT.md` owns release evidence.
+Current state reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Latest successful released artifact is Build #99 at source bc1498d5b3db7621ee18f5ca6f021e6013c73b09. A further static-icon-state redraw is source-only after Build #99 and is NOT RUN / NOT RELEASED. APP_BUILD_REPORT.md owns build evidence; CHAT_TRANSFER.md records the final handoff snapshot.
 
-## Current App / Release state — Build #95 verified; smoothness follow-up is NOT RELEASED
+## Current App / Release state — Build #99 verified; next icon-state redraw is NOT RELEASED
 
-- Canonical repo: `TenzoNkz/JEXFYZ-App`, branch `main`. The source-level motion follow-up was committed at `fcfc76278aca22138c26113601560f3973c6b17a`, based on live source tree `bd8422a2bcb51ff574135e2170e47cf80b45c791`.
-- Latest successful App artifact: **Build #95** / [Actions run 39217718351](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39217718351), exact source `cd691b874ddb0e454ba69891a3e0da3001df892f`. All 21 workflow steps passed; 99/99 Flutter tests passed; analyzer exited 0 with 23 info-level deprecations; APK/signing/certificate/source-ZIP/release-tag checks passed. Native JUnit tasks were NO-SOURCE.
-- Build #95 APK asset `655596091`, SHA-256 `856718ada30c5ef5081b5bb28a5e00c3b9d234e00ebced58a211112cc381140d`; source ZIP asset `655596090`, SHA-256 `262d552e564b7c0a1727048a2e2897777ff18fa7296381a77f2c10236784ce7e`.
-- **Current source-only smoothness follow-up:** `lib/main.dart` blob `f0bc1375799e7b9e4466a3124ddb031d5f58e522`; `test/widget_test.dart` blob `aaf911cdcf5e23a23b80c2ef47ca4e11d406f9cf`. Battery/Hotside/Voltage/Adaptive/Peltier cycles are 1500/1650/1000/2300/2100 ms; falling particles are larger with eased fades; whole-icon breathing is removed; Peltier crystal motion is decoupled from snowfall; Home glyph increases from 22 to 26 dp inside the existing tile; Fan angular rate is smoothly retargeted from accumulated phase without resetting its angle.
-- Updated tests cover particle-fade math, Fan rate integration, cycle targets, crystal motion separation, painter repaint dependencies and Home glyph size. Neither `flutter` nor `dart` CLI is installed: analyzer/tests are **NOT RUN**. Build #95 does not contain this follow-up. Physical phone smoothness is UNVERIFIED.
-- No App Build/release, firmware/BIN, Firebase, OTA, flash or device operation was performed.
+- Canonical repo: TenzoNkz/JEXFYZ-App, branch main. Latest successful artifact is Build #99 / [Actions run 39230380636](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39230380636), exact packaged source bc1498d5b3db7621ee18f5ca6f021e6013c73b09.
+- Build #99 passed all 21 workflow steps, analyzer (25 info-level findings, no errors/warnings), 102/102 Flutter tests, APK V1/V2/V3 signing/certificate, matching source ZIP, re-downloaded asset integrity and Release/tag/source equality. Native JUnit tasks were NO-SOURCE.
+- Build #99 APK asset 655835412, SHA-256 06a3e4edc7ff911c66cda8b152d4f2acbc11f41b2ccd2f009aa966510aa89096. Source ZIP asset 655835414, SHA-256 490ef913574a38fd47644422aa52b11f09c2d47895ba4f3e21db466e47aa8229. Tag/release target Build #99 source; do not manually move the tag.
+- New source-only visual-state redraw after Build #99: lib/main.dart blob 6a008c5c3e5ba7118e948e0b1f36277c01e73529; test/widget_test.dart blob 94dad7a7506fbcbeea63f300ea25b7f32299d471. It reworks all seven icon families' static/unknown-state surfaces: battery inset/thermal motif, thermometer graduations/bulb bezel, bolt inset face, stronger Adaptive arrows, faceted snow crystal, three-blade fan bearing/highlights, and speedometer bezel/11-tick scale. It preserves Build #99's smoothness architecture, state gates, telemetry and control behavior.
+- This follow-up is NOT RUN / NOT ANALYZED / NOT RELEASED and is not included in Build #99. The earlier phase-integrated Fan simulation, periodic particle fade and 26 dp Home glyph were validated by Build #99; the added disconnected/idle drawing changes were not. Physical-phone appearance, frame timing, BLE/PWM and cooling/safety behavior remain UNVERIFIED.
+- No App Build/release was started by this execution. No Firmware/BIN/Firebase/OTA/flash/device operation occurred. Preserve Gradle versionName "Telegram @horizontalzzz".
 
 ## Current source fingerprints
 
-- `lib/main.dart`: `f0bc1375799e7b9e4466a3124ddb031d5f58e522` — smoothness follow-up; NOT RUN / NOT RELEASED.
-- `test/widget_test.dart`: `aaf911cdcf5e23a23b80c2ef47ca4e11d406f9cf` — updated cadence, particle fade, fan integration, crystal separation and Home size contracts; NOT RUN.
-- `lib/jex_animated_glyph.dart`: `b37fc4e0807c874b2f01db00c7f606810cb5deca` — generic navigation/settings/action glyphs remain static.
-- Other unchanged contract tests include `test/floating_monitor_layout_contract_test.dart`, `test/v6_7_qc_contract_test.dart`, `test/app_protocol_notify_contract_test.dart`, and `test/firmware_touch_adaptive_sync_test.dart`.
-- App config stays pubspec `1.0.0+3`, package `com.horizontalzzz.jexfyz`, minSdk 24, targetSdk 36, compileSdk 37. Preserve Gradle `versionName "Telegram @horizontalzzz"`.
+- lib/main.dart: 6a008c5c3e5ba7118e948e0b1f36277c01e73529 — static/idle icon-state redraw staged after Build #99; not run/released.
+- test/widget_test.dart: 94dad7a7506fbcbeea63f300ea25b7f32299d471 — source contract for detailed static geometry/unknown states and revised 11-tick gauge; not run.
+- lib/jex_animated_glyph.dart: b37fc4e0807c874b2f01db00c7f606810cb5deca — generic navigation/settings/action glyphs remain static.
+- Existing independent contract tests remain test/floating_monitor_layout_contract_test.dart, test/v6_7_qc_contract_test.dart, test/app_protocol_notify_contract_test.dart and test/firmware_touch_adaptive_sync_test.dart.
+- App config: pubspec 1.0.0+3, applicationId com.horizontalzzz.jexfyz, minSdk 24, targetSdk 36, compileSdk 37.
 
-## Current approved icon animation rules
+## Current approved seven-icon rules and static-state redraw
 
-- Battery/Hotside: anchored flame tongues during connected warning state plus three embers falling downward within the shape and fading smoothly, in the same direction family as Peltier snow. Existing thermal thresholds/colours and firmware safety are unchanged.
-- Voltage: illuminated bolt with closed-spine pulse and staggered internal strikes; semantic colours remain 5V red, 9V green, 12V blue.
-- Adaptive: two opposite arrows on circular arcs; only authoritative active state rotates the arcs.
-- Peltier: six-branch crystal with falling snowflakes behind it; existing intensity/state gating stays intact.
-- Fan: three-blade rotor, shared subtle glow, same voltage/PWM timing policy and fixed three airflow ribbons.
-- Fan Speed: upper-half gauge, smooth PWM retarget, hidden needle for unknown/disconnected values.
-- BLE disconnect stops/resets custom animation controllers. Floating Monitor remains compact B/H/V/A/P/F labels; no values are fabricated. Physical display, real BLE/PWM and cooling/safety remain UNVERIFIED.
+- Battery Temperature: recessed inner window and small neutral thermal emblem in unknown state; valid temperature uses existing mapped presentation and falling fire/warning follows the existing predicates.
+- Hotside Temperature: continuous tube-and-bulb contour, dark recessed tube, fixed scale graduations and bulb bezel even when unknown; live column only when data is valid.
+- Voltage: recessed shadowed bolt and inner luminous face; travelling current and staggered branches remain active-state gated. Colours remain 5V red, 9V green, 12V blue.
+- Adaptive: strong dual circular arrows and recessed orbit track in every state; rotation only while authoritatively ON.
+- Peltier: stronger beveled six-branch crystal and faceted core; falling snow appears only while the existing active-state rule permits it, not as frozen stray particles in disconnected/OFF poses.
+- Fan: exactly three swept blades, three fixed airflow ribbons, recessed bearing ring, per-blade highlights and hub; existing voltage/PWM mapping and integrated phase retarget remain.
+- Fan Speed: semicircle with recessed bezel, 11 graded scale ticks and layered pivot. Needle appears only for valid authoritative PWM.
+- Unknown telemetry never becomes fabricated OFF/zero status. Floating Monitor stays B/H/V/A/P/F; no BLE, controls, Firmware or safety semantics change.
+
 
 
 ## Repository topology and roles
