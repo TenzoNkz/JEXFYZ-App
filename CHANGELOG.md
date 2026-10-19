@@ -1,5 +1,14 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-19 — Professional Home STATUS / NOTIFY copy and localization (source-only; NOT RUN / NOT RELEASED)
+
+- Added shared localized reason mapping and Home-notification normalization so known firmware/safety reasons become actionable English/Indonesian copy and internal identifiers such as PELTIER_SAFETY_LATCH are not shown in the UI.
+- Peltier command failures no longer append raw safetyReason to human copy. Unknown underscore tokens are removed or mapped to generic localized status wording.
+- Category labels are now concise: STATUS / STATUS, CONNECTION / KONEKSI, SYNC / SINKRONISASI, WARNING / PERINGATAN and ERROR / ERROR.
+- Regression assertions were added for Peltier latch text, voltage-failure wording, unknown-reason fallback, category labels and confirmation-failure classification. Tests/analyzer have not run; Build #100 remains latest release and does not include this follow-up.
+- No BLE command/protocol, firmware safety predicate, telemetry semantics, Firmware/BIN, Firebase/OTA or hardware behavior was changed.
+
+
 ## 2026-10-19 — Static / unknown-state icon-family redraw (source-only; NOT RUN / NOT RELEASED)
 
 - Reworked the inactive/disconnected visual pose across all seven Home indicators because the supplied screenshot showed thin/empty glyphs when animation stopped. This source change is after Build #99; it has not been tested or released.
