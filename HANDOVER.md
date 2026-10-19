@@ -6,7 +6,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #108 is 
 
 - Latest successful release: Build #108 / Actions run 39294761979, packaged source commit `51f401c90085b0bef5599375f7819d0294375938`. Analyzer exited 0 with 25 info-level findings/no warnings or errors, 107 Flutter tests passed, the configured Android gate passed, and APK signing/source ZIP/downloaded assets/source-marker checks were verified.
 - APK asset `656953696`, 54,734,939 bytes, SHA-256 `a7e46390a2b8a487eb85e69d33af685dbc79f9814c201cce9fd255e1164cf8ed`; source ZIP asset `656953697`, 2,866,251 bytes, SHA-256 `4b3095747a711888afa9879e70cd8d3fc74b22659e68f338e6e8cbc2430d12be`.
-- Current Home geometry correction is newer than Build #108, NOT RUN / NOT RELEASED: `lib/main.dart` blob `0341122a53e7a6bb00d9f079bfcb350b385c83cb`; `test/widget_test.dart` blob `b240231403c26071e618f3da1e82b379ff912adf`.
+- Current Home geometry correction is newer than Build #108, NOT RUN / NOT RELEASED: `lib/main.dart` blob `0341122a53e7a6bb00d9f079bfcb350b385c83cb`; `test/widget_test.dart` blob `eeee8dcdb9dd88b985145e059913759f5f325920`.
 - Restored Home metric rows to 44 dp. NOTIFY is restored to the original left-icon/text-left Row, the separate connection badge is removed, body text stays normal size and wraps to at most two lines, and the card/slot is 56 dp. No other Home layout, tab, image, icon animation, BLE or control behavior was intentionally changed.
 - The new row/card source contracts have NOT RUN. Do not infer they passed from Build #108; its source preceded this correction. No App Build was started.
 - Firmware V6.8 remains a separate, uncompiled/uninstalled source change. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
