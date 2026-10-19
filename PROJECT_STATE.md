@@ -1,15 +1,19 @@
 # JE X FYZ / JE Cooler — Current Project State
 
+Current state reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #100 is the latest successful release; a notification copy/localization follow-up is source-only after Build #100 and is NOT RUN / NOT RELEASED. APP_BUILD_REPORT.md owns build evidence; CHAT_TRANSFER.md is the final handoff snapshot.
+
 Current state reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Latest successful released artifact is Build #99 at source bc1498d5b3db7621ee18f5ca6f021e6013c73b09. A further static-icon-state redraw is source-only after Build #99 and is NOT RUN / NOT RELEASED. APP_BUILD_REPORT.md owns build evidence; CHAT_TRANSFER.md records the final handoff snapshot.
 
-## Current App / Release state — Build #99 verified; next icon-state redraw is NOT RELEASED
+## Current App / Release state — Build #100 verified; notification copy follow-up is NOT RELEASED
 
-- Canonical repo: TenzoNkz/JEXFYZ-App, branch main. Latest successful artifact is Build #99 / [Actions run 39230380636](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39230380636), exact packaged source bc1498d5b3db7621ee18f5ca6f021e6013c73b09.
-- Build #99 passed all 21 workflow steps, analyzer (25 info-level findings, no errors/warnings), 102/102 Flutter tests, APK V1/V2/V3 signing/certificate, matching source ZIP, re-downloaded asset integrity and Release/tag/source equality. Native JUnit tasks were NO-SOURCE.
-- Build #99 APK asset 655835412, SHA-256 06a3e4edc7ff911c66cda8b152d4f2acbc11f41b2ccd2f009aa966510aa89096. Source ZIP asset 655835414, SHA-256 490ef913574a38fd47644422aa52b11f09c2d47895ba4f3e21db466e47aa8229. Tag/release target Build #99 source; do not manually move the tag.
-- New source-only visual-state redraw after Build #99: lib/main.dart blob 6a008c5c3e5ba7118e948e0b1f36277c01e73529; test/widget_test.dart blob 94dad7a7506fbcbeea63f300ea25b7f32299d471. It reworks all seven icon families' static/unknown-state surfaces: battery inset/thermal motif, thermometer graduations/bulb bezel, bolt inset face, stronger Adaptive arrows, faceted snow crystal, three-blade fan bearing/highlights, and speedometer bezel/11-tick scale. It preserves Build #99's smoothness architecture, state gates, telemetry and control behavior.
-- This follow-up is NOT RUN / NOT ANALYZED / NOT RELEASED and is not included in Build #99. The earlier phase-integrated Fan simulation, periodic particle fade and 26 dp Home glyph were validated by Build #99; the added disconnected/idle drawing changes were not. Physical-phone appearance, frame timing, BLE/PWM and cooling/safety behavior remain UNVERIFIED.
-- No App Build/release was started by this execution. No Firmware/BIN/Firebase/OTA/flash/device operation occurred. Preserve Gradle versionName "Telegram @horizontalzzz".
+- Canonical repo: TenzoNkz/JEXFYZ-App, branch main. Baseline before this source update was HEAD 27f1b572af2db8c73d325defed196086207649c8; the copy/test update is now committed on main after Build #100.
+- Latest successful release is Build #100 / https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39237262140, source 51bea70b2ca17f285bf35c3e547dc44c70f26d59. All 21 workflow steps passed; 103/103 Flutter tests passed; analyzer exited 0 with 25 info-level findings and no errors/warnings; configured Android gate, APK signature/certificate, source ZIP integrity and Release/tag/source equality passed. Native JUnit tasks were NO-SOURCE.
+- Build #100 APK ID 655957943, 54,718,555 bytes, SHA-256 a59c0a37b2025ad2b250bd4354b887379d96658e9f7757692691fa23b7b4d0a2. Source ZIP ID 655957946, 2,862,476 bytes, SHA-256 e60c4705097009d843b624bf8f0f989770a76aba6fdfbdd8d2159d77f98890f1.
+- Current notification copy follow-up is source-only / NOT RUN / NOT RELEASED. Blobs: lib/main.dart 931b7e2d074b1006622b0f83cc6db3f8ce43a400; lib/app_settings.dart e91ecd2a00eafdec3f681daabb74fd49fcd25bf2; test/widget_test.dart ff419072b6eca1f3dc2c932b6290e3d664f75c17.
+- It removes raw internal reason codes from visible Home copy, maps known safety reasons, standardizes confirmation failures in English/Indonesian, and shortens category labels. New test cases have not run; Build #100 does not contain this follow-up.
+- Do not change the guarded Build App workflow. A separate @Thinking Eksekusi Build App! is required to validate/release this source. Firmware V6.7, BIN, Firebase, OTA, flash and physical hardware are untouched.
+
+## Current source fingerprints
 
 ## Current source fingerprints
 
