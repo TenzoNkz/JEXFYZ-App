@@ -1,14 +1,19 @@
 # JE X FYZ / JE Cooler — Changelog
 
-## 2026-10-19 — Seven-icon animation rework (source only; NOT RELEASED)
+## 2026-10-19 — Animation smoothness rework (source-only; NOT RUN / NOT RELEASED)
 
-- Battery and Hotside warning icons now combine anchored thermal tongues, a restrained red luminous halo and three phase-locked ember drops that fall top-to-bottom within their cavities and fade at both ends, mirroring the vertical fall family of Peltier snow while retaining distinct fire shapes/colour.
-- Fan rotor geometry changes from five narrow blades to three broad swept blades. Its existing rotation/timing/state gates remain authoritative; the three fixed airflow ribbons are unchanged.
-- Applied a shared blurred luminous-core treatment to Battery/Hotside, Voltage, Adaptive arcs, Peltier crystal, Fan rotor and Fan Speed active arc/needle. Voltage branch-spine animation, two-arrow Adaptive flow, falling Peltier snow and the half-circle PWM gauge stay data/state driven.
-- Added/updated source-contract tests for falling fire, three-blade rotor geometry, helper boundaries and unchanged state gates. These tests have NOT RUN in this execution.
-- Baseline successful release is Build #92 / [Actions run 39211726896](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39211726896), exact source `6610fecb3e47d9941cbf96043b7da3b2a869753b`, 98/98 Flutter tests passed. This source follow-up is newer than Build #92 and is NOT RUN / NOT RELEASED. No App Build, Firmware/BIN/Firebase/OTA/flash or device operation occurred.
-- Live source/test blobs after this patch: `lib/main.dart` `ec8d682432946bd5b9afea925685855d632610b8`; `test/widget_test.dart` `ab0862470846455465b65ec294d33d39c07aac62`. Documentation and final transfer hashes will be re-fetched after the last write.
+- Likely stiffness contributors found in the live source and recording: 4.2–6.4 s animation cycles at tiny glyph size, small fire/snow particles, non-integer phase drift, whole-icon breathing, crystal spin locked to snowfall, and abrupt Fan angular-speed changes when PWM/voltage changed cycle duration.
+- Cadences are now Battery 1500 ms, Hotside 1650 ms, Voltage 1000 ms, Adaptive 2300 ms, Peltier 2100 ms. These are UI animation parameters only; hardware/telemetry semantics remain unchanged.
+- Falling fire/snow uses larger shapes with smooth boundary fade and phase-periodic drift. The main snowflake no longer rotates fully at the snow-particle rate. Whole-icon breathing is removed; Home glyph rises 22→26 dp within the unchanged 38×38 dp tile.
+- Fan retains exactly three blades and three fixed airflow ribbons. An unbounded phase simulation integrates smoothstep angular-rate changes over 420 ms on valid PWM/voltage retargets, so the rotor angle is preserved. Confirmed OFF decelerates to zero; disconnect resets phase under existing policy.
+- Test source was updated for particle-fade math, integrated fan rate/phase, durations, Peltier motion separation, painter repaint dependencies, and Home icon sizing. Neither Flutter nor Dart CLI was available; tests/analyzer were NOT RUN. The follow-up is not in Build #95; physical-phone smoothness remains UNVERIFIED.
 
+
+## 2026-10-19 — Seven-icon animation rework (initial version; included in Build #95)
+
+- Initial source rework added three downward-falling ember drops to Battery/Hotside, changed Fan to three broad swept blades, and applied a shared luminous-core treatment to the seven indicator family while preserving device-control semantics.
+- That initial version was validated and released as Build #95 / [Actions run 39217718351](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39217718351), source commit `cd691b874ddb0e454ba69891a3e0da3001df892f`, with 99/99 Flutter tests passing and release/tag/source evidence verified.
+- The new animation-smoothness follow-up is a separate post-Build-#95 source revision and is NOT RUN / NOT RELEASED.
 
 ## 2026-10-19 — Finalize Industrial Premium / Precise icon-motion policy (source follow-up; NOT RELEASED)
 
