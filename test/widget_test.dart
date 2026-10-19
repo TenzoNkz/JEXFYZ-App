@@ -1260,7 +1260,7 @@ void main() {
     expect(speed, contains('..lineTo(tip.dx, tip.dy);'));
     expect(speed, contains('const tickCount = 9'));
     expect(speed, contains('if (active && safeLevel > 0)'));
-    expect(speed, contains('mainColor.withValues(alpha: .92)'));
+    expect(speed, contains('mainColor.withValues(alpha: opacity)'));
   });
 
   test('Integrated indicator animation preserves seamless phase transitions', () {
