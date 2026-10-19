@@ -60,7 +60,7 @@ Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 
 ## Current Adaptive Fan PWM — V6.8 deterministic Hotside-limit tiers
 
-- Active editable source: `firmware/JEXFYZ-V6.8.ino`, blob `4f8011337fc3c9e3f1ace717fbd7179e1331bff8`, embedded `FW_VERSION="V6.8"`. The source was updated but has **NOT been compiled or installed**; source-to-BIN provenance and current device version remain UNVERIFIED.
+- Active editable source: `firmware/JEXFYZ-V6.8.ino`, blob `7b4df708708e021aad39258468eed2fde94d202f`, embedded `FW_VERSION="V6.8"`. The source was updated but has **NOT been compiled or installed**; source-to-BIN provenance and current device version remain UNVERIFIED.
 - This replaces the V6.7 trend/stability controller. In Adaptive mode at 12 V, Fan PWM is selected directly from `delta = hotLimit - hotsideC`; the old ten-sample downshift window, four-sample warming-trend test and up/down timing gates are removed.
 - Target tiers: delta ≤1°C →100%; 2°C →90%; 3°C →80%; 4°C →70%; 5°C →60%; delta ≥6°C →50%. For fractional NTC readings, the switch edges are halfway between the listed whole-degree deltas (1.5, 2.5, 3.5, 4.5 and 5.5°C), giving deterministic bins. There is no extra hysteresis or time-based dwell in this speed selector.
 - Reaching the configured Hotside limit or an active Hotside protection state forces 100%. Adaptive 5 V/9 V remains at 100%. Voltage handoff, Adaptive thermal dwell, inactive/paused cooling outputs, invalid NTC fail-safe, Peltier safety, and OTA safety keep their existing priority. NTC sampling remains one calibrated sample per second; no ADC filter, delay or timing loop was added.
