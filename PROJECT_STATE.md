@@ -1,23 +1,23 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Current state refreshed against live GitHub `main` on 2026-10-19 (Asia/Jakarta). The latest successful App artifact is Build #92 at source `6610fecb3e47d9941cbf96043b7da3b2a869753b`; this seven-icon source follow-up is newer and **NOT RUN / NOT RELEASED**. The final `CHAT_TRANSFER.md` records the exact pre-transfer HEAD/tree and current source/document blobs. Use `APP_BUILD_REPORT.md` for authoritative build evidence and `CHANGELOG.md` for history.
+Current state refreshed against live GitHub `main` on 2026-10-19 (Asia/Jakarta). Latest successful released artifact is Build #95 at source `cd691b874ddb0e454ba69891a3e0da3001df892f`. The animation smoothness follow-up is newer source and **NOT RUN / NOT RELEASED**. `CHAT_TRANSFER.md` records final HEAD/tree and changed blobs; `APP_BUILD_REPORT.md` owns release evidence.
 
-## Current App / Release state — Build #92 verified; seven-icon follow-up is NOT RELEASED
+## Current App / Release state — Build #95 verified; smoothness follow-up is NOT RELEASED
 
-- Canonical repo: `TenzoNkz/JEXFYZ-App`, branch `main`. Source-only icon rework baseline begins at Build #92 source commit `6610fecb3e47d9941cbf96043b7da3b2a869753b`; exact final current HEAD/tree and hashes are recorded in `CHAT_TRANSFER.md`.
-- Latest successful App artifact is **Build #92** / [Actions run `39211726896`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39211726896). All 21 workflow steps passed; **98/98 Flutter tests passed**, analyzer had 23 info-level deprecation findings, configured Android gate, obfuscated APK, V1/V2/V3 production-signature/certificate checks, source ZIP, downloaded assets, and Release/tag/source consistency passed. Native JUnit tasks were NO-SOURCE.
-- Build #92 APK asset `655482761`, SHA-256 `ee3ce9cb9697b8bcabf4da829fc64c16524bbe914eb83901f5d21c855d706926`; corresponding source ZIP asset `655482764`, SHA-256 `7ec969d092638790dd36b5d71c758b68cdc11a0e8db2bdfb390c812f541e677a`.
-- **Current source-only follow-up:** battery/Hotside warning effects now use falling ember particles and thermal glow; Fan rotor is three broad blades; Voltage, Adaptive, Peltier and Fan Speed receive consistent luminous-core detail while retaining their existing motion/state/telemetry rules. New tests were added/updated to assert falling fire and three-blade geometry.
-- These changes are **NOT RUN / NOT RELEASED**. No analyzer/test/build or physical-device validation was performed in this scope. Do not report Build #92's 98/98 test result as validation of this newer commit. Build #92 remains the latest successful artifact for its exact historical source.
-- Workflow remains guarded to its official issue-event/title/token path; no workflow changes or Build App operations were performed. Keep Android Gradle `versionName "Telegram @horizontalzzz"` unchanged.
+- Canonical repo: `TenzoNkz/JEXFYZ-App`, branch `main`. The source-level motion follow-up was committed at `fcfc76278aca22138c26113601560f3973c6b17a`, based on live source tree `bd8422a2bcb51ff574135e2170e47cf80b45c791`.
+- Latest successful App artifact: **Build #95** / [Actions run 39217718351](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39217718351), exact source `cd691b874ddb0e454ba69891a3e0da3001df892f`. All 21 workflow steps passed; 99/99 Flutter tests passed; analyzer exited 0 with 23 info-level deprecations; APK/signing/certificate/source-ZIP/release-tag checks passed. Native JUnit tasks were NO-SOURCE.
+- Build #95 APK asset `655596091`, SHA-256 `856718ada30c5ef5081b5bb28a5e00c3b9d234e00ebced58a211112cc381140d`; source ZIP asset `655596090`, SHA-256 `262d552e564b7c0a1727048a2e2897777ff18fa7296381a77f2c10236784ce7e`.
+- **Current source-only smoothness follow-up:** `lib/main.dart` blob `f0bc1375799e7b9e4466a3124ddb031d5f58e522`; `test/widget_test.dart` blob `653a67f3c946bb10c0da350f9677e19b3275ed58`. Battery/Hotside/Voltage/Adaptive/Peltier cycles are 1500/1650/1000/2300/2100 ms; falling particles are larger with eased fades; whole-icon breathing is removed; Peltier crystal motion is decoupled from snowfall; Home glyph increases from 22 to 26 dp inside the existing tile; Fan angular rate is smoothly retargeted from accumulated phase without resetting its angle.
+- Updated tests cover particle-fade math, Fan rate integration, cycle targets, crystal motion separation, painter repaint dependencies and Home glyph size. Neither `flutter` nor `dart` CLI is installed: analyzer/tests are **NOT RUN**. Build #95 does not contain this follow-up. Physical phone smoothness is UNVERIFIED.
+- No App Build/release, firmware/BIN, Firebase, OTA, flash or device operation was performed.
 
 ## Current source fingerprints
 
-- `lib/main.dart`: `ec8d682432946bd5b9afea925685855d632610b8` (seven-icon animation rework; NOT RUN / NOT RELEASED).
-- `lib/jex_animated_glyph.dart`: `b37fc4e0807c874b2f01db00c7f606810cb5deca` (static generic action/settings glyphs).
-- `test/widget_test.dart`: `ab0862470846455465b65ec294d33d39c07aac62` (falling-fire and three-blade contracts; NOT RUN).
-- Other active Dart test paths remain `test/floating_monitor_layout_contract_test.dart`, `test/v6_7_qc_contract_test.dart`, `test/app_protocol_notify_contract_test.dart`, and `test/firmware_touch_adaptive_sync_test.dart`.
-- App config remains pubspec `1.0.0+3`, applicationId `com.horizontalzzz.jexfyz`, minSdk 24, targetSdk 36, compileSdk 37. Preserve Gradle `versionName "Telegram @horizontalzzz"`.
+- `lib/main.dart`: `f0bc1375799e7b9e4466a3124ddb031d5f58e522` — smoothness follow-up; NOT RUN / NOT RELEASED.
+- `test/widget_test.dart`: `653a67f3c946bb10c0da350f9677e19b3275ed58` — updated cadence, particle fade, fan integration, crystal separation and Home size contracts; NOT RUN.
+- `lib/jex_animated_glyph.dart`: `b37fc4e0807c874b2f01db00c7f606810cb5deca` — generic navigation/settings/action glyphs remain static.
+- Other unchanged contract tests include `test/floating_monitor_layout_contract_test.dart`, `test/v6_7_qc_contract_test.dart`, `test/app_protocol_notify_contract_test.dart`, and `test/firmware_touch_adaptive_sync_test.dart`.
+- App config stays pubspec `1.0.0+3`, package `com.horizontalzzz.jexfyz`, minSdk 24, targetSdk 36, compileSdk 37. Preserve Gradle `versionName "Telegram @horizontalzzz"`.
 
 ## Current approved icon animation rules
 
