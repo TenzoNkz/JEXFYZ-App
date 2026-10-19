@@ -20,18 +20,11 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 
 ## Current release and source validation boundary — 2026-10-19
 
-Latest successful released artifact is **Build #95** / [Actions run 39217718351](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39217718351), source commit `cd691b874ddb0e454ba69891a3e0da3001df892f`. All 21 guarded workflow steps passed, analyzer passed with 23 info-level deprecations, **99/99 Flutter tests passed**, APK signing/certificate, corresponding source ZIP and Release/tag/source checks passed. Native JUnit tasks were NO-SOURCE.
-- APK asset `655596091`, SHA-256 `856718ada30c5ef5081b5bb28a5e00c3b9d234e00ebced58a211112cc381140d`.
-- Source ZIP asset `655596090`, SHA-256 `262d552e564b7c0a1727048a2e2897777ff18fa7296381a77f2c10236784ce7e`.
-
-## Current animation smoothness follow-up — source only / NOT RUN / NOT RELEASED
-
-- New source blob: `lib/main.dart` `f0bc1375799e7b9e4466a3124ddb031d5f58e522`; updated test blob: `test/widget_test.dart` `aaf911cdcf5e23a23b80c2ef47ca4e11d406f9cf`.
-- Main UI icon cycles are Battery 1.5 s, Hotside 1.65 s, Voltage 1.0 s, Adaptive 2.3 s, Peltier 2.1 s; fire/snow particles are larger with eased wrap fades; phase drift is periodic; whole-icon breathing is removed; Peltier crystal rocking is separate from snowfall; Fan rate uses an integrated phase and a 420 ms smooth angular-rate retarget. Home glyphs are 26 dp in the existing 38×38 dp tile.
-- The change preserves the existing semantic colours, telemetry authority, warnings, BLE/control behavior, Fan PWM policy, three blades/airflow ribbons, and unknown-value handling.
-- The new tests/analyzer are **NOT RUN** because neither Flutter nor Dart CLI is installed. The new source is not included in Build #95. Physical-device smoothness and profile-mode frame workload remain UNVERIFIED. No Build App, Firmware/BIN, Firebase, OTA, flash, or device operation was performed.
-
-
+- Latest successful released artifact is Build #99 / [Actions run 39230380636](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39230380636), packaged from source bc1498d5b3db7621ee18f5ca6f021e6013c73b09. All 21 workflow steps passed; analyzer exited 0 with 25 info-level findings/no errors or warnings; 102/102 Flutter tests passed; APK signature/certificate, matching source ZIP, asset integrity and Release/tag/source equality passed. Native JUnit tasks were NO-SOURCE.
+- APK asset 655835412 SHA-256 06a3e4edc7ff911c66cda8b152d4f2acbc11f41b2ccd2f009aa966510aa89096; source ZIP asset 655835414 SHA-256 490ef913574a38fd47644422aa52b11f09c2d47895ba4f3e21db466e47aa8229.
+- Build #99 includes the animation-smoothness implementation: periodic particle paths/fades, 26 dp Home glyphs, decoupled Peltier crystal motion and accumulated-phase Fan retarget. Current static/unknown-state redraw is after Build #99: lib/main.dart 6a008c5c3e5ba7118e948e0b1f36277c01e73529; test/widget_test.dart 94dad7a7506fbcbeea63f300ea25b7f32299d471. NOT RUN / NOT RELEASED until validated by a separately authorized Build App flow.
+- Static redraw gives Battery a semantic low-intensity thermal emblem instead of fabricated fill when unknown; Hotside a recessed tube/graduations/bulb bezel; Voltage an inset bolt; Adaptive stronger dual arrows; Peltier a faceted six-branch crystal without frozen flakes when inactive; Fan a bearing ring and three blade highlights; Speedometer an 11-tick bezel while keeping needle hidden for unknown PWM.
+- Physical-phone visuals, profile-mode frame time, live BLE/PWM, cooling/safety and device operation remain UNVERIFIED. No Build App, Firmware/BIN, Firebase, OTA, flash or device operation occurred during this source execution.
 
 ## Repository boundaries
 
@@ -43,7 +36,7 @@ Latest successful released artifact is **Build #95** / [Actions run 39217718351]
 
 ## Remaining validation outside CI
 
-- Build #95 / run `39217718351` is the latest successful artifact, built from `cd691b874ddb0e454ba69891a3e0da3001df892f`; its 99/99 Flutter tests and guarded release/tag gates passed. The current animation-smoothness follow-up is newer than Build #95 and remains **NOT RUN / NOT RELEASED**. Do not start a build from `Eksekusi Full`; only the separate `@Thinking Eksekusi Build App!` authorizes the full validation/build/release workflow.
+- Build #99 / run 39230380636 is the latest successful artifact, built from source bc1498d5b3db7621ee18f5ca6f021e6013c73b09; its 102/102 Flutter tests and guarded release/tag gates passed. The static/unknown-state icon redraw is newer than Build #99 and remains NOT RUN / NOT RELEASED. Do not start a build from Eksekusi Full; only the separate @Thinking Eksekusi Build App! authorizes the full validation/build/release workflow.
 - Next verification step, after a separately authorized `@Thinking Eksekusi Build App!`, is to run the repaired workflow through its guarded issue trigger, confirm all required gates pass, and verify the Git tag, Release metadata, APK and source ZIP all reference the same source commit. Then verify indicator rendering and BLE/Fan telemetry on a real phone. Build #83 already contains the current painter source; physical validation remains pending.
 - App CI does not prove Firmware compilation, source-to-BIN provenance, Firebase, OTA, flash, BLE hardware, thermal/electrical safety or installed device version.
 
