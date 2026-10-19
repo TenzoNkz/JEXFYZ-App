@@ -234,8 +234,8 @@ void main() {
     expect(painter, contains('valueKnown'));
     expect(painter, contains('const start = math.pi;'));
     expect(painter, contains('const sweep = math.pi;'));
-    expect(painter, contains('active: animatedKind == JexAnimatedIconKind.speed'));
-    expect(painter, contains('active: connected && runtimeOutputsKnown && fanOn'));
+    expect(source, contains('active: animatedKind == JexAnimatedIconKind.speed'));
+    expect(source, contains('active: connected && runtimeOutputsKnown && fanOn'));
   });
 
   testWidgets('tamper screen shows an insult-only wall and opens developer contact',
