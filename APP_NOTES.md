@@ -67,8 +67,8 @@ This file is the durable App behavior/design contract. Live source and the curre
 
 - Manual voltage levels: 5 V, 9 V, 12 V. Expected user touch cycle is 5→9→12→9→5, with the established ~1-second manual-switch guard.
 - Voltage indicator LED default mapping: 5 V red, 9 V green, 12 V blue. Users can customize colors and reset to defaults.
-- PWM Fan speed control belongs in the CONTROL submenu; increments should be practical (multiples of 5 or 10).
-- Manual PWM control remains available only in Manual mode at 12V. Adaptive manages PWM automatically at 12V; Adaptive at 5V or 9V retains established full-speed Fan behavior.
+- PWM Fan speed control belongs in the CONTROL submenu. Manual PWM control is available only in Manual mode at 12V, in 50–100% increments of 10; App control remains disabled during Adaptive.
+- Adaptive Fan PWM is Firmware-owned. In V6.8 at Adaptive 12V, target speed follows the distance below `Hotside Limit`: ≤1°C →100%, 2°C →90%, 3°C →80%, 4°C →70%, 5°C →60%, and ≥6°C →50%. Fractional temperatures choose the nearest whole-degree tier with half-degree boundaries; the old trend/stability timer logic is removed. The Hotside limit/protection still forces 100%, and Adaptive at 5V/9V remains 100%. V6.8 source is not yet compiled or installed.
 - Adaptive ON locks the manual voltage touch sensor. Toggling Adaptive ON/OFF returns hardware to safe 5 V first. When leaving Adaptive, restore a previously running Peltier only through the safety gates and its normal 5-second OFF→ON soft-start.
 - The App must not claim rail transition complete until matching authoritative `VOLTAGE` telemetry confirms it.
 
