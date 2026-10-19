@@ -25,7 +25,7 @@ Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #100 is 
 - User decided to retire FPS after repeated F:--/Shizuku UserService failures. FPS, SurfaceFlinger TimeStats sampling, Shizuku permission/status UI/API/provider/dependency, UserService/AIDL, FPS-only tests and Shizuku-only notice/license files were removed from active source.
 - The HUD has exactly six metrics: B (Battery), H (Hotside), V (Voltage), A (Adaptive), P (Peltier), F (Fan/Kipas label; current value is live speed). Schema v2 drops old schema-v1 F (FPS) and maps old S (Speed) to F. Fan telemetry and firmware speed control are unchanged.
 - Overlay remains Letters-only, freely draggable, with saved coordinates; horizontal metrics centered as a group, vertical rows left aligned; size 0.30×–1.00× by 0.05× (default 0.60×); background opacity 0–100% by 5%, current value and endpoint marks only, no midpoint. Physical layout and live BLE metric behavior remain UNVERIFIED on the phone.
-- Build #95 is the latest successful artifact run and exercised the guarded release/tag verification; release metadata, source ZIP and `jexfyz-latest` matched the Build #95 source. The current animation-smoothness follow-up is newer and remains untested/unreleased pending separate validation.
+- Historical note: Build #95 was a successful intermediate release and validated the guarded tag/source check at that time. It was superseded by Build #100. The latest source-only notification text follow-up is newer than Build #100 and remains untested/unreleased pending separate validation.
 
 ## Firmware / OTA boundary
 
