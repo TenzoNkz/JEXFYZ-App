@@ -1330,13 +1330,11 @@ void main() {
   test('Fan voltage/PWM retarget integrates angular velocity without a phase reset', () {
     final source = File('lib/main.dart').readAsStringSync();
     final stateStart = source.indexOf('class _JexAnimatedIconState');
-    final stateEnd = source.indexOf('  @override\n  Widget build(BuildContext context)', stateStart);
-    final painterStart = source.indexOf('class _JexIconPainter extends CustomPainter {');
-    final painterEnd = source.indexOf('const MethodChannel securityChannel', painterStart);
+    // Include the State.build method, where normalized accumulated phase is passed into the painter.
+    final stateEnd = source.indexOf('class _JexIconPainter extends CustomPainter {', stateStart);
     expect(stateStart, isNonNegative);
     expect(stateEnd, greaterThan(stateStart));
     final iconState = source.substring(stateStart, stateEnd);
-    final painter = source.substring(painterStart, painterEnd);
 
     expect(source, contains('class _JexFanRotationSimulation extends Simulation'));
     expect(source, contains('double jexIntegratedFanCycles('));
@@ -1351,8 +1349,7 @@ void main() {
     expect(iconState, isNot(contains('_animateFanToCycleBoundary')));
     expect(iconState, isNot(contains('_fanCoastStartProgress')));
     expect(iconState, contains('_resetFanRotation();'));
-    // The normalized accumulated phase is passed into the painter from the widget build method.
-    expect(source, contains('jexNormalizedFanProgress(fanPhaseController.value)'));
+    expect(iconState, contains('jexNormalizedFanProgress(fanPhaseController.value)'));
   });
 
   test('Indicator animations stop on disconnect and OFF glyphs stay fully coloured', () {
