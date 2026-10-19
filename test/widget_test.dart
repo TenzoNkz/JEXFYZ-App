@@ -138,15 +138,49 @@ void main() {
       'final bulbRadius',
       '_drawAdaptiveFlow(canvas, s, active ? angle : 0.0, mainColor, strength)',
       'final branchPulse',
-      'final sweepRect',
-      'final glintStart',
-      'final dotX',
-      'Connection status is represented by colour, not Bluetooth-icon motion.',
+      'final electricalSpine = Path()',
+      'metric.extractPath(tail, head)',
+      'Path _flameTonguePath(',
+      'void _drawSnowflake(',
       'final rotor = _fanSilhouette(s, angle)',
+      'final needleAngle = start + sweep * safeLevel',
+      'Connection status is represented by colour, not Bluetooth-icon motion.',
     ]) {
-      expect(painter, contains(effect), reason: 'Missing distinct motion: $effect');
+      expect(painter, contains(effect), reason: 'Missing refined effect: $effect');
     }
     expect(painter, isNot(contains('_adaptiveLoop(s, angle)')));
+    expect(painter, isNot(contains('final flowAngle = phase * 2 + .6;')));
+    expect(painter, isNot(contains('final sweepRect = Rect.fromLTWH')));
+    expect(painter, isNot(contains('final glintStart = start + sweep * p;')));
+    expect(painter, isNot(contains('jexFanSpeedNeedleWobble')));
+
+    final adaptiveStart = painter.indexOf('void _drawAdaptiveFlow');
+    final adaptiveEnd = painter.indexOf('Path _crystalSilhouette', adaptiveStart);
+    final adaptive = painter.substring(adaptiveStart, adaptiveEnd);
+    expect(adaptive, isNot(contains('flowAngle')));
+    expect(adaptive, isNot(contains('Offset(center.dx + math.cos(flowAngle)')));
+
+    final flamesStart = painter.indexOf('void _drawThermalFlames');
+    final flamesEnd = painter.indexOf('void _drawSnowflake', flamesStart);
+    final flames = painter.substring(flamesStart, flamesEnd);
+    expect(flames, contains('_flameTonguePath'));
+    expect(flames, contains('baseline - height'));
+    expect(flames, isNot(contains('canvas.drawCircle')));
+    expect(flames, isNot(contains('canvas.drawLine')));
+
+    final snowStart = painter.indexOf('void _drawSnowflake');
+    final snowEnd = painter.indexOf('void _drawFanAirflow', snowStart);
+    final snow = painter.substring(snowStart, snowEnd);
+    expect(snow, contains('branchAngle'));
+    expect(snow, contains('fall * 1.24'));
+    expect(snow, isNot(contains('canvas.drawCircle')));
+
+    final airflowStart = painter.indexOf('void _drawFanAirflow');
+    final airflowEnd = painter.indexOf('@override\\n  void paint', airflowStart);
+    final airflow = painter.substring(airflowStart, airflowEnd);
+    expect(airflow, contains('These streamlines orbit inside the rotor footprint'));
+    expect(airflow, contains('math.sin(startAngle)'));
+    expect(airflow, isNot(contains('final x1 = s * (.70 + offset * .095)')));
   });
 
   testWidgets('tamper screen shows an insult-only wall and opens developer contact',
@@ -702,7 +736,6 @@ void main() {
       JexAnimatedIconKind.adaptive,
       JexAnimatedIconKind.peltier,
       JexAnimatedIconKind.fan,
-      JexAnimatedIconKind.speed,
       JexAnimatedIconKind.led,
     ]) {
       expect(
@@ -719,6 +752,15 @@ void main() {
         isFalse,
       );
     }
+    expect(
+      jexIconAnimationPermitted(
+        connected: true,
+        kind: JexAnimatedIconKind.speed,
+        stateActive: true,
+      ),
+      isFalse,
+      reason: 'Fan Speed interpolates PWM updates without a decorative phase loop.',
+    );
     expect(
       jexIconAnimationPermitted(
         connected: true,
@@ -794,11 +836,20 @@ void main() {
     expect(jexSmoothFanSpeedLevel(from: .2, to: .8, progress: .75), greaterThan(.65));
   });
 
-  test('Fan Speed needle wobble is periodic at the repeat boundary', () {
-    expect(jexFanSpeedNeedleWobble(0), closeTo(0, 1e-9));
-    expect(jexFanSpeedNeedleWobble(1), closeTo(0, 1e-9));
-    expect(jexFanSpeedNeedleWobble(.25), closeTo(.035, 1e-9));
-    expect(jexFanSpeedNeedleWobble(.75), closeTo(-.035, 1e-9));
+  test('Fan Speed needle has no autonomous wobble and follows retargeted PWM', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final painterStart = source.indexOf('class _JexIconPainter extends CustomPainter {');
+    final painterEnd = source.indexOf('const MethodChannel securityChannel', painterStart);
+    final painter = source.substring(painterStart, painterEnd);
+    final speedStart = painter.indexOf('case JexAnimatedIconKind.speed:');
+    final speedEnd = painter.indexOf('case JexAnimatedIconKind.led:', speedStart);
+    final speed = painter.substring(speedStart, speedEnd);
+
+    expect(speed, contains('final needleAngle = start + sweep * safeLevel;'));
+    expect(speed, isNot(contains('jexFanSpeedNeedleWobble')));
+    expect(speed, isNot(contains('glintStart')));
+    expect(speed, isNot(contains('canvas.drawArc(gauge, glintStart')));
+    expect(jexSmoothFanSpeedLevel(from: .2, to: .8, progress: .5), closeTo(.5, 1e-9));
   });
 
   test('LED palette exposes current RGB colors', () {
@@ -879,11 +930,11 @@ void main() {
   });
 
   test('Dashboard indicators use distinct, slower motion cycles', () {
-    expect(jexIconAnimationDuration(JexAnimatedIconKind.battery), const Duration(milliseconds: 2600));
-    expect(jexIconAnimationDuration(JexAnimatedIconKind.hotside), const Duration(milliseconds: 3200));
-    expect(jexIconAnimationDuration(JexAnimatedIconKind.voltage), const Duration(milliseconds: 1900));
-    expect(jexIconAnimationDuration(JexAnimatedIconKind.adaptive), const Duration(milliseconds: 4600));
-    expect(jexIconAnimationDuration(JexAnimatedIconKind.peltier), const Duration(milliseconds: 3000));
+    expect(jexIconAnimationDuration(JexAnimatedIconKind.battery), const Duration(milliseconds: 4200));
+    expect(jexIconAnimationDuration(JexAnimatedIconKind.hotside), const Duration(milliseconds: 4400));
+    expect(jexIconAnimationDuration(JexAnimatedIconKind.voltage), const Duration(milliseconds: 3000));
+    expect(jexIconAnimationDuration(JexAnimatedIconKind.adaptive), const Duration(milliseconds: 6400));
+    expect(jexIconAnimationDuration(JexAnimatedIconKind.peltier), const Duration(milliseconds: 5200));
     expect(jexIconAnimationDuration(JexAnimatedIconKind.fan, voltageLevel: 5), const Duration(milliseconds: 2600));
     expect(jexIconAnimationDuration(JexAnimatedIconKind.fan, voltageLevel: 9), const Duration(milliseconds: 1250));
     expect(jexIconAnimationDuration(JexAnimatedIconKind.fan, voltageLevel: 12), const Duration(milliseconds: 620));
