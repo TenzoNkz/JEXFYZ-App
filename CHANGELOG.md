@@ -10,7 +10,7 @@
 - **Status remains BLOCKED:** live release metadata/assets target `dfc7e6633298498bb6eac21182c9306d5e3cac1d`, but the live Git tag still targets `9136f11799143d91eb58e947ea10e9e576bb579f`; the repaired workflow has not yet run. `@Thinking Eksekusi Full!` did not launch Build App or retarget the release tag. A separate `@Thinking Eksekusi Build App!` is required to exercise the official guarded workflow and verify the resulting run SHA, tag ref and both asset digests.
 - No Firmware source/BIN, Firebase production metadata, OTA, flash or physical device was changed or operated.
 
-## 2026-10-19 — Refine Home indicator animation effects (source-only after Build #80)
+## 2026-10-19 — Refine Home indicator animation effects (included in Build #83; release handoff blocked)
 
 - Peltier now rotates its six-branch snow crystal over a slower phase loop; recognisable branched snowflakes fall behind the main crystal, replacing floating cross/dot particles. Voltage class still controls frost intensity/density.
 - Adaptive keeps its two directional arcs/arrowheads and removes the rotating orbit dot.
@@ -19,16 +19,15 @@
 - Fan Speed removes the moving gauge glint and autonomous needle wobble. Its arc/needle transition remains a smooth retarget of the authoritative PWM value; the repeating phase controller is disabled for this gauge.
 - Battery/Hotside warnings replace 30 tiny ember dots and short line trails with five layered, tapered flame tongues in red/orange/yellow. Battery’s moving highlight and idle glint, plus the LED travelling dot, move beyond the clipped bounds before wrap so they do not visibly jump at cycle reset.
 - Non-mechanical indicator cycles are slower: Battery 4.2 s, Hotside 4.4 s, Voltage 3.0 s, Adaptive 6.4 s, Peltier 5.2 s, LED 3.0 s. Fan rotor speed remains based on voltage and PWM. Thermal thresholds/colors, BLE state gating, output-state policy, firmware safety, controls and telemetry were not changed.
-- Source/test blobs: `lib/main.dart` `99bdf225b990fbe8a4ff92c224b4fccc4ae4624a`; `test/widget_test.dart` `2527fa278a56da30bf74eb488287580d0d2c99d8`. The widget contract now checks effect shape/removal and layer order.
-- Flutter/Dart tests and analysis were **NOT RUN** in this environment. Build #80 remains the latest verified APK; these source changes are not in that APK. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+- Source/test blobs included in Build #83: `lib/main.dart` `99bdf225b990fbe8a4ff92c224b4fccc4ae4624a`; `test/widget_test.dart` `9fffea531bdb19315c01aaf0e253ebdfacd7a1ed`. Build #83 ran the updated test source and passed 96/96 Flutter tests. The latest painter source is in the verified APK, but visual quality/smoothness and BLE behavior on a physical phone remain unverified. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
-## 2026-10-19 — Explicitly static TamperScreen warning icon and app-source audit (source-only)
+## 2026-10-19 — Explicitly static TamperScreen warning icon and app-source audit (included in Build #83)
 
 - Replaced the TamperScreen warning symbol's generic `JexAnimatedIcon.glyph` wrapper with a direct Flutter `Icon`. The generic wrapper already returned a plain `Icon`, so the previous `active/warning` arguments were inert for this glyph; this cleanup makes the no-animation intent explicit without changing its shape, size, color or surrounding frame.
 - Added regression assertions requiring a static Icon, disallowing the generic animation wrapper in `TamperScreen`, and preserving the existing warning glyph. All 10 text strings/order, text colors/typography, rounded boxes, header and developer-contact behavior remain unchanged.
 - Audit against `DESIGN_NOTES.md`: Battery/Hotside/Voltage loop while BLE is connected (even when a displayed reading is unknown); Adaptive/Peltier/Fan/Fan Speed/LED animate only when authoritative state is ON; OFF output icons are static except the Fan's permitted one-shot connected coast-down; Bluetooth remains static. Existing color-threshold, BLE/state, menu-lock and temperature presentation contracts are already present, so no unrelated control/thermal behavior was changed.
-- Current source blobs: `lib/main.dart` `522e108dd78d9b413316a6c79c8a4f0144f5e58f`; `test/widget_test.dart` `5098c30291cbd70422cd351f03cd9325f0870258`.
-- Build #80 / [run 39171729285](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39171729285) remains the latest verified APK, source `4e9f14b959cdbf60136158187db26d0bb65f6287`. It includes the rounded text-box layout and Home animation/state-gating work, but not this direct-Icon simplification. Flutter tests/analyzer and App Build were **NOT RUN** for this post-Build-80 delta; no Firmware/BIN/Firebase/OTA/flash/device operation was performed.
+- Current source blobs included in Build #83: `lib/main.dart` `99bdf225b990fbe8a4ff92c224b4fccc4ae4624a`; `test/widget_test.dart` `9fffea531bdb19315c01aaf0e253ebdfacd7a1ed`.
+- Build #83 / [run 39192430789](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39192430789) includes the direct static warning Icon and its source-contract test; 96/96 Flutter tests passed. No new tests were run after Build #83 because only workflow/docs changed. The repaired workflow is untested by a later official run. Physical phone rendering remains unverified. No Firmware/BIN/Firebase/OTA/flash/device operation was performed.
 
 ## 2026-10-18 — Tamper warning text-block layout polish (included by Build #80)
 
@@ -43,16 +42,16 @@
 - The user reports V6.7 compiled successfully and was updated online. This is **USER-REPORTED**; no compile log, resulting BIN, source-to-BIN provenance, OTA log or current installed-device version was independently inspected as part of this App-only task.
 - The active App-repository source remains `firmware/JEXFYZ-V6.7.ino`, blob `efe6eaa62c178ab536fb68c06a310e54826cbaf2`; no Firmware source or the BIN-only `TenzoNkz/JEXFYZ-Firmware` repository was modified in this task.
 
-## 2026-10-18 — Adaptive Fan PWM consistency fix (V6.7 source-only)
+## 2026-10-18 — Adaptive Fan PWM consistency fix (V6.7 source; compile/online update USER-REPORTED)
 
 - Fixed the 12V Adaptive Fan controller so a failed downshift qualification no longer triggers an unconditional PWM increase. This was the source of the abrupt, inconsistent speed ramp.
 - The upshift now requires four consecutive one-second samples spanning at least 0.25°C warming, with at least two of the three intervals rising. It raises PWM by one 10-point step and waits at least 3 seconds before another increase.
 - Downshift remains guarded by ten fresh NTC samples, every sample and the rolling average at/below `hotLimit - 2°C`, no confirmed warming trend, and a 10-second stable window. Decrease by 10 points no more often than every 10 seconds, with a 50% floor.
 - Kept immediate 100% Fan response at the configured Hotside limit, Adaptive 5V/9V full-speed behavior, GPIO5 Peltier / GPIO6 Fan mapping, one calibrated NTC reading per second, voltage-transition timing, and all OTA/safety paths unchanged.
 - Added a source-contract regression test for warming-trend gating and the upshift interval. Static pre-write assertions passed.
-- Active source `firmware/JEXFYZ-V6.7.ino` blob: `efe6eaa62c178ab536fb68c06a310e54826cbaf2` (source edit commit 317a27bfc89fca69e7c6d46005d9411a0e928f3d: https://github.com/TenzoNkz/JEXFYZ-App/commit/317a27bfc89fca69e7c6d46005d9411a0e928f3d). **Not compiled, not built into BIN, not published, not OTA-applied, and not tested on hardware.** No App build was triggered, per project authorization rules; Firmware artifact repo, Firebase and device were untouched.
+- Active source `firmware/JEXFYZ-V6.7.ino` blob: `efe6eaa62c178ab536fb68c06a310e54826cbaf2` (source edit commit 317a27bfc89fca69e7c6d46005d9411a0e928f3d: https://github.com/TenzoNkz/JEXFYZ-App/commit/317a27bfc89fca69e7c6d46005d9411a0e928f3d). On 2026-10-18 the user separately reported V6.7 compiled successfully and was updated online. This remains USER-REPORTED; the compile log, generated BIN/source identity, OTA result logs and installed version were not independently verified. This App-only history entry did not compile Firmware, build/publish a BIN, edit Firebase, or operate a device.
 
-## 2026-10-18 — Full chat-limit memory reconciliation (documentation-only)
+## HISTORICAL / SNAPSHOT — 2026-10-18 — Full chat-limit memory reconciliation (documentation-only; superseded by 2026-10-19 live audit)
 
 - Reconciled current canonical status from live `main`, complete recursive tree inventory (67 entries: 49 blobs / 18 trees, not truncated), five branches, zero open PRs, five active Dart test files, the issue/title/token-guarded App workflow, current App/Firmware versions and exact source blobs.
 - Corrected current documentation to distinguish Build #73 (latest verified App release) from later source-only Hotside/indicator/toggle/menu-lock UI changes. Removed the duplicate obsolete Build #71 source-only block in `PROJECT_STATE.md` and removed the duplicated older Dashboard animation contract from `APP_NOTES.md`.
