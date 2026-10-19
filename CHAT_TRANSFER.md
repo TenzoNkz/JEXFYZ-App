@@ -62,7 +62,7 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
 
 ## 3A. TamperScreen warning/contact behavior — rounded text blocks included by Build #80; static Icon source-only
 
-- The native signer-identity check and developer-contact behavior are unchanged. Build #80 includes all ten text blocks framed in consistent dark rounded boxes. The sole post-release follow-up replaces the generic glyph wrapper with a direct static Flutter `Icon` using the exact same warning glyph, size and color; all wording/order, text colors, typography, frame and contact action remain unchanged.
+- The native signer-identity check and developer-contact behavior are unchanged. Build #80 includes all ten text blocks framed in consistent dark rounded boxes. Post-release source-only changes replace the generic glyph wrapper with a direct static Flutter `Icon` and refine the Home indicator painter; neither change alters warning glyph shape/size/color, text wording/order, text colors/typography, frame, or contact action.
 - Base warning/contact behavior and rounded text-box layout are included in Build #80 source marker `4e9f14b959cdbf60136158187db26d0bb65f6287`. The direct-Icon simplification and its test assertion are not in the current release. The refined Home indicator painter is also post-Build-80 and source-only.
 
 ## 3B. Home indicator motion, toggles and submenu locks — included by Build #80
