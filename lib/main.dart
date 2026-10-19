@@ -8312,7 +8312,8 @@ void _handleAckLine(String line) {
             const SizedBox(height: 2),
             SizedBox(
               width: double.infinity,
-              height: 44,
+              // The centered two-line status card needs room for its icon and vertical padding.
+              height: 64,
               child: _homeNotify(),
             ),
           ],
