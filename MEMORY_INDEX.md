@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Memory Index
 
-Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #106 is the latest successful App release; Home NOTIFY/animation edits remain NOT RUN / NOT RELEASED. Active Firmware source is V6.8 with new Adaptive Fan temperature tiers; not compiled/installed. This file is the navigation index; `PROJECT_STATE.md` carries current state, subject files own detailed contracts, `APP_BUILD_REPORT.md` owns build evidence, `CHANGELOG.md` owns history, and `CHAT_TRANSFER.md` is the detailed next-chat boot snapshot. Live source, Git refs, Actions and Release metadata override memory.
+Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #106 is the latest successful App release; Home NOTIFY/animation edits remain NOT RUN / NOT RELEASED. Active Firmware source is V6.8 with new Adaptive Fan temperature tiers; not compiled/installed. This file is the navigation index; `PROJECT_STATE.md` carries current state, subject files own detailed contracts, `APP_BUILD_REPORT.md` owns build evidence, `CHANGELOG.md` owns history, and `CHAT_TRANSFER.md` is the detailed next-chat boot snapshot. Live source, Git refs, Actions and Release metadata override memory.
 
 ## Current verified release and source checkpoint
 
