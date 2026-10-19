@@ -859,7 +859,7 @@ void main() {
     expect(normalizerIndex, greaterThan(otaFormatterIndex));
   });
 
-  test('Home Notify card removes connection badge and keeps left-aligned two-line copy', () {
+  test('Home Notify restores the original left Row, removes connection badge, and fits two lines', () {
     final source = File('lib/main.dart').readAsStringSync();
     final start = source.indexOf('Widget _homeNotify() {');
     final end = source.indexOf('Widget _card({required Widget child', start);
@@ -867,23 +867,40 @@ void main() {
     expect(end, greaterThan(start));
     final card = source.substring(start, end);
 
-    expect(card, contains('BoxConstraints(minHeight: 48)'));
+    expect(card, contains('BoxConstraints(minHeight: 56)'));
     expect(card, contains('maxLines: 2'));
     expect(card, contains('softWrap: true'));
     expect(card, contains('textAlign: TextAlign.start'));
     expect(card, contains('crossAxisAlignment: CrossAxisAlignment.start'));
     expect(card, isNot(contains('textAlign: TextAlign.center')));
-    expect(card, contains('Stack('));
+    expect(card, contains('child: Row('));
+    expect(card, contains('width: 45,'));
+    expect(card, contains('const SizedBox(width: 6)'));
+    expect(card, isNot(contains('Stack(')));
     expect(card, isNot(contains('FittedBox(')));
     expect(card, isNot(contains('_notifyStatusLabel()')));
     expect(card, isNot(contains('noticeChipFill')));
     expect(card, isNot(contains('offlineStatusColor')));
+    expect(source, contains('height: 56,\n              child: _homeNotify(),'));
 
     final categoryStart = source.indexOf('String _notifyStateLabel()');
     final categoryEnd = source.indexOf('Widget _homeNotify() {', categoryStart);
     expect(categoryStart, isNonNegative);
     expect(categoryEnd, greaterThan(categoryStart));
-    expect(source.substring(categoryStart, categoryEnd), contains('NOTIFY • \$category'));
+    expect(source.substring(categoryStart, categoryEnd), contains('NOTIFY • \\$category'));
+  });
+
+  test('Home indicator rows preserve the original 44 dp vertical spacing', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final metricStart = source.indexOf('Widget _homeMetric(');
+    final metricEnd = source.indexOf('Widget _homeStateChip(', metricStart);
+    expect(metricStart, isNonNegative);
+    expect(metricEnd, greaterThan(metricStart));
+    final metric = source.substring(metricStart, metricEnd);
+
+    expect(metric, contains('height: 44,'));
+    expect(metric, contains('width: 41,\n                height: 41,'));
+    expect(metric, contains('width: 38,\n                    height: 38,'));
   });
 
   test('Live cooling telemetry clears stale command errors only in a healthy state', () {
