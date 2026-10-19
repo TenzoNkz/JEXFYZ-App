@@ -1,10 +1,10 @@
 # JE X FYZ / JE Cooler — Voltage Transition & Peltier Soft-Start Memory
 
 Last reconciled: 2026-10-18 (Asia/Jakarta).
-Canonical active source: `firmware/JEXFYZ-V6.7.ino`, blob `efe6eaa62c178ab536fb68c06a310e54826cbaf2`. On 2026-10-18 the user reported V6.7 compiled and updated online; this is USER-REPORTED, while exact source-to-BIN provenance and current device version remain UNVERIFIED.
-Static regression contract: test/v6_7_qc_contract_test.dart. Current blob must be re-fetched from main before relying on the prior hash.
+Canonical active source: `firmware/JEXFYZ-V6.8.ino`, blob `4f8011337fc3c9e3f1ace717fbd7179e1331bff8`. V6.8 changes Adaptive Fan target mapping only; source is NOT COMPILED / NOT INSTALLED, while source-to-BIN provenance and current device version remain UNVERIFIED. V6.7 compile/online update is historical USER-REPORTED evidence.
+Static regression contract: `test/firmware_qc_contract_test.dart` (Adaptive Fan tiers and general Firmware source contracts). Re-fetch its live blob before relying on a hash.
 
-**App-side validation evidence:** Build #83 / run `39192430789` passed 96/96 Flutter tests and the App release gates for source `dfc7e6633298498bb6eac21182c9306d5e3cac1d`; the Release handoff is blocked by a stale Git tag, and this App run does not prove Firmware compilation, source-to-BIN provenance or physical rail-transition behavior. The user's V6.7 compile/online-update success remains USER-REPORTED. Physical transition reproduction, current measurement, and end-to-end thermal/OTA behavior remain unverified.
+**App-side validation evidence:** Build #83 / run `39192430789` passed 96/96 Flutter tests and the App release gates for source `dfc7e6633298498bb6eac21182c9306d5e3cac1d`; the Release handoff is blocked by a stale Git tag, and this App run does not prove Firmware compilation, source-to-BIN provenance or physical rail-transition behavior. The user's V6.7 compile/online-update success remains historical USER-REPORTED evidence; V6.8 is not compiled. Physical transition reproduction, current measurement, and end-to-end thermal/OTA behavior remain unverified.
 
 ## Incident
 
