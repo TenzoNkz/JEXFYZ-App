@@ -1,10 +1,10 @@
 # JE X FYZ / JE Cooler — CHAT TRANSFER SNAPSHOT
 
-Snapshot reconciled on 2026-10-19 (Asia/Jakarta). This file is the boot snapshot for the next chat, not a substitute for fetching live GitHub state. **It is intentionally written last.** It records the parent `main` HEAD immediately before this transfer write; the final transfer commit/HEAD must be re-fetched rather than self-referenced here.
+Snapshot reconciled from live GitHub on 2026-10-19 (Asia/Jakarta). Current pre-transfer `main` HEAD is recorded below with its GitHub timestamp/tree ID; this file is the boot snapshot for the next chat, not a substitute for fetching live state. **It is written last.** After the commit, re-fetch `main`/tree/blob hashes; this file does not self-reference its own future commit/blob.
 
 ## 1. Authority, mode and permanent operating rules
 
-- Canonical source/memory repository: `TenzoNkz/JEXFYZ-App`, branch `main`. Pre-transfer HEAD: `8b264beeeeb3570732c84cb10cc21c719741f21e` (GitHub commit metadata timestamp `2026-10-19T04:29:38Z`). The complete recursive tree is not truncated: 67 entries / 49 blobs / 18 trees. Five branches exist; there are zero open PRs. Do not switch away from `main`, create a branch, or create a PR unless explicitly asked.
+- Canonical source/memory repository: `TenzoNkz/JEXFYZ-App`, branch `main`. Pre-transfer HEAD `143600ffd1563e2e0fa047063ece15734e502063` (GitHub author/committer timestamp `2026-10-19T04:41:28Z`; commit tree `f356a5a8c3e23cbafa9f2c086202e52c6690402a`). The full recursive tree is `truncated=false`: 67 entries / 49 blobs / 18 trees. Five branches exist: `main` `143600ffd1563e2e0fa047063ece15734e502063`; `diag/latest-stable-v16` `ec77759d224c581870d98330d9278896ff29e50b`; `diagnostic/v1.6-heap-check` `1a4cd83b3ee82cdc2d86277dc4a0eb4c4238f8a3`; `fix/adaptive-power-sequencing` `33740be782d976a881e285bbf8b86b3b485b83c1`; `tmp-jexfyz-v5-test` `b388cba98ea1d9e92873df64ba3224d6cb99156d`. Open PRs: zero. Work directly on `main`; do not switch branch, create a branch or PR unless asked.
 - Source authority order: re-fetch live source, Git refs, current workflow and current test/build/run evidence first; then current-only `PROJECT_STATE.md`; subject contract file; `MEMORY_INDEX.md`; handover/rules/changelog; this snapshot; old chat/archives. Old blob hashes or summaries are never sufficient evidence by themselves.
 - `@Thinking Diskusi!` is read-only. `@Thinking Eksekusi Full!` authorizes only the scoped code/docs/test/audit work described in that request; it does **not** authorize App Build, firmware compilation, BIN generation/publication, Firebase/production metadata, OTA, flash/device operations or unrelated release work.
 - `@Thinking Eksekusi Build App!` is the only current App Build/release authorization. Follow the guarded issue workflow and record exact run/source/assets/evidence in `APP_BUILD_REPORT.md`. `@Thinking Chat Stuck!` means recover live state and resume the last valid authorization without blind retries or wider scope.
@@ -14,7 +14,7 @@ Snapshot reconciled on 2026-10-19 (Asia/Jakarta). This file is the boot snapshot
 
 ## 2. Live repository/source checkpoint
 
-- Pre-transfer `main` HEAD: `8b264beeeeb3570732c84cb10cc21c719741f21e`. This snapshot itself is the final planned write; re-fetch final `main`, tree and blob SHAs after it.
+- Pre-transfer `main` HEAD: `143600ffd1563e2e0fa047063ece15734e502063`; GitHub commit timestamp `2026-10-19T04:41:28Z` / Asia-Jakarta local +07:00. Commit tree `f356a5a8c3e23cbafa9f2c086202e52c6690402a`; recursive tree has 67 entries / 49 blobs / 18 trees and is not truncated. Re-fetch final branch HEAD and tree after this snapshot write.
 - Current App version: `pubspec.yaml` `1.0.0+3`; Android application ID `com.horizontalzzz.jexfyz`; minSdk 24, targetSdk 36, compileSdk 37. Preserve `versionName "Telegram @horizontalzzz"`.
 - Active editable Firmware source lives in the App repo: `firmware/JEXFYZ-V6.7.ino`, blob `efe6eaa62c178ab536fb68c06a310e54826cbaf2`, embedded `FW_VERSION = "V6.7"`, 5,487 source lines. Exactly one active versioned `.ino` was observed.
 - Current core App blobs: `lib/main.dart` `99bdf225b990fbe8a4ff92c224b4fccc4ae4624a`; `lib/app_settings.dart` `36927823c91904a35d87d2f21bd77932a2214e83`; `lib/floating_monitor.dart` `31b45ea08b08ac7fc25ebd991dca873b889fdd14`; `lib/jex_animated_glyph.dart` `c9c5c2802cb0ed363c042620511148b0d58d36c4`.
@@ -56,8 +56,8 @@ Snapshot reconciled on 2026-10-19 (Asia/Jakarta). This file is the boot snapshot
 - `OTA_REGRESSION_MEMORY.md` — CA/NTP experiment, evidence limits and `setInsecure()` trade-off; `2f84ea884e96dacda7440ad3ce74fa5a7d51b91c`.
 - `VOLTAGE_TRANSITION_MEMORY.md` — Peltier rail/ramp pause, resume/cancel rules; `a1136fab242d67296cb8de4ab3117749df20681e`.
 - `BUILD_NOTES.md` — only authorized App Build flow, toolchain and release gates; `303eec75607c0bcdfce3e916d3b8a6bc9a61f3b4`.
-- `APP_BUILD_REPORT.md` — authoritative run ledger/current Build #83 blocker/repair; `4c773fc3c9f5018a6d8c37e27040365e34d6209e`.
-- `CHANGELOG.md` — dated significant changes/history with superseded entries labelled; `41bbfe0d6469f91b5988af8da0fe87b0dedb7df4`.
+- `APP_BUILD_REPORT.md` — authoritative run ledger/current Build #83 blocker/repair; `b8b21007fc048cdea32e71fb425e960dcca0f13a`.
+- `CHANGELOG.md` — dated significant changes/history with superseded entries labelled; `d82b6872e1b9f78e829c14388e0855cd491a3cd3`.
 - `DESIGN_NOTES.md` — approved grille/icon/assets and motion/layout requirements; `a887c26851504b0a834be9597aba39f34a8e4a7f`.
 - `CHAT_TRANSFER_PROMPTS.md` — Prompt A reconciliation, Prompt B boot, Prompt C persistence, Prompt D Build App LOAD+CONTINUE; `bf1134dbfe9c138aa2fd99fa6090d111672b632c`.
 - `.github/workflows/jexfyz-app-build-trigger.yml` — only active release workflow; `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`.
@@ -121,7 +121,7 @@ Snapshot reconciled on 2026-10-19 (Asia/Jakarta). This file is the boot snapshot
 
 ## 12. Immediate next action
 
-1. Do not perform more changes under this reconciliation snapshot; it is now being closed by this file write.
+1. This complete snapshot was refreshed after all other documentation writes and is the final write in this reconciliation. Its recorded parent HEAD is the pre-write state; re-fetch live `main`, recursive tree and changed blob hashes after commit before reporting completion.
 2. For App Build/release completion, wait for separate `@Thinking Eksekusi Build App!`. Then use the official guarded issue trigger only; verify the runner ran against the intended `main` source, every gate passed, actual tag ref equals the run `head_sha`, Release metadata/assets match, APK/source ZIP digests and source marker match, and downloaded APK certificate/signatures are valid. Keep overall state BLOCKED until all those checks pass.
 3. After release consistency is proven, device verification still remains for physical animation smoothness/rendering, BLE state/telemetry, Floating Monitor geometry, cooling/thermal performance, firmware/BIN identity and OTA apply/reboot/reconnect.
 4. No App Build, firmware compilation, BIN read/edit/publication, Firebase update, OTA, flash or device operation was performed by this documentation reconciliation. The user's V6.7 compile/online-update report remains USER-REPORTED, not independently verified.
