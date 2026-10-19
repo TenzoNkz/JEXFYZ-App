@@ -2938,7 +2938,6 @@ class _JexIconPainter extends CustomPainter {
     final strength = activity.clamp(0.0, 1.0).toDouble();
     final p = progress.clamp(0.0, 1.0).toDouble();
     final angle = p * math.pi * 2;
-    final pulse = math.sin(angle);
     final safeLevel = level.clamp(0.0, 1.0).toDouble();
     // Keep thermal tint steady; only the existing 280 ms warning transition eases in/out.
     final warningBlend = active ? .16 * warningStrength : 0.0;
