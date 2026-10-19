@@ -8002,7 +8002,7 @@ void _handleAckLine(String line) {
       width: double.infinity,
       height: height,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 7, 12, 8),
+        padding: const EdgeInsets.fromLTRB(12, 4, 12, 5),
         child: Column(
           children: [
             SizedBox(
