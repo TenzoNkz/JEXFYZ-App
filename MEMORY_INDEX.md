@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Memory Index
 
-Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #106 is the latest successful release; current Home NOTIFY alignment and Battery/Hotside/Voltage animation edits are newer source and NOT RUN / NOT RELEASED. This file is the navigation index; `PROJECT_STATE.md` carries current state, subject files own detailed contracts, `APP_BUILD_REPORT.md` owns build evidence, `CHANGELOG.md` owns history, and `CHAT_TRANSFER.md` is the detailed next-chat boot snapshot. Live source, Git refs, Actions and Release metadata override memory.
+Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #106 is the latest successful App release; Home NOTIFY/animation edits remain NOT RUN / NOT RELEASED. Active Firmware source is V6.8 with new Adaptive Fan temperature tiers; not compiled/installed. This file is the navigation index; `PROJECT_STATE.md` carries current state, subject files own detailed contracts, `APP_BUILD_REPORT.md` owns build evidence, `CHANGELOG.md` owns history, and `CHAT_TRANSFER.md` is the detailed next-chat boot snapshot. Live source, Git refs, Actions and Release metadata override memory.
 
 ## Current verified release and source checkpoint
 
@@ -64,10 +64,11 @@ Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #106 is 
 | `DESIGN_NOTES.md` | Approved grille/logo/assets and dashboard motion/layout contracts |
 | `.github/workflows/jexfyz-app-build-trigger.yml` | Authoritative guarded manual App Build workflow |
 | `test/*.dart` | Five current Flutter/source-contract test files; execution must be proven from run evidence |
-| `firmware/JEXFYZ-V6.7.ino` | Active editable V6.7 source; user compiles separately |
+| `firmware/JEXFYZ-V6.8.ino` | Active editable V6.8 source; user compiles separately |
 | `archive/*.md` | Immutable forensic snapshots; stale “CURRENT” claims remain historical, paths retained verbatim |
 
-## Current source fingerprints (Build #106 successful; current UI follow-up NOT RUN)
+- Active Firmware: `firmware/JEXFYZ-V6.8.ino` blob `4f8011337fc3c9e3f1ace717fbd7179e1331bff8`; new Adaptive Fan tier logic is SOURCE UPDATED / NOT COMPILED / NOT INSTALLED.
+## Current source fingerprints (Build #106 successful; current UI follow-up NOT RUN; Firmware V6.8 NOT COMPILED)
 
 - lib/main.dart: 7e09a3d28b4efe24bdced858db4274cf70806284 — oval thermal bursts, Voltage edge pulses, left-aligned NOTIFY; NOT RUN / NOT RELEASED.
 - test/widget_test.dart: 5a82cf79e6c5c40fc34489ce90cf1200cf9faccb — animation/layout source contracts; NOT RUN / NOT RELEASED.
@@ -87,7 +88,7 @@ Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #106 is 
 ## Durable repository/evidence restrictions
 
 - All source, documentation, tests and project memory remain in `TenzoNkz/JEXFYZ-App`. Keep `TenzoNkz/JEXFYZ-Firmware` BIN-only. The currently checked BIN metadata is `JEXFYZ.cpp.bin`, blob `dca6a1267762152519f6d2889e4f0adf46fd8803`, 1,457,008 bytes; do not read or mutate payload during documentation tasks, and do not infer source provenance.
-- User reports V6.7 compilation and online update. Source/BIN identity, installed version, Firebase state, and full OTA apply/reboot/reconnect remain unverified. The previous V6.6 compile/two-OTA statements are historical user reports.
+- V6.8 source blob 4f8011337fc3c9e3f1ace717fbd7179e1331bff8 uses deterministic Adaptive Fan temperature tiers; it is not compiled/installed. V6.7 compilation/online update was user-reported only. Source/BIN identity, installed version, Firebase state and full OTA apply/reboot/reconnect remain unverified. The previous V6.6 compile/two-OTA statements are historical user reports.
 - Current UI excludes a standalone Battery Protection Guard. The exclusive one-App/one-cooler pairing lock is a user design requirement; encrypted/bonded writes alone do not prove exclusive provisioning.
 - Preserve OTA protection and its `setInsecure()` server-identity trade-off; read OTA and voltage-transition references before changes. Preserve the approved white square grille/purple X/four corner holes/flat-print design and transparent square app assets.
 - Keep the permanent hardware timings, NTC single-sample rule, safety gates, Adaptive profile behavior, BLE P1 UUIDs, LED mode IDs and telemetry contracts in their canonical subject files.
