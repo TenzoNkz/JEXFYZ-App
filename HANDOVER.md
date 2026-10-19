@@ -2,7 +2,7 @@
 
 Reconciled against live GitHub on 2026-10-19 (Asia/Jakarta). Latest successful release is Build #95 from `cd691b874ddb0e454ba69891a3e0da3001df892f`, with 99/99 Flutter tests passing and all guarded release checks verified. Current animation-smoothness changes are newer source, **NOT RUN / NOT RELEASED**. No analyzer/test/build was run in this source-only follow-up. Final post-write HEAD/tree and fingerprints are in `CHAT_TRANSFER.md`.
 
-Refreshed against live `main` on 2026-10-19 (Asia/Jakarta). The newest verified artifact is Build #92 from `6610fecb3e47d9941cbf96043b7da3b2a869753b`, with 98/98 Flutter tests passing and all guarded release checks verified. This task adds a newer seven-icon source/test follow-up; it is **NOT RUN / NOT RELEASED**. Exact post-write HEAD/tree/source/doc hashes belong in `CHAT_TRANSFER.md`. No App Build or Firmware/device operation is authorized by this command.
+Refreshed against live `main` on 2026-10-19 (Asia/Jakarta). The newest verified artifact is Build #95 from `cd691b874ddb0e454ba69891a3e0da3001df892f`, with 99/99 Flutter tests passing and all guarded release checks verified. The current animation smoothness follow-up is newer source and is **NOT RUN / NOT RELEASED**. Exact final HEAD/tree/source/doc hashes are in `CHAT_TRANSFER.md`; no App Build or Firmware/device operation was performed by this source task.
 
 ## Latest successful build and current source boundary
 
@@ -28,7 +28,7 @@ Refreshed against live `main` on 2026-10-19 (Asia/Jakarta). The newest verified 
 - User decided to retire FPS after repeated F:--/Shizuku UserService failures. FPS, SurfaceFlinger TimeStats sampling, Shizuku permission/status UI/API/provider/dependency, UserService/AIDL, FPS-only tests and Shizuku-only notice/license files were removed from active source.
 - The HUD has exactly six metrics: B (Battery), H (Hotside), V (Voltage), A (Adaptive), P (Peltier), F (Fan/Kipas label; current value is live speed). Schema v2 drops old schema-v1 F (FPS) and maps old S (Speed) to F. Fan telemetry and firmware speed control are unchanged.
 - Overlay remains Letters-only, freely draggable, with saved coordinates; horizontal metrics centered as a group, vertical rows left aligned; size 0.30×–1.00× by 0.05× (default 0.60×); background opacity 0–100% by 5%, current value and endpoint marks only, no midpoint. Physical layout and live BLE metric behavior remain UNVERIFIED on the phone.
-- Build #92 is the latest successful artifact run and exercised the repaired tag-check workflow; release metadata and `jexfyz-latest` matched the Build #92 source. The current seven-icon visual follow-up is newer and remains untested/unreleased pending the separate Build App command.
+- Build #95 is the latest successful artifact run and exercised the guarded release/tag verification; release metadata, source ZIP and `jexfyz-latest` matched the Build #95 source. The current animation-smoothness follow-up is newer and remains untested/unreleased pending separate validation.
 
 ## Firmware / OTA boundary
 
