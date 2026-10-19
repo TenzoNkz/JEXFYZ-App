@@ -1,16 +1,16 @@
 # JE X FYZ / JE Cooler — CHAT TRANSFER SNAPSHOT
 
-Refreshed after the Home STATUS / NOTIFY localization source follow-up on 2026-10-19 (Asia/Jakarta). This is the canonical boot snapshot. The pre-transfer HEAD/tree below describes live main immediately before this final transfer write. This file is written last and does not self-reference its future commit/blob; fetch final HEAD/tree/blob after committing.
+Refreshed after the Home STATUS / NOTIFY localization and OTA summary sanitization source follow-up on 2026-10-19 (Asia/Jakarta). This is the canonical boot snapshot. The pre-transfer HEAD/tree below describes live main immediately before this final transfer write. This file is written last and does not self-reference its future commit/blob; fetch final HEAD/tree/blob after committing.
 
 ## 1. Authority, repository roles and command protocol
 
 - Canonical editable repository: TenzoNkz/JEXFYZ-App, branch main. Continue directly on main; do not create branches/PRs unless explicitly requested.
-- Pre-transfer HEAD: e7c8248fcf8892e9cfab8c095771ad60123c1437. Parent: 29467546690c3d78bb12d2a24c154331c47ebbd1. Tree: d4d9f2c8cc16165cfdf4448d5a48dffa3e373cf2.
+- Pre-transfer HEAD: 40e27083a61b0d2ea56a55f66347ed8c9791ac08. Parent: 3339267b8d8b0d04a18fd2083a8951bc38060a93. Tree: 9c6be05ae94e504375c89b0b0b3270286484bca3.
 - Artifact-only repository: TenzoNkz/JEXFYZ-Firmware must contain exactly JEXFYZ.cpp.bin. Last inspected blob dca6a1267762152519f6d2889e4f0adf46fd8803, 1,457,008 bytes. Only tree metadata was inspected; the payload was not read and source-to-BIN provenance is UNVERIFIED.
 - Commands: @Thinking Diskusi! is read-only; @Thinking Eksekusi Full! permits scoped App source/tests/docs/audit/commit but not App Build/Firmware/device actions; @Thinking Eksekusi Build App! alone authorizes the official App build/QC/release pipeline; @Thinking Chat Stuck! recovers the authorized task without widening scope. Retired aliases: @Thinking Build App!, @Thinking Eksekusi & Build App!, and standalone @Thinking Eksekusi!.
 - Build workflow remains .github/workflows/jexfyz-app-build-trigger.yml, blob 9dc1e61ba49f19cad4edbb99a832d5333d9f0f12. It is guarded to issues.opened/reopened with repository owner/title/body token only. No push/PR/manual bypass.
 - Preserve Android Gradle versionName "Telegram @horizontalzzz". User compiles Firmware. No firmware, BIN, Firebase, OTA, flash, or physical-device operations are authorized under Eksekusi Full.
-- Current task scope is Home STATUS / NOTIFY wording/localization. Code and tests are committed after Build #100; tests/analyzer/build are NOT RUN for this follow-up. Build #100 remains the latest successful release.
+- Current task scope is Home STATUS / NOTIFY wording/localization, including concise bilingual OTA outcome summaries that hide raw ERROR/CODE/event identifiers. Code and tests are committed after Build #100; tests/analyzer/build are NOT RUN for this follow-up. Build #100 remains the latest successful release.
 
 ## 2. Latest verified App release
 
@@ -20,16 +20,16 @@ Refreshed after the Home STATUS / NOTIFY localization source follow-up on 2026-1
 - Corresponding source ZIP asset 655957946, 2,862,476 bytes, SHA-256 e60c4705097009d843b624bf8f0f989770a76aba6fdfbdd8d2159d77f98890f1.
 - Release jexfyz-latest and Release metadata match Build #100 source 51bea70b2ca17f285bf35c3e547dc44c70f26d59. Do not manually move the tag.
 
-## 3. Current post-Build-#100 notification text/localization follow-up — NOT RUN / NOT RELEASED
+## 3. Current post-Build-#100 STATUS / NOTIFY copy and OTA diagnostic sanitization — NOT RUN / NOT RELEASED
 
-- Current source: lib/main.dart blob 931b7e2d074b1006622b0f83cc6db3f8ce43a400.
+- Current source: lib/main.dart blob 51b52042b6429ae2e4a4f2508685cd8326af68c8.
 - Localization table: lib/app_settings.dart blob e91ecd2a00eafdec3f681daabb74fd49fcd25bf2.
-- Regression tests: test/widget_test.dart blob ff419072b6eca1f3dc2c932b6290e3d664f75c17.
+- Regression tests: test/widget_test.dart blob 9d80171a12af084748b88fcdd06d3d6b3cf65e1f.
 - The screenshot's raw message “The device did not confirm the Peltier change. PELTIER_SAFETY_LATCH” is addressed by central localized reason mapping and removal of raw code concatenation. Known safety tokens map to clear English/Indonesian instructions; unknown underscore tokens use generic localized copy or are removed. Raw tokens remain diagnostic-only.
 - Peltier safety re-arm wording now explains the threshold/action in concise localized text without changing the existing threshold formula or firmware predicate.
 - Home category labels are short: STATUS / STATUS, CONNECTION / KONEKSI, SYNC / SINKRONISASI, WARNING / PERINGATAN, ERROR / ERROR.
-- Common unconfirmed-command/failure text is normalized by action and language. The error badge also recognizes unconfirmed outcomes in English and Indonesian.
-- New regression assertions cover Peltier latch text in both languages, voltage-failure copy, known and unknown reason tokens, concise localized labels and command-confirmation error classification.
+- Common unconfirmed-command/failure text is normalized by action and language. The error badge also recognizes unconfirmed outcomes in English and Indonesian. OTA failure cards omit raw ERROR/CODE fields, numeric firmware return codes, internal event suffixes, and unknown OTA mode identifiers. Known localized stage, safe version, and valid progress can remain when useful.
+- Regression assertions cover Peltier latch text in both languages, voltage-failure copy, known/unknown reason tokens, concise labels, command-confirmation errors, and English/Indonesian OTA summary formatting without raw diagnostics.
 - This source/test update is newer than Build #100. Tests and analyzer are NOT RUN; the new text behavior is NOT RELEASED/NOT in the APK. Existing Build #100 remains the latest successful artifact.
 
 ## 3. Current post-Build-#99 icon-state redraw — NOT RUN / NOT RELEASED
@@ -56,34 +56,34 @@ Refreshed after the Home STATUS / NOTIFY localization source follow-up on 2026-1
 
 ## 5. Source and canonical documentation hashes immediately before this transfer write
 
-- lib/main.dart: 931b7e2d074b1006622b0f83cc6db3f8ce43a400
+- lib/main.dart: 51b52042b6429ae2e4a4f2508685cd8326af68c8
 - lib/app_settings.dart: e91ecd2a00eafdec3f681daabb74fd49fcd25bf2
-- test/widget_test.dart: ff419072b6eca1f3dc2c932b6290e3d664f75c17
-- DESIGN_NOTES.md: 08ae374ea1215490c958ffef1f683993e2359485
-- APP_NOTES.md: e54eb3a350b41eae1a5b3a41e1ba0041946b5f21
-- PROJECT_STATE.md: 8e4a2b9f79e52478e18410dc5d1d3b597e366862
-- MEMORY_INDEX.md: 5d496f0c1c0348dbab94dbe323d6559543462aca
-- HANDOVER.md: c3f9be0d5458d914bc741ea3fa4258bb2df2b7fe
-- BUILD_NOTES.md: f9e54f97b23bb7eba83591383bc61f02e9d28fb3
-- APP_BUILD_REPORT.md: f4163a44824e20eafc209c9ae376fe1c8accee32
-- CHANGELOG.md: 9808efafe69aaa334a4da8cf77d7829099b35efa
-- README.md: 433b13352d633c8e96203fb9d0e7ba5710e81ed7
-- CHAT_RULES.md: 58f48fc129fe89e4c563709d04febda451da7de3
+- test/widget_test.dart: 9d80171a12af084748b88fcdd06d3d6b3cf65e1f
+- DESIGN_NOTES.md: 92bc43fdc12c1ef9c48f36992debc9e709fc2a52
+- APP_NOTES.md: d2af8f5cb88892662fc0b583e44b735bbeab8b96
+- PROJECT_STATE.md: 8eab17d0c508b7b568a4827d4a7221f9114d1062
+- MEMORY_INDEX.md: 230808b2d538a51bbb8be5249b4e6f13477191eb
+- HANDOVER.md: e463d46b10e3efc2656029f9608f68778ad8bf01
+- BUILD_NOTES.md: 0635faeb83aade3adf37e2a8643c0b8141718d08
+- APP_BUILD_REPORT.md: a41c80e95ef7e35977d7c2592051299bf1084bd9
+- CHANGELOG.md: b88780138a1f23e47b9062f3ea14cffe37834eb3
+- README.md: a68b24c4cda137901193644b7f6ff1173ac15f4d
+- CHAT_RULES.md: 60ea9d84e09d887cf83a079384dea4c3026c14e5
 - Build workflow: 9dc1e61ba49f19cad4edbb99a832d5333d9f0f12
 - This transfer blob intentionally is not listed because its future blob SHA cannot be self-referenced.
 
 ## 6. Exact next actions and validation gates
 
-1. Re-fetch live main HEAD/tree and current source/test/doc hashes before the next operation.
-2. The notification text/localization source update is committed but NOT RUN / NOT RELEASED. Its regression tests and analyzer still need actual execution.
-3. After separate @Thinking Eksekusi Build App! authorization, run the official guarded workflow against the intended main source; verify all Flutter tests, analyzer, Android/APK/signature/source-ZIP/download checks and Release/tag/source equality.
-4. Do not start App Build under Eksekusi Full. Do not claim the new notification fix passed tests until the authorized run reports it.
-5. Keep Firmware/BIN/Firebase/OTA/flash/device untouched unless separately authorized.
+1. Re-fetch live main HEAD/tree and source/test/document hashes before the next action.
+2. The current STATUS/NOTIFY localization and OTA-summary sanitization is committed but NOT RUN / NOT RELEASED. Flutter tests and analyzer still require actual execution.
+3. Build #100 remains the latest successful release, source commit 51bea70b2ca17f285bf35c3e547dc44c70f26d59; it does not contain the current copy changes.
+4. Only after separate @Thinking Eksekusi Build App! authorization, run the official guarded workflow against intended main source and verify tests, analyzer, Android/APK/signature/source-ZIP/download checks and Release/tag/source equality.
+5. Do not start App Build under Eksekusi Full. Keep Firmware/BIN/Firebase/OTA/flash/device untouched unless separately authorized.
 
 ## 7. Audit / operations not performed
 
 - Inspected live source, localization table, existing tests and latest Build #100 report before editing.
-- Committed notification normalization, known reason-code mapping, professional English/Indonesian failure copy, concise status headings and regression assertions to main.
-- No Flutter/Dart tests or analyzer were run for the current notification follow-up. Do not claim them passed.
+- Committed notification normalization, known reason-code mapping, professional English/Indonesian failure copy, concise status headings, OTA summary sanitization, and regression assertions to main.
+- No Flutter/Dart tests or analyzer were run for the current notification follow-up. OTA summary helper/test changes were source-checked only; do not claim the tests passed.
 - No App Build/release, APK build, release-tag movement, Firmware edit/compile, BIN payload read/write, Firebase metadata change, OTA, flash or device operation occurred.
-- Build #100 remains the latest successful artifact and does not contain these notification source changes. Real-device copy wrapping, language switching and displayed error classification remain unverified until tested on-device.
+- Build #100 remains the latest successful artifact and does not contain these notification source changes. Runtime wrapping, language switching, visible OTA messages, and command classification remain unverified until the new source is run and reviewed on-device.
