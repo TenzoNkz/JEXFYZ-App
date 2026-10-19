@@ -5,7 +5,7 @@ Last source/safety-reference reconciliation: 2026-10-19 (Asia/Jakarta). Latest s
 ## Current source identity
 
 - Canonical editable source: `firmware/JEXFYZ-V6.8.ino`.
-- `FW_VERSION = "V6.8"`; source blob `4f8011337fc3c9e3f1ace717fbd7179e1331bff8`.
+- `FW_VERSION = "V6.8"`; source blob `7b4df708708e021aad39258468eed2fde94d202f`.
 - **Status: SOURCE UPDATED / NOT COMPILED / NOT INSTALLED.** V6.8 replaces Adaptive 12 V Fan PWM trend/stability logic with deterministic temperature tiers. The user compiles Firmware separately in ArduinoDroid with Arduino-ESP32 Core 3.3.7. Source-to-BIN identity, OTA logs and installed-device version remain UNVERIFIED.
 - Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module, Arduino-ESP32 Core 3.3.7.
 - V6.7 compile/online update is a historical USER-REPORTED result only; it does not validate V6.8 or prove source-to-BIN provenance. Physical safety/thermal/LED behavior and full OTA apply/reboot/reconnect gates remain UNVERIFIED.
@@ -70,7 +70,7 @@ The canonical detailed incident/contract is `VOLTAGE_TRANSITION_MEMORY.md`.
 - In Adaptive mode at 12 V, target PWM follows `delta = hotLimit - hotsideC` directly. The controller no longer waits for ten cool samples, a stable 10-second window, four-sample warming trends, or per-step timers.
 - Whole-degree examples are: delta ≤1°C →100%; 2°C →90%; 3°C →80%; 4°C →70%; 5°C →60%; delta ≥6°C →50%. Fractional readings use nearest-degree bins with boundaries at 1.5/2.5/3.5/4.5/5.5°C. No additional hysteresis is applied.
 - The configured Hotside limit or active Hotside protection forces 100%; Adaptive 5 V/9 V keeps 100%. Existing transition/thermal dwell/paused-output priority and invalid-NTC safety handling remain. Physical output stays Firmware-authoritative.
-- Source is `firmware/JEXFYZ-V6.8.ino` blob `4f8011337fc3c9e3f1ace717fbd7179e1331bff8`; static source-contract test is now `test/firmware_qc_contract_test.dart`. Neither Flutter/source-contract tests nor Arduino compilation has been run for this revision; source/BIN/device identity remains unverified.
+- Source is `firmware/JEXFYZ-V6.8.ino` blob `7b4df708708e021aad39258468eed2fde94d202f`; static source-contract test is now `test/firmware_qc_contract_test.dart`. Neither Flutter/source-contract tests nor Arduino compilation has been run for this revision; source/BIN/device identity remains unverified.
 
 ## HISTORICAL / SUPERSEDED — V6.7 Adaptive Fan trend-gating correction
 
