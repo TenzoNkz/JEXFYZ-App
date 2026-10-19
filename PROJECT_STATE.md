@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Current state reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #106 is the latest successful release; the newer left-aligned Home NOTIFY layout and Battery/Hotside/Voltage animation redesign are source-only, NOT RUN / NOT RELEASED. APP_BUILD_REPORT.md owns build evidence; CHAT_TRANSFER.md is the final handoff snapshot.
+Current state reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #106 is the latest successful release; the newer left-aligned Home NOTIFY layout and Battery/Hotside/Voltage animation redesign are source-only, NOT RUN / NOT RELEASED. APP_BUILD_REPORT.md owns build evidence; CHAT_TRANSFER.md is the final handoff snapshot.
 
 ## Current App / Release state — Build #106 verified; current UI follow-up is NOT RELEASED
 
@@ -16,6 +16,9 @@ Current state reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). 
 - `lib/main.dart`: `7e09a3d28b4efe24bdced858db4274cf70806284` — oval thermal bursts, outer-bolt edge pulses, left-aligned responsive NOTIFY; NOT RUN / NOT RELEASED.
 - `lib/app_settings.dart`: `8f228000d38d73038c06f569c052b1af601288a5` — bilingual connection/OTA copy; unchanged in this UI pass.
 - `test/widget_test.dart`: `5a82cf79e6c5c40fc34489ce90cf1200cf9faccb` — regression contracts for oval thermal bursts, Voltage edge pulses, and left-aligned badge-free NOTIFY; NOT RUN.
+- `firmware/JEXFYZ-V6.8.ino`: `7b4df708708e021aad39258468eed2fde94d202f` — deterministic Adaptive 12 V Fan PWM temperature tiers; NOT COMPILED / NOT INSTALLED.
+- `test/firmware_qc_contract_test.dart`: `59f376af6b3ec1c22d24f71db6afa40927a835fd` — tier boundaries, prior trend/timer removal, and safety-contract assertions; NOT RUN.
+- `test/firmware_touch_adaptive_sync_test.dart`: `a96b501d694b6eb4ad42fca0c61a8a430b129105` — Touch/Adaptive telemetry contract now reads V6.8 source; NOT RUN.
 - `lib/jex_animated_glyph.dart`: `b37fc4e0807c874b2f01db00c7f606810cb5deca` — generic navigation/settings/action glyphs remain static.
 - Existing independent contract tests remain test/floating_monitor_layout_contract_test.dart, test/firmware_qc_contract_test.dart, test/app_protocol_notify_contract_test.dart and test/firmware_touch_adaptive_sync_test.dart.
 - App config: pubspec 1.0.0+3, applicationId com.horizontalzzz.jexfyz, minSdk 24, targetSdk 36, compileSdk 37.
