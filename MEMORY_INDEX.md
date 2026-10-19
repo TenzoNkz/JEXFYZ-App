@@ -1,14 +1,16 @@
 # JE X FYZ / JE Cooler — Memory Index
 
-Reconciled against live GitHub `main` on 2026-10-19 (Asia/Jakarta). This file is the navigation index; `PROJECT_STATE.md` carries current state, subject files own detailed contracts, `APP_BUILD_REPORT.md` owns build evidence, `CHANGELOG.md` owns history, and `CHAT_TRANSFER.md` is the detailed next-chat boot snapshot. Live source, Git refs, Actions and Release metadata override memory.
+Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #100 is the latest successful release; notification copy edits are newer source and untested/unreleased. This file is the navigation index; `PROJECT_STATE.md` carries current state, subject files own detailed contracts, `APP_BUILD_REPORT.md` owns build evidence, `CHANGELOG.md` owns history, and `CHAT_TRANSFER.md` is the detailed next-chat boot snapshot. Live source, Git refs, Actions and Release metadata override memory.
 
 ## Current verified release and source checkpoint
 
-- Latest successful released artifact: Build #99 / [Actions run 39230380636](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39230380636), exact packaged source bc1498d5b3db7621ee18f5ca6f021e6013c73b09. All 21 guarded workflow steps passed; analyzer reported 25 info-level findings/no errors or warnings; 102/102 Flutter tests passed; APK signing/certificate, corresponding source ZIP, asset digests and Release/tag/source checks passed. Native JUnit tasks were NO-SOURCE.
-- Build #99 APK asset 655835412, SHA-256 06a3e4edc7ff911c66cda8b152d4f2acbc11f41b2ccd2f009aa966510aa89096; source ZIP asset 655835414, SHA-256 490ef913574a38fd47644422aa52b11f09c2d47895ba4f3e21db466e47aa8229.
-- Current redraw after Build #99: lib/main.dart blob 6a008c5c3e5ba7118e948e0b1f36277c01e73529; test/widget_test.dart blob 94dad7a7506fbcbeea63f300ea25b7f32299d471. NOT RUN / NOT RELEASED. These blobs are newer than packaged source and are not validated by Build #99.
-- Build #99 validated smoothness changes: 1500/1650/1000/2300/2100 ms cycles, phase-periodic fire/snow with boundary fade, 26 dp Home glyph in 38 dp tile, decoupled Peltier crystal motion and integrated Fan rate retarget. The new visual-state redraw adds static recessed/icon-specific details after Build #99.
-- Regression tests for the new static-state redraw have not run. Real-device UI, frame timing, BLE/PWM runtime and cooling/safety remain UNVERIFIED. No Build, Firmware/BIN, Firebase, OTA, flash or device action was performed by this source execution.
+- Latest successful release is Build #100 / https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39237262140, packaged source 51bea70b2ca17f285bf35c3e547dc44c70f26d59. All 21 workflow steps passed; 103/103 Flutter tests passed; analyzer exited 0 with 25 info-level findings and no errors/warnings; APK signature/certificate, matching source ZIP, downloaded asset digests and Release/tag/source equality passed. Native JUnit tasks were NO-SOURCE.
+- Build #100 APK asset ID 655957943, SHA-256 a59c0a37b2025ad2b250bd4354b887379d96658e9f7757692691fa23b7b4d0a2; source ZIP asset ID 655957946, SHA-256 e60c4705097009d843b624bf8f0f989770a76aba6fdfbdd8d2159d77f98890f1.
+- Current notification follow-up is source-only / NOT RUN / NOT RELEASED: lib/main.dart 931b7e2d074b1006622b0f83cc6db3f8ce43a400; lib/app_settings.dart e91ecd2a00eafdec3f681daabb74fd49fcd25bf2; test/widget_test.dart ff419072b6eca1f3dc2c932b6290e3d664f75c17.
+- Home notification body has a shared localization policy for safety reasons and command failures, suppresses raw identifiers such as PELTIER_SAFETY_LATCH, and uses concise labels STATUS / CONNECTION / SYNC / WARNING / ERROR with Indonesian equivalents.
+- Build #100 remains latest release and does not include these changes. New tests are not run. No Firmware/BIN/Firebase/OTA/device operation occurred.
+
+## Current visual-state redraw checklist
 
 ## Current visual-state redraw checklist
 
