@@ -68,6 +68,7 @@ Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #106 is 
 | `archive/*.md` | Immutable forensic snapshots; stale “CURRENT” claims remain historical, paths retained verbatim |
 
 - Active Firmware: `firmware/JEXFYZ-V6.8.ino` blob `7b4df708708e021aad39258468eed2fde94d202f`; new Adaptive Fan tier logic is SOURCE UPDATED / NOT COMPILED / NOT INSTALLED.
+- Current Firmware QC contract: `test/firmware_qc_contract_test.dart` blob `59f376af6b3ec1c22d24f71db6afa40927a835fd`; Touch/Adaptive sync contract: `test/firmware_touch_adaptive_sync_test.dart` blob `a96b501d694b6eb4ad42fca0c61a8a430b129105`. Both are NOT RUN for V6.8.
 ## Current source fingerprints (Build #106 successful; current UI follow-up NOT RUN; Firmware V6.8 NOT COMPILED)
 
 - lib/main.dart: 7e09a3d28b4efe24bdced858db4274cf70806284 — oval thermal bursts, Voltage edge pulses, left-aligned NOTIFY; NOT RUN / NOT RELEASED.
