@@ -1920,18 +1920,18 @@ class _JexIconPainter extends CustomPainter {
     final cx = s / 2;
     final cy = s / 2;
     final path = Path();
-    // Five narrower swept blades give the rotor a more engineered silhouette.
-    for (var i = 0; i < 5; i++) {
-      final a = angle + i * math.pi * 2 / 5;
-      final p0 = _fanPoint(-s * .016, s * .045, a, cx, cy);
-      final p1 = _fanPoint(-s * .082, s * .005, a, cx, cy);
-      final p2 = _fanPoint(-s * .178, -s * .115, a, cx, cy);
-      final p3 = _fanPoint(-s * .148, -s * .275, a, cx, cy);
-      final p4 = _fanPoint(-s * .080, -s * .405, a, cx, cy);
-      final p5 = _fanPoint(s * .008, -s * .425, a, cx, cy);
-      final p6 = _fanPoint(s * .070, -s * .345, a, cx, cy);
-      final p7 = _fanPoint(s * .075, -s * .210, a, cx, cy);
-      final p8 = _fanPoint(s * .043, -s * .075, a, cx, cy);
+    // Exactly three broad swept blades: a recognizable three-blade cooler fan.
+    for (var i = 0; i < 3; i++) {
+      final a = angle + i * math.pi * 2 / 3;
+      final p0 = _fanPoint(-s * .018, s * .055, a, cx, cy);
+      final p1 = _fanPoint(-s * .045, s * .012, a, cx, cy);
+      final p2 = _fanPoint(-s * .150, -s * .060, a, cx, cy);
+      final p3 = _fanPoint(-s * .155, -s * .205, a, cx, cy);
+      final p4 = _fanPoint(-s * .075, -s * .365, a, cx, cy);
+      final p5 = _fanPoint(s * .015, -s * .405, a, cx, cy);
+      final p6 = _fanPoint(s * .090, -s * .335, a, cx, cy);
+      final p7 = _fanPoint(s * .105, -s * .205, a, cx, cy);
+      final p8 = _fanPoint(s * .065, -s * .075, a, cx, cy);
       path
         ..moveTo(p0.dx, p0.dy)
         ..cubicTo(p1.dx, p1.dy, p2.dx, p2.dy, p3.dx, p3.dy)
@@ -1939,7 +1939,7 @@ class _JexIconPainter extends CustomPainter {
         ..cubicTo(p7.dx, p7.dy, p8.dx, p8.dy, p0.dx, p0.dy)
         ..close();
     }
-    path.addOval(Rect.fromCircle(center: Offset(cx, cy), radius: s * .082));
+    path.addOval(Rect.fromCircle(center: Offset(cx, cy), radius: s * .090));
     return path;
   }
 
@@ -1996,6 +1996,8 @@ class _JexIconPainter extends CustomPainter {
   /// A deterministic eruption cycle: tapered flame tongues bend in the heat,
   /// while teardrop-shaped lava fragments rise, drift, and cool out smoothly.
   /// Harmonic motion is phase-compatible at the loop boundary; no dot confetti.
+  /// Flame tongues stay anchored at the thermal source, while the distinct embers
+  /// fall through the icon cavity in the same top-to-bottom motion family as Peltier snow.
   void _drawThermalFlames(
     Canvas canvas,
     double s,
@@ -2011,20 +2013,20 @@ class _JexIconPainter extends CustomPainter {
         ? const <double>[-.23, -.12, .015, .15, .25]
         : const <double>[-.34, -.23, -.11, .025, .16, .29, .36];
     final baseline = s * (thermometer ? .935 : .885);
-    final thermalPhase = phase;
     for (var i = 0; i < lanes.length; i++) {
-      final flicker = (.5 + .25 * math.sin(thermalPhase * 2 + i * 1.31) +
-              .25 * math.sin(thermalPhase * 3 - i * .77))
+      final flicker = (.5 + .25 * math.sin(phase * 2 + i * 1.31) +
+              .25 * math.sin(phase * 3 - i * .77))
           .clamp(0.0, 1.0)
           .toDouble();
       final sourceBias = thermometer ? .06 : 0.0;
       final height = s * ((thermometer ? .25 : .19) +
               (thermometer ? .19 : .16) * flicker) *
           strength;
-      final width = s * ((thermometer ? .042 : .036) + (i % 3) * .006) * strength;
-      final drift = s * .022 * math.sin(thermalPhase + i * 1.13);
+      final width = s * ((thermometer ? .042 : .036) + (i % 3) * .006) *
+          strength;
+      final drift = s * .022 * math.sin(phase + i * 1.13);
       final x = s * (.5 + lanes[i] + sourceBias * math.sin(i * .8));
-      final lean = s * .035 * math.sin(thermalPhase * 2 + i * 1.07);
+      final lean = s * .035 * math.sin(phase * 2 + i * 1.07);
 
       final outer = _flameTonguePath(x + drift, baseline, height, width, lean: lean);
       final middle = _flameTonguePath(
@@ -2056,33 +2058,94 @@ class _JexIconPainter extends CustomPainter {
         _fill(const Color(0xFFFFE18A).withValues(alpha: .90 * strength)),
       );
     }
+  }
 
-    // Three always-counted rising fragments use different but phase-locked lanes.
-    // Fade-in/out at both ends prevents a visible pop when each fragment respawns.
-    const lavaLanes = <double>[-.24, .035, .25];
-    for (var i = 0; i < lavaLanes.length; i++) {
-      final life = ((phase / (math.pi * 2) * 2 + i / lavaLanes.length) % 1.0).toDouble();
-      final rise = 1.0 - (1.0 - life) * (1.0 - life);
-      final fadeIn = (life / .16).clamp(0.0, 1.0).toDouble();
-      final fadeOut = ((1.0 - life) / .30).clamp(0.0, 1.0).toDouble();
-      final alpha = (math.min(fadeIn, fadeOut) * strength).toDouble();
+  Path _fallingFlameDropPath(double x, double y, double radius) => Path()
+    ..moveTo(x, y + radius * 1.30)
+    ..cubicTo(
+      x - radius * .94,
+      y + radius * .28,
+      x - radius * .88,
+      y - radius * .62,
+      x,
+      y - radius,
+    )
+    ..cubicTo(
+      x + radius * .88,
+      y - radius * .62,
+      x + radius * .94,
+      y + radius * .28,
+      x,
+      y + radius * 1.30,
+    )
+    ..close();
+
+  /// Three phase-locked ember drops travel from top to bottom and fade at both
+  /// ends of the clipped cavity. Their pointed tips face downward to contrast
+  /// with the upward-facing anchored flame tongues; no random dot particles.
+  void _drawFallingFlameParticles(
+    Canvas canvas,
+    double s,
+    double phase,
+    Color hotColor,
+    double intensity, {
+    required Rect bounds,
+    Path? clipPath,
+  }) {
+    final strength = intensity.clamp(0.0, 1.0).toDouble();
+    if (strength <= .005 || bounds.isEmpty) return;
+
+    final cycle = (phase / (math.pi * 2)) % 1.0;
+    const count = 3;
+    canvas.save();
+    if (clipPath != null) canvas.clipPath(clipPath);
+    canvas.clipRect(bounds);
+    for (var i = 0; i < count; i++) {
+      final fall = (cycle + i / count) % 1.0;
+      final fadeIn = (fall / .18).clamp(0.0, 1.0).toDouble();
+      final fadeOut = ((1.0 - fall) / .22).clamp(0.0, 1.0).toDouble();
+      final alpha = math.min(fadeIn, fadeOut) * strength;
       if (alpha <= .01) continue;
-      final x = s * (.5 + lavaLanes[i]) +
-          s * .035 * math.sin(phase * 2 + i * 1.7);
-      final riseHeight = s * (thermometer ? .43 : .31);
-      final y = baseline - s * .055 - riseHeight * rise;
-      final radius = s * (.017 + .012 * math.sin(math.pi * life));
-      final droplet = _lavaDropletPath(x, y, radius);
-      final innerDroplet = _lavaDropletPath(x, y - radius * .10, radius * .43);
-      canvas.drawPath(
-        droplet,
-        _fill(const Color(0xFFFF7828).withValues(alpha: .85 * alpha)),
+
+      final seed = i * 2.399963229728653;
+      final baseX = bounds.left + bounds.width * (.22 + i * .28);
+      final x = baseX + math.sin(phase * 1.15 + seed) * bounds.width * .075;
+      final y = bounds.top + fall * bounds.height;
+      final radius = math.min(s * .055, bounds.width * .12) *
+          (i.isEven ? 1.0 : .80);
+      final tail = Path()
+        ..moveTo(x, y - radius * 2.3)
+        ..cubicTo(
+          x - radius * .45,
+          y - radius * 1.7,
+          x + radius * .28,
+          y - radius * 1.45,
+          x,
+          y - radius * 1.15,
+        );
+      final trailPaint = _stroke(
+        math.max(s * .010, radius * .48),
+        const Color(0xFFFF9A35).withValues(alpha: .64 * alpha),
       );
+      trailPaint.maskFilter = MaskFilter.blur(BlurStyle.normal, s * .012);
+      canvas.drawPath(tail, trailPaint);
+
+      final drop = _fallingFlameDropPath(x, y, radius);
+      final glowPaint = _fill(hotColor.withValues(alpha: .45 * alpha));
+      glowPaint.maskFilter = MaskFilter.blur(BlurStyle.normal, s * .018);
+      canvas.drawPath(drop, glowPaint);
       canvas.drawPath(
-        innerDroplet,
-        _fill(const Color(0xFFFFE18A).withValues(alpha: .86 * alpha)),
+        drop,
+        _fill(Color.lerp(hotColor, const Color(0xFFFF922E), .56)!
+            .withValues(alpha: .96 * alpha)),
+      );
+      final inner = _fallingFlameDropPath(x, y - radius * .08, radius * .43);
+      canvas.drawPath(
+        inner,
+        _fill(const Color(0xFFFFF0A5).withValues(alpha: .94 * alpha)),
       );
     }
+    canvas.restore();
   }
 
   void _drawSnowflake(
@@ -2242,9 +2305,23 @@ class _JexIconPainter extends CustomPainter {
     switch (kind) {
       case JexAnimatedIconKind.battery:
         final shell = _batterySilhouette(s);
+        if (warningStrength > .005) {
+          final glow = _stroke(
+            s * .12,
+            jexThermalRed.withValues(alpha: .24 * warningStrength),
+          )..maskFilter = MaskFilter.blur(BlurStyle.normal, s * .045);
+          canvas.drawPath(shell, glow);
+        }
         canvas.drawPath(shell, _fill(mainColor.withValues(alpha: .10)));
         if (active && warningStrength > .005) {
-          _drawThermalFlames(canvas, s, angle, jexThermalRed, warningStrength, thermometer: false);
+          _drawThermalFlames(
+            canvas,
+            s,
+            angle,
+            jexThermalRed,
+            warningStrength,
+            thermometer: false,
+          );
         }
         canvas.drawPath(shell, _stroke(s * .045, mainColor.withValues(alpha: opacity)));
         final inner = RRect.fromRectAndRadius(
@@ -2286,13 +2363,37 @@ class _JexIconPainter extends CustomPainter {
           );
         }
         canvas.restore();
+        if (active && warningStrength > .005) {
+          _drawFallingFlameParticles(
+            canvas,
+            s,
+            angle,
+            jexThermalRed,
+            warningStrength,
+            bounds: inner.outerRect,
+          );
+        }
         break;
 
       case JexAnimatedIconKind.hotside:
         final shell = _hotsideSilhouette(s);
+        if (warningStrength > .005) {
+          final glow = _stroke(
+            s * .12,
+            jexThermalRed.withValues(alpha: .24 * warningStrength),
+          )..maskFilter = MaskFilter.blur(BlurStyle.normal, s * .045);
+          canvas.drawPath(shell, glow);
+        }
         canvas.drawPath(shell, _fill(mainColor.withValues(alpha: .10)));
         if (active && warningStrength > .005) {
-          _drawThermalFlames(canvas, s, angle, jexThermalRed, warningStrength, thermometer: true);
+          _drawThermalFlames(
+            canvas,
+            s,
+            angle,
+            jexThermalRed,
+            warningStrength,
+            thermometer: true,
+          );
         }
         canvas.drawPath(shell, _stroke(s * .045, mainColor.withValues(alpha: opacity)));
         final tubeInner = RRect.fromRectAndRadius(
@@ -2329,6 +2430,17 @@ class _JexIconPainter extends CustomPainter {
           _fill(Colors.white.withValues(alpha: .40)),
         );
         canvas.restore();
+        if (active && warningStrength > .005) {
+          _drawFallingFlameParticles(
+            canvas,
+            s,
+            angle,
+            jexThermalRed,
+            warningStrength,
+            bounds: Rect.fromLTWH(s * .37, s * .18, s * .26, s * .63),
+            clipPath: shell,
+          );
+        }
         break;
 
       case JexAnimatedIconKind.voltage:
