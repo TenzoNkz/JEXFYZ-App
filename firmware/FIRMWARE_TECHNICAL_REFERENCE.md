@@ -4,11 +4,11 @@ Last source/safety-reference reconciliation: 2026-10-19 (Asia/Jakarta). Latest s
 
 ## Current source identity
 
-- Canonical editable source: `firmware/JEXFYZ-V6.7.ino`.
-- `FW_VERSION = "V6.7"`; source blob `efe6eaa62c178ab536fb68c06a310e54826cbaf2`.
-- **Status: USER-REPORTED COMPILED AND UPDATED ONLINE; NOT INDEPENDENTLY VERIFIED.** On 2026-10-18 the user reported successful V6.7 compilation and online update; this task did not inspect compile logs, the resulting BIN, OTA logs or current installed version.
-- Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module, Arduino-ESP32 Core 3.3.7, compiled by the user in ArduinoDroid.
-- Historical V6.6 acceptance is USER-REPORTED: the user reported a successful compile and two same-version Online OTA updates. The V6.7 compile/online update is also USER-REPORTED, but neither report independently proves source-to-BIN provenance or current device behavior. The current installed-device version, physical safety/thermal/LED behavior and full OTA apply/reboot/reconnect gates remain UNVERIFIED.
+- Canonical editable source: `firmware/JEXFYZ-V6.8.ino`.
+- `FW_VERSION = "V6.8"`; source blob `4f8011337fc3c9e3f1ace717fbd7179e1331bff8`.
+- **Status: SOURCE UPDATED / NOT COMPILED / NOT INSTALLED.** V6.8 replaces Adaptive 12 V Fan PWM trend/stability logic with deterministic temperature tiers. The user compiles Firmware separately in ArduinoDroid with Arduino-ESP32 Core 3.3.7. Source-to-BIN identity, OTA logs and installed-device version remain UNVERIFIED.
+- Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module, Arduino-ESP32 Core 3.3.7.
+- V6.7 compile/online update is a historical USER-REPORTED result only; it does not validate V6.8 or prove source-to-BIN provenance. Physical safety/thermal/LED behavior and full OTA apply/reboot/reconnect gates remain UNVERIFIED.
 
 ## Architecture
 
@@ -65,13 +65,16 @@ The canonical detailed incident/contract is `VOLTAGE_TRANSITION_MEMORY.md`.
 - HOTSIDE is the startup default; HOTSIDE_BATTERY is runtime selectable but is not persisted. Battery sensor loss falls back to HOTSIDE behavior without changing the user's profile selection.
 - No rapid Hotside slope/rise protection is present in the known V6.x contract.
 
-## Adaptive Fan PWM at 12V — V6.7 trend-gating correction (source behavior and validation boundary)
+## Current Adaptive Fan PWM at 12V — V6.8 temperature-tier selector
 
-- Adaptive Fan PWM at 12V is automatic only in Adaptive mode. Reaching the configured Hotside limit immediately forces Fan PWM to 100%; Adaptive 5V/9V retain the established 100% Fan behavior.
-- Downshift requires ten fresh one-second NTC samples, every sample and the rolling average at/below `hotLimit - 2°C`, no confirmed warming trend, and one continuous stable 10-second interval. Decrease by 10 percentage points every 10 seconds, down to a 50% floor.
-- **Correction:** the controller now holds its present PWM if downshift eligibility is not met but no warming trend is confirmed. Upshift requires four consecutive one-second readings spanning at least 0.25°C and at least two of the three intervals rising; each upshift adds 10 points and is bounded by a 3-second minimum interval. This prevents one-sample noise or an incomplete stable window from ramping PWM to 100%.
-- The ten-sample downshift window and four-sample trend check reuse the existing calibrated NTC readings. NTC acquisition remains one sample per second; no extra ADC reads, blocking delays or timing loops are introduced. Existing Hotside/Peltier/rail safety remains authoritative.
-- The user reports successful V6.7 compilation and online update on 2026-10-18; this was not independently verified in this task. Static source contracts do not prove binary/source identity, current installed version, real sensor behavior or physical cooling/safety performance.
+- In Adaptive mode at 12 V, target PWM follows `delta = hotLimit - hotsideC` directly. The controller no longer waits for ten cool samples, a stable 10-second window, four-sample warming trends, or per-step timers.
+- Whole-degree examples are: delta ≤1°C →100%; 2°C →90%; 3°C →80%; 4°C →70%; 5°C →60%; delta ≥6°C →50%. Fractional readings use nearest-degree bins with boundaries at 1.5/2.5/3.5/4.5/5.5°C. No additional hysteresis is applied.
+- The configured Hotside limit or active Hotside protection forces 100%; Adaptive 5 V/9 V keeps 100%. Existing transition/thermal dwell/paused-output priority and invalid-NTC safety handling remain. Physical output stays Firmware-authoritative.
+- Source is `firmware/JEXFYZ-V6.8.ino` blob `4f8011337fc3c9e3f1ace717fbd7179e1331bff8`; static source-contract test is now `test/firmware_qc_contract_test.dart`. Neither Flutter/source-contract tests nor Arduino compilation has been run for this revision; source/BIN/device identity remains unverified.
+
+## HISTORICAL / SUPERSEDED — V6.7 Adaptive Fan trend-gating correction
+
+- V6.7 required ten samples and a stable downshift period, and used a four-sample warming-trend gate for upshifts. Those rules are superseded by the V6.8 direct tier selector above. The V6.7 compile/online-update result remains user-reported and is not evidence that V6.8 is compiled or installed.
 
 ## Touch / indicators / preferences
 
@@ -100,4 +103,4 @@ Static source assertions and file/blob checks can verify paths, constants and or
 
 ## HISTORICAL / SUPERSEDED App CI boundary — Build #65 (2026-10-16), not Firmware compile proof
 
-App Build #65 / run 38851040144 historically passed 88 Flutter tests plus the native FPS parser JUnit gate. Later Build #70 verified the App's FPS-retirement source (86/86 Flutter tests, native JUnit tasks NO-SOURCE); neither run is a Firmware compile. App source-contract checks over `firmware/JEXFYZ-V6.7.ino` do not compile the Arduino/ESP32 sketch, prove source-to-BIN provenance, or prove physical safety/OTA behavior. V6.6 compile/two-same-version Online OTA statements are historical USER-REPORTED evidence. The user reported V6.7 compiled and was updated online on 2026-10-18; this is USER-REPORTED. The compile log, BIN identity, source-to-BIN provenance, OTA apply/reboot logs and current installed-device version remain UNVERIFIED. No firmware source/BIN, Firebase, OTA, flash or device operation occurred during this App build.
+App Build #65 / run 38851040144 historically passed 88 Flutter tests plus the native FPS parser JUnit gate. Later Build #70 verified the App's FPS-retirement source (86/86 Flutter tests, native JUnit tasks NO-SOURCE); neither run is a Firmware compile. App source-contract checks over the active versioned sketch do not compile the Arduino/ESP32 sketch, prove source-to-BIN provenance, or prove physical safety/OTA behavior. V6.6 compile/two-same-version Online OTA statements are historical USER-REPORTED evidence. The user reported V6.7 compiled and was updated online on 2026-10-18; this is USER-REPORTED. The compile log, BIN identity, source-to-BIN provenance, OTA apply/reboot logs and current installed-device version remain UNVERIFIED. No firmware source/BIN, Firebase, OTA, flash or device operation occurred during this App build.
