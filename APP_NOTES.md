@@ -4,19 +4,23 @@ This file is the durable App behavior/design contract. Live source and the curre
 
 ## Latest successful App build and current source boundary — 2026-10-19
 
-- Latest successful, verified release is **Build #91** / [Actions run `39207456720`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39207456720), packaged from source `e9f6d8ca3ea936a1c4c05b2fbbd228dda5e2cdd1`. All 21 workflow steps passed; analyzer had 23 info-level deprecation findings and **97/97 Flutter tests passed**. The configured Android gate, obfuscated APK, required V1/V2/V3 signature/certificate checks, source ZIP verification, release publication, re-downloaded asset hashes, and tag/Release/source equality passed. Native JUnit tasks were NO-SOURCE; no native JUnit cases ran.
-- Build #91 APK asset `655397774`, 54,636,635 bytes, SHA-256 `8a111df269a5093dd3b7de9e086ab0c2fddda4bc5f1c71a1cf237daa7542863c`; corresponding source ZIP asset `655397777`, 2,857,331 bytes, SHA-256 `78ccbbdeaf3dfd9353f652c09e4e6ddcf2aa83ce77b771ad1822078a5a541ed6`. Release `jexfyz-latest` metadata and the live tag both target `e9f6d8ca3ea936a1c4c05b2fbbd228dda5e2cdd1`.
-- The icon-motion source update below creates a new source revision after Build #91; it is **SOURCE IMPLEMENTED / NOT RUN / NOT RELEASED** until separately validated by the guarded Build App workflow. Build #91 remains the latest successful artifact, but does not contain the follow-up that makes generic action/settings glyphs static.
-- Floating Monitor supports B/H/V/A/P/F; F is Fan/Kipas and carries live Fan Speed. Its native display remains compact letters-only; schema v2 removes legacy F (FPS) and migrates S (Speed) to F. Unknown/disconnected telemetry is not fabricated.
-- Keep the Build App workflow guard unchanged. App Build/release is authorized only by `@Thinking Eksekusi Build App!`; this scoped execution did not invoke it. Physical phone rendering, smoothness, live BLE/PWM and hardware behavior are not proven by source tests or CI.
+- Latest successful verified release remains **Build #92** / [Actions run `39211726896`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39211726896), packaged from source `6610fecb3e47d9941cbf96043b7da3b2a869753b`. All 21 workflow steps passed; analyzer reported 23 info-level deprecation findings, **98/98 Flutter tests passed**, the configured Android gate, production APK signing/certificate checks, corresponding source ZIP, downloaded asset digests, and tag/Release/source equality passed. Native JUnit tasks were NO-SOURCE.
+- Build #92 APK asset `655482761`, 54,636,635 bytes, SHA-256 `ee3ce9cb9697b8bcabf4da829fc64c16524bbe914eb83901f5d21c855d706926`; source ZIP asset `655482764`, 2,857,021 bytes, SHA-256 `7ec969d092638790dd36b5d71c758b68cdc11a0e8db2bdfb390c812f541e677a`. At that build, Release metadata and `jexfyz-latest` tag target matched the Build #92 source.
+- The current seven-icon rework below is newer than Build #92: battery/Hotside gain falling fire particles and restrained thermal glow; Fan becomes three broad blades; all seven core icons receive a shared luminous-core treatment; Voltage/Adaptive/Peltier/Fan Speed retain their distinct state/telemetry behavior. The follow-up and its updated source tests are **NOT RUN / NOT RELEASED**; they are not in the Build #92 APK.
+- Floating Monitor remains compact letters-only B/H/V/A/P/F, with F = Fan Speed, to preserve its established layout contract. Unknown/disconnected telemetry remains unknown instead of being fabricated.
+- No App Build or physical validation occurred in this execution. Current changes need separate `@Thinking Eksekusi Build App!` authorization before analyzer/tests/build/release. Phone rendering, animation smoothness, BLE/PWM runtime and cooling/safety behavior remain unverified.
 
-## Approved dashboard icon design and current source follow-up — NOT RELEASED
+## Approved seven-icon animation design — NOT RELEASED
 
-- Approved direction: Industrial Premium with balanced geometric detail; precise movement follows valid telemetry and meaningful status changes across all in-app indicators, including the Home painter, submenu state indicators and connection state. Colours, controls, Adaptive, PWM, safety rules and BLE telemetry semantics stay unchanged.
-- Battery/Hotside use tapered lava tongues with rising/fading teardrop fragments and a 280 ms warning fade. Voltage uses two staggered branch strikes clipped inside the closed bolt. Adaptive uses a restrained halo/highlight. Peltier retains its six-branch crystal and falling branched flakes with faceted center. Fan uses five swept blades, a layered hub, and exactly three fixed airflow ribbons that do not change with voltage/PWM. Fan Speed uses a half-circle gauge with smooth authoritative PWM retargeting; unknown/disconnected state hides the needle.
-- Generic navigation/settings/action glyphs do not represent telemetry and are static rather than continuously looping. Data-driven status motion stays in `JexAnimatedIcon`; the regression contract verifies the separation.
-- The Floating Monitor keeps its existing native letters-only B/H/V/A/P/F design and compact geometry; its displayed values/status continue to follow telemetry. Switching to pictograms in the overlay is not included in this change.
-- Current source/test blob hashes are recorded in `CHANGELOG.md` and the final `CHAT_TRANSFER.md`. This follow-up has not been run/analyzed/built. UI rendering, motion smoothness, BLE/PWM behavior and physical cooling remain UNVERIFIED.
+- Battery: recognizable battery shell and level, thermal warning glow/tongues, three downward-falling embers clipped inside the battery cavity.
+- Hotside: continuous thermometer and live column with falling embers clipped to the thermometer silhouette; existing configured warning threshold is unchanged.
+- Voltage: bolt with luminous core, current pulse along its closed spine and two staggered branch strikes; preserve 5V red, 9V green, 12V blue.
+- Adaptive: two separate, opposed arrowheads moving smoothly around their arcs; OFF remains a static full-colour icon.
+- Peltier: six-branch snowflake/crystal, faceted centre and falling branched snowflakes behind it.
+- Fan: exactly three broad swept blades and layered hub. Rotor timing uses existing voltage/PWM policy; three airflow ribbons stay fixed and independent of PWM.
+- Fan Speed: upper-half gauge with smooth live-PWM retarget; OFF at the existing left endpoint, 100% at the right endpoint; hide the needle when the value is unknown/disconnected.
+- Shared luminous-core treatment unifies style without changing control behaviour or inventing telemetry. These current source changes are **NOT RUN / NOT RELEASED**.
+
 
 
 ## Tamper warning screen and developer contact — rounded text blocks included by Build #80
