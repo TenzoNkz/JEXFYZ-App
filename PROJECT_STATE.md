@@ -4,7 +4,7 @@ Current state reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). 
 
 ## Current App / Release state — Build #106 verified; current UI follow-up is NOT RELEASED
 
-- Canonical repo: TenzoNkz/JEXFYZ-App, branch main. Baseline before this source update was HEAD 27f1b572af2db8c73d325defed196086207649c8; the copy/test update is now committed on main after Build #100.
+- Canonical repo: TenzoNkz/JEXFYZ-App, branch main. Current UI edits are committed directly to main after Build #106 and remain NOT RUN / NOT RELEASED. No branch or PR was created.
 - Latest successful release is Build #106 / Actions run 39279938461, source `9f90cf6063ee7786613f8b5dfa1c6b0412d89638`. Analyzer exited 0 with 25 info findings and no errors/warnings; 108 Flutter tests passed; the configured Android gate, APK signature/certificate, source archive integrity and downloaded Release-asset checks passed.
 - Build #106 APK asset ID `656702702`, 54,734,939 bytes, SHA-256 `bab332a4312c628178e384a88d513cf8546ff15ab4b4e3f3becf2e70b10830cc`; source ZIP asset ID `656702729`, 2,866,720 bytes, SHA-256 `0bb86c4e6bd7d3cb7a6bb894658bd707acee48bac106fc5227f8adcba584ec98`.
 - Current source is newer than Build #106 and NOT RUN / NOT RELEASED: `lib/main.dart` `7e09a3d28b4efe24bdced858db4274cf70806284`; `lib/app_settings.dart` `8f228000d38d73038c06f569c052b1af601288a5`; `test/widget_test.dart` `5a82cf79e6c5c40fc34489ce90cf1200cf9faccb`.
