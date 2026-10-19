@@ -6,7 +6,7 @@ Reconciled against live GitHub `main` on 2026-10-19 (Asia/Jakarta). This file is
 
 - Latest successful verified release: **Build #95** / [Actions run 39217718351](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39217718351), source `cd691b874ddb0e454ba69891a3e0da3001df892f`. All 21 guarded workflow steps passed; analyzer passed with 23 info-level deprecations; **99/99 Flutter tests passed**; APK signature/certificate, corresponding source ZIP, release assets and tag/source checks passed. Native JUnit tasks were NO-SOURCE.
 - Build #95 APK asset `655596091`, SHA-256 `856718ada30c5ef5081b5bb28a5e00c3b9d234e00ebced58a211112cc381140d`; source ZIP asset `655596090`, SHA-256 `262d552e564b7c0a1727048a2e2897777ff18fa7296381a77f2c10236784ce7e`.
-- The current smoothness follow-up is newer than Build #95 and **SOURCE ONLY / NOT RUN / NOT RELEASED**. Source blob: `lib/main.dart` `f0bc1375799e7b9e4466a3124ddb031d5f58e522`; test blob: `test/widget_test.dart` `653a67f3c946bb10c0da350f9677e19b3275ed58`.
+- The current smoothness follow-up is newer than Build #95 and **SOURCE ONLY / NOT RUN / NOT RELEASED**. Source blob: `lib/main.dart` `f0bc1375799e7b9e4466a3124ddb031d5f58e522`; test blob: `test/widget_test.dart` `aaf911cdcf5e23a23b80c2ef47ca4e11d406f9cf`.
 - Diagnosed stiffness: slow 4.2–6.4 s cycles on tiny glyphs, tiny particle geometry, non-periodic drift, whole-icon breathing, crystal spin tied to snowfall, and abrupt Fan angular-rate changes. The follow-up updates cycle timing, particle size/fade, periodic phase drift, Peltier crystal motion, Home drawable size, and phase-integrated Fan speed changes.
 - Regression tests cover fade math, Fan rate integration, cadences, crystal movement separation, painter repaint dependencies and Home drawable size. Neither Dart nor Flutter CLI is installed; analysis/tests are **NOT RUN**. Build #95 is not proof that this newer source is validated or packaged. Physical rendering remains UNVERIFIED.
 
@@ -70,7 +70,7 @@ Reconciled against live GitHub `main` on 2026-10-19 (Asia/Jakarta). This file is
 ## Source fingerprints (after animation smoothness follow-up; final HEAD/tree in CHAT_TRANSFER.md)
 
 - `lib/main.dart`: `f0bc1375799e7b9e4466a3124ddb031d5f58e522` (smoothness follow-up; NOT RUN / NOT RELEASED).
-- `test/widget_test.dart`: `653a67f3c946bb10c0da350f9677e19b3275ed58` (updated deterministic/source-contract tests; NOT RUN).
+- `test/widget_test.dart`: `aaf911cdcf5e23a23b80c2ef47ca4e11d406f9cf` (updated deterministic/source-contract tests; NOT RUN).
 - `lib/jex_animated_glyph.dart`: `b37fc4e0807c874b2f01db00c7f606810cb5deca` (static generic action/settings glyph).
 - Final commit and all changed-document hashes are recorded in `CHAT_TRANSFER.md`.
 
