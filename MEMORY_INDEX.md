@@ -73,7 +73,7 @@ Reconciled against live GitHub `main` on 2026-10-19 (Asia/Jakarta). This file is
 
 ## Source fingerprints (after seven-icon rework; exact final HEAD/tree in CHAT_TRANSFER.md)
 
-- `lib/main.dart`: `18f0a4d11948c7d584e8eeff5fd88eb6230d17e8` (seven-icon visual rework; NOT RUN / NOT RELEASED)
+- `lib/main.dart`: `ec8d682432946bd5b9afea925685855d632610b8` (seven-icon visual rework; NOT RUN / NOT RELEASED)
 - `lib/app_settings.dart`: `36927823c91904a35d87d2f21bd77932a2214e83`
 - `lib/floating_monitor.dart`: `31b45ea08b08ac7fc25ebd991dca873b889fdd14`
 - `test/widget_test.dart`: `ab0862470846455465b65ec294d33d39c07aac62` (falling-fire, three-blade and luminous-core source contracts; NOT RUN)
