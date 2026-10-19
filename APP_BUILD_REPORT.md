@@ -1,4 +1,14 @@
-## LATEST SUCCESSFUL APP BUILD — BUILD #108 (CURRENT UI FOLLOW-UP RELEASED AND VERIFIED)
+## CURRENT SOURCE FOLLOW-UP AFTER BUILD #108 — RESTORE ORIGINAL HOME ROW GEOMETRY (NOT RUN / NOT RELEASED)
+
+- The latest source-only correction is newer than Build #108 and must not be described as already released. Build #108 succeeded on source commit `51f401c90085b0bef5599375f7819d0294375938`; the current geometry source is `lib/main.dart` blob `0341122a53e7a6bb00d9f079bfcb350b385c83cb`, and its regression test is `test/widget_test.dart` blob `b240231403c26071e618f3da1e82b379ff912adf`.
+- Restored `_homeMetric` row height to 44 dp (original icon tile remains 38 dp within its 41 dp lane). Replaced the centered `Stack` inside `_homeNotify` with the original left-icon / left-text `Row`, removed the connection badge and badge-sized text lane, and retained left-aligned normal-font text wrapping to a maximum of two lines.
+- NOTIFY minimum height and its reserved Home slot are now 56 dp, a modest increase over the original 44 dp to accommodate two message lines. All other Home geometry, menu layout, app branding, icon painters, BLE behavior, telemetry and Firmware logic remain out of scope.
+- Added explicit source-contract assertions for the 44 dp metric row, 56 dp Notify card/slot, Row structure, icon lane, no `Stack`, no `FittedBox`, two-line body, left alignment, and absent connection badge.
+- **Validation: NOT RUN / NOT RELEASED.** This task has not triggered App Build; the current correction has not run Flutter tests/analyzer/Android build. Do not infer it passed from Build #108 because #108 packages source `51f401c90085b0bef5599375f7819d0294375938`. No Firmware compile, BIN, Firebase, OTA, flash or hardware operation occurred.
+
+---
+
+## LATEST SUCCESSFUL APP BUILD — BUILD #108 (PREVIOUS SOURCE REVISION RELEASED AND VERIFIED)
 
 - **Result: SUCCESS.** [GitHub Actions Build #108 / run 39294761979](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39294761979) completed with conclusion `success` on the exact checked-out App source commit `51f401c90085b0bef5599375f7819d0294375938`. All 21 main workflow steps and all post-job cleanup steps succeeded.
 - **Workflow guard and scope:** triggered only through official issue #34, [JE X FYZ — EKSEKUSI BUILD APP TRIGGER](https://github.com/TenzoNkz/JEXFYZ-App/issues/34), using the accepted `issues/reopened` event. Owner/title/body-token checks were retained. Workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12` was not changed. No push/PR/dispatch bypass was introduced.
