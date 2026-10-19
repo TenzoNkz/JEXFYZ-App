@@ -8,7 +8,7 @@ Reconciled against live GitHub `main` on 2026-10-19 (Asia/Jakarta). This file is
 - Build #92 APK ID `655482761`, SHA-256 `ee3ce9cb9697b8bcabf4da829fc64c16524bbe914eb83901f5d21c855d706926`; source ZIP ID `655482764`, SHA-256 `7ec969d092638790dd36b5d71c758b68cdc11a0e8db2bdfb390c812f541e677a`.
 - Current source follow-up after Build #92 reworks the seven requested indicators: Battery/Hotside gain downward-falling fire particles, Voltage has a luminous bolt core, Adaptive uses two rotating arrows, Peltier retains a six-branch snowflake and falling snow, Fan changes to three broad swept blades, and Fan Speed keeps the half-circle PWM gauge. A common restrained luminous-core style is added across the set.
 - Source/test follow-up is **SOURCE IMPLEMENTED / NOT RUN / NOT RELEASED** until separately authorized Build App validation. Build #92 remains the latest successful artifact for its exact source; it does not contain this update.
-- Exact new blobs: `lib/main.dart` `18f0a4d11948c7d584e8eeff5fd88eb6230d17e8`; `test/widget_test.dart` `ab0862470846455465b65ec294d33d39c07aac62`. Their new contracts have not been run/analyzed/built.
+- Exact new blobs: `lib/main.dart` `ec8d682432946bd5b9afea925685855d632610b8`; `test/widget_test.dart` `ab0862470846455465b65ec294d33d39c07aac62`. Their new contracts have not been run/analyzed/built.
 - Firmware source remains `firmware/JEXFYZ-V6.7.ino`, `FW_VERSION="V6.7"`; user compile/update report remains USER-REPORTED, source-to-BIN/device provenance UNVERIFIED. No firmware/BIN/Firebase/OTA/device action occurred.
 - App config remains pubspec `1.0.0+3`, package `com.horizontalzzz.jexfyz`; preserve Gradle `versionName "Telegram @horizontalzzz"`. Build workflow guard remains unchanged.
 
