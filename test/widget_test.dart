@@ -912,6 +912,22 @@ void main() {
     expect(jexSmoothFanSpeedLevel(from: .2, to: .8, progress: .5), closeTo(.5, 1e-9));
   });
 
+  test('Thermal warning repaint tracks warning strength changes', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final painterStart = source.indexOf('class _JexIconPainter extends CustomPainter {');
+    final painterEnd = source.indexOf('const MethodChannel securityChannel', painterStart);
+    expect(painterStart, isNonNegative);
+    expect(painterEnd, greaterThan(painterStart));
+    final painter = source.substring(painterStart, painterEnd);
+    final repaintStart = painter.indexOf(
+      'bool shouldRepaint(covariant _JexIconPainter oldDelegate) =>',
+    );
+    expect(repaintStart, isNonNegative);
+    final repaint = painter.substring(repaintStart);
+    expect(repaint, contains('oldDelegate.warningStrength != warningStrength'));
+    expect(repaint, isNot(contains('oldDelegate.warning != warning')));
+  });
+
   test('LED palette exposes current RGB colors', () {
     expect(ledColorPalette, hasLength(36));
     expect(ledColorPalette.first, '#FF1744');
