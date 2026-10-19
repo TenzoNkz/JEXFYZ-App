@@ -6762,21 +6762,29 @@ void _handleAckLine(String line) {
 
   String _notifyStateLabel() {
     final custom = notice.trim().toUpperCase();
-    if (_bleConnecting) return JexText.of('notifyBluetooth', appLanguageNotifier.value);
-    if (syncing && !dashboardReady) return JexText.of('notifySync', appLanguageNotifier.value);
+    final language = appLanguageNotifier.value;
+    String category;
 
-    final hasError = isNotifyErrorMessage(custom);
-    if (hasError) return JexText.of('notifyError', appLanguageNotifier.value);
+    if (_bleConnecting) {
+      category = JexText.of('notifyBluetooth', language);
+    } else if (syncing && !dashboardReady) {
+      category = JexText.of('notifySync', language);
+    } else if (isNotifyErrorMessage(custom)) {
+      category = JexText.of('notifyError', language);
+    } else {
+      // WAITING_* is a startup/sensor-validation state and must not be shown
+      // as a safety warning while the dashboard is offline.
+      final warning = connected &&
+          safety != 'OK' &&
+          safetyReason != 'NONE' &&
+          safetyReason != 'WAITING_FOR_NTC' &&
+          safetyReason != 'WAITING_FOR_SENSOR_VALIDATION';
+      category = warning
+          ? JexText.of('notifyWarning', language)
+          : JexText.of('notify', language);
+    }
 
-    // WAITING_* is a startup/sensor-validation state and must not be shown as
-    // a safety warning while the dashboard is offline.
-    final warning = connected &&
-        safety != 'OK' &&
-        safetyReason != 'NONE' &&
-        safetyReason != 'WAITING_FOR_NTC' &&
-        safetyReason != 'WAITING_FOR_SENSOR_VALIDATION';
-    if (warning) return JexText.of('notifyWarning', appLanguageNotifier.value);
-    return JexText.of('notify', appLanguageNotifier.value);
+    return 'NOTIFY • $category';
   }
 
   // AI-METHOD: _homeNotify — Render the Home NOTIFY card.
