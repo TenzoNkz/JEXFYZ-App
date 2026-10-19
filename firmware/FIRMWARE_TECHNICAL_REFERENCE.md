@@ -1,6 +1,6 @@
 # JE X FYZ — Firmware Technical Reference
 
-Last source/safety-reference reconciliation: 2026-10-19 (Asia/Jakarta). Latest successful App artifact run is Build #83, source `dfc7e6633298498bb6eac21182c9306d5e3cac1d`; its APK/source assets passed their gates, but the Release handoff is BLOCKED because `refs/tags/jexfyz-latest` remains stale and the post-Build-#83 workflow repair is untested. App CI does not prove Firmware compile, BIN provenance or physical OTA/safety behavior. Always fetch live source and compare before relying on line locations/hashes.
+Last source/safety-reference reconciliation: 2026-10-20 (Asia/Jakarta). The latest successful App artifact remains Build #106 / run `39279938461`, source `9f90cf6063ee7786613f8b5dfa1c6b0412d89638`; the current Home NOTIFY/animation UI follow-up remains newer than that release and unvalidated. App CI does not prove Firmware compile, BIN provenance or physical OTA/safety behavior. Always fetch live source and compare before relying on line locations/hashes.
 
 ## Current source identity
 
