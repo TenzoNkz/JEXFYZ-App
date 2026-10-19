@@ -769,44 +769,44 @@ class JexText {
       AppLanguage.indonesia: 'Disimpan dengan aman.',
     },
     'otaStartRejected': {
-      AppLanguage.english: 'OTA start was rejected.',
-      AppLanguage.indonesia: 'Permintaan OTA ditolak.',
+      AppLanguage.english: 'Firmware update could not start.',
+      AppLanguage.indonesia: 'Pembaruan firmware tidak dapat dimulai.',
     },
     'otaInProgress': {
-      AppLanguage.english: 'OTA is in progress.',
-      AppLanguage.indonesia: 'OTA sedang berlangsung.',
+      AppLanguage.english: 'Firmware update in progress.',
+      AppLanguage.indonesia: 'Pembaruan firmware sedang berlangsung.',
     },
     'otaUpToDate': {
-      AppLanguage.english: 'OTA is already up to date.',
+      AppLanguage.english: 'Firmware is up to date.',
       AppLanguage.indonesia: 'Firmware sudah versi terbaru.',
     },
     'otaReconnectFailed': {
-      AppLanguage.english: 'OTA finished, but BLE recovery could not reconnect.',
-      AppLanguage.indonesia: 'OTA selesai, tetapi BLE tidak dapat tersambung kembali.',
+      AppLanguage.english: 'Update finished, but the cooler did not reconnect.',
+      AppLanguage.indonesia: 'Pembaruan selesai, tetapi cooler tidak tersambung kembali.',
     },
     'systemReady': {
       AppLanguage.english: 'System ready.',
       AppLanguage.indonesia: 'Sistem siap.',
     },
     'deviceStatusUpdate': {
-      AppLanguage.english: 'Device status updated.',
+      AppLanguage.english: 'Device status refreshed.',
       AppLanguage.indonesia: 'Status perangkat diperbarui.',
     },
     'connectingDevice': {
-      AppLanguage.english: 'Connecting to device...',
-      AppLanguage.indonesia: 'Menghubungkan ke perangkat...',
+      AppLanguage.english: 'Connecting to JE X FYZ…',
+      AppLanguage.indonesia: 'Menghubungkan ke JE X FYZ…',
     },
     'scanning': {
-      AppLanguage.english: 'Scanning...',
-      AppLanguage.indonesia: 'Memindai...',
+      AppLanguage.english: 'Scanning for JE X FYZ…',
+      AppLanguage.indonesia: 'Mencari JE X FYZ…',
     },
     'bluetoothNotReady': {
-      AppLanguage.english: 'Bluetooth is not ready.',
-      AppLanguage.indonesia: 'Bluetooth belum siap.',
+      AppLanguage.english: 'Bluetooth is unavailable. Check your settings.',
+      AppLanguage.indonesia: 'Bluetooth tidak tersedia. Periksa pengaturan Anda.',
     },
     'connectFirst': {
-      AppLanguage.english: 'Connect to JE X FYZ first.',
-      AppLanguage.indonesia: 'Hubungkan ke JE X FYZ terlebih dahulu.',
+      AppLanguage.english: 'Connect to JE X FYZ to continue.',
+      AppLanguage.indonesia: 'Hubungkan ke JE X FYZ untuk melanjutkan.',
     },
     'manual': {
       AppLanguage.english: 'Manual',
@@ -897,28 +897,28 @@ class JexText {
       AppLanguage.indonesia: 'Izin koneksi diperlukan.',
     },
     'deviceNotFound': {
-      AppLanguage.english: 'JE X FYZ was not found.',
-      AppLanguage.indonesia: 'JE X FYZ tidak ditemukan.',
+      AppLanguage.english: 'JE X FYZ was not found nearby.',
+      AppLanguage.indonesia: 'JE X FYZ tidak ditemukan di sekitar.',
     },
     'scanFailed': {
-      AppLanguage.english: 'Scan failed.',
-      AppLanguage.indonesia: 'Pemindaian gagal.',
+      AppLanguage.english: 'Could not scan for devices. Check Bluetooth permissions.',
+      AppLanguage.indonesia: 'Pemindaian perangkat gagal. Periksa izin Bluetooth.',
     },
     'notificationSafetyDescription': {
       AppLanguage.english: 'Notify when Hotside reaches the set limit.',
       AppLanguage.indonesia: 'Beri tahu saat Hotside mencapai batas yang ditetapkan.',
     },
     'otaFailed': {
-      AppLanguage.english: 'OTA failed.',
-      AppLanguage.indonesia: 'OTA gagal.',
+      AppLanguage.english: 'Firmware update failed.',
+      AppLanguage.indonesia: 'Pembaruan firmware gagal.',
     },
     'otaSuccessful': {
-      AppLanguage.english: 'OTA successful.',
-      AppLanguage.indonesia: 'OTA berhasil.',
+      AppLanguage.english: 'Firmware update completed.',
+      AppLanguage.indonesia: 'Pembaruan firmware selesai.',
     },
     'otaProgress': {
-      AppLanguage.english: 'OTA in progress • ',
-      AppLanguage.indonesia: 'OTA sedang berlangsung • ',
+      AppLanguage.english: 'Firmware update in progress • ',
+      AppLanguage.indonesia: 'Pembaruan firmware berlangsung • ',
     },
     'adaptiveCeiling': {
       AppLanguage.english: 'Adaptive Limit',
