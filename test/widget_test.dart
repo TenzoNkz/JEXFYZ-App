@@ -875,7 +875,7 @@ void main() {
     final categoryEnd = source.indexOf('Widget _homeNotify() {', categoryStart);
     expect(categoryStart, isNonNegative);
     expect(categoryEnd, greaterThan(categoryStart));
-    expect(source.substring(categoryStart, categoryEnd), contains('NOTIFY • $category'));
+    expect(source.substring(categoryStart, categoryEnd), contains('NOTIFY • \$category'));
   });
 
   test('Live cooling telemetry clears stale command errors only in a healthy state', () {
