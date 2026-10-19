@@ -4,23 +4,17 @@ This file is the durable App behavior/design contract. Live source and the curre
 
 ## Latest successful App build and current source boundary — 2026-10-19
 
-- Latest successful verified release remains **Build #92** / [Actions run `39211726896`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39211726896), packaged from source `6610fecb3e47d9941cbf96043b7da3b2a869753b`. All 21 workflow steps passed; analyzer reported 23 info-level deprecation findings, **98/98 Flutter tests passed**, the configured Android gate, production APK signing/certificate checks, corresponding source ZIP, downloaded asset digests, and tag/Release/source equality passed. Native JUnit tasks were NO-SOURCE.
-- Build #92 APK asset `655482761`, 54,636,635 bytes, SHA-256 `ee3ce9cb9697b8bcabf4da829fc64c16524bbe914eb83901f5d21c855d706926`; source ZIP asset `655482764`, 2,857,021 bytes, SHA-256 `7ec969d092638790dd36b5d71c758b68cdc11a0e8db2bdfb390c812f541e677a`. At that build, Release metadata and `jexfyz-latest` tag target matched the Build #92 source.
-- The current seven-icon rework below is newer than Build #92: battery/Hotside gain falling fire particles and restrained thermal glow; Fan becomes three broad blades; all seven core icons receive a shared luminous-core treatment; Voltage/Adaptive/Peltier/Fan Speed retain their distinct state/telemetry behavior. The follow-up and its updated source tests are **NOT RUN / NOT RELEASED**; they are not in the Build #92 APK.
-- Floating Monitor remains compact letters-only B/H/V/A/P/F, with F = Fan Speed, to preserve its established layout contract. Unknown/disconnected telemetry remains unknown instead of being fabricated.
-- No App Build or physical validation occurred in this execution. Current changes need separate `@Thinking Eksekusi Build App!` authorization before analyzer/tests/build/release. Phone rendering, animation smoothness, BLE/PWM runtime and cooling/safety behavior remain unverified.
+Latest successful released artifact is **Build #95** / [Actions run 39217718351](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39217718351), packaged from source commit `cd691b874ddb0e454ba69891a3e0da3001df892f`. It passed all 21 workflow steps, analyzer with 23 info-level deprecation findings, **99/99 Flutter tests**, configured Android gate, production APK signature/certificate checks, matching source ZIP and release/tag/source validation. Native JUnit tasks were NO-SOURCE.
+- APK asset `655596091`, 54,702,171 bytes, SHA-256 `856718ada30c5ef5081b5bb28a5e00c3b9d234e00ebced58a211112cc381140d`.
+- Source ZIP asset `655596090`, 2,858,246 bytes, SHA-256 `262d552e564b7c0a1727048a2e2897777ff18fa7296381a77f2c10236784ce7e`. At Build #95, release metadata and the `jexfyz-latest` tag matched the exact Build #95 source.
+- Build #95 is the latest successful artifact. The smoothness follow-up below is later source, **NOT RUN / NOT RELEASED**, and is not in that APK.
 
-## Approved seven-icon animation design — NOT RELEASED
+## Current animation smoothness follow-up — NOT RUN / NOT RELEASED
 
-- Battery: recognizable battery shell and level, thermal warning glow/tongues, three downward-falling embers clipped inside the battery cavity.
-- Hotside: continuous thermometer and live column with falling embers clipped to the thermometer silhouette; existing configured warning threshold is unchanged.
-- Voltage: bolt with luminous core, current pulse along its closed spine and two staggered branch strikes; preserve 5V red, 9V green, 12V blue.
-- Adaptive: two separate, opposed arrowheads moving smoothly around their arcs; OFF remains a static full-colour icon.
-- Peltier: six-branch snowflake/crystal, faceted centre and falling branched snowflakes behind it.
-- Fan: exactly three broad swept blades and layered hub. Rotor timing uses existing voltage/PWM policy; three airflow ribbons stay fixed and independent of PWM.
-- Fan Speed: upper-half gauge with smooth live-PWM retarget; OFF at the existing left endpoint, 100% at the right endpoint; hide the needle when the value is unknown/disconnected.
-- Shared luminous-core treatment unifies style without changing control behaviour or inventing telemetry. These current source changes are **NOT RUN / NOT RELEASED**.
-
+- New source blob: `lib/main.dart` `f0bc1375799e7b9e4466a3124ddb031d5f58e522`; updated test blob: `test/widget_test.dart` `653a67f3c946bb10c0da350f9677e19b3275ed58`.
+- Root causes investigated: cycles of 4.2–6.4 s were too slow for tiny glyphs; ember/snow shapes were too small; non-integer particle phase drift risked a snap at cycle wrap; whole-glyph breathing scaled the symbol rather than improving internal detail; Peltier crystal rotation competed with falling snow; Fan rate changes were abrupt when cycle duration changed mid-rotation.
+- Corrections: Battery/Hotside/Voltage/Adaptive/Peltier UI cycles now target 1.5/1.65/1.0/2.3/2.1 seconds; fire/snow particles are larger and fade at boundaries; phase drift uses integer harmonics; Peltier crystal rocking is separated from snowfall; whole-icon breathing is removed; Home glyph size is 26 dp inside the unchanged 38×38 dp tile; Fan rotation uses accumulated phase plus integrated smoothstep angular-rate retarget over 420 ms. Existing PWM/voltage policy, state gates, telemetry, warning predicate, BLE, and safety behavior remain unchanged.
+- Regression tests were updated for particle fade math, Fan phase/rate integration, cadence values, Peltier motion separation, repaint dependencies, and Home icon size. Neither `flutter` nor `dart` CLI is available, so tests/analyzer are **NOT RUN**. Real-device smoothness remains UNVERIFIED. No Build, Firmware/BIN, Firebase, OTA, flash or device action occurred.
 
 
 ## Tamper warning screen and developer contact — rounded text blocks included by Build #80
