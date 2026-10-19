@@ -2101,15 +2101,15 @@ class _JexIconPainter extends CustomPainter {
       final fall = (cycle + i / count) % 1.0;
       final fadeIn = (fall / .18).clamp(0.0, 1.0).toDouble();
       final fadeOut = ((1.0 - fall) / .22).clamp(0.0, 1.0).toDouble();
-      final alpha = math.min(fadeIn, fadeOut) * strength;
+      final alpha = (math.min(fadeIn, fadeOut) * strength).toDouble();
       if (alpha <= .01) continue;
 
       final seed = i * 2.399963229728653;
       final baseX = bounds.left + bounds.width * (.22 + i * .28);
       final x = baseX + math.sin(phase * 1.15 + seed) * bounds.width * .075;
       final y = bounds.top + fall * bounds.height;
-      final radius = math.min(s * .055, bounds.width * .12) *
-          (i.isEven ? 1.0 : .80);
+      final radius = (math.min(s * .055, bounds.width * .12) *
+          (i.isEven ? 1.0 : .80)).toDouble();
       final tail = Path()
         ..moveTo(x, y - radius * 2.3)
         ..cubicTo(
@@ -2121,7 +2121,7 @@ class _JexIconPainter extends CustomPainter {
           y - radius * 1.15,
         );
       final trailPaint = _stroke(
-        math.max(s * .010, radius * .48),
+        math.max(s * .010, radius * .48).toDouble(),
         const Color(0xFFFF9A35).withValues(alpha: .64 * alpha),
       );
       trailPaint.maskFilter = MaskFilter.blur(BlurStyle.normal, s * .012);
