@@ -1702,6 +1702,30 @@ void main() {
     expect(JexText.of('notifyError', AppLanguage.indonesia), 'ERROR');
   });
 
+  test('Home Notify connection and action copy stays concise in both languages', () {
+    expect(JexText.of('bluetoothDisconnected', AppLanguage.english), 'Bluetooth disconnected.');
+    expect(JexText.of('bluetoothDisconnected', AppLanguage.indonesia), 'Bluetooth terputus.');
+    expect(JexText.of('connectionReady', AppLanguage.english), 'Connection established.');
+    expect(JexText.of('connectionReady', AppLanguage.indonesia), 'Koneksi berhasil dibuat.');
+    expect(JexText.of('modeUpdated', AppLanguage.english), 'LED mode updated.');
+    expect(JexText.of('modeUpdated', AppLanguage.indonesia), 'Mode LED diperbarui.');
+    expect(JexText.of('brightnessUpdated', AppLanguage.english), 'LED brightness updated.');
+    expect(JexText.of('brightnessUpdated', AppLanguage.indonesia), 'Kecerahan LED diperbarui.');
+    expect(JexText.of('colorUpdated', AppLanguage.english), 'LED color updated.');
+    expect(JexText.of('colorUpdated', AppLanguage.indonesia), 'Warna LED diperbarui.');
+
+    final source = File('lib/main.dart').readAsStringSync();
+    final start = source.indexOf('void _notifyCommandAccepted(String command)');
+    final end = source.indexOf('String _notifyStateLabel()', start);
+    expect(start, isNonNegative);
+    expect(end, greaterThan(start));
+    final accepted = source.substring(start, end);
+    expect(accepted, contains("JexText.phrase('Fan speed set to ', 'Kecepatan kipas diatur ke ', lang)"));
+    expect(accepted, contains("JexText.phrase('Hotside temperature limit set to ', 'Batas suhu Hotside diatur ke ', lang)"));
+    expect(accepted, contains("JexText.phrase('5V battery limit updated.', 'Batas baterai 5V diperbarui.', lang)"));
+    expect(accepted, contains("JexText.phrase('12V battery limit updated.', 'Batas baterai 12V diperbarui.', lang)"));
+  });
+
   test('Localized Notify error detection is language-aware', () {
     expect(isNotifyErrorMessage('Voltage change failed.'), isTrue);
     expect(isNotifyErrorMessage('Perubahan tegangan gagal.'), isTrue);
