@@ -1,15 +1,15 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #106 remains the latest successful release; the current left-aligned NOTIFY and Battery/Hotside/Voltage animation update is source-only, NOT RUN / NOT RELEASED. CHAT_TRANSFER.md is the final handoff snapshot.
+Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #108 is the latest successful App release; a newer Home layout correction is source-only and NOT RUN / NOT RELEASED. CHAT_TRANSFER.md is the detailed boot snapshot.
 
 ## Latest successful build and current source boundary
 
-- Latest successful release is Build #106 / Actions run 39279938461, source `9f90cf6063ee7786613f8b5dfa1c6b0412d89638`. Analyzer exited 0 with 25 info findings/no errors or warnings, 108 Flutter tests passed, and the configured Android, signing, source ZIP and asset verification gates passed.
-- Build #106 APK asset ID `656702702`, 54,734,939 bytes, SHA-256 `bab332a4312c628178e384a88d513cf8546ff15ab4b4e3f3becf2e70b10830cc`; corresponding source ZIP asset ID `656702729`, 2,866,720 bytes, SHA-256 `0bb86c4e6bd7d3cb7a6bb894658bd707acee48bac106fc5227f8adcba584ec98`.
-- Current source after Build #106 is NOT RUN / NOT RELEASED. `lib/main.dart` `7e09a3d28b4efe24bdced858db4274cf70806284`; `lib/app_settings.dart` `8f228000d38d73038c06f569c052b1af601288a5`; `test/widget_test.dart` `5a82cf79e6c5c40fc34489ce90cf1200cf9faccb`.
-- Home NOTIFY has no separate CONNECTED/DISCONNECTED badge; its heading and body are left-aligned and the body wraps to at most two lines. Battery/Hotside use clipped oval ember bursts instead of old tapered flame/drop particles. Voltage uses outer-contour pulses rather than a moving central spine or branch strikes. Firmware thresholds and all other icon families are unchanged.
-Build #106 succeeded on older source and does not include these changes.
-- No App Build/release, Firmware/BIN/Firebase/OTA/flash/device operation occurred. Request @Thinking Eksekusi Build App! separately before validation/release.
+- Latest successful release: Build #108 / Actions run 39294761979, packaged source commit `51f401c90085b0bef5599375f7819d0294375938`. Analyzer exited 0 with 25 info-level findings/no warnings or errors, 107 Flutter tests passed, the configured Android gate passed, and APK signing/source ZIP/downloaded assets/source-marker checks were verified.
+- APK asset `656953696`, 54,734,939 bytes, SHA-256 `a7e46390a2b8a487eb85e69d33af685dbc79f9814c201cce9fd255e1164cf8ed`; source ZIP asset `656953697`, 2,866,251 bytes, SHA-256 `4b3095747a711888afa9879e70cd8d3fc74b22659e68f338e6e8cbc2430d12be`.
+- Current Home geometry correction is newer than Build #108, NOT RUN / NOT RELEASED: `lib/main.dart` blob `0341122a53e7a6bb00d9f079bfcb350b385c83cb`; `test/widget_test.dart` blob `b240231403c26071e618f3da1e82b379ff912adf`.
+- Restored Home metric rows to 44 dp. NOTIFY is restored to the original left-icon/text-left Row, the separate connection badge is removed, body text stays normal size and wraps to at most two lines, and the card/slot is 56 dp. No other Home layout, tab, image, icon animation, BLE or control behavior was intentionally changed.
+- The new row/card source contracts have NOT RUN. Do not infer they passed from Build #108; its source preceded this correction. No App Build was started.
+- Firmware V6.8 remains a separate, uncompiled/uninstalled source change. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
 ## Current approved icon behavior
 
