@@ -20,11 +20,16 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 
 ## Current release and source validation boundary — 2026-10-19
 
-- Latest successful verified App artifact is **Build #92** / [Actions run 39211726896](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39211726896), source commit `6610fecb3e47d9941cbf96043b7da3b2a869753b`. All 21 workflow steps passed; **98/98 Flutter tests passed**, analyzer exited 0 with 23 informational deprecation findings, Android configured gate, obfuscated APK, required V1/V2/V3 signing/certificate, matching source ZIP and downloaded-asset verification all passed. Native JUnit tasks were NO-SOURCE.
-- Build #92 APK asset `655482761` SHA-256 `ee3ce9cb9697b8bcabf4da829fc64c16524bbe914eb83901f5d21c855d706926`; source ZIP asset `655482764` SHA-256 `7ec969d092638790dd36b5d71c758b68cdc11a0e8db2bdfb390c812f541e677a`. Release metadata and `refs/tags/jexfyz-latest` matched the Build #92 source.
-- Current source follow-up after Build #92 reworks seven core icons: Battery and Hotside warning fire particles now fall like Peltier snow; Voltage has a luminous bolt core; Adaptive uses two rotating arrows; Peltier retains six-branch crystal with falling flakes; Fan is reworked to three broad swept blades; Fan Speed retains the upper-half PWM-driven gauge. A shared restrained luminous-core finish unifies the set.
-- This follow-up is **NOT RUN / NOT RELEASED** and is not included in Build #92. The source test file was updated for falling fire, three blades and the shared luminous-core treatment; these assertions have not run. A separate `@Thinking Eksekusi Build App!` is required to validate and release the new source.
-- Physical rendering, on-device motion, live BLE/PWM, cooling/safety behavior and device operation are not proven by the earlier CI run. Firmware `firmware/JEXFYZ-V6.7.ino` remains user-controlled; no Firmware/BIN/Firebase/OTA/device action was performed during this source update.
+Latest successful released artifact is **Build #95** / [Actions run 39217718351](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39217718351), source commit `cd691b874ddb0e454ba69891a3e0da3001df892f`. All 21 guarded workflow steps passed, analyzer passed with 23 info-level deprecations, **99/99 Flutter tests passed**, APK signing/certificate, corresponding source ZIP and Release/tag/source checks passed. Native JUnit tasks were NO-SOURCE.
+- APK asset `655596091`, SHA-256 `856718ada30c5ef5081b5bb28a5e00c3b9d234e00ebced58a211112cc381140d`.
+- Source ZIP asset `655596090`, SHA-256 `262d552e564b7c0a1727048a2e2897777ff18fa7296381a77f2c10236784ce7e`.
+
+## Current animation smoothness follow-up — source only / NOT RUN / NOT RELEASED
+
+- New source blob: `lib/main.dart` `f0bc1375799e7b9e4466a3124ddb031d5f58e522`; updated test blob: `test/widget_test.dart` `653a67f3c946bb10c0da350f9677e19b3275ed58`.
+- Main UI icon cycles are Battery 1.5 s, Hotside 1.65 s, Voltage 1.0 s, Adaptive 2.3 s, Peltier 2.1 s; fire/snow particles are larger with eased wrap fades; phase drift is periodic; whole-icon breathing is removed; Peltier crystal rocking is separate from snowfall; Fan rate uses an integrated phase and a 420 ms smooth angular-rate retarget. Home glyphs are 26 dp in the existing 38×38 dp tile.
+- The change preserves the existing semantic colours, telemetry authority, warnings, BLE/control behavior, Fan PWM policy, three blades/airflow ribbons, and unknown-value handling.
+- The new tests/analyzer are **NOT RUN** because neither Flutter nor Dart CLI is installed. The new source is not included in Build #95. Physical-device smoothness and profile-mode frame workload remain UNVERIFIED. No Build App, Firmware/BIN, Firebase, OTA, flash, or device operation was performed.
 
 
 
