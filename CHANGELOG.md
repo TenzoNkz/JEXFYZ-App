@@ -1,5 +1,17 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-19 — Refine Home indicator animation effects (source-only after Build #80)
+
+- Peltier now rotates its six-branch snow crystal over a slower phase loop; recognisable branched snowflakes fall behind the main crystal, replacing floating cross/dot particles. Voltage class still controls frost intensity/density.
+- Adaptive keeps its two directional arcs/arrowheads and removes the rotating orbit dot.
+- Voltage replaces the full-rect sweep/short slanted streaks with a bright current segment travelling along a closed lightning-shaped spine clipped to the bolt, making the repeating boundary continuous.
+- Fan airflow is redrawn as curved concentric streamlines inside the rotor footprint; they are painted before the blades so the airflow sits behind the rotor rather than exiting as side lines.
+- Fan Speed removes the moving gauge glint and autonomous needle wobble. Its arc/needle transition remains a smooth retarget of the authoritative PWM value; the repeating phase controller is disabled for this gauge.
+- Battery/Hotside warnings replace 30 tiny ember dots and short line trails with five layered, tapered flame tongues in red/orange/yellow. Battery’s moving highlight and idle glint, plus the LED travelling dot, move beyond the clipped bounds before wrap so they do not visibly jump at cycle reset.
+- Non-mechanical indicator cycles are slower: Battery 4.2 s, Hotside 4.4 s, Voltage 3.0 s, Adaptive 6.4 s, Peltier 5.2 s, LED 3.0 s. Fan rotor speed remains based on voltage and PWM. Thermal thresholds/colors, BLE state gating, output-state policy, firmware safety, controls and telemetry were not changed.
+- Source/test blobs: `lib/main.dart` `99bdf225b990fbe8a4ff92c224b4fccc4ae4624a`; `test/widget_test.dart` `2527fa278a56da30bf74eb488287580d0d2c99d8`. The widget contract now checks effect shape/removal and layer order.
+- Flutter/Dart tests and analysis were **NOT RUN** in this environment. Build #80 remains the latest verified APK; these source changes are not in that APK. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+
 ## 2026-10-19 — Explicitly static TamperScreen warning icon and app-source audit (source-only)
 
 - Replaced the TamperScreen warning symbol's generic `JexAnimatedIcon.glyph` wrapper with a direct Flutter `Icon`. The generic wrapper already returned a plain `Icon`, so the previous `active/warning` arguments were inert for this glyph; this cleanup makes the no-animation intent explicit without changing its shape, size, color or surrounding frame.
