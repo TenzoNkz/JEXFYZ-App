@@ -4,26 +4,22 @@ Reconciled against live GitHub `main` on 2026-10-19 (Asia/Jakarta). This file is
 
 ## Current verified release and source checkpoint
 
-- Latest successful verified release: **Build #92** / [Actions run `39211726896`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39211726896), source `6610fecb3e47d9941cbf96043b7da3b2a869753b`. All 21 gates passed, 98/98 Flutter tests and analyzer passed, APK V1/V2/V3/certificate checks, corresponding-source ZIP, downloaded asset digests, Release metadata and `refs/tags/jexfyz-latest` equality passed. Native JUnit tasks were NO-SOURCE.
-- Build #92 APK ID `655482761`, SHA-256 `ee3ce9cb9697b8bcabf4da829fc64c16524bbe914eb83901f5d21c855d706926`; source ZIP ID `655482764`, SHA-256 `7ec969d092638790dd36b5d71c758b68cdc11a0e8db2bdfb390c812f541e677a`.
-- Current source follow-up after Build #92 reworks the seven requested indicators: Battery/Hotside gain downward-falling fire particles, Voltage has a luminous bolt core, Adaptive uses two rotating arrows, Peltier retains a six-branch snowflake and falling snow, Fan changes to three broad swept blades, and Fan Speed keeps the half-circle PWM gauge. A common restrained luminous-core style is added across the set.
-- Source/test follow-up is **SOURCE IMPLEMENTED / NOT RUN / NOT RELEASED** until separately authorized Build App validation. Build #92 remains the latest successful artifact for its exact source; it does not contain this update.
-- Exact new blobs: `lib/main.dart` `ec8d682432946bd5b9afea925685855d632610b8`; `test/widget_test.dart` `ab0862470846455465b65ec294d33d39c07aac62`. Their new contracts have not been run/analyzed/built.
-- Firmware source remains `firmware/JEXFYZ-V6.7.ino`, `FW_VERSION="V6.7"`; user compile/update report remains USER-REPORTED, source-to-BIN/device provenance UNVERIFIED. No firmware/BIN/Firebase/OTA/device action occurred.
-- App config remains pubspec `1.0.0+3`, package `com.horizontalzzz.jexfyz`; preserve Gradle `versionName "Telegram @horizontalzzz"`. Build workflow guard remains unchanged.
+- Latest successful verified release: **Build #95** / [Actions run 39217718351](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39217718351), source `cd691b874ddb0e454ba69891a3e0da3001df892f`. All 21 guarded workflow steps passed; analyzer passed with 23 info-level deprecations; **99/99 Flutter tests passed**; APK signature/certificate, corresponding source ZIP, release assets and tag/source checks passed. Native JUnit tasks were NO-SOURCE.
+- Build #95 APK asset `655596091`, SHA-256 `856718ada30c5ef5081b5bb28a5e00c3b9d234e00ebced58a211112cc381140d`; source ZIP asset `655596090`, SHA-256 `262d552e564b7c0a1727048a2e2897777ff18fa7296381a77f2c10236784ce7e`.
+- The current smoothness follow-up is newer than Build #95 and **SOURCE ONLY / NOT RUN / NOT RELEASED**. Source blob: `lib/main.dart` `f0bc1375799e7b9e4466a3124ddb031d5f58e522`; test blob: `test/widget_test.dart` `653a67f3c946bb10c0da350f9677e19b3275ed58`.
+- Diagnosed stiffness: slow 4.2–6.4 s cycles on tiny glyphs, tiny particle geometry, non-periodic drift, whole-icon breathing, crystal spin tied to snowfall, and abrupt Fan angular-rate changes. The follow-up updates cycle timing, particle size/fade, periodic phase drift, Peltier crystal motion, Home drawable size, and phase-integrated Fan speed changes.
+- Regression tests cover fade math, Fan rate integration, cadences, crystal movement separation, painter repaint dependencies and Home drawable size. Neither Dart nor Flutter CLI is installed; analysis/tests are **NOT RUN**. Build #95 is not proof that this newer source is validated or packaged. Physical rendering remains UNVERIFIED.
 
-## Approved seven-icon redesign — NOT RELEASED
+## Current smoothness-rework checklist
 
-- Battery: battery shell/thermal level plus anchored flames and three falling ember drops on warning.
-- Hotside: continuous thermometer and live level plus downward-falling embers clipped inside its contour on warning; thresholds/safety unchanged.
-- Voltage: closed lightning spine with current pulse and staggered inner strikes; 5V red, 9V green, 12V blue.
-- Adaptive: two opposing arrows on separate arcs, rotating together only when authoritative state is ON.
-- Peltier: six-arm snowflake/crystal, faceted core and falling branched snowflakes behind it.
-- Fan: exactly three broad curved blades, layered hub, existing voltage/PWM-controlled rotor speed and three fixed airflow ribbons.
-- Fan Speed: true upper semicircle, smooth authoritative PWM retarget, OFF left / 100% right, hide needle when unknown/disconnected.
-- Shared luminous core/glow remains restrained. BLE disconnect stops/resets custom indicator animation; unknown telemetry is never represented as fabricated OFF/0. Floating Monitor stays letters-only B/H/V/A/P/F; changing that overlay to pictograms requires separate layout approval.
-- Physical rendering, animation smoothness, BLE/PWM behavior and thermal/cooling safety remain UNVERIFIED. Only `@Thinking Eksekusi Build App!` authorizes App validation/build/release.
-
+- [x] Source and supplied recording reviewed; likely causes identified.
+- [x] Battery/Hotside particles enlarged, drift periodic, phase-wrap fade added.
+- [x] Peltier snow enlarged/faded; crystal motion decoupled from snowfall.
+- [x] Fan angular rate is integrated and retargeted without resetting accumulated phase.
+- [x] Home glyph size increased inside the unchanged tile; layout/state semantics preserved.
+- [x] Regression test source updated.
+- [ ] Dart analysis / Flutter tests (CLI unavailable; NOT RUN).
+- [ ] Real-device/profile-mode smoothness verification.
 
 
 ## New-chat boot order
@@ -71,21 +67,13 @@ Reconciled against live GitHub `main` on 2026-10-19 (Asia/Jakarta). This file is
 | `firmware/JEXFYZ-V6.7.ino` | Active editable V6.7 source; user compiles separately |
 | `archive/*.md` | Immutable forensic snapshots; stale “CURRENT” claims remain historical, paths retained verbatim |
 
-## Source fingerprints (after seven-icon rework; exact final HEAD/tree in CHAT_TRANSFER.md)
+## Source fingerprints (after animation smoothness follow-up; final HEAD/tree in CHAT_TRANSFER.md)
 
-- `lib/main.dart`: `ec8d682432946bd5b9afea925685855d632610b8` (seven-icon visual rework; NOT RUN / NOT RELEASED)
-- `lib/app_settings.dart`: `36927823c91904a35d87d2f21bd77932a2214e83`
-- `lib/floating_monitor.dart`: `31b45ea08b08ac7fc25ebd991dca873b889fdd14`
-- `test/widget_test.dart`: `ab0862470846455465b65ec294d33d39c07aac62` (falling-fire, three-blade and luminous-core source contracts; NOT RUN)
-- `test/floating_monitor_layout_contract_test.dart`: `87e805095202ac3edfe55b9aeb3138c7c6886375`
-- `test/v6_7_qc_contract_test.dart`: `52671a0c9014ab48cfe3475d775d4457fede7124`
-- `test/app_protocol_notify_contract_test.dart`: `92214dd90178c705844d3979d3f8f7bd17bcc4b8`
-- `test/firmware_touch_adaptive_sync_test.dart`: `94c0f074247f47fce7d939a72b0130eb1b2d70fa`
-- `firmware/JEXFYZ-V6.7.ino`: `efe6eaa62c178ab536fb68c06a310e54826cbaf2`
-- `.github/workflows/jexfyz-app-build-trigger.yml`: `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`
-- `pubspec.yaml`: `8f558273e21692af9958f914527fdc62d623d63a`; `pubspec.lock`: `1e92812bfda2c28244a0556d71d1ec94084acc66`
-- Android `MainActivity.kt`: `ef35590cfc91fafe5dec104b7cfd7828011185bf`; `FloatingMonitorService.kt`: `8312cc12d391cde5f76b146ff98075856d32bae2`; `JeForegroundService.kt`: `9ea4dce7001bcd5cc10f9c1c7ad62f34ec54b03e`; `JexNotificationUtils.kt`: `aecfc87121f2195ef6724613c612d674ed95ae55`; `AndroidManifest.xml`: `c374b5d3ad6448b8b3e99a420ed7e8c49d38497a`; `android/app/build.gradle`: `060cdd36a4f7d4d2fa4c97a1b6a15954b8355350`
-- These are blob SHAs, not build artifacts, and must be re-fetched before use in future work.
+- `lib/main.dart`: `f0bc1375799e7b9e4466a3124ddb031d5f58e522` (smoothness follow-up; NOT RUN / NOT RELEASED).
+- `test/widget_test.dart`: `653a67f3c946bb10c0da350f9677e19b3275ed58` (updated deterministic/source-contract tests; NOT RUN).
+- `lib/jex_animated_glyph.dart`: `b37fc4e0807c874b2f01db00c7f606810cb5deca` (static generic action/settings glyph).
+- Final commit and all changed-document hashes are recorded in `CHAT_TRANSFER.md`.
+
 
 ## Evidence labels
 
