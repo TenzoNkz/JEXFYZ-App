@@ -38,7 +38,7 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 
 ## Remaining validation outside CI
 
-- Build #83 is the latest successful artifact run and its App source matches current main. Runs #84–#87 were push-event failures with no jobs; issue #34 did not create a newer issue-event run. The workflow YAML syntax fix is newer and has not yet been exercised; tag/ref consistency remains blocked. Do not start a build from `Eksekusi Full`. After a separately authorized `@Thinking Eksekusi Build App!`, verify all gates and `refs/tags/jexfyz-latest == run.head_sha`, then check the published APK/source ZIP digests.
+- Build #92 / run `39211726896` is the latest successful artifact, built from `6610fecb3e47d9941cbf96043b7da3b2a869753b`; its 98/98 Flutter tests and guarded release/tag gates passed. The current seven-icon source follow-up is newer than Build #92 and remains **NOT RUN / NOT RELEASED**. Do not start a build from `Eksekusi Full`; only the separate `@Thinking Eksekusi Build App!` authorizes the full validation/build/release workflow.
 - Next verification step, after a separately authorized `@Thinking Eksekusi Build App!`, is to run the repaired workflow through its guarded issue trigger, confirm all required gates pass, and verify the Git tag, Release metadata, APK and source ZIP all reference the same source commit. Then verify indicator rendering and BLE/Fan telemetry on a real phone. Build #83 already contains the current painter source; physical validation remains pending.
 - App CI does not prove Firmware compilation, source-to-BIN provenance, Firebase, OTA, flash, BLE hardware, thermal/electrical safety or installed device version.
 
