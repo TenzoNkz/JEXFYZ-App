@@ -4,23 +4,21 @@ Reconciled against live GitHub `main` on 2026-10-19 (Asia/Jakarta). This file is
 
 ## Current verified release and source checkpoint
 
-- Latest successful verified release: **Build #95** / [Actions run 39217718351](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39217718351), source `cd691b874ddb0e454ba69891a3e0da3001df892f`. All 21 guarded workflow steps passed; analyzer passed with 23 info-level deprecations; **99/99 Flutter tests passed**; APK signature/certificate, corresponding source ZIP, release assets and tag/source checks passed. Native JUnit tasks were NO-SOURCE.
-- Build #95 APK asset `655596091`, SHA-256 `856718ada30c5ef5081b5bb28a5e00c3b9d234e00ebced58a211112cc381140d`; source ZIP asset `655596090`, SHA-256 `262d552e564b7c0a1727048a2e2897777ff18fa7296381a77f2c10236784ce7e`.
-- The current smoothness follow-up is newer than Build #95 and **SOURCE ONLY / NOT RUN / NOT RELEASED**. Source blob: `lib/main.dart` `f0bc1375799e7b9e4466a3124ddb031d5f58e522`; test blob: `test/widget_test.dart` `aaf911cdcf5e23a23b80c2ef47ca4e11d406f9cf`.
-- Diagnosed stiffness: slow 4.2–6.4 s cycles on tiny glyphs, tiny particle geometry, non-periodic drift, whole-icon breathing, crystal spin tied to snowfall, and abrupt Fan angular-rate changes. The follow-up updates cycle timing, particle size/fade, periodic phase drift, Peltier crystal motion, Home drawable size, and phase-integrated Fan speed changes.
-- Regression tests cover fade math, Fan rate integration, cadences, crystal movement separation, painter repaint dependencies and Home drawable size. Neither Dart nor Flutter CLI is installed; analysis/tests are **NOT RUN**. Build #95 is not proof that this newer source is validated or packaged. Physical rendering remains UNVERIFIED.
+- Latest successful released artifact: Build #99 / [Actions run 39230380636](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39230380636), exact packaged source bc1498d5b3db7621ee18f5ca6f021e6013c73b09. All 21 guarded workflow steps passed; analyzer reported 25 info-level findings/no errors or warnings; 102/102 Flutter tests passed; APK signing/certificate, corresponding source ZIP, asset digests and Release/tag/source checks passed. Native JUnit tasks were NO-SOURCE.
+- Build #99 APK asset 655835412, SHA-256 06a3e4edc7ff911c66cda8b152d4f2acbc11f41b2ccd2f009aa966510aa89096; source ZIP asset 655835414, SHA-256 490ef913574a38fd47644422aa52b11f09c2d47895ba4f3e21db466e47aa8229.
+- Current redraw after Build #99: lib/main.dart blob 6a008c5c3e5ba7118e948e0b1f36277c01e73529; test/widget_test.dart blob 94dad7a7506fbcbeea63f300ea25b7f32299d471. NOT RUN / NOT RELEASED. These blobs are newer than packaged source and are not validated by Build #99.
+- Build #99 validated smoothness changes: 1500/1650/1000/2300/2100 ms cycles, phase-periodic fire/snow with boundary fade, 26 dp Home glyph in 38 dp tile, decoupled Peltier crystal motion and integrated Fan rate retarget. The new visual-state redraw adds static recessed/icon-specific details after Build #99.
+- Regression tests for the new static-state redraw have not run. Real-device UI, frame timing, BLE/PWM runtime and cooling/safety remain UNVERIFIED. No Build, Firmware/BIN, Firebase, OTA, flash or device action was performed by this source execution.
 
-## Current smoothness-rework checklist
+## Current visual-state redraw checklist
 
-- [x] Source and supplied recording reviewed; likely causes identified.
-- [x] Battery/Hotside particles enlarged, drift periodic, phase-wrap fade added.
-- [x] Peltier snow enlarged/faded; crystal motion decoupled from snowfall.
-- [x] Fan angular rate is integrated and retargeted without resetting accumulated phase.
-- [x] Home glyph size increased inside the unchanged tile; layout/state semantics preserved.
-- [x] Regression test source updated.
-- [ ] Dart analysis / Flutter tests (CLI unavailable; NOT RUN).
-- [ ] Real-device/profile-mode smoothness verification.
-
+- [x] Preserve Build #99's tested smoothness/state architecture without duplicating it.
+- [x] Redraw disconnected/idle-state detail for all seven icons.
+- [x] Keep unknown Battery/Hotside values from showing a fabricated live level.
+- [x] Keep Peltier flakes and Fan Speed needle hidden when state/value is not authoritative.
+- [x] Add source-contract regression for static detail, unknown-state rules and the 11-tick gauge.
+- [ ] Run Dart analysis / Flutter tests for this follow-up.
+- [ ] Inspect actual on-device rendering and profile frame workload.
 
 ## New-chat boot order
 
@@ -67,13 +65,12 @@ Reconciled against live GitHub `main` on 2026-10-19 (Asia/Jakarta). This file is
 | `firmware/JEXFYZ-V6.7.ino` | Active editable V6.7 source; user compiles separately |
 | `archive/*.md` | Immutable forensic snapshots; stale “CURRENT” claims remain historical, paths retained verbatim |
 
-## Source fingerprints (after animation smoothness follow-up; final HEAD/tree in CHAT_TRANSFER.md)
+## Source fingerprints (after static-state redraw; latest release remains Build #99)
 
-- `lib/main.dart`: `f0bc1375799e7b9e4466a3124ddb031d5f58e522` (smoothness follow-up; NOT RUN / NOT RELEASED).
-- `test/widget_test.dart`: `aaf911cdcf5e23a23b80c2ef47ca4e11d406f9cf` (updated deterministic/source-contract tests; NOT RUN).
-- `lib/jex_animated_glyph.dart`: `b37fc4e0807c874b2f01db00c7f606810cb5deca` (static generic action/settings glyph).
-- Final commit and all changed-document hashes are recorded in `CHAT_TRANSFER.md`.
-
+- lib/main.dart: 6a008c5c3e5ba7118e948e0b1f36277c01e73529 — seven-icon static/idle redraw; not run/released.
+- test/widget_test.dart: 94dad7a7506fbcbeea63f300ea25b7f32299d471 — static icon-state contract, revised 11-tick gauge; not run.
+- lib/jex_animated_glyph.dart: b37fc4e0807c874b2f01db00c7f606810cb5deca — generic action glyphs static.
+- Build #99 validated source commit bc1498d5b3db7621ee18f5ca6f021e6013c73b09, source blob 30d864c2f03c40fd4d0b6926a9958153f2a3b236 and test blob 711a44b00eadee2e2bcd24e48383128f0d70ccc9.
 
 ## Evidence labels
 
