@@ -1,14 +1,14 @@
 # JE X FYZ / JE Cooler — Memory Index
 
-Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #100 is the latest successful release; Home NOTIFY copy/layout edits are newer source and untested/unreleased. This file is the navigation index; `PROJECT_STATE.md` carries current state, subject files own detailed contracts, `APP_BUILD_REPORT.md` owns build evidence, `CHANGELOG.md` owns history, and `CHAT_TRANSFER.md` is the detailed next-chat boot snapshot. Live source, Git refs, Actions and Release metadata override memory.
+Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #106 is the latest successful release; current Home NOTIFY alignment and Battery/Hotside/Voltage animation edits are newer source and NOT RUN / NOT RELEASED. This file is the navigation index; `PROJECT_STATE.md` carries current state, subject files own detailed contracts, `APP_BUILD_REPORT.md` owns build evidence, `CHANGELOG.md` owns history, and `CHAT_TRANSFER.md` is the detailed next-chat boot snapshot. Live source, Git refs, Actions and Release metadata override memory.
 
 ## Current verified release and source checkpoint
 
-- Latest successful release is Build #100 / https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39237262140, packaged source 51bea70b2ca17f285bf35c3e547dc44c70f26d59. All 21 workflow steps passed; 103/103 Flutter tests passed; analyzer exited 0 with 25 info-level findings and no errors/warnings; APK signature/certificate, matching source ZIP, downloaded asset digests and Release/tag/source equality passed. Native JUnit tasks were NO-SOURCE.
-- Build #100 APK asset ID 655957943, SHA-256 a59c0a37b2025ad2b250bd4354b887379d96658e9f7757692691fa23b7b4d0a2; source ZIP asset ID 655957946, SHA-256 e60c4705097009d843b624bf8f0f989770a76aba6fdfbdd8d2159d77f98890f1.
-- Current Home STATUS/NOTIFY copy/layout source is NOT RUN / NOT RELEASED: `lib/main.dart` `b0d3a18f79b903bc8574d03a95cbc134b9234f20`; `lib/app_settings.dart` `8f228000d38d73038c06f569c052b1af601288a5`; `test/widget_test.dart` `df1b400b46cbe1e1e79c95e0cf537fbe4d7efd98`.
-- The Home card removes the connection badge, centers its heading/message, and allows natural two-line copy; normalization maps safety reasons, hides raw tokens, localizes common failures/OTA summaries, and sends OTA envelopes to their formatter before generic cleanup.
-- Tests/analyzer have NOT RUN. Build #100 remains latest release and does not include this follow-up. No Firmware/BIN/Firebase/OTA/device operation occurred.
+- Latest successful release is Build #106 / Actions run 39279938461, packaged source `9f90cf6063ee7786613f8b5dfa1c6b0412d89638`. Analyzer exited 0 with 25 info findings/no errors or warnings; 108 Flutter tests passed; Android gate and release-asset validation passed.
+- Build #106 APK asset ID `656702702`, SHA-256 `bab332a4312c628178e384a88d513cf8546ff15ab4b4e3f3becf2e70b10830cc`; source ZIP asset ID `656702729`, SHA-256 `0bb86c4e6bd7d3cb7a6bb894658bd707acee48bac106fc5227f8adcba584ec98`.
+- Current Home NOTIFY alignment and icon-animation source is NOT RUN / NOT RELEASED: `lib/main.dart` `7e09a3d28b4efe24bdced858db4274cf70806284`; `lib/app_settings.dart` `8f228000d38d73038c06f569c052b1af601288a5`; `test/widget_test.dart` `5a82cf79e6c5c40fc34489ce90cf1200cf9faccb`.
+- Home NOTIFY uses left-aligned bilingual copy, no CONNECTED/DISCONNECTED badge, and at most two readable lines. Battery/Hotside use clipped oval thermal bursts; Voltage uses outer-contour pulses. Raw reason/OTA identifiers remain hidden.
+- Tests/analyzer have NOT RUN for the current source. Build #106 remains latest release and does not include these changes
 
 ## Current visual-state redraw checklist
 
@@ -67,10 +67,10 @@ Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #100 is 
 | `firmware/JEXFYZ-V6.7.ino` | Active editable V6.7 source; user compiles separately |
 | `archive/*.md` | Immutable forensic snapshots; stale “CURRENT” claims remain historical, paths retained verbatim |
 
-## Source fingerprints (after static-state redraw; latest release remains Build #99)
+## Current source fingerprints (Build #106 successful; current UI follow-up NOT RUN)
 
-- lib/main.dart: 6a008c5c3e5ba7118e948e0b1f36277c01e73529 — seven-icon static/idle redraw; not run/released.
-- test/widget_test.dart: 94dad7a7506fbcbeea63f300ea25b7f32299d471 — static icon-state contract, revised 11-tick gauge; not run.
+- lib/main.dart: 7e09a3d28b4efe24bdced858db4274cf70806284 — oval thermal bursts, Voltage edge pulses, left-aligned NOTIFY; NOT RUN / NOT RELEASED.
+- test/widget_test.dart: 5a82cf79e6c5c40fc34489ce90cf1200cf9faccb — animation/layout source contracts; NOT RUN / NOT RELEASED.
 - lib/jex_animated_glyph.dart: b37fc4e0807c874b2f01db00c7f606810cb5deca — generic action glyphs static.
 - Build #99 validated source commit bc1498d5b3db7621ee18f5ca6f021e6013c73b09, source blob 30d864c2f03c40fd4d0b6926a9958153f2a3b236 and test blob 711a44b00eadee2e2bcd24e48383128f0d70ccc9.
 
