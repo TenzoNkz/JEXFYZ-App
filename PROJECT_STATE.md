@@ -1,8 +1,6 @@
-Current-state summary synchronized from live GitHub on 2026-10-19 (Asia/Jakarta). The execution baseline was main HEAD `8ffcabb6668f0a095eabb0d0e051520fcae29310`; final post-write HEAD/tree and exact changed blob SHAs are recorded in `CHAT_TRANSFER.md`. This file is current state, not the build-history ledger; use `APP_BUILD_REPORT.md` for exact run evidence and `CHANGELOG.md` for history.
+# JE X FYZ / JE Cooler — Current Project State
 
-Current state refreshed against live main on 2026-10-19 (Asia/Jakarta). Pre-rework release baseline is Build #92, source `6610fecb3e47d9941cbf96043b7da3b2a869753b`; this source-only icon follow-up is newer and NOT RUN / NOT RELEASED. The final `CHAT_TRANSFER.md` records exact final HEAD/tree/blob hashes. Use `APP_BUILD_REPORT.md` for authoritative build evidence and `CHANGELOG.md` for history.
-
-Last fully audited from live GitHub on 2026-10-19 (Asia/Jakarta), beginning at main HEAD/tree `e224c5e1d3e86def06a5b97b0111a6e9c33e979a` (67 entries; recursive tree not truncated). This is the current-state file, not the build-history ledger. `CHAT_TRANSFER.md` records the later pre-transfer parent snapshot; use `APP_BUILD_REPORT.md` for exact run evidence and `CHANGELOG.md` for superseded decisions.
+Current state refreshed against live GitHub `main` on 2026-10-19 (Asia/Jakarta). The latest successful App artifact is Build #92 at source `6610fecb3e47d9941cbf96043b7da3b2a869753b`; this seven-icon source follow-up is newer and **NOT RUN / NOT RELEASED**. The final `CHAT_TRANSFER.md` records the exact pre-transfer HEAD/tree and current source/document blobs. Use `APP_BUILD_REPORT.md` for authoritative build evidence and `CHANGELOG.md` for history.
 
 ## Current App / Release state — Build #92 verified; seven-icon follow-up is NOT RELEASED
 
