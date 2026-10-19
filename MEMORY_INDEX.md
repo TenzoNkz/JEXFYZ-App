@@ -16,7 +16,7 @@ Reconciled against live GitHub `main` on 2026-10-19 (Asia/Jakarta). This file is
 
 ## Dashboard animation refresh — source-only / NOT RELEASED
 
-- Battery/Hotside now have tapered flame tongues with moving, rising/fading teardrop lava fragments; Voltage adds staggered bolt-branch strikes; Adaptive adds restrained inner highlights; Peltier keeps the crystal/snowflake animation with a faceted core; Fan uses a five-blade rotor and three fixed airflow ribbons behind it whose geometry/colour/count are independent of voltage/PWM; Fan Speed uses a true half-circle gauge, smooth PWM retarget and hides the needle for unknown/disconnected state.
+- Battery/Hotside now have tapered flame tongues with moving, rising/fading teardrop lava fragments; the effect fades in/out over 280 ms at the exact warning predicate change; Voltage adds staggered bolt-branch strikes; Adaptive adds restrained inner highlights; Peltier keeps the crystal/snowflake animation with a faceted core; Fan uses a five-blade rotor and three fixed airflow ribbons behind it whose geometry/colour/count are independent of voltage/PWM; Fan Speed uses a true half-circle gauge, smooth PWM retarget and hides the needle for unknown/disconnected state.
 - Current live blobs: lib/main.dart f52c1921dffd7fa360cfc01bb41cfecf352acdb6; test/widget_test.dart dbb62587a5aefdf9af623dcd45781837cb28e8b0. Source-contract tests were updated but analysis/tests have NOT RUN; source differs from packaged Build #83 and is NOT RELEASED.
 - App Build/release remains separately authorized only by @Thinking Eksekusi Build App!; this Full task did not run a build. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
