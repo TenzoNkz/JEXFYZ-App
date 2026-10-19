@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #106 remains the latest successful release; the current left-aligned NOTIFY and Battery/Hotside/Voltage animation update is source-only, NOT RUN / NOT RELEASED. CHAT_TRANSFER.md is the final handoff snapshot.
+Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #106 remains the latest successful release; the current left-aligned NOTIFY and Battery/Hotside/Voltage animation update is source-only, NOT RUN / NOT RELEASED. CHAT_TRANSFER.md is the final handoff snapshot.
 
 ## Latest successful build and current source boundary
 
