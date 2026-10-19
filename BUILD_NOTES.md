@@ -8,14 +8,13 @@
 - Build App does not authorize Firmware compilation, BIN creation/publication/replacement, Firebase metadata changes, physical OTA, flashing, device operation, or unrelated release operations.
 - Never claim CI success proves BLE, cooling/safety behavior, Firmware compilation, OTA installation or installed device version.
 
-## LATEST SUCCESSFUL APP BUILD — Build #92 (release handoff verified; newer icon source follow-up pending)
+## LATEST SUCCESSFUL APP BUILD — Build #95 (release handoff verified; later smoothness source follow-up pending)
 
-- Latest successful verified App artifact run: [Build #92 / run `39211726896`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39211726896), source `6610fecb3e47d9941cbf96043b7da3b2a869753b`. All 21 workflow steps passed; **98/98 Flutter tests passed**, analyzer passed with 23 info-level deprecation findings, configured Android gate passed, APK signing/official certificate, corresponding source ZIP, re-downloaded asset hashes, Release publication and tag/source equality passed. Native `:app:testDebugUnitTest` was NO-SOURCE; no native JUnit test cases ran.
-- APK asset `655482761`, 54,636,635 bytes, SHA-256 `ee3ce9cb9697b8bcabf4da829fc64c16524bbe914eb83901f5d21c855d706926`; matching source ZIP asset `655482764`, 2,857,021 bytes, SHA-256 `7ec969d092638790dd36b5d71c758b68cdc11a0e8db2bdfb390c812f541e677a`.
-- At Build #92, published Release `jexfyz-latest` metadata and the live Git tag matched the run's source commit. The official issue-trigger workflow guard remains unchanged and was exercised successfully by that build.
-- The present `@Thinking Eksekusi Full!` source follow-up changes the seven Home indicator visuals: Battery/Hotside falling fire particles + thermal halo, Voltage luminous bolt, Adaptive two rotating arrows, Peltier snow/crystal with falling flakes, Fan three broad blades, Fan Speed half-circle gauge with a consistent luminous core. Source/test blobs are `lib/main.dart` `ec8d682432946bd5b9afea925685855d632610b8` and `test/widget_test.dart` `ab0862470846455465b65ec294d33d39c07aac62`.
-- The follow-up is newer than Build #92 and is **NOT RUN / NOT RELEASED**. Do not treat Build #92's 98/98 result as test evidence for the newer source. No build was run in this execution; Firmware/BIN/Firebase/OTA/flash/device operations were not performed.
-- `@Thinking Eksekusi Full!` never launches App Build. Only the separate `@Thinking Eksekusi Build App!` authorizes the full analyzer/test/build/release retry workflow. Preserve the owner/title/body-token guard and Gradle `versionName "Telegram @horizontalzzz"`.
+- Latest successful verified App run: [Build #95 / run 39217718351](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39217718351), source `cd691b874ddb0e454ba69891a3e0da3001df892f`. All 21 workflow steps passed; **99/99 Flutter tests passed**; analyzer exited 0 with 23 info-level deprecation findings; APK signing/certificate/source ZIP/asset integrity/Release-tag-source checks passed. Native JUnit tasks were NO-SOURCE.
+- APK asset `655596091`, 54,702,171 bytes, SHA-256 `856718ada30c5ef5081b5bb28a5e00c3b9d234e00ebced58a211112cc381140d`; source ZIP asset `655596090`, 2,858,246 bytes, SHA-256 `262d552e564b7c0a1727048a2e2897777ff18fa7296381a77f2c10236784ce7e`. These results apply to Build #95's exact packaged source.
+- The current smoothness follow-up is newer source: `lib/main.dart` `f0bc1375799e7b9e4466a3124ddb031d5f58e522`; `test/widget_test.dart` `653a67f3c946bb10c0da350f9677e19b3275ed58`. The follow-up is **NOT RUN / NOT RELEASED** and has not been validated by Build #95.
+- Neither `flutter` nor `dart` CLI is installed in this execution environment, so the updated tests and analysis are **NOT RUN**. Do not report Build #95's 99/99 as validation of this newer source.
+- No App Build/release, Firmware/BIN/Firebase/OTA/flash/device operation was performed by this execution. Separate `@Thinking Eksekusi Build App!` is required to validate/release later source.
 
 
 
