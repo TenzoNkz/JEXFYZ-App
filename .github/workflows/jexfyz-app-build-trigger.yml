@@ -454,6 +454,14 @@ jobs:
               --latest
           fi
 
+          # `gh release edit --target` updates Release metadata but does not move an existing Git tag ref.
+          gh api --method PATCH "repos/${GITHUB_REPOSITORY}/git/refs/tags/${RELEASE_TAG}" \
+            -f "sha=${GITHUB_SHA}" \
+            -F force=true >/dev/null
+          TAG_TARGET_SHA="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${RELEASE_TAG}" --jq '.object.sha')"
+          test "$TAG_TARGET_SHA" = "$GITHUB_SHA"
+          echo "Release tag $RELEASE_TAG points to exact source commit: $TAG_TARGET_SHA"
+
           APK_ASSET_COUNT="$(gh release view "$RELEASE_TAG" --json assets --jq '[.assets[] | select(.name == "JEXFYZ-release.apk")] | length')"
           SOURCE_ASSET_COUNT="$(gh release view "$RELEASE_TAG" --json assets --jq '[.assets[] | select(.name == "JEXFYZ-corresponding-source.zip")] | length')"
           APK_COUNT="$(gh release view "$RELEASE_TAG" --json assets --jq '[.assets[] | select(.name | endswith(".apk"))] | length')"
@@ -464,7 +472,10 @@ jobs:
           test "$ASSET_COUNT" = "2"
           echo "GitHub Release assets verified: exactly one APK plus one matching source archive."
 
-      # Re-download the exact published asset and verify it again.
+      # Re-download the exact published asset and verify it
+          TAG_TARGET_SHA="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${RELEASE_TAG}" --jq '.object.sha')"
+          test "$TAG_TARGET_SHA" = "$GITHUB_SHA"
+          echo "Release tag verified for source commit: $TAG_TARGET_SHA" again.
       # This closes the release-delivery loop: the bytes users receive from
       # GitHub must be identical to the signed APK that passed CI verification.
       - name: Verify downloaded GitHub Release asset
