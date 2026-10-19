@@ -15,7 +15,7 @@ Last reconciled: 2026-10-19 (Asia/Jakarta). This is the canonical incident recor
 - Removed the embedded CA PEM, `setCACert()`, `configTime()`, `TIME_SYNCING`, epoch-validity condition and OTA-only 20-second NTP time gate.
 - Flow is Wi-Fi success → blue feedback → `prepareOnlineOtaDownload()` → GitHub GET attempt.
 - Kept allowlisted URL prefix `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/`, redirect blocking, HTTP/length/size/image checks, ESP image magic byte `0xE9`, streaming Update lifecycle, all-safe output, OTA lifecycle and failure recovery.
-- Static test contract lives in `test/v6_7_qc_contract_test.dart` (current main blob `6b71cc2ebbef9b3f1c9757728067eec4d11ff5ee`). It was run as part of App Build #35 (`38669526891`, code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`); all 74 Flutter tests passed. These are Dart/source-contract assertions, not physical Online OTA, Firmware compilation or end-to-end update/reboot validation.
+- Historical OTA source-contract evidence: `test/v6_7_qc_contract_test.dart` was used in App Build #35 (`38669526891`, code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`); all 74 Flutter tests passed at that older checkpoint. That file has since been retired with V6.7. Current suite `test/firmware_qc_contract_test.dart` includes the OTA transport assertions and reads V6.8, but has NOT RUN for the current source. These static checks are not Firmware compilation, physical Online OTA or end-to-end update/reboot validation.
 
 ## User-reported evidence boundary
 
