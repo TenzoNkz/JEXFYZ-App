@@ -172,6 +172,10 @@ void main() {
     final flamesEnd = painter.indexOf('void _drawSnowflake', flamesStart);
     final flames = painter.substring(flamesStart, flamesEnd);
     expect(flames, contains('_flameTonguePath'));
+    expect(flames, contains('_lavaDropletPath'));
+    expect(flames, contains('final riseHeight = s * (thermometer ? .43 : .31)'));
+    expect(flames, contains('final fadeIn ='));
+    expect(flames, contains('required bool thermometer'));
 
     expect(flames, isNot(contains('canvas.drawCircle')));
     expect(flames, isNot(contains('canvas.drawLine')));
@@ -188,9 +192,15 @@ void main() {
     expect(airflowStart, isNonNegative);
     expect(airflowEnd, greaterThan(airflowStart));
     final airflow = painter.substring(airflowStart, airflowEnd);
-    expect(airflow, contains('These streamlines orbit inside the rotor footprint'));
+    expect(airflow, contains('Three fixed airflow ribbons stay behind the rotor'));
+    expect(airflow, contains('for (var i = 0; i < 3; i++)'));
+    expect(airflow, contains('final startAngle = -math.pi * .83'));
     expect(airflow, contains('math.sin(startAngle)'));
-    expect(airflow, isNot(contains('final x1 = s * (.70 + offset * .095)')));
+    expect(airflow, isNot(contains('phase')));
+    expect(airflow, isNot(contains('voltageClass')));
+    expect(airflow, isNot(contains('pwmLevel')));
+    expect(airflow, isNot(contains('airflowPower')));
+    expect(airflow, isNot(contains('streakCount')));
 
     final peltierStart = painter.indexOf('case JexAnimatedIconKind.peltier:');
     final peltierEnd = painter.indexOf('case JexAnimatedIconKind.fan:', peltierStart);
@@ -218,6 +228,14 @@ void main() {
       lessThan(fan.indexOf('final rotor = _fanSilhouette')),
       reason: 'Airflow must be painted behind the fan rotor.',
     );
+    expect(fan, contains('final airflowProgress = active'));
+    expect(fan, contains('fanCoasting'));
+    expect(painter, contains('for (var i = 0; i < 5; i++)'));
+    expect(painter, contains('valueKnown'));
+    expect(painter, contains('const start = math.pi;'));
+    expect(painter, contains('const sweep = math.pi;'));
+    expect(painter, contains('active: animatedKind == JexAnimatedIconKind.speed'));
+    expect(painter, contains('active: connected && runtimeOutputsKnown && fanOn'));
   });
 
   testWidgets('tamper screen shows an insult-only wall and opens developer contact',
