@@ -2,6 +2,14 @@
 
 This is the durable evidence ledger for `@Thinking Eksekusi Build App!`. A replacement Build App chat uses Prompt D in `CHAT_TRANSFER_PROMPTS.md` to load this file and continue the same workstream across a context limit; there is no separate Build App recap chat. It records verified GitHub Actions/Release evidence and distinguishes CI gates from physical-device validation.
 
+## CURRENT SOURCE FOLLOW-UP — APPROVED ICON MOTION FINISHING PASS (NOT RUN / NOT RELEASED)
+
+- At the start of this scoped execution, live `main` was `8ffcabb6668f0a095eabb0d0e051520fcae29310`; its latest successful release was Build #91 from `e9f6d8ca3ea936a1c4c05b2fbbd228dda5e2cdd1`.
+- The approved dashboard painter redesign is already included in Build #91 and its 97/97 Flutter test/analyzer gates passed. This follow-up changes generic `JexAnimatedGlyph` navigation/settings/action affordances from an unconditional decorative loop to a static icon, and adds a source-contract test so non-telemetry glyphs cannot regain an idle loop.
+- New code/test blobs: `lib/jex_animated_glyph.dart` `b37fc4e0807c874b2f01db00c7f606810cb5deca`; `test/widget_test.dart` `5f1c5345f6ea1e0114c72360414362d3667be276`.
+- The follow-up is source-only and has **NOT been run, analyzed, built, or released** by this execution. Build #91 remains the latest successful artifact for its exact source and the published Release/tag remain consistent to that historical commit; current `main` is newer after this follow-up.
+- Next release validation requires the separate `@Thinking Eksekusi Build App!` authorization and the unchanged guarded workflow. No Firmware/BIN/Firebase/OTA/flash/device action occurred.
+
 ## LATEST SUCCESSFUL APP BUILD — BUILD #91 (RELEASE HANDOFF VERIFIED)
 
 - **Build:** [Build #91 / Actions run 39207456720](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39207456720) completed successfully at 2026-10-19T06:06:31Z (2026-10-19 13:06:31 Asia/Jakarta), for exact App source commit e9f6d8ca3ea936a1c4c05b2fbbd228dda5e2cdd1. All 21 workflow steps and cleanup completed successfully.
