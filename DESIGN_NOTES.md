@@ -69,6 +69,14 @@ This file stores durable, user-approved visual constraints. Do not reinterpret a
 - Live Home status indicators use the data-driven `JexAnimatedIcon` painter and the connection/authoritative-state gates above. Bluetooth remains static and communicates state through semantic colour.
 - The native Floating Monitor retains its established compact letters-only B/H/V/A/P/F presentation and schema; values/status still follow live telemetry, unknown values remain `--`, and disconnected state must never imply current physical output. Replacing those letters with native pictograms is a separate presentation/layout change, not a hidden side effect of the Home icon refresh.
 
+## Home STATUS / NOTIFY copy contract — 2026-10-19
+
+- Home status categories are concise: STATUS / STATUS, CONNECTION / KONEKSI, SYNC / SINKRONISASI, WARNING / PERINGATAN, ERROR / ERROR.
+- User-facing messages must follow the supported English/Indonesian language setting. Never concatenate firmware reason IDs such as PELTIER_SAFETY_LATCH or underscore-formatted diagnostic tokens into visible prose.
+- Map known reason codes to localized, actionable copy. Unknown codes use a generic localized message. Keep raw identifiers in internal diagnostics only.
+- Classify unconfirmed command outcomes as errors in both languages. Preserve existing safety thresholds, predicates, controls, BLE protocol, command semantics and telemetry state.
+- Normalize Home STATUS text consistently, including after language changes, but preserve OTA result envelopes for their dedicated parser.
+
 ## Visual-change protocol
 
 1. Inspect the exact latest reference or source image.
