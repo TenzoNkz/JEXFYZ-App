@@ -4,7 +4,7 @@ Last reconciled: 2026-10-18 (Asia/Jakarta).
 Canonical active source: `firmware/JEXFYZ-V6.7.ino`, blob `efe6eaa62c178ab536fb68c06a310e54826cbaf2`. On 2026-10-18 the user reported V6.7 compiled and updated online; this is USER-REPORTED, while exact source-to-BIN provenance and current device version remain UNVERIFIED.
 Static regression contract: test/v6_7_qc_contract_test.dart. Current blob must be re-fetched from main before relying on the prior hash.
 
-**App-side validation evidence:** Build #80 / run `39171729285` passed 96/96 Flutter tests and the App release gates for source `4e9f14b959cdbf60136158187db26d0bb65f6287`; it does not prove Firmware compilation, source-to-BIN provenance or physical rail-transition behavior. The user's V6.7 compile/online-update success remains USER-REPORTED. Physical transition reproduction, current measurement, and end-to-end thermal/OTA behavior remain unverified.
+**App-side validation evidence:** Build #83 / run `39192430789` passed 96/96 Flutter tests and the App release gates for source `dfc7e6633298498bb6eac21182c9306d5e3cac1d`; the Release handoff is blocked by a stale Git tag, and this App run does not prove Firmware compilation, source-to-BIN provenance or physical rail-transition behavior. The user's V6.7 compile/online-update success remains USER-REPORTED. Physical transition reproduction, current measurement, and end-to-end thermal/OTA behavior remain unverified.
 
 ## Incident
 
@@ -37,7 +37,7 @@ Applies to normal voltage changes requested in Manual Volt and while Adaptive is
 - `stopPeltierOutput()` clears both pending pause and saved-resume state.
 - Retain reset reason reporting, including `ESP_RST_BROWNOUT`, Serial `BOOT: RESET_REASON=...` and telemetry `RESET_REASON`.
 
-Historical clarification: the contract was not yet executed when first written on 2026-10-15. Build #62 and later App tests exercised source contracts; Build #80 is the latest verified App release. No App run proves Firmware compilation or physical behavior.
+Historical clarification: the contract was not yet executed when first written on 2026-10-15. Build #62 and later App tests exercised source contracts; Build #83 is the latest successful App artifact run, though the Release tag mismatch remains unresolved. No App run proves Firmware compilation or physical behavior.
 
 ## Hardware validation plan
 
