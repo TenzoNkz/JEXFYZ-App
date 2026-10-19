@@ -166,6 +166,49 @@ void main() {
     expect(source, contains('valueKnown'));
   });
 
+  test('Indicator glyphs retain detailed static geometry while disconnected or unknown', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final painterStart = source.indexOf('class _JexIconPainter extends CustomPainter {');
+    final painterEnd = source.indexOf('const MethodChannel securityChannel', painterStart);
+    expect(painterStart, isNonNegative);
+    expect(painterEnd, greaterThan(painterStart));
+    final painter = source.substring(painterStart, painterEnd);
+
+    for (final feature in [
+      'shell.shift(Offset(s * .014, s * .018))',
+      'canvas.drawRRect(inner, _fill(const Color(0xFF09121A)',
+      'if (!valueKnown)',
+      'if (valueKnown && fluidHeight > 0)',
+      'Path _boltInnerCore(double s)',
+      'const Color(0xFF070B12).withValues(alpha: .74)',
+      's * (.135 + .010 * wave)',
+      'if (!moving || strength <= .005) return;',
+      'final crystalWidth = s * (.058 + .006 * frostPower)',
+      '_fanBladeHighlightPath(s, angle, blade)',
+      'const tickCount = 11',
+      'if (valueKnown)',
+    ]) {
+      expect(painter, contains(feature), reason: 'Missing static icon finish: $feature');
+    }
+
+    final speedStart = painter.indexOf('case JexAnimatedIconKind.speed:');
+    final speedEnd = painter.indexOf('case JexAnimatedIconKind.led:', speedStart);
+    expect(speedStart, isNonNegative);
+    expect(speedEnd, greaterThan(speedStart));
+    final speed = painter.substring(speedStart, speedEnd);
+    expect(speed, contains('if (valueKnown)'));
+    expect(speed, contains('final needleAngle = start + sweep * safeLevel;'));
+    expect(speed, contains('_stroke(s * .090, const Color(0xFF070B12)'));
+    expect(speed, contains('const tickCount = 11'));
+
+    final batteryStart = painter.indexOf('case JexAnimatedIconKind.battery:');
+    final hotStart = painter.indexOf('case JexAnimatedIconKind.hotside:', batteryStart);
+    final battery = painter.substring(batteryStart, hotStart);
+    expect(battery, contains('quiet thermal emblem completes the unknown-state battery'));
+    expect(battery, isNot(contains('final breath')));
+    expect(source, contains('size: 26,'));
+  });
+
   test('Thermal icons use falling fire, Peltier uses falling snow, and indicators have distinct signatures', () {
     final source = File('lib/main.dart').readAsStringSync();
     final shellStart = source.indexOf('Path _hotsideSilhouette(double s)');
@@ -1384,7 +1427,7 @@ void main() {
     expect(painter, contains('_drawThermalFlames'));
     expect(painter, contains('_drawFrostParticles'));
     expect(painter, contains('_drawFanAirflow'));
-    expect(painter, contains('const tickCount = 9'));
+    expect(painter, contains('const tickCount = 11'));
     expect(painter, contains('_drawAdaptiveArrowHead'));
 
     final bluetoothStart = painter.indexOf('case JexAnimatedIconKind.bluetooth:');
@@ -1418,7 +1461,7 @@ void main() {
     expect(speed, contains('final needle = Path()'));
     expect(speed, contains('..moveTo(cx, cy)'));
     expect(speed, contains('..lineTo(tip.dx, tip.dy);'));
-    expect(speed, contains('const tickCount = 9'));
+    expect(speed, contains('const tickCount = 11'));
     expect(speed, contains('if (active && safeLevel > 0)'));
     expect(speed, contains('mainColor.withValues(alpha: opacity)'));
   });
