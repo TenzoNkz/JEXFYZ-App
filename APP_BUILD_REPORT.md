@@ -2,6 +2,14 @@
 
 This is the durable evidence ledger for `@Thinking Eksekusi Build App!`. A replacement Build App chat uses Prompt D in `CHAT_TRANSFER_PROMPTS.md` to load this file and continue the same workstream across a context limit; there is no separate Build App recap chat. It records verified GitHub Actions/Release evidence and distinguishes CI gates from physical-device validation.
 
+## CURRENT SOURCE FOLLOW-UP AFTER BUILD #95 — SMOOTHNESS REWORK (NOT RUN / NOT RELEASED)
+
+- Source-level baseline before this follow-up was HEAD `b6eb55262611c39c39ea5c3b51a4c1542372247f`, tree `bd8422a2bcb51ff574135e2170e47cf80b45c791`. The seven-icon implementation was already included in the Build #95 release described below.
+- Live-source/video audit found likely stiffness contributors: Battery/Hotside cycles of 4.2/4.4 s and Adaptive at 6.4 s despite tiny glyphs; tiny ember/snow geometry; fire drift using a non-integer phase multiplier; whole-icon breathing instead of purposeful internal motion; Peltier crystal spinning at the snowfall phase rate; and Fan voltage/PWM updates changing a repeating controller duration mid-rotation.
+- New source blob `lib/main.dart` `f0bc1375799e7b9e4466a3124ddb031d5f58e522`; updated test blob `test/widget_test.dart` `653a67f3c946bb10c0da350f9677e19b3275ed58`. Cadences now target 1500/1650/1000/2300/2100 ms for Battery/Hotside/Voltage/Adaptive/Peltier; particles use larger teardrop/snowflake shapes with smooth boundary fades; motion uses periodic integer harmonics; whole-icon breathing is removed; Peltier crystal rocking is decoupled from snowfall; Home glyph size increases 22→26 dp within the unchanged 38×38 tile; and Fan angular velocity uses integrated smoothstep retargeting with phase preservation.
+- Regression tests were updated for fade math, fan-rate/phase integration, cadence targets, Peltier motion separation, repaint dependencies and Home size. **No Dart/Flutter test or analyzer was run** because neither CLI is installed in the execution environment. These changes are not included in Build #95 and have not been visually verified on a physical device.
+- No App Build/release, firmware/BIN, Firebase, OTA, flash or device operation occurred. Build #95 evidence below remains authoritative for the release and exact source it packaged.
+
 ## LATEST SUCCESSFUL APP BUILD — BUILD #95 (SEVEN-ICON REWORK RELEASED AND VERIFIED)
 
 - **Build:** [Build #95 / Actions run 39217718351](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39217718351) completed with conclusion **success** at `2026-10-19T07:47:45Z` (2026-10-19 14:47:45 Asia/Jakarta). Exact checked-out App source commit: **`cd691b874ddb0e454ba69891a3e0da3001df892f`**. All 21 main workflow steps, including cleanup, completed successfully.
