@@ -85,3 +85,14 @@ This file stores durable, user-approved visual constraints. Do not reinterpret a
 3. Change only authorized elements.
 4. Verify square ratio, symmetry, mounting holes, interior pattern, logo shape and flat-print constraints before delivery.
 5. Do not overwrite an approved design with a speculative alternative.
+
+
+## Home NOTIFY card — clean centered two-line layout (source updated; NOT RUN / NOT RELEASED)
+
+- Remove the right-side CONNECTED / DISCONNECTED badge completely. Connection state remains communicated by the localized main message when relevant; never duplicate it in a separate chip.
+- Keep the category heading as `NOTIFY • STATUS`, `NOTIFY • CONNECTION`, `NOTIFY • SYNC`, `NOTIFY • WARNING`, or `NOTIFY • ERROR`, using the existing English/Indonesian category localizations.
+- Center the heading and body text horizontally; vertically center the whole text group beside the left status icon. The text region uses symmetric side insets so its center aligns with the card center.
+- Card height is content-driven with a minimum height. Short body copy stays on one line; longer copy wraps naturally to at most two lines. Keep a readable font size; do not use `FittedBox` to shrink long messages. Only content beyond two lines may ellipsize after message normalization.
+- Keep existing status icon/color selection, connection logic, BLE semantics, safety thresholds/predicates and telemetry authority unchanged.
+- Polish Home NOTIFY copy in both supported languages. Map known reason codes to actionable text, use generic localized copy for unknown identifiers, and route raw OTA envelopes through the dedicated formatter before normalizing. No raw reason IDs, OTA ERROR/CODE values or internal event suffixes may reach the card.
+- Current source blobs: `lib/main.dart` `5282fb226c818b8f4601ec89953c0c47ff4861e9`; `lib/app_settings.dart` `562e42c4dc1ee2ac0c15b3f7211e55fa7b11bac6`; `test/widget_test.dart` `0ebbf0cd03f041a44afa314d66b77278e26c646e`. The changes have not been executed through Flutter tests/analyzer or released. Physical-device layout remains UNVERIFIED.
