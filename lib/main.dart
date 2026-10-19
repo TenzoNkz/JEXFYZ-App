@@ -6737,7 +6737,7 @@ void _handleAckLine(String line) {
     } else if (c == 'ADAPTIVE:OFF') {
       message = JexText.of('adaptiveOff', lang);
     } else if (c.startsWith('FANSPEED:')) {
-      message = JexText.of('fanSpeed', lang) + ' ' + c.substring(9) + '%.';
+      message = JexText.phrase('Fan speed set to ', 'Kecepatan kipas diatur ke ', lang) + c.substring(9) + '%.';
     } else if (c == 'RGB:ON') {
       message = JexText.of('ledOn', lang);
     } else if (c == 'RGB:OFF') {
@@ -6749,11 +6749,11 @@ void _handleAckLine(String line) {
     } else if (c.startsWith('COLOR:')) {
       message = JexText.of('colorUpdated', lang);
     } else if (c.startsWith('HOTLIMIT:')) {
-      message = JexText.of('hotsideTemperature', lang) + ': ' + c.substring(9) + '°C.';
+      message = JexText.phrase('Hotside temperature limit set to ', 'Batas suhu Hotside diatur ke ', lang) + c.substring(9) + '°C.';
     } else if (c.startsWith('BATT5:')) {
-      message = JexText.of('fiveVCeiling', lang) + ' ' + JexText.phrase('updated.', 'Diperbarui.', lang);
+      message = JexText.phrase('5V battery limit updated.', 'Batas baterai 5V diperbarui.', lang);
     } else if (c.startsWith('BATT12:')) {
-      message = JexText.of('twelveVFloor', lang) + ' ' + JexText.phrase('updated.', 'Diperbarui.', lang);
+      message = JexText.phrase('12V battery limit updated.', 'Batas baterai 12V diperbarui.', lang);
     } else if (c == 'RESET:TEMPERATURE') {
       message = JexText.of('temperatureReset', lang);
     }
