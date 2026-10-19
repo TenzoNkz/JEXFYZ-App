@@ -37,6 +37,18 @@ This file stores durable, user-approved visual constraints. Do not reinterpret a
 
 - LED contract: RGB ON/OFF controls only custom RGB effects. Voltage, thermal/safety, Adaptive, OTA/error and other system indicators remain independent; saved master Brightness applies to every physical WS2812 indication. Phone-side preview remains readable at low hardware Brightness.
 
+## Approved seven-icon animation family — current source follow-up (NOT RELEASED)
+
+- **Battery Temperature:** conventional battery silhouette with its temperature-driven inner level, warning-state thermal tongues and three pointed ember particles falling top-to-bottom inside the battery cavity. Ember timing/fades mirror the downward movement family used by Peltier snow, but retain fire colours and pointed downward flame shapes.
+- **Hotside Temperature:** continuous thermometre silhouette, live level and hot warning halo, with small falling embers clipped within its contour. Existing configured Hotside threshold and firmware safety behavior are unchanged.
+- **Voltage:** high-contrast lightning bolt with a restrained luminous core, current pulse following its closed spine and staggered internal branch strikes. Preserve 5V red, 9V green, 12V blue.
+- **Adaptive:** two opposed arrowheads on separate arcs; active mode rotates the pair smoothly as a single coherent cycle. OFF remains a static full-colour pose.
+- **Peltier:** six-branch snowflake/crystal with a faceted core and falling branched snowflakes behind it. Keep the existing state/voltage intensity policy; do not claim the visual estimates physical ice or cooling output.
+- **Fan:** three broad swept blades around a layered hub, rotating only according to the existing voltage/PWM timing policy. The three background airflow ribbons remain fixed in number, geometry and colour; only rotor phase/speed and the allowed connected one-shot coast-down change.
+- **Fan Speed:** instrument-style upper half-circle gauge; known PWM retargets the arc/needle smoothly, OFF maps to the established left endpoint, 100% to the right, and unknown/disconnected state hides the needle.
+- All seven use a shared subtle luminous-core treatment and consistent geometry. BLE disconnect stops/resets the custom animation controllers; unknown telemetry is not presented as a fabricated OFF/0 value. Home/dashboard layout, semantic colours, controls, BLE protocol and firmware safety are outside this visual change.
+- Current implementation is a post-Build-#92 source follow-up. The actual visual rendering and new regression contracts remain NOT RUN / NOT RELEASED until separately authorized `@Thinking Eksekusi Build App!`.
+
 ## Static action glyphs versus animated status indicators
 
 - Navigation, settings, drag handles and other action affordances use static high-contrast glyphs. They do not run idle loops because they do not represent live state or telemetry.
