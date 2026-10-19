@@ -87,7 +87,7 @@ This file stores durable, user-approved visual constraints. Do not reinterpret a
 5. Do not overwrite an approved design with a speculative alternative.
 
 
-## Home NOTIFY card — clean centered two-line layout (source updated; NOT RUN / NOT RELEASED)
+## Home NOTIFY card — clean left-aligned two-line layout
 
 - Remove the right-side CONNECTED / DISCONNECTED badge completely. Connection state remains communicated by the localized main message when relevant; never duplicate it in a separate chip.
 - Keep the category heading as `NOTIFY • STATUS`, `NOTIFY • CONNECTION`, `NOTIFY • SYNC`, `NOTIFY • WARNING`, or `NOTIFY • ERROR`, using the existing English/Indonesian category localizations.
