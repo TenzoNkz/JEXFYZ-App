@@ -1,5 +1,15 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-19 — Repair malformed tag verification placement in App Build workflow (unverified until next official run)
+
+- Diagnosed a concrete workflow YAML defect: four tag-verification shell statements sat outside all `run: |` blocks after the Release-publish step, before the next step declaration. This is a likely cause of the #84–#87 push-triggered failures with no jobs and the absent newer issue-event run; only a subsequent official Actions run can confirm recovery.
+- Repair commit: [`0c266f3064d77a394d660acd16595ff43166fb7f`](https://github.com/TenzoNkz/JEXFYZ-App/commit/0c266f3064d77a394d660acd16595ff43166fb7f); workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`.
+- Removed the orphaned duplicate shell lines and moved the final `refs/tags/jexfyz-latest == GITHUB_SHA` assertion into the existing downloaded-asset verification step. The publish step's authorized tag PATCH plus immediate equality assertion remain in place.
+- The workflow is still limited to `issues.opened/reopened` and the exact repository-owner/title/body-token guard. No push/PR/manual-dispatch bypass, new secret or altered build/signing/test gate was added.
+- Build #83 remains the latest successful App artifact run: 96/96 Flutter tests and every required gate passed, source commit `dfc7e6633298498bb6eac21182c9306d5e3cac1d`, APK asset `655087433`, source ZIP asset `655087446`. Current main App source/test match Build #83.
+- **Status remains BLOCKED:** live release metadata/assets target `dfc7e6633298498bb6eac21182c9306d5e3cac1d`, but the live Git tag still targets `9136f11799143d91eb58e947ea10e9e576bb579f`; the repaired workflow has not yet run. `@Thinking Eksekusi Full!` did not launch Build App or retarget the release tag. A separate `@Thinking Eksekusi Build App!` is required to exercise the official guarded workflow and verify the resulting run SHA, tag ref and both asset digests.
+- No Firmware source/BIN, Firebase production metadata, OTA, flash or physical device was changed or operated.
+
 ## 2026-10-19 — Refine Home indicator animation effects (source-only after Build #80)
 
 - Peltier now rotates its six-branch snow crystal over a slower phase loop; recognisable branched snowflakes fall behind the main crystal, replacing floating cross/dot particles. Voltage class still controls frost intensity/density.
