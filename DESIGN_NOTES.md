@@ -37,6 +37,12 @@ This file stores durable, user-approved visual constraints. Do not reinterpret a
 
 - LED contract: RGB ON/OFF controls only custom RGB effects. Voltage, thermal/safety, Adaptive, OTA/error and other system indicators remain independent; saved master Brightness applies to every physical WS2812 indication. Phone-side preview remains readable at low hardware Brightness.
 
+## Static action glyphs versus animated status indicators
+
+- Navigation, settings, drag handles and other action affordances use static high-contrast glyphs. They do not run idle loops because they do not represent live state or telemetry.
+- Live Home status indicators use the data-driven `JexAnimatedIcon` painter and the connection/authoritative-state gates above. Bluetooth remains static and communicates state through semantic colour.
+- The native Floating Monitor retains its established compact letters-only B/H/V/A/P/F presentation and schema; values/status still follow live telemetry, unknown values remain `--`, and disconnected state must never imply current physical output. Replacing those letters with native pictograms is a separate presentation/layout change, not a hidden side effect of the Home icon refresh.
+
 ## Visual-change protocol
 
 1. Inspect the exact latest reference or source image.
