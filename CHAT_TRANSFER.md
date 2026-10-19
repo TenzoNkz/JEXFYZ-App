@@ -1,13 +1,13 @@
 # JE X FYZ / JE Cooler — Chat Transfer Snapshot
 
-Snapshot reconciled against live `main` on 2026-10-19 (Asia/Jakarta), after the TamperScreen static-warning-icon source cleanup, regression assertions, Build #80 release-boundary reconciliation and project-memory sync. Build #80 is the latest verified APK and already includes the rounded text-block framing, Home indicator motion/state-gating, toggle styling and whole-submenu locks. Only the direct plain-Icon warning glyph cleanup and its test assertion are source-only after Build #80. Flutter validation and physical-device behavior for that latest delta remain unverified. V6.7 compile/online-update status remains USER-REPORTED. This file is written last and deliberately excludes its own future blob/commit hash.
+Snapshot reconciled against live `main` on 2026-10-19 (Asia/Jakarta), after the Home indicator animation refactor, source/test fingerprint refresh and Build #80 release-boundary audit. Build #80 is the latest verified APK; it includes the rounded TamperScreen boxes and previous dashboard/menu work, but not the direct static warning-Icon cleanup or current painter refinements. Peltier uses a rotating crystal with falling snowflakes; Adaptive has no orbiting dot; Voltage uses a closed lightning current path; Fan airflow curves behind the rotor; Fan Speed has no autonomous glint/wobble; thermal effects use flame tongues rather than round ember particles; battery/LED moving highlights wrap beyond their clipped bounds. Tests/analyzer and physical-phone rendering remain unverified. V6.7 compile/online-update status remains USER-REPORTED. This file is written last and deliberately excludes its own future blob/commit hash.
 
 Source-of-truth order: live main source/tree and exact Actions/Release evidence → CHAT_RULES.md for authorization → PROJECT_STATE.md for current state → subject reference files and APP_BUILD_REPORT.md → HANDOVER.md / this snapshot → CHANGELOG.md for history → archive/*.md for forensic recovery only. Archived “CURRENT” wording is not live truth.
 
 ## 1. Current Git and repository state
 
 - Canonical App/Firmware source and project-memory repository: `TenzoNkz/JEXFYZ-App`, branch `main`.
-- Parent HEAD immediately before this transfer-snapshot commit: `e50456f86360a6520f9cbe73de913ac080d59789`, message `docs(app): update QC boundary to Build 80`. This snapshot is written last; final live source/test fingerprints are included below.
+- Parent HEAD immediately before this transfer-snapshot commit: `291e242dba50123c41a3c8b6fa2f3c1eb8b2e2ad`, message `docs(build): refresh latest unbuilt animation fingerprints`. This snapshot is written last; final live source/test fingerprints are included below.
 - Latest verified release: Build #80 / [Actions run `39171729285`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39171729285), exact release/source commit `4e9f14b959cdbf60136158187db26d0bb65f6287`. Completed at `2026-10-18T22:25:23Z` (`2026-10-19 05:25:23 Asia/Jakarta`). All 21 active workflow steps passed, including audit, dependencies, Dart analysis, **96/96 Flutter tests**, Android production compilation/configured gate, obfuscated APK, V1/V2/V3 signing/certificate, source ZIP, Release publication and re-downloaded asset verification.
 - Build #70 is historical and verified FPS/Shizuku retirement plus schema-v2 migration to six metrics B/H/V/A/P/F (F=Fan Speed). Build #71 is newer and includes the post-Build-70 motion/toggle refinements.
 - Build #71 was triggered through owner/title/token-guarded [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). Issue owner `TenzoNkz`, title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; workflow blob `8a8533aff7e0e0e01412bf522e1966e81aa1a39f` is unchanged and listens only to issue opened/reopened. No push/PR/dispatch bypass.
@@ -26,12 +26,12 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
 
 ## 3. Current source fingerprints and canonical docs
 
-- Latest **verified release source** is `4e9f14b959cdbf60136158187db26d0bb65f6287` (Build #80). It includes the rounded TamperScreen blocks and Home animation/state-gating/toggle/menu-lock changes, but not the latest source-only simplification of the warning symbol to a direct static `Icon` plus its regression assertion.
+- Latest **verified release source** is `4e9f14b959cdbf60136158187db26d0bb65f6287` (Build #80). It includes rounded TamperScreen blocks and the earlier Home animation/state-gating/toggle/menu-lock changes, but not the direct static warning `Icon` cleanup or latest source-only painter refactor and contracts.
 - Current source/test/config blobs, re-fetched from the complete `main` tree:
-  - `lib/main.dart`: `522e108dd78d9b413316a6c79c8a4f0144f5e58f`.
+  - `lib/main.dart`: `99bdf225b990fbe8a4ff92c224b4fccc4ae4624a`.
   - `lib/floating_monitor.dart`: `31b45ea08b08ac7fc25ebd991dca873b889fdd14`.
   - `lib/app_settings.dart`: `36927823c91904a35d87d2f21bd77932a2214e83`.
-  - `test/widget_test.dart`: `5098c30291cbd70422cd351f03cd9325f0870258`.
+  - `test/widget_test.dart`: `2527fa278a56da30bf74eb488287580d0d2c99d8`.
   - `test/floating_monitor_layout_contract_test.dart`: `87e805095202ac3edfe55b9aeb3138c7c6886375`.
   - `test/v6_7_qc_contract_test.dart`: `6b71cc2ebbef9b3f1c9757728067eec4d11ff5ee`.
   - `test/app_protocol_notify_contract_test.dart`: `92214dd90178c705844d3979d3f8f7bd17bcc4b8`.
@@ -71,7 +71,7 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
 - Peltier, Adaptive and LED submenu toggles use neutral rows like Manual Voltage, omit the knob checkmark and adjacent ON/OFF label, and keep theme-primary toggle accent. BLE/Firmware state authority and command gating are unchanged.
 - If Bluetooth is disconnected, the complete selected submenu is blurred/dimmed under one centered lock card; top-level tabs and Home Bluetooth remain usable. If connected but Adaptive is active/transitioning, only Voltage, Control and Temperature use the whole-menu blur and centered lock. Messages: CONNECT TO JE X FYZ FIRST / HUBUNGKAN KE JE X FYZ TERLEBIH DAHULU and LOCKED BY ADAPTIVE MODE / TERKUNCI OLEH MODE ADAPTIF.
 - Build #80's 96/96 Flutter tests cover current App source contracts including lock policy, centered overlay, toggle presentation, indicator contour/motion and thermal thresholds. The additional direct-Icon warning assertion is post-Build-80 and NOT RUN. No App Build was triggered in this `Eksekusi Full` task; physical rendering, BLE/device behavior and thermal performance remain unverified.
-- Current fingerprints: lib/main.dart 522e108dd78d9b413316a6c79c8a4f0144f5e58f; test/widget_test.dart 5098c30291cbd70422cd351f03cd9325f0870258; lib/floating_monitor.dart 31b45ea08b08ac7fc25ebd991dca873b889fdd14; lib/app_settings.dart 36927823c91904a35d87d2f21bd77932a2214e83; MainActivity.kt ef35590cfc91fafe5dec104b7cfd7828011185bf.
+- Current fingerprints: lib/main.dart 99bdf225b990fbe8a4ff92c224b4fccc4ae4624a; test/widget_test.dart 2527fa278a56da30bf74eb488287580d0d2c99d8; lib/floating_monitor.dart 31b45ea08b08ac7fc25ebd991dca873b889fdd14; lib/app_settings.dart 36927823c91904a35d87d2f21bd77932a2214e83; MainActivity.kt ef35590cfc91fafe5dec104b7cfd7828011185bf.
 
 ## 4. Current Floating Monitor: FPS retired, F label is Fan/Kipas
 
