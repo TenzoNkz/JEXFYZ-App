@@ -206,7 +206,6 @@ void main() {
     expect(fallingFire, contains('_fallingFlameDropPath'));
     expect(fallingFire, contains('final fadeOut ='));
     expect(fallingFire, contains('clipPath'));
-    expect(fallingFire, contains('count = 3') == false); // Count is a fixed local constant.
     expect(fallingFire, contains('const count = 3'));
     expect(fallingFire, isNot(contains('canvas.drawCircle')));
 
