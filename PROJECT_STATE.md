@@ -9,7 +9,7 @@ Current state reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). 
 - Build #106 APK asset ID `656702702`, 54,734,939 bytes, SHA-256 `bab332a4312c628178e384a88d513cf8546ff15ab4b4e3f3becf2e70b10830cc`; source ZIP asset ID `656702729`, 2,866,720 bytes, SHA-256 `0bb86c4e6bd7d3cb7a6bb894658bd707acee48bac106fc5227f8adcba584ec98`.
 - Current source is newer than Build #106 and NOT RUN / NOT RELEASED: `lib/main.dart` `7e09a3d28b4efe24bdced858db4274cf70806284`; `lib/app_settings.dart` `8f228000d38d73038c06f569c052b1af601288a5`; `test/widget_test.dart` `5a82cf79e6c5c40fc34489ce90cf1200cf9faccb`.
 - Current NOTIFY retains localized `NOTIFY • category`, left-aligns its heading/body, removes the separate connection badge, and wraps long copy to at most two lines. Battery/Hotside use clipped oval ember bursts instead of animated tapered flames/teardrops; Voltage uses edge-following pulses instead of a moving central spine/inner strikes. OTA diagnostics remain sanitized. Tests/analyzer have NOT RUN for the current source; Build #106 does not include these changes.
-- Do not change the guarded Build App workflow. A separate @Thinking Eksekusi Build App! is required to validate/release this source. Firmware V6.7, BIN, Firebase, OTA, flash and physical hardware are untouched.
+- The guarded App Build workflow is unchanged. The App UI follow-up remains unvalidated as documented above. Active Firmware source is now V6.8 for Adaptive Fan temperature-tier control; its source contracts are not run and V6.8 is not compiled or installed. No BIN artifact, Firebase state, OTA, flashing, or hardware was operated.
 
 ## Current source fingerprints
 
