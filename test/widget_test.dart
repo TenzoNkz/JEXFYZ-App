@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math' as math;
 // AI-MEMORY / TEST CONTRACT
 // This file validates deterministic UI helpers, localization contracts, and pure parsing rules.
 // It does not prove BLE, Android OEM permission behavior, overlay compositing, OTA transport,
@@ -188,6 +189,12 @@ void main() {
       'metric.extractPath(tail, head)',
       'Path _flameTonguePath(',
       'void _drawSnowflake(',
+      'jexParticleBoundaryFade(',
+      'final radius = s * (.080 + .012 * strength)',
+      'final crystalRotation = active ? math.sin(angle) * .035 : 0.0',
+      'TickerFuture _retargetFanRotation(',
+      'jexNormalizedFanProgress(fanPhaseController.value)',
+
       'final rotor = _fanSilhouette(s, angle)',
       'final needleAngle = start + sweep * safeLevel',
       'final warningBlend = active',
@@ -198,6 +205,9 @@ void main() {
     }
     expect(source, contains('late final AnimationController warningTransitionController;'));
     expect(source, contains('warningTransitionController.duration = const Duration(milliseconds: 280)'));
+    expect(source, contains('JexAnimatedIconKind.battery => const Duration(milliseconds: 1500)'));
+    expect(source, contains('JexAnimatedIconKind.hotside => const Duration(milliseconds: 1650)'));
+    expect(source, contains('JexAnimatedIconKind.peltier => const Duration(milliseconds: 2100)'));
     expect(source, contains('_retargetWarningLevel(widget.connected && widget.warning)'));
     expect(painter, isNot(contains('_adaptiveLoop(s, angle)')));
     expect(painter, contains('inner.left - sheenWidth + (inner.width + sheenWidth * 2) * p'));
@@ -236,7 +246,9 @@ void main() {
     expect(fallingFire, contains('final fall = (cycle + i / count) % 1.0'));
     expect(fallingFire, contains('bounds.top + fall * bounds.height'));
     expect(fallingFire, contains('_fallingFlameDropPath'));
-    expect(fallingFire, contains('final fadeOut ='));
+    expect(fallingFire, contains('jexParticleBoundaryFade('));
+    expect(fallingFire, contains('fadeIn: .18'));
+    expect(fallingFire, contains('fadeOut: .22'));
     expect(fallingFire, contains('clipPath'));
     expect(fallingFire, contains('const count = 3'));
     expect(fallingFire, isNot(contains('canvas.drawCircle')));
@@ -266,11 +278,11 @@ void main() {
     final peltierStart = painter.indexOf('case JexAnimatedIconKind.peltier:');
     final peltierEnd = painter.indexOf('case JexAnimatedIconKind.fan:', peltierStart);
     final peltier = painter.substring(peltierStart, peltierEnd);
-    expect(peltier, contains('canvas.rotate(frostAngle)'));
+    expect(peltier, contains('canvas.rotate(crystalRotation)'));
     expect(peltier, contains('moving: active'));
     expect(
       peltier.indexOf('_drawFrostParticles'),
-      lessThan(peltier.indexOf('canvas.rotate(frostAngle)')),
+      lessThan(peltier.indexOf('canvas.rotate(crystalRotation)')),
       reason: 'Snowflakes should be drawn behind the rotating crystal.',
     );
 
@@ -925,7 +937,7 @@ void main() {
     );
     expect(
       jexIconAnimationDuration(JexAnimatedIconKind.adaptive),
-      const Duration(milliseconds: 6400),
+      const Duration(milliseconds: 2300),
     );
   });
 
@@ -950,6 +962,78 @@ void main() {
     expect(jexPeltierFrostParticleCount(5), 3);
     expect(jexPeltierFrostParticleCount(9), 6);
     expect(jexPeltierFrostParticleCount(12), 14);
+  });
+
+  test('Particle boundary fade hides both ends without flattening the middle', () {
+    expect(jexParticleBoundaryFade(0), 0);
+    expect(jexParticleBoundaryFade(.5), 1);
+    expect(jexParticleBoundaryFade(1), 0);
+    expect(jexParticleBoundaryFade(.09), greaterThan(0));
+    expect(jexParticleBoundaryFade(.09), lessThan(1));
+    expect(jexParticleBoundaryFade(.90), greaterThan(0));
+    expect(jexParticleBoundaryFade(.90), lessThan(1));
+    expect(jexParticleBoundaryFade(double.nan), 0);
+  });
+
+  test('Fan angular velocity ramps smoothly while accumulated phase stays continuous', () {
+    expect(
+      jexFanRotationCyclesPerSecondAt(
+        fromCyclesPerSecond: 1,
+        toCyclesPerSecond: 3,
+        elapsedSeconds: 0,
+        transitionSeconds: 1,
+      ),
+      closeTo(1, 1e-9),
+    );
+    expect(
+      jexFanRotationCyclesPerSecondAt(
+        fromCyclesPerSecond: 1,
+        toCyclesPerSecond: 3,
+        elapsedSeconds: .5,
+        transitionSeconds: 1,
+      ),
+      closeTo(2, 1e-9),
+    );
+    expect(
+      jexFanRotationCyclesPerSecondAt(
+        fromCyclesPerSecond: 1,
+        toCyclesPerSecond: 3,
+        elapsedSeconds: 1,
+        transitionSeconds: 1,
+      ),
+      closeTo(3, 1e-9),
+    );
+    final atEnd = jexIntegratedFanCycles(
+      fromCyclesPerSecond: 1,
+      toCyclesPerSecond: 3,
+      elapsedSeconds: 1,
+      transitionSeconds: 1,
+    );
+    expect(atEnd, closeTo(2, 1e-9));
+    expect(
+      jexIntegratedFanCycles(
+        fromCyclesPerSecond: 1,
+        toCyclesPerSecond: 3,
+        elapsedSeconds: 1.25,
+        transitionSeconds: 1,
+      ),
+      closeTo(atEnd + .75, 1e-9),
+    );
+    expect(jexNormalizedFanProgress(math.pi * 2), closeTo(0, 1e-9));
+    expect(jexNormalizedFanProgress(math.pi), closeTo(.5, 1e-9));
+  });
+
+  test('Home indicator glyph fits a larger drawable area without changing tile layout', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final homeStart = source.indexOf('Widget _homeMetric(');
+    final homeEnd = source.indexOf('\n  Widget ', homeStart + 20);
+    expect(homeStart, isNonNegative);
+    expect(homeEnd, greaterThan(homeStart));
+    final homeMetric = source.substring(homeStart, homeEnd);
+    expect(homeMetric, contains('width: 38,'));
+    expect(homeMetric, contains('height: 38,'));
+    expect(homeMetric, contains('size: 26,'));
+    expect(homeMetric, isNot(contains('size: 22,')));
   });
 
   test('Fan Speed level retargeting eases between values without abrupt jumps', () {
@@ -1069,16 +1153,20 @@ void main() {
     expect(displayMenuOverlayTop(screenWidth: 360, availableHeight: 400), 256.0);
   });
 
-  test('Dashboard indicators use distinct, slower motion cycles', () {
-    expect(jexIconAnimationDuration(JexAnimatedIconKind.battery), const Duration(milliseconds: 4200));
-    expect(jexIconAnimationDuration(JexAnimatedIconKind.hotside), const Duration(milliseconds: 4400));
-    expect(jexIconAnimationDuration(JexAnimatedIconKind.voltage), const Duration(milliseconds: 3000));
-    expect(jexIconAnimationDuration(JexAnimatedIconKind.adaptive), const Duration(milliseconds: 6400));
-    expect(jexIconAnimationDuration(JexAnimatedIconKind.peltier), const Duration(milliseconds: 5200));
+  test('Dashboard animation cadences are tuned for legible fluid motion', () {
+    expect(jexIconAnimationDuration(JexAnimatedIconKind.battery), const Duration(milliseconds: 1500));
+    expect(jexIconAnimationDuration(JexAnimatedIconKind.hotside), const Duration(milliseconds: 1650));
+    expect(jexIconAnimationDuration(JexAnimatedIconKind.voltage), const Duration(milliseconds: 1000));
+    expect(jexIconAnimationDuration(JexAnimatedIconKind.adaptive), const Duration(milliseconds: 2300));
+    expect(jexIconAnimationDuration(JexAnimatedIconKind.peltier), const Duration(milliseconds: 2100));
     expect(jexIconAnimationDuration(JexAnimatedIconKind.fan, voltageLevel: 5), const Duration(milliseconds: 2600));
     expect(jexIconAnimationDuration(JexAnimatedIconKind.fan, voltageLevel: 9), const Duration(milliseconds: 1250));
     expect(jexIconAnimationDuration(JexAnimatedIconKind.fan, voltageLevel: 12), const Duration(milliseconds: 620));
     expect(jexIconAnimationDuration(JexAnimatedIconKind.speed), const Duration(milliseconds: 1800));
+    expect(jexIconAnimationDuration(JexAnimatedIconKind.adaptive).inMilliseconds,
+        inInclusiveRange(1800, 2600));
+    expect(jexIconAnimationDuration(JexAnimatedIconKind.peltier).inMilliseconds,
+        inInclusiveRange(1600, 2400));
   });
 
   test('LED color palette has 36 hue-ordered presets with localized names', () {
@@ -1234,28 +1322,36 @@ void main() {
     expect(painter, contains('final rotor = _fanSilhouette(s, angle);'));
     expect(painter, contains('canvas.drawPath(rotor, _fill('));
     expect(painter, isNot(contains('_drawFanBlade')));
-    expect(state, contains('_animateFanToCycleBoundary();'));
+    expect(state, contains('fanPhaseController.animateWith(simulation)'));
+    expect(state, contains('_retargetFanRotation('));
     expect(state, contains('unawaited(_coastFanToStop());'));
   });
 
-  test('Fan voltage change preserves phase and OFF coasts smoothly to a stop', () {
+  test('Fan voltage/PWM retarget integrates angular velocity without a phase reset', () {
     final source = File('lib/main.dart').readAsStringSync();
     final stateStart = source.indexOf('class _JexAnimatedIconState');
-    final stateEnd = source.indexOf('class _JexIconPainter', stateStart);
+    final stateEnd = source.indexOf('  @override\n  Widget build(BuildContext context)', stateStart);
+    final painterStart = source.indexOf('class _JexIconPainter extends CustomPainter {');
+    final painterEnd = source.indexOf('const MethodChannel securityChannel', painterStart);
     expect(stateStart, isNonNegative);
     expect(stateEnd, greaterThan(stateStart));
     final iconState = source.substring(stateStart, stateEnd);
-    expect(iconState, contains('else if ((fanVoltageChanged || fanSpeedChanged) && widget.active)'));
-    expect(iconState, contains('_animateFanToCycleBoundary();'));
-    expect(iconState, contains('await controller.animateTo('));
-    expect(iconState, contains('controller.repeat();'));
+    final painter = source.substring(painterStart, painterEnd);
+
+    expect(source, contains('class _JexFanRotationSimulation extends Simulation'));
+    expect(source, contains('double jexIntegratedFanCycles('));
+    expect(source, contains('double jexFanRotationCyclesPerSecondAt('));
+    expect(iconState, contains('TickerFuture _retargetFanRotation('));
+    expect(iconState, contains('startPhaseRadians: fanPhaseController.value'));
+    expect(iconState, contains('fanPhaseController.animateWith(simulation)'));
+    expect(iconState, contains('_launchFanRotationRetarget('));
+    expect(iconState, contains('fanPhaseController.dispose();'));
     expect(iconState, contains('unawaited(_coastFanToStop());'));
-    expect(iconState, contains('const coastCycles = .16;'));
-    expect(iconState, contains('Curves.easeOutCubic'));
-    expect(iconState, isNot(contains('coastDelta')));
-    expect(iconState, contains('frostTransitionController.forward(from: 0)'));
-    expect(iconState, isNot(contains('_frostFromVisibility')));
-    expect(iconState, contains('if (widget.active)'));
+    expect(iconState, contains('stopAtTarget: true'));
+    expect(iconState, isNot(contains('_animateFanToCycleBoundary')));
+    expect(iconState, isNot(contains('_fanCoastStartProgress')));
+    expect(iconState, contains('_resetFanRotation();'));
+    expect(painter, contains('jexNormalizedFanProgress(fanPhaseController.value)'));
   });
 
   test('Indicator animations stop on disconnect and OFF glyphs stay fully coloured', () {
@@ -1283,7 +1379,9 @@ void main() {
     expect(state, isNot(contains('widget.kind != JexAnimatedIconKind.fan && !controller.isAnimating')));
 
     expect(painter, contains('const opacity = 1.0;'));
-    expect(painter, contains('final breath = active ? 1.0 + .014 * pulse * strength : 1.0;'));
+    expect(painter, isNot(contains('final breath = active ? 1.0 + .014 * pulse * strength : 1.0;')));
+    expect(painter, contains('oldDelegate.valueKnown != valueKnown'));
+    expect(painter, contains('oldDelegate.fanCoasting != fanCoasting'));
     expect(painter, isNot(contains('final idleBreath')));
     expect(painter, contains('_drawThermalFlames'));
     expect(painter, contains('_drawFrostParticles'));
