@@ -6,7 +6,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #108 is 
 
 - Latest successful release is Build #108 / Actions run 39294761979, packaged source `51f401c90085b0bef5599375f7819d0294375938`. Analyzer exited 0 with 25 info findings/no errors or warnings; 107 Flutter tests passed; Android gate and APK/source ZIP validation passed.
 - Build #108 APK asset ID `656953696`, SHA-256 `a7e46390a2b8a487eb85e69d33af685dbc79f9814c201cce9fd255e1164cf8ed`; source ZIP asset ID `656953697`, SHA-256 `4b3095747a711888afa9879e70cd8d3fc74b22659e68f338e6e8cbc2430d12be`.
-- Current Home geometry correction is NOT RUN / NOT RELEASED: `lib/main.dart` `0341122a53e7a6bb00d9f079bfcb350b385c83cb`; `test/widget_test.dart` `b240231403c26071e618f3da1e82b379ff912adf`. It restores 44 dp metric rows and the original icon-left/text-left Notify Row, removes only the connection badge, and reserves 56 dp for two-line copy.
+- Current Home geometry correction is NOT RUN / NOT RELEASED: `lib/main.dart` `0341122a53e7a6bb00d9f079bfcb350b385c83cb`; `test/widget_test.dart` `eeee8dcdb9dd88b985145e059913759f5f325920`. It restores 44 dp metric rows and the original icon-left/text-left Notify Row, removes only the connection badge, and reserves 56 dp for two-line copy.
 - Home NOTIFY uses left-aligned bilingual copy, no CONNECTED/DISCONNECTED badge, and at most two readable lines. Battery/Hotside use clipped oval thermal bursts; Voltage uses outer-contour pulses. Raw reason/OTA identifiers remain hidden.
 - Tests/analyzer have NOT RUN for the current geometry source. Build #108 remains the latest successful release and does not include these changes. No Firmware/BIN/Firebase/OTA/device operation occurred.
 
@@ -72,7 +72,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #108 is 
 ## Current source fingerprints (Build #108 successful; latest Home geometry follow-up NOT RUN; Firmware V6.8 NOT COMPILED)
 
 - lib/main.dart: 0341122a53e7a6bb00d9f079bfcb350b385c83cb — 44 dp Home metric rows and original icon-left/text-left badge-free Notify Row with 56 dp slot; NOT RUN / NOT RELEASED.
-- test/widget_test.dart: b240231403c26071e618f3da1e82b379ff912adf — layout regression contracts for 44 dp metrics and 56 dp two-line Notify; NOT RUN / NOT RELEASED.
+- test/widget_test.dart: eeee8dcdb9dd88b985145e059913759f5f325920 — layout regression contracts for 44 dp metrics and 56 dp two-line Notify; NOT RUN / NOT RELEASED.
 - lib/jex_animated_glyph.dart: b37fc4e0807c874b2f01db00c7f606810cb5deca — generic action glyphs static.
 - Build #99 validated source commit bc1498d5b3db7621ee18f5ca6f021e6013c73b09, source blob 30d864c2f03c40fd4d0b6926a9958153f2a3b236 and test blob 711a44b00eadee2e2bcd24e48383128f0d70ccc9.
 
