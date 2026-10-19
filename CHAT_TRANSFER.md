@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — CHAT TRANSFER SNAPSHOT
 
-Refreshed for the seven-icon visual rework on 2026-10-19 (Asia/Jakarta). This is the canonical boot snapshot. Before further action, re-fetch live `main`, full tree, relevant source/test/doc hashes, workflow, Actions runs, Release/tag, branches/PRs and the firmware-artifact repository. This file is written last; the pre-transfer values below refer to the source state immediately before this transfer commit. It deliberately does not self-reference its future blob or commit SHA.
+Refreshed for the post-Build-#95 animation-smoothness source follow-up on 2026-10-19 (Asia/Jakarta). This is the canonical boot snapshot. Before further action, re-fetch live `main`, full tree, relevant source/test/doc hashes, workflow, Actions runs, Release/tag, branches/PRs and the firmware-artifact repository. This file is written last. Pre-transfer HEAD/tree below describes live `main` immediately before this transfer write; this snapshot deliberately does not self-reference its future commit or blob SHA.
 
 ## 1. Authority, repository roles and command protocol
 
@@ -14,21 +14,21 @@ Refreshed for the seven-icon visual rework on 2026-10-19 (Asia/Jakarta). This is
 
 ## 2. App/Firmware identity
 
-- App: JE Cooler; header/brand JE X FYZ; pubspec `1.0.0+3`; application ID `com.horizontalzzz.jexfyz`; minSdk 24, targetSdk 36, compileSdk 37.
-- Active editable Firmware: `firmware/JEXFYZ-V6.7.ino`, blob `efe6eaa62c178ab536fb68c06a310e54826cbaf2`, embedded `FW_VERSION="V6.7"`. User-reported compile/online-update status is not independently verified; source-to-BIN provenance and installed-device version remain UNVERIFIED.
-- The latest successful App artifact remains **Build #92**, [Actions run 39211726896](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39211726896), exact source `6610fecb3e47d9941cbf96043b7da3b2a869753b`. Analyzer passed with 23 informational deprecations; 98/98 Flutter tests passed; all 21 workflow steps passed; Android configured gate, APK V1/V2/V3 + production certificate, source ZIP, downloaded digests and Release/tag/source equality passed. Native JUnit tasks were NO-SOURCE.
-- Build #92 APK asset `655482761`, 54,636,635 bytes, SHA-256 `ee3ce9cb9697b8bcabf4da829fc64c16524bbe914eb83901f5d21c855d706926`. Corresponding source ZIP asset `655482764`, 2,857,021 bytes, SHA-256 `7ec969d092638790dd36b5d71c758b68cdc11a0e8db2bdfb390c812f541e677a`. These results apply to Build #92 source only.
+- App: JE Cooler; header/brand JE X FYZ; pubspec `1.0.0+3`; application ID `com.horizontalzzz.jexfyz`; minSdk 24, targetSdk 36, compileSdk 37. Preserve Gradle `versionName "Telegram @horizontalzzz"`.
+- **Latest successful released artifact:** Build #95 / [Actions run 39217718351](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39217718351), packaged source commit `cd691b874ddb0e454ba69891a3e0da3001df892f`. All 21 workflow steps passed, 99/99 Flutter tests passed, analyzer passed with 23 info-level deprecation findings, APK/signing/certificate, source ZIP, asset-integrity and tag/Release/source checks passed. Native JUnit tasks were NO-SOURCE.
+- Build #95 APK asset `655596091`, 54,702,171 bytes, SHA-256 `856718ada30c5ef5081b5bb28a5e00c3b9d234e00ebced58a211112cc381140d`. Corresponding source ZIP asset `655596090`, 2,858,246 bytes, SHA-256 `262d552e564b7c0a1727048a2e2897777ff18fa7296381a77f2c10236784ce7e`. These results apply to Build #95's exact source; the current smoothness follow-up is not in the APK.
+- Active editable Firmware source remains `firmware/JEXFYZ-V6.7.ino`, embedded `FW_VERSION="V6.7"`. User-reported compile/online-update remains unverified; source-to-BIN provenance/device version remain UNVERIFIED. Artifact-only repo `TenzoNkz/JEXFYZ-Firmware` retains exactly one `JEXFYZ.cpp.bin`; its payload was not read.
+- Workflow `.github/workflows/jexfyz-app-build-trigger.yml` is unchanged at blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12` and remains issue-owner/title/body-token guarded. No trigger bypass was added.
 
-## 3. Current seven-icon source follow-up — NOT RUN / NOT RELEASED
+## 3. Current animation smoothness rework — NOT RUN / NOT RELEASED
 
-- Current `lib/main.dart` blob: `ec8d682432946bd5b9afea925685855d632610b8`.
-- Current `test/widget_test.dart` blob: `ab0862470846455465b65ec294d33d39c07aac62`.
-- Current `lib/jex_animated_glyph.dart` blob: `b37fc4e0807c874b2f01db00c7f606810cb5deca`; generic navigation/settings/action glyphs remain static, since they are not live telemetry indicators.
-- Source changes after Build #92: Battery/Hotside warnings add three pointed embers falling top-to-bottom within their own silhouettes with smooth fade-in/out; anchored flame tongues and existing 280 ms warning transition remain. The Hotside configured threshold, colours and safety behavior are unchanged.
-- Fan rotor geometry changed to **exactly three broad swept blades** and a layered hub. The existing three airflow ribbons remain fixed in geometry/count/colour regardless of PWM; only rotor speed follows the established voltage/PWM policy, with the existing permitted connected one-shot coast-down.
-- A shared restrained luminous-core helper now gives Battery/Hotside, Voltage bolt, Adaptive arrows, Peltier crystal, Fan rotor and Fan Speed active arc/needle a consistent premium glow. Voltage’s closed-spine pulse and branch strikes, Adaptive’s paired rotating arrows, six-branch Peltier crystal and falling branched snow, and half-circle PWM speed gauge retain their distinct state/telemetry behavior.
-- Updated source-contract assertions cover falling fire, three-blade geometry, glow helper and state gates. They have **NOT RUN**. Do not report Build #92's 98/98 tests as validation of the newer source. This update is not in the Build #92 APK.
-- No Home layout/control, semantic voltage colours (5V red, 9V green, 12V blue), BLE protocol, telemetry meaning, Adaptive/PWM control or firmware safety behavior was changed.
+- Source-level seven-icon geometry and luminous-core styling were included in Build #95. The new follow-up addresses smoothness issues detected in current source and the supplied recording, without changing the Home layout, BLE/device state, control, telemetry, or safety policies.
+- Source blob `lib/main.dart`: `f0bc1375799e7b9e4466a3124ddb031d5f58e522`. Updated test blob `test/widget_test.dart`: `653a67f3c946bb10c0da350f9677e19b3275ed58`. Generic navigation/settings/action glyphs remain static in `lib/jex_animated_glyph.dart` blob `b37fc4e0807c874b2f01db00c7f606810cb5deca`.
+- Diagnosis: Battery/Hotside cycle periods 4.2/4.4 s and Adaptive 6.4 s were slow for tiny icon detail; ember/snow particles were small; fire drift used a non-integer phase multiplier; whole-icon breathing scaled the entire glyph; Peltier crystal spun with the snowfall phase; Fan PWM/voltage target updates changed repeating cycle duration abruptly.
+- Current UI cadence targets: Battery 1500 ms, Hotside 1650 ms, Voltage 1000 ms, Adaptive 2300 ms, Peltier 2100 ms. Falling fire/snow is enlarged, uses eased boundary fades and periodic per-particle drift; Peltier crystal has only a tiny independent rock; whole-glyph breathing is removed; Home glyph size rises 22→26 dp inside the existing 38×38 dp tile.
+- Fan retains exactly three blades and three fixed airflow ribbons. An unbounded radian phase and integrated smoothstep rate simulation retarget angular speed over 420 ms when valid PWM/voltage targets change, preserving rotor angle. Confirmed OFF decelerates to zero; disconnect resets phase under existing state policy. Existing voltage/PWM target mapping is unchanged.
+- Tests were updated for fade mathematics, Fan rate/phase integration, cadence targets, Peltier motion separation, repaint dependencies and Home glyph size. **Dart/Flutter tests and analyzer are NOT RUN** because neither CLI is installed in the execution environment. These source changes are not packaged in Build #95. Physical-phone smoothness and profile-mode frame-time performance are UNVERIFIED.
+- No App Build, Android APK build/release, tag movement, Firmware/BIN/Firebase/OTA/flash/device operation occurred in this task.
 
 ## 4. Icon behavior contract
 
@@ -53,34 +53,35 @@ Refreshed for the seven-icon visual rework on 2026-10-19 (Asia/Jakarta). This is
 
 ## 6. Canonical docs and source hashes before this transfer write
 
-- `lib/main.dart`: `ec8d682432946bd5b9afea925685855d632610b8`
+- `lib/main.dart`: `f0bc1375799e7b9e4466a3124ddb031d5f58e522`
+- `test/widget_test.dart`: `653a67f3c946bb10c0da350f9677e19b3275ed58`
 - `lib/jex_animated_glyph.dart`: `b37fc4e0807c874b2f01db00c7f606810cb5deca`
-- `test/widget_test.dart`: `ab0862470846455465b65ec294d33d39c07aac62`
-- `DESIGN_NOTES.md`: `0222d1760ac21616ea78d24a5e296c016f8bbb4e`
-- `CHANGELOG.md`: `0cd02c3d34b5ea7ab0c67be4bd036db88ed4356e`
-- `APP_NOTES.md`: `7a6f886133d0c139d32259f55b27121436a9f420`
-- `PROJECT_STATE.md`: `07eb09320048550c8bffb3e5f910b5865dd9b64e`
-- `HANDOVER.md`: `bb5d6783972a172d387bc2fc95682c91387eaf07`
-- `MEMORY_INDEX.md`: `61a277222121a85638be53d94816c5a41a20d688`
-- `BUILD_NOTES.md`: `199916b7028dd3bb46cfbf6b543fff7170dcf138`
-- `APP_BUILD_REPORT.md`: `ff26db36f03987f697df6d373f7b42f0a363bff8`
-- `README.md`: `16107b66a6cf8031e72803f8e83a9797a6571819`
+- `DESIGN_NOTES.md`: `2e9a63a3f3bb7494fea22c8331c8125fd6176a9a`
+- `APP_NOTES.md`: `7b258cba73fc2b648192a17ed3a013d23d79245c`
+- `PROJECT_STATE.md`: `f1a8c007ac9c73b4addfa550302d1456b7d359cd`
+- `MEMORY_INDEX.md`: `2ebda3ff40d672800d58cbe268490baa5206184d`
+- `HANDOVER.md`: `9eec579f4f445e6e5027e88e25a93cf085f89338`
+- `BUILD_NOTES.md`: `113ce4bc47735897fc84b9da2c66b5a82e55e334`
+- `APP_BUILD_REPORT.md`: `2d86f5efe84ce9059cd4ff8d3c60300e607cca1b`
+- `CHANGELOG.md`: `bb07a15427ae533005321c01fb14f20451214395`
+- `README.md`: `6856a051e47619a374b9e62b89b474fb313169b2`
 - `CHAT_RULES.md`: `97a2e149e51cf467d8a92fd76f17ec860ec319b8`
-- Build workflow: `.github/workflows/jexfyz-app-build-trigger.yml` `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`.
-- Pre-transfer main HEAD: `e21d8689b50854aaa5685c72d2f16f79557031e3`, parent `61570f23ec17a9e411eaab5cb260cef11c1f03ab`, commit tree `d3dca07b8e970bced866519e05869210aaf93425`. This file intentionally does not list its own future blob hash.
+- Workflow `.github/workflows/jexfyz-app-build-trigger.yml`: `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`.
+- **Pre-transfer main state:** HEAD `fa781a8edb07c9882134ec1ba0cd2a988fbe7d8c`, parent `0e3e76832be770f58ecb12a1e3406175f1ec2f07`, tree `7fd8e62ce6b73dcd879e54858f9289f65ec647ec`. This snapshot intentionally omits its own future transfer commit/blob. Re-fetch final HEAD/tree after this write.
 
 ## 7. Exact next actions and validation gates
 
-1. Re-fetch live `main` HEAD/tree and relevant source/test/doc hashes before the next action; then read this file, `MEMORY_INDEX.md`, `CHAT_RULES.md`, `PROJECT_STATE.md` and the subject-specific reference.
-2. Current seven-icon follow-up is **SOURCE IMPLEMENTED / NOT RUN / NOT RELEASED**. Do not claim test/analyzer success based on Build #92 because that run predates the latest source.
-3. Do not build as part of `@Thinking Eksekusi Full!`. After separate `@Thinking Eksekusi Build App!` authorization, use the unchanged official issue-only workflow, confirm intended source `head_sha`, pass all analyzer/test/Android/APK/signing/source-ZIP/digest gates and independently verify the Release/tag source equality.
-4. Do not manually move `jexfyz-latest`, weaken workflow guards or add push/PR/manual bypasses.
-5. Firmware compilation/online update remains user-controlled. Do not read/replace the BIN or touch Firebase, OTA, flash or hardware without separate authorization.
+1. Re-fetch live `main` HEAD/tree and current source/test/doc hashes before any new action. Read `MEMORY_INDEX.md`, `CHAT_RULES.md`, `PROJECT_STATE.md`, and relevant subject notes.
+2. Current smoothness follow-up is **SOURCE IMPLEMENTED / NOT RUN / NOT RELEASED**. Latest released APK is Build #95, which does not include this follow-up. Do not claim new tests/analyzer passed.
+3. No build is part of `@Thinking Eksekusi Full!`. A separate `@Thinking Eksekusi Build App!` is required for the guarded analyzer/test/Android/APK/release workflow, then confirm intended `head_sha` and independent Release/tag/source equality.
+4. Do not manually move `jexfyz-latest`, weaken guards or add push/PR/manual bypass.
+5. Firmware compilation/online update remains user-controlled. Do not read/replace BIN or touch Firebase, OTA, flash or hardware without separate authorization.
 
 ## 8. Audit / operations not performed
 
-- Live source and tests were re-fetched. Static source-contract inspection confirmed the falling-fire helper and top-to-bottom particle path, fade-in/out and clipping, exactly three Fan blades, fixed three airflow ribbons, consistent luminous-core use on the icon family, explicit `BlurStyle`/`MaskFilter` imports, and the updated test assertions.
-- Tree remains complete with 67 entries; firmware artifact repo still contains only `JEXFYZ.cpp.bin`. Workflow, Firmware V6.7 source and artifact BIN were not changed.
-- **Not run:** Dart/Flutter analyzer and test suite; the source-contract tests are not execution evidence.
-- **Not performed:** App Build/release, tag movement, Firmware edit/compile, BIN payload access, Firebase production-metadata changes, OTA, flash or physical device operation.
-- Real-device rendering, animation smoothness, BLE/PWM response and thermal/cooling behavior remain UNVERIFIED.
+- Live source and the supplied screen recording were reviewed. Source-level changes address slow cycles, tiny particle details, phase-wrap behaviour, whole-icon breathing, crystal/snow coupling, Fan rate discontinuities, and Home glyph drawing size.
+- Exact source/test and documentation hashes are listed above. The tree was complete and not truncated at the pre-transfer checkpoint.
+- **Not run:** Flutter/Dart tests and analyzer. New source/tests have not executed. No device/profile measurements are available, so on-device smoothness and frame time remain UNVERIFIED.
+- **Not performed:** App Build/release, Android APK build, tag movement, Firmware edit/compile, BIN payload access, Firebase metadata changes, OTA, flash or hardware operation.
+- Build #95 remains the latest successful artifact, validated for its exact historical source only. The current smoothness source is not included in that APK.
+
