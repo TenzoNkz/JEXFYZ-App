@@ -2432,6 +2432,62 @@ class _JexIconPainter extends CustomPainter {
     canvas.drawPath(path, paint);
   }
 
+  /// Draws an outline-following electric pulse around the closed bolt silhouette.
+  /// Both pulses travel only on the outer contour; the lightning centre stays static.
+  void _drawVoltageEdgePulse(
+    Canvas canvas,
+    Path outline,
+    double s,
+    double progress,
+    Color edgeColor,
+    double intensity,
+  ) {
+    final strength = intensity.clamp(0.0, 1.0).toDouble();
+    if (strength <= .005) return;
+    final metrics = outline.computeMetrics().toList();
+    if (metrics.isEmpty || metrics.first.length <= 0) return;
+
+    final metric = metrics.first;
+    final length = metric.length;
+    final segmentLength = length * (.12 + .025 * strength);
+    for (var i = 0; i < 2; i++) {
+      final head = (progress * length + i * length * .5) % length;
+      final tail = head - segmentLength;
+      final segment = Path();
+      if (tail < 0) {
+        segment.addPath(
+          metric.extractPath(length + tail, length),
+          Offset.zero,
+        );
+        if (head > 0) {
+          segment.addPath(metric.extractPath(0, head), Offset.zero);
+        }
+      } else if (head > tail) {
+        segment.addPath(metric.extractPath(tail, head), Offset.zero);
+      }
+      if (segment.computeMetrics().isEmpty) continue;
+
+      final pulseStrength = i == 0 ? 1.0 : .58;
+      final alpha = pulseStrength * (.55 + .45 * strength);
+      _drawGlow(
+        canvas,
+        segment,
+        edgeColor,
+        s * .105,
+        s * .030,
+        .34 * alpha,
+      );
+      canvas.drawPath(
+        segment,
+        _stroke(s * .046, Colors.white.withValues(alpha: .62 * alpha)),
+      );
+      canvas.drawPath(
+        segment,
+        _stroke(s * .018, edgeColor.withValues(alpha: .96 * alpha)),
+      );
+    }
+  }
+
   Path _batterySilhouette(double s) => Path()
     ..addRRect(RRect.fromRectAndRadius(
       Rect.fromLTWH(s * .12, s * .26, s * .70, s * .48),
@@ -2632,166 +2688,106 @@ class _JexIconPainter extends CustomPainter {
       ..close();
   }
 
-  /// A deterministic eruption cycle: tapered flame tongues bend in the heat,
-  /// while teardrop-shaped lava fragments rise, drift, and cool out smoothly.
-  /// Harmonic motion is phase-compatible at the loop boundary; no dot confetti.
-  /// Flame tongues stay anchored at the thermal source, while the distinct embers
-  /// fall through the icon cavity in the same top-to-bottom motion family as Peltier snow.
-  void _drawThermalFlames(
-    Canvas canvas,
-    double s,
-    double phase,
-    Color hotColor,
-    double intensity, {
-    required bool thermometer,
-  }) {
-    final strength = intensity.clamp(0.0, 1.0).toDouble();
-    if (strength <= 0) return;
-
-    final lanes = thermometer
-        ? const <double>[-.23, -.12, .015, .15, .25]
-        : const <double>[-.34, -.23, -.11, .025, .16, .29, .36];
-    final baseline = s * (thermometer ? .935 : .885);
-    for (var i = 0; i < lanes.length; i++) {
-      final flicker = (.5 + .25 * math.sin(phase * 2 + i * 1.31) +
-              .25 * math.sin(phase * 3 - i * .77))
-          .clamp(0.0, 1.0)
-          .toDouble();
-      final sourceBias = thermometer ? .06 : 0.0;
-      final height = s * ((thermometer ? .25 : .19) +
-              (thermometer ? .19 : .16) * flicker) *
-          strength;
-      final width = s * ((thermometer ? .042 : .036) + (i % 3) * .006) *
-          strength;
-      final drift = s * .022 * math.sin(phase + i * 1.13);
-      final x = s * (.5 + lanes[i] + sourceBias * math.sin(i * .8));
-      final lean = s * .035 * math.sin(phase * 2 + i * 1.07);
-
-      final outer = _flameTonguePath(x + drift, baseline, height, width, lean: lean);
-      final middle = _flameTonguePath(
-        x + drift,
-        baseline,
-        height * .70,
-        width * .56,
-        lean: lean * .70,
-      );
-      final core = _flameTonguePath(
-        x + drift,
-        baseline,
-        height * .42,
-        width * .27,
-        lean: lean * .42,
-      );
-      final outerColor = Color.lerp(
-        hotColor,
-        const Color(0xFFFF641E),
-        flicker,
-      )!;
-      canvas.drawPath(outer, _fill(outerColor.withValues(alpha: .92 * strength)));
-      canvas.drawPath(
-        middle,
-        _fill(const Color(0xFFFF8A24).withValues(alpha: .96 * strength)),
-      );
-      canvas.drawPath(
-        core,
-        _fill(const Color(0xFFFFE18A).withValues(alpha: .90 * strength)),
-      );
-    }
-  }
-
-  Path _fallingFlameDropPath(double x, double y, double radius) => Path()
-    ..moveTo(x, y + radius * 1.30)
-    ..cubicTo(
-      x - radius * .94,
-      y + radius * .28,
-      x - radius * .88,
-      y - radius * .62,
-      x,
-      y - radius,
-    )
-    ..cubicTo(
-      x + radius * .88,
-      y - radius * .62,
-      x + radius * .94,
-      y + radius * .28,
-      x,
-      y + radius * 1.30,
-    )
-    ..close();
-
-  /// Three phase-locked ember drops travel from top to bottom and fade at both
-  /// ends of the clipped cavity. Their pointed tips face downward to contrast
-  /// with the upward-facing anchored flame tongues; no random dot particles.
-  /// Three phase-offset embers fall through a clipped icon cavity. Their trajectories
-  /// are periodic in each particle's own normalized fall phase and opacity reaches
-  /// zero at both ends, hiding the wrap instead of visibly teleporting bottom-to-top.
-  void _drawFallingFlameParticles(
+  /// Rounded oval embers burst from the thermal source and cool out smoothly.
+  /// Positions use deterministic periodic phases; no tapered flame tongues or droplet particles.
+  void _drawThermalBurstParticles(
     Canvas canvas,
     double s,
     double phase,
     Color hotColor,
     double intensity, {
     required Rect bounds,
+    required bool thermometer,
     Path? clipPath,
   }) {
     final strength = intensity.clamp(0.0, 1.0).toDouble();
     if (strength <= .005 || bounds.isEmpty) return;
 
     final cycle = (phase / (math.pi * 2)) % 1.0;
-    const count = 3;
+    final lanes = thermometer
+        ? const <double>[-.84, -.48, -.16, .16, .48]
+        : const <double>[-.90, -.62, -.34, .34, .62, .90];
+    final sourceX = thermometer ? s * .5 : bounds.center.dx;
+    final sourceY = thermometer ? s * .79 : bounds.bottom - s * .018;
+    final emberColor = Color.lerp(
+      hotColor,
+      const Color(0xFFFF7828),
+      .62,
+    )!;
+
     canvas.save();
     if (clipPath != null) canvas.clipPath(clipPath);
     canvas.clipRect(bounds);
-    for (var i = 0; i < count; i++) {
-      final fall = (cycle + i / count) % 1.0;
-      final boundaryFade = jexParticleBoundaryFade(
-        fall,
-        fadeIn: .18,
-        fadeOut: .22,
-      );
-      final alpha = boundaryFade * strength;
+    for (var i = 0; i < lanes.length; i++) {
+      final age = (cycle + i / lanes.length) % 1.0;
+      final lifeFade = jexParticleBoundaryFade(age, fadeIn: .14, fadeOut: .26);
+      final alpha = lifeFade * strength;
       if (alpha <= .01) continue;
 
-      final seed = i * 2.399963229728653;
-      final baseX = bounds.left + bounds.width * (.22 + i * .28);
-      // Integer harmonics stay phase-compatible at the loop boundary.
-      final drift = math.sin(fall * math.pi * 2 + seed) * .055 +
-          math.sin(fall * math.pi * 4 + seed * .37) * .020;
-      final x = baseX + drift * bounds.width;
-      final y = bounds.top + fall * bounds.height;
-      final radius = math.min(s * .072, bounds.width * .20).toDouble() *
-          (i.isEven ? 1.0 : .86);
+      final travel = jexMotionSmoothStep(age);
+      final lane = lanes[i];
+      final spreadX = thermometer ? lane * s * .095 : lane * bounds.width * .40;
+      final drift = math.sin(age * math.pi * 2 + i * .73) *
+          s *
+          (thermometer ? .009 : .012) *
+          (1.0 - .35 * travel);
+      final rise = thermometer
+          ? s * (.40 + (i % 3) * .065)
+          : bounds.height * (.48 + (i % 3) * .10);
+      final x = sourceX + spreadX * travel + drift;
+      final y = sourceY - rise * travel;
+      final sizePulse = .76 + .24 * math.sin(math.pi * age);
+      final radiusX = s *
+          (thermometer ? .043 : .048) *
+          sizePulse *
+          (i.isEven ? 1.0 : .88);
+      final radiusY = radiusX * (thermometer ? .64 : .60) * (i.isOdd ? 1.08 : 1.0);
+      final rotation = .28 * math.sin(age * math.pi * 2 + i * .71);
 
-      final tail = Path()
-        ..moveTo(x, y - radius * 2.0)
-        ..cubicTo(
-          x - radius * .42,
-          y - radius * 1.55,
-          x + radius * .24,
-          y - radius * 1.35,
-          x,
-          y - radius * 1.08,
-        );
-      canvas.drawPath(
-        tail,
-        _stroke(
-          math.max(s * .014, radius * .36).toDouble(),
-          const Color(0xFFFFA044).withValues(alpha: .46 * alpha),
+      canvas.save();
+      canvas.translate(x, y);
+      canvas.rotate(rotation);
+      canvas.drawOval(
+        Rect.fromCenter(
+          center: Offset.zero,
+          width: radiusX * 3.8,
+          height: radiusY * 4.0,
         ),
+        _fill(emberColor.withValues(alpha: .18 * alpha)),
       );
-
-      final drop = _fallingFlameDropPath(x, y, radius);
-      final bodyColor = Color.lerp(
-        hotColor,
-        const Color(0xFFFF922E),
-        .56,
-      )!;
-      canvas.drawPath(drop, _fill(bodyColor.withValues(alpha: .98 * alpha)));
-      final inner = _fallingFlameDropPath(x, y - radius * .08, radius * .40);
-      canvas.drawPath(
-        inner,
-        _fill(const Color(0xFFFFF1B3).withValues(alpha: .96 * alpha)),
+      canvas.drawOval(
+        Rect.fromCenter(
+          center: Offset.zero,
+          width: radiusX * 2.5,
+          height: radiusY * 2.6,
+        ),
+        _fill(emberColor.withValues(alpha: .92 * alpha)),
       );
+      canvas.drawOval(
+        Rect.fromCenter(
+          center: Offset.zero,
+          width: radiusX * 1.65,
+          height: radiusY * 1.75,
+        ),
+        _fill(const Color(0xFFFFA13D).withValues(alpha: .96 * alpha)),
+      );
+      canvas.drawOval(
+        Rect.fromCenter(
+          center: Offset.zero,
+          width: radiusX * .78,
+          height: radiusY * .92,
+        ),
+        _fill(const Color(0xFFFFEDB5).withValues(alpha: .98 * alpha)),
+      );
+      canvas.drawOval(
+        Rect.fromCenter(
+          center: Offset(-radiusX * .16, -radiusY * .18),
+          width: radiusX * .42,
+          height: radiusY * .48,
+        ),
+        _fill(Colors.white.withValues(alpha: .88 * alpha)),
+      );
+      canvas.restore();
     }
     canvas.restore();
   }
@@ -2944,9 +2940,8 @@ class _JexIconPainter extends CustomPainter {
     final angle = p * math.pi * 2;
     final pulse = math.sin(angle);
     final safeLevel = level.clamp(0.0, 1.0).toDouble();
-    final warningBlend = active
-        ? (.12 + .06 * (pulse + 1) / 2) * warningStrength
-        : 0.0;
+    // Keep thermal tint steady; only the existing 280 ms warning transition eases in/out.
+    final warningBlend = active ? .16 * warningStrength : 0.0;
     final mainColor = Color.lerp(color, const Color(0xFFFF5B55), warningBlend)!;
     // The semantic glyph colour and opacity never depend on ON/OFF state.
     const opacity = 1.0;
@@ -2964,16 +2959,6 @@ class _JexIconPainter extends CustomPainter {
           active ? .16 * warningStrength : 0.0,
         );
         canvas.drawPath(shell, _fill(mainColor.withValues(alpha: .16)));
-        if (active && warningStrength > .005) {
-          _drawThermalFlames(
-            canvas,
-            s,
-            angle,
-            jexThermalRed,
-            warningStrength,
-            thermometer: false,
-          );
-        }
         canvas.drawPath(shell, _stroke(s * .045, mainColor.withValues(alpha: opacity)));
         final inner = RRect.fromRectAndRadius(
           Rect.fromLTWH(s * .17, s * .31, s * .60, s * .38),
@@ -3011,41 +2996,28 @@ class _JexIconPainter extends CustomPainter {
             Rect.fromLTWH(inner.left, inner.bottom - fluidHeight, inner.width, fluidHeight),
             _fill(mainColor.withValues(alpha: .86)),
           );
-          final sheenWidth = inner.width * .18;
+          // Static bevel highlight: the old moving shine/idle scanline is intentionally removed.
           final sheenRect = Rect.fromLTWH(
-            inner.left - sheenWidth + (inner.width + sheenWidth * 2) * p,
+            inner.left + inner.width * .10,
             inner.bottom - fluidHeight,
-            sheenWidth,
+            inner.width * .075,
             fluidHeight,
           );
           canvas.drawRect(
             sheenRect,
-            Paint()
-              ..shader = LinearGradient(
-                colors: <Color>[
-                  Colors.transparent,
-                  mainColor.withValues(alpha: .36),
-                  Colors.transparent,
-                ],
-              ).createShader(sheenRect),
-          );
-        } else if (valueKnown) {
-          final idleGlintX = inner.left - s * .025 + (inner.width + s * .05) * p;
-          canvas.drawLine(
-            Offset(idleGlintX, inner.top + s * .035),
-            Offset(idleGlintX, inner.bottom - s * .035),
-            _stroke(s * .018, mainColor.withValues(alpha: .30 + .12 * (pulse + 1) / 2)),
+            _fill(Colors.white.withValues(alpha: .18)),
           );
         }
         canvas.restore();
         if (active && warningStrength > .005) {
-          _drawFallingFlameParticles(
+          _drawThermalBurstParticles(
             canvas,
             s,
             angle,
             jexThermalRed,
             warningStrength,
             bounds: inner.outerRect,
+            thermometer: false,
           );
         }
         break;
@@ -3062,16 +3034,6 @@ class _JexIconPainter extends CustomPainter {
           active ? .16 * warningStrength : 0.0,
         );
         canvas.drawPath(shell, _fill(mainColor.withValues(alpha: .16)));
-        if (active && warningStrength > .005) {
-          _drawThermalFlames(
-            canvas,
-            s,
-            angle,
-            jexThermalRed,
-            warningStrength,
-            thermometer: true,
-          );
-        }
         canvas.drawPath(shell, _stroke(s * .045, mainColor.withValues(alpha: opacity)));
         final tubeInner = RRect.fromRectAndRadius(
           Rect.fromLTWH(s * .455, s * .17, s * .09, s * .45),
@@ -3124,7 +3086,7 @@ class _JexIconPainter extends CustomPainter {
         canvas.drawCircle(
           Offset(cx, s * .775),
           bulbRadius,
-          _fill(mainColor.withValues(alpha: valueKnown ? .82 + .10 * pulse : .60)),
+          _fill(mainColor.withValues(alpha: valueKnown ? .90 : .60)),
         );
         canvas.drawCircle(
           Offset(cx - s * .018, s * .758),
@@ -3133,13 +3095,14 @@ class _JexIconPainter extends CustomPainter {
         );
         canvas.restore();
         if (active && warningStrength > .005) {
-          _drawFallingFlameParticles(
+          _drawThermalBurstParticles(
             canvas,
             s,
             angle,
             jexThermalRed,
             warningStrength,
-            bounds: Rect.fromLTWH(s * .37, s * .18, s * .26, s * .63),
+            bounds: Rect.fromLTWH(s * .36, s * .18, s * .28, s * .64),
+            thermometer: true,
             clipPath: shell,
           );
         }
@@ -3159,82 +3122,7 @@ class _JexIconPainter extends CustomPainter {
         canvas.drawPath(innerCore, _stroke(s * .012, mainColor.withValues(alpha: .74)));
         if (active) {
           _drawGlow(canvas, bolt, mainColor, s * .10, s * .035, .18);
-          final electricalSpine = Path()
-            ..moveTo(s * .535, s * .135)
-            ..lineTo(s * .425, s * .445)
-            ..lineTo(s * .515, s * .445)
-            ..lineTo(s * .455, s * .695)
-            ..lineTo(s * .645, s * .405)
-            ..lineTo(s * .535, s * .405)
-            ..lineTo(s * .595, s * .255)
-            ..close();
-
-          canvas.save();
-          canvas.clipPath(bolt);
-          canvas.drawPath(
-            electricalSpine,
-            _stroke(
-              s * .054,
-              Colors.white.withValues(alpha: .12 + .14 * safeLevel),
-            ),
-          );
-          final metric = electricalSpine.computeMetrics().first;
-          final segmentLength = metric.length * (.22 + .06 * safeLevel);
-          final head = (p * metric.length) % metric.length;
-          final tail = head - segmentLength;
-          final currentPaint = _stroke(
-            s * (.026 + .012 * safeLevel),
-            Colors.white.withValues(
-              alpha: .66 + .26 * (math.sin(angle) + 1) / 2,
-            ),
-          );
-          final corePaint = _stroke(
-            s * .012,
-            mainColor.withValues(alpha: .94),
-          );
-          if (tail < 0) {
-            final endSegment = metric.extractPath(
-              metric.length + tail,
-              metric.length,
-            );
-            canvas.drawPath(endSegment, currentPaint);
-            canvas.drawPath(endSegment, corePaint);
-            if (head > 0) {
-              final startSegment = metric.extractPath(0, head);
-              canvas.drawPath(startSegment, currentPaint);
-              canvas.drawPath(startSegment, corePaint);
-            }
-          } else {
-            final segment = metric.extractPath(tail, head);
-            canvas.drawPath(segment, currentPaint);
-            canvas.drawPath(segment, corePaint);
-          }
-          // Short side strikes ignite in staggered pulses and remain clipped to the bolt.
-          final strikeBranches = <Path>[
-            Path()
-              ..moveTo(s * .515, s * .305)
-              ..lineTo(s * .585, s * .335)
-              ..lineTo(s * .552, s * .375),
-            Path()
-              ..moveTo(s * .495, s * .515)
-              ..lineTo(s * .445, s * .555)
-              ..lineTo(s * .478, s * .595),
-          ];
-          for (var i = 0; i < strikeBranches.length; i++) {
-            final wave = (.5 + .5 * math.sin(angle * 2 + i * 1.9)).clamp(0.0, 1.0).toDouble();
-            final strikePower = wave * wave * (3.0 - 2.0 * wave);
-            if (strikePower > .01) {
-              canvas.drawPath(
-                strikeBranches[i],
-                _stroke(s * .020, Colors.white.withValues(alpha: .90 * strikePower * safeLevel)),
-              );
-              canvas.drawPath(
-                strikeBranches[i],
-                _stroke(s * .008, mainColor.withValues(alpha: .92 * strikePower)),
-              );
-            }
-          }
-          canvas.restore();
+          _drawVoltageEdgePulse(canvas, bolt, s, p, mainColor, safeLevel);
         }
         break;
 
@@ -6846,19 +6734,19 @@ void _handleAckLine(String line) {
               ),
             ),
             Padding(
-              // Symmetric insets center both lines across the full card while
-              // keeping the left status icon clear of the text.
+              // Reserve the icon lane on the left and align the whole text block to its start.
+              // A matching right inset keeps the block inside the same compact card bounds.
               padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 2),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     _notifyStateLabel(),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
+                    textAlign: TextAlign.start,
                     style: TextStyle(
                       color: color,
                       fontSize: 8.5,
@@ -6868,12 +6756,12 @@ void _handleAckLine(String line) {
                   ),
                   const SizedBox(height: 3),
                   Text(
-                    // Keep normal font size; long messages wrap to two centered lines.
+                    // Keep normal font size; long messages wrap to two left-aligned lines.
                     _professionalNotice(),
                     maxLines: 2,
                     softWrap: true,
                     overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
+                    textAlign: TextAlign.start,
                     style: TextStyle(
                       color: noticeTextColor,
                       fontSize: 11,
@@ -8314,7 +8202,7 @@ void _handleAckLine(String line) {
             const SizedBox(height: 2),
             SizedBox(
               width: double.infinity,
-              // Reserve enough vertical space for the centered two-line status card.
+              // Reserve enough vertical space for the responsive two-line status card.
               height: 48,
               child: _homeNotify(),
             ),
