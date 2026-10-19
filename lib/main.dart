@@ -2149,7 +2149,7 @@ class _JexIconPainter extends CustomPainter {
           );
           final sheenWidth = inner.width * .18;
           final sheenRect = Rect.fromLTWH(
-            inner.left + (inner.width - sheenWidth) * p,
+            inner.left - sheenWidth + (inner.width + sheenWidth * 2) * p,
             inner.bottom - fluidHeight,
             sheenWidth,
             fluidHeight,
@@ -2166,7 +2166,7 @@ class _JexIconPainter extends CustomPainter {
               ).createShader(sheenRect),
           );
         } else {
-          final idleGlintX = inner.left + inner.width * p;
+          final idleGlintX = inner.left - s * .025 + (inner.width + s * .05) * p;
           canvas.drawLine(
             Offset(idleGlintX, inner.top + s * .035),
             Offset(idleGlintX, inner.bottom - s * .035),
@@ -2408,11 +2408,14 @@ class _JexIconPainter extends CustomPainter {
           if (i == 0) wave.moveTo(x, y); else wave.lineTo(x, y);
         }
         canvas.drawPath(wave, _stroke(s * .058, mainColor.withValues(alpha: opacity)));
-        final dotX = s * (.12 + .76 * (active ? p : 0.0));
+        final dotX = active ? s * (-.06 + 1.12 * p) : s * .12;
         final dotY = cy + math.sin(ledAngle - ((dotX / s - .12) / .76) * math.pi * 3) *
             s * (.10 + .045 * strength);
+        canvas.save();
+        canvas.clipRect(Rect.fromLTWH(0, 0, s, s));
         canvas.drawCircle(Offset(dotX, dotY), s * .045,
             _fill(mainColor.withValues(alpha: .82 + .14 * strength)));
+        canvas.restore();
         break;
 
       case JexAnimatedIconKind.bluetooth:
