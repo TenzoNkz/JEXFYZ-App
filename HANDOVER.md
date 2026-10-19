@@ -1,17 +1,14 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Reconciled against live GitHub on 2026-10-19 (Asia/Jakarta). Build #99 is the latest successful release for source bc1498d5b3db7621ee18f5ca6f021e6013c73b09; a separate static/unknown-state redraw after that release is not tested or packaged. CHAT_TRANSFER.md is the final handoff snapshot.
-
-Refreshed against live `main` on 2026-10-19 (Asia/Jakarta). The newest verified artifact is Build #95 from `cd691b874ddb0e454ba69891a3e0da3001df892f`, with 99/99 Flutter tests passing and all guarded release checks verified. The current animation smoothness follow-up is newer source and is **NOT RUN / NOT RELEASED**. Exact final HEAD/tree/source/doc hashes are in `CHAT_TRANSFER.md`; no App Build or Firmware/device operation was performed by this source task.
+Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #100 is the latest successful release for source 51bea70b2ca17f285bf35c3e547dc44c70f26d59. Notification copy/localization source changes are newer and NOT RUN / NOT RELEASED. CHAT_TRANSFER.md is the final handoff snapshot.
 
 ## Latest successful build and current source boundary
 
-- Latest successful artifact: Build #99 / [Actions run 39230380636](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39230380636), exact source bc1498d5b3db7621ee18f5ca6f021e6013c73b09. All 21 workflow steps passed, analyzer passed with 25 info-level findings/no errors or warnings, 102/102 Flutter tests passed, APK signing/certificate and source ZIP integrity passed, and Release/tag/source equality was independently verified. Native JUnit tasks were NO-SOURCE.
-- APK asset 655835412 SHA-256 06a3e4edc7ff911c66cda8b152d4f2acbc11f41b2ccd2f009aa966510aa89096; source ZIP asset 655835414 SHA-256 490ef913574a38fd47644422aa52b11f09c2d47895ba4f3e21db466e47aa8229.
-- New source/test blobs after Build #99: lib/main.dart 6a008c5c3e5ba7118e948e0b1f36277c01e73529; test/widget_test.dart 94dad7a7506fbcbeea63f300ea25b7f32299d471. They are NOT RUN / NOT RELEASED and not in Build #99.
-- The redraw targets the disconnected/static appearance: battery recess plus neutral thermal motif; thermometer recess, graduations and bulb bezel; voltage inset face; bolder Adaptive arrows; stronger faceted snowflake; Fan bearing plus blade highlights; speedometer bezel plus 11 ticks. Unknown battery/temperature state never receives a fabricated level. Peltier flakes and speed needle remain appropriately gated.
-- Build #99's tested smoothness implementation remains intact: periodic falling particle phases/fades, 26 dp glyph in the original 38×38 tile, decoupled Peltier crystal motion, exactly three Fan blades/three fixed ribbons, and integrated phase-preserving Fan speed retarget.
-- The new static-state source and tests have not been analyzed/tested in this execution. Real-phone appearance, frame-time smoothness, BLE/PWM and cooling/safety behavior remain UNVERIFIED. No App Build, Firmware/BIN/Firebase/OTA/flash/device operation was performed.
+- Latest successful release is Build #100 / https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39237262140, source 51bea70b2ca17f285bf35c3e547dc44c70f26d59. All 21 workflow steps passed; 103/103 Flutter tests passed; analyzer exited 0 with 25 info-level findings and no errors/warnings; Android gate, APK signature/certificate, corresponding source ZIP and downloaded asset verification passed. Native JUnit steps were NO-SOURCE.
+- Build #100 APK ID 655957943, SHA-256 a59c0a37b2025ad2b250bd4354b887379d96658e9f7757692691fa23b7b4d0a2. Source ZIP ID 655957946, SHA-256 e60c4705097009d843b624bf8f0f989770a76aba6fdfbdd8d2159d77f98890f1.
+- Notification text/localization follow-up after Build #100 is source-only / NOT RUN / NOT RELEASED. Blobs: lib/main.dart 931b7e2d074b1006622b0f83cc6db3f8ce43a400; lib/app_settings.dart e91ecd2a00eafdec3f681daabb74fd49fcd25bf2; test/widget_test.dart ff419072b6eca1f3dc2c932b6290e3d664f75c17.
+- The change normalizes Home status bodies, maps known safety reasons, hides raw internal tokens, classifies failed/unconfirmed commands in both languages, and shortens category labels. New regression tests are not run. Build #100 remains latest and does not include this source change.
+- No App Build/release, Firmware/BIN/Firebase/OTA/flash/device operation occurred. Request @Thinking Eksekusi Build App! separately before validation/release.
 
 ## Current approved icon behavior
 
