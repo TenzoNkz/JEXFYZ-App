@@ -472,7 +472,7 @@ void main() {
     expect(painter, contains('final warningBlend ='));
     // Soft shared-core glow is part of the approved finish; silhouettes must still stay integrated.
     expect(painter, contains('void _drawGlow('));
-    expect(painter, contains('_drawThermalFlames'));
+    expect(painter, contains('_drawThermalBurstParticles'));
     expect(painter, contains('_drawFrostParticles'));
     expect(painter, contains('_drawFanAirflow'));
     expect(painter, isNot(contains('_drawFanBlade')));
@@ -859,7 +859,7 @@ void main() {
     expect(normalizerIndex, greaterThan(otaFormatterIndex));
   });
 
-  test('Home Notify card removes connection badge and keeps centered two-line copy', () {
+  test('Home Notify card removes connection badge and keeps left-aligned two-line copy', () {
     final source = File('lib/main.dart').readAsStringSync();
     final start = source.indexOf('Widget _homeNotify() {');
     final end = source.indexOf('Widget _card({required Widget child', start);
@@ -870,7 +870,9 @@ void main() {
     expect(card, contains('BoxConstraints(minHeight: 48)'));
     expect(card, contains('maxLines: 2'));
     expect(card, contains('softWrap: true'));
-    expect(card, contains('textAlign: TextAlign.center'));
+    expect(card, contains('textAlign: TextAlign.start'));
+    expect(card, contains('crossAxisAlignment: CrossAxisAlignment.start'));
+    expect(card, isNot(contains('textAlign: TextAlign.center')));
     expect(card, contains('Stack('));
     expect(card, isNot(contains('FittedBox(')));
     expect(card, isNot(contains('_notifyStatusLabel()')));
@@ -1519,7 +1521,7 @@ void main() {
     expect(painter, contains('oldDelegate.valueKnown != valueKnown'));
     expect(painter, contains('oldDelegate.fanCoasting != fanCoasting'));
     expect(painter, isNot(contains('final idleBreath')));
-    expect(painter, contains('_drawThermalFlames'));
+    expect(painter, contains('_drawThermalBurstParticles'));
     expect(painter, contains('_drawFrostParticles'));
     expect(painter, contains('_drawFanAirflow'));
     expect(painter, contains('const tickCount = 11'));
