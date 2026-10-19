@@ -133,6 +133,36 @@ void main() {
     }
   });
 
+  test('Core indicator family shares a luminous core with distinct telemetry motion', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final painterStart = source.indexOf('class _JexIconPainter extends CustomPainter {');
+    final painterEnd = source.indexOf('const MethodChannel securityChannel', painterStart);
+    expect(painterStart, isNonNegative);
+    expect(painterEnd, greaterThan(painterStart));
+    final painter = source.substring(painterStart, painterEnd);
+
+    for (final feature in [
+      'void _drawGlow(',
+      '_drawGlow(canvas, bolt, mainColor',
+      '_drawGlow(canvas, rotor, mainColor',
+      '_drawGlow(canvas, crystal, mainColor',
+      '_drawGlow(canvas, needle, mainColor',
+      'final arcPath = Path()..addArc(orbit, start, sweep);',
+      'final activeArc = Path()..addArc(gauge, start, sweep * safeLevel);',
+    ]) {
+      expect(painter, contains(feature), reason: 'Missing shared icon finish: $feature');
+    }
+
+    expect(painter, contains('void _drawFallingFlameParticles('));
+    expect(painter, contains('Path _fallingFlameDropPath('));
+    expect(painter, contains('for (var i = 0; i < 3; i++)'));
+    expect(source, contains('JexAnimatedIconKind.adaptive'));
+    expect(source, contains('JexAnimatedIconKind.peltier'));
+    expect(source, contains('JexAnimatedIconKind.speed'));
+    expect(source, contains('jexIconAnimationPermitted('));
+    expect(source, contains('valueKnown'));
+  });
+
   test('Thermal icons use falling fire, Peltier uses falling snow, and indicators have distinct signatures', () {
     final source = File('lib/main.dart').readAsStringSync();
     final shellStart = source.indexOf('Path _hotsideSilhouette(double s)');
