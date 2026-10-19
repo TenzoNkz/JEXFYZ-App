@@ -1,27 +1,31 @@
 # JE X FYZ / JE Cooler — Current Handover
 
+Refreshed against live `main` on 2026-10-19 (Asia/Jakarta). The newest verified artifact is Build #92 from `6610fecb3e47d9941cbf96043b7da3b2a869753b`, with 98/98 Flutter tests passing and all guarded release checks verified. This task adds a newer seven-icon source/test follow-up; it is **NOT RUN / NOT RELEASED**. Exact post-write HEAD/tree/source/doc hashes belong in `CHAT_TRANSFER.md`. No App Build or Firmware/device operation is authorized by this command.
+
 Reconciled against live GitHub on 2026-10-19 (Asia/Jakarta), with execution baseline main HEAD `8ffcabb6668f0a095eabb0d0e051520fcae29310`. The latest successful verified release is Build #91 from `e9f6d8ca3ea936a1c4c05b2fbbd228dda5e2cdd1`; current post-build source/test changes and exact final HEAD are recorded in `CHAT_TRANSFER.md`. Build #91 passed 97/97 Flutter tests and all required release gates. The present small source follow-up is NOT RUN / NOT RELEASED; no App Build or Firmware/device operation was performed.
 
 Reconciled against live GitHub on 2026-10-19 (Asia/Jakarta), with execution baseline main HEAD `8ffcabb6668f0a095eabb0d0e051520fcae29310`. Latest successful verified release is Build #91 from `e9f6d8ca3ea936a1c4c05b2fbbd228dda5e2cdd1`; its 97/97 Flutter tests and release/signing/tag gates passed. Current main includes a small generic-action glyph follow-up after Build #91; it is SOURCE IMPLEMENTED / NOT RUN / NOT RELEASED. Current post-write state and source/test hashes are recorded in `CHAT_TRANSFER.md`. No App Build or Firmware/device operation was performed.
 
 ## Latest successful build and current source boundary
 
-- Latest successful verified artifact is **Build #91** / [Actions run `39207456720`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39207456720), source commit `e9f6d8ca3ea936a1c4c05b2fbbd228dda5e2cdd1`. All 21 gates completed, **97/97 Flutter tests passed**, analyzer passed with 23 informational deprecation findings, and APK signing/certificate, source ZIP, downloaded asset digests, Release metadata and `jexfyz-latest` tag target all matched. Native JUnit remained NO-SOURCE.
-- Build #91 APK asset `655397774`, 54,636,635 bytes, SHA-256 `8a111df269a5093dd3b7de9e086ab0c2fddda4bc5f1c71a1cf237daa7542863c`. Corresponding source ZIP asset `655397777`, 2,857,331 bytes, SHA-256 `78ccbbdeaf3dfd9353f652c09e4e6ddcf2aa83ce77b771ad1822078a5a541ed6`.
-- The Home indicator motion approved in this discussion is already present in the Build #91 source. This execution adds a small source follow-up: generic navigation/settings/action glyphs stop looping continuously and become static; Home telemetry indicators continue to use their dedicated state-gated painter. A regression source-contract test accompanies the change. New blobs: `lib/jex_animated_glyph.dart` `b37fc4e0807c874b2f01db00c7f606810cb5deca`; `test/widget_test.dart` `5f1c5345f6ea1e0114c72360414362d3667be276`.
-- The follow-up source/test update is **NOT RUN / NOT RELEASED** until separately authorized Build App validation. Do not report new test/analyzer success based only on Build #91, because that run predates this follow-up. Build #91 remains the latest successful artifact and exactly matches its historical Release/tag source.
-- No App Build/release, Firmware compile/edit, BIN read/write, Firebase change, OTA, flash or physical device operation is part of `@Thinking Eksekusi Full!`. The guarded workflow and all release gates remain unchanged.
+- Latest successful verified artifact remains **Build #92** / [Actions run `39211726896`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39211726896), source commit `6610fecb3e47d9941cbf96043b7da3b2a869753b`. All 21 workflow steps passed; **98/98 Flutter tests passed**, analysis passed with 23 informational deprecations, Android configured gate, obfuscated APK, required V1/V2/V3 signing/certificate, corresponding-source ZIP, downloaded asset hashes, and Release/tag/source equality passed. Native JUnit tasks were NO-SOURCE.
+- Build #92 APK: asset `655482761`, 54,636,635 bytes, SHA-256 `ee3ce9cb9697b8bcabf4da829fc64c16524bbe914eb83901f5d21c855d706926`. Source ZIP: asset `655482764`, 2,857,021 bytes, SHA-256 `7ec969d092638790dd36b5d71c758b68cdc11a0e8db2bdfb390c812f541e677a`.
+- **Current follow-up after Build #92:** `lib/main.dart` changes thermal warning to include falling fire particles inside Battery/Hotside; converts Fan from five narrow blades to exactly three broad swept blades; and adds a consistent, restrained luminous-core effect to Battery/Hotside, Voltage, Adaptive, Peltier, Fan, and the Fan Speed gauge. The six-branch snow crystal, two-arrow Adaptive motion, Voltage spine/branch pulse, PWM gauge state gates and fixed three airflow ribbons remain distinct.
+- Source/test blobs: `lib/main.dart` `18f0a4d11948c7d584e8eeff5fd88eb6230d17e8`; `test/widget_test.dart` `ab0862470846455465b65ec294d33d39c07aac62`. Regression contracts now cover falling fire, exactly three rotor blades, and the shared luminous-core style. They have **NOT RUN**.
+- Follow-up state: **SOURCE IMPLEMENTED / NOT RUN / NOT RELEASED**. Build #92 remains the latest successful APK and does not contain this follow-up. No Dart analysis, Flutter tests, App Build/release, firmware/BIN/Firebase/OTA/flash or device operation was performed in this Full execution.
 
-## Approved animation behavior
+## Approved seven-icon behavior
 
-- Industrial Premium, balanced geometric silhouettes; Precise movement responds to telemetry/status changes, not arbitrary perpetual loops.
-- Hotside/Battery: tapered molten-lava layers and three rising/fading teardrop fragments, 280 ms warning transition; existing thresholds/semantic colors unchanged.
-- Voltage: closed lightning silhouette with staggered inner branch strikes; 5V red, 9V green, 12V blue.
-- Adaptive: two directional arcs with restrained halo; Peltier: six-branch crystal/falling branched flakes/faceted center.
-- Fan: five swept rotor blades, layered hub and exactly three airflow ribbons fixed behind the rotor; only rotor angular speed follows existing voltage/PWM policy. Fan Speed: upper-half gauge, smooth PWM retarget; unknown/disconnected state hides the needle. OFF outputs remain static except one permitted connected Fan coast-down.
-- BLE disconnection stops/resets custom icon controllers; unknown sensors/outputs do not become fabricated zero/OFF states. Bluetooth remains static and communicates connection through semantic colour.
-- Generic settings/navigation/action glyphs are static because they are not live indicators. The native Floating Monitor remains letters-only B/H/V/A/P/F, with F = Fan Speed; values follow telemetry and unknown values remain `--`. Replacing the overlay labels with pictograms is not included in this patch.
-
+- **Battery Temperature:** recognizable battery shell and temperature level; warning state adds anchored heat tongues and three pointed ember particles falling inside the battery cavity, fading in and out.
+- **Hotside Temperature:** continuous thermometer contour and live temperature column; warning state adds falling embers clipped to the thermometer body and a restrained thermal halo. Existing configured threshold is unchanged.
+- **Voltage:** lightning bolt with luminous core, pulsed current along its closed spine and staggered internal branch strikes; 5V red, 9V green, 12V blue.
+- **Adaptive:** two opposite arrowheads on separate arcs rotate together when authoritative Adaptive state is ON; OFF remains full-colour and static.
+- **Peltier:** six-branch snowflake/crystal with faceted core and falling branched snowflakes behind it. State/intensity policy remains unchanged.
+- **Fan:** exactly three broad swept blades, layered hub, smooth phase rotation according to existing voltage/PWM policy, and exactly three fixed airflow ribbons behind it. The airflow does not change shape/count/colour with PWM; only the rotor changes speed.
+- **Fan Speed:** upper-half gauge and smooth retargeting to known PWM. OFF maps to the established left endpoint, 100% to right; unknown/disconnected values hide the needle.
+- Generic navigation/settings glyphs remain static. Bluetooth remains static and indicates state through semantic colour. BLE disconnect stops/resets telemetry-driven icon animation.
+- Floating Monitor is still letter-only B/H/V/A/P/F (F = Fan Speed); replacing those letters with pictograms requires a separate design/layout approval. All values remain firmware-telemetry-derived; no fabricated OFF or 0 values.
+- Visual preview, physical-screen motion, live BLE/PWM response and thermal/safety behavior are **UNVERIFIED** until separately validated. Only `@Thinking Eksekusi Build App!` authorizes App analyzer/test/build/release workflow.
 
 
 ## FPS retirement and current Floating Monitor
