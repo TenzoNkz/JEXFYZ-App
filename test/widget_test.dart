@@ -144,10 +144,15 @@ void main() {
       'void _drawSnowflake(',
       'final rotor = _fanSilhouette(s, angle)',
       'final needleAngle = start + sweep * safeLevel',
+      'final warningBlend = active',
+      'warningStrength > .005',
       'Connection status is represented by colour, not Bluetooth-icon motion.',
     ]) {
       expect(painter, contains(effect), reason: 'Missing refined effect: $effect');
     }
+    expect(source, contains('late final AnimationController warningTransitionController;'));
+    expect(source, contains('warningTransitionController.duration = const Duration(milliseconds: 280)'));
+    expect(source, contains('_retargetWarningLevel(widget.connected && widget.warning)'));
     expect(painter, isNot(contains('_adaptiveLoop(s, angle)')));
     expect(painter, contains('inner.left - sheenWidth + (inner.width + sheenWidth * 2) * p'));
     expect(painter, contains('final dotX = active ? s * (-.06 + 1.12 * p) : s * .12;'));
