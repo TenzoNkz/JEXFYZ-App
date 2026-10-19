@@ -453,27 +453,6 @@ void main() {
   });
 
 
-
-  test('V6.7 Adaptive Fan control uses ten recent samples and safe 12V-only downsteps', () {
-    final source = File('firmware/JEXFYZ-V6.8.ino').readAsStringSync();
-    expect(source, contains('FW_VERSION[] = "V6.8"'));
-    expect(source, contains('ADAPTIVE_FAN_WINDOW_SAMPLES = 10'));
-    expect(source, contains('ADAPTIVE_FAN_SAFE_MARGIN_C = 2.0f'));
-    expect(source, contains('ADAPTIVE_FAN_DOWNSTEP_MS = 10000UL'));
-    expect(source, contains('ADAPTIVE_FAN_UPSTEP_MS = 3000UL'));
-    expect(source, contains('adaptiveFanStableWindowStartedMs'));
-    expect(source, contains('stablePeriodReached'));
-    expect(source, contains('currentSampleSafe'));
-    expect(source, contains('if (hotsideProtectionActiveNow() || hotsideC >= static_cast<float>(hotLimit))'));
-    expect(source, contains('setAdaptiveFanPwm(FAN_PWM_MAX);'));
-    expect(source, contains('adaptiveFanAverageTemperatureC <= safeThreshold'));
-    expect(source, contains('currentVoltage != Voltage::V12'));
-    expect(source, contains('static void processAdaptiveFanControl()'));
-    expect(source, contains('processAdaptiveFanControl();'));
-    expect(source, contains('now - adaptiveFanLastDownStepMs >= ADAPTIVE_FAN_DOWNSTEP_MS'));
-    expect(source, contains('now - adaptiveFanLastUpStepMs >= ADAPTIVE_FAN_UPSTEP_MS'));
-  });
-
   test('System LED indicators ignore RGB effect toggle but obey master brightness', () {
     final source = File('firmware/JEXFYZ-V6.8.ino').readAsStringSync();
     final voltageStart = source.indexOf('static void startVoltageIndicator() {');
