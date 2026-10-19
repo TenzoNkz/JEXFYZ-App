@@ -1,80 +1,78 @@
 # JE X FYZ / JE Cooler — CHAT TRANSFER SNAPSHOT
 
-Refreshed after Home STATUS / NOTIFY bilingual copy, OTA summary sanitization and centered responsive-card source changes on 2026-10-19 (Asia/Jakarta). This is the canonical boot snapshot. The pre-transfer HEAD/tree below describes live main immediately before this final transfer write. This file is written last and does not self-reference its future commit/blob; fetch final HEAD/tree/blob after committing.
+Refreshed after recovering the approved Home NOTIFY alignment and Battery/Hotside/Voltage animation scope on 2026-10-19 (Asia/Jakarta). This is the canonical boot snapshot. Pre-transfer HEAD/tree below are live evidence immediately before this final transfer write; the transfer blob cannot self-reference its future hash.
 
-## 1. Authority, repository roles and command protocol
+## 1. Authority, scope and command protocol
 
-- Canonical editable repository: TenzoNkz/JEXFYZ-App, branch main. Continue directly on main; do not create branches/PRs unless explicitly requested.
-- Pre-transfer HEAD: `eef8a5c1b4a28cef06ebd9b87a12e1b4df49777f`. Parent: `05dcca182e3eb11473c2df733b7a9410a5d5e94c`. Tree: `eef8a5c1b4a28cef06ebd9b87a12e1b4df49777f`.
-- Artifact-only repository: TenzoNkz/JEXFYZ-Firmware must contain exactly JEXFYZ.cpp.bin. Last inspected blob dca6a1267762152519f6d2889e4f0adf46fd8803, 1,457,008 bytes. Only tree metadata was inspected; the payload was not read and source-to-BIN provenance is UNVERIFIED.
-- Commands: @Thinking Diskusi! is read-only; @Thinking Eksekusi Full! permits scoped App source/tests/docs/audit/commit but not App Build/Firmware/device actions; @Thinking Eksekusi Build App! alone authorizes the official App build/QC/release pipeline; @Thinking Chat Stuck! recovers the authorized task without widening scope. Retired aliases: @Thinking Build App!, @Thinking Eksekusi & Build App!, and standalone @Thinking Eksekusi!.
-- Build workflow remains .github/workflows/jexfyz-app-build-trigger.yml, blob 9dc1e61ba49f19cad4edbb99a832d5333d9f0f12. It is guarded to issues.opened/reopened with repository owner/title/body token only. No push/PR/manual bypass.
-- Preserve Android Gradle versionName "Telegram @horizontalzzz". User compiles Firmware. No firmware, BIN, Firebase, OTA, flash, or physical-device operations are authorized under Eksekusi Full.
-- Current approved scope is Home STATUS / NOTIFY bilingual copy polish and card layout: remove the separate connection badge; retain `NOTIFY • category`; center the heading/body; support natural one/two-line body text at readable size; localize known safety/command/OTA outcomes; and prevent raw reason/OTA diagnostic tokens from reaching the card. Source/tests are committed after Build #100. Flutter/Dart tests and analyzer are NOT RUN because the execution environment has no Flutter/Dart executables. No Build App is authorized by `Eksekusi Full`; Build #100 remains the latest successful release.
+- Canonical editable repository: TenzoNkz/JEXFYZ-App, branch main. Work directly on main; do not create branches/PRs unless explicitly requested.
+- Pre-transfer HEAD: 49773d3acce176dd8bf88b7b9b686288d774ffca. Parent: ca9384ae29cf2b006ce956181f69d1e466a8498b. Tree: 6eb08808770eadbc0aa84f160b8d34cab9271fa9.
+- Commands: Diskusi is read-only. Eksekusi Full permits scoped App source/tests/docs/audit/commit only; it does not authorize App Build, Firmware compile, BIN, Firebase, OTA, flash or device operations. Eksekusi Build App is the sole end-to-end App build/QC/release authorization. Chat Stuck recovers the latest valid authorized operation from evidence and never broadens scope or blindly retries.
+- The combined user command was handled as a scoped Full execution with recovery: inspect actual source and test state first, resume only the approved task, do not start a build.
+- The approved visual scope is: Battery/Hotside overheat effects replaced by oval ember bursts; Voltage central electrical spine/inner strikes replaced by outer-contour edge pulses; Home NOTIFY left-aligned and without CONNECTED/DISCONNECTED badge, with up to two readable lines. Adaptive, Peltier, Fan and Fan Speed are explicitly out of animation-change scope.
+- Preserve semantic colours and telemetry/state authority. Do not alter BLE/protocol, warning thresholds, firmware safety predicates, control behavior or unknown-state rules.
+- Preserve Android Gradle versionName "Telegram @horizontalzzz". The App repository owns all source, tests and project memory. Firmware artifact repository is BIN-only.
 
-## 2. Latest verified App release
+## 2. Current live App repository and source fingerprints
 
-- Latest successful released artifact: Build #100 / Actions run 39237262140, exact packaged source commit 51bea70b2ca17f285bf35c3e547dc44c70f26d59.
-- All 21 workflow steps passed. Analyzer exited 0 with 25 info-level findings and no errors/warnings. Flutter test result: 103/103 passed. APK signature/certificate, corresponding source ZIP, downloaded asset digests, and Release/tag/source equality passed. Native JUnit tasks were NO-SOURCE.
-- APK asset 655957943, 54,718,555 bytes, SHA-256 a59c0a37b2025ad2b250bd4354b887379d96658e9f7757692691fa23b7b4d0a2.
-- Corresponding source ZIP asset 655957946, 2,862,476 bytes, SHA-256 e60c4705097009d843b624bf8f0f989770a76aba6fdfbdd8d2159d77f98890f1.
-- Release jexfyz-latest and Release metadata match Build #100 source 51bea70b2ca17f285bf35c3e547dc44c70f26d59. Do not manually move the tag.
+- Current HEAD before this transfer write: 49773d3acce176dd8bf88b7b9b686288d774ffca; recursive tree 6eb08808770eadbc0aa84f160b8d34cab9271fa9, 67 entries (49 blobs / 18 trees), not truncated. Five branches, zero open PRs.
+- Current source implementation is already present in commit 8c12bb22e919e987aed3f11505242b94596a87f4 (redesign of oval thermal bursts and Voltage edge pulses). This recovery found no need to duplicate or reapply the functional patch.
+- lib/main.dart blob: 7e09a3d28b4efe24bdced858db4274cf70806284.
+- lib/app_settings.dart blob: 8f228000d38d73038c06f569c052b1af601288a5.
+- test/widget_test.dart blob: 5a82cf79e6c5c40fc34489ce90cf1200cf9faccb.
+- APP_NOTES.md blob after reconciling stale animation descriptions: 7603f2f2a9922efa846fb49496315229bcc641a5.
+- DESIGN_NOTES.md: 15b71fa19705d936b15c4caef97f2d7f18565357.
+- PROJECT_STATE.md: c6e76733fbab517f9e91c97840e7ea1f4da49b22.
+- HANDOVER.md: 6e54be9431b748676eb2e9e561a99494b94e9fa5.
+- MEMORY_INDEX.md: cb833ee5cdd8ad6028326b2dce40f957c521d6c0.
+- CHANGELOG.md: ea2ff744b8b58826d77f75d44896f1f43d28353b.
+- APP_BUILD_REPORT.md: fdbbb3d9507eea2b858c3b622c63126ceb82a9a2.
+- CHAT_RULES.md: 58f48fc129fe89e4c563709d04febda451da7de3.
+- BUILD_NOTES.md: 304ad67924638f9218beb0697053df69d30e8bc2.
+- Workflow .github/workflows/jexfyz-app-build-trigger.yml: 9dc1e61ba49f19cad4edbb99a832d5333d9f0f12. Guarded issue-open/reopen workflow; do not add push/PR/manual bypass.
 
-## 3. Current post-Build-#100 STATUS / NOTIFY copy and centered two-line card — NOT RUN / NOT RELEASED
+## 3. Latest verified App release — Build #106
 
-- Current source: `lib/main.dart` blob `b0d3a18f79b903bc8574d03a95cbc134b9234f20`.
-- Localization table: `lib/app_settings.dart` blob `8f228000d38d73038c06f569c052b1af601288a5`.
-- Regression tests: `test/widget_test.dart` blob `df1b400b46cbe1e1e79c95e0cf537fbe4d7efd98`.
-- The prior raw `PELTIER_SAFETY_LATCH` suffix is mapped to localized safety guidance. Unknown reason codes fall back to generic English/Indonesian copy; internal identifiers remain diagnostic-only.
-- The separate CONNECTED/DISCONNECTED badge is removed. The card keeps a `NOTIFY • category` heading, centers heading/body, grows with content, and wraps long body text to at most two lines without shrinking the font. Short messages remain one line.
-- Common unconfirmed-command, connection, and OTA messages use concise bilingual copy. Raw OTA envelopes and legacy result identifiers reach the dedicated localized OTA formatter before generic normalization; raw ERROR/CODE/event identifiers are not user-facing.
-- Regression assertions cover bilingual safety/command copy, OTA summaries, removal of the badge/FittedBox, centered two-line layout, and OTA-formatting order. Flutter/Dart tests and analyzer have NOT RUN because this environment has no Flutter/Dart executable.
-- These changes are newer than Build #100, are NOT RELEASED, and are not present in the current APK. No App Build/release, Firmware/BIN, Firebase production metadata, physical OTA, flashing, or device action occurred.
+- Actions run 39279938461 completed successfully with source commit 9f90cf6063ee7786613f8b5dfa1c6b0412d89638. Analyzer exited 0 with 25 info-level findings and no errors/warnings; 108 Flutter tests passed; configured Android gate, APK signature/certificate, source ZIP integrity and downloaded asset checks passed.
+- APK asset ID 656702702, 54,734,939 bytes, SHA-256 bab332a4312c628178e384a88d513cf8546ff15ab4b4e3f3becf2e70b10830cc.
+- Corresponding source ZIP asset ID 656702729, 2,866,720 bytes, SHA-256 0bb86c4e6bd7d3cb7a6bb894658bd707acee48bac106fc5227f8adcba584ec98.
+- Release jexfyz-latest and tag target Build #106 source 9f90cf6063ee7786613f8b5dfa1c6b0412d89638. Build #106 does not contain the current source follow-up below.
 
-## Historical: icon-state redraw included in Build #100
+## 4. Current approved source follow-up — NOT RUN / NOT RELEASED
 
-- Build #100 validated the icon redraw using `lib/main.dart` blob `6a008c5c3e5ba7118e948e0b1f36277c01e73529` and `test/widget_test.dart` blob `94dad7a7506fbcbeea63f300ea25b7f32299d471`; its test result was 103/103 Flutter tests passed.
-- Battery's unknown pose has a recessed window without fabricated fill; Hotside has a recessed tube/graduations/bulb bezel; Voltage has an inset bolt; Adaptive has reinforced arrows/orbit; Peltier has the faceted crystal and no frozen flakes while inactive; Fan has three blades and three airflow ribbons; Fan Speed has 11 ticks and hides its needle when PWM is unknown.
-- The current Notify changes are separate from that released icon redraw. Their new source/tests have NOT RUN / NOT RELEASED and do not appear in Build #100.
+### Battery Temperature
+- Existing exact warning predicate remains ≥40°C. The old animated tapered tongues, falling teardrop fragments, moving fill sheen and idle scanline are removed from the current source effect.
+- The replacement draws deterministic, clipped oval ember bursts from the lower battery chamber: warm orange body, bright yellow-white core, restrained halo, short pulse/spread/rise, then shrink/fade.
+- The 280 ms warning transition and all semantic colour/telemetry rules remain unchanged.
 
-## 4. Icon motion and static-state source validated by Build #100
+### Hotside Temperature
+- Existing configured Hotside Limit and firmware safety predicate remain unchanged.
+- Replace the old animated tapered tongues, falling teardrops and pulsing bulb with taller clipped oval ember bursts rising/spreading from the bulb inside the thermometer silhouette. Static tube/bulb/gauge geometry remains recognizable.
 
-- Build #99 validated the smoothness source: phase-periodic falling particles and boundary fades, 26 dp Home glyph, Peltier crystal motion decoupled from snowfall, and Fan angular velocity with integrated smoothstep and accumulated-phase preservation.
-- Build #100 validated the static/unknown-state icon redraw against source main.dart blob 6a008c5c3e5ba7118e948e0b1f36277c01e73529 and test/widget_test.dart blob 94dad7a7506fbcbeea63f300ea25b7f32299d471 with 103/103 Flutter tests.
-- Seven static icon poses have stronger definition for OFF/unknown data; Fan retains exactly three blades and three fixed airflow ribbons; Fan Speed needle remains hidden for unknown PWM. This note does not claim real-device animation smoothness.
-- The current Notify copy follow-up is separate from those releases; it has not been tested or packaged.
-- Real-device appearance, frame timing, BLE/PWM runtime and physical cooling/safety remain UNVERIFIED.
+### Voltage
+- Remove the moving central electrical spine and internal branch strikes. Bolt face and inner luminous core remain static.
+- Two phase-offset light pulses follow the closed outer bolt contour with a white core, semantic-colour edge and soft halo. Preserve existing 5V red / 9V green / 12V blue mapping and current visual intensity classes (25% / 50% / 100%); this is not a real current measurement.
 
-## 5. Source and canonical documentation hashes immediately before this transfer write
+### Home NOTIFY and dashboard layout
+- Keep the title/category and message left-aligned; do not restore center alignment. Keep the separate CONNECTED/DISCONNECTED badge removed.
+- Short copy remains one line; longer copy wraps to at most two readable lines without FittedBox shrink-to-fit.
+- The current Home metric row is 41 dp and the NOTIFY slot/container minimum is 48 dp. Keep these dimensions for now: they reflect evidence-based overflow repairs after runs #102/#103/#105. Do not revert blindly to 44 dp without separately proving that the dashboard no longer overflows.
+- Regression source contracts now check oval thermal particles, absence of old animated thermal painters/drop paths, Voltage edge-only pulses, left-aligned badge-free NOTIFY, and the existing icon signatures.
+- This recovery re-read current source and test contracts. Source-level checks confirmed these requested elements exist. There is no Flutter or Dart executable in the current execution environment; tests/analyzer for the current source have NOT RUN. Do not claim they pass.
 
-- `lib/main.dart`: `b0d3a18f79b903bc8574d03a95cbc134b9234f20`
-- `lib/app_settings.dart`: `8f228000d38d73038c06f569c052b1af601288a5`
-- `test/widget_test.dart`: `df1b400b46cbe1e1e79c95e0cf537fbe4d7efd98`
-- `DESIGN_NOTES.md`: `b97721fa12e25b9e8f3d3ef8815958cd1a7d9aab`
-- `APP_NOTES.md`: `e2f994c5f4ffc955e1e1c38360e071731d2cbd2b`
-- `PROJECT_STATE.md`: `de70df543076769795d50b9e4ec3ff5313caeb85`
-- `MEMORY_INDEX.md`: `78ee6e116ef65790bb9abd6ed0cc26ad0c00c387`
-- `HANDOVER.md`: `38118b691a4b3fa1f2d081078abc3bcdf83816c1`
-- `BUILD_NOTES.md`: `0635faeb83aade3adf37e2a8643c0b8141718d08`
-- `APP_BUILD_REPORT.md`: `b688de51bf1d9c068bd80a63c912e033be845e03`
-- `CHANGELOG.md`: `3542b8d0d94f152261a8a59ead0a78c148c0623b`
-- `README.md`: `a68b24c4cda137901193644b7f6ff1173ac15f4d`
-- `CHAT_RULES.md`: `58f48fc129fe89e4c563709d04febda451da7de3`
-- Build workflow: `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`
-- This transfer blob intentionally is not listed because its future blob SHA cannot be self-referenced.
+## 5. Build recovery evidence and next gate
 
-## 6. Exact next actions and validation gates
+- Build #101 failed Dart analysis due to an unescaped test interpolation. #102 and #103 failed dashboard overflow checks (17 px then 14 px). #104 was cancelled during APK build/concurrency contention. #105 showed 106 tests passed and two failures (3 px dashboard overflow and a stale minimum-height source assertion). Fixes included 41 dp Home metric rows and a 48 dp NOTIFY slot/container; Build #106 passed against that older source.
+- No new Build App was triggered in this recovery. Do not blindly retry. When the user issues @Thinking Eksekusi Build App!, validate the current intended main source through the official guarded workflow, then verify test/analyzer results, signing, APK/source ZIP, asset digests and tag/Release/source equality. Only that command authorizes the build.
+- Build #106 remains the latest successful released artifact. The current left-aligned NOTIFY and oval-ember/Voltage-edge-pulse code is newer than Build #106 and is NOT RUN / NOT RELEASED.
 
-1. Re-fetch live main HEAD/tree and source/test/document hashes before the next action.
-2. The current STATUS/NOTIFY copy, layout and OTA-formatting changes are committed but NOT RUN / NOT RELEASED. Flutter tests and analyzer still require actual execution.
-3. Build #100 remains the latest successful release, source commit `51bea70b2ca17f285bf35c3e547dc44c70f26d59`; it does not contain the current Notify changes.
-4. Only after separate @Thinking Eksekusi Build App! authorization, run the official guarded workflow against intended main source and verify tests, analyzer, Android/APK/signature/source-ZIP/download checks and Release/tag/source equality.
-5. Do not start App Build under Eksekusi Full. Keep Firmware/BIN/Firebase/OTA/flash/device untouched unless separately authorized.
+## 6. Repository split and Firmware boundary
 
-## 7. Audit / operations not performed
+- Active App-repository sketch: firmware/JEXFYZ-V6.7.ino, blob efe6eaa62c178ab536fb68c06a310e54826cbaf2; project memory identifies embedded FW_VERSION as V6.7. Historical user-reported compile/update is not independently verified here.
+- TenzoNkz/JEXFYZ-Firmware recursive tree contains exactly JEXFYZ.cpp.bin, blob dca6a1267762152519f6d2889e4f0adf46fd8803, size 1,457,008 bytes. BIN payload was not read; source-to-BIN provenance remains UNVERIFIED.
+- No Firmware source/BIN, Firebase production metadata, OTA/flash/device operation was performed.
 
-- Inspected live source, localization table, current tests, canonical App/design/state/handover notes, workflow, and latest Build #100 report before editing.
-- Committed Home NOTIFY card cleanup (remove connected/disconnected badge, retain `NOTIFY • category`, horizontally centered one/two-line body, content-driven height), bilingual copy refinements, explicit accepted-setting messages, dedicated OTA envelope formatting, and regression source-contract assertions directly to `main`.
-- Flutter/Dart tests and analyzer were NOT RUN because no Flutter/Dart executable is installed in this environment. Static GitHub content checks confirmed badge removal, absence of `FittedBox` in `_homeNotify`, two-line/center properties, updated test expectations, and OTA formatting order; this is not test-pass evidence.
-- No App Build/release, APK build, release-tag movement, Firmware edit/compile, BIN payload read/write, Firebase metadata change, OTA, flash or device operation occurred.
-- Build #100 remains the latest successful artifact and does not contain these notification source/layout changes. Actual Flutter layout, language switching, visible OTA messages, and command classification remain unverified until tests are executed and the new APK is reviewed on-device.
+## 7. Audit result
+
+- RECOVERED: the approved source changes were already committed; no duplicate functional patch or build was needed.
+- Reconciled APP_NOTES.md, whose Home animation section still incorrectly described tapered flames as current, to the approved oval-burst/Voltage-edge contract; clarified that Build #100 validated the earlier static-state redraw while this post-Build-#106 source is still untested/unreleased.
+- No Flutter/Dart tests or analyzer run; no App Build/release run. Physical-screen appearance, animation feel/frame pacing, current-source runtime wrapping, live BLE/PWM and hardware safety behavior remain UNVERIFIED.
