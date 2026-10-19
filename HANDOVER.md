@@ -1,13 +1,14 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #100 is the latest successful release for source 51bea70b2ca17f285bf35c3e547dc44c70f26d59. Notification copy/localization source changes are newer and NOT RUN / NOT RELEASED. CHAT_TRANSFER.md is the final handoff snapshot.
+Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #100 remains the latest successful release for source 51bea70b2ca17f285bf35c3e547dc44c70f26d59. Newer bilingual Home NOTIFY copy/layout source is NOT RUN / NOT RELEASED. CHAT_TRANSFER.md is the final handoff snapshot.
 
 ## Latest successful build and current source boundary
 
 - Latest successful release is Build #100 / https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39237262140, source 51bea70b2ca17f285bf35c3e547dc44c70f26d59. All 21 workflow steps passed; 103/103 Flutter tests passed; analyzer exited 0 with 25 info-level findings and no errors/warnings; Android gate, APK signature/certificate, corresponding source ZIP and downloaded asset verification passed. Native JUnit steps were NO-SOURCE.
 - Build #100 APK ID 655957943, SHA-256 a59c0a37b2025ad2b250bd4354b887379d96658e9f7757692691fa23b7b4d0a2. Source ZIP ID 655957946, SHA-256 e60c4705097009d843b624bf8f0f989770a76aba6fdfbdd8d2159d77f98890f1.
-- Home STATUS/NOTIFY localization follow-up after Build #100—including raw OTA diagnostic suppression—is source-only / NOT RUN / NOT RELEASED. Blobs: lib/main.dart 51b52042b6429ae2e4a4f2508685cd8326af68c8; lib/app_settings.dart e91ecd2a00eafdec3f681daabb74fd49fcd25bf2; test/widget_test.dart 9d80171a12af084748b88fcdd06d3d6b3cf65e1f.
-- The change normalizes Home status bodies, maps known safety reasons, hides raw internal and OTA failure tokens, classifies failed/unconfirmed commands in English/Indonesian, and shortens category labels. OTA failure summaries retain only a localized category and recognized stage. Regression tests/analyzer have NOT RUN. Build #100 remains latest and does not include this source change.
+- Home STATUS/NOTIFY copy and layout after Build #100 is source-only / NOT RUN / NOT RELEASED. Current blobs: `lib/main.dart` `5282fb226c818b8f4601ec89953c0c47ff4861e9`; `lib/app_settings.dart` `562e42c4dc1ee2ac0c15b3f7211e55fa7b11bac6`; `test/widget_test.dart` `0ebbf0cd03f041a44afa314d66b77278e26c646e`.
+- The card removes the CONNECTED/DISCONNECTED badge, preserves a `NOTIFY • category` heading, and shows centered copy across one or two natural lines without reducing font size. Copy mapping suppresses known/unknown reason IDs and OTA protocol tokens, normalizes unconfirmed-command errors, and improves English/Indonesian connection and OTA messages. OTA envelopes use the dedicated formatter first.
+- Flutter/Dart tests and analyzer have NOT RUN; this environment has no Flutter/Dart executable. Build #100 does not include these changes. No App Build/release, Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 - No App Build/release, Firmware/BIN/Firebase/OTA/flash/device operation occurred. Request @Thinking Eksekusi Build App! separately before validation/release.
 
 ## Current approved icon behavior
