@@ -280,12 +280,12 @@ class JexText {
       AppLanguage.indonesia: 'Pembaruan Firmware',
     },
     'bluetoothConnected': {
-      AppLanguage.english: 'Bluetooth Connected',
-      AppLanguage.indonesia: 'Bluetooth Terhubung',
+      AppLanguage.english: 'Bluetooth connected.',
+      AppLanguage.indonesia: 'Bluetooth terhubung.',
     },
     'bluetoothDisconnected': {
-      AppLanguage.english: 'Bluetooth Disconnected',
-      AppLanguage.indonesia: 'Bluetooth Terputus',
+      AppLanguage.english: 'Bluetooth disconnected.',
+      AppLanguage.indonesia: 'Bluetooth terputus.',
     },
     'bluetooth': {
       AppLanguage.english: 'Bluetooth',
@@ -889,12 +889,12 @@ class JexText {
       AppLanguage.indonesia: 'Pindai',
     },
     'connectionReady': {
-      AppLanguage.english: 'Connection ready.',
-      AppLanguage.indonesia: 'Koneksi siap.',
+      AppLanguage.english: 'Connection established.',
+      AppLanguage.indonesia: 'Koneksi berhasil dibuat.',
     },
     'connectionAccessRequired': {
-      AppLanguage.english: 'Connection access required.',
-      AppLanguage.indonesia: 'Izin koneksi diperlukan.',
+      AppLanguage.english: 'Bluetooth permission is required to connect.',
+      AppLanguage.indonesia: 'Izin Bluetooth diperlukan untuk menghubungkan perangkat.',
     },
     'deviceNotFound': {
       AppLanguage.english: 'JE X FYZ was not found nearby.',
@@ -1117,8 +1117,8 @@ class JexText {
       AppLanguage.indonesia: 'Perangkat',
     },
     'connectionUnavailable': {
-      AppLanguage.english: 'Connection unavailable.',
-      AppLanguage.indonesia: 'Koneksi tidak tersedia.',
+      AppLanguage.english: 'Unable to connect right now.',
+      AppLanguage.indonesia: 'Koneksi belum tersedia.',
     },
     'bluetoothOn': {
       AppLanguage.english: 'Bluetooth ON',
@@ -1193,8 +1193,8 @@ class JexText {
       AppLanguage.indonesia: 'Floating Monitor tidak dapat dijalankan.',
     },
     'synchronizingDevice': {
-      AppLanguage.english: 'Synchronizing device...',
-      AppLanguage.indonesia: 'Menyinkronkan perangkat...',
+      AppLanguage.english: 'Syncing device…',
+      AppLanguage.indonesia: 'Menyinkronkan perangkat…',
     },
     'validatingTemperature': {
       AppLanguage.english: 'Validating temperature...',
@@ -1245,28 +1245,28 @@ class JexText {
       AppLanguage.indonesia: 'LED nonaktif.',
     },
     'modeUpdated': {
-      AppLanguage.english: 'Mode updated.',
-      AppLanguage.indonesia: 'Mode diperbarui.',
+      AppLanguage.english: 'LED mode updated.',
+      AppLanguage.indonesia: 'Mode LED diperbarui.',
     },
     'brightnessUpdated': {
-      AppLanguage.english: 'Brightness updated.',
-      AppLanguage.indonesia: 'Kecerahan diperbarui.',
+      AppLanguage.english: 'LED brightness updated.',
+      AppLanguage.indonesia: 'Kecerahan LED diperbarui.',
     },
     'colorUpdated': {
-      AppLanguage.english: 'Color updated.',
-      AppLanguage.indonesia: 'Warna diperbarui.',
+      AppLanguage.english: 'LED color updated.',
+      AppLanguage.indonesia: 'Warna LED diperbarui.',
     },
     'temperatureReset': {
-      AppLanguage.english: 'Temperature settings reset.',
-      AppLanguage.indonesia: 'Pengaturan suhu diatur ulang.',
+      AppLanguage.english: 'Temperature settings have been reset.',
+      AppLanguage.indonesia: 'Pengaturan suhu berhasil diatur ulang.',
     },
     'commandNotConfirmed': {
-      AppLanguage.english: 'Device did not confirm the command.',
-      AppLanguage.indonesia: 'Perangkat tidak mengonfirmasi perintah.',
+      AppLanguage.english: 'Action not confirmed. Check device status.',
+      AppLanguage.indonesia: 'Tindakan belum terkonfirmasi. Periksa status perangkat.',
     },
     'commandFailed': {
-      AppLanguage.english: 'Command failed.',
-      AppLanguage.indonesia: 'Perintah gagal.',
+      AppLanguage.english: 'Action failed. Check device status and try again.',
+      AppLanguage.indonesia: 'Tindakan gagal. Periksa status perangkat, lalu coba lagi.',
     },
     'firmware': {
       AppLanguage.english: 'Firmware',
