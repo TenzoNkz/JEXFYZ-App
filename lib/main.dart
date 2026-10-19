@@ -2032,6 +2032,16 @@ class _JexIconPainter extends CustomPainter {
     ..lineTo(s * .545, s * .37)
     ..close();
 
+  Path _boltInnerCore(double s) => Path()
+    ..moveTo(s * .535, s * .165)
+    ..lineTo(s * .365, s * .485)
+    ..lineTo(s * .495, s * .485)
+    ..lineTo(s * .445, s * .805)
+    ..lineTo(s * .685, s * .405)
+    ..lineTo(s * .555, s * .405)
+    ..lineTo(s * .605, s * .285)
+    ..close();
+
   void _drawAdaptiveArrowHead(Canvas canvas, Offset tip, double direction, double length, Color color) {
     final wingA = Offset(
       tip.dx - math.cos(direction - .72) * length,
@@ -2057,10 +2067,16 @@ class _JexIconPainter extends CustomPainter {
     final orbit = Rect.fromCircle(center: center, radius: radius);
     final wave = (math.sin(phase * 2) + 1) / 2;
     final flowStrength = strength.clamp(0.0, 1.0).toDouble();
+    // Recessed track keeps the OFF/disconnected pose intentional rather than empty.
     canvas.drawCircle(
       center,
       radius,
-      _stroke(s * .028, color.withValues(alpha: .14 + .08 * flowStrength)),
+      _stroke(s * .052, const Color(0xFF090C12).withValues(alpha: .76)),
+    );
+    canvas.drawCircle(
+      center,
+      radius,
+      _stroke(s * .028, color.withValues(alpha: .24 + .08 * flowStrength)),
     );
     for (var i = 0; i < 2; i++) {
       final start = phase + i * math.pi;
@@ -2071,17 +2087,23 @@ class _JexIconPainter extends CustomPainter {
       // Each directional arrow has a soft luminous core, consistent with the thermal
       // and electrical glyphs without changing the rotating two-arrow silhouette.
       final arcPath = Path()..addArc(orbit, start, sweep);
-      _drawGlow(canvas, arcPath, tint, s * .14, s * .045, .22 * flowStrength);
+      if (flowStrength > .01) {
+        _drawGlow(canvas, arcPath, tint, s * .12, s * .035, .16 * flowStrength);
+      }
+      canvas.drawArc(
+        orbit, start, sweep, false,
+        _stroke(s * .115, const Color(0xFF090C12).withValues(alpha: .90)),
+      );
       canvas.drawArc(orbit, start, sweep, false,
-          _stroke(s * .105, tint.withValues(alpha: .08 + .06 * flowStrength)));
-      canvas.drawArc(orbit, start, sweep, false, _stroke(s * .065, tint));
+          _stroke(s * .085, tint.withValues(alpha: .24 + .08 * flowStrength)));
+      canvas.drawArc(orbit, start, sweep, false, _stroke(s * .070, tint));
       canvas.drawArc(orbit, start, sweep, false,
-          _stroke(s * .016, Colors.white.withValues(alpha: .12 + .30 * flowStrength)));
+          _stroke(s * .022, Colors.white.withValues(alpha: .22 + .26 * flowStrength)));
       final end = start + sweep;
       final tip = Offset(center.dx + math.cos(end) * radius,
           center.dy + math.sin(end) * radius);
       _drawAdaptiveArrowHead(canvas, tip, end + math.pi / 2,
-          s * (.105 + .018 * wave), tint);
+          s * (.135 + .010 * wave), tint);
     }
   }
 
@@ -2133,6 +2155,19 @@ class _JexIconPainter extends CustomPainter {
     }
     path.addOval(Rect.fromCircle(center: Offset(cx, cy), radius: s * .090));
     return path;
+  }
+
+  Path _fanBladeHighlightPath(double s, double angle, int bladeIndex) {
+    final cx = s / 2;
+    final cy = s / 2;
+    final a = angle + bladeIndex * math.pi * 2 / 3;
+    final p0 = _fanPoint(-s * .006, -s * .095, a, cx, cy);
+    final p1 = _fanPoint(-s * .045, -s * .165, a, cx, cy);
+    final p2 = _fanPoint(-s * .047, -s * .255, a, cx, cy);
+    final p3 = _fanPoint(s * .012, -s * .335, a, cx, cy);
+    return Path()
+      ..moveTo(p0.dx, p0.dy)
+      ..cubicTo(p1.dx, p1.dy, p2.dx, p2.dy, p3.dx, p3.dy);
   }
 
   Path _flameTonguePath(
@@ -2368,10 +2403,11 @@ class _JexIconPainter extends CustomPainter {
     required double particleCount,
     required bool moving,
   }) {
+    final strength = intensity.clamp(0.0, 1.0).toDouble();
+    if (!moving || strength <= .005) return;
     final count = particleCount.round().clamp(3, 7).toInt();
     final cx = s / 2;
-    final strength = intensity.clamp(0.0, 1.0).toDouble();
-    final cycle = moving ? (phase / (math.pi * 2)) % 1.0 : 0.0;
+    final cycle = (phase / (math.pi * 2)) % 1.0;
     const lanes = <double>[-.31, -.20, -.08, .08, .20, .31, 0.0];
 
     // Particles start/end outside the clipping region; edge fades conceal the wrap.
@@ -2486,15 +2522,16 @@ class _JexIconPainter extends CustomPainter {
     switch (kind) {
       case JexAnimatedIconKind.battery:
         final shell = _batterySilhouette(s);
-        _drawGlow(
-          canvas,
-          shell,
-          jexThermalRed,
-          s * .12,
-          s * .045,
-          .24 * warningStrength,
+        canvas.drawPath(
+          shell.shift(Offset(s * .014, s * .018)),
+          _fill(const Color(0xFF060A10).withValues(alpha: .72)),
         );
-        canvas.drawPath(shell, _fill(mainColor.withValues(alpha: .10)));
+        canvas.drawPath(shell, _stroke(s * .092, Colors.white.withValues(alpha: .16)));
+        _drawGlow(
+          canvas, shell, jexThermalRed, s * .10, s * .035,
+          active ? .16 * warningStrength : 0.0,
+        );
+        canvas.drawPath(shell, _fill(mainColor.withValues(alpha: .16)));
         if (active && warningStrength > .005) {
           _drawThermalFlames(
             canvas,
@@ -2510,10 +2547,34 @@ class _JexIconPainter extends CustomPainter {
           Rect.fromLTWH(s * .17, s * .31, s * .60, s * .38),
           Radius.circular(s * .055),
         );
+        canvas.drawRRect(inner, _fill(const Color(0xFF09121A).withValues(alpha: .92)));
+        canvas.drawRRect(inner, _stroke(s * .022, mainColor.withValues(alpha: .74)));
         canvas.save();
         canvas.clipRRect(inner);
+        if (!valueKnown) {
+          // A quiet thermal emblem completes the unknown-state battery without
+          // showing a level or using warning red when no temperature is available.
+          for (var i = 0; i < 3; i++) {
+            final centerX = inner.left + inner.width * (.25 + i * .25);
+            final flame = _flameTonguePath(
+              centerX,
+              inner.bottom - s * .018,
+              s * (.125 + (i == 1 ? .025 : 0.0)),
+              s * .038,
+              lean: (i - 1) * s * .010,
+            );
+            canvas.drawPath(
+              flame,
+              _fill(mainColor.withValues(alpha: i == 1 ? .42 : .30)),
+            );
+            canvas.drawPath(
+              flame,
+              _stroke(s * .008, Colors.white.withValues(alpha: .28)),
+            );
+          }
+        }
         final fluidHeight = inner.height * safeLevel;
-        if (fluidHeight > 0) {
+        if (valueKnown && fluidHeight > 0) {
           canvas.drawRect(
             Rect.fromLTWH(inner.left, inner.bottom - fluidHeight, inner.width, fluidHeight),
             _fill(mainColor.withValues(alpha: .86)),
@@ -2536,7 +2597,7 @@ class _JexIconPainter extends CustomPainter {
                 ],
               ).createShader(sheenRect),
           );
-        } else {
+        } else if (valueKnown) {
           final idleGlintX = inner.left - s * .025 + (inner.width + s * .05) * p;
           canvas.drawLine(
             Offset(idleGlintX, inner.top + s * .035),
@@ -2559,15 +2620,16 @@ class _JexIconPainter extends CustomPainter {
 
       case JexAnimatedIconKind.hotside:
         final shell = _hotsideSilhouette(s);
-        _drawGlow(
-          canvas,
-          shell,
-          jexThermalRed,
-          s * .12,
-          s * .045,
-          .24 * warningStrength,
+        canvas.drawPath(
+          shell.shift(Offset(s * .010, s * .012)),
+          _fill(const Color(0xFF060A10).withValues(alpha: .72)),
         );
-        canvas.drawPath(shell, _fill(mainColor.withValues(alpha: .10)));
+        canvas.drawPath(shell, _stroke(s * .092, Colors.white.withValues(alpha: .16)));
+        _drawGlow(
+          canvas, shell, jexThermalRed, s * .10, s * .035,
+          active ? .16 * warningStrength : 0.0,
+        );
+        canvas.drawPath(shell, _fill(mainColor.withValues(alpha: .16)));
         if (active && warningStrength > .005) {
           _drawThermalFlames(
             canvas,
@@ -2585,10 +2647,29 @@ class _JexIconPainter extends CustomPainter {
         );
         canvas.save();
         canvas.clipPath(shell);
+        canvas.drawRRect(tubeInner, _fill(const Color(0xFF09121A).withValues(alpha: .94)));
+        canvas.drawRRect(
+          tubeInner,
+          _stroke(s * .020, mainColor.withValues(alpha: .74)),
+        );
+        // Fixed instrument graduations remain visible in ON, OFF and unknown poses.
+        for (var i = 0; i < 3; i++) {
+          final tickY = s * (.30 + i * .105);
+          canvas.drawLine(
+            Offset(s * .355, tickY),
+            Offset(s * .405, tickY),
+            _stroke(s * .025, mainColor.withValues(alpha: .72)),
+          );
+          canvas.drawLine(
+            Offset(s * .365, tickY - s * .012),
+            Offset(s * .397, tickY - s * .012),
+            _stroke(s * .008, Colors.white.withValues(alpha: .32)),
+          );
+        }
         canvas.save();
         canvas.clipRRect(tubeInner);
         final fluidHeight = tubeInner.height * safeLevel;
-        if (fluidHeight > 0) {
+        if (valueKnown && fluidHeight > 0) {
           canvas.drawRect(
             Rect.fromLTWH(tubeInner.left, tubeInner.bottom - fluidHeight, tubeInner.width, fluidHeight),
             _fill(mainColor.withValues(alpha: .90)),
@@ -2602,15 +2683,21 @@ class _JexIconPainter extends CustomPainter {
           canvas.drawRect(sheenRect, _fill(Colors.white.withValues(alpha: .28)));
         }
         canvas.restore();
-        final bulbRadius = s * (.035 + .048 * safeLevel);
+        final bulbRadius = s * (valueKnown ? (.040 + .035 * safeLevel) : .055);
         canvas.drawCircle(
-          Offset(cx, s * .775), bulbRadius,
-          _fill(mainColor.withValues(alpha: .72 + .12 * (pulse + 1) / 2)),
+          Offset(cx, s * .775),
+          s * .100,
+          _stroke(s * .020, mainColor.withValues(alpha: .52)),
+        );
+        canvas.drawCircle(
+          Offset(cx, s * .775),
+          bulbRadius,
+          _fill(mainColor.withValues(alpha: valueKnown ? .82 + .10 * pulse : .60)),
         );
         canvas.drawCircle(
           Offset(cx - s * .018, s * .758),
           s * .021,
-          _fill(Colors.white.withValues(alpha: .40)),
+          _fill(Colors.white.withValues(alpha: valueKnown ? .52 : .40)),
         );
         canvas.restore();
         if (active && warningStrength > .005) {
@@ -2628,16 +2715,18 @@ class _JexIconPainter extends CustomPainter {
 
       case JexAnimatedIconKind.voltage:
         final bolt = _bolt(s);
-        _drawGlow(canvas, bolt, mainColor, s * .13, s * .05, .34);
         canvas.drawPath(
-          bolt,
-          _fill(mainColor.withValues(alpha: .58 + .36 * safeLevel)),
+          bolt.shift(Offset(s * .020, s * .018)),
+          _fill(const Color(0xFF070B12).withValues(alpha: .74)),
         );
-        canvas.drawPath(
-          bolt,
-          _stroke(s * .018, mainColor.withValues(alpha: opacity)),
-        );
+        canvas.drawPath(bolt, _fill(mainColor.withValues(alpha: .64 + .24 * safeLevel)));
+        canvas.drawPath(bolt, _stroke(s * .045, Colors.white.withValues(alpha: .18)));
+        canvas.drawPath(bolt, _stroke(s * .022, mainColor.withValues(alpha: opacity)));
+        final innerCore = _boltInnerCore(s);
+        canvas.drawPath(innerCore, _fill(Colors.white.withValues(alpha: .20)));
+        canvas.drawPath(innerCore, _stroke(s * .012, mainColor.withValues(alpha: .74)));
         if (active) {
+          _drawGlow(canvas, bolt, mainColor, s * .10, s * .035, .18);
           final electricalSpine = Path()
             ..moveTo(s * .535, s * .135)
             ..lineTo(s * .425, s * .445)
@@ -2725,7 +2814,7 @@ class _JexIconPainter extends CustomPainter {
         final crystal = _crystalSilhouette(s);
         final frostPower =
             (frostIntensityOverride ?? .5).clamp(0.0, 1.0).toDouble();
-        final crystalWidth = s * (.042 + .006 * frostPower);
+        final crystalWidth = s * (.058 + .006 * frostPower);
         final snowPhase = active ? angle : 0.0;
         // Keep the primary snowflake anchored; a tiny periodic rock does not compete
         // with the more legible falling particles or turn into a fast spinning star.
@@ -2748,16 +2837,17 @@ class _JexIconPainter extends CustomPainter {
           canvas.translate(-cx, -cy);
         }
         _drawGlow(
-          canvas,
-          crystal,
-          mainColor,
-          crystalWidth * 1.9,
-          s * .035,
-          .28 * frostPower,
+          canvas, crystal, mainColor, crystalWidth * 1.7, s * .028,
+          active ? .20 * frostPower : 0.0,
         );
         canvas.drawPath(
           crystal,
-          _stroke(crystalWidth, mainColor.withValues(alpha: opacity)),
+          _stroke(crystalWidth * 1.60, const Color(0xFF071019).withValues(alpha: .92)),
+        );
+        canvas.drawPath(crystal, _stroke(crystalWidth, mainColor.withValues(alpha: .98)));
+        canvas.drawPath(
+          crystal,
+          _stroke(crystalWidth * .34, Colors.white.withValues(alpha: active ? .38 : .24)),
         );
         for (var i = 0; i < 6; i++) {
           final a = -math.pi / 2 + i * math.pi / 3;
@@ -2782,8 +2872,19 @@ class _JexIconPainter extends CustomPainter {
           ..lineTo(cx, cy + s * .052)
           ..lineTo(cx - s * .038, cy)
           ..close();
-        canvas.drawPath(core, _fill(Colors.white.withValues(alpha: .24 + .28 * frostPower)));
-        canvas.drawPath(core, _stroke(s * .010, mainColor.withValues(alpha: .90)));
+        canvas.drawPath(
+          core,
+          _fill(Color.lerp(mainColor, const Color(0xFF0C2633), .32)!
+              .withValues(alpha: active ? .86 : .72)),
+        );
+        canvas.drawPath(core, _stroke(s * .020, Colors.white.withValues(alpha: .76)));
+        final coreFacet = Path()
+          ..moveTo(cx, cy - s * .030)
+          ..lineTo(cx + s * .020, cy - s * .004)
+          ..lineTo(cx, cy + s * .020)
+          ..lineTo(cx - s * .020, cy - s * .004)
+          ..close();
+        canvas.drawPath(coreFacet, _fill(Colors.white.withValues(alpha: .46)));
         canvas.restore();
         break;
 
@@ -2794,11 +2895,29 @@ class _JexIconPainter extends CustomPainter {
         if (airflowProgress > .005) {
           _drawFanAirflow(canvas, s, mainColor, opacity: airflowProgress);
         }
+        canvas.drawCircle(
+          Offset(cx, cy), s * .405,
+          _stroke(s * .042, const Color(0xFF070B12).withValues(alpha: .92)),
+        );
+        canvas.drawCircle(
+          Offset(cx, cy), s * .392,
+          _stroke(s * .020, mainColor.withValues(alpha: .46)),
+        );
         final rotor = _fanSilhouette(s, angle);
-        _drawGlow(canvas, rotor, mainColor, s * .10, s * .035, .32 * strength);
-        canvas.drawPath(rotor, _fill(mainColor.withValues(alpha: .96)));
-        canvas.drawPath(rotor, _stroke(s * .012, mainColor.withValues(alpha: .88)));
+        if (active || fanCoasting) {
+          _drawGlow(canvas, rotor, mainColor, s * .075, s * .025, .18 * strength);
+        }
+        canvas.drawPath(rotor, _fill(mainColor.withValues(alpha: .98)));
+        canvas.drawPath(rotor, _stroke(s * .022, const Color(0xFF071019).withValues(alpha: .90)));
+        canvas.drawPath(rotor, _stroke(s * .012, mainColor.withValues(alpha: .94)));
+        for (var blade = 0; blade < 3; blade++) {
+          canvas.drawPath(
+            _fanBladeHighlightPath(s, angle, blade),
+            _stroke(s * .022, Colors.white.withValues(alpha: active ? .42 : .28)),
+          );
+        }
         final hubColor = Color.lerp(mainColor, const Color(0xFF101319), .48)!;
+        canvas.drawCircle(Offset(cx, cy), s * .096, _fill(const Color(0xFF070B12)));
         canvas.drawCircle(Offset(cx, cy), s * .084, _fill(hubColor));
         canvas.drawCircle(
           Offset(cx, cy),
@@ -2810,6 +2929,11 @@ class _JexIconPainter extends CustomPainter {
           s * .026,
           _fill(mainColor.withValues(alpha: .95)),
         );
+        canvas.drawCircle(
+          Offset(cx - s * .010, cy - s * .010),
+          s * .008,
+          _fill(Colors.white.withValues(alpha: .76)),
+        );
         break;
 
       case JexAnimatedIconKind.speed:
@@ -2818,29 +2942,37 @@ class _JexIconPainter extends CustomPainter {
         const start = math.pi;
         const sweep = math.pi;
         canvas.drawArc(
-          gauge,
-          start,
-          sweep,
-          false,
-          _stroke(s * .045, mainColor.withValues(alpha: .62)),
+          gauge, start, sweep, false,
+          _stroke(s * .090, const Color(0xFF070B12).withValues(alpha: .96)),
         );
-        const tickCount = 9;
+        canvas.drawArc(gauge, start, sweep, false,
+            _stroke(s * .055, mainColor.withValues(alpha: .30)));
+        canvas.drawArc(gauge, start, sweep, false,
+            _stroke(s * .022, Colors.white.withValues(alpha: .18)));
+        const tickCount = 11;
         for (var i = 0; i < tickCount; i++) {
           final t = i / (tickCount - 1);
           final tickAngle = start + sweep * t;
+          final majorTick = i.isEven || i == tickCount - 1;
           final inner = Offset(
-            cx + math.cos(tickAngle) * s * .285,
-            cy + math.sin(tickAngle) * s * .285,
+            cx + math.cos(tickAngle) * s * (majorTick ? .270 : .292),
+            cy + math.sin(tickAngle) * s * (majorTick ? .270 : .292),
           );
           final outer = Offset(
-            cx + math.cos(tickAngle) * s * .325,
-            cy + math.sin(tickAngle) * s * .325,
+            cx + math.cos(tickAngle) * s * .335,
+            cy + math.sin(tickAngle) * s * .335,
           );
           canvas.drawLine(
             inner,
             outer,
-            _stroke(s * .018, mainColor.withValues(alpha: .60 + .30 * (t <= safeLevel ? 1 : 0))),
+            _stroke(s * (majorTick ? .028 : .018),
+                mainColor.withValues(alpha: majorTick ? .92 : .62)),
           );
+          if (majorTick) {
+            final tickHighlight = Offset.lerp(inner, outer, .48)!;
+            canvas.drawCircle(tickHighlight, s * .008,
+                _fill(Colors.white.withValues(alpha: .42)));
+          }
         }
         if (valueKnown) {
           if (active && safeLevel > 0) {
@@ -2868,15 +3000,19 @@ class _JexIconPainter extends CustomPainter {
             _stroke(s * .060, mainColor.withValues(alpha: opacity)),
           );
         }
+        canvas.drawCircle(Offset(cx, cy), s * .062,
+            _fill(const Color(0xFF070B12)));
+        canvas.drawCircle(Offset(cx, cy), s * .050,
+            _stroke(s * .018, mainColor.withValues(alpha: .88)));
+        canvas.drawCircle(Offset(cx, cy), s * .034,
+            _fill(Color.lerp(mainColor, const Color(0xFF171A22), .20)!));
         canvas.drawCircle(
-          Offset(cx, cy),
-          s * .048,
-          _fill(Color.lerp(mainColor, const Color(0xFF171A22), .20)!),
+          Offset(cx - s * .008, cy - s * .009), s * .013,
+          _fill(Colors.white.withValues(alpha: valueKnown ? .74 : .36)),
         );
         canvas.drawCircle(
-          Offset(cx, cy),
-          s * .020,
-          _fill(mainColor.withValues(alpha: valueKnown ? opacity : .28)),
+          Offset(cx, cy), s * .020,
+          _fill(mainColor.withValues(alpha: valueKnown ? opacity : .62)),
         );
         break;
 
