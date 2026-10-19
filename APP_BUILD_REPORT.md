@@ -18,14 +18,14 @@
 - Regression source contracts were updated to expect oval bursts, edge pulses, absence of old animated painters, and left-aligned badge-free NOTIFY. **Flutter/Dart tests and analyzer have NOT RUN for this source follow-up.** Build #106 is successful for its older source only and does not include these changes.
 - No App Build/release was started in this scope. Firmware/BIN, Firebase production metadata, OTA/flash/device operations and the protected workflow were untouched.
 
-## CURRENT SOURCE FOLLOW-UP — HOME STATUS / NOTIFY COPY, CENTERED TWO-LINE CARD AND OTA SUMMARY SANITIZATION (NOT RUN / NOT RELEASED)
+## HISTORICAL — PRIOR NOTIFY COPY/OTA SANITIZATION SNAPSHOT (SUPERSEDED BY THE CURRENT UI FOLLOW-UP)
 
-- Latest successful release remains Build #100 from source `51bea70b2ca17f285bf35c3e547dc44c70f26d59`; the following Home NOTIFY copy/layout changes are newer source-only work.
-- Home STATUS/NOTIFY maps known safety reasons to concise actionable English/Indonesian copy, removes raw reason identifiers, classifies failed/unconfirmed commands, and retains the `NOTIFY • category` heading. The right-side connection badge is removed; message text is centered and naturally wraps to at most two lines at readable font size rather than being shrunk.
+- This earlier snapshot was authored after Build #100 and before Build #106; its hashes below describe a superseded source revision.
+- The prior copy-only revision normalized known safety reasons, suppressed raw diagnostics and routed OTA envelopes through a localized formatter. It is retained as history; current visual/layout rules and hashes are in the source-follow-up section at the top of this report.
 - OTA/legacy result envelopes now pass through the dedicated localized formatter before general normalization. User-facing summaries hide raw `ERROR`, `CODE`, internal event suffixes, and unknown mode identifiers; known mode, localized stage, validated version and valid progress remain only where useful. Common bilingual connection and OTA copy was polished; accepted fan-speed, Hotside-limit and battery-limit acknowledgements now state the applied setting.
 - Current source/test blobs: `lib/main.dart` `b0d3a18f79b903bc8574d03a95cbc134b9234f20`; `test/widget_test.dart` `df1b400b46cbe1e1e79c95e0cf537fbe4d7efd98`; localization table `lib/app_settings.dart` `8f228000d38d73038c06f569c052b1af601288a5`.
-- Regression source contracts cover bilingual safety/command messages, no raw error identifiers, two-line centered text, removal of the connection badge/FittedBox, and OTA formatting order. Flutter/Dart tests and analyzer have NOT RUN because the execution environment has no Flutter/Dart executable. Do not claim this source passed automated execution.
-- Build #100 remains the latest successful release and does not include these source changes. No App Build/APK release, Firmware/BIN, Firebase production metadata, physical OTA, flash, or device action occurred. Existing build evidence below remains unchanged.
+- Regression source contracts for that earlier revision covered bilingual safety/command messages, no raw error identifiers, centered two-line text, badge removal, and OTA formatting order. Those assertions have since been updated for left-aligned Notify and the new animation designs; tests/analyzer have NOT RUN for the current source.
+- Build #106 is the latest successful release; neither this historical source snapshot nor the newer current source edits are represented by Build #106.
 
 
 
