@@ -1176,8 +1176,9 @@ void main() {
     expect(iconState, contains('speedLevelTransitionController.forward(from: 0)'));
     expect(iconState, contains('Duration(milliseconds: 420)'));
     expect(iconState, contains('Duration(milliseconds: 520)'));
-    expect(speed, contains('final needleAngle = start + sweep * safeLevel +'));
-    expect(speed, contains('final glintStart = start + sweep * p;'));
+    expect(speed, contains('final needleAngle = start + sweep * safeLevel;'));
+    expect(speed, isNot(contains('glintStart')));
+    expect(speed, isNot(contains('jexFanSpeedNeedleWobble')));
     expect(speed, contains('final needle = Path()..moveTo(cx, cy)..lineTo(tip.dx, tip.dy);'));
     expect(speed, contains('const tickCount = 9'));
     expect(speed, contains('if (active && safeLevel > 0)'));
