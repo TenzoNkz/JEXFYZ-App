@@ -163,11 +163,16 @@ void main() {
     expect(adaptive, isNot(contains('flowAngle')));
     expect(adaptive, isNot(contains('Offset(center.dx + math.cos(flowAngle)')));
 
+    final flamePathStart = painter.indexOf('Path _flameTonguePath(');
+    final flamePathEnd = painter.indexOf('void _drawThermalFlames', flamePathStart);
+    final flamePath = painter.substring(flamePathStart, flamePathEnd);
+    expect(flamePath, contains('baseline - height'));
+
     final flamesStart = painter.indexOf('void _drawThermalFlames');
     final flamesEnd = painter.indexOf('void _drawSnowflake', flamesStart);
     final flames = painter.substring(flamesStart, flamesEnd);
     expect(flames, contains('_flameTonguePath'));
-    expect(flames, contains('baseline - height'));
+
     expect(flames, isNot(contains('canvas.drawCircle')));
     expect(flames, isNot(contains('canvas.drawLine')));
 
@@ -831,7 +836,7 @@ void main() {
     );
     expect(
       jexIconAnimationDuration(JexAnimatedIconKind.adaptive),
-      const Duration(milliseconds: 4600),
+      const Duration(milliseconds: 6400),
     );
   });
 
