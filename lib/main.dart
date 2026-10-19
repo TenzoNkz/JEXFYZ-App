@@ -1308,6 +1308,9 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
   late final AnimationController frostTransitionController;
   late final AnimationController speedLevelTransitionController;
   late final AnimationController indicatorLevelTransitionController;
+  late final AnimationController warningTransitionController;
+  double _warningFromLevel = 0.0;
+  double _warningTargetLevel = 0.0;
   double _frostFromIntensity = .24;
   double _frostFromParticleCount = 2;
   double _speedFromLevel = 0;
@@ -1327,6 +1330,18 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
   double _currentIndicatorLevel() {
     final t = Curves.easeInOutCubic.transform(indicatorLevelTransitionController.value);
     return _indicatorLevelFrom + (_indicatorLevelTarget - _indicatorLevelFrom) * t;
+  }
+
+  double _currentWarningLevel() {
+    final t = Curves.easeInOutCubic.transform(warningTransitionController.value);
+    return _warningFromLevel + (_warningTargetLevel - _warningFromLevel) * t;
+  }
+
+  void _retargetWarningLevel(bool warning) {
+    _warningFromLevel = _currentWarningLevel();
+    _warningTargetLevel = warning ? 1.0 : 0.0;
+    warningTransitionController.duration = const Duration(milliseconds: 280);
+    warningTransitionController.forward(from: 0);
   }
 
   void _retargetIndicatorLevel(double target) {
@@ -1488,6 +1503,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     frostTransitionController.stop();
     speedLevelTransitionController.stop();
     indicatorLevelTransitionController.stop();
+    warningTransitionController.stop();
     controller.value = 0;
     activityTransitionController.value = 0;
     frostTransitionController.value = 0;
@@ -1497,6 +1513,9 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     _indicatorLevelFrom = widget.level.clamp(0.0, 1.0).toDouble();
     _indicatorLevelTarget = _indicatorLevelFrom;
     indicatorLevelTransitionController.value = 1;
+    _warningFromLevel = 0.0;
+    _warningTargetLevel = 0.0;
+    warningTransitionController.value = 1;
   }
 
   void _syncAnimation() {
@@ -1564,6 +1583,12 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
       vsync: this,
       duration: const Duration(milliseconds: 520),
     )..value = 1;
+    _warningFromLevel = widget.warning ? 1.0 : 0.0;
+    _warningTargetLevel = _warningFromLevel;
+    warningTransitionController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 280),
+    )..value = 1;
     speedLevelTransitionController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 420),
@@ -1577,6 +1602,9 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     if (!widget.connected) {
       _stopAnimationsForDisconnect();
       return;
+    }
+    if (widget.warning != oldWidget.warning || widget.connected != oldWidget.connected) {
+      _retargetWarningLevel(widget.connected && widget.warning);
     }
     if (widget.active != oldWidget.active) {
       if (widget.active) {
@@ -1672,6 +1700,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
     frostTransitionController.dispose();
     speedLevelTransitionController.dispose();
     indicatorLevelTransitionController.dispose();
+    warningTransitionController.dispose();
     super.dispose();
   }
 
@@ -1698,6 +1727,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
             frostTransitionController,
             speedLevelTransitionController,
             indicatorLevelTransitionController,
+            warningTransitionController,
           ],
         ),
         builder: (_, __) {
@@ -1724,7 +1754,7 @@ class _JexAnimatedIconState extends State<JexAnimatedIcon>
               voltageLevel: widget.voltageLevel,
               frostIntensityOverride: frostIntensity,
               frostParticleCountOverride: frostParticleCount,
-              warning: widget.warning,
+              warningStrength: _currentWarningLevel(),
               valueKnown: widget.valueKnown,
               fanCoasting: _fanCoasting,
               fanCoastStartProgress: _fanCoastStartProgress,
@@ -1747,7 +1777,7 @@ class _JexIconPainter extends CustomPainter {
   final int voltageLevel;
   final double? frostIntensityOverride;
   final double? frostParticleCountOverride;
-  final bool warning;
+  final double warningStrength;
   final bool valueKnown;
   final bool fanCoasting;
   final double fanCoastStartProgress;
@@ -1763,7 +1793,7 @@ class _JexIconPainter extends CustomPainter {
     required this.voltageLevel,
     required this.frostIntensityOverride,
     required this.frostParticleCountOverride,
-    required this.warning,
+    required this.warningStrength,
     required this.valueKnown,
     required this.fanCoasting,
     required this.fanCoastStartProgress,
@@ -2196,7 +2226,9 @@ class _JexIconPainter extends CustomPainter {
     final angle = p * math.pi * 2;
     final pulse = math.sin(angle);
     final safeLevel = level.clamp(0.0, 1.0).toDouble();
-    final warningBlend = warning && active ? (.12 + .06 * (pulse + 1) / 2) : 0.0;
+    final warningBlend = active
+        ? (.12 + .06 * (pulse + 1) / 2) * warningStrength
+        : 0.0;
     final mainColor = Color.lerp(color, const Color(0xFFFF5B55), warningBlend)!;
     // The semantic glyph colour and opacity never depend on ON/OFF state.
     const opacity = 1.0;
@@ -2211,8 +2243,8 @@ class _JexIconPainter extends CustomPainter {
       case JexAnimatedIconKind.battery:
         final shell = _batterySilhouette(s);
         canvas.drawPath(shell, _fill(mainColor.withValues(alpha: .10)));
-        if (warning && active) {
-          _drawThermalFlames(canvas, s, angle, jexThermalRed, 1.0, thermometer: false);
+        if (active && warningStrength > .005) {
+          _drawThermalFlames(canvas, s, angle, jexThermalRed, warningStrength, thermometer: false);
         }
         canvas.drawPath(shell, _stroke(s * .045, mainColor.withValues(alpha: opacity)));
         final inner = RRect.fromRectAndRadius(
@@ -2259,8 +2291,8 @@ class _JexIconPainter extends CustomPainter {
       case JexAnimatedIconKind.hotside:
         final shell = _hotsideSilhouette(s);
         canvas.drawPath(shell, _fill(mainColor.withValues(alpha: .10)));
-        if (warning && active) {
-          _drawThermalFlames(canvas, s, angle, jexThermalRed, 1.0, thermometer: true);
+        if (active && warningStrength > .005) {
+          _drawThermalFlames(canvas, s, angle, jexThermalRed, warningStrength, thermometer: true);
         }
         canvas.drawPath(shell, _stroke(s * .045, mainColor.withValues(alpha: opacity)));
         final tubeInner = RRect.fromRectAndRadius(
