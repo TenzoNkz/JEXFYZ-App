@@ -1,5 +1,14 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-19 — Refresh dashboard icon motion (source-only; NOT RELEASED)
+
+- Replaced fixed-lane thermal flicker with phase-compatible tapered lava tongues and rising/fading teardrop fragments; Battery and Hotside use distinct plume shapes while preserving their existing telemetry thresholds/colours.
+- Voltage adds two staggered branch strikes to its travelling closed-spine current pulse. Adaptive receives a restrained inner highlight/halo. Peltier retains the six-branch snow crystal and falling branched flakes with an added faceted center.
+- Fan rotor changed to five swept blades and a layered hub. Exactly three fixed airflow ribbons remain behind the rotor; their geometry, count, width and colour are independent of voltage/PWM. Rotor angular velocity still follows the existing voltage/PWM policy; airflow fades only during the permitted connected coast-down.
+- Fan Speed uses a true upper-half semicircle gauge (left endpoint 0/off, right endpoint 100%), smoothly retargets the authoritative PWM, and hides the needle when current output/speed state is unknown. Fixed the speed-icon wiring so event-driven retargeting is separate from the no-loop animation policy.
+- Updated source-contract assertions for lava motion, invariant airflow, five-blade rotor, gauge endpoint mapping, and known-state handling. Final live source blobs: lib/main.dart 88e98bb705393bef9aa0c9dd7de3224acf06d5ba; test/widget_test.dart e7f2ec0c129594dcb85b398fd9991741d4a8cea4.
+- These changes are SOURCE IMPLEMENTED / NOT RUN / NOT RELEASED. Dart analysis and Flutter tests have not run after the patch. Build #83 remains the latest successful artifact, built from older source; this task did not start App Build/Release. No Firmware/BIN/Firebase/OTA/flash/device action, BLE protocol/controls/telemetry or hardware safety changes occurred.
+
 ## 2026-10-19 — Full repository audit and canonical memory reconciliation (live baseline e224c5e1)
 
 - **Audited live App repository baseline:** main HEAD e224c5e1d3e86def06a5b97b0111a6e9c33e979a, tree SHA equal to HEAD, recursive tree not truncated (67 entries, 49 blobs, 18 trees); five branches and zero open PRs. Repository inventory, live App/Firmware source versions, workflow, config, all five tests, memory/reference docs, transfer prompts and archive references were reviewed. Archived V5.x/V6.1–V6.4 “CURRENT” statements remain immutable forensic history, not current truth.
