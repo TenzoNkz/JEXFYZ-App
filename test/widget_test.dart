@@ -184,7 +184,9 @@ void main() {
     expect(snow, isNot(contains('canvas.drawCircle')));
 
     final airflowStart = painter.indexOf('void _drawFanAirflow');
-    final airflowEnd = painter.indexOf('@override\\n  void paint', airflowStart);
+    final airflowEnd = painter.indexOf('@override\n  void paint', airflowStart);
+    expect(airflowStart, isNonNegative);
+    expect(airflowEnd, greaterThan(airflowStart));
     final airflow = painter.substring(airflowStart, airflowEnd);
     expect(airflow, contains('These streamlines orbit inside the rotor footprint'));
     expect(airflow, contains('math.sin(startAngle)'));
