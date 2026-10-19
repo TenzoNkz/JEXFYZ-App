@@ -142,7 +142,7 @@ This file is the durable App behavior/design contract. Live source and the curre
 - Current metrics are B/H/V/A/P/F. F is labelled Fan/Kipas and displays live PWM speed while running. When BLE telemetry is disconnected, live device values are unknown (--) and no stale output state is inferred.
 - FPS, SurfaceFlinger TimeStats sampling, Shizuku permission UI/provider/UserService/AIDL, related parser/watchdog tests and Shizuku-only license files are removed from active App source. The release workflow audit and source archive packaging no longer depend on them.
 - Schema version 2 maps old schema-v1 S (Speed) to F (Fan Speed) and drops old schema-v1 F (FPS). Flutter contract tests cover migration and removal of FPS/Shizuku UI.
-- Build #80 is the latest verified release (run `39171729285`, source/release `4e9f14b959cdbf60136158187db26d0bb65f6287`); 96/96 Flutter tests and all 21 workflow steps passed. It includes the TamperScreen rounded-block layout and the current Hotside/animation/toggle/menu-lock UI work. The explicit direct-Icon warning-symbol cleanup is source-only after Build #80; tests and analyzer have not run for that final delta. Phone overlay visuals and live BLE telemetry remain unverified.
+- Build #83 / run `39192430789` is the latest successful App artifact run and includes the rounded TamperScreen blocks, static warning Icon and current Home painter/test source. The overall release handoff remains blocked by the stale Git tag; the post-Build-#83 workflow repair is still untested. Phone overlay visuals and live BLE telemetry remain unverified.
 
 ## Phone battery telemetry and Battery Protection UI boundary
 
