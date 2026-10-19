@@ -133,7 +133,7 @@ void main() {
     }
   });
 
-  test('Hotside contour is continuous and indicator painters have distinct motion signatures', () {
+  test('Thermal icons use falling fire, Peltier uses falling snow, and indicators have distinct signatures', () {
     final source = File('lib/main.dart').readAsStringSync();
     final shellStart = source.indexOf('Path _hotsideSilhouette(double s)');
     final shellEnd = source.indexOf('void _drawAdaptiveArrowHead', shellStart);
@@ -191,13 +191,24 @@ void main() {
     final flamesEnd = painter.indexOf('void _drawSnowflake', flamesStart);
     final flames = painter.substring(flamesStart, flamesEnd);
     expect(flames, contains('_flameTonguePath'));
-    expect(flames, contains('_lavaDropletPath'));
-    expect(flames, contains('final riseHeight = s * (thermometer ? .43 : .31)'));
-    expect(flames, contains('final fadeIn ='));
     expect(flames, contains('required bool thermometer'));
+    expect(flames, contains('anchored at the thermal source'));
+    expect(flames, isNot(contains('rising fragments')));
 
-    expect(flames, isNot(contains('canvas.drawCircle')));
-    expect(flames, isNot(contains('canvas.drawLine')));
+    final fallingFireStart = painter.indexOf('void _drawFallingFlameParticles');
+    final fallingFireEnd = painter.indexOf('void _drawSnowflake', fallingFireStart);
+    expect(fallingFireStart, isNonNegative);
+    expect(fallingFireEnd, greaterThan(fallingFireStart));
+    final fallingFire = painter.substring(fallingFireStart, fallingFireEnd);
+    expect(fallingFire, contains('final cycle = (phase / (math.pi * 2)) % 1.0'));
+    expect(fallingFire, contains('final fall = (cycle + i / count) % 1.0'));
+    expect(fallingFire, contains('bounds.top + fall * bounds.height'));
+    expect(fallingFire, contains('_fallingFlameDropPath'));
+    expect(fallingFire, contains('final fadeOut ='));
+    expect(fallingFire, contains('clipPath'));
+    expect(fallingFire, contains('count = 3') == false); // Count is a fixed local constant.
+    expect(fallingFire, contains('const count = 3'));
+    expect(fallingFire, isNot(contains('canvas.drawCircle')));
 
     final snowStart = painter.indexOf('void _drawSnowflake');
     final snowEnd = painter.indexOf('void _drawFanAirflow', snowStart);
@@ -249,7 +260,14 @@ void main() {
     );
     expect(fan, contains('final airflowProgress = active'));
     expect(fan, contains('fanCoasting'));
-    expect(painter, contains('for (var i = 0; i < 5; i++)'));
+    final rotorStart = painter.indexOf('Path _fanSilhouette(double s, double angle)');
+    final rotorEnd = painter.indexOf('Path _flameTonguePath(', rotorStart);
+    expect(rotorStart, isNonNegative);
+    expect(rotorEnd, greaterThan(rotorStart));
+    final rotorGeometry = painter.substring(rotorStart, rotorEnd);
+    expect(rotorGeometry, contains('for (var i = 0; i < 3; i++)'));
+    expect(rotorGeometry, contains('i * math.pi * 2 / 3'));
+    expect(rotorGeometry, contains('Exactly three broad swept blades'));
     expect(painter, contains('valueKnown'));
     expect(painter, contains('const start = math.pi;'));
     expect(painter, contains('const sweep = math.pi;'));
