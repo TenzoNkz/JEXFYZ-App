@@ -10,7 +10,7 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
 - Parent HEAD immediately before this transfer-snapshot commit: `4100f90b3f59c3e0af0437d71f2caff7550a4454`, message `docs(rules): correct Build 83 asset and workflow hashes`. This snapshot is written last; final live source/test fingerprints are included below.
 - Latest successful artifact run: Build #83 / [Actions run `39192430789`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39192430789), exact packaged source `dfc7e6633298498bb6eac21182c9306d5e3cac1d`. All 21 active workflow steps passed, including analysis, 96/96 Flutter tests, Android configured gate, obfuscated APK, V1/V2/V3 signature and production-certificate verification, source ZIP, Release publication and re-downloaded asset checks. The tag-ref consistency gate remains blocked.
 - Build #70 is historical and verified FPS/Shizuku retirement plus schema-v2 migration to six metrics B/H/V/A/P/F (F=Fan Speed). Build #71 is newer and includes the post-Build-70 motion/toggle refinements.
-- Build #71 was triggered through owner/title/token-guarded [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). Issue owner `TenzoNkz`, title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; workflow blob `8a8533aff7e0e0e01412bf522e1966e81aa1a39f` is unchanged and listens only to issue opened/reopened. No push/PR/dispatch bypass.
+- Historical note (Build #71): issue #33 matched the owner/title/body-token guard and workflow blob `8a8533aff7e0e0e01412bf522e1966e81aa1a39f` was active at that time. The current workflow is newer: blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`, with tag-check placement repaired after Build #83. Trigger conditions remain issues opened/reopened only; no push/PR/dispatch bypass was added.
 - Live branch/PR check: five branches and zero open PRs. No branch or PR was created for this Build App work.
 - Dedicated Firmware artifact repository `TenzoNkz/JEXFYZ-Firmware` is BIN-only. Its complete live tree has exactly `JEXFYZ.cpp.bin`, blob `68167e65d26137eeb1ce4d6d4ba798dc282454e6`, 1,455,936 bytes. The BIN payload was not read or changed; source-to-BIN provenance remains UNVERIFIED.
 
@@ -38,7 +38,7 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
   - `test/firmware_touch_adaptive_sync_test.dart`: `94c0f074247f47fce7d939a72b0130eb1b2d70fa`.
   - Native `FloatingMonitorService.kt`: `8312cc12d391cde5f76b146ff98075856d32bae2`; `MainActivity.kt`: `ef35590cfc91fafe5dec104b7cfd7828011185bf`; `AndroidManifest.xml`: `c374b5d3ad6448b8b3e99a420ed7e8c49d38497a`; `android/app/build.gradle`: `060cdd36a4f7d4d2fa4c97a1b6a15954b8355350`.
   - Active workflow `.github/workflows/jexfyz-app-build-trigger.yml`: `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12` (fix commit `0c266f3064d77a394d660acd16595ff43166fb7f`).
-  - Current app configuration: `pubspec.yaml` `8f558273e21692af9958f914527fdc62d623d63a`; `pubspec.lock` `1e92812bfda2c28244a0556d71d1ec94084acc66`; `android/app/build.gradle` `060cdd36a4f7d4d2fa4c97a1b6a15954b8355350`; `android/gradle.properties` `aeb7ffd8c41e6c668c1eeb4e656755e5b1cc18f6`; `AndroidManifest.xml` `c374b5d3ad6448b8b3e99a420ed7e8c49d38497a`; `android/app/proguard-rules.pro` `50fc26f726ae8660fe04cf19da688431c8dca4a0`; `.github/workflows/jexfyz-app-build-trigger.yml` `8a8533aff7e0e0e01412bf522e1966e81aa1a39f`.
+  - Current app configuration: `pubspec.yaml` `8f558273e21692af9958f914527fdc62d623d63a`; `pubspec.lock` `1e92812bfda2c28244a0556d71d1ec94084acc66`; `android/app/build.gradle` `060cdd36a4f7d4d2fa4c97a1b6a15954b8355350`; `android/gradle.properties` `aeb7ffd8c41e6c668c1eeb4e656755e5b1cc18f6`; `AndroidManifest.xml` `c374b5d3ad6448b8b3e99a420ed7e8c49d38497a`; `android/app/proguard-rules.pro` `50fc26f726ae8660fe04cf19da688431c8dca4a0`; `.github/workflows/jexfyz-app-build-trigger.yml` `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`.
   - Firebase config file `android/app/google-services.json`: blob `f3ed065a7ee56b2a44f0a943a48fa578ba72e0d7`, 761 bytes. Only JSON structure was checked; no credential values are included in this transfer snapshot.
 - Canonical docs immediately before this transfer-only commit:
   - `APP_BUILD_REPORT.md`: `40a9f8a3c87c66d9a06b2565c2a728b17f89eb9a`.
@@ -52,10 +52,10 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
   - `CHAT_RULES.md`: `7655b0aa340f68b9248bffe47439b896c677c6cc`.
   - `FIRMWARE_NOTES.md`: `1b0897dc4ea11c6eb51324e691fb9637a118612f`.
   - `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `a9b40284a2fa9125e4d381fdd6b14708eab45daf`.
-  - `OTA_PROTECTION.md`: `767364ed6c8afd87104f0348490a5afd245d2fe3`.
-  - `OTA_REGRESSION_MEMORY.md`: `1eb7365d0e31cdb8ab06e4d63ce9d6f33ca7bba9`.
+  - `OTA_PROTECTION.md`: `ef5842e91ce2b3f83be5459a5c43bf205c878bb8`.
+  - `OTA_REGRESSION_MEMORY.md`: `940c786e594e171e0a62eaf4e5ca3f941e4e0f8f`.
   - `VOLTAGE_TRANSITION_MEMORY.md`: `d29e9c480d4976086968967ed705cfee2357159b`.
-  - `DESIGN_NOTES.md`: `c30e0d174a678a83224e3a62878a371e9b2f978c`.
+  - `DESIGN_NOTES.md`: `a887c26851504b0a834be9597aba39f34a8e4a7f`.
   - `CHAT_TRANSFER_PROMPTS.md`: `64fc43d66a2f8df1a710fcdfecc02b4345ad7fa5`.
   - `android/app/proguard-rules.pro`: `50fc26f726ae8660fe04cf19da688431c8dca4a0` (obsolete FPS/Shizuku class keep rules removed; config-only cleanup).
   - `android/gradle.properties`: `aeb7ffd8c41e6c668c1eeb4e656755e5b1cc18f6` (replaced the stale FPS-parser test comment only; Gradle values were unchanged).
@@ -174,7 +174,7 @@ Canonical document blob hashes immediately before this transfer-only write:
 - `VOLTAGE_TRANSITION_MEMORY.md`: `d61828c7de7efeefd8e1f79cc3f41b625541d62a`.
 - `DESIGN_NOTES.md`: `c30e0d174a678a83224e3a62878a371e9b2f978c`.
 - `CHAT_TRANSFER_PROMPTS.md`: `64fc43d66a2f8df1a710fcdfecc02b4345ad7fa5`.
-- `.github/workflows/jexfyz-app-build-trigger.yml`: `8a8533aff7e0e0e01412bf522e1966e81aa1a39f`.
+- `.github/workflows/jexfyz-app-build-trigger.yml`: `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`.
 - This file is being committed last; do not embed its own future hash.
 
 ## 11. Evidence labels and exact next actions
@@ -190,6 +190,6 @@ Canonical document blob hashes immediately before this transfer-only write:
 - For a new functional source change, use `@Thinking Diskusi!` then `@Thinking Eksekusi Full!` for approved source/tests/docs and separately `@Thinking Eksekusi Build App!` for CI/release. `@Thinking Chat Stuck!` only resumes the last authorized task and never expands permission.
 - Current workflow is `.github/workflows/jexfyz-app-build-trigger.yml`, blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; issue opened/reopened only, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`, repository-owner guard retained. No push/PR build trigger or manual bypass was added.
 - All durable current notes route through `MEMORY_INDEX.md`: source/build evidence via `APP_BUILD_REPORT.md`/`BUILD_NOTES.md`; current project truth via `PROJECT_STATE.md`; app UI/protocol via `APP_NOTES.md`; hardware/Firmware via `FIRMWARE_NOTES.md` and `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`; OTA via `OTA_PROTECTION.md`/`OTA_REGRESSION_MEMORY.md`; transition rules via `VOLTAGE_TRANSITION_MEMORY.md`; approved visual contracts via `DESIGN_NOTES.md`; permanent authorization through `CHAT_RULES.md`. Archive snapshots are immutable forensic history.
-- At the earlier project-memory reconciliation, the change was documentation plus two config-only files: `android/app/proguard-rules.pro` removed keep rules for already-retired FPS/Shizuku classes, and `android/gradle.properties` had a stale FPS-parser test comment corrected (no Gradle values changed). In this task, only `lib/main.dart`, `test/widget_test.dart` and project documentation/memory files changed. No Firmware source/BIN, Firebase, OTA, flash or device action occurred.
-- Build #80 remains the latest verified APK; physical-device checks remain pending. The latest source delta after Build #80 is the static warning-Icon simplification plus its regression assertion. No App Build or Firmware/BIN/Firebase/OTA/flash/device operations were performed by this task.
+- This task changed the App Build workflow and project documentation only. The current App source/test/config inputs still match Build #83. No Firmware source/BIN, Firebase, OTA, flash or device action occurred.
+- Build #83 is the latest successful App artifact run, but overall Release handoff remains BLOCKED by the stale Git tag and the untested workflow syntax repair. No new App Build or Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
