@@ -17,7 +17,7 @@ Current state reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). 
 - `lib/app_settings.dart`: `8f228000d38d73038c06f569c052b1af601288a5` — bilingual connection/OTA copy; unchanged in this UI pass.
 - `test/widget_test.dart`: `5a82cf79e6c5c40fc34489ce90cf1200cf9faccb` — regression contracts for oval thermal bursts, Voltage edge pulses, and left-aligned badge-free NOTIFY; NOT RUN.
 - `lib/jex_animated_glyph.dart`: `b37fc4e0807c874b2f01db00c7f606810cb5deca` — generic navigation/settings/action glyphs remain static.
-- Existing independent contract tests remain test/floating_monitor_layout_contract_test.dart, test/v6_7_qc_contract_test.dart, test/app_protocol_notify_contract_test.dart and test/firmware_touch_adaptive_sync_test.dart.
+- Existing independent contract tests remain test/floating_monitor_layout_contract_test.dart, test/firmware_qc_contract_test.dart, test/app_protocol_notify_contract_test.dart and test/firmware_touch_adaptive_sync_test.dart.
 - App config: pubspec 1.0.0+3, applicationId com.horizontalzzz.jexfyz, minSdk 24, targetSdk 36, compileSdk 37.
 
 ## Current approved seven-icon rules and static-state redraw
