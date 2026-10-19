@@ -1,19 +1,25 @@
 # JE X FYZ / JE Cooler — Changelog
 
-## 2026-10-19 — Animation smoothness rework (source-only; NOT RUN / NOT RELEASED)
+## 2026-10-19 — Static / unknown-state icon-family redraw (source-only; NOT RUN / NOT RELEASED)
+
+- Reworked the inactive/disconnected visual pose across all seven Home indicators because the supplied screenshot showed thin/empty glyphs when animation stopped. This source change is after Build #99; it has not been tested or released.
+- Battery receives a recessed window and subtle semantic-colour thermal emblem when unknown, without fabricated level; Hotside receives a recessed tube, fixed graduations and bulb bezel; Voltage receives a shadowed/inset bolt face; Adaptive gets stronger twin arrows and a recessed orbit; Peltier gets a brighter beveled six-arm crystal and no frozen flakes while inactive; Fan gets a bearing ring and three blade highlights; Fan Speed gets an 11-tick bezel and a layered pivot.
+- New main.dart blob 6a008c5c3e5ba7118e948e0b1f36277c01e73529; test/widget_test.dart blob 94dad7a7506fbcbeea63f300ea25b7f32299d471. The new source/test delta was not executed in this scope. No App Build, Firmware/BIN, Firebase, OTA, flash or device action occurred. Physical-device appearance remains UNVERIFIED.
+
+## 2026-10-19 — Animation smoothness rework (included in Build #99; exact source validated)
 
 - Likely stiffness contributors found in the live source and recording: 4.2–6.4 s animation cycles at tiny glyph size, small fire/snow particles, non-integer phase drift, whole-icon breathing, crystal spin locked to snowfall, and abrupt Fan angular-speed changes when PWM/voltage changed cycle duration.
 - Cadences are now Battery 1500 ms, Hotside 1650 ms, Voltage 1000 ms, Adaptive 2300 ms, Peltier 2100 ms. These are UI animation parameters only; hardware/telemetry semantics remain unchanged.
 - Falling fire/snow uses larger shapes with smooth boundary fade and phase-periodic drift. The main snowflake no longer rotates fully at the snow-particle rate. Whole-icon breathing is removed; Home glyph rises 22→26 dp within the unchanged 38×38 dp tile.
 - Fan retains exactly three blades and three fixed airflow ribbons. An unbounded phase simulation integrates smoothstep angular-rate changes over 420 ms on valid PWM/voltage retargets, so the rotor angle is preserved. Confirmed OFF decelerates to zero; disconnect resets phase under existing policy.
-- Test source was updated for particle-fade math, integrated fan rate/phase, durations, Peltier motion separation, painter repaint dependencies, and Home icon sizing. Neither Flutter nor Dart CLI was available; tests/analyzer were NOT RUN. The follow-up is not in Build #95; physical-phone smoothness remains UNVERIFIED.
+- These earlier smoothness changes were subsequently validated in Build #99 (102/102 Flutter tests; analyzer exit 0 with 25 info-level findings/no errors or warnings; guarded APK/signing/source-ZIP/release-tag pipeline passed). Those results apply only to Build #99's exact source. The separate static/unknown-state redraw at the top of this changelog is still NOT RUN / NOT RELEASED; physical-phone smoothness remains UNVERIFIED.
 
 
 ## 2026-10-19 — Seven-icon animation rework (initial version; included in Build #95)
 
 - Initial source rework added three downward-falling ember drops to Battery/Hotside, changed Fan to three broad swept blades, and applied a shared luminous-core treatment to the seven indicator family while preserving device-control semantics.
 - That initial version was validated and released as Build #95 / [Actions run 39217718351](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39217718351), source commit `cd691b874ddb0e454ba69891a3e0da3001df892f`, with 99/99 Flutter tests passing and release/tag/source evidence verified.
-- The new animation-smoothness follow-up is a separate post-Build-#95 source revision and is NOT RUN / NOT RELEASED.
+- The later smoothness follow-up was validated in Build #99. The still-newer static/unknown-state redraw at the top of this changelog is a separate post-Build-#99 source revision and is NOT RUN / NOT RELEASED.
 
 ## 2026-10-19 — Finalize Industrial Premium / Precise icon-motion policy (source follow-up; NOT RELEASED)
 
