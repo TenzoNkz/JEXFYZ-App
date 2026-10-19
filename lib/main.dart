@@ -6812,8 +6812,8 @@ void _handleAckLine(String line) {
             : const Color(0xFF4DE7B7);
     return Container(
       width: double.infinity,
-      constraints: const BoxConstraints(minHeight: 48),
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 7),
+      constraints: const BoxConstraints(minHeight: 42),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
       decoration: BoxDecoration(
         color: headerDark
             ? color.withValues(alpha: hasError ? .12 : .07)
@@ -8314,8 +8314,8 @@ void _handleAckLine(String line) {
             const SizedBox(height: 2),
             SizedBox(
               width: double.infinity,
-              // The centered two-line status card needs room for its icon and vertical padding.
-              height: 64,
+              // Keep the Home footer compact; _homeNotify fits its two-line content within this slot.
+              height: 44,
               child: _homeNotify(),
             ),
           ],
