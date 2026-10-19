@@ -272,34 +272,34 @@ void main() {
     expect(adaptive, isNot(contains('flowAngle')));
     expect(adaptive, isNot(contains('Offset(center.dx + math.cos(flowAngle)')));
 
-    final flamePathStart = painter.indexOf('Path _flameTonguePath(');
-    final flamePathEnd = painter.indexOf('void _drawThermalFlames', flamePathStart);
-    final flamePath = painter.substring(flamePathStart, flamePathEnd);
-    expect(flamePath, contains('baseline - height'));
+    final thermalStart = painter.indexOf('void _drawThermalBurstParticles(');
+    final thermalEnd = painter.indexOf('void _drawSnowflake', thermalStart);
+    expect(thermalStart, isNonNegative);
+    expect(thermalEnd, greaterThan(thermalStart));
+    final thermal = painter.substring(thermalStart, thermalEnd);
+    expect(thermal, contains('canvas.drawOval'));
+    expect(thermal, contains('final age = (cycle + i / lanes.length) % 1.0'));
+    expect(thermal, contains('jexMotionSmoothStep(age)'));
+    expect(thermal, contains('jexParticleBoundaryFade(age, fadeIn: .14, fadeOut: .26)'));
+    expect(thermal, contains('required bool thermometer'));
+    expect(thermal, contains('if (clipPath != null) canvas.clipPath(clipPath)'));
+    expect(thermal, isNot(contains('_flameTonguePath')));
+    expect(thermal, isNot(contains('_fallingFlameDropPath')));
+    expect(thermal, isNot(contains('canvas.drawLine')));
+    expect(painter, isNot(contains('void _drawThermalFlames(')));
+    expect(painter, isNot(contains('void _drawFallingFlameParticles(')));
+    expect(painter, isNot(contains('Path _fallingFlameDropPath(')));
 
-    final flamesStart = painter.indexOf('void _drawThermalFlames');
-    final flamesEnd = painter.indexOf('void _drawSnowflake', flamesStart);
-    final flames = painter.substring(flamesStart, flamesEnd);
-    expect(flames, contains('_flameTonguePath'));
-    expect(flames, contains('required bool thermometer'));
-    expect(painter, contains('Flame tongues stay anchored at the thermal source'));
-    expect(flames, isNot(contains('rising fragments')));
-
-    final fallingFireStart = painter.indexOf('void _drawFallingFlameParticles');
-    final fallingFireEnd = painter.indexOf('void _drawSnowflake', fallingFireStart);
-    expect(fallingFireStart, isNonNegative);
-    expect(fallingFireEnd, greaterThan(fallingFireStart));
-    final fallingFire = painter.substring(fallingFireStart, fallingFireEnd);
-    expect(fallingFire, contains('final cycle = (phase / (math.pi * 2)) % 1.0'));
-    expect(fallingFire, contains('final fall = (cycle + i / count) % 1.0'));
-    expect(fallingFire, contains('bounds.top + fall * bounds.height'));
-    expect(fallingFire, contains('_fallingFlameDropPath'));
-    expect(fallingFire, contains('jexParticleBoundaryFade('));
-    expect(fallingFire, contains('fadeIn: .18'));
-    expect(fallingFire, contains('fadeOut: .22'));
-    expect(fallingFire, contains('clipPath'));
-    expect(fallingFire, contains('const count = 3'));
-    expect(fallingFire, isNot(contains('canvas.drawCircle')));
+    final edgeStart = painter.indexOf('void _drawVoltageEdgePulse(');
+    final edgeEnd = painter.indexOf('Path _batterySilhouette', edgeStart);
+    expect(edgeStart, isNonNegative);
+    expect(edgeEnd, greaterThan(edgeStart));
+    final edgePulse = painter.substring(edgeStart, edgeEnd);
+    expect(edgePulse, contains('outline.computeMetrics().toList()'));
+    expect(edgePulse, contains('for (var i = 0; i < 2; i++)'));
+    expect(edgePulse, contains('metric.extractPath(tail, head)'));
+    expect(edgePulse, contains('progress * length + i * length * .5'));
+    expect(edgePulse, isNot(contains('electricalSpine')));
 
     final snowStart = painter.indexOf('void _drawSnowflake');
     final snowEnd = painter.indexOf('void _drawFanAirflow', snowStart);
@@ -337,9 +337,9 @@ void main() {
     final voltageStart = painter.indexOf('case JexAnimatedIconKind.voltage:');
     final voltageEnd = painter.indexOf('case JexAnimatedIconKind.adaptive:', voltageStart);
     final voltage = painter.substring(voltageStart, voltageEnd);
-    expect(voltage, contains('final electricalSpine = Path()'));
-    expect(voltage, contains('..close();'));
-    expect(voltage, contains('metric.extractPath'));
+    expect(voltage, contains('_drawVoltageEdgePulse(canvas, bolt, s, p, mainColor, safeLevel)'));
+    expect(voltage, isNot(contains('electricalSpine')));
+    expect(voltage, contains('final innerCore = _boltInnerCore(s)'));
 
     final fanStart = painter.indexOf('case JexAnimatedIconKind.fan:');
     final fanEnd = painter.indexOf('case JexAnimatedIconKind.speed:', fanStart);
