@@ -8,7 +8,7 @@ Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #106 rem
 - Build #106 APK asset ID `656702702`, 54,734,939 bytes, SHA-256 `bab332a4312c628178e384a88d513cf8546ff15ab4b4e3f3becf2e70b10830cc`; corresponding source ZIP asset ID `656702729`, 2,866,720 bytes, SHA-256 `0bb86c4e6bd7d3cb7a6bb894658bd707acee48bac106fc5227f8adcba584ec98`.
 - Current source after Build #106 is NOT RUN / NOT RELEASED. `lib/main.dart` `7e09a3d28b4efe24bdced858db4274cf70806284`; `lib/app_settings.dart` `8f228000d38d73038c06f569c052b1af601288a5`; `test/widget_test.dart` `5a82cf79e6c5c40fc34489ce90cf1200cf9faccb`.
 - Home NOTIFY has no separate CONNECTED/DISCONNECTED badge; its heading and body are left-aligned and the body wraps to at most two lines. Battery/Hotside use clipped oval ember bursts instead of old tapered flame/drop particles. Voltage uses outer-contour pulses rather than a moving central spine or branch strikes. Firmware thresholds and all other icon families are unchanged.
-- Flutter/Dart tests and analyzer have NOT RUN; this environment has no Flutter/Dart executable. Build #100 does not include these changes. No App Build/release, Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+Build #106 succeeded on older source and does not include these changes.
 - No App Build/release, Firmware/BIN/Firebase/OTA/flash/device operation occurred. Request @Thinking Eksekusi Build App! separately before validation/release.
 
 ## Current approved icon behavior
@@ -26,7 +26,7 @@ Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #106 rem
 - User decided to retire FPS after repeated F:--/Shizuku UserService failures. FPS, SurfaceFlinger TimeStats sampling, Shizuku permission/status UI/API/provider/dependency, UserService/AIDL, FPS-only tests and Shizuku-only notice/license files were removed from active source.
 - The HUD has exactly six metrics: B (Battery), H (Hotside), V (Voltage), A (Adaptive), P (Peltier), F (Fan/Kipas label; current value is live speed). Schema v2 drops old schema-v1 F (FPS) and maps old S (Speed) to F. Fan telemetry and firmware speed control are unchanged.
 - Overlay remains Letters-only, freely draggable, with saved coordinates; horizontal metrics centered as a group, vertical rows left aligned; size 0.30×–1.00× by 0.05× (default 0.60×); background opacity 0–100% by 5%, current value and endpoint marks only, no midpoint. Physical layout and live BLE metric behavior remain UNVERIFIED on the phone.
-- Historical note: Build #95 was a successful intermediate release and validated the guarded tag/source check at that time. It was superseded by Build #100. The latest source-only notification text follow-up is newer than Build #100 and remains untested/unreleased pending separate validation.
+Historical note: Build #95 was a successful intermediate release, later superseded by Build #100 and then Build #106. The current left-aligned NOTIFY and Battery/Hotside/Voltage visual follow-up is newer than Build #106 and remains untested/unreleased pending separate validation.
 
 ## Firmware / OTA boundary
 
