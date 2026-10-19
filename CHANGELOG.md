@@ -1,3 +1,10 @@
+## 2026-10-20 — Restore original Home spacing and NOTIFY row geometry (source-only; NOT RUN / NOT RELEASED)
+
+- Reverted the unintended Home metric row compression from 41 dp to the original 44 dp while keeping the 38 dp indicator tiles centered in the original 41 dp lane.
+- Restored NOTIFY's original icon-left/text-left `Row` instead of a centered `Stack`. Removed the CONNECTED/DISCONNECTED badge without centering the copy or reserving a badge lane. The card and Home slot are now 56 dp to fit up to two lines at normal font size.
+- Added regression contracts for 44 dp indicator-row spacing, the 56 dp card/slot, original Row structure, left-aligned body text, and absence of badge/Stack/FittedBox shrink-to-fit.
+- Current source/test blobs: `lib/main.dart` `0341122a53e7a6bb00d9f079bfcb350b385c83cb`; `test/widget_test.dart` `b240231403c26071e618f3da1e82b379ff912adf`. The source is newer than Build #108 and is NOT RUN / NOT RELEASED. No App Build was triggered; Firmware and hardware paths are outside scope.
+
 ## 2026-10-20 — V6.8 Adaptive Fan PWM temperature tiers (source-only; NOT COMPILED / NOT INSTALLED)
 
 - Bumped the active Firmware source to `firmware/JEXFYZ-V6.8.ino`, embedded `FW_VERSION="V6.8"`, blob `7b4df708708e021aad39258468eed2fde94d202f`. The V6.7 sketch was removed after the V6.8 rename; only `firmware/JEXFYZ-V6.8.ino` remains active.
