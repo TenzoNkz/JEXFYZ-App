@@ -20,11 +20,10 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 
 ## Current release and source validation boundary — 2026-10-19
 
-- Latest successful released artifact is Build #99 / [Actions run 39230380636](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39230380636), packaged from source bc1498d5b3db7621ee18f5ca6f021e6013c73b09. All 21 workflow steps passed; analyzer exited 0 with 25 info-level findings/no errors or warnings; 102/102 Flutter tests passed; APK signature/certificate, matching source ZIP, asset integrity and Release/tag/source equality passed. Native JUnit tasks were NO-SOURCE.
-- APK asset 655835412 SHA-256 06a3e4edc7ff911c66cda8b152d4f2acbc11f41b2ccd2f009aa966510aa89096; source ZIP asset 655835414 SHA-256 490ef913574a38fd47644422aa52b11f09c2d47895ba4f3e21db466e47aa8229.
-- Build #99 includes the animation-smoothness implementation: periodic particle paths/fades, 26 dp Home glyphs, decoupled Peltier crystal motion and accumulated-phase Fan retarget. Current static/unknown-state redraw is after Build #99: lib/main.dart 6a008c5c3e5ba7118e948e0b1f36277c01e73529; test/widget_test.dart 94dad7a7506fbcbeea63f300ea25b7f32299d471. NOT RUN / NOT RELEASED until validated by a separately authorized Build App flow.
-- Static redraw gives Battery a semantic low-intensity thermal emblem instead of fabricated fill when unknown; Hotside a recessed tube/graduations/bulb bezel; Voltage an inset bolt; Adaptive stronger dual arrows; Peltier a faceted six-branch crystal without frozen flakes when inactive; Fan a bearing ring and three blade highlights; Speedometer an 11-tick bezel while keeping needle hidden for unknown PWM.
-- Physical-phone visuals, profile-mode frame time, live BLE/PWM, cooling/safety and device operation remain UNVERIFIED. No Build App, Firmware/BIN, Firebase, OTA, flash or device operation occurred during this source execution.
+- Latest successful release is Build #100 / https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39237262140, source 51bea70b2ca17f285bf35c3e547dc44c70f26d59. All 21 workflow steps passed; 103/103 Flutter tests passed; analyzer exited 0 with 25 info-level findings and no errors/warnings; APK signatures/certificate, matching source ZIP, downloaded asset digests and Release/tag/source equality passed. Native JUnit tasks were NO-SOURCE.
+- APK asset ID 655957943, SHA-256 a59c0a37b2025ad2b250bd4354b887379d96658e9f7757692691fa23b7b4d0a2; source ZIP asset ID 655957946, SHA-256 e60c4705097009d843b624bf8f0f989770a76aba6fdfbdd8d2159d77f98890f1.
+- New source follow-up after Build #100 professionalizes Home STATUS/NOTIFY text, prevents raw firmware reason codes from rendering, and shortens category labels. Blobs: lib/main.dart 931b7e2d074b1006622b0f83cc6db3f8ce43a400; lib/app_settings.dart e91ecd2a00eafdec3f681daabb74fd49fcd25bf2; test/widget_test.dart ff419072b6eca1f3dc2c932b6290e3d664f75c17. It is NOT RUN / NOT RELEASED; Build #100 does not include it.
+- Real-device display, language switching, BLE/PWM behavior and hardware safety are not proven by source assertions. No Firmware/BIN/Firebase/OTA/device operation was performed.
 
 ## Repository boundaries
 
