@@ -1386,7 +1386,7 @@ class JexAnimatedIcon extends StatefulWidget {
 }
 
 class _JexFanRotationSimulation extends Simulation {
-  const _JexFanRotationSimulation({
+  _JexFanRotationSimulation({
     required this.startPhaseRadians,
     required this.fromCyclesPerSecond,
     required this.toCyclesPerSecond,
