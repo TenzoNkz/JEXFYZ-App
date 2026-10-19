@@ -1,5 +1,14 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-19 — Finalize Industrial Premium / Precise icon-motion policy (source follow-up; NOT RELEASED)
+
+- The approved dashboard icon refresh is present in `lib/main.dart`: temperature lava tongues with 280 ms warning transitions, closed-spine voltage animation with staggered strikes, restrained Adaptive halo, faceted Peltier crystal, five-blade Fan rotor with three invariant airflow ribbons, and event-driven semicircle Fan Speed gauge with unknown-state needle suppression.
+- Removed perpetual decorative looping from generic `JexAnimatedGlyph` used for navigation/settings/action affordances. Those glyphs are now static; only the data-driven Home status indicators use the animation controller and authoritative telemetry/state gates.
+- Added a source-contract regression test to prevent generic action glyphs from regaining an unconditional animation loop. The native Floating Monitor stays compact letters-only B/H/V/A/P/F; telemetry/state semantics remain authoritative and unknown values are not fabricated.
+- Baseline before this source follow-up was main HEAD `8ffcabb6668f0a095eabb0d0e051520fcae29310`. Current source/test blobs: `lib/jex_animated_glyph.dart` `b37fc4e0807c874b2f01db00c7f606810cb5deca`; `test/widget_test.dart` `5f1c5345f6ea1e0114c72360414362d3667be276`.
+- Build #91 / [Actions run 39207456720](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39207456720) validated its source parent `e9f6d8ca3ea936a1c4c05b2fbbd228dda5e2cdd1` with 97/97 Flutter tests and successful analyzer/Android/release gates. This follow-up changes generic glyph source/test after Build #91; the follow-up itself has NOT been run, built or released. No Firmware/BIN/Firebase/OTA/device action occurred.
+
+
 ## 2026-10-19 — Refresh dashboard icon motion (source-only; NOT RELEASED)
 
 - Replaced fixed-lane thermal flicker with phase-compatible tapered lava tongues and rising/fading teardrop fragments; their warning layer eases over 280 ms when the exact threshold predicate changes; Battery and Hotside use distinct plume shapes while preserving their existing telemetry thresholds/colours.
