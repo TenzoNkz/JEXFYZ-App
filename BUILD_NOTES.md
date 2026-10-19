@@ -8,11 +8,11 @@
 - Build App does not authorize Firmware compilation, BIN creation/publication/replacement, Firebase metadata changes, physical OTA, flashing, device operation, or unrelated release operations.
 - Never claim CI success proves BLE, cooling/safety behavior, Firmware compilation, OTA installation or installed device version.
 
-## LATEST SUCCESSFUL APP BUILD — Build #100 (verified release; notification copy follow-up pending)
+## LATEST SUCCESSFUL APP BUILD — Build #106 (verified release; newer UI follow-up pending)
 
-- Latest successful App artifact: Build #100 / https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39237262140, exact source 51bea70b2ca17f285bf35c3e547dc44c70f26d59. All 21 workflow steps passed; 103/103 Flutter tests passed; analyzer exited 0 with 25 info-level findings and no errors/warnings. Android gate, APK signature/certificate, corresponding source ZIP, downloaded asset verification and Release/tag/source equality passed. Native JUnit tasks were NO-SOURCE.
-- APK asset ID 655957943: 54,718,555 bytes, SHA-256 a59c0a37b2025ad2b250bd4354b887379d96658e9f7757692691fa23b7b4d0a2; source ZIP asset ID 655957946: 2,862,476 bytes, SHA-256 e60c4705097009d843b624bf8f0f989770a76aba6fdfbdd8d2159d77f98890f1.
-- Current source-only follow-up after Build #100 professionalizes Home STATUS/NOTIFY text, prevents raw internal reason/OTA failure identifiers from being displayed, localizes command-confirmation failures, and uses concise category labels. Blobs: lib/main.dart 51b52042b6429ae2e4a4f2508685cd8326af68c8; lib/app_settings.dart e91ecd2a00eafdec3f681daabb74fd49fcd25bf2; test/widget_test.dart 9d80171a12af084748b88fcdd06d3d6b3cf65e1f. It has NOT been tested, analyzed, built or released.
+- Latest successful App artifact: Build #106 / https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39279938461, exact source `9f90cf6063ee7786613f8b5dfa1c6b0412d89638`. Analyzer exited 0 with 25 info-level findings and no errors/warnings; 108 Flutter tests passed; Android configured gate, APK signature/certificate, corresponding source ZIP and downloaded-asset validation passed.
+- APK asset ID `656702702`: 54,734,939 bytes, SHA-256 `bab332a4312c628178e384a88d513cf8546ff15ab4b4e3f3becf2e70b10830cc`; source ZIP asset ID `656702729`: 2,866,720 bytes, SHA-256 `0bb86c4e6bd7d3cb7a6bb894658bd707acee48bac106fc5227f8adcba584ec98`.
+- Current source-only follow-up after Build #106: left-aligned, badge-free NOTIFY plus oval Battery/Hotside ember bursts and Voltage outer-edge pulses. Blobs: `lib/main.dart` `7e09a3d28b4efe24bdced858db4274cf70806284`; `lib/app_settings.dart` `8f228000d38d73038c06f569c052b1af601288a5`; `test/widget_test.dart` `5a82cf79e6c5c40fc34489ce90cf1200cf9faccb`. It has NOT been tested, analyzed, built or released.
 - @Thinking Eksekusi Full! does not start App Build. A separate @Thinking Eksekusi Build App! is required. No Firmware/BIN/Firebase/OTA/device operation occurred.
 
 ## HISTORICAL / SUPERSEDED — Build #71 (verified release; superseded by Build #83; kept for history)
