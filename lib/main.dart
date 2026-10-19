@@ -2625,7 +2625,7 @@ class _JexIconPainter extends CustomPainter {
       oldDelegate.activity != activity ||
       oldDelegate.level != level ||
       oldDelegate.voltageLevel != voltageLevel ||
-      oldDelegate.warning != warning ||
+      oldDelegate.warningStrength != warningStrength ||
       oldDelegate.frostIntensityOverride != frostIntensityOverride ||
       oldDelegate.frostParticleCountOverride != frostParticleCountOverride;
 }
