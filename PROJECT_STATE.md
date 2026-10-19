@@ -7,7 +7,7 @@ Current state reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). 
 - Canonical repository: TenzoNkz/JEXFYZ-App, branch main. Continue directly on main; no branches or PRs were created.
 - Latest successful App release is Build #108 / Actions run 39294761979, source commit `51f401c90085b0bef5599375f7819d0294375938`. Analyzer passed with 25 info-level findings and no warnings/errors; 107 Flutter tests passed; configured Android gate, APK signing/certificate, source ZIP integrity, downloaded asset hashes and exact source-marker checks passed. Full evidence is at the top of APP_BUILD_REPORT.md.
 - Build #108 APK asset `656953696`, 54,734,939 bytes, SHA-256 `a7e46390a2b8a487eb85e69d33af685dbc79f9814c201cce9fd255e1164cf8ed`; corresponding source ZIP asset `656953697`, 2,866,251 bytes, SHA-256 `4b3095747a711888afa9879e70cd8d3fc74b22659e68f338e6e8cbc2430d12be`. Release tag `jexfyz-latest` targets Build #108 source.
-- A newer Home geometry correction is now on main and is NOT RUN / NOT RELEASED: `lib/main.dart` blob `0341122a53e7a6bb00d9f079bfcb350b385c83cb`; `test/widget_test.dart` blob `b240231403c26071e618f3da1e82b379ff912adf`. It is not part of Build #108.
+- A newer Home geometry correction is now on main and is NOT RUN / NOT RELEASED: `lib/main.dart` blob `0341122a53e7a6bb00d9f079bfcb350b385c83cb`; `test/widget_test.dart` blob `eeee8dcdb9dd88b985145e059913759f5f325920`. It is not part of Build #108.
 - Home indicator rows are restored to 44 dp. The NOTIFY card uses the original icon-left / text-left Row rather than the centered Stack, has no CONNECTED/DISCONNECTED badge, keeps normal-size left-aligned copy with a maximum of two lines, and uses a 56 dp card plus reserved slot. Other Home proportions, tabs, cooler image, submenu, animation painters, BLE behavior and telemetry semantics remain unchanged.
 - Regression contracts now check the original 44 dp metric row, the 56 dp Notify card/slot, original Row and icon lane, no centered Stack, no FittedBox shrink-to-fit, left-aligned two-line body, and no connection badge. Current Flutter tests/analyzer have NOT RUN; no App Build was triggered by this source correction.
 - Build #108 contains the previous badge-free, two-line NOTIFY design, but its text wrapper was centered as a group and the metric row was compressed. The latest source fixes that geometry; do not claim Build #108 validates this correction.
@@ -16,7 +16,7 @@ Current state reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). 
 ## Current source fingerprints
 
 - `lib/main.dart`: `0341122a53e7a6bb00d9f079bfcb350b385c83cb` — original Home metric spacing restored, original NOTIFY Row restored, badge removed, two-line copy on a 56 dp card; NOT RUN / NOT RELEASED.
-- `test/widget_test.dart`: `b240231403c26071e618f3da1e82b379ff912adf` — layout contracts for 44 dp metric rows and 56 dp badge-free NOTIFY card; NOT RUN.
+- `test/widget_test.dart`: `eeee8dcdb9dd88b985145e059913759f5f325920` — layout contracts for 44 dp metric rows and 56 dp badge-free NOTIFY card; NOT RUN.
 - `lib/app_settings.dart`: `8f228000d38d73038c06f569c052b1af601288a5` — bilingual BLE/OTA/setting copy; unchanged in this pass.
 - `lib/jex_animated_glyph.dart`: `b37fc4e0807c874b2f01db00c7f606810cb5deca` — static navigation/settings/action glyphs unchanged.
 - `firmware/JEXFYZ-V6.8.ino`: `7b4df708708e021aad39258468eed2fde94d202f` — separate deterministic Adaptive Fan PWM tiers; NOT COMPILED / NOT INSTALLED.
