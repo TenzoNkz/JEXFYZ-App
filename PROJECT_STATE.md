@@ -15,9 +15,9 @@ Last fully audited from live GitHub on 2026-10-19 (Asia/Jakarta), beginning at m
 
 ## Current source fingerprints
 
-- `lib/main.dart`: `18f0a4d11948c7d584e8eeff5fd88eb6230d17e8` (seven-icon animation rework; NOT RUN / NOT RELEASED).
+- `lib/main.dart`: `ec8d682432946bd5b9afea925685855d632610b8` (seven-icon animation rework; NOT RUN / NOT RELEASED).
 - `lib/jex_animated_glyph.dart`: `b37fc4e0807c874b2f01db00c7f606810cb5deca` (static generic action/settings glyphs).
-- `test/widget_test.dart`: `d4a4006fd74b9e4a348b1ddcac1ae31a043a1b53` (falling-fire and three-blade contracts; NOT RUN).
+- `test/widget_test.dart`: `ab0862470846455465b65ec294d33d39c07aac62` (falling-fire and three-blade contracts; NOT RUN).
 - Other active Dart test paths remain `test/floating_monitor_layout_contract_test.dart`, `test/v6_7_qc_contract_test.dart`, `test/app_protocol_notify_contract_test.dart`, and `test/firmware_touch_adaptive_sync_test.dart`.
 - App config remains pubspec `1.0.0+3`, applicationId `com.horizontalzzz.jexfyz`, minSdk 24, targetSdk 36, compileSdk 37. Preserve Gradle `versionName "Telegram @horizontalzzz"`.
 
