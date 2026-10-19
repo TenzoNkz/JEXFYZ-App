@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last reconciled from live GitHub on 2026-10-19 (Asia/Jakarta). This is a current-state file, not the build-history ledger. Use `APP_BUILD_REPORT.md` for exact run evidence and `CHANGELOG.md` for superseded decisions.
+Last fully audited from live GitHub on 2026-10-19 (Asia/Jakarta), beginning at main HEAD/tree `e224c5e1d3e86def06a5b97b0111a6e9c33e979a` (67 entries; recursive tree not truncated). This is the current-state file, not the build-history ledger. `CHAT_TRANSFER.md` records the later pre-transfer parent snapshot; use `APP_BUILD_REPORT.md` for exact run evidence and `CHANGELOG.md` for superseded decisions.
 
 ## Current App / Release state — Build #83 artifact verified; overall handoff BLOCKED
 
