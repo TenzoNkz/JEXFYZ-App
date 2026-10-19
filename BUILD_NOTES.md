@@ -8,15 +8,13 @@
 - Build App does not authorize Firmware compilation, BIN creation/publication/replacement, Firebase metadata changes, physical OTA, flashing, device operation, or unrelated release operations.
 - Never claim CI success proves BLE, cooling/safety behavior, Firmware compilation, OTA installation or installed device version.
 
-## LATEST SUCCESSFUL APP BUILD — Build #95 (release handoff verified; later smoothness source follow-up pending)
+## LATEST SUCCESSFUL APP BUILD — Build #99 (verified release; later static icon-state redraw pending)
 
-- Latest successful verified App run: [Build #95 / run 39217718351](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39217718351), source `cd691b874ddb0e454ba69891a3e0da3001df892f`. All 21 workflow steps passed; **99/99 Flutter tests passed**; analyzer exited 0 with 23 info-level deprecation findings; APK signing/certificate/source ZIP/asset integrity/Release-tag-source checks passed. Native JUnit tasks were NO-SOURCE.
-- APK asset `655596091`, 54,702,171 bytes, SHA-256 `856718ada30c5ef5081b5bb28a5e00c3b9d234e00ebced58a211112cc381140d`; source ZIP asset `655596090`, 2,858,246 bytes, SHA-256 `262d552e564b7c0a1727048a2e2897777ff18fa7296381a77f2c10236784ce7e`. These results apply to Build #95's exact packaged source.
-- The current smoothness follow-up is newer source: `lib/main.dart` `f0bc1375799e7b9e4466a3124ddb031d5f58e522`; `test/widget_test.dart` `aaf911cdcf5e23a23b80c2ef47ca4e11d406f9cf`. The follow-up is **NOT RUN / NOT RELEASED** and has not been validated by Build #95.
-- Neither `flutter` nor `dart` CLI is installed in this execution environment, so the updated tests and analysis are **NOT RUN**. Do not report Build #95's 99/99 as validation of this newer source.
-- No App Build/release, Firmware/BIN/Firebase/OTA/flash/device operation was performed by this execution. Separate `@Thinking Eksekusi Build App!` is required to validate/release later source.
-
-
+- Latest successful verified run: [Build #99 / Actions run 39230380636](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39230380636), source bc1498d5b3db7621ee18f5ca6f021e6013c73b09. All 21 workflow steps passed; 102/102 Flutter tests passed; analyzer exited 0 with 25 info-level findings and no errors/warnings; APK signature/certificate, matching source ZIP, asset integrity and Release/tag/source checks passed. Native JUnit tasks were NO-SOURCE.
+- APK asset 655835412, 54,702,171 bytes, SHA-256 06a3e4edc7ff911c66cda8b152d4f2acbc11f41b2ccd2f009aa966510aa89096; source ZIP asset 655835414, 2,860,973 bytes, SHA-256 490ef913574a38fd47644422aa52b11f09c2d47895ba4f3e21db466e47aa8229. Release/tag source matched Build #99 exactly.
+- Smoothness implementation validated by Build #99 includes periodic falling fire/snow, eased particle boundary fades, 26 dp Home glyphs inside the unchanged 38×38 tile, decoupled Peltier crystal motion and phase-integrated Fan-rate retargeting.
+- Current source-only redraw after Build #99: lib/main.dart 6a008c5c3e5ba7118e948e0b1f36277c01e73529; test/widget_test.dart 94dad7a7506fbcbeea63f300ea25b7f32299d471. New static surfaces add recessed shells, graduations, static voltage facet, stronger Adaptive arrows, faceted crystal, three-blade fan bearing/highlights and 11-tick gauge. Unknown readings/outputs are not fabricated.
+- The source/test delta is NOT RUN / NOT RELEASED and is not in Build #99. No tests/analyzer were run for this delta. Physical-phone appearance/smoothness remains unverified. This execution did not start App Build/release or touch Firmware/BIN/Firebase/OTA/flash/device.
 
 ## HISTORICAL / SUPERSEDED — Build #71 (verified release; superseded by Build #83; kept for history)
 
