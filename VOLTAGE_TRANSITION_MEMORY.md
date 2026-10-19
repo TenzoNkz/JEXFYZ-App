@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Voltage Transition & Peltier Soft-Start Memory
 
-Last reconciled: 2026-10-18 (Asia/Jakarta).
+Last reconciled: 2026-10-20 (Asia/Jakarta).
 Canonical active source: `firmware/JEXFYZ-V6.8.ino`, blob `7b4df708708e021aad39258468eed2fde94d202f`. V6.8 changes Adaptive Fan target mapping only; source is NOT COMPILED / NOT INSTALLED, while source-to-BIN provenance and current device version remain UNVERIFIED. V6.7 compile/online update is historical USER-REPORTED evidence.
 Static regression contract: `test/firmware_qc_contract_test.dart` (Adaptive Fan tiers and general Firmware source contracts). Re-fetch its live blob before relying on a hash.
 
