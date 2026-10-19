@@ -1,3 +1,15 @@
+## CURRENT APP BUILD REQUEST — HOME ROW44 / NOTIFY ROW / CARD56 (BUILD PENDING)
+
+- Command: `@Thinking Eksekusi Build App!`, requested to execute the latest Home-layout discussion carried into the 2026-10-20 checkpoint. This is the authorized end-to-end App QC/build/release command.
+- Initial live `main` HEAD: `bdcd5c7bca5882322f8e8727dedb1bb2b5bc18ca` (`docs(transfer): checkpoint restored Home spacing and Notify layout`). Current source `lib/main.dart` blob `0341122a53e7a6bb00d9f079bfcb350b385c83cb`; regression tests `test/widget_test.dart` blob `eeee8dcdb9dd88b985145e059913759f5f325920`. Tree/history confirms these geometry corrections are newer than the last successful Build #108.
+- **Requested source scope to validate:** restore Home metric row height to 44 dp with the existing 38 dp indicator centered in the 41 dp lane; restore NOTIFY to the original icon-left/text-left `Row`; remove only the CONNECTED/DISCONNECTED badge; retain normal-size, left-aligned copy with at most two body lines; use 56 dp minimum card/reserved slot. Tests assert the row/card geometry, Row structure, text wrapping/alignment and no `Stack`/`FittedBox`. Do not change unrelated icons, menu geometry, BLE/control/telemetry, firmware source or safety behavior.
+- Latest prior successful Release is Build #108 / run `39294761979`, source `51f401c90085b0bef5599375f7819d0294375938`. It does not validate the current row44/card56 correction. Release metadata as of preflight points to the Build #108 commit; no new run is queued or in progress.
+- Workflow preflight: `.github/workflows/jexfyz-app-build-trigger.yml` blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; accepted events remain `issues/opened` and `issues/reopened`; owner/title/body-token guard is intact. Official trigger issue #34 is open with exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, owner `TenzoNkz`, and token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. The build will be triggered by closing/reopening this same issue; no workflow changes, push/PR event, or dispatch bypass.
+- Android identity remains `versionName "Telegram @horizontalzzz"`. Scope exclusions remain: no Firmware compilation, BIN generation/publication/replacement, Firebase production metadata, OTA, flashing or device operation.
+- Preflight recorded before the official trigger. Record actual run number/ID and checked-out SHA when surfaced. Fix only evidenced App-scope blockers; preserve every test/security/release gate. Final success requires verified APK/signature/certificate, corresponding source ZIP, downloaded Release assets, and tag targeting the exact packaged commit.
+
+---
+
 ## CURRENT SOURCE FOLLOW-UP AFTER BUILD #108 — RESTORE ORIGINAL HOME ROW GEOMETRY (NOT RUN / NOT RELEASED)
 
 - The latest source-only correction is newer than Build #108 and must not be described as already released. Build #108 succeeded on source commit `51f401c90085b0bef5599375f7819d0294375938`; the current geometry source is `lib/main.dart` blob `0341122a53e7a6bb00d9f079bfcb350b385c83cb`, and its regression test is `test/widget_test.dart` blob `eeee8dcdb9dd88b985145e059913759f5f325920`.
