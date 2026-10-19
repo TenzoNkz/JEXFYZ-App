@@ -1,5 +1,15 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-19 — Seven-icon animation rework (source only; NOT RELEASED)
+
+- Battery and Hotside warning icons now combine anchored thermal tongues, a restrained red luminous halo and three phase-locked ember drops that fall top-to-bottom within their cavities and fade at both ends, mirroring the vertical fall family of Peltier snow while retaining distinct fire shapes/colour.
+- Fan rotor geometry changes from five narrow blades to three broad swept blades. Its existing rotation/timing/state gates remain authoritative; the three fixed airflow ribbons are unchanged.
+- Applied a shared blurred luminous-core treatment to Battery/Hotside, Voltage, Adaptive arcs, Peltier crystal, Fan rotor and Fan Speed active arc/needle. Voltage branch-spine animation, two-arrow Adaptive flow, falling Peltier snow and the half-circle PWM gauge stay data/state driven.
+- Added/updated source-contract tests for falling fire, three-blade rotor geometry, helper boundaries and unchanged state gates. These tests have NOT RUN in this execution.
+- Baseline successful release is Build #92 / [Actions run 39211726896](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39211726896), exact source `6610fecb3e47d9941cbf96043b7da3b2a869753b`, 98/98 Flutter tests passed. This source follow-up is newer than Build #92 and is NOT RUN / NOT RELEASED. No App Build, Firmware/BIN/Firebase/OTA/flash or device operation occurred.
+- Live source/test blobs after this patch: `lib/main.dart` `18f0a4d11948c7d584e8eeff5fd88eb6230d17e8`; `test/widget_test.dart` `d4a4006fd74b9e4a348b1ddcac1ae31a043a1b53`. Documentation and final transfer hashes will be re-fetched after the last write.
+
+
 ## 2026-10-19 — Finalize Industrial Premium / Precise icon-motion policy (source follow-up; NOT RELEASED)
 
 - The approved dashboard icon refresh is present in `lib/main.dart`: temperature lava tongues with 280 ms warning transitions, closed-spine voltage animation with staggered strikes, restrained Adaptive halo, faceted Peltier crystal, five-blade Fan rotor with three invariant airflow ribbons, and event-driven semicircle Fan Speed gauge with unknown-state needle suppression.
