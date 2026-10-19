@@ -192,9 +192,6 @@ void main() {
       'jexParticleBoundaryFade(',
       'final radius = s * (.080 + .012 * strength)',
       'final crystalRotation = active ? math.sin(angle) * .035 : 0.0',
-      'TickerFuture _retargetFanRotation(',
-      'jexNormalizedFanProgress(fanPhaseController.value)',
-
       'final rotor = _fanSilhouette(s, angle)',
       'final needleAngle = start + sweep * safeLevel',
       'final warningBlend = active',
@@ -209,6 +206,8 @@ void main() {
     expect(source, contains('JexAnimatedIconKind.hotside => const Duration(milliseconds: 1650)'));
     expect(source, contains('JexAnimatedIconKind.peltier => const Duration(milliseconds: 2100)'));
     expect(source, contains('_retargetWarningLevel(widget.connected && widget.warning)'));
+    expect(source, contains('TickerFuture _retargetFanRotation('));
+    expect(source, contains('jexNormalizedFanProgress(fanPhaseController.value)'));
     expect(painter, isNot(contains('_adaptiveLoop(s, angle)')));
     expect(painter, contains('inner.left - sheenWidth + (inner.width + sheenWidth * 2) * p'));
     expect(painter, contains('final dotX = active ? s * (-.06 + 1.12 * p) : s * .12;'));
