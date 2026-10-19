@@ -26,7 +26,7 @@ Latest successful released artifact is **Build #95** / [Actions run 39217718351]
 
 ## Current animation smoothness follow-up — source only / NOT RUN / NOT RELEASED
 
-- New source blob: `lib/main.dart` `f0bc1375799e7b9e4466a3124ddb031d5f58e522`; updated test blob: `test/widget_test.dart` `653a67f3c946bb10c0da350f9677e19b3275ed58`.
+- New source blob: `lib/main.dart` `f0bc1375799e7b9e4466a3124ddb031d5f58e522`; updated test blob: `test/widget_test.dart` `aaf911cdcf5e23a23b80c2ef47ca4e11d406f9cf`.
 - Main UI icon cycles are Battery 1.5 s, Hotside 1.65 s, Voltage 1.0 s, Adaptive 2.3 s, Peltier 2.1 s; fire/snow particles are larger with eased wrap fades; phase drift is periodic; whole-icon breathing is removed; Peltier crystal rocking is separate from snowfall; Fan rate uses an integrated phase and a 420 ms smooth angular-rate retarget. Home glyphs are 26 dp in the existing 38×38 dp tile.
 - The change preserves the existing semantic colours, telemetry authority, warnings, BLE/control behavior, Fan PWM policy, three blades/airflow ribbons, and unknown-value handling.
 - The new tests/analyzer are **NOT RUN** because neither Flutter nor Dart CLI is installed. The new source is not included in Build #95. Physical-device smoothness and profile-mode frame workload remain UNVERIFIED. No Build App, Firmware/BIN, Firebase, OTA, flash, or device operation was performed.
