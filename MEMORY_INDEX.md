@@ -4,19 +4,26 @@ Reconciled against live GitHub `main` on 2026-10-19 (Asia/Jakarta). This file is
 
 ## Current verified release and source checkpoint
 
-- Latest successful verified release: **Build #91** / [Actions run `39207456720`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39207456720), exact release source `e9f6d8ca3ea936a1c4c05b2fbbd228dda5e2cdd1`. All 21 gates passed, 97/97 Flutter tests and analysis passed, APK V1/V2/V3/certificate checks, corresponding-source ZIP, downloaded assets, Release metadata and `refs/tags/jexfyz-latest` equality passed. Native JUnit tasks were NO-SOURCE.
-- Build #91 assets: APK ID `655397774`, SHA-256 `8a111df269a5093dd3b7de9e086ab0c2fddda4bc5f1c71a1cf237daa7542863c`; source ZIP ID `655397777`, SHA-256 `78ccbbdeaf3dfd9353f652c09e4e6ddcf2aa83ce77b771ad1822078a5a541ed6`.
-- The approved Home icon refresh (thermal lava/warning fades, voltage branch strikes, Adaptive halo, Peltier faceted crystal, fixed-airflow five-blade Fan and true half-circle Fan Speed gauge) is included in Build #91 source. Current follow-up makes generic navigation/settings/action glyphs static rather than looping independently of telemetry and adds a source-contract regression.
-- This source/test follow-up occurs after Build #91. It is **SOURCE IMPLEMENTED / NOT RUN / NOT RELEASED** until a separate `@Thinking Eksekusi Build App!` runs the guarded validation/release pipeline. Build #91 is still a verified historical release for its exact source; current main is newer and must not be described as already packaged.
-- Exact new source blobs: `lib/jex_animated_glyph.dart` `b37fc4e0807c874b2f01db00c7f606810cb5deca`; `test/widget_test.dart` `5f1c5345f6ea1e0114c72360414362d3667be276`. Current post-write HEAD/tree and document blobs will be recorded in final `CHAT_TRANSFER.md`.
-- Active editable Firmware source remains `firmware/JEXFYZ-V6.7.ino`, embedded `FW_VERSION="V6.7"`; user compilation/online update remains USER-REPORTED; source-to-BIN provenance/device installation are UNVERIFIED. No firmware, BIN, Firebase, OTA or device operation was performed.
-- App config remains pubspec `1.0.0+3`, package `com.horizontalzzz.jexfyz`; preserve Gradle `versionName "Telegram @horizontalzzz"`. Workflow owner/title/token guard and issue-event trigger remain unchanged.
+- Latest successful verified release: **Build #92** / [Actions run `39211726896`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39211726896), source `6610fecb3e47d9941cbf96043b7da3b2a869753b`. All 21 gates passed, 98/98 Flutter tests and analyzer passed, APK V1/V2/V3/certificate checks, corresponding-source ZIP, downloaded asset digests, Release metadata and `refs/tags/jexfyz-latest` equality passed. Native JUnit tasks were NO-SOURCE.
+- Build #92 APK ID `655482761`, SHA-256 `ee3ce9cb9697b8bcabf4da829fc64c16524bbe914eb83901f5d21c855d706926`; source ZIP ID `655482764`, SHA-256 `7ec969d092638790dd36b5d71c758b68cdc11a0e8db2bdfb390c812f541e677a`.
+- Current source follow-up after Build #92 reworks the seven requested indicators: Battery/Hotside gain downward-falling fire particles, Voltage has a luminous bolt core, Adaptive uses two rotating arrows, Peltier retains a six-branch snowflake and falling snow, Fan changes to three broad swept blades, and Fan Speed keeps the half-circle PWM gauge. A common restrained luminous-core style is added across the set.
+- Source/test follow-up is **SOURCE IMPLEMENTED / NOT RUN / NOT RELEASED** until separately authorized Build App validation. Build #92 remains the latest successful artifact for its exact source; it does not contain this update.
+- Exact new blobs: `lib/main.dart` `18f0a4d11948c7d584e8eeff5fd88eb6230d17e8`; `test/widget_test.dart` `ab0862470846455465b65ec294d33d39c07aac62`. Their new contracts have not been run/analyzed/built.
+- Firmware source remains `firmware/JEXFYZ-V6.7.ino`, `FW_VERSION="V6.7"`; user compile/update report remains USER-REPORTED, source-to-BIN/device provenance UNVERIFIED. No firmware/BIN/Firebase/OTA/device action occurred.
+- App config remains pubspec `1.0.0+3`, package `com.horizontalzzz.jexfyz`; preserve Gradle `versionName "Telegram @horizontalzzz"`. Build workflow guard remains unchanged.
 
-## Approved icon motion and latest source follow-up — NOT RELEASED
+## Approved seven-icon redesign — NOT RELEASED
 
-- Design decisions are finalized: Industrial Premium balanced geometry; precise, telemetry/state-driven motion; all in-app status indicators; preserve semantic colours, controls, voltage/Adaptive/PWM/safety behavior; no fabricated status when telemetry is unknown; vector-driven motion as the base with Rive/Lottie only when justified.
-- Generic navigation/settings glyphs are static. Live Home indicators use the state-gated `JexAnimatedIcon` painter. Battery/Hotside/Voltage animate under the connected policy; Adaptive/Peltier/Fan/LED animate only with authoritative ON; Fan Speed is event-driven; Bluetooth is static. BLE disconnect stops/resets custom controllers.
-- Native Floating Monitor retains its compact letter display B/H/V/A/P/F (F = Fan Speed), not new pictograms. All metric values/status still derive from telemetry; disconnected/unknown values are `--`. See `DESIGN_NOTES.md` and `APP_NOTES.md` for exact behavior.
+- Battery: battery shell/thermal level plus anchored flames and three falling ember drops on warning.
+- Hotside: continuous thermometer and live level plus downward-falling embers clipped inside its contour on warning; thresholds/safety unchanged.
+- Voltage: closed lightning spine with current pulse and staggered inner strikes; 5V red, 9V green, 12V blue.
+- Adaptive: two opposing arrows on separate arcs, rotating together only when authoritative state is ON.
+- Peltier: six-arm snowflake/crystal, faceted core and falling branched snowflakes behind it.
+- Fan: exactly three broad curved blades, layered hub, existing voltage/PWM-controlled rotor speed and three fixed airflow ribbons.
+- Fan Speed: true upper semicircle, smooth authoritative PWM retarget, OFF left / 100% right, hide needle when unknown/disconnected.
+- Shared luminous core/glow remains restrained. BLE disconnect stops/resets custom indicator animation; unknown telemetry is never represented as fabricated OFF/0. Floating Monitor stays letters-only B/H/V/A/P/F; changing that overlay to pictograms requires separate layout approval.
+- Physical rendering, animation smoothness, BLE/PWM behavior and thermal/cooling safety remain UNVERIFIED. Only `@Thinking Eksekusi Build App!` authorizes App validation/build/release.
+
 
 
 ## New-chat boot order
@@ -64,12 +71,12 @@ Reconciled against live GitHub `main` on 2026-10-19 (Asia/Jakarta). This file is
 | `firmware/JEXFYZ-V6.7.ino` | Active editable V6.7 source; user compiles separately |
 | `archive/*.md` | Immutable forensic snapshots; stale “CURRENT” claims remain historical, paths retained verbatim |
 
-## Source fingerprints (live main after approved glyph follow-up; exact final hashes in CHAT_TRANSFER.md)
+## Source fingerprints (after seven-icon rework; exact final HEAD/tree in CHAT_TRANSFER.md)
 
-- `lib/main.dart`: `b13793f4ff5c5471690f49999240194bd2e4c271` (Home painter validated by Build #91; follow-up does not change this file)
+- `lib/main.dart`: `18f0a4d11948c7d584e8eeff5fd88eb6230d17e8` (seven-icon visual rework; NOT RUN / NOT RELEASED)
 - `lib/app_settings.dart`: `36927823c91904a35d87d2f21bd77932a2214e83`
 - `lib/floating_monitor.dart`: `31b45ea08b08ac7fc25ebd991dca873b889fdd14`
-- `test/widget_test.dart`: `5f1c5345f6ea1e0114c72360414362d3667be276` (includes new static-action-glyph source contract; follow-up NOT RUN)
+- `test/widget_test.dart`: `ab0862470846455465b65ec294d33d39c07aac62` (falling-fire, three-blade and luminous-core source contracts; NOT RUN)
 - `test/floating_monitor_layout_contract_test.dart`: `87e805095202ac3edfe55b9aeb3138c7c6886375`
 - `test/v6_7_qc_contract_test.dart`: `52671a0c9014ab48cfe3475d775d4457fede7124`
 - `test/app_protocol_notify_contract_test.dart`: `92214dd90178c705844d3979d3f8f7bd17bcc4b8`
