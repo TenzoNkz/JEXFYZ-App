@@ -86,7 +86,7 @@ void main() {
     expect(source, contains('static void processAdaptiveFanControl();'));
     expect(source, contains('processAdaptiveFanControl();'));
     // The NTC acquisition contract remains a single calibrated sample each second.
-    expect(RegExp(r'analogReadMilliVolts\\(PIN_NTC\\)').allMatches(source).length, 1);
+    expect(RegExp(r'analogReadMilliVolts\(PIN_NTC\)').allMatches(source).length, 1);
     expect(source, contains('FAN_PWM_MIN = 50'));
     expect(source, contains('FAN_PWM_MAX = 100'));
   });
