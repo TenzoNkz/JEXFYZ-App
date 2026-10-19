@@ -589,11 +589,11 @@ void main() {
   test('Peltier re-arm notify uses the 1C safety hysteresis threshold', () {
     expect(
       peltierRearmNotice(45, AppLanguage.english),
-      'Peltier is locked for safety. Cool the hot side to ≤ 44°C before retrying.',
+      'Peltier is locked for safety. Cool the hot side to ≤ 44°C, then try again.',
     );
     expect(
       peltierRearmNotice(45, AppLanguage.indonesia),
-      'Peltier dikunci demi keselamatan. Dinginkan sisi panas hingga ≤ 44°C sebelum mencoba lagi.',
+      'Peltier dikunci demi keselamatan. Turunkan suhu sisi panas hingga ≤ 44°C, lalu coba lagi.',
     );
   });
 
@@ -798,7 +798,7 @@ void main() {
         mode: 'Online',
         stage: 'Image validation',
       ),
-      'OTA failed • Online • Image validation',
+      'Firmware update failed • Online • Image validation',
     );
     expect(
       localizedOtaFailureSummary(
@@ -806,7 +806,7 @@ void main() {
         mode: 'Online',
         stage: 'Validasi citra',
       ),
-      'OTA gagal • Online • Validasi citra',
+      'Pembaruan firmware gagal • Online • Validasi citra',
     );
     expect(
       localizedOtaFailureSummary(
@@ -814,7 +814,7 @@ void main() {
         mode: 'OTA',
         stage: 'Unknown stage',
       ),
-      'OTA failed',
+      'Firmware update failed',
     );
     expect(
       localizedOtaSuccessSummary(
@@ -822,7 +822,7 @@ void main() {
         mode: 'Online',
         version: 'V2.5',
       ),
-      'OTA successful • Online • V2.5',
+      'Firmware update completed • Online • V2.5',
     );
     expect(
       localizedOtaSuccessSummary(
@@ -830,7 +830,7 @@ void main() {
         mode: 'OTA',
         version: 'V2.5',
       ),
-      'OTA berhasil • V2.5',
+      'Pembaruan firmware selesai • V2.5',
     );
 
     final source = File('lib/main.dart').readAsStringSync();
@@ -844,6 +844,38 @@ void main() {
     expect(formatter, isNot(contains("fields['ERROR']")));
     expect(formatter, isNot(contains('code $code')));
     expect(formatter, isNot(contains("raw.replaceAll('_', ' ').toLowerCase()")));
+
+    final compactStart = source.indexOf('String _compactNotifyMessage(String message)');
+    final normalizerIndex = source.indexOf('normalizeHomeNotifyText(', compactStart);
+    final otaFormatterIndex = source.indexOf('return _friendlyOtaResult(trimmed);', compactStart);
+    expect(compactStart, isNonNegative);
+    expect(otaFormatterIndex, isNonNegative);
+    expect(normalizerIndex, greaterThan(otaFormatterIndex));
+  });
+
+  test('Home Notify card removes connection badge and keeps centered two-line copy', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final start = source.indexOf('Widget _homeNotify() {');
+    final end = source.indexOf('Widget _card({required Widget child', start);
+    expect(start, isNonNegative);
+    expect(end, greaterThan(start));
+    final card = source.substring(start, end);
+
+    expect(card, contains('BoxConstraints(minHeight: 48)'));
+    expect(card, contains('maxLines: 2'));
+    expect(card, contains('softWrap: true'));
+    expect(card, contains('textAlign: TextAlign.center'));
+    expect(card, contains('Stack('));
+    expect(card, isNot(contains('FittedBox(')));
+    expect(card, isNot(contains('_notifyStatusLabel()')));
+    expect(card, isNot(contains('noticeChipFill')));
+    expect(card, isNot(contains('offlineStatusColor')));
+
+    final categoryStart = source.indexOf('String _notifyStateLabel()');
+    final categoryEnd = source.indexOf('Widget _homeNotify() {', categoryStart);
+    expect(categoryStart, isNonNegative);
+    expect(categoryEnd, greaterThan(categoryStart));
+    expect(source.substring(categoryStart, categoryEnd), contains('NOTIFY • $category'));
   });
 
   test('Live cooling telemetry clears stale command errors only in a healthy state', () {
@@ -1610,8 +1642,8 @@ void main() {
       hotLimit: 45,
       language: AppLanguage.indonesia,
     );
-    expect(englishSafety, 'Peltier is locked for safety. Cool the hot side to ≤ 44°C before retrying.');
-    expect(indonesiaSafety, 'Peltier dikunci demi keselamatan. Dinginkan sisi panas hingga ≤ 44°C sebelum mencoba lagi.');
+    expect(englishSafety, 'Peltier is locked for safety. Cool the hot side to ≤ 44°C, then try again.');
+    expect(indonesiaSafety, 'Peltier dikunci demi keselamatan. Turunkan suhu sisi panas hingga ≤ 44°C, lalu coba lagi.');
     expect(englishSafety, isNot(contains('PELTIER_SAFETY_LATCH')));
     expect(indonesiaSafety, isNot(contains('PELTIER_SAFETY_LATCH')));
 
@@ -1645,7 +1677,7 @@ void main() {
         hotLimit: 45,
         language: AppLanguage.english,
       ),
-      'Device status needs attention. Check the connection and try again.',
+      'Check the device connection, then try again.',
     );
     expect(
       normalizeHomeNotifyText(
