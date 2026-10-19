@@ -154,8 +154,8 @@ String normalizeLedColor(String value) {
 String peltierRearmNotice(int hotLimit, AppLanguage language) {
   final target = peltierRearmTarget(hotLimit);
   return JexText.phrase(
-    'Peltier is locked for safety. Cool the hot side to ≤ ' + target.toString() + '°C before retrying.',
-    'Peltier dikunci demi keselamatan. Dinginkan sisi panas hingga ≤ ' + target.toString() + '°C sebelum mencoba lagi.',
+    'Peltier is locked for safety. Cool the hot side to ≤ ' + target.toString() + '°C, then try again.',
+    'Peltier dikunci demi keselamatan. Turunkan suhu sisi panas hingga ≤ ' + target.toString() + '°C, lalu coba lagi.',
     language,
   );
 }
@@ -349,8 +349,8 @@ String normalizeHomeNotifyText(
     raw = raw.substring(0, suffixCode.start).trim();
   }
 
-  const genericIssue = 'Device status needs attention. Check the connection and try again.';
-  const genericIssueId = 'Status perangkat perlu diperiksa. Periksa koneksi, lalu coba lagi.';
+  const genericIssue = 'Check the device connection, then try again.';
+  const genericIssueId = 'Periksa koneksi perangkat, lalu coba lagi.';
   if (raw.isEmpty) return JexText.phrase(genericIssue, genericIssueId, language);
 
   final lower = raw.toLowerCase();
@@ -6617,8 +6617,23 @@ void _handleAckLine(String line) {
   }
 
   String _compactNotifyMessage(String message) {
+    final trimmed = message.trim();
+    final upper = trimmed.toUpperCase();
+
+    // OTA envelopes and legacy result tokens must pass through the dedicated
+    // localized formatter before any general STATUS normalization.
+    if (isTransientOtaResultEvent(trimmed) ||
+        upper == 'IN_PROGRESS' ||
+        upper == 'LOCAL_SUCCESS' ||
+        upper.startsWith('IN_PROGRESS|') ||
+        upper.startsWith('SUCCESS_') ||
+        upper.startsWith('UPLOAD_SIZE_MISMATCH_') ||
+        upper.startsWith('OTA_END_ERROR_')) {
+      return _friendlyOtaResult(trimmed);
+    }
+
     final raw = normalizeHomeNotifyText(
-      message,
+      trimmed,
       hotLimit: hotLimit,
       language: appLanguageNotifier.value,
     );
@@ -6764,19 +6779,10 @@ void _handleAckLine(String line) {
     return JexText.of('notify', appLanguageNotifier.value);
   }
 
-  String _notifyStatusLabel() => homeNotifyConnectionLabel(
-        notice: notice,
-        isConnecting: _bleConnecting,
-        isSyncing: syncing && !dashboardReady,
-        connected: connected,
-        language: appLanguageNotifier.value,
-      );
-
   // AI-METHOD: _homeNotify — Render the Home NOTIFY card.
   Widget _homeNotify() {
     final headerDark = appThemeNotifier.value != AppThemePreset.light;
     final noticeTextColor = headerDark ? const Color(0xFFF4F6FA) : const Color(0xFF16181D);
-    final offlineStatusColor = headerDark ? Colors.white38 : const Color(0xFF5C626B);
     final custom = notice.trim().toUpperCase();
     final hasError = isNotifyErrorMessage(custom);
     final warning = connected &&
@@ -6794,14 +6800,10 @@ void _handleAckLine(String line) {
         : alert
             ? const Color(0xFFFFB72B)
             : const Color(0xFF4DE7B7);
-    final lightStatusTextColor = lightThemeAccentText(color);
-    final noticeChipFill = headerDark
-        ? const Color(0x12FFFFFF)
-        : color.withValues(alpha: hasError ? .11 : .08);
     return Container(
       width: double.infinity,
-      height: 44,
-      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+      constraints: const BoxConstraints(minHeight: 48),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 7),
       decoration: BoxDecoration(
         color: headerDark
             ? color.withValues(alpha: hasError ? .12 : .07)
@@ -6813,93 +6815,68 @@ void _handleAckLine(String line) {
               : color.withValues(alpha: .30),
         ),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 45,
-            height: 43,
-            child: Center(
-              child: JexAnimatedIcon.glyph(icon: icon, size: 27, color: color, active: true),
-            ),
-          ),
-          const SizedBox(width: 6),
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  _notifyStateLabel(),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
+      child: SizedBox(
+        width: double.infinity,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: SizedBox(
+                width: 44,
+                height: 43,
+                child: Center(
+                  child: JexAnimatedIcon.glyph(
+                    icon: icon,
+                    size: 27,
                     color: color,
-                    fontSize: 8.5,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 0.8,
+                    active: true,
                   ),
                 ),
-                const SizedBox(height: 2),
-                LayoutBuilder(
-                  builder: (context, constraints) {
-                    return SizedBox(
-                      width: constraints.maxWidth,
-                      height: 13,
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          // AI-METHOD: _professionalNotice — Normalize technical status into project UI wording.
-                          _professionalNotice(),
-                          maxLines: 1,
-                          softWrap: false,
-                          style: TextStyle(
-                            color: noticeTextColor,
-                            fontSize: 10.5,
-                            decoration: TextDecoration.none,
-                            height: 1.0,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 6),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-            decoration: BoxDecoration(
-              color: noticeChipFill,
-              borderRadius: BorderRadius.circular(7),
-              border: Border.all(
-                color: headerDark
-                    ? color.withValues(alpha: .16)
-                    : lightStatusTextColor.withValues(alpha: .24),
               ),
             ),
-            child: Text(
-              _notifyStatusLabel(),
-              style: TextStyle(
-                decoration: TextDecoration.none,
-                color: hasError
-                    ? (headerDark
-                        ? const Color(0xFFFF8A98)
-                        : lightThemeAccentText(const Color(0xFFFF5164)))
-                    : connected
-                        ? (headerDark ? Colors.cyanAccent : lightStatusTextColor)
-                        : offlineStatusColor,
-                fontSize: 7.3,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 0.75,
+            Padding(
+              // Symmetric insets center both lines across the full card while
+              // keeping the left status icon clear of the text.
+              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 2),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    _notifyStateLabel(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: color,
+                      fontSize: 8.5,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.8,
+                    ),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    // Keep normal font size; long messages wrap to two centered lines.
+                    _professionalNotice(),
+                    maxLines: 2,
+                    softWrap: true,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: noticeTextColor,
+                      fontSize: 11,
+                      decoration: TextDecoration.none,
+                      height: 1.15,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
