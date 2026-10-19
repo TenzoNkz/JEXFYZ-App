@@ -887,7 +887,7 @@ void main() {
     final categoryEnd = source.indexOf('Widget _homeNotify() {', categoryStart);
     expect(categoryStart, isNonNegative);
     expect(categoryEnd, greaterThan(categoryStart));
-    expect(source.substring(categoryStart, categoryEnd), contains('NOTIFY • \\$category'));
+    expect(source.substring(categoryStart, categoryEnd), contains('NOTIFY • \$category'));
   });
 
   test('Home indicator rows preserve the original 44 dp vertical spacing', () {
