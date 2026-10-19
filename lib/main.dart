@@ -1994,7 +1994,7 @@ class _JexIconPainter extends CustomPainter {
       final width = s * ((thermometer ? .042 : .036) + (i % 3) * .006) * strength;
       final drift = s * .022 * math.sin(thermalPhase + i * 1.13);
       final x = s * (.5 + lanes[i] + sourceBias * math.sin(i * .8));
-      final lean = s * .035 * math.sin(thermalPhase * 1.5 + i * 1.07);
+      final lean = s * .035 * math.sin(thermalPhase * 2 + i * 1.07);
 
       final outer = _flameTonguePath(x + drift, baseline, height, width, lean: lean);
       final middle = _flameTonguePath(
@@ -2031,11 +2031,11 @@ class _JexIconPainter extends CustomPainter {
     // Fade-in/out at both ends prevents a visible pop when each fragment respawns.
     const lavaLanes = <double>[-.24, .035, .25];
     for (var i = 0; i < lavaLanes.length; i++) {
-      final life = (phase / (math.pi * 2) * 2 + i / lavaLanes.length) % 1.0;
+      final life = ((phase / (math.pi * 2) * 2 + i / lavaLanes.length) % 1.0).toDouble();
       final rise = 1.0 - (1.0 - life) * (1.0 - life);
       final fadeIn = (life / .16).clamp(0.0, 1.0).toDouble();
       final fadeOut = ((1.0 - life) / .30).clamp(0.0, 1.0).toDouble();
-      final alpha = math.min(fadeIn, fadeOut) * strength;
+      final alpha = (math.min(fadeIn, fadeOut) * strength).toDouble();
       if (alpha <= .01) continue;
       final x = s * (.5 + lavaLanes[i]) +
           s * .035 * math.sin(phase * 2 + i * 1.7);
