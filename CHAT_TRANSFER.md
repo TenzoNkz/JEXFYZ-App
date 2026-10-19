@@ -5,7 +5,7 @@ Refreshed after Home STATUS / NOTIFY bilingual copy, OTA summary sanitization an
 ## 1. Authority, repository roles and command protocol
 
 - Canonical editable repository: TenzoNkz/JEXFYZ-App, branch main. Continue directly on main; do not create branches/PRs unless explicitly requested.
-- Pre-transfer HEAD: `f861f172461cf44da125b00fc85473c34151dd09`. Parent: `a5d6eed6b23891f6c9a3a4dbb036e4c771f15cb2`. Tree: `ba98ef4158cf4cbf29210114247adba76d428106`.
+- Pre-transfer HEAD: `eef8a5c1b4a28cef06ebd9b87a12e1b4df49777f`. Parent: `05dcca182e3eb11473c2df733b7a9410a5d5e94c`. Tree: `eef8a5c1b4a28cef06ebd9b87a12e1b4df49777f`.
 - Artifact-only repository: TenzoNkz/JEXFYZ-Firmware must contain exactly JEXFYZ.cpp.bin. Last inspected blob dca6a1267762152519f6d2889e4f0adf46fd8803, 1,457,008 bytes. Only tree metadata was inspected; the payload was not read and source-to-BIN provenance is UNVERIFIED.
 - Commands: @Thinking Diskusi! is read-only; @Thinking Eksekusi Full! permits scoped App source/tests/docs/audit/commit but not App Build/Firmware/device actions; @Thinking Eksekusi Build App! alone authorizes the official App build/QC/release pipeline; @Thinking Chat Stuck! recovers the authorized task without widening scope. Retired aliases: @Thinking Build App!, @Thinking Eksekusi & Build App!, and standalone @Thinking Eksekusi!.
 - Build workflow remains .github/workflows/jexfyz-app-build-trigger.yml, blob 9dc1e61ba49f19cad4edbb99a832d5333d9f0f12. It is guarded to issues.opened/reopened with repository owner/title/body token only. No push/PR/manual bypass.
@@ -22,9 +22,9 @@ Refreshed after Home STATUS / NOTIFY bilingual copy, OTA summary sanitization an
 
 ## 3. Current post-Build-#100 STATUS / NOTIFY copy and centered two-line card — NOT RUN / NOT RELEASED
 
-- Current source: `lib/main.dart` blob `5282fb226c818b8f4601ec89953c0c47ff4861e9`.
-- Localization table: `lib/app_settings.dart` blob `562e42c4dc1ee2ac0c15b3f7211e55fa7b11bac6`.
-- Regression tests: `test/widget_test.dart` blob `0ebbf0cd03f041a44afa314d66b77278e26c646e`.
+- Current source: `lib/main.dart` blob `b0d3a18f79b903bc8574d03a95cbc134b9234f20`.
+- Localization table: `lib/app_settings.dart` blob `8f228000d38d73038c06f569c052b1af601288a5`.
+- Regression tests: `test/widget_test.dart` blob `df1b400b46cbe1e1e79c95e0cf537fbe4d7efd98`.
 - The prior raw `PELTIER_SAFETY_LATCH` suffix is mapped to localized safety guidance. Unknown reason codes fall back to generic English/Indonesian copy; internal identifiers remain diagnostic-only.
 - The separate CONNECTED/DISCONNECTED badge is removed. The card keeps a `NOTIFY • category` heading, centers heading/body, grows with content, and wraps long body text to at most two lines without shrinking the font. Short messages remain one line.
 - Common unconfirmed-command, connection, and OTA messages use concise bilingual copy. Raw OTA envelopes and legacy result identifiers reach the dedicated localized OTA formatter before generic normalization; raw ERROR/CODE/event identifiers are not user-facing.
@@ -47,17 +47,17 @@ Refreshed after Home STATUS / NOTIFY bilingual copy, OTA summary sanitization an
 
 ## 5. Source and canonical documentation hashes immediately before this transfer write
 
-- `lib/main.dart`: `5282fb226c818b8f4601ec89953c0c47ff4861e9`
-- `lib/app_settings.dart`: `562e42c4dc1ee2ac0c15b3f7211e55fa7b11bac6`
-- `test/widget_test.dart`: `0ebbf0cd03f041a44afa314d66b77278e26c646e`
-- `DESIGN_NOTES.md`: `45d527c8e38dfa4a0302a753ed6aa85936275f36`
-- `APP_NOTES.md`: `9e087872abace197a6d1bbfb338e341a3719f93c`
-- `PROJECT_STATE.md`: `24c94493248fe81a025428fdc0f1f853e4d0b1d9`
-- `MEMORY_INDEX.md`: `378e9d9fe7eaa081093004aa77677a7e16b097d7`
-- `HANDOVER.md`: `6b740a352b659f24114eff90eda6937f88f8e5c2`
+- `lib/main.dart`: `b0d3a18f79b903bc8574d03a95cbc134b9234f20`
+- `lib/app_settings.dart`: `8f228000d38d73038c06f569c052b1af601288a5`
+- `test/widget_test.dart`: `df1b400b46cbe1e1e79c95e0cf537fbe4d7efd98`
+- `DESIGN_NOTES.md`: `b97721fa12e25b9e8f3d3ef8815958cd1a7d9aab`
+- `APP_NOTES.md`: `e2f994c5f4ffc955e1e1c38360e071731d2cbd2b`
+- `PROJECT_STATE.md`: `de70df543076769795d50b9e4ec3ff5313caeb85`
+- `MEMORY_INDEX.md`: `78ee6e116ef65790bb9abd6ed0cc26ad0c00c387`
+- `HANDOVER.md`: `38118b691a4b3fa1f2d081078abc3bcdf83816c1`
 - `BUILD_NOTES.md`: `0635faeb83aade3adf37e2a8643c0b8141718d08`
-- `APP_BUILD_REPORT.md`: `5197d35a3a4986c6af277c33b091b69aaf69b042`
-- `CHANGELOG.md`: `c540d5a903d032bf181dfc73578ffe471af1e091`
+- `APP_BUILD_REPORT.md`: `b688de51bf1d9c068bd80a63c912e033be845e03`
+- `CHANGELOG.md`: `3542b8d0d94f152261a8a59ead0a78c148c0623b`
 - `README.md`: `a68b24c4cda137901193644b7f6ff1173ac15f4d`
 - `CHAT_RULES.md`: `58f48fc129fe89e4c563709d04febda451da7de3`
 - Build workflow: `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`
@@ -74,7 +74,7 @@ Refreshed after Home STATUS / NOTIFY bilingual copy, OTA summary sanitization an
 ## 7. Audit / operations not performed
 
 - Inspected live source, localization table, current tests, canonical App/design/state/handover notes, workflow, and latest Build #100 report before editing.
-- Committed Home NOTIFY card cleanup (remove connected/disconnected badge, retain `NOTIFY • category`, horizontally centered one/two-line body, content-driven height), bilingual copy refinements, dedicated OTA envelope formatting, and regression source-contract assertions directly to `main`.
+- Committed Home NOTIFY card cleanup (remove connected/disconnected badge, retain `NOTIFY • category`, horizontally centered one/two-line body, content-driven height), bilingual copy refinements, explicit accepted-setting messages, dedicated OTA envelope formatting, and regression source-contract assertions directly to `main`.
 - Flutter/Dart tests and analyzer were NOT RUN because no Flutter/Dart executable is installed in this environment. Static GitHub content checks confirmed badge removal, absence of `FittedBox` in `_homeNotify`, two-line/center properties, updated test expectations, and OTA formatting order; this is not test-pass evidence.
 - No App Build/release, APK build, release-tag movement, Firmware edit/compile, BIN payload read/write, Firebase metadata change, OTA, flash or device operation occurred.
 - Build #100 remains the latest successful artifact and does not contain these notification source/layout changes. Actual Flutter layout, language switching, visible OTA messages, and command classification remain unverified until tests are executed and the new APK is reviewed on-device.
