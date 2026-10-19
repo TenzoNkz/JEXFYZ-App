@@ -12,7 +12,7 @@ Reconciled against live GitHub `main` on 2026-10-19 (Asia/Jakarta). This file is
 - Active Firmware source: `firmware/JEXFYZ-V6.7.ino`, `FW_VERSION="V6.7"`, blob `efe6eaa62c178ab536fb68c06a310e54826cbaf2`. User-reported compilation/online update on 2026-10-18 is **USER-REPORTED**; source-to-BIN provenance, compile log, OTA logs and installed version remain **UNVERIFIED**.
 - The latest read-only artifact-repo tree for `TenzoNkz/JEXFYZ-Firmware` is not truncated and contains exactly `JEXFYZ.cpp.bin`, blob `dca6a1267762152519f6d2889e4f0adf46fd8803`, 1,457,008 bytes. The BIN payload was not read or changed; path/version/date do not prove source-to-BIN identity.
 - App config: pubspec `1.0.0+3`, Android applicationId `com.horizontalzzz.jexfyz`, minSdk 24, targetSdk 36, compileSdk 37. Preserve Gradle `versionName "Telegram @horizontalzzz"` exactly.
-- The last complete App tree scan returned 67 entries (49 blobs/18 trees), five branches and zero open PRs. Re-fetch for any later session.
+- Full audit baseline at the start of this documentation reconciliation: main HEAD/tree `e224c5e1d3e86def06a5b97b0111a6e9c33e979a`, recursive tree 67 entries (49 blobs/18 trees), `truncated=false`, five branches and zero open PRs. This is a baseline, not the later final HEAD; `CHAT_TRANSFER.md` records the final pre-transfer parent snapshot.
 
 ## New-chat boot order
 
