@@ -1942,7 +1942,7 @@ class _JexIconPainter extends CustomPainter {
         width * .29,
       );
       final outerColor = Color.lerp(
-        const Color(0xFFB91C1C),
+        hotColor,
         const Color(0xFFFF641E),
         flicker,
       )!;
