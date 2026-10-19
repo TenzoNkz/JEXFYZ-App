@@ -589,11 +589,11 @@ void main() {
   test('Peltier re-arm notify uses the 1C safety hysteresis threshold', () {
     expect(
       peltierRearmNotice(45, AppLanguage.english),
-      'Peltier is locked. Cool the Hotside to ≤ 44°C before restarting.',
+      'Peltier is locked for safety. Cool the hot side to ≤ 44°C before retrying.',
     );
     expect(
       peltierRearmNotice(45, AppLanguage.indonesia),
-      'Peltier terkunci. Dinginkan Hotside hingga ≤ 44°C sebelum menyalakan kembali.',
+      'Peltier dikunci demi keselamatan. Dinginkan sisi panas hingga ≤ 44°C sebelum mencoba lagi.',
     );
   });
 
@@ -683,6 +683,8 @@ void main() {
     expect(label(connected: false, connecting: true), 'CONNECTING');
     expect(label(connected: false, syncing: true), 'SYNCING');
     expect(label(connected: false, notice: 'Wireless ADB failed'), 'ERROR');
+    expect(label(connected: true, notice: 'The device did not confirm the Peltier change.'), 'ERROR');
+    expect(label(connected: true, notice: 'Perubahan Peltier belum terkonfirmasi.'), 'ERROR');
     expect(label(connected: false, notice: 'Bluetooth Disconnected'), 'DISCONNECTED');
     expect(label(connected: true, notice: 'Bluetooth Disconnected'), 'CONNECTED');
   });
@@ -1542,9 +1544,82 @@ void main() {
     expect(theme.scaffoldBackgroundColor, const Color(0xFF0F1013));
   });
 
+  test('Home Notify localizes safety reasons and never exposes internal tokens', () {
+    final englishSafety = normalizeHomeNotifyText(
+      'The device did not confirm the Peltier change. PELTIER_SAFETY_LATCH',
+      hotLimit: 45,
+      language: AppLanguage.english,
+    );
+    final indonesiaSafety = normalizeHomeNotifyText(
+      'Perangkat belum mengonfirmasi perubahan Peltier. PELTIER_SAFETY_LATCH',
+      hotLimit: 45,
+      language: AppLanguage.indonesia,
+    );
+    expect(englishSafety, 'Peltier is locked for safety. Cool the hot side to ≤ 44°C before retrying.');
+    expect(indonesiaSafety, 'Peltier dikunci demi keselamatan. Dinginkan sisi panas hingga ≤ 44°C sebelum mencoba lagi.');
+    expect(englishSafety, isNot(contains('PELTIER_SAFETY_LATCH')));
+    expect(indonesiaSafety, isNot(contains('PELTIER_SAFETY_LATCH')));
+
+    expect(
+      normalizeHomeNotifyText(
+        'The device did not confirm the voltage change.',
+        hotLimit: 45,
+        language: AppLanguage.english,
+      ),
+      'Voltage change not confirmed. Check device status.',
+    );
+    expect(
+      normalizeHomeNotifyText(
+        'Perangkat belum mengonfirmasi perubahan tegangan.',
+        hotLimit: 45,
+        language: AppLanguage.indonesia,
+      ),
+      'Perubahan tegangan belum terkonfirmasi. Periksa status perangkat.',
+    );
+    expect(
+      normalizeHomeNotifyText(
+        'VOLTAGE_GUARD_OR_BUSY',
+        hotLimit: 45,
+        language: AppLanguage.indonesia,
+      ),
+      'Kontrol tegangan sedang sibuk. Coba lagi sebentar.',
+    );
+    expect(
+      normalizeHomeNotifyText(
+        'UNRECOGNIZED_INTERNAL_REASON',
+        hotLimit: 45,
+        language: AppLanguage.english,
+      ),
+      'Device status needs attention. Check the connection and try again.',
+    );
+    expect(
+      normalizeHomeNotifyText(
+        'Change not confirmed. UNKNOWN_INTERNAL_CODE',
+        hotLimit: 45,
+        language: AppLanguage.indonesia,
+      ),
+      'Perintah belum terkonfirmasi. Periksa status perangkat.',
+    );
+  });
+
+  test('Home Notify section labels are concise and localized', () {
+    expect(JexText.of('notify', AppLanguage.english), 'STATUS');
+    expect(JexText.of('notify', AppLanguage.indonesia), 'STATUS');
+    expect(JexText.of('notifyBluetooth', AppLanguage.english), 'CONNECTION');
+    expect(JexText.of('notifyBluetooth', AppLanguage.indonesia), 'KONEKSI');
+    expect(JexText.of('notifySync', AppLanguage.english), 'SYNC');
+    expect(JexText.of('notifySync', AppLanguage.indonesia), 'SINKRONISASI');
+    expect(JexText.of('notifyWarning', AppLanguage.english), 'WARNING');
+    expect(JexText.of('notifyWarning', AppLanguage.indonesia), 'PERINGATAN');
+    expect(JexText.of('notifyError', AppLanguage.english), 'ERROR');
+    expect(JexText.of('notifyError', AppLanguage.indonesia), 'ERROR');
+  });
+
   test('Localized Notify error detection is language-aware', () {
     expect(isNotifyErrorMessage('Voltage change failed.'), isTrue);
     expect(isNotifyErrorMessage('Perubahan tegangan gagal.'), isTrue);
+    expect(isNotifyErrorMessage('The device did not confirm the Peltier change.'), isTrue);
+    expect(isNotifyErrorMessage('Perubahan Peltier belum terkonfirmasi.'), isTrue);
     expect(isNotifyErrorMessage('System ready.'), isFalse);
     expect(isNotifyErrorMessage('Sistem siap.'), isFalse);
   });

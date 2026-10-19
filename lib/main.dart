@@ -110,10 +110,388 @@ String normalizeLedColor(String value) {
 String peltierRearmNotice(int hotLimit, AppLanguage language) {
   final target = peltierRearmTarget(hotLimit);
   return JexText.phrase(
-    'Peltier is locked. Cool the Hotside to ≤ ' + target.toString() + '°C before restarting.',
-    'Peltier terkunci. Dinginkan Hotside hingga ≤ ' + target.toString() + '°C sebelum menyalakan kembali.',
+    'Peltier is locked for safety. Cool the hot side to ≤ ' + target.toString() + '°C before retrying.',
+    'Peltier dikunci demi keselamatan. Dinginkan sisi panas hingga ≤ ' + target.toString() + '°C sebelum mencoba lagi.',
     language,
   );
+}
+
+const Set<String> _jexKnownNotifyReasonCodes = <String>{
+  'NTC_ERROR',
+  'HOTSIDE_PROTECTION',
+  'PELTIER_SAFETY_LATCH',
+  'VOLTAGE_STEP_FAILED',
+  'VOLTAGE_FORCE_FAILED',
+  'ADAPTIVE_RISE_WAIT',
+  'ADAPTIVE_STARTING',
+  'FAN_REQUIRED',
+  'PELTIER_ON',
+  'ADAPTIVE_ACTIVE',
+  'MANUAL_12V_ONLY',
+  'VOLTAGE_TRANSITION',
+  'VOLTAGE_GUARD_OR_BUSY',
+  'SYNC_REQUIRED',
+  'RATE_LIMIT',
+  'RANGE_50_100_STEP_10',
+  'MUST_BE_BELOW_BATT12',
+  'MUST_BE_ABOVE_BATT5',
+  'UNKNOWN_GROUP',
+  'WAITING_FOR_NTC',
+  'WAITING_FOR_SENSOR_VALIDATION',
+  'DISCONNECTED',
+  'NONE',
+};
+
+/// Translate firmware/internal reason identifiers into concise UI text. Unknown codes
+/// deliberately fall back to a generic status message; raw codes remain diagnostic-only.
+String localizedNotifyReason(
+  String reason, {
+  required int hotLimit,
+  required AppLanguage language,
+}) {
+  switch (reason.trim().toUpperCase()) {
+    case 'PELTIER_SAFETY_LATCH':
+    case 'HOTSIDE_PROTECTION':
+      return peltierRearmNotice(hotLimit, language);
+    case 'NTC_ERROR':
+      return JexText.phrase(
+        'Temperature sensor fault. Peltier is disabled for safety.',
+        'Sensor suhu bermasalah. Peltier dinonaktifkan demi keselamatan.',
+        language,
+      );
+    case 'VOLTAGE_STEP_FAILED':
+      return JexText.phrase(
+        'Adaptive could not complete the voltage change.',
+        'Adaptive tidak dapat menyelesaikan perubahan tegangan.',
+        language,
+      );
+    case 'VOLTAGE_FORCE_FAILED':
+      return JexText.phrase(
+        'Safety protection could not set 5V. Check the device.',
+        'Proteksi keselamatan gagal mengatur 5V. Periksa perangkat.',
+        language,
+      );
+    case 'ADAPTIVE_RISE_WAIT':
+      return JexText.phrase(
+        'Adaptive is waiting before increasing voltage.',
+        'Adaptive menunggu sebelum menaikkan tegangan.',
+        language,
+      );
+    case 'ADAPTIVE_STARTING':
+      return JexText.phrase(
+        'Adaptive is starting.',
+        'Mode Adaptif sedang dimulai.',
+        language,
+      );
+    case 'FAN_REQUIRED':
+      return JexText.phrase(
+        'Turn on the fan before enabling Peltier.',
+        'Nyalakan kipas sebelum mengaktifkan Peltier.',
+        language,
+      );
+    case 'PELTIER_ON':
+      return JexText.phrase(
+        'Fan controls are locked while Peltier is active.',
+        'Kontrol kipas dikunci saat Peltier aktif.',
+        language,
+      );
+    case 'ADAPTIVE_ACTIVE':
+      return JexText.phrase(
+        'Manual cooling controls are unavailable in Adaptive Mode.',
+        'Kontrol pendinginan manual tidak tersedia saat Mode Adaptif aktif.',
+        language,
+      );
+    case 'MANUAL_12V_ONLY':
+      return JexText.phrase(
+        'Fan speed adjustment requires 12V in Manual Mode.',
+        'Kecepatan kipas hanya dapat diatur pada 12V dalam Mode Manual.',
+        language,
+      );
+    case 'VOLTAGE_TRANSITION':
+      return JexText.phrase(
+        'Voltage change in progress. Please wait.',
+        'Perubahan tegangan berlangsung. Tunggu sebentar.',
+        language,
+      );
+    case 'VOLTAGE_GUARD_OR_BUSY':
+      return JexText.phrase(
+        'Voltage control is busy. Try again shortly.',
+        'Kontrol tegangan sedang sibuk. Coba lagi sebentar.',
+        language,
+      );
+    case 'SYNC_REQUIRED':
+      return JexText.phrase(
+        'Device synchronization is in progress.',
+        'Sinkronisasi perangkat sedang berlangsung.',
+        language,
+      );
+    case 'RATE_LIMIT':
+      return JexText.phrase(
+        'Please wait before sending another command.',
+        'Tunggu sebentar sebelum mengirim perintah berikutnya.',
+        language,
+      );
+    case 'RANGE_50_100_STEP_10':
+      return JexText.phrase(
+        'Fan speed must be 50–100% in 10% steps.',
+        'Kecepatan kipas harus 50–100% dengan kelipatan 10%.',
+        language,
+      );
+    case 'MUST_BE_BELOW_BATT12':
+      return JexText.phrase(
+        'The 5V battery limit must be lower than the 12V limit.',
+        'Batas baterai 5V harus lebih rendah daripada batas 12V.',
+        language,
+      );
+    case 'MUST_BE_ABOVE_BATT5':
+      return JexText.phrase(
+        'The 12V battery limit must be higher than the 5V limit.',
+        'Batas baterai 12V harus lebih tinggi daripada batas 5V.',
+        language,
+      );
+    case 'UNKNOWN_GROUP':
+      return JexText.phrase(
+        'This reset request is not supported.',
+        'Permintaan reset ini tidak didukung.',
+        language,
+      );
+    case 'WAITING_FOR_NTC':
+    case 'WAITING_FOR_SENSOR_VALIDATION':
+      return JexText.phrase(
+        'Checking temperature sensors.',
+        'Memeriksa sensor suhu.',
+        language,
+      );
+    case 'DISCONNECTED':
+      return JexText.of('bluetoothDisconnected', language);
+    case 'NONE':
+      return JexText.of('systemReady', language);
+    default:
+      return JexText.phrase(
+        'Device status needs attention. Check the connection and try again.',
+        'Status perangkat perlu diperiksa. Periksa koneksi, lalu coba lagi.',
+        language,
+      );
+  }
+}
+
+/// Normalize the Home STATUS body in the currently selected UI language.
+/// Known safety codes become useful instructions; unknown identifiers are never shown.
+String normalizeHomeNotifyText(
+  String message, {
+  required int hotLimit,
+  required AppLanguage language,
+}) {
+  var raw = message.trim();
+  if (raw.isEmpty) return '';
+
+  // OTA event envelopes have their own parser and must reach it unchanged.
+  if (RegExp(r'^OTA_(?:SUCCESS|FAILED|UP_TO_DATE)\|', caseSensitive: false)
+      .hasMatch(raw)) {
+    return raw;
+  }
+
+  // Interpret only a terminal underscore token as a reason. This avoids matching ordinary
+  // words such as "none" inside readable prose.
+  final suffixCode = RegExp(
+    r'(?:^|\s)([A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+)\s*$',
+    caseSensitive: false,
+  ).firstMatch(raw);
+  if (suffixCode != null) {
+    final code = suffixCode.group(1)!.toUpperCase();
+    if (_jexKnownNotifyReasonCodes.contains(code)) {
+      return localizedNotifyReason(code, hotLimit: hotLimit, language: language);
+    }
+    raw = raw.substring(0, suffixCode.start).trim();
+  }
+
+  const genericIssue = 'Device status needs attention. Check the connection and try again.';
+  const genericIssueId = 'Status perangkat perlu diperiksa. Periksa koneksi, lalu coba lagi.';
+  if (raw.isEmpty) return JexText.phrase(genericIssue, genericIssueId, language);
+
+  final lower = raw.toLowerCase();
+  final confirmationFailed = <String>[
+    'did not confirm',
+    'was not confirmed',
+    'not confirmed',
+    'could not confirm',
+    'belum mengonfirmasi',
+    'tidak mengonfirmasi',
+    'belum terkonfirmasi',
+    'tidak terkonfirmasi',
+    'tidak dikonfirmasi',
+  ].any(lower.contains);
+  final commandFailed = <String>[
+    'command failed',
+    'change failed',
+    'settings failed',
+    'failed.',
+    ' gagal',
+    'tidak berhasil',
+  ].any(lower.contains);
+
+  if (lower.contains('temperature sensor fault') ||
+      lower.contains('temperature sensor error') ||
+      lower.contains('sensor suhu bermasalah')) {
+    return JexText.phrase(
+      'Temperature sensor fault. Peltier is disabled for safety.',
+      'Sensor suhu bermasalah. Peltier dinonaktifkan demi keselamatan.',
+      language,
+    );
+  }
+
+  if (confirmationFailed || commandFailed) {
+    final fanSpeedIssue = lower.contains('fan speed') ||
+        lower.contains('fan-speed') ||
+        lower.contains('kecepatan kipas');
+    final peltierIssue = lower.contains('peltier');
+    final adaptiveIssue = lower.contains('adaptive') || lower.contains('mode adaptif');
+    final voltageIssue = lower.contains('voltage') || lower.contains('tegangan');
+    final fanIssue = lower.contains('fan') || lower.contains('kipas');
+    final brightnessIssue = lower.contains('brightness') || lower.contains('kecerahan');
+    final colorIssue = lower.contains('color') || lower.contains('colour') || lower.contains('warna');
+    final ledIssue = lower.contains('led') || lower.contains('rgb');
+    final modeIssue = lower.contains('mode');
+    final temperatureIssue = lower.contains('temperature') ||
+        lower.contains('suhu') ||
+        lower.contains('hotlimit');
+
+    if (peltierIssue) {
+      return confirmationFailed
+          ? JexText.phrase(
+              'Peltier change not confirmed. Check safety status.',
+              'Perubahan Peltier belum terkonfirmasi. Periksa status keselamatan.',
+              language,
+            )
+          : JexText.phrase(
+              'Peltier change failed. Check safety status.',
+              'Perubahan Peltier gagal. Periksa status keselamatan.',
+              language,
+            );
+    }
+    if (voltageIssue) {
+      return confirmationFailed
+          ? JexText.phrase(
+              'Voltage change not confirmed. Check device status.',
+              'Perubahan tegangan belum terkonfirmasi. Periksa status perangkat.',
+              language,
+            )
+          : JexText.phrase(
+              'Voltage change failed. Check device status.',
+              'Perubahan tegangan gagal. Periksa status perangkat.',
+              language,
+            );
+    }
+    if (adaptiveIssue) {
+      return confirmationFailed
+          ? JexText.phrase(
+              'Adaptive change not confirmed. Check device status.',
+              'Perubahan Mode Adaptif belum terkonfirmasi. Periksa status perangkat.',
+              language,
+            )
+          : JexText.phrase(
+              'Adaptive change failed. Check device status.',
+              'Perubahan Mode Adaptif gagal. Periksa status perangkat.',
+              language,
+            );
+    }
+    if (fanSpeedIssue) {
+      return confirmationFailed
+          ? JexText.phrase(
+              'Fan speed not confirmed. Check device status.',
+              'Kecepatan kipas belum terkonfirmasi. Periksa status perangkat.',
+              language,
+            )
+          : JexText.phrase(
+              'Fan speed change failed. Check device status.',
+              'Perubahan kecepatan kipas gagal. Periksa status perangkat.',
+              language,
+            );
+    }
+    if (fanIssue) {
+      return confirmationFailed
+          ? JexText.phrase(
+              'Fan change not confirmed. Check device status.',
+              'Perubahan kipas belum terkonfirmasi. Periksa status perangkat.',
+              language,
+            )
+          : JexText.phrase(
+              'Fan change failed. Check device status.',
+              'Perubahan kipas gagal. Periksa status perangkat.',
+              language,
+            );
+    }
+    if (brightnessIssue) {
+      return confirmationFailed
+          ? JexText.phrase(
+              'Brightness change not confirmed. Check device status.',
+              'Perubahan kecerahan belum terkonfirmasi. Periksa status perangkat.',
+              language,
+            )
+          : JexText.phrase(
+              'Brightness change failed. Check device status.',
+              'Perubahan kecerahan gagal. Periksa status perangkat.',
+              language,
+            );
+    }
+    if (colorIssue) {
+      return confirmationFailed
+          ? JexText.phrase(
+              'Color change not confirmed. Check device status.',
+              'Perubahan warna belum terkonfirmasi. Periksa status perangkat.',
+              language,
+            )
+          : JexText.phrase(
+              'Color change failed. Check device status.',
+              'Perubahan warna gagal. Periksa status perangkat.',
+              language,
+            );
+    }
+    if (ledIssue || modeIssue) {
+      return confirmationFailed
+          ? JexText.phrase(
+              'LED change not confirmed. Check device status.',
+              'Perubahan LED belum terkonfirmasi. Periksa status perangkat.',
+              language,
+            )
+          : JexText.phrase(
+              'LED change failed. Check device status.',
+              'Perubahan LED gagal. Periksa status perangkat.',
+              language,
+            );
+    }
+    if (temperatureIssue) {
+      return confirmationFailed
+          ? JexText.phrase(
+              'Temperature settings not confirmed. Check device status.',
+              'Pengaturan suhu belum terkonfirmasi. Periksa status perangkat.',
+              language,
+            )
+          : JexText.phrase(
+              'Temperature settings failed. Check device status.',
+              'Pengaturan suhu gagal. Periksa status perangkat.',
+              language,
+            );
+    }
+    return confirmationFailed
+        ? JexText.phrase(
+            'Command not confirmed. Check device status.',
+            'Perintah belum terkonfirmasi. Periksa status perangkat.',
+            language,
+          )
+        : JexText.phrase(
+            'Action failed. Check device status and try again.',
+            'Tindakan gagal. Periksa status perangkat, lalu coba lagi.',
+            language,
+          );
+  }
+
+  raw = raw
+      .replaceAll(RegExp(r'\b[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+\b'), '')
+      .replaceAll(RegExp(r'\s+'), ' ')
+      .trim();
+  if (raw.isEmpty) return JexText.phrase(genericIssue, genericIssueId, language);
+  return raw;
 }
 
 /// Returns true when a live, healthy firmware update can clear a stale Home NOTIFY error.
@@ -145,7 +523,17 @@ String homeNotifyConnectionLabel({
   if (custom.contains('FAILED') ||
       custom.contains('ERROR') ||
       custom.contains('NOT FOUND') ||
-      custom.contains('SERVICE DISCOVERY')) {
+      custom.contains('SERVICE DISCOVERY') ||
+      custom.contains('DID NOT CONFIRM') ||
+      custom.contains('NOT CONFIRMED') ||
+      custom.contains('UNCONFIRMED') ||
+      custom.contains('BELUM MENGONFIRMASI') ||
+      custom.contains('TIDAK MENGONFIRMASI') ||
+      custom.contains('BELUM TERKONFIRMASI') ||
+      custom.contains('TIDAK TERKONFIRMASI') ||
+      custom.contains('TIDAK DIKONFIRMASI') ||
+      custom.contains('GAGAL') ||
+      custom.contains('KESALAHAN')) {
     return JexText.of('error', language);
   }
   if (isConnecting) return JexText.of('connecting', language);
@@ -3115,6 +3503,14 @@ bool isNotifyErrorMessage(String value) {
     'KESALAHAN',
     'TIDAK DITEMUKAN',
     'TERPUTUS',
+    'DID NOT CONFIRM',
+    'NOT CONFIRMED',
+    'UNCONFIRMED',
+    'BELUM MENGONFIRMASI',
+    'TIDAK MENGONFIRMASI',
+    'BELUM TERKONFIRMASI',
+    'TIDAK TERKONFIRMASI',
+    'TIDAK DIKONFIRMASI',
   ];
   return markers.any(normalized.contains);
 }
@@ -5270,7 +5666,19 @@ void _handleAckLine(String line) {
         timeout: const Duration(seconds: 6),
       );
       if (!ok && mounted) {
-        _showSnackBar(JexText.phrase('The device did not confirm the Peltier change. ${safetyReason == 'NONE' ? '' : safetyReason}','Perangkat belum mengonfirmasi perubahan Peltier. ${safetyReason == 'NONE' ? '' : safetyReason}'), color: Colors.orangeAccent);
+        final reason = safetyReason.trim().toUpperCase();
+        final message = enabled && reason.isNotEmpty && reason != 'NONE'
+            ? localizedNotifyReason(
+                reason,
+                hotLimit: hotLimit,
+                language: appLanguageNotifier.value,
+              )
+            : JexText.phrase(
+                'Peltier change not confirmed. Check safety status.',
+                'Perubahan Peltier belum terkonfirmasi. Periksa status keselamatan.',
+                appLanguageNotifier.value,
+              );
+        _showSnackBar(message, color: Colors.orangeAccent);
       }
     } catch (e) {
       debugPrint('Peltier command: $e');
@@ -5864,48 +6272,11 @@ void _handleAckLine(String line) {
   }
 
   String _friendlyReason(String reason) {
-    switch (reason) {
-      case 'NTC_ERROR':
-        return JexText.phrase('Temperature sensor error. Peltier is locked.', 'Sensor suhu bermasalah. Peltier dikunci untuk keselamatan.');
-      case 'HOTSIDE_PROTECTION':
-        return peltierRearmNotice(hotLimit, appLanguageNotifier.value);
-      case 'PELTIER_SAFETY_LATCH':
-        return peltierRearmNotice(hotLimit, appLanguageNotifier.value);
-      case 'VOLTAGE_STEP_FAILED':
-        return JexText.phrase('Adaptive voltage step failed.', 'Perpindahan tegangan Adaptive gagal.');
-      case 'VOLTAGE_FORCE_FAILED':
-        return JexText.phrase('Safety could not switch to the required 5V state.', 'Sistem keselamatan tidak dapat mengalihkan tegangan ke 5V.');
-      case 'ADAPTIVE_RISE_WAIT':
-        return JexText.phrase('Adaptive is waiting before raising the voltage.', 'Adaptive menunggu sebelum menaikkan tegangan.');
-      case 'ADAPTIVE_STARTING':
-        return JexText.phrase('Adaptive Mode is starting.', 'Mode Adaptif sedang dimulai.');
-      case 'FAN_REQUIRED':
-        return JexText.phrase('Turn on the Fan before starting the Peltier.', 'Nyalakan kipas sebelum menyalakan Peltier.');
-      case 'PELTIER_ON':
-        return JexText.phrase('Fan control is locked while the Peltier is on.', 'Kontrol kipas terkunci saat Peltier menyala.');
-      case 'ADAPTIVE_ACTIVE':
-        return JexText.phrase('Manual cooling controls are locked while Adaptive Mode is active.', 'Kontrol pendinginan manual terkunci saat Mode Adaptif aktif.');
-      case 'MANUAL_12V_ONLY':
-        return JexText.phrase('Fan speed can only be adjusted at 12V in Manual Mode.', 'Kecepatan kipas hanya dapat diatur pada 12V dalam Mode Manual.');
-      case 'VOLTAGE_TRANSITION':
-        return JexText.phrase('Voltage change is in progress. Please wait.', 'Perubahan tegangan sedang berlangsung. Tunggu sebentar.');
-      case 'VOLTAGE_GUARD_OR_BUSY':
-        return JexText.phrase('Voltage command is still being processed.', 'Perintah tegangan masih diproses.');
-      case 'SYNC_REQUIRED':
-        return JexText.phrase('Device sync is still in progress.', 'Sinkronisasi perangkat masih berlangsung.');
-      case 'RATE_LIMIT':
-        return JexText.phrase('Command was sent too quickly. Please wait and try again.', 'Perintah terlalu cepat. Tunggu sebentar, lalu coba lagi.');
-      case 'RANGE_50_100_STEP_10':
-        return JexText.phrase('Fan speed must be between 50% and 100% in 10% steps.', 'Kecepatan kipas harus antara 50% dan 100% dengan kelipatan 10%.');
-      case 'MUST_BE_BELOW_BATT12':
-        return JexText.phrase('5V battery limit must stay below the 12V battery limit.', 'Batas baterai 5V harus di bawah batas baterai 12V.');
-      case 'MUST_BE_ABOVE_BATT5':
-        return JexText.phrase('12V battery limit must stay above the 5V battery limit.', 'Batas baterai 12V harus di atas batas baterai 5V.');
-      case 'UNKNOWN_GROUP':
-        return JexText.phrase('Reset request is not supported.', 'Permintaan reset tidak didukung.');
-      default:
-        return reason.replaceAll('_', ' ').toLowerCase();
-    }
+    return localizedNotifyReason(
+      reason,
+      hotLimit: hotLimit,
+      language: appLanguageNotifier.value,
+    );
   }
 
   void _showSnackBar(String message, {Color color = Colors.blueAccent}) {
@@ -6185,7 +6556,11 @@ void _handleAckLine(String line) {
   }
 
   String _compactNotifyMessage(String message) {
-    final raw = message.trim();
+    final raw = normalizeHomeNotifyText(
+      message,
+      hotLimit: hotLimit,
+      language: appLanguageNotifier.value,
+    );
     if (raw.isEmpty) return '';
 
     final lower = raw.toLowerCase();
@@ -6262,30 +6637,7 @@ void _handleAckLine(String line) {
     if (_bleConnecting) return JexText.of('connectingDevice', appLanguageNotifier.value);
     if (syncing && !dashboardReady) return JexText.of('synchronizingDevice', appLanguageNotifier.value);
 
-    switch (safetyReason) {
-      case 'PELTIER_SAFETY_LATCH':
-        return peltierRearmNotice(hotLimit, appLanguageNotifier.value);
-      case 'FAN_REQUIRED':
-        return JexText.phrase('Fan required before Peltier.','Kipas harus aktif sebelum Peltier.');
-      case 'PELTIER_ON':
-        return JexText.phrase('Fan control is locked while Peltier is on.','Kendali kipas terkunci saat Peltier aktif.');
-      case 'ADAPTIVE_ACTIVE':
-        return JexText.phrase('Manual cooling controls are locked.','Kendali pendinginan manual terkunci.');
-      case 'ADAPTIVE_STARTING':
-        return JexText.phrase('Adaptive Mode is starting.','Mode Adaptif sedang dimulai.');
-      case 'MANUAL_12V_ONLY':
-        return JexText.phrase('Only available at 12V in Manual Mode.','Hanya tersedia pada 12V dalam Mode Manual.');
-      case 'VOLTAGE_GUARD_OR_BUSY':
-        return JexText.phrase('Voltage command is still processing.','Perintah tegangan sedang diproses.');
-      case 'RATE_LIMIT':
-        return JexText.phrase('Too many commands. Please wait before trying again.','Terlalu banyak perintah. Tunggu sebentar sebelum mencoba lagi.');
-      case 'DISCONNECTED':
-        return JexText.of('bluetoothDisconnected', appLanguageNotifier.value);
-      case 'NONE':
-        return JexText.of('systemReady', appLanguageNotifier.value);
-      default:
-        return _friendlyReason(safetyReason);
-    }
+    return _friendlyReason(safetyReason);
   }
 
   void _notifyCommandAccepted(String command) {

@@ -613,24 +613,24 @@ class JexText {
       AppLanguage.indonesia: 'Kecepatan Kipas',
     },
     'notify': {
-      AppLanguage.english: 'NOTIFY',
-      AppLanguage.indonesia: 'NOTIFIKASI',
+      AppLanguage.english: 'STATUS',
+      AppLanguage.indonesia: 'STATUS',
     },
     'notifyBluetooth': {
-      AppLanguage.english: 'NOTIFY • BLUETOOTH',
-      AppLanguage.indonesia: 'NOTIFIKASI • BLUETOOTH',
+      AppLanguage.english: 'CONNECTION',
+      AppLanguage.indonesia: 'KONEKSI',
     },
     'notifySync': {
-      AppLanguage.english: 'NOTIFY • SYNC',
-      AppLanguage.indonesia: 'NOTIFIKASI • SINKRONISASI',
+      AppLanguage.english: 'SYNC',
+      AppLanguage.indonesia: 'SINKRONISASI',
     },
     'notifyError': {
-      AppLanguage.english: 'NOTIFY • ERROR',
-      AppLanguage.indonesia: 'NOTIFIKASI • KESALAHAN',
+      AppLanguage.english: 'ERROR',
+      AppLanguage.indonesia: 'ERROR',
     },
     'notifyWarning': {
-      AppLanguage.english: 'NOTIFY • WARNING',
-      AppLanguage.indonesia: 'NOTIFIKASI • PERINGATAN',
+      AppLanguage.english: 'WARNING',
+      AppLanguage.indonesia: 'PERINGATAN',
     },
     'error': {
       AppLanguage.english: 'ERROR',
