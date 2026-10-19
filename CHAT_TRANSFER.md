@@ -1,14 +1,14 @@
 # JE X FYZ / JE Cooler — Chat Transfer Snapshot
 
-Snapshot reconciled against live `main` on 2026-10-19 (Asia/Jakarta), after Home animation refinement, current source/test hash audit, and README/BUILD_NOTES/APP_BUILD_REPORT synchronization. Build #80 is the latest verified APK; it includes rounded TamperScreen boxes and the earlier dashboard/menu work, but not the direct static warning-Icon cleanup or current painter refinements. Peltier uses a rotating crystal with falling snowflakes; Adaptive has no orbiting dot; Voltage uses a closed lightning current path; Fan airflow curves behind the rotor; Fan Speed has no autonomous glint/wobble; thermal effects use flame tongues rather than round ember particles; Battery/LED highlights wrap beyond clipped bounds. Flutter tests/analyzer and physical-phone rendering remain unverified. V6.7 compile/online-update status remains USER-REPORTED. This file is written last and deliberately excludes its own future blob/commit hash.
+Snapshot reconciled against live `main` on 2026-10-19 (Asia/Jakarta), after live audit and repair of malformed tag-verification placement in `.github/workflows/jexfyz-app-build-trigger.yml`. Build #83 is the latest successful App artifact run: 96/96 Flutter tests and all 21 workflow gates passed for source `dfc7e6633298498bb6eac21182c9306d5e3cac1d`. Current main App source/test inputs still match Build #83. Overall release handoff remains BLOCKED: Release metadata/assets target `dfc7e6633298498bb6eac21182c9306d5e3cac1d`, while `refs/tags/jexfyz-latest` still points to `9136f11799143d91eb58e947ea10e9e576bb579f`. The post-Build-#83 workflow syntax fix is committed but not yet exercised by an official run. V6.7 compile/online-update status remains USER-REPORTED. This file is written last and deliberately excludes its own future blob/commit hash.
 
 Source-of-truth order: live main source/tree and exact Actions/Release evidence → CHAT_RULES.md for authorization → PROJECT_STATE.md for current state → subject reference files and APP_BUILD_REPORT.md → HANDOVER.md / this snapshot → CHANGELOG.md for history → archive/*.md for forensic recovery only. Archived “CURRENT” wording is not live truth.
 
 ## 1. Current Git and repository state
 
 - Canonical App/Firmware source and project-memory repository: `TenzoNkz/JEXFYZ-App`, branch `main`.
-- Parent HEAD immediately before this transfer-snapshot commit: `c0e2b9f296eb2ddb8d0bed9681c0e70270da4fdf`, message `docs(build): update post-Build-80 animation boundary`. This snapshot is written last; final live source/test fingerprints are included below.
-- Latest verified release: Build #80 / [Actions run `39171729285`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39171729285), exact release/source commit `4e9f14b959cdbf60136158187db26d0bb65f6287`. Completed at `2026-10-18T22:25:23Z` (`2026-10-19 05:25:23 Asia/Jakarta`). All 21 active workflow steps passed, including audit, dependencies, Dart analysis, **96/96 Flutter tests**, Android production compilation/configured gate, obfuscated APK, V1/V2/V3 signing/certificate, source ZIP, Release publication and re-downloaded asset verification.
+- Parent HEAD immediately before this transfer-snapshot commit: `4100f90b3f59c3e0af0437d71f2caff7550a4454`, message `docs(rules): correct Build 83 asset and workflow hashes`. This snapshot is written last; final live source/test fingerprints are included below.
+- Latest successful artifact run: Build #83 / [Actions run `39192430789`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39192430789), exact packaged source `dfc7e6633298498bb6eac21182c9306d5e3cac1d`. All 21 active workflow steps passed, including analysis, 96/96 Flutter tests, Android configured gate, obfuscated APK, V1/V2/V3 signature and production-certificate verification, source ZIP, Release publication and re-downloaded asset checks. The tag-ref consistency gate remains blocked.
 - Build #70 is historical and verified FPS/Shizuku retirement plus schema-v2 migration to six metrics B/H/V/A/P/F (F=Fan Speed). Build #71 is newer and includes the post-Build-70 motion/toggle refinements.
 - Build #71 was triggered through owner/title/token-guarded [issue #33](https://github.com/TenzoNkz/JEXFYZ-App/issues/33). Issue owner `TenzoNkz`, title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; workflow blob `8a8533aff7e0e0e01412bf522e1966e81aa1a39f` is unchanged and listens only to issue opened/reopened. No push/PR/dispatch bypass.
 - Live branch/PR check: five branches and zero open PRs. No branch or PR was created for this Build App work.
@@ -16,40 +16,40 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
 
 ## 2. Latest verified App release and artifacts
 
-- Release APK [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk): asset ID `654626935`, 54,620,251 bytes, SHA-256 `b403ccd3813f1974b82703730fce2c60bab972b067bc7ac4875d51d0e55558c6`.
-- Matching [`JEXFYZ-corresponding-source.zip`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip): asset ID `654626933`, 2,852,944 bytes, SHA-256 `bae47230267438073c9fd2bdf9ee58bfd768a5fcdfedf7102983c05dc23bf0cc`.
-- Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) targets exact source `4e9f14b959cdbf60136158187db26d0bb65f6287`, contains exactly one APK and one matching source ZIP; both were re-downloaded and verified. V1/V2/V3 and production certificate checks passed.
+- Build #83 Release APK [`JEXFYZ-release.apk`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk): asset ID `655087433`, 54,620,251 bytes, SHA-256 `1b5e2cf4a16e6e521a7a332b2ab252c45a2f632a39f259203f9dce47602e9b92`.
+- Matching Build #83 source archive [`JEXFYZ-corresponding-source.zip`](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip): asset ID `655087446`, 2,854,731 bytes, SHA-256 `c7e3952d20510d203f2d9fbf901033d5289fdcdbf8c6c141c7ff29b9a413c018`; embedded source marker matches `dfc7e6633298498bb6eac21182c9306d5e3cac1d`.
+- Release [`jexfyz-latest`](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest) metadata targets `dfc7e6633298498bb6eac21182c9306d5e3cac1d` and contains the two verified Build #83 assets above. Independent GET of `refs/tags/jexfyz-latest` still returns `9136f11799143d91eb58e947ea10e9e576bb579f`, so the Git tag ref does not yet match the Release/artifact source.
 - Signing: one signer; expected certificate DN `CN=JE X FYZ, OU=JE X FYZ, O=JE X FYZ, L=Indonesia, ST=Central Java, C=ID`; certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`; RSA key 4096 bits.
-- `flutter analyze --no-fatal-infos` passed with 23 info-level deprecation findings; 96/96 Flutter tests passed in Build #80. Native JUnit tasks were NO-SOURCE; no native JUnit cases ran.
+- Build #83 `flutter analyze --no-fatal-infos` passed with 23 info-level deprecation findings and 96/96 Flutter tests passed. Native JUnit tasks were NO-SOURCE; no native JUnit cases ran.
 - Non-blocking warnings: Gradle 9.3.1 out-of-date; native ELF DWARF information not obfuscated; JAR/META-INF V1 coverage and self-signed/no-timestamp certificate notices; pub-cache save denied by token scope. None failed a required release gate.
 - CI does not prove phone visuals, live BLE/Fan Speed telemetry, source-to-BIN identity, cooling/thermal safety, OTA/reboot/current installed version, physical flash or hardware behavior. The user separately reports V6.7 compiled and was updated online; this was not independently verified in the App-only task. No Firmware source/BIN, Firebase, OTA, flash or device operation was performed by the assistant in this task.
 
 ## 3. Current source fingerprints and canonical docs
 
-- Latest **verified release source** is `4e9f14b959cdbf60136158187db26d0bb65f6287` (Build #80). It includes rounded TamperScreen blocks and the earlier Home animation/state-gating/toggle/menu-lock changes, but not the direct static warning `Icon` cleanup or latest source-only painter refactor and contracts.
+- Latest successful artifact source is `dfc7e6633298498bb6eac21182c9306d5e3cac1d` (Build #83). Current `lib/main.dart` and `test/widget_test.dart` blobs below match the exact Build #83 tree. The workflow repair is newer and workflow-only; it has not yet been exercised by Actions.
 - Current source/test/config blobs, re-fetched from the complete `main` tree:
   - `lib/main.dart`: `99bdf225b990fbe8a4ff92c224b4fccc4ae4624a`.
   - `lib/floating_monitor.dart`: `31b45ea08b08ac7fc25ebd991dca873b889fdd14`.
   - `lib/app_settings.dart`: `36927823c91904a35d87d2f21bd77932a2214e83`.
-  - `test/widget_test.dart`: `2527fa278a56da30bf74eb488287580d0d2c99d8`.
+  - `test/widget_test.dart`: `9fffea531bdb19315c01aaf0e253ebdfacd7a1ed`.
   - `test/floating_monitor_layout_contract_test.dart`: `87e805095202ac3edfe55b9aeb3138c7c6886375`.
   - `test/v6_7_qc_contract_test.dart`: `6b71cc2ebbef9b3f1c9757728067eec4d11ff5ee`.
   - `test/app_protocol_notify_contract_test.dart`: `92214dd90178c705844d3979d3f8f7bd17bcc4b8`.
   - `test/firmware_touch_adaptive_sync_test.dart`: `94c0f074247f47fce7d939a72b0130eb1b2d70fa`.
   - Native `FloatingMonitorService.kt`: `8312cc12d391cde5f76b146ff98075856d32bae2`; `MainActivity.kt`: `ef35590cfc91fafe5dec104b7cfd7828011185bf`; `AndroidManifest.xml`: `c374b5d3ad6448b8b3e99a420ed7e8c49d38497a`; `android/app/build.gradle`: `060cdd36a4f7d4d2fa4c97a1b6a15954b8355350`.
-  - Active workflow `.github/workflows/jexfyz-app-build-trigger.yml`: `8a8533aff7e0e0e01412bf522e1966e81aa1a39f`.
+  - Active workflow `.github/workflows/jexfyz-app-build-trigger.yml`: `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12` (fix commit `0c266f3064d77a394d660acd16595ff43166fb7f`).
   - Current app configuration: `pubspec.yaml` `8f558273e21692af9958f914527fdc62d623d63a`; `pubspec.lock` `1e92812bfda2c28244a0556d71d1ec94084acc66`; `android/app/build.gradle` `060cdd36a4f7d4d2fa4c97a1b6a15954b8355350`; `android/gradle.properties` `aeb7ffd8c41e6c668c1eeb4e656755e5b1cc18f6`; `AndroidManifest.xml` `c374b5d3ad6448b8b3e99a420ed7e8c49d38497a`; `android/app/proguard-rules.pro` `50fc26f726ae8660fe04cf19da688431c8dca4a0`; `.github/workflows/jexfyz-app-build-trigger.yml` `8a8533aff7e0e0e01412bf522e1966e81aa1a39f`.
   - Firebase config file `android/app/google-services.json`: blob `f3ed065a7ee56b2a44f0a943a48fa578ba72e0d7`, 761 bytes. Only JSON structure was checked; no credential values are included in this transfer snapshot.
 - Canonical docs immediately before this transfer-only commit:
-  - `APP_BUILD_REPORT.md`: `0efea694062fe11173f2503c2fea334ffa71964b`.
-  - `PROJECT_STATE.md`: `9cbaeb1a141160c22ae66de8f8a01c7a0c4e516b`.
-  - `MEMORY_INDEX.md`: `c120d734661d324c10560151bd8a74de99f5631a`.
-  - `BUILD_NOTES.md`: `63153acbd22e9e2d21bd6babce850b2d58face0b`.
-  - `HANDOVER.md`: `0fd974bb7ddba319c7892aa5d082781ccc52e1f3`.
-  - `APP_NOTES.md`: `f108bc14d89e45f802438c1b755dc5cb110227e7`.
-  - `CHANGELOG.md`: `ef9ce4583ee81a37f833ddd2d0c5287d68de6f6f`.
-  - `README.md`: `2388d472c767fdf0a45fca09fdb00e5db0e43ac4`.
-  - `CHAT_RULES.md`: `3ec9a68447955d4f5e5e94e38ee1db36a412e07e`.
+  - `APP_BUILD_REPORT.md`: `40a9f8a3c87c66d9a06b2565c2a728b17f89eb9a`.
+  - `PROJECT_STATE.md`: `0ee5b9bd022af85d1e51154c6fb153699cd52d44`.
+  - `MEMORY_INDEX.md`: `ea8b2e8be1f6175607478ae39e11693414bb1fbb`.
+  - `BUILD_NOTES.md`: `2a99a510106208c1f5de69db17427ea231ff7f4e`.
+  - `HANDOVER.md`: `9742e48b131715bd45e4e686ac513419b573f70a`.
+  - `APP_NOTES.md`: `a2e432e4d937f87e2487bc5cdaab794cb1e51e15`.
+  - `CHANGELOG.md`: `4d67b7d1964599fc91a45821065b03f1059c311f`.
+  - `README.md`: `18e1d7ce8d2a45494dfa5cfdcd4b7651e5f6e72e`.
+  - `CHAT_RULES.md`: `7655b0aa340f68b9248bffe47439b896c677c6cc`.
   - `FIRMWARE_NOTES.md`: `1b0897dc4ea11c6eb51324e691fb9637a118612f`.
   - `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `a9b40284a2fa9125e4d381fdd6b14708eab45daf`.
   - `OTA_PROTECTION.md`: `767364ed6c8afd87104f0348490a5afd245d2fe3`.
@@ -60,18 +60,18 @@ Source-of-truth order: live main source/tree and exact Actions/Release evidence 
   - `android/app/proguard-rules.pro`: `50fc26f726ae8660fe04cf19da688431c8dca4a0` (obsolete FPS/Shizuku class keep rules removed; config-only cleanup).
   - `android/gradle.properties`: `aeb7ffd8c41e6c668c1eeb4e656755e5b1cc18f6` (replaced the stale FPS-parser test comment only; Gradle values were unchanged).
 
-## 3A. TamperScreen warning/contact behavior — rounded text blocks included by Build #80; static Icon source-only
+## 3A. TamperScreen warning/contact behavior — rounded text blocks in Build #83; static Icon included
 
-- The native signer-identity check and developer-contact behavior are unchanged. Build #80 includes all ten text blocks framed in consistent dark rounded boxes. Post-release source-only changes replace the generic glyph wrapper with a direct static Flutter `Icon` and refine the Home indicator painter; neither change alters warning glyph shape/size/color, text wording/order, text colors/typography, frame, or contact action.
-- Base warning/contact behavior and rounded text-box layout are included in Build #80 source marker `4e9f14b959cdbf60136158187db26d0bb65f6287`. The direct-Icon simplification and its test assertion are not in the current release. The refined Home indicator painter is also post-Build-80 and source-only.
+- The native signer-identity check and developer-contact behavior are unchanged. Build #83 includes all ten text blocks framed in rounded boxes and the direct static warning `Icon`; neither the warning glyph, size/color, copy/order, text colors/typography, frame, nor contact action changed.
+- Base warning/contact behavior, rounded text-box layout and the direct static warning Icon are included in Build #83 source `dfc7e6633298498bb6eac21182c9306d5e3cac1d`.
 
-## 3B. Home indicator motion, toggles and submenu locks — included by Build #80
+## 3B. Home indicator motion, toggles and submenu locks — included by Build #83
 
-- Hotside contour is one continuous tube-to-bulb silhouette; liquid fill/highlight is separate from the outer stroke. Animation policy is strict: Battery/Hotside/Voltage loop while BLE is connected (including unknown readings); Adaptive/Peltier/Fan/LED animate only while authoritative state is ON; Fan Speed has only smooth event-driven PWM transitions, not a phase loop; OFF outputs are static except a connected Fan's one-shot coast-down; Bluetooth is static. Post-Build-80 source refinement adds rotating Peltier snow with falling branched flakes, removes Adaptive's orbit dot, runs the Voltage current pulse along a closed lightning spine, puts curved airflow behind the Fan rotor, removes Fan Speed glint/wobble, and replaces Battery/Hotside dot embers with tapered flame tongues. Battery/LED moving highlights wrap beyond their clipped bounds to avoid visible jumps. Semantic color, temperature thresholds, BLE, controls and safety behavior are unchanged. This refinement is NOT BUILT or TESTED by Flutter in this task.
+- Hotside contour is one continuous tube-to-bulb silhouette; liquid fill/highlight is separate from the outer stroke. The current indicator painter is included in Build #83: Peltier rotates/falls as branched crystals, Adaptive has no orbit dot, Voltage current follows a closed lightning spine, curved Fan airflow is behind the rotor, Fan Speed has no autonomous glint/wobble, thermal warnings use flame tongues rather than ember dots, and Battery/LED highlights wrap outside clipped bounds. Animation state gating, temperature thresholds/colors, BLE, controls, and safety behavior remain unchanged.
 - Peltier, Adaptive and LED submenu toggles use neutral rows like Manual Voltage, omit the knob checkmark and adjacent ON/OFF label, and keep theme-primary toggle accent. BLE/Firmware state authority and command gating are unchanged.
 - If Bluetooth is disconnected, the complete selected submenu is blurred/dimmed under one centered lock card; top-level tabs and Home Bluetooth remain usable. If connected but Adaptive is active/transitioning, only Voltage, Control and Temperature use the whole-menu blur and centered lock. Messages: CONNECT TO JE X FYZ FIRST / HUBUNGKAN KE JE X FYZ TERLEBIH DAHULU and LOCKED BY ADAPTIVE MODE / TERKUNCI OLEH MODE ADAPTIF.
-- Build #80's 96/96 Flutter tests cover the source included in that release, including lock policy, centered overlay, toggle presentation, indicator contour/motion and thermal thresholds. Post-Build-80 direct-Icon and refined animation-painter contracts are NOT RUN; Flutter/Dart executables are unavailable here. No App Build was triggered in this `Eksekusi Full` task; physical rendering, BLE/device behavior and thermal performance remain unverified.
-- Current fingerprints: lib/main.dart 99bdf225b990fbe8a4ff92c224b4fccc4ae4624a; test/widget_test.dart 2527fa278a56da30bf74eb488287580d0d2c99d8; lib/floating_monitor.dart 31b45ea08b08ac7fc25ebd991dca873b889fdd14; lib/app_settings.dart 36927823c91904a35d87d2f21bd77932a2214e83; MainActivity.kt ef35590cfc91fafe5dec104b7cfd7828011185bf.
+- Build #83's 96/96 Flutter tests cover the current App source/test blobs. The later workflow-only syntax repair is NOT yet exercised by Actions. No new App Build was triggered in this `Eksekusi Full` task; physical rendering, BLE/device behavior and thermal performance remain unverified.
+- Current fingerprints included by Build #83: lib/main.dart `99bdf225b990fbe8a4ff92c224b4fccc4ae4624a`; test/widget_test.dart `9fffea531bdb19315c01aaf0e253ebdfacd7a1ed`; lib/floating_monitor.dart `31b45ea08b08ac7fc25ebd991dca873b889fdd14`; lib/app_settings.dart `36927823c91904a35d87d2f21bd77932a2214e83`; MainActivity.kt `ef35590cfc91fafe5dec104b7cfd7828011185bf`.
 
 ## 4. Current Floating Monitor: FPS retired, F label is Fan/Kipas
 
@@ -179,16 +179,16 @@ Canonical document blob hashes immediately before this transfer-only write:
 
 ## 11. Evidence labels and exact next actions
 
-- **CURRENT / VERIFIED:** Build #80 / run `39171729285` passed 96/96 Flutter tests and all 21 active workflow steps. Release `jexfyz-latest` targets exact source `4e9f14b959cdbf60136158187db26d0bb65f6287`.
-- **LATEST VERIFIED RELEASE (Build #80):** includes rounded TamperScreen text blocks and current Home indicator motion/state-gating, toggle styling and submenu locks.
-- **CURRENT SOURCE ONLY / NOT BUILT / NOT RUN:** only the direct static `Icon` warning glyph cleanup and its new widget-test assertions, after Build #80. Flutter/Dart tests and analysis were not run for this last delta.
-- **TEST CAVEAT:** the configured Gradle unit-test gate passed in Build #80, but native JUnit compilation/testing was NO-SOURCE; no native JUnit cases ran.
+- **LATEST SUCCESSFUL ARTIFACT BUILD:** Build #83 / run `39192430789`; 96/96 Flutter tests and all 21 workflow steps passed for source `dfc7e6633298498bb6eac21182c9306d5e3cac1d`.
+- **RELEASE HANDOFF BLOCKED:** Release metadata/assets target Build #83 SHA `dfc7e6633298498bb6eac21182c9306d5e3cac1d`, but `refs/tags/jexfyz-latest` still points to `9136f11799143d91eb58e947ea10e9e576bb579f`.
+- **WORKFLOW REPAIR COMMITTED / NOT EXERCISED:** workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12` removes four tag-check shell statements that had been outside a `run: |` block and places the final tag-equality assertion inside the downloaded-asset step. Runs #84–#87 are push events with empty jobs; no newer issue-event build exists. The trigger is unchanged (issues opened/reopened only; exact owner/title/token guard).
+- **NEXT REQUIRED ACTION:** after a separate `@Thinking Eksekusi Build App!`, verify the official issue trigger now starts, all gates pass, and `refs/tags/jexfyz-latest == run.head_sha`; then verify the Release APK/source ZIP digests and source marker. Do not manually move the tag or declare overall SUCCESS before those checks.
 - **NOT DEVICE-VERIFIED:** phone-side icon/animation smoothness, toggle appearance, overlay geometry, live BLE/Fan Speed telemetry, BLE pairing exclusivity, Firmware thermal/LED behavior, source-to-BIN provenance and end-to-end OTA/reboot/installed version.
 - **HISTORICAL / SUPERSEDED:** Build #70 and earlier release details, FPS/Shizuku code/results, older Firmware snapshots and archive CURRENT claims. Full build attempt history is in `APP_BUILD_REPORT.md`.
 - **HISTORICAL USER-REPORTED:** V6.6 compile/two-same-version-OTA statements remain historical. V6.7 has a separate user-reported compile/online-update success, not independently verified; current device version, binary/source identity and physical behavior remain UNVERIFIED.
-- **Immediate next step:** to put the latest direct-Icon cleanup in a distributable APK and rerun tests/analyze/signing/release verification, use the separate `@Thinking Eksekusi Build App!` authorization. Build #80 does not contain this tiny final cleanup.
+- **NOT DEVICE-VERIFIED:** physical phone icon rendering, live BLE/Fan Speed telemetry, cooling/safety behavior, Firmware/BIN identity and OTA/install remain unverified.
 - For a new functional source change, use `@Thinking Diskusi!` then `@Thinking Eksekusi Full!` for approved source/tests/docs and separately `@Thinking Eksekusi Build App!` for CI/release. `@Thinking Chat Stuck!` only resumes the last authorized task and never expands permission.
-- Current workflow is `.github/workflows/jexfyz-app-build-trigger.yml`, blob `8a8533aff7e0e0e01412bf522e1966e81aa1a39f`; event gate is issues opened/reopened only, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`, repository-owner guard retained. No workflow file was changed and no Build App trigger was emitted in this task.
+- Current workflow is `.github/workflows/jexfyz-app-build-trigger.yml`, blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; issue opened/reopened only, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`, repository-owner guard retained. No push/PR build trigger or manual bypass was added.
 - All durable current notes route through `MEMORY_INDEX.md`: source/build evidence via `APP_BUILD_REPORT.md`/`BUILD_NOTES.md`; current project truth via `PROJECT_STATE.md`; app UI/protocol via `APP_NOTES.md`; hardware/Firmware via `FIRMWARE_NOTES.md` and `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`; OTA via `OTA_PROTECTION.md`/`OTA_REGRESSION_MEMORY.md`; transition rules via `VOLTAGE_TRANSITION_MEMORY.md`; approved visual contracts via `DESIGN_NOTES.md`; permanent authorization through `CHAT_RULES.md`. Archive snapshots are immutable forensic history.
 - At the earlier project-memory reconciliation, the change was documentation plus two config-only files: `android/app/proguard-rules.pro` removed keep rules for already-retired FPS/Shizuku classes, and `android/gradle.properties` had a stale FPS-parser test comment corrected (no Gradle values changed). In this task, only `lib/main.dart`, `test/widget_test.dart` and project documentation/memory files changed. No Firmware source/BIN, Firebase, OTA, flash or device action occurred.
 - Build #80 remains the latest verified APK; physical-device checks remain pending. The latest source delta after Build #80 is the static warning-Icon simplification plus its regression assertion. No App Build or Firmware/BIN/Firebase/OTA/flash/device operations were performed by this task.
