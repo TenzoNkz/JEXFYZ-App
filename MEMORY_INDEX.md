@@ -59,7 +59,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #108 is 
 | `OTA_REGRESSION_MEMORY.md` | CA/NTP experiment, failure evidence, `setInsecure()` security trade-off and preflight |
 | `VOLTAGE_TRANSITION_MEMORY.md` | Peltier ramp, rail handoff, cancellation/recovery rules and hardware validation plan |
 | `BUILD_NOTES.md` | Active App build procedure, toolchain, authorization and validation boundaries |
-| `APP_BUILD_REPORT.md` | Authoritative complete App Build attempts/fixes/results; Build #106 is latest successful artifact, current App UI follow-up is unvalidated |
+| `APP_BUILD_REPORT.md` | Authoritative App Build history; Build #108 is latest successful artifact, latest Home geometry follow-up is unvalidated |
 | `CHANGELOG.md` | Significant history and superseded decisions; never override current source |
 | `DESIGN_NOTES.md` | Approved grille/logo/assets and dashboard motion/layout contracts |
 | `.github/workflows/jexfyz-app-build-trigger.yml` | Authoritative guarded manual App Build workflow |
@@ -69,10 +69,10 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #108 is 
 
 - Active Firmware: `firmware/JEXFYZ-V6.8.ino` blob `7b4df708708e021aad39258468eed2fde94d202f`; new Adaptive Fan tier logic is SOURCE UPDATED / NOT COMPILED / NOT INSTALLED.
 - Current Firmware QC contract: `test/firmware_qc_contract_test.dart` blob `59f376af6b3ec1c22d24f71db6afa40927a835fd`; Touch/Adaptive sync contract: `test/firmware_touch_adaptive_sync_test.dart` blob `a96b501d694b6eb4ad42fca0c61a8a430b129105`. Both are NOT RUN for V6.8.
-## Current source fingerprints (Build #106 successful; current UI follow-up NOT RUN; Firmware V6.8 NOT COMPILED)
+## Current source fingerprints (Build #108 successful; latest Home geometry follow-up NOT RUN; Firmware V6.8 NOT COMPILED)
 
-- lib/main.dart: 7e09a3d28b4efe24bdced858db4274cf70806284 — oval thermal bursts, Voltage edge pulses, left-aligned NOTIFY; NOT RUN / NOT RELEASED.
-- test/widget_test.dart: 5a82cf79e6c5c40fc34489ce90cf1200cf9faccb — animation/layout source contracts; NOT RUN / NOT RELEASED.
+- lib/main.dart: 0341122a53e7a6bb00d9f079bfcb350b385c83cb — 44 dp Home metric rows and original icon-left/text-left badge-free Notify Row with 56 dp slot; NOT RUN / NOT RELEASED.
+- test/widget_test.dart: b240231403c26071e618f3da1e82b379ff912adf — layout regression contracts for 44 dp metrics and 56 dp two-line Notify; NOT RUN / NOT RELEASED.
 - lib/jex_animated_glyph.dart: b37fc4e0807c874b2f01db00c7f606810cb5deca — generic action glyphs static.
 - Build #99 validated source commit bc1498d5b3db7621ee18f5ca6f021e6013c73b09, source blob 30d864c2f03c40fd4d0b6926a9958153f2a3b236 and test blob 711a44b00eadee2e2bcd24e48383128f0d70ccc9.
 
