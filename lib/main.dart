@@ -6345,9 +6345,8 @@ void _handleAckLine(String line) {
       padding: EdgeInsets.zero,
       child: SizedBox(
         width: double.infinity,
-        // Compact each metric row slightly so all seven rows still fit
-        // when Home Notify uses its two-line status layout.
-        height: 41,
+        // Preserve the original Home indicator rhythm and vertical spacing.
+        height: 44,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
           child: Row(
@@ -6677,9 +6676,12 @@ void _handleAckLine(String line) {
   }
 
   // AI-METHOD: _homeNotify — Render the Home NOTIFY card.
+  // Retain the original icon-left / text-left Row; only the connection badge is removed.
+  // The 56 dp card gives the message room for two lines without shrinking its font.
   Widget _homeNotify() {
     final headerDark = appThemeNotifier.value != AppThemePreset.light;
-    final noticeTextColor = headerDark ? const Color(0xFFF4F6FA) : const Color(0xFF16181D);
+    final noticeTextColor =
+        headerDark ? const Color(0xFFF4F6FA) : const Color(0xFF16181D);
     final custom = notice.trim().toUpperCase();
     final hasError = isNotifyErrorMessage(custom);
     final warning = connected &&
@@ -6697,10 +6699,11 @@ void _handleAckLine(String line) {
         : alert
             ? const Color(0xFFFFB72B)
             : const Color(0xFF4DE7B7);
+
     return Container(
       width: double.infinity,
-      constraints: const BoxConstraints(minHeight: 48),
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+      constraints: const BoxConstraints(minHeight: 56),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
         color: headerDark
             ? color.withValues(alpha: hasError ? .12 : .07)
@@ -6712,72 +6715,64 @@ void _handleAckLine(String line) {
               : color.withValues(alpha: .30),
         ),
       ),
-      child: SizedBox(
-        width: double.infinity,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: SizedBox(
-                width: 44,
-                height: 43,
-                child: Center(
-                  child: JexAnimatedIcon.glyph(
-                    icon: icon,
-                    size: 27,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 45,
+            height: 48,
+            child: Center(
+              child: JexAnimatedIcon.glyph(
+                icon: icon,
+                size: 27,
+                color: color,
+                active: true,
+              ),
+            ),
+          ),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _notifyStateLabel(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
                     color: color,
-                    active: true,
+                    fontSize: 8.5,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 0.8,
                   ),
                 ),
-              ),
-            ),
-            Padding(
-              // Reserve the icon lane on the left and align the whole text block to its start.
-              // A matching right inset keeps the block inside the same compact card bounds.
-              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 2),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _notifyStateLabel(),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      color: color,
-                      fontSize: 8.5,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 0.8,
-                    ),
+                const SizedBox(height: 2),
+                Text(
+                  // Use normal font sizing; longer notices wrap to at most two lines.
+                  _professionalNotice(),
+                  maxLines: 2,
+                  softWrap: true,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    color: noticeTextColor,
+                    fontSize: 10.5,
+                    decoration: TextDecoration.none,
+                    height: 1.1,
+                    fontWeight: FontWeight.w800,
                   ),
-                  const SizedBox(height: 3),
-                  Text(
-                    // Keep normal font size; long messages wrap to two left-aligned lines.
-                    _professionalNotice(),
-                    maxLines: 2,
-                    softWrap: true,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      color: noticeTextColor,
-                      fontSize: 11,
-                      decoration: TextDecoration.none,
-                      height: 1.15,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          const SizedBox(width: 12),
+        ],
       ),
     );
   }
-
 
   Widget _card({required Widget child, EdgeInsetsGeometry? padding}) {
     final scheme = Theme.of(context).colorScheme;
@@ -8201,8 +8196,8 @@ void _handleAckLine(String line) {
             const SizedBox(height: 2),
             SizedBox(
               width: double.infinity,
-              // Reserve enough vertical space for the responsive two-line status card.
-              height: 48,
+              // Slightly taller than the original slot to fit a two-line notice.
+              height: 56,
               child: _homeNotify(),
             ),
           ],
