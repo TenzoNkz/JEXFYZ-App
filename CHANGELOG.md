@@ -35,7 +35,7 @@
 - Exact visible wording and order, each item's text colour and typography, JE X FYZ branding, warning icon, `HUBUNGI DEVELOPER` label, pinned button placement and security/contact behavior are unchanged. No security-gate or contact-channel logic changed.
 - Added widget-contract assertions for the shared padding, background, rounded corners, border, centering and wrapping.
 - Source blobs: `lib/main.dart` `57cf250b4de48b683252e9f27aa2a3cf9e3bd7bd`; `test/widget_test.dart` `7e52166a51b41481f7a9ff2a82677ebcdefbf656`.
-- This follow-up's source checkpoint preceded Build #80; Build #80 later included the rounded-box layout and its widget contract as part of the verified release. The subsequent direct-Icon warning symbol cleanup is recorded in the 2026-10-19 entry above and remains source-only. No Firmware source/artifact, Firebase, OTA or device operation was performed for this layout task.
+- This follow-up's source checkpoint preceded Build #80; Build #80 included the rounded-box layout and its widget contract as part of the verified release. The direct-Icon warning symbol cleanup happened later and was included in Build #83. No Firmware source/artifact, Firebase, OTA or device operation was performed for this layout task.
 
 ## 2026-10-18 — User-reported Firmware V6.7 compile and online update
 
@@ -59,13 +59,13 @@
 - Confirmed `TenzoNkz/JEXFYZ-Firmware` remains BIN-only with exactly `JEXFYZ.cpp.bin`; its payload was not read and source-to-BIN provenance remains unverified. No executable Dart/Kotlin or Firmware source changed in the memory reconciliation; one obsolete ProGuard keep-rule block for already-retired FPS/Shizuku classes and transfer-prompt wording were cleaned. Tests, Dart analysis, App Build, firmware compile, BIN publication, Firebase, OTA, flash and device operations were not performed.
 - The updated `CHAT_TRANSFER.md` is written last and records current live hashes plus exact verified/unverified boundaries.
 
-## 2026-10-18 — Distinct indicator motion, aligned toggles and centered menu locks (source-only)
+## HISTORICAL / SOURCE CHECKPOINT — 2026-10-18 — Distinct indicator motion, aligned toggles and centered menu locks (later included in Build #83)
 
 - Rebuilt the Hotside thermometer into one continuous tube/bulb contour, eliminating the overlapping internal outline. Added distinct, phase-driven effects for Battery fill, Hotside liquid/bulb, Voltage flash, Adaptive directional arrows, Peltier branch highlights, Speed gauge glint, LED wave/dot and Bluetooth stem pulse. Fan rotation retains voltage-aware phase behavior and coast-down; no Bluetooth ripple rings or Peltier orbiting sparks were added.
 - Non-Fan indicators keep quiet ambient cycles after the 440 ms active-state fade. These are visual-only idle motion, not a claim about physical output state. Fan OFF still coasts to a resting position.
 - Peltier, Adaptive and LED switch rows now use neutral surfaces like Manual Voltage; their knob no longer includes a checkmark and the adjacent ON/OFF label is omitted. Theme-primary toggle accent and all BLE state/enable/command gates remain in place.
 - Added a centralized menu-lock policy. Bluetooth disconnected blurs/dims the entire active submenu and centers one lock panel; top tabs and Home Bluetooth remain usable. Adaptive active/transitioning applies the same one-panel treatment only to Voltage, Control and Temperature. The content beneath the blur ignores pointer input.
-- Added four Flutter test contracts for the lock matrix, one centered overlay, toggle styling and indicator contour/motion signatures. **Tests and Dart analysis were not run** because this environment has no Flutter/Dart executable. Build #73 remains the latest verified APK and does not contain this change; no APK build/CI, native compile, firmware, cloud or device actions were triggered.
+- Added four Flutter test contracts for the lock matrix, one centered overlay, toggle styling and indicator contour/motion signatures. **At the original source checkpoint**, tests and Dart analysis were not run; Build #73 was then the latest verified APK. Build #83 later included the current App source/test and passed 96/96 Flutter tests. No Firmware compile, Firebase, OTA, flash or device operation was performed as part of that source checkpoint.
 - Source blobs: `lib/main.dart` `0f6335435570691c5e9509f3f1a2619cf351e732`; `test/widget_test.dart` `661130f0bc2197478cc5f0e083324bdc41c8e6a3`.
 
 ## HISTORICAL / SOURCE CHECKPOINT — 2026-10-18 — Opaque profanity warning screen and developer contact (later included by Build #73)
