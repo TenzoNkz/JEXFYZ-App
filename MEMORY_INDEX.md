@@ -67,7 +67,7 @@ Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #106 is 
 | `firmware/JEXFYZ-V6.8.ino` | Active editable V6.8 source; user compiles separately |
 | `archive/*.md` | Immutable forensic snapshots; stale “CURRENT” claims remain historical, paths retained verbatim |
 
-- Active Firmware: `firmware/JEXFYZ-V6.8.ino` blob `4f8011337fc3c9e3f1ace717fbd7179e1331bff8`; new Adaptive Fan tier logic is SOURCE UPDATED / NOT COMPILED / NOT INSTALLED.
+- Active Firmware: `firmware/JEXFYZ-V6.8.ino` blob `7b4df708708e021aad39258468eed2fde94d202f`; new Adaptive Fan tier logic is SOURCE UPDATED / NOT COMPILED / NOT INSTALLED.
 ## Current source fingerprints (Build #106 successful; current UI follow-up NOT RUN; Firmware V6.8 NOT COMPILED)
 
 - lib/main.dart: 7e09a3d28b4efe24bdced858db4274cf70806284 — oval thermal bursts, Voltage edge pulses, left-aligned NOTIFY; NOT RUN / NOT RELEASED.
@@ -88,7 +88,7 @@ Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #106 is 
 ## Durable repository/evidence restrictions
 
 - All source, documentation, tests and project memory remain in `TenzoNkz/JEXFYZ-App`. Keep `TenzoNkz/JEXFYZ-Firmware` BIN-only. The currently checked BIN metadata is `JEXFYZ.cpp.bin`, blob `dca6a1267762152519f6d2889e4f0adf46fd8803`, 1,457,008 bytes; do not read or mutate payload during documentation tasks, and do not infer source provenance.
-- V6.8 source blob 4f8011337fc3c9e3f1ace717fbd7179e1331bff8 uses deterministic Adaptive Fan temperature tiers; it is not compiled/installed. V6.7 compilation/online update was user-reported only. Source/BIN identity, installed version, Firebase state and full OTA apply/reboot/reconnect remain unverified. The previous V6.6 compile/two-OTA statements are historical user reports.
+- V6.8 source blob 7b4df708708e021aad39258468eed2fde94d202f uses deterministic Adaptive Fan temperature tiers; it is not compiled/installed. V6.7 compilation/online update was user-reported only. Source/BIN identity, installed version, Firebase state and full OTA apply/reboot/reconnect remain unverified. The previous V6.6 compile/two-OTA statements are historical user reports.
 - Current UI excludes a standalone Battery Protection Guard. The exclusive one-App/one-cooler pairing lock is a user design requirement; encrypted/bonded writes alone do not prove exclusive provisioning.
 - Preserve OTA protection and its `setInsecure()` server-identity trade-off; read OTA and voltage-transition references before changes. Preserve the approved white square grille/purple X/four corner holes/flat-print design and transparent square app assets.
 - Keep the permanent hardware timings, NTC single-sample rule, safety gates, Adaptive profile behavior, BLE P1 UUIDs, LED mode IDs and telemetry contracts in their canonical subject files.
