@@ -1,10 +1,13 @@
-## CURRENT SOURCE FOLLOW-UP — HOME STATUS / NOTIFY COPY AND LOCALIZATION (NOT RUN / NOT RELEASED)
+## CURRENT SOURCE FOLLOW-UP — HOME STATUS / NOTIFY COPY, LOCALIZATION AND OTA SUMMARY SANITIZATION (NOT RUN / NOT RELEASED)
 
-- Baseline at execution start was main HEAD 27f1b572af2db8c73d325defed196086207649c8. Latest successful release remains Build #100 from source 51bea70b2ca17f285bf35c3e547dc44c70f26d59.
-- Changes centralize localized reason mapping, remove raw internal tokens including PELTIER_SAFETY_LATCH from visible UI, standardize confirmation-failure copy in English/Indonesian, and shorten Home status-category labels.
-- Code/test blobs: lib/main.dart 931b7e2d074b1006622b0f83cc6db3f8ce43a400; lib/app_settings.dart e91ecd2a00eafdec3f681daabb74fd49fcd25bf2; test/widget_test.dart ff419072b6eca1f3dc2c932b6290e3d664f75c17.
-- Regression tests were added but have NOT RUN. Flutter/Dart analyzer was not run. No APK/build/release was run; no Firmware/BIN/Firebase/OTA/flash/device action occurred.
-- Build #100 remains latest and does not contain this follow-up. Separate @Thinking Eksekusi Build App! authorization is required for official validation/release.
+- Baseline at execution start was main HEAD `3339267b8d8b0d04a18fd2083a8951bc38060a93`. Latest successful release remains Build #100 from source `51bea70b2ca17f285bf35c3e547dc44c70f26d59`.
+- Home STATUS/NOTIFY normalizes known safety reasons to concise actionable English/Indonesian, removes raw reason identifiers, classifies failed/unconfirmed commands in both languages, and uses compact category labels.
+- OTA result copy summarizes failures without exposing raw `ERROR`, `CODE`, internal event suffixes, or unknown mode identifiers. Known mode, localized stage, validated version, and valid progress percentage are retained only where useful.
+- Code/test blobs: `lib/main.dart` `51b52042b6429ae2e4a4f2508685cd8326af68c8`; `test/widget_test.dart` `9d80171a12af084748b88fcdd06d3d6b3cf65e1f`; localization table `lib/app_settings.dart` remains `e91ecd2a00eafdec3f681daabb74fd49fcd25bf2`.
+- Regression tests were added/updated for bilingual OTA summaries and suppression of internal error identifiers. Tests/analyzer have NOT RUN. Do not claim the new source passed automated execution.
+- Build #100 remains the latest successful release and does not include these source changes. No App Build/release, Firmware/BIN, Firebase production metadata, OTA, flash, or device action occurred in this follow-up.
+
+
 
 ## LATEST SUCCESSFUL APP BUILD — BUILD #100 (STATIC ICON-STATE REDRAW RELEASED AND VERIFIED)
 

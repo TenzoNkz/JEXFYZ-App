@@ -97,6 +97,50 @@ String otaStageLocalizationKey(String stage) {
   return special[stage.trim().toUpperCase()] ?? '';
 }
 
+/// Concise, localized Home NOTIFY presentation for OTA outcomes.
+/// Raw firmware error tokens/codes are intentionally excluded from user-facing copy.
+String localizedOtaFailureSummary(
+  AppLanguage language, {
+  String? mode,
+  String? stage,
+}) {
+  final base = JexText.of('otaFailed', language)
+      .replaceFirst(RegExp(r'[.!]\s*$'), '');
+  final details = <String>[base];
+  final unknownStage = JexText.of('unknownOtaStage', language);
+  for (final candidate in <String?>[mode, stage]) {
+    final value = candidate?.trim() ?? '';
+    if (value.isEmpty ||
+        value.toUpperCase() == 'OTA' ||
+        value == unknownStage) {
+      continue;
+    }
+    details.add(value);
+  }
+  return details.join(' • ');
+}
+
+/// Successful OTA copy only includes validated, user-meaningful metadata.
+String localizedOtaSuccessSummary(
+  AppLanguage language, {
+  String? mode,
+  String? version,
+}) {
+  final base = JexText.of('otaSuccessful', language)
+      .replaceFirst(RegExp(r'[.!]\s*$'), '');
+  final details = <String>[base];
+  final normalizedMode = mode?.trim() ?? '';
+  if (normalizedMode.isNotEmpty && normalizedMode.toUpperCase() != 'OTA') {
+    details.add(normalizedMode);
+  }
+  final normalizedVersion = version?.trim() ?? '';
+  if (RegExp(r'^[A-Za-z0-9][A-Za-z0-9._+\-]{0,31}$')
+      .hasMatch(normalizedVersion)) {
+    details.add(normalizedVersion);
+  }
+  return details.join(' • ');
+}
+
 bool isSupportedP1Protocol(String value) =>
     value.trim().toUpperCase() == 'P1';
 
@@ -6180,78 +6224,95 @@ void _handleAckLine(String line) {
       case 'ONLINE':
         return JexText.of('otaModeOnline', appLanguageNotifier.value);
       default:
-        return mode.trim().isEmpty ? 'OTA' : mode.trim();
+        return 'OTA';
     }
   }
 
-  // AI-METHOD: _friendlyOtaResult — Translate OTA result envelopes while preserving technical diagnostics.
+  // User-facing OTA summaries never expose raw ERROR/CODE values or event tokens.
   String _friendlyOtaResult(String value) {
     final raw = value.trim();
     if (raw.isEmpty || raw.toUpperCase() == 'NONE') return '';
     final upper = raw.toUpperCase();
+    final language = appLanguageNotifier.value;
 
     if (upper.startsWith('OTA_FAILED|')) {
       final fields = _otaDiagnosticFields(raw);
-      final mode = _friendlyOtaMode(fields['MODE'] ?? 'OTA');
-      final stage = _friendlyOtaStage(fields['STAGE'] ?? 'UNKNOWN');
-      final error = fields['ERROR'] ?? JexText.of('unknownError', appLanguageNotifier.value);
-      final progress = fields['PROGRESS'] ?? '--';
-      final code = fields['CODE'] ?? '0';
-      return JexText.of('otaFailed', appLanguageNotifier.value) + ' • $mode • $stage • $error [${progress}% / code $code]';
+      return localizedOtaFailureSummary(
+        language,
+        mode: _friendlyOtaMode(fields['MODE'] ?? 'OTA'),
+        stage: _friendlyOtaStage(fields['STAGE'] ?? 'UNKNOWN'),
+      );
     }
 
     if (upper.startsWith('OTA_UP_TO_DATE|')) {
       final fields = _otaDiagnosticFields(raw);
       final mode = _friendlyOtaMode(fields['MODE'] ?? 'OTA');
-      final stage = _friendlyOtaStage(fields['STAGE'] ?? 'UNKNOWN');
       final version = fields['VERSION'] ?? '';
-      return JexText.of('otaUpToDate', appLanguageNotifier.value) +
-          ' • ' + mode + ' • ' + stage +
-          (version.isEmpty ? '' : ' • ' + version);
+      final details = <String>[JexText.of('otaUpToDate', language)];
+      if (mode.toUpperCase() != 'OTA') details.add(mode);
+      if (RegExp(r'^[A-Za-z0-9][A-Za-z0-9._+\-]{0,31}$').hasMatch(version)) {
+        details.add(version);
+      }
+      return details.join(' • ');
     }
 
     if (upper.startsWith('OTA_SUCCESS|')) {
       final fields = _otaDiagnosticFields(raw);
-      final mode = _friendlyOtaMode(fields['MODE'] ?? 'OTA');
-      final stage = _friendlyOtaStage(fields['STAGE'] ?? 'UNKNOWN');
-      final version = fields['VERSION'] ?? '';
-      return JexText.of('otaSuccessful', appLanguageNotifier.value) + ' • $mode • $stage${version.isEmpty ? '' : ' • $version'}';
+      return localizedOtaSuccessSummary(
+        language,
+        mode: _friendlyOtaMode(fields['MODE'] ?? 'OTA'),
+        version: fields['VERSION'] ?? '',
+      );
     }
 
     if (upper.startsWith('IN_PROGRESS|')) {
       final fields = _otaDiagnosticFields(raw);
       final mode = _friendlyOtaMode(fields['MODE'] ?? 'OTA');
       final stage = _friendlyOtaStage(fields['STAGE'] ?? 'UNKNOWN');
-      final progress = fields['PROGRESS'] ?? '0';
-      return JexText.of('otaProgress', appLanguageNotifier.value) + '$mode • $stage • ${progress}%';
+      final progress = int.tryParse(fields['PROGRESS'] ?? '')?.clamp(0, 100);
+      final details = <String>[
+        JexText.of('otaProgress', language).replaceAll(RegExp(r'\s*•\s*$'), ''),
+      ];
+      if (mode.toUpperCase() != 'OTA') details.add(mode);
+      if (stage != JexText.of('unknownOtaStage', language)) details.add(stage);
+      if (progress != null) details.add('$progress%');
+      return details.join(' • ');
     }
 
-    if (upper == 'IN_PROGRESS') return JexText.of('otaInProgress', appLanguageNotifier.value);
-    if (upper == 'LOCAL_SUCCESS') return JexText.of('otaLocalSuccessful', appLanguageNotifier.value);
+    if (upper == 'IN_PROGRESS') return JexText.of('otaInProgress', language);
+    if (upper == 'LOCAL_SUCCESS') {
+      return localizedOtaSuccessSummary(
+        language,
+        mode: JexText.of('otaModeLocal', language),
+      );
+    }
     if (upper.startsWith('SUCCESS_')) {
-      return JexText.of('otaSuccessfulGeneric', appLanguageNotifier.value) + raw.substring(8) + '.';
+      // The suffix is an internal event identifier, not user-facing copy.
+      return localizedOtaSuccessSummary(language);
     }
     if (upper.startsWith('UPLOAD_SIZE_MISMATCH_')) {
       final parts = raw.split('_');
-      if (parts.length >= 5) {
-        return JexText.of('otaUploaded', appLanguageNotifier.value) + parts[3] + ' / ' + parts[4] + JexText.of('otaBytes', appLanguageNotifier.value);
+      if (parts.length >= 5 &&
+          int.tryParse(parts[3]) != null &&
+          int.tryParse(parts[4]) != null) {
+        return JexText.of('otaUploaded', language) +
+            parts[3] + ' / ' + parts[4] + JexText.of('otaBytes', language);
       }
-      return JexText.of('otaSizeMismatch', appLanguageNotifier.value);
+      return JexText.of('otaSizeMismatch', language);
     }
     if (upper.startsWith('OTA_END_ERROR_')) {
-      final parts = raw.split('_');
-      if (parts.length >= 5) {
-        return JexText.of('otaFailedGeneric', appLanguageNotifier.value) + parts.sublist(4).join(' ').toLowerCase() + '.';
-      }
-      return JexText.of('otaFinalizationError', appLanguageNotifier.value);
+      // Detailed suffixes belong in internal diagnostics, not the Home status card.
+      return localizedOtaFailureSummary(language);
     }
     if (upper.contains('FAILED') || upper.contains('ERROR')) {
-      return JexText.of('otaFailedGeneric', appLanguageNotifier.value) + raw.replaceAll('_', ' ').toLowerCase() + '.';
+      return localizedOtaFailureSummary(language);
     }
     return raw.contains('_')
-        ? JexText.of('deviceStatusUpdate', appLanguageNotifier.value)
+        ? JexText.of('deviceStatusUpdate', language)
         : raw;
   }
+
+
 
   String _friendlyReset(String value) {
     switch (value) {

@@ -2,14 +2,12 @@
 
 Current state reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #100 is the latest successful release; a notification copy/localization follow-up is source-only after Build #100 and is NOT RUN / NOT RELEASED. APP_BUILD_REPORT.md owns build evidence; CHAT_TRANSFER.md is the final handoff snapshot.
 
-Current state reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Latest successful released artifact is Build #99 at source bc1498d5b3db7621ee18f5ca6f021e6013c73b09. A further static-icon-state redraw is source-only after Build #99 and is NOT RUN / NOT RELEASED. APP_BUILD_REPORT.md owns build evidence; CHAT_TRANSFER.md records the final handoff snapshot.
-
 ## Current App / Release state — Build #100 verified; notification copy follow-up is NOT RELEASED
 
 - Canonical repo: TenzoNkz/JEXFYZ-App, branch main. Baseline before this source update was HEAD 27f1b572af2db8c73d325defed196086207649c8; the copy/test update is now committed on main after Build #100.
 - Latest successful release is Build #100 / https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39237262140, source 51bea70b2ca17f285bf35c3e547dc44c70f26d59. All 21 workflow steps passed; 103/103 Flutter tests passed; analyzer exited 0 with 25 info-level findings and no errors/warnings; configured Android gate, APK signature/certificate, source ZIP integrity and Release/tag/source equality passed. Native JUnit tasks were NO-SOURCE.
 - Build #100 APK ID 655957943, 54,718,555 bytes, SHA-256 a59c0a37b2025ad2b250bd4354b887379d96658e9f7757692691fa23b7b4d0a2. Source ZIP ID 655957946, 2,862,476 bytes, SHA-256 e60c4705097009d843b624bf8f0f989770a76aba6fdfbdd8d2159d77f98890f1.
-- Current notification copy follow-up is source-only / NOT RUN / NOT RELEASED. Blobs: lib/main.dart 931b7e2d074b1006622b0f83cc6db3f8ce43a400; lib/app_settings.dart e91ecd2a00eafdec3f681daabb74fd49fcd25bf2; test/widget_test.dart ff419072b6eca1f3dc2c932b6290e3d664f75c17.
+- Current Home STATUS/NOTIFY localization follow-up, including OTA diagnostic sanitization, is source-only / NOT RUN / NOT RELEASED. Blobs: lib/main.dart 51b52042b6429ae2e4a4f2508685cd8326af68c8; lib/app_settings.dart e91ecd2a00eafdec3f681daabb74fd49fcd25bf2; test/widget_test.dart 9d80171a12af084748b88fcdd06d3d6b3cf65e1f.
 - It removes raw internal reason codes from visible Home copy, maps known safety reasons, standardizes confirmation failures in English/Indonesian, and shortens category labels. New test cases have not run; Build #100 does not contain this follow-up.
 - Do not change the guarded Build App workflow. A separate @Thinking Eksekusi Build App! is required to validate/release this source. Firmware V6.7, BIN, Firebase, OTA, flash and physical hardware are untouched.
 

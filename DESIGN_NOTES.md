@@ -74,6 +74,7 @@ This file stores durable, user-approved visual constraints. Do not reinterpret a
 - Home status categories are concise: STATUS / STATUS, CONNECTION / KONEKSI, SYNC / SINKRONISASI, WARNING / PERINGATAN, ERROR / ERROR.
 - User-facing messages must follow the supported English/Indonesian language setting. Never concatenate firmware reason IDs such as PELTIER_SAFETY_LATCH or underscore-formatted diagnostic tokens into visible prose.
 - Map known reason codes to localized, actionable copy. Unknown codes use a generic localized message. Keep raw identifiers in internal diagnostics only.
+- OTA result presentation must never expose raw ERROR/CODE fields or internal event suffixes. Show concise localized success/failure summaries, a known localized stage when useful, and a validated firmware version; keep protocol diagnostics out of Home STATUS.
 - Classify unconfirmed command outcomes as errors in both languages. Preserve existing safety thresholds, predicates, controls, BLE protocol, command semantics and telemetry state.
 - Normalize Home STATUS text consistently, including after language changes, but preserve OTA result envelopes for their dedicated parser.
 

@@ -6,7 +6,7 @@ Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #100 is 
 
 - Latest successful release is Build #100 / https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39237262140, packaged source 51bea70b2ca17f285bf35c3e547dc44c70f26d59. All 21 workflow steps passed; 103/103 Flutter tests passed; analyzer exited 0 with 25 info-level findings and no errors/warnings; APK signature/certificate, matching source ZIP, downloaded asset digests and Release/tag/source equality passed. Native JUnit tasks were NO-SOURCE.
 - Build #100 APK asset ID 655957943, SHA-256 a59c0a37b2025ad2b250bd4354b887379d96658e9f7757692691fa23b7b4d0a2; source ZIP asset ID 655957946, SHA-256 e60c4705097009d843b624bf8f0f989770a76aba6fdfbdd8d2159d77f98890f1.
-- Current notification follow-up is source-only / NOT RUN / NOT RELEASED: lib/main.dart 931b7e2d074b1006622b0f83cc6db3f8ce43a400; lib/app_settings.dart e91ecd2a00eafdec3f681daabb74fd49fcd25bf2; test/widget_test.dart ff419072b6eca1f3dc2c932b6290e3d664f75c17.
+- Current Home STATUS/NOTIFY copy and OTA diagnostic sanitization follow-up is source-only / NOT RUN / NOT RELEASED: lib/main.dart 51b52042b6429ae2e4a4f2508685cd8326af68c8; lib/app_settings.dart e91ecd2a00eafdec3f681daabb74fd49fcd25bf2; test/widget_test.dart 9d80171a12af084748b88fcdd06d3d6b3cf65e1f.
 - Home notification body has a shared localization policy for safety reasons and command failures, suppresses raw identifiers such as PELTIER_SAFETY_LATCH, and uses concise labels STATUS / CONNECTION / SYNC / WARNING / ERROR with Indonesian equivalents.
 - Build #100 remains latest release and does not include these changes. New tests are not run. No Firmware/BIN/Firebase/OTA/device operation occurred.
 

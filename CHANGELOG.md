@@ -1,12 +1,13 @@
 # JE X FYZ / JE Cooler — Changelog
 
-## 2026-10-19 — Professional Home STATUS / NOTIFY copy and localization (source-only; NOT RUN / NOT RELEASED)
+## 2026-10-19 — Professional Home STATUS / NOTIFY copy, localization and OTA summaries (source-only; NOT RUN / NOT RELEASED)
 
-- Added shared localized reason mapping and Home-notification normalization so known firmware/safety reasons become actionable English/Indonesian copy and internal identifiers such as PELTIER_SAFETY_LATCH are not shown in the UI.
-- Peltier command failures no longer append raw safetyReason to human copy. Unknown underscore tokens are removed or mapped to generic localized status wording.
-- Category labels are now concise: STATUS / STATUS, CONNECTION / KONEKSI, SYNC / SINKRONISASI, WARNING / PERINGATAN and ERROR / ERROR.
-- Regression assertions were added for Peltier latch text, voltage-failure wording, unknown-reason fallback, category labels and confirmation-failure classification. Tests/analyzer have not run; Build #100 remains latest release and does not include this follow-up.
-- No BLE command/protocol, firmware safety predicate, telemetry semantics, Firmware/BIN, Firebase/OTA or hardware behavior was changed.
+- Added shared localized reason mapping and Home-notification normalization so known firmware/safety reasons become actionable English/Indonesian copy and identifiers such as `PELTIER_SAFETY_LATCH` are not shown in the UI.
+- Command-confirmation/failure messages and category labels are normalized in English/Indonesian: STATUS / STATUS, CONNECTION / KONEKSI, SYNC / SINKRONISASI, WARNING / PERINGATAN, ERROR / ERROR.
+- OTA results no longer display raw `ERROR`/`CODE` fields, internal `SUCCESS_*`/failure suffixes, or unknown mode tokens. The Home card uses concise localized outcome summaries with recognized mode/stage/version details where appropriate.
+- Regression assertions cover Peltier latch copy, voltage and command failures, unknown-reason fallback, localized category labels, and bilingual OTA summary formatting. Tests/analyzer have NOT RUN; Build #100 remains latest release and does not include this source follow-up.
+- Code/test blobs: `lib/main.dart` `51b52042b6429ae2e4a4f2508685cd8326af68c8`; `test/widget_test.dart` `9d80171a12af084748b88fcdd06d3d6b3cf65e1f`. No BLE protocol, firmware safety predicate, telemetry semantics, Firmware/BIN, Firebase/OTA operation or hardware behavior was changed.
+
 
 
 ## 2026-10-19 — Static / unknown-state icon-family redraw (source-only; NOT RUN / NOT RELEASED)

@@ -791,6 +791,61 @@ void main() {
     expect(isTransientOtaResultEvent('IN_PROGRESS|MODE=ONLINE|STAGE=ONLINE_WIFI_CONNECT|PROGRESS=0'), isFalse);
   });
 
+  test('Home OTA failures use concise localized copy without raw diagnostics', () {
+    expect(
+      localizedOtaFailureSummary(
+        AppLanguage.english,
+        mode: 'Online',
+        stage: 'Image validation',
+      ),
+      'OTA failed • Online • Image validation',
+    );
+    expect(
+      localizedOtaFailureSummary(
+        AppLanguage.indonesia,
+        mode: 'Online',
+        stage: 'Validasi citra',
+      ),
+      'OTA gagal • Online • Validasi citra',
+    );
+    expect(
+      localizedOtaFailureSummary(
+        AppLanguage.english,
+        mode: 'OTA',
+        stage: 'Unknown stage',
+      ),
+      'OTA failed',
+    );
+    expect(
+      localizedOtaSuccessSummary(
+        AppLanguage.english,
+        mode: 'Online',
+        version: 'V2.5',
+      ),
+      'OTA successful • Online • V2.5',
+    );
+    expect(
+      localizedOtaSuccessSummary(
+        AppLanguage.indonesia,
+        mode: 'OTA',
+        version: 'V2.5',
+      ),
+      'OTA berhasil • V2.5',
+    );
+
+    final source = File('lib/main.dart').readAsStringSync();
+    final start = source.indexOf('String _friendlyOtaResult(String value)');
+    final end = source.indexOf('String _friendlyReset(String value)', start);
+    expect(start, isNonNegative);
+    expect(end, greaterThan(start));
+    final formatter = source.substring(start, end);
+    expect(formatter, contains('localizedOtaFailureSummary('));
+    expect(formatter, contains('localizedOtaSuccessSummary('));
+    expect(formatter, isNot(contains("fields['ERROR']")));
+    expect(formatter, isNot(contains('code $code')));
+    expect(formatter, isNot(contains("raw.replaceAll('_', ' ').toLowerCase()")));
+  });
+
   test('Live cooling telemetry clears stale command errors only in a healthy state', () {
     expect(
       shouldClearStaleNotifyError(
