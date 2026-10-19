@@ -149,6 +149,9 @@ void main() {
       expect(painter, contains(effect), reason: 'Missing refined effect: $effect');
     }
     expect(painter, isNot(contains('_adaptiveLoop(s, angle)')));
+    expect(painter, contains('inner.left - sheenWidth + (inner.width + sheenWidth * 2) * p'));
+    expect(painter, contains('final dotX = active ? s * (-.06 + 1.12 * p) : s * .12;'));
+    expect(painter, contains('canvas.clipRect(Rect.fromLTWH(0, 0, s, s));'));
     expect(painter, isNot(contains('final flowAngle = phase * 2 + .6;')));
     expect(painter, isNot(contains('final sweepRect = Rect.fromLTWH')));
     expect(painter, isNot(contains('final glintStart = start + sweep * p;')));
