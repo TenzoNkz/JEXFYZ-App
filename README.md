@@ -29,7 +29,7 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 
 - `TenzoNkz/JEXFYZ-App` is the canonical editable App + Firmware source repository and the sole home for project documentation/memories.
 - `TenzoNkz/JEXFYZ-Firmware` is intended to contain only the production OTA artifact `JEXFYZ.cpp.bin`. The live recursive tree currently has exactly one entry, blob `dca6a1267762152519f6d2889e4f0adf46fd8803`, 1,457,008 bytes. Only tree metadata was checked; do not read the payload or add README, note, source, or memory files there. Source-to-BIN provenance remains UNVERIFIED.
-- The active editable Firmware source is `firmware/JEXFYZ-V6.8.ino` (`FW_VERSION="V6.8"`, blob `4f8011337fc3c9e3f1ace717fbd7179e1331bff8`). It replaces Adaptive 12V Fan PWM trend control with direct Hotside-limit temperature tiers. V6.8 is source-only, not compiled/installed; source-to-BIN provenance remains UNVERIFIED.
+- The active editable Firmware source is `firmware/JEXFYZ-V6.8.ino` (`FW_VERSION="V6.8"`, blob `7b4df708708e021aad39258468eed2fde94d202f`). It replaces Adaptive 12V Fan PWM trend control with direct Hotside-limit temperature tiers. V6.8 is source-only, not compiled/installed; source-to-BIN provenance remains UNVERIFIED.
 - V6.6/V6.7 compile/OTA reports are historical user reports. V6.7 compilation and online update were user-reported, but no independent compile log, BIN identity, OTA evidence or current device version was inspected.
 - App Gradle `versionName "Telegram @horizontalzzz"` is an intentional identity string; do not change it.
 
