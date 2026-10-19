@@ -1009,8 +1009,9 @@ bool jexIndicatorAnimationActive({
 }) =>
     connected && stateActive;
 
-/// Battery, Hotside and Voltage are continuous indicators while BLE is online.
-/// Output indicators only animate while their authoritative state is active.
+/// Controls autonomous phase loops, not event-driven transitions.
+/// Battery, Hotside and Voltage loop while BLE is online; output icons otherwise
+/// loop only while active. Fan Speed is retargeted by its separate PWM controller.
 bool jexIconAnimationPermitted({
   required bool connected,
   required JexAnimatedIconKind kind,
@@ -2271,11 +2272,13 @@ class _JexIconPainter extends CustomPainter {
               metric.length + tail,
               metric.length,
             );
-            final startSegment = metric.extractPath(0, head);
             canvas.drawPath(endSegment, currentPaint);
-            canvas.drawPath(startSegment, currentPaint);
             canvas.drawPath(endSegment, corePaint);
-            canvas.drawPath(startSegment, corePaint);
+            if (head > 0) {
+              final startSegment = metric.extractPath(0, head);
+              canvas.drawPath(startSegment, currentPaint);
+              canvas.drawPath(startSegment, corePaint);
+            }
           } else {
             final segment = metric.extractPath(tail, head);
             canvas.drawPath(segment, currentPaint);
