@@ -1,20 +1,20 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #100 remains the latest successful release for source 51bea70b2ca17f285bf35c3e547dc44c70f26d59. Newer bilingual Home NOTIFY copy/layout source is NOT RUN / NOT RELEASED. CHAT_TRANSFER.md is the final handoff snapshot.
+Reconciled against live GitHub main on 2026-10-19 (Asia/Jakarta). Build #106 remains the latest successful release; the current left-aligned NOTIFY and Battery/Hotside/Voltage animation update is source-only, NOT RUN / NOT RELEASED. CHAT_TRANSFER.md is the final handoff snapshot.
 
 ## Latest successful build and current source boundary
 
-- Latest successful release is Build #100 / https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39237262140, source 51bea70b2ca17f285bf35c3e547dc44c70f26d59. All 21 workflow steps passed; 103/103 Flutter tests passed; analyzer exited 0 with 25 info-level findings and no errors/warnings; Android gate, APK signature/certificate, corresponding source ZIP and downloaded asset verification passed. Native JUnit steps were NO-SOURCE.
-- Build #100 APK ID 655957943, SHA-256 a59c0a37b2025ad2b250bd4354b887379d96658e9f7757692691fa23b7b4d0a2. Source ZIP ID 655957946, SHA-256 e60c4705097009d843b624bf8f0f989770a76aba6fdfbdd8d2159d77f98890f1.
-- Home STATUS/NOTIFY copy and layout after Build #100 is source-only / NOT RUN / NOT RELEASED. Current blobs: `lib/main.dart` `b0d3a18f79b903bc8574d03a95cbc134b9234f20`; `lib/app_settings.dart` `8f228000d38d73038c06f569c052b1af601288a5`; `test/widget_test.dart` `df1b400b46cbe1e1e79c95e0cf537fbe4d7efd98`.
-- The card removes the CONNECTED/DISCONNECTED badge, preserves a `NOTIFY • category` heading, and shows centered copy across one or two natural lines without reducing font size. Copy mapping suppresses known/unknown reason IDs and OTA protocol tokens, normalizes unconfirmed-command errors, and improves English/Indonesian connection and OTA messages. OTA envelopes use the dedicated formatter first.
+- Latest successful release is Build #106 / Actions run 39279938461, source `9f90cf6063ee7786613f8b5dfa1c6b0412d89638`. Analyzer exited 0 with 25 info findings/no errors or warnings, 108 Flutter tests passed, and the configured Android, signing, source ZIP and asset verification gates passed.
+- Build #106 APK asset ID `656702702`, 54,734,939 bytes, SHA-256 `bab332a4312c628178e384a88d513cf8546ff15ab4b4e3f3becf2e70b10830cc`; corresponding source ZIP asset ID `656702729`, 2,866,720 bytes, SHA-256 `0bb86c4e6bd7d3cb7a6bb894658bd707acee48bac106fc5227f8adcba584ec98`.
+- Current source after Build #106 is NOT RUN / NOT RELEASED. `lib/main.dart` `7e09a3d28b4efe24bdced858db4274cf70806284`; `lib/app_settings.dart` `8f228000d38d73038c06f569c052b1af601288a5`; `test/widget_test.dart` `5a82cf79e6c5c40fc34489ce90cf1200cf9faccb`.
+- Home NOTIFY has no separate CONNECTED/DISCONNECTED badge; its heading and body are left-aligned and the body wraps to at most two lines. Battery/Hotside use clipped oval ember bursts instead of old tapered flame/drop particles. Voltage uses outer-contour pulses rather than a moving central spine or branch strikes. Firmware thresholds and all other icon families are unchanged.
 - Flutter/Dart tests and analyzer have NOT RUN; this environment has no Flutter/Dart executable. Build #100 does not include these changes. No App Build/release, Firmware/BIN/Firebase/OTA/flash/device operation occurred.
 - No App Build/release, Firmware/BIN/Firebase/OTA/flash/device operation occurred. Request @Thinking Eksekusi Build App! separately before validation/release.
 
 ## Current approved icon behavior
 
-- Battery/Hotside: complete silhouette when inactive/unknown; falling ember effect follows existing state/warning predicates.
-- Voltage: bevelled static bolt face; travelling current/branch sparks remain state-gated; 5V red / 9V green / 12V blue.
+- Battery/Hotside: complete silhouette when inactive/unknown; clipped oval ember bursts only under the existing thermal warning predicates.
+- Voltage: bevelled static bolt face with edge-following pulses; no central spine/inner strikes. 5V red / 9V green / 12V blue.
 - Adaptive: two distinct arrowheads and recessed track; rotates only when authoritatively ON.
 - Peltier: six-branch faceted crystal; snow particles only while existing active-state rules permit them.
 - Fan: exactly three swept blades, fixed airflow ribbons, bearing and blade-face highlights; existing voltage/PWM mapping and phase retarget remain.
