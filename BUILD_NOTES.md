@@ -12,7 +12,7 @@
 
 - Latest successful verified App run: [Build #95 / run 39217718351](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39217718351), source `cd691b874ddb0e454ba69891a3e0da3001df892f`. All 21 workflow steps passed; **99/99 Flutter tests passed**; analyzer exited 0 with 23 info-level deprecation findings; APK signing/certificate/source ZIP/asset integrity/Release-tag-source checks passed. Native JUnit tasks were NO-SOURCE.
 - APK asset `655596091`, 54,702,171 bytes, SHA-256 `856718ada30c5ef5081b5bb28a5e00c3b9d234e00ebced58a211112cc381140d`; source ZIP asset `655596090`, 2,858,246 bytes, SHA-256 `262d552e564b7c0a1727048a2e2897777ff18fa7296381a77f2c10236784ce7e`. These results apply to Build #95's exact packaged source.
-- The current smoothness follow-up is newer source: `lib/main.dart` `f0bc1375799e7b9e4466a3124ddb031d5f58e522`; `test/widget_test.dart` `653a67f3c946bb10c0da350f9677e19b3275ed58`. The follow-up is **NOT RUN / NOT RELEASED** and has not been validated by Build #95.
+- The current smoothness follow-up is newer source: `lib/main.dart` `f0bc1375799e7b9e4466a3124ddb031d5f58e522`; `test/widget_test.dart` `aaf911cdcf5e23a23b80c2ef47ca4e11d406f9cf`. The follow-up is **NOT RUN / NOT RELEASED** and has not been validated by Build #95.
 - Neither `flutter` nor `dart` CLI is installed in this execution environment, so the updated tests and analysis are **NOT RUN**. Do not report Build #95's 99/99 as validation of this newer source.
 - No App Build/release, Firmware/BIN/Firebase/OTA/flash/device operation was performed by this execution. Separate `@Thinking Eksekusi Build App!` is required to validate/release later source.
 
