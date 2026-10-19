@@ -1811,6 +1811,20 @@ class _JexIconPainter extends CustomPainter {
     ..color = paintColor
     ..style = PaintingStyle.fill;
 
+  void _drawGlow(
+    Canvas canvas,
+    Path path,
+    Color glowColor,
+    double strokeWidth,
+    double blurRadius,
+    double alpha,
+  ) {
+    if (alpha <= .005) return;
+    final paint = _stroke(strokeWidth, glowColor.withValues(alpha: alpha));
+    paint.maskFilter = MaskFilter.blur(BlurStyle.normal, blurRadius);
+    canvas.drawPath(path, paint);
+  }
+
   Path _batterySilhouette(double s) => Path()
     ..addRRect(RRect.fromRectAndRadius(
       Rect.fromLTWH(s * .12, s * .26, s * .70, s * .48),
@@ -1879,7 +1893,10 @@ class _JexIconPainter extends CustomPainter {
       final tint = color.withValues(
         alpha: .82 + .14 * math.sin(phase + i * math.pi).abs(),
       );
-      // A subtle halo and an inner edge keep the directional arcs legible at 22px.
+      // Each directional arrow has a soft luminous core, consistent with the thermal
+      // and electrical glyphs without changing the rotating two-arrow silhouette.
+      final arcPath = Path()..addArc(orbit, start, sweep);
+      _drawGlow(canvas, arcPath, tint, s * .14, s * .045, .22 * flowStrength);
       canvas.drawArc(orbit, start, sweep, false,
           _stroke(s * .105, tint.withValues(alpha: .08 + .06 * flowStrength)));
       canvas.drawArc(orbit, start, sweep, false, _stroke(s * .065, tint));
@@ -1972,26 +1989,6 @@ class _JexIconPainter extends CustomPainter {
       )
       ..close();
   }
-
-  Path _lavaDropletPath(double x, double y, double radius) => Path()
-    ..moveTo(x, y - radius * 1.35)
-    ..cubicTo(
-      x + radius * .92,
-      y - radius * .18,
-      x + radius * .92,
-      y + radius * .68,
-      x,
-      y + radius,
-    )
-    ..cubicTo(
-      x - radius * .92,
-      y + radius * .68,
-      x - radius * .92,
-      y - radius * .18,
-      x,
-      y - radius * 1.35,
-    )
-    ..close();
 
   /// A deterministic eruption cycle: tapered flame tongues bend in the heat,
   /// while teardrop-shaped lava fragments rise, drift, and cool out smoothly.
@@ -2305,13 +2302,14 @@ class _JexIconPainter extends CustomPainter {
     switch (kind) {
       case JexAnimatedIconKind.battery:
         final shell = _batterySilhouette(s);
-        if (warningStrength > .005) {
-          final glow = _stroke(
-            s * .12,
-            jexThermalRed.withValues(alpha: .24 * warningStrength),
-          )..maskFilter = MaskFilter.blur(BlurStyle.normal, s * .045);
-          canvas.drawPath(shell, glow);
-        }
+        _drawGlow(
+          canvas,
+          shell,
+          jexThermalRed,
+          s * .12,
+          s * .045,
+          .24 * warningStrength,
+        );
         canvas.drawPath(shell, _fill(mainColor.withValues(alpha: .10)));
         if (active && warningStrength > .005) {
           _drawThermalFlames(
@@ -2377,13 +2375,14 @@ class _JexIconPainter extends CustomPainter {
 
       case JexAnimatedIconKind.hotside:
         final shell = _hotsideSilhouette(s);
-        if (warningStrength > .005) {
-          final glow = _stroke(
-            s * .12,
-            jexThermalRed.withValues(alpha: .24 * warningStrength),
-          )..maskFilter = MaskFilter.blur(BlurStyle.normal, s * .045);
-          canvas.drawPath(shell, glow);
-        }
+        _drawGlow(
+          canvas,
+          shell,
+          jexThermalRed,
+          s * .12,
+          s * .045,
+          .24 * warningStrength,
+        );
         canvas.drawPath(shell, _fill(mainColor.withValues(alpha: .10)));
         if (active && warningStrength > .005) {
           _drawThermalFlames(
@@ -2445,6 +2444,7 @@ class _JexIconPainter extends CustomPainter {
 
       case JexAnimatedIconKind.voltage:
         final bolt = _bolt(s);
+        _drawGlow(canvas, bolt, mainColor, s * .13, s * .05, .34);
         canvas.drawPath(
           bolt,
           _fill(mainColor.withValues(alpha: .58 + .36 * safeLevel)),
@@ -2560,6 +2560,14 @@ class _JexIconPainter extends CustomPainter {
           canvas.rotate(frostAngle);
           canvas.translate(-cx, -cy);
         }
+        _drawGlow(
+          canvas,
+          crystal,
+          mainColor,
+          crystalWidth * 1.9,
+          s * .035,
+          .28 * frostPower,
+        );
         canvas.drawPath(
           crystal,
           _stroke(crystalWidth, mainColor.withValues(alpha: opacity)),
@@ -2605,6 +2613,7 @@ class _JexIconPainter extends CustomPainter {
           _drawFanAirflow(canvas, s, mainColor, opacity: airflowProgress);
         }
         final rotor = _fanSilhouette(s, angle);
+        _drawGlow(canvas, rotor, mainColor, s * .10, s * .035, .32 * strength);
         canvas.drawPath(rotor, _fill(mainColor.withValues(alpha: .96)));
         canvas.drawPath(rotor, _stroke(s * .012, mainColor.withValues(alpha: .88)));
         final hubColor = Color.lerp(mainColor, const Color(0xFF101319), .48)!;
@@ -2653,6 +2662,8 @@ class _JexIconPainter extends CustomPainter {
         }
         if (valueKnown) {
           if (active && safeLevel > 0) {
+            final activeArc = Path()..addArc(gauge, start, sweep * safeLevel);
+            _drawGlow(canvas, activeArc, mainColor, s * .11, s * .035, .30);
             canvas.drawArc(
               gauge,
               start,
@@ -2669,6 +2680,7 @@ class _JexIconPainter extends CustomPainter {
           final needle = Path()
             ..moveTo(cx, cy)
             ..lineTo(tip.dx, tip.dy);
+          _drawGlow(canvas, needle, mainColor, s * .12, s * .035, .36);
           canvas.drawPath(
             needle,
             _stroke(s * .060, mainColor.withValues(alpha: opacity)),
