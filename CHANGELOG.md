@@ -1,5 +1,13 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-19 — Clean centered Home NOTIFY card and bilingual copy polish (source-only; NOT RUN / NOT RELEASED)
+
+- Removed the separate right-side CONNECTED/DISCONNECTED badge. The card retains the `NOTIFY • category` heading and centers the heading/body while keeping the status icon on the left.
+- Replaced fixed-height, one-line `FittedBox` scaling with a content-driven card and readable body text that naturally stays on one line when short and wraps to at most two centered lines when needed.
+- Polished bilingual connection and OTA wording. OTA envelopes/legacy internal result tokens are routed through the dedicated localized result formatter before general message normalization; raw firmware reason IDs and OTA ERROR/CODE/event identifiers remain internal.
+- Updated regression source contracts for badge removal, centered two-line layout, OTA formatting order, bilingual safety copy, and OTA summaries. Flutter/Dart tests and analyzer have NOT RUN (no Flutter/Dart executable in this execution environment). Build #100 remains the latest successful release and does not include this source update.
+- Source blobs: `lib/main.dart` `5282fb226c818b8f4601ec89953c0c47ff4861e9`; `lib/app_settings.dart` `562e42c4dc1ee2ac0c15b3f7211e55fa7b11bac6`; `test/widget_test.dart` `0ebbf0cd03f041a44afa314d66b77278e26c646e`. No BLE/control/safety semantics, Firmware/BIN/Firebase/OTA/device operations or release artifacts changed.
+
 ## 2026-10-19 — Professional Home STATUS / NOTIFY copy, localization and OTA summaries (source-only; NOT RUN / NOT RELEASED)
 
 - Added shared localized reason mapping and Home-notification normalization so known firmware/safety reasons become actionable English/Indonesian copy and identifiers such as `PELTIER_SAFETY_LATCH` are not shown in the UI.
