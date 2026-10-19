@@ -1,11 +1,11 @@
-## CURRENT SOURCE FOLLOW-UP — HOME STATUS / NOTIFY COPY, LOCALIZATION AND OTA SUMMARY SANITIZATION (NOT RUN / NOT RELEASED)
+## CURRENT SOURCE FOLLOW-UP — HOME STATUS / NOTIFY COPY, CENTERED TWO-LINE CARD AND OTA SUMMARY SANITIZATION (NOT RUN / NOT RELEASED)
 
-- Baseline at execution start was main HEAD `3339267b8d8b0d04a18fd2083a8951bc38060a93`. Latest successful release remains Build #100 from source `51bea70b2ca17f285bf35c3e547dc44c70f26d59`.
-- Home STATUS/NOTIFY normalizes known safety reasons to concise actionable English/Indonesian, removes raw reason identifiers, classifies failed/unconfirmed commands in both languages, and uses compact category labels.
-- OTA result copy summarizes failures without exposing raw `ERROR`, `CODE`, internal event suffixes, or unknown mode identifiers. Known mode, localized stage, validated version, and valid progress percentage are retained only where useful.
-- Code/test blobs: `lib/main.dart` `51b52042b6429ae2e4a4f2508685cd8326af68c8`; `test/widget_test.dart` `9d80171a12af084748b88fcdd06d3d6b3cf65e1f`; localization table `lib/app_settings.dart` remains `e91ecd2a00eafdec3f681daabb74fd49fcd25bf2`.
-- Regression tests were added/updated for bilingual OTA summaries and suppression of internal error identifiers. Tests/analyzer have NOT RUN. Do not claim the new source passed automated execution.
-- Build #100 remains the latest successful release and does not include these source changes. No App Build/release, Firmware/BIN, Firebase production metadata, OTA, flash, or device action occurred in this follow-up.
+- Latest successful release remains Build #100 from source `51bea70b2ca17f285bf35c3e547dc44c70f26d59`; the following Home NOTIFY copy/layout changes are newer source-only work.
+- Home STATUS/NOTIFY maps known safety reasons to concise actionable English/Indonesian copy, removes raw reason identifiers, classifies failed/unconfirmed commands, and retains the `NOTIFY • category` heading. The right-side connection badge is removed; message text is centered and naturally wraps to at most two lines at readable font size rather than being shrunk.
+- OTA/legacy result envelopes now pass through the dedicated localized formatter before general normalization. User-facing summaries hide raw `ERROR`, `CODE`, internal event suffixes, and unknown mode identifiers; known mode, localized stage, validated version and valid progress remain only where useful. Common bilingual connection and OTA copy was polished.
+- Current source/test blobs: `lib/main.dart` `5282fb226c818b8f4601ec89953c0c47ff4861e9`; `test/widget_test.dart` `0ebbf0cd03f041a44afa314d66b77278e26c646e`; localization table `lib/app_settings.dart` `562e42c4dc1ee2ac0c15b3f7211e55fa7b11bac6`.
+- Regression source contracts cover bilingual safety/command messages, no raw error identifiers, two-line centered text, removal of the connection badge/FittedBox, and OTA formatting order. Flutter/Dart tests and analyzer have NOT RUN because the execution environment has no Flutter/Dart executable. Do not claim this source passed automated execution.
+- Build #100 remains the latest successful release and does not include these source changes. No App Build/APK release, Firmware/BIN, Firebase production metadata, physical OTA, flash, or device action occurred. Existing build evidence below remains unchanged.
 
 
 
