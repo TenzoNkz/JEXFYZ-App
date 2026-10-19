@@ -24,7 +24,7 @@ Change OTA only if there is a demonstrated OTA defect and the user explicitly au
 5. Update the canonical memory, `PROJECT_STATE.md` if current state changed, `CHANGELOG.md` and `CHAT_TRANSFER.md`.
 6. Label test/compile/hardware evidence precisely. Static assertions are not an OTA success certificate.
 
-Current source pointer is `firmware/JEXFYZ-V6.8.ino` (`FW_VERSION="V6.8"`, blob `4f8011337fc3c9e3f1ace717fbd7179e1331bff8`). The current change targets Adaptive Fan PWM selection and does not intentionally alter the protected OTA transport sequence. V6.7 compile/online update on 2026-10-18 remains user-reported historical evidence; V6.8 has NOT been compiled or installed. BIN identity, OTA logs and current installed-device version remain UNVERIFIED.
+Current source pointer is `firmware/JEXFYZ-V6.8.ino` (`FW_VERSION="V6.8"`, blob `7b4df708708e021aad39258468eed2fde94d202f`). The current change targets Adaptive Fan PWM selection and does not intentionally alter the protected OTA transport sequence. V6.7 compile/online update on 2026-10-18 remains user-reported historical evidence; V6.8 has NOT been compiled or installed. BIN identity, OTA logs and current installed-device version remain UNVERIFIED.
 
 ## Current Online OTA contract (must re-check live source)
 
