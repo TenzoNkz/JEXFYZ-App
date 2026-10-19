@@ -6458,7 +6458,9 @@ void _handleAckLine(String line) {
       padding: EdgeInsets.zero,
       child: SizedBox(
         width: double.infinity,
-        height: 44,
+        // Compact each metric row slightly so all seven rows still fit
+        // when Home Notify uses its two-line status layout.
+        height: 41,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
           child: Row(
