@@ -1823,6 +1823,15 @@ void main() {
     );
     expect(
       homeNotifyForTelemetryChange(
+        key: 'ADAPTIVE_CEILING',
+        previousValue: '9V',
+        currentValue: '12V',
+        language: AppLanguage.english,
+      ),
+      'Adaptive voltage ceiling set to 12V.',
+    );
+    expect(
+      homeNotifyForTelemetryChange(
         key: 'RGB_COLOR',
         previousValue: '#FF0000',
         currentValue: '#00FF00',
