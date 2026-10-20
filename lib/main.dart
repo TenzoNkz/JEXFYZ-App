@@ -7178,6 +7178,13 @@ void _handleAckLine(String line) {
         currentValue: c.substring(17),
         language: lang,
       );
+    } else if (c.startsWith('ADAPTIVE_CEILING:')) {
+      message = homeNotifyForTelemetryChange(
+        key: 'ADAPTIVE_CEILING',
+        previousValue: '',
+        currentValue: c.substring(17),
+        language: lang,
+      );
     } else if (c.startsWith('HOTLIMIT:')) {
       // Keep the existing Temperature-tab limit acknowledgement; do not notify on samples.
       message = JexText.phrase('Hotside temperature limit set to ', 'Batas suhu Hotside diatur ke ', lang) + c.substring(9) + '°C.';
