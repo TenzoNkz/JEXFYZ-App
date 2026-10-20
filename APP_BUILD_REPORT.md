@@ -1,10 +1,30 @@
-## CURRENT APP BUILD ATTEMPT — BUILD #109 TEST FAILURE; CANVAS-FIT FIX COMMITTED (BUILD #110 PENDING)
+## LATEST SUCCESSFUL APP BUILD — BUILD #110 (HOME LAYOUT RESTORATION RELEASED)
+
+- **Result: SUCCESS.** [Actions run 39300262741](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39300262741) completed with conclusion `success` on source commit `b5adcffb2c9724a07cdba4cd8521c1307f1e6566`.
+- **Release/tag consistency:** the live `jexfyz-latest` Release target is `b5adcffb2c9724a07cdba4cd8521c1307f1e6566`, matching the Build #110 checked-out source commit. The Release contains the APK and its corresponding source ZIP.
+- **APK:** asset ID `657047529`, 54,734,939 bytes, SHA-256 `258211ec9313c555aaac6cd797d1bf6abc6c62c3c2781cd37baa0a8c849bfb84`.
+- **Corresponding source ZIP:** asset ID `657047524`, 2,866,352 bytes, SHA-256 `13d1cad6cf4fbb9b2560da7406f4c6bf875fe4ebc2ed5483e6f0001a3b24aa23`.
+- Build #110 packages the restored 44 dp Home metric rows and 56 dp left-aligned, badge-free NOTIFY card/slot. Its source does **not** include the follow-up below: top-down fire embers, raised Hotside tube/Voltage-core clipping, removal of Settings About, or Firmware V6.9 pacing.
+- Android identity remains `versionName "Telegram @horizontalzzz"`. The protected workflow remained unchanged.
+
+## CURRENT SOURCE FOLLOW-UP AFTER BUILD #110 — NOT RUN / NOT RELEASED
+
+- **App source blobs:** `lib/main.dart` `08592a9d861a11ecdb8de1aa289f8ce06bf2e20c`; `lib/app_settings.dart` `f8e465648946a25eae44f3fad6a5a3bfaca8b050`; `lib/floating_monitor.dart` `e7c74bf749698a8331f2b0b31a847b2627ac3e4b`; `test/widget_test.dart` `c3cca34a17eb11a6949b9132eda785c788c0ba01`; `test/floating_monitor_layout_contract_test.dart` `b053a92522223fd237a8f0e025648eb1b26730a5`.
+- Battery/Hotside now use clipped top-down falling fire embers inspired by Peltier's particle cadence, with orange/gold ovals and bright cores; Hotside inner tube is taller; Voltage's white core is inset and clipped to the bolt; the Settings About section/page and EN/ID labels were removed. Home geometry remains 44 dp metric rows and a 56 dp badge-free, left-aligned, two-line NOTIFY card.
+- Flutter tests and Dart analyzer have NOT RUN for this follow-up. Build #110 is successful for its earlier source and must not be treated as verification of these edits.
+- **Firmware source:** `firmware/JEXFYZ-V6.9.ino`, `FW_VERSION="V6.9"`, blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`. Temperature tiers remain the same; downsteps are 10 percentage points every 10 seconds, upsteps every 1 second, and voltage/thermal-transition gates reset the clock. The Hotside limit/protection still forces 100% immediately.
+- Firmware contracts: `test/firmware_qc_contract_test.dart` `1b35feeb1e411efec44261ec130eec4535004454`; `test/firmware_touch_adaptive_sync_test.dart` `3a86dd118cd1d1332dbafa3883ab9e5ae2823ac8`. These tests have NOT RUN for V6.9. Firmware has NOT been compiled or installed; the physical reset cause, output ramp and source-to-BIN provenance remain UNVERIFIED.
+- No App Build, Firmware compile, BIN generation/publication, Firebase change, OTA, flashing, or hardware operation was performed for this source follow-up. Request `@Thinking Eksekusi Build App!` separately to validate/package the App source; Firmware compilation remains separate.
+
+---
+
+## RESOLVED — BUILD #109 TEST FAILURE; CANVAS-FIT FIX VALIDATED BY BUILD #110
 
 - **Build #109:** [Actions run 39299761339](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39299761339), checked out source `ba578c5f3f729112bdcba8a35b1025d413571d8e`, concluded **failure**. Toolchain, signing-secret preparation, App security/architecture audit, dependencies and Dart analyzer passed. Flutter tests reported **107 passed, 1 failed**. Only `JE Cooler dashboard renders` failed: `A RenderFlex overflowed by 6.0 pixels on the bottom`. New NOTIFY Row/card56 and metric-row44 source contracts passed. Android gate, APK build/signing, source ZIP, Release publishing and asset-verification steps were skipped; Build #109 published no new release assets.
 - **Evidence-based App source fix committed:** `1fb106308f28052d69af979baade4c8d3af04371`, message `fix(ui): keep restored Home geometry within fixed canvas`, updates only outer Home padding in `lib/main.dart` from `EdgeInsets.fromLTRB(12, 7, 12, 8)` to `EdgeInsets.fromLTRB(12, 4, 12, 5)`. This reclaims 6 dp of vertical layout capacity evenly at the upper/lower gutters while keeping the 420 dp master Home canvas, 44 dp metric rows, 56 dp NOTIFY card/reserved slot, 38/41 dp indicator geometry and inter-item gaps intact. It does not reduce text size, remove assertions, alter BLE/control/telemetry, or touch Firmware safety logic.
 - Updated source blob: `lib/main.dart` `4161ab05ec005322eacd627a3e77c9c9250fbcce`. Test source remains `test/widget_test.dart` blob `eeee8dcdb9dd88b985145e059913759f5f325920`. The padding fix is **not yet validated**; it requires a new guarded run.
-- **Next authorized retry:** record this failure/fix in this file, then re-trigger official issue #34 using the accepted `issues/reopened` event. Next run expected #110. Do not start parallel or blind retries; proceed from the actual new run ID and checked-out SHA.
-- Current official Release still remains Build #108 / source `51f401c90085b0bef5599375f7819d0294375938`; `jexfyz-latest` has not been moved by #109. Do not claim the row44/card56 geometry is released until all gates pass and release/tag/assets are verified.
+- **Resolution:** Build #110 ran after this fix and succeeded. No retry is pending for the #109 overflow failure.
+- At the time of Build #109, Release still targeted Build #108. Build #110 subsequently updated `jexfyz-latest` to source `b5adcffb2c9724a07cdba4cd8521c1307f1e6566`; its assets and tag were re-fetched and verified.
 - Workflow is unchanged at blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`. Trigger remains the official owner-authored issue #34, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. Android `versionName "Telegram @horizontalzzz"` remains preserved.
 - No Firmware compilation, BIN generation/publication/replacement, Firebase production metadata, OTA, flashing or device action was performed.
 
