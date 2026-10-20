@@ -1,8 +1,8 @@
 ## 2026-10-20 — Compact dynamic Home NOTIFY height (source-only; NOT RUN / NOT RELEASED)
 
 - Kept the original icon-left/text-left NOTIFY Row, removed no additional connection semantics or layout, and retained 44 dp metric rows.
-- Changed the current card from a fixed 56 dp slot to a 44 dp minimum-height card. A one-line message now stays compact; a two-line message grows to its natural required height without shrinking text or using a fixed empty badge lane.
-- Updated `test/widget_test.dart` to assert the 44 dp minimum, smaller icon lane, two-line wrapping, and absence of the fixed 56 dp slot. Current widget test blob: `9c47cbeb0d4c4dc9a85e895847a9b81b53d1a91f`.
+- Changed the current card from a fixed 56 dp slot to a compact 44 dp minimum-height card. A one-line message now stays compact; a two-line message grows only as much as needed without shrinking text or using a fixed empty badge lane.
+- Updated `test/widget_test.dart` to assert the 44 dp minimum, smaller icon lane, two-line wrapping, and absence of the fixed 56 dp slot. Current widget test blob: `10de861b593c7b4955deaa160ab1d0c3be519f58`.
 - Static source assertions are updated, but Flutter tests/analyzer have NOT RUN. Build #110 still packages its older fixed 56 dp card; the dynamic-height change is not released. No App Build or device operation was performed.
 
 ## 2026-10-20 — Falling thermal embers, icon containment, Settings About removal and Adaptive Fan PWM V6.9
