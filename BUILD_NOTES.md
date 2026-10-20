@@ -19,7 +19,7 @@
 
 ## Latest source-only follow-up after Build #120 — Home NOTIFY single-event messages
 
-- Current source blobs: `lib/main.dart` `22986e3cdd21973fbf8ae5e5ed646d28f18785d6`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `c2cb9928fcb8388d51687b8907575c3f06b8cc66`.
+- Current source blobs: `lib/main.dart` `dfc7621bbdce9ebe31cdb19be8b452a8c0b1411d`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `132c3b000abd63599ebea9d26fc5085cb577e50e`.
 - Home NOTIFY now shows only one sentence for the newest confirmed event. Voltage, Control, Adaptive and LED events replace earlier messages, and Fan speed copy distinguishes increases from reductions. Temperature sampling does not create ordinary messages; Hotside-limit alerts use measured temperature and limit and override normal event copy.
 - Build #120 remains the latest successful App release, packaged source `aeadaa47bd7ad64af6044afce5783781f0c0d82f`; it does not include this latest patch. Flutter tests and Dart analysis have NOT RUN; no App Build or Firmware/device operation was triggered.
 
