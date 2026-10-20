@@ -189,16 +189,16 @@ String homeHotsideLimitNotice(
 }
 
 bool isActiveHomeSafetyReason(String reason) {
-  const inactiveReasons = <String>{
-    '',
-    'NONE',
-    'OK',
-    'READY',
-    'WAITING_FOR_NTC',
-    'WAITING_FOR_SENSOR_VALIDATION',
-    'DISCONNECTED',
+  // Only persistent protection/fault states override a newer ordinary event.
+  // Operational reasons such as ADAPTIVE_ACTIVE, VOLTAGE_TRANSITION and FAN_REQUIRED
+  // are events/status explanations, not indefinitely active safety latches.
+  const priorityReasons = <String>{
+    'HOTSIDE_PROTECTION',
+    'PELTIER_SAFETY_LATCH',
+    'NTC_ERROR',
+    'VOLTAGE_FORCE_FAILED',
   };
-  return !inactiveReasons.contains(reason.trim().toUpperCase());
+  return priorityReasons.contains(reason.trim().toUpperCase());
 }
 
 String homeFanSpeedChangedNotice(
@@ -5580,8 +5580,13 @@ void _handleAckLine(String line) {
         }
       } else if (isActiveHomeSafetyReason(safetyReason)) {
         if (latestTelemetryNotice != null || latestSafetyReason != null) {
+          notice = _friendlyReason(safetyReason);
           _homeNotifyRevision++;
         }
+      } else if (latestTelemetryNotice != null) {
+        // The most recent confirmed control/LED event outranks ordinary operating reasons.
+        notice = latestTelemetryNotice;
+        _homeNotifyRevision++;
       } else if (latestSafetyReason != null) {
         notice = safetyReason.trim().toUpperCase() == 'NONE'
             ? JexText.phrase(
@@ -5594,9 +5599,6 @@ void _handleAckLine(String line) {
                 'Status keselamatan diperbarui.',
                 appLanguageNotifier.value,
               );
-        _homeNotifyRevision++;
-      } else if (latestTelemetryNotice != null) {
-        notice = latestTelemetryNotice;
         _homeNotifyRevision++;
       }
     });
