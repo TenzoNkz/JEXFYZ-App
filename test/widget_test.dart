@@ -869,7 +869,7 @@ void main() {
     expect(normalizerIndex, greaterThan(otaFormatterIndex));
   });
 
-  test('Home Notify restores the original left Row, removes connection badge, and fits two lines', () {
+  test('Home Notify restores the original left Row, removes badge, and grows only for two-line copy', () {
     final source = File('lib/main.dart').readAsStringSync();
     final start = source.indexOf('Widget _homeNotify() {');
     final end = source.indexOf('Widget _card({required Widget child', start);
@@ -877,7 +877,7 @@ void main() {
     expect(end, greaterThan(start));
     final card = source.substring(start, end);
 
-    expect(card, contains('BoxConstraints(minHeight: 56)'));
+    expect(card, contains('BoxConstraints(minHeight: 44)'));
     expect(card, contains('maxLines: 2'));
     expect(card, contains('softWrap: true'));
     expect(card, contains('textAlign: TextAlign.start'));
@@ -885,13 +885,19 @@ void main() {
     expect(card, isNot(contains('textAlign: TextAlign.center')));
     expect(card, contains('child: Row('));
     expect(card, contains('width: 45,'));
+    expect(card, contains('height: 34,'));
     expect(card, contains('const SizedBox(width: 6)'));
     expect(card, isNot(contains('Stack(')));
     expect(card, isNot(contains('FittedBox(')));
     expect(card, isNot(contains('_notifyStatusLabel()')));
     expect(card, isNot(contains('noticeChipFill')));
     expect(card, isNot(contains('offlineStatusColor')));
-    expect(source, contains('height: 56,\n              child: _homeNotify(),'));
+    expect(source, isNot(contains('height: 56,\n              child: _homeNotify(),')));
+    final homeStart = source.lastIndexOf('Widget _buildHome(');
+    final notifySlot = source.indexOf('_homeNotify(),', homeStart);
+    expect(homeStart, isNonNegative);
+    expect(notifySlot, greaterThan(homeStart));
+    expect(source.substring(homeStart, notifySlot), isNot(contains('height: 56,')));
 
     final categoryStart = source.indexOf('String _notifyStateLabel()');
     final categoryEnd = source.indexOf('Widget _homeNotify() {', categoryStart);
