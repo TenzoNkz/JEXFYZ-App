@@ -286,7 +286,7 @@ void main() {
     expect(thermal, contains('const Color(0xFFFFEDB5)'));
     expect(thermal, isNot(contains('final rise =')));
     expect(thermal, isNot(contains('sourceY - rise')));
-    expect(thermal, contains('jexMotionSmoothStep(age)'));
+    expect(thermal, contains('jexMotionSmoothStep(fall)'));
     expect(thermal, contains('jexParticleBoundaryFade(fall, fadeIn: .18, fadeOut: .22)'));
     expect(thermal, contains('required bool thermometer'));
     expect(thermal, contains('if (clipPath != null) canvas.clipPath(clipPath)'));
