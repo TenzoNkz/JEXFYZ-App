@@ -1,3 +1,13 @@
+## SOURCE FOLLOW-UP — 2026-10-20 — Stabilize Adaptive Fan whole-degree targets (NOT COMPILED / NOT RUN)
+
+- Replaced fractional-delta PWM target thresholds with floored whole-degree Hotside categories. With a 40°C Hotside Limit, 36.0–36.99°C stays at 70%; the target becomes 80% starting at category 37. The reported 36.3°C →36.8°C drift therefore no longer moves the target up a tier.
+- Preserved raw-decimal Hotside protection: at `hotsideC >= hotLimit`, Fan still moves directly to 100%. Adaptive Fan remains paced in 10-point steps (up every 1 second, down every 10 seconds). One calibrated NTC reading per second and the non-blocking loop remain unchanged.
+- Updated the Firmware QC contract with the 36.3°C/36.8°C case and whole-degree tier checks. Static readback checks passed; Firmware tests and Arduino compile were NOT RUN. A prior user-reported V6.9 compile/install does not validate the current source hash.
+- Current blobs: `firmware/JEXFYZ-V6.9.ino` `b35101a0cc5a597c55ecd4391cd99d5b62852417`; `test/firmware_qc_contract_test.dart` `29325173289d78041002df41cc14262fcf89e045`.
+- No Firmware artifact/BIN, Firebase, OTA, flash or device operation occurred.
+
+---
+
 ## 2026-10-20 — Refined falling flames and category-free NOTIFY (source-only; NOT RUN / NOT RELEASED)
 
 ## SOURCE FOLLOW-UP — 2026-10-20 — Formalize English and Indonesian UI copy
