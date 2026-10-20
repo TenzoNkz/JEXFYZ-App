@@ -18,7 +18,7 @@
 
 - Run #122 / `39371442709` used the official issue #34 reopened event and source commit `25ee50c52e76b20abf6d8a957540ac61f78f55d2`. Toolchain, signing prep, security audit, dependency installation and Dart analyzer passed; Flutter tests failed with 114 passed / 1 failed. The Android gate and every APK/release step were skipped.
 - Exact failure: `test/widget_test.dart:2064`, `RangeError (start): Invalid value ... -1`, from `source.indexOf('void _notifyCommandAccepted(String command)')`. This marker no longer matched the multiline helper signature; the next expected Fan Speed string was also superseded by helper delegation.
-- Test fix commit `13e61f18606e87f27f6d147b0f3183f73a71916d` updates the test contract to the actual helper signature and `homeFanSpeedChangedNotice(...)`; no functionality or gate was weakened. Revalidate all tests in Build #123.
+- Test fix commit `13e61f18606e87f27f6d147b0f3183f73a71916d` updates the test contract to the actual helper signature and `homeFanSpeedChangedNotice(...)`; no functionality or gate was weakened. Build #123 subsequently passed the full Flutter suite (115 passed, 0 failed), as recorded in the successful-build section above.
 
 ---
 
