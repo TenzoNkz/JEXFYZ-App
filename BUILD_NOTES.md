@@ -8,13 +8,21 @@
 - **Corresponding source ZIP:** [JEXFYZ-corresponding-source.zip](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip), asset ID `658178573`, 2,871,380 bytes, SHA-256 `3e7585549d2eef68ad93b35c378bd76332d80a92a0edf1856aec8303df5e28d7`. CI re-downloaded both Release assets and verified hashes, source marker, ZIP integrity, and APK signature schemes.
 - **Validation:** security/architecture audit, dependency installation, Dart analyzer and **115 Flutter tests passed with 0 failures**. Analyzer reported 25 informational diagnostics (deprecated APIs/unnecessary imports). Android `./gradlew --no-daemon :app:testDebugUnitTest` reported `BUILD SUCCESSFUL in 1m 42s`; Android unit-test tasks were `NO-SOURCE`, so no native Android JUnit cases actually ran.
 - **Signing:** V1/JAR, V2 and V3 verification passed on generated and downloaded APK. Official certificate SHA-256 is `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. JAR verifier printed certificate-chain trust warnings, but the required scheme checks and configured signer fingerprint passed.
-- **Validated NOTIFY behavior:** Home notification state now follows the newest confirmed cooling/safety telemetry rather than leaving an earlier command ACK visible after live voltage/fan/output changes. A confirmed Hotside-limit crossing outranks older command status; stale command errors clear only after healthy telemetry is confirmed; stored text is re-localized when switching app language; connection/action/safety/error copy remains concise, bilingual and free of internal tokens.
+- **NOTIFY baseline and latest source follow-up:** Build #120 packages the source fingerprints listed below. The newest source-only change supersedes its aggregate state summary with one complete sentence per latest confirmed event; it has not been run through Flutter tests or Dart analysis and is NOT RELEASED. Hotside at/above the configured limit remains the safety-priority exception.
 - **Source fingerprints in the release:** `lib/main.dart` `4d2871234971ef8a9fa976f197e0e4f7b1e188ac`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `ccae334f9a737926bef021fa04ce7caa4d30601d`; `FloatingMonitorService.kt` `f2c5d5e8b5731be36ae3b82109a75beaefe5fb4d`.
 - Android identity is preserved: `versionName "Telegram @horizontalzzz"`.
 - **Firmware boundary:** source `firmware/JEXFYZ-V7.0.ino` is included in the repository and referenced by source-contract tests, but Build #120 did not compile Firmware, generate/publish a BIN, edit production Firebase metadata, perform OTA/flashing or operate hardware. Firmware compilation/installed version and physical BLE/cooling/PWM behavior remain unverified by this App-only CI.
 - **Workflow note:** a post-job cache-write warning said the token lacks writable cache scopes; core build, signature, publication and downloaded-asset validation had already passed, and the final run conclusion is `success`.
 - **Authorization policy:** `@Thinking Eksekusi Build App!` is the sole App Build authorization. Builds use the guarded issue-only trigger in `.github/workflows/jexfyz-app-build-trigger.yml`; push, PR and manual-dispatch bypasses are not permitted. App Build never authorizes Firmware/BIN publication, production Firebase changes, OTA, flashing or hardware operation.
 - `APP_BUILD_REPORT.md` contains the detailed attempt history and complete Build #120 evidence. Its post-build update and this checkpoint are documentation-only; the released APK/source package remains exactly tied to commit `aeadaa47bd7ad64af6044afce5783781f0c0d82f`.
+
+
+## Latest source-only follow-up after Build #120 — Home NOTIFY single-event messages
+
+- Current source blobs: `lib/main.dart` `a167e884f765a8a9ef379108262c366c8bcdcf99`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `5cb9ccacf585823a874976432478529893f71da3`.
+- Home NOTIFY now shows only one sentence for the newest confirmed event. Voltage, Control, Adaptive and LED events replace earlier messages, and Fan speed copy distinguishes increases from reductions. Temperature sampling does not create ordinary messages; Hotside-limit alerts use measured temperature and limit and override normal event copy.
+- Build #120 remains the latest successful App release, packaged source `aeadaa47bd7ad64af6044afce5783781f0c0d82f`; it does not include this latest patch. Flutter tests and Dart analysis have NOT RUN; no App Build or Firmware/device operation was triggered.
+
 
 ---
 
