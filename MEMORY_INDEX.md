@@ -57,20 +57,20 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #113 is 
 | `OTA_REGRESSION_MEMORY.md` | CA/NTP experiment, failure evidence, `setInsecure()` security trade-off and preflight |
 | `VOLTAGE_TRANSITION_MEMORY.md` | Peltier ramp, rail handoff, cancellation/recovery rules and hardware validation plan |
 | `BUILD_NOTES.md` | Active App build procedure, toolchain, authorization and validation boundaries |
-| `APP_BUILD_REPORT.md` | Authoritative App Build history; Build #110 is latest successful artifact, latest Home geometry follow-up is unvalidated |
+| `APP_BUILD_REPORT.md` | Authoritative App Build history; Build #113 is latest successful release; the post-#113 Home/thermal follow-up remains unvalidated |
 | `CHANGELOG.md` | Significant history and superseded decisions; never override current source |
 | `DESIGN_NOTES.md` | Approved grille/logo/assets and dashboard motion/layout contracts |
 | `.github/workflows/jexfyz-app-build-trigger.yml` | Authoritative guarded manual App Build workflow |
 | `test/*.dart` | Five current Flutter/source-contract test files; execution must be proven from run evidence |
-| `firmware/JEXFYZ-V6.9.ino` | Active editable V6.8 source; user compiles separately |
+| `firmware/JEXFYZ-V6.9.ino` | Active editable Firmware V6.9 source; compilation is user-reported and must be independently proven before claiming source-to-BIN identity |
 | `archive/*.md` | Immutable forensic snapshots; stale “CURRENT” claims remain historical, paths retained verbatim |
 
-- Active Firmware: `firmware/JEXFYZ-V6.9.ino` blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`; new Adaptive Fan tier logic is SOURCE UPDATED / NOT COMPILED / NOT INSTALLED.
+- Active Firmware: `firmware/JEXFYZ-V6.9.ino` blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`; the user reports compile/install success, but independent logs, source-to-BIN provenance and installed version remain UNVERIFIED.
 - Current Firmware QC contract: `test/firmware_qc_contract_test.dart` blob `1b35feeb1e411efec44261ec130eec4535004454`; Touch/Adaptive sync contract: `test/firmware_touch_adaptive_sync_test.dart` blob `3a86dd118cd1d1332dbafa3883ab9e5ae2823ac8`. Both are NOT RUN for V6.8.
-## Current source fingerprints (Build #110 successful; latest App follow-up NOT RUN; Firmware V6.9 NOT COMPILED)
+## Current source fingerprints (Build #113 successful; latest App follow-up NOT RUN; Firmware V6.9 compile/install USER-REPORTED)
 
-- lib/main.dart: 2e2301db3199569273d0ad1466549ab3fcd04380 — 44 dp Home metric rows and original icon-left/text-left badge-free Notify Row with 44 dp minimum height, expanding only for two-line copy; falling fire/geometry follow-up; NOT RUN / NOT RELEASED.
-- test/widget_test.dart: 10de861b593c7b4955deaa160ab1d0c3be519f58 — layout regression contracts for 44 dp metrics and dynamic 44 dp-minimum Notify; NOT RUN / NOT RELEASED.
+- lib/main.dart: d0fdb7482d939b34b0a1824b33d37f6457835818 — seven 45 dp Home rows, 3 dp pre-NOTIFY gap, fixed 44 dp badge-free NOTIFY with two-line body text scaling, stable cooler image constraints, and Battery/Hotside fire painted behind the foreground silhouettes; NOT RUN / NOT RELEASED.
+- test/widget_test.dart: 09cfe3e7b744b988571a28ad0d9377da5ee36cb1 — layout and painter source contracts for 45 dp rows, fixed-height/two-line NOTIFY, stable image constraints and background-first/outside-silhouette fire; tests NOT RUN.
 - lib/jex_animated_glyph.dart: b37fc4e0807c874b2f01db00c7f606810cb5deca — generic action glyphs static.
 - Build #99 validated source commit bc1498d5b3db7621ee18f5ca6f021e6013c73b09, source blob 30d864c2f03c40fd4d0b6926a9958153f2a3b236 and test blob 711a44b00eadee2e2bcd24e48383128f0d70ccc9.
 
@@ -86,8 +86,8 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #113 is 
 
 ## Durable repository/evidence restrictions
 
-- All source, documentation, tests and project memory remain in `TenzoNkz/JEXFYZ-App`. Keep `TenzoNkz/JEXFYZ-Firmware` BIN-only. The currently checked BIN metadata is `JEXFYZ.cpp.bin`, blob `9fdd915c3d298cad4de720765dab7fb03f47024d`, 1,456,368 bytes; do not read or mutate payload during documentation tasks, and do not infer source provenance.
-- V6.9 source blob 8e0f0ff5a65962ebdb44300b05fc161cf9349d96 uses deterministic Adaptive Fan temperature tiers; it is not compiled/installed. V6.7 compilation/online update was user-reported only. Source/BIN identity, installed version, Firebase state and full OTA apply/reboot/reconnect remain unverified. The previous V6.6 compile/two-OTA statements are historical user reports.
+- All source, documentation, tests and project memory remain in `TenzoNkz/JEXFYZ-App`. Keep `TenzoNkz/JEXFYZ-Firmware` BIN-only. Live BIN metadata: `JEXFYZ.cpp.bin`, blob `821b022f97353d9a7aea4695b2e37c98b7488e15`, 1,456,560 bytes. Only tree metadata was checked; do not read or mutate payload or infer source provenance.
+- V6.9 source blob 8e0f0ff5a65962ebdb44300b05fc161cf9349d96 uses deterministic Adaptive Fan temperature tiers. The user reports compile/install success; exact source/BIN identity, installed version, Firebase state and full OTA apply/reboot/reconnect remain unverified. V6.7 compile/online-update and V6.6 two-OTA reports are historical user reports.
 - Current UI excludes a standalone Battery Protection Guard. The exclusive one-App/one-cooler pairing lock is a user design requirement; encrypted/bonded writes alone do not prove exclusive provisioning.
 - Preserve OTA protection and its `setInsecure()` server-identity trade-off; read OTA and voltage-transition references before changes. Preserve the approved white square grille/purple X/four corner holes/flat-print design and transparent square app assets.
 - Keep the permanent hardware timings, NTC single-sample rule, safety gates, Adaptive profile behavior, BLE P1 UUIDs, LED mode IDs and telemetry contracts in their canonical subject files.

@@ -5,7 +5,7 @@ Refreshed after @Thinking Eksekusi Full! on 2026-10-20 (Asia/Jakarta). Pre-chang
 ## 1. Authority and operation scope
 
 - Canonical repository: `TenzoNkz/JEXFYZ-App`, branch `main`; continue directly on `main`, with no branch/PR unless explicitly requested.
-- Pre-transfer HEAD: `af34f32f947a5c5ec7b7eac87948aa3f8b099329`; parent `7f95f8b8663c91fea56d99d20761a8be71d590ed`. Tree before transfer write: `af34f32f947a5c5ec7b7eac87948aa3f8b099329`, 67 entries (49 blobs / 18 trees), not truncated.
+- Pre-task HEAD: `8d74c0382089590160d65d81f8e505af7243ccc5`; parent `05e4f644d6bf82ae2682154082c3e44a4876205a`. Pre-task tree `b24abf62698aa91852eb57bec413b488fcfab129`, 67 entries (49 blobs / 18 trees), not truncated.
 - `Diskusi` is read-only. `Eksekusi Full` authorizes scoped source/tests/docs/static audit/commit only; it does not authorize App Build, Firmware compile, BIN publication, Firebase, OTA, flashing or physical-device operations. `Eksekusi Build App` is the separate authorization for official App validation/build/release. `Chat Stuck` recovers evidence and never expands scope.
 - Keep Android Gradle `versionName "Telegram @horizontalzzz"`. App repository owns code, tests, docs/memory; `TenzoNkz/JEXFYZ-Firmware` remains BIN-only. The user compiles Firmware separately in ArduinoDroid / Arduino-ESP32 Core 3.3.7.
 
@@ -39,25 +39,25 @@ Refreshed after @Thinking Eksekusi Full! on 2026-10-20 (Asia/Jakarta). Pre-chang
 
 ## 6. Canonical memory/document fingerprints before transfer write
 
-- `FIRMWARE_NOTES.md` `67ef8c56d5adf04b77279090ede3a5f1693638a9`
-- `firmware/FIRMWARE_TECHNICAL_REFERENCE.md` `86f95da09078922869bd8f4cbd1865f7402d3d5f`
-- `PROJECT_STATE.md` `4c2d76fb793d8e1fbc512efc6bd4f23fc2c6db8d`
-- `HANDOVER.md` `a103b5002eec3182dab8ddd0f59fea8c232e4923`
-- `MEMORY_INDEX.md` `26a613ffab6eed59bbe4e84bd435a8a990245151`
-- `APP_NOTES.md` `827f7e281c2af8bec399215a788b73acab1a662a`
-- `DESIGN_NOTES.md` `e4a66b78dfb636d79e5b260e2e6893d21a676cf6`
-- `README.md` `ce9c2839270334e5a73003e117a60d8c7b43d67b`
-- `CHANGELOG.md` `4997f99cc06330af79ed81c6d544d48ad4eb49e1`
-- `APP_BUILD_REPORT.md` `65ec94d99fc1bc75d8be49b7a40ab45eabf8988a`
-- `CHAT_RULES.md` `849ea46d4137c29b7b427e853fbe15ac5e3d994a`
+- `FIRMWARE_NOTES.md` `cbd98b32ed40e81549a5f23af6017724d7f987aa`
+- `firmware/FIRMWARE_TECHNICAL_REFERENCE.md` `92fa33131cc3a434033e45bdab930812a8bf85cb`
+- `PROJECT_STATE.md` `98a36ec6d56019c80469c483e44d1a93c9e1d003`
+- `HANDOVER.md` `9503016ef34f5e74e515890eb6dfe6ccebd23adf`
+- `MEMORY_INDEX.md` `3d2be0cec693f5f14c4ca1cda8f88af57b518b7e`
+- `APP_NOTES.md` `6bccafbc9be14cabea52dcd158131be0476e0367`
+- `DESIGN_NOTES.md` `2f7d15b5bafddbbae14a0000cd905bebd7a96f9b`
+- `README.md` `71d948fbf7db206f03a66536968893cc7e9f7535`
+- `CHANGELOG.md` `78979ceb5a7f6889f2a6d7ff309a4b89ad3cdb91`
+- `APP_BUILD_REPORT.md` `2b9f9ef1df25c3ce8362a7ee5034e6f66cde8f4e`
+- `CHAT_RULES.md` `7f07107a388d3997e733961c9544c28c780953b1`
 - `CHAT_TRANSFER_PROMPTS.md` `95545a00dd37ca972dd89c8c368ebec2a71eb50a`
-- `BUILD_NOTES.md` `c43878a276b5bb998903d38cd7b44c8e354f4c9b`
+- `BUILD_NOTES.md` `d4503bf79f293e447f4ea6dbe35e2f6d829531af`
 - `OTA_PROTECTION.md` `01e17086b537afb4fd90a64d6b22c3a33b37b010`
 - `OTA_REGRESSION_MEMORY.md` `ca4415fde22eb55c95eaed97f07fa376c9d9ed86`
-- `VOLTAGE_TRANSITION_MEMORY.md` `0d3391ac5406fc9de97c962285d03cd3284cb8de`
+- `VOLTAGE_TRANSITION_MEMORY.md` `8ed01d20a6408a7df36952feb930bbe1c4f667a7`
 - `.github/workflows/jexfyz-app-build-trigger.yml` stays guarded and unchanged at workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`.
 
 ## 7. Recovery disposition
 
-- RECOVERED: requested follow-up source/tests were already present on live `main`; no duplicate feature patch was applied. Corrected the stale fixed-56-dp NOTIFY source comment, synchronized current App source fingerprints and Home NOTIFY layout wording in canonical docs, and refreshed this transfer snapshot last.
-- Final source/test validation remains NOT RUN; only source-level inspection was performed. Build #110 remains the latest successful App release for its older fixed-56-dp NOTIFY source. Current UI changes are NOT RELEASED; Firmware V6.9 compile/install is USER-REPORTED; independent compile logs, source-to-BIN provenance and installed version remain UNVERIFIED.
+- EXECUTED (Eksekusi Full): committed Home layout/thermal background-layer source and regression-contract updates to `main` in `0494d51dd776535c1e208297039a106d7d5c7d0f` and `b4bb63591f03568a9287017275e76c308f57e36a`; this transfer snapshot records the final memory reconciliation. Flutter tests and analyzer have NOT RUN for the newest source. No App Build or Firmware/device operation was started.
+- Final source/test validation remains NOT RUN for the newest follow-up; only source-level/static-contract inspection was performed. Build #113 remains the latest successful App release for the preceding source. Current 45 dp/fixed-NOTIFY/background-fire changes are NOT RELEASED; Firmware V6.9 compile/install is USER-REPORTED; independent compile logs, source-to-BIN provenance and installed version remain UNVERIFIED.

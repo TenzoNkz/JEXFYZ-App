@@ -13,7 +13,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #113 / r
 
 ## Current approved icon behavior
 
-- Battery/Hotside: complete silhouette when inactive/unknown; clipped top-down falling orange/gold fire embers with bright cores only under the existing thermal warning predicates. The Hotside inner tube starts closer to the outer cap.
+- Battery/Hotside: complete foreground silhouette when inactive/unknown. At warning thresholds, falling orange/gold background embers with bright cores are clipped OUTSIDE the silhouette; the foreground icon is painted over them. The Hotside inner tube starts closer to the outer cap.
 - Voltage: bevelled static bolt face with edge-following pulses; no central spine/inner strikes. The white inner core is inset and clipped to the bolt silhouette to prevent spill at the upper-right edge. 5V red / 9V green / 12V blue.
 - Adaptive: two distinct arrowheads and recessed track; rotates only when authoritatively ON.
 - Peltier: six-branch faceted crystal; snow particles only while existing active-state rules permit them.
@@ -30,8 +30,8 @@ Historical note: Build #95 was an intermediate release, later superseded by Buil
 
 ## Firmware / OTA boundary
 
-- Firmware source: `firmware/JEXFYZ-V6.9.ino`, blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`; embedded `FW_VERSION="V6.9"`. Adaptive 12 V target tiers remain 100/90/80/70/60/50%; downshift steps −10 percentage points every 10 seconds and upshift steps +10 points every 1 second. Voltage/thermal transitions reset the clock; Hotside limit/protection forces 100% immediately. V6.9 is SOURCE UPDATED / NOT COMPILED / NOT INSTALLED. Source-to-BIN identity and installed device version remain UNVERIFIED.
-- Artifact repository TenzoNkz/JEXFYZ-Firmware currently has exactly one recursive-tree entry: `JEXFYZ.cpp.bin`, blob `9fdd915c3d298cad4de720765dab7fb03f47024d`, 1,456,368 bytes. Only tree metadata was inspected; do not read/change the BIN payload or add notes there. Source-to-BIN provenance remains UNVERIFIED.
+- Firmware source: `firmware/JEXFYZ-V6.9.ino`, blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`; embedded `FW_VERSION="V6.9"`. Adaptive 12 V target tiers remain 100/90/80/70/60/50%; downshift steps −10 percentage points every 10 seconds and upshift steps +10 points every 1 second. Voltage/thermal transitions reset the clock; Hotside limit/protection forces 100% immediately. Firmware V6.9 compile/install is USER-REPORTED. Compile logs, source-to-BIN identity and installed device version remain UNVERIFIED.
+- Artifact repository TenzoNkz/JEXFYZ-Firmware has exactly one recursive-tree entry: `JEXFYZ.cpp.bin`, blob `821b022f97353d9a7aea4695b2e37c98b7488e15`, 1,456,560 bytes. Only tree metadata was inspected; do not read/change the BIN payload or add notes there. Source-to-BIN provenance remains UNVERIFIED.
 - Do not compile Firmware, publish/replace BIN, edit Firebase metadata, flash/OTA hardware or perform device actions without separate explicit approval. User compiles Firmware. Preserve Android versionName "Telegram @horizontalzzz".
 - OTA is protected/frozen. Read OTA_PROTECTION.md and OTA_REGRESSION_MEMORY.md before any OTA/TLS/recovery edit; read VOLTAGE_TRANSITION_MEMORY.md before rail/Peltier timing edits. setInsecure() bypasses server-certificate identity verification; CA and NTP gates were removed together after a user-reported failure, but one cause was not isolated. Do not infer HTTP/TLS errors from LEDs.
 
