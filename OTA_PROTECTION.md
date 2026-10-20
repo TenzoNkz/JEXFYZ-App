@@ -24,11 +24,11 @@ Change OTA only if there is a demonstrated OTA defect and the user explicitly au
 5. Update the canonical memory, `PROJECT_STATE.md` if current state changed, `CHANGELOG.md` and `CHAT_TRANSFER.md`.
 6. Label test/compile/hardware evidence precisely. Static assertions are not an OTA success certificate.
 
-Current source pointer is `firmware/JEXFYZ-V7.0.ino` (`FW_VERSION="V7.0"`, blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`). V7.0 retains the protected OTA transport sequence and includes the whole-degree Adaptive Fan target fix. V7.0 has NOT been compiled or installed. The previous failure to bump `FW_VERSION` meant the modified V6.9 source still identified itself as V6.9; that identity gap is corrected in this source revision. BIN identity, Firebase metadata alignment, OTA logs and installed-device version remain UNVERIFIED.
+Current source pointer is `firmware/JEXFYZ-V7.1.ino` (`FW_VERSION="V7.1"`, blob `6ef355d666b83fc83b4d7c48ee377753828ca02c`). V7.1 carries the protected OTA transport forward unchanged and updates only Adaptive 12 V Fan target bands. V7.1 has NOT been compiled or installed; the V7.0 compile/Online OTA report is USER-REPORTED for the preceding revision only. V7.1 BIN identity, Firebase metadata alignment, OTA logs and installed-device version remain UNVERIFIED. No OTA code, transport, timing, recovery or safe-output path changed.
 
 ## Current Online OTA contract (must re-check live source)
 
-- Canonical editable Firmware source is in the App repo: `firmware/JEXFYZ-V7.0.ino`.
+- Canonical editable Firmware source is in the App repo: `firmware/JEXFYZ-V7.1.ino`.
 - The V6.3-origin restoration uses `cloudClient.setInsecure()`; embedded CA certificate validation, `setCACert()`, `configTime()`, `TIME_SYNCING`, epoch-validity gate and OTA-only 20-second NTP timeout are absent.
 - On successful Wi-Fi connection, blue indication proceeds to the GitHub GET attempt.
 - Raw URL allowlist remains restricted to `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/`.

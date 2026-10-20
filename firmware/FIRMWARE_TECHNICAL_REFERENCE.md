@@ -1,6 +1,6 @@
 # JE X FYZ — Firmware Technical Reference
 
-Last source/safety-reference reconciliation: 2026-10-20 (Asia/Jakarta). Latest verified App artifact is Build #123 / run 39371864780, package source 14e90e7e26b8eb4400bd01ec8d0eab5ed4195f1c. The new password-visibility patch is not included. User reports V7.0 compile and Online OTA success, but App CI does not prove firmware source-to-BIN identity or current physical behavior.
+Last source/safety-reference reconciliation: 2026-10-20 (Asia/Jakarta). Latest verified App artifact is Build #124 / run 39386733061, packaged source commit 7d4e7262c6a3474eefa8ccb58b08f070df3ac15a. That release includes password visibility but does not compile Firmware. Current Firmware V7.1 source update is newer and remains NOT COMPILED / NOT DEPLOYED; the V7.0 user report does not prove V7.1.
 
 ## BLE App-authentication checkpoint — 2026-10-20 (BLOCKED / NOT IMPLEMENTED)
 
@@ -12,8 +12,8 @@ Last source/safety-reference reconciliation: 2026-10-20 (Asia/Jakarta). Latest v
 
 ## Current source identity
 
-- Canonical editable source: firmware/JEXFYZ-V7.0.ino, blob 823f6f31176695a3ff3a923995b1b3cd5f42c683, embedded FW_VERSION=V7.0.
-- Compile/install status: the user reports V7.0 was compiled and successfully updated via Online OTA. This is USER-REPORTED; independent compile logs, source-to-BIN identity, installed device version and physical PWM/thermal behavior remain UNVERIFIED. Firmware contract tests have NOT RUN in this task.
+- Canonical editable source: `firmware/JEXFYZ-V7.1.ino`, blob `6ef355d666b83fc83b4d7c48ee377753828ca02c`, embedded `FW_VERSION="V7.1"`.
+- Compile/install status: prior V7.0 compile / Online OTA success is USER-REPORTED for that prior revision only. V7.1 has NOT been compiled/installed; tests, source-to-BIN identity, installed version and physical behavior remain UNVERIFIED.
 - Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module, Arduino-ESP32 Core 3.3.7. Firmware compiles separately from App release.
 
 ## Architecture
@@ -71,14 +71,13 @@ The canonical detailed incident/contract is `VOLTAGE_TRANSITION_MEMORY.md`.
 - HOTSIDE is the startup default; HOTSIDE_BATTERY is runtime selectable but is not persisted. Battery sensor loss falls back to HOTSIDE behavior without changing the user's profile selection.
 - No rapid Hotside slope/rise protection is present in the known V6.x contract.
 
-## Current Adaptive Fan PWM at 12V — V7.0 whole-degree target, paced ramp
+## Current Adaptive Fan PWM at 12V — V7.1 2°C limit-relative target bands, paced ramp
 
-- Target tiers use the floored whole-degree category, `temperatureCategoryC = floor(hotsideC)`, then the integer distance `belowLimitC = hotLimit - temperatureCategoryC`: ≤1 →100%; ≤2 →90%; ≤3 →80%; ≤4 →70%; ≤5 →60%; ≥6 →50%. For a 40°C limit, 36.0–36.99°C stays at 70%, and target 80% begins at category 37. This prevents 36.3°C →36.8°C from changing the target. The immediate protection override remains based on the unrounded reading (`hotsideC >= hotLimit`) and still forces 100% without delay.
-- Actual PWM approaches the target in 10-point steps: decreasing waits 10,000 ms before each step; increasing waits 1,000 ms before each step. When direction changes, the clock starts for the new direction rather than allowing a stale timer to cause a step immediately.
-- `voltageTransition`, Adaptive hot-step transition, thermal dwell and non-running output conditions reset the clock and preserve the full-speed priority. A 9 V → 12 V transition therefore remains at 100% through the handoff, then waits at least 10 seconds before the first reduction. Subsequent reductions happen no faster than one step per 10 seconds.
-- Active Hotside protection or `hotsideC >= hotLimit` forces 100% immediately. Adaptive 5 V/9 V remains 100%; the normal safety controller remains authoritative.
+- Target tiers use `temperatureCategoryC = floor(hotsideC)` and `belowLimitC = hotLimit - temperatureCategoryC`: ≤2 →100%; ≤4 →90%; ≤6 →80%; ≤8 →70%; ≤10 →60%; ≥11 →50%. At a 40°C limit: 40/39/38 →100%; 37/36 →90%; 35/34 →80%; 33/32 →70%; 31/30 →60%; ≤29 →50%. Bands shift with the configured limit.
+- Immediate thermal protection stays independent: raw-decimal `hotsideC >= hotLimit` forces Fan 100% without pacing delay, and the existing supervisor shuts Peltier OFF. Adaptive 5 V / 9 V remain Fan 100%.
+- PWM approaches the selected target in 10-point steps: each reduction waits 10,000 ms; each increase waits 1,000 ms. A direction change starts a fresh clock. Voltage transitions, Adaptive HOTSTEP, thermal dwell and inactive outputs reset pacing and preserve full-speed priority.
 - NTC acquisition remains one calibrated sample per second. No blocking delay, extra ADC read, averaging/filter, or timing loop was added.
-- Current source is `firmware/JEXFYZ-V7.0.ino` blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`; `test/firmware_qc_contract_test.dart` blob `a44c12d32c472f109687c06316ea40f70fcf93ce` and `test/firmware_touch_adaptive_sync_test.dart` blob `b3e23e59deae19408cd7ccbacbad84273f958970`. The whole-degree category target retains the raw-decimal safety override and 10-second down/1-second up ramp cadence. Tests and Arduino compile have NOT RUN for V7.0. The prior V6.9 compile/install report predates this source revision; this exact hash is not confirmed installed. The hardware-reset symptom remains unverified.
+- Active source `firmware/JEXFYZ-V7.1.ino` blob `6ef355d666b83fc83b4d7c48ee377753828ca02c`; QC contract `12e30d7ec16b322e7411cefa7c99cd42aff6c056`; Touch/Adaptive sync contract `7c203a11f79de62744af8536bbf2e3219d7f0909`. Contract tests and Arduino compile have NOT RUN for V7.1. The V7.0 user report does not validate this revision.
 
 ## HISTORICAL / SUPERSEDED — V6.8 direct temperature-tier controller
 

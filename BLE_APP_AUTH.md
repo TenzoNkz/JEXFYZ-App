@@ -13,7 +13,7 @@ Checkpoint date: 2026-10-20 (Asia/Jakarta). Baseline source parent: `14e90e7e26b
 
 ## Live source findings
 
-Firmware source: `firmware/JEXFYZ-V7.0.ino`, blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`.
+Firmware source: `firmware/JEXFYZ-V7.1.ino`, blob `6ef355d666b83fc83b4d7c48ee377753828ca02c`. V7.1 does not change BLE authorization or the command protocol.
 
 - RX writes are configured as encrypted and bonded, but pairing uses Just Works and does not provide MITM identity assurance.
 - `dispatchBleLine()` gates normal commands on `bleCommandGateOpen`; `SYNC_READY` itself opens that gate.

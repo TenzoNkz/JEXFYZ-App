@@ -64,7 +64,7 @@ enum class VoltageRequestSource : uint8_t;
 enum class AdaptiveProfile : uint8_t;
 
 /**
- * JE X FYZ — V7.0 Firmware
+ * JE X FYZ — V7.1 Firmware
  * ---------------------------------------------------------------------------
  * Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module
  * Framework: Arduino Standard + official Arduino-ESP32 Core 3.3.7
@@ -132,7 +132,7 @@ enum class AdaptiveProfile : uint8_t;
  * ---------------------------------------------------------------------------
  */
 
-static constexpr char FW_VERSION[] = "V7.0";
+static constexpr char FW_VERSION[] = "V7.1";
 
 // ============================================================================
 // ========================== HEAP DIAGNOSTIC BUILD ===========================
@@ -2298,17 +2298,19 @@ static void processAdaptiveHotTimer() {
 static uint8_t adaptiveFanTargetPwm(float temperatureC) {
   if (!isfinite(temperatureC)) return FAN_PWM_MAX;
 
-  // Ignore fractional movement within the same category: at a 40 C limit,
-  // both 36.3 C and 36.8 C are category 36 and keep the 70% target.
-  // The safety override below remains based on the unrounded temperature.
+  // Use 2 C target bands relative to the configured Hotside limit, grouped by
+  // floored whole-degree categories. At a 40 C limit: 40..38 -> 100%,
+  // 37..36 -> 90%, 35..34 -> 80%, 33..32 -> 70%, 31..30 -> 60%,
+  // and 29 C or lower -> 50%. The urgent raw-temperature safety override is
+  // independent and still forces 100% at/above hotLimit immediately.
   const int temperatureCategoryC = static_cast<int>(floorf(temperatureC));
   const int belowLimitC = hotLimit - temperatureCategoryC;
-  if (belowLimitC <= 1) return FAN_PWM_MAX;  // limit - 1 C category: 100%
-  if (belowLimitC <= 2) return 90;           // limit - 2 C category: 90%
-  if (belowLimitC <= 3) return 80;           // limit - 3 C category: 80%
-  if (belowLimitC <= 4) return 70;           // limit - 4 C category: 70%
-  if (belowLimitC <= 5) return 60;           // limit - 5 C category: 60%
-  return FAN_PWM_MIN;                        // limit - 6 C or lower: fixed 50%
+  if (belowLimitC <= 2) return FAN_PWM_MAX;  // limit through limit - 2 C: 100%
+  if (belowLimitC <= 4) return 90;           // limit - 3 to -4 C: 90%
+  if (belowLimitC <= 6) return 80;           // limit - 5 to -6 C: 80%
+  if (belowLimitC <= 8) return 70;           // limit - 7 to -8 C: 70%
+  if (belowLimitC <= 10) return 60;          // limit - 9 to -10 C: 60%
+  return FAN_PWM_MIN;                        // limit - 11 C or lower: fixed 50%
 }
 
 static void resetAdaptiveFanPwmStepClock() {

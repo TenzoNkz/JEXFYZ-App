@@ -1,9 +1,8 @@
 # JE X FYZ / JE Cooler — Voltage Transition & Peltier Soft-Start Memory
 
 Last reconciled: 2026-10-20 (Asia/Jakarta).
-Canonical active source: firmware/JEXFYZ-V7.0.ino, current source blob 823f6f31176695a3ff3a923995b1b3cd5f42c683. V7.0 includes floored whole-degree Hotside target categories; at a 40°C limit, 36.0–36.99°C stays at 70% and 37.0–37.99°C targets 80%. The raw-decimal Hotside safety override is unchanged. PWM still uses 10-point steps (down every 10 seconds, up every 1 second); step clock resets during rail transitions and thermal dwell. The embedded version now matches the sketch filename.
-The earlier V6.9 source was USER-REPORTED compiled/installed; that report does not validate the active V7.0 source. This exact source hash is NOT compiled/installed or physically validated. Independent compile logs, source-to-BIN provenance, installed version and physical transition results remain UNVERIFIED. Firmware contract tests have NOT RUN for V7.0. Firebase metadata and the artifact BIN remain unchanged, so OTA deployment is still pending.
-Build #113 / run 39350217172 is the latest successful App release. The post-Build-#113 Home layout/thermal background-layer follow-up is source-only, NOT RUN / NOT RELEASED. App CI does not prove Firmware compilation or physical rail-transition behavior.
+Canonical active source: `firmware/JEXFYZ-V7.1.ino`, blob `6ef355d666b83fc83b4d7c48ee377753828ca02c`. V7.1 changes only Adaptive 12 V Fan target bands to 2°C whole-degree categories relative to configured Hotside limit. Fan pacing (down every 10 s / up every 1 s), raw-decimal Hotside safety, 1 Hz NTC sampling, voltage-transition and Peltier soft-start behavior, and thermal-dwell clock-reset behavior remain unchanged.
+The prior V7.0 compile/Online OTA success is USER-REPORTED for V7.0 only. V7.1 is NOT compiled/installed or physically validated; Firmware contract tests have NOT RUN. Source-to-BIN provenance and installed-device version remain UNVERIFIED. No V7.1 BIN/Firebase/OTA/flash/device operation occurred.
 
 ## Incident
 

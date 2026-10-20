@@ -1,3 +1,12 @@
+## FIRMWARE V7.1 SOURCE UPDATE — 2026-10-20 (Adaptive Fan 2°C bands; NOT COMPILED / NOT DEPLOYED)
+
+- Promoted the functional Firmware revision from V7.0 to V7.1 and renamed the only active sketch to `firmware/JEXFYZ-V7.1.ino`; embedded `FW_VERSION="V7.1"` matches the filename.
+- Adaptive 12 V targets use floored whole-degree categories relative to configured `hotLimit`: delta ≤2°C →100%; 3–4°C →90%; 5–6°C →80%; 7–8°C →70%; 9–10°C →60%; ≥11°C →50%. At a 40°C limit: 40/39/38 →100%; 37/36 →90%; 35/34 →80%; 33/32 →70%; 31/30 →60%; 29°C or lower →50%.
+- Preserved raw-decimal immediate thermal protection, Fan 100% / Peltier OFF at/above limit, Adaptive 5 V/9 V Fan 100%, 10-second downsteps, 1-second upsteps, one NTC sample/sec, non-blocking control loop, Touch actions, Peltier/voltage timing and all OTA behavior.
+- Source blob `6ef355d666b83fc83b4d7c48ee377753828ca02c`; QC contract `12e30d7ec16b322e7411cefa7c99cd42aff6c056`; Touch/Adaptive sync `7c203a11f79de62744af8536bbf2e3219d7f0909`. Source/number mapping was statically reviewed. Contract tests and Arduino compile have NOT RUN. V7.0 user-reported compile/Online OTA covers the previous revision only; no V7.1 BIN/Firebase/OTA/device operation occurred.
+
+---
+
 ## 2026-10-20 — Reconcile Build #123 evidence and current-state memory (docs-only)
 
 - Replaced the stale “Build #123 pending official trigger” preflight block in `APP_BUILD_REPORT.md` with the confirmed successful run: 115 Flutter tests passed, Dart analysis exit 0 (25 info diagnostics), configured Gradle gate successful with native unit-test tasks NO-SOURCE, APK V1/V2/V3 and expected signer verified, matching source ZIP/hash/source marker verified, and `jexfyz-latest` Release/tag matched source commit `14e90e7e26b8eb4400bd01ec8d0eab5ed4195f1c`.

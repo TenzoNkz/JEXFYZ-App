@@ -1,15 +1,16 @@
 # JE X FYZ / JE Cooler — CHAT TRANSFER SNAPSHOT
 
+Reconciled from live GitHub main on 2026-10-20 (Asia/Jakarta). Latest verified App release is Build #124 / run 39386733061 on packaged source commit 7d4e7262c6a3474eefa8ccb58b08f070df3ac15a. Active Firmware V7.1 has 2°C limit-relative Adaptive 12 V Fan target bands and remains source-only / NOT COMPILED / NOT DEPLOYED.
+
 Reconciled from live GitHub main on 2026-10-20 (Asia/Jakarta). Build #123 is the latest verified App release; user reports the App is installed safely and Firmware V7.0 compiled/updated by Online OTA. The latest password-visibility patch is source-only and not yet built.
 
-## Latest checkpoint — 2026-10-20 (security task partial; BLE auth blocked)
+## Latest checkpoint — 2026-10-20 (Firmware V7.1 source-only)
 
-- Build #123 / Actions run `39371864780`, source `14e90e7e26b8eb4400bd01ec8d0eab5ed4195f1c`; APK SHA-256 `1d06c806b1e75440dfe16108d236dd4c5f0e9b85d50e56989263793952351abb`; source ZIP SHA-256 `0118f201027747f8f682a8d3a393334585a14845a8741f2296da07afae06fbe1`. This release predates and does not include the password-visibility patch.
-- User reports safe App installation and successful Firmware V7.0 compile/Online OTA; source-to-BIN/device version remains not independently verified.
-- This execution adds a localized eye toggle for the Wi-Fi password field. Current source/test blobs: `lib/main.dart` `2d44e1f1f5b88ca1dae8324082da751b6ef1485a`, `lib/app_settings.dart` `637c07be55c412451d9ffde762e080c8bd92fd5e`, `test/widget_test.dart` `90e1a582c49ce3ad1a1d9a3b875921098eaf2545`. Tests/analyzer/App Build NOT RUN.
-- BLE App-only authorization is **BLOCKED / NOT IMPLEMENTED** pending a trusted backend enrollment/signing/owner-claim path. See `BLE_APP_AUTH.md`. No first BLE client can be trusted automatically without validating the enrollment grant.
-- UX stays power on → open App → Connect BLE; no QR and no extra Touch gesture. **OTA is frozen and must not change.** No Firebase production deployment, Firmware compile/BIN, App Build, OTA, flash, or device operation occurred here.
-
+- Latest verified App release is Build #124 / run `39386733061`, source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`; APK SHA-256 `c0738d3607b120b716841610c849d9608f954a5f1f28017a8018790f4f4b6318`, source ZIP SHA-256 `e00ac34cb6cf7f04a5485c8ab8ee74d4acc1b20dc1a213ac733a8bf8c43cc152`. Build #124 includes Wi-Fi password Show/Hide and passed 116 Flutter tests plus configured App release gates.
+- Active Firmware is V7.1: `firmware/JEXFYZ-V7.1.ino` blob `6ef355d666b83fc83b4d7c48ee377753828ca02c`; QC contract `12e30d7ec16b322e7411cefa7c99cd42aff6c056`; Touch/Adaptive sync contract `7c203a11f79de62744af8536bbf2e3219d7f0909`.
+- At limit 40°C: 40/39/38 →100%; 37/36 →90%; 35/34 →80%; 33/32 →70%; 31/30 →60%; ≤29 →50%. Bands shift with configured limit. PWM remains −10 points/10 s and +10 points/1 s; raw-decimal protection remains immediate.
+- Tests and Arduino compile have NOT RUN for V7.1. Prior user-reported V7.0 compile/Online OTA does not verify this revision. No V7.1 BIN/Firebase/OTA/flash/device action occurred.
+- BLE App-only authorization remains BLOCKED / NOT IMPLEMENTED pending trusted backend enrollment/signing. OTA remains protected/unchanged; all Touch actions remain unchanged.
 
 ## 1. Authority and operation scope
 
@@ -34,46 +35,37 @@ Reconciled from live GitHub main on 2026-10-20 (Asia/Jakarta). Build #123 is the
 - Updated notification descriptions, Hotside terminology, palette labels, Bluetooth/firmware copy and Android Floating Monitor status text.
 - Latest NOTIFY source blobs: `lib/main.dart` 40f172a5d190b429d3a952f2531349c1ee220d1f; `lib/app_settings.dart` 44431e926bfa2557c26345899e2333bd767f3f8e; `test/widget_test.dart` 132c3b000abd63599ebea9d26fc5085cb577e50e. Native `FloatingMonitorService.kt` blob remains `f2c5d5e8b5731be36ae3b82109a75beaefe5fb4d`. Tests and analyzer have NOT RUN for the latest source-only fix.
 
-## Home NOTIFY — single latest-event message (2026-10-20; source-only / NOT RUN / NOT RELEASED)
+## Home NOTIFY — latest-event message (validated in App Build #124)
 
-- Current blobs: `lib/main.dart` `40f172a5d190b429d3a952f2531349c1ee220d1f`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `132c3b000abd63599ebea9d26fc5085cb577e50e`.
-- Home NOTIFY presents only the newest confirmed event as one complete sentence. A new event replaces the previous one; it never concatenates Adaptive, Voltage, Fan and Peltier into a combined summary. Example sequence: `Adaptive ON.` → `Voltage set to 5V.` → `Fan speed reduced to 70%.`
-- Events cover Voltage, Fan/Peltier ON/OFF, Adaptive ON/OFF/profile/ceiling, Fan speed increase/reduction, LED ON/OFF/mode/brightness/color and safety-state changes. Repeated identical telemetry creates no event, and a delayed ACK cannot overwrite newer telemetry.
-- Ordinary Temperature samples do not generate Home NOTIFY. Hotside reaching the configured limit displays the measured temperature and configured limit in English/Indonesian, with safety priority. Android push still follows its notification preference and re-arms when Hotside falls below the limit.
-- Language changes re-render the latest event immediately. BLE protocol/ownership, Firmware safety rules, OTA transport and Android `versionName` remain unchanged.
-- Build #123 / run `39371864780` is the last verified successful App release and packages parent source `14e90e7e26b8eb4400bd01ec8d0eab5ed4195f1c`. The latest password-visibility source/test patch is newer, NOT RUN / NOT RELEASED. No App Build, Firmware compile, BIN/Firebase, OTA, flash or device operation was performed in the current task.
-## Adaptive Fan whole-degree target fix — source-only / NOT COMPILED / NOT TESTED
+- Packaged App blobs: `lib/main.dart` `2d44e1f1f5b88ca1dae8324082da751b6ef1485a`; `lib/app_settings.dart` `637c07be55c412451d9ffde762e080c8bd92fd5e`; `test/widget_test.dart` `90e1a582c49ce3ad1a1d9a3b875921098eaf2545`.
+- Home NOTIFY shows one complete sentence for the newest confirmed event; ordinary Temperature samples do not notify. Hotside at its configured limit remains the safety-priority exception.
+- Build #124 passed 116 Flutter tests. App CI does not validate Firmware V7.1 or physical thermal behavior.
 
-- Source: `firmware/JEXFYZ-V7.0.ino` blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`.
-- QC contract: `test/firmware_qc_contract_test.dart` blob `a44c12d32c472f109687c06316ea40f70fcf93ce`.
-- Use `floorf(hotsideC)` to select the whole-degree target category. At a 40°C limit, 36.0–36.99°C stays at 70%; target 80% begins at category 37. Preserve the unrounded Hotside safety override, immediate 100% cooling, 10-point ramp steps (up 1 second / down 10 seconds), one calibrated NTC sample per second and the non-blocking loop.
-- Static readback checks passed. Firmware contract tests and Arduino compile were NOT RUN; the earlier user-reported V6.9 install does not validate this source revision. No BIN payload was inspected/changed, and no Firebase, OTA, flash or device operation occurred. A real OTA still requires a V7.0 BIN compiled from this source and Firebase metadata `version: "V7.0"` pointing to that artifact.
+## Adaptive Fan 2°C target-band update — V7.1 source-only / NOT COMPILED
+
+- Active source: `firmware/JEXFYZ-V7.1.ino`, blob `6ef355d666b83fc83b4d7c48ee377753828ca02c`; QC contract `12e30d7ec16b322e7411cefa7c99cd42aff6c056`; Touch/Adaptive sync contract `7c203a11f79de62744af8536bbf2e3219d7f0909`.
+- Targets derive from `floorf(hotsideC)` and configured `hotLimit`: delta ≤2°C →100%; 3–4°C →90%; 5–6°C →80%; 7–8°C →70%; 9–10°C →60%; ≥11°C →50%. At 40°C: 40/39/38 →100%; 37/36 →90%; 35/34 →80%; 33/32 →70%; 31/30 →60%; ≤29°C →50%.
+- Immediate raw-decimal safety, +10 points/1 second upsteps, −10 points/10 seconds downsteps, 1 Hz NTC sampling, non-blocking loop, Touch, Peltier/rail timing and OTA remain unchanged.
+- Static source/mapping review passed, but Dart contract tests and Arduino compilation have NOT RUN. V7.0 user-reported compile/OTA applies to the prior revision only.
 
 ## 3. Current validated release versus working source
 
-- **Latest validated/released App:** Build #120, commit `aeadaa47bd7ad64af6044afce5783781f0c0d82f`. The new single-event NOTIFY source is not included in that release.
-- **Current working source:** the latest localized source and test blobs listed above, layered on top of the prior thermal-visual work. This follow-up remains **UNVALIDATED / NOT RELEASED**; live `main` HEAD is authoritative.
-- Any next official App validation/release requires the distinct `@Thinking Eksekusi Build App!` command. Never infer APK contents from a newer main source hash alone.
+- **Latest validated/released App:** Build #124 / run `39386733061`, packaged source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`; APK SHA-256 `c0738d3607b120b716841610c849d9608f954a5f1f28017a8018790f4f4b6318`; source ZIP SHA-256 `e00ac34cb6cf7f04a5485c8ab8ee74d4acc1b20dc1a213ac733a8bf8c43cc152`.
+- Build #124 passed 116 Flutter tests and configured App release gates. Analyzer exit 0 with 25 info-level diagnostics; native Android unit tests were NO-SOURCE.
+- Current Firmware V7.1 source-only changes postdate the packaged App source and are not compiled/deployed. An App build requires the distinct `@Thinking Eksekusi Build App!` command; no App Build ran here.
 
-## 4. Canonical memory files and updated fingerprints (localization copy pass included)
+## 4. Canonical memory files and updated fingerprints
 
-- `lib/main.dart`: `07178b5cce55fc8f78cc7c2953f4d8e352ccefe7`
-- `test/widget_test.dart`: `0a5901ac6dc23c947356189a312bb1dec418298e`
-- `PROJECT_STATE.md`: `b1923c30b5fef9c7502adcc96e9d58f04fea6d71`
-- `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `7e7a4a30c779e46f71c2a573653fcf001284d4b8`
-- `VOLTAGE_TRANSITION_MEMORY.md`: `f4b5d953dfca0319ebc30e055ad90893d8612dee`
-- `DESIGN_NOTES.md`: `48fa3014c5b3e93028f36adbdda4525bd4ee69e7`
-- `APP_BUILD_REPORT.md`: `377db79e937a3d1704616a3e487090dfddf0e94f`
-- `CHANGELOG.md`: `791e58466b5d463fbe159e21a217b762e8193ba6`
-- `README.md`: `95a799144c2cb093af6dab9a953884709663c5f2`
-- `HANDOVER.md`: `c11dd8c9feb885176eb2216f3729d8825f5ebd31`
-- `CHAT_RULES.md`: `cc2798d1d1b4f5a48005966f14d70954c3ef4b86`
-- `APP_NOTES.md`: `21e53cb65ec4e99f66fc1499cc6e79d930ef95bd`
-- `MEMORY_INDEX.md`: `7d0ec09ab84189e6c583987a382e4d189905b658`
-- Guarded App trigger workflow stays unchanged at blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`.
+- Active Firmware `firmware/JEXFYZ-V7.1.ino`: `6ef355d666b83fc83b4d7c48ee377753828ca02c`
+- QC contract `test/firmware_qc_contract_test.dart`: `12e30d7ec16b322e7411cefa7c99cd42aff6c056`
+- Touch/Adaptive sync contract `test/firmware_touch_adaptive_sync_test.dart`: `7c203a11f79de62744af8536bbf2e3219d7f0909`
+- Updated canonical references: `FIRMWARE_NOTES.md` `0fc97bd5ecff2a049263c6ef44a93a0a3a5ae97a`; `firmware/FIRMWARE_TECHNICAL_REFERENCE.md` `55aafae1be80c9fd161ca768bc609a152e92047c`; `PROJECT_STATE.md` `833b53a7838c425eda23cbc271a12c259306fcf6`; `HANDOVER.md` `a518bd004898eead8f3ea2f59aa9127e20892466`; `MEMORY_INDEX.md` `ad51543097e5bf57af960c6a9b7e126cc375f522`.
+- OTA/auth/handoff references updated in the same commit; protected App trigger workflow unchanged. No compile, BIN/Firebase, OTA or device operation occurred.
 
 ## 5. Firmware checkpoint / protected behavior
 
-- Active Firmware source is `firmware/JEXFYZ-V7.0.ino`, current blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`, embedded `FW_VERSION="V7.0"`; QC contract test blob `a44c12d32c472f109687c06316ea40f70fcf93ce` and Touch/Adaptive test blob `b3e23e59deae19408cd7ccbacbad84273f958970`. Adaptive 12 V target selection now groups Hotside readings by floored whole degrees (36.3°C and 36.8°C are both category 36 and target 70% when the limit is 40°C; target 80% starts at category 37). The immediate safety override still uses the raw decimal temperature and forces 100% at the limit. PWM ramp timing and 1 Hz single NTC read are unchanged. The user reported compile/install for an earlier V6.9 revision; the current hashes have NOT been compiled/installed. Compile logs, source-to-BIN provenance, installed version and physical PWM/thermal results remain **UNVERIFIED**.
-- Firmware QC test blob `1b35feeb1e411efec44261ec130eec4535004454` and Touch/Adaptive sync test blob `b3e23e59deae19408cd7ccbacbad84273f958970` have NOT RUN for V7.0.
-- Preserve the existing safety gates, 1 Hz calibrated NTC sample, Adaptive downstep/upstep cadence, voltage handoff, BLE/P1 protocol, OTA protection, Firebase policy and current app build workflow. No unrelated changes.
+- Active Firmware `firmware/JEXFYZ-V7.1.ino` blob `6ef355d666b83fc83b4d7c48ee377753828ca02c`, embedded `FW_VERSION="V7.1"`; QC `12e30d7ec16b322e7411cefa7c99cd42aff6c056`; Touch/Adaptive sync `7c203a11f79de62744af8536bbf2e3219d7f0909`.
+- At limit 40°C, Adaptive 12 V target bands: 40/39/38 →100%; 37/36 →90%; 35/34 →80%; 33/32 →70%; 31/30 →60%; ≤29 →50%. Band thresholds shift with configured limit.
+- Raw-decimal Hotside protection remains immediate: Fan 100% and Peltier OFF at/above limit. PWM remains +10 points each 1 s / −10 points each 10 s; Adaptive 5 V/9 V remains 100%.
+- V7.1 tests/Arduino compile have NOT RUN, and exact source-to-BIN/installed identity remains UNVERIFIED. V7.0 success was user-reported for that earlier revision only.
+- `TenzoNkz/JEXFYZ-Firmware` remains BIN-only. No V7.1 BIN/Firebase/OTA/flash/device action occurred. Preserve all Touch, Peltier/rail timing, BLE/P1 and OTA contracts.

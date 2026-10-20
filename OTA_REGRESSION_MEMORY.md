@@ -10,7 +10,7 @@ Last reconciled: 2026-10-19 (Asia/Jakarta). This is the canonical incident recor
 
 ## Historical OTA correction retained in current V7.0 source
 
-- The correction originated in the then-current V6.3 source and remains present in the active `firmware/JEXFYZ-V7.0.ino` (live source blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`). The older V6.7/V6.9 blobs are historical checkpoints, not the live source.
+- The correction originated in the then-current V6.3 source and remains present in active `firmware/JEXFYZ-V7.1.ino` (blob `6ef355d666b83fc83b4d7c48ee377753828ca02c`). OTA transport remains unchanged in V7.1; V7.0 is the preceding source checkpoint and V6.7/V6.9 are historical.
 - Restored `cloudClient.setInsecure()` for the Online OTA client.
 - Removed the embedded CA PEM, `setCACert()`, `configTime()`, `TIME_SYNCING`, epoch-validity condition and OTA-only 20-second NTP time gate.
 - Flow is Wi-Fi success → blue feedback → `prepareOnlineOtaDownload()` → GitHub GET attempt.
@@ -37,7 +37,7 @@ Do not add/remove CA roots, change certificate validation, add an NTP gate, or a
 
 ## Historical V6.7 evidence boundary — 2026-10-18
 
-- Current source is `firmware/JEXFYZ-V7.0.ino`, `FW_VERSION="V7.0"`, blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`. The whole-degree Adaptive Fan fix and version bump are source-only: V7.0 has NOT been compiled or installed. The earlier V6.9 compilation/install report and V6.7 online-update report are historical user reports; V7.0 source-to-BIN provenance and installed-device version remain unverified.
+- Current source is `firmware/JEXFYZ-V7.1.ino`, `FW_VERSION="V7.1"`, blob `6ef355d666b83fc83b4d7c48ee377753828ca02c`. The 2°C Adaptive Fan target-band change and version bump are source-only; V7.1 has NOT been compiled or installed. V7.0 compile/Online OTA is USER-REPORTED for the previous revision only; V7.1 source-to-BIN provenance and installed version remain UNVERIFIED. No OTA code changed.
 - HISTORICAL App Build #65 / run 38851040144 passed 88/88 Flutter tests and an FPS parser JUnit gate. Later App Build #70 / run 38998407325 passed 86/86 Flutter tests and the FPS-retired source's release gates; native JUnit tasks were NO-SOURCE. Neither App run is an Arduino compile, physical Online OTA, update-apply/reboot or installed-version proof.
 - Latest successful App artifact run Build #83 (run `39192430789`, source `dfc7e6633298498bb6eac21182c9306d5e3cac1d`) is App-only and does not validate the OTA transport or Firmware compile/BIN identity; the overall Release handoff is still blocked by the stale Git tag ref. The user reports V6.7 compiled and completed an online update; the report has not been independently verified. Hosted BIN provenance and current installed version remain unverified. Keep the setInsecure() certificate-identity trade-off explicit and do not infer the earlier HTTP/TLS failure root cause from LEDs alone.
 
