@@ -1,12 +1,12 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #116 / run 39355262101 is the latest successful App release recorded in this handover. The bilingual localization copy pass remains source-only. Firmware has been version-bumped to V7.0 to align filename and `FW_VERSION` with the whole-degree Adaptive Fan fix; V7.0 is NOT COMPILED / NOT INSTALLED / NOT OTA-DEPLOYED.
+Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #120 / run 39365201489 is the latest successful App release recorded in this handover. The latest single-event NOTIFY change remains source-only. Firmware has been version-bumped to V7.0 to align filename and `FW_VERSION` with the whole-degree Adaptive Fan fix; V7.0 is NOT COMPILED / NOT INSTALLED / NOT OTA-DEPLOYED.
 
 ## Latest successful build and current source boundary
 
-- Build #116 passed 109 Flutter tests, Dart analyzer exit 0 (25 info diagnostics), configured Android gate, APK V1/V2/V3 and official-certificate checks, ZIP integrity, downloaded-asset comparison and exact tag/commit checks. Native Android test tasks were NO-SOURCE.
-- APK asset `657979004`, 54,734,939 bytes, SHA-256 `8570914f331583d2cc462f61881609c0eae56639a139f2d60a832e4aaa81ea27`; source ZIP asset `657979008`, 2,867,315 bytes, SHA-256 `60ef4e79529aabcbb4f4093b9f8a18b5d383d5c651c1c303dd8bb774e7b0dd5d`.
-- Current Home NOTIFY follow-up blobs: lib/main.dart `4d2871234971ef8a9fa976f197e0e4f7b1e188ac`; lib/app_settings.dart `44431e926bfa2557c26345899e2333bd767f3f8e`; test/widget_test.dart `ccae334f9a737926bef021fa04ce7caa4d30601d`. These postdate Build #116 and are SOURCE UPDATED / NOT RUN / NOT RELEASED.
+- Build #120 passed 115 Flutter tests, Dart analyzer exit 0 (25 info diagnostics), configured Android gate, APK V1/V2/V3 and official-certificate checks, ZIP integrity, downloaded-asset comparison and exact tag/commit checks. Native Android test tasks were NO-SOURCE.
+- APK asset `658178574`, 54,751,323 bytes, SHA-256 `aa162e57a04f229922cca4fe48773a49585328e2337761f5c641097957ff0392`; source ZIP asset `658178573`, 2,871,380 bytes, SHA-256 `3e7585549d2eef68ad93b35c378bd76332d80a92a0edf1856aec8303df5e28d7`.
+- Current Home NOTIFY single-event blobs: lib/main.dart `a167e884f765a8a9fa976f197e0e4f7b1e188ac`; lib/app_settings.dart `44431e926bfa2557c26345899e2333bd767f3f8e`; test/widget_test.dart `5cb9ccacf585823a874976432478529893f71da3`. These postdate Build #120 and are SOURCE UPDATED / NOT RUN / NOT RELEASED.
 - Home contract: seven 45 dp rows; 3 dp gap before the fixed 44 dp notification card; localized `Notification` / `Notifikasi` heading with 2 dp top inset; left-aligned body scales to at most two lines; cooler image stays under stable sibling-row constraints.
 - Battery/Hotside use refined falling flame-shaped background particles with warm yellow-white cores, a soft halo, subtle drift/rotation, and a rounded-frame clip combined with foreground-silhouette subtraction. Thresholds remain Battery ≥40°C and Hotside at configured limit.
 - Firmware V6.9 compile/install is USER-REPORTED. Independent compile logs, source-to-BIN provenance, installed version and physical behavior remain UNVERIFIED. No Firmware/device operation was done in this task.
@@ -34,15 +34,14 @@ Historical note: Build #95 was an intermediate release, later superseded by Buil
 - Temperature target selection uses `floorf()` and integer whole-degree categories. At a 40°C limit, 36.3°C and 36.8°C both target 70%; target 80% starts at category 37. Immediate safety uses the original decimal value and is not delayed.
 - The 10-point ramp cadence (up 1 s, down 10 s), one 1 Hz NTC sample and non-blocking control loop are preserved. Firmware tests and compile have NOT RUN for this revision.
 
-## Home NOTIFY live-state and localization fix — 2026-10-20 (source-only / NOT RUN / NOT RELEASED)
+## Home NOTIFY — single latest-event message (2026-10-20; source-only / NOT RUN / NOT RELEASED)
 
-- Latest source/test fingerprints: `lib/main.dart` `4d2871234971ef8a9fa976f197e0e4f7b1e188ac`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `ccae334f9a737926bef021fa04ce7caa4d30601d`.
-- Home NOTIFY now follows the newest confirmed cooling telemetry instead of treating a successful command acknowledgement as a permanent message. Accepted Adaptive/Voltage/Fan/Peltier/Fan Speed commands move the card to a compact summary built from current mode, voltage, Fan state/speed and Peltier state.
-- A genuine change in cooling telemetry, safety reason or Hotside-limit state retires an older ordinary acknowledgement. Repeated identical telemetry is not treated as a new change.
-- Safety has priority over older success messages and ordinary summaries. Hotside at/above its configured limit displays the current measured temperature and configured limit. Home warning presentation also recognizes that live threshold.
-- Stored bilingual strings are re-resolved for the selected app language. A language listener rebuilds Home immediately, republishes Floating Monitor telemetry, and updates the connected-device foreground notification without waiting for new BLE traffic.
-- BLE protocol/ownership, Firmware safety rules, OTA transport and Android Gradle `versionName` remain unchanged.
-- Regression cases cover bilingual live summaries, Hotside temperature/limit wording, stored-message relocalization and listener wiring. Flutter tests and Dart analysis have NOT RUN. No App Build, Firmware compile, BIN/Firebase, OTA, flash or device operation occurred. Build #116 remains the latest verified App release; this source is NOT RELEASED and live-device behavior remains UNVERIFIED.
+- Current blobs: `lib/main.dart` `a167e884f765a8a9fa976f197e0e4f7b1e188ac`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `5cb9ccacf585823a874976432478529893f71da3`.
+- Home NOTIFY displays one complete sentence for the newest confirmed event; a new event replaces the old sentence. It never combines the Adaptive, Voltage, Fan and Peltier values in one summary.
+- Covered confirmed events: Voltage, Fan/Peltier ON/OFF, Adaptive ON/OFF/profile/ceiling, Fan speed up/down, LED power/mode/brightness/color and safety-state changes. Repeated values do not repeat the event, and a delayed ACK cannot overwrite newer telemetry.
+- Ordinary Temperature samples do not notify. Hotside at/above its configured limit shows the measured temperature and configured limit in the Home card in English/Indonesian and takes priority over ordinary control events. Android push remains preference-controlled and re-arms when Hotside cools below the limit.
+- Language changes re-render the last event immediately. The fixed 44 dp card, BLE protocol/ownership, Firmware safety rules and OTA transport remain unchanged.
+- Tests and analyzer have NOT RUN for the latest source; Build #120 does not contain it. No App Build, Firmware compile, BIN/Firebase, OTA, flash or device operation occurred.
 
 ## Firmware / OTA boundary
 
