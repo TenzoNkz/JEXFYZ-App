@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #116 / run 39355262101 is the latest successful App release, packaging source `48683874db659df940272bed1c860072ead2d767`. The following bilingual localization/copy pass is source-only, NOT RUN / NOT RELEASED.
+Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #116 / run 39355262101 is the latest successful App release recorded in this handover. The bilingual localization copy pass and the Adaptive Fan whole-degree target fix are source-only and have not been validated/released.
 
 ## Latest successful build and current source boundary
 
@@ -28,9 +28,15 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #116 / r
 - Overlay remains Letters-only, freely draggable, with saved coordinates; horizontal metrics centered as a group, vertical rows left aligned; size 0.30×–1.00× by 0.05× (default 0.60×); background opacity 0–100% by 5%, current value and endpoint marks only, no midpoint. Physical layout and live BLE metric behavior remain UNVERIFIED on the phone.
 Historical note: Build #95 was an intermediate release, later superseded by Builds #100, #106, #108 and #110. The current top-down falling-fire/icon-geometry/Settings-About removal follow-up is newer than Build #110 and remains untested/unreleased pending separate validation.
 
+## Adaptive Fan target update — source-only / NOT COMPILED
+
+- `firmware/JEXFYZ-V6.9.ino` blob `b35101a0cc5a597c55ecd4391cd99d5b62852417`; `test/firmware_qc_contract_test.dart` blob `29325173289d78041002df41cc14262fcf89e045`.
+- Temperature target selection uses `floorf()` and integer whole-degree categories. At a 40°C limit, 36.3°C and 36.8°C both target 70%; target 80% starts at category 37. Immediate safety uses the original decimal value and is not delayed.
+- The 10-point ramp cadence (up 1 s, down 10 s), one 1 Hz NTC sample and non-blocking control loop are preserved. Firmware tests and compile have NOT RUN for this revision.
+
 ## Firmware / OTA boundary
 
-- Firmware source: `firmware/JEXFYZ-V6.9.ino`, blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`; embedded `FW_VERSION="V6.9"`. Adaptive 12 V target tiers remain 100/90/80/70/60/50%; downshift steps −10 percentage points every 10 seconds and upshift steps +10 points every 1 second. Voltage/thermal transitions reset the clock; Hotside limit/protection forces 100% immediately. Firmware V6.9 compile/install is USER-REPORTED. Compile logs, source-to-BIN identity and installed device version remain UNVERIFIED.
+- Firmware source: `firmware/JEXFYZ-V6.9.ino`, current blob `b35101a0cc5a597c55ecd4391cd99d5b62852417`; embedded `FW_VERSION="V6.9"`. Adaptive 12 V targets now use floored whole-degree Hotside categories (with a 40°C limit, 36.x°C targets 70%, 37.x°C targets 80%). The raw decimal safety override still forces 100% at the configured limit. Ramp cadence remains −10 percentage points every 10 seconds / +10 points every 1 second. A prior V6.9 compile/install was user-reported before this edit; this exact source revision is NOT compiled or installed. Source-to-BIN identity remains UNVERIFIED.
 - Artifact repository TenzoNkz/JEXFYZ-Firmware has exactly one recursive-tree entry: `JEXFYZ.cpp.bin`, blob `821b022f97353d9a7aea4695b2e37c98b7488e15`, 1,456,560 bytes. Only tree metadata was inspected; do not read/change the BIN payload or add notes there. Source-to-BIN provenance remains UNVERIFIED.
 - Do not compile Firmware, publish/replace BIN, edit Firebase metadata, flash/OTA hardware or perform device actions without separate explicit approval. User compiles Firmware. Preserve Android versionName "Telegram @horizontalzzz".
 - OTA is protected/frozen. Read OTA_PROTECTION.md and OTA_REGRESSION_MEMORY.md before any OTA/TLS/recovery edit; read VOLTAGE_TRANSITION_MEMORY.md before rail/Peltier timing edits. setInsecure() bypasses server-certificate identity verification; CA and NTP gates were removed together after a user-reported failure, but one cause was not isolated. Do not infer HTTP/TLS errors from LEDs.
