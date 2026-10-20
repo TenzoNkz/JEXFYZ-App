@@ -1,14 +1,27 @@
-## CURRENT APP BUILD ATTEMPT — BUILD #114 ANALYZER FAILURE; DUPLICATE PELTIER TEST DECLARATIONS FIXED (BUILD #115 PENDING)
+## CURRENT APP BUILD ATTEMPT — BUILD #115 ANALYZER FAILURE; SUPPORTED THERMAL BACKDROP CLIP FIX COMMITTED (BUILD #116 PENDING)
+
+- **Build #115:** [Actions run 39354946732](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39354946732), checked out source commit `aabb571d0aa55738b4eba8379334060a2c2a8ba5`, and failed at Dart analysis. Toolchain, signing preparation, architecture/security audit and dependency install passed. Flutter tests, Android gate, APK, signing, source ZIP, publish and asset verification were skipped.
+- **Exact analyzer errors:** `lib/main.dart:2721` used named argument `clipOp` not supported by the Canvas `clipPath` API in the configured Flutter toolchain and referenced undefined identifier `ClipOp`. The duplicate Peltier test-local declarations fixed after Build #114 did not recur in the Build #115 diagnostics.
+- **App fix:** commit `39c7c16c1d90dacd9409c64b2fc0a29da7c91fb6`, message `fix(ui): use supported PathOperation for thermal backdrop clipping`, replaces the unsupported Canvas call with `Path.combine(PathOperation.difference, Path()..addRect(bounds), foregroundSilhouette)` and clips to the computed background path. This keeps the visual intent: particles are bounded to the icon rectangle but excluded from the battery/thermometer silhouette so the foreground glyph paints cleanly on top.
+- **Regression-test fix:** commit `281a5179f8fc8a7e1302e32f367b4eb0d036912d`, message `test(ui): assert supported thermal backdrop path difference`, asserts `PathOperation.difference`, the rectangle-minus-silhouette construction and the `canvas.clipPath(fireBackdrop)` call; it asserts the unsupported `ClipOp.difference` token is absent. The Peltier order assertions are retained in their one shared declaration block.
+- Current source/test blobs: `lib/main.dart` `5caf43f4075884b457b922aa35fc405b2887695e`; `test/widget_test.dart` `d5e55a4cf3bb4c97bbbd7f022e907f76c4a0e466`. These fixes are **not yet validated**.
+- **Next run:** Build #116 pending. Build #115 is terminal and no other Actions runs are queued/in progress. Retry remains only through official issue #34 close/reopen, with the guarded workflow unchanged at blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`.
+- Build #113 remains latest successful Release until Build #116 passes all gates and exact Release/tag/digest/source-marker checks. Preserve `versionName "Telegram @horizontalzzz"`. No Firmware V6.9 compile/tests, BIN/Firebase changes, OTA, flashing or device operations were performed.
+
+---
+
+## HISTORICAL APP BUILD ATTEMPT — BUILD #114 ANALYZER FAILURE; DUPLICATE PELTIER TEST DECLARATIONS FIXED
 
 - **Build #114:** [Actions run 39354652567](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39354652567), checked out commit `08b398bec362ef2b57ecdd3bf5b5e2c7c6083cd0`, and failed at `flutter analyze --no-fatal-infos`. Toolchain, signing setup, architecture/security audit and dependency installation passed. Flutter tests, Android gate, APK/signing, source ZIP, publish and asset verification were skipped.
 - **Exact analyzer blocker:** `test/widget_test.dart` declared local variables `peltierStart`, `peltierEnd`, and `peltier` twice inside the same test callback (duplicate-definition errors at the corresponding declarations around test lines 350–352). New thermal-layering work had added a Peltier particle-order assertion using names already declared later in the same painter contract test.
 - **Test-only fix committed:** `0afdf53d7de68943c6f6a676a213a74e678032bb`, message `test(ui): merge Peltier particle order assertions`, removes the redundant earlier declarations and moves the `_drawFrostParticles`-before-`canvas.drawPath` assertion into the existing Peltier block. The existing assertion that snow particles are painted before `canvas.rotate(crystalRotation)` is retained. No analyzer/test gate was disabled and `lib/main.dart` was not changed by this fix.
-- **Current source/test fingerprints:** `lib/main.dart` `d0fdb7482d939b34b0a1824b33d37f6457835818`; `test/widget_test.dart` `278d0fb46fad7a877d6ce6234006fb6491e6568e`. The fix has **not yet been validated**; Build #115 must rerun analyzer and all downstream gates.
-- **Official retry preflight:** Build #114 is terminal, no other Actions runs are queued/in progress, issue #34 remains open with exact title/token/owner, and the guarded workflow remains unchanged at `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`. Build #115 is next, triggered only through the official issue #34 close/reopen event after this report checkpoint.
+- **Current source/test fingerprints:** `lib/main.dart` `d0fdb7482d939b34b0a1824b33d37f6457835818`; `test/widget_test.dart` `278d0fb46fad7a877d6ce6234006fb6491e6568e`. The duplicate-declaration correction was included in Build #115; analyzer then exposed a separate unsupported Canvas clipping API in `lib/main.dart`, recorded in the latest attempt above.
+- **Official retry preflight:** Build #114 is terminal, no other Actions runs are queued/in progress, issue #34 remains open with exact title/token/owner, and the guarded workflow remains unchanged at `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`. Build #115 consumed this preflight and failed on the separate Canvas clipping API issue; see the latest attempt above.
 - Build #113 remains the latest successful released artifact until Build #115 fully succeeds and its release/tag/assets are verified. The newer Home fixed-height/45 dp rows and outer-background thermal particles remain unreleased until validated. Android `versionName "Telegram @horizontalzzz"` is preserved.
 - Firmware V6.9 compilation/tests, BIN generation/publication, Firebase production metadata updates, OTA, flashing and device operation are not authorized by this App Build command and were not performed.
 
 ---
+
 
 
 ---
