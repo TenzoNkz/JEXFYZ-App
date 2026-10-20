@@ -8,14 +8,14 @@ Last reconciled: 2026-10-19 (Asia/Jakarta). This is the canonical incident recor
 - No serial transcript establishing an exact HTTP/TLS error code was supplied. Do not invent one based on LEDs.
 - The failed path used `GITHUB_ROOT_CA`, `cloudClient.setCACert(...)`, `configTime(0, 0, "pool.ntp.org", "time.google.com")`, `OnlineOtaFlow::TIME_SYNCING`, epoch-validity state and a 20-second gate.
 
-## Historical OTA correction retained in current V6.9 source
+## Historical OTA correction retained in current V7.0 source
 
-- The correction originated in the then-current V6.3 source and remains present in the active `firmware/JEXFYZ-V6.9.ino` (live source blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`). The older V6.7 blobs are historical checkpoints, not the live source.
+- The correction originated in the then-current V6.3 source and remains present in the active `firmware/JEXFYZ-V7.0.ino` (live source blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`). The older V6.7/V6.9 blobs are historical checkpoints, not the live source.
 - Restored `cloudClient.setInsecure()` for the Online OTA client.
 - Removed the embedded CA PEM, `setCACert()`, `configTime()`, `TIME_SYNCING`, epoch-validity condition and OTA-only 20-second NTP time gate.
 - Flow is Wi-Fi success → blue feedback → `prepareOnlineOtaDownload()` → GitHub GET attempt.
 - Kept allowlisted URL prefix `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/`, redirect blocking, HTTP/length/size/image checks, ESP image magic byte `0xE9`, streaming Update lifecycle, all-safe output, OTA lifecycle and failure recovery.
-- Historical OTA source-contract evidence: `test/v6_7_qc_contract_test.dart` was used in App Build #35 (`38669526891`, code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`); all 74 Flutter tests passed at that older checkpoint. That file has since been retired with V6.7. Current suite `test/firmware_qc_contract_test.dart` (blob `1b35feeb1e411efec44261ec130eec4535004454`) includes OTA transport assertions and reads V6.9, but has NOT RUN for the current source. These static checks are not Firmware compilation, physical Online OTA or end-to-end update/reboot validation.
+- Historical OTA source-contract evidence: `test/v6_7_qc_contract_test.dart` was used in App Build #35 (`38669526891`, code commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8`); all 74 Flutter tests passed at that older checkpoint. That file has since been retired with V6.7. Current suite `test/firmware_qc_contract_test.dart` (blob `a44c12d32c472f109687c06316ea40f70fcf93ce`) includes OTA transport and V7.0/V6.9 version-mismatch assertions, reads V7.0, and has NOT RUN for the current source. These static checks are not Firmware compilation, physical Online OTA or end-to-end update/reboot validation.
 
 ## User-reported evidence boundary
 
@@ -37,7 +37,7 @@ Do not add/remove CA roots, change certificate validation, add an NTP gate, or a
 
 ## Historical V6.7 evidence boundary — 2026-10-18
 
-- Current source is `firmware/JEXFYZ-V6.9.ino`, `FW_VERSION="V6.9"`, blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`. V6.9 changes Adaptive Fan ramp pacing and has NOT been compiled or installed. The V6.7 compilation/online-update report is historical and user-reported; source-to-BIN provenance and installed-device version remain unverified.
+- Current source is `firmware/JEXFYZ-V7.0.ino`, `FW_VERSION="V7.0"`, blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`. The whole-degree Adaptive Fan fix and version bump are source-only: V7.0 has NOT been compiled or installed. The earlier V6.9 compilation/install report and V6.7 online-update report are historical user reports; V7.0 source-to-BIN provenance and installed-device version remain unverified.
 - HISTORICAL App Build #65 / run 38851040144 passed 88/88 Flutter tests and an FPS parser JUnit gate. Later App Build #70 / run 38998407325 passed 86/86 Flutter tests and the FPS-retired source's release gates; native JUnit tasks were NO-SOURCE. Neither App run is an Arduino compile, physical Online OTA, update-apply/reboot or installed-version proof.
 - Latest successful App artifact run Build #83 (run `39192430789`, source `dfc7e6633298498bb6eac21182c9306d5e3cac1d`) is App-only and does not validate the OTA transport or Firmware compile/BIN identity; the overall Release handoff is still blocked by the stale Git tag ref. The user reports V6.7 compiled and completed an online update; the report has not been independently verified. Hosted BIN provenance and current installed version remain unverified. Keep the setInsecure() certificate-identity trade-off explicit and do not infer the earlier HTTP/TLS failure root cause from LEDs alone.
 
