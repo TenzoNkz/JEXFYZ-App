@@ -1,6 +1,6 @@
 ## Home NOTIFY — single latest-event message (2026-10-20; source-only / NOT RUN / NOT RELEASED)
 
-- Current blobs: `lib/main.dart` `dfc7621bbdce9ebe31cdb19be8b452a8c0b1411d`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `132c3b000abd63599ebea9d26fc5085cb577e50e`.
+- Current blobs: `lib/main.dart` `40f172a5d190b429d3a952f2531349c1ee220d1f`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `132c3b000abd63599ebea9d26fc5085cb577e50e`.
 - Home NOTIFY displays one complete sentence for the newest confirmed event, replacing the previous sentence. It does not concatenate Adaptive, Voltage, Fan and Peltier into a state summary. Example: `Adaptive ON.` → `Voltage set to 5V.` → `Fan speed reduced to 70%.`
 - Event copy covers Voltage, Fan/Peltier ON/OFF, Adaptive ON/OFF/profile/ceiling, Fan speed increase/reduction, LED ON/OFF/mode/brightness/color and safety-state transitions. Repeated values do not create repeated events; older delayed ACKs cannot overwrite newer telemetry.
 - Ordinary Temperature samples do not generate Home NOTIFY. Hotside at/above the configured limit is the safety exception: the card shows measured temperature and configured limit in English/Indonesian and prioritizes it over ordinary events. Android push remains preference-controlled and re-arms after temperature falls below the limit.
