@@ -1,3 +1,14 @@
+## CURRENT APP BUILD ATTEMPT — BUILD #121 (PENDING OFFICIAL TRIGGER; CURRENT NOTIFY SOURCE UNVALIDATED)
+
+- **Authorization:** user issued `@Thinking Eksekusi Build App!` on 2026-10-20 (Asia/Jakarta). No build was running or queued at preflight; Builds #117–#120 were terminal. Last successful release remains Build #120 / [run 39365201489](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39365201489).
+- **Pre-trigger repository evidence:** `main` HEAD `a60d708bea2ec01411e302c0ffa7daa90f248ca2`; `lib/main.dart` blob `40f172a5d190b429d3a952f2531349c1ee220d1f`; `test/widget_test.dart` blob `132c3b000abd63599ebea9d26fc5085cb577e50e`; Android `versionName "Telegram @horizontalzzz"` is unchanged.
+- **Source requiring validation:** Home NOTIFY single-latest-event sentences (rather than aggregated status), current live cooling/safety telemetry superseding stale command acknowledgements, safety-latch/event reason prioritization, Adaptive voltage-ceiling acknowledgements, bilingual relocalization and associated regression contracts. Latest changes are **NOT RUN / NOT RELEASED** until the guarded pipeline finishes and Release/tag/assets are independently checked.
+- **Trigger/security preflight:** issue #34 is open, owner-authored by `TenzoNkz`, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. The workflow is unchanged at blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; it listens only to `issues.opened/reopened` with the repository-owner/title/body guards. No active or queued Actions run was found. The next action is one official close/reopen cycle on issue #34; no push/PR/manual-dispatch bypass is allowed.
+- **Required gates:** toolchain and security audit; dependencies and Dart analyzer; all Flutter tests; configured Android gate; obfuscated production APK; V1/V2/V3 and expected certificate verification; matching source ZIP; Release/tag target equal to exact packaged source commit; exactly one APK and one source ZIP; re-downloaded digests, ZIP integrity and source-marker equality.
+- **Boundary:** App Build only. Do not compile Firmware, generate or publish BIN, change production Firebase/OTA metadata, flash or operate hardware. Record the terminal run and any evidence-based fix/retry below after the outcome is known.
+
+---
+
 ## LATEST SUCCESSFUL APP BUILD — BUILD #120 (AUTHORITATIVE LIVE NOTIFY / BILINGUAL STATUS LOCALIZATION RELEASED)
 
 - **Result: SUCCESS.** [GitHub Actions run #120 / 39365201489](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39365201489) completed with conclusion `success` on exact packaged source commit `aeadaa47bd7ad64af6044afce5783781f0c0d82f`. All 21 main workflow steps and all post-job cleanup steps succeeded (including downloaded Release asset verification).
