@@ -345,6 +345,7 @@ const Set<String> _jexKnownNotifyReasonCodes = <String>{
   'PELTIER_SAFETY_LATCH',
   'VOLTAGE_STEP_FAILED',
   'VOLTAGE_FORCE_FAILED',
+  'ADAPTIVE_RECOVERY_WAIT',
   'ADAPTIVE_RISE_WAIT',
   'ADAPTIVE_STARTING',
   'FAN_REQUIRED',
@@ -392,6 +393,12 @@ String localizedNotifyReason(
       return JexText.phrase(
         'Safety protection could not set 5V. Check the device.',
         'Proteksi keselamatan gagal mengatur 5V. Periksa perangkat.',
+        language,
+      );
+    case 'ADAPTIVE_RECOVERY_WAIT':
+      return JexText.phrase(
+        'Adaptive is waiting for voltage recovery to stabilize.',
+        'Adaptive menunggu hingga pemulihan tegangan stabil.',
         language,
       );
     case 'ADAPTIVE_RISE_WAIT':
