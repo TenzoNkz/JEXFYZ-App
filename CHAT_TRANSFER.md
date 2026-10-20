@@ -41,7 +41,7 @@ Reconciled from live GitHub main on 2026-10-20 (Asia/Jakarta). Build #123 is the
 - Events cover Voltage, Fan/Peltier ON/OFF, Adaptive ON/OFF/profile/ceiling, Fan speed increase/reduction, LED ON/OFF/mode/brightness/color and safety-state changes. Repeated identical telemetry creates no event, and a delayed ACK cannot overwrite newer telemetry.
 - Ordinary Temperature samples do not generate Home NOTIFY. Hotside reaching the configured limit displays the measured temperature and configured limit in English/Indonesian, with safety priority. Android push still follows its notification preference and re-arms when Hotside falls below the limit.
 - Language changes re-render the latest event immediately. BLE protocol/ownership, Firmware safety rules, OTA transport and Android `versionName` remain unchanged.
-- Build #120 remains the last successful App release; the latest source/test changes are NOT RUN / NOT RELEASED. No App Build, Firmware compile, BIN/Firebase, OTA, flash or device operation was performed.
+- Build #123 / run `39371864780` is the last verified successful App release and packages parent source `14e90e7e26b8eb4400bd01ec8d0eab5ed4195f1c`. The latest password-visibility source/test patch is newer, NOT RUN / NOT RELEASED. No App Build, Firmware compile, BIN/Firebase, OTA, flash or device operation was performed in the current task.
 ## Adaptive Fan whole-degree target fix — source-only / NOT COMPILED / NOT TESTED
 
 - Source: `firmware/JEXFYZ-V7.0.ino` blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`.

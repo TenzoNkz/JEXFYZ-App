@@ -1,3 +1,12 @@
+## 2026-10-20 — Reconcile Build #123 evidence and current-state memory (docs-only)
+
+- Replaced the stale “Build #123 pending official trigger” preflight block in `APP_BUILD_REPORT.md` with the confirmed successful run: 115 Flutter tests passed, Dart analysis exit 0 (25 info diagnostics), configured Gradle gate successful with native unit-test tasks NO-SOURCE, APK V1/V2/V3 and expected signer verified, matching source ZIP/hash/source marker verified, and `jexfyz-latest` Release/tag matched source commit `14e90e7e26b8eb4400bd01ec8d0eab5ed4195f1c`.
+- Updated current-only state references in `APP_NOTES.md`, `PROJECT_STATE.md`, `MEMORY_INDEX.md`, and `CHAT_TRANSFER.md` to identify Build #123 as the latest verified App release and the password-visibility patch as source-only / not released.
+- Firmware V7.0 compile/Online OTA remains USER-REPORTED; source-to-BIN provenance and installed-device identity are not independently verified.
+- This documentation-only correction did not run or trigger a Build App, did not change App source, Firmware source/BIN or production Firebase, and did not touch OTA, flash or device operations.
+
+---
+
 ## 2026-10-20 — Firmware Update password visibility; BLE authorization blocker (partial execution)
 
 - Added a visibility toggle for the Wi-Fi password in Firmware Update. The field is masked by default; the eye icon toggles visibility and the tooltip is localized in EN/ID: Show/Hide password / Tampilkan/Sembunyikan kata sandi.
