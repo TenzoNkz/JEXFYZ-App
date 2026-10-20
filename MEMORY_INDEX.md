@@ -1,5 +1,11 @@
 # JE X FYZ / JE Cooler — Memory Index
 
+## Current localization copy contract
+
+- English/Indonesian labels and user-facing notices live in `lib/app_settings.dart` (`JexText`) or `JexText.phrase()` in `lib/main.dart`. Keep the Home heading localized as `Notification` / `Notifikasi`, Settings as `Notifications` / `Notifikasi`, and Contact Developer as `Contact Developer` / `Hubungi Pengembang`.
+- Current source/test fingerprints and validation boundaries are recorded in `PROJECT_STATE.md`, `APP_NOTES.md`, `HANDOVER.md`, `CHAT_TRANSFER.md`, and the latest `CHANGELOG.md` entry. Build #116 remains the latest verified App release; this copy pass is source-only until the separate Build App flow.
+
+
 Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #116 is the latest successful App release; the final flame/rounded-clip/NOTIFY-label follow-up is source-updated but NOT RUN / NOT RELEASED. The user reports Firmware V6.9 was compiled and installed; independent compile logs, source-to-BIN provenance and installed-device version remain UNVERIFIED. Live source/refs/Actions/Release override memory.
 
 ## Current verified release and source checkpoint
