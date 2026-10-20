@@ -8,12 +8,15 @@
 - Build App does not authorize Firmware compilation, BIN creation/publication/replacement, Firebase metadata changes, physical OTA, flashing, device operation, or unrelated release operations.
 - Never claim CI success proves BLE, cooling/safety behavior, Firmware compilation, OTA installation or installed device version.
 
-## LATEST SUCCESSFUL APP BUILD — Build #106 (verified release; newer UI follow-up pending)
+## LATEST SUCCESSFUL APP BUILD — Build #110 (verified release; latest source follow-up pending)
 
-- Latest successful App artifact: Build #106 / https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39279938461, exact source `9f90cf6063ee7786613f8b5dfa1c6b0412d89638`. Analyzer exited 0 with 25 info-level findings and no errors/warnings; 108 Flutter tests passed; Android configured gate, APK signature/certificate, corresponding source ZIP and downloaded-asset validation passed.
-- APK asset ID `656702702`: 54,734,939 bytes, SHA-256 `bab332a4312c628178e384a88d513cf8546ff15ab4b4e3f3becf2e70b10830cc`; source ZIP asset ID `656702729`: 2,866,720 bytes, SHA-256 `0bb86c4e6bd7d3cb7a6bb894658bd707acee48bac106fc5227f8adcba584ec98`.
-- Current source-only follow-up after Build #106: left-aligned, badge-free NOTIFY plus oval Battery/Hotside ember bursts and Voltage outer-edge pulses. Blobs: `lib/main.dart` `7e09a3d28b4efe24bdced858db4274cf70806284`; `lib/app_settings.dart` `8f228000d38d73038c06f569c052b1af601288a5`; `test/widget_test.dart` `5a82cf79e6c5c40fc34489ce90cf1200cf9faccb`. It has NOT been tested, analyzed, built or released.
-- @Thinking Eksekusi Full! does not start App Build. A separate @Thinking Eksekusi Build App! is required. No Firmware/BIN/Firebase/OTA/device operation occurred.
+- Latest successful App artifact: Build #110 / https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39300262741, exact source `b5adcffb2c9724a07cdba4cd8521c1307f1e6566`. The live `jexfyz-latest` Release/tag and package assets target this source.
+- APK asset `657047529`: 54,734,939 bytes, SHA-256 `258211ec9313c555aaac6cd797d1bf6abc6c62c3c2781cd37baa0a8c849bfb84`; corresponding source ZIP asset `657047524`: 2,866,352 bytes, SHA-256 `13d1cad6cf4fbb9b2560da7406f4c6bf875fe4ebc2ed5483e6f0001a3b24aa23`.
+- Build #110 includes restored Home geometry (44 dp metric rows) and badge-free, left-aligned NOTIFY with a 56 dp card/slot. The current source follow-up is newer than #110 and NOT RUN / NOT RELEASED: falling fire embers for Battery/Hotside, taller Hotside tube, inset/clipped Voltage core, About removal from Settings, plus Firmware V6.9 PWM pacing.
+- Current App fingerprints: `lib/main.dart` `08592a9d861a11ecdb8de1aa289f8ce06bf2e20c`; `lib/app_settings.dart` `f8e465648946a25eae44f3fad6a5a3bfaca8b050`; `lib/floating_monitor.dart` `e7c74bf749698a8331f2b0b31a847b2627ac3e4b`; `test/widget_test.dart` `2a2ff8a3RECHECK_AFTER_WRITE` (re-fetch live main for final hash); `test/floating_monitor_layout_contract_test.dart` `b053a92522223fd237a8f0e025648eb1b26730a5`.
+- Current Firmware source: `firmware/JEXFYZ-V6.9.ino`, blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`, embedded `FW_VERSION="V6.9"`. Adaptive 12 V PWM temperature tiers are unchanged; down steps move -10 points every 10 s and up steps +10 points every 1 s. Transition/thermal gates reset the clock; Hotside limit/protection forces 100% immediately.
+- `test/firmware_qc_contract_test.dart` blob `1b35feeb1e411efec44261ec130eec4535004454`; `test/firmware_touch_adaptive_sync_test.dart` blob `3a86dd118cd1d1332dbafa3883ab9e5ae2823ac8`. Neither suite has run for V6.9. Flutter tests/analyzer also have NOT RUN for the current App follow-up; V6.9 has NOT been compiled or installed.
+- `@Thinking Eksekusi Full!` does not trigger App Build. Request `@Thinking Eksekusi Build App!` separately to test and release current App source. No Firmware compile, BIN generation/publication, Firebase change, OTA, flash or hardware operation occurred.
 
 ## HISTORICAL / SUPERSEDED — Build #71 (verified release; superseded by Build #83; kept for history)
 
