@@ -91,4 +91,23 @@ void main() {
     expect(native, contains('coerceIn(0.0f, 1.0f)'));
     expect(native, isNot(contains('Gravity.CENTER_HORIZONTAL')));
   });
+
+  test('Settings removes the About section and page entirely', () {
+    final settingsSource = File('lib/floating_monitor.dart').readAsStringSync();
+    final localizationSource = File('lib/app_settings.dart').readAsStringSync();
+    final settingsStart = settingsSource.indexOf('class SettingsPage extends StatelessWidget');
+    final settingsEnd = settingsSource.indexOf('class LanguageSettingsPage', settingsStart);
+    expect(settingsStart, isNonNegative);
+    expect(settingsEnd, greaterThan(settingsStart));
+    final settingsPage = settingsSource.substring(settingsStart, settingsEnd);
+
+    expect(settingsPage, isNot(contains("JexText.of('aboutSection'")));
+    expect(settingsPage, isNot(contains("JexText.of('about'")));
+    expect(settingsPage, isNot(contains('AboutSettingsPage')));
+    expect(settingsSource, isNot(contains('class AboutSettingsPage')));
+    expect(settingsSource, isNot(contains('class _AboutRow')));
+    expect(localizationSource, isNot(contains("'aboutSection':")));
+    expect(localizationSource, isNot(contains("'about':")));
+  });
+
 }
