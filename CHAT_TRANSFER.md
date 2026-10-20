@@ -12,7 +12,7 @@ Reconciled from live GitHub main after `@Thinking Eksekusi Full!` on 2026-10-20 
 ## 2. Home visual and localization follow-up — source-only / NOT RUN / NOT RELEASED
 
 - `lib/main.dart` blob: `07178b5cce55fc8f78cc7c2953f4d8e352ccefe7`.
-- `test/widget_test.dart` blob: `da12f8ef82283f55af04a5286a6366e2253a4e6f`.
+- `test/widget_test.dart` blob: `0a5901ac6dc23c947356189a312bb1dec418298e`.
 - Battery/Hotside use deterministic falling flame-shaped particles (not plain oval dots), with orange/gold body, warm yellow-white hot cores, soft halo, subtle drift/rotation and edge fading. Flames fall from the top like the Peltier snowfall.
 - Fire draws as a background layer. The permitted path is the rounded painter frame minus the foreground thermal silhouette; the frame clip stops particles escaping rounded corners, and the foreground battery/thermometer casing remains above them. Existing Battery >=40°C and configured Hotside warning gates plus the 280 ms warning transition are unchanged. Peltier animation is not changed.
 - Home Notification heading is localized as `Notification` / `Notifikasi` in the selected app language, with no `• ERROR`, `• STATUS`, `• SYNC`, `• WARNING`, or connection suffix. A 2 dp top inset lowers the label away from the card border. The card remains fixed at 44 dp, body remains up to two lines with only necessary font shrinking, Home metric rows stay 45 dp with a 3 dp gap before the card, and cooler-image constraints stay stable.
@@ -23,7 +23,7 @@ Reconciled from live GitHub main after `@Thinking Eksekusi Full!` on 2026-10-20 
 
 - Home heading: `Notification` / `Notifikasi`; Settings section: `Notifications` / `Notifikasi`; Contact Developer: `Contact Developer` / `Hubungi Pengembang`.
 - Updated notification descriptions, Hotside terminology, palette labels, Bluetooth/firmware copy and Android Floating Monitor status text.
-- Current source blobs: `lib/app_settings.dart` 3486653401adb6bba251ae16afc7837a3a1af5fe; `lib/main.dart` 07178b5cce55fc8f78cc7c2953f4d8e352ccefe7; `test/widget_test.dart` da12f8ef82283f55af04a5286a6366e2253a4e6f; `FloatingMonitorService.kt` f2c5d5e8b5731be36ae3b82109a75beaefe5fb4d. Flutter tests and Dart analysis have NOT RUN. Build #116 remains the latest verified release.
+- Current source blobs: `lib/app_settings.dart` 6d143e6b6b5b986e2d6915dd8b608baca6f0d444; `lib/main.dart` 07178b5cce55fc8f78cc7c2953f4d8e352ccefe7; `test/widget_test.dart` 0a5901ac6dc23c947356189a312bb1dec418298e; `FloatingMonitorService.kt` f2c5d5e8b5731be36ae3b82109a75beaefe5fb4d. Flutter tests and Dart analysis have NOT RUN. Build #116 remains the latest verified release.
 
 ## 3. Current validated release versus working source
 
@@ -34,15 +34,15 @@ Reconciled from live GitHub main after `@Thinking Eksekusi Full!` on 2026-10-20 
 ## 4. Canonical memory files and updated fingerprints (localization copy pass included)
 
 - `lib/main.dart`: `07178b5cce55fc8f78cc7c2953f4d8e352ccefe7`
-- `test/widget_test.dart`: `da12f8ef82283f55af04a5286a6366e2253a4e6f`
-- `PROJECT_STATE.md`: `689176249837c5ab8d4ed858a53e7e62da58aac9`
+- `test/widget_test.dart`: `0a5901ac6dc23c947356189a312bb1dec418298e`
+- `PROJECT_STATE.md`: `420515e3d69640b70174ea27e2ed32e0e86cddbc`
 - `DESIGN_NOTES.md`: `48fa3014c5b3e93028f36adbdda4525bd4ee69e7`
 - `APP_BUILD_REPORT.md`: `377db79e937a3d1704616a3e487090dfddf0e94f`
-- `CHANGELOG.md`: `54141d46d8ad1af1927dd1de54f53439d600e4b8`
+- `CHANGELOG.md`: `5dfb52c90fa48d755b80f9ce4ba213db32b99d3e`
 - `README.md`: `95a799144c2cb093af6dab9a953884709663c5f2`
-- `HANDOVER.md`: `fe6b40a7320dbda8c773fa5063dfe36a67db7f84`
+- `HANDOVER.md`: `ed5ca8fcb87184a8bd576efb1aca65dd12750cbb`
 - `CHAT_RULES.md`: `cc2798d1d1b4f5a48005966f14d70954c3ef4b86`
-- `APP_NOTES.md`: `d87679f511d54669970eab5452ada9f1f47e222d`
+- `APP_NOTES.md`: `bfb698deba9fcc0c44e801f9c1fb2562de064c64`
 - `MEMORY_INDEX.md`: `7dc84007c6d0fbafcf96ac26b3d6b4ded7d4b7f1`
 - Guarded App trigger workflow stays unchanged at blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`.
 
