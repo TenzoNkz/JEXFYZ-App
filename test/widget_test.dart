@@ -893,7 +893,7 @@ void main() {
     expect(card, isNot(contains('noticeChipFill')));
     expect(card, isNot(contains('offlineStatusColor')));
     expect(source, isNot(contains('height: 56,\n              child: _homeNotify(),')));
-    final homeStart = source.lastIndexOf('Widget _buildHome(');
+    final homeStart = source.lastIndexOf('Widget _buildHomeArea(double height)');
     final notifySlot = source.indexOf('_homeNotify(),', homeStart);
     expect(homeStart, isNonNegative);
     expect(notifySlot, greaterThan(homeStart));
