@@ -65,12 +65,12 @@ The canonical detailed incident/contract is `VOLTAGE_TRANSITION_MEMORY.md`.
 
 ## Current Adaptive Fan PWM at 12V — V6.9 paced temperature-tier ramp
 
-- Target tiers remain based on `delta = hotLimit - hotsideC`: <1.5°C →100%; 1.5–<2.5°C →90%; 2.5–<3.5°C →80%; 3.5–<4.5°C →70%; 4.5–<5.5°C →60%; ≥5.5°C →50%.
+- Target tiers use the floored whole-degree category, `temperatureCategoryC = floor(hotsideC)`, then the integer distance `belowLimitC = hotLimit - temperatureCategoryC`: ≤1 →100%; ≤2 →90%; ≤3 →80%; ≤4 →70%; ≤5 →60%; ≥6 →50%. For a 40°C limit, 36.0–36.99°C stays at 70%, and target 80% begins at category 37. This prevents 36.3°C →36.8°C from changing the target. The immediate protection override remains based on the unrounded reading (`hotsideC >= hotLimit`) and still forces 100% without delay.
 - Actual PWM approaches the target in 10-point steps: decreasing waits 10,000 ms before each step; increasing waits 1,000 ms before each step. When direction changes, the clock starts for the new direction rather than allowing a stale timer to cause a step immediately.
 - `voltageTransition`, Adaptive hot-step transition, thermal dwell and non-running output conditions reset the clock and preserve the full-speed priority. A 9 V → 12 V transition therefore remains at 100% through the handoff, then waits at least 10 seconds before the first reduction. Subsequent reductions happen no faster than one step per 10 seconds.
 - Active Hotside protection or `hotsideC >= hotLimit` forces 100% immediately. Adaptive 5 V/9 V remains 100%; the normal safety controller remains authoritative.
 - NTC acquisition remains one calibrated sample per second. No blocking delay, extra ADC read, averaging/filter, or timing loop was added.
-- Current source is `firmware/JEXFYZ-V6.9.ino` blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`; tests are `test/firmware_qc_contract_test.dart` and `test/firmware_touch_adaptive_sync_test.dart`. Tests and Arduino compile have NOT RUN; V6.9 is not installed. The hardware-reset symptom is not physically diagnosed/verified.
+- Current source is `firmware/JEXFYZ-V6.9.ino` blob `b35101a0cc5a597c55ecd4391cd99d5b62852417`; `test/firmware_qc_contract_test.dart` blob is `29325173289d78041002df41cc14262fcf89e045`. The source adds whole-degree target selection while retaining exact-decimal safety override and 10-second down/1-second up ramp cadence. Tests and Arduino compile have NOT RUN for this revision. The previous V6.9 compile/install was user-reported before this source change; this exact hash is not confirmed installed. The hardware-reset symptom remains unverified.
 
 ## HISTORICAL / SUPERSEDED — V6.8 direct temperature-tier controller
 
