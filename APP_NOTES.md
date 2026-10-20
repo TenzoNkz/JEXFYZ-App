@@ -4,7 +4,7 @@ This file is the durable App behavior/design contract. Live source and the curre
 
 ## Home NOTIFY — single latest-event message (2026-10-20; source-only / NOT RUN / NOT RELEASED)
 
-- Current blobs: `lib/main.dart` `22986e3cdd21973fbf8ae5e5ed646d28f18785d6`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `c2cb9928fcb8388d51687b8907575c3f06b8cc66`.
+- Current blobs: `lib/main.dart` `dfc7621bbdce9ebe31cdb19be8b452a8c0b1411d`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `132c3b000abd63599ebea9d26fc5085cb577e50e`.
 - Home NOTIFY displays one complete sentence for the newest confirmed event. It never concatenates Adaptive, Voltage, Fan and Peltier into a state summary. Each new event replaces the previous sentence: `Adaptive ON.` → `Voltage set to 5V.` → `Fan speed reduced to 70%.`
 - Events cover Voltage, Fan/Peltier ON/OFF, Adaptive ON/OFF and profile/ceiling, Fan speed increase/reduction, LED ON/OFF/mode/brightness/color and safety-state transitions. Repeated identical telemetry creates no new event. If newer telemetry arrives before an ACK completes, that older ACK cannot overwrite it.
 - Ordinary Temperature samples do not create messages. Hotside reaching its configured limit is the exception: the in-app card shows measured temperature and limit in English/Indonesian regardless of the Android push preference. Android push remains preference-controlled and is re-armed after temperature falls below the limit.
@@ -13,7 +13,7 @@ This file is the durable App behavior/design contract. Live source and the curre
 ## Current App release and follow-up — 2026-10-20
 
 - Latest successful App release is Build #120 / run 39365201489, source `aeadaa47bd7ad64af6044afce5783781f0c0d82f`. APK SHA-256 `aa162e57a04f229922cca4fe48773a49585328e2337761f5c641097957ff0392`; source ZIP SHA-256 `3e7585549d2eef68ad93b35c378bd76332d80a92a0edf1856aec8303df5e28d7`.
-- Latest unbuilt Home NOTIFY single-event follow-up: lib/main.dart `22986e3cdd21973fbf8ae5e5ed646d28f18785d6`; lib/app_settings.dart `44431e926bfa2557c26345899e2333bd767f3f8e`; test/widget_test.dart `c2cb9928fcb8388d51687b8907575c3f06b8cc66`. Flutter tests and analyzer have NOT RUN for this follow-up.
+- Latest unbuilt Home NOTIFY single-event follow-up: lib/main.dart `dfc7621bbdce9ebe31cdb19be8b452a8c0b1411d`; lib/app_settings.dart `44431e926bfa2557c26345899e2333bd767f3f8e`; test/widget_test.dart `132c3b000abd63599ebea9d26fc5085cb577e50e`. Flutter tests and analyzer have NOT RUN for this follow-up.
 - Home: seven 45 dp metric rows, 3 dp pre-card gap, and a fixed 44 dp icon-left/text-left card. Its heading is localized as `Notification` / `Notifikasi` with a 2 dp top inset; body copy scales down only as needed and is limited to two lines. Cooler-image constraints remain stable.
 - Battery/Hotside: small stylized orange/gold flame particles descend from the top with warm yellow-white cores, a soft halo and subtle drift/rotation. The particles are background-first, clipped to a rounded frame minus the foreground shell, and cannot escape the rounded boundary or paint inside the battery chamber/thermometer tube. Existing warning gates and safety logic are unchanged.
 - Build #120 validates only the packaged source commit above, not the latest single-event NOTIFY edits or physical-phone behavior. No BLE protocol/ownership, Firmware safety predicates, BIN/Firebase/OTA or device state were changed by this follow-up.
