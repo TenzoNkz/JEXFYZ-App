@@ -258,9 +258,9 @@ class FloatingMonitorService : Service() {
             .setContentTitle("JE X FYZ")
             .setContentText(
                 if (data.language.equals("indonesia", ignoreCase = true))
-                    "Monitor Melayang aktif"
+                    "Floating Monitor aktif."
                 else
-                    "Floating Monitor active"
+                    "Floating Monitor is active."
             )
             .setOngoing(true)
             .setShowWhen(false)
