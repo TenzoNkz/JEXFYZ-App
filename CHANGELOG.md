@@ -1,15 +1,13 @@
-## Home NOTIFY live-state and localization fix — 2026-10-20 (source-only / NOT RUN / NOT RELEASED)
+## Home NOTIFY — single latest-event message (2026-10-20; source-only / NOT RUN / NOT RELEASED)
 
-- Latest source/test fingerprints: `lib/main.dart` `4d2871234971ef8a9fa976f197e0e4f7b1e188ac`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `ccae334f9a737926bef021fa04ce7caa4d30601d`.
-- Home NOTIFY now follows the newest confirmed cooling telemetry instead of treating a successful command acknowledgement as a permanent message. Accepted Adaptive/Voltage/Fan/Peltier/Fan Speed commands move the card to a compact summary built from current mode, voltage, Fan state/speed and Peltier state.
-- A genuine change in cooling telemetry, safety reason or Hotside-limit state retires an older ordinary acknowledgement. Repeated identical telemetry is not treated as a new change.
-- Safety has priority over older success messages and ordinary summaries. Hotside at/above its configured limit displays the current measured temperature and configured limit. Home warning presentation also recognizes that live threshold.
-- Stored bilingual strings are re-resolved for the selected app language. A language listener rebuilds Home immediately, republishes Floating Monitor telemetry, and updates the connected-device foreground notification without waiting for new BLE traffic.
-- BLE protocol/ownership, Firmware safety rules, OTA transport and Android Gradle `versionName` remain unchanged.
-- Regression cases cover bilingual live summaries, Hotside temperature/limit wording, stored-message relocalization and listener wiring. Flutter tests and Dart analysis have NOT RUN. No App Build, Firmware compile, BIN/Firebase, OTA, flash or device operation occurred. Build #116 remains the latest verified App release; this source is NOT RELEASED and live-device behavior remains UNVERIFIED.
+- Current blobs: `lib/main.dart` `a167e884f765a8a9ef379108262c366c8bcdcf99`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `5cb9ccacf585823a874976432478529893f71da3`.
+- Home NOTIFY displays one complete sentence for the newest confirmed event, replacing the previous sentence. It does not concatenate Adaptive, Voltage, Fan and Peltier into a state summary. Example: `Adaptive ON.` → `Voltage set to 5V.` → `Fan speed reduced to 70%.`
+- Event copy covers Voltage, Fan/Peltier ON/OFF, Adaptive ON/OFF/profile/ceiling, Fan speed increase/reduction, LED ON/OFF/mode/brightness/color and safety-state transitions. Repeated values do not create repeated events; older delayed ACKs cannot overwrite newer telemetry.
+- Ordinary Temperature samples do not generate Home NOTIFY. Hotside at/above the configured limit is the safety exception: the card shows measured temperature and configured limit in English/Indonesian and prioritizes it over ordinary events. Android push remains preference-controlled and re-arms after temperature falls below the limit.
+- Language changes re-render the latest event immediately. BLE protocol/ownership, Firmware safety rules and OTA transport are unchanged.
+- Validation: source/test blobs were fetched back; Flutter tests and Dart analysis have NOT RUN for this revision. Build #120 remains the latest successful App release and does not contain this source patch. No App Build, Firmware compile, BIN/Firebase, OTA, flash or device operation was performed; live-device behavior remains UNVERIFIED.
 
 ---
-
 ## FIRMWARE V7.0 SOURCE FOLLOW-UP — 2026-10-20 (NOT COMPILED / NOT DEPLOYED)
 
 - Corrected the missed version increment from the previous Adaptive Fan whole-degree edit: the only active sketch is now `firmware/JEXFYZ-V7.0.ino`, and its embedded `FW_VERSION` is `V7.0`. Previous `firmware/JEXFYZ-V6.9.ino` has been retired from the active tree.
