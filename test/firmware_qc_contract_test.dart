@@ -19,15 +19,15 @@ void main() {
   });
 
   test('Active firmware keeps one calibrated NTC read and cooperative timing', () {
-    final source = File('firmware/JEXFYZ-V6.8.ino').readAsStringSync();
-    expect(source, contains('FW_VERSION[] = "V6.8"'));
+    final source = File('firmware/JEXFYZ-V6.9.ino').readAsStringSync();
+    expect(source, contains('FW_VERSION[] = "V6.9"'));
     expect(RegExp(r'analogReadMilliVolts\(PIN_NTC\)').allMatches(source).length, 1);
     expect(RegExp(r'^\s*delay\s*\(', multiLine: true).hasMatch(source), isFalse);
     expect(RegExp(r'^\s*while\s*\(', multiLine: true).hasMatch(source), isFalse);
   });
 
   test('Adaptive protection has 30-second stages and 60-second voltage recovery', () {
-    final source = File('firmware/JEXFYZ-V6.8.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V6.9.ino').readAsStringSync();
     expect(source, contains('HOT_PELTIER_OFF_MS          = 30000'));
     expect(source, contains('HOTSIDE_REARM_STABLE_MS = 5000UL'));
     expect(source, contains('ADAPTIVE_VOLTAGE_RECOVERY_STABLE_MS = 60000UL'));
@@ -38,12 +38,12 @@ void main() {
     expect(source, contains('adaptiveThermalRecoveryActive ||'));
   });
 
-  test('V6.8 Adaptive Fan PWM follows deterministic Hotside-limit temperature tiers', () {
-    final source = File('firmware/JEXFYZ-V6.8.ino').readAsStringSync();
-    expect(source, contains('FW_VERSION[] = "V6.8"'));
+  test('V6.9 Adaptive Fan PWM uses timed 10-point ramp steps', () {
+    final source = File('firmware/JEXFYZ-V6.9.ino').readAsStringSync();
+    expect(source, contains('FW_VERSION[] = "V6.9"'));
 
     final helperStart = source.indexOf('static uint8_t adaptiveFanTargetPwm(float temperatureC) {');
-    final helperEnd = source.indexOf('static void setAdaptiveFanPwm(uint8_t target)', helperStart);
+    final helperEnd = source.indexOf('static void resetAdaptiveFanPwmStepClock()', helperStart);
     final controllerStart = source.indexOf('static void processAdaptiveFanControl() {');
     final controllerEnd = source.indexOf('static String safetyReason()', controllerStart);
     expect(helperStart, greaterThanOrEqualTo(0));
@@ -66,33 +66,43 @@ void main() {
     expect(helper, contains('if (!isfinite(temperatureC)) return FAN_PWM_MAX;'));
 
     final controller = source.substring(controllerStart, controllerEnd);
-    expect(controller, contains('if (!adaptiveOn || currentVoltage != Voltage::V12) return;'));
-    expect(controller, contains('if (hotsideProtectionActiveNow() || hotsideC >= static_cast<float>(hotLimit))'));
-    expect(controller, contains('setAdaptiveFanPwm(adaptiveFanTargetPwm(hotsideC));'));
-    expect(controller, contains('voltageTransition || adaptiveHotStepPending'));
-    expect(controller, contains('peltierHotOffUntilMs != 0 || !fanOn || !peltierOn'));
+    expect(source, contains('ADAPTIVE_FAN_DOWNSTEP_INTERVAL_MS = 10000UL'));
+    expect(source, contains('ADAPTIVE_FAN_UPSTEP_INTERVAL_MS = 1000UL'));
+    expect(source, contains('ADAPTIVE_FAN_STEP_PERCENT = 10'));
+    expect(controller, contains('if (!adaptiveOn)'));
+    expect(controller, contains('if (voltageTransition || adaptiveHotStepPending ||'));
+    expect(controller, contains('resetAdaptiveFanPwmStepClock();'));
+    expect(controller, contains('hotsideProtectionActiveNow() || hotsideC >= static_cast<float>(hotLimit)'));
+    expect(controller, contains('const uint32_t intervalMs = direction < 0'));
+    expect(controller, contains('ADAPTIVE_FAN_DOWNSTEP_INTERVAL_MS'));
+    expect(controller, contains('ADAPTIVE_FAN_UPSTEP_INTERVAL_MS'));
+    expect(controller, contains('if (now - adaptiveFanStepStartedMs < intervalMs) return;'));
+    expect(controller, contains('const int step = static_cast<int>(ADAPTIVE_FAN_STEP_PERCENT);'));
+    expect(controller, contains('if (currentVoltage != Voltage::V12)'));
 
     for (final obsolete in [
       'ADAPTIVE_FAN_WINDOW_SAMPLES',
       'adaptiveFanStableWindowStartedMs',
       'warmingTrendConfirmed',
-      'ADAPTIVE_FAN_DOWNSTEP_MS',
-      'ADAPTIVE_FAN_UPSTEP_MS',
       'adaptiveFanPreviousTemperatureC',
+      'adaptiveFanLastDownStepMs',
+      'adaptiveFanLastUpStepMs',
     ]) {
-      expect(source, isNot(contains(obsolete)), reason: 'Old trend/time control remains: $obsolete');
+      expect(source, isNot(contains(obsolete)), reason: 'Obsolete trend/window state remains: $obsolete');
     }
 
     expect(source, contains('static void processAdaptiveFanControl();'));
     expect(source, contains('processAdaptiveFanControl();'));
-    // The NTC acquisition contract remains a single calibrated sample each second.
-    expect(RegExp(r'analogReadMilliVolts\(PIN_NTC\)').allMatches(source).length, 1);
+    // NTC remains one calibrated sample each second; the ramp is non-blocking.
+    expect(RegExp(r'analogReadMilliVolts\\(PIN_NTC\\)').allMatches(source).length, 1);
     expect(source, contains('FAN_PWM_MIN = 50'));
     expect(source, contains('FAN_PWM_MAX = 100'));
+    expect(RegExp(r'^\\s*delay\\s*\\(', multiLine: true).hasMatch(source), isFalse);
+    expect(RegExp(r'^\\s*while\\s*\\(', multiLine: true).hasMatch(source), isFalse);
   });
 
   test('Online OTA preserves the legacy connection path and GitHub URL restrictions', () {
-    final source = File('firmware/JEXFYZ-V6.8.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V6.9.ino').readAsStringSync();
 
     expect(source, isNot(contains('GITHUB_ROOT_CA')));
     expect(source, isNot(contains('-----BEGIN CERTIFICATE-----')));
@@ -119,7 +129,7 @@ void main() {
   });
 
   test('Manual and Adaptive transitions pause only an active soft-start and preserve full PWM', () {
-    final source = File('firmware/JEXFYZ-V6.8.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V6.9.ino').readAsStringSync();
 
     expect(source, contains('VOLTAGE_DEADTIME_MS           = 200'));
     expect(source, contains('VOLTAGE_GUARD_MS             = 1000'));
@@ -217,7 +227,7 @@ void main() {
   });
 
   test('Adaptive activation observes the new voltage-settle timestamp first', () {
-    final source = File('firmware/JEXFYZ-V6.8.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V6.9.ino').readAsStringSync();
     final start = source.indexOf('static void completeVoltageTransition() {');
     final end = source.indexOf('static float ntcTemperatureFromOhms', start);
 
@@ -242,7 +252,7 @@ void main() {
   });
 
   test('Adaptive ON/OFF handoffs do not force a redundant Peltier OFF cycle', () {
-    final source = File('firmware/JEXFYZ-V6.8.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V6.9.ino').readAsStringSync();
     final start = source.indexOf('static void setAdaptiveState(bool desired, String& reason) {');
     final end = source.indexOf('static bool setRgbState(bool desired)', start);
 
@@ -281,7 +291,7 @@ void main() {
   });
 
   test('Explicit Peltier OFF cancels deferred Adaptive-stop restoration', () {
-    final source = File('firmware/JEXFYZ-V6.8.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V6.9.ino').readAsStringSync();
     final start = source.indexOf('static bool setPeltierState(bool desired, String& reason) {');
     final end = source.indexOf('static bool forceAdaptiveFiveVolt()', start);
 
@@ -296,7 +306,7 @@ void main() {
     expect(peltierStop, greaterThan(cancelRestore));
   });
 
-  test('V6.8 and newer App mode state is updated only by atomic LED_SYNC', () {
+  test('V6.9 and newer App mode state is updated only by atomic LED_SYNC', () {
     final source = File('lib/main.dart').readAsStringSync();
     final start = source.indexOf("case 'MODE':");
     final end = source.indexOf("case 'LED_PHASE':", start);
@@ -311,7 +321,7 @@ void main() {
   });
 
   test('Firmware retires Mirror Pulse without renumbering other LED IDs', () {
-    final source = File('firmware/JEXFYZ-V6.8.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V6.9.ino').readAsStringSync();
     expect(source, contains('STATIC = 1'));
     expect(source, contains('BREATH = 2'));
     expect(source, contains('COMET = 4'));
@@ -324,7 +334,7 @@ void main() {
   });
 
   test('Firmware emits atomic LED_SYNC snapshot at BLE notify time', () {
-    final source = File('firmware/JEXFYZ-V6.8.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V6.9.ino').readAsStringSync();
     final serviceStart = source.indexOf('static void serviceBleTx() {');
     final serviceEnd = source.indexOf('static void sendDelta(', serviceStart);
     expect(serviceStart, greaterThanOrEqualTo(0));
@@ -345,7 +355,7 @@ void main() {
   });
 
   test('Full BLE sync sends atomic LED snapshot rather than two stale phase deltas', () {
-    final source = File('firmware/JEXFYZ-V6.8.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V6.9.ino').readAsStringSync();
     final start = source.indexOf('static void sendFullSync() {');
     final end = source.indexOf('static void sendHotsideTelemetry()', start);
     expect(start, greaterThanOrEqualTo(0));
@@ -357,7 +367,7 @@ void main() {
   });
 
   test('BLE command writes require encryption and bonding', () {
-    final source = File('firmware/JEXFYZ-V6.8.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V6.9.ino').readAsStringSync();
     expect(source, contains('#include <BLESecurity.h>'));
     expect(source, contains('BLESecurity::setAuthenticationMode(true, false, true)'));
     expect(source, contains('BLECharacteristic::PROPERTY_WRITE_ENC'));
@@ -388,7 +398,7 @@ void main() {
   });
 
   test('manual Peltier lock cannot be bypassed by one threshold sample', () {
-    final source = File('firmware/JEXFYZ-V6.8.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V6.9.ino').readAsStringSync();
     final start = source.indexOf('static bool manualPeltierSafetyLatchBlocksPeltier() {');
     final end = source.indexOf('static bool safetyAllowsPeltier()', start);
 
@@ -454,7 +464,7 @@ void main() {
 
 
   test('System LED indicators ignore RGB effect toggle but obey master brightness', () {
-    final source = File('firmware/JEXFYZ-V6.8.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V6.9.ino').readAsStringSync();
     final voltageStart = source.indexOf('static void startVoltageIndicator() {');
     final voltageEnd = source.indexOf('static uint32_t ledAnimationCycleMs(', voltageStart);
     expect(voltageStart, greaterThanOrEqualTo(0));
