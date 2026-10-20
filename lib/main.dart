@@ -5588,17 +5588,14 @@ void _handleAckLine(String line) {
         notice = latestTelemetryNotice;
         _homeNotifyRevision++;
       } else if (latestSafetyReason != null) {
+        // Preserve actionable known reason copy instead of replacing it with a generic label.
         notice = safetyReason.trim().toUpperCase() == 'NONE'
             ? JexText.phrase(
                 'Safety condition cleared.',
                 'Kondisi keselamatan kembali normal.',
                 appLanguageNotifier.value,
               )
-            : JexText.phrase(
-                'Safety status updated.',
-                'Status keselamatan diperbarui.',
-                appLanguageNotifier.value,
-              );
+            : _friendlyReason(safetyReason);
         _homeNotifyRevision++;
       }
     });
