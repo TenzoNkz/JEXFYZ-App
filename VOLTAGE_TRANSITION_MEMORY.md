@@ -1,8 +1,8 @@
 # JE X FYZ / JE Cooler — Voltage Transition & Peltier Soft-Start Memory
 
 Last reconciled: 2026-10-20 (Asia/Jakarta).
-Canonical active source: firmware/JEXFYZ-V6.9.ino, blob 8e0f0ff5a65962ebdb44300b05fc161cf9349d96. Adaptive 12 V PWM uses 10-point steps (down every 10 seconds, up every 1 second); step clock resets during rail transitions and thermal dwell.
-Firmware device status is USER-REPORTED compiled/installed by the user. Independent compile logs, source-to-BIN provenance, installed version and physical transition results remain UNVERIFIED. Firmware contract tests have NOT RUN for V6.9 in recorded validation.
+Canonical active source: firmware/JEXFYZ-V6.9.ino, current source blob b35101a0cc5a597c55ecd4391cd99d5b62852417. Adaptive 12 V target selection now uses floored whole-degree Hotside categories; at a 40°C limit, 36.0–36.99°C remains at 70% target and 37.0–37.99°C targets 80%. The exact-decimal Hotside safety override is unchanged. PWM still uses 10-point steps (down every 10 seconds, up every 1 second); step clock resets during rail transitions and thermal dwell.
+An earlier V6.9 source revision was USER-REPORTED compiled/installed. The whole-degree Adaptive Fan change makes the current source newer than that report; this exact source hash is NOT compiled/installed or physically validated. Independent compile logs, source-to-BIN provenance, installed version and physical transition results remain UNVERIFIED. Firmware contract tests have NOT RUN for this revision.
 Build #113 / run 39350217172 is the latest successful App release. The post-Build-#113 Home layout/thermal background-layer follow-up is source-only, NOT RUN / NOT RELEASED. App CI does not prove Firmware compilation or physical rail-transition behavior.
 
 ## Incident
