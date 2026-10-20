@@ -309,10 +309,6 @@ void main() {
     expect(hotside, contains('bounds: Rect.fromLTWH(0, 0, s, s)'));
     expect(hotside, contains('foregroundSilhouette: shell'));
 
-    final peltierStart = painter.indexOf('case JexAnimatedIconKind.peltier:');
-    final peltierEnd = painter.indexOf('case JexAnimatedIconKind.fan:', peltierStart);
-    final peltier = painter.substring(peltierStart, peltierEnd);
-    expect(peltier.indexOf('_drawFrostParticles('), lessThan(peltier.indexOf('canvas.drawPath(')));
 
     final edgeStart = painter.indexOf('void _drawVoltageEdgePulse(');
     final edgeEnd = painter.indexOf('Path _batterySilhouette', edgeStart);
@@ -350,6 +346,7 @@ void main() {
     final peltierStart = painter.indexOf('case JexAnimatedIconKind.peltier:');
     final peltierEnd = painter.indexOf('case JexAnimatedIconKind.fan:', peltierStart);
     final peltier = painter.substring(peltierStart, peltierEnd);
+    expect(peltier.indexOf('_drawFrostParticles('), lessThan(peltier.indexOf('canvas.drawPath(')));
     expect(peltier, contains('canvas.rotate(crystalRotation)'));
     expect(peltier, contains('moving: active'));
     expect(
