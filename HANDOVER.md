@@ -1,13 +1,13 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #116 / run 39355262101 is the latest successful App release, packaging source `48683874db659df940272bed1c860072ead2d767`. The following final UI polish is source-only, NOT RUN / NOT RELEASED.
+Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #116 / run 39355262101 is the latest successful App release, packaging source `48683874db659df940272bed1c860072ead2d767`. The following bilingual localization/copy pass is source-only, NOT RUN / NOT RELEASED.
 
 ## Latest successful build and current source boundary
 
 - Build #116 passed 109 Flutter tests, Dart analyzer exit 0 (25 info diagnostics), configured Android gate, APK V1/V2/V3 and official-certificate checks, ZIP integrity, downloaded-asset comparison and exact tag/commit checks. Native Android test tasks were NO-SOURCE.
 - APK asset `657979004`, 54,734,939 bytes, SHA-256 `8570914f331583d2cc462f61881609c0eae56639a139f2d60a832e4aaa81ea27`; source ZIP asset `657979008`, 2,867,315 bytes, SHA-256 `60ef4e79529aabcbb4f4093b9f8a18b5d383d5c651c1c303dd8bb774e7b0dd5d`.
-- Current lib/main.dart blob `8eb24de58a2e510b3d05abbb29bce45bb0a42810` and test/widget_test.dart blob `a82875dd47ad904818fcd4c1c47b1a3ac0ca8fd2` are newer than Build #116; SOURCE UPDATED / NOT RUN / NOT RELEASED.
-- Home contract: seven 45 dp rows; 3 dp gap before fixed 44 dp NOTIFY; exact `NOTIFY` heading with 2 dp top inset; left-aligned body scales to at most two lines; cooler image stays under stable sibling-row constraints.
+- Current lib/main.dart blob `07178b5cce55fc8f78cc7c2953f4d8e352ccefe7` and test/widget_test.dart blob `da12f8ef82283f55af04a5286a6366e2253a4e6f` are newer than Build #116; SOURCE UPDATED / NOT RUN / NOT RELEASED.
+- Home contract: seven 45 dp rows; 3 dp gap before the fixed 44 dp notification card; localized `Notification` / `Notifikasi` heading with 2 dp top inset; left-aligned body scales to at most two lines; cooler image stays under stable sibling-row constraints.
 - Battery/Hotside use refined falling flame-shaped background particles with warm yellow-white cores, a soft halo, subtle drift/rotation, and a rounded-frame clip combined with foreground-silhouette subtraction. Thresholds remain Battery ≥40°C and Hotside at configured limit.
 - Firmware V6.9 compile/install is USER-REPORTED. Independent compile logs, source-to-BIN provenance, installed version and physical behavior remain UNVERIFIED. No Firmware/device operation was done in this task.
 
@@ -19,7 +19,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #116 / r
 - Peltier: six-branch faceted crystal; snow particles only while existing active-state rules permit them.
 - Fan: exactly three swept blades, fixed airflow ribbons, bearing and blade-face highlights; existing voltage/PWM mapping and phase retarget remain.
 - Fan Speed: semicircle, recessed bezel, 11 graded ticks and layered pivot; valid PWM drives the needle, unknown/disconnected values hide it.
-- Static nav/settings/action glyphs remain static. Home NOTIFY displays only `NOTIFY`; its fixed 44 dp card and two-line localized body remain. Floating Monitor remains letters-only B/H/V/A/P/F; no telemetry/control/safety semantics change.
+- Static nav/settings/action glyphs remain static. Home displays the localized `Notification` / `Notifikasi` heading; its fixed 44 dp card and two-line localized body remain. Floating Monitor remains letters-only B/H/V/A/P/F; no telemetry/control/safety semantics change.
 
 ## FPS retirement and current Floating Monitor
 
