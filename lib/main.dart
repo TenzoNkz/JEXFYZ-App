@@ -2520,14 +2520,16 @@ class _JexIconPainter extends CustomPainter {
     ..lineTo(s * .545, s * .37)
     ..close();
 
+  // Every vertex is inset within the bolt; the drawing code also clips the core
+  // to the outer silhouette to prevent any antialiased white pixels escaping.
   Path _boltInnerCore(double s) => Path()
-    ..moveTo(s * .535, s * .165)
+    ..moveTo(s * .525, s * .165)
     ..lineTo(s * .365, s * .485)
     ..lineTo(s * .495, s * .485)
     ..lineTo(s * .445, s * .805)
     ..lineTo(s * .685, s * .405)
     ..lineTo(s * .555, s * .405)
-    ..lineTo(s * .605, s * .285)
+    ..lineTo(s * .535, s * .285)
     ..close();
 
   void _drawAdaptiveArrowHead(Canvas canvas, Offset tip, double direction, double length, Color color) {
@@ -2690,6 +2692,9 @@ class _JexIconPainter extends CustomPainter {
 
   /// Rounded oval embers burst from the thermal source and cool out smoothly.
   /// Positions use deterministic periodic phases; no tapered flame tongues or droplet particles.
+  /// Fire embers fall through the thermal icons like Peltier snow, but use
+  /// elongated orange/gold ovals with a hot core instead of snowflake geometry.
+  /// Independent phase offsets keep the fall continuous without random particles.
   void _drawThermalBurstParticles(
     Canvas canvas,
     double s,
@@ -2707,8 +2712,6 @@ class _JexIconPainter extends CustomPainter {
     final lanes = thermometer
         ? const <double>[-.84, -.48, -.16, .16, .48]
         : const <double>[-.90, -.62, -.34, .34, .62, .90];
-    final sourceX = thermometer ? s * .5 : bounds.center.dx;
-    final sourceY = thermometer ? s * .79 : bounds.bottom - s * .018;
     final emberColor = Color.lerp(
       hotColor,
       const Color(0xFFFF7828),
@@ -2719,73 +2722,74 @@ class _JexIconPainter extends CustomPainter {
     if (clipPath != null) canvas.clipPath(clipPath);
     canvas.clipRect(bounds);
     for (var i = 0; i < lanes.length; i++) {
-      final age = (cycle + i / lanes.length) % 1.0;
-      final lifeFade = jexParticleBoundaryFade(age, fadeIn: .14, fadeOut: .26);
-      final alpha = lifeFade * strength;
+      final fall = (cycle + i / lanes.length) % 1.0;
+      final edgeFade = jexParticleBoundaryFade(fall, fadeIn: .18, fadeOut: .22);
+      final alpha = edgeFade * strength;
       if (alpha <= .01) continue;
 
-      final travel = jexMotionSmoothStep(age);
+      final travel = jexMotionSmoothStep(fall);
       final lane = lanes[i];
-      final spreadX = thermometer ? lane * s * .095 : lane * bounds.width * .40;
-      final drift = math.sin(age * math.pi * 2 + i * .73) *
+      final laneOffset = thermometer
+          ? lane * s * .042
+          : lane * bounds.width * .36;
+      final drift = math.sin(fall * math.pi * 2 + i * .73) *
           s *
-          (thermometer ? .009 : .012) *
-          (1.0 - .35 * travel);
-      final rise = thermometer
-          ? s * (.40 + (i % 3) * .065)
-          : bounds.height * (.48 + (i % 3) * .10);
-      final x = sourceX + spreadX * travel + drift;
-      final y = sourceY - rise * travel;
-      final sizePulse = .76 + .24 * math.sin(math.pi * age);
+          (thermometer ? .009 : .012);
+      final x = bounds.center.dx + laneOffset + drift;
+      final fallDistance = bounds.height + s * (thermometer ? .20 : .16);
+      final y = bounds.top - s * (thermometer ? .10 : .08) +
+          travel * fallDistance;
+      final sizePulse = .76 + .24 * math.sin(math.pi * fall);
       final radiusX = s *
-          (thermometer ? .043 : .048) *
+          (thermometer ? .035 : .040) *
           sizePulse *
           (i.isEven ? 1.0 : .88);
-      final radiusY = radiusX * (thermometer ? .64 : .60) * (i.isOdd ? 1.08 : 1.0);
-      final rotation = .28 * math.sin(age * math.pi * 2 + i * .71);
+      final radiusY = radiusX * 1.45 * (i.isOdd ? 1.08 : 1.0);
+      final rotation = .20 * math.sin(fall * math.pi * 2 + i * .71);
 
       canvas.save();
       canvas.translate(x, y);
       canvas.rotate(rotation);
+      // Soft glow, ember body and a narrow bright core read as fire rather than snow.
       canvas.drawOval(
         Rect.fromCenter(
           center: Offset.zero,
-          width: radiusX * 3.8,
-          height: radiusY * 4.0,
+          width: radiusX * 3.5,
+          height: radiusY * 3.5,
         ),
-        _fill(emberColor.withValues(alpha: .18 * alpha)),
+        _fill(emberColor.withValues(alpha: .16 * alpha)),
       );
       canvas.drawOval(
         Rect.fromCenter(
           center: Offset.zero,
-          width: radiusX * 2.5,
-          height: radiusY * 2.6,
+          width: radiusX * 2.45,
+          height: radiusY * 2.8,
         ),
         _fill(emberColor.withValues(alpha: .92 * alpha)),
       );
       canvas.drawOval(
         Rect.fromCenter(
           center: Offset.zero,
-          width: radiusX * 1.65,
-          height: radiusY * 1.75,
+          width: radiusX * 1.58,
+          height: radiusY * 1.95,
         ),
         _fill(const Color(0xFFFFA13D).withValues(alpha: .96 * alpha)),
       );
       canvas.drawOval(
         Rect.fromCenter(
           center: Offset.zero,
-          width: radiusX * .78,
-          height: radiusY * .92,
+          width: radiusX * .72,
+          height: radiusY * 1.12,
         ),
         _fill(const Color(0xFFFFEDB5).withValues(alpha: .98 * alpha)),
       );
       canvas.drawOval(
         Rect.fromCenter(
-          center: Offset(-radiusX * .16, -radiusY * .18),
-          width: radiusX * .42,
-          height: radiusY * .48,
+          center: Offset(-radiusX * .12, -radiusY * .16),
+          width: radiusX * .38,
+          height: radiusY * .52,
         ),
-        _fill(Colors.white.withValues(alpha: .88 * alpha)),
+        _fill(Colors.white.withValues(alpha: .86 * alpha)),
       );
       canvas.restore();
     }
@@ -3035,7 +3039,7 @@ class _JexIconPainter extends CustomPainter {
         canvas.drawPath(shell, _fill(mainColor.withValues(alpha: .16)));
         canvas.drawPath(shell, _stroke(s * .045, mainColor.withValues(alpha: opacity)));
         final tubeInner = RRect.fromRectAndRadius(
-          Rect.fromLTWH(s * .455, s * .17, s * .09, s * .45),
+          Rect.fromLTWH(s * .455, s * .09, s * .09, s * .53),
           Radius.circular(s * .045),
         );
         canvas.save();
@@ -3117,8 +3121,11 @@ class _JexIconPainter extends CustomPainter {
         canvas.drawPath(bolt, _stroke(s * .045, Colors.white.withValues(alpha: .18)));
         canvas.drawPath(bolt, _stroke(s * .022, mainColor.withValues(alpha: opacity)));
         final innerCore = _boltInnerCore(s);
+        canvas.save();
+        canvas.clipPath(bolt);
         canvas.drawPath(innerCore, _fill(Colors.white.withValues(alpha: .20)));
         canvas.drawPath(innerCore, _stroke(s * .012, mainColor.withValues(alpha: .74)));
+        canvas.restore();
         if (active) {
           _drawGlow(canvas, bolt, mainColor, s * .10, s * .035, .18);
           _drawVoltageEdgePulse(canvas, bolt, s, p, mainColor, safeLevel);
