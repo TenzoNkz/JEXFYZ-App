@@ -1,4 +1,22 @@
-## LATEST SUCCESSFUL APP BUILD — BUILD #123 (PASSWORD-VISIBILITY PATCH NOT INCLUDED)
+## LATEST SUCCESSFUL APP BUILD — BUILD #124 (FIRMWARE UPDATE WI-FI PASSWORD VISIBILITY)
+
+- **Result: SUCCESS.** [GitHub Actions run #124 / 39386733061](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39386733061) completed with conclusion `success` on exact packaged source commit `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`. The official issue #34 reopened trigger was used; workflow guard blob remains `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`. All 21 main workflow steps and post-job cleanup passed.
+- **Toolchain / security / dependencies:** Java 17, Flutter 3.47.2 and Gradle 9.3.1 setup, security/architecture audit, production-signing preparation and dependency installation passed.
+- **Dart analysis:** `flutter analyze --no-fatal-infos` exited 0 with **25 info-level diagnostics** (deprecated APIs/unnecessary imports); no warning/error-level analyzer findings were present.
+- **Flutter tests:** **116 passed, 0 failed.**
+- **Android configured gate:** `./gradlew --no-daemon :app:testDebugUnitTest` reported **BUILD SUCCESSFUL in 1m 34s**. The app's native unit-test tasks `:app:compileDebugUnitTestKotlin`, `:app:compileDebugUnitTestJavaWithJavac`, `:app:processDebugUnitTestJavaRes`, and `:app:testDebugUnitTest` were `NO-SOURCE`; the configured gate passed, but no native Android JUnit cases executed.
+- **Released APK:** [Download JEXFYZ-release.apk](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk). Asset ID `658613910`; **54,751,323 bytes**; SHA-256 `c0738d3607b120b716841610c849d9608f954a5f1f28017a8018790f4f4b6318`.
+- **Corresponding source ZIP:** [Download JEXFYZ-corresponding-source.zip](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip). Asset ID `658613911`; **2,873,358 bytes**; SHA-256 `e00ac34cb6cf7f04a5485c8ab8ee74d4acc1b20dc1a213ac733a8bf8c43cc152`. The CI workflow re-downloaded and verified both assets, confirmed ZIP integrity and the source-commit marker, and found exactly one APK plus one matching source ZIP.
+- **APK signature:** generated and downloaded APKs both passed **V1/JAR, V2 and V3** checks. Expected production certificate SHA-256: `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`.
+- **Release/tag parity:** [`jexfyz-latest` Release](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest), Release ID `403010611`. Release metadata and live `refs/tags/jexfyz-latest` both target the exact packaged source commit `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`; the final downloaded-asset verification step succeeded.
+- **App change validated/released:** Firmware Update's Wi-Fi password field has a visibility toggle, remains masked by default, uses English/Indonesian Show/Hide tooltips, and continues to use `FlutterSecureStorage`. Packaged source blobs: `lib/main.dart` `2d44e1f1f5b88ca1dae8324082da751b6ef1485a`, `lib/app_settings.dart` `637c07be55c412451d9ffde762e080c8bd92fd5e`, and `test/widget_test.dart` `90e1a582c49ce3ad1a1d9a3b875921098eaf2545`.
+- **Important security boundary:** BLE App-only command authorization remains **BLOCKED / NOT IMPLEMENTED**; Build #124 does not create trusted enrollment/backend signing, device-claim authorization, or cryptographic session proof. The `BLE_APP_AUTH.md` document records the dependency and threat model. Do not claim that nRF Connect or other manual BLE clients are blocked by App identity.
+- Android identity remains `versionName "Telegram @horizontalzzz"`. This was the App Build workflow only: no Firmware compile/test, BIN generation/publication, production Firebase change, OTA, flash, or physical-device operation was performed. CI does not verify real-device UI or BLE/hardware behavior.
+- This entry was added as a documentation-only commit after the verified package commit. The APK and source ZIP above correspond to source commit `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`; no additional build is required for this report update.
+
+---
+
+## PREVIOUS SUCCESSFUL APP BUILD — BUILD #123 (SUPERSEDED BY BUILD #124)
 
 - **Result: SUCCESS.** [GitHub Actions run #123 / 39371864780](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39371864780) completed with conclusion `success` on exact packaged source commit `14e90e7e26b8eb4400bd01ec8d0eab5ed4195f1c`. All workflow gates and post-job asset verification completed successfully.
 - **Dart analysis:** `flutter analyze --no-fatal-infos` exited 0 with 25 info-level diagnostics and no errors.
@@ -9,9 +27,8 @@
 - **Signing:** generated and downloaded APK passed V1/JAR, V2 and V3 checks with the expected production signing certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`.
 - **Release/tag parity:** live Release ID `403010611` and `refs/tags/jexfyz-latest` point to exact tested source `14e90e7e26b8eb4400bd01ec8d0eab5ed4195f1c`. See the [successful run](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39371864780).
 - **Build #123 repairs:** it followed Build #121's analyzer correction and Build #122's test-contract correction. Build #121 failed a nullable assignment; Build #122 had 114 passes / 1 stale source-contract failure. Those failures are resolved by the tested #123 source. The detailed historical records below remain.
-- **Current release boundary:** Build #123 predates and does not include the newer Firmware Update password-visibility patch currently at `lib/main.dart` blob `2d44e1f1f5b88ca1dae8324082da751b6ef1485a`, `lib/app_settings.dart` blob `637c07be55c412451d9ffde762e080c8bd92fd5e`, and `test/widget_test.dart` blob `90e1a582c49ce3ad1a1d9a3b875921098eaf2545`. Those patches have NOT been tested/analyzed/built and are not included in the Release.
-- **This recovery/execution did not run a new App Build.** It is documentation reconciliation from the live run evidence above. No Firmware compile, BIN generation/publication, Firebase production change, OTA, flash or device operation occurred in this task. Preserve Android `versionName "Telegram @horizontalzzz"`.
-
+- **Historical release boundary at Build #123:** that APK did not include the newer Firmware Update password-visibility patch. Build #124 below subsequently validates and releases source containing `lib/main.dart` blob `2d44e1f1f5b88ca1dae8324082da751b6ef1485a`, `lib/app_settings.dart` blob `637c07be55c412451d9ffde762e080c8bd92fd5e`, and `test/widget_test.dart` blob `90e1a582c49ce3ad1a1d9a3b875921098eaf2545`.
+- **Historical note:** the earlier recovery/reconciliation pass documented above was report-only. Build #124 is recorded at the top of this report. No Firmware compile, BIN generation/publication, Firebase production change, OTA, flash or device operation occurred during Build #123 or Build #124. Preserve Android `versionName "Telegram @horizontalzzz"`.
 ---
 
 ## RESOLVED ATTEMPT RECORD — BUILD #122 FLUTTER TEST FAILURE
