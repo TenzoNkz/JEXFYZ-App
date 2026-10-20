@@ -598,6 +598,12 @@ void main() {
 
     // The heading follows the selected app language without a category suffix.
     expect(find.text('Notification'), findsOneWidget);
+    appLanguageNotifier.value = AppLanguage.indonesia;
+    await tester.pump();
+    expect(find.text('Notifikasi'), findsOneWidget);
+    appLanguageNotifier.value = AppLanguage.english;
+    await tester.pump();
+    expect(find.text('Notification'), findsOneWidget);
     expect(
       find.byWidgetPredicate(
         (widget) => widget is Text &&
