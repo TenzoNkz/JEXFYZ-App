@@ -1748,50 +1748,91 @@ void main() {
     expect(theme.scaffoldBackgroundColor, const Color(0xFF0F1013));
   });
 
-  test('Home Notify follows latest cooling telemetry in both languages', () {
-    final english = homeCoolingStatusSummary(
-      adaptiveOn: true,
-      voltage: '12V',
-      fanOn: true,
-      fanSpeed: 80,
-      peltierOn: false,
-      language: AppLanguage.english,
-    );
-    final indonesia = homeCoolingStatusSummary(
-      adaptiveOn: true,
-      voltage: '12V',
-      fanOn: true,
-      fanSpeed: 80,
-      peltierOn: false,
-      language: AppLanguage.indonesia,
-    );
-    expect(english, 'Adaptive active • 12 V • Fan 80% • Peltier OFF');
-    expect(indonesia, 'Adaptive aktif • 12 V • Kipas 80% • Peltier MATI');
+  test('Home NOTIFY displays one sentence for each latest confirmed control change', () {
     expect(
-      homeCoolingStatusSummary(
-        adaptiveOn: true,
-        voltage: '12V',
-        fanOn: true,
-        fanSpeed: 90,
-        peltierOn: false,
+      homeNotifyForTelemetryChange(
+        key: 'ADAPTIVE',
+        previousValue: 'OFF',
+        currentValue: 'ON',
         language: AppLanguage.english,
       ),
-      isNot(english),
+      'Adaptive ON.',
     );
     expect(
-      homeCoolingStatusSummary(
-        adaptiveOn: true,
-        voltage: '9V',
-        fanOn: true,
-        fanSpeed: 80,
-        peltierOn: false,
+      homeNotifyForTelemetryChange(
+        key: 'VOLTAGE',
+        previousValue: '12V',
+        currentValue: '5V',
         language: AppLanguage.english,
       ),
-      isNot(english),
+      'Voltage set to 5V.',
+    );
+    expect(
+      homeNotifyForTelemetryChange(
+        key: 'FAN_SPEED',
+        previousValue: '90',
+        currentValue: '70',
+        language: AppLanguage.english,
+      ),
+      'Fan speed reduced to 70%.',
+    );
+    expect(
+      homeNotifyForTelemetryChange(
+        key: 'FAN_SPEED',
+        previousValue: '70',
+        currentValue: '90',
+        language: AppLanguage.english,
+      ),
+      'Fan speed increased to 90%.',
+    );
+    expect(
+      homeNotifyForTelemetryChange(
+        key: 'FAN_SPEED',
+        previousValue: '70',
+        currentValue: '70',
+        language: AppLanguage.english,
+      ),
+      isNull,
+    );
+    expect(
+      homeNotifyForTelemetryChange(
+        key: 'RGB',
+        previousValue: 'OFF',
+        currentValue: 'ON',
+        language: AppLanguage.indonesia,
+      ),
+      'LED aktif.',
+    );
+    expect(
+      homeNotifyForTelemetryChange(
+        key: 'BRIGHTNESS',
+        previousValue: '35',
+        currentValue: '80',
+        language: AppLanguage.english,
+      ),
+      'LED brightness set to 80%.',
+    );
+    expect(
+      homeNotifyForTelemetryChange(
+        key: 'RGB_COLOR',
+        previousValue: '#FF0000',
+        currentValue: '#00FF00',
+        language: AppLanguage.english,
+      ),
+      'LED color updated.',
+    );
+    expect(
+      homeNotifyForTelemetryChange(
+        key: 'HOT',
+        previousValue: '38.0',
+        currentValue: '38.5',
+        language: AppLanguage.english,
+      ),
+      isNull,
     );
   });
 
-  test('Home Notify promotes a live Hotside limit crossing over older command status', () {
+    test('Home Notify promotes a live Hotside limit crossing over older command status', () {
     expect(parseHomeTemperatureCelsius('45.8'), 45.8);
     expect(parseHomeTemperatureCelsius('45.8 °C'), 45.8);
     expect(parseHomeTemperatureCelsius('--'), isNull);
@@ -1843,6 +1884,27 @@ void main() {
     );
     expect(
       relocalizeHomeNotifyMessage(
+        'Kecepatan kipas diturunkan ke 70%.',
+        AppLanguage.english,
+      ),
+      'Fan speed reduced to 70%.',
+    );
+    expect(
+      relocalizeHomeNotifyMessage(
+        'Kecerahan LED diatur ke 80%.',
+        AppLanguage.english,
+      ),
+      'LED brightness set to 80%.',
+    );
+    expect(
+      relocalizeHomeNotifyMessage(
+        'Batas suhu Hotside tercapai: 45.8°C (batas 45°C).',
+        AppLanguage.english,
+      ),
+      'Hotside limit reached: 45.8°C (limit 45°C).',
+    );
+    expect(
+      relocalizeHomeNotifyMessage(
         'Kecepatan kipas diatur ke 80%.',
         AppLanguage.english,
       ),
@@ -1858,7 +1920,8 @@ void main() {
     final source = File('lib/main.dart').readAsStringSync();
     expect(source, contains('appLanguageNotifier.addListener(_handleLanguagePreferenceChanged)'));
     expect(source, contains('appLanguageNotifier.removeListener(_handleLanguagePreferenceChanged)'));
-    expect(source, contains('notice = liveCoolingCommand ? _homeLiveCoolingNoticeToken : message!;'));
+    expect(source, contains('_homeNotifyRevision != expectedRevision'));
+    expect(source, isNot(contains('homeCoolingStatusSummary(')));
     expect(source, contains('homeHotsideLimitReached(hotsideTemp, hotLimit: hotLimit)'));
   });
 
