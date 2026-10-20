@@ -9,7 +9,7 @@
 
 ## CURRENT SOURCE FOLLOW-UP AFTER BUILD #110 — NOT RUN / NOT RELEASED
 
-- **App source blobs:** `lib/main.dart` `08592a9d861a11ecdb8de1aa289f8ce06bf2e20c`; `lib/app_settings.dart` `f8e465648946a25eae44f3fad6a5a3bfaca8b050`; `lib/floating_monitor.dart` `e7c74bf749698a8331f2b0b31a847b2627ac3e4b`; `test/widget_test.dart` `c3cca34a17eb11a6949b9132eda785c788c0ba01`; `test/floating_monitor_layout_contract_test.dart` `b053a92522223fd237a8f0e025648eb1b26730a5`.
+- **App source blobs:** `lib/main.dart` `08592a9d861a11ecdb8de1aa289f8ce06bf2e20c`; `lib/app_settings.dart` `f8e465648946a25eae44f3fad6a5a3bfaca8b050`; `lib/floating_monitor.dart` `e7c74bf749698a8331f2b0b31a847b2627ac3e4b`; `test/widget_test.dart` `ec5e3d0eab341a269c6af91640a46c087481e58f`; `test/floating_monitor_layout_contract_test.dart` `b053a92522223fd237a8f0e025648eb1b26730a5`.
 - Battery/Hotside now use clipped top-down falling fire embers inspired by Peltier's particle cadence, with orange/gold ovals and bright cores; Hotside inner tube is taller; Voltage's white core is inset and clipped to the bolt; the Settings About section/page and EN/ID labels were removed. Home geometry remains 44 dp metric rows and a 56 dp badge-free, left-aligned, two-line NOTIFY card.
 - Flutter tests and Dart analyzer have NOT RUN for this follow-up. Build #110 is successful for its earlier source and must not be treated as verification of these edits.
 - **Firmware source:** `firmware/JEXFYZ-V6.9.ino`, `FW_VERSION="V6.9"`, blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`. Temperature tiers remain the same; downsteps are 10 percentage points every 10 seconds, upsteps every 1 second, and voltage/thermal-transition gates reset the clock. The Hotside limit/protection still forces 100% immediately.
