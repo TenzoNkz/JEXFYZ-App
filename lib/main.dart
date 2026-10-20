@@ -246,6 +246,19 @@ String? homeNotifyForTelemetryChange({
       return JexText.of(currentValue == 'ON' ? 'peltierOn' : 'peltierOff', language);
     case 'ADAPTIVE':
       return JexText.of(currentValue == 'ON' ? 'adaptiveOn' : 'adaptiveOff', language);
+    case 'SAFETY':
+      if (currentValue.trim().toUpperCase() == 'OK') {
+        return JexText.phrase(
+          'Safety checks passed.',
+          'Pemeriksaan keselamatan normal.',
+          language,
+        );
+      }
+      return JexText.phrase(
+        'Safety protection active.',
+        'Proteksi keselamatan aktif.',
+        language,
+      );
     case 'FAN_SPEED':
       final before = int.tryParse(previousValue);
       final after = int.tryParse(currentValue);
@@ -5631,6 +5644,8 @@ void _handleAckLine(String line) {
         return peltierOn ? 'ON' : 'OFF';
       case 'ADAPTIVE':
         return adaptiveOn ? 'ON' : 'OFF';
+      case 'SAFETY':
+        return safety.toUpperCase();
       case 'FAN_SPEED':
         return fanSpeed.toString();
       case 'RGB':
