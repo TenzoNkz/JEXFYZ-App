@@ -1,22 +1,19 @@
 # JE X FYZ / JE Cooler — Build & Release Notes
 
+## Current repository/release checkpoint — 2026-10-20
+
+- Latest successful App release is Build #113 / run 39350217172, package source 05e4f644d6bf82ae2682154082c3e44a4876205a. APK SHA-256 7252e952983560254822b8d77a9a1c47d5a3f91d80bf8ed50e58586bbe2c2991; source ZIP SHA-256 0fcccecc639e20f16d65976a5f3c334dd2ce4f7692d2a4d95b5b8aaad7dae59f.
+- Newest source follow-up: lib/main.dart d0fdb7482d939b34b0a1824b33d37f6457835818; test/widget_test.dart af692cb7473f8447e1ab27939a3dc281d21737ad. Seven Home rows are 45 dp, NOTIFY is fixed 44 dp with body copy scaled down to fit up to two lines, cooler image constraints are stable, and Battery/Hotside fire is drawn behind foreground silhouettes.
+- This follow-up's Flutter tests and Dart analyzer have NOT RUN and it is NOT RELEASED. The sole App Build authorization remains @Thinking Eksekusi Build App!. No App Build or Firmware/device action occurred in this source task.
+- User reports Firmware V6.9 compiled and installed; exact compile logs, source-to-BIN provenance and installed version remain independently unverified.
+
 ## Authorization policy
 
-- The only App Build command is `@Thinking Eksekusi Build App!`. It authorizes the complete App build/validation workflow, including justified App-scope repair, retries and the approved issue-triggered Release pipeline.
-- `@Thinking Eksekusi Full!` does not authorize App Build; discussion, source edits, tests or regular pushes do not silently trigger the release workflow.
-- Retired aliases `@Thinking Build App!` and `@Thinking Eksekusi & Build App!`, plus standalone `@Thinking Eksekusi!`, must not be used. `@Thinking Eksekusi Full!` does not authorize App Build.
-- Build App does not authorize Firmware compilation, BIN creation/publication/replacement, Firebase metadata changes, physical OTA, flashing, device operation, or unrelated release operations.
-- Never claim CI success proves BLE, cooling/safety behavior, Firmware compilation, OTA installation or installed device version.
-
-## LATEST SUCCESSFUL APP BUILD — Build #110 (verified release; latest source follow-up pending)
-
-- Latest successful App artifact: Build #110 / https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39300262741, exact source `b5adcffb2c9724a07cdba4cd8521c1307f1e6566`. The live `jexfyz-latest` Release/tag and package assets target this source.
-- APK asset `657047529`: 54,734,939 bytes, SHA-256 `258211ec9313c555aaac6cd797d1bf6abc6c62c3c2781cd37baa0a8c849bfb84`; corresponding source ZIP asset `657047524`: 2,866,352 bytes, SHA-256 `13d1cad6cf4fbb9b2560da7406f4c6bf875fe4ebc2ed5483e6f0001a3b24aa23`.
-- Build #110 includes restored Home geometry (44 dp metric rows) and badge-free, left-aligned NOTIFY with a 56 dp card/slot. The current source follow-up is newer than #110 and NOT RUN / NOT RELEASED: falling fire embers for Battery/Hotside, taller Hotside tube, inset/clipped Voltage core, compact dynamic NOTIFY (44 dp minimum; grows only when copy wraps to two lines), About removal from Settings, plus Firmware V6.9 PWM pacing.
-- Current App fingerprints: `lib/main.dart` `417083ebeb3ea59145182bc49912b9f2416721a2`; `lib/app_settings.dart` `f8e465648946a25eae44f3fad6a5a3bfaca8b050`; `lib/floating_monitor.dart` `e7c74bf749698a8331f2b0b31a847b2627ac3e4b`; `test/widget_test.dart` `10de861b593c7b4955deaa160ab1d0c3be519f58` (re-fetch live main for final hash); `test/floating_monitor_layout_contract_test.dart` `b053a92522223fd237a8f0e025648eb1b26730a5`.
-- Current Firmware source: `firmware/JEXFYZ-V6.9.ino`, blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`, embedded `FW_VERSION="V6.9"`. Adaptive 12 V PWM temperature tiers are unchanged; down steps move -10 points every 10 s and up steps +10 points every 1 s. Transition/thermal gates reset the clock; Hotside limit/protection forces 100% immediately.
-- `test/firmware_qc_contract_test.dart` blob `1b35feeb1e411efec44261ec130eec4535004454`; `test/firmware_touch_adaptive_sync_test.dart` blob `3a86dd118cd1d1332dbafa3883ab9e5ae2823ac8`. Neither suite has run for V6.9. Flutter tests/analyzer also have NOT RUN for the current App follow-up; V6.9 has NOT been compiled or installed.
-- `@Thinking Eksekusi Full!` does not trigger App Build. Request `@Thinking Eksekusi Build App!` separately to test and release current App source. No Firmware compile, BIN generation/publication, Firebase change, OTA, flash or hardware operation occurred.
+- The only App Build command is @Thinking Eksekusi Build App!. It authorizes the complete App build/validation workflow including justified App-scope repairs/retries.
+- @Thinking Eksekusi Full! does not authorize App Build; edits or regular pushes do not trigger release.
+- Retired aliases @Thinking Build App!, @Thinking Eksekusi & Build App!, and standalone @Thinking Eksekusi! must not be used.
+- Build App does not authorize Firmware compilation, BIN creation/publication/replacement, Firebase changes, physical OTA, flashing, device operation or unrelated releases.
+- Never claim App CI proves BLE, cooling/safety, Firmware compilation, OTA installation or installed device version.
 
 ## HISTORICAL / SUPERSEDED — Build #71 (verified release; superseded by Build #83; kept for history)
 

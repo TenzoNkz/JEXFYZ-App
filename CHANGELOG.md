@@ -1,3 +1,12 @@
+## 2026-10-20 — Home layout and thermal-fire background layering (source-only; NOT RUN / NOT RELEASED)
+
+- Set all seven Home metric rows to 45 dp with a uniform rhythm, retaining 38 dp icon tiles in the 41 dp lane. A 3 dp gap keeps NOTIFY close without overlap.
+- NOTIFY is fixed at 44 dp total height. One-line copy keeps normal sizing; wrapped text reduces to 9.5 dp first and further only if needed, capped at two lines. The icon-left/text-left row and badge-free design remain.
+- Fixed NOTIFY height keeps the cooler image's sibling row constraints unchanged when the message wraps, preventing image shift/resize.
+- Battery/Hotside fire draws before the foreground shell and is clipped OUTSIDE it via ClipOp.difference; the icon remains painted over the fire. Warning thresholds and firmware safety predicates are unchanged.
+- Source blob lib/main.dart d0fdb7482d939b34b0a1824b33d37f6457835818; regression test blob test/widget_test.dart af692cb7473f8447e1ab27939a3dc281d21737ad. Source/order assertions were inspected, but Flutter tests and analyzer have NOT RUN. Build #113 remains the latest successful App release; no Firmware/BIN/Firebase/OTA/flash/device action occurred.
+
+---
 ## 2026-10-20 — Compact dynamic Home NOTIFY height (source-only; NOT RUN / NOT RELEASED)
 
 - Kept the original icon-left/text-left NOTIFY Row, removed no additional connection semantics or layout, and retained 44 dp metric rows.

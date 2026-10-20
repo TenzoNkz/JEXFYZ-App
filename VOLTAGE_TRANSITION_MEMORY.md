@@ -1,10 +1,9 @@
 # JE X FYZ / JE Cooler — Voltage Transition & Peltier Soft-Start Memory
 
 Last reconciled: 2026-10-20 (Asia/Jakarta).
-Canonical active source: `firmware/JEXFYZ-V6.9.ino`, blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`. V6.9 retains temperature target tiers and paces Adaptive 12 V PWM by 10-point steps (down every 10 seconds, up every 1 second); the step clock resets during rail transitions and thermal dwell. V6.9 is NOT COMPILED / NOT INSTALLED; source-to-BIN provenance and current device version remain UNVERIFIED. V6.7 compile/online update is historical USER-REPORTED evidence.
-Static regression contract: `test/firmware_qc_contract_test.dart` blob `1b35feeb1e411efec44261ec130eec4535004454`; Touch/Adaptive sync contract `test/firmware_touch_adaptive_sync_test.dart` blob `3a86dd118cd1d1332dbafa3883ab9e5ae2823ac8`. Both are NOT RUN for V6.9.
-
-**App-side validation evidence:** Build #83 / run `39192430789` passed 96/96 Flutter tests and the App release gates for source `dfc7e6633298498bb6eac21182c9306d5e3cac1d`; the Release handoff is blocked by a stale Git tag, and this App run does not prove Firmware compilation, source-to-BIN provenance or physical rail-transition behavior. The user's V6.7 compile/online-update success remains historical USER-REPORTED evidence; V6.9 is not compiled. Physical transition reproduction, current measurement, and end-to-end thermal/OTA behavior remain unverified.
+Canonical active source: firmware/JEXFYZ-V6.9.ino, blob 8e0f0ff5a65962ebdb44300b05fc161cf9349d96. Adaptive 12 V PWM uses 10-point steps (down every 10 seconds, up every 1 second); step clock resets during rail transitions and thermal dwell.
+Firmware device status is USER-REPORTED compiled/installed by the user. Independent compile logs, source-to-BIN provenance, installed version and physical transition results remain UNVERIFIED. Firmware contract tests have NOT RUN for V6.9 in recorded validation.
+Build #113 / run 39350217172 is the latest successful App release. The post-Build-#113 Home layout/thermal background-layer follow-up is source-only, NOT RUN / NOT RELEASED. App CI does not prove Firmware compilation or physical rail-transition behavior.
 
 ## Incident
 

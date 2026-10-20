@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — CHAT TRANSFER SNAPSHOT
 
-Refreshed after `@Thinking Chat Stuck!` recovery on 2026-10-20 (Asia/Jakarta). This is the final checkpoint for the authorized Eksekusi Full task; source/test/docs status below is based on live `main`. The HEAD/tree recorded here are immediately before this transfer write; this file cannot self-reference its future commit.
+Refreshed after @Thinking Eksekusi Full! on 2026-10-20 (Asia/Jakarta). Pre-change main HEAD was 8d74c0382089590160d65d81f8e505af7243ccc5; recursive tree b24abf62698aa91852eb57bec413b488fcfab129 had 67 entries (49 blobs / 18 trees). This file is written last and cannot self-reference the resulting commit; live HEAD/tree override this baseline.
 
 ## 1. Authority and operation scope
 
@@ -11,37 +11,30 @@ Refreshed after `@Thinking Chat Stuck!` recovery on 2026-10-20 (Asia/Jakarta). T
 
 ## 2. Current App release and source boundary
 
-- Latest successful App release is **Build #110**, Actions run `39300262741`, packaged commit `b5adcffb2c9724a07cdba4cd8521c1307f1e6566`. Live `jexfyz-latest` Release/tag and both assets target that commit.
-- APK asset `657047529`, 54,734,939 bytes, SHA-256 `258211ec9313c555aaac6cd797d1bf6abc6c62c3c2781cd37baa0a8c849bfb84`.
-- Corresponding source ZIP asset `657047524`, 2,866,352 bytes, SHA-256 `13d1cad6cf4fbb9b2560da7406f4c6bf875fe4ebc2ed5483e6f0001a3b24aa23`.
-- Build #110 includes 44 dp Home metric rows and the original icon-left/text-left, badge-free NOTIFY row with a fixed 56 dp card/slot. **The source follow-up below is newer than Build #110 and NOT RUN / NOT RELEASED.** No App Build was started during this recovery; the guarded trigger workflow is unchanged.
+- Latest successful App release is Build #113, Actions run 39350217172, packaged commit 05e4f644d6bf82ae2682154082c3e44a4876205a. Live jexfyz-latest Release/tag and both assets target that commit.
+- APK asset 657872748, 54,718,555 bytes, SHA-256 7252e952983560254822b8d77a9a1c47d5a3f91d80bf8ed50e58586bbe2c2991.
+- Corresponding source ZIP asset 657872749, 2,866,922 bytes, SHA-256 0fcccecc639e20f16d65976a5f3c334dd2ce4f7692d2a4d95b5b8aaad7dae59f.
+- Build #113 passed 109 Flutter tests and all 21 main workflow steps; analyzer exit 0 with 25 info-level diagnostics. Native Android test tasks were NO-SOURCE. Release/tag ref, asset digests and source marker were verified.
 
 ## 3. Current App follow-up — source updated; validation/release pending
 
-- `lib/main.dart`: blob `2e2301db3199569273d0ad1466549ab3fcd04380`. The last source edit in recovery corrected a stale code comment to describe the dynamic Notify height; no runtime behavior changed in that edit.
-- `lib/app_settings.dart`: blob `f8e465648946a25eae44f3fad6a5a3bfaca8b050`.
-- `lib/floating_monitor.dart`: blob `e7c74bf749698a8331f2b0b31a847b2627ac3e4b`.
-- `test/widget_test.dart`: blob `10de861b593c7b4955deaa160ab1d0c3be519f58`.
-- `test/floating_monitor_layout_contract_test.dart`: blob `b053a92522223fd237a8f0e025648eb1b26730a5`.
-- Home indicator rows are restored to 44 dp (38 dp tile centred in the original 41 dp icon lane); other Home layout/branding stays unchanged.
-- NOTIFY is the original icon-left/text-left `Row`; the CONNECTED/DISCONNECTED badge is removed without centring the text or reserving a badge lane. Its minimum height is 44 dp and the container expands naturally only when the body wraps to a second line. Body copy stays normal size, left aligned and limited to two lines; the Home no longer reserves a fixed 56 dp slot.
-- Battery/Hotside fire embers enter from the top and fall through the chamber/tube like Peltier snow cadence, but use elongated orange/gold ovals with yellow-white hot cores, restrained halo, deterministic phase lanes, subtle drift and edge fading. Particle geometry is clipped to the respective silhouette. Existing warning predicates stay the same: Battery ≥40°C, Hotside at configured Hotside Limit.
-- Hotside inner tube is raised to y=.09 with height .53, closer to the outer cap while preserving the bottom endpoint.
-- Voltage inner core vertices are inset; its white core and outline are painted under `canvas.clipPath(bolt)`, preventing white pixels from escaping the upper-right bolt contour. Edge-following voltage pulses remain; 5V red / 9V green / 12V blue mapping is unchanged.
-- Settings no longer contains the ABOUT section, `AboutSettingsPage`, `_AboutRow`, or About localization keys. General, Device and Firmware sections remain.
-- Contract tests check falling particles, the raised Hotside tube, clipped/inset Voltage core, 44 dp Home rows, dynamic 44 dp-minimum badge-free Notify and removal of Settings About. **Flutter tests and Dart analyzer have NOT RUN for this follow-up.** Do not claim these edits are validated by Build #110.
+- Current source blobs: lib/main.dart d0fdb7482d939b34b0a1824b33d37f6457835818; test/widget_test.dart af692cb7473f8447e1ab27939a3dc281d21737ad. The follow-up is newer than the released source and NOT RUN / NOT RELEASED.
+- Seven Home rows are 45 dp; NOTIFY is fixed at 44 dp and body text scales down if it wraps to two lines; the gap above it is 3 dp. Cooler image constraints remain stable with one- or two-line copy.
+- Battery/Hotside fire particles draw first as background, clipped OUTSIDE the foreground silhouette with ClipOp.difference. Icon shell/body/tube/graduations paint over them. Battery warning stays ≥40°C and Hotside warning stays at configured limit.
+- Flutter tests and Dart analyzer have NOT RUN for this follow-up. No App Build or device operation was started; guarded workflow remains unchanged.
 
-## 4. Current Firmware V6.9 — not compiled / not installed
 
-- Exactly one active versioned sketch is present: `firmware/JEXFYZ-V6.9.ino`, blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`, embedded `FW_VERSION="V6.9"`. V6.8 has been retired.
+## 4. Current Firmware V6.9 — compile/install USER-REPORTED
+
+- Exactly one active versioned sketch is present: firmware/JEXFYZ-V6.9.ino, blob 8e0f0ff5a65962ebdb44300b05fc161cf9349d96, embedded FW_VERSION V6.9. V6.8 has been retired; user reports compile/install success, but independent proof is pending.
 - Adaptive 12 V target tiers remain based on `delta = hotLimit - hotsideC`: delta <1.5°C →100%; 1.5–<2.5°C →90%; 2.5–<3.5°C →80%; 3.5–<4.5°C →70%; 4.5–<5.5°C →60%; ≥5.5°C →50%. Whole-degree examples stay 1°C below limit=100%, 2°C=90%, 3°C=80%, 4°C=70%, 5°C=60%, and 6°C or more=50%.
 - PWM changes in 10-point steps: down every 10 seconds, up every 1 second. The pacing clock resets during voltage handoff, Adaptive hot-step transitions, thermal dwell, and inactive/paused cooling-output states, so a 9V→12V change does not immediately downshift from 100% to a low target. Reaching Hotside Limit or active protection forces 100% immediately. Adaptive 5V/9V remains 100%.
 - NTC acquisition stays exactly one calibrated `analogReadMilliVolts(PIN_NTC)` sample per second. Static source inspection verified no blocking `delay()` or timing `while()`, removed the old trend/window state names, and retained the immediate 100% safety branch.
-- Firmware tests: `test/firmware_qc_contract_test.dart` blob `1b35feeb1e411efec44261ec130eec4535004454`; `test/firmware_touch_adaptive_sync_test.dart` blob `3a86dd118cd1d1332dbafa3883ab9e5ae2823ac8`. Tests have NOT RUN for V6.9. Firmware has NOT been compiled or installed. The physical reset cause and actual hardware ramp remain UNVERIFIED.
+- Firmware tests: `test/firmware_qc_contract_test.dart` blob `1b35feeb1e411efec44261ec130eec4535004454`; `test/firmware_touch_adaptive_sync_test.dart` blob `3a86dd118cd1d1332dbafa3883ab9e5ae2823ac8`. Recorded CI Firmware tests have NOT RUN for V6.9. The user reports the Firmware was successfully compiled and installed; compile logs, source-to-BIN provenance, installed version, physical reset cause and actual PWM ramp remain UNVERIFIED independently.
 
 ## 5. Firmware artifact boundary
 
-- `TenzoNkz/JEXFYZ-Firmware` tree has exactly one file: `JEXFYZ.cpp.bin`, blob `9fdd915c3d298cad4de720765dab7fb03f47024d`, size 1,456,368 bytes. Only tree metadata was checked; the BIN payload was not read or changed. Source-to-BIN provenance remains UNVERIFIED.
+- `TenzoNkz/JEXFYZ-Firmware` tree has exactly one file: `JEXFYZ.cpp.bin`, blob 821b022f97353d9a7aea4695b2e37c98b7488e15, size 1,456,560 bytes. Only tree metadata was checked; the BIN payload was not read or changed. Source-to-BIN provenance remains UNVERIFIED.
 - No Arduino compile, App Build, BIN generation/publication, Firebase update, OTA, flashing or device operation was performed in this recovery.
 
 ## 6. Canonical memory/document fingerprints before transfer write
@@ -67,4 +60,4 @@ Refreshed after `@Thinking Chat Stuck!` recovery on 2026-10-20 (Asia/Jakarta). T
 ## 7. Recovery disposition
 
 - RECOVERED: requested follow-up source/tests were already present on live `main`; no duplicate feature patch was applied. Corrected the stale fixed-56-dp NOTIFY source comment, synchronized current App source fingerprints and Home NOTIFY layout wording in canonical docs, and refreshed this transfer snapshot last.
-- Final source/test validation remains NOT RUN; only source-level inspection was performed. Build #110 remains the latest successful App release for its older fixed-56-dp NOTIFY source. Current UI changes are NOT RELEASED; Firmware V6.9 is NOT COMPILED / NOT INSTALLED.
+- Final source/test validation remains NOT RUN; only source-level inspection was performed. Build #110 remains the latest successful App release for its older fixed-56-dp NOTIFY source. Current UI changes are NOT RELEASED; Firmware V6.9 compile/install is USER-REPORTED; independent compile logs, source-to-BIN provenance and installed version remain UNVERIFIED.

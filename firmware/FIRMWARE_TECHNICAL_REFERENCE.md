@@ -1,14 +1,12 @@
 # JE X FYZ — Firmware Technical Reference
 
-Last source/safety-reference reconciliation: 2026-10-20 (Asia/Jakarta). The latest successful App artifact remains Build #106 / run `39279938461`, source `9f90cf6063ee7786613f8b5dfa1c6b0412d89638`; the current Home NOTIFY/animation UI follow-up remains newer than that release and unvalidated. App CI does not prove Firmware compile, BIN provenance or physical OTA/safety behavior. Always fetch live source and compare before relying on line locations/hashes.
+Last source/safety-reference reconciliation: 2026-10-20 (Asia/Jakarta). Latest successful App artifact is Build #113 / run 39350217172, package source 05e4f644d6bf82ae2682154082c3e44a4876205a. The newer Home-layout/thermal-layer App follow-up is not validated/released. App CI does not prove Firmware compilation, BIN provenance or physical OTA/safety behavior.
 
 ## Current source identity
 
-- Canonical editable source: `firmware/JEXFYZ-V6.9.ino`.
-- `FW_VERSION = "V6.9"`; source blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`.
-- **Status: SOURCE UPDATED / NOT COMPILED / NOT INSTALLED.** V6.9 preserves the V6.8 temperature tiers and adds paced 10-point PWM steps: down every 10 s, up every 1 s, with a fresh 10-second grace period after voltage transitions. Hotside limit/protection still forces 100% immediately. The user compiles Firmware separately in ArduinoDroid with Arduino-ESP32 Core 3.3.7. Source-to-BIN identity, OTA logs and installed-device version remain UNVERIFIED.
-- Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module, Arduino-ESP32 Core 3.3.7.
-- V6.7 compile/online update is historical USER-REPORTED evidence and does not validate V6.9. Physical safety/thermal/LED behavior and full OTA apply/reboot/reconnect gates remain UNVERIFIED.
+- Canonical editable source: firmware/JEXFYZ-V6.9.ino, blob 8e0f0ff5a65962ebdb44300b05fc161cf9349d96, embedded FW_VERSION=V6.9.
+- Compile/install status: USER-REPORTED. The user says latest Firmware was compiled and installed. Independent logs, source-to-BIN relationship, installed device version and physical PWM/thermal behavior remain UNVERIFIED. Recorded Firmware contract tests have not run for V6.9.
+- Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module, Arduino-ESP32 Core 3.3.7. Firmware compiles separately from App release.
 
 ## Architecture
 

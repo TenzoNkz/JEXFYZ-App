@@ -1,15 +1,15 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #110 remains the latest successful App release. Current follow-up after that release includes top-down falling fire embers, Hotside/Voltage geometry corrections, removal of the Settings About section/page, and Firmware V6.9 Adaptive PWM pacing; these are source-only and unvalidated.
+Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #113 / run 39350217172 is the latest successful App release, source 05e4f644d6bf82ae2682154082c3e44a4876205a. A newer source-only Home/layout/thermal-layer follow-up has been applied after that build; validation/release remain pending.
 
 ## Latest successful build and current source boundary
 
-- Latest successful release: Build #110 / Actions run 39300262741, packaged source commit `b5adcffb2c9724a07cdba4cd8521c1307f1e6566`. The run completed successfully; release/tag/assets were checked against the packaged source. See `APP_BUILD_REPORT.md` for the authoritative gate evidence.
-- APK asset `657047529`, 54,734,939 bytes, SHA-256 `258211ec9313c555aaac6cd797d1bf6abc6c62c3c2781cd37baa0a8c849bfb84`; source ZIP asset `657047524`, 2,866,352 bytes, SHA-256 `13d1cad6cf4fbb9b2560da7406f4c6bf875fe4ebc2ed5483e6f0001a3b24aa23`.
-- Current App follow-up after Build #110 is NOT RUN / NOT RELEASED: `lib/main.dart` blob `2e2301db3199569273d0ad1466549ab3fcd04380`; `test/widget_test.dart` blob `10de861b593c7b4955deaa160ab1d0c3be519f58`. It changes Battery/Hotside to top-down falling embers, raises the Hotside inner tube, clips/insets the Voltage core, and removes Settings About.
-- Build #110 already includes the restored 44 dp Home metric rows and a fixed 56 dp icon-left/text-left NOTIFY card with the connection badge removed. The current follow-up keeps 44 dp metric rows but changes the NOTIFY card to a compact 44 dp minimum height that grows only when text wraps to two lines; it also updates icon effects/geometries and removes the Settings About section/page.
-- The new row/card source contracts have NOT RUN. Do not infer they passed from Build #110; its source preceded this correction. No App Build was started.
-- Firmware V6.9 is source-only / NOT COMPILED / NOT INSTALLED. Downsteps wait 10 seconds per 10 points; upsteps wait 1 second per 10 points, and a 9 V →12 V handoff restarts the downshift clock. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+- Build #113 passed 109 Flutter tests, Dart analyzer exit 0 (25 info diagnostics), configured Android Gradle gate, APK V1/V2/V3 and official-certificate checks, ZIP integrity, downloaded-asset comparison and exact tag/commit checks. Native Android test tasks were NO-SOURCE.
+- APK asset 657872748, 54,718,555 bytes, SHA-256 7252e952983560254822b8d77a9a1c47d5a3f91d80bf8ed50e58586bbe2c2991; source ZIP asset 657872749, 2,866,922 bytes, SHA-256 0fcccecc639e20f16d65976a5f3c334dd2ce4f7692d2a4d95b5b8aaad7dae59f.
+- Current lib/main.dart blob d0fdb7482d939b34b0a1824b33d37f6457835818 and test/widget_test.dart blob af692cb7473f8447e1ab27939a3dc281d21737ad are newer than packaged source; SOURCE UPDATED / NOT RUN / NOT RELEASED.
+- Home contract: seven 45 dp rows; 3 dp gap before fixed 44 dp NOTIFY; left-aligned body text scales down to fit up to two lines; cooler image stays in stable row constraints independent of notice length.
+- Battery/Hotside fire is drawn behind the foreground silhouette and clipped OUTSIDE it. Thresholds remain Battery ≥40°C and Hotside at configured limit.
+- User reports Firmware V6.9 compile/install success. Compile logs, source-to-BIN provenance, installed version and physical PWM/thermal results remain independently unverified. No App Build/Firmware/device operation occurred here.
 
 ## Current approved icon behavior
 

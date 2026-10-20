@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Firmware & Hardware Reference
 
-Durable hardware and behavior decisions belong here. For code-level structure see firmware/FIRMWARE_TECHNICAL_REFERENCE.md; for protected OTA use OTA_PROTECTION.md; for incidents read the dedicated regression-memory files. Latest successful App artifact is Build #110 (run 39300262741, source b5adcffb2c9724a07cdba4cd8521c1307f1e6566). Current UI and Firmware source follow-ups are newer than that release and are NOT RUN / NOT RELEASED; V6.9 is not compiled/installed.
+Durable hardware and behavior decisions belong here. For code-level structure see firmware/FIRMWARE_TECHNICAL_REFERENCE.md; for protected OTA use OTA_PROTECTION.md; for incidents read the dedicated regression-memory files. Latest successful App artifact is Build #113 (run 39350217172, source 05e4f644d6bf82ae2682154082c3e44a4876205a). Current Home layout/thermal-layer App edits are NOT RUN / NOT RELEASED. User reports V6.9 compiled/installed; independent compile logs, source-to-BIN provenance and actual device version remain UNVERIFIED.
 
 ## Hardware platform and pinout
 
@@ -66,7 +66,7 @@ Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 - **Upshift is faster:** when the selected target exceeds current PWM, increase by 10 percentage points after a 1-second interval until reaching the target. Reaching Hotside Limit or active Hotside protection forces 100% immediately and is not rate-limited.
 - Voltage transition, Adaptive hot-step transition, thermal dwell and inactive cooling-output gates reset the pacing timer and preserve full-speed priority. Adaptive 5 V/9 V remains at 100%. Manual speed, BLE/telemetry protocol, Peltier controls, safety predicates and OTA flow were not intentionally changed.
 - NTC still uses one calibrated `analogReadMilliVolts(PIN_NTC)` sample per second. No filter, blocking `delay()`, or timing `while()` was added.
-- Contract tests: `test/firmware_qc_contract_test.dart` and `test/firmware_touch_adaptive_sync_test.dart`; current blobs must be re-fetched from main. Tests have NOT RUN for V6.9, and Firmware has NOT been compiled. The 10-second downstep/1-second upstep is intended to reduce abrupt load changes after rail transitions; hardware reset cause and physical results remain UNVERIFIED.
+- Contract tests: `test/firmware_qc_contract_test.dart` and `test/firmware_touch_adaptive_sync_test.dart`; current blobs must be re-fetched from main. Recorded CI evidence says V6.9 Firmware contract tests have NOT RUN. The user reports successful compile/install, but logs/source-to-BIN proof are not available here. The 10-second downstep/1-second upstep is intended to reduce abrupt load changes after rail transitions; reset cause and physical results remain UNVERIFIED.
 
 ## Touch and indicators
 

@@ -280,7 +280,7 @@ void main() {
     final thermal = painter.substring(thermalStart, thermalEnd);
     expect(thermal, contains('canvas.drawOval'));
     expect(thermal, contains('final fall = (cycle + i / lanes.length) % 1.0'));
-    expect(thermal, contains('final y = bounds.top - s * (thermometer ? .10 : .08)'));
+    expect(thermal, contains('final y = bounds.top - s * .08'));
     expect(thermal, contains('travel * fallDistance'));
     expect(thermal, contains('const Color(0xFFFF7828)'));
     expect(thermal, contains('const Color(0xFFFFEDB5)'));

@@ -1,15 +1,14 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Current state reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #110 is the latest successful App release. The current follow-up—falling fire particles, Hotside/Voltage geometry fixes, About removal, and Firmware V6.9 Adaptive Fan pacing—is source-only after Build #110 and NOT RUN / NOT RELEASED. APP_BUILD_REPORT.md owns build evidence; CHAT_TRANSFER.md is the final handoff snapshot.
+Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #113 / run 39350217172, package source 05e4f644d6bf82ae2682154082c3e44a4876205a, is the latest successful App release. This task adds a newer Home-layout/thermal-layer source follow-up that is NOT RUN / NOT RELEASED. Firmware V6.9 compile/install is USER-REPORTED; independent logs, source-to-BIN provenance and physical behavior remain UNVERIFIED.
 
-## Current App / Release state — Build #110 verified; subsequent source follow-up is not released
+## Current App / Release state
 
-- Canonical repo: TenzoNkz/JEXFYZ-App, branch main. Latest successful App release is Build #110 / Actions run 39300262741, source commit `b5adcffb2c9724a07cdba4cd8521c1307f1e6566`. Release/tag `jexfyz-latest` and its assets target that source.
-- Build #110 APK asset `657047529`, 54,734,939 bytes, SHA-256 `258211ec9313c555aaac6cd797d1bf6abc6c62c3c2781cd37baa0a8c849bfb84`; source ZIP asset `657047524`, 2,866,352 bytes, SHA-256 `13d1cad6cf4fbb9b2560da7406f4c6bf875fe4ebc2ed5483e6f0001a3b24aa23`. The current source changes below are newer than the packaged build.
-- Build #110 includes restored Home metric spacing (44 dp), the original icon-left/text-left NOTIFY Row, no CONNECTED/DISCONNECTED badge, and a 56 dp card/slot for up to two normal-size lines. The latest source follow-up changes the thermal particles to top-down falling embers, raises the Hotside inner tube, clips/insets the Voltage core, makes NOTIFY height dynamic (44 dp minimum with room added for two-line copy), and removes the About section/page from Settings. Those changes are NOT RUN / NOT RELEASED.
-- `test/widget_test.dart` now checks falling ember motion, 44 dp indicator rows, two-line NOTIFY layout, the raised thermometer tube and clipped/inset Voltage core; `test/floating_monitor_layout_contract_test.dart` asserts the About section/page is removed. Flutter tests and Dart analyzer have NOT RUN for this follow-up.
-- Current App source/test fingerprints: `lib/main.dart` `2e2301db3199569273d0ad1466549ab3fcd04380`; `lib/app_settings.dart` `f8e465648946a25eae44f3fad6a5a3bfaca8b050`; `lib/floating_monitor.dart` `e7c74bf749698a8331f2b0b31a847b2627ac3e4b`; `test/widget_test.dart` `10de861b593c7b4955deaa160ab1d0c3be519f58`; `test/floating_monitor_layout_contract_test.dart` `b053a92522223fd237a8f0e025648eb1b26730a5`.
-- The guarded App Build workflow is unchanged. `@Thinking Eksekusi Full!` did not trigger an App Build. Only a separate `@Thinking Eksekusi Build App!` authorizes the full App validation/build/release workflow.
+- Canonical repo: TenzoNkz/JEXFYZ-App, branch main. Live jexfyz-latest Release/tag points to Build #113 source 05e4f644d6bf82ae2682154082c3e44a4876205a.
+- APK asset 657872748, 54,718,555 bytes, SHA-256 7252e952983560254822b8d77a9a1c47d5a3f91d80bf8ed50e58586bbe2c2991; source ZIP asset 657872749, 2,866,922 bytes, SHA-256 0fcccecc639e20f16d65976a5f3c334dd2ce4f7692d2a4d95b5b8aaad7dae59f.
+- Build #113 validated/released the preceding falling-fire/icon-geometry/Settings cleanup/dynamic-NOTIFY source. This newer follow-up sets all seven rows to 45 dp, uses a 3 dp gap above a fixed 44 dp NOTIFY, shrinks wrapped copy to fit two lines, holds cooler image constraints stable, and paints Battery/Hotside embers behind their foreground silhouettes.
+- Current source/test blobs: lib/main.dart d0fdb7482d939b34b0a1824b33d37f6457835818; test/widget_test.dart af692cb7473f8447e1ab27939a3dc281d21737ad. Flutter tests and Dart analyzer have NOT RUN for this follow-up. Do not infer validation from Build #113.
+- Preserve Android versionName Telegram @horizontalzzz, BLE/control/telemetry semantics and guarded App workflow. No App Build was triggered.
 
 ## Current Firmware source — V6.9 source updated; compile unverified
 

@@ -1,3 +1,12 @@
+## CURRENT SOURCE FOLLOW-UP AFTER BUILD #113 — SOURCE UPDATED; VALIDATION NOT RUN / NOT RELEASED
+
+- Home: seven metric rows are 45 dp, with a 3 dp gap above a fixed 44 dp NOTIFY card. Wrapped body copy reduces to 9.5 dp first and scales further only if needed, up to two lines; icon/text stay left aligned with no connection badge.
+- Cooler image stays within the same Home row constraints because NOTIFY no longer changes height with copy.
+- Battery/Hotside fire draws first in the canvas background and is clipped OUTSIDE the foreground silhouette using ClipOp.difference. The shell/body/tube/graduations are painted above it. Existing Battery 40°C and configured Hotside warning thresholds and Firmware safety predicates are unchanged.
+- Current source blobs: lib/main.dart d0fdb7482d939b34b0a1824b33d37f6457835818; test/widget_test.dart af692cb7473f8447e1ab27939a3dc281d21737ad. Flutter tests and Dart analyzer have NOT RUN for these edits. Build #113 remains the latest successful release for the earlier source; these newest edits are NOT RELEASED.
+- No App Build, Firmware compile, BIN/Firebase/OTA/flash/device operation was started by Eksekusi Full.
+
+---
 ## LATEST SUCCESSFUL APP BUILD — BUILD #113 (FALLING FIRE / ICON GEOMETRY / SETTINGS CLEANUP / DYNAMIC NOTIFY RELEASED)
 
 - **Result: SUCCESS.** [GitHub Actions run #113 / 39350217172](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39350217172) completed with conclusion `success` on exact checked-out App source commit `05e4f644d6bf82ae2682154082c3e44a4876205a`. All 21 main workflow steps and all post-job cleanup steps passed.

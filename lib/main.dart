@@ -2690,11 +2690,9 @@ class _JexIconPainter extends CustomPainter {
       ..close();
   }
 
-  /// Rounded oval embers burst from the thermal source and cool out smoothly.
-  /// Positions use deterministic periodic phases; no tapered flame tongues or droplet particles.
-  /// Fire embers fall through the thermal icons like Peltier snow, but use
-  /// elongated orange/gold ovals with a hot core instead of snowflake geometry.
-  /// Independent phase offsets keep the fall continuous without random particles.
+  /// Draw falling fire in the canvas background, behind the foreground thermal icon.
+  /// Clip out the silhouette so embers never paint inside the battery/thermometer body.
+  /// Deterministic lanes and phases keep the particles smooth without random state.
   void _drawThermalBurstParticles(
     Canvas canvas,
     double s,
@@ -2703,15 +2701,15 @@ class _JexIconPainter extends CustomPainter {
     double intensity, {
     required Rect bounds,
     required bool thermometer,
-    Path? clipPath,
+    required Path foregroundSilhouette,
   }) {
     final strength = intensity.clamp(0.0, 1.0).toDouble();
     if (strength <= .005 || bounds.isEmpty) return;
 
     final cycle = (phase / (math.pi * 2)) % 1.0;
     final lanes = thermometer
-        ? const <double>[-.84, -.48, -.16, .16, .48]
-        : const <double>[-.90, -.62, -.34, .34, .62, .90];
+        ? const <double>[-.92, -.70, -.48, .48, .70, .92]
+        : const <double>[-.96, -.78, -.60, -.42, .42, .60, .78, .96];
     final emberColor = Color.lerp(
       hotColor,
       const Color(0xFFFF7828),
@@ -2719,8 +2717,8 @@ class _JexIconPainter extends CustomPainter {
     )!;
 
     canvas.save();
-    if (clipPath != null) canvas.clipPath(clipPath);
     canvas.clipRect(bounds);
+    canvas.clipPath(foregroundSilhouette, clipOp: ClipOp.difference);
     for (var i = 0; i < lanes.length; i++) {
       final fall = (cycle + i / lanes.length) % 1.0;
       final edgeFade = jexParticleBoundaryFade(fall, fadeIn: .18, fadeOut: .22);
@@ -2729,16 +2727,11 @@ class _JexIconPainter extends CustomPainter {
 
       final travel = jexMotionSmoothStep(fall);
       final lane = lanes[i];
-      final laneOffset = thermometer
-          ? lane * s * .042
-          : lane * bounds.width * .36;
-      final drift = math.sin(fall * math.pi * 2 + i * .73) *
-          s *
-          (thermometer ? .009 : .012);
+      final laneOffset = lane * s * .48;
+      final drift = math.sin(fall * math.pi * 2 + i * .73) * s * .012;
       final x = bounds.center.dx + laneOffset + drift;
       final fallDistance = bounds.height + s * (thermometer ? .20 : .16);
-      final y = bounds.top - s * (thermometer ? .10 : .08) +
-          travel * fallDistance;
+      final y = bounds.top - s * .08 + travel * fallDistance;
       final sizePulse = .76 + .24 * math.sin(math.pi * fall);
       final radiusX = s *
           (thermometer ? .035 : .040) *
@@ -2750,7 +2743,7 @@ class _JexIconPainter extends CustomPainter {
       canvas.save();
       canvas.translate(x, y);
       canvas.rotate(rotation);
-      // Soft glow, ember body and a narrow bright core read as fire rather than snow.
+      // Soft halo, orange/gold ember body, and a hot yellow-white core.
       canvas.drawOval(
         Rect.fromCenter(
           center: Offset.zero,
@@ -2952,6 +2945,18 @@ class _JexIconPainter extends CustomPainter {
     switch (kind) {
       case JexAnimatedIconKind.battery:
         final shell = _batterySilhouette(s);
+        if (active && warningStrength > .005) {
+          _drawThermalBurstParticles(
+            canvas,
+            s,
+            angle,
+            jexThermalRed,
+            warningStrength,
+            bounds: Rect.fromLTWH(0, 0, s, s),
+            thermometer: false,
+            foregroundSilhouette: shell,
+          );
+        }
         canvas.drawPath(
           shell.shift(Offset(s * .014, s * .018)),
           _fill(const Color(0xFF060A10).withValues(alpha: .72)),
@@ -3012,6 +3017,10 @@ class _JexIconPainter extends CustomPainter {
           );
         }
         canvas.restore();
+        break;
+
+      case JexAnimatedIconKind.hotside:
+        final shell = _hotsideSilhouette(s);
         if (active && warningStrength > .005) {
           _drawThermalBurstParticles(
             canvas,
@@ -3019,14 +3028,11 @@ class _JexIconPainter extends CustomPainter {
             angle,
             jexThermalRed,
             warningStrength,
-            bounds: inner.outerRect,
-            thermometer: false,
+            bounds: Rect.fromLTWH(0, 0, s, s),
+            thermometer: true,
+            foregroundSilhouette: shell,
           );
         }
-        break;
-
-      case JexAnimatedIconKind.hotside:
-        final shell = _hotsideSilhouette(s);
         canvas.drawPath(
           shell.shift(Offset(s * .010, s * .012)),
           _fill(const Color(0xFF060A10).withValues(alpha: .72)),
@@ -3097,18 +3103,6 @@ class _JexIconPainter extends CustomPainter {
           _fill(Colors.white.withValues(alpha: valueKnown ? .52 : .40)),
         );
         canvas.restore();
-        if (active && warningStrength > .005) {
-          _drawThermalBurstParticles(
-            canvas,
-            s,
-            angle,
-            jexThermalRed,
-            warningStrength,
-            bounds: Rect.fromLTWH(s * .36, s * .18, s * .28, s * .64),
-            thermometer: true,
-            clipPath: shell,
-          );
-        }
         break;
 
       case JexAnimatedIconKind.voltage:
@@ -6352,8 +6346,8 @@ void _handleAckLine(String line) {
       padding: EdgeInsets.zero,
       child: SizedBox(
         width: double.infinity,
-        // Preserve the original Home indicator rhythm and vertical spacing.
-        height: 44,
+        // Keep all seven Home indicator rows at the same 45 dp height.
+        height: 45,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
           child: Row(
@@ -6709,8 +6703,8 @@ void _handleAckLine(String line) {
 
     return Container(
       width: double.infinity,
-      constraints: const BoxConstraints(minHeight: 44),
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      height: 44,
+      padding: const EdgeInsets.symmetric(vertical: 2),
       decoration: BoxDecoration(
         color: headerDark
             ? color.withValues(alpha: hasError ? .12 : .07)
@@ -6740,7 +6734,7 @@ void _handleAckLine(String line) {
           const SizedBox(width: 6),
           Expanded(
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -6757,19 +6751,53 @@ void _handleAckLine(String line) {
                   ),
                 ),
                 const SizedBox(height: 2),
-                Text(
-                  // Use normal font sizing; longer notices wrap to at most two lines.
-                  _professionalNotice(),
-                  maxLines: 2,
-                  softWrap: true,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                    color: noticeTextColor,
-                    fontSize: 10.5,
-                    decoration: TextDecoration.none,
-                    height: 1.1,
-                    fontWeight: FontWeight.w800,
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final message = _professionalNotice();
+                      final bodyStyle = TextStyle(
+                        color: noticeTextColor,
+                        fontSize: 10.5,
+                        decoration: TextDecoration.none,
+                        height: 1.1,
+                        fontWeight: FontWeight.w800,
+                      );
+                      TextPainter measure(double fontSize) => TextPainter(
+                            text: TextSpan(
+                              text: message,
+                              style: bodyStyle.copyWith(fontSize: fontSize),
+                            ),
+                            textDirection: Directionality.of(context),
+                            maxLines: 2,
+                            ellipsis: '…',
+                          )..layout(maxWidth: constraints.maxWidth);
+
+                      var fontSize = 10.5;
+                      var measured = measure(fontSize);
+                      // A wrapped notice gets a slightly smaller type size first;
+                      // further reduction is used only when required by the fixed slot.
+                      if (measured.computeLineMetrics().length > 1) {
+                        fontSize = 9.5;
+                        measured = measure(fontSize);
+                      }
+                      while (fontSize > 7.0 &&
+                          (measured.didExceedMaxLines ||
+                              measured.height > constraints.maxHeight)) {
+                        fontSize = (fontSize - .5).clamp(7.0, 10.5).toDouble();
+                        measured = measure(fontSize);
+                      }
+                      return Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          message,
+                          maxLines: 2,
+                          softWrap: true,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.start,
+                          style: bodyStyle.copyWith(fontSize: fontSize),
+                        ),
+                      );
+                    },
                   ),
                 ),
               ],
@@ -8200,7 +8228,7 @@ void _handleAckLine(String line) {
                 ],
               ),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: 3),
             _homeNotify(),
           ],
         ),
