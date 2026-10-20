@@ -403,8 +403,8 @@ String normalizeHomeNotifyText(
     if (peltierIssue) {
       return confirmationFailed
           ? JexText.phrase(
-              'Peltier change not confirmed. Check safety status.',
-              'Perubahan Peltier belum terkonfirmasi. Periksa status keselamatan.',
+              'The device did not confirm the Peltier change. Check the safety status.',
+              'Perangkat belum mengonfirmasi perubahan Peltier. Periksa status keselamatan.',
               language,
             )
           : JexText.phrase(
@@ -3777,7 +3777,7 @@ class TamperScreen extends StatelessWidget {
                       letterSpacing: 0.35,
                     ),
                   ),
-                  child: const Text('HUBUNGI DEVELOPER'),
+                  child: Text(JexText.of('contactDeveloper', appLanguageNotifier.value)),
                 ),
               ),
             ),
@@ -5482,7 +5482,7 @@ void _handleAckLine(String line) {
       voltageGuardTimer?.cancel();
       if (mounted) {
         setState(() => voltageGuardActive = false);
-        _showSnackBar(JexText.phrase('Voltage change failed.','Perintah perubahan tegangan gagal.'));
+        _showSnackBar(JexText.phrase('Voltage change failed.','Perubahan tegangan gagal diterapkan.'));
       }
     }
   }
@@ -5604,8 +5604,8 @@ void _handleAckLine(String line) {
           if (mounted) {
             _showSnackBar(
               JexText.phrase(
-                'Fan start was not confirmed.',
-                'Kipas tidak terkonfirmasi menyala.',
+                'The device has not confirmed that the fan is on.',
+                'Perangkat belum mengonfirmasi bahwa kipas menyala.',
               ),
               color: Colors.orangeAccent,
             );
@@ -5633,8 +5633,8 @@ void _handleAckLine(String line) {
           } else {
             _showSnackBar(
               JexText.phrase(
-                'Peltier change was not confirmed.',
-                'Perubahan Peltier tidak terkonfirmasi.',
+                'The device did not confirm the Peltier change.',
+                'Perangkat belum mengonfirmasi perubahan Peltier.',
               ),
               color: Colors.orangeAccent,
             );
@@ -5656,8 +5656,8 @@ void _handleAckLine(String line) {
                 language: appLanguageNotifier.value,
               )
             : JexText.phrase(
-                'Peltier change not confirmed. Check safety status.',
-                'Perubahan Peltier belum terkonfirmasi. Periksa status keselamatan.',
+                'The device did not confirm the Peltier change. Check the safety status.',
+                'Perangkat belum mengonfirmasi perubahan Peltier. Periksa status keselamatan.',
                 appLanguageNotifier.value,
               );
         _showSnackBar(message, color: Colors.orangeAccent);
@@ -5704,7 +5704,7 @@ void _handleAckLine(String line) {
       }
     } catch (e) {
       debugPrint('LED power command: $e');
-      if (mounted) _showSnackBar(JexText.phrase('LED power command failed.','Perintah daya LED gagal.'));
+      if (mounted) _showSnackBar(JexText.phrase('LED power command failed.','Perintah daya LED gagal dijalankan.'));
     }
   }
 
@@ -5715,11 +5715,11 @@ void _handleAckLine(String line) {
       final next = ledFirmwareModeForDisplayIndex(displayIndex);
       final ok = await _sendAndConfirm('MODE:$next');
       if (!ok && mounted) {
-        _showSnackBar(JexText.phrase('LED mode change was not confirmed.','Perubahan mode LED tidak terkonfirmasi.'));
+        _showSnackBar(JexText.phrase('The device did not confirm the LED mode change.','Perangkat belum mengonfirmasi perubahan mode LED.'));
       }
     } catch (e) {
       debugPrint('LED mode command: $e');
-      if (mounted) _showSnackBar(JexText.phrase('LED mode command failed.','Perintah mode LED gagal.'));
+      if (mounted) _showSnackBar(JexText.phrase('LED mode command failed.','Perintah mode LED gagal dijalankan.'));
     }
   }
 
@@ -5749,7 +5749,7 @@ void _handleAckLine(String line) {
       debugPrint('LED brightness command: $e');
       if (mounted) {
         setState(() => brightness = previous);
-        _showSnackBar(JexText.phrase('LED brightness command failed.','Perintah kecerahan LED gagal.'));
+        _showSnackBar(JexText.phrase('LED brightness command failed.','Perintah kecerahan LED gagal dijalankan.'));
       }
     }
   }
@@ -5765,7 +5765,7 @@ void _handleAckLine(String line) {
       final ok = await _sendAndConfirm('COLOR:' + value.substring(1));
       if (!ok) {
         if (mounted) {
-          _showSnackBar(JexText.phrase('Color change was not confirmed.','Perubahan warna tidak terkonfirmasi.'));
+          _showSnackBar(JexText.phrase('The device did not confirm the color change.','Perangkat belum mengonfirmasi perubahan warna.'));
         }
         return false;
       }
@@ -5776,7 +5776,7 @@ void _handleAckLine(String line) {
       return true;
     } catch (e) {
       debugPrint('LED color command: $e');
-      if (mounted) _showSnackBar(JexText.phrase('LED color command failed.','Perintah warna LED gagal.'));
+      if (mounted) _showSnackBar(JexText.phrase('LED color command failed.','Perintah warna LED gagal dijalankan.'));
       return false;
     }
   }
@@ -5901,7 +5901,7 @@ void _handleAckLine(String line) {
     final ok = await _sendAndConfirm('ADAPTIVE_PROFILE:' + profile);
     if (!ok && mounted) {
       _showSnackBar(
-        JexText.phrase('The device did not confirm the Adaptive profile change.','Perangkat belum mengonfirmasi perubahan profil Adaptive.'),
+        JexText.phrase('The device did not confirm the Adaptive Profile change.','Perangkat belum mengonfirmasi perubahan Profil Adaptif.'),
         color: Colors.orangeAccent,
       );
     }
@@ -6699,9 +6699,9 @@ void _handleAckLine(String line) {
     if (message != null) setState(() => notice = message!);
   }
 
-  String _notifyStateLabel() => 'NOTIFY';
+  String _notifyStateLabel() => JexText.of('notification', appLanguageNotifier.value);
 
-  // AI-METHOD: _homeNotify — Render the Home NOTIFY card.
+  // AI-METHOD: _homeNotify — Render the localized Home Notification card.
   // Retain the original icon-left / text-left Row; only the connection badge is removed.
   // The card stays compact for one line and grows naturally for two lines without shrinking its font.
   Widget _homeNotify() {
@@ -7990,7 +7990,7 @@ void _handleAckLine(String line) {
         ? JexText.phrase('CONNECT TO JE X FYZ FIRST', 'HUBUNGKAN KE JE X FYZ TERLEBIH DAHULU')
         : JexText.phrase('LOCKED BY ADAPTIVE MODE', 'TERKUNCI OLEH MODE ADAPTIF');
     final detail = disconnected
-        ? JexText.phrase('Connect your cooler to unlock this menu.', 'Hubungkan perangkat JE X FYZ untuk membuka menu ini.')
+        ? JexText.phrase('Connect JE X FYZ to use this menu.', 'Sambungkan JE X FYZ untuk menggunakan menu ini.')
         : JexText.phrase('Turn Adaptive Mode off to edit these settings.', 'Matikan Mode Adaptif untuk mengubah pengaturan ini.');
     return ClipRect(
       child: Stack(
