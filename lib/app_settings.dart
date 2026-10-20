@@ -1185,7 +1185,7 @@ class JexText {
       AppLanguage.indonesia: 'Izin tampilan mengambang belum diberikan.',
     },
     'overlaySettingsFailed': {
-      AppLanguage.english: 'Could not open Android's overlay permission settings.',
+      AppLanguage.english: 'Could not open the Android overlay permission settings.',
       AppLanguage.indonesia: 'Pengaturan izin tampilan mengambang Android tidak dapat dibuka.',
     },
     'floatingStartFailed': {
