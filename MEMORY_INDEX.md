@@ -87,7 +87,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #110 is 
 
 ## Durable repository/evidence restrictions
 
-- All source, documentation, tests and project memory remain in `TenzoNkz/JEXFYZ-App`. Keep `TenzoNkz/JEXFYZ-Firmware` BIN-only. The currently checked BIN metadata is `JEXFYZ.cpp.bin`, blob `dca6a1267762152519f6d2889e4f0adf46fd8803`, 1,457,008 bytes; do not read or mutate payload during documentation tasks, and do not infer source provenance.
+- All source, documentation, tests and project memory remain in `TenzoNkz/JEXFYZ-App`. Keep `TenzoNkz/JEXFYZ-Firmware` BIN-only. The currently checked BIN metadata is `JEXFYZ.cpp.bin`, blob `9fdd915c3d298cad4de720765dab7fb03f47024d`, 1,456,368 bytes; do not read or mutate payload during documentation tasks, and do not infer source provenance.
 - V6.9 source blob 8e0f0ff5a65962ebdb44300b05fc161cf9349d96 uses deterministic Adaptive Fan temperature tiers; it is not compiled/installed. V6.7 compilation/online update was user-reported only. Source/BIN identity, installed version, Firebase state and full OTA apply/reboot/reconnect remain unverified. The previous V6.6 compile/two-OTA statements are historical user reports.
 - Current UI excludes a standalone Battery Protection Guard. The exclusive one-App/one-cooler pairing lock is a user design requirement; encrypted/bonded writes alone do not prove exclusive provisioning.
 - Preserve OTA protection and its `setInsecure()` server-identity trade-off; read OTA and voltage-transition references before changes. Preserve the approved white square grille/purple X/four corner holes/flat-print design and transparent square app assets.
