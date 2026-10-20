@@ -5,7 +5,7 @@
 - Home card heading now follows the selected language: `Notification` / `Notifikasi`. The Settings section retains `Notifications` / `Notifikasi`.
 - Localized Contact Developer and the Android Floating Monitor foreground notification. Standardized Hotside terminology, improved notification descriptions, refined palette labels and made user-facing Bluetooth/firmware errors clearer without exposing internal backend details.
 - Regression assertions now cover the notification heading and contact label in both languages. Flutter tests and Dart analysis were NOT RUN. Build #116 remains the latest verified App release and does not include this copy pass.
-- Source blobs: `lib/app_settings.dart` 3486653401adb6bba251ae16afc7837a3a1af5fe; `lib/main.dart` 07178b5cce55fc8f78cc7c2953f4d8e352ccefe7; `test/widget_test.dart` da12f8ef82283f55af04a5286a6366e2253a4e6f; `FloatingMonitorService.kt` f2c5d5e8b5731be36ae3b82109a75beaefe5fb4d.
+- Source blobs: `lib/app_settings.dart` 6d143e6b6b5b986e2d6915dd8b608baca6f0d444; `lib/main.dart` 07178b5cce55fc8f78cc7c2953f4d8e352ccefe7; `test/widget_test.dart` 0a5901ac6dc23c947356189a312bb1dec418298e; `FloatingMonitorService.kt` f2c5d5e8b5731be36ae3b82109a75beaefe5fb4d.
 - No App Build/release, Firmware/BIN, Firebase, OTA, flash or device operation occurred.
 
 
