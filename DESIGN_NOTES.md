@@ -95,7 +95,7 @@ This file stores durable, user-approved visual constraints. Do not reinterpret a
 - Set every Home metric row to 45 dp (38 dp indicator tile centered in the 41 dp icon lane) with uniform rhythm and a 3 dp gap before NOTIFY. NOTIFY stays fixed at 44 dp, icon-left/text-left and badge-free; only body text may shrink as needed to fit two lines. Cooler image constraints remain stable when copy changes. Never allow overlap between indicator rows and NOTIFY.
 - Keep existing status icon/color selection, connection logic, BLE semantics, safety thresholds/predicates and telemetry authority unchanged.
 - Polish Home NOTIFY copy in both supported languages, including direct acknowledgements for accepted fan-speed, Hotside-limit and 5V/12V battery-limit commands. Map known reason codes to actionable text, use generic localized copy for unknown identifiers, and route raw OTA envelopes through the dedicated formatter before normalizing. No raw reason IDs, OTA ERROR/CODE values or internal event suffixes may reach the card.
-- Current source after the final visual follow-up: lib/main.dart 8eb24de58a2e510b3d05abbb29bce45bb0a42810; test/widget_test.dart 134880899237c1bfa875473129473524f6851439. Build #116 remains the latest successful release for the preceding revision; these flame-shape/rounded-clip/NOTIFY-label adjustments are NOT RUN / NOT RELEASED.
+- Current source after the final visual follow-up: lib/main.dart 8eb24de58a2e510b3d05abbb29bce45bb0a42810; test/widget_test.dart a82875dd47ad904818fcd4c1c47b1a3ac0ca8fd2. Build #116 remains the latest successful release for the preceding revision; these flame-shape/rounded-clip/NOTIFY-label adjustments are NOT RUN / NOT RELEASED.
 
 ## Settings scope constraint
 

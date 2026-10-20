@@ -7,7 +7,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #116 is 
 - Latest successful release: Build #116 / Actions run 39355262101, packaged source 48683874db659df940272bed1c860072ead2d767. The live jexfyz-latest Release/tag and both assets target that commit.
 - APK asset 657979004, 54,734,939 bytes, SHA-256 8570914f331583d2cc462f61881609c0eae56639a139f2d60a832e4aaa81ea27; corresponding source ZIP asset 657979008, 2,867,315 bytes, SHA-256 60ef4e79529aabcbb4f4093b9f8a18b5d383d5c651c1c303dd8bb774e7b0dd5d.
 - Build #116 passed 109 Flutter tests, analyzer exit 0 with 25 info-level diagnostics, Android gate/signing checks, source ZIP integrity and downloaded-asset/tag verification. Native Android test tasks were NO-SOURCE.
-- Current unvalidated source/test blobs: lib/main.dart 8eb24de58a2e510b3d05abbb29bce45bb0a42810; test/widget_test.dart 134880899237c1bfa875473129473524f6851439. All seven Home rows remain 45 dp, NOTIFY stays fixed at 44 dp with a 2 dp title inset and exact category-free heading, the body scales to two lines, and the latest falling-flame background is rounded-frame-clipped. Flutter tests/analyzer have NOT RUN for this final follow-up.
+- Current unvalidated source/test blobs: lib/main.dart 8eb24de58a2e510b3d05abbb29bce45bb0a42810; test/widget_test.dart a82875dd47ad904818fcd4c1c47b1a3ac0ca8fd2. All seven Home rows remain 45 dp, NOTIFY stays fixed at 44 dp with a 2 dp title inset and exact category-free heading, the body scales to two lines, and the latest falling-flame background is rounded-frame-clipped. Flutter tests/analyzer have NOT RUN for this final follow-up.
 - Active Firmware source is firmware/JEXFYZ-V6.9.ino, blob 8e0f0ff5a65962ebdb44300b05fc161cf9349d96. User reports compile/install success; logs, exact BIN provenance and installed version remain UNVERIFIED.
 
 ## Current visual-state redraw checklist
@@ -70,7 +70,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #116 is 
 ## Current source fingerprints (Build #116 successful; final App follow-up NOT RUN; Firmware V6.9 compile/install USER-REPORTED)
 
 - lib/main.dart: 8eb24de58a2e510b3d05abbb29bce45bb0a42810 — seven 45 dp Home rows, 3 dp pre-NOTIFY gap, fixed 44 dp NOTIFY with exact category-free heading, 2 dp label inset and adaptive two-line body, stable cooler constraints, and rounded-frame-clipped falling flame background; NOT RUN / NOT RELEASED.
-- test/widget_test.dart: 134880899237c1bfa875473129473524f6851439 — layout/painter contracts for 45 dp rows, fixed-height two-line NOTIFY, stable image constraints, flame paths, rounded-frame clipping and category-free heading; tests NOT RUN.
+- test/widget_test.dart: a82875dd47ad904818fcd4c1c47b1a3ac0ca8fd2 — layout/painter contracts for 45 dp rows, fixed-height two-line NOTIFY, stable image constraints, flame paths, rounded-frame clipping and category-free heading; tests NOT RUN.
 - lib/jex_animated_glyph.dart: b37fc4e0807c874b2f01db00c7f606810cb5deca — generic action glyphs static.
 - Build #99 validated source commit bc1498d5b3db7621ee18f5ca6f021e6013c73b09, source blob 30d864c2f03c40fd4d0b6926a9958153f2a3b236 and test blob 711a44b00eadee2e2bcd24e48383128f0d70ccc9.
 

@@ -4,7 +4,7 @@
 - The fire background is clipped to a rounded frame minus the foreground silhouette, so flames do not escape the rounded boundary or paint inside the battery chamber/thermometer tube. Existing Battery ≥40°C and configured Hotside warning gates plus the 280 ms transition remain unchanged.
 - Home NOTIFY heading is always exactly `NOTIFY`, with category suffixes removed for every state and language. Added a 2 dp top inset for the heading while preserving the fixed 44 dp card, two-line body scaling, 45 dp metric rows and 3 dp gap above the card.
 - Regression source contracts were updated for flame paths, rounded clipping and the category-free heading/title inset. Flutter tests/analyzer were NOT RUN during this Full execution. Build #116 remains the last successful release for the preceding source; this follow-up is NOT RELEASED.
-- Current source/test blobs: `lib/main.dart` `8eb24de58a2e510b3d05abbb29bce45bb0a42810`; `test/widget_test.dart` `134880899237c1bfa875473129473524f6851439`. No firmware/BIN/Firebase/OTA/flash/device operation occurred.
+- Current source/test blobs: `lib/main.dart` `8eb24de58a2e510b3d05abbb29bce45bb0a42810`; `test/widget_test.dart` `a82875dd47ad904818fcd4c1c47b1a3ac0ca8fd2`. No firmware/BIN/Firebase/OTA/flash/device operation occurred.
 
 ---
 

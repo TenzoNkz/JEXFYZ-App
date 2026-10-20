@@ -19,7 +19,7 @@
 - Battery/Hotside particles now use compact flame-shaped paths with soft blurred orange/gold halos and warm yellow-white cores, falling top-down on deterministic phase lanes with subtle drift and rotation. The rounded-frame clip intersects the permitted background with the foreground-silhouette difference: fire remains behind/outside the casing and does not leak through rounded corners. Battery ≥40°C and configured Hotside warning conditions remain unchanged.
 - Home NOTIFY remains a fixed 44 dp card. The heading is exactly `NOTIFY` in all languages (category suffixes removed) and receives a 2 dp top inset. Body copy still wraps to at most two lines with adaptive font size; rows remain 45 dp with a 3 dp pre-NOTIFY gap and stable cooler-image constraints.
 - Regression source contracts were updated for flame paths, rounded-frame clipping, exact NOTIFY copy, and title inset. Flutter tests and Dart analyzer were NOT RUN in this Full execution; static checks only. This task did not start an App Build, change firmware/BIN, update Firebase, invoke OTA, flash or operate a device.
-- Current unvalidated source/test blobs: `lib/main.dart` `8eb24de58a2e510b3d05abbb29bce45bb0a42810`; `test/widget_test.dart` `134880899237c1bfa875473129473524f6851439`.
+- Current unvalidated source/test blobs: `lib/main.dart` `8eb24de58a2e510b3d05abbb29bce45bb0a42810`; `test/widget_test.dart` `a82875dd47ad904818fcd4c1c47b1a3ac0ca8fd2`.
 
 ## RESOLVED — BUILD #115 ANALYZER FAILURE; THERMAL BACKDROP CLIPPING FIX VALIDATED BY BUILD #116
 

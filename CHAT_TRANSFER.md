@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — CHAT TRANSFER SNAPSHOT
 
-Reconciled from live GitHub main after `@Thinking Eksekusi Full!` on 2026-10-20 (Asia/Jakarta). Pre-change HEAD: `766a52afd284529a214f8a47dd3bcf74662b23ff`; base tree: `c42df15b82815fdc7f1dfc7edc26cc8221075ce7`. This snapshot is written last in the scoped memory update and intentionally does not self-reference its resulting commit.
+Reconciled from live GitHub main after `@Thinking Eksekusi Full!` on 2026-10-20 (Asia/Jakarta). Original pre-change HEAD: `766a52afd284529a214f8a47dd3bcf74662b23ff`; base tree: `c42df15b82815fdc7f1dfc7edc26cc8221075ce7`. The main UI update is committed as `69f7034270cf6ad76af6cae17ae2daf372084ce8`; this snapshot records a small follow-up correction to the regression test. Live HEAD overrides this pre-commit snapshot.
 
 ## 1. Authority and operation scope
 
@@ -12,7 +12,7 @@ Reconciled from live GitHub main after `@Thinking Eksekusi Full!` on 2026-10-20 
 ## 2. Final Home visual follow-up — source-only / NOT RUN / NOT RELEASED
 
 - `lib/main.dart` blob: `8eb24de58a2e510b3d05abbb29bce45bb0a42810`.
-- `test/widget_test.dart` blob: `134880899237c1bfa875473129473524f6851439`.
+- `test/widget_test.dart` blob: `a82875dd47ad904818fcd4c1c47b1a3ac0ca8fd2`.
 - Battery/Hotside use deterministic falling flame-shaped particles (not plain oval dots), with orange/gold body, warm yellow-white hot cores, soft halo, subtle drift/rotation and edge fading. Flames fall from the top like the Peltier snowfall.
 - Fire draws as a background layer. The permitted path is the rounded painter frame minus the foreground thermal silhouette; the frame clip stops particles escaping rounded corners, and the foreground battery/thermometer casing remains above them. Existing Battery >=40°C and configured Hotside warning gates plus the 280 ms warning transition are unchanged. Peltier animation is not changed.
 - Home NOTIFY heading is now exactly `NOTIFY` in all languages/states: no `• ERROR`, `• STATUS`, `• SYNC`, `• WARNING`, or connection suffix. A 2 dp top inset lowers the label away from the card border. Card remains fixed 44 dp, body remains up to two lines with only necessary font shrinking, Home metric rows stay 45 dp with a 3 dp gap before NOTIFY, and cooler-image constraints stay stable.
@@ -22,22 +22,22 @@ Reconciled from live GitHub main after `@Thinking Eksekusi Full!` on 2026-10-20 
 ## 3. Current validated release versus working source
 
 - **Latest validated/released App:** Build #116, commit `48683874db659df940272bed1c860072ead2d767`.
-- **New working source from this Full task:** commit to be recorded by the live main ref after this snapshot is committed; its source/test changes are **UNVALIDATED / NOT RELEASED**.
+- **Current working source:** source blob listed above and test blob listed above; main UI commit `69f7034270cf6ad76af6cae17ae2daf372084ce8` is followed by a small correction to align the test's expected top-to-bottom particle start offset with source. This complete follow-up remains **UNVALIDATED / NOT RELEASED**; live `main` HEAD is authoritative.
 - Any next official App validation/release requires the distinct `@Thinking Eksekusi Build App!` command. Never infer APK contents from a newer main source hash alone.
 
-## 4. Canonical memory files and updated fingerprints
+## 4. Canonical memory files and updated fingerprints (test offset correction included)
 
 - `lib/main.dart`: `8eb24de58a2e510b3d05abbb29bce45bb0a42810`
-- `test/widget_test.dart`: `134880899237c1bfa875473129473524f6851439`
-- `PROJECT_STATE.md`: `923cee1ab5d74e0b335fd359e9ff88a35ed7c486`
-- `DESIGN_NOTES.md`: `9057ae35bcb9ecdbd5420a4edc0a57c0522b8950`
-- `APP_BUILD_REPORT.md`: `94c052ee17c7b861895a8f1589bb3efb2250b153`
-- `CHANGELOG.md`: `2d7d4ce33b8fdb58ce13fa5f489d6787cba67f4f`
-- `README.md`: `e75da7864e7ee3c46d937a52b2cbf4b078202e05`
-- `HANDOVER.md`: `9a8e377e92967391dfdfb1ac1f6f0df93f1d38c2`
-- `CHAT_RULES.md`: `3cdd2d55f432c39062138d506a0eb836a340e367`
-- `APP_NOTES.md`: `a61962ba9f2789e7af15888c7deaab25202604b2`
-- `MEMORY_INDEX.md`: `77e3b8d9de77cf4bfa0207976b69095f06b1d44b`
+- `test/widget_test.dart`: `a82875dd47ad904818fcd4c1c47b1a3ac0ca8fd2`
+- `PROJECT_STATE.md`: `d8e126e3b521d42c7d3a37008c552866e11052ef`
+- `DESIGN_NOTES.md`: `48fa3014c5b3e93028f36adbdda4525bd4ee69e7`
+- `APP_BUILD_REPORT.md`: `377db79e937a3d1704616a3e487090dfddf0e94f`
+- `CHANGELOG.md`: `a28b6d1ba5bab5663f7468ba0008c4d151c2c2de`
+- `README.md`: `6712a0c2e9b6e425acb5ff3de09c546919358af3`
+- `HANDOVER.md`: `af335a5e23380dc5eff2223106be3ccc4da7341c`
+- `CHAT_RULES.md`: `cc2798d1d1b4f5a48005966f14d70954c3ef4b86`
+- `APP_NOTES.md`: `55bf0fc25c1753e6c8d9528d366679f808daf143`
+- `MEMORY_INDEX.md`: `9dfdc34039996ac01216f0e1e4b7a30a84439ed1`
 - Guarded App trigger workflow stays unchanged at blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`.
 
 ## 5. Firmware checkpoint / protected behavior

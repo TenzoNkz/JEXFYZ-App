@@ -5,7 +5,7 @@ This file is the durable App behavior/design contract. Live source and the curre
 ## Current App release and follow-up — 2026-10-20
 
 - Latest successful App release is Build #116 / run 39355262101, source `48683874db659df940272bed1c860072ead2d767`. APK SHA-256 `8570914f331583d2cc462f61881609c0eae56639a139f2d60a832e4aaa81ea27`; source ZIP SHA-256 `60ef4e79529aabcbb4f4093b9f8a18b5d383d5c651c1c303dd8bb774e7b0dd5d`.
-- Newest unbuilt source follow-up: lib/main.dart `8eb24de58a2e510b3d05abbb29bce45bb0a42810`; test/widget_test.dart `134880899237c1bfa875473129473524f6851439`. Flutter tests and analyzer have NOT RUN for this follow-up.
+- Newest unbuilt source follow-up: lib/main.dart `8eb24de58a2e510b3d05abbb29bce45bb0a42810`; test/widget_test.dart `a82875dd47ad904818fcd4c1c47b1a3ac0ca8fd2`. Flutter tests and analyzer have NOT RUN for this follow-up.
 - Home: seven 45 dp metric rows, 3 dp pre-NOTIFY gap, and a fixed 44 dp icon-left/text-left card. Its heading is always exactly `NOTIFY` with a 2 dp top inset; body copy scales down only as needed and is limited to two lines. Cooler-image constraints remain stable.
 - Battery/Hotside: small stylized orange/gold flame particles descend from the top with warm yellow-white cores, a soft halo and subtle drift/rotation. The particles are background-first, clipped to a rounded frame minus the foreground shell, and cannot escape the rounded boundary or paint inside the battery chamber/thermometer tube. Existing warning gates and safety logic are unchanged.
 - Build #116 validates only the packaged source commit above, not these newest UI edits or physical-phone rendering/smoothness. No BLE semantics, controls, telemetry, Firmware safety predicates, BIN/Firebase/OTA or device state were changed by this follow-up.

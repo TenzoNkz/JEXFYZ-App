@@ -286,7 +286,7 @@ void main() {
     expect(thermal, contains('final flameCore = Path()'));
     expect(thermal, contains('final hotCore = Path()'));
     expect(thermal, contains('final fall = (cycle + i / lanes.length) % 1.0'));
-    expect(thermal, contains('final y = bounds.top - s * .08'));
+    expect(thermal, contains('final y = bounds.top - s * .12'));
     expect(thermal, contains('travel * fallDistance'));
     expect(thermal, contains('const Color(0xFFFF7828)'));
     expect(thermal, contains('const Color(0xFFFFEDB5)'));
