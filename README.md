@@ -2,6 +2,11 @@
 
 Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired with the ESP32-C3 firmware.
 
+## Current source-only follow-up — 2026-10-20
+
+- The Home card heading is localized as `Notification` / `Notifikasi`; Contact Developer and user-facing copy are localized consistently in English and Indonesian. Hotside terminology is standardized as `Hotside` / `Suhu Hotside`.
+- This copy pass is source-only and has NOT been validated by Flutter tests/Dart analysis or an App Build. Build #116 remains the latest verified release.
+
 ## Start here
 
 1. [Memory Index](MEMORY_INDEX.md) — authoritative map of all project knowledge and where to write new decisions.
