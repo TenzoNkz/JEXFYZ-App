@@ -6,7 +6,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #116 / r
 
 - Build #116 passed 109 Flutter tests, Dart analyzer exit 0 (25 info diagnostics), configured Android gate, APK V1/V2/V3 and official-certificate checks, ZIP integrity, downloaded-asset comparison and exact tag/commit checks. Native Android test tasks were NO-SOURCE.
 - APK asset `657979004`, 54,734,939 bytes, SHA-256 `8570914f331583d2cc462f61881609c0eae56639a139f2d60a832e4aaa81ea27`; source ZIP asset `657979008`, 2,867,315 bytes, SHA-256 `60ef4e79529aabcbb4f4093b9f8a18b5d383d5c651c1c303dd8bb774e7b0dd5d`.
-- Current Home NOTIFY follow-up blobs: lib/main.dart `24cd98e54944cca57bcdade80d335f66aeefdc9e`; lib/app_settings.dart `44431e926bfa2557c26345899e2333bd767f3f8e`; test/widget_test.dart `e55a41dfeacc9ab5aee0e9bb31a0e21221bd9156`. These postdate Build #116 and are SOURCE UPDATED / NOT RUN / NOT RELEASED.
+- Current Home NOTIFY follow-up blobs: lib/main.dart `4d2871234971ef8a9fa976f197e0e4f7b1e188ac`; lib/app_settings.dart `44431e926bfa2557c26345899e2333bd767f3f8e`; test/widget_test.dart `ccae334f9a737926bef021fa04ce7caa4d30601d`. These postdate Build #116 and are SOURCE UPDATED / NOT RUN / NOT RELEASED.
 - Home contract: seven 45 dp rows; 3 dp gap before the fixed 44 dp notification card; localized `Notification` / `Notifikasi` heading with 2 dp top inset; left-aligned body scales to at most two lines; cooler image stays under stable sibling-row constraints.
 - Battery/Hotside use refined falling flame-shaped background particles with warm yellow-white cores, a soft halo, subtle drift/rotation, and a rounded-frame clip combined with foreground-silhouette subtraction. Thresholds remain Battery ≥40°C and Hotside at configured limit.
 - Firmware V6.9 compile/install is USER-REPORTED. Independent compile logs, source-to-BIN provenance, installed version and physical behavior remain UNVERIFIED. No Firmware/device operation was done in this task.
@@ -36,7 +36,7 @@ Historical note: Build #95 was an intermediate release, later superseded by Buil
 
 ## Home NOTIFY live-state and localization fix — 2026-10-20 (source-only / NOT RUN / NOT RELEASED)
 
-- Latest source/test fingerprints: `lib/main.dart` `24cd98e54944cca57bcdade80d335f66aeefdc9e`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `e55a41dfeacc9ab5aee0e9bb31a0e21221bd9156`.
+- Latest source/test fingerprints: `lib/main.dart` `4d2871234971ef8a9fa976f197e0e4f7b1e188ac`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `ccae334f9a737926bef021fa04ce7caa4d30601d`.
 - Home NOTIFY now follows the newest confirmed cooling telemetry instead of treating a successful command acknowledgement as a permanent message. Accepted Adaptive/Voltage/Fan/Peltier/Fan Speed commands move the card to a compact summary built from current mode, voltage, Fan state/speed and Peltier state.
 - A genuine change in cooling telemetry, safety reason or Hotside-limit state retires an older ordinary acknowledgement. Repeated identical telemetry is not treated as a new change.
 - Safety has priority over older success messages and ordinary summaries. Hotside at/above its configured limit displays the current measured temperature and configured limit. Home warning presentation also recognizes that live threshold.
