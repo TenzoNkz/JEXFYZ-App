@@ -1,3 +1,12 @@
+## FIRMWARE V7.0 SOURCE FOLLOW-UP — 2026-10-20 (NOT COMPILED / NOT DEPLOYED)
+
+- Corrected the missed version increment from the previous Adaptive Fan whole-degree edit: the only active sketch is now `firmware/JEXFYZ-V7.0.ino`, and its embedded `FW_VERSION` is `V7.0`. Previous `firmware/JEXFYZ-V6.9.ino` has been retired from the active tree.
+- Retained whole-degree target selection, the raw-decimal immediate Hotside safety override, +10 PWM points per second / −10 points per 10 seconds, the single calibrated 1 Hz NTC sample, non-blocking timing, voltage-transition pacing and protected OTA transport.
+- Added a regression contract for App recognition of V7.0 as different from V6.9 and for the firmware's exact-version OTA short-circuit. Source blob: `823f6f31176695a3ff3a923995b1b3cd5f42c683`; QC test: `a44c12d32c472f109687c06316ea40f70fcf93ce`; Touch/Adaptive test: `b3e23e59deae19408cd7ccbacbad84273f958970`.
+- **Deployment is still pending.** Firmware contract tests and Arduino compile have NOT RUN. No new BIN was generated/published, no Firebase metadata was changed, and no OTA/flash/device operation occurred. The firmware skips download when metadata version equals embedded `FW_VERSION`; after a matching V7.0 BIN is compiled and published, Firebase `firmware_update.json` must advertise `version: "V7.0"` and the fixed BIN URL before the installed V6.9 device can see the update. OTA apply, reboot, BLE resync and installed version remain unverified.
+
+---
+
 ## SOURCE FOLLOW-UP — 2026-10-20 — Stabilize Adaptive Fan whole-degree targets (NOT COMPILED / NOT RUN)
 
 - Replaced fractional-delta PWM target thresholds with floored whole-degree Hotside categories. With a 40°C Hotside Limit, 36.0–36.99°C stays at 70%; the target becomes 80% starting at category 37. The reported 36.3°C →36.8°C drift therefore no longer moves the target up a tier.
