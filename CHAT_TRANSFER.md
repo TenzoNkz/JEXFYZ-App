@@ -23,11 +23,11 @@ Reconciled from live GitHub main after `@Thinking Eksekusi Full!` on 2026-10-20 
 
 - Home heading: `Notification` / `Notifikasi`; Settings section: `Notifications` / `Notifikasi`; Contact Developer: `Contact Developer` / `Hubungi Pengembang`.
 - Updated notification descriptions, Hotside terminology, palette labels, Bluetooth/firmware copy and Android Floating Monitor status text.
-- Latest NOTIFY source blobs: `lib/main.dart` a167e884f765a8a9ef379108262c366c8bcdcf99; `lib/app_settings.dart` 44431e926bfa2557c26345899e2333bd767f3f8e; `test/widget_test.dart` 5cb9ccacf585823a874976432478529893f71da3. Native `FloatingMonitorService.kt` blob remains `f2c5d5e8b5731be36ae3b82109a75beaefe5fb4d`. Tests and analyzer have NOT RUN for the latest source-only fix.
+- Latest NOTIFY source blobs: `lib/main.dart` 22986e3cdd21973fbf8ae5e5ed646d28f18785d6; `lib/app_settings.dart` 44431e926bfa2557c26345899e2333bd767f3f8e; `test/widget_test.dart` c2cb9928fcb8388d51687b8907575c3f06b8cc66. Native `FloatingMonitorService.kt` blob remains `f2c5d5e8b5731be36ae3b82109a75beaefe5fb4d`. Tests and analyzer have NOT RUN for the latest source-only fix.
 
 ## Home NOTIFY — single latest-event message (2026-10-20; source-only / NOT RUN / NOT RELEASED)
 
-- Current blobs: `lib/main.dart` `a167e884f765a8a9ef379108262c366c8bcdcf99`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `5cb9ccacf585823a874976432478529893f71da3`.
+- Current blobs: `lib/main.dart` `22986e3cdd21973fbf8ae5e5ed646d28f18785d6`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `c2cb9928fcb8388d51687b8907575c3f06b8cc66`.
 - Home NOTIFY presents only the newest confirmed event as one complete sentence. A new event replaces the previous one; it never concatenates Adaptive, Voltage, Fan and Peltier into a combined summary. Example sequence: `Adaptive ON.` → `Voltage set to 5V.` → `Fan speed reduced to 70%.`
 - Events cover Voltage, Fan/Peltier ON/OFF, Adaptive ON/OFF/profile/ceiling, Fan speed increase/reduction, LED ON/OFF/mode/brightness/color and safety-state changes. Repeated identical telemetry creates no event, and a delayed ACK cannot overwrite newer telemetry.
 - Ordinary Temperature samples do not generate Home NOTIFY. Hotside reaching the configured limit displays the measured temperature and configured limit in English/Indonesian, with safety priority. Android push still follows its notification preference and re-arms when Hotside falls below the limit.
