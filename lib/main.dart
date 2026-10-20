@@ -5585,7 +5585,7 @@ void _handleAckLine(String line) {
         }
       } else if (latestTelemetryNotice != null) {
         // The most recent confirmed control/LED event outranks ordinary operating reasons.
-        notice = latestTelemetryNotice;
+        notice = latestTelemetryNotice!;
         _homeNotifyRevision++;
       } else if (latestSafetyReason != null) {
         // Preserve actionable known reason copy instead of replacing it with a generic label.
