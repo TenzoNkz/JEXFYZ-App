@@ -4,8 +4,8 @@ Last source/safety-reference reconciliation: 2026-10-20 (Asia/Jakarta). Latest s
 
 ## Current source identity
 
-- Canonical editable source: firmware/JEXFYZ-V6.9.ino, blob 8e0f0ff5a65962ebdb44300b05fc161cf9349d96, embedded FW_VERSION=V6.9.
-- Compile/install status: USER-REPORTED. The user says latest Firmware was compiled and installed. Independent logs, source-to-BIN relationship, installed device version and physical PWM/thermal behavior remain UNVERIFIED. Recorded Firmware contract tests have not run for V6.9.
+- Canonical editable source: firmware/JEXFYZ-V7.0.ino, blob 823f6f31176695a3ff3a923995b1b3cd5f42c683, embedded FW_VERSION=V7.0.
+- Compile/install status: V7.0 is NOT COMPILED / NOT INSTALLED. The earlier V6.9 compile/install report is historical user-reported evidence only. Independent logs, source-to-BIN relationship, installed device version and physical PWM/thermal behavior remain UNVERIFIED. Firmware contract tests have NOT RUN for V7.0.
 - Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module, Arduino-ESP32 Core 3.3.7. Firmware compiles separately from App release.
 
 ## Architecture
@@ -63,14 +63,14 @@ The canonical detailed incident/contract is `VOLTAGE_TRANSITION_MEMORY.md`.
 - HOTSIDE is the startup default; HOTSIDE_BATTERY is runtime selectable but is not persisted. Battery sensor loss falls back to HOTSIDE behavior without changing the user's profile selection.
 - No rapid Hotside slope/rise protection is present in the known V6.x contract.
 
-## Current Adaptive Fan PWM at 12V — V6.9 paced temperature-tier ramp
+## Current Adaptive Fan PWM at 12V — V7.0 whole-degree target, paced ramp
 
 - Target tiers use the floored whole-degree category, `temperatureCategoryC = floor(hotsideC)`, then the integer distance `belowLimitC = hotLimit - temperatureCategoryC`: ≤1 →100%; ≤2 →90%; ≤3 →80%; ≤4 →70%; ≤5 →60%; ≥6 →50%. For a 40°C limit, 36.0–36.99°C stays at 70%, and target 80% begins at category 37. This prevents 36.3°C →36.8°C from changing the target. The immediate protection override remains based on the unrounded reading (`hotsideC >= hotLimit`) and still forces 100% without delay.
 - Actual PWM approaches the target in 10-point steps: decreasing waits 10,000 ms before each step; increasing waits 1,000 ms before each step. When direction changes, the clock starts for the new direction rather than allowing a stale timer to cause a step immediately.
 - `voltageTransition`, Adaptive hot-step transition, thermal dwell and non-running output conditions reset the clock and preserve the full-speed priority. A 9 V → 12 V transition therefore remains at 100% through the handoff, then waits at least 10 seconds before the first reduction. Subsequent reductions happen no faster than one step per 10 seconds.
 - Active Hotside protection or `hotsideC >= hotLimit` forces 100% immediately. Adaptive 5 V/9 V remains 100%; the normal safety controller remains authoritative.
 - NTC acquisition remains one calibrated sample per second. No blocking delay, extra ADC read, averaging/filter, or timing loop was added.
-- Current source is `firmware/JEXFYZ-V6.9.ino` blob `b35101a0cc5a597c55ecd4391cd99d5b62852417`; `test/firmware_qc_contract_test.dart` blob is `29325173289d78041002df41cc14262fcf89e045`. The source adds whole-degree target selection while retaining exact-decimal safety override and 10-second down/1-second up ramp cadence. Tests and Arduino compile have NOT RUN for this revision. The previous V6.9 compile/install was user-reported before this source change; this exact hash is not confirmed installed. The hardware-reset symptom remains unverified.
+- Current source is `firmware/JEXFYZ-V7.0.ino` blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`; `test/firmware_qc_contract_test.dart` blob `a44c12d32c472f109687c06316ea40f70fcf93ce` and `test/firmware_touch_adaptive_sync_test.dart` blob `b3e23e59deae19408cd7ccbacbad84273f958970`. The whole-degree category target retains the raw-decimal safety override and 10-second down/1-second up ramp cadence. Tests and Arduino compile have NOT RUN for V7.0. The prior V6.9 compile/install report predates this source revision; this exact hash is not confirmed installed. The hardware-reset symptom remains unverified.
 
 ## HISTORICAL / SUPERSEDED — V6.8 direct temperature-tier controller
 
@@ -92,7 +92,7 @@ The canonical detailed incident/contract is `VOLTAGE_TRANSITION_MEMORY.md`.
 - Read `OTA_PROTECTION.md` and `OTA_REGRESSION_MEMORY.md` before any OTA source edit.
 - Current Online OTA uses `cloudClient.setInsecure()`; the embedded root CA validation and OTA-only NTP/TIME_SYNCING gate are absent. This bypasses server certificate identity validation; do not hide this security trade-off.
 - Keep raw GitHub URL allowlist for `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/`, redirects disabled, response/length/size/image checks, streaming update lifecycle, all-off safety output, failure recovery and restart behavior.
-- No custom SHA/signature layer is part of the user-approved Firebase OTA metadata model; version + link only.
+- No custom SHA/signature layer is part of the user-approved Firebase OTA metadata model; version + link only. Online OTA short-circuits when the metadata version equals embedded `FW_VERSION`; V7.0 therefore requires a matching compiled/published `JEXFYZ.cpp.bin` and Firebase `version: "V7.0"` before it can be discovered as an update. Neither has been deployed by this source-only change.
 - Never assume the artifact BIN is compiled from current source until source/version/build provenance is verified.
 
 **HISTORICAL App source-contract evidence:** Build #35 / run `38669526891` on commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8` passed Dart analyze and 74 Flutter tests including earlier V6.6 source assertions; that proves only those older App/test gates.
