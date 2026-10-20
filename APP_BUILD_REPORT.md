@@ -1,19 +1,30 @@
-## CURRENT APP BUILD ATTEMPT — BUILD #122 (PENDING OFFICIAL TRIGGER AFTER ANALYZER FIX)
+## CURRENT APP BUILD ATTEMPT — BUILD #123 (PENDING OFFICIAL TRIGGER; TEST CONTRACT REPAIRED)
 
-- **Authorization:** the current `@Thinking Eksekusi Build App!` task authorizes evidence-based App-only repair/retry without another command. Build #121 is terminal; there are no active or queued runs at this pre-retry check.
-- **Pre-trigger source HEAD:** `c2b2ad81c5adca303731c41f8baace5863192067`; `lib/main.dart` blob `4e1d73bc4954696ed875824f468341c01c84bc4c`; `test/widget_test.dart` blob `132c3b000abd63599ebea9d26fc5085cb577e50e`. Android `versionName "Telegram @horizontalzzz"` remains unchanged.
-- **Build #121 result:** [run 39371082590](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39371082590) failed at `flutter analyze --no-fatal-infos` on checked-out commit `ac80d71dada661f209febca1996c05e092c7c451`. Exact diagnostic: `lib/main.dart:5588:18` — a `String?` value could not be assigned to `String` at `notice = latestTelemetryNotice;`. Flutter tests and downstream Android/APK/signature/release gates were skipped; no asset from #121 was published.
-- **Evidence-based fix:** commit `c2b2ad81c5adca303731c41f8baace5863192067`, message `fix(notify): assert checked latest event is non-null`, changes that assignment to `notice = latestTelemetryNotice!;`. The branch immediately checks `latestTelemetryNotice != null`; the explicit assertion addresses Dart's failed flow promotion for a local captured and mutated inside the `setState` closure. No gate was disabled and no test was weakened. The analyzer and all tests still must run on this fix.
-- **Source under retry:** current single-latest-event Home NOTIFY, live cooling/safety telemetry precedence, safety-latch/reason prioritization, Adaptive voltage-ceiling acknowledgement, bilingual localization and regression contracts.
-- **Trigger/security preflight:** issue #34 remains owner-authored by `TenzoNkz`, with title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. Workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12` retains issue-only opened/reopened triggers and owner/title/token guards. Next action is one official close/reopen cycle; no push/PR/dispatch bypass.
-- **Required gates:** analyzer, all Flutter tests, configured Android gate, obfuscated production APK, V1/V2/V3 and expected certificate checks, matching source ZIP, Release/tag target parity, exactly one APK plus one ZIP, re-downloaded digest/ZIP/source-marker verification.
-- App Build scope only: no Firmware compile/test, BIN publication, Firebase/OTA production update, flashing or device operation.
+- **Authorization and preflight:** the active user command `@Thinking Eksekusi Build App!` authorizes evidence-based App-only fixes/retries. Build #122 is terminal; no Actions run is queued or in progress. Last successful release is still Build #120 / [run 39365201489](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39365201489).
+- **Current pre-trigger source:** `main` HEAD `13e61f18606e87f27f6d147b0f3183f73a71916d`; `lib/main.dart` blob `4e1d73bc4954696ed875824f468341c01c84bc4c`; `test/widget_test.dart` blob `25b4e352ee17456091dc9766313a9303abc6f892`. Android `versionName "Telegram @horizontalzzz"` remains unchanged.
+- **Build #121 failure and fix:** run `39371082590` failed Dart analysis on `lib/main.dart:5588:18` because a nullable local captured/mutated inside `setState` could not be promoted to `String`. Commit `c2b2ad81c5adca303731c41f8baace5863192067` makes the already-checked value explicit with `notice = latestTelemetryNotice!;`; Build #122 analyzer passed with this fix.
+- **Build #122 result:** [run 39371442709](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39371442709) passed toolchain/security/dependency install and Dart analyzer, then Flutter tests reported **114 passed, 1 failed**. Failing test was `Home Notify connection and action copy stays concise in both languages`; `test/widget_test.dart:2064` raised `RangeError` because the source-contract marker still searched for the obsolete one-line signature `void _notifyCommandAccepted(String command)`. Downstream Android/APK/signing/release gates were skipped, and no #122 artifact was published.
+- **Evidence-based regression-test fix:** commit `13e61f18606e87f27f6d147b0f3183f73a71916d`, message `test(notify): align source contract with current command handler`, changes the marker to `void _notifyCommandAccepted(` to match the current multiline parameter signature, and checks delegation to `homeFanSpeedChangedNotice(previousFanSpeed, requested, language: lang)` rather than asserting the superseded inline Fan Speed phrase. The existing runtime tests for increasing/decreasing Fan Speed and the rest of the bilingual action-copy assertions are retained. No tests were removed or weakened.
+- **Source under validation:** current single-latest-event Home NOTIFY, current cooling/safety telemetry precedence, Hotside limit priority, actionable safety reason messages, Adaptive voltage-ceiling event, bilingual relocalization, and the repaired implementation/source contract.
+- **Trigger/security:** issue #34 remains owner-authored by `TenzoNkz` with the exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. Workflow blob remains `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`, limited to the guarded issue opened/reopened event. One official close/reopen cycle is required for #123; no push/PR/manual-dispatch bypass.
+- **Required gates:** Dart analyzer; every Flutter test; configured Android gate; obfuscated production APK; V1/V2/V3 and expected certificate verification; corresponding source ZIP; Release/tag target parity; exactly one APK plus one ZIP; downloaded digest, ZIP integrity and source marker checks.
+- App-only scope. Do not compile Firmware, publish BIN, update production Firebase/OTA metadata, flash hardware or operate a device.
 
-## RESOLVED ATTEMPT RECORD — BUILD #121 ANALYZER FAILURE
+---
+
+## RESOLVED ATTEMPT RECORD — BUILD #122 FLUTTER TEST FAILURE
+
+- Run #122 / `39371442709` used the official issue #34 reopened event and source commit `25ee50c52e76b20abf6d8a957540ac61f78f55d2`. Toolchain, signing prep, security audit, dependency installation and Dart analyzer passed; Flutter tests failed with 114 passed / 1 failed. The Android gate and every APK/release step were skipped.
+- Exact failure: `test/widget_test.dart:2064`, `RangeError (start): Invalid value ... -1`, from `source.indexOf('void _notifyCommandAccepted(String command)')`. This marker no longer matched the multiline helper signature; the next expected Fan Speed string was also superseded by helper delegation.
+- Test fix commit `13e61f18606e87f27f6d147b0f3183f73a71916d` updates the test contract to the actual helper signature and `homeFanSpeedChangedNotice(...)`; no functionality or gate was weakened. Revalidate all tests in Build #123.
+
+---
+
+## RESOLVED ATTEMPT RECORD — BUILD #121 DART ANALYZER FAILURE
 
 - Run #121 / `39371082590` used official issue #34 reopened event and source commit `ac80d71dada661f209febca1996c05e092c7c451`.
-- Toolchain, production signing preparation, security/architecture audit and dependency installation passed. Analyzer failed only on the nullable assignment documented above. Flutter tests and all following gates were skipped. Run is terminal `failure`.
-- Fix is committed as `c2b2ad81c5adca303731c41f8baace5863192067`; retry remains pending and must use the official guarded issue event.
+- Toolchain, production signing preparation, security/architecture audit and dependency installation passed. Analyzer failed at `lib/main.dart:5588:18` with `String?` → `String` invalid assignment. Flutter tests and every following gate were skipped.
+- Fix commit `c2b2ad81c5adca303731c41f8baace5863192067` adds the explicit non-null assertion in the branch that already checks `latestTelemetryNotice != null`. Build #122 analyzer passed this line.
 
 ---
 
