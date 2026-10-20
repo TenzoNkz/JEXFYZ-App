@@ -1,5 +1,14 @@
 ## 2026-10-20 — Refined falling flames and category-free NOTIFY (source-only; NOT RUN / NOT RELEASED)
 
+## SOURCE FOLLOW-UP — 2026-10-20 — Formalize English and Indonesian UI copy
+
+- Home card heading now follows the selected language: `Notification` / `Notifikasi`. The Settings section retains `Notifications` / `Notifikasi`.
+- Localized Contact Developer and the Android Floating Monitor foreground notification. Standardized Hotside terminology, improved notification descriptions, refined palette labels and made user-facing Bluetooth/firmware errors clearer without exposing internal backend details.
+- Regression assertions now cover the notification heading and contact label in both languages. Flutter tests and Dart analysis were NOT RUN. Build #116 remains the latest verified App release and does not include this copy pass.
+- Source blobs: `lib/app_settings.dart` 3486653401adb6bba251ae16afc7837a3a1af5fe; `lib/main.dart` 07178b5cce55fc8f78cc7c2953f4d8e352ccefe7; `test/widget_test.dart` da12f8ef82283f55af04a5286a6366e2253a4e6f; `FloatingMonitorService.kt` f2c5d5e8b5731be36ae3b82109a75beaefe5fb4d.
+- No App Build/release, Firmware/BIN, Firebase, OTA, flash or device operation occurred.
+
+
 - Replaced the oval-dot Battery/Hotside visual with compact falling flame shapes, a soft orange/gold halo, and warm yellow-white cores. Deterministic top-down movement, subtle drift/rotation and boundary fading remain; no random per-frame state was introduced.
 - The fire background is clipped to a rounded frame minus the foreground silhouette, so flames do not escape the rounded boundary or paint inside the battery chamber/thermometer tube. Existing Battery ≥40°C and configured Hotside warning gates plus the 280 ms transition remain unchanged.
 - Home NOTIFY heading is always exactly `NOTIFY`, with category suffixes removed for every state and language. Added a 2 dp top inset for the heading while preserving the fixed 44 dp card, two-line body scaling, 45 dp metric rows and 3 dp gap above the card.
