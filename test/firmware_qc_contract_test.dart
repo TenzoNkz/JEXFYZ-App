@@ -94,11 +94,11 @@ void main() {
     expect(source, contains('static void processAdaptiveFanControl();'));
     expect(source, contains('processAdaptiveFanControl();'));
     // NTC remains one calibrated sample each second; the ramp is non-blocking.
-    expect(RegExp(r'analogReadMilliVolts\\(PIN_NTC\\)').allMatches(source).length, 1);
+    expect(RegExp(r'analogReadMilliVolts\(PIN_NTC\)').allMatches(source).length, 1);
     expect(source, contains('FAN_PWM_MIN = 50'));
     expect(source, contains('FAN_PWM_MAX = 100'));
-    expect(RegExp(r'^\\s*delay\\s*\\(', multiLine: true).hasMatch(source), isFalse);
-    expect(RegExp(r'^\\s*while\\s*\\(', multiLine: true).hasMatch(source), isFalse);
+    expect(RegExp(r'^\s*delay\s*\(', multiLine: true).hasMatch(source), isFalse);
+    expect(RegExp(r'^\s*while\s*\(', multiLine: true).hasMatch(source), isFalse);
   });
 
   test('Online OTA preserves the legacy connection path and GitHub URL restrictions', () {
