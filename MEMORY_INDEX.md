@@ -70,7 +70,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #110 is 
 - Current Firmware QC contract: `test/firmware_qc_contract_test.dart` blob `1b35feeb1e411efec44261ec130eec4535004454`; Touch/Adaptive sync contract: `test/firmware_touch_adaptive_sync_test.dart` blob `3a86dd118cd1d1332dbafa3883ab9e5ae2823ac8`. Both are NOT RUN for V6.8.
 ## Current source fingerprints (Build #110 successful; latest App follow-up NOT RUN; Firmware V6.9 NOT COMPILED)
 
-- lib/main.dart: 08592a9d861a11ecdb8de1aa289f8ce06bf2e20 — 44 dp Home metric rows and original icon-left/text-left badge-free Notify Row with 56 dp slot; NOT RUN / NOT RELEASED.
+- lib/main.dart: 417083ebeb3ea59145182bc49912b9f2416721a2 — 44 dp Home metric rows and original icon-left/text-left badge-free Notify Row with 44 dp minimum height, expanding only for two-line copy; falling fire/geometry follow-up; NOT RUN / NOT RELEASED.
 - test/widget_test.dart: 10de861b593c7b4955deaa160ab1d0c3be519f58 — layout regression contracts for 44 dp metrics and dynamic 44 dp-minimum Notify; NOT RUN / NOT RELEASED.
 - lib/jex_animated_glyph.dart: b37fc4e0807c874b2f01db00c7f606810cb5deca — generic action glyphs static.
 - Build #99 validated source commit bc1498d5b3db7621ee18f5ca6f021e6013c73b09, source blob 30d864c2f03c40fd4d0b6926a9958153f2a3b236 and test blob 711a44b00eadee2e2bcd24e48383128f0d70ccc9.
