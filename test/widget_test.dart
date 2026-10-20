@@ -440,10 +440,13 @@ void main() {
           .setMockMethodCallHandler(securityChannel, null);
     });
 
+    final priorLanguage = appLanguageNotifier.value;
+    appLanguageNotifier.value = AppLanguage.indonesia;
+    addTearDown(() => appLanguageNotifier.value = priorLanguage);
     await tester.pumpWidget(const TamperApp());
     await tester.pump();
 
-    expect(find.text('HUBUNGI DEVELOPER'), findsOneWidget);
+    expect(find.text('Hubungi Pengembang'), findsOneWidget);
     expect(find.byType(Icon), findsOneWidget);
     expect(find.textContaining('KONTOL'), findsWidgets);
     expect(find.textContaining('MEMEK'), findsWidgets);
@@ -501,7 +504,7 @@ void main() {
     expect(nativeSource, contains('"openDeveloperContact" -> result.success(openDeveloperContact())'));
     expect(nativeSource, contains('Uri.parse("https://t.me/horizontalzzz")'));
 
-    await tester.tap(find.text('HUBUNGI DEVELOPER'));
+    await tester.tap(find.text('Hubungi Pengembang'));
     await tester.pump();
     expect(contactRequested, isTrue);
     expect(tester.takeException(), isNull);
@@ -573,6 +576,9 @@ void main() {
       tester.view.resetDevicePixelRatio();
     });
 
+    final priorLanguage = appLanguageNotifier.value;
+    appLanguageNotifier.value = AppLanguage.english;
+    addTearDown(() => appLanguageNotifier.value = priorLanguage);
     await tester.pumpWidget(const JeCoolerApp());
     await tester.pump();
 
@@ -590,17 +596,20 @@ void main() {
     expect(find.text('9V'), findsOneWidget);
     expect(find.text('12V'), findsOneWidget);
 
-    // NOTIFY stays category-free in every state and language.
-    expect(find.text('NOTIFY'), findsOneWidget);
+    // The heading follows the selected app language without a category suffix.
+    expect(find.text('Notification'), findsOneWidget);
     expect(
       find.byWidgetPredicate(
         (widget) => widget is Text &&
-            (widget.data ?? '').trim().startsWith('NOTIFY •'),
+            ((widget.data ?? '').trim().startsWith('Notification •') ||
+             (widget.data ?? '').trim().startsWith('Notifikasi •')),
       ),
       findsNothing,
     );
     final source = File('lib/main.dart').readAsStringSync();
-    final notifyLabelStart = source.indexOf("String _notifyStateLabel() => 'NOTIFY';");
+    final notifyLabelStart = source.indexOf(
+      "String _notifyStateLabel() => JexText.of('notification', appLanguageNotifier.value);",
+    );
     expect(notifyLabelStart, isNonNegative);
     expect(source, contains('padding: const EdgeInsets.only(top: 2)'));
 
@@ -619,8 +628,15 @@ void main() {
     expect(JexText.of('indonesia', AppLanguage.indonesia), 'Indonesia');
     // Indonesia uses baku UI terminology while coding identifiers remain English.
     expect(JexText.of('temperature', AppLanguage.indonesia), 'Suhu');
+    expect(JexText.of('notification', AppLanguage.english), 'Notification');
+    expect(JexText.of('notification', AppLanguage.indonesia), 'Notifikasi');
+    expect(JexText.of('notifications', AppLanguage.english), 'Notifications');
+    expect(JexText.of('notifications', AppLanguage.indonesia), 'Notifikasi');
+    expect(JexText.of('contactDeveloper', AppLanguage.english), 'Contact Developer');
+    expect(JexText.of('contactDeveloper', AppLanguage.indonesia), 'Hubungi Pengembang');
+    expect(JexText.of('autoConnect', AppLanguage.indonesia), 'Koneksi Otomatis');
     expect(JexText.of('batteryTemperature', AppLanguage.indonesia), 'Suhu Baterai');
-    expect(JexText.of('hotsideTemperature', AppLanguage.indonesia), 'Suhu Panas');
+    expect(JexText.of('hotsideTemperature', AppLanguage.indonesia), 'Suhu Hotside');
     expect(JexText.of('hotsideTemperature', AppLanguage.english), 'Hotside Temperature');
     expect(JexText.of('speed', AppLanguage.english), 'Fan');
     expect(JexText.of('speed', AppLanguage.indonesia), 'Kipas');
@@ -954,7 +970,10 @@ void main() {
     final categoryEnd = source.indexOf('Widget _homeNotify() {', categoryStart);
     expect(categoryStart, isNonNegative);
     expect(categoryEnd, greaterThan(categoryStart));
-    expect(source.substring(categoryStart, categoryEnd), contains('NOTIFY • \$category'));
+    expect(
+      source.substring(categoryStart, categoryEnd),
+      contains("JexText.of('notification', appLanguageNotifier.value)"),
+    );
   });
 
   test('All seven Home indicator rows use uniform 45 dp vertical spacing', () {
@@ -1695,8 +1714,8 @@ void main() {
     expect(icon, isNot(contains('Legacy monochrome X resource retained')));
     expect(bleService, contains('Bluetooth connected · cooler session active'));
     expect(bleService, contains('Bluetooth terhubung · sesi cooler aktif'));
-    expect(floatingService, contains('Floating Monitor active'));
-    expect(floatingService, contains('Monitor Melayang aktif'));
+    expect(floatingService, contains('Floating Monitor is active.'));
+    expect(floatingService, contains('Floating Monitor aktif.'));
     expect(icon, contains('android:fillColor="#FFFFFFFF"'));
     expect(appSource, contains("JexText.of('bluetoothDisconnected', appLanguageNotifier.value)"));
   });
