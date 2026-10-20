@@ -6709,7 +6709,7 @@ void _handleAckLine(String line) {
 
     return Container(
       width: double.infinity,
-      constraints: const BoxConstraints(minHeight: 56),
+      constraints: const BoxConstraints(minHeight: 44),
       padding: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
         color: headerDark
@@ -6727,7 +6727,7 @@ void _handleAckLine(String line) {
         children: [
           SizedBox(
             width: 45,
-            height: 48,
+            height: 34,
             child: Center(
               child: JexAnimatedIcon.glyph(
                 icon: icon,
@@ -8201,12 +8201,7 @@ void _handleAckLine(String line) {
               ),
             ),
             const SizedBox(height: 2),
-            SizedBox(
-              width: double.infinity,
-              // Slightly taller than the original slot to fit a two-line notice.
-              height: 56,
-              child: _homeNotify(),
-            ),
+            _homeNotify(),
           ],
         ),
       ),
