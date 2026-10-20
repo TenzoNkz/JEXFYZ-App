@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('Touch Adaptive-OFF publishes authoritative state before its ACK', () {
-    final source = File('firmware/JEXFYZ-V6.8.ino').readAsStringSync();
+    final source = File('firmware/JEXFYZ-V6.9.ino').readAsStringSync();
     final start = source.indexOf('static void executeTouchLong() {');
     final end = source.indexOf('static void processTouchInput()', start);
 
