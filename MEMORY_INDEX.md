@@ -13,8 +13,6 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #110 is 
 
 ## Current visual-state redraw checklist
 
-## Current visual-state redraw checklist
-
 - [x] Preserve Build #99's tested smoothness/state architecture without duplicating it.
 - [x] Redraw disconnected/idle-state detail for all seven icons.
 - [x] Keep unknown Battery/Hotside values from showing a fabricated live level.
