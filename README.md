@@ -20,20 +20,12 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 
 ## Current release and source validation boundary — 2026-10-20
 
-- Latest successful App release is **Build #113**, Actions run [39350217172](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39350217172), packaged source `05e4f644d6bf82ae2682154082c3e44a4876205a`. The live `jexfyz-latest` Release and tag both point to that commit. APK asset `657872748`, SHA-256 `7252e952983560254822b8d77a9a1c47d5a3f91d80bf8ed50e58586bbe2c2991`; source ZIP asset `657872749`, SHA-256 `0fcccecc639e20f16d65976a5f3c334dd2ce4f7692d2a4d95b5b8aaad7dae59f`.
-- Build #113 passed 109 Flutter tests, Dart analyzer exit 0 with 25 info-level diagnostics, the configured Android Gradle gate, V1/V2/V3 signing and certificate checks, and published-asset/hash/tag verification. Native Android JUnit tasks were `NO-SOURCE`, so no native Android JUnit cases ran.
-- Latest App source follow-up is newer than Build #113 and **NOT RUN / NOT RELEASED**: `lib/main.dart` blob `d0fdb7482d939b34b0a1824b33d37f6457835818`, `test/widget_test.dart` blob `09cfe3e7b744b988571a28ad0d9377da5ee36cb1`. It sets all seven Home metric rows to 45 dp, uses a 3 dp gap above fixed-height 44 dp NOTIFY, scales wrapped body text to fit up to two lines, keeps cooler image constraints stable, and paints Battery/Hotside fire behind their foreground silhouettes using `ClipOp.difference`.
-- The source-only follow-up has NOT had Flutter tests or Dart analysis executed. Build #113 must not be treated as validation of these newer edits.
-- Firmware V6.9 source remains `firmware/JEXFYZ-V6.9.ino` (blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`). The user reports successful compile/install; independent logs, source-to-BIN provenance, installed version and physical PWM/thermal behavior remain UNVERIFIED. No Firmware tests were run for V6.9 in the recorded CI evidence.
-- Physical UI/layout, BLE, thermal/electrical safety, PWM response, source-to-BIN identity, Firebase/OTA, flash and installed-device version require evidence outside App CI.
-
-## Repository boundaries
-
-- `TenzoNkz/JEXFYZ-App` is the canonical editable App + Firmware source repository and the sole home for project documentation/memories.
-- `TenzoNkz/JEXFYZ-Firmware` is intended to contain only the production OTA artifact `JEXFYZ.cpp.bin`. The live recursive tree has exactly one entry, blob `821b022f97353d9a7aea4695b2e37c98b7488e15`, 1,456,560 bytes. Only tree metadata was inspected; do not read the payload or add README, note, source, or memory files there. Source-to-BIN provenance remains UNVERIFIED.
-- The active editable Firmware source is `firmware/JEXFYZ-V6.9.ino` (`FW_VERSION="V6.9"`, blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`). It retains Hotside-limit temperature tiers and adds 10-second downsteps/1-second upsteps with transition grace. The user reports V6.9 compiled/installed; independent compile logs, source-to-BIN provenance and installed version remain UNVERIFIED.
-- V6.6/V6.7 compile/OTA reports are historical user reports. V6.7 compilation and online update were user-reported, but no independent compile log, BIN identity, OTA evidence or current device version was inspected.
-- App Gradle `versionName "Telegram @horizontalzzz"` is an intentional identity string; do not change it.
+- Latest successful App release: **Build #116**, Actions run [39355262101](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39355262101), packaged source `48683874db659df940272bed1c860072ead2d767`. Live `jexfyz-latest` Release/tag target that package commit.
+- APK asset `657979004`, SHA-256 `8570914f331583d2cc462f61881609c0eae56639a139f2d60a832e4aaa81ea27`; corresponding source ZIP asset `657979008`, SHA-256 `60ef4e79529aabcbb4f4093b9f8a18b5d383d5c651c1c303dd8bb774e7b0dd5d`.
+- Build #116 passed 109 Flutter tests, analyzer exit 0 with 25 info-level diagnostics, configured Android gate, signing checks, ZIP integrity, asset hash/source-marker checks, and exact tag/commit verification. Native Android JUnit tasks were `NO-SOURCE`.
+- Current source-only follow-up is **NOT RUN / NOT RELEASED**: `lib/main.dart` blob `8eb24de58a2e510b3d05abbb29bce45bb0a42810`, `test/widget_test.dart` blob `134880899237c1bfa875473129473524f6851439`. Fire now uses falling flame-shaped particles with rounded-frame clipping; NOTIFY is exactly `NOTIFY` with a 2 dp top inset, while its height stays 44 dp, body remains limited to two lines, metric rows stay 45 dp, and the pre-NOTIFY gap stays 3 dp.
+- Flutter tests and Dart analysis have NOT RUN on this newest change. Build #116 must not be treated as validation of these later edits.
+- Firmware V6.9 compile/install remains USER-REPORTED; independent logs, source-to-BIN provenance, installed version and physical behavior remain UNVERIFIED. No App Build/Firmware/device action was started in this Full task.
 
 ## Remaining validation outside CI
 

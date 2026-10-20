@@ -282,6 +282,9 @@ void main() {
     expect(thermalEnd, greaterThan(thermalStart));
     final thermal = painter.substring(thermalStart, thermalEnd);
     expect(thermal, contains('canvas.drawOval'));
+    expect(thermal, contains('final flameShape = Path()'));
+    expect(thermal, contains('final flameCore = Path()'));
+    expect(thermal, contains('final hotCore = Path()'));
     expect(thermal, contains('final fall = (cycle + i / lanes.length) % 1.0'));
     expect(thermal, contains('final y = bounds.top - s * .08'));
     expect(thermal, contains('travel * fallDistance'));
@@ -295,7 +298,10 @@ void main() {
     expect(thermal, contains('required Path foregroundSilhouette'));
     expect(thermal, contains('final fireBackdrop = Path.combine('));
     expect(thermal, contains('PathOperation.difference'));
-    expect(thermal, contains('Path()..addRect(bounds)'));
+    expect(thermal, contains('final roundedFrame = RRect.fromRectAndRadius('));
+    expect(thermal, contains('Path()..addRRect(roundedFrame)'));
+    expect(thermal, contains('canvas.clipRRect(roundedFrame)'));
+    expect(thermal, isNot(contains('Path()..addRect(bounds)')));
     expect(thermal, contains('canvas.clipPath(fireBackdrop)'));
     expect(thermal, isNot(contains('ClipOp.difference')));
     expect(thermal, isNot(contains('clipPath: shell')));
@@ -584,16 +590,19 @@ void main() {
     expect(find.text('9V'), findsOneWidget);
     expect(find.text('12V'), findsOneWidget);
 
-    // Notify is part of the Home dashboard. Its label may include a
-    // contextual suffix such as "• ERROR", "• SYNC", etc.
+    // NOTIFY stays category-free in every state and language.
+    expect(find.text('NOTIFY'), findsOneWidget);
     expect(
       find.byWidgetPredicate(
-        (widget) =>
-            widget is Text &&
-            (widget.data ?? '').trim().startsWith('NOTIFY'),
+        (widget) => widget is Text &&
+            (widget.data ?? '').trim().startsWith('NOTIFY •'),
       ),
-      findsOneWidget,
+      findsNothing,
     );
+    final source = File('lib/main.dart').readAsStringSync();
+    final notifyLabelStart = source.indexOf("String _notifyStateLabel() => 'NOTIFY';");
+    expect(notifyLabelStart, isNonNegative);
+    expect(source, contains('padding: const EdgeInsets.only(top: 2)'));
 
     // The dashboard must render without a test-time layout exception.
     expect(tester.takeException(), isNull);

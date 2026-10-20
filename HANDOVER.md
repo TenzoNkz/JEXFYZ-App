@@ -1,25 +1,25 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #113 / run 39350217172 is the latest successful App release, source 05e4f644d6bf82ae2682154082c3e44a4876205a. A newer source-only Home/layout/thermal-layer follow-up has been applied after that build; validation/release remain pending.
+Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #116 / run 39355262101 is the latest successful App release, packaging source `48683874db659df940272bed1c860072ead2d767`. The following final UI polish is source-only, NOT RUN / NOT RELEASED.
 
 ## Latest successful build and current source boundary
 
-- Build #113 passed 109 Flutter tests, Dart analyzer exit 0 (25 info diagnostics), configured Android Gradle gate, APK V1/V2/V3 and official-certificate checks, ZIP integrity, downloaded-asset comparison and exact tag/commit checks. Native Android test tasks were NO-SOURCE.
-- APK asset 657872748, 54,718,555 bytes, SHA-256 7252e952983560254822b8d77a9a1c47d5a3f91d80bf8ed50e58586bbe2c2991; source ZIP asset 657872749, 2,866,922 bytes, SHA-256 0fcccecc639e20f16d65976a5f3c334dd2ce4f7692d2a4d95b5b8aaad7dae59f.
-- Current lib/main.dart blob d0fdb7482d939b34b0a1824b33d37f6457835818 and test/widget_test.dart blob 09cfe3e7b744b988571a28ad0d9377da5ee36cb1 are newer than packaged source; SOURCE UPDATED / NOT RUN / NOT RELEASED.
-- Home contract: seven 45 dp rows; 3 dp gap before fixed 44 dp NOTIFY; left-aligned body text scales down to fit up to two lines; cooler image stays in stable row constraints independent of notice length.
-- Battery/Hotside fire is drawn behind the foreground silhouette and clipped OUTSIDE it. Thresholds remain Battery ≥40°C and Hotside at configured limit.
-- User reports Firmware V6.9 compile/install success. Compile logs, source-to-BIN provenance, installed version and physical PWM/thermal results remain independently unverified. No App Build/Firmware/device operation occurred here.
+- Build #116 passed 109 Flutter tests, Dart analyzer exit 0 (25 info diagnostics), configured Android gate, APK V1/V2/V3 and official-certificate checks, ZIP integrity, downloaded-asset comparison and exact tag/commit checks. Native Android test tasks were NO-SOURCE.
+- APK asset `657979004`, 54,734,939 bytes, SHA-256 `8570914f331583d2cc462f61881609c0eae56639a139f2d60a832e4aaa81ea27`; source ZIP asset `657979008`, 2,867,315 bytes, SHA-256 `60ef4e79529aabcbb4f4093b9f8a18b5d383d5c651c1c303dd8bb774e7b0dd5d`.
+- Current lib/main.dart blob `8eb24de58a2e510b3d05abbb29bce45bb0a42810` and test/widget_test.dart blob `134880899237c1bfa875473129473524f6851439` are newer than Build #116; SOURCE UPDATED / NOT RUN / NOT RELEASED.
+- Home contract: seven 45 dp rows; 3 dp gap before fixed 44 dp NOTIFY; exact `NOTIFY` heading with 2 dp top inset; left-aligned body scales to at most two lines; cooler image stays under stable sibling-row constraints.
+- Battery/Hotside use refined falling flame-shaped background particles with warm yellow-white cores, a soft halo, subtle drift/rotation, and a rounded-frame clip combined with foreground-silhouette subtraction. Thresholds remain Battery ≥40°C and Hotside at configured limit.
+- Firmware V6.9 compile/install is USER-REPORTED. Independent compile logs, source-to-BIN provenance, installed version and physical behavior remain UNVERIFIED. No Firmware/device operation was done in this task.
 
 ## Current approved icon behavior
 
-- Battery/Hotside: complete foreground silhouette when inactive/unknown. At warning thresholds, falling orange/gold background embers with bright cores are clipped OUTSIDE the silhouette; the foreground icon is painted over them. The Hotside inner tube starts closer to the outer cap.
+- Battery/Hotside: complete foreground silhouette when inactive/unknown. At warning thresholds, small falling orange/gold flame shapes with bright cores are drawn first, clipped to the rounded background frame minus the foreground silhouette, and painted behind the icon. The Hotside inner tube starts closer to the outer cap.
 - Voltage: bevelled static bolt face with edge-following pulses; no central spine/inner strikes. The white inner core is inset and clipped to the bolt silhouette to prevent spill at the upper-right edge. 5V red / 9V green / 12V blue.
 - Adaptive: two distinct arrowheads and recessed track; rotates only when authoritatively ON.
 - Peltier: six-branch faceted crystal; snow particles only while existing active-state rules permit them.
 - Fan: exactly three swept blades, fixed airflow ribbons, bearing and blade-face highlights; existing voltage/PWM mapping and phase retarget remain.
 - Fan Speed: semicircle, recessed bezel, 11 graded ticks and layered pivot; valid PWM drives the needle, unknown/disconnected values hide it.
-- Static nav/settings/action glyphs remain static. Floating Monitor remains letters-only B/H/V/A/P/F; no telemetry/control/safety semantics change.
+- Static nav/settings/action glyphs remain static. Home NOTIFY displays only `NOTIFY`; its fixed 44 dp card and two-line localized body remain. Floating Monitor remains letters-only B/H/V/A/P/F; no telemetry/control/safety semantics change.
 
 ## FPS retirement and current Floating Monitor
 

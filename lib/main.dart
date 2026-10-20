@@ -2690,9 +2690,9 @@ class _JexIconPainter extends CustomPainter {
       ..close();
   }
 
-  /// Draw falling fire in the canvas background, behind the foreground thermal icon.
-  /// Clip out the silhouette so embers never paint inside the battery/thermometer body.
-  /// Deterministic lanes and phases keep the particles smooth without random state.
+  /// Draw refined falling flames in the background, outside the thermal silhouette.
+  /// The rounded-frame clip prevents any ember from leaking through the tile corners.
+  /// Deterministic phase lanes keep motion smooth and free from per-frame randomness.
   void _drawThermalBurstParticles(
     Canvas canvas,
     double s,
@@ -2708,20 +2708,25 @@ class _JexIconPainter extends CustomPainter {
 
     final cycle = (phase / (math.pi * 2)) % 1.0;
     final lanes = thermometer
-        ? const <double>[-.92, -.70, -.48, .48, .70, .92]
-        : const <double>[-.96, -.78, -.60, -.42, .42, .60, .78, .96];
+        ? const <double>[-.72, -.24, .24, .72]
+        : const <double>[-.82, -.50, -.18, .18, .50, .82];
     final emberColor = Color.lerp(
       hotColor,
       const Color(0xFFFF7828),
       .62,
     )!;
-
+    final roundedFrame = RRect.fromRectAndRadius(
+      bounds,
+      Radius.circular(s * .22),
+    );
     final fireBackdrop = Path.combine(
       PathOperation.difference,
-      Path()..addRect(bounds),
+      Path()..addRRect(roundedFrame),
       foregroundSilhouette,
     );
+
     canvas.save();
+    canvas.clipRRect(roundedFrame);
     canvas.clipPath(fireBackdrop);
     for (var i = 0; i < lanes.length; i++) {
       final fall = (cycle + i / lanes.length) % 1.0;
@@ -2731,62 +2736,103 @@ class _JexIconPainter extends CustomPainter {
 
       final travel = jexMotionSmoothStep(fall);
       final lane = lanes[i];
-      final laneOffset = lane * s * .48;
-      final drift = math.sin(fall * math.pi * 2 + i * .73) * s * .012;
+      final laneOffset = lane * s * .43;
+      final drift = math.sin(fall * math.pi * 2 + i * .73) * s * .018;
       final x = bounds.center.dx + laneOffset + drift;
-      final fallDistance = bounds.height + s * (thermometer ? .20 : .16);
-      final y = bounds.top - s * .08 + travel * fallDistance;
-      final sizePulse = .76 + .24 * math.sin(math.pi * fall);
+      final fallDistance = bounds.height + s * .18;
+      final y = bounds.top - s * .12 + travel * fallDistance;
+      final sizePulse = .82 + .18 * math.sin(math.pi * fall);
       final radiusX = s *
-          (thermometer ? .035 : .040) *
+          (thermometer ? .043 : .047) *
           sizePulse *
           (i.isEven ? 1.0 : .88);
-      final radiusY = radiusX * 1.45 * (i.isOdd ? 1.08 : 1.0);
-      final rotation = .20 * math.sin(fall * math.pi * 2 + i * .71);
+      final radiusY = radiusX * (thermometer ? 1.65 : 1.58);
+      final rotation = .24 * math.sin(fall * math.pi * 2 + i * .71) +
+          (lane < 0 ? -.08 : .08);
 
       canvas.save();
       canvas.translate(x, y);
       canvas.rotate(rotation);
-      // Soft halo, orange/gold ember body, and a hot yellow-white core.
+
+      final haloPaint = _fill(emberColor.withValues(alpha: .20 * alpha));
+      haloPaint.maskFilter = MaskFilter.blur(BlurStyle.normal, radiusX * 1.15);
       canvas.drawOval(
         Rect.fromCenter(
-          center: Offset.zero,
-          width: radiusX * 3.5,
-          height: radiusY * 3.5,
-        ),
-        _fill(emberColor.withValues(alpha: .16 * alpha)),
-      );
-      canvas.drawOval(
-        Rect.fromCenter(
-          center: Offset.zero,
-          width: radiusX * 2.45,
+          center: Offset(0, radiusY * .08),
+          width: radiusX * 3.4,
           height: radiusY * 2.8,
         ),
-        _fill(emberColor.withValues(alpha: .92 * alpha)),
+        haloPaint,
       );
-      canvas.drawOval(
-        Rect.fromCenter(
-          center: Offset.zero,
-          width: radiusX * 1.58,
-          height: radiusY * 1.95,
-        ),
-        _fill(const Color(0xFFFFA13D).withValues(alpha: .96 * alpha)),
+
+      // A compact flame silhouette reads as fire instead of a row of oval dots.
+      final flameShape = Path()
+        ..moveTo(0, -radiusY * 1.25)
+        ..cubicTo(
+          radiusX * 1.05,
+          -radiusY * .68,
+          radiusX * 1.12,
+          radiusY * .28,
+          radiusX * .28,
+          radiusY * .84,
+        )
+        ..quadraticBezierTo(0, radiusY * 1.10, -radiusX * .26, radiusY * .82)
+        ..cubicTo(
+          -radiusX * 1.08,
+          radiusY * .30,
+          -radiusX * .72,
+          -radiusY * .66,
+          0,
+          -radiusY * 1.25,
+        )
+        ..close();
+      canvas.drawPath(
+        flameShape,
+        _fill(emberColor.withValues(alpha: .98 * alpha)),
       );
-      canvas.drawOval(
-        Rect.fromCenter(
-          center: Offset.zero,
-          width: radiusX * .72,
-          height: radiusY * 1.12,
-        ),
+
+      final flameCore = Path()
+        ..moveTo(0, -radiusY * .43)
+        ..cubicTo(
+          radiusX * .50,
+          -radiusY * .04,
+          radiusX * .32,
+          radiusY * .43,
+          0,
+          radiusY * .61,
+        )
+        ..cubicTo(
+          -radiusX * .31,
+          radiusY * .38,
+          -radiusX * .34,
+          radiusY * .08,
+          0,
+          -radiusY * .43,
+        )
+        ..close();
+      canvas.drawPath(
+        flameCore,
         _fill(const Color(0xFFFFEDB5).withValues(alpha: .98 * alpha)),
       );
-      canvas.drawOval(
-        Rect.fromCenter(
-          center: Offset(-radiusX * .12, -radiusY * .16),
-          width: radiusX * .38,
-          height: radiusY * .52,
-        ),
-        _fill(Colors.white.withValues(alpha: .86 * alpha)),
+
+      final hotCore = Path()
+        ..moveTo(-radiusX * .04, -radiusY * .05)
+        ..quadraticBezierTo(
+          radiusX * .19,
+          radiusY * .22,
+          0,
+          radiusY * .42,
+        )
+        ..quadraticBezierTo(
+          -radiusX * .14,
+          radiusY * .22,
+          -radiusX * .04,
+          -radiusY * .05,
+        )
+        ..close();
+      canvas.drawPath(
+        hotCore,
+        _fill(Colors.white.withValues(alpha: .88 * alpha)),
       );
       canvas.restore();
     }
@@ -6653,32 +6699,7 @@ void _handleAckLine(String line) {
     if (message != null) setState(() => notice = message!);
   }
 
-  String _notifyStateLabel() {
-    final custom = notice.trim().toUpperCase();
-    final language = appLanguageNotifier.value;
-    String category;
-
-    if (_bleConnecting) {
-      category = JexText.of('notifyBluetooth', language);
-    } else if (syncing && !dashboardReady) {
-      category = JexText.of('notifySync', language);
-    } else if (isNotifyErrorMessage(custom)) {
-      category = JexText.of('notifyError', language);
-    } else {
-      // WAITING_* is a startup/sensor-validation state and must not be shown
-      // as a safety warning while the dashboard is offline.
-      final warning = connected &&
-          safety != 'OK' &&
-          safetyReason != 'NONE' &&
-          safetyReason != 'WAITING_FOR_NTC' &&
-          safetyReason != 'WAITING_FOR_SENSOR_VALIDATION';
-      category = warning
-          ? JexText.of('notifyWarning', language)
-          : JexText.of('notify', language);
-    }
-
-    return 'NOTIFY • $category';
-  }
+  String _notifyStateLabel() => 'NOTIFY';
 
   // AI-METHOD: _homeNotify — Render the Home NOTIFY card.
   // Retain the original icon-left / text-left Row; only the connection badge is removed.
@@ -6742,16 +6763,19 @@ void _handleAckLine(String line) {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  _notifyStateLabel(),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                    color: color,
-                    fontSize: 8.5,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 0.8,
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Text(
+                    _notifyStateLabel(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      color: color,
+                      fontSize: 8.5,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.8,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 2),

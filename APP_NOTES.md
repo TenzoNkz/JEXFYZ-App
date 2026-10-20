@@ -4,11 +4,11 @@ This file is the durable App behavior/design contract. Live source and the curre
 
 ## Current App release and follow-up — 2026-10-20
 
-- Latest successful App release is Build #113 / run 39350217172, source 05e4f644d6bf82ae2682154082c3e44a4876205a. APK SHA-256 7252e952983560254822b8d77a9a1c47d5a3f91d80bf8ed50e58586bbe2c2991; source ZIP SHA-256 0fcccecc639e20f16d65976a5f3c334dd2ce4f7692d2a4d95b5b8aaad7dae59f.
-- Newest unbuilt source follow-up: lib/main.dart d0fdb7482d939b34b0a1824b33d37f6457835818; test/widget_test.dart 09cfe3e7b744b988571a28ad0d9377da5ee36cb1. Tests/analyzer have NOT RUN for this update.
-- Home: all seven metric rows are 45 dp with a 3 dp gap above NOTIFY. NOTIFY stays icon-left/text-left, badge-free and fixed at 44 dp; body copy shrinks when wrapped and is limited to two lines. The cooler image stays under stable sibling-row constraints when copy length changes.
-- Battery/Hotside fire embers are background particles, not inside the icon. Draw first and clip OUTSIDE the foreground shell using ClipOp.difference; then paint the shell/body/tube/graduations above them. Keep orange/gold ovals, yellow-white cores, falling cadence, Battery ≥40°C and Hotside at configured limit.
-- Build #113 validates the earlier source only; it does not validate these newest UI edits or physical phone rendering/smoothness. BLE semantics and Firmware safety predicates are unchanged.
+- Latest successful App release is Build #116 / run 39355262101, source `48683874db659df940272bed1c860072ead2d767`. APK SHA-256 `8570914f331583d2cc462f61881609c0eae56639a139f2d60a832e4aaa81ea27`; source ZIP SHA-256 `60ef4e79529aabcbb4f4093b9f8a18b5d383d5c651c1c303dd8bb774e7b0dd5d`.
+- Newest unbuilt source follow-up: lib/main.dart `8eb24de58a2e510b3d05abbb29bce45bb0a42810`; test/widget_test.dart `134880899237c1bfa875473129473524f6851439`. Flutter tests and analyzer have NOT RUN for this follow-up.
+- Home: seven 45 dp metric rows, 3 dp pre-NOTIFY gap, and a fixed 44 dp icon-left/text-left card. Its heading is always exactly `NOTIFY` with a 2 dp top inset; body copy scales down only as needed and is limited to two lines. Cooler-image constraints remain stable.
+- Battery/Hotside: small stylized orange/gold flame particles descend from the top with warm yellow-white cores, a soft halo and subtle drift/rotation. The particles are background-first, clipped to a rounded frame minus the foreground shell, and cannot escape the rounded boundary or paint inside the battery chamber/thermometer tube. Existing warning gates and safety logic are unchanged.
+- Build #116 validates only the packaged source commit above, not these newest UI edits or physical-phone rendering/smoothness. No BLE semantics, controls, telemetry, Firmware safety predicates, BIN/Firebase/OTA or device state were changed by this follow-up.
 - Firmware V6.9 compile/install is USER-REPORTED; independent logs, source-to-BIN provenance and installed version remain UNVERIFIED.
 
 ## Tamper warning screen and developer contact — rounded text blocks included by Build #80
@@ -132,7 +132,7 @@ This file is the durable App behavior/design contract. Live source and the curre
 - Current metrics are B/H/V/A/P/F. F is labelled Fan/Kipas and displays live PWM speed while running. When BLE telemetry is disconnected, live device values are unknown (--) and no stale output state is inferred.
 - FPS, SurfaceFlinger TimeStats sampling, Shizuku permission UI/provider/UserService/AIDL, related parser/watchdog tests and Shizuku-only license files are removed from active App source. The release workflow audit and source archive packaging no longer depend on them.
 - Schema version 2 maps old schema-v1 S (Speed) to F (Fan Speed) and drops old schema-v1 F (FPS). Flutter contract tests cover migration and removal of FPS/Shizuku UI.
-- Historical Build #83 / run 39192430789 was superseded by later releases. Build #113 is the latest successful App release and validates falling-fire, Hotside/Voltage geometry and Settings About removal, with 44 dp rows and dynamic 44 dp-minimum NOTIFY. The newer source-only follow-up uses 45 dp rows, fixed 44 dp NOTIFY and background-layer fire; it is not yet validated/released. Phone visuals, physical animation smoothness and live BLE telemetry remain unverified.
+- Historical Build #83 / run 39192430789 was superseded. Build #116 is the latest successful App release and validates the preceding fixed 44 dp NOTIFY / 45 dp Home-row layout and bounded background ember painter. The newer source-only follow-up updates falling-flame geometry/rounded clipping and makes the heading exactly NOTIFY; it is not yet validated/released. Phone visuals, physical animation smoothness and live BLE telemetry remain unverified.
 
 ## Phone battery telemetry and Battery Protection UI boundary
 
@@ -149,4 +149,4 @@ This file is the durable App behavior/design contract. Live source and the curre
 
 ## Settings presentation update — source only
 
-- The About section, AboutSettingsPage, its reusable About row, and EN/ID labels were removed from Settings. General, Device and Firmware remain; Build #113 validated/released this removal. The newer fixed-height Home/thermal-background follow-up has not been validated.
+- The About section, AboutSettingsPage, its reusable About row, and EN/ID labels were removed from Settings. General, Device and Firmware remain; Build #116 validated/released this removal. The newest flame-shape/NOTIFY-label follow-up has not been validated.

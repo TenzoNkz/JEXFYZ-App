@@ -13,6 +13,14 @@
 - Android identity remains `versionName "Telegram @horizontalzzz"`. Firmware V6.9 compilation/tests, BIN publication, Firebase updates, OTA/flashing and device operations are outside this App Build and were not performed. Physical UI and hardware behavior are not proven by CI.
 - This report update is documentation-only after the successful package commit; the APK/source ZIP package commit above is the validated code source. No new build is needed for this report-only update.
 
+## POST-BUILD #116 — FINAL HOME / THERMAL VISUAL FOLLOW-UP (SOURCE ONLY; NOT RUN / NOT RELEASED)
+
+- Build #116 remains the latest successful App release, package source `48683874db659df940272bed1c860072ead2d767`. Its checks do not cover this newer source-only follow-up.
+- Battery/Hotside particles now use compact flame-shaped paths with soft blurred orange/gold halos and warm yellow-white cores, falling top-down on deterministic phase lanes with subtle drift and rotation. The rounded-frame clip intersects the permitted background with the foreground-silhouette difference: fire remains behind/outside the casing and does not leak through rounded corners. Battery ≥40°C and configured Hotside warning conditions remain unchanged.
+- Home NOTIFY remains a fixed 44 dp card. The heading is exactly `NOTIFY` in all languages (category suffixes removed) and receives a 2 dp top inset. Body copy still wraps to at most two lines with adaptive font size; rows remain 45 dp with a 3 dp pre-NOTIFY gap and stable cooler-image constraints.
+- Regression source contracts were updated for flame paths, rounded-frame clipping, exact NOTIFY copy, and title inset. Flutter tests and Dart analyzer were NOT RUN in this Full execution; static checks only. This task did not start an App Build, change firmware/BIN, update Firebase, invoke OTA, flash or operate a device.
+- Current unvalidated source/test blobs: `lib/main.dart` `8eb24de58a2e510b3d05abbb29bce45bb0a42810`; `test/widget_test.dart` `134880899237c1bfa875473129473524f6851439`.
+
 ## RESOLVED — BUILD #115 ANALYZER FAILURE; THERMAL BACKDROP CLIPPING FIX VALIDATED BY BUILD #116
 
 - **Build #115:** [Actions run 39354946732](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39354946732), checked out source commit `aabb571d0aa55738b4eba8379334060a2c2a8ba5`, and failed at Dart analysis. Toolchain, signing preparation, architecture/security audit and dependency install passed. Flutter tests, Android gate, APK, signing, source ZIP, publish and asset verification were skipped.
