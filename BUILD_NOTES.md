@@ -2,8 +2,8 @@
 
 ## Current repository/release checkpoint — 2026-10-20
 
-- Latest successful App release is Build #113 / run 39350217172, package source 05e4f644d6bf82ae2682154082c3e44a4876205a. APK SHA-256 7252e952983560254822b8d77a9a1c47d5a3f91d80bf8ed50e58586bbe2c2991; source ZIP SHA-256 0fcccecc639e20f16d65976a5f3c334dd2ce4f7692d2a4d95b5b8aaad7dae59f.
-- Newest source follow-up: lib/main.dart d0fdb7482d939b34b0a1824b33d37f6457835818; test/widget_test.dart 09cfe3e7b744b988571a28ad0d9377da5ee36cb1. Seven Home rows are 45 dp, NOTIFY is fixed 44 dp with body copy scaled down to fit up to two lines, cooler image constraints are stable, and Battery/Hotside fire is drawn behind foreground silhouettes.
+- Latest successful App release recorded in canonical project state is Build #116 / run 39355262101, package source `48683874db659df940272bed1c860072ead2d767`. APK SHA-256 `8570914f331583d2cc462f61881609c0eae56639a139f2d60a832e4aaa81ea27`; source ZIP SHA-256 `60ef4e79529aabcbb4f4093b9f8a18b5d383d5c651c1c303dd8bb774e7b0dd5d`. Build #116 predates the current Home NOTIFY source follow-up.
+- Latest source-only NOTIFY follow-up: lib/main.dart `24cd98e54944cca57bcdade80d335f66aeefdc9e`; lib/app_settings.dart `44431e926bfa2557c26345899e2333bd767f3f8e`; test/widget_test.dart `e55a41dfeacc9ab5aee0e9bb31a0e21221bd9156`. It promotes new confirmed cooling/safety telemetry over stale acknowledgements and re-localizes status when the app language changes. Flutter tests/Dart analysis have NOT RUN; no App Build was triggered.
 - This follow-up's Flutter tests and Dart analyzer have NOT RUN and it is NOT RELEASED. The sole App Build authorization remains @Thinking Eksekusi Build App!. No App Build or Firmware/device action occurred in this source task.
 - User reports Firmware V6.9 compiled and installed; exact compile logs, source-to-BIN provenance and installed version remain independently unverified.
 
