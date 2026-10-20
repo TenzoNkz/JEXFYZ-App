@@ -53,16 +53,17 @@ void main() {
 
     final helper = source.substring(helperStart, helperEnd);
     for (final tier in [
-      'if (belowLimitC < 1.5f) return FAN_PWM_MAX;',
-      'if (belowLimitC < 2.5f) return 90;',
-      'if (belowLimitC < 3.5f) return 80;',
-      'if (belowLimitC < 4.5f) return 70;',
-      'if (belowLimitC < 5.5f) return 60;',
+      'if (belowLimitC <= 1) return FAN_PWM_MAX;',
+      'if (belowLimitC <= 2) return 90;',
+      'if (belowLimitC <= 3) return 80;',
+      'if (belowLimitC <= 4) return 70;',
+      'if (belowLimitC <= 5) return 60;',
       'return FAN_PWM_MIN;',
     ]) {
       expect(helper, contains(tier), reason: 'Missing Adaptive Fan target tier: $tier');
     }
-    expect(helper, contains('static_cast<float>(hotLimit) - temperatureC'));
+    expect(helper, contains('static_cast<int>(floorf(temperatureC))'));
+    expect(helper, contains('hotLimit - temperatureCategoryC'));
     expect(helper, contains('if (!isfinite(temperatureC)) return FAN_PWM_MAX;'));
 
     final controller = source.substring(controllerStart, controllerEnd);
@@ -99,6 +100,40 @@ void main() {
     expect(source, contains('FAN_PWM_MAX = 100'));
     expect(RegExp(r'^\s*delay\s*\(', multiLine: true).hasMatch(source), isFalse);
     expect(RegExp(r'^\s*while\s*\(', multiLine: true).hasMatch(source), isFalse);
+  });
+
+  test('Adaptive Fan target remains stable within one whole-degree Hotside category', () {
+    const hotLimit = 40;
+
+    int expectedTarget(double temperatureC) {
+      final belowLimitC = hotLimit - temperatureC.floor();
+      if (belowLimitC <= 1) return 100;
+      if (belowLimitC <= 2) return 90;
+      if (belowLimitC <= 3) return 80;
+      if (belowLimitC <= 4) return 70;
+      if (belowLimitC <= 5) return 60;
+      return 50;
+    }
+
+    // 36.3°C -> 36.8°C must not move the target from 70% to 80%.
+    expect(expectedTarget(36.3), 70);
+    expect(expectedTarget(36.8), 70);
+    expect(expectedTarget(36.99), 70);
+    expect(expectedTarget(37.0), 80);
+    expect(expectedTarget(37.8), 80);
+    expect(expectedTarget(38.0), 90);
+
+    final source = File('firmware/JEXFYZ-V6.9.ino').readAsStringSync();
+    final helperStart = source.indexOf('static uint8_t adaptiveFanTargetPwm(float temperatureC) {');
+    final helperEnd = source.indexOf('static void resetAdaptiveFanPwmStepClock()', helperStart);
+    expect(helperStart, greaterThanOrEqualTo(0));
+    expect(helperEnd, greaterThan(helperStart));
+    final helper = source.substring(helperStart, helperEnd);
+    expect(helper, contains('static_cast<int>(floorf(temperatureC))'));
+    expect(helper, contains('hotLimit - temperatureCategoryC'));
+
+    // Never quantize the actual temperature used by the immediate safety override.
+    expect(source, contains('hotsideProtectionActiveNow() || hotsideC >= static_cast<float>(hotLimit)'));
   });
 
   test('Online OTA preserves the legacy connection path and GitHub URL restrictions', () {
