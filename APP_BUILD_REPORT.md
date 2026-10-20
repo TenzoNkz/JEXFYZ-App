@@ -1,14 +1,15 @@
-## CURRENT APP BUILD REQUEST — FIXED HOME HEIGHT / OUTER THERMAL FIRE LAYERING (BUILD #114 PENDING)
+## CURRENT APP BUILD ATTEMPT — BUILD #114 ANALYZER FAILURE; DUPLICATE PELTIER TEST DECLARATIONS FIXED (BUILD #115 PENDING)
 
-- Command received: `@Thinking Eksekusi Build App!`. Build #113 was successful for exact source commit `05e4f644d6bf82ae2682154082c3e44a4876205a`; the current source follow-up is newer and has not been tested or released. The official Build #113 Release/tag is still valid for its earlier packaged source until this run passes.
-- Preflight HEAD on `main`: `07b0d935b882db2d5f7af71ff8f51ce449e9ff06`. Changes since Build #113 include actual App source/test edits, not only docs: `lib/main.dart` blob `d0fdb7482d939b34b0a1824b33d37f6457835818`; `test/widget_test.dart` blob `09cfe3e7b744b988571a28ad0d9377da5ee36cb1`. These are the exact source blobs to validate in Build #114.
-- Home layout follow-up: seven metric rows are 45 dp; a 3 dp gap precedes a fixed 44 dp NOTIFY card. NOTIFY stays icon-left/text-left and badge-free; body copy is measured and shrinks from 9.5 dp as needed to fit up to two lines. Stable fixed height keeps the cooler image within unchanged row constraints rather than resizing/shifting with message length.
-- Thermal background follow-up: Battery and Hotside embers are painted before the foreground shell/tube and are clipped OUTSIDE the silhouette with `ClipOp.difference`; the recognizable icon body is painted over the fire. Keep the warning predicates/thresholds (Battery ≥40°C and configured Hotside limit) unchanged. No BLE, telemetry, control, or Firmware safety semantics are intended to change.
-- Existing test edits assert the 45 dp metric rhythm, 3 dp Notify gap, fixed 44 dp card, two-line font fitting, stable cooler image constraints, and background fire order/negative silhouette clip. These tests and Dart analyzer have NOT RUN on current HEAD and must not be assumed passed from Build #113.
-- Current Android `versionName "Telegram @horizontalzzz"` is preserved. Guarded workflow remains unchanged at blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`.
-- Trigger preflight passed: issue #34 is open with exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, owner `TenzoNkz`, and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; no Actions run was queued/in progress. The next official run is expected to be #114, triggered only by close/reopen issue #34 after this report checkpoint is committed.
-- Build #114 must pass security/architecture audit, Dart analyzer, all Flutter tests, configured Android gate, production APK creation, V1/V2/V3 signature and official certificate checks, source ZIP generation, publish, and downloaded asset/digest/source-marker/tag-target verification. Any failure is to be diagnosed from actual logs and corrected only within authorized App/test scope.
-- Firmware V6.9, BIN/Firebase/OTA/flash/device operations are outside this command and must not be performed. This App build validates source/package behavior only; it does not establish physical rendering or hardware safety.
+- **Build #114:** [Actions run 39354652567](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39354652567), checked out commit `08b398bec362ef2b57ecdd3bf5b5e2c7c6083cd0`, and failed at `flutter analyze --no-fatal-infos`. Toolchain, signing setup, architecture/security audit and dependency installation passed. Flutter tests, Android gate, APK/signing, source ZIP, publish and asset verification were skipped.
+- **Exact analyzer blocker:** `test/widget_test.dart` declared local variables `peltierStart`, `peltierEnd`, and `peltier` twice inside the same test callback (duplicate-definition errors at the corresponding declarations around test lines 350–352). New thermal-layering work had added a Peltier particle-order assertion using names already declared later in the same painter contract test.
+- **Test-only fix committed:** `0afdf53d7de68943c6f6a676a213a74e678032bb`, message `test(ui): merge Peltier particle order assertions`, removes the redundant earlier declarations and moves the `_drawFrostParticles`-before-`canvas.drawPath` assertion into the existing Peltier block. The existing assertion that snow particles are painted before `canvas.rotate(crystalRotation)` is retained. No analyzer/test gate was disabled and `lib/main.dart` was not changed by this fix.
+- **Current source/test fingerprints:** `lib/main.dart` `d0fdb7482d939b34b0a1824b33d37f6457835818`; `test/widget_test.dart` `278d0fb46fad7a877d6ce6234006fb6491e6568e`. The fix has **not yet been validated**; Build #115 must rerun analyzer and all downstream gates.
+- **Official retry preflight:** Build #114 is terminal, no other Actions runs are queued/in progress, issue #34 remains open with exact title/token/owner, and the guarded workflow remains unchanged at `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`. Build #115 is next, triggered only through the official issue #34 close/reopen event after this report checkpoint.
+- Build #113 remains the latest successful released artifact until Build #115 fully succeeds and its release/tag/assets are verified. The newer Home fixed-height/45 dp rows and outer-background thermal particles remain unreleased until validated. Android `versionName "Telegram @horizontalzzz"` is preserved.
+- Firmware V6.9 compilation/tests, BIN generation/publication, Firebase production metadata updates, OTA, flashing and device operation are not authorized by this App Build command and were not performed.
+
+---
+
 
 ---
 
@@ -21,6 +22,7 @@
 - No App Build, Firmware compile, BIN/Firebase/OTA/flash/device operation was started by Eksekusi Full.
 
 ---
+
 ## LATEST SUCCESSFUL APP BUILD — BUILD #113 (FALLING FIRE / ICON GEOMETRY / SETTINGS CLEANUP / DYNAMIC NOTIFY RELEASED)
 
 - **Result: SUCCESS.** [GitHub Actions run #113 / 39350217172](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39350217172) completed with conclusion `success` on exact checked-out App source commit `05e4f644d6bf82ae2682154082c3e44a4876205a`. All 21 main workflow steps and all post-job cleanup steps passed.
