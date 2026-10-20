@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — CHAT TRANSFER SNAPSHOT
 
-Reconciled from live GitHub main after `@Thinking Eksekusi Full!` on 2026-10-20 (Asia/Jakarta). The working source includes the earlier thermal-visual revisions plus a new English/Indonesian localization and copy pass. Live `main` is authoritative; this snapshot records the source-only, not-yet-validated state.
+Reconciled from live GitHub main after `@Thinking Eksekusi Full!` on 2026-10-20 (Asia/Jakarta). The working source includes earlier thermal-visual and English/Indonesian localization revisions plus an Adaptive Fan whole-degree target correction. Live `main` is authoritative; the Firmware update is source-only and not compiled/installed.
 
 ## 1. Authority and operation scope
 
@@ -25,6 +25,13 @@ Reconciled from live GitHub main after `@Thinking Eksekusi Full!` on 2026-10-20 
 - Updated notification descriptions, Hotside terminology, palette labels, Bluetooth/firmware copy and Android Floating Monitor status text.
 - Current source blobs: `lib/app_settings.dart` 6d143e6b6b5b986e2d6915dd8b608baca6f0d444; `lib/main.dart` 07178b5cce55fc8f78cc7c2953f4d8e352ccefe7; `test/widget_test.dart` 0a5901ac6dc23c947356189a312bb1dec418298e; `FloatingMonitorService.kt` f2c5d5e8b5731be36ae3b82109a75beaefe5fb4d. Flutter tests and Dart analysis have NOT RUN. Build #116 remains the latest verified release.
 
+## Adaptive Fan whole-degree target fix — source-only / NOT COMPILED / NOT TESTED
+
+- Source: `firmware/JEXFYZ-V6.9.ino` blob `b35101a0cc5a597c55ecd4391cd99d5b62852417`.
+- QC contract: `test/firmware_qc_contract_test.dart` blob `29325173289d78041002df41cc14262fcf89e045`.
+- Use `floorf(hotsideC)` to select the whole-degree target category. At a 40°C limit, 36.0–36.99°C stays at 70%; target 80% begins at category 37. Preserve the unrounded Hotside safety override, immediate 100% cooling, 10-point ramp steps (up 1 second / down 10 seconds), one calibrated NTC sample per second and the non-blocking loop.
+- Static readback checks passed. Firmware contract tests and Arduino compile were NOT RUN; the earlier user-reported V6.9 install does not validate this source revision. No BIN payload was inspected/changed, and no Firebase, OTA, flash or device operation occurred.
+
 ## 3. Current validated release versus working source
 
 - **Latest validated/released App:** Build #116, commit `48683874db659df940272bed1c860072ead2d767`.
@@ -35,19 +42,21 @@ Reconciled from live GitHub main after `@Thinking Eksekusi Full!` on 2026-10-20 
 
 - `lib/main.dart`: `07178b5cce55fc8f78cc7c2953f4d8e352ccefe7`
 - `test/widget_test.dart`: `0a5901ac6dc23c947356189a312bb1dec418298e`
-- `PROJECT_STATE.md`: `420515e3d69640b70174ea27e2ed32e0e86cddbc`
+- `PROJECT_STATE.md`: `b1923c30b5fef9c7502adcc96e9d58f04fea6d71`
+- `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`: `7e7a4a30c779e46f71c2a573653fcf001284d4b8`
+- `VOLTAGE_TRANSITION_MEMORY.md`: `f4b5d953dfca0319ebc30e055ad90893d8612dee`
 - `DESIGN_NOTES.md`: `48fa3014c5b3e93028f36adbdda4525bd4ee69e7`
 - `APP_BUILD_REPORT.md`: `377db79e937a3d1704616a3e487090dfddf0e94f`
-- `CHANGELOG.md`: `5dfb52c90fa48d755b80f9ce4ba213db32b99d3e`
+- `CHANGELOG.md`: `791e58466b5d463fbe159e21a217b762e8193ba6`
 - `README.md`: `95a799144c2cb093af6dab9a953884709663c5f2`
-- `HANDOVER.md`: `ed5ca8fcb87184a8bd576efb1aca65dd12750cbb`
+- `HANDOVER.md`: `c11dd8c9feb885176eb2216f3729d8825f5ebd31`
 - `CHAT_RULES.md`: `cc2798d1d1b4f5a48005966f14d70954c3ef4b86`
-- `APP_NOTES.md`: `bfb698deba9fcc0c44e801f9c1fb2562de064c64`
-- `MEMORY_INDEX.md`: `7dc84007c6d0fbafcf96ac26b3d6b4ded7d4b7f1`
+- `APP_NOTES.md`: `21e53cb65ec4e99f66fc1499cc6e79d930ef95bd`
+- `MEMORY_INDEX.md`: `7d0ec09ab84189e6c583987a382e4d189905b658`
 - Guarded App trigger workflow stays unchanged at blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`.
 
 ## 5. Firmware checkpoint / protected behavior
 
-- Active Firmware source is `firmware/JEXFYZ-V6.9.ino`, blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`. User reports compile/install success; independent compile logs, source-to-BIN provenance, installed version and physical PWM/thermal results remain **UNVERIFIED**.
+- Active Firmware source is `firmware/JEXFYZ-V6.9.ino`, current blob `b35101a0cc5a597c55ecd4391cd99d5b62852417`; QC contract test blob `29325173289d78041002df41cc14262fcf89e045`. Adaptive 12 V target selection now groups Hotside readings by floored whole degrees (36.3°C and 36.8°C are both category 36 and target 70% when the limit is 40°C; target 80% starts at category 37). The immediate safety override still uses the raw decimal temperature and forces 100% at the limit. PWM ramp timing and 1 Hz single NTC read are unchanged. The user reported compile/install for an earlier V6.9 revision; the current hashes have NOT been compiled/installed. Compile logs, source-to-BIN provenance, installed version and physical PWM/thermal results remain **UNVERIFIED**.
 - Firmware QC test blob `1b35feeb1e411efec44261ec130eec4535004454` and Touch/Adaptive sync test blob `3a86dd118cd1d1332dbafa3883ab9e5ae2823ac8` have NOT RUN for V6.9 in recorded CI evidence.
 - Preserve the existing safety gates, 1 Hz calibrated NTC sample, Adaptive downstep/upstep cadence, voltage handoff, BLE/P1 protocol, OTA protection, Firebase policy and current app build workflow. No unrelated changes.
