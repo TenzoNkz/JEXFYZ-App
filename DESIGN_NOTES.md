@@ -95,7 +95,15 @@ This file stores durable, user-approved visual constraints. Do not reinterpret a
 - Set every Home metric row to 45 dp (38 dp indicator tile centered in the 41 dp icon lane) with uniform rhythm and a 3 dp gap before NOTIFY. NOTIFY stays fixed at 44 dp, icon-left/text-left and badge-free; only body text may shrink as needed to fit two lines. Cooler image constraints remain stable when copy changes. Never allow overlap between indicator rows and NOTIFY.
 - Keep existing status icon/color selection, connection logic, BLE semantics, safety thresholds/predicates and telemetry authority unchanged.
 - Polish Home NOTIFY copy in both supported languages, including direct acknowledgements for accepted fan-speed, Hotside-limit and 5V/12V battery-limit commands. Map known reason codes to actionable text, use generic localized copy for unknown identifiers, and route raw OTA envelopes through the dedicated formatter before normalizing. No raw reason IDs, OTA ERROR/CODE values or internal event suffixes may reach the card.
-- Current source after the final visual follow-up: lib/main.dart 8eb24de58a2e510b3d05abbb29bce45bb0a42810; test/widget_test.dart a82875dd47ad904818fcd4c1c47b1a3ac0ca8fd2. Build #116 remains the latest successful release for the preceding revision; these flame-shape/rounded-clip/NOTIFY-label adjustments are NOT RUN / NOT RELEASED.
+- Latest Home NOTIFY source/test fingerprints: lib/main.dart `24cd98e54944cca57bcdade80d335f66aeefdc9e`; lib/app_settings.dart `44431e926bfa2557c26345899e2333bd767f3f8e`; test/widget_test.dart `e55a41dfeacc9ab5aee0e9bb31a0e21221bd9156`. Live-state notice priority and language-refresh changes are source-only / NOT RUN / NOT RELEASED; Build #116 does not include them.
+
+## Home NOTIFY live-state priority — 2026-10-20
+
+- The body represents the newest confirmed operating state, not a one-time command acknowledgement. Cooling-related telemetry changes supersede older ordinary acknowledgements; repeated identical telemetry does not create repeated messages.
+- After cooling controls change, show a compact bilingual summary of mode, confirmed voltage, Fan state/speed and Peltier state.
+- Safety state wins over command confirmations and normal summaries. Hotside at/above the configured limit shows its measured temperature and configured limit.
+- The fixed 44 dp card, left alignment, two-line body limit and approved warning styling remain unchanged. Language changes must update rendered copy without waiting for new BLE traffic.
+- Current source/test fingerprints: main `${H.main}`; settings `${H.settings}`; tests `${H.test}`. Tests/analyzer have NOT RUN; not released.
 
 ## Settings scope constraint
 
