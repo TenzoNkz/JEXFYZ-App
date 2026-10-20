@@ -1,19 +1,22 @@
 # JE X FYZ / JE Cooler — Build & Release Notes
 
-## Current repository/release checkpoint — 2026-10-20
+## Current repository/release checkpoint — Build #120 (2026-10-20)
 
-- Latest successful App release recorded in canonical project state is Build #116 / run 39355262101, package source `48683874db659df940272bed1c860072ead2d767`. APK SHA-256 `8570914f331583d2cc462f61881609c0eae56639a139f2d60a832e4aaa81ea27`; source ZIP SHA-256 `60ef4e79529aabcbb4f4093b9f8a18b5d383d5c651c1c303dd8bb774e7b0dd5d`. Build #116 predates the current Home NOTIFY source follow-up.
-- Latest source-only NOTIFY follow-up: lib/main.dart `4d2871234971ef8a9fa976f197e0e4f7b1e188ac`; lib/app_settings.dart `44431e926bfa2557c26345899e2333bd767f3f8e`; test/widget_test.dart `ccae334f9a737926bef021fa04ce7caa4d30601d`. It promotes new confirmed cooling/safety telemetry over stale acknowledgements and re-localizes status when the app language changes. Flutter tests/Dart analysis have NOT RUN; no App Build was triggered.
-- This follow-up's Flutter tests and Dart analyzer have NOT RUN and it is NOT RELEASED. The sole App Build authorization remains @Thinking Eksekusi Build App!. No App Build or Firmware/device action occurred in this source task.
-- User reports Firmware V6.9 compiled and installed; exact compile logs, source-to-BIN provenance and installed version remain independently unverified.
+- **Latest successful App release:** [Build #120 / Actions run 39365201489](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39365201489), packaged source commit `aeadaa47bd7ad64af6044afce5783781f0c0d82f`. All 21 main steps and all post-job cleanup succeeded.
+- **Release and downloads:** [`jexfyz-latest` Release](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest). The Release metadata and live tag target exactly `aeadaa47bd7ad64af6044afce5783781f0c0d82f`. The Release contains exactly one verified APK and one matching source ZIP.
+- **APK:** [JEXFYZ-release.apk](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk), asset ID `658178574`, 54,751,323 bytes, SHA-256 `aa162e57a04f229922cca4fe48773a49585328e2337761f5c641097957ff0392`.
+- **Corresponding source ZIP:** [JEXFYZ-corresponding-source.zip](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip), asset ID `658178573`, 2,871,380 bytes, SHA-256 `3e7585549d2eef68ad93b35c378bd76332d80a92a0edf1856aec8303df5e28d7`. CI re-downloaded both Release assets and verified hashes, source marker, ZIP integrity, and APK signature schemes.
+- **Validation:** security/architecture audit, dependency installation, Dart analyzer and **115 Flutter tests passed with 0 failures**. Analyzer reported 25 informational diagnostics (deprecated APIs/unnecessary imports). Android `./gradlew --no-daemon :app:testDebugUnitTest` reported `BUILD SUCCESSFUL in 1m 42s`; Android unit-test tasks were `NO-SOURCE`, so no native Android JUnit cases actually ran.
+- **Signing:** V1/JAR, V2 and V3 verification passed on generated and downloaded APK. Official certificate SHA-256 is `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. JAR verifier printed certificate-chain trust warnings, but the required scheme checks and configured signer fingerprint passed.
+- **Validated NOTIFY behavior:** Home notification state now follows the newest confirmed cooling/safety telemetry rather than leaving an earlier command ACK visible after live voltage/fan/output changes. A confirmed Hotside-limit crossing outranks older command status; stale command errors clear only after healthy telemetry is confirmed; stored text is re-localized when switching app language; connection/action/safety/error copy remains concise, bilingual and free of internal tokens.
+- **Source fingerprints in the release:** `lib/main.dart` `4d2871234971ef8a9fa976f197e0e4f7b1e188ac`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `ccae334f9a737926bef021fa04ce7caa4d30601d`; `FloatingMonitorService.kt` `f2c5d5e8b5731be36ae3b82109a75beaefe5fb4d`.
+- Android identity is preserved: `versionName "Telegram @horizontalzzz"`.
+- **Firmware boundary:** source `firmware/JEXFYZ-V7.0.ino` is included in the repository and referenced by source-contract tests, but Build #120 did not compile Firmware, generate/publish a BIN, edit production Firebase metadata, perform OTA/flashing or operate hardware. Firmware compilation/installed version and physical BLE/cooling/PWM behavior remain unverified by this App-only CI.
+- **Workflow note:** a post-job cache-write warning said the token lacks writable cache scopes; core build, signature, publication and downloaded-asset validation had already passed, and the final run conclusion is `success`.
+- **Authorization policy:** `@Thinking Eksekusi Build App!` is the sole App Build authorization. Builds use the guarded issue-only trigger in `.github/workflows/jexfyz-app-build-trigger.yml`; push, PR and manual-dispatch bypasses are not permitted. App Build never authorizes Firmware/BIN publication, production Firebase changes, OTA, flashing or hardware operation.
+- `APP_BUILD_REPORT.md` contains the detailed attempt history and complete Build #120 evidence. Its post-build update and this checkpoint are documentation-only; the released APK/source package remains exactly tied to commit `aeadaa47bd7ad64af6044afce5783781f0c0d82f`.
 
-## Authorization policy
-
-- The only App Build command is @Thinking Eksekusi Build App!. It authorizes the complete App build/validation workflow including justified App-scope repairs/retries.
-- @Thinking Eksekusi Full! does not authorize App Build; edits or regular pushes do not trigger release.
-- Retired aliases @Thinking Build App!, @Thinking Eksekusi & Build App!, and standalone @Thinking Eksekusi! must not be used.
-- Build App does not authorize Firmware compilation, BIN creation/publication/replacement, Firebase changes, physical OTA, flashing, device operation or unrelated releases.
-- Never claim App CI proves BLE, cooling/safety, Firmware compilation, OTA installation or installed device version.
+---
 
 ## HISTORICAL / SUPERSEDED — Build #71 (verified release; superseded by Build #83; kept for history)
 
