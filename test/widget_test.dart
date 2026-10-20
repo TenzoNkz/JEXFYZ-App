@@ -348,7 +348,24 @@ void main() {
     expect(voltage, isNot(contains('electricalSpine')));
     expect(voltage, contains('final innerCore = _boltInnerCore(s)'));
     expect(voltage, contains('canvas.clipPath(bolt)'));
-    expect(voltage, contains('..lineTo(s * .535, s * .285)'));
+    expect(voltage, contains('canvas.restore()'));
+
+    // Geometry is factored into _boltInnerCore rather than inlined in the
+    // painter switch. Keep checking every inset vertex and the clipping contract.
+    final innerCoreStart = painter.indexOf('Path _boltInnerCore(double s)');
+    final innerCoreEnd = painter.indexOf('void _drawAdaptiveArrowHead', innerCoreStart);
+    expect(innerCoreStart, isNonNegative);
+    expect(innerCoreEnd, greaterThan(innerCoreStart));
+    final innerCoreGeometry = painter.substring(innerCoreStart, innerCoreEnd);
+    expect(innerCoreGeometry, contains('Every vertex is inset within the bolt'));
+    expect(innerCoreGeometry, contains('..moveTo(s * .525, s * .165)'));
+    expect(innerCoreGeometry, contains('..lineTo(s * .365, s * .485)'));
+    expect(innerCoreGeometry, contains('..lineTo(s * .495, s * .485)'));
+    expect(innerCoreGeometry, contains('..lineTo(s * .445, s * .805)'));
+    expect(innerCoreGeometry, contains('..lineTo(s * .685, s * .405)'));
+    expect(innerCoreGeometry, contains('..lineTo(s * .555, s * .405)'));
+    expect(innerCoreGeometry, contains('..lineTo(s * .535, s * .285)'));
+
     expect(voltage, contains('canvas.restore()'));
 
     final fanStart = painter.indexOf('case JexAnimatedIconKind.fan:');
