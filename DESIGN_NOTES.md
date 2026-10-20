@@ -95,7 +95,7 @@ This file stores durable, user-approved visual constraints. Do not reinterpret a
 - Set every Home metric row to 45 dp (38 dp indicator tile centered in the 41 dp icon lane) with uniform rhythm and a 3 dp gap before NOTIFY. NOTIFY stays fixed at 44 dp, icon-left/text-left and badge-free; only body text may shrink as needed to fit two lines. Cooler image constraints remain stable when copy changes. Never allow overlap between indicator rows and NOTIFY.
 - Keep existing status icon/color selection, connection logic, BLE semantics, safety thresholds/predicates and telemetry authority unchanged.
 - Polish Home NOTIFY copy in both supported languages, including direct acknowledgements for accepted fan-speed, Hotside-limit and 5V/12V battery-limit commands. Map known reason codes to actionable text, use generic localized copy for unknown identifiers, and route raw OTA envelopes through the dedicated formatter before normalizing. No raw reason IDs, OTA ERROR/CODE values or internal event suffixes may reach the card.
-- Latest Home NOTIFY source/test fingerprints: lib/main.dart `a167e884f765a8a9ef379108262c366c8bcdcf99`; lib/app_settings.dart `44431e926bfa2557c26345899e2333bd767f3f8e`; test/widget_test.dart `5cb9ccacf585823a874976432478529893f71da3`. Single-event copy changes are source-only / NOT RUN / NOT RELEASED; Build #120 does not include them.
+- Latest Home NOTIFY source/test fingerprints: lib/main.dart `22986e3cdd21973fbf8ae5e5ed646d28f18785d6`; lib/app_settings.dart `44431e926bfa2557c26345899e2333bd767f3f8e`; test/widget_test.dart `c2cb9928fcb8388d51687b8907575c3f06b8cc66`. Single-event copy changes are source-only / NOT RUN / NOT RELEASED; Build #120 does not include them.
 
 ## Home NOTIFY single-event behavior — 2026-10-20
 
@@ -104,7 +104,7 @@ This file stores durable, user-approved visual constraints. Do not reinterpret a
 - Repeated telemetry with the same value does not generate a second event. A delayed command ACK must not overwrite a newer telemetry event.
 - Ordinary Temperature samples do not generate Home NOTIFY. Hotside at/above its configured limit is the exception: show measured temperature and configured limit and prioritize that safety message over ordinary control events.
 - Language changes re-render the last notice immediately. Preserve the fixed 44 dp card, left alignment, two-line body limit and approved warning styling.
-- Current blobs: main `a167e884f765a8a9ef379108262c366c8bcdcf99`; settings `44431e926bfa2557c26345899e2333bd767f3f8e`; tests `5cb9ccacf585823a874976432478529893f71da3`. Tests/analyzer have NOT RUN and this source is not released.
+- Current blobs: main `22986e3cdd21973fbf8ae5e5ed646d28f18785d6`; settings `44431e926bfa2557c26345899e2333bd767f3f8e`; tests `c2cb9928fcb8388d51687b8907575c3f06b8cc66`. Tests/analyzer have NOT RUN and this source is not released.
 
 ## Settings scope constraint
 
