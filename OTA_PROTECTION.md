@@ -24,17 +24,18 @@ Change OTA only if there is a demonstrated OTA defect and the user explicitly au
 5. Update the canonical memory, `PROJECT_STATE.md` if current state changed, `CHANGELOG.md` and `CHAT_TRANSFER.md`.
 6. Label test/compile/hardware evidence precisely. Static assertions are not an OTA success certificate.
 
-Current source pointer is `firmware/JEXFYZ-V6.9.ino` (`FW_VERSION="V6.9"`, blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`). V6.9 changes Adaptive Fan PWM ramp timing only and does not intentionally alter the protected OTA transport sequence. V6.9 has NOT been compiled or installed. BIN identity, OTA logs and current installed-device version remain UNVERIFIED; V6.7 compile/online update is historical user-reported evidence.
+Current source pointer is `firmware/JEXFYZ-V7.0.ino` (`FW_VERSION="V7.0"`, blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`). V7.0 retains the protected OTA transport sequence and includes the whole-degree Adaptive Fan target fix. V7.0 has NOT been compiled or installed. The previous failure to bump `FW_VERSION` meant the modified V6.9 source still identified itself as V6.9; that identity gap is corrected in this source revision. BIN identity, Firebase metadata alignment, OTA logs and installed-device version remain UNVERIFIED.
 
 ## Current Online OTA contract (must re-check live source)
 
-- Canonical editable Firmware source is in the App repo: `firmware/JEXFYZ-V6.9.ino`.
+- Canonical editable Firmware source is in the App repo: `firmware/JEXFYZ-V7.0.ino`.
 - The V6.3-origin restoration uses `cloudClient.setInsecure()`; embedded CA certificate validation, `setCACert()`, `configTime()`, `TIME_SYNCING`, epoch-validity gate and OTA-only 20-second NTP timeout are absent.
 - On successful Wi-Fi connection, blue indication proceeds to the GitHub GET attempt.
 - Raw URL allowlist remains restricted to `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/`.
 - `HTTPC_DISABLE_FOLLOW_REDIRECTS`, HTTP status/length checks, download size limit, ESP image magic byte check (`0xE9`), streaming write/update lifecycle, output-safe sequence, failure recovery and restart semantics remain protected.
 - Known security trade-off: `setInsecure()` bypasses server certificate identity validation. This was chosen after the prior CA + NTP-gated path failed in the user's observed environment. The exact single cause was not isolated. Do not silently re-introduce CA/NTP validation.
 - Firebase OTA metadata remains firmware version + link; no added user-approved SHA/signature layer.
+- **Required release alignment:** Online OTA stops with `OTA_UP_TO_DATE` when Firebase's `version` equals embedded `FW_VERSION`. To make V7.0 available to an installed V6.9 device, compile this exact sketch into a new `JEXFYZ.cpp.bin`, publish the matching BIN at the fixed allowed URL, and update Firebase `firmware_update.json` to `version: "V7.0"` plus that URL. These release actions are separate from source edits and have NOT been performed. Afterward, verify OTA apply, reboot, BLE re-sync and the reported installed `VERSION:V7.0`.
 - Artifact repo `TenzoNkz/JEXFYZ-Firmware` must contain `JEXFYZ.cpp.bin` only. Documentation lives in `TenzoNkz/JEXFYZ-App`.
 
 ## App side contract
