@@ -4101,6 +4101,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     appAutoConnectNotifier.addListener(_handleAutoConnectPreferenceChanged);
+    appLanguageNotifier.addListener(_handleLanguagePreferenceChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) => _tryAutoConnect());
     try {
       FlutterBluePlus.setOperationQueueMode(OperationQueueMode.perDevice);
@@ -4113,6 +4114,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     appAutoConnectNotifier.removeListener(_handleAutoConnectPreferenceChanged);
+    appLanguageNotifier.removeListener(_handleLanguagePreferenceChanged);
     disconnectRediscoverySub?.cancel();
     connectionSub?.cancel();
     notificationSub?.cancel();
@@ -4144,6 +4146,16 @@ class _DashboardScreenState extends State<DashboardScreen>
     } else {
       unawaited(_tryAutoConnect());
     }
+  }
+
+  // Rebuild localized status from the current language without waiting for new BLE traffic.
+  // The overlay telemetry and existing Bluetooth foreground service also receive the new
+  // language so their persistent presentation does not remain in the previous locale.
+  void _handleLanguagePreferenceChanged() {
+    if (!mounted) return;
+    setState(() {});
+    _publishFloatingTelemetry();
+    if (connected) unawaited(_setBackgroundService(true));
   }
 
   // AI-METHOD / AUTO-CONNECT-PREFERENCE-CONTRACT
