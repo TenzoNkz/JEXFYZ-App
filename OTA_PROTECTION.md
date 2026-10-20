@@ -24,11 +24,11 @@ Change OTA only if there is a demonstrated OTA defect and the user explicitly au
 5. Update the canonical memory, `PROJECT_STATE.md` if current state changed, `CHANGELOG.md` and `CHAT_TRANSFER.md`.
 6. Label test/compile/hardware evidence precisely. Static assertions are not an OTA success certificate.
 
-Current source pointer is `firmware/JEXFYZ-V6.8.ino` (`FW_VERSION="V6.8"`, blob `7b4df708708e021aad39258468eed2fde94d202f`). The current change targets Adaptive Fan PWM selection and does not intentionally alter the protected OTA transport sequence. V6.7 compile/online update on 2026-10-18 remains user-reported historical evidence; V6.8 has NOT been compiled or installed. BIN identity, OTA logs and current installed-device version remain UNVERIFIED.
+Current source pointer is `firmware/JEXFYZ-V6.9.ino` (`FW_VERSION="V6.9"`, blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`). V6.9 changes Adaptive Fan PWM ramp timing only and does not intentionally alter the protected OTA transport sequence. V6.9 has NOT been compiled or installed. BIN identity, OTA logs and current installed-device version remain UNVERIFIED; V6.7 compile/online update is historical user-reported evidence.
 
 ## Current Online OTA contract (must re-check live source)
 
-- Canonical editable Firmware source is in the App repo: `firmware/JEXFYZ-V6.8.ino`.
+- Canonical editable Firmware source is in the App repo: `firmware/JEXFYZ-V6.9.ino`.
 - The V6.3-origin restoration uses `cloudClient.setInsecure()`; embedded CA certificate validation, `setCACert()`, `configTime()`, `TIME_SYNCING`, epoch-validity gate and OTA-only 20-second NTP timeout are absent.
 - On successful Wi-Fi connection, blue indication proceeds to the GitHub GET attempt.
 - Raw URL allowlist remains restricted to `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/`.
