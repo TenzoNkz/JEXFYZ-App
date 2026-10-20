@@ -247,7 +247,7 @@ When rebuilding memory, explicitly reconcile each item below against the live so
 
 ### Firmware source identity, hardware and wiring
 
-- Source identity: exactly one active versioned `.ino`; filename matches embedded `FW_VERSION`; every functional Firmware change bumps version. Current live checkpoint is V6.8 (`firmware/JEXFYZ-V6.8.ino`, blob `7b4df708708e021aad39258468eed2fde94d202f`) with Adaptive Fan temperature-tier control; it is not compiled/installed. Always refetch `main`, filename and embedded `FW_VERSION` before relying on it.
+- Source identity: exactly one active versioned `.ino`; filename matches embedded `FW_VERSION`; every functional Firmware change bumps version. Current live checkpoint is V6.9 (`firmware/JEXFYZ-V6.9.ino`, blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`) with Adaptive Fan temperature-tier control and 10 s downstep / 1 s upstep pacing; it is not compiled/installed. Always refetch `main`, filename and embedded `FW_VERSION` before relying on it.
 - Board ESP32-C3 Super Mini / ESP32-C3 Dev Module at 3.3 V logic; GPIO0 NTC, GPIO1 TTP223, GPIO3 12 V selector, GPIO4 9 V selector, GPIO5 Peltier MOSFET, GPIO6 Fan MOSFET, GPIO7 WS2812.
 - MOSFET wiring memory: GPIO → R100 → Gate, 100 kΩ Gate–Source pull-down; Fan positive goes to supply and Fan negative to MOSFET Drain. Verify physical wiring and cables; a previously suspected 12 V selection failure was ultimately a loose cable.
 - NTC nominal 10 kΩ, fixed resistor 10 kΩ, Beta 3950, calibrated `analogReadMilliVolts()`, one sample per second. The user explicitly rejected median, trimmed-mean and multi-sample averaging; do not lose that rejected approach and its reason.
