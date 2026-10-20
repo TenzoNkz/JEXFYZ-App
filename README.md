@@ -28,7 +28,7 @@ Flutter Android companion app for the JE X FYZ thermoelectric cooler, paired wit
 ## Repository boundaries
 
 - `TenzoNkz/JEXFYZ-App` is the canonical editable App + Firmware source repository and the sole home for project documentation/memories.
-- `TenzoNkz/JEXFYZ-Firmware` is intended to contain only the production OTA artifact `JEXFYZ.cpp.bin`. The live recursive tree currently has exactly one entry, blob `dca6a1267762152519f6d2889e4f0adf46fd8803`, 1,457,008 bytes. Only tree metadata was checked; do not read the payload or add README, note, source, or memory files there. Source-to-BIN provenance remains UNVERIFIED.
+- `TenzoNkz/JEXFYZ-Firmware` is intended to contain only the production OTA artifact `JEXFYZ.cpp.bin`. The live recursive tree currently has exactly one entry, blob `9fdd915c3d298cad4de720765dab7fb03f47024d`, 1,456,368 bytes. Only tree metadata was checked; do not read the payload or add README, note, source, or memory files there. Source-to-BIN provenance remains UNVERIFIED.
 - The active editable Firmware source is `firmware/JEXFYZ-V6.9.ino` (`FW_VERSION="V6.9"`, blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`). It retains Hotside-limit temperature tiers and adds 10-second downsteps/1-second upsteps with transition grace. V6.9 is source-only, not compiled/installed; source-to-BIN provenance remains UNVERIFIED.
 - V6.6/V6.7 compile/OTA reports are historical user reports. V6.7 compilation and online update were user-reported, but no independent compile log, BIN identity, OTA evidence or current device version was inspected.
 - App Gradle `versionName "Telegram @horizontalzzz"` is an intentional identity string; do not change it.
