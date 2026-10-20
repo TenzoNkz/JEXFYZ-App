@@ -222,6 +222,7 @@ void main() {
     expect(hotsideShell, contains('..cubicTo('));
     expect(hotsideShell, isNot(contains('..addRRect(')));
     expect(hotsideShell, isNot(contains('..addOval(')));
+    expect(source, contains('Rect.fromLTWH(s * .455, s * .09, s * .09, s * .53)'));
 
     final painterStart = source.indexOf('class _JexIconPainter extends CustomPainter {');
     final painterEnd = source.indexOf('const MethodChannel securityChannel', painterStart);
@@ -278,7 +279,12 @@ void main() {
     expect(thermalEnd, greaterThan(thermalStart));
     final thermal = painter.substring(thermalStart, thermalEnd);
     expect(thermal, contains('canvas.drawOval'));
-    expect(thermal, contains('final age = (cycle + i / lanes.length) % 1.0'));
+    expect(thermal, contains('final fall = (cycle + i / lanes.length) % 1.0'));
+    expect(thermal, contains('final y = bounds.top - s * (thermometer ? .10 : .08)'));
+    expect(thermal, contains('travel * fallDistance'));
+    expect(thermal, contains('Orange/gold ovals'));
+    expect(thermal, isNot(contains('final rise =')));
+    expect(thermal, isNot(contains('sourceY - rise')));
     expect(thermal, contains('jexMotionSmoothStep(age)'));
     expect(thermal, contains('jexParticleBoundaryFade(age, fadeIn: .14, fadeOut: .26)'));
     expect(thermal, contains('required bool thermometer'));
@@ -340,6 +346,8 @@ void main() {
     expect(voltage, contains('_drawVoltageEdgePulse(canvas, bolt, s, p, mainColor, safeLevel)'));
     expect(voltage, isNot(contains('electricalSpine')));
     expect(voltage, contains('final innerCore = _boltInnerCore(s)'));
+    expect(voltage, contains('canvas.clipPath(bolt)'));
+    expect(voltage, contains('canvas.restore()'));
 
     final fanStart = painter.indexOf('case JexAnimatedIconKind.fan:');
     final fanEnd = painter.indexOf('case JexAnimatedIconKind.speed:', fanStart);
