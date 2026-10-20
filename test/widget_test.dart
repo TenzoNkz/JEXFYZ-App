@@ -1855,6 +1855,11 @@ void main() {
       ),
       'Firmware update completed • Online • V2.5',
     );
+    final source = File('lib/main.dart').readAsStringSync();
+    expect(source, contains('appLanguageNotifier.addListener(_handleLanguagePreferenceChanged)'));
+    expect(source, contains('appLanguageNotifier.removeListener(_handleLanguagePreferenceChanged)'));
+    expect(source, contains('notice = liveCoolingCommand ? _homeLiveCoolingNoticeToken : message!;'));
+    expect(source, contains('homeHotsideLimitReached(hotsideTemp, hotLimit: hotLimit)'));
   });
 
   test('Home Notify localizes safety reasons and never exposes internal tokens', () {
