@@ -1864,6 +1864,12 @@ void main() {
       'Batas suhu Hotside tercapai: 45.8°C (batas 45°C).',
     );
     expect(isActiveHomeSafetyReason('HOTSIDE_PROTECTION'), isTrue);
+    expect(isActiveHomeSafetyReason('PELTIER_SAFETY_LATCH'), isTrue);
+    expect(isActiveHomeSafetyReason('NTC_ERROR'), isTrue);
+    expect(isActiveHomeSafetyReason('VOLTAGE_FORCE_FAILED'), isTrue);
+    expect(isActiveHomeSafetyReason('ADAPTIVE_ACTIVE'), isFalse);
+    expect(isActiveHomeSafetyReason('VOLTAGE_TRANSITION'), isFalse);
+    expect(isActiveHomeSafetyReason('FAN_REQUIRED'), isFalse);
     expect(isActiveHomeSafetyReason('NONE'), isFalse);
     expect(isActiveHomeSafetyReason('WAITING_FOR_NTC'), isFalse);
   });
