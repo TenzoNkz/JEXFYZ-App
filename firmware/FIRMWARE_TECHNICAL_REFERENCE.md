@@ -4,11 +4,11 @@ Last source/safety-reference reconciliation: 2026-10-20 (Asia/Jakarta). The late
 
 ## Current source identity
 
-- Canonical editable source: `firmware/JEXFYZ-V6.8.ino`.
-- `FW_VERSION = "V6.8"`; source blob `7b4df708708e021aad39258468eed2fde94d202f`.
-- **Status: SOURCE UPDATED / NOT COMPILED / NOT INSTALLED.** V6.8 replaces Adaptive 12 V Fan PWM trend/stability logic with deterministic temperature tiers. The user compiles Firmware separately in ArduinoDroid with Arduino-ESP32 Core 3.3.7. Source-to-BIN identity, OTA logs and installed-device version remain UNVERIFIED.
+- Canonical editable source: `firmware/JEXFYZ-V6.9.ino`.
+- `FW_VERSION = "V6.9"`; source blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`.
+- **Status: SOURCE UPDATED / NOT COMPILED / NOT INSTALLED.** V6.9 preserves the V6.8 temperature tiers and adds paced 10-point PWM steps: down every 10 s, up every 1 s, with a fresh 10-second grace period after voltage transitions. Hotside limit/protection still forces 100% immediately. The user compiles Firmware separately in ArduinoDroid with Arduino-ESP32 Core 3.3.7. Source-to-BIN identity, OTA logs and installed-device version remain UNVERIFIED.
 - Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module, Arduino-ESP32 Core 3.3.7.
-- V6.7 compile/online update is a historical USER-REPORTED result only; it does not validate V6.8 or prove source-to-BIN provenance. Physical safety/thermal/LED behavior and full OTA apply/reboot/reconnect gates remain UNVERIFIED.
+- V6.7 compile/online update is historical USER-REPORTED evidence and does not validate V6.9. Physical safety/thermal/LED behavior and full OTA apply/reboot/reconnect gates remain UNVERIFIED.
 
 ## Architecture
 
@@ -65,16 +65,21 @@ The canonical detailed incident/contract is `VOLTAGE_TRANSITION_MEMORY.md`.
 - HOTSIDE is the startup default; HOTSIDE_BATTERY is runtime selectable but is not persisted. Battery sensor loss falls back to HOTSIDE behavior without changing the user's profile selection.
 - No rapid Hotside slope/rise protection is present in the known V6.x contract.
 
-## Current Adaptive Fan PWM at 12V — V6.8 temperature-tier selector
+## Current Adaptive Fan PWM at 12V — V6.9 paced temperature-tier ramp
 
-- In Adaptive mode at 12 V, target PWM follows `delta = hotLimit - hotsideC` directly. The controller no longer waits for ten cool samples, a stable 10-second window, four-sample warming trends, or per-step timers.
-- Whole-degree examples are: delta ≤1°C →100%; 2°C →90%; 3°C →80%; 4°C →70%; 5°C →60%; delta ≥6°C →50%. Fractional readings use nearest-degree bins with boundaries at 1.5/2.5/3.5/4.5/5.5°C. No additional hysteresis is applied.
-- The configured Hotside limit or active Hotside protection forces 100%; Adaptive 5 V/9 V keeps 100%. Existing transition/thermal dwell/paused-output priority and invalid-NTC safety handling remain. Physical output stays Firmware-authoritative.
-- Source is `firmware/JEXFYZ-V6.8.ino` blob `7b4df708708e021aad39258468eed2fde94d202f`; static source-contract test is now `test/firmware_qc_contract_test.dart`. Neither Flutter/source-contract tests nor Arduino compilation has been run for this revision; source/BIN/device identity remains unverified.
+- Target tiers remain based on `delta = hotLimit - hotsideC`: <1.5°C →100%; 1.5–<2.5°C →90%; 2.5–<3.5°C →80%; 3.5–<4.5°C →70%; 4.5–<5.5°C →60%; ≥5.5°C →50%.
+- Actual PWM approaches the target in 10-point steps: decreasing waits 10,000 ms before each step; increasing waits 1,000 ms before each step. When direction changes, the clock starts for the new direction rather than allowing a stale timer to cause a step immediately.
+- `voltageTransition`, Adaptive hot-step transition, thermal dwell and non-running output conditions reset the clock and preserve the full-speed priority. A 9 V → 12 V transition therefore remains at 100% through the handoff, then waits at least 10 seconds before the first reduction. Subsequent reductions happen no faster than one step per 10 seconds.
+- Active Hotside protection or `hotsideC >= hotLimit` forces 100% immediately. Adaptive 5 V/9 V remains 100%; the normal safety controller remains authoritative.
+- NTC acquisition remains one calibrated sample per second. No blocking delay, extra ADC read, averaging/filter, or timing loop was added.
+- Current source is `firmware/JEXFYZ-V6.9.ino` blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`; tests are `test/firmware_qc_contract_test.dart` and `test/firmware_touch_adaptive_sync_test.dart`. Tests and Arduino compile have NOT RUN; V6.9 is not installed. The hardware-reset symptom is not physically diagnosed/verified.
 
+## HISTORICAL / SUPERSEDED — V6.8 direct temperature-tier controller
+
+- V6.8 selected the same six temperature tiers directly, with no time-based pacing. The immediate 100% → 50% change after a 9 V → 12 V handoff is the abrupt step that V6.9 is intended to avoid. V6.8 source is no longer the active versioned sketch.
 ## HISTORICAL / SUPERSEDED — V6.7 Adaptive Fan trend-gating correction
 
-- V6.7 required ten samples and a stable downshift period, and used a four-sample warming-trend gate for upshifts. Those rules are superseded by the V6.8 direct tier selector above. The V6.7 compile/online-update result remains user-reported and is not evidence that V6.8 is compiled or installed.
+- V6.7 required ten samples and a stable downshift period, and used a four-sample warming-trend gate for upshifts. Those rules are superseded by the V6.8 direct tier selector above. V6.7 compile/online-update remains historical user-reported evidence and does not validate V6.9.
 
 ## Touch / indicators / preferences
 
