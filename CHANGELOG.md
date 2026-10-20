@@ -1,3 +1,12 @@
+## 2026-10-20 — Falling thermal embers, icon containment, Settings About removal and Adaptive Fan PWM V6.9
+
+- Replaced Battery/Hotside's rising oval ember burst with deterministic top-down falling fire particles: elongated orange/gold ovals, bright cores, subtle drift/rotation and edge fading, clipped to the icon chambers. Existing Battery 40°C and configured Hotside warning predicates remain unchanged.
+- Raised the Hotside inner tube from `y=.17, h=.45` to `y=.09, h=.53`, bringing it closer to the outer cap while preserving its lower endpoint. Inset the Voltage white core's upper-right vertex and clip the complete core drawing to the bolt silhouette to prevent overflow beyond the right edge.
+- Removed the ABOUT section, AboutSettingsPage, About row helper and their EN/ID labels from Settings; General, Device and Firmware remain. Home geometry is not otherwise changed: 44 dp indicator rows, icon-left/text-left NOTIFY Row, no connection badge, and 56 dp card/slot for up to two lines.
+- Bumped active Firmware source from V6.8 to `firmware/JEXFYZ-V6.9.ino` (`FW_VERSION="V6.9"`, blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`). Target temperature tiers remain 100/90/80/70/60/50%; downshifts now step down 10 points every 10 seconds, upshifts step up 10 points every 1 second. Timer state resets during voltage transitions/thermal dwell, so a stable 9 V →12 V handoff never immediately sends PWM from 100% to 50%. Hotside limit/protection still forces 100% immediately.
+- Updated `test/widget_test.dart`, `test/floating_monitor_layout_contract_test.dart`, `test/firmware_qc_contract_test.dart` and `test/firmware_touch_adaptive_sync_test.dart`; updated the relevant UI, safety, OTA, transition and transfer notes.
+- Static source inspections passed for the expected thermal fall path, Hotside inner geometry, bolt clipping, PWM tier/ramp constants, the safety fast-100% branch, single NTC read, absence of old trend-state variables and absence of blocking `delay()`/timing `while()` statements. Flutter tests/analyzer and Firmware Arduino compile have NOT RUN. Build #110 is the last successful App release; this source follow-up is not included in that release. No Firmware BIN, Firebase, OTA, flash or hardware operation occurred.
+
 ## 2026-10-20 — Restore original Home spacing and NOTIFY row geometry (source-only; NOT RUN / NOT RELEASED)
 
 - Reverted the unintended Home metric row compression from 41 dp to the original 44 dp while keeping the 38 dp indicator tiles centered in the original 41 dp lane.
