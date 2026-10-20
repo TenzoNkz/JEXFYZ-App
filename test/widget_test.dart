@@ -1862,6 +1862,33 @@ void main() {
     expect(source, contains('homeHotsideLimitReached(hotsideTemp, hotLimit: hotLimit)'));
   });
 
+  test('Adaptive voltage recovery waiting reason has actionable bilingual copy', () {
+    expect(
+      localizedNotifyReason(
+        'ADAPTIVE_RECOVERY_WAIT',
+        hotLimit: 45,
+        language: AppLanguage.english,
+      ),
+      'Adaptive is waiting for voltage recovery to stabilize.',
+    );
+    expect(
+      localizedNotifyReason(
+        'ADAPTIVE_RECOVERY_WAIT',
+        hotLimit: 45,
+        language: AppLanguage.indonesia,
+      ),
+      'Adaptive menunggu hingga pemulihan tegangan stabil.',
+    );
+    expect(
+      normalizeHomeNotifyText(
+        'ADAPTIVE_RECOVERY_WAIT',
+        hotLimit: 45,
+        language: AppLanguage.english,
+      ),
+      'Adaptive is waiting for voltage recovery to stabilize.',
+    );
+  });
+
   test('Home Notify localizes safety reasons and never exposes internal tokens', () {
     final englishSafety = normalizeHomeNotifyText(
       'The device did not confirm the Peltier change. PELTIER_SAFETY_LATCH',
