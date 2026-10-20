@@ -1547,7 +1547,7 @@ void main() {
 
   test('LED localization matches the six supported modes', () {
     expect(JexText.of('ledModeStatic', AppLanguage.english), 'Static');
-    expect(JexText.of('ledModeBreath', AppLanguage.english), 'Breath');
+    expect(JexText.of('ledModeBreath', AppLanguage.english), 'Breathing');
     expect(JexText.of('ledModeComet', AppLanguage.english), 'Comet');
     expect(JexText.of('ledModeDualChase', AppLanguage.english), 'Dual Chase');
     expect(JexText.of('leftRight', AppLanguage.english), 'Left / Right');
