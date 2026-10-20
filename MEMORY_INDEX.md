@@ -2,7 +2,7 @@
 
 ## Home NOTIFY — single latest-event message (2026-10-20; source-only / NOT RUN / NOT RELEASED)
 
-- Current blobs: `lib/main.dart` `dfc7621bbdce9ebe31cdb19be8b452a8c0b1411d`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `132c3b000abd63599ebea9d26fc5085cb577e50e`.
+- Current blobs: `lib/main.dart` `40f172a5d190b429d3a952f2531349c1ee220d1f`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `132c3b000abd63599ebea9d26fc5085cb577e50e`.
 - Home NOTIFY displays only the newest confirmed event as one complete sentence. It never assembles a combined state summary. Each new event replaces the previous one: `Adaptive ON.` → `Voltage set to 5V.` → `Fan speed reduced to 70%.`
 - Event copy covers Voltage, Fan/Peltier ON/OFF, Adaptive ON/OFF/profile/ceiling, Fan speed up/down, LED power/mode/brightness/color and safety-state transitions. Identical repeated telemetry creates no new message; an older delayed ACK cannot overwrite newer telemetry.
 - Ordinary Temperature samples do not notify. Hotside at/above the configured limit is the safety exception, showing measured temperature and limit in English/Indonesian regardless of Android push preference; Android push still respects the preference and re-arms after cooling below the limit.
@@ -26,7 +26,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #120 is 
 - Latest successful release: Build #120 / Actions run 39365201489, packaged source aeadaa47bd7ad64af6044afce5783781f0c0d82f. The live `jexfyz-latest` Release/tag and both assets target that commit.
 - APK asset 658178574, 54,751,323 bytes, SHA-256 aa162e57a04f229922cca4fe48773a49585328e2337761f5c641097957ff0392; corresponding source ZIP asset 658178573, 2,871,380 bytes, SHA-256 3e7585549d2eef68ad93b35c378bd76332d80a92a0edf1856aec8303df5e28d7.
 - Build #120 passed 115 Flutter tests, analyzer exit 0 with 25 info-level diagnostics, Android gate/signing checks, source ZIP integrity and downloaded-asset/tag verification. Native Android test tasks were NO-SOURCE.
-- Current NOTIFY source/test blobs: lib/main.dart dfc7621bbdce9ebe31cdb19be8b452a8c0b1411d; lib/app_settings.dart 44431e926bfa2557c26345899e2333bd767f3f8e; test/widget_test.dart 132c3b000abd63599ebea9d26fc5085cb577e50e. These latest single-event contracts have NOT RUN.
+- Current NOTIFY source/test blobs: lib/main.dart 40f172a5d190b429d3a952f2531349c1ee220d1f; lib/app_settings.dart 44431e926bfa2557c26345899e2333bd767f3f8e; test/widget_test.dart 132c3b000abd63599ebea9d26fc5085cb577e50e. These latest single-event contracts have NOT RUN.
 - Active Firmware source is `firmware/JEXFYZ-V7.0.ino`, blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`, embedded `FW_VERSION="V7.0"`. V7.0 is source-only / NOT COMPILED / NOT INSTALLED; the prior V6.9 report does not validate this revision.
 
 ## Current visual-state redraw checklist
@@ -87,7 +87,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #120 is 
 - Active Firmware: `firmware/JEXFYZ-V7.0.ino` blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`; QC contract: `test/firmware_qc_contract_test.dart` blob `a44c12d32c472f109687c06316ea40f70fcf93ce`; Touch/Adaptive sync contract: `test/firmware_touch_adaptive_sync_test.dart` blob `b3e23e59deae19408cd7ccbacbad84273f958970`. V7.0 tests and Arduino compile have NOT RUN; the previous V6.9 compile/install report is not V7.0 validation.
 ## Historical source fingerprints (Build #99 validated older baseline; current single-event NOTIFY follow-up NOT RUN; Firmware V7.0 source-only)
 
-- Current lib/main.dart: dfc7621bbdce9ebe31cdb19be8b452a8c0b1411d; lib/app_settings.dart: 44431e926bfa2557c26345899e2333bd767f3f8e; test/widget_test.dart: 132c3b000abd63599ebea9d26fc5085cb577e50e. Home NOTIFY uses one sentence per latest event, not a combined summary. Tests and analyzer have NOT RUN.
+- Current lib/main.dart: 40f172a5d190b429d3a952f2531349c1ee220d1f; lib/app_settings.dart: 44431e926bfa2557c26345899e2333bd767f3f8e; test/widget_test.dart: 132c3b000abd63599ebea9d26fc5085cb577e50e. Home NOTIFY uses one sentence per latest event, not a combined summary. Tests and analyzer have NOT RUN.
 - Historical layout/painter test baseline: a82875dd47ad904818fcd4c1c47b1a3ac0ca8fd2; latest current test blob is recorded above.
 - lib/jex_animated_glyph.dart: b37fc4e0807c874b2f01db00c7f606810cb5deca — generic action glyphs static.
 - Build #99 validated source commit bc1498d5b3db7621ee18f5ca6f021e6013c73b09, source blob 30d864c2f03c40fd4d0b6926a9958153f2a3b236 and test blob 711a44b00eadee2e2bcd24e48383128f0d70ccc9.
