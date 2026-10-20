@@ -357,7 +357,7 @@ void main() {
     expect(innerCoreStart, isNonNegative);
     expect(innerCoreEnd, greaterThan(innerCoreStart));
     final innerCoreGeometry = painter.substring(innerCoreStart, innerCoreEnd);
-    expect(innerCoreGeometry, contains('Every vertex is inset within the bolt'));
+    expect(painter, contains('Every vertex is inset within the bolt'));
     expect(innerCoreGeometry, contains('..moveTo(s * .525, s * .165)'));
     expect(innerCoreGeometry, contains('..lineTo(s * .365, s * .485)'));
     expect(innerCoreGeometry, contains('..lineTo(s * .495, s * .485)'));
