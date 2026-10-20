@@ -976,19 +976,7 @@ class SettingsPage extends StatelessWidget {
                 _item(context, PhosphorIconsRegular.uploadSimple, JexText.of('firmwareUpdate', language),
                     currentFirmwareVersion, () => unawaited(onOpenFirmwareUpdate())),
               ]),
-              _section(context, JexText.of('aboutSection', language), [
-                _item(
-                context,
-                PhosphorIconsRegular.info,
-                JexText.of('about', language),
-                'JE Cooler',
-                () => Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => const AboutSettingsPage(),
-                  ),
-                ),
-              ),
-              ]),
+
             ],
           ),
           ),
@@ -1290,59 +1278,6 @@ class BluetoothSettingsPage extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-// AI-MEMORY / ABOUT-PAGE-CONTRACT
-// Static product/about presentation; no device state or transport ownership.
-class AboutSettingsPage extends StatelessWidget {
-  const AboutSettingsPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<AppLanguage>(
-      valueListenable: appLanguageNotifier,
-      builder: (context, language, _) => Scaffold(
-        appBar: AppBar(title: Text(JexText.of('about', language))),
-        body: ListView(
-          padding: const EdgeInsets.fromLTRB(24, 28, 24, 28),
-          children: [
-            Center(child: Image.asset('assets/jexfyzicon.png', width: 88, height: 88)),
-            const SizedBox(height: 16),
-            const Center(child: Text('JE X FYZ', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900))),
-            const SizedBox(height: 4),
-            const Center(child: Text('JE Cooler', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700))),
-            const SizedBox(height: 24),
-            _AboutRow(label: JexText.of('appVersion', language), value: 'Telegram @horizontalzzz'),
-            _AboutRow(label: JexText.of('bluetooth', language), value: 'P1'),
-            const SizedBox(height: 14),
-            Center(child: Text('© JE X FYZ', style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant))),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// AI-MEMORY / ABOUT-ROW-CONTRACT
-// Reusable presentation row for static About information.
-class _AboutRow extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _AboutRow({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 7),
-      child: Row(
-        children: [
-          Expanded(child: Text(label, style: const TextStyle(fontWeight: FontWeight.w800))),
-          Text(value),
-        ],
       ),
     );
   }
