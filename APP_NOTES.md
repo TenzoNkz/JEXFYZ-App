@@ -2,29 +2,27 @@
 
 This file is the durable App behavior/design contract. Live source and the current workflow remain authoritative.
 
-## Home NOTIFY live-state and localization fix — 2026-10-20 (source-only / NOT RUN / NOT RELEASED)
+## Home NOTIFY — single latest-event message (2026-10-20; source-only / NOT RUN / NOT RELEASED)
 
-- Latest source/test fingerprints: `lib/main.dart` `4d2871234971ef8a9fa976f197e0e4f7b1e188ac`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `ccae334f9a737926bef021fa04ce7caa4d30601d`.
-- Home NOTIFY now follows the newest confirmed cooling telemetry instead of treating a successful command acknowledgement as a permanent message. Accepted Adaptive/Voltage/Fan/Peltier/Fan Speed commands move the card to a compact summary built from current mode, voltage, Fan state/speed and Peltier state.
-- A genuine change in cooling telemetry, safety reason or Hotside-limit state retires an older ordinary acknowledgement. Repeated identical telemetry is not treated as a new change.
-- Safety has priority over older success messages and ordinary summaries. Hotside at/above its configured limit displays the current measured temperature and configured limit. Home warning presentation also recognizes that live threshold.
-- Stored bilingual strings are re-resolved for the selected app language. A language listener rebuilds Home immediately, republishes Floating Monitor telemetry, and updates the connected-device foreground notification without waiting for new BLE traffic.
-- BLE protocol/ownership, Firmware safety rules, OTA transport and Android Gradle `versionName` remain unchanged.
-- Regression cases cover bilingual live summaries, Hotside temperature/limit wording, stored-message relocalization and listener wiring. Flutter tests and Dart analysis have NOT RUN. No App Build, Firmware compile, BIN/Firebase, OTA, flash or device operation occurred. Build #116 remains the latest verified App release; this source is NOT RELEASED and live-device behavior remains UNVERIFIED.
-
+- Current blobs: `lib/main.dart` `a167e884f765a8a9ef379108262c366c8bcdcf99`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `5cb9ccacf585823a874976432478529893f71da3`.
+- Home NOTIFY displays one complete sentence for the newest confirmed event. It never concatenates Adaptive, Voltage, Fan and Peltier into a state summary. Each new event replaces the previous sentence: `Adaptive ON.` → `Voltage set to 5V.` → `Fan speed reduced to 70%.`
+- Events cover Voltage, Fan/Peltier ON/OFF, Adaptive ON/OFF and profile/ceiling, Fan speed increase/reduction, LED ON/OFF/mode/brightness/color and safety-state transitions. Repeated identical telemetry creates no new event. If newer telemetry arrives before an ACK completes, that older ACK cannot overwrite it.
+- Ordinary Temperature samples do not create messages. Hotside reaching its configured limit is the exception: the in-app card shows measured temperature and limit in English/Indonesian regardless of the Android push preference. Android push remains preference-controlled and is re-armed after temperature falls below the limit.
+- Language changes re-render the last event immediately. Active Hotside/safety conditions take priority over ordinary events. BLE protocol/ownership, Firmware safety rules and OTA transport are unchanged.
+- Validation: source/test blobs were fetched back. Flutter tests and Dart analysis have NOT RUN for this revision. Build #120 remains the latest successful App release and does not contain this source patch. No App Build, Firmware compile, BIN/Firebase, OTA, flash or device operation was performed; live-device behavior remains UNVERIFIED.
 ## Current App release and follow-up — 2026-10-20
 
-- Latest successful App release is Build #116 / run 39355262101, source `48683874db659df940272bed1c860072ead2d767`. APK SHA-256 `8570914f331583d2cc462f61881609c0eae56639a139f2d60a832e4aaa81ea27`; source ZIP SHA-256 `60ef4e79529aabcbb4f4093b9f8a18b5d383d5c651c1c303dd8bb774e7b0dd5d`.
-- Latest unbuilt Home NOTIFY live-state/localization follow-up: lib/main.dart `4d2871234971ef8a9fa976f197e0e4f7b1e188ac`; lib/app_settings.dart `44431e926bfa2557c26345899e2333bd767f3f8e`; test/widget_test.dart `ccae334f9a737926bef021fa04ce7caa4d30601d`. Flutter tests and analyzer have NOT RUN for this follow-up.
+- Latest successful App release is Build #120 / run 39365201489, source `aeadaa47bd7ad64af6044afce5783781f0c0d82f`. APK SHA-256 `aa162e57a04f229922cca4fe48773a49585328e2337761f5c641097957ff0392`; source ZIP SHA-256 `3e7585549d2eef68ad93b35c378bd76332d80a92a0edf1856aec8303df5e28d7`.
+- Latest unbuilt Home NOTIFY single-event follow-up: lib/main.dart `a167e884f765a8a9ef379108262c366c8bcdcf99`; lib/app_settings.dart `44431e926bfa2557c26345899e2333bd767f3f8e`; test/widget_test.dart `5cb9ccacf585823a874976432478529893f71da3`. Flutter tests and analyzer have NOT RUN for this follow-up.
 - Home: seven 45 dp metric rows, 3 dp pre-card gap, and a fixed 44 dp icon-left/text-left card. Its heading is localized as `Notification` / `Notifikasi` with a 2 dp top inset; body copy scales down only as needed and is limited to two lines. Cooler-image constraints remain stable.
 - Battery/Hotside: small stylized orange/gold flame particles descend from the top with warm yellow-white cores, a soft halo and subtle drift/rotation. The particles are background-first, clipped to a rounded frame minus the foreground shell, and cannot escape the rounded boundary or paint inside the battery chamber/thermometer tube. Existing warning gates and safety logic are unchanged.
-- Build #116 validates only the packaged source commit above, not these newest UI edits or physical-phone rendering/smoothness. No BLE semantics, controls, telemetry, Firmware safety predicates, BIN/Firebase/OTA or device state were changed by this follow-up.
+- Build #120 validates only the packaged source commit above, not the latest single-event NOTIFY edits or physical-phone behavior. No BLE protocol/ownership, Firmware safety predicates, BIN/Firebase/OTA or device state were changed by this follow-up.
 - V6.9 compile/install was previously USER-REPORTED. Active V7.0 source is newer and remains NOT COMPILED / NOT INSTALLED; source-to-BIN provenance and the device's installed version remain UNVERIFIED.
 
 ## Localization copy pass — source-only / validation pending
 
 - Home and contact actions use centralized localization keys for English and Indonesian. The Home heading is `Notification` / `Notifikasi`; the Settings page keeps `Notifications` / `Notifikasi`. Hotside labels consistently use `Hotside` / `Suhu Hotside`.
-- Notification descriptions use natural action language (`Send a notification` / `Kirim notifikasi`). User-facing errors avoid surfacing internal backend wording. Flutter tests and Dart analysis have NOT RUN; the last verified App build remains #116.
+- Notification descriptions use natural action language (`Send a notification` / `Kirim notifikasi`). User-facing errors avoid surfacing internal backend wording. Flutter tests and Dart analysis have NOT RUN; the last verified App build remains #120.
 
 ## Tamper warning screen and developer contact — rounded text blocks included by Build #80
 
@@ -147,7 +145,7 @@ This file is the durable App behavior/design contract. Live source and the curre
 - Current metrics are B/H/V/A/P/F. F is labelled Fan/Kipas and displays live PWM speed while running. When BLE telemetry is disconnected, live device values are unknown (--) and no stale output state is inferred.
 - FPS, SurfaceFlinger TimeStats sampling, Shizuku permission UI/provider/UserService/AIDL, related parser/watchdog tests and Shizuku-only license files are removed from active App source. The release workflow audit and source archive packaging no longer depend on them.
 - Schema version 2 maps old schema-v1 S (Speed) to F (Fan Speed) and drops old schema-v1 F (FPS). Flutter contract tests cover migration and removal of FPS/Shizuku UI.
-- Historical Build #83 / run 39192430789 was superseded. Build #116 is the latest successful App release and validates the preceding fixed 44 dp NOTIFY / 45 dp Home-row layout and bounded background ember painter. The newer source-only follow-up updates falling-flame geometry/rounded clipping and makes the heading exactly NOTIFY; it is not yet validated/released. Phone visuals, physical animation smoothness and live BLE telemetry remain unverified.
+- Historical Build #83 / run 39192430789 was superseded. Build #120 is the latest successful App release and validates its packaged source only; the latest single-event NOTIFY source has not been tested or released. The newer source-only follow-up updates falling-flame geometry/rounded clipping and makes the heading exactly NOTIFY; it is not yet validated/released. Phone visuals, physical animation smoothness and live BLE telemetry remain unverified.
 
 ## Phone battery telemetry and Battery Protection UI boundary
 
