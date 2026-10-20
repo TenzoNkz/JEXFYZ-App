@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — CHAT TRANSFER SNAPSHOT
 
-Reconciled from live GitHub main after `@Thinking Eksekusi Full!` on 2026-10-20 (Asia/Jakarta). Original pre-change HEAD: `766a52afd284529a214f8a47dd3bcf74662b23ff`; base tree: `c42df15b82815fdc7f1dfc7edc26cc8221075ce7`. The main UI update is committed as `69f7034270cf6ad76af6cae17ae2daf372084ce8`; this snapshot records a small follow-up correction to the regression test. Live HEAD overrides this pre-commit snapshot.
+Reconciled from live GitHub main after `@Thinking Eksekusi Full!` on 2026-10-20 (Asia/Jakarta). The working source includes the earlier thermal-visual revisions plus a new English/Indonesian localization and copy pass. Live `main` is authoritative; this snapshot records the source-only, not-yet-validated state.
 
 ## 1. Authority and operation scope
 
@@ -9,35 +9,41 @@ Reconciled from live GitHub main after `@Thinking Eksekusi Full!` on 2026-10-20 
 - Preserve Android Gradle `versionName "Telegram @horizontalzzz"`. `TenzoNkz/JEXFYZ-Firmware` is BIN-only; do not inspect or modify its payload.
 - Latest successful App release is Build #116 / Actions run 39355262101, packaging commit `48683874db659df940272bed1c860072ead2d767`. It passed 109 Flutter tests and the configured release gates. Its APK SHA-256 is `8570914f331583d2cc462f61881609c0eae56639a139f2d60a832e4aaa81ea27`; source ZIP SHA-256 is `60ef4e79529aabcbb4f4093b9f8a18b5d383d5c651c1c303dd8bb774e7b0dd5d`. Build #116 validates only its packaged source, not this new follow-up.
 
-## 2. Final Home visual follow-up — source-only / NOT RUN / NOT RELEASED
+## 2. Home visual and localization follow-up — source-only / NOT RUN / NOT RELEASED
 
-- `lib/main.dart` blob: `8eb24de58a2e510b3d05abbb29bce45bb0a42810`.
-- `test/widget_test.dart` blob: `a82875dd47ad904818fcd4c1c47b1a3ac0ca8fd2`.
+- `lib/main.dart` blob: `07178b5cce55fc8f78cc7c2953f4d8e352ccefe7`.
+- `test/widget_test.dart` blob: `da12f8ef82283f55af04a5286a6366e2253a4e6f`.
 - Battery/Hotside use deterministic falling flame-shaped particles (not plain oval dots), with orange/gold body, warm yellow-white hot cores, soft halo, subtle drift/rotation and edge fading. Flames fall from the top like the Peltier snowfall.
 - Fire draws as a background layer. The permitted path is the rounded painter frame minus the foreground thermal silhouette; the frame clip stops particles escaping rounded corners, and the foreground battery/thermometer casing remains above them. Existing Battery >=40°C and configured Hotside warning gates plus the 280 ms warning transition are unchanged. Peltier animation is not changed.
-- Home NOTIFY heading is now exactly `NOTIFY` in all languages/states: no `• ERROR`, `• STATUS`, `• SYNC`, `• WARNING`, or connection suffix. A 2 dp top inset lowers the label away from the card border. Card remains fixed 44 dp, body remains up to two lines with only necessary font shrinking, Home metric rows stay 45 dp with a 3 dp gap before NOTIFY, and cooler-image constraints stay stable.
-- The regression source contract was updated for flame shape paths, rounded-frame clipping, exact NOTIFY label and the top inset. Flutter tests and Dart analyzer were **NOT RUN** in this Full execution. Do not claim the latest changes are test-passing, built or released until separately validated.
+- Home Notification heading is localized as `Notification` / `Notifikasi` in the selected app language, with no `• ERROR`, `• STATUS`, `• SYNC`, `• WARNING`, or connection suffix. A 2 dp top inset lowers the label away from the card border. The card remains fixed at 44 dp, body remains up to two lines with only necessary font shrinking, Home metric rows stay 45 dp with a 3 dp gap before the card, and cooler-image constraints stay stable.
+- Regression contracts cover flame paths, rounded-frame clipping, localized notification/contact labels and the top inset. Flutter tests and Dart analyzer were **NOT RUN** in this Full execution. Do not claim the latest changes are test-passing, built or released until separately validated.
 - No App Build/release, Firmware compile, BIN inspection/publication, Firebase edit, OTA, flash, or device operation took place here.
+
+## Localization copy pass — source-only / NOT RUN / NOT RELEASED
+
+- Home heading: `Notification` / `Notifikasi`; Settings section: `Notifications` / `Notifikasi`; Contact Developer: `Contact Developer` / `Hubungi Pengembang`.
+- Updated notification descriptions, Hotside terminology, palette labels, Bluetooth/firmware copy and Android Floating Monitor status text.
+- Current source blobs: `lib/app_settings.dart` 3486653401adb6bba251ae16afc7837a3a1af5fe; `lib/main.dart` 07178b5cce55fc8f78cc7c2953f4d8e352ccefe7; `test/widget_test.dart` da12f8ef82283f55af04a5286a6366e2253a4e6f; `FloatingMonitorService.kt` f2c5d5e8b5731be36ae3b82109a75beaefe5fb4d. Flutter tests and Dart analysis have NOT RUN. Build #116 remains the latest verified release.
 
 ## 3. Current validated release versus working source
 
 - **Latest validated/released App:** Build #116, commit `48683874db659df940272bed1c860072ead2d767`.
-- **Current working source:** source blob listed above and test blob listed above; main UI commit `69f7034270cf6ad76af6cae17ae2daf372084ce8` is followed by a small correction to align the test's expected top-to-bottom particle start offset with source. This complete follow-up remains **UNVALIDATED / NOT RELEASED**; live `main` HEAD is authoritative.
+- **Current working source:** the latest localized source and test blobs listed above, layered on top of the prior thermal-visual work. This follow-up remains **UNVALIDATED / NOT RELEASED**; live `main` HEAD is authoritative.
 - Any next official App validation/release requires the distinct `@Thinking Eksekusi Build App!` command. Never infer APK contents from a newer main source hash alone.
 
-## 4. Canonical memory files and updated fingerprints (test offset correction included)
+## 4. Canonical memory files and updated fingerprints (localization copy pass included)
 
-- `lib/main.dart`: `8eb24de58a2e510b3d05abbb29bce45bb0a42810`
-- `test/widget_test.dart`: `a82875dd47ad904818fcd4c1c47b1a3ac0ca8fd2`
-- `PROJECT_STATE.md`: `d8e126e3b521d42c7d3a37008c552866e11052ef`
+- `lib/main.dart`: `07178b5cce55fc8f78cc7c2953f4d8e352ccefe7`
+- `test/widget_test.dart`: `da12f8ef82283f55af04a5286a6366e2253a4e6f`
+- `PROJECT_STATE.md`: `689176249837c5ab8d4ed858a53e7e62da58aac9`
 - `DESIGN_NOTES.md`: `48fa3014c5b3e93028f36adbdda4525bd4ee69e7`
 - `APP_BUILD_REPORT.md`: `377db79e937a3d1704616a3e487090dfddf0e94f`
-- `CHANGELOG.md`: `a28b6d1ba5bab5663f7468ba0008c4d151c2c2de`
-- `README.md`: `6712a0c2e9b6e425acb5ff3de09c546919358af3`
-- `HANDOVER.md`: `af335a5e23380dc5eff2223106be3ccc4da7341c`
+- `CHANGELOG.md`: `54141d46d8ad1af1927dd1de54f53439d600e4b8`
+- `README.md`: `95a799144c2cb093af6dab9a953884709663c5f2`
+- `HANDOVER.md`: `fe6b40a7320dbda8c773fa5063dfe36a67db7f84`
 - `CHAT_RULES.md`: `cc2798d1d1b4f5a48005966f14d70954c3ef4b86`
-- `APP_NOTES.md`: `55bf0fc25c1753e6c8d9528d366679f808daf143`
-- `MEMORY_INDEX.md`: `9dfdc34039996ac01216f0e1e4b7a30a84439ed1`
+- `APP_NOTES.md`: `d87679f511d54669970eab5452ada9f1f47e222d`
+- `MEMORY_INDEX.md`: `7dc84007c6d0fbafcf96ac26b3d6b4ded7d4b7f1`
 - Guarded App trigger workflow stays unchanged at blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`.
 
 ## 5. Firmware checkpoint / protected behavior
