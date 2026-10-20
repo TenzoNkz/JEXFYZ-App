@@ -27,10 +27,10 @@ Reconciled from live GitHub main after `@Thinking Eksekusi Full!` on 2026-10-20 
 
 ## Adaptive Fan whole-degree target fix — source-only / NOT COMPILED / NOT TESTED
 
-- Source: `firmware/JEXFYZ-V6.9.ino` blob `b35101a0cc5a597c55ecd4391cd99d5b62852417`.
-- QC contract: `test/firmware_qc_contract_test.dart` blob `29325173289d78041002df41cc14262fcf89e045`.
+- Source: `firmware/JEXFYZ-V7.0.ino` blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`.
+- QC contract: `test/firmware_qc_contract_test.dart` blob `a44c12d32c472f109687c06316ea40f70fcf93ce`.
 - Use `floorf(hotsideC)` to select the whole-degree target category. At a 40°C limit, 36.0–36.99°C stays at 70%; target 80% begins at category 37. Preserve the unrounded Hotside safety override, immediate 100% cooling, 10-point ramp steps (up 1 second / down 10 seconds), one calibrated NTC sample per second and the non-blocking loop.
-- Static readback checks passed. Firmware contract tests and Arduino compile were NOT RUN; the earlier user-reported V6.9 install does not validate this source revision. No BIN payload was inspected/changed, and no Firebase, OTA, flash or device operation occurred.
+- Static readback checks passed. Firmware contract tests and Arduino compile were NOT RUN; the earlier user-reported V6.9 install does not validate this source revision. No BIN payload was inspected/changed, and no Firebase, OTA, flash or device operation occurred. A real OTA still requires a V7.0 BIN compiled from this source and Firebase metadata `version: "V7.0"` pointing to that artifact.
 
 ## 3. Current validated release versus working source
 
@@ -57,6 +57,6 @@ Reconciled from live GitHub main after `@Thinking Eksekusi Full!` on 2026-10-20 
 
 ## 5. Firmware checkpoint / protected behavior
 
-- Active Firmware source is `firmware/JEXFYZ-V6.9.ino`, current blob `b35101a0cc5a597c55ecd4391cd99d5b62852417`; QC contract test blob `29325173289d78041002df41cc14262fcf89e045`. Adaptive 12 V target selection now groups Hotside readings by floored whole degrees (36.3°C and 36.8°C are both category 36 and target 70% when the limit is 40°C; target 80% starts at category 37). The immediate safety override still uses the raw decimal temperature and forces 100% at the limit. PWM ramp timing and 1 Hz single NTC read are unchanged. The user reported compile/install for an earlier V6.9 revision; the current hashes have NOT been compiled/installed. Compile logs, source-to-BIN provenance, installed version and physical PWM/thermal results remain **UNVERIFIED**.
-- Firmware QC test blob `1b35feeb1e411efec44261ec130eec4535004454` and Touch/Adaptive sync test blob `3a86dd118cd1d1332dbafa3883ab9e5ae2823ac8` have NOT RUN for V6.9 in recorded CI evidence.
+- Active Firmware source is `firmware/JEXFYZ-V7.0.ino`, current blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`, embedded `FW_VERSION="V7.0"`; QC contract test blob `a44c12d32c472f109687c06316ea40f70fcf93ce` and Touch/Adaptive test blob `b3e23e59deae19408cd7ccbacbad84273f958970`. Adaptive 12 V target selection now groups Hotside readings by floored whole degrees (36.3°C and 36.8°C are both category 36 and target 70% when the limit is 40°C; target 80% starts at category 37). The immediate safety override still uses the raw decimal temperature and forces 100% at the limit. PWM ramp timing and 1 Hz single NTC read are unchanged. The user reported compile/install for an earlier V6.9 revision; the current hashes have NOT been compiled/installed. Compile logs, source-to-BIN provenance, installed version and physical PWM/thermal results remain **UNVERIFIED**.
+- Firmware QC test blob `1b35feeb1e411efec44261ec130eec4535004454` and Touch/Adaptive sync test blob `b3e23e59deae19408cd7ccbacbad84273f958970` have NOT RUN for V7.0.
 - Preserve the existing safety gates, 1 Hz calibrated NTC sample, Adaptive downstep/upstep cadence, voltage handoff, BLE/P1 protocol, OTA protection, Firebase policy and current app build workflow. No unrelated changes.
