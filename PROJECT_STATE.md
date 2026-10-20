@@ -1,6 +1,15 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #120 / run 39365201489 is the latest successful App release recorded here. The Home NOTIFY live-state/localization fix is source-updated but remains NOT RUN / NOT RELEASED. The active Firmware source is now V7.0: the whole-degree Adaptive Fan change and embedded version are aligned. This revision has NOT been compiled or installed. The earlier V6.9 compile/install report refers to a prior source revision; current source-to-BIN provenance and physical behavior remain UNVERIFIED.
+Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #123 / run 39371864780 is the latest verified App release on parent source 14e90e7e26b8eb4400bd01ec8d0eab5ed4195f1c. The Wi-Fi password visibility patch in this commit is newer and is NOT RUN / NOT RELEASED. The user reports V7.0 was compiled and updated via Online OTA; source-to-BIN provenance and exact installed version remain independently UNVERIFIED.
+
+## Latest execution checkpoint — 2026-10-20 (partial; BLE auth blocked)
+
+- Build #123 / Actions run `39371864780`, source `14e90e7e26b8eb4400bd01ec8d0eab5ed4195f1c`; APK SHA-256 `1d06c806b1e75440dfe16108d236dd4c5f0e9b85d50e56989263793952351abb`; source ZIP SHA-256 `0118f201027747f8f682a8d3a393334585a14845a8741f2296da07afae06fbe1`. This release predates and does not include the password-visibility patch.
+- User reports Build #123 is safely installed and Firmware V7.0 compiled / Online OTA succeeded. This is USER-REPORTED; source-to-BIN and installed-version identity were not independently verified.
+- Password visibility source/test blobs: `lib/main.dart` `2d44e1f1f5b88ca1dae8324082da751b6ef1485a`, `lib/app_settings.dart` `637c07be55c412451d9ffde762e080c8bd92fd5e`, `test/widget_test.dart` `90e1a582c49ce3ad1a1d9a3b875921098eaf2545`. Tests, analyzer and Build App have NOT RUN for this patch.
+- BLE App-only authorization remains BLOCKED / NOT IMPLEMENTED due to missing trusted backend enrollment/signing/owner-claim flow; see `BLE_APP_AUTH.md`. No incomplete auth gate was added.
+- No Firmware source/version change and **no OTA change**. No Firebase production action, firmware compile/BIN, App Build, flash or device action occurred here.
+
 
 ## Home NOTIFY — single latest-event message (2026-10-20; source-only / NOT RUN / NOT RELEASED)
 
@@ -12,7 +21,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #120 / r
 - Validation: latest source and test blobs were fetched back. Flutter tests and Dart analysis have NOT RUN for this revision. Build #120 remains the last successful App release and does not contain this source patch. No App Build, Firmware compile, BIN/Firebase, OTA, flash or device operation was performed; live-device behavior remains UNVERIFIED.
 ## Current App / Release state
 
-- Canonical repo: TenzoNkz/JEXFYZ-App, branch main. Build #120 / run 39365201489 is the latest successful App release; live `jexfyz-latest` Release/tag point to packaged source `aeadaa47bd7ad64af6044afce5783781f0c0d82f`.
+- Canonical repo: TenzoNkz/JEXFYZ-App, branch main. Build #123 / run 39371864780 is the latest verified App release; live `jexfyz-latest` Release/tag point to packaged source `aeadaa47bd7ad64af6044afce5783781f0c0d82f`.
 - APK asset 658178574, 54,751,323 bytes, SHA-256 aa162e57a04f229922cca4fe48773a49585328e2337761f5c641097957ff0392; source ZIP asset 658178573, 2,871,380 bytes, SHA-256 3e7585549d2eef68ad93b35c378bd76332d80a92a0edf1856aec8303df5e28d7.
 - Build #116 validated the preceding fixed Home layout and bounded background ember painter. The preceding source-only visual follow-up refines falling flame shapes and rounded-frame clipping. This localization follow-up changes the Home heading to `Notification` / `Notifikasi`, localizes Contact Developer, and polishes user-facing English/Indonesian copy. The seven 45 dp rows, 3 dp gap and fixed 44 dp notification card remain unchanged.
 - Current NOTIFY source/test blobs: `lib/main.dart` 40f172a5d190b429d3a952f2531349c1ee220d1f; `lib/app_settings.dart` 44431e926bfa2557c26345899e2333bd767f3f8e; `test/widget_test.dart` 132c3b000abd63599ebea9d26fc5085cb577e50e. Build #120 validates prior packaged source only; Flutter tests/analyzer have NOT RUN for the latest single-event change.
@@ -22,11 +31,11 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #120 / r
 
 - The app supports English and Indonesian. The Home card heading now uses the centralized `notification` key (`Notification` / `Notifikasi`); the Settings section retains the plural `Notifications` / `Notifikasi` label. Contact Developer is localized through the same table.
 - Hotside terminology is consistent (`Hotside Temperature` / `Suhu Hotside`), notification settings descriptions use `Send a notification` / `Kirim notifikasi`, and user-facing firmware/Bluetooth messages avoid exposing implementation details such as Firebase read access.
-- Flutter tests and Dart analysis have NOT RUN for this copy pass. Build #120 remains the latest verified App release; the latest single-event NOTIFY patch is not included.
+- Flutter tests and Dart analysis have NOT RUN for this copy pass. Build #123 remains the latest verified App release; the latest single-event NOTIFY patch is not included.
 
 ## Current Firmware source — V7.0 identity corrected; compile unverified
 
-- Exactly one active versioned sketch: `firmware/JEXFYZ-V7.0.ino`, current source blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`, embedded `FW_VERSION="V7.0"`. V6.9 is superseded and its old sketch path has been removed from the active tree. This corrects the missed version bump on the previous whole-degree Adaptive Fan edit. V7.0 is source-only and NOT compiled/installed.
+- Exactly one active versioned sketch: `firmware/JEXFYZ-V7.0.ino`, current source blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`, embedded `FW_VERSION="V7.0"`. V6.9 is superseded and its old sketch path has been removed from the active tree. This corrects the missed version bump on the previous whole-degree Adaptive Fan edit. User reports V7.0 is compiled and installed via Online OTA; exact source-to-BIN identity is unverified.
 - Adaptive 12 V target uses the floored whole-degree Hotside category: `temperatureCategoryC = floor(hotsideC)` and integer `belowLimitC = hotLimit - temperatureCategoryC`. With a 40°C limit, category 36 (36.0–36.99°C) targets 70%, category 37 targets 80%, category 38 targets 90%, category 39 targets 100%, category 35 targets 60%, and category 34 or lower targets 50%. Thus 36.3°C →36.8°C remains at the same target. The immediate safety override continues to compare the original decimal `hotsideC >= hotLimit` and forces 100% without rate limiting. Actual PWM still changes by 10 percentage points: down every 10 seconds, up every 1 second. Voltage handoff and thermal-dwell paths reset the pacing clock; Adaptive 5/9 V remains 100%.
 - `test/firmware_qc_contract_test.dart` current blob `a44c12d32c472f109687c06316ea40f70fcf93ce` checks V7.0 identity, V7.0-vs-V6.9 OTA version difference, whole-degree tiers, the 36.3°C/36.8°C same-category case, 10-second/1-second ramp timing, safety priority, one NTC sample per second and non-blocking timing. `test/firmware_touch_adaptive_sync_test.dart` `b3e23e59deae19408cd7ccbacbad84273f958970` remains the companion state/telemetry contract. Firmware contract tests and Arduino compile have NOT RUN for V7.0; it is not proven installed.
 - OTA deployment is still pending: firmware sends `OTA_UP_TO_DATE` without downloading when metadata `version` equals embedded `FW_VERSION`. The live BIN and Firebase `firmware_update.json` were not changed; V7.0 must be compiled/published and metadata aligned to `V7.0` before the current V6.9 device can receive it.

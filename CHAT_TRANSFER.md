@@ -1,13 +1,22 @@
 # JE X FYZ / JE Cooler — CHAT TRANSFER SNAPSHOT
 
-Reconciled from live GitHub main after `@Thinking Eksekusi Full!` on 2026-10-20 (Asia/Jakarta). The working source includes earlier thermal-visual and English/Indonesian localization revisions plus an Adaptive Fan whole-degree target correction. Live `main` is authoritative; the Firmware update is source-only and not compiled/installed.
+Reconciled from live GitHub main on 2026-10-20 (Asia/Jakarta). Build #123 is the latest verified App release; user reports the App is installed safely and Firmware V7.0 compiled/updated by Online OTA. The latest password-visibility patch is source-only and not yet built.
+
+## Latest checkpoint — 2026-10-20 (security task partial; BLE auth blocked)
+
+- Build #123 / Actions run `39371864780`, source `14e90e7e26b8eb4400bd01ec8d0eab5ed4195f1c`; APK SHA-256 `1d06c806b1e75440dfe16108d236dd4c5f0e9b85d50e56989263793952351abb`; source ZIP SHA-256 `0118f201027747f8f682a8d3a393334585a14845a8741f2296da07afae06fbe1`. This release predates and does not include the password-visibility patch.
+- User reports safe App installation and successful Firmware V7.0 compile/Online OTA; source-to-BIN/device version remains not independently verified.
+- This execution adds a localized eye toggle for the Wi-Fi password field. Current source/test blobs: `lib/main.dart` `2d44e1f1f5b88ca1dae8324082da751b6ef1485a`, `lib/app_settings.dart` `637c07be55c412451d9ffde762e080c8bd92fd5e`, `test/widget_test.dart` `90e1a582c49ce3ad1a1d9a3b875921098eaf2545`. Tests/analyzer/App Build NOT RUN.
+- BLE App-only authorization is **BLOCKED / NOT IMPLEMENTED** pending a trusted backend enrollment/signing/owner-claim path. See `BLE_APP_AUTH.md`. No first BLE client can be trusted automatically without validating the enrollment grant.
+- UX stays power on → open App → Connect BLE; no QR and no extra Touch gesture. **OTA is frozen and must not change.** No Firebase production deployment, Firmware compile/BIN, App Build, OTA, flash, or device operation occurred here.
+
 
 ## 1. Authority and operation scope
 
 - Canonical repository: `TenzoNkz/JEXFYZ-App`, branch `main`; continue directly on `main`, no branch/PR unless requested.
 - `@Thinking Diskusi!` is read-only. `@Thinking Eksekusi Full!` authorizes only scoped source/tests/docs/static audit/commit; it does NOT authorize official App Build/release, Firmware compile, BIN publication, Firebase, OTA, flashing or physical-device operations. `@Thinking Eksekusi Build App!` remains the separate App Build authorization.
 - Preserve Android Gradle `versionName "Telegram @horizontalzzz"`. `TenzoNkz/JEXFYZ-Firmware` is BIN-only; do not inspect or modify its payload.
-- Latest successful App release is Build #120 / Actions run 39365201489, packaging commit `aeadaa47bd7ad64af6044afce5783781f0c0d82f`. It passed 115 Flutter tests and the configured release gates. APK SHA-256 `aa162e57a04f229922cca4fe48773a49585328e2337761f5c641097957ff0392`; source ZIP SHA-256 `3e7585549d2eef68ad93b35c378bd76332d80a92a0edf1856aec8303df5e28d7`. Build #120 validates only its packaged source, not this latest single-event NOTIFY patch.
+- Latest verified App release is Build #123 / Actions run 39371864780, packaging commit `14e90e7e26b8eb4400bd01ec8d0eab5ed4195f1c`. It passed 115 Flutter tests and configured release gates. APK SHA-256 `1d06c806b1e75440dfe16108d236dd4c5f0e9b85d50e56989263793952351abb`; source ZIP SHA-256 `0118f201027747f8f682a8d3a393334585a14845a8741f2296da07afae06fbe1`. It does not include the current password-visibility patch.
 
 ## 2. Home visual and localization follow-up — source-only / NOT RUN / NOT RELEASED
 

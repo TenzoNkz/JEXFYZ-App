@@ -1,3 +1,14 @@
+## 2026-10-20 — Firmware Update password visibility; BLE authorization blocker (partial execution)
+
+- Added a visibility toggle for the Wi-Fi password in Firmware Update. The field is masked by default; the eye icon toggles visibility and the tooltip is localized in EN/ID: Show/Hide password / Tampilkan/Sembunyikan kata sandi.
+- Existing `FlutterSecureStorage`, SSID field, OTA command sequence, and all OTA source/state-machine behavior remain unchanged.
+- Source/test blobs: `lib/main.dart` `2d44e1f1f5b88ca1dae8324082da751b6ef1485a`, `lib/app_settings.dart` `637c07be55c412451d9ffde762e080c8bd92fd5e`, `test/widget_test.dart` `90e1a582c49ce3ad1a1d9a3b875921098eaf2545`.
+- BLE App-specific authorization was NOT implemented: current encrypted/bonded writes + Just Works + `SYNC_READY` do not prove App identity. A trusted backend enrollment/signing/owner-claim endpoint and managed server signing-key provisioning path are absent. Adding a claim-from-any-first-client shortcut would be unsafe. See `BLE_APP_AUTH.md`.
+- Flutter tests/analyzer, App Build, Firmware compilation, Firebase production changes, BIN, OTA and device operations were not run/performed. OTA source was not touched.
+- User reports Build #123 installed safely and Firmware V7.0 compiled/updated through Online OTA; these remain USER-REPORTED and exact source-to-BIN identity is not independently verified.
+
+---
+
 ## Home NOTIFY — single latest-event message (2026-10-20; source-only / NOT RUN / NOT RELEASED)
 
 - Current blobs: `lib/main.dart` `40f172a5d190b429d3a952f2531349c1ee220d1f`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `132c3b000abd63599ebea9d26fc5085cb577e50e`.

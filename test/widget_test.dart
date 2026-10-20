@@ -18,6 +18,28 @@ import 'package:jexfyz_cooler/app_settings.dart';
 import 'package:jexfyz_cooler/floating_monitor.dart';
 
 void main() {
+  test('Firmware Update Wi-Fi password visibility is toggleable and localized', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final settings = File('lib/app_settings.dart').readAsStringSync();
+    final dialogStart = source.indexOf(
+      'class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog>',
+    );
+    expect(dialogStart, isNonNegative);
+    final dialog = source.substring(dialogStart);
+
+    expect(dialog, contains('bool passwordVisible = false;'));
+    expect(dialog, contains('obscureText: !passwordVisible'));
+    expect(dialog, contains("passwordVisible ? 'hidePassword' : 'showPassword'"));
+    expect(dialog, contains('passwordVisible = !passwordVisible;'));
+    expect(dialog, contains('passwordVisible ? Icons.visibility_off : Icons.visibility'));
+    expect(settings, contains("'showPassword': {"));
+    expect(settings, contains("AppLanguage.english: 'Show password'"));
+    expect(settings, contains("AppLanguage.indonesia: 'Tampilkan kata sandi'"));
+    expect(settings, contains("'hidePassword': {"));
+    expect(settings, contains("AppLanguage.english: 'Hide password'"));
+    expect(settings, contains("AppLanguage.indonesia: 'Sembunyikan kata sandi'"));
+  });
+
   test('Generic action glyphs stay static outside telemetry-driven indicators', () {
     final glyph = File('lib/jex_animated_glyph.dart').readAsStringSync();
     final app = File('lib/main.dart').readAsStringSync();

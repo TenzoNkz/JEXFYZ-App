@@ -1,6 +1,15 @@
 # JE X FYZ / JE Cooler — Firmware & Hardware Reference
 
-Durable hardware and behavior decisions belong here. For code-level structure see firmware/FIRMWARE_TECHNICAL_REFERENCE.md; for protected OTA use OTA_PROTECTION.md; for incidents read the dedicated regression-memory files. Latest successful App artifact is Build #113 (run 39350217172, source 05e4f644d6bf82ae2682154082c3e44a4876205a). Current Home layout/thermal-layer App edits are NOT RUN / NOT RELEASED. The earlier V6.9 compile/install was USER-REPORTED; active V7.0 source is NOT COMPILED / NOT INSTALLED. Independent compile logs, source-to-BIN provenance and actual device version remain UNVERIFIED.
+Durable hardware and behavior decisions belong here. For code-level structure see firmware/FIRMWARE_TECHNICAL_REFERENCE.md; for protected OTA use OTA_PROTECTION.md; for incidents read the dedicated regression-memory files. Latest verified App artifact is Build #123 / run 39371864780, source `14e90e7e26b8eb4400bd01ec8d0eab5ed4195f1c`. The current password-visibility patch is newer than that release and is NOT RUN / NOT RELEASED. User reports that Firmware V7.0 compiled and Online OTA succeeded; this remains USER-REPORTED and exact source-to-BIN provenance / installed version are independently UNVERIFIED.
+
+## BLE authorization checkpoint — 2026-10-20 (BLOCKED / NOT IMPLEMENTED)
+
+- User requires normal UX: power on cooler → open App → Connect BLE → use it; no QR, no additional Touch gesture, and preserve all current gestures.
+- Current `firmware/JEXFYZ-V7.0.ino` configures encrypted/bonded writes but uses Just Works; `SYNC_READY` opens its command gate. This is not proof of official App identity.
+- Do not add a self-service first-key claim: any arbitrary initial BLE peer might claim the cooler. A server-authorized, device-bound enrollment grant and per-session nonce/signature verification are required. See `BLE_APP_AUTH.md`.
+- No Firmware source edit/version bump occurred in this task. User reports V7.0 compile/Online OTA success; exact source-to-BIN provenance and installed identity remain unverified independently.
+- **OTA PROTECTED / NO CHANGE:** all Local/Online OTA logic, transport/TLS, handoff, checks, timing, recovery and restart remain untouched.
+
 
 ## Hardware platform and pinout
 
@@ -60,7 +69,7 @@ Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 
 ## Current Adaptive Fan PWM — V7.0 whole-degree temperature categories with stepped controller
 
-- Active editable source: `firmware/JEXFYZ-V7.0.ino`, blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`, embedded `FW_VERSION="V7.0"`. The source incorporates the whole-degree target fix and corrects the missed version bump from the previous source edit. V7.0 has **NOT been compiled or installed**; source-to-BIN provenance and current device version remain UNVERIFIED.
+- Active editable source: `firmware/JEXFYZ-V7.0.ino`, blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`, embedded `FW_VERSION="V7.0"`. The source incorporates the whole-degree target fix and corrects the missed version bump from the previous source edit. User later reported V7.0 compiled and updated successfully over Online OTA; this is USER-REPORTED, while source-to-BIN provenance and exact installed version remain independently UNVERIFIED.
 - Temperature target tiers remain unchanged: `delta = hotLimit - hotsideC`; delta <1.5°C →100%; 1.5–<2.5°C →90%; 2.5–<3.5°C →80%; 3.5–<4.5°C →70%; 4.5–<5.5°C →60%; delta ≥5.5°C →50%. Requested integer examples are 1°C below limit=100%, 2°C=90%, 3°C=80%, 4°C=70%, 5°C=60%, and 6°C or more=50%.
 - **Downshift is paced:** only reduce by 10 percentage points after a full 10-second interval, then wait another 10 seconds for each further reduction until the temperature-selected target is reached. After a 9 V → 12 V transition, PWM stays at full speed during the handoff; when 12 V becomes stable, the downshift clock starts fresh, preventing an immediate drop from 100% directly to 50%.
 - **Upshift is faster:** when the selected target exceeds current PWM, increase by 10 percentage points after a 1-second interval until reaching the target. Reaching Hotside Limit or active Hotside protection forces 100% immediately and is not rate-limited.

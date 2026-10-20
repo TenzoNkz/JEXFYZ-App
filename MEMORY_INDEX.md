@@ -1,12 +1,20 @@
 # JE X FYZ / JE Cooler — Memory Index
 
+## Current security execution checkpoint — 2026-10-20
+
+- Build #123 / Actions run `39371864780`, source `14e90e7e26b8eb4400bd01ec8d0eab5ed4195f1c`; APK SHA-256 `1d06c806b1e75440dfe16108d236dd4c5f0e9b85d50e56989263793952351abb`; source ZIP SHA-256 `0118f201027747f8f682a8d3a393334585a14845a8741f2296da07afae06fbe1`. This release predates and does not include the password-visibility patch.
+- User reports safe installation and V7.0 Online OTA success; exact source-to-BIN and installed identity remain USER-REPORTED / not independently verified.
+- Source/test blobs: `lib/main.dart` `2d44e1f1f5b88ca1dae8324082da751b6ef1485a`, `lib/app_settings.dart` `637c07be55c412451d9ffde762e080c8bd92fd5e`, `test/widget_test.dart` `90e1a582c49ce3ad1a1d9a3b875921098eaf2545`; password show/hide change is NOT RUN / NOT RELEASED.
+- BLE auth remains BLOCKED / NOT IMPLEMENTED; see `BLE_APP_AUTH.md`. No arbitrary first BLE client is trusted. OTA was not changed.
+
+
 ## Home NOTIFY — single latest-event message (2026-10-20; source-only / NOT RUN / NOT RELEASED)
 
 - Current blobs: `lib/main.dart` `40f172a5d190b429d3a952f2531349c1ee220d1f`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `132c3b000abd63599ebea9d26fc5085cb577e50e`.
 - Home NOTIFY displays only the newest confirmed event as one complete sentence. It never assembles a combined state summary. Each new event replaces the previous one: `Adaptive ON.` → `Voltage set to 5V.` → `Fan speed reduced to 70%.`
 - Event copy covers Voltage, Fan/Peltier ON/OFF, Adaptive ON/OFF/profile/ceiling, Fan speed up/down, LED power/mode/brightness/color and safety-state transitions. Identical repeated telemetry creates no new message; an older delayed ACK cannot overwrite newer telemetry.
 - Ordinary Temperature samples do not notify. Hotside at/above the configured limit is the safety exception, showing measured temperature and limit in English/Indonesian regardless of Android push preference; Android push still respects the preference and re-arms after cooling below the limit.
-- App language changes re-render the latest event. Build #120 is the latest successful App release; these source/test changes are NOT RUN / NOT RELEASED. No App Build or Firmware/device action was performed.
+- App language changes re-render the latest event. Build #123 is the latest verified App release; these source/test changes are NOT RUN / NOT RELEASED. No App Build or Firmware/device action was performed.
 ## Current Adaptive Fan temperature-category contract
 
 - Firmware-owned Adaptive Fan target tiers live in `firmware/JEXFYZ-V7.0.ino`; its filename and embedded `FW_VERSION="V7.0"` now agree. The target uses floored whole-degree Hotside categories; for a 40°C limit, both 36.3°C and 36.8°C target 70%, while target 80% starts in category 37.
@@ -16,10 +24,10 @@
 ## Current localization copy contract
 
 - English/Indonesian labels and user-facing notices live in `lib/app_settings.dart` (`JexText`) or `JexText.phrase()` in `lib/main.dart`. Keep the Home heading localized as `Notification` / `Notifikasi`, Settings as `Notifications` / `Notifikasi`, and Contact Developer as `Contact Developer` / `Hubungi Pengembang`.
-- Current source/test fingerprints and validation boundaries are recorded in `PROJECT_STATE.md`, `APP_NOTES.md`, `HANDOVER.md`, `CHAT_TRANSFER.md`, and the latest `CHANGELOG.md` entry. Build #120 remains the latest verified App release; this copy pass is source-only until the separate Build App flow.
+- Current source/test fingerprints and validation boundaries are recorded in `PROJECT_STATE.md`, `APP_NOTES.md`, `HANDOVER.md`, `CHAT_TRANSFER.md`, and the latest `CHANGELOG.md` entry. Build #123 remains the latest verified App release; this copy pass is source-only until the separate Build App flow.
 
 
-Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #120 is the latest successful App release; the newest single-event NOTIFY follow-up is source-updated but NOT RUN / NOT RELEASED. V6.9 compile/install was previously user-reported; active V7.0 source is NOT COMPILED / NOT INSTALLED. Source-to-BIN provenance and installed-device version remain UNVERIFIED. Live source/refs/Actions/Release override memory.
+Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #120 is the latest successful App release; the newest single-event NOTIFY follow-up is source-updated but NOT RUN / NOT RELEASED. V6.9 compile/install was previously user-reported; user reports V7.0 was compiled and Online-OTA-updated; exact source-to-BIN identity remains unverified. Source-to-BIN provenance and installed-device version remain UNVERIFIED. Live source/refs/Actions/Release override memory.
 
 ## Current verified release and source checkpoint
 
@@ -27,7 +35,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #120 is 
 - APK asset 658178574, 54,751,323 bytes, SHA-256 aa162e57a04f229922cca4fe48773a49585328e2337761f5c641097957ff0392; corresponding source ZIP asset 658178573, 2,871,380 bytes, SHA-256 3e7585549d2eef68ad93b35c378bd76332d80a92a0edf1856aec8303df5e28d7.
 - Build #120 passed 115 Flutter tests, analyzer exit 0 with 25 info-level diagnostics, Android gate/signing checks, source ZIP integrity and downloaded-asset/tag verification. Native Android test tasks were NO-SOURCE.
 - Current NOTIFY source/test blobs: lib/main.dart 40f172a5d190b429d3a952f2531349c1ee220d1f; lib/app_settings.dart 44431e926bfa2557c26345899e2333bd767f3f8e; test/widget_test.dart 132c3b000abd63599ebea9d26fc5085cb577e50e. These latest single-event contracts have NOT RUN.
-- Active Firmware source is `firmware/JEXFYZ-V7.0.ino`, blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`, embedded `FW_VERSION="V7.0"`. V7.0 is source-only / NOT COMPILED / NOT INSTALLED; the prior V6.9 report does not validate this revision.
+- Active Firmware source is `firmware/JEXFYZ-V7.0.ino`, blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`, embedded `FW_VERSION="V7.0"`. The user reports V7.0 compile/Online OTA success; exact source-to-BIN identity and installed version remain independently unverified.
 
 ## Current visual-state redraw checklist
 
@@ -76,12 +84,12 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #120 is 
 | `OTA_REGRESSION_MEMORY.md` | CA/NTP experiment, failure evidence, `setInsecure()` security trade-off and preflight |
 | `VOLTAGE_TRANSITION_MEMORY.md` | Peltier ramp, rail handoff, cancellation/recovery rules and hardware validation plan |
 | `BUILD_NOTES.md` | Active App build procedure, toolchain, authorization and validation boundaries |
-| `APP_BUILD_REPORT.md` | Authoritative App Build history; Build #120 is latest successful release; newest single-event NOTIFY follow-up remains unvalidated |
+| `APP_BUILD_REPORT.md` | Authoritative App Build history; Build #123 is latest verified release; newest single-event NOTIFY follow-up remains unvalidated |
 | `CHANGELOG.md` | Significant history and superseded decisions; never override current source |
 | `DESIGN_NOTES.md` | Approved grille/logo/assets and dashboard motion/layout contracts |
 | `.github/workflows/jexfyz-app-build-trigger.yml` | Authoritative guarded manual App Build workflow |
 | `test/*.dart` | Five current Flutter/source-contract test files; execution must be proven from run evidence |
-| `firmware/JEXFYZ-V7.0.ino` | Active editable Firmware V7.0 source; not compiled/installed; verify matching BIN provenance before claiming source-to-BIN identity |
+| `firmware/JEXFYZ-V7.0.ino` | Active editable Firmware V7.0 source; user-reported compile/Online OTA success; verify matching BIN/device provenance independently |
 | `archive/*.md` | Immutable forensic snapshots; stale “CURRENT” claims remain historical, paths retained verbatim |
 
 - Active Firmware: `firmware/JEXFYZ-V7.0.ino` blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`; QC contract: `test/firmware_qc_contract_test.dart` blob `a44c12d32c472f109687c06316ea40f70fcf93ce`; Touch/Adaptive sync contract: `test/firmware_touch_adaptive_sync_test.dart` blob `b3e23e59deae19408cd7ccbacbad84273f958970`. V7.0 tests and Arduino compile have NOT RUN; the previous V6.9 compile/install report is not V7.0 validation.

@@ -2,6 +2,17 @@
 
 This file is the durable App behavior/design contract. Live source and the current workflow remain authoritative.
 
+## Latest security execution — 2026-10-20 (partial; BLE authorization blocked)
+
+- Build #123 / Actions run `39371864780`, source `14e90e7e26b8eb4400bd01ec8d0eab5ed4195f1c`; APK SHA-256 `1d06c806b1e75440dfe16108d236dd4c5f0e9b85d50e56989263793952351abb`; source ZIP SHA-256 `0118f201027747f8f682a8d3a393334585a14845a8741f2296da07afae06fbe1`. This release predates and does not include the password-visibility patch.
+- User reports the App release is installed safely and Firmware V7.0 compiled and successfully updated via Online OTA. This is **USER-REPORTED**; installed firmware version and source-to-BIN provenance have not been independently verified.
+- Added a toggleable eye icon to the Firmware Update Wi-Fi password field. It is masked by default, supports localized English/Indonesian Show/Hide tooltips, and retains `FlutterSecureStorage`. New source/test blobs: `lib/main.dart` `2d44e1f1f5b88ca1dae8324082da751b6ef1485a`, `lib/app_settings.dart` `637c07be55c412451d9ffde762e080c8bd92fd5e`, `test/widget_test.dart` `90e1a582c49ce3ad1a1d9a3b875921098eaf2545`. Flutter tests, analyzer, and App Build have NOT RUN for this patch.
+- **BLE App-only command authorization remains BLOCKED / NOT IMPLEMENTED.** Live V7.0 has encrypted/bonded BLE writes, Just Works pairing and a gate opened by `SYNC_READY`, but no per-install App identity or authenticated enrollment. No trusted backend signing/enrollment/owner-claim endpoint or deployment path was found in the repository. See `BLE_APP_AUTH.md`.
+- No first-connection client may self-register a trusted key. Do not claim nRF Connect is blocked until server-authorized enrolment, per-session challenge-response, firmware verification and rejection tests are implemented.
+- User-approved UX: power on cooler → open App → Connect BLE → use it; no QR and no additional Touch gesture. All existing Touch gestures and hardware safety remain unchanged.
+- **OTA is frozen and was not changed.** No OTA state machine/transport, TLS, URL/redirect, timeout, radio handoff, recovery/restart, Firebase production config/metadata, firmware source/version, BIN, App Build, compile, flash, or device action was changed/run in this task.
+
+
 ## Home NOTIFY — single latest-event message (2026-10-20; source-only / NOT RUN / NOT RELEASED)
 
 - Current blobs: `lib/main.dart` `40f172a5d190b429d3a952f2531349c1ee220d1f`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `132c3b000abd63599ebea9d26fc5085cb577e50e`.
@@ -9,10 +20,10 @@ This file is the durable App behavior/design contract. Live source and the curre
 - Events cover Voltage, Fan/Peltier ON/OFF, Adaptive ON/OFF and profile/ceiling, Fan speed increase/reduction, LED ON/OFF/mode/brightness/color and safety-state transitions. Repeated identical telemetry creates no new event. If newer telemetry arrives before an ACK completes, that older ACK cannot overwrite it.
 - Ordinary Temperature samples do not create messages. Hotside reaching its configured limit is the exception: the in-app card shows measured temperature and limit in English/Indonesian regardless of the Android push preference. Android push remains preference-controlled and is re-armed after temperature falls below the limit.
 - Language changes re-render the last event immediately. The Hotside threshold and persistent critical protection/fault latches take priority over ordinary events. BLE protocol/ownership, Firmware safety rules and OTA transport are unchanged.
-- Validation: source/test blobs were fetched back. Flutter tests and Dart analysis have NOT RUN for this revision. Build #120 remains the latest successful App release and does not contain this source patch. No App Build, Firmware compile, BIN/Firebase, OTA, flash or device operation was performed; live-device behavior remains UNVERIFIED.
+- Validation: source/test blobs were fetched back. Flutter tests and Dart analysis have NOT RUN for this revision. Build #123 remains the latest verified App release and does not contain this source patch. No App Build, Firmware compile, BIN/Firebase, OTA, flash or device operation was performed; live-device behavior remains UNVERIFIED.
 ## Current App release and follow-up — 2026-10-20
 
-- Latest successful App release is Build #120 / run 39365201489, source `aeadaa47bd7ad64af6044afce5783781f0c0d82f`. APK SHA-256 `aa162e57a04f229922cca4fe48773a49585328e2337761f5c641097957ff0392`; source ZIP SHA-256 `3e7585549d2eef68ad93b35c378bd76332d80a92a0edf1856aec8303df5e28d7`.
+- Latest verified App release is Build #123 / run 39371864780, source `14e90e7e26b8eb4400bd01ec8d0eab5ed4195f1c`. APK SHA-256 `1d06c806b1e75440dfe16108d236dd4c5f0e9b85d50e56989263793952351abb`; source ZIP SHA-256 `0118f201027747f8f682a8d3a393334585a14845a8741f2296da07afae06fbe1`. This release predates the password-visibility patch.
 - Latest unbuilt Home NOTIFY single-event follow-up: lib/main.dart `40f172a5d190b429d3a952f2531349c1ee220d1f`; lib/app_settings.dart `44431e926bfa2557c26345899e2333bd767f3f8e`; test/widget_test.dart `132c3b000abd63599ebea9d26fc5085cb577e50e`. Flutter tests and analyzer have NOT RUN for this follow-up.
 - Home: seven 45 dp metric rows, 3 dp pre-card gap, and a fixed 44 dp icon-left/text-left card. Its heading is localized as `Notification` / `Notifikasi` with a 2 dp top inset; body copy scales down only as needed and is limited to two lines. Cooler-image constraints remain stable.
 - Battery/Hotside: small stylized orange/gold flame particles descend from the top with warm yellow-white cores, a soft halo and subtle drift/rotation. The particles are background-first, clipped to a rounded frame minus the foreground shell, and cannot escape the rounded boundary or paint inside the battery chamber/thermometer tube. Existing warning gates and safety logic are unchanged.
@@ -145,7 +156,7 @@ This file is the durable App behavior/design contract. Live source and the curre
 - Current metrics are B/H/V/A/P/F. F is labelled Fan/Kipas and displays live PWM speed while running. When BLE telemetry is disconnected, live device values are unknown (--) and no stale output state is inferred.
 - FPS, SurfaceFlinger TimeStats sampling, Shizuku permission UI/provider/UserService/AIDL, related parser/watchdog tests and Shizuku-only license files are removed from active App source. The release workflow audit and source archive packaging no longer depend on them.
 - Schema version 2 maps old schema-v1 S (Speed) to F (Fan Speed) and drops old schema-v1 F (FPS). Flutter contract tests cover migration and removal of FPS/Shizuku UI.
-- Historical Build #83 / run 39192430789 was superseded. Build #120 is the latest successful App release and validates its packaged source only; the latest single-event NOTIFY source has not been tested or released. The newer source-only follow-up updates falling-flame geometry/rounded clipping and makes the heading exactly NOTIFY; it is not yet validated/released. Phone visuals, physical animation smoothness and live BLE telemetry remain unverified.
+- Historical Build #83 / run 39192430789 was superseded. Build #123 is the latest verified App release and validates its packaged source only; the latest single-event NOTIFY source has not been tested or released. The newer source-only follow-up updates falling-flame geometry/rounded clipping and makes the heading exactly NOTIFY; it is not yet validated/released. Phone visuals, physical animation smoothness and live BLE telemetry remain unverified.
 
 ## Phone battery telemetry and Battery Protection UI boundary
 

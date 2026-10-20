@@ -9358,6 +9358,7 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
   String firmwareUrl = '';
   String status = 'CHECKING';
   bool updateAvailable = false;
+  bool passwordVisible = false;
 
   final ssid = TextEditingController();
   final password = TextEditingController();
@@ -9546,15 +9547,29 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
               const SizedBox(height: 8),
               TextField(
                 controller: password,
-                obscureText: true,
+                obscureText: !passwordVisible,
                 decoration: InputDecoration(
                   labelText: JexText.of('password', appLanguageNotifier.value),
                   prefixIcon: JexAnimatedIcon.glyph(
-          icon: PhosphorIconsBold.lock,
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-          size: 20,
-          active: true,
-        ),
+                    icon: PhosphorIconsBold.lock,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    size: 20,
+                    active: true,
+                  ),
+                  suffixIcon: IconButton(
+                    tooltip: JexText.of(
+                      passwordVisible ? 'hidePassword' : 'showPassword',
+                      appLanguageNotifier.value,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        passwordVisible = !passwordVisible;
+                      });
+                    },
+                    icon: Icon(
+                      passwordVisible ? Icons.visibility_off : Icons.visibility,
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 6),

@@ -1,11 +1,19 @@
 # JE X FYZ — Firmware Technical Reference
 
-Last source/safety-reference reconciliation: 2026-10-20 (Asia/Jakarta). Latest successful App artifact is Build #113 / run 39350217172, package source 05e4f644d6bf82ae2682154082c3e44a4876205a. The newer Home-layout/thermal-layer App follow-up is not validated/released. App CI does not prove Firmware compilation, BIN provenance or physical OTA/safety behavior.
+Last source/safety-reference reconciliation: 2026-10-20 (Asia/Jakarta). Latest verified App artifact is Build #123 / run 39371864780, package source 14e90e7e26b8eb4400bd01ec8d0eab5ed4195f1c. The new password-visibility patch is not included. User reports V7.0 compile and Online OTA success, but App CI does not prove firmware source-to-BIN identity or current physical behavior.
+
+## BLE App-authentication checkpoint — 2026-10-20 (BLOCKED / NOT IMPLEMENTED)
+
+- Current V7.0 BLE configures encrypted bonded RX writes but uses Just Works and opens the session command gate with `SYNC_READY`; this does not cryptographically establish JE Cooler App identity.
+- Intended direction: per-install signing key in Android Keystore, server-authorized device-bound enrollment, firmware-pinned server verification key, and fresh nonce/signature challenge per session.
+- No trusted backend enrollment/signing/owner-claim endpoint or managed signing-key provisioning path was found in the repository. Do not accept a key supplied by any first-connected client; this would permit hostile enrollment. See `BLE_APP_AUTH.md`.
+- No Firmware source/protocol change occurred. OTA code is protected and unchanged.
+
 
 ## Current source identity
 
 - Canonical editable source: firmware/JEXFYZ-V7.0.ino, blob 823f6f31176695a3ff3a923995b1b3cd5f42c683, embedded FW_VERSION=V7.0.
-- Compile/install status: V7.0 is NOT COMPILED / NOT INSTALLED. The earlier V6.9 compile/install report is historical user-reported evidence only. Independent logs, source-to-BIN relationship, installed device version and physical PWM/thermal behavior remain UNVERIFIED. Firmware contract tests have NOT RUN for V7.0.
+- Compile/install status: the user reports V7.0 was compiled and successfully updated via Online OTA. This is USER-REPORTED; independent compile logs, source-to-BIN identity, installed device version and physical PWM/thermal behavior remain UNVERIFIED. Firmware contract tests have NOT RUN in this task.
 - Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module, Arduino-ESP32 Core 3.3.7. Firmware compiles separately from App release.
 
 ## Architecture

@@ -756,6 +756,14 @@ class JexText {
       AppLanguage.english: 'Password',
       AppLanguage.indonesia: 'Kata Sandi',
     },
+    'showPassword': {
+      AppLanguage.english: 'Show password',
+      AppLanguage.indonesia: 'Tampilkan kata sandi',
+    },
+    'hidePassword': {
+      AppLanguage.english: 'Hide password',
+      AppLanguage.indonesia: 'Sembunyikan kata sandi',
+    },
     'ssid': {
       AppLanguage.english: 'SSID',
       AppLanguage.indonesia: 'SSID',
