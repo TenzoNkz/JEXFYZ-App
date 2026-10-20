@@ -282,11 +282,11 @@ void main() {
     expect(thermal, contains('final fall = (cycle + i / lanes.length) % 1.0'));
     expect(thermal, contains('final y = bounds.top - s * (thermometer ? .10 : .08)'));
     expect(thermal, contains('travel * fallDistance'));
-    expect(thermal, contains('Orange/gold ovals'));
+    expect(thermal, contains('orange/gold ovals'));
     expect(thermal, isNot(contains('final rise =')));
     expect(thermal, isNot(contains('sourceY - rise')));
     expect(thermal, contains('jexMotionSmoothStep(age)'));
-    expect(thermal, contains('jexParticleBoundaryFade(age, fadeIn: .14, fadeOut: .26)'));
+    expect(thermal, contains('jexParticleBoundaryFade(fall, fadeIn: .18, fadeOut: .22)'));
     expect(thermal, contains('required bool thermometer'));
     expect(thermal, contains('if (clipPath != null) canvas.clipPath(clipPath)'));
     expect(thermal, isNot(contains('_flameTonguePath')));
@@ -347,6 +347,7 @@ void main() {
     expect(voltage, isNot(contains('electricalSpine')));
     expect(voltage, contains('final innerCore = _boltInnerCore(s)'));
     expect(voltage, contains('canvas.clipPath(bolt)'));
+    expect(voltage, contains('..lineTo(s * .535, s * .285)'));
     expect(voltage, contains('canvas.restore()'));
 
     final fanStart = painter.indexOf('case JexAnimatedIconKind.fan:');
