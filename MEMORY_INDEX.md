@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Memory Index
 
-Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #110 is the latest successful App release; the newest Home metric-spacing/NOTIFY Row correction is NOT RUN / NOT RELEASED. Active Firmware source is V6.9 with paced Adaptive Fan temperature tiers; not compiled/installed. This file is the navigation index; `PROJECT_STATE.md` carries current state, subject files own detailed contracts, `APP_BUILD_REPORT.md` owns build evidence, `CHANGELOG.md` owns history, and `CHAT_TRANSFER.md` is the detailed next-chat boot snapshot. Live source, Git refs, Actions and Release metadata override memory.
+Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #110 is the latest successful App release; the post-Build-#110 falling-fire/geometry/Settings follow-up is NOT RUN / NOT RELEASED. Active Firmware source is V6.9 with paced Adaptive Fan temperature tiers; not compiled/installed. This file is the navigation index; `PROJECT_STATE.md` carries current state, subject files own detailed contracts, `APP_BUILD_REPORT.md` owns build evidence, `CHANGELOG.md` owns history, and `CHAT_TRANSFER.md` is the detailed next-chat boot snapshot. Live source, Git refs, Actions and Release metadata override memory.
 
 ## Current verified release and source checkpoint
 
