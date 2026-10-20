@@ -2294,17 +2294,21 @@ static void processAdaptiveHotTimer() {
 }
 
 
-// Select a target PWM tier from the distance to Hotside Limit.
+// Select a target PWM tier from the whole-degree Hotside category.
 static uint8_t adaptiveFanTargetPwm(float temperatureC) {
   if (!isfinite(temperatureC)) return FAN_PWM_MAX;
 
-  const float belowLimitC = static_cast<float>(hotLimit) - temperatureC;
-  if (belowLimitC < 1.5f) return FAN_PWM_MAX;  // 1 C below: 100%
-  if (belowLimitC < 2.5f) return 90;           // 2 C below: 90%
-  if (belowLimitC < 3.5f) return 80;           // 3 C below: 80%
-  if (belowLimitC < 4.5f) return 70;           // 4 C below: 70%
-  if (belowLimitC < 5.5f) return 60;           // 5 C below: 60%
-  return FAN_PWM_MIN;                          // 6 C or more below: fixed 50%
+  // Ignore fractional movement within the same category: at a 40 C limit,
+  // both 36.3 C and 36.8 C are category 36 and keep the 70% target.
+  // The safety override below remains based on the unrounded temperature.
+  const int temperatureCategoryC = static_cast<int>(floorf(temperatureC));
+  const int belowLimitC = hotLimit - temperatureCategoryC;
+  if (belowLimitC <= 1) return FAN_PWM_MAX;  // limit - 1 C category: 100%
+  if (belowLimitC <= 2) return 90;           // limit - 2 C category: 90%
+  if (belowLimitC <= 3) return 80;           // limit - 3 C category: 80%
+  if (belowLimitC <= 4) return 70;           // limit - 4 C category: 70%
+  if (belowLimitC <= 5) return 60;           // limit - 5 C category: 60%
+  return FAN_PWM_MIN;                        // limit - 6 C or lower: fixed 50%
 }
 
 static void resetAdaptiveFanPwmStepClock() {
