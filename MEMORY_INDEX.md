@@ -6,7 +6,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #110 is 
 
 - Latest successful release: Build #110 / Actions run 39300262741, packaged source `b5adcffb2c9724a07cdba4cd8521c1307f1e6566`. APK asset ID `657047529`, SHA-256 `258211ec9313c555aaac6cd797d1bf6abc6c62c3c2781cd37baa0a8c849bfb84`; source ZIP asset ID `657047524`, SHA-256 `13d1cad6cf4fbb9b2560da7406f4c6bf875fe4ebc2ed5483e6f0001a3b24aa23`.
 - Build #110 includes the Home 44 dp metric rows and 56 dp badge-free, left-aligned NOTIFY card. The newer follow-up is NOT RUN / NOT RELEASED: falling fire embers for Battery/Hotside, raised Hotside inner tube, clipped Voltage core, removal of the Settings About section/page, plus Firmware V6.9 PWM pacing.
-- Current source fingerprints: `lib/main.dart` `08592a9d861a11ecdb8de1aa289f8ce06bf2e20`; `lib/app_settings.dart` `f8e465648946a25eae44f3fad6a5a3bfaca8b050`; `lib/floating_monitor.dart` `e7c74bf749698a8331f2b0b31a847b2627ac3e4b`; `test/widget_test.dart` `c3cca34a17eb11a6949b9132eda785c788c0ba01`; `test/floating_monitor_layout_contract_test.dart` `b053a92522223fd237a8f0e025648eb1b26730a5`.
+- Current source fingerprints: `lib/main.dart` `08592a9d861a11ecdb8de1aa289f8ce06bf2e20`; `lib/app_settings.dart` `f8e465648946a25eae44f3fad6a5a3bfaca8b050`; `lib/floating_monitor.dart` `e7c74bf749698a8331f2b0b31a847b2627ac3e4b`; `test/widget_test.dart` `ec5e3d0eab341a269c6af91640a46c087481e58f`; `test/floating_monitor_layout_contract_test.dart` `b053a92522223fd237a8f0e025648eb1b26730a5`.
 - Current Firmware: `firmware/JEXFYZ-V6.9.ino` blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`; it retains the temperature tiers but ramps down by 10 points per 10 seconds and up by 10 points per 1 second, resetting the downstep clock during voltage/thermal transitions. Hotside limit/protection forces 100%. Firmware is NOT COMPILED / NOT INSTALLED.
 - Firmware tests: `test/firmware_qc_contract_test.dart` `1b35feeb1e411efec44261ec130eec4535004454`; `test/firmware_touch_adaptive_sync_test.dart` `3a86dd118cd1d1332dbafa3883ab9e5ae2823ac8`. Both are NOT RUN for V6.9. Flutter tests/analyzer are also NOT RUN for the post-Build-#110 UI follow-up.
 - No Firmware compile, BIN change, Firebase, OTA, flash, or physical-device action was performed. Live repository and Release metadata take precedence over stale notes.
@@ -73,7 +73,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #110 is 
 ## Current source fingerprints (Build #110 successful; latest Home geometry follow-up NOT RUN; Firmware V6.8 NOT COMPILED)
 
 - lib/main.dart: 08592a9d861a11ecdb8de1aa289f8ce06bf2e20 — 44 dp Home metric rows and original icon-left/text-left badge-free Notify Row with 56 dp slot; NOT RUN / NOT RELEASED.
-- test/widget_test.dart: c3cca34a17eb11a6949b9132eda785c788c0ba01 — layout regression contracts for 44 dp metrics and 56 dp two-line Notify; NOT RUN / NOT RELEASED.
+- test/widget_test.dart: ec5e3d0eab341a269c6af91640a46c087481e58f — layout regression contracts for 44 dp metrics and 56 dp two-line Notify; NOT RUN / NOT RELEASED.
 - lib/jex_animated_glyph.dart: b37fc4e0807c874b2f01db00c7f606810cb5deca — generic action glyphs static.
 - Build #99 validated source commit bc1498d5b3db7621ee18f5ca6f021e6013c73b09, source blob 30d864c2f03c40fd4d0b6926a9958153f2a3b236 and test blob 711a44b00eadee2e2bcd24e48383128f0d70ccc9.
 
