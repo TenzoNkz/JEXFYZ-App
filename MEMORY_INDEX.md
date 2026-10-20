@@ -2,7 +2,7 @@
 
 ## Current Adaptive Fan temperature-category contract
 
-- Firmware-owned Adaptive Fan target tiers live in `firmware/JEXFYZ-V6.9.ino`. The target uses floored whole-degree Hotside categories; for a 40°C limit, both 36.3°C and 36.8°C target 70%, while target 80% starts in category 37.
+- Firmware-owned Adaptive Fan target tiers live in `firmware/JEXFYZ-V7.0.ino`; its filename and embedded `FW_VERSION="V7.0"` now agree. The target uses floored whole-degree Hotside categories; for a 40°C limit, both 36.3°C and 36.8°C target 70%, while target 80% starts in category 37.
 - Preserve the independent raw-decimal Hotside safety override (immediate Fan 100%), 10-point PWM pacing (up every 1 second, down every 10 seconds), one NTC sample each second and the non-blocking main loop.
 - Current source/test hashes, unrun test/compile status and implementation details are recorded in `PROJECT_STATE.md`, `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`, `APP_NOTES.md`, `HANDOVER.md`, and the newest `CHANGELOG.md` / `CHAT_TRANSFER.md` entries.
 
@@ -12,7 +12,7 @@
 - Current source/test fingerprints and validation boundaries are recorded in `PROJECT_STATE.md`, `APP_NOTES.md`, `HANDOVER.md`, `CHAT_TRANSFER.md`, and the latest `CHANGELOG.md` entry. Build #116 remains the latest verified App release; this copy pass is source-only until the separate Build App flow.
 
 
-Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #116 is the latest successful App release; the final flame/rounded-clip/NOTIFY-label follow-up is source-updated but NOT RUN / NOT RELEASED. The user reports Firmware V6.9 was compiled and installed; independent compile logs, source-to-BIN provenance and installed-device version remain UNVERIFIED. Live source/refs/Actions/Release override memory.
+Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #116 is the latest successful App release; the final flame/rounded-clip/NOTIFY-label follow-up is source-updated but NOT RUN / NOT RELEASED. V6.9 compile/install was previously user-reported; active V7.0 source is NOT COMPILED / NOT INSTALLED. Source-to-BIN provenance and installed-device version remain UNVERIFIED. Live source/refs/Actions/Release override memory.
 
 ## Current verified release and source checkpoint
 
@@ -20,7 +20,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #116 is 
 - APK asset 657979004, 54,734,939 bytes, SHA-256 8570914f331583d2cc462f61881609c0eae56639a139f2d60a832e4aaa81ea27; corresponding source ZIP asset 657979008, 2,867,315 bytes, SHA-256 60ef4e79529aabcbb4f4093b9f8a18b5d383d5c651c1c303dd8bb774e7b0dd5d.
 - Build #116 passed 109 Flutter tests, analyzer exit 0 with 25 info-level diagnostics, Android gate/signing checks, source ZIP integrity and downloaded-asset/tag verification. Native Android test tasks were NO-SOURCE.
 - Current unvalidated source/test blobs: lib/main.dart 8eb24de58a2e510b3d05abbb29bce45bb0a42810; test/widget_test.dart a82875dd47ad904818fcd4c1c47b1a3ac0ca8fd2. All seven Home rows remain 45 dp, NOTIFY stays fixed at 44 dp with a 2 dp title inset and exact category-free heading, the body scales to two lines, and the latest falling-flame background is rounded-frame-clipped. Flutter tests/analyzer have NOT RUN for this final follow-up.
-- Active Firmware source is firmware/JEXFYZ-V6.9.ino, blob 8e0f0ff5a65962ebdb44300b05fc161cf9349d96. User reports compile/install success; logs, exact BIN provenance and installed version remain UNVERIFIED.
+- Active Firmware source is `firmware/JEXFYZ-V7.0.ino`, blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`, embedded `FW_VERSION="V7.0"`. V7.0 is source-only / NOT COMPILED / NOT INSTALLED; the prior V6.9 report does not validate this revision.
 
 ## Current visual-state redraw checklist
 
@@ -74,12 +74,11 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #116 is 
 | `DESIGN_NOTES.md` | Approved grille/logo/assets and dashboard motion/layout contracts |
 | `.github/workflows/jexfyz-app-build-trigger.yml` | Authoritative guarded manual App Build workflow |
 | `test/*.dart` | Five current Flutter/source-contract test files; execution must be proven from run evidence |
-| `firmware/JEXFYZ-V6.9.ino` | Active editable Firmware V6.9 source; compilation is user-reported and must be independently proven before claiming source-to-BIN identity |
+| `firmware/JEXFYZ-V7.0.ino` | Active editable Firmware V7.0 source; not compiled/installed; verify matching BIN provenance before claiming source-to-BIN identity |
 | `archive/*.md` | Immutable forensic snapshots; stale “CURRENT” claims remain historical, paths retained verbatim |
 
-- Active Firmware: `firmware/JEXFYZ-V6.9.ino` blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`; the user reports compile/install success, but independent logs, source-to-BIN provenance and installed version remain UNVERIFIED.
-- Current Firmware QC contract: `test/firmware_qc_contract_test.dart` blob `1b35feeb1e411efec44261ec130eec4535004454`; Touch/Adaptive sync contract: `test/firmware_touch_adaptive_sync_test.dart` blob `3a86dd118cd1d1332dbafa3883ab9e5ae2823ac8`. Both are NOT RUN for V6.8.
-## Current source fingerprints (Build #116 successful; final App follow-up NOT RUN; Firmware V6.9 compile/install USER-REPORTED)
+- Active Firmware: `firmware/JEXFYZ-V7.0.ino` blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`; QC contract: `test/firmware_qc_contract_test.dart` blob `a44c12d32c472f109687c06316ea40f70fcf93ce`; Touch/Adaptive sync contract: `test/firmware_touch_adaptive_sync_test.dart` blob `b3e23e59deae19408cd7ccbacbad84273f958970`. V7.0 tests and Arduino compile have NOT RUN; the previous V6.9 compile/install report is not V7.0 validation.
+## Current source fingerprints (Build #116 successful; final App follow-up NOT RUN; Firmware V7.0 source-only)
 
 - lib/main.dart: 8eb24de58a2e510b3d05abbb29bce45bb0a42810 — seven 45 dp Home rows, 3 dp pre-NOTIFY gap, fixed 44 dp NOTIFY with exact category-free heading, 2 dp label inset and adaptive two-line body, stable cooler constraints, and rounded-frame-clipped falling flame background; NOT RUN / NOT RELEASED.
 - test/widget_test.dart: a82875dd47ad904818fcd4c1c47b1a3ac0ca8fd2 — layout/painter contracts for 45 dp rows, fixed-height two-line NOTIFY, stable image constraints, flame paths, rounded-frame clipping and category-free heading; tests NOT RUN.
