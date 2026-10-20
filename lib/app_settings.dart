@@ -1318,6 +1318,38 @@ class JexText {
     final lang = language ?? appLanguageNotifier.value;
     return _values[key]?[lang] ?? key;
   }
+
+  // AI-METHOD / RELOCALIZATION CONTRACT
+  // Re-resolve a previously stored table string in the current language without changing
+  // stable bilingual labels or technical protocol identifiers.
+  static String relocalize(String value, AppLanguage language) {
+    final raw = value.trim();
+    if (raw.isEmpty) return raw;
+
+    // If the value already equals its requested-language entry, keep it as-is.
+    for (final variants in _values.values) {
+      if (variants[language] == raw) return raw;
+    }
+
+    String? translated;
+    for (final variants in _values.values) {
+      final english = variants[AppLanguage.english];
+      final indonesia = variants[AppLanguage.indonesia];
+      if (english == null || indonesia == null || english == indonesia) continue;
+
+      String? candidate;
+      if (raw == english) candidate = indonesia;
+      if (raw == indonesia) candidate = english;
+      if (candidate == null) continue;
+
+      if (translated != null && translated != candidate) {
+        // Ambiguous source text must not be translated to a guessed label.
+        return raw;
+      }
+      translated = candidate;
+    }
+    return translated ?? raw;
+  }
 }
 
 // AI-METHOD / THEME CONTRACT
