@@ -1769,6 +1769,15 @@ void main() {
     );
     expect(
       homeNotifyForTelemetryChange(
+        key: 'SAFETY',
+        previousValue: 'LOCKED',
+        currentValue: 'OK',
+        language: AppLanguage.english,
+      ),
+      'Safety checks passed.',
+    );
+    expect(
+      homeNotifyForTelemetryChange(
         key: 'FAN_SPEED',
         previousValue: '90',
         currentValue: '70',
