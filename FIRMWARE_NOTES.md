@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Firmware & Hardware Reference
 
-Durable hardware and behavior decisions belong here. For code-level structure see firmware/FIRMWARE_TECHNICAL_REFERENCE.md; for protected OTA use OTA_PROTECTION.md; for incidents read the dedicated regression-memory files. Latest successful App artifact remains Build #106 (run 39279938461); this App-only evidence does not prove Firmware compilation, BIN provenance or OTA/device behavior. Current editable Firmware source is V6.8 and is not yet compiled/verified.
+Durable hardware and behavior decisions belong here. For code-level structure see firmware/FIRMWARE_TECHNICAL_REFERENCE.md; for protected OTA use OTA_PROTECTION.md; for incidents read the dedicated regression-memory files. Latest successful App artifact is Build #110 (run 39300262741, source b5adcffb2c9724a07cdba4cd8521c1307f1e6566). Current UI and Firmware source follow-ups are newer than that release and are NOT RUN / NOT RELEASED; V6.9 is not compiled/installed.
 
 ## Hardware platform and pinout
 
@@ -55,16 +55,18 @@ Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 - After Adaptive thermal downshift, restoration proceeds upward one rail at a time after 60 seconds continuously at/below `hotLimit - 1°C`, no higher than the saved pre-downshift ceiling.
 - HOTSIDE is default Adaptive profile after boot. HOTSIDE_BATTERY is a runtime selectable profile, not persisted. When Battery sensor data is missing, fall back to HOTSIDE behavior without changing chosen profile.
 - No rapid Hotside-rise/slope protection is present in the known V6.x contract; do not claim it exists.
-- [HISTORICAL USER REQUIREMENT / NOT IMPLEMENTED IN V6.8] A prior request called for a very rapid Hotside rise to shut Peltier OFF immediately and require manual re-arm/restart. The active V6.8 contract does not implement slope/rate-of-rise protection; do not describe the request as completed. If reconsidered, discuss first, update source with a mandatory version bump and test the safety behavior.
+- [HISTORICAL USER REQUIREMENT / NOT IMPLEMENTED IN V6.9] A prior request called for a very rapid Hotside rise to shut Peltier OFF immediately and require manual re-arm/restart. The active V6.9 contract does not implement slope/rate-of-rise protection; do not describe the request as completed. If reconsidered, discuss first, update source with a mandatory version bump and test the safety behavior.
 - Keep thermal/NTC safety higher priority than App requests, normal RGB animation, or pending Peltier restart.
 
-## Current Adaptive Fan PWM — V6.8 deterministic Hotside-limit tiers
+## Current Adaptive Fan PWM — V6.9 temperature-based stepped controller
 
-- Active editable source: `firmware/JEXFYZ-V6.8.ino`, blob `7b4df708708e021aad39258468eed2fde94d202f`, embedded `FW_VERSION="V6.8"`. The source was updated but has **NOT been compiled or installed**; source-to-BIN provenance and current device version remain UNVERIFIED.
-- This replaces the V6.7 trend/stability controller. In Adaptive mode at 12 V, Fan PWM is selected directly from `delta = hotLimit - hotsideC`; the old ten-sample downshift window, four-sample warming-trend test and up/down timing gates are removed.
-- Target tiers: delta ≤1°C →100%; 2°C →90%; 3°C →80%; 4°C →70%; 5°C →60%; delta ≥6°C →50%. For fractional NTC readings, the switch edges are halfway between the listed whole-degree deltas (1.5, 2.5, 3.5, 4.5 and 5.5°C), giving deterministic bins. There is no extra hysteresis or time-based dwell in this speed selector.
-- Reaching the configured Hotside limit or an active Hotside protection state forces 100%. Adaptive 5 V/9 V remains at 100%. Voltage handoff, Adaptive thermal dwell, inactive/paused cooling outputs, invalid NTC fail-safe, Peltier safety, and OTA safety keep their existing priority. NTC sampling remains one calibrated sample per second; no ADC filter, delay or timing loop was added.
-- Source-contract test is `test/firmware_qc_contract_test.dart`; the existing Touch/Adaptive telemetry contract is `test/firmware_touch_adaptive_sync_test.dart`. Tests have NOT RUN for V6.8, and Firmware has NOT been compiled.
+- Active editable source: `firmware/JEXFYZ-V6.9.ino`, blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`, embedded `FW_VERSION="V6.9"`. The source is updated but has **NOT been compiled or installed**; source-to-BIN provenance and current device version remain UNVERIFIED.
+- Temperature target tiers remain unchanged: `delta = hotLimit - hotsideC`; delta <1.5°C →100%; 1.5–<2.5°C →90%; 2.5–<3.5°C →80%; 3.5–<4.5°C →70%; 4.5–<5.5°C →60%; delta ≥5.5°C →50%. Requested integer examples are 1°C below limit=100%, 2°C=90%, 3°C=80%, 4°C=70%, 5°C=60%, and 6°C or more=50%.
+- **Downshift is paced:** only reduce by 10 percentage points after a full 10-second interval, then wait another 10 seconds for each further reduction until the temperature-selected target is reached. After a 9 V → 12 V transition, PWM stays at full speed during the handoff; when 12 V becomes stable, the downshift clock starts fresh, preventing an immediate drop from 100% directly to 50%.
+- **Upshift is faster:** when the selected target exceeds current PWM, increase by 10 percentage points after a 1-second interval until reaching the target. Reaching Hotside Limit or active Hotside protection forces 100% immediately and is not rate-limited.
+- Voltage transition, Adaptive hot-step transition, thermal dwell and inactive cooling-output gates reset the pacing timer and preserve full-speed priority. Adaptive 5 V/9 V remains at 100%. Manual speed, BLE/telemetry protocol, Peltier controls, safety predicates and OTA flow were not intentionally changed.
+- NTC still uses one calibrated `analogReadMilliVolts(PIN_NTC)` sample per second. No filter, blocking `delay()`, or timing `while()` was added.
+- Contract tests: `test/firmware_qc_contract_test.dart` and `test/firmware_touch_adaptive_sync_test.dart`; current blobs must be re-fetched from main. Tests have NOT RUN for V6.9, and Firmware has NOT been compiled. The 10-second downstep/1-second upstep is intended to reduce abrupt load changes after rail transitions; hardware reset cause and physical results remain UNVERIFIED.
 
 ## Touch and indicators
 
@@ -112,9 +114,9 @@ Historical source at that time: `firmware/JEXFYZ-V6.7.ino`, blob `efe6eaa62c178a
 
 ## Validation status
 
-[HISTORICAL USER-REPORTED — 2026-10-14] The user reported V6.6 was accepted, compiled and updated twice over Online OTA. On 2026-10-17 the user reopened Firmware source work and authorized the earlier V6.7 Adaptive Fan PWM trend-response change, which V6.8 now supersedes. The separate V6.7 compile/online-update report was provided on 2026-10-18; it remains USER-REPORTED and does not prove exact source-to-BIN identity or current installed-device behavior.
+[HISTORICAL USER-REPORTED — 2026-10-14] The user reported V6.6 was accepted, compiled and updated twice over Online OTA. On 2026-10-17 the user reopened Firmware source work and authorized the earlier V6.7 Adaptive Fan PWM trend-response change, which V6.8 superseded and V6.9 now replaces with timed temperature-tier ramping. The separate V6.7 compile/online-update report was provided on 2026-10-18; it remains USER-REPORTED and does not prove exact source-to-BIN identity or current installed-device behavior.
 
-This is the 2026-10-14 user report, not an assistant-witnessed compile/flash log. Source-to-BIN provenance remains unverified. Previously reported restart symptoms and Adaptive-OFF boot indication remain historical/unverified. The separate request for rapid Hotside-rise shutdown/manual re-arm remains unimplemented; V6.7 added Adaptive Fan PWM trend response; V6.8 replaces that speed selector with deterministic temperature tiers. Neither version adds a hard rate-of-rise shutdown or manual re-arm. Do not expand into that separate safety feature without explicit scope approval.
+This is the 2026-10-14 user report, not an assistant-witnessed compile/flash log. Source-to-BIN provenance remains unverified. Previously reported restart symptoms and Adaptive-OFF boot indication remain historical/unverified. The separate request for rapid Hotside-rise shutdown/manual re-arm remains unimplemented; V6.7 added Adaptive Fan PWM trend response; V6.8 replaced it with direct temperature tiers; V6.9 retains those tiers and adds 10-second downsteps/1-second upsteps. Neither version adds a hard rate-of-rise shutdown or manual re-arm. Do not expand into that separate safety feature without explicit scope approval.
 
 [HISTORICAL / SUPERSEDED APP CI EVIDENCE — BUILDS #39/#40, NOT FIRMWARE COMPILE] Builds #39 and #40 ran 80 Flutter tests, including then-current `test/v6_6_qc_contract_test.dart` assertions over V6.6 source. Build #40 compiled/signed the Android APK but stopped before publication at a source-archive path assertion. These historical App CI checks are not an Arduino/ESP32 compile, BIN-provenance validation, physical sensor/thermal test or OTA proof.
 
