@@ -1,5 +1,15 @@
 # JE X FYZ / JE Cooler — Memory Index
 
+## Home NOTIFY live-state and localization fix — 2026-10-20 (source-only / NOT RUN / NOT RELEASED)
+
+- Latest source/test fingerprints: `lib/main.dart` `24cd98e54944cca57bcdade80d335f66aeefdc9e`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `e55a41dfeacc9ab5aee0e9bb31a0e21221bd9156`.
+- Home NOTIFY now follows the newest confirmed cooling telemetry instead of treating a successful command acknowledgement as a permanent message. Accepted Adaptive/Voltage/Fan/Peltier/Fan Speed commands move the card to a compact summary built from current mode, voltage, Fan state/speed and Peltier state.
+- A genuine change in cooling telemetry, safety reason or Hotside-limit state retires an older ordinary acknowledgement. Repeated identical telemetry is not treated as a new change.
+- Safety has priority over older success messages and ordinary summaries. Hotside at/above its configured limit displays the current measured temperature and configured limit. Home warning presentation also recognizes that live threshold.
+- Stored bilingual strings are re-resolved for the selected app language. A language listener rebuilds Home immediately, republishes Floating Monitor telemetry, and updates the connected-device foreground notification without waiting for new BLE traffic.
+- BLE protocol/ownership, Firmware safety rules, OTA transport and Android Gradle `versionName` remain unchanged.
+- Regression cases cover bilingual live summaries, Hotside temperature/limit wording, stored-message relocalization and listener wiring. Flutter tests and Dart analysis have NOT RUN. No App Build, Firmware compile, BIN/Firebase, OTA, flash or device operation occurred. Build #116 remains the latest verified App release; this source is NOT RELEASED and live-device behavior remains UNVERIFIED.
+
 ## Current Adaptive Fan temperature-category contract
 
 - Firmware-owned Adaptive Fan target tiers live in `firmware/JEXFYZ-V7.0.ino`; its filename and embedded `FW_VERSION="V7.0"` now agree. The target uses floored whole-degree Hotside categories; for a 40°C limit, both 36.3°C and 36.8°C target 70%, while target 80% starts in category 37.
@@ -19,7 +29,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #116 is 
 - Latest successful release: Build #116 / Actions run 39355262101, packaged source 48683874db659df940272bed1c860072ead2d767. The live jexfyz-latest Release/tag and both assets target that commit.
 - APK asset 657979004, 54,734,939 bytes, SHA-256 8570914f331583d2cc462f61881609c0eae56639a139f2d60a832e4aaa81ea27; corresponding source ZIP asset 657979008, 2,867,315 bytes, SHA-256 60ef4e79529aabcbb4f4093b9f8a18b5d383d5c651c1c303dd8bb774e7b0dd5d.
 - Build #116 passed 109 Flutter tests, analyzer exit 0 with 25 info-level diagnostics, Android gate/signing checks, source ZIP integrity and downloaded-asset/tag verification. Native Android test tasks were NO-SOURCE.
-- Current unvalidated source/test blobs: lib/main.dart 8eb24de58a2e510b3d05abbb29bce45bb0a42810; test/widget_test.dart a82875dd47ad904818fcd4c1c47b1a3ac0ca8fd2. All seven Home rows remain 45 dp, NOTIFY stays fixed at 44 dp with a 2 dp title inset and exact category-free heading, the body scales to two lines, and the latest falling-flame background is rounded-frame-clipped. Flutter tests/analyzer have NOT RUN for this final follow-up.
+- Current NOTIFY live-state source/test blobs: lib/main.dart 24cd98e54944cca57bcdade80d335f66aeefdc9e; lib/app_settings.dart 44431e926bfa2557c26345899e2333bd767f3f8e; test/widget_test.dart e55a41dfeacc9ab5aee0e9bb31a0e21221bd9156. All seven Home rows remain 45 dp, NOTIFY stays fixed at 44 dp with a 2 dp title inset and exact category-free heading, the body scales to two lines, and the latest falling-flame background is rounded-frame-clipped. Flutter tests/analyzer have NOT RUN for this final follow-up.
 - Active Firmware source is `firmware/JEXFYZ-V7.0.ino`, blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`, embedded `FW_VERSION="V7.0"`. V7.0 is source-only / NOT COMPILED / NOT INSTALLED; the prior V6.9 report does not validate this revision.
 
 ## Current visual-state redraw checklist
