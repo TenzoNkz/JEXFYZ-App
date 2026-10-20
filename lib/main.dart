@@ -160,8 +160,6 @@ String peltierRearmNotice(int hotLimit, AppLanguage language) {
   );
 }
 
-const String _homeLiveCoolingNoticeToken = '__HOME_LIVE_COOLING_STATUS__';
-
 double? parseHomeTemperatureCelsius(String value) {
   final normalized = value
       .trim()
@@ -203,36 +201,89 @@ bool isActiveHomeSafetyReason(String reason) {
   return !inactiveReasons.contains(reason.trim().toUpperCase());
 }
 
-/// Compact, live summary of the authoritative cooling telemetry currently in the App.
-String homeCoolingStatusSummary({
-  required bool adaptiveOn,
-  required String voltage,
-  required bool fanOn,
-  required int fanSpeed,
-  required bool peltierOn,
+String homeFanSpeedChangedNotice(
+  int previousSpeed,
+  int currentSpeed, {
   required AppLanguage language,
 }) {
-  final parts = <String>[
-    adaptiveOn
-        ? JexText.phrase('Adaptive active', 'Adaptive aktif', language)
-        : JexText.of('manual', language),
-  ];
-  final normalizedVoltage = voltage.trim().toUpperCase().replaceAll(' ', '');
-  if (const <String>{'5V', '9V', '12V'}.contains(normalizedVoltage)) {
-    parts.add(normalizedVoltage.replaceFirst('V', ' V'));
+  if (currentSpeed < previousSpeed) {
+    return JexText.phrase(
+      'Fan speed reduced to ',
+      'Kecepatan kipas diturunkan ke ',
+      language,
+    ) + currentSpeed.toString() + '%.';
   }
-  parts.add(
-    fanOn
-        ? JexText.of('fan', language) +
-            ' ' +
-            fanSpeed.clamp(50, 100).toInt().toString() +
-            '%'
-        : JexText.of('fan', language) + ' ' + JexText.of('off', language),
-  );
-  parts.add(
-    'Peltier ' + JexText.of(peltierOn ? 'on' : 'off', language),
-  );
-  return parts.join(' • ');
+  if (currentSpeed > previousSpeed) {
+    return JexText.phrase(
+      'Fan speed increased to ',
+      'Kecepatan kipas dinaikkan ke ',
+      language,
+    ) + currentSpeed.toString() + '%.';
+  }
+  return JexText.phrase(
+    'Fan speed set to ',
+    'Kecepatan kipas diatur ke ',
+    language,
+  ) + currentSpeed.toString() + '%.';
+}
+
+/// One telemetry transition becomes one localized sentence; values never accumulate.
+String? homeNotifyForTelemetryChange({
+  required String key,
+  required String previousValue,
+  required String currentValue,
+  required AppLanguage language,
+}) {
+  if (previousValue == currentValue) return null;
+  switch (key) {
+    case 'VOLTAGE':
+      return JexText.phrase('Voltage set to ', 'Tegangan diatur ke ', language) +
+          currentValue +
+          '.';
+    case 'FAN':
+      return JexText.of(currentValue == 'ON' ? 'fanOn' : 'fanOff', language);
+    case 'PELTIER':
+      return JexText.of(currentValue == 'ON' ? 'peltierOn' : 'peltierOff', language);
+    case 'ADAPTIVE':
+      return JexText.of(currentValue == 'ON' ? 'adaptiveOn' : 'adaptiveOff', language);
+    case 'FAN_SPEED':
+      final before = int.tryParse(previousValue);
+      final after = int.tryParse(currentValue);
+      if (before == null || after == null || before == after) return null;
+      return homeFanSpeedChangedNotice(before, after, language: language);
+    case 'RGB':
+      return JexText.of(currentValue == 'ON' ? 'ledOn' : 'ledOff', language);
+    case 'MODE':
+    case 'LED_SYNC':
+      return JexText.of('modeUpdated', language);
+    case 'BRIGHTNESS':
+      return JexText.phrase(
+        'LED brightness set to ',
+        'Kecerahan LED diatur ke ',
+        language,
+      ) + currentValue + '%.';
+    case 'RGB_COLOR':
+      return JexText.of('colorUpdated', language);
+    case 'ADAPTIVE_PROFILE':
+      final profile = currentValue.trim().toUpperCase() == 'BATTERY'
+          ? JexText.phrase('Battery', 'Baterai', language)
+          : JexText.phrase('Hotside', 'Sisi panas', language);
+      return JexText.phrase(
+        'Adaptive profile set to ',
+        'Profil Adaptif diatur ke ',
+        language,
+      ) + profile + '.';
+    case 'ADAPTIVE_CEILING':
+      final ceiling = currentValue.trim().toUpperCase();
+      return JexText.phrase(
+        'Adaptive voltage ceiling set to ',
+        'Batas tegangan Adaptif diatur ke ',
+        language,
+      ) + ceiling + '.';
+    default:
+      // HOT/BATTERY temperature samples do not generate ordinary notices.
+      return null;
+  }
 }
 
 String relocalizeHomeNotifyMessage(String message, AppLanguage language) {
@@ -275,6 +326,81 @@ String relocalizeHomeNotifyMessage(String message, AppLanguage language) {
       }
     }
     return localizedOtaFailureSummary(language, mode: mode, stage: stage);
+  }
+
+  final fanSpeedChange = RegExp(
+    r'^(?:Fan speed (reduced|increased|set) to|Kecepatan kipas (diturunkan ke|dinaikkan ke|diatur ke))\s*(\d+)%\.?$',
+    caseSensitive: false,
+  ).firstMatch(raw);
+  if (fanSpeedChange != null) {
+    final englishAction = fanSpeedChange.group(1)?.toLowerCase();
+    final indonesiaAction = fanSpeedChange.group(2)?.toLowerCase();
+    final speed = fanSpeedChange.group(3)!;
+    if (englishAction == 'reduced' || indonesiaAction == 'diturunkan ke') {
+      return JexText.phrase(
+        'Fan speed reduced to ',
+        'Kecepatan kipas diturunkan ke ',
+        language,
+      ) + speed + '%.';
+    }
+    if (englishAction == 'increased' || indonesiaAction == 'dinaikkan ke') {
+      return JexText.phrase(
+        'Fan speed increased to ',
+        'Kecepatan kipas dinaikkan ke ',
+        language,
+      ) + speed + '%.';
+    }
+    return JexText.phrase(
+      'Fan speed set to ',
+      'Kecepatan kipas diatur ke ',
+      language,
+    ) + speed + '%.';
+  }
+
+  final ledBrightness = RegExp(
+    r'^(?:LED brightness set to|Kecerahan LED diatur ke)\s*(\d+)%\.?$',
+    caseSensitive: false,
+  ).firstMatch(raw);
+  if (ledBrightness != null) {
+    return JexText.phrase(
+      'LED brightness set to ',
+      'Kecerahan LED diatur ke ',
+      language,
+    ) + ledBrightness.group(1)! + '%.';
+  }
+
+  final hotsideReached = RegExp(
+    r'^(?:Hotside limit reached:|Batas suhu Hotside tercapai:)\s*(\d+(?:\.\d+)?)°C\s*\((?:limit|batas)\s*(\d+)°C\)\.?$',
+    caseSensitive: false,
+  ).firstMatch(raw);
+  if (hotsideReached != null) {
+    return JexText.phrase(
+      'Hotside limit reached: ',
+      'Batas suhu Hotside tercapai: ',
+      language,
+    ) + hotsideReached.group(1)! +
+        '°C (' +
+        JexText.phrase('limit ', 'batas ', language) +
+        hotsideReached.group(2)! +
+        '°C).';
+  }
+
+  final adaptiveProfile = RegExp(
+    r'^(?:Adaptive profile set to|Profil Adaptif diatur ke)\s*(Battery|Baterai|Hotside|Sisi panas)\.?$',
+    caseSensitive: false,
+  ).firstMatch(raw);
+  if (adaptiveProfile != null) {
+    final rawProfile = adaptiveProfile.group(1)!.toLowerCase();
+    final isBattery = rawProfile == 'battery' || rawProfile == 'baterai';
+    return JexText.phrase(
+      'Adaptive profile set to ',
+      'Profil Adaptif diatur ke ',
+      language,
+    ) + JexText.phrase(
+      isBattery ? 'Battery' : 'Hotside',
+      isBattery ? 'Baterai' : 'Sisi panas',
+      language,
+    ) + '.';
   }
 
   final voltage = RegExp(
@@ -4069,6 +4195,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   String incomingBuffer = '';
   String notice = '';
   String pendingOtaNotice = '';
+  int _homeNotifyRevision = 0;
 
   String voltage = '--';
   String hotsideTemp = '--';
@@ -5383,19 +5510,34 @@ void _handleAckLine(String line) {
         values.containsKey('SAFETY') ||
         values.containsKey('SAFETY_REASON');
 
-    final previousVoltage = voltage;
-    final previousFanOn = fanOn;
-    final previousPeltierOn = peltierOn;
-    final previousAdaptiveOn = adaptiveOn;
-    final previousFanSpeed = fanSpeed;
-    final previousSafetyReason = safetyReason;
     final previousHotsideAtLimit =
         homeHotsideLimitReached(hotsideTemp, hotLimit: hotLimit);
+    String? latestTelemetryNotice;
+    String? latestSafetyReason;
 
     setState(() {
       for (final entry in values.entries) {
+        final previousValue = _homeNotifyTelemetryValue(entry.key);
+        final previousReason = safetyReason;
         // AI-METHOD: _applyTelemetryValue — Map firmware telemetry keys into typed Flutter state.
         _applyTelemetryValue(entry.key, entry.value);
+        final currentValue = _homeNotifyTelemetryValue(entry.key);
+
+        if (previousValue != null &&
+            currentValue != null &&
+            previousValue != currentValue) {
+          final eventNotice = homeNotifyForTelemetryChange(
+            key: entry.key,
+            previousValue: previousValue,
+            currentValue: currentValue,
+            language: appLanguageNotifier.value,
+          );
+          if (eventNotice != null) latestTelemetryNotice = eventNotice;
+        }
+
+        if (entry.key == 'SAFETY_REASON' && safetyReason != previousReason) {
+          latestSafetyReason = safetyReason;
+        }
       }
 
       if (shouldClearStaleNotifyError(
@@ -5408,29 +5550,41 @@ void _handleAckLine(String line) {
         notice = JexText.of('systemReady', appLanguageNotifier.value);
       }
 
-      // Firmware telemetry is authoritative. A genuinely changed output/safety state
-      // retires an older command acknowledgement so Home NOTIFY follows the live state.
-      final coolingStateChanged =
-          voltage != previousVoltage ||
-          fanOn != previousFanOn ||
-          peltierOn != previousPeltierOn ||
-          adaptiveOn != previousAdaptiveOn ||
-          fanSpeed != previousFanSpeed;
-      final safetyReasonChanged = safetyReason != previousSafetyReason;
-      final hotsideAtLimitChanged =
-          homeHotsideLimitReached(hotsideTemp, hotLimit: hotLimit) !=
-          previousHotsideAtLimit;
-
-      if (coolingStateChanged || safetyReasonChanged || hotsideAtLimitChanged) {
-        final rawNotice = notice.trim().toUpperCase();
-        final currentNotice = _compactNotifyMessage(notice);
-        final firmwareEvent = rawNotice.contains('OTA') ||
-            rawNotice.contains('FIRMWARE') ||
-            currentNotice.toUpperCase().contains('FIRMWARE UPDATE') ||
-            currentNotice.toUpperCase().contains('PEMBARUAN FIRMWARE');
-        if (!isNotifyErrorMessage(currentNotice) && !firmwareEvent) {
-          notice = _homeLiveCoolingNoticeToken;
+      final hotsideAtLimit =
+          homeHotsideLimitReached(hotsideTemp, hotLimit: hotLimit);
+      if (hotsideAtLimit) {
+        // Safety is authoritative while the threshold is active.
+        if (!previousHotsideAtLimit) {
+          notice = homeHotsideLimitNotice(
+            hotsideTemp,
+            hotLimit: hotLimit,
+            language: appLanguageNotifier.value,
+          );
+          _homeNotifyRevision++;
+        } else if (latestTelemetryNotice != null || latestSafetyReason != null) {
+          // Retire an in-flight ACK without replacing the active safety warning.
+          _homeNotifyRevision++;
         }
+      } else if (isActiveHomeSafetyReason(safetyReason)) {
+        if (latestTelemetryNotice != null || latestSafetyReason != null) {
+          _homeNotifyRevision++;
+        }
+      } else if (latestSafetyReason != null) {
+        notice = safetyReason.trim().toUpperCase() == 'NONE'
+            ? JexText.phrase(
+                'Safety condition cleared.',
+                'Kondisi keselamatan kembali normal.',
+                appLanguageNotifier.value,
+              )
+            : JexText.phrase(
+                'Safety status updated.',
+                'Status keselamatan diperbarui.',
+                appLanguageNotifier.value,
+              );
+        _homeNotifyRevision++;
+      } else if (latestTelemetryNotice != null) {
+        notice = latestTelemetryNotice;
+        _homeNotifyRevision++;
       }
     });
 
@@ -5438,23 +5592,63 @@ void _handleAckLine(String line) {
     final hot = hotText == null ? null : double.tryParse(hotText);
     if (hot != null && hot.isFinite) {
       if (hot < hotLimit) hotAlertArmed = true;
-      if (hot >= hotLimit &&
-          hotAlertArmed &&
-          appNotifySafetyNotifier.value &&
-          connected) {
+      if (hot >= hotLimit && hotAlertArmed && connected) {
         hotAlertArmed = false;
-        unawaited(_postNotification(
-          JexText.of('safetyAlert', appLanguageNotifier.value),
-          homeHotsideLimitNotice(
-            hotsideTemp,
-            hotLimit: hotLimit,
-            language: appLanguageNotifier.value,
-          ),
-          2101,
-        ));
+        final hotNotice = homeHotsideLimitNotice(
+          hotsideTemp,
+          hotLimit: hotLimit,
+          language: appLanguageNotifier.value,
+        );
+        // Always update the in-app NOTIFY card. Android push remains governed by
+        // the user's safety-notification preference.
+        if (mounted && notice != hotNotice) {
+          setState(() {
+            notice = hotNotice;
+            _homeNotifyRevision++;
+          });
+        }
+        if (appNotifySafetyNotifier.value) {
+          unawaited(_postNotification(
+            JexText.of('safetyAlert', appLanguageNotifier.value),
+            hotNotice,
+            2101,
+          ));
+        }
       }
     }
     _publishFloatingTelemetry();
+  }
+
+  // Read confirmed values whose changes should create a user-facing event.
+  // Ordinary HOT/BATTERY temperature samples are deliberately excluded.
+  String? _homeNotifyTelemetryValue(String key) {
+    switch (key) {
+      case 'VOLTAGE':
+        return voltage;
+      case 'FAN':
+        return fanOn ? 'ON' : 'OFF';
+      case 'PELTIER':
+        return peltierOn ? 'ON' : 'OFF';
+      case 'ADAPTIVE':
+        return adaptiveOn ? 'ON' : 'OFF';
+      case 'FAN_SPEED':
+        return fanSpeed.toString();
+      case 'RGB':
+        return rgbOn ? 'ON' : 'OFF';
+      case 'MODE':
+      case 'LED_SYNC':
+        return rgbMode.toString();
+      case 'BRIGHTNESS':
+        return brightness.toString();
+      case 'RGB_COLOR':
+        return rgbColor.toUpperCase();
+      case 'ADAPTIVE_PROFILE':
+        return adaptiveProfile.toUpperCase();
+      case 'ADAPTIVE_CEILING':
+        return adaptiveCeiling.toUpperCase();
+      default:
+        return null;
+    }
   }
 
   // AI-METHOD: _applyTelemetryValue — Map firmware telemetry keys into typed Flutter state.
@@ -5675,13 +5869,20 @@ void _handleAckLine(String line) {
     String command, {
     Duration timeout = const Duration(seconds: 3),
   }) async {
+    // If newer telemetry arrives while the ACK is pending, it must keep priority.
+    final noticeRevisionAtStart = _homeNotifyRevision;
+    final previousFanSpeed = fanSpeed;
     final accepted = await _sendAndWaitAck(
       command,
       showError: false,
       timeout: timeout,
     );
     if (accepted) {
-      _notifyCommandAccepted(command);
+      _notifyCommandAccepted(
+        command,
+        expectedRevision: noticeRevisionAtStart,
+        previousFanSpeed: previousFanSpeed,
+      );
     }
     return accepted;
   }
@@ -6877,11 +7078,8 @@ void _handleAckLine(String line) {
 
   // AI-METHOD: _professionalNotice — Normalize technical status into project UI wording.
   String _professionalNotice() {
-    final followsLiveCoolingState = notice.trim() == _homeLiveCoolingNoticeToken;
-    final custom = followsLiveCoolingState ? '' : _compactNotifyMessage(notice);
+    final custom = _compactNotifyMessage(notice);
 
-    // Connection failures remain visible while offline; disconnected telemetry is never
-    // presented as current hardware state.
     if (!connected && !_bleConnecting) {
       final upper = custom.toUpperCase();
       final staleValidation = upper == 'VALIDATING TEMPERATURE...' ||
@@ -6893,7 +7091,7 @@ void _handleAckLine(String line) {
       return custom;
     }
 
-    // Safety conditions have priority over stale command acknowledgements and summaries.
+    // Hotside threshold is the only live condition that overrides ordinary events.
     if (connected &&
         homeHotsideLimitReached(hotsideTemp, hotLimit: hotLimit)) {
       return homeHotsideLimitNotice(
@@ -6909,30 +7107,6 @@ void _handleAckLine(String line) {
       return _friendlyReason(safetyReason);
     }
 
-    final upperNotice = notice.trim().toUpperCase();
-    final firmwareEvent = upperNotice.startsWith('OTA_') ||
-        upperNotice.contains('FIRMWARE') ||
-        upperNotice.contains('PEMBARUAN FIRMWARE') ||
-        custom.toUpperCase().contains('FIRMWARE UPDATE') ||
-        custom.toUpperCase().contains('PEMBARUAN FIRMWARE');
-    if (custom.isNotEmpty && (isNotifyErrorMessage(custom) || firmwareEvent)) {
-      return custom;
-    }
-
-    if (followsLiveCoolingState &&
-        connected &&
-        dashboardReady &&
-        runtimeOutputsKnown) {
-      return homeCoolingStatusSummary(
-        adaptiveOn: adaptiveOn,
-        voltage: voltage,
-        fanOn: fanOn,
-        fanSpeed: fanSpeed,
-        peltierOn: peltierOn,
-        language: appLanguageNotifier.value,
-      );
-    }
-
     if (custom.isNotEmpty) return custom;
 
     if (_bleConnecting) return JexText.of('connectingDevice', appLanguageNotifier.value);
@@ -6941,14 +7115,18 @@ void _handleAckLine(String line) {
     return _friendlyReason(safetyReason);
   }
 
-  void _notifyCommandAccepted(String command) {
-    if (!mounted) return;
+  void _notifyCommandAccepted(
+    String command, {
+    required int expectedRevision,
+    required int previousFanSpeed,
+  }) {
+    if (!mounted || _homeNotifyRevision != expectedRevision) return;
     final c = command.trim().toUpperCase();
     final lang = appLanguageNotifier.value;
     String? message;
 
     if (c.startsWith('VOLTAGE:')) {
-      message = JexText.of('voltageSetTo', lang) + c.substring(8) + '.';
+      message = JexText.phrase('Voltage set to ', 'Tegangan diatur ke ', lang) + c.substring(8) + '.';
     } else if (c == 'FAN:ON') {
       message = JexText.of('fanOn', lang);
     } else if (c == 'FAN:OFF') {
@@ -6962,7 +7140,10 @@ void _handleAckLine(String line) {
     } else if (c == 'ADAPTIVE:OFF') {
       message = JexText.of('adaptiveOff', lang);
     } else if (c.startsWith('FANSPEED:')) {
-      message = JexText.phrase('Fan speed set to ', 'Kecepatan kipas diatur ke ', lang) + c.substring(9) + '%.';
+      final requested = int.tryParse(c.substring(9));
+      message = requested == null
+          ? JexText.phrase('Fan speed updated.', 'Kecepatan kipas diperbarui.', lang)
+          : homeFanSpeedChangedNotice(previousFanSpeed, requested, language: lang);
     } else if (c == 'RGB:ON') {
       message = JexText.of('ledOn', lang);
     } else if (c == 'RGB:OFF') {
@@ -6970,10 +7151,18 @@ void _handleAckLine(String line) {
     } else if (c.startsWith('MODE:')) {
       message = JexText.of('modeUpdated', lang);
     } else if (c.startsWith('BRIGHTNESS:')) {
-      message = JexText.of('brightnessUpdated', lang);
+      message = JexText.phrase('LED brightness set to ', 'Kecerahan LED diatur ke ', lang) + c.substring(11) + '%.';
     } else if (c.startsWith('COLOR:')) {
       message = JexText.of('colorUpdated', lang);
+    } else if (c.startsWith('ADAPTIVE_PROFILE:')) {
+      message = homeNotifyForTelemetryChange(
+        key: 'ADAPTIVE_PROFILE',
+        previousValue: '',
+        currentValue: c.substring(17),
+        language: lang,
+      );
     } else if (c.startsWith('HOTLIMIT:')) {
+      // Keep the existing Temperature-tab limit acknowledgement; do not notify on samples.
       message = JexText.phrase('Hotside temperature limit set to ', 'Batas suhu Hotside diatur ke ', lang) + c.substring(9) + '°C.';
     } else if (c.startsWith('BATT5:')) {
       message = JexText.phrase('5V battery limit updated.', 'Batas baterai 5V diperbarui.', lang);
@@ -6983,18 +7172,9 @@ void _handleAckLine(String line) {
       message = JexText.of('temperatureReset', lang);
     }
     if (message != null) {
-      final liveCoolingCommand = c.startsWith('VOLTAGE:') ||
-          c == 'FAN:ON' ||
-          c == 'FAN:OFF' ||
-          c == 'PELTIER:ON' ||
-          c == 'PELTIER:OFF' ||
-          c == 'ADAPTIVE:ON' ||
-          c == 'ADAPTIVE:OFF' ||
-          c.startsWith('FANSPEED:');
       setState(() {
-        // The command ACK confirms acceptance; the displayed body is then sourced
-        // from the current firmware telemetry and re-localized on every render.
-        notice = liveCoolingCommand ? _homeLiveCoolingNoticeToken : message!;
+        notice = message!;
+        _homeNotifyRevision++;
       });
     }
   }
