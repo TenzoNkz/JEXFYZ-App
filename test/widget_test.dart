@@ -1748,6 +1748,115 @@ void main() {
     expect(theme.scaffoldBackgroundColor, const Color(0xFF0F1013));
   });
 
+  test('Home Notify follows latest cooling telemetry in both languages', () {
+    final english = homeCoolingStatusSummary(
+      adaptiveOn: true,
+      voltage: '12V',
+      fanOn: true,
+      fanSpeed: 80,
+      peltierOn: false,
+      language: AppLanguage.english,
+    );
+    final indonesia = homeCoolingStatusSummary(
+      adaptiveOn: true,
+      voltage: '12V',
+      fanOn: true,
+      fanSpeed: 80,
+      peltierOn: false,
+      language: AppLanguage.indonesia,
+    );
+    expect(english, 'Adaptive active • 12 V • Fan 80% • Peltier OFF');
+    expect(indonesia, 'Adaptive aktif • 12 V • Kipas 80% • Peltier MATI');
+    expect(
+      homeCoolingStatusSummary(
+        adaptiveOn: true,
+        voltage: '12V',
+        fanOn: true,
+        fanSpeed: 90,
+        peltierOn: false,
+        language: AppLanguage.english,
+      ),
+      isNot(english),
+    );
+    expect(
+      homeCoolingStatusSummary(
+        adaptiveOn: true,
+        voltage: '9V',
+        fanOn: true,
+        fanSpeed: 80,
+        peltierOn: false,
+        language: AppLanguage.english,
+      ),
+      isNot(english),
+    );
+  });
+
+  test('Home Notify promotes a live Hotside limit crossing over older command status', () {
+    expect(parseHomeTemperatureCelsius('45.8'), 45.8);
+    expect(parseHomeTemperatureCelsius('45.8 °C'), 45.8);
+    expect(parseHomeTemperatureCelsius('--'), isNull);
+    expect(homeHotsideLimitReached('44.9', hotLimit: 45), isFalse);
+    expect(homeHotsideLimitReached('45.0', hotLimit: 45), isTrue);
+    expect(
+      homeHotsideLimitNotice(
+        '45.8',
+        hotLimit: 45,
+        language: AppLanguage.english,
+      ),
+      'Hotside limit reached: 45.8°C (limit 45°C).',
+    );
+    expect(
+      homeHotsideLimitNotice(
+        '45.8',
+        hotLimit: 45,
+        language: AppLanguage.indonesia,
+      ),
+      'Batas suhu Hotside tercapai: 45.8°C (batas 45°C).',
+    );
+    expect(isActiveHomeSafetyReason('HOTSIDE_PROTECTION'), isTrue);
+    expect(isActiveHomeSafetyReason('NONE'), isFalse);
+    expect(isActiveHomeSafetyReason('WAITING_FOR_NTC'), isFalse);
+  });
+
+  test('Stored Home Notify strings are re-localized when the app language changes', () {
+    expect(
+      JexText.relocalize('LED mode updated.', AppLanguage.indonesia),
+      'Mode LED diperbarui.',
+    );
+    expect(
+      JexText.relocalize('Mode LED diperbarui.', AppLanguage.english),
+      'LED mode updated.',
+    );
+    expect(
+      relocalizeHomeNotifyMessage(
+        'Voltage set to 12V.',
+        AppLanguage.indonesia,
+      ),
+      'Tegangan diatur ke 12V.',
+    );
+    expect(
+      relocalizeHomeNotifyMessage(
+        'Batas suhu Hotside diatur ke 45°C.',
+        AppLanguage.english,
+      ),
+      'Hotside temperature limit set to 45°C.',
+    );
+    expect(
+      relocalizeHomeNotifyMessage(
+        'Kecepatan kipas diatur ke 80%.',
+        AppLanguage.english,
+      ),
+      'Fan speed set to 80%.',
+    );
+    expect(
+      relocalizeHomeNotifyMessage(
+        'Pembaruan firmware selesai • Online • V2.5',
+        AppLanguage.english,
+      ),
+      'Firmware update completed • Online • V2.5',
+    );
+  });
+
   test('Home Notify localizes safety reasons and never exposes internal tokens', () {
     final englishSafety = normalizeHomeNotifyText(
       'The device did not confirm the Peltier change. PELTIER_SAFETY_LATCH',
