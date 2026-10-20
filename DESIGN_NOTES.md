@@ -95,15 +95,16 @@ This file stores durable, user-approved visual constraints. Do not reinterpret a
 - Set every Home metric row to 45 dp (38 dp indicator tile centered in the 41 dp icon lane) with uniform rhythm and a 3 dp gap before NOTIFY. NOTIFY stays fixed at 44 dp, icon-left/text-left and badge-free; only body text may shrink as needed to fit two lines. Cooler image constraints remain stable when copy changes. Never allow overlap between indicator rows and NOTIFY.
 - Keep existing status icon/color selection, connection logic, BLE semantics, safety thresholds/predicates and telemetry authority unchanged.
 - Polish Home NOTIFY copy in both supported languages, including direct acknowledgements for accepted fan-speed, Hotside-limit and 5V/12V battery-limit commands. Map known reason codes to actionable text, use generic localized copy for unknown identifiers, and route raw OTA envelopes through the dedicated formatter before normalizing. No raw reason IDs, OTA ERROR/CODE values or internal event suffixes may reach the card.
-- Latest Home NOTIFY source/test fingerprints: lib/main.dart `4d2871234971ef8a9fa976f197e0e4f7b1e188ac`; lib/app_settings.dart `44431e926bfa2557c26345899e2333bd767f3f8e`; test/widget_test.dart `ccae334f9a737926bef021fa04ce7caa4d30601d`. Live-state notice priority and language-refresh changes are source-only / NOT RUN / NOT RELEASED; Build #116 does not include them.
+- Latest Home NOTIFY source/test fingerprints: lib/main.dart `a167e884f765a8a9ef379108262c366c8bcdcf99`; lib/app_settings.dart `44431e926bfa2557c26345899e2333bd767f3f8e`; test/widget_test.dart `5cb9ccacf585823a874976432478529893f71da3`. Single-event copy changes are source-only / NOT RUN / NOT RELEASED; Build #120 does not include them.
 
-## Home NOTIFY live-state priority — 2026-10-20
+## Home NOTIFY single-event behavior — 2026-10-20
 
-- The body represents the newest confirmed operating state, not a one-time command acknowledgement. Cooling-related telemetry changes supersede older ordinary acknowledgements; repeated identical telemetry does not create repeated messages.
-- After cooling controls change, show a compact bilingual summary of mode, confirmed voltage, Fan state/speed and Peltier state.
-- Safety state wins over command confirmations and normal summaries. Hotside at/above the configured limit shows its measured temperature and configured limit.
-- The fixed 44 dp card, left alignment, two-line body limit and approved warning styling remain unchanged. Language changes must update rendered copy without waiting for new BLE traffic.
-- Current source/test fingerprints: main `${H.main}`; settings `${H.settings}`; tests `${H.test}`. Tests/analyzer have NOT RUN; not released.
+- Keep Home NOTIFY to one complete sentence describing the newest confirmed event. A new event replaces the old message; never concatenate Adaptive, Voltage, Fan and Peltier values into a combined status summary.
+- Voltage, Control, Adaptive and LED changes receive meaningful English/Indonesian event copy. Examples: `Adaptive ON.`, `Voltage set to 5V.`, `Fan speed reduced to 70%.`, `LED brightness set to 80%.`
+- Repeated telemetry with the same value does not generate a second event. A delayed command ACK must not overwrite a newer telemetry event.
+- Ordinary Temperature samples do not generate Home NOTIFY. Hotside at/above its configured limit is the exception: show measured temperature and configured limit and prioritize that safety message over ordinary control events.
+- Language changes re-render the last notice immediately. Preserve the fixed 44 dp card, left alignment, two-line body limit and approved warning styling.
+- Current blobs: main `a167e884f765a8a9ef379108262c366c8bcdcf99`; settings `44431e926bfa2557c26345899e2333bd767f3f8e`; tests `5cb9ccacf585823a874976432478529893f71da3`. Tests/analyzer have NOT RUN and this source is not released.
 
 ## Settings scope constraint
 
