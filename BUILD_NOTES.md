@@ -3,7 +3,7 @@
 ## Current repository/release checkpoint — 2026-10-20
 
 - Latest successful App release recorded in canonical project state is Build #116 / run 39355262101, package source `48683874db659df940272bed1c860072ead2d767`. APK SHA-256 `8570914f331583d2cc462f61881609c0eae56639a139f2d60a832e4aaa81ea27`; source ZIP SHA-256 `60ef4e79529aabcbb4f4093b9f8a18b5d383d5c651c1c303dd8bb774e7b0dd5d`. Build #116 predates the current Home NOTIFY source follow-up.
-- Latest source-only NOTIFY follow-up: lib/main.dart `24cd98e54944cca57bcdade80d335f66aeefdc9e`; lib/app_settings.dart `44431e926bfa2557c26345899e2333bd767f3f8e`; test/widget_test.dart `e55a41dfeacc9ab5aee0e9bb31a0e21221bd9156`. It promotes new confirmed cooling/safety telemetry over stale acknowledgements and re-localizes status when the app language changes. Flutter tests/Dart analysis have NOT RUN; no App Build was triggered.
+- Latest source-only NOTIFY follow-up: lib/main.dart `4d2871234971ef8a9fa976f197e0e4f7b1e188ac`; lib/app_settings.dart `44431e926bfa2557c26345899e2333bd767f3f8e`; test/widget_test.dart `ccae334f9a737926bef021fa04ce7caa4d30601d`. It promotes new confirmed cooling/safety telemetry over stale acknowledgements and re-localizes status when the app language changes. Flutter tests/Dart analysis have NOT RUN; no App Build was triggered.
 - This follow-up's Flutter tests and Dart analyzer have NOT RUN and it is NOT RELEASED. The sole App Build authorization remains @Thinking Eksekusi Build App!. No App Build or Firmware/device action occurred in this source task.
 - User reports Firmware V6.9 compiled and installed; exact compile logs, source-to-BIN provenance and installed version remain independently unverified.
 
