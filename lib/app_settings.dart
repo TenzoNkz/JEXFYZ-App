@@ -235,10 +235,6 @@ class JexText {
       AppLanguage.english: 'Firmware',
       AppLanguage.indonesia: 'Firmware',
     },
-    'aboutSection': {
-      AppLanguage.english: 'About',
-      AppLanguage.indonesia: 'Tentang',
-    },
     'language': {
       AppLanguage.english: 'Language',
       AppLanguage.indonesia: 'Bahasa',
@@ -298,10 +294,6 @@ class JexText {
     'floatingMonitor': {
       AppLanguage.english: 'Floating Monitor',
       AppLanguage.indonesia: 'Floating Monitor',
-    },
-    'about': {
-      AppLanguage.english: 'About JE X FYZ',
-      AppLanguage.indonesia: 'Tentang JE X FYZ',
     },
     'voltage': {
       AppLanguage.english: 'Voltage',
