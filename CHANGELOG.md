@@ -1,3 +1,15 @@
+## Home NOTIFY live-state and localization fix — 2026-10-20 (source-only / NOT RUN / NOT RELEASED)
+
+- Latest source/test fingerprints: `lib/main.dart` `24cd98e54944cca57bcdade80d335f66aeefdc9e`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `e55a41dfeacc9ab5aee0e9bb31a0e21221bd9156`.
+- Home NOTIFY now follows the newest confirmed cooling telemetry instead of treating a successful command acknowledgement as a permanent message. Accepted Adaptive/Voltage/Fan/Peltier/Fan Speed commands move the card to a compact summary built from current mode, voltage, Fan state/speed and Peltier state.
+- A genuine change in cooling telemetry, safety reason or Hotside-limit state retires an older ordinary acknowledgement. Repeated identical telemetry is not treated as a new change.
+- Safety has priority over older success messages and ordinary summaries. Hotside at/above its configured limit displays the current measured temperature and configured limit. Home warning presentation also recognizes that live threshold.
+- Stored bilingual strings are re-resolved for the selected app language. A language listener rebuilds Home immediately, republishes Floating Monitor telemetry, and updates the connected-device foreground notification without waiting for new BLE traffic.
+- BLE protocol/ownership, Firmware safety rules, OTA transport and Android Gradle `versionName` remain unchanged.
+- Regression cases cover bilingual live summaries, Hotside temperature/limit wording, stored-message relocalization and listener wiring. Flutter tests and Dart analysis have NOT RUN. No App Build, Firmware compile, BIN/Firebase, OTA, flash or device operation occurred. Build #116 remains the latest verified App release; this source is NOT RELEASED and live-device behavior remains UNVERIFIED.
+
+---
+
 ## FIRMWARE V7.0 SOURCE FOLLOW-UP — 2026-10-20 (NOT COMPILED / NOT DEPLOYED)
 
 - Corrected the missed version increment from the previous Adaptive Fan whole-degree edit: the only active sketch is now `firmware/JEXFYZ-V7.0.ino`, and its embedded `FW_VERSION` is `V7.0`. Previous `firmware/JEXFYZ-V6.9.ino` has been retired from the active tree.
