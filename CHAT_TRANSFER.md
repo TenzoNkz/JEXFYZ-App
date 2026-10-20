@@ -7,7 +7,7 @@ Reconciled from live GitHub main after `@Thinking Eksekusi Full!` on 2026-10-20 
 - Canonical repository: `TenzoNkz/JEXFYZ-App`, branch `main`; continue directly on `main`, no branch/PR unless requested.
 - `@Thinking Diskusi!` is read-only. `@Thinking Eksekusi Full!` authorizes only scoped source/tests/docs/static audit/commit; it does NOT authorize official App Build/release, Firmware compile, BIN publication, Firebase, OTA, flashing or physical-device operations. `@Thinking Eksekusi Build App!` remains the separate App Build authorization.
 - Preserve Android Gradle `versionName "Telegram @horizontalzzz"`. `TenzoNkz/JEXFYZ-Firmware` is BIN-only; do not inspect or modify its payload.
-- Latest successful App release is Build #116 / Actions run 39355262101, packaging commit `48683874db659df940272bed1c860072ead2d767`. It passed 109 Flutter tests and the configured release gates. Its APK SHA-256 is `8570914f331583d2cc462f61881609c0eae56639a139f2d60a832e4aaa81ea27`; source ZIP SHA-256 is `60ef4e79529aabcbb4f4093b9f8a18b5d383d5c651c1c303dd8bb774e7b0dd5d`. Build #116 validates only its packaged source, not this new follow-up.
+- Latest successful App release is Build #120 / Actions run 39365201489, packaging commit `aeadaa47bd7ad64af6044afce5783781f0c0d82f`. It passed 115 Flutter tests and the configured release gates. APK SHA-256 `aa162e57a04f229922cca4fe48773a49585328e2337761f5c641097957ff0392`; source ZIP SHA-256 `3e7585549d2eef68ad93b35c378bd76332d80a92a0edf1856aec8303df5e28d7`. Build #120 validates only its packaged source, not this latest single-event NOTIFY patch.
 
 ## 2. Home visual and localization follow-up — source-only / NOT RUN / NOT RELEASED
 
@@ -23,18 +23,16 @@ Reconciled from live GitHub main after `@Thinking Eksekusi Full!` on 2026-10-20 
 
 - Home heading: `Notification` / `Notifikasi`; Settings section: `Notifications` / `Notifikasi`; Contact Developer: `Contact Developer` / `Hubungi Pengembang`.
 - Updated notification descriptions, Hotside terminology, palette labels, Bluetooth/firmware copy and Android Floating Monitor status text.
-- Latest NOTIFY source blobs: `lib/main.dart` 4d2871234971ef8a9fa976f197e0e4f7b1e188ac; `lib/app_settings.dart` 44431e926bfa2557c26345899e2333bd767f3f8e; `test/widget_test.dart` ccae334f9a737926bef021fa04ce7caa4d30601d. Native `FloatingMonitorService.kt` blob remains `f2c5d5e8b5731be36ae3b82109a75beaefe5fb4d`. Tests and analyzer have NOT RUN for the latest fix; Build #116 remains the latest verified release.
+- Latest NOTIFY source blobs: `lib/main.dart` a167e884f765a8a9ef379108262c366c8bcdcf99; `lib/app_settings.dart` 44431e926bfa2557c26345899e2333bd767f3f8e; `test/widget_test.dart` 5cb9ccacf585823a874976432478529893f71da3. Native `FloatingMonitorService.kt` blob remains `f2c5d5e8b5731be36ae3b82109a75beaefe5fb4d`. Tests and analyzer have NOT RUN for the latest source-only fix.
 
-## Home NOTIFY live-state and localization fix — 2026-10-20 (source-only / NOT RUN / NOT RELEASED)
+## Home NOTIFY — single latest-event message (2026-10-20; source-only / NOT RUN / NOT RELEASED)
 
-- Latest source/test fingerprints: `lib/main.dart` `4d2871234971ef8a9fa976f197e0e4f7b1e188ac`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `ccae334f9a737926bef021fa04ce7caa4d30601d`.
-- Home NOTIFY now follows the newest confirmed cooling telemetry instead of treating a successful command acknowledgement as a permanent message. Accepted Adaptive/Voltage/Fan/Peltier/Fan Speed commands move the card to a compact summary built from current mode, voltage, Fan state/speed and Peltier state.
-- A genuine change in cooling telemetry, safety reason or Hotside-limit state retires an older ordinary acknowledgement. Repeated identical telemetry is not treated as a new change.
-- Safety has priority over older success messages and ordinary summaries. Hotside at/above its configured limit displays the current measured temperature and configured limit. Home warning presentation also recognizes that live threshold.
-- Stored bilingual strings are re-resolved for the selected app language. A language listener rebuilds Home immediately, republishes Floating Monitor telemetry, and updates the connected-device foreground notification without waiting for new BLE traffic.
-- BLE protocol/ownership, Firmware safety rules, OTA transport and Android Gradle `versionName` remain unchanged.
-- Regression cases cover bilingual live summaries, Hotside temperature/limit wording, stored-message relocalization and listener wiring. Flutter tests and Dart analysis have NOT RUN. No App Build, Firmware compile, BIN/Firebase, OTA, flash or device operation occurred. Build #116 remains the latest verified App release; this source is NOT RELEASED and live-device behavior remains UNVERIFIED.
-
+- Current blobs: `lib/main.dart` `a167e884f765a8a9ef379108262c366c8bcdcf99`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `5cb9ccacf585823a874976432478529893f71da3`.
+- Home NOTIFY presents only the newest confirmed event as one complete sentence. A new event replaces the previous one; it never concatenates Adaptive, Voltage, Fan and Peltier into a combined summary. Example sequence: `Adaptive ON.` → `Voltage set to 5V.` → `Fan speed reduced to 70%.`
+- Events cover Voltage, Fan/Peltier ON/OFF, Adaptive ON/OFF/profile/ceiling, Fan speed increase/reduction, LED ON/OFF/mode/brightness/color and safety-state changes. Repeated identical telemetry creates no event, and a delayed ACK cannot overwrite newer telemetry.
+- Ordinary Temperature samples do not generate Home NOTIFY. Hotside reaching the configured limit displays the measured temperature and configured limit in English/Indonesian, with safety priority. Android push still follows its notification preference and re-arms when Hotside falls below the limit.
+- Language changes re-render the latest event immediately. BLE protocol/ownership, Firmware safety rules, OTA transport and Android `versionName` remain unchanged.
+- Build #120 remains the last successful App release; the latest source/test changes are NOT RUN / NOT RELEASED. No App Build, Firmware compile, BIN/Firebase, OTA, flash or device operation was performed.
 ## Adaptive Fan whole-degree target fix — source-only / NOT COMPILED / NOT TESTED
 
 - Source: `firmware/JEXFYZ-V7.0.ino` blob `823f6f31176695a3ff3a923995b1b3cd5f42c683`.
@@ -44,7 +42,7 @@ Reconciled from live GitHub main after `@Thinking Eksekusi Full!` on 2026-10-20 
 
 ## 3. Current validated release versus working source
 
-- **Latest validated/released App:** Build #116, commit `48683874db659df940272bed1c860072ead2d767`.
+- **Latest validated/released App:** Build #120, commit `aeadaa47bd7ad64af6044afce5783781f0c0d82f`. The new single-event NOTIFY source is not included in that release.
 - **Current working source:** the latest localized source and test blobs listed above, layered on top of the prior thermal-visual work. This follow-up remains **UNVALIDATED / NOT RELEASED**; live `main` HEAD is authoritative.
 - Any next official App validation/release requires the distinct `@Thinking Eksekusi Build App!` command. Never infer APK contents from a newer main source hash alone.
 
