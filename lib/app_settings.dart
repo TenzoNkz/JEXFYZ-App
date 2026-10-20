@@ -267,6 +267,10 @@ class JexText {
       AppLanguage.english: 'Notifications',
       AppLanguage.indonesia: 'Notifikasi',
     },
+    'notification': {
+      AppLanguage.english: 'Notification',
+      AppLanguage.indonesia: 'Notifikasi',
+    },
     'safetyAlert': {
       AppLanguage.english: 'Safety Alert',
       AppLanguage.indonesia: 'Peringatan Keselamatan',
@@ -288,8 +292,8 @@ class JexText {
       AppLanguage.indonesia: 'Bluetooth',
     },
     'autoConnect': {
-      AppLanguage.english: 'Auto Connect',
-      AppLanguage.indonesia: 'Hubungkan Otomatis',
+      AppLanguage.english: 'Automatic Connection',
+      AppLanguage.indonesia: 'Koneksi Otomatis',
     },
     'floatingMonitor': {
       AppLanguage.english: 'Floating Monitor',
@@ -329,15 +333,15 @@ class JexText {
     },
     'ledColorCrimson': {
       AppLanguage.english: 'Crimson',
-      AppLanguage.indonesia: 'Merah Crimson',
+      AppLanguage.indonesia: 'Merah Tua',
     },
     'ledColorScarlet': {
       AppLanguage.english: 'Scarlet',
-      AppLanguage.indonesia: 'Merah Scarlet',
+      AppLanguage.indonesia: 'Merah Skarlat',
     },
     'ledColorVermilion': {
       AppLanguage.english: 'Vermilion',
-      AppLanguage.indonesia: 'Vermilion',
+      AppLanguage.indonesia: 'Merah Jingga',
     },
     'ledColorCoral': {
       AppLanguage.english: 'Coral',
@@ -349,7 +353,7 @@ class JexText {
     },
     'ledColorTangerine': {
       AppLanguage.english: 'Tangerine',
-      AppLanguage.indonesia: 'Jingga Tangerine',
+      AppLanguage.indonesia: 'Jingga Tangerin',
     },
     'ledColorPeach': {
       AppLanguage.english: 'Peach',
@@ -373,7 +377,7 @@ class JexText {
     },
     'ledColorLemon': {
       AppLanguage.english: 'Lemon',
-      AppLanguage.indonesia: 'Lemon',
+      AppLanguage.indonesia: 'Kuning Lemon',
     },
     'ledColorChartreuse': {
       AppLanguage.english: 'Chartreuse',
@@ -401,11 +405,11 @@ class JexText {
     },
     'ledColorTurquoise': {
       AppLanguage.english: 'Turquoise',
-      AppLanguage.indonesia: 'Turkuas',
+      AppLanguage.indonesia: 'Biru Pirus',
     },
     'ledColorCyan': {
       AppLanguage.english: 'Cyan',
-      AppLanguage.indonesia: 'Cyan',
+      AppLanguage.indonesia: 'Sian',
     },
     'ledColorSkyBlue': {
       AppLanguage.english: 'Sky Blue',
@@ -413,7 +417,7 @@ class JexText {
     },
     'ledColorAzure': {
       AppLanguage.english: 'Azure',
-      AppLanguage.indonesia: 'Biru Azure',
+      AppLanguage.indonesia: 'Biru Azur',
     },
     'ledColorElectricBlue': {
       AppLanguage.english: 'Electric Blue',
@@ -429,11 +433,11 @@ class JexText {
     },
     'ledColorBlueViolet': {
       AppLanguage.english: 'Blue Violet',
-      AppLanguage.indonesia: 'Biru Violet',
+      AppLanguage.indonesia: 'Biru Ungu',
     },
     'ledColorViolet': {
       AppLanguage.english: 'Violet',
-      AppLanguage.indonesia: 'Violet',
+      AppLanguage.indonesia: 'Ungu Violet',
     },
     'ledColorPurple': {
       AppLanguage.english: 'Purple',
@@ -445,7 +449,7 @@ class JexText {
     },
     'ledColorOrchid': {
       AppLanguage.english: 'Orchid',
-      AppLanguage.indonesia: 'Anggrek',
+      AppLanguage.indonesia: 'Ungu Anggrek',
     },
     'ledColorMagenta': {
       AppLanguage.english: 'Magenta',
@@ -457,11 +461,11 @@ class JexText {
     },
     'ledColorHotPink': {
       AppLanguage.english: 'Hot Pink',
-      AppLanguage.indonesia: 'Merah Muda Neon',
+      AppLanguage.indonesia: 'Merah Muda Terang',
     },
     'ledColorRosePink': {
       AppLanguage.english: 'Rose Pink',
-      AppLanguage.indonesia: 'Merah Mawar',
+      AppLanguage.indonesia: 'Merah Muda Mawar',
     },
     'ledColorWhite': {
       AppLanguage.english: 'White',
@@ -493,7 +497,7 @@ class JexText {
     },
     'ledColorSpringLime': {
       AppLanguage.english: 'Spring Lime',
-      AppLanguage.indonesia: 'Hijau Lime Muda',
+      AppLanguage.indonesia: 'Hijau Limau Muda',
     },
     'ledColorGreen': {
       AppLanguage.english: 'Green',
@@ -501,11 +505,11 @@ class JexText {
     },
     'ledColorSpringGreen': {
       AppLanguage.english: 'Spring Green',
-      AppLanguage.indonesia: 'Hijau Spring',
+      AppLanguage.indonesia: 'Hijau Muda',
     },
     'ledColorDeepSkyBlue': {
       AppLanguage.english: 'Deep Sky Blue',
-      AppLanguage.indonesia: 'Biru Langit Cerah',
+      AppLanguage.indonesia: 'Biru Langit Pekat',
     },
     'ledColorBlue': {
       AppLanguage.english: 'Blue',
@@ -658,11 +662,11 @@ class JexText {
     },
     'hotsideLimit': {
       AppLanguage.english: 'Hotside Limit',
-      AppLanguage.indonesia: 'Batas Suhu Panas',
+      AppLanguage.indonesia: 'Batas Suhu Hotside',
     },
     'batteryZones': {
-      AppLanguage.english: 'Battery Zones',
-      AppLanguage.indonesia: 'Zona Baterai',
+      AppLanguage.english: 'Battery Temperature Zones',
+      AppLanguage.indonesia: 'Zona Suhu Baterai',
     },
     'fiveVCeiling': {
       AppLanguage.english: '5V Limit',
@@ -681,8 +685,8 @@ class JexText {
       AppLanguage.indonesia: 'Zona 9V',
     },
     'lockedAdaptive': {
-      AppLanguage.english: 'Locked while Adaptive Mode is active.',
-      AppLanguage.indonesia: 'Terkunci saat Mode Adaptif aktif.',
+      AppLanguage.english: 'Controls are unavailable while Adaptive Mode is on.',
+      AppLanguage.indonesia: 'Kontrol tidak tersedia saat Mode Adaptif aktif.',
     },
     'lowMode': {
       AppLanguage.english: 'Low Mode',
@@ -698,19 +702,19 @@ class JexText {
     },
     'hotsideProtection': {
       AppLanguage.english: 'Hotside Protection',
-      AppLanguage.indonesia: 'Perlindungan Suhu Panas',
+      AppLanguage.indonesia: 'Perlindungan Hotside',
     },
     'hotsideBattery': {
       AppLanguage.english: 'Hotside + Battery',
-      AppLanguage.indonesia: 'Suhu Panas + Baterai',
+      AppLanguage.indonesia: 'Hotside + Baterai',
     },
     'peltierSafety': {
       AppLanguage.english: 'Peltier Safety',
       AppLanguage.indonesia: 'Keamanan Peltier',
     },
     'fanRequiredPeltier': {
-      AppLanguage.english: 'Fan must be running before Peltier can be enabled.',
-      AppLanguage.indonesia: 'Kipas harus aktif sebelum Peltier dapat dimulai.',
+      AppLanguage.english: 'The fan must be running before Peltier can be enabled.',
+      AppLanguage.indonesia: 'Kipas harus menyala sebelum Peltier dapat diaktifkan.',
     },
     'cancel': {
       AppLanguage.english: 'Cancel',
@@ -745,8 +749,8 @@ class JexText {
       AppLanguage.indonesia: 'Sudah terbaru.',
     },
     'metadataUnavailable': {
-      AppLanguage.english: 'Firmware metadata unavailable.',
-      AppLanguage.indonesia: 'Metadata firmware tidak tersedia.',
+      AppLanguage.english: 'Firmware information is unavailable.',
+      AppLanguage.indonesia: 'Informasi firmware tidak tersedia.',
     },
     'password': {
       AppLanguage.english: 'Password',
@@ -773,8 +777,8 @@ class JexText {
       AppLanguage.indonesia: 'Firmware sudah versi terbaru.',
     },
     'otaReconnectFailed': {
-      AppLanguage.english: 'Update finished, but the cooler did not reconnect.',
-      AppLanguage.indonesia: 'Pembaruan selesai, tetapi cooler tidak tersambung kembali.',
+      AppLanguage.english: 'The update finished, but JE X FYZ could not reconnect.',
+      AppLanguage.indonesia: 'Pembaruan selesai, tetapi perangkat JE X FYZ belum tersambung kembali.',
     },
     'systemReady': {
       AppLanguage.english: 'System ready.',
@@ -818,11 +822,11 @@ class JexText {
     },
     'hSideProtection': {
       AppLanguage.english: 'Hotside Protection',
-      AppLanguage.indonesia: 'Perlindungan Suhu Panas',
+      AppLanguage.indonesia: 'Perlindungan Hotside',
     },
     'hSideBattery': {
       AppLanguage.english: 'Hotside + Battery',
-      AppLanguage.indonesia: 'Suhu Panas + Baterai',
+      AppLanguage.indonesia: 'Hotside + Baterai',
     },
     'batteryTemperature': {
       AppLanguage.english: 'Battery Temperature',
@@ -830,7 +834,7 @@ class JexText {
     },
     'hotsideTemperature': {
       AppLanguage.english: 'Hotside Temperature',
-      AppLanguage.indonesia: 'Suhu Panas',
+      AppLanguage.indonesia: 'Suhu Hotside',
     },
     'fanSpeed': {
       AppLanguage.english: 'Fan Speed',
@@ -841,24 +845,24 @@ class JexText {
       AppLanguage.indonesia: 'Atur Ulang Pengaturan Suhu',
     },
     'hotsideLimitNotConfirmed': {
-      AppLanguage.english: 'Hotside limit was not confirmed.',
-      AppLanguage.indonesia: 'Batas Hotside tidak terkonfirmasi.',
+      AppLanguage.english: 'The device did not confirm the Hotside limit change.',
+      AppLanguage.indonesia: 'Perangkat belum mengonfirmasi perubahan batas suhu Hotside.',
     },
     'hotsideLimitFailed': {
       AppLanguage.english: 'Hotside limit update failed.',
       AppLanguage.indonesia: 'Gagal memperbarui batas Hotside.',
     },
     'battery5LimitNotConfirmed': {
-      AppLanguage.english: '5V battery limit not confirmed.',
-      AppLanguage.indonesia: 'Batas baterai 5V tidak terkonfirmasi.',
+      AppLanguage.english: 'The device did not confirm the 5V battery limit change.',
+      AppLanguage.indonesia: 'Perangkat belum mengonfirmasi perubahan batas baterai 5V.',
     },
     'battery5LimitFailed': {
       AppLanguage.english: '5V battery limit failed.',
       AppLanguage.indonesia: 'Gagal memperbarui batas baterai 5V.',
     },
     'battery12LimitNotConfirmed': {
-      AppLanguage.english: '12V battery limit not confirmed.',
-      AppLanguage.indonesia: 'Batas baterai 12V tidak terkonfirmasi.',
+      AppLanguage.english: 'The device did not confirm the 12V battery limit change.',
+      AppLanguage.indonesia: 'Perangkat belum mengonfirmasi perubahan batas baterai 12V.',
     },
     'battery12LimitFailed': {
       AppLanguage.english: '12V battery limit failed.',
@@ -897,8 +901,8 @@ class JexText {
       AppLanguage.indonesia: 'Pemindaian perangkat gagal. Periksa izin Bluetooth.',
     },
     'notificationSafetyDescription': {
-      AppLanguage.english: 'Notify when Hotside reaches the set limit.',
-      AppLanguage.indonesia: 'Beri tahu saat Hotside mencapai batas yang ditetapkan.',
+      AppLanguage.english: 'Send a notification when Hotside reaches the set limit.',
+      AppLanguage.indonesia: 'Kirim notifikasi saat suhu Hotside mencapai batas yang ditetapkan.',
     },
     'otaFailed': {
       AppLanguage.english: 'Firmware update failed.',
@@ -929,16 +933,16 @@ class JexText {
       AppLanguage.indonesia: 'Sistem dimulai ulang.',
     },
     'resetWatchdog': {
-      AppLanguage.english: 'System recovered after a watchdog reset.',
-      AppLanguage.indonesia: 'Sistem pulih setelah reset watchdog.',
+      AppLanguage.english: 'System restarted automatically after becoming unresponsive.',
+      AppLanguage.indonesia: 'Sistem dimulai ulang secara otomatis setelah tidak merespons.',
     },
     'resetExternal': {
       AppLanguage.english: 'Device restarted.',
       AppLanguage.indonesia: 'Perangkat dimulai ulang.',
     },
     'resetDeepSleep': {
-      AppLanguage.english: 'Device resumed from deep sleep.',
-      AppLanguage.indonesia: 'Perangkat melanjutkan dari mode deep sleep.',
+      AppLanguage.english: 'Device resumed from low-power sleep.',
+      AppLanguage.indonesia: 'Perangkat kembali aktif dari mode hemat daya.',
     },
     'resetPowerOn': {
       AppLanguage.english: 'Device started.',
@@ -949,8 +953,8 @@ class JexText {
       AppLanguage.indonesia: 'Statis',
     },
     'ledModeBreath': {
-      AppLanguage.english: 'Breath',
-      AppLanguage.indonesia: 'Bernapas',
+      AppLanguage.english: 'Breathing',
+      AppLanguage.indonesia: 'Efek Napas',
     },
     'ledModeComet': {
       AppLanguage.english: 'Comet',
@@ -958,7 +962,7 @@ class JexText {
     },
     'ledModeDualChase': {
       AppLanguage.english: 'Dual Chase',
-      AppLanguage.indonesia: 'Kejar Ganda',
+      AppLanguage.indonesia: 'Chase Ganda',
     },
     'ledModeRainbow': {
       AppLanguage.english: 'Rainbow',
@@ -1089,16 +1093,16 @@ class JexText {
     'failedSuffix': { AppLanguage.english: 'failed.', AppLanguage.indonesia: 'gagal.' },
 
     'notificationFirmwareDescription': {
-      AppLanguage.english: 'Notify when a firmware update is available.',
-      AppLanguage.indonesia: 'Beri tahu saat pembaruan firmware tersedia.',
+      AppLanguage.english: 'Send a notification when a firmware update is available.',
+      AppLanguage.indonesia: 'Kirim notifikasi saat pembaruan firmware tersedia.',
     },
     'notificationBluetoothDescription': {
-      AppLanguage.english: 'Notify when JE X FYZ connects or disconnects.',
-      AppLanguage.indonesia: 'Beri tahu saat JE X FYZ terhubung atau terputus.',
+      AppLanguage.english: 'Send a notification when JE X FYZ connects or disconnects.',
+      AppLanguage.indonesia: 'Kirim notifikasi saat JE X FYZ terhubung atau terputus.',
     },
     'autoConnectDescription': {
-      AppLanguage.english: 'Connect to JE X FYZ automatically when it is advertising.',
-      AppLanguage.indonesia: 'Hubungkan JE X FYZ secara otomatis saat perangkat menyiarkan sinyal.',
+      AppLanguage.english: 'Connect to JE X FYZ automatically when the device is available.',
+      AppLanguage.indonesia: 'Sambungkan ke JE X FYZ secara otomatis saat perangkat tersedia.',
     },
     'connection': {
       AppLanguage.english: 'Connection',
@@ -1109,8 +1113,8 @@ class JexText {
       AppLanguage.indonesia: 'Perangkat',
     },
     'connectionUnavailable': {
-      AppLanguage.english: 'Unable to connect right now.',
-      AppLanguage.indonesia: 'Koneksi belum tersedia.',
+      AppLanguage.english: 'Unable to connect right now. Please try again.',
+      AppLanguage.indonesia: 'Belum dapat terhubung. Silakan coba lagi.',
     },
     'bluetoothOn': {
       AppLanguage.english: 'Bluetooth ON',
@@ -1132,6 +1136,10 @@ class JexText {
       AppLanguage.english: 'Disconnect',
       AppLanguage.indonesia: 'Putuskan',
     },
+    'contactDeveloper': {
+      AppLanguage.english: 'Contact Developer',
+      AppLanguage.indonesia: 'Hubungi Pengembang',
+    },
     'developedByHorizon': {
       AppLanguage.english: 'DEVELOPED BY HORIZON',
       AppLanguage.indonesia: 'DIKEMBANGKAN OLEH HORIZON',
@@ -1141,28 +1149,28 @@ class JexText {
       AppLanguage.indonesia: 'Koneksi gagal.',
     },
     'connectionNeedsAccess': {
-      AppLanguage.english: 'Connection needs access.',
-      AppLanguage.indonesia: 'Akses koneksi diperlukan.',
+      AppLanguage.english: 'Bluetooth permission is required to connect.',
+      AppLanguage.indonesia: 'Izin Bluetooth diperlukan untuk menghubungkan perangkat.',
     },
     'bleServiceDiscoveryFailed': {
-      AppLanguage.english: 'JE X FYZ BLE service discovery failed.',
-      AppLanguage.indonesia: 'Pencarian layanan BLE JE X FYZ gagal.',
+      AppLanguage.english: 'Could not find the JE X FYZ Bluetooth service.',
+      AppLanguage.indonesia: 'Layanan Bluetooth JE X FYZ tidak ditemukan.',
     },
     'bleSyncFailed': {
-      AppLanguage.english: 'BLE sync failed.',
-      AppLanguage.indonesia: 'Sinkronisasi BLE gagal.',
+      AppLanguage.english: 'Could not sync with JE X FYZ.',
+      AppLanguage.indonesia: 'Tidak dapat menyinkronkan perangkat JE X FYZ.',
     },
     'bleHandshakeWriteFailed': {
-      AppLanguage.english: 'BLE session handshake write failed.',
-      AppLanguage.indonesia: 'Penulisan handshake sesi BLE gagal.',
+      AppLanguage.english: 'Could not complete Bluetooth connection setup.',
+      AppLanguage.indonesia: 'Penyiapan koneksi Bluetooth tidak dapat diselesaikan.',
     },
     'bleSessionNotReady': {
-      AppLanguage.english: 'BLE session not ready.',
-      AppLanguage.indonesia: 'Sesi BLE belum siap.',
+      AppLanguage.english: 'The Bluetooth session is not ready yet.',
+      AppLanguage.indonesia: 'Sesi Bluetooth belum siap.',
     },
     'fullSyncFailed': {
-      AppLanguage.english: 'Full Sync failed.',
-      AppLanguage.indonesia: 'Sinkronisasi penuh gagal.',
+      AppLanguage.english: 'Could not complete device sync.',
+      AppLanguage.indonesia: 'Sinkronisasi perangkat tidak selesai.',
     },
     'floatingPermissionTitle': {
       AppLanguage.english: 'Floating Monitor Permission',
@@ -1177,24 +1185,24 @@ class JexText {
       AppLanguage.indonesia: 'Izin tampilan mengambang belum diberikan.',
     },
     'overlaySettingsFailed': {
-      AppLanguage.english: 'Android overlay permission settings could not be opened.',
+      AppLanguage.english: 'Could not open Android's overlay permission settings.',
       AppLanguage.indonesia: 'Pengaturan izin tampilan mengambang Android tidak dapat dibuka.',
     },
     'floatingStartFailed': {
-      AppLanguage.english: 'Floating Monitor could not be started.',
-      AppLanguage.indonesia: 'Floating Monitor tidak dapat dijalankan.',
+      AppLanguage.english: 'Floating Monitor could not be started. Check its permissions and try again.',
+      AppLanguage.indonesia: 'Floating Monitor tidak dapat dijalankan. Periksa izinnya, lalu coba lagi.',
     },
     'synchronizingDevice': {
       AppLanguage.english: 'Syncing device…',
       AppLanguage.indonesia: 'Menyinkronkan perangkat…',
     },
     'validatingTemperature': {
-      AppLanguage.english: 'Validating temperature...',
-      AppLanguage.indonesia: 'Memvalidasi suhu...',
+      AppLanguage.english: 'Checking temperature readings…',
+      AppLanguage.indonesia: 'Memeriksa pembacaan suhu…',
     },
     'sensorErrorCoolingLocked': {
-      AppLanguage.english: 'Temperature sensor error. Cooling is locked.',
-      AppLanguage.indonesia: 'Sensor suhu bermasalah. Pendinginan dikunci.',
+      AppLanguage.english: 'Temperature sensor error. Cooling has been disabled for safety.',
+      AppLanguage.indonesia: 'Sensor suhu bermasalah. Pendinginan dinonaktifkan demi keamanan.',
     },
     'hotsideProtectionActive': {
       AppLanguage.english: 'Hotside protection is active. Peltier is paused.',
@@ -1265,8 +1273,8 @@ class JexText {
       AppLanguage.indonesia: 'Firmware',
     },
     'firmwareMetadataCheckFailed': {
-      AppLanguage.english: 'Firmware metadata unavailable. Check Firebase read access.',
-      AppLanguage.indonesia: 'Data versi firmware tidak tersedia. Periksa izin baca Firebase.',
+      AppLanguage.english: 'Could not load firmware information. Please try again later.',
+      AppLanguage.indonesia: 'Informasi firmware tidak dapat dimuat. Silakan coba lagi nanti.',
     },
     'leftRight': {
       AppLanguage.english: 'Left / Right',
@@ -1289,7 +1297,7 @@ class JexText {
     'latestValue': { AppLanguage.english: 'Latest', AppLanguage.indonesia: 'Terbaru' },
     'waitingForDevice': { AppLanguage.english: 'Waiting for device...', AppLanguage.indonesia: 'Menunggu perangkat...' },
     'upToDateSentence': { AppLanguage.english: 'Up to date.', AppLanguage.indonesia: 'Sudah terbaru.' },
-    'firmwareMetadataUnavailableSentence': { AppLanguage.english: 'Firmware metadata unavailable. Check Firebase read access.', AppLanguage.indonesia: 'Metadata firmware tidak tersedia. Periksa akses baca Firebase.' },
+    'firmwareMetadataUnavailableSentence': { AppLanguage.english: 'Could not load firmware information. Please try again later.', AppLanguage.indonesia: 'Informasi firmware tidak dapat dimuat. Silakan coba lagi nanti.' },
   };
 
   // AI-METHOD / PHRASE CONTRACT
