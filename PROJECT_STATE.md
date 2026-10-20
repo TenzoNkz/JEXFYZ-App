@@ -1,29 +1,35 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Current state reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #108 is the latest successful App release. The latest Home geometry correction is source-only, NOT RUN / NOT RELEASED. APP_BUILD_REPORT.md owns build evidence; CHAT_TRANSFER.md is the final handoff snapshot.
+Current state reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #110 is the latest successful App release. The current follow-up—falling fire particles, Hotside/Voltage geometry fixes, About removal, and Firmware V6.9 Adaptive Fan pacing—is source-only after Build #110 and NOT RUN / NOT RELEASED. APP_BUILD_REPORT.md owns build evidence; CHAT_TRANSFER.md is the final handoff snapshot.
 
-## Current App / Release state — Build #108 verified; Home geometry follow-up unvalidated
+## Current App / Release state — Build #110 verified; subsequent source follow-up is not released
 
-- Canonical repository: TenzoNkz/JEXFYZ-App, branch main. Continue directly on main; no branches or PRs were created.
-- Latest successful App release is Build #108 / Actions run 39294761979, source commit `51f401c90085b0bef5599375f7819d0294375938`. Analyzer passed with 25 info-level findings and no warnings/errors; 107 Flutter tests passed; configured Android gate, APK signing/certificate, source ZIP integrity, downloaded asset hashes and exact source-marker checks passed. Full evidence is at the top of APP_BUILD_REPORT.md.
-- Build #108 APK asset `656953696`, 54,734,939 bytes, SHA-256 `a7e46390a2b8a487eb85e69d33af685dbc79f9814c201cce9fd255e1164cf8ed`; corresponding source ZIP asset `656953697`, 2,866,251 bytes, SHA-256 `4b3095747a711888afa9879e70cd8d3fc74b22659e68f338e6e8cbc2430d12be`. Release tag `jexfyz-latest` targets Build #108 source.
-- A newer Home geometry correction is now on main and is NOT RUN / NOT RELEASED: `lib/main.dart` blob `0341122a53e7a6bb00d9f079bfcb350b385c83cb`; `test/widget_test.dart` blob `eeee8dcdb9dd88b985145e059913759f5f325920`. It is not part of Build #108.
-- Home indicator rows are restored to 44 dp. The NOTIFY card uses the original icon-left / text-left Row rather than the centered Stack, has no CONNECTED/DISCONNECTED badge, keeps normal-size left-aligned copy with a maximum of two lines, and uses a 56 dp card plus reserved slot. Other Home proportions, tabs, cooler image, submenu, animation painters, BLE behavior and telemetry semantics remain unchanged.
-- Regression contracts now check the original 44 dp metric row, the 56 dp Notify card/slot, original Row and icon lane, no centered Stack, no FittedBox shrink-to-fit, left-aligned two-line body, and no connection badge. Current Flutter tests/analyzer have NOT RUN; no App Build was triggered by this source correction.
-- Build #108 contains the previous badge-free, two-line NOTIFY design, but its text wrapper was centered as a group and the metric row was compressed. The latest source fixes that geometry; do not claim Build #108 validates this correction.
-- Firmware V6.8 is a separate source update for Adaptive Fan temperature tiers and remains NOT COMPILED / NOT INSTALLED. No Firmware compile, BIN, Firebase, OTA, flash or hardware operation was performed here.
+- Canonical repo: TenzoNkz/JEXFYZ-App, branch main. Latest successful App release is Build #110 / Actions run 39300262741, source commit `b5adcffb2c9724a07cdba4cd8521c1307f1e6566`. Release/tag `jexfyz-latest` and its assets target that source.
+- Build #110 APK asset `657047529`, 54,734,939 bytes, SHA-256 `258211ec9313c555aaac6cd797d1bf6abc6c62c3c2781cd37baa0a8c849bfb84`; source ZIP asset `657047524`, 2,866,352 bytes, SHA-256 `13d1cad6cf4fbb9b2560da7406f4c6bf875fe4ebc2ed5483e6f0001a3b24aa23`. The current source changes below are newer than the packaged build.
+- Build #110 includes restored Home metric spacing (44 dp), the original icon-left/text-left NOTIFY Row, no CONNECTED/DISCONNECTED badge, and a 56 dp card/slot for up to two normal-size lines. The latest source follow-up changes the thermal particles to top-down falling embers, raises the Hotside inner tube, clips/insets the Voltage core, and removes the About section/page from Settings. Those changes are NOT RUN / NOT RELEASED.
+- `test/widget_test.dart` now checks falling ember motion, 44 dp indicator rows, two-line NOTIFY layout, the raised thermometer tube and clipped/inset Voltage core; `test/floating_monitor_layout_contract_test.dart` asserts the About section/page is removed. Flutter tests and Dart analyzer have NOT RUN for this follow-up.
+- Current App source/test fingerprints: `lib/main.dart` `08592a9d861a11ecdb8de1aa289f8ce06bf2e20c`; `lib/app_settings.dart` `f8e465648946a25eae44f3fad6a5a3bfaca8b050`; `lib/floating_monitor.dart` `e7c74bf749698a8331f2b0b31a847b2627ac3e4b`; `test/widget_test.dart` `c3cca34a17eb11a6949b9132eda785c788c0ba01`; `test/floating_monitor_layout_contract_test.dart` `b053a92522223fd237a8f0e025648eb1b26730a5`.
+- The guarded App Build workflow is unchanged. `@Thinking Eksekusi Full!` did not trigger an App Build. Only a separate `@Thinking Eksekusi Build App!` authorizes the full App validation/build/release workflow.
 
-## Current source fingerprints
+## Current Firmware source — V6.9 source updated; compile unverified
 
-- `lib/main.dart`: `0341122a53e7a6bb00d9f079bfcb350b385c83cb` — original Home metric spacing restored, original NOTIFY Row restored, badge removed, two-line copy on a 56 dp card; NOT RUN / NOT RELEASED.
-- `test/widget_test.dart`: `eeee8dcdb9dd88b985145e059913759f5f325920` — layout contracts for 44 dp metric rows and 56 dp badge-free NOTIFY card; NOT RUN.
-- `lib/app_settings.dart`: `8f228000d38d73038c06f569c052b1af601288a5` — bilingual BLE/OTA/setting copy; unchanged in this pass.
-- `lib/jex_animated_glyph.dart`: `b37fc4e0807c874b2f01db00c7f606810cb5deca` — static navigation/settings/action glyphs unchanged.
-- `firmware/JEXFYZ-V6.8.ino`: `7b4df708708e021aad39258468eed2fde94d202f` — separate deterministic Adaptive Fan PWM tiers; NOT COMPILED / NOT INSTALLED.
-- `test/firmware_qc_contract_test.dart`: `59f376af6b3ec1c22d24f71db6afa40927a835fd` — V6.8 Firmware source contracts; NOT RUN.
-- `test/firmware_touch_adaptive_sync_test.dart`: `a96b501d694b6eb4ad42fca0c61a8a430b129105` — Touch/Adaptive telemetry contract against V6.8; NOT RUN.
-- Other current App contract tests: `test/app_protocol_notify_contract_test.dart` and `test/floating_monitor_layout_contract_test.dart`.
-- App config: pubspec 1.0.0+3, applicationId com.horizontalzzz.jexfyz, minSdk 24, targetSdk 36, compileSdk 37. Preserve Gradle versionName `Telegram @horizontalzzz`.
+- Exactly one active versioned sketch: `firmware/JEXFYZ-V6.9.ino`, blob `8e0f0ff5a65962ebdb44300b05fc161cf9349d96`, embedded `FW_VERSION="V6.9"`. V6.8 is superseded and was removed from the active tree.
+- Adaptive 12 V target tiers remain delta <1.5°C →100%, 1.5–<2.5°C →90%, 2.5–<3.5°C →80%, 3.5–<4.5°C →70%, 4.5–<5.5°C →60%, and ≥5.5°C →50%. Actual PWM now changes by 10 percentage points: down every 10 seconds, up every 1 second. Voltage handoff and thermal-dwell paths reset the pacing clock, preventing an immediate 100% →50% drop after 9 V →12 V. Hotside limit/protection still forces 100% immediately; Adaptive 5/9 V remains 100%.
+- `test/firmware_qc_contract_test.dart` `1b35feeb1e411efec44261ec130eec4535004454` checks the tiers, 10-second/1-second ramp timing, safety gates, one NTC sample per second and absence of blocking timing loops. `test/firmware_touch_adaptive_sync_test.dart` `3a86dd118cd1d1332dbafa3883ab9e5ae2823ac8` now reads V6.9. Tests have NOT RUN and V6.9 is NOT COMPILED / NOT INSTALLED. The reported reset symptom's physical cause is not verified.
+- `TenzoNkz/JEXFYZ-Firmware` is BIN-only. Its live recursive tree contains exactly `JEXFYZ.cpp.bin`, blob `dca6a1267762152519f6d2889e4f0adf46fd8803`, 1,457,008 bytes. Only repository tree metadata was checked; BIN payload was not read or changed. Source-to-BIN provenance remains UNVERIFIED.
+
+## Safety and implementation constraints
+
+- NTC remains one calibrated `analogReadMilliVolts(PIN_NTC)` sample per second. The user rejected median/trimmed/multi-sample NTC filtering; do not add it without renewed approval.
+- Hotside configurable limit is 40–50°C (default 45°C). Manual Peltier latch rearms only at/below `hotLimit - 1°C` continuously for 5 s. Invalid NTC retains its existing fail-safe. No slope/rate-of-rise shutdown or manual-rearm feature was added by this task.
+- OTA implementation, redirects, image validation, TLS trade-off, Firebase fields, BLE protocol, Adaptive rail sequencing, manual control and physical safety predicates were not intentionally changed. No BIN artifact, Firebase, OTA, flashing or hardware operation occurred.
+- Preserve Android Gradle `versionName "Telegram @horizontalzzz"` and current App workflow `.github/workflows/jexfyz-app-build-trigger.yml`.
+
+## Source of truth and handoff
+
+- Current implementation: this `PROJECT_STATE.md`; detailed source contracts: `APP_NOTES.md`, `FIRMWARE_NOTES.md`, `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`, `DESIGN_NOTES.md`, `OTA_PROTECTION.md`, `OTA_REGRESSION_MEMORY.md`, `VOLTAGE_TRANSITION_MEMORY.md`.
+- Build history/results: `APP_BUILD_REPORT.md`. Decisions/failures: `CHANGELOG.md`. Navigation: `MEMORY_INDEX.md`. Authorization: `CHAT_RULES.md`. `CHAT_TRANSFER.md` must be written last after each meaningful execution.
+
 
 ## Current approved seven-icon rules and static-state redraw
 
