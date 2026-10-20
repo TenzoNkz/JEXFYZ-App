@@ -6684,7 +6684,7 @@ void _handleAckLine(String line) {
 
   // AI-METHOD: _homeNotify — Render the Home NOTIFY card.
   // Retain the original icon-left / text-left Row; only the connection badge is removed.
-  // The 56 dp card gives the message room for two lines without shrinking its font.
+  // The card stays compact for one line and grows naturally for two lines without shrinking its font.
   Widget _homeNotify() {
     final headerDark = appThemeNotifier.value != AppThemePreset.light;
     final noticeTextColor =
