@@ -4,7 +4,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #120 / r
 
 ## Home NOTIFY — single latest-event message (2026-10-20; source-only / NOT RUN / NOT RELEASED)
 
-- Current blobs: `lib/main.dart` `22986e3cdd21973fbf8ae5e5ed646d28f18785d6`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `c2cb9928fcb8388d51687b8907575c3f06b8cc66`.
+- Current blobs: `lib/main.dart` `dfc7621bbdce9ebe31cdb19be8b452a8c0b1411d`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `132c3b000abd63599ebea9d26fc5085cb577e50e`.
 - Home NOTIFY displays one complete sentence for the newest confirmed event. It never concatenates Adaptive, Voltage, Fan and Peltier into a state summary. Each genuine next event replaces the previous sentence: for example, `Adaptive ON.` → `Voltage set to 5V.` → `Fan speed reduced to 70%.`
 - Events cover Voltage, Fan/Peltier ON/OFF, Adaptive ON/OFF and profile/ceiling, Fan speed increase/reduction, LED ON/OFF/mode/brightness/color and safety-state transitions. Repeated identical telemetry creates no new event. If newer telemetry arrives before an ACK completes, that older ACK cannot overwrite it.
 - Ordinary Temperature samples do not create messages. Hotside reaching its configured limit is the exception: the in-app card gets one safety sentence with measured temperature and configured limit in English/Indonesian regardless of the Android push preference; Android push remains preference-controlled and is re-armed after temperature falls below the limit.
@@ -15,7 +15,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #120 / r
 - Canonical repo: TenzoNkz/JEXFYZ-App, branch main. Build #120 / run 39365201489 is the latest successful App release; live `jexfyz-latest` Release/tag point to packaged source `aeadaa47bd7ad64af6044afce5783781f0c0d82f`.
 - APK asset 658178574, 54,751,323 bytes, SHA-256 aa162e57a04f229922cca4fe48773a49585328e2337761f5c641097957ff0392; source ZIP asset 658178573, 2,871,380 bytes, SHA-256 3e7585549d2eef68ad93b35c378bd76332d80a92a0edf1856aec8303df5e28d7.
 - Build #116 validated the preceding fixed Home layout and bounded background ember painter. The preceding source-only visual follow-up refines falling flame shapes and rounded-frame clipping. This localization follow-up changes the Home heading to `Notification` / `Notifikasi`, localizes Contact Developer, and polishes user-facing English/Indonesian copy. The seven 45 dp rows, 3 dp gap and fixed 44 dp notification card remain unchanged.
-- Current NOTIFY source/test blobs: `lib/main.dart` 22986e3cdd21973fbf8ae5e5ed646d28f18785d6; `lib/app_settings.dart` 44431e926bfa2557c26345899e2333bd767f3f8e; `test/widget_test.dart` c2cb9928fcb8388d51687b8907575c3f06b8cc66. Build #120 validates prior packaged source only; Flutter tests/analyzer have NOT RUN for the latest single-event change.
+- Current NOTIFY source/test blobs: `lib/main.dart` dfc7621bbdce9ebe31cdb19be8b452a8c0b1411d; `lib/app_settings.dart` 44431e926bfa2557c26345899e2333bd767f3f8e; `test/widget_test.dart` 132c3b000abd63599ebea9d26fc5085cb577e50e. Build #120 validates prior packaged source only; Flutter tests/analyzer have NOT RUN for the latest single-event change.
 - Preserve Android versionName Telegram @horizontalzzz, BLE/control/telemetry semantics and the guarded App workflow. No App Build, firmware compile, BIN, Firebase, OTA, flash or device operation was performed.
 
 ## Current localization copy — source-only / validation pending
