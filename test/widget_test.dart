@@ -293,7 +293,11 @@ void main() {
     expect(thermal, contains('jexParticleBoundaryFade(fall, fadeIn: .18, fadeOut: .22)'));
     expect(thermal, contains('required bool thermometer'));
     expect(thermal, contains('required Path foregroundSilhouette'));
-    expect(thermal, contains('canvas.clipPath(foregroundSilhouette, clipOp: ClipOp.difference)'));
+    expect(thermal, contains('final fireBackdrop = Path.combine('));
+    expect(thermal, contains('PathOperation.difference'));
+    expect(thermal, contains('Path()..addRect(bounds)'));
+    expect(thermal, contains('canvas.clipPath(fireBackdrop)'));
+    expect(thermal, isNot(contains('ClipOp.difference')));
     expect(thermal, isNot(contains('clipPath: shell')));
     expect(thermal, isNot(contains('_flameTonguePath')));
     expect(thermal, isNot(contains('_fallingFlameDropPath')));
