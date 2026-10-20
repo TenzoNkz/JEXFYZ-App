@@ -2716,9 +2716,13 @@ class _JexIconPainter extends CustomPainter {
       .62,
     )!;
 
+    final fireBackdrop = Path.combine(
+      PathOperation.difference,
+      Path()..addRect(bounds),
+      foregroundSilhouette,
+    );
     canvas.save();
-    canvas.clipRect(bounds);
-    canvas.clipPath(foregroundSilhouette, clipOp: ClipOp.difference);
+    canvas.clipPath(fireBackdrop);
     for (var i = 0; i < lanes.length; i++) {
       final fall = (cycle + i / lanes.length) % 1.0;
       final edgeFade = jexParticleBoundaryFade(fall, fadeIn: .18, fadeOut: .22);
