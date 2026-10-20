@@ -2060,12 +2060,12 @@ void main() {
     expect(JexText.of('colorUpdated', AppLanguage.indonesia), 'Warna LED diperbarui.');
 
     final source = File('lib/main.dart').readAsStringSync();
-    final start = source.indexOf('void _notifyCommandAccepted(String command)');
+    final start = source.indexOf('void _notifyCommandAccepted(');
     final end = source.indexOf('String _notifyStateLabel()', start);
     expect(start, isNonNegative);
     expect(end, greaterThan(start));
     final accepted = source.substring(start, end);
-    expect(accepted, contains("JexText.phrase('Fan speed set to ', 'Kecepatan kipas diatur ke ', lang)"));
+    expect(accepted, contains('homeFanSpeedChangedNotice(previousFanSpeed, requested, language: lang)'));
     expect(accepted, contains("JexText.phrase('Hotside temperature limit set to ', 'Batas suhu Hotside diatur ke ', lang)"));
     expect(accepted, contains("JexText.phrase('5V battery limit updated.', 'Batas baterai 5V diperbarui.', lang)"));
     expect(accepted, contains("JexText.phrase('12V battery limit updated.', 'Batas baterai 12V diperbarui.', lang)"));
