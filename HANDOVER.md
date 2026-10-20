@@ -6,7 +6,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #120 / r
 
 - Build #120 passed 115 Flutter tests, Dart analyzer exit 0 (25 info diagnostics), configured Android gate, APK V1/V2/V3 and official-certificate checks, ZIP integrity, downloaded-asset comparison and exact tag/commit checks. Native Android test tasks were NO-SOURCE.
 - APK asset `658178574`, 54,751,323 bytes, SHA-256 `aa162e57a04f229922cca4fe48773a49585328e2337761f5c641097957ff0392`; source ZIP asset `658178573`, 2,871,380 bytes, SHA-256 `3e7585549d2eef68ad93b35c378bd76332d80a92a0edf1856aec8303df5e28d7`.
-- Current Home NOTIFY single-event blobs: lib/main.dart `22986e3cdd21973fbf8ae5e5ed646d28f18785d6`; lib/app_settings.dart `44431e926bfa2557c26345899e2333bd767f3f8e`; test/widget_test.dart `c2cb9928fcb8388d51687b8907575c3f06b8cc66`. These postdate Build #120 and are SOURCE UPDATED / NOT RUN / NOT RELEASED.
+- Current Home NOTIFY single-event blobs: lib/main.dart `dfc7621bbdce9ebe31cdb19be8b452a8c0b1411d`; lib/app_settings.dart `44431e926bfa2557c26345899e2333bd767f3f8e`; test/widget_test.dart `132c3b000abd63599ebea9d26fc5085cb577e50e`. These postdate Build #120 and are SOURCE UPDATED / NOT RUN / NOT RELEASED.
 - Home contract: seven 45 dp rows; 3 dp gap before the fixed 44 dp notification card; localized `Notification` / `Notifikasi` heading with 2 dp top inset; left-aligned body scales to at most two lines; cooler image stays under stable sibling-row constraints.
 - Battery/Hotside use refined falling flame-shaped background particles with warm yellow-white cores, a soft halo, subtle drift/rotation, and a rounded-frame clip combined with foreground-silhouette subtraction. Thresholds remain Battery ≥40°C and Hotside at configured limit.
 - Firmware V6.9 compile/install is USER-REPORTED. Independent compile logs, source-to-BIN provenance, installed version and physical behavior remain UNVERIFIED. No Firmware/device operation was done in this task.
@@ -36,7 +36,7 @@ Historical note: Build #95 was an intermediate release, later superseded by Buil
 
 ## Home NOTIFY — single latest-event message (2026-10-20; source-only / NOT RUN / NOT RELEASED)
 
-- Current blobs: `lib/main.dart` `22986e3cdd21973fbf8ae5e5ed646d28f18785d6`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `c2cb9928fcb8388d51687b8907575c3f06b8cc66`.
+- Current blobs: `lib/main.dart` `dfc7621bbdce9ebe31cdb19be8b452a8c0b1411d`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `132c3b000abd63599ebea9d26fc5085cb577e50e`.
 - Home NOTIFY displays one complete sentence for the newest confirmed event; a new event replaces the old sentence. It never combines the Adaptive, Voltage, Fan and Peltier values in one summary.
 - Covered confirmed events: Voltage, Fan/Peltier ON/OFF, Adaptive ON/OFF/profile/ceiling, Fan speed up/down, LED power/mode/brightness/color and safety-state changes. Repeated values do not repeat the event, and a delayed ACK cannot overwrite newer telemetry.
 - Ordinary Temperature samples do not notify. Hotside at/above its configured limit shows the measured temperature and configured limit in the Home card in English/Indonesian and takes priority over ordinary control events. Android push remains preference-controlled and re-arms when Hotside cools below the limit.
