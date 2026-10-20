@@ -1,14 +1,20 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #116 / run 39355262101 is the latest successful App release, packaging source 48683874db659df940272bed1c860072ead2d767. This execution adds a newer visual-only source/test follow-up that is NOT RUN / NOT RELEASED. Firmware V6.9 compile/install is USER-REPORTED; independent logs, source-to-BIN provenance and physical behavior remain UNVERIFIED.
+Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #116 / run 39355262101 is the latest successful App release, packaging source 48683874db659df940272bed1c860072ead2d767. This execution adds a source-only English/Indonesian localization and copy follow-up that is NOT RUN / NOT RELEASED. Firmware V6.9 compile/install is USER-REPORTED; independent logs, source-to-BIN provenance and physical behavior remain UNVERIFIED.
 
 ## Current App / Release state
 
 - Canonical repo: TenzoNkz/JEXFYZ-App, branch main. Build #116 / run 39355262101 is the latest successful App release; live jexfyz-latest Release/tag point to packaged source 48683874db659df940272bed1c860072ead2d767.
 - APK asset 657979004, 54,734,939 bytes, SHA-256 8570914f331583d2cc462f61881609c0eae56639a139f2d60a832e4aaa81ea27; source ZIP asset 657979008, 2,867,315 bytes, SHA-256 60ef4e79529aabcbb4f4093b9f8a18b5d383d5c651c1c303dd8bb774e7b0dd5d.
-- Build #116 validated the preceding fixed Home layout and bounded background ember painter. This execution further replaces oval dots with compact falling flame shapes, adds rounded-frame clipping, keeps the icon silhouette foreground, makes the NOTIFY title category-free, and adds a 2 dp top inset. Seven 45 dp rows, 3 dp gap and fixed 44 dp NOTIFY/body scaling remain unchanged.
-- Current source/test blobs for the new unvalidated follow-up: lib/main.dart 8eb24de58a2e510b3d05abbb29bce45bb0a42810; test/widget_test.dart a82875dd47ad904818fcd4c1c47b1a3ac0ca8fd2. Source contracts were updated, but Flutter tests and Dart analysis have NOT RUN for these edits; Build #116 does not validate them.
+- Build #116 validated the preceding fixed Home layout and bounded background ember painter. The preceding source-only visual follow-up refines falling flame shapes and rounded-frame clipping. This localization follow-up changes the Home heading to `Notification` / `Notifikasi`, localizes Contact Developer, and polishes user-facing English/Indonesian copy. The seven 45 dp rows, 3 dp gap and fixed 44 dp notification card remain unchanged.
+- Current source/test blobs for the unvalidated localization follow-up: lib/main.dart 07178b5cce55fc8f78cc7c2953f4d8e352ccefe7; test/widget_test.dart da12f8ef82283f55af04a5286a6366e2253a4e6f. Source assertions were updated, but Flutter tests and Dart analysis have NOT RUN for these edits; Build #116 does not validate them.
 - Preserve Android versionName Telegram @horizontalzzz, BLE/control/telemetry semantics and the guarded App workflow. No App Build, firmware compile, BIN, Firebase, OTA, flash or device operation was performed.
+
+## Current localization copy — source-only / validation pending
+
+- The app supports English and Indonesian. The Home card heading now uses the centralized `notification` key (`Notification` / `Notifikasi`); the Settings section retains the plural `Notifications` / `Notifikasi` label. Contact Developer is localized through the same table.
+- Hotside terminology is consistent (`Hotside Temperature` / `Suhu Hotside`), notification settings descriptions use `Send a notification` / `Kirim notifikasi`, and user-facing firmware/Bluetooth messages avoid exposing implementation details such as Firebase read access.
+- Flutter tests and Dart analysis have NOT RUN for this copy pass. Build #116 remains the latest verified App release and does not include these changes.
 
 ## Current Firmware source — V6.9 source updated; compile unverified
 
@@ -39,7 +45,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #116 / r
 - Peltier: one six-branch rotating snow crystal and falling snow, only while the existing active-state rule permits animation.
 - Fan: exactly three swept blades and three fixed airflow ribbons behind the rotor; retain existing voltage/PWM mapping and phase retargeting.
 - Fan Speed: semicircle gauge, 11 graded ticks and event-driven live-PWM needle. Unknown telemetry never becomes fabricated OFF/zero status.
-- Home NOTIFY: icon-left/text-left Row, no CONNECTED/DISCONNECTED badge, fixed 44 dp card height; label text is always exactly NOTIFY, with a small top inset. Body text can wrap to at most two lines and scales down only as needed. Seven indicator rows are 45 dp with 38 dp tile in 41 dp lane and a 3 dp gap before NOTIFY. The Settings About section/page is removed; keep General, Device, Firmware only.
+- Home Notification: icon-left/text-left Row, no CONNECTED/DISCONNECTED badge, fixed 44 dp card height; the localized heading is `Notification` / `Notifikasi`, with a small top inset. Body text can wrap to at most two lines and scales down only as needed. Seven indicator rows are 45 dp with 38 dp tile in 41 dp lane and a 3 dp gap before the card. The Settings About section/page is removed; keep General, Device, Firmware only.
 ## Repository topology and roles
 
 - At the last complete recursive tree fetch, the App repo had 67 entries (49 blobs / 18 trees), five branches and zero open PRs. Re-fetch before relying on these counts in a later task.
