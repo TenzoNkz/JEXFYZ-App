@@ -18,7 +18,7 @@ Refreshed after @Thinking Eksekusi Full! on 2026-10-20 (Asia/Jakarta). Pre-chang
 
 ## 3. Current App follow-up — source updated; validation/release pending
 
-- Current source blobs: lib/main.dart d0fdb7482d939b34b0a1824b33d37f6457835818; test/widget_test.dart af692cb7473f8447e1ab27939a3dc281d21737ad. The follow-up is newer than the released source and NOT RUN / NOT RELEASED.
+- Current source blobs: lib/main.dart d0fdb7482d939b34b0a1824b33d37f6457835818; test/widget_test.dart 09cfe3e7b744b988571a28ad0d9377da5ee36cb1. The follow-up is newer than the released source and NOT RUN / NOT RELEASED.
 - Seven Home rows are 45 dp; NOTIFY is fixed at 44 dp and body text scales down if it wraps to two lines; the gap above it is 3 dp. Cooler image constraints remain stable with one- or two-line copy.
 - Battery/Hotside fire particles draw first as background, clipped OUTSIDE the foreground silhouette with ClipOp.difference. Icon shell/body/tube/graduations paint over them. Battery warning stays ≥40°C and Hotside warning stays at configured limit.
 - Flutter tests and Dart analyzer have NOT RUN for this follow-up. No App Build or device operation was started; guarded workflow remains unchanged.

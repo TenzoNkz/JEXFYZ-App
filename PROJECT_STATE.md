@@ -7,7 +7,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #113 / r
 - Canonical repo: TenzoNkz/JEXFYZ-App, branch main. Live jexfyz-latest Release/tag points to Build #113 source 05e4f644d6bf82ae2682154082c3e44a4876205a.
 - APK asset 657872748, 54,718,555 bytes, SHA-256 7252e952983560254822b8d77a9a1c47d5a3f91d80bf8ed50e58586bbe2c2991; source ZIP asset 657872749, 2,866,922 bytes, SHA-256 0fcccecc639e20f16d65976a5f3c334dd2ce4f7692d2a4d95b5b8aaad7dae59f.
 - Build #113 validated/released the preceding falling-fire/icon-geometry/Settings cleanup/dynamic-NOTIFY source. This newer follow-up sets all seven rows to 45 dp, uses a 3 dp gap above a fixed 44 dp NOTIFY, shrinks wrapped copy to fit two lines, holds cooler image constraints stable, and paints Battery/Hotside embers behind their foreground silhouettes.
-- Current source/test blobs: lib/main.dart d0fdb7482d939b34b0a1824b33d37f6457835818; test/widget_test.dart af692cb7473f8447e1ab27939a3dc281d21737ad. Flutter tests and Dart analyzer have NOT RUN for this follow-up. Do not infer validation from Build #113.
+- Current source/test blobs: lib/main.dart d0fdb7482d939b34b0a1824b33d37f6457835818; test/widget_test.dart 09cfe3e7b744b988571a28ad0d9377da5ee36cb1. Flutter tests and Dart analyzer have NOT RUN for this follow-up. Do not infer validation from Build #113.
 - Preserve Android versionName Telegram @horizontalzzz, BLE/control/telemetry semantics and guarded App workflow. No App Build was triggered.
 
 ## Current Firmware source — V6.9 source updated; compile unverified

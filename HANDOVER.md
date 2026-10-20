@@ -6,7 +6,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #113 / r
 
 - Build #113 passed 109 Flutter tests, Dart analyzer exit 0 (25 info diagnostics), configured Android Gradle gate, APK V1/V2/V3 and official-certificate checks, ZIP integrity, downloaded-asset comparison and exact tag/commit checks. Native Android test tasks were NO-SOURCE.
 - APK asset 657872748, 54,718,555 bytes, SHA-256 7252e952983560254822b8d77a9a1c47d5a3f91d80bf8ed50e58586bbe2c2991; source ZIP asset 657872749, 2,866,922 bytes, SHA-256 0fcccecc639e20f16d65976a5f3c334dd2ce4f7692d2a4d95b5b8aaad7dae59f.
-- Current lib/main.dart blob d0fdb7482d939b34b0a1824b33d37f6457835818 and test/widget_test.dart blob af692cb7473f8447e1ab27939a3dc281d21737ad are newer than packaged source; SOURCE UPDATED / NOT RUN / NOT RELEASED.
+- Current lib/main.dart blob d0fdb7482d939b34b0a1824b33d37f6457835818 and test/widget_test.dart blob 09cfe3e7b744b988571a28ad0d9377da5ee36cb1 are newer than packaged source; SOURCE UPDATED / NOT RUN / NOT RELEASED.
 - Home contract: seven 45 dp rows; 3 dp gap before fixed 44 dp NOTIFY; left-aligned body text scales down to fit up to two lines; cooler image stays in stable row constraints independent of notice length.
 - Battery/Hotside fire is drawn behind the foreground silhouette and clipped OUTSIDE it. Thresholds remain Battery ≥40°C and Hotside at configured limit.
 - User reports Firmware V6.9 compile/install success. Compile logs, source-to-BIN provenance, installed version and physical PWM/thermal results remain independently unverified. No App Build/Firmware/device operation occurred here.

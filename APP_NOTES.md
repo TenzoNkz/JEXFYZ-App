@@ -5,7 +5,7 @@ This file is the durable App behavior/design contract. Live source and the curre
 ## Current App release and follow-up — 2026-10-20
 
 - Latest successful App release is Build #113 / run 39350217172, source 05e4f644d6bf82ae2682154082c3e44a4876205a. APK SHA-256 7252e952983560254822b8d77a9a1c47d5a3f91d80bf8ed50e58586bbe2c2991; source ZIP SHA-256 0fcccecc639e20f16d65976a5f3c334dd2ce4f7692d2a4d95b5b8aaad7dae59f.
-- Newest unbuilt source follow-up: lib/main.dart d0fdb7482d939b34b0a1824b33d37f6457835818; test/widget_test.dart af692cb7473f8447e1ab27939a3dc281d21737ad. Tests/analyzer have NOT RUN for this update.
+- Newest unbuilt source follow-up: lib/main.dart d0fdb7482d939b34b0a1824b33d37f6457835818; test/widget_test.dart 09cfe3e7b744b988571a28ad0d9377da5ee36cb1. Tests/analyzer have NOT RUN for this update.
 - Home: all seven metric rows are 45 dp with a 3 dp gap above NOTIFY. NOTIFY stays icon-left/text-left, badge-free and fixed at 44 dp; body copy shrinks when wrapped and is limited to two lines. The cooler image stays under stable sibling-row constraints when copy length changes.
 - Battery/Hotside fire embers are background particles, not inside the icon. Draw first and clip OUTSIDE the foreground shell using ClipOp.difference; then paint the shell/body/tube/graduations above them. Keep orange/gold ovals, yellow-white cores, falling cadence, Battery ≥40°C and Hotside at configured limit.
 - Build #113 validates the earlier source only; it does not validate these newest UI edits or physical phone rendering/smoothness. BLE semantics and Firmware safety predicates are unchanged.

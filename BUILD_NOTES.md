@@ -3,7 +3,7 @@
 ## Current repository/release checkpoint — 2026-10-20
 
 - Latest successful App release is Build #113 / run 39350217172, package source 05e4f644d6bf82ae2682154082c3e44a4876205a. APK SHA-256 7252e952983560254822b8d77a9a1c47d5a3f91d80bf8ed50e58586bbe2c2991; source ZIP SHA-256 0fcccecc639e20f16d65976a5f3c334dd2ce4f7692d2a4d95b5b8aaad7dae59f.
-- Newest source follow-up: lib/main.dart d0fdb7482d939b34b0a1824b33d37f6457835818; test/widget_test.dart af692cb7473f8447e1ab27939a3dc281d21737ad. Seven Home rows are 45 dp, NOTIFY is fixed 44 dp with body copy scaled down to fit up to two lines, cooler image constraints are stable, and Battery/Hotside fire is drawn behind foreground silhouettes.
+- Newest source follow-up: lib/main.dart d0fdb7482d939b34b0a1824b33d37f6457835818; test/widget_test.dart 09cfe3e7b744b988571a28ad0d9377da5ee36cb1. Seven Home rows are 45 dp, NOTIFY is fixed 44 dp with body copy scaled down to fit up to two lines, cooler image constraints are stable, and Battery/Hotside fire is drawn behind foreground silhouettes.
 - This follow-up's Flutter tests and Dart analyzer have NOT RUN and it is NOT RELEASED. The sole App Build authorization remains @Thinking Eksekusi Build App!. No App Build or Firmware/device action occurred in this source task.
 - User reports Firmware V6.9 compiled and installed; exact compile logs, source-to-BIN provenance and installed version remain independently unverified.
 

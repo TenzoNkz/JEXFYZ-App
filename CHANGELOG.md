@@ -4,7 +4,7 @@
 - NOTIFY is fixed at 44 dp total height. One-line copy keeps normal sizing; wrapped text reduces to 9.5 dp first and further only if needed, capped at two lines. The icon-left/text-left row and badge-free design remain.
 - Fixed NOTIFY height keeps the cooler image's sibling row constraints unchanged when the message wraps, preventing image shift/resize.
 - Battery/Hotside fire draws before the foreground shell and is clipped OUTSIDE it via ClipOp.difference; the icon remains painted over the fire. Warning thresholds and firmware safety predicates are unchanged.
-- Source blob lib/main.dart d0fdb7482d939b34b0a1824b33d37f6457835818; regression test blob test/widget_test.dart af692cb7473f8447e1ab27939a3dc281d21737ad. Source/order assertions were inspected, but Flutter tests and analyzer have NOT RUN. Build #113 remains the latest successful App release; no Firmware/BIN/Firebase/OTA/flash/device action occurred.
+- Source blob lib/main.dart d0fdb7482d939b34b0a1824b33d37f6457835818; regression test blob test/widget_test.dart 09cfe3e7b744b988571a28ad0d9377da5ee36cb1. Source/order assertions were inspected, but Flutter tests and analyzer have NOT RUN. Build #113 remains the latest successful App release; no Firmware/BIN/Firebase/OTA/flash/device action occurred.
 
 ---
 ## 2026-10-20 — Compact dynamic Home NOTIFY height (source-only; NOT RUN / NOT RELEASED)

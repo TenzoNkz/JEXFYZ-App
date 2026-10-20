@@ -207,6 +207,9 @@ void main() {
     final batteryStart = painter.indexOf('case JexAnimatedIconKind.battery:');
     final hotStart = painter.indexOf('case JexAnimatedIconKind.hotside:', batteryStart);
     final battery = painter.substring(batteryStart, hotStart);
+    expect(battery.indexOf('_drawThermalBurstParticles('), lessThan(battery.indexOf('canvas.drawPath(')));
+    expect(battery, contains('bounds: Rect.fromLTWH(0, 0, s, s)'));
+    expect(battery, contains('foregroundSilhouette: shell'));
     expect(battery, contains('quiet thermal emblem completes the unknown-state battery'));
     expect(battery, isNot(contains('final breath')));
     expect(source, contains('size: 26,'));
@@ -289,13 +292,27 @@ void main() {
     expect(thermal, contains('jexMotionSmoothStep(fall)'));
     expect(thermal, contains('jexParticleBoundaryFade(fall, fadeIn: .18, fadeOut: .22)'));
     expect(thermal, contains('required bool thermometer'));
-    expect(thermal, contains('if (clipPath != null) canvas.clipPath(clipPath)'));
+    expect(thermal, contains('required Path foregroundSilhouette'));
+    expect(thermal, contains('canvas.clipPath(foregroundSilhouette, clipOp: ClipOp.difference)'));
+    expect(thermal, isNot(contains('clipPath: shell')));
     expect(thermal, isNot(contains('_flameTonguePath')));
     expect(thermal, isNot(contains('_fallingFlameDropPath')));
     expect(thermal, isNot(contains('canvas.drawLine')));
     expect(painter, isNot(contains('void _drawThermalFlames(')));
     expect(painter, isNot(contains('void _drawFallingFlameParticles(')));
     expect(painter, isNot(contains('Path _fallingFlameDropPath(')));
+
+    final hotsideStart = painter.indexOf('case JexAnimatedIconKind.hotside:');
+    final hotsideEnd = painter.indexOf('case JexAnimatedIconKind.voltage:', hotsideStart);
+    final hotside = painter.substring(hotsideStart, hotsideEnd);
+    expect(hotside.indexOf('_drawThermalBurstParticles('), lessThan(hotside.indexOf('canvas.drawPath(')));
+    expect(hotside, contains('bounds: Rect.fromLTWH(0, 0, s, s)'));
+    expect(hotside, contains('foregroundSilhouette: shell'));
+
+    final peltierStart = painter.indexOf('case JexAnimatedIconKind.peltier:');
+    final peltierEnd = painter.indexOf('case JexAnimatedIconKind.fan:', peltierStart);
+    final peltier = painter.substring(peltierStart, peltierEnd);
+    expect(peltier.indexOf('_drawFrostParticles('), lessThan(peltier.indexOf('canvas.drawPath(')));
 
     final edgeStart = painter.indexOf('void _drawVoltageEdgePulse(');
     final edgeEnd = painter.indexOf('Path _batterySilhouette', edgeStart);
@@ -886,7 +903,7 @@ void main() {
     expect(normalizerIndex, greaterThan(otaFormatterIndex));
   });
 
-  test('Home Notify restores the original left Row, removes badge, and grows only for two-line copy', () {
+  test('Home Notify keeps a fixed-height left Row and scales wrapped copy to two lines', () {
     final source = File('lib/main.dart').readAsStringSync();
     final start = source.indexOf('Widget _homeNotify() {');
     final end = source.indexOf('Widget _card({required Widget child', start);
@@ -894,7 +911,11 @@ void main() {
     expect(end, greaterThan(start));
     final card = source.substring(start, end);
 
-    expect(card, contains('BoxConstraints(minHeight: 44)'));
+    expect(card, contains('height: 44,'));
+    expect(card, isNot(contains('BoxConstraints(minHeight: 44)')));
+    expect(card, contains('TextPainter measure(double fontSize)'));
+    expect(card, contains('fontSize = 9.5;'));
+    expect(card, contains('maxLines: 2'));
     expect(card, contains('maxLines: 2'));
     expect(card, contains('softWrap: true'));
     expect(card, contains('textAlign: TextAlign.start'));
@@ -914,6 +935,9 @@ void main() {
     final notifySlot = source.indexOf('_homeNotify(),', homeStart);
     expect(homeStart, isNonNegative);
     expect(notifySlot, greaterThan(homeStart));
+    expect(source.substring(homeStart, notifySlot), contains('const SizedBox(height: 3),'));
+    expect(source.substring(homeStart, notifySlot), contains("Image.asset(\n                              'assets/jexfyzcooler.png'"));
+    expect(source.substring(homeStart, notifySlot), contains('height: imageHeight'));
     expect(source.substring(homeStart, notifySlot), isNot(contains('height: 56,')));
 
     final categoryStart = source.indexOf('String _notifyStateLabel()');
@@ -923,7 +947,7 @@ void main() {
     expect(source.substring(categoryStart, categoryEnd), contains('NOTIFY • \$category'));
   });
 
-  test('Home indicator rows preserve the original 44 dp vertical spacing', () {
+  test('All seven Home indicator rows use uniform 45 dp vertical spacing', () {
     final source = File('lib/main.dart').readAsStringSync();
     final metricStart = source.indexOf('Widget _homeMetric(');
     final metricEnd = source.indexOf('Widget _homeStateChip(', metricStart);
@@ -931,7 +955,7 @@ void main() {
     expect(metricEnd, greaterThan(metricStart));
     final metric = source.substring(metricStart, metricEnd);
 
-    expect(metric, contains('height: 44,'));
+    expect(metric, contains('height: 45,'));
     expect(metric, contains('width: 41,\n                height: 41,'));
     expect(metric, contains('width: 38,\n                    height: 38,'));
   });
