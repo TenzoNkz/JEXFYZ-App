@@ -1,30 +1,28 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #116 / run 39355262101 is the latest successful App release recorded here. The Home NOTIFY live-state/localization fix is source-updated but remains NOT RUN / NOT RELEASED. The active Firmware source is now V7.0: the whole-degree Adaptive Fan change and embedded version are aligned. This revision has NOT been compiled or installed. The earlier V6.9 compile/install report refers to a prior source revision; current source-to-BIN provenance and physical behavior remain UNVERIFIED.
+Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #120 / run 39365201489 is the latest successful App release recorded here. The Home NOTIFY live-state/localization fix is source-updated but remains NOT RUN / NOT RELEASED. The active Firmware source is now V7.0: the whole-degree Adaptive Fan change and embedded version are aligned. This revision has NOT been compiled or installed. The earlier V6.9 compile/install report refers to a prior source revision; current source-to-BIN provenance and physical behavior remain UNVERIFIED.
 
-## Home NOTIFY live-state and localization fix — 2026-10-20 (source-only / NOT RUN / NOT RELEASED)
+## Home NOTIFY — single latest-event message (2026-10-20; source-only / NOT RUN / NOT RELEASED)
 
-- Latest source/test fingerprints: `lib/main.dart` `4d2871234971ef8a9fa976f197e0e4f7b1e188ac`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `ccae334f9a737926bef021fa04ce7caa4d30601d`.
-- Home NOTIFY now follows the newest confirmed cooling telemetry instead of treating a successful command acknowledgement as a permanent message. Accepted Adaptive/Voltage/Fan/Peltier/Fan Speed commands move the card to a compact summary built from current mode, voltage, Fan state/speed and Peltier state.
-- A genuine change in cooling telemetry, safety reason or Hotside-limit state retires an older ordinary acknowledgement. Repeated identical telemetry is not treated as a new change.
-- Safety has priority over older success messages and ordinary summaries. Hotside at/above its configured limit displays the current measured temperature and configured limit. Home warning presentation also recognizes that live threshold.
-- Stored bilingual strings are re-resolved for the selected app language. A language listener rebuilds Home immediately, republishes Floating Monitor telemetry, and updates the connected-device foreground notification without waiting for new BLE traffic.
-- BLE protocol/ownership, Firmware safety rules, OTA transport and Android Gradle `versionName` remain unchanged.
-- Regression cases cover bilingual live summaries, Hotside temperature/limit wording, stored-message relocalization and listener wiring. Flutter tests and Dart analysis have NOT RUN. No App Build, Firmware compile, BIN/Firebase, OTA, flash or device operation occurred. Build #116 remains the latest verified App release; this source is NOT RELEASED and live-device behavior remains UNVERIFIED.
-
+- Current blobs: `lib/main.dart` `a167e884f765a8a9ef379108262c366c8bcdcf99`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `5cb9ccacf585823a874976432478529893f71da3`.
+- Home NOTIFY displays one complete sentence for the newest confirmed event. It never concatenates Adaptive, Voltage, Fan and Peltier into a state summary. Each genuine next event replaces the previous sentence: for example, `Adaptive ON.` → `Voltage set to 5V.` → `Fan speed reduced to 70%.`
+- Events cover Voltage, Fan/Peltier ON/OFF, Adaptive ON/OFF and profile/ceiling, Fan speed increase/reduction, LED ON/OFF/mode/brightness/color and safety-state transitions. Repeated identical telemetry creates no new event. If newer telemetry arrives before an ACK completes, that older ACK cannot overwrite it.
+- Ordinary Temperature samples do not create messages. Hotside reaching its configured limit is the exception: the in-app card gets one safety sentence with measured temperature and configured limit in English/Indonesian regardless of the Android push preference; Android push remains preference-controlled and is re-armed after temperature falls below the limit.
+- Language changes re-render the last event immediately. Active Hotside/safety conditions take priority over ordinary events. The Home NOTIFY card geometry, BLE protocol/ownership, Firmware safety code and OTA transport are unchanged.
+- Validation: latest source and test blobs were fetched back. Flutter tests and Dart analysis have NOT RUN for this revision. Build #120 remains the last successful App release and does not contain this source patch. No App Build, Firmware compile, BIN/Firebase, OTA, flash or device operation was performed; live-device behavior remains UNVERIFIED.
 ## Current App / Release state
 
-- Canonical repo: TenzoNkz/JEXFYZ-App, branch main. Build #116 / run 39355262101 is the latest successful App release; live jexfyz-latest Release/tag point to packaged source 48683874db659df940272bed1c860072ead2d767.
-- APK asset 657979004, 54,734,939 bytes, SHA-256 8570914f331583d2cc462f61881609c0eae56639a139f2d60a832e4aaa81ea27; source ZIP asset 657979008, 2,867,315 bytes, SHA-256 60ef4e79529aabcbb4f4093b9f8a18b5d383d5c651c1c303dd8bb774e7b0dd5d.
+- Canonical repo: TenzoNkz/JEXFYZ-App, branch main. Build #120 / run 39365201489 is the latest successful App release; live `jexfyz-latest` Release/tag point to packaged source `aeadaa47bd7ad64af6044afce5783781f0c0d82f`.
+- APK asset 658178574, 54,751,323 bytes, SHA-256 aa162e57a04f229922cca4fe48773a49585328e2337761f5c641097957ff0392; source ZIP asset 658178573, 2,871,380 bytes, SHA-256 3e7585549d2eef68ad93b35c378bd76332d80a92a0edf1856aec8303df5e28d7.
 - Build #116 validated the preceding fixed Home layout and bounded background ember painter. The preceding source-only visual follow-up refines falling flame shapes and rounded-frame clipping. This localization follow-up changes the Home heading to `Notification` / `Notifikasi`, localizes Contact Developer, and polishes user-facing English/Indonesian copy. The seven 45 dp rows, 3 dp gap and fixed 44 dp notification card remain unchanged.
-- Current source/test blobs for the latest Home NOTIFY follow-up: lib/main.dart 4d2871234971ef8a9fa976f197e0e4f7b1e188ac; lib/app_settings.dart 44431e926bfa2557c26345899e2333bd767f3f8e; test/widget_test.dart ccae334f9a737926bef021fa04ce7caa4d30601d. Source assertions were updated, but Flutter tests and Dart analysis have NOT RUN for these edits; Build #116 does not validate them.
+- Current NOTIFY source/test blobs: `lib/main.dart` a167e884f765a8a9ef379108262c366c8bcdcf99; `lib/app_settings.dart` 44431e926bfa2557c26345899e2333bd767f3f8e; `test/widget_test.dart` 5cb9ccacf585823a874976432478529893f71da3. Build #120 validates prior packaged source only; Flutter tests/analyzer have NOT RUN for the latest single-event change.
 - Preserve Android versionName Telegram @horizontalzzz, BLE/control/telemetry semantics and the guarded App workflow. No App Build, firmware compile, BIN, Firebase, OTA, flash or device operation was performed.
 
 ## Current localization copy — source-only / validation pending
 
 - The app supports English and Indonesian. The Home card heading now uses the centralized `notification` key (`Notification` / `Notifikasi`); the Settings section retains the plural `Notifications` / `Notifikasi` label. Contact Developer is localized through the same table.
 - Hotside terminology is consistent (`Hotside Temperature` / `Suhu Hotside`), notification settings descriptions use `Send a notification` / `Kirim notifikasi`, and user-facing firmware/Bluetooth messages avoid exposing implementation details such as Firebase read access.
-- Flutter tests and Dart analysis have NOT RUN for this copy pass. Build #116 remains the latest verified App release and does not include these changes.
+- Flutter tests and Dart analysis have NOT RUN for this copy pass. Build #120 remains the latest verified App release; the latest single-event NOTIFY patch is not included.
 
 ## Current Firmware source — V7.0 identity corrected; compile unverified
 
