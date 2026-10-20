@@ -4,7 +4,7 @@ Reconciled against live GitHub main on 2026-10-20 (Asia/Jakarta). Build #110 rem
 
 ## Latest successful build and current source boundary
 
-- Latest successful release: Build #110 / Actions run 39300262741, packaged source commit `b5adcffb2c9724a07cdba4cd8521c1307f1e6566`. Analyzer exited 0 with 25 info-level findings/no warnings or errors, 107 Flutter tests passed, the configured Android gate passed, and APK signing/source ZIP/downloaded assets/source-marker checks were verified.
+- Latest successful release: Build #110 / Actions run 39300262741, packaged source commit `b5adcffb2c9724a07cdba4cd8521c1307f1e6566`. The run completed successfully; release/tag/assets were checked against the packaged source. See `APP_BUILD_REPORT.md` for the authoritative gate evidence.
 - APK asset `657047529`, 54,734,939 bytes, SHA-256 `258211ec9313c555aaac6cd797d1bf6abc6c62c3c2781cd37baa0a8c849bfb84`; source ZIP asset `657047524`, 2,866,352 bytes, SHA-256 `13d1cad6cf4fbb9b2560da7406f4c6bf875fe4ebc2ed5483e6f0001a3b24aa23`.
 - Current App follow-up after Build #110 is NOT RUN / NOT RELEASED: `lib/main.dart` blob `08592a9d861a11ecdb8de1aa289f8ce06bf2e20c`; `test/widget_test.dart` blob `b4a4ae36389432bb1334f8940b66caf3bf1ad184`. It changes Battery/Hotside to top-down falling embers, raises the Hotside inner tube, clips/insets the Voltage core, and removes Settings About.
 - Build #110 already includes the restored 44 dp Home metric rows and 56 dp icon-left/text-left NOTIFY card with the connection badge removed. In the current follow-up, those dimensions remain unchanged; only the icon effects/geometries and Settings About section/page are changed.
