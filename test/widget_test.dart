@@ -282,7 +282,8 @@ void main() {
     expect(thermal, contains('final fall = (cycle + i / lanes.length) % 1.0'));
     expect(thermal, contains('final y = bounds.top - s * (thermometer ? .10 : .08)'));
     expect(thermal, contains('travel * fallDistance'));
-    expect(thermal, contains('orange/gold ovals'));
+    expect(thermal, contains('const Color(0xFFFF7828)'));
+    expect(thermal, contains('const Color(0xFFFFEDB5)'));
     expect(thermal, isNot(contains('final rise =')));
     expect(thermal, isNot(contains('sourceY - rise')));
     expect(thermal, contains('jexMotionSmoothStep(age)'));
