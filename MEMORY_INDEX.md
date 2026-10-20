@@ -1,5 +1,11 @@
 # JE X FYZ / JE Cooler — Memory Index
 
+## Current Adaptive Fan temperature-category contract
+
+- Firmware-owned Adaptive Fan target tiers live in `firmware/JEXFYZ-V6.9.ino`. The target uses floored whole-degree Hotside categories; for a 40°C limit, both 36.3°C and 36.8°C target 70%, while target 80% starts in category 37.
+- Preserve the independent raw-decimal Hotside safety override (immediate Fan 100%), 10-point PWM pacing (up every 1 second, down every 10 seconds), one NTC sample each second and the non-blocking main loop.
+- Current source/test hashes, unrun test/compile status and implementation details are recorded in `PROJECT_STATE.md`, `firmware/FIRMWARE_TECHNICAL_REFERENCE.md`, `APP_NOTES.md`, `HANDOVER.md`, and the newest `CHANGELOG.md` / `CHAT_TRANSFER.md` entries.
+
 ## Current localization copy contract
 
 - English/Indonesian labels and user-facing notices live in `lib/app_settings.dart` (`JexText`) or `JexText.phrase()` in `lib/main.dart`. Keep the Home heading localized as `Notification` / `Notifikasi`, Settings as `Notifications` / `Notifikasi`, and Contact Developer as `Contact Developer` / `Hubungi Pengembang`.
