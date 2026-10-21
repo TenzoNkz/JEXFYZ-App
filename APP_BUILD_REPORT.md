@@ -1,5 +1,13 @@
 ## LATEST SUCCESSFUL APP BUILD — BUILD #124 (FIRMWARE UPDATE WI-FI PASSWORD VISIBILITY)
 
+## Current product status — owner confirmation (2026-10-21)
+
+- The owner confirms the sold/shipped unit is running App Build #124 and that Firmware V7.1 was compiled and successfully updated through Online OTA. This is USER-REPORTED deployment status, separate from the App Build evidence tracked by this report.
+- Build #124 remains the latest independently verified App release record unless live Actions/Release data show a later one. Its App CI tests do not prove Firmware BIN/source identity or physical OTA/reboot/BLE-recovery behavior.
+- Preserve the field baseline and avoid discretionary changes that could strand the device. This current note does not rewrite or upgrade any historical attempt's evidence labels.
+
+
+
 - **Result: SUCCESS.** [GitHub Actions run #124 / 39386733061](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39386733061) completed with conclusion `success` on exact packaged source commit `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`. The official issue #34 reopened trigger was used; workflow guard blob remains `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`. All 21 main workflow steps and post-job cleanup passed.
 - **Toolchain / security / dependencies:** Java 17, Flutter 3.47.2 and Gradle 9.3.1 setup, security/architecture audit, production-signing preparation and dependency installation passed.
 - **Dart analysis:** `flutter analyze --no-fatal-infos` exited 0 with **25 info-level diagnostics** (deprecated APIs/unnecessary imports); no warning/error-level analyzer findings were present.

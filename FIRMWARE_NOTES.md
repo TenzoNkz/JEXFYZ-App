@@ -51,7 +51,7 @@ Durable hardware and behavior decisions belong here. For code-level structure se
 - Use cooperative `millis()` timing. No executable `delay()` or timing `while()` loops.
 - Every functional Firmware change increments `FW_VERSION`; filename must match; only one active versioned `.ino` may exist.
 
-## Current Peltier voltage-transition contract — V6.7
+## Voltage-transition contract — established in V6.7 and retained in V7.1
 
 Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 

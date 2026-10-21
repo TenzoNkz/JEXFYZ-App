@@ -30,12 +30,12 @@ This file is the durable App behavior/design contract. Live source and the curre
 
 ## HISTORICAL / SUPERSEDED — earlier App release and follow-up checkpoint (Build #123, 2026-10-20)
 
-- Latest verified App release is Build #123 / run 39371864780, source `14e90e7e26b8eb4400bd01ec8d0eab5ed4195f1c`. APK SHA-256 `1d06c806b1e75440dfe16108d236dd4c5f0e9b85d50e56989263793952351abb`; source ZIP SHA-256 `0118f201027747f8f682a8d3a393334585a14845a8741f2296da07afae06fbe1`. This release predates the password-visibility patch.
+- At this historical checkpoint (2026-10-20), Build #123 / run 39371864780 was the latest verified App release, source `14e90e7e26b8eb4400bd01ec8d0eab5ed4195f1c`. APK SHA-256 `1d06c806b1e75440dfe16108d236dd4c5f0e9b85d50e56989263793952351abb`; source ZIP SHA-256 `0118f201027747f8f682a8d3a393334585a14845a8741f2296da07afae06fbe1`. Build #124 subsequently superseded this release checkpoint.
 - Latest unbuilt Home NOTIFY single-event follow-up: lib/main.dart `40f172a5d190b429d3a952f2531349c1ee220d1f`; lib/app_settings.dart `44431e926bfa2557c26345899e2333bd767f3f8e`; test/widget_test.dart `132c3b000abd63599ebea9d26fc5085cb577e50e`. Flutter tests and analyzer have NOT RUN for this follow-up.
 - Home: seven 45 dp metric rows, 3 dp pre-card gap, and a fixed 44 dp icon-left/text-left card. Its heading is localized as `Notification` / `Notifikasi` with a 2 dp top inset; body copy scales down only as needed and is limited to two lines. Cooler-image constraints remain stable.
 - Battery/Hotside: small stylized orange/gold flame particles descend from the top with warm yellow-white cores, a soft halo and subtle drift/rotation. The particles are background-first, clipped to a rounded frame minus the foreground shell, and cannot escape the rounded boundary or paint inside the battery chamber/thermometer tube. Existing warning gates and safety logic are unchanged.
-- Build #123 validated the current single-event NOTIFY implementation in its packaged source. It does not include the later password-visibility patch or prove physical-phone behavior. BLE App identity authentication is not implemented; no firmware/BIN/Firebase/OTA/device state changed in this follow-up.
-- The user subsequently reported V7.0 compiled and successfully updated via Online OTA. This remains USER-REPORTED; source-to-BIN provenance and exact installed-device version remain independently UNVERIFIED.
+- At that checkpoint, Build #123 validated the single-event NOTIFY implementation in its packaged source but did not include the password-visibility patch. Build #124 later included password visibility and is the current verified App release; neither release proves physical-phone behavior. BLE App identity authentication is not implemented; no firmware/BIN/Firebase/OTA/device state changed in this follow-up.
+- The owner later confirmed that Firmware V7.1 compiled and was updated via Online OTA on the sold/shipped unit (USER-REPORTED). Exact source-to-BIN provenance and independent installed-device identity remain UNVERIFIED.
 
 ## HISTORICAL / SUPERSEDED — localization copy pass checkpoint (2026-10-20)
 
