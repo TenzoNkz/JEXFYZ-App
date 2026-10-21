@@ -5,7 +5,7 @@ Durable hardware and behavior decisions belong here. For code-level structure se
 ## BLE authorization checkpoint — 2026-10-20 (BLOCKED / NOT IMPLEMENTED)
 
 - User requires normal UX: power on cooler → open App → Connect BLE → use it; no QR, no additional Touch gesture, and preserve all current gestures.
-- Current `firmware/JEXFYZ-V7.0.ino` configures encrypted/bonded writes but uses Just Works; `SYNC_READY` opens its command gate. This is not proof of official App identity.
+- Current `firmware/JEXFYZ-V7.1.ino` configures encrypted/bonded writes but uses Just Works; `SYNC_READY` opens its command gate. This is not proof of official App identity.
 - Do not add a self-service first-key claim: any arbitrary initial BLE peer might claim the cooler. A server-authorized, device-bound enrollment grant and per-session nonce/signature verification are required. See `BLE_APP_AUTH.md`.
 - No Firmware source edit/version bump occurred in this task. User reports V7.0 compile/Online OTA success; exact source-to-BIN provenance and installed identity remain unverified independently.
 - **OTA PROTECTED / NO CHANGE:** all Local/Online OTA logic, transport/TLS, handoff, checks, timing, recovery and restart remain untouched.

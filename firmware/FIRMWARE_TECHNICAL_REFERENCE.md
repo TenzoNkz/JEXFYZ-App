@@ -4,7 +4,7 @@ Last source/safety-reference reconciliation: 2026-10-20 (Asia/Jakarta). Latest v
 
 ## BLE App-authentication checkpoint — 2026-10-20 (BLOCKED / NOT IMPLEMENTED)
 
-- Current V7.0 BLE configures encrypted bonded RX writes but uses Just Works and opens the session command gate with `SYNC_READY`; this does not cryptographically establish JE Cooler App identity.
+- Current V7.1 BLE configures encrypted bonded RX writes but uses Just Works and opens the session command gate with `SYNC_READY`; this does not cryptographically establish JE Cooler App identity.
 - Intended direction: per-install signing key in Android Keystore, server-authorized device-bound enrollment, firmware-pinned server verification key, and fresh nonce/signature challenge per session.
 - No trusted backend enrollment/signing/owner-claim endpoint or managed signing-key provisioning path was found in the repository. Do not accept a key supplied by any first-connected client; this would permit hostile enrollment. See `BLE_APP_AUTH.md`.
 - No Firmware source/protocol change occurred. OTA code is protected and unchanged.

@@ -2,7 +2,14 @@
 
 This file is the durable App behavior/design contract. Live source and the current workflow remain authoritative.
 
-## Latest security execution — 2026-10-20 (partial; BLE authorization blocked)
+## Current production checkpoint — 2026-10-21
+
+- The owner confirms the sold/shipped unit is using App Build #124 and Firmware V7.1; Firmware V7.1 was compiled and successfully updated through Online OTA. Record this as USER-REPORTED product/deployment status.
+- Independently verified App release evidence: Build #124 / Actions run `39386733061`, package source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`, APK SHA-256 `c0738d3607b120b716841610c849d9608f954a5f1f28017a8018790f4f4b6318`, source ZIP SHA-256 `e00ac34cb6cf7f04a5485c8ab8ee74d4acc1b20dc1a213ac733a8bf8c43cc152`. Build #124 passed 116 Flutter tests and the configured App release gates.
+- The App release record does not independently prove Firmware compilation, exact source-to-BIN identity, installed version, physical OTA/reboot/BLE recovery, or thermal/electrical behavior. Do not contradict the owner's report with stale V7.0/V7.1 status text.
+- Since the unit is sold and shipped and cannot be routinely disassembled, treat Build #124 + V7.1 as the production baseline. OTA/BLE/reconnect changes are high-risk and must not be bundled into unrelated UI cleanup.
+
+## HISTORICAL / SUPERSEDED — security checkpoint before Build #124 (2026-10-20; BLE authorization blocked)
 
 - Build #123 / Actions run `39371864780`, source `14e90e7e26b8eb4400bd01ec8d0eab5ed4195f1c`; APK SHA-256 `1d06c806b1e75440dfe16108d236dd4c5f0e9b85d50e56989263793952351abb`; source ZIP SHA-256 `0118f201027747f8f682a8d3a393334585a14845a8741f2296da07afae06fbe1`. This release predates and does not include the password-visibility patch.
 - User reports the App release is installed safely and Firmware V7.0 compiled and successfully updated via Online OTA. This is **USER-REPORTED**; installed firmware version and source-to-BIN provenance have not been independently verified.

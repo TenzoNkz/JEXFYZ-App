@@ -1,3 +1,12 @@
+## 2026-10-21 — Repository hygiene and LOAD + CONTINUE handoff
+
+- Reconciled the current production status with the owner confirmation: App Build #124 is in use; Firmware V7.1 compiled and was updated by Online OTA; the unit is sold and shipped. This deployment detail is recorded as USER-REPORTED, separate from CI and source provenance evidence.
+- Established `CHAT_TRANSFER.md` as a rolling checkpoint rather than a transcript recap. After substantive Discussion decisions and after execution completes/blocks, update the checkpoint and canonical subject note.
+- General/Discussion chat-limit recovery now uses Prompt B as LOAD + CONTINUE, with no recap-only stage. Prompt D remains the one-shot Build App LOAD + CONTINUE path; Prompt A is for an explicitly requested full memory reconciliation.
+- Clarified that Discussion may persist documentation/checkpoint changes after a durable decision/conclusion but cannot edit executable source/config/workflows or trigger builds, releases, firmware, Firebase, OTA, flashing or device operations.
+- Updated current-only status/navigation files to remove contradictory Build #123/#120 and V7.1-not-compiled statements from active status sections. Historical evidence remains labelled and is not rewritten as current truth.
+- This maintenance pass does not authorize or perform an App Build/release, Firmware compile, BIN operation, Firebase update, OTA, flash or physical-device action.
+
 ## FIRMWARE V7.1 SOURCE UPDATE — 2026-10-20 (Adaptive Fan 2°C bands; NOT COMPILED / NOT DEPLOYED)
 
 - Promoted the functional Firmware revision from V7.0 to V7.1 and renamed the only active sketch to `firmware/JEXFYZ-V7.1.ino`; embedded `FW_VERSION="V7.1"` matches the filename.

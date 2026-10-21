@@ -1,23 +1,21 @@
 # JE X FYZ / JE Cooler — Build & Release Notes
 
-## Current repository/release checkpoint — Build #120 (2026-10-20)
+## Current production/release checkpoint — 2026-10-21
 
-- **Latest successful App release:** [Build #120 / Actions run 39365201489](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39365201489), packaged source commit `aeadaa47bd7ad64af6044afce5783781f0c0d82f`. All 21 main steps and all post-job cleanup succeeded.
-- **Release and downloads:** [`jexfyz-latest` Release](https://github.com/TenzoNkz/JEXFYZ-App/releases/tag/jexfyz-latest). The Release metadata and live tag target exactly `aeadaa47bd7ad64af6044afce5783781f0c0d82f`. The Release contains exactly one verified APK and one matching source ZIP.
-- **APK:** [JEXFYZ-release.apk](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk), asset ID `658178574`, 54,751,323 bytes, SHA-256 `aa162e57a04f229922cca4fe48773a49585328e2337761f5c641097957ff0392`.
-- **Corresponding source ZIP:** [JEXFYZ-corresponding-source.zip](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip), asset ID `658178573`, 2,871,380 bytes, SHA-256 `3e7585549d2eef68ad93b35c378bd76332d80a92a0edf1856aec8303df5e28d7`. CI re-downloaded both Release assets and verified hashes, source marker, ZIP integrity, and APK signature schemes.
-- **Validation:** security/architecture audit, dependency installation, Dart analyzer and **115 Flutter tests passed with 0 failures**. Analyzer reported 25 informational diagnostics (deprecated APIs/unnecessary imports). Android `./gradlew --no-daemon :app:testDebugUnitTest` reported `BUILD SUCCESSFUL in 1m 42s`; Android unit-test tasks were `NO-SOURCE`, so no native Android JUnit cases actually ran.
-- **Signing:** V1/JAR, V2 and V3 verification passed on generated and downloaded APK. Official certificate SHA-256 is `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`. JAR verifier printed certificate-chain trust warnings, but the required scheme checks and configured signer fingerprint passed.
-- **NOTIFY baseline and latest source follow-up:** Build #120 packages the source fingerprints listed below. The newest source-only change supersedes its aggregate state summary with one complete sentence per latest confirmed event; it has not been run through Flutter tests or Dart analysis and is NOT RELEASED. Hotside at/above the configured limit remains the safety-priority exception.
-- **Source fingerprints in the release:** `lib/main.dart` `4d2871234971ef8a9fa976f197e0e4f7b1e188ac`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `ccae334f9a737926bef021fa04ce7caa4d30601d`; `FloatingMonitorService.kt` `f2c5d5e8b5731be36ae3b82109a75beaefe5fb4d`.
-- Android identity is preserved: `versionName "Telegram @horizontalzzz"`.
-- **Firmware boundary:** current source is `firmware/JEXFYZ-V7.1.ino` (blob `6ef355d666b83fc83b4d7c48ee377753828ca02c`, `FW_VERSION="V7.1"`). Build #124 was App-only and did not compile Firmware, generate/publish BIN, edit Firebase production metadata, perform OTA/flash or operate hardware. V7.1 remains NOT COMPILED / NOT DEPLOYED; physical BLE/cooling/PWM behavior and source-to-BIN identity are unverified.
-- **Workflow note:** a post-job cache-write warning said the token lacks writable cache scopes; core build, signature, publication and downloaded-asset validation had already passed, and the final run conclusion is `success`.
-- **Authorization policy:** `@Thinking Eksekusi Build App!` is the sole App Build authorization. Builds use the guarded issue-only trigger in `.github/workflows/jexfyz-app-build-trigger.yml`; push, PR and manual-dispatch bypasses are not permitted. App Build never authorizes Firmware/BIN publication, production Firebase changes, OTA, flashing or hardware operation.
-- `APP_BUILD_REPORT.md` contains the detailed attempt history and complete Build #120 evidence. Its post-build update and this checkpoint are documentation-only; the released APK/source package remains exactly tied to commit `aeadaa47bd7ad64af6044afce5783781f0c0d82f`.
+- **Product owner confirmation:** sold/shipped unit uses App Build #124; Firmware V7.1 compiled and was successfully updated through Online OTA. This is USER-REPORTED product/deployment status. The physical unit is not available for routine disassembly or repair.
+- **Latest independently verified App release:** Build #124 / Actions run [39386733061](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39386733061), packaged source commit `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`.
+- **Release assets:** exactly one production APK and one corresponding source ZIP. APK SHA-256 `c0738d3607b120b716841610c849d9608f954a5f1f28017a8018790f4f4b6318`; ZIP SHA-256 `e00ac34cb6cf7f04a5485c8ab8ee74d4acc1b20dc1a213ac733a8bf8c43cc152`.
+- **Validation:** 116 Flutter tests passed; analyzer exit 0 with 25 informational diagnostics; configured Gradle gate succeeded. Android unit-test tasks were NO-SOURCE. V1/V2/V3 signing and downloaded asset integrity/source-marker checks passed.
+- **App/Firmware boundary:** the above CI evidence verifies the packaged App release only. The owner's V7.1 compile/Online OTA report is recorded separately; exact source-to-BIN identity, installed version, physical OTA/reboot/BLE recovery and thermal/electrical behavior are not independently verified by App CI.
+- **Current source:** `firmware/JEXFYZ-V7.1.ino`, `FW_VERSION="V7.1"`. Preserve Android Gradle `versionName "Telegram @horizontalzzz"`.
+- **Authorization:** `@Thinking Eksekusi Build App!` remains the sole App Build/release command. It does not authorize Firmware compilation, BIN publication/replacement, Firebase, OTA, flashing or device operations. Normal push/PR must not trigger a production APK build.
+- **Remote-maintenance rule:** because the unit has shipped, avoid discretionary functional changes. Audit OTA/BLE/reconnect consequences before any relevant App release and do not treat a successful CI result as device-safety evidence.
 
+## HISTORICAL / SUPERSEDED — source-only checkpoint after Build #120
 
-## Latest source-only follow-up after Build #120 — Home NOTIFY single-event messages
+Earlier source-only and release checkpoints below are retained for historical evidence. They do not override Build #124 or the owner-confirmed V7.1 deployment status.
+
+## HISTORICAL / SUPERSEDED — Source-only follow-up after Build #120 — Home NOTIFY single-event messages
 
 - Current source blobs: `lib/main.dart` `40f172a5d190b429d3a952f2531349c1ee220d1f`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `132c3b000abd63599ebea9d26fc5085cb577e50e`.
 - Home NOTIFY now shows only one sentence for the newest confirmed event. Voltage, Control, Adaptive and LED events replace earlier messages, and Fan speed copy distinguishes increases from reductions. Temperature sampling does not create ordinary messages; Hotside-limit alerts use measured temperature and limit and override normal event copy.
