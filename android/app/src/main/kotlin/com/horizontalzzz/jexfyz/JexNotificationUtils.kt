@@ -1,5 +1,8 @@
 package com.horizontalzzz.jexfyz
 
+// Shared Android notification construction helpers. Keep presentation utility code separate
+// from BLE/GATT ownership and from the Flutter-to-native service lifecycle.
+
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context

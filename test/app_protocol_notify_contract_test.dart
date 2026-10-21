@@ -1,3 +1,7 @@
+// AI-MEMORY / TEST CONTRACT
+// Covers pure P1 protocol-token validation and deterministic Home NOTIFY helpers.
+// These tests do not exercise a live BLE radio, physical device state, or OTA transport.
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jexfyz_cooler/main.dart';
 

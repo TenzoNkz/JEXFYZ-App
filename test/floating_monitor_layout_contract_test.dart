@@ -1,3 +1,7 @@
+// AI-MEMORY / TEST CONTRACT
+// Checks the App-side Floating Monitor layout and presentation constraints from source.
+// Android WindowManager attachment, OEM permissions, overlays, and live telemetry require device validation.
+
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';

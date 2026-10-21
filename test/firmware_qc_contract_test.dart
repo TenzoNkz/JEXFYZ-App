@@ -1,3 +1,7 @@
+// AI-MEMORY / TEST CONTRACT
+// Checks source-level firmware invariants and mapped Adaptive Fan target-band expectations.
+// A passing Flutter contract test is not an Arduino compile, BIN identity check, OTA run, or hardware test.
+
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';

@@ -1,3 +1,7 @@
+// AI-MEMORY / TEST CONTRACT
+// Checks source ordering for Touch Adaptive-OFF state publication before acknowledgement.
+// This is a static source contract, not proof of BLE timing or physical hardware response.
+
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
