@@ -1,6 +1,7 @@
 # JE X FYZ / JE Cooler — Chat Transfer Prompt Templates
 
-Use these templates to move the correct workstream across a context/chat limit without relying on imperfect chat recall. Prompt A is for broad project-memory reconciliation; Prompt B is a read-only general/Discussion boot. For a Build App chat limit, use Prompt D exactly once as the first message in the replacement Build App chat: it loads the current repository/build evidence and continues the same work. There is no separate Build App recap chat or recap prompt. Current command gate: `@Thinking Diskusi!`, `@Thinking Diskusi! Tanya Gemini!`, `@Thinking Diskusi! Jawaban Gemini!`, `@Thinking Eksekusi Full!`, `@Thinking Eksekusi Build App!`, and standalone recovery command `@Thinking Chat Stuck!`. Chat Stuck halts blind retries, inspects live logs/state and resumes only the most recent valid authorization; it does not independently trigger a build or expand scope. The two Gemini subcommands are invalid without `Diskusi!`; App Build attempts and evidence belong in `APP_BUILD_REPORT.md`.
+Use Prompt B for routine general/Discussion chat-limit recovery: it loads the rolling checkpoint and live repository, then continues without a recap-only stage. Use Prompt D for a Build App chat-limit handoff: it loads live build evidence and continues the same authorized App Build. Prompt A is reserved for an explicitly requested full repository-memory reconciliation, not routine handoff. Prompt C defines persistence after durable decisions/executions. Current commands and authorization limits are defined in `CHAT_RULES.md`.
+
 
 ---
 
