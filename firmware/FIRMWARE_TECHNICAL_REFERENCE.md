@@ -12,7 +12,7 @@ Last source/safety-reference reconciliation: 2026-10-21 (Asia/Jakarta). The owne
 
 ## Current source identity
 
-- Canonical editable source: `firmware/JEXFYZ-V7.1.ino`, blob `6ef355d666b83fc83b4d7c48ee377753828ca02c`, embedded `FW_VERSION="V7.1"`.
+- Canonical editable source: `firmware/JEXFYZ-V7.1.ino`, blob `c44e076b2c1ee2d0b66b4fcd308d0febc69976e9`, embedded `FW_VERSION="V7.1"`.
 - Compile/install status: owner confirms V7.1 compile and Online OTA installation on the sold unit (USER-REPORTED). Independent V7.1 contract-test execution, exact source-to-BIN identity, installed-version evidence and physical behavior remain UNVERIFIED.
 - Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module, Arduino-ESP32 Core 3.3.7. Firmware compiles separately from App release.
 
@@ -77,7 +77,7 @@ The canonical detailed incident/contract is `VOLTAGE_TRANSITION_MEMORY.md`.
 - Immediate thermal protection stays independent: raw-decimal `hotsideC >= hotLimit` forces Fan 100% without pacing delay, and the existing supervisor shuts Peltier OFF. Adaptive 5 V / 9 V remain Fan 100%.
 - PWM approaches the selected target in 10-point steps: each reduction waits 10,000 ms; each increase waits 1,000 ms. A direction change starts a fresh clock. Voltage transitions, Adaptive HOTSTEP, thermal dwell and inactive outputs reset pacing and preserve full-speed priority.
 - NTC acquisition remains one calibrated sample per second. No blocking delay, extra ADC read, averaging/filter, or timing loop was added.
-- Active source `firmware/JEXFYZ-V7.1.ino` blob `6ef355d666b83fc83b4d7c48ee377753828ca02c`; QC contract `12e30d7ec16b322e7411cefa7c99cd42aff6c056`; Touch/Adaptive sync contract `7c203a11f79de62744af8536bbf2e3219d7f0909`. Contract tests and Arduino compile have NOT RUN for V7.1. The V7.0 user report does not validate this revision.
+- Active source `firmware/JEXFYZ-V7.1.ino` blob `c44e076b2c1ee2d0b66b4fcd308d0febc69976e9`; QC contract `367acddd4ca9123c2834f8a5177039d9dadaabc9`; Touch/Adaptive sync contract `dfa1f604327f1705b52134aa794d7ce60232841e`. Contract tests have NOT been independently run in this documentation/comment cleanup. The owner confirms V7.1 compilation and Online OTA installation; source-to-BIN identity and physical post-update behavior remain independently UNVERIFIED.
 
 ## HISTORICAL / SUPERSEDED — V6.8 direct temperature-tier controller
 
