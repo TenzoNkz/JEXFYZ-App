@@ -7,6 +7,7 @@
 - General/Discussion chat-limit recovery now uses Prompt B as LOAD + CONTINUE, with no recap-only stage. Prompt D remains the one-shot Build App LOAD + CONTINUE path; Prompt A is for an explicitly requested full memory reconciliation.
 - Clarified that Discussion may persist documentation/checkpoint changes after a durable decision/conclusion but cannot edit executable source/config/workflows or trigger builds, releases, firmware, Firebase, OTA, flashing or device operations.
 - Updated current-only status/navigation files to remove contradictory Build #123/#120 and V7.1-not-compiled statements from active status sections. Historical evidence remains labelled and is not rewritten as current truth.
+- Added explanatory file/section-level comments to the active Firmware source, under-commented native notification helper, source-contract test files and build/package configuration. Review confirmed the code/config modifications add comments only; no runtime statement, timing or control path was changed.
 - This maintenance pass does not authorize or perform an App Build/release, Firmware compile, BIN operation, Firebase update, OTA, flash or physical-device action.
 
 ## HISTORICAL CHECKPOINT — Firmware V7.1 source update — 2026-10-20 (at that time: awaiting compile/OTA confirmation)

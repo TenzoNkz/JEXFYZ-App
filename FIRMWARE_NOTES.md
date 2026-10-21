@@ -71,8 +71,8 @@ Read `VOLTAGE_TRANSITION_MEMORY.md` before changing this logic.
 - If it does not recover, 12 V/9 V step down one rail; unrecovered 5 V enters terminal lock requiring manual restart.
 - After Adaptive thermal downshift, restoration proceeds upward one rail at a time after 60 seconds continuously at/below `hotLimit - 1°C`, no higher than the saved pre-downshift ceiling.
 - HOTSIDE is default Adaptive profile after boot. HOTSIDE_BATTERY is a runtime selectable profile, not persisted. When Battery sensor data is missing, fall back to HOTSIDE behavior without changing chosen profile.
-- No rapid Hotside-rise/slope protection is present in the known V6.x contract; do not claim it exists.
-- [USER REQUIREMENT / STILL NOT IMPLEMENTED IN V7.0] A prior request called for a very rapid Hotside rise to shut Peltier OFF immediately and require manual re-arm/restart. The active V7.0 contract does not implement slope/rate-of-rise protection; do not describe the request as completed. If reconsidered, discuss first, update source with a mandatory version bump and test the safety behavior.
+- No rapid Hotside-rise/slope protection is present in active V7.1; the configured Hotside limit remains the thermal safety authority. Do not claim slope-based shutdown exists.
+- [USER REQUIREMENT / STILL NOT IMPLEMENTED IN V7.1] A prior request called for a very rapid Hotside rise to shut Peltier OFF immediately and require manual re-arm/restart. The active V7.1 contract does not implement slope/rate-of-rise protection; do not describe the request as completed. If reconsidered, discuss first, update source with a mandatory version bump and test the safety behavior.
 - Keep thermal/NTC safety higher priority than App requests, normal RGB animation, or pending Peltier restart.
 
 ## Current Adaptive Fan PWM — V7.1 2°C limit-relative target bands with stepped controller
