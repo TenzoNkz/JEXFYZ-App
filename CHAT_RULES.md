@@ -6,7 +6,7 @@ These are durable user rules. Current implementation facts must still be checked
 
 Use the canonical command spellings below. The main command decides what is authorized; never infer a missing command from the message body.
 
-- `@Thinking Diskusi!` — full technical discussion before execution: inspect, read, compare, analyze risks, reconcile requirements and prepare the proposed plan. **Read-only; no repository writes or source edits.**
+- `@Thinking Diskusi!` — inspect, compare and discuss technical options before execution. It must not change executable source/config/workflows, run builds, publish artifacts, or operate firmware/device/OTA. **Checkpoint exception:** after a substantive discussion reaches a durable decision or is explicitly concluded, it may update project-memory documentation only (`CHAT_TRANSFER.md` and the relevant canonical notes/index/changelog) so a replacement chat can continue without a recap. Do not represent an unsettled proposal as approved. This exception never authorizes source or product changes.
 - `@Thinking Diskusi! Tanya Gemini!` — create one complete, self-contained prompt for Gemini based on the agreed discussion, current technical context, exact question, constraints, desired evidence and expected answer format. Do not execute the proposed patch.
 - `@Thinking Diskusi! Jawaban Gemini!` — the user has pasted Gemini's answer. Evaluate it against live source, canonical project memory, technical correctness and the agreed discussion. Do not accept it automatically or execute anything while in discussion mode.
 - `@Thinking Eksekusi Full!` — execute the approved scope fully: scoped changes, relevant audit/tests, cross-reference and documentation reconciliation, canonical memory/index/state/changelog updates, verification and commit to `main`. **Does not authorize App Build or Firmware/device operations.**
@@ -78,7 +78,8 @@ A docs-only task is not permission for a functional source edit. A firmware-only
 - Read `CHAT_TRANSFER.md` first at new-chat boot, then fetch live `main` HEAD/tree and read `MEMORY_INDEX.md`.
 - Read every current source-of-truth file relevant to the requested area **to completion**, not only the first screen/first lines. Before reorganizing the memory system, audit all text files and cross-references.
 - `PROJECT_STATE.md` is current-only; `CHANGELOG.md` is history-only; subject-specific docs own detailed facts; `CHAT_TRANSFER.md` is a refreshed snapshot/boot prompt.
-- After any meaningful execution, record the durable decision/result/uncertainty in its canonical note. At chat-limit, read the old transfer snapshot completely, reconcile it with the repo, then replace it.
+- Keep `CHAT_TRANSFER.md` as a rolling checkpoint, not a transcript recap. After a substantive Discussion reaches a decision/conclusion and after every execution completes or becomes blocked, refresh the checkpoint and relevant canonical notes from live evidence. Record last durable decision, current task/status, completed steps, failed/remaining gates, latest verified repository checkpoint, authorization boundaries, and the exact next action. Never invent missing content from an interrupted answer.
+- At a chat/context limit, the replacement chat uses the appropriate LOAD + CONTINUE prompt and reads live repository state; it must not create a separate recap stage or ask the user to repeat saved context. Recovery resumes only the last authorized scope. If a limit interrupts before a checkpoint write, resume from the latest saved checkpoint and live evidence, explicitly recognizing anything after that checkpoint may be missing.
 - Update all references/hashes after renames; do not leave contradictory legacy “current truth” blocks.
 - Preserve user-approved designs, hard constraints, previous failures, rejected approaches and why they were rejected.
 - Persist project-specific presentation constraints explicitly. Current example: do not display a standalone Battery Protection Guard in App UI; keep the hardware safety function intact and continue to show independently actionable localized safety/Notify messages when applicable.
@@ -87,9 +88,11 @@ A docs-only task is not permission for a functional source edit. A firmware-only
 - If repository state and a summary/memory conflict, fetch the repository; repository wins for current code/version, and user rules remain authoritative for authorization/preferences.
 
 
-### Build App chat-limit handoff
+### Chat-limit LOAD + CONTINUE handoff
 
-When a Build App chat reaches its context/chat limit, use Prompt D in `CHAT_TRANSFER_PROMPTS.md` exactly once as the opening message of the replacement Build App chat. Prompt D starts with `@Thinking Eksekusi Build App!`, loads live repository state and `APP_BUILD_REPORT.md`, then continues the same build/QC operation. Do not open a separate recap chat, do not use project-wide Prompt A for this handoff, and do not stop at a boot summary waiting for another command. Prompt A remains for broad project-memory reconciliation; Prompt B remains a read-only general/Discussion boot.
+- **General / Discussion chat limit:** use Prompt B in `CHAT_TRANSFER_PROMPTS.md` as the replacement chat's first message. It loads the checkpoint and relevant live source, then continues the previous discussion/workstream without a recap stage. It must not execute source changes or builds.
+- **Build App chat limit:** use Prompt D exactly once as the replacement Build App chat's opening message. It loads live repository state and `APP_BUILD_REPORT.md`, then continues the same authorized App Build/QC operation without a recap stage.
+- Prompt A is reserved for an explicitly requested full project-memory reconciliation, not routine chat-limit recovery. The latest saved checkpoint is authoritative only up to its timestamp; always check live `main`, Actions and Release evidence.
 
 ## 9. Current known checkpoint (must refresh before use)
 
@@ -98,3 +101,10 @@ When a Build App chat reaches its context/chat limit, use Prompt D in `CHAT_TRAN
 - Active Firmware is `firmware/JEXFYZ-V7.1.ino`, blob `6ef355d666b83fc83b4d7c48ee377753828ca02c`, `FW_VERSION="V7.1"`. At limit 40°C: 40/39/38 →100%; 37/36 →90%; 35/34 →80%; 33/32 →70%; 31/30 →60%; ≤29 →50%. Downstep 10 points/10 s; upstep 10 points/1 s.
 - QC `12e30d7ec16b322e7411cefa7c99cd42aff6c056` and Touch/Adaptive sync `7c203a11f79de62744af8536bbf2e3219d7f0909` were updated but have NOT RUN. V7.1 is NOT COMPILED / NOT INSTALLED; V7.0 compile/OTA user report applies only to that earlier revision.
 - Keep `TenzoNkz/JEXFYZ-Firmware` BIN-only; no Firebase metadata change, BIN publication, Firmware compile, OTA, flash or device operation occurred under Eksekusi Full. OTA, Touch, Peltier/rail timing and Android `versionName "Telegram @horizontalzzz"` are unchanged. BLE App-only authorization remains blocked in `BLE_APP_AUTH.md`.
+
+
+## 10. Remote-only product maintenance — current user instruction
+
+- The owner confirms App Build #124 is in use, Firmware V7.1 was compiled and updated through Online OTA, and the product has been sold and shipped. Preserve this as USER-REPORTED product/deployment status; do not overwrite it with older stale notes. Distinguish it from independently verifiable repository/CI evidence.
+- Treat the deployed Build #124 / V7.1 combination as the production baseline. Avoid discretionary releases and functional changes, especially to OTA, BLE ownership, reset/recovery, safe outputs or firmware update handling. The physical unit is no longer available for routine disassembly or repair.
+- Repository cleanup and comment-only edits must not alter runtime behavior. Build App, Firmware compilation, BIN publication/replacement, Firebase changes, OTA, flashing, or device actions remain separately gated as described above. A successful App CI run does not establish OTA/device safety.

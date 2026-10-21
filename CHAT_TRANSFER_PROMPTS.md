@@ -77,22 +77,33 @@ DONE CONDITIONS
 
 ---
 
-## Prompt B — New chat boot / learn before asking questions
+## Prompt B — New chat / chat-limit LOAD + CONTINUE (general or Discussion)
+
+Use this as the first message in a replacement general/Discussion chat when context is lost or the prior chat reaches its limit. It is a LOAD + CONTINUE prompt, not a recap request. It resumes only the prior authorized scope.
 
 ```text
-@Thinking Diskusi! NEW CHAT BOOT — LOAD JE X FYZ MEMORY BEFORE DOING ANYTHING
+@Thinking Diskusi! CHAT-LIMIT LOAD — CONTINUE FROM LIVE CHECKPOINT
 
-Work on JE X FYZ / JE Cooler from repository memory. Do not assume this chat is the first conversation.
+PROJECT: JE X FYZ / JE Cooler
+CANONICAL REPOSITORY: TenzoNkz/JEXFYZ-App
+CANONICAL BRANCH: main
 
-1. Read CHAT_TRANSFER.md fully first.
-2. Fetch live TenzoNkz/JEXFYZ-App main HEAD and recursive tree. Then read MEMORY_INDEX.md, CHAT_RULES.md, PROJECT_STATE.md and HANDOVER.md fully.
-3. Read the complete subject reference that matches the current request. For App: APP_NOTES.md. For Firmware/hardware: FIRMWARE_NOTES.md + firmware/FIRMWARE_TECHNICAL_REFERENCE.md. For OTA: OTA_PROTECTION.md + OTA_REGRESSION_MEMORY.md. For voltage/Peltier sequencing: VOLTAGE_TRANSITION_MEMORY.md. For Build App: BUILD_NOTES.md and the actual workflow. For grille/visuals: DESIGN_NOTES.md. Use CHANGELOG.md only for history.
-4. Inspect current source/test/workflow and verify all current claims. Do not trust an old SHA/path/version without a live fetch.
-5. Learn and enforce the current Thinking protocol from CHAT_RULES.md. `@Thinking Diskusi!` is full read-only discussion. Gemini prompt/answer commands require `Diskusi!` in the same message. `@Thinking Eksekusi Full!` executes only approved work and never implies Build App. `@Thinking Eksekusi Build App!` owns end-to-end App build, App-scope repair/retry, artifact verification and `APP_BUILD_REPORT.md` logging. `@Thinking Chat Stuck!` is a standalone recovery command that resumes the last authorized operation from evidence without blindly retrying or broadening permission. Reject missing-parent Gemini commands without processing their substantive content. The old standalone `Eksekusi!` and combined `Eksekusi & Build App!` commands are retired.
-6. Respect repository split: App repo owns all code source and every note/memory. Firmware artifact repo must contain JEXFYZ.cpp.bin only.
-7. Preserve every approved requirement, previous failure and rejected approach. Never ask the user to repeat details already in the repository or available project context. If something is missing, report the exact gap rather than inventing.
-8. Return a compact boot report: current HEAD/source version/hash, App version, workflow/test/PR state, relevant constraints, known bugs and exact unverified gates. Then wait for the user's next command. Do not write changes or start any build during boot.
+PURPOSE
+Restore context from the latest saved checkpoint and live repository evidence, then continue the previous general/Discussion workstream without a separate recap stage. Do not ask the user to repeat saved requirements. Do not treat this as permission to execute a source change or build.
+
+1. Read CHAT_TRANSFER.md fully before assuming a state.
+2. Fetch live main HEAD and recursive tree. Read CHAT_RULES.md, MEMORY_INDEX.md, PROJECT_STATE.md, HANDOVER.md and the canonical subject reference(s) for the task.
+3. Identify the latest saved task/decision/checkpoint and compare it to live source, tests, config, current Actions/Release evidence where relevant. A saved checkpoint is authoritative only up to its stated time; later uncheckpointed chat content may be unavailable.
+4. Continue from the last valid point. Do not produce a long recap, create a recap-only chat, or stop after boot waiting for the user to restate the current task. Ask a question only when a material decision truly cannot be recovered from saved evidence.
+5. Preserve the command/authorization gates. Discussion is read-only for executable source/config/workflow, builds/releases, firmware/BIN/Firebase, device and OTA operations. When a substantive discussion concludes, update project-memory documentation/checkpoint only, clearly distinguishing decisions, proposals, user-reported outcomes and independently verified evidence.
+6. If the inherited task was an already-authorized execution that stopped unexpectedly, use @Thinking Chat Stuck! to recover from actual logs/current state; do not use Discussion as a substitute execution authorization.
+7. Report the restored checkpoint briefly, then continue the previous discussion/workstream.
+
+No source edits, build, release, firmware compile, BIN/Firebase modification, OTA, flash or device operation is authorized by this recovery prompt.
 ```
+
+---
+
 
 ---
 
@@ -104,10 +115,10 @@ Before marking an execution complete:
 2. Save the durable decision, behavior, rationale, rejected alternative, safety constraints and evidence status there.
 3. Update PROJECT_STATE.md only if current state or validation gates changed.
 4. Add a concise dated CHANGELOG entry for significant source/config/architecture changes.
-5. Refresh CHAT_TRANSFER.md if the current checkpoint has changed; always read its old content first.
+5. Refresh CHAT_TRANSFER.md whenever a substantive decision or execution outcome changes the durable checkpoint; always read its old content first. Keep it as a compact current checkpoint, not a transcript recap.
 6. For any App Build attempt, append the exact run outcome, source commit, fixes, tests, APK/checksum/signing checks and unresolved gates to APP_BUILD_REPORT.md so the next Build App chat can resume through the one-shot Prompt D LOAD + CONTINUE; a Discussion chat may also consult the same evidence record.
 7. Update MEMORY_INDEX.md and all cross-links if file paths/names changed.
-8. Verify post-write content, branch HEAD, blob hashes and no stale path/version references.
+8. Verify post-write content, branch HEAD, blob hashes and no stale path/version references. For a substantive Discussion, documentation/checkpoint writes are allowed; never change executable source/config/workflow in Discussion mode.
 9. Do not report an unrun test/build/compile/device check as passed.
 ```
 
