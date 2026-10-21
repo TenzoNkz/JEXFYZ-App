@@ -5,6 +5,7 @@
 - User requested stable Settings sizing across Android display-density changes, Floating Monitor visibility gated to a fully synchronized BLE session, and professional phone-notification copy in English and Indonesian.
 - Audit found standalone Settings routes and root-navigator overlays that do not share Home's fixed canvas; Floating Monitor redraws disconnected placeholders rather than hiding its window and its health reconciler may clear enabled intent; the firmware-update push body is only a version string and Android channel metadata is English-only.
 - Recorded the proposed, test-backed implementation scope in the live checkpoint. No executable source/test/workflow/firmware/Firebase/BIN/OTA change or build was performed; awaiting the appropriate execution command.
+- Additional notification audit: transient Hotside warning ID `2101` collides with the persistent BLE foreground-service notification ID `2101`; reserve non-overlapping IDs and test the contract before code release.
 
 
 ## 2026-10-21 — APK optimization deferred by owner
