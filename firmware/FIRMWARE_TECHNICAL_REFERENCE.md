@@ -1,6 +1,6 @@
 # JE X FYZ — Firmware Technical Reference
 
-Last source/safety-reference reconciliation: 2026-10-20 (Asia/Jakarta). Latest verified App artifact is Build #124 / run 39386733061, packaged source commit 7d4e7262c6a3474eefa8ccb58b08f070df3ac15a. That release includes password visibility but does not compile Firmware. Current Firmware V7.1 source update is newer and remains NOT COMPILED / NOT DEPLOYED; the V7.0 user report does not prove V7.1.
+Last source/safety-reference reconciliation: 2026-10-21 (Asia/Jakarta). The owner confirms App Build #124 is in use and Firmware V7.1 compiled successfully and was installed by Online OTA on the sold/shipped unit. Treat this as USER-REPORTED deployment status; do not repeat superseded claims that V7.1 is uncompiled/uninstalled. Build #124 independently verifies the App release package only, not exact firmware BIN identity or in-field behavior.
 
 ## BLE App-authentication checkpoint — 2026-10-20 (BLOCKED / NOT IMPLEMENTED)
 
@@ -13,7 +13,7 @@ Last source/safety-reference reconciliation: 2026-10-20 (Asia/Jakarta). Latest v
 ## Current source identity
 
 - Canonical editable source: `firmware/JEXFYZ-V7.1.ino`, blob `6ef355d666b83fc83b4d7c48ee377753828ca02c`, embedded `FW_VERSION="V7.1"`.
-- Compile/install status: prior V7.0 compile / Online OTA success is USER-REPORTED for that prior revision only. V7.1 has NOT been compiled/installed; tests, source-to-BIN identity, installed version and physical behavior remain UNVERIFIED.
+- Compile/install status: owner confirms V7.1 compile and Online OTA installation on the sold unit (USER-REPORTED). Independent V7.1 contract-test execution, exact source-to-BIN identity, installed-version evidence and physical behavior remain UNVERIFIED.
 - Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module, Arduino-ESP32 Core 3.3.7. Firmware compiles separately from App release.
 
 ## Architecture

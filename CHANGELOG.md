@@ -1,3 +1,5 @@
+# JE X FYZ / JE Cooler — Changelog
+
 ## 2026-10-21 — Repository hygiene and LOAD + CONTINUE handoff
 
 - Reconciled the current production status with the owner confirmation: App Build #124 is in use; Firmware V7.1 compiled and was updated by Online OTA; the unit is sold and shipped. This deployment detail is recorded as USER-REPORTED, separate from CI and source provenance evidence.
@@ -7,7 +9,7 @@
 - Updated current-only status/navigation files to remove contradictory Build #123/#120 and V7.1-not-compiled statements from active status sections. Historical evidence remains labelled and is not rewritten as current truth.
 - This maintenance pass does not authorize or perform an App Build/release, Firmware compile, BIN operation, Firebase update, OTA, flash or physical-device action.
 
-## FIRMWARE V7.1 SOURCE UPDATE — 2026-10-20 (Adaptive Fan 2°C bands; NOT COMPILED / NOT DEPLOYED)
+## HISTORICAL CHECKPOINT — Firmware V7.1 source update — 2026-10-20 (at that time: awaiting compile/OTA confirmation)
 
 - Promoted the functional Firmware revision from V7.0 to V7.1 and renamed the only active sketch to `firmware/JEXFYZ-V7.1.ino`; embedded `FW_VERSION="V7.1"` matches the filename.
 - Adaptive 12 V targets use floored whole-degree categories relative to configured `hotLimit`: delta ≤2°C →100%; 3–4°C →90%; 5–6°C →80%; 7–8°C →70%; 9–10°C →60%; ≥11°C →50%. At a 40°C limit: 40/39/38 →100%; 37/36 →90%; 35/34 →80%; 33/32 →70%; 31/30 →60%; 29°C or lower →50%.

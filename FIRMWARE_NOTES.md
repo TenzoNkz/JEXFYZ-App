@@ -1,13 +1,21 @@
 # JE X FYZ / JE Cooler — Firmware & Hardware Reference
 
-Durable hardware and behavior decisions belong here. For code-level structure see firmware/FIRMWARE_TECHNICAL_REFERENCE.md; for protected OTA use OTA_PROTECTION.md; for incidents read the dedicated regression-memory files. Build #124 / run 39386733061 is the latest verified App release (packaged source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`); its Wi-Fi password visibility change is included. Firmware V7.1 is a later source-only update, not compiled/deployed. User-reported V7.0 compile/Online OTA success does not validate V7.1.
+Durable hardware and behavior decisions belong here. For code-level structure see firmware/FIRMWARE_TECHNICAL_REFERENCE.md; for protected OTA use OTA_PROTECTION.md; for incidents read the dedicated regression-memory files.
+
+## Current product baseline — 2026-10-21
+
+- Owner confirms the sold/shipped unit uses App Build #124 and Firmware V7.1, which was compiled and updated through Online OTA. This is USER-REPORTED deployment status and supersedes older notes that describe V7.1 as not compiled/deployed.
+- The independently verified App release is Build #124 / Actions run 39386733061, package source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`. App CI does not independently verify Firmware compilation, source-to-BIN identity, physical OTA/reboot, BLE recovery, or thermal/electrical behavior.
+- Treat V7.1 as the field baseline; avoid discretionary Firmware/OTA changes to a unit that cannot be routinely recovered physically. Preserve source/version filename alignment and the current OTA contract.
+
+
 
 ## BLE authorization checkpoint — 2026-10-20 (BLOCKED / NOT IMPLEMENTED)
 
 - User requires normal UX: power on cooler → open App → Connect BLE → use it; no QR, no additional Touch gesture, and preserve all current gestures.
 - Current `firmware/JEXFYZ-V7.1.ino` configures encrypted/bonded writes but uses Just Works; `SYNC_READY` opens its command gate. This is not proof of official App identity.
 - Do not add a self-service first-key claim: any arbitrary initial BLE peer might claim the cooler. A server-authorized, device-bound enrollment grant and per-session nonce/signature verification are required. See `BLE_APP_AUTH.md`.
-- No Firmware source edit/version bump occurred in this task. User reports V7.0 compile/Online OTA success; exact source-to-BIN provenance and installed identity remain unverified independently.
+- At the 2026-10-20 BLE-auth review, no Firmware source edit/version bump occurred in that task. The owner subsequently confirmed V7.1 compile/Online OTA success on 2026-10-21; exact source-to-BIN provenance and installed identity remain independently unverified.
 - **OTA PROTECTED / NO CHANGE:** all Local/Online OTA logic, transport/TLS, handoff, checks, timing, recovery and restart remain untouched.
 
 

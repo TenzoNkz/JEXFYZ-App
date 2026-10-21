@@ -20,15 +20,15 @@ This file is the durable App behavior/design contract. Live source and the curre
 - **OTA is frozen and was not changed.** No OTA state machine/transport, TLS, URL/redirect, timeout, radio handoff, recovery/restart, Firebase production config/metadata, firmware source/version, BIN, App Build, compile, flash, or device action was changed/run in this task.
 
 
-## Home NOTIFY — single latest-event message (2026-10-20; source-only / NOT RUN / NOT RELEASED)
+## Home NOTIFY — single latest-event message (validated in Build #124)
 
-- Current blobs: `lib/main.dart` `40f172a5d190b429d3a952f2531349c1ee220d1f`; `lib/app_settings.dart` `44431e926bfa2557c26345899e2333bd767f3f8e`; `test/widget_test.dart` `132c3b000abd63599ebea9d26fc5085cb577e50e`.
-- Home NOTIFY displays one complete sentence for the newest confirmed event. It never concatenates Adaptive, Voltage, Fan and Peltier into a state summary. Each new event replaces the previous sentence: `Adaptive ON.` → `Voltage set to 5V.` → `Fan speed reduced to 70%.`
-- Events cover Voltage, Fan/Peltier ON/OFF, Adaptive ON/OFF and profile/ceiling, Fan speed increase/reduction, LED ON/OFF/mode/brightness/color and safety-state transitions. Repeated identical telemetry creates no new event. If newer telemetry arrives before an ACK completes, that older ACK cannot overwrite it.
-- Ordinary Temperature samples do not create messages. Hotside reaching its configured limit is the exception: the in-app card shows measured temperature and limit in English/Indonesian regardless of the Android push preference. Android push remains preference-controlled and is re-armed after temperature falls below the limit.
-- Language changes re-render the last event immediately. The Hotside threshold and persistent critical protection/fault latches take priority over ordinary events. BLE protocol/ownership, Firmware safety rules and OTA transport are unchanged.
-- Validation: source/test blobs were fetched back. Flutter tests and Dart analysis have NOT RUN for this revision. Build #123 remains the latest verified App release and does not contain this source patch. No App Build, Firmware compile, BIN/Firebase, OTA, flash or device operation was performed; live-device behavior remains UNVERIFIED.
-## Current App release and follow-up — 2026-10-20
+- Packaged source blobs in Build #124: `lib/main.dart` `2d44e1f1f5b88ca1dae8324082da751b6ef1485a`, `lib/app_settings.dart` `637c07be55c412451d9ffde762e080c8bd92fd5e`, and `test/widget_test.dart` `90e1a582c49ce3ad1a1d9a3b875921098eaf2545`.
+- Home NOTIFY displays one complete sentence for the newest confirmed event. Ordinary Temperature samples do not create messages; Hotside-at-limit remains the safety-priority exception. New confirmed Voltage, Control, Adaptive, Fan, LED or safety events replace the earlier notice instead of being combined into a state summary.
+- Build #124 passed 116 Flutter tests and configured release gates. This verifies packaged source and CI gates, not physical phone animation, BLE state accuracy or firmware thermal behavior.
+- Owner confirms Build #124 is used by the sold/shipped unit. Firmware V7.1 compile and Online OTA success are separately USER-REPORTED; App CI does not verify firmware BIN identity or physical OTA/reboot/reconnect.
+
+
+## HISTORICAL / SUPERSEDED — earlier App release and follow-up checkpoint (Build #123, 2026-10-20)
 
 - Latest verified App release is Build #123 / run 39371864780, source `14e90e7e26b8eb4400bd01ec8d0eab5ed4195f1c`. APK SHA-256 `1d06c806b1e75440dfe16108d236dd4c5f0e9b85d50e56989263793952351abb`; source ZIP SHA-256 `0118f201027747f8f682a8d3a393334585a14845a8741f2296da07afae06fbe1`. This release predates the password-visibility patch.
 - Latest unbuilt Home NOTIFY single-event follow-up: lib/main.dart `40f172a5d190b429d3a952f2531349c1ee220d1f`; lib/app_settings.dart `44431e926bfa2557c26345899e2333bd767f3f8e`; test/widget_test.dart `132c3b000abd63599ebea9d26fc5085cb577e50e`. Flutter tests and analyzer have NOT RUN for this follow-up.
@@ -37,7 +37,7 @@ This file is the durable App behavior/design contract. Live source and the curre
 - Build #123 validated the current single-event NOTIFY implementation in its packaged source. It does not include the later password-visibility patch or prove physical-phone behavior. BLE App identity authentication is not implemented; no firmware/BIN/Firebase/OTA/device state changed in this follow-up.
 - The user subsequently reported V7.0 compiled and successfully updated via Online OTA. This remains USER-REPORTED; source-to-BIN provenance and exact installed-device version remain independently UNVERIFIED.
 
-## Localization copy pass — source-only / validation pending
+## HISTORICAL / SUPERSEDED — localization copy pass checkpoint (2026-10-20)
 
 - Home and contact actions use centralized localization keys for English and Indonesian. The Home heading is `Notification` / `Notifikasi`; the Settings page keeps `Notifications` / `Notifikasi`. Hotside labels consistently use `Hotside` / `Suhu Hotside`.
 - Notification descriptions use natural action language (`Send a notification` / `Kirim notifikasi`). User-facing errors avoid surfacing internal backend wording. Flutter tests and Dart analysis have NOT RUN; the last verified App build remains #120.
@@ -99,7 +99,7 @@ This file is the durable App behavior/design contract. Live source and the curre
 - Manual voltage levels: 5 V, 9 V, 12 V. Expected user touch cycle is 5→9→12→9→5, with the established ~1-second manual-switch guard.
 - Voltage indicator LED default mapping: 5 V red, 9 V green, 12 V blue. Users can customize colors and reset to defaults.
 - PWM Fan speed control belongs in the CONTROL submenu. Manual PWM control is available only in Manual mode at 12V, in 50–100% increments of 10; App control remains disabled during Adaptive.
-- Adaptive Fan PWM is Firmware-owned. Current active source is `firmware/JEXFYZ-V7.1.ino` (blob `6ef355d666b83fc83b4d7c48ee377753828ca02c`). Target bands at 12 V use floored whole-degree categories relative to configured Hotside Limit: delta ≤2°C →100%; 3–4°C →90%; 5–6°C →80%; 7–8°C →70%; 9–10°C →60%; ≥11°C →50%. At limit 40°C: 40/39/38 →100%, 37/36 →90%, 35/34 →80%, 33/32 →70%, 31/30 →60%, ≤29 →50%. Bands move with the setting. Immediate raw-decimal Hotside safety remains Fan 100% and Peltier OFF at/above limit; Adaptive 5 V/9 V stays 100%. PWM pacing remains −10 points/10 seconds and +10 points/1 second. The prior V7.0 compile/Online OTA report does not validate V7.1, which is NOT COMPILED / NOT INSTALLED.
+- Adaptive Fan PWM is Firmware-owned. Current active source is `firmware/JEXFYZ-V7.1.ino` (blob `6ef355d666b83fc83b4d7c48ee377753828ca02c`). Target bands at 12 V use floored whole-degree categories relative to configured Hotside Limit: delta ≤2°C →100%; 3–4°C →90%; 5–6°C →80%; 7–8°C →70%; 9–10°C →60%; ≥11°C →50%. At limit 40°C: 40/39/38 →100%, 37/36 →90%, 35/34 →80%, 33/32 →70%, 31/30 →60%, ≤29 →50%. Bands move with the setting. Immediate raw-decimal Hotside safety remains Fan 100% and Peltier OFF at/above limit; Adaptive 5 V/9 V stays 100%. PWM pacing remains −10 points/10 seconds and +10 points/1 second. The owner subsequently confirmed V7.1 was compiled and installed via Online OTA. Exact source-to-BIN provenance and physical behavior remain independently UNVERIFIED.
 - Adaptive ON locks the manual voltage touch sensor. Toggling Adaptive ON/OFF returns hardware to safe 5 V first. When leaving Adaptive, restore a previously running Peltier only through the safety gates and its normal 5-second OFF→ON soft-start.
 - The App must not claim rail transition complete until matching authoritative `VOLTAGE` telemetry confirms it.
 
@@ -163,7 +163,7 @@ This file is the durable App behavior/design contract. Live source and the curre
 - Current metrics are B/H/V/A/P/F. F is labelled Fan/Kipas and displays live PWM speed while running. When BLE telemetry is disconnected, live device values are unknown (--) and no stale output state is inferred.
 - FPS, SurfaceFlinger TimeStats sampling, Shizuku permission UI/provider/UserService/AIDL, related parser/watchdog tests and Shizuku-only license files are removed from active App source. The release workflow audit and source archive packaging no longer depend on them.
 - Schema version 2 maps old schema-v1 S (Speed) to F (Fan Speed) and drops old schema-v1 F (FPS). Flutter contract tests cover migration and removal of FPS/Shizuku UI.
-- Historical Build #83 / run 39192430789 was superseded. Build #123 is the latest verified App release and validates its packaged source only; the latest single-event NOTIFY source has not been tested or released. The newer source-only follow-up updates falling-flame geometry/rounded clipping and makes the heading exactly NOTIFY; it is not yet validated/released. Phone visuals, physical animation smoothness and live BLE telemetry remain unverified.
+- Historical Build #83 / run 39192430789 was superseded by later App releases. Build #124 is the latest independently verified App package and includes the single-event Home NOTIFY behavior described above. Physical-phone rendering, animation smoothness, BLE telemetry and OTA/device behavior remain unverified by App CI.
 
 ## Phone battery telemetry and Battery Protection UI boundary
 
