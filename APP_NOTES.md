@@ -9,6 +9,13 @@ This file is the durable App behavior/design contract. Live source and the curre
 - The App release record does not independently prove Firmware compilation, exact source-to-BIN identity, installed version, physical OTA/reboot/BLE recovery, or thermal/electrical behavior. Do not contradict the owner's report with stale V7.0/V7.1 status text.
 - Since the unit is sold and shipped and cannot be routinely disassembled, treat Build #124 + V7.1 as the production baseline. OTA/BLE/reconnect changes are high-risk and must not be bundled into unrelated UI cleanup.
 
+## Audit findings — Settings UI scale, Floating Monitor BLE visibility, and phone-notification copy (implementation pending)
+
+- The Home/dashboard visual canvas locks text scaling and scales a 360-dp design canvas to the viewport. The separately pushed Settings/sub-settings routes do not inherit this route-local lock. Root-navigator dialogs/sheets are also outside that subtree, so they need an explicit shared fixed-canvas policy rather than relying on Home's `MediaQuery`.
+- Native Floating Monitor currently replaces output values with `--` when telemetry says disconnected but does not remove the overlay. A future fix must distinguish the saved user preference from native runtime visibility; otherwise the current runtime health reconciler can clear the enabled preference while the window is intentionally hidden.
+- App push notification review: Bluetooth copy is generic but bilingual; Hotside safety copy is already localized; firmware-update availability sends the version string alone as its body; native notification channel labels/descriptions are English-only; cached OTA notice text must be localized again at send time after any language change.
+- Proposed correction and tests are tracked in `CHAT_TRANSFER.md`. No code or test files changed as part of this audit.
+
 ## HISTORICAL / SUPERSEDED — security checkpoint before Build #124 (2026-10-20; BLE authorization blocked)
 
 - Build #123 / Actions run `39371864780`, source `14e90e7e26b8eb4400bd01ec8d0eab5ed4195f1c`; APK SHA-256 `1d06c806b1e75440dfe16108d236dd4c5f0e9b85d50e56989263793952351abb`; source ZIP SHA-256 `0118f201027747f8f682a8d3a393334585a14845a8741f2296da07afae06fbe1`. This release predates and does not include the password-visibility patch.
