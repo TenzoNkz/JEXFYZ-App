@@ -15,7 +15,10 @@ Checkpoint maintenance date: 2026-10-21 (Asia/Jakarta). This is a concise contin
 - Canonical repository: `TenzoNkz/JEXFYZ-App`, branch `main`; work directly on main unless explicitly asked otherwise.
 - Latest code checkpoint before this documentation cleanup: HEAD `ca143274994316ebfee6195b47c59bab9cd1b3bb` (2026-10-20); recursive tree contained 68 entries and was not truncated. Re-fetch HEAD/tree on each new chat.
 - Latest independently verified App release record: Build #124 / Actions run [39386733061](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39386733061), package source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`. It passed 116 Flutter tests and configured release gates; native Android unit-test tasks were NO-SOURCE. APK SHA-256 `c0738d3607b120b716841610c849d9608f954a5f1f28017a8018790f4f4b6318`; corresponding source ZIP SHA-256 `e00ac34cb6cf7f04a5485c8ab8ee74d4acc1b20dc1a213ac733a8bf8c43cc152`.
-- Active editable Firmware source: `firmware/JEXFYZ-V7.1.ino`, `FW_VERSION="V7.1"`, pre-cleanup blob `6ef355d666b83fc83b4d7c48ee377753828ca02c`. The owner's compile/OTA confirmation applies to the product in the field; no binary payload was inspected and its source-to-BIN identity is not independently proven here.
+- Active editable Firmware source: `firmware/JEXFYZ-V7.1.ino`, `FW_VERSION="V7.1"`, current blob `c44e076b2c1ee2d0b66b4fcd308d0febc69976e9`. The owner's compile/OTA confirmation applies to the product in the field; no binary payload was inspected and its source-to-BIN identity is not independently proven here.
+- Current source-contract fingerprints after comment-only maintenance: QC `test/firmware_qc_contract_test.dart` blob `367acddd4ca9123c2834f8a5177039d9dadaabc9`; Touch/Adaptive sync `test/firmware_touch_adaptive_sync_test.dart` blob `dfa1f604327f1705b52134aa794d7ce60232841e`; Floating Monitor layout `test/floating_monitor_layout_contract_test.dart` blob `1159ac2970381cd6811a7a4a84c9d92321080f7b`.
+- Comment-only equivalence was checked for all changed source/test/config files against their pre-cleanup blobs. No runtime logic changed. No test, analysis, Gradle build, Arduino compile, App Build, BIN, Firebase, OTA, flash or device operation ran in this cleanup.
+
 - `TenzoNkz/JEXFYZ-Firmware` is BIN-only and must contain only `JEXFYZ.cpp.bin`. Never inspect or edit the payload during documentation cleanup.
 - Preserve Android Gradle `versionName "Telegram @horizontalzzz"`.
 
@@ -57,6 +60,9 @@ Checkpoint maintenance date: 2026-10-21 (Asia/Jakarta). This is a concise contin
 - Design constraints: `DESIGN_NOTES.md`; history: `CHANGELOG.md`; permanent rules and prompts: `CHAT_RULES.md`, `CHAT_TRANSFER_PROMPTS.md`.
 - `archive/` is immutable forensic history. Never treat an archived “CURRENT” statement as present truth.
 
-## Current cleanup checkpoint
+## Last completed task — repository hygiene and LOAD + CONTINUE handoff
 
-Task: repository hygiene, precise comments, reconcile current status docs and switch general chat-limit handoff to LOAD + CONTINUE. Keep this task documentation/comment-only; do not refactor protected behavior or run an App release/Firmware compile/OTA. The next chat should load live main and continue any explicit new user request, not repeat a recap.
+- Current-state docs and navigation were reconciled with the owner's Build #124 / Firmware V7.1 deployment confirmation, while preserving separate independent-evidence labels and dated history.
+- Added explanatory comments to source/test/config files that lacked clear file-level contracts; exact comparison with pre-cleanup blobs proves the edits are comment-only. Protected behavior and executable logic were not changed.
+- General chat-limit recovery now uses Prompt B to LOAD + CONTINUE; Build App retains Prompt D; Prompt A is reserved for explicitly requested full memory reconciliation.
+- No tests/build/analysis/compile/release/BIN/Firebase/OTA/flash/device operation was run by this maintenance task. Next step: load live main and await the user's next specific request; do not start discretionary product changes.
