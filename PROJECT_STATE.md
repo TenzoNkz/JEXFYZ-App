@@ -40,3 +40,11 @@ Last updated: 2026-10-21 (Asia/Jakarta). This file is current-only state; use `C
 - `CHAT_TRANSFER.md` is a rolling checkpoint, not a long transcript recap. Keep it accurate and update it after a substantive Discussion concludes and after each execution completes/blocks.
 - General/Discussion context limit: Prompt B in `CHAT_TRANSFER_PROMPTS.md` loads live state then continues without a recap stage. Build App context limit: Prompt D loads build state and `APP_BUILD_REPORT.md`, then continues the same authorized operation.
 - Prompt A is reserved for explicit full-memory reconciliation. If interrupted before a checkpoint write, recover from the last saved point and verify live evidence; do not pretend unsaved content was saved.
+
+
+## Latest maintenance decision — defer APK optimization (2026-10-21)
+
+- The owner cancelled the proposed APK-size/performance optimization and unused-file cleanup. The current APK works; avoiding unnecessary regression risk on the sold/shipped product is the priority.
+- Keep Build #124 + Firmware V7.1 as the production baseline. Do not remove assets/dependencies, split APKs by ABI, refactor the app, or make size/performance changes without a new explicit request tied to a concrete issue or measurable need.
+- This decision does not authorize source edits, tests/builds, firmware compilation, BIN/Firebase changes, OTA, flashing, or device operations. Reconsider only if a real problem or requirement appears, using baseline measurements and a narrowly scoped, reversible plan.
+

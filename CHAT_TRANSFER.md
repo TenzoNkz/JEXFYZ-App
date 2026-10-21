@@ -93,6 +93,12 @@ These fingerprints identify the exact document blobs available to this handoff, 
 - Current contract tests: `test/app_protocol_notify_contract_test.dart` `cd56576d440f3c23d9f340755b522fe12d997156`; `test/firmware_qc_contract_test.dart` `367acddd4ca9123c2834f8a5177039d9dadaabc9`; `test/firmware_touch_adaptive_sync_test.dart` `dfa1f604327f1705b52134aa794d7ce60232841e`; `test/floating_monitor_layout_contract_test.dart` `1159ac2970381cd6811a7a4a84c9d92321080f7b`.
 - Android Gradle preserves `versionName "Telegram @horizontalzzz"`. Build workflow SHA is above; it remains issue-triggered only, not push/PR triggered.
 
+## Latest maintenance decision — defer APK optimization (2026-10-21)
+
+- The owner cancelled the proposed APK-size/performance optimization and unused-file cleanup. The current APK works; avoiding unnecessary regression risk on the sold/shipped product is the priority.
+- Keep Build #124 + Firmware V7.1 as the production baseline. Do not remove assets/dependencies, split APKs by ABI, refactor the app, or make size/performance changes without a new explicit request tied to a concrete issue or measurable need.
+- This decision does not authorize source edits, tests/builds, firmware compilation, BIN/Firebase changes, OTA, flashing, or device operations. Reconsider only if a real problem or requirement appears, using baseline measurements and a narrowly scoped, reversible plan.
+
 ## Last completed task — repository hygiene and LOAD + CONTINUE handoff
 
 - Current-state docs and navigation were reconciled with the owner's Build #124 / Firmware V7.1 deployment confirmation, while preserving separate independent-evidence labels and dated history.

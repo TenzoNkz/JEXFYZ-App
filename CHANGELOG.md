@@ -1,5 +1,11 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-21 — APK optimization deferred by owner
+
+- Owner cancelled the proposal to shrink the APK or remove potentially unused repository files because the current App works and preventing regression is the priority for the sold/shipped product.
+- Build #124 + Firmware V7.1 remain the production baseline. No source, asset, dependency, workflow, firmware, BIN, Firebase, OTA or device changes were made for this decision.
+
+
 ## 2026-10-21 — Repository hygiene and LOAD + CONTINUE handoff
 
 - Reconciled the current production status with the owner confirmation: App Build #124 is in use; Firmware V7.1 compiled and was updated by Online OTA; the unit is sold and shipped. This deployment detail is recorded as USER-REPORTED, separate from CI and source provenance evidence.
