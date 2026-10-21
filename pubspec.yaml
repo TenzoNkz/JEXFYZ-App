@@ -1,3 +1,6 @@
+# Flutter package manifest: dependencies, version, SDK constraints, and app asset/plugin declarations.
+# Keep dependency resolution in pubspec.lock reproducible; comments below do not affect package behavior.
+
 # AI DEPENDENCY MEMORY
 # Keep dependencies minimal and synchronized with actual source imports.
 # Remove unused packages rather than keeping them as historical ballast.

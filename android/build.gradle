@@ -1,3 +1,6 @@
+// Root Android Gradle configuration: shared build/plugin setup for the Flutter Android project.
+// Production signing and app identity live in android/app/build.gradle; do not duplicate secrets here.
+
 // AI BUILD MEMORY:
 // Root Gradle configuration. Keep application-specific details in android/app/build.gradle.
 

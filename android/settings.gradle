@@ -1,3 +1,6 @@
+// Gradle settings: resolve the Android/Flutter plugins and include the app module.
+// Keep plugin versions and Flutter SDK discovery aligned with the committed project configuration.
+
 // AI BUILD MEMORY:
 // Pinned Flutter Gradle loader and Android/Kotlin/Google Services plugin versions.
 

@@ -1,3 +1,6 @@
+# Repository hygiene: generated build outputs, local secrets/configuration, and editor-only files stay out of Git.
+# Do not ignore project memory or canonical source/tests; they are tracked project assets.
+
 # Dart / Flutter generated files
 .dart_tool/
 .packages
