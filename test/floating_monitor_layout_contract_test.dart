@@ -119,15 +119,30 @@ void main() {
             ),
           ),
         );
+        await tester.pumpAndSettle();
         expect(tester.takeException(), isNull);
       }
 
       await pumpAtWidth(420);
       expect(contentWidth, closeTo(420.0, 0.01));
+      var canvasTransform = tester.widget<Transform>(
+        find.descendant(
+          of: find.byType(JexFixedScalePage),
+          matching: find.byType(Transform),
+        ),
+      );
+      expect(canvasTransform.transform.storage[0], closeTo(1.0, 0.01));
 
       await pumpAtWidth(320);
       // Narrow screens keep the 360-dp canvas and scale it down proportionally.
       expect(contentWidth, closeTo(360.0, 0.01));
+      canvasTransform = tester.widget<Transform>(
+        find.descendant(
+          of: find.byType(JexFixedScalePage),
+          matching: find.byType(Transform),
+        ),
+      );
+      expect(canvasTransform.transform.storage[0], closeTo(320 / 360, 0.01));
     },
   );
 
