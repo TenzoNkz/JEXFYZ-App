@@ -10,7 +10,15 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 - Build #128 passed all 21 workflow gates, 121 Flutter tests, analyzer (25 informational diagnostics), the configured Android Gradle gate, V1/V2/V3 + expected certificate checks, source-marker/ZIP checks and independent downloaded APK/source checksum verification. Native Android JUnit tasks were NO-SOURCE.
 - App release CI is not evidence of Firmware compile/BIN identity, installation on the sold unit, OTA apply/reboot, BLE recovery or thermal/electrical behavior.
 
-## Active Build App/QC operation — BUILD #129 ACTIVE — 2026-10-23 (Asia/Jakarta)
+## Active Build App/QC operation — BUILD #129 ACTIVE; FLUTTER TESTS PASSED — 2026-10-23 (Asia/Jakarta)
+
+- **Run:** [#129 / 39925045446](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446), source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`, job `120319250463`, runner `1000002428`, run `in_progress`.
+- **Passed:** setup/checkout, Java 17/Flutter/Gradle, toolchain validation, local.properties, production-signing preparation, generated wrapper, security/architecture audit, dependencies, Dart analyzer and Flutter tests (steps 1–13). The new density regression test executes within the passed Flutter suite. Aggregate test count awaits the terminal job log.
+- **Current:** Android configured Gradle gate (step 14) is `in_progress`. APK build/signing, source archive, publication, tag parity and downloaded asset checks remain pending.
+- **Checkpoint:** report commit `d1b98e537498546a820ceaa7cb50555d2caf692f` was committed and verified. This transfer update must also be verified after commit. No duplicate trigger while #129 is active; Build #128 remains latest verified release until the new run completes all gates.
+- Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device operations.
+
+
 
 - **Run:** [#129 / 39925045446](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446), exact source SHA `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`, job `120319250463`, runner `1000002428` (`ubuntu-24.04`), status `in_progress`.
 - **Runner steps:** Set up job, checkout and Java 17 passed; Set up Flutter is running at the latest read. This confirms the current attempt obtained a real hosted runner, but no analyzer/test/release gate has passed yet.
