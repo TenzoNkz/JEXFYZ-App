@@ -1,5 +1,15 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-23 — Cap Settings/Connection canvas scaling (source implemented; tests not run)
+
+- Owner authorized `@Thinking Eksekusi Full!` to correct the Settings page and Bluetooth Connection sheet looking oversized/zoomed.
+- Root cause: `JexFixedScalePage` in `lib/floating_monitor.dart` previously used `constraints.maxWidth / 360.0` directly, scaling the entire child above 1× on viewports wider than 360 logical dp.
+- Source commit: [`57ebcf8d971decf399e7a4d3e5dd5bf3d605010d`](https://github.com/TenzoNkz/JEXFYZ-App/commit/57ebcf8d971decf399e7a4d3e5dd5bf3d605010d). It clamps the factor to 1.0, uses the available logical width on wider viewports, and preserves a 360-dp logical design canvas with proportional downscale on narrow viewports.
+- Regression test coverage was added in that change and refined in [`c92b0d08a16d101abf01b448804431dc795060fd`](https://github.com/TenzoNkz/JEXFYZ-App/commit/c92b0d08a16d101abf01b448804431dc795060fd), asserting 420-dp viewport uses logical width 420/scale 1.0 and 320-dp viewport uses logical width 360/scale 320÷360. Source-contract assertions cover the cap, width sizing and no-upscale policy.
+- Static verification: live source/test contents re-fetched after commit; required source and test anchors present; old uncapped scale statement absent; only one `JexFixedScalePage` class definition remains. These are static checks, not executed Flutter tests.
+- **Validation status: NOT RUN / BLOCKED BY TOOLING.** Flutter and Dart executables are absent in this environment; cloning GitHub failed because the host could not be resolved. Targeted widget tests, `dart format`, analyzer, full Flutter suite and device-layout checks have not run. No App Build/release was triggered. Build #128 / source `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3` remains the latest verified release; this main-only patch is not included in it.
+- No Firmware compile, BIN/Firebase, OTA, flash or device operation occurred. Next validation in a Flutter-enabled environment: format modified files, run the targeted widget test, run `flutter analyze --no-fatal-infos`, then full `flutter test`. Only after passing validation should a separate explicitly authorized Build App/QC task package the change.
+
 ## 2026-10-23 — Record oversized Settings/Connection UI feedback (docs-only; source fix pending)
 
 - Owner reports they installed/overwrote with Build #128 and supplied screenshots/video where Settings and the Bluetooth Connection bottom sheet look too large/zoomed.
