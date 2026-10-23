@@ -1,5 +1,12 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-23 — Define durable chat-memory checkpoint cadence (docs-only)
+
+- Clarified that GitHub is not an automatic transcript store: a decision or state is saved only after its repository update is committed and verified.
+- Updated both transfer prompts to checkpoint after durable decisions, logical milestones, task completion/blockage, and before an expected chat-limit interruption; Build App must update APP_BUILD_REPORT.md as real attempts progress.
+- Updated CHAT_RULES.md, MEMORY_INDEX.md, HANDOVER.md, CHAT_TRANSFER.md and the current Build App handoff guidance to recover from the last verified commit and never claim an unsaved conversation tail was preserved.
+- Documentation-only. No application source, config, workflow, tests, build/release, Firmware/BIN/Firebase, OTA, flashing or device operation was performed.
+
 ## 2026-10-23 — Use bare command names in chat-transfer blocks (docs-only)
 
 - Corrected the transfer prompt convention: copy-ready block first lines are now only `Diskusi!` and `Eksekusi Build App!`, without the `@Thinking` prefix.
