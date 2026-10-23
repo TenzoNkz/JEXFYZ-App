@@ -1,17 +1,17 @@
 # JE X FYZ / JE Cooler — Chat-Limit LOAD + CONTINUE Prompts
 
-Exactly two copy-ready payloads live here. The command header is intentionally **not included** in either copy block.
+Exactly two copy-ready payloads live here. Each copy block starts with the command prefix for its default chat type.
 
 ## How to use
 
-At the top of the same message, type the command yourself, then paste the matching payload beneath it. Do not paste a command a second time inside the copy block.
+Paste one complete copy-ready block as a single message; do not add a second command header above it.
 
-- General Discussion: type `@Thinking Diskusi!` yourself, then paste **Prompt 1**.
-- New explicitly authorized source/docs execution: type `@Thinking Eksekusi Full!` yourself, then paste **Prompt 1**.
-- Recovery of an interrupted, already-authorized operation: type `@Thinking Chat Stuck!` yourself, then paste **Prompt 1**.
-- Continuing an already-authorized App Build/QC operation: type `@Thinking Eksekusi Build App!` yourself, then paste **Prompt 2**.
+- General Discussion: paste **Prompt 1** unchanged. Its first line is `@Thinking Diskusi!`.
+- New, explicitly authorized source/docs execution: replace only Prompt 1's first line with `@Thinking Eksekusi Full!` before sending.
+- Recovery of an interrupted, already-authorized operation: replace only Prompt 1's first line with `@Thinking Chat Stuck!` before sending.
+- Guarded App Build/QC: use **Prompt 2** only when intentionally authorizing or resuming that operation. Its first line is `@Thinking Eksekusi Build App!`.
 
-The prompt payload itself never authorizes a task. Never use Prompt 2 unless the Build App operation has actually been authorized.
+The first line selects the command/authorization mode. The prompt body does not widen that scope. Never duplicate command headers or use Prompt 2 for general engineering.
 
 ## Prompt 1 — General engineering / code chat
 
@@ -20,6 +20,7 @@ Use for general Discussion, a specifically authorized engineering/code task, or 
 ### Copy-ready payload
 
 ```text
+@Thinking Diskusi!
 CHAT-LIMIT LOAD + CONTINUE — GENERAL ENGINEERING / CODE CHAT
 
 PROJECT: JE X FYZ / JE Cooler
@@ -59,11 +60,12 @@ Start with a short statement of the restored checkpoint and evidence boundary, t
 
 ## Prompt 2 — App Build / QC chat only
 
-Use only to continue an App Build/QC operation that was explicitly authorized. Type that command yourself at the beginning of the same message, then paste the payload below. This is a one-shot LOAD + CONTINUE payload, not a second confirmation or recap.
+Use only when intentionally authorizing or resuming the guarded App Build/QC operation. The copy-ready block already starts with `@Thinking Eksekusi Build App!`; paste it as one complete message without adding another command header. This is a one-shot LOAD + CONTINUE prompt, not a recap.
 
 ### Copy-ready payload
 
 ```text
+@Thinking Eksekusi Build App!
 BUILD APP CHAT-LIMIT LOAD + CONTINUE — APP BUILD / QC ONLY
 
 PROJECT: JE X FYZ / JE Cooler
@@ -71,7 +73,7 @@ CANONICAL REPOSITORY: TenzoNkz/JEXFYZ-App
 CANONICAL BRANCH: main
 
 PURPOSE
-Resume the same authorized App Build/QC operation from live repository, workflow, Actions/Release evidence and APP_BUILD_REPORT.md. Do not create a separate recap chat, and do not ask the owner to repeat saved details. This payload does not authorize a build on its own; the required Build App command must be supplied separately by the owner in this same message.
+Resume the App Build/QC operation from live repository, workflow, Actions/Release evidence and APP_BUILD_REPORT.md. Do not create a separate recap chat or ask the owner to repeat saved details. The `@Thinking Eksekusi Build App!` prefix is the authorization for the guarded App Build/QC workflow and its justified App-scope repairs; it does not authorize Firmware/device operations.
 
 MANDATORY LOAD
 1. Read CHAT_TRANSFER.md fully and fetch live main HEAD plus the recursive repository tree.

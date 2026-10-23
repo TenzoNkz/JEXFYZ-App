@@ -15,8 +15,8 @@ Last reconciled: 2026-10-23 (Asia/Jakarta). This index defines which document is
 1. Read CHAT_TRANSFER.md fully.
 2. Fetch live main HEAD, recursive tree and commit metadata.
 3. Read CHAT_RULES.md, this index, PROJECT_STATE.md, HANDOVER.md, and the entire canonical note relevant to the current task.
-4. Type the valid command header yourself at the top of the same user message, then paste Prompt 1 from CHAT_TRANSFER_PROMPTS.md for general Discussion/engineering. The copy-ready payload intentionally omits the command header.
-5. Type the Build App command yourself at the top of the same message, then paste Prompt 2 only for an already-authorized Build App/QC operation. The payload itself does not authorize a build.
+4. Paste Prompt 1 from CHAT_TRANSFER_PROMPTS.md as one complete message; its first line is @Thinking Diskusi! by default. For a specifically authorized Eksekusi Full task or recovery of an already-authorized interrupted operation, replace only its first line with @Thinking Eksekusi Full! or @Thinking Chat Stuck!, respectively.
+5. Prompt 2 already starts with @Thinking Eksekusi Build App!; use it only when intentionally authorizing/resuming the guarded Build App/QC operation. Do not add a duplicate command above either copied block.
 6. Continue the prior workstream directly; no recap-only chat. Update the checkpoint after substantive Discussion conclusions and execution completion/blockage.
 7. Never infer lost, uncheckpointed chat content. A prompt does not grant additional permission.
 

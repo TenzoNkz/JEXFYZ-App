@@ -1,5 +1,12 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-23 — Restore matching command prefixes to chat-transfer prompts (docs-only)
+
+- Added @Thinking Diskusi! as Prompt 1's default first line and @Thinking Eksekusi Build App! as Prompt 2's first line, so a pasted copy-ready block includes a recognized command.
+- Clarified that Prompt 1's first line must be replaced with @Thinking Eksekusi Full! for a specifically authorized engineering execution or @Thinking Chat Stuck! for recovery; the two-prompt structure is retained and duplicate headers are discouraged.
+- Aligned CHAT_TRANSFER.md, CHAT_RULES.md, MEMORY_INDEX.md, HANDOVER.md, BUILD_NOTES.md and the current APP_BUILD_REPORT.md handoff block with the command-prefix convention.
+- Documentation-only commit. No executable source, configuration, workflow or tests changed; no tests/build/release, Firmware/BIN/Firebase, OTA, flashing or device operation was performed.
+
 ## 2026-10-23 — Chat-limit prompt copy cleanup (docs-only)
 
 - Removed the command header from both copy-ready LOAD + CONTINUE prompt payloads. The owner now types the appropriate @Thinking command at the top of the same message and pastes the matching payload below it, avoiding duplicate command text in the copied prompt.

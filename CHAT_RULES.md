@@ -19,7 +19,7 @@ Use only the two templates in CHAT_TRANSFER_PROMPTS.md:
 1. General engineering: Discussion, an explicitly authorized Eksekusi Full task, or recovery of an already-authorized interrupted operation.
 2. Build App: one-shot LOAD + CONTINUE for an already authorized App Build/QC operation.
 
-A replacement chat must LOAD and CONTINUE; do not create a recap-only chat or ask the user to repeat saved requirements. The owner types the correct command header manually at the top of the same message, followed by the matching copy-ready payload. The payloads in CHAT_TRANSFER_PROMPTS.md deliberately omit command headers and grant no permissions by themselves. If authorized execution was interrupted, use @Thinking Chat Stuck! rather than silently switching to Discussion or starting another build.
+A replacement chat must LOAD and CONTINUE; do not create a recap-only chat or ask the user to repeat saved requirements. The copy-ready blocks in CHAT_TRANSFER_PROMPTS.md include their command prefix as the first line. Prompt 1 defaults to @Thinking Diskusi!; for a specifically authorized Eksekusi Full scope or a Chat Stuck recovery, replace only that first line with the matching command. Prompt 2 starts with @Thinking Eksekusi Build App! and must be used only for that guarded workflow. Paste the selected block as one complete message without a duplicate header above it. The command sets the authorization mode; the remaining payload cannot widen it. If authorized execution was interrupted, use @Thinking Chat Stuck! rather than silently switching to Discussion or starting another build.
 
 ## 3. Source-of-truth and memory discipline
 

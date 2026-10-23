@@ -37,4 +37,4 @@ This file describes the current guarded App release process. APP_BUILD_REPORT.md
 - Retry only after a concrete fix or a documented transient infrastructure cause. Never launch duplicate builds blindly.
 - If permissions, runner allocation, signing secrets, external services or owner/device action blocks progress, record the exact blocker and stop as BLOCKED.
 - A successful App build does not authorize Firmware compilation, BIN publication/replacement, Firebase mutation, OTA, flash or device actions. Those require separate explicit permission.
-- Use Prompt 2 in CHAT_TRANSFER_PROMPTS.md for chat-limit LOAD + CONTINUE of an already-authorized Build App task. Keep the run ledger, not a recap chat, as the continuation source.
+- Use Prompt 2 in CHAT_TRANSFER_PROMPTS.md for chat-limit LOAD + CONTINUE of the guarded Build App/QC workflow. Its copy-ready block already begins with @Thinking Eksekusi Build App!; paste it as one complete message without a duplicate command header. Keep the run ledger, not a recap chat, as the continuation source.
