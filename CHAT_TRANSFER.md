@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Live Chat Checkpoint
 
-Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuation state, not a transcript or a substitute for live repository checks. Prompt 1 defaults to `@Thinking Diskusi!`; Prompt 2 begins with `@Thinking Eksekusi Build App!`. For Prompt 1 execution/recovery variants, replace its first line with the matching command.
+Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuation state, not a transcript or a substitute for live repository checks. Prompt 1 begins with `Diskusi!`; Prompt 2 begins with `Eksekusi Build App!`. For explicitly authorized execution/recovery variants, replace Prompt 1's first line with `Eksekusi Full!` or `Chat Stuck!`.
 
 ## Product/release baseline
 
@@ -18,7 +18,7 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 
 ## Last durable task and result
 
-Latest durable task: the owner requested that every copy-ready chat-transfer prompt include the command prefix appropriate to its chat mode, after a transfer payload sent without a recognized command was treated as a prompt title rather than a command. The two-prompt structure remains intact: Prompt 1 defaults to `@Thinking Diskusi!` and its first line is replaced with `@Thinking Eksekusi Full!` or `@Thinking Chat Stuck!` for those respective modes; Prompt 2 begins with `@Thinking Eksekusi Build App!`. No command is duplicated above the pasted block.
+Latest durable task: the owner requested that every copy-ready chat-transfer prompt include the command prefix appropriate to its chat mode, after a transfer payload sent without a recognized command was treated as a prompt title rather than a command. The two-prompt structure remains intact: Prompt 1 defaults to `Diskusi!` and its first line is replaced with `Eksekusi Full!` or `Chat Stuck!` for those respective modes; Prompt 2 begins with `Eksekusi Build App!`. These are short command names without the `@Thinking` prefix. No extra command line is added above the copied block.
 
 The prior documentation rework remains complete. The Home notice-heading mismatch stays unresolved: live source renders localized Notification / Notifikasi, while DESIGN_NOTES.md still records the fixed NOTIFY requirement. No product behavior change is included in this prompt-prefix task.
 
@@ -54,4 +54,4 @@ Static contract files exist, notably test/device_copy_notification_contract_test
 - OTA: OTA_PROTECTION.md and OTA_REGRESSION_MEMORY.md. Voltage/Peltier: VOLTAGE_TRANSITION_MEMORY.md.
 - App build process: BUILD_NOTES.md. Full attempt ledger: APP_BUILD_REPORT.md. History-only timeline: CHANGELOG.md. Immutable forensic snapshots: archive/.
 - General Discussion/engineering handoff: Prompt 1 in CHAT_TRANSFER_PROMPTS.md. Build App handoff: Prompt 2 only.
-- After a durable Discussion conclusion or execution completion/blockage, refresh this checkpoint and the relevant canonical note. Copy-ready transfer prompts include command prefixes: Prompt 1 defaults to `@Thinking Diskusi!` (replace its first line for Eksekusi Full or Chat Stuck), and Prompt 2 starts with `@Thinking Eksekusi Build App!`. If chat limit interrupts before saving, recover only from the last checkpoint and live evidence; do not claim unsaved content was preserved.
+- After a durable Discussion conclusion or execution completion/blockage, refresh this checkpoint and the relevant canonical note. Copy-ready transfer prompts use short command names without `@Thinking`: Prompt 1 defaults to `Diskusi!` (replace its first line with `Eksekusi Full!` or `Chat Stuck!` for those modes), and Prompt 2 starts with `Eksekusi Build App!`. If chat limit interrupts before saving, recover only from the last checkpoint and live evidence; do not claim unsaved content was preserved.
