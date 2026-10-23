@@ -1,4 +1,15 @@
-## CURRENT BUILD APP EXECUTION — BUILD #128 QUEUED — 2026-10-23 (Asia/Jakarta)
+## CURRENT BUILD APP EXECUTION — BUILD #128 FLUTTER TESTS IN PROGRESS — 2026-10-23 (Asia/Jakarta)
+
+- **Run/source:** [#128 / 39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440), source SHA `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`, job `120264345808`, hosted runner `1000002427` (`ubuntu-24.04`), status `in_progress`.
+- **Steps 1–12 passed:** runner setup, checkout, Java 17/Flutter/Gradle toolchains, toolchain validation, local.properties, production-signing preparation, wrapper setup, App security/architecture audit, dependency installation and Dart analyzer. Analyzer step succeeded; Build #126/#127 had 25 info-level diagnostics on their corresponding source.
+- **Current gate:** Flutter tests (step 13) is `in_progress`; these tests validate the three corrected static assertions. Android Gradle gate and all APK/signing/source ZIP/Release/download gates remain pending.
+- **Logs:** job log download still returns `BlobNotFound` while the job is active; step API continues to show runner progress. The test outcome is not yet known.
+- **No duplicate:** do not start another run while #128 is active. Build #124 remains the latest verified package until the complete #128 release and asset checks pass.
+- **Next:** inspect final Flutter test results. If they pass, continue the remaining Android and release gates; if they fail, use the actual log to make only a justified test/source repair, then checkpoint. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device activity.
+
+---
+
+## HISTORICAL CHECKPOINT — BUILD #128 QUEUED BEFORE RUNNER
 
 - **Run:** [Build #128 / 39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440), event `issues`, created `2026-10-23T05:50:50Z`, status `in_progress`, exact `head_sha` `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3` (matches main at trigger).
 - **Trigger/policy:** existing issue #34 was closed/reopened once via the unchanged guarded issue trigger. Workflow blob remains `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; no push/PR/manual-dispatch route was added.
