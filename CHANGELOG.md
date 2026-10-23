@@ -1,5 +1,11 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-23 — Owner reports Actions startup issue fixed; verification pending
+
+- Owner reports the GitHub Actions issue behind Build #125 is repaired and now works. Evidence status is `USER-REPORTED`: at the latest live query, #125 remained the newest failed run, #124 remained the latest successful release, and no later run had yet demonstrated runner startup recovery.
+- Updated APP_BUILD_REPORT.md, CHAT_TRANSFER.md, PROJECT_STATE.md and HANDOVER.md to preserve the original #125 failure evidence while recording the owner's update without claiming the recovery is independently verified.
+- No build/trigger was initiated in Discussion. Future verification requires explicit `@Thinking Eksekusi Build App!` authorization, fresh preflight and the unchanged guarded issue-only workflow.
+
 ## 2026-10-23 — Reconcile Home notice decision and pre-Build App checkpoint (docs-only)
 
 - Corrected a stale `MEMORY_INDEX.md` sentence that still described the Home notice heading as an unresolved mismatch after the owner had settled on `Notification` (English) / `Notifikasi` (Indonesian). `APP_NOTES.md` and `DESIGN_NOTES.md` already record the resolved decision.
