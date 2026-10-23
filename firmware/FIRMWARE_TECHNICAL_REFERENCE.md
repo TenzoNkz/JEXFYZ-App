@@ -1,116 +1,82 @@
 # JE X FYZ — Firmware Technical Reference
 
-Last source/safety-reference reconciliation: 2026-10-21 (Asia/Jakarta). The owner confirms App Build #124 is in use and Firmware V7.1 compiled successfully and was installed by Online OTA on the sold/shipped unit. Treat this as USER-REPORTED deployment status; do not repeat superseded claims that V7.1 is uncompiled/uninstalled. Build #124 independently verifies the App release package only, not exact firmware BIN identity or in-field behavior.
+Last reconciled: 2026-10-23 (Asia/Jakarta). Source identity and behavior are rechecked against live main before every task. This is the current technical reference; previous-version algorithms belong in CHANGELOG.md.
 
-## BLE App-authentication checkpoint — 2026-10-20 (BLOCKED / NOT IMPLEMENTED)
+## Current source and evidence
 
-- Current V7.1 BLE configures encrypted bonded RX writes but uses Just Works and opens the session command gate with `SYNC_READY`; this does not cryptographically establish JE Cooler App identity.
-- Intended direction: per-install signing key in Android Keystore, server-authorized device-bound enrollment, firmware-pinned server verification key, and fresh nonce/signature challenge per session.
-- No trusted backend enrollment/signing/owner-claim endpoint or managed signing-key provisioning path was found in the repository. Do not accept a key supplied by any first-connected client; this would permit hostile enrollment. See `BLE_APP_AUTH.md`.
-- No Firmware source/protocol change occurred. OTA code is protected and unchanged.
+- Active source: firmware/JEXFYZ-V7.1.ino.
+- Embedded version: FW_VERSION="V7.1".
+- Live source blob at the start of this documentation rework: c44e076b2c1ee2d0b66b4fcd308d0febc69976e9.
+- Owner reports V7.1 compilation and Online OTA installation on the sold/shipped unit. USER-REPORTED; exact BIN provenance, installed-version query and physical post-update behavior remain UNVERIFIED.
+- Target toolchain: ESP32-C3 Super Mini / ESP32-C3 Dev Module; Arduino-ESP32 Core 3.3.7.
+- Build #124 is Android App release evidence only, not a Firmware compile.
 
+## Architecture and runtime invariants
 
-## Current source identity
+- Cooperative main loop; time-based control uses millis(), without executable delay() or timing while().
+- OTA supervision takes priority over ordinary application work.
+- ESP32-C3 has one radio path. Wi-Fi OTA and BLE must transfer radio ownership deliberately, never operate as concurrent owners.
+- Hotside NTC is the universal thermal safety input. Use one calibrated analogReadMilliVolts(PIN_NTC) sample per second; do not add averaging/filtering without explicit approval.
+- Firmware owns actual hardware state and streams telemetry/state deltas to App. App must not infer physical state from ACK alone.
+- NTC invalid state fails safe according to current code (Peltier OFF, Fan 100%, Adaptive OFF, safe 5 V).
+- Persistent settings use a shared quiet-period debounce; Adaptive Profile is runtime-only.
+- BLE app-only authentication is BLOCKED: encrypted/bonded writes plus Just Works and SYNC_READY do not prove official App identity. See BLE_APP_AUTH.md.
 
-- Canonical editable source: `firmware/JEXFYZ-V7.1.ino`, blob `c44e076b2c1ee2d0b66b4fcd308d0febc69976e9`, embedded `FW_VERSION="V7.1"`.
-- Compile/install status: owner confirms V7.1 compile and Online OTA installation on the sold unit (USER-REPORTED). Independent V7.1 contract-test execution, exact source-to-BIN identity, installed-version evidence and physical behavior remain UNVERIFIED.
-- Target: ESP32-C3 Super Mini / ESP32-C3 Dev Module, Arduino-ESP32 Core 3.3.7. Firmware compiles separately from App release.
+## Hardware, pins and timing
 
-## Architecture
-
-- Cooperative main loop; time-based control uses `millis()` rather than blocking delays.
-- OTA is supervised before normal application work.
-- ESP32-C3's single radio path requires an explicit Wi-Fi/BLE ownership handoff.
-- Local OTA starts from a boot SoftAP. Current constants are `BOOT_AP_TIMEOUT_MS = 10000` (no-client window) and `BOOT_AP_HARD_LIMIT_MS = 60000` (hard cap after AP interaction). BLE may start only after Wi-Fi is shut down and the existing 160 ms radio-settle interval elapses. Treat this as protected OTA/radio behavior.
-- Hotside NTC is the universal thermal safety input.
-- Firmware maintains authoritative hardware state and sends telemetry/state deltas to App. The App must not invent physical state from command ACK alone.
-- RGB sync uses one `LED_SYNC:<mode>,<phase_ms>,<cycle_ms>` tuple. An internal queue marker is expanded only in `serviceBleTx()` immediately before notification, so phase/mode/cycle are atomic and phase does not age in the BLE queue.
-- Firmware IDs are Static 1 (1000 ms), Breath 2 (2200 ms), Comet 4 (1600 ms), Dual Chase 5 (900 ms), Left/Right 6 (1800 ms), Rainbow 7 (30000 ms). ID 3 is retired; saved ID 3/invalid values migrate to Static and `MODE:3` is rejected.
-- App provides Android phone Battery temperature at 1 Hz via `PHONE:BT`; current Firmware Battery freshness TTL is 5 seconds and the Battery zones have 0.5°C hysteresis. The App’s Battery heartbeat does not change the one-calibrated-sample-per-second NTC rule.
-- Persistent setting writes share a quiet-period debounce; Adaptive Profile is runtime-only.
-
-## Pin/output map
-
-| Function | Pin / setting |
+| Function | Pin / contract |
 |---|---|
 | Hotside NTC ADC | GPIO0 |
-| TTP223 touch | GPIO1 |
+| TTP223 Touch input | GPIO1 |
 | 12 V selector | GPIO3 |
 | 9 V selector | GPIO4 |
-| Peltier MOSFET | GPIO5 |
-| Fan MOSFET | GPIO6 |
-| WS2812 LEDs | GPIO7 |
-| Peltier PWM | 20 kHz, 8-bit, 5 s normal OFF→ON ramp |
-| Fan PWM | 25 kHz, 8-bit; manual target 50–100% |
+| Peltier MOSFET PWM | GPIO5; 20 kHz, 8-bit; ordinary OFF→ON ramp 5 s |
+| Fan MOSFET PWM | GPIO6; 25 kHz, 8-bit; Manual target 50–100% |
+| WS2812 LED | GPIO7 |
 | Selector deadtime | 200 ms break-before-make |
-| Shared voltage guard | 1,000 ms |
-| NTC sample/telemetry cadence | one calibrated sample per second |
+| Voltage settle/guard | 1,000 ms |
+| NTC sample/telemetry cadence | one calibrated sample each second |
 
-Electrical assumptions: logic/divider reference 3.3 V; 10 kΩ fixed resistor + 10 kΩ nominal NTC, Beta 3950. Use `analogReadMilliVolts(PIN_NTC)` as the single sample; no median, trimmed mean or multi-sample average. NTC invalid state fails safe (Peltier OFF, Fan 100%, Adaptive OFF, safe 5 V according to current implementation).
+Electrical assumptions: 3.3 V reference; 10 kΩ fixed divider and 10 kΩ nominal NTC, Beta 3950. Hotside limit is configurable 40–50°C, default 45°C.
 
 ## Voltage transition and Peltier soft-start
 
-The canonical detailed incident/contract is `VOLTAGE_TRANSITION_MEMORY.md`.
+See VOLTAGE_TRANSITION_MEMORY.md for the two separate reset incidents and full static acceptance checklist.
 
-- `requestVoltage()` records accepted transition state and pauses only an active Peltier soft-start before selector shutdown.
-- If the ramp is active, capture the interrupted state, force GPIO5 to 0%, retain selector 200 ms break-before-make, and restart a fresh five-second ramp after the one-second guard.
-- If ramp completion has already occurred, keep PWM at 100% throughout the rail transition. No forced 0%, no redundant ramp.
-- If Peltier is logically OFF, a voltage change never turns it on.
-- OFF command, thermal/NTC safety and OTA safe-output must cancel pending resume state. Explicit Peltier OFF during Adaptive-stop also clears the deferred restore flag, preventing handoff completion from turning Peltier back on.
-- Fan remains on/forced to 100% during transition.
-- Adaptive mode entry/exit uses a safe-5V selector handoff without forcing an additional Peltier OFF/ON cycle. The common voltage-transition helper pauses only an active soft-start; a completed ramp stays at 100%. Explicit OFF and Hotside/NTC/OTA safety retain priority.
-- A reported restart during 5 V→12 V with active ramp is not proven to be brownout. Use `BOOT: RESET_REASON=...` and live telemetry for diagnosis.
+- A Peltier already OFF remains OFF through a rail change.
+- An active five-second soft-start is captured and paused at 0% before selector switching; keep the 200 ms break-before-make and one-second guard, then restart only the saved interrupted ramp.
+- A completed ramp stays at 100% continuously through rail transitions; do not add an unnecessary pause or soft-start.
+- Fan stays ON/100% during handoff.
+- Explicit OFF, Hotside/NTC safety and OTA safe-output cancel deferred resumes. Adaptive entry/exit uses the safe-5V handoff without a redundant Peltier OFF/ON cycle.
+- Reset causes require BOOT: RESET_REASON=... or equivalent real diagnostics. Brownout is not assumed.
 
-## Hotside / Adaptive safety
+## Hotside, Adaptive and Fan
 
-- Hotside limit: configurable 40–50°C, default 45°C.
-- Manual Peltier safety latch requires Hotside `<= hotLimit - 1°C` continuously for five seconds before re-arm; no single-sample bypass.
-- Adaptive thermal protection uses a 30-second stage at 12 V, 9 V and 5 V, with Peltier OFF and Fan 100%.
-- Five seconds continuously at/below `hotLimit - 1°C` before timeout cancels the stage. Otherwise 12 V/9 V step down one rail; unrecovered 5 V enters terminal lock requiring manual restart.
-- Restoration after thermal step-down requires 60 seconds continuously at/below `hotLimit - 1°C` for each upward rail, capped at the saved pre-downshift Adaptive ceiling.
-- HOTSIDE is the startup default; HOTSIDE_BATTERY is runtime selectable but is not persisted. Battery sensor loss falls back to HOTSIDE behavior without changing the user's profile selection.
-- No rapid Hotside slope/rise protection is present in the known V6.x contract.
+- Manual Peltier re-arm requires Hotside at/below hotLimit − 1°C for five continuous seconds.
+- Adaptive thermal stage: 30 seconds at 12 V, 9 V and 5 V with Peltier OFF / Fan 100%; five seconds stable at/below hotLimit − 1°C may recover where allowed. Otherwise 12/9 V step down; unrecovered 5 V terminal-locks for manual restart. Restoration requires 60 seconds stable at/below limit − 1°C per upward rail and cannot exceed the saved ceiling.
+- HOTSIDE is default at boot. HOTSIDE_BATTERY is runtime-only; if phone Battery input is stale, runtime behavior falls back to HOTSIDE without rewriting the selected profile.
+- Adaptive Fan target uses floor(hotsideC) and delta = hotLimit − temperatureCategoryC. Delta ≤2°C→100%, 3–4→90%, 5–6→80%, 7–8→70%, 9–10→60%, ≥11→50%. At limit 40°C: 40/39/38→100%, 37/36→90%, 35/34→80%, 33/32→70%, 31/30→60%, ≤29→50%.
+- Fan target ramps in 10-point steps: +10 points per second; −10 points per ten seconds. Direction changes start a fresh clock. Adaptive at 5 V/9 V remains Fan 100%.
+- Raw-decimal safety is separate: at/above the configured limit, Fan 100% immediately and the existing safety supervisor shuts Peltier OFF.
+- Rapid Hotside-rise/rate-of-rise shutdown with manual re-arm is NOT IMPLEMENTED in V7.1.
 
-## Current Adaptive Fan PWM at 12V — V7.1 2°C limit-relative target bands, paced ramp
+## Touch, LEDs and persisted data
 
-- Target tiers use `temperatureCategoryC = floor(hotsideC)` and `belowLimitC = hotLimit - temperatureCategoryC`: ≤2 →100%; ≤4 →90%; ≤6 →80%; ≤8 →70%; ≤10 →60%; ≥11 →50%. At a 40°C limit: 40/39/38 →100%; 37/36 →90%; 35/34 →80%; 33/32 →70%; 31/30 →60%; ≤29 →50%. Bands shift with the configured limit.
-- Immediate thermal protection stays independent: raw-decimal `hotsideC >= hotLimit` forces Fan 100% without pacing delay, and the existing supervisor shuts Peltier OFF. Adaptive 5 V / 9 V remain Fan 100%.
-- PWM approaches the selected target in 10-point steps: each reduction waits 10,000 ms; each increase waits 1,000 ms. A direction change starts a fresh clock. Voltage transitions, Adaptive HOTSTEP, thermal dwell and inactive outputs reset pacing and preserve full-speed priority.
-- NTC acquisition remains one calibrated sample per second. No blocking delay, extra ADC read, averaging/filter, or timing loop was added.
-- Active source `firmware/JEXFYZ-V7.1.ino` blob `c44e076b2c1ee2d0b66b4fcd308d0febc69976e9`; QC contract `367acddd4ca9123c2834f8a5177039d9dadaabc9`; Touch/Adaptive sync contract `dfa1f604327f1705b52134aa794d7ce60232841e`. Contract tests have NOT been independently run in this documentation/comment cleanup. The owner confirms V7.1 compilation and Online OTA installation; source-to-BIN identity and physical post-update behavior remain independently UNVERIFIED.
+- Recorded TTP223 timings: about 1,000 ms startup grace, 30 ms qualification, valid tap 60–500 ms, double-tap window 800 ms, long press 5,000 ms. Inspect live source before changing these values.
+- Decorative LED mode IDs: Static 1, Breath 2, Comet 4, Dual Chase 5, Left/Right 6, Rainbow 7; ID 3 is retired. Safety/OTA indications take priority over RGB animation.
+- Firmware sends LED_SYNC:<mode>,<phase_ms>,<cycle_ms> atomically immediately before notification.
+- Persistent settings include Hotside limit, phone Battery thresholds and RGB enable/mode/brightness/color; write only changed data after ten seconds of quiet. Adaptive Profile is not persisted.
+- App phone Battery data arrives via PHONE:BT at 1 Hz; Battery validity expires after five seconds; 5 V/12 V threshold defaults are 25°C/35°C with 0.5°C hysteresis.
 
-## HISTORICAL / SUPERSEDED — V6.8 direct temperature-tier controller
+## OTA — protected
 
-- V6.8 selected the same six temperature tiers directly, with no time-based pacing. The immediate 100% → 50% change after a 9 V → 12 V handoff is the abrupt step that V6.9 is intended to avoid. V6.8 source is no longer the active versioned sketch.
-## HISTORICAL / SUPERSEDED — V6.7 Adaptive Fan trend-gating correction
+Read OTA_PROTECTION.md and OTA_REGRESSION_MEMORY.md before any authorized OTA change.
 
-- V6.7 required ten samples and a stable downshift period, and used a four-sample warming-trend gate for upshifts. Those rules are superseded by the V6.8 direct tier selector above. V6.7 compile/online-update remains historical user-reported evidence and does not validate V6.9.
+- Local OTA boot SoftAP: ten-second no-client timeout, 60-second hard limit after interaction, and existing 160 ms Wi-Fi-off settle before BLE starts. Preserve current source semantics.
+- Online OTA currently uses cloudClient.setInsecure(). This does not authenticate server certificate identity. Keep the raw GitHub allowlist, redirect blocking, status/length/size/image-magic checks, streaming Update lifecycle, safe outputs, failure recovery and restart semantics.
+- Firebase metadata is version + link only; no custom firmware hash/signature requirement without explicit approval.
+- App protocol order: OTAENTER → SSID → PASS → URL → VERSION → CLOUDOTA. A timeout/disconnect ACK is ambiguous; normal P1 synchronization is required after reconnect.
 
-## Touch / indicators / preferences
+## Evidence boundaries
 
-- TTP223 gesture timing recorded from QC: about 1,000 ms startup grace, 30 ms qualification, raw HIGH tap duration 60–500 ms, 800 ms double-tap window and 5,000 ms long press. Verify the live source before adjusting.
-- Adaptive ON indication: three orange blinks. Adaptive OFF: three white blinks; OFF indication waits for safe 5 V completion if Adaptive was active.
-- Manual voltage indicator defaults: 5 V red, 9 V green, 12 V blue; colors are configurable.
-- Safety and OTA indications outrank decorative RGB animation.
-- Persistent settings include Hotside limit, Battery 5 V/12 V limits, RGB enable/mode/brightness/color. Every setting change resets the shared 10-second quiet-period timer; write only changed persistent values after the period. Adaptive Profile remains runtime-only.
-
-## OTA boundaries
-
-- Read `OTA_PROTECTION.md` and `OTA_REGRESSION_MEMORY.md` before any OTA source edit.
-- Current Online OTA uses `cloudClient.setInsecure()`; the embedded root CA validation and OTA-only NTP/TIME_SYNCING gate are absent. This bypasses server certificate identity validation; do not hide this security trade-off.
-- Keep raw GitHub URL allowlist for `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/`, redirects disabled, response/length/size/image checks, streaming update lifecycle, all-off safety output, failure recovery and restart behavior.
-- No custom SHA/signature layer is part of the user-approved Firebase OTA metadata model; version + link only. Online OTA short-circuits when the metadata version equals embedded `FW_VERSION`; V7.0 therefore requires a matching compiled/published `JEXFYZ.cpp.bin` and Firebase `version: "V7.0"` before it can be discovered as an update. Neither has been deployed by this source-only change.
-- Never assume the artifact BIN is compiled from current source until source/version/build provenance is verified.
-
-**HISTORICAL App source-contract evidence:** Build #35 / run `38669526891` on commit `d25ca28af9f2c04ff77ea710daac3edf3a44f3c8` passed Dart analyze and 74 Flutter tests including earlier V6.6 source assertions; that proves only those older App/test gates.
-
-**LATER App source-contract evidence:** Build #39 and #40 each passed 80 Flutter tests, including `test/v6_6_qc_contract_test.dart` which reads the V6.6 source. Build #40 also passed Android APK compilation and signing before source-archive validation stopped publication. Neither result is an Arduino/ESP32 Firmware compile or physical OTA proof. V6.6 compile/two same-version Online OTA successes remain USER-REPORTED; independent logs, installed version, physical behavior and source-to-BIN provenance remain unverified.
-
-## Static versus runtime validation
-
-Static source assertions and file/blob checks can verify paths, constants and ordering. They cannot certify Arduino compilation, electrical stability, real NTC accuracy, LEDs, cooling, safety response, BLE pairing, full OTA apply or reboot. Record each validation gate separately.
-
-
-## HISTORICAL / SUPERSEDED App CI boundary — Build #65 (2026-10-16), not Firmware compile proof
-
-App Build #65 / run 38851040144 historically passed 88 Flutter tests plus the native FPS parser JUnit gate. Later Build #70 verified the App's FPS-retirement source (86/86 Flutter tests, native JUnit tasks NO-SOURCE); neither run is a Firmware compile. App source-contract checks over the active versioned sketch do not compile the Arduino/ESP32 sketch, prove source-to-BIN provenance, or prove physical safety/OTA behavior. V6.6 compile/two-same-version Online OTA statements are historical USER-REPORTED evidence. The user reported V6.7 compiled and was updated online on 2026-10-18; this is USER-REPORTED. The compile log, BIN identity, source-to-BIN provenance, OTA apply/reboot logs and current installed-device version remain UNVERIFIED. No firmware source/BIN, Firebase, OTA, flash or device operation occurred during this App build.
+Static source contracts can verify strings, constants and code ordering. They do not certify Arduino compilation, exact BIN provenance, sensor accuracy, current draw, physical thermal response, rail stability, BLE pairing security, or end-to-end OTA/reboot. Record each gate independently.

@@ -1,54 +1,47 @@
 # JE X FYZ / JE Cooler — OTA Protection Contract
 
-> **OTA PROTECTED / FROZEN.** Do not alter casually while fixing unrelated App or Firmware issues.
+> OTA IS PROTECTED / FROZEN. Do not alter it as part of unrelated App, UI or Firmware maintenance.
 
-## Scope protected by this contract
+## Protected scope
 
-- Local OTA state machine and boot SoftAP path.
-- Boot SoftAP window and Wi-Fi→BLE radio handoff timings: current Firmware uses a 10-second no-client timeout, a 60-second AP hard limit, and a 160 ms Wi-Fi-off settle before BLE ownership. Verify live source before referring to a changed value; unrelated work must not retime this protected path.
-- Online OTA connection, URL/path validation and image download.
-- OTA priority over ordinary control/UI work.
-- Wi-Fi↔BLE single-radio ownership handoff.
-- Output-safe state during OTA (Peltier and Fan OFF, selector safe at 5 V, LED/state-machine handling).
-- Timeout/retry state, progress/results, cancellation, update finalization, failure recovery and restart behavior.
-- App OTA version selection, protocol order, expected BLE disconnect, reconnect/P1 sync and result delivery.
-- URL allowlist, redirect blocking, HTTP/length/size/image checks and streaming update lifecycle.
+- Local OTA state machine and boot SoftAP lifecycle.
+- Boot SoftAP timing and the Wi-Fi→BLE single-radio handoff.
+- Online OTA connection, URL validation, download, image checks and streaming Update lifecycle.
+- OTA priority and output-safe behavior.
+- Timeout/retry, progress/result, cancellation, finalization, failure recovery and restart.
+- App OTA command order, expected BLE disconnect, reconnect/P1 synchronization and result delivery.
+- URL allowlist, redirect blocking and HTTP/length/size/image validation.
+- Firebase metadata shape: firmware version + URL only; no custom checksum/signature field without explicit approval.
 
-## Authorization required
+## Required authorization and audit
 
-Change OTA only if there is a demonstrated OTA defect and the user explicitly authorizes the change after discussion. Before editing:
-1. Read this file and `OTA_REGRESSION_MEMORY.md` completely.
-2. Identify exact symptom, logs/diagnostic stage and reproduction steps. Do not infer HTTP/TLS code from LED colors alone.
-3. State scope and safeguards. Change one variable at a time where possible.
-4. Update source-level contract tests and audit Local OTA, Online OTA, Wi-Fi/BLE handoff, safe outputs, timeouts, recovery and App reconnect end-to-end.
-5. Update the canonical memory, `PROJECT_STATE.md` if current state changed, `CHANGELOG.md` and `CHAT_TRANSFER.md`.
-6. Label test/compile/hardware evidence precisely. Static assertions are not an OTA success certificate.
+Change protected OTA only for a demonstrated defect after discussion and explicit user authorization. Before editing:
+1. Read this file, OTA_REGRESSION_MEMORY.md and the exact current Firmware/App OTA source and related tests in full.
+2. Identify the symptom, diagnostic stage, available logs and reproduction. LED colors alone do not prove an HTTP/TLS error code.
+3. State the scope, safety conditions and rollback/recovery strategy. Test one variable at a time where practical.
+4. Audit Local OTA, Online OTA, single-radio handoff, safe outputs, timeouts/retries, image/download checks, Update finalization, restart/recovery, BLE reconnect/P1 and result presentation.
+5. Update relevant source-contract tests and canonical memory. Static assertions do not prove a successful physical OTA.
 
-Current source pointer is `firmware/JEXFYZ-V7.1.ino` (`FW_VERSION="V7.1"`, blob `6ef355d666b83fc83b4d7c48ee377753828ca02c`). V7.1 carries the protected OTA transport forward unchanged and updates only Adaptive 12 V Fan target bands. V7.1 has NOT been compiled or installed; the V7.0 compile/Online OTA report is USER-REPORTED for the preceding revision only. V7.1 BIN identity, Firebase metadata alignment, OTA logs and installed-device version remain UNVERIFIED. No OTA code, transport, timing, recovery or safe-output path changed.
+## Current Firmware baseline pointer
 
-## Current Online OTA contract (must re-check live source)
+- Active editable source: firmware/JEXFYZ-V7.1.ino, FW_VERSION="V7.1", live blob c44e076b2c1ee2d0b66b4fcd308d0febc69976e9.
+- The owner reports V7.1 compiled and was installed through Online OTA on the sold unit. This is USER-REPORTED, not an independently inspected compile log or source-to-BIN proof.
+- Build #124 is App-only CI evidence; it does not validate Firmware compilation or field OTA behavior.
+- Current Firmware's Online OTA path uses cloudClient.setInsecure(). TLS transport is encrypted, but server certificate identity is not authenticated. The CA certificate and OTA-only NTP/TIME_SYNCING gate are absent. Do not silently restore that path or conceal the security trade-off.
+- Allowlisted raw URL prefix remains https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/. Preserve redirect blocking, HTTP status/length, download-size and ESP image-magic (0xE9) checks.
+- Preserve OTA-safe output sequence, streaming Update lifecycle, failure recovery and restart semantics. Check current source before making any statement about exact LED signaling or stage timing.
 
-- Canonical editable Firmware source is in the App repo: `firmware/JEXFYZ-V7.1.ino`.
-- The V6.3-origin restoration uses `cloudClient.setInsecure()`; embedded CA certificate validation, `setCACert()`, `configTime()`, `TIME_SYNCING`, epoch-validity gate and OTA-only 20-second NTP timeout are absent.
-- On successful Wi-Fi connection, blue indication proceeds to the GitHub GET attempt.
-- Raw URL allowlist remains restricted to `https://raw.githubusercontent.com/TenzoNkz/JEXFYZ-Firmware/`.
-- `HTTPC_DISABLE_FOLLOW_REDIRECTS`, HTTP status/length checks, download size limit, ESP image magic byte check (`0xE9`), streaming write/update lifecycle, output-safe sequence, failure recovery and restart semantics remain protected.
-- Known security trade-off: `setInsecure()` bypasses server certificate identity validation. This was chosen after the prior CA + NTP-gated path failed in the user's observed environment. The exact single cause was not isolated. Do not silently re-introduce CA/NTP validation.
-- Firebase OTA metadata remains firmware version + link; no added user-approved SHA/signature layer.
-- **Required release alignment:** Online OTA stops with `OTA_UP_TO_DATE` when Firebase's `version` equals embedded `FW_VERSION`. To make V7.0 available to an installed V6.9 device, compile this exact sketch into a new `JEXFYZ.cpp.bin`, publish the matching BIN at the fixed allowed URL, and update Firebase `firmware_update.json` to `version: "V7.0"` plus that URL. These release actions are separate from source edits and have NOT been performed. Afterward, verify OTA apply, reboot, BLE re-sync and the reported installed `VERSION:V7.0`.
-- Artifact repo `TenzoNkz/JEXFYZ-Firmware` must contain `JEXFYZ.cpp.bin` only. Documentation lives in `TenzoNkz/JEXFYZ-App`.
+## App-side contract
 
-## App side contract
+- Established command order: OTAENTER → SSID → PASS → URL → VERSION → CLOUDOTA.
+- Arm expected OTA disconnect/recovery before CLOUDOTA.
+- TIMEOUT/DISCONNECTED acknowledgment is ambiguous, not proof of command rejection. Preserve recovery state and await reconnect/update result; roll back only on a definite rejection while BLE remains connected.
+- After reconnect, require normal P1 session synchronization before surfacing the one-shot OTA result.
+- User-facing result/cause copy must be localized and must not expose raw protocol tokens.
+- The physical OTA, restart, BLE recovery and installed-version result are separate gates from code review or App CI.
 
-- Expected OTA command order: `OTAENTER`, `SSID`, `PASS`, `URL`, `VERSION`, `CLOUDOTA`.
-- Mark the expected OTA disconnect/recovery before sending `CLOUDOTA`.
-- A `TIMEOUT` or `DISCONNECTED` acknowledgement is ambiguous, not proof of rejection. Keep recovery state and await reconnect/result. Roll back only on a definite rejection while the BLE session remains connected.
-- On reconnect, complete normal P1/session sync and surface the one-shot OTA result.
-- App-visible reason/status text must be localized and must not reveal internal protocol tokens.
+## Release/operation boundaries
 
-## Version and release boundaries
-
-- Functional Firmware edits require version constant + active filename bump and exactly one active versioned `.ino`.
-- User compiles Firmware; no automatic compile as a side effect.
-- Never generate/publish BIN, change Firebase metadata, flash/OTA hardware, start App Build or release without separate explicit authorization.
-- Success at one gate (compile, BIN, BLE command, or Wi-Fi connect) does not prove end-to-end OTA install/reboot.
+- Firmware functional changes require a version bump and matching filename; exactly one active versioned .ino.
+- The owner compiles Firmware separately. Do not compile, generate or publish BIN, change Firebase metadata, perform physical OTA, flash hardware, operate devices, or run App Build unless each is separately authorized.
+- App Build does not authorize Firmware operations. Eksekusi Full does not authorize App Build.

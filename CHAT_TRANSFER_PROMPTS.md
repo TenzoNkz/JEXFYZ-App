@@ -1,314 +1,91 @@
-# JE X FYZ / JE Cooler — Chat Transfer Prompt Templates
+# JE X FYZ / JE Cooler — Chat-Limit LOAD + CONTINUE Prompts
 
-Use Prompt B for routine general/Discussion chat-limit recovery: it loads the rolling checkpoint and live repository, then continues without a recap-only stage. Use Prompt D for a Build App chat-limit handoff: it loads live build evidence and continues the same authorized App Build. Prompt A is reserved for an explicitly requested full repository-memory reconciliation, not routine handoff. Prompt C defines persistence after durable decisions/executions. Current commands and authorization limits are defined in `CHAT_RULES.md`.
+This file intentionally contains exactly two prompts. Both load live state and continue the actual workstream; neither asks for a recap-only response.
 
+## Prompt 1 — General engineering / code chat
 
----
+Use for ordinary Discussion, an explicitly authorized Eksekusi Full scope, or recovery of an already-authorized interrupted engineering operation. Before sending, keep the command header that matches the real authorization mode:
+- Leave @Thinking Diskusi! for read-only discussion.
+- Replace the first line with @Thinking Eksekusi Full! only when the user has explicitly authorized the new execution scope in the same request.
+- Replace the first line with @Thinking Chat Stuck! when recovering an already-authorized operation interrupted by a stall/context limit.
+Do not send multiple command headers. This prompt grants no new permissions.
 
-## Prompt A — Chat limit / reconcile and save everything
+### Copy prompt
 
-```text
-@Thinking Eksekusi Full! CHAT-LIMIT RECONCILIATION — READ EVERYTHING, RECONCILE, SAVE TO REPOSITORY
-
-PROJECT: JE X FYZ / JE Cooler
-CANONICAL REPO: TenzoNkz/JEXFYZ-App
-CANONICAL BRANCH: main
-ARTIFACT REPO: TenzoNkz/JEXFYZ-Firmware (JEXFYZ.cpp.bin ONLY)
-
-GOAL
-Preserve all durable project memory from this chat and earlier project chats in the canonical App repository. Audit the complete repository, correct stale/conflicting notes, and replace CHAT_TRANSFER.md with one detailed, accurate transfer snapshot. Do not rely on remembered summaries where the repository can be checked.
-
-NON-NEGOTIABLE RULES
-1. Directly use main unless explicitly instructed otherwise; do not create a branch or PR.
-2. Read CHAT_TRANSFER.md completely BEFORE replacing it. Read every current canonical memory/reference file fully, including beyond the first screen/range.
-3. Fetch live main HEAD, full recursive tree, active .ino inventory and FW_VERSION, App source/version, all tests, the exact active workflow, open PR/branch state, and current blob SHAs before making claims.
-4. Audit every text/document/config/test file in the App repo, not just the files that look like notes. Inspect source/config for current identity, paths, workflows and references. Do not expose credential contents in summaries.
-5. Reconcile every old memory against live source. Do not leave contradictory “CURRENT” / “CURRENT TRUTH” blocks from V5.x, V6.1, V6.2, or V6.3 inside current status files. Keep useful history in CHANGELOG.md with a HISTORICAL/SUPERSEDED label.
-6. Preserve ALL durable discussion memory: approved features, technical decisions, hardware/wiring, pins, sensor model, timings, UI/UX, app/firmware protocol, safety thresholds, Adaptive modes, LED mapping, OTA decisions, failed approaches and why they failed, user's explicit restrictions, build/release process, visual/grille design, validation evidence and pending checks.
-7. Distinguish CURRENT/VERIFIED, SOURCE IMPLEMENTED/NOT RUN, USER-REPORTED, UNVERIFIED, HYPOTHESIS, HISTORICAL/SUPERSEDED and NOT RELEASED. A test file is not proof it ran. A compile report for one version is not proof for a later version. LEDs alone do not prove a specific HTTP/TLS error.
-8. If a decision is in chat but not backed by current code, save it as user requirement or a proposed/pending decision—not as implemented behavior. Preserve why a prior path was rejected.
-9. Keep every note, memory, handover, transfer prompt, changelog and reference in TenzoNkz/JEXFYZ-App. TenzoNkz/JEXFYZ-Firmware must contain JEXFYZ.cpp.bin only; do not add/readme notes there. Never edit the BIN during documentation work.
-10. Do not perform firmware compile, BIN generation/publication, flash/OTA, Firebase/production metadata changes, App Build, release or device operations unless each operation is explicitly authorized. The user compiles firmware.
-11. Every functional Firmware source edit requires FW_VERSION bump, matching active filename and exactly one active versioned .ino. Documentation-only work does not cause a version bump.
-12. Keep Android versionName "Telegram @horizontalzzz" unchanged.
-13. Do not alter protected OTA code during unrelated cleanup. Read OTA_PROTECTION.md and OTA_REGRESSION_MEMORY.md before touching OTA. Read VOLTAGE_TRANSITION_MEMORY.md before rail/Peltier timing edits.
-14. Rename or delete files only after updating all links, path-based tests and indexes. Verify exact post-write paths and hashes.
-15. Do not say “saved/reconciled” unless GitHub confirms the exact writes and the final tree/HEAD are re-read.
-
-REQUIRED READING
-- CHAT_TRANSFER.md
-- MEMORY_INDEX.md
-- README.md
-- CHAT_RULES.md
-- PROJECT_STATE.md
-- HANDOVER.md
-- APP_NOTES.md
-- FIRMWARE_NOTES.md
-- firmware/FIRMWARE_TECHNICAL_REFERENCE.md
-- OTA_PROTECTION.md
-- OTA_REGRESSION_MEMORY.md
-- VOLTAGE_TRANSITION_MEMORY.md
-- BUILD_NOTES.md
-- CHANGELOG.md
-- DESIGN_NOTES.md
-- .github/workflows/jexfyz-app-build-trigger.yml
-- pubspec.yaml, android/app/build.gradle, manifests and app configuration relevant to the work
-- every test file under test/
-- current active firmware/App source
-Read complete content for all relevant files. Cross-check all links, filenames, version strings, historical labels and hashes.
-
-TASK SEQUENCE
-A. Inventory live main HEAD/tree, file sizes/types, branches, PRs, workflow and test files.
-B. Read old CHAT_TRANSFER.md fully and read the required memory docs fully.
-C. Search and review every file reference for stale paths, wrong source version, duplicated current-state blocks, old build claims and claims unsupported by evidence.
-D. Compare durable memories from the current chat and available prior project context with repository notes; categorize KEEP CURRENT, MOVE TO CANONICAL FILE, MARK HISTORICAL, CORRECT, or UNVERIFIED.
-E. Reorganize docs under clear names while preserving meaningful details. Do not create two competing “current truth” sources. MEMORY_INDEX.md must route each category to one canonical file.
-F. Update canonical notes and CHANGELOG with the durable decisions/results that are missing.
-G. Rebuild CHAT_TRANSFER.md as a complete boot snapshot: live HEAD and timestamp/timezone; current active source/version/hash; App version/source; test/workflow state; branch/PR state; repo roles; permanent user rules; hardware/pin/sensor summary; current safety/Adaptive/timing behavior; App/BLE/UI constraints; OTA trade-off and protected-flow reminder; approved visual design; history pointers; verified vs reported vs unverified evidence; next exact actions.
-H. Re-fetch all changed files and verify the repository tree, exact filenames, source constant/path alignment, all references, hashes and main HEAD. Check the App repo contains the notes; confirm the artifact repo holds only the BIN if repository cleanup is within the explicitly authorized scope.
-I. Commit direct to main. Report only verifiable changes, final commit(s), changed/deleted paths, current state, and operations explicitly not performed.
-
-DONE CONDITIONS
-- No duplicate/conflicting current-status blocks remain in current files.
-- All durable decisions have a home and are linked from MEMORY_INDEX.md.
-- The transfer snapshot is long and detailed enough to boot the next chat without asking the user to repeat known decisions.
-- Every retained history item is clearly historical; every unverified result remains unverified.
-- File references and current blob hashes match live main after writing.
-```
-
----
-
-## Prompt B — New chat / chat-limit LOAD + CONTINUE (general or Discussion)
-
-Use this as the first message in a replacement general/Discussion chat when context is lost or the prior chat reaches its limit. It is a LOAD + CONTINUE prompt, not a recap request. It resumes only the prior authorized scope.
-
-```text
-@Thinking Diskusi! CHAT-LIMIT LOAD — CONTINUE FROM LIVE CHECKPOINT
+@Thinking Diskusi! CHAT-LIMIT LOAD + CONTINUE — GENERAL ENGINEERING / CODE CHAT
 
 PROJECT: JE X FYZ / JE Cooler
 CANONICAL REPOSITORY: TenzoNkz/JEXFYZ-App
 CANONICAL BRANCH: main
 
 PURPOSE
-Restore context from the latest saved checkpoint and live repository evidence, then continue the previous general/Discussion workstream without a separate recap stage. Do not ask the user to repeat saved requirements. Do not treat this as permission to execute a source change or build.
+Load the latest saved checkpoint and live repository evidence, then continue the same general engineering workstream immediately. This is not a recap request. Do not ask the owner to repeat requirements already in saved records. Do not infer a source change or build authorization from this prompt.
 
-1. Read CHAT_TRANSFER.md fully before assuming a state.
-2. Fetch live main HEAD and recursive tree. Read CHAT_RULES.md, MEMORY_INDEX.md, PROJECT_STATE.md, HANDOVER.md and the canonical subject reference(s) for the task.
-3. Identify the latest saved task/decision/checkpoint and compare it to live source, tests, config, current Actions/Release evidence where relevant. A saved checkpoint is authoritative only up to its stated time; later uncheckpointed chat content may be unavailable.
-4. Continue from the last valid point. Do not produce a long recap, create a recap-only chat, or stop after boot waiting for the user to restate the current task. Ask a question only when a material decision truly cannot be recovered from saved evidence.
-5. Preserve the command/authorization gates. Discussion is read-only for executable source/config/workflow, builds/releases, firmware/BIN/Firebase, device and OTA operations. When a substantive discussion concludes, update project-memory documentation/checkpoint only, clearly distinguishing decisions, proposals, user-reported outcomes and independently verified evidence.
-6. If the inherited task was an already-authorized execution that stopped unexpectedly, use @Thinking Chat Stuck! to recover from actual logs/current state; do not use Discussion as a substitute execution authorization.
-7. Report the restored checkpoint briefly, then continue the previous discussion/workstream.
+LOAD
+1. Read CHAT_TRANSFER.md fully before making assumptions.
+2. Fetch live main HEAD, commit metadata and the full recursive repository tree.
+3. Read CHAT_RULES.md, MEMORY_INDEX.md, PROJECT_STATE.md and HANDOVER.md completely.
+4. Read the complete canonical subject references for the current task. Inspect relevant live source, tests, configuration and workflow only as needed. For a full documentation audit, inspect every Markdown file and classify active reference, append-only ledger or immutable archive.
+5. Check current Actions/Release/PR status when relevant. A saved hash or prior checkpoint is not proof of current state.
 
-No source edits, build, release, firmware compile, BIN/Firebase modification, OTA, flash or device operation is authorized by this recovery prompt.
-```
+CONTINUE — NO RECAP STAGE
+- Identify the latest durable decision, the last verified task state, and any live evidence that supersedes it.
+- Continue the inherited discussion/task from that point; do not stop after a long summary and wait for the user to restate the work.
+- Ask a question only if a material user decision cannot be recovered from the source of truth.
+- If later chat content may have been lost before checkpointing, say exactly what is recoverable; never invent an unsaved answer or claim it was saved.
+- For @Thinking Chat Stuck!, inspect actual logs/tool results and live state first, then recover only the most recent valid already-authorized operation. Avoid blind retries and duplicate side effects. If scope/authorization cannot be established, stay read-only.
 
----
+STRICT AUTHORIZATION
+- Discussion is read-only for executable source, config, workflow, builds/releases, Firmware/BIN/Firebase, OTA, flash and devices. Once a substantive discussion concludes, update canonical memory/checkpoint documentation only.
+- Eksekusi Full performs only the specifically authorized code/docs/tests/static-audit task and commits directly to main. It never authorizes App Build/APK release, Firmware compilation, BIN/Firebase mutation, OTA, flash or device work.
+- Chat Stuck inherits only a valid in-progress authorization and never widens it.
+- Preserve production baseline Build #124 + Firmware V7.1. Firmware compile/Online OTA success is owner-reported; exact BIN identity and physical behavior remain unverified. The sold unit is not available for routine repair.
+- Preserve Android Gradle versionName "Telegram @horizontalzzz", protected BLE/P1, telemetry, Touch, safe-output, rail-timing and OTA contracts. Before authorized OTA-related changes, read OTA_PROTECTION.md and OTA_REGRESSION_MEMORY.md.
+- Do not remove historical evidence merely because it is old. Keep APP_BUILD_REPORT.md and CHANGELOG.md as history ledgers and archive/*.md immutable unless explicitly directed otherwise.
+- After a discussion conclusion or execution success/blockage, update CHAT_TRANSFER.md and the relevant canonical notes. Verify the post-write content and live main before reporting.
+- Do not run App Build, Firmware compile, BIN publication, Firebase changes, OTA, flash or device operations under this general prompt.
 
+REPORT
+Start with a short statement of the restored checkpoint and evidence boundary, then continue the actual work. Never produce a recap-only chat.
 
----
+## Prompt 2 — App Build / QC chat only
 
-## Prompt C — Update one lasting decision during normal execution
+Use only for a Build App workstream that the owner has explicitly authorized through this command. Paste once at the beginning of the replacement Build App chat. It is a one-shot LOAD + CONTINUE prompt, not a second confirmation or recap.
 
-```text
-Before marking an execution complete:
-1. Identify the canonical memory file for the changed subject.
-2. Save the durable decision, behavior, rationale, rejected alternative, safety constraints and evidence status there.
-3. Update PROJECT_STATE.md only if current state or validation gates changed.
-4. Add a concise dated CHANGELOG entry for significant source/config/architecture changes.
-5. Refresh CHAT_TRANSFER.md whenever a substantive decision or execution outcome changes the durable checkpoint; always read its old content first. Keep it as a compact current checkpoint, not a transcript recap.
-6. For any App Build attempt, append the exact run outcome, source commit, fixes, tests, APK/checksum/signing checks and unresolved gates to APP_BUILD_REPORT.md so the next Build App chat can resume through the one-shot Prompt D LOAD + CONTINUE; a Discussion chat may also consult the same evidence record.
-7. Update MEMORY_INDEX.md and all cross-links if file paths/names changed.
-8. Verify post-write content, branch HEAD, blob hashes and no stale path/version references. For a substantive Discussion, documentation/checkpoint writes are allowed; never change executable source/config/workflow in Discussion mode.
-9. Do not report an unrun test/build/compile/device check as passed.
-```
+### Copy prompt
 
-
----
-
-## Prompt D — Build App chat-limit LOAD + CONTINUE (use once; no recap chat)
-
-Use this prompt only when the current Build App chat itself reaches its context/chat limit. Paste it once as the opening message of the replacement Build App chat. It combines loading repository evidence and continuing the existing App Build operation. **Do not create a separate recap chat, run Prompt A for this handoff, or send a second prompt just to start the build.**
-
-```text
-@Thinking Eksekusi Build App! BUILD APP CHAT-LIMIT LOAD — CONTINUE FROM LIVE REPOSITORY EVIDENCE
+@Thinking Eksekusi Build App! BUILD APP CHAT-LIMIT LOAD + CONTINUE — APP BUILD / QC ONLY
 
 PROJECT: JE X FYZ / JE Cooler
 CANONICAL REPOSITORY: TenzoNkz/JEXFYZ-App
 CANONICAL BRANCH: main
 
 PURPOSE
-This is a one-shot LOAD + CONTINUE handoff for an already-authorized Build App workstream that reached the chat/context limit. The prior transcript may no longer be available; repository memory and APP_BUILD_REPORT.md are the durable state. Load and verify them, then continue the same Build App/QC operation without a separate recap stage.
+Resume the same authorized App Build/QC operation from live repository, workflow, Actions/Release evidence and APP_BUILD_REPORT.md. Do not create a separate recap chat, and do not ask the owner to repeat saved details.
 
-1. LOAD LIVE STATE FIRST
-- Read CHAT_TRANSFER.md fully.
-- Fetch live main HEAD and the current repository tree/file identities.
-- Read CHAT_RULES.md, MEMORY_INDEX.md, PROJECT_STATE.md, HANDOVER.md, BUILD_NOTES.md, APP_BUILD_REPORT.md, and the complete current .github/workflows/jexfyz-app-build-trigger.yml.
-- Inspect the current App source, relevant tests, Android/package/signing configuration and dependency files needed for the current failure or build.
-- Read all relevant prior entries in APP_BUILD_REPORT.md, including the exact last run/commit, failed steps, fixes already made, and unresolved gates.
-- Verify current Actions runs, Releases and trigger state from live GitHub evidence. Do not trust historical run IDs or source SHAs without fetching them.
+MANDATORY LOAD
+1. Read CHAT_TRANSFER.md fully and fetch live main HEAD plus recursive tree.
+2. Read CHAT_RULES.md, MEMORY_INDEX.md, PROJECT_STATE.md, HANDOVER.md, BUILD_NOTES.md and the entire current .github/workflows/jexfyz-app-build-trigger.yml.
+3. Read APP_BUILD_REPORT.md through to the latest attempt, including fixes, failures, test counts, source commit, signing, release-asset checks and outstanding gates. It is the authoritative execution ledger; older entries are history.
+4. Inspect the live App source, relevant tests, dependency/package configuration, Android signing configuration and workflow contracts relevant to the current blocker.
+5. Fetch current Actions runs, jobs/logs and Releases. Do not infer run status, package identity, tag target or artifact hashes from old notes.
 
-2. RESUME THE EXISTING BUILD OPERATION — DO NOT RECAP
-- Determine whether an intended workflow run is still in progress, failed, blocked, or already passed all required gates.
-- If the intended run is in progress, continue monitoring/verifying that run; do not create a duplicate trigger.
-- If it failed, inspect the exact log and root cause. Repair only authorized App-scope causes, preserve tests/security gates, commit the justified fix directly to main, and start a fresh run using the current official workflow when retry is evidence-based.
-- If the job failed before step 1 with `runner_id=0`, missing runner details or no steps, do not re-trigger the same unchanged job. Investigate Actions usage/budget, repository/account Actions policy, security/verification restrictions and available check-run evidence; escalate to GitHub Support when appropriate. Resume the build only when runner dispatch is demonstrably working or new evidence supports one justified retry.
-- If blocked, continue any permitted investigation and record the exact blocker and required action.
-- If the existing target commit already passed every required gate and the exact release asset has been independently verified, do not start an unnecessary duplicate build. Verify evidence, complete the report, and close as SUCCESS.
-- Continue the work in this chat without stopping after a boot summary and waiting for another prompt. The user has already supplied the Build App command by using this handoff prompt.
+CONTINUE THE BUILD — NO RECAP
+- Determine whether the exact intended run is active, failed, cancelled, blocked or already complete.
+- If active, inspect its actual jobs/logs and continue monitoring within this response's available tools; do not launch a duplicate run.
+- If failed, identify the exact failing gate and fix an App-scope cause rather than weakening checks. Commit the justified fix to main, then trigger only the guarded issue workflow and verify the run targets the intended commit.
+- Retry only after a concrete code/config fix or an evidence-backed transient infrastructure issue. Never retry blindly.
+- If blocked by missing permissions, hosted runner, secrets/signing credentials, external service or a required owner/device action, record the precise blocker and stop. Do not claim success.
+- Append each attempt, run ID, intended source SHA, failure evidence, fix, tests, APK/signature/release checks and result to APP_BUILD_REPORT.md while the operation progresses.
+- Completion requires the live workflow's full gates, test/analyzer status, exactly one APK and corresponding source ZIP, signing/certificate validation, publication and downloaded-asset identity/checksum checks. Clearly separate CI evidence from physical-device/BLE/Firmware/OTA evidence.
 
-3. OFFICIAL BUILD WORKFLOW
-- Re-fetch and follow the live .github/workflows/jexfyz-app-build-trigger.yml. Documented trigger title: JE X FYZ — EKSEKUSI BUILD APP TRIGGER. Required body token: JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1. Verify owner/title/token checks before triggering.
-- Never change the workflow to run on push/PR as a shortcut.
-- Inspect actual results for security/architecture checks, dependency resolution, Dart analysis, Flutter tests, APK build, signing verification, Release publication and re-downloaded asset verification.
-- Repair App-scope failures by fixing root causes; never weaken/delete tests or skip mandatory gates just to obtain a green run.
-- Retry only after a concrete repair or evidence-based transient failure; do not loop blindly.
+BUILD-ONLY LIMITS
+- This command authorizes only the guarded App Build/QC/release workflow and justified App-scope repairs required by it.
+- It does not authorize Firmware compilation, BIN generation/publication, Firebase/production metadata changes, physical OTA, flash, device operations or unrelated releases.
+- Do not change the workflow so push/PR automatically publishes an APK. Read and follow the live guarded issue trigger.
+- Preserve Android Gradle versionName "Telegram @horizontalzzz".
+- If the build task has already passed all gates, verify the package from live evidence and do not launch another build without a new explicit request.
 
-4. REQUIRED DURABLE RECORD
-- Append every new attempt, exact run ID/URL, source commit, failing step, root cause, code/doc fix, rerun and verification result to APP_BUILD_REPORT.md.
-- Record Dart/test results and counts; APK filename/count/size/SHA-256; V1/V2/V3 and production-certificate verification; Release/tag and re-downloaded asset identity; warnings and all remaining unverified checks.
-- Preserve past failures and successful history. Do not rewrite history to hide a failure.
-- Re-fetch the updated report and verify the final main HEAD and report blob after writing.
+REPORT
+Continue immediately from the last valid attempt. Keep the user-facing status concise, evidence-based and labeled RECOVERED, BLOCKED or FAILED when appropriate. Never return only a recap.
 
-5. AUTHORIZATION BOUNDARIES
-- Work directly on main; do not create branches or PRs unless explicitly requested.
-- Preserve Gradle versionName "Telegram @horizontalzzz".
-- This command authorizes App Build, App-scope fixes required for the build, relevant tests, artifact verification and APP_BUILD_REPORT.md updates only.
-- Do not compile/edit Firmware, generate/replace/publish BIN, modify Firebase production metadata, perform OTA/flash, operate hardware/device, expose secrets, or perform unrelated release work without separate explicit authorization.
-- Do not infer physical-device rendering, BLE/cooling behavior or OTA success from CI results.
-- If progress needs unavailable permission/secret, external service recovery, user/device action or separate authorization, stop at that boundary, record BLOCKED and the exact next action. Never claim success without evidence.
-
-6. FINAL DISPOSITION
-Report SUCCESS only when every mandatory App Build/release gate has verified evidence; otherwise report BLOCKED or FAILED accurately. Give the source commit, run URL, trigger details, test results, APK/signing/checksum/release evidence and unresolved checks. Keep the response concise.
-
-IMPORTANT: This Prompt D is used once when a Build App chat reaches its context limit. It is the LOAD + CONTINUE prompt for the replacement Build App chat. There is no Build App recap chat or separate recap prompt. Do not replace CHAT_TRANSFER.md or run the general project-memory reconciliation Prompt A just to transfer the Build App work.
-```
-
-## Mandatory memory inventory — include all categories before ending a transfer
-
-When reconciling or booting a chat, check every category below against the canonical current notes, the full legacy archives, and available chat/project context. Mark each as FOUND / UPDATED / HISTORICAL / NOT FOUND; never silently omit an unresolved category.
-
-### Product / App and Android
-- App name JE Cooler, JE X FYZ branding, package and `versionName`; Horizon Cooler architecture/design reference.
-- Main dashboard/Home labels, voltage/adaptive tabs, menu hierarchy VOLTAGE → CONTROL → ADAPTIVE → LED → TEMPERATURE, compact UI and cooler-image placement.
-- Manual 5/9/12 V cycle, 1-second voltage guard, default voltage LED colors and custom/reset behavior.
-- Fan PWM control range and the distinction between Manual and Adaptive fan speed.
-- Adaptive start/stop safe-5V behavior and touch-sensor lock.
-- Localization, safety/Notify copy, output-unknown while disconnected, authoritative telemetry vs ACK, state reconciliation and LED preview phase synchronization.
-- P1 protocol handshake, exact BLE service/RX/TX UUIDs, Secure BLE write/bonding constraints and no second Android GATT client.
-- Auto Connect and reconnection prerequisites; current Floating Monitor metrics B/H/V/A/P/F (F labelled Fan/Kipas and showing live speed), legacy schema-v1 S→F migration and old F=FPS removal, native bridge channel and permission/lifecycle contracts.
-- Battery temperature heartbeat, Hotside telemetry cadence and firmware notice/preferences storage.
-- Android package, target/min/compile SDK/tool versions, manifest permissions, services, release signing, R8 obfuscation, icon/assets, and preserved creator identity `versionName "Telegram @horizontalzzz"`.
-
-### Firmware / electronics / physical hardware
-- MCU and core: ESP32-C3 Super Mini / ESP32-C3 Dev Module, Arduino-ESP32 Core 3.3.7, single-radio Wi-Fi/BLE handoff.
-- Full GPIO pin map; MOSFET gate/source/wiring notes; selector polarity should be checked in source.
-- NTC resistance/Beta/divider supply, calibrated millivolt ADC function, single one-second sample, no median/multi-sample filters, fault/failsafe behavior.
-- Peltier/Fan PWM frequencies/resolution, ON soft-start, rail deadtime/guard, Fan continuity through transition.
-- Manual Peltier safety latch/hysteresis, Hotside range/default, Adaptive HOTSIDE/HOTSIDE_BATTERY rules, timeout, step-down, recovery, saved ceiling, terminal lock.
-- Touch TTP223 startup grace/debounce/qualification/tap/double-tap/long-press timing and approved Adaptive ON/OFF LED blink feedback.
-- WS2812/RGB mode list, default voltage LED map, persistent settings, one 10-second quiet-period debounce, runtime-only Adaptive Profile.
-- Reset-reason diagnostic handling and separation between a symptom and a proven physical root cause.
-- Version filename constant rule and exactly one active versioned `.ino`.
-
-### OTA, cloud, protocol and security
-- Local OTA Golden/Protected flow and Online OTA flow/state machine.
-- Single-radio Wi-Fi-to-BLE transition; outputs must be safe during OTA.
-- Exact OTA command/protocol sequence, expected disconnect, ACK timeout ambiguity, reconnect, P1 resync and result handling.
-- Current `setInsecure()` trade-off, removed CA/NTP-gate experiment, user-reported symptom/result, and what exact evidence remains unavailable.
-- Raw GitHub BIN URL allowlist, redirects, HTTP/length/size/image checks, `Update` lifecycle, error/recovery/restart.
-- Firebase metadata remains version + link; don't invent SHA/signature fields or imply that current BIN matches active source without provenance.
-- Every prior OTA regression, failed attempt and reason must remain recorded, even when the old implementation is superseded.
-
-### Decisions, failures and validation
-- Every explicit user requirement and every “do not do” instruction.
-- Every rejected approach, why it was rejected, side effects/trade-offs, known bug symptom and reproduction conditions.
-- Exact version/build/commit/test IDs only where directly verified; old IDs marked historical and discrepancies retained unresolved instead of guessing.
-- For each quality gate, record source review, static contract, test execution, compiler, BIN, flash, hardware, BLE, OTA install/reboot and release separately.
-- Include known open issues, pending verification, diagnostic evidence needed, and the precise next action.
-
-### Visual design and build/release
-- Approved white symmetric square grille, 1:1 outline, central purple X, four corner mounting holes, original internal pattern/frame, removal-only side protrusions, flat/no-effects/print-ready requirement.
-- Approved app icon/cooler assets and transparent 1:1 constraint.
-- Manual App Build issue title/token, current workflow, Java/Flutter/Gradle versions, production signing, one obfuscated APK, no bundle/artifact, no push-triggered builds.
-- Exact commands that authorize App Build vs Firmware compile/BIN/OTA/Firebase/flash/release; do not infer one authorization from another.
-
-### Repository hygiene and final transfer
-- App repo owns all source and every memory/note; artifact repo contains only `JEXFYZ.cpp.bin`.
-- Check the full recursive tree, docs and code/config references. Avoid printing secrets from configuration files.
-- Search the current (non-archive) files for stale versions, incorrect filenames, dead links, old workflow path names and contradictory “current” paragraphs.
-- Historical archives are preservation only. Search them for a missing past detail, then restore the useful fact to its canonical file with a clear historical/current label. Never quote archive “CURRENT” text as live truth.
-- Update `MEMORY_INDEX.md`, current-only `PROJECT_STATE.md`, subject-specific memory, `CHANGELOG.md`, `HANDOVER.md` if next steps changed, and replace `CHAT_TRANSFER.md` last.
-- Final confirmation must state current main HEAD, exact source/version/active .ino count, final test paths, workflow/PR state, artifact repo root, doc hashes and operations not performed.
-
-
-## Additional mandatory reconciliation gates — full repository memory
-
-- Inspect all current text, config, source, workflow and test files in the recursive tree, not only the listed note files. Read the whole prior CHAT_TRANSFER.md before replacing it. Read the listed docs fully and inspect the archives for missing historical decisions; archives are forensic only and never override live code.
-- Preserve explicit UI exclusions, including that a standalone Battery Protection Guard must not be shown in the App. Preserve phone Battery temperature telemetry separately from NTC sampling: App sends PHONE:BT at approximately 1 Hz while BLE is ready; Firmware freshness TTL is 5 seconds. The user’s one-App/one-cooler pairing-lock intent is a design requirement until exclusive enforcement is proved in source and physically verified.
-- Verify Local OTA boot SoftAP ownership and current timeouts in source (currently 10-second no-client timeout, 60-second hard limit after interaction, then Wi-Fi shutdown/radio settle before BLE). Do not change OTA logic during a memory cleanup.
-- Preserve Android identity versionName Telegram @horizontalzzz. App Build and firmware compile/BIN/OTA/Firebase/flash/release are separately gated operations. Documentation authorization is not build authorization.
-- Check every local Markdown link and all current path/version/workflow/test references after writing. Preserve archives byte-for-byte; restore relevant facts from them into canonical notes with honest historical labels.
-- Before replacing CHAT_TRANSFER.md, update all other canonical docs, indexes and prompt templates first. Record the live main HEAD immediately before the transfer write, then re-fetch the final transfer and verify its commit parent, file tree, source/version/hash, tests, workflow, PR state, and artifact-repository BIN-only contents. Never store CHAT_TRANSFER.md’s own future blob SHA inside its own contents.
-- Readable prior chats are not guaranteed to be available to every new context. Use current repository notes, transfer prompts, archives, Git history and available project context; never claim a missing chat was read, and report any unrecoverable gap instead of guessing.
-
-
-## JE X FYZ durable-decision ledger — do not omit during transfer
-
-When rebuilding memory, explicitly reconcile each item below against the live source and current user requirements. Retain it in the named canonical memory even if the immediate task is unrelated; classify implementation/evidence correctly.
-
-### Firmware source identity, hardware and wiring
-
-- Source identity: one active versioned `.ino` only; filename must match embedded version and every functional Firmware change increments it. Current source is V7.1 (`firmware/JEXFYZ-V7.1.ino`, current blob `c44e076b2c1ee2d0b66b4fcd308d0febc69976e9`) with 2°C whole-degree Adaptive 12 V Fan bands relative to configured Hotside Limit and 10 s downstep / 1 s upstep. The owner confirms V7.1 was compiled and installed by Online OTA on the sold unit (USER-REPORTED). Exact BIN-to-source identity, independent installed-version evidence and physical post-update behavior remain UNVERIFIED; do not replace that owner report with a stale “not compiled” claim.
-- Board ESP32-C3 Super Mini / ESP32-C3 Dev Module at 3.3 V logic; GPIO0 NTC, GPIO1 TTP223, GPIO3 12 V selector, GPIO4 9 V selector, GPIO5 Peltier MOSFET, GPIO6 Fan MOSFET, GPIO7 WS2812.
-- MOSFET wiring memory: GPIO → R100 → Gate, 100 kΩ Gate–Source pull-down; Fan positive goes to supply and Fan negative to MOSFET Drain. Verify physical wiring and cables; a previously suspected 12 V selection failure was ultimately a loose cable.
-- NTC nominal 10 kΩ, fixed resistor 10 kΩ, Beta 3950, calibrated `analogReadMilliVolts()`, one sample per second. The user explicitly rejected median, trimmed-mean and multi-sample averaging; do not lose that rejected approach and its reason.
-- If NTC is invalid, check current source fail-safe contract rather than guessing. Known contract: Peltier OFF, Fan 100%, Adaptive OFF, safe 5 V selection.
-- Preserve hardware timings and control: Peltier 20 kHz/8-bit, normal OFF→ON five-second soft-start; Fan 25 kHz/8-bit, manual 50–100%, step 10; selector deadtime 200 ms; shared guard/settle 1 s; settings quiet debounce 10 s; HOTSIDE telemetry 1 Hz; state changes sent as deltas when changed.
-- LED mode IDs are Static 1, Breath 2, Comet 4, Dual Chase 5, Left/Right 6, Rainbow 7; ID 3/Mirror Pulse is retired, persisted ID 3 migrates to Static and `MODE:3` is rejected.
-- LED preview synchronization uses one `LED_SYNC:<mode>,<phase_ms>,<cycle_ms>` tuple generated at BLE notify time. App interpolates from snapshots via monotonic time and corrects drift without resetting animation on every update; older separate phase/cycle telemetry remains a compatibility fallback.
-- Adaptive ON/OFF returns the selector to safe 5 V without a separate Peltier OFF/ON cycle. The existing transition handler pauses only an active soft-start; a completed ramp remains at 100%, subject to explicit OFF and current Hotside/NTC/OTA safety.
-
-### Thermal, Adaptive, Touch and indicators
-
-- Hotside limit configurable 40–50°C, default 45°C. Manual Peltier re-arm requires Hotside <= hotLimit−1°C for five continuous seconds. One low sample must not bypass re-arm.
-- Adaptive 30-second thermal stages at 12 V / 9 V / 5 V, Peltier OFF and Fan 100%; five seconds stable at/below limit−1°C before deadline recovers, otherwise step down 12/9 or terminal-lock at 5 V. Restoration after thermal downshift goes up one rail only after 60 seconds continuously stable and never beyond saved ceiling. No rapid Hotside rise/slope protection is present in known V6.x.
-- HOTSIDE is the startup default; HOTSIDE_BATTERY is runtime-selectable and not persisted. Battery input defaults are 5 V threshold 25°C and 12 V threshold 35°C, 0.5°C hysteresis, firmware data TTL 5 s. App sends `PHONE:BT` at 1 Hz and coalesces pending heartbeat. If battery data expires, fallback to HOTSIDE behavior without silently rewriting selected profile.
-- App presentation rule: do not display a standalone Battery Protection Guard. This does not suppress actual thermal safety or independently actionable localized Notify messages.
-- One TTP223 only; no separate Wi-Fi/BLE toggle. Retain startup calibration grace, qualification/tap/double-tap/long-press timings only after live source check. Current known timing record: ~1 s startup grace, 30 ms qualification, raw HIGH 60–500 ms tap, 800 ms double-tap window, 5 s long press.
-- Adaptive ON is orange three blinks; OFF is white three blinks, with OFF indicator deferred until safe 5 V handoff when required. Voltage LED defaults: 5 V red, 9 V green, 12 V blue; user-customizable/resettable. Decorative RGB never overrides safety/OTA indications. Preserve the six supported RGB mode IDs (1, 2, 4, 5, 6, 7) and atomic LED_SYNC phase synchronization.
-
-### App product, BLE and user-visible behavior
-
-- Identity: App `JE Cooler`, brand/header `JE X FYZ`, package `com.horizontalzzz.jexfyz`, pubspec `1.0.0+3`; Gradle `versionName "Telegram @horizontalzzz"` is intentionally fixed.
-- UI layout reference: Horizon Cooler App; dark header, white rounded content panel, compact VOLTAGE/ADAPTIVE tabs, Home Hotside/Battery temps, voltage indicator, Adaptive, Peltier/Fan, Fan Speed and Notify reason. Menu order VOLTAGE → CONTROL → ADAPTIVE → LED → TEMPERATURE; the user explicitly approved a full redesign of animated dashboard indicators; keep grille/logo, app identity, cards, main layout and unrelated control behavior unchanged.
-- Manual 5/9/12 V selection/cycle and 1-second guard. Manual Fan speed control is not Adaptive-controlled; Adaptive can demand 100% cooling. Manual transition completion must wait for authoritative Firmware `VOLTAGE` telemetry.
-- Firmware-owned state: ACK is not proof physical hardware changed. Disconnected dashboard/Home and Floating Monitor outputs display unknown (`--`); CONTROL/ADAPTIVE/LED switch rows use an OFF-looking disabled toggle at left as presentation only, not a claim of physical state. Touch Adaptive-OFF must publish state deltas before ACK.
-- Protocol P1 UUIDs: service `6f1c0001-7f35-4d0f-9b9a-7e9b2f5c1001`, RX `6f1c0002-7f35-4d0f-9b9a-7e9b2f5c1001`, TX `6f1c0003-7f35-4d0f-9b9a-7e9b2f5c1001`. BLE write encryption/bonding is present; one-App-only pairing lock remains unverified unless code/physical tests establish it.
-- Auto Connect is passive: it cannot enable Bluetooth or request BLE permissions by itself; requires known cooler identity, ready Bluetooth/permission/location prerequisites and no sync collision. Native services/channels must not create a second BLE/GATT client.
-- English/Indonesia localization; user-facing power states ON/OFF versus HIDUP/MATI; machine identifiers remain English.
-
-### OTA failure history, cloud contract and build operation
-
-- OTA is protected code with priority over normal work and safe outputs. Local OTA uses the boot SoftAP; currently 10-second no-client timeout, 60-second hard cap after AP interaction, 160 ms Wi-Fi-off settle before BLE owns the single radio. Reconcile to current source before quoting.
-- Online OTA earlier used CA certificate verification and an OTA-only NTP/TIME_SYNCING gate; the observed user's failure was blue after Wi-Fi then red on the GitHub stage, but no exact HTTP/TLS log was provided. The V6.3-origin correction removed CA/NTP together and restored `cloudClient.setInsecure()`, which the user reported compiled and restored GitHub connectivity. This does not isolate which removed factor caused the failure, nor validate later V6.4–V6.7 source/BIN revisions or end-to-end OTA installation. Current V6.7 compile/online-update success is separately USER-REPORTED only. Trade-off: TLS is encrypted but server certificate identity is not authenticated.
-- Keep the raw GitHub BIN allowlist, redirect blocking, status/length/size/image checks (`0xE9`), streaming Update lifecycle, safe outputs, recovery/restart semantics. No custom firmware SHA/signature field in Firebase OTA metadata; user expects version + link. Do not infer BIN provenance from path or upload date.
-- App OTA sequence is `OTAENTER → SSID → PASS → URL → VERSION → CLOUDOTA`; timeout/disconnect ACK is ambiguous and must preserve recovery state. Separate OTA transport, full transfer, Update finalization, reboot, BLE recovery, installed-version confirmation, and Firebase promotion evidence.
-- Build App is manual issue-trigger only: title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; Java 17, Flutter 3.47.2 stable, Gradle 9.3.1, one obfuscated production-signed APK `JEXFYZ-release.apk` in release `jexfyz-latest`. Do not run it unless explicitly authorized. Preserve Gradle identity.
-
-### Approved physical/visual design and memory discipline
-
-- Approved grille: solid white symmetric geometry, perfect square 1:1 outer contour, central purple X, four corner mounting holes. Preserve interior pattern/frame, remove only the two left/right midpoint protrusions when asked. Flat print-ready 2D, no shadow/bevel/gradient/texture. HZ monogram was tried and reverted; purple X is approved. “Enlarge only” changes scale, not design.
-- Preserve icons/cooler PNG transparency and 1:1 aspect. All visual changes are scoped; don't invent a redesign.
-- Preserve failed/rejected methods and their reason in the appropriate current note/changelog, but label older claims as historical. A source contract/test file is not a run; compile is not OTA install; blue/red LED is not an HTTP diagnosis; version bump is not a BIN; reboot symptom is not proof of brownout; closed PR is not automatically merged.
-- At final boot snapshot include exact next steps, current and historical version boundary, current workflow and CI run SHA, all canonical document hashes, active tests, open PR/branch state, current BIN hash/provenance, and all not-run operations. Redact credentials and signing material.
-
-
-## Historic symptoms that must not be silently dropped
-
-During every full reconciliation, separately preserve the following reports and their evidence status in the canonical memory:
-- The reported reset during Manual 5 V→12 V while Peltier/Fan were ON and Peltier soft-start was still active; reset reason was not captured and brownout is a hypothesis only.
-- A separate reported reset when switching Adaptive ON after selecting 12 V and enabling Peltier/Fan; do not assume the two reset reports share a cause. Capture reset telemetry and physical conditions if the user later authorizes reproduction.
-- The user previously requested rapid Hotside rise/rate-of-rise protection to turn Peltier OFF and require manual re-arm. This behavior is NOT implemented in current V6.7; record as an unimplemented user requirement, not as current functionality.
-- The user reported the Adaptive-OFF white three-blink indication missing immediately after restart. A code path for OFF transition after user interaction does not prove boot-time initial OFF feedback; mark physical/boot behavior unverified until specifically checked.
-- Preserve the corrected physical-wiring finding that an apparent 12 V selector malfunction was later traced to a loose cable, and do not label it a code defect without evidence.

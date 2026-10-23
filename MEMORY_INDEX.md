@@ -1,73 +1,76 @@
-# JE X FYZ / JE Cooler — Memory Index
+# JE X FYZ / JE Cooler — Documentation Index and Retention Policy
 
-Last reconciled: 2026-10-23 (Asia/Jakarta). This is a navigation index plus concise production checkpoint; detailed topic contracts live in the canonical files below. Always check live source and evidence before making current-state claims.
+Last reconciled: 2026-10-23 (Asia/Jakarta). This index defines which document is authoritative for each topic and why each Markdown record is retained. Always verify implementation facts against live main/source, tests, Actions and Release data.
 
-## Production checkpoint
+## Current production checkpoint
 
-- Owner-confirmed state: the sold/shipped unit uses Android App Build #124; Firmware V7.1 was compiled and updated through Online OTA. This is USER-REPORTED product/deployment status.
-- Independently verified App artifact: Build #124 / Actions run `39386733061`, packaged source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`, APK SHA-256 `c0738d3607b120b716841610c849d9608f954a5f1f28017a8018790f4f4b6318`, source ZIP SHA-256 `e00ac34cb6cf7f04a5485c8ab8ee74d4acc1b20dc1a213ac733a8bf8c43cc152`. Build passed 116 Flutter tests and configured release gates; native Android tests were NO-SOURCE.
-- Active editable Firmware source: `firmware/JEXFYZ-V7.1.ino`, `FW_VERSION="V7.1"`. At a 40°C limit, Adaptive target bands are 40/39/38→100%, 37/36→90%, 35/34→80%, 33/32→70%, 31/30→60%, ≤29→50%; thresholds shift with configured limit. Raw-decimal thermal safety remains immediate, Fan 100% / Peltier OFF at or above the limit. PWM ramps +10 percentage points/1 s and −10 points/10 s.
-- Do not conflate the owner's compile/OTA report with independent source-to-BIN, installed-version, reboot, BLE recovery or physical thermal/electrical validation. The field unit is not available for routine physical repair; make remote updates conservative.
-- Latest source-only maintenance (2026-10-23): Home-matched Settings/modal scaling, Device/Perangkat UI copy, BLE-gated Floating Monitor, distinct Android notification IDs, and bilingual channel updates. Details/fingerprints: `CHAT_TRANSFER.md`; tests/analyzer/Android compilation remain unrun and Build #124 + Firmware V7.1 is unchanged.
+- Baseline reported by the owner: Android App Build #124 and Firmware V7.1 successfully compiled/installed through Online OTA on the sold/shipped unit. The Firmware compile/OTA statement is USER-REPORTED.
+- Independently verified App artifact: [Build #124 / Actions run 39386733061](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39386733061), package source 7d4e7262c6a3474eefa8ccb58b08f070df3ac15a. APK SHA-256 c0738d3607b120b716841610c849d9608f954a5f1f28017a8018790f4f4b6318; source ZIP SHA-256 e00ac34cb6cf7f04a5485c8ab8ee74d4acc1b20dc1a213ac733a8bf8c43cc152.
+- Live documentation rework began from main HEAD 11a0ef162f1c2945704229ed7697dc70e7617e9b. Fetch live HEAD/tree before using this or any saved source hash as current.
+- Current source-only App changes for fixed Settings scaling, Device/Perangkat copy, BLE-gated Floating Monitor and language-synchronized notifications are in source but have not been validated by a new App Build since Build #124. No build/release was run during this documentation rework.
+- Important audit finding: live source currently returns Notification / Notifikasi for the Home notice heading via the localization key; DESIGN_NOTES.md contains an older rule saying the heading must always be exactly NOTIFY in both languages. This UI contract mismatch is recorded for an explicit follow-up; this docs task does not change App behavior.
 
-## New-chat and chat-limit recovery
+## Recovery protocol
 
-1. Read `CHAT_TRANSFER.md` fully, then fetch live `main` HEAD + recursive tree.
-2. Read this index, `CHAT_RULES.md`, `PROJECT_STATE.md`, `HANDOVER.md`, and the full canonical reference relevant to the task. Inspect live code/config/tests/workflow as needed.
-3. General / Discussion chat-limit: use Prompt B (LOAD + CONTINUE) from `CHAT_TRANSFER_PROMPTS.md`; no separate recap-only chat.
-4. Build App chat-limit: use Prompt D once; load live workflow and `APP_BUILD_REPORT.md`, then continue the same authorized work.
-5. Prompt A is for explicitly requested full repository-memory reconciliation only, not default handoff.
-6. After substantive Discussion conclusions and after execution success/blockage, update the checkpoint and canonical subject note. A hard interruption may occur before a write; resume from the last persisted checkpoint and verify live evidence.
+1. Read CHAT_TRANSFER.md fully.
+2. Fetch live main HEAD, recursive tree and commit metadata.
+3. Read CHAT_RULES.md, this index, PROJECT_STATE.md, HANDOVER.md, and the entire canonical note relevant to the current task.
+4. Use Prompt 1 in CHAT_TRANSFER_PROMPTS.md for general Discussion/engineering; select a valid command header matching the actual authorization mode.
+5. Use Prompt 2 only for an already-authorized Build App/QC operation.
+6. Continue the prior workstream directly; no recap-only chat. Update the checkpoint after substantive Discussion conclusions and execution completion/blockage.
+7. Never infer lost, uncheckpointed chat content. A prompt does not grant additional permission.
 
-## Permanent command and authorization protocol
+## Canonical authority map
 
-- `@Thinking Diskusi!`: read-only for executable source/config/workflow and all build/release, firmware/BIN/Firebase, OTA/flash/device actions. Documentation-only checkpoint/canonical-note writes are permitted after substantive decisions or when the discussion concludes.
-- `@Thinking Eksekusi Full!`: executes the approved scoped source/docs/tests/static-audit change and commits directly to `main`; it never implies App Build, firmware compile, BIN/Firebase changes, OTA, flashing or hardware operation.
-- `@Thinking Eksekusi Build App!`: sole end-to-end App Build/QC authorization and required `APP_BUILD_REPORT.md` ledger update.
-- `@Thinking Chat Stuck!`: resumes the last valid authorized operation from actual logs/current state without blind retry or broader authorization.
-- Gemini subcommands require `Diskusi!` in the same command. Retired aliases remain invalid.
-- Preserve Gradle `versionName "Telegram @horizontalzzz"`; App repository owns source + all memory, while `TenzoNkz/JEXFYZ-Firmware` is BIN-only (`JEXFYZ.cpp.bin`).
+| File | Role | Retention decision |
+|---|---|---|
+| README.md | Project entry page, safe scope and direct navigation | KEEP; short entrypoint, not a second project-state ledger |
+| CHAT_RULES.md | Durable commands, authorization and safety workflow | KEEP; rules only, no duplicated current release fingerprints |
+| CHAT_TRANSFER.md | Rolling checkpoint for the next chat | KEEP; concise, updated at each durable checkpoint |
+| CHAT_TRANSFER_PROMPTS.md | The two current LOAD + CONTINUE templates | KEEP; exactly two prompts, retire A/B/C/D taxonomy |
+| MEMORY_INDEX.md | This map and retention policy | KEEP; authoritative documentation navigation |
+| PROJECT_STATE.md | Current-only product/source/validation status | KEEP; remove historical build-by-build narratives |
+| HANDOVER.md | Short next-step handoff | KEEP; point to checkpoint and current blocker/task |
+| APP_NOTES.md | Canonical App/BLE/UI/telemetry/language contract | KEEP; current contract only, old build snapshots belong in logs |
+| DESIGN_NOTES.md | Approved visual assets/layout/animation rules | KEEP; approved design only, dated validation history belongs elsewhere |
+| FIRMWARE_NOTES.md | Hardware, safety, operating contracts and durable reports | KEEP; current V7.1 facts plus material unresolved requirements |
+| firmware/FIRMWARE_TECHNICAL_REFERENCE.md | Low-level live Firmware architecture/invariants | KEEP; live version facts at top, historical algorithm versions in changelog |
+| OTA_PROTECTION.md | Frozen OTA contract and pre-change gates | KEEP; live-safe current baseline, no stale release claims |
+| OTA_REGRESSION_MEMORY.md | Root-cause evidence, past attempt and security trade-off | KEEP; preserve the failed CA/NTP attempt and evidence limitation |
+| VOLTAGE_TRANSITION_MEMORY.md | Two separate reset reports and rail/Peltier transition contract | KEEP; preserve hypotheses separately from confirmed cause |
+| BLE_APP_AUTH.md | Unimplemented App-only identity/authentication design and blocker | KEEP; do not imply security feature is implemented |
+| BUILD_NOTES.md | Current release procedure/gates | KEEP; build-by-build attempt evidence moves nowhere and remains in report |
+| APP_BUILD_REPORT.md | Authoritative append-only log of Build App runs/fixes/gates | KEEP AS APPEND-ONLY; required by the guarded workflow; 274 KB is historical evidence, not a navigation document |
+| CHANGELOG.md | Chronological record of decisions and changes | KEEP AS HISTORY; 155 KB reflects an append-only timeline, never use it as current truth |
+| .github/workflows/jexfyz-app-build-trigger.yml | Guarded release workflow | KEEP; manual issue trigger only |
+| test/*.dart | Source contracts and executable Flutter tests | KEEP; existence alone does not mean a test ran |
+| archive/ARTIFACT_REPO_NOTES_PRE_BIN_ONLY_2026-10-14.md | Pre-cleanup artifact-repository forensic record | KEEP IMMUTABLE; history only |
+| archive/LEGACY_NOTES_SNAPSHOT_2026-10-14.md | Snapshot of pre-reorganization mixed current/history notes | KEEP IMMUTABLE; never source current truth |
+| archive/LEGACY_TRANSFER_HISTORY_2026-10-14.md | Older transfer/rules/changelog snapshot | KEEP IMMUTABLE; not a current handoff prompt |
 
-## Canonical file map
+## Markdown cleanup conclusions
 
-| File | Canonical purpose |
-|---|---|
-| `README.md` | Project overview, navigation, baseline and validation boundaries |
-| `CHAT_RULES.md` | Commands, authorization, repository/OTA restrictions, persistence rules |
-| `CHAT_TRANSFER.md` | Rolling LOAD + CONTINUE checkpoint; not transcript prose |
-| `CHAT_TRANSFER_PROMPTS.md` | Prompt A full reconciliation, B general LOAD + CONTINUE, C persistence, D Build App LOAD + CONTINUE |
-| `MEMORY_INDEX.md` | This routing index and compact production checkpoint |
-| `PROJECT_STATE.md` | Current-only product/source/validation status |
-| `HANDOVER.md` | Current checkpoint and exact next action |
-| `APP_NOTES.md` | App UI, controls, BLE, telemetry, localization and notification contracts |
-| `FIRMWARE_NOTES.md` | Hardware, safety, Adaptive, Touch, LEDs, settings and telemetry |
-| `firmware/FIRMWARE_TECHNICAL_REFERENCE.md` | Source architecture and low-level firmware invariants |
-| `OTA_PROTECTION.md` | Protected Local/Online OTA behavior and regression gates |
-| `OTA_REGRESSION_MEMORY.md` | OTA failure history, CA/NTP experiment and TLS trade-off |
-| `VOLTAGE_TRANSITION_MEMORY.md` | Rail/Peltier timing, cancellation and recovery behavior |
-| `BUILD_NOTES.md` | Official App build procedure and validation boundaries |
-| `APP_BUILD_REPORT.md` | Authoritative App Build attempt/fix/test/signing/release ledger |
-| `DESIGN_NOTES.md` | Approved grille, logo, assets, animation and layout contracts |
-| `BLE_APP_AUTH.md` | App identity/enrollment gap, requirements and blocker |
-| `CHANGELOG.md` | Dated history; historical entries never override live state |
-| `.github/workflows/jexfyz-app-build-trigger.yml` | Authoritative guarded App Build trigger |
-| `test/*.dart` | Flutter/source-contract tests; file presence is not proof of execution |
-| `archive/*.md` | Immutable forensic snapshots; never current truth |
+- Do not delete the large APP_BUILD_REPORT.md or CHANGELOG.md simply to reduce the visible repository size. Their chronology and evidence have historical value; the workflow also expects APP_BUILD_REPORT.md at the repository root. Keep them out of the boot path and summarize only the latest state in PROJECT_STATE.md.
+- Do not edit archive/*.md. They are dated snapshots that intentionally contain stale versions and obsolete prompt formats.
+- Subject references should not carry duplicate build logs, old current-state blocks or stale source/blob fingerprints. Keep release artifact checksums and incident evidence where they are evidentially meaningful.
+- Keep current notes small enough to load selectively; CHAT_TRANSFER.md and HANDOVER.md must be materially smaller than history ledgers.
+- Current docs must distinguish CURRENT SOURCE, USER-REPORTED, VERIFIED CI, SOURCE IMPLEMENTED / NOT RUN, UNVERIFIED, HYPOTHESIS and HISTORICAL / SUPERSEDED.
+- Do not move files or rename paths unless all code/tests/workflow/docs references have been audited.
 
 ## Evidence labels
 
-- **CURRENT / VERIFIED:** checked live source/tree/ref/Actions/Release or executed gate.
-- **USER-REPORTED:** user-confirmed outcome not independently verified here.
-- **SOURCE IMPLEMENTED / NOT RUN:** code or test exists but that validation did not run.
-- **UNVERIFIED:** supporting evidence is missing.
-- **HYPOTHESIS:** possible explanation, not an established cause.
-- **HISTORICAL / SUPERSEDED:** valid for an earlier source/version/run only.
-- **NOT RELEASED:** current source/artifact is not proven to be the released package.
+- CURRENT / VERIFIED: inspected live ref/source or an executed gate with matching evidence.
+- USER-REPORTED: owner confirmed a deployment/behavior that was not independently witnessed here.
+- SOURCE IMPLEMENTED / NOT RUN: code or static contract exists but relevant validation has not run.
+- UNVERIFIED: evidence unavailable.
+- HYPOTHESIS: plausible explanation, not proven.
+- HISTORICAL / SUPERSEDED: valid for an earlier build or source revision only.
+- NOT RELEASED: not proven to be part of the latest packaged artifact.
 
-## Non-negotiable safety and design boundaries
+## Non-negotiable product boundaries
 
-- Preserve protected OTA behavior and the current `cloudClient.setInsecure()` trade-off. No casual OTA refactor; read `OTA_PROTECTION.md` and `OTA_REGRESSION_MEMORY.md` before any authorized OTA change.
-- Firmware source changes require an `FW_VERSION` bump and matching filename; exactly one active versioned `.ino`. Keep cooperative `millis()` timing; no executable `delay()` or timing `while()`.
-- No standalone Battery Protection Guard UI. Physical output state must not be inferred from command ACK alone. Keep BLE P1 IDs/protocol, radio ownership, Touch/Peltier/rail timing, thermal fail-safes and persisted schema compatibility.
-- No firmware checksum/signature fields in Firebase OTA metadata without explicit user approval. Do not assume the BIN matches current source without provenance.
-- Preserve approved white symmetric 1:1 grille, central purple X, four mounting holes, original interior pattern, and flat print-ready design. Keep existing App identity/assets and localization contracts.
+- Active Firmware file: firmware/JEXFYZ-V7.1.ino, FW_VERSION="V7.1"; raw-decimal Hotside limit safety remains separate from Adaptive Fan target bands.
+- Adaptive Fan bands at 40°C limit: 40/39/38→100%; 37/36→90%; 35/34→80%; 33/32→70%; 31/30→60%; ≤29→50%. PWM upsteps are 10 points/second; downsteps are 10 points/10 seconds.
+- No rapid Hotside-rise/rate-of-rise shutdown/manual-rearm implementation exists in V7.1. Retain as an unimplemented user requirement, not a feature.
+- Preserve BLE P1 identifiers, authoritative telemetry, unknown values when disconnected, protected single-radio handoff, OTA safeguards, Touch/rail/Peltier timing and stored schema compatibility.
+- Do not add a standalone Battery Protection Guard UI; do not infer official App identity from BLE bonding/SYNC_READY.

@@ -1,61 +1,45 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last updated: 2026-10-23 (Asia/Jakarta). This file is current-only state; use `CHANGELOG.md` for historical changes.
+Last checked against live main at the start of the documentation rework: 2026-10-23 (Asia/Jakarta). This is current-only state, not history; fetch live HEAD and tree on every new task.
 
-## Product and deployed baseline
+## Product baseline and evidence
 
-- **App Build #124:** owner confirms this is the App used by the sold unit.
-- **Firmware V7.1:** owner confirms it compiled successfully and was installed by Online OTA.
-- **Product status:** sold and shipped; routine physical disassembly/repair is unavailable. Treat future changes as remote-maintenance work with a high bar for firmware/OTA safety.
-- These compile/deployment facts are USER-REPORTED. The App release itself is independently evidenced by Actions run `39386733061` and package source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`. Repository/App CI does not independently establish exact installed BIN identity, in-field boot/reconnect behavior or thermal/electrical behavior.
+- Owner-reported field baseline: Android App Build #124 and Firmware V7.1, reportedly compiled and updated through Online OTA. The product is sold/shipped and unavailable for routine physical repair.
+- Independently verified App release: [Build #124 / Actions run 39386733061](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39386733061), packaged source 7d4e7262c6a3474eefa8ccb58b08f070df3ac15a. APK SHA-256 c0738d3607b120b716841610c849d9608f954a5f1f28017a8018790f4f4b6318; source ZIP SHA-256 e00ac34cb6cf7f04a5485c8ab8ee74d4acc1b20dc1a213ac733a8bf8c43cc152.
+- Build #124 passed 116 Flutter tests and configured App release gates; native Android JUnit tasks were NO-SOURCE. This verifies the package/build gates for that source commit, not Firmware compilation, OTA apply/reboot, BLE behavior or hardware safety.
+- Keep Build #124 + Firmware V7.1 as the production baseline. Avoid discretionary releases and preserve remote recovery/safety.
 
-## Code and release baseline
+## Live source state at audit start
 
-- Canonical repository: `TenzoNkz/JEXFYZ-App`, branch `main`. Fetch live HEAD and tree each time; do not treat the source SHA packaged in Build #124 as the current docs/source HEAD.
-- Active Firmware source: `firmware/JEXFYZ-V7.1.ino`; embedded version `FW_VERSION="V7.1"`. Firmware artifact repository `TenzoNkz/JEXFYZ-Firmware` is BIN-only.
-- Build #124 passed 116 Flutter tests and configured App release gates. Analyzer exit was 0 with 25 info-level diagnostics; Android unit-test tasks were NO-SOURCE. APK SHA-256 `c0738d3607b120b716841610c849d9608f954a5f1f28017a8018790f4f4b6318`, source ZIP SHA-256 `e00ac34cb6cf7f04a5485c8ab8ee74d4acc1b20dc1a213ac733a8bf8c43cc152`.
-- Preserve Android Gradle `versionName "Telegram @horizontalzzz"`.
+- Canonical repository TenzoNkz/JEXFYZ-App, branch main. Audit started at commit 11a0ef162f1c2945704229ed7697dc70e7617e9b; the documentation rework commit will move main, so this SHA is the audit base, not the final HEAD.
+- Active Firmware: firmware/JEXFYZ-V7.1.ino, FW_VERSION="V7.1", source blob c44e076b2c1ee2d0b66b4fcd308d0febc69976e9.
+- The recursive tree had 69 entries and was not truncated. No open pull requests were returned by the live query at audit start.
+- Latest successful App Build/release record returned by live Actions/Release queries remains #124; do not trigger a new App build as part of this documentation task.
 
-## Firmware operating contract — do not alter during cleanup
+## Latest App source implementation — not yet released/validated
 
-- Adaptive target bands relative to the configured Hotside limit: delta ≤2°C →100%; 3–4°C →90%; 5–6°C →80%; 7–8°C →70%; 9–10°C →60%; ≥11°C →50%. At 40°C, exact bands are 40/39/38→100%, 37/36→90%, 35/34→80%, 33/32→70%, 31/30→60%, ≤29→50%.
-- Raw-decimal protection remains immediate: Fan 100% and Peltier OFF at/above the configured limit. Adaptive ramp up is +10 points/second; down is −10 points/10 seconds; Adaptive 5 V/9 V stays at 100%.
-- Maintain NTC one-sample-per-second calibration path, cooperative non-blocking loop, Touch/P1 behavior, Peltier/selector/rail timing, BLE/radio ownership, safe OTA outputs and failure/recovery logic.
+The latest source-only App implementation on main covers:
+- Home-matched 360-dp Settings/sub-settings and modal design canvas, with system text scaling disabled.
+- Device / Perangkat terminology for user-facing device labels, locked-menu copy, BLE discovery/errors and service notifications.
+- Floating Monitor detaches while disconnected and only attaches when the saved enable preference and synchronized connected telemetry permit it. Saved intent survives disconnect or missing overlay permission.
+- Alert IDs 2101–2104, persistent BLE foreground ID 2110 and Floating Monitor ID 2301 are distinct; channel IDs remain stable. Channel labels/descriptions synchronize to the selected App language on startup and language change.
+- OTA-result messages are formatted using the language selected when displayed. OTA protocol/transport was not edited in that UI change.
 
-## OTA and remote-maintenance policy
+The related static tests exist, including test/device_copy_notification_contract_test.dart and test/floating_monitor_layout_contract_test.dart. They were not executed in this documentation rework. Dart analyze/format and Android compilation have not been run for this latest source-only change. No new App release is proven; Build #124 + V7.1 remains the reported field baseline.
 
-- Baseline is frozen for discretionary functional work. Prefer no release unless it fixes a concrete problem or is required for maintenance.
-- Do not casually modify Local/Online OTA, redirects, allowlists, size/image checks, timeouts, Update lifecycle, restart or BLE-recovery logic. The current Online OTA path uses `cloudClient.setInsecure()`, which does not authenticate server certificate identity; retain the current chosen trade-off unless a specific authorized redesign is evaluated.
-- App-only changes can still affect BLE, OTA command sequencing, URL/version handling, reconnect behavior and update UX. They require source review and the required App validation/release authorization.
-- An App Build command does not authorize Firmware compilation/BIN publication, Firebase changes, OTA, flash or device operations. `@Thinking Eksekusi Full!` does not authorize the App Build pipeline.
+## Open design/validation items
 
-## Current known blockers / evidence boundaries
+- Known documentation/source mismatch: source currently uses the localized Home notice heading Notification / Notifikasi; DESIGN_NOTES.md contains an older approved line requiring the fixed heading NOTIFY in both languages. This rework records the mismatch but does not alter executable UI. Resolve in a separately scoped UI task rather than silently changing one side.
+- Rapid Hotside-rise/slope shutdown plus manual re-arm remains an unimplemented Firmware requirement. Do not imply it is covered by Adaptive Fan tiers or raw-decimal limit safety.
+- BLE App-only authorization is BLOCKED / NOT IMPLEMENTED until a trusted backend, device-bound enrollment grant and per-session signature verification are designed/deployed.
+- Exact field BIN-to-source identity, installed-version evidence, physical reboot/BLE recovery and thermal/electrical behavior remain independently unverified despite the owner's report.
+- Historical reports of resets during a voltage transition and during Adaptive entry have no captured reset reason; brownout remains a hypothesis. Keep the two incidents separate.
 
-- BLE App-only authorization is BLOCKED / NOT IMPLEMENTED: trusted backend enrollment/signing is missing. Encrypted/bonded BLE writes and `SYNC_READY` do not prove official App identity.
-- Owner confirms V7.1 compile and successful Online OTA to the sold unit, but exact BIN-to-source provenance, independent installed-version query, physical reboot/BLE recovery and long-run thermal behavior are not independently observable from the repository.
-- Do not claim a physical reset cause without `BOOT: RESET_REASON=...` or equivalent evidence. Hotside rate-of-rise protection remains an unimplemented historic requirement unless live source shows otherwise.
+## Protected baseline
 
-## Memory and handoff protocol
-
-- `CHAT_TRANSFER.md` is a rolling checkpoint, not a long transcript recap. Keep it accurate and update it after a substantive Discussion concludes and after each execution completes/blocks.
-- General/Discussion context limit: Prompt B in `CHAT_TRANSFER_PROMPTS.md` loads live state then continues without a recap stage. Build App context limit: Prompt D loads build state and `APP_BUILD_REPORT.md`, then continues the same authorized operation.
-- Prompt A is reserved for explicit full-memory reconciliation. If interrupted before a checkpoint write, recover from the last saved point and verify live evidence; do not pretend unsaved content was saved.
-
-
-## Latest maintenance decision — defer APK optimization (2026-10-21)
-
-- The owner cancelled the proposed APK-size/performance optimization and unused-file cleanup. The current APK works; avoiding unnecessary regression risk on the sold/shipped product is the priority.
-- Keep Build #124 + Firmware V7.1 as the production baseline. Do not remove assets/dependencies, split APKs by ABI, refactor the app, or make size/performance changes without a new explicit request tied to a concrete issue or measurable need.
-- This decision does not authorize source edits, tests/builds, firmware compilation, BIN/Firebase changes, OTA, flashing, or device operations. Reconsider only if a real problem or requirement appears, using baseline measurements and a narrowly scoped, reversible plan.
-
-
-
-## Latest source implementation — Settings scale, Floating Monitor and device notification copy (2026-10-23)
-
-- Source-only implementation committed directly to main following the explicit @Thinking Eksekusi Full! command.
-- Settings and sub-settings use the Home-matched fixed 360-dp canvas with system text scaling disabled; the BLE sheet, Firmware Update, Peltier safety and LED picker also use the shared canvas. The Home brand header remains JE X FYZ.
-- Device-facing wording uses Device / Perangkat; Android push copy and all three Android notification channels use the selected bilingual locale, synchronized on startup and every App-language change. The firmware-update message includes a clear next step. Existing BLE matching and app/package identity remain unchanged.
-- Floating Monitor overlay requires the saved enabled preference plus synchronized BLE connected=true; disconnected telemetry detaches the overlay while saved intent survives. Dashboard sends an offline snapshot at startup to clear stale overlays and restores after the full BLE/P1 gate with current telemetry in the native startup payload.
-- Persistent foreground service notification ID 2110 separates from transient alerts 2101–2104; Floating Monitor uses 2301. Channel IDs remain unchanged. Protected OTA runtime logic was not edited.
-- Added a static device/notification contract test and updated copy/layout expectations. Test execution, Dart analysis/formatting and Android compilation have not been run. No APK/release, firmware compile, BIN/Firebase write, OTA/flash/device operation was performed. Build #124 + Firmware V7.1 remains the reported production baseline.
-- Next release validation, if requested, is @Thinking Eksekusi Build App!; do not initiate it from this source-only command.
+- Firmware Hotside limit 40–50°C (default 45°C); at or above limit, existing safety forces Fan 100% and Peltier OFF.
+- Adaptive Fan tiers relative to limit: delta ≤2°C→100%; 3–4→90%; 5–6→80%; 7–8→70%; 9–10→60%; ≥11→50%. Ramp +10 points/second, −10 points/10 seconds; Adaptive 5 V/9 V remains 100%.
+- Preserve NTC one-sample-per-second path, cooperative millis() timing, Touch/P1, voltage/Peltier sequencing, radio ownership and Local/Online OTA recovery.
+- Online OTA intentionally uses cloudClient.setInsecure(); server certificate identity is not authenticated. Keep the GitHub BIN allowlist, redirect blocking, response/image/size checks and version+link metadata contract.
+- Preserve Android Gradle versionName "Telegram @horizontalzzz".
+- No App Build/release, Firmware compile, BIN/Firebase mutation, OTA, flash or device operation was authorized or performed by this documentation rework.

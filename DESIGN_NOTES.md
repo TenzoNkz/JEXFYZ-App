@@ -1,111 +1,59 @@
-# JE X FYZ / JE Cooler — Approved Design Notes
+# JE X FYZ / JE Cooler — Approved Design Contract
 
-This file stores durable, user-approved visual constraints. Do not reinterpret a narrowly-scoped adjustment as permission to redesign.
+This document stores durable design constraints, not a build history. Live App source determines current implementation; CHANGELOG.md / APP_BUILD_REPORT.md retain dated validation evidence.
 
-## JE X FYZ grille — approved reference
+## Product identity and supplied assets
 
-- Approved direction: symmetrical white geometric grille, central purple X monogram, four corner mounting holes.
-- Outer silhouette must be a geometrically square 1:1 shape and symmetrical.
-- Keep the approved original interior pattern and surrounding frame unchanged unless the user explicitly requests a change.
-- Remove only the two small protrusions at the midpoint of the left/right outer sides when continuing the approved edit.
-- Flat 2D manufacturable/print-ready design: no shadows, bevels, faux depth, gradients or texture.
-- White solid grille with purple X monogram. Do not change the monogram to HZ; user reverted that experiment and re-approved X.
-- For an “enlarge only” request, scale up the existing design only. Do not invent new holes, ribs, borders, pattern pieces or logos.
-- Do not search for a replacement design or redesign from scratch when the user asks to clean up or scale the approved reference.
+- App name: JE Cooler. Brand/header: JE X FYZ.
+- Preserve assets/jexfyzicon.png and assets/jexfyzcooler.png as transparent square 1:1 PNGs. Do not distort geometry, transparency or aspect ratio.
+- The cooler image remains on the right within the established compact Horizon Cooler-inspired layout, with a dark header, white rounded content panel and compact mode navigation.
+- Do not casually redesign the approved identity or replace assets with speculative alternatives.
 
-## App visual assets / interface direction
+## Approved grille / manufacturable visual
 
-- App name: JE Cooler; top/brand label: JE X FYZ.
-- `assets/jexfyzicon.png` and `assets/jexfyzcooler.png` are transparent 1:1 PNG visual assets. Preserve their intended aspect ratio and transparency.
-- UI direction: dark header, white rounded main content panel, compact navigation; VOLTAGE and ADAPTIVE are the principal modes. Cooler image sits on the right in the established Horizon Cooler-inspired layout.
-- If a future visual request supplies an image, preserve unmentioned geometry/details and edit only what the user asked to change.
+- White, symmetrical geometric grille; central purple X monogram; four corner mounting holes.
+- Outer silhouette is square 1:1 and symmetrical; preserve the approved interior pattern and frame.
+- When continuing the approved edit, remove only the two small protrusions at the midpoint of the left/right outer sides. Do not invent holes, ribs, borders or extra pattern pieces.
+- Flat 2D and print-ready: no shadows, bevels, faux depth, gradients or texture.
+- HZ monogram was rejected; keep X.
 
-## Dashboard indicator motion, switch styling and menu locks
+## Home layout, submenu lock and controls
 
-- Keep each Home indicator as a high-contrast integrated 2D silhouette; effects support the symbol and never obscure its identity.
-- **Current approved thermal animation:** Battery/Hotside use small, stylized orange/gold flame particles with warm yellow-white cores, a soft restrained halo, deterministic phase lanes, slight drift/rotation and boundary fade. Particles fall from the top like Peltier's snowfall. Render the fire first as a background layer and clip it to a rounded frame minus the foreground silhouette: never allow particles beyond the rounded frame, inside the battery chamber/tube, or over the icon foreground. Paint shell/body/tube/graduations afterward. Keep thresholds and the 280 ms warning transition unchanged.
-- Battery remains Ice Blue at ≤30°C, transitions through cyan/amber/orange from 30–40°C, and shows red plus falling flame particles at ≥40°C. Hotside remains Ice Blue at ≤30°C and shows red plus falling flame particles at the configured Hotside Limit. These visual-only effects never change Firmware safety or thresholds.
-- **Current Voltage animation:** keep the bolt face/core static; remove the moving central spine and internal strikes. Two pulses travel along the closed outer contour. The white core vertices are inset and the inner-core drawing is clipped to the bolt silhouette so no white pixels can leak past the upper-right edge. Keep 5V red, 9V green and 12V blue and preserve the existing 25% / 50% / 100% visual intensity mapping.
-- Adaptive keeps exactly two directional arcs/arrowheads, improved with a restrained halo and inner highlight; no orbiting dot or unrelated particles.
-- Peltier keeps one six-branch rotating snow crystal and recognisable branched flakes falling behind it. Frost strength/density maps to established 5V / 9V / 12V classes. A small faceted centre adds depth without obscuring the crystal; no random dots or orbiting sparks.
-- Fan uses one five-blade swept rotor and a layered central hub. Exactly three curved airflow ribbons remain fixed behind the blades throughout spin; their path, count, width and colour never change with voltage or PWM. Only rotor angular speed changes: 5V slow, 9V medium and 12V uses authoritative PWM. Airflow stays visible while spinning and fades only during the permitted one-shot connected ON→OFF coast; then Fan rests static.
-- Fan Speed uses a fixed upper-half semicircle gauge (start π, sweep π): a known OFF state puts the needle at the far-left endpoint, intermediate PWM is proportional, and 100% reaches the far-right endpoint. Needle and filled arc smoothly retarget authoritative PWM with no autonomous phase loop, wobble or orbiting glint. If PWM/output state is unknown or BLE is disconnected, hide the needle rather than implying OFF.
-- Animation gating is strict: while BLE is disconnected, stop and reset every custom icon controller. While connected, Battery, Hotside and Voltage loop continuously, even if a sensor value is unknown (retain “--”). Adaptive, Peltier, Fan and LED animate only when authoritative state is ON. Fan Speed is event-driven and has no repeating phase loop. OFF outputs remain in a fully-coloured standby pose, except the connected Fan’s one-shot coast. Bluetooth remains static.
-- Repeating paths use phase-compatible integer harmonics and must be visually continuous at their wrap. All effects are illustrative: never fabricate sensor values, voltage/output state, electrical current or physical RPM. Preserve semantic colours, approved icon/card layout, brand identity, controls and telemetry behavior.
-- Manual VOLTAGE rows remain neutral. 5V/9V/12V labels keep red/green/blue semantic colours; the active toggle uses theme-primary without a check glyph. Peltier, Adaptive, Fan and LED switch rows follow that convention: neutral row/icon surface, stable semantic icon colour, no knob checkmark and no adjacent ON/OFF label. Preserve selector commands, Fan safety gating, BLE state semantics, voltage locks, authoritative telemetry, and Fan Speed slider layout/behavior.
-- When Bluetooth is disconnected, blur/dim the entire active display submenu with exactly one centered lock card; keep the top-level tab strip and Home Bluetooth control usable. When Adaptive is ON or transitioning while Bluetooth is connected, apply the same whole-submenu lock only to Voltage, Control and Temperature; leave Adaptive and LED reachable. The text is centered over the submenu content, not placed as an extra row below it.
+- Keep the established Home card geometry and high-contrast status icon silhouettes. Short status copy should remain compact; long notice copy must not overlap metric rows or escape its card.
+- Home notice is icon-left/text-left with no separate CONNECTED/DISCONNECTED badge; physical state is conveyed through the localized primary message when relevant. Current source card height is 44 dp.
+- Preserve one centered blur/dim lock overlay over the active submenu when BLE is disconnected. Top-level tab strip and Home Bluetooth control remain usable. When BLE is connected but Adaptive is ON/transitioning, lock Voltage, Control and Temperature only; Adaptive and LED remain available. The lock overlay does not replace control gating.
+- Lock copy is bilingual and uses generic Device / Perangkat: CONNECT YOUR DEVICE FIRST / HUBUNGKAN PERANGKAT TERLEBIH DAHULU. Do not use JE X FYZ as a generic noun in this sentence.
+- Switch styling: neutral row/icon surface, stable semantic icon colour, theme-primary toggle accent, no checkmark in knob, no extra ON/OFF label beside the toggle. Manual Voltage rows remain neutral with 5V red, 9V green, 12V blue labels.
 
-- LED contract: RGB ON/OFF controls only custom RGB effects. Voltage, thermal/safety, Adaptive, OTA/error and other system indicators remain independent; saved master Brightness applies to every physical WS2812 indication. Phone-side preview remains readable at low hardware Brightness.
+## Home status icon contract
 
-## Historical seven-icon animation family — included in Build #95 (Battery/Hotside/Voltage effects superseded by current contract)
+- Unknown/disconnected state must never fabricate values or imply output ON/OFF. Preserve semantic accent at rest; stop and reset state-driven animations while disconnected.
+- Battery: Ice Blue at/below 30°C, smooth transition through cyan/amber/orange from 30–40°C, red/fire effect at or above 40°C. Falling oval embers with warm yellow-white cores, soft restrained halo and deterministic phases are behind the shell and clipped inside the rounded frame but outside the foreground icon.
+- Hotside: Ice Blue at/below 30°C, smooth transition to red/flame at the configured Hotside limit. Embers are background-only, clipped outside the raised thermometer silhouette; tube, bulb and graduations paint above particles. UI effect never modifies Firmware safety.
+- Voltage: bolt face/core remains static. Two pulses travel along the closed outer contour. No moving central spine or internal strikes; no white pixels may leak beyond the bolt silhouette. Keep 5V/9V/12V red/green/blue and 25%/50%/100% visual intensity mapping.
+- Adaptive: exactly two directional arcs/arrowheads with restrained halo/highlight; no orbiting dot or unrelated particles.
+- Peltier: one six-branch rotating snow crystal and recognisable flakes behind it. Frost/snow strength maps to 5V/9V/12V classes; no random dots or orbiting sparks.
+- Fan: one five-blade swept rotor and layered hub; exactly three curved airflow ribbons remain fixed behind the blades. Only rotor angular speed changes by voltage/PWM class. Airflow fades only during the permitted one-shot connected ON→OFF coast, then Fan is static.
+- Fan Speed: fixed upper-half semicircle gauge, start π and sweep π. Known OFF puts the needle at far-left; proportional PWM reaches far-right at 100%. Retarget from authoritative state without autonomous phase loop/wobble. Hide the needle for unknown/disconnected PWM instead of implying OFF.
+- Animation gate: while BLE disconnected, stop/reset all custom icon controllers. While connected, Battery/Hotside/Voltage loop continuously even if the sensor value is unknown (value remains --). Adaptive/Peltier/Fan/LED animate only when authoritative state is ON; OFF is static, except the connected Fan's one-shot coast. Bluetooth icon is static.
+- Keep animations phase-compatible at loop seams. Effects must not fabricate sensor values, voltage, current, output state or physical RPM.
 
-- Battery: recognizable shell with a downward-falling three-ember thermal warning effect.
-- Hotside: continuous thermometer tube/bulb in front of falling ember particles rendered outside the foreground silhouette.
-- Voltage: closed bolt, luminous core, travelling spine pulse and staggered inner strikes.
-- Adaptive: two opposing circular arrows with the established active-only animation gate.
-- Peltier: six-branch crystal with falling snow behind it.
-- Fan: exactly three broad swept blades, stable hub, and three fixed airflow ribbons.
-- Fan Speed: semicircular gauge and value-driven needle with the existing PWM/unknown-state mapping.
-- Build #95 is the latest verified release for this icon family. It passed 99/99 Flutter tests; this does not prove physical-screen smoothness.
+## Home notice copy and known mismatch
 
-## Smoothness rework validated in Build #99
+- The intended notice is a single concise latest-event message, not a concatenated state summary. Ordinary temperature samples do not create notices; Hotside at/above the limit has safety priority. Delayed ACKs must not replace newer telemetry-confirmed events.
+- User-facing notice copy is professional, actionable and localized. Never display raw reason IDs, internal underscore tokens, OTA ERROR/CODE text or internal event suffixes.
+- A previous approved note says the heading must always be exactly NOTIFY in both languages. However, live source currently renders the localized key Notification / Notifikasi. The code and this design note are not aligned; preserve this as an OPEN CONTRACT MISMATCH until a scoped UI task resolves it. Do not silently claim either representation is fully synchronized.
 
-- Build #99 / [Actions run 39230380636](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39230380636) validated the seven-icon motion baseline: 102/102 Flutter tests passed; analyzer had 25 info-level findings and no errors/warnings; required Android/APK/signing/source-ZIP/Release-tag checks passed. This evidence applies to Build #99 source, not later redraws.
-- Cadences are Battery 1500 ms, Hotside 1650 ms, Voltage 1000 ms, Adaptive 2300 ms, Peltier 2100 ms. Falling particles use deterministic phase, larger geometry and boundary fades; whole-icon breathing was removed; Peltier crystal rocking is separate from snowfall; Fan uses integrated angular-rate retarget from accumulated phase; Home glyph is 26 dp within the unchanged 38×38 tile.
-- Build #99 source blob: lib/main.dart 30d864c2f03c40fd4d0b6926a9958153f2a3b236; test blob: test/widget_test.dart 711a44b00eadee2e2bcd24e48383128f0d70ccc9.
+## LED semantics
 
-## Static / unknown-state icon-family redraw after Build #99 — SOURCE ONLY / NOT RUN / NOT RELEASED
+- RGB ON/OFF controls custom RGB effects only. Voltage, thermal/safety, Adaptive, OTA/error and other system indications remain independent.
+- Saved master LED brightness applies to every physical WS2812 indication. Phone-side preview remains readable at low hardware Brightness.
+- Safety/OTA indication outranks decorative RGB effects.
 
-- The disconnected-state screenshot showed thin/empty glyphs when animation stopped. This follow-up changes static geometry itself rather than adding more idle animation.
-- Battery gets a recessed dark window and a subtle semantic-colour thermal emblem in unknown state, never fabricated numeric fill. Hotside gets a dark tube, fixed graduations and a bulb bezel; its live column only reflects valid data.
-- Voltage gets a shadowed, inset bolt face; travelling pulse remains state-gated. Adaptive gets stronger twin arrows, thicker arcs and a recessed orbit track, with no idle glow when inactive.
-- Peltier's six-arm crystal and centre facet are stronger at rest; secondary flakes are not drawn as frozen particles when not allowed to move. Fan gets a bearing ring, dark blade outline and per-blade specular strips without changing its exact three-blade geometry or three fixed airflow ribbons.
-- Speedometer gets a recessed track, 11 graded ticks and layered pivot. The actual needle remains visible only for valid authoritative PWM.
-- Source blob lib/main.dart: 6a008c5c3e5ba7118e948e0b1f36277c01e73529; test blob test/widget_test.dart: 94dad7a7506fbcbeea63f300ea25b7f32299d471. These changes are NOT RUN / NOT RELEASED and do not appear in Build #99. Physical-device appearance/smoothness remains UNVERIFIED.
+## Change protocol
 
-## Static action glyphs versus animated status indicators
-
-- Navigation, settings, drag handles and other action affordances use static high-contrast glyphs. They do not run idle loops because they do not represent live state or telemetry.
-- Live Home status indicators use the data-driven `JexAnimatedIcon` painter and the connection/authoritative-state gates above. Bluetooth remains static and communicates state through semantic colour.
-- The native Floating Monitor retains its established compact letters-only B/H/V/A/P/F presentation and schema; values/status still follow live telemetry, unknown values remain `--`, and disconnected state must never imply current physical output. Replacing those letters with native pictograms is a separate presentation/layout change, not a hidden side effect of the Home icon refresh.
-
-## Home STATUS / NOTIFY copy contract — 2026-10-19
-
-- Home status categories are concise: STATUS / STATUS, CONNECTION / KONEKSI, SYNC / SINKRONISASI, WARNING / PERINGATAN, ERROR / ERROR.
-- User-facing messages must follow the supported English/Indonesian language setting. Never concatenate firmware reason IDs such as PELTIER_SAFETY_LATCH or underscore-formatted diagnostic tokens into visible prose.
-- Map known reason codes to localized, actionable copy. Unknown codes use a generic localized message. Keep raw identifiers in internal diagnostics only.
-- OTA result presentation must never expose raw ERROR/CODE fields or internal event suffixes. Show concise localized success/failure summaries, a known localized stage when useful, and a validated firmware version; keep protocol diagnostics out of Home STATUS.
-- Classify unconfirmed command outcomes as errors in both languages. Preserve existing safety thresholds, predicates, controls, BLE protocol, command semantics and telemetry state.
-- Normalize Home STATUS text consistently, including after language changes, but preserve OTA result envelopes for their dedicated parser.
-
-## Visual-change protocol
-
-1. Inspect the exact latest reference or source image.
-2. State which elements are locked and which are requested to change.
-3. Change only authorized elements.
-4. Verify square ratio, symmetry, mounting holes, interior pattern, logo shape and flat-print constraints before delivery.
-5. Do not overwrite an approved design with a speculative alternative.
-
-
-## Home NOTIFY card — clean left-aligned two-line layout
-
-- Remove the right-side CONNECTED / DISCONNECTED badge completely. Connection state remains communicated by the localized main message when relevant; never duplicate it in a separate chip.
-- The heading is always exactly `NOTIFY`; never append `• ERROR`, `• STATUS`, `• SYNC`, `• WARNING`, `• CONNECTION` or any other category suffix. This fixed label is the same in English and Indonesian; color, icon and localized body copy still communicate the condition.
-- Left-align the heading and body text beside the status icon. Keep the title/body in one column with enough inset to avoid the icon; never render a CONNECTED/DISCONNECTED badge. Add a small 2 dp top inset to the title so it does not crowd the card's upper border. Short copy stays on one line; longer copy wraps to at most two lines.
-- Set every Home metric row to 45 dp (38 dp indicator tile centered in the 41 dp icon lane) with uniform rhythm and a 3 dp gap before NOTIFY. NOTIFY stays fixed at 44 dp, icon-left/text-left and badge-free; only body text may shrink as needed to fit two lines. Cooler image constraints remain stable when copy changes. Never allow overlap between indicator rows and NOTIFY.
-- Keep existing status icon/color selection, connection logic, BLE semantics, safety thresholds/predicates and telemetry authority unchanged.
-- Polish Home NOTIFY copy in both supported languages, including direct acknowledgements for accepted fan-speed, Hotside-limit and 5V/12V battery-limit commands. Map known reason codes to actionable text, use generic localized copy for unknown identifiers, and route raw OTA envelopes through the dedicated formatter before normalizing. No raw reason IDs, OTA ERROR/CODE values or internal event suffixes may reach the card.
-- Latest Home NOTIFY source/test fingerprints: lib/main.dart `40f172a5d190b429d3a952f2531349c1ee220d1f`; lib/app_settings.dart `44431e926bfa2557c26345899e2333bd767f3f8e`; test/widget_test.dart `132c3b000abd63599ebea9d26fc5085cb577e50e`. Single-event copy changes are source-only / NOT RUN / NOT RELEASED; Build #120 does not include them.
-
-## Home NOTIFY single-event behavior — 2026-10-20
-
-- Keep Home NOTIFY to one complete sentence describing the newest confirmed event. A new event replaces the old message; never concatenate Adaptive, Voltage, Fan and Peltier values into a combined status summary.
-- Voltage, Control, Adaptive and LED changes receive meaningful English/Indonesian event copy. Examples: `Adaptive ON.`, `Voltage set to 5V.`, `Fan speed reduced to 70%.`, `LED brightness set to 80%.`
-- Repeated telemetry with the same value does not generate a second event. A delayed command ACK must not overwrite a newer telemetry event.
-- Ordinary Temperature samples do not generate Home NOTIFY. Hotside at/above its configured limit is the exception: show measured temperature and configured limit and prioritize that safety message over ordinary control events.
-- Language changes re-render the last notice immediately. Preserve the fixed 44 dp card, left alignment, two-line body limit and approved warning styling.
-- Current blobs: main `40f172a5d190b429d3a952f2531349c1ee220d1f`; settings `44431e926bfa2557c26345899e2333bd767f3f8e`; tests `132c3b000abd63599ebea9d26fc5085cb577e50e`. Tests/analyzer have NOT RUN and this source is not released.
-
-## Settings scope constraint
-
-- The About section and page have been removed from Settings by request. Keep General, Device, and Firmware only; don't reintroduce the About row without a new request.
+1. Inspect the exact current source/reference image.
+2. Identify locked versus requested elements before editing.
+3. Make only authorized changes; do not reinterpret a narrow edit as permission to redesign.
+4. Verify square ratio, symmetry, mounting holes, interior pattern, logo shape, aspect ratio, transparency and flat-print constraints as applicable.
+5. Record significant outcomes in CHANGELOG.md; keep historical build-specific proof in APP_BUILD_REPORT.md.

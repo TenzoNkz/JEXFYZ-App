@@ -1,5 +1,15 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-23 — Documentation architecture rework (docs-only; product source unchanged)
+
+- Reduced the active chat-limit system to exactly two LOAD + CONTINUE prompts: Prompt 1 for general Discussion/engineering/code and Prompt 2 for the authorized App Build/QC workflow. Retired the current Prompt A/B/C/D taxonomy; any old prompt references below remain historical records only.
+- Reworked README, CHAT_RULES, CHAT_TRANSFER, MEMORY_INDEX, PROJECT_STATE and HANDOVER into distinct roles: entry point, durable authorization rules, rolling checkpoint, documentation map/retention policy, current-only state and short immediate handoff.
+- Rewrote APP_NOTES and DESIGN_NOTES as current behavioral/visual contracts; rewrote BUILD_NOTES as the current guarded release procedure and kept APP_BUILD_REPORT.md as the authoritative append-only Build App attempt log.
+- Corrected the Home connection-lock copy in project documentation to Device/Perangkat. Corrected stale Firmware V7.1 claims, source fingerprints and the voltage-transition/OTA current-state notes to match the live main audit evidence and owner-reported deployment status.
+- Markdown retention decision: keep all current canonical subject notes; keep CHANGELOG.md as history and APP_BUILD_REPORT.md as the Build App execution ledger; preserve the three archive/*.md forensic snapshots unchanged. Large history records are not part of the boot path.
+- Audit found an unresolved UI contract mismatch: current App source localizes the Home notice heading as Notification/Notifikasi, while DESIGN_NOTES.md had required a fixed NOTIFY heading in both languages. Recorded for explicit follow-up; executable UI was not changed in this documentation rework.
+- No executable App/Firmware source, tests, configuration or workflow were changed. Tests, Dart analyzer/formatter, Android compilation, App Build/release, Firmware compile, BIN/Firebase, OTA, flash and device operations were NOT RUN.
+
 ## 2026-10-23 — Implement fixed Settings canvas, BLE-gated Floating Monitor and device notifications
 
 - Added a reusable Home-matched 360-dp canvas to Settings/sub-settings and root modal surfaces; the Home JE X FYZ header is unchanged.
@@ -150,7 +160,7 @@
 - Current source/test blobs: `firmware/JEXFYZ-V6.8.ino` `7b4df708708e021aad39258468eed2fde94d202f`; `test/firmware_qc_contract_test.dart` `59f376af6b3ec1c22d24f71db6afa40927a835fd`; `test/firmware_touch_adaptive_sync_test.dart` `a96b501d694b6eb4ad42fca0c61a8a430b129105`.
 - Static source checks were performed; Flutter contract tests and Arduino compilation have NOT RUN. V6.8 is not compiled/installed; source-to-BIN identity, current installed version, and physical Fan/thermal behavior remain UNVERIFIED. No BIN/Firebase/OTA/flash/device operation occurred.
 
-# JE X FYZ / JE Cooler — Changelog
+## Older change-history entries
 
 ## 2026-10-19 — Oval thermal bursts, Voltage edge pulses and left-aligned NOTIFY (source-only; NOT RUN / NOT RELEASED)
 

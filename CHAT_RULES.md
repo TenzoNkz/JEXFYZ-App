@@ -1,110 +1,79 @@
-# JE X FYZ / JE Cooler — Permanent Chat & Execution Rules
+# JE X FYZ / JE Cooler — Permanent Rules
 
-These are durable user rules. Current implementation facts must still be checked against live source and workflows.
+This file contains durable workflow, evidence and safety rules. Current implementation facts belong in the relevant canonical subject note and must be checked against live source.
 
-## 1. Command protocol — strict command validation
+## 1. Canonical commands
 
-Use the canonical command spellings below. The main command decides what is authorized; never infer a missing command from the message body.
+- @Thinking Diskusi! — read-only technical analysis and planning. Do not change executable source/config/workflow; do not run builds or operate firmware, BIN, Firebase, OTA, flash or devices. After a substantive discussion reaches a durable conclusion, update project-memory documentation only.
+- @Thinking Diskusi! Tanya Gemini! — produce one self-contained prompt grounded in current source, constraints and the exact question. Do not execute the patch.
+- @Thinking Diskusi! Jawaban Gemini! — assess the user's pasted answer against source and project memory. Do not accept it automatically or execute while in Discussion mode.
+- @Thinking Eksekusi Full! — fully execute the specifically authorized engineering scope: scoped source/docs/tests, appropriate static audit and tests, canonical note updates, verification and commit to main. This does not authorize App Build/release or Firmware/device operations.
+- @Thinking Eksekusi Build App! — the sole end-to-end App Build/QC/release command. Follow the current guarded workflow and update APP_BUILD_REPORT.md for every attempt/fix/result. Retry only after a concrete repair or evidence-based transient failure; never retry blindly.
+- @Thinking Chat Stuck! — recover an interrupted, already-authorized operation from actual logs and live state. Do not duplicate side effects, commits or builds. This command does not broaden scope or independently authorize a build. If the inherited scope cannot be established, diagnose read-only and ask for a valid command before writing.
 
-- `@Thinking Diskusi!` — inspect, compare and discuss technical options before execution. It must not change executable source/config/workflows, run builds, publish artifacts, or operate firmware/device/OTA. **Checkpoint exception:** after a substantive discussion reaches a durable decision or is explicitly concluded, it may update project-memory documentation only (`CHAT_TRANSFER.md` and the relevant canonical notes/index/changelog) so a replacement chat can continue without a recap. Do not represent an unsettled proposal as approved. This exception never authorizes source or product changes.
-- `@Thinking Diskusi! Tanya Gemini!` — create one complete, self-contained prompt for Gemini based on the agreed discussion, current technical context, exact question, constraints, desired evidence and expected answer format. Do not execute the proposed patch.
-- `@Thinking Diskusi! Jawaban Gemini!` — the user has pasted Gemini's answer. Evaluate it against live source, canonical project memory, technical correctness and the agreed discussion. Do not accept it automatically or execute anything while in discussion mode.
-- `@Thinking Eksekusi Full!` — execute the approved scope fully: scoped changes, relevant audit/tests, cross-reference and documentation reconciliation, canonical memory/index/state/changelog updates, verification and commit to `main`. **Does not authorize App Build or Firmware/device operations.**
-- `@Thinking Eksekusi Build App!` — the single end-to-end App Build/QC command: load live state/workflow, investigate the actual blocker, repair App-scope faults from evidence, rerun necessary test/build gates, and continue the same loop without requiring a second command for each justified repair/retry. Retry only after a concrete fix or evidence-based transient condition; never retry blindly. Stop with an evidence-based blocker when permissions, runner allocation, secrets, device action or separate approval is required. Log every attempt/fix/result in `APP_BUILD_REPORT.md`; Prompt D is one-shot LOAD + CONTINUE, not a recap stage.
-- `@Thinking Chat Stuck!` — emergency recovery for work that has stalled, stopped unexpectedly, or errored. Stop blind/repetitive retries; inspect the actual tool output, logs, live repository/Actions state and last verified checkpoint; then resume the most recent valid, already-authorized task without duplicating commits, side effects or builds. Report `RECOVERED`, `BLOCKED` or `FAILED` with evidence. This command does not widen authorization or trigger a build by itself. If the prior task scope cannot be established, perform read-only diagnosis and request a valid execution command before writing.
+Tanya Gemini! and Jawaban Gemini! require Diskusi! in the same command. Retired aliases @Thinking Build App! and @Thinking Eksekusi & Build App! are invalid.
 
-Retired aliases: `@Thinking Build App!` and `@Thinking Eksekusi & Build App!` are invalid and must not be recommended or executed. All canonical commands use no `#` prefix. `@Thinking Eksekusi Build App!` is the only App Build command; it does not authorize Firmware compile, BIN/Firebase changes, physical OTA, flashing, device operation or unrelated releases outside its approved workflow.
+## 2. Chat-limit handling
 
-**Required parent command for Gemini:** `Tanya Gemini!` and `Jawaban Gemini!` are discussion subcommands, not standalone commands. If either appears without `Diskusi!` in the same command, reject the command format without answering its substantive question, producing the prompt, or analyzing the pasted answer. Briefly ask the user to resend with the correct parent command. The primary commands `Diskusi!`, `Eksekusi Full!`, `Eksekusi Build App!` and standalone `@Thinking Chat Stuck!` do not require one another as prefixes.
+Use only the two templates in CHAT_TRANSFER_PROMPTS.md:
+1. General engineering: Discussion, an explicitly authorized Eksekusi Full task, or recovery of an already-authorized interrupted operation.
+2. Build App: one-shot LOAD + CONTINUE for an already authorized App Build/QC operation.
 
-For command-format errors, do not silently infer intent. Explain only that the required main command is missing/invalid and show the valid format. `@Thinking Chat Stuck!` is a valid standalone recovery command; it inherits the scope of the most recent valid in-progress command and never authorizes App Build/Firmware/device work by itself.
+A replacement chat must LOAD and CONTINUE; do not create a recap-only chat or ask the user to repeat saved requirements. The command header must match the actual authorization mode. The template itself grants no new permissions. If the task is incomplete and authorized execution was interrupted, use @Thinking Chat Stuck! rather than silently switching to Discussion or starting another build.
 
-## 2. Branch and write protocol
+## 3. Source-of-truth and memory discipline
 
-- Repository: `TenzoNkz/JEXFYZ-App`; work directly on `main` by default.
-- Do not create branches or pull requests unless explicitly requested.
-- Fetch live HEAD and current blob SHA before editing. Re-read a file immediately before replacing/deleting it if its SHA or content may have changed.
-- Prefer one scoped commit per file if using the Contents API; check the final HEAD and diff/tree after multi-file tasks.
-- Do not claim successful writes, commits, test passes, compilation or hardware validation without the matching evidence.
+- Start by reading CHAT_TRANSFER.md fully; then fetch live main HEAD and the complete recursive tree. Read MEMORY_INDEX.md, PROJECT_STATE.md and HANDOVER.md. Read the full canonical reference(s) for the active task.
+- Repository state wins over stale summaries for current code/version. User instructions remain authoritative for permissions and preferences.
+- CHAT_TRANSFER.md is a rolling checkpoint, not a transcript. PROJECT_STATE.md is current-only. CHANGELOG.md is dated history. APP_BUILD_REPORT.md is the authoritative build-attempt ledger. Subject references own detailed engineering contracts. Files in archive/ are immutable forensic history, never current truth.
+- After a substantive Discussion conclusion or execution completion/blockage, update the checkpoint and the relevant canonical document. Keep proposals separate from decisions; label user-reported outcomes and independently verified evidence separately.
+- Do not store a source fingerprint inventory that quickly becomes stale. Record hashes only where they materially identify a release, artifact, test evidence or a reproducible current-state comparison. Re-fetch files before relying on any SHA.
+- Don't call a test/build/compile/device check passed unless its result was actually observed. Test-file presence is not test execution. App CI does not prove Firmware compile, BIN provenance, OTA application or physical safety.
+- Before deletion, rename or moving a file, search all links and path-based tests, update all references and verify the final tree. Keep user-approved constraints and important failed approaches.
+- Do not expose credentials or secrets in prompts or summaries.
 
-## 3. Version and firmware-source rules — mandatory
+## 4. Main branch and write policy
 
-- Every **functional Firmware source change** must increment `FW_VERSION`.
-- The active `.ino` filename must match that version, e.g. `FW_VERSION = "V6.6"` ↔ `firmware/JEXFYZ-V6.6.ino`.
-- Exactly one active versioned `.ino` may exist in `firmware/`.
-- Documentation-only changes do not require a firmware version bump.
-- A source version bump is **not** a BIN build, Firebase publication, OTA update, device flash, or release.
-- Required flow: edit source → bump version and rename file → update contract tests/docs/hash records → static audit → user compiles in ArduinoDroid with Arduino-ESP32 Core 3.3.7 → inspect/verify BIN → only then, with separate authorization, consider OTA/Firebase promotion and physical validation.
-- No executable `delay()`; no timing `while()`; retain cooperative `millis()` timing unless the user explicitly authorizes a justified design change.
-- User-reported reset cause is not proof: capture `BOOT: RESET_REASON=...` / telemetry before claiming cause.
+- Canonical repository: TenzoNkz/JEXFYZ-App. Work directly on main by default; do not create a branch or PR unless asked.
+- Fetch the live main HEAD/tree and each file's current content/blob before edits. Re-read a file just before replacing/deleting if it may have changed.
+- For multi-file edits, verify every resulting path/content and the final commit/tree. Never report a failed or unconfirmed write as successful.
 
-## 4. Hard authorization boundaries
+## 5. Firmware source contract
 
-Do not perform any of these without separate, explicit user authorization:
-- End-to-end App Build/APK Release workflow is authorized only by `@Thinking Eksekusi Build App!` and must be documented in `APP_BUILD_REPORT.md`.
-- Firmware compile/build, BIN generation or publication.
-- Flashing, physical OTA, device operations or Firebase/production metadata updates.
-- Any release/prerelease operation outside the approved App Build workflow or replacement of the artifact BIN.
-- Functional code changes while the user is asking for Discussion only.
+- Every functional Firmware edit increments FW_VERSION and renames the active file to match. Exactly one active versioned .ino may exist in firmware/.
+- Firmware compilation is separate from source editing; the owner compiles with ArduinoDroid and the approved Arduino-ESP32 Core 3.3.7 toolchain.
+- No executable delay() and no timing while() loops. Retain cooperative millis() timing unless a justified change is explicitly approved.
+- A source edit/version bump is not a BIN, Firebase publication, OTA, flash or installed-device confirmation.
+- Do not claim a reset cause without BOOT: RESET_REASON=... or matching diagnostic evidence.
 
-A docs-only task is not permission for a functional source edit. A firmware-only change does not automatically require App Build. App Build does not prove firmware compile or hardware behavior.
+## 6. Hard safety and product boundaries
 
-## 5. Repository separation
+Never infer authorization for any of the following from a general repository task:
+- App Build/APK/Release; only @Thinking Eksekusi Build App! authorizes the guarded App release workflow.
+- Firmware compile, BIN generation/publication/replacement, Firebase/production metadata changes.
+- Physical OTA, flashing, device operation or any other release outside the authorized App workflow.
 
-- `TenzoNkz/JEXFYZ-App` is the canonical editable source + **all project documentation and memory** repository. Keep all notes, architecture decisions, regression memories, prompts, handovers and changelog here.
-- `TenzoNkz/JEXFYZ-Firmware` is intended to contain **only `JEXFYZ.cpp.bin`**. Do not store README files, source code, docs, or memory notes there. Do not alter the BIN while tidying docs.
-- The existing BIN must never be assumed to represent current source without verified build provenance/version evidence.
+Protected Firmware/App contracts:
+- Preserve BLE P1 UUIDs/protocol, authoritative telemetry, radio ownership and command/reconnect semantics.
+- Preserve safe outputs, Peltier/selector/rail timing, Touch behavior, sensor-fault protection and existing OTA recovery.
+- OTA is frozen unless a demonstrated defect has been discussed and explicitly authorized. Before any OTA change, read OTA_PROTECTION.md, OTA_REGRESSION_MEMORY.md and the live related source/tests.
+- Current Online OTA intentionally uses cloudClient.setInsecure(); this encrypts transport but does not authenticate server certificate identity. Preserve the trade-off and GitHub BIN allowlist, redirect blocking and image/size/status validation unless an explicitly approved redesign says otherwise.
+- Do not add Firmware hash/signature requirements to Firebase OTA metadata without explicit user approval.
+- Android Gradle versionName "Telegram @horizontalzzz" is intentional and must remain exact.
+- Do not show a standalone Battery Protection Guard UI. This is a presentation restriction, not permission to weaken Firmware safety.
+- Exclusive BLE App identity authorization remains BLOCKED until trusted backend enrollment/signing and Firmware verification are implemented. Bonded writes plus SYNC_READY do not prove the official App identity.
 
-## 6. App identity, build and product rules
+## 7. Documentation roles
 
-- Android Gradle `versionName "Telegram @horizontalzzz"` is intentional identity text; preserve it exactly.
-- Build one ordinary obfuscated production-signed APK; do not create a Play Store app bundle.
-- App Build is manual issue-trigger only, title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. Normal push/PR must not produce an APK.
-- `@Thinking Eksekusi Build App!` owns retries for App-scope failures; each run/fix must be recorded in `APP_BUILD_REPORT.md`. Stop with a precise blocker if progress requires unavailable permissions, secrets, user/device action or separate authorization.
-- Current workflow `.github/workflows/jexfyz-app-build-trigger.yml` is authoritative. Re-read it before any build; never rely only on old run hashes.
-- Do not add firmware SHA/signature/checksum semantics to Firebase OTA metadata without explicit user approval; intended metadata is firmware version + link.
-- Do not add a second BLE radio / concurrent Wi-Fi+BLE model: ESP32-C3 has one radio path. Wi-Fi OTA and BLE ownership must hand off.
-
-## 7. OTA and safety protection
-
-- `OTA_PROTECTION.md`, `OTA_REGRESSION_MEMORY.md`, current OTA source and their regression tests are mandatory reading before any OTA/TLS/recovery change.
-- OTA has priority over normal application work; safe outputs and Wi-Fi↔BLE radio ownership must be preserved.
-- Do not casually refactor/optimize Local OTA, Online OTA, OTA state machine, retry/timeout, image checks, redirect policy, failure recovery, or App reconnect lifecycle.
-- A real OTA defect, prior discussion/approval and a full re-audit are required before changing protected behavior.
-- The chosen current Online OTA path uses `cloudClient.setInsecure()`; this **does not authenticate server certificate identity**. The GitHub raw-BIN allowlist, redirect blocking and image/size checks remain important. Do not silently restore CA/NTP gates or alter the TLS trade-off.
-
-## 8. Memory discipline — do not rely on chat recall
-
-- Read `CHAT_TRANSFER.md` first at new-chat boot, then fetch live `main` HEAD/tree and read `MEMORY_INDEX.md`.
-- Read every current source-of-truth file relevant to the requested area **to completion**, not only the first screen/first lines. Before reorganizing the memory system, audit all text files and cross-references.
-- `PROJECT_STATE.md` is current-only; `CHANGELOG.md` is history-only; subject-specific docs own detailed facts; `CHAT_TRANSFER.md` is a refreshed snapshot/boot prompt.
-- Keep `CHAT_TRANSFER.md` as a rolling checkpoint, not a transcript recap. After a substantive Discussion reaches a decision/conclusion and after every execution completes or becomes blocked, refresh the checkpoint and relevant canonical notes from live evidence. Record last durable decision, current task/status, completed steps, failed/remaining gates, latest verified repository checkpoint, authorization boundaries, and the exact next action. Never invent missing content from an interrupted answer.
-- At a chat/context limit, the replacement chat uses the appropriate LOAD + CONTINUE prompt and reads live repository state; it must not create a separate recap stage or ask the user to repeat saved context. Recovery resumes only the last authorized scope. If a limit interrupts before a checkpoint write, resume from the latest saved checkpoint and live evidence, explicitly recognizing anything after that checkpoint may be missing.
-- Update all references/hashes after renames; do not leave contradictory legacy “current truth” blocks.
-- Preserve user-approved designs, hard constraints, previous failures, rejected approaches and why they were rejected.
-- Persist project-specific presentation constraints explicitly. Current example: do not display a standalone Battery Protection Guard in App UI; keep the hardware safety function intact and continue to show independently actionable localized safety/Notify messages when applicable.
-- Preserve “one authorized App identity / one cooler firmware pairing lock” as a user design requirement, but do not claim an exclusive pairing lock exists until its current source/provisioning flow and physical behavior are verified.
-- Never convert a hypothesis/user-reported result into verified fact. Mark tests/builds as NOT RUN unless executed.
-- If repository state and a summary/memory conflict, fetch the repository; repository wins for current code/version, and user rules remain authoritative for authorization/preferences.
-
-
-### Chat-limit LOAD + CONTINUE handoff
-
-- **General / Discussion chat limit:** use Prompt B in `CHAT_TRANSFER_PROMPTS.md` as the replacement chat's first message. It loads the checkpoint and relevant live source, then continues the previous discussion/workstream without a recap stage. It must not execute source changes or builds.
-- **Build App chat limit:** use Prompt D exactly once as the replacement Build App chat's opening message. It loads live repository state and `APP_BUILD_REPORT.md`, then continues the same authorized App Build/QC operation without a recap stage.
-- Prompt A is reserved for an explicitly requested full project-memory reconciliation, not routine chat-limit recovery. The latest saved checkpoint is authoritative only up to its timestamp; always check live `main`, Actions and Release evidence.
-
-## 9. Current known checkpoint (must refresh before use)
-
-- Latest successful App release is Build #124 / run `39386733061`, packaged source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`. APK SHA-256 `c0738d3607b120b716841610c849d9608f954a5f1f28017a8018790f4f4b6318`; source ZIP SHA-256 `e00ac34cb6cf7f04a5485c8ab8ee74d4acc1b20dc1a213ac733a8bf8c43cc152`.
-- Build #124 passed 116 Flutter tests and the configured App release gates and includes the Wi-Fi password Show/Hide toggle. Native Android unit-test tasks were NO-SOURCE.
-- Active Firmware is `firmware/JEXFYZ-V7.1.ino`, blob `c44e076b2c1ee2d0b66b4fcd308d0febc69976e9`, `FW_VERSION="V7.1"`. At limit 40°C: 40/39/38 →100%; 37/36 →90%; 35/34 →80%; 33/32 →70%; 31/30 →60%; ≤29 →50%. Downstep 10 points/10 s; upstep 10 points/1 s.
-- QC `367acddd4ca9123c2834f8a5177039d9dadaabc9` and Touch/Adaptive sync `dfa1f604327f1705b52134aa794d7ce60232841e` were updated, but those V7.1 contract tests have NOT been independently run in this maintenance task. The owner confirms V7.1 was compiled and installed via Online OTA on the sold unit (USER-REPORTED); exact source-to-BIN identity and physical post-update behavior remain independently UNVERIFIED.
-- Keep `TenzoNkz/JEXFYZ-Firmware` BIN-only; no Firebase metadata change, BIN publication, Firmware compile, OTA, flash or device operation occurred under Eksekusi Full. OTA, Touch, Peltier/rail timing and Android `versionName "Telegram @horizontalzzz"` are unchanged. BLE App-only authorization remains blocked in `BLE_APP_AUTH.md`.
-
-
-## 10. Remote-only product maintenance — current user instruction
-
-- The owner confirms App Build #124 is in use, Firmware V7.1 was compiled and updated through Online OTA, and the product has been sold and shipped. Preserve this as USER-REPORTED product/deployment status; do not overwrite it with older stale notes. Distinguish it from independently verifiable repository/CI evidence.
-- Treat the deployed Build #124 / V7.1 combination as the production baseline. Avoid discretionary releases and functional changes, especially to OTA, BLE ownership, reset/recovery, safe outputs or firmware update handling. The physical unit is no longer available for routine disassembly or repair.
-- Repository cleanup and comment-only edits must not alter runtime behavior. Build App, Firmware compilation, BIN publication/replacement, Firebase changes, OTA, flashing, or device actions remain separately gated as described above. A successful App CI run does not establish OTA/device safety.
+- README.md: project introduction and entry points.
+- CHAT_TRANSFER.md: rolling load/continue checkpoint.
+- CHAT_TRANSFER_PROMPTS.md: exactly two chat-limit prompts, not a historical prompt library.
+- CHAT_RULES.md: durable instructions, never a duplicated live-state report.
+- MEMORY_INDEX.md: map, authority and Markdown retention policy.
+- PROJECT_STATE.md: concise present truth and open validation gaps.
+- HANDOVER.md: short immediate continuation handoff.
+- APP_NOTES.md and DESIGN_NOTES.md: current App behavior contract and approved visual constraints.
+- FIRMWARE_NOTES.md and firmware/FIRMWARE_TECHNICAL_REFERENCE.md: durable hardware/safety decisions and current source-level technical reference.
+- OTA_PROTECTION.md, OTA_REGRESSION_MEMORY.md and VOLTAGE_TRANSITION_MEMORY.md: protected contracts and specific incident/transition memory.
+- BUILD_NOTES.md: current build procedure; APP_BUILD_REPORT.md: append-only attempt/fix evidence.
+- CHANGELOG.md: dated history only. archive/*.md is preserved, immutable historical evidence.
