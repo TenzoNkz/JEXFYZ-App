@@ -1,4 +1,16 @@
-## CURRENT BUILD APP EXECUTION — BUILD #127 FLUTTER TESTS IN PROGRESS — 2026-10-23 (Asia/Jakarta)
+## CURRENT BUILD APP EXECUTION — BUILD #127 FAILED AT FLUTTER TEST GATE — 2026-10-23 (Asia/Jakarta)
+
+- **Attempt:** [Build #127 / run 39907723349](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907723349) targeted main SHA `74472861b868ba69caed97233d86d40424f2610f`; job `120263398179`, hosted runner `1000002426`. Run completed `failure`.
+- **Passed:** setup, checkout, Java/Flutter/Gradle, toolchain validation, local.properties, production-signing preparation, wrapper setup, security/architecture audit, dependency installation, Dart analyzer (exit 0, 25 info-level diagnostics). Flutter tests: **120 passed, 1 failed**.
+- **Remaining exact failure:** test `test/widget_test.dart`, test `Android notifications use JE X FYZ branding and meaningful foreground text`, expected old Indonesian text `Bluetooth terhubung · sesi cooler aktif` but the live `JeForegroundService.kt` correctly uses `Bluetooth terhubung · sesi perangkat aktif`, matching the approved Device/Perangkat user-facing terminology. Both earlier #126 assertions now pass; the revised #127 run reduced failures from two to one. This is a third stale static-copy assertion, not a runtime crash.
+- **Justified repair:** update this single remaining assertion to the exact current native notification string. Do not revert the Device/Perangkat wording or weaken/remove the test. Android gate, APK build/signing, source ZIP, publication and downloaded asset checks were skipped after the test failure.
+- **Active state:** run `completed/failure`; fresh live queries returned `0` active and `0` queued runs. There is no overlapping build.
+- **Release remains unchanged:** Release ID `403010611`, tag and metadata target `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a` / prior Build #124 source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`. Existing APK asset ID `658613910`, SHA-256 `c0738d3607b120b716841610c849d9608f954a5f1f28017a8018790f4f4b6318`; source ZIP asset ID `658613911`, SHA-256 `e00ac34cb6cf7f04a5485c8ab8ee74d4acc1b20dc1a213ac733a8bf8c43cc152`. No #127 package was published.
+- **Next:** commit this single assertion correction, verify it, update both ledgers, then recheck main/guard/idle Actions/Release before one official issue-only retry. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device action.
+
+---
+
+## ATTEMPT RECORD — BUILD #127 FAILED AT FLUTTER TEST GATE — 2026-10-23 (Asia/Jakarta)
 
 - **Run/source:** [#127 / 39907723349](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907723349), exact target `74472861b868ba69caed97233d86d40424f2610f`; job `120263398179` on hosted runner `1000002426` (`ubuntu-24.04`) remains `in_progress`.
 - **Steps 1–12 passed:** runner setup, checkout, Java 17, Flutter, Gradle, toolchain verification, Flutter local.properties, production-signing preparation, Gradle wrapper setup, App security/architecture audit, dependency installation and Dart analysis. Analyzer step concluded `success`; its diagnostic count/result will be recorded from the completed log if available.
