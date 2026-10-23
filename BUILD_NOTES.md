@@ -12,12 +12,12 @@ This file describes the current guarded App release process. APP_BUILD_REPORT.md
 
 ## Current release baseline
 
-- Latest verified App package returned by live Actions/Release queries: Build #124, [run 39386733061](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39386733061), packaged source 7d4e7262c6a3474eefa8ccb58b08f070df3ac15a.
-- APK SHA-256: c0738d3607b120b716841610c849d9608f954a5f1f28017a8018790f4f4b6318.
-- Source ZIP SHA-256: e00ac34cb6cf7f04a5485c8ab8ee74d4acc1b20dc1a213ac733a8bf8c43cc152.
-- Build #124 passed 116 Flutter tests and configured release gates. Analyzer exited 0 with 25 informational diagnostics. Native Android unit-test tasks were NO-SOURCE.
-- The owner reports the shipped unit uses Build #124. Its Firmware V7.1 compile/Online OTA is separately USER-REPORTED. App CI does not prove Firmware compile, BIN provenance, physical OTA, BLE recovery, or thermal/electrical behavior.
-- Source-only App changes made after Build #124 have not been packaged by a later verified run. Fetch live Actions/Release evidence before describing what is currently released.
+- Latest verified App package: Build #128, [run 39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440), exact packaged source commit `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`.
+- APK: [JEXFYZ-release.apk](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk), asset ID `668133495`, 54,751,323 bytes, SHA-256 `2f5fdf4ffab0eccac3db886855b34f8c2c6c83afb54d7088fd2f8b578d322c5b`.
+- Corresponding source ZIP: [JEXFYZ-corresponding-source.zip](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip), asset ID `668133492`, 2,877,957 bytes, SHA-256 `9b740671f7e8d3b9d4cfc1b1e5f3200af905ba207d4a6c8a6b27114f39ec32f4`.
+- Build #128 passed 121 Flutter tests; Dart analyzer exited 0 with 25 informational diagnostics; the configured Android Gradle gate reported BUILD SUCCESSFUL. Native Android JUnit tasks were NO-SOURCE. Production APK V1/V2/V3 and expected certificate checks passed; Release/tag parity, exactly-one-APK-plus-source-ZIP, and downloaded asset checksum/source-marker/signature checks all passed.
+- The owner-reported shipped unit baseline remains App Build #124 + Firmware V7.1 Online OTA. That field status is USER-REPORTED; Build #128 CI does not prove the new APK is installed or verify Firmware compilation, BIN provenance, physical OTA, BLE recovery, or thermal/electrical behavior.
+- Build #128 packages the previously source-only Settings, Device/Perangkat copy, Floating Monitor and language-synchronized notification-channel changes. See APP_BUILD_REPORT.md for complete gate, signing and release evidence.
 
 ## Authorization and trigger
 
