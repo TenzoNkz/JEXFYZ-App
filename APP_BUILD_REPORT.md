@@ -1,3 +1,14 @@
+## CURRENT BUILD APP EXECUTION — BUILD #126 ACTIVE — DEPENDENCIES IN PROGRESS — 2026-10-23 (Asia/Jakarta)
+
+- **Run/source:** [#126 / 39907333312](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907333312), exact tested checkout SHA `806bbdb462189a94c7e3716b793ea0fb35d7f30d`; run and job remain `in_progress`. Job `120262178483` is on hosted runner `1000002425` (`ubuntu-24.04`).
+- **Observed passed steps 1–10:** Set up job; Checkout repository; Set up Java 17; Set up Flutter; Set up Gradle; Verify toolchain; Prepare Flutter local.properties; Prepare production release signing; Restore Gradle wrapper if missing; JE X FYZ security and architecture audit. The runner/startup problem from #125 is now independently resolved for this run.
+- **Current gate at latest live step read:** step 11, `Install dependencies` (`flutter pub get`), `in_progress`. Analyzer (step 12), Flutter tests (13), Android Gradle gate (14), APK build/signing (15–17), archive/package (18–19), Release publication (20) and downloaded-asset checks (21) are still pending; no successful conclusion is yet available.
+- **Log availability:** live job-step API returns the current list/status, but job log download currently returns `BlobNotFound` while the job is active. No failure diagnosis is being inferred from that transient log endpoint response.
+- **Release state checked during run:** `jexfyz-latest` Release/tag still target old Build #124 source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`; existing APK/source ZIP hashes remain the #124 values recorded above. No #126 release artifact is yet verified.
+- **Next:** keep monitoring this same run and inspect actual step outcomes. Do not trigger a duplicate. If dependencies fail/hang and a terminal job log becomes available, diagnose its exact evidence before considering any retry. Preserve Gradle `versionName "Telegram @horizontalzzz"`; App-only scope remains in force.
+
+---
+
 ## CURRENT BUILD APP EXECUTION — BUILD #126 ACTIVE — 2026-10-23 (Asia/Jakarta)
 
 - **Official trigger recovered:** [Run #126 / 39907333312](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907333312) was created by the guarded `issues/reopened` event on issue #34. It targets exact live main/source SHA `806bbdb462189a94c7e3716b793ea0fb35d7f30d`; workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`.
