@@ -11,10 +11,10 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 
 ## Active Build App/QC recovery — 2026-10-23 (Asia/Jakarta)
 
-- **Status: BUILD #128 ACTIVE, Flutter tests running.** [Run 39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440), exact source SHA `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`, job `120264345808`, hosted runner `1000002427`.
-- **Passed:** steps 1–12; the security/architecture audit, dependencies and Dart analyzer all succeeded. **Current:** step 13 `Run Flutter tests` is `in_progress`; this is the first run to validate the three stale assertion fixes.
-- **Pending:** Flutter test result, Android Gradle gate, obfuscated release APK, V1/V2/V3 + certificate checks, source ZIP, Release/tag parity and downloaded asset hashes/source marker. Active logs are unavailable until later in the run; the live step API is still returning status.
-- **Checkpoint:** ledger commit `0ee981a90ecaa6f925f4cb7db068d7b29cf505ce` is committed and verified. Verify this transfer update too. Do not trigger a duplicate while #128 is active. Build #124 remains latest verified package. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device actions.
+- **Status: BUILD #128 ACTIVE; Flutter tests passed and Android gate is running.** [Run 39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440), source `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`, job `120264345808`, runner `1000002427`.
+- **Passed:** steps 1–13, including dependency install, Dart analyzer and Flutter tests. This is the first attempt to pass the repaired notification/device-copy contracts. Exact pass count is pending final log read.
+- **Current gate:** step 14 `Run Android unit-test gate` is `in_progress`. Release APK, V1/V2/V3/certificate, source ZIP, release/tag parity and re-downloaded asset checks are not yet verified. Active run logs aren't downloadable yet; step API remains authoritative for the current step status.
+- **Checkpoint:** ledger commit `30fa454361b504b076fff62beb657af15e42c46f` is committed and re-read. Verify this transfer update as well. No duplicate while #128 active; Build #124 still latest verified release. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device activity.
 
 ## Live repository point
 
