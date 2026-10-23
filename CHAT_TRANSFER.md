@@ -11,6 +11,16 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 - **QC:** 122 Flutter tests passed; Dart analyzer exited 0 with 25 informational diagnostics; configured Android Gradle gate reported `BUILD SUCCESSFUL in 1m 27s`. Native Android JUnit tasks were `NO-SOURCE`, so no native JUnit test cases executed.
 - **Field-device status (USER-REPORTED):** the owner previously reported installing/overwriting Build #128. The exact installed APK identity was not independently read; do not assume Build #129 is installed. Firmware V7.1 compile/Online OTA is also USER-REPORTED. CI is not physical-device, Firmware/BIN, OTA, BLE, cooling or safety proof.
 
+## New owner visual feedback — compact Settings/Bluetooth surfaces (Discussion) — 2026-10-23
+
+- **Mode:** `@Thinking Diskusi!`. No executable source, test, formatter/analyzer or build action was taken for this new visual request.
+- **Owner observation:** screenshots at 420-dp and 350-dp logical display settings show the DPI-fixed canvas behaving consistently, but Settings and the Bluetooth Connection bottom sheet still look much too large. The existing Home-equivalent canvas fix is validated/released in Build #129; this is a separate typography/spacing/visual-density request.
+- **Design direction:** keep `JexFixedScalePage`'s 360-dp master canvas, uncapped `width / 360` scale, safe-area/inset conversion and one transform exactly unchanged. Do not add a second blanket Transform.scale; that can shrink hit targets and produce new margins/wrapping. Make base UI sizes more compact instead.
+- **First-pass targets:** Settings AppBar title 20→18; row title explicitly about 13 dp, summary 12→11; section label 10→9; row glyph 21→19, chevron 18→16; vertical row padding 13→10, glyph gap 14→12, section top gap 16→13. Keep cards full-width.
+- **Connection sheet targets:** heading 18→16, header height 66→60; close glyph 25→22 while retaining the 42-dp IconButton hit area; status-pill label 10.5→9.5, status glyph 19→18, Devices heading 14→13, unavailable/scanning message 13→12 and reduce nearby vertical gaps modestly. Keep the indicator pills' 42-dp height, Scan/refresh tap targets and comfortably tappable controls (roughly 40 dp or larger). Preserve English/Indonesian localization, theme contrast, state colors, BLE status/scanning/connect logic.
+- **Scope:** Settings root and subpages plus Bluetooth Connection sheet only. Do not redesign Home, change the 360-dp/DPI model, adjust other app surfaces without need, or touch Firmware/BIN/Firebase/OTA/flash/device behavior.
+- **Validation plan after `@Thinking Eksekusi Full!`:** add/update focused widget/source-contract tests for smaller title/body sizes, row density, stable full-width layout and minimum interactive dimensions; run formatter, analyzer and full Flutter tests where toolchain is available. Build #129 / run `39925045446` remains the latest verified release. This compact visual change is not implemented or released.
+
 ## Canonical release-memory refresh — Build #129
 
 After the verified Build #129 release, all current-state/design/handover index notes were refreshed and re-read from `main` to remove stale Build #128 / “validation pending” statuses:
