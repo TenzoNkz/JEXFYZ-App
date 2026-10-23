@@ -60,7 +60,7 @@ Source-only UI implementation on main includes:
 - Android alert/BLE/Floating Monitor channel names/descriptions synchronize to App language on startup and language changes.
 - OTA result copy is localized at display time; OTA protocol/transport is unchanged.
 
-Static contract files exist, notably test/device_copy_notification_contract_test.dart and test/floating_monitor_layout_contract_test.dart, but they have NOT been executed for these latest UI changes. Latest Dart analyze/formatter/Android compilation and packaged release validation remain NOT RUN for this source revision.
+Build #128 / run 39908023440 on source `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3` has now executed the current source contracts: 121 Flutter tests passed; Dart analyzer exited 0 with 25 informational diagnostics; the configured Android Gradle gate passed. Obfuscated APK build, V1/V2/V3 production signing/certificate verification, source ZIP marker/integrity, exact Release/tag target, exactly one APK plus one source ZIP, and downloaded asset checksum/signature checks also passed. Physical-device BLE/overlay/notification presentation and Firmware/OTA behavior remain unverified by CI.
 
 ## Permanent technical boundaries
 
