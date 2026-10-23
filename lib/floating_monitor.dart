@@ -288,9 +288,20 @@ class FloatingBridge {
 
   // AI-METHOD / START CONTRACT
   // Start the native service only after the Android permission gate is satisfied.
-  static Future<bool> start(FloatingConfig config) async {
+  static Future<bool> start(
+    FloatingConfig config, {
+    FloatingTelemetry? telemetry,
+  }) async {
     try {
-      return await _channel.invokeMethod<bool>('startFloatingMonitor', config.toJson()) ?? false;
+      final payload = <String, dynamic>{
+        ...config.toMap(),
+        if (telemetry != null) ...telemetry.toMap(),
+      };
+      return await _channel.invokeMethod<bool>(
+            'startFloatingMonitor',
+            jsonEncode(payload),
+          ) ??
+          false;
     } catch (_) {
       return false;
     }
@@ -444,22 +455,21 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
     if (!mounted) return;
     setState(() => loading = false);
     if (config.enabled) {
-      if (!await FloatingBridge.hasPermission()) {
+      // Keep enabled intent through BLE disconnect and overlay permission revocation.
+      // Dashboard restores the overlay only after its full BLE/P1 sync gate opens.
+      if (!floatingTelemetryNotifier.value.connected) return;
+      if (!await FloatingBridge.hasPermission()) return;
+      final started = await FloatingBridge.start(config, telemetry: floatingTelemetryNotifier.value);
+      final running = started && await _waitForRuntimeReady();
+      if (!running) {
+        await FloatingBridge.stop();
+        if (!floatingTelemetryNotifier.value.connected || !await FloatingBridge.hasPermission()) return;
         config = config.copyWith(enabled: false);
         await FloatingStore.save(config);
       } else {
-        final started = await FloatingBridge.start(config);
-        final running = started && await _waitForRuntimeReady();
-        if (!running) {
-          config = config.copyWith(enabled: false);
-          await FloatingStore.save(config);
-        } else {
-          await FloatingBridge.updateConfig(config);
-          // Telemetry emitted before the native overlay service started is intentionally
-          // not queued. Push the current authoritative snapshot after attachment.
-          await FloatingBridge.updateData(floatingTelemetryNotifier.value);
-          _startRuntimeSync();
-        }
+        await FloatingBridge.updateConfig(config);
+        await FloatingBridge.updateData(floatingTelemetryNotifier.value);
+        _startRuntimeSync();
       }
     }
   }
@@ -511,12 +521,25 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
       return;
     }
 
+    if (!floatingTelemetryNotifier.value.connected) {
+      config = config.copyWith(enabled: true);
+      await FloatingStore.save(config);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(JexText.of('floatingPendingConnection', appLanguageNotifier.value))),
+        );
+        setState(() {});
+      }
+      return;
+    }
+
     if (!await FloatingBridge.hasPermission()) {
       final proceed = await showDialog<bool>(
         context: context,
         barrierDismissible: false,
         builder: (dialogContext) {
-          return AlertDialog(
+          return JexFixedScalePage(
+            child: AlertDialog(
             title: Text(JexText.of('floatingPermissionTitle', appLanguageNotifier.value)),
             content: Text(JexText.of('floatingPermissionMessage', appLanguageNotifier.value)),
             actions: [
@@ -529,6 +552,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                 child: Text(JexText.of('allow', appLanguageNotifier.value)),
               ),
             ],
+          ),
           );
         },
       );
@@ -550,7 +574,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
 
     config = await _normalizeSelection(config);
     final next = config.copyWith(enabled: true);
-    final started = await FloatingBridge.start(next);
+    final started = await FloatingBridge.start(next, telemetry: floatingTelemetryNotifier.value);
     final running = started && await _waitForRuntimeReady();
     if (!running) {
       await FloatingBridge.stop();
@@ -586,9 +610,10 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   // Detect service/window loss and clear stale enabled state instead of silently showing
   // a broken Floating Monitor toggle.
   Future<void> _syncRuntimeState() async {
-    if (!mounted || !config.enabled) return;
+    if (!mounted || !config.enabled || !floatingTelemetryNotifier.value.connected) return;
+    if (!await FloatingBridge.hasPermission()) return;
     final state = await FloatingBridge.runtimeState();
-    if (!mounted || state == null) return;
+    if (!mounted || state == null || !floatingTelemetryNotifier.value.connected) return;
 
     final serviceRunning = state['service_running'] ?? state['running'];
     final overlayAttached = state['view_attached_to_window'] ?? state['overlay'];
@@ -881,6 +906,52 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   }
 }
 
+// AI-MEMORY / FIXED-DPI-CANVAS-CONTRACT
+// Matches Home's 360-dp design canvas and disables system font scaling for standalone routes/modal content.
+class JexFixedScalePage extends StatelessWidget {
+  final Widget child;
+  const JexFixedScalePage({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    final media = MediaQuery.of(context);
+    return MediaQuery(
+      data: media.copyWith(textScaler: TextScaler.noScaling),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          const designWidth = 360.0;
+          if (constraints.maxWidth <= 0 || constraints.maxHeight <= 0) return child;
+          final scale = constraints.maxWidth / designWidth;
+          final designHeight = constraints.maxHeight / scale;
+          final scaledMedia = media.copyWith(
+            textScaler: TextScaler.noScaling,
+            size: Size(designWidth, designHeight),
+            padding: EdgeInsets.fromLTRB(media.padding.left / scale, media.padding.top / scale,
+                media.padding.right / scale, media.padding.bottom / scale),
+            viewPadding: EdgeInsets.fromLTRB(media.viewPadding.left / scale, media.viewPadding.top / scale,
+                media.viewPadding.right / scale, media.viewPadding.bottom / scale),
+            viewInsets: EdgeInsets.fromLTRB(media.viewInsets.left / scale, media.viewInsets.top / scale,
+                media.viewInsets.right / scale, media.viewInsets.bottom / scale),
+          );
+          return ClipRect(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Transform.scale(
+                scale: scale,
+                alignment: Alignment.topCenter,
+                child: MediaQuery(
+                  data: scaledMedia,
+                  child: SizedBox(width: designWidth, height: designHeight, child: child),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
 // AI-MEMORY / SETTINGS-CONTAINER-CONTRACT
 // Hosts the Settings navigation hierarchy and delegates persisted preferences to AppSettingsStore.
 class SettingsPage extends StatelessWidget {
@@ -912,7 +983,7 @@ class SettingsPage extends StatelessWidget {
                         ? JexText.of('languageEnglish', language)
                         : JexText.of('languageIndonesia', language),
                     () => Navigator.of(context).push(MaterialPageRoute<void>(
-                          builder: (_) => const LanguageSettingsPage(),
+                          builder: (_) => const JexFixedScalePage(child: LanguageSettingsPage()),
                         ))),
                 _item(
                   context,
@@ -928,7 +999,7 @@ class SettingsPage extends StatelessWidget {
                   ),
                   () => Navigator.of(context).push(
                     MaterialPageRoute<void>(
-                      builder: (_) => const AppearanceSettingsPage(),
+                      builder: (_) => const JexFixedScalePage(child: AppearanceSettingsPage()),
                     ),
                   ),
                 ),
@@ -939,7 +1010,7 @@ class SettingsPage extends StatelessWidget {
                   '3',
                   () => Navigator.of(context).push(
                     MaterialPageRoute<void>(
-                      builder: (_) => const NotificationsSettingsPage(),
+                      builder: (_) => const JexFixedScalePage(child: NotificationsSettingsPage()),
                     ),
                   ),
                 ),
@@ -954,7 +1025,7 @@ class SettingsPage extends StatelessWidget {
                       : JexText.of('manual', language),
                   () => Navigator.of(context).push(
                     MaterialPageRoute<void>(
-                      builder: (_) => const BluetoothSettingsPage(),
+                      builder: (_) => const JexFixedScalePage(child: BluetoothSettingsPage()),
                     ),
                   ),
                 ),
@@ -967,7 +1038,7 @@ class SettingsPage extends StatelessWidget {
                       : JexText.of('off', language),
                   () => Navigator.of(context).push(
                     MaterialPageRoute<void>(
-                      builder: (_) => const FloatingSettingsPage(),
+                      builder: (_) => const JexFixedScalePage(child: FloatingSettingsPage()),
                     ),
                   ),
                 ),
@@ -1078,6 +1149,12 @@ class LanguageSettingsPage extends StatelessWidget {
       autoConnect: appAutoConnectNotifier.value,
     );
     await AppSettingsStore.save(current.copyWith(language: value));
+    try {
+      await const MethodChannel('je_x_fyz/notifications').invokeMethod<bool>(
+        'updateNotificationChannelLanguage',
+        <String, dynamic>{'language': value.name},
+      );
+    } catch (_) {}
     if (context.mounted) Navigator.pop(context);
   }
 
@@ -1178,7 +1255,10 @@ class NotificationsSettingsPage extends StatelessWidget {
     if (value) {
       try {
         final granted = await const MethodChannel('je_x_fyz/notifications')
-                .invokeMethod<bool>('requestNotificationPermission') ??
+                .invokeMethod<bool>(
+                  'requestNotificationPermission',
+                  <String, dynamic>{'language': appLanguageNotifier.value.name},
+                ) ??
             false;
         if (!granted) return;
       } catch (_) {
@@ -1229,7 +1309,7 @@ class NotificationsSettingsPage extends StatelessWidget {
                     onChanged: (value) => _set('firmware', value),
                   ),
                   SwitchListTile(
-                    title: Text(JexText.of('bluetoothConnected', language)),
+                    title: Text(JexText.of('deviceConnectionNotifications', language)),
                     subtitle: Text(JexText.of('notificationBluetoothDescription', language)),
                     value: appNotifyBluetoothNotifier.value,
                     onChanged: (value) => _set('bluetooth', value),
