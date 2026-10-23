@@ -4,24 +4,26 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 
 ## Product/release baseline
 
-- Owner reports the sold/shipped unit uses App Build #124; Firmware V7.1 was compiled and installed through Online OTA. Treat those deployment claims as USER-REPORTED.
-- Verified App artifact: [Actions run 39386733061](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39386733061), packaged source 7d4e7262c6a3474eefa8ccb58b08f070df3ac15a. APK SHA-256 c0738d3607b120b716841610c849d9608f954a5f1f28017a8018790f4f4b6318; source ZIP SHA-256 e00ac34cb6cf7f04a5485c8ab8ee74d4acc1b20dc1a213ac733a8bf8c43cc152.
-- Production baseline remains Build #124 + V7.1. The unit is sold/shipped and not routinely available for physical repair; future changes must be conservative.
-- App release CI is not evidence of Firmware compile/BIN identity, OTA apply/reboot, BLE recovery or thermal/electrical behavior.
+- **Field unit (USER-REPORTED):** the sold/shipped unit remains reported at App Build #124 + Firmware V7.1, compiled/applied through Online OTA. Build #128 has not been independently observed installed on that physical unit; avoid inferring field behavior from CI.
+- **Latest verified App release:** [Build #128 / run 39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440), packaged source `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`. Release ID `403010611`; Release metadata and `refs/tags/jexfyz-latest` both target that exact source SHA.
+- APK: [JEXFYZ-release.apk](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk), 54,751,323 bytes, SHA-256 `2f5fdf4ffab0eccac3db886855b34f8c2c6c83afb54d7088fd2f8b578d322c5b`. Corresponding source ZIP: [JEXFYZ-corresponding-source.zip](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip), 2,877,957 bytes, SHA-256 `9b740671f7e8d3b9d4cfc1b1e5f3200af905ba207d4a6c8a6b27114f39ec32f4`.
+- Build #128 passed all 21 workflow gates, 121 Flutter tests, analyzer (25 informational diagnostics), the configured Android Gradle gate, V1/V2/V3 + expected certificate checks, source-marker/ZIP checks and independent downloaded APK/source checksum verification. Native Android JUnit tasks were NO-SOURCE.
+- App release CI is not evidence of Firmware compile/BIN identity, installation on the sold unit, OTA apply/reboot, BLE recovery or thermal/electrical behavior.
 
-## Active Build App/QC recovery — 2026-10-23 (Asia/Jakarta)
+## Latest App Build result — SUCCESS — 2026-10-23 (Asia/Jakarta)
 
-- **Status: BUILD #128 ACTIVE; APK build, V1/V2/V3 signing/certificate verification, and source ZIP package passed; Release publishing is active.** [Run 39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440), target SHA `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`, job `120264345808`.
-- **Passed:** workflow steps 1–19. Step 20 `Publish APK and corresponding source to GitHub Release` is `in_progress`; step 21 `Verify downloaded GitHub Release asset` remains pending.
-- **Critical completion gate:** do not report SUCCESS until step 21 finishes and fresh Release/tag/asset evidence proves exact target source SHA, exactly one APK plus one source ZIP, identity/checksums, source marker and downloaded APK signature/certificate.
-- **Checkpoint:** ledger commit `92708619351fbcc4d70b4781be166edda645d8dd` committed and re-read. Verify this transfer update too. No duplicate while #128 active. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device operations.
+- **Build #128 complete:** [Actions run 39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440), conclusion `success`; job `120264345808`, runner `1000002427`. Exact tested/package source: `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`. All 21 workflow steps and post-job cleanup completed successfully.
+- **QC:** analyzer exit 0 with 25 info diagnostics; 121 Flutter tests passed; configured Android Gradle gate passed (native Android JUnit tasks were `NO-SOURCE`). APK build/obfuscation, generated/downloaded APK V1/V2/V3 signatures, official certificate, corresponding ZIP/source marker, exactly-one-APK-plus-one-ZIP and step-21 re-download verification all passed.
+- **Release identity:** Release ID `403010611` and live tag `jexfyz-latest` target the exact run SHA. APK SHA-256 `2f5fdf4ffab0eccac3db886855b34f8c2c6c83afb54d7088fd2f8b578d322c5b`; source ZIP SHA-256 `9b740671f7e8d3b9d4cfc1b1e5f3200af905ba207d4a6c8a6b27114f39ec32f4`.
+- **Durable ledger:** [APP_BUILD_REPORT.md success checkpoint](https://github.com/TenzoNkz/JEXFYZ-App/commit/b881b708d7be38c7d98e6270d7775d09af7eb044). Latest package does not prove installation/behavior on the shipped unit; its Build #124 + V7.1 status remains USER-REPORTED.
+- **Next:** no additional build is needed for this source. Do not trigger another release unless the owner explicitly requests a new one. Preserve Android `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device operations are authorized.
 
 ## Live repository point
 
 - Documentation audit began on TenzoNkz/JEXFYZ-App/main at 11a0ef162f1c2945704229ed7697dc70e7617e9b, commit message "fix: sync Android notification channels with app language", dated 2026-10-23. The docs-only rework commit moves main forward; fetch live HEAD/tree at every boot instead of trusting this audit-base SHA.
 - At audit start, recursive tree had 69 entries, untruncated; no open PRs were returned.
 - Active Firmware source is firmware/JEXFYZ-V7.1.ino, FW_VERSION="V7.1", blob c44e076b2c1ee2d0b66b4fcd308d0febc69976e9.
-- Latest release record is Build #124; current App source-only UI changes have no later verified package.
+- Latest verified App release is Build #128 / run `39908023440`, packaged source `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`; the release/tag and downloaded asset checks are verified in `APP_BUILD_REPORT.md`.
 
 ## Last durable task and result
 
@@ -29,23 +31,23 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 
 GitHub memory is not an automatic transcript of this chat. A state is considered saved only after the relevant checkpoint/note is committed to `main` and the resulting content is verified. Save at each durable decision, logical milestone, and task success/blockage; for Build App, update `APP_BUILD_REPORT.md` as each attempt progresses. Before an expected chat limit, record the active scope, last verified step, remaining work, run status, blocker, and next action. If interruption happens before a commit finishes, recover only the last verified checkpoint and live evidence; never claim the unsaved portion was preserved.
 
-Latest durable task: under `@Thinking Eksekusi Full!`, audited the chat-limit memory workflow and strengthened the durable save cadence across the two prompts and current project-memory docs. The policy now requires a review/save pass before ending any substantive project chat, even if the larger task is unfinished; checkpoint after durable decisions, milestones, tests, and blockers; update `APP_BUILD_REPORT.md` as build attempts progress; and verify the actual commit before describing the state as saved. If nothing new is durable, avoid no-op commits and retain the last verified checkpoint.
+Latest durable task/result (2026-10-23): under `@Thinking Eksekusi Build App!`, Build #125 hit a pre-runner startup failure; Builds #126/#127 exposed three stale static-test assertions; those assertions were repaired without changing runtime App behavior or weakening gates. Build #128 then passed all workflow gates and published the exact tested source, production-signed APK and matching source ZIP. Detailed evidence and all failed attempts remain preserved in `APP_BUILD_REPORT.md`; this checkpoint records the successful current package.
 
 Important persistence boundary: GitHub does not automatically receive the ChatGPT transcript. An abrupt interruption before a verified commit can leave an unsaved tail; next chat must recover the last committed checkpoint and live source/run evidence rather than inventing that missing tail.
 
 Exactly two transfer prompts remain in `CHAT_TRANSFER_PROMPTS.md`: Prompt 1 starts `Diskusi!` and can be switched to `Eksekusi Full!` or `Chat Stuck!`; Prompt 2 starts `Eksekusi Build App!`. The copy-ready command names intentionally omit `@Thinking`.
 
-This execution was documentation-only. No executable source, config, workflow, tests, App Build/release, Firmware compile, BIN/Firebase, OTA, flash or device work was performed. Main was at `34f6f3ab14459078fdecd2e0ef980002b0b53090` immediately before this final handoff update; always fetch the live HEAD after boot.
+The prior memory-policy audit was documentation-only. The subsequent, separately authorized App Build operation did execute the guarded App QC/release workflow and is now recorded above. No Firmware compile, BIN/Firebase mutation, OTA, flash or device action occurred. Always fetch live main HEAD/tree and the latest Actions/Release evidence on a new task.
 
-Latest durable decision (2026-10-23): the owner confirmed the Home notice heading must follow the selected App language — `Notification` in English and `Notifikasi` in Indonesian. This resolves the former DESIGN_NOTES.md mismatch with live localization source. The decision is documentation/design-only: no executable source, tests, configuration or workflow were changed; no test/build/release or Firmware/BIN/Firebase/OTA/flash/device operation was run. Next safe action: continue the Discussion workstream from live evidence; if a later UI implementation is requested, use this heading contract and obtain the appropriate execution authorization first.
+Durable design decision (2026-10-23): the Home notice heading follows the selected App language — `Notification` in English and `Notifikasi` in Indonesian. The current Build #128 source/release has since passed all guarded App CI gates; this CI result still does not establish physical-device installation or Firmware/device behavior.
 
-## Latest pre-Build notes reconciliation — 2026-10-23
+## Historical pre-Build notes reconciliation — 2026-10-23 (superseded by Builds #126–#128)
 
 - This Discussion-mode audit began from live `main` HEAD `3234cecd7903f66622e5bf1b14fdb1dfc86fcb82`, commit "docs: checkpoint Home notice localization decision". Its recursive tree had 69 entries (`truncated=false`), and the open-PR query returned none. Documentation-only writes from this audit advance main beyond that starting SHA; fetch the final live HEAD before any later action.
 - A stale sentence in `MEMORY_INDEX.md` still described the Home notice heading as an unresolved mismatch, contradicting the owner decision and the resolved contracts in `APP_NOTES.md`/`DESIGN_NOTES.md`. It has now been corrected. `CHANGELOG.md`, `PROJECT_STATE.md` and `HANDOVER.md` were also refreshed to record the pre-build state and keep the handoff accurate.
-- Fresh live Actions still show Build #125 / run `39905665853` completed as failure before runner steps: job `120256919402`, `runner_id=0`, empty runner name, `steps=[]`, no usable log and no artifacts. The owner subsequently reported the Actions issue fixed and working, but no new run has verified that claim; the exact old failure cause remains `UNVERIFIED INFRASTRUCTURE BLOCKER`. No gate ran and no retry was issued.
-- Release `jexfyz-latest` and `refs/tags/jexfyz-latest` still target Build #124 source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`, with the same recorded APK/source ZIP digests. Build #124 is the latest verified package; #125 produced none.
-- Build readiness decision: do not broadly rewrite every repo note. Keep active canonical notes current, preserve `APP_BUILD_REPORT.md` and `CHANGELOG.md` as history ledgers, and leave `archive/*.md` immutable. The owner-reported Actions recovery is not yet CI-verified; the next separately authorized Build App task must preflight live state and verify the new run reaches real runner steps before treating the blocker as resolved.
+- At this historical point, Build #125 / run `39905665853` had failed before runner steps: job `120256919402`, `runner_id=0`, empty runner name, no steps/log/artifacts. This was later followed by #126 and #127 test failures and then the successful #128 runner/build/release; the earlier infrastructure blocker is closed for the current run, while its root cause was never established.
+- At this historical point, Release `jexfyz-latest` and its tag still targeted Build #124 source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`. That package has since been superseded by the verified Build #128 release documented above.
+- Build readiness decision at the time: do not broadly rewrite every repo note. The current release now exists, and this handoff supersedes that pre-build readiness status. Keep `APP_BUILD_REPORT.md` and `CHANGELOG.md` as history ledgers and leave `archive/*.md` immutable.
 - This reconciliation changed project-memory documentation only. No App/Firmware source, config, workflow or tests were changed; no test, build/release, Firmware compile, BIN/Firebase, OTA, flashing or device action ran.
 
 ## Current UI implementation / validation
