@@ -1741,7 +1741,7 @@ void main() {
     expect(icon, contains('M2,3 H10'));
     expect(icon, isNot(contains('Legacy monochrome X resource retained')));
     expect(bleService, contains('Bluetooth connected · device session active'));
-    expect(bleService, contains('Bluetooth terhubung · sesi cooler aktif'));
+    expect(bleService, contains('Bluetooth terhubung · sesi perangkat aktif'));
     expect(floatingService, contains('Floating Monitor is active.'));
     expect(floatingService, contains('Floating Monitor aktif.'));
     expect(icon, contains('android:fillColor="#FFFFFFFF"'));
