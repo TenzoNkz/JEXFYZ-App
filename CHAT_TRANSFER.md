@@ -42,6 +42,15 @@ This execution was documentation-only. No executable source, config, workflow, t
 
 Latest durable decision (2026-10-23): the owner confirmed the Home notice heading must follow the selected App language — `Notification` in English and `Notifikasi` in Indonesian. This resolves the former DESIGN_NOTES.md mismatch with live localization source. The decision is documentation/design-only: no executable source, tests, configuration or workflow were changed; no test/build/release or Firmware/BIN/Firebase/OTA/flash/device operation was run. Next safe action: continue the Discussion workstream from live evidence; if a later UI implementation is requested, use this heading contract and obtain the appropriate execution authorization first.
 
+## Latest pre-Build notes reconciliation — 2026-10-23
+
+- This Discussion-mode audit began from live `main` HEAD `3234cecd7903f66622e5bf1b14fdb1dfc86fcb82`, commit "docs: checkpoint Home notice localization decision". Its recursive tree had 69 entries (`truncated=false`), and the open-PR query returned none. Documentation-only writes from this audit advance main beyond that starting SHA; fetch the final live HEAD before any later action.
+- A stale sentence in `MEMORY_INDEX.md` still described the Home notice heading as an unresolved mismatch, contradicting the owner decision and the resolved contracts in `APP_NOTES.md`/`DESIGN_NOTES.md`. It has now been corrected. `CHANGELOG.md`, `PROJECT_STATE.md` and `HANDOVER.md` were also refreshed to record the pre-build state and keep the handoff accurate.
+- Fresh live Actions still show Build #125 / run `39905665853` completed as failure before runner steps: job `120256919402`, `runner_id=0`, empty runner name, `steps=[]`, no usable log and no artifacts. The exact cause remains `UNVERIFIED INFRASTRUCTURE BLOCKER`; no gate ran. No retry was issued.
+- Release `jexfyz-latest` and `refs/tags/jexfyz-latest` still target Build #124 source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`, with the same recorded APK/source ZIP digests. Build #124 is the latest verified package; #125 produced none.
+- Build readiness decision: do not broadly rewrite every repo note. Keep active canonical notes current, preserve `APP_BUILD_REPORT.md` and `CHANGELOG.md` as history ledgers (append only), and leave `archive/*.md` immutable. The Build App blocker is separate from documentation quality: do not retrigger until Actions startup is evidence-backed as recovered, and only under a fresh explicit `Eksekusi Build App!` authorization.
+- This reconciliation changed project-memory documentation only. No App/Firmware source, config, workflow or tests were changed; no test, build/release, Firmware compile, BIN/Firebase, OTA, flashing or device action ran.
+
 ## Current UI implementation / validation
 
 Source-only UI implementation on main includes:
