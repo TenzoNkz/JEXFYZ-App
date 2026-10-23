@@ -1,4 +1,14 @@
-## CURRENT BUILD APP EXECUTION — BUILD #129 RUNNER ACTIVE — DPI PATCH VALIDATION — 2026-10-23 (Asia/Jakarta)
+## CURRENT BUILD APP EXECUTION — BUILD #129 FLUTTER TESTS PASSED; ANDROID GATE IN PROGRESS — 2026-10-23 (Asia/Jakarta)
+
+- **Run/source:** [#129 / 39925045446](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446), exact tested checkout `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`, job `120319250463`, hosted runner `1000002428`, status `in_progress`.
+- **Passed steps 1–13:** runner/toolchain and local.properties setup, production signing preparation, wrapper setup, App security/architecture audit, dependency installation, Dart analyzer and **full Flutter test step**. The new density-regression test `Fixed-scale pages match the Home canvas across display-density changes` is included in this successful test step; the final aggregate pass count awaits terminal log availability.
+- **Current gate:** step 14 `Run Android unit-test gate` is `in_progress`. Release APK build and all later V1/V2/V3 signature/certificate, source ZIP, Release/tag/asset and re-download checks are pending.
+- **Important distinction:** local Flutter/Dart remains unavailable; the hosted runner has now independently provided the actual analyzer/test execution. Step status is real; no final build or release result yet.
+- **Next:** monitor Android gate, then continue release gates only on this same run. Do not trigger another build while #129 is active. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device operation.
+
+---
+
+## HISTORICAL CHECKPOINT — BUILD #129 RUNNER ACTIVE BEFORE ANALYZER/TEST RESULTS
 
 - **Run:** [Build #129 / 39925045446](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446), official `issues/reopened` event, tested source SHA `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`; it equals the main SHA at trigger time.
 - **Runner recovery verified:** run status `in_progress`; job `build` / ID `120319250463`, hosted runner ID `1000002428`, name `GitHub Actions 1000002428`, `ubuntu-24.04`. Steps 1 (Set up job), 2 (Checkout repository), and 3 (Set up Java 17) succeeded; step 4 (Set up Flutter) is `in_progress`.
