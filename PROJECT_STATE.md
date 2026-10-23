@@ -36,7 +36,7 @@ The related static tests exist, including test/device_copy_notification_contract
 
 ## Open design/validation items
 
-- Known documentation/source mismatch: source currently uses the localized Home notice heading Notification / Notifikasi; DESIGN_NOTES.md contains an older approved line requiring the fixed heading NOTIFY in both languages. This rework records the mismatch but does not alter executable UI. Resolve in a separately scoped UI task rather than silently changing one side.
+- Home notice heading contract is resolved by owner decision (2026-10-23): use `Notification` in English and `Notifikasi` in Indonesian, following the selected App language. Documentation only; no executable source change or build was authorized.
 - Rapid Hotside-rise/slope shutdown plus manual re-arm remains an unimplemented Firmware requirement. Do not imply it is covered by Adaptive Fan tiers or raw-decimal limit safety.
 - BLE App-only authorization is BLOCKED / NOT IMPLEMENTED until a trusted backend, device-bound enrollment grant and per-session signature verification are designed/deployed.
 - Exact field BIN-to-source identity, installed-version evidence, physical reboot/BLE recovery and thermal/electrical behavior remain independently unverified despite the owner's report.
