@@ -117,7 +117,7 @@ void main() {
     expect(lockSource, contains('IgnorePointer(child: content)'));
     expect(lockSource, contains('Positioned.fill('));
     expect(lockSource, contains('child: Center('));
-    expect(lockSource, contains('CONNECT TO JE X FYZ FIRST'));
+    expect(lockSource, contains('CONNECT YOUR DEVICE FIRST'));
     expect(lockSource, contains('LOCKED BY ADAPTIVE MODE'));
     expect(lockSource, isNot(contains('_tab(')));
 
@@ -1740,7 +1740,7 @@ void main() {
     expect(icon, contains('android:pathData='));
     expect(icon, contains('M2,3 H10'));
     expect(icon, isNot(contains('Legacy monochrome X resource retained')));
-    expect(bleService, contains('Bluetooth connected · cooler session active'));
+    expect(bleService, contains('Bluetooth connected · device session active'));
     expect(bleService, contains('Bluetooth terhubung · sesi cooler aktif'));
     expect(floatingService, contains('Floating Monitor is active.'));
     expect(floatingService, contains('Floating Monitor aktif.'));
@@ -2070,7 +2070,7 @@ void main() {
   });
 
   test('Home Notify connection and action copy stays concise in both languages', () {
-    expect(JexText.of('bluetoothDisconnected', AppLanguage.english), 'Bluetooth disconnected.');
+    expect(JexText.of('bluetoothDisconnected', AppLanguage.english), 'Device disconnected.');
     expect(JexText.of('bluetoothDisconnected', AppLanguage.indonesia), 'Bluetooth terputus.');
     expect(JexText.of('connectionReady', AppLanguage.english), 'Connection established.');
     expect(JexText.of('connectionReady', AppLanguage.indonesia), 'Koneksi berhasil dibuat.');
