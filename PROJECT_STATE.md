@@ -4,7 +4,7 @@ Last refreshed: 2026-10-23 (Asia/Jakarta), after successful Build #128 release v
 
 ## Product baseline and evidence
 
-- **Owner-reported field baseline:** the sold/shipped unit uses Android App Build #124 and Firmware V7.1, reportedly compiled and updated through Online OTA. The shipped unit has not been independently observed on the new Build #128 APK and is not available for routine physical repair.
+- **Latest owner-reported field update:** the owner says Build #128 was installed/overwrote the previously installed App and supplied screenshots/video from that UI. The exact installed APK identity was not independently read from the device. Firmware V7.1 compile/Online OTA remains owner-reported, and the device is not available for routine physical repair.
 - **Latest independently verified App release:** [Build #128 / Actions run 39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440), exact packaged source `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`. Release ID `403010611`; live Release metadata and `refs/tags/jexfyz-latest` target this exact source.
 - **APK:** [JEXFYZ-release.apk](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk), asset ID `668133495`, 54,751,323 bytes, SHA-256 `2f5fdf4ffab0eccac3db886855b34f8c2c6c83afb54d7088fd2f8b578d322c5b`.
 - **Corresponding source ZIP:** [JEXFYZ-corresponding-source.zip](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip), asset ID `668133492`, 2,877,957 bytes, SHA-256 `9b740671f7e8d3b9d4cfc1b1e5f3200af905ba207d4a6c8a6b27114f39ec32f4`.
@@ -39,6 +39,7 @@ Build #128 validated this implementation with 121 passing Flutter tests, Dart an
 
 ## Open design/validation items
 
+- **New owner UI feedback (2026-10-23; pending source fix):** Settings page and Bluetooth Connection sheet look oversized/zoomed in screenshots/video after Build #128. Source review points to `JexFixedScalePage` in `lib/floating_monitor.dart`: its `constraints.maxWidth / 360.0` scale upscales the entire content above 360 logical dp. Planned fix is a capped 1.0 maximum scale while keeping actual available width at native 1× on wider devices and proportional downscaling only on narrower devices. No source/test/build change has been made for this request; use `Eksekusi Full!` for scoped source/tests, and `Eksekusi Build App!` separately if a new release is desired.
 - Home notice heading contract is resolved by owner decision (2026-10-23): use `Notification` in English and `Notifikasi` in Indonesian, following the selected App language. Documentation only; no executable source change or build was authorized.
 - Rapid Hotside-rise/slope shutdown plus manual re-arm remains an unimplemented Firmware requirement. Do not imply it is covered by Adaptive Fan tiers or raw-decimal limit safety.
 - BLE App-only authorization is BLOCKED / NOT IMPLEMENTED until a trusted backend, device-bound enrollment grant and per-session signature verification are designed/deployed.
