@@ -11,11 +11,10 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 
 ## Active Build App/QC recovery — 2026-10-23 (Asia/Jakarta)
 
-- **Status: Build #126 failed at Flutter tests; concrete test-only repair committed; new run not yet triggered.**
-- **Failed run evidence:** [39907333312](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907333312), source `806bbdb462189a94c7e3716b793ea0fb35d7f30d`, 119 passed / 2 failed. Failures were a stale `requestNotificationPermission()` static token and an obsolete `Bluetooth terputus.` localization expectation. Analyzer passed (25 info diagnostics); downstream Android/APK/release gates did not run.
-- **Repair commit:** [`0e5ed8871c2ba2047543b92052fc3ab4541b8c6a`](https://github.com/TenzoNkz/JEXFYZ-App/commit/0e5ed8871c2ba2047543b92052fc3ab4541b8c6a), test blob `d3727923afa972e6a0302e23039a419b818daaa8`. It asserts the language-aware notification permission bridge and approved `Perangkat terputus.` copy. No runtime source/config/workflow changed; test execution is pending in the next CI run.
-- **Saved ledger:** repair and pre-retry state recorded in `APP_BUILD_REPORT.md` commit `f1e65a47b0f4cfcbae69dce4bace8e0318af7abc`, re-read and verified. This transfer update still needs verification after its own commit.
-- **Next:** verify this transfer update, re-fetch main and idle Actions state plus issue #34 guard and Release/tag parity; then emit exactly one official issue-only trigger. Confirm exact run `head_sha`, tests and all downstream gates. Do not trigger duplicate runs. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device actions.
+- **Status: BUILD #127 QUEUED, exact source SHA verified.** [Run 39907723349](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907723349) was created by the official issue #34 reopen event and targets `74472861b868ba69caed97233d86d40424f2610f`, matching live main at trigger time.
+- **Repair under test:** commit `0e5ed8871c2ba2047543b92052fc3ab4541b8c6a` updates two stale assertions in `test/widget_test.dart`. Build #126 had setup/security/dependency/analyzer passes but 119 passed / 2 failed; #127 must now validate the repair before any APK gate.
+- **Current gate:** queued; runner/job steps not yet confirmed. No further trigger while #127 is queued or active. Build #124 is still the last verified release.
+- **Ledger checkpoint:** report update committed at `f72a2de998d477a50674745305aa8ee407708599` and reread successfully; verify this handoff commit. Next inspect #127's real runner/steps/logs and update both ledgers as gates complete/fail. Preserve `versionName "Telegram @horizontalzzz"`; do not run Firmware/BIN/Firebase/OTA/flash/device actions.
 
 ## Live repository point
 
