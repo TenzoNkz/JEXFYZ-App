@@ -1,4 +1,15 @@
-## CURRENT BUILD APP EXECUTION — TWO TEST REPAIRS VERIFIED IN SOURCE; RETRY PREFLIGHT — 2026-10-23 (Asia/Jakarta)
+## CURRENT BUILD APP EXECUTION — BUILD #128 QUEUED — 2026-10-23 (Asia/Jakarta)
+
+- **Run:** [Build #128 / 39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440), event `issues`, created `2026-10-23T05:50:50Z`, status `in_progress`, exact `head_sha` `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3` (matches main at trigger).
+- **Trigger/policy:** existing issue #34 was closed/reopened once via the unchanged guarded issue trigger. Workflow blob remains `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; no push/PR/manual-dispatch route was added.
+- **Repairs included in this SHA:** test assertion fixes for language-aware `requestNotificationPermission(language)`, Indonesian Home disconnect `Perangkat terputus.`, and foreground notification `Bluetooth terhubung · sesi perangkat aktif`. These address the exact #126/#127 Flutter test failures and are not yet revalidated until #128 runs the test step.
+- **Current gate:** queued; no runner step has been confirmed at this checkpoint. Do not trigger anything else while this run is queued or active.
+- **Release baseline:** Build #124 / source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a` remains latest verified package. No #128 asset/release yet.
+- **Next:** inspect job/runner steps and logs for this run, record analyzer/test output, then continue all remaining Android/APK/signing/source ZIP/release/asset gates if tests pass. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device actions.
+
+---
+
+## HISTORICAL CHECKPOINT — TWO TEST REPAIRS VERIFIED IN SOURCE BEFORE BUILD #128
 
 - **Most recent attempt:** Build #127 / [run 39907723349](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907723349) completed `failure` at Flutter tests: 120 passed, 1 failed. Setup through analyzer passed; analyzer exited 0 with 25 info diagnostics. Android/APK/signing/release gates were skipped.
 - **Exact remaining failure repaired:** the notification contract expected obsolete `Bluetooth terhubung · sesi cooler aktif`; actual current `JeForegroundService.kt` text is `Bluetooth terhubung · sesi perangkat aktif`, matching the approved Device/Perangkat terminology. Fix commit [`b57e2f9a74e58aaed694ac1f5a660e3b9b0d895a`](https://github.com/TenzoNkz/JEXFYZ-App/commit/b57e2f9a74e58aaed694ac1f5a660e3b9b0d895a) updates that exact assertion in `test/widget_test.dart`.
