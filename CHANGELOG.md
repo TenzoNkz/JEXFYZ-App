@@ -1,5 +1,13 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-23 — Match Settings/Connection to Home's DPI-compensating master canvas (source committed; validation blocked)
+
+- Owner authorized `@Thinking Eksekusi Full!` and clarified that Settings root/subpages and the Bluetooth Connection sheet must use the same fixed logical canvas and uncapped width/360 scale as Home, keeping physical appearance consistent when Android display DPI/Smallest Width changes on the same screen.
+- Updated `JexFixedScalePage` in [`d0f87b09c96a89063dc3b6f8c23e763bd11dc66e`](https://github.com/TenzoNkz/JEXFYZ-App/commit/d0f87b09c96a89063dc3b6f8c23e763bd11dc66e): remove the interim 1.0 cap, fix the logical width at 360 dp, compute design height and media insets in canvas units, use `OverflowBox` outside a single `Transform.scale`, and clip to the viewport. The wrapper contract comment was aligned in [`cf0b66d6c5cf131d55aa99783fa3518274275d57`](https://github.com/TenzoNkz/JEXFYZ-App/commit/cf0b66d6c5cf131d55aa99783fa3518274275d57).
+- Revised the regression test in [`f680837ad61653fbda071bb8f451ccd4113acfaf`](https://github.com/TenzoNkz/JEXFYZ-App/commit/f680837ad61653fbda071bb8f451ccd4113acfaf). The widget test holds physical viewport 1080×2400 constant while varying DPR to simulate logical widths 420 dp and 320 dp. It checks a 360×800 logical canvas, scales 420/360 and 320/360, plus invariant 1080×2400 physical dimensions.
+- Static source/test validation passed: live file blobs were re-fetched; expected scale, media insets, fixed canvas, OverflowBox/Transform order, and all test expectation strings are present. `flutter` and `dart` are not installed and the environment cannot fetch the toolchain, so formatter, targeted Flutter test, analyzer, full suite and live-device layout QA are NOT RUN. Do not describe them as passing.
+- No App Build/release was triggered. Build #128 / run `39908023440` remains the latest verified package source `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`; the source patch is not yet released. A separate explicit `@Thinking Eksekusi Build App!` is required after the patch passes validation. No Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+
 ## 2026-10-23 — Owner clarifies DPI requirement: Settings/Connection must match Home canvas (design decision)
 
 - Owner clarified that Settings root/subpages and the Bluetooth Connection sheet must use the same uncapped 360-dp master-canvas scaling as Home, preserving physical appearance when Android display density / Smallest Width changes on the same physical screen.
