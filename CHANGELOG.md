@@ -1,5 +1,12 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-23 — Record oversized Settings/Connection UI feedback (docs-only; source fix pending)
+
+- Owner reports they installed/overwrote with Build #128 and supplied screenshots/video where Settings and the Bluetooth Connection bottom sheet look too large/zoomed.
+- Compared the screenshots with live source. `JexFixedScalePage` in `lib/floating_monitor.dart` applies `Transform.scale` at `constraints.maxWidth / 360.0` to Settings/routes and the Connection sheet, which enlarges fonts, padding, icons and controls together on viewports wider than 360 logical dp. The three reviewed Dart UI files match the Build #128 package source blob-for-blob.
+- Recorded the proposed narrow correction in APP_NOTES.md and DESIGN_NOTES.md: cap scale at 1.0 for wider screens while sizing the logical child to the actual available width; retain proportional downscaling only when the viewport is narrower than 360 dp. Validate both screens, narrow/wide widths, English/Indonesian and overflow after explicit source execution.
+- This remains a source-level diagnosis and plan. No executable source, tests, config, workflow, Build App/release, Firmware/BIN/Firebase, OTA, flash or device action occurred in Discussion mode. Build #128 remains the latest verified package; no post-fix release exists.
+
 ## 2026-10-23 — Owner reports Actions startup issue fixed; verification pending
 
 - Owner reports the GitHub Actions issue behind Build #125 is repaired and now works. Evidence status is `USER-REPORTED`: at the latest live query, #125 remained the newest failed run, #124 remained the latest successful release, and no later run had yet demonstrated runner startup recovery.
