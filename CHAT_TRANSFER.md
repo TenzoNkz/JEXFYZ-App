@@ -10,7 +10,19 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 - Build #128 passed all 21 workflow gates, 121 Flutter tests, analyzer (25 informational diagnostics), the configured Android Gradle gate, V1/V2/V3 + expected certificate checks, source-marker/ZIP checks and independent downloaded APK/source checksum verification. Native Android JUnit tasks were NO-SOURCE.
 - App release CI is not evidence of Firmware compile/BIN identity, installation on the sold unit, OTA apply/reboot, BLE recovery or thermal/electrical behavior.
 
-## Latest App Build result — SUCCESS — 2026-10-23 (Asia/Jakarta)
+## Active Build App/QC operation — PREFLIGHT SAVED; NEXT OFFICIAL RUN IS BUILD #129 — 2026-10-23 (Asia/Jakarta)
+
+- **Authorization:** owner re-issued `@Thinking Eksekusi Build App!`. Scope is guarded App Build/QC/release only.
+- **Current source change awaiting hosted validation:** Settings root/subpages, Bluetooth Connection sheet and selected modals now use Home's uncapped 360-dp DPI-compensating master canvas in `lib/floating_monitor.dart` (blob `3739ce402e0355f5bda9625aae7ba8b6f0d9020d`); regression test is `test/floating_monitor_layout_contract_test.dart` (blob `f7f85bb200732204b1fb4b262ce5c254697c5fa9`). Key commits `d0f87b09c96a89063dc3b6f8c23e763bd11dc66e` / `f680837ad61653fbda071bb8f451ccd4113acfaf`. These haven't been through a Build #128-equivalent CI validation yet.
+- **Tooling status:** local Flutter and Dart are absent; the targeted test and `dart format` attempts were not started (exit 127). The hosted issue-guarded workflow is the available validation/build path; it must demonstrate analyzer, the new density test and all release gates. Do not mark local validation as passing.
+- **Preflight at saved point:** prior Build #128 success and Release/tag target `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`; no active/queued/waiting workflow run; issue #34 open with owner `TenzoNkz`, required title and body token; unchanged workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12` (issue `opened/reopened`, no push/PR dispatch).
+- **Durable ledger:** [APP_BUILD_REPORT.md preflight checkpoint](https://github.com/TenzoNkz/JEXFYZ-App/commit/910497ef082965e68fb056f51d2386a1c5925f9a) was committed and re-read. This transfer update will advance `main`; fetch final main HEAD/tree again before triggering.
+- **Next exact action:** recheck current main, workflow/issue guard, no active/queued/waiting run and Release/tag parity. If all still match, emit one official close/reopen event on issue #34; verify the new run's `head_sha` equals freshly fetched main. Continue from the real steps/logs and repair only concrete gate failures without weakening policy. No duplicate while a run is queued/active.
+- Preserve Gradle `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device operation is authorized.
+
+---
+
+## Last completed App Build result — SUCCESS — Build #128 — 2026-10-23
 
 - **Build #128 complete:** [Actions run 39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440), conclusion `success`; job `120264345808`, runner `1000002427`. Exact tested/package source: `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`. All 21 workflow steps and post-job cleanup completed successfully.
 - **QC:** analyzer exit 0 with 25 info diagnostics; 121 Flutter tests passed; configured Android Gradle gate passed (native Android JUnit tasks were `NO-SOURCE`). APK build/obfuscation, generated/downloaded APK V1/V2/V3 signatures, official certificate, corresponding ZIP/source marker, exactly-one-APK-plus-one-ZIP and step-21 re-download verification all passed.
