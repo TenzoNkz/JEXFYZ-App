@@ -11,12 +11,11 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 
 ## Active Build App/QC recovery — 2026-10-23 (Asia/Jakarta)
 
-- **Status: BUILD #126 FAILED at Flutter tests; source/test repair identified.** Run [39907333312](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907333312), source SHA `806bbdb462189a94c7e3716b793ea0fb35d7f30d`; job `120262178483`, runner `1000002425`, completed failure.
-- **Passed steps:** setup through analyzer (steps 1–12), including production signing-secret preparation and architecture/security audit. Dart analyze exited 0 with 25 info diagnostics. Flutter tests produced `119 passed, 2 failed`.
-- **Concrete failures:** (1) `test/widget_test.dart:1735` expects the stale `requestNotificationPermission()` token rather than current language-aware `requestNotificationPermission(language)` handler; (2) `test/widget_test.dart:2074` expects old `Bluetooth terputus.` while the approved localization now reads `Perangkat terputus.`. Fix test assertions only; do not weaken gates or change functional source to satisfy obsolete expectations.
-- **No APK/package:** Android gate and later build/sign/publish/re-download gates were skipped. Release/tag remain on Build #124 source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`; its APK and ZIP hashes remain unchanged.
-- **Checkpoint:** Build #126 failure and exact evidence were committed in `APP_BUILD_REPORT.md` at `e23b15e2f60ca4b286890c5579a99271d993dd06`; that ledger content was re-read and verified. Verify this transfer update after commit.
-- **Next:** update the two stale assertions in `test/widget_test.dart`, commit and verify to main. Then fetch main/workflow/issue #34/Actions idle state and issue a single guarded trigger if clear. Confirm run target SHA exactly; do not run a duplicate; inspect every later gate. Preserve `versionName "Telegram @horizontalzzz"`, and perform no Firmware/BIN/Firebase/OTA/flash/device actions.
+- **Status: Build #126 failed at Flutter tests; concrete test-only repair committed; new run not yet triggered.**
+- **Failed run evidence:** [39907333312](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907333312), source `806bbdb462189a94c7e3716b793ea0fb35d7f30d`, 119 passed / 2 failed. Failures were a stale `requestNotificationPermission()` static token and an obsolete `Bluetooth terputus.` localization expectation. Analyzer passed (25 info diagnostics); downstream Android/APK/release gates did not run.
+- **Repair commit:** [`0e5ed8871c2ba2047543b92052fc3ab4541b8c6a`](https://github.com/TenzoNkz/JEXFYZ-App/commit/0e5ed8871c2ba2047543b92052fc3ab4541b8c6a), test blob `d3727923afa972e6a0302e23039a419b818daaa8`. It asserts the language-aware notification permission bridge and approved `Perangkat terputus.` copy. No runtime source/config/workflow changed; test execution is pending in the next CI run.
+- **Saved ledger:** repair and pre-retry state recorded in `APP_BUILD_REPORT.md` commit `f1e65a47b0f4cfcbae69dce4bace8e0318af7abc`, re-read and verified. This transfer update still needs verification after its own commit.
+- **Next:** verify this transfer update, re-fetch main and idle Actions state plus issue #34 guard and Release/tag parity; then emit exactly one official issue-only trigger. Confirm exact run `head_sha`, tests and all downstream gates. Do not trigger duplicate runs. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device actions.
 
 ## Live repository point
 
