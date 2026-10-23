@@ -1,4 +1,15 @@
-## CURRENT BUILD APP EXECUTION — BUILD #127 RUNNER ACTIVE — 2026-10-23 (Asia/Jakarta)
+## CURRENT BUILD APP EXECUTION — BUILD #127 FLUTTER TESTS IN PROGRESS — 2026-10-23 (Asia/Jakarta)
+
+- **Run/source:** [#127 / 39907723349](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907723349), exact target `74472861b868ba69caed97233d86d40424f2610f`; job `120263398179` on hosted runner `1000002426` (`ubuntu-24.04`) remains `in_progress`.
+- **Steps 1–12 passed:** runner setup, checkout, Java 17, Flutter, Gradle, toolchain verification, Flutter local.properties, production-signing preparation, Gradle wrapper setup, App security/architecture audit, dependency installation and Dart analysis. Analyzer step concluded `success`; its diagnostic count/result will be recorded from the completed log if available.
+- **Current gate:** `Run Flutter tests` (step 13) is `in_progress`. The two test-only assertion repairs from `0e5ed8871c2ba2047543b92052fc3ab4541b8c6a` are now under CI verification. Android Gradle, APK/signing, ZIP, Release publishing and downloaded-asset verification remain pending.
+- **Log availability:** step API shows real progression, but the job log is not yet downloadable during active execution (`BlobNotFound`). No test result inferred before the step reaches a terminal state.
+- **No duplicate:** this is the only active authorized run. Build #124 remains the latest verified package until #127 passes every required gate. Preserve `versionName "Telegram @horizontalzzz"`.
+- **Next:** inspect #127 when the Flutter test step completes, record exact pass/fail count and any failure names, then checkpoint before the next gate or repair. No Firmware/BIN/Firebase/OTA/flash/device actions.
+
+---
+
+## HISTORICAL CHECKPOINT — BUILD #127 RUNNER ACTIVE BEFORE ANALYZER/TESTS
 
 - **Run:** [#127 / 39907723349](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907723349), status `in_progress`, exact target/source SHA `74472861b868ba69caed97233d86d40424f2610f`. The current repo documentation may advance, but this run's checkout SHA is immutable.
 - **Runner recovery:** live job `120263398179` has hosted runner `1000002426` on `ubuntu-24.04`. Steps 1–4 passed: Set up job, Checkout repository, Java 17 setup and Flutter setup.
