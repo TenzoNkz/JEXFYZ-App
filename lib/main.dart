@@ -4207,8 +4207,10 @@ class _DashboardScreenState extends State<DashboardScreen>
   int battery12Draft = 35;
   String incomingBuffer = '';
   String notice = '';
-  String pendingOtaNotice = '';
+  String pendingOtaResult = '';
   int _homeNotifyRevision = 0;
+  bool _floatingStartPending = false;
+  bool _floatingStartAttemptedForSession = false;
 
   String voltage = '--';
   String hotsideTemp = '--';
@@ -4379,6 +4381,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           'title': title,
           'body': body,
           'id': id,
+          'language': appLanguageNotifier.value.name,
         },
       );
     } catch (e) {
@@ -4399,7 +4402,47 @@ class _DashboardScreenState extends State<DashboardScreen>
       connected: connected,
     );
     floatingTelemetryNotifier.value = telemetry;
-    unawaited(FloatingBridge.updateData(telemetry));
+    if (!telemetry.connected) {
+      _floatingStartAttemptedForSession = false;
+      unawaited(FloatingBridge.updateData(telemetry));
+      return;
+    }
+    final config = floatingConfigNotifier.value;
+    if (config.enabled && !_floatingStartAttemptedForSession && !_floatingStartPending) {
+      unawaited(_restoreFloatingMonitorAfterSync());
+    } else {
+      unawaited(FloatingBridge.updateData(telemetry));
+    }
+  }
+
+  Future<void> _restoreFloatingMonitorAfterSync() async {
+    if (_floatingStartPending || _floatingStartAttemptedForSession) return;
+    _floatingStartPending = true;
+    _floatingStartAttemptedForSession = true;
+    try {
+      final config = floatingConfigNotifier.value;
+      if (!mounted || !connected || !config.enabled) return;
+      if (!await FloatingBridge.hasPermission()) return;
+      final currentTelemetry = floatingTelemetryNotifier.value;
+      if (!currentTelemetry.connected || !connected) return;
+      final started = await FloatingBridge.start(config, telemetry: currentTelemetry);
+      if (!started) return;
+      final deadline = DateTime.now().add(const Duration(seconds: 3));
+      var ready = false;
+      while (DateTime.now().isBefore(deadline) && mounted && connected) {
+        final state = await FloatingBridge.runtimeState();
+        if (state?['running'] == true && state?['overlay'] == true) {
+          ready = true;
+          break;
+        }
+        await Future<void>.delayed(const Duration(milliseconds: 120));
+      }
+      if (!ready || !mounted || !connected) return;
+      await FloatingBridge.updateConfig(config);
+      await FloatingBridge.updateData(floatingTelemetryNotifier.value);
+    } finally {
+      _floatingStartPending = false;
+    }
   }
 
   // AI-METHOD: _requestPermissions — Prepare Android BLE permissions, adapter state, and legacy location requirements.
@@ -4873,7 +4916,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     _pendingTelemetry.clear();
     _lastPeltierAckFailureReason = '';
     if (!expectedOtaDisconnect) {
-      pendingOtaNotice = '';
+      pendingOtaResult = '';
     }
     batteryTimer?.cancel();
 
@@ -4920,7 +4963,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     if (!expectedOtaDisconnect && appNotifyBluetoothNotifier.value) {
       unawaited(_postNotification(
-        'JE X FYZ',
+        JexText.of('device', appLanguageNotifier.value),
         JexText.of('bluetoothDisconnected', appLanguageNotifier.value),
         2103,
       ));
@@ -5070,12 +5113,12 @@ class _DashboardScreenState extends State<DashboardScreen>
     final readySnapshot = Map<String, String>.from(_pendingTelemetry);
     _pendingTelemetry.clear();
     final syncedOtaResult = readySnapshot['LAST_OTA_RESULT'] ?? '';
-    final syncedOtaNotice = pendingOtaNotice.isNotEmpty
-        ? pendingOtaNotice
-        : (isTransientOtaResultEvent(syncedOtaResult)
-            ? _friendlyOtaResult(syncedOtaResult)
-            : '');
-    pendingOtaNotice = '';
+    final resultEvent = pendingOtaResult.isNotEmpty ? pendingOtaResult : syncedOtaResult;
+    // Format only when displayed so a language change during synchronization uses the current locale.
+    final syncedOtaNotice = isTransientOtaResultEvent(resultEvent)
+        ? _friendlyOtaResult(resultEvent)
+        : '';
+    pendingOtaResult = '';
 
     setState(() {
       for (final entry in readySnapshot.entries) {
@@ -5100,14 +5143,14 @@ class _DashboardScreenState extends State<DashboardScreen>
       otaRecoveryScanInProgress = false;
       if (appNotifyBluetoothNotifier.value && syncedOtaNotice.isNotEmpty) {
         unawaited(_postNotification(
-          'JE X FYZ',
+          JexText.of('device', appLanguageNotifier.value),
           syncedOtaNotice,
           2102,
         ));
       }
     } else if (appNotifyBluetoothNotifier.value) {
       unawaited(_postNotification(
-        'JE X FYZ',
+        JexText.of('device', appLanguageNotifier.value),
         JexText.of('bluetoothConnected', appLanguageNotifier.value),
         2102,
       ));
@@ -5507,7 +5550,7 @@ void _handleAckLine(String line) {
       }
       final otaResult = values['LAST_OTA_RESULT'];
       if (otaResult != null && isTransientOtaResultEvent(otaResult)) {
-        pendingOtaNotice = _friendlyOtaResult(otaResult);
+        pendingOtaResult = otaResult;
       }
       _pendingTelemetry.addAll(values);
       return;
@@ -5971,11 +6014,12 @@ void _handleAckLine(String line) {
           barrierColor: Colors.black.withValues(alpha: .54),
           transitionDuration: const Duration(milliseconds: 190),
           pageBuilder: (dialogContext, _, __) {
-            return SafeArea(
+            return JexFixedScalePage(
+              child: SafeArea(
               child: LayoutBuilder(
                 builder: (dialogContext, constraints) {
                   final top = displayMenuOverlayTop(
-                    screenWidth: MediaQuery.sizeOf(dialogContext).width,
+                    screenWidth: 360,
                     availableHeight: constraints.maxHeight,
                   );
                   return SingleChildScrollView(
@@ -6032,6 +6076,7 @@ void _handleAckLine(String line) {
                     ),
                   );
                 },
+              ),
               ),
             );
           },
@@ -6339,9 +6384,11 @@ void _handleAckLine(String line) {
     await Navigator.push<void>(
       context,
       MaterialPageRoute<void>(
-        builder: (_) => SettingsPage(
-          currentFirmwareVersion: firmwareVersion,
-          onOpenFirmwareUpdate: _openFirmwareSettings,
+        builder: (_) => JexFixedScalePage(
+          child: SettingsPage(
+            currentFirmwareVersion: firmwareVersion,
+            onOpenFirmwareUpdate: _openFirmwareSettings,
+          ),
         ),
       ),
     );
@@ -6368,7 +6415,8 @@ void _handleAckLine(String line) {
       barrierColor: Colors.black.withValues(alpha: .48),
       transitionDuration: const Duration(milliseconds: 210),
       pageBuilder: (dialogContext, _, __) {
-        return PopScope<void>(
+        return JexFixedScalePage(
+          child: PopScope<void>(
           canPop: false,
           child: SafeArea(
             child: LayoutBuilder(
@@ -6394,6 +6442,7 @@ void _handleAckLine(String line) {
                 );
               },
             ),
+          ),
           ),
         );
       },
@@ -6424,9 +6473,11 @@ void _handleAckLine(String line) {
     if (!mounted) return;
     await showDialog<void>(
       context: context,
-      builder: (_) => FirmwareUpdateDialog(
-        currentVersion: firmwareVersion,
-        onUpdate: _startCloudOta,
+      builder: (_) => JexFixedScalePage(
+        child: FirmwareUpdateDialog(
+          currentVersion: firmwareVersion,
+          onUpdate: _startCloudOta,
+        ),
       ),
     );
   }
@@ -6774,11 +6825,13 @@ void _handleAckLine(String line) {
           height: sheetHeight,
           child: ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(34)),
-            child: _ConnectionSheetContent(
-              onScan: _startScanFromSheet,
-              onConnect: _connect,
-              onOpenBluetoothSettings: _openBluetoothSettings,
-              onOpenLocationSettings: _openLocationSettings,
+            child: JexFixedScalePage(
+              child: _ConnectionSheetContent(
+                onScan: _startScanFromSheet,
+                onConnect: _connect,
+                onOpenBluetoothSettings: _openBluetoothSettings,
+                onOpenLocationSettings: _openLocationSettings,
+              ),
             ),
           ),
         );
@@ -7042,15 +7095,15 @@ void _handleAckLine(String line) {
     if (raw.isEmpty) return '';
 
     final lower = raw.toLowerCase();
-    if (lower == 'scanning for je x fyz...') {
+    if (lower == 'scanning for device...' || lower == 'scanning for devices...' || lower == 'scanning for je x fyz...') {
       return JexText.of('scanning');
     }
-    if (lower == 'connecting to je x fyz...') {
+    if (lower == 'connecting to the device...' || lower == 'connecting to device...' || lower == 'connecting to je x fyz...') {
       return JexText.of('connectingDevice');
     }    if (lower == 'device disconnected.') {
       return JexText.of('bluetoothDisconnected');
     }
-    if (lower == 'je x fyz was not found.') {
+    if (lower == 'device not found.' || lower == 'je x fyz was not found.') {
       return JexText.of('deviceNotFound');
     }
     if (lower == 'bluetooth scan failed.') {
@@ -7059,7 +7112,7 @@ void _handleAckLine(String line) {
     if (lower == 'bluetooth is not ready.') {
       return JexText.of('bluetoothNotReady');
     }
-    if (lower == 'connect to je x fyz first.') {
+    if (lower == 'connect your device to continue.' || lower == 'connect to je x fyz first.') {
       return JexText.of('connectFirst');
     }
     if (lower.startsWith('reset:')) {
@@ -8489,10 +8542,10 @@ void _handleAckLine(String line) {
     final disconnected = reason == DisplayMenuLockReason.bluetoothDisconnected;
     final scheme = Theme.of(context).colorScheme;
     final title = disconnected
-        ? JexText.phrase('CONNECT TO JE X FYZ FIRST', 'HUBUNGKAN KE JE X FYZ TERLEBIH DAHULU')
+        ? JexText.phrase('CONNECT YOUR DEVICE FIRST', 'HUBUNGKAN PERANGKAT TERLEBIH DAHULU')
         : JexText.phrase('LOCKED BY ADAPTIVE MODE', 'TERKUNCI OLEH MODE ADAPTIF');
     final detail = disconnected
-        ? JexText.phrase('Connect JE X FYZ to use this menu.', 'Sambungkan JE X FYZ untuk menggunakan menu ini.')
+        ? JexText.phrase('Connect your device to use this menu.', 'Hubungkan perangkat untuk menggunakan menu ini.')
         : JexText.phrase('Turn Adaptive Mode off to edit these settings.', 'Matikan Mode Adaptif untuk mengubah pengaturan ini.');
     return ClipRect(
       child: Stack(
@@ -9272,7 +9325,9 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
                         active: true,
                       ),
                       title: Text(
-                        name.isEmpty ? 'JE X FYZ' : name,
+                        name.trim().isEmpty || name.trim().toLowerCase() == 'je x fyz'
+                            ? JexText.of('device', lang)
+                            : name,
                         style: TextStyle(
                           color: scheme.onSurface,
                           fontWeight: FontWeight.w800,
@@ -9475,9 +9530,11 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
             await const MethodChannel('je_x_fyz/notifications').invokeMethod<void>(
               'showNotification',
               <String, dynamic>{
-                'title': JexText.of('firmwareUpdate'),
-                'body': version,
+                'title': JexText.of('firmwareUpdate', appLanguageNotifier.value),
+                'body': JexText.of('firmwareUpdateAvailableBody', appLanguageNotifier.value)
+                    .replaceAll('{version}', version),
                 'id': 2104,
+                'language': appLanguageNotifier.value.name,
               },
             );
             await AppSettingsStore.markFirmwareNotified(version);
