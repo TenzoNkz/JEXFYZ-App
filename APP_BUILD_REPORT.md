@@ -752,8 +752,8 @@
 ## Cross-chat usage
 
 - This file is the authoritative append-only attempt/fix/test/signing/release ledger. Do not replace it with a summary or remove failed attempts.
-- When a Build App chat reaches the context limit, use Prompt 2 in CHAT_TRANSFER_PROMPTS.md exactly once. Its copy-ready block starts with @Thinking Eksekusi Build App! and loads live main, the complete current guarded workflow, current Actions/Release evidence and this ledger, then continues without a recap-only stage.
-- Prompt 1 in CHAT_TRANSFER_PROMPTS.md defaults to @Thinking Diskusi!; replace only its first line for a scoped Eksekusi Full task or Chat Stuck recovery. Prompt 1 is not a Build App authorization path.
+- When a Build App chat reaches the context limit, use Prompt 2 in CHAT_TRANSFER_PROMPTS.md exactly once. Its copy-ready block starts with Eksekusi Build App! (without the @Thinking prefix) and loads live main, the complete current guarded workflow, current Actions/Release evidence and this ledger, then continues without a recap-only stage.
+- Prompt 1 in CHAT_TRANSFER_PROMPTS.md defaults to Diskusi!; replace only its first line for a scoped Eksekusi Full task or Chat Stuck recovery. Prompt 1 is not a Build App authorization path.
 - Discussion must read the latest ledger entries and live build state before recommending a repair, claiming a current status or asking to start another build.
 - Keep PROJECT_STATE.md and HANDOVER.md concise; point here for attempt-by-attempt details.
 - Never edit past successful/failed attempt entries to hide history. Add later fixes/results as new, dated entries.
