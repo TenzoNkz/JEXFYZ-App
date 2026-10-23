@@ -279,13 +279,21 @@ class JexText {
       AppLanguage.english: 'Firmware Update',
       AppLanguage.indonesia: 'Pembaruan Firmware',
     },
+    'firmwareUpdateAvailableBody': {
+      AppLanguage.english: 'Version {version} is available. Connect your device to update.',
+      AppLanguage.indonesia: 'Versi {version} tersedia. Hubungkan perangkat untuk memperbarui firmware.',
+    },
+    'deviceConnectionNotifications': {
+      AppLanguage.english: 'Device connection',
+      AppLanguage.indonesia: 'Koneksi perangkat',
+    },
     'bluetoothConnected': {
-      AppLanguage.english: 'Bluetooth connected.',
-      AppLanguage.indonesia: 'Bluetooth terhubung.',
+      AppLanguage.english: 'Device connected.',
+      AppLanguage.indonesia: 'Perangkat terhubung.',
     },
     'bluetoothDisconnected': {
-      AppLanguage.english: 'Bluetooth disconnected.',
-      AppLanguage.indonesia: 'Bluetooth terputus.',
+      AppLanguage.english: 'Device disconnected.',
+      AppLanguage.indonesia: 'Perangkat terputus.',
     },
     'bluetooth': {
       AppLanguage.english: 'Bluetooth',
@@ -785,8 +793,8 @@ class JexText {
       AppLanguage.indonesia: 'Firmware sudah versi terbaru.',
     },
     'otaReconnectFailed': {
-      AppLanguage.english: 'The update finished, but JE X FYZ could not reconnect.',
-      AppLanguage.indonesia: 'Pembaruan selesai, tetapi perangkat JE X FYZ belum tersambung kembali.',
+      AppLanguage.english: 'The update finished, but the device could not reconnect.',
+      AppLanguage.indonesia: 'Pembaruan selesai, tetapi perangkat tidak dapat tersambung kembali.',
     },
     'systemReady': {
       AppLanguage.english: 'System ready.',
@@ -797,20 +805,20 @@ class JexText {
       AppLanguage.indonesia: 'Status perangkat diperbarui.',
     },
     'connectingDevice': {
-      AppLanguage.english: 'Connecting to JE X FYZ…',
-      AppLanguage.indonesia: 'Menghubungkan ke JE X FYZ…',
+      AppLanguage.english: 'Connecting to the device…',
+      AppLanguage.indonesia: 'Menghubungkan ke perangkat…',
     },
     'scanning': {
-      AppLanguage.english: 'Scanning for JE X FYZ…',
-      AppLanguage.indonesia: 'Mencari JE X FYZ…',
+      AppLanguage.english: 'Scanning for devices…',
+      AppLanguage.indonesia: 'Mencari perangkat…',
     },
     'bluetoothNotReady': {
       AppLanguage.english: 'Bluetooth is unavailable. Check your settings.',
       AppLanguage.indonesia: 'Bluetooth tidak tersedia. Periksa pengaturan Anda.',
     },
     'connectFirst': {
-      AppLanguage.english: 'Connect to JE X FYZ to continue.',
-      AppLanguage.indonesia: 'Hubungkan ke JE X FYZ untuk melanjutkan.',
+      AppLanguage.english: 'Connect your device to continue.',
+      AppLanguage.indonesia: 'Hubungkan perangkat untuk melanjutkan.',
     },
     'manual': {
       AppLanguage.english: 'Manual',
@@ -901,8 +909,8 @@ class JexText {
       AppLanguage.indonesia: 'Izin Bluetooth diperlukan untuk menghubungkan perangkat.',
     },
     'deviceNotFound': {
-      AppLanguage.english: 'JE X FYZ was not found nearby.',
-      AppLanguage.indonesia: 'JE X FYZ tidak ditemukan di sekitar.',
+      AppLanguage.english: 'Device not found nearby.',
+      AppLanguage.indonesia: 'Perangkat tidak ditemukan di sekitar.',
     },
     'scanFailed': {
       AppLanguage.english: 'Could not scan for devices. Check Bluetooth permissions.',
@@ -1105,12 +1113,12 @@ class JexText {
       AppLanguage.indonesia: 'Kirim notifikasi saat pembaruan firmware tersedia.',
     },
     'notificationBluetoothDescription': {
-      AppLanguage.english: 'Send a notification when JE X FYZ connects or disconnects.',
-      AppLanguage.indonesia: 'Kirim notifikasi saat JE X FYZ terhubung atau terputus.',
+      AppLanguage.english: 'Send a notification when the device connects or disconnects.',
+      AppLanguage.indonesia: 'Kirim notifikasi saat perangkat terhubung atau terputus.',
     },
     'autoConnectDescription': {
-      AppLanguage.english: 'Connect to JE X FYZ automatically when the device is available.',
-      AppLanguage.indonesia: 'Sambungkan ke JE X FYZ secara otomatis saat perangkat tersedia.',
+      AppLanguage.english: 'Connect to the device automatically when available.',
+      AppLanguage.indonesia: 'Sambungkan perangkat secara otomatis saat tersedia.',
     },
     'connection': {
       AppLanguage.english: 'Connection',
@@ -1161,12 +1169,12 @@ class JexText {
       AppLanguage.indonesia: 'Izin Bluetooth diperlukan untuk menghubungkan perangkat.',
     },
     'bleServiceDiscoveryFailed': {
-      AppLanguage.english: 'Could not find the JE X FYZ Bluetooth service.',
-      AppLanguage.indonesia: 'Layanan Bluetooth JE X FYZ tidak ditemukan.',
+      AppLanguage.english: 'The device’s Bluetooth service was not found.',
+      AppLanguage.indonesia: 'Layanan Bluetooth perangkat tidak ditemukan.',
     },
     'bleSyncFailed': {
-      AppLanguage.english: 'Could not sync with JE X FYZ.',
-      AppLanguage.indonesia: 'Tidak dapat menyinkronkan perangkat JE X FYZ.',
+      AppLanguage.english: 'Could not sync with the device.',
+      AppLanguage.indonesia: 'Tidak dapat menyinkronkan perangkat.',
     },
     'bleHandshakeWriteFailed': {
       AppLanguage.english: 'Could not complete Bluetooth connection setup.',
@@ -1184,9 +1192,13 @@ class JexText {
       AppLanguage.english: 'Floating Monitor Permission',
       AppLanguage.indonesia: 'Izin Floating Monitor',
     },
+    'floatingPendingConnection': {
+      AppLanguage.english: 'Floating Monitor will appear when the device is connected.',
+      AppLanguage.indonesia: 'Floating Monitor akan tampil saat perangkat terhubung.',
+    },
     'floatingPermissionMessage': {
-      AppLanguage.english: 'JE X FYZ needs permission to display the Floating Monitor over other apps. Android will open the display-over-other-apps setting.',
-      AppLanguage.indonesia: 'JE X FYZ memerlukan izin untuk menampilkan Floating Monitor di atas aplikasi lain. Android akan membuka pengaturan tampilan di atas aplikasi lain.',
+      AppLanguage.english: 'The app needs permission to display Floating Monitor over other apps. Android will open the display-over-other-apps setting.',
+      AppLanguage.indonesia: 'Aplikasi memerlukan izin untuk menampilkan Floating Monitor di atas aplikasi lain. Android akan membuka pengaturan tampilan di atas aplikasi lain.',
     },
     'overlayPermissionDenied': {
       AppLanguage.english: 'Overlay permission was not granted.',
