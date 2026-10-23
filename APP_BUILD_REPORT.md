@@ -1,3 +1,17 @@
+## CURRENT BUILD APP RECOVERY — 2026-10-23 — PREFLIGHT SAVED, RUN NOT YET TRIGGERED
+
+- **Authorization / scope:** the owner explicitly invoked `Eksekusi Build App!`. This is App Build/QC/release only; no Firmware compile/BIN, Firebase production metadata, OTA, flashing, device operation, or unrelated release is authorized.
+- **Preflight main HEAD:** `ee68c16a07bc79d04e78a3ff113de134c3e33fe0` (tree `901d935cbe2151d4b602857bad4be07b993231f1`); recursive tree returned 69 entries, `truncated=false`. This SHA is the inspected starting point, not the intended build source SHA; the precise source SHA must be re-fetched from live `main` immediately before the issue event.
+- **Prior verified package:** Build #124, run [39386733061](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39386733061), succeeded on package source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`. It passed 116 Flutter tests, analyzer (25 info diagnostics), configured Android Gradle gate, production APK V1/V2/V3 and certificate checks, corresponding-source ZIP, Release publication, and downloaded asset/checksum/source-marker verification. Those gates apply to that older source SHA only.
+- **Live Actions preflight:** newest observed run is #124 / `39386733061` (completed, success, event `issues`, source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`). Fresh API filters returned zero `in_progress`, `queued`, and `waiting` workflow runs. No duplicate build is active at this checkpoint.
+- **Live release preflight:** Release `jexfyz-latest` ID `403010611`; live tag and Release metadata target `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`. Published APK asset ID `658613910`, 54,751,323 bytes, SHA-256 `c0738d3607b120b716841610c849d9608f954a5f1f28017a8018790f4f4b6318`; corresponding source ZIP asset ID `658613911`, 2,873,358 bytes, SHA-256 `e00ac34cb6cf7f04a5485c8ab8ee74d4acc1b20dc1a213ac733a8bf8c43cc152`.
+- **Reason a new App build is justified:** live `main` is ahead of Build #124's packaged source and includes App/UI and Android notification/Floating Monitor changes plus new source-contract tests. The current source has not passed analyzer/tests/Android/release gates in a newer verified run. Live package identity must not be inferred from older Build #124.
+- **Trigger contract:** workflow `.github/workflows/jexfyz-app-build-trigger.yml` blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12` is guarded to owner-authored issue events `opened`/`reopened` with exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`; concurrency has `cancel-in-progress: true`. Issue #34 currently has the correct owner/title/token but is open, so a guarded re-open event requires a deliberate close then one reopen. No trigger action has been issued yet.
+- **Current status:** `PREFLIGHT SAVED / BUILD NOT STARTED`. The prior completed gate applies only to Build #124's source; no gate is yet verified for the current source. Preserve Android Gradle `versionName "Telegram @horizontalzzz"`.
+- **Next action:** commit/verify the handoff checkpoint; re-fetch main HEAD and confirm Actions are still idle; then invoke the existing issue-only trigger once and verify the run's `head_sha` equals the then-live main SHA. Capture its real jobs/logs and update this ledger with the run ID, source SHA, every gate, and the actual outcome. Do not use push/PR/manual-dispatch bypasses or blindly retry.
+
+---
+
 ## LATEST SUCCESSFUL APP BUILD — BUILD #124 (FIRMWARE UPDATE WI-FI PASSWORD VISIBILITY)
 
 
