@@ -11,10 +11,10 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 
 ## Active Build App/QC recovery — 2026-10-23 (Asia/Jakarta)
 
-- **Status: BUILD #128 ACTIVE; Flutter tests passed and Android gate is running.** [Run 39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440), source `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`, job `120264345808`, runner `1000002427`.
-- **Passed:** steps 1–13, including dependency install, Dart analyzer and Flutter tests. This is the first attempt to pass the repaired notification/device-copy contracts. Exact pass count is pending final log read.
-- **Current gate:** step 14 `Run Android unit-test gate` is `in_progress`. Release APK, V1/V2/V3/certificate, source ZIP, release/tag parity and re-downloaded asset checks are not yet verified. Active run logs aren't downloadable yet; step API remains authoritative for the current step status.
-- **Checkpoint:** ledger commit `30fa454361b504b076fff62beb657af15e42c46f` is committed and re-read. Verify this transfer update as well. No duplicate while #128 active; Build #124 still latest verified release. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device activity.
+- **Status: BUILD #128 ACTIVE; Flutter tests and Android Gradle gate passed; APK build is running.** [Run 39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440), exact source `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`, job `120264345808`, hosted runner `1000002427`.
+- **Passed:** steps 1–14, including analyzer, Flutter tests (repair assertions now pass), and Android configured Gradle test gate. Exact total Flutter count awaits log access after runner output becomes available.
+- **Current:** step 15 `Build latest release APK` is `in_progress`. **Pending:** V1/V2/V3 signing, signer certificate validation, source ZIP, Release publication, tag parity, downloaded asset checksums/source marker and signature.
+- **Checkpoint:** ledger milestone committed at `a560d5f36c7c5617fe44bed185f1aef76388d5fc` and re-read. Verify this handoff write too. No duplicate run while #128 active; Build #124 is still last verified release. Preserve `versionName "Telegram @horizontalzzz"`, no Firmware/BIN/Firebase/OTA/flash/device actions.
 
 ## Live repository point
 
