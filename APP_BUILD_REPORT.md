@@ -751,11 +751,12 @@
 
 ## Cross-chat usage
 
-- Build App chat owns run execution and appends each attempt here.
-- When a Build App chat reaches context limit, the replacement Build App chat starts with Prompt D once. Prompt D loads this ledger + live workflow/run state and continues execution; do not create a separate recap chat or run Prompt A for this handoff.
-- Discussion chat must read this file before recommending what to fix, claiming current build state, or asking for another build.
-- `PROJECT_STATE.md` and `HANDOVER.md` should keep only latest concise status and point here for attempt-by-attempt details.
-- Never edit successful history to hide failures. Record retries/fixes as new entries.
+- This file is the authoritative append-only attempt/fix/test/signing/release ledger. Do not replace it with a summary or remove failed attempts.
+- When a Build App chat reaches the context limit, use Prompt 2 in CHAT_TRANSFER_PROMPTS.md exactly once. It loads live main, the complete current guarded workflow, current Actions/Release evidence and this ledger, then continues the same authorized operation with no recap-only stage.
+- Prompt 1 in CHAT_TRANSFER_PROMPTS.md is for general engineering/Discussion and is not a substitute for the Build App authorization command.
+- Discussion must read the latest ledger entries and live build state before recommending a repair, claiming a current status or asking to start another build.
+- Keep PROJECT_STATE.md and HANDOVER.md concise; point here for attempt-by-attempt details.
+- Never edit past successful/failed attempt entries to hide history. Add later fixes/results as new, dated entries.
 
 
 ---
