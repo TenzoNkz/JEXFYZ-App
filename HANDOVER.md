@@ -13,9 +13,11 @@ Updated: 2026-10-23 (Asia/Jakarta).
 
 This checkpoint is a pre-Build App documentation consistency audit under `@Thinking Diskusi!`. The Home notice heading decision is settled: `Notification` in English and `Notifikasi` in Indonesian. A stale sentence in MEMORY_INDEX.md that still described this as an open mismatch was corrected; APP_NOTES.md and DESIGN_NOTES.md already held the resolved contract.
 
-The latest guarded App attempt is Build #125 / run 39905665853. Live GitHub reports a job failure before any runner step (`runner_id=0`, no runner name, no steps or artifacts). The exact infrastructure cause remains UNVERIFIED, and no retry should be made blindly. Build #124 / run 39386733061 remains the latest verified release; no package was produced for #125. Read APP_BUILD_REPORT.md and fresh Actions/Release state before a future Build App operation.
+The latest guarded App attempt is Build #125 / run 39905665853. Live GitHub reports a job failure before any runner step (`runner_id=0`, no runner name, no steps or artifacts). The owner now reports the Actions issue has been fixed and is working; classify this as `USER-REPORTED` because live Actions still shows #125 as newest and there is no later run proving runner recovery. Build #124 / run 39386733061 remains the latest verified release; no package was produced for #125.
 
-Important boundary: conversation text is not automatically committed to GitHub. Only actual, verified commits are durable. These notes updates do not validate the App source or unblock the separate Actions startup failure.
+For a future Build App operation, read APP_BUILD_REPORT.md and freshly verify Actions/Release/tag state. Only after separate `@Thinking Eksekusi Build App!` authorization, preflight that no run is active, use the existing issue-only trigger once, and require a new run to reach real runner steps with `head_sha` equal to freshly verified main. Do not trigger or build in Discussion.
+
+Important boundary: conversation text is not automatically committed to GitHub. Only actual, verified commits are durable. This owner report does not itself validate the App source, create a package, or independently prove Actions recovery.
 
 ## Next continuation
 
