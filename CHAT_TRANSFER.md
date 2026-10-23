@@ -18,6 +18,10 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 
 ## Last durable task and result
 
+### Memory checkpoint rule
+
+GitHub memory is not an automatic transcript of this chat. A state is considered saved only after the relevant checkpoint/note is committed to `main` and the resulting content is verified. Save at each durable decision, logical milestone, and task success/blockage; for Build App, update `APP_BUILD_REPORT.md` as each attempt progresses. Before an expected chat limit, record the active scope, last verified step, remaining work, run status, blocker, and next action. If interruption happens before a commit finishes, recover only the last verified checkpoint and live evidence; never claim the unsaved portion was preserved.
+
 Latest durable task: the owner requested that every copy-ready chat-transfer prompt include the command prefix appropriate to its chat mode, after a transfer payload sent without a recognized command was treated as a prompt title rather than a command. The two-prompt structure remains intact: Prompt 1 defaults to `Diskusi!` and its first line is replaced with `Eksekusi Full!` or `Chat Stuck!` for those respective modes; Prompt 2 begins with `Eksekusi Build App!`. These are short command names without the `@Thinking` prefix. No extra command line is added above the copied block.
 
 The prior documentation rework remains complete. The Home notice-heading mismatch stays unresolved: live source renders localized Notification / Notifikasi, while DESIGN_NOTES.md still records the fixed NOTIFY requirement. No product behavior change is included in this prompt-prefix task.
