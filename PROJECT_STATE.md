@@ -16,12 +16,12 @@ Last checked against live main at the start of the documentation rework: 2026-10
 - Checkpoint each durable decision, meaningful finding, logical milestone, test result, or blocker. At substantive task completion, update `CHAT_TRANSFER.md` and the relevant canonical note. While Build App progresses, append actual attempts to `APP_BUILD_REPORT.md` and checkpoint the current run in `CHAT_TRANSFER.md`.
 - On recovery, load the latest committed checkpoint and current repository/Actions evidence. If interruption happened before a write was committed, treat the unsaved conversation tail as potentially lost; never invent its content or repeat side effects blindly.
 
-## Live source state at audit start
+## Pre-Build repository check — 2026-10-23 (Asia/Jakarta)
 
-- Canonical repository TenzoNkz/JEXFYZ-App, branch main. Audit started at commit 11a0ef162f1c2945704229ed7697dc70e7617e9b; the documentation rework commit will move main, so this SHA is the audit base, not the final HEAD.
+- Canonical repository: TenzoNkz/JEXFYZ-App, branch main. At the start of this pre-build audit, live main HEAD was `3234cecd7903f66622e5bf1b14fdb1dfc86fcb82`, commit "docs: checkpoint Home notice localization decision". Its recursive tree contained 69 entries and was not truncated; the live query returned no open pull requests. Documentation-only corrections made during this audit move main beyond that SHA; always fetch the final live HEAD before any future build.
 - Active Firmware: firmware/JEXFYZ-V7.1.ino, FW_VERSION="V7.1", source blob c44e076b2c1ee2d0b66b4fcd308d0febc69976e9.
-- The recursive tree had 69 entries and was not truncated. No open pull requests were returned by the live query at audit start.
-- Latest successful App Build/release record returned by live Actions/Release queries remains #124; do not trigger a new App build as part of this documentation task.
+- Latest guarded attempt: Build #125 / run 39905665853 targeted source `709f03a94ae8312af541b0bd876e67ea01fdd395` and failed in pre-runner startup with `runner_id=0`, no runner name, no steps/logs/artifacts. No named release gate ran; the infrastructure root cause remains UNVERIFIED. Full evidence is in APP_BUILD_REPORT.md. Do not retry blindly.
+- Latest verified release remains Build #124 / run 39386733061; Release `jexfyz-latest` and its tag still target packaged source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`. Build #125 produced no package. The newer App source therefore remains unvalidated/unreleased; resolve the Actions startup blocker and obtain the explicit `Eksekusi Build App!` command before a new attempt.
 
 ## Latest App source implementation — not yet released/validated
 
