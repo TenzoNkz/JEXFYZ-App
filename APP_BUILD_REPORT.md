@@ -1,4 +1,15 @@
-## CURRENT BUILD APP EXECUTION — BUILD #126 FAILED AT FLUTTER TEST GATE — 2026-10-23 (Asia/Jakarta)
+## CURRENT BUILD APP EXECUTION — TEST REPAIR COMMITTED; RETRY PREFLIGHT — 2026-10-23 (Asia/Jakarta)
+
+- **Previous attempt:** Build #126 / run [39907333312](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907333312), source `806bbdb462189a94c7e3716b793ea0fb35d7f30d`, failed at Flutter tests (119 passed, 2 failed). Setup/security audit/dependencies/analyzer passed; analyzer exited 0 with 25 info diagnostics. Android gate and APK/release gates were skipped.
+- **Root cause/fix:** two obsolete assertions in `test/widget_test.dart` did not match already-implemented App behavior. Commit [`0e5ed8871c2ba2047543b92052fc3ab4541b8c6a`](https://github.com/TenzoNkz/JEXFYZ-App/commit/0e5ed8871c2ba2047543b92052fc3ab4541b8c6a) changes the expected MainActivity handler contract to `result.success(requestNotificationPermission(language))` and updates Indonesian disconnect copy from `Bluetooth terputus.` to the approved `Perangkat terputus.`. This is a test-only contract repair; no gates were weakened and runtime source/config/workflow were not changed.
+- **Fix verification:** the updated test file was re-fetched from main and both new assertions confirmed; blob SHA `d3727923afa972e6a0302e23039a419b818daaa8`. These tests have **not yet been executed on the repaired revision**; the next guarded run must prove them.
+- **Trigger safety:** the new source/test repair is committed on `main`; before retry, fresh preflight must confirm current main, unchanged issue-only workflow guard, issue #34 owner/title/token, no active/queued/waiting runs, and unchanged Release/tag state. Only then perform one official close/reopen trigger and verify the run's `head_sha`.
+- **Release boundary:** Build #124 remains the latest verified package. Release/tag target `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`; its APK and source ZIP digests are preserved in the prior current-status section below. No Build #126 package was published.
+- Preserve Android `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device activity is included.
+
+---
+
+## ATTEMPT RECORD — BUILD #126 FAILED AT FLUTTER TEST GATE — 2026-10-23 (Asia/Jakarta)
 
 - **Attempt:** [Build #126 / run 39907333312](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907333312) used the official `issues/reopened` trigger and exact source SHA `806bbdb462189a94c7e3716b793ea0fb35d7f30d`. Workflow blob: `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`.
 - **Runner recovery verified:** hosted runner `1000002425` / `ubuntu-24.04` ran the workflow. Steps 1–12 passed: job setup, checkout, Java 17, Flutter, Gradle, toolchain checks, local.properties, production-signing preparation, wrapper setup, architecture/security audit, dependency installation and Dart analyzer. Analyzer exited 0 with **25 info-level diagnostics**.
