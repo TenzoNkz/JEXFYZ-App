@@ -4,10 +4,12 @@ Flutter Android companion App and ESP32-C3 Firmware source for the JE X FYZ ther
 
 ## Production baseline
 
-- App Build #124 is the package the owner reports using on the sold/shipped unit.
-- Firmware V7.1 was compiled and updated through Online OTA, according to the owner.
-- These deployment facts are USER-REPORTED. Build #124 is independently supported by GitHub Actions run 39386733061. App CI does not prove Firmware BIN identity or physical-device behavior.
+- **Latest independently verified App release:** Build #129, [GitHub Actions run 39925045446](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446), packaged source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`.
+- APK SHA-256: `f59c511786d49add8e0596fd3d658248746c008b7eaff94bb6215d314aa0426e`; matching source ZIP SHA-256: `c74e6800dadf80a5223dedcce3144b12f6365506a8b9821bb7abf1817df8cfff`. [Download APK](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk) · [Download source ZIP](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip).
+- The owner previously reported installing/overwriting Build #128 on the sold/shipped unit; Build #129 installation is **not independently confirmed**. Firmware V7.1 compile/Online OTA remains USER-REPORTED. App CI does not prove Firmware BIN identity or physical-device behavior.
+- Build #129 passed all 21 workflow gates and 122 Flutter tests, including Home-equivalent DPI canvas regression coverage. Native Android JUnit tasks were `NO-SOURCE`; physical-device/OEM layout QA remains outstanding.
 - The field unit is not available for routine disassembly. Avoid discretionary product changes and preserve BLE/OTA/safety behavior.
+
 
 ## Read first
 
