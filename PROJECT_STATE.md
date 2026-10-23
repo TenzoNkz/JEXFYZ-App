@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last refreshed: 2026-10-23 (Asia/Jakarta), after the owner's clarification that Settings/Connection must match Home's DPI-compensating master canvas. Current main still contains the interim cap-at-1.0 patch and needs a new authorized source revision; Build #128 remains the latest verified release. This is current-only state, not history, so fetch live HEAD/tree on every new task.
+Last refreshed: 2026-10-23 (Asia/Jakarta), after the Home-equivalent Settings/Connection DPI scaling source/test commits. The implementation is on main but Flutter/Dart validation and a new release remain pending; Build #128 is still the latest verified package. This is current-only state, not history, so fetch live HEAD/tree on every new task.
 
 ## Product baseline and evidence
 
