@@ -1,4 +1,15 @@
-## CURRENT BUILD APP EXECUTION — BUILD #129 PREFLIGHT CHECKPOINT — SETTINGS/CONNECTION DPI VALIDATION — 2026-10-23 (Asia/Jakarta)
+## CURRENT BUILD APP EXECUTION — BUILD #129 RUNNER ACTIVE — DPI PATCH VALIDATION — 2026-10-23 (Asia/Jakarta)
+
+- **Run:** [Build #129 / 39925045446](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446), official `issues/reopened` event, tested source SHA `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`; it equals the main SHA at trigger time.
+- **Runner recovery verified:** run status `in_progress`; job `build` / ID `120319250463`, hosted runner ID `1000002428`, name `GitHub Actions 1000002428`, `ubuntu-24.04`. Steps 1 (Set up job), 2 (Checkout repository), and 3 (Set up Java 17) succeeded; step 4 (Set up Flutter) is `in_progress`.
+- **Scope under validation:** Settings root/subpages, Bluetooth Connection sheet and selected modal surfaces use the Home-equivalent uncapped DPI-compensating 360-dp canvas from `lib/floating_monitor.dart`; the density-invariance widget test in `test/floating_monitor_layout_contract_test.dart` is included in this source SHA. Local Flutter/Dart tools were unavailable; no local test/format pass is claimed.
+- **Pending:** toolchain setup, architecture/security audit, dependencies, Dart analyzer, full Flutter tests (including the new 420-dp/320-dp test), Android Gradle gate, release APK, V1/V2/V3/signing certificate, source archive, GitHub Release, tag parity and downloaded-asset checksum/source-marker/signature verification.
+- **No duplicate:** this is the only run in progress; no further issue trigger while #129 is queued or active. Build #128 remains latest verified release until #129 passes all required gates and the live Release/tag/assets match its exact source SHA.
+- **Next:** continue from real run #129 steps/logs. If the new density test or any gate fails, diagnose actual evidence and repair only a justified App-scope issue without weakening gates. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device work.
+
+---
+
+## HISTORICAL CHECKPOINT — BUILD #129 PREFLIGHT BEFORE OFFICIAL TRIGGER — SETTINGS/CONNECTION DPI VALIDATION
 
 - **Owner authorization:** `@Thinking Eksekusi Build App!` received for the current App Build/QC operation. This scope covers the guarded App pipeline only; no Firmware/BIN/Firebase/OTA/flash/device actions.
 - **Pre-checkpoint live main:** `eea96704c74d213d84c120bad42f70a0b939b954`, tree `0208af0fc84da262fd6c566fd97a3ee724d82d3d` (recursive tree has 69 entries; `truncated=false`). The intended current-source validation patch is already committed on main; source and tests have not yet run through CI on that patch.
