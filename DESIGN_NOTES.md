@@ -17,6 +17,13 @@ This document stores durable design constraints, not a build history. Live App s
 - Flat 2D and print-ready: no shadows, bevels, faux depth, gradients or texture.
 - HZ monogram was rejected; keep X.
 
+## Settings and modal sizing
+
+- Keep Settings, its subpages and the Bluetooth Connection sheet at a standard native logical-pixel scale; the interface must not look zoomed on phones wider than the 360-dp reference width.
+- Current source diagnosis (2026-10-23): `JexFixedScalePage` multiplies the whole route/modal by `constraints.maxWidth / 360.0`. On wider phones this enlarges typography, padding, icons and controls together. The owner reports the Settings and Connection UI looks oversized in supplied screenshots/video.
+- **Requested visual correction — pending authorized source execution:** cap scale at 1.0 for widths at/above 360 dp, and let the content use the full available logical width at native 1× sizing. Continue scaling down proportionally only on narrower widths where needed to prevent clipping. Keep spacing balanced and existing layout hierarchy, color system, language behavior, connection controls and BLE logic unchanged.
+- Avoid an ad-hoc blanket font-size reduction: correct the root canvas transform first. Verify Settings and Bluetooth Connection on representative narrow and standard/wide phone widths, and confirm no overflow in English and Indonesian.
+
 ## Home layout, submenu lock and controls
 
 - Keep the established Home card geometry and high-contrast status icon silhouettes. Short status copy should remain compact; long notice copy must not overlap metric rows or escape its card.
