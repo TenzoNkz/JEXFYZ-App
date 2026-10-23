@@ -106,6 +106,70 @@ void main() {
     expect(settings, contains("'white':"));
   });
 
+  test('Settings and Connection use compact visual tokens without changing the DPI canvas', () {
+    final floating = File('lib/floating_monitor.dart').readAsStringSync();
+    final appSettings = File('lib/app_settings.dart').readAsStringSync();
+    final main = File('lib/main.dart').readAsStringSync();
+
+    final settingsStart = floating.indexOf('class SettingsPage extends StatelessWidget');
+    final settingsEnd = floating.indexOf('// AI-MEMORY / LANGUAGE-PAGE-CONTRACT', settingsStart);
+    expect(settingsStart, isNonNegative);
+    expect(settingsEnd, greaterThan(settingsStart));
+    final settings = floating.substring(settingsStart, settingsEnd);
+    expect(settings, contains('data: buildJexCompactUiTheme(preset)'));
+    expect(settings, contains('EdgeInsets.fromLTRB(8, 13, 8, 6)'));
+    expect(settings, contains('EdgeInsets.symmetric(horizontal: 12, vertical: 10)'));
+    expect(settings, contains('fontSize: 13'));
+    expect(settings, contains('fontSize: 11'));
+    expect(settings, contains('size: 19'));
+    expect(settings, contains('size: 16'));
+
+    expect(floating, contains('final bool compactUi;'));
+    expect(floating, contains('this.compactUi = false'));
+    expect(floating, contains('buildJexCompactUiTheme(appThemeNotifier.value)'));
+    for (final page in [
+      'LanguageSettingsPage',
+      'AppearanceSettingsPage',
+      'NotificationsSettingsPage',
+      'BluetoothSettingsPage',
+      'FloatingSettingsPage',
+    ]) {
+      expect(
+        settings,
+        contains('JexFixedScalePage(compactUi: true, child: $page())'),
+      );
+    }
+
+    expect(appSettings, contains('ThemeData buildJexCompactUiTheme(AppThemePreset preset)'));
+    expect(appSettings, contains('fontSize: 18'));
+    expect(appSettings, contains('fontSize: 13'));
+    expect(appSettings, contains('fontSize: 12'));
+    expect(appSettings, contains('fontSize: 11'));
+    expect(appSettings, contains('VisualDensity(horizontal: -0.5, vertical: -0.5)'));
+
+    expect(main, contains('compactUi: true,\n          child: SettingsPage('));
+    final connectionStart = main.indexOf('class _ConnectionSheetContentState');
+    final connectionEnd = main.indexOf('class StaticSwitcher', connectionStart);
+    expect(connectionStart, isNonNegative);
+    expect(connectionEnd, greaterThan(connectionStart));
+    final connection = main.substring(connectionStart, connectionEnd);
+    expect(connection, contains('height: 60,'));
+    expect(connection, contains('fontSize: 16,'));
+    expect(connection, contains('fontSize: 9.5,'));
+    expect(connection, contains('fontSize: 12,'));
+    expect(connection, contains('height: 42'));
+    expect(connection, contains('tightFor(width: 42, height: 42)'));
+    expect(connection, contains('tightFor(width: 40, height: 40)'));
+    expect(
+      main,
+      contains('compactUi: true,\n              child: _ConnectionSheetContent('),
+    );
+
+    // The existing DPI master-canvas scale is left intact; compactness is typography/density only.
+    expect(floating, contains('final scale = constraints.maxWidth / designWidth;'));
+    expect(floating, isNot(contains('(constraints.maxWidth / designWidth).clamp(0.0, 1.0).toDouble()')));
+  });
+
   testWidgets(
     'Fixed-scale pages match the Home canvas across display-density changes',
     (tester) async {

@@ -705,7 +705,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                     children: [
                       Text(
                         JexText.of('functions', lang),
-                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
+                        style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900),
                       ),
                       const SizedBox(height: 4),
                       ReorderableListView.builder(
@@ -762,7 +762,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                       const SizedBox(height: 10),
                       Text(
                         JexText.of('backgroundColor', lang),
-                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
+                        style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900),
                       ),
                       const SizedBox(height: 7),
                       SegmentedButton<FloatingBackgroundColor>(
@@ -788,7 +788,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                       const SizedBox(height: 12),
                       Text(
                         JexText.of('orientation', lang),
-                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
+                        style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900),
                       ),
                       const SizedBox(height: 7),
                       SegmentedButton<bool>(
@@ -871,7 +871,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
               Expanded(
                 child: Text(
                   label,
-                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800),
+                  style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800),
                 ),
               ),
               DecoratedBox(
@@ -883,7 +883,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   child: Text(
                     valueLabel,
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900),
+                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900),
                   ),
                 ),
               ),
@@ -911,7 +911,13 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
 // System text scaling is disabled and media insets are converted to canvas units.
 class JexFixedScalePage extends StatelessWidget {
   final Widget child;
-  const JexFixedScalePage({super.key, required this.child});
+  final bool compactUi;
+
+  const JexFixedScalePage({
+    super.key,
+    required this.child,
+    this.compactUi = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -949,6 +955,21 @@ class JexFixedScalePage extends StatelessWidget {
               media.viewInsets.bottom / scale,
             ),
           );
+          final logicalCanvas = MediaQuery(
+            data: scaledMedia,
+            child: SizedBox(
+              width: designWidth,
+              height: designHeight,
+              child: child,
+            ),
+          );
+          final canvasChild = compactUi
+              ? Theme(
+                  data: buildJexCompactUiTheme(appThemeNotifier.value),
+                  child: logicalCanvas,
+                )
+              : logicalCanvas;
+
           return ClipRect(
             child: Align(
               alignment: Alignment.topCenter,
@@ -961,14 +982,7 @@ class JexFixedScalePage extends StatelessWidget {
                 child: Transform.scale(
                   scale: scale,
                   alignment: Alignment.topCenter,
-                  child: MediaQuery(
-                    data: scaledMedia,
-                    child: SizedBox(
-                      width: designWidth,
-                      height: designHeight,
-                      child: child,
-                    ),
-                  ),
+                  child: canvasChild,
                 ),
               ),
             ),
@@ -998,7 +1012,7 @@ class SettingsPage extends StatelessWidget {
       builder: (context, language, _) {
         final preset = appThemeNotifier.value;
         return Theme(
-          data: buildJexTheme(preset),
+          data: buildJexCompactUiTheme(preset),
           child: Scaffold(
           appBar: AppBar(title: Text(JexText.of('settings', language))),
           body: ListView(
@@ -1010,7 +1024,7 @@ class SettingsPage extends StatelessWidget {
                         ? JexText.of('languageEnglish', language)
                         : JexText.of('languageIndonesia', language),
                     () => Navigator.of(context).push(MaterialPageRoute<void>(
-                          builder: (_) => const JexFixedScalePage(child: LanguageSettingsPage()),
+                          builder: (_) => const JexFixedScalePage(compactUi: true, child: LanguageSettingsPage()),
                         ))),
                 _item(
                   context,
@@ -1026,7 +1040,7 @@ class SettingsPage extends StatelessWidget {
                   ),
                   () => Navigator.of(context).push(
                     MaterialPageRoute<void>(
-                      builder: (_) => const JexFixedScalePage(child: AppearanceSettingsPage()),
+                      builder: (_) => const JexFixedScalePage(compactUi: true, child: AppearanceSettingsPage()),
                     ),
                   ),
                 ),
@@ -1037,7 +1051,7 @@ class SettingsPage extends StatelessWidget {
                   '3',
                   () => Navigator.of(context).push(
                     MaterialPageRoute<void>(
-                      builder: (_) => const JexFixedScalePage(child: NotificationsSettingsPage()),
+                      builder: (_) => const JexFixedScalePage(compactUi: true, child: NotificationsSettingsPage()),
                     ),
                   ),
                 ),
@@ -1052,7 +1066,7 @@ class SettingsPage extends StatelessWidget {
                       : JexText.of('manual', language),
                   () => Navigator.of(context).push(
                     MaterialPageRoute<void>(
-                      builder: (_) => const JexFixedScalePage(child: BluetoothSettingsPage()),
+                      builder: (_) => const JexFixedScalePage(compactUi: true, child: BluetoothSettingsPage()),
                     ),
                   ),
                 ),
@@ -1065,7 +1079,7 @@ class SettingsPage extends StatelessWidget {
                       : JexText.of('off', language),
                   () => Navigator.of(context).push(
                     MaterialPageRoute<void>(
-                      builder: (_) => const JexFixedScalePage(child: FloatingSettingsPage()),
+                      builder: (_) => const JexFixedScalePage(compactUi: true, child: FloatingSettingsPage()),
                     ),
                   ),
                 ),
@@ -1088,8 +1102,8 @@ class SettingsPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(8, 16, 8, 7),
-          child: Text(title.toUpperCase(), style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 1, color: Theme.of(context).colorScheme.onSurfaceVariant)),
+          padding: const EdgeInsets.fromLTRB(8, 13, 8, 6),
+          child: Text(title.toUpperCase(), style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 0.9, color: Theme.of(context).colorScheme.onSurfaceVariant)),
         ),
         Card(
           margin: EdgeInsets.zero,
@@ -1115,15 +1129,15 @@ class SettingsPage extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Row(
             children: [
               JexAnimatedGlyph(
                 icon: icon,
-                size: 21,
+                size: 19,
                 color: scheme.onSurfaceVariant,
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1132,16 +1146,17 @@ class SettingsPage extends StatelessWidget {
                       title,
                       style: TextStyle(
                         color: scheme.onSurface,
-                        fontWeight: FontWeight.w800,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                     if (summary.trim().isNotEmpty) ...[
-                      const SizedBox(height: 3),
+                      const SizedBox(height: 2),
                       Text(
                         summary,
                         style: TextStyle(
                           color: scheme.onSurfaceVariant,
-                          fontSize: 12,
+                          fontSize: 11,
                         ),
                       ),
                     ],
@@ -1150,7 +1165,7 @@ class SettingsPage extends StatelessWidget {
               ),
               JexAnimatedGlyph(
                 icon: PhosphorIconsRegular.caretRight,
-                size: 18,
+                size: 16,
                 color: scheme.onSurfaceVariant,
               ),
             ],

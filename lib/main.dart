@@ -6411,6 +6411,7 @@ void _handleAckLine(String line) {
       context,
       MaterialPageRoute<void>(
         builder: (_) => JexFixedScalePage(
+          compactUi: true,
           child: SettingsPage(
             currentFirmwareVersion: firmwareVersion,
             onOpenFirmwareUpdate: _openFirmwareSettings,
@@ -6852,6 +6853,7 @@ void _handleAckLine(String line) {
           child: ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(34)),
             child: JexFixedScalePage(
+              compactUi: true,
               child: _ConnectionSheetContent(
                 onScan: _startScanFromSheet,
                 onConnect: _connect,
@@ -9117,7 +9119,7 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
           borderRadius: BorderRadius.circular(24),
           child: Container(
             height: 42,
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             decoration: BoxDecoration(
               color: indicatorBackground,
               borderRadius: BorderRadius.circular(24),
@@ -9129,8 +9131,8 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                JexAnimatedIcon.glyph(icon: icon, size: 19, color: color, active: true),
-                const SizedBox(width: 7),
+                JexAnimatedIcon.glyph(icon: icon, size: 18, color: color, active: true),
+                const SizedBox(width: 6),
                 Flexible(
                   child: Text(
                     label,
@@ -9138,7 +9140,7 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: indicatorForeground,
-                      fontSize: 10.5,
+                      fontSize: 9.5,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -9186,8 +9188,8 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
       child: Column(
         children: [
           Container(
-            height: 66,
-            padding: const EdgeInsets.fromLTRB(18, 7, 7, 5),
+            height: 60,
+            padding: const EdgeInsets.fromLTRB(16, 6, 6, 4),
             decoration: BoxDecoration(
               color: scheme.surfaceContainerHighest,
               border: Border(bottom: BorderSide(color: scheme.outlineVariant)),
@@ -9199,7 +9201,7 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
                     JexText.of('connection', lang),
                     style: TextStyle(
                       color: scheme.onSurface,
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.w900,
                       letterSpacing: -0.15,
                     ),
@@ -9212,7 +9214,7 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
                   icon: JexAnimatedIcon.glyph(
                     icon: PhosphorIconsRegular.x,
                     color: scheme.onSurfaceVariant,
-                    size: 25,
+                    size: 22,
                     active: true,
                   ),
                 ),
@@ -9220,7 +9222,7 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 13, 16, 10),
+            padding: const EdgeInsets.fromLTRB(14, 10, 14, 8),
             child: Row(
               children: [
                 _indicator(
@@ -9244,7 +9246,7 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 10, 8),
+            padding: const EdgeInsets.fromLTRB(14, 0, 8, 6),
             child: Row(
               children: [
                 Expanded(
@@ -9252,20 +9254,20 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
                     JexText.of('devices', lang),
                     style: TextStyle(
                       color: scheme.onSurfaceVariant,
-                      fontSize: 14,
+                      fontSize: 12,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
                 ),
                 IconButton(
                   padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints.tightFor(width: 38, height: 38),
+                  constraints: const BoxConstraints.tightFor(width: 40, height: 40),
                   tooltip: JexText.of('scan', lang),
                   onPressed: widget.onScan,
                   icon: JexAnimatedIcon.glyph(
                     icon: PhosphorIconsRegular.arrowClockwise,
                     color: const Color(0xFF5C9DFF),
-                    size: 25,
+                    size: 22,
                     active: true,
                   ),
                 ),
@@ -9303,11 +9305,11 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
                           color: unavailable
                               ? btColor
                               : const Color(0xFF5C9DFF),
-                          size: 36,
+                          size: 32,
                           active: !unavailable,
                           warning: unavailable,
                         ),
-                        const SizedBox(height: 11),
+                        const SizedBox(height: 8),
                         Text(
                           unavailable ? JexText.of('connectionUnavailable', lang) : JexText.of('scanning', lang),
                           style: TextStyle(
@@ -9316,13 +9318,13 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        const SizedBox(height: 13),
+                        const SizedBox(height: 10),
                         FilledButton.icon(
                           onPressed: unavailable ? null : widget.onScan,
                           icon: JexAnimatedIcon.glyph(
                             icon: PhosphorIconsRegular.arrowClockwise,
                             color: Theme.of(context).colorScheme.onPrimary,
-                            size: 18,
+                            size: 16,
                             active: true,
                           ),
                           label: Text(JexText.of('scan', lang)),
@@ -9333,7 +9335,7 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
                 }
 
                 return ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(10, 2, 10, 16),
+                  padding: const EdgeInsets.fromLTRB(8, 2, 8, 12),
                   itemCount: filtered.length,
                   separatorBuilder: (_, __) =>
                       Divider(color: scheme.outlineVariant.withValues(alpha: .55), height: 1),
@@ -9347,7 +9349,7 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
                       leading: JexAnimatedIcon.glyph(
                         icon: PhosphorIconsRegular.bluetooth,
                         color: const Color(0xFF63E6BE),
-                        size: 21,
+                        size: 19,
                         active: true,
                       ),
                       title: Text(

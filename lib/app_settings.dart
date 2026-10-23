@@ -1485,3 +1485,45 @@ ThemeData buildJexTheme(AppThemePreset preset) {
     fontFamily: 'Roboto',
   );
 }
+
+// AI-THEME / COMPACT-SETTINGS-CONTRACT
+// Applies a restrained typography/visual-density reduction only to Settings routes and the
+// Bluetooth Connection sheet. Do not apply this theme globally to Home/Dashboard.
+ThemeData buildJexCompactUiTheme(AppThemePreset preset) {
+  final base = buildJexTheme(preset);
+  final text = base.textTheme;
+  final foreground = base.colorScheme.onSurface;
+  final muted = base.colorScheme.onSurfaceVariant;
+
+  return base.copyWith(
+    appBarTheme: base.appBarTheme.copyWith(
+      titleTextStyle: base.appBarTheme.titleTextStyle?.copyWith(fontSize: 18),
+      iconTheme: base.appBarTheme.iconTheme?.copyWith(size: 22),
+    ),
+    textTheme: text.copyWith(
+      titleLarge: text.titleLarge?.copyWith(fontSize: 18),
+      titleMedium: text.titleMedium?.copyWith(fontSize: 13),
+      titleSmall: text.titleSmall?.copyWith(fontSize: 12),
+      bodyLarge: text.bodyLarge?.copyWith(fontSize: 13),
+      bodyMedium: text.bodyMedium?.copyWith(fontSize: 12),
+      bodySmall: text.bodySmall?.copyWith(fontSize: 11),
+      labelLarge: text.labelLarge?.copyWith(fontSize: 12),
+      labelMedium: text.labelMedium?.copyWith(fontSize: 11),
+      labelSmall: text.labelSmall?.copyWith(fontSize: 10),
+    ),
+    listTileTheme: base.listTileTheme.copyWith(
+      dense: true,
+      visualDensity: const VisualDensity(horizontal: -0.5, vertical: -0.5),
+      minVerticalPadding: 6,
+      titleTextStyle: text.titleMedium?.copyWith(
+        color: foreground,
+        fontSize: 13,
+        fontWeight: FontWeight.w700,
+      ),
+      subtitleTextStyle: text.bodySmall?.copyWith(
+        color: muted,
+        fontSize: 11,
+      ),
+    ),
+  );
+}
