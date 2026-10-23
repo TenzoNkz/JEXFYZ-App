@@ -1,5 +1,12 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-23 — Use bare command names in chat-transfer blocks (docs-only)
+
+- Corrected the transfer prompt convention: copy-ready block first lines are now only `Diskusi!` and `Eksekusi Build App!`, without the `@Thinking` prefix.
+- Prompt 1's first line may be replaced with `Eksekusi Full!` for a newly authorized source/docs scope or `Chat Stuck!` to recover an already-authorized interrupted operation.
+- Aligned CHAT_TRANSFER.md, CHAT_RULES.md, MEMORY_INDEX.md, HANDOVER.md, BUILD_NOTES.md and the current APP_BUILD_REPORT.md cross-chat block.
+- Documentation-only change: no executable source, config, workflow, or tests changed; no builds/releases, Firmware/BIN/Firebase, OTA, flashing, or device operations were performed.
+
 ## 2026-10-23 — Restore matching command prefixes to chat-transfer prompts (docs-only)
 
 - Added @Thinking Diskusi! as Prompt 1's default first line and @Thinking Eksekusi Build App! as Prompt 2's first line, so a pasted copy-ready block includes a recognized command.
