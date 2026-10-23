@@ -20,6 +20,8 @@ No Firmware compile, BIN generation/publication, production Firebase edit, OTA, 
 
 ## Next continuation
 
+The latest owner feedback is that Build #129's Home-equivalent DPI-fixed behavior looks correct on both the 420-dp and 350-dp settings, but the Settings and Bluetooth Connection UI are still visually oversized. The next authorized `@Thinking Eksekusi Full!` task should make only these surfaces about 10% more compact through base font sizes, icon sizes and spacing; keep the fixed 360-dp master canvas and DPI scale formula unchanged, preserve full-width cards and retain tappable controls at roughly 40 dp or larger. Recommended first-pass targets are recorded in `DESIGN_NOTES.md` and `APP_NOTES.md`. This is currently only a design request, not an implemented change. After source/test validation, a separate `@Thinking Eksekusi Build App!` is needed only if the owner wants an APK with the compact pass.
+
 1. On a new task, fetch the live `main` HEAD/tree and current Actions/Release/tag state; do not assume saved hashes remain current.
 2. Read `CHAT_RULES.md`, `MEMORY_INDEX.md`, `PROJECT_STATE.md`, `BUILD_NOTES.md` and the full active-task reference.
 3. No duplicate Build App run is needed for source commit `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`; require a new explicit owner request for another release. Future builds must use the unchanged owner/title/token issue-only trigger and all gates, preserve Android `versionName "Telegram @horizontalzzz"`, and verify downloaded asset identity/checksums.
