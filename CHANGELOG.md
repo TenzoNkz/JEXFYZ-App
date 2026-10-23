@@ -1,5 +1,12 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-23 — Compact UI source pass committed; validation pending
+
+- Settings root/subpages and Bluetooth Connection now use smaller typography, icons and spacing through a scoped compact theme. Full-width cards and 40–42 dp touch targets are retained.
+- The fixed 360-dp DPI canvas and its scale formula are unchanged. Home geometry, localization, status colors and BLE behavior are unchanged.
+- Source commits: 5ab14e2, bfdcafd, 415d240, f5bf63b and 9db9ee3.
+- Static source contracts were checked. Formatter and targeted Flutter test could not run because `dart` and `flutter` are absent; analyzer, full suite and physical-device visual QA remain unrun. This change is not part of Build #129.
+
 ## 2026-10-23 — Compact Settings and Bluetooth Connection visuals (source committed; tests blocked by missing toolchain)
 
 - Under the owner's `@Thinking Eksekusi Full!` authorization, added a Settings-only `buildJexCompactUiTheme` helper in `lib/app_settings.dart`, an opt-in `compactUi` flag on `JexFixedScalePage`, and enabled it only for Settings root/subpages plus the Bluetooth Connection sheet. Other fixed-canvas dialogs and Home remain unchanged.
