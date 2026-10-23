@@ -11,10 +11,11 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 
 ## Active Build App/QC recovery — 2026-10-23 (Asia/Jakarta)
 
-- **Status: Build #127 failed at Flutter tests (120 passed, 1 failed); one stale notification-copy assertion remains.** [Run 39907723349](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907723349), source `74472861b868ba69caed97233d86d40424f2610f`.
-- **Passed gates:** runner/toolchain, security/architecture audit, dependencies, Dart analyzer (25 info diagnostics). Both #126 test failures were fixed; #127 revealed one remaining obsolete assertion in `test/widget_test.dart`: expects `Bluetooth terhubung · sesi cooler aktif`, while current native service copy is `Bluetooth terhubung · sesi perangkat aktif` consistent with Device/Perangkat wording.
-- **Next repair:** update that exact assertion only. Android Gradle/APK/signing/source ZIP/release gates remain skipped; Build #124 is still the latest verified package. The failed attempt and log evidence are recorded in APP_BUILD_REPORT.md commit `a63f6e6fe5ac53a95c08b4d4688d651e16e62c9d`.
-- **Next:** verify the report/handoff commits, commit the test fix, then preflight current main + issue guard + no active runs and use one official issue trigger. Do not weaken the gate or revert approved copy. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device actions.
+- **Status: Build #127 failed at Flutter tests (120 passed / 1 failed); all three stale assertions have now been corrected in source. New run not yet triggered at this checkpoint.**
+- **Latest repair commit:** `b57e2f9a74e58aaed694ac1f5a660e3b9b0d895a` updates the remaining Indonesian notification expectation to `Bluetooth terhubung · sesi perangkat aktif`. Earlier fixes align the permission bridge assertion and `Perangkat terputus.` copy. All are static-test expectation updates; runtime App and workflow gates were not changed.
+- **Test state:** the repaired tests have not yet run on this newest SHA. Build #127 analyzer passed (25 info diagnostics); downstream Android/APK/sign/release gates were skipped.
+- **Checkpoint:** report update committed at `1318f3c104ee32b4eca29e7eb78b85eed8964af9` and re-read successfully. Verify this handoff commit after writing. Before one retry, verify current main, existing workflow guard, issue #34 and no active/queued/waiting runs; then use one official issue trigger only. Do not retry blindly or weaken checks.
+- Build #124 remains latest verified package until the newest source completes every gate. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device operations.
 
 ## Live repository point
 
