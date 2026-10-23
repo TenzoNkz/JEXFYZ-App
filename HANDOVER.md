@@ -11,9 +11,9 @@ Updated: 2026-10-23 (Asia/Jakarta).
 
 ## Current handoff
 
-The current task is documentation/repository rework under @Thinking Eksekusi Full!. Preserve source/runtime behavior. The live tree was checked at 11a0ef162f1c2945704229ed7697dc70e7617e9b before this docs commit; fetch live main after the commit for the actual new HEAD.
+The current task is a documentation-only improvement to chat-memory recovery. The owner wants exactly two transfer prompts and wants each substantive Discussion/Eksekusi completion, important milestone and Build App attempt recorded into GitHub memory without a separate save command.
 
-The rework simplifies current-only docs, removes the old four-prompt taxonomy, defines exactly two LOAD + CONTINUE prompts, and audits current notes versus history ledgers/archive. It does not change App/Firmware code, config, workflows or tests.
+Important boundary: conversation text is not automatically committed to GitHub. Only actual, verified commits are durable. The transfer prompt must instruct the next chat to read the saved checkpoint, live main/tree, durable rules/index/state, relevant canonical notes, and live run logs before continuing; never infer or claim unsaved tail content survived.
 
 ## Next continuation
 
@@ -22,7 +22,7 @@ The rework simplifies current-only docs, removes the old four-prompt taxonomy, d
 3. Read CHAT_RULES.md, MEMORY_INDEX.md, PROJECT_STATE.md and the complete reference relevant to the user's next request.
 4. Paste one complete block from CHAT_TRANSFER_PROMPTS.md as a single message. Prompt 1 starts with Diskusi!; replace only its first line with Eksekusi Full! or Chat Stuck! when that mode matches the task. Prompt 2 starts with Eksekusi Build App! and is only for the guarded App Build/QC workflow. These short command names intentionally omit @Thinking. Do not add a duplicate command line above the block.
 5. Before a new UI implementation, explicitly resolve the current disagreement over Home notice heading: live source localizes it as Notification / Notifikasi while DESIGN_NOTES.md retains a fixed NOTIFY requirement.
-6. If a substantive Discussion ends or an authorized execution completes/blocks, refresh the checkpoint and canonical notes.
+6. Save durable memory at each decision/milestone and at every substantive Discussion/Eksekusi Full completion or blockage. For Build App, update APP_BUILD_REPORT.md while attempts progress and refresh CHAT_TRANSFER.md at each logical milestone. Verify the commit before claiming the checkpoint was saved; if an abrupt limit occurs first, recover the last committed checkpoint only.
 
 ## Safety boundary
 
