@@ -11,18 +11,20 @@ Updated: 2026-10-23 (Asia/Jakarta).
 
 ## Current handoff
 
-The current task is a documentation-only improvement to chat-memory recovery. The owner wants exactly two transfer prompts and wants each substantive Discussion/Eksekusi completion, important milestone and Build App attempt recorded into GitHub memory without a separate save command.
+This checkpoint is a pre-Build App documentation consistency audit under `@Thinking Diskusi!`. The Home notice heading decision is settled: `Notification` in English and `Notifikasi` in Indonesian. A stale sentence in MEMORY_INDEX.md that still described this as an open mismatch was corrected; APP_NOTES.md and DESIGN_NOTES.md already held the resolved contract.
 
-Important boundary: conversation text is not automatically committed to GitHub. Only actual, verified commits are durable. The transfer prompt must instruct the next chat to read the saved checkpoint, live main/tree, durable rules/index/state, relevant canonical notes, and live run logs before continuing; never infer or claim unsaved tail content survived.
+The latest guarded App attempt is Build #125 / run 39905665853. Live GitHub reports a job failure before any runner step (`runner_id=0`, no runner name, no steps or artifacts). The exact infrastructure cause remains UNVERIFIED, and no retry should be made blindly. Build #124 / run 39386733061 remains the latest verified release; no package was produced for #125. Read APP_BUILD_REPORT.md and fresh Actions/Release state before a future Build App operation.
+
+Important boundary: conversation text is not automatically committed to GitHub. Only actual, verified commits are durable. These notes updates do not validate the App source or unblock the separate Actions startup failure.
 
 ## Next continuation
 
-1. Read CHAT_TRANSFER.md fully.
-2. Fetch live main HEAD and recursive tree.
-3. Read CHAT_RULES.md, MEMORY_INDEX.md, PROJECT_STATE.md and the complete reference relevant to the user's next request.
-4. Paste one complete block from CHAT_TRANSFER_PROMPTS.md as a single message. Prompt 1 starts with Diskusi!; replace only its first line with Eksekusi Full! or Chat Stuck! when that mode matches the task. Prompt 2 starts with Eksekusi Build App! and is only for the guarded App Build/QC workflow. These short command names intentionally omit @Thinking. Do not add a duplicate command line above the block.
-5. Home notice heading decision is now resolved: use Notification in English and Notifikasi in Indonesian, following the selected App language. Keep source/design references consistent; this decision alone does not authorize executable changes.
-6. Save durable memory at each decision/milestone and at every substantive Discussion/Eksekusi Full completion or blockage. For Build App, update APP_BUILD_REPORT.md while attempts progress and refresh CHAT_TRANSFER.md at each logical milestone. Verify the commit before claiming the checkpoint was saved; if an abrupt limit occurs first, recover the last committed checkpoint only.
+1. Read CHAT_TRANSFER.md fully, then fetch the current main HEAD/commit metadata and complete recursive tree. Documentation commits from this audit mean the previously observed HEAD is now an audit baseline, not the final current HEAD.
+2. Read CHAT_RULES.md, MEMORY_INDEX.md, PROJECT_STATE.md, HANDOVER.md and BUILD_NOTES.md; for Build App, also read the entire guarded workflow and current APP_BUILD_REPORT.md, then verify live Actions jobs/logs, Release metadata/assets and tag target.
+3. Do not rewrite every note indiscriminately. Keep current-state docs synchronized; preserve APP_BUILD_REPORT.md and CHANGELOG.md as history ledgers and leave archive/*.md immutable.
+4. The next Build App operation remains blocked on the unexplained #125 pre-runner failure. Obtain evidence-backed confirmation/diagnostics that the Actions startup issue is resolved before another attempt. Then require the owner's explicit `@Thinking Eksekusi Build App!` authorization, fetch fresh main, confirm no run is active, and use only the existing issue-only guarded trigger. Do not add a push/PR/manual-dispatch bypass or weaken gates.
+5. Home notice heading is resolved: use `Notification` in English and `Notifikasi` in Indonesian. This decision does not authorize executable changes.
+6. Save durable memory at each decision/milestone and at every substantive Discussion/Eksekusi completion/blockage. During Build App, update APP_BUILD_REPORT.md as actual attempts progress and refresh CHAT_TRANSFER.md at each logical milestone. Verify each checkpoint commit before claiming it was saved; if interrupted before a verified commit, recover only the last verified state.
 
 ## Safety boundary
 
