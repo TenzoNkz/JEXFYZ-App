@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last refreshed: 2026-10-23 (Asia/Jakarta), after the main-only Settings/Connection sizing patch. Build #128 remains the latest verified release; this is current-only state, not history, so fetch live HEAD and tree on every new task.
+Last refreshed: 2026-10-23 (Asia/Jakarta), after the owner's clarification that Settings/Connection must match Home's DPI-compensating master canvas. Current main still contains the interim cap-at-1.0 patch and needs a new authorized source revision; Build #128 remains the latest verified release. This is current-only state, not history, so fetch live HEAD/tree on every new task.
 
 ## Product baseline and evidence
 
