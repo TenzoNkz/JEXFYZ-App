@@ -1,4 +1,15 @@
-## CURRENT BUILD APP EXECUTION — BUILD #128 FLUTTER TESTS IN PROGRESS — 2026-10-23 (Asia/Jakarta)
+## CURRENT BUILD APP EXECUTION — BUILD #128 FLUTTER TESTS PASSED; ANDROID GATE IN PROGRESS — 2026-10-23 (Asia/Jakarta)
+
+- **Run/source:** [#128 / 39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440), target `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`, job `120264345808`, runner `1000002427`; run remains `in_progress`.
+- **Passed through step 13:** runner/toolchain setup, source checkout, production signing preparation, wrapper setup, security/architecture audit, dependency install, analyzer and Flutter tests. The previously failing Flutter test step now concludes `success` with the three corrected notification/device-copy contracts in place. Exact final test-count line will be recorded when the completed job log is available.
+- **Current gate:** step 14 `Run Android unit-test gate` is `in_progress`. Release APK build (15), V1/V2/V3 enforcement and signature/certificate checks (16–17), archive preparation (18–19), Release publication (20) and downloaded-asset verification (21) are still pending.
+- **Logs:** job log download remains temporarily unavailable while job is active (`BlobNotFound`); live step API provides current real step states. No final success inferred.
+- **Release:** Build #124 remains the latest verified package until #128 passes all remaining gates and live Release/tag/artifact checks. No duplicate run while #128 active.
+- **Next:** follow Android gate completion and then APK/signing/archive/publication/download verification. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device operations.
+
+---
+
+## HISTORICAL CHECKPOINT — BUILD #128 FLUTTER TESTS IN PROGRESS
 
 - **Run/source:** [#128 / 39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440), source SHA `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`, job `120264345808`, hosted runner `1000002427` (`ubuntu-24.04`), status `in_progress`.
 - **Steps 1–12 passed:** runner setup, checkout, Java 17/Flutter/Gradle toolchains, toolchain validation, local.properties, production-signing preparation, wrapper setup, App security/architecture audit, dependency installation and Dart analyzer. Analyzer step succeeded; Build #126/#127 had 25 info-level diagnostics on their corresponding source.
