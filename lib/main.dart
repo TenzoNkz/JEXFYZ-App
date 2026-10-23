@@ -4288,6 +4288,9 @@ class _DashboardScreenState extends State<DashboardScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state != AppLifecycleState.resumed) return;
+    // Re-check overlay permission after returning from Android Settings without
+    // making repeated permission-channel calls for every telemetry frame.
+    _floatingStartAttemptedForSession = false;
     if (connected && _bleReady && _bleSessionReady) {
       unawaited(_requestFreshSync(timeout: const Duration(seconds: 4)));
     } else if (!connected && !otaRecoveryActive && !otaExpectedDisconnect) {
@@ -4424,7 +4427,8 @@ class _DashboardScreenState extends State<DashboardScreen>
       // Permission may be granted after Android Settings returns without a BLE reconnect.
       // Leave this attempt retryable until the public overlay permission is available.
       if (!await FloatingBridge.hasPermission()) {
-        _floatingStartAttemptedForSession = false;
+        // Wait until the app resumes from Android Settings before trying again.
+        _floatingStartAttemptedForSession = true;
         return;
       }
       final currentTelemetry = floatingTelemetryNotifier.value;
