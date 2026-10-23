@@ -26,7 +26,7 @@ Last refreshed: 2026-10-23 (Asia/Jakarta), after successful Build #128 release v
 - The owner reported the Actions issue fixed; subsequent live evidence confirmed runner recovery in #126 and a successful complete guarded App release in #128. The guarded issue-only workflow remains unchanged; each future authorized release must still preflight live Actions and verify its exact `head_sha`.
 - At that historical checkpoint, Build #124 was the newest verified release and Build #125 produced no package. Current verified release is Build #128 / run 39908023440, source `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`; see the current product baseline above and the detailed APP_BUILD_REPORT.md entry.
 
-## Latest App source implementation — validated and released in Build #128
+## Build #128 baseline and newer UI sizing patch
 
 The latest source-only App implementation on main covers:
 - Home-matched 360-dp Settings/sub-settings and modal design canvas, with system text scaling disabled.
@@ -35,11 +35,11 @@ The latest source-only App implementation on main covers:
 - Alert IDs 2101–2104, persistent BLE foreground ID 2110 and Floating Monitor ID 2301 are distinct; channel IDs remain stable. Channel labels/descriptions synchronize to the selected App language on startup and language change.
 - OTA-result messages are formatted using the language selected when displayed. OTA protocol/transport was not edited in that UI change.
 
-Build #128 validated this implementation with 121 passing Flutter tests, Dart analyze exit 0 (25 informational diagnostics), and the configured Android Gradle gate passing. The release package was obfuscated, signed and verified with production V1/V2/V3 checks, and independently matched to the published Release/tag and re-downloaded APK/source ZIP hashes. The fielded unit's Build #124 + Firmware V7.1 status remains USER-REPORTED; CI does not prove installation on the physical unit.
+Build #128 validated the packaged implementation with 121 passing Flutter tests, Dart analyze exit 0 (25 informational diagnostics), and the configured Android Gradle gate passing. The release package was obfuscated, signed and verified with production V1/V2/V3 checks, and independently matched to the published Release/tag and re-downloaded APK/source ZIP hashes. A later source-only sizing patch on current `main` (commit `57ebcf8d971decf399e7a4d3e5dd5bf3d605010d`) modifies `JexFixedScalePage` and its contract test; it is not yet validated or released. The fielded unit's Build #128 install status remains USER-REPORTED; CI does not prove installed package identity or physical behavior.
 
 ## Open design/validation items
 
-- **New owner UI feedback (2026-10-23; pending source fix):** Settings page and Bluetooth Connection sheet look oversized/zoomed in screenshots/video after Build #128. Source review points to `JexFixedScalePage` in `lib/floating_monitor.dart`: its `constraints.maxWidth / 360.0` scale upscales the entire content above 360 logical dp. Planned fix is a capped 1.0 maximum scale while keeping actual available width at native 1× on wider devices and proportional downscaling only on narrower devices. No source/test/build change has been made for this request; use `Eksekusi Full!` for scoped source/tests, and `Eksekusi Build App!` separately if a new release is desired.
+- **Settings/Connection sizing patch (2026-10-23; implemented on main, validation pending):** Owner reports the Settings page and Bluetooth Connection sheet looked oversized/zoomed after Build #128. Commit `57ebcf8d971decf399e7a4d3e5dd5bf3d605010d` caps `JexFixedScalePage` scale at 1.0 for wider viewports, expands the logical child width to match available space, and adds a widget regression test covering 420-dp and 320-dp widths. The Flutter test, Dart analyzer/formatter and live-device layout checks have NOT RUN: this environment lacks Flutter/Dart and cannot fetch tooling. Build #128 remains the latest verified package; the sizing patch is not released. Next: run the targeted widget test and analyzer/formatter in a Flutter-enabled environment, then the Flutter suite, before any separate `Eksekusi Build App!` release.
 - Home notice heading contract is resolved by owner decision (2026-10-23): use `Notification` in English and `Notifikasi` in Indonesian, following the selected App language. Documentation only; no executable source change or build was authorized.
 - Rapid Hotside-rise/slope shutdown plus manual re-arm remains an unimplemented Firmware requirement. Do not imply it is covered by Adaptive Fan tiers or raw-decimal limit safety.
 - BLE App-only authorization is BLOCKED / NOT IMPLEMENTED until a trusted backend, device-bound enrollment grant and per-session signature verification are designed/deployed.
@@ -53,4 +53,4 @@ Build #128 validated this implementation with 121 passing Flutter tests, Dart an
 - Preserve NTC one-sample-per-second path, cooperative millis() timing, Touch/P1, voltage/Peltier sequencing, radio ownership and Local/Online OTA recovery.
 - Online OTA intentionally uses cloudClient.setInsecure(); server certificate identity is not authenticated. Keep the GitHub BIN allowlist, redirect blocking, response/image/size checks and version+link metadata contract.
 - Preserve Android Gradle versionName "Telegram @horizontalzzz".
-- No App Build/release, Firmware compile, BIN/Firebase mutation, OTA, flash or device operation was authorized or performed by this documentation rework.
+- This scoped source/test change did not run App Build/release, Firmware compile, BIN/Firebase mutation, OTA, flash or device operations. Build #128 remains the latest release; the new sizing patch has not been packaged.
