@@ -64,20 +64,24 @@ void main() {
     expect(floating, isNot(contains('nativeSize.toDouble().clamp(0.3, 0.8)')));
     expect(floating, contains('nativeSize.toDouble().clamp(0.3, 1.0)'));
     expect(floating, contains('class JexFixedScalePage extends StatelessWidget'));
+    expect(floating, contains('final scale = constraints.maxWidth / designWidth;'));
     expect(
       floating,
-      contains('(constraints.maxWidth / designWidth).clamp(0.0, 1.0).toDouble()'),
+      isNot(contains('(constraints.maxWidth / designWidth).clamp(0.0, 1.0).toDouble()')),
     );
-    expect(floating, contains('final logicalWidth = constraints.maxWidth / scale;'));
-    expect(floating, contains('size: Size(logicalWidth, designHeight)'));
+    expect(floating, contains('size: Size(designWidth, designHeight)'));
+    expect(floating, contains('padding: EdgeInsets.fromLTRB('));
+    expect(floating, contains('media.padding.left / scale'));
+    expect(floating, contains('media.viewPadding.left / scale'));
+    expect(floating, contains('media.viewInsets.left / scale'));
     expect(floating, contains('child: OverflowBox('));
-    expect(floating, contains('minWidth: logicalWidth'));
-    expect(floating, contains('maxWidth: logicalWidth'));
+    expect(floating, contains('minWidth: designWidth'));
+    expect(floating, contains('maxWidth: designWidth'));
     expect(floating, contains('minHeight: designHeight'));
     expect(floating, contains('maxHeight: designHeight'));
     expect(
       floating,
-      contains('SizedBox(width: logicalWidth, height: designHeight, child: child)'),
+      contains('width: designWidth,\n                      height: designHeight,\n                      child: child,'),
     );
     expect(floating, contains('TextScaler.noScaling'));
     expect(floating, contains('builder: (_) => const JexFixedScalePage(child: LanguageSettingsPage())'));
@@ -103,21 +107,22 @@ void main() {
   });
 
   testWidgets(
-    'Fixed-scale pages do not upscale wide layouts and still fit narrow ones',
+    'Fixed-scale pages match the Home canvas across display-density changes',
     (tester) async {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
-      tester.view.devicePixelRatio = 1.0;
+      // Keep the physical display constant; vary DPR so logical width changes.
+      tester.view.physicalSize = const Size(1080, 2400);
 
-      double? contentWidth;
-      Future<void> pumpAtWidth(double width) async {
-        tester.view.physicalSize = Size(width, 800);
+      Size? logicalCanvasSize;
+      Future<void> pumpAtDensity(double devicePixelRatio) async {
+        tester.view.devicePixelRatio = devicePixelRatio;
         await tester.pumpWidget(
           MaterialApp(
             home: JexFixedScalePage(
               child: Builder(
                 builder: (context) {
-                  contentWidth = MediaQuery.sizeOf(context).width;
+                  logicalCanvasSize = MediaQuery.sizeOf(context);
                   return const SizedBox.expand(key: ValueKey<String>('scale-probe'));
                 },
               ),
@@ -128,11 +133,12 @@ void main() {
         expect(tester.takeException(), isNull);
       }
 
-      await pumpAtWidth(420);
-      expect(contentWidth, closeTo(420.0, 0.01));
+      await pumpAtDensity(1080 / 420);
+      expect(logicalCanvasSize!.width, closeTo(360.0, 0.01));
+      expect(logicalCanvasSize!.height, closeTo(800.0, 0.01));
       expect(
         tester.getSize(find.byKey(const ValueKey<String>('scale-probe'))).width,
-        closeTo(420.0, 0.01),
+        closeTo(360.0, 0.01),
       );
       var canvasTransform = tester.widget<Transform>(
         find.descendant(
@@ -140,11 +146,11 @@ void main() {
           matching: find.byType(Transform),
         ),
       );
-      expect(canvasTransform.transform.storage[0], closeTo(1.0, 0.01));
+      expect(canvasTransform.transform.storage[0], closeTo(420 / 360, 0.01));
 
-      await pumpAtWidth(320);
-      // Narrow screens keep the 360-dp canvas and scale it down proportionally.
-      expect(contentWidth, closeTo(360.0, 0.01));
+      await pumpAtDensity(1080 / 320);
+      expect(logicalCanvasSize!.width, closeTo(360.0, 0.01));
+      expect(logicalCanvasSize!.height, closeTo(800.0, 0.01));
       expect(
         tester.getSize(find.byKey(const ValueKey<String>('scale-probe'))).width,
         closeTo(360.0, 0.01),
