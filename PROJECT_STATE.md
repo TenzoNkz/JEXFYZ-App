@@ -28,7 +28,7 @@ Last refreshed: 2026-10-23 (Asia/Jakarta), after successful Build #128 release v
 
 ## Build #128 baseline and newer UI sizing patch
 
-The latest source-only App implementation on main covers:
+The Build #128 package UI baseline covers:
 - Home-matched 360-dp Settings/sub-settings and modal design canvas, with system text scaling disabled.
 - Device / Perangkat terminology for user-facing device labels, locked-menu copy, BLE discovery/errors and service notifications.
 - Floating Monitor detaches while disconnected and only attaches when the saved enable preference and synchronized connected telemetry permit it. Saved intent survives disconnect or missing overlay permission.
@@ -40,7 +40,7 @@ Build #128 validated the packaged implementation with 121 passing Flutter tests,
 ## Open design/validation items
 
 - **Settings/Connection sizing patch (2026-10-23; implemented on main, validation pending):** Owner reports the Settings page and Bluetooth Connection sheet looked oversized/zoomed after Build #128. Commit `57ebcf8d971decf399e7a4d3e5dd5bf3d605010d` caps `JexFixedScalePage` scale at 1.0 for wider viewports, expands the logical child width to match available space, and adds a widget regression test covering 420-dp and 320-dp widths. The Flutter test, Dart analyzer/formatter and live-device layout checks have NOT RUN: this environment lacks Flutter/Dart and cannot fetch tooling. Build #128 remains the latest verified package; the sizing patch is not released. Next: run the targeted widget test and analyzer/formatter in a Flutter-enabled environment, then the Flutter suite, before any separate `Eksekusi Build App!` release.
-- Home notice heading contract is resolved by owner decision (2026-10-23): use `Notification` in English and `Notifikasi` in Indonesian, following the selected App language. Documentation only; no executable source change or build was authorized.
+- Home notice heading contract is resolved by owner decision (2026-10-23): use `Notification` in English and `Notifikasi` in Indonesian, following the selected App language. The design decision itself was documented before separately authorized UI source work; preserve the localization contract.
 - Rapid Hotside-rise/slope shutdown plus manual re-arm remains an unimplemented Firmware requirement. Do not imply it is covered by Adaptive Fan tiers or raw-decimal limit safety.
 - BLE App-only authorization is BLOCKED / NOT IMPLEMENTED until a trusted backend, device-bound enrollment grant and per-session signature verification are designed/deployed.
 - Exact field BIN-to-source identity, installed-version evidence, physical reboot/BLE recovery and thermal/electrical behavior remain independently unverified despite the owner's report.
