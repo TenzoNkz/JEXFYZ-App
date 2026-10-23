@@ -1,5 +1,13 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-23 — Chat-limit prompt copy cleanup (docs-only)
+
+- Removed the command header from both copy-ready LOAD + CONTINUE prompt payloads. The owner now types the appropriate @Thinking command at the top of the same message and pastes the matching payload below it, avoiding duplicate command text in the copied prompt.
+- Prompt 1 remains general Discussion/engineering/code and Chat Stuck recovery; Prompt 2 remains exclusively for an already-authorized Build App/QC operation.
+- Updated CHAT_RULES.md, MEMORY_INDEX.md, CHAT_TRANSFER.md and HANDOVER.md to keep prompt usage and command authorization consistent.
+- No executable source/config/workflow was changed. No tests/build/release, Firmware/BIN/Firebase, OTA, flash or device operation was performed.
+
+
 ## 2026-10-23 — Documentation architecture rework (docs-only; product source unchanged)
 
 - Reduced the active chat-limit system to exactly two LOAD + CONTINUE prompts: Prompt 1 for general Discussion/engineering/code and Prompt 2 for the authorized App Build/QC workflow. Retired the current Prompt A/B/C/D taxonomy; any old prompt references below remain historical records only.

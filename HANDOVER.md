@@ -20,7 +20,7 @@ The rework simplifies current-only docs, removes the old four-prompt taxonomy, d
 1. Read CHAT_TRANSFER.md fully.
 2. Fetch live main HEAD and recursive tree.
 3. Read CHAT_RULES.md, MEMORY_INDEX.md, PROJECT_STATE.md and the complete reference relevant to the user's next request.
-4. Use Prompt 1 in CHAT_TRANSFER_PROMPTS.md for general engineering, or Prompt 2 only for an authorized App Build chat.
+4. Type the appropriate @Thinking command manually at the top of the same message, then paste Prompt 1 for general engineering or Prompt 2 for an already-authorized App Build chat. The copy blocks do not include the command.
 5. Before a new UI implementation, explicitly resolve the current disagreement over Home notice heading: live source localizes it as Notification / Notifikasi while DESIGN_NOTES.md retains a fixed NOTIFY requirement.
 6. If a substantive Discussion ends or an authorized execution completes/blocks, refresh the checkpoint and canonical notes.
 

@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Live Chat Checkpoint
 
-Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuation state, not a transcript or a substitute for live repository checks.
+Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuation state, not a transcript or a substitute for live repository checks. Prompt 1/2 copy blocks omit command headers; the owner types the appropriate command at the top of the same message before pasting the payload.
 
 ## Product/release baseline
 
@@ -54,4 +54,4 @@ Static contract files exist, notably test/device_copy_notification_contract_test
 - OTA: OTA_PROTECTION.md and OTA_REGRESSION_MEMORY.md. Voltage/Peltier: VOLTAGE_TRANSITION_MEMORY.md.
 - App build process: BUILD_NOTES.md. Full attempt ledger: APP_BUILD_REPORT.md. History-only timeline: CHANGELOG.md. Immutable forensic snapshots: archive/.
 - General Discussion/engineering handoff: Prompt 1 in CHAT_TRANSFER_PROMPTS.md. Build App handoff: Prompt 2 only.
-- After a durable Discussion conclusion or execution completion/blockage, refresh this checkpoint and the relevant canonical note. If chat limit interrupts before saving, recover only from the last checkpoint and live evidence; do not claim unsaved content was preserved.
+- After a durable Discussion conclusion or execution completion/blockage, refresh this checkpoint and the relevant canonical note. Prompt payloads intentionally have no @Thinking prefix; the owner enters the matching command manually before the payload in the same message. If chat limit interrupts before saving, recover only from the last checkpoint and live evidence; do not claim unsaved content was preserved.
