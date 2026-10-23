@@ -906,8 +906,9 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
   }
 }
 
-// AI-MEMORY / FIXED-DPI-CANVAS-CONTRACT
-// Matches Home's 360-dp design canvas and disables system font scaling for standalone routes/modal content.
+// AI-MEMORY / RESPONSIVE-FIXED-CANVAS-CONTRACT
+// Uses native 1x sizing on wider viewports and scales the 360-dp logical canvas down on narrow ones.
+// System font scaling remains disabled for standalone routes and modal content.
 class JexFixedScalePage extends StatelessWidget {
   final Widget child;
   const JexFixedScalePage({super.key, required this.child});
