@@ -1732,7 +1732,7 @@ void main() {
 
     expect(activity, contains('setJexNotificationBranding(this)'));
     expect(activity, contains('jexNotificationContentIntent(this, id)'));
-    expect(activity, contains('requestNotificationPermission()'));
+    expect(activity, contains('result.success(requestNotificationPermission(language))'));
     expect(helper, contains('setSmallIcon(R.drawable.ic_notification)'));
     expect(helper, isNot(contains('R.drawable.jexfyzicon')));
     expect(helper, isNot(contains('setLargeIcon')));
@@ -2071,7 +2071,7 @@ void main() {
 
   test('Home Notify connection and action copy stays concise in both languages', () {
     expect(JexText.of('bluetoothDisconnected', AppLanguage.english), 'Device disconnected.');
-    expect(JexText.of('bluetoothDisconnected', AppLanguage.indonesia), 'Bluetooth terputus.');
+    expect(JexText.of('bluetoothDisconnected', AppLanguage.indonesia), 'Perangkat terputus.');
     expect(JexText.of('connectionReady', AppLanguage.english), 'Connection established.');
     expect(JexText.of('connectionReady', AppLanguage.indonesia), 'Koneksi berhasil dibuat.');
     expect(JexText.of('modeUpdated', AppLanguage.english), 'LED mode updated.');
