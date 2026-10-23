@@ -17,7 +17,7 @@ class JeForegroundService : Service() {
 
     companion object {
         private const val CHANNEL_ID = "je_x_fyz_background"
-        private const val NOTIFICATION_ID = 2101
+        private const val NOTIFICATION_ID = 2110
         const val EXTRA_LANGUAGE = "language"
     }
 
@@ -30,6 +30,7 @@ class JeForegroundService : Service() {
     // Promote the service into connected-device foreground mode.
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val language = intent?.getStringExtra(EXTRA_LANGUAGE) ?: "english"
+        createNotificationChannel(language)
         val notification = buildNotification(language)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -49,16 +50,20 @@ class JeForegroundService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     // Define the low-importance persistent BLE-session notification.
-    private fun createNotificationChannel() {
+    private fun createNotificationChannel(language: String = "english") {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
 
         val manager = getSystemService(NotificationManager::class.java)
+        val indonesia = language.equals("indonesia", ignoreCase = true)
         val channel = NotificationChannel(
             CHANNEL_ID,
-            "JE X FYZ Background",
+            if (indonesia) "Layanan latar belakang perangkat" else "Device background service",
             NotificationManager.IMPORTANCE_LOW
         ).apply {
-            description = "Keeps the JE X FYZ BLE session active while the app is in the background."
+            description = if (indonesia)
+                "Menjaga koneksi Bluetooth perangkat tetap aktif saat aplikasi berada di latar belakang."
+            else
+                "Keeps the device Bluetooth connection active while the app is in the background."
             setShowBadge(false)
             setSound(null, null)
             enableVibration(false)
@@ -74,15 +79,16 @@ class JeForegroundService : Service() {
             @Suppress("DEPRECATION")
             Notification.Builder(this)
         }
-        val content = if (language.equals("indonesia", ignoreCase = true)) {
-            "Bluetooth terhubung · sesi cooler aktif"
+        val indonesia = language.equals("indonesia", ignoreCase = true)
+        val content = if (indonesia) {
+            "Bluetooth terhubung · sesi perangkat aktif"
         } else {
-            "Bluetooth connected · cooler session active"
+            "Bluetooth connected · device session active"
         }
 
         return builder
             .setJexNotificationBranding(this)
-            .setContentTitle("JE X FYZ")
+            .setContentTitle(if (indonesia) "Perangkat" else "Device")
             .setContentText(content)
             .setOngoing(true)
             .setShowWhen(false)
