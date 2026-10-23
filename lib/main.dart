@@ -4251,6 +4251,8 @@ class _DashboardScreenState extends State<DashboardScreen>
     WidgetsBinding.instance.addObserver(this);
     appAutoConnectNotifier.addListener(_handleAutoConnectPreferenceChanged);
     appLanguageNotifier.addListener(_handleLanguagePreferenceChanged);
+    // Immediately detach any stale native overlay while this app session is offline.
+    _publishFloatingTelemetry();
     WidgetsBinding.instance.addPostFrameCallback((_) => _tryAutoConnect());
     try {
       FlutterBluePlus.setOperationQueueMode(OperationQueueMode.perDevice);
