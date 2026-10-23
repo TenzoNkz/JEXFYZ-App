@@ -1,4 +1,15 @@
-## CURRENT BUILD APP EXECUTION — BUILD #128 FLUTTER TESTS + ANDROID GATE PASSED; APK BUILD IN PROGRESS — 2026-10-23 (Asia/Jakarta)
+## CURRENT BUILD APP EXECUTION — BUILD #128 APK SIGNING/ARCHIVE PASSED; RELEASE PUBLISHING IN PROGRESS — 2026-10-23 (Asia/Jakarta)
+
+- **Run/source:** [Build #128 / 39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440), exact tested source `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`, job `120264345808`, hosted runner `1000002427`, status still `in_progress`.
+- **Passed gates:** steps 1–19: setup/toolchain, architecture/security audit, dependencies, analyzer, Flutter tests, Android Gradle gate, obfuscated APK build, forced V1/V2/V3 signing, APK signature/certificate verification, stable APK filename, and corresponding-source ZIP packaging. The signing verifier step is `success`; the source archive step is `success`.
+- **Current gate:** step 20 `Publish APK and corresponding source to GitHub Release` is `in_progress`. Step 21 `Verify downloaded GitHub Release asset` remains pending. The release must not be called successful until step 21 completes and live tag/Release/assets match run source.
+- **Log retrieval:** active job logs still return `BlobNotFound`, while live step API reports completed successes for steps 15–19. Do not invent APK hash/size or test count before terminal logs and published asset data are available.
+- **Next:** wait for publication and final downloaded-asset verification, then independently fetch current Release/tag/assets and ensure exact source SHA, exactly one APK plus one source ZIP, matching hashes, ZIP source marker and downloaded APK v1/v2/v3 + expected certificate. No duplicate build while #128 active.
+- Preserve Android Gradle `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device action has occurred.
+
+---
+
+## HISTORICAL CHECKPOINT — BUILD #128 ANDROID GATE PASSED; APK BUILD IN PROGRESS
 
 - **Run/source:** [Build #128 / 39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440), tested SHA `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`; job `120264345808`, hosted runner `1000002427` (`ubuntu-24.04`), currently `in_progress`.
 - **Passed gates/steps 1–14:** toolchain + checkout, signing-secret prep, wrapper setup, architecture/security audit, dependency installation, Dart analyzer, Flutter tests, and configured Android Gradle gate. Step 13 tests passed, including the three corrected notification/device-copy source-contract assertions. Exact Flutter pass count still needs extraction from completed runner log; current active-job log endpoint remains unavailable.
