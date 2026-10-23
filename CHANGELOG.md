@@ -1,5 +1,11 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-23 — Reconcile Home notice decision and pre-Build App checkpoint (docs-only)
+
+- Corrected a stale `MEMORY_INDEX.md` sentence that still described the Home notice heading as an unresolved mismatch after the owner had settled on `Notification` (English) / `Notifikasi` (Indonesian). `APP_NOTES.md` and `DESIGN_NOTES.md` already record the resolved decision.
+- Audited the live pre-build checkpoint: `main` was at `3234cecd7903f66622e5bf1b14fdb1dfc86fcb82` when checked; guarded Build #125 / run `39905665853` remains failed before any runner step was observable, with no artifacts. Build #124 remains the latest verified release.
+- No App/Firmware source, configuration, workflow, tests, build/release, BIN/Firebase, OTA, flashing or device operations were changed or run. Documentation reconciliation does not resolve the separate Actions startup blocker.
+
 ## 2026-10-23 — Require a final memory-save pass before chat handoff (docs-only)
 
 - Strengthened both LOAD + CONTINUE prompts: before ending any substantive project chat, review the conversation since the prior checkpoint and commit new durable requirements, decisions, findings, progress, blockers, and next steps to canonical notes.
