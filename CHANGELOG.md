@@ -1,5 +1,12 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-23 — Owner clarifies DPI requirement: Settings/Connection must match Home canvas (design decision)
+
+- Owner clarified that Settings root/subpages and the Bluetooth Connection sheet must use the same uncapped 360-dp master-canvas scaling as Home, preserving physical appearance when Android display density / Smallest Width changes on the same physical screen.
+- This supersedes the interim cap-at-1.0 source patch on main (`57ebcf8d971decf399e7a4d3e5dd5bf3d605010d`, `c92b0d08a16d101abf01b448804431dc795060fd`, `25adcfed5dd24b5c41ff603797087a30e704e8ae`). Current source still uses the cap; it has not yet been changed to the new contract because the user selected `@Thinking Diskusi!` for this turn.
+- Next authorized source revision must mirror Home: `scale = maxWidth / 360.0` with no 1.0 cap, fixed logical child width 360 dp, design height and safe-area/media insets divided by scale, and a single uniform transform. Update regression expectations to width 360 / scale 420÷360 at 420 dp, and width 360 / scale 320÷360 at 320 dp. Preserve full logical child layout for narrow viewports and verify overflow.
+- The interim patch's Flutter tests, formatter/analyzer and device checks remain NOT RUN. No source, tests, build, release or device operation occurred in this Discussion turn. Build #128 (`e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`) remains the latest verified release.
+
 ## 2026-10-23 — Preserve the full logical child during narrow-screen downscaling (source implemented; tests not run)
 
 - Reviewed the initial responsive canvas patch and tightened the narrow-viewport layout: `Transform.scale` needs its child to retain the 360-dp logical size before scaling, rather than being constrained to the narrow viewport first.
