@@ -1,4 +1,15 @@
-## CURRENT BUILD APP EXECUTION — BUILD #128 FLUTTER TESTS PASSED; ANDROID GATE IN PROGRESS — 2026-10-23 (Asia/Jakarta)
+## CURRENT BUILD APP EXECUTION — BUILD #128 FLUTTER TESTS + ANDROID GATE PASSED; APK BUILD IN PROGRESS — 2026-10-23 (Asia/Jakarta)
+
+- **Run/source:** [Build #128 / 39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440), tested SHA `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`; job `120264345808`, hosted runner `1000002427` (`ubuntu-24.04`), currently `in_progress`.
+- **Passed gates/steps 1–14:** toolchain + checkout, signing-secret prep, wrapper setup, architecture/security audit, dependency installation, Dart analyzer, Flutter tests, and configured Android Gradle gate. Step 13 tests passed, including the three corrected notification/device-copy source-contract assertions. Exact Flutter pass count still needs extraction from completed runner log; current active-job log endpoint remains unavailable.
+- **Current gate:** step 15 `Build latest release APK` (`flutter build apk --release --obfuscate --split-debug-info=build/symbols`) is `in_progress`.
+- **Pending:** force V1/V2/V3 signing, APK certificate verification, corresponding source ZIP packaging, GitHub Release publication, and downloaded APK/ZIP identity/hash/source-marker/signature verification.
+- **Release remains historical Build #124 until proven otherwise:** current Release/tag still target `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`; no Build #128 assets are yet independently verified.
+- **Next:** follow step 15 onward using the live job step API. Do not launch any duplicate while #128 is active. Preserve `versionName "Telegram @horizontalzzz"`, no Firmware/BIN/Firebase/OTA/flash/device operations.
+
+---
+
+## HISTORICAL CHECKPOINT — BUILD #128 TESTS PASSED; ANDROID GATE IN PROGRESS
 
 - **Run/source:** [#128 / 39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440), target `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`, job `120264345808`, runner `1000002427`; run remains `in_progress`.
 - **Passed through step 13:** runner/toolchain setup, source checkout, production signing preparation, wrapper setup, security/architecture audit, dependency install, analyzer and Flutter tests. The previously failing Flutter test step now concludes `success` with the three corrected notification/device-copy contracts in place. Exact final test-count line will be recorded when the completed job log is available.
