@@ -11,11 +11,12 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 
 ## Active Build App/QC recovery — 2026-10-23 (Asia/Jakarta)
 
-- **Status: BUILD #126 ACTIVE; dependency install is running.** [Run 39907333312](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907333312), source SHA `806bbdb462189a94c7e3716b793ea0fb35d7f30d`, job `120262178483`, hosted runner `1000002425` on `ubuntu-24.04`.
-- **Completed gates:** steps 1–10 succeeded, including Java 17, Flutter, Gradle setup, toolchain validation, signing-secret preparation and the App security/architecture audit. Step 11 `Install dependencies` (`flutter pub get`) was `in_progress` at last observation.
-- **Pending:** analyzer, Flutter tests, Android Gradle gate, release APK, V1/V2/V3 + certificate validation, source ZIP, publication, tag/release parity and downloaded asset checksum/source-marker checks.
-- **Evidence boundary:** active run logs are not yet downloadable (`BlobNotFound` at log API), while the live step API continues to report active steps. No failure inferred from log unavailability.
-- **Checkpoint saved:** ledger commit `07c67d0fee3c222a792222476fd0f34f779505cd`; verify this handoff update and main HEAD before future actions. Do not trigger a second run while #126 remains active. Build #124 remains the latest verified package. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device activity.
+- **Status: BUILD #126 FAILED at Flutter tests; source/test repair identified.** Run [39907333312](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907333312), source SHA `806bbdb462189a94c7e3716b793ea0fb35d7f30d`; job `120262178483`, runner `1000002425`, completed failure.
+- **Passed steps:** setup through analyzer (steps 1–12), including production signing-secret preparation and architecture/security audit. Dart analyze exited 0 with 25 info diagnostics. Flutter tests produced `119 passed, 2 failed`.
+- **Concrete failures:** (1) `test/widget_test.dart:1735` expects the stale `requestNotificationPermission()` token rather than current language-aware `requestNotificationPermission(language)` handler; (2) `test/widget_test.dart:2074` expects old `Bluetooth terputus.` while the approved localization now reads `Perangkat terputus.`. Fix test assertions only; do not weaken gates or change functional source to satisfy obsolete expectations.
+- **No APK/package:** Android gate and later build/sign/publish/re-download gates were skipped. Release/tag remain on Build #124 source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`; its APK and ZIP hashes remain unchanged.
+- **Checkpoint:** Build #126 failure and exact evidence were committed in `APP_BUILD_REPORT.md` at `e23b15e2f60ca4b286890c5579a99271d993dd06`; that ledger content was re-read and verified. Verify this transfer update after commit.
+- **Next:** update the two stale assertions in `test/widget_test.dart`, commit and verify to main. Then fetch main/workflow/issue #34/Actions idle state and issue a single guarded trigger if clear. Confirm run target SHA exactly; do not run a duplicate; inspect every later gate. Preserve `versionName "Telegram @horizontalzzz"`, and perform no Firmware/BIN/Firebase/OTA/flash/device actions.
 
 ## Live repository point
 
