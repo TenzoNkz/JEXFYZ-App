@@ -24,7 +24,7 @@ GitHub memory is not an automatic transcript of this chat. A state is considered
 
 Latest durable task: the owner clarified that chat-limit recovery must continue from the last committed GitHub memory, and that durable project memory should be checkpointed during work rather than relying on a separate save command. Exactly two transfer prompts remain: Prompt 1 defaults to `Diskusi!` and can be switched by replacing its first line with `Eksekusi Full!` or `Chat Stuck!`; Prompt 2 begins with `Eksekusi Build App!`. These command names intentionally omit `@Thinking`.
 
-The prior documentation rework remains complete. The Home notice-heading mismatch stays unresolved: live source renders localized Notification / Notifikasi, while DESIGN_NOTES.md still records the fixed NOTIFY requirement. No product behavior change is included in this prompt-prefix task.
+The prior documentation rework remains complete. The Home notice-heading mismatch stays unresolved: live source renders localized Notification / Notifikasi, while DESIGN_NOTES.md still records the fixed NOTIFY requirement. The current memory-policy change is documentation-only and does not change product behavior.
 
 ## Current UI implementation / validation
 
