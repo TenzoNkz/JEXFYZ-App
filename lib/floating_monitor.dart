@@ -705,7 +705,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                     children: [
                       Text(
                         JexText.of('functions', lang),
-                        style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900),
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900),
                       ),
                       const SizedBox(height: 4),
                       ReorderableListView.builder(
@@ -762,7 +762,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                       const SizedBox(height: 10),
                       Text(
                         JexText.of('backgroundColor', lang),
-                        style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900),
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900),
                       ),
                       const SizedBox(height: 7),
                       SegmentedButton<FloatingBackgroundColor>(
@@ -788,7 +788,7 @@ class _FloatingSettingsPageState extends State<FloatingSettingsPage> with Widget
                       const SizedBox(height: 12),
                       Text(
                         JexText.of('orientation', lang),
-                        style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900),
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900),
                       ),
                       const SizedBox(height: 7),
                       SegmentedButton<bool>(

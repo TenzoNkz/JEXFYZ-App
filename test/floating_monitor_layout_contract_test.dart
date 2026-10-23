@@ -124,6 +124,22 @@ void main() {
     expect(settings, contains('size: 19'));
     expect(settings, contains('size: 16'));
 
+    final floatingSettingsStart = floating.indexOf('class _FloatingSettingsPageState');
+    final floatingSettingsEnd = floating.indexOf(
+      'class JexFixedScalePage extends StatelessWidget',
+      floatingSettingsStart,
+    );
+    expect(floatingSettingsStart, isNonNegative);
+    expect(floatingSettingsEnd, greaterThan(floatingSettingsStart));
+    final floatingSettings = floating.substring(floatingSettingsStart, floatingSettingsEnd);
+    expect(floatingSettings, contains("JexText.of('functions', lang)"));
+    expect(floatingSettings, contains("JexText.of('backgroundColor', lang)"));
+    expect(floatingSettings, contains("JexText.of('orientation', lang)"));
+    expect(floatingSettings, contains('fontSize: 11, fontWeight: FontWeight.w900'));
+    expect(floatingSettings, contains('fontSize: 10, fontWeight: FontWeight.w800'));
+    expect(floatingSettings, contains('valueLabel'));
+    expect(floatingSettings, contains('fontSize: 10, fontWeight: FontWeight.w900'));
+
     expect(floating, contains('final bool compactUi;'));
     expect(floating, contains('this.compactUi = false'));
     expect(floating, contains('buildJexCompactUiTheme(appThemeNotifier.value)'));
@@ -156,7 +172,14 @@ void main() {
     expect(connection, contains('height: 60,'));
     expect(connection, contains('fontSize: 16,'));
     expect(connection, contains('fontSize: 9.5,'));
-    expect(connection, contains('fontSize: 12,'));
+    expect(
+      connection,
+      contains("JexText.of('devices', lang),\\n                    style: TextStyle(\\n                      color: scheme.onSurfaceVariant,\\n                      fontSize: 13,"),
+    );
+    expect(
+      connection,
+      contains("unavailable ? JexText.of('connectionUnavailable', lang) : JexText.of('scanning', lang),\\n                          style: TextStyle(\\n                            color: scheme.onSurfaceVariant,\\n                            fontSize: 12,"),
+    );
     expect(connection, contains('height: 42'));
     expect(connection, contains('tightFor(width: 42, height: 42)'));
     expect(connection, contains('tightFor(width: 40, height: 40)'));

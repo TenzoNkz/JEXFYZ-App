@@ -9254,7 +9254,7 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
                     JexText.of('devices', lang),
                     style: TextStyle(
                       color: scheme.onSurfaceVariant,
-                      fontSize: 12,
+                      fontSize: 13,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -9314,7 +9314,7 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
                           unavailable ? JexText.of('connectionUnavailable', lang) : JexText.of('scanning', lang),
                           style: TextStyle(
                             color: scheme.onSurfaceVariant,
-                            fontSize: 13,
+                            fontSize: 12,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
