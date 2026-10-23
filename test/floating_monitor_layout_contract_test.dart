@@ -62,6 +62,9 @@ void main() {
     expect(floating, isNot(contains('size.toDouble().clamp(0.3, 0.8)')));
     expect(floating, isNot(contains('nativeSize.toDouble().clamp(0.3, 0.8)')));
     expect(floating, contains('nativeSize.toDouble().clamp(0.3, 1.0)'));
+    expect(floating, contains('class JexFixedScalePage extends StatelessWidget'));
+    expect(floating, contains('TextScaler.noScaling'));
+    expect(floating, contains('telemetry: floatingTelemetryNotifier.value'));
     expect(floating, contains('size.toDouble().clamp(0.3, 1.0)'));
     expect(floating, contains("maxLabel: '1.00×'"));
     expect(floating, contains('(config.opacity * 100).round()'));
@@ -90,6 +93,8 @@ void main() {
     expect(native, contains('val leftX = dp(8f * scale)'));
     expect(native, isNot(contains('val centeredX = (width - itemWidth(metric)) / 2f')));
     expect(native, contains('config.style = "letters"'));
+    expect(native, contains('config.enabled && data.connected'));
+    expect(native, contains('if (config.enabled && data.connected) ensureOverlay() else removeOverlay()'));
     expect(native, contains('config.backgroundColor == "white"'));
     expect(native, contains('coerceIn(0.3f, 1.0f)'));
     expect(native, contains('coerceIn(0.0f, 1.0f)'));
