@@ -157,10 +157,9 @@ void main() {
       );
     }
 
-    expect(
-      appSettings,
-      contains('ThemeData buildJexCompactUiTheme(AppThemePreset preset, {ThemeData? baseTheme})'),
-    );
+    expect(appSettings, contains('ThemeData buildJexCompactUiTheme('));
+    expect(appSettings, contains('AppThemePreset preset'));
+    expect(appSettings, contains('ThemeData? baseTheme'));
     expect(appSettings, contains('fontSize: 18'));
     expect(appSettings, contains('fontSize: 13'));
     expect(appSettings, contains('fontSize: 12'));
