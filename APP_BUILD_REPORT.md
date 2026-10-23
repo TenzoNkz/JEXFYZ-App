@@ -1,3 +1,14 @@
+## CURRENT BUILD APP EXECUTION — BUILD #126 ACTIVE — 2026-10-23 (Asia/Jakarta)
+
+- **Official trigger recovered:** [Run #126 / 39907333312](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907333312) was created by the guarded `issues/reopened` event on issue #34. It targets exact live main/source SHA `806bbdb462189a94c7e3716b793ea0fb35d7f30d`; workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`.
+- **Infrastructure recovery evidence:** job `build` / ID `120262178483` has hosted runner ID `1000002425`, runner name `GitHub Actions 1000002425`, label `ubuntu-24.04`; steps 1 (Set up job) and 2 (Checkout repository) completed successfully; step 3 (Set up Java 17) was `in_progress` at the latest read. This independently proves the workflow progressed past the prior #125 pre-runner failure; it does not imply any later gate passed.
+- **Live state at checkpoint:** run status `in_progress`; run started `2026-10-23T05:43:22Z`, job started `2026-10-23T05:43:26Z`. No conclusions yet for setup, security audit, dependency install, analyzer, Flutter tests, Android gate, APK/signing, source archive or release/download gates.
+- **Last completed gates on #126:** GitHub runner setup and checkout only. **Current gate:** Java 17 setup.
+- **Historical boundary:** Build #125 / run `39905665853` remains a failed pre-runner attempt with no code-gate evidence. Its failure record is preserved below. Build #124 remains the last verified release until the #126 package gates and live release parity are all confirmed.
+- **Next action:** inspect run #126's live jobs/steps/logs and append actual step/gate outcomes as they progress. Do not start another run while #126 is active. No App source/config repair or gate weakening has been made. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device operation.
+
+---
+
 ## CURRENT BUILD APP RECOVERY — RETRY PREFLIGHT — 2026-10-23 (Asia/Jakarta)
 
 - **Authorization:** owner re-issued `@Thinking Eksekusi Build App!` after reporting the Actions startup issue fixed. This authorizes one guarded App Build/QC verification attempt. No Firmware/device/OTA/BIN/Firebase operation is included.
