@@ -11,6 +11,24 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 - **QC:** 122 Flutter tests passed; Dart analyzer exited 0 with 25 informational diagnostics; configured Android Gradle gate reported `BUILD SUCCESSFUL in 1m 27s`. Native Android JUnit tasks were `NO-SOURCE`, so no native JUnit test cases executed.
 - **Field-device status (USER-REPORTED):** the owner previously reported installing/overwriting Build #128. The exact installed APK identity was not independently read; do not assume Build #129 is installed. Firmware V7.1 compile/Online OTA is also USER-REPORTED. CI is not physical-device, Firmware/BIN, OTA, BLE, cooling or safety proof.
 
+## Canonical release-memory refresh — Build #129
+
+After the verified Build #129 release, all current-state/design/handover index notes were refreshed and re-read from `main` to remove stale Build #128 / “validation pending” statuses:
+
+- `APP_BUILD_REPORT.md`: successful Build #129 gate/artifact ledger — [`71880ce0a72289decb74a05e61e9381c9d8a0748`](https://github.com/TenzoNkz/JEXFYZ-App/commit/71880ce0a72289decb74a05e61e9381c9d8a0748).
+- `BUILD_NOTES.md`: [`cdc898f25f87f3697b3059a53d2c9c999167898f`](https://github.com/TenzoNkz/JEXFYZ-App/commit/cdc898f25f87f3697b3059a53d2c9c999167898f).
+- `PROJECT_STATE.md`: [`0867f4df83fb8e49c57024288d4dcc706c8c3069`](https://github.com/TenzoNkz/JEXFYZ-App/commit/0867f4df83fb8e49c57024288d4dcc706c8c3069).
+- `APP_NOTES.md`: [`c3e94c292e2aceb8d029140f6a2a0abbe1dcaae7`](https://github.com/TenzoNkz/JEXFYZ-App/commit/c3e94c292e2aceb8d029140f6a2a0abbe1dcaae7).
+- `DESIGN_NOTES.md`: [`e798ae0c09dfa6bcdf42ce1645a5f2fa7e04870b`](https://github.com/TenzoNkz/JEXFYZ-App/commit/e798ae0c09dfa6bcdf42ce1645a5f2fa7e04870b).
+- `HANDOVER.md`: [`203ab66417dae65b153856b7c96c063d7792b660`](https://github.com/TenzoNkz/JEXFYZ-App/commit/203ab66417dae65b153856b7c96c063d7792b660).
+- `MEMORY_INDEX.md`: [`787773ec5be482acf78b77176df3a5b81a553b85`](https://github.com/TenzoNkz/JEXFYZ-App/commit/787773ec5be482acf78b77176df3a5b81a553b85).
+- `README.md`: [`6485cb7344d4d7800bb7180a7112c766abfd2b09`](https://github.com/TenzoNkz/JEXFYZ-App/commit/6485cb7344d4d7800bb7180a7112c766abfd2b09).
+- `CHANGELOG.md`: [`f403feec7f4664c43ebbf12c0413272f90429c3c`](https://github.com/TenzoNkz/JEXFYZ-App/commit/f403feec7f4664c43ebbf12c0413272f90429c3c).
+
+All these writes were verified by re-fetching their resulting file contents. The release remains bound to tested/package source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`; subsequent commits are documentation-only and do not change the tested artifact.
+
+---
+
 ## Latest App Build result — SUCCESS — Build #129 — 2026-10-23
 
 - [GitHub Actions run #129](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446), job `120319250463`, runner `1000002428` (`ubuntu-24.04`). Exact tested/package source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`.
