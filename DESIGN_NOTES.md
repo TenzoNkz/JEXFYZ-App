@@ -42,7 +42,7 @@ This document stores durable design constraints, not a build history. Live App s
 
 - The intended notice is a single concise latest-event message, not a concatenated state summary. Ordinary temperature samples do not create notices; Hotside at/above the limit has safety priority. Delayed ACKs must not replace newer telemetry-confirmed events.
 - User-facing notice copy is professional, actionable and localized. Never display raw reason IDs, internal underscore tokens, OTA ERROR/CODE text or internal event suffixes.
-- A previous approved note says the heading must always be exactly NOTIFY in both languages. However, live source currently renders the localized key Notification / Notifikasi. The code and this design note are not aligned; preserve this as an OPEN CONTRACT MISMATCH until a scoped UI task resolves it. Do not silently claim either representation is fully synchronized.
+- **Resolved design decision (2026-10-23):** the Home notice heading follows the selected App language — `Notification` in English and `Notifikasi` in Indonesian. Keep this localized heading aligned with live source; do not use the former fixed `NOTIFY` wording. This is a documentation/design decision only; it does not authorize source edits or a build.
 
 ## LED semantics
 
