@@ -4,10 +4,11 @@ Last reconciled: 2026-10-23 (Asia/Jakarta). This index defines which document is
 
 ## Current production checkpoint
 
-- Baseline reported by the owner: Android App Build #124 and Firmware V7.1 successfully compiled/installed through Online OTA on the sold/shipped unit. The Firmware compile/OTA statement is USER-REPORTED.
-- Independently verified App artifact: [Build #124 / Actions run 39386733061](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39386733061), package source 7d4e7262c6a3474eefa8ccb58b08f070df3ac15a. APK SHA-256 c0738d3607b120b716841610c849d9608f954a5f1f28017a8018790f4f4b6318; source ZIP SHA-256 e00ac34cb6cf7f04a5485c8ab8ee74d4acc1b20dc1a213ac733a8bf8c43cc152.
-- Live documentation rework began from main HEAD 11a0ef162f1c2945704229ed7697dc70e7617e9b. Fetch live HEAD/tree before using this or any saved source hash as current.
-- Current source-only App changes for fixed Settings scaling, Device/Perangkat copy, BLE-gated Floating Monitor and language-synchronized notifications are in source but have not been validated by a new App Build since Build #124. No build/release was run during this documentation rework.
+- **Field baseline reported by the owner:** the sold/shipped unit uses Android App Build #124 and Firmware V7.1, reportedly compiled and installed through Online OTA. Firmware compile/OTA and physical-unit state remain USER-REPORTED; Build #128 has not been independently observed installed on that unit.
+- **Latest independently verified App release:** [Build #128 / Actions run 39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440), exact package source `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`. Release ID `403010611`; live Release metadata and `refs/tags/jexfyz-latest` target the same source.
+- **APK:** asset ID `668133495`, 54,751,323 bytes, SHA-256 `2f5fdf4ffab0eccac3db886855b34f8c2c6c83afb54d7088fd2f8b578d322c5b`. **Corresponding source ZIP:** asset ID `668133492`, 2,877,957 bytes, SHA-256 `9b740671f7e8d3b9d4cfc1b1e5f3200af905ba207d4a6c8a6b27114f39ec32f4`.
+- Build #128 passed all 21 workflow gates, 121 Flutter tests, analyzer (25 informational diagnostics), configured Android Gradle gate, APK V1/V2/V3 signing and expected certificate verification, matching source archive, exact tag/release parity and downloaded asset checksum/source-marker/signature checks. Native Android JUnit tasks were NO-SOURCE.
+- The App/UI implementation that was source-only after Build #124 (Settings scaling, Device/Perangkat terminology, BLE-gated Floating Monitor and language-synchronized Android notifications) is now included in Build #128 and has CI validation. App CI does not prove physical-device behavior or Firmware/OTA/BIN identity.
 - Resolved design alignment (2026-10-23): the owner confirmed the Home notice heading follows the selected App language — `Notification` in English and `Notifikasi` in Indonesian. `APP_NOTES.md` and `DESIGN_NOTES.md` now agree with the localization contract. This is a documentation/design decision only; no new runtime validation or release is implied.
 
 ## Recovery protocol
