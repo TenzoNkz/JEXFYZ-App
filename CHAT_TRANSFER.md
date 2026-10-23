@@ -11,11 +11,10 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 
 ## Active Build App/QC recovery — 2026-10-23 (Asia/Jakarta)
 
-- **Status: Build #127 failed at Flutter tests (120 passed / 1 failed); all three stale assertions have now been corrected in source. New run not yet triggered at this checkpoint.**
-- **Latest repair commit:** `b57e2f9a74e58aaed694ac1f5a660e3b9b0d895a` updates the remaining Indonesian notification expectation to `Bluetooth terhubung · sesi perangkat aktif`. Earlier fixes align the permission bridge assertion and `Perangkat terputus.` copy. All are static-test expectation updates; runtime App and workflow gates were not changed.
-- **Test state:** the repaired tests have not yet run on this newest SHA. Build #127 analyzer passed (25 info diagnostics); downstream Android/APK/sign/release gates were skipped.
-- **Checkpoint:** report update committed at `1318f3c104ee32b4eca29e7eb78b85eed8964af9` and re-read successfully. Verify this handoff commit after writing. Before one retry, verify current main, existing workflow guard, issue #34 and no active/queued/waiting runs; then use one official issue trigger only. Do not retry blindly or weaken checks.
-- Build #124 remains latest verified package until the newest source completes every gate. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device operations.
+- **Status: BUILD #128 QUEUED.** Run [39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440) targets `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`, matching live main at trigger time. Official issue #34 reopen event used the unchanged guarded workflow.
+- **Test repairs included:** three stale assertions for the notification-permission bridge and bilingual Device/Perangkat copy were corrected; #126 had 119/2 test result, #127 had 120/1. Run #128 must validate all tests.
+- **Current gate:** queued; runner steps not yet confirmed. No duplicate trigger while #128 queued/active. Build #124 remains last verified release.
+- **Checkpoint:** ledger commit `c60cde210ff08c4af6ab92b7454ceba1173ec0da` is saved and re-read; verify this handoff commit too. Next monitor real steps/logs, then every downstream Android/APK/signing/archive/Release/tag/download gate. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device operations.
 
 ## Live repository point
 
