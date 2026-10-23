@@ -10,7 +10,15 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 - Build #128 passed all 21 workflow gates, 121 Flutter tests, analyzer (25 informational diagnostics), the configured Android Gradle gate, V1/V2/V3 + expected certificate checks, source-marker/ZIP checks and independent downloaded APK/source checksum verification. Native Android JUnit tasks were NO-SOURCE.
 - App release CI is not evidence of Firmware compile/BIN identity, installation on the sold unit, OTA apply/reboot, BLE recovery or thermal/electrical behavior.
 
-## Active Build App/QC operation — BUILD #129 ACTIVE; FLUTTER TESTS PASSED — 2026-10-23 (Asia/Jakarta)
+## Active Build App/QC operation — BUILD #129 ACTIVE; FLUTTER AND ANDROID GATES PASSED — 2026-10-23 (Asia/Jakarta)
+
+- **Run:** [#129 / 39925045446](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446), source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`, job `120319250463`, runner `1000002428`, status `in_progress`.
+- **Passed:** steps 1–14. Analyzer and full Flutter tests passed, including the new physical-size/DPI regression test. Android configured Gradle gate passed at `2026-10-23T08:33:08Z`; exact aggregate test count and Android NO-SOURCE details await completed logs.
+- **Current:** release APK build (step 15) is `in_progress`. Signing, source archive, GitHub Release/tag parity and downloaded APK/source checksum/signature gates remain pending.
+- **Checkpoint:** ledger commit `a67cc3a2ee6f9736d4e519991767d6d3d5528e94` committed and re-read. Verify this handoff update after commit. No duplicate trigger while #129 runs. Build #128 remains latest verified release until the full #129 package gates pass.
+- Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device operations.
+
+
 
 - **Run:** [#129 / 39925045446](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446), source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`, job `120319250463`, runner `1000002428`, run `in_progress`.
 - **Passed:** setup/checkout, Java 17/Flutter/Gradle, toolchain validation, local.properties, production-signing preparation, generated wrapper, security/architecture audit, dependencies, Dart analyzer and Flutter tests (steps 1–13). The new density regression test executes within the passed Flutter suite. Aggregate test count awaits the terminal job log.
