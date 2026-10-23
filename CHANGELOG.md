@@ -1,5 +1,13 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-23 — Preserve the full logical child during narrow-screen downscaling (source implemented; tests not run)
+
+- Reviewed the initial responsive canvas patch and tightened the narrow-viewport layout: `Transform.scale` needs its child to retain the 360-dp logical size before scaling, rather than being constrained to the narrow viewport first.
+- Commit [`25adcfed5dd24b5c41ff603797087a30e704e8ae`](https://github.com/TenzoNkz/JEXFYZ-App/commit/25adcfed5dd24b5c41ff603797087a30e704e8ae) places an `OverflowBox` with the computed logical width/height inside the transform. On wide screens it matches the available width at 1×; on a 320-dp viewport it permits a 360-dp logical child and applies the 320/360 transform before clipping to the viewport.
+- `test/floating_monitor_layout_contract_test.dart` now asserts both child render width and transform factor for 420-dp and 320-dp viewports, in addition to source-contract assertions. This refines the prior source/test commits `57ebcf8d971decf399e7a4d3e5dd5bf3d605010d` and `c92b0d08a16d101abf01b448804431dc795060fd`.
+- Static checks after this refinement verified all expected source/test anchors, one `JexFixedScalePage` definition, and removal of the old uncapped scale expression. Flutter tests, `dart format`, analyzer, full Flutter suite and device UI checks remain NOT RUN because Flutter/Dart tools are absent and network access could not fetch them. Build #128 remains the latest verified package; the patch is not released.
+- No App Build/release, Firmware/BIN/Firebase, OTA, flash or device operation occurred. Next validation: format modified Dart files, run the targeted widget test, analyze and run the full Flutter suite in a Flutter-enabled environment before requesting a separate App Build.
+
 ## 2026-10-23 — Cap Settings/Connection canvas scaling (source implemented; tests not run)
 
 - Owner authorized `@Thinking Eksekusi Full!` to correct the Settings page and Bluetooth Connection sheet looking oversized/zoomed.
