@@ -8,7 +8,7 @@ Last reconciled: 2026-10-23 (Asia/Jakarta). This index defines which document is
 - Independently verified App artifact: [Build #124 / Actions run 39386733061](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39386733061), package source 7d4e7262c6a3474eefa8ccb58b08f070df3ac15a. APK SHA-256 c0738d3607b120b716841610c849d9608f954a5f1f28017a8018790f4f4b6318; source ZIP SHA-256 e00ac34cb6cf7f04a5485c8ab8ee74d4acc1b20dc1a213ac733a8bf8c43cc152.
 - Live documentation rework began from main HEAD 11a0ef162f1c2945704229ed7697dc70e7617e9b. Fetch live HEAD/tree before using this or any saved source hash as current.
 - Current source-only App changes for fixed Settings scaling, Device/Perangkat copy, BLE-gated Floating Monitor and language-synchronized notifications are in source but have not been validated by a new App Build since Build #124. No build/release was run during this documentation rework.
-- Important audit finding: live source currently returns Notification / Notifikasi for the Home notice heading via the localization key; DESIGN_NOTES.md contains an older rule saying the heading must always be exactly NOTIFY in both languages. This UI contract mismatch is recorded for an explicit follow-up; this docs task does not change App behavior.
+- Resolved design alignment (2026-10-23): the owner confirmed the Home notice heading follows the selected App language — `Notification` in English and `Notifikasi` in Indonesian. `APP_NOTES.md` and `DESIGN_NOTES.md` now agree with the localization contract. This is a documentation/design decision only; no new runtime validation or release is implied.
 
 ## Recovery protocol
 
