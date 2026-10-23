@@ -4418,13 +4418,18 @@ class _DashboardScreenState extends State<DashboardScreen>
   Future<void> _restoreFloatingMonitorAfterSync() async {
     if (_floatingStartPending || _floatingStartAttemptedForSession) return;
     _floatingStartPending = true;
-    _floatingStartAttemptedForSession = true;
     try {
       final config = floatingConfigNotifier.value;
       if (!mounted || !connected || !config.enabled) return;
-      if (!await FloatingBridge.hasPermission()) return;
+      // Permission may be granted after Android Settings returns without a BLE reconnect.
+      // Leave this attempt retryable until the public overlay permission is available.
+      if (!await FloatingBridge.hasPermission()) {
+        _floatingStartAttemptedForSession = false;
+        return;
+      }
       final currentTelemetry = floatingTelemetryNotifier.value;
       if (!currentTelemetry.connected || !connected) return;
+      _floatingStartAttemptedForSession = true;
       final started = await FloatingBridge.start(config, telemetry: currentTelemetry);
       if (!started) return;
       final deadline = DateTime.now().add(const Duration(seconds: 3));
