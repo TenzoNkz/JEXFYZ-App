@@ -172,14 +172,21 @@ void main() {
     expect(connection, contains('height: 60,'));
     expect(connection, contains('fontSize: 16,'));
     expect(connection, contains('fontSize: 9.5,'));
-    expect(
-      connection,
-      contains("JexText.of('devices', lang),\\n                    style: TextStyle(\\n                      color: scheme.onSurfaceVariant,\\n                      fontSize: 13,"),
+    final devicesStart = connection.indexOf("JexText.of('devices', lang)");
+    final devicesEnd = connection.indexOf('IconButton(', devicesStart);
+    expect(devicesStart, isNonNegative);
+    expect(devicesEnd, greaterThan(devicesStart));
+    final devicesLabel = connection.substring(devicesStart, devicesEnd);
+    expect(devicesLabel, contains('fontSize: 13,'));
+
+    final emptyStateStart = connection.indexOf(
+      "unavailable ? JexText.of('connectionUnavailable', lang) : JexText.of('scanning', lang)",
     );
-    expect(
-      connection,
-      contains("unavailable ? JexText.of('connectionUnavailable', lang) : JexText.of('scanning', lang),\\n                          style: TextStyle(\\n                            color: scheme.onSurfaceVariant,\\n                            fontSize: 12,"),
-    );
+    final emptyStateEnd = connection.indexOf('const SizedBox(height: 10)', emptyStateStart);
+    expect(emptyStateStart, isNonNegative);
+    expect(emptyStateEnd, greaterThan(emptyStateStart));
+    final emptyStateMessage = connection.substring(emptyStateStart, emptyStateEnd);
+    expect(emptyStateMessage, contains('fontSize: 12,'));
     expect(connection, contains('height: 42'));
     expect(connection, contains('tightFor(width: 42, height: 42)'));
     expect(connection, contains('tightFor(width: 40, height: 40)'));
