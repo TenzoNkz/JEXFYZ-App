@@ -1,4 +1,14 @@
-## CURRENT BUILD APP EXECUTION — BUILD #129 FLUTTER TESTS PASSED; ANDROID GATE IN PROGRESS — 2026-10-23 (Asia/Jakarta)
+## CURRENT BUILD APP EXECUTION — BUILD #129 ANDROID GATE PASSED; APK BUILD IN PROGRESS — 2026-10-23 (Asia/Jakarta)
+
+- **Run/source:** [#129 / 39925045446](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446), exact source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`, job `120319250463`, hosted runner `1000002428`; current job status `in_progress`.
+- **Passed steps 1–14:** toolchain, signing preparation, security/architecture audit, dependency install, Dart analyzer, full Flutter tests, and Android configured Gradle gate. In particular, step 13 passed and includes the new fixed-physical-size density regression test for 420-dp and 320-dp viewport widths. Exact aggregate Flutter pass count is not yet available because active job logs remain unavailable.
+- **Android configured gate:** step 14 `./gradlew --no-daemon :app:testDebugUnitTest` concluded `success` at `2026-10-23T08:33:08Z`. Native Android test-task execution details will be recorded from the final runner log.
+- **Current gate:** step 15 `Build latest release APK` is `in_progress`. Step 16 V1/V2/V3 signing, step 17 signature/certificate verification, source ZIP, publication/tag and downloaded-asset validation are pending.
+- **Next:** follow the same run; do not trigger another. The currently published Release/tag remain on Build #128 source until #129 passes all checks. Preserve `versionName "Telegram @horizontalzzz"`, no Firmware/BIN/Firebase/OTA/flash/device activity.
+
+---
+
+## HISTORICAL CHECKPOINT — BUILD #129 FLUTTER TESTS PASSED; ANDROID GATE IN PROGRESS
 
 - **Run/source:** [#129 / 39925045446](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446), exact tested checkout `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`, job `120319250463`, hosted runner `1000002428`, status `in_progress`.
 - **Passed steps 1–13:** runner/toolchain and local.properties setup, production signing preparation, wrapper setup, App security/architecture audit, dependency installation, Dart analyzer and **full Flutter test step**. The new density-regression test `Fixed-scale pages match the Home canvas across display-density changes` is included in this successful test step; the final aggregate pass count awaits terminal log availability.
