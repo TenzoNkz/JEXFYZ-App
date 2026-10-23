@@ -4,7 +4,7 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 
 ## Product/release baseline
 
-- **Field unit (USER-REPORTED):** the sold/shipped unit remains reported at App Build #124 + Firmware V7.1, compiled/applied through Online OTA. Build #128 has not been independently observed installed on that physical unit; avoid inferring field behavior from CI.
+- **Latest field update (USER-REPORTED):** the owner says they installed/overwrote their App with Build #128 and shared screenshots/video. The exact installed APK identity was not independently read from the device. Firmware V7.1 compile/Online OTA remains USER-REPORTED; avoid inferring Firmware/thermal/OTA behavior from App CI.
 - **Latest verified App release:** [Build #128 / run 39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440), packaged source `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`. Release ID `403010611`; Release metadata and `refs/tags/jexfyz-latest` both target that exact source SHA.
 - APK: [JEXFYZ-release.apk](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk), 54,751,323 bytes, SHA-256 `2f5fdf4ffab0eccac3db886855b34f8c2c6c83afb54d7088fd2f8b578d322c5b`. Corresponding source ZIP: [JEXFYZ-corresponding-source.zip](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip), 2,877,957 bytes, SHA-256 `9b740671f7e8d3b9d4cfc1b1e5f3200af905ba207d4a6c8a6b27114f39ec32f4`.
 - Build #128 passed all 21 workflow gates, 121 Flutter tests, analyzer (25 informational diagnostics), the configured Android Gradle gate, V1/V2/V3 + expected certificate checks, source-marker/ZIP checks and independent downloaded APK/source checksum verification. Native Android JUnit tasks were NO-SOURCE.
@@ -61,6 +61,15 @@ Source-only UI implementation on main includes:
 - OTA result copy is localized at display time; OTA protocol/transport is unchanged.
 
 Build #128 / run 39908023440 on source `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3` has now executed the current source contracts: 121 Flutter tests passed; Dart analyzer exited 0 with 25 informational diagnostics; the configured Android Gradle gate passed. Obfuscated APK build, V1/V2/V3 production signing/certificate verification, source ZIP marker/integrity, exact Release/tag target, exactly one APK plus one source ZIP, and downloaded asset checksum/signature checks also passed. Physical-device BLE/overlay/notification presentation and Firmware/OTA behavior remain unverified by CI.
+
+## Active Discussion — Settings / Connection UI scaling — 2026-10-23
+
+- **Mode/scope:** current user selected `@Thinking Diskusi!`. Read-only for executable source, tests, config, workflow and builds; canonical project-memory docs may be updated. No source/test/build change has been made for this request.
+- **Owner feedback:** supplied screenshots/video show Settings and the Bluetooth Connection bottom sheet looking too large, as if zoomed, and ask for a modest correction to standard sizing. Owner reports Build #128 has been installed/overwritten; exact installed package identity is not independently inspected.
+- **Source finding:** the reviewed live files `lib/main.dart`, `lib/floating_monitor.dart`, and `lib/app_settings.dart` match the Build #128 package source blob-for-blob. `JexFixedScalePage` in `lib/floating_monitor.dart` currently calculates `scale = constraints.maxWidth / 360.0` then transforms its entire child. It is used by Settings/routes and the BLE Connection sheet; when viewport width exceeds 360 logical dp, typography, spacing, icons and controls are enlarged together even though system text scaling is disabled. This is a concrete likely cause of the reported zoomed appearance.
+- **Proposed minimal source correction (not yet applied):** cap the wrapper scale at 1.0 on widths above 360 dp, but adjust the wrapper's logical child width to the available width so it still fills the screen without side gutters; preserve proportional down-scaling only for narrower screens. Avoid individually reducing every font size before fixing the common transform. Keep existing language, layout hierarchy, BLE behavior and controls unchanged.
+- **Validation plan under a future explicit `@Thinking Eksekusi Full!`:** update the wrapper and relevant source-contract/widget tests; run Dart formatting/analyze and Flutter tests; check Settings and Connection modal on narrow and standard/wide logical widths in English and Indonesian with no overflow. This does not authorize App Build/release. If an installable release is wanted after that patch, request `@Thinking Eksekusi Build App!` separately.
+- **Current release baseline:** Build #128 / run `39908023440`, package source `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`, remains the latest verified release. A new source patch has not yet been made or released.
 
 ## Permanent technical boundaries
 
