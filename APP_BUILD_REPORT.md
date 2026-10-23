@@ -1,4 +1,15 @@
-## CURRENT BUILD APP EXECUTION — BUILD #127 FAILED AT FLUTTER TEST GATE — 2026-10-23 (Asia/Jakarta)
+## CURRENT BUILD APP EXECUTION — TWO TEST REPAIRS VERIFIED IN SOURCE; RETRY PREFLIGHT — 2026-10-23 (Asia/Jakarta)
+
+- **Most recent attempt:** Build #127 / [run 39907723349](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907723349) completed `failure` at Flutter tests: 120 passed, 1 failed. Setup through analyzer passed; analyzer exited 0 with 25 info diagnostics. Android/APK/signing/release gates were skipped.
+- **Exact remaining failure repaired:** the notification contract expected obsolete `Bluetooth terhubung · sesi cooler aktif`; actual current `JeForegroundService.kt` text is `Bluetooth terhubung · sesi perangkat aktif`, matching the approved Device/Perangkat terminology. Fix commit [`b57e2f9a74e58aaed694ac1f5a660e3b9b0d895a`](https://github.com/TenzoNkz/JEXFYZ-App/commit/b57e2f9a74e58aaed694ac1f5a660e3b9b0d895a) updates that exact assertion in `test/widget_test.dart`.
+- **All known stale assertions from #126/#127 corrected:** (a) notification permission bridge now expects `result.success(requestNotificationPermission(language))`; (b) home disconnect localization expects `Perangkat terputus.`; (c) Indonesian foreground BLE notification expects `Bluetooth terhubung · sesi perangkat aktif`. These are source-contract test corrections; runtime app behavior and workflow gates remain unchanged.
+- **Fix verification:** live `test/widget_test.dart` was re-fetched after commit; blob SHA `b3a33a3ef9aa4d2b4bb57f0641b7314145e5a041`. The repaired test suite has **not yet been run** on the latest revision. The next guarded build must validate all assertions before any downstream gate.
+- **Before retry:** re-fetch live main, workflow guard, issue #34 owner/title/token, Actions active/queued/waiting state and Release/tag parity. Trigger one guarded issue reopen only if all checks remain valid. No retry is in flight as of the last verified #127 result.
+- Build #124 remains the latest verified released package; no #126 or #127 artifact was produced. Preserve `versionName "Telegram @horizontalzzz"`, and do not perform Firmware/BIN/Firebase/OTA/flash/device work.
+
+---
+
+## ATTEMPT RECORD — BUILD #127 FAILED AT FLUTTER TEST GATE — 2026-10-23 (Asia/Jakarta)
 
 - **Attempt:** [Build #127 / run 39907723349](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907723349) targeted main SHA `74472861b868ba69caed97233d86d40424f2610f`; job `120263398179`, hosted runner `1000002426`. Run completed `failure`.
 - **Passed:** setup, checkout, Java/Flutter/Gradle, toolchain validation, local.properties, production-signing preparation, wrapper setup, security/architecture audit, dependency installation, Dart analyzer (exit 0, 25 info-level diagnostics). Flutter tests: **120 passed, 1 failed**.
