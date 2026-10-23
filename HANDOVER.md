@@ -2,32 +2,28 @@
 
 Updated: 2026-10-23 (Asia/Jakarta).
 
-## Baseline
+## Baseline and evidence
 
-- Product owner reports the shipped unit uses Android App Build #124 and Firmware V7.1, compiled and installed through Online OTA.
-- Verified App package: [Build #124 / run 39386733061](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39386733061), source 7d4e7262c6a3474eefa8ccb58b08f070df3ac15a.
-- These are two different evidence types: App release is CI-verified; Firmware compile/OTA is USER-REPORTED. Exact BIN identity and physical behavior remain unverified.
-- Latest source-only UI changes on main are not yet covered by a newer App Build. This docs task does not run a build.
+- **Field unit (USER-REPORTED):** the sold/shipped unit remains reported at Android App Build #124 + Firmware V7.1, reportedly compiled and applied through Online OTA. No physical installation/behavior evidence was produced by the App Build run.
+- **Latest verified App package:** [Build #128 / GitHub Actions run 39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440), exact source commit `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`. All 21 workflow steps and post-job cleanup succeeded.
+- **Validation:** 121 Flutter tests passed; Dart analyzer exited 0 with 25 informational diagnostics; the configured Android Gradle gate reported BUILD SUCCESSFUL. Native Android JUnit tasks were NO-SOURCE.
+- **Release:** [JEXFYZ-release.apk](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk), 54,751,323 bytes, SHA-256 `2f5fdf4ffab0eccac3db886855b34f8c2c6c83afb54d7088fd2f8b578d322c5b`. [Corresponding source ZIP](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip), 2,877,957 bytes, SHA-256 `9b740671f7e8d3b9d4cfc1b1e5f3200af905ba207d4a6c8a6b27114f39ec32f4`.
+- **Identity verified:** Release ID `403010611` and live `refs/tags/jexfyz-latest` both target `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`. Workflow confirmed exactly one APK and one corresponding source ZIP, checksum/source-marker match, and downloaded APK signature V1/V2/V3 with expected production certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`.
+- **Build-only boundary:** no Firmware compile, BIN generation/publication, production Firebase edit, OTA, flashing or device operation occurred. CI success does not prove real-device UI, BLE/cooling behavior, Firmware/BIN identity or physical safety.
 
 ## Current handoff
 
-This checkpoint is a pre-Build App documentation consistency audit under `@Thinking Diskusi!`. The Home notice heading decision is settled: `Notification` in English and `Notifikasi` in Indonesian. A stale sentence in MEMORY_INDEX.md that still described this as an open mismatch was corrected; APP_NOTES.md and DESIGN_NOTES.md already held the resolved contract.
+The authorized `@Thinking Eksekusi Build App!` operation is complete. Build #125 was a pre-runner startup failure; #126 and #127 reached their CI runner but failed on stale source-contract test assertions. Those test-only expectation mismatches were corrected without weakening any gate. Build #128 then passed the full guarded App release workflow and its downloaded-asset verification. Full attempt-by-attempt evidence is in `APP_BUILD_REPORT.md`; the rolling checkpoint is `CHAT_TRANSFER.md`.
 
-The latest guarded App attempt is Build #125 / run 39905665853. Live GitHub reports a job failure before any runner step (`runner_id=0`, no runner name, no steps or artifacts). The owner now reports the Actions issue has been fixed and is working; classify this as `USER-REPORTED` because live Actions still shows #125 as newest and there is no later run proving runner recovery. Build #124 / run 39386733061 remains the latest verified release; no package was produced for #125.
-
-For a future Build App operation, read APP_BUILD_REPORT.md and freshly verify Actions/Release/tag state. Only after separate `@Thinking Eksekusi Build App!` authorization, preflight that no run is active, use the existing issue-only trigger once, and require a new run to reach real runner steps with `head_sha` equal to freshly verified main. Do not trigger or build in Discussion.
-
-Important boundary: conversation text is not automatically committed to GitHub. Only actual, verified commits are durable. This owner report does not itself validate the App source, create a package, or independently prove Actions recovery.
+The latest App release contains the source-only changes previously awaiting CI validation: Home-matched Settings scaling, generic Device/Perangkat copy, offline-safe BLE-gated Floating Monitor behavior, and Android notification channel language synchronization. The Home heading follows the selected App language: `Notification` in English and `Notifikasi` in Indonesian. Do not describe these changes as installed on the shipped field unit without new evidence.
 
 ## Next continuation
 
-1. Read CHAT_TRANSFER.md fully, then fetch the current main HEAD/commit metadata and complete recursive tree. Documentation commits from this audit mean the previously observed HEAD is now an audit baseline, not the final current HEAD.
-2. Read CHAT_RULES.md, MEMORY_INDEX.md, PROJECT_STATE.md, HANDOVER.md and BUILD_NOTES.md; for Build App, also read the entire guarded workflow and current APP_BUILD_REPORT.md, then verify live Actions jobs/logs, Release metadata/assets and tag target.
-3. Do not rewrite every note indiscriminately. Keep current-state docs synchronized; preserve APP_BUILD_REPORT.md and CHANGELOG.md as history ledgers and leave archive/*.md immutable.
-4. The next Build App operation remains blocked on the unexplained #125 pre-runner failure. Obtain evidence-backed confirmation/diagnostics that the Actions startup issue is resolved before another attempt. Then require the owner's explicit `@Thinking Eksekusi Build App!` authorization, fetch fresh main, confirm no run is active, and use only the existing issue-only guarded trigger. Do not add a push/PR/manual-dispatch bypass or weaken gates.
-5. Home notice heading is resolved: use `Notification` in English and `Notifikasi` in Indonesian. This decision does not authorize executable changes.
-6. Save durable memory at each decision/milestone and at every substantive Discussion/Eksekusi completion/blockage. During Build App, update APP_BUILD_REPORT.md as actual attempts progress and refresh CHAT_TRANSFER.md at each logical milestone. Verify each checkpoint commit before claiming it was saved; if interrupted before a verified commit, recover only the last verified state.
+1. On a new task, fetch the live `main` HEAD/tree and current Actions/Release/tag state; do not assume a saved SHA is still the live HEAD.
+2. Read `CHAT_RULES.md`, `MEMORY_INDEX.md`, `PROJECT_STATE.md`, `BUILD_NOTES.md` and the full active-task reference.
+3. No duplicate build is needed for the current source; do not start another release unless the owner explicitly requests a new one. Any future App release must use the unchanged guarded issue-only trigger and full gate set, preserve Android `versionName "Telegram @horizontalzzz"`, and verify downloaded asset identity/checksums.
+4. Keep App CI evidence separate from user-reported Firmware V7.1/Online OTA, physical-device behavior, and any Firmware/BIN/Firebase/OTA operation; those remain outside App Build authorization.
 
 ## Safety boundary
 
-No App Build/release, Firmware compile, BIN/Firebase update, OTA, flash or device action is included in this handover. Do not treat @Thinking Eksekusi Full! as Build App authorization.
+This handover authorizes no Firmware compilation, BIN generation/publication, Firebase production metadata change, OTA, flash or device operation. Those require separate explicit permission.
