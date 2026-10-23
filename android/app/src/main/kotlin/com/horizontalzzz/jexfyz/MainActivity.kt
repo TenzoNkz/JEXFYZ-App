@@ -156,15 +156,26 @@ class MainActivity : FlutterActivity() {
         ).setMethodCallHandler { call, result ->
             when (call.method) {
                 "requestNotificationPermission" -> {
-                    result.success(requestNotificationPermission())
+                    val args = call.arguments as? Map<*, *>
+                    val language = args?.get("language")?.toString() ?: "english"
+                    result.success(requestNotificationPermission(language))
+                }
+
+                "updateNotificationChannelLanguage" -> {
+                    val args = call.arguments as? Map<*, *>
+                    val language = args?.get("language")?.toString() ?: "english"
+                    ensureNotificationChannel(language)
+                    result.success(true)
                 }
 
                 "showNotification" -> {
                     val args = call.arguments as? Map<*, *>
-                    val title = args?.get("title")?.toString() ?: "JE X FYZ"
+                    val language = args?.get("language")?.toString() ?: "english"
+                    val defaultTitle = if (language.equals("indonesia", ignoreCase = true)) "Perangkat" else "Device"
+                    val title = args?.get("title")?.toString() ?: defaultTitle
                     val body = args?.get("body")?.toString() ?: ""
                     val id = (args?.get("id") as? Number)?.toInt() ?: 2300
-                    result.success(showUserNotification(title, body, id))
+                    result.success(showUserNotification(title, body, id, language))
                 }
 
                 else -> result.notImplemented()
@@ -346,15 +357,19 @@ class MainActivity : FlutterActivity() {
 
     // AI-METHOD / NOTIFICATION-CHANNEL-CONTRACT
     // Create the user-alert notification channel once; safe to call repeatedly.
-    private fun ensureNotificationChannel() {
+    private fun ensureNotificationChannel(language: String = "english") {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         val manager = getSystemService(NotificationManager::class.java)
+        val indonesia = language.equals("indonesia", ignoreCase = true)
         val channel = NotificationChannel(
             NOTIFICATION_CHANNEL,
-            "JE X FYZ Alerts",
+            if (indonesia) "Notifikasi perangkat" else "Device alerts",
             NotificationManager.IMPORTANCE_DEFAULT
         ).apply {
-            description = "Important JE X FYZ safety, firmware, and Bluetooth notifications."
+            description = if (indonesia)
+                "Peringatan keselamatan, firmware, dan Bluetooth dari perangkat."
+            else
+                "Safety, firmware, and Bluetooth alerts from your device."
             setShowBadge(true)
         }
         manager.createNotificationChannel(channel)
@@ -362,8 +377,8 @@ class MainActivity : FlutterActivity() {
 
     // AI-METHOD / NOTIFICATION-PERMISSION-CONTRACT
     // Request POST_NOTIFICATIONS on Android 13+; older versions require no runtime prompt.
-    private fun requestNotificationPermission(): Boolean {
-        ensureNotificationChannel()
+    private fun requestNotificationPermission(language: String = "english"): Boolean {
+        ensureNotificationChannel(language)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return true
         if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) ==
             PackageManager.PERMISSION_GRANTED
@@ -376,14 +391,14 @@ class MainActivity : FlutterActivity() {
 
     // AI-METHOD / USER-NOTIFICATION-CONTRACT
     // Publish one user notification when POST_NOTIFICATIONS is granted.
-    private fun showUserNotification(title: String, body: String, id: Int): Boolean {
-        ensureNotificationChannel()
+    private fun showUserNotification(title: String, body: String, id: Int, language: String): Boolean {
+        ensureNotificationChannel(language)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) !=
             PackageManager.PERMISSION_GRANTED
         ) {
             // Ask on the first real notification attempt rather than dropping alerts silently.
-            requestNotificationPermission()
+            requestNotificationPermission(language)
             return false
         }
         return try {
