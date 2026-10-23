@@ -1,5 +1,12 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-23 — Require a final memory-save pass before chat handoff (docs-only)
+
+- Strengthened both LOAD + CONTINUE prompts: before ending any substantive project chat, review the conversation since the prior checkpoint and commit new durable requirements, decisions, findings, progress, blockers, and next steps to canonical notes.
+- Kept honest persistence semantics: GitHub does not automatically receive the ChatGPT transcript; only commits actually written and verified count as saved memory. Avoid empty commits when there is no durable delta.
+- Aligned CHAT_RULES.md, MEMORY_INDEX.md, README.md and BUILD_NOTES.md with the final checkpoint rule; PROJECT_STATE.md and HANDOVER.md continue to explain the same recovery boundary.
+- Documentation-only audit. No App/Firmware source, config, workflow, tests, build/release, BIN/Firebase, OTA, flashing, or device operations were changed or run.
+
 ## 2026-10-23 — Define durable chat-memory checkpoint cadence (docs-only)
 
 - Clarified that GitHub is not an automatic transcript store: a decision or state is saved only after its repository update is committed and verified.
