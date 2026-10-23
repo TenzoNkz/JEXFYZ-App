@@ -27,6 +27,7 @@ Flutter Android companion App and ESP32-C3 Firmware source for the JE X FYZ ther
 ## Durable project memory and chat continuity
 
 - The repository is the shared project-memory source, but it does not automatically receive the ChatGPT transcript. A checkpoint is durable only after a real commit to `main` is verified.
+- Before ending any substantive project chat, compare the conversation against the last checkpoint and save new durable details; no separate save request is required. If there is no new durable information, retain the existing checkpoint instead of creating an empty commit.
 - Checkpoint after every durable decision, meaningful finding, logical work milestone, test result, or blocker; also refresh the handoff at substantive task completion. Do not wait for the owner to request a save.
 - Before a chat-limit transfer, update `CHAT_TRANSFER.md` with the exact last verified state, active mode/authorization, completed milestone, remaining task, run status, evidence, blockers, and next safe step. During Build App, update `APP_BUILD_REPORT.md` as attempts progress.
 - Use only the two complete LOAD + CONTINUE blocks in `CHAT_TRANSFER_PROMPTS.md`. A replacement chat must read saved records and re-check live GitHub state. An unsaved conversation tail cannot be guaranteed to survive an abrupt interruption.
