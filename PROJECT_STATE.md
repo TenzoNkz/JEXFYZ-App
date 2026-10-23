@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last refreshed: 2026-10-23 (Asia/Jakarta), after successful Build #129 release verification. This is current-only state, not history; fetch live HEAD/tree on every new task.
+Last refreshed: 2026-10-23 (Asia/Jakarta), after compact Settings/Connection source changes on `main`. Build #129 remains the latest verified release; compact visual changes are committed but not runtime-validated or released. This is current-only state, not history; fetch live HEAD/tree on every new task.
 
 ## Product baseline and evidence
 
