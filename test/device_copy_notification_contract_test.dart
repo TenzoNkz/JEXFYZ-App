@@ -58,6 +58,7 @@ void main() {
     expect(floating, contains('class JexFixedScalePage extends StatelessWidget'));
     expect(floating, contains('textScaler: TextScaler.noScaling'));
     expect(main, contains('Future<void> _restoreFloatingMonitorAfterSync()'));
+    expect(main, contains('// Immediately detach any stale native overlay while this app session is offline.\n    _publishFloatingTelemetry();'));
     expect(main, contains('final currentTelemetry = floatingTelemetryNotifier.value;'));
     expect(main, contains('if (!currentTelemetry.connected || !connected) return;'));
     expect(native, contains('if (config.enabled && data.connected) ensureOverlay() else removeOverlay()'));
