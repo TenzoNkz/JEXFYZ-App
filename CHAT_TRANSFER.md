@@ -11,11 +11,11 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 
 ## Active Build App/QC recovery — 2026-10-23 (Asia/Jakarta)
 
-- **Status: retry preflight checkpoint saved; no new run has been triggered at this checkpoint.** Owner re-authorized with `@Thinking Eksekusi Build App!` after reporting the previous Actions startup issue fixed. Treat claimed recovery as USER-REPORTED until a new run reaches runner steps.
-- **Prior attempt remains failed:** Build #125 / run `39905665853`, source `709f03a94ae8312af541b0bd876e67ea01fdd395`; job `120256919402` failed before runner steps, `runner_id=0`, no steps/log/artifacts. Do not change that evidence.
-- **Preflight state:** main was `c6d76169a53e514cb4fd21f1830aa10796789462` (tree `93e30afe2c1975047176040ffb56681b198d2902`); recursive tree 69 entries, not truncated. Workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`, issue-only owner/title/token guard unchanged. Live queries returned zero active/queued/waiting workflow runs. Issue #34 is open and its owner/title/body token match the guard.
-- **Latest package only:** Release/tag `jexfyz-latest` still target Build #124 source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`; APK SHA-256 `c0738d3607b120b716841610c849d9608f954a5f1f28017a8018790f4f4b6318`; source ZIP SHA-256 `e00ac34cb6cf7f04a5485c8ab8ee74d4acc1b20dc1a213ac733a8bf8c43cc152`. Current source remains unvalidated/unreleased.
-- **Next:** verify this commit, re-fetch main and the live Actions idle state, then use the existing issue #34 close/reopen guard once. Confirm the new run SHA equals the freshly fetched `main`, and inspect real steps/logs before deciding further action. Do not use push/PR/manual-dispatch bypasses or weaken gates. Preserve Android Gradle `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device operations.
+- **Status: BUILD #126 ACTIVE; live runner is now allocated.** Run [39907333312](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907333312), official `issues/reopened` event, exact target SHA `806bbdb462189a94c7e3716b793ea0fb35d7f30d`. This is the one authorized retry after the owner reported the Actions issue fixed.
+- **Confirmed current job:** `build` / ID `120262178483`, runner `1000002425` (`ubuntu-24.04`); steps 1 and 2 succeeded, Java 17 setup was in progress at last read. This verifies recovery from #125's failure before runner assignment, but all later gates remain pending/not yet evidenced.
+- **Checkpoint saved:** Build ledger milestone is committed at `223c70614e89250fe9ebe700209ea16518cae3ff` and was re-read from main. Verify this transfer commit after write; main will advance to a documentation SHA while run #126 continues on its immutable target commit.
+- **Last completed gate:** job setup + source checkout. **Current gate:** Java 17 setup. **Next:** follow actual job steps/logs, append observed analyzer/test/Android/APK/signing/release outcomes to `APP_BUILD_REPORT.md`, and checkpoint each logical milestone.
+- **No duplicate builds:** do not issue another trigger while #126 is active. Build #124 remains the newest verified package until #126 completes every workflow gate plus exact tag/release/asset checks. Preserve Android `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device work is authorized.
 
 ## Live repository point
 
