@@ -40,7 +40,7 @@ Last reconciled: 2026-10-23 (Asia/Jakarta). This index defines which document is
 | VOLTAGE_TRANSITION_MEMORY.md | Two separate reset reports and rail/Peltier transition contract | KEEP; preserve hypotheses separately from confirmed cause |
 | BLE_APP_AUTH.md | Unimplemented App-only identity/authentication design and blocker | KEEP; do not imply security feature is implemented |
 | BUILD_NOTES.md | Current release procedure/gates | KEEP; build-by-build attempt evidence moves nowhere and remains in report |
-| APP_BUILD_REPORT.md | Authoritative append-only log of Build App runs/fixes/gates | KEEP AS APPEND-ONLY; required by the guarded workflow; 274 KB is historical evidence, not a navigation document |
+| APP_BUILD_REPORT.md | Authoritative append-only log of Build App runs/fixes/gates | KEEP; preserve past attempt records as append-only, but maintain the current procedure/handoff block when workflow instructions change; the guarded workflow requires this root path, and its large history is not a boot document |
 | CHANGELOG.md | Chronological record of decisions and changes | KEEP AS HISTORY; 155 KB reflects an append-only timeline, never use it as current truth |
 | .github/workflows/jexfyz-app-build-trigger.yml | Guarded release workflow | KEEP; manual issue trigger only |
 | test/*.dart | Source contracts and executable Flutter tests | KEEP; existence alone does not mean a test ran |
