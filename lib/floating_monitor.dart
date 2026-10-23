@@ -921,11 +921,15 @@ class JexFixedScalePage extends StatelessWidget {
         builder: (context, constraints) {
           const designWidth = 360.0;
           if (constraints.maxWidth <= 0 || constraints.maxHeight <= 0) return child;
-          final scale = constraints.maxWidth / designWidth;
+          // Keep the 360-dp design baseline on narrow viewports, but never
+          // upscale text, spacing, icons and controls on wider phones.
+          final scale =
+              (constraints.maxWidth / designWidth).clamp(0.0, 1.0).toDouble();
+          final logicalWidth = constraints.maxWidth / scale;
           final designHeight = constraints.maxHeight / scale;
           final scaledMedia = media.copyWith(
             textScaler: TextScaler.noScaling,
-            size: Size(designWidth, designHeight),
+            size: Size(logicalWidth, designHeight),
             padding: EdgeInsets.fromLTRB(media.padding.left / scale, media.padding.top / scale,
                 media.padding.right / scale, media.padding.bottom / scale),
             viewPadding: EdgeInsets.fromLTRB(media.viewPadding.left / scale, media.viewPadding.top / scale,
@@ -941,7 +945,7 @@ class JexFixedScalePage extends StatelessWidget {
                 alignment: Alignment.topCenter,
                 child: MediaQuery(
                   data: scaledMedia,
-                  child: SizedBox(width: designWidth, height: designHeight, child: child),
+                  child: SizedBox(width: logicalWidth, height: designHeight, child: child),
                 ),
               ),
             ),

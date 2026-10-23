@@ -4,6 +4,7 @@
 
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../lib/floating_monitor.dart';
@@ -63,6 +64,16 @@ void main() {
     expect(floating, isNot(contains('nativeSize.toDouble().clamp(0.3, 0.8)')));
     expect(floating, contains('nativeSize.toDouble().clamp(0.3, 1.0)'));
     expect(floating, contains('class JexFixedScalePage extends StatelessWidget'));
+    expect(
+      floating,
+      contains('(constraints.maxWidth / designWidth).clamp(0.0, 1.0).toDouble()'),
+    );
+    expect(floating, contains('final logicalWidth = constraints.maxWidth / scale;'));
+    expect(floating, contains('size: Size(logicalWidth, designHeight)'));
+    expect(
+      floating,
+      contains('SizedBox(width: logicalWidth, height: designHeight, child: child)'),
+    );
     expect(floating, contains('TextScaler.noScaling'));
     expect(floating, contains('builder: (_) => const JexFixedScalePage(child: LanguageSettingsPage())'));
     expect(floating, contains('builder: (_) => const JexFixedScalePage(child: AppearanceSettingsPage())'));
@@ -85,6 +96,40 @@ void main() {
     expect(settings, contains("'black':"));
     expect(settings, contains("'white':"));
   });
+
+  testWidgets(
+    'Fixed-scale pages do not upscale wide layouts and still fit narrow ones',
+    (tester) async {
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      tester.view.devicePixelRatio = 1.0;
+
+      double? contentWidth;
+      Future<void> pumpAtWidth(double width) async {
+        tester.view.physicalSize = Size(width, 800);
+        await tester.pumpWidget(
+          MaterialApp(
+            home: JexFixedScalePage(
+              child: Builder(
+                builder: (context) {
+                  contentWidth = MediaQuery.sizeOf(context).width;
+                  return const SizedBox.expand();
+                },
+              ),
+            ),
+          ),
+        );
+        expect(tester.takeException(), isNull);
+      }
+
+      await pumpAtWidth(420);
+      expect(contentWidth, closeTo(420.0, 0.01));
+
+      await pumpAtWidth(320);
+      // Narrow screens keep the 360-dp canvas and scale it down proportionally.
+      expect(contentWidth, closeTo(360.0, 0.01));
+    },
+  );
 
   test('Native Floating Monitor centers text inside a freely draggable compact box', () {
     final native = File(
