@@ -40,7 +40,7 @@ Exactly two transfer prompts remain in `CHAT_TRANSFER_PROMPTS.md`: Prompt 1 star
 
 This execution was documentation-only. No executable source, config, workflow, tests, App Build/release, Firmware compile, BIN/Firebase, OTA, flash or device work was performed. Main was at `34f6f3ab14459078fdecd2e0ef980002b0b53090` immediately before this final handoff update; always fetch the live HEAD after boot.
 
-The prior documentation rework remains complete. The Home notice-heading mismatch stays unresolved: live source renders localized Notification / Notifikasi, while DESIGN_NOTES.md still records the fixed NOTIFY requirement. The current memory-policy change is documentation-only and does not change product behavior.
+Latest durable decision (2026-10-23): the owner confirmed the Home notice heading must follow the selected App language — `Notification` in English and `Notifikasi` in Indonesian. This resolves the former DESIGN_NOTES.md mismatch with live localization source. The decision is documentation/design-only: no executable source, tests, configuration or workflow were changed; no test/build/release or Firmware/BIN/Firebase/OTA/flash/device operation was run. Next safe action: continue the Discussion workstream from live evidence; if a later UI implementation is requested, use this heading contract and obtain the appropriate execution authorization first.
 
 ## Current UI implementation / validation
 
