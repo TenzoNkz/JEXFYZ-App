@@ -11,11 +11,11 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 
 ## Active Build App/QC recovery — 2026-10-23 (Asia/Jakarta)
 
-- **Status: BUILD #126 ACTIVE; live runner is now allocated.** Run [39907333312](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907333312), official `issues/reopened` event, exact target SHA `806bbdb462189a94c7e3716b793ea0fb35d7f30d`. This is the one authorized retry after the owner reported the Actions issue fixed.
-- **Confirmed current job:** `build` / ID `120262178483`, runner `1000002425` (`ubuntu-24.04`); steps 1 and 2 succeeded, Java 17 setup was in progress at last read. This verifies recovery from #125's failure before runner assignment, but all later gates remain pending/not yet evidenced.
-- **Checkpoint saved:** Build ledger milestone is committed at `223c70614e89250fe9ebe700209ea16518cae3ff` and was re-read from main. Verify this transfer commit after write; main will advance to a documentation SHA while run #126 continues on its immutable target commit.
-- **Last completed gate:** job setup + source checkout. **Current gate:** Java 17 setup. **Next:** follow actual job steps/logs, append observed analyzer/test/Android/APK/signing/release outcomes to `APP_BUILD_REPORT.md`, and checkpoint each logical milestone.
-- **No duplicate builds:** do not issue another trigger while #126 is active. Build #124 remains the newest verified package until #126 completes every workflow gate plus exact tag/release/asset checks. Preserve Android `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device work is authorized.
+- **Status: BUILD #126 ACTIVE; dependency install is running.** [Run 39907333312](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907333312), source SHA `806bbdb462189a94c7e3716b793ea0fb35d7f30d`, job `120262178483`, hosted runner `1000002425` on `ubuntu-24.04`.
+- **Completed gates:** steps 1–10 succeeded, including Java 17, Flutter, Gradle setup, toolchain validation, signing-secret preparation and the App security/architecture audit. Step 11 `Install dependencies` (`flutter pub get`) was `in_progress` at last observation.
+- **Pending:** analyzer, Flutter tests, Android Gradle gate, release APK, V1/V2/V3 + certificate validation, source ZIP, publication, tag/release parity and downloaded asset checksum/source-marker checks.
+- **Evidence boundary:** active run logs are not yet downloadable (`BlobNotFound` at log API), while the live step API continues to report active steps. No failure inferred from log unavailability.
+- **Checkpoint saved:** ledger commit `07c67d0fee3c222a792222476fd0f34f779505cd`; verify this handoff update and main HEAD before future actions. Do not trigger a second run while #126 remains active. Build #124 remains the latest verified package. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device activity.
 
 ## Live repository point
 
