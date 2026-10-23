@@ -965,7 +965,10 @@ class JexFixedScalePage extends StatelessWidget {
           );
           final canvasChild = compactUi
               ? Theme(
-                  data: buildJexCompactUiTheme(appThemeNotifier.value),
+                  data: buildJexCompactUiTheme(
+                    appThemeNotifier.value,
+                    baseTheme: Theme.of(context),
+                  ),
                   child: logicalCanvas,
                 )
               : logicalCanvas;

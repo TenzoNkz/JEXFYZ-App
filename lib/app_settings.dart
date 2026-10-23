@@ -1489,8 +1489,8 @@ ThemeData buildJexTheme(AppThemePreset preset) {
 // AI-THEME / COMPACT-SETTINGS-CONTRACT
 // Applies a restrained typography/visual-density reduction only to Settings routes and the
 // Bluetooth Connection sheet. Do not apply this theme globally to Home/Dashboard.
-ThemeData buildJexCompactUiTheme(AppThemePreset preset) {
-  final base = buildJexTheme(preset);
+ThemeData buildJexCompactUiTheme(AppThemePreset preset, {ThemeData? baseTheme}) {
+  final base = baseTheme ?? buildJexTheme(preset);
   final text = base.textTheme;
   final foreground = base.colorScheme.onSurface;
   final muted = base.colorScheme.onSurfaceVariant;

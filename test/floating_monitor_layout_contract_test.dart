@@ -142,7 +142,8 @@ void main() {
 
     expect(floating, contains('final bool compactUi;'));
     expect(floating, contains('this.compactUi = false'));
-    expect(floating, contains('buildJexCompactUiTheme(appThemeNotifier.value)'));
+    expect(floating, contains('buildJexCompactUiTheme('));
+    expect(floating, contains('baseTheme: Theme.of(context)'));
     for (final page in [
       'LanguageSettingsPage',
       'AppearanceSettingsPage',
@@ -156,7 +157,10 @@ void main() {
       );
     }
 
-    expect(appSettings, contains('ThemeData buildJexCompactUiTheme(AppThemePreset preset)'));
+    expect(
+      appSettings,
+      contains('ThemeData buildJexCompactUiTheme(AppThemePreset preset, {ThemeData? baseTheme})'),
+    );
     expect(appSettings, contains('fontSize: 18'));
     expect(appSettings, contains('fontSize: 13'));
     expect(appSettings, contains('fontSize: 12'));
