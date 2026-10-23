@@ -11,10 +11,10 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 
 ## Active Build App/QC recovery — 2026-10-23 (Asia/Jakarta)
 
-- **Status: BUILD #127 QUEUED, exact source SHA verified.** [Run 39907723349](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907723349) was created by the official issue #34 reopen event and targets `74472861b868ba69caed97233d86d40424f2610f`, matching live main at trigger time.
-- **Repair under test:** commit `0e5ed8871c2ba2047543b92052fc3ab4541b8c6a` updates two stale assertions in `test/widget_test.dart`. Build #126 had setup/security/dependency/analyzer passes but 119 passed / 2 failed; #127 must now validate the repair before any APK gate.
-- **Current gate:** queued; runner/job steps not yet confirmed. No further trigger while #127 is queued or active. Build #124 is still the last verified release.
-- **Ledger checkpoint:** report update committed at `f72a2de998d477a50674745305aa8ee407708599` and reread successfully; verify this handoff commit. Next inspect #127's real runner/steps/logs and update both ledgers as gates complete/fail. Preserve `versionName "Telegram @horizontalzzz"`; do not run Firmware/BIN/Firebase/OTA/flash/device actions.
+- **Status: BUILD #127 ACTIVE; runner allocation verified.** Run [39907723349](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907723349) targets `74472861b868ba69caed97233d86d40424f2610f`; job `120263398179` runs on hosted runner `1000002426` (`ubuntu-24.04`).
+- **Passed:** Set up job, checkout, Java 17 and Flutter setup. **Current:** Set up Gradle is `in_progress`. The remaining toolchain/security, dependencies, analyzer, Flutter tests, Android gate, APK/signing/source ZIP/Release/download gates are not yet verified.
+- **Repair being validated:** the two stale `test/widget_test.dart` assertions were corrected in commit `0e5ed8871c2ba2047543b92052fc3ab4541b8c6a`; actual test results are still pending.
+- **Checkpoint:** ledger milestone saved at `5812ba2e8a410975b8b005cb0c34b34c3644cb27` and re-read. Verify this transfer commit after write. No duplicate build; Build #124 remains latest verified package. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device operations.
 
 ## Live repository point
 
