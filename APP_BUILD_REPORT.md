@@ -1,4 +1,15 @@
-## CURRENT BUILD APP EXECUTION — TEST REPAIR COMMITTED; RETRY PREFLIGHT — 2026-10-23 (Asia/Jakarta)
+## CURRENT BUILD APP EXECUTION — BUILD #127 QUEUED — 2026-10-23 (Asia/Jakarta)
+
+- **Trigger:** official issue #34 `issues/reopened` event fired at `2026-10-23T05:47:32Z`; [Build #127 / run 39907723349](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907723349) was created at `2026-10-23T05:47:34Z`, event `issues`, current status `queued`.
+- **Exact source target:** run `head_sha` equals main SHA `74472861b868ba69caed97233d86d40424f2610f`. Workflow blob remains `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; this is the existing guarded issue-only trigger, no push/PR/manual-dispatch path.
+- **Reason for this attempt:** Build #126 failed at Flutter tests with 119 passed/2 failed. The two stale source-contract assertions were repaired and committed in `test/widget_test.dart`, commit [`0e5ed8871c2ba2047543b92052fc3ab4541b8c6a`](https://github.com/TenzoNkz/JEXFYZ-App/commit/0e5ed8871c2ba2047543b92052fc3ab4541b8c6a). No gate was removed or weakened; this run must execute the revised assertions.
+- **Current gate:** queued before runner allocation; no #127 step result is confirmed yet. Prior Build #126's setup/security/dependency/analyzer passes remain evidence only for SHA `806bbdb462189a94c7e3716b793ea0fb35d7f30d`.
+- **Release boundary:** last published package remains Build #124 source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`. No #127 artifact or release is yet evidenced. Do not start any further run while #127 is queued or active.
+- **Next:** inspect #127 jobs/steps/logs as the run advances, record the test outcome and every downstream gate, and checkpoint each logical milestone. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device action.
+
+---
+
+## HISTORICAL CHECKPOINT — TEST REPAIR COMMITTED BEFORE BUILD #127
 
 - **Previous attempt:** Build #126 / run [39907333312](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907333312), source `806bbdb462189a94c7e3716b793ea0fb35d7f30d`, failed at Flutter tests (119 passed, 2 failed). Setup/security audit/dependencies/analyzer passed; analyzer exited 0 with 25 info diagnostics. Android gate and APK/release gates were skipped.
 - **Root cause/fix:** two obsolete assertions in `test/widget_test.dart` did not match already-implemented App behavior. Commit [`0e5ed8871c2ba2047543b92052fc3ab4541b8c6a`](https://github.com/TenzoNkz/JEXFYZ-App/commit/0e5ed8871c2ba2047543b92052fc3ab4541b8c6a) changes the expected MainActivity handler contract to `result.success(requestNotificationPermission(language))` and updates Indonesian disconnect copy from `Bluetooth terputus.` to the approved `Perangkat terputus.`. This is a test-only contract repair; no gates were weakened and runtime source/config/workflow were not changed.
