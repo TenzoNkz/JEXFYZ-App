@@ -10,7 +10,18 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 - Build #128 passed all 21 workflow gates, 121 Flutter tests, analyzer (25 informational diagnostics), the configured Android Gradle gate, V1/V2/V3 + expected certificate checks, source-marker/ZIP checks and independent downloaded APK/source checksum verification. Native Android JUnit tasks were NO-SOURCE.
 - App release CI is not evidence of Firmware compile/BIN identity, installation on the sold unit, OTA apply/reboot, BLE recovery or thermal/electrical behavior.
 
-## Active Build App/QC operation — PREFLIGHT SAVED; NEXT OFFICIAL RUN IS BUILD #129 — 2026-10-23 (Asia/Jakarta)
+## Active Build App/QC operation — BUILD #129 ACTIVE — 2026-10-23 (Asia/Jakarta)
+
+- **Run:** [#129 / 39925045446](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446), exact source SHA `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`, job `120319250463`, runner `1000002428` (`ubuntu-24.04`), status `in_progress`.
+- **Runner steps:** Set up job, checkout and Java 17 passed; Set up Flutter is running at the latest read. This confirms the current attempt obtained a real hosted runner, but no analyzer/test/release gate has passed yet.
+- **Source under test:** Home-equivalent uncapped 360-dp DPI canvas and new density-regression test in `test/floating_monitor_layout_contract_test.dart`. The test holds 1080×2400 physical viewport constant while testing 420-dp/320-dp logical widths, scales 420/360 and 320/360, and a 360×800 logical canvas. Local Flutter/Dart tools are unavailable; hosted CI is the validation path.
+- **Next gates:** toolchain/audit/dependencies → analyzer → full Flutter tests → Android gate → APK and production V1/V2/V3 + certificate verification → source ZIP → Release/tag/asset + downloaded identity/hash/signature checks. No duplicate trigger while #129 is active.
+- **Ledger:** [APP_BUILD_REPORT.md runner checkpoint](https://github.com/TenzoNkz/JEXFYZ-App/commit/8947d2f240e3e77ed26e36eb332e16fc948a3d87) was committed and re-read. Verify this transfer update as well; documentation commits may advance main while #129 continues on immutable source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`.
+- Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device operations.
+
+---
+
+
 
 - **Authorization:** owner re-issued `@Thinking Eksekusi Build App!`. Scope is guarded App Build/QC/release only.
 - **Current source change awaiting hosted validation:** Settings root/subpages, Bluetooth Connection sheet and selected modals now use Home's uncapped 360-dp DPI-compensating master canvas in `lib/floating_monitor.dart` (blob `3739ce402e0355f5bda9625aae7ba8b6f0d9020d`); regression test is `test/floating_monitor_layout_contract_test.dart` (blob `f7f85bb200732204b1fb4b262ce5c254697c5fa9`). Key commits `d0f87b09c96a89063dc3b6f8c23e763bd11dc66e` / `f680837ad61653fbda071bb8f451ccd4113acfaf`. These haven't been through a Build #128-equivalent CI validation yet.
