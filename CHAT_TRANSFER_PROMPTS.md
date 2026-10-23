@@ -89,6 +89,7 @@ Resume the same App Build/QC operation from live repository, workflow, Actions/R
 
 MEMORY SAVE — REQUIRED CADENCE
 - GitHub memory is not automatic: only changes actually committed and verified in the repository are durable. Do not rely on the conversation transcript as the only record of a build.
+- Before ending a substantive Build App chat, review messages since the last checkpoint and save any new durable decisions, real attempts/results, blockers, unfinished steps, and next actions. Do not wait for a separate save request. If there is no durable change, keep the prior verified checkpoint and avoid empty commits.
 - Append each actual build attempt/result, source SHA, run ID, job/failure evidence, repair, validation status, artifact/release checks, and blocker to APP_BUILD_REPORT.md as the workflow progresses. Never rewrite older attempt evidence to make it look successful.
 - At each logical build milestone and before any foreseeable chat-limit interruption, update CHAT_TRANSFER.md with the exact current run status, source SHA, last completed gate, remaining gate/next action, and whether a run is still active. Commit and verify the saved ledger/checkpoint on main.
 - At successful completion or blockage, finalize APP_BUILD_REPORT.md and CHAT_TRANSFER.md with evidence labels before reporting. If the chat cuts off before the update commits, recover the last saved state and live Actions/jobs/logs; explicitly note any possible unsaved gap.
