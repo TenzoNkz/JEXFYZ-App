@@ -1,6 +1,17 @@
 # JE X FYZ / JE Cooler — Changelog
 
-## 2026-10-23 — Match Settings/Connection to Home's DPI-compensating master canvas (source committed; validation blocked)
+## 2026-10-23 — Home-equivalent Settings/Connection DPI canvas validated and released in Build #129
+
+- Guarded official issue-triggered run [39925045446](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446) packaged source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4` and completed SUCCESS with all 21 workflow steps passing.
+- **122 Flutter tests passed**, including the fixed-physical-viewport density regression test (1080×2400 with simulated 420-dp and 320-dp logical widths). Dart analyzer exited 0 with 25 informational diagnostics.
+- Configured Android Gradle gate reported `BUILD SUCCESSFUL in 1m 27s`; native app JUnit tasks were `NO-SOURCE`, so no native Android JUnit cases executed.
+- Obfuscated APK build, V1/V2/V3 signing and production certificate, matching corresponding source ZIP, exact Release/tag target, exactly-one-APK-plus-one-ZIP, source marker, downloaded hashes and downloaded APK signing checks all passed.
+- APK SHA-256: `f59c511786d49add8e0596fd3d658248746c008b7eaff94bb6215d314aa0426e`; source ZIP SHA-256: `c74e6800dadf80a5223dedcce3144b12f6365506a8b9821bb7abf1817df8cfff`.
+- This validates App-side DPI layout contracts in hosted CI. Local `dart format` and physical-device/OEM display-density QA remain unrun; CI does not prove actual field-device rendering, BLE/overlay/cooling behavior, installed APK identity, Firmware/BIN identity or OTA behavior.
+
+---
+
+## HISTORICAL / SUPERSEDED — 2026-10-23 — Match Settings/Connection to Home's DPI-compensating master canvas (was source committed; validation blocked, later superseded by Build #129)
 
 - Owner authorized `@Thinking Eksekusi Full!` and clarified that Settings root/subpages and the Bluetooth Connection sheet must use the same fixed logical canvas and uncapped width/360 scale as Home, keeping physical appearance consistent when Android display DPI/Smallest Width changes on the same screen.
 - Updated `JexFixedScalePage` in [`d0f87b09c96a89063dc3b6f8c23e763bd11dc66e`](https://github.com/TenzoNkz/JEXFYZ-App/commit/d0f87b09c96a89063dc3b6f8c23e763bd11dc66e): remove the interim 1.0 cap, fix the logical width at 360 dp, compute design height and media insets in canvas units, use `OverflowBox` outside a single `Transform.scale`, and clip to the viewport. The wrapper contract comment was aligned in [`cf0b66d6c5cf131d55aa99783fa3518274275d57`](https://github.com/TenzoNkz/JEXFYZ-App/commit/cf0b66d6c5cf131d55aa99783fa3518274275d57).
