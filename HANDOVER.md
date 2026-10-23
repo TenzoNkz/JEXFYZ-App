@@ -21,7 +21,7 @@ Important boundary: conversation text is not automatically committed to GitHub. 
 2. Fetch live main HEAD and recursive tree.
 3. Read CHAT_RULES.md, MEMORY_INDEX.md, PROJECT_STATE.md and the complete reference relevant to the user's next request.
 4. Paste one complete block from CHAT_TRANSFER_PROMPTS.md as a single message. Prompt 1 starts with Diskusi!; replace only its first line with Eksekusi Full! or Chat Stuck! when that mode matches the task. Prompt 2 starts with Eksekusi Build App! and is only for the guarded App Build/QC workflow. These short command names intentionally omit @Thinking. Do not add a duplicate command line above the block.
-5. Before a new UI implementation, explicitly resolve the current disagreement over Home notice heading: live source localizes it as Notification / Notifikasi while DESIGN_NOTES.md retains a fixed NOTIFY requirement.
+5. Home notice heading decision is now resolved: use Notification in English and Notifikasi in Indonesian, following the selected App language. Keep source/design references consistent; this decision alone does not authorize executable changes.
 6. Save durable memory at each decision/milestone and at every substantive Discussion/Eksekusi Full completion or blockage. For Build App, update APP_BUILD_REPORT.md while attempts progress and refresh CHAT_TRANSFER.md at each logical milestone. Verify the commit before claiming the checkpoint was saved; if an abrupt limit occurs first, recover the last committed checkpoint only.
 
 ## Safety boundary
