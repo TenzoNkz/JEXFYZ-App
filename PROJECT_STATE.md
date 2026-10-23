@@ -9,6 +9,13 @@ Last checked against live main at the start of the documentation rework: 2026-10
 - Build #124 passed 116 Flutter tests and configured App release gates; native Android JUnit tasks were NO-SOURCE. This verifies the package/build gates for that source commit, not Firmware compilation, OTA apply/reboot, BLE behavior or hardware safety.
 - Keep Build #124 + Firmware V7.1 as the production baseline. Avoid discretionary releases and preserve remote recovery/safety.
 
+## Durable project-memory / recovery policy
+
+- `TenzoNkz/JEXFYZ-App/main` is the shared project-memory source, but chat transcripts are not automatically synchronized to GitHub. A state is saved only after the relevant document update is committed and verified.
+- The two transfer prompts are in `CHAT_TRANSFER_PROMPTS.md`: Prompt 1 for Discussion/general engineering, specifically authorized Eksekusi Full, or recovery of an already-authorized operation; Prompt 2 only for guarded Build App/QC.
+- Checkpoint each durable decision, meaningful finding, logical milestone, test result, or blocker. At substantive task completion, update `CHAT_TRANSFER.md` and the relevant canonical note. While Build App progresses, append actual attempts to `APP_BUILD_REPORT.md` and checkpoint the current run in `CHAT_TRANSFER.md`.
+- On recovery, load the latest committed checkpoint and current repository/Actions evidence. If interruption happened before a write was committed, treat the unsaved conversation tail as potentially lost; never invent its content or repeat side effects blindly.
+
 ## Live source state at audit start
 
 - Canonical repository TenzoNkz/JEXFYZ-App, branch main. Audit started at commit 11a0ef162f1c2945704229ed7697dc70e7617e9b; the documentation rework commit will move main, so this SHA is the audit base, not the final HEAD.
