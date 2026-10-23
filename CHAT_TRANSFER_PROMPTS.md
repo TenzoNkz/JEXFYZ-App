@@ -36,6 +36,7 @@ Load the latest saved checkpoint and live repository evidence, identify the exac
 
 MEMORY SAVE — REQUIRED CADENCE
 - Do not assume chat content is automatically written to GitHub. Only a repository update that was actually committed and verified is durable shared memory.
+- Before ending a substantive project chat, review messages since the last checkpoint and commit any new durable requirements, decisions, findings, progress, open issues, or next steps to the relevant canonical notes. Do not wait for a separate save request. If nothing durable changed, keep the previous verified checkpoint and avoid empty commits.
 - After every durable user decision, significant finding, completed logical milestone, test result, or blockage, update CHAT_TRANSFER.md plus the relevant canonical note; commit directly to main and verify the written content/HEAD before reporting the checkpoint as saved.
 - At the end of every substantive Discussion or scoped Eksekusi Full task, record the decision/result, evidence label, unfinished work, and precise next action before reporting completion. For work that spans multiple milestones, checkpoint between milestones rather than waiting until the entire task finishes.
 - When a chat-limit/context interruption is foreseeable, checkpoint immediately: active mode and authorized scope; latest completed milestone; exact remaining/uncommitted work; files/commit and test/log evidence; blockers; next safe step; and whether any operation is still running. Verify the live main branch and checkpoint after writing.
