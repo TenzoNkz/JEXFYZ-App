@@ -184,8 +184,12 @@ class FloatingMonitorService : Service() {
         when (intent?.action) {
             ACTION_START -> {
                 val json = intent.getStringExtra(EXTRA_JSON)
-                if (json != null) applyConfig(json)
-                ensureOverlay()
+                if (json != null) {
+                    // Start payload carries the latest full-sync telemetry alongside configuration.
+                    applyData(json)
+                    applyConfig(json)
+                }
+                if (config.enabled && data.connected) ensureOverlay() else removeOverlay()
             }
             ACTION_STOP -> removeOverlay()
             ACTION_CONFIG -> intent.getStringExtra(EXTRA_JSON)?.let { applyConfig(it) }
@@ -228,15 +232,18 @@ class FloatingMonitorService : Service() {
 
     // AI-METHOD / NOTIFICATION-CONTRACT
     // Create the low-priority channel required by the foreground overlay service.
-    private fun createNotificationChannel() {
+    private fun createNotificationChannel(language: String = data.language) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         val manager = getSystemService(NotificationManager::class.java)
         val channel = NotificationChannel(
             CHANNEL_ID,
-            "JE X FYZ",
+            "Floating Monitor",
             NotificationManager.IMPORTANCE_LOW,
         ).apply {
-            description = ""
+            description = if (language.equals("indonesia", ignoreCase = true))
+                "Menampilkan status perangkat saat Floating Monitor aktif."
+            else
+                "Displays device status while Floating Monitor is active."
             setShowBadge(false)
             setSound(null, null)
             enableVibration(false)
@@ -255,12 +262,12 @@ class FloatingMonitorService : Service() {
         }
         return builder
             .setJexNotificationBranding(this)
-            .setContentTitle("JE X FYZ")
+            .setContentTitle("Floating Monitor")
             .setContentText(
                 if (data.language.equals("indonesia", ignoreCase = true))
-                    "Floating Monitor aktif."
+                    "Floating Monitor siap."
                 else
-                    "Floating Monitor is active."
+                    "Floating Monitor is ready."
             )
             .setOngoing(true)
             .setShowWhen(false)
@@ -307,7 +314,7 @@ class FloatingMonitorService : Service() {
             }
             config.selected = selected
             persistNativePositionAndSize()
-            if (config.enabled) {
+            if (config.enabled && data.connected) {
                 ensureOverlay()
                 hudView?.invalidate()
                 hudView?.requestLayout()
@@ -334,11 +341,15 @@ class FloatingMonitorService : Service() {
             val nextLanguage = obj.optString("language", data.language).lowercase()
             val languageChanged = nextLanguage != data.language
             data.language = nextLanguage
-            if (config.enabled) {
+            if (languageChanged) createNotificationChannel(data.language)
+            if (config.enabled && data.connected) {
+                ensureOverlay()
                 // Values can change HUD width (for example Fan Speed 50 -> 100 or
                 // Hotside changing from -- to a numeric temperature), not just its pixels.
                 hudView?.requestLayout()
                 hudView?.invalidate()
+            } else {
+                removeOverlay()
             }
             if (languageChanged) {
                 getSystemService(NotificationManager::class.java)
