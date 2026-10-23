@@ -23,6 +23,8 @@ A replacement chat must LOAD and CONTINUE; do not create a recap-only chat or as
 
 GitHub is the durable project-memory store, not an automatic transcript of the conversation. Only changes actually committed to main and verified should be described as saved. Checkpoint after each durable decision, significant finding, logical task milestone, test result, or blockage. At the end of every substantive Discussion/Eksekusi Full task, update CHAT_TRANSFER.md and the relevant canonical notes before reporting completion. During Build App, append each actual attempt and its evidence to APP_BUILD_REPORT.md as work progresses and refresh CHAT_TRANSFER.md at each logical milestone, then finalize both at success/blockage. Before an expected chat limit, record the last verified step, active authorization/scope, remaining work, current run status, blockers, evidence links and next action. If interruption occurs before the commit is verified, resume from the last saved checkpoint/live evidence; never claim the unsaved chat tail was automatically preserved.
 
+Before ending any substantive project chat, perform a save pass over the conversation since the last verified checkpoint. Persist new durable decisions, requirements, findings, progress, blockers and next steps in canonical notes; do not wait for a separate save request. If no durable information changed, keep the prior checkpoint rather than creating a no-op commit.
+
 ## 3. Source-of-truth and memory discipline
 
 - Start by reading CHAT_TRANSFER.md fully; then fetch live main HEAD and the complete recursive tree. Read MEMORY_INDEX.md, PROJECT_STATE.md and HANDOVER.md. Read the full canonical reference(s) for the active task.
