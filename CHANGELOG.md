@@ -1,5 +1,13 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-23 — Implement fixed Settings canvas, BLE-gated Floating Monitor and device notifications
+
+- Added a reusable Home-matched 360-dp canvas to Settings/sub-settings and root modal surfaces; the Home JE X FYZ header is unchanged.
+- Device-facing copy now uses bilingual Device / Perangkat; Android push copy/channel labels are localized, and firmware-available notification explains the next action. Deferred OTA-result copy uses the currently selected locale.
+- Floating Monitor native overlay hides while disconnected and reattaches only when enabled and full-sync telemetry reports connected. Start payload carries current telemetry; saved preference persists offline and when overlay permission is missing.
+- Foreground BLE notification ID changed from colliding 2101 to 2110; alert IDs 2101–2104 and Floating Monitor 2301 remain separate. Channel IDs were preserved.
+- Added test/device_copy_notification_contract_test.dart and updated static expectations. Tests/analyzer/formatter/Android compilation were not run. No App Build, firmware/BIN/Firebase/OTA/device operation occurred; protected OTA paths were untouched.
+
 ## 2026-10-21 — Audit Settings sizing, Floating Monitor lifecycle, and notification copy (implementation pending)
 
 - User requested stable Settings sizing across Android display-density changes, Floating Monitor visibility gated to a fully synchronized BLE session, and professional phone-notification copy in English and Indonesian.
