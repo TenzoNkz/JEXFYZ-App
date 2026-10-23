@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Memory Index
 
-Last reconciled: 2026-10-21 (Asia/Jakarta). This is a navigation index plus concise production checkpoint; detailed topic contracts live in the canonical files below. Always check live source and evidence before making current-state claims.
+Last reconciled: 2026-10-23 (Asia/Jakarta). This is a navigation index plus concise production checkpoint; detailed topic contracts live in the canonical files below. Always check live source and evidence before making current-state claims.
 
 ## Production checkpoint
 
@@ -8,6 +8,7 @@ Last reconciled: 2026-10-21 (Asia/Jakarta). This is a navigation index plus conc
 - Independently verified App artifact: Build #124 / Actions run `39386733061`, packaged source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`, APK SHA-256 `c0738d3607b120b716841610c849d9608f954a5f1f28017a8018790f4f4b6318`, source ZIP SHA-256 `e00ac34cb6cf7f04a5485c8ab8ee74d4acc1b20dc1a213ac733a8bf8c43cc152`. Build passed 116 Flutter tests and configured release gates; native Android tests were NO-SOURCE.
 - Active editable Firmware source: `firmware/JEXFYZ-V7.1.ino`, `FW_VERSION="V7.1"`. At a 40°C limit, Adaptive target bands are 40/39/38→100%, 37/36→90%, 35/34→80%, 33/32→70%, 31/30→60%, ≤29→50%; thresholds shift with configured limit. Raw-decimal thermal safety remains immediate, Fan 100% / Peltier OFF at or above the limit. PWM ramps +10 percentage points/1 s and −10 points/10 s.
 - Do not conflate the owner's compile/OTA report with independent source-to-BIN, installed-version, reboot, BLE recovery or physical thermal/electrical validation. The field unit is not available for routine physical repair; make remote updates conservative.
+- Latest source-only maintenance (2026-10-23): Home-matched Settings/modal scaling, Device/Perangkat UI copy, BLE-gated Floating Monitor, distinct Android notification IDs, and bilingual channel updates. Details/fingerprints: `CHAT_TRANSFER.md`; tests/analyzer/Android compilation remain unrun and Build #124 + Firmware V7.1 is unchanged.
 
 ## New-chat and chat-limit recovery
 

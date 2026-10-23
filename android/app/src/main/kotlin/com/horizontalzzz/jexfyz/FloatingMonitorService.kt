@@ -121,6 +121,26 @@ class FloatingMonitorService : Service() {
         fun updateData(context: Context, json: String) {
             instance?.applyData(json)
         }
+
+        // Keep channel language correct even while the overlay service is not running.
+        fun updateNotificationChannelLanguage(context: Context, language: String) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+            val manager = context.getSystemService(NotificationManager::class.java)
+            val channel = NotificationChannel(
+                CHANNEL_ID,
+                "Floating Monitor",
+                NotificationManager.IMPORTANCE_LOW,
+            ).apply {
+                description = if (language.equals("indonesia", ignoreCase = true))
+                    "Menampilkan status perangkat saat Floating Monitor aktif."
+                else
+                    "Displays device status while Floating Monitor is active."
+                setShowBadge(false)
+                setSound(null, null)
+                enableVibration(false)
+            }
+            manager.createNotificationChannel(channel)
+        }
     }
 
     private data class Config(
@@ -233,22 +253,7 @@ class FloatingMonitorService : Service() {
     // AI-METHOD / NOTIFICATION-CONTRACT
     // Create the low-priority channel required by the foreground overlay service.
     private fun createNotificationChannel(language: String = data.language) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
-        val manager = getSystemService(NotificationManager::class.java)
-        val channel = NotificationChannel(
-            CHANNEL_ID,
-            "Floating Monitor",
-            NotificationManager.IMPORTANCE_LOW,
-        ).apply {
-            description = if (language.equals("indonesia", ignoreCase = true))
-                "Menampilkan status perangkat saat Floating Monitor aktif."
-            else
-                "Displays device status while Floating Monitor is active."
-            setShowBadge(false)
-            setSound(null, null)
-            enableVibration(false)
-        }
-        manager.createNotificationChannel(channel)
+        updateNotificationChannelLanguage(this, language)
     }
 
     // AI-METHOD / NOTIFICATION-BUILD-CONTRACT

@@ -71,4 +71,25 @@ void main() {
     expect(main, contains('final syncedOtaNotice = isTransientOtaResultEvent(resultEvent)'));
     expect(main, isNot(contains('pendingOtaResult = _friendlyOtaResult(otaResult);')));
   });
+
+  test('All Android notification channels follow the selected App language', () {
+    final main = File('lib/main.dart').readAsStringSync();
+    final activity = File(
+      'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/MainActivity.kt',
+    ).readAsStringSync();
+    final foreground = File(
+      'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/JeForegroundService.kt',
+    ).readAsStringSync();
+    final floating = File(
+      'android/app/src/main/kotlin/com/horizontalzzz/jexfyz/FloatingMonitorService.kt',
+    ).readAsStringSync();
+
+    expect(main, contains('Future<void> _syncNotificationChannelLanguage() async'));
+    expect(main, contains("'updateNotificationChannelLanguage'"));
+    expect(main, contains('unawaited(_syncNotificationChannelLanguage());'));
+    expect(activity, contains('JeForegroundService.updateNotificationChannelLanguage(this, language)'));
+    expect(activity, contains('FloatingMonitorService.updateNotificationChannelLanguage(this, language)'));
+    expect(foreground, contains('fun updateNotificationChannelLanguage(context: Context, language: String)'));
+    expect(floating, contains('fun updateNotificationChannelLanguage(context: Context, language: String)'));
+  });
 }

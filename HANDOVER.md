@@ -27,7 +27,7 @@ The owner confirms that the deployed Android App is Build #124, Firmware V7.1 wa
 - Explicit @Thinking Eksekusi Full! authorized source changes directly on main for fixed-DPI Settings canvas, generic bilingual Device/Perangkat wording, BLE-gated Floating Monitor visibility and notification ID/channel hygiene.
 - Home brand header remains JE X FYZ. Existing Android channel IDs and BLE service/UUID matching are preserved.
 - Floating Monitor is sent an offline snapshot immediately at Dashboard startup, hides while telemetry says disconnected and restores only after Dashboard full sync; startup of the native service includes current telemetry. Saved user preference survives disconnect and missing overlay permission.
-- Alert IDs 2101–2104, ongoing BLE notification 2110, and Floating Monitor 2301 are distinct. OTA notifications render in the current language; no OTA protocol or transport protection was edited.
+- Alert IDs 2101–2104, ongoing BLE notification 2110, and Floating Monitor 2301 are distinct. Alert, BLE foreground-service and Floating Monitor channel names/descriptions sync to the selected App language on startup and language changes. OTA notifications render in the current language; no OTA protocol or transport protection was edited.
 - Static contract tests were added/updated, but tests, analysis/formatting and Android compilation have not run. No App Build/release, firmware compile, BIN/Firebase production write, OTA, flash or device action occurred. Preserve Build #124 / Firmware V7.1 baseline.
 
 ## Next action and limits

@@ -165,6 +165,8 @@ class MainActivity : FlutterActivity() {
                     val args = call.arguments as? Map<*, *>
                     val language = args?.get("language")?.toString() ?: "english"
                     ensureNotificationChannel(language)
+                    JeForegroundService.updateNotificationChannelLanguage(this, language)
+                    FloatingMonitorService.updateNotificationChannelLanguage(this, language)
                     result.success(true)
                 }
 

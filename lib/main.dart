@@ -4251,6 +4251,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     WidgetsBinding.instance.addObserver(this);
     appAutoConnectNotifier.addListener(_handleAutoConnectPreferenceChanged);
     appLanguageNotifier.addListener(_handleLanguagePreferenceChanged);
+    unawaited(_syncNotificationChannelLanguage());
     // Immediately detach any stale native overlay while this app session is offline.
     _publishFloatingTelemetry();
     WidgetsBinding.instance.addPostFrameCallback((_) => _tryAutoConnect());
@@ -4308,8 +4309,22 @@ class _DashboardScreenState extends State<DashboardScreen>
   void _handleLanguagePreferenceChanged() {
     if (!mounted) return;
     setState(() {});
+    unawaited(_syncNotificationChannelLanguage());
     _publishFloatingTelemetry();
     if (connected) unawaited(_setBackgroundService(true));
+  }
+
+  // Update every Android notification channel to match the persisted App language,
+  // even when the BLE foreground service and Floating Monitor are not running.
+  Future<void> _syncNotificationChannelLanguage() async {
+    try {
+      await const MethodChannel('je_x_fyz/notifications').invokeMethod<void>(
+        'updateNotificationChannelLanguage',
+        <String, dynamic>{'language': appLanguageNotifier.value.name},
+      );
+    } catch (e) {
+      debugPrint('Notification channel language: $e');
+    }
   }
 
   // AI-METHOD / AUTO-CONNECT-PREFERENCE-CONTRACT
