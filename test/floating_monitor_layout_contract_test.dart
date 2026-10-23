@@ -70,6 +70,11 @@ void main() {
     );
     expect(floating, contains('final logicalWidth = constraints.maxWidth / scale;'));
     expect(floating, contains('size: Size(logicalWidth, designHeight)'));
+    expect(floating, contains('child: OverflowBox('));
+    expect(floating, contains('minWidth: logicalWidth'));
+    expect(floating, contains('maxWidth: logicalWidth'));
+    expect(floating, contains('minHeight: designHeight'));
+    expect(floating, contains('maxHeight: designHeight'));
     expect(
       floating,
       contains('SizedBox(width: logicalWidth, height: designHeight, child: child)'),
@@ -113,7 +118,7 @@ void main() {
               child: Builder(
                 builder: (context) {
                   contentWidth = MediaQuery.sizeOf(context).width;
-                  return const SizedBox.expand();
+                  return const SizedBox.expand(key: ValueKey<String>('scale-probe'));
                 },
               ),
             ),
@@ -125,6 +130,10 @@ void main() {
 
       await pumpAtWidth(420);
       expect(contentWidth, closeTo(420.0, 0.01));
+      expect(
+        tester.getSize(find.byKey(const ValueKey<String>('scale-probe'))).width,
+        closeTo(420.0, 0.01),
+      );
       var canvasTransform = tester.widget<Transform>(
         find.descendant(
           of: find.byType(JexFixedScalePage),
@@ -136,6 +145,10 @@ void main() {
       await pumpAtWidth(320);
       // Narrow screens keep the 360-dp canvas and scale it down proportionally.
       expect(contentWidth, closeTo(360.0, 0.01));
+      expect(
+        tester.getSize(find.byKey(const ValueKey<String>('scale-probe'))).width,
+        closeTo(360.0, 0.01),
+      );
       canvasTransform = tester.widget<Transform>(
         find.descendant(
           of: find.byType(JexFixedScalePage),

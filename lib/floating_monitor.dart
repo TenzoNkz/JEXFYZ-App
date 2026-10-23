@@ -943,9 +943,16 @@ class JexFixedScalePage extends StatelessWidget {
               child: Transform.scale(
                 scale: scale,
                 alignment: Alignment.topCenter,
-                child: MediaQuery(
-                  data: scaledMedia,
-                  child: SizedBox(width: logicalWidth, height: designHeight, child: child),
+                child: OverflowBox(
+                  alignment: Alignment.topCenter,
+                  minWidth: logicalWidth,
+                  maxWidth: logicalWidth,
+                  minHeight: designHeight,
+                  maxHeight: designHeight,
+                  child: MediaQuery(
+                    data: scaledMedia,
+                    child: SizedBox(width: logicalWidth, height: designHeight, child: child),
+                  ),
                 ),
               ),
             ),
