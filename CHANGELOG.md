@@ -1,5 +1,14 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-23 — Compact Settings and Bluetooth Connection visuals (source committed; tests blocked by missing toolchain)
+
+- Under the owner's `@Thinking Eksekusi Full!` authorization, added a Settings-only `buildJexCompactUiTheme` helper in `lib/app_settings.dart`, an opt-in `compactUi` flag on `JexFixedScalePage`, and enabled it only for Settings root/subpages plus the Bluetooth Connection sheet. Other fixed-canvas dialogs and Home remain unchanged.
+- Settings rows are denser: title 13 dp, summary 11 dp, section labels 9 dp, icons 19/16 dp, vertical row padding 10 dp and more compact section spacing. Floating Settings captions/labels are reduced. Connection header is 60 dp with 16-dp heading; status labels 9.5 dp; Devices heading 13 dp; unavailable/scanning message 12 dp. Close/status/refresh tap areas remain 40–42 dp, pill height remains 42 dp.
+- The existing 360-dp DPI master-canvas formula, insets, single transform and clipping were not changed. BLE state, permissions, scanning/connect callbacks, status colors, localization and Firmware behavior were not changed.
+- Source commits: [`5ab14e258a9e21bfec486e3c6a3d81d6705c6d0f`](https://github.com/TenzoNkz/JEXFYZ-App/commit/5ab14e258a9e21bfec486e3c6a3d81d6705c6d0f), [`bfdcafd1ad044974935b4e473d68f2096a297fbf`](https://github.com/TenzoNkz/JEXFYZ-App/commit/bfdcafd1ad044974935b4e473d68f2096a297fbf), and [`415d240db3cd9b3e2bca3ef760c4ba667459c604`](https://github.com/TenzoNkz/JEXFYZ-App/commit/415d240db3cd9b3e2bca3ef760c4ba667459c604). Source-contract tests were updated in the same scope.
+- Static source assertions passed after re-fetching the live files. `flutter test test/floating_monitor_layout_contract_test.dart` and `dart format --output=none ...` failed to start because `flutter` and `dart` are unavailable (`command not found`, exit 127); analyzer, full suite and physical-device/OEM visual QA are NOT RUN. Do not call the new compact pass runtime-validated.
+- No App Build/release, Firmware/BIN/Firebase, OTA, flash or device operation occurred. Build #129 / run `39925045446`, source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`, remains the latest verified release; this compact pass is not in its APK/source ZIP. Package only through a separate explicit `@Thinking Eksekusi Build App!` after validation.
+
 ## 2026-10-23 — Compact Settings and Bluetooth UI requested (Discussion; source unchanged)
 
 - Owner confirms the Home-equivalent DPI-fixed canvas in Build #129 looks correct at both supplied 420-dp and 350-dp logical configurations, but the Settings and Bluetooth Connection UI still look too large.
