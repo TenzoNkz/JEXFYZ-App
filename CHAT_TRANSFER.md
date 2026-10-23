@@ -11,10 +11,10 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 
 ## Active Build App/QC recovery — 2026-10-23 (Asia/Jakarta)
 
-- **Status: BUILD #127 ACTIVE, Flutter tests running.** Run [39907723349](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907723349), source `74472861b868ba69caed97233d86d40424f2610f`, job `120263398179`, hosted runner `1000002426`.
-- **Passed:** steps 1–12 including security/architecture audit, signing-secret preparation, dependency install and Dart analyzer. **Current gate:** step 13 `Run Flutter tests` is `in_progress`; two stale assertions from #126 were repaired before this SHA.
-- **Pending:** Flutter test result, Android Gradle gate, APK build/signing/certificate, source ZIP, Release/tag parity and downloaded asset checks. Active job log still returns `BlobNotFound`; do not infer an outcome from it.
-- **Checkpoint:** report update committed at `9db4307da38bf295bee73b74696f6696002157f3` and verified. Verify this transfer update too. Do not trigger another run; Build #124 remains latest verified release. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device activity.
+- **Status: Build #127 failed at Flutter tests (120 passed, 1 failed); one stale notification-copy assertion remains.** [Run 39907723349](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907723349), source `74472861b868ba69caed97233d86d40424f2610f`.
+- **Passed gates:** runner/toolchain, security/architecture audit, dependencies, Dart analyzer (25 info diagnostics). Both #126 test failures were fixed; #127 revealed one remaining obsolete assertion in `test/widget_test.dart`: expects `Bluetooth terhubung · sesi cooler aktif`, while current native service copy is `Bluetooth terhubung · sesi perangkat aktif` consistent with Device/Perangkat wording.
+- **Next repair:** update that exact assertion only. Android Gradle/APK/signing/source ZIP/release gates remain skipped; Build #124 is still the latest verified package. The failed attempt and log evidence are recorded in APP_BUILD_REPORT.md commit `a63f6e6fe5ac53a95c08b4d4688d651e16e62c9d`.
+- **Next:** verify the report/handoff commits, commit the test fix, then preflight current main + issue guard + no active runs and use one official issue trigger. Do not weaken the gate or revert approved copy. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device actions.
 
 ## Live repository point
 
