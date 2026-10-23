@@ -9,6 +9,16 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 - Production baseline remains Build #124 + V7.1. The unit is sold/shipped and not routinely available for physical repair; future changes must be conservative.
 - App release CI is not evidence of Firmware compile/BIN identity, OTA apply/reboot, BLE recovery or thermal/electrical behavior.
 
+## Active Build App/QC recovery — 2026-10-23 (Asia/Jakarta)
+
+- **Mode/scope:** authorized `Eksekusi Build App!`; guarded App Build/QC/release and App-scope repairs only. No Firmware/device/OTA/BIN/Firebase operation.
+- **Preflight result:** `APP_BUILD_REPORT.md` preflight section is committed and re-read from main. Its report commit is `102236859a5340a7562f5332c07db4c7c5b6deca`. Starting HEAD before that commit was `ee68c16a07bc79d04e78a3ff113de134c3e33fe0`; re-fetch `main` again before trigger to determine the exact intended build SHA.
+- **Run status at preflight:** latest Actions run #124 / `39386733061` completed SUCCESS on old packaged source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`; live API filters returned zero queued/in-progress/waiting runs. No new App build has been triggered yet.
+- **Artifact baseline only (not current-source proof):** Release `jexfyz-latest` / ID `403010611` and its tag still target Build #124 source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`. APK SHA-256 `c0738d3607b120b716841610c849d9608f954a5f1f28017a8018790f4f4b6318`; source ZIP SHA-256 `e00ac34cb6cf7f04a5485c8ab8ee74d4acc1b20dc1a213ac733a8bf8c43cc152`.
+- **Trigger guard:** workflow remains `.github/workflows/jexfyz-app-build-trigger.yml`, issue `opened/reopened` only, exact owner/title/body token. Issue #34 is currently open and valid. After this checkpoint is committed and live preconditions are rechecked, use one official close/reopen cycle to deliver the required `reopened` event; do not create a second trigger issue or invoke push/PR/dispatch.
+- **Last completed gate for current source:** none. Build #124's gates apply only to its packaged commit. Current App/Android UI and notification/Floating Monitor changes are newer than that package and require the full workflow.
+- **Next:** verify this checkpoint commit, re-fetch main and active/queued/waiting runs, trigger once, check the new run targets the exact live head, then follow actual job steps/logs and update both ledgers at each milestone. Preserve `versionName "Telegram @horizontalzzz"`.
+
 ## Live repository point
 
 - Documentation audit began on TenzoNkz/JEXFYZ-App/main at 11a0ef162f1c2945704229ed7697dc70e7617e9b, commit message "fix: sync Android notification channels with app language", dated 2026-10-23. The docs-only rework commit moves main forward; fetch live HEAD/tree at every boot instead of trusting this audit-base SHA.
