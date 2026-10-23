@@ -1,5 +1,12 @@
 # JE X FYZ / JE Cooler — Changelog
 
+## 2026-10-23 — Compact Settings and Bluetooth UI requested (Discussion; source unchanged)
+
+- Owner confirms the Home-equivalent DPI-fixed canvas in Build #129 looks correct at both supplied 420-dp and 350-dp logical configurations, but the Settings and Bluetooth Connection UI still look too large.
+- The next visual pass should keep the released 360-dp master canvas and uncapped `width / 360` transform unchanged. Reduce base Settings typography, glyph sizes, row padding/spacing and Connection-sheet header/status/message sizing by roughly 10%; maintain full-width cards, localization, theme contrast, BLE status/scanning/connect behavior and comfortably tappable controls (about 40 dp or larger).
+- Suggested values: Settings AppBar 20→18; row title about 13 dp, summary 12→11; icons 21→19; row vertical padding 13→10; Connection heading 18→16, header 66→60, status label 10.5→9.5, Devices label 14→13, message 13→12. Detailed plan is in `DESIGN_NOTES.md`.
+- This is a design checkpoint under `@Thinking Diskusi!`: no App/Firmware source or tests were changed; no formatting, analyzer, Flutter test, build or release was run for this compact pass. Build #129 remains the latest verified package until a future separately authorized `Eksekusi Full!` source/test change and, if desired, `Eksekusi Build App!` release.
+
 ## 2026-10-23 — Home-equivalent Settings/Connection DPI canvas validated and released in Build #129
 
 - Guarded official issue-triggered run [39925045446](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446) packaged source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4` and completed SUCCESS with all 21 workflow steps passing.
