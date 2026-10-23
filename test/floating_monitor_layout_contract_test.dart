@@ -147,6 +147,14 @@ void main() {
         ),
       );
       expect(canvasTransform.transform.storage[0], closeTo(420 / 360, 0.01));
+      expect(
+        360.0 * canvasTransform.transform.storage[0] * tester.view.devicePixelRatio,
+        closeTo(1080.0, 0.01),
+      );
+      expect(
+        800.0 * canvasTransform.transform.storage[0] * tester.view.devicePixelRatio,
+        closeTo(2400.0, 0.01),
+      );
 
       await pumpAtDensity(1080 / 320);
       expect(logicalCanvasSize!.width, closeTo(360.0, 0.01));
@@ -162,6 +170,14 @@ void main() {
         ),
       );
       expect(canvasTransform.transform.storage[0], closeTo(320 / 360, 0.01));
+      expect(
+        360.0 * canvasTransform.transform.storage[0] * tester.view.devicePixelRatio,
+        closeTo(1080.0, 0.01),
+      );
+      expect(
+        800.0 * canvasTransform.transform.storage[0] * tester.view.devicePixelRatio,
+        closeTo(2400.0, 0.01),
+      );
     },
   );
 
