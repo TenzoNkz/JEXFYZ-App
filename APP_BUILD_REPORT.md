@@ -1,4 +1,16 @@
-## CURRENT BUILD APP EXECUTION — BUILD #127 QUEUED — 2026-10-23 (Asia/Jakarta)
+## CURRENT BUILD APP EXECUTION — BUILD #127 RUNNER ACTIVE — 2026-10-23 (Asia/Jakarta)
+
+- **Run:** [#127 / 39907723349](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907723349), status `in_progress`, exact target/source SHA `74472861b868ba69caed97233d86d40424f2610f`. The current repo documentation may advance, but this run's checkout SHA is immutable.
+- **Runner recovery:** live job `120263398179` has hosted runner `1000002426` on `ubuntu-24.04`. Steps 1–4 passed: Set up job, Checkout repository, Java 17 setup and Flutter setup.
+- **Current gate:** `Set up Gradle` (`in_progress`). Subsequent toolchain/security/dependency/analyzer/Flutter test/Android/APK/sign/release gates remain pending in the latest step API.
+- **Fix under test:** source SHA includes test repair commit `0e5ed8871c2ba2047543b92052fc3ab4541b8c6a` for the two stale assertions found in #126. It has not yet been validated by #127 because tests are pending.
+- **Log availability:** step API shows real runner progress, while live job-log retrieval currently returns `BlobNotFound` before terminal log publication. Do not infer failure from that alone.
+- **Release:** latest verified package remains Build #124; no #127 assets are yet evidenced. Do not trigger any duplicate while this run is active.
+- **Next:** follow the same run's real step outcomes; after analyzer/tests milestone, record exact results and any remaining gates. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device activity.
+
+---
+
+## HISTORICAL CHECKPOINT — BUILD #127 QUEUED BEFORE RUNNER STARTED
 
 - **Trigger:** official issue #34 `issues/reopened` event fired at `2026-10-23T05:47:32Z`; [Build #127 / run 39907723349](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39907723349) was created at `2026-10-23T05:47:34Z`, event `issues`, current status `queued`.
 - **Exact source target:** run `head_sha` equals main SHA `74472861b868ba69caed97233d86d40424f2610f`. Workflow blob remains `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`; this is the existing guarded issue-only trigger, no push/PR/manual-dispatch path.
