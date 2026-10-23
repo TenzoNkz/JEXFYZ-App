@@ -11,10 +11,10 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 
 ## Active Build App/QC recovery — 2026-10-23 (Asia/Jakarta)
 
-- **Status: BUILD #128 ACTIVE; Flutter tests and Android Gradle gate passed; APK build is running.** [Run 39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440), exact source `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`, job `120264345808`, hosted runner `1000002427`.
-- **Passed:** steps 1–14, including analyzer, Flutter tests (repair assertions now pass), and Android configured Gradle test gate. Exact total Flutter count awaits log access after runner output becomes available.
-- **Current:** step 15 `Build latest release APK` is `in_progress`. **Pending:** V1/V2/V3 signing, signer certificate validation, source ZIP, Release publication, tag parity, downloaded asset checksums/source marker and signature.
-- **Checkpoint:** ledger milestone committed at `a560d5f36c7c5617fe44bed185f1aef76388d5fc` and re-read. Verify this handoff write too. No duplicate run while #128 active; Build #124 is still last verified release. Preserve `versionName "Telegram @horizontalzzz"`, no Firmware/BIN/Firebase/OTA/flash/device actions.
+- **Status: BUILD #128 ACTIVE; APK build, V1/V2/V3 signing/certificate verification, and source ZIP package passed; Release publishing is active.** [Run 39908023440](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39908023440), target SHA `e4dcbe0e813c2bdc6094814d23d6b1752eafd2d3`, job `120264345808`.
+- **Passed:** workflow steps 1–19. Step 20 `Publish APK and corresponding source to GitHub Release` is `in_progress`; step 21 `Verify downloaded GitHub Release asset` remains pending.
+- **Critical completion gate:** do not report SUCCESS until step 21 finishes and fresh Release/tag/asset evidence proves exact target source SHA, exactly one APK plus one source ZIP, identity/checksums, source marker and downloaded APK signature/certificate.
+- **Checkpoint:** ledger commit `92708619351fbcc4d70b4781be166edda645d8dd` committed and re-read. Verify this transfer update too. No duplicate while #128 active. Preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device operations.
 
 ## Live repository point
 
