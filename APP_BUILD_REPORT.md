@@ -1,4 +1,28 @@
-## CURRENT BUILD APP RECOVERY — 2026-10-23 — PREFLIGHT SAVED, RUN NOT YET TRIGGERED
+## CURRENT BUILD APP EXECUTION STATUS — BLOCKED — 2026-10-23 (Asia/Jakarta)
+
+- **Disposition:** `BLOCKED` after one official guarded attempt. Do not interpret this as an App source/build failure or as a passed gate.
+- **Exact intended source / run target:** [Build #125, run 39905665853](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39905665853), event `issues`, source SHA `709f03a94ae8312af541b0bd876e67ea01fdd395`. The run head matched the verified `main` HEAD at trigger time exactly. Issue #34 was closed at `2026-10-23T05:25:17Z` and reopened at `2026-10-23T05:25:20Z` to emit the unchanged guarded `reopened` event.
+- **Latest verified package remains historical Build #124:** source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`, run `39386733061`. No package for the newer source is evidenced.
+- **Current failure gate:** job `build`, ID `120256919402`, run status `completed/failure`; run began `2026-10-23T05:25:22Z` and ended `2026-10-23T05:25:26Z`. Live job fields show `runner_id=0`, empty `runner_name`, and no steps. A separate steps query returned an empty array; job-log retrieval returned `BlobNotFound`; the run's artifact list is empty.
+- **Gate interpretation:** the job failed before any runner step was observable. The security audit, dependency install, Dart analyze, Flutter tests, Android gate, APK compilation, signing/certificate verification, source ZIP, Release publishing and downloaded-asset checks did **not** run in Build #125. There is no source-level error output to repair from this attempt.
+- **Release integrity re-check after #125:** Release ID `403010611` still targets `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`; `refs/tags/jexfyz-latest` has the same target. Assets remain exactly the Build #124 APK (ID `658613910`, 54,751,323 bytes, SHA-256 `c0738d3607b120b716841610c849d9608f954a5f1f28017a8018790f4f4b6318`) and matching source ZIP (ID `658613911`, 2,873,358 bytes, SHA-256 `e00ac34cb6cf7f04a5485c8ab8ee74d4acc1b20dc1a213ac733a8bf8c43cc152`). No Build #125 artifact was created and the tag was not moved.
+- **Blocker:** pre-runner GitHub Actions job startup/hosted-runner allocation is the strongest evidence-supported classification (`runner_id=0`, no steps/logs), but the connector exposes no explicit runner provisioning error. Root cause is therefore `UNVERIFIED INFRASTRUCTURE BLOCKER`, not confirmed runner outage or confirmed workflow/source defect.
+- **Retry policy:** no retry/rerun issued. With no source/config failure and no explicit confirmation that an infrastructure fault is transient/resolved, another attempt would be blind. Recheck GitHub Actions/job scheduling diagnostics or obtain confirmation from repository/admin/hosted-runner status before the next guarded trigger. Do not add push/PR/manual-dispatch triggers or weaken gates.
+- Android Gradle `versionName "Telegram @horizontalzzz"` remains required. This attempt involved App workflow dispatch only; no Firmware/BIN/Firebase/OTA/flash/device operation occurred.
+
+---
+
+## ATTEMPT RECORD — BUILD #125 — PRE-RUNNER STARTUP FAILURE
+
+- **Run / source:** [#125 / 39905665853](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39905665853), source `709f03a94ae8312af541b0bd876e67ea01fdd395`, official issue #34 reopened event, workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`.
+- **Job result:** job `120256919402` completed as failure in approximately two seconds; the API returned `runner_id=0`, no runner name and `steps=[]`.
+- **Failure evidence:** step listing returned no steps, log retrieval returned `BlobNotFound`, and the run had zero workflow artifacts. No named workflow gate started; there is no source stack trace, test failure or signing error.
+- **Impact:** no APK/source ZIP was built or published. Live Release metadata and `jexfyz-latest` tag still point at Build #124 source `7d4e7262c6a3474eefa8ccb58b08f070df3ac15a`; existing asset digests were unchanged on re-check.
+- **Disposition:** `BLOCKED / INFRASTRUCTURE REASON NOT FULLY EXPOSED`. Do not label as source failure, do not rerun blindly, and do not claim a successful Build #125.
+
+---
+
+## PRE-TRIGGER RECOVERY PREFLIGHT — 2026-10-23 (HISTORICAL SNAPSHOT BEFORE BUILD #125)
 
 - **Authorization / scope:** the owner explicitly invoked `Eksekusi Build App!`. This is App Build/QC/release only; no Firmware compile/BIN, Firebase production metadata, OTA, flashing, device operation, or unrelated release is authorized.
 - **Preflight main HEAD:** `ee68c16a07bc79d04e78a3ff113de134c3e33fe0` (tree `901d935cbe2151d4b602857bad4be07b993231f1`); recursive tree returned 69 entries, `truncated=false`. This SHA is the inspected starting point, not the intended build source SHA; the precise source SHA must be re-fetched from live `main` immediately before the issue event.
