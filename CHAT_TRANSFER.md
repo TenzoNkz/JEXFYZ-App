@@ -11,7 +11,7 @@ Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuatio
 - **QC:** 122 Flutter tests passed; Dart analyzer exited 0 with 25 informational diagnostics; configured Android Gradle gate reported `BUILD SUCCESSFUL in 1m 27s`. Native Android JUnit tasks were `NO-SOURCE`, so no native JUnit test cases executed.
 - **Field-device status (USER-REPORTED):** the owner previously reported installing/overwriting Build #128. The exact installed APK identity was not independently read; do not assume Build #129 is installed. Firmware V7.1 compile/Online OTA is also USER-REPORTED. CI is not physical-device, Firmware/BIN, OTA, BLE, cooling or safety proof.
 
-## Active scoped execution result — compact Settings and Bluetooth Connection UI — 2026-10-23
+## Active recovered execution result — compact Settings and Bluetooth Connection UI — 2026-10-23
 
 - **Authorization/scope:** owner invoked `@Thinking Eksekusi Full!` for the compact visual pass. Only App source, targeted regression/source-contract tests, and canonical project-memory docs were changed. No App Build/release, Firmware/BIN/Firebase, OTA, flashing or physical-device operation was authorized or performed.
 - **Owner observation:** Home-equivalent DPI-fixed behavior is correct on the supplied 420-dp and 350-dp displays, but Settings and Bluetooth Connection still looked oversized. The 360-dp canvas and its uncapped `width / 360` transform are kept unchanged; compactness is achieved only through base typography, icons, visual density and spacing.
