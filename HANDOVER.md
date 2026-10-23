@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Handover
 
-Updated: 2026-10-21 (Asia/Jakarta).
+Updated: 2026-10-23 (Asia/Jakarta).
 
 ## Production checkpoint
 
@@ -22,9 +22,17 @@ The owner confirms that the deployed Android App is Build #124, Firmware V7.1 wa
 - Preserve Adaptive whole-degree target bands and immediate raw-decimal Hotside safety, current Touch/P1 semantics, cooperative timing, Peltier/rail sequence, BLE radio ownership and OTA flow.
 - `TenzoNkz/JEXFYZ-Firmware` is binary-only, containing `JEXFYZ.cpp.bin`; never replace or inspect the payload during cleanup.
 
+## Latest source-only App maintenance — 2026-10-23
+
+- Explicit @Thinking Eksekusi Full! authorized source changes directly on main for fixed-DPI Settings canvas, generic bilingual Device/Perangkat wording, BLE-gated Floating Monitor visibility and notification ID/channel hygiene.
+- Home brand header remains JE X FYZ. Existing Android channel IDs and BLE service/UUID matching are preserved.
+- Floating Monitor hides while telemetry says disconnected and restores only after Dashboard full sync; startup includes current telemetry. Saved user preference survives disconnect and missing overlay permission.
+- Alert IDs 2101–2104, ongoing BLE notification 2110, and Floating Monitor 2301 are distinct. OTA notifications render in the current language; no OTA protocol or transport protection was edited.
+- Static contract tests were added/updated, but tests, analysis/formatting and Android compilation have not run. No App Build/release, firmware compile, BIN/Firebase production write, OTA, flash or device action occurred. Preserve Build #124 / Firmware V7.1 baseline.
+
 ## Next action and limits
 
-No firmware update, OTA, App Build, release, Firebase edit, BIN publication or physical-device action is pending from this documentation cleanup. Wait for a concrete maintenance request and inspect live main/workflow/source first. For future changes, prefer documentation-only or isolated App improvements; any change that can affect BLE/OTA requires an explicit rationale, regression review and the appropriate authorization.
+No firmware update, OTA, App Build, release, Firebase edit, BIN publication or physical-device action was performed for this source-only maintenance. Inspect live main/workflow/source before the next authorized task. For future changes, prefer documentation-only or isolated App improvements; any change that can affect BLE/OTA requires an explicit rationale, regression review and the appropriate authorization.
 
 ## Chat-limit recovery
 
