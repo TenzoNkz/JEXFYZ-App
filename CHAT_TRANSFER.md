@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Live Chat Checkpoint
 
-Checkpoint refreshed: 2026-10-23 (Asia/Jakarta). This is the rolling continuation state, not a transcript. Prompt 1 in `CHAT_TRANSFER_PROMPTS.md` starts with `Diskusi!`; for explicitly authorized execution/recovery, replace only its first line with `Eksekusi Full!` or `Chat Stuck!`. Prompt 2 starts with `Eksekusi Build App!`. Paste one complete prompt and do not add a duplicate command line.
+Checkpoint refreshed: 2026-10-24 (Asia/Jakarta), after `@Thinking Chat Stuck!` recovery of the authorized compact Settings/Connection source task. The implementation and canonical notes are committed; static source contracts were rechecked. Flutter/Dart execution remains blocked because both executables are absent, and Build #129 remains the release baseline. This is the rolling continuation state, not a transcript. Prompt 1 in `CHAT_TRANSFER_PROMPTS.md` starts with `Diskusi!`; for explicitly authorized execution/recovery, replace only its first line with `Eksekusi Full!` or `Chat Stuck!`. Prompt 2 starts with `Eksekusi Build App!`. Paste one complete prompt and do not add a duplicate command line.
 
 ## Product and release baseline
 
