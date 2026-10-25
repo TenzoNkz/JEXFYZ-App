@@ -84,11 +84,11 @@ void main() {
       contains('width: designWidth,\n                      height: designHeight,\n                      child: child,'),
     );
     expect(floating, contains('TextScaler.noScaling'));
-    expect(floating, contains('builder: (_) => const JexFixedScalePage(child: LanguageSettingsPage())'));
-    expect(floating, contains('builder: (_) => const JexFixedScalePage(child: AppearanceSettingsPage())'));
-    expect(floating, contains('builder: (_) => const JexFixedScalePage(child: NotificationsSettingsPage())'));
-    expect(floating, contains('builder: (_) => const JexFixedScalePage(child: BluetoothSettingsPage())'));
-    expect(floating, contains('builder: (_) => const JexFixedScalePage(child: FloatingSettingsPage())'));
+    expect(floating, contains('JexFixedScalePage(compactUi: true, child: LanguageSettingsPage())'));
+    expect(floating, contains('JexFixedScalePage(compactUi: true, child: AppearanceSettingsPage())'));
+    expect(floating, contains('JexFixedScalePage(compactUi: true, child: NotificationsSettingsPage())'));
+    expect(floating, contains('JexFixedScalePage(compactUi: true, child: BluetoothSettingsPage())'));
+    expect(floating, contains('JexFixedScalePage(compactUi: true, child: FloatingSettingsPage())'));
     expect(floating, contains('telemetry: floatingTelemetryNotifier.value'));
     expect(floating, contains('size.toDouble().clamp(0.3, 1.0)'));
     expect(floating, contains("maxLabel: '1.00×'"));
