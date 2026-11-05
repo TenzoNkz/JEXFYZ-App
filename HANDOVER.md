@@ -1,33 +1,20 @@
 # JE X FYZ / JE Cooler — Immediate Handover
 
-Updated: 2026-10-23 (Asia/Jakarta).
+Updated: 2026-11-06 (Asia/Jakarta).
 
-## Baseline and evidence
+## Latest verified state
 
-- **Latest verified App package:** [Build #129 / GitHub Actions run 39925045446](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446), exact tested/package source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`. All 21 workflow steps and post-job cleanup succeeded.
-- **APK:** [JEXFYZ-release.apk](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk), 54,751,323 bytes, SHA-256 `f59c511786d49add8e0596fd3d658248746c008b7eaff94bb6215d314aa0426e`. **Matching source ZIP:** [JEXFYZ-corresponding-source.zip](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip), 2,878,916 bytes, SHA-256 `c74e6800dadf80a5223dedcce3144b12f6365506a8b9821bb7abf1817df8cfff`.
-- **QC:** 122 Flutter tests passed; Dart analyzer exited 0 with 25 info-level diagnostics; configured Android Gradle gate succeeded. Native Android JUnit tasks were `NO-SOURCE`. V1/V2/V3 APK signing, expected production certificate, corresponding source archive, Release/tag parity and final re-downloaded asset checks all passed.
-- **Validated source change:** Settings root/subpages, Bluetooth Connection sheet and selected modals now match Home's uncapped DPI-compensating 360-dp logical canvas. The density regression test keeps physical size 1080×2400 constant and checks 420-dp and 320-dp logical widths; it passed in Build #129.
-- **Field status (USER-REPORTED):** the owner previously reported using/installing Build #128. Build #129 is latest published, but its installation on the physical unit has not been independently confirmed. Firmware V7.1 compile/Online OTA remains USER-REPORTED.
+- The single operating policy is [MASTER_PROMPT.md](MASTER_PROMPT.md). [CHAT_RULES.md](CHAT_RULES.md) is only a compatibility pointer.
+- Exactly two LOAD + CONTINUE prompts remain in [CHAT_TRANSFER_PROMPTS.md](CHAT_TRANSFER_PROMPTS.md). Prompt 1 is general engineering; Prompt 2 is guarded Build App/QC only.
+- Gemini consultation may be proposed proactively during Discussion when a second opinion materially reduces uncertainty. Gemini has no GitHub access; the owner must paste a fully self-contained prompt and return its answer for repository-backed review.
+- Latest independently verified App release remains Build #129 / run `39925045446`, source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`. The compact Settings/Connection pass is on main but not in that release.
+- Latest compact UI source/test repair: commit `c37aea44abeb832987e13a1c74701d415e85a737` updates five stale route expectations. Static substring checks pass; Flutter runtime validation has not run.
+- Repository workflow/documentation cleanup is documentation-only. No App source, Firmware source, tests, build workflow or release behavior is authorized to change merely by this handover.
 
-## Current handoff
+## Next safe action
 
-The authorized `@Thinking Eksekusi Build App!` operation is complete. Builds #125–#127 are preserved in the attempt ledger; #128 validated Device/notification contracts; #129 validated the Home-equivalent DPI canvas and published the current APK/source ZIP. The guarded issue-only workflow remains unchanged. Current successful evidence is in `APP_BUILD_REPORT.md`; rolling continuation state is in `CHAT_TRANSFER.md`.
+In a Flutter-enabled environment, run formatting, the targeted `floating_monitor_layout_contract_test.dart`, analyzer and the complete Flutter suite for the compact UI pass. Review actual results and then perform physical-device/OEM layout QA when available. Only after validation, and only with a separate explicit `Eksekusi Build App!`, may a new APK be packaged.
 
-The Build #129 Release ID is `403010611`; live Release metadata and tag `jexfyz-latest` target source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`. Downloaded APK/ZIP digests, source marker and downloaded APK signatures were verified. The cache-write denial after job completion was a non-blocking post-job cleanup warning; all gates and the run concluded success.
+## Evidence and safety boundary
 
-No Firmware compile, BIN generation/publication, production Firebase edit, OTA, flash or physical-device operation occurred. CI does not prove real OEM display rendering, BLE/overlay/cooling, installed APK identity, Firmware/BIN identity or physical safety.
-
-## Next continuation
-
-The latest owner-authorized `@Thinking Eksekusi Full!` compact pass is now implemented on `main` in `lib/app_settings.dart`, `lib/floating_monitor.dart`, `lib/main.dart`, with source-contract test updates in `test/floating_monitor_layout_contract_test.dart`. Commits: `5ab14e258a9e21bfec486e3c6a3d81d6705c6d0f`, `bfdcafd1ad044974935b4e473d68f2096a297fbf`, `415d240db3cd9b3e2bca3ef760c4ba667459c604`, `f5bf63b0f5c8a837f47617b77e85d8dce93d845c` (preserves inherited Theme colors on the Connection sheet), and `9db9ee3fc453f537ceaca88462b02e36318a487e` (formatter-safe contract assertion). The DPI canvas and Home scale formula are unchanged; settings typography/rows and Connection header/status/empty-state text are more compact, while tappable controls remain 40–42 dp. Manual source inspection confirms compact visual tokens and target route wrappers. The five Settings subpage expectations in `test/floating_monitor_layout_contract_test.dart` were updated to include `compactUi: true`, matching the live `SettingsPage` route wrappers for Language, Appearance, Notifications, Bluetooth and Floating Settings. A fresh static comparison confirms each new expected substring occurs exactly once in both test and source, and all five obsolete exact strings are absent. Flutter and Dart are unavailable in this environment (`command -v flutter` and `command -v dart` returned no executable), so the targeted Flutter test, formatter, analyzer and full suite remain NOT RUN; this is static consistency evidence, not a runtime test result. Flutter test, formatter and analyzer remain NOT RUN because Flutter/Dart are not installed. Next, run `dart format`, the targeted Flutter test, analyzer and the full Flutter suite in a Flutter-enabled environment. Build #129 remains the latest release and excludes this UI pass. After validation, a separate `@Thinking Eksekusi Build App!` is required if the owner wants an installable APK.
-
-
-1. On a new task, fetch the live `main` HEAD/tree and current Actions/Release/tag state; do not assume saved hashes remain current.
-2. Read `CHAT_RULES.md`, `MEMORY_INDEX.md`, `PROJECT_STATE.md`, `BUILD_NOTES.md` and the full active-task reference.
-3. No duplicate Build App run is needed for source commit `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`; require a new explicit owner request for another release. Future builds must use the unchanged owner/title/token issue-only trigger and all gates, preserve Android `versionName "Telegram @horizontalzzz"`, and verify downloaded asset identity/checksums.
-4. Current source-only compact UI pass is committed but unvalidated/unreleased. In a Flutter-enabled environment run `dart format lib/app_settings.dart lib/floating_monitor.dart lib/main.dart test/floating_monitor_layout_contract_test.dart`, `flutter test test/floating_monitor_layout_contract_test.dart`, `flutter analyze --no-fatal-infos`, and the full `flutter test` suite. Then, if a new APK is wanted, require a separate `@Thinking Eksekusi Build App!`; also perform physical-device/OEM layout QA across display-density settings. Firmware/BIN/Firebase/OTA/flash/device work requires separate explicit permission.
-
-## Safety boundary
-
-This handover authorizes no Firmware compilation, BIN generation/publication, Firebase production metadata change, OTA, flash or device operation. Those require separate explicit permission.
+Build #129 is the latest published artifact, not proof of installation on the field unit. Firmware V7.1 compile/Online OTA remains USER-REPORTED; BIN identity and physical behavior remain UNVERIFIED. No Firmware compile, BIN/Firebase operation, OTA, flashing or device operation is authorized by this note.
