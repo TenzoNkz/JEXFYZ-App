@@ -1,3 +1,12 @@
+## 2026-11-06 — Centralize Master Prompt, add proactive Gemini handoff, and reconcile Markdown map (docs-only)
+
+- Added `MASTER_PROMPT.md` as the single authoritative operating contract for command modes, authorization, LOAD + CONTINUE, durable-memory cadence, evidence labels, protected App/Firmware/OTA contracts and repository hygiene.
+- Reframed `CHAT_RULES.md` as a compatibility pointer rather than a second ruleset. Reduced `CHAT_TRANSFER_PROMPTS.md` to exactly two copy-ready prompts that load the Master Prompt: general engineering and guarded App Build/QC.
+- Added the Discussion Gemini handoff rule: the assistant may proactively provide a self-contained second-opinion prompt when material uncertainty merits it. Gemini has no GitHub/repository access; all evidence must be included in the prompt, and its answer must be verified against live source.
+- Rebuilt README navigation; classified all 22 Markdown files in `MEMORY_INDEX.md`; condensed current-only `PROJECT_STATE.md`, `HANDOVER.md` and `CHAT_TRANSFER.md`; updated App/design/build references to reflect the corrected compact-UI test expectations and their still-unrun validation.
+- Preserved APP_BUILD_REPORT.md and CHANGELOG.md as history ledgers and all three archive/*.md snapshots as immutable evidence. No Markdown file was removed, renamed or moved.
+- Documentation-only change. No executable source, test file, build workflow, App Build/APK, Firmware/BIN, Firebase, OTA, flashing or device operation was changed or run.
+
 # JE X FYZ / JE Cooler — Changelog
 
 ## 2026-10-23 — Compact UI source pass committed; validation pending
