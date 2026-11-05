@@ -1,65 +1,37 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last refreshed: 2026-10-24 (Asia/Jakarta), after Chat Stuck recovery and verification of the compact Settings/Connection source checkpoint. Build #129 remains the latest verified release; compact visual changes are committed but not runtime-validated or released. This is current-only state, not history; fetch live HEAD/tree on every new task.
+Last refreshed: 2026-11-06 (Asia/Jakarta). Current-state summary only; always fetch live main/source, tests, Actions and Release data before acting.
 
-## Product baseline and evidence
+## Production and release baseline
 
-- **Latest owner-reported field update:** the owner previously reported installing/overwriting Build #128 and supplied screenshots/video. The exact installed APK identity was not independently read; Build #129 has not been confirmed installed on the physical unit. Firmware V7.1 compile/Online OTA remains USER-REPORTED.
-- **Latest independently verified App release:** [Build #129 / Actions run 39925045446](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446), exact packaged source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`. Release ID `403010611`; Release metadata and live `refs/tags/jexfyz-latest` target this exact SHA.
-- **APK:** [JEXFYZ-release.apk](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk), asset ID `668498025`, 54,751,323 bytes, SHA-256 `f59c511786d49add8e0596fd3d658248746c008b7eaff94bb6215d314aa0426e`.
-- **Corresponding source ZIP:** [JEXFYZ-corresponding-source.zip](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip), asset ID `668498026`, 2,878,916 bytes, SHA-256 `c74e6800dadf80a5223dedcce3144b12f6365506a8b9821bb7abf1817df8cfff`.
-- Build #129 passed all 21 workflow gates, **122 Flutter tests**, analyzer (25 informational diagnostics), and the configured Android Gradle gate. Native Android JUnit tasks were `NO-SOURCE`. The APK was obfuscated, signed and verified using V1/V2/V3 with the expected production certificate; matching source ZIP, source marker, exact Release/tag parity and downloaded asset digest/signature checks passed.
-- **Validated and released in Build #129:** the Home-equivalent uncapped 360-dp DPI-compensating canvas for Settings root/subpages, Bluetooth Connection and selected modals. Its fixed-physical-viewport regression test passed in hosted CI.
-- App CI does not prove physical installation on the shipped unit, real OEM display rendering, BLE/overlay/cooling behavior, Firmware compilation, BIN/source identity, physical OTA or thermal/electrical safety. Preserve remote recovery and safety.
+- **Protected known production reference:** App Build #124 + Firmware V7.1. Keep this stable reference distinct from newer published artifacts and the exact package installed on the field unit.
+- **Latest independently verified published App package (live check 2026-11-06):** Build #129 / [Actions run 39925045446](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446), exact tested/package source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`. Latest Release `jexfyz-latest` (ID `403010611`) and tag both target this SHA.
+- APK asset `668498025`: 54,751,323 bytes, SHA-256 `f59c511786d49add8e0596fd3d658248746c008b7eaff94bb6215d314aa0426e`.
+- Matching source ZIP asset `668498026`: 2,878,916 bytes, SHA-256 `c74e6800dadf80a5223dedcce3144b12f6365506a8b9821bb7abf1817df8cfff`.
+- Build #129 passed all 21 workflow gates, 122 Flutter tests, analyzer (25 informational diagnostics), configured Android Gradle gate, APK V1/V2/V3 and expected certificate, corresponding ZIP/source marker, exact Release/tag parity and downloaded asset identity/digest checks. Native Android JUnit tasks were NO-SOURCE.
+- Live Actions check on 2026-11-06: latest listed run remains #129; zero in-progress runs, zero queued runs and zero open PRs.
+- **Field evidence (USER-REPORTED):** owner previously reported installing/overwriting Build #128. Exact installed APK identity was not independently read; do not assume Build #129 is installed. Firmware V7.1 compile/Online OTA is also USER-REPORTED; exact BIN identity and physical behavior remain UNVERIFIED.
 
-## Durable project-memory / recovery policy
+## Current App source and validation
 
-- `TenzoNkz/JEXFYZ-App/main` is the shared project-memory source, but chat transcripts are not automatically synchronized to GitHub. A state is saved only after the relevant document update is committed and verified.
-- The two transfer prompts are in `CHAT_TRANSFER_PROMPTS.md`: Prompt 1 for Discussion/general engineering, specifically authorized Eksekusi Full, or recovery of an already-authorized operation; Prompt 2 only for guarded Build App/QC.
-- Checkpoint each durable decision, meaningful finding, logical milestone, test result, or blocker. At substantive task completion, update `CHAT_TRANSFER.md` and the relevant canonical note. While Build App progresses, append actual attempts to `APP_BUILD_REPORT.md` and checkpoint the current run in `CHAT_TRANSFER.md`.
-- On recovery, load the latest committed checkpoint and current repository/Actions evidence. If interruption happened before a write was committed, treat the unsaved conversation tail as potentially lost; never invent its content or repeat side effects blindly.
+- Home-equivalent uncapped 360-dp DPI canvas for Settings/subpages, Connection sheet and selected dialogs is validated/released in Build #129.
+- The later compact Settings/Connection UI pass is committed on main but NOT RELEASED. It reduces Settings typography/glyphs/spacing and Connection header/status/empty-state sizes while preserving the 360-dp canvas, DPI formula, BLE behavior, localization, colors and 40–42 dp tap targets. Relevant source commits: `5ab14e258a9e21bfec486e3c6a3d81d6705c6d0f`, `bfdcafd1ad044974935b4e473d68f2096a297fbf`, `415d240db3cd9b3e2bca3ef760c4ba667459c604`, `f5bf63b0f5c8a837f47617b77e85d8dce93d845c`, `9db9ee3fc453f537ceaca88462b02e36318a487e`.
+- Five stale Settings route expectations in `test/floating_monitor_layout_contract_test.dart` were corrected in commit `c37aea44abeb832987e13a1c74701d415e85a737` to include `compactUi: true` for Language, Appearance, Notifications, Bluetooth and Floating Settings. Static comparison confirms each expected substring occurs once in source and test, with the old strings absent. This is STATIC SOURCE CHECK only.
+- Compact-pass formatter, targeted Flutter test, analyzer, full Flutter suite and physical-device/OEM QA have NOT RUN. The previous execution environment had no Flutter/Dart executable. Do not claim the compact pass is runtime-validated.
 
-## Historical pre-Build repository check — 2026-10-23 (before Builds #125–#129)
+## Open design and engineering gaps
 
-- Canonical repository: TenzoNkz/JEXFYZ-App, branch main. At the start of this pre-build audit, live main HEAD was `3234cecd7903f66622e5bf1b14fdb1dfc86fcb82`, commit "docs: checkpoint Home notice localization decision". Its recursive tree contained 69 entries and was not truncated; the live query returned no open pull requests. Documentation-only corrections made during this audit move main beyond that SHA; always fetch the final live HEAD before any future build.
-- Active Firmware: firmware/JEXFYZ-V7.1.ino, FW_VERSION="V7.1", source blob c44e076b2c1ee2d0b66b4fcd308d0febc69976e9.
-- At this pre-build snapshot, Build #125 / run 39905665853 had failed before runner steps (`runner_id=0`, no runner name, steps/logs/artifacts absent). This was later superseded by Builds #126–#129; the #125 failure remains in APP_BUILD_REPORT.md as historical evidence.
-- The owner reported the Actions issue fixed; subsequent live evidence confirmed runner recovery in #126 and successful complete guarded App releases in #128 and #129. The guarded issue-only workflow remains unchanged; each future authorized release must still preflight live Actions and verify its exact `head_sha`.
-- At that historical checkpoint, Build #124 was the newest verified release and Build #125 produced no package. At that historical checkpoint the latest release was Build #128; it has since been superseded by Build #129 / run `39925045446`, source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`.
+- **Next App UI validation:** in a Flutter-enabled environment run `dart format lib/app_settings.dart lib/floating_monitor.dart lib/main.dart test/floating_monitor_layout_contract_test.dart`, `flutter test test/floating_monitor_layout_contract_test.dart`, `flutter analyze --no-fatal-infos` and the full `flutter test` suite. Review actual output; static string matching is not a test pass.
+- After source/test validation, physical-device/OEM layout QA remains necessary when a suitable device is available. A separate explicit `Eksekusi Build App!` is required before packaging the compact pass.
+- BLE App-only identity authorization remains BLOCKED / NOT IMPLEMENTED until trusted enrollment/signing backend and Firmware verification exist.
+- Rapid Hotside-rise/rate-of-rise shutdown plus manual re-arm remains NOT IMPLEMENTED in Firmware V7.1; do not conflate it with Adaptive Fan tiers or raw-decimal limit safety.
+- Exact field BIN-to-source identity, Build #129 installation, physical OTA/reboot/BLE recovery and thermal/electrical behavior remain independently UNVERIFIED.
 
-## Build #129 validated App baseline
+## Protected contracts
 
-The latest Build #129 package contains and validates the current App UI contracts:
-
-- Home-matched 360-dp Settings/sub-settings and modal canvas; Home notice heading localized as `Notification` / `Notifikasi`.
-- Generic Device / Perangkat copy across lock prompts, BLE discovery/errors and Android service notifications.
-- Floating Monitor detaches while disconnected and only attaches when saved enable intent, overlay permission and synchronized BLE/P1 connected telemetry allow it; disconnect does not erase saved enable intent.
-- Alert notification IDs 2101–2104, persistent BLE foreground ID 2110 and Floating Monitor ID 2301 are distinct; existing channel IDs remain stable and labels/descriptions follow App language.
-- OTA result messages are localized at display time; OTA transport/protocol remains unchanged.
-
-### Home-equivalent DPI canvas — validated/released
-
-- Settings root/subpages, Bluetooth Connection sheet and selected modals use `JexFixedScalePage` with uncapped `constraints.maxWidth / 360.0`, fixed 360-dp logical child, scale-adjusted design height/media insets, an outer `OverflowBox` before one `Transform.scale`, then viewport clipping.
-- Relevant commits: source `d0f87b09c96a89063dc3b6f8c23e763bd11dc66e`, density regression test `f680837ad61653fbda071bb8f451ccd4113acfaf`, contract comment `cf0b66d6c5cf131d55aa99783fa3518274275d57`.
-- Build #129's full Flutter suite passed 122/122 tests, including the test that holds physical viewport 1080×2400 constant while simulating 420-dp and 320-dp logical widths, with expected 360×800 logical canvas and scale factors 420/360 and 320/360.
-- Dart analyzer exited 0 with 25 info-level diagnostics. The configured Android Gradle gate passed; native Android JUnit tasks were `NO-SOURCE`. APK obfuscation, V1/V2/V3 production certificate, corresponding ZIP/source marker, Release/tag parity and downloaded assets were verified.
-- **Not validated by CI:** local `dart format` was not run because Flutter/Dart are absent locally; physical-device/OEM density rendering, BLE/overlay behavior and hardware/OTA performance are not proven by widget tests or App CI. Build #129's field installation is not independently confirmed.
-
-## Open design/validation items
-
-- **Physical Settings/Connection layout:** hosted DPI regression widget test passed in Build #129; real-device/OEM rendering across display size/density remains untested.
-- **Compact Settings/Connection pass (2026-10-23; implemented on `main`, validation pending):** commits `5ab14e258a9e21bfec486e3c6a3d81d6705c6d0f`, `bfdcafd1ad044974935b4e473d68f2096a297fbf`, `415d240db3cd9b3e2bca3ef760c4ba667459c604`, `f5bf63b0f5c8a837f47617b77e85d8dce93d845c`, and `9db9ee3fc453f537ceaca88462b02e36318a487e` add the scoped compact Theme, smaller Settings root/subpage typography, tighter rows, a more compact Connection header/status/empty state, inherited theme preservation and per-role test assertions. Full-width cards, 360-dp master canvas, DPI compensation, status colors, localization and BLE behavior are unchanged; close/status/refresh controls retain 40–42 dp hit areas. The five Settings subpage expectations in `test/floating_monitor_layout_contract_test.dart` were updated to include `compactUi: true`, matching the live `SettingsPage` route wrappers for Language, Appearance, Notifications, Bluetooth and Floating Settings. A fresh static comparison confirms each new expected substring occurs exactly once in both test and source, and all five obsolete exact strings are absent. Flutter and Dart are unavailable in this environment (`command -v flutter` and `command -v dart` returned no executable), so the targeted Flutter test, formatter, analyzer and full suite remain NOT RUN; this is static consistency evidence, not a runtime test result. Build #129 remains the latest verified package and excludes this UI pass. Next safe validation step is to run formatting, the targeted test, analyzer and the full suite in a Flutter-enabled environment, then assess physical-device/OEM rendering. A separate explicit Eksekusi Build App! is required before packaging.
-
-- Home notice heading contract is settled: use `Notification` in English and `Notifikasi` in Indonesian, following selected App language.
-- Rapid Hotside-rise/slope shutdown plus manual re-arm remains an unimplemented Firmware requirement; it is not covered by existing Adaptive Fan tiers or raw-decimal limit safety.
-- BLE App-only authorization remains BLOCKED / NOT IMPLEMENTED until trusted backend enrollment/signing and Firmware verification exist.
-- Exact field BIN-to-source identity, whether Build #129 is installed on the sold unit, physical reboot/BLE recovery, and thermal/electrical behavior remain independently unverified.
-
-## Protected baseline
-
-- Firmware Hotside limit 40–50°C (default 45°C); at or above limit, existing safety forces Fan 100% and Peltier OFF.
-- Adaptive Fan tiers relative to limit: delta ≤2°C→100%; 3–4→90%; 5–6→80%; 7–8→70%; 9–10→60%; ≥11→50%. Ramp +10 points/second, −10 points/10 seconds; Adaptive 5 V/9 V remains 100%.
-- Preserve NTC one-sample-per-second path, cooperative millis() timing, Touch/P1, voltage/Peltier sequencing, radio ownership and Local/Online OTA recovery.
-- Online OTA intentionally uses cloudClient.setInsecure(); server certificate identity is not authenticated. Keep the GitHub BIN allowlist, redirect blocking, response/image/size checks and version+link metadata contract.
-- Preserve Android Gradle versionName "Telegram @horizontalzzz".
-- Build #129 App Build/release validated and packaged this source/test change. No Firmware compile, BIN/Firebase mutation, OTA, flash or device operation occurred.
+- Preserve Android Gradle versionName `Telegram @horizontalzzz`.
+- Preserve BLE P1, authoritative telemetry, session synchronization, radio ownership, Touch synchronization, unknown/disconnected value semantics and persisted schema compatibility.
+- Preserve safe outputs, calibrated one-sample-per-second NTC path, cooperative millis() timing, Peltier/selector/rail timing and OTA recovery.
+- Online OTA intentionally uses `cloudClient.setInsecure()`; HTTPS server certificate identity is not authenticated. Preserve the allowlist, redirect blocking, response/size/image validation and safe-output/recovery behavior.
+- Do not add Firebase firmware hash/signature requirements or a standalone Battery Protection Guard UI without explicit owner approval.
+- The sold unit is not available for routine disassembly/repair; do not infer device-operation authorization.
