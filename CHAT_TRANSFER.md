@@ -2,6 +2,14 @@
 
 Checkpoint refreshed: 2026-11-06 (Asia/Jakarta), after repository workflow/documentation redesign in Diskusi. The canonical operating rules are now consolidated in MASTER_PROMPT.md. Gemini consultation can be proposed proactively when a second opinion materially helps; every handoff must contain all evidence because Gemini cannot access GitHub. CHAT_RULES.md is a compatibility pointer, and CHAT_TRANSFER_PROMPTS.md retains exactly two concise LOAD + CONTINUE prompts.
 
+## Repository governance redesign — 2026-11-06
+
+- Added [MASTER_PROMPT.md](MASTER_PROMPT.md) as the only full ruleset: mode permissions, live-repo LOAD + CONTINUE, memory-save cadence, evidence, protected engineering boundaries and proactive Gemini handoff.
+- Gemini cannot access this GitHub repository or its pages. When a second opinion materially helps, provide the owner a complete prompt containing all relevant facts and source/test excerpts; do not ask Gemini to fetch GitHub. Its answer remains advisory until checked against live main.
+- `CHAT_RULES.md` is now a compatibility pointer. `CHAT_TRANSFER_PROMPTS.md` contains exactly two concise prompts that load the Master Prompt. README navigation, MEMORY_INDEX classifications, current-state/handover notes and App/design/build notes were reconciled.
+- Markdown audit: 22 files in the recursive tree — 17 active/index/subject/procedure/checkpoint documents, 2 history ledgers and 3 immutable archives. No Markdown file was deleted, renamed or moved. `APP_BUILD_REPORT.md` and `CHANGELOG.md` remain history ledgers; archive files remain immutable.
+- Key verified commits: [Master Prompt](https://github.com/TenzoNkz/JEXFYZ-App/commit/97af6965347cb043b924007f73f7742b4a324cde), [two transfer prompts](https://github.com/TenzoNkz/JEXFYZ-App/commit/06b38155a4c90b03acf814c0a42375c9d2fdb5a4), [Markdown index](https://github.com/TenzoNkz/JEXFYZ-App/commit/8ba81fe16cac74c3aba931e332eb02619dbb4fa6), [current state and handover](https://github.com/TenzoNkz/JEXFYZ-App/commit/7803787540f922f76bbc534f228b255fdaaa8313), [App/design/build notes](https://github.com/TenzoNkz/JEXFYZ-App/commit/49bbef57a829826da431825857c65a08e1bffcfa), and [changelog entry](https://github.com/TenzoNkz/JEXFYZ-App/commit/a7796d199f6505404bfe01fa998026ec8fca1825).
+
 ## Last engineering milestone
 
 - Compact Settings/Connection source pass is committed but not released. The test's five stale route assertions were corrected in commit `c37aea44abeb832987e13a1c74701d415e85a737` to include `compactUi: true` for all five Settings subpages.
