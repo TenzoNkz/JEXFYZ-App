@@ -19,6 +19,14 @@ Checkpoint refreshed: 2026-11-07 (Asia/Jakarta), after the authorized product-de
 - Root agent entrypoint: [2ae747d8](https://github.com/TenzoNkz/JEXFYZ-App/commit/2ae747d861f54d0528f3190b2c173a8fa7117720).
 - Canonical skills: `.agents/skills/`; Copilot mirrors: `.github/skills/`. See [SKILLS_INDEX.md](SKILLS_INDEX.md) for the complete catalogue. Product design standards: [PRODUCT_DESIGN_CONSTITUTION.md](PRODUCT_DESIGN_CONSTITUTION.md) and [VISUAL_QUALITY_GATE.md](VISUAL_QUALITY_GATE.md).
 
+## Product design quality rollout — verification
+
+- Added `PRODUCT_DESIGN_CONSTITUTION.md`, `VISUAL_QUALITY_GATE.md` and the twelfth skill `product-design-and-visual-quality` with a byte-identical Codex/Copilot pair. Non-trivial UI/UX tasks are now routed through this skill and the existing Flutter engineering/quality skills.
+- Updated Flutter engineering and Flutter quality skill pairs; both canonical/mirror pairs were re-fetched and verified identical. The new product-design skill pair was also fetched and verified identical. The nine other pre-existing skill pairs were not changed in this rollout and remain covered by the previous 11-skill mirror audit.
+- GitHub compare from prior checkpoint `b6a30dbdfe066a24152ca248729be4dd87e9bcff` to integration head `5e95e7a4402236c8adaacbadcb62213601fb7bc3` reports 19 changed paths, all Markdown. No executable App/Firmware source, test source, workflow, build/release configuration or artifact changed. The final checkpoint update is documentation-only as well.
+- Static document/link/routing checks confirm the constitution, visual gate, skill index, Master Prompt and agent entrypoint are connected. The current Markdown count is 50; recursive tree entry count has not yet been re-read after adding the four Markdown paths.
+- **Visual QA status: NOT RUN / UNVERIFIED.** No App screenshot was captured or reviewed in this documentation task. The standard defines how future UI changes must prove a visual PASS; it does not claim that any existing screen has passed or that the pending compact Settings/Connection pass is validated/released.
+
 ## Last App engineering milestone
 
 - Compact Settings/Connection source pass is committed but NOT RELEASED. Five stale Settings route expectations were corrected in commit `c37aea44abeb832987e13a1c74701d415e85a737` to include `compactUi: true` for Language, Appearance, Notifications, Bluetooth and Floating Settings.
