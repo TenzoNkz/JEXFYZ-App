@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Immediate Handover
 
-Updated: 2026-11-06 (Asia/Jakarta).
+Updated: 2026-11-07 (Asia/Jakarta).
 
 ## Latest verified state
 
@@ -11,7 +11,7 @@ Updated: 2026-11-06 (Asia/Jakarta).
 - Latest compact UI source/test repair: commit `c37aea44abeb832987e13a1c74701d415e85a737` updates five stale route expectations. Static substring checks pass; Flutter runtime validation has not run.
 - Repository workflow/documentation cleanup is documentation-only. No App source, Firmware source, tests, build workflow or release behavior is authorized to change merely by this handover.
 
-## Next safe action
+## Agent skills and capability routing,,- `MASTER_PROMPT.md` is the sole operating policy; `AGENTS.md` is the cross-agent entrypoint; `SKILLS_INDEX.md` is the skill catalogue.,- Eleven skills are stored in `.agents/skills/` for Codex-compatible discovery and mirrored byte-for-byte under `.github/skills/` for GitHub Copilot. The catalogue includes a dedicated `code-review` skill for Copilot review surfaces.,- ChatGPT in this environment must fetch/read a relevant private repo SKILL.md manually through GitHub tools; it is not auto-installed as a ChatGPT skill. Gemini is manual-only and has no GitHub access.,- Current tool snapshot: Python/Git available; Flutter/Dart/Gradle/ADB/Arduino CLI/ESP-IDF unavailable. Re-check before any validation task.,## Next safe action
 
 In a Flutter-enabled environment, run formatting, the targeted `floating_monitor_layout_contract_test.dart`, analyzer and the complete Flutter suite for the compact UI pass. Review actual results and then perform physical-device/OEM layout QA when available. Only after validation, and only with a separate explicit `Eksekusi Build App!`, may a new APK be packaged.
 
