@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Documentation Map & Retention Policy
 
-Last reconciled: 2026-11-06 (Asia/Jakarta). This file is the navigation and retention index, not an alternate operating ruleset or current-state ledger. Read MASTER_PROMPT.md for all operating instructions. Verify current implementation against live main/source/tests and current Actions/Release evidence.
+Last reconciled: 2026-11-07 (Asia/Jakarta). This file is the navigation and retention index, not an alternate operating ruleset or current-state ledger. Read MASTER_PROMPT.md for all operating instructions. Verify current implementation against live main/source/tests and current Actions/Release evidence.
 
 ## Authority order
 
@@ -41,9 +41,9 @@ Last reconciled: 2026-11-06 (Asia/Jakarta). This file is the navigation and rete
 | .agents/skills/*/SKILL.md | Canonical repository skills for OpenAI Codex-compatible discovery | Active skill library | KEEP one focused workflow per skill; load progressively |
 | .github/skills/*/SKILL.md | Byte-identical GitHub Copilot mirrors; the `code-review` skill is eligible for Copilot code review use | Active skill mirrors | KEEP synchronized with `.agents/skills`; verify exact content equality |
 
-## Markdown audit — 2026-11-06
+## Markdown audit — 2026-11-07
 
-- The recursive main tree previously contained 22 Markdown files after adding MASTER_PROMPT.md. The 2026-11-07 skill rollout adds AGENTS.md, SKILLS_INDEX.md, eleven canonical `.agents/skills/*/SKILL.md` files and eleven byte-identical `.github/skills/*/SKILL.md` mirrors. Current recursive tree is verified separately; the 20 skill files are one reusable library mirrored for Codex and GitHub Copilot.
+- The recursive main tree previously contained 22 Markdown files after adding MASTER_PROMPT.md. The 2026-11-07 skill rollout adds AGENTS.md, SKILLS_INDEX.md, eleven canonical `.agents/skills/*/SKILL.md` files and eleven byte-identical `.github/skills/*/SKILL.md` mirrors. The verified recursive tree now contains 119 entries, is not truncated, and has 46 Markdown files: 41 active/index/subject/agent/skill documents, 2 history ledgers and 3 immutable archives. The 22 skill files form one reusable library mirrored for Codex and GitHub Copilot.
 - Every current Markdown file has one assigned role in the table above. No Markdown file was removed, renamed or moved in this cleanup.
 - The archive files intentionally preserve stale and contradictory historical status. Never copy those statements into current notes without re-verifying the live repository.
 - APP_BUILD_REPORT.md and CHANGELOG.md are large by design. Keep them out of the routine boot path; inspect only the latest relevant sections unless investigating history.
