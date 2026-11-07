@@ -1,3 +1,13 @@
+## 2026-11-07 — Add reusable engineering skills and cross-agent capability routing (docs/agent instructions only)
+
+- Added root `AGENTS.md` as a lightweight cross-agent entrypoint to `MASTER_PROMPT.md` and `SKILLS_INDEX.md`.
+- Added eleven focused reusable skill definitions under `.agents/skills/` and byte-identical mirrors under `.github/skills/` for GitHub Copilot, including a dedicated `code-review` workflow.
+- Skills cover repository forensics, code review, Flutter App engineering, Flutter quality/regression, BLE P1 auditing, ESP32-C3 safety, OTA/release integrity, GitHub Actions triage, hardware power/thermal analysis, technical research/Gemini and documentation/memory governance.
+- Extended MASTER_PROMPT.md with skill selection, platform discovery, actual tool capability boundaries and a high-rigor engineering loop. Updated SKILLS_INDEX.md, MEMORY_INDEX.md, README.md, PROJECT_STATE.md and HANDOVER.md.
+- Recorded current execution environment limits: Python/Git available; Flutter/Dart/Gradle/ADB/Arduino CLI/ESP-IDF unavailable at check time. This must be rechecked for future tasks.
+- OpenAI Codex uses `.agents/skills/`; GitHub Copilot supports `.github/skills/` and can consume relevant skills in supported Copilot review/agent surfaces. ChatGPT in this conversation must read private repo skill files through GitHub tools; it does not auto-install them as ChatGPT skills. Gemini remains manual-only and cannot access GitHub.
+- Documentation/agent-instruction change only. No App/Firmware source, tests, build workflow, release artifacts, BIN/Firebase, OTA, flashing or physical device operation was changed or run.
+
 ## 2026-11-06 — Centralize Master Prompt, add proactive Gemini handoff, and reconcile Markdown map (docs-only)
 
 - Added `MASTER_PROMPT.md` as the single authoritative operating contract for command modes, authorization, LOAD + CONTINUE, durable-memory cadence, evidence labels, protected App/Firmware/OTA contracts and repository hygiene.
