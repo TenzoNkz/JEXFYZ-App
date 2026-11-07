@@ -2,13 +2,19 @@
 
 Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines implementation; DESIGN_NOTES.md holds owner-approved screen-specific visual constraints; PRODUCT_DESIGN_CONSTITUTION.md defines cross-screen design principles; VISUAL_QUALITY_GATE.md defines evidence-based visual acceptance; CHANGELOG.md and APP_BUILD_REPORT.md hold history/evidence.
 
-## Current source and release boundary — checked 2026-11-06
+## Current source and release boundary — checked 2026-11-08
 
 - Latest independently verified App release remains Build #129 / [Actions run 39925045446](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446), packaged source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`. The detailed build/artifact ledger is APP_BUILD_REPORT.md; current live release identity is summarized in PROJECT_STATE.md.
 - The later compact Settings/Connection pass is committed to main but NOT RELEASED. It reduces selected text, glyph and spacing values while preserving the Home-equivalent 360-dp canvas/DPI formula, inherited theme colors, localization, status colors and BLE behavior.
 - The five compact Settings subpage expectations in `test/floating_monitor_layout_contract_test.dart` were corrected in commit `c37aea44abeb832987e13a1c74701d415e85a737` to include `compactUi: true` for Language, Appearance, Notifications, Bluetooth and Floating Settings. A static comparison confirms each expected substring occurs once in source and test; the old strings are absent.
-- Compact-pass formatter, targeted Flutter test, analyzer, full suite and physical-device/OEM QA remain NOT RUN. Static substring matching is not runtime validation. Build #129 does not contain the compact pass.
+- Compact Settings/Connection remains NOT RELEASED. The later source patch also distinguishes active Bluetooth scanning, completed scans with no JE Cooler found, permission requirements, adapter/legacy-location unavailability and scan failures. It observes the plugin scan lifecycle and live results; BLE P1 UUIDs, scan matching, GATT connect/sync and telemetry authority are unchanged. New regression tests cover the five scan-state mappings and compact-theme rendering at 350-dp/420-dp, but formatter, focused tests, analyzer, full suite and physical-device/OEM QA remain NOT RUN in this environment. Build #129 does not contain these changes.
 - Owner previously reported installing/overwriting Build #128; the exact installed field APK was not independently identified. Firmware V7.1 compile/Online OTA remains USER-REPORTED. App CI does not prove physical display, BLE/overlay/cooling, Firmware, BIN or OTA behavior.
+
+## Bluetooth Connection sheet — scan presentation contract
+
+- The sheet starts its initial scan after its first frame and observes `FlutterBluePlus.isScanning` separately from fresh `onScanResults`. The completed 10-second scan with no matching JE Cooler displays the localized not-found message instead of remaining on Scanning or showing cached results from an earlier scan.
+- Permission denial, Bluetooth/legacy-location unavailability, scan startup/stream errors and active scanning have distinct localized message keys. A guarded retry handler is shared by the scan button and permission retry. Dismissing the sheet still stops scanning.
+- These are App presentation/lifecycle states only. BLE P1 framing, UUIDs, GATT connection ownership, synchronization and authoritative telemetry contracts are unchanged.
 
 ## Identity, package and app navigation
 
