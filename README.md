@@ -4,16 +4,18 @@ Flutter Android companion App and ESP32-C3 Firmware source for the JE X FYZ ther
 
 ## Start here
 
-1. [MASTER_PROMPT.md](MASTER_PROMPT.md) — single authoritative operating policy: commands, authorization, LOAD + CONTINUE, Gemini handoff, memory-save cadence, evidence labels and protected contracts.
-2. [CHAT_TRANSFER.md](CHAT_TRANSFER.md) — latest durable checkpoint. Read fully, then verify live main.
-3. [PROJECT_STATE.md](PROJECT_STATE.md) — concise current product/source/release/validation truth.
-4. [MEMORY_INDEX.md](MEMORY_INDEX.md) — canonical document map and Markdown retention policy.
-5. [HANDOVER.md](HANDOVER.md) — immediate next action.
-6. [CHAT_TRANSFER_PROMPTS.md](CHAT_TRANSFER_PROMPTS.md) — exactly two copy-ready LOAD + CONTINUE prompts.
-7. [CHAT_RULES.md](CHAT_RULES.md) — compatibility pointer to the Master Prompt.
-8. App, Firmware, OTA, voltage-transition and BLE-auth contracts: [APP_NOTES.md](APP_NOTES.md), [DESIGN_NOTES.md](DESIGN_NOTES.md), [FIRMWARE_NOTES.md](FIRMWARE_NOTES.md), [Firmware technical reference](firmware/FIRMWARE_TECHNICAL_REFERENCE.md), [OTA protection](OTA_PROTECTION.md), [OTA incident record](OTA_REGRESSION_MEMORY.md), [voltage transition memory](VOLTAGE_TRANSITION_MEMORY.md), [BLE App authorization](BLE_APP_AUTH.md).
-9. [BUILD_NOTES.md](BUILD_NOTES.md) is the current App release procedure; [APP_BUILD_REPORT.md](APP_BUILD_REPORT.md) is its append-only attempt/evidence ledger.
-10. [CHANGELOG.md](CHANGELOG.md) is dated history. [archive/](archive/) contains immutable forensic snapshots.
+1. [MASTER_PROMPT.md](MASTER_PROMPT.md) — single authoritative operating policy: modes, authorization, skills, tools, Gemini, memory cadence, evidence and protected contracts.
+2. [AGENTS.md](AGENTS.md) — lightweight entrypoint for Codex/Copilot/repository-aware agents.
+3. [SKILLS_INDEX.md](SKILLS_INDEX.md) — ten reusable engineering skills, platform locations and capability boundaries.
+4. [CHAT_TRANSFER.md](CHAT_TRANSFER.md) — latest durable checkpoint. Read fully, then verify live main.
+5. [PROJECT_STATE.md](PROJECT_STATE.md) — concise current product/source/release/validation truth.
+6. [MEMORY_INDEX.md](MEMORY_INDEX.md) — canonical document map and Markdown retention policy.
+7. [HANDOVER.md](HANDOVER.md) — immediate next action.
+8. [CHAT_TRANSFER_PROMPTS.md](CHAT_TRANSFER_PROMPTS.md) — exactly two copy-ready LOAD + CONTINUE prompts.
+9. [CHAT_RULES.md](CHAT_RULES.md) — compatibility pointer to the Master Prompt.
+10. App, Firmware, OTA, voltage-transition and BLE-auth contracts: [APP_NOTES.md](APP_NOTES.md), [DESIGN_NOTES.md](DESIGN_NOTES.md), [FIRMWARE_NOTES.md](FIRMWARE_NOTES.md), [Firmware technical reference](firmware/FIRMWARE_TECHNICAL_REFERENCE.md), [OTA protection](OTA_PROTECTION.md), [OTA incident record](OTA_REGRESSION_MEMORY.md), [voltage transition memory](VOLTAGE_TRANSITION_MEMORY.md), [BLE App authorization](BLE_APP_AUTH.md).
+11. [BUILD_NOTES.md](BUILD_NOTES.md) is the current App release procedure; [APP_BUILD_REPORT.md](APP_BUILD_REPORT.md) is its append-only attempt/evidence ledger.
+12. [CHANGELOG.md](CHANGELOG.md) is dated history. [archive/](archive/) contains immutable forensic snapshots.
 
 ## Operating modes
 
@@ -23,6 +25,10 @@ Flutter Android companion App and ESP32-C3 Firmware source for the JE X FYZ ther
 - Chat Stuck! — recover only an already-authorized in-progress operation.
 
 The Master Prompt is authoritative; chat-transfer blocks select a mode but do not widen it.
+
+## Reusable engineering skills
+
+Ten project-specific skill workflows are available for repository forensics, Flutter engineering/testing, BLE P1, ESP32-C3 safety, OTA/release integrity, GitHub Actions triage, electronics/power/thermal analysis, technical research/Gemini and documentation governance. Read [SKILLS_INDEX.md](SKILLS_INDEX.md) for triggers and locations. Codex-compatible canonical skills are under `.agents/skills/`; GitHub Copilot mirrors are under `.github/skills/`.
 
 ## Gemini second opinion
 
