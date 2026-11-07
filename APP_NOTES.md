@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — App Behavior Reference
 
-Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines implementation; DESIGN_NOTES.md holds approved visual constraints; CHANGELOG.md and APP_BUILD_REPORT.md hold history/evidence.
+Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines implementation; DESIGN_NOTES.md holds owner-approved screen-specific visual constraints; PRODUCT_DESIGN_CONSTITUTION.md defines cross-screen design principles; VISUAL_QUALITY_GATE.md defines evidence-based visual acceptance; CHANGELOG.md and APP_BUILD_REPORT.md hold history/evidence.
 
 ## Current source and release boundary — checked 2026-11-06
 
