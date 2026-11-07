@@ -8,6 +8,10 @@ description: Use for Flutter/Dart app architecture, widgets, navigation, themes,
 ## Objective
 Design and review Flutter changes as a complete stateful UI system, not isolated widget edits.
 
+## Product-design requirement
+
+For every non-trivial UI/UX task, load `.agents/skills/product-design-and-visual-quality/SKILL.md` and read `PRODUCT_DESIGN_CONSTITUTION.md` plus `VISUAL_QUALITY_GATE.md`. `DESIGN_NOTES.md` remains authoritative for owner-approved screen-specific constraints. Treat Home as the primary visual reference without copying its layout mechanically. Protect the existing 360-dp canvas/DPI formula, compact Settings scope, localization, theme, telemetry truth, BLE/safety gates and icon contracts. Do not introduce generic styling, arbitrary tokens or a redesign to solve a narrow issue.
+
 ## Review sequence
 1. Identify the UI owner: route/page, state notifier/store, BLE/telemetry source, persistence schema, localization source and Android/native bridge.
 2. Trace data flow from firmware/BLE/parser through authoritative model state into widgets. Keep command intent, acknowledgement and physical telemetry distinct.
@@ -23,6 +27,8 @@ Design and review Flutter changes as a complete stateful UI system, not isolated
 - Format changed Dart files; run focused widget/unit/source-contract tests; run analyzer; then the full test suite where the environment permits.
 - Distinguish source review, widget tests, hosted CI and physical Android/OEM rendering.
 - When visual screenshots are supplied, compare geometry, baselines, clipping, tap areas and text hierarchy; do not infer unobserved device behavior.
+- For appearance-sensitive changes, capture and inspect screenshots from the actual App at the reviewed source SHA; compare matched conditions, viewport, density, language, theme and device state. A mockup, source inspection or successful build is not visual evidence.
+- Record a separate visual outcome from formatter/tests/analyzer/CI/device results using the exact outcomes defined in `VISUAL_QUALITY_GATE.md`.
 
 ## JE Cooler invariants
 - Firmware telemetry is authoritative for physical state; an ACK alone never proves output state.
