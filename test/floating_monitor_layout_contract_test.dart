@@ -202,6 +202,10 @@ void main() {
     expect(main, contains('key: ValueKey<int>(_scanGeneration)'));
     expect(main, contains('_scanErrorKey'));
     expect(main, contains('Future<bool> _startScanFromSheet()'));
+    expect(connection, contains('onPressed: _requestScan,'));
+    expect(connection, isNot(contains('onPressed: widget.onScan')));
+    expect(connection, contains('WidgetsBinding.instance.addPostFrameCallback'));
+    expect(connection, contains('if (FlutterBluePlus.isScanningNow)'));
 
     // The existing DPI master-canvas scale is left intact; compactness is typography/density only.
     expect(floating, contains('final scale = constraints.maxWidth / designWidth;'));
