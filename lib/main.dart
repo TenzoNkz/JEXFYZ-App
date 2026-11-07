@@ -9023,6 +9023,7 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
   Timer? _refreshTimer;
   bool _scanAttempted = false;
   bool _scanRequestInFlight = false;
+  int _scanGeneration = 0;
   String? _scanErrorKey;
   BluetoothAdapterState _adapterState = BluetoothAdapterState.unknown;
   PermissionStatus _scanPermission = PermissionStatus.denied;
@@ -9052,9 +9053,14 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
 
   Future<void> _requestScan() async {
     if (!mounted || _scanRequestInFlight) return;
+    if (FlutterBluePlus.isScanningNow) {
+      setState(() => _scanAttempted = true);
+      return;
+    }
     setState(() {
       _scanAttempted = true;
       _scanRequestInFlight = true;
+      _scanGeneration++;
       _scanErrorKey = null;
     });
 
@@ -9295,7 +9301,7 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints.tightFor(width: 40, height: 40),
                   tooltip: JexText.of('scan', lang),
-                  onPressed: widget.onScan,
+                  onPressed: _requestScan,
                   icon: JexAnimatedIcon.glyph(
                     icon: PhosphorIconsRegular.arrowClockwise,
                     color: const Color(0xFF5C9DFF),
@@ -9314,7 +9320,8 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
                 final pluginScanning =
                     scanSnapshot.data ?? FlutterBluePlus.isScanningNow;
                 return StreamBuilder<List<ScanResult>>(
-                  stream: FlutterBluePlus.scanResults,
+                  key: ValueKey<int>(_scanGeneration),
+                  stream: FlutterBluePlus.onScanResults,
                   initialData: const [],
                   builder: (context, snapshot) {
                     final filtered = (snapshot.data ?? const <ScanResult>[]).where((r) {
