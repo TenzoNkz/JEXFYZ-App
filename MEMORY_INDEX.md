@@ -23,7 +23,9 @@ Last reconciled: 2026-11-07 (Asia/Jakarta). This file is the navigation and rete
 | PROJECT_STATE.md | Current-only product/source/release/validation truth | Active state | KEEP concise; remove superseded narratives |
 | HANDOVER.md | Immediate next action and nearest blockers | Active handover | KEEP short; no duplicate history |
 | APP_NOTES.md | Current App behavior, BLE, telemetry, language and notification contracts | Active subject reference | KEEP; detailed implementation must match source |
-| DESIGN_NOTES.md | Approved UI/design constraints and visual contracts | Active subject reference | KEEP; no build chronology |
+| DESIGN_NOTES.md | Owner-approved screen-specific UI/design constraints and visual contracts | Active subject reference | KEEP; no build chronology |
+| PRODUCT_DESIGN_CONSTITUTION.md | Cross-screen product-design intent, protected identity, design-system governance and anti-AI-slop principles | Active design reference | KEEP; do not override more specific owner-approved screen contracts |
+| VISUAL_QUALITY_GATE.md | Evidence-based visual review, viewport/state matrix, accessibility checks and acceptance outcomes | Active quality standard | KEEP; visual acceptance is separate from build/test status |
 | FIRMWARE_NOTES.md | Durable Firmware/hardware/safety requirements and user-reported evidence | Active subject reference | KEEP; distinguish implemented from requested |
 | firmware/FIRMWARE_TECHNICAL_REFERENCE.md | Current Firmware architecture, pins, timing and safety invariants | Active technical reference | KEEP; prior-version history belongs in CHANGELOG |
 | BLE_APP_AUTH.md | App-only BLE identity design and unimplemented blocker | Active security design | KEEP; never imply it is implemented |
@@ -43,7 +45,7 @@ Last reconciled: 2026-11-07 (Asia/Jakarta). This file is the navigation and rete
 
 ## Markdown audit — 2026-11-07
 
-- The recursive main tree previously contained 22 Markdown files after adding MASTER_PROMPT.md. The 2026-11-07 skill rollout adds AGENTS.md, SKILLS_INDEX.md, eleven canonical `.agents/skills/*/SKILL.md` files and eleven byte-identical `.github/skills/*/SKILL.md` mirrors. The verified recursive tree now contains 119 entries, is not truncated, and has 46 Markdown files: 41 active/index/subject/agent/skill documents, 2 history ledgers and 3 immutable archives. The 22 skill files form one reusable library mirrored for Codex and GitHub Copilot.
+- The recursive main tree contained 119 entries and 46 Markdown files after the 2026-11-07 skill rollout. The product-design quality rollout adds PRODUCT_DESIGN_CONSTITUTION.md, VISUAL_QUALITY_GATE.md and one canonical skill plus its byte-identical Copilot mirror. The verified recursive tree is expected to contain 122 entries and 49 Markdown files: 44 active/index/subject/agent/skill documents, 2 history ledgers and 3 immutable archives. The 24 skill files form one 12-skill library mirrored for Codex and GitHub Copilot; verify the live tree before relying on these counts.
 - Every current Markdown file has one assigned role in the table above. No Markdown file was removed, renamed or moved in this cleanup.
 - The archive files intentionally preserve stale and contradictory historical status. Never copy those statements into current notes without re-verifying the live repository.
 - APP_BUILD_REPORT.md and CHANGELOG.md are large by design. Keep them out of the routine boot path; inspect only the latest relevant sections unless investigating history.
