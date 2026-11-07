@@ -1,43 +1,43 @@
 # JE X FYZ / JE Cooler — Live Chat Checkpoint
 
-Checkpoint refreshed: 2026-11-06 (Asia/Jakarta), after repository workflow/documentation redesign in Diskusi. The canonical operating rules are now consolidated in MASTER_PROMPT.md. Gemini consultation can be proposed proactively when a second opinion materially helps; every handoff must contain all evidence because Gemini cannot access GitHub. CHAT_RULES.md is a compatibility pointer, and CHAT_TRANSFER_PROMPTS.md retains exactly two concise LOAD + CONTINUE prompts.
+Checkpoint refreshed: 2026-11-07 (Asia/Jakarta), after a Discussion-mode skills and agent-capability rollout. The single operating authority is `MASTER_PROMPT.md`; root `AGENTS.md` is a short cross-agent entrypoint. Eleven focused project skills are available in `.agents/skills/` with byte-identical GitHub Copilot mirrors in `.github/skills/`. `SKILLS_INDEX.md` documents the catalogue, platform compatibility and tool limits.
 
-## Repository governance redesign — 2026-11-06
+## Skills and capability rollout
 
-- Added [MASTER_PROMPT.md](MASTER_PROMPT.md) as the only full ruleset: mode permissions, live-repo LOAD + CONTINUE, memory-save cadence, evidence, protected engineering boundaries and proactive Gemini handoff.
-- Gemini cannot access this GitHub repository or its pages. When a second opinion materially helps, provide the owner a complete prompt containing all relevant facts and source/test excerpts; do not ask Gemini to fetch GitHub. Its answer remains advisory until checked against live main.
-- `CHAT_RULES.md` is now a compatibility pointer. `CHAT_TRANSFER_PROMPTS.md` contains exactly two concise prompts that load the Master Prompt. README navigation, MEMORY_INDEX classifications, current-state/handover notes and App/design/build notes were reconciled.
-- Markdown audit: 22 files in the recursive tree — 17 active/index/subject/procedure/checkpoint documents, 2 history ledgers and 3 immutable archives. No Markdown file was deleted, renamed or moved. `APP_BUILD_REPORT.md` and `CHANGELOG.md` remain history ledgers; archive files remain immutable.
-- Key verified commits: [Master Prompt](https://github.com/TenzoNkz/JEXFYZ-App/commit/97af6965347cb043b924007f73f7742b4a324cde), [two transfer prompts](https://github.com/TenzoNkz/JEXFYZ-App/commit/06b38155a4c90b03acf814c0a42375c9d2fdb5a4), [Markdown index](https://github.com/TenzoNkz/JEXFYZ-App/commit/8ba81fe16cac74c3aba931e332eb02619dbb4fa6), [current state and handover](https://github.com/TenzoNkz/JEXFYZ-App/commit/7803787540f922f76bbc534f228b255fdaaa8313), [App/design/build notes](https://github.com/TenzoNkz/JEXFYZ-App/commit/49bbef57a829826da431825857c65a08e1bffcfa), and [changelog entry](https://github.com/TenzoNkz/JEXFYZ-App/commit/a7796d199f6505404bfe01fa998026ec8fca1825).
+- **11 skill workflows:** `repository-forensics`, `code-review`, `flutter-app-engineering`, `flutter-quality-and-regression`, `ble-p1-protocol-audit`, `esp32c3-firmware-safety`, `ota-and-release-integrity`, `github-actions-triage`, `hardware-power-thermal-analysis`, `technical-research-and-second-opinion`, and `documentation-memory-governance`.
+- Codex-compatible canonical skills: `.agents/skills/<name>/SKILL.md`. GitHub Copilot mirrors: `.github/skills/<name>/SKILL.md`. Mirrors must remain byte-for-byte identical. The dedicated `code-review` skill is intended for Copilot code-review use when that surface/configuration supports repository skills.
+- `MASTER_PROMPT.md` now routes tasks to one-to-three relevant skills and defines a high-rigor workflow: scope, evidence, system model, alternatives/quantitative checks, adversarial review, test/evidence design, diff and checkpoint verification.
+- ChatGPT in this conversation does not automatically discover private repo skills as installed ChatGPT skills. Fetch/read a relevant `SKILL.md` with GitHub tools when needed. Gemini has no repository/GitHub access; consultation is a fully self-contained prompt for the owner to paste manually.
+- `AGENTS.md`, `SKILLS_INDEX.md`, `MASTER_PROMPT.md`, README, MEMORY_INDEX, current state and handover were updated. No executable source, test source, Firmware, build workflow or release configuration was changed in this skills rollout.
+- Current container checked 2026-11-07: Python 3 and Git available; Flutter, Dart, Gradle, ADB, Arduino CLI and ESP-IDF absent. Re-check at task start. This environment cannot claim local Flutter/Android/Firmware builds or physical-device validation.
 
-## Last engineering milestone
+## Last App engineering milestone
 
-- Compact Settings/Connection source pass is committed but not released. The test's five stale route assertions were corrected in commit `c37aea44abeb832987e13a1c74701d415e85a737` to include `compactUi: true` for all five Settings subpages.
-- STATIC SOURCE CHECK: each corrected expected substring occurs exactly once in both live source and test; all five obsolete strings are absent. Flutter/Dart formatting, targeted test, analyzer, full suite and physical-device/OEM QA remain NOT RUN. This is not a runtime test pass.
-- No App source, Firmware source, tests or build workflow were changed in the repository-cleanup work. No App Build, Firmware compile, BIN/Firebase, OTA, flashing or device operation was performed.
+- Compact Settings/Connection source pass is committed but NOT RELEASED. The five stale Settings route test expectations were corrected in commit `c37aea44abeb832987e13a1c74701d415e85a737` to include `compactUi: true` for Language, Appearance, Notifications, Bluetooth and Floating Settings.
+- STATIC SOURCE CHECK only: all five updated expected substrings appear exactly once in live source and test; old exact strings are absent. Flutter/Dart formatting, targeted test, analyzer, full suite and physical-device/OEM QA remain NOT RUN.
+- Preserve the Home-equivalent 360-dp canvas, BLE P1, telemetry authority, localization, theme, safety, OTA and rail-timing contracts.
 
 ## Release baseline and field evidence
 
-- Latest independently verified App package (live check 2026-11-06): Build #129 / [Actions run 39925045446](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446), tested source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`; Release ID `403010611`; tag `jexfyz-latest` targets the same source.
+- Latest independently verified published App package (live check 2026-11-06): Build #129 / [Actions run 39925045446](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446), tested source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`; Release ID `403010611`; tag `jexfyz-latest` targets the same source.
 - APK SHA-256: `f59c511786d49add8e0596fd3d658248746c008b7eaff94bb6215d314aa0426e`; matching source ZIP SHA-256: `c74e6800dadf80a5223dedcce3144b12f6365506a8b9821bb7abf1817df8cfff`.
-- Build #129 passed all 21 workflow steps, 122 Flutter tests, analyzer and the configured Android gate, signing/certificate, ZIP, tag/release and downloaded-asset checks. Native Android JUnit tasks were NO-SOURCE.
-- Protected known production reference remains App Build #124 + Firmware V7.1. Owner previously reported installing/overwriting Build #128; the exact field APK identity is unknown. Firmware V7.1 compile/Online OTA remains USER-REPORTED. Exact BIN identity and physical behavior are UNVERIFIED.
-- Live Actions check 2026-11-06: latest listed run #129; 0 active, 0 queued; 0 open PRs.
+- Build #129 passed 21 workflow steps, 122 Flutter tests, analyzer (25 informational diagnostics), Android gate, signing/certificate, ZIP/source marker, Release/tag and downloaded-asset identity/digest checks. Native Android JUnit tasks were NO-SOURCE.
+- Protected known production reference remains App Build #124 + Firmware V7.1. Owner previously reported installing/overwriting Build #128; exact field APK identity remains unverified. Firmware V7.1 compile/Online OTA is USER-REPORTED; exact BIN identity and physical behavior remain UNVERIFIED.
 
-## Precise next action
+## Precise next engineering action
 
-In a Flutter-enabled environment run:
+In a Flutter-enabled environment:
 
 1. `dart format lib/app_settings.dart lib/floating_monitor.dart lib/main.dart test/floating_monitor_layout_contract_test.dart`
 2. `flutter test test/floating_monitor_layout_contract_test.dart`
 3. `flutter analyze --no-fatal-infos`
 4. `flutter test`
 
-Review actual results, then assess physical-device/OEM rendering. A separate explicit `Eksekusi Build App!` is required before creating a new APK.
+Review actual results, then perform physical-device/OEM UI QA when available. A separate explicit `Eksekusi Build App!` is required before packaging the compact UI pass.
 
-## Durable memory and recovery
+## Durable memory and safety
 
-- Read MASTER_PROMPT.md before acting; it is the single authority for modes, authorization, Gemini handoff, evidence and memory cadence.
-- Read this file fully, fetch live main HEAD/commit/tree, then read MEMORY_INDEX.md, PROJECT_STATE.md, HANDOVER.md and the canonical subject references for the task.
-- GitHub does not automatically save chat text. Save durable decisions, findings, milestones, test results, blockers and next steps in the relevant notes plus this checkpoint; commit and re-read before claiming saved.
-- APP_BUILD_REPORT.md is append-only attempt evidence; CHANGELOG.md is dated history; archive/*.md is immutable.
+- Read `MASTER_PROMPT.md`, then this checkpoint, live main HEAD/tree, `MEMORY_INDEX.md`, `PROJECT_STATE.md`, `HANDOVER.md` and relevant skills/subject references.
+- GitHub does not automatically save chat text. Save durable decisions, findings, milestones, test results, blockers and next steps to canonical notes plus this checkpoint; verify commit/content/HEAD before saying saved.
+- `APP_BUILD_REPORT.md` is append-only build evidence; `CHANGELOG.md` is dated history; `archive/*.md` is immutable.
+- Diskusi changes documentation/skill instructions only. Eksekusi Full is the specifically authorized source/docs/tests scope. Only Eksekusi Build App! authorizes the guarded App release workflow. Firmware compilation, BIN/Firebase changes, OTA, flashing and device work require separate explicit authorization.
