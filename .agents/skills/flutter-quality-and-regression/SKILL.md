@@ -8,6 +8,12 @@ description: Use when designing, updating, or reviewing Flutter/Dart tests, sour
 ## Objective
 Turn each requirement into observable acceptance evidence and prevent tests from becoming brittle or misleading.
 
+## Visual acceptance integration
+
+For any UI-facing test plan or regression review, apply `VISUAL_QUALITY_GATE.md` in addition to behavioral tests. Define the applicable viewport, locale, theme, text scale, device-state and system-inset matrix before implementation. Include screenshot/golden coverage when it gives reliable value; control or mask dynamic telemetry/animation rather than asserting unstable full-screen pixel identity. Inspect actual Android screenshots for the final visual claim.
+
+New/materially changed interactive targets should aim for 48 × 48 dp. The documented 40–42 dp compact Connection controls are a legacy project-specific constraint: never shrink them further and do not claim general platform compliance without a separate review. A passing widget test is not a visual pass; use the distinct visual outcomes in `VISUAL_QUALITY_GATE.md`.
+
 ## Test-design procedure
 1. Rewrite the requirement as one or more observable behaviors with preconditions, action, expected result and safety invariant.
 2. Build a traceability table: requirement → source owner → test type → exact test → evidence status.
@@ -32,7 +38,8 @@ Use STATIC SOURCE CHECK, TESTED, VERIFIED CI, DEVICE VERIFIED, BLOCKED / NOT RUN
 
 ## JE Cooler regression themes
 - 360-dp DPI canvas geometry and scale invariance.
-- Settings compact tokens and 40–42 dp interactive targets.
+- Settings compact tokens and 40–42 dp legacy Connection targets; new/changed targets aim for 48 × 48 dp.
+- Screenshot-based visual acceptance and separate VISUAL PASS / REJECT / NOT VERIFIED outcomes.
 - BLE P1 session readiness, command/ACK/telemetry ordering and disconnected values.
 - Notification/localization consistency and stable IDs/channels.
 - Floating Monitor persisted schema migration and telemetry authority.
