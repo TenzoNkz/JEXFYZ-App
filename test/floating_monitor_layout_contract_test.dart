@@ -198,7 +198,8 @@ void main() {
       contains('compactUi: true,\n              child: _ConnectionSheetContent('),
     );
     expect(main, contains('stream: FlutterBluePlus.isScanning'));
-    expect(main, contains('stream: FlutterBluePlus.scanResults'));
+    expect(main, contains('stream: FlutterBluePlus.onScanResults'));
+    expect(main, contains('key: ValueKey<int>(_scanGeneration)'));
     expect(main, contains('_scanErrorKey'));
     expect(main, contains('Future<bool> _startScanFromSheet()'));
 
