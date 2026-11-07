@@ -70,11 +70,12 @@ Reusable project skills extend the Master Prompt with task-specific procedures. 
 
 ### Task-to-skill routing
 
-Use only the relevant skill(s), typically one to three:
+Use only the relevant skill(s), typically one to three. For every non-trivial App UI/UX task, the product-design quality skill and its two canonical references are mandatory; combine with the Flutter engineering and quality skills as needed. A routine copy typo or single-value fix may use a lighter review.
 
 - Repository bootstrap, source history, reference mapping, diff archaeology: `.agents/skills/repository-forensics/SKILL.md`.
 - PR/commit/patch review for correctness, regressions, safety and actionable findings: `.agents/skills/code-review/SKILL.md`.
 - Flutter/Dart widgets, architecture, UI, navigation, themes, localization and state lifecycle: `.agents/skills/flutter-app-engineering/SKILL.md`.
+- Product identity, visual hierarchy, design-system consistency, anti-AI-slop review, accessibility and screenshot-based visual acceptance: `.agents/skills/product-design-and-visual-quality/SKILL.md`; read `PRODUCT_DESIGN_CONSTITUTION.md` and `VISUAL_QUALITY_GATE.md`.
 - Unit/widget/source-contract tests, test matrices, formatter, analyzer, regression and validation strategy: `.agents/skills/flutter-quality-and-regression/SKILL.md`.
 - GATT, BLE P1, session lifecycle, command/ACK/telemetry ordering, reconnect and race analysis: `.agents/skills/ble-p1-protocol-audit/SKILL.md`.
 - ESP32-C3 source, non-blocking timing, NTC/thermal protection, PWM, selector/rail transitions and radio handoff: `.agents/skills/esp32c3-firmware-safety/SKILL.md`.
@@ -175,7 +176,8 @@ Use the existing canonical files; do not create parallel status documents or dup
 - `.agents/skills/<name>/SKILL.md` — canonical OpenAI Codex-compatible repository skills.
 - `.github/skills/<name>/SKILL.md` — byte-identical GitHub Copilot skill mirrors; keep synchronized and verify.
 - README.md — project entrypoint and navigation, not a second project-state ledger.
-- APP_NOTES.md / DESIGN_NOTES.md — current App behavior and approved visual constraints.
+- APP_NOTES.md / DESIGN_NOTES.md — current App behavior and approved screen-specific visual constraints.
+- PRODUCT_DESIGN_CONSTITUTION.md / VISUAL_QUALITY_GATE.md — cross-screen product-design principles and screenshot-based visual acceptance; do not duplicate their full rules in individual skills.
 - FIRMWARE_NOTES.md / firmware/FIRMWARE_TECHNICAL_REFERENCE.md — hardware/safety decisions and current source-level Firmware reference.
 - OTA_PROTECTION.md / OTA_REGRESSION_MEMORY.md / VOLTAGE_TRANSITION_MEMORY.md / BLE_APP_AUTH.md — protected contracts, incidents and unresolved auth design.
 - BUILD_NOTES.md — current guarded App release procedure. APP_BUILD_REPORT.md — append-only Build App attempt/evidence ledger.
