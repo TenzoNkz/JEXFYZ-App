@@ -1,3 +1,9 @@
+## 2026-11-08 — Repair Bluetooth scan result/error states and strengthen compact UI tests
+
+- Connection sheet now observes the plugin scan lifecycle separately from fresh scan results and distinguishes active scan, completed no-result, permission-required, adapter/legacy-location unavailable and scan failure states with existing English/Indonesian strings.
+- Initial scan is launched after the sheet's first frame; manual retry uses one guarded handler; scan startup errors reach the UI; retries reset the result subscription so stale results from prior scans are not reused. Dismissal still stops scanning.
+- Added pure state-mapping tests and compact-theme widget coverage at 350-dp/420-dp, including inherited palette preservation. Existing fixed 360-dp logical canvas and 40–42 dp Connection hit targets remain unchanged.
+- Source/tests only: formatter, focused tests, analyzer and full suite are NOT RUN because Flutter/Dart are absent here. Visual QA is NOT VERIFIED; changes are NOT RELEASED and require a separate `Eksekusi Build App!`.
 ## 2026-11-07 — Reconcile product-design rollout inventory against final main tree
 
 - Re-read the final recursive `main` tree at commit `5d4940c2a0682ce1a312bcad1e7691afef0918d3`: 125 entries, not truncated, and 50 Markdown files (45 active/index/subject/agent/skill documents, 2 history ledgers and 3 immutable archives).
