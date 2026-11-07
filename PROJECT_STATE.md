@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Current Project State
 
-Last refreshed: 2026-11-07 (Asia/Jakarta). Current-state summary only; always fetch live main/source, tests, Actions and Release data before acting.
+Last refreshed: 2026-11-08 (Asia/Jakarta). Current-state summary only; always fetch live main/source, tests, Actions and Release data before acting.
 
 ## Agent skills and capability system
 
@@ -23,13 +23,14 @@ Last refreshed: 2026-11-07 (Asia/Jakarta). Current-state summary only; always fe
 ## Current App source and validation
 
 - Home-equivalent uncapped 360-dp DPI canvas for Settings/subpages, Connection sheet and selected dialogs is validated/released in Build #129.
-- The later compact Settings/Connection UI pass is committed on main but NOT RELEASED. It reduces Settings typography/glyphs/spacing and Connection header/status/empty-state sizes while preserving the 360-dp canvas, DPI formula, BLE behavior, localization, colors and 40–42 dp tap targets. Relevant source commits: `5ab14e258a9e21bfec486e3c6a3d81d6705c6d0f`, `bfdcafd1ad044974935b4e473d68f2096a297fbf`, `415d240db3cd9b3e2bca3ef760c4ba667459c604`, `f5bf63b0f5c8a837f47617b77e85d8dce93d845c`, `9db9ee3fc453f537ceaca88462b02e36318a487e`.
-- Five stale Settings route expectations in `test/floating_monitor_layout_contract_test.dart` were corrected in commit `c37aea44abeb832987e13a1c74701d415e85a737` to include `compactUi: true` for Language, Appearance, Notifications, Bluetooth and Floating Settings. Static comparison confirms each expected substring occurs once in source and test, with the old strings absent. This is STATIC SOURCE CHECK only.
-- Compact-pass formatter, targeted Flutter test, analyzer, full Flutter suite and physical-device/OEM QA have NOT RUN. The previous execution environment had no Flutter/Dart executable. Do not claim the compact pass is runtime-validated.
+- The compact Settings/Connection pass remains implemented on `main` but NOT RELEASED. It reduces selected typography/glyph/spacing while preserving the approved 360-dp canvas and DPI formula.
+- The follow-up scan-state repair distinguishes active scanning, completed no-result scans, permission requirement, adapter/legacy-location unavailability and scan failure. It uses the plugin's scan lifecycle stream and fresh scan-result stream, with one guarded retry handler. BLE P1 UUIDs, protocol, GATT connection ownership and telemetry semantics are unchanged.
+- Regression tests now cover five scan-message mappings and render the opt-in compact theme at 350-dp/420-dp while checking inherited palette preservation. Test source is present; no test has run in this execution environment.
+- Formatter, focused Flutter tests, analyzer, full suite, screenshots and physical-device/OEM QA remain NOT RUN; current container has Git/Python but no Flutter/Dart. Do not claim runtime validation or release.
 
 ## Open design and engineering gaps
 
-- **Next App UI validation:** in a Flutter-enabled environment run `dart format lib/app_settings.dart lib/floating_monitor.dart lib/main.dart test/floating_monitor_layout_contract_test.dart`, `flutter test test/floating_monitor_layout_contract_test.dart`, `flutter analyze --no-fatal-infos` and the full `flutter test` suite. Review actual output; static string matching is not a test pass.
+- **Next App UI validation:** in a Flutter-enabled environment run `dart format lib/main.dart lib/connection_scan_state.dart test/floating_monitor_layout_contract_test.dart test/connection_scan_state_test.dart`, then `flutter test test/connection_scan_state_test.dart test/floating_monitor_layout_contract_test.dart`, `flutter analyze --no-fatal-infos` and the full `flutter test` suite. Review actual outputs; source contracts and test files are not execution evidence.
 - After source/test validation, physical-device/OEM layout QA remains necessary when a suitable device is available. A separate explicit `Eksekusi Build App!` is required before packaging the compact pass.
 - BLE App-only identity authorization remains BLOCKED / NOT IMPLEMENTED until trusted enrollment/signing backend and Firmware verification exist.
 - Rapid Hotside-rise/rate-of-rise shutdown plus manual re-arm remains NOT IMPLEMENTED in Firmware V7.1; do not conflate it with Adaptive Fan tiers or raw-decimal limit safety.
