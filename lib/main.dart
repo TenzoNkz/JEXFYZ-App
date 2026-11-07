@@ -9307,97 +9307,120 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
             ),
           ),
           Expanded(
-            child: StreamBuilder<List<ScanResult>>(
-              stream: FlutterBluePlus.scanResults,
-              initialData: const [],
-              builder: (context, snapshot) {
-                final filtered = (snapshot.data ?? const <ScanResult>[]).where((r) {
-                  final serviceMatch = r.advertisementData.serviceUuids.any(
-                    (uuid) => uuid.toString().toLowerCase() == serviceUuid,
-                  );
-                  final name = r.device.platformName.trim().toLowerCase();
-                  final advName = r.advertisementData.advName.trim().toLowerCase();
-                  return serviceMatch || name == 'je x fyz' || advName == 'je x fyz';
-                }).toList();
+            child: StreamBuilder<bool>(
+              stream: FlutterBluePlus.isScanning,
+              initialData: FlutterBluePlus.isScanningNow,
+              builder: (context, scanSnapshot) {
+                final pluginScanning =
+                    scanSnapshot.data ?? FlutterBluePlus.isScanningNow;
+                return StreamBuilder<List<ScanResult>>(
+                  stream: FlutterBluePlus.scanResults,
+                  initialData: const [],
+                  builder: (context, snapshot) {
+                    final filtered = (snapshot.data ?? const <ScanResult>[]).where((r) {
+                      final serviceMatch = r.advertisementData.serviceUuids.any(
+                        (uuid) => uuid.toString().toLowerCase() == serviceUuid,
+                      );
+                      final name = r.device.platformName.trim().toLowerCase();
+                      final advName = r.advertisementData.advName.trim().toLowerCase();
+                      return serviceMatch || name == 'je x fyz' || advName == 'je x fyz';
+                    }).toList();
 
-                if (filtered.isEmpty) {
-                  final unavailable =
-                      _bluetoothDenied ||
-                      _adapterState != BluetoothAdapterState.on ||
-                      (locationRequired && !_locationOn);
+                    if (filtered.isEmpty) {
+                      final permissionRequired = _bluetoothDenied || _locationDenied;
+                      final bluetoothUnavailable =
+                          _adapterState != BluetoothAdapterState.on ||
+                          (locationRequired && !_locationServiceEnabled);
+                      final scanning = !_scanAttempted ||
+                          _scanRequestInFlight ||
+                          pluginScanning;
+                      final errorKey = snapshot.hasError ? 'scanFailed' : _scanErrorKey;
+                      final messageKey = connectionScanEmptyStateMessageKey(
+                        permissionRequired: permissionRequired,
+                        bluetoothUnavailable: bluetoothUnavailable,
+                        scanning: scanning,
+                        errorKey: errorKey,
+                      );
+                      final unavailable = permissionRequired || bluetoothUnavailable;
+                      final failed = errorKey == 'scanFailed';
 
-                  return Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        JexAnimatedIcon.glyph(
-                          icon: unavailable
-                              ? PhosphorIconsRegular.bluetoothSlash
-                              : PhosphorIconsRegular.bluetooth,
-                          color: unavailable
-                              ? btColor
-                              : const Color(0xFF5C9DFF),
-                          size: 32,
-                          active: !unavailable,
-                          warning: unavailable,
+                      return Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            JexAnimatedIcon.glyph(
+                              icon: unavailable || failed
+                                  ? PhosphorIconsRegular.bluetoothSlash
+                                  : PhosphorIconsRegular.bluetooth,
+                              color: unavailable
+                                  ? btColor
+                                  : failed
+                                      ? scheme.error
+                                      : const Color(0xFF5C9DFF),
+                              size: 32,
+                              active: !unavailable && !failed && scanning,
+                              warning: unavailable || failed,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              JexText.of(messageKey, lang),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: failed ? scheme.error : scheme.onSurfaceVariant,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            FilledButton.icon(
+                              onPressed: unavailable || scanning ? null : _requestScan,
+                              icon: JexAnimatedIcon.glyph(
+                                icon: PhosphorIconsRegular.arrowClockwise,
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                size: 16,
+                                active: true,
+                              ),
+                              label: Text(JexText.of('scan', lang)),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          unavailable ? JexText.of('connectionUnavailable', lang) : JexText.of('scanning', lang),
-                          style: TextStyle(
-                            color: scheme.onSurfaceVariant,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        FilledButton.icon(
-                          onPressed: unavailable ? null : widget.onScan,
-                          icon: JexAnimatedIcon.glyph(
-                            icon: PhosphorIconsRegular.arrowClockwise,
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            size: 16,
+                      );
+                    }
+
+                    return ListView.separated(
+                      padding: const EdgeInsets.fromLTRB(8, 2, 8, 12),
+                      itemCount: filtered.length,
+                      separatorBuilder: (_, __) =>
+                          Divider(color: scheme.outlineVariant.withValues(alpha: .55), height: 1),
+                      itemBuilder: (_, index) {
+                        final result = filtered[index];
+                        final name = result.device.platformName.isNotEmpty
+                            ? result.device.platformName
+                            : result.advertisementData.advName;
+                        return ListTile(
+                          dense: true,
+                          leading: JexAnimatedIcon.glyph(
+                            icon: PhosphorIconsRegular.bluetooth,
+                            color: const Color(0xFF63E6BE),
+                            size: 19,
                             active: true,
                           ),
-                          label: Text(JexText.of('scan', lang)),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-
-                return ListView.separated(
-                  padding: const EdgeInsets.fromLTRB(8, 2, 8, 12),
-                  itemCount: filtered.length,
-                  separatorBuilder: (_, __) =>
-                      Divider(color: scheme.outlineVariant.withValues(alpha: .55), height: 1),
-                  itemBuilder: (_, index) {
-                    final result = filtered[index];
-                    final name = result.device.platformName.isNotEmpty
-                        ? result.device.platformName
-                        : result.advertisementData.advName;
-                    return ListTile(
-                      dense: true,
-                      leading: JexAnimatedIcon.glyph(
-                        icon: PhosphorIconsRegular.bluetooth,
-                        color: const Color(0xFF63E6BE),
-                        size: 19,
-                        active: true,
-                      ),
-                      title: Text(
-                        name.trim().isEmpty || name.trim().toLowerCase() == 'je x fyz'
-                            ? JexText.of('device', lang)
-                            : name,
-                        style: TextStyle(
-                          color: scheme.onSurface,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      onTap: () async {
-                        await FlutterBluePlus.stopScan();
-                        if (!context.mounted) return;
-                        Navigator.pop(context);
-                        await widget.onConnect(result.device);
+                          title: Text(
+                            name.trim().isEmpty || name.trim().toLowerCase() == 'je x fyz'
+                                ? JexText.of('device', lang)
+                                : name,
+                            style: TextStyle(
+                              color: scheme.onSurface,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          onTap: () async {
+                            await FlutterBluePlus.stopScan();
+                            if (!context.mounted) return;
+                            Navigator.pop(context);
+                            await widget.onConnect(result.device);
+                          },
+                        );
                       },
                     );
                   },
