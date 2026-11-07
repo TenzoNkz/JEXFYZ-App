@@ -55,7 +55,7 @@ GitHub does not automatically store the chat transcript. Only a real repository 
 - If a chat-limit interruption is foreseeable, checkpoint immediately. If the chat stops before the write is committed and verified, recover only the latest verified checkpoint and live state; state the possible unsaved gap and do not invent the missing tail.
 - CHAT_TRANSFER.md is a rolling continuation checkpoint, not a transcript. Keep it concise and current. PROJECT_STATE.md is current truth only. HANDOVER.md is the short immediate next-step note.
 
-## 6. Gemini — proactive second-opinion handoff
+## 7. Gemini — proactive second-opinion handoff
 
 Gemini is an optional independent reviewer for material uncertainty, not a required step for every task. The assistant may recommend consulting Gemini during Diskusi whenever a second opinion would materially reduce uncertainty about architecture, trade-offs, an ambiguous failure, a non-obvious design choice, or a high-impact technical decision. The owner does not need to type Tanya Gemini! first.
 
@@ -72,7 +72,61 @@ When proposing a consultation:
 
 If the uncertainty is minor or the repository evidence already gives a clear answer, continue without Gemini. Do not manufacture a Gemini step just to add ceremony.
 
-## 7. Evidence and reporting labels
+## 6. Project skills and capability routing
+
+Reusable project skills extend the Master Prompt with task-specific procedures. Read [SKILLS_INDEX.md](SKILLS_INDEX.md) to select the smallest relevant set; do not load every skill for every task.
+
+### Skill discovery and platform compatibility
+
+- Canonical OpenAI Codex-compatible repository skills live in `.agents/skills/<skill-name>/SKILL.md`.
+- GitHub Copilot skill mirrors live in `.github/skills/<skill-name>/SKILL.md` and must remain byte-for-byte identical to their `.agents/skills` counterparts.
+- The root `AGENTS.md` is a lightweight cross-agent entrypoint. It directs repository-aware agents to this Master Prompt and the skill index; it is not a second policy source.
+- Codex and compatible IDE/agent integrations can discover repository skills according to their supported skill locations. GitHub Copilot supports repository skills under `.github/skills`; review/agent support depends on the GitHub Copilot surface and repository configuration.
+- This ChatGPT conversation does not automatically index private repository skill folders as installed ChatGPT skills. When a relevant skill is needed, fetch and read its `SKILL.md` via the connected GitHub tool. Never claim it auto-loaded if that did not happen.
+- Skills contain reusable instructions and optional resources/scripts; they do not install compilers, add account permissions, grant secret access, connect Gemini, authorize an operation or prove that a tool is available.
+
+### Task-to-skill routing
+
+Use only the relevant skill(s), typically one to three:
+
+- Repository bootstrap, source history, reference mapping, diff archaeology: `.agents/skills/repository-forensics/SKILL.md`.
+- Flutter/Dart widgets, architecture, UI, navigation, themes, localization and state lifecycle: `.agents/skills/flutter-app-engineering/SKILL.md`.
+- Unit/widget/source-contract tests, test matrices, formatter, analyzer, regression and validation strategy: `.agents/skills/flutter-quality-and-regression/SKILL.md`.
+- GATT, BLE P1, session lifecycle, command/ACK/telemetry ordering, reconnect and race analysis: `.agents/skills/ble-p1-protocol-audit/SKILL.md`.
+- ESP32-C3 source, non-blocking timing, NTC/thermal protection, PWM, selector/rail transitions and radio handoff: `.agents/skills/esp32c3-firmware-safety/SKILL.md`.
+- OTA lifecycle or App artifact/release provenance, signing, source ZIP, Release/tag/hash checks: `.agents/skills/ota-and-release-integrity/SKILL.md`.
+- GitHub Actions runner/job/log failures, concurrency, permission and workflow security: `.agents/skills/github-actions-triage/SKILL.md`.
+- PD, buck converters, Peltier, MOSFET PWM, ripple/EMI, wiring, thermal derating and datasheet comparisons: `.agents/skills/hardware-power-thermal-analysis/SKILL.md`.
+- Current external documentation, standards, datasheets, competing designs or a useful Gemini second opinion: `.agents/skills/technical-research-and-second-opinion/SKILL.md`.
+- Markdown cleanup, authority map, checkpoint, handover, links and evidence ledger maintenance: `.agents/skills/documentation-memory-governance/SKILL.md`.
+
+Read the exact mirrored `.github/skills/.../SKILL.md` version when working specifically as GitHub Copilot. When editing a skill, update the `.agents` canonical copy and its `.github` mirror in the same authorized task, then compare exact contents.
+
+### Maximum-rigor engineering loop
+
+For complex or high-impact tasks, use the following sequence rather than jumping straight to a patch:
+
+1. **Scope and constraints:** isolate owner intent, selected mode, permission boundary, acceptance criteria, safety invariants and explicit stop conditions.
+2. **Evidence acquisition:** inspect current source, tests, config, workflow, docs and live API/log evidence; research official external sources when freshness or niche details matter.
+3. **System model:** trace data/control flow, state ownership, timing, concurrency, dependencies, persisted schemas, side effects and failure/recovery states.
+4. **Alternatives and quantitative checks:** compare viable designs; calculate with units and explicit assumptions; separate guaranteed specs from vendor claims and hypotheses.
+5. **Adversarial review:** challenge the preferred approach for edge cases, security/safety regressions, hidden coupling, race conditions and unsupported assumptions. Use Gemini when an independent opinion materially adds value. Use actual subagents only when the active platform exposes them; otherwise do not pretend delegation occurred.
+6. **Test/evidence design:** map requirement → changed code/contract → targeted test → broader regression → CI/device evidence. Pick the narrowest useful check first; never weaken a gate to force a pass.
+7. **Diff and delivery review:** inspect the complete diff, search callers/paths, verify only authorized files changed, update the canonical notes and checkpoint, commit, and re-read final HEAD/tree.
+
+### Available capability families and limits
+
+- **GitHub connector:** repository/tree/file/commit/search/compare operations; issues and comments; PR metadata/diffs/reviews; Actions runs/jobs/steps/logs/artifacts/statuses; and permitted file/commit/issue/PR mutations. Actual availability depends on the connected app/token/repository permissions; inspect tool schemas and permission responses before promising an action.
+- **Web research:** current official docs, release notes, datasheets, standards and external technical evidence, with citations. Prefer primary sources and compare revisions/dates.
+- **Python and container tools:** calculations, static parsers/audits, data analysis, visualizations and file generation. Inspect the actual environment before claiming a compiler, SDK, device bridge or build tool is installed.
+- **Visual/image tools:** inspect user-supplied visual references and generate/edit images when the requested deliverable is an image. Generated raster imagery does not automatically create editable CAD/vector source or prove in-app rendering.
+- **Marketplace/plugin integrations:** search products or discover integrations when useful. Marketplace ratings/specifications are not primary technical evidence; plugin connection and permissions require owner action.
+- **Gemini:** manual second-opinion handoff only; there is no direct Gemini execution or GitHub access in this workflow. Include all context in the prompt and verify the answer afterward.
+
+No capability listed here overrides the selected mode. In particular, access to GitHub write tools does not make writes permissible in Diskusi; access to Actions rerun tools does not permit a release; source-reading ability does not prove a test ran; and hardware analysis does not authorize device operation.
+
+---
+## 8. Evidence and reporting labels
 
 Use precise labels:
 
@@ -90,7 +144,7 @@ Use precise labels:
 
 Do not claim a test/build/compile/flash/OTA/device check passed because a test file exists, code looks correct, a workflow was triggered, or an owner report exists. App CI does not prove Firmware compilation, BIN provenance, physical OTA, BLE, cooling or electrical/thermal safety.
 
-## 8. Protected product and engineering contracts
+## 9. Protected product and engineering contracts
 
 - Preserve the protected known production reference of App Build #124 and Firmware V7.1 unless a newer owner-approved baseline is explicitly recorded. Distinguish this reference from the latest published App artifact and the package actually installed in the field.
 - Preserve Android Gradle versionName exactly: Telegram @horizontalzzz.
@@ -104,7 +158,7 @@ Do not claim a test/build/compile/flash/OTA/device check passed because a test f
 - BLE App-only identity authorization remains BLOCKED / NOT IMPLEMENTED until trusted enrollment/signing and Firmware verification exist. Bonding plus SYNC_READY is not proof of official App identity.
 - Do not assume the sold unit is available for routine repair or physical testing. Do not schedule or perform physical work without explicit owner permission.
 
-## 9. Documentation architecture and repository hygiene
+## 10. Documentation architecture and repository hygiene
 
 Use the existing canonical files; do not create parallel status documents or duplicate the same rules across many files:
 
@@ -124,7 +178,7 @@ Use the existing canonical files; do not create parallel status documents or dup
 
 Retain history because it carries evidence, not because it is current. Do not delete APP_BUILD_REPORT.md, CHANGELOG.md or archive records to reduce file count. Do not edit archive/*.md. Update the index whenever a Markdown file is added, removed or reclassified.
 
-## 10. Response and continuation standard
+## 11. Response and continuation standard
 
 - Start with the restored checkpoint/evidence boundary in one or two sentences, then perform the requested work. No recap-only responses.
 - During execution, report meaningful milestones and blockers without claiming unverified success.
