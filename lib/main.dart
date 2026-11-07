@@ -9054,7 +9054,10 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
   Future<void> _requestScan() async {
     if (!mounted || _scanRequestInFlight) return;
     if (FlutterBluePlus.isScanningNow) {
-      setState(() => _scanAttempted = true);
+      setState(() {
+        _scanAttempted = true;
+        _scanErrorKey = null;
+      });
       return;
     }
     setState(() {
