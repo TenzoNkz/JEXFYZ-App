@@ -29,7 +29,7 @@ At the start of a new or recovered project chat:
 
 1. Read CHAT_TRANSFER.md completely before making assumptions.
 2. Fetch live repository metadata, main HEAD, commit metadata and the full recursive tree. Confirm the requested repository and branch; inspect whether the tree is truncated.
-3. Read this MASTER_PROMPT.md fully, then CHAT_RULES.md (a short compatibility pointer), MEMORY_INDEX.md, PROJECT_STATE.md and HANDOVER.md.
+3. Read AGENTS.md and SKILLS_INDEX.md to orient the active agent and discover applicable skills; then read CHAT_RULES.md (a short compatibility pointer), MEMORY_INDEX.md, PROJECT_STATE.md and HANDOVER.md.
 4. Read the complete canonical subject references relevant to the actual task. Inspect the live source, tests, configuration and workflow only to the degree needed to verify the issue. For a full Markdown cleanup/audit, enumerate and inspect every Markdown file, classify its role, and search all links/path-based references before proposing moves or deletion.
 5. Check current Actions, Releases, tags, PRs, run jobs and logs when relevant. A saved SHA or prior checkpoint is not proof of current state.
 6. Identify the last durable decision, latest verified milestone, unfinished work, blockers and exact next safe action. Continue the actual workstream; do not stop after a recap and wait for the owner to restate known requirements.
