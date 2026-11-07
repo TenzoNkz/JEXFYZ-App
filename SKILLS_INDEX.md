@@ -41,6 +41,12 @@ Last reconciled: 2026-11-07 (Asia/Jakarta). This is the discovery map for reusab
 | Automations | Set up authorized reminders/monitoring/recurring checks when explicitly requested or accepted | Requires a trigger/cadence and successful creation. It does not execute repository work in the background by itself. |
 | Gemini second opinion | Prepare a complete prompt, then review an answer the owner returns | No direct Gemini access or GitHub access. The owner manually pastes the prompt and result. |
 
+## ChatGPT session integration snapshot
+
+- The installed ChatGPT plugin-skill list in this session exposes `plugin-management`; it is not a code-engineering skill. The project-specific SKILL.md files in this repository are loaded manually by fetching the relevant file through the GitHub connector, not by assuming they are installed into ChatGPT's native skill registry.
+- Connected tool families visible in this session include GitHub repository/Actions/PR/issue tools, web research, Python/container utilities, Shopee product search, plugin management and task automations. Each action remains subject to tool availability, account connection, permission and the command-mode authorization in MASTER_PROMPT.md.
+- No direct Gemini connector is available in this workflow. The owner manually pastes the prompt and returns Gemini's response for verification.
+
 ## Current execution-environment snapshot
 
 Checked on 2026-11-07 in the active container: `python3` and `git` are available. `flutter`, `dart`, `gradle`, `adb`, `arduino-cli` and `idf.py` are not installed in this environment. This is a runtime-specific snapshot, not a permanent repository fact; re-check command availability at the start of any task that needs those tools.
