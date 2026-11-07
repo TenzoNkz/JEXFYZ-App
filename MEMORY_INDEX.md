@@ -39,11 +39,11 @@ Last reconciled: 2026-11-06 (Asia/Jakarta). This file is the navigation and rete
 | AGENTS.md | Cross-agent entrypoint that points to the Master Prompt and skill index | Active agent entry | KEEP short; do not duplicate policy |
 | SKILLS_INDEX.md | Catalogue of portable project skills and capability boundaries | Active capability index | KEEP; update with skill additions/removals |
 | .agents/skills/*/SKILL.md | Canonical repository skills for OpenAI Codex-compatible discovery | Active skill library | KEEP one focused workflow per skill; load progressively |
-| .github/skills/*/SKILL.md | Byte-identical GitHub Copilot mirrors, including code-review skill discovery | Active skill mirrors | KEEP synchronized with `.agents/skills`; verify exact content equality |
+| .github/skills/*/SKILL.md | Byte-identical GitHub Copilot mirrors; the `code-review` skill is eligible for Copilot code review use | Active skill mirrors | KEEP synchronized with `.agents/skills`; verify exact content equality |
 
 ## Markdown audit — 2026-11-06
 
-- The recursive main tree previously contained 22 Markdown files after adding MASTER_PROMPT.md. The 2026-11-07 skill rollout adds AGENTS.md, SKILLS_INDEX.md, ten canonical `.agents/skills/*/SKILL.md` files and ten byte-identical `.github/skills/*/SKILL.md` mirrors. Current recursive tree is verified separately; the 20 skill files are one reusable library mirrored for Codex and GitHub Copilot.
+- The recursive main tree previously contained 22 Markdown files after adding MASTER_PROMPT.md. The 2026-11-07 skill rollout adds AGENTS.md, SKILLS_INDEX.md, eleven canonical `.agents/skills/*/SKILL.md` files and eleven byte-identical `.github/skills/*/SKILL.md` mirrors. Current recursive tree is verified separately; the 20 skill files are one reusable library mirrored for Codex and GitHub Copilot.
 - Every current Markdown file has one assigned role in the table above. No Markdown file was removed, renamed or moved in this cleanup.
 - The archive files intentionally preserve stale and contradictory historical status. Never copy those statements into current notes without re-verifying the live repository.
 - APP_BUILD_REPORT.md and CHANGELOG.md are large by design. Keep them out of the routine boot path; inspect only the latest relevant sections unless investigating history.
