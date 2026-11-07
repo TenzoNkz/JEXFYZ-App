@@ -1,22 +1,23 @@
 # JE X FYZ / JE Cooler — Live Chat Checkpoint
 
-Checkpoint refreshed: 2026-11-07 (Asia/Jakarta), after the authorized Discussion-mode agent skill/capability rollout. The single operating policy is `MASTER_PROMPT.md`; `AGENTS.md` is the cross-agent entrypoint; `SKILLS_INDEX.md` is the skill and tool-capability map.
+Checkpoint refreshed: 2026-11-07 (Asia/Jakarta), after the authorized product-design and visual-quality capability rollout. The single operating policy is `MASTER_PROMPT.md`; `AGENTS.md` is the cross-agent entrypoint; `SKILLS_INDEX.md` is the skill and tool-capability map.
 
 ## Skills and capability rollout
 
-- **Eleven repository skill workflows:** `repository-forensics`, `code-review`, `flutter-app-engineering`, `flutter-quality-and-regression`, `ble-p1-protocol-audit`, `esp32c3-firmware-safety`, `ota-and-release-integrity`, `github-actions-triage`, `hardware-power-thermal-analysis`, `technical-research-and-second-opinion`, and `documentation-memory-governance`.
+- **Twelve repository skill workflows:** `repository-forensics`, `code-review`, `product-design-and-visual-quality`, `flutter-app-engineering`, `flutter-quality-and-regression`, `ble-p1-protocol-audit`, `esp32c3-firmware-safety`, `ota-and-release-integrity`, `github-actions-triage`, `hardware-power-thermal-analysis`, `technical-research-and-second-opinion`, and `documentation-memory-governance`.
 - Canonical Codex-compatible files are in `.agents/skills/<name>/SKILL.md`; GitHub Copilot mirrors are in `.github/skills/<name>/SKILL.md`. All 11 mirror pairs were fetched and verified byte-for-byte identical. The `code-review` skill is intended for Copilot code review where that surface and repository configuration support skills.
 - `MASTER_PROMPT.md` now selects one to three relevant skills and requires scope/evidence/system modelling, alternatives and quantitative checks, adversarial review, test traceability, diff review and verified checkpointing.
+- Non-trivial UI/UX work must use `product-design-and-visual-quality` and read `PRODUCT_DESIGN_CONSTITUTION.md` plus `VISUAL_QUALITY_GATE.md`; `DESIGN_NOTES.md` remains the authority for owner-approved screen-specific details. The new gate requires actual screenshot evidence for visual PASS and keeps visual status separate from build/test status.
 - ChatGPT mobile/web does not auto-install these private repository skills. It must fetch/read the relevant SKILL.md through GitHub tools when needed. The installed native ChatGPT skill list in this session exposes `plugin-management` only; GitHub, web, Python/container, Shopee and Automation tools are separate connected tool families. There is no direct Gemini connector; Gemini is a self-contained manual handoff and has no GitHub access.
 - Current container checked 2026-11-07: Python 3 and Git available; Flutter, Dart, Gradle, ADB, Arduino CLI and ESP-IDF absent. Re-check before each validation task. This environment cannot claim local Flutter/Android/Firmware builds or physical-device validation.
-- Documentation tree after the skill rollout: 119 entries, not truncated; 46 Markdown files = 41 active/index/subject/agent/skill docs, 2 history ledgers and 3 immutable archives. No source, test source, Firmware or build workflow changed in this rollout.
+- Documentation tree after the 12-skill/product-design rollout: 122 entries, not truncated; 49 Markdown files = 44 active/index/subject/agent/skill docs, 2 history ledgers and 3 immutable archives. The two new design references and canonical/mirrored product-design skill were added. No App/Firmware source, tests, workflow, build or release behavior changed.
 
 ## Main skill/agent commits
 
 - Master Prompt skill routing: [f9e8f456](https://github.com/TenzoNkz/JEXFYZ-App/commit/f9e8f4566d22ca7c485d94462433c31947389153).
 - Skill/capability index: [b5b94e7f](https://github.com/TenzoNkz/JEXFYZ-App/commit/b5b94e7f0bac061491594a2a229ccdc9a9059506).
 - Root agent entrypoint: [2ae747d8](https://github.com/TenzoNkz/JEXFYZ-App/commit/2ae747d861f54d0528f3190b2c173a8fa7117720).
-- Canonical skills: `.agents/skills/`; Copilot mirrors: `.github/skills/`. See [SKILLS_INDEX.md](SKILLS_INDEX.md) for the complete catalogue.
+- Canonical skills: `.agents/skills/`; Copilot mirrors: `.github/skills/`. See [SKILLS_INDEX.md](SKILLS_INDEX.md) for the complete catalogue. Product design standards: [PRODUCT_DESIGN_CONSTITUTION.md](PRODUCT_DESIGN_CONSTITUTION.md) and [VISUAL_QUALITY_GATE.md](VISUAL_QUALITY_GATE.md).
 
 ## Last App engineering milestone
 
