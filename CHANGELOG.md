@@ -1,3 +1,12 @@
+## 2026-11-07 — Establish JE Cooler product-design constitution and visual quality gate (documentation/agent skills only)
+
+- Added `PRODUCT_DESIGN_CONSTITUTION.md` to define JE Cooler design intent, authority order, existing Home/360-dp/compact-UI invariants, design-system governance, anti-AI-slop rejection patterns and accessibility baseline.
+- Added `VISUAL_QUALITY_GATE.md` with a repeatable review sequence, viewport/language/theme/state matrix, screenshot evidence requirements, P0–P3 severity and separate VISUAL PASS / REJECT / NOT VERIFIED outcomes.
+- Added the twelfth agent skill `product-design-and-visual-quality` under `.agents/skills/` and a byte-identical GitHub Copilot mirror under `.github/skills/`. Routed non-trivial UI work through the design skill and the existing Flutter engineering/quality skills.
+- Linked the new design references from MASTER_PROMPT.md, AGENTS.md, SKILLS_INDEX.md, README.md, MEMORY_INDEX.md, APP_NOTES.md and DESIGN_NOTES.md; refreshed PROJECT_STATE.md, HANDOVER.md and CHAT_TRANSFER.md.
+- Preserved the current Home visual contract, 360-dp master canvas/DPI formula, compact Settings scope, theme/localization, BLE P1, telemetry truth, safety and Firmware invariants. Existing 40–42 dp compact Connection targets remain an explicit legacy constraint; new/materially changed targets should aim for 48 × 48 dp.
+- Documentation and agent-instruction change only. No App/Firmware source, tests, build workflow, release artifact, BIN/Firebase, OTA, flashing or physical-device operation was changed or run. The compact Settings/Connection pass remains unvalidated/unreleased as previously recorded.
+
 ## 2026-11-07 — Add reusable engineering skills and cross-agent capability routing (docs/agent instructions only)
 
 - Added root `AGENTS.md` as a lightweight cross-agent entrypoint to `MASTER_PROMPT.md` and `SKILLS_INDEX.md`.
