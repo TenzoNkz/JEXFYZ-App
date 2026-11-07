@@ -45,7 +45,7 @@ Last reconciled: 2026-11-07 (Asia/Jakarta). This file is the navigation and rete
 
 ## Markdown audit — 2026-11-07
 
-- The recursive main tree was last verified at 119 entries and 46 Markdown files after the 2026-11-07 skill rollout. The product-design quality rollout adds four Markdown paths: PRODUCT_DESIGN_CONSTITUTION.md, VISUAL_QUALITY_GATE.md and one canonical skill plus its byte-identical Copilot mirror. The current expected Markdown total is 50: 45 active/index/subject/agent/skill documents, 2 history ledgers and 3 immutable archives. The 24 skill files form one 12-skill library mirrored for Codex and GitHub Copilot. The recursive tree entry count has not yet been re-read after the additions; re-verify it during the next full tree audit.
+- The recursive `main` tree was verified at **125 entries, not truncated, with 50 Markdown files** at commit `5d4940c2a0682ce1a312bcad1e7691afef0918d3` (2026-11-07, Asia/Jakarta). The 50 Markdown files classify as 45 active/index/subject/agent/skill documents, 2 history ledgers and 3 immutable archives. The 24 skill files form 12 canonical `.agents/skills` workflows plus 12 byte-identical `.github/skills` mirrors; all 12 pairs were fetched and compared successfully in the final audit.
 - Every current Markdown file has one assigned role in the table above. No Markdown file was removed, renamed or moved in this cleanup.
 - The archive files intentionally preserve stale and contradictory historical status. Never copy those statements into current notes without re-verifying the live repository.
 - APP_BUILD_REPORT.md and CHANGELOG.md are large by design. Keep them out of the routine boot path; inspect only the latest relevant sections unless investigating history.
