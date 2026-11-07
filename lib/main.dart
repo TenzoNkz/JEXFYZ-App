@@ -71,6 +71,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:phosphor_icons/phosphor_icons.dart';
 
 import 'app_settings.dart';
+import 'connection_scan_state.dart';
 import 'floating_monitor.dart';
 
 
@@ -6866,12 +6867,11 @@ void _handleAckLine(String line) {
       },
     ).whenComplete(() => FlutterBluePlus.stopScan());
 
-    _startScanFromSheet();
   }
 
-  Future<void> _startScanFromSheet() async {
+  Future<bool> _startScanFromSheet() async {
     final accessReady = await _requestPermissions();
-    if (!accessReady) return;
+    if (!accessReady) return false;
     try {
       await FlutterBluePlus.stopScan();
       await FlutterBluePlus.startScan(
@@ -6879,8 +6879,10 @@ void _handleAckLine(String line) {
         androidCheckLocationServices: false,
         androidUsesFineLocation: false,
       );
+      return true;
     } catch (e) {
       debugPrint('start scan sheet: $e');
+      rethrow;
     }
   }
 
@@ -8999,7 +9001,7 @@ void _handleAckLine(String line) {
 
 // --- CONNECTION SHEET: UI only; BLE ownership remains in DashboardScreen ---
 class _ConnectionSheetContent extends StatefulWidget {
-  final Future<void> Function() onScan;
+  final Future<bool> Function() onScan;
   final Future<void> Function(BluetoothDevice device) onConnect;
   final Future<void> Function() onOpenBluetoothSettings;
   final Future<void> Function() onOpenLocationSettings;
@@ -9019,6 +9021,9 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
   static const MethodChannel _channel = MethodChannel('je_x_fyz/battery_temp');
 
   Timer? _refreshTimer;
+  bool _scanAttempted = false;
+  bool _scanRequestInFlight = false;
+  String? _scanErrorKey;
   BluetoothAdapterState _adapterState = BluetoothAdapterState.unknown;
   PermissionStatus _scanPermission = PermissionStatus.denied;
   PermissionStatus _connectPermission = PermissionStatus.denied;
@@ -9034,12 +9039,39 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
       const Duration(milliseconds: 650),
       (_) => _refreshStatus(),
     );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) unawaited(_requestScan());
+    });
   }
 
   @override
   void dispose() {
     _refreshTimer?.cancel();
     super.dispose();
+  }
+
+  Future<void> _requestScan() async {
+    if (!mounted || _scanRequestInFlight) return;
+    setState(() {
+      _scanAttempted = true;
+      _scanRequestInFlight = true;
+      _scanErrorKey = null;
+    });
+
+    try {
+      final started = await widget.onScan();
+      if (!mounted) return;
+      if (!started) {
+        await _refreshStatus();
+        if (!mounted) return;
+        setState(() => _scanErrorKey = 'connectionAccessRequired');
+      }
+    } catch (error) {
+      debugPrint('Connection scan: $error');
+      if (mounted) setState(() => _scanErrorKey = 'scanFailed');
+    } finally {
+      if (mounted) setState(() => _scanRequestInFlight = false);
+    }
   }
 
   Future<void> _refreshStatus() async {
@@ -9156,7 +9188,7 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
     if (_bluetoothDenied) {
       // Explicit user action retries the Nearby Devices permission request.
       // Never redirect to App Settings merely because the previous request was denied.
-      await widget.onScan();
+      await _requestScan();
     } else {
       // Bluetooth power remains a manual OS action when the adapter is off.
       await widget.onOpenBluetoothSettings();
