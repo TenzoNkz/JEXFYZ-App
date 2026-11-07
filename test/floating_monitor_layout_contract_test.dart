@@ -197,6 +197,10 @@ void main() {
       main,
       contains('compactUi: true,\n              child: _ConnectionSheetContent('),
     );
+    expect(main, contains('stream: FlutterBluePlus.isScanning'));
+    expect(main, contains('stream: FlutterBluePlus.scanResults'));
+    expect(main, contains('_scanErrorKey'));
+    expect(main, contains('Future<bool> _startScanFromSheet()'));
 
     // The existing DPI master-canvas scale is left intact; compactness is typography/density only.
     expect(floating, contains('final scale = constraints.maxWidth / designWidth;'));
@@ -212,14 +216,24 @@ void main() {
       tester.view.physicalSize = const Size(1080, 2400);
 
       Size? logicalCanvasSize;
+      ThemeData? compactTheme;
+      final inheritedTheme = ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF3456AB),
+          brightness: Brightness.light,
+        ),
+      );
       Future<void> pumpAtDensity(double devicePixelRatio) async {
         tester.view.devicePixelRatio = devicePixelRatio;
         await tester.pumpWidget(
           MaterialApp(
+            theme: inheritedTheme,
             home: JexFixedScalePage(
+              compactUi: true,
               child: Builder(
                 builder: (context) {
                   logicalCanvasSize = MediaQuery.sizeOf(context);
+                  compactTheme = Theme.of(context);
                   return const SizedBox.expand(key: ValueKey<String>('scale-probe'));
                 },
               ),
@@ -228,6 +242,11 @@ void main() {
         );
         await tester.pumpAndSettle();
         expect(tester.takeException(), isNull);
+        expect(compactTheme!.textTheme.titleLarge!.fontSize, 18);
+        expect(compactTheme!.textTheme.bodyLarge!.fontSize, 13);
+        expect(compactTheme!.brightness, inheritedTheme.brightness);
+        expect(compactTheme!.colorScheme.primary, inheritedTheme.colorScheme.primary);
+        expect(compactTheme!.colorScheme.surface, inheritedTheme.colorScheme.surface);
       }
 
       await pumpAtDensity(1080 / 420);
@@ -253,7 +272,7 @@ void main() {
         closeTo(2400.0, 0.01),
       );
 
-      await pumpAtDensity(1080 / 320);
+      await pumpAtDensity(1080 / 350);
       expect(logicalCanvasSize!.width, closeTo(360.0, 0.01));
       expect(logicalCanvasSize!.height, closeTo(800.0, 0.01));
       expect(
@@ -266,7 +285,7 @@ void main() {
           matching: find.byType(Transform),
         ),
       );
-      expect(canvasTransform.transform.storage[0], closeTo(320 / 360, 0.01));
+      expect(canvasTransform.transform.storage[0], closeTo(350 / 360, 0.01));
       expect(
         360.0 * canvasTransform.transform.storage[0] * tester.view.devicePixelRatio,
         closeTo(1080.0, 0.01),
