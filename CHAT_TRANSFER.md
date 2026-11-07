@@ -1,27 +1,35 @@
 # JE X FYZ / JE Cooler — Live Chat Checkpoint
 
-Checkpoint refreshed: 2026-11-07 (Asia/Jakarta), after a Discussion-mode skills and agent-capability rollout. The single operating authority is `MASTER_PROMPT.md`; root `AGENTS.md` is a short cross-agent entrypoint. Eleven focused project skills are available in `.agents/skills/` with byte-identical GitHub Copilot mirrors in `.github/skills/`. `SKILLS_INDEX.md` documents the catalogue, platform compatibility and tool limits.
+Checkpoint refreshed: 2026-11-07 (Asia/Jakarta), after the authorized Discussion-mode agent skill/capability rollout. The single operating policy is `MASTER_PROMPT.md`; `AGENTS.md` is the cross-agent entrypoint; `SKILLS_INDEX.md` is the skill and tool-capability map.
 
 ## Skills and capability rollout
 
-- **11 skill workflows:** `repository-forensics`, `code-review`, `flutter-app-engineering`, `flutter-quality-and-regression`, `ble-p1-protocol-audit`, `esp32c3-firmware-safety`, `ota-and-release-integrity`, `github-actions-triage`, `hardware-power-thermal-analysis`, `technical-research-and-second-opinion`, and `documentation-memory-governance`.
-- Codex-compatible canonical skills: `.agents/skills/<name>/SKILL.md`. GitHub Copilot mirrors: `.github/skills/<name>/SKILL.md`. Mirrors must remain byte-for-byte identical. The dedicated `code-review` skill is intended for Copilot code-review use when that surface/configuration supports repository skills.
-- `MASTER_PROMPT.md` now routes tasks to one-to-three relevant skills and defines a high-rigor workflow: scope, evidence, system model, alternatives/quantitative checks, adversarial review, test/evidence design, diff and checkpoint verification.
-- ChatGPT in this conversation does not automatically discover private repo skills as installed ChatGPT skills. Fetch/read a relevant `SKILL.md` with GitHub tools when needed. Gemini has no repository/GitHub access; consultation is a fully self-contained prompt for the owner to paste manually.
-- `AGENTS.md`, `SKILLS_INDEX.md`, `MASTER_PROMPT.md`, README, MEMORY_INDEX, current state and handover were updated. No executable source, test source, Firmware, build workflow or release configuration was changed in this skills rollout.
-- Current container checked 2026-11-07: Python 3 and Git available; Flutter, Dart, Gradle, ADB, Arduino CLI and ESP-IDF absent. Re-check at task start. This environment cannot claim local Flutter/Android/Firmware builds or physical-device validation.
+- **Eleven repository skill workflows:** `repository-forensics`, `code-review`, `flutter-app-engineering`, `flutter-quality-and-regression`, `ble-p1-protocol-audit`, `esp32c3-firmware-safety`, `ota-and-release-integrity`, `github-actions-triage`, `hardware-power-thermal-analysis`, `technical-research-and-second-opinion`, and `documentation-memory-governance`.
+- Canonical Codex-compatible files are in `.agents/skills/<name>/SKILL.md`; GitHub Copilot mirrors are in `.github/skills/<name>/SKILL.md`. All 11 mirror pairs were fetched and verified byte-for-byte identical. The `code-review` skill is intended for Copilot code review where that surface and repository configuration support skills.
+- `MASTER_PROMPT.md` now selects one to three relevant skills and requires scope/evidence/system modelling, alternatives and quantitative checks, adversarial review, test traceability, diff review and verified checkpointing.
+- ChatGPT mobile/web does not auto-install these private repository skills. It must fetch/read the relevant SKILL.md through GitHub tools when needed. The installed native ChatGPT skill list in this session exposes `plugin-management` only; GitHub, web, Python/container, Shopee and Automation tools are separate connected tool families. There is no direct Gemini connector; Gemini is a self-contained manual handoff and has no GitHub access.
+- Current container checked 2026-11-07: Python 3 and Git available; Flutter, Dart, Gradle, ADB, Arduino CLI and ESP-IDF absent. Re-check before each validation task. This environment cannot claim local Flutter/Android/Firmware builds or physical-device validation.
+- Documentation tree after the skill rollout: 119 entries, not truncated; 46 Markdown files = 41 active/index/subject/agent/skill docs, 2 history ledgers and 3 immutable archives. No source, test source, Firmware or build workflow changed in this rollout.
+
+## Main skill/agent commits
+
+- Master Prompt skill routing: [f9e8f456](https://github.com/TenzoNkz/JEXFYZ-App/commit/f9e8f4566d22ca7c485d94462433c31947389153).
+- Skill/capability index: [b5b94e7f](https://github.com/TenzoNkz/JEXFYZ-App/commit/b5b94e7f0bac061491594a2a229ccdc9a9059506).
+- Root agent entrypoint: [2ae747d8](https://github.com/TenzoNkz/JEXFYZ-App/commit/2ae747d861f54d0528f3190b2c173a8fa7117720).
+- Canonical skills: `.agents/skills/`; Copilot mirrors: `.github/skills/`. See [SKILLS_INDEX.md](SKILLS_INDEX.md) for the complete catalogue.
 
 ## Last App engineering milestone
 
-- Compact Settings/Connection source pass is committed but NOT RELEASED. The five stale Settings route test expectations were corrected in commit `c37aea44abeb832987e13a1c74701d415e85a737` to include `compactUi: true` for Language, Appearance, Notifications, Bluetooth and Floating Settings.
-- STATIC SOURCE CHECK only: all five updated expected substrings appear exactly once in live source and test; old exact strings are absent. Flutter/Dart formatting, targeted test, analyzer, full suite and physical-device/OEM QA remain NOT RUN.
-- Preserve the Home-equivalent 360-dp canvas, BLE P1, telemetry authority, localization, theme, safety, OTA and rail-timing contracts.
+- Compact Settings/Connection source pass is committed but NOT RELEASED. Five stale Settings route expectations were corrected in commit `c37aea44abeb832987e13a1c74701d415e85a737` to include `compactUi: true` for Language, Appearance, Notifications, Bluetooth and Floating Settings.
+- STATIC SOURCE CHECK only: all five expected substrings appear exactly once in live source and test; obsolete exact strings are absent. Flutter/Dart formatting, targeted test, analyzer, full suite and physical-device/OEM QA remain NOT RUN.
+- Preserve the Home-equivalent 360-dp canvas, BLE P1, telemetry authority, localization, theme, safe-output, OTA and rail-timing contracts.
 
 ## Release baseline and field evidence
 
-- Latest independently verified published App package (live check 2026-11-06): Build #129 / [Actions run 39925045446](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446), tested source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`; Release ID `403010611`; tag `jexfyz-latest` targets the same source.
+- Latest independently verified published App package (live check 2026-11-07): Build #129 / [Actions run 39925045446](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446), tested source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`; Release ID `403010611`; tag `jexfyz-latest` targets the same source.
 - APK SHA-256: `f59c511786d49add8e0596fd3d658248746c008b7eaff94bb6215d314aa0426e`; matching source ZIP SHA-256: `c74e6800dadf80a5223dedcce3144b12f6365506a8b9821bb7abf1817df8cfff`.
 - Build #129 passed 21 workflow steps, 122 Flutter tests, analyzer (25 informational diagnostics), Android gate, signing/certificate, ZIP/source marker, Release/tag and downloaded-asset identity/digest checks. Native Android JUnit tasks were NO-SOURCE.
+- Live Actions check 2026-11-07: latest run remains #129; zero active runs, zero queued runs. Latest Release/tag still target the #129 package source.
 - Protected known production reference remains App Build #124 + Firmware V7.1. Owner previously reported installing/overwriting Build #128; exact field APK identity remains unverified. Firmware V7.1 compile/Online OTA is USER-REPORTED; exact BIN identity and physical behavior remain UNVERIFIED.
 
 ## Precise next engineering action
@@ -37,7 +45,8 @@ Review actual results, then perform physical-device/OEM UI QA when available. A 
 
 ## Durable memory and safety
 
-- Read `MASTER_PROMPT.md`, then this checkpoint, live main HEAD/tree, `MEMORY_INDEX.md`, `PROJECT_STATE.md`, `HANDOVER.md` and relevant skills/subject references.
+- Read `MASTER_PROMPT.md`, `AGENTS.md`, `SKILLS_INDEX.md`, this checkpoint, live main HEAD/tree, `MEMORY_INDEX.md`, `PROJECT_STATE.md`, `HANDOVER.md` and only the skills/subject references relevant to the task.
 - GitHub does not automatically save chat text. Save durable decisions, findings, milestones, test results, blockers and next steps to canonical notes plus this checkpoint; verify commit/content/HEAD before saying saved.
+- `.agents/skills` is canonical for Codex discovery; `.github/skills` must stay byte-identical. In ChatGPT, fetch/read only the relevant skill manually.
 - `APP_BUILD_REPORT.md` is append-only build evidence; `CHANGELOG.md` is dated history; `archive/*.md` is immutable.
-- Diskusi changes documentation/skill instructions only. Eksekusi Full is the specifically authorized source/docs/tests scope. Only Eksekusi Build App! authorizes the guarded App release workflow. Firmware compilation, BIN/Firebase changes, OTA, flashing and device work require separate explicit authorization.
+- Diskusi changes canonical documentation/skill instructions only. Eksekusi Full is the specifically authorized source/docs/tests scope. Only Eksekusi Build App! authorizes guarded App release. Firmware compilation, BIN/Firebase changes, OTA, flashing and device work require separate explicit authorization.
