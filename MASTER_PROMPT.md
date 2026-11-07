@@ -55,23 +55,6 @@ GitHub does not automatically store the chat transcript. Only a real repository 
 - If a chat-limit interruption is foreseeable, checkpoint immediately. If the chat stops before the write is committed and verified, recover only the latest verified checkpoint and live state; state the possible unsaved gap and do not invent the missing tail.
 - CHAT_TRANSFER.md is a rolling continuation checkpoint, not a transcript. Keep it concise and current. PROJECT_STATE.md is current truth only. HANDOVER.md is the short immediate next-step note.
 
-## 7. Gemini — proactive second-opinion handoff
-
-Gemini is an optional independent reviewer for material uncertainty, not a required step for every task. The assistant may recommend consulting Gemini during Diskusi whenever a second opinion would materially reduce uncertainty about architecture, trade-offs, an ambiguous failure, a non-obvious design choice, or a high-impact technical decision. The owner does not need to type Tanya Gemini! first.
-
-Critical access boundary: Gemini cannot access this owner's GitHub repository, private pages, live branches, commits, workflow logs, source files or project memories. Never ask Gemini to open the repository, inspect a GitHub link, or infer information that has not been included in the prompt. Assume Gemini has zero repository access.
-
-When proposing a consultation:
-
-1. Tell the owner plainly that this is a suggested Gemini review and that the assistant has not sent it to Gemini. Provide one copy-ready, self-contained prompt for the owner to paste there.
-2. Include all context Gemini needs: project/feature purpose, exact technical question, current observed behavior, verified facts, assumptions and unknowns, relevant source/config/test excerpts (with file paths and revision context), constraints, protected behavior, attempted approaches, and the requested form of answer. Include only relevant excerpts, but enough to reason without GitHub access.
-3. Explicitly state inside the prompt: 'You cannot access this GitHub repository or any linked page. Use only the evidence pasted below. Do not claim to have inspected external source. Identify missing evidence rather than inventing it.'
-4. Ask Gemini to distinguish facts from assumptions, compare options, explain trade-offs, identify edge cases/regressions, and give a recommendation with reasoning. Ask for source changes only when a code proposal is needed; do not ask it to claim tests or builds ran.
-5. Never include secrets, tokens, private signing material or unnecessary personal data. Do not dump the entire repository when a focused excerpt is sufficient.
-6. Treat the Gemini answer as an unverified second opinion. When the owner pastes it back (Jawaban Gemini!), compare every material claim against live main, tests, canonical notes and actual evidence. Accept, modify or reject it with reasons; never execute it automatically in Diskusi.
-
-If the uncertainty is minor or the repository evidence already gives a clear answer, continue without Gemini. Do not manufacture a Gemini step just to add ceremony.
-
 ## 6. Project skills and capability routing
 
 Reusable project skills extend the Master Prompt with task-specific procedures. Read [SKILLS_INDEX.md](SKILLS_INDEX.md) to select the smallest relevant set; do not load every skill for every task.
@@ -127,6 +110,23 @@ For complex or high-impact tasks, use the following sequence rather than jumping
 No capability listed here overrides the selected mode. In particular, access to GitHub write tools does not make writes permissible in Diskusi; access to Actions rerun tools does not permit a release; source-reading ability does not prove a test ran; and hardware analysis does not authorize device operation.
 
 ---
+## 7. Gemini — proactive second-opinion handoff
+
+Gemini is an optional independent reviewer for material uncertainty, not a required step for every task. The assistant may recommend consulting Gemini during Diskusi whenever a second opinion would materially reduce uncertainty about architecture, trade-offs, an ambiguous failure, a non-obvious design choice, or a high-impact technical decision. The owner does not need to type Tanya Gemini! first.
+
+Critical access boundary: Gemini cannot access this owner's GitHub repository, private pages, live branches, commits, workflow logs, source files or project memories. Never ask Gemini to open the repository, inspect a GitHub link, or infer information that has not been included in the prompt. Assume Gemini has zero repository access.
+
+When proposing a consultation:
+
+1. Tell the owner plainly that this is a suggested Gemini review and that the assistant has not sent it to Gemini. Provide one copy-ready, self-contained prompt for the owner to paste there.
+2. Include all context Gemini needs: project/feature purpose, exact technical question, current observed behavior, verified facts, assumptions and unknowns, relevant source/config/test excerpts (with file paths and revision context), constraints, protected behavior, attempted approaches, and the requested form of answer. Include only relevant excerpts, but enough to reason without GitHub access.
+3. Explicitly state inside the prompt: 'You cannot access this GitHub repository or any linked page. Use only the evidence pasted below. Do not claim to have inspected external source. Identify missing evidence rather than inventing it.'
+4. Ask Gemini to distinguish facts from assumptions, compare options, explain trade-offs, identify edge cases/regressions, and give a recommendation with reasoning. Ask for source changes only when a code proposal is needed; do not ask it to claim tests or builds ran.
+5. Never include secrets, tokens, private signing material or unnecessary personal data. Do not dump the entire repository when a focused excerpt is sufficient.
+6. Treat the Gemini answer as an unverified second opinion. When the owner pastes it back (Jawaban Gemini!), compare every material claim against live main, tests, canonical notes and actual evidence. Accept, modify or reject it with reasons; never execute it automatically in Diskusi.
+
+If the uncertainty is minor or the repository evidence already gives a clear answer, continue without Gemini. Do not manufacture a Gemini step just to add ceremony.
+
 ## 8. Evidence and reporting labels
 
 Use precise labels:
