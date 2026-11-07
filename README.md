@@ -6,7 +6,7 @@ Flutter Android companion App and ESP32-C3 Firmware source for the JE X FYZ ther
 
 1. [MASTER_PROMPT.md](MASTER_PROMPT.md) — single authoritative operating policy: modes, authorization, skills, tools, Gemini, memory cadence, evidence and protected contracts.
 2. [AGENTS.md](AGENTS.md) — lightweight entrypoint for Codex/Copilot/repository-aware agents.
-3. [SKILLS_INDEX.md](SKILLS_INDEX.md) — ten reusable engineering skills, platform locations and capability boundaries.
+3. [SKILLS_INDEX.md](SKILLS_INDEX.md) — eleven reusable engineering skills, platform locations and capability boundaries.
 4. [CHAT_TRANSFER.md](CHAT_TRANSFER.md) — latest durable checkpoint. Read fully, then verify live main.
 5. [PROJECT_STATE.md](PROJECT_STATE.md) — concise current product/source/release/validation truth.
 6. [MEMORY_INDEX.md](MEMORY_INDEX.md) — canonical document map and Markdown retention policy.
@@ -28,7 +28,7 @@ The Master Prompt is authoritative; chat-transfer blocks select a mode but do no
 
 ## Reusable engineering skills
 
-Ten project-specific skill workflows are available for repository forensics, Flutter engineering/testing, BLE P1, ESP32-C3 safety, OTA/release integrity, GitHub Actions triage, electronics/power/thermal analysis, technical research/Gemini and documentation governance. Read [SKILLS_INDEX.md](SKILLS_INDEX.md) for triggers and locations. Codex-compatible canonical skills are under `.agents/skills/`; GitHub Copilot mirrors are under `.github/skills/`.
+Ten project-specific skill workflows are available for repository forensics, code review, Flutter engineering/testing, BLE P1, ESP32-C3 safety, OTA/release integrity, GitHub Actions triage, electronics/power/thermal analysis, technical research/Gemini and documentation governance. Read [SKILLS_INDEX.md](SKILLS_INDEX.md) for triggers and locations. Codex-compatible canonical skills are under `.agents/skills/`; GitHub Copilot mirrors are under `.github/skills/`.
 
 ## Gemini second opinion
 
