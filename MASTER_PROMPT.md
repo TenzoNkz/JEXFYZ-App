@@ -169,6 +169,10 @@ Use the existing canonical files; do not create parallel status documents or dup
 - MEMORY_INDEX.md — source-of-truth map, file roles and Markdown retention policy.
 - PROJECT_STATE.md — concise current product/source/release/validation truth; no long build chronology.
 - HANDOVER.md — immediate next action only; no duplicated long history.
+- AGENTS.md — concise cross-agent entrypoint that loads MASTER_PROMPT.md and routes to skills; do not duplicate rules.
+- SKILLS_INDEX.md — skill catalogue, platform-specific discovery paths, tool capabilities and limits.
+- `.agents/skills/<name>/SKILL.md` — canonical OpenAI Codex-compatible repository skills.
+- `.github/skills/<name>/SKILL.md` — byte-identical GitHub Copilot skill mirrors; keep synchronized and verify.
 - README.md — project entrypoint and navigation, not a second project-state ledger.
 - APP_NOTES.md / DESIGN_NOTES.md — current App behavior and approved visual constraints.
 - FIRMWARE_NOTES.md / firmware/FIRMWARE_TECHNICAL_REFERENCE.md — hardware/safety decisions and current source-level Firmware reference.
