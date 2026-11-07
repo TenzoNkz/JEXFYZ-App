@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Immediate Handover
 
-Updated: 2026-11-07 (Asia/Jakarta).
+Updated: 2026-11-08 (Asia/Jakarta).
 
 ## Latest verified state
 
@@ -8,7 +8,7 @@ Updated: 2026-11-07 (Asia/Jakarta).
 - Exactly two LOAD + CONTINUE prompts remain in [CHAT_TRANSFER_PROMPTS.md](CHAT_TRANSFER_PROMPTS.md). Prompt 1 is general engineering; Prompt 2 is guarded Build App/QC only.
 - Gemini consultation may be proposed proactively during Discussion when a second opinion materially reduces uncertainty. Gemini has no GitHub access; the owner must paste a fully self-contained prompt and return its answer for repository-backed review.
 - Latest independently verified App release remains Build #129 / run `39925045446`, source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`. The compact Settings/Connection pass is on main but not in that release.
-- Latest compact UI source/test repair: commit `c37aea44abeb832987e13a1c74701d415e85a737` updates five stale route expectations. Static substring checks pass; Flutter runtime validation has not run.
+- Latest `main` workstream adds explicit Bluetooth scan lifecycle, completed no-result, permission and error presentation plus regression tests for scan-state priority. The compact Theme is rendered in widget coverage at 350-dp/420-dp with inherited palette assertions. Source/tests are NOT RUN in this environment because Flutter/Dart are absent.
 - Repository workflow/documentation cleanup is documentation-only. No App source, Firmware source, tests, build workflow or release behavior is authorized to change merely by this handover.
 
 ## Agent skills and capability routing
@@ -21,7 +21,7 @@ Updated: 2026-11-07 (Asia/Jakarta).
 
 ## Next safe action
 
-In a Flutter-enabled environment, run formatting, the targeted `floating_monitor_layout_contract_test.dart`, analyzer and the complete Flutter suite for the compact UI pass. Review actual results and then perform physical-device/OEM layout QA when available. Only after validation, and only with a separate explicit `Eksekusi Build App!`, may a new APK be packaged.
+In a Flutter-enabled environment, run `dart format lib/main.dart lib/connection_scan_state.dart test/floating_monitor_layout_contract_test.dart test/connection_scan_state_test.dart`, the two targeted tests, `flutter analyze --no-fatal-infos` and the complete `flutter test` suite. Then review Connection scan states and compact Settings/Bluetooth screenshots at 350-dp/420-dp, English/Indonesian and Light/Dark. Only separate explicit `Eksekusi Build App!` authorizes APK packaging.
 
 ## Evidence and safety boundary
 
