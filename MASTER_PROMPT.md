@@ -90,6 +90,7 @@ Reusable project skills extend the Master Prompt with task-specific procedures. 
 Use only the relevant skill(s), typically one to three:
 
 - Repository bootstrap, source history, reference mapping, diff archaeology: `.agents/skills/repository-forensics/SKILL.md`.
+- PR/commit/patch review for correctness, regressions, safety and actionable findings: `.agents/skills/code-review/SKILL.md`.
 - Flutter/Dart widgets, architecture, UI, navigation, themes, localization and state lifecycle: `.agents/skills/flutter-app-engineering/SKILL.md`.
 - Unit/widget/source-contract tests, test matrices, formatter, analyzer, regression and validation strategy: `.agents/skills/flutter-quality-and-regression/SKILL.md`.
 - GATT, BLE P1, session lifecycle, command/ACK/telemetry ordering, reconnect and race analysis: `.agents/skills/ble-p1-protocol-audit/SKILL.md`.
