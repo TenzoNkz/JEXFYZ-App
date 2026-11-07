@@ -209,7 +209,7 @@ void main() {
   });
 
   testWidgets(
-    'Fixed-scale pages match the Home canvas across display-density changes',
+    'Compact fixed-scale pages preserve the Home canvas across density changes',
     (tester) async {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
