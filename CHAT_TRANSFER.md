@@ -5,12 +5,12 @@ Checkpoint refreshed: 2026-11-07 (Asia/Jakarta), after the authorized product-de
 ## Skills and capability rollout
 
 - **Twelve repository skill workflows:** `repository-forensics`, `code-review`, `product-design-and-visual-quality`, `flutter-app-engineering`, `flutter-quality-and-regression`, `ble-p1-protocol-audit`, `esp32c3-firmware-safety`, `ota-and-release-integrity`, `github-actions-triage`, `hardware-power-thermal-analysis`, `technical-research-and-second-opinion`, and `documentation-memory-governance`.
-- Canonical Codex-compatible files are in `.agents/skills/<name>/SKILL.md`; GitHub Copilot mirrors are in `.github/skills/<name>/SKILL.md`. All 11 mirror pairs were fetched and verified byte-for-byte identical. The `code-review` skill is intended for Copilot code review where that surface and repository configuration support skills.
+- Canonical Codex-compatible files are in `.agents/skills/<name>/SKILL.md`; GitHub Copilot mirrors are in `.github/skills/<name>/SKILL.md`. All 12 mirror pairs were fetched and verified byte-for-byte identical at the final product-design audit. The `code-review` skill is intended for Copilot code review where that surface and repository configuration support skills.
 - `MASTER_PROMPT.md` now selects one to three relevant skills and requires scope/evidence/system modelling, alternatives and quantitative checks, adversarial review, test traceability, diff review and verified checkpointing.
 - Non-trivial UI/UX work must use `product-design-and-visual-quality` and read `PRODUCT_DESIGN_CONSTITUTION.md` plus `VISUAL_QUALITY_GATE.md`; `DESIGN_NOTES.md` remains the authority for owner-approved screen-specific details. The new gate requires actual screenshot evidence for visual PASS and keeps visual status separate from build/test status.
 - ChatGPT mobile/web does not auto-install these private repository skills. It must fetch/read the relevant SKILL.md through GitHub tools when needed. The installed native ChatGPT skill list in this session exposes `plugin-management` only; GitHub, web, Python/container, Shopee and Automation tools are separate connected tool families. There is no direct Gemini connector; Gemini is a self-contained manual handoff and has no GitHub access.
 - Current container checked 2026-11-07: Python 3 and Git available; Flutter, Dart, Gradle, ADB, Arduino CLI and ESP-IDF absent. Re-check before each validation task. This environment cannot claim local Flutter/Android/Firmware builds or physical-device validation.
-- Markdown count after the 12-skill/product-design rollout: 50 files (45 active/index/subject/agent/skill docs, 2 history ledgers and 3 immutable archives), based on the prior verified 46-Markdown tree plus four new Markdown paths. The recursive tree entry count has not been re-read after these additions. No App/Firmware source, tests, workflow, build or release behavior changed.
+- Final recursive `main` tree audit: 125 entries, not truncated, and 50 Markdown files (45 active/index/subject/agent/skill docs, 2 history ledgers and 3 immutable archives). All 24 skill files were fetched; the 12 canonical/mirror pairs are byte-for-byte identical. No App/Firmware source, tests, workflow, build or release behavior changed.
 
 ## Main skill/agent commits
 
@@ -21,10 +21,12 @@ Checkpoint refreshed: 2026-11-07 (Asia/Jakarta), after the authorized product-de
 
 ## Product design quality rollout — verification
 
+- Inventory reconciliation: `MEMORY_INDEX.md` updated in commit `6b8e25ae7d5b40f72c34dff924d50e1466a4ed58`; `CHANGELOG.md` records the audit in commit `a388912891d6dc86828a9ee7c3af501934cf6c1c`. This checkpoint is being refreshed last.
+
 - Added `PRODUCT_DESIGN_CONSTITUTION.md`, `VISUAL_QUALITY_GATE.md` and the twelfth skill `product-design-and-visual-quality` with a byte-identical Codex/Copilot pair. Non-trivial UI/UX tasks are now routed through this skill and the existing Flutter engineering/quality skills.
-- Updated Flutter engineering and Flutter quality skill pairs; both canonical/mirror pairs were re-fetched and verified identical. The new product-design skill pair was also fetched and verified identical. The nine other pre-existing skill pairs were not changed in this rollout and remain covered by the previous 11-skill mirror audit.
+- Updated Flutter engineering and Flutter quality skill pairs; both canonical/mirror pairs were re-fetched and verified identical. The new product-design skill pair was also fetched and verified identical. The nine other existing pairs were also fetched during the final audit. All 12 canonical/mirror pairs were independently re-fetched and verified identical.
 - GitHub compare from prior checkpoint `b6a30dbdfe066a24152ca248729be4dd87e9bcff` to integration head `5e95e7a4402236c8adaacbadcb62213601fb7bc3` reports 19 changed paths, all Markdown. No executable App/Firmware source, test source, workflow, build/release configuration or artifact changed. The final checkpoint update is documentation-only as well.
-- Static document/link/routing checks confirm the constitution, visual gate, skill index, Master Prompt and agent entrypoint are connected. The current Markdown count is 50; recursive tree entry count has not yet been re-read after adding the four Markdown paths.
+- Static document/link/routing checks confirm the constitution, visual gate, skill index, Master Prompt and agent entrypoint are connected. The final recursive tree audit confirms 125 entries (not truncated) and 50 Markdown files.
 - **Visual QA status: NOT RUN / UNVERIFIED.** No App screenshot was captured or reviewed in this documentation task. The standard defines how future UI changes must prove a visual PASS; it does not claim that any existing screen has passed or that the pending compact Settings/Connection pass is validated/released.
 
 ## Last App engineering milestone
