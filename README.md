@@ -28,7 +28,7 @@ The Master Prompt is authoritative; chat-transfer blocks select a mode but do no
 
 ## Reusable engineering skills
 
-Ten project-specific skill workflows are available for repository forensics, code review, Flutter engineering/testing, BLE P1, ESP32-C3 safety, OTA/release integrity, GitHub Actions triage, electronics/power/thermal analysis, technical research/Gemini and documentation governance. Read [SKILLS_INDEX.md](SKILLS_INDEX.md) for triggers and locations. Codex-compatible canonical skills are under `.agents/skills/`; GitHub Copilot mirrors are under `.github/skills/`.
+Eleven project-specific skill workflows are available for repository forensics, code review, Flutter engineering/testing, BLE P1, ESP32-C3 safety, OTA/release integrity, GitHub Actions triage, electronics/power/thermal analysis, technical research/Gemini and documentation governance. Read [SKILLS_INDEX.md](SKILLS_INDEX.md) for triggers and locations. Codex-compatible canonical skills are under `.agents/skills/`; GitHub Copilot mirrors are under `.github/skills/`.
 
 ## Gemini second opinion
 
