@@ -14,7 +14,8 @@ Updated: 2026-11-07 (Asia/Jakarta).
 ## Agent skills and capability routing
 
 - `MASTER_PROMPT.md` is the sole operating policy; `AGENTS.md` is the cross-agent entrypoint; `SKILLS_INDEX.md` is the skill catalogue.
-- Eleven skills are stored in `.agents/skills/` for Codex-compatible discovery and mirrored byte-for-byte under `.github/skills/` for GitHub Copilot. The catalogue includes a dedicated `code-review` skill for Copilot review surfaces.
+- Twelve skills are stored in `.agents/skills/` for Codex-compatible discovery and mirrored byte-for-byte under `.github/skills/` for GitHub Copilot. The catalogue includes dedicated `code-review` and `product-design-and-visual-quality` skills.
+- Non-trivial UI/UX work must load the product-design skill and read `PRODUCT_DESIGN_CONSTITUTION.md` plus `VISUAL_QUALITY_GATE.md`; `DESIGN_NOTES.md` remains the authority for approved screen-specific constraints.
 - ChatGPT in this environment must fetch/read a relevant private repo `SKILL.md` manually through GitHub tools; it is not auto-installed as a ChatGPT skill. Gemini is manual-only and has no GitHub access.
 - Current tool snapshot: Python/Git available; Flutter/Dart/Gradle/ADB/Arduino CLI/ESP-IDF unavailable. Re-check before any validation task.
 
