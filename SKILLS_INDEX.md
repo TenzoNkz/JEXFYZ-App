@@ -18,6 +18,7 @@ Last reconciled: 2026-11-07 (Asia/Jakarta). This is the discovery map for reusab
 | Repository forensics | Live repo boot, commit/diff archaeology, code/reference mapping, evidence tracing | `.agents/skills/repository-forensics/SKILL.md` |
 | Code review | PR/commit/patch review for correctness, regression, safety, security and actionable findings; Copilot code-review integration | `.agents/skills/code-review/SKILL.md` |
 | Flutter App engineering | Flutter/Dart architecture, state, UI, navigation, theme, localization, responsive/animation review | `.agents/skills/flutter-app-engineering/SKILL.md` |
+| Product design and visual quality | Product identity, hierarchy, design-system consistency, anti-AI-slop review, accessibility and screenshot-based acceptance | `.agents/skills/product-design-and-visual-quality/SKILL.md` |
 | Flutter quality and regression | Test design, source-contract quality, widget tests, formatter, analyzer, full-suite strategy | `.agents/skills/flutter-quality-and-regression/SKILL.md` |
 | BLE P1 protocol audit | GATT, P1 session lifecycle, ACK-vs-telemetry, reconnect, race/stale-state review | `.agents/skills/ble-p1-protocol-audit/SKILL.md` |
 | ESP32-C3 Firmware safety | Cooperative timing, NTC, thermal safety, PWM, rail transitions, radio handoff | `.agents/skills/esp32c3-firmware-safety/SKILL.md` |
@@ -26,6 +27,16 @@ Last reconciled: 2026-11-07 (Asia/Jakarta). This is the discovery map for reusab
 | Hardware power/thermal analysis | PD, buck converters, Peltier, MOSFET PWM, ripple/EMI, thermal derating and datasheets | `.agents/skills/hardware-power-thermal-analysis/SKILL.md` |
 | Technical research and second opinion | Official docs/datasheets/standards, evidence comparison, Gemini handoff and answer review | `.agents/skills/technical-research-and-second-opinion/SKILL.md` |
 | Documentation and memory governance | Markdown classification, single source of truth, link audit, checkpoint/ledger hygiene | `.agents/skills/documentation-memory-governance/SKILL.md` |
+
+## Canonical product-design references
+
+| Reference | Authority / purpose |
+|---|---|
+| `PRODUCT_DESIGN_CONSTITUTION.md` | Cross-screen design intent, authority order, protected JE Cooler identity, anti-AI-slop principles, design-system governance and accessibility baseline |
+| `VISUAL_QUALITY_GATE.md` | Review sequence, viewport/state matrix, screenshot evidence rules, rejection severity and visual acceptance outcomes |
+| `DESIGN_NOTES.md` | Owner-approved screen-specific visual constraints and existing implementation contracts; remains authoritative for those details |
+
+For non-trivial UI changes, load the product-design skill plus the Flutter engineering skill; add Flutter quality/regression when planning or reviewing tests. Read the design constitution and visual gate rather than duplicating their rules in every skill.
 
 ## Capability matrix — current project-chat tool families
 
