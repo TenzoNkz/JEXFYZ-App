@@ -40,6 +40,15 @@ Last reconciled: 2026-11-07 (Asia/Jakarta). This is the discovery map for reusab
 | Automations | Set up authorized reminders/monitoring/recurring checks when explicitly requested or accepted | Requires a trigger/cadence and successful creation. It does not execute repository work in the background by itself. |
 | Gemini second opinion | Prepare a complete prompt, then review an answer the owner returns | No direct Gemini access or GitHub access. The owner manually pastes the prompt and result. |
 
+## Current execution-environment snapshot
+
+Checked on 2026-11-07 in the active container: `python3` and `git` are available. `flutter`, `dart`, `gradle`, `adb`, `arduino-cli` and `idf.py` are not installed in this environment. This is a runtime-specific snapshot, not a permanent repository fact; re-check command availability at the start of any task that needs those tools.
+
+Consequences for this environment:
+- Python-based calculations, static source checks, text parsing, report generation and Git operations are available.
+- Local Flutter formatting/tests/analyzer, Android Gradle builds, ADB device validation, Arduino compilation and ESP-IDF builds cannot be claimed or executed here while those tools remain absent.
+- GitHub Actions logs and CI can be inspected through the connected GitHub tools; a workflow can only be triggered/re-run under its own explicit authorization and available permissions.
+- Physical USB, cooler, phone and instrument access is not present. Device/hardware evidence must come from owner-provided measurements, photos/logs or an explicitly available external test system.
 ## High-rigor work pattern
 
 1. Scope: restate the requested outcome, mode, protected invariants and stop conditions.
