@@ -16,6 +16,7 @@ Last reconciled: 2026-11-07 (Asia/Jakarta). This is the discovery map for reusab
 | Skill | Primary use | Canonical path |
 |---|---|---|
 | Repository forensics | Live repo boot, commit/diff archaeology, code/reference mapping, evidence tracing | `.agents/skills/repository-forensics/SKILL.md` |
+| Code review | PR/commit/patch review for correctness, regression, safety, security and actionable findings; Copilot code-review integration | `.agents/skills/code-review/SKILL.md` |
 | Flutter App engineering | Flutter/Dart architecture, state, UI, navigation, theme, localization, responsive/animation review | `.agents/skills/flutter-app-engineering/SKILL.md` |
 | Flutter quality and regression | Test design, source-contract quality, widget tests, formatter, analyzer, full-suite strategy | `.agents/skills/flutter-quality-and-regression/SKILL.md` |
 | BLE P1 protocol audit | GATT, P1 session lifecycle, ACK-vs-telemetry, reconnect, race/stale-state review | `.agents/skills/ble-p1-protocol-audit/SKILL.md` |
