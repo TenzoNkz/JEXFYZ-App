@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Live Chat Checkpoint
 
-Checkpoint refreshed: 2026-11-07 (Asia/Jakarta), after the authorized product-design and visual-quality capability rollout. The single operating policy is `MASTER_PROMPT.md`; `AGENTS.md` is the cross-agent entrypoint; `SKILLS_INDEX.md` is the skill and tool-capability map.
+Checkpoint refreshed: 2026-11-08 (Asia/Jakarta), after the authorized Bluetooth scan-state and compact-theme regression repair. The single operating policy is `MASTER_PROMPT.md`; `AGENTS.md` is the cross-agent entrypoint; `SKILLS_INDEX.md` is the skill and tool-capability map.
 
 ## Skills and capability rollout
 
@@ -29,15 +29,19 @@ Checkpoint refreshed: 2026-11-07 (Asia/Jakarta), after the authorized product-de
 - Static document/link/routing checks confirm the constitution, visual gate, skill index, Master Prompt and agent entrypoint are connected. The final recursive tree audit confirms 125 entries (not truncated) and 50 Markdown files.
 - **Visual QA status: NOT RUN / UNVERIFIED.** No App screenshot was captured or reviewed in this documentation task. The standard defines how future UI changes must prove a visual PASS; it does not claim that any existing screen has passed or that the pending compact Settings/Connection pass is validated/released.
 
-## Last App engineering milestone
+## Last App engineering milestone — Bluetooth scan-state and compact-theme test repair
 
-- Compact Settings/Connection source pass is committed but NOT RELEASED. Five stale Settings route expectations were corrected in commit `c37aea44abeb832987e13a1c74701d415e85a737` to include `compactUi: true` for Language, Appearance, Notifications, Bluetooth and Floating Settings.
-- STATIC SOURCE CHECK only: all five expected substrings appear exactly once in live source and test; obsolete exact strings are absent. Flutter/Dart formatting, targeted test, analyzer, full suite and physical-device/OEM QA remain NOT RUN.
-- Preserve the Home-equivalent 360-dp canvas, BLE P1, telemetry authority, localization, theme, safe-output, OTA and rail-timing contracts.
+- Added `lib/connection_scan_state.dart` to distinguish permission-required, Bluetooth/legacy-location unavailable, scan failure, active scan and completed-no-result messages using existing English/Indonesian localization keys.
+- Connection sheet starts its initial scan after first frame, observes `FlutterBluePlus.isScanning` separately from fresh `onScanResults`, resets the results subscription for each scan generation to avoid stale previous-scan results, and routes retry through one guarded handler. Scan-start errors now reach the UI; sheet dismissal still stops scanning.
+- BLE P1 UUIDs/framing, scan identity filter, GATT connect callback, P1 synchronization, authoritative telemetry, persisted schemas, DPI canvas, hit targets, Firmware and OTA contracts are unchanged.
+- Added five pure state-mapping tests in `test/connection_scan_state_test.dart`. `test/floating_monitor_layout_contract_test.dart` now renders `compactUi: true`, verifies typography/inherited palette, tests 350-dp and 420-dp fixed physical geometry, and asserts the live scan-state integration.
+- Source/test commits: `68ae5662ceb2b71f1c20790f66ad69d9010b1530` (state helper), `c49f523082f5f55f7441de9be7fadacd80e16485` (scan request lifecycle), `6dc650a9e7ece7d613fe0cf7eec23c2944428435` (scan UI), `00bdfe75f523eca1c246d599ce77111179575f13` (fresh scan results/reset), `cf2a20bbdce7663ae5cbcdd23534102e2524108f` (state tests), `34cb5a5eda8aa7b092d2ad701fc65693750bcfb2` (compact theme viewport coverage), and `a61f5bb788039dfd0165addfe3909f2b72d6b1ce` (fresh result-stream contract).
+- **Evidence: SOURCE IMPLEMENTED / NOT RUN.** Current container has Git/Python but no Flutter or Dart. Formatter, focused tests, analyzer and full Flutter suite have NOT RUN. No screenshot was captured; Visual QA remains NOT VERIFIED. These changes are NOT RELEASED and are absent from Build #129.
+- **Next exact action:** in a Flutter-enabled environment run `dart format lib/main.dart lib/connection_scan_state.dart test/floating_monitor_layout_contract_test.dart test/connection_scan_state_test.dart`, then `flutter test test/connection_scan_state_test.dart test/floating_monitor_layout_contract_test.dart`, `flutter analyze --no-fatal-infos`, and `flutter test`. Inspect Android screenshots at 350-dp/420-dp, English/Indonesian and Light/Dark. Only a separate `Eksekusi Build App!` authorizes packaging.
 
 ## Release baseline and field evidence
 
-- Latest independently verified published App package (live check 2026-11-07): Build #129 / [Actions run 39925045446](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446), tested source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`; Release ID `403010611`; tag `jexfyz-latest` targets the same source.
+- Latest independently verified published App package (live check 2026-11-08): Build #129 / [Actions run 39925045446](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446), tested source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`; Release ID `403010611`; tag `jexfyz-latest` targets the same source.
 - APK SHA-256: `f59c511786d49add8e0596fd3d658248746c008b7eaff94bb6215d314aa0426e`; matching source ZIP SHA-256: `c74e6800dadf80a5223dedcce3144b12f6365506a8b9821bb7abf1817df8cfff`.
 - Build #129 passed 21 workflow steps, 122 Flutter tests, analyzer (25 informational diagnostics), Android gate, signing/certificate, ZIP/source marker, Release/tag and downloaded-asset identity/digest checks. Native Android JUnit tasks were NO-SOURCE.
 - Live Actions check 2026-11-07: latest run remains #129; zero active runs, zero queued runs. Latest Release/tag still target the #129 package source.
@@ -47,13 +51,12 @@ Checkpoint refreshed: 2026-11-07 (Asia/Jakarta), after the authorized product-de
 
 In a Flutter-enabled environment:
 
-1. `dart format lib/app_settings.dart lib/floating_monitor.dart lib/main.dart test/floating_monitor_layout_contract_test.dart`
-2. `flutter test test/floating_monitor_layout_contract_test.dart`
+1. `dart format lib/main.dart lib/connection_scan_state.dart test/floating_monitor_layout_contract_test.dart test/connection_scan_state_test.dart`
+2. `flutter test test/connection_scan_state_test.dart test/floating_monitor_layout_contract_test.dart`
 3. `flutter analyze --no-fatal-infos`
 4. `flutter test`
 
-Review actual results, then perform physical-device/OEM UI QA when available. A separate explicit `Eksekusi Build App!` is required before packaging the compact UI pass.
-
+Review exact output, then inspect actual Android screenshots at 350-dp/420-dp with English/Indonesian and Light/Dark themes. Only after validation and a separate explicit `Eksekusi Build App!` may an APK be packaged.
 ## Durable memory and safety
 
 - Read `MASTER_PROMPT.md`, `AGENTS.md`, `SKILLS_INDEX.md`, this checkpoint, live main HEAD/tree, `MEMORY_INDEX.md`, `PROJECT_STATE.md`, `HANDOVER.md` and only the skills/subject references relevant to the task.
