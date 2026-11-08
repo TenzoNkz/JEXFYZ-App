@@ -21,7 +21,7 @@ Updated: 2026-11-08 (Asia/Jakarta).
 
 ## Next safe action
 
-In a Flutter/Android-enabled environment, format the changed Dart files; run localization widget tests plus the Bluetooth scan/compact-layout tests; run `flutter analyze --no-fatal-infos` and the complete `flutter test` suite. Then inspect Home, Fan Speed control, Floating Monitor settings/notification and Connection screenshots at 350-dp/420-dp, English/Indonesian and Light/Dark. Build App remains a separate authorization. Only separate explicit `Eksekusi Build App!` authorizes APK packaging.
+Before validating or packaging the compact pass, use a separately authorized `Eksekusi Full!` to replace the stale empty-state source-string assertion in `test/floating_monitor_layout_contract_test.dart` and resolve the scan-ownership policy between passive Auto Connect rediscovery and the manual 10-second Connection-sheet scan. Add regression coverage for the chosen ownership behavior without changing BLE P1, telemetry or reconnect contracts. Then, in a Flutter/Android-enabled environment, format the changed Dart files; run the localization, scan-state and compact-layout tests; run `flutter analyze --no-fatal-infos` and the full `flutter test` suite; and inspect Home, Fan Speed control, Floating Monitor and Connection screenshots at 350-dp/420-dp, English/Indonesian and Light/Dark. Build App remains a separate authorization. Only explicit `Eksekusi Build App!` authorizes APK packaging.
 
 ## Evidence and safety boundary
 

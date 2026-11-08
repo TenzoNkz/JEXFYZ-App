@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Live Chat Checkpoint
 
-Checkpoint refreshed: 2026-11-08 (Asia/Jakarta), after the authorized Bluetooth scan-state and compact-theme regression repair. The single operating policy is `MASTER_PROMPT.md`; `AGENTS.md` is the cross-agent entrypoint; `SKILLS_INDEX.md` is the skill and tool-capability map.
+Checkpoint refreshed: 2026-11-08 (Asia/Jakarta), after the authorized Bluetooth scan-state/compact-theme source work and a subsequent read-only Discussion audit. The single operating policy is `MASTER_PROMPT.md`; `AGENTS.md` is the cross-agent entrypoint; `SKILLS_INDEX.md` is the skill and tool-capability map.
 
 ## Skills and capability rollout
 
@@ -70,6 +70,15 @@ In a Flutter-enabled environment:
 4. `flutter test`
 
 Review exact output, then inspect actual Android screenshots at 350-dp/420-dp with English/Indonesian and Light/Dark themes. Only after validation and a separate explicit `Eksekusi Build App!` may an APK be packaged.
+## Read-only Discussion audit — test contract and scan ownership (2026-11-08)
+
+- **CURRENT / VERIFIED:** live `main` HEAD at audit is `65101a297f9cd10caf1cb6a7ffed38613072c745`; recursive tree contains 127 entries / 50 Markdown files and is not truncated. Build #129 remains the latest published App package; its tested source is `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`. No Actions runs are queued or in progress, and no PR is open.
+- **STATIC SOURCE CHECK — stale test contract:** `lib/main.dart` now derives the Connection empty-state message through `connectionScanEmptyStateMessageKey(...)`. `test/floating_monitor_layout_contract_test.dart` still searches for the previous inline ternary `unavailable ? JexText.of('connectionUnavailable', lang) : JexText.of('scanning', lang)`. The literal is absent from current `main.dart` and remains in the test; therefore `emptyStateStart` is `-1` and the following `expect(emptyStateStart, isNonNegative)` is expected to fail when executed. This is a deterministic source/test mismatch found by static inspection, **not** an observed test failure. No Flutter test was run.
+- **STATIC SOURCE CHECK / HYPOTHESIS — shared scanner ownership:** the passive reconnect path can run while disconnected when Auto Connect and a saved cooler ID are present. It launches 2-second scans and schedules another attempt every 3 seconds. The Bluetooth sheet is reachable while disconnected and starts a 10-second scan using the same process-wide `FlutterBluePlus` scanner. The sheet path stops the current scan before starting, but no pause/cancel of the passive rediscovery timer is visible when the sheet opens; each rediscovery attempt also calls `stopScan()`, and sheet dismissal unconditionally calls `stopScan()`. A timer tick can therefore pre-empt the sheet's scan or make the UI observe competing scan lifecycles. This is a source-level race risk, not a reproduced device defect. No dedicated scan-ownership/arbitration test was found in the inspected Connection/Flutter widget-contract tests.
+- **Plugin API check:** `pubspec.lock` pins `flutter_blue_plus 2.3.14`. Its versioned API documentation states that `onScanResults` clears results between scans while `scanResults` can include current or prior results. The Connection sheet uses `onScanResults` for fresh UI results; passive rediscovery uses `scanResults`. This part of the implementation is consistent with the documented stream distinction: [flutter_blue_plus 2.3.14](https://pub.dev/packages/flutter_blue_plus/versions/2.3.14).
+- **Validation boundary:** Dart formatting, targeted tests, analyzer, full Flutter suite, Android screenshots and physical/OEM checks remain NOT RUN. The active environment has Python/Git but no Flutter, Dart, Gradle or ADB. No source, test, config, workflow, build, release, Firmware, Firebase, OTA or device operation was changed or executed in this Discussion.
+- **Next safe action:** only a separate `Eksekusi Full!` can authorize repairs to the stale test matcher and any agreed scan-ownership coordination/tests. First settle whether opening the manual Connection sheet should pause passive reconnect; do not silently alter Auto Connect behavior. Then use a Flutter-enabled environment for formatting, focused scan/layout/localization tests, analyzer, full tests and actual 350-dp/420-dp visual QA. App packaging still requires its own `Eksekusi Build App!`.
+
 ## Durable memory and safety
 
 - Read `MASTER_PROMPT.md`, `AGENTS.md`, `SKILLS_INDEX.md`, this checkpoint, live main HEAD/tree, `MEMORY_INDEX.md`, `PROJECT_STATE.md`, `HANDOVER.md` and only the skills/subject references relevant to the task.
