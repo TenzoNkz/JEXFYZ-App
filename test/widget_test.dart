@@ -715,7 +715,8 @@ void main() {
     final mainSource = File('lib/main.dart').readAsStringSync();
     final floatingSource = File('lib/floating_monitor.dart').readAsStringSync();
     final fanSpeedStart = mainSource.indexOf('Widget _homeFanSpeed()');
-    final fanSpeedEnd = mainSource.indexOf('String _compactNotifyMessage(', fanSpeedStart);
+    final fanSpeedEnd =
+        mainSource.indexOf('String _compactNotifyMessage(', fanSpeedStart);
     expect(fanSpeedStart, isNonNegative);
     expect(fanSpeedEnd, greaterThan(fanSpeedStart));
     final fanSpeedSource = mainSource.substring(fanSpeedStart, fanSpeedEnd);
