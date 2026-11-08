@@ -342,16 +342,6 @@ String relocalizeHomeNotifyMessage(String message, AppLanguage language) {
     return localizedOtaFailureSummary(language, mode: mode, stage: stage);
   }
 
-  // Accept legacy bilingual Peltier-rearm copy when a stored notice is re-localized.
-  final peltierRearm = RegExp(
-    r'^(?:Peltier is locked for safety\. Cool (?:Hotside|the hot side) to ≤|Peltier dikunci demi keselamatan\. Turunkan suhu (?:Hotside|sisi panas) hingga ≤)\s*(\d+)°C,? (?:then try again|lalu coba lagi)\.?$',
-    caseSensitive: false,
-  ).firstMatch(raw);
-  if (peltierRearm != null) {
-    final target = int.tryParse(peltierRearm.group(1)!);
-    if (target != null) return peltierRearmNotice(target + 1, language);
-  }
-
   final fanSpeedChange = RegExp(
     r'^(?:Fan speed (reduced|increased|set) to|Kecepatan kipas (diturunkan ke|dinaikkan ke|diatur ke))\s*(\d+)%\.?$',
     caseSensitive: false,
@@ -479,7 +469,7 @@ String relocalizeHomeNotifyMessage(String message, AppLanguage language) {
   }
 
   final rearm = RegExp(
-    r'^(?:Peltier is locked for safety\. Cool the hot side to ≤|Peltier dikunci demi keselamatan\. Turunkan suhu sisi panas hingga ≤)\s*(\d+)°C,? (?:then try again|lalu coba lagi)\.?$',
+    r'^(?:Peltier is locked for safety\. Cool (?:Hotside|the hot side) to ≤|Peltier dikunci demi keselamatan\. Turunkan suhu (?:Hotside|sisi panas) hingga ≤)\s*(\d+)°C,? (?:then try again|lalu coba lagi)\.?
     caseSensitive: false,
   ).firstMatch(raw);
   if (rearm != null) {
@@ -9759,141 +9749,6 @@ class _FirmwareUpdateDialogState extends State<FirmwareUpdateDialog> {
     );
   }
 },
-    caseSensitive: false,
-  ).firstMatch(raw);
-  if (peltierRearm != null) {
-    final target = int.tryParse(peltierRearm.group(1)!);
-    if (target != null) return peltierRearmNotice(target + 1, language);
-  }
-
-  final fanSpeedChange = RegExp(
-    r'^(?:Fan speed (reduced|increased|set) to|Kecepatan kipas (diturunkan ke|dinaikkan ke|diatur ke))\s*(\d+)%\.?$',
-    caseSensitive: false,
-  ).firstMatch(raw);
-  if (fanSpeedChange != null) {
-    final englishAction = fanSpeedChange.group(1)?.toLowerCase();
-    final indonesiaAction = fanSpeedChange.group(2)?.toLowerCase();
-    final speed = fanSpeedChange.group(3)!;
-    if (englishAction == 'reduced' || indonesiaAction == 'diturunkan ke') {
-      return JexText.phrase(
-        'Fan speed reduced to ',
-        'Kecepatan kipas diturunkan ke ',
-        language,
-      ) + speed + '%.';
-    }
-    if (englishAction == 'increased' || indonesiaAction == 'dinaikkan ke') {
-      return JexText.phrase(
-        'Fan speed increased to ',
-        'Kecepatan kipas dinaikkan ke ',
-        language,
-      ) + speed + '%.';
-    }
-    return JexText.phrase(
-      'Fan speed set to ',
-      'Kecepatan kipas diatur ke ',
-      language,
-    ) + speed + '%.';
-  }
-
-  final ledBrightness = RegExp(
-    r'^(?:LED brightness set to|Kecerahan LED diatur ke)\s*(\d+)%\.?$',
-    caseSensitive: false,
-  ).firstMatch(raw);
-  if (ledBrightness != null) {
-    return JexText.phrase(
-      'LED brightness set to ',
-      'Kecerahan LED diatur ke ',
-      language,
-    ) + ledBrightness.group(1)! + '%.';
-  }
-
-  final hotsideReached = RegExp(
-    r'^(?:Hotside limit reached:|Batas suhu Hotside tercapai:)\s*(\d+(?:\.\d+)?)°C\s*\((?:limit|batas)\s*(\d+)°C\)\.?$',
-    caseSensitive: false,
-  ).firstMatch(raw);
-  if (hotsideReached != null) {
-    return JexText.phrase(
-      'Hotside limit reached: ',
-      'Batas suhu Hotside tercapai: ',
-      language,
-    ) + hotsideReached.group(1)! +
-        '°C (' +
-        JexText.phrase('limit ', 'batas ', language) +
-        hotsideReached.group(2)! +
-        '°C).';
-  }
-
-  final adaptiveProfile = RegExp(
-    r'^(?:Adaptive profile set to|Profil Adaptif diatur ke)\s*(Battery|Baterai|Hotside|Sisi panas)\.?$',
-    caseSensitive: false,
-  ).firstMatch(raw);
-  if (adaptiveProfile != null) {
-    final rawProfile = adaptiveProfile.group(1)!.toLowerCase();
-    final isBattery = rawProfile == 'battery' || rawProfile == 'baterai';
-    return JexText.phrase(
-      'Adaptive profile set to ',
-      'Profil Adaptif diatur ke ',
-      language,
-    ) + JexText.phrase(
-      isBattery ? 'Battery' : 'Hotside',
-      isBattery ? 'Baterai' : 'Hotside',
-      language,
-    ) + '.';
-  }
-
-  final voltage = RegExp(
-    r'^(?:Voltage set to|Tegangan diatur ke)\s+([^\s.!?]+)\.?$',
-    caseSensitive: false,
-  ).firstMatch(raw);
-  if (voltage != null) {
-    return JexText.phrase('Voltage set to ', 'Tegangan diatur ke ', language) +
-        voltage.group(1)! +
-        '.';
-  }
-
-  final fanSpeed = RegExp(
-    r'^(?:Fan speed set to|Kecepatan kipas diatur ke)\s+(\d+)%\.?$',
-    caseSensitive: false,
-  ).firstMatch(raw);
-  if (fanSpeed != null) {
-    return JexText.phrase('Fan speed set to ', 'Kecepatan kipas diatur ke ', language) +
-        fanSpeed.group(1)! +
-        '%.';
-  }
-
-  final hotsideLimit = RegExp(
-    r'^(?:Hotside temperature limit set to|Batas suhu Hotside diatur ke)\s+(\d+)°C\.?$',
-    caseSensitive: false,
-  ).firstMatch(raw);
-  if (hotsideLimit != null) {
-    return JexText.phrase(
-          'Hotside temperature limit set to ',
-          'Batas suhu Hotside diatur ke ',
-          language,
-        ) +
-        hotsideLimit.group(1)! +
-        '°C.';
-  }
-
-  if (raw == '5V battery limit updated.' ||
-      raw == 'Batas baterai 5V diperbarui.') {
-    return JexText.phrase(
-      '5V battery limit updated.',
-      'Batas baterai 5V diperbarui.',
-      language,
-    );
-  }
-  if (raw == '12V battery limit updated.' ||
-      raw == 'Batas baterai 12V diperbarui.') {
-    return JexText.phrase(
-      '12V battery limit updated.',
-      'Batas baterai 12V diperbarui.',
-      language,
-    );
-  }
-
-  final rearm = RegExp(
-    r'^(?:Peltier is locked for safety\. Cool the hot side to ≤|Peltier dikunci demi keselamatan\. Turunkan suhu sisi panas hingga ≤)\s*(\d+)°C,? (?:then try again|lalu coba lagi)\.?$',
     caseSensitive: false,
   ).firstMatch(raw);
   if (rearm != null) {
