@@ -1,3 +1,17 @@
+## BUILD #130 — GUARDED ISSUE TRIGGER ACCEPTED; HOSTED RUNNER ACTIVE — 2026-11-08 (Asia/Jakarta)
+
+- **Official trigger:** after the preflight checkpoint was committed and re-read, issue #34 was closed once (`2026-11-08T10:53:18Z`) and reopened once (`2026-11-08T10:53:28Z`). The exact issue title/body token were preserved. No push/PR/manual workflow path was used.
+- **Run identity:** [Build #130 / run 42473329529](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42473329529); workflow ID `374946166`; event `issues`; run attempt 1; exact checkout source SHA `f48fedcde8358c2f957a737501fa120c2214bb69`, equal to main after preflight checkpoint commit. Created `2026-11-08T10:53:30Z`; first live status `in_progress`.
+- **Job / runner:** job `build`, ID `128709004935`, status `in_progress`. Steps 1–4 (Set up job, Checkout repository, Set up Java 17, Set up Flutter) are `success`; step 5 Set up Gradle is `in_progress`. Steps 6–21 (toolchain, local.properties, signing, wrapper, architecture/security audit, dependency resolution, Dart analyzer, Flutter tests, Android gate, APK, V1/V2/V3 signing, cert verification, source ZIP, Release/tag and final downloaded-asset verification) are pending at this checkpoint.
+- **Gate progress:** hosted runner has been allocated and Java 17 + Flutter setup completed. Gradle setup is the current gate. No analyzer, Flutter test, Android, APK, signing, source ZIP, Release or final asset gate is claimed yet.
+- **Log availability:** live job-log download currently returns a temporary Azure Blob `BlobNotFound` (404) while the job is running; steps API is available and shows the current step. This is an early-log availability condition, not a failed gate. Re-fetch after the job advances/completes.
+- **Retry/duplicate discipline:** no duplicate run or rerun was started. Continue this same run only; do not trigger another issue event while #130 is active.
+- **Pre-trigger release state:** prior Release/tag still target Build #129 source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`; Build #129 artifacts remain the only verified release until #130 completes and new live assets/tag are independently verified.
+- **Boundaries:** `android/app/build.gradle` retains `versionName "Telegram @horizontalzzz"`. Local `dart format` remains NOT RUN (no local Dart SDK; current hosted workflow has no formatter step). This run will provide hosted analyzer/test/Android/production package evidence only; no physical device, BLE, Firmware, BIN, Firebase, OTA or flash actions.
+- **Next gate:** keep polling run `42473329529` and job `128709004935`; inspect complete logs for failures. Update this ledger and CHAT_TRANSFER at the next meaningful gate.
+
+---
+
 ## PRE-TRIGGER CHECKPOINT — NEXT GUARDED APP BUILD (EXPECTED #130) — 2026-11-08
 
 - **Owner authorization:** the current message explicitly selects `Eksekusi Build App!`. Scope is the guarded App Build/QC/Release workflow and justified App-scope repairs only. No Firmware compile, BIN, Firebase, OTA, flashing or device operation is included.
