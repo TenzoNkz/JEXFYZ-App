@@ -3,7 +3,7 @@
 - Corrected the Fan Speed control panel to use the full Fan Speed / Kecepatan Kipas label while preserving Fan / Kipas for the fan switch and compact Floating Monitor F metric.
 - Standardized the named thermal component as Hotside in both locales and clarified Adaptive Mode status/reason copy as Adaptive Mode / Mode Adaptif.
 - Localized the Floating Monitor feature as Monitor Melayang in Indonesian across Flutter Settings/permission copy and the Android foreground-service channel/title/body; English naming and native channel IDs remain unchanged.
-- JexText.of now asserts on missing localization keys/locale entries in debug builds. Added regression assertions for the contextual Fan Speed label, legacy Adaptive Profile/Peltier re-arm copy, Hotside terminology, and native Floating Monitor localization.
+- JexText.of now asserts on missing localization keys/locale entries in debug builds. A static audit found 320 complete English/Indonesian entries and 180 direct production keys; added regression coverage for the entire table, missing-key assertions, contextual Fan Speed/Fan labels, legacy Adaptive Profile/Peltier re-arm copy, Hotside terminology, and native Floating Monitor localization.
 - Static source checks only. Flutter/Dart formatter, targeted tests, analyzer, full suite and Android/device rendering are NOT RUN because the required toolchains are absent. No App Build/release or Firmware/device operation was performed.
 
 ## 2026-11-08 — Repair Bluetooth scan result/error states and strengthen compact UI tests
