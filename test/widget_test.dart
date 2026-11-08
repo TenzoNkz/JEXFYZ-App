@@ -696,7 +696,7 @@ void main() {
 
   test('Every localization entry provides English and Indonesian copy', () {
     final source = File('lib/app_settings.dart').readAsStringSync();
-    final entries = RegExp(r"'([^']+)'\\s*:\\s*\\{([\\s\\S]*?)\\},").allMatches(source).toList();
+    final entries = RegExp(r"'([^']+)'\s*:\s*\{([\s\S]*?)\},").allMatches(source).toList();
 
     expect(entries.length, greaterThanOrEqualTo(300));
     for (final entry in entries) {
