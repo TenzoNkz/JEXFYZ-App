@@ -155,8 +155,8 @@ String normalizeLedColor(String value) {
 String peltierRearmNotice(int hotLimit, AppLanguage language) {
   final target = peltierRearmTarget(hotLimit);
   return JexText.phrase(
-    'Peltier is locked for safety. Cool the hot side to ≤ ' + target.toString() + '°C, then try again.',
-    'Peltier dikunci demi keselamatan. Turunkan suhu sisi panas hingga ≤ ' + target.toString() + '°C, lalu coba lagi.',
+    'Peltier is locked for safety. Cool Hotside to ≤ ' + target.toString() + '°C, then try again.',
+    'Peltier dikunci demi keselamatan. Turunkan suhu Hotside hingga ≤ ' + target.toString() + '°C, lalu coba lagi.',
     language,
   );
 }
@@ -281,7 +281,7 @@ String? homeNotifyForTelemetryChange({
     case 'ADAPTIVE_PROFILE':
       final profile = currentValue.trim().toUpperCase() == 'BATTERY'
           ? JexText.phrase('Battery', 'Baterai', language)
-          : JexText.phrase('Hotside', 'Sisi panas', language);
+          : 'Hotside';
       return JexText.phrase(
         'Adaptive profile set to ',
         'Profil Adaptif diatur ke ',
@@ -412,7 +412,7 @@ String relocalizeHomeNotifyMessage(String message, AppLanguage language) {
       language,
     ) + JexText.phrase(
       isBattery ? 'Battery' : 'Hotside',
-      isBattery ? 'Baterai' : 'Sisi panas',
+      isBattery ? 'Baterai' : 'Hotside',
       language,
     ) + '.';
   }
@@ -525,8 +525,8 @@ String localizedNotifyReason(
       );
     case 'VOLTAGE_STEP_FAILED':
       return JexText.phrase(
-        'Adaptive could not complete the voltage change.',
-        'Adaptive tidak dapat menyelesaikan perubahan tegangan.',
+        'Adaptive Mode could not complete the voltage change.',
+        'Mode Adaptif tidak dapat menyelesaikan perubahan tegangan.',
         language,
       );
     case 'VOLTAGE_FORCE_FAILED':
@@ -537,19 +537,19 @@ String localizedNotifyReason(
       );
     case 'ADAPTIVE_RECOVERY_WAIT':
       return JexText.phrase(
-        'Adaptive is waiting for voltage recovery to stabilize.',
-        'Adaptive menunggu hingga pemulihan tegangan stabil.',
+        'Adaptive Mode is waiting for voltage recovery to stabilize.',
+        'Mode Adaptif menunggu hingga pemulihan tegangan stabil.',
         language,
       );
     case 'ADAPTIVE_RISE_WAIT':
       return JexText.phrase(
-        'Adaptive is waiting before increasing voltage.',
-        'Adaptive menunggu sebelum menaikkan tegangan.',
+        'Adaptive Mode is waiting before increasing voltage.',
+        'Mode Adaptif menunggu sebelum menaikkan tegangan.',
         language,
       );
     case 'ADAPTIVE_STARTING':
       return JexText.phrase(
-        'Adaptive is starting.',
+        'Adaptive Mode is starting.',
         'Mode Adaptif sedang dimulai.',
         language,
       );
@@ -7862,7 +7862,7 @@ void _handleAckLine(String line) {
                           const SizedBox(width: 10),
                           Expanded(
                             child: Text(
-                              JexText.of('speed', lang),
+                              JexText.of('fanSpeedLabel', lang),
                               style: TextStyle(
                                 color: scheme.onSurface,
                                 fontSize: 13,

@@ -668,6 +668,9 @@ void main() {
     expect(JexText.of('hotsideTemperature', AppLanguage.english), 'Hotside Temperature');
     expect(JexText.of('speed', AppLanguage.english), 'Fan');
     expect(JexText.of('speed', AppLanguage.indonesia), 'Kipas');
+    expect(JexText.of('floatingMonitor', AppLanguage.indonesia), 'Monitor Melayang');
+    expect(JexText.of('adaptiveOn', AppLanguage.english), 'Adaptive Mode ON.');
+    expect(JexText.of('adaptiveOff', AppLanguage.english), 'Adaptive Mode OFF.');
     expect(JexText.of('fanSpeedLabel', AppLanguage.english), 'Fan Speed');
     expect(JexText.of('fanSpeedLabel', AppLanguage.indonesia), 'Kecepatan Kipas');
     expect(JexText.of('power', AppLanguage.english), 'RGB Power');
@@ -690,14 +693,23 @@ void main() {
     expect(JexText.of('off', AppLanguage.indonesia), 'MATI');
   });
 
+  test('Fan speed control uses the complete localized label while the Floating Monitor stays compact', () {
+    final mainSource = File('lib/main.dart').readAsStringSync();
+    final floatingSource = File('lib/floating_monitor.dart').readAsStringSync();
+    expect(RegExp(r"kind:\s*JexAnimatedIcon\.speed,[\s\S]{0,600}?JexText\.of\('fanSpeedLabel',\s*lang\)").hasMatch(mainSource), isTrue);
+    expect(floatingSource, contains("case 'F':\n        return JexText.of('speed', lang);"));
+    expect(JexText.of('fanSpeedLabel', AppLanguage.english), 'Fan Speed');
+    expect(JexText.of('fanSpeedLabel', AppLanguage.indonesia), 'Kecepatan Kipas');
+  });
+
   test('Peltier re-arm notify uses the 1C safety hysteresis threshold', () {
     expect(
       peltierRearmNotice(45, AppLanguage.english),
-      'Peltier is locked for safety. Cool the hot side to ≤ 44°C, then try again.',
+      'Peltier is locked for safety. Cool Hotside to ≤ 44°C, then try again.',
     );
     expect(
       peltierRearmNotice(45, AppLanguage.indonesia),
-      'Peltier dikunci demi keselamatan. Turunkan suhu sisi panas hingga ≤ 44°C, lalu coba lagi.',
+      'Peltier dikunci demi keselamatan. Turunkan suhu Hotside hingga ≤ 44°C, lalu coba lagi.',
     );
   });
 
@@ -1743,7 +1755,10 @@ void main() {
     expect(bleService, contains('Bluetooth connected · device session active'));
     expect(bleService, contains('Bluetooth terhubung · sesi perangkat aktif'));
     expect(floatingService, contains('Floating Monitor is active.'));
-    expect(floatingService, contains('Floating Monitor aktif.'));
+    expect(floatingService, contains('Monitor Melayang aktif.'));
+    expect(floatingService, contains('Menampilkan status perangkat saat Monitor Melayang aktif.'));
+    expect(floatingService, contains('Monitor Melayang siap.'));
+    expect(floatingService, contains('else "Floating Monitor"'));
     expect(icon, contains('android:fillColor="#FFFFFFFF"'));
     expect(appSource, contains("JexText.of('bluetoothDisconnected', appLanguageNotifier.value)"));
   });
@@ -1778,7 +1793,7 @@ void main() {
         currentValue: 'ON',
         language: AppLanguage.english,
       ),
-      'Adaptive ON.',
+      'Adaptive Mode ON.',
     );
     expect(
       homeNotifyForTelemetryChange(
@@ -1978,7 +1993,7 @@ void main() {
         hotLimit: 45,
         language: AppLanguage.english,
       ),
-      'Adaptive is waiting for voltage recovery to stabilize.',
+      'Adaptive Mode is waiting for voltage recovery to stabilize.',
     );
     expect(
       localizedNotifyReason(
@@ -1986,7 +2001,7 @@ void main() {
         hotLimit: 45,
         language: AppLanguage.indonesia,
       ),
-      'Adaptive menunggu hingga pemulihan tegangan stabil.',
+      'Mode Adaptif menunggu hingga pemulihan tegangan stabil.',
     );
     expect(
       normalizeHomeNotifyText(
@@ -1994,7 +2009,7 @@ void main() {
         hotLimit: 45,
         language: AppLanguage.english,
       ),
-      'Adaptive is waiting for voltage recovery to stabilize.',
+      'Adaptive Mode is waiting for voltage recovery to stabilize.',
     );
   });
 
@@ -2009,8 +2024,8 @@ void main() {
       hotLimit: 45,
       language: AppLanguage.indonesia,
     );
-    expect(englishSafety, 'Peltier is locked for safety. Cool the hot side to ≤ 44°C, then try again.');
-    expect(indonesiaSafety, 'Peltier dikunci demi keselamatan. Turunkan suhu sisi panas hingga ≤ 44°C, lalu coba lagi.');
+    expect(englishSafety, 'Peltier is locked for safety. Cool Hotside to ≤ 44°C, then try again.');
+    expect(indonesiaSafety, 'Peltier dikunci demi keselamatan. Turunkan suhu Hotside hingga ≤ 44°C, lalu coba lagi.');
     expect(englishSafety, isNot(contains('PELTIER_SAFETY_LATCH')));
     expect(indonesiaSafety, isNot(contains('PELTIER_SAFETY_LATCH')));
 

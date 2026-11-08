@@ -128,11 +128,11 @@ class FloatingMonitorService : Service() {
             val manager = context.getSystemService(NotificationManager::class.java)
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                "Floating Monitor",
+                if (language.equals("indonesia", ignoreCase = true)) "Monitor Melayang" else "Floating Monitor",
                 NotificationManager.IMPORTANCE_LOW,
             ).apply {
                 description = if (language.equals("indonesia", ignoreCase = true))
-                    "Menampilkan status perangkat saat Floating Monitor aktif."
+                    "Menampilkan status perangkat saat Monitor Melayang aktif."
                 else
                     "Displays device status while Floating Monitor is active."
                 setShowBadge(false)
@@ -267,10 +267,12 @@ class FloatingMonitorService : Service() {
         }
         return builder
             .setJexNotificationBranding(this)
-            .setContentTitle("Floating Monitor")
+            .setContentTitle(
+                if (data.language.equals("indonesia", ignoreCase = true)) "Monitor Melayang" else "Floating Monitor"
+            )
             .setContentText(
                 if (data.language.equals("indonesia", ignoreCase = true))
-                    "Floating Monitor siap."
+                    "Monitor Melayang siap."
                 else
                     "Floating Monitor is ready."
             )

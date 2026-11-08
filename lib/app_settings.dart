@@ -305,7 +305,7 @@ class JexText {
     },
     'floatingMonitor': {
       AppLanguage.english: 'Floating Monitor',
-      AppLanguage.indonesia: 'Floating Monitor',
+      AppLanguage.indonesia: 'Monitor Melayang',
     },
     'voltage': {
       AppLanguage.english: 'Voltage',
@@ -1190,15 +1190,15 @@ class JexText {
     },
     'floatingPermissionTitle': {
       AppLanguage.english: 'Floating Monitor Permission',
-      AppLanguage.indonesia: 'Izin Floating Monitor',
+      AppLanguage.indonesia: 'Izin Monitor Melayang',
     },
     'floatingPendingConnection': {
       AppLanguage.english: 'Floating Monitor will appear when the device is connected.',
-      AppLanguage.indonesia: 'Floating Monitor akan tampil saat perangkat terhubung.',
+      AppLanguage.indonesia: 'Monitor Melayang akan tampil saat perangkat terhubung.',
     },
     'floatingPermissionMessage': {
       AppLanguage.english: 'The app needs permission to display Floating Monitor over other apps. Android will open the display-over-other-apps setting.',
-      AppLanguage.indonesia: 'Aplikasi memerlukan izin untuk menampilkan Floating Monitor di atas aplikasi lain. Android akan membuka pengaturan tampilan di atas aplikasi lain.',
+      AppLanguage.indonesia: 'Aplikasi memerlukan izin untuk menampilkan Monitor Melayang di atas aplikasi lain. Android akan membuka pengaturan tampilan di atas aplikasi lain.',
     },
     'overlayPermissionDenied': {
       AppLanguage.english: 'Overlay permission was not granted.',
@@ -1210,7 +1210,7 @@ class JexText {
     },
     'floatingStartFailed': {
       AppLanguage.english: 'Floating Monitor could not be started. Check its permissions and try again.',
-      AppLanguage.indonesia: 'Floating Monitor tidak dapat dijalankan. Periksa izinnya, lalu coba lagi.',
+      AppLanguage.indonesia: 'Monitor Melayang tidak dapat dijalankan. Periksa izinnya, lalu coba lagi.',
     },
     'synchronizingDevice': {
       AppLanguage.english: 'Syncing device…',
@@ -1249,11 +1249,11 @@ class JexText {
       AppLanguage.indonesia: 'Peltier nonaktif.',
     },
     'adaptiveOn': {
-      AppLanguage.english: 'Adaptive ON.',
+      AppLanguage.english: 'Adaptive Mode ON.',
       AppLanguage.indonesia: 'Mode Adaptif aktif.',
     },
     'adaptiveOff': {
-      AppLanguage.english: 'Adaptive OFF.',
+      AppLanguage.english: 'Adaptive Mode OFF.',
       AppLanguage.indonesia: 'Mode Adaptif nonaktif.',
     },
     'ledOn': {
@@ -1336,7 +1336,10 @@ class JexText {
   // Resolve one localized UI string; return the key only for an intentionally missing entry.
   static String of(String key, [AppLanguage? language]) {
     final lang = language ?? appLanguageNotifier.value;
-    return _values[key]?[lang] ?? key;
+    final translations = _values[key];
+    assert(translations != null, 'Missing JexText localization key "$key".');
+    assert(translations?.containsKey(lang) ?? false, 'Missing ${lang.name} translation for JexText key "$key".');
+    return translations?[lang] ?? key;
   }
 
   // AI-METHOD / RELOCALIZATION CONTRACT
