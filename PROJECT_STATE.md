@@ -13,12 +13,15 @@ Last refreshed: 2026-11-08 (Asia/Jakarta). Current-state summary only; always fe
 ## Production and release baseline
 
 - **Protected known production reference:** App Build #124 + Firmware V7.1. Keep this stable reference distinct from newer published artifacts and the exact package installed on the field unit.
-- **Latest independently verified published App package (live check 2026-11-06):** Build #129 / [Actions run 39925045446](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/39925045446), exact tested/package source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`. Latest Release `jexfyz-latest` (ID `403010611`) and tag both target this SHA.
-- APK asset `668498025`: 54,751,323 bytes, SHA-256 `f59c511786d49add8e0596fd3d658248746c008b7eaff94bb6215d314aa0426e`.
-- Matching source ZIP asset `668498026`: 2,878,916 bytes, SHA-256 `c74e6800dadf80a5223dedcce3144b12f6365506a8b9821bb7abf1817df8cfff`.
-- Build #129 passed all 21 workflow gates, 122 Flutter tests, analyzer (25 informational diagnostics), configured Android Gradle gate, APK V1/V2/V3 and expected certificate, corresponding ZIP/source marker, exact Release/tag parity and downloaded asset identity/digest checks. Native Android JUnit tasks were NO-SOURCE.
-- Live Actions check on 2026-11-08: latest listed run remains #129; zero in-progress runs, zero queued runs and zero open PRs.
-- **Field evidence (USER-REPORTED):** owner previously reported installing/overwriting Build #128. Exact installed APK identity was not independently read; do not assume Build #129 is installed. Firmware V7.1 compile/Online OTA is also USER-REPORTED; exact BIN identity and physical behavior remain UNVERIFIED.
+- **Latest independently verified published App package:** Build #131 / [Actions run 42474266430](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42474266430), exact tested/package source `b3c4fee432fddc49430840daeb1e2eecbe78a0db`. Release `jexfyz-latest` (ID `403010611`) and live tag both target this SHA.
+- APK asset `723696457`: 54,849,627 bytes, SHA-256 `d614bc42c6270fa3de616d944d043fc833cd0ab0ffc391d89526627606c3ee35`.
+- Matching source ZIP asset `723696458`: 2,888,040 bytes, SHA-256 `cca5609e5a471f204118f2bdfc40e6aa0fa7dcb6dc151a4b306e6c9ca4615177`.
+- Build #131 passed all 21 main workflow steps, 142 Flutter tests, analyzer (25 info-level diagnostics), the configured Android Gradle gate, obfuscated APK build, V1/V2/V3 and expected production-certificate checks, matching ZIP/source marker, exact Release/tag parity, and downloaded-asset checksum/identity/signature verification.
+- Android `:app:testDebugUnitTest` Gradle gate completed successfully (`BUILD SUCCESSFUL`), but `:app:compileDebugUnitTestKotlin`, `:app:compileDebugUnitTestJavaWithJavac`, `:app:processDebugUnitTestJavaRes` and `:app:testDebugUnitTest` were `NO-SOURCE`; no native Android JUnit case executed.
+- Latest live Actions query after completion: Build #131 terminal `success`; zero active, queued or waiting runs for this workflow.
+- **Field evidence (USER-REPORTED / UNVERIFIED):** owner previously reported installing/overwriting Build #128. Exact installed APK identity has not been independently read; do not assume Build #131 is installed. Firmware V7.1 compile/Online OTA remains USER-REPORTED; exact BIN identity and physical behavior remain unverified.
+
+
 
 ## Current App source and validation
 
