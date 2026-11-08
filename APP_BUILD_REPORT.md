@@ -1,3 +1,14 @@
+## BUILD #131 PROGRESS — RELEASE APK BUILT; V1/V2/V3 SIGNING ACTIVE — 2026-11-08
+
+- **Run/job/source:** #131 / `42474266430`, job `128711948544`, source SHA `b3c4fee432fddc49430840daeb1e2eecbe78a0db`; still active.
+- **Passed:** steps 1–15 are `success), including analyzer, full Flutter tests, Android Gradle gate, and `Build latest release APK` (step 15). The three #130 source-contract failures are resolved in this run.
+- **Current gate:** step 16 `Enforce V1/V2/V3 APK signing` is `in_progress). Certificate verification (17), filename preparation (18), source ZIP (19), Release/tag publish (20), and downloaded asset verification (21) remain pending.
+- **Build artifact caveat:** APK build step success is confirmed, but final artifact checksum, obfuscation/source identity, signing schemes, certificate and Release URL are not claimed until their dedicated subsequent gates and post-publish download validation succeed.
+- **Logs:** live runner log download has not yet become available; gate status comes from the live Jobs/steps API. Retrieve the completed log for test counts, analyzer diagnostics and Android task details.
+- **Next:** follow the same run/job only, complete signature/certificate/source/release and downloaded asset integrity gates.
+
+---
+
 ## BUILD #131 PROGRESS — ANDROID GATE PASSED; OBFUSCATED APK BUILD ACTIVE — 2026-11-08
 
 - **Run/job:** #131 / `42474266430`, job `128711948544`, source SHA `b3c4fee432fddc49430840daeb1e2eecbe78a0db`; still `in_progress`.
