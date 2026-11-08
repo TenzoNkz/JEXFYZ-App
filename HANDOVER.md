@@ -5,7 +5,7 @@ Updated: 2026-11-08 (Asia/Jakarta).
 ## Latest verified state
 
 - **Latest App release:** Build #131, [Actions run 42474266430](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42474266430), source `b3c4fee432fddc49430840daeb1e2eecbe78a0db`; run terminal success, all 21 main workflow steps passed.
-- **Release/tag:** `jexfyz-latest`, Release ID `403010611), tag and Release both target the exact packaged source SHA. Exactly one APK and one corresponding source ZIP are attached and verified by post-publication re-download.
+- **Release/tag:** `jexfyz-latest`, Release ID `403010611`, tag and Release both target the exact packaged source SHA. Exactly one APK and one corresponding source ZIP are attached and verified by post-publication re-download.
 - **APK:** [JEXFYZ-release.apk](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk), SHA-256 `d614bc42c6270fa3de616d944d043fc833cd0ab0ffc391d89526627606c3ee35`, 54,849,627 bytes. V1/V2/V3 signing and expected certificate passed.
 - **Source ZIP:** [JEXFYZ-corresponding-source.zip](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip), SHA-256 `cca5609e5a471f204118f2bdfc40e6aa0fa7dcb6dc151a4b306e6c9ca4615177`, 2,888,040 bytes; ZIP integrity and exact source marker passed.
 - **QC:** 142 Flutter tests passed; analyzer exit 0 with 25 info-level diagnostics; Android Gradle gate succeeded. Native Android JUnit tasks were `NO-SOURCE`, so no native JUnit test case ran.
