@@ -344,7 +344,15 @@ String relocalizeHomeNotifyMessage(String message, AppLanguage language) {
 
   // Accept legacy bilingual Peltier-rearm copy when a stored notice is re-localized.
   final peltierRearm = RegExp(
-    r'^(?:Peltier is locked for safety\. Cool (?:Hotside|the hot side) to ≤|Peltier dikunci demi keselamatan\. Turunkan suhu (?:Hotside|sisi panas) hingga ≤)\s*(\d+)°C,? (?:then try again|lalu coba lagi)\.?
+    r'^(?:Peltier is locked for safety\. Cool (?:Hotside|the hot side) to ≤|Peltier dikunci demi keselamatan\. Turunkan suhu (?:Hotside|sisi panas) hingga ≤)\s*(\d+)°C,? (?:then try again|lalu coba lagi)\.?$',
+    caseSensitive: false,
+  ).firstMatch(raw);
+  if (peltierRearm != null) {
+    final target = int.tryParse(peltierRearm.group(1)!);
+    if (target != null) return peltierRearmNotice(target + 1, language);
+  }
+
+  final fanSpeedChange = RegExp(
     r'^(?:Fan speed (reduced|increased|set) to|Kecepatan kipas (diturunkan ke|dinaikkan ke|diatur ke))\s*(\d+)%\.?$',
     caseSensitive: false,
   ).firstMatch(raw);
