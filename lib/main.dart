@@ -4977,6 +4977,14 @@ class _DashboardScreenState extends State<DashboardScreen>
             androidUsesFineLocation: false,
           );
         });
+
+        // startScan() resolves once scanning has started. Keep this passive
+        // attempt active until the plugin reports that the scan has completed
+        // (timeout, connection handoff, manual-sheet pre-emption or stopScan()).
+        await FlutterBluePlus.isScanning
+            .where((scanning) => !scanning)
+            .first;
+        if (!isCurrentAttempt()) return;
       } catch (e) {
         if (isCurrentAttempt()) {
           debugPrint('BLE disconnect rediscovery: $e');

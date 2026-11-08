@@ -84,6 +84,27 @@ void main() {
       coordinator.finishPassiveAttempt(finalAttempt);
     });
 
+    test('passive ownership remains active until the scan-complete wait resolves', () async {
+      final coordinator = ConnectionScanCoordinator();
+      final scanCompleted = Completer<void>();
+      final attempt = coordinator.beginPassiveAttempt()!;
+
+      final attemptTask = () async {
+        await scanCompleted.future;
+        coordinator.finishPassiveAttempt(attempt);
+      }();
+
+      expect(coordinator.isPassiveAttemptCurrent(attempt), isTrue);
+      expect(coordinator.beginPassiveAttempt(), isNull);
+
+      scanCompleted.complete();
+      await attemptTask;
+
+      expect(coordinator.isPassiveAttemptCurrent(attempt), isFalse);
+      final nextAttempt = coordinator.beginPassiveAttempt()!;
+      coordinator.finishPassiveAttempt(nextAttempt);
+    });
+
     test('passive and manual scanner commands are serialized in FIFO order', () async {
       final coordinator = ConnectionScanCoordinator();
       final events = <String>[];

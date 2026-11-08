@@ -219,6 +219,24 @@ void main() {
     expect(main, contains('_finishManualConnectionSheet'));
     expect(main, contains('_prepareManualConnectionSheet'));
     expect(main, contains('Future<bool> _startScanFromSheet()'));
+
+    final passiveStart = main.indexOf('void _startDisconnectRediscovery()');
+    final passiveEnd = main.indexOf('void _handleBleDisconnected()', passiveStart);
+    expect(passiveStart, isNonNegative);
+    expect(passiveEnd, greaterThan(passiveStart));
+    final passiveScanner = main.substring(passiveStart, passiveEnd);
+    final startScanCall =
+        passiveScanner.indexOf('await FlutterBluePlus.startScan(');
+    final scanCompletionWait =
+        passiveScanner.indexOf('await FlutterBluePlus.isScanning', startScanCall);
+    final finishAttempt = passiveScanner.indexOf(
+      '_connectionScanCoordinator.finishPassiveAttempt(attempt)',
+      scanCompletionWait,
+    );
+    expect(startScanCall, isNonNegative);
+    expect(scanCompletionWait, greaterThan(startScanCall));
+    expect(finishAttempt, greaterThan(scanCompletionWait));
+
     expect(connection, contains('onPressed: _requestScan,'));
     expect(connection, isNot(contains('onPressed: widget.onScan')));
     expect(connection, contains('WidgetsBinding.instance.addPostFrameCallback'));

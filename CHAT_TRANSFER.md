@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Live Chat Checkpoint
 
-Checkpoint refreshed: 2026-11-08 (Asia/Jakarta), after BLE scanner ownership, connection-handoff fence and regression-test implementation. The single operating policy is `MASTER_PROMPT.md`; `AGENTS.md` is the cross-agent entrypoint; `SKILLS_INDEX.md` is the skill and tool-capability map.
+Checkpoint refreshed: 2026-11-08 (Asia/Jakarta), after passive scan-lifetime correction and scanner ownership/handoff regression work. The single operating policy is `MASTER_PROMPT.md`; `AGENTS.md` is the cross-agent entrypoint; `SKILLS_INDEX.md` is the skill and tool-capability map.
 
 ## Skills and capability rollout
 
@@ -88,7 +88,7 @@ Only after validation and a separate explicit `Eksekusi Build App!` may an APK b
 
 - Mode: `Eksekusi Full!`; authorized scope was the stale Connection empty-state matcher, manual-sheet/passive-reconnect scanner arbitration and regression coverage only.
 - Added `lib/connection_scan_coordinator.dart`, a narrow coordinator for the two existing App scanner users. It tracks a generation token, active passive-attempt identity, manual-sheet ownership, selected-device handoff and a FIFO async scanner-operation queue. It does not own GATT/P1/session state.
-- Refactored passive rediscovery so its attempt is registered before the first permission/adapter await and checks generation validity after each await and inside the serialized scanner operation. Cancellation invalidates immediately and does not falsely clear an in-flight attempt; a stale attempt cannot clear a newer generation. Passive discovery now listens to fresh `onScanResults`.
+- Refactored passive rediscovery so its attempt is registered before the first permission/adapter await and checks generation validity after each await and inside the serialized scanner operation. Cancellation invalidates immediately and does not falsely clear an in-flight attempt; a stale attempt cannot clear a newer generation. Passive discovery listens to fresh `onScanResults` and keeps its attempt token active until `FlutterBluePlus.isScanning` reports `false` (timeout, pre-emption or connection stop), rather than releasing ownership when `startScan()` returns.
 - Opening the manual Connection sheet synchronously acquires ownership, invalidates/cancels passive work, and queues a scanner stop before the initial manual scan. Manual start/stop operations are serialized. The child sheet no longer treats an already-running global scan as its own and always delegates a refresh to the parent.
 - Device selection is marked before the sheet is popped. Sheet completion skips neutral-dismissal cleanup/resume for selected-device handoff; `_connect()` owns scanner stop. Neutral dismissal stops the manual scan first, releases ownership, then re-evaluates the unchanged Auto Connect prerequisites before resuming passive rediscovery. Opening the sheet is blocked while an existing connection or `_scanAndConnect` is syncing.
 - Device selection is marked before the sheet is popped. A dedicated connection-handoff fence persists after the modal closes and is released only after `_connect()` has synchronously set `_bleConnecting=true`; `_tryAutoConnect`, passive rediscovery and `_scanAndConnect(automatic:true)` recheck the fence, including after prerequisite awaits. This closes the selection-to-connect async gap. A separate regression assertion covers the fence.
@@ -96,6 +96,16 @@ Only after validation and a separate explicit `Eksekusi Build App!` may an APK b
 - BLE UUIDs/P1 framing, GATT connection semantics, Auto Connect preference/prerequisite gates, 2-second passive timeout/3-second cadence, 10-second manual timeout, telemetry semantics, Firmware, OTA, build workflow and Release behavior were not changed.
 - Validation: STATIC SOURCE CHECK only. Flutter/Dart/Gradle/ADB are unavailable here; formatter, both focused scan tests, layout/widget tests, analyzer, full suite and device QA are BLOCKED / NOT RUN. No App Build, APK/Release, Firmware compile, BIN, Firebase, OTA, flash or device operation occurred.
 - Next action: run the exact format/focused/full test sequence above in a Flutter 3.47.2-enabled environment, then inspect real Android scan transitions and 350-dp/420-dp visuals. App packaging still requires separate `Eksekusi Build App!`.
+
+## Chat Stuck recovery refinement — passive scan lifetime (2026-11-08)
+
+- Recovery re-audit verified the commits `4782256`, `851beca` and `f6e5188` on live `main`; the last two add the connection-handoff fence. The tag and latest App release still target Build #129 source `f9ffac6`; no new workflow run or PR was created.
+- A further STATIC SOURCE CHECK found a lifecycle defect in the new passive scanner: pinned `flutter_blue_plus 2.3.14` documents that `await startScan()` returns when scanning starts, while scan completion must be observed on `isScanning`. The passive attempt was being finished immediately after startScan(), so its result callback could reject every later advertisement as a stale attempt.
+- Corrected passive scan lifecycle to await `FlutterBluePlus.isScanning.where((scanning) => !scanning).first` after the serialized start operation, then recheck generation before releasing attempt identity in `finally`. The token now remains valid for the 2-second scan window and becomes invalid immediately when the manual sheet or connection path pre-empts it.
+- Added a deterministic coordinator test proving the passive owner remains exclusive until scan-complete is signalled, and a layout/source-contract test enforcing start → scan-completion wait → finish-attempt ordering.
+- External API evidence: the pinned official [flutter_blue_plus 2.3.14 documentation](https://pub.dev/packages/flutter_blue_plus/versions/2.3.14) documents fresh `onScanResults`, retained `scanResults`, and the explicit sequence of awaiting `startScan()` then waiting for `isScanning == false`.
+- This is SOURCE IMPLEMENTED / NOT RUN. Flutter/Dart/Gradle/ADB are absent in the active environment; formatter, targeted tests, analyzer, full suite and device validation remain BLOCKED / NOT RUN.
+- Next: validate the committed scan-lifetime correction in Flutter 3.47.2, then Android scanner handoff and compact UI QA. App packaging still requires `Eksekusi Build App!`.
 
 ## Durable memory and safety
 
