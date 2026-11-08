@@ -1,3 +1,15 @@
+# CURRENT APP BUILD EXECUTION — BUILD #131 ANDROID GATE PASSED / APK BUILD ACTIVE — 2026-11-08
+
+- **Run:** [#131 / 42474266430](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42474266430), source SHA `b3c4fee432fddc49430840daeb1e2eecbe78a0db`, status `in_progress`.
+- **Job:** `128711948544`, hosted runner `1000002677`, in progress.
+- **Passed through step 14:** setup, security/architecture audit, dependency resolution, Dart analyzer, full Flutter suite and Android Gradle unit-test gate are all workflow `success`.
+- **Current:** step 15 release APK build is `in_progress). Steps 16–21 still pending: V1/V2/V3 signing, production certificate, corresponding source ZIP, Release/tag identity and downloaded asset integrity.
+- **Android detail caveat:** final step success known; exact JUnit task/NO-SOURCE detail awaits job logs. Logs download currently returns Azure BlobNotFound while job active.
+- **Release:** #129 remains latest published; no #131 artifact claim yet.
+- **Next:** follow only #131 through package and final asset checks. No more issue trigger while active.
+
+---
+
 # CURRENT APP BUILD EXECUTION — BUILD #131 FLUTTER TESTS PASSED / ANDROID GATE ACTIVE — 2026-11-08
 
 - **Run:** [#131 / 42474266430](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42474266430), event `issues`, exact source SHA `b3c4fee432fddc49430840daeb1e2eecbe78a0db`.
