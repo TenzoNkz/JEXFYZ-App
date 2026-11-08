@@ -1,3 +1,20 @@
+# CURRENT APP BUILD EXECUTION — BUILD #131 SUCCESS / RELEASE VERIFIED — 2026-11-08
+
+- **Latest verified run:** [Build #131 / 42474266430](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42474266430), terminal `completed/success`; workflow ID `374946166`, event `issues`, attempt 1; job `build` / `128711948544`, hosted runner `1000002677`. All 21 main steps and post-job cleanup completed successfully.
+- **Exact packaged source SHA:** `b3c4fee432fddc49430840daeb1e2eecbe78a0db`. Later main commits are docs/checkpoint-only; they do not change the packaged source.
+- **Validation:** Dart analyzer exit 0 / 25 info-level diagnostics; full Flutter test suite **142 passed, 0 failed**; Android Gradle gate `BUILD SUCCESSFUL`. Native Android JUnit compile/process/test tasks were `NO-SOURCE`, so no native JUnit case ran.
+- **APK:** obfuscated release APK [JEXFYZ-release.apk](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-release.apk), asset ID `723696457`, 54,849,627 bytes, SHA-256 `d614bc42c6270fa3de616d944d043fc833cd0ab0ffc391d89526627606c3ee35`. V1/V2/V3 verified; expected certificate SHA-256 `dd6ca6bec4e8f4d594214730426048c06081c2e977dfd8f260606849c2c2e0e0`.
+- **Source archive:** [JEXFYZ-corresponding-source.zip](https://github.com/TenzoNkz/JEXFYZ-App/releases/download/jexfyz-latest/JEXFYZ-corresponding-source.zip), asset ID `723696458`, 2,888,040 bytes, SHA-256 `cca5609e5a471f204118f2bdfc40e6aa0fa7dcb6dc151a4b306e6c9ca4615177`; ZIP integrity and source marker matched the exact source SHA.
+- **Release/tag:** Release ID `403010611`, tag `jexfyz-latest`; both point to `b3c4fee432fddc49430840daeb1e2eecbe78a0db). Exactly one APK plus one matching source ZIP. Step 21 downloaded both assets again and verified checksum, identity, source marker and APK signature/certificate.
+- **Prior #130:** preserved as a failed attempt followed by concrete source/test fixes before #131; history remains in APP_BUILD_REPORT.md.
+- **Warnings/limits:** 25 analyzer infos; Kotlin Gradle plugin 2.2.20 and Gradle deprecation warnings; non-fatal build watcher message; self-signed/untimestamped certificate and META-INF verification notices; cache saves denied due missing writable token scopes, while cleanup succeeded. These did not fail gates.
+- **Protected setting:** `android/app/build.gradle:97` remains `versionName "Telegram @horizontalzzz"`.
+- **Current run state:** no active, queued or waiting workflow run.
+- **Not verified:** owner installation, physical display/OEM visual quality, BLE on real hardware, cooling/thermal behavior, Firmware/BIN identity or OTA. No Firmware compile, BIN/Firebase action, OTA, flash or device operation occurred. Firmware V7.1 compile/Online OTA remains USER-REPORTED.
+- **Next:** owner installation then physical visual QA at 350-dp/420-dp and BLE scan lifecycle/handoff/reconnect acceptance. No repeat build needed unless a subsequent source change is authorized.
+
+---
+
 # CURRENT APP BUILD EXECUTION — BUILD #131 APK BUILT / SIGNING ACTIVE — 2026-11-08
 
 - **Run:** [#131 / 42474266430](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42474266430), source `b3c4fee432fddc49430840daeb1e2eecbe78a0db`, still in progress.
