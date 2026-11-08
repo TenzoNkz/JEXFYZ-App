@@ -1,3 +1,14 @@
+## BUILD #131 PROGRESS — ANDROID GATE PASSED; OBFUSCATED APK BUILD ACTIVE — 2026-11-08
+
+- **Run/job:** #131 / `42474266430`, job `128711948544`, source SHA `b3c4fee432fddc49430840daeb1e2eecbe78a0db`; still `in_progress`.
+- **Passed:** workflow steps 1–14 are now `success), covering setup, architecture/security audit, dependency resolution, analyzer, the full Flutter test suite, and the Android `:app:testDebugUnitTest` workflow gate. Task-level Android JUnit/NO-SOURCE details are not yet confirmed because the live job log download still returns BlobNotFound; step success is established, but do not claim native test cases ran until the log can be read.
+- **Current gate:** step 15 `Build latest release APK` is `in_progress`. Steps 16–21 remain pending for explicit V1/V2/V3 signing, production certificate, APK filename, corresponding source ZIP, Release/tag publication and downloaded-asset integrity.
+- **Logs:** workflow job logs remain unavailable from the Azure Blob download endpoint while the job is active. Steps API is live and authoritative for gate status.
+- **Release:** Build #129 remains latest Release until the #131 publication and final verification gates succeed.
+- **Next:** keep following the same #131 run/job; inspect logs at terminal completion and verify APK/source/tag downloaded bytes independently.
+
+---
+
 ## BUILD #131 PROGRESS — FULL FLUTTER TESTS PASSED; ANDROID GATE ACTIVE — 2026-11-08
 
 - **Run/job unchanged:** run `42474266430` / #131, job `128711948544`, source SHA `b3c4fee432fddc49430840daeb1e2eecbe78a0db`; run and job remain `in_progress`.
