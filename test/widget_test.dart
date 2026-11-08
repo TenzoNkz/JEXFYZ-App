@@ -720,8 +720,14 @@ void main() {
     expect(fanSpeedStart, isNonNegative);
     expect(fanSpeedEnd, greaterThan(fanSpeedStart));
     final fanSpeedSource = mainSource.substring(fanSpeedStart, fanSpeedEnd);
-    expect(fanSpeedSource, contains("JexText.of('fanSpeedLabel', lang)"));
-    expect(fanSpeedSource, contains('animatedKind: JexAnimatedIconKind.speed'));
+    expect(
+      fanSpeedSource,
+      contains("JexText.of('fanSpeedLabel', lang)"),
+    );
+    expect(
+      fanSpeedSource,
+      contains('animatedKind: JexAnimatedIconKind.speed'),
+    );
     expect(floatingSource, contains("case 'F':\n        return JexText.of('speed', lang);"));
     expect(JexText.of('fanSpeedLabel', AppLanguage.english), 'Fan Speed');
     expect(JexText.of('fanSpeedLabel', AppLanguage.indonesia), 'Kecepatan Kipas');
