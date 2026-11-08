@@ -1,3 +1,12 @@
+## 2026-11-08 — App Build #131 successful; compact UI and BLE scan coordination released
+
+- Guarded issue-only Build #131 completed successfully from exact source `b3c4fee432fddc49430840daeb1e2eecbe78a0db`; all 21 main workflow gates and cleanup succeeded.
+- Full Flutter suite: 142 passed. Dart analyzer exited 0 with 25 info-level diagnostics. Android Gradle gate reported `BUILD SUCCESSFUL`; native Android JUnit compile/process/test tasks were `NO-SOURCE`.
+- Release APK was built obfuscated with split debug info; V1/V2/V3 and expected JE X FYZ production certificate verified. Release `jexfyz-latest` and its live tag both target the exact source SHA. Exactly one APK and one corresponding-source ZIP were published and independently re-downloaded for checksum, source-marker, signature and certificate verification.
+- APK SHA-256: `d614bc42c6270fa3de616d944d043fc833cd0ab0ffc391d89526627606c3ee35`. Source ZIP SHA-256: `cca5609e5a471f204118f2bdfc40e6aa0fa7dcb6dc151a4b306e6c9ca4615177`.
+- This release includes compact Settings/Connection presentation, Bluetooth scan lifecycle/error states, passive/manual/one-shot scanner ownership coordination and Home Fan Speed locale propagation. Build #130's three brittle source-contract test failures were fixed before this successful retry; the failed attempt remains separately preserved in APP_BUILD_REPORT.md.
+- Physical screenshot/OEM QA, owner installation, real-device BLE lifecycle, cooling/thermal behavior and Firmware/BIN/OTA identity remain unverified. No Firmware, BIN, Firebase, OTA, flash or device operation occurred.
+
 ## 2026-11-08 — Arbitrate one-shot Auto Connect/OTA with passive and manual BLE scans
 
 - Added a synchronous one-shot scanner reservation before permission/adapter prerequisite awaits. The coordinator now excludes overlapping one-shot/passive attempts and invalidates pending one-shot work when manual ownership or connection handoff begins.
