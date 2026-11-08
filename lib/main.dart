@@ -4587,7 +4587,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     bool automatic = false,
     bool otaRecovery = false,
   }) async {
-    if (syncing || connected || _bleConnecting) return;
+    if (syncing) return;
 
     // Reserve synchronously before the first asynchronous permission/adapter check.
     // This excludes duplicate one-shot work and passive rediscovery while prerequisites
@@ -4659,7 +4659,9 @@ class _DashboardScreenState extends State<DashboardScreen>
 
       // Recheck mutable App/connection state immediately before taking the UI
       // scanning state and issuing native scanner commands.
-      if (!isCurrentAttempt() || syncing || connected || _bleConnecting) {
+      if (!isCurrentAttempt() ||
+          syncing ||
+          (automatic && (connected || _bleConnecting))) {
         return;
       }
 
