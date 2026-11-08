@@ -755,12 +755,12 @@ String normalizeHomeNotifyText(
     if (adaptiveIssue) {
       return confirmationFailed
           ? JexText.phrase(
-              'Adaptive change not confirmed. Check device status.',
+              'Adaptive Mode change was not confirmed. Check device status.',
               'Perubahan Mode Adaptif belum terkonfirmasi. Periksa status perangkat.',
               language,
             )
           : JexText.phrase(
-              'Adaptive change failed. Check device status.',
+              'Adaptive Mode change failed. Check device status.',
               'Perubahan Mode Adaptif gagal. Periksa status perangkat.',
               language,
             );
