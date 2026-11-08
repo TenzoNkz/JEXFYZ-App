@@ -95,12 +95,14 @@ void main() {
       }();
 
       expect(coordinator.isPassiveAttemptCurrent(attempt), isTrue);
+      expect(coordinator.hasActivePassiveAttempt, isTrue);
       expect(coordinator.beginPassiveAttempt(), isNull);
 
       scanCompleted.complete();
       await attemptTask;
 
       expect(coordinator.isPassiveAttemptCurrent(attempt), isFalse);
+      expect(coordinator.hasActivePassiveAttempt, isFalse);
       final nextAttempt = coordinator.beginPassiveAttempt()!;
       coordinator.finishPassiveAttempt(nextAttempt);
     });

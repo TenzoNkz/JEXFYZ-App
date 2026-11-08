@@ -4590,7 +4590,8 @@ class _DashboardScreenState extends State<DashboardScreen>
       // prerequisite Futures above were pending. Recheck immediately before scanning.
       if (automatic &&
           (_connectionScanCoordinator.isManualSheetOpen ||
-              _connectionScanCoordinator.isConnectionHandoffActive)) {
+              _connectionScanCoordinator.isConnectionHandoffActive ||
+              _connectionScanCoordinator.hasActivePassiveAttempt)) {
         return;
       }
       if (!canAutoConnect(

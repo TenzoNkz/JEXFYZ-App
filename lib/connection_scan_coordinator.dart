@@ -13,6 +13,7 @@ class ConnectionScanCoordinator {
   bool get isManualSheetOpen => _manualSheetOpen;
   bool get manualDeviceSelected => _manualSheetOpen && _manualDeviceSelected;
   bool get isConnectionHandoffActive => _connectionHandoffActive;
+  bool get hasActivePassiveAttempt => _activePassiveAttempt == _generation;
 
   void beginConnectionHandoff() {
     _connectionHandoffActive = true;
