@@ -4359,6 +4359,8 @@ class _DashboardScreenState extends State<DashboardScreen>
         _bleConnecting ||
         _connectionScanCoordinator.isManualSheetOpen ||
         _connectionScanCoordinator.isConnectionHandoffActive ||
+        _connectionScanCoordinator.hasActiveOneShotAttempt ||
+        _connectionScanCoordinator.hasActivePassiveAttempt ||
         (reconnectTimer?.isActive ?? false) ||
         !appAutoConnectNotifier.value ||
         knownCoolerRemoteIdNotifier.value == null) {
@@ -4561,147 +4563,259 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
   }
 
+  // Serialize each scanner command while the one-shot lease reserves scanner ownership
+  // across prerequisite awaits and the complete discovery/fallback sequence.
+  Future<bool> _runOneShotScannerCommand(
+    int attempt,
+    Future<void> Function() operation,
+  ) async {
+    var operationCompletedForCurrentAttempt = false;
+    await _connectionScanCoordinator.runSerialized(() async {
+      if (!mounted ||
+          !_connectionScanCoordinator.isOneShotAttemptCurrent(attempt)) {
+        return;
+      }
+      await operation();
+      operationCompletedForCurrentAttempt = mounted &&
+          _connectionScanCoordinator.isOneShotAttemptCurrent(attempt);
+    });
+    return operationCompletedForCurrentAttempt;
+  }
+
   // AI-METHOD: _scanAndConnect — Perform bounded BLE discovery and pass the matching device to the connection routine.
   Future<void> _scanAndConnect({
     bool automatic = false,
     bool otaRecovery = false,
   }) async {
-    if (syncing) return;
-    if (automatic) {
-      final scanPermission = await Permission.bluetoothScan.status;
-      final connectPermission = await Permission.bluetoothConnect.status;
-      final adapter = await FlutterBluePlus.adapterState.first;
-      final sdk = await _androidSdkInt();
-      var locationReady = true;
-      if (sdk > 0 && sdk <= 30) {
-        final permission = await Permission.locationWhenInUse.status;
-        var serviceEnabled = true;
-        try {
-          serviceEnabled = await batteryChannel.invokeMethod<bool>(
-                'isLocationServiceEnabled',
-              ) ??
-              false;
-        } catch (_) {
-          serviceEnabled = false;
-        }
-        locationReady = permission.isGranted && serviceEnabled;
-      }
-      // The manual sheet or a selected-device handoff may have started while the
-      // prerequisite Futures above were pending. Recheck immediately before scanning.
-      if (automatic &&
-          (_connectionScanCoordinator.isManualSheetOpen ||
-              _connectionScanCoordinator.isConnectionHandoffActive ||
-              _connectionScanCoordinator.hasActivePassiveAttempt)) {
-        return;
-      }
-      if (!canAutoConnect(
-        autoConnectEnabled: otaRecovery || appAutoConnectNotifier.value,
-        knownRemoteId: knownCoolerRemoteIdNotifier.value,
-        bluetoothScanGranted: scanPermission.isGranted,
-        bluetoothConnectGranted: connectPermission.isGranted,
-        bluetoothAdapterOn: adapter == BluetoothAdapterState.on,
-        legacyLocationReady: locationReady,
-      )) {
-        return;
-      }
-    } else {
-      final accessReady = await _requestPermissions();
-      if (!accessReady) {
-        if (mounted) setState(() => notice = JexText.of('connectionAccessRequired', appLanguageNotifier.value));
-        return;
-      }
-    }
-    if (!mounted) return;
+    if (syncing || connected || _bleConnecting) return;
 
-    setState(() {
-      syncing = true;
-      notice = JexText.of('scanning', appLanguageNotifier.value);
-    });
+    // Reserve synchronously before the first asynchronous permission/adapter check.
+    // This excludes duplicate one-shot work and passive rediscovery while prerequisites
+    // are pending. Opening the manual sheet or beginning a connection invalidates it.
+    final attempt = _connectionScanCoordinator.beginOneShotAttempt();
+    if (attempt == null) return;
+
+    bool isCurrentAttempt() =>
+        mounted &&
+        _connectionScanCoordinator.isOneShotAttemptCurrent(attempt);
 
     StreamSubscription<List<ScanResult>>? scanSub;
     BluetoothDevice? found;
+    var ownsSyncing = false;
 
     try {
-      await FlutterBluePlus.stopScan();
-      final completer = Completer<BluetoothDevice?>();
+      if (automatic) {
+        final scanPermission = await Permission.bluetoothScan.status;
+        if (!isCurrentAttempt()) return;
+        final connectPermission = await Permission.bluetoothConnect.status;
+        if (!isCurrentAttempt()) return;
+        final adapter = await FlutterBluePlus.adapterState.first;
+        if (!isCurrentAttempt()) return;
+        final sdk = await _androidSdkInt();
+        if (!isCurrentAttempt()) return;
 
-      scanSub = FlutterBluePlus.scanResults.listen((results) {
-        for (final result in results) {
-          final serviceMatch = result.advertisementData.serviceUuids.any(
-            (uuid) => uuid.toString().toLowerCase() == serviceUuid,
-          );
-          final name = result.advertisementData.advName.trim().toLowerCase();
-          final platformName = result.device.platformName.trim().toLowerCase();
-          final knownMatch = knownCoolerRemoteIdNotifier.value != null &&
-              result.device.remoteId.toString() == knownCoolerRemoteIdNotifier.value;
-          final matches = automatic
-              ? (knownMatch && serviceMatch)
-              : (serviceMatch || name == 'je x fyz' || platformName == 'je x fyz');
-          if (matches) {
-            if (!completer.isCompleted) completer.complete(result.device);
-            break;
+        var locationReady = true;
+        if (sdk > 0 && sdk <= 30) {
+          final permission = await Permission.locationWhenInUse.status;
+          if (!isCurrentAttempt()) return;
+          var serviceEnabled = true;
+          try {
+            serviceEnabled = await batteryChannel.invokeMethod<bool>(
+                  'isLocationServiceEnabled',
+                ) ??
+                false;
+          } catch (_) {
+            serviceEnabled = false;
           }
+          if (!isCurrentAttempt()) return;
+          locationReady = permission.isGranted && serviceEnabled;
         }
-      });
 
-      await FlutterBluePlus.startScan(
-        withServices: <Guid>[Guid(serviceUuid)],
-        timeout: const Duration(seconds: 10),
-        androidCheckLocationServices: false,
-        androidUsesFineLocation: false,
+        if (!canAutoConnect(
+          autoConnectEnabled: otaRecovery || appAutoConnectNotifier.value,
+          knownRemoteId: knownCoolerRemoteIdNotifier.value,
+          bluetoothScanGranted: scanPermission.isGranted,
+          bluetoothConnectGranted: connectPermission.isGranted,
+          bluetoothAdapterOn: adapter == BluetoothAdapterState.on,
+          legacyLocationReady: locationReady,
+        )) {
+          return;
+        }
+      } else {
+        final accessReady = await _requestPermissions();
+        if (!isCurrentAttempt()) return;
+        if (!accessReady) {
+          if (mounted) {
+            setState(() {
+              notice = JexText.of(
+                'connectionAccessRequired',
+                appLanguageNotifier.value,
+              );
+            });
+          }
+          return;
+        }
+      }
+
+      // Recheck mutable App/connection state immediately before taking the UI
+      // scanning state and issuing native scanner commands.
+      if (!isCurrentAttempt() || syncing || connected || _bleConnecting) {
+        return;
+      }
+
+      setState(() {
+        syncing = true;
+        notice = JexText.of('scanning', appLanguageNotifier.value);
+      });
+      ownsSyncing = true;
+
+      if (!await _runOneShotScannerCommand(
+        attempt,
+        () => FlutterBluePlus.stopScan(),
+      )) {
+        return;
+      }
+
+      final completer = Completer<BluetoothDevice?>();
+      scanSub = FlutterBluePlus.onScanResults.listen(
+        (results) {
+          if (!isCurrentAttempt()) return;
+          for (final result in results) {
+            final serviceMatch = result.advertisementData.serviceUuids.any(
+              (uuid) => uuid.toString().toLowerCase() == serviceUuid,
+            );
+            final name = result.advertisementData.advName.trim().toLowerCase();
+            final platformName = result.device.platformName.trim().toLowerCase();
+            final knownMatch = knownCoolerRemoteIdNotifier.value != null &&
+                result.device.remoteId.toString() ==
+                    knownCoolerRemoteIdNotifier.value;
+            final matches = automatic
+                ? (knownMatch && serviceMatch)
+                : (serviceMatch || name == 'je x fyz' || platformName == 'je x fyz');
+            if (matches) {
+              if (!completer.isCompleted) completer.complete(result.device);
+              break;
+            }
+          }
+        },
+        onError: (Object error, StackTrace stackTrace) {
+          if (!completer.isCompleted) {
+            completer.completeError(error, stackTrace);
+          }
+        },
       );
+
+      if (!await _runOneShotScannerCommand(
+        attempt,
+        () => FlutterBluePlus.startScan(
+          withServices: <Guid>[Guid(serviceUuid)],
+          timeout: const Duration(seconds: 10),
+          androidCheckLocationServices: false,
+          androidUsesFineLocation: false,
+        ),
+      )) {
+        return;
+      }
+
       found = await completer.future.timeout(
         const Duration(seconds: 10),
         onTimeout: () => null,
       );
-      await FlutterBluePlus.stopScan();
+      if (!isCurrentAttempt()) return;
+
+      if (!await _runOneShotScannerCommand(
+        attempt,
+        () => FlutterBluePlus.stopScan(),
+      )) {
+        return;
+      }
 
       // Some ESP32-C3 advertising stacks omit the 128-bit service UUID from
-      // the first scan packet. Fall back to a name-based scan instead of
-      // declaring the device unavailable.
+      // the first scan packet. The fresh-result fallback preserves the known
+      // remote-ID match for that case without accepting retained prior results.
       if (found == null) {
-        final fallback = Completer<BluetoothDevice?>();
         await scanSub.cancel();
-        scanSub = FlutterBluePlus.scanResults.listen((results) {
-          for (final result in results) {
-            final name = result.advertisementData.advName.trim().toLowerCase();
-            final platformName = result.device.platformName.trim().toLowerCase();
-            final knownMatch = knownCoolerRemoteIdNotifier.value != null &&
-                result.device.remoteId.toString() == knownCoolerRemoteIdNotifier.value;
-            final matches = automatic
-                ? knownMatch
-                : (name == 'je x fyz' || platformName == 'je x fyz');
-            if (matches) {
-              if (!fallback.isCompleted) fallback.complete(result.device);
-              break;
+        scanSub = null;
+        if (!isCurrentAttempt()) return;
+
+        final fallback = Completer<BluetoothDevice?>();
+        scanSub = FlutterBluePlus.onScanResults.listen(
+          (results) {
+            if (!isCurrentAttempt()) return;
+            for (final result in results) {
+              final name = result.advertisementData.advName.trim().toLowerCase();
+              final platformName = result.device.platformName.trim().toLowerCase();
+              final knownMatch = knownCoolerRemoteIdNotifier.value != null &&
+                  result.device.remoteId.toString() ==
+                      knownCoolerRemoteIdNotifier.value;
+              final matches = automatic
+                  ? knownMatch
+                  : (name == 'je x fyz' || platformName == 'je x fyz');
+              if (matches) {
+                if (!fallback.isCompleted) fallback.complete(result.device);
+                break;
+              }
             }
-          }
-        });
-        await FlutterBluePlus.startScan(
-          timeout: const Duration(seconds: 6),
-          androidCheckLocationServices: false,
-          androidUsesFineLocation: false,
+          },
+          onError: (Object error, StackTrace stackTrace) {
+            if (!fallback.isCompleted) {
+              fallback.completeError(error, stackTrace);
+            }
+          },
         );
+
+        if (!await _runOneShotScannerCommand(
+          attempt,
+          () => FlutterBluePlus.startScan(
+            timeout: const Duration(seconds: 6),
+            androidCheckLocationServices: false,
+            androidUsesFineLocation: false,
+          ),
+        )) {
+          return;
+        }
+
         found = await fallback.future.timeout(
           const Duration(seconds: 6),
           onTimeout: () => null,
         );
-        await FlutterBluePlus.stopScan();
+        if (!isCurrentAttempt()) return;
+
+        if (!await _runOneShotScannerCommand(
+          attempt,
+          () => FlutterBluePlus.stopScan(),
+        )) {
+          return;
+        }
       }
 
+      if (!isCurrentAttempt()) return;
       if (found == null) {
         _showSnackBar(JexText.of('deviceNotFound'), color: Colors.orangeAccent);
         return;
       }
 
-      // AI-METHOD: _connect — Create a clean GATT session, discover the contract, and complete P1 synchronization.
+      // _connect() synchronously takes over with its connection-handoff fence.
       await _connect(found);
     } catch (e) {
       debugPrint('BLE scan: $e');
       _showSnackBar(JexText.of('scanFailed'), color: Colors.redAccent);
     } finally {
+      // Best-effort cleanup for failures after scanner startup. The lease check
+      // prevents an invalidated attempt from stopping a newer owner's scan.
+      if (ownsSyncing && isCurrentAttempt()) {
+        try {
+          await _runOneShotScannerCommand(
+            attempt,
+            () => FlutterBluePlus.stopScan(),
+          );
+        } catch (e) {
+          debugPrint('BLE scan cleanup: $e');
+        }
+      }
       await scanSub?.cancel();
-      if (mounted && !connected) {
+      _connectionScanCoordinator.finishOneShotAttempt(attempt);
+      if (ownsSyncing && mounted && !connected) {
         setState(() => syncing = false);
       }
     }

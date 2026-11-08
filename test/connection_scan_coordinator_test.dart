@@ -152,5 +152,76 @@ void main() {
       });
       expect(laterCommandRan, isTrue);
     });
+
+    test('one-shot reservation excludes passive and duplicate one-shot attempts', () {
+      final coordinator = ConnectionScanCoordinator();
+      final oneShot = coordinator.beginOneShotAttempt()!;
+
+      expect(coordinator.hasActiveOneShotAttempt, isTrue);
+      expect(coordinator.beginOneShotAttempt(), isNull);
+      expect(coordinator.beginPassiveAttempt(), isNull);
+
+      coordinator.finishOneShotAttempt(oneShot);
+      expect(coordinator.hasActiveOneShotAttempt, isFalse);
+
+      final passive = coordinator.beginPassiveAttempt()!;
+      expect(coordinator.beginOneShotAttempt(), isNull);
+      coordinator.finishPassiveAttempt(passive);
+    });
+
+    test('opening the manual sheet invalidates a one-shot attempt suspended in prerequisites', () async {
+      final coordinator = ConnectionScanCoordinator();
+      final prerequisites = Completer<void>();
+      var scannerStarted = false;
+
+      final attempt = coordinator.beginOneShotAttempt()!;
+      final suspendedAttempt = () async {
+        await prerequisites.future;
+        if (coordinator.isOneShotAttemptCurrent(attempt)) {
+          scannerStarted = true;
+        }
+        coordinator.finishOneShotAttempt(attempt);
+      }();
+
+      expect(coordinator.openManualSheet(), isTrue);
+      expect(coordinator.isOneShotAttemptCurrent(attempt), isFalse);
+      prerequisites.complete();
+      await suspendedAttempt;
+
+      expect(scannerStarted, isFalse);
+      expect(coordinator.isManualSheetOpen, isTrue);
+      expect(coordinator.beginOneShotAttempt(), isNull);
+    });
+
+    test('connection handoff invalidates and blocks a pending one-shot attempt', () {
+      final coordinator = ConnectionScanCoordinator();
+      final attempt = coordinator.beginOneShotAttempt()!;
+
+      coordinator.beginConnectionHandoff();
+      expect(coordinator.isOneShotAttemptCurrent(attempt), isFalse);
+      expect(coordinator.beginOneShotAttempt(), isNull);
+      expect(coordinator.beginPassiveAttempt(), isNull);
+
+      coordinator.finishOneShotAttempt(attempt);
+      coordinator.completeConnectionHandoff();
+      expect(coordinator.isConnectionHandoffActive, isFalse);
+    });
+
+    test('finishing an invalidated one-shot attempt does not clear a newer reservation', () {
+      final coordinator = ConnectionScanCoordinator();
+      final oldAttempt = coordinator.beginOneShotAttempt()!;
+      coordinator.invalidatePassiveAttempts();
+
+      final newAttempt = coordinator.beginOneShotAttempt()!;
+      expect(coordinator.isOneShotAttemptCurrent(newAttempt), isTrue);
+
+      coordinator.finishOneShotAttempt(oldAttempt);
+      expect(coordinator.isOneShotAttemptCurrent(newAttempt), isTrue);
+
+      coordinator.finishOneShotAttempt(newAttempt);
+      expect(coordinator.hasActiveOneShotAttempt, isFalse);
+    });
+
+
   });
 }

@@ -213,6 +213,10 @@ void main() {
     expect(main, contains('isPassiveAttemptCurrent(attempt)'));
     expect(main, contains('isConnectionHandoffActive'));
     expect(main, contains('hasActivePassiveAttempt'));
+    expect(main, contains('hasActiveOneShotAttempt'));
+    expect(main, contains('beginOneShotAttempt()'));
+    expect(main, contains('isOneShotAttemptCurrent(attempt)'));
+    expect(main, contains('finishOneShotAttempt(attempt)'));
     expect(main, contains('beginConnectionHandoff();'));
     expect(main, contains('completeConnectionHandoff();'));
     expect(main, contains('runSerialized(() async {'));
@@ -237,6 +241,46 @@ void main() {
     expect(startScanCall, isNonNegative);
     expect(scanCompletionWait, greaterThan(startScanCall));
     expect(finishAttempt, greaterThan(scanCompletionWait));
+
+    final oneShotStart = main.indexOf('Future<void> _scanAndConnect(');
+    final oneShotEnd = main.indexOf(
+      'Future<void> _connect(BluetoothDevice target) async',
+      oneShotStart,
+    );
+    expect(oneShotStart, isNonNegative);
+    expect(oneShotEnd, greaterThan(oneShotStart));
+    final oneShotScanner = main.substring(oneShotStart, oneShotEnd);
+    final oneShotReservation = oneShotScanner.indexOf('beginOneShotAttempt()');
+    final firstPermissionAwait =
+        oneShotScanner.indexOf('await Permission.bluetoothScan.status');
+    expect(oneShotReservation, isNonNegative);
+    expect(firstPermissionAwait, greaterThan(oneShotReservation));
+    expect(oneShotScanner, contains('if (!isCurrentAttempt()) return;'));
+    expect(
+      oneShotScanner.split('FlutterBluePlus.onScanResults.listen(').length - 1,
+      2,
+    );
+    expect(
+      oneShotScanner,
+      isNot(contains('FlutterBluePlus.scanResults.listen(')),
+    );
+    expect(
+      oneShotScanner.split('() => FlutterBluePlus.startScan(').length - 1,
+      2,
+    );
+    expect(oneShotScanner, isNot(contains('await FlutterBluePlus.startScan(')));
+    expect(oneShotScanner, isNot(contains('await FlutterBluePlus.stopScan(')));
+    expect(oneShotScanner, contains('() => FlutterBluePlus.stopScan()'));
+
+    final oneShotCommandStart =
+        main.indexOf('Future<bool> _runOneShotScannerCommand(');
+    final oneShotCommandEnd =
+        main.indexOf('Future<void> _scanAndConnect(', oneShotCommandStart);
+    expect(oneShotCommandStart, isNonNegative);
+    expect(oneShotCommandEnd, greaterThan(oneShotCommandStart));
+    final oneShotCommand = main.substring(oneShotCommandStart, oneShotCommandEnd);
+    expect(oneShotCommand, contains('_connectionScanCoordinator.runSerialized('));
+    expect(oneShotCommand, contains('isOneShotAttemptCurrent(attempt)'));
 
     expect(connection, contains('onPressed: _requestScan,'));
     expect(connection, isNot(contains('onPressed: widget.onScan')));

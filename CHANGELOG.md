@@ -1,3 +1,10 @@
+## 2026-11-08 — Arbitrate one-shot Auto Connect/OTA with passive and manual BLE scans
+
+- Added a synchronous one-shot scanner reservation before permission/adapter prerequisite awaits. The coordinator now excludes overlapping one-shot/passive attempts and invalidates pending one-shot work when manual ownership or connection handoff begins.
+- Routed one-shot primary/fallback scanner start/stop commands through the shared FIFO command queue with a lease check inside the queued operation. The lease spans both discovery stages without holding the command queue open for the radio scan duration.
+- Switched one-shot primary and fallback listeners from retained `scanResults` to fresh `onScanResults`. Preserved known-remote-ID-only matching in the fallback for ESP32-C3 advertisements that omit the 128-bit service UUID.
+- Added four deterministic coordinator tests and source-contract coverage for reservation, invalidation, fresh streams and serialized commands. Flutter formatter/tests/analyzer/full suite and Android QA are BLOCKED / NOT RUN because the toolchain/device is unavailable here. No App Build, Firmware, OTA or device operation was run.
+
 ## 2026-11-08 — Audit and repair English/Indonesian localization consistency
 
 - Corrected the Fan Speed control panel to use the full Fan Speed / Kecepatan Kipas label while preserving Fan / Kipas for the fan switch and compact Floating Monitor F metric.

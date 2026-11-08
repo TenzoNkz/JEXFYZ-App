@@ -21,7 +21,14 @@ Updated: 2026-11-08 (Asia/Jakarta).
 
 ## Next safe action
 
-The Full-mode source/test repair, connection-handoff fence and full passive-scan lifetime correction are committed but not yet validated. In a Flutter 3.47.2-enabled environment, format changed Dart files; run `connection_scan_state_test.dart`, `connection_scan_coordinator_test.dart`, `floating_monitor_layout_contract_test.dart` and `widget_test.dart`; run `flutter analyze --no-fatal-infos` and the complete `flutter test` suite. Then verify actual Android scanner handoff (passive-to-manual, neutral close, selected-device handoff, passive advertisement delivery throughout the 2-second scan window, one-shot Auto Connect deferral during passive ownership, and Auto Connect preference changes during connection handoff) and inspect Home/Settings/Connection at 350-dp/420-dp in English/Indonesian and Light/Dark. Build App remains a separate authorization. Only explicit `Eksekusi Build App!` authorizes APK packaging.
+The passive/manual/one-shot scanner ownership repair and coordinator regression coverage are now committed on `main` but remain SOURCE IMPLEMENTED / NOT RUN. The next action is validation in a Flutter 3.47.2-enabled environment:
+
+1. Format `lib/main.dart`, `lib/connection_scan_coordinator.dart`, `test/connection_scan_coordinator_test.dart` and `test/floating_monitor_layout_contract_test.dart`.
+2. Run `flutter test test/connection_scan_coordinator_test.dart test/floating_monitor_layout_contract_test.dart test/widget_test.dart`.
+3. Run `flutter analyze --no-fatal-infos`, then the complete `flutter test` suite.
+4. Android QA: duplicate Auto Connect triggers while permission checks are pending; open the manual sheet during a pending one-shot prerequisite; passive-to-manual pre-emption and neutral dismissal; selected-device handoff; current-only primary/fallback advertisements; BLE adapter off during passive scan; OTA disconnect/recovery while manual ownership is active and after it closes.
+
+Flutter/Dart/Gradle/ADB are unavailable in this container, so those checks remain BLOCKED / NOT RUN. Build App remains separate authorization; only explicit `Eksekusi Build App!` authorizes APK packaging.
 
 ## Evidence and safety boundary
 

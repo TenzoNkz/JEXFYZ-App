@@ -1,10 +1,12 @@
-/// Coordinates the two App-owned users of FlutterBluePlus' process-wide scanner:
-/// passive Auto Connect rediscovery and the manually opened Connection sheet.
+/// Coordinates App-owned users of FlutterBluePlus' process-wide scanner:
+/// passive Auto Connect rediscovery, one-shot Auto Connect/OTA discovery, and the
+/// manually opened Connection sheet.
 ///
 /// This deliberately does not own BLE connection/session state or protocol behavior.
 class ConnectionScanCoordinator {
   int _generation = 0;
   int? _activePassiveAttempt;
+  int? _activeOneShotAttempt;
   bool _manualSheetOpen = false;
   bool _manualDeviceSelected = false;
   bool _connectionHandoffActive = false;
@@ -14,6 +16,7 @@ class ConnectionScanCoordinator {
   bool get manualDeviceSelected => _manualSheetOpen && _manualDeviceSelected;
   bool get isConnectionHandoffActive => _connectionHandoffActive;
   bool get hasActivePassiveAttempt => _activePassiveAttempt == _generation;
+  bool get hasActiveOneShotAttempt => _activeOneShotAttempt == _generation;
 
   void beginConnectionHandoff() {
     _connectionHandoffActive = true;
@@ -28,7 +31,8 @@ class ConnectionScanCoordinator {
   int? beginPassiveAttempt() {
     if (_manualSheetOpen ||
         _connectionHandoffActive ||
-        _activePassiveAttempt == _generation) {
+        _activePassiveAttempt == _generation ||
+        _activeOneShotAttempt == _generation) {
       return null;
     }
     final token = _generation;
@@ -42,18 +46,42 @@ class ConnectionScanCoordinator {
       token == _generation &&
       _activePassiveAttempt == token;
 
-  void invalidatePassiveAttempts() {
-    _generation++;
-  }
-
   void finishPassiveAttempt(int token) {
     if (_activePassiveAttempt == token) {
       _activePassiveAttempt = null;
     }
   }
 
+  int? beginOneShotAttempt() {
+    if (_manualSheetOpen ||
+        _connectionHandoffActive ||
+        _activePassiveAttempt == _generation ||
+        _activeOneShotAttempt == _generation) {
+      return null;
+    }
+    final token = _generation;
+    _activeOneShotAttempt = token;
+    return token;
+  }
+
+  bool isOneShotAttemptCurrent(int token) =>
+      !_manualSheetOpen &&
+      !_connectionHandoffActive &&
+      token == _generation &&
+      _activeOneShotAttempt == token;
+
+  void finishOneShotAttempt(int token) {
+    if (_activeOneShotAttempt == token) {
+      _activeOneShotAttempt = null;
+    }
+  }
+
+  void invalidatePassiveAttempts() {
+    _generation++;
+  }
+
   bool openManualSheet() {
-    if (_manualSheetOpen) return false;
+    if (_manualSheetOpen || _connectionHandoffActive) return false;
     _manualSheetOpen = true;
     _manualDeviceSelected = false;
     invalidatePassiveAttempts();
