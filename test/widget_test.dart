@@ -694,6 +694,23 @@ void main() {
     expect(JexText.of('off', AppLanguage.indonesia), 'MATI');
   });
 
+  test('Every localization entry provides English and Indonesian copy', () {
+    final source = File('lib/app_settings.dart').readAsStringSync();
+    final entries = RegExp(r"'([^']+)'\\s*:\\s*\\{([\\s\\S]*?)\\},").allMatches(source).toList();
+
+    expect(entries.length, greaterThanOrEqualTo(300));
+    for (final entry in entries) {
+      final key = entry.group(1)!;
+      final translations = entry.group(2)!;
+      expect(translations, contains('AppLanguage.english:'), reason: 'Missing English translation: $key');
+      expect(translations, contains('AppLanguage.indonesia:'), reason: 'Missing Indonesian translation: $key');
+    }
+    expect(
+      () => JexText.of('__missing_localization_key__', AppLanguage.english),
+      throwsA(isA<AssertionError>()),
+    );
+  });
+
   test('Fan speed control uses the complete localized label while the Floating Monitor stays compact', () {
     final mainSource = File('lib/main.dart').readAsStringSync();
     final floatingSource = File('lib/floating_monitor.dart').readAsStringSync();
@@ -2082,6 +2099,22 @@ void main() {
         language: AppLanguage.indonesia,
       ),
       'Perubahan tegangan belum terkonfirmasi. Periksa status perangkat.',
+    );
+    expect(
+      normalizeHomeNotifyText(
+        'Adaptive change not confirmed. Check device status.',
+        hotLimit: 45,
+        language: AppLanguage.english,
+      ),
+      'Adaptive Mode change was not confirmed. Check device status.',
+    );
+    expect(
+      normalizeHomeNotifyText(
+        'Adaptive change failed. Check device status.',
+        hotLimit: 45,
+        language: AppLanguage.indonesia,
+      ),
+      'Perubahan Mode Adaptif gagal. Periksa status perangkat.',
     );
     expect(
       normalizeHomeNotifyText(
