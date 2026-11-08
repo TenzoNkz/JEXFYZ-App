@@ -72,3 +72,9 @@ This document stores owner-approved, screen-specific visual constraints, not a b
 3. Make only authorized changes; do not reinterpret a narrow edit as permission to redesign.
 4. Verify square ratio, symmetry, mounting holes, interior pattern, logo shape, aspect ratio, transparency and flat-print constraints as applicable.
 5. Record significant outcomes in CHANGELOG.md; keep historical build-specific proof in APP_BUILD_REPORT.md.
+
+## Localization terminology — English and Indonesian
+
+- The PWM speed control uses Fan Speed / Kecepatan Kipas. The Fan toggle and Floating Monitor F metric use the shorter Fan / Kipas label.
+- Hotside remains the named thermal component in both locales; Adaptive Mode / Mode Adaptif is the consistent feature name. Legacy stored notices using Sisi panas are re-localized to Hotside.
+- Floating Monitor is presented as Monitor Melayang in Indonesian, including its Android foreground-service notification channel, title and body. Keep the native channel ID unchanged.

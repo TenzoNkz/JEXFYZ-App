@@ -29,6 +29,17 @@ Checkpoint refreshed: 2026-11-08 (Asia/Jakarta), after the authorized Bluetooth 
 - Static document/link/routing checks confirm the constitution, visual gate, skill index, Master Prompt and agent entrypoint are connected. The final recursive tree audit confirms 125 entries (not truncated) and 50 Markdown files.
 - **Visual QA status: NOT RUN / UNVERIFIED.** No App screenshot was captured or reviewed in this documentation task. The standard defines how future UI changes must prove a visual PASS; it does not claim that any existing screen has passed or that the pending compact Settings/Connection pass is validated/released.
 
+
+## Latest App engineering milestone — English/Indonesian localization audit
+
+- Source review identified a real context-key defect: the Home Fan Speed control displayed Fan / Kipas because it used the compact speed key. It now uses fanSpeedLabel (Fan Speed / Kecepatan Kipas); the fan switch and Floating Monitor F metric intentionally keep Fan / Kipas.
+- Standardized the named thermal component as Hotside in English/Indonesian re-arm and Adaptive Profile copy; the legacy Sisi panas Adaptive Profile and Peltier re-arm strings remain accepted by the relocalizer for previously stored notices. Adaptive status/reason messages now consistently say Adaptive Mode / Mode Adaptif.
+- Localized the Floating Monitor feature to Monitor Melayang in Indonesian Flutter Settings/permission copy and Android channel/title/body. Native notification channel IDs and English copy are unchanged.
+- JexText.of now debug-asserts if a key or selected-locale entry is missing. Added regression assertions for the actual Fan Speed callsite, compact metric exception, Hotside/Adaptive wording, legacy notice re-localization and native Floating Monitor notification copy.
+- STATIC SOURCE CHECK / SOURCE IMPLEMENTED — NOT RUN. Flutter, Dart, Gradle and ADB are not installed in this environment. Formatter, focused tests, analyzer, full Flutter suite, Android compile, screenshot review and device/OEM QA have NOT RUN. Not released; no Build App, Firmware, BIN, Firebase, OTA, flash or device operation occurred.
+- Changed scope: lib/main.dart, lib/app_settings.dart, FloatingMonitorService.kt, test/widget_test.dart, APP_NOTES.md, DESIGN_NOTES.md, CHANGELOG.md, PROJECT_STATE.md, HANDOVER.md, and this checkpoint.
+- Next action: from a Flutter/Android-enabled environment run dart format on changed Dart files; run flutter test test/widget_test.dart test/connection_scan_state_test.dart test/floating_monitor_layout_contract_test.dart; then flutter analyze --no-fatal-infos and flutter test. Inspect Android output in both languages/themes and the existing 350-dp/420-dp matrix. Only a separate Eksekusi Build App! authorizes packaging.
+
 ## Last App engineering milestone — Bluetooth scan-state and compact-theme test repair
 
 - Added `lib/connection_scan_state.dart` to distinguish permission-required, Bluetooth/legacy-location unavailable, scan failure, active scan and completed-no-result messages using existing English/Indonesian localization keys.

@@ -22,11 +22,12 @@ Last refreshed: 2026-11-08 (Asia/Jakarta). Current-state summary only; always fe
 
 ## Current App source and validation
 
+- Localization repair implemented on main: Fan Speed controls now use the full Fan Speed / Kecepatan Kipas label while the fan switch and compact Floating Monitor F metric retain Fan / Kipas. Hotside and Adaptive Mode terminology is standardized; Indonesian Floating Monitor copy uses Monitor Melayang, including native foreground-service notifications. Debug builds assert on missing localization keys/locale entries. Legacy Sisi panas/Peltier re-arm notice text is still accepted for language switching.
 - Home-equivalent uncapped 360-dp DPI canvas for Settings/subpages, Connection sheet and selected dialogs is validated/released in Build #129.
 - The compact Settings/Connection pass remains implemented on `main` but NOT RELEASED. It reduces selected typography/glyph/spacing while preserving the approved 360-dp canvas and DPI formula.
 - The follow-up scan-state repair distinguishes active scanning, completed no-result scans, permission requirement, adapter/legacy-location unavailability and scan failure. It uses the plugin's scan lifecycle stream and fresh scan-result stream, with one guarded retry handler. BLE P1 UUIDs, protocol, GATT connection ownership and telemetry semantics are unchanged.
 - Regression tests now cover five scan-message mappings and render the opt-in compact theme at 350-dp/420-dp while checking inherited palette preservation. Test source is present; no test has run in this execution environment.
-- Formatter, focused Flutter tests, analyzer, full suite, screenshots and physical-device/OEM QA remain NOT RUN; current container has Git/Python but no Flutter/Dart. Do not claim runtime validation or release.
+- Formatter, targeted localization/scan/compact tests, analyzer, full suite, screenshots and physical-device/OEM QA remain NOT RUN; current container has Git/Python but no Flutter/Dart/Android toolchain. Localization and recent scan/compact source changes are NOT RELEASED. Do not claim runtime validation or release.
 
 ## Open design and engineering gaps
 

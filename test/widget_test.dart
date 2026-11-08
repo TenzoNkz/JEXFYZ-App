@@ -668,6 +668,7 @@ void main() {
     expect(JexText.of('hotsideTemperature', AppLanguage.english), 'Hotside Temperature');
     expect(JexText.of('speed', AppLanguage.english), 'Fan');
     expect(JexText.of('speed', AppLanguage.indonesia), 'Kipas');
+    expect(JexText.of('floatingMonitor', AppLanguage.english), 'Floating Monitor');
     expect(JexText.of('floatingMonitor', AppLanguage.indonesia), 'Monitor Melayang');
     expect(JexText.of('adaptiveOn', AppLanguage.english), 'Adaptive Mode ON.');
     expect(JexText.of('adaptiveOff', AppLanguage.english), 'Adaptive Mode OFF.');
@@ -1935,6 +1936,29 @@ void main() {
         AppLanguage.indonesia,
       ),
       'Tegangan diatur ke 12V.',
+    );
+    expect(
+      relocalizeHomeNotifyMessage(
+        'Peltier dikunci demi keselamatan. Turunkan suhu sisi panas hingga ≤ 44°C, lalu coba lagi.',
+        AppLanguage.english,
+      ),
+      'Peltier is locked for safety. Cool Hotside to ≤ 44°C, then try again.',
+    );
+    expect(
+      relocalizeHomeNotifyMessage(
+        'Profil Adaptif diatur ke Sisi panas.',
+        AppLanguage.english,
+      ),
+      'Adaptive profile set to Hotside.',
+    );
+    expect(
+      homeNotifyForTelemetryChange(
+        key: 'ADAPTIVE_PROFILE',
+        previousValue: 'BATTERY',
+        currentValue: 'HOTSIDE',
+        language: AppLanguage.indonesia,
+      ),
+      'Profil Adaptif diatur ke Hotside.',
     );
     expect(
       relocalizeHomeNotifyMessage(
