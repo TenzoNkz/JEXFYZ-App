@@ -40,11 +40,13 @@ Last refreshed: 2026-11-08 (Asia/Jakarta). Current-state summary only; always fe
 
 ## Open design and engineering gaps
 
-- **Next App validation:** source review is complete for the passive/manual/one-shot scanner ownership repair; coordinator and source-contract test source is committed but NOT RUN. This container has no Flutter, Dart, Gradle or ADB. In Flutter 3.47.2, run `dart format lib/main.dart lib/connection_scan_coordinator.dart test/connection_scan_coordinator_test.dart test/floating_monitor_layout_contract_test.dart`, focused scan/layout/widget tests, `flutter analyze --no-fatal-infos` and the full `flutter test` suite. If a real source defect appears, repair it under `Eksekusi Full!` before packaging. Once formatting is clean and no repair remains, a separate `Eksekusi Build App!` may run the guarded hosted analyzer/test/Android/APK/signing/source-ZIP/Release gates. Physical scanner/OEM and 350-dp/420-dp visual QA must be performed after owner installation; hosted CI does not prove device behavior.
-- After source/test validation, physical-device/OEM layout QA remains necessary when a suitable device is available. A separate explicit `Eksekusi Build App!` is required before packaging the compact pass.
+- **Physical App acceptance remains pending:** after the owner installs Build #131, inspect Settings and Bluetooth Connection at 350-dp/420-dp, English/Indonesian and Light/Dark themes; compare screenshots against the approved Home-equivalent 360-dp canvas and compact typography contract.
+- **BLE runtime acceptance remains pending:** verify passive rediscovery, pending-prerequisite cancellation, manual-sheet pre-emption and neutral dismissal, selected-device handoff, fresh primary/fallback advertisement handling, adapter loss and reconnect behavior on the actual phone/cooler. The 142 passing Flutter tests are automated tests, not a physical radio session.
+- Exact Build #131 installation on the field unit, Firmware V7.1 source-to-BIN identity, physical OTA/reboot/BLE recovery and thermal/electrical behavior remain independently UNVERIFIED.
 - BLE App-only identity authorization remains BLOCKED / NOT IMPLEMENTED until trusted enrollment/signing backend and Firmware verification exist.
-- Rapid Hotside-rise/rate-of-rise shutdown plus manual re-arm remains NOT IMPLEMENTED in Firmware V7.1; do not conflate it with Adaptive Fan tiers or raw-decimal limit safety.
-- Exact field BIN-to-source identity, Build #129 installation, physical OTA/reboot/BLE recovery and thermal/electrical behavior remain independently UNVERIFIED.
+- Rapid Hotside-rise/rate-of-rise shutdown plus manual re-arm remains NOT IMPLEMENTED in Firmware V7.1; do not conflate it with Adaptive Fan tiers or ordinary Hotside-limit protection.
+
+
 
 ## Protected contracts
 
