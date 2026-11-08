@@ -1,3 +1,14 @@
+## BUILD #131 PROGRESS — FULL FLUTTER TESTS PASSED; ANDROID GATE ACTIVE — 2026-11-08
+
+- **Run/job unchanged:** run `42474266430` / #131, job `128711948544`, source SHA `b3c4fee432fddc49430840daeb1e2eecbe78a0db`; run and job remain `in_progress`.
+- **Passed since runner-start checkpoint:** steps 1–13 are now `success), including Flutter 3.47.2, Gradle 9.3.1, security/architecture audit, dependencies, `flutter analyze --no-fatal-infos`, and the complete `flutter test` suite. The former three failing contracts are no longer blocking this suite. Exact test count/analyzer info count remain pending log retrieval; do not infer them from step success alone.
+- **Current gate:** step 14 `Run Android unit-test gate` is `in_progress). Steps 15–21 (APK build/sign/cert/source archive/Release/tag/download verification) remain pending.
+- **Log availability:** job-log archive endpoint still returns Azure BlobNotFound while the runner is active. The authoritative live job steps endpoint confirms the test step completed successfully.
+- **No Release change yet:** Build #129 remains latest published; do not treat #131 as an artifact until the final Release and downloaded-asset gates pass.
+- **Next:** follow job `128711948544`, capture Android gate result and final logs when available, then continue to APK/sign/source/release gates without another trigger.
+
+---
+
 ## BUILD #131 — GUARDED RETRY ACCEPTED; FLUTTER SETUP IN PROGRESS — 2026-11-08
 
 - **Why retry is valid:** Build #130 terminated at the full Flutter test gate with 3 concrete source-contract failures. App source/test repairs were committed and statically checked before the new trigger; this is not a blind retry.
