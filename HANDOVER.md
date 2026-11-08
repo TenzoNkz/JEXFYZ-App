@@ -4,7 +4,7 @@ Updated: 2026-11-08 (Asia/Jakarta).
 
 ## Latest verified state
 
-- Latest BLE scanner Full-mode source/test repair is committed on `main`: `6974d4e41d903f0ae11a5d0f7c316b6066029051`, followed by `310818f228a389930e24c85ec087476875686138` (current HEAD). It reserves one-shot Auto Connect/OTA before async prerequisites, uses fresh scan-result streams and serializes scanner commands. Validation remains NOT RUN; not released.
+- Latest one-shot scanner source repair: implementation commit `6974d4e41d903f0ae11a5d0f7c316b6066029051` plus compatibility follow-up `310818f228a389930e24c85ec087476875686138`; the later documentation checkpoint is `0776d57d37078435d935a1b3620456556a7ac58b`. No executable source changed in that final documentation checkpoint. The implementation reserves one-shot Auto Connect/OTA before async prerequisites, uses fresh scan-result streams and serializes scanner commands. Validation remains NOT RUN; source is not released.
 
 - The single operating policy is [MASTER_PROMPT.md](MASTER_PROMPT.md). [CHAT_RULES.md](CHAT_RULES.md) is only a compatibility pointer.
 - Exactly two LOAD + CONTINUE prompts remain in [CHAT_TRANSFER_PROMPTS.md](CHAT_TRANSFER_PROMPTS.md). Prompt 1 is general engineering; Prompt 2 is guarded Build App/QC only.
@@ -23,14 +23,16 @@ Updated: 2026-11-08 (Asia/Jakarta).
 
 ## Next safe action
 
-The passive/manual/one-shot scanner ownership repair and coordinator regression coverage are now committed on `main` but remain SOURCE IMPLEMENTED / NOT RUN. The next action is validation in a Flutter 3.47.2-enabled environment:
+The passive/manual/one-shot scanner ownership repair and coordinator regression coverage are committed, SOURCE IMPLEMENTED / NOT RUN, and have no additional source defect substantiated by the latest static review.
 
-1. Format `lib/main.dart`, `lib/connection_scan_coordinator.dart`, `test/connection_scan_coordinator_test.dart` and `test/floating_monitor_layout_contract_test.dart`.
+1. In a Flutter 3.47.2 environment, run `dart format lib/main.dart lib/connection_scan_coordinator.dart test/connection_scan_coordinator_test.dart test/floating_monitor_layout_contract_test.dart`.
 2. Run `flutter test test/connection_scan_coordinator_test.dart test/floating_monitor_layout_contract_test.dart test/widget_test.dart`.
 3. Run `flutter analyze --no-fatal-infos`, then the complete `flutter test` suite.
-4. Android QA: duplicate Auto Connect triggers while permission checks are pending; open the manual sheet during a pending one-shot prerequisite; passive-to-manual pre-emption and neutral dismissal; selected-device handoff; current-only primary/fallback advertisements; BLE adapter off during passive scan; OTA disconnect/recovery while manual ownership is active and after it closes.
+4. If any formatter/test/analyzer failure identifies a source defect, use a scoped `Eksekusi Full!` repair, commit it to `main`, and repeat the affected checks. Do not repeat the already-completed scanner implementation without a new finding.
+5. When formatting is clean and source repair is no longer pending, separately authorize `Eksekusi Build App!`. Its guarded hosted workflow independently runs the architecture/security audit, dependency install, analyzer, full Flutter tests, Android Gradle gate, APK build, V1/V2/V3 + certificate checks, corresponding-source ZIP, Release/tag and downloaded-asset integrity gates.
+6. After the resulting APK is installed by the owner, perform physical Android BLE lifecycle QA: duplicate Auto Connect during pending prerequisites; manual-sheet pre-emption and neutral dismissal; selected-device handoff; fresh primary/fallback advertisements; adapter loss; OTA disconnect/recovery. Also inspect the compact UI at 350-dp/420-dp. Hosted CI is not proof of device or visual behavior.
 
-Flutter/Dart/Gradle/ADB are unavailable in this container, so those checks remain BLOCKED / NOT RUN. Build App remains separate authorization; only explicit `Eksekusi Build App!` authorizes APK packaging.
+Flutter/Dart/Gradle/ADB are unavailable in this container, so formatter and local test/analyzer checks remain BLOCKED / NOT RUN. No build or device operation has been performed in this Discussion.
 
 ## Evidence and safety boundary
 
