@@ -1,3 +1,17 @@
+# CURRENT GUARDED APP BUILD EXECUTION — BUILD #130 RUNNER ACTIVE — 2026-11-08
+
+- **Run:** [Build #130 / 42473329529](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42473329529), workflow `374946166`, official `issues` event, attempt 1; run status `in_progress`.
+- **Exact source:** run `head_sha` `f48fedcde8358c2f957a737501fa120c2214bb69`, equal to main at the end of the pre-trigger checkpoint. Later ledger/checkpoint commits are documentation-only and do not change the run's checked-out source.
+- **Job:** `build` / ID `128709004935`, `in_progress`. Steps 1–4 succeeded (job, checkout, Java 17, Flutter 3.47.2); step 5 Set up Gradle is currently in progress. Steps 6–21 remain pending at the last read. No analyzer/test/build/release pass is claimed yet.
+- **Trigger integrity:** issue #34 was closed once and reopened once after checking exact owner/title/body-token and zero active prior runs. No duplicate trigger or rerun has occurred. Do not start another while #130 remains active.
+- **Current release:** Build #129 remains the latest verified artifact. Release/tag still target `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`; its APK/source hashes remain recorded in APP_BUILD_REPORT.md.
+- **Last completed gate:** Flutter setup (step 4). **Current gate:** Gradle setup (step 5). **Remaining:** steps 6–21, including analyzer, Flutter tests, Android gate, obfuscated APK, signing/cert, corresponding ZIP, Release/tag parity, and downloaded asset checks.
+- **Logs:** job-log download temporarily returns Azure BlobNotFound while the runner is active; the live steps endpoint is available. Re-fetch logs when available/completion.
+- **Limitations:** local formatter has not run; hosted workflow has no formatter step. CI is not physical-device/BLE/visual/Firmware/BIN/OTA evidence. Android versionName remains `Telegram @horizontalzzz`; no Firmware/BIN/Firebase/OTA/flash/device operations.
+- **Next:** continue observing the same run/job and append each gate result to the ledger. Current run is ACTIVE.
+
+---
+
 # CURRENT GUARDED APP BUILD EXECUTION — PRE-TRIGGER CHECKPOINT — 2026-11-08
 
 - **Mode/authorization:** owner explicitly issued `@Thinking Eksekusi Build App!`. Only the guarded App Build/QC/Release workflow and justified App-scope repairs are authorized. Firmware, BIN, Firebase, OTA, flashing and device operations remain outside scope.
