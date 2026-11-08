@@ -1,3 +1,18 @@
+# CURRENT APP BUILD EXECUTION — BUILD #130 FAILED / REPAIRS COMMITTED — 2026-11-08
+
+- **Failed run:** [Build #130 / 42473329529](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42473329529), source `f48fedcde8358c2f957a737501fa120c2214bb69`, terminal `completed/failure` at `2026-11-08T10:57:31Z`. Job ID `128709004935`, hosted runner `ubuntu-24.04` / `1000002676`.
+- **Gate outcome:** steps 1–12 success. Analyzer success with 25 info diagnostics. Step 13 full Flutter test suite failed: 139 passed, 3 failed. Step 14–21 were skipped, so #130 created no APK, source ZIP or new Release.
+- **Exact failures:** (1) Floating Monitor layout test line 82 used indentation-sensitive SizedBox source text; (2) Fan Speed test line 717 expected an obsolete animated-icon source shape; (3) BLE rediscovery test line 494 expected direct cancellation while source correctly uses `unawaited(_cancelDisconnectRediscovery());`. Complete names, evidence and repairs are at the top of APP_BUILD_REPORT.md.
+- **Committed repairs:** Home Fan Speed explicitly passes the locally captured language. Layout source contract now ignores indentation but retains width/height/child checks. Fan Speed test checks the actual `_homeFanSpeed()` method and `JexAnimatedIconKind.speed`. BLE test now verifies unawaited cancellation after the Auto Connect readiness failure gate.
+- **Repair commits:** `f67b8f8e2bf7fc450c666ff2cad363cc267e58d3`, `f5e95edf7117b0f8efccca13bf64a2faa4070a0c`, `f21c47881ff0c49389235435141f8fe01f9bf99b`, `32a6a27ce120e7bcd73cd4fa1af6abe16392d959`; style follow-ups `743fbc6a498857518cf4e6d87b97da3a528489c7`, `1fe46d64e3144560fd9d1a1fffbe52160592391b`, `b986be694fca3c701fd1ed6c291af833fd552be9`.
+- **Current repaired HEAD:** `b986be694fca3c701fd1ed6c291af833fd552be9` before this report/checkpoint write. Static source checks for the three repairs passed. Flutter tests have not yet been rerun; local Dart formatter remains unavailable and the guarded workflow itself has no formatter step.
+- **No active run:** latest workflow #130 is terminal failure, and the live workflow query shows no queued/in-progress/waiting run. No blind retry. This failure has concrete source/test repairs, so one fresh guarded retry is justified.
+- **Release baseline remains #129:** Release ID `403010611` and tag target `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`. Old APK/ZIP assets and hashes remain unchanged. #130 never reached Android/package/publish steps.
+- **Next exact action:** after verifying this ledger/checkpoint on live main, close issue #34 once and reopen it once. That should create Build #131 for the repaired main SHA. Confirm the run source SHA, then follow it only. Do not send another event while active.
+- **Preserve:** `versionName "Telegram @horizontalzzz"`. No Firmware source, Firmware compile, BIN, Firebase, OTA, flashing, device or hardware operation occurred.
+
+---
+
 # CURRENT GUARDED APP BUILD EXECUTION — BUILD #130 RUNNER ACTIVE — 2026-11-08
 
 - **Run:** [Build #130 / 42473329529](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42473329529), workflow `374946166`, official `issues` event, attempt 1; run status `in_progress`.
