@@ -714,7 +714,13 @@ void main() {
   test('Fan speed control uses the complete localized label while the Floating Monitor stays compact', () {
     final mainSource = File('lib/main.dart').readAsStringSync();
     final floatingSource = File('lib/floating_monitor.dart').readAsStringSync();
-    expect(RegExp(r"kind:\s*JexAnimatedIcon\.speed,[\s\S]{0,600}?JexText\.of\('fanSpeedLabel',\s*lang\)").hasMatch(mainSource), isTrue);
+    final fanSpeedStart = mainSource.indexOf('Widget _homeFanSpeed()');
+    final fanSpeedEnd = mainSource.indexOf('String _compactNotifyMessage(', fanSpeedStart);
+    expect(fanSpeedStart, isNonNegative);
+    expect(fanSpeedEnd, greaterThan(fanSpeedStart));
+    final fanSpeedSource = mainSource.substring(fanSpeedStart, fanSpeedEnd);
+    expect(fanSpeedSource, contains("JexText.of('fanSpeedLabel', lang)"));
+    expect(fanSpeedSource, contains('animatedKind: JexAnimatedIconKind.speed'));
     expect(floatingSource, contains("case 'F':\n        return JexText.of('speed', lang);"));
     expect(JexText.of('fanSpeedLabel', AppLanguage.english), 'Fan Speed');
     expect(JexText.of('fanSpeedLabel', AppLanguage.indonesia), 'Kecepatan Kipas');
