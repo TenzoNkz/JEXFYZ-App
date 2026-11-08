@@ -1,3 +1,16 @@
+# CURRENT APP BUILD EXECUTION — BUILD #131 ACTIVE — 2026-11-08
+
+- **Run:** [Build #131 / 42474266430](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42474266430), workflow `374946166`, event `issues`, attempt 1, `in_progress`.
+- **Source SHA:** `b3c4fee432fddc49430840daeb1e2eecbe78a0db`, equal to main when the run was triggered. This includes the #130 test/source repairs and the saved failure checkpoint.
+- **Job:** `build` / `128711948544`, `in_progress`. Step 1 Set up job, step 2 Checkout repository and step 3 Set up Java 17 are `success`; step 4 Set up Flutter is `in_progress`. Steps 5–21 remain pending.
+- **Reason for retry:** #130 failed the full Flutter suite with 139 pass / 3 test-contract failures. Exact evidence and committed corrections are recorded in APP_BUILD_REPORT.md. No retry occurred until after the App/test repairs and re-read checkpoint.
+- **Last completed gate:** Java 17 setup (step 3). **Current gate:** Flutter setup (step 4). **Remaining:** steps 5–21, including analyzer/full tests/Android/release integrity.
+- **Release:** Build #129 is still latest; #131 has not yet built or published anything.
+- **Guard:** only issue close/reopen was used after exact owner/title/token and workflow trigger review. No duplicate run. Keep following #131 only.
+- **Limits:** Android Gradle `versionName "Telegram @horizontalzzz"` preserved. Formatter not run locally (Dart unavailable; no format workflow step). No device/BLE/Firmware/BIN/Firebase/OTA/flash operation.
+
+---
+
 # CURRENT APP BUILD EXECUTION — BUILD #130 FAILED / REPAIRS COMMITTED — 2026-11-08
 
 - **Failed run:** [Build #130 / 42473329529](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42473329529), source `f48fedcde8358c2f957a737501fa120c2214bb69`, terminal `completed/failure` at `2026-11-08T10:57:31Z`. Job ID `128709004935`, hosted runner `ubuntu-24.04` / `1000002676`.
