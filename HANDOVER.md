@@ -4,6 +4,8 @@ Updated: 2026-11-08 (Asia/Jakarta).
 
 ## Latest verified state
 
+- Latest BLE scanner Full-mode source/test repair is committed on `main`: `6974d4e41d903f0ae11a5d0f7c316b6066029051`, followed by `310818f228a389930e24c85ec087476875686138` (current HEAD). It reserves one-shot Auto Connect/OTA before async prerequisites, uses fresh scan-result streams and serializes scanner commands. Validation remains NOT RUN; not released.
+
 - The single operating policy is [MASTER_PROMPT.md](MASTER_PROMPT.md). [CHAT_RULES.md](CHAT_RULES.md) is only a compatibility pointer.
 - Exactly two LOAD + CONTINUE prompts remain in [CHAT_TRANSFER_PROMPTS.md](CHAT_TRANSFER_PROMPTS.md). Prompt 1 is general engineering; Prompt 2 is guarded Build App/QC only.
 - Gemini consultation may be proposed proactively during Discussion when a second opinion materially reduces uncertainty. Gemini has no GitHub access; the owner must paste a fully self-contained prompt and return its answer for repository-backed review.

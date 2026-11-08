@@ -127,3 +127,12 @@ Only after validation and a separate explicit `Eksekusi Build App!` may an APK b
 - Current App published artifact remains Build #129 / source `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`; these new source changes are NOT RELEASED.
 - Exact changed paths: `lib/main.dart`, `lib/connection_scan_coordinator.dart`, `test/connection_scan_coordinator_test.dart`, `test/floating_monitor_layout_contract_test.dart`, `APP_NOTES.md`, `PROJECT_STATE.md`, `HANDOVER.md`, `CHAT_TRANSFER.md`, `CHANGELOG.md`.
 - Next action: run formatter and focused coordinator/layout/widget tests in Flutter 3.47.2, then analyzer and the complete test suite; perform Android QA for pending duplicate Auto Connect, manual-sheet pre-emption, primary/fallback current advertisements, selected-device handoff, adapter loss and OTA recovery. Only a separate `Eksekusi Build App!` can package an APK.
+
+## Chat Stuck recovery — final one-shot scanner checkpoint (2026-11-08)
+
+- Recovered the already-authorized `Eksekusi Full!` operation; no new permission to Build App, release, OTA, Firmware, BIN/Firebase or device actions was inferred.
+- Implementation commit: `6974d4e41d903f0ae11a5d0f7c316b6066029051`; follow-up compatibility commit: `310818f228a389930e24c85ec087476875686138`. The follow-up preserves the pre-existing non-automatic scan entry behavior while applying the post-prerequisite connected/`_bleConnecting` gate to automatic scans.
+- Final verified `main` HEAD at checkpoint: `310818f228a389930e24c85ec087476875686138`. The two commits change nine paths in total: scanner coordinator/main, two regression tests, APP_NOTES, PROJECT_STATE, HANDOVER, CHAT_TRANSFER and CHANGELOG.
+- Static source review: one-shot primary/fallback each subscribe to fresh `onScanResults`; no one-shot use of retained `scanResults`; one-shot `startScan`/ `stopScan` commands use the serialized helper; passive and manual scanner commands remain inside the same queue. Coordinator test source now contains 12 tests (8 existing + 4 added). This is STATIC SOURCE CHECK, not execution.
+- Environment lacks Flutter, Dart, Gradle and ADB. Formatter, coordinator/layout/widget tests, analyzer, full Flutter suite and Android scanner/device QA are BLOCKED / NOT RUN. Build #129 remains the latest App artifact; new source is NOT RELEASED.
+- Next exact action: run the format command in HANDOVER.md, then targeted tests, analyzer and full test suite on Flutter 3.47.2; complete the Android scanner lifecycle matrix before requesting separate `Eksekusi Build App!`.
