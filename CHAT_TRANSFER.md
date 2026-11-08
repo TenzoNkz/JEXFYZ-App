@@ -1,3 +1,18 @@
+# CURRENT GUARDED APP BUILD EXECUTION — PRE-TRIGGER CHECKPOINT — 2026-11-08
+
+- **Mode/authorization:** owner explicitly issued `@Thinking Eksekusi Build App!`. Only the guarded App Build/QC/Release workflow and justified App-scope repairs are authorized. Firmware, BIN, Firebase, OTA, flashing and device operations remain outside scope.
+- **Live source baseline before checkpoint commit:** `main` HEAD `8c1aef194de7fa397f1be3e699825c35393b28b6`; recursive tree is complete (129 entries; `truncated=false`). The App changes after Build #129 include localization/compact UI and BLE scan lifecycle plus passive/manual/one-shot coordinator ownership. They are not in the Build #129 package.
+- **Prior run state:** Build #129 / run `39925045446` is terminal `completed/success`; job `120319250463` and all 21 workflow steps are `success`. Current workflow query shows no active/queued/waiting run. Do not duplicate #129.
+- **Previous artifact:** Release `403010611` and live tag `jexfyz-latest` both target `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`. APK SHA-256 `f59c511786d49add8e0596fd3d658248746c008b7eaff94bb6215d314aa0426e`; source ZIP SHA-256 `c74e6800dadf80a5223dedcce3144b12f6365506a8b9821bb7abf1817df8cfff`.
+- **Trigger:** workflow blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`, issue opened/reopened only, exact owner/title/token guard. Issue #34 is open with the exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER` and body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`. No trigger event has been sent yet.
+- **Protected value:** `android/app/build.gradle` retains `versionName "Telegram @horizontalzzz"`.
+- **Validation limitations:** local Flutter/Dart/Gradle/ADB are absent. Formatter has not run; the existing workflow contains no formatter step, but hosted analyzer and full Flutter tests are enabled. Physical device/BLE/visual/Firmware/BIN/OTA evidence remains separate.
+- **Log retention:** run #129 job and step API confirm success; downloading its old job log currently returns HTTP 410. Its successful test counts, gate outcomes and artifact digests remain recorded in `APP_BUILD_REPORT.md`.
+- **Next exact operation:** verify this checkpoint commit and current main HEAD; close issue #34, then reopen it once. Confirm one new `issues/reopened` run and require its `head_sha` to equal the final checkpoint HEAD. Follow that same run; no duplicate while queued/active.
+- **State:** pre-trigger only. No Build #130 run exists yet. Latest verified release remains Build #129.
+
+---
+
 # JE X FYZ / JE Cooler — Live Chat Checkpoint
 
 Checkpoint refreshed: 2026-11-08 (Asia/Jakarta), after full BLE scanner arbitration across passive and one-shot Auto Connect paths. The single operating policy is `MASTER_PROMPT.md`; `AGENTS.md` is the cross-agent entrypoint; `SKILLS_INDEX.md` is the skill and tool-capability map.
