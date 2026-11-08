@@ -492,7 +492,7 @@ void main() {
     final readinessGate = method.indexOf('if (!canAutoConnect(');
     expect(readinessGate, greaterThanOrEqualTo(0));
     expect(
-      method.indexOf('_cancelDisconnectRediscovery();', readinessGate),
+      method.indexOf('unawaited(_cancelDisconnectRediscovery());', readinessGate),
       greaterThan(readinessGate),
     );
     expect(method, contains('syncing ||'));
