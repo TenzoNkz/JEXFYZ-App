@@ -182,14 +182,21 @@ void main() {
     final devicesLabel = connection.substring(devicesStart, devicesEnd);
     expect(devicesLabel, contains('fontSize: 13,'));
 
-    final emptyStateStart = connection.indexOf(
-      "unavailable ? JexText.of('connectionUnavailable', lang) : JexText.of('scanning', lang)",
+    final emptyStateHelper =
+        connection.indexOf('connectionScanEmptyStateMessageKey(');
+    expect(emptyStateHelper, isNonNegative);
+    final emptyStateMessage = connection.indexOf(
+      'JexText.of(messageKey, lang)',
+      emptyStateHelper,
     );
-    final emptyStateEnd = connection.indexOf('const SizedBox(height: 10)', emptyStateStart);
-    expect(emptyStateStart, isNonNegative);
-    expect(emptyStateEnd, greaterThan(emptyStateStart));
-    final emptyStateMessage = connection.substring(emptyStateStart, emptyStateEnd);
-    expect(emptyStateMessage, contains('fontSize: 12,'));
+    final emptyStateLayoutEnd =
+        connection.indexOf('const SizedBox(height: 10)', emptyStateMessage);
+    expect(emptyStateMessage, greaterThan(emptyStateHelper));
+    expect(emptyStateLayoutEnd, greaterThan(emptyStateMessage));
+    expect(
+      connection.substring(emptyStateMessage, emptyStateLayoutEnd),
+      contains('fontSize: 12,'),
+    );
     expect(connection, contains('height: 42'));
     expect(connection, contains('tightFor(width: 42, height: 42)'));
     expect(connection, contains('tightFor(width: 40, height: 40)'));
@@ -201,11 +208,18 @@ void main() {
     expect(main, contains('stream: FlutterBluePlus.onScanResults'));
     expect(main, contains('key: ValueKey<int>(_scanGeneration)'));
     expect(main, contains('_scanErrorKey'));
+    expect(main, contains('ConnectionScanCoordinator();'));
+    expect(main, contains('beginPassiveAttempt()'));
+    expect(main, contains('isPassiveAttemptCurrent(attempt)'));
+    expect(main, contains('runSerialized(() async {'));
+    expect(main, contains('onDeviceSelected:'));
+    expect(main, contains('_finishManualConnectionSheet'));
+    expect(main, contains('_prepareManualConnectionSheet'));
     expect(main, contains('Future<bool> _startScanFromSheet()'));
     expect(connection, contains('onPressed: _requestScan,'));
     expect(connection, isNot(contains('onPressed: widget.onScan')));
     expect(connection, contains('WidgetsBinding.instance.addPostFrameCallback'));
-    expect(connection, contains('if (FlutterBluePlus.isScanningNow)'));
+    expect(connection, isNot(contains('if (FlutterBluePlus.isScanningNow)')));
 
     // The existing DPI master-canvas scale is left intact; compactness is typography/density only.
     expect(floating, contains('final scale = constraints.maxWidth / designWidth;'));

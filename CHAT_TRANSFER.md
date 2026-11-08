@@ -1,6 +1,6 @@
 # JE X FYZ / JE Cooler — Live Chat Checkpoint
 
-Checkpoint refreshed: 2026-11-08 (Asia/Jakarta), after the authorized Bluetooth scan-state/compact-theme source work and a subsequent read-only Discussion audit. The single operating policy is `MASTER_PROMPT.md`; `AGENTS.md` is the cross-agent entrypoint; `SKILLS_INDEX.md` is the skill and tool-capability map.
+Checkpoint refreshed: 2026-11-08 (Asia/Jakarta), after Eksekusi Full BLE scan-ownership and regression-test implementation. The single operating policy is `MASTER_PROMPT.md`; `AGENTS.md` is the cross-agent entrypoint; `SKILLS_INDEX.md` is the skill and tool-capability map.
 
 ## Skills and capability rollout
 
@@ -62,10 +62,12 @@ Checkpoint refreshed: 2026-11-08 (Asia/Jakarta), after the authorized Bluetooth 
 
 ## Precise next engineering action
 
-1. Under a separate explicit `Eksekusi Full!`, replace the stale empty-state source-string assertion in `test/floating_monitor_layout_contract_test.dart` with a helper-backed semantic/behavioral assertion. Resolve scan ownership before implementation. The manual Connection sheet should temporarily own the global scanner and pause passive Auto Connect rediscovery, but a sheet-open boolean alone is insufficient: invalidate/await any in-flight passive scanOnce() across its permission/adapter awaits, serialize scanner stop/start operations, and do not clear the in-progress flag while the old task is still running. On sheet close, resume passive rediscovery only after manual scan cleanup, only for a neutral dismissal (not a selected-device connection), and only after rechecking the existing Auto Connect gates. Add regression coverage for pre-emption, stale cached results, sheet close and connection selection. No source/test change was made in this Discussion.
-2. In a Flutter-enabled environment, run `dart format lib/main.dart lib/connection_scan_state.dart test/floating_monitor_layout_contract_test.dart test/connection_scan_state_test.dart`.
-3. Run `flutter test test/connection_scan_state_test.dart test/floating_monitor_layout_contract_test.dart test/widget_test.dart`, then `flutter analyze --no-fatal-infos` and the full `flutter test` suite.
-4. Inspect actual Android screenshots at 350-dp/420-dp, English/Indonesian and Light/Dark themes, including Connection scanning, completed-no-result, permission and error states.
+The BLE scan-ownership and stale matcher source/test changes are now committed on `main`. They remain SOURCE IMPLEMENTED / NOT RUN and NOT RELEASED.
+
+1. In a Flutter-enabled environment, run `dart format lib/main.dart lib/connection_scan_state.dart lib/connection_scan_coordinator.dart test/floating_monitor_layout_contract_test.dart test/connection_scan_state_test.dart test/connection_scan_coordinator_test.dart`.
+2. Run `flutter test test/connection_scan_state_test.dart test/connection_scan_coordinator_test.dart test/floating_monitor_layout_contract_test.dart test/widget_test.dart`.
+3. Run `flutter analyze --no-fatal-infos` and the full `flutter test` suite; investigate actual failures without weakening test gates.
+4. Inspect real Android rendering and scanner behavior at 350-dp/420-dp, English/Indonesian, Light/Dark, including active scan, no result, permission denied, adapter off, neutral dismissal and selected-device handoff.
 
 Only after validation and a separate explicit `Eksekusi Build App!` may an APK be packaged.
 ## Read-only Discussion audit — test contract and scan ownership (2026-11-08)
@@ -80,7 +82,19 @@ Only after validation and a separate explicit `Eksekusi Build App!` may an APK b
 - **Gemini test-matrix correction:** its proposed assertion that scanResults must not replay earlier manual results is not a valid assumption. The pinned 2.3.14 documentation explicitly describes scanResults as current or previous results, while onScanResults clears between scans. Test that stale cached observations are not accepted as a fresh passive sighting (or use a fresh-result stream), not that the plugin's retained-results stream never emits old data.
 - **Unverified suggestion:** the claim that a 2-second passive scan is too short due to advertising cadence is not supported by supplied measurement or manufacturer advertising interval evidence. Preserve the existing timeout until observed discovery latency justifies a separate decision.
 - **Validation boundary:** Dart formatting, targeted tests, analyzer, full Flutter suite, Android screenshots and physical/OEM checks remain NOT RUN. The active environment has Python/Git but no Flutter, Dart, Gradle or ADB. No source, test, config, workflow, build, release, Firmware, Firebase, OTA or device operation was changed or executed in this Discussion.
-- **Next safe action:** only a separate `Eksekusi Full!` can authorize repairs to the stale test matcher and any agreed scan-ownership coordination/tests. First settle whether opening the manual Connection sheet should pause passive reconnect; do not silently alter Auto Connect behavior. Then use a Flutter-enabled environment for formatting, focused scan/layout/localization tests, analyzer, full tests and actual 350-dp/420-dp visual QA. App packaging still requires its own `Eksekusi Build App!`.
+- **Historical next action before implementation:** this audit called for a separate `Eksekusi Full!` to fix the matcher and define scanner ownership. That work is completed in the subsequent Full milestone below; this line is retained as historical chronology.
+
+## Eksekusi Full milestone — BLE scanner ownership and test contract repair (2026-11-08)
+
+- Mode: `Eksekusi Full!`; authorized scope was the stale Connection empty-state matcher, manual-sheet/passive-reconnect scanner arbitration and regression coverage only.
+- Added `lib/connection_scan_coordinator.dart`, a narrow coordinator for the two existing App scanner users. It tracks a generation token, active passive-attempt identity, manual-sheet ownership, selected-device handoff and a FIFO async scanner-operation queue. It does not own GATT/P1/session state.
+- Refactored passive rediscovery so its attempt is registered before the first permission/adapter await and checks generation validity after each await and inside the serialized scanner operation. Cancellation invalidates immediately and does not falsely clear an in-flight attempt; a stale attempt cannot clear a newer generation. Passive discovery now listens to fresh `onScanResults`.
+- Opening the manual Connection sheet synchronously acquires ownership, invalidates/cancels passive work, and queues a scanner stop before the initial manual scan. Manual start/stop operations are serialized. The child sheet no longer treats an already-running global scan as its own and always delegates a refresh to the parent.
+- Device selection is marked before the sheet is popped. Sheet completion skips neutral-dismissal cleanup/resume for selected-device handoff; `_connect()` owns scanner stop. Neutral dismissal stops the manual scan first, releases ownership, then re-evaluates the unchanged Auto Connect prerequisites before resuming passive rediscovery. Opening the sheet is blocked while an existing connection or `_scanAndConnect` is syncing.
+- Replaced the stale inline-ternary matcher with assertions for the helper call, localized message rendering and 12-dp message style in `test/floating_monitor_layout_contract_test.dart`. Added `test/connection_scan_coordinator_test.dart` with deterministic tests for suspended-attempt invalidation, manual ownership, selected-device no-resume, generation isolation, FIFO scanner serialization and queue recovery after errors.
+- BLE UUIDs/P1 framing, GATT connection semantics, Auto Connect preference/prerequisite gates, 2-second passive timeout/3-second cadence, 10-second manual timeout, telemetry semantics, Firmware, OTA, build workflow and Release behavior were not changed.
+- Validation: STATIC SOURCE CHECK only. Flutter/Dart/Gradle/ADB are unavailable here; formatter, both focused scan tests, layout/widget tests, analyzer, full suite and device QA are BLOCKED / NOT RUN. No App Build, APK/Release, Firmware compile, BIN, Firebase, OTA, flash or device operation occurred.
+- Next action: run the exact format/focused/full test sequence above in a Flutter 3.47.2-enabled environment, then inspect real Android scan transitions and 350-dp/420-dp visuals. App packaging still requires separate `Eksekusi Build App!`.
 
 ## Durable memory and safety
 

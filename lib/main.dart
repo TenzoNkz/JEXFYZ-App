@@ -72,6 +72,7 @@ import 'package:phosphor_icons/phosphor_icons.dart';
 
 import 'app_settings.dart';
 import 'connection_scan_state.dart';
+import 'connection_scan_coordinator.dart';
 import 'floating_monitor.dart';
 
 
@@ -4173,7 +4174,9 @@ class _DashboardScreenState extends State<DashboardScreen>
   Timer? reconnectTimer;
   Timer? disconnectRediscoveryTimer;
   StreamSubscription<List<ScanResult>>? disconnectRediscoverySub;
-  bool disconnectRediscoveryScanInProgress = false;
+  final ConnectionScanCoordinator _connectionScanCoordinator =
+      ConnectionScanCoordinator();
+  Future<void> _manualConnectionSheetPreparation = Future<void>.value();
   bool hotAlertArmed = true;
 
   bool _bleReady = false;
@@ -4278,7 +4281,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     disconnectRediscoveryTimer = null;
     disconnectRediscoverySub?.cancel();
     disconnectRediscoverySub = null;
-    disconnectRediscoveryScanInProgress = false;
+    _connectionScanCoordinator.invalidatePassiveAttempts();
     device?.disconnect();
     for (final waiters in _ackWaiters.values) {
       for (final waiter in waiters) {
@@ -4342,7 +4345,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     } else if (!otaRecoveryActive && !otaExpectedDisconnect) {
       reconnectTimer?.cancel();
       reconnectTimer = null;
-      _cancelDisconnectRediscovery();
+      unawaited(_cancelDisconnectRediscovery());
     }
   }
 
@@ -4354,6 +4357,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (connected ||
         syncing ||
         _bleConnecting ||
+        _connectionScanCoordinator.isManualSheetOpen ||
         (reconnectTimer?.isActive ?? false) ||
         !appAutoConnectNotifier.value ||
         knownCoolerRemoteIdNotifier.value == null) {
@@ -4696,8 +4700,10 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   // AI-METHOD: _connect — Create a clean GATT session, discover the contract, and complete P1 synchronization.
   Future<void> _connect(BluetoothDevice target) async {
-    _cancelDisconnectRediscovery();
-    await FlutterBluePlus.stopScan();
+    await _cancelDisconnectRediscovery();
+    await _connectionScanCoordinator.runSerialized(
+      () => FlutterBluePlus.stopScan(),
+    );
     await Future<void>.delayed(const Duration(milliseconds: 250));
     await connectionSub?.cancel();
     await notificationSub?.cancel();
@@ -4820,24 +4826,34 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   // AI-METHOD: _handleBleDisconnected — Central BLE teardown path; clear stale timers, ACKs, session state, and UI telemetry.
-  void _cancelDisconnectRediscovery() {
+  Future<void> _cancelDisconnectRediscovery() async {
+    // Invalidate immediately, before awaiting subscription cleanup. A scanOnce()
+    // suspended in a permission/adapter Future must re-check its generation before
+    // touching the shared scanner.
+    _connectionScanCoordinator.invalidatePassiveAttempts();
     disconnectRediscoveryTimer?.cancel();
     disconnectRediscoveryTimer = null;
-    disconnectRediscoverySub?.cancel();
+    final subscription = disconnectRediscoverySub;
     disconnectRediscoverySub = null;
-    disconnectRediscoveryScanInProgress = false;
+    await subscription?.cancel();
   }
 
   void _startDisconnectRediscovery() {
-    if (!mounted || connected || syncing || _bleConnecting) return;
+    if (!mounted ||
+        connected ||
+        syncing ||
+        _bleConnecting ||
+        _connectionScanCoordinator.isManualSheetOpen) {
+      return;
+    }
     if (!appAutoConnectNotifier.value ||
         knownCoolerRemoteIdNotifier.value == null) {
-      _cancelDisconnectRediscovery();
+      unawaited(_cancelDisconnectRediscovery());
       return;
     }
     if (reconnectTimer?.isActive ?? false) return;
 
-    _cancelDisconnectRediscovery();
+    final previousSubscriptionCleanup = _cancelDisconnectRediscovery();
     var attempts = 0;
 
     Future<void> scanOnce() async {
@@ -4845,78 +4861,109 @@ class _DashboardScreenState extends State<DashboardScreen>
           connected ||
           syncing ||
           _bleConnecting ||
+          _connectionScanCoordinator.isManualSheetOpen ||
           (reconnectTimer?.isActive ?? false) ||
           attempts >= 10) {
-        _cancelDisconnectRediscovery();
-        return;
-      }
-      if (disconnectRediscoveryScanInProgress) return;
-
-      // Passive reconnect uses the same OS-state gate as Auto Connect.
-      final scanPermission = await Permission.bluetoothScan.status;
-      final connectPermission = await Permission.bluetoothConnect.status;
-      final adapter = await FlutterBluePlus.adapterState.first;
-      final sdk = await _androidSdkInt();
-      var locationReady = true;
-      if (sdk > 0 && sdk <= 30) {
-        final permission = await Permission.locationWhenInUse.status;
-        var serviceEnabled = true;
-        try {
-          serviceEnabled = await batteryChannel.invokeMethod<bool>(
-                'isLocationServiceEnabled',
-              ) ??
-              false;
-        } catch (_) {
-          serviceEnabled = false;
-        }
-        locationReady = permission.isGranted && serviceEnabled;
-      }
-      if (!canAutoConnect(
-        autoConnectEnabled: appAutoConnectNotifier.value,
-        knownRemoteId: knownCoolerRemoteIdNotifier.value,
-        bluetoothScanGranted: scanPermission.isGranted,
-        bluetoothConnectGranted: connectPermission.isGranted,
-        bluetoothAdapterOn: adapter == BluetoothAdapterState.on,
-        legacyLocationReady: locationReady,
-      )) {
-        _cancelDisconnectRediscovery();
+        unawaited(_cancelDisconnectRediscovery());
         return;
       }
 
-      disconnectRediscoveryScanInProgress = true;
-      attempts++;
+      final attempt = _connectionScanCoordinator.beginPassiveAttempt();
+      if (attempt == null) return;
+      bool isCurrentAttempt() =>
+          mounted && _connectionScanCoordinator.isPassiveAttemptCurrent(attempt);
+
       try {
-        await FlutterBluePlus.stopScan();
-        await disconnectRediscoverySub?.cancel();
+        await previousSubscriptionCleanup;
+        if (!isCurrentAttempt()) return;
 
-        disconnectRediscoverySub =
-            FlutterBluePlus.scanResults.listen((results) {
-          if (!mounted || connected || _bleConnecting) return;
-          for (final result in results) {
-            final serviceMatch = result.advertisementData.serviceUuids.any(
-              (uuid) => uuid.toString().toLowerCase() == serviceUuid,
-            );
-            final knownMatch = knownCoolerRemoteIdNotifier.value != null &&
-                result.device.remoteId.toString() == knownCoolerRemoteIdNotifier.value;
-            if (serviceMatch && knownMatch) {
-              unawaited(FlutterBluePlus.stopScan());
-              _cancelDisconnectRediscovery();
-              unawaited(_connect(result.device));
-              break;
-            }
+        final scanPermission = await Permission.bluetoothScan.status;
+        if (!isCurrentAttempt()) return;
+        final connectPermission = await Permission.bluetoothConnect.status;
+        if (!isCurrentAttempt()) return;
+        final adapter = await FlutterBluePlus.adapterState.first;
+        if (!isCurrentAttempt()) return;
+        final sdk = await _androidSdkInt();
+        if (!isCurrentAttempt()) return;
+
+        var locationReady = true;
+        if (sdk > 0 && sdk <= 30) {
+          final permission = await Permission.locationWhenInUse.status;
+          if (!isCurrentAttempt()) return;
+          var serviceEnabled = true;
+          try {
+            serviceEnabled = await batteryChannel.invokeMethod<bool>(
+                  'isLocationServiceEnabled',
+                ) ??
+                false;
+          } catch (_) {
+            serviceEnabled = false;
           }
-        });
+          if (!isCurrentAttempt()) return;
+          locationReady = permission.isGranted && serviceEnabled;
+        }
 
-        await FlutterBluePlus.startScan(
-          withServices: <Guid>[Guid(serviceUuid)],
-          timeout: const Duration(seconds: 2),
-          androidCheckLocationServices: false,
-          androidUsesFineLocation: false,
-        );
+        if (!canAutoConnect(
+          autoConnectEnabled: appAutoConnectNotifier.value,
+          knownRemoteId: knownCoolerRemoteIdNotifier.value,
+          bluetoothScanGranted: scanPermission.isGranted,
+          bluetoothConnectGranted: connectPermission.isGranted,
+          bluetoothAdapterOn: adapter == BluetoothAdapterState.on,
+          legacyLocationReady: locationReady,
+        )) {
+          unawaited(_cancelDisconnectRediscovery());
+          return;
+        }
+
+        attempts++;
+        await _connectionScanCoordinator.runSerialized(() async {
+          if (!isCurrentAttempt()) return;
+          await FlutterBluePlus.stopScan();
+          if (!isCurrentAttempt()) return;
+
+          final previous = disconnectRediscoverySub;
+          disconnectRediscoverySub = null;
+          await previous?.cancel();
+          if (!isCurrentAttempt()) return;
+
+          disconnectRediscoverySub =
+              FlutterBluePlus.onScanResults.listen((results) {
+            if (!isCurrentAttempt() || connected || _bleConnecting) return;
+            for (final result in results) {
+              final serviceMatch = result.advertisementData.serviceUuids.any(
+                (uuid) => uuid.toString().toLowerCase() == serviceUuid,
+              );
+              final knownMatch =
+                  knownCoolerRemoteIdNotifier.value != null &&
+                  result.device.remoteId.toString() ==
+                      knownCoolerRemoteIdNotifier.value;
+              if (serviceMatch && knownMatch) {
+                unawaited(_cancelDisconnectRediscovery());
+                unawaited(_connect(result.device));
+                break;
+              }
+            }
+          });
+
+          if (!isCurrentAttempt()) {
+            final staleSubscription = disconnectRediscoverySub;
+            disconnectRediscoverySub = null;
+            await staleSubscription?.cancel();
+            return;
+          }
+          await FlutterBluePlus.startScan(
+            withServices: <Guid>[Guid(serviceUuid)],
+            timeout: const Duration(seconds: 2),
+            androidCheckLocationServices: false,
+            androidUsesFineLocation: false,
+          );
+        });
       } catch (e) {
-        debugPrint('BLE disconnect rediscovery: $e');
+        if (isCurrentAttempt()) {
+          debugPrint('BLE disconnect rediscovery: $e');
+        }
       } finally {
-        disconnectRediscoveryScanInProgress = false;
+        _connectionScanCoordinator.finishPassiveAttempt(attempt);
       }
     }
 
@@ -4980,7 +5027,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     // Start reconnect only after connected=false has been committed.
     if (expectedOtaDisconnect) {
-      _cancelDisconnectRediscovery();
+      unawaited(_cancelDisconnectRediscovery());
       if (!(reconnectTimer?.isActive ?? false)) {
         _startOtaReconnectMonitor();
       }
@@ -6832,6 +6879,13 @@ void _handleAckLine(String line) {
   }
 
   void _showBluetoothMenu() {
+    if (!mounted ||
+        syncing ||
+        _bleConnecting ||
+        !_connectionScanCoordinator.openManualSheet()) {
+      return;
+    }
+    _manualConnectionSheetPreparation = _prepareManualConnectionSheet();
     final media = MediaQuery.of(context);
     const designWidth = 360.0;
     const homeHeight = 420.0;
@@ -6858,6 +6912,8 @@ void _handleAckLine(String line) {
               child: _ConnectionSheetContent(
                 onScan: _startScanFromSheet,
                 onConnect: _connect,
+                onDeviceSelected:
+                    _connectionScanCoordinator.markManualDeviceSelected,
                 onOpenBluetoothSettings: _openBluetoothSettings,
                 onOpenLocationSettings: _openLocationSettings,
               ),
@@ -6865,21 +6921,58 @@ void _handleAckLine(String line) {
           ),
         );
       },
-    ).whenComplete(() => FlutterBluePlus.stopScan());
+    ).whenComplete(_finishManualConnectionSheet);
+  }
 
+  Future<void> _prepareManualConnectionSheet() async {
+    await _cancelDisconnectRediscovery();
+    await _connectionScanCoordinator.runSerialized(() async {
+      if (_connectionScanCoordinator.isManualSheetOpen) {
+        await FlutterBluePlus.stopScan();
+      }
+    });
+  }
+
+  Future<void> _finishManualConnectionSheet() async {
+    final selectedDevice = _connectionScanCoordinator.manualDeviceSelected;
+    var scannerStopped = selectedDevice;
+    if (!selectedDevice) {
+      try {
+        await _connectionScanCoordinator.runSerialized(
+          () => FlutterBluePlus.stopScan(),
+        );
+        scannerStopped = true;
+      } catch (e) {
+        debugPrint('Connection sheet scan cleanup: $e');
+      }
+    }
+    final resumePassiveReconnect =
+        _connectionScanCoordinator.closeManualSheet();
+    if (resumePassiveReconnect && scannerStopped && mounted) {
+      _startDisconnectRediscovery();
+    }
   }
 
   Future<bool> _startScanFromSheet() async {
+    await _manualConnectionSheetPreparation;
+    if (!_connectionScanCoordinator.isManualSheetOpen) return false;
     final accessReady = await _requestPermissions();
+    if (!accessReady || !_connectionScanCoordinator.isManualSheetOpen) {
+      return false;
+    }
     if (!accessReady) return false;
     try {
-      await FlutterBluePlus.stopScan();
-      await FlutterBluePlus.startScan(
-        timeout: const Duration(seconds: 10),
-        androidCheckLocationServices: false,
-        androidUsesFineLocation: false,
-      );
-      return true;
+      await _connectionScanCoordinator.runSerialized(() async {
+        if (!_connectionScanCoordinator.isManualSheetOpen) return;
+        await FlutterBluePlus.stopScan();
+        if (!_connectionScanCoordinator.isManualSheetOpen) return;
+        await FlutterBluePlus.startScan(
+          timeout: const Duration(seconds: 10),
+          androidCheckLocationServices: false,
+          androidUsesFineLocation: false,
+        );
+      });
+      return _connectionScanCoordinator.isManualSheetOpen;
     } catch (e) {
       debugPrint('start scan sheet: $e');
       rethrow;
@@ -9003,12 +9096,14 @@ void _handleAckLine(String line) {
 class _ConnectionSheetContent extends StatefulWidget {
   final Future<bool> Function() onScan;
   final Future<void> Function(BluetoothDevice device) onConnect;
+  final VoidCallback onDeviceSelected;
   final Future<void> Function() onOpenBluetoothSettings;
   final Future<void> Function() onOpenLocationSettings;
 
   const _ConnectionSheetContent({
     required this.onScan,
     required this.onConnect,
+    required this.onDeviceSelected,
     required this.onOpenBluetoothSettings,
     required this.onOpenLocationSettings,
   });
@@ -9053,13 +9148,6 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
 
   Future<void> _requestScan() async {
     if (!mounted || _scanRequestInFlight) return;
-    if (FlutterBluePlus.isScanningNow) {
-      setState(() {
-        _scanAttempted = true;
-        _scanErrorKey = null;
-      });
-      return;
-    }
     setState(() {
       _scanAttempted = true;
       _scanRequestInFlight = true;
@@ -9425,8 +9513,8 @@ class _ConnectionSheetContentState extends State<_ConnectionSheetContent> {
                             ),
                           ),
                           onTap: () async {
-                            await FlutterBluePlus.stopScan();
                             if (!context.mounted) return;
+                            widget.onDeviceSelected();
                             Navigator.pop(context);
                             await widget.onConnect(result.device);
                           },
