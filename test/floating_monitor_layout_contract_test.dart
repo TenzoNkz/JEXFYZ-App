@@ -211,6 +211,9 @@ void main() {
     expect(main, contains('ConnectionScanCoordinator();'));
     expect(main, contains('beginPassiveAttempt()'));
     expect(main, contains('isPassiveAttemptCurrent(attempt)'));
+    expect(main, contains('isConnectionHandoffActive'));
+    expect(main, contains('beginConnectionHandoff();'));
+    expect(main, contains('completeConnectionHandoff();'));
     expect(main, contains('runSerialized(() async {'));
     expect(main, contains('onDeviceSelected:'));
     expect(main, contains('_finishManualConnectionSheet'));

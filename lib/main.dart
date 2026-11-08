@@ -4586,6 +4586,13 @@ class _DashboardScreenState extends State<DashboardScreen>
         }
         locationReady = permission.isGranted && serviceEnabled;
       }
+      // The manual sheet or a selected-device handoff may have started while the
+      // prerequisite Futures above were pending. Recheck immediately before scanning.
+      if (automatic &&
+          (_connectionScanCoordinator.isManualSheetOpen ||
+              _connectionScanCoordinator.isConnectionHandoffActive)) {
+        return;
+      }
       if (!canAutoConnect(
         autoConnectEnabled: otaRecovery || appAutoConnectNotifier.value,
         knownRemoteId: knownCoolerRemoteIdNotifier.value,
@@ -4853,7 +4860,8 @@ class _DashboardScreenState extends State<DashboardScreen>
         connected ||
         syncing ||
         _bleConnecting ||
-        _connectionScanCoordinator.isManualSheetOpen) {
+        _connectionScanCoordinator.isManualSheetOpen ||
+        _connectionScanCoordinator.isConnectionHandoffActive) {
       return;
     }
     if (!appAutoConnectNotifier.value ||
@@ -4872,6 +4880,7 @@ class _DashboardScreenState extends State<DashboardScreen>
           syncing ||
           _bleConnecting ||
           _connectionScanCoordinator.isManualSheetOpen ||
+          _connectionScanCoordinator.isConnectionHandoffActive ||
           (reconnectTimer?.isActive ?? false) ||
           attempts >= 10) {
         unawaited(_cancelDisconnectRediscovery());

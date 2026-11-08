@@ -21,7 +21,7 @@ Updated: 2026-11-08 (Asia/Jakarta).
 
 ## Next safe action
 
-The Full-mode source/test repair is committed but not yet validated. In a Flutter 3.47.2-enabled environment, format changed Dart files; run `connection_scan_state_test.dart`, `connection_scan_coordinator_test.dart`, `floating_monitor_layout_contract_test.dart` and `widget_test.dart`; run `flutter analyze --no-fatal-infos` and the complete `flutter test` suite. Then verify actual Android scanner handoff (passive-to-manual, neutral close, selected-device handoff) and inspect Home/Settings/Connection at 350-dp/420-dp in English/Indonesian and Light/Dark. Build App remains a separate authorization. Only explicit `Eksekusi Build App!` authorizes APK packaging.
+The Full-mode source/test repair and follow-up connection-handoff fence are committed but not yet validated. In a Flutter 3.47.2-enabled environment, format changed Dart files; run `connection_scan_state_test.dart`, `connection_scan_coordinator_test.dart`, `floating_monitor_layout_contract_test.dart` and `widget_test.dart`; run `flutter analyze --no-fatal-infos` and the complete `flutter test` suite. Then verify actual Android scanner handoff (passive-to-manual, neutral close, selected-device handoff and Auto Connect preference changes during connection handoff) and inspect Home/Settings/Connection at 350-dp/420-dp in English/Indonesian and Light/Dark. Build App remains a separate authorization. Only explicit `Eksekusi Build App!` authorizes APK packaging.
 
 ## Evidence and safety boundary
 
