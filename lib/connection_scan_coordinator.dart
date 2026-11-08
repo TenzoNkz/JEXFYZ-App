@@ -7,13 +7,27 @@ class ConnectionScanCoordinator {
   int? _activePassiveAttempt;
   bool _manualSheetOpen = false;
   bool _manualDeviceSelected = false;
+  bool _connectionHandoffActive = false;
   Future<void> _operationQueue = Future<void>.value();
 
   bool get isManualSheetOpen => _manualSheetOpen;
   bool get manualDeviceSelected => _manualSheetOpen && _manualDeviceSelected;
+  bool get isConnectionHandoffActive => _connectionHandoffActive;
+
+  void beginConnectionHandoff() {
+    _connectionHandoffActive = true;
+    invalidatePassiveAttempts();
+  }
+
+  void completeConnectionHandoff() {
+    _connectionHandoffActive = false;
+    invalidatePassiveAttempts();
+  }
 
   int? beginPassiveAttempt() {
-    if (_manualSheetOpen || _activePassiveAttempt == _generation) {
+    if (_manualSheetOpen ||
+        _connectionHandoffActive ||
+        _activePassiveAttempt == _generation) {
       return null;
     }
     final token = _generation;
@@ -23,6 +37,7 @@ class ConnectionScanCoordinator {
 
   bool isPassiveAttemptCurrent(int token) =>
       !_manualSheetOpen &&
+      !_connectionHandoffActive &&
       token == _generation &&
       _activePassiveAttempt == token;
 
@@ -45,7 +60,10 @@ class ConnectionScanCoordinator {
   }
 
   void markManualDeviceSelected() {
-    if (_manualSheetOpen) _manualDeviceSelected = true;
+    if (_manualSheetOpen) {
+      _manualDeviceSelected = true;
+      beginConnectionHandoff();
+    }
   }
 
   bool closeManualSheet() {

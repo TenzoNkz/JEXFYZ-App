@@ -4358,6 +4358,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         syncing ||
         _bleConnecting ||
         _connectionScanCoordinator.isManualSheetOpen ||
+        _connectionScanCoordinator.isConnectionHandoffActive ||
         (reconnectTimer?.isActive ?? false) ||
         !appAutoConnectNotifier.value ||
         knownCoolerRemoteIdNotifier.value == null) {
@@ -4700,15 +4701,23 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   // AI-METHOD: _connect — Create a clean GATT session, discover the contract, and complete P1 synchronization.
   Future<void> _connect(BluetoothDevice target) async {
-    await _cancelDisconnectRediscovery();
-    await _connectionScanCoordinator.runSerialized(
-      () => FlutterBluePlus.stopScan(),
-    );
-    await Future<void>.delayed(const Duration(milliseconds: 250));
-    await connectionSub?.cancel();
-    await notificationSub?.cancel();
-    batteryTimer?.cancel();
-    voltageGuardTimer?.cancel();
+    // Keep passive scans blocked from the moment this async handoff starts until
+    // _bleConnecting is set; selected-sheet close may happen before these awaits end.
+    _connectionScanCoordinator.beginConnectionHandoff();
+    try {
+      await _cancelDisconnectRediscovery();
+      await _connectionScanCoordinator.runSerialized(
+        () => FlutterBluePlus.stopScan(),
+      );
+      await Future<void>.delayed(const Duration(milliseconds: 250));
+      await connectionSub?.cancel();
+      await notificationSub?.cancel();
+      batteryTimer?.cancel();
+      voltageGuardTimer?.cancel();
+    } catch (_) {
+      _connectionScanCoordinator.completeConnectionHandoff();
+      rethrow;
+    }
 
     // Never let a previous failed/stalled GATT write block the next session.
     _writeQueue = Future<void>.value();
@@ -4720,6 +4729,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     } catch (_) {}
     device = target;
     _bleConnecting = true;
+    _connectionScanCoordinator.completeConnectionHandoff();
     rx = null;
     tx = null;
     _bleReady = false;
@@ -6882,6 +6892,7 @@ void _handleAckLine(String line) {
     if (!mounted ||
         syncing ||
         _bleConnecting ||
+        _connectionScanCoordinator.isConnectionHandoffActive ||
         !_connectionScanCoordinator.openManualSheet()) {
       return;
     }
@@ -6960,7 +6971,6 @@ void _handleAckLine(String line) {
     if (!accessReady || !_connectionScanCoordinator.isManualSheetOpen) {
       return false;
     }
-    if (!accessReady) return false;
     try {
       await _connectionScanCoordinator.runSerialized(() async {
         if (!_connectionScanCoordinator.isManualSheetOpen) return;

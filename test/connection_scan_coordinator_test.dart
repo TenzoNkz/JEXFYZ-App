@@ -48,6 +48,24 @@ void main() {
       expect(coordinator.manualDeviceSelected, isTrue);
       expect(coordinator.closeManualSheet(), isFalse);
       expect(coordinator.isManualSheetOpen, isFalse);
+      expect(coordinator.isConnectionHandoffActive, isTrue);
+      expect(coordinator.beginPassiveAttempt(), isNull);
+
+      coordinator.completeConnectionHandoff();
+      expect(coordinator.isConnectionHandoffActive, isFalse);
+    });
+
+    test('beginning connection handoff invalidates and blocks passive attempts', () {
+      final coordinator = ConnectionScanCoordinator();
+      final attempt = coordinator.beginPassiveAttempt()!;
+
+      coordinator.beginConnectionHandoff();
+      expect(coordinator.isPassiveAttemptCurrent(attempt), isFalse);
+      expect(coordinator.beginPassiveAttempt(), isNull);
+
+      coordinator.finishPassiveAttempt(attempt);
+      coordinator.completeConnectionHandoff();
+      expect(coordinator.isConnectionHandoffActive, isFalse);
     });
 
     test('invalidating an old attempt does not clear a newer generation', () {
