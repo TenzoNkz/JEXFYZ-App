@@ -7311,7 +7311,7 @@ void _handleAckLine(String line) {
       offLabel: JexText.of('off', lang),
     );
     return _homeMetric(
-      JexText.of('fanSpeedLabel'),
+      JexText.of('fanSpeedLabel', lang),
       displaySpeed,
       '',
       color: const Color(0xFFFFCD38),
