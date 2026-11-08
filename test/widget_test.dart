@@ -1946,6 +1946,20 @@ void main() {
     );
     expect(
       relocalizeHomeNotifyMessage(
+        'Peltier is locked for safety. Cool Hotside to ≤ 44°C, then try again.',
+        AppLanguage.indonesia,
+      ),
+      'Peltier dikunci demi keselamatan. Turunkan suhu Hotside hingga ≤ 44°C, lalu coba lagi.',
+    );
+    expect(
+      relocalizeHomeNotifyMessage(
+        'Peltier dikunci demi keselamatan. Turunkan suhu Hotside hingga ≤ 44°C, lalu coba lagi.',
+        AppLanguage.english,
+      ),
+      'Peltier is locked for safety. Cool Hotside to ≤ 44°C, then try again.',
+    );
+    expect(
+      relocalizeHomeNotifyMessage(
         'Profil Adaptif diatur ke Sisi panas.',
         AppLanguage.english,
       ),
