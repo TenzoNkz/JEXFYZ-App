@@ -1,3 +1,17 @@
+## BUILD #131 — GUARDED RETRY ACCEPTED; FLUTTER SETUP IN PROGRESS — 2026-11-08
+
+- **Why retry is valid:** Build #130 terminated at the full Flutter test gate with 3 concrete source-contract failures. App source/test repairs were committed and statically checked before the new trigger; this is not a blind retry.
+- **Official trigger:** issue #34 was checked for owner/title/token, no active prior run, and unchanged issue-only workflow guard. It was closed once at `2026-11-08T11:06:18Z` and reopened once at `2026-11-08T11:06:25Z`. No push, PR, workflow_dispatch or duplicate event was used.
+- **Run identity:** [Build #131 / run 42474266430](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42474266430); workflow ID `374946166`; attempt 1; event `issues`; source SHA `b3c4fee432fddc49430840daeb1e2eecbe78a0db`, exactly equal to main HEAD after repair and the failure/repair memory checkpoint. Created/started `2026-11-08T11:06:27Z`.
+- **Job:** `build`, ID `128711948544`, status `in_progress`. Hosted runner started successfully; step 1 Set up job, step 2 Checkout repository and step 3 Set up Java 17 are `success`; step 4 Set up Flutter is `in_progress`. Steps 5–21 have not run at this checkpoint.
+- **Remaining gates:** Flutter/Gradle toolchain, signing prep, architecture/security audit, dependency resolution, analyzer, complete Flutter suite, Android unit-test gate, obfuscated APK build, V1/V2/V3 and certificate verification, corresponding source ZIP, Release/tag parity, and downloaded asset identity/checksum/signature/cert verification.
+- **Current release baseline:** Build #129 remains the latest published release until #131 completes. Release ID `403010611` and tag `jexfyz-latest` still point to `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`; asset hashes remain in the immediately preceding failure record.
+- **Protected value:** `android/app/build.gradle` remains `versionName "Telegram @horizontalzzz"`.
+- **Limitations:** local Dart formatter remains NOT RUN (no Dart SDK in active container; current workflow has no formatter gate). This CI run does not prove physical BLE, device display/overlay/cooling, Firmware/BIN identity or OTA behavior.
+- **Retry discipline:** exactly one run #131 is active. Continue this run/job only; never trigger another while queued or active. Record each actual gate result before concluding.
+
+---
+
 ## BUILD #130 — FAILED AT FULL FLUTTER TEST GATE; REPAIRS COMMITTED FOR #131 — 2026-11-08
 
 - **Terminal run:** [Build #130 / run 42473329529](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42473329529), workflow `374946166`, attempt 1, event `issues`, source SHA `f48fedcde8358c2f957a737501fa120c2214bb69`. Run completed `failure` at `2026-11-08T10:57:31Z`.
