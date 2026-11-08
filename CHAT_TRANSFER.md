@@ -62,14 +62,12 @@ Checkpoint refreshed: 2026-11-08 (Asia/Jakarta), after the authorized Bluetooth 
 
 ## Precise next engineering action
 
-In a Flutter-enabled environment:
+1. Under a separate explicit `Eksekusi Full!`, replace the stale empty-state source-string assertion in `test/floating_monitor_layout_contract_test.dart` with a helper-backed semantic/behavioral assertion. Resolve the intended scan ownership between passive Auto Connect rediscovery and the manual 10-second Connection sheet; the recommended default is to suspend passive rediscovery while the manually opened sheet owns the global scanner, then resume only when the normal Auto Connect prerequisites still hold. Add regression coverage for scan pre-emption, sheet dismissal and reconnect resumption. No source/test change was made in this Discussion.
+2. In a Flutter-enabled environment, run `dart format lib/main.dart lib/connection_scan_state.dart test/floating_monitor_layout_contract_test.dart test/connection_scan_state_test.dart`.
+3. Run `flutter test test/connection_scan_state_test.dart test/floating_monitor_layout_contract_test.dart test/widget_test.dart`, then `flutter analyze --no-fatal-infos` and the full `flutter test` suite.
+4. Inspect actual Android screenshots at 350-dp/420-dp, English/Indonesian and Light/Dark themes, including Connection scanning, completed-no-result, permission and error states.
 
-1. `dart format lib/main.dart lib/connection_scan_state.dart test/floating_monitor_layout_contract_test.dart test/connection_scan_state_test.dart`
-2. `flutter test test/connection_scan_state_test.dart test/floating_monitor_layout_contract_test.dart`
-3. `flutter analyze --no-fatal-infos`
-4. `flutter test`
-
-Review exact output, then inspect actual Android screenshots at 350-dp/420-dp with English/Indonesian and Light/Dark themes. Only after validation and a separate explicit `Eksekusi Build App!` may an APK be packaged.
+Only after validation and a separate explicit `Eksekusi Build App!` may an APK be packaged.
 ## Read-only Discussion audit — test contract and scan ownership (2026-11-08)
 
 - **CURRENT / VERIFIED:** live `main` HEAD at audit is `65101a297f9cd10caf1cb6a7ffed38613072c745`; recursive tree contains 127 entries / 50 Markdown files and is not truncated. Build #129 remains the latest published App package; its tested source is `f9ffac6a92917afd73d8d30ab0c5653ed9b67cb4`. No Actions runs are queued or in progress, and no PR is open.
