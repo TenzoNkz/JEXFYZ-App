@@ -80,8 +80,10 @@ void main() {
     expect(floating, contains('minHeight: designHeight'));
     expect(floating, contains('maxHeight: designHeight'));
     expect(
-      floating,
-      contains('width: designWidth,\n                      height: designHeight,\n                      child: child,'),
+      RegExp(
+        r'width:\s*designWidth,\s*height:\s*designHeight,\s*child:\s*child,',
+      ).hasMatch(floating),
+      isTrue,
     );
     expect(floating, contains('TextScaler.noScaling'));
     expect(floating, contains('JexFixedScalePage(compactUi: true, child: LanguageSettingsPage())'));
