@@ -324,6 +324,29 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
+    testWidgets('surfaces a visible warning after local recorder writes fail', (tester) async {
+      final recorder = UsageStatisticsRecorder.instance;
+      final previousError = recorder.lastWriteError;
+      recorder.lastWriteError = 'simulated write failure';
+      addTearDown(() => recorder.lastWriteError = previousError);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData.light(useMaterial3: true),
+          home: UsageStatisticsPage(
+            coolerId: 'AA:BB:CC',
+            repository: _FakeUsageRepository(
+              const UsageStatsSnapshot.empty(fromMs: 0, toMs: 10000),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('History recording may be incomplete.'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+
     testWidgets('renders all three sections in the compact Home canvas', (tester) async {
       final previousLanguage = appLanguageNotifier.value;
       addTearDown(() => appLanguageNotifier.value = previousLanguage);
@@ -356,12 +379,14 @@ void main() {
       expect(find.text('Suhu Baterai HP'), findsOneWidget);
       expect(find.text('Suhu Hotside'), findsOneWidget);
       expect(find.text('Riwayat Operasi'), findsOneWidget);
+      expect(find.text('30D'), findsOneWidget);
       expect(find.byType(CustomPaint), findsNWidgets(5));
 
       await pumpAtWidth(420, ThemeData.dark(useMaterial3: true));
       expect(find.text('Suhu Baterai HP'), findsOneWidget);
       expect(find.text('Suhu Hotside'), findsOneWidget);
       expect(find.text('Riwayat Operasi'), findsOneWidget);
+      expect(find.text('30D'), findsOneWidget);
       expect(tester.takeException(), isNull);
 
     });
