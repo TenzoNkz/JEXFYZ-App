@@ -1,12 +1,13 @@
 
 
-## Immediate resume — Usage Statistics validation and final source review (2026-11-09)
-Usage Statistics source is already committed and restored. Continue the authorized App-only scope from the active CHAT_TRANSFER checkpoint: review analytics/session/error/retention behavior, use available static checks, update durable notes and verify main. Flutter/Dart validation is BLOCKED / NOT RUN in this runtime. No App Build/release and no Firmware/OTA/device operations.
+## Immediate resume — Usage Statistics static review complete / validation blocked (2026-11-10)
+Current command: `Diskusi!` — read-only for executable source, tests, configuration, workflows, builds/releases and Firmware/device operations. The earlier `Eksekusi Full!` implementation pass produced the committed Usage Statistics source; that prior authorization does not permit source edits in this continuation. Static review is complete for the current pass. One low-priority display timestamp mismatch is recorded in `APP_NOTES.md`; the unbounded serialized write queue and unmeasured 30-day database growth remain open validation risks. Flutter, Dart, Gradle and ADB are absent from the current runtime, so formatter/tests/analyzer/screenshots were not run. Live `jexfyz-latest` still points to the pre-Statistics package source `5201a3e`; current `main` is 50 commits ahead.
+
 # JE X FYZ / JE Cooler — Immediate Handover
 
-Updated: 2026-11-09 (Asia/Jakarta).
+Updated: 2026-11-10 (Asia/Jakarta).
 
-## Current App feature — Usage Statistics source implemented; validation pending (2026-11-09)
+## Current App feature — Usage Statistics source implemented; validation pending (2026-11-10)
 
 - Owner no longer wants a standalone Firmware timer for now; instead asks for a Usage Statistics / Statistik Penggunaan page under Settings.
 - Page order: Phone Battery Temperature trend; Hotside Temperature trend; Operating Profile timeline with separate Voltage 5/9/12V, Adaptive ON/OFF and Fan Speed (%) lanes. Source provides 1h / 24h / 7d / 30d filters, default 24h.
@@ -38,13 +39,14 @@ Updated: 2026-11-09 (Asia/Jakarta).
 - Android Gradle `versionName "Telegram @horizontalzzz"` remains unchanged.
 - **Field boundary:** installation of Build #133 is not yet independently confirmed; visual screenshot/OEM QA, physical BLE lifecycle, cooling/thermal, Firmware/BIN/OTA behavior remain separate/unverified.
 
+
 ## Next safe action
 
-- Continue a targeted static review of Usage Statistics data correctness, session lifecycle, recorder backpressure and long-range chart behavior; correct any substantiated defect within the already-authorized App-only scope.
-- Re-run Flutter formatter, focused and full tests, and analyzer only when a Flutter/Dart toolchain is available. Do not claim the older Build #133 test results validate the Usage Statistics commits.
-- Update the active checkpoint and subject notes after each durable milestone. An APK still requires separate `Eksekusi Build App!`; no Firmware/BIN/Firebase/OTA/device operation is part of this task.
-- Add schema/repository/parser/widget tests; validate lifecycle, sync/reconnect/gaps, invalid values, time-weighted summaries, settings navigation, 350/420-dp canvas, themes and localization; run formatter, analyzer and full Flutter suite. A release still requires separate `Eksekusi Build App!`.
-- Remaining separate backlog: Default hybrid Home contrast regression and Firmware Touch Voltage one-way cycle. Do not silently bundle them into the Statistics implementation unless the owner explicitly expands scope.
+- Keep this continuation in Diskusi until the owner explicitly selects another mode. No source, test, configuration, workflow, App Build/release or Firmware/device operation is authorized here.
+- The review's low-priority UI correction candidate is the “Last value change” timestamp: it currently derives from the plotted endpoint, which can be synthetic. Use the latest valid persisted temperature-event timestamp and add a focused widget test if the owner authorizes the repair with a new `Eksekusi Full!`.
+- Before any code validation, provide Flutter/Dart matching `pubspec.lock` constraints (Flutter `>=3.38.4`, Dart `>=3.13.0`). Then run formatter, focused tests, analyzer and full Flutter tests; all are currently NOT RUN because the toolchain is absent.
+- Do not treat Build #133's 145 tests as evidence for Usage Statistics. A new package still requires separate `Eksekusi Build App!`; no Firmware/BIN/Firebase/OTA/flash/device operation is part of this workstream.
+
 ## Evidence and safety boundary
 
 - Build #133 validates the App source SHA above only. It does not prove the exact package has been installed on the owner's phone or physically accepted.
