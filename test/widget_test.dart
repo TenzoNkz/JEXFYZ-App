@@ -191,6 +191,36 @@ void main() {
     expect(source, contains('valueKnown'));
   });
 
+  test('Home indicator painter receives Light Mode theme tokens and repaints on changes', () {
+    final source = File('lib/main.dart').readAsStringSync();
+    final widgetStart = source.indexOf('class JexAnimatedIcon extends StatefulWidget {');
+    final widgetEnd = source.indexOf('class _JexFanRotationSimulation', widgetStart);
+    expect(widgetStart, isNonNegative);
+    expect(widgetEnd, greaterThan(widgetStart));
+    final widget = source.substring(widgetStart, widgetEnd);
+    expect(widget, contains('final bool lightTheme;'));
+    expect(widget, contains('final Color lightSurfaceColor;'));
+    expect(widget, contains('final Color lightOutlineColor;'));
+
+    final metricStart = source.indexOf('Widget _homeMetric(');
+    final metricEnd = source.indexOf('Widget _homeStateChip(', metricStart);
+    final metric = source.substring(metricStart, metricEnd);
+    expect(metric, contains('lightTheme: !homeDark'));
+    expect(metric, contains('lightSurfaceColor: theme.colorScheme.surface'));
+    expect(metric, contains('lightOutlineColor: theme.colorScheme.onSurfaceVariant'));
+
+    final painterStart = source.indexOf('class _JexIconPainter extends CustomPainter {');
+    final painterEnd = source.indexOf('const MethodChannel securityChannel', painterStart);
+    final painter = source.substring(painterStart, painterEnd);
+    expect(painter, contains('_depthPaintColor('));
+    expect(painter, contains('_cavityPaintColor('));
+    expect(painter, contains('lightTheme ? lightOutlineColor'));
+    expect(painter, contains('lightTheme ? lightSurfaceColor'));
+    expect(painter, contains('oldDelegate.lightTheme != lightTheme'));
+    expect(painter, contains('oldDelegate.lightSurfaceColor != lightSurfaceColor'));
+    expect(painter, contains('oldDelegate.lightOutlineColor != lightOutlineColor'));
+  });
+
   test('Indicator glyphs retain detailed static geometry while disconnected or unknown', () {
     final source = File('lib/main.dart').readAsStringSync();
     final painterStart = source.indexOf('class _JexIconPainter extends CustomPainter {');
@@ -201,11 +231,11 @@ void main() {
 
     for (final feature in [
       'shell.shift(Offset(s * .014, s * .018))',
-      'canvas.drawRRect(inner, _fill(const Color(0xFF09121A)',
+      '_cavityPaintColor(\n            const Color(0xFF09121A),\n            darkAlpha: .92,',
       'if (!valueKnown)',
       'if (valueKnown && fluidHeight > 0)',
       'Path _boltInnerCore(double s)',
-      'const Color(0xFF070B12).withValues(alpha: .74)',
+      '_depthPaintColor(\n            const Color(0xFF070B12),\n            darkAlpha: .74,\n            lightAlpha: .46,',
       's * (.135 + .010 * wave)',
       'if (!moving || strength <= .005) return;',
       'final crystalWidth = s * (.058 + .006 * frostPower)',
@@ -223,7 +253,9 @@ void main() {
     final speed = painter.substring(speedStart, speedEnd);
     expect(speed, contains('if (valueKnown)'));
     expect(speed, contains('final needleAngle = start + sweep * safeLevel;'));
-    expect(speed, contains('_stroke(s * .090, const Color(0xFF070B12)'));
+    expect(speed, contains('_depthPaintColor('));
+    expect(speed, contains('darkAlpha: .96,'));
+    expect(speed, contains('lightAlpha: .52,'));
     expect(speed, contains('const tickCount = 11'));
 
     final batteryStart = painter.indexOf('case JexAnimatedIconKind.battery:');
@@ -1000,6 +1032,60 @@ void main() {
     expect(normalizerIndex, greaterThan(otaFormatterIndex));
   });
 
+  test('Home NOTIFY uses contrast-safe Light Mode foregrounds and preserves Dark Mode colors', () {
+    final light = buildJexTheme(AppThemePreset.light);
+
+    final successForeground = jexHomeNotifyForegroundColor(
+      darkTheme: false,
+      hasError: false,
+      warning: false,
+    );
+    final warningForeground = jexHomeNotifyForegroundColor(
+      darkTheme: false,
+      hasError: false,
+      warning: true,
+    );
+    final errorForeground = jexHomeNotifyForegroundColor(
+      darkTheme: false,
+      hasError: true,
+      warning: true,
+    );
+
+    expect(successForeground, const Color(0xFF027A48));
+    expect(warningForeground, const Color(0xFFB54708));
+    expect(errorForeground, const Color(0xFFB42318));
+
+    final successSurface = Color.alphaBlend(
+      const Color(0xFF4DE7B7).withValues(alpha: .08),
+      light.colorScheme.surface,
+    );
+    final warningSurface = Color.alphaBlend(
+      const Color(0xFFFFB72B).withValues(alpha: .08),
+      light.colorScheme.surface,
+    );
+    final errorSurface = Color.alphaBlend(
+      const Color(0xFFFF5164).withValues(alpha: .11),
+      light.colorScheme.surface,
+    );
+
+    expect(jexContrastRatio(successForeground, successSurface), greaterThanOrEqualTo(4.5));
+    expect(jexContrastRatio(warningForeground, warningSurface), greaterThanOrEqualTo(4.5));
+    expect(jexContrastRatio(errorForeground, errorSurface), greaterThanOrEqualTo(4.5));
+
+    expect(
+      jexHomeNotifyForegroundColor(darkTheme: true, hasError: false, warning: false),
+      const Color(0xFF4DE7B7),
+    );
+    expect(
+      jexHomeNotifyForegroundColor(darkTheme: true, hasError: false, warning: true),
+      const Color(0xFFFFB72B),
+    );
+    expect(
+      jexHomeNotifyForegroundColor(darkTheme: true, hasError: true, warning: true),
+      const Color(0xFFFF5164),
+    );
+  });
+
   test('Home Notify keeps a fixed-height left Row and scales wrapped copy to two lines', () {
     final source = File('lib/main.dart').readAsStringSync();
     final start = source.indexOf('Widget _homeNotify() {');
@@ -1009,6 +1095,10 @@ void main() {
     final card = source.substring(start, end);
 
     expect(card, contains('height: 44,'));
+    expect(card, contains('jexHomeNotifyForegroundColor('));
+    expect(card, contains('color: foregroundColor'));
+    expect(card, contains('foregroundColor.withValues(alpha: .28)'));
+    expect(card, contains('color.withValues(alpha: hasError ? .11 : .08)'));
     expect(card, isNot(contains('BoxConstraints(minHeight: 44)')));
     expect(card, contains('TextPainter measure(double fontSize)'));
     expect(card, contains('fontSize = 9.5;'));
@@ -2212,6 +2302,35 @@ void main() {
     expect(isUserVisibleResetReason('POWERON'), isFalse);
     expect(isUserVisibleResetReason('UNKNOWN'), isFalse);
     expect(isUserVisibleResetReason('BROWNOUT'), isTrue);
+  });
+
+  test('Home Light Mode metric accents meet WCAG 4.5:1 on the active surface', () {
+    final light = buildJexTheme(AppThemePreset.light);
+    final accents = <Color>[
+      jexThermalBatteryColor('25'),
+      jexThermalBatteryColor('35'),
+      jexThermalBatteryColor('40'),
+      jexHotsideTemperatureColor('25', hotLimit: 45),
+      jexHotsideTemperatureColor('37', hotLimit: 45),
+      jexHotsideTemperatureColor('45', hotLimit: 45),
+      jexVoltageIndicatorColor('5V'),
+      jexVoltageIndicatorColor('9V'),
+      jexVoltageIndicatorColor('12V'),
+      const Color(0xFFC05BFF),
+      const Color(0xFFFFCD38),
+    ];
+
+    for (final accent in accents) {
+      final foreground = lightThemeAccentText(
+        accent,
+        background: light.colorScheme.surface,
+      );
+      expect(
+        jexContrastRatio(foreground, light.colorScheme.surface),
+        greaterThanOrEqualTo(4.5),
+        reason: 'Home accent $accent must remain readable in Light Mode.',
+      );
+    }
   });
 
   test('Light Theme Home metric value role uses dark semantic accent', () {
