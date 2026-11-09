@@ -1,3 +1,18 @@
+# CURRENT DISCUSSION — APP USAGE STATISTICS FEATURE REQUESTED — 2026-11-09
+
+- **Mode:** `@Thinking Diskusi!`; design/memory work only. No App source, test, database schema, dependency, workflow, Build, Firmware, BIN, Firebase, OTA, flash or device operation.
+- **Owner direction:** no standalone Firmware timer for now. Add **Usage Statistics / Statistik Penggunaan** inside Settings so the owner can review recorded cooler usage and trends.
+- **Page hierarchy:** (1) Phone Battery Temperature graph; (2) Hotside Temperature graph; (3) Operating Profile timeline with separate lanes for Voltage 5V/9V/12V, Adaptive ON/OFF and Fan Speed %. Proposed period filters: 1h, 24h, 7d, 30d.
+- **Capture:** Phone Battery from existing Android `getBatteryTemperature` reader (~1Hz during connected session); Hotside from Firmware `HOT` telemetry (~1Hz); Voltage/Adaptive/Fan Speed recorded only when authoritative state changes. Temperature values stored on change with timestamp; use step-hold display and duration-weighted averages. Invalid/missing/disconnected periods are visible gaps, never inferred/zero-filled.
+- **Placement/design:** new Statistics section in `SettingsPage` (`lib/floating_monitor.dart`) after Device and before Firmware; open with existing `JexFixedScalePage(compactUi: true, ...)`, preserve 360-dp DPI behavior, all themes and EN/ID. Default page hierarchy and visual requirements are in `DESIGN_NOTES.md`.
+- **Storage proposal:** App-local SQLite with batched writes; existing `flutter_secure_storage` is preferences only and must not hold high-frequency history. No Firebase upload, no Firmware NVS writes and no standalone Firmware timer. Proposed retention: 7 days detailed records + 30 days 1-minute aggregates/state summaries. Current `pubspec.yaml` has no DB/chart dependency; package choice is to be reviewed in implementation. Custom painter is preferred initially to avoid unnecessary chart dependencies.
+- **Truth/coverage:** data records only while App has a valid synchronized BLE/P1 session and actually receives telemetry. A foreground connected-device session may supply background readings only while the process/service continues receiving them; force-stop/disconnect/sensor invalidity must cause gaps. Reconnect begins a new segment from the verified full-sync baseline. Do not average across gaps.
+- **Statistics:** temperature min/max and duration-weighted average; Hotside limit reference; Voltage time share at 5/9/12V; Adaptive active duration; Fan Speed time-weighted average/maximum. For event/change-only records, never use simple arithmetic average of event rows.
+- **Docs updated:** `APP_NOTES.md`, `DESIGN_NOTES.md`, `FIRMWARE_NOTES.md` (standalone timer deferred), `PROJECT_STATE.md`, `HANDOVER.md`, and this checkpoint.
+- **Implementation boundary:** REQUESTED DESIGN / NOT IMPLEMENTED. A separate App-scoped `Eksekusi Full!` is required for database/repository/parser/UI/tests; resulting APK requires separate `Eksekusi Build App!`. Existing separate backlog (Default hybrid Home theme contrast and Touch Voltage one-way Firmware cycle) must not be silently bundled.
+- **Next:** owner may explicitly issue App-scoped `Eksekusi Full!` for Usage Statistics implementation. This Diskusi has not authorized source/dependency/test changes.
+
+---
 # CURRENT DISCUSSION — FIRMWARE APP / COOLER TIMER SEMANTICS PENDING — 2026-11-09
 
 - **Mode:** `@Thinking Diskusi!`; this is read-only for executable source/tests. Documentation-only findings recorded; no compile, BIN, Firebase, OTA, flash or device action.
