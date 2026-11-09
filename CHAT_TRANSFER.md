@@ -1,4 +1,28 @@
-## CURRENT EXECUTION CHECKPOINT — APP USAGE STATISTICS — CHAT STUCK — 2026-11-09
+## CURRENT EXECUTION CHECKPOINT — REPOSITORY RESTORED / USAGE STATISTICS — 2026-11-09
+
+**Mode / authorization:** Owner's `@Thinking Eksekusi Full!` for App-only Usage Statistics remains active. Continue only this App feature. No APK build/release, Firebase deployment, Firmware source/compile/BIN, OTA, flash or device operation.
+
+**Canonical repo:** `TenzoNkz/JEXFYZ-App`, branch `main`.
+**Latest verified source commit before documentation reconciliation:** `4ddd70c2842a1e381d89f1f9d0639cb48dfd5247` (local write-failure warning). Earlier source commits: `d9b1c99057fa0e8da8d1584068e5ba964144518f` (30D filter + 30-day retention), `78c94c98b859872ccc1d32eb8b5d5a4138e86d56` (tests).
+**Repository recovery:** bad checkpoint `6bbe571` created a tree with only four documentation files because the tree was created without inheriting the previous tree. Recovery commit `18b4d2279053100eb94dc1099671db29e0c8ad79` restored from the full parent tree and retained the four newer checkpoint docs. Verified recursive tree had 131 entries and key source, Firmware, Android, test, workflow and documentation paths present. The compare from pre-incident full commit `8b3270e` to the recovery commit showed only four documentation files modified and no file deletions. Preserve this recovery commit/history; never force-push or rewrite it.
+
+**Feature history/current source:** Usage Statistics had already been implemented in `810c550` and received a retention fix in `8b3270e`; the previous checkpoint's claim that no source had been committed was incorrect. Current source includes SQLite persistence, BLE/P1 sync-gated sessions, Android battery readings, authoritative HOT/Voltage/Adaptive/FAN telemetry, Settings navigation, custom charts/timelines, empty/error/clear-history UI, duration-weighted analytics and tests. The current execution added 1H/24H/7D/30D selection, 30-day retention and a visible process-local warning after SQLite write failure.
+
+**Retention decision:** current implementation retains changed-value temperature events and operating-state changes for 30 days. It does **not** implement the prior 1-minute rollup proposal; do not call the raw event store an aggregate. Measure database growth under sustained high-change telemetry before treating storage efficiency as fully validated.
+
+**Validation/evidence:** STATIC SOURCE CHECK only. Focused regression assertions are committed in `test/usage_statistics_test.dart`, but Flutter/Dart formatter, unit/widget tests, analyzer, screenshot/OEM review and App Build have NOT RUN for this feature. Existing Build #133 / 145 tests belong to source `5201a3e` and predate Usage Statistics; they do not validate this feature. Current container lacks Flutter, Dart, Gradle and ADB.
+
+**Next actions:**
+1. Finish adversarial source review of temperature stale/gap behavior, state timeline horizon, P1 readiness/session reset, SQLite write errors and recorder queue backpressure.
+2. Check dependency/lock parity (`sqflite: 2.4.2`, `path: ^1.9.1`) and run available static/lexical checks without presenting them as Flutter validation.
+3. Keep `APP_NOTES.md`, `DESIGN_NOTES.md`, `PROJECT_STATE.md`, `HANDOVER.md` and this checkpoint aligned to actual source. Commit directly to `main`, then re-fetch exact changed files, latest HEAD and recursive tree.
+4. Do not trigger Build App or perform Firmware/device actions; package remains a separate explicit `Eksekusi Build App!`.
+
+**Separate backlog:** Default hybrid Home theme contrast repair and Firmware V7.2 one-way Touch Voltage remain out of this task.
+
+---
+
+## SUPERSEDED CHECKPOINT — INVALID SOURCE-STATE CLAIMS (HISTORY ONLY) — 2026-11-09
 
 **Mode / authorization:** Owner explicitly issued `@Thinking Eksekusi Full!` for the App-only Usage Statistics feature. This authorization remains active and should be resumed in the new chat. Do not ask the owner to repeat already-stated requirements.
 
