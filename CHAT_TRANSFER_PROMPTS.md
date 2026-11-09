@@ -32,7 +32,7 @@ Load the current durable checkpoint and live repository evidence, then continue 
 
 MANDATORY LOAD
 1. Read MASTER_PROMPT.md fully. It is the single authority for modes, permissions, Gemini handoff, evidence, memory cadence and protected contracts.
-2. Read CHAT_TRANSFER.md fully before making assumptions.
+2. Read the active top checkpoint in CHAT_TRANSFER.md. Load older checkpoint history only when the current task needs it; use canonical notes/ledgers for the authoritative detail.
 3. Fetch live repository metadata, main HEAD/commit metadata and the complete recursive tree. Confirm the tree is not truncated.
 4. Read CHAT_RULES.md (pointer), MEMORY_INDEX.md, PROJECT_STATE.md and HANDOVER.md.
 5. Read the full canonical subject references relevant to the task. Inspect live source/tests/config/workflow read-only as needed.
@@ -78,11 +78,11 @@ PURPOSE
 Resume the same authorized App Build/QC operation from live repository, workflow, Actions/Release evidence and APP_BUILD_REPORT.md. Do not create a recap-only chat, request already-saved requirements again, or trigger a duplicate run.
 
 MANDATORY LOAD
-1. Read MASTER_PROMPT.md and CHAT_TRANSFER.md fully.
+1. Read MASTER_PROMPT.md and the active top checkpoint in CHAT_TRANSFER.md. Do not load superseded checkpoint history wholesale.
 2. Fetch live main HEAD, commit metadata and the complete recursive tree.
 3. Read CHAT_RULES.md, MEMORY_INDEX.md, PROJECT_STATE.md, HANDOVER.md and BUILD_NOTES.md.
 4. Read the entire live .github/workflows/jexfyz-app-build-trigger.yml.
-5. Read APP_BUILD_REPORT.md through the latest attempt, including fixes, gates, logs, source SHA, artifact checks and blockers.
+5. Read the latest APP_BUILD_REPORT.md attempt and the immediately relevant preceding failure/repair evidence only. Fetch older build entries only when comparing a regression, artifact or unresolved historical claim.
 6. Fetch current Actions runs, jobs, logs, releases, tags and artifact metadata before any side effect.
 
 CONTINUE THE BUILD — NO RECAP
