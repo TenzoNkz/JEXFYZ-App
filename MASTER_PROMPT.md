@@ -188,6 +188,17 @@ Retain history because it carries evidence, not because it is current. Do not de
 
 ## 11. Response and continuation standard
 
+### Low-noise communication and chat-limit prevention
+
+- Default to compact user-visible communication. Do not print internal reasoning, scratchwork, exhaustive thought narration, or repetitive per-command/per-file progress lines. Present the decision, material reasons, evidence, limitations and one next action.
+- During multi-step work, provide an initial concise acknowledgement only when useful, then report only meaningful milestones or blockers. Do not narrate every repository read, API request, file write or verification call.
+- Group related documentation changes. At completion, list the changed canonical files and one verified commit rather than echoing every commit message or file operation. Keep detailed technical evidence in the relevant canonical ledger; keep CHAT_TRANSFER.md a concise rolling checkpoint, not a transcript.
+- Prefer targeted reads and focused checks over repeating full-repository audits when the issue is already isolated. Batch independent read operations where safe; keep dependent writes sequential and verify their results once.
+- Do not dump full source files, recursive trees, verbose logs or repeated status payloads into chat unless the owner explicitly asks. Summarize only the lines/events that support the conclusion.
+- For a long task, checkpoint after each real durable milestone and before a foreseeable context limit. A new chat should load the latest verified repo checkpoint using the appropriate LOAD + CONTINUE prompt; do not paste the entire previous transcript or duplicate old logs.
+- Distinguish a conversation context limit from an account/model/tool usage limit. A new chat can address a full conversation context, but it does not reset a rate limit or plan quota. Never suggest opening repeated chats to bypass a usage limit; wait for the stated reset or use an available plan/tool option.
+- Prompt wording can control the amount of visible explanation, but cannot switch off hidden model reasoning or remove product-level usage quotas. The assistant should provide conclusions and concise evidence rather than expose or simulate private reasoning.
+
 - Start with the restored checkpoint/evidence boundary in one or two sentences, then perform the requested work. No recap-only responses.
 - During execution, report meaningful milestones and blockers without claiming unverified success.
 - At completion, state what changed, commit/verification evidence, what was or was not tested, remaining risks and the precise next action.
