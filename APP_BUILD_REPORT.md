@@ -1,3 +1,14 @@
+## BUILD #133 — GUARDED RETRY ACCEPTED; JAVA SETUP ACTIVE — 2026-11-09
+
+- **Why retry is valid:** Build #132 failed only one Flutter source-contract assertion caused by a stale exact-indentation matcher. The test was repaired in commit `ddd72866627375c7b793d8f7b86a0263bca56fd0` using whitespace normalization while retaining semantic Dark/Light helper, exact color/alpha, geometry/state and Fan Speed assertions. The repaired test file was read back and the new matcher conditions passed STATIC SOURCE CHECK.
+- **Official trigger:** issue #34 was revalidated for owner/title/body token and no active/queued run; closed once at `2026-11-09T12:45:30Z` and reopened once at `2026-11-09T12:45:33Z`. No push/PR/manual-dispatch event was used.
+- **Run:** [Build #133 / Actions run 42619673642](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42619673642), workflow ID `374946166`, event `issues`, attempt 1, exact source SHA `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; created `2026-11-09T12:45:35Z`.
+- **Job:** `build` / `129168258628`, `in_progress`. Steps 1 Set up job and 2 Checkout repository are `success`; step 3 Set up Java 17 is `in_progress`. Steps 4–21 have not completed at this checkpoint.
+- **Last completed gate:** Checkout repository. **Current gate:** Java 17 setup. **Remaining:** Flutter/Gradle setup, toolchain/security/dependencies, analyzer, full Flutter tests, Android gate, obfuscated APK, V1/V2/V3 signing, certificate, source ZIP, Release/tag and downloaded-asset verification.
+- **Release baseline:** latest published Release is still Build #131 source `b3c4fee432fddc49430840daeb1e2eecbe78a0db`; Build #132 made no APK/ZIP/Release. Do not claim Build #133 artifacts before all final gates pass.
+- **No current test or build result is claimed.** Continue this run/job only; no duplicate trigger.
+
+---
 ## BUILD #132 — EVIDENCE-BASED TEST CONTRACT REPAIR COMMITTED; PRE-RETRY CHECKPOINT — 2026-11-09
 
 - **Failed attempt preserved:** Build #132 / run `42619044436`, source `2d274613a67708201139311cce55eddbc3d3f78b`, terminal failure at Flutter test step 13, **144 passed / 1 failed**. The failing contract and skipped downstream gates are documented immediately below.
