@@ -2,6 +2,15 @@
 
 Last refreshed: 2026-11-08 (Asia/Jakarta). Current-state summary only; always fetch live main/source, tests, Actions and Release data before acting.
 
+## Pending Home Light Mode visual repair — ready for Eksekusi Full (2026-11-09)
+
+- **Status:** technical plan recorded during `Pikirkan Diskusi!`; no executable source, tests, configuration, workflow, APK or release has been changed for this issue. Next implementation still requires the owner's explicit `Eksekusi Full!`.
+- **Audit baseline:** live `main` HEAD at the start of this checkpoint was `37a51f6b22dec6f42311c29e70358130352e797a`. The active App source reviewed was `lib/main.dart` blob `bf7466ef5be63ea7b98d3091ccbb1a8664801ec0`; `test/widget_test.dart` blob `c938f4ae9a0e6ad272f4dc3160d75081618bdd96`. All commits after packaged Build #131 source `b3c4fee432fddc49430840daeb1e2eecbe78a0db` are documentation-only at this audit point.
+- **Findings:** Home painter still uses fixed dark-only depth layers in Light Mode; Home metric value text bypasses the existing accent-text helper; NOTIFY heading/icon use bright status colors with insufficient Light Mode foreground contrast. The body message is already dark and readable.
+- **Implementation target:** theme-aware painter surface/outline tokens only for Light Mode, preserving Dark Mode paint, icon paths/geometry/animation/telemetry gates; make Light Mode accent text achieve >=4.5:1 on the Home white surface; separate Light Mode NOTIFY foreground tokens from unchanged pastel status-tint fills (success `#027A48`, warning `#B54708`, error `#B42318`). Preserve the 44 dp NOTIFY card, all state predicates, localized copy and single-message priority.
+- **Required regression coverage:** theme switch/repaint, Dark Mode paint preservation, icon geometry/motion/state invariants, contrast ratios for every Home accent and all three NOTIFY states, localized EN/ID labels, and no layout/message regressions. Existing source tests that assert raw near-black painter literals must be converted to theme-aware contract assertions without removing their geometry/state coverage.
+- **Visual gate:** screenshots from the real app at 350-dp/420-dp, Light/Dark, EN/ID, icon warning/normal states, and NOTIFY success/warning/error plus long copy. Until screenshots are reviewed, status remains `VISUAL NOT VERIFIED`.
+- **Current release remains:** Build #131 / run `42474266430`, package source `b3c4fee432fddc49430840daeb1e2eecbe78a0db`. Do not trigger App Build from `Eksekusi Full!`; release requires separate `Eksekusi Build App!`.
 ## Agent skills and capability system
 
 - `MASTER_PROMPT.md` remains the single operating authority; `AGENTS.md` is the cross-agent entrypoint and `SKILLS_INDEX.md` maps the reusable skill library.
