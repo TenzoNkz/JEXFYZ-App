@@ -1,3 +1,12 @@
+## 2026-11-09 — Usage Statistics 30D completion and repository-tree recovery
+
+- Confirmed Usage Statistics source had already been committed in `810c550` and retention follow-up in `8b3270e`; corrected the false “not committed” checkpoint claim.
+- Repaired the accidental sparse-tree checkpoint. The recovery commit `18b4d2279053100eb94dc1099671db29e0c8ad79` restored the full parent tree and retained the four newer checkpoint documentation blobs. Recursive tree verification found 131 entries; diff from the pre-incident full commit contained only four intended documentation modifications and no deletions.
+- Added the missing 30D period selector and changed SQLite event retention from 7 to 30 days. This version retains changed-value event rows; it does not implement 1-minute rollups. Sustained high-change storage growth remains to be measured.
+- Added a process-local recording warning when asynchronous SQLite writes fail, rather than silently relying only on debug logging.
+- Added focused test assertions for the 30D period, label and 30-day retention. Tests are committed but **NOT RUN** because Flutter/Dart are unavailable in this runtime. Formatter, analyzer, full suite, screenshots, App Build and device validation are also NOT RUN.
+- No Firmware, BIN, Firebase, OTA, flash or device action was performed. App packaging still requires separate `Eksekusi Build App!`.
+
 ## 2026-11-09 — Home Light Mode indicator and NOTIFY contrast implementation (NOT RELEASED)
 
 - Implemented theme-aware depth/cavity paint for Home Battery, Hotside, Voltage, Adaptive, Peltier, Fan and Fan Speed indicators. Light Mode uses inherited surface/outline tokens; Dark Mode retains the original dark paint fallback. Painter repaint invalidation includes theme/palette changes. Glyph paths, sizes, animation phase/timing, clipping, warning/telemetry predicates, unknown-state rules, Fan coast and Fan Speed needle mapping were preserved by scoped source changes.
