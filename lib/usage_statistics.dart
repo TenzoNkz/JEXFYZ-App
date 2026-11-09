@@ -774,12 +774,18 @@ class UsageStatisticsRecorder {
   final Map<String, Object?> _states = {};
   final Map<String, int> _lastSensorSeenMs = {};
 
+  // Kept visible for the lifetime of this process because a later successful
+  // write cannot prove that a previously dropped sample was recovered.
+  String? lastWriteError;
+
   Future<void> _enqueue(Future<void> Function() operation) {
     _queue = _queue.then((_) async {
       try {
         await operation();
       } catch (error) {
+        lastWriteError = error.toString();
         debugPrint('Usage statistics write: ' + error.toString());
+        _notifyChanged();
       }
     });
     return _queue;
@@ -1189,6 +1195,22 @@ class _UsageStatisticsPageState extends State<UsageStatisticsPage>
           padding: const EdgeInsets.fromLTRB(14, 10, 14, 28),
           children: [
             _periodSelector(),
+            if (UsageStatisticsRecorder.instance.lastWriteError != null) ...[
+              const SizedBox(height: 10),
+              _messageState(
+                JexText.phrase(
+                  'History recording may be incomplete.',
+                  'Perekaman riwayat mungkin tidak lengkap.',
+                  language,
+                ),
+                JexText.phrase(
+                  'Local storage could not save one or more readings. Check available phone storage; some history may be missing.',
+                  'Penyimpanan lokal gagal menyimpan satu atau beberapa pembacaan. Periksa ruang penyimpanan ponsel; sebagian riwayat mungkin hilang.',
+                  language,
+                ),
+                scheme,
+              ),
+            ],
             const SizedBox(height: 16),
             if (_loading && summary == null)
               const Padding(
