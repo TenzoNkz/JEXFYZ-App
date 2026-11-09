@@ -1,3 +1,16 @@
+# CURRENT DISCUSSION — FIRMWARE TOUCH VOLTAGE ONE-WAY CYCLE REQUEST — 2026-11-09
+
+- **Mode:** owner issued `@Thinking Diskusi!`. Documentation/analysis only. No Firmware/App source, tests, configuration, workflow, compile, BIN, Firebase, OTA, flash or device operation.
+- **Owner requirement:** physical TTP223 single tap should cycle `5V → 9V → 12V → 5V → 9V → 12V → ...`, not ping-pong `5V → 9V → 12V → 9V → 5V → ...`.
+- **Verified current source:** only active sketch is `firmware/JEXFYZ-V7.1.ino`, `FW_VERSION="V7.1"`, blob `c44e076b2c1ee2d0b66b4fcd308d0febc69976e9`. `executeTouchSingle()` uses `touchVoltageAscending`, explicitly producing the old bounce pattern. Only one active `.ino` exists.
+- **Recommended implementation:** choose next target from authoritative current rail: V5→V9, V9→V12, V12→V5. Avoid a separate ascending/descending direction state. If App/manual selection changes the actual rail, the next physical single tap continues from that actual rail. A blocked request must not advance an independent index.
+- **Scope/invariants:** physical single tap only while Adaptive is OFF. Keep double tap RGB toggle, long-press behavior, Touch qualification/timers and boot-touch suppression. Keep `requestVoltage()` as sole validation path (OTA, active transition, manual source gate, 1-second voltage guard, invalid NTC safe-5V, Hotside and Adaptive ceiling), 200 ms selector deadtime, existing Peltier soft-start pause/resume and completed-ramp behavior, Fan 100% handoff, safety overrides, cooperative `millis()` and no executable delay/timing while-loop.
+- **Version/test plan:** a functional change under a new explicit `Eksekusi Full!` must become V7.2 (`firmware/JEXFYZ-V7.2.ino`, `FW_VERSION="V7.2"`), update hard-pinned file/version references in `test/firmware_qc_contract_test.dart`, and add regression coverage for the repeated cycle, alternate actual starting rails, App/manual change between taps, rejected request, 12V→5V transition and unchanged double/long gestures.
+- **Tool/evidence boundary:** current static source confirms implementation and old behavior. Existing QC test file has no coverage for `touchVoltageAscending`/`executeTouchSingle`/`TOUCH_VOLTAGE` pattern. No Arduino compile or physical behavior is claimed. Owner-side compile uses Arduino-ESP32 Core 3.3.7; BIN provenance/publication, Firebase, OTA and flashing are separate authorizations.
+- **Docs updated:** `FIRMWARE_NOTES.md`, `PROJECT_STATE.md`, `HANDOVER.md`, and this checkpoint. Full acceptance criteria and version rules are in `FIRMWARE_NOTES.md`.
+- **Next:** owner may explicitly issue `Eksekusi Full!` for the V7.2 source/test implementation. This Diskusi has not authorized that implementation.
+
+---
 # CURRENT DISCUSSION — DEFAULT HYBRID THEME CONTRAST BUG DIAGNOSED — 2026-11-09
 
 - **Owner mode:** `@Thinking Diskusi!`. This is diagnosis and documentation only; no App source/test/config/workflow, Actions, APK/Release, Firmware, BIN/Firebase, OTA or device operation.
