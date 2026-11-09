@@ -2,13 +2,14 @@
 
 Updated: 2026-11-08 (Asia/Jakarta).
 
-## Immediate next task — Home Light Mode indicator and NOTIFY repair (2026-11-09)
+## Immediate next task — validate Home Light Mode indicator and NOTIFY source (2026-11-09)
 
-- **Recommended command:** `Eksekusi Full!` — the previous turn was Discussion only, so no source implementation is authorized yet.
-- **Scope ready:** `lib/main.dart` painter/theme handling, `_homeMetric()` Light Mode accent foreground, `_homeNotify()` Light Mode status foreground, and focused regression tests in `test/widget_test.dart`. Follow the detailed contracts in `DESIGN_NOTES.md`, `APP_NOTES.md` and the top of `CHAT_TRANSFER.md`.
-- **Do not change:** Dark Mode appearance; icon paths/geometry, sizes, animation timing/phase, clipping, telemetry/warning/connected/OFF/unknown rules; Home row/card dimensions; NOTIFY priority/localization/message semantics; BLE/Firmware/safety; build workflow or release policy.
-- **Validation:** formatter, focused tests, full Flutter tests and analyzer when the Flutter 3.47.2 toolchain is available. The current recorded environment lacks Flutter/Dart/Gradle/ADB, so re-check it and label any unavailable validation BLOCKED / NOT RUN. Actual screenshots at 350/420 dp, both themes and both locales are required for visual acceptance.
-- **Release boundary:** Build #131 remains the latest verified package. No App Build, APK, Release, Firmware, BIN, Firebase, OTA, flash or device action is included in this Full task. A later App package still needs separate `Eksekusi Build App!`.
+- **Current result:** the authorized `Eksekusi Full!` implementation is committed to `main`. Source status is SOURCE IMPLEMENTED / NOT RUN; the changed App source is not in the Build #131 package and is NOT RELEASED.
+- **Changed paths:** `lib/main.dart` latest blob `0d90b418c9140cfbb6090f2723ab24c8fbd5e9fc`; `test/widget_test.dart` latest blob `cd60dff690a8dc17fd45dcc13a3e8d94f4afef37`. Latest source commit `ab833650ff14f9d3b2ea0c7048902826693a57b6`; tests were last extended in `0d168c8e54dd61bfd0d51c70b00cc070fc9443b5`.
+- **Next validation sequence in a Flutter 3.47.2-enabled environment:** `dart format lib/main.dart test/widget_test.dart`; run focused affected Home/icon/NOTIFY widget tests; run full `flutter test`; then `flutter analyze --no-fatal-infos`. Capture actual command exit codes/logs. Current execution runtime reports Flutter, Dart, Gradle and ADB NOT FOUND; therefore all these gates are BLOCKED / NOT RUN here.
+- **Physical visual acceptance:** after a validated App artifact is separately built and installed, inspect actual Home screenshots at 350-dp/420-dp, Light/Dark, English/Indonesian, normal/warning/unknown states for Battery/Hotside/Voltage/Adaptive/Peltier/Fan/Fan Speed, and NOTIFY success/warning/error with one-/two-line copy. Current result remains `VISUAL NOT VERIFIED`.
+- **Preserve:** Dark Mode's previous painter colors; icon silhouette/geometry/clipping/animation and telemetry/state gates; metric/card dimensions; NOTIFY predicates, priority, localization and 44 dp layout; BLE P1 and Firmware safety. No App Build/release, Firmware/BIN/Firebase/OTA/flash or device operation is authorized by this checkpoint.
+- **Next mode:** continue validation/repairs only under a new scoped `Eksekusi Full!` as needed. A package/release still requires separate `Eksekusi Build App!`.
 
 ## Latest verified state
 
