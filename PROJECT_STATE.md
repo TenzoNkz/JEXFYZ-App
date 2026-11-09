@@ -46,6 +46,14 @@ Last refreshed: 2026-11-09 (Asia/Jakarta). Current-state summary only; always fe
 - Exact package source is `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; later `main` commits are documentation/checkpoint-only. Local `dart format` was not run because Dart is not installed in the current runtime, and the guarded workflow has no formatter step.
 - No actual screenshot/OEM visual QA or real-device BLE lifecycle test has been performed. CI is widget/test and hosted build evidence only, not physical acceptance.
 
+## Default hybrid Home theme contrast regression — diagnosed, not repaired (2026-11-09)
+
+- **Observed:** owner-provided Default screenshot shows the intended dark Home header and light lower Display Menu panel, but Home metric labels/values and NOTIFY body use low-contrast Light-theme foregrounds on the dark header. The Light and explicit Dark screenshots show their expected coherent variants.
+- **Root cause (STATIC SOURCE CHECK):** `JeCoolerApp` intentionally wraps the Default Dashboard in a Light `ThemeData` to preserve the lower white panel and light lock dialog. `_dashboardTopColor()` independently paints the Default header dark. But `_homeMetric()` and `_homeNotify()` infer header color mode from inherited `Theme.of(context).brightness`, which remains Light for Default. Header title/icons use the preset directly, causing inconsistent semantic palettes within the same dark header.
+- **Recommended repair:** introduce one preset-based Home-header palette resolver (Default/Dark = dark; Light = light) for metric text, indicator painter and NOTIFY. Keep lower panel resolution independent (Default/Light = light; Dark = dark). Do not darken the complete Default Dashboard.
+- **Build boundary:** Build #133 / source `5201a3e07f36305ffe3882a1b965b9e7414cd71a` contains the previous Light Mode contrast corrections, but the current source still has the Default mixed-theme bug. The provided screenshot APK identity is not independently established.
+- **Status:** diagnosed only in `@Pikirkan Diskusi!`; no App source/test edit and no new build was made. Next source repair requires explicit `Eksekusi Full!`; packaging subsequently requires separate `Eksekusi Build App!`. `DESIGN_NOTES.md` stores the full acceptance matrix.
+
 ## Open design and engineering gaps
 
 - **Physical App acceptance remains pending:** after the owner installs Build #133, inspect Home and Settings/Connection at 350-dp/420-dp, English/Indonesian, Light/Dark. For Home, verify Battery/Hotside/Voltage/Adaptive/Peltier/Fan/Fan Speed normal, warning and unknown states plus NOTIFY success/warning/error with one-/two-line copy. CI tests are not screenshot/OEM acceptance.
