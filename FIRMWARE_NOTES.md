@@ -70,24 +70,13 @@ Durable hardware/user requirements live here. The source-level architecture and 
 - **Version rule:** any functional implementation increments the embedded `FW_VERSION` and renames the sole active sketch to match (expected next version `V7.2`, file `firmware/JEXFYZ-V7.2.ino`, subject to current live-version recheck at execution). Keep exactly one active versioned `.ino`.
 - **Current status:** REQUEST RECORDED / NOT IMPLEMENTED. `firmware/JEXFYZ-V7.1.ino` remains current source (`FW_VERSION="V7.1"`). This Diskusi made documentation-only updates; no Firmware source/test edit, compilation, BIN, Firebase, OTA, flash or device operation occurred. Owner must issue a separate `Eksekusi Full!` for source/test implementation. Owner-side compilation remains separate with the approved Arduino-ESP32 Core 3.3.7 unless explicitly authorized otherwise.
 
-### Timer function for connected App / cooler operating duration — design pending (2026-11-09)
+### Standalone Firmware timer — deferred by owner (2026-11-09)
 
-**Owner question:** can Firmware expose a timer so the App can show how long the cooler has been on while connected? Feasible with the existing ESP32-C3 cooperative `millis()` loop and BLE/P1 telemetry. Final timer semantics are NOT YET DECIDED.
-
-Two distinct metrics must not be conflated:
-
-1. **App connection/session duration:** starts only after the P1 `SYNC_READY` handshake is accepted (not on raw GATT connect), updates once per second, and ends/resets on BLE disconnect/OTA radio handoff. It reports how long the current App session has been connected; it does not prove Fan/Peltier are ON. This requires no NVS persistence.
-2. **Cooler operating duration:** accumulates only while physical output state is active (proposed definition: `fanOn || peltierOn`), regardless of whether the App is connected. It survives App disconnect/reconnect; persistence across MCU reboot would require a carefully bounded Preferences/NVS checkpoint policy, never a flash write every second. The App displays the Firmware-reported total when connected. Decide whether Fan-only safety operation counts as operating time before implementation.
-
-**Source feasibility already verified (STATIC SOURCE CHECK):** `ServerCallbacks::onConnect()` marks raw GATT connection but keeps `bleCommandGateOpen=false`; `handleCommand("SYNC_READY")` opens the P1 command gate and sends `sendFullSync()`. `sendFullSync()` carries structured telemetry; `sendHotsideTelemetry()` already runs on a one-second `millis()` cadence. `Preferences prefs` and debounced persistence exist. App `_commitTelemetry()` receives typed Firmware deltas and `_applyTelemetryValue()` is the state-mapping boundary; a timer displayed in the UI would therefore require both Firmware telemetry and a scoped App UI/parser change.
-
-**Recommended design if the owner chooses session duration:** use a monotonic elapsed-time counter based on unsigned `millis()` subtraction; start only after valid `SYNC_READY`, publish an initial snapshot plus a one-second `SESSION_SECONDS` (or equivalent) delta, stop on disconnect and start fresh after reconnection. Use no blocking delay and no NVS writes. App UI should label it clearly as Connection Time / Durasi Koneksi.
-
-**Recommended design if the owner chooses operating duration:** count only confirmed actual Fan/Peltier output-active intervals, preserve across short BLE drops, and report a cumulative counter. Define whether it is volatile for the current boot or persistent across reboot. If persistent, checkpoint infrequently and on safe state transitions using the existing debounced Preferences approach; never write to NVS each second. Label it Operating Time / Durasi Operasi, not connection time.
-
-**Required regression coverage:** initial SYNC before READY must not start a session timer; successful P1 READY starts exactly once; disconnect stops session time; reconnect creates a new session; OTA radio handoff must not leave a false active session; timer monotonicity and `millis()` rollover; no duplicate/missed second at sync boundary. For operating-time mode: every Fan/Peltier ON/OFF path, safety override, BOOT AP, BLE loss/reconnect, reboot/persistence, and NVS write cadence.
-
-**Current status:** DESIGN DISCUSSION / SEMANTICS PENDING. No Firmware/App source or tests were changed; no compilation, BIN, Firebase, OTA, flash or device action occurred. The earlier one-way Touch Voltage cycle request remains pending and has not been implemented. The two Firmware requirements may be combined into one V7.2 source/test revision after both semantics are settled and the owner separately issues `Eksekusi Full!`.
+- Owner initially asked about a Firmware timer, then explicitly said a separate timer is not needed for now and proposed an App **Usage Statistics / Statistik Penggunaan** page instead.
+- Do not implement a standalone Firmware timer or add a Firmware timer telemetry protocol for this request. The current direction is App-only collection from existing phone Battery readings and Firmware Hotside / Voltage / Adaptive / Fan Speed telemetry.
+- See `APP_NOTES.md` and `DESIGN_NOTES.md` for the Usage Statistics data model, chart hierarchy, local SQLite proposal, retention, gaps and acceptance criteria.
+- The App can collect only when it receives valid telemetry in a synchronized BLE/P1 session. Disconnected/App-stopped periods must be shown as data gaps rather than inferred runtime.
+- This deferral does not remove or modify the earlier independent Touch one-way Voltage cycle request. That remains pending and requires its own implementation scope.
 
 ## Telemetry and phone Battery
 
