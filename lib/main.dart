@@ -2921,7 +2921,14 @@ class _JexIconPainter extends CustomPainter {
     canvas.drawCircle(
       center,
       radius,
-      _stroke(s * .052, const Color(0xFF090C12).withValues(alpha: .76)),
+      _stroke(
+        s * .052,
+        _depthPaintColor(
+          const Color(0xFF090C12),
+          darkAlpha: .76,
+          lightAlpha: .42,
+        ),
+      ),
     );
     canvas.drawCircle(
       center,
@@ -2942,7 +2949,14 @@ class _JexIconPainter extends CustomPainter {
       }
       canvas.drawArc(
         orbit, start, sweep, false,
-        _stroke(s * .115, const Color(0xFF090C12).withValues(alpha: .90)),
+        _stroke(
+          s * .115,
+          _depthPaintColor(
+            const Color(0xFF090C12),
+            darkAlpha: .90,
+            lightAlpha: .52,
+          ),
+        ),
       );
       canvas.drawArc(orbit, start, sweep, false,
           _stroke(s * .085, tint.withValues(alpha: .24 + .08 * flowStrength)));
@@ -3457,7 +3471,13 @@ class _JexIconPainter extends CustomPainter {
         }
         canvas.drawPath(
           shell.shift(Offset(s * .010, s * .012)),
-          _fill(const Color(0xFF060A10).withValues(alpha: .72)),
+          _fill(
+            _depthPaintColor(
+              const Color(0xFF060A10),
+              darkAlpha: .72,
+              lightAlpha: .46,
+            ),
+          ),
         );
         canvas.drawPath(shell, _stroke(s * .092, Colors.white.withValues(alpha: .16)));
         _drawGlow(
