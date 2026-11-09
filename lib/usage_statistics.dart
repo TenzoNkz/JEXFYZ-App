@@ -468,8 +468,33 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
   static const int retentionDays = 7;
 
   Future<Database>? _databaseFuture;
+  int _lastPrunedAtMs = 0;
 
   Future<Database> get _database => _databaseFuture ??= _openDatabase();
+
+  Future<void> _pruneIfDue(int timestampMs) async {
+    if (_lastPrunedAtMs > 0 &&
+        timestampMs - _lastPrunedAtMs <
+            const Duration(hours: 24).inMilliseconds) {
+      return;
+    }
+
+    final database = await _database;
+    final cutoff =
+        timestampMs - const Duration(days: retentionDays).inMilliseconds;
+    await database.rawDelete(
+      'DELETE FROM usage_events WHERE timestamp_ms < ? '
+      'AND id NOT IN (SELECT MAX(id) FROM usage_events '
+      'WHERE timestamp_ms < ? GROUP BY session_id, metric)',
+      [cutoff, cutoff],
+    );
+    await database.delete(
+      'usage_sessions',
+      where: 'COALESCE(ended_at_ms, last_seen_at_ms) < ?',
+      whereArgs: [cutoff],
+    );
+    _lastPrunedAtMs = timestampMs;
+  }
 
   Future<Database> _openDatabase() async {
     final directory = await getDatabasesPath();
@@ -514,6 +539,9 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
           'CREATE INDEX usage_sessions_cooler_start '
           'ON usage_sessions(cooler_id, started_at_ms)',
         );
+        await database.execute(
+          'CREATE INDEX usage_events_timestamp ON usage_events(timestamp_ms)',
+        );
       },
       onOpen: (database) async {
         // A process restart closes a session at its last real telemetry receipt.
@@ -523,14 +551,21 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
           "end_reason = 'process_interrupted' "
           'WHERE ended_at_ms IS NULL',
         );
+        final now = DateTime.now().millisecondsSinceEpoch;
         final cutoff =
-            DateTime.now().millisecondsSinceEpoch -
-                const Duration(days: retentionDays).inMilliseconds;
+            now - const Duration(days: retentionDays).inMilliseconds;
+        await database.rawDelete(
+          'DELETE FROM usage_events WHERE timestamp_ms < ? '
+          'AND id NOT IN (SELECT MAX(id) FROM usage_events '
+          'WHERE timestamp_ms < ? GROUP BY session_id, metric)',
+          [cutoff, cutoff],
+        );
         await database.delete(
           'usage_sessions',
           where: 'COALESCE(ended_at_ms, last_seen_at_ms) < ?',
           whereArgs: [cutoff],
         );
+        _lastPrunedAtMs = now;
       },
     );
   }
@@ -608,6 +643,7 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
     required int timestampMs,
   }) async {
     final database = await _database;
+    await _pruneIfDue(timestampMs);
     if (metric == 'hotside') {
       // Only the Firmware HOT heartbeat proves the P1 device session is fresh.
       await database.update(

@@ -287,6 +287,10 @@ void main() {
     expect(usage, contains('ON DELETE CASCADE'));
     expect(usage, contains('last_hotside_seen_at_ms'));
     expect(usage, contains('end_reason'));
+    expect(usage, contains('Only the Firmware HOT heartbeat proves the P1 device session is fresh.'));
+    expect(usage, contains('SELECT MAX(id) FROM usage_events'));
+    expect(usage, contains('CREATE INDEX usage_events_timestamp'));
+    expect(usage, contains('const Duration(hours: 24).inMilliseconds'));
     expect(usage, isNot(contains('FirebaseDatabase')));
   });
 
