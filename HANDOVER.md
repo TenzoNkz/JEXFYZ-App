@@ -2,6 +2,14 @@
 
 Updated: 2026-11-09 (Asia/Jakarta).
 
+## Current Firmware design question — timer semantics pending (2026-11-09)
+
+- Owner asks for a Firmware timer so the App can show how long the cooler has been on while connected. Static source inspection confirms feasibility through existing cooperative `millis()` timing and BLE/P1 telemetry.
+- Clarify the metric before source work: **App session duration** starts only after successful P1 `SYNC_READY` and resets on disconnect/reconnect; **cooler operating duration** accumulates only while physical Fan/Peltier outputs are active and can persist across app disconnects (and optionally MCU reboot). These are not the same metric.
+- Recommended: choose session time if the aim is to show how long the App has been connected; choose operating time if the aim is to measure actual cooler use. For operating time, define Fan-only safety operation and reboot persistence. Do not write NVS every second.
+- App display requires an App telemetry/UI extension as well as Firmware; no source or test was changed in Diskusi.
+- The previously requested one-way Touch Voltage cycle also remains pending. After timer semantics are clear, both may be planned as one V7.2 source/test task, but only following explicit `Eksekusi Full!`. Compilation is owner-side; BIN/Firebase/OTA/flash remain separate authorizations.
+
 ## Immediate next task — implement Touch Voltage one-way cycle in Firmware (2026-11-09)
 
 - Owner-requested physical TTP223 single-tap sequence: `5V → 9V → 12V → 5V → 9V → 12V → ...`; do not reverse direction at 12V.
