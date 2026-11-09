@@ -1,3 +1,15 @@
+# CURRENT APP BUILD EXECUTION — BUILD #132 FAILED / TEST CONTRACT REPAIR REQUIRED — 2026-11-09
+
+- **Run:** [Build #132 / 42619044436](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42619044436), source `2d274613a67708201139311cce55eddbc3d3f78b`, event `issues`, attempt 1; terminal `completed/failure`.
+- **Job:** `129166133125`. Steps 1–12 passed, including analyzer (25 info-level diagnostics). Step 13 full Flutter tests failed: **144 passed / 1 failed**.
+- **Exact failing test:** `test/widget_test.dart` — `Indicator glyphs retain detailed static geometry while disconnected or unknown`. A fixed-indentation string matcher expects a `_cavityPaintColor` call at an older nesting depth; the same helper call and Dark Mode color/alpha remain in live `lib/main.dart:3406–3410`. New Light Mode painter and NOTIFY tests passed.
+- **Next repair:** normalize whitespace in the source-contract assertion and retain checks for the exact helper arguments + Light/Dark fallback implementation. The related `_depthPaintColor` matcher should use the same normalization to avoid a second formatting-only failure. No visual/runtime assertion is being removed.
+- **Build #132 did not reach Android, APK, signing, ZIP or Release gates.** Existing #131 Release/tag/assets remain unchanged.
+- **Current Actions state:** #132 terminal; no retry has been triggered. Confirm no other active/queued run immediately before the next guarded issue event.
+- **Checkpoint:** failure evidence appended to APP_BUILD_REPORT.md in `ad4dbf962be79b8f98c1a208f3d09c334aeff572`. The test fix and its source/test re-read must precede any new trigger.
+- **Scope:** App test-contract correction only; preserve workflow gates and `versionName "Telegram @horizontalzzz"`. No Firmware/BIN/Firebase/OTA/flash/device operation.
+
+---
 # CURRENT APP BUILD EXECUTION — BUILD #132 FLUTTER TESTS ACTIVE — 2026-11-09
 
 - **Run/job/source:** [#132 / 42619044436](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42619044436), job `129166133125`, exact checkout SHA `2d274613a67708201139311cce55eddbc3d3f78b`.
