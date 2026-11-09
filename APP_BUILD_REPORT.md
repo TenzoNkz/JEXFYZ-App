@@ -1,3 +1,15 @@
+## BUILD #132 — EVIDENCE-BASED TEST CONTRACT REPAIR COMMITTED; PRE-RETRY CHECKPOINT — 2026-11-09
+
+- **Failed attempt preserved:** Build #132 / run `42619044436`, source `2d274613a67708201139311cce55eddbc3d3f78b`, terminal failure at Flutter test step 13, **144 passed / 1 failed**. The failing contract and skipped downstream gates are documented immediately below.
+- **Root cause confirmed:** `test/widget_test.dart` matched an old exact indentation string for `_cavityPaintColor` after the helper call moved one indentation level deeper beneath `_fill`. The live `lib/main.dart` call still supplies `Color(0xFF09121A)` and `darkAlpha: .92`; `_cavityPaintColor` retains the Light surface branch and Dark color/alpha fallback. The later `_depthPaintColor` assertion shared the same indentation brittleness.
+- **Repair commit:** `ddd72866627375c7b793d8f7b86a0263bca56fd0` — `test(home): normalize theme-aware painter source contracts`. Only `test/widget_test.dart` changed. The affected assertions now collapse whitespace and still require the exact cavity/depth helper arguments, theme branch, Dark fallback, known/unknown battery geometry and Fan Speed needle/tick contracts. No production code, workflow, gate, Android config or Firmware was changed.
+- **Read-back verification:** current test blob `e5bb1d409b580d1e27d09a5e98b4cef008a1ece6`; normalized cavity call, depth call, Light/Dark helper branch, unknown/known geometry and speed-gauge checks all present. This is STATIC SOURCE CHECK, not execution. Dart formatter and Flutter tests have not yet run against the repair because Dart/Flutter are not installed in this container; the guarded hosted suite will be the execution validation.
+- **Retry basis:** #132 is terminal and a live workflow query confirms zero queued/in-progress/waiting/requested runs. The new retry is justified by this concrete, narrow test-contract repair; no blind rerun and no gate relaxation.
+- **Next:** checkpoint and re-read the repair; close issue #34 once and reopen once. Require exactly one Build #133 run with the post-checkpoint `main` SHA, then follow only that run.
+- **Latest published Release remains Build #131**; #132 produced no APK, ZIP or Release update.
+- **Scope boundary:** preserve `versionName "Telegram @horizontalzzz"`; no Firmware compile, BIN/Firebase, OTA, flashing or device action.
+
+---
 ## BUILD #132 — FAILED AT FLUTTER TEST GATE; CONCRETE TEST-CONTRACT REPAIR IDENTIFIED — 2026-11-09
 
 - **Run:** [Build #132 / Actions run 42619044436](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42619044436), workflow `374946166`, event `issues`, attempt 1, exact source `2d274613a67708201139311cce55eddbc3d3f78b`. Terminal `completed/failure` at `2026-11-09T12:42:47Z`.
