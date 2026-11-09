@@ -29,6 +29,24 @@ This document stores owner-approved, screen-specific visual constraints, not a b
 
 
 
+## Usage Statistics / Statistik Penggunaan — requested screen design (2026-11-09)
+
+**Status:** OWNER-REQUESTED DESIGN / NOT IMPLEMENTED. Settings addition is a new page, not a Home redesign. It follows the compact Settings subpage visual system and the existing 360-dp master-canvas contract.
+
+- Add a distinct Statistics / Statistik section to Settings between Device and Firmware. Entry label: **Usage Statistics** (EN) / **Statistik Penggunaan** (ID).
+- Page hierarchy, top to bottom:
+  1. **Phone Battery Temperature / Suhu Baterai HP** — first temperature trend chart with °C axis and min/max/time-weighted average summary.
+  2. **Hotside Temperature / Suhu Hotside** — second temperature trend chart with °C axis, min/max/time-weighted average and a restrained Hotside limit reference line.
+  3. **Operating Profile / Riwayat Operasi** — one time axis with separate aligned lanes for Voltage (5V/9V/12V), Adaptive ON/OFF and Fan Speed (%). Use step/timeline rendering because these are state intervals, not continuously measured temperature curves.
+- Proposed range controls: 1h, 24h, 7d, 30d. Default proposal: 24h. Keep chart labels/ticks readable in English and Indonesian; page scrolls vertically.
+- Reuse existing ThemeData, compact typography, semantic state colors and icon family. Avoid excessive cards, decorative gradients/glows, fake data, overfull legends and arbitrary animation. Show actual observations, date/time and data coverage only.
+- Summary stats should be valid-duration aware. For change-only temperature records, use step-hold segments and duration-weighted average, not simple arithmetic mean of event rows. Voltage distribution and Adaptive duration are calculated from confirmed state-change intervals.
+- BLE disconnect, app/service telemetry gap, invalid Phone Battery or invalid NTC must appear as an explicit chart gap. Do not connect the last old value to a later reconnect snapshot or treat `--` as zero. On reconnect, start a new segment from the new complete verified P1 sync.
+- Keep this page under the existing `JexFixedScalePage(compactUi: true, ...)` navigation/canvas behavior. Check 350-dp/420-dp, Default hybrid/Light/Dark, English/Indonesian, no-history/loading/partial-history/disconnected/storage-error and long-range axis labeling.
+- No new Firmware timer is required. History is stored locally in the App; no Firebase upload and no Firmware NVS time-series writes. Existing `flutter_secure_storage` preferences must not become the history store.
+- Proposed architecture: local SQLite repository with batched writes (current `pubspec.yaml` has no DB/chart dependency); use a focused chart painter unless a reviewed dependency materially improves maintainability. Proposed retention: detailed changed data for 7 days plus 1-minute aggregates/state-duration summaries up to 30 days. Provide a confirmed Clear Statistics action.
+- The feature is not live-verified or implemented. Diskusi did not change App source/tests, database schema, dependencies, Firmware, build or release.
+
 ## Home layout, submenu lock and controls
 
 - Keep the established Home card geometry and high-contrast status icon silhouettes. Short status copy should remain compact; long notice copy must not overlap metric rows or escape its card.
