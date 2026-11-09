@@ -1,3 +1,7 @@
+
+
+## Usage Statistics — Eksekusi Full in progress (2026-11-09)
+Owner authorized App-only implementation with `Eksekusi Full!`. Scope and design are in the active CHAT_TRANSFER checkpoint. Feature is not yet implemented/verified; no source, dependency, test or build changes are confirmed committed at interruption. Resume from live main and check for any orphaned blob before continuing. Preserve the hard exclusions: no App build/release and no Firmware/device/OTA work.
 # JE X FYZ / JE Cooler — App Behavior Reference
 
 Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines implementation; DESIGN_NOTES.md holds owner-approved screen-specific visual constraints; PRODUCT_DESIGN_CONSTITUTION.md defines cross-screen design principles; VISUAL_QUALITY_GATE.md defines evidence-based visual acceptance; CHANGELOG.md and APP_BUILD_REPORT.md hold history/evidence.

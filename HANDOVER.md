@@ -1,3 +1,7 @@
+
+
+## Immediate resume — Usage Statistics App implementation (2026-11-09)
+Continue the already-authorized App-only Usage Statistics work from the active CHAT_TRANSFER checkpoint. Verify live main and any uncommitted/orphaned source blob, then implement, test and commit in small verified milestones. No App Build/release and no Firmware/OTA/device operations.
 # JE X FYZ / JE Cooler — Immediate Handover
 
 Updated: 2026-11-09 (Asia/Jakarta).

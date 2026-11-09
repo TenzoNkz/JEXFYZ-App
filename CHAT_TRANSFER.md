@@ -1,3 +1,26 @@
+## CURRENT EXECUTION CHECKPOINT — APP USAGE STATISTICS — CHAT STUCK — 2026-11-09
+
+**Mode / authorization:** Owner explicitly issued `@Thinking Eksekusi Full!` for the App-only Usage Statistics feature. This authorization remains active and should be resumed in the new chat. Do not ask the owner to repeat already-stated requirements.
+
+**Canonical repo:** `TenzoNkz/JEXFYZ-App`, branch `main`.
+**Last verified repository HEAD at checkpoint:** `8b3270e22c4c33c0655de83a3c549dd47cc4b10a`.
+
+**Feature scope:** App-only local Usage Statistics page in Settings. Phone Battery Temperature first, Hotside Temperature second, Operating Profile third (Voltage 5V/9V/12V, Adaptive ON/OFF, Fan Speed %). 1H/24H/7D/30D filters; default 24H. Record only valid live BLE/P1 session data and authoritative telemetry changes; never infer state from command ACK. Preserve gaps across disconnect, invalid sensor, process interruption, and stale data. Local SQLite storage keyed by cooler identity; no Firebase or Firmware timer. 30-day retention and confirmed clear-history action. English/Indonesian, Default/Light/Dark, existing compact Settings visual system and 350/420 dp scaling contract.
+
+**Progress before interruption:** Re-read live main and relevant source/docs/contracts. Located integration points: BLE/P1 sync readiness, Dashboard telemetry commit path, battery temperature reader, and SettingsPage in `lib/floating_monitor.dart`. Selected SQLite local storage rather than secure storage. Started drafting `lib/usage_statistics.dart` with SQLite schema, session/event repository, sample-and-hold analytics, recorder queue, temperature charts, operating-state timelines and clear-history UI. A Git blob creation was attempted in the immediately preceding tool call, but its result was not surfaced; treat the blob and any source file as **unverified / not committed** until fetched from GitHub. No source file has been added to main, no dependencies/lockfile changed, no tests run, no App build/release, and no Firmware/device/OTA action.
+
+**Critical next actions (resume directly):**
+1. Fetch live `main` HEAD/tree and inspect whether the attempted `lib/usage_statistics.dart` blob was committed (it should not be assumed). Re-read current versions of `lib/main.dart`, `lib/floating_monitor.dart`, `pubspec.yaml`, `pubspec.lock`, and applicable tests.
+2. Implement the feature in small verifiable increments. Review the drafted design carefully before reuse; correct issues in schema/analytics, sensor-gap handling, session lifecycle, database failure behavior, and Flutter API compatibility. Avoid unsafe fire-and-forget telemetry writes.
+3. Integrate recording only after full P1 sync and valid Dashboard readiness. Capture Battery and Hotside sensor values with validity/staleness handling; record Voltage/Adaptive/Fan Speed only on authoritative state changes. End session on disconnect/OTA and ensure process interruption is not represented as continuous usage.
+4. Add Settings navigation and localized page; keep current compact scale/theme contract. Build custom chart/timeline from real stored data only; show no-data/loading/error/partial-history states.
+5. Add focused unit/widget/contract tests for gaps, weighted averages, session boundaries, state durations, retention/clear, recorder ordering, and Settings navigation. Update dependency constraints and lockfile only after checking compatibility with repository's Flutter/Dart SDK.
+6. Update `APP_NOTES.md`, `DESIGN_NOTES.md`, `PROJECT_STATE.md`, `HANDOVER.md`, and this checkpoint. Commit durable work directly to `main`; fetch back and verify exact content and HEAD after each milestone.
+
+**Hard exclusions:** No Flutter APK build, signing, release, Firebase deployment, Firmware source changes, Firmware compilation/BIN, OTA, flashing, or device operations. Existing Default hybrid Home theme fix and Firmware Touch Voltage sequence change remain separate backlog items and are not part of this authorization.
+
+**Validation status:** No Flutter/Dart validation has been run for this feature. Never report tests/build/visual acceptance as passed unless evidence is produced.
+
 # CURRENT DISCUSSION — APP USAGE STATISTICS FEATURE REQUESTED — 2026-11-09
 
 - **Mode:** `@Thinking Diskusi!`; design/memory work only. No App source, test, database schema, dependency, workflow, Build, Firmware, BIN, Firebase, OTA, flash or device operation.

@@ -1,3 +1,7 @@
+
+
+## App — Usage Statistics execution in progress (2026-11-09)
+Owner authorized App-only Usage Statistics implementation. Current state: telemetry and Settings integration points inspected; SQLite local storage chosen; implementation drafting began but no source commit or validation is confirmed. See the top active CHAT_TRANSFER checkpoint for exact resume sequence and exclusions. Do not infer that the feature is complete.
 # JE X FYZ / JE Cooler — Current Project State
 
 Last refreshed: 2026-11-09 (Asia/Jakarta). Current-state summary only; always fetch live main/source, tests, Actions and Release data before acting.
