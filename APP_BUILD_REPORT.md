@@ -1,3 +1,18 @@
+## BUILD #132 — PRE-TRIGGER CHECKPOINT — HOME LIGHT MODE / NOTIFY CONTRAST — 2026-11-09 (Asia/Jakarta)
+
+- **Authorization:** owner explicitly issued `@Thinking Eksekusi Build App!`. Scope is the guarded App Build/QC/Release workflow and justified App-scope repairs only. No Firmware compile, BIN/Firebase mutation, OTA, flashing or device operation is authorized.
+- **Why a new package is required:** Build #131 / run `42474266430` is the latest successful package but its source SHA is `b3c4fee432fddc49430840daeb1e2eecbe78a0db`. The current main source contains later Home Light Mode corrections not included in that APK.
+- **Intended source before checkpoint writes:** `main` HEAD `72fce7c8bba98f505010bd45fa48b8ddcfd84ba7`; recursive tree has 129 entries and `truncated=false`. Comparison from Build #131 source identifies executable changes only in `lib/main.dart` (theme-aware Home indicator painter, Light Mode metric contrast and NOTIFY foregrounds) and `test/widget_test.dart` (theme, contrast, repaint and regression assertions); remaining changes are documentation/checkpoint files.
+- **Source/test evidence before CI:** the live changed Dart files were fetched and inspected. The repository checkpoint records lexical delimiter checks and a painter hard-coded-dark-color audit as STATIC SOURCE CHECK only. Flutter formatting, focused tests, full Flutter tests and analyzer have not yet run on this source. Build #132 CI is intended to supply those gates; do not claim success before the logs confirm it.
+- **Last verified release before this attempt:** Build #131, run `42474266430`, Release ID `403010611`, tag `jexfyz-latest`, both targeting `b3c4fee432fddc49430840daeb1e2eecbe78a0db`. Existing APK and source ZIP remain the old package until a new run completes all gates.
+- **Current workflow:** `.github/workflows/jexfyz-app-build-trigger.yml`, blob `9dc1e61ba49f19cad4edbb99a832d5333d9f0f12`. It is issue opened/reopened only, checks repository owner + exact issue title + body token, and has no push/pull_request trigger. Preserve all gates and signing checks. Required trigger issue is #34, presently open, authored by `TenzoNkz`, exact title `JE X FYZ — EKSEKUSI BUILD APP TRIGGER`, exact body token `JEXFYZ_EKSEKUSI_BUILD_TRIGGER_V1`.
+- **Pre-trigger Actions state:** latest intended run #131 is terminal success; #130 is historical failure. Live run query shows no active, queued, waiting or requested run for workflow ID `374946166`. Do not send duplicate events.
+- **Protected Android value:** `android/app/build.gradle:97` remains `versionName "Telegram @horizontalzzz"`.
+- **Next exact operation:** commit and re-read this report/checkpoint, record the resulting final main SHA, then close issue #34 once and reopen it once. Confirm exactly one `issues/reopened` run for workflow `374946166`, with `head_sha` equal to that final checkpoint SHA. Continue that same run/job only.
+- **No attempt/run ID exists yet for Build #132.** This entry is pre-trigger state, not a claim that the workflow has started or passed any gate.
+
+---
+
 ## BUILD #131 — COMPLETE SUCCESS / RELEASE AND DOWNLOADED ASSETS VERIFIED — 2026-11-08
 
 - **Status:** [Build #131 / Actions run 42474266430](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42474266430) completed `success`. Workflow ID `374946166`; event `issues`; attempt 1; all 21 main workflow steps success. Job `build` ID `128711948544`, hosted `ubuntu-24.04`, runner `1000002677`. Run started `2026-11-08T11:06:27Z` and terminal run metadata updated `2026-11-08T11:13:59Z`.
