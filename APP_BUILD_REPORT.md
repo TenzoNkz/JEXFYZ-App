@@ -1,3 +1,16 @@
+## BUILD #132 — FAILED AT FLUTTER TEST GATE; CONCRETE TEST-CONTRACT REPAIR IDENTIFIED — 2026-11-09
+
+- **Run:** [Build #132 / Actions run 42619044436](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42619044436), workflow `374946166`, event `issues`, attempt 1, exact source `2d274613a67708201139311cce55eddbc3d3f78b`. Terminal `completed/failure` at `2026-11-09T12:42:47Z`.
+- **Job:** `build` ID `129166133125`; hosted runner completed. Steps 1–12 succeeded: toolchain, signing preparation, architecture/security audit, dependency resolution and Dart analyzer. Analyzer reported 25 info-level diagnostics and exited successfully.
+- **Failing gate:** step 13 `Run Flutter tests`; exact suite result **144 passed, 1 failed**. Failure: `test/widget_test.dart: Indicator glyphs retain detailed static geometry while disconnected or unknown`.
+- **Exact assertion mismatch:** the test at current test line 255 expects the literal `_cavityPaintColor(\n            const Color(0xFF09121A),\n            darkAlpha: .92,` with a fixed indentation count. The live painter still invokes that helper with the same fallback color and alpha at `lib/main.dart:3406–3410`, nested one level deeper under `_fill(`; the actual indentation differs. The production helper explicitly preserves `lightTheme ? lightSurfaceColor : darkColor.withValues(alpha: darkAlpha)`. This is a brittle source-text assertion against a formatting/nesting change, not evidence of a rendered/runtime defect.
+- **Other test evidence:** both new Light Mode checks passed: `Home indicator painter receives Light Mode theme tokens and repaints on changes` and `Home NOTIFY uses contrast-safe Light Mode foregrounds and preserves Dark Mode colors`; all metric contrast and other suite cases passed. The only failing test stopped at its first stale literal matcher; its later assertion uses a similar whitespace-sensitive `_depthPaintColor` pattern and should also be normalized.
+- **Skipped:** Android Gradle step 14 and steps 15–21 (APK, signing, cert, source ZIP, Release/tag, downloaded-asset verification) were skipped. No Build #132 APK, ZIP, Release update or Actions artifact was produced. Existing Release remains Build #131 and its source SHA.
+- **Evidence-backed repair:** update the affected source-contract test to collapse whitespace and assert the same helper invocation arguments for the dark fallback color/alpha. Retain the separate test asserting the helper's Light Mode branch and Dark Mode fallback. Do not remove geometry/state checks or weaken runtime/test coverage.
+- **Retry discipline:** #132 is terminal. A fresh workflow query must confirm no queued/in-progress/waiting run before the one guarded retry. Retry only after the concrete matcher repair is committed and re-read.
+- **Scope:** no source behavior, Android config, workflow, Firmware, BIN, Firebase, OTA, flashing or device action was changed by Build #132.
+
+---
 ## BUILD #132 PROGRESS — ANALYZER PASSED; FULL FLUTTER TESTS ACTIVE — 2026-11-09
 
 - **Run/job/source:** [#132 / `42619044436`](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42619044436), job `129166133125`, source `2d274613a67708201139311cce55eddbc3d3f78b`.
