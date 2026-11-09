@@ -15,12 +15,11 @@ Updated: 2026-11-09 (Asia/Jakarta).
 
 ## Next safe action
 
-The build/release operation is complete. No further build is pending for the same source.
-
-1. Owner downloads and installs Build #133.
-2. Perform Home visual review at 350-dp/420-dp, Light/Dark, English/Indonesian, including normal/warning/unknown icon states and NOTIFY success/warning/error with short and two-line copy. Also recheck Settings and Bluetooth Connection sizing.
-3. Perform real-device BLE validation: passive rediscovery, prerequisite cancellation, manual-sheet pre-emption/dismissal, selected-device handoff, fresh primary/fallback scan handling, adapter loss and reconnect.
-4. Record field evidence separately. Do not infer Firmware, BIN, OTA, cooling/thermal or hardware status from App CI.
+- **Immediate recommended source task:** owner may issue a new scoped `Eksekusi Full!` to repair the Default hybrid Home theme contrast regression. This is only a recommendation; Diskusi did not authorize source/test edits.
+- Use a preset-based Home-header palette resolver: Default and Dark use dark-header foreground/painter/NOTIFY treatment; Light uses light-header treatment. Preserve the Default lower white panel, light navigation tabs and light disconnected lock dialog. Do not darken the entire Default Dashboard.
+- Add a regression matrix separating header palette from lower-panel palette across Default, Light and Dark. Run formatter, focused tests, full Flutter suite and analyzer in the available Flutter 3.47.2 environment; capture actual screenshots before claiming visual acceptance.
+- After a validated source repair, a new APK requires a separate explicit `Eksekusi Build App!`. Build #133 remains the latest verified package and its installation is not independently confirmed.
+- Physical Home/Settings/Bluetooth visual QA and BLE lifecycle validation remain pending after the owner installs the relevant APK. Record physical evidence separately; do not infer Firmware, BIN, OTA, cooling/thermal or hardware status from App CI.
 
 ## Evidence and safety boundary
 
