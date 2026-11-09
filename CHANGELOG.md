@@ -1,3 +1,14 @@
+## 2026-11-09 — Home Light Mode indicator and NOTIFY contrast implementation (NOT RELEASED)
+
+- Implemented theme-aware depth/cavity paint for Home Battery, Hotside, Voltage, Adaptive, Peltier, Fan and Fan Speed indicators. Light Mode uses inherited surface/outline tokens; Dark Mode retains the original dark paint fallback. Painter repaint invalidation includes theme/palette changes. Glyph paths, sizes, animation phase/timing, clipping, warning/telemetry predicates, unknown-state rules, Fan coast and Fan Speed needle mapping were preserved by scoped source changes.
+- Integrated a contrast-targeted HSL lightness search for Home metric value accents in Light Mode only; Dark Mode still uses the original semantic accent.
+- Separated Home NOTIFY Light Mode foreground from the original semantic status tint: success `#027A48`, warning `#B54708`, error `#B42318`. The pastel mint/amber/coral fill, Dark Mode foregrounds, dark body copy, notification priority/localization, 44 dp card and icon-left/text-left/no-badge layout remain.
+- Updated `test/widget_test.dart` with theme propagation/repaint and palette coverage, Adaptive/Hotside theme-aware paint assertions, >=4.5:1 metric accent coverage, composited NOTIFY tinted-surface contrast checks and unchanged Dark Mode foreground mapping. Existing painter geometry/state and NOTIFY layout assertions were migrated to the new palette helpers, not removed.
+- Implementation commit chain includes `37369b0`, `7057514`, `030e1d5`, `7b1172d`, `59cdb19`, `0d168c8` and latest source commit `ab833650ff14f9d3b2ea0c7048902826693a57b6`. Latest source blobs: `lib/main.dart` `0d90b418c9140cfbb6090f2723ab24c8fbd5e9fc`; `test/widget_test.dart` `cd60dff690a8dc17fd45dcc13a3e8d94f4afef37`.
+- STATIC SOURCE CHECK: both Dart files were read back from main; lexical delimiter checks were balanced; the painter no longer directly paints hard-coded near-black depth/cavity colors in its Light Mode code path. No formatter or Flutter test/analyzer command was executed.
+- **Validation:** Flutter/Dart/Gradle/ADB are unavailable in the active runtime. Formatting, focused/full tests and analyzer are BLOCKED / NOT RUN; actual screenshots/OEM rendering remain VISUAL NOT VERIFIED. This entry records source implementation only, not test pass, CI, build, release or field acceptance.
+- Build #131 remains the latest verified package from source `b3c4fee432fddc49430840daeb1e2eecbe78a0db`; this change is NOT RELEASED. No App Build, APK, Release, Firmware, BIN, Firebase, OTA, flash or device operation occurred. A later package requires separate `Eksekusi Build App!`.
+
 ## 2026-11-08 — App Build #131 successful; compact UI and BLE scan coordination released
 
 - Guarded issue-only Build #131 completed successfully from exact source `b3c4fee432fddc49430840daeb1e2eecbe78a0db`; all 21 main workflow gates and cleanup succeeded.
