@@ -219,6 +219,27 @@ void main() {
     expect(painter, contains('oldDelegate.lightTheme != lightTheme'));
     expect(painter, contains('oldDelegate.lightSurfaceColor != lightSurfaceColor'));
     expect(painter, contains('oldDelegate.lightOutlineColor != lightOutlineColor'));
+    expect(painter, contains('darkColor.withValues(alpha: darkAlpha)'));
+    expect(painter, isNot(contains('const Color(0xFF090C12).withValues')));
+    expect(painter, isNot(contains('const Color(0xFF060A10).withValues')));
+
+    final adaptiveStart = painter.indexOf('void _drawAdaptiveFlow');
+    final adaptiveEnd = painter.indexOf('Path _crystalSilhouette', adaptiveStart);
+    expect(adaptiveStart, isNonNegative);
+    expect(adaptiveEnd, greaterThan(adaptiveStart));
+    final adaptive = painter.substring(adaptiveStart, adaptiveEnd);
+    expect(adaptive, contains('darkAlpha: .76'));
+    expect(adaptive, contains('lightAlpha: .42'));
+    expect(adaptive, contains('darkAlpha: .90'));
+    expect(adaptive, contains('lightAlpha: .52'));
+
+    final hotsideStart = painter.indexOf('case JexAnimatedIconKind.hotside:');
+    final voltageStart = painter.indexOf('case JexAnimatedIconKind.voltage:', hotsideStart);
+    expect(hotsideStart, isNonNegative);
+    expect(voltageStart, greaterThan(hotsideStart));
+    final hotside = painter.substring(hotsideStart, voltageStart);
+    expect(hotside, contains('darkAlpha: .72'));
+    expect(hotside, contains('lightAlpha: .46'));
   });
 
   test('Indicator glyphs retain detailed static geometry while disconnected or unknown', () {
