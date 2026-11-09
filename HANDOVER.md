@@ -2,6 +2,14 @@
 
 Updated: 2026-11-08 (Asia/Jakarta).
 
+## Immediate next task — Home Light Mode indicator and NOTIFY repair (2026-11-09)
+
+- **Recommended command:** `Eksekusi Full!` — the previous turn was Discussion only, so no source implementation is authorized yet.
+- **Scope ready:** `lib/main.dart` painter/theme handling, `_homeMetric()` Light Mode accent foreground, `_homeNotify()` Light Mode status foreground, and focused regression tests in `test/widget_test.dart`. Follow the detailed contracts in `DESIGN_NOTES.md`, `APP_NOTES.md` and the top of `CHAT_TRANSFER.md`.
+- **Do not change:** Dark Mode appearance; icon paths/geometry, sizes, animation timing/phase, clipping, telemetry/warning/connected/OFF/unknown rules; Home row/card dimensions; NOTIFY priority/localization/message semantics; BLE/Firmware/safety; build workflow or release policy.
+- **Validation:** formatter, focused tests, full Flutter tests and analyzer when the Flutter 3.47.2 toolchain is available. The current recorded environment lacks Flutter/Dart/Gradle/ADB, so re-check it and label any unavailable validation BLOCKED / NOT RUN. Actual screenshots at 350/420 dp, both themes and both locales are required for visual acceptance.
+- **Release boundary:** Build #131 remains the latest verified package. No App Build, APK, Release, Firmware, BIN, Firebase, OTA, flash or device action is included in this Full task. A later App package still needs separate `Eksekusi Build App!`.
+
 ## Latest verified state
 
 - **Latest App release:** Build #131, [Actions run 42474266430](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42474266430), source `b3c4fee432fddc49430840daeb1e2eecbe78a0db`; run terminal success, all 21 main workflow steps passed.
