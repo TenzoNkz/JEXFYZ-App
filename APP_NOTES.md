@@ -1,7 +1,7 @@
 
 
-## Usage Statistics — Eksekusi Full in progress (2026-11-09)
-Owner authorized App-only implementation with `Eksekusi Full!`. Scope and design are in the active CHAT_TRANSFER checkpoint. Feature is not yet implemented/verified; no source, dependency, test or build changes are confirmed committed at interruption. Resume from live main and check for any orphaned blob before continuing. Preserve the hard exclusions: no App build/release and no Firmware/device/OTA work.
+## Usage Statistics — implementation status (2026-11-09)
+Owner authorized App-only implementation with `Eksekusi Full!`. The feature source was already committed in `810c550` and retention follow-up in `8b3270e`; the erroneous sparse-tree checkpoint was repaired by `18b4d22`. The current source now adds the 30D range, 30-day retention and a visible warning for local write failures. Flutter/Dart tests, analyzer, formatter, screenshots and App Build have not been run for this feature. Preserve the hard exclusions: no App build/release and no Firmware/device/OTA work.
 # JE X FYZ / JE Cooler — App Behavior Reference
 
 Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines implementation; DESIGN_NOTES.md holds owner-approved screen-specific visual constraints; PRODUCT_DESIGN_CONSTITUTION.md defines cross-screen design principles; VISUAL_QUALITY_GATE.md defines evidence-based visual acceptance; CHANGELOG.md and APP_BUILD_REPORT.md hold history/evidence.
@@ -69,7 +69,7 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 - **Not run / unverified:** Flutter formatter, focused widget tests, full `flutter test`, `flutter analyze`, screenshots and physical/OEM display review. The current runtime lacks Flutter, Dart, Gradle and ADB. Report these as BLOCKED / NOT RUN; visual status is `VISUAL NOT VERIFIED`.
 - Build #131 remains the latest verified release. No App Build, APK/Release, Firmware, BIN, Firebase, OTA, flash or device operation occurred. A later package requires separate `Eksekusi Build App!`.
 
-## Usage Statistics — requested App-only feature (2026-11-09)
+## Usage Statistics — App-only implementation contract (2026-11-09)
 
 **Owner direction:** do not add a standalone Firmware timer for now. Prefer a Usage Statistics / Statistik Penggunaan page inside Settings, showing historical telemetry and Operating Profile so the owner can draw conclusions from actual cooler use.
 
@@ -98,15 +98,15 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 ### Local storage and retention proposal
 
 - Keep statistics on the Android App locally. Do not send raw history to Firebase and do not persist it in Firmware NVS. Existing `AppSettingsStore` / `flutter_secure_storage` is for small user preferences and is not a time-series database.
-- Current `pubspec.yaml` has no local database or chart package. For implementation, prefer a local SQLite store (for example `sqflite`) with buffered/batched inserts and a small repository boundary. A custom Flutter painter can draw the charts while retaining minimal chart dependencies; review package trade-offs before adding dependencies.
-- Suggested retention default: detailed change/event history for 7 days, compact 1-minute aggregates and state-duration summaries for up to 30 days. The retention period can be made configurable later; provide a clear Clear Statistics action with confirmation.
-- Logging and DB writes must not block the BLE parser/UI or battery heartbeat. Use a bounded queue/batched writes, handle storage-full/write failure visibly, and keep collection independent of whether the Statistics page is open.
+- Current source uses App-local SQLite (`sqflite` 2.4.2) behind a repository boundary and custom Flutter painters; no additional chart package is used. The database stores changed temperature values and authoritative state-change events.
+- Current implementation retains changed-value temperature events and operating-state events for 30 days. It does not yet build 1-minute rollup tables; do not describe the retained history as aggregated. Database growth under sustained high-change telemetry remains a validation item. Clear Statistics requires confirmation.
+- Recording is submitted to a serialized asynchronous queue so BLE parsing/UI do not await SQLite operations. The queue is not currently bounded or coalesced and is not batch-written; stress/backpressure validation remains open. A local write exception is retained for the current process and surfaced as a recording warning on the Statistics page. Collection is not dependent on the page being open.
 
 ### User-visible limitation
 
 - Statistics represent periods when the App's connected-device service actually received telemetry. They are not guaranteed full-day hardware logs while BLE is disconnected, App is force-stopped, or Android does not deliver the connected-device session. Show coverage / missing-data gaps and the last-recorded timestamp so the graph is not misleading.
 
-**Status:** OWNER-REQUESTED DESIGN / NOT IMPLEMENTED. This is an App-only feature and does not require a new Firmware timer or Firmware source change. Implementation, database migration, charts, tests and Settings UI require a separate explicit `Eksekusi Full!`; App packaging still requires separate `Eksekusi Build App!`.
+**Status:** SOURCE IMPLEMENTED / VALIDATION NOT RUN. Live source contains SQLite persistence, P1-session recording, Settings navigation, period selector, charts/timelines and clear-history flow. The 30D selector and 30-day event retention are now present. Focused tests are committed but not executed in this runtime; visual/device acceptance remains unverified. App packaging still requires separate `Eksekusi Build App!`.
 
 ## Floating Monitor
 
