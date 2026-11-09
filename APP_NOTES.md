@@ -108,6 +108,14 @@ Purpose: canonical current App/UI/BLE/telemetry contract. Current source defines
 
 **Status:** SOURCE IMPLEMENTED / VALIDATION NOT RUN. Live source contains SQLite persistence, P1-session recording, Settings navigation, period selector, charts/timelines and clear-history flow. The 30D selector and 30-day event retention are now present. Focused tests are committed but not executed in this runtime; visual/device acceptance remains unverified. App packaging still requires separate `Eksekusi Build App!`.
 
+### Static source audit follow-up — 2026-11-10
+
+- Live-source review confirms the recording boundary is after completed P1 synchronization; HOT freshness bounds the operating timeline, Phone Battery freshness is tracked separately, invalid temperature readings create gaps, and sessions are closed on disconnect/process interruption. Settings navigation, duration-weighted summaries and event-driven state lanes are present in source.
+- **Low-priority display accuracy issue:** `_temperatureSummary()` appends a synthetic final `UsageChartPoint` at the observation/session endpoint to complete the held step. `_formatLastSample()` then chooses the latest non-null chart point while labeling it “Last value change”. That timestamp can therefore be the synthetic endpoint (up to the 1.5-second freshness allowance / selected query endpoint), not the last persisted temperature-change event. This does not alter chart values, min/max or averages. Recommended correction: derive this label from the latest valid Battery/Hotside event timestamp in the loaded snapshot, and add a widget test for an unchanged value with a later freshness heartbeat.
+- The serialized recorder write queue still has no explicit bound/coalescing, and the 30-day raw event store has not been stress-measured. These remain validation risks, not observed runtime failures.
+- Validation remains **SOURCE REVIEW ONLY / FLUTTER VALIDATION NOT RUN**. The current runtime has no Flutter, Dart, Gradle or ADB executable. No formatter, test, analyzer, screenshot, physical-device or build result is inferred from this review.
+- Live tag `jexfyz-latest` resolves to source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; `main` is 50 commits ahead and the compare identifies `lib/usage_statistics.dart` and `test/usage_statistics_test.dart` as additions after that tag. Usage Statistics is therefore **not included in the currently tagged package**.
+
 ## Floating Monitor
 
 - Exactly six metrics: B/H/V/A/P/F = Battery temperature, Hotside, Voltage, Adaptive, Peltier, Fan. F is Fan/Kipas, not FPS. Fan shows live PWM speed when running, localized OFF/MATI when off, and -- when disconnected.
