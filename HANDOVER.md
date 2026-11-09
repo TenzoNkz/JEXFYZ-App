@@ -15,7 +15,7 @@ Updated: 2026-11-09 (Asia/Jakarta).
 
 - Physical single-tap sequence remains requested: 5V→9V→12V→5V; current V7.1 still ping-pongs. The full implementation/version/test scope is in `FIRMWARE_NOTES.md` and the relevant state/checkpoint.
 - Keep this separate from the App Usage Statistics feature. No Firmware source/BIN/OTA/flash/device change is authorized by the present Diskusi.
-## Immediate next task — implement Touch Voltage one-way cycle in Firmware (2026-11-09)
+## Touch Voltage one-way cycle — implementation details (deferred)
 
 - Owner-requested physical TTP223 single-tap sequence: `5V → 9V → 12V → 5V → 9V → 12V → ...`; do not reverse direction at 12V.
 - Current active Firmware is V7.1; `executeTouchSingle()` uses `touchVoltageAscending` and implements the old ping-pong sequence. Static source review confirmed the cause. The existing Firmware QC test pins V7.1 filename/version and does not currently assert the Touch Voltage cycle.
@@ -36,12 +36,11 @@ Updated: 2026-11-09 (Asia/Jakarta).
 
 ## Next safe action
 
-- **Immediate recommended source task:** owner may issue a new scoped `Eksekusi Full!` to repair the Default hybrid Home theme contrast regression. This is only a recommendation; Diskusi did not authorize source/test edits.
-- Use a preset-based Home-header palette resolver: Default and Dark use dark-header foreground/painter/NOTIFY treatment; Light uses light-header treatment. Preserve the Default lower white panel, light navigation tabs and light disconnected lock dialog. Do not darken the entire Default Dashboard.
-- Add a regression matrix separating header palette from lower-panel palette across Default, Light and Dark. Run formatter, focused tests, full Flutter suite and analyzer in the available Flutter 3.47.2 environment; capture actual screenshots before claiming visual acceptance.
-- After a validated source repair, a new APK requires a separate explicit `Eksekusi Build App!`. Build #133 remains the latest verified package and its installation is not independently confirmed.
-- Physical Home/Settings/Bluetooth visual QA and BLE lifecycle validation remain pending after the owner installs the relevant APK. Record physical evidence separately; do not infer Firmware, BIN, OTA, cooling/thermal or hardware status from App CI.
-
+- **Current recommended task:** owner may issue an App-scoped `Eksekusi Full!` to implement Usage Statistics in Settings. Treat this as App-only; no Firmware timer, Firmware source, BIN, Firebase, OTA or flashing is needed.
+- Implement the documented three-part hierarchy (Phone Battery Temperature; Hotside Temperature; Operating Profile timeline), local timestamped history, changed-value recording, time-weighted statistics, data-gap behavior, and EN/ID + Default/Light/Dark UI.
+- Proposed storage is local SQLite with batched writes; 7-day detailed history plus 30-day aggregates. Confirm package choice/schema/retention in execution before modifying dependencies. No history goes into `flutter_secure_storage` or Firebase.
+- Add schema/repository/parser/widget tests; validate lifecycle, sync/reconnect/gaps, invalid values, time-weighted summaries, settings navigation, 350/420-dp canvas, themes and localization; run formatter, analyzer and full Flutter suite. A release still requires separate `Eksekusi Build App!`.
+- Remaining separate backlog: Default hybrid Home contrast regression and Firmware Touch Voltage one-way cycle. Do not silently bundle them into the Statistics implementation unless the owner explicitly expands scope.
 ## Evidence and safety boundary
 
 - Build #133 validates the App source SHA above only. It does not prove the exact package has been installed on the owner's phone or physically accepted.
