@@ -214,7 +214,7 @@ void main() {
     final painter = source.substring(painterStart, painterEnd);
     expect(painter, contains('_depthPaintColor('));
     expect(painter, contains('_cavityPaintColor('));
-    expect(painter, contains('lightTheme ? lightOutlineColor'));
+    expect(painter, contains('? lightOutlineColor.withValues(alpha: lightAlpha)'));
     expect(painter, contains('lightTheme ? lightSurfaceColor'));
     expect(painter, contains('oldDelegate.lightTheme != lightTheme'));
     expect(painter, contains('oldDelegate.lightSurfaceColor != lightSurfaceColor'));
