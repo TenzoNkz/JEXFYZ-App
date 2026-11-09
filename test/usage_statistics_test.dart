@@ -156,6 +156,9 @@ void main() {
       expect(UsagePeriod.hour.duration, const Duration(hours: 1));
       expect(UsagePeriod.day.duration, const Duration(hours: 24));
       expect(UsagePeriod.week.duration, const Duration(days: 7));
+      expect(UsagePeriod.month.duration, const Duration(days: 30));
+      expect(UsagePeriod.month.label, '30D');
+      expect(UsageStatisticsStore.retentionDays, 30);
     });
 
     test('temperature uses a duration-weighted average and preserves invalid gaps', () {
