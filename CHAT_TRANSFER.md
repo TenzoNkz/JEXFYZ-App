@@ -1,3 +1,14 @@
+# CURRENT APP BUILD EXECUTION — BUILD #133 RUNNER ACTIVE — 2026-11-09
+
+- **Run:** [Build #133 / 42619673642](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42619673642), workflow `374946166`, event `issues`, attempt 1, exact source SHA `5201a3e07f36305ffe3882a1b965b9e7414cd71a`.
+- **Job:** `build` / `129168258628`, status `in_progress`. Step 1 job setup and step 2 checkout passed; step 3 Java 17 setup is in progress. Steps 4–21 remain.
+- **Retry rationale:** #132 had one stale indentation-sensitive source matcher. Commit `ddd72866627375c7b793d8f7b86a0263bca56fd0` normalizes whitespace while retaining the underlying color/fallback, geometry, state and Fan Speed checks. This is an evidence-backed retry; #132's failure is retained.
+- **Last completed gate:** Checkout. **Current gate:** Java 17 setup. No analyzer/test/Android/APK/signing/Release result is claimed yet.
+- **Previous Release remains Build #131**; #132 produced no APK/ZIP. #133 must pass all 21 current workflow gates and downloaded-asset checks.
+- **Checkpoint:** APP_BUILD_REPORT.md Build #133 run entry committed in `67cc3324ea106947f0ddbea5b76e6e2a0db95823`; this checkpoint follows it. Continue only run #133.
+- **Limits:** preserve `versionName "Telegram @horizontalzzz"`; no Firmware/BIN/Firebase/OTA/flash/device operations.
+
+---
 # CURRENT APP BUILD EXECUTION — BUILD #132 TEST FIX COMMITTED / BUILD #133 PRE-TRIGGER — 2026-11-09
 
 - **Build #132:** [run 42619044436](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42619044436) terminal failure at Flutter test step 13: 144 passed / 1 failed. Android, APK, signing, ZIP and Release steps were skipped; no artifact was produced.
