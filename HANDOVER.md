@@ -1,19 +1,19 @@
 
 
-## Immediate resume — Usage Statistics App implementation (2026-11-09)
-Continue the already-authorized App-only Usage Statistics work from the active CHAT_TRANSFER checkpoint. Verify live main and any uncommitted/orphaned source blob, then implement, test and commit in small verified milestones. No App Build/release and no Firmware/OTA/device operations.
+## Immediate resume — Usage Statistics validation and final source review (2026-11-09)
+Usage Statistics source is already committed and restored. Continue the authorized App-only scope from the active CHAT_TRANSFER checkpoint: review analytics/session/error/retention behavior, use available static checks, update durable notes and verify main. Flutter/Dart validation is BLOCKED / NOT RUN in this runtime. No App Build/release and no Firmware/OTA/device operations.
 # JE X FYZ / JE Cooler — Immediate Handover
 
 Updated: 2026-11-09 (Asia/Jakarta).
 
-## Current App feature — Usage Statistics requested, not implemented (2026-11-09)
+## Current App feature — Usage Statistics source implemented; validation pending (2026-11-09)
 
 - Owner no longer wants a standalone Firmware timer for now; instead asks for a Usage Statistics / Statistik Penggunaan page under Settings.
-- Page order: Phone Battery Temperature trend; Hotside Temperature trend; Operating Profile timeline with separate Voltage 5/9/12V, Adaptive ON/OFF and Fan Speed (%) lanes. Proposed filters 1h / 24h / 7d / 30d.
+- Page order: Phone Battery Temperature trend; Hotside Temperature trend; Operating Profile timeline with separate Voltage 5/9/12V, Adaptive ON/OFF and Fan Speed (%) lanes. Source provides 1h / 24h / 7d / 30d filters, default 24h.
 - App-side capture: existing Android phone Battery reader ~1Hz; Firmware Hotside `HOT` ~1Hz; voltage/adaptive/fan-speed on telemetry state changes. Store timestamped changed values; compute time-weighted averages and render gaps for disconnected/invalid/missing telemetry.
-- Proposed local data architecture: SQLite, batched writes, no Firebase upload and no Firmware NVS history. Existing `flutter_secure_storage` remains settings-only. Proposed retention: 7 days detailed records + 30 days 1-minute rollups/state summaries.
-- Exact data and visual acceptance is recorded in `APP_NOTES.md` and `DESIGN_NOTES.md`. Feature requires a separate explicit App-scoped `Eksekusi Full!`; APK packaging requires separate `Eksekusi Build App!`.
-- No App source/test/dependency/database change was made in Diskusi. A new Firmware timer is deferred.
+- Local data architecture: SQLite (`sqflite` 2.4.2), no Firebase upload and no Firmware NVS history. Existing `flutter_secure_storage` remains settings-only. Source keeps changed-value temperature events and state-change events for 30 days; no 1-minute rollup table exists. Storage growth under sustained high-change telemetry remains to be measured.
+- Source integration is present in `lib/main.dart`, `lib/usage_statistics.dart`, and `lib/floating_monitor.dart`; focused tests are in `test/usage_statistics_test.dart`. The current pass added 30D/30-day retention and a visible local-write warning. Exact contracts are in `APP_NOTES.md` and `DESIGN_NOTES.md`. APK packaging still requires separate `Eksekusi Build App!`.
+- Validation is still pending: no Flutter formatter, test, analyzer, actual screenshot or App Build was run in this execution. A new Firmware timer remains deferred.
 
 ## Separate pending Firmware request — Touch Voltage one-way cycle
 
@@ -40,9 +40,9 @@ Updated: 2026-11-09 (Asia/Jakarta).
 
 ## Next safe action
 
-- **Current recommended task:** owner may issue an App-scoped `Eksekusi Full!` to implement Usage Statistics in Settings. Treat this as App-only; no Firmware timer, Firmware source, BIN, Firebase, OTA or flashing is needed.
-- Implement the documented three-part hierarchy (Phone Battery Temperature; Hotside Temperature; Operating Profile timeline), local timestamped history, changed-value recording, time-weighted statistics, data-gap behavior, and EN/ID + Default/Light/Dark UI.
-- Proposed storage is local SQLite with batched writes; 7-day detailed history plus 30-day aggregates. Confirm package choice/schema/retention in execution before modifying dependencies. No history goes into `flutter_secure_storage` or Firebase.
+- Continue a targeted static review of Usage Statistics data correctness, session lifecycle, recorder backpressure and long-range chart behavior; correct any substantiated defect within the already-authorized App-only scope.
+- Re-run Flutter formatter, focused and full tests, and analyzer only when a Flutter/Dart toolchain is available. Do not claim the older Build #133 test results validate the Usage Statistics commits.
+- Update the active checkpoint and subject notes after each durable milestone. An APK still requires separate `Eksekusi Build App!`; no Firmware/BIN/Firebase/OTA/device operation is part of this task.
 - Add schema/repository/parser/widget tests; validate lifecycle, sync/reconnect/gaps, invalid values, time-weighted summaries, settings navigation, 350/420-dp canvas, themes and localization; run formatter, analyzer and full Flutter suite. A release still requires separate `Eksekusi Build App!`.
 - Remaining separate backlog: Default hybrid Home contrast regression and Firmware Touch Voltage one-way cycle. Do not silently bundle them into the Statistics implementation unless the owner explicitly expands scope.
 ## Evidence and safety boundary
