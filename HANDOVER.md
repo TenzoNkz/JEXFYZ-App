@@ -2,6 +2,14 @@
 
 Updated: 2026-11-09 (Asia/Jakarta).
 
+## Immediate next task — implement Touch Voltage one-way cycle in Firmware (2026-11-09)
+
+- Owner-requested physical TTP223 single-tap sequence: `5V → 9V → 12V → 5V → 9V → 12V → ...`; do not reverse direction at 12V.
+- Current active Firmware is V7.1; `executeTouchSingle()` uses `touchVoltageAscending` and implements the old ping-pong sequence. Static source review confirmed the cause. The existing Firmware QC test pins V7.1 filename/version and does not currently assert the Touch Voltage cycle.
+- Recommended implementation under a new explicit `Eksekusi Full!`: derive next rail directly from `currentVoltage` (V5→V9, V9→V12, V12→V5), preserve all requestVoltage/safety/selector/Peltier/Fan/OTA contracts, and keep other Touch gestures unchanged.
+- Functional Firmware version rule: rename the single active sketch to `firmware/JEXFYZ-V7.2.ino`, set `FW_VERSION="V7.2"`, update hard-pinned source/version test references, and add tests for repeated cycle, alternate starting rails, request rejection and gesture invariants.
+- No source/test edit, compile, BIN, Firebase, OTA, flash or device action was performed in this Diskusi. `Eksekusi Full!` is not yet authorized. Owner compiles separately with Arduino-ESP32 Core 3.3.7; BIN/OTA/flash requires separate explicit permission.
+
 ## Latest verified state
 
 - **Latest App release:** Build #133, [Actions run 42619673642](https://github.com/TenzoNkz/JEXFYZ-App/actions/runs/42619673642), source `5201a3e07f36305ffe3882a1b965b9e7414cd71a`; terminal success, all 21 main workflow steps passed.
