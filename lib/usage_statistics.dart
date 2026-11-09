@@ -14,7 +14,7 @@ import 'package:sqflite/sqflite.dart';
 
 import 'app_settings.dart';
 
-enum UsagePeriod { hour, day, week }
+enum UsagePeriod { hour, day, week, month }
 
 extension UsagePeriodContract on UsagePeriod {
   Duration get duration {
@@ -25,6 +25,8 @@ extension UsagePeriodContract on UsagePeriod {
         return const Duration(hours: 24);
       case UsagePeriod.week:
         return const Duration(days: 7);
+      case UsagePeriod.month:
+        return const Duration(days: 30);
     }
   }
 
@@ -36,6 +38,8 @@ extension UsagePeriodContract on UsagePeriod {
         return '24H';
       case UsagePeriod.week:
         return '7D';
+      case UsagePeriod.month:
+        return '30D';
     }
   }
 }
@@ -465,7 +469,7 @@ class UsageStatisticsStore implements UsageStatisticsRepository {
 
   static final UsageStatisticsStore instance = UsageStatisticsStore._();
   static const String _databaseName = 'jexfyz_usage_statistics.db';
-  static const int retentionDays = 7;
+  static const int retentionDays = 30;
 
   Future<Database>? _databaseFuture;
   int _lastPrunedAtMs = 0;
